@@ -94,6 +94,9 @@ class Control
 
     void configure();
 
+    string strHex(const int val) const;
+    string strDouble(const double val) const;
+
 
   public:
 
@@ -140,7 +143,7 @@ class Control
 
     int numThreads() const;
 
-    const string str() const;
+    string str() const;
 };
 
 #endif

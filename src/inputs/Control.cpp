@@ -103,11 +103,11 @@ void Control::configure()
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
       "0x001: Some\n"
-      "0x400: More" },
+      "0x002: More" },
     { "-d", "--debug", CORRESPONDENCE_BIT_VECTOR, CTRL_DEBUG, "0x0",
       "Output verbosity (default: 0x0).  Bits:\n"
       "0x001: Some\n"
-      "0x400: More" },
+      "0x002: More" },
     { "-T", "--threads", CORRESPONDENCE_INT, CTRL_NUM_THREADS, "1",
       "Number of threads." }
   };
@@ -419,10 +419,25 @@ int Control::numThreads() const
 }
 
 
-const string Control::str() const
+string Control::strHex(const int val) const
+{
+  stringstream ss;
+  ss << "0x" << hex << val;
+  return ss.str();
+}
+
+
+string Control::strDouble(const double val) const
+{
+  stringstream ss;
+  ss << setprecision(2) << val;
+  return ss.str();
+}
+
+
+string Control::str() const
 {
   string s = "Parameters:\n";
-  stringstream ss;
 
   for (auto& cmd: commands)
   {
@@ -433,44 +448,42 @@ const string Control::str() const
         val = entry.getString(cmd.no);
         break;
       case CORRESPONDENCE_STRING_VECTOR:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
-        break;
       case CORRESPONDENCE_STRING_MAP:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
-        break;
-      case CORRESPONDENCE_INT_VECTOR:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
-        break;
       case CORRESPONDENCE_FLOAT_VECTOR:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
-        break;
-      case CORRESPONDENCE_INT:
-        val = to_string(entry.getInt(cmd.no));
-        break;
       case CORRESPONDENCE_BOOL:
         cout << "Haven't learned: " << cmd.corrType << "\n";
         break;
-      case CORRESPONDENCE_DOUBLE:
-        ss << setprecision(2) << entry.getDouble(cmd.no);
-        val = ss.str();
+      case CORRESPONDENCE_INT_VECTOR:
+        cout << "INT_VECTOR\n";
+        // val = Control::strHex(entry.getIntVector(cmd.no));
         break;
-      case CORRESPONDENCE_BIT_VECTOR:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
+      case CORRESPONDENCE_INT:
+        if (cmd.no == CTRL_HOLDING)
+          val = Control::strHex(entry.getInt(cmd.no));
+        else
+          val = to_string(entry.getInt(cmd.no));
+        break;
+      case CORRESPONDENCE_DOUBLE:
+        val = Control::strDouble(entry.getDouble(cmd.no));
         break;
       case CORRESPONDENCE_SIZE:
         cout << "Shouldn't happen: " << cmd.corrType << "\n";
         break;
     }
 
-    ss.clear();
+    stringstream ss;
     ss << 
       setw(2) << cmd.singleDash << " " <<
-      setw(8) << cmd.doubleDash << " " <<
+      setw(9) << cmd.doubleDash << " " <<
       setw(10) << right << val << " " <<
       left << cmd.documentation << "\n";
-      
     s += ss.str();
   }
   return s + "\n";
 }
 
+
+// Bit vectors are messed up
+// Lengths don't get filled out right
+// Empty string perhaps as -
+// Multi-line: Replace \n with 3+10+13 spaces after \n

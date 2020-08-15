@@ -20,7 +20,7 @@ enum CorrespondenceType
   CORRESPONDENCE_INT = 5,
   CORRESPONDENCE_BOOL = 6,
   CORRESPONDENCE_DOUBLE = 7,
-  CORRESPONDENCE_BIT_VECTOR = 8, // No separate storage, so correct
+  CORRESPONDENCE_BIT_VECTOR = 3, // No separate storage, so correct
   CORRESPONDENCE_SIZE = 9
 };
 

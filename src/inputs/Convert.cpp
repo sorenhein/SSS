@@ -83,22 +83,30 @@ bool Convert::cards2holding(
   int nindex = 0;
   int sindex = 0;
   int h;
+  bool x_ok = true;
 
   for (int j = 1; j <= cards; j++)
   {
     const string s = index2card[j];
-    if (nindex < nlen && north.substr(nindex, 1) == s)
+    const string ncard = north.substr(nindex, 1);
+    const string scard = north.substr(sindex, 1);
+
+    if (nindex < nlen && (ncard == s || (x_ok && ncard == "x")))
     {
+      // North gets the first x'es.
       h = CONVERT_NORTH;
       nindex++;
     }
-    else if (sindex <= slen && south.substr(sindex, 1) == s)
+    else if (sindex <= slen && (scard == s || (x_ok && scard == "x")))
     {
       h = CONVERT_SOUTH;
       sindex++;
     }
     else
+    {
       h = CONVERT_OPPS;
+      x_ok = false;
+    }
     
     holding = 3*holding + h;
   }
