@@ -1,0 +1,8 @@
+driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h stats/Timers.h
+driver.obj: stats/Timer.h const.h
+inputs/Convert.obj: inputs/Convert.h const.h
+inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h const.h
+inputs/Entity.obj: inputs/Entity.h inputs/parse.h
+inputs/parse.obj: inputs/parse.h
+stats/Timer.obj: stats/Timer.h
+stats/Timers.obj: stats/Timers.h stats/Timer.h

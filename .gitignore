@@ -5,6 +5,7 @@
 *.dll
 *.obj
 *.def
+*.pdb
 src/[Mm]akefile
 test/[Mm]akefile
 examples/[Mm]akefile
@@ -18,3 +19,7 @@ test/itest
 *.exp
 *.lib
 *.res
+
+chapters/*
+scripts/*
+hash/*
