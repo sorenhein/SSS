@@ -6,6 +6,15 @@
 *.obj
 *.def
 *.pdb
+*.filters
+*.user
+*.suo
+*.db
+*.ipch
+*.cache
+*.log
+*.sln
+*.vcxproj
 src/[Mm]akefile
 test/[Mm]akefile
 examples/[Mm]akefile

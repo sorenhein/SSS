@@ -35,6 +35,7 @@ int main(int argc, char * argv[])
   timers.resize(control.numThreads());
   timers[0].start(TIMER_ALL_THREADS);
 
+  /*
   vector<thread *> threads;
   threads.resize(control.numThreads());
   for (int thid = 0; thid < control.numThreads(); thid++)
@@ -45,14 +46,17 @@ int main(int argc, char * argv[])
     threads[thid]->join();
     delete threads[thid];
   }
+  */
 
   timers[0].stop(TIMER_ALL_THREADS);
 
   // Consolidate the thread timers.
+  /*
   for (int i = 1; i < control.numThreads(); i++)
     timers[0] += timers[i];
 
   cout << timers[0].str(2) << endl;
+  */
 }
 
 

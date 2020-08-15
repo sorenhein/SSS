@@ -43,7 +43,7 @@ void Entity::init(const vector<unsigned>& fieldCounts)
   floatVectors.resize(fieldCounts[CORRESPONDENCE_FLOAT_VECTOR]);
   ints.resize(fieldCounts[CORRESPONDENCE_INT], -1);
   bools.resize(fieldCounts[CORRESPONDENCE_BOOL]);
-  doubles.resize(fieldCounts[CORRESPONDENCE_DOUBLE]);
+  doubles.resize(fieldCounts[CORRESPONDENCE_DOUBLE], -1.);
 }
 
 
@@ -97,6 +97,14 @@ bool Entity::parseValue(
       bools[no] = ! bools[no];
     }
   }
+  else if (corrType == CORRESPONDENCE_DOUBLE)
+  {
+    if (! parseDouble(value, doubles[no]))
+    {
+      cout << "Bad double" << endl;
+      return false;
+    }
+  }
   else if (corrType == CORRESPONDENCE_BIT_VECTOR)
   {
     intVectors[no].resize(BIT_VECTOR_SIZE);
@@ -108,7 +116,7 @@ bool Entity::parseValue(
   }
   else
   {
-    cout << "Bad correspondence type " << endl;
+    cout << "Bad correspondence type " << corrType << endl;
     return false;
   }
 

@@ -38,7 +38,7 @@ void Convert::reset()
   number2card.resize(MAX_CARDS+1);
   for (int i = 1; i <= MAX_CARDS; i++)
   {
-    number2card[i].resize(i);
+    number2card[i].resize(i+1);
     for (int j = 1; j <= i; j++)
       number2card[i][j] = index2card[j];
   }
@@ -82,7 +82,7 @@ bool Convert::cards2holding(
 
   int nindex = 0;
   int sindex = 0;
-    int h;
+  int h;
 
   for (int j = 1; j <= cards; j++)
   {
