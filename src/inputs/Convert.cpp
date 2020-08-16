@@ -55,13 +55,14 @@ bool Convert::holding2cards(
   north = "";
   south = "";
 
-  for (int i = 0; i < cards; i++)
+  const int imin = (cards > 13 ? 0 : 13-cards);
+  for (int i = imin; i < imin+cards; i++)
   {
     const int c = h % 3;
     if (c == CONVERT_NORTH)
-      north += index2card[i+1];
+      north = index2card[i+1] + north;
     else if (c == CONVERT_SOUTH)
-      south += index2card[i+1];
+      south = index2card[i+1] + south;
     
     h /= 3;
   }
@@ -83,34 +84,69 @@ bool Convert::cards2holding(
   int nindex = 0;
   int sindex = 0;
   int h;
-  bool x_ok = true;
 
-  for (int j = 1; j <= cards; j++)
+  // Generally start at the ace, even if the suit is shorter.
+  // So it's the deuce and not the ace missing from a 12-card suit.
+  // For longer suits, start from the top.
+  // So in a hypothetical 15-card suit the first card is the "C".
+  const int jmax = (cards > 13 ? cards : 13);
+  int count = 0;
+
+  // First do the non-x cards from the top down.
+  for (int j = jmax; j > jmax-cards; j--)
   {
     const string s = index2card[j];
-    const string ncard = north.substr(nindex, 1);
-    const string scard = north.substr(sindex, 1);
+    const string ncard = (nindex == nlen ? "" : north.substr(nindex, 1));
+    const string scard = (sindex == slen ? "" : south.substr(sindex, 1));
 
-    if (nindex < nlen && (ncard == s || (x_ok && ncard == "x")))
+    if (ncard == s)
     {
-      // North gets the first x'es.
       h = CONVERT_NORTH;
       nindex++;
     }
-    else if (sindex <= slen && (scard == s || (x_ok && scard == "x")))
+    else if (scard == s)
     {
       h = CONVERT_SOUTH;
       sindex++;
     }
     else
-    {
       h = CONVERT_OPPS;
-      x_ok = false;
-    }
     
     holding = 3*holding + h;
+    count++;
+
+    if ((nindex == nlen || ncard == "x") &&
+        (sindex == slen || scard == "x"))
+      break;
   }
 
-  return (nindex == nlen && sindex == slen);
+  const int num_x = nlen - nindex + slen - sindex;
+  if (num_x == 0)
+    return true;
+
+  // If there are false characters in the input, this test may trigger.
+  if (count + num_x > cards)
+    return false;
+
+  // Shift up the holding before filling in the x's.
+  for (int i = 0; i < cards - count - num_x; i++)
+    holding = 3*holding + CONVERT_OPPS;
+
+  // North gets the first x's.
+  for (int i = nindex; i < nlen; i++)
+  {
+    if (north.substr(i, 1) != "x")
+      return false;
+    holding = 3*holding + CONVERT_NORTH;
+  }
+
+  for (int i = sindex; i < slen; i++)
+  {
+    if (south.substr(i, 1) != "x")
+      return false;
+    holding = 3*holding + CONVERT_SOUTH;
+  }
+  
+  return true;
 }
 

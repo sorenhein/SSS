@@ -184,6 +184,11 @@ bool Control::completeHoldings()
     return false;
   }
 
+  if (Control::north() == "void")
+    entry.setString(CTRL_NORTH, "");
+  if (Control::south() == "void")
+    entry.setString(CTRL_SOUTH, "");
+
   string n = Control::north();
   string s = Control::south();
   int h = Control::holding();
@@ -229,7 +234,7 @@ bool Control::completeHoldings()
     else
     {
       entry.setString(CTRL_NORTH, n);
-      entry.setString(CTRL_SOUTH, n);
+      entry.setString(CTRL_SOUTH, s);
     }
   }
   return true;
@@ -521,6 +526,3 @@ string Control::str() const
   return s + "\n";
 }
 
-
-// When building -n/-s, option to make x'es or not
-// Make sure 12 cards use A-3, not K-2
