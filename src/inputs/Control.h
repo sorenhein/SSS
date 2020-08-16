@@ -96,6 +96,9 @@ class Control
 
     string strHex(const int val) const;
     string strDouble(const double val) const;
+    string strBitVector(
+      const vector<int>& bits,
+      const string& doc) const;
 
 
   public:

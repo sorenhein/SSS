@@ -93,7 +93,7 @@ bool Entity::parseValue(
     }
     else
     {
-      // Opposity of default value.
+      // Opposite of default value.
       bools[no] = ! bools[no];
     }
   }

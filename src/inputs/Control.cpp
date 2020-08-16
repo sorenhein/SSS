@@ -13,6 +13,7 @@
 
 #include "Control.h"
 #include "Convert.h"
+#include "parse.h"
 #include "../const.h"
 
 extern Convert convert;
@@ -92,14 +93,14 @@ void Control::configure()
     { "-g", "--goal", CORRESPONDENCE_INT, CTRL_GOAL, "0",
       "Minimum number of tricks to target (default: 0)." },
     { "-e", "--expect", CORRESPONDENCE_DOUBLE, CTRL_EXPECT, "-1.",
-      "Average number of tricks expected (e.g. from Roudi'sbook)." },
+      "Average tricks expected (e.g. from Roudinesco's book)." },
 
     { "-i", "--input", CORRESPONDENCE_STRING, CTRL_INPUT_FILE, "",
       "Input batch file with command-line strings." },
     { "-f", "--file", CORRESPONDENCE_STRING, CTRL_CONTROL_FILE, "",
       "Control file with further settings." },
     { "-t", "--text", CORRESPONDENCE_STRING, CTRL_TEXT, "",
-      "Text to print with output (e.g. page and number in Roudi's book)." },
+      "Text to print (e.g. Roudinesco page and number)." },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
       "0x001: Some\n"
@@ -237,18 +238,6 @@ bool Control::completeHoldings()
 
 void Control::completeCounts()
 {
-  if (Control::westMin() > Control::westMax())
-  {
-    cout << "No possible West length left.\n";
-    return;
-  }
-
-  if (Control::eastMin() > Control::eastMax())
-  {
-    cout << "No possible East length left.\n";
-    return;
-  }
-
   const int c = Control::cards();
 
   if (Control::westMax() == -1)
@@ -260,6 +249,18 @@ void Control::completeCounts()
     entry.setInt(CTRL_WEST_VACANT, c);
   if (Control::eastVacant() == -1)
     entry.setInt(CTRL_EAST_VACANT, c);
+
+  if (Control::westMin() > Control::westMax())
+  {
+    cout << "No possible West length left.\n";
+    return;
+  }
+
+  if (Control::eastMin() > Control::eastMax())
+  {
+    cout << "No possible East length left.\n";
+    return;
+  }
 
   const int rest = Control::cards() - 
     Control::north().length() - 
@@ -429,8 +430,43 @@ string Control::strHex(const int val) const
 
 string Control::strDouble(const double val) const
 {
+  if (val < 0.)
+    return "-";
+
   stringstream ss;
   ss << setprecision(2) << val;
+  return ss.str();
+}
+
+
+string Control::strBitVector(
+  const vector<int>& bits,
+  const string& doc) const
+{
+  // This is a kludge to pull apart the documentation text and to
+  // put it together again including the values.
+
+  vector<string> lines;
+  tokenize(doc, lines, "\n");
+
+  if (bits.size() < lines.size()-1)
+  {
+    cout << bits.size() << " VS " << lines.size() << "\n";
+    return "";
+  }
+
+  stringstream ss;
+  ss << lines[0];
+
+  for (unsigned i = 1; i < lines.size(); i++)
+  {
+    const string set = (bits[i-1] ? "1" : "-");
+    ss <<
+      "\n" <<
+      setw(13) << "" <<
+      setw(8) << right << set << " " <<
+      left << lines[i];
+  }
   return ss.str();
 }
 
@@ -442,10 +478,14 @@ string Control::str() const
   for (auto& cmd: commands)
   {
     string val = "";
+    string doc = cmd.documentation;
+
     switch(cmd.corrType)
     {
       case CORRESPONDENCE_STRING:
         val = entry.getString(cmd.no);
+        if (val.empty())
+          val = "-";
         break;
       case CORRESPONDENCE_STRING_VECTOR:
       case CORRESPONDENCE_STRING_MAP:
@@ -454,8 +494,7 @@ string Control::str() const
         cout << "Haven't learned: " << cmd.corrType << "\n";
         break;
       case CORRESPONDENCE_INT_VECTOR:
-        cout << "INT_VECTOR\n";
-        // val = Control::strHex(entry.getIntVector(cmd.no));
+        doc = Control::strBitVector(entry.getIntVector(cmd.no), doc);
         break;
       case CORRESPONDENCE_INT:
         if (cmd.no == CTRL_HOLDING)
@@ -475,15 +514,13 @@ string Control::str() const
     ss << 
       setw(2) << cmd.singleDash << " " <<
       setw(9) << cmd.doubleDash << " " <<
-      setw(10) << right << val << " " <<
-      left << cmd.documentation << "\n";
+      setw(8) << right << val << "  " <<
+      left << doc << "\n";
     s += ss.str();
   }
   return s + "\n";
 }
 
 
-// Bit vectors are messed up
-// Lengths don't get filled out right
-// Empty string perhaps as -
-// Multi-line: Replace \n with 3+10+13 spaces after \n
+// When building -n/-s, option to make x'es or not
+// Make sure 12 cards use A-3, not K-2
