@@ -50,7 +50,7 @@ class Ranks
       const vector<RankInfo>& vec1,
       const vector<RankInfo>& vec2,
       const int cards,
-      map<char, char>& canonical2comb) const;
+      vector<char>& canonical2comb) const;
 
     string strRankInfo(
       const RankInfo& rankInfo,

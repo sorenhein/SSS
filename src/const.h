@@ -29,7 +29,8 @@ struct CombEntry
   int canonicalHolding;
   int canonicalIndex;
   bool rotateFlag;
-  map<char, char> canonical2comb;
+  vector<char> canonical2comb;
+  // map<char, char> canonical2comb;
   // Once we have a Combination, probably
   // Combination * combinationPtr;
 };

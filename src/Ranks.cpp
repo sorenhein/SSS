@@ -109,22 +109,24 @@ int Ranks::canonical(
   const vector<RankInfo>& vec1,
   const vector<RankInfo>& vec2,
   const int cards,
-  map<char, char>& canonical2comb) const
+  vector<char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
   int holding = 0;
   int index = (cards > 13 ? 0 : 13-cards);
 
+  canonical2comb.resize(cards > 13 ? cards : 13);
+
   for (int rank = maxRank; rank >= 0; rank--, index++)
   {
-    const char canonicalCard = CARD_NAMES[index];
+    // const char canonicalCard = CARD_NAMES[index];
 
     if (opps[rank].count)
     {
       for (int count = 0; count < opps[rank].count; count++)
       {
         holding = 3*holding + CONVERT_OPPS;
-        canonical2comb[canonicalCard] = opps[rank].cards[count];
+        canonical2comb[index] = opps[rank].cards[count];
       }
     }
     else
@@ -132,13 +134,13 @@ int Ranks::canonical(
       for (int count = 0; count < vec1[rank].count; count++)
       {
         holding = 3*holding + CONVERT_NORTH;
-        canonical2comb[canonicalCard] = vec1[rank].cards[count];
+        canonical2comb[index] = vec1[rank].cards[count];
       }
 
       for (int count = 0; count < vec2[rank].count; count++)
       {
         holding = 3*holding + CONVERT_SOUTH;
-        canonical2comb[canonicalCard] = vec2[rank].cards[count];
+        canonical2comb[index] = vec2[rank].cards[count];
       }
     }
   }
