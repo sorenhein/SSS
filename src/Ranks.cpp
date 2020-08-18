@@ -26,6 +26,13 @@ void Ranks::resize(const int cards)
   north.resize(cards); 
   south.resize(cards); 
   opps.resize(cards); 
+
+  for (int card = 0; card < cards; card++)
+  {
+    north[card].cards.resize(cards);
+    south[card].cards.resize(cards);
+    opps[card].cards.resize(cards);
+  }
 }
 
 
@@ -62,8 +69,7 @@ void Ranks::setRanks(
       if (! prev_is_NS)
         maxRank++;
 
-      north[maxRank].count++;
-      north[maxRank].cards.push_back(CARD_NAMES[i]);
+      north[maxRank].add(CARD_NAMES[i]);
       prev_is_NS = true;
     }
     else if (c == CONVERT_SOUTH)
@@ -71,8 +77,7 @@ void Ranks::setRanks(
       if (! prev_is_NS)
         maxRank++;
 
-      south[maxRank].count++;
-      south[maxRank].cards.push_back(CARD_NAMES[i]);
+      south[maxRank].add(CARD_NAMES[i]);
       prev_is_NS = true;
     }
     else
@@ -80,8 +85,7 @@ void Ranks::setRanks(
       if (prev_is_NS)
         maxRank++;
 
-      opps[maxRank].count++;
-      opps[maxRank].cards.push_back(CARD_NAMES[i]);
+      opps[maxRank].add(CARD_NAMES[i]);
       prev_is_NS = false;
     }
 

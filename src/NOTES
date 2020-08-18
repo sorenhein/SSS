@@ -1,6 +1,4 @@
 * 3* could be x + (x << 1) or += (x << 1)
-* cards can be fixed-size at maximum, so no push_back
-* Use arrays, not vectors
 * Multi-thread? One rank per thread.
 
 * Doesn't parse -n A -s void ?

@@ -26,9 +26,13 @@ class Ranks
       void clear()
       {
         count = 0;
-        cards.clear();
       }
 
+      void add(const char card)
+      {
+        cards[count] = card;
+        count++;
+      }
     };
 
     vector<RankInfo> north;
