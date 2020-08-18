@@ -21,6 +21,7 @@ void Combinations::reset()
 {
   maxCards = 0;
   combinations.clear();
+  uniques.clear();
   counts.clear();
 }
 
@@ -30,6 +31,7 @@ void Combinations::resize(const int maxCardsIn)
   maxCards = maxCardsIn;
 
   combinations.resize(maxCardsIn+1);
+  uniques.resize(maxCardsIn+1);
 
   // There are three combinations with 1 card: It may be with
   // North, South or the opponents.
@@ -39,6 +41,7 @@ void Combinations::resize(const int maxCardsIn)
   {
     combinations[cards].resize(numCombinations);
     numCombinations *= 3;
+    uniques[cards].clear();
   }
 
   counts.resize(maxCardsIn+1);

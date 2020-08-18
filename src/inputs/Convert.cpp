@@ -90,12 +90,10 @@ bool Convert::cards2holding(
   const int jmax = (cards > 13 ? cards : 13);
   int count = 0;
 
-cout << "north " << north << " south " << south << "\n";
   // First do the non-x cards from the top down.
   for (int j = jmax; j > jmax-cards; j--)
   {
     const char nextCard = index2card[j];
-cout << "Seek " << nextCard << endl;
     const char ncard = (nindex == nlen ? ' ' : north.at(nindex));
     const char scard = (sindex == slen ? ' ' : south.at(sindex));
 
@@ -121,14 +119,13 @@ cout << "Seek " << nextCard << endl;
   }
 
   const int num_x = nlen - nindex + slen - sindex;
-cout << "nlen " << nlen << " slen " << slen << " nindex " << nindex << " sindex" << sindex << " num_x " << num_x << endl;
   if (num_x == 0)
     return true;
 
   // If there are false characters in the input, this test may trigger.
   if (count + num_x > cards)
     return false;
-cout << "count " << count << endl;
+
   // Shift up the holding before filling in the x's.
   for (int i = 0; i < cards - count - num_x; i++)
     holding = 3*holding + CONVERT_OPPS;
@@ -148,7 +145,6 @@ cout << "count " << count << endl;
     holding = 3*holding + CONVERT_SOUTH;
   }
   
-cout << "DONE\n";
   return true;
 }
 
