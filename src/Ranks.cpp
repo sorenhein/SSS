@@ -9,7 +9,9 @@
 
 Ranks::Ranks()
 {
-  Ranks::reset();
+  north.clear();
+  south.clear();
+  opps.clear();
 }
 
 
@@ -18,11 +20,27 @@ Ranks::~Ranks()
 }
 
 
-void Ranks::reset()
+void Ranks::resize(const int cards)
 {
-  north.clear();
-  south.clear();
-  opps.clear();
+  // Worst case.  
+  north.resize(cards); 
+  south.resize(cards); 
+  opps.resize(cards); 
+
+  maxRank = -1;
+
+  Ranks::clear();
+}
+
+
+void Ranks::clear()
+{
+  for (unsigned rank = 0; rank < north.size(); rank++)
+  {
+    north[rank].clear();
+    south[rank].clear();
+    opps[rank].clear();
+  }
 }
 
 
@@ -30,10 +48,7 @@ void Ranks::setRanks(
   const int holding,
   const int cards)
 {
-  // Worst case.  
-  north.resize(cards); 
-  south.resize(cards); 
-  opps.resize(cards); 
+  Ranks::clear();
 
   // Find the owner of the first card so that we can consider the
   // predecessor to belong to someone else.
@@ -155,5 +170,55 @@ void Ranks::set(
       cards, combEntry.canonical2comb);
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
+}
+
+
+string Ranks::strRankInfo(
+  const RankInfo& rankInfo,
+  const string& pos) const
+{
+  stringstream ss;
+
+  if (rankInfo.count == 0)
+  {
+    ss << 
+      setw(8) << "-" <<
+      setw(2) << "-" <<
+      setw(6) << "-";
+  }
+  else
+  {
+    string concat = "";
+    for (auto& s: rankInfo.cards)
+      concat += s;
+
+    ss << 
+      setw(8) << pos <<
+      setw(2) << rankInfo.count <<
+      setw(6) << concat;
+  }
+
+  return ss.str();
+}
+
+
+string Ranks::str() const
+{
+  stringstream ss;
+  ss << "Ranks:\n";
+
+  ss << 
+    setw(8) << right << "North" << setw(2) << "#" << setw(6) << "cards" <<
+    setw(8) << "South" << setw(2) << "#" << setw(6) << "cards" <<
+    setw(8) << "Opps" << right << setw(2) << "#" << setw(6) << "cards" << 
+    "\n";
+
+  for (int rank = north.size()-1; rank >= 0; rank--)
+    ss <<
+      Ranks::strRankInfo(north[rank], "North") <<
+      Ranks::strRankInfo(south[rank], "South") <<
+      Ranks::strRankInfo(opps[rank], "Opps") << endl;
+  
+  return ss.str() + "\n";
 }
 

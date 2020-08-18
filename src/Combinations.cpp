@@ -59,9 +59,12 @@ void Combinations::runUniques(const int cards)
   vector<int>& uniqs = uniques[cards];
   Ranks ranks;
 
+  ranks.resize(cards);
+
   for (int holding = 0; holding < static_cast<int>(combs.size()); holding++)
   {
     ranks.set(holding, cards, combs[holding]);
+cout << ranks.str();
 
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
