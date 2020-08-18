@@ -6,20 +6,15 @@
 #include <vector>
 #include <string>
 
+#include "../const.h"
+
+
 using namespace std;
 
 
 class Convert
 {
   private:
-
-    enum CardPosition
-    {
-      CONVERT_NORTH = 0,
-      CONVERT_SOUTH = 1,
-      CONVERT_OPPS = 2
-    };
-
 
     vector<string> index2card;
     map<string, int> card2index;

@@ -20,15 +20,13 @@ Convert::~Convert()
 
 void Convert::reset()
 {
-  const string cards = "23456789TJQKABC";
-
   index2card.clear();
   index2card.resize(MAX_CARDS+1);
 
   card2index.clear();
   for (int j = 1; j <= MAX_CARDS; j++)
   {
-    const string c = cards.substr(j-1, 1);
+    const string c = CARD_NAMES.substr(j-1, 1);
 
     index2card[j] = c;
     card2index[c] = j;

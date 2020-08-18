@@ -73,7 +73,7 @@ enum ControlOutput
 
 enum ControlDebug
 {
-  CTRL_DEBUG_BIT0 = 0,
+  CTRL_DEBUG_ARGS = 0,
   CTRL_DEBUG_BIT1 = 1
 };
 
@@ -137,7 +137,7 @@ class Control
     const string& text() const; 
     bool outputBit0() const; 
     bool outputBit1() const; 
-    bool debugBit0() const; 
+    bool debugArgs() const; 
     bool debugBit1() const; 
 
     const string& simpleDir() const;

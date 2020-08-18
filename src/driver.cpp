@@ -1,6 +1,8 @@
 #include <iostream>
 #include <thread>
 
+#include "Combinations.h"
+
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
 
@@ -30,7 +32,20 @@ int main(int argc, char * argv[])
     exit(0);
   }
 
-  cout << control.str();
+  if (control.debugArgs())
+    cout << control.str();
+
+  Combinations combinations;
+  combinations.resize(control.cards());
+
+  for (int cards = 1; cards <= control.cards(); cards++)
+  {
+cout << "Cards " << cards << endl;
+    combinations.runUniques(cards);
+  }
+
+  cout << combinations.strUniques();
+  
 
   timers.resize(control.numThreads());
   timers[0].start(TIMER_ALL_THREADS);

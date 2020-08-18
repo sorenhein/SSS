@@ -107,7 +107,7 @@ void Control::configure()
       "0x002: More" },
     { "-d", "--debug", CORRESPONDENCE_BIT_VECTOR, CTRL_DEBUG, "0x0",
       "Output verbosity (default: 0x0).  Bits:\n"
-      "0x001: Some\n"
+      "0x001: Input arguments\n"
       "0x002: More" },
     { "-T", "--threads", CORRESPONDENCE_INT, CTRL_NUM_THREADS, "1",
       "Number of threads." }
@@ -389,9 +389,9 @@ bool Control::outputBit1() const
 }
 
 
-bool Control::debugBit0() const
+bool Control::debugArgs() const
 {
-  return (entry.getIntVector(CTRL_DEBUG)[CTRL_DEBUG_BIT0] != 0);
+  return (entry.getIntVector(CTRL_DEBUG)[CTRL_DEBUG_ARGS] != 0);
 }
 
 
