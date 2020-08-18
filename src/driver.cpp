@@ -38,10 +38,15 @@ int main(int argc, char * argv[])
   Combinations combinations;
   combinations.resize(control.cards());
 
+Timer timerCard;
   for (int cards = 1; cards <= control.cards(); cards++)
   {
+timerCard.reset();
+timerCard.start();
 cout << "Cards " << cards << endl;
     combinations.runUniques(cards);
+timerCard.stop();
+cout << timerCard.str() << endl;
   }
 
   cout << combinations.strUniques();

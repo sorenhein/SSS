@@ -64,7 +64,7 @@ void Combinations::runUniques(const int cards)
   for (int holding = 0; holding < static_cast<int>(combs.size()); holding++)
   {
     ranks.set(holding, cards, combs[holding]);
-cout << ranks.str();
+// cout << ranks.str();
 
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
