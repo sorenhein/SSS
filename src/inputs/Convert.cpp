@@ -20,26 +20,6 @@ Convert::~Convert()
 
 void Convert::reset()
 {
-  index2card.clear();
-  index2card.resize(MAX_CARDS+1);
-
-  card2index.clear();
-  for (int j = 1; j <= MAX_CARDS; j++)
-  {
-    const char c = CARD_NAMES[j-1];
-
-    index2card[j] = c;
-    card2index[c] = j;
-  }
-
-  number2card.clear();
-  number2card.resize(MAX_CARDS+1);
-  for (int i = 1; i <= MAX_CARDS; i++)
-  {
-    number2card[i].resize(i+1);
-    for (int j = 1; j <= i; j++)
-      number2card[i][j] = index2card[j];
-  }
 }
 
 
@@ -58,9 +38,9 @@ bool Convert::holding2cards(
   {
     const int c = h % 3;
     if (c == CONVERT_NORTH)
-      north = index2card[i+1] + north;
+      north = CARD_NAMES[i] + north;
     else if (c == CONVERT_SOUTH)
-      south = index2card[i+1] + south;
+      south = CARD_NAMES[i] + south;
     
     h /= 3;
   }
@@ -93,7 +73,7 @@ bool Convert::cards2holding(
   // First do the non-x cards from the top down.
   for (int j = jmax; j > jmax-cards; j--)
   {
-    const char nextCard = index2card[j];
+    const char nextCard = CARD_NAMES[j-1];
     const char ncard = (nindex == nlen ? ' ' : north.at(nindex));
     const char scard = (sindex == slen ? ' ' : south.at(sindex));
 
