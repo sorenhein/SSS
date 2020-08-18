@@ -1,0 +1,75 @@
+# --------------------- INFORMATION --------------------------------
+
+# This the Metapron3 Makefile for Windows and the Cygwin GNU g++
+# compiler.  It assumes a Unix-like setup for some commands.
+
+INCL_SOURCE	= Makefiles/sources.txt
+INCL_DEPENDS	= Makefiles/depends_o.txt
+
+# If your compiler name is not given here, change it.
+CC		= g++
+
+# We compile with aggressive warnings, but we have to turn off some
+# of them as they appear in libraries in great numbers...
+
+WARN_FLAGS	= 		\
+	-Wshadow 		\
+	-Wsign-conversion 	\
+	-pedantic -Wall -Wextra  \
+	-Wcast-align -Wcast-qual \
+	-Wctor-dtor-privacy 	\
+	-Wdisabled-optimization \
+	-Wformat=2 		\
+	-Winit-self 		\
+	-Wlogical-op 		\
+	-Wmissing-declarations 	\
+	-Wmissing-include-dirs 	\
+	-Wnoexcept 		\
+	-Wold-style-cast 	\
+	-Woverloaded-virtual 	\
+	-Wredundant-decls 	\
+	-Wsign-promo 		\
+	-Wstrict-null-sentinel 	\
+	-Wstrict-overflow=1 	\
+	-Wswitch-default -Wundef \
+	-Werror 		\
+	-Wno-unused 		\
+	-Wno-unknown-pragmas 	\
+	-Wno-long-long
+
+# COMPILE_FLAGS	= -O0 -flto -mtune=generic -fno-use-linker-plugin -ggdb
+COMPILE_FLAGS	= -O3 -flto -mtune=generic \
+		-fno-use-linker-plugin $(WARN_FLAGS) 
+
+LINK1_FLAGS	= 
+
+LINK2_FLAGS	= 		\
+	-lstdc++fs		\
+	-Wl,--dynamicbase 	\
+	-Wl,--nxcompat 		\
+	-Wl,--no-seh 		\
+	-Wl,--enable-stdcall-fixup 
+
+include $(INCL_SOURCE)
+
+O_FILES 	= $(subst .cpp,.o,$(SOURCE_FILES))
+
+cygwin:	$(O_FILES)
+	$(CC) $(LINK1_FLAGS) $(O_FILES) \
+	$(LINK2_FLAGS) $(EXPORTER) -o driver
+
+%.o:	%.cpp
+	$(CC) $(COMPILE_FLAGS) -c $< -o $@
+
+depend:
+	makedepend -Y -- $(SOURCE_FILES)
+
+clean:
+	rm -f $(O_FILES) $(DLL) $(DLLBASE).{lib,def,exp,res}
+
+# If you don't have a Linux-like setup, use "del" instead of "rm
+# and "copy" instead of "cp".
+
+include $(INCL_DEPENDS)
+
+# DO NOT DELETE

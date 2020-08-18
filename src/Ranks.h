@@ -15,7 +15,7 @@ class Ranks
 
     struct RankInfo
     {
-      int count;
+      unsigned count;
       vector<char> cards;
 
       RankInfo()
@@ -39,12 +39,12 @@ class Ranks
     vector<RankInfo> south;
     vector<RankInfo> opps;
 
-    int maxRank;
+    unsigned maxRank;
 
 
     void setRanks(
       const int holding,
-      const int cards);
+      const unsigned cards);
 
     bool dominates(
       const vector<RankInfo>& vec1,
@@ -53,7 +53,7 @@ class Ranks
     int canonical(
       const vector<RankInfo>& vec1,
       const vector<RankInfo>& vec2,
-      const int cards,
+      const unsigned cards,
       vector<char>& canonical2comb) const;
 
     string strRankInfo(
@@ -66,13 +66,13 @@ class Ranks
 
     ~Ranks();
 
-    void resize(const int cards);
+    void resize(const unsigned cards);
 
     void clear();
 
     void set(
       const int holding,
-      const int cards,
+      const unsigned cards,
       CombEntry& combEntry);
 
     string str() const;
