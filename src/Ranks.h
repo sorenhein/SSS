@@ -16,7 +16,7 @@ class Ranks
     struct RankInfo
     {
       int count;
-      vector<string> cards;
+      vector<char> cards;
 
       RankInfo()
       {

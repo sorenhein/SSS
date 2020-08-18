@@ -13,6 +13,3 @@
 * Multi-thread? One rank per thread.
 
 * Doesn't parse -n A -s void ?
-
-* rank output has 1 card too many?
-* The cards are labeled from about 7, not from ace?
