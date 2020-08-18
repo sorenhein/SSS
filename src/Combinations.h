@@ -6,6 +6,10 @@
 #include <vector>
 #include <string>
 
+#include <atomic>
+#include <thread>
+#include <mutex>
+
 #include "const.h"
 
 using namespace std;
@@ -27,6 +31,17 @@ class Combinations
     vector<vector<int>> uniques; // Probably gets more structure
 
     vector<CountEntry> counts;
+
+/*
+    atomic<int> counter; // Holding
+    mutex log; // Locked when a result is being logged
+
+    void runUniqueThread(const int cards);
+
+    void runUniquesMT(
+      const int cards,
+      const int numThreads);
+*/
 
 
   public:

@@ -52,8 +52,8 @@ cout << timerCard.str() << endl;
   cout << combinations.strUniques();
   
 
-  timers.resize(control.numThreads());
-  timers[0].start(TIMER_ALL_THREADS);
+  // timers.resize(control.numThreads());
+  // timers[0].start(TIMER_ALL_THREADS);
 
   /*
   vector<thread *> threads;
@@ -68,7 +68,7 @@ cout << timerCard.str() << endl;
   }
   */
 
-  timers[0].stop(TIMER_ALL_THREADS);
+  // timers[0].stop(TIMER_ALL_THREADS);
 
   // Consolidate the thread timers.
   /*

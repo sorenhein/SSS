@@ -78,6 +78,60 @@ void Combinations::runUniques(const int cards)
 }
 
 
+/*
+void Combinations::runUniqueThread(const int cards)
+{
+  vector<CombEntry>& combs = combinations[cards];
+  vector<int>& uniqs = uniques[cards];
+
+  Ranks ranks;
+  ranks.resize(cards);
+  int holding;
+
+  const int counterMax = static_cast<int>(combs.size());
+
+  while (counter < counterMax)
+  {
+    holding = ++counter; // Atomic
+
+    ranks.set(holding, cards, combs[holding]);
+
+    log.lock();
+
+    counts[cards].total++;
+    if (holding == combs[holding].canonicalHolding)
+    {
+      combs[holding].canonicalIndex = uniques.size();
+      uniqs.push_back(holding);
+
+      counts[cards].unique++;
+    }
+
+    log.unlock();
+  }
+}
+
+
+void Combinations::runUniquesMT(
+  const int cards,
+  const int numThreads)
+{
+  counter = -1;
+
+  vector<thread *> threads;
+  threads.resize(numThreads);
+  for (int thid = 0; thid < numThreads; thid++)
+    threads[thid] = new thread(&Combinations::runUniqueThread, this, cards);
+
+  for (int thid = 0; thid < numThreads; thid++)
+  {
+    threads[thid]->join();
+    delete threads[thid];
+  }
+}
+*/
+
+
 string Combinations::strUniques(const int cards) const
 {
   int cmin, cmax;
