@@ -123,13 +123,11 @@ int Ranks::canonical(
 
   for (int rank = maxRank; rank >= 0; rank--, index++)
   {
-    // const char canonicalCard = CARD_NAMES[index];
-
     if (opps[rank].count)
     {
       for (int count = 0; count < opps[rank].count; count++)
       {
-        holding = 3*holding + CONVERT_OPPS;
+        holding += (holding << 1) + CONVERT_OPPS;
         canonical2comb[index] = opps[rank].cards[count];
       }
     }
@@ -137,13 +135,13 @@ int Ranks::canonical(
     {
       for (int count = 0; count < vec1[rank].count; count++)
       {
-        holding = 3*holding + CONVERT_NORTH;
+        holding += (holding << 1) + CONVERT_NORTH;
         canonical2comb[index] = vec1[rank].cards[count];
       }
 
       for (int count = 0; count < vec2[rank].count; count++)
       {
-        holding = 3*holding + CONVERT_SOUTH;
+        holding += (holding << 1) + CONVERT_SOUTH;
         canonical2comb[index] = vec2[rank].cards[count];
       }
     }

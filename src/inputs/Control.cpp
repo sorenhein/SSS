@@ -184,14 +184,16 @@ bool Control::completeHoldings()
     return false;
   }
 
-  if (Control::north() == "void")
-    entry.setString(CTRL_NORTH, "");
-  if (Control::south() == "void")
-    entry.setString(CTRL_SOUTH, "");
-
   string n = Control::north();
   string s = Control::south();
   int h = Control::holding();
+
+  if (n.empty() != s.empty())
+  {
+    cout << "Either both or neither of -n and -s should be present.\n";
+    return false;
+  }
+
 
   if (n.empty() &&
       s.empty() &&
@@ -202,23 +204,28 @@ bool Control::completeHoldings()
     return false;
   }
 
-  if (n.empty() != s.empty())
-  {
-    cout << "Either both or neither of -n and -s should be present.\n";
-    return false;
-  }
-
-  if (! n.empty() && h != -1)
+  if ((! n.empty() || ! s.empty()) && h != -1)
   {
     cout << "-n/-s and -h are mutually exclusive.\n";
     return false;
   }
 
-  if (! n.empty())
+  if (Control::north() == "void")
+  {
+    entry.setString(CTRL_NORTH, "");
+    n = "";
+  }
+  if (Control::south() == "void")
+  {
+    entry.setString(CTRL_SOUTH, "");
+    s = "";
+  }
+
+  if (! n.empty() || ! s.empty())
   {
     if (! convert.cards2holding(n, s, Control::cards(), h))
     {
-      cout << "could not parse card strings into holding.\n";
+      cout << "Could not parse card strings into holding.\n";
       return false;
     }
     else

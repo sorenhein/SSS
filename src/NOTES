@@ -1,4 +1,4 @@
-* 3* could be x + (x << 1) or += (x << 1)
 * Multi-thread? One rank per thread.
 
-* Doesn't parse -n A -s void ?
+Number of unique holdings:
+http://oeis.org/A051450
