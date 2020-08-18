@@ -1,7 +1,3 @@
-~ 3000 sec for 1..12
-
-* Time each card length run
-* Only up to 11 for now?
 * In canonical(), can use .at instead of string
 * map<char, char> instead of <string, string>
 * Could have vector<char> indexed by index in CARD_NAMES

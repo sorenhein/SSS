@@ -109,7 +109,7 @@ int Ranks::canonical(
   const vector<RankInfo>& vec1,
   const vector<RankInfo>& vec2,
   const int cards,
-  map<string, string>& canonical2comb) const
+  map<char, char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
   int holding = 0;
@@ -117,7 +117,7 @@ int Ranks::canonical(
 
   for (int rank = maxRank; rank >= 0; rank--, index++)
   {
-    const string canonicalCard = to_string(CARD_NAMES[index]);
+    const char canonicalCard = CARD_NAMES[index];
 
     if (opps[rank].count)
     {
