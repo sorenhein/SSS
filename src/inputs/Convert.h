@@ -16,10 +16,10 @@ class Convert
 {
   private:
 
-    vector<string> index2card;
-    map<string, int> card2index;
+    vector<char> index2card;
+    map<char, int> card2index;
 
-    vector<vector<string>> number2card;
+    vector<vector<char>> number2card;
 
 
   public:

@@ -26,7 +26,7 @@ void Convert::reset()
   card2index.clear();
   for (int j = 1; j <= MAX_CARDS; j++)
   {
-    const string c = CARD_NAMES.substr(j-1, 1);
+    const char c = CARD_NAMES[j-1];
 
     index2card[j] = c;
     card2index[c] = j;
@@ -90,19 +90,21 @@ bool Convert::cards2holding(
   const int jmax = (cards > 13 ? cards : 13);
   int count = 0;
 
+cout << "north " << north << " south " << south << "\n";
   // First do the non-x cards from the top down.
   for (int j = jmax; j > jmax-cards; j--)
   {
-    const string s = index2card[j];
-    const string ncard = (nindex == nlen ? "" : north.substr(nindex, 1));
-    const string scard = (sindex == slen ? "" : south.substr(sindex, 1));
+    const char nextCard = index2card[j];
+cout << "Seek " << nextCard << endl;
+    const char ncard = (nindex == nlen ? ' ' : north.at(nindex));
+    const char scard = (sindex == slen ? ' ' : south.at(sindex));
 
-    if (ncard == s)
+    if (ncard == nextCard)
     {
       h = CONVERT_NORTH;
       nindex++;
     }
-    else if (scard == s)
+    else if (scard == nextCard)
     {
       h = CONVERT_SOUTH;
       sindex++;
@@ -113,19 +115,20 @@ bool Convert::cards2holding(
     holding = 3*holding + h;
     count++;
 
-    if ((nindex == nlen || ncard == "x") &&
-        (sindex == slen || scard == "x"))
+    if ((nindex == nlen || ncard == 'x') &&
+        (sindex == slen || scard == 'x'))
       break;
   }
 
   const int num_x = nlen - nindex + slen - sindex;
+cout << "nlen " << nlen << " slen " << slen << " nindex " << nindex << " sindex" << sindex << " num_x " << num_x << endl;
   if (num_x == 0)
     return true;
 
   // If there are false characters in the input, this test may trigger.
   if (count + num_x > cards)
     return false;
-
+cout << "count " << count << endl;
   // Shift up the holding before filling in the x's.
   for (int i = 0; i < cards - count - num_x; i++)
     holding = 3*holding + CONVERT_OPPS;
@@ -133,18 +136,19 @@ bool Convert::cards2holding(
   // North gets the first x's.
   for (int i = nindex; i < nlen; i++)
   {
-    if (north.substr(i, 1) != "x")
+    if (north.at(i) != 'x')
       return false;
     holding = 3*holding + CONVERT_NORTH;
   }
 
   for (int i = sindex; i < slen; i++)
   {
-    if (south.substr(i, 1) != "x")
+    if (south.at(i) != 'x')
       return false;
     holding = 3*holding + CONVERT_SOUTH;
   }
   
+cout << "DONE\n";
   return true;
 }
 

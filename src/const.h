@@ -10,7 +10,7 @@ using namespace std;
 // A real suit has up to 13 cards, but let's see if we can solve more.
 #define MAX_CARDS 15
 
-const string CARD_NAMES = "23456789TJQKABC";
+#define CARD_NAMES "23456789TJQKABC"
 
 enum CardPosition
 {

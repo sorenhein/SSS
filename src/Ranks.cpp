@@ -52,7 +52,7 @@ void Ranks::setRanks(
         runningRank++;
 
       north[runningRank].count++;
-      north[runningRank].cards.push_back(CARD_NAMES.substr(i, 1));
+      north[runningRank].cards.push_back(to_string(CARD_NAMES[i]));
       prev_is_NS = true;
     }
     else if (c == CONVERT_SOUTH)
@@ -61,7 +61,7 @@ void Ranks::setRanks(
         runningRank++;
 
       south[runningRank].count++;
-      south[runningRank].cards.push_back(CARD_NAMES.substr(i, 1));
+      south[runningRank].cards.push_back(to_string(CARD_NAMES[i]));
       prev_is_NS = true;
     }
     else
@@ -70,7 +70,7 @@ void Ranks::setRanks(
         runningRank++;
 
       opps[runningRank].count++;
-      opps[runningRank].cards.push_back(CARD_NAMES.substr(i, 1));
+      opps[runningRank].cards.push_back(to_string(CARD_NAMES[i]));
       prev_is_NS = false;
     }
 
@@ -110,7 +110,7 @@ int Ranks::canonical(
 
   for (unsigned rank = 0; rank < vec1.size(); rank++, index++)
   {
-    const string canonicalCard = CARD_NAMES.substr(index, 1);
+    const string canonicalCard = to_string(CARD_NAMES[index]);
 
     if (opps[rank].count)
     {

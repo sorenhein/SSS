@@ -1,7 +1,10 @@
-driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h stats/Timers.h
-driver.obj: stats/Timer.h const.h
+driver.obj: Combinations.h const.h inputs/Control.h inputs/Entity.h
+driver.obj: inputs/Convert.h const.h stats/Timers.h stats/Timer.h
+Ranks.obj: Ranks.h const.h
+Combinations.obj: Combinations.h const.h Ranks.h
 inputs/Convert.obj: inputs/Convert.h const.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h const.h
+inputs/Control.obj: inputs/parse.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
 stats/Timer.obj: stats/Timer.h
