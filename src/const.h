@@ -1,8 +1,7 @@
 #ifndef SSS_CONST_H
 #define SSS_CONST_H
 
-#include <string>
-#include <map>
+#include <vector>
 
 using namespace std;
 

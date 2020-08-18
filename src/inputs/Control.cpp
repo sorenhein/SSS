@@ -187,7 +187,7 @@ bool Control::completeHoldings()
 
   string n = Control::north();
   string s = Control::south();
-  int h = Control::holding();
+  unsigned h = Control::holding();
 
   if (n.empty() != s.empty())
   {
@@ -308,13 +308,13 @@ const string& Control::south() const
 }
 
 
-int Control::holding() const
+unsigned Control::holding() const
 {
   return entry.getInt(CTRL_HOLDING);
 }
 
 
-int Control::cards() const
+unsigned Control::cards() const
 {
   return entry.getInt(CTRL_CARDS);
 }

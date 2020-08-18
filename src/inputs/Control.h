@@ -120,8 +120,8 @@ class Control
 
     const string& north() const;
     const string& south() const;
-    int holding() const;
-    int cards() const;
+    unsigned holding() const;
+    unsigned cards() const;
     int westMin() const;
     int westMax() const;
     int westVacant() const;

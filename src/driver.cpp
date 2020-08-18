@@ -36,7 +36,7 @@ int main(int argc, char * argv[])
   combinations.resize(control.cards());
 
   Timer timerCard;
-  for (int cards = 1; cards <= control.cards(); cards++)
+  for (unsigned cards = 1; cards <= control.cards(); cards++)
   {
     timerCard.reset();
     timerCard.start();
