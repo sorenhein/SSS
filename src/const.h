@@ -26,11 +26,10 @@ enum CardPosition
 struct CombEntry
 {
   bool canonicalFlag;
-  int canonicalHolding;
-  int canonicalIndex;
+  unsigned canonicalHolding;
+  unsigned canonicalIndex;
   bool rotateFlag;
   vector<char> canonical2comb;
-  // map<char, char> canonical2comb;
   // Once we have a Combination, probably
   // Combination * combinationPtr;
 };

@@ -32,8 +32,8 @@ class Combinations
     vector<CountEntry> threadCounts;
 
     mutex log; // Locked when a result is being logged
-    atomic<int> counterHolding; // Holding
-    atomic<int> counterUnique; // Unique index
+    atomic<unsigned> counterHolding; // Holding
+    atomic<unsigned> counterUnique; // Unique index
 
     void runUniqueThread(
       const int cards,

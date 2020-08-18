@@ -51,7 +51,7 @@ void Ranks::clear()
 
 
 void Ranks::setRanks(
-  const int holding,
+  const unsigned holding,
   const unsigned cards)
 {
   Ranks::clear();
@@ -60,11 +60,11 @@ void Ranks::setRanks(
   // predecessor to belong to someone else.
   bool prev_is_NS = ((holding % 3) != CONVERT_OPPS);
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
-  int h = holding;
+  unsigned h = holding;
 
   for (unsigned i = imin; i < imin+cards; i++)
   {
-    const int c = h % 3;
+    const unsigned c = h % 3;
     if (c == CONVERT_NORTH)
     {
       if (! prev_is_NS)
@@ -110,14 +110,14 @@ bool Ranks::dominates(
 }
 
 
-int Ranks::canonical(
+unsigned Ranks::canonical(
   const vector<RankInfo>& vec1,
   const vector<RankInfo>& vec2,
   const unsigned cards,
   vector<char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
-  int holding = 0;
+  unsigned holding = 0;
   unsigned index = (cards > 13 ? 0 : 13-cards);
 
   canonical2comb.resize(cards > 13 ? cards : 13);
@@ -152,7 +152,7 @@ int Ranks::canonical(
 
 
 void Ranks::set(
-  const int holding,
+  const unsigned holding,
   const unsigned cards,
   CombEntry& combEntry)
 {

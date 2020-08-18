@@ -85,7 +85,7 @@ void Combinations::runUniques(const int cards)
   ranks.resize(cards);
   int uniqueIndex = -1;
 
-  for (int holding = 0; holding < static_cast<int>(combs.size()); holding++)
+  for (unsigned holding = 0; holding < combs.size(); holding++)
   {
     ranks.set(holding, cards, combs[holding]);
 // cout << ranks.str();
@@ -112,13 +112,13 @@ void Combinations::runUniqueThread(
 
   Ranks ranks;
   ranks.resize(cards);
-  int holding;
+  unsigned holding;
 
-  const int counterMax = static_cast<int>(combs.size());
+  const unsigned counterMax = combs.size();
 
   while (true)
   {
-    holding = ++counterHolding; // Atomic
+    holding = counterHolding++; // Atomic
     if (holding >= counterMax)
       break;
 
@@ -127,7 +127,7 @@ void Combinations::runUniqueThread(
     threadCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      const int uniqueIndex = ++counterUnique; // Atomic
+      const int uniqueIndex = counterUnique++; // Atomic
 
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
@@ -142,8 +142,8 @@ void Combinations::runUniquesMT(
   const int cards,
   const int numThreads)
 {
-  counterHolding = -1;
-  counterUnique = -1;
+  counterHolding = 0;
+  counterUnique = 0;
 
   vector<thread *> threads;
   threads.resize(numThreads);

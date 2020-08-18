@@ -43,14 +43,14 @@ class Ranks
 
 
     void setRanks(
-      const int holding,
+      const unsigned holding,
       const unsigned cards);
 
     bool dominates(
       const vector<RankInfo>& vec1,
       const vector<RankInfo>& vec2) const;
 
-    int canonical(
+    unsigned canonical(
       const vector<RankInfo>& vec1,
       const vector<RankInfo>& vec2,
       const unsigned cards,
@@ -71,7 +71,7 @@ class Ranks
     void clear();
 
     void set(
-      const int holding,
+      const unsigned holding,
       const unsigned cards,
       CombEntry& combEntry);
 
