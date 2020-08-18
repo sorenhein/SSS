@@ -19,14 +19,14 @@ class Combinations
 
     struct CountEntry
     {
-      int total;
-      int unique;
+      unsigned total;
+      unsigned unique;
     };
 
-    int maxCards;
+    unsigned maxCards;
 
     vector<vector<CombEntry>> combinations;
-    vector<vector<int>> uniques; // Probably gets more structure
+    vector<vector<unsigned>> uniques; // Probably gets more structure
 
     vector<CountEntry> counts;
     vector<CountEntry> threadCounts;
@@ -36,8 +36,8 @@ class Combinations
     atomic<unsigned> counterUnique; // Unique index
 
     void runUniqueThread(
-      const int cards,
-      const int thid);
+      const unsigned cards,
+      const unsigned thid);
 
   public:
 
@@ -47,15 +47,15 @@ class Combinations
 
     void reset();
 
-    void resize(const int maxCardsIn);
+    void resize(const unsigned maxCardsIn);
 
-    void runUniques(const int cards);
+    void runUniques(const unsigned cards);
 
     void runUniquesMT(
-      const int cards,
-      const int numThreads);
+      const unsigned cards,
+      const unsigned numThreads);
 
-    string strUniques(const int cards = 0) const;
+    string strUniques(const int unsigned = 0) const;
 
 };
 

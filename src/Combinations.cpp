@@ -6,7 +6,7 @@
 #include "Ranks.h"
 
 // http://oeis.org/A051450
-const vector<int> UNIQUE_COUNT = 
+const vector<unsigned> UNIQUE_COUNT = 
 {
   1,      //  0
   2,      //  1
@@ -48,7 +48,7 @@ void Combinations::reset()
 }
 
 
-void Combinations::resize(const int maxCardsIn)
+void Combinations::resize(const unsigned maxCardsIn)
 {
   maxCards = maxCardsIn;
 
@@ -57,9 +57,9 @@ void Combinations::resize(const int maxCardsIn)
 
   // There are three combinations with 1 card: It may be with
   // North, South or the opponents.
-  int numCombinations = 3;
+  unsigned numCombinations = 3;
 
-  for (int cards = 1; cards <= maxCards; cards++)
+  for (unsigned cards = 1; cards <= maxCards; cards++)
   {
     combinations[cards].resize(numCombinations);
     numCombinations *= 3;
@@ -76,14 +76,14 @@ void Combinations::resize(const int maxCardsIn)
 }
 
 
-void Combinations::runUniques(const int cards)
+void Combinations::runUniques(const unsigned cards)
 {
   vector<CombEntry>& combs = combinations[cards];
-  vector<int>& uniqs = uniques[cards];
+  vector<unsigned>& uniqs = uniques[cards];
   Ranks ranks;
 
   ranks.resize(cards);
-  int uniqueIndex = -1;
+  unsigned uniqueIndex = 0;
 
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
@@ -93,9 +93,9 @@ void Combinations::runUniques(const int cards)
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      uniqueIndex++;
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
+      uniqueIndex++;
 
       counts[cards].unique++;
     }
@@ -104,11 +104,11 @@ void Combinations::runUniques(const int cards)
 
 
 void Combinations::runUniqueThread(
-  const int cards,
-  const int thid)
+  const unsigned cards,
+  const unsigned thid)
 {
   vector<CombEntry>& combs = combinations[cards];
-  vector<int>& uniqs = uniques[cards];
+  vector<unsigned>& uniqs = uniques[cards];
 
   Ranks ranks;
   ranks.resize(cards);
@@ -127,7 +127,7 @@ void Combinations::runUniqueThread(
     threadCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      const int uniqueIndex = counterUnique++; // Atomic
+      const unsigned uniqueIndex = counterUnique++; // Atomic
 
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
@@ -139,8 +139,8 @@ void Combinations::runUniqueThread(
 
 
 void Combinations::runUniquesMT(
-  const int cards,
-  const int numThreads)
+  const unsigned cards,
+  const unsigned numThreads)
 {
   counterHolding = 0;
   counterUnique = 0;
@@ -151,17 +151,17 @@ void Combinations::runUniquesMT(
   threadCounts.clear();
   threadCounts.resize(numThreads);
 
-  for (int thid = 0; thid < numThreads; thid++)
+  for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
       this, cards, thid);
 
-  for (int thid = 0; thid < numThreads; thid++)
+  for (unsigned thid = 0; thid < numThreads; thid++)
   {
     threads[thid]->join();
     delete threads[thid];
   }
 
-  for (int thid = 0; thid < numThreads; thid++)
+  for (unsigned thid = 0; thid < numThreads; thid++)
   {
     counts[cards].total += threadCounts[thid].total;
     counts[cards].unique += threadCounts[thid].unique;
@@ -169,9 +169,9 @@ void Combinations::runUniquesMT(
 }
 
 
-string Combinations::strUniques(const int cards) const
+string Combinations::strUniques(const unsigned cards) const
 {
-  int cmin, cmax;
+  unsigned cmin, cmax;
   if (cards == 0)
   {
     cmin = 1;
@@ -191,7 +191,7 @@ string Combinations::strUniques(const int cards) const
     setw(9) << "%" <<
     "\n";
 
-  for (int c = cmin; c <= cmax; c++)
+  for (unsigned c = cmin; c <= cmax; c++)
   {
     if (counts[c].total == 0)
       continue;
