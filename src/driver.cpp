@@ -1,6 +1,5 @@
 #include <iostream>
 #include <iomanip>
-#include <thread>
 
 #include "Combinations.h"
 
@@ -20,9 +19,6 @@ Control control;
 Convert convert;
 
 vector<Timers> timers;
-
-
-void runThread(unsigned thid);
 
 
 int main(int argc, char * argv[])
@@ -46,7 +42,8 @@ int main(int argc, char * argv[])
     timerCard.start();
     cout << "Cards " << setw(2) << right << cards << ": ";
 
-    combinations.runUniquesMT(cards, control.numThreads());
+    // combinations.runUniquesMT(cards, control.numThreads());
+    combinations.runUniques(cards);
 
     timerCard.stop();
     cout << timerCard.str();
@@ -54,11 +51,5 @@ int main(int argc, char * argv[])
   cout << endl;
 
   cout << combinations.strUniques();
-}
-
-
-void runThread(unsigned thid)
-{
-  UNUSED(thid);
 }
 

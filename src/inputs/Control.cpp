@@ -30,6 +30,7 @@ Control::Control()
 
 Control::~Control()
 {
+  cout << "Control desctructor" << endl;
 }
 
 

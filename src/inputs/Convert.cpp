@@ -15,6 +15,7 @@ Convert::Convert()
 
 Convert::~Convert()
 {
+  cout << "Convert destructor" << endl;
 }
 
 

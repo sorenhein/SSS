@@ -8,22 +8,22 @@
 // http://oeis.org/A051450
 const vector<int> UNIQUE_COUNT = 
 {
-  1,
-  2,
-  5,
-  12,
-  30,
-  76,
-  195,
-  504,
-  1309,
-  3410,
-  8900,
-  23256,
-  60813,
-  159094,
-  416325,
-  1089648
+  1,      //  0
+  2,      //  1
+  5,      //  2
+  12,     //  3
+  30,     //  4
+  76,     //  5
+  195,    //  6
+  504,    //  7
+  1309,   //  8
+  3410,   //  9
+  8900,   // 10
+  23256,  // 11
+  60813,  // 12
+  159094, // 13
+  416325, // 14
+  1089648 // 15
 };
 
 
@@ -35,6 +35,7 @@ Combinations::Combinations()
 
 Combinations::~Combinations()
 {
+  cout << "Combinations destructor" << endl;
 }
 
 
@@ -82,6 +83,7 @@ void Combinations::runUniques(const int cards)
   Ranks ranks;
 
   ranks.resize(cards);
+  int uniqueIndex = -1;
 
   for (int holding = 0; holding < static_cast<int>(combs.size()); holding++)
   {
@@ -91,8 +93,9 @@ void Combinations::runUniques(const int cards)
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      combs[holding].canonicalIndex = uniques.size();
-      uniqs.push_back(holding);
+      uniqueIndex++;
+      combs[holding].canonicalIndex = uniqueIndex;
+      uniqs[uniqueIndex] = holding;
 
       counts[cards].unique++;
     }
@@ -124,7 +127,7 @@ void Combinations::runUniqueThread(
     threadCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      const int uniqueIndex = ++counterUnique;
+      const int uniqueIndex = ++counterUnique; // Atomic
 
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;

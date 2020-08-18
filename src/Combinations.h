@@ -1,8 +1,6 @@
 #ifndef SSS_COMBINATIONS_H
 #define SSS_COMBINATIONS_H
 
-#include <map>
-#include <list>
 #include <vector>
 #include <string>
 

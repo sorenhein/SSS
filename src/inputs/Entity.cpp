@@ -19,6 +19,7 @@ Entity::Entity()
 
 Entity::~Entity()
 {
+  cout << "Entity destructor" << endl;
 }
 
 
