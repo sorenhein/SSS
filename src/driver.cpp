@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <thread>
 
 #include "Combinations.h"
@@ -38,45 +39,21 @@ int main(int argc, char * argv[])
   Combinations combinations;
   combinations.resize(control.cards());
 
-Timer timerCard;
+  Timer timerCard;
   for (int cards = 1; cards <= control.cards(); cards++)
   {
-timerCard.reset();
-timerCard.start();
-cout << "Cards " << cards << endl;
-    combinations.runUniques(cards);
-timerCard.stop();
-cout << timerCard.str() << endl;
+    timerCard.reset();
+    timerCard.start();
+    cout << "Cards " << setw(2) << right << cards << ": ";
+
+    combinations.runUniquesMT(cards, control.numThreads());
+
+    timerCard.stop();
+    cout << timerCard.str();
   }
+  cout << endl;
 
   cout << combinations.strUniques();
-  
-
-  // timers.resize(control.numThreads());
-  // timers[0].start(TIMER_ALL_THREADS);
-
-  /*
-  vector<thread *> threads;
-  threads.resize(control.numThreads());
-  for (int thid = 0; thid < control.numThreads(); thid++)
-    threads[thid] = new thread(&runThread, thid);
-
-  for (int thid = 0; thid < control.numThreads(); thid++)
-  {
-    threads[thid]->join();
-    delete threads[thid];
-  }
-  */
-
-  // timers[0].stop(TIMER_ALL_THREADS);
-
-  // Consolidate the thread timers.
-  /*
-  for (int i = 1; i < control.numThreads(); i++)
-    timers[0] += timers[i];
-
-  cout << timers[0].str(2) << endl;
-  */
 }
 
 

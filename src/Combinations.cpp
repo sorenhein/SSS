@@ -5,6 +5,27 @@
 #include "Combinations.h"
 #include "Ranks.h"
 
+// http://oeis.org/A051450
+const vector<int> UNIQUE_COUNT = 
+{
+  1,
+  2,
+  5,
+  12,
+  30,
+  76,
+  195,
+  504,
+  1309,
+  3410,
+  8900,
+  23256,
+  60813,
+  159094,
+  416325,
+  1089648
+};
+
 
 Combinations::Combinations()
 {
@@ -41,7 +62,8 @@ void Combinations::resize(const int maxCardsIn)
   {
     combinations[cards].resize(numCombinations);
     numCombinations *= 3;
-    uniques[cards].clear();
+
+    uniques[cards].resize(UNIQUE_COUNT[cards]);
   }
 
   counts.resize(maxCardsIn+1);
@@ -78,8 +100,9 @@ void Combinations::runUniques(const int cards)
 }
 
 
-/*
-void Combinations::runUniqueThread(const int cards)
+void Combinations::runUniqueThread(
+  const int cards,
+  const int thid)
 {
   vector<CombEntry>& combs = combinations[cards];
   vector<int>& uniqs = uniques[cards];
@@ -90,24 +113,24 @@ void Combinations::runUniqueThread(const int cards)
 
   const int counterMax = static_cast<int>(combs.size());
 
-  while (counter < counterMax)
+  while (true)
   {
-    holding = ++counter; // Atomic
+    holding = ++counterHolding; // Atomic
+    if (holding >= counterMax)
+      break;
 
     ranks.set(holding, cards, combs[holding]);
 
-    log.lock();
-
-    counts[cards].total++;
+    threadCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-      combs[holding].canonicalIndex = uniques.size();
-      uniqs.push_back(holding);
+      const int uniqueIndex = ++counterUnique;
 
-      counts[cards].unique++;
+      combs[holding].canonicalIndex = uniqueIndex;
+      uniqs[uniqueIndex] = holding;
+
+      threadCounts[thid].unique++;
     }
-
-    log.unlock();
   }
 }
 
@@ -116,20 +139,31 @@ void Combinations::runUniquesMT(
   const int cards,
   const int numThreads)
 {
-  counter = -1;
+  counterHolding = -1;
+  counterUnique = -1;
 
   vector<thread *> threads;
   threads.resize(numThreads);
+
+  threadCounts.clear();
+  threadCounts.resize(numThreads);
+
   for (int thid = 0; thid < numThreads; thid++)
-    threads[thid] = new thread(&Combinations::runUniqueThread, this, cards);
+    threads[thid] = new thread(&Combinations::runUniqueThread, 
+      this, cards, thid);
 
   for (int thid = 0; thid < numThreads; thid++)
   {
     threads[thid]->join();
     delete threads[thid];
   }
+
+  for (int thid = 0; thid < numThreads; thid++)
+  {
+    counts[cards].total += threadCounts[thid].total;
+    counts[cards].unique += threadCounts[thid].unique;
+  }
 }
-*/
 
 
 string Combinations::strUniques(const int cards) const

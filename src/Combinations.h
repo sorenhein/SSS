@@ -31,18 +31,15 @@ class Combinations
     vector<vector<int>> uniques; // Probably gets more structure
 
     vector<CountEntry> counts;
+    vector<CountEntry> threadCounts;
 
-/*
-    atomic<int> counter; // Holding
     mutex log; // Locked when a result is being logged
+    atomic<int> counterHolding; // Holding
+    atomic<int> counterUnique; // Unique index
 
-    void runUniqueThread(const int cards);
-
-    void runUniquesMT(
+    void runUniqueThread(
       const int cards,
-      const int numThreads);
-*/
-
+      const int thid);
 
   public:
 
@@ -55,6 +52,10 @@ class Combinations
     void resize(const int maxCardsIn);
 
     void runUniques(const int cards);
+
+    void runUniquesMT(
+      const int cards,
+      const int numThreads);
 
     string strUniques(const int cards = 0) const;
 
