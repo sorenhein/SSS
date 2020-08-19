@@ -18,8 +18,6 @@
 Control control;
 Convert convert;
 
-vector<Timers> timers;
-
 
 int main(int argc, char * argv[])
 {
@@ -35,20 +33,19 @@ int main(int argc, char * argv[])
   Combinations combinations;
   combinations.resize(control.cards());
 
-  Timer timerCard;
+  Timers timers;
+  timers.start(TIMER_UNIQUE);
+
   for (unsigned cards = 1; cards <= control.cards(); cards++)
   {
-    timerCard.reset();
-    timerCard.start();
-    cout << "Cards " << setw(2) << right << cards << ": ";
+    cout << "Cards " << setw(2) << right << cards << endl;
 
-    // combinations.runUniquesMT(cards, control.numThreads());
-    combinations.runUniques(cards);
-
-    timerCard.stop();
-    cout << timerCard.str();
+    combinations.runUniquesMT(cards, control.numThreads());
+    // combinations.runUniques(cards);
   }
-  cout << endl;
+
+  timers.stop(TIMER_UNIQUE);
+  cout << timers.str();
 
   cout << combinations.strUniques();
 }

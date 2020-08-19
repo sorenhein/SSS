@@ -18,7 +18,6 @@ Ranks::Ranks()
 
 Ranks::~Ranks()
 {
-  cout << "Rank destructor" << endl;
 }
 
 
