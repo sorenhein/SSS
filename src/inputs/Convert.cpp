@@ -1,6 +1,5 @@
 #include <iostream>
-#include <iomanip>
-#include <sstream>
+#include <cassert>
 
 #include "Convert.h"
 
@@ -37,6 +36,7 @@ bool Convert::holding2cards(
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   for (unsigned i = imin; i < imin+cards; i++)
   {
+    assert(i < MAX_CARDS);
     const unsigned c = h % 3;
     if (c == CONVERT_NORTH)
       north = CARD_NAMES[i] + north;
@@ -74,9 +74,10 @@ bool Convert::cards2holding(
   // First do the non-x cards from the top down.
   for (unsigned j = jmax; j > jmax-cards; j--)
   {
+    assert(j < MAX_CARDS);
     const char nextCard = CARD_NAMES[j-1];
-    const char ncard = (nindex == nlen ? ' ' : north.at(nindex));
-    const char scard = (sindex == slen ? ' ' : south.at(sindex));
+    const char ncard = (nindex >= nlen ? ' ' : north.at(nindex));
+    const char scard = (sindex >= slen ? ' ' : south.at(sindex));
 
     if (ncard == nextCard)
     {
