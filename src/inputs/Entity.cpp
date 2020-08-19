@@ -68,6 +68,7 @@ bool Entity::parseValue(
 {
   if (corrType == CORRESPONDENCE_STRING)
   {
+    assert(no < strings.size());
     strings[no] = value;
   }
   else if (corrType == CORRESPONDENCE_STRING_VECTOR)
@@ -76,6 +77,7 @@ bool Entity::parseValue(
   }
   else if (corrType == CORRESPONDENCE_INT)
   {
+    assert(no < ints.size());
     if (! parseInt(value, ints[no]))
     {
       cout << "Bad integer" << endl;
@@ -84,6 +86,7 @@ bool Entity::parseValue(
   }
   else if (corrType == CORRESPONDENCE_BOOL)
   {
+    assert(no < bools.size());
     if (boolExplicitFlag)
     {
       if (! parseBool(value, bools[no]))
@@ -100,6 +103,7 @@ bool Entity::parseValue(
   }
   else if (corrType == CORRESPONDENCE_DOUBLE)
   {
+    assert(no < doubles.size());
     if (! parseDouble(value, doubles[no]))
     {
       cout << "Bad double" << endl;
@@ -108,6 +112,7 @@ bool Entity::parseValue(
   }
   else if (corrType == CORRESPONDENCE_BIT_VECTOR)
   {
+    assert(no < intVectors.size());
     intVectors[no].resize(BIT_VECTOR_SIZE);
     if (! parseBitVector(value, intVectors[no], BIT_VECTOR_SIZE))
     {
