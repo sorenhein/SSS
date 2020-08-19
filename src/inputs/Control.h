@@ -144,7 +144,7 @@ class Control
     const string& constantDir() const;
     const string& roudiDir() const;
 
-    int numThreads() const;
+    unsigned numThreads() const;
 
     string str() const;
 };

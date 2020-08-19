@@ -8,7 +8,7 @@
 
 #include "stats/Timers.h"
 
-#include "const.h"
+Timers timers;
 
 
 // Can also keep them local and pass them to runThread, but in
@@ -33,7 +33,6 @@ int main(int argc, char * argv[])
   Combinations combinations;
   combinations.resize(control.cards());
 
-  Timers timers;
   timers.start(TIMER_UNIQUE);
 
   for (unsigned cards = 1; cards <= control.cards(); cards++)

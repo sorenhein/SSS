@@ -431,9 +431,9 @@ const string& Control::roudiDir() const
 }
 
 
-int Control::numThreads() const
+unsigned Control::numThreads() const
 {
-  return entry.getInt(CTRL_NUM_THREADS);
+  return static_cast<unsigned>(entry.getInt(CTRL_NUM_THREADS));
 }
 
 

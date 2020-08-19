@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <thread>
+#include <cassert>
 
 #include "Combinations.h"
 #include "Ranks.h"
@@ -60,11 +61,13 @@ void Combinations::resize(const unsigned maxCardsIn)
   // North, South or the opponents.
   unsigned numCombinations = 3;
 
-  for (unsigned cards = 1; cards <= maxCards; cards++)
+  // for (unsigned cards = 1; cards <= maxCards; cards++)
+  for (unsigned cards = 1; cards < combinations.size(); cards++)
   {
     combinations[cards].resize(numCombinations);
     numCombinations *= 3;
 
+    assert(cards < UNIQUE_COUNT.size());
     uniques[cards].resize(UNIQUE_COUNT[cards]);
   }
 
@@ -79,6 +82,10 @@ void Combinations::resize(const unsigned maxCardsIn)
 
 void Combinations::runUniques(const unsigned cards)
 {
+  assert(cards < combinations.size());
+  assert(cards < uniques.size());
+  assert(cards < counts.size());
+
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
   Ranks ranks;
@@ -94,6 +101,7 @@ void Combinations::runUniques(const unsigned cards)
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
     {
+      assert(uniqueIndex < uniqs.size());
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
       uniqueIndex++;
@@ -108,6 +116,10 @@ void Combinations::runUniqueThread(
   const unsigned cards,
   const unsigned thid)
 {
+  assert(cards < combinations.size());
+  assert(cards < uniques.size());
+  assert(thid < threadCounts.size());
+
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
 
@@ -129,6 +141,7 @@ void Combinations::runUniqueThread(
     if (holding == combs[holding].canonicalHolding)
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
+      assert(uniqueIndex < uniqs.size());
 
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
@@ -194,6 +207,7 @@ string Combinations::strUniques(const unsigned cards) const
 
   for (unsigned c = cmin; c <= cmax; c++)
   {
+    assert(c < counts.size());
     if (counts[c].total == 0)
       continue;
 

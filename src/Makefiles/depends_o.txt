@@ -1,10 +1,10 @@
-driver.o: Combinations.h const.h inputs/Control.h inputs/Entity.h
-driver.o: inputs/Convert.h const.h stats/Timers.h stats/Timer.h
-Ranks.o: Ranks.h const.h
-Combinations.o: Combinations.h const.h Ranks.h
+driver.o: Combinations.h struct.h inputs/Control.h inputs/Entity.h
+driver.o: inputs/Convert.h stats/Timers.h stats/Timer.h
+Ranks.o: Ranks.h struct.h const.h
+Combinations.o: Combinations.h struct.h Ranks.h
 inputs/Convert.o: inputs/Convert.h const.h
-inputs/Control.o: inputs/Control.h inputs/Entity.h inputs/Convert.h const.h
-inputs/Control.o: inputs/parse.h
+inputs/Control.o: inputs/Control.h inputs/Entity.h inputs/Convert.h
+inputs/Control.o: inputs/parse.h const.h
 inputs/Entity.o: inputs/Entity.h inputs/parse.h
 inputs/parse.o: inputs/parse.h
 stats/Timer.o: stats/Timer.h
