@@ -2,6 +2,7 @@
 #define SSS_CONST_H
 
 #include <vector>
+#include <limits>
 
 using namespace std;
 
@@ -18,21 +19,7 @@ enum CardPosition
   CONVERT_OPPS = 2
 };
 
-
-// CombEntry is used to map a given holding to a canonical combination,
-// where only the ranks within a suit matter.
-
-struct CombEntry
-{
-  bool canonicalFlag;
-  unsigned canonicalHolding;
-  unsigned canonicalIndex;
-  bool rotateFlag;
-  vector<char> canonical2comb;
-  // Once we have a Combination, probably
-  // Combination * combinationPtr;
-};
-
+const unsigned UNSIGNED_NOT_SET = numeric_limits<unsigned>::max();
 
 #define UNUSED(x) ((void)(true ? 0 : ((x), void(), 0)))
 

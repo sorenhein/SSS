@@ -5,10 +5,9 @@
 #include <string>
 
 #include <atomic>
-#include <thread>
 #include <mutex>
 
-#include "const.h"
+#include "struct.h"
 
 using namespace std;
 

@@ -122,14 +122,14 @@ class Control
     const string& south() const;
     unsigned holding() const;
     unsigned cards() const;
-    int westMin() const;
-    int westMax() const;
-    int westVacant() const;
-    int eastMin() const;
-    int eastMax() const;
-    int eastVacant() const;
+    unsigned westMin() const;
+    unsigned westMax() const;
+    unsigned westVacant() const;
+    unsigned eastMin() const;
+    unsigned eastMax() const;
+    unsigned eastVacant() const;
 
-    int goal() const;
+    unsigned goal() const;
     double expect() const;
 
     const string& inputFile() const; 

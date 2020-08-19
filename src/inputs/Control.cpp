@@ -187,7 +187,7 @@ bool Control::completeHoldings()
 
   string n = Control::north();
   string s = Control::south();
-  unsigned h = Control::holding();
+  int h = entry.getInt(CTRL_HOLDING);
 
   if (n.empty() != s.empty())
   {
@@ -224,17 +224,19 @@ bool Control::completeHoldings()
 
   if (! n.empty() || ! s.empty())
   {
-    if (! convert.cards2holding(n, s, Control::cards(), h))
+    unsigned hU;
+    if (! convert.cards2holding(n, s, Control::cards(), hU))
     {
       cout << "Could not parse card strings into holding.\n";
       return false;
     }
     else
-      entry.setInt(CTRL_HOLDING, h);
+      entry.setInt(CTRL_HOLDING, static_cast<int>(h));
   }
   else if (h != -1)
   {
-    if (! convert.holding2cards(h, Control::cards(), n, s))
+    const unsigned hU = static_cast<unsigned>(h);
+    if (! convert.holding2cards(hU, Control::cards(), n, s))
     {
       cout << "could not parse holding into card strings.\n";
       return false;
@@ -251,16 +253,16 @@ bool Control::completeHoldings()
 
 void Control::completeCounts()
 {
-  const int c = Control::cards();
+  const int c = entry.getInt(CTRL_CARDS);
 
-  if (Control::westMax() == -1)
+  if (entry.getInt(CTRL_WEST_MAX) == -1)
     entry.setInt(CTRL_WEST_MAX, c);
-  if (Control::eastMax() == -1)
+  if (entry.getInt(CTRL_EAST_MAX) == -1)
     entry.setInt(CTRL_EAST_MAX, c);
 
-  if (Control::westVacant() == -1)
+  if (entry.getInt(CTRL_WEST_VACANT) == -1)
     entry.setInt(CTRL_WEST_VACANT, c);
-  if (Control::eastVacant() == -1)
+  if (entry.getInt(CTRL_EAST_VACANT) == -1)
     entry.setInt(CTRL_EAST_VACANT, c);
 
   if (Control::westMin() > Control::westMax())
@@ -275,13 +277,13 @@ void Control::completeCounts()
     return;
   }
 
-  const int rest = Control::cards() - 
-    Control::north().length() - 
-    Control::south().length();
+  const int rest = entry.getInt(CTRL_CARDS) - 
+    static_cast<int>(Control::north().length()) - 
+    static_cast<int>(Control::south().length());
 
-  if (Control::westMax() > rest)
+  if (entry.getInt(CTRL_WEST_MAX) > rest)
     entry.setInt(CTRL_WEST_MAX, rest);
-  if (Control::eastMax() > rest)
+  if (entry.getInt(CTRL_EAST_MAX) > rest)
     entry.setInt(CTRL_EAST_MAX, rest);
 
   if (Control::westMax() > Control::westVacant())
@@ -289,10 +291,10 @@ void Control::completeCounts()
   if (Control::eastMax() > Control::eastVacant())
     entry.setInt(CTRL_EAST_MAX, rest);
 
-  if (Control::westMin() < rest - Control::eastMax())
-    entry.setInt(CTRL_WEST_MIN, rest - Control::eastMax());
-  if (Control::eastMin() < rest - Control::westMax())
-    entry.setInt(CTRL_EAST_MIN, rest - Control::westMax());
+  if (entry.getInt(CTRL_WEST_MIN) < rest - entry.getInt(CTRL_EAST_MAX))
+    entry.setInt(CTRL_WEST_MIN, rest - entry.getInt(CTRL_EAST_MAX));
+  if (entry.getInt(CTRL_EAST_MIN) < rest - entry.getInt(CTRL_WEST_MAX))
+    entry.setInt(CTRL_EAST_MIN, rest - entry.getInt(CTRL_WEST_MAX));
 }
 
 
@@ -310,55 +312,57 @@ const string& Control::south() const
 
 unsigned Control::holding() const
 {
-  return entry.getInt(CTRL_HOLDING);
+  const int h = entry.getInt(CTRL_HOLDING);
+  return (h == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(h));
 }
 
 
 unsigned Control::cards() const
 {
-  return entry.getInt(CTRL_CARDS);
+  const int c = entry.getInt(CTRL_CARDS);
+  return (c == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(c));
 }
 
 
-int Control::westMin() const
+unsigned Control::westMin() const
 {
-  return entry.getInt(CTRL_WEST_MIN);
+  return static_cast<unsigned>(entry.getInt(CTRL_WEST_MIN));
 }
 
 
-int Control::westMax() const
+unsigned Control::westMax() const
 {
-  return entry.getInt(CTRL_WEST_MAX);
+  return static_cast<unsigned>(entry.getInt(CTRL_WEST_MAX));
 }
 
 
-int Control::westVacant() const
+unsigned Control::westVacant() const
 {
-  return entry.getInt(CTRL_WEST_VACANT);
+  return static_cast<unsigned>(entry.getInt(CTRL_WEST_VACANT));
 }
 
 
-int Control::eastMin() const
+unsigned Control::eastMin() const
 {
-  return entry.getInt(CTRL_EAST_MIN);
+  return static_cast<unsigned>(entry.getInt(CTRL_EAST_MIN));
 }
 
 
-int Control::eastMax() const
+unsigned Control::eastMax() const
 {
-  return entry.getInt(CTRL_EAST_MAX);
+  return static_cast<unsigned>(entry.getInt(CTRL_EAST_MAX));
 }
 
 
-int Control::eastVacant() const
+unsigned Control::eastVacant() const
 {
-  return entry.getInt(CTRL_EAST_VACANT);
+  return static_cast<unsigned>(entry.getInt(CTRL_EAST_VACANT));
 }
 
 
-int Control::goal() const
+unsigned Control::goal() const
 {
-  return entry.getInt(CTRL_GOAL);
+  return static_cast<unsigned>(entry.getInt(CTRL_GOAL));
 }
 
 
@@ -504,7 +508,8 @@ string Control::str() const
       case CORRESPONDENCE_STRING_MAP:
       case CORRESPONDENCE_FLOAT_VECTOR:
       case CORRESPONDENCE_BOOL:
-        cout << "Haven't learned: " << cmd.corrType << "\n";
+        cout << "Haven't learned: " << 
+          static_cast<unsigned>(cmd.corrType) << "\n";
         break;
       case CORRESPONDENCE_INT_VECTOR:
         doc = Control::strBitVector(entry.getIntVector(cmd.no), doc);
@@ -519,7 +524,9 @@ string Control::str() const
         val = Control::strDouble(entry.getDouble(cmd.no));
         break;
       case CORRESPONDENCE_SIZE:
-        cout << "Shouldn't happen: " << cmd.corrType << "\n";
+      default:
+        cout << "Shouldn't happen: " <<
+          static_cast<unsigned>(cmd.corrType) << "\n";
         break;
     }
 

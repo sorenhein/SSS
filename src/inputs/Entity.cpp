@@ -117,7 +117,8 @@ bool Entity::parseValue(
   }
   else
   {
-    cout << "Bad correspondence type " << corrType << endl;
+    cout << "Bad correspondence type " << 
+      static_cast<unsigned>(corrType) << endl;
     return false;
   }
 

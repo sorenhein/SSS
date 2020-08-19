@@ -4,6 +4,7 @@
 
 #include "Ranks.h"
 
+#include "struct.h"
 #include "const.h"
 
 
