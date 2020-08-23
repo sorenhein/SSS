@@ -17,6 +17,7 @@ Timers timers;
 
 Control control;
 Convert convert;
+Combinations combinations;
 
 
 int main(int argc, char * argv[])
@@ -30,7 +31,6 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  Combinations combinations;
   combinations.resize(control.cards());
 
   timers.start(TIMER_UNIQUE);
@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
   }
 
   timers.stop(TIMER_UNIQUE);
-  cout << timers.str();
+  cout << "\n" << timers.str();
 
   cout << combinations.strUniques();
 }

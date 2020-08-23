@@ -2,6 +2,7 @@ SOURCE_FILES    =                       \
                 driver.cpp              \
                 Ranks.cpp               \
                 Combinations.cpp        \
+                Distributions.cpp       \
                                         \
                 inputs/Convert.cpp      \
                 inputs/Control.cpp      \

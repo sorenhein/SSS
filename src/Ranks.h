@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+#include "struct.h"
+
 using namespace std;
 
 struct CombEntry;
@@ -12,28 +14,6 @@ struct CombEntry;
 class Ranks
 {
   private:
-
-    struct RankInfo
-    {
-      unsigned count;
-      vector<char> cards;
-
-      RankInfo()
-      {
-        RankInfo::clear();
-      }
-
-      void clear()
-      {
-        count = 0;
-      }
-
-      void add(const char card)
-      {
-        cards[count] = card;
-        count++;
-      }
-    };
 
     vector<RankInfo> north;
     vector<RankInfo> south;
