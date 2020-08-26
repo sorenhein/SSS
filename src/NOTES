@@ -1,9 +1,12 @@
-* CombEntry -> Combination?
-* Debug Distribution
+* Distribution: A single card is output as its name, H only applies to
+  multi-card ranks
+* Distribution code is a mess.  Some may go in Ranks, too
+* Make Distributions, using holding2 (binary, not trinary)
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
+
+* CombEntry -> Combination?
 * Add rank = 0 for void, shift the others up
-* Make Distributions, using holding2 (binary, not trinary)
 * In Combination, generate all tricks
   - First naively
   - Then properly

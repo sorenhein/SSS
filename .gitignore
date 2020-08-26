@@ -15,6 +15,9 @@
 *.log
 *.sln
 *.vcxproj
+*.opendb
+*.db-wal
+*.db-shm
 src/[Mm]akefile
 test/[Mm]akefile
 examples/[Mm]akefile

@@ -253,7 +253,7 @@ string Distribution::rank2str(
   for (unsigned r = ranks.size(); --r > 0; )
   {
     if (ranks[r] > 0)
-      s += names[r];
+      s += string(ranks[r], names[r].at(0));
   }
 
   return (s == "" ? "-" : s);
@@ -277,10 +277,15 @@ string Distribution::str() const
   }
 
   vector<string> names(maxRank+1);
-  names[0] = "x";
+  unsigned minRank;
+  if (distributions[0].west[0] == 0 && distributions[0].east[0] == 0)
+    minRank = 1;
+  else
+    minRank = 0;
+  names[minRank] = "x";
 
   unsigned i = 0;
-  for (unsigned r = maxRank; r > 0; r--)
+  for (unsigned r = maxRank; r > minRank; r--)
   {
     if (distributions[0].west[r] > 0 || distributions[0].east[r] > 0)
     {
