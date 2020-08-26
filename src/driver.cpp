@@ -47,5 +47,7 @@ int main(int argc, char * argv[])
   cout << "\n" << timers.str();
 
   cout << combinations.strUniques();
+
+  combinations.tmp(control.cards(), control.holding());
 }
 

@@ -55,6 +55,8 @@ class Ranks
       const unsigned cards,
       CombEntry& combEntry);
 
+    const vector<RankInfo>& oppsRank() const;
+
     string str() const;
 };
 

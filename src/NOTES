@@ -1,128 +1,20 @@
-Distributions.cpp
------------------
-setup(cards, holding) in binary notation
+* CombEntry -> Combination?
+* Debug Distribution
+* Distribution::limit, using a struct that Control returns
+  - We will fail for now on some HCP values
+* Add rank = 0 for void, shift the others up
+* Make Distributions, using holding2 (binary, not trinary)
+* In Combination, generate all tricks
+  - First naively
+  - Then properly
+  - Count the difference
+  - side, card1..4
+  - End up with new comb, new dist bit vector
+  - Also, some dist's are impossible because E or W known to be void
+  - And some because of HCP or other limitations
+  - Set up the tree
+  - Have a dist vector that corresponds to next-level dists
+  - Know which ones are possible
+  - Know which cards correspond to next-level cards (and ranks)
 
-- Turn into rank array
-- Generate EW arrays as splits of this array, iteratively
-
-const unsigned CHUNK_SIZE = 50;
-
-struct Distribution
-{
-  vector<RankInfo> west;
-  vector<RankInfo> east;
-  unsigned lenWest;
-  unsigned lenEast;
-  unsigned count;
-};
-
-// A list would be more natural, but this cuts down on the
-// memory allocations.
-vector<Distribution> stack(DIST_CHUNK);
-vector<Distribution> distributions(DIST_CHUNK);
-
-unsigned stackReadIndex = 0;
-unsigned stackWriteIndex = 0;
-unsigned distIndex = 0;
-
-const Distribution& fullDist = rankInfo.opps;
-const unsigned len = ...; // Number of EW cards
-const unsigned rankSize = fullDist->size();
-
-Distribution * newDist;
-
-// Only do the first half and then mirror the other lengths.
-const unsigned lenMid = ((len & 1) ? (len-1)/2 : len / 2);
-
-for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
-{
-  Distribution * currStack = &stack[stackReadIndex];
-
-  for (unsigned r = 0; r < rankSize; r++)
-    currStack->west[r].count = 0;
-
-  currStack->lenWest = 0;
-  currStack->count = 1;
-
-  rankNext = 0;
-
-  while (true)
-  {
-    while (rankNext < rankSize && currStack->west[rankNext].count == 0)
-      rankNext++;
-    assert(rankNext < rankSize);
-
-    count unsigned gap = len - currStack->lenWest;
-    const unsigned available = fullDist->west[rankNext].count;
-
-    for (unsigned r = 0; r <= min(gap, available); r++, stackReadIndex++)
-    {
-      if (r == gap)
-      {
-        // End of "recursion".
-        if (distIndex == distributions.size())
-          distributions.resize(distributions.size() + CHuNK_SIZE);
-
-        newDist = &distributions[distIndex++];
-      }
-      else
-      {
-        // Continue "recursion".
-        if (stackWriteIndex == stack.size())
-          stack.resize(stack.size() + CHUNK_SIZE));
-
-        newDist = &stack[stackWriteIndex++];
-      }
-
-      newDist->west[rankNext].count = r;
-      newDist->lenWest += r;
-      newDist->count *= binomCoeff(available, r);
-
-      if (r == gap)
-      {
-        newDist->lenEast = len - newDist->lenWest;
-        for (unsigned rr = 0; rr <= rankNext; rr++)
-          newDist->east[rr].count = fullDist[rr].count -
-            newDist->west[rr].count;
-      }
-    }
-  }
-}
-
-assert(distIndex > 0);
-
-// Go backwards from one past the first element to mirror.
-unsigned dtop;
-if (len & 1)
-  dtop = distIndex;
-else
-{
-  dtop = distIndex;
-  while (dtop >= 1 && newDist[dtop-1].lenWest == lenMid)
-    dtop--;
-  assert(dtop > 0 && newDist[dtop-1].lenWest < lenMid);
-}
-
-Distribution * oldDist;
-
-for (unsigned d = dtop; dtop-- > 0; )
-{
-  if (distIndex == distributions.size())
-    distributions.resize(distributions.size() + CHuNK_SIZE);
-
-  oldDist = &distributions[d];
-  newDist = &distributions[distIndex++];
-
-  newDist.west = oldDist.east;
-  newDist.east = oldDist.west;
-  newDist.lenWest = oldDist.lenEast;
-  newDist.lenEast = oldDist.lenWest;
-  newDist.count = oldDist.count;
-}
-
-
-
-
-str() const:
-Use HH, hh, GG, gg, xx notation
 

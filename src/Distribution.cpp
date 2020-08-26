@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cassert>
 
-#include "Distributions.h"
+#include "Distribution.h"
 #include "const.h"
 
 #define CHUNK_SIZE 50
@@ -13,25 +13,25 @@
 const string genericNames = "HhGgIiJj";
 
 
-Distributions::Distributions()
+Distribution::Distribution()
 {
-  Distributions::reset();
-  Distributions::setBinomial();
+  Distribution::reset();
+  Distribution::setBinomial();
 }
 
 
-Distributions::~Distributions()
+Distribution::~Distribution()
 {
 }
 
 
-void Distributions::reset()
+void Distribution::reset()
 {
   distributions.clear();
 }
 
 
-void Distributions::setBinomial()
+void Distribution::setBinomial()
 {
   binomial.resize(MAX_CARDS+1);
   for (unsigned n = 0; n <= MAX_CARDS; n++)
@@ -48,7 +48,7 @@ void Distributions::setBinomial()
 }
 
 
-void Distributions::mirror(
+void Distribution::mirror(
   const unsigned len, 
   const unsigned lenMid,
   unsigned& distIndex)
@@ -65,10 +65,11 @@ void Distributions::mirror(
     assert(dtop > 0 && distributions[dtop-1].lenWest + 1 == lenMid);
   }
 
-  Distribution * oldDist;
-  Distribution * newDist;
+  DistInfo * oldDist;
+  DistInfo * newDist;
 
-  for (unsigned d = dtop; dtop-- > 0; )
+cout << "distIndex " << distIndex << ", dtop " << dtop << endl;
+  for (unsigned d = dtop; d-- > 0; )
   {
     if (distIndex == distributions.size())
       distributions.resize(distributions.size() + CHUNK_SIZE);
@@ -84,15 +85,16 @@ void Distributions::mirror(
   }
 
   distributions.resize(distIndex); // Shrink to fit
+cout << Distribution::strDist(distIndex);
 }
 
 
-void Distributions::set(
+void Distribution::set(
   const unsigned cards,
   const vector<RankInfo>& oppsRank)
 {
-  list<Distribution> stack(CHUNK_SIZE); // Unfinished expansions
-  list<Distribution>::iterator stackIter;
+  list<DistInfo> stack; // Unfinished expansions
+  list<DistInfo>::iterator stackIter;
 
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
@@ -102,17 +104,19 @@ void Distributions::set(
   for (auto oppr: oppsRank)
     len += oppr.count;
 
+cout << "len " << len << endl;
+
   const unsigned rankSize = oppsRank.size();
   unsigned rankNext; // Next one to write
 
   // Only do the first half and then mirror the other lengths
   // (optimization).
   const unsigned lenMid = ((len & 1) ? (len-1)/2 : len/2);
-  Distribution * newDist;
+  DistInfo * newDist;
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
-    stack.emplace_back(Distribution());
+    stack.emplace_back(DistInfo());
     stackIter = prev(stack.end());
     newDist = &*stackIter;
 
@@ -121,18 +125,30 @@ void Distributions::set(
     for (unsigned r = 0; r < rankSize; r++)
       newDist->west[r] = 0;
     newDist->lenWest = 0;
+    newDist->used = 0;
+    newDist->rankNext = 0;
     newDist->cases = 1;
 
-    rankNext = 0;
+cout << "Starting on west length " << lenWest << endl;
+cout << "Stack:\n";
+cout << Distribution::strStack(stack);
+cout << "Distributions:\n";
+cout << Distribution::strDist(distIndex);
 
-    while (true)
+    while (! stack.empty())
     {
-      while (rankNext < rankSize && newDist->west[rankNext] == 0)
+      newDist = &*stackIter;
+      rankNext = newDist->rankNext;
+      while (rankNext < rankSize && oppsRank[rankNext].count == 0)
         rankNext++;
       assert(rankNext < rankSize);
 
-      const unsigned gap = len - newDist->lenWest;
-      const unsigned available = newDist->west[rankNext];
+      newDist->used += oppsRank[rankNext].count;
+
+      const unsigned gap = lenWest - newDist->lenWest;
+      const unsigned available = oppsRank[rankNext].count;
+cout << "Current rank " << rankNext << ", gap " << gap << ", " <<
+  "available " << available << endl;
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -143,40 +159,93 @@ void Distributions::set(
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
           distributions[distIndex] = * newDist;
-          * newDist = distributions[distIndex++];
+          distributions[distIndex].west[rankNext] = r;
+          distributions[distIndex].lenWest += r;
+          distributions[distIndex].cases *= binomial[available][r];
+
+          distributions[distIndex].lenEast = len - distributions[distIndex].lenWest;
+          for (unsigned rr = 0; rr < rankSize; rr++)
+            distributions[distIndex].east[rr] = oppsRank[rr].count - distributions[distIndex].west[rr];
+
+          distIndex++;
         }
-        else
+        else if (r + len >= gap + newDist->used)
         {
+          // Can still reach our goal of lenWest cards.
           // Continue the "recursion".  They will end up in reverse
           // rank order.
           auto stackInserted = stack.emplace(next(stackIter));
           * stackInserted = * newDist;
-          * newDist = * stackInserted;
+
+          stackInserted->west[rankNext] = r;
+          stackInserted->lenWest += r;
+          stackInserted->rankNext = rankNext+1;
+          stackInserted->cases *= binomial[available][r];
         }
-
-        newDist->west[rankNext] = r;
-        newDist->lenWest += r;
-        newDist->cases *= binomial[available][r];
-
-        if (r == gap)
+        else
         {
-          // Fill out the East side.
-          newDist->lenEast = len - newDist->lenWest;
-          for (unsigned rr = 0; rr <= rankNext; rr++)
-            newDist->east[rr] = oppsRank[rr].count - newDist->west[rr];
+cout << "lenWest goal not achievable from here: r " << r << ", used " <<
+  newDist->used << "\n";
         }
+
+if (r == gap)
+  cout << "Ending recursion, r = " << r <<"\n";
+else if (r + len >= gap + newDist->used)
+  cout << "Continuing recursion, r = " << r << "\n";
+else
+  cout << "Ending recursion without a result\n";
+
+cout << "Stack:\n";
+cout << Distribution::strStack(stack);
+cout << "Distributions:\n";
+cout << Distribution::strDist(distIndex);
+
       }
       stackIter = stack.erase(stackIter);
+cout << "Erased from stack, rankNext was " << rankNext << "\n";
+cout << "Stack:\n";
+cout << Distribution::strStack(stack);
+cout << "Distributions:\n";
+cout << Distribution::strDist(distIndex);
+      rankNext++;
     }
+cout << "Finished west length " << lenWest << endl;
+cout << "Stack:\n";
+cout << Distribution::strStack(stack);
+cout << "Distributions:\n";
+cout << Distribution::strDist(distIndex);
   }
 
   assert(distIndex > 0);
+cout << "Done with recursion" << endl;
 
-  Distributions::mirror(len, lenMid, distIndex);
+  Distribution::mirror(len, lenMid, distIndex);
 }
 
 
-string Distributions::rank2str(
+string Distribution::strStack(const list<DistInfo>& stack) const
+{
+  int i = 0;
+  string s = "";
+  for (auto& st: stack)
+  {
+    s += to_string(i) + "   " + st.str();
+    i++;
+  }
+  return s + "\n";
+}
+
+
+string Distribution::strDist(const unsigned distIndex) const
+{
+  string s = "";
+  for (unsigned i = 0; i < distIndex; i++)
+    s += to_string(i) + "   " + distributions[i].str();
+  return s + "\n";
+}
+
+
+string Distribution::rank2str(
   const vector<unsigned>& ranks,
   const vector<string>& names) const
 {
@@ -191,7 +260,7 @@ string Distributions::rank2str(
 }
 
 
-string Distributions::str() const
+string Distribution::str() const
 {
   if (distributions.empty())
     return "No distributions\n";
@@ -224,8 +293,8 @@ string Distributions::str() const
   for (unsigned d = 0; d < distributions.size(); d++)
   {
     ss << 
-      setw(8) << Distributions::rank2str(distributions[d].west, names) <<
-      setw(8) << Distributions::rank2str(distributions[d].east, names) <<
+      setw(8) << Distribution::rank2str(distributions[d].west, names) <<
+      setw(8) << Distribution::rank2str(distributions[d].east, names) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();

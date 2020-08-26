@@ -183,6 +183,22 @@ void Combinations::runUniquesMT(
 }
 
 
+#include "Distribution.h"
+void Combinations::tmp(
+  const unsigned cards,
+  const unsigned holding)
+{
+  Ranks ranks;
+  ranks.resize(cards);
+  ranks.set(holding, cards, combinations[cards][holding]);
+
+  Distribution distribution;
+  distribution.set(cards, ranks.oppsRank());
+
+  cout << distribution.str();
+}
+
+
 string Combinations::strUniques(const unsigned cards) const
 {
   unsigned cmin, cmax;

@@ -174,6 +174,12 @@ void Ranks::set(
 }
 
 
+const vector<RankInfo>& Ranks::oppsRank() const
+{
+  return opps;
+}
+
+
 string Ranks::strRankInfo(
   const RankInfo& rankInfo,
   const string& pos) const

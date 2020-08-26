@@ -231,7 +231,7 @@ bool Control::completeHoldings()
       return false;
     }
     else
-      entry.setInt(CTRL_HOLDING, static_cast<int>(h));
+      entry.setInt(CTRL_HOLDING, static_cast<int>(hU));
   }
   else if (h != -1)
   {
