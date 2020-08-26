@@ -12,6 +12,21 @@ class Distribution
 {
   private:
 
+    struct RankEntry
+    {
+      unsigned rank;
+      unsigned count;
+    };
+
+    struct StackInfo
+    {
+      vector<RankEntry> ranks; // For a single player (West)
+      unsigned len; // Number of cards in ranks
+      unsigned seen; // Number of EW cards already seen
+      unsigned rankNext;
+      unsigned count;
+    };
+
     struct DistInfo
     {
       vector<unsigned> west; // Ranks
