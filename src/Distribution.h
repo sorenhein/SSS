@@ -13,10 +13,17 @@ class Distribution
 {
   private:
 
+    vector<unsigned> full2reduced;
+
     struct RankEntry
     {
       unsigned rank;
       unsigned count;
+
+      RankEntry()
+      {
+        count = 0;
+      }
     };
 
     struct StackInfo
@@ -92,8 +99,9 @@ class Distribution
     void setRanks(
       const unsigned cards,
       const unsigned holding2,
-      vector<unsigned>&oppsRank,
-      unsigned& len) const;
+      vector<unsigned>& oppsFullRank,
+      vector<RankEntry>& oppsReducedRank,
+      unsigned& len);
 
     void mirror(
       const unsigned len,

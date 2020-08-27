@@ -90,14 +90,27 @@ void Distribution::mirror(
 void Distribution::setRanks(
   const unsigned cards,
   const unsigned holding2,
-  vector<unsigned>& oppsRank,
-  unsigned& len) const
+  vector<unsigned>& oppsFullRank,
+  vector<RankEntry>& oppsReducedRank,
+  unsigned& len)
 {
-  oppsRank.resize(cards);
+  oppsFullRank.resize(cards);
+  full2reduced.resize(cards);
+
+  oppsReducedRank.resize(cards); // Can be reduced to about half
   
   bool prev_is_NS = ((holding2 & 1) == CONVERT_NS);
-  unsigned nextRank = 0;
-  unsigned maxRank = 0;
+
+  // The full rank is the rank used in Combinations.
+  // East-West might have ranks 1, 3 and 5, for example.
+  unsigned nextFullRank = 0;
+  unsigned maxFullRank = 0;
+
+  // The reduced rank is used internally in Distribution and only
+  // considers the East-West ranks which might be 0, 1 and 2.
+  unsigned nextReducedRank = 0;
+  unsigned maxReducedRank = 0;
+
   unsigned h = holding2;
   len = 0;
 
@@ -109,17 +122,25 @@ void Distribution::setRanks(
     if (c == CONVERT_NS)
     {
       if (! prev_is_NS)
-        nextRank++;
+      {
+        nextFullRank++;
+        nextReducedRank++;
+      }
 
       prev_is_NS = true;
     }
     else
     {
       if (prev_is_NS)
-        nextRank++;
+        nextFullRank++;
 
-      oppsRank[nextRank]++;
-      maxRank = nextRank;
+      oppsFullRank[nextFullRank]++;
+
+      oppsReducedRank[nextReducedRank].rank = nextFullRank;
+      oppsReducedRank[nextReducedRank].count++;
+
+      maxFullRank = nextFullRank;
+      maxReducedRank = nextReducedRank;
       len++;
       prev_is_NS = false;
     }
@@ -128,7 +149,10 @@ void Distribution::setRanks(
 
   // Shrink to fit.
   if (len > 0)
-    oppsRank.resize(maxRank+1);
+  {
+    oppsFullRank.resize(maxFullRank+1);
+    oppsReducedRank.resize(maxReducedRank+1);
+  }
 }
 
 
@@ -136,21 +160,23 @@ unsigned Distribution::set(
   const unsigned cards,
   const unsigned holding2)
 {
-  vector<unsigned> oppsRank;
+  vector<unsigned> oppsFullRank;
+  vector<RankEntry> oppsReducedRank;
   unsigned len;
-  Distribution::setRanks(cards, holding2, oppsRank, len);
+  Distribution::setRanks(cards, holding2, oppsFullRank, oppsReducedRank, len);
 
   if (len == 0)
     return 1;
 
-  list<DistInfo> stack; // Unfinished expansions
-  list<DistInfo>::iterator stackIter;
+  list<DistInfo> stackFull; // Unfinished expansions
+  list<StackInfo> stackReduced; // Unfinished expansions
+  list<DistInfo>::iterator stackFullIter;
 
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
 
-  const unsigned rankSize = oppsRank.size();
-  unsigned rankNext; // Next one to write
+  const unsigned rankFullSize = oppsFullRank.size();
+  unsigned rankFullNext; // Next one to write
 
   // Only do the first half and then mirror the other lengths
   // (optimization).
@@ -158,23 +184,22 @@ unsigned Distribution::set(
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
-    assert(stack.empty());
-    stack.emplace_back(DistInfo(rankSize));
-    stackIter = stack.begin();
+    assert(stackFull.empty());
+    stackFull.emplace_back(DistInfo(rankFullSize));
+    stackFullIter = stackFull.begin();
 
-    while (! stack.empty())
+    while (! stackFull.empty())
     {
-      stackIter = stack.begin();
-      rankNext = stackIter->rankNext;
-      while (rankNext < rankSize && oppsRank[rankNext] == 0)
-        rankNext++;
-      assert(rankNext < rankSize);
+      stackFullIter = stackFull.begin();
+      rankFullNext = stackFullIter->rankNext;
+      while (rankFullNext < rankFullSize && oppsFullRank[rankFullNext] == 0)
+        rankFullNext++;
+      assert(rankFullNext < rankFullSize);
 
-      // newDist = &*stackIter;
-      stackIter->used += oppsRank[rankNext];
+      stackFullIter->used += oppsFullRank[rankFullNext];
 
-      const unsigned gap = lenWest - stackIter->lenWest;
-      const unsigned available = oppsRank[rankNext];
+      const unsigned gap = lenWest - stackFullIter->lenWest;
+      const unsigned available = oppsFullRank[rankFullNext];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -183,39 +208,39 @@ unsigned Distribution::set(
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
-          distributions[distIndex] = * stackIter;
-          distributions[distIndex].west[rankNext] = r;
+          distributions[distIndex] = * stackFullIter;
+          distributions[distIndex].west[rankFullNext] = r;
           distributions[distIndex].lenWest += r;
           distributions[distIndex].cases *= binomial[available][r];
 
           distributions[distIndex].lenEast = len - distributions[distIndex].lenWest;
-          for (unsigned rr = 0; rr < rankSize; rr++)
-            distributions[distIndex].east[rr] = oppsRank[rr] - distributions[distIndex].west[rr];
+          for (unsigned rr = 0; rr < rankFullSize; rr++)
+            distributions[distIndex].east[rr] = oppsFullRank[rr] - distributions[distIndex].west[rr];
 
           distIndex++;
           break;
         }
-        else if (r + len >= gap + stackIter->used)
+        else if (r + len >= gap + stackFullIter->used)
         {
           // Can still reach our goal of lenWest cards.
           // Continue the "recursion".  They will end up in reverse
           // rank order.
 
-          stackIter = stack.insert(stackIter, * stackIter);
-          auto stackInserted = next(stackIter);
+          stackFullIter = stackFull.insert(stackFullIter, * stackFullIter);
+          auto stackFullInserted = next(stackFullIter);
 
-          stackInserted->west[rankNext] = r;
-          stackInserted->lenWest += r;
-          stackInserted->rankNext = rankNext+1;
-          stackInserted->cases *= binomial[available][r];
+          stackFullInserted->west[rankFullNext] = r;
+          stackFullInserted->lenWest += r;
+          stackFullInserted->rankNext = rankFullNext+1;
+          stackFullInserted->cases *= binomial[available][r];
         }
         else
         {
         }
       }
-      stack.pop_front();
+      stackFull.pop_front();
 
-      rankNext++;
+      rankFullNext++;
     }
   }
 

@@ -65,8 +65,8 @@ int main(int argc, char * argv[])
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
-    distributions.runUniquesMT(cards, control.numThreads());
-    // distributions.runUniques(cards);
+    // distributions.runUniquesMT(cards, control.numThreads());
+    distributions.runUniques(cards);
   }
 
   timers.stop(TIMER_DISTRIBUTIONS);

@@ -32,3 +32,5 @@ DistInfo
   - Know which cards correspond to next-level cards (and ranks)
 
 
+
+Make histogram of distribution counts in order to choose chunk size.
