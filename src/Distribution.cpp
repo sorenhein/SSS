@@ -68,7 +68,6 @@ void Distribution::mirror(
   DistInfo * oldDist;
   DistInfo * newDist;
 
-// cout << "distIndex " << distIndex << ", dtop " << dtop << endl;
   for (unsigned d = dtop; d-- > 0; )
   {
     if (distIndex == distributions.size())
@@ -85,8 +84,6 @@ void Distribution::mirror(
   }
 
   distributions.resize(distIndex); // Shrink to fit
-// if (distIndex > 100)
-  // cout << Distribution::strDist(distIndex);
 }
 
 
@@ -101,7 +98,6 @@ unsigned Distribution::set(
   bool prev_is_NS = true;
   unsigned nextRank = 0;
   unsigned h = holding2;
-// cout << "holding2 " << holding2 << endl;
 
   // Quick and dirty.  Move to more compact vector format.
   for (unsigned i = 0; i < cards; i++)
@@ -114,7 +110,6 @@ unsigned Distribution::set(
       if (! prev_is_NS)
         nextRank++;
 
-assert(nextRank < oppsRank.size());
       oppsRank[nextRank].count++;
       prev_is_NS = false;
     }
@@ -137,10 +132,7 @@ UNUSED(cards);
     len += oppr.count;
 
   if (len == 0)
-  // {
-    // cout << "cards " << cards << ", len 0\n";
     return 1;
-  // }
 
   list<DistInfo> stack; // Unfinished expansions
   list<DistInfo>::iterator stackIter;
@@ -148,23 +140,12 @@ UNUSED(cards);
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
 
-/*
-cout << "len " << len << endl;
-cout << "cards " << cards << ", ranks:\n";
-for (unsigned i = 0; i < oppsRank.size(); i++)
-  if (oppsRank[i].count)
-    cout << i << ": " << oppsRank[i].count << endl;
-cout << endl;
-*/
-
-
   const unsigned rankSize = oppsRank.size();
   unsigned rankNext; // Next one to write
 
   // Only do the first half and then mirror the other lengths
   // (optimization).
   const unsigned lenMid = ((len & 1) ? (len-1)/2 : len/2);
-  // DistInfo * newDist;
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
@@ -172,19 +153,9 @@ cout << endl;
     stack.emplace_back(DistInfo(rankSize));
     stackIter = stack.begin();
 
-/*
-cout << "Starting on west length " << lenWest << endl;
-cout << "vector size " << stackIter->west.size() << endl;
-cout << "Stack:\n";
-cout << Distribution::strStack(stack);
-cout << "Distributions:\n";
-cout << Distribution::strDist(distIndex);
-*/
-
     while (! stack.empty())
     {
       stackIter = stack.begin();
-// assert(stackIter != stack.end());
       rankNext = stackIter->rankNext;
       while (rankNext < rankSize && oppsRank[rankNext].count == 0)
         rankNext++;
@@ -195,16 +166,11 @@ cout << Distribution::strDist(distIndex);
 
       const unsigned gap = lenWest - stackIter->lenWest;
       const unsigned available = oppsRank[rankNext].count;
-// cout << "Current rank " << rankNext << ", gap " << gap << ", " <<
-  // "available " << available << endl;
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
-// cout << "Starting on lenWest " << lenWest << ", r " << r << endl;
         if (r == gap)
         {
-// cout << "Starting on distribution insert" << endl;
-          // End of "recursion".
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
@@ -218,102 +184,33 @@ cout << Distribution::strDist(distIndex);
             distributions[distIndex].east[rr] = oppsRank[rr].count - distributions[distIndex].west[rr];
 
           distIndex++;
-// cout << "Finished distribution insert" << endl;
           break;
         }
         else if (r + len >= gap + stackIter->used)
         {
-// cout << "Starting on stack insert" << endl;
           // Can still reach our goal of lenWest cards.
           // Continue the "recursion".  They will end up in reverse
           // rank order.
-/*
-cout << "size: " << stack.size() << endl;
-if (stackIter == stack.begin())
-{
-  cout << "stackIter is begin()" << endl;
-  if (next(stackIter) == stack.end())
-    cout << "  next is end()" << endl;
-  else
-    cout << "  next is something else" << endl;
-}
-else if (stackIter == stack.end())
-  cout << "stackIter is end()" << endl;
-else
-  cout << "stackIter is something else" << endl;
-*/
 
-          // Copy
-          // auto stackInserted = stack.emplace(next(stackIter), DistInfo());
-          // * stackInserted = * newDist;
-          // * stackInserted = * stackIter;
-// cout << "0 begin " << &*stack.begin() << " iter " << &*stackIter << endl;
           stackIter = stack.insert(stackIter, * stackIter);
-// cout << "1 begin " << &*stack.begin() << " iter " << &*stackIter << endl;
           auto stackInserted = next(stackIter);
-// cout << "2 begin " << &*stack.begin() << " inserted " << &*stackInserted << 
-  // " iter " << &*stackIter << endl;
 
           stackInserted->west[rankNext] = r;
           stackInserted->lenWest += r;
           stackInserted->rankNext = rankNext+1;
           stackInserted->cases *= binomial[available][r];
-// cout << "Finished stack insert" << endl;
         }
         else
         {
-// cout << "lenWest goal not achievable from here: r " << r << ", used " <<
-  // stackIter->used << endl;
         }
-
-/*
-if (r == gap)
-  cout << "Ending recursion, r = " << r <<"\n";
-else if (r + len >= gap + stackIter->used)
-  cout << "Continuing recursion, r = " << r << "\n";
-else
-  cout << "Ending recursion without a result\n";
-
-cout << "Stack:\n";
-cout << Distribution::strStack(stack);
-cout << "Distributions:\n";
-cout << Distribution::strDist(distIndex);
-*/
-
       }
-/*
-cout << "Will now erase from stack " << rankNext << endl;
-cout << "begin(): " << &*stack.begin() << endl;
-cout << "stackIter(): " << &*stackIter << endl;
-cout << "size: " << stack.size() << endl;
-cout << "Stack was:\n";
-*/
-// cout << Distribution::strStack(stack);
-      // stackIter = stack.erase(stackIter);
-      assert(stackIter == stack.begin());
       stack.pop_front();
 
-/*
-cout << "Erased from stack, rankNext was " << rankNext << endl;
-cout << "Stack:\n";
-cout << Distribution::strStack(stack);
-cout << "Distributions:\n";
-cout << Distribution::strDist(distIndex);
-*/
       rankNext++;
     }
-/*
-cout << "Finished west length " << lenWest << endl;
-cout << "Stack:\n";
-cout << Distribution::strStack(stack);
-cout << "Distributions:\n";
-cout << Distribution::strDist(distIndex);
-cout << "---" << endl;
-*/
   }
 
   assert(distIndex > 0);
-// cout << "Done with recursion" << endl;
 
   Distribution::mirror(len, lenMid, distIndex);
   return distIndex;
