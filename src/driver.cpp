@@ -53,7 +53,9 @@ int main(int argc, char * argv[])
 
 
   // combinations.tmp(control.cards(), control.holding());
-
+  // Distribution dist;
+  // dist.set(6, 43);
+  // exit(0);
 
   // Set up distributions.
 
