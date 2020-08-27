@@ -89,6 +89,12 @@ class Distribution
 
     void setBinomial();
 
+    void setRanks(
+      const unsigned cards,
+      const unsigned holding2,
+      vector<unsigned>&oppsRank,
+      unsigned& len) const;
+
     void mirror(
       const unsigned len,
       const unsigned lenMid,
@@ -106,10 +112,6 @@ class Distribution
     ~Distribution();
 
     void reset();
-
-    unsigned set(
-      const unsigned cards,
-      const vector<RankInfo>& oppsRank);
 
     unsigned set(
       const unsigned cards,

@@ -87,49 +87,58 @@ void Distribution::mirror(
 }
 
 
-unsigned Distribution::set(
+void Distribution::setRanks(
   const unsigned cards,
-  const unsigned holding2)
+  const unsigned holding2,
+  vector<unsigned>& oppsRank,
+  unsigned& len) const
 {
-  // Turn holding into oppsRank
-  vector<RankInfo> oppsRank;
-  oppsRank.resize(cards+1);
+  oppsRank.resize(cards);
   
-  bool prev_is_NS = true;
+  bool prev_is_NS = ((holding2 & 1) == CONVERT_NS);
   unsigned nextRank = 0;
+  unsigned maxRank = 0;
   unsigned h = holding2;
+  len = 0;
 
-  // Quick and dirty.  Move to more compact vector format.
+  // We could use a more compact rank format, but we want to have the
+  // same rank numbers as in Combination.
   for (unsigned i = 0; i < cards; i++)
   {
     const unsigned c = h & 1;
     if (c == CONVERT_NS)
-      prev_is_NS = true;
-    else
     {
       if (! prev_is_NS)
         nextRank++;
 
-      oppsRank[nextRank].count++;
+      prev_is_NS = true;
+    }
+    else
+    {
+      if (prev_is_NS)
+        nextRank++;
+
+      oppsRank[nextRank]++;
+      maxRank = nextRank;
+      len++;
       prev_is_NS = false;
     }
-    
     h >>= 1;
   }
 
-  return Distribution::set(cards, oppsRank);
+  // Shrink to fit.
+  if (len > 0)
+    oppsRank.resize(maxRank+1);
 }
 
 
 unsigned Distribution::set(
   const unsigned cards,
-  const vector<RankInfo>& oppsRank)
+  const unsigned holding2)
 {
-UNUSED(cards);
-  // TODO: Store this in Ranks.cpp and just pass it in?
-  unsigned len = 0;
-  for (auto oppr: oppsRank)
-    len += oppr.count;
+  vector<unsigned> oppsRank;
+  unsigned len;
+  Distribution::setRanks(cards, holding2, oppsRank, len);
 
   if (len == 0)
     return 1;
@@ -157,15 +166,15 @@ UNUSED(cards);
     {
       stackIter = stack.begin();
       rankNext = stackIter->rankNext;
-      while (rankNext < rankSize && oppsRank[rankNext].count == 0)
+      while (rankNext < rankSize && oppsRank[rankNext] == 0)
         rankNext++;
       assert(rankNext < rankSize);
 
       // newDist = &*stackIter;
-      stackIter->used += oppsRank[rankNext].count;
+      stackIter->used += oppsRank[rankNext];
 
       const unsigned gap = lenWest - stackIter->lenWest;
-      const unsigned available = oppsRank[rankNext].count;
+      const unsigned available = oppsRank[rankNext];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -181,7 +190,7 @@ UNUSED(cards);
 
           distributions[distIndex].lenEast = len - distributions[distIndex].lenWest;
           for (unsigned rr = 0; rr < rankSize; rr++)
-            distributions[distIndex].east[rr] = oppsRank[rr].count - distributions[distIndex].west[rr];
+            distributions[distIndex].east[rr] = oppsRank[rr] - distributions[distIndex].west[rr];
 
           distIndex++;
           break;

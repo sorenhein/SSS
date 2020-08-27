@@ -54,10 +54,6 @@ class Combinations
       const unsigned cards,
       const unsigned numThreads);
 
-    void tmp(
-      const unsigned cards,
-      const unsigned holding);
-
     string strUniques(const int unsigned = 0) const;
 
 };
