@@ -19,6 +19,12 @@ enum CardPosition
   CONVERT_OPPS = 2
 };
 
+enum SidePosition
+{
+  CONVERT_NS = 0,
+  CONVERT_EW = 1
+};
+
 const unsigned UNSIGNED_NOT_SET = numeric_limits<unsigned>::max();
 
 #define UNUSED(x) ((void)(true ? 0 : ((x), void(), 0)))

@@ -1,7 +1,8 @@
-#ifndef SSS_DISTRIBUTIONS_H
-#define SSS_DISTRIBUTIONS_H
+#ifndef SSS_DISTRIBUTION_H
+#define SSS_DISTRIBUTION_H
 
 #include <string>
+#include <list>
 
 #include "struct.h"
 
@@ -24,7 +25,7 @@ class Distribution
       unsigned len; // Number of cards in ranks
       unsigned seen; // Number of EW cards already seen
       unsigned rankNext;
-      unsigned count;
+      unsigned cases; // Combinatorial count
     };
 
     struct DistInfo
@@ -36,6 +37,24 @@ class Distribution
       unsigned used; // Number of E-W cards already seen
       unsigned rankNext;
       unsigned cases; // Combinatorial count
+
+      DistInfo(unsigned cards = 0)
+      {
+        if (cards)
+        {
+          west.resize(cards);
+          east.resize(cards);
+          for (unsigned r = 0; r < cards; r++)
+          {
+            west[r] = 0;
+            east[r] = 0;
+          }
+        }
+        lenWest = 0;
+        used = 0;
+        rankNext = 0;
+        cases = 1;
+      }
 
       string str() const
       {
@@ -88,9 +107,13 @@ class Distribution
 
     void reset();
 
-    void set(
+    unsigned set(
       const unsigned cards,
       const vector<RankInfo>& oppsRank);
+
+    unsigned set(
+      const unsigned cards,
+      const unsigned holding2); // Binary, not trinary format
 
     string rank2str(
       const vector<unsigned>& ranks,

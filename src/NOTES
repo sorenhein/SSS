@@ -1,3 +1,14 @@
+StackInfo
+* reset() automatically
+* update(StackInfo&, r, factor)
+* str()
+
+DistInfo
+* fill(ranks(), len(), cases(), r, factor)
+* complete(len, vector<RankEntry>&)
+* str(), just uses generic card names
+* str(names)
+
 * Distribution: A single card is output as its name, H only applies to
   multi-card ranks
 * Distribution code is a mess.  Some may go in Ranks, too

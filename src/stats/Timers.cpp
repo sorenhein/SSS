@@ -25,7 +25,8 @@ void Timers::reset()
   for (auto& t: timers)
     t.reset();
   
-  names[TIMER_UNIQUE] = "Unique";
+  names[TIMER_COMBINATIONS] = "Combos";
+  names[TIMER_DISTRIBUTIONS] = "Dists";
   names[TIMER_FILL_TREE] = "Fwd";
   names[TIMER_DERIVE_STRAT] = "Bwd";
   names[TIMER_WRITE_CONST] = "Const";

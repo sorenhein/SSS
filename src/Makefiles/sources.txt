@@ -3,6 +3,7 @@ SOURCE_FILES    =                       \
                 Ranks.cpp               \
                 Combinations.cpp        \
                 Distribution.cpp        \
+                Distributions.cpp       \
                                         \
                 inputs/Convert.cpp      \
                 inputs/Control.cpp      \
