@@ -146,7 +146,7 @@ string Distributions::str(const unsigned cards) const
       setw(5) << c <<
       setw(9) << distributions[c].size() <<
       setw(9) << counts[c] <<
-      setw(8) << fixed << setprecision(2) <<
+      setw(9) << fixed << setprecision(2) <<
         static_cast<double>(counts[c]) / distributions[c].size() << 
       "\n";
   }

@@ -35,7 +35,6 @@ int main(int argc, char * argv[])
 
   // Set up combinations.
 
-/*
   combinations.resize(control.cards());
 
   timers.start(TIMER_COMBINATIONS);
@@ -49,19 +48,11 @@ int main(int argc, char * argv[])
   }
 
   timers.stop(TIMER_COMBINATIONS);
-  cout << "\n" << timers.str();
 
   cout << combinations.strUniques();
-*/
-
 
 
   // combinations.tmp(control.cards(), control.holding());
-  Distribution dist;
-  dist.set(2, 3);
-  exit(0);
-
-
 
 
   // Set up distributions.
@@ -82,7 +73,5 @@ int main(int argc, char * argv[])
   cout << "\n" << timers.str();
 
   cout << distributions.str();
-
-
 }
 

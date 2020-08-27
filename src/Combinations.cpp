@@ -37,7 +37,6 @@ Combinations::Combinations()
 
 Combinations::~Combinations()
 {
-  cout << "Combinations destructor" << endl;
 }
 
 
