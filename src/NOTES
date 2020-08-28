@@ -1,28 +1,10 @@
-struct SideInfo (ranks + len), len autom 0 on alloc.
-Don't keep the reduced ranks in RankEntry (so it's just a scalar).
-Instead have global "maps" full->reduced and the other way.
-StackInfo uses 1, DistInfo uses 2
-Has a method add(rankReduced, count, factor)
-DistInfo has method complete (east), doesn't need that much init
-When DistInfo west gets set, it has been add() before and is just
-  copied over
-No longer make oppsRankFull
-Reduce size of arrays
-Stack and Dist can share some output through SideInfo?
 Is there a way to use a vector rather than a list after all?
-Check with an old holding AKT / xxx or so.
+- Two vectors, actually
+
 Make histogram of distribution counts in order to choose chunk size.
 
-StackInfo
-* reset() automatically
-* update(StackInfo&, r, factor)
-* str()
-
-DistInfo
-* fill(ranks(), len(), cases(), r, factor)
-* complete(len, vector<RankEntry>&)
-* str(), just uses generic card names
-* str(names)
+Make binomial and names global and only calculated once.
+- names are a vector, one vector for each rankSize.
 
 * Distribution: A single card is output as its name, H only applies to
   multi-card ranks

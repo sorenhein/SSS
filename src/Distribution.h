@@ -44,6 +44,17 @@ class Distribution
           counts[rank] = side1.counts[rank] - side2.counts[rank];
         len = side1.len - side2.len;
       }
+
+      string str(const vector<char>& names) const
+      {
+        string s = "";
+        for (unsigned r = counts.size(); r-- > 0; )
+        {
+          if (counts[r] > 0)
+            s += string(counts[r], names[r]);
+        }
+        return (s == "" ? "-" : s);
+      }
     };
 
     struct StackInfo
@@ -96,27 +107,11 @@ class Distribution
         cases *= factor;
       }
 
-      string str() const
+      string str(const vector<char> &names) const
       {
         string s;
-        s = "W " + to_string(west.len) + ": ";
-        for (unsigned i = west.counts.size(); i-- > 0; )
-        {
-          if (west.counts[i] > 0)
-          {
-            for (unsigned j = 0; j < west.counts[i]; j++)
-              s += to_string(i);
-          }
-        }
-        s += ", E " + to_string(east.len) + ": ";
-        for (unsigned i = east.counts.size(); i-- > 0; )
-        {
-          if (east.counts[i] > 0)
-          {
-            for (unsigned j = 0; j < east.counts[i]; j++)
-              s += to_string(i);
-          }
-        }
+        s = "W " + to_string(west.len) + ": " + west.str(names);
+        s += ", E " + to_string(east.len) + ": " + east.str(names);
         s += " (" + to_string(cases) + ")\n";
         return s;
       }
@@ -125,9 +120,10 @@ class Distribution
     vector<unsigned> full2reduced;
     vector<unsigned> reduced2full;
     unsigned rankSize; // Reduced ranks
-    SideInfo opponents;
 
     vector<vector<unsigned>> binomial;
+
+    SideInfo opponents;
 
     vector<DistInfo> distributions;
 
@@ -145,10 +141,6 @@ class Distribution
 
     void mirror(unsigned& distIndex);
 
-    string strStack(const list<DistInfo>& stack) const;
-
-    string strDist(const unsigned DistIndex) const;
-
 
   public:
 
@@ -161,10 +153,6 @@ class Distribution
     unsigned set(
       const unsigned cards,
       const unsigned holding2); // Binary, not trinary format
-
-    string rank2str(
-      const vector<unsigned>& counts,
-      const vector<string>& names) const;
 
     string str() const;
 

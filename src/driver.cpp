@@ -54,7 +54,8 @@ int main(int argc, char * argv[])
 
   // combinations.tmp(control.cards(), control.holding());
   // Distribution dist;
-  // dist.set(2, 3);
+  // dist.set(13, 1784);
+  // cout << dist.str();
   // exit(0);
 
   // Set up distributions.

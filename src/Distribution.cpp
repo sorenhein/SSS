@@ -230,86 +230,22 @@ unsigned Distribution::set(
 }
 
 
-string Distribution::strStack(const list<DistInfo>& stack) const
-{
-  int i = 0;
-  string s = "";
-  for (auto& st: stack)
-  {
-    s += to_string(i) + "   " + st.str();
-    i++;
-  }
-  return s + "\n";
-}
-
-
-string Distribution::strDist(const unsigned distIndex) const
-{
-  string s = "";
-  for (unsigned i = 0; i < distIndex; i++)
-    s += to_string(i) + "   " + distributions[i].str();
-  return s + "\n";
-}
-
-
-string Distribution::rank2str(
-  const vector<unsigned>& counts,
-  const vector<string>& names) const
-{
-  string s = "";
-  for (unsigned r = counts.size(); --r > 0; )
-  {
-    if (counts[r]> 0)
-      s += string(counts[r], names[r].at(0));
-  }
-
-  return (s == "" ? "-" : s);
-}
-
-
 string Distribution::str() const
 {
   if (distributions.empty())
     return "No distributions\n";
 
-  unsigned numRanks = 0;
-  unsigned maxRank = 0;
-  for (unsigned r = 0; r < distributions[0].west.counts.size(); r++)
-  {
-    if (distributions[0].west.counts[r] == 0 && 
-        distributions[0].east.counts[r] == 0)
-      continue;
-
-    numRanks++;
-    maxRank = r;
-  }
-
-  vector<string> names(maxRank+1);
-  unsigned minRank;
-  if (distributions[0].west.counts[0] == 0 && 
-      distributions[0].east.counts[0] == 0)
-    minRank = 1;
-  else
-    minRank = 0;
-  names[minRank] = "x";
-
-  unsigned i = 0;
-  for (unsigned r = maxRank; r > minRank; r--)
-  {
-    if (distributions[0].west.counts[r] > 0 || 
-        distributions[0].east.counts[r] > 0)
-    {
-      names[r] = genericNames.substr(i, 1);
-      i++;
-    }
-  }
+  vector<char> names(rankSize);
+  names[0] = 'x';
+  for (unsigned rank = 1; rank < rankSize; rank++)
+    names[rank] = genericNames.at(rankSize-rank-1);
 
   stringstream ss;
   for (unsigned d = 0; d < distributions.size(); d++)
   {
     ss << 
-      setw(8) << Distribution::rank2str(distributions[d].west.counts, names) <<
-      setw(8) << Distribution::rank2str(distributions[d].east.counts, names) <<
+      setw(8) << distributions[d].west.str(names) <<
+      setw(8) << distributions[d].east.str(names) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();
