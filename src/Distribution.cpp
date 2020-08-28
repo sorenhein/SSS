@@ -90,7 +90,7 @@ void Distribution::mirror(
 void Distribution::setRanks(
   const unsigned cards,
   const unsigned holding2,
-  vector<RankEntry>& oppsReducedRank,
+  vector<unsigned>& oppsReducedRank,
   unsigned& len)
 {
   // We go with a minimal representation of East-West in terms of ranks,
@@ -136,8 +136,7 @@ void Distribution::setRanks(
       if (prev_is_NS)
         nextFullRank++;
 
-      oppsReducedRank[nextReducedRank].rank = nextFullRank;
-      oppsReducedRank[nextReducedRank].count++;
+      oppsReducedRank[nextReducedRank]++;
 
       full2reduced[nextFullRank] = nextReducedRank;
       reduced2full[nextReducedRank] = nextFullRank;
@@ -164,7 +163,8 @@ unsigned Distribution::set(
   const unsigned cards,
   const unsigned holding2)
 {
-  vector<RankEntry> oppsReducedRank;
+  // TODO Turn these two into a SideInfo
+  vector<unsigned> oppsReducedRank;
   unsigned len;
   Distribution::setRanks(cards, holding2, oppsReducedRank, len);
 
@@ -191,7 +191,7 @@ unsigned Distribution::set(
     stackReduced.emplace_back(StackInfo(rankReducedSize));
     stackReducedIter = stackReduced.begin();
 
-    stackReducedIter->west.ranks.resize(rankReducedSize);
+    stackReducedIter->west.counts.resize(rankReducedSize);
     stackReducedIter->west.len = 0;
     stackReducedIter->seen = 0;
     stackReducedIter->rankNext = 0;
@@ -202,10 +202,10 @@ unsigned Distribution::set(
       stackReducedIter = stackReduced.begin();
       rankReducedNext = stackReducedIter->rankNext;
 
-      stackReducedIter->seen += oppsReducedRank[rankReducedNext].count;
+      stackReducedIter->seen += oppsReducedRank[rankReducedNext];
 
       const unsigned gap = lenWest - stackReducedIter->west.len;
-      const unsigned available = oppsReducedRank[rankReducedNext].count;
+      const unsigned available = oppsReducedRank[rankReducedNext];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -214,13 +214,11 @@ unsigned Distribution::set(
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
-          distributions[distIndex].west.ranks.resize(rankReducedSize);
-          distributions[distIndex].east.ranks.resize(rankReducedSize);
+          distributions[distIndex].west.counts.resize(rankReducedSize);
+          distributions[distIndex].east.counts.resize(rankReducedSize);
 
           distributions[distIndex].west = stackReducedIter->west;
-          distributions[distIndex].west.ranks[rankReducedNext].rank = 
-            oppsReducedRank[rankReducedNext].rank;
-          distributions[distIndex].west.ranks[rankReducedNext].count = r;
+          distributions[distIndex].west.counts[rankReducedNext] = r;
           distributions[distIndex].west.len =
             stackReducedIter->west.len + r;
           distributions[distIndex].cases =
@@ -229,11 +227,8 @@ unsigned Distribution::set(
           distributions[distIndex].east.len = len - distributions[distIndex].west.len;
           for (unsigned rr = 0; rr < rankReducedSize; rr++)
           {
-            distributions[distIndex].east.ranks[rr].rank = 
-              distributions[distIndex].west.ranks[rr].rank;
-
-            distributions[distIndex].east.ranks[rr].count = 
-              oppsReducedRank[rr].count - distributions[distIndex].west.ranks[rr].count;
+            distributions[distIndex].east.counts[rr] = 
+              oppsReducedRank[rr] - distributions[distIndex].west.counts[rr];
           }
 
           distIndex++;
@@ -247,10 +242,8 @@ unsigned Distribution::set(
 
           stackReducedIter = stackReduced.insert(stackReducedIter, * stackReducedIter);
           auto stackReducedInserted = next(stackReducedIter);
-          stackReducedInserted->west.ranks[rankReducedNext].rank =
-            oppsReducedRank[rankReducedNext].rank;
 
-          stackReducedInserted->west.ranks[rankReducedNext].count = r;
+          stackReducedInserted->west.counts[rankReducedNext] = r;
           stackReducedInserted->west.len += r;
           stackReducedInserted->rankNext = rankReducedNext+1;
           stackReducedInserted->cases *= binomial[available][r];
@@ -290,14 +283,14 @@ string Distribution::strDist(const unsigned distIndex) const
 
 
 string Distribution::rank2str(
-  const vector<RankEntry>& ranks,
+  const vector<unsigned>& counts,
   const vector<string>& names) const
 {
   string s = "";
-  for (unsigned r = ranks.size(); --r > 0; )
+  for (unsigned r = counts.size(); --r > 0; )
   {
-    if (ranks[r].count > 0)
-      s += string(ranks[r].count, names[r].at(0));
+    if (counts[r]> 0)
+      s += string(counts[r], names[r].at(0));
   }
 
   return (s == "" ? "-" : s);
@@ -311,10 +304,10 @@ string Distribution::str() const
 
   unsigned numRanks = 0;
   unsigned maxRank = 0;
-  for (unsigned r = 0; r < distributions[0].west.ranks.size(); r++)
+  for (unsigned r = 0; r < distributions[0].west.counts.size(); r++)
   {
-    if (distributions[0].west.ranks[r].count == 0 && 
-        distributions[0].east.ranks[r].count == 0)
+    if (distributions[0].west.counts[r] == 0 && 
+        distributions[0].east.counts[r] == 0)
       continue;
 
     numRanks++;
@@ -323,8 +316,8 @@ string Distribution::str() const
 
   vector<string> names(maxRank+1);
   unsigned minRank;
-  if (distributions[0].west.ranks[0].count == 0 && 
-      distributions[0].east.ranks[0].count == 0)
+  if (distributions[0].west.counts[0] == 0 && 
+      distributions[0].east.counts[0] == 0)
     minRank = 1;
   else
     minRank = 0;
@@ -333,8 +326,8 @@ string Distribution::str() const
   unsigned i = 0;
   for (unsigned r = maxRank; r > minRank; r--)
   {
-    if (distributions[0].west.ranks[r].count > 0 || 
-        distributions[0].east.ranks[r].count > 0)
+    if (distributions[0].west.counts[r] > 0 || 
+        distributions[0].east.counts[r] > 0)
     {
       names[r] = genericNames.substr(i, 1);
       i++;
@@ -345,8 +338,8 @@ string Distribution::str() const
   for (unsigned d = 0; d < distributions.size(); d++)
   {
     ss << 
-      setw(8) << Distribution::rank2str(distributions[d].west.ranks, names) <<
-      setw(8) << Distribution::rank2str(distributions[d].east.ranks, names) <<
+      setw(8) << Distribution::rank2str(distributions[d].west.counts, names) <<
+      setw(8) << Distribution::rank2str(distributions[d].east.counts, names) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();

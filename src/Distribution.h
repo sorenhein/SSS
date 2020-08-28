@@ -16,20 +16,9 @@ class Distribution
     vector<unsigned> full2reduced;
     vector<unsigned> reduced2full;
 
-    struct RankEntry
-    {
-      unsigned rank;
-      unsigned count;
-
-      RankEntry()
-      {
-        count = 0;
-      }
-    };
-
     struct SideInfo
     {
-      vector<RankEntry> ranks;
+      vector<unsigned> counts; // For each (reduced) rank
       unsigned len; // Sum of rank counts
     };
 
@@ -44,12 +33,9 @@ class Distribution
       {
         if (cards)
         {
-          west.ranks.resize(cards);
+          west.counts.resize(cards);
           for (unsigned r = 0; r < cards; r++)
-          {
-            west.ranks[r].rank = r;
-            west.ranks[r].count = 0;
-          }
+            west.counts[r] = 0;
         }
         west.len = 0;
         cases = 1;
@@ -67,14 +53,12 @@ class Distribution
       {
         if (cards)
         {
-          west.ranks.resize(cards);
-          east.ranks.resize(cards);
+          west.counts.resize(cards);
+          east.counts.resize(cards);
           for (unsigned r = 0; r < cards; r++)
           {
-            west.ranks[r].rank = r;
-            west.ranks[r].count = 0;
-            east.ranks[r].rank = r;
-            east.ranks[r].count = 0;
+            west.counts[r] = 0;
+            east.counts[r] = 0;
           }
         }
         west.len = 0;
@@ -86,20 +70,20 @@ class Distribution
       {
         string s;
         s = "W " + to_string(west.len) + ": ";
-        for (unsigned i = west.ranks.size(); i-- > 0; )
+        for (unsigned i = west.counts.size(); i-- > 0; )
         {
-          if (west.ranks[i].count > 0)
+          if (west.counts[i] > 0)
           {
-            for (unsigned j = 0; j < west.ranks[i].count; j++)
+            for (unsigned j = 0; j < west.counts[i]; j++)
               s += to_string(i);
           }
         }
         s += ", E " + to_string(east.len) + ": ";
-        for (unsigned i = east.ranks.size(); i-- > 0; )
+        for (unsigned i = east.counts.size(); i-- > 0; )
         {
-          if (east.ranks[i].count > 0)
+          if (east.counts[i] > 0)
           {
-            for (unsigned j = 0; j < east.ranks[i].count; j++)
+            for (unsigned j = 0; j < east.counts[i]; j++)
               s += to_string(i);
           }
         }
@@ -118,7 +102,7 @@ class Distribution
     void setRanks(
       const unsigned cards,
       const unsigned holding2,
-      vector<RankEntry>& oppsReducedRank,
+      vector<unsigned>& oppsReducedRank,
       unsigned& len);
 
     void mirror(
@@ -144,7 +128,7 @@ class Distribution
       const unsigned holding2); // Binary, not trinary format
 
     string rank2str(
-      const vector<RankEntry>& ranks,
+      const vector<unsigned>& counts,
       const vector<string>& names) const;
 
     string str() const;
