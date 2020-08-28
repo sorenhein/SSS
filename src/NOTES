@@ -3,12 +3,6 @@ Is there a way to use a vector rather than a list after all?
 
 Make histogram of distribution counts in order to choose chunk size.
 
-Make binomial and names global and only calculated once.
-- names are a vector, one vector for each rankSize.
-
-* Distribution: A single card is output as its name, H only applies to
-  multi-card ranks
-* Distribution code is a mess.  Some may go in Ranks, too
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 

@@ -1,22 +1,34 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <list>
 #include <algorithm>
+#include <utility>
 #include <cassert>
 
 #include "Distribution.h"
 #include "const.h"
 
+
 #define CHUNK_SIZE 50
 
 const string genericNames = "HhGgIiJj";
+
+once_flag onceFlag;
+vector<vector<unsigned>> binomial;
+vector<vector<char>> names;
 
 
 Distribution::Distribution()
 {
   Distribution::reset();
-  Distribution::setBinomial();
+
+  // https://stackoverflow.com/questions/8412630/
+  // how-to-execute-a-piece-of-code-only-once
+  if (static auto called = false; ! exchange(called, true))
+  {
+    Distribution::setBinomial();
+    Distribution::setNames();
+  }
 }
 
 
@@ -44,6 +56,22 @@ void Distribution::setBinomial()
     binomial[n][n] = 1;
     for (unsigned k = 1; k < n; k++)
       binomial[n][k] = binomial[n-1][k] + binomial[n-1][k-1];
+  }
+}
+
+
+void Distribution::setNames()
+{
+  const unsigned maxNumRanks = (MAX_CARDS+1) / 2;
+  names.resize(maxNumRanks+1);
+
+  for (unsigned numRanks = 1; numRanks < names.size(); numRanks++)
+  {
+    vector<char>& vec = names[numRanks];
+    vec.resize(numRanks);
+    vec[0] = 'x';
+    for (unsigned rank = 1; rank < numRanks; rank++)
+      vec[rank] = genericNames.at(numRanks-rank-1);
   }
 }
 
@@ -235,17 +263,19 @@ string Distribution::str() const
   if (distributions.empty())
     return "No distributions\n";
 
+  /*
   vector<char> names(rankSize);
   names[0] = 'x';
   for (unsigned rank = 1; rank < rankSize; rank++)
     names[rank] = genericNames.at(rankSize-rank-1);
+    */
 
   stringstream ss;
   for (unsigned d = 0; d < distributions.size(); d++)
   {
     ss << 
-      setw(8) << distributions[d].west.str(names) <<
-      setw(8) << distributions[d].east.str(names) <<
+      setw(8) << distributions[d].west.str(names[rankSize]) <<
+      setw(8) << distributions[d].east.str(names[rankSize]) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();

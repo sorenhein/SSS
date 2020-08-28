@@ -121,15 +121,14 @@ class Distribution
     vector<unsigned> reduced2full;
     unsigned rankSize; // Reduced ranks
 
-    vector<vector<unsigned>> binomial;
-
     SideInfo opponents;
 
     vector<DistInfo> distributions;
 
 
-
     void setBinomial();
+
+    void setNames();
 
     void shrink(
       const unsigned maxFullRank,
