@@ -1,3 +1,16 @@
+struct SideInfo (ranks + len), len autom 0 on alloc.
+StackInfo uses 1, DistInfo uses 2
+Has a method add(rankReduced, count, factor)
+DistInfo has method complete (east), doesn't need that much init
+When DistInfo west gets set, it has been add() before and is just
+  copied over
+No longer make oppsRankFull
+Reduce size of arrays
+Stack and Dist can share some output through SideInfo?
+Is there a way to use a vector rather than a list after all?
+Check with an old holding AKT / xxx or so.
+Make histogram of distribution counts in order to choose chunk size.
+
 StackInfo
 * reset() automatically
 * update(StackInfo&, r, factor)
@@ -12,7 +25,6 @@ DistInfo
 * Distribution: A single card is output as its name, H only applies to
   multi-card ranks
 * Distribution code is a mess.  Some may go in Ranks, too
-* Make Distributions, using holding2 (binary, not trinary)
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 
@@ -33,4 +45,3 @@ DistInfo
 
 
 
-Make histogram of distribution counts in order to choose chunk size.

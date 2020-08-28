@@ -26,10 +26,15 @@ class Distribution
       }
     };
 
+    struct SideInfo
+    {
+      vector<RankEntry> ranks;
+      unsigned len; // Sum of rank counts
+    };
+
     struct StackInfo
     {
-      vector<RankEntry> ranks; // For a single player (West)
-      unsigned len; // Number of cards in ranks
+      SideInfo west;
       unsigned seen; // Number of EW cards already seen
       unsigned rankNext;
       unsigned cases; // Combinatorial count

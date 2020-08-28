@@ -198,8 +198,8 @@ unsigned Distribution::set(
     stackReduced.emplace_back(StackInfo());
     stackReducedIter = stackReduced.begin();
 
-    stackReducedIter->ranks.resize(rankReducedSize);
-    stackReducedIter->len = 0;
+    stackReducedIter->west.ranks.resize(rankReducedSize);
+    stackReducedIter->west.len = 0;
     stackReducedIter->seen = 0;
     stackReducedIter->rankNext = 0;
     stackReducedIter->cases = 1;
@@ -226,7 +226,7 @@ unsigned Distribution::set(
       const unsigned gap = lenWest - stackFullIter->lenWest;
       const unsigned available = oppsFullRank[rankFullNext];
 
-      assert(stackFullIter->lenWest == stackReducedIter->len);
+      assert(stackFullIter->lenWest == stackReducedIter->west.len);
       assert(oppsFullRank[rankFullNext] == oppsReducedRank[rankReducedNext].count);
 
       for (unsigned r = 0; r <= min(gap, available); r++)
@@ -238,11 +238,11 @@ unsigned Distribution::set(
 
           for (unsigned rred = 0; rred < rankReducedNext; rred++)
           {
-            assert(stackFullIter->west[ stackReducedIter->ranks[rred].rank ] == stackReducedIter->ranks[rred].count);
+            assert(stackFullIter->west[ stackReducedIter->west.ranks[rred].rank ] == stackReducedIter->west.ranks[rred].count);
 
           }
 
-          assert(stackFullIter->lenWest == stackReducedIter->len);
+          assert(stackFullIter->lenWest == stackReducedIter->west.len);
           assert(stackFullIter->cases == stackReducedIter->cases);
 
           distributions[distIndex] = * stackFullIter;
@@ -273,11 +273,11 @@ unsigned Distribution::set(
 
           stackReducedIter = stackReduced.insert(stackReducedIter, * stackReducedIter);
           auto stackReducedInserted = next(stackReducedIter);
-          stackReducedInserted->ranks[rankReducedNext].rank =
+          stackReducedInserted->west.ranks[rankReducedNext].rank =
             oppsReducedRank[rankReducedNext].rank;
 
-          stackReducedInserted->ranks[rankReducedNext].count = r;
-          stackReducedInserted->len += r;
+          stackReducedInserted->west.ranks[rankReducedNext].count = r;
+          stackReducedInserted->west.len += r;
           stackReducedInserted->rankNext = rankReducedNext+1;
           stackReducedInserted->cases *= binomial[available][r];
         }
