@@ -18,6 +18,14 @@ class Distribution
       vector<unsigned> counts; // For each (reduced) rank
       unsigned len; // Sum of rank counts
 
+      void reset(const unsigned ranks)
+      {
+        counts.resize(ranks);
+        for (unsigned rank = 0; rank < ranks; rank++)
+          counts[rank] = 0;
+        len = 0;
+      }
+
       void diff(
         const SideInfo& side1,
         const SideInfo& side2)
@@ -31,19 +39,14 @@ class Distribution
     struct StackInfo
     {
       SideInfo west;
-      unsigned seen; // Number of EW cards already seen
-      unsigned rankNext;
       unsigned cases; // Combinatorial count
 
-      StackInfo(unsigned cards = 0)
+      unsigned seen; // Number of EW cards already seen
+      unsigned rankNext;
+
+      StackInfo(const unsigned ranks)
       {
-        if (cards)
-        {
-          west.counts.resize(cards);
-          for (unsigned r = 0; r < cards; r++)
-            west.counts[r] = 0;
-        }
-        west.len = 0;
+        west.reset(ranks);
         cases = 1;
       }
 
