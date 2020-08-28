@@ -179,8 +179,6 @@ unsigned Distribution::set(
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
 
-  unsigned rankReducedNext; // Next one to write
-
   // Only do the first half and then mirror the other lengths.
   const unsigned lenMid = opponents.len / 2;
 
@@ -199,12 +197,12 @@ unsigned Distribution::set(
     while (! stack.empty())
     {
       stackIter = stack.begin();
-      rankReducedNext = stackIter->rankNext;
+      const unsigned rank = stackIter->rankNext; // Next to write
 
-      stackIter->seen += opponents.counts[rankReducedNext];
+      stackIter->seen += opponents.counts[rank];
 
       const unsigned gap = lenWest - stackIter->west.len;
-      const unsigned available = opponents.counts[rankReducedNext];
+      const unsigned available = opponents.counts[rank];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -213,11 +211,11 @@ unsigned Distribution::set(
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
-          distributions[distIndex].west = stackIter->west;
+          DistInfo& dist = distributions[distIndex];
 
-          distributions[distIndex].add(rankReducedNext, r, binomial[available][r]);
-
-          distributions[distIndex].east.diff(opponents, distributions[distIndex].west);
+          dist.west = stackIter->west;
+          dist.add(rank, r, binomial[available][r]);
+          dist.east.diff(opponents, dist.west);
 
           distIndex++;
           break;
@@ -231,7 +229,7 @@ unsigned Distribution::set(
           stackIter = stack.insert(stackIter, * stackIter);
           auto stackInserted = next(stackIter);
 
-          stackInserted->add(rankReducedNext, r, binomial[available][r]);
+          stackInserted->add(rank, r, binomial[available][r]);
         }
       }
       stack.pop_front();
