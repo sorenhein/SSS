@@ -48,42 +48,24 @@ void Distribution::setBinomial()
 }
 
 
-void Distribution::mirror(
-  const unsigned len, 
-  const unsigned lenMid,
-  unsigned& distIndex)
+void Distribution::shrink(
+  const unsigned maxFullRank,
+  const unsigned maxReducedRank)
 {
-  // Go backwards from one past the first element to mirror.
-  unsigned dtop;
-  if (len & 1)
-    dtop = distIndex;
+  if (opponents.len > 0)
+  {
+    rankSize = maxReducedRank + 1;
+    full2reduced.resize(maxFullRank+1);
+    reduced2full.resize(rankSize);
+    opponents.counts.resize(rankSize);
+  }
   else
   {
-    dtop = distIndex;
-    while (dtop >= 1 && distributions[dtop-1].west.len == lenMid)
-      dtop--;
-    assert(dtop > 0 && distributions[dtop-1].west.len + 1 == lenMid);
+    rankSize = 0;
+    full2reduced.clear();
+    reduced2full.clear();
+    opponents.counts.clear();
   }
-
-  DistInfo * oldDist;
-  DistInfo * newDist;
-
-  for (unsigned d = dtop; d-- > 0; )
-  {
-    if (distIndex == distributions.size())
-      distributions.resize(distributions.size() + CHUNK_SIZE);
-
-    oldDist = &distributions[d];
-    newDist = &distributions[distIndex++];
-
-    newDist->west = oldDist->east;
-    newDist->east = oldDist->west;
-    newDist->west.len = oldDist->east.len;
-    newDist->east.len = oldDist->west.len;
-    newDist->cases = oldDist->cases;
-  }
-
-  distributions.resize(distIndex); // Shrink to fit
 }
 
 
@@ -148,20 +130,42 @@ void Distribution::setRanks(
 
 
   // Shrink to fit.
-  if (opponents.len > 0)
-  {
-    rankSize = maxReducedRank + 1;
-    full2reduced.resize(maxFullRank+1);
-    reduced2full.resize(rankSize);
-    opponents.counts.resize(rankSize);
-  }
+  Distribution::shrink(maxFullRank, maxReducedRank);
+}
+
+
+void Distribution::mirror(unsigned& distIndex)
+{
+  // Go backwards from one past the first element to mirror.
+  unsigned dtop;
+  if (opponents.len & 1)
+    dtop = distIndex;
   else
   {
-    rankSize = 0;
-    full2reduced.clear();
-    reduced2full.clear();
-    opponents.counts.clear();
+    const unsigned lenMid = opponents.len / 2;
+    dtop = distIndex;
+    while (dtop >= 1 && distributions[dtop-1].west.len == lenMid)
+      dtop--;
+    assert(dtop > 0 && distributions[dtop-1].west.len + 1 == lenMid);
   }
+
+  DistInfo * oldDist;
+  DistInfo * newDist;
+
+  for (unsigned d = dtop; d-- > 0; )
+  {
+    if (distIndex == distributions.size())
+      distributions.resize(distributions.size() + CHUNK_SIZE);
+
+    oldDist = &distributions[d];
+    newDist = &distributions[distIndex++];
+
+    newDist->west = oldDist->east;
+    newDist->east = oldDist->west;
+    newDist->cases = oldDist->cases;
+  }
+
+  distributions.resize(distIndex); // Shrink to fit
 }
 
 
@@ -174,65 +178,54 @@ unsigned Distribution::set(
     return 1;
 
   list<StackInfo> stack; // Unfinished expansions
-  list<StackInfo>::iterator stackIter;
 
   distributions.resize(CHUNK_SIZE);
-  unsigned distIndex = 0; // Next one to write
+  unsigned distIndex = 0; // Position of next result to write
 
   // Only do the first half and then mirror the other lengths.
-  const unsigned lenMid = opponents.len / 2;
-
-  for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
+  for (unsigned lenWest = 0; lenWest <= opponents.len / 2; lenWest++)
   {
-    assert(stack.empty());
     stack.emplace_back(StackInfo(rankSize));
-    stackIter = stack.begin();
 
     while (! stack.empty())
     {
-      stackIter = stack.begin();
+      auto stackIter = stack.begin();
       const unsigned rank = stackIter->rankNext; // Next to write
-
-      stackIter->seen += opponents.counts[rank];
-
       const unsigned gap = lenWest - stackIter->west.len;
       const unsigned available = opponents.counts[rank];
+      stackIter->seen += available;
 
-      for (unsigned r = 0; r <= min(gap, available); r++)
+      for (unsigned count = 0; count <= min(gap, available); count++)
       {
-        if (r == gap)
+        if (count == gap)
         {
+          // Store the result.
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackIter->west;
-          dist.add(rank, r, binomial[available][r]);
+          dist.add(rank, count, binomial[available][count]);
           dist.east.diff(opponents, dist.west);
 
           distIndex++;
           break;
         }
-        else if (r + opponents.len >= gap + stackIter->seen)
+        else if (count + opponents.len >= gap + stackIter->seen)
         {
-          // Can still reach our goal of lenWest cards.
-          // Continue the "recursion".  They will end up in reverse
-          // rank order.
-
+          // Can still reach our goal of lenWest cards:
+          // We have opponents.len - stackIter->seen cards still to come.
+          // We have gap - count holes still to fill.
           stackIter = stack.insert(stackIter, * stackIter);
-          auto stackInserted = next(stackIter);
-
-          stackInserted->add(rank, r, binomial[available][r]);
+          next(stackIter)->add(rank, count, binomial[available][count]);
         }
       }
       stack.pop_front();
     }
   }
 
-  assert(distIndex > 0);
-
-  Distribution::mirror(opponents.len, lenMid, distIndex);
+  Distribution::mirror(distIndex);
   return distIndex;
 }
 

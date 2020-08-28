@@ -135,14 +135,15 @@ class Distribution
 
     void setBinomial();
 
+    void shrink(
+      const unsigned maxFullRank,
+      const unsigned maxReducedRank);
+
     void setRanks(
       const unsigned cards,
       const unsigned holding2);
 
-    void mirror(
-      const unsigned len,
-      const unsigned lenMid,
-      unsigned& distIndex);
+    void mirror(unsigned& distIndex);
 
     string strStack(const list<DistInfo>& stack) const;
 
