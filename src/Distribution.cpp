@@ -90,12 +90,14 @@ void Distribution::mirror(
 void Distribution::setRanks(
   const unsigned cards,
   const unsigned holding2,
-  vector<unsigned>& oppsFullRank,
   vector<RankEntry>& oppsReducedRank,
   unsigned& len)
 {
-  oppsFullRank.resize(cards);
+  // We go with a minimal representation of East-West in terms of ranks,
+  // so the rank numbers will be smaller.  We keep a correspondence
+  // back and forth with the outside world.
   full2reduced.resize(cards);
+  reduced2full.resize(cards);
 
   oppsReducedRank.resize(cards); // Can be reduced to about half
   
@@ -134,10 +136,11 @@ void Distribution::setRanks(
       if (prev_is_NS)
         nextFullRank++;
 
-      oppsFullRank[nextFullRank]++;
-
       oppsReducedRank[nextReducedRank].rank = nextFullRank;
       oppsReducedRank[nextReducedRank].count++;
+
+      full2reduced[nextFullRank] = nextReducedRank;
+      reduced2full[nextReducedRank] = nextFullRank;
 
       maxFullRank = nextFullRank;
       maxReducedRank = nextReducedRank;
@@ -150,8 +153,9 @@ void Distribution::setRanks(
   // Shrink to fit.
   if (len > 0)
   {
-    oppsFullRank.resize(maxFullRank+1);
     oppsReducedRank.resize(maxReducedRank+1);
+    full2reduced.resize(maxFullRank+1);
+    reduced2full.resize(maxReducedRank+1);
   }
 }
 
@@ -160,10 +164,9 @@ unsigned Distribution::set(
   const unsigned cards,
   const unsigned holding2)
 {
-  vector<unsigned> oppsFullRank;
   vector<RankEntry> oppsReducedRank;
   unsigned len;
-  Distribution::setRanks(cards, holding2, oppsFullRank, oppsReducedRank, len);
+  Distribution::setRanks(cards, holding2, oppsReducedRank, len);
 
   if (len == 0)
     return 1;

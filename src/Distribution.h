@@ -14,6 +14,7 @@ class Distribution
   private:
 
     vector<unsigned> full2reduced;
+    vector<unsigned> reduced2full;
 
     struct RankEntry
     {
@@ -117,7 +118,6 @@ class Distribution
     void setRanks(
       const unsigned cards,
       const unsigned holding2,
-      vector<unsigned>& oppsFullRank,
       vector<RankEntry>& oppsReducedRank,
       unsigned& len);
 
