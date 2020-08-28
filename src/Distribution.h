@@ -17,6 +17,15 @@ class Distribution
     {
       vector<unsigned> counts; // For each (reduced) rank
       unsigned len; // Sum of rank counts
+
+      void diff(
+        const SideInfo& side1,
+        const SideInfo& side2)
+      {
+        for (unsigned rank = 0; rank < side1.counts.size(); rank++)
+          counts[rank] = side1.counts[rank] - side2.counts[rank];
+        len = side1.len - side2.len;
+      }
     };
 
     struct StackInfo
@@ -91,6 +100,7 @@ class Distribution
 
     vector<unsigned> full2reduced;
     vector<unsigned> reduced2full;
+    unsigned rankSize; // Reduced ranks
     SideInfo opponents;
 
     vector<vector<unsigned>> binomial;

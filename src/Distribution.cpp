@@ -146,15 +146,18 @@ void Distribution::setRanks(
     h >>= 1;
   }
 
+
   // Shrink to fit.
   if (opponents.len > 0)
   {
+    rankSize = maxReducedRank + 1;
     full2reduced.resize(maxFullRank+1);
-    reduced2full.resize(maxReducedRank+1);
-    opponents.counts.resize(maxReducedRank+1);
+    reduced2full.resize(rankSize);
+    opponents.counts.resize(rankSize);
   }
   else
   {
+    rankSize = 0;
     full2reduced.clear();
     reduced2full.clear();
     opponents.counts.clear();
@@ -176,22 +179,18 @@ unsigned Distribution::set(
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
 
-  const unsigned rankReducedSize = opponents.counts.size();
   unsigned rankReducedNext; // Next one to write
 
-  // Only do the first half and then mirror the other lengths
-  // (optimization).
-  // TODO Just len/2 ?
-  // const unsigned lenMid = ((len & 1) ? (len-1)/2 : len/2);
+  // Only do the first half and then mirror the other lengths.
   const unsigned lenMid = opponents.len / 2;
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
     assert(stackReduced.empty());
-    stackReduced.emplace_back(StackInfo(rankReducedSize));
+    stackReduced.emplace_back(StackInfo(rankSize));
     stackReducedIter = stackReduced.begin();
 
-    stackReducedIter->west.counts.resize(rankReducedSize);
+    stackReducedIter->west.counts.resize(rankSize);
     stackReducedIter->west.len = 0;
     stackReducedIter->seen = 0;
     stackReducedIter->rankNext = 0;
@@ -214,8 +213,8 @@ unsigned Distribution::set(
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
-          distributions[distIndex].west.counts.resize(rankReducedSize);
-          distributions[distIndex].east.counts.resize(rankReducedSize);
+          distributions[distIndex].west.counts.resize(rankSize);
+          distributions[distIndex].east.counts.resize(rankSize);
 
           distributions[distIndex].west = stackReducedIter->west;
           distributions[distIndex].west.counts[rankReducedNext] = r;
@@ -224,12 +223,7 @@ unsigned Distribution::set(
           distributions[distIndex].cases =
             stackReducedIter->cases * binomial[available][r];
             
-          distributions[distIndex].east.len = opponents.len - distributions[distIndex].west.len;
-          for (unsigned rr = 0; rr < rankReducedSize; rr++)
-          {
-            distributions[distIndex].east.counts[rr] = 
-              opponents.counts[rr] - distributions[distIndex].west.counts[rr];
-          }
+          distributions[distIndex].east.diff(opponents, distributions[distIndex].west);
 
           distIndex++;
           break;
