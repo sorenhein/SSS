@@ -89,17 +89,14 @@ void Distribution::mirror(
 
 void Distribution::setRanks(
   const unsigned cards,
-  const unsigned holding2,
-  vector<unsigned>& oppsReducedRank,
-  unsigned& len)
+  const unsigned holding2)
 {
   // We go with a minimal representation of East-West in terms of ranks,
   // so the rank numbers will be smaller.  We keep a correspondence
   // back and forth with the outside world.
   full2reduced.resize(cards);
   reduced2full.resize(cards);
-
-  oppsReducedRank.resize(cards); // Can be reduced to about half
+  opponents.counts.resize(cards);
   
   bool prev_is_NS = ((holding2 & 1) == CONVERT_NS);
 
@@ -114,7 +111,7 @@ void Distribution::setRanks(
   unsigned maxReducedRank = 0;
 
   unsigned h = holding2;
-  len = 0;
+  opponents.len = 0;
 
   // We could use a more compact rank format, but we want to have the
   // same rank numbers as in Combination.
@@ -136,25 +133,31 @@ void Distribution::setRanks(
       if (prev_is_NS)
         nextFullRank++;
 
-      oppsReducedRank[nextReducedRank]++;
-
       full2reduced[nextFullRank] = nextReducedRank;
       reduced2full[nextReducedRank] = nextFullRank;
+      opponents.counts[nextReducedRank]++;
+      opponents.len++;
 
       maxFullRank = nextFullRank;
       maxReducedRank = nextReducedRank;
-      len++;
+
       prev_is_NS = false;
     }
     h >>= 1;
   }
 
   // Shrink to fit.
-  if (len > 0)
+  if (opponents.len > 0)
   {
-    oppsReducedRank.resize(maxReducedRank+1);
     full2reduced.resize(maxFullRank+1);
     reduced2full.resize(maxReducedRank+1);
+    opponents.counts.resize(maxReducedRank+1);
+  }
+  else
+  {
+    full2reduced.clear();
+    reduced2full.clear();
+    opponents.counts.clear();
   }
 }
 
@@ -163,12 +166,8 @@ unsigned Distribution::set(
   const unsigned cards,
   const unsigned holding2)
 {
-  // TODO Turn these two into a SideInfo
-  vector<unsigned> oppsReducedRank;
-  unsigned len;
-  Distribution::setRanks(cards, holding2, oppsReducedRank, len);
-
-  if (len == 0)
+  Distribution::setRanks(cards, holding2);
+  if (opponents.len == 0)
     return 1;
 
   list<StackInfo> stackReduced; // Unfinished expansions
@@ -177,13 +176,14 @@ unsigned Distribution::set(
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
 
-  const unsigned rankReducedSize = oppsReducedRank.size();
+  const unsigned rankReducedSize = opponents.counts.size();
   unsigned rankReducedNext; // Next one to write
 
   // Only do the first half and then mirror the other lengths
   // (optimization).
   // TODO Just len/2 ?
-  const unsigned lenMid = ((len & 1) ? (len-1)/2 : len/2);
+  // const unsigned lenMid = ((len & 1) ? (len-1)/2 : len/2);
+  const unsigned lenMid = opponents.len / 2;
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
@@ -202,10 +202,10 @@ unsigned Distribution::set(
       stackReducedIter = stackReduced.begin();
       rankReducedNext = stackReducedIter->rankNext;
 
-      stackReducedIter->seen += oppsReducedRank[rankReducedNext];
+      stackReducedIter->seen += opponents.counts[rankReducedNext];
 
       const unsigned gap = lenWest - stackReducedIter->west.len;
-      const unsigned available = oppsReducedRank[rankReducedNext];
+      const unsigned available = opponents.counts[rankReducedNext];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
       {
@@ -224,17 +224,17 @@ unsigned Distribution::set(
           distributions[distIndex].cases =
             stackReducedIter->cases * binomial[available][r];
             
-          distributions[distIndex].east.len = len - distributions[distIndex].west.len;
+          distributions[distIndex].east.len = opponents.len - distributions[distIndex].west.len;
           for (unsigned rr = 0; rr < rankReducedSize; rr++)
           {
             distributions[distIndex].east.counts[rr] = 
-              oppsReducedRank[rr] - distributions[distIndex].west.counts[rr];
+              opponents.counts[rr] - distributions[distIndex].west.counts[rr];
           }
 
           distIndex++;
           break;
         }
-        else if (r + len >= gap + stackReducedIter->seen)
+        else if (r + opponents.len >= gap + stackReducedIter->seen)
         {
           // Can still reach our goal of lenWest cards.
           // Continue the "recursion".  They will end up in reverse
@@ -255,7 +255,7 @@ unsigned Distribution::set(
 
   assert(distIndex > 0);
 
-  Distribution::mirror(len, lenMid, distIndex);
+  Distribution::mirror(opponents.len, lenMid, distIndex);
   return distIndex;
 }
 

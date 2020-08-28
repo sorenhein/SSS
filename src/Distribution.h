@@ -13,9 +13,6 @@ class Distribution
 {
   private:
 
-    vector<unsigned> full2reduced;
-    vector<unsigned> reduced2full;
-
     struct SideInfo
     {
       vector<unsigned> counts; // For each (reduced) rank
@@ -92,18 +89,21 @@ class Distribution
       }
     };
 
+    vector<unsigned> full2reduced;
+    vector<unsigned> reduced2full;
+    SideInfo opponents;
+
     vector<vector<unsigned>> binomial;
 
     vector<DistInfo> distributions;
+
 
 
     void setBinomial();
 
     void setRanks(
       const unsigned cards,
-      const unsigned holding2,
-      vector<unsigned>& oppsReducedRank,
-      unsigned& len);
+      const unsigned holding2);
 
     void mirror(
       const unsigned len,
