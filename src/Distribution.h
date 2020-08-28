@@ -26,6 +26,14 @@ class Distribution
         len = 0;
       }
 
+      void add(
+        const unsigned rank,
+        const unsigned count)
+      {
+        counts[rank] = count;
+        len += count;
+      }
+
       void diff(
         const SideInfo& side1,
         const SideInfo& side2)
@@ -50,6 +58,15 @@ class Distribution
         cases = 1;
       }
 
+      void add(
+        const unsigned rank,
+        const unsigned count,
+        const unsigned factor)
+      {
+        west.add(rank, count);
+        rankNext++;
+        cases *= factor;
+      }
     };
 
     struct DistInfo

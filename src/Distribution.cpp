@@ -237,10 +237,7 @@ unsigned Distribution::set(
           stackReducedIter = stackReduced.insert(stackReducedIter, * stackReducedIter);
           auto stackReducedInserted = next(stackReducedIter);
 
-          stackReducedInserted->west.counts[rankReducedNext] = r;
-          stackReducedInserted->west.len += r;
-          stackReducedInserted->rankNext = rankReducedNext+1;
-          stackReducedInserted->cases *= binomial[available][r];
+          stackReducedInserted->add(rankReducedNext, r, binomial[available][r]);
         }
       }
       stackReduced.pop_front();
