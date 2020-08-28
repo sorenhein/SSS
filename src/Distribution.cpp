@@ -188,12 +188,6 @@ unsigned Distribution::set(
     stack.emplace_back(StackInfo(rankSize));
     stackIter = stack.begin();
 
-    stackIter->west.counts.resize(rankSize);
-    stackIter->west.len = 0;
-    stackIter->seen = 0;
-    stackIter->rankNext = 0;
-    stackIter->cases = 1;
-
     while (! stack.empty())
     {
       stackIter = stack.begin();

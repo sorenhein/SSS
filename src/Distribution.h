@@ -58,6 +58,9 @@ class Distribution
       {
         west.reset(ranks);
         cases = 1;
+
+        seen = 0;
+        rankNext = 0;
       }
 
       void add(
