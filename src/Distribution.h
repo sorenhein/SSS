@@ -38,6 +38,8 @@ class Distribution
         const SideInfo& side1,
         const SideInfo& side2)
       {
+        counts.resize(side1.counts.size());
+
         for (unsigned rank = 0; rank < side1.counts.size(); rank++)
           counts[rank] = side1.counts[rank] - side2.counts[rank];
         len = side1.len - side2.len;
@@ -75,21 +77,20 @@ class Distribution
       SideInfo east;
       unsigned cases; // Combinatorial count
 
-      DistInfo(unsigned cards = 0)
+      DistInfo()
       {
-        if (cards)
-        {
-          west.counts.resize(cards);
-          east.counts.resize(cards);
-          for (unsigned r = 0; r < cards; r++)
-          {
-            west.counts[r] = 0;
-            east.counts[r] = 0;
-          }
-        }
         west.len = 0;
         east.len = 0;
         cases = 1;
+      }
+
+      void add(
+        const unsigned rank,
+        const unsigned count,
+        const unsigned factor)
+      {
+        west.add(rank, count);
+        cases *= factor;
       }
 
       string str() const

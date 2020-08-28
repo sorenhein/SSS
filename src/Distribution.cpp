@@ -173,8 +173,8 @@ unsigned Distribution::set(
   if (opponents.len == 0)
     return 1;
 
-  list<StackInfo> stackReduced; // Unfinished expansions
-  list<StackInfo>::iterator stackReducedIter;
+  list<StackInfo> stack; // Unfinished expansions
+  list<StackInfo>::iterator stackIter;
 
   distributions.resize(CHUNK_SIZE);
   unsigned distIndex = 0; // Next one to write
@@ -186,24 +186,24 @@ unsigned Distribution::set(
 
   for (unsigned lenWest = 0; lenWest <= lenMid; lenWest++)
   {
-    assert(stackReduced.empty());
-    stackReduced.emplace_back(StackInfo(rankSize));
-    stackReducedIter = stackReduced.begin();
+    assert(stack.empty());
+    stack.emplace_back(StackInfo(rankSize));
+    stackIter = stack.begin();
 
-    stackReducedIter->west.counts.resize(rankSize);
-    stackReducedIter->west.len = 0;
-    stackReducedIter->seen = 0;
-    stackReducedIter->rankNext = 0;
-    stackReducedIter->cases = 1;
+    stackIter->west.counts.resize(rankSize);
+    stackIter->west.len = 0;
+    stackIter->seen = 0;
+    stackIter->rankNext = 0;
+    stackIter->cases = 1;
 
-    while (! stackReduced.empty())
+    while (! stack.empty())
     {
-      stackReducedIter = stackReduced.begin();
-      rankReducedNext = stackReducedIter->rankNext;
+      stackIter = stack.begin();
+      rankReducedNext = stackIter->rankNext;
 
-      stackReducedIter->seen += opponents.counts[rankReducedNext];
+      stackIter->seen += opponents.counts[rankReducedNext];
 
-      const unsigned gap = lenWest - stackReducedIter->west.len;
+      const unsigned gap = lenWest - stackIter->west.len;
       const unsigned available = opponents.counts[rankReducedNext];
 
       for (unsigned r = 0; r <= min(gap, available); r++)
@@ -213,34 +213,28 @@ unsigned Distribution::set(
           if (distIndex == distributions.size())
             distributions.resize(distributions.size() + CHUNK_SIZE);
 
-          distributions[distIndex].west.counts.resize(rankSize);
-          distributions[distIndex].east.counts.resize(rankSize);
+          distributions[distIndex].west = stackIter->west;
 
-          distributions[distIndex].west = stackReducedIter->west;
-          distributions[distIndex].west.counts[rankReducedNext] = r;
-          distributions[distIndex].west.len =
-            stackReducedIter->west.len + r;
-          distributions[distIndex].cases =
-            stackReducedIter->cases * binomial[available][r];
-            
+          distributions[distIndex].add(rankReducedNext, r, binomial[available][r]);
+
           distributions[distIndex].east.diff(opponents, distributions[distIndex].west);
 
           distIndex++;
           break;
         }
-        else if (r + opponents.len >= gap + stackReducedIter->seen)
+        else if (r + opponents.len >= gap + stackIter->seen)
         {
           // Can still reach our goal of lenWest cards.
           // Continue the "recursion".  They will end up in reverse
           // rank order.
 
-          stackReducedIter = stackReduced.insert(stackReducedIter, * stackReducedIter);
-          auto stackReducedInserted = next(stackReducedIter);
+          stackIter = stack.insert(stackIter, * stackIter);
+          auto stackInserted = next(stackIter);
 
-          stackReducedInserted->add(rankReducedNext, r, binomial[available][r]);
+          stackInserted->add(rankReducedNext, r, binomial[available][r]);
         }
       }
-      stackReduced.pop_front();
+      stack.pop_front();
     }
   }
 
