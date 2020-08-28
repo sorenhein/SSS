@@ -38,54 +38,67 @@ class Distribution
       unsigned seen; // Number of EW cards already seen
       unsigned rankNext;
       unsigned cases; // Combinatorial count
+
+      StackInfo(unsigned cards = 0)
+      {
+        if (cards)
+        {
+          west.ranks.resize(cards);
+          for (unsigned r = 0; r < cards; r++)
+          {
+            west.ranks[r].rank = r;
+            west.ranks[r].count = 0;
+          }
+        }
+        west.len = 0;
+        cases = 1;
+      }
+
     };
 
     struct DistInfo
     {
-      vector<unsigned> west; // Ranks
-      vector<unsigned> east;
-      unsigned lenWest;
-      unsigned lenEast;
-      unsigned used; // Number of E-W cards already seen
-      unsigned rankNext;
+      SideInfo west;
+      SideInfo east;
       unsigned cases; // Combinatorial count
 
       DistInfo(unsigned cards = 0)
       {
         if (cards)
         {
-          west.resize(cards);
-          east.resize(cards);
+          west.ranks.resize(cards);
+          east.ranks.resize(cards);
           for (unsigned r = 0; r < cards; r++)
           {
-            west[r] = 0;
-            east[r] = 0;
+            west.ranks[r].rank = r;
+            west.ranks[r].count = 0;
+            east.ranks[r].rank = r;
+            east.ranks[r].count = 0;
           }
         }
-        lenWest = 0;
-        used = 0;
-        rankNext = 0;
+        west.len = 0;
+        east.len = 0;
         cases = 1;
       }
 
       string str() const
       {
         string s;
-        s = "W " + to_string(lenWest) + ": ";
-        for (unsigned i = west.size(); i-- > 0; )
+        s = "W " + to_string(west.len) + ": ";
+        for (unsigned i = west.ranks.size(); i-- > 0; )
         {
-          if (west[i] > 0)
+          if (west.ranks[i].count > 0)
           {
-            for (unsigned j = 0; j < west[i]; j++)
+            for (unsigned j = 0; j < west.ranks[i].count; j++)
               s += to_string(i);
           }
         }
-        s += ", E " + to_string(lenEast) + ": ";
-        for (unsigned i = east.size(); i-- > 0; )
+        s += ", E " + to_string(east.len) + ": ";
+        for (unsigned i = east.ranks.size(); i-- > 0; )
         {
-          if (east[i] > 0)
+          if (east.ranks[i].count > 0)
           {
-            for (unsigned j = 0; j < east[i]; j++)
+            for (unsigned j = 0; j < east.ranks[i].count; j++)
               s += to_string(i);
           }
         }
@@ -131,7 +144,7 @@ class Distribution
       const unsigned holding2); // Binary, not trinary format
 
     string rank2str(
-      const vector<unsigned>& ranks,
+      const vector<RankEntry>& ranks,
       const vector<string>& names) const;
 
     string str() const;

@@ -1,4 +1,6 @@
 struct SideInfo (ranks + len), len autom 0 on alloc.
+Don't keep the reduced ranks in RankEntry (so it's just a scalar).
+Instead have global "maps" full->reduced and the other way.
 StackInfo uses 1, DistInfo uses 2
 Has a method add(rankReduced, count, factor)
 DistInfo has method complete (east), doesn't need that much init
