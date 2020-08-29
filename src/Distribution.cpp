@@ -9,9 +9,33 @@
 #include "const.h"
 
 
-#define CHUNK_SIZE 50
-
 const string genericNames = "HhGgIiJj";
+
+// The full size sequence is:
+// http://oeis.org/A000792 (has something to do with partitions)
+// Note that c(n) = 3 * c(n-3) for n >= 4.
+// We make space for about half the worst case for larger n.
+
+const vector<unsigned> CHUNK_SIZE =
+{
+   1, //  0
+   2, //  1
+   3, //  2
+   4, //  3
+   6, //  4
+   9, //  5
+  12, //  6
+  18, //  7
+  27, //  8
+  36, //  9
+  54, // 10
+  54, // 11 (really 81)
+  54, // 12 (really 108)
+  81, // 13 (really 162)
+ 122, // 14 (really 243)
+ 162  // 15 (really 324)
+};
+
 
 once_flag onceFlag;
 vector<vector<unsigned>> binomial;
@@ -180,11 +204,12 @@ void Distribution::mirror(unsigned& distIndex)
   DistInfo * oldDist;
   DistInfo * newDist;
 
+  // Make room if needed.
+  if (distIndex + dtop >= distributions.size())
+    distributions.resize(distIndex + dtop);
+
   for (unsigned d = dtop; d-- > 0; )
   {
-    if (distIndex == distributions.size())
-      distributions.resize(distributions.size() + CHUNK_SIZE);
-
     oldDist = &distributions[d];
     newDist = &distributions[distIndex++];
 
@@ -192,8 +217,6 @@ void Distribution::mirror(unsigned& distIndex)
     newDist->east = oldDist->west;
     newDist->cases = oldDist->cases;
   }
-
-  distributions.resize(distIndex); // Shrink to fit
 }
 
 
@@ -207,7 +230,7 @@ unsigned Distribution::set(
 
   list<StackInfo> stack; // Unfinished expansions
 
-  distributions.resize(CHUNK_SIZE);
+  distributions.resize(CHUNK_SIZE[cards]);
   unsigned distIndex = 0; // Position of next result to write
 
   // Only do the first half and then mirror the other lengths.
@@ -229,7 +252,7 @@ unsigned Distribution::set(
         {
           // Store the result.
           if (distIndex == distributions.size())
-            distributions.resize(distributions.size() + CHUNK_SIZE);
+            distributions.resize(distributions.size() + CHUNK_SIZE[cards]);
 
           DistInfo& dist = distributions[distIndex];
 

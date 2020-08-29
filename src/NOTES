@@ -1,8 +1,6 @@
 Is there a way to use a vector rather than a list after all?
 - Two vectors, actually
 
-Make histogram of distribution counts in order to choose chunk size.
-
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 

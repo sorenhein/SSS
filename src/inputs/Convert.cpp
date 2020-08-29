@@ -73,7 +73,7 @@ bool Convert::cards2holding(
   // First do the non-x cards from the top down.
   for (unsigned j = jmax; j > jmax-cards; j--)
   {
-    assert(j < MAX_CARDS);
+    assert(j <= MAX_CARDS);
     const char nextCard = CARD_NAMES[j-1];
     const char ncard = (nindex >= nlen ? ' ' : north.at(nindex));
     const char scard = (sindex >= slen ? ' ' : south.at(sindex));
