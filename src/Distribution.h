@@ -3,6 +3,7 @@
 
 #include <string>
 #include <list>
+#include <cassert>
 
 #include "struct.h"
 
@@ -65,7 +66,7 @@ class Distribution
       unsigned seen; // Number of EW cards already seen
       unsigned rankNext;
 
-      StackInfo(const unsigned ranks)
+      StackInfo(const unsigned ranks = 0)
       {
         west.reset(ranks);
         cases = 1;
@@ -152,6 +153,10 @@ class Distribution
     unsigned set(
       const unsigned cards,
       const unsigned holding2); // Binary, not trinary format
+
+    unsigned setAlternative(
+      const unsigned cards,
+      const unsigned holding2); // Does the identical thing
 
     string str() const;
 

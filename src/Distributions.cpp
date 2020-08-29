@@ -82,7 +82,7 @@ void Distributions::runUniques(const unsigned cards)
   vector<Distribution>& dists = distributions[cards];
 
   for (unsigned holding = 0; holding < dists.size(); holding++)
-    counts[cards] += dists[holding].set(cards, holding);
+    counts[cards] += dists[holding].setAlternative(cards, holding);
 }
 
 
@@ -105,7 +105,7 @@ void Distributions::runUniqueThread(
     if (holding >= counterMax)
       break;
 
-    threadCounts[thid] += dists[holding].set(cards, holding);
+    threadCounts[thid] += dists[holding].setAlternative(cards, holding);
   }
 }
 

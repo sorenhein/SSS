@@ -204,12 +204,13 @@ void Distribution::mirror(unsigned& distIndex)
   DistInfo * oldDist;
   DistInfo * newDist;
 
-  // Make room if needed.
-  if (distIndex + dtop >= distributions.size())
-    distributions.resize(distIndex + dtop);
+  // Make/shrink room.
+  distributions.resize(distIndex + dtop);
 
   for (unsigned d = dtop; d-- > 0; )
   {
+assert(d < distributions.size());
+assert(distIndex < distributions.size());
     oldDist = &distributions[d];
     newDist = &distributions[distIndex++];
 
@@ -281,17 +282,126 @@ unsigned Distribution::set(
 }
 
 
+unsigned Distribution::setAlternative(
+  const unsigned cards,
+  const unsigned holding2)
+{
+  // I thought it might be faster to have two vectors whose sizes
+  // don't change (much), rather than a list.  But it turns out to
+  // be about the same.  I've left the code in.
+
+  Distribution::setRanks(cards, holding2);
+  if (opponents.len == 0)
+    return 1;
+
+  vector<StackInfo> stack1(CHUNK_SIZE[cards]); // Unfinished expansion
+  vector<StackInfo> stack2(CHUNK_SIZE[cards]); // Unfinished expansion
+
+  vector<StackInfo> * stackRead = &stack1;
+  vector<StackInfo> * stackWrite = &stack2;
+
+  unsigned indexRead = 0; // Next index to read
+  unsigned indexWrite = 0; // Next index to write
+  unsigned countRead = 0;
+
+  distributions.resize(CHUNK_SIZE[cards]);
+  unsigned distIndex = 0; // Position of next result to write
+
+  // Only do the first half and then mirror the other lengths.
+  for (unsigned lenWest = 0; lenWest <= opponents.len / 2; lenWest++)
+  {
+    (*stackRead)[0] = StackInfo(rankSize);
+    indexRead = 0;
+    countRead = 1;
+
+    while (indexRead < countRead)
+    {
+      StackInfo& stackElem = (*stackRead)[indexRead];
+      const unsigned rank = stackElem.rankNext; // Next to write
+      const unsigned gap = lenWest - stackElem.west.len;
+      const unsigned available = (gap == 0 ? 0 : opponents.counts[rank]);
+      stackElem.seen += available;
+
+      unsigned upperPlus1;
+      if (gap <= available)
+      {
+        // Can complete a distribution.
+        if (indexRead == 0)
+        {
+          // Can write it to distributions.
+          if (distIndex == distributions.size())
+            distributions.resize(distributions.size() + CHUNK_SIZE[cards]);
+
+          DistInfo& dist = distributions[distIndex];
+
+          dist.west = stackElem.west;
+          if (gap > 0)
+             dist.add(rank, gap, binomial[available][gap]);
+          dist.east.diff(opponents, dist.west);
+
+          distIndex++;
+        }
+        else
+        {
+          // Must keep it in stackWrite.
+          if (indexWrite == stackWrite->size())
+            stackWrite->resize(stackWrite->size() + CHUNK_SIZE[cards]);
+
+          (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
+          if (gap > 0)
+            (*stackWrite)[indexWrite].add(rank, gap, 
+              binomial[available][gap]);
+
+          indexWrite++;
+        }
+        upperPlus1 = gap;
+      }
+      else
+       upperPlus1 = available + 1;
+
+      unsigned clow;
+      if (gap + stackElem.seen >= opponents.len)
+        clow = gap + stackElem.seen - opponents.len;
+      else
+        clow = 0;
+
+      for (unsigned count = upperPlus1; count-- > clow; )
+      {
+        // Put to stackWrite
+        if (indexWrite == stackWrite->size())
+          stackWrite->resize(stackWrite->size() + CHUNK_SIZE[cards]);
+          
+        (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
+        (*stackWrite)[indexWrite].add(rank, count, 
+          binomial[available][count]);
+        indexWrite++;
+      }
+
+      indexRead++;
+      if (indexRead < countRead)
+        continue;
+      if (indexWrite > 0)
+      {
+        vector<StackInfo> * tmp = stackRead;
+        stackRead = stackWrite;
+        stackWrite = tmp;
+
+        countRead = indexWrite;
+        indexRead = 0;
+        indexWrite = 0;
+      }
+    }
+  }
+
+  Distribution::mirror(distIndex);
+  return distIndex;
+}
+
+
 string Distribution::str() const
 {
   if (distributions.empty())
     return "No distributions\n";
-
-  /*
-  vector<char> names(rankSize);
-  names[0] = 'x';
-  for (unsigned rank = 1; rank < rankSize; rank++)
-    names[rank] = genericNames.at(rankSize-rank-1);
-    */
 
   stringstream ss;
   for (unsigned d = 0; d < distributions.size(); d++)

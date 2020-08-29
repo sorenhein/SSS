@@ -1,6 +1,3 @@
-Is there a way to use a vector rather than a list after all?
-- Two vectors, actually
-
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 

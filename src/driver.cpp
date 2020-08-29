@@ -33,6 +33,11 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
+  // Distribution dist;
+  // dist.set2(6, 45);
+  // cout << dist.str();
+  // exit(0);
+
   // Set up combinations.
 
   combinations.resize(control.cards());
@@ -54,7 +59,7 @@ int main(int argc, char * argv[])
 
   // combinations.tmp(control.cards(), control.holding());
   // Distribution dist;
-  // dist.set(13, 1784);
+  // dist.set(5, 27);
   // cout << dist.str();
   // exit(0);
 
@@ -68,8 +73,8 @@ int main(int argc, char * argv[])
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
-    // distributions.runUniquesMT(cards, control.numThreads());
-    distributions.runUniques(cards);
+    distributions.runUniquesMT(cards, control.numThreads());
+    // distributions.runUniques(cards);
   }
 
   timers.stop(TIMER_DISTRIBUTIONS);
