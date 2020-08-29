@@ -6,6 +6,29 @@
 
 #include "Distributions.h"
 
+// Number of distributions is:
+//
+//   1:       3
+//   2:       8
+//   3:      21
+//   4:      55
+//   5:     144
+//   6:     377
+//   7:     987
+//   8:    2584
+//   9:    6765
+//  10:   17711
+//  11:   46368
+//  12:  121383
+//  13:  317811
+//  14:  832040
+//  15: 2178409
+//
+//  These are Fibonacci numbers.  If f(0) = 1, f(1) = 1, f(2) = 2, ...
+//  then dist(n) = f(2*n+1).
+//  There are a lot of possible interpretations on
+//  http://oeis.org/A001906 and http://oeis.org/A088305.
+
 
 Distributions::Distributions()
 {
