@@ -2,7 +2,7 @@
 #define SSS_RANKS_H
 
 #include <vector>
-#include <map>
+#include <list>
 
 #include "struct.h"
 
@@ -80,8 +80,8 @@ class Ranks
     void setPlaysSide(
       const PositionInfo& leader,
       const PositionInfo& partner,
-      const bool firstFlag,
-      vector<PlayEntry>& plays) const;
+      const SidePosition side,
+      list<PlayEntry>& plays) const;
 
     string strRankInfo(
       const RankInfo& rankInfo,
@@ -103,7 +103,7 @@ class Ranks
       CombEntry& combEntry);
 
     CombinationType setPlays(
-      vector<PlayEntry>& plays,
+      list<PlayEntry>& plays,
       unsigned& terminalValue) const;
 
     string str() const;

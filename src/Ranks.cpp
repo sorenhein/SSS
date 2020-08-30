@@ -270,8 +270,8 @@ bool Ranks::pardOK(
 void Ranks::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
-  const bool firstFlag,
-  vector<PlayEntry>& plays) const
+  const SidePosition side,
+  list<PlayEntry>& plays) const
 {
   UNUSED(plays);
 
@@ -282,7 +282,7 @@ void Ranks::setPlaysSide(
   // higher one, or if they're the same, the first one.
   if (partner.singleRank &&
       (! leader.singleRank || leader.max < partner.max ||
-        (leader.max == partner.max && ! firstFlag)))
+        (leader.max == partner.max && side == SIDE_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
@@ -307,9 +307,30 @@ void Ranks::setPlaysSide(
           if (opps.ranks[lho].count == 1 && lho == rho)
             continue;
           
-          // log the 5 plays
-          // Store trick winner, known E/W voids
-          // Figure out the new holding3 and holding2
+          plays.emplace_back(PlayEntry());
+          PlayEntry& play = plays.back();
+
+          play.side = side;
+          play.lead = lead;
+          play.lho = lho;
+          play.pard = pard;
+          play.rho = rho;
+          play.trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
+          if (side == SIDE_NORTH)
+          {
+            play.knownVoidWest = (rho == 0); // TODO Voids
+            play.knownVoidEast = (lho == 0);
+          }
+          else
+          {
+            play.knownVoidWest = (lho == 0);
+            play.knownVoidEast = (rho == 0);
+          }
+
+          // Figure out the new holding3 and holding2:
+          // Set up 3 help arrays north_played etc.
+          // Figure out the new number of cards (dep. on voids)
+          // Loop over opps - help array
         }
       }
     }
@@ -318,7 +339,7 @@ void Ranks::setPlaysSide(
 
 
 CombinationType Ranks::setPlays(
-  vector<PlayEntry>& plays,
+  list<PlayEntry>& plays,
   unsigned& terminalValue) const
 {
   // If COMB_TRIVIAL, then only terminalValue is set.
@@ -329,8 +350,8 @@ CombinationType Ranks::setPlays(
   if (Ranks::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  Ranks::setPlaysSide(north, south, true, plays);
-  Ranks::setPlaysSide(south, north, false, plays);
+  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);
+  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays);
   return COMB_OTHER;
 }
 
