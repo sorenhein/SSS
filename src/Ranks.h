@@ -38,6 +38,15 @@ class Ranks
         len++;
       }
 
+      void setVoid(const bool flag)
+      {
+        if (flag)
+        {
+          ranks[0].add('-');
+          max = 0;
+        }
+      }
+
       void setSingleRank()
       {
         singleRank = (len >= 1 && min == max);

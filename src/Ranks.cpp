@@ -26,16 +26,16 @@ void Ranks::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
-  // Worst case.  
-  north.ranks.resize(cards); 
-  south.ranks.resize(cards); 
-  opps.ranks.resize(cards); 
+  // Worst case, leaving room for voids at rank 0.
+  north.ranks.resize(cards+1); 
+  south.ranks.resize(cards+1); 
+  opps.ranks.resize(cards+1); 
 
-  for (unsigned card = 0; card < cards; card++)
+  for (unsigned card = 0; card < cards+1; card++)
   {
-    north.ranks[card].cards.resize(cards);
-    south.ranks[card].cards.resize(cards);
-    opps.ranks[card].cards.resize(cards);
+    north.ranks[card].cards.resize(cards+1);
+    south.ranks[card].cards.resize(cards+1);
+    opps.ranks[card].cards.resize(cards+1);
   }
 }
 
@@ -53,7 +53,7 @@ void Ranks::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 0;
+  maxRank = 1; // First non-void rank
 }
 
 
@@ -101,6 +101,10 @@ void Ranks::setRanks(const unsigned holding)
     h /= 3;
   }
 
+  north.setVoid(firstNorth);
+  south.setVoid(firstSouth);
+  opps.setVoid(firstOpps);
+
   north.setSingleRank();
   south.setSingleRank();
   opps.setSingleRank();
@@ -111,7 +115,7 @@ bool Ranks::dominates(
   const vector<RankInfo>& vec1,
   const vector<RankInfo>& vec2) const
 {
-  for (unsigned rank = maxRank+1; rank-- > 0; )
+  for (unsigned rank = maxRank+1; rank-- > 1; ) // Exclude void
   {
     if (vec1[rank].count > vec2[rank].count)
       return true;
@@ -133,7 +137,7 @@ unsigned Ranks::canonical(
 
   canonical2comb.resize(cards > 13 ? cards : 13);
 
-  for (unsigned rank = maxRank+1; rank-- > 0; index++)
+  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
     if (opps.ranks[rank].count)
     {
@@ -177,7 +181,7 @@ void Ranks::canonicalUpdate(
   holding2 = 0;
   unsigned index = (cardsNew > 13 ? 0 : 13-cardsNew);
 
-  for (unsigned rank = maxRank+1; rank-- > 0; index++)
+  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
     if (oppsIn[rank].count)
     {
@@ -452,7 +456,7 @@ string Ranks::str() const
     setw(8) << "Opps" <<  setw(4) << "#" << setw(6) << "cards" << 
     "\n";
 
-  for (unsigned rank = maxRank+1; rank-- > 0; )
+  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     ss <<
       Ranks::strRankInfo(north.ranks[rank], "North") <<
