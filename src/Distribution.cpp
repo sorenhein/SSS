@@ -132,7 +132,7 @@ void Distribution::setRanks(
   reduced2full.resize(cards);
   opponents.counts.resize(cards);
   
-  bool prev_is_NS = ((holding2 & 1) == CONVERT_NS);
+  bool prev_is_NS = ((holding2 & 1) == PAIR_NS);
 
   // The full rank is the rank used in Combinations.
   // East-West might have ranks 1, 3 and 5, for example.
@@ -152,7 +152,7 @@ void Distribution::setRanks(
   for (unsigned i = 0; i < cards; i++)
   {
     const unsigned c = h & 1;
-    if (c == CONVERT_NS)
+    if (c == PAIR_NS)
     {
       if (! prev_is_NS)
       {

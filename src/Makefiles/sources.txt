@@ -1,6 +1,7 @@
 SOURCE_FILES    =                       \
                 driver.cpp              \
                 Ranks.cpp               \
+                Combination.cpp         \
                 Combinations.cpp        \
                 Distribution.cpp        \
                 Distributions.cpp       \

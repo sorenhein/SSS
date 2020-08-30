@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "const.h"
+
 using namespace std;
 
 
@@ -18,6 +20,20 @@ struct CombEntry
   vector<char> canonical2comb;
   // Once we have a Combination, probably
   // Combination * combinationPtr;
+};
+
+struct PlayEntry
+{
+  SidePosition side;
+  int lead;
+  int lho;
+  int pard;
+  int rho;
+  unsigned trickNS;
+  bool knownVoidWest;
+  bool knownVoidEast;
+  unsigned holdingNew3;
+  unsigned holdingNew2;
 };
 
 struct RankInfo

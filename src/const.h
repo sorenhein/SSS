@@ -19,10 +19,24 @@ enum CardPosition
   CONVERT_OPPS = 2
 };
 
+enum PairPosition
+{
+  PAIR_NS = 0,
+  PAIR_EW = 1
+};
+
 enum SidePosition
 {
-  CONVERT_NS = 0,
-  CONVERT_EW = 1
+  SIDE_NORTH = 0,
+  SIDE_SOUTH = 1
+};
+
+enum CombinationType
+{
+  COMB_TRIVIAL = 0,
+  COMB_CONST = 1,
+  COMB_SIMPLE = 2,
+  COMB_OTHER = 3
 };
 
 const unsigned UNSIGNED_NOT_SET = numeric_limits<unsigned>::max();
