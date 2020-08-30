@@ -25,15 +25,40 @@ struct CombEntry
 struct PlayEntry
 {
   SidePosition side;
-  int lead;
-  int lho;
-  int pard;
-  int rho;
+  unsigned lead;
+  unsigned lho;
+  unsigned pard;
+  unsigned rho;
   unsigned trickNS;
   bool knownVoidWest;
   bool knownVoidEast;
   unsigned holdingNew3;
   unsigned holdingNew2;
+
+  void update(
+    const SidePosition sideIn,
+    const unsigned leadIn,
+    const unsigned lhoIn,
+    const unsigned pardIn,
+    const unsigned rhoIn)
+  {
+    side = sideIn;
+    lead = leadIn;
+    lho = lhoIn;
+    pard = pardIn;
+    rho = rhoIn;
+    trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
+    if (side == SIDE_NORTH)
+    {
+      knownVoidWest = (rho == 0);
+      knownVoidEast = (lho == 0);
+    }
+    else
+    {
+      knownVoidWest = (lho == 0);
+      knownVoidEast = (rho == 0);
+    }
+  }
 };
 
 struct RankInfo

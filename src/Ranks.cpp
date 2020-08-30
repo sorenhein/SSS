@@ -22,8 +22,10 @@ Ranks::~Ranks()
 }
 
 
-void Ranks::resize(const unsigned cards)
+void Ranks::resize(const unsigned cardsIn)
 {
+  cards = cardsIn;
+
   // Worst case.  
   north.ranks.resize(cards); 
   south.ranks.resize(cards); 
@@ -55,9 +57,7 @@ void Ranks::clear()
 }
 
 
-void Ranks::setRanks(
-  const unsigned holding,
-  const unsigned cards)
+void Ranks::setRanks(const unsigned holding)
 {
   Ranks::clear();
 
@@ -125,7 +125,6 @@ bool Ranks::dominates(
 unsigned Ranks::canonical(
   const vector<RankInfo>& vec1,
   const vector<RankInfo>& vec2,
-  const unsigned cards,
   vector<char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
@@ -163,23 +162,65 @@ unsigned Ranks::canonical(
 }
 
 
+void Ranks::canonicalUpdate(
+  const vector<RankInfo>& vec1,
+  const vector<RankInfo>& vec2,
+  const vector<RankInfo>& oppsIn,
+  const unsigned cardsNew,
+  unsigned& holding3,
+  unsigned& holding2) const
+{
+  // This is similar to canonical, but (a) doesn't keep track of card
+  // names, and (b) generates both the binary and trinary holdings.
+  // For this purpose vec1 is considered "North".
+  holding3 = 0;
+  holding2 = 0;
+  unsigned index = (cardsNew > 13 ? 0 : 13-cardsNew);
+
+  for (unsigned rank = maxRank+1; rank-- > 0; index++)
+  {
+    if (oppsIn[rank].count)
+    {
+      for (unsigned count = 0; count < oppsIn[rank].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_OPPS;
+        holding2 += holding2 + PAIR_EW;
+      }
+    }
+    else
+    {
+      for (unsigned count = 0; count < vec1[rank].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_NORTH;
+        holding2 += holding2 + PAIR_NS;
+      }
+
+      for (unsigned count = 0; count < vec2[rank].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_SOUTH;
+        holding2 += holding2 + PAIR_NS;
+      }
+    }
+  }
+}
+
+
 void Ranks::set(
   const unsigned holding,
-  const unsigned cards,
   CombEntry& combEntry)
 {
-  Ranks::setRanks(holding, cards);
+  Ranks::setRanks(holding);
 
   combEntry.rotateFlag = ! Ranks::dominates(north.ranks, south.ranks);
   if (combEntry.rotateFlag)
   {
     combEntry.canonicalHolding = Ranks::canonical(south.ranks, north.ranks,
-      cards, combEntry.canonical2comb);
+      combEntry.canonical2comb);
   }
   else
   {
     combEntry.canonicalHolding = Ranks::canonical(north.ranks, south.ranks,
-      cards, combEntry.canonical2comb);
+      combEntry.canonical2comb);
   }
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
@@ -237,12 +278,12 @@ bool Ranks::leadOK(
     if (lead >= partner.max)
     {
       // Again, don't lead a too-high card.
-      return false;;
+      return false;
     }
     else if (lead <= partner.min && lead > leader.min)
     {
       // If partner's lowest card is at least as high, lead lowest.
-      return false;;
+      return false;
     }
   }
   return true;
@@ -267,14 +308,53 @@ bool Ranks::pardOK(
 }
 
 
+void Ranks::updateHoldings(
+  const vector<RankInfo>& vec1,
+  const vector<RankInfo>& vec2,
+  PlayEntry& play) const
+{
+  unsigned cardsNew = cards;
+
+  // The leader always has a card.
+  vector<RankInfo> vec1New = vec1;
+  vec1New[play.lead].count--;
+  cardsNew--;
+
+  vector<RankInfo> vec2New = vec2;
+  if (play.pard > 0)
+  {
+    vec2New[play.pard].count--;
+    cardsNew--;
+  }
+
+  vector<RankInfo> oppsNew = opps.ranks;
+  if (play.lho > 0)
+  {
+    oppsNew[play.lho].count--;
+    cardsNew--;
+  }
+
+  if (play.rho > 0)
+  {
+    oppsNew[play.rho].count--;
+    cardsNew--;
+  }
+
+  if (Ranks::dominates(vec1New, vec2New))
+    Ranks::canonicalUpdate(vec1New, vec2New, oppsNew, cardsNew, 
+      play.holdingNew3, play.holdingNew2);
+  else
+    Ranks::canonicalUpdate(vec2New, vec1New, oppsNew, cardsNew, 
+      play.holdingNew3, play.holdingNew2);
+}
+
+
 void Ranks::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
   list<PlayEntry>& plays) const
 {
-  UNUSED(plays);
-
   if (leader.len == 0)
     return;
 
@@ -307,30 +387,12 @@ void Ranks::setPlaysSide(
           if (opps.ranks[lho].count == 1 && lho == rho)
             continue;
           
+          // Register the new play.
           plays.emplace_back(PlayEntry());
           PlayEntry& play = plays.back();
+          play.update(side, lead, lho, pard, rho);
 
-          play.side = side;
-          play.lead = lead;
-          play.lho = lho;
-          play.pard = pard;
-          play.rho = rho;
-          play.trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
-          if (side == SIDE_NORTH)
-          {
-            play.knownVoidWest = (rho == 0); // TODO Voids
-            play.knownVoidEast = (lho == 0);
-          }
-          else
-          {
-            play.knownVoidWest = (lho == 0);
-            play.knownVoidEast = (rho == 0);
-          }
-
-          // Figure out the new holding3 and holding2:
-          // Set up 3 help arrays north_played etc.
-          // Figure out the new number of cards (dep. on voids)
-          // Loop over opps - help array
+          Ranks::updateHoldings(leader.ranks, partner.ranks, play);
         }
       }
     }

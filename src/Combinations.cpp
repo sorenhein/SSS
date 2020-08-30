@@ -94,7 +94,7 @@ void Combinations::runUniques(const unsigned cards)
 
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
-    ranks.set(holding, cards, combs[holding]);
+    ranks.set(holding, combs[holding]);
 // cout << ranks.str();
 
     counts[cards].total++;
@@ -134,7 +134,7 @@ void Combinations::runUniqueThread(
     if (holding >= counterMax)
       break;
 
-    ranks.set(holding, cards, combs[holding]);
+    ranks.set(holding, combs[holding]);
 
     threadCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding)

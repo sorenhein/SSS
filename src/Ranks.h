@@ -48,12 +48,11 @@ class Ranks
     PositionInfo south;
     PositionInfo opps;
 
+    unsigned cards;
     unsigned maxRank;
 
 
-    void setRanks(
-      const unsigned holding,
-      const unsigned cards);
+    void setRanks(const unsigned holding);
 
     bool dominates(
       const vector<RankInfo>& vec1,
@@ -62,8 +61,15 @@ class Ranks
     unsigned canonical(
       const vector<RankInfo>& vec1,
       const vector<RankInfo>& vec2,
-      const unsigned cards,
       vector<char>& canonical2comb) const;
+
+    void canonicalUpdate(
+      const vector<RankInfo>& vec1,
+      const vector<RankInfo>& vec2,
+      const vector<RankInfo>& oppsIn,
+      const unsigned cardsNew,
+      unsigned& holding3,
+      unsigned& holding2) const;
 
     bool trivial(unsigned& terminalValue) const;
 
@@ -76,6 +82,11 @@ class Ranks
       const PositionInfo& partner,
       const unsigned toBeat,
       const unsigned pard) const;
+
+    void updateHoldings(
+      const vector<RankInfo>& vec1,
+      const vector<RankInfo>& vec2,
+      PlayEntry& play) const;
 
     void setPlaysSide(
       const PositionInfo& leader,
@@ -93,13 +104,12 @@ class Ranks
 
     ~Ranks();
 
-    void resize(const unsigned cards);
+    void resize(const unsigned cardsIn);
 
     void clear();
 
     void set(
       const unsigned holding,
-      const unsigned cards,
       CombEntry& combEntry);
 
     CombinationType setPlays(
