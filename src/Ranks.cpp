@@ -270,9 +270,13 @@ bool Ranks::leadOK(
   const PositionInfo& partner,
   const unsigned lead) const
 {
-  if (partner.len == 0)
+  if (leader.ranks[lead].count == 0)
   {
-    // If we have the top rank opposite a void, always play it.
+    // Could be an in-between rank that the leader doesn't have.
+    return false;
+  }
+  else if (partner.len == 0)
+  { // If we have the top rank opposite a void, always play it.
     if (leader.max == maxRank && lead < maxRank)
       return false;
   }
@@ -294,6 +298,23 @@ bool Ranks::leadOK(
 }
 
 
+bool Ranks::oppOK(
+  const unsigned card,
+  const bool alreadyPlayed) const
+{
+  if (card == 0)
+    // Both opponents cannot be void.
+    return ! alreadyPlayed;
+  else if (opps.ranks[card].count == 0)
+    return false;
+  else if (opps.ranks[card].count == 1 && alreadyPlayed)
+    // Can only play a card once.
+    return false;
+  else
+    return true;
+}
+
+
 bool Ranks::pardOK(
   const PositionInfo& partner,
   const unsigned toBeat,
@@ -302,6 +323,12 @@ bool Ranks::pardOK(
   // Always "play" a void.
   if (partner.len == 0)
     return true;
+
+  if (partner.ranks[pard].count == 0)
+  {
+    // Could be an in-between rank that partner doesn't have.
+    return false;
+  }
 
   // No rule concerning high cards.
   if (pard > toBeat)
@@ -378,17 +405,19 @@ void Ranks::setPlaysSide(
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    for (unsigned lho = opps.min; lho <= opps.max; lho++)
+    for (unsigned lho = 0; lho <= opps.max; lho++)
     {
+      if (! Ranks::oppOK(lho, false))
+        continue;
+
       for (unsigned pard = partner.min; pard <= partner.max; pard++)
       {
         if (! Ranks::pardOK(partner, max(lead, lho), pard))
           continue;
 
-        for (unsigned rho = opps.min; rho <= opps.max; rho++)
+        for (unsigned rho = 0; rho <= opps.max; rho++)
         {
-          // Can only play a card once.
-          if (opps.ranks[lho].count == 1 && lho == rho)
+          if (! Ranks::oppOK(rho, lho == rho))
             continue;
           
           // Register the new play.

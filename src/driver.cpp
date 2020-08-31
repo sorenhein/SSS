@@ -22,6 +22,7 @@ Combinations combinations;
 Distributions distributions;
 
 
+#include "Ranks.h"
 int main(int argc, char * argv[])
 {
   if (! control.parseCommandLine(argc, argv))
@@ -33,10 +34,22 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  // Distribution dist;
-  // dist.set2(6, 45);
-  // cout << dist.str();
-  // exit(0);
+  /* */
+  Ranks ranks;
+  CombEntry ce;
+  ranks.resize(13);
+  ranks.set(464920, ce);
+  cout << ranks.str();
+
+  list<PlayEntry> plays;
+  unsigned term;
+  ranks.setPlays(plays, term);
+  cout << "size " << plays.size() << endl << endl;
+  cout << plays.front().strHeader();
+  for (auto& play: plays)
+    cout << play.str();
+  exit(0);
+  /* */
 
   // Set up combinations.
 
@@ -48,8 +61,8 @@ int main(int argc, char * argv[])
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
-    combinations.runUniquesMT(cards, control.numThreads());
-    // combinations.runUniques(cards);
+    // combinations.runUniquesMT(cards, control.numThreads());
+    combinations.runUniques(cards);
   }
 
   timers.stop(TIMER_COMBINATIONS);

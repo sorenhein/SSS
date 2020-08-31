@@ -79,6 +79,7 @@ void Combinations::resize(const unsigned maxCardsIn)
 }
 
 
+#include "inputs/Convert.h"
 void Combinations::runUniques(const unsigned cards)
 {
   assert(cards < combinations.size());
@@ -92,6 +93,7 @@ void Combinations::runUniques(const unsigned cards)
   ranks.resize(cards);
   unsigned uniqueIndex = 0;
 
+vector<unsigned> hist(1000);
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
     ranks.set(holding, combs[holding]);
@@ -106,8 +108,29 @@ void Combinations::runUniques(const unsigned cards)
       uniqueIndex++;
 
       counts[cards].unique++;
+
+      list<PlayEntry> plays;
+      unsigned term;
+      ranks.setPlays(plays, term);
+      hist[plays.size()]++;
+if (plays.size() >= 600)
+{
+  string north, south;
+  Convert convert;
+  convert.holding2cards(holding, cards, north, south);
+  cout << "holding " << holding << " cards " << cards <<
+    " size " << plays.size() << " north " << north << "south " <<
+    south << endl;
+}
     }
   }
+
+for (unsigned i = 0; i < hist.size(); i++)
+{
+  if (hist[i])
+    cout << i << ": " << hist[i] << endl;
+}
+
 }
 
 

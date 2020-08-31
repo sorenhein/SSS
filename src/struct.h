@@ -2,6 +2,9 @@
 #define SSS_STRUCT_H
 
 #include <vector>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include "const.h"
 
@@ -58,6 +61,42 @@ struct PlayEntry
       knownVoidWest = (lho == 0);
       knownVoidEast = (rho == 0);
     }
+  }
+
+  string strHeader() const
+  {
+    stringstream ss;
+    ss << right << 
+      setw(4) << "Side" <<
+      setw(5) << "Lead" <<
+      setw(5) << "LHO" <<
+      setw(5) << "Pard" <<
+      setw(5) << "RHO" <<
+      setw(5) << "Win?" <<
+      setw(5) << "W vd" <<
+      setw(5) << "E vd" <<
+      setw(10) << "Holding3" <<
+      setw(10) << "Holding2" <<
+      endl;
+    return ss.str();
+  }
+
+  string str() const
+  {
+    stringstream ss;
+    ss << right << 
+      setw(4) << (side == SIDE_NORTH ? "N" : "S") <<
+      setw(5) << lead <<
+      setw(5) << (lho == 0 ? "-" : to_string(lho)) <<
+      setw(5) << (pard == 0 ? "-" : to_string(pard)) <<
+      setw(5) << (rho == 0 ? "-" : to_string(rho)) <<
+      setw(5) << (trickNS == 1 ? "+" : "") <<
+      setw(5) << (knownVoidWest ? "yes" : "") <<
+      setw(5) << (knownVoidEast ? "yes" : "") <<
+      setw(10) << holdingNew3 <<
+      setw(10) << holdingNew2 <<
+      endl;
+    return ss.str();
   }
 };
 

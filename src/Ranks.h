@@ -87,6 +87,10 @@ class Ranks
       const PositionInfo& partner,
       const unsigned lead) const;
 
+    bool oppOK(
+      const unsigned card,
+      const bool alreadyPlayed) const;
+
     bool pardOK(
       const PositionInfo& partner,
       const unsigned toBeat,
