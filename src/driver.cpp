@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  /* */
+  /*
   Ranks ranks;
   CombEntry ce;
   ranks.resize(13);
@@ -49,7 +49,7 @@ int main(int argc, char * argv[])
   for (auto& play: plays)
     cout << play.str();
   exit(0);
-  /* */
+  */
 
   // Set up combinations.
 

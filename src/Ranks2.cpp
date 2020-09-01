@@ -3,13 +3,13 @@
 #include <sstream>
 #include <algorithm>
 
-#include "Ranks.h"
+#include "Ranks2.h"
 
 #include "struct.h"
 #include "const.h"
 
 
-Ranks::Ranks()
+Ranks2::Ranks2()
 {
   north.ranks.clear();
   south.ranks.clear();
@@ -17,12 +17,12 @@ Ranks::Ranks()
 }
 
 
-Ranks::~Ranks()
+Ranks2::~Ranks2()
 {
 }
 
 
-void Ranks::resize(const unsigned cardsIn)
+void Ranks2::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
@@ -40,7 +40,7 @@ void Ranks::resize(const unsigned cardsIn)
 }
 
 
-void Ranks::clear()
+void Ranks2::clear()
 {
   for (unsigned rank = 0; rank < north.ranks.size(); rank++)
   {
@@ -54,18 +54,27 @@ void Ranks::clear()
   opps.len = 0;
 
   maxRank = 1; // First non-void rank
+
+  full2reducedNS.clear();
+  full2reducedOpps.clear();
 }
 
 
-void Ranks::setRanks(const unsigned holding)
+void Ranks2::setRanks(const unsigned holding)
 {
-  Ranks::clear();
+  Ranks2::clear();
+  full2reducedNS.resize(cards+1, 16*cards); // Large value
+  full2reducedOpps.resize(cards+1, 16*cards); // Large value
 
   // Find the owner of the first card so that we can consider the
   // predecessor to belong to someone else.
   bool prev_is_NS = ((holding % 3) != CONVERT_OPPS);
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
+
+  unsigned posNS = 1;
+  unsigned posOpps = 1;
+
   bool firstNorth = true;
   bool firstSouth = true;
   bool firstOpps = true;
@@ -76,30 +85,46 @@ void Ranks::setRanks(const unsigned holding)
     if (c == CONVERT_NORTH)
     {
       if (! prev_is_NS)
+      {
         maxRank++;
+        posNS++;
+      }
 
-      north.update(maxRank, CARD_NAMES[i], firstNorth);
+      north.update(posNS, maxRank, CARD_NAMES[i], firstNorth);
+      full2reducedNS[maxRank] = posNS;
       prev_is_NS = true;
     }
     else if (c == CONVERT_SOUTH)
     {
       if (! prev_is_NS)
+      {
         maxRank++;
+        full2reducedNS[maxRank] = posNS;
+        posNS++;
+      }
 
-      south.update(maxRank, CARD_NAMES[i], firstSouth);
+      south.update(posNS, maxRank, CARD_NAMES[i], firstSouth);
       prev_is_NS = true;
     }
     else
     {
       if (prev_is_NS)
+      {
         maxRank++;
+        posOpps++;
+      }
 
-      opps.update(maxRank, CARD_NAMES[i], firstOpps);
+      opps.update(posOpps, maxRank, CARD_NAMES[i], firstOpps);
+      full2reducedOpps[maxRank] = posOpps;
       prev_is_NS = false;
     }
 
     h /= 3;
   }
+
+  north.ranks.resize(posNS+1);
+  south.ranks.resize(posNS+1);
+  opps.ranks.resize(posOpps+1);
 
   north.setVoid(firstNorth);
   south.setVoid(firstSouth);
@@ -111,24 +136,28 @@ void Ranks::setRanks(const unsigned holding)
 }
 
 
-bool Ranks::dominates(
-  const vector<RankInfo>& vec1,
-  const vector<RankInfo>& vec2) const
+bool Ranks2::dominates(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2) const
 {
-  for (unsigned rank = maxRank+1; rank-- > 1; ) // Exclude void
+  for (unsigned pos = vec1.size(); pos-- > 0; )
   {
-    if (vec1[rank].count > vec2[rank].count)
+    if (vec1[pos].rank > vec2[pos].rank)
       return true;
-    if (vec1[rank].count < vec2[rank].count)
+    if (vec1[pos].rank < vec2[pos].rank)
+      return false;
+    if (vec1[pos].count > vec2[pos].count)
+      return true;
+    if (vec1[pos].count < vec2[pos].count)
       return false;
   }
   return true;
 }
 
 
-unsigned Ranks::canonical(
-  const vector<RankInfo>& vec1,
-  const vector<RankInfo>& vec2,
+unsigned Ranks2::canonical(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2,
   vector<char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
@@ -139,26 +168,28 @@ unsigned Ranks::canonical(
 
   for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
-    if (opps.ranks[rank].count)
+    if (full2reducedOpps[rank] < 2*cards)
     {
-      for (unsigned count = 0; count < opps.ranks[rank].count; count++)
+      const unsigned pos = full2reducedOpps[rank];
+      for (unsigned count = 0; count < opps.ranks[pos].count; count++)
       {
         holding += (holding << 1) + CONVERT_OPPS;
-        canonical2comb[index] = opps.ranks[rank].cards[count];
+        canonical2comb[index] = opps.ranks[pos].cards[count];
       }
     }
     else
     {
-      for (unsigned count = 0; count < vec1[rank].count; count++)
+      const unsigned pos = full2reducedNS[rank];
+      for (unsigned count = 0; count < vec1[pos].count; count++)
       {
         holding += (holding << 1) + CONVERT_NORTH;
-        canonical2comb[index] = vec1[rank].cards[count];
+        canonical2comb[index] = vec1[pos].cards[count];
       }
 
-      for (unsigned count = 0; count < vec2[rank].count; count++)
+      for (unsigned count = 0; count < vec2[pos].count; count++)
       {
         holding += (holding << 1) + CONVERT_SOUTH;
-        canonical2comb[index] = vec2[rank].cards[count];
+        canonical2comb[index] = vec2[pos].cards[count];
       }
     }
   }
@@ -166,10 +197,10 @@ unsigned Ranks::canonical(
 }
 
 
-void Ranks::canonicalUpdate(
-  const vector<RankInfo>& vec1,
-  const vector<RankInfo>& vec2,
-  const vector<RankInfo>& oppsIn,
+void Ranks2::canonicalUpdate(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2,
+  const vector<RankInfo2>& oppsIn,
   const unsigned cardsNew,
   unsigned& holding3,
   unsigned& holding2) const
@@ -183,9 +214,10 @@ void Ranks::canonicalUpdate(
 
   for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
-    if (oppsIn[rank].count)
+    if (full2reducedOpps[rank] < 2*cards)
     {
-      for (unsigned count = 0; count < oppsIn[rank].count; count++)
+      const unsigned pos = full2reducedOpps[rank];
+      for (unsigned count = 0; count < oppsIn[pos].count; count++)
       {
         holding3 += (holding3 << 1) + CONVERT_OPPS;
         holding2 += holding2 + PAIR_EW;
@@ -193,7 +225,8 @@ void Ranks::canonicalUpdate(
     }
     else
     {
-      for (unsigned count = 0; count < vec1[rank].count; count++)
+      const unsigned pos = full2reducedNS[rank];
+      for (unsigned count = 0; count < vec1[pos].count; count++)
       {
         holding3 += (holding3 << 1) + CONVERT_NORTH;
         holding2 += holding2 + PAIR_NS;
@@ -209,21 +242,21 @@ void Ranks::canonicalUpdate(
 }
 
 
-void Ranks::set(
+void Ranks2::set(
   const unsigned holding,
   CombEntry& combEntry)
 {
-  Ranks::setRanks(holding);
+  Ranks2::setRanks(holding);
 
-  combEntry.rotateFlag = ! Ranks::dominates(north.ranks, south.ranks);
+  combEntry.rotateFlag = ! Ranks2::dominates(north.ranks, south.ranks);
   if (combEntry.rotateFlag)
   {
-    combEntry.canonicalHolding = Ranks::canonical(south.ranks, north.ranks,
+    combEntry.canonicalHolding = Ranks2::canonical(south.ranks, north.ranks,
       combEntry.canonical2comb);
   }
   else
   {
-    combEntry.canonicalHolding = Ranks::canonical(north.ranks, south.ranks,
+    combEntry.canonicalHolding = Ranks2::canonical(north.ranks, south.ranks,
       combEntry.canonical2comb);
   }
 
@@ -231,7 +264,7 @@ void Ranks::set(
 }
 
 
-bool Ranks::trivial(unsigned& terminalValue) const
+bool Ranks2::trivial(unsigned& terminalValue) const
 {
   if (north.len == 0 && south.len == 0)
   {
@@ -248,16 +281,16 @@ bool Ranks::trivial(unsigned& terminalValue) const
   if (north.len <= 1 && south.len <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    terminalValue = (opps.ranks[maxRank].count == 0);
+    terminalValue = (opps.max != maxRank);
     return true;
   }
 
   if (opps.len <= 1)
   {
-    if (opps.ranks[maxRank].count == 0)
-      terminalValue = max(north.len, south.len);
-    else
+    if (opps.max == maxRank)
       terminalValue = max(north.len, south.len) - 1;
+    else
+      terminalValue = max(north.len, south.len);
     return true;
   }
 
@@ -265,12 +298,13 @@ bool Ranks::trivial(unsigned& terminalValue) const
 }
 
 
-bool Ranks::leadOK(
+bool Ranks2::leadOK(
   const PositionInfo& leader,
   const PositionInfo& partner,
+  const unsigned leadPos,
   const unsigned lead) const
 {
-  if (leader.ranks[lead].count == 0)
+  if (leader.ranks[leadPos].count == 0)
   {
     // Could be an in-between rank that the leader doesn't have.
     return false;
@@ -298,16 +332,18 @@ bool Ranks::leadOK(
 }
 
 
-bool Ranks::oppOK(
+bool Ranks2::oppOK(
   const unsigned card,
+  const unsigned count,
   const bool alreadyPlayed) const
 {
   if (card == 0)
     // Both opponents cannot be void.
     return ! alreadyPlayed;
-  else if (opps.ranks[card].count == 0)
+
+  else if (count == 0)
     return false;
-  else if (opps.ranks[card].count == 1 && alreadyPlayed)
+  else if (count == 1 && alreadyPlayed)
     // Can only play a card once.
     return false;
   else
@@ -315,16 +351,17 @@ bool Ranks::oppOK(
 }
 
 
-bool Ranks::pardOK(
+bool Ranks2::pardOK(
   const PositionInfo& partner,
   const unsigned toBeat,
+  const unsigned pardPos,
   const unsigned pard) const
 {
   // Always "play" a void.
   if (partner.len == 0)
     return true;
 
-  if (partner.ranks[pard].count == 0)
+  if (partner.ranks[pardPos].count == 0)
   {
     // Could be an in-between rank that partner doesn't have.
     return false;
@@ -339,48 +376,48 @@ bool Ranks::pardOK(
 }
 
 
-void Ranks::updateHoldings(
-  const vector<RankInfo>& vec1,
-  const vector<RankInfo>& vec2,
+void Ranks2::updateHoldings(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2,
   PlayEntry& play) const
 {
   unsigned cardsNew = cards;
 
   // The leader always has a card.
-  vector<RankInfo> vec1New = vec1;
-  vec1New[play.lead].count--;
+  vector<RankInfo2> vec1New = vec1;
+  vec1New[full2reducedNS[play.lead]].count--;
   cardsNew--;
 
-  vector<RankInfo> vec2New = vec2;
+  vector<RankInfo2> vec2New = vec2;
   if (play.pard > 0)
   {
-    vec2New[play.pard].count--;
+    vec2New[full2reducedNS[play.pard]].count--;
     cardsNew--;
   }
 
-  vector<RankInfo> oppsNew = opps.ranks;
+  vector<RankInfo2> oppsNew = opps.ranks;
   if (play.lho > 0)
   {
-    oppsNew[play.lho].count--;
+    oppsNew[full2reducedOpps[play.lho]].count--;
     cardsNew--;
   }
 
   if (play.rho > 0)
   {
-    oppsNew[play.rho].count--;
+    oppsNew[full2reducedOpps[play.rho]].count--;
     cardsNew--;
   }
 
-  if (Ranks::dominates(vec1New, vec2New))
-    Ranks::canonicalUpdate(vec1New, vec2New, oppsNew, cardsNew, 
+  if (Ranks2::dominates(vec1New, vec2New))
+    Ranks2::canonicalUpdate(vec1New, vec2New, oppsNew, cardsNew, 
       play.holdingNew3, play.holdingNew2);
   else
-    Ranks::canonicalUpdate(vec2New, vec1New, oppsNew, cardsNew, 
+    Ranks2::canonicalUpdate(vec2New, vec1New, oppsNew, cardsNew, 
       play.holdingNew3, play.holdingNew2);
 }
 
 
-void Ranks::setPlaysSide(
+void Ranks2::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
@@ -400,24 +437,30 @@ void Ranks::setPlaysSide(
   if (! leader.singleRank && partner.len > 0 && leader.min >= partner.max)
     return;
        
-  for (unsigned lead = leader.min; lead <= leader.max; lead++)
+  for (unsigned leadPos = leader.min; leadPos <= leader.max; leadPos++)
   {
-    if (! Ranks::leadOK(leader, partner, lead))
+    const unsigned lead = leader.ranks[leadPos].rank;
+    if (! Ranks2::leadOK(leader, partner, leadPos, lead))
       continue;
 
-    for (unsigned lho = 0; lho <= opps.max; lho++)
+    for (unsigned lhoPos = 0; lhoPos <= opps.max; lhoPos++)
     {
-      if (! Ranks::oppOK(lho, false))
+      const unsigned lho = opps.ranks[lhoPos].rank;
+      const unsigned lhoCount = opps.ranks[lhoPos].count;
+      if (! Ranks2::oppOK(lho, lhoCount, false))
         continue;
 
-      for (unsigned pard = partner.min; pard <= partner.max; pard++)
+      for (unsigned pardPos = partner.min; pardPos <= partner.max; pardPos++)
       {
-        if (! Ranks::pardOK(partner, max(lead, lho), pard))
+        const unsigned pard = partner.ranks[pardPos].rank;
+        if (! Ranks2::pardOK(partner, max(lead, lho), pardPos, pard))
           continue;
 
-        for (unsigned rho = 0; rho <= opps.max; rho++)
+        for (unsigned rhoPos = 0; rhoPos <= opps.max; rhoPos++)
         {
-          if (! Ranks::oppOK(rho, lho == rho))
+          const unsigned rho = opps.ranks[rhoPos].rank;
+          const unsigned rhoCount = opps.ranks[rhoPos].count;
+          if (! Ranks2::oppOK(rho, rhoCount, lho == rho))
             continue;
           
           // Register the new play.
@@ -426,7 +469,7 @@ void Ranks::setPlaysSide(
           play.update(side, lead, lho, pard, rho);
 
           // This takes 67 out of 70 seconds, so commented out for now.
-          // Ranks::updateHoldings(leader.ranks, partner.ranks, play);
+          // Ranks2::updateHoldings(leader.ranks, partner.ranks, play);
         }
       }
     }
@@ -434,7 +477,7 @@ void Ranks::setPlaysSide(
 }
 
 
-CombinationType Ranks::setPlays(
+CombinationType Ranks2::setPlays(
   list<PlayEntry>& plays,
   unsigned& terminalValue) const
 {
@@ -443,42 +486,35 @@ CombinationType Ranks::setPlays(
   // TODO: Should probably be a tree structure.
   plays.clear();
 
-  if (Ranks::trivial(terminalValue))
+  if (Ranks2::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);
-  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays);
+  Ranks2::setPlaysSide(north, south, SIDE_NORTH, plays);
+  Ranks2::setPlaysSide(south, north, SIDE_SOUTH, plays);
   return COMB_OTHER;
 }
 
 
-string Ranks::strRankInfo(
-  const RankInfo& rankInfo,
+string Ranks2::strRankInfo(
+  const RankInfo2& rankInfo,
   const string& pos) const
 {
   stringstream ss;
 
-  if (rankInfo.count == 0)
-  {
-    ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
-  }
-  else
-  {
-    string concat = "";
-    for (unsigned card = rankInfo.count; card-- > 0; )
-      concat += rankInfo.cards[card];
+  string concat = "";
+  for (unsigned card = rankInfo.count; card-- > 0; )
+    concat += rankInfo.cards[card];
 
-    ss << setw(8) << pos << setw(4) << rankInfo.count << setw(6) << concat;
-  }
+  ss << setw(8) << pos << setw(4) << rankInfo.count << setw(6) << concat;
 
   return ss.str();
 }
 
 
-string Ranks::str() const
+string Ranks2::str() const
 {
   stringstream ss;
-  ss << "Ranks:\n";
+  ss << "Ranks2:\n";
 
   ss <<  right <<
     setw(8) << "North" << setw(4) << "#" << setw(6) << "cards" <<
@@ -486,12 +522,26 @@ string Ranks::str() const
     setw(8) << "Opps" <<  setw(4) << "#" << setw(6) << "cards" << 
     "\n";
 
-  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
+  for (unsigned pos = maxRank; pos > 0; pos--) // Exclude void
   {
-    ss <<
-      Ranks::strRankInfo(north.ranks[rank], "North") <<
-      Ranks::strRankInfo(south.ranks[rank], "South") <<
-      Ranks::strRankInfo(opps.ranks[rank], "Opps") << endl;
+    const unsigned rankNS = full2reducedNS[pos];
+    const unsigned rankOpps = full2reducedOpps[pos];
+
+    if (rankNS > 2*cards)
+    {
+      // TODO Make into a method (first line = empty)?
+      ss << 
+        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" <<
+        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" <<
+        Ranks2::strRankInfo(opps.ranks[rankOpps], "Opps") << endl;
+    }
+    else
+    {
+      ss << 
+        Ranks2::strRankInfo(north.ranks[rankNS], "North") <<
+        Ranks2::strRankInfo(south.ranks[rankNS], "South") <<
+        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" << endl;
+    }
   }
   
   return ss.str() + "\n";

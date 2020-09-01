@@ -113,6 +113,7 @@ vector<unsigned> hist(1000);
       unsigned term;
       ranks.setPlays(plays, term);
       hist[plays.size()]++;
+/*
 if (plays.size() >= 600)
 {
   string north, south;
@@ -122,14 +123,19 @@ if (plays.size() >= 600)
     " size " << plays.size() << " north " << north << "south " <<
     south << endl;
 }
+*/
     }
   }
 
+unsigned sum = 0;
+unsigned count = 0;
 for (unsigned i = 0; i < hist.size(); i++)
 {
-  if (hist[i])
-    cout << i << ": " << hist[i] << endl;
+  sum += i * hist[i];
+  count += hist[i];
 }
+cout << "Avg " << fixed << setprecision(2) <<
+  static_cast<float>(sum)/static_cast<float>(count) << endl;
 
 }
 
