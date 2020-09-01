@@ -80,6 +80,7 @@ void Combinations::resize(const unsigned maxCardsIn)
 
 
 #include "inputs/Convert.h"
+#include "Ranks2.h"
 void Combinations::runUniques(const unsigned cards)
 {
   assert(cards < combinations.size());
@@ -88,7 +89,7 @@ void Combinations::runUniques(const unsigned cards)
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
-  Ranks ranks;
+  Ranks2 ranks;
 
   ranks.resize(cards);
   unsigned uniqueIndex = 0;

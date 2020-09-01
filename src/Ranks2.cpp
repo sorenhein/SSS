@@ -71,18 +71,20 @@ void Ranks2::setRanks(const unsigned holding)
   full2reducedOpps.resize(cards+1, BIGINT);
 
   // Find the owner of the first card so that we can consider the
-  // predecessor to belong to someone else.
+  // predecessor to belong to someone else (from the same side).
   CardPosition prev_is = static_cast<CardPosition>(holding % 3);
+
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
 
-  unsigned posNorth = 0; // So actual ranks will start from 1
-  unsigned posSouth = 0;
-  unsigned posOpps = 0;
+  unsigned posNorth = 1; // So actual ranks will start from 1
+  unsigned posSouth = 1;
+  unsigned posOpps = 1;
 
   bool firstNorth = true;
   bool firstSouth = true;
   bool firstOpps = true;
+  opps.setVoid(true); // Have to do it first to make max come out right
 
   for (unsigned i = imin; i < imin+cards; i++)
   {
@@ -133,7 +135,6 @@ void Ranks2::setRanks(const unsigned holding)
 
   north.setVoid(false);
   south.setVoid(false);
-  opps.setVoid(true);
 
   north.setSingleRank();
   south.setSingleRank();
@@ -473,7 +474,7 @@ void Ranks2::setPlaysSide(
       if (! Ranks2::oppOK(lho, lhoCount, false))
         continue;
 
-      for (unsigned pardPos = partner.min; pardPos <= partner.max; pardPos++)
+      for (unsigned pardPos = 0; pardPos <= partner.ranks.size(); pardPos++)
       {
         const unsigned pard = partner.ranks[pardPos].rank;
         if (! Ranks2::pardOK(partner, max(lead, lho), pardPos, pard))

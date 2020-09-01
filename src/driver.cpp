@@ -35,14 +35,13 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
+  /*
   Ranks2 ranks;
   CombEntry ce;
   ranks.resize(13);
   ranks.set(464920, ce);
   cout << ranks.str();
-  exit(0);
 
-  /*
   list<PlayEntry> plays;
   unsigned term;
   ranks.setPlays(plays, term);
@@ -88,8 +87,8 @@ int main(int argc, char * argv[])
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
-    distributions.runUniquesMT(cards, control.numThreads());
-    // distributions.runUniques(cards);
+    // distributions.runUniquesMT(cards, control.numThreads());
+    distributions.runUniques(cards);
   }
 
   timers.stop(TIMER_DISTRIBUTIONS);
