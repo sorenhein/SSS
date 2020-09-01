@@ -66,9 +66,9 @@ class Ranks2
         len++;
       }
 
-      void setVoid(const bool flag)
+      void setVoid(const bool forceFlag)
       {
-        if (flag)
+        if (forceFlag || len == 0)
         {
           ranks[0].add(0, '-');
           max = 0;
@@ -81,7 +81,8 @@ class Ranks2
       }
     };
 
-    vector<unsigned> full2reducedNS;
+    vector<unsigned> full2reducedNorth;
+    vector<unsigned> full2reducedSouth;
     vector<unsigned> full2reducedOpps;
 
     PositionInfo north;
@@ -133,6 +134,10 @@ class Ranks2
     void updateHoldings(
       const vector<RankInfo2>& vec1,
       const vector<RankInfo2>& vec2,
+      const unsigned leadPos,
+      const unsigned lhoPos,
+      const unsigned pardPos,
+      const unsigned rhoPos,
       PlayEntry& play) const;
 
     void setPlaysSide(
@@ -142,8 +147,9 @@ class Ranks2
       list<PlayEntry>& plays) const;
 
     string strRankInfo(
-      const RankInfo2& rankInfo,
-      const string& pos) const;
+      const vector<RankInfo2>& rankInfo,
+      const unsigned rank,
+      const string& player) const;
 
   public:
 

@@ -8,6 +8,8 @@
 #include "struct.h"
 #include "const.h"
 
+#define BIGINT 99
+
 
 Ranks2::Ranks2()
 {
@@ -55,7 +57,8 @@ void Ranks2::clear()
 
   maxRank = 0;
 
-  full2reducedNS.clear();
+  full2reducedNorth.clear();
+  full2reducedSouth.clear();
   full2reducedOpps.clear();
 }
 
@@ -63,17 +66,19 @@ void Ranks2::clear()
 void Ranks2::setRanks(const unsigned holding)
 {
   Ranks2::clear();
-  full2reducedNS.resize(cards+1, 16*cards); // Large value
-  full2reducedOpps.resize(cards+1, 16*cards); // Large value
+  full2reducedNorth.resize(cards+1, BIGINT);
+  full2reducedSouth.resize(cards+1, BIGINT);
+  full2reducedOpps.resize(cards+1, BIGINT);
 
   // Find the owner of the first card so that we can consider the
   // predecessor to belong to someone else.
-  bool prev_is_NS = ((holding % 3) == CONVERT_OPPS);
+  CardPosition prev_is = static_cast<CardPosition>(holding % 3);
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
 
-  unsigned posNS = 0; // So actual ranks will start from 1
-  unsigned posOpps = 0; // Ditto
+  unsigned posNorth = 0; // So actual ranks will start from 1
+  unsigned posSouth = 0;
+  unsigned posOpps = 0;
 
   bool firstNorth = true;
   bool firstSouth = true;
@@ -84,31 +89,31 @@ void Ranks2::setRanks(const unsigned holding)
     const unsigned c = h % 3;
     if (c == CONVERT_NORTH)
     {
-      if (! prev_is_NS)
+      if (prev_is == CONVERT_OPPS)
       {
         maxRank++;
-        posNS++;
+        posNorth++;
       }
 
-      north.update(posNS, maxRank, CARD_NAMES[i], firstNorth);
-      full2reducedNS[maxRank] = posNS;
-      prev_is_NS = true;
+      north.update(posNorth, maxRank, CARD_NAMES[i], firstNorth);
+      full2reducedNorth[maxRank] = posNorth;
+      prev_is = CONVERT_NORTH;
     }
     else if (c == CONVERT_SOUTH)
     {
-      if (! prev_is_NS)
+      if (prev_is == CONVERT_OPPS)
       {
         maxRank++;
-        posNS++;
+        posSouth++;
       }
 
-      south.update(posNS, maxRank, CARD_NAMES[i], firstSouth);
-      full2reducedNS[maxRank] = posNS;
-      prev_is_NS = true;
+      south.update(posSouth, maxRank, CARD_NAMES[i], firstSouth);
+      full2reducedSouth[maxRank] = posSouth;
+      prev_is = CONVERT_SOUTH;
     }
     else
     {
-      if (prev_is_NS)
+      if (prev_is != CONVERT_OPPS)
       {
         maxRank++;
         posOpps++;
@@ -116,19 +121,19 @@ void Ranks2::setRanks(const unsigned holding)
 
       opps.update(posOpps, maxRank, CARD_NAMES[i], firstOpps);
       full2reducedOpps[maxRank] = posOpps;
-      prev_is_NS = false;
+      prev_is = CONVERT_OPPS;
     }
 
     h /= 3;
   }
 
-  north.ranks.resize(posNS+1);
-  south.ranks.resize(posNS+1);
+  north.ranks.resize(posNorth+1);
+  south.ranks.resize(posSouth+1);
   opps.ranks.resize(posOpps+1);
 
-  north.setVoid(firstNorth);
-  south.setVoid(firstSouth);
-  opps.setVoid(firstOpps);
+  north.setVoid(false);
+  south.setVoid(false);
+  opps.setVoid(true);
 
   north.setSingleRank();
   south.setSingleRank();
@@ -168,7 +173,7 @@ unsigned Ranks2::canonical(
 
   for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
-    if (full2reducedOpps[rank] < 2*cards)
+    if (full2reducedOpps[rank] < BIGINT)
     {
       const unsigned pos = full2reducedOpps[rank];
       for (unsigned count = 0; count < opps.ranks[pos].count; count++)
@@ -177,19 +182,26 @@ unsigned Ranks2::canonical(
         canonical2comb[index] = opps.ranks[pos].cards[count];
       }
     }
-    else
+    else 
     {
-      const unsigned pos = full2reducedNS[rank];
-      for (unsigned count = 0; count < vec1[pos].count; count++)
+      if (full2reducedNorth[rank] < BIGINT)
       {
-        holding += (holding << 1) + CONVERT_NORTH;
-        canonical2comb[index] = vec1[pos].cards[count];
+        const unsigned pos = full2reducedNorth[rank];
+        for (unsigned count = 0; count < vec1[pos].count; count++)
+        {
+          holding += (holding << 1) + CONVERT_NORTH;
+          canonical2comb[index] = vec1[pos].cards[count];
+        }
       }
 
-      for (unsigned count = 0; count < vec2[pos].count; count++)
+      if (full2reducedSouth[rank] < BIGINT)
       {
-        holding += (holding << 1) + CONVERT_SOUTH;
-        canonical2comb[index] = vec2[pos].cards[count];
+        const unsigned pos = full2reducedSouth[rank];
+        for (unsigned count = 0; count < vec2[pos].count; count++)
+        {
+          holding += (holding << 1) + CONVERT_SOUTH;
+          canonical2comb[index] = vec2[pos].cards[count];
+        }
       }
     }
   }
@@ -214,7 +226,7 @@ void Ranks2::canonicalUpdate(
 
   for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
-    if (full2reducedOpps[rank] < 2*cards)
+    if (full2reducedOpps[rank] < BIGINT)
     {
       const unsigned pos = full2reducedOpps[rank];
       for (unsigned count = 0; count < oppsIn[pos].count; count++)
@@ -225,17 +237,24 @@ void Ranks2::canonicalUpdate(
     }
     else
     {
-      const unsigned pos = full2reducedNS[rank];
-      for (unsigned count = 0; count < vec1[pos].count; count++)
+      if (full2reducedNorth[rank] < BIGINT)
       {
-        holding3 += (holding3 << 1) + CONVERT_NORTH;
-        holding2 += holding2 + PAIR_NS;
+        const unsigned pos = full2reducedNorth[rank];
+        for (unsigned count = 0; count < vec1[pos].count; count++)
+        {
+          holding3 += (holding3 << 1) + CONVERT_NORTH;
+          holding2 += holding2 + PAIR_NS;
+        }
       }
 
-      for (unsigned count = 0; count < vec2[rank].count; count++)
+      if (full2reducedSouth[rank] < 2*cards)
       {
-        holding3 += (holding3 << 1) + CONVERT_SOUTH;
-        holding2 += holding2 + PAIR_NS;
+        const unsigned pos = full2reducedSouth[rank];
+        for (unsigned count = 0; count < vec2[pos].count; count++)
+        {
+          holding3 += (holding3 << 1) + CONVERT_SOUTH;
+          holding2 += holding2 + PAIR_NS;
+        }
       }
     }
   }
@@ -379,32 +398,36 @@ bool Ranks2::pardOK(
 void Ranks2::updateHoldings(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
+  const unsigned leadPos,
+  const unsigned lhoPos,
+  const unsigned pardPos,
+  const unsigned rhoPos,
   PlayEntry& play) const
 {
   unsigned cardsNew = cards;
 
   // The leader always has a card.
   vector<RankInfo2> vec1New = vec1;
-  vec1New[full2reducedNS[play.lead]].count--;
+  vec1New[leadPos].count--;
   cardsNew--;
 
   vector<RankInfo2> vec2New = vec2;
   if (play.pard > 0)
   {
-    vec2New[full2reducedNS[play.pard]].count--;
+    vec2New[pardPos].count--;
     cardsNew--;
   }
 
   vector<RankInfo2> oppsNew = opps.ranks;
   if (play.lho > 0)
   {
-    oppsNew[full2reducedOpps[play.lho]].count--;
+    oppsNew[lhoPos].count--;
     cardsNew--;
   }
 
   if (play.rho > 0)
   {
-    oppsNew[full2reducedOpps[play.rho]].count--;
+    oppsNew[rhoPos].count--;
     cardsNew--;
   }
 
@@ -469,7 +492,8 @@ void Ranks2::setPlaysSide(
           play.update(side, lead, lho, pard, rho);
 
           // This takes 67 out of 70 seconds, so commented out for now.
-          // Ranks2::updateHoldings(leader.ranks, partner.ranks, play);
+          // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+          //   leadPos, lhoPos, pardPos, rhoPos, play);
         }
       }
     }
@@ -496,16 +520,24 @@ CombinationType Ranks2::setPlays(
 
 
 string Ranks2::strRankInfo(
-  const RankInfo2& rankInfo,
-  const string& pos) const
+  const vector<RankInfo2>& rankInfo,
+  const unsigned rank,
+  const string& player) const
 {
   stringstream ss;
+  if (rank == BIGINT)
+    ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
+  else
+  {
+    string concat = "";
+    for (unsigned card = rankInfo[rank].count; card-- > 0; )
+      concat += rankInfo[rank].cards[card];
 
-  string concat = "";
-  for (unsigned card = rankInfo.count; card-- > 0; )
-    concat += rankInfo.cards[card];
-
-  ss << setw(8) << pos << setw(4) << rankInfo.count << setw(6) << concat;
+    ss << 
+      setw(8) << player << 
+      setw(4) << rankInfo[rank].count << 
+      setw(6) << concat;
+  }
 
   return ss.str();
 }
@@ -514,7 +546,7 @@ string Ranks2::strRankInfo(
 string Ranks2::str() const
 {
   stringstream ss;
-  ss << "Ranks2:\n";
+  ss << "Ranks:\n";
 
   ss <<  right <<
     setw(8) << "North" << setw(4) << "#" << setw(6) << "cards" <<
@@ -524,24 +556,11 @@ string Ranks2::str() const
 
   for (unsigned pos = maxRank; pos > 0; pos--) // Exclude void
   {
-    const unsigned rankNS = full2reducedNS[pos];
-    const unsigned rankOpps = full2reducedOpps[pos];
-
-    if (rankNS > 2*cards)
-    {
-      // TODO Make into a method (first line = empty)?
-      ss << 
-        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" <<
-        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" <<
-        Ranks2::strRankInfo(opps.ranks[rankOpps], "Opps") << endl;
-    }
-    else
-    {
-      ss << 
-        Ranks2::strRankInfo(north.ranks[rankNS], "North") <<
-        Ranks2::strRankInfo(south.ranks[rankNS], "South") <<
-        setw(8) << "-" << setw(4) << "-" << setw(6) << "-" << endl;
-    }
+    ss << 
+      Ranks2::strRankInfo(north.ranks, full2reducedNorth[pos], "North") <<
+      Ranks2::strRankInfo(south.ranks, full2reducedSouth[pos], "South") <<
+      Ranks2::strRankInfo(opps.ranks, full2reducedOpps[pos], "Opps") <<
+      endl;
   }
   
   return ss.str() + "\n";
