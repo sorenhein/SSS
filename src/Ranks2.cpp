@@ -55,7 +55,7 @@ void Ranks2::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 0;
+  maxRank = 1;
 
   full2reducedNorth.clear();
   full2reducedSouth.clear();
