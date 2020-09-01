@@ -23,6 +23,7 @@ Distributions distributions;
 
 
 #include "Ranks.h"
+#include "Ranks2.h"
 int main(int argc, char * argv[])
 {
   if (! control.parseCommandLine(argc, argv))
@@ -34,13 +35,14 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  /*
-  Ranks ranks;
+  Ranks2 ranks;
   CombEntry ce;
   ranks.resize(13);
   ranks.set(464920, ce);
   cout << ranks.str();
+  exit(0);
 
+  /*
   list<PlayEntry> plays;
   unsigned term;
   ranks.setPlays(plays, term);

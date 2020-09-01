@@ -53,7 +53,7 @@ void Ranks2::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 1; // First non-void rank
+  maxRank = 0;
 
   full2reducedNS.clear();
   full2reducedOpps.clear();
@@ -68,12 +68,12 @@ void Ranks2::setRanks(const unsigned holding)
 
   // Find the owner of the first card so that we can consider the
   // predecessor to belong to someone else.
-  bool prev_is_NS = ((holding % 3) != CONVERT_OPPS);
+  bool prev_is_NS = ((holding % 3) == CONVERT_OPPS);
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
 
-  unsigned posNS = 1;
-  unsigned posOpps = 1;
+  unsigned posNS = 0; // So actual ranks will start from 1
+  unsigned posOpps = 0; // Ditto
 
   bool firstNorth = true;
   bool firstSouth = true;
@@ -99,11 +99,11 @@ void Ranks2::setRanks(const unsigned holding)
       if (! prev_is_NS)
       {
         maxRank++;
-        full2reducedNS[maxRank] = posNS;
         posNS++;
       }
 
       south.update(posNS, maxRank, CARD_NAMES[i], firstSouth);
+      full2reducedNS[maxRank] = posNS;
       prev_is_NS = true;
     }
     else
@@ -437,7 +437,7 @@ void Ranks2::setPlaysSide(
   if (! leader.singleRank && partner.len > 0 && leader.min >= partner.max)
     return;
        
-  for (unsigned leadPos = leader.min; leadPos <= leader.max; leadPos++)
+  for (unsigned leadPos = 1; leadPos <= leader.ranks.size(); leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
     if (! Ranks2::leadOK(leader, partner, leadPos, lead))
