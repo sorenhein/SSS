@@ -135,7 +135,6 @@ class Ranks2
       const unsigned pard) const;
 
     bool rhoWithVoidOK(
-      const unsigned card,
       const unsigned count,
       const bool alreadyPlayed) const;
 
