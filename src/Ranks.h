@@ -106,7 +106,8 @@ class Ranks
       const PositionInfo& leader,
       const PositionInfo& partner,
       const SidePosition side,
-      list<PlayEntry>& plays) const;
+      vector<PlayEntry>& plays,
+      unsigned& playNo) const;
 
     string strRankInfo(
       const RankInfo& rankInfo,
@@ -127,7 +128,8 @@ class Ranks
       CombEntry& combEntry);
 
     CombinationType setPlays(
-      list<PlayEntry>& plays,
+      vector<PlayEntry>& plays,
+      unsigned& playNo,
       unsigned& terminalValue) const;
 
     string str() const;

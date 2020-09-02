@@ -8,6 +8,26 @@
 #include "struct.h"
 #include "const.h"
 
+const vector<unsigned> PLAY_CHUNK_SIZE =
+{
+    1, //  0
+    2, //  1
+    2, //  2
+    2, //  3
+    4, //  4
+    6, //  5
+   10, //  6
+   15, //  7
+   25, //  8
+   40, //  9
+   50, // 10
+   70, // 11
+   90, // 12
+  110, // 13
+  130, // 14
+  150, // 15
+};
+
 
 Ranks::Ranks()
 {
@@ -384,7 +404,8 @@ void Ranks::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
-  list<PlayEntry>& plays) const
+  vector<PlayEntry>& plays,
+  unsigned& playNo) const
 {
   if (leader.len == 0)
     return;
@@ -421,8 +442,10 @@ void Ranks::setPlaysSide(
             continue;
           
           // Register the new play.
-          plays.emplace_back(PlayEntry());
-          PlayEntry& play = plays.back();
+          if (playNo >= plays.size())
+            plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
+
+          PlayEntry& play = plays[playNo++];
           play.update(side, lead, lho, pard, rho);
 
           // This takes 67 out of 70 seconds, so commented out for now.
@@ -435,19 +458,22 @@ void Ranks::setPlaysSide(
 
 
 CombinationType Ranks::setPlays(
-  list<PlayEntry>& plays,
+  vector<PlayEntry>& plays,
+  unsigned& playNo,
   unsigned& terminalValue) const
 {
   // If COMB_TRIVIAL, then only terminalValue is set.
   // Otherwise, plays are set.
   // TODO: Should probably be a tree structure.
   plays.clear();
+  plays.resize(PLAY_CHUNK_SIZE[cards]);
+  playNo = 0;
 
   if (Ranks::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);
-  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays);
+  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays, playNo);
+  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays, playNo);
   return COMB_OTHER;
 }
 
