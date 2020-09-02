@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <cassert>
 
 #include "struct.h"
 
@@ -24,18 +25,23 @@ class Ranks2
       RankInfo2()
       {
         RankInfo2::clear();
+        cards.clear();
       }
 
       void clear()
       {
         count = 0;
-        cards.clear();
       }
 
       void add(
         const unsigned rankIn,
         const char card)
       {
+if (count >= cards.size())
+{
+  cout << "add: rank " << rankIn << ", card " << card << ", count " << count << ", size " << cards.size() << endl;
+  assert(count < cards.size());
+}
         cards[count] = card;
         rank = rankIn;
         count++;
@@ -45,8 +51,10 @@ class Ranks2
     struct PositionInfo
     {
       vector<RankInfo2> ranks;
-      unsigned max;
-      unsigned min;
+      unsigned maxRank;
+      unsigned minRank;
+      unsigned maxPos;
+      unsigned minPos;
       bool singleRank;
       unsigned len;
 
@@ -56,11 +64,14 @@ class Ranks2
         const char name,
         bool& flag)
       {
+assert(position < ranks.size());
         ranks[position].add(rank, name);
-        max = rank;
+        maxRank = rank;
+        maxPos = position;
         if (flag)
         {
-          min = rank;
+          minRank = rank;
+          minPos = position;
           flag = false;
         }
         len++;
@@ -71,13 +82,16 @@ class Ranks2
         if (forceFlag || len == 0)
         {
           ranks[0].add(0, '-');
-          max = 0;
+          minRank = 0;
+          maxRank = 0;
+          minPos = 0;
+          maxPos = 0;
         }
       }
 
       void setSingleRank()
       {
-        singleRank = (len >= 1 && min == max);
+        singleRank = (len >= 1 && minRank == maxRank);
       }
     };
 
@@ -92,12 +106,13 @@ class Ranks2
     unsigned cards;
     unsigned maxRank;
 
-
     void setRanks(const unsigned holding);
 
     bool dominates(
       const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2) const;
+      const unsigned max1,
+      const vector<RankInfo2>& vec2,
+      const unsigned max2) const;
 
     unsigned canonical(
       const vector<RankInfo2>& vec1,
@@ -134,6 +149,8 @@ class Ranks2
     void updateHoldings(
       const vector<RankInfo2>& vec1,
       const vector<RankInfo2>& vec2,
+      const unsigned max1,
+      const unsigned max2,
       const unsigned leadPos,
       const unsigned lhoPos,
       const unsigned pardPos,

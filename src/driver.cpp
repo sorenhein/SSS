@@ -42,6 +42,16 @@ int main(int argc, char * argv[])
   ranks.set(464920, ce);
   cout << ranks.str();
 
+  Ranks2 ranks;
+  CombEntry ce;
+  ranks.resize(2);
+  ranks.set(4, ce);
+  cout << ranks.str();
+  cout << "canonical holding " << ce.canonicalHolding << endl;
+  exit(0);
+  */
+
+  /*
   list<PlayEntry> plays;
   unsigned term;
   ranks.setPlays(plays, term);

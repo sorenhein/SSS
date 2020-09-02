@@ -98,11 +98,16 @@ vector<unsigned> hist(1000);
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
     ranks.set(holding, combs[holding]);
+// cout << "\n\nholding " << holding << endl;
+// cout << ranks.str() << endl;
+// cout << "canonical " << combs[holding].canonicalHolding << endl;
 // cout << ranks.str();
 
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
     {
+// cout << "Is canonical, uniqueIndex is " << uniqueIndex << " vs " <<
+  // uniqs.size() << endl;
       assert(uniqueIndex < uniqs.size());
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;

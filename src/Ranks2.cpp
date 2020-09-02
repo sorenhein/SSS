@@ -55,7 +55,7 @@ void Ranks2::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 1;
+  maxRank = 1; // First non-void rank
 
   full2reducedNorth.clear();
   full2reducedSouth.clear();
@@ -65,6 +65,7 @@ void Ranks2::clear()
 
 void Ranks2::setRanks(const unsigned holding)
 {
+// cout << "sr holding " << holding << " cards " << cards << endl;
   Ranks2::clear();
   full2reducedNorth.resize(cards+1, BIGINT);
   full2reducedSouth.resize(cards+1, BIGINT);
@@ -129,35 +130,71 @@ void Ranks2::setRanks(const unsigned holding)
     h /= 3;
   }
 
-  north.ranks.resize(posNorth+1);
-  south.ranks.resize(posSouth+1);
-  opps.ranks.resize(posOpps+1);
-
   north.setVoid(false);
   south.setVoid(false);
 
   north.setSingleRank();
   south.setSingleRank();
   opps.setSingleRank();
+
+/*
+cout << "end of setRanks: North\n";
+for (unsigned p = 0; p <= north.maxPos; p++)
+{
+  assert(p < north.ranks.size());
+  cout << p << ": " << north.ranks[p].rank << " " << north.ranks[p].count << endl;
+}
+cout << "end of setRanks: South\n";
+for (unsigned p = 0; p <= south.maxPos; p++)
+{
+  assert(p < south.ranks.size());
+  cout << p << ": " << south.ranks[p].rank << " " << south.ranks[p].count << endl;
+}
+*/
 }
 
 
 bool Ranks2::dominates(
   const vector<RankInfo2>& vec1,
-  const vector<RankInfo2>& vec2) const
+  const unsigned max1,
+  const vector<RankInfo2>& vec2,
+  const unsigned max2) const
 {
-  for (unsigned pos = vec1.size(); pos-- > 0; )
+  // The rank vectors may not be of the same effective size.
+  unsigned pos1 = max1 + 1;  // One beyond end, as we first advance
+  unsigned pos2 = max2 + 1;
+
+  while (true)
   {
-    if (vec1[pos].rank > vec2[pos].rank)
+    while (true)
+    {
+      // If we run out of vec2, vec1 wins even if it also runs out.
+      if (pos2 == 0)
+        return true;
+
+      if (vec2[--pos2].count)
+        break;
+    }
+
+    while (true)
+    {
+      // Otherwise vec2 wins.
+      if (pos1 == 0)
+        return false;
+
+      if (vec1[--pos1].count)
+        break;
+    }
+
+    if (vec1[pos1].rank > vec2[pos2].rank)
       return true;
-    if (vec1[pos].rank < vec2[pos].rank)
+    if (vec1[pos1].rank < vec2[pos2].rank)
       return false;
-    if (vec1[pos].count > vec2[pos].count)
+    if (vec1[pos1].count > vec2[pos2].count)
       return true;
-    if (vec1[pos].count < vec2[pos].count)
+    if (vec1[pos1].count < vec2[pos2].count)
       return false;
   }
-  return true;
 }
 
 
@@ -268,14 +305,17 @@ void Ranks2::set(
 {
   Ranks2::setRanks(holding);
 
-  combEntry.rotateFlag = ! Ranks2::dominates(north.ranks, south.ranks);
+  combEntry.rotateFlag = ! Ranks2::dominates(north.ranks, north.maxPos, 
+    south.ranks, south.maxPos);
   if (combEntry.rotateFlag)
   {
+// cout << "South dominates\n";
     combEntry.canonicalHolding = Ranks2::canonical(south.ranks, north.ranks,
       combEntry.canonical2comb);
   }
   else
   {
+// cout << "North dominates\n";
     combEntry.canonicalHolding = Ranks2::canonical(north.ranks, south.ranks,
       combEntry.canonical2comb);
   }
@@ -301,13 +341,13 @@ bool Ranks2::trivial(unsigned& terminalValue) const
   if (north.len <= 1 && south.len <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    terminalValue = (opps.max != maxRank);
+    terminalValue = (opps.maxRank != maxRank);
     return true;
   }
 
   if (opps.len <= 1)
   {
-    if (opps.max == maxRank)
+    if (opps.maxRank == maxRank)
       terminalValue = max(north.len, south.len) - 1;
     else
       terminalValue = max(north.len, south.len);
@@ -331,18 +371,18 @@ bool Ranks2::leadOK(
   }
   else if (partner.len == 0)
   { // If we have the top rank opposite a void, always play it.
-    if (leader.max == maxRank && lead < maxRank)
+    if (leader.maxRank == maxRank && lead < maxRank)
       return false;
   }
   else if (! leader.singleRank)
   {
     // Both sides have 2+ ranks.  
-    if (lead >= partner.max)
+    if (lead >= partner.maxRank)
     {
       // Again, don't lead a too-high card.
       return false;
     }
-    else if (lead <= partner.min && lead > leader.min)
+    else if (lead <= partner.minRank && lead > leader.minRank)
     {
       // If partner's lowest card is at least as high, lead lowest.
       return false;
@@ -392,13 +432,15 @@ bool Ranks2::pardOK(
     return true;
 
   // Play the lowest of losing cards.
-  return (pard == partner.min);
+  return (pard == partner.minRank);
 }
 
 
 void Ranks2::updateHoldings(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
+  const unsigned max1, // TODO Many too many arguments
+  const unsigned max2,
   const unsigned leadPos,
   const unsigned lhoPos,
   const unsigned pardPos,
@@ -432,7 +474,7 @@ void Ranks2::updateHoldings(
     cardsNew--;
   }
 
-  if (Ranks2::dominates(vec1New, vec2New))
+  if (Ranks2::dominates(vec1New, max1, vec2New, max2))
     Ranks2::canonicalUpdate(vec1New, vec2New, oppsNew, cardsNew, 
       play.holdingNew3, play.holdingNew2);
   else
@@ -453,34 +495,36 @@ void Ranks2::setPlaysSide(
   // Always lead the singleton rank.  If both have this, lead the
   // higher one, or if they're the same, the first one.
   if (partner.singleRank &&
-      (! leader.singleRank || leader.max < partner.max ||
-        (leader.max == partner.max && side == SIDE_SOUTH)))
+      (! leader.singleRank || leader.maxRank < partner.maxRank ||
+        (leader.maxRank == partner.maxRank && side == SIDE_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
-  if (! leader.singleRank && partner.len > 0 && leader.min >= partner.max)
+  if (! leader.singleRank && 
+      partner.len > 0 && 
+      leader.minRank >= partner.maxRank)
     return;
        
-  for (unsigned leadPos = 1; leadPos <= leader.ranks.size(); leadPos++)
+  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
     if (! Ranks2::leadOK(leader, partner, leadPos, lead))
       continue;
 
-    for (unsigned lhoPos = 0; lhoPos <= opps.max; lhoPos++)
+    for (unsigned lhoPos = 0; lhoPos <= opps.maxPos; lhoPos++)
     {
       const unsigned lho = opps.ranks[lhoPos].rank;
       const unsigned lhoCount = opps.ranks[lhoPos].count;
       if (! Ranks2::oppOK(lho, lhoCount, false))
         continue;
 
-      for (unsigned pardPos = 0; pardPos <= partner.ranks.size(); pardPos++)
+      for (unsigned pardPos = partner.minPos; pardPos <= partner.maxPos; pardPos++)
       {
         const unsigned pard = partner.ranks[pardPos].rank;
         if (! Ranks2::pardOK(partner, max(lead, lho), pardPos, pard))
           continue;
 
-        for (unsigned rhoPos = 0; rhoPos <= opps.max; rhoPos++)
+        for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
         {
           const unsigned rho = opps.ranks[rhoPos].rank;
           const unsigned rhoCount = opps.ranks[rhoPos].count;
@@ -494,6 +538,7 @@ void Ranks2::setPlaysSide(
 
           // This takes 67 out of 70 seconds, so commented out for now.
           // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+          //   leader.maxPos, partner.maxPos,
           //   leadPos, lhoPos, pardPos, rhoPos, play);
         }
       }
