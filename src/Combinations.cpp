@@ -95,6 +95,8 @@ void Combinations::runUniques(const unsigned cards)
   unsigned uniqueIndex = 0;
 
 vector<unsigned> hist(1000);
+  vector<PlayEntry> plays;
+
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
     ranks.set(holding, combs[holding]);
@@ -109,12 +111,11 @@ vector<unsigned> hist(1000);
 
       counts[cards].unique++;
 
-      /*
-      list<PlayEntry> plays;
-      unsigned term;
-      ranks.setPlays(plays, term);
-      hist[plays.size()]++;
-      */
+      /* */
+      unsigned term, playNo;
+      ranks.setPlays(plays, playNo, term);
+      hist[playNo]++;
+      /* */
 /*
 if (plays.size() >= 600)
 {
