@@ -55,7 +55,7 @@ void Ranks2::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 1; // First non-void rank
+  maxRank = 0;
 
   full2reducedNorth.clear();
   full2reducedSouth.clear();
@@ -71,16 +71,16 @@ void Ranks2::setRanks(const unsigned holding)
   full2reducedSouth.resize(cards+1, BIGINT);
   full2reducedOpps.resize(cards+1, BIGINT);
 
-  // Find the owner of the first card so that we can consider the
-  // predecessor to belong to someone else (from the same side).
-  CardPosition prev_is = static_cast<CardPosition>(holding % 3);
+  // If the first card belongs to EW, there will be an uptick (from 0).
+  // If it does belong to NS, there will only be an uptick if there
+  // is a count > 0, which will not be the case.
+  bool prev_is_NS = ((holding % 3) == CONVERT_OPPS);
+  unsigned posNorth = 1;
+  unsigned posSouth = 1;
+  unsigned posOpps = 0;
 
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
-
-  unsigned posNorth = 1; // So actual ranks will start from 1
-  unsigned posSouth = 1;
-  unsigned posOpps = 1;
 
   bool firstNorth = true;
   bool firstSouth = true;
@@ -90,33 +90,9 @@ void Ranks2::setRanks(const unsigned holding)
   for (unsigned i = imin; i < imin+cards; i++)
   {
     const unsigned c = h % 3;
-    if (c == CONVERT_NORTH)
+    if (c == CONVERT_OPPS)
     {
-      if (prev_is == CONVERT_OPPS)
-      {
-        maxRank++;
-        posNorth++;
-      }
-
-      north.update(posNorth, maxRank, CARD_NAMES[i], firstNorth);
-      full2reducedNorth[maxRank] = posNorth;
-      prev_is = CONVERT_NORTH;
-    }
-    else if (c == CONVERT_SOUTH)
-    {
-      if (prev_is == CONVERT_OPPS)
-      {
-        maxRank++;
-        posSouth++;
-      }
-
-      south.update(posSouth, maxRank, CARD_NAMES[i], firstSouth);
-      full2reducedSouth[maxRank] = posSouth;
-      prev_is = CONVERT_SOUTH;
-    }
-    else
-    {
-      if (prev_is != CONVERT_OPPS)
+      if (prev_is_NS)
       {
         maxRank++;
         posOpps++;
@@ -124,7 +100,31 @@ void Ranks2::setRanks(const unsigned holding)
 
       opps.update(posOpps, maxRank, CARD_NAMES[i], firstOpps);
       full2reducedOpps[maxRank] = posOpps;
-      prev_is = CONVERT_OPPS;
+      prev_is_NS = false;
+    }
+    else
+    {
+      if (! prev_is_NS)
+      {
+        maxRank++;
+        if (north.ranks[posNorth].count > 0)
+          posNorth++;
+        if (south.ranks[posSouth].count > 0)
+          posSouth++;
+      }
+
+      if (c == CONVERT_NORTH)
+      {
+        north.update(posNorth, maxRank, CARD_NAMES[i], firstNorth);
+        full2reducedNorth[maxRank] = posNorth;
+      }
+      else
+      {
+        south.update(posSouth, maxRank, CARD_NAMES[i], firstSouth);
+        full2reducedSouth[maxRank] = posSouth;
+      }
+
+      prev_is_NS = true;
     }
 
     h /= 3;
@@ -201,6 +201,8 @@ bool Ranks2::dominates(
 unsigned Ranks2::canonical(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   vector<char>& canonical2comb) const
 {
   // For this purpose vec1 is considered "North".
@@ -222,9 +224,9 @@ unsigned Ranks2::canonical(
     }
     else 
     {
-      if (full2reducedNorth[rank] < BIGINT)
+      if (full2reduced1[rank] < BIGINT)
       {
-        const unsigned pos = full2reducedNorth[rank];
+        const unsigned pos = full2reduced1[rank];
         for (unsigned count = 0; count < vec1[pos].count; count++)
         {
           holding += (holding << 1) + CONVERT_NORTH;
@@ -232,9 +234,9 @@ unsigned Ranks2::canonical(
         }
       }
 
-      if (full2reducedSouth[rank] < BIGINT)
+      if (full2reduced2[rank] < BIGINT)
       {
-        const unsigned pos = full2reducedSouth[rank];
+        const unsigned pos = full2reduced2[rank];
         for (unsigned count = 0; count < vec2[pos].count; count++)
         {
           holding += (holding << 1) + CONVERT_SOUTH;
@@ -311,12 +313,14 @@ void Ranks2::set(
   {
 // cout << "South dominates\n";
     combEntry.canonicalHolding = Ranks2::canonical(south.ranks, north.ranks,
+      full2reducedSouth, full2reducedNorth,
       combEntry.canonical2comb);
   }
   else
   {
 // cout << "North dominates\n";
     combEntry.canonicalHolding = Ranks2::canonical(north.ranks, south.ranks,
+      full2reducedNorth, full2reducedSouth,
       combEntry.canonical2comb);
   }
 

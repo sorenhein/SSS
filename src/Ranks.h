@@ -43,6 +43,7 @@ class Ranks
         if (flag)
         {
           ranks[0].add('-');
+          min = 0;
           max = 0;
         }
       }

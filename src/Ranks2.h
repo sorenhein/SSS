@@ -117,6 +117,8 @@ assert(position < ranks.size());
     unsigned canonical(
       const vector<RankInfo2>& vec1,
       const vector<RankInfo2>& vec2,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       vector<char>& canonical2comb) const;
 
     void canonicalUpdate(

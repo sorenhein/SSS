@@ -90,18 +90,30 @@ void Combinations::runUniques(const unsigned cards)
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
   Ranks2 ranks;
+  Ranks ranksOld;
 
   ranks.resize(cards);
+  ranksOld.resize(cards);
   unsigned uniqueIndex = 0;
 
 vector<unsigned> hist(1000);
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
     ranks.set(holding, combs[holding]);
-// cout << "\n\nholding " << holding << endl;
-// cout << ranks.str() << endl;
-// cout << "canonical " << combs[holding].canonicalHolding << endl;
-// cout << ranks.str();
+
+    CombEntry ce;
+    ranksOld.set(holding, ce);
+    if (combs[holding].canonicalHolding != ce.canonicalHolding)
+    {
+ cout << "\n\ncards " << cards << " holding " << holding << endl;
+ cout << "New ranks\n";
+ cout << ranks.str() << endl;
+ cout << "Old ranks\n";
+ cout << ranksOld.str() << endl;
+ cout << "canonical " << combs[holding].canonicalHolding << endl;
+ cout << "canonical old " << ce.canonicalHolding << endl;
+ exit(0);
+    }
 
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
@@ -118,6 +130,26 @@ vector<unsigned> hist(1000);
       list<PlayEntry> plays;
       unsigned term;
       ranks.setPlays(plays, term);
+
+      list<PlayEntry> playsOld;
+      unsigned termOld;
+      ranksOld.setPlays(playsOld, termOld);
+
+      if (term != termOld)
+      {
+        cout << "holding " << holding << ": " << term << " " << termOld << endl;
+      }
+      if (plays.size() != playsOld.size())
+      {
+        cout << "holding " << holding << ": " << endl;
+        cout << plays.size() << " " << playsOld.size() << endl;
+        cout << plays.front().strHeader();
+        for (auto& play: plays)
+          cout << play.str();
+
+        exit(0);
+      }
+
       hist[plays.size()]++;
 /*
 if (plays.size() >= 600)
