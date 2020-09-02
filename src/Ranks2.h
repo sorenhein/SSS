@@ -132,10 +132,14 @@ class Ranks2
     bool pardOK(
       const PositionInfo& partner,
       const unsigned toBeat,
-      const unsigned pardPos,
       const unsigned pard) const;
 
-    bool rhoOK(
+    bool rhoWithVoidOK(
+      const unsigned card,
+      const unsigned count,
+      const bool alreadyPlayed) const;
+
+    bool rhoWithoutVoidOK(
       const unsigned card,
       const unsigned count,
       const bool alreadyPlayed) const;
@@ -150,6 +154,20 @@ class Ranks2
       const unsigned pardPos,
       const unsigned rhoPos,
       PlayEntry& play) const;
+
+    void setPlaysSideWithVoid(
+      const PositionInfo& leader,
+      const PositionInfo& partner,
+      const SidePosition side,
+      vector<PlayEntry>& plays,
+      unsigned& playNo) const;
+
+    void setPlaysSideWithoutVoid(
+      const PositionInfo& leader,
+      const PositionInfo& partner,
+      const SidePosition side,
+      vector<PlayEntry>& plays,
+      unsigned& playNo) const;
 
     void setPlaysSide(
       const PositionInfo& leader,

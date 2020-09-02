@@ -44,21 +44,21 @@ int main(int argc, char * argv[])
   */
 
   /*
-  Ranks ranks;
+  Ranks2 ranks;
   CombEntry ce;
-  ranks.resize(4);
-  ranks.set(8, ce);
+  ranks.resize(5);
+  ranks.set(47, ce);
   cout << ranks.str();
   cout << "canonical holding " << ce.canonicalHolding << endl;
   // exit(0);
   */
 
   /*
-  list<PlayEntry> plays;
-  unsigned term;
-  ranks.setPlays(plays, term);
-  cout << "size " << plays.size() << endl << endl;
-  cout << plays.front().strHeader();
+  vector<PlayEntry> plays;
+  unsigned term, playNo;
+  ranks.setPlays(plays, playNo, term);
+  cout << "size " << playNo << endl << endl;
+  cout << plays[0].strHeader();
   for (auto& play: plays)
     cout << play.str();
   exit(0);

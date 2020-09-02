@@ -409,15 +409,32 @@ bool Ranks2::leadOK(
 }
 
 
-bool Ranks2::rhoOK(
+bool Ranks2::rhoWithVoidOK(
+  const unsigned card,
+  const unsigned count,
+  const bool alreadyPlayed) const
+{
+  if (card == 0)
+  {
+    // Both opponents cannot be void.
+    return ! alreadyPlayed;
+  }
+  else if (count == 1 && alreadyPlayed)
+    // Can only play a card once.
+    return false;
+  else
+    return true;
+}
+
+
+bool Ranks2::rhoWithoutVoidOK(
   const unsigned card,
   const unsigned count,
   const bool alreadyPlayed) const
 {
   if (card == 0)
     // Both opponents cannot be void.
-    return ! alreadyPlayed;
-
+    return true;
   else if (count == 0)
     return false;
   else if (count == 1 && alreadyPlayed)
@@ -431,18 +448,13 @@ bool Ranks2::rhoOK(
 bool Ranks2::pardOK(
   const PositionInfo& partner,
   const unsigned toBeat,
-  const unsigned pardPos,
   const unsigned pard) const
 {
   // Always "play" a void.
   if (partner.len == 0)
     return true;
 
-  if (partner.ranks[pardPos].count == 0)
-  {
-    // Could be an in-between rank that partner doesn't have.
-    return false;
-  }
+  // By construction, count is > 0.
 
   // No rule concerning high cards.
   if (pard > toBeat)
@@ -500,6 +512,102 @@ void Ranks2::updateHoldings(
 }
 
 
+void Ranks2::setPlaysSideWithVoid(
+  const PositionInfo& leader,
+  const PositionInfo& partner,
+  const SidePosition side,
+  vector<PlayEntry>& plays,
+  unsigned &playNo) const
+{
+  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
+  {
+    const unsigned lead = leader.ranks[leadPos].rank;
+    if (! Ranks2::leadOK(leader, partner, lead))
+      continue;
+
+    const unsigned lhoPos = 0;
+    const unsigned lho = opps.ranks[lhoPos].rank;
+
+    for (unsigned pardPos = partner.minPos; 
+        pardPos <= partner.maxPos; pardPos++)
+    {
+      const unsigned pard = partner.ranks[pardPos].rank;
+      if (! Ranks2::pardOK(partner, max(lead, lho), pard))
+        continue;
+
+      for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
+      {
+        const unsigned rho = opps.ranks[rhoPos].rank;
+        const unsigned rhoCount = opps.ranks[rhoPos].count;
+        if (! Ranks2::rhoWithVoidOK(rho, rhoCount, lho == rho))
+          continue;
+          
+        // Register the new play.
+        if (playNo >= plays.size())
+          plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
+
+        PlayEntry& play = plays[playNo++];
+        play.update(side, lead, lho, pard, rho);
+
+        // This takes 67 out of 70 seconds, so commented out for now.
+        // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+        //   leader.maxPos, partner.maxPos,
+        //   leadPos, lhoPos, pardPos, rhoPos, play);
+      }
+    }
+  }
+}
+
+
+void Ranks2::setPlaysSideWithoutVoid(
+  const PositionInfo& leader,
+  const PositionInfo& partner,
+  const SidePosition side,
+  vector<PlayEntry>& plays,
+  unsigned &playNo) const
+{
+  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
+  {
+    const unsigned lead = leader.ranks[leadPos].rank;
+    if (! Ranks2::leadOK(leader, partner, lead))
+      continue;
+
+    for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
+    {
+      const unsigned lho = opps.ranks[lhoPos].rank;
+
+      for (unsigned pardPos = partner.minPos; 
+          pardPos <= partner.maxPos; pardPos++)
+      {
+        const unsigned pard = partner.ranks[pardPos].rank;
+        if (! Ranks2::pardOK(partner, max(lead, lho), pard))
+          continue;
+
+        for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
+        {
+          const unsigned rho = opps.ranks[rhoPos].rank;
+          const unsigned rhoCount = opps.ranks[rhoPos].count;
+          if (! Ranks2::rhoWithoutVoidOK(rho, rhoCount, lho == rho))
+            continue;
+          
+          // Register the new play.
+          if (playNo >= plays.size())
+            plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
+
+          PlayEntry& play = plays[playNo++];
+          play.update(side, lead, lho, pard, rho);
+
+          // This takes 67 out of 70 seconds, so commented out for now.
+          // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+          //   leader.maxPos, partner.maxPos,
+          //   leadPos, lhoPos, pardPos, rhoPos, play);
+        }
+      }
+    }
+  }
+}
+
+
 void Ranks2::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
@@ -522,48 +630,9 @@ void Ranks2::setPlaysSide(
       partner.len > 0 && 
       leader.minRank >= partner.maxRank)
     return;
-       
-  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
-  {
-    const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks2::leadOK(leader, partner, lead))
-      continue;
 
-    for (unsigned lhoPos = 0; lhoPos <= opps.maxPos; lhoPos++)
-    {
-      const unsigned lho = opps.ranks[lhoPos].rank;
-      const unsigned lhoCount = opps.ranks[lhoPos].count;
-      // if (! Ranks2::lhoOK(lho, lhoCount))
-        // continue;
-
-      for (unsigned pardPos = partner.minPos; pardPos <= partner.maxPos; pardPos++)
-      {
-        const unsigned pard = partner.ranks[pardPos].rank;
-        if (! Ranks2::pardOK(partner, max(lead, lho), pardPos, pard))
-          continue;
-
-        for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
-        {
-          const unsigned rho = opps.ranks[rhoPos].rank;
-          const unsigned rhoCount = opps.ranks[rhoPos].count;
-          if (! Ranks2::rhoOK(rho, rhoCount, lho == rho))
-            continue;
-          
-          // Register the new play.
-          if (playNo >= plays.size())
-            plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
-
-          PlayEntry& play = plays[playNo++];
-          play.update(side, lead, lho, pard, rho);
-
-          // This takes 67 out of 70 seconds, so commented out for now.
-          // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-          //   leader.maxPos, partner.maxPos,
-          //   leadPos, lhoPos, pardPos, rhoPos, play);
-        }
-      }
-    }
-  }
+  Ranks2::setPlaysSideWithVoid(leader, partner, side, plays, playNo);
+  Ranks2::setPlaysSideWithoutVoid(leader, partner, side, plays, playNo);
 }
 
 
