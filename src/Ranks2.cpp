@@ -16,6 +16,10 @@ Ranks2::Ranks2()
   north.ranks.clear();
   south.ranks.clear();
   opps.ranks.clear();
+
+  full2reducedNorth.clear();
+  full2reducedSouth.clear();
+  full2reducedOpps.clear();
 }
 
 
@@ -39,6 +43,12 @@ void Ranks2::resize(const unsigned cardsIn)
     south.ranks[card].cards.resize(cards+1);
     opps.ranks[card].cards.resize(cards+1);
   }
+
+  full2reducedNorth.resize(cards+1, BIGINT);
+  full2reducedSouth.resize(cards+1, BIGINT);
+  full2reducedOpps.resize(cards+1, BIGINT);
+
+  maxRank = 0;
 }
 
 
@@ -55,20 +65,20 @@ void Ranks2::clear()
   south.len = 0;
   opps.len = 0;
 
-  maxRank = 0;
+  for (unsigned rank = 0; rank <= maxRank; rank++)
+  {
+    full2reducedNorth[rank] = BIGINT;
+    full2reducedSouth[rank] = BIGINT;
+    full2reducedOpps[rank] = BIGINT;
+  }
 
-  full2reducedNorth.clear();
-  full2reducedSouth.clear();
-  full2reducedOpps.clear();
+  maxRank = 0;
 }
 
 
 void Ranks2::setRanks(const unsigned holding)
 {
   Ranks2::clear();
-  full2reducedNorth.resize(cards+1, BIGINT);
-  full2reducedSouth.resize(cards+1, BIGINT);
-  full2reducedOpps.resize(cards+1, BIGINT);
 
   // If the first card belongs to EW, there will be an uptick (from 0).
   // If it does belong to NS, there will only be an uptick if there
