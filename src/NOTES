@@ -1,3 +1,14 @@
+Ranks2 is 10% SLOWER than Ranks -- WTF?
+The difference seems to come basically from setRanks already.
+
+
+- canonical: 
+  - c2c looks wrong?
+  - Maybe the count loop can become a lookup.  The old holding gets multiplied
+    by a number of times-3 (lookup), and the adder is a block of N, S or opps.
+
+
+
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 

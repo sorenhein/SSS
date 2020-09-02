@@ -90,10 +90,8 @@ void Combinations::runUniques(const unsigned cards)
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
   Ranks2 ranks;
-  Ranks ranksOld;
 
   ranks.resize(cards);
-  ranksOld.resize(cards);
   unsigned uniqueIndex = 0;
 
 vector<unsigned> hist(1000);
@@ -101,25 +99,9 @@ vector<unsigned> hist(1000);
   {
     ranks.set(holding, combs[holding]);
 
-    CombEntry ce;
-    ranksOld.set(holding, ce);
-    if (combs[holding].canonicalHolding != ce.canonicalHolding)
-    {
- cout << "\n\ncards " << cards << " holding " << holding << endl;
- cout << "New ranks\n";
- cout << ranks.str() << endl;
- cout << "Old ranks\n";
- cout << ranksOld.str() << endl;
- cout << "canonical " << combs[holding].canonicalHolding << endl;
- cout << "canonical old " << ce.canonicalHolding << endl;
- exit(0);
-    }
-
     counts[cards].total++;
     if (holding == combs[holding].canonicalHolding)
     {
-// cout << "Is canonical, uniqueIndex is " << uniqueIndex << " vs " <<
-  // uniqs.size() << endl;
       assert(uniqueIndex < uniqs.size());
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
@@ -127,30 +109,12 @@ vector<unsigned> hist(1000);
 
       counts[cards].unique++;
 
+      /*
       list<PlayEntry> plays;
       unsigned term;
       ranks.setPlays(plays, term);
-
-      list<PlayEntry> playsOld;
-      unsigned termOld;
-      ranksOld.setPlays(playsOld, termOld);
-
-      if (term != termOld)
-      {
-        cout << "holding " << holding << ": " << term << " " << termOld << endl;
-      }
-      if (plays.size() != playsOld.size())
-      {
-        cout << "holding " << holding << ": " << endl;
-        cout << plays.size() << " " << playsOld.size() << endl;
-        cout << plays.front().strHeader();
-        for (auto& play: plays)
-          cout << play.str();
-
-        exit(0);
-      }
-
       hist[plays.size()]++;
+      */
 /*
 if (plays.size() >= 600)
 {
@@ -172,6 +136,7 @@ for (unsigned i = 0; i < hist.size(); i++)
   sum += i * hist[i];
   count += hist[i];
 }
+if (count >0)
 cout << "Avg " << fixed << setprecision(2) <<
   static_cast<float>(sum)/static_cast<float>(count) << endl;
 

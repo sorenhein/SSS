@@ -65,7 +65,6 @@ void Ranks2::clear()
 
 void Ranks2::setRanks(const unsigned holding)
 {
-// cout << "sr holding " << holding << " cards " << cards << endl;
   Ranks2::clear();
   full2reducedNorth.resize(cards+1, BIGINT);
   full2reducedSouth.resize(cards+1, BIGINT);
@@ -136,21 +135,6 @@ void Ranks2::setRanks(const unsigned holding)
   north.setSingleRank();
   south.setSingleRank();
   opps.setSingleRank();
-
-/*
-cout << "end of setRanks: North\n";
-for (unsigned p = 0; p <= north.maxPos; p++)
-{
-  assert(p < north.ranks.size());
-  cout << p << ": " << north.ranks[p].rank << " " << north.ranks[p].count << endl;
-}
-cout << "end of setRanks: South\n";
-for (unsigned p = 0; p <= south.maxPos; p++)
-{
-  assert(p < south.ranks.size());
-  cout << p << ": " << south.ranks[p].rank << " " << south.ranks[p].count << endl;
-}
-*/
 }
 
 

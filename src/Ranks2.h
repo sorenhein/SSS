@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <list>
-#include <cassert>
 
 #include "struct.h"
 
@@ -37,11 +36,6 @@ class Ranks2
         const unsigned rankIn,
         const char card)
       {
-if (count >= cards.size())
-{
-  cout << "add: rank " << rankIn << ", card " << card << ", count " << count << ", size " << cards.size() << endl;
-  assert(count < cards.size());
-}
         cards[count] = card;
         rank = rankIn;
         count++;
@@ -64,7 +58,6 @@ if (count >= cards.size())
         const char name,
         bool& flag)
       {
-assert(position < ranks.size());
         ranks[position].add(rank, name);
         maxRank = rank;
         maxPos = position;
