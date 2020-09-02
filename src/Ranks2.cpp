@@ -48,18 +48,21 @@ void Ranks2::resize(const unsigned cardsIn)
   full2reducedSouth.resize(cards+1, BIGINT);
   full2reducedOpps.resize(cards+1, BIGINT);
 
-  maxRank = 0;
+  maxRank = cards;
+  north.maxRank = cards;
+  south.maxRank = cards;
+  opps.maxRank = cards;
 }
 
 
 void Ranks2::clear()
 {
-  for (unsigned rank = 0; rank < north.ranks.size(); rank++)
-  {
+  for (unsigned rank = 0; rank <= north.maxRank; rank++)
     north.ranks[rank].clear();
+  for (unsigned rank = 0; rank <= south.maxRank; rank++)
     south.ranks[rank].clear();
+  for (unsigned rank = 0; rank <= opps.maxRank; rank++)
     opps.ranks[rank].clear();
-  }
 
   north.len = 0;
   south.len = 0;
