@@ -127,19 +127,18 @@ class Ranks2
     bool leadOK(
       const PositionInfo& leader,
       const PositionInfo& partner,
-      const unsigned leadPos,
       const unsigned lead) const;
-
-    bool oppOK(
-      const unsigned card,
-      const unsigned count,
-      const bool alreadyPlayed) const;
 
     bool pardOK(
       const PositionInfo& partner,
       const unsigned toBeat,
       const unsigned pardPos,
       const unsigned pard) const;
+
+    bool rhoOK(
+      const unsigned card,
+      const unsigned count,
+      const bool alreadyPlayed) const;
 
     void updateHoldings(
       const vector<RankInfo2>& vec1,

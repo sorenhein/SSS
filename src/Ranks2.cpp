@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+#include <cassert>
 
 #include "Ranks2.h"
 
@@ -382,15 +383,10 @@ bool Ranks2::trivial(unsigned& terminalValue) const
 bool Ranks2::leadOK(
   const PositionInfo& leader,
   const PositionInfo& partner,
-  const unsigned leadPos,
   const unsigned lead) const
 {
-  if (leader.ranks[leadPos].count == 0)
-  {
-    // Could be an in-between rank that the leader doesn't have.
-    return false;
-  }
-  else if (partner.len == 0)
+  // By construction, count is always > 0.
+  if (partner.len == 0)
   { // If we have the top rank opposite a void, always play it.
     if (leader.maxRank == maxRank && lead < maxRank)
       return false;
@@ -413,7 +409,7 @@ bool Ranks2::leadOK(
 }
 
 
-bool Ranks2::oppOK(
+bool Ranks2::rhoOK(
   const unsigned card,
   const unsigned count,
   const bool alreadyPlayed) const
@@ -530,15 +526,15 @@ void Ranks2::setPlaysSide(
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks2::leadOK(leader, partner, leadPos, lead))
+    if (! Ranks2::leadOK(leader, partner, lead))
       continue;
 
     for (unsigned lhoPos = 0; lhoPos <= opps.maxPos; lhoPos++)
     {
       const unsigned lho = opps.ranks[lhoPos].rank;
       const unsigned lhoCount = opps.ranks[lhoPos].count;
-      if (! Ranks2::oppOK(lho, lhoCount, false))
-        continue;
+      // if (! Ranks2::lhoOK(lho, lhoCount))
+        // continue;
 
       for (unsigned pardPos = partner.minPos; pardPos <= partner.maxPos; pardPos++)
       {
@@ -550,7 +546,7 @@ void Ranks2::setPlaysSide(
         {
           const unsigned rho = opps.ranks[rhoPos].rank;
           const unsigned rhoCount = opps.ranks[rhoPos].count;
-          if (! Ranks2::oppOK(rho, rhoCount, lho == rho))
+          if (! Ranks2::rhoOK(rho, rhoCount, lho == rho))
             continue;
           
           // Register the new play.
