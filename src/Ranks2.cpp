@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+#include <utility>
 #include <cassert>
 
 #include "Ranks2.h"
@@ -31,9 +32,20 @@ const vector<unsigned> PLAY_CHUNK_SIZE =
   150, // 15
 };
 
+vector<unsigned> HOLDING3_FACTOR;
+vector<vector<unsigned>> HOLDING3_ADDER;
+
+vector<unsigned> HOLDING2_FACTOR;
+vector<vector<unsigned>> HOLDING2_ADDER;
+
 
 Ranks2::Ranks2()
 {
+  // https://stackoverflow.com/questions/8412630/
+  // how-to-execute-a-piece-of-code-only-once
+  if (static auto called = false; ! exchange(called, true))
+    Ranks2::setConstants();
+
   north.ranks.clear();
   south.ranks.clear();
   opps.ranks.clear();
@@ -46,6 +58,37 @@ Ranks2::Ranks2()
 
 Ranks2::~Ranks2()
 {
+}
+
+
+void Ranks2::setConstants()
+{
+  HOLDING3_FACTOR.resize(MAX_CARDS+1);
+  HOLDING3_FACTOR[0] = 1;
+  for (unsigned c = 1; c < HOLDING3_FACTOR.size(); c++)
+    HOLDING3_FACTOR[c] = 3 * HOLDING3_FACTOR[c-1];
+
+  HOLDING3_ADDER.resize(MAX_CARDS+1);
+  for (unsigned c = 0; c < HOLDING3_FACTOR.size(); c++)
+  {
+    HOLDING3_ADDER[c].resize(3);
+    HOLDING3_ADDER[c][2] = HOLDING3_FACTOR[c] - 1;
+    HOLDING3_ADDER[c][1] = HOLDING3_ADDER[c][1] / 2;
+    HOLDING3_ADDER[c][0] = 0;
+  }
+
+  HOLDING2_FACTOR.resize(MAX_CARDS+1);
+  HOLDING2_FACTOR[0] = 1;
+  for (unsigned c = 1; c < HOLDING2_FACTOR.size(); c++)
+    HOLDING2_FACTOR[c] = HOLDING2_FACTOR[c-1] << 1;
+
+  HOLDING2_ADDER.resize(MAX_CARDS+1);
+  for (unsigned c = 0; c < HOLDING2_FACTOR.size(); c++)
+  {
+    HOLDING2_ADDER[c].resize(2);
+    HOLDING2_ADDER[c][1] = HOLDING2_ADDER[c][1] - 1;
+    HOLDING2_ADDER[c][0] = 0;
+  }
 }
 
 
@@ -271,6 +314,8 @@ void Ranks2::canonicalUpdate(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
   const vector<RankInfo2>& oppsIn,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   const unsigned cardsNew,
   unsigned& holding3,
   unsigned& holding2) const
@@ -284,20 +329,20 @@ void Ranks2::canonicalUpdate(
 
   for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
   {
-    if (full2reducedOpps[rank] < BIGINT)
+    const unsigned posOpps = full2reducedOpps[rank];
+    if (posOpps < BIGINT)
     {
-      const unsigned pos = full2reducedOpps[rank];
-      for (unsigned count = 0; count < oppsIn[pos].count; count++)
+      for (unsigned count = 0; count < oppsIn[posOpps].count; count++)
       {
         holding3 += (holding3 << 1) + CONVERT_OPPS;
         holding2 += holding2 + PAIR_EW;
       }
+      continue;
     }
-    else
-    {
-      if (full2reducedNorth[rank] < BIGINT)
+
+      if (full2reduced1[rank] < BIGINT)
       {
-        const unsigned pos = full2reducedNorth[rank];
+        const unsigned pos = full2reduced1[rank];
         for (unsigned count = 0; count < vec1[pos].count; count++)
         {
           holding3 += (holding3 << 1) + CONVERT_NORTH;
@@ -305,14 +350,66 @@ void Ranks2::canonicalUpdate(
         }
       }
 
-      if (full2reducedSouth[rank] < 2*cards)
+      if (full2reduced2[rank] < BIGINT)
       {
-        const unsigned pos = full2reducedSouth[rank];
+        const unsigned pos = full2reduced2[rank];
         for (unsigned count = 0; count < vec2[pos].count; count++)
         {
           holding3 += (holding3 << 1) + CONVERT_SOUTH;
           holding2 += holding2 + PAIR_NS;
         }
+      }
+  }
+}
+
+
+void Ranks2::canonicalUpdateNew(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2,
+  const vector<RankInfo2>& oppsIn,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
+  const unsigned cardsNew,
+  unsigned& holding3,
+  unsigned& holding2) const
+{
+  // This is similar to canonical, but (a) doesn't keep track of card
+  // names, and (b) generates both the binary and trinary holdings.
+  // For this purpose vec1 is considered "North".
+  holding3 = 0;
+  holding2 = 0;
+  unsigned index = (cardsNew > 13 ? 0 : 13-cardsNew);
+
+  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
+  {
+    const unsigned posOpps = full2reducedOpps[rank];
+    if (posOpps < BIGINT)
+    {
+      for (unsigned count = 0; count < oppsIn[posOpps].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_OPPS;
+        holding2 += holding2 + PAIR_EW;
+      }
+      continue;
+    }
+
+    if (full2reduced1[rank] < BIGINT)
+    {
+      const unsigned pos = full2reduced1[rank];
+      for (unsigned count = 0; count < vec1[pos].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_NORTH;
+        holding2 += holding2 + PAIR_NS;
+      }
+    }
+
+    if (full2reduced2[rank] < BIGINT)
+    {
+      const unsigned pos = full2reduced2[rank];
+      for (unsigned count = 0; count < vec2[pos].count; count++)
+      {
+        holding3 += (holding3 << 1) + CONVERT_SOUTH;
+        holding2 += holding2 + PAIR_NS;
       }
     }
   }
@@ -434,15 +531,23 @@ void Ranks2::updateHoldings(
   const vector<RankInfo2>& vec2,
   const unsigned max1,
   const unsigned max2,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   const unsigned cardsNew,
   PlayEntry& play)
 {
   if (Ranks2::dominates(vec1, max1, vec2, max2))
-    Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, cardsNew, 
-      play.holdingNew3, play.holdingNew2);
+  {
+    Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, 
+      full2reduced1, full2reduced2,
+      cardsNew, play.holdingNew3, play.holdingNew2);
+  }
   else
-    Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, cardsNew, 
-      play.holdingNew3, play.holdingNew2);
+  {
+    Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, 
+      full2reduced1, full2reduced2,
+      cardsNew, play.holdingNew3, play.holdingNew2);
+  }
 }
 
 
@@ -450,6 +555,8 @@ void Ranks2::setPlaysSideWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -494,7 +601,8 @@ void Ranks2::setPlaysSideWithVoid(
         play.update(side, lead, 0, pard, rho);
 
         Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-          leader.maxPos, partner.maxPos, cardsNew, play);
+          leader.maxPos, partner.maxPos, 
+          full2reduced1, full2reduced2, cardsNew, play);
         
         opps.ranks[rhoPos].count++;
       }
@@ -514,6 +622,8 @@ void Ranks2::setPlaysSideWithoutVoid(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -566,7 +676,8 @@ void Ranks2::setPlaysSideWithoutVoid(
           play.update(side, lead, lho, pard, rho);
 
           Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-            leader.maxPos, partner.maxPos, cardsNew, play);
+            leader.maxPos, partner.maxPos, 
+            full2reduced1, full2reduced2, cardsNew, play);
           
           if (rhoPos > 0)
             cardsNew++;
@@ -590,6 +701,8 @@ void Ranks2::setPlaysSide(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
+  const vector<unsigned>& full2reduced1,
+  const vector<unsigned>& full2reduced2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -609,8 +722,10 @@ void Ranks2::setPlaysSide(
       leader.minRank >= partner.maxRank)
     return;
 
-  Ranks2::setPlaysSideWithVoid(leader, partner, side, plays, playNo);
-  Ranks2::setPlaysSideWithoutVoid(leader, partner, side, plays, playNo);
+  Ranks2::setPlaysSideWithVoid(leader, partner, side, 
+    full2reduced1, full2reduced2, plays, playNo);
+  Ranks2::setPlaysSideWithoutVoid(leader, partner, side,
+    full2reduced1, full2reduced2, plays, playNo);
 }
 
 
@@ -629,8 +744,10 @@ CombinationType Ranks2::setPlays(
   if (Ranks2::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  Ranks2::setPlaysSide(north, south, SIDE_NORTH, plays, playNo);
-  Ranks2::setPlaysSide(south, north, SIDE_SOUTH, plays, playNo);
+  Ranks2::setPlaysSide(north, south, SIDE_NORTH, 
+    full2reducedNorth, full2reducedSouth, plays, playNo);
+  Ranks2::setPlaysSide(south, north, SIDE_SOUTH, 
+    full2reducedSouth, full2reducedNorth, plays, playNo);
   return COMB_OTHER;
 }
 

@@ -99,6 +99,8 @@ class Ranks2
     unsigned cards;
     unsigned maxRank;
 
+    void setConstants();
+
     void setRanks(const unsigned holding);
 
     bool dominates(
@@ -118,6 +120,18 @@ class Ranks2
       const vector<RankInfo2>& vec1,
       const vector<RankInfo2>& vec2,
       const vector<RankInfo2>& oppsIn,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
+      const unsigned cardsNew,
+      unsigned& holding3,
+      unsigned& holding2) const;
+
+    void canonicalUpdateNew(
+      const vector<RankInfo2>& vec1,
+      const vector<RankInfo2>& vec2,
+      const vector<RankInfo2>& oppsIn,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       const unsigned cardsNew,
       unsigned& holding3,
       unsigned& holding2) const;
@@ -139,6 +153,8 @@ class Ranks2
       const vector<RankInfo2>& vec2,
       const unsigned max1,
       const unsigned max2,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       const unsigned cardsNew,
       PlayEntry& play);
 
@@ -146,6 +162,8 @@ class Ranks2
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -153,6 +171,8 @@ class Ranks2
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -160,6 +180,8 @@ class Ranks2
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
+      const vector<unsigned>& full2reduced1,
+      const vector<unsigned>& full2reduced2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
