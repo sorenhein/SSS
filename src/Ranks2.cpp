@@ -38,6 +38,12 @@ vector<vector<unsigned>> HOLDING3_ADDER;
 vector<unsigned> HOLDING2_SHIFT;
 vector<vector<unsigned>> HOLDING2_ADDER;
 
+vector<unsigned> HOLDING3_RANK_FACTOR;
+vector<unsigned> HOLDING3_RANK_ADDER;
+
+vector<unsigned> HOLDING2_RANK_SHIFT;
+vector<unsigned> HOLDING2_RANK_ADDER;
+
 
 Ranks2::Ranks2()
 {
@@ -53,6 +59,8 @@ Ranks2::Ranks2()
   full2reducedNorth.clear();
   full2reducedSouth.clear();
   full2reducedOpps.clear();
+
+  zero = 0; // See .h file
 }
 
 
@@ -85,8 +93,49 @@ void Ranks2::setConstants()
   for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
   {
     HOLDING2_ADDER[c].resize(2);
-    HOLDING2_ADDER[c][1] = (1 << c) - 1;
+    HOLDING2_ADDER[c][1] = (c == 0 ? 0 : (1 << c) - 1);
     HOLDING2_ADDER[c][0] = 0;
+  }
+
+  // Store the counts of a rank in a 12-bit word.  As we only consider
+  // a limited number of cards, we only fill out the table entries up
+  // to a sum of 16 cards.
+  assert(MAX_CARDS <= 15);
+  HOLDING3_RANK_FACTOR.resize(4096);
+  HOLDING3_RANK_ADDER.resize(4096);
+
+  HOLDING2_RANK_SHIFT.resize(4096);
+  HOLDING2_RANK_ADDER.resize(4096);
+
+  for (unsigned oppCount = 0; oppCount < 16; oppCount++)
+  {
+    for (unsigned decl1Count = 0; 
+        decl1Count <= MAX_CARDS - oppCount; decl1Count++)
+    {
+      for (unsigned decl2Count = 0; 
+          decl2Count <= MAX_CARDS - oppCount - decl1Count; decl2Count++)
+      {
+        const unsigned sum = oppCount + decl1Count + decl2Count;
+        const unsigned index = (oppCount << 8 ) |
+          (decl1Count << 4) | decl2Count;
+        
+        HOLDING3_RANK_FACTOR[index] = HOLDING3_FACTOR[sum];
+
+        HOLDING3_RANK_ADDER[index] = 
+          HOLDING3_ADDER[oppCount][CONVERT_OPPS] *
+            HOLDING3_FACTOR[decl1Count + decl2Count] +
+          HOLDING3_ADDER[decl1Count][CONVERT_NORTH] *
+            HOLDING3_FACTOR[decl2Count] +
+          HOLDING3_ADDER[decl2Count][CONVERT_SOUTH];
+
+        HOLDING2_RANK_SHIFT[index] = HOLDING2_SHIFT[sum];
+
+        HOLDING2_RANK_ADDER[index] = 
+          (HOLDING2_ADDER[oppCount][PAIR_EW] << 
+            (decl1Count + decl2Count)) |
+          HOLDING2_ADDER[decl1Count + decl2Count][PAIR_NS];
+      }
+    }
   }
 }
 
@@ -320,46 +369,25 @@ void Ranks2::canonicalUpdate(
 {
   // This is similar to canonical, but (a) doesn't keep track of card
   // names, and (b) generates both the binary and trinary holdings.
-  // For this purpose vec1 is considered "North".
+  // It is also quite highly optimized.
   holding3 = 0;
   holding2 = 0;
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     const unsigned posOpps = full2reducedOpps[rank];
-    if (posOpps < BIGINT)
-    {
-      const unsigned countOpps = oppsIn[posOpps].count;
-      holding3 = HOLDING3_FACTOR[countOpps] * holding3 +
-        HOLDING3_ADDER[countOpps][CONVERT_OPPS];
-
-      holding2 = (holding2 << HOLDING2_SHIFT[countOpps]) |
-        HOLDING2_ADDER[countOpps][PAIR_EW];
-
-      continue;
-    }
-
     const unsigned pos1 = full2reduced1[rank];
-    if (pos1 < BIGINT)
-    {
-      const unsigned count1 = vec1[pos1].count;
-      holding3 = HOLDING3_FACTOR[count1] * holding3 +
-        HOLDING3_ADDER[count1][CONVERT_NORTH];
-
-      holding2 = (holding2 << HOLDING2_SHIFT[count1]) |
-        HOLDING2_ADDER[count1][PAIR_NS];
-    }
-
     const unsigned pos2 = full2reduced2[rank];
-    if (pos2 < BIGINT)
-    {
-      const unsigned count2 = vec2[pos2].count;
-      holding3 = HOLDING3_FACTOR[count2] * holding3 +
-        HOLDING3_ADDER[count2][CONVERT_SOUTH];
 
-      holding2 = (holding2 << HOLDING2_SHIFT[count2]) |
-        HOLDING2_ADDER[count2][PAIR_NS];
-    }
+    const unsigned cOpps = (posOpps < BIGINT ? oppsIn[posOpps].count : 0);
+    const unsigned c1 = (pos1 < BIGINT ? vec1[pos1].count : 0);
+    const unsigned c2 = (pos2 < BIGINT ? vec2[pos2].count : 0);
+    const unsigned index = (cOpps << 8) | (c1 << 4) | c2;
+
+    holding3 = HOLDING3_RANK_FACTOR[index] * holding3 +
+      HOLDING3_RANK_ADDER[index];
+    holding2 = (holding2 << HOLDING2_RANK_SHIFT[index]) |
+      HOLDING2_RANK_ADDER[index];
   }
 }
 

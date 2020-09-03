@@ -99,6 +99,7 @@ class Ranks2
     unsigned cards;
     unsigned maxRank;
 
+
     void setConstants();
 
     void setRanks(const unsigned holding);
