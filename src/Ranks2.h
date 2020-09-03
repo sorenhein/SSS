@@ -145,15 +145,6 @@ class Ranks2
       vector<char>& canonical2comb) const;
 
     void canonicalUpdate(
-      const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2,
-      const vector<RankInfo2>& oppsIn,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
-      unsigned& holding3,
-      unsigned& holding2) const;
-
-    void canonicalUpdateNew(
       const vector<RankInfo3>& full2reduced1,
       const vector<RankInfo3>& full2reduced2,
       unsigned& holding3,
@@ -176,47 +167,32 @@ class Ranks2
       const vector<RankInfo2>& vec2,
       const unsigned max1,
       const unsigned max2,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
-      PlayEntry& play);
-
-    void updateHoldingsNew(
-      const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2,
-      const unsigned max1,
-      const unsigned max2,
       const vector<RankInfo3>& fullCount1,
       const vector<RankInfo3>& fullCount2,
       PlayEntry& play);
 
     void setPlaysSideWithVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      const PositionInfo& leader,
+      const PositionInfo& partner,
       const SidePosition side,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
       vector<RankInfo3>& fullCount1,
       vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
     void setPlaysSideWithoutVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      const PositionInfo& leader,
+      const PositionInfo& partner,
       const SidePosition side,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
       vector<RankInfo3>& fullCount1,
       vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
     void setPlaysSide(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      const PositionInfo& leader,
+      const PositionInfo& partner,
       const SidePosition side,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
       vector<RankInfo3>& fullCount1,
       vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
