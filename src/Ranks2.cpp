@@ -475,6 +475,23 @@ void Ranks2::updateHoldings(
 }
 
 
+void Ranks2::updateHoldingsNew(
+  const vector<RankInfo2>& vec1,
+  const vector<RankInfo2>& vec2,
+  const unsigned max1, // TODO Many too many arguments
+  const unsigned max2,
+  const unsigned cardsNew,
+  PlayEntry& play)
+{
+  if (Ranks2::dominates(vec1, max1, vec2, max2))
+    Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, cardsNew, 
+      play.holdingNew3, play.holdingNew2);
+  else
+    Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, cardsNew, 
+      play.holdingNew3, play.holdingNew2);
+}
+
+
 void Ranks2::setPlaysSideWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
@@ -482,11 +499,17 @@ void Ranks2::setPlaysSideWithVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
+  // Leader and RHO are known not to be void.  LHO is void.
+  unsigned cardsNew = cards - 2;
+
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
     if (! Ranks2::leadOK(leader, partner, lead))
       continue;
+
+    leader.ranks[leadPos].count--;
+    opps.ranks[0].count--;
 
     for (unsigned pardPos = partner.minPos; 
         pardPos <= partner.maxPos; pardPos++)
@@ -495,27 +518,41 @@ void Ranks2::setPlaysSideWithVoid(
       if (! Ranks2::pardOK(partner, lead, pard))
         continue;
 
+      if (pardPos > 0)
+        cardsNew--;
+      partner.ranks[pardPos].count--;
+
       // toBeat = max(lead, pard)
       for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
       {
         const unsigned rho = opps.ranks[rhoPos].rank;
+
+        // TODO Lowest of rho cards < toBeat (no subterfuge left)
+        // Lowest of rho cards > toBeat
+
+        opps.ranks[rhoPos].count--;
           
         // Register the new play.
         if (playNo >= plays.size())
           plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
 
-        // TODO Lowest of rho cards < toBeat (no subterfuge left)
-        // Lowest of rho cards > toBeat
-
         PlayEntry& play = plays[playNo++];
         play.update(side, lead, 0, pard, rho);
 
         // This takes 67 out of 70 seconds, so commented out for now.
-        Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-        leader.maxPos, partner.maxPos,
-          leadPos, 0, pardPos, rhoPos, play);
+        Ranks2::updateHoldingsNew(leader.ranks, partner.ranks, 
+          leader.maxPos, partner.maxPos, cardsNew, play);
+        
+        opps.ranks[rhoPos].count++;
       }
+
+      if (pardPos > 0)
+        cardsNew++;
+      partner.ranks[pardPos].count++;
     }
+
+    leader.ranks[leadPos].count++;
+    opps.ranks[0].count++;
   }
 }
 

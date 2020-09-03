@@ -145,6 +145,14 @@ class Ranks2
       const unsigned rhoPos,
       PlayEntry& play);
 
+    void updateHoldingsNew(
+      const vector<RankInfo2>& vec1,
+      const vector<RankInfo2>& vec2,
+      const unsigned max1,
+      const unsigned max2,
+      const unsigned cardsNew,
+      PlayEntry& play);
+
     void setPlaysSideWithVoid(
       PositionInfo& leader,
       PositionInfo& partner,
