@@ -134,46 +134,37 @@ class Ranks2
       const unsigned toBeat,
       const unsigned pard) const;
 
-    bool rhoWithVoidOK(
-      const unsigned count,
-      const bool alreadyPlayed) const;
-
-    bool rhoWithoutVoidOK(
-      const unsigned card,
-      const unsigned count,
-      const bool alreadyPlayed) const;
-
     void updateHoldings(
-      const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2,
+      vector<RankInfo2>& vec1,
+      vector<RankInfo2>& vec2,
       const unsigned max1,
       const unsigned max2,
       const unsigned leadPos,
       const unsigned lhoPos,
       const unsigned pardPos,
       const unsigned rhoPos,
-      PlayEntry& play) const;
+      PlayEntry& play);
 
     void setPlaysSideWithVoid(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
       vector<PlayEntry>& plays,
-      unsigned& playNo) const;
+      unsigned& playNo);
 
     void setPlaysSideWithoutVoid(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
       vector<PlayEntry>& plays,
-      unsigned& playNo) const;
+      unsigned& playNo);
 
     void setPlaysSide(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
       vector<PlayEntry>& plays,
-      unsigned& playNo) const;
+      unsigned& playNo);
 
     string strRankInfo(
       const vector<RankInfo2>& rankInfo,
@@ -197,7 +188,7 @@ class Ranks2
     CombinationType setPlays(
       vector<PlayEntry>& plays,
       unsigned& playNo,
-      unsigned& terminalValue) const;
+      unsigned& terminalValue);
 
     string str() const;
 };

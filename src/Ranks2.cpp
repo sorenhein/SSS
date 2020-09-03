@@ -409,42 +409,6 @@ bool Ranks2::leadOK(
 }
 
 
-bool Ranks2::rhoWithVoidOK(
-  const unsigned card,
-  const unsigned count,
-  const bool alreadyPlayed) const
-{
-  if (card == 0)
-  {
-    // Both opponents cannot be void.
-    return ! alreadyPlayed;
-  }
-  else if (count == 1 && alreadyPlayed)
-    // Can only play a card once.
-    return false;
-  else
-    return true;
-}
-
-
-bool Ranks2::rhoWithoutVoidOK(
-  const unsigned card,
-  const unsigned count,
-  const bool alreadyPlayed) const
-{
-  if (card == 0)
-    // Both opponents cannot be void.
-    return true;
-  else if (count == 0)
-    return false;
-  else if (count == 1 && alreadyPlayed)
-    // Can only play a card once.
-    return false;
-  else
-    return true;
-}
-
-
 bool Ranks2::pardOK(
   const PositionInfo& partner,
   const unsigned toBeat,
@@ -466,58 +430,69 @@ bool Ranks2::pardOK(
 
 
 void Ranks2::updateHoldings(
-  const vector<RankInfo2>& vec1,
-  const vector<RankInfo2>& vec2,
+  vector<RankInfo2>& vec1,
+  vector<RankInfo2>& vec2,
   const unsigned max1, // TODO Many too many arguments
   const unsigned max2,
   const unsigned leadPos,
   const unsigned lhoPos,
   const unsigned pardPos,
   const unsigned rhoPos,
-  PlayEntry& play) const
+  PlayEntry& play)
 {
   unsigned cardsNew = cards;
 
   // The leader always has a card.
-  vector<RankInfo2> vec1New = vec1;
-  vec1New[leadPos].count--;
+  vec1[leadPos].count--;
   cardsNew--;
 
-  vector<RankInfo2> vec2New = vec2;
   if (play.pard > 0)
   {
-    vec2New[pardPos].count--;
+    vec2[pardPos].count--;
     cardsNew--;
   }
 
-  vector<RankInfo2> oppsNew = opps.ranks;
   if (play.lho > 0)
   {
-    oppsNew[lhoPos].count--;
+    opps.ranks[lhoPos].count--;
     cardsNew--;
   }
 
   if (play.rho > 0)
   {
-    oppsNew[rhoPos].count--;
+    opps.ranks[rhoPos].count--;
     cardsNew--;
   }
 
-  if (Ranks2::dominates(vec1New, max1, vec2New, max2))
-    Ranks2::canonicalUpdate(vec1New, vec2New, oppsNew, cardsNew, 
+
+  if (Ranks2::dominates(vec1, max1, vec2, max2))
+    Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, cardsNew, 
       play.holdingNew3, play.holdingNew2);
   else
-    Ranks2::canonicalUpdate(vec2New, vec1New, oppsNew, cardsNew, 
+    Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, cardsNew, 
       play.holdingNew3, play.holdingNew2);
+
+
+  // Restore the vectors.
+  vec1[leadPos].count++;
+
+  if (play.pard > 0)
+    vec2[pardPos].count++;
+
+  if (play.lho > 0)
+    opps.ranks[lhoPos].count++;
+
+  if (play.rho > 0)
+    opps.ranks[rhoPos].count++;
 }
 
 
 void Ranks2::setPlaysSideWithVoid(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
   vector<PlayEntry>& plays,
-  unsigned &playNo) const
+  unsigned &playNo)
 {
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -525,34 +500,32 @@ void Ranks2::setPlaysSideWithVoid(
     if (! Ranks2::leadOK(leader, partner, lead))
       continue;
 
-    const unsigned lhoPos = 0;
-    const unsigned lho = opps.ranks[lhoPos].rank;
-
     for (unsigned pardPos = partner.minPos; 
         pardPos <= partner.maxPos; pardPos++)
     {
       const unsigned pard = partner.ranks[pardPos].rank;
-      if (! Ranks2::pardOK(partner, max(lead, lho), pard))
+      if (! Ranks2::pardOK(partner, lead, pard))
         continue;
 
-      for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
+      // toBeat = max(lead, pard)
+      for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
       {
         const unsigned rho = opps.ranks[rhoPos].rank;
-        const unsigned rhoCount = opps.ranks[rhoPos].count;
-        if (! Ranks2::rhoWithVoidOK(rho, rhoCount, lho == rho))
-          continue;
           
         // Register the new play.
         if (playNo >= plays.size())
           plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
 
+        // TODO Lowest of rho cards < toBeat (no subterfuge left)
+        // Lowest of rho cards > toBeat
+
         PlayEntry& play = plays[playNo++];
-        play.update(side, lead, lho, pard, rho);
+        play.update(side, lead, 0, pard, rho);
 
         // This takes 67 out of 70 seconds, so commented out for now.
-        // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-        //   leader.maxPos, partner.maxPos,
-        //   leadPos, lhoPos, pardPos, rhoPos, play);
+        Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+        leader.maxPos, partner.maxPos,
+          leadPos, 0, pardPos, rhoPos, play);
       }
     }
   }
@@ -560,11 +533,11 @@ void Ranks2::setPlaysSideWithVoid(
 
 
 void Ranks2::setPlaysSideWithoutVoid(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
   vector<PlayEntry>& plays,
-  unsigned &playNo) const
+  unsigned &playNo)
 {
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -586,8 +559,8 @@ void Ranks2::setPlaysSideWithoutVoid(
         for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
         {
           const unsigned rho = opps.ranks[rhoPos].rank;
-          const unsigned rhoCount = opps.ranks[rhoPos].count;
-          if (! Ranks2::rhoWithoutVoidOK(rho, rhoCount, lho == rho))
+
+          if (lho == rho && opps.ranks[rhoPos].count == 1)
             continue;
           
           // Register the new play.
@@ -598,9 +571,9 @@ void Ranks2::setPlaysSideWithoutVoid(
           play.update(side, lead, lho, pard, rho);
 
           // This takes 67 out of 70 seconds, so commented out for now.
-          // Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-          //   leader.maxPos, partner.maxPos,
-          //   leadPos, lhoPos, pardPos, rhoPos, play);
+          Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+            leader.maxPos, partner.maxPos,
+            leadPos, lhoPos, pardPos, rhoPos, play);
         }
       }
     }
@@ -609,11 +582,11 @@ void Ranks2::setPlaysSideWithoutVoid(
 
 
 void Ranks2::setPlaysSide(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
   vector<PlayEntry>& plays,
-  unsigned &playNo) const
+  unsigned &playNo)
 {
   if (leader.len == 0)
     return;
@@ -639,7 +612,7 @@ void Ranks2::setPlaysSide(
 CombinationType Ranks2::setPlays(
   vector<PlayEntry>& plays,
   unsigned& playNo,
-  unsigned& terminalValue) const
+  unsigned& terminalValue)
 {
   // If COMB_TRIVIAL, then only terminalValue is set.
   // Otherwise, plays are set.

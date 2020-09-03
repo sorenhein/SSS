@@ -1,6 +1,6 @@
-Ranks2 is 10% SLOWER than Ranks -- WTF?
-The difference seems to come basically from setRanks already.
-
+Optimizations
+- If LHO void, RHO is more restricted
+- If opps play Q and we have KJ (so 1 rank in between), always prefer K to J.
 
 - canonical: 
   - c2c looks wrong?
