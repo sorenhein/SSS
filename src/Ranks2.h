@@ -88,9 +88,36 @@ class Ranks2
       }
     };
 
+    struct RankInfo3
+    {
+      unsigned count;
+      vector<char> cards;
+
+      RankInfo3()
+      {
+        RankInfo3::clear();
+      }
+
+      void clear()
+      {
+        count = 0;
+      }
+
+      void add(const char name)
+      {
+        cards[count] = name;
+        count++;
+      }
+    };
+
+
     vector<unsigned> full2reducedNorth;
     vector<unsigned> full2reducedSouth;
     vector<unsigned> full2reducedOpps;
+
+    vector<RankInfo3> fullCountNorth;
+    vector<RankInfo3> fullCountSouth;
+    vector<RankInfo3> fullCountOpps;
 
     PositionInfo north;
     PositionInfo south;
@@ -126,6 +153,12 @@ class Ranks2
       unsigned& holding3,
       unsigned& holding2) const;
 
+    void canonicalUpdateNew(
+      const vector<RankInfo3>& full2reduced1,
+      const vector<RankInfo3>& full2reduced2,
+      unsigned& holding3,
+      unsigned& holding2) const;
+
     bool trivial(unsigned& terminalValue) const;
 
     bool leadOK(
@@ -147,12 +180,23 @@ class Ranks2
       const vector<unsigned>& full2reduced2,
       PlayEntry& play);
 
+    void updateHoldingsNew(
+      const vector<RankInfo2>& vec1,
+      const vector<RankInfo2>& vec2,
+      const unsigned max1,
+      const unsigned max2,
+      const vector<RankInfo3>& fullCount1,
+      const vector<RankInfo3>& fullCount2,
+      PlayEntry& play);
+
     void setPlaysSideWithVoid(
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
+      vector<RankInfo3>& fullCount1,
+      vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -162,6 +206,8 @@ class Ranks2
       const SidePosition side,
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
+      vector<RankInfo3>& fullCount1,
+      vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -171,6 +217,8 @@ class Ranks2
       const SidePosition side,
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
+      vector<RankInfo3>& fullCount1,
+      vector<RankInfo3>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 

@@ -43,11 +43,11 @@ int main(int argc, char * argv[])
   cout << ranks.str();
   */
 
-  /*
+  /* 
   Ranks2 ranks;
   CombEntry ce;
-  ranks.resize(5);
-  ranks.set(47, ce);
+  ranks.resize(4);
+  ranks.set(8, ce);
   cout << ranks.str();
   cout << "canonical holding " << ce.canonicalHolding << endl;
   // exit(0);
