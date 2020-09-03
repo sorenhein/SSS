@@ -199,8 +199,7 @@ class Ranks2
       unsigned& playNo);
 
     string strRankInfo(
-      const vector<RankInfo2>& rankInfo,
-      const unsigned rank,
+      const RankInfo3& rankInfo,
       const string& player) const;
 
   public:

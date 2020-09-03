@@ -1,11 +1,21 @@
+- Moved canonical to the new way of doing it
+- Remove full2reduced vectors after this fix
+- Put the fullCount vectors inside the north/south/opps structs?
+- Better name than RankInfo3, maybe FullRankInfo
+- Get rid of Ranks.cpp
+- Get rid of RankInfo
+- Rename RankInfo to ReducedRankInfo
+- RankInfo goes inside Ranks2.cpp
+- dominates() can take PositionInfo's as arguments
+- play output should use full ranks
+
+
 Optimizations
 - If LHO void, RHO is more restricted
 - If opps play Q and we have KJ (so 1 rank in between), always prefer K to J.
 
 - canonical: 
   - c2c looks wrong?
-  - Maybe the count loop can become a lookup.  The old holding gets multiplied
-    by a number of times-3 (lookup), and the adder is a block of N, S or opps.
 
 
 

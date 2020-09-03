@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  /*
+  /* 
   Ranks2 ranks;
   CombEntry ce;
   ranks.resize(13);
@@ -43,26 +43,26 @@ int main(int argc, char * argv[])
   cout << ranks.str();
   */
 
-  /* 
+  /* */
   Ranks2 ranks;
   CombEntry ce;
-  ranks.resize(4);
-  ranks.set(8, ce);
+  ranks.resize(13);
+  ranks.set(464920, ce);
   cout << ranks.str();
   cout << "canonical holding " << ce.canonicalHolding << endl;
   // exit(0);
-  */
+  /* */
 
-  /*
+  /* */
   vector<PlayEntry> plays;
   unsigned term, playNo;
   ranks.setPlays(plays, playNo, term);
   cout << "size " << playNo << endl << endl;
   cout << plays[0].strHeader();
-  for (auto& play: plays)
-    cout << play.str();
+  for (unsigned i = 0; i < playNo; i++)
+    cout << plays[i].str();
   exit(0);
-  */
+  /* */
 
   // Set up combinations.
 

@@ -728,22 +728,21 @@ CombinationType Ranks2::setPlays(
 
 
 string Ranks2::strRankInfo(
-  const vector<RankInfo2>& rankInfo,
-  const unsigned rank,
+  const RankInfo3& rankInfo,
   const string& player) const
 {
   stringstream ss;
-  if (rank == BIGINT)
+  if (rankInfo.count == 0)
     ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
   else
   {
     string concat = "";
-    for (unsigned card = rankInfo[rank].count; card-- > 0; )
-      concat += rankInfo[rank].cards[card];
+    for (unsigned card = rankInfo.count; card-- > 0; )
+      concat += rankInfo.cards[card];
 
     ss << 
       setw(8) << player << 
-      setw(4) << rankInfo[rank].count << 
+      setw(4) << rankInfo.count << 
       setw(6) << concat;
   }
 
@@ -765,9 +764,9 @@ string Ranks2::str() const
   for (unsigned pos = maxRank; pos > 0; pos--) // Exclude void
   {
     ss << 
-      Ranks2::strRankInfo(north.ranks, full2reducedNorth[pos], "North") <<
-      Ranks2::strRankInfo(south.ranks, full2reducedSouth[pos], "South") <<
-      Ranks2::strRankInfo(opps.ranks, full2reducedOpps[pos], "Opps") <<
+      Ranks2::strRankInfo(fullCountNorth[pos], "North") <<
+      Ranks2::strRankInfo(fullCountSouth[pos], "South") <<
+      Ranks2::strRankInfo(fullCountOpps[pos], "Opps") <<
       endl;
   }
   
