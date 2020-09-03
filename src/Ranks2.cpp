@@ -35,7 +35,7 @@ const vector<unsigned> PLAY_CHUNK_SIZE =
 vector<unsigned> HOLDING3_FACTOR;
 vector<vector<unsigned>> HOLDING3_ADDER;
 
-vector<unsigned> HOLDING2_FACTOR;
+vector<unsigned> HOLDING2_SHIFT;
 vector<vector<unsigned>> HOLDING2_ADDER;
 
 
@@ -77,16 +77,15 @@ void Ranks2::setConstants()
     HOLDING3_ADDER[c][0] = 0;
   }
 
-  HOLDING2_FACTOR.resize(MAX_CARDS+1);
-  HOLDING2_FACTOR[0] = 1;
-  for (unsigned c = 1; c < HOLDING2_FACTOR.size(); c++)
-    HOLDING2_FACTOR[c] = HOLDING2_FACTOR[c-1] << 1;
+  HOLDING2_SHIFT.resize(MAX_CARDS+1);
+  for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
+    HOLDING2_SHIFT[c] = c;
 
   HOLDING2_ADDER.resize(MAX_CARDS+1);
-  for (unsigned c = 0; c < HOLDING2_FACTOR.size(); c++)
+  for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
   {
     HOLDING2_ADDER[c].resize(2);
-    HOLDING2_ADDER[c][1] = HOLDING2_FACTOR[c] - 1;
+    HOLDING2_ADDER[c][1] = (1 << c) - 1;
     HOLDING2_ADDER[c][0] = 0;
   }
 }
@@ -316,7 +315,6 @@ void Ranks2::canonicalUpdate(
   const vector<RankInfo2>& oppsIn,
   const vector<unsigned>& full2reduced1,
   const vector<unsigned>& full2reduced2,
-  const unsigned cardsNew,
   unsigned& holding3,
   unsigned& holding2) const
 {
@@ -325,9 +323,8 @@ void Ranks2::canonicalUpdate(
   // For this purpose vec1 is considered "North".
   holding3 = 0;
   holding2 = 0;
-  unsigned index = (cardsNew > 13 ? 0 : 13-cardsNew);
 
-  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
+  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     const unsigned posOpps = full2reducedOpps[rank];
     if (posOpps < BIGINT)
@@ -336,7 +333,7 @@ void Ranks2::canonicalUpdate(
       holding3 = HOLDING3_FACTOR[countOpps] * holding3 +
         HOLDING3_ADDER[countOpps][CONVERT_OPPS];
 
-      holding2 = HOLDING2_FACTOR[countOpps] * holding2 +
+      holding2 = (holding2 << HOLDING2_SHIFT[countOpps]) |
         HOLDING2_ADDER[countOpps][PAIR_EW];
 
       continue;
@@ -349,7 +346,7 @@ void Ranks2::canonicalUpdate(
       holding3 = HOLDING3_FACTOR[count1] * holding3 +
         HOLDING3_ADDER[count1][CONVERT_NORTH];
 
-      holding2 = HOLDING2_FACTOR[count1] * holding2 +
+      holding2 = (holding2 << HOLDING2_SHIFT[count1]) |
         HOLDING2_ADDER[count1][PAIR_NS];
     }
 
@@ -360,7 +357,7 @@ void Ranks2::canonicalUpdate(
       holding3 = HOLDING3_FACTOR[count2] * holding3 +
         HOLDING3_ADDER[count2][CONVERT_SOUTH];
 
-      holding2 = HOLDING2_FACTOR[count2] * holding2 +
+      holding2 = (holding2 << HOLDING2_SHIFT[count2]) |
         HOLDING2_ADDER[count2][PAIR_NS];
     }
   }
@@ -484,20 +481,19 @@ void Ranks2::updateHoldings(
   const unsigned max2,
   const vector<unsigned>& full2reduced1,
   const vector<unsigned>& full2reduced2,
-  const unsigned cardsNew,
   PlayEntry& play)
 {
   if (Ranks2::dominates(vec1, max1, vec2, max2))
   {
     Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, 
       full2reduced1, full2reduced2,
-      cardsNew, play.holdingNew3, play.holdingNew2);
+      play.holdingNew3, play.holdingNew2);
   }
   else
   {
     Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, 
       full2reduced2, full2reduced1,
-      cardsNew, play.holdingNew3, play.holdingNew2);
+      play.holdingNew3, play.holdingNew2);
   }
 }
 
@@ -511,9 +507,6 @@ void Ranks2::setPlaysSideWithVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
-  // Leader and RHO are known not to be void.  LHO is void.
-  unsigned cardsNew = cards - 2;
-
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
@@ -530,8 +523,6 @@ void Ranks2::setPlaysSideWithVoid(
       if (! Ranks2::pardOK(partner, lead, pard))
         continue;
 
-      if (pardPos > 0)
-        cardsNew--;
       partner.ranks[pardPos].count--;
 
       // toBeat = max(lead, pard)
@@ -553,13 +544,11 @@ void Ranks2::setPlaysSideWithVoid(
 
         Ranks2::updateHoldings(leader.ranks, partner.ranks, 
           leader.maxPos, partner.maxPos, 
-          full2reduced1, full2reduced2, cardsNew, play);
+          full2reduced1, full2reduced2, play);
         
         opps.ranks[rhoPos].count++;
       }
 
-      if (pardPos > 0)
-        cardsNew++;
       partner.ranks[pardPos].count++;
     }
 
@@ -578,9 +567,6 @@ void Ranks2::setPlaysSideWithoutVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
-  // Leader and LHO are known not to be void.
-  unsigned cardsNew = cards - 2;
-
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
@@ -602,8 +588,6 @@ void Ranks2::setPlaysSideWithoutVoid(
         if (! Ranks2::pardOK(partner, max(lead, lho), pard))
           continue;
 
-        if (pardPos > 0)
-          cardsNew--;
         partner.ranks[pardPos].count--;
 
         for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
@@ -615,8 +599,6 @@ void Ranks2::setPlaysSideWithoutVoid(
           if (opps.ranks[rhoPos].count == 0)
             continue;
 
-          if (rhoPos > 0)
-            cardsNew--;
           opps.ranks[rhoPos].count--;
           
           // Register the new play.
@@ -628,15 +610,11 @@ void Ranks2::setPlaysSideWithoutVoid(
 
           Ranks2::updateHoldings(leader.ranks, partner.ranks, 
             leader.maxPos, partner.maxPos, 
-            full2reduced1, full2reduced2, cardsNew, play);
+            full2reduced1, full2reduced2, play);
           
-          if (rhoPos > 0)
-            cardsNew++;
           opps.ranks[rhoPos].count++;
         }
 
-        if (pardPos > 0)
-          cardsNew++;
         partner.ranks[pardPos].count++;
       }
 

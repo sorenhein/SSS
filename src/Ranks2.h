@@ -122,7 +122,6 @@ class Ranks2
       const vector<RankInfo2>& oppsIn,
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
-      const unsigned cardsNew,
       unsigned& holding3,
       unsigned& holding2) const;
 
@@ -145,7 +144,6 @@ class Ranks2
       const unsigned max2,
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
-      const unsigned cardsNew,
       PlayEntry& play);
 
     void setPlaysSideWithVoid(
