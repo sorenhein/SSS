@@ -440,29 +440,23 @@ void Ranks2::updateHoldings(
   const unsigned rhoPos,
   PlayEntry& play)
 {
-  unsigned cardsNew = cards;
-
-  // The leader always has a card.
+  // Use the existing vectors.
   vec1[leadPos].count--;
+  vec2[pardPos].count--;
+  opps.ranks[lhoPos].count--;
+  opps.ranks[rhoPos].count--;
+
+  unsigned cardsNew = cards;
   cardsNew--;
 
   if (play.pard > 0)
-  {
-    vec2[pardPos].count--;
     cardsNew--;
-  }
 
   if (play.lho > 0)
-  {
-    opps.ranks[lhoPos].count--;
     cardsNew--;
-  }
 
   if (play.rho > 0)
-  {
-    opps.ranks[rhoPos].count--;
     cardsNew--;
-  }
 
 
   if (Ranks2::dominates(vec1, max1, vec2, max2))
@@ -475,15 +469,9 @@ void Ranks2::updateHoldings(
 
   // Restore the vectors.
   vec1[leadPos].count++;
-
-  if (play.pard > 0)
-    vec2[pardPos].count++;
-
-  if (play.lho > 0)
-    opps.ranks[lhoPos].count++;
-
-  if (play.rho > 0)
-    opps.ranks[rhoPos].count++;
+  vec2[pardPos].count++;
+  opps.ranks[lhoPos].count++;
+  opps.ranks[rhoPos].count++;
 }
 
 
