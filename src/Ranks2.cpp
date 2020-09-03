@@ -430,55 +430,9 @@ bool Ranks2::pardOK(
 
 
 void Ranks2::updateHoldings(
-  vector<RankInfo2>& vec1,
-  vector<RankInfo2>& vec2,
-  const unsigned max1, // TODO Many too many arguments
-  const unsigned max2,
-  const unsigned leadPos,
-  const unsigned lhoPos,
-  const unsigned pardPos,
-  const unsigned rhoPos,
-  PlayEntry& play)
-{
-  // Use the existing vectors.
-  vec1[leadPos].count--;
-  vec2[pardPos].count--;
-  opps.ranks[lhoPos].count--;
-  opps.ranks[rhoPos].count--;
-
-  unsigned cardsNew = cards;
-  cardsNew--;
-
-  if (play.pard > 0)
-    cardsNew--;
-
-  if (play.lho > 0)
-    cardsNew--;
-
-  if (play.rho > 0)
-    cardsNew--;
-
-
-  if (Ranks2::dominates(vec1, max1, vec2, max2))
-    Ranks2::canonicalUpdate(vec1, vec2, opps.ranks, cardsNew, 
-      play.holdingNew3, play.holdingNew2);
-  else
-    Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, cardsNew, 
-      play.holdingNew3, play.holdingNew2);
-
-
-  // Restore the vectors.
-  vec1[leadPos].count++;
-  vec2[pardPos].count++;
-  opps.ranks[lhoPos].count++;
-  opps.ranks[rhoPos].count++;
-}
-
-
-void Ranks2::updateHoldingsNew(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
-  const unsigned max1, // TODO Many too many arguments
+  const unsigned max1,
   const unsigned max2,
   const unsigned cardsNew,
   PlayEntry& play)
@@ -539,8 +493,7 @@ void Ranks2::setPlaysSideWithVoid(
         PlayEntry& play = plays[playNo++];
         play.update(side, lead, 0, pard, rho);
 
-        // This takes 67 out of 70 seconds, so commented out for now.
-        Ranks2::updateHoldingsNew(leader.ranks, partner.ranks, 
+        Ranks2::updateHoldings(leader.ranks, partner.ranks, 
           leader.maxPos, partner.maxPos, cardsNew, play);
         
         opps.ranks[rhoPos].count++;
@@ -564,15 +517,22 @@ void Ranks2::setPlaysSideWithoutVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
+  // Leader and LHO are known not to be void.
+  unsigned cardsNew = cards - 2;
+
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
     if (! Ranks2::leadOK(leader, partner, lead))
       continue;
 
+    leader.ranks[leadPos].count--;
+
     for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
     {
       const unsigned lho = opps.ranks[lhoPos].rank;
+
+      opps.ranks[lhoPos].count--;
 
       for (unsigned pardPos = partner.minPos; 
           pardPos <= partner.maxPos; pardPos++)
@@ -581,12 +541,22 @@ void Ranks2::setPlaysSideWithoutVoid(
         if (! Ranks2::pardOK(partner, max(lead, lho), pard))
           continue;
 
+        if (pardPos > 0)
+          cardsNew--;
+        partner.ranks[pardPos].count--;
+
         for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
         {
           const unsigned rho = opps.ranks[rhoPos].rank;
 
-          if (lho == rho && opps.ranks[rhoPos].count == 1)
+          // if (lho == rho && opps.ranks[rhoPos].count == 1)
+          // Maybe the same single card has been played already.
+          if (opps.ranks[rhoPos].count == 0)
             continue;
+
+          if (rhoPos > 0)
+            cardsNew--;
+          opps.ranks[rhoPos].count--;
           
           // Register the new play.
           if (playNo >= plays.size())
@@ -595,13 +565,23 @@ void Ranks2::setPlaysSideWithoutVoid(
           PlayEntry& play = plays[playNo++];
           play.update(side, lead, lho, pard, rho);
 
-          // This takes 67 out of 70 seconds, so commented out for now.
           Ranks2::updateHoldings(leader.ranks, partner.ranks, 
-            leader.maxPos, partner.maxPos,
-            leadPos, lhoPos, pardPos, rhoPos, play);
+            leader.maxPos, partner.maxPos, cardsNew, play);
+          
+          if (rhoPos > 0)
+            cardsNew++;
+          opps.ranks[rhoPos].count++;
         }
+
+        if (pardPos > 0)
+          cardsNew++;
+        partner.ranks[pardPos].count++;
       }
+
+      opps.ranks[lhoPos].count++;
     }
+
+    leader.ranks[leadPos].count++;
   }
 }
 

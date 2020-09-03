@@ -135,17 +135,6 @@ class Ranks2
       const unsigned pard) const;
 
     void updateHoldings(
-      vector<RankInfo2>& vec1,
-      vector<RankInfo2>& vec2,
-      const unsigned max1,
-      const unsigned max2,
-      const unsigned leadPos,
-      const unsigned lhoPos,
-      const unsigned pardPos,
-      const unsigned rhoPos,
-      PlayEntry& play);
-
-    void updateHoldingsNew(
       const vector<RankInfo2>& vec1,
       const vector<RankInfo2>& vec2,
       const unsigned max1,
