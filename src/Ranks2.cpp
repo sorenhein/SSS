@@ -73,7 +73,7 @@ void Ranks2::setConstants()
   {
     HOLDING3_ADDER[c].resize(3);
     HOLDING3_ADDER[c][2] = HOLDING3_FACTOR[c] - 1;
-    HOLDING3_ADDER[c][1] = HOLDING3_ADDER[c][1] / 2;
+    HOLDING3_ADDER[c][1] = HOLDING3_ADDER[c][2] / 2;
     HOLDING3_ADDER[c][0] = 0;
   }
 
@@ -86,7 +86,7 @@ void Ranks2::setConstants()
   for (unsigned c = 0; c < HOLDING2_FACTOR.size(); c++)
   {
     HOLDING2_ADDER[c].resize(2);
-    HOLDING2_ADDER[c][1] = HOLDING2_ADDER[c][1] - 1;
+    HOLDING2_ADDER[c][1] = HOLDING2_FACTOR[c] - 1;
     HOLDING2_ADDER[c][0] = 0;
   }
 }
@@ -332,85 +332,36 @@ void Ranks2::canonicalUpdate(
     const unsigned posOpps = full2reducedOpps[rank];
     if (posOpps < BIGINT)
     {
-      for (unsigned count = 0; count < oppsIn[posOpps].count; count++)
-      {
-        holding3 += (holding3 << 1) + CONVERT_OPPS;
-        holding2 += holding2 + PAIR_EW;
-      }
+      const unsigned countOpps = oppsIn[posOpps].count;
+      holding3 = HOLDING3_FACTOR[countOpps] * holding3 +
+        HOLDING3_ADDER[countOpps][CONVERT_OPPS];
+
+      holding2 = HOLDING2_FACTOR[countOpps] * holding2 +
+        HOLDING2_ADDER[countOpps][PAIR_EW];
+
       continue;
     }
 
-      if (full2reduced1[rank] < BIGINT)
-      {
-        const unsigned pos = full2reduced1[rank];
-        for (unsigned count = 0; count < vec1[pos].count; count++)
-        {
-          holding3 += (holding3 << 1) + CONVERT_NORTH;
-          holding2 += holding2 + PAIR_NS;
-        }
-      }
-
-      if (full2reduced2[rank] < BIGINT)
-      {
-        const unsigned pos = full2reduced2[rank];
-        for (unsigned count = 0; count < vec2[pos].count; count++)
-        {
-          holding3 += (holding3 << 1) + CONVERT_SOUTH;
-          holding2 += holding2 + PAIR_NS;
-        }
-      }
-  }
-}
-
-
-void Ranks2::canonicalUpdateNew(
-  const vector<RankInfo2>& vec1,
-  const vector<RankInfo2>& vec2,
-  const vector<RankInfo2>& oppsIn,
-  const vector<unsigned>& full2reduced1,
-  const vector<unsigned>& full2reduced2,
-  const unsigned cardsNew,
-  unsigned& holding3,
-  unsigned& holding2) const
-{
-  // This is similar to canonical, but (a) doesn't keep track of card
-  // names, and (b) generates both the binary and trinary holdings.
-  // For this purpose vec1 is considered "North".
-  holding3 = 0;
-  holding2 = 0;
-  unsigned index = (cardsNew > 13 ? 0 : 13-cardsNew);
-
-  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
-  {
-    const unsigned posOpps = full2reducedOpps[rank];
-    if (posOpps < BIGINT)
+    const unsigned pos1 = full2reduced1[rank];
+    if (pos1 < BIGINT)
     {
-      for (unsigned count = 0; count < oppsIn[posOpps].count; count++)
-      {
-        holding3 += (holding3 << 1) + CONVERT_OPPS;
-        holding2 += holding2 + PAIR_EW;
-      }
-      continue;
+      const unsigned count1 = vec1[pos1].count;
+      holding3 = HOLDING3_FACTOR[count1] * holding3 +
+        HOLDING3_ADDER[count1][CONVERT_NORTH];
+
+      holding2 = HOLDING2_FACTOR[count1] * holding2 +
+        HOLDING2_ADDER[count1][PAIR_NS];
     }
 
-    if (full2reduced1[rank] < BIGINT)
+    const unsigned pos2 = full2reduced2[rank];
+    if (pos2 < BIGINT)
     {
-      const unsigned pos = full2reduced1[rank];
-      for (unsigned count = 0; count < vec1[pos].count; count++)
-      {
-        holding3 += (holding3 << 1) + CONVERT_NORTH;
-        holding2 += holding2 + PAIR_NS;
-      }
-    }
+      const unsigned count2 = vec2[pos2].count;
+      holding3 = HOLDING3_FACTOR[count2] * holding3 +
+        HOLDING3_ADDER[count2][CONVERT_SOUTH];
 
-    if (full2reduced2[rank] < BIGINT)
-    {
-      const unsigned pos = full2reduced2[rank];
-      for (unsigned count = 0; count < vec2[pos].count; count++)
-      {
-        holding3 += (holding3 << 1) + CONVERT_SOUTH;
-        holding2 += holding2 + PAIR_NS;
-      }
+      holding2 = HOLDING2_FACTOR[count2] * holding2 +
+        HOLDING2_ADDER[count2][PAIR_NS];
     }
   }
 }
@@ -545,7 +496,7 @@ void Ranks2::updateHoldings(
   else
   {
     Ranks2::canonicalUpdate(vec2, vec1, opps.ranks, 
-      full2reduced1, full2reduced2,
+      full2reduced2, full2reduced1,
       cardsNew, play.holdingNew3, play.holdingNew2);
   }
 }

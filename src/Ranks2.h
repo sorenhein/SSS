@@ -126,16 +126,6 @@ class Ranks2
       unsigned& holding3,
       unsigned& holding2) const;
 
-    void canonicalUpdateNew(
-      const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2,
-      const vector<RankInfo2>& oppsIn,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
-      const unsigned cardsNew,
-      unsigned& holding3,
-      unsigned& holding2) const;
-
     bool trivial(unsigned& terminalValue) const;
 
     bool leadOK(
