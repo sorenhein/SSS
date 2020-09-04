@@ -276,9 +276,9 @@ void Ranks::setRanks()
 
 
 bool Ranks::dominates(
-  const vector<RankInfo2>& vec1,
+  const vector<ReducedRankInfo>& vec1,
   const unsigned max1,
-  const vector<RankInfo2>& vec2,
+  const vector<ReducedRankInfo>& vec2,
   const unsigned max2) const
 {
   // The rank vectors may not be of the same effective size.
@@ -320,8 +320,8 @@ bool Ranks::dominates(
 
 
 unsigned Ranks::canonicalTrinary(
-  const vector<RankInfo3>& fullCount1,
-  const vector<RankInfo3>& fullCount2) const
+  const vector<FullRankInfo>& fullCount1,
+  const vector<FullRankInfo>& fullCount2) const
 {
   // This is similar to canonicalNew, but only does holding3.
   unsigned holding3 = 0;
@@ -342,8 +342,8 @@ unsigned Ranks::canonicalTrinary(
 
 
 void Ranks::canonicalBoth(
-  const vector<RankInfo3>& fullCount1,
-  const vector<RankInfo3>& fullCount2,
+  const vector<FullRankInfo>& fullCount1,
+  const vector<FullRankInfo>& fullCount2,
   unsigned& holding3,
   unsigned& holding2) const
 {
@@ -480,12 +480,12 @@ bool Ranks::pardOK(
 
 
 void Ranks::updateHoldings(
-  const vector<RankInfo2>& vec1,
-  const vector<RankInfo2>& vec2,
+  const vector<ReducedRankInfo>& vec1,
+  const vector<ReducedRankInfo>& vec2,
   const unsigned max1,
   const unsigned max2,
-  const vector<RankInfo3>& fullCount1,
-  const vector<RankInfo3>& fullCount2,
+  const vector<FullRankInfo>& fullCount1,
+  const vector<FullRankInfo>& fullCount2,
   PlayEntry& play)
 {
   if (Ranks::dominates(vec1, max1, vec2, max2))
@@ -505,8 +505,8 @@ void Ranks::setPlaysSideWithVoid(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
-  vector<RankInfo3>& fullCount1,
-  vector<RankInfo3>& fullCount2,
+  vector<FullRankInfo>& fullCount1,
+  vector<FullRankInfo>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -563,8 +563,8 @@ void Ranks::setPlaysSideWithoutVoid(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
-  vector<RankInfo3>& fullCount1,
-  vector<RankInfo3>& fullCount2,
+  vector<FullRankInfo>& fullCount1,
+  vector<FullRankInfo>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -626,8 +626,8 @@ void Ranks::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
-  vector<RankInfo3>& fullCount1,
-  vector<RankInfo3>& fullCount2,
+  vector<FullRankInfo>& fullCount1,
+  vector<FullRankInfo>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {

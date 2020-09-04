@@ -1,4 +1,3 @@
-- Don't really need canonical2comb
 - Do need for each play a map from new rank to old one
 
   AJ
@@ -10,10 +9,6 @@
   But we don't need card *names* ever here?
 
 - Take vector<char> and delete from fullCount
-- Better name than RankInfo3, maybe FullRankInfo
-- Get rid of RankInfo
-- Rename RankInfo to ReducedRankInfo
-- RankInfo goes inside Ranks2.cpp
 - dominates() can take PositionInfo's as arguments
 - play output should use full ranks as characters
   EW are named HH, hh, ...

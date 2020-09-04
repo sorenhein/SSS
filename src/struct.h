@@ -99,26 +99,4 @@ struct PlayEntry
   }
 };
 
-struct RankInfo
-{
-  unsigned count;
-  vector<char> cards;
-
-  RankInfo()
-  {
-    RankInfo::clear();
-  }
-
-  void clear()
-  {
-    count = 0;
-  }
-
-  void add(const char card)
-  {
-    cards[count] = card;
-    count++;
-  }
-};
-
 #endif
