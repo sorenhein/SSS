@@ -19,12 +19,10 @@ class Ranks
     {
       unsigned rank;
       unsigned count;
-      vector<char> cards;
 
       ReducedRankInfo()
       {
         ReducedRankInfo::clear();
-        cards.clear();
       }
 
       void clear()
@@ -32,34 +30,9 @@ class Ranks
         count = 0;
       }
 
-      void add(
-        const unsigned rankIn,
-        const char card)
+      void add(const unsigned rankIn)
       {
-        cards[count] = card;
         rank = rankIn;
-        count++;
-      }
-    };
-
-    struct FullRankInfo
-    {
-      unsigned count;
-      vector<char> cards;
-
-      FullRankInfo()
-      {
-        FullRankInfo::clear();
-      }
-
-      void clear()
-      {
-        count = 0;
-      }
-
-      void add(const char name)
-      {
-        cards[count] = name;
         count++;
       }
     };
@@ -67,7 +40,7 @@ class Ranks
     struct PositionInfo
     {
       vector<ReducedRankInfo> ranks;
-      vector<FullRankInfo> fullCount;
+      vector<unsigned> fullCount;
       unsigned maxRank;
       unsigned minRank;
       unsigned maxPos;
@@ -78,10 +51,9 @@ class Ranks
       void update(
         const unsigned position,
         const unsigned rank,
-        const char name,
         bool& flag)
       {
-        ranks[position].add(rank, name);
+        ranks[position].add(rank);
         maxRank = rank;
         maxPos = position;
         if (flag)
@@ -97,7 +69,7 @@ class Ranks
       {
         if (forceFlag || len == 0)
         {
-          ranks[0].add(0, '-');
+          ranks[0].add(0);
           minRank = 0;
           maxRank = 0;
           minPos = 0;
@@ -132,12 +104,12 @@ class Ranks
       const unsigned max2) const;
 
     unsigned canonicalTrinary(
-      const vector<FullRankInfo>& fullCount1,
-      const vector<FullRankInfo>& fullCount2) const;
+      const vector<unsigned>& fullCount1,
+      const vector<unsigned>& fullCount2) const;
 
     void canonicalBoth(
-      const vector<FullRankInfo>& fullCount1,
-      const vector<FullRankInfo>& fullCount2,
+      const vector<unsigned>& fullCount1,
+      const vector<unsigned>& fullCount2,
       unsigned& holding3,
       unsigned& holding2) const;
 
@@ -158,16 +130,16 @@ class Ranks
       const vector<ReducedRankInfo>& vec2,
       const unsigned max1,
       const unsigned max2,
-      const vector<FullRankInfo>& fullCount1,
-      const vector<FullRankInfo>& fullCount2,
+      const vector<unsigned>& fullCount1,
+      const vector<unsigned>& fullCount2,
       PlayEntry& play);
 
     void setPlaysSideWithVoid(
       const PositionInfo& leader,
       const PositionInfo& partner,
       const SidePosition side,
-      vector<FullRankInfo>& fullCount1,
-      vector<FullRankInfo>& fullCount2,
+      vector<unsigned>& fullCount1,
+      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -175,8 +147,8 @@ class Ranks
       const PositionInfo& leader,
       const PositionInfo& partner,
       const SidePosition side,
-      vector<FullRankInfo>& fullCount1,
-      vector<FullRankInfo>& fullCount2,
+      vector<unsigned>& fullCount1,
+      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
@@ -184,8 +156,8 @@ class Ranks
       const PositionInfo& leader,
       const PositionInfo& partner,
       const SidePosition side,
-      vector<FullRankInfo>& fullCount1,
-      vector<FullRankInfo>& fullCount2,
+      vector<unsigned>& fullCount1,
+      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
