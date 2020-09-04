@@ -8,7 +8,6 @@
   How to do efficiently? Just keep track of old ranks that are disappearing? How?
   But we don't need card *names* ever here?
 
-- dominates() can take PositionInfo's as arguments
 - play output should use full ranks as characters
   EW are named HH, hh, ...
   x's only from 9 on down, so may not be used at all

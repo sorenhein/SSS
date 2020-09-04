@@ -21,13 +21,13 @@ class Ranks
 
       ReducedRankInfo()
       {
-        ReducedRankInfo::clear();
-      }
-
-      void clear()
-      {
         count = 0;
       }
+
+      // void clear()
+      // {
+        // count = 0;
+      // }
 
       void add(const unsigned rankIn)
       {
@@ -39,28 +39,61 @@ class Ranks
     struct PositionInfo
     {
       vector<ReducedRankInfo> ranks;
+      unsigned maxPos;
+      unsigned minPos;
+
       vector<unsigned> fullCount;
       unsigned maxRank;
       unsigned minRank;
-      unsigned maxPos;
-      unsigned minPos;
+
       bool singleRank;
       unsigned len;
+
+      void resize(const unsigned cardsIn)
+      {
+        // Worst case, leaving room for voids at rank 0.
+        ranks.resize(cardsIn+1);
+        maxPos = cardsIn;
+
+        fullCount.resize(cardsIn+1);
+        maxRank = cardsIn;
+      }
+
+      void clear()
+      {
+        ranks.clear();
+        fullCount.clear();
+      }
+
+      void zero()
+      {
+        for (unsigned pos = 0; pos <= maxPos; pos++)
+          ranks[pos].count = 0;
+
+        for (unsigned rank = 0; rank <= maxRank; rank++)
+          fullCount[rank] = 0;
+        
+        len = 0;
+      }
 
       void update(
         const unsigned position,
         const unsigned rank,
-        bool& flag)
+        bool& firstFlag)
       {
         ranks[position].add(rank);
-        maxRank = rank;
         maxPos = position;
-        if (flag)
+
+        fullCount[rank]++;
+        maxRank = rank;
+
+        if (firstFlag)
         {
-          minRank = rank;
           minPos = position;
-          flag = false;
+          minRank = rank;
+          firstFlag = false;
         }
+
         len++;
       }
 
@@ -94,13 +127,13 @@ class Ranks
 
     void setConstants();
 
+    void zero();
+
     void setRanks();
 
     bool dominates(
-      const vector<ReducedRankInfo>& vec1,
-      const unsigned max1,
-      const vector<ReducedRankInfo>& vec2,
-      const unsigned max2) const;
+      const PositionInfo& first,
+      const PositionInfo& second) const;
 
     unsigned canonicalTrinary(
       const vector<unsigned>& fullCount1,
@@ -166,8 +199,6 @@ class Ranks
     ~Ranks();
 
     void resize(const unsigned cardsIn);
-
-    void clear();
 
     void set(
       const unsigned holdingIn,

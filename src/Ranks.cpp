@@ -10,6 +10,33 @@
 #include "struct.h"
 #include "const.h"
 
+/*
+ * This class performs some rank manipulation for an entire hand
+ * consisting of North, South and opposing cards.
+ *
+ * The set() method sets up the rank data and determines whether the
+ * holding is canonical, i.e. whether or not it can be reduced to
+ * another equivalent holding.  
+ * - It is determined which side "dominates", i.e. which side has
+ *   higher or more high cards.
+ * - If the dominant side has cards of the same rank as the other side, 
+ *   then the higher of these cards are given to the dominant side.
+ *
+ * The setPlays() method sets up all meaningful plays for North-South.
+ * If the holding has a very clear value, then no plays are returned,
+ * and a terminal value (number of NS tricks) is returned instead.
+ *
+ * The key methods are quite heavily optimized for time.  For example:
+ * - The play list is a vector and it only grows, by a chunk at a time,
+ *   when we run out of space.  
+ * - The creation of a holding is done by table lookup of each individual 
+ *   rank.  
+ * - The innermost loops of the play generation only have the minimum 
+ *   instructions needed.
+ * - The rank arrays are only zeroed out to the minimum extent between
+ *   usages.
+ */
+
 const vector<unsigned> PLAY_CHUNK_SIZE =
 {
     1, //  0
@@ -30,12 +57,6 @@ const vector<unsigned> PLAY_CHUNK_SIZE =
   150, // 15
 };
 
-vector<unsigned> HOLDING3_FACTOR;
-vector<vector<unsigned>> HOLDING3_ADDER;
-
-vector<unsigned> HOLDING2_SHIFT;
-vector<vector<unsigned>> HOLDING2_ADDER;
-
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
@@ -50,13 +71,9 @@ Ranks::Ranks()
   if (static auto called = false; ! exchange(called, true))
     Ranks::setConstants();
 
-  north.ranks.clear();
-  south.ranks.clear();
-  opps.ranks.clear();
-
-  north.fullCount.clear();
-  south.fullCount.clear();
-  opps.fullCount.clear();
+  north.clear();
+  south.clear();
+  opps.clear();
 }
 
 
@@ -67,6 +84,17 @@ Ranks::~Ranks()
 
 void Ranks::setConstants()
 {
+  // First we set up tables for a single count of a certain position
+  // (North, South, opps).  The factor is a power of 3 or 2 in order
+  // to shift the trinary or binary holding up, and the adder is the
+  // value (in "trits" or in bits) to add to the holding.
+
+  vector<unsigned> HOLDING3_FACTOR;
+  vector<vector<unsigned>> HOLDING3_ADDER;
+
+  vector<unsigned> HOLDING2_SHIFT;
+  vector<vector<unsigned>> HOLDING2_ADDER;
+
   HOLDING3_FACTOR.resize(MAX_CARDS+1);
   HOLDING3_FACTOR[0] = 1;
   for (unsigned c = 1; c < HOLDING3_FACTOR.size(); c++)
@@ -93,9 +121,14 @@ void Ranks::setConstants()
     HOLDING2_ADDER[c][0] = 0;
   }
 
-  // Store the counts of a rank in a 12-bit word.  As we only consider
+  // Then we set up tables for a complete rank, including counts with
+  // North, South and opps.  Of course either North+South or opps will
+  // have a rank, and not both, but the table works uniformly.
+
+  // We store the counts of a rank in a 12-bit word.  As we only consider
   // a limited number of cards, we only fill out the table entries up
   // to a sum of 16 cards.
+
   assert(MAX_CARDS <= 15);
   HOLDING3_RANK_FACTOR.resize(4096);
   HOLDING3_RANK_ADDER.resize(4096);
@@ -140,41 +173,19 @@ void Ranks::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
-  // Worst case, leaving room for voids at rank 0.
-  north.ranks.resize(cards+1); 
-  south.ranks.resize(cards+1); 
-  opps.ranks.resize(cards+1); 
-
-  north.fullCount.resize(cards+1);
-  south.fullCount.resize(cards+1);
-  opps.fullCount.resize(cards+1);
+  north.resize(cards);
+  south.resize(cards);
+  opps.resize(cards);
 
   maxRank = cards;
-  north.maxRank = cards;
-  south.maxRank = cards;
-  opps.maxRank = cards;
 }
 
 
-void Ranks::clear()
+void Ranks::zero()
 {
-  for (unsigned rank = 0; rank <= north.maxRank; rank++)
-    north.ranks[rank].clear();
-  for (unsigned rank = 0; rank <= south.maxRank; rank++)
-    south.ranks[rank].clear();
-  for (unsigned rank = 0; rank <= opps.maxRank; rank++)
-    opps.ranks[rank].clear();
-
-  north.len = 0;
-  south.len = 0;
-  opps.len = 0;
-
-  for (unsigned rank = 0; rank <= maxRank; rank++)
-  {
-    north.fullCount[rank] = 0;
-    south.fullCount[rank] = 0;
-    opps.fullCount[rank] = 0;
-  }
+  north.zero();
+  south.zero();
+  opps.zero();
 
   maxRank = 0;
 }
@@ -182,11 +193,13 @@ void Ranks::clear()
 
 void Ranks::setRanks()
 {
-  Ranks::clear();
+  Ranks::zero();
 
-  // If the first card belongs to EW, there will be an uptick (from 0).
-  // If it does belong to NS, there will only be an uptick if there
-  // is a count > 0, which will not be the case.
+  // We choose prev_is_NS ("the previously seen card belonged to NS")
+  // such that the first real card we see will result in an increase
+  // in maxRank, i.e. in the running rank.  Therefore we will never
+  // write to rank = 0 (void) in the loop itself.
+
   bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
   unsigned posNorth = 1;
   unsigned posSouth = 1;
@@ -213,7 +226,6 @@ void Ranks::setRanks()
       }
 
       opps.update(posOpps, maxRank, firstOpps);
-      opps.fullCount[maxRank]++;
       prev_is_NS = false;
     }
     else
@@ -228,15 +240,9 @@ void Ranks::setRanks()
       }
 
       if (c == POSITION_NORTH)
-      {
         north.update(posNorth, maxRank, firstNorth);
-        north.fullCount[maxRank]++;
-      }
       else
-      {
         south.update(posSouth, maxRank, firstSouth);
-        south.fullCount[maxRank]++;
-      }
 
       prev_is_NS = true;
     }
@@ -259,14 +265,12 @@ void Ranks::setRanks()
 
 
 bool Ranks::dominates(
-  const vector<ReducedRankInfo>& vec1,
-  const unsigned max1,
-  const vector<ReducedRankInfo>& vec2,
-  const unsigned max2) const
+  const PositionInfo& first,
+  const PositionInfo& second) const
 {
   // The rank vectors may not be of the same effective size.
-  unsigned pos1 = max1 + 1;  // One beyond end, as we first advance
-  unsigned pos2 = max2 + 1;
+  unsigned pos1 = first.maxPos + 1;  // One beyond end, as we first advance
+  unsigned pos2 = second.maxPos + 1;
 
   while (true)
   {
@@ -276,7 +280,7 @@ bool Ranks::dominates(
       if (pos2 == 0)
         return true;
 
-      if (vec2[--pos2].count)
+      if (second.ranks[--pos2].count)
         break;
     }
 
@@ -286,17 +290,17 @@ bool Ranks::dominates(
       if (pos1 == 0)
         return false;
 
-      if (vec1[--pos1].count)
+      if (first.ranks[--pos1].count)
         break;
     }
 
-    if (vec1[pos1].rank > vec2[pos2].rank)
+    if (first.ranks[pos1].rank > second.ranks[pos2].rank)
       return true;
-    if (vec1[pos1].rank < vec2[pos2].rank)
+    if (first.ranks[pos1].rank < second.ranks[pos2].rank)
       return false;
-    if (vec1[pos1].count > vec2[pos2].count)
+    if (first.ranks[pos1].count > second.ranks[pos2].count)
       return true;
-    if (vec1[pos1].count < vec2[pos2].count)
+    if (first.ranks[pos1].count < second.ranks[pos2].count)
       return false;
   }
 }
@@ -361,8 +365,7 @@ void Ranks::set(
   holding = holdingIn;
   Ranks::setRanks();
 
-  combEntry.rotateFlag = ! Ranks::dominates(north.ranks, north.maxPos, 
-    south.ranks, south.maxPos);
+  combEntry.rotateFlag = ! Ranks::dominates(north, south);
 
   if (combEntry.rotateFlag)
   {
@@ -467,8 +470,7 @@ void Ranks::updateHoldings(
   const PositionInfo& partner,
   PlayEntry& play) const
 {
-  if (Ranks::dominates(leader.ranks, leader.maxPos, 
-    partner.ranks, partner.maxPos))
+  if (Ranks::dominates(leader, partner))
   {
     Ranks::canonicalBoth(
       leader.fullCount, partner.fullCount, 
