@@ -2,7 +2,6 @@
 #define SSS_RANKS_H
 
 #include <vector>
-#include <list>
 
 #include "struct.h"
 
@@ -153,11 +152,9 @@ class Ranks
       unsigned& playNo);
 
     void setPlaysSide(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
-      vector<unsigned>& fullCount1,
-      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 

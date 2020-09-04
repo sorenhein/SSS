@@ -10,8 +10,6 @@
 #include "struct.h"
 #include "const.h"
 
-#define BIGINT 99
-
 const vector<unsigned> PLAY_CHUNK_SIZE =
 {
     1, //  0
@@ -608,11 +606,9 @@ void Ranks::setPlaysSideWithoutVoid(
 
 
 void Ranks::setPlaysSide(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
-  vector<unsigned>& fullCount1,
-  vector<unsigned>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -633,9 +629,9 @@ void Ranks::setPlaysSide(
     return;
 
   Ranks::setPlaysSideWithVoid(leader, partner, side, 
-    fullCount1, fullCount2, plays, playNo);
+    leader.fullCount, partner.fullCount, plays, playNo);
   Ranks::setPlaysSideWithoutVoid(leader, partner, side,
-    fullCount1, fullCount2, plays, playNo);
+    leader.fullCount, partner.fullCount, plays, playNo);
 }
 
 
@@ -655,10 +651,8 @@ CombinationType Ranks::setPlays(
     return COMB_TRIVIAL;
 
   // TODO Don't need to pass .fullCount separately
-  Ranks::setPlaysSide(north, south, SIDE_NORTH, 
-    north.fullCount, south.fullCount, plays, playNo);
-  Ranks::setPlaysSide(south, north, SIDE_SOUTH, 
-    south.fullCount, north.fullCount, plays, playNo);
+  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays, playNo);
+  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays, playNo);
   return COMB_OTHER;
 }
 
