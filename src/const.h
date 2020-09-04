@@ -12,6 +12,8 @@ using namespace std;
 
 #define CARD_NAMES "23456789TJQKABC"
 
+#define GENERIC_NAMES "HhGgIiJj"
+
 enum CardPosition
 {
   CONVERT_NORTH = 0,

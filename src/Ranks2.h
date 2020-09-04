@@ -123,13 +123,14 @@ class Ranks2
     PositionInfo south;
     PositionInfo opps;
 
+    unsigned holding;
     unsigned cards;
     unsigned maxRank;
 
 
     void setConstants();
 
-    void setRanks(const unsigned holding);
+    void setRanks();
 
     bool dominates(
       const vector<RankInfo2>& vec1,
@@ -143,6 +144,10 @@ class Ranks2
       const vector<unsigned>& full2reduced1,
       const vector<unsigned>& full2reduced2,
       vector<char>& canonical2comb) const;
+
+    unsigned canonicalNew(
+      const vector<RankInfo3>& fullCount1,
+      const vector<RankInfo3>& fullCount2) const;
 
     void canonicalUpdate(
       const vector<RankInfo3>& full2reduced1,
@@ -198,8 +203,13 @@ class Ranks2
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
-    string strRankInfo(
-      const RankInfo3& rankInfo,
+    void strSetFullNames(
+      vector<string>& namesNorth,
+      vector<string>& namesSouth,
+      vector<string>& namesOpps) const;
+
+    string strPosition(
+      const string& cards,
       const string& player) const;
 
   public:
@@ -213,7 +223,7 @@ class Ranks2
     void clear();
 
     void set(
-      const unsigned holding,
+      const unsigned holdingIn,
       CombEntry& combEntry);
 
     CombinationType setPlays(

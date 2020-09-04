@@ -1,4 +1,15 @@
-- Moved canonical to the new way of doing it
+- Don't really need canonical2comb
+- Do need for each play a map from new rank to old one
+
+  AJ
+      Q, T
+  K
+
+  When play K - J T, want to map A -> A, K -> Q so 2 -> 5, 1 -> 3
+  How to do efficiently? Just keep track of old ranks that are disappearing? How?
+  But we don't need card *names* ever here?
+
+- Move canonical to the new way of doing it
 - Remove full2reduced vectors after this fix
 - Put the fullCount vectors inside the north/south/opps structs?
 - Better name than RankInfo3, maybe FullRankInfo
@@ -7,7 +18,10 @@
 - Rename RankInfo to ReducedRankInfo
 - RankInfo goes inside Ranks2.cpp
 - dominates() can take PositionInfo's as arguments
-- play output should use full ranks
+- play output should use full ranks as characters
+  EW are named HH, hh, ...
+  x's only from 9 on down, so may not be used at all
+- Rename CONVERT_NORTH to POSITION_NORTH etc.
 
 
 Optimizations
