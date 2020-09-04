@@ -9,8 +9,6 @@
   How to do efficiently? Just keep track of old ranks that are disappearing? How?
   But we don't need card *names* ever here?
 
-- Move canonical to the new way of doing it
-- Remove full2reduced vectors after this fix
 - Put the fullCount vectors inside the north/south/opps structs?
 - Better name than RankInfo3, maybe FullRankInfo
 - Get rid of Ranks.cpp

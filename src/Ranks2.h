@@ -111,10 +111,6 @@ class Ranks2
     };
 
 
-    vector<unsigned> full2reducedNorth;
-    vector<unsigned> full2reducedSouth;
-    vector<unsigned> full2reducedOpps;
-
     vector<RankInfo3> fullCountNorth;
     vector<RankInfo3> fullCountSouth;
     vector<RankInfo3> fullCountOpps;
@@ -139,19 +135,12 @@ class Ranks2
       const unsigned max2) const;
 
     unsigned canonical(
-      const vector<RankInfo2>& vec1,
-      const vector<RankInfo2>& vec2,
-      const vector<unsigned>& full2reduced1,
-      const vector<unsigned>& full2reduced2,
-      vector<char>& canonical2comb) const;
-
-    unsigned canonicalNew(
       const vector<RankInfo3>& fullCount1,
       const vector<RankInfo3>& fullCount2) const;
 
     void canonicalUpdate(
-      const vector<RankInfo3>& full2reduced1,
-      const vector<RankInfo3>& full2reduced2,
+      const vector<RankInfo3>& fullCount1,
+      const vector<RankInfo3>& fullCount2,
       unsigned& holding3,
       unsigned& holding2) const;
 

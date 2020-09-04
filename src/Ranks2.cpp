@@ -56,10 +56,6 @@ Ranks2::Ranks2()
   south.ranks.clear();
   opps.ranks.clear();
 
-  full2reducedNorth.clear();
-  full2reducedSouth.clear();
-  full2reducedOpps.clear();
-
   fullCountNorth.clear();
   fullCountSouth.clear();
   fullCountOpps.clear();
@@ -158,10 +154,6 @@ void Ranks2::resize(const unsigned cardsIn)
     opps.ranks[card].cards.resize(cards+1);
   }
 
-  full2reducedNorth.resize(cards+1, BIGINT);
-  full2reducedSouth.resize(cards+1, BIGINT);
-  full2reducedOpps.resize(cards+1, BIGINT);
-
   fullCountNorth.resize(cards+1);
   fullCountSouth.resize(cards+1);
   fullCountOpps.resize(cards+1);
@@ -195,10 +187,6 @@ void Ranks2::clear()
 
   for (unsigned rank = 0; rank <= maxRank; rank++)
   {
-    full2reducedNorth[rank] = BIGINT;
-    full2reducedSouth[rank] = BIGINT;
-    full2reducedOpps[rank] = BIGINT;
-
     fullCountNorth[rank].clear();
     fullCountSouth[rank].clear();
     fullCountOpps[rank].clear();
@@ -227,7 +215,6 @@ void Ranks2::setRanks()
   bool firstSouth = true;
   bool firstOpps = true;
   opps.setVoid(true); // Have to do it first to make max come out right
-  full2reducedOpps[0] = 1;
   fullCountOpps[0].add('-');
 
   for (unsigned i = imin; i < imin+cards; i++)
@@ -242,7 +229,6 @@ void Ranks2::setRanks()
       }
 
       opps.update(posOpps, maxRank, CARD_NAMES[i], firstOpps);
-      full2reducedOpps[maxRank] = posOpps;
       fullCountOpps[maxRank].add(CARD_NAMES[i]);
       prev_is_NS = false;
     }
@@ -260,13 +246,11 @@ void Ranks2::setRanks()
       if (c == CONVERT_NORTH)
       {
         north.update(posNorth, maxRank, CARD_NAMES[i], firstNorth);
-        full2reducedNorth[maxRank] = posNorth;
         fullCountNorth[maxRank].add(CARD_NAMES[i]);
       }
       else
       {
         south.update(posSouth, maxRank, CARD_NAMES[i], firstSouth);
-        full2reducedSouth[maxRank] = posSouth;
         fullCountSouth[maxRank].add(CARD_NAMES[i]);
       }
 
@@ -280,15 +264,9 @@ void Ranks2::setRanks()
   south.setVoid(false);
 
   if (north.len == 0)
-  {
     fullCountNorth[0].add('-');
-    full2reducedNorth[0] = 1;
-  }
   if (south.len == 0)
-  {
     fullCountSouth[0].add('-');
-    full2reducedSouth[0] = 1;
-  }
 
   north.setSingleRank();
   south.setSingleRank();
@@ -341,57 +319,6 @@ bool Ranks2::dominates(
 
 
 unsigned Ranks2::canonical(
-  const vector<RankInfo2>& vec1,
-  const vector<RankInfo2>& vec2,
-  const vector<unsigned>& full2reduced1,
-  const vector<unsigned>& full2reduced2,
-  vector<char>& canonical2comb) const
-{
-  // For this purpose vec1 is considered "North".
-  unsigned holdingCan = 0;
-  unsigned index = (cards > 13 ? 0 : 13-cards);
-
-  canonical2comb.resize(cards > 13 ? cards : 13);
-
-  for (unsigned rank = maxRank; rank > 0; rank--, index++) // Exclude void
-  {
-    if (full2reducedOpps[rank] < BIGINT)
-    {
-      const unsigned pos = full2reducedOpps[rank];
-      for (unsigned count = 0; count < opps.ranks[pos].count; count++)
-      {
-        holdingCan += (holdingCan << 1) + CONVERT_OPPS;
-        canonical2comb[index] = opps.ranks[pos].cards[count];
-      }
-    }
-    else 
-    {
-      if (full2reduced1[rank] < BIGINT)
-      {
-        const unsigned pos = full2reduced1[rank];
-        for (unsigned count = 0; count < vec1[pos].count; count++)
-        {
-          holdingCan += (holdingCan << 1) + CONVERT_NORTH;
-          canonical2comb[index] = vec1[pos].cards[count];
-        }
-      }
-
-      if (full2reduced2[rank] < BIGINT)
-      {
-        const unsigned pos = full2reduced2[rank];
-        for (unsigned count = 0; count < vec2[pos].count; count++)
-        {
-          holdingCan += (holdingCan << 1) + CONVERT_SOUTH;
-          canonical2comb[index] = vec2[pos].cards[count];
-        }
-      }
-    }
-  }
-  return holdingCan;
-}
-
-
-unsigned Ranks2::canonicalNew(
   const vector<RankInfo3>& fullCount1,
   const vector<RankInfo3>& fullCount2) const
 {
@@ -452,17 +379,16 @@ void Ranks2::set(
 
   combEntry.rotateFlag = ! Ranks2::dominates(north.ranks, north.maxPos, 
     south.ranks, south.maxPos);
+
   if (combEntry.rotateFlag)
   {
-    combEntry.canonicalHolding = Ranks2::canonical(south.ranks, north.ranks,
-      full2reducedSouth, full2reducedNorth,
-      combEntry.canonical2comb);
+    combEntry.canonicalHolding = 
+      Ranks2::canonical(fullCountSouth, fullCountNorth);
   }
   else
   {
-    combEntry.canonicalHolding = Ranks2::canonical(north.ranks, south.ranks,
-      full2reducedNorth, full2reducedSouth,
-      combEntry.canonical2comb);
+    combEntry.canonicalHolding = 
+      Ranks2::canonical(fullCountNorth, fullCountSouth);
   }
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
