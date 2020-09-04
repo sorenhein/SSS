@@ -1,5 +1,5 @@
-#ifndef SSS_RANKS2_H
-#define SSS_RANKS2_H
+#ifndef SSS_RANKS_H
+#define SSS_RANKS_H
 
 #include <vector>
 #include <list>
@@ -11,7 +11,7 @@ using namespace std;
 struct CombEntry;
 
 
-class Ranks2
+class Ranks
 {
   private:
 
@@ -200,9 +200,9 @@ class Ranks2
 
   public:
 
-    Ranks2();
+    Ranks();
 
-    ~Ranks2();
+    ~Ranks();
 
     void resize(const unsigned cardsIn);
 

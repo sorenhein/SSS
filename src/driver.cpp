@@ -23,7 +23,6 @@ Distributions distributions;
 
 
 #include "Ranks.h"
-#include "Ranks2.h"
 int main(int argc, char * argv[])
 {
   if (! control.parseCommandLine(argc, argv))
@@ -44,7 +43,7 @@ int main(int argc, char * argv[])
   */
 
   /*
-  Ranks2 ranks;
+  Ranks ranks;
   CombEntry ce;
   ranks.resize(13);
   ranks.set(464920, ce);

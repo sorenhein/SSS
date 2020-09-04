@@ -5,7 +5,7 @@
 #include <utility>
 #include <cassert>
 
-#include "Ranks2.h"
+#include "Ranks.h"
 
 #include "struct.h"
 #include "const.h"
@@ -45,12 +45,12 @@ vector<unsigned> HOLDING2_RANK_SHIFT;
 vector<unsigned> HOLDING2_RANK_ADDER;
 
 
-Ranks2::Ranks2()
+Ranks::Ranks()
 {
   // https://stackoverflow.com/questions/8412630/
   // how-to-execute-a-piece-of-code-only-once
   if (static auto called = false; ! exchange(called, true))
-    Ranks2::setConstants();
+    Ranks::setConstants();
 
   north.ranks.clear();
   south.ranks.clear();
@@ -62,12 +62,12 @@ Ranks2::Ranks2()
 }
 
 
-Ranks2::~Ranks2()
+Ranks::~Ranks()
 {
 }
 
 
-void Ranks2::setConstants()
+void Ranks::setConstants()
 {
   HOLDING3_FACTOR.resize(MAX_CARDS+1);
   HOLDING3_FACTOR[0] = 1;
@@ -138,7 +138,7 @@ void Ranks2::setConstants()
 }
 
 
-void Ranks2::resize(const unsigned cardsIn)
+void Ranks::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
@@ -172,7 +172,7 @@ void Ranks2::resize(const unsigned cardsIn)
 }
 
 
-void Ranks2::clear()
+void Ranks::clear()
 {
   for (unsigned rank = 0; rank <= north.maxRank; rank++)
     north.ranks[rank].clear();
@@ -196,9 +196,9 @@ void Ranks2::clear()
 }
 
 
-void Ranks2::setRanks()
+void Ranks::setRanks()
 {
-  Ranks2::clear();
+  Ranks::clear();
 
   // If the first card belongs to EW, there will be an uptick (from 0).
   // If it does belong to NS, there will only be an uptick if there
@@ -275,7 +275,7 @@ void Ranks2::setRanks()
 }
 
 
-bool Ranks2::dominates(
+bool Ranks::dominates(
   const vector<RankInfo2>& vec1,
   const unsigned max1,
   const vector<RankInfo2>& vec2,
@@ -319,7 +319,7 @@ bool Ranks2::dominates(
 }
 
 
-unsigned Ranks2::canonicalTrinary(
+unsigned Ranks::canonicalTrinary(
   const vector<RankInfo3>& fullCount1,
   const vector<RankInfo3>& fullCount2) const
 {
@@ -341,7 +341,7 @@ unsigned Ranks2::canonicalTrinary(
 }
 
 
-void Ranks2::canonicalBoth(
+void Ranks::canonicalBoth(
   const vector<RankInfo3>& fullCount1,
   const vector<RankInfo3>& fullCount2,
   unsigned& holding3,
@@ -370,33 +370,33 @@ void Ranks2::canonicalBoth(
 }
 
 
-void Ranks2::set(
+void Ranks::set(
   const unsigned holdingIn,
   CombEntry& combEntry)
 {
 // cout << "holding " << holdingIn << endl;
   holding = holdingIn;
-  Ranks2::setRanks();
+  Ranks::setRanks();
 
-  combEntry.rotateFlag = ! Ranks2::dominates(north.ranks, north.maxPos, 
+  combEntry.rotateFlag = ! Ranks::dominates(north.ranks, north.maxPos, 
     south.ranks, south.maxPos);
 
   if (combEntry.rotateFlag)
   {
     combEntry.canonicalHolding = 
-      Ranks2::canonicalTrinary(south.fullCount, north.fullCount);
+      Ranks::canonicalTrinary(south.fullCount, north.fullCount);
   }
   else
   {
     combEntry.canonicalHolding = 
-      Ranks2::canonicalTrinary(north.fullCount, south.fullCount);
+      Ranks::canonicalTrinary(north.fullCount, south.fullCount);
   }
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
 }
 
 
-bool Ranks2::trivial(unsigned& terminalValue) const
+bool Ranks::trivial(unsigned& terminalValue) const
 {
   if (north.len == 0 && south.len == 0)
   {
@@ -430,7 +430,7 @@ bool Ranks2::trivial(unsigned& terminalValue) const
 }
 
 
-bool Ranks2::leadOK(
+bool Ranks::leadOK(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const unsigned lead) const
@@ -459,7 +459,7 @@ bool Ranks2::leadOK(
 }
 
 
-bool Ranks2::pardOK(
+bool Ranks::pardOK(
   const PositionInfo& partner,
   const unsigned toBeat,
   const unsigned pard) const
@@ -479,7 +479,7 @@ bool Ranks2::pardOK(
 }
 
 
-void Ranks2::updateHoldings(
+void Ranks::updateHoldings(
   const vector<RankInfo2>& vec1,
   const vector<RankInfo2>& vec2,
   const unsigned max1,
@@ -488,20 +488,20 @@ void Ranks2::updateHoldings(
   const vector<RankInfo3>& fullCount2,
   PlayEntry& play)
 {
-  if (Ranks2::dominates(vec1, max1, vec2, max2))
+  if (Ranks::dominates(vec1, max1, vec2, max2))
   {
-    Ranks2::canonicalBoth(
+    Ranks::canonicalBoth(
       fullCount1, fullCount2, play.holdingNew3, play.holdingNew2);
   }
   else
   {
-    Ranks2::canonicalBoth(
+    Ranks::canonicalBoth(
       fullCount2, fullCount1, play.holdingNew3, play.holdingNew2);
   }
 }
 
 
-void Ranks2::setPlaysSideWithVoid(
+void Ranks::setPlaysSideWithVoid(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
@@ -513,7 +513,7 @@ void Ranks2::setPlaysSideWithVoid(
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks2::leadOK(leader, partner, lead))
+    if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
     fullCount1[lead].count--;
@@ -523,7 +523,7 @@ void Ranks2::setPlaysSideWithVoid(
         pardPos <= partner.maxPos; pardPos++)
     {
       const unsigned pard = partner.ranks[pardPos].rank;
-      if (! Ranks2::pardOK(partner, lead, pard))
+      if (! Ranks::pardOK(partner, lead, pard))
         continue;
 
       fullCount2[pard].count--;
@@ -545,7 +545,7 @@ void Ranks2::setPlaysSideWithVoid(
         PlayEntry& play = plays[playNo++];
         play.update(side, lead, 0, pard, rho);
 
-        Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+        Ranks::updateHoldings(leader.ranks, partner.ranks, 
           leader.maxPos, partner.maxPos, 
           fullCount1, fullCount2, play);
 
@@ -559,7 +559,7 @@ void Ranks2::setPlaysSideWithVoid(
 }
 
 
-void Ranks2::setPlaysSideWithoutVoid(
+void Ranks::setPlaysSideWithoutVoid(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
@@ -571,7 +571,7 @@ void Ranks2::setPlaysSideWithoutVoid(
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks2::leadOK(leader, partner, lead))
+    if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
     fullCount1[lead].count--;
@@ -585,7 +585,7 @@ void Ranks2::setPlaysSideWithoutVoid(
           pardPos <= partner.maxPos; pardPos++)
       {
         const unsigned pard = partner.ranks[pardPos].rank;
-        if (! Ranks2::pardOK(partner, max(lead, lho), pard))
+        if (! Ranks::pardOK(partner, max(lead, lho), pard))
           continue;
 
         fullCount2[pard].count--;
@@ -607,7 +607,7 @@ void Ranks2::setPlaysSideWithoutVoid(
           PlayEntry& play = plays[playNo++];
           play.update(side, lead, lho, pard, rho);
 
-          Ranks2::updateHoldings(leader.ranks, partner.ranks, 
+          Ranks::updateHoldings(leader.ranks, partner.ranks, 
             leader.maxPos, partner.maxPos, 
             fullCount1, fullCount2, play);
         
@@ -622,7 +622,7 @@ void Ranks2::setPlaysSideWithoutVoid(
 }
 
 
-void Ranks2::setPlaysSide(
+void Ranks::setPlaysSide(
   const PositionInfo& leader,
   const PositionInfo& partner,
   const SidePosition side,
@@ -647,14 +647,14 @@ void Ranks2::setPlaysSide(
       leader.minRank >= partner.maxRank)
     return;
 
-  Ranks2::setPlaysSideWithVoid(leader, partner, side, 
+  Ranks::setPlaysSideWithVoid(leader, partner, side, 
     fullCount1, fullCount2, plays, playNo);
-  Ranks2::setPlaysSideWithoutVoid(leader, partner, side,
+  Ranks::setPlaysSideWithoutVoid(leader, partner, side,
     fullCount1, fullCount2, plays, playNo);
 }
 
 
-CombinationType Ranks2::setPlays(
+CombinationType Ranks::setPlays(
   vector<PlayEntry>& plays,
   unsigned& playNo,
   unsigned& terminalValue)
@@ -666,19 +666,19 @@ CombinationType Ranks2::setPlays(
   plays.resize(PLAY_CHUNK_SIZE[cards]);
   playNo = 0;
 
-  if (Ranks2::trivial(terminalValue))
+  if (Ranks::trivial(terminalValue))
     return COMB_TRIVIAL;
 
   // TODO Don't need to pass .fullCount separately
-  Ranks2::setPlaysSide(north, south, SIDE_NORTH, 
+  Ranks::setPlaysSide(north, south, SIDE_NORTH, 
     north.fullCount, south.fullCount, plays, playNo);
-  Ranks2::setPlaysSide(south, north, SIDE_SOUTH, 
+  Ranks::setPlaysSide(south, north, SIDE_SOUTH, 
     south.fullCount, north.fullCount, plays, playNo);
   return COMB_OTHER;
 }
 
 
-void Ranks2::strSetFullNames(
+void Ranks::strSetFullNames(
   vector<string>& namesNorth,
   vector<string>& namesSouth,
   vector<string>& namesOpps) const
@@ -749,7 +749,7 @@ void Ranks2::strSetFullNames(
 }
 
 
-string Ranks2::strPosition(
+string Ranks::strPosition(
   const string& cardString,
   const string& player) const
 {
@@ -766,7 +766,7 @@ string Ranks2::strPosition(
 }
 
 
-string Ranks2::str() const
+string Ranks::str() const
 {
   stringstream ss;
   ss << "Ranks:\n";
@@ -780,14 +780,14 @@ string Ranks2::str() const
   vector<string> namesNorth(cards+1);
   vector<string> namesSouth(cards+1);
   vector<string> namesOpps(cards+1);
-  Ranks2::strSetFullNames(namesNorth, namesSouth, namesOpps);
+  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     ss <<
-      Ranks2::strPosition(namesNorth[rank], "North") <<
-      Ranks2::strPosition(namesSouth[rank], "South") <<
-      Ranks2::strPosition(namesOpps[rank], "Opps") <<
+      Ranks::strPosition(namesNorth[rank], "North") <<
+      Ranks::strPosition(namesSouth[rank], "South") <<
+      Ranks::strPosition(namesOpps[rank], "Opps") <<
       "\n";
   }
 

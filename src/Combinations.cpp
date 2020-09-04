@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
-#include "Ranks2.h"
+#include "Ranks.h"
 
 // http://oeis.org/A051450
 const vector<unsigned> UNIQUE_COUNT = 
@@ -87,7 +87,7 @@ void Combinations::runUniques(const unsigned cards)
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
-  Ranks2 ranks;
+  Ranks ranks;
 
   ranks.resize(cards);
   unsigned uniqueIndex = 0;
@@ -157,7 +157,7 @@ void Combinations::runUniqueThread(
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
 
-  Ranks2 ranks;
+  Ranks ranks;
   ranks.resize(cards);
   unsigned holding;
 
