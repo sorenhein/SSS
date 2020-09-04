@@ -3,11 +3,12 @@
 
 #include <vector>
 
-#include "struct.h"
+#include "const.h"
 
 using namespace std;
 
 struct CombEntry;
+struct PlayEntry;
 
 
 class Ranks
@@ -23,11 +24,6 @@ class Ranks
       {
         count = 0;
       }
-
-      // void clear()
-      // {
-        // count = 0;
-      // }
 
       void add(const unsigned rankIn)
       {
@@ -102,10 +98,12 @@ class Ranks
         if (forceFlag || len == 0)
         {
           ranks[0].add(0);
-          minRank = 0;
-          maxRank = 0;
           minPos = 0;
           maxPos = 0;
+
+          fullCount[0] = 1;
+          minRank = 0;
+          maxRank = 0;
         }
       }
 

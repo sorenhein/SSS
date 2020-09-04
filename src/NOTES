@@ -1,3 +1,7 @@
+- Move PositionInfo into an own file?
+- Turn dominates into a method of PositionInfo (>=) ?
+
+- Add comment (TODO) to Ranks.cpp:
 - Do need for each play a map from new rank to old one
 
   AJ
@@ -13,28 +17,26 @@
   x's only from 9 on down, so may not be used at all
   Implemented: DEBUG
 
+plays get stored in outside method so it's easier to turn into a
+tree later.
+
+Space for plays comes from Combination.
 
 Optimizations
 - If LHO void, RHO is more restricted
 - If opps play Q and we have KJ (so 1 rank in between), always prefer K to J.
 
+------
+
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 
 * CombEntry -> Combination?
-* Add rank = 0 for void, shift the others up
 * In Combination, generate all tricks
-  - First naively
-  - Then properly
-  - Count the difference
-  - side, card1..4
-  - End up with new comb, new dist bit vector
-  - Also, some dist's are impossible because E or W known to be void
+  - Some dist's are impossible because E or W known to be void
   - And some because of HCP or other limitations
   - Set up the tree
   - Have a dist vector that corresponds to next-level dists
   - Know which ones are possible
   - Know which cards correspond to next-level cards (and ranks)
-
-
 

@@ -23,7 +23,7 @@
  *   then the higher of these cards are given to the dominant side.
  *
  * The setPlays() method sets up all meaningful plays for North-South.
- * If the holding has a very clear value, then no plays are returned,
+ * If the holding has a trivial value, then no plays are returned,
  * and a terminal value (number of NS tricks) is returned instead.
  *
  * The key methods are quite heavily optimized for time.  For example:
@@ -199,20 +199,23 @@ void Ranks::setRanks()
   // such that the first real card we see will result in an increase
   // in maxRank, i.e. in the running rank.  Therefore we will never
   // write to rank = 0 (void) in the loop itself.
-
   bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
+
   unsigned posNorth = 1;
   unsigned posSouth = 1;
   unsigned posOpps = 0;
 
-  const unsigned imin = (cards > 13 ? 0 : 13-cards);
-  unsigned h = holding;
-
   bool firstNorth = true;
   bool firstSouth = true;
   bool firstOpps = true;
+
+  // Have to set opps here already, as opps are not definitely void
+  // but may be void, so we don't want the maximum values to get
+  // reset to 0 by calling setVoid() after the loop below.
   opps.setVoid(true); // Have to do it first to make max come out right
-  opps.fullCount[0]++;
+
+  const unsigned imin = (cards > 13 ? 0 : 13-cards);
+  unsigned h = holding;
 
   for (unsigned i = imin; i < imin+cards; i++)
   {
@@ -232,6 +235,8 @@ void Ranks::setRanks()
     {
       if (! prev_is_NS)
       {
+        // We could get a mix of positions within the same rank,
+        // not necessarily sorted by position.
         maxRank++;
         if (north.ranks[posNorth].count > 0)
           posNorth++;
@@ -252,11 +257,6 @@ void Ranks::setRanks()
 
   north.setVoid(false);
   south.setVoid(false);
-
-  if (north.len == 0)
-    north.fullCount[0] = 1;
-  if (south.len == 0)
-    south.fullCount[0] = 1;
 
   north.setSingleRank();
   south.setSingleRank();
@@ -334,9 +334,8 @@ void Ranks::canonicalBoth(
   unsigned& holding3,
   unsigned& holding2) const
 {
-  // This is similar to canonical, but (a) doesn't keep track of card
-  // names, and (b) generates both the binary and trinary holdings.
-  // It is also quite highly optimized.
+  // This is similar to canonicalTrinary, but generates both the binary 
+  // and trinary holdings.
   holding3 = 0;
   holding2 = 0;
 
@@ -361,22 +360,17 @@ void Ranks::set(
   const unsigned holdingIn,
   CombEntry& combEntry)
 {
-// cout << "holding " << holdingIn << endl;
   holding = holdingIn;
   Ranks::setRanks();
 
   combEntry.rotateFlag = ! Ranks::dominates(north, south);
 
   if (combEntry.rotateFlag)
-  {
     combEntry.canonicalHolding = 
       Ranks::canonicalTrinary(south.fullCount, north.fullCount);
-  }
   else
-  {
     combEntry.canonicalHolding = 
       Ranks::canonicalTrinary(north.fullCount, south.fullCount);
-  }
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
 }
@@ -454,8 +448,6 @@ bool Ranks::pardOK(
   if (partner.len == 0)
     return true;
 
-  // By construction, count is > 0.
-
   // No rule concerning high cards.
   if (pard > toBeat)
     return true;
@@ -492,6 +484,8 @@ void Ranks::setPlaysSideWithVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
+  // For optimization we treat the case separately where LHO is void.
+
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
@@ -634,6 +628,7 @@ CombinationType Ranks::setPlays(
   // If COMB_TRIVIAL, then only terminalValue is set.
   // Otherwise, plays are set.
   // TODO: Should probably be a tree structure.
+  // TODO: Use space allocation in a Combination.
   plays.clear();
   plays.resize(PLAY_CHUNK_SIZE[cards]);
   playNo = 0;
@@ -641,7 +636,6 @@ CombinationType Ranks::setPlays(
   if (Ranks::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  // TODO Don't need to pass .fullCount separately
   Ranks::setPlaysSide(north, south, SIDE_NORTH, plays, playNo);
   Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays, playNo);
   return COMB_OTHER;
@@ -656,6 +650,7 @@ void Ranks::strSetFullNames(
   // Start by full names. This is a small version of setRanks().
   // As it is only required when we want str(), it is not calculated
   // by default in setRanks.
+
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
   unsigned h = holding;
