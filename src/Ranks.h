@@ -134,20 +134,16 @@ class Ranks
       PlayEntry& play);
 
     void setPlaysSideWithVoid(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
-      vector<unsigned>& fullCount1,
-      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 
     void setPlaysSideWithoutVoid(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      PositionInfo& leader,
+      PositionInfo& partner,
       const SidePosition side,
-      vector<unsigned>& fullCount1,
-      vector<unsigned>& fullCount2,
       vector<PlayEntry>& plays,
       unsigned& playNo);
 

@@ -485,11 +485,9 @@ void Ranks::updateHoldings(
 
 
 void Ranks::setPlaysSideWithVoid(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
-  vector<unsigned>& fullCount1,
-  vector<unsigned>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -499,7 +497,7 @@ void Ranks::setPlaysSideWithVoid(
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    fullCount1[lead]--;
+    leader.fullCount[lead]--;
     opps.fullCount[0]--;
 
     for (unsigned pardPos = partner.minPos; 
@@ -509,7 +507,7 @@ void Ranks::setPlaysSideWithVoid(
       if (! Ranks::pardOK(partner, lead, pard))
         continue;
 
-      fullCount2[pard]--;
+      partner.fullCount[pard]--;
 
       // toBeat = max(lead, pard)
       for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
@@ -530,24 +528,22 @@ void Ranks::setPlaysSideWithVoid(
 
         Ranks::updateHoldings(leader.ranks, partner.ranks, 
           leader.maxPos, partner.maxPos, 
-          fullCount1, fullCount2, play);
+          leader.fullCount, partner.fullCount, play);
 
         opps.fullCount[rho]++;
       }
-      fullCount2[pard]++;
+      partner.fullCount[pard]++;
     }
-    fullCount1[lead]++;
+    leader.fullCount[lead]++;
     opps.fullCount[0]++;
   }
 }
 
 
 void Ranks::setPlaysSideWithoutVoid(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  PositionInfo& leader,
+  PositionInfo& partner,
   const SidePosition side,
-  vector<unsigned>& fullCount1,
-  vector<unsigned>& fullCount2,
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
@@ -557,7 +553,7 @@ void Ranks::setPlaysSideWithoutVoid(
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    fullCount1[lead]--;
+    leader.fullCount[lead]--;
 
     for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
     {
@@ -571,7 +567,7 @@ void Ranks::setPlaysSideWithoutVoid(
         if (! Ranks::pardOK(partner, max(lead, lho), pard))
           continue;
 
-        fullCount2[pard]--;
+        partner.fullCount[pard]--;
 
         for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
         {
@@ -592,15 +588,15 @@ void Ranks::setPlaysSideWithoutVoid(
 
           Ranks::updateHoldings(leader.ranks, partner.ranks, 
             leader.maxPos, partner.maxPos, 
-            fullCount1, fullCount2, play);
+            leader.fullCount, partner.fullCount, play);
         
           opps.fullCount[rho]++;
         }
-        fullCount2[pard]++;
+        partner.fullCount[pard]++;
       }
       opps.fullCount[lho]++;
     }
-    fullCount1[lead]++;
+    leader.fullCount[lead]++;
   }
 }
 
@@ -628,10 +624,8 @@ void Ranks::setPlaysSide(
       leader.minRank >= partner.maxRank)
     return;
 
-  Ranks::setPlaysSideWithVoid(leader, partner, side, 
-    leader.fullCount, partner.fullCount, plays, playNo);
-  Ranks::setPlaysSideWithoutVoid(leader, partner, side,
-    leader.fullCount, partner.fullCount, plays, playNo);
+  Ranks::setPlaysSideWithVoid(leader, partner, side, plays, playNo);
+  Ranks::setPlaysSideWithoutVoid(leader, partner, side, plays, playNo);
 }
 
 
