@@ -42,9 +42,32 @@ class Ranks2
       }
     };
 
+    struct RankInfo3
+    {
+      unsigned count;
+      vector<char> cards;
+
+      RankInfo3()
+      {
+        RankInfo3::clear();
+      }
+
+      void clear()
+      {
+        count = 0;
+      }
+
+      void add(const char name)
+      {
+        cards[count] = name;
+        count++;
+      }
+    };
+
     struct PositionInfo
     {
       vector<RankInfo2> ranks;
+      vector<RankInfo3> fullCount;
       unsigned maxRank;
       unsigned minRank;
       unsigned maxPos;
@@ -88,32 +111,6 @@ class Ranks2
       }
     };
 
-    struct RankInfo3
-    {
-      unsigned count;
-      vector<char> cards;
-
-      RankInfo3()
-      {
-        RankInfo3::clear();
-      }
-
-      void clear()
-      {
-        count = 0;
-      }
-
-      void add(const char name)
-      {
-        cards[count] = name;
-        count++;
-      }
-    };
-
-
-    vector<RankInfo3> fullCountNorth;
-    vector<RankInfo3> fullCountSouth;
-    vector<RankInfo3> fullCountOpps;
 
     PositionInfo north;
     PositionInfo south;
@@ -134,11 +131,11 @@ class Ranks2
       const vector<RankInfo2>& vec2,
       const unsigned max2) const;
 
-    unsigned canonical(
+    unsigned canonicalTrinary(
       const vector<RankInfo3>& fullCount1,
       const vector<RankInfo3>& fullCount2) const;
 
-    void canonicalUpdate(
+    void canonicalBoth(
       const vector<RankInfo3>& fullCount1,
       const vector<RankInfo3>& fullCount2,
       unsigned& holding3,

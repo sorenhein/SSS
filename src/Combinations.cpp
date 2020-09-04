@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
-#include "Ranks.h"
+#include "Ranks2.h"
 
 // http://oeis.org/A051450
 const vector<unsigned> UNIQUE_COUNT = 
@@ -79,8 +79,6 @@ void Combinations::resize(const unsigned maxCardsIn)
 }
 
 
-#include "inputs/Convert.h"
-#include "Ranks2.h"
 void Combinations::runUniques(const unsigned cards)
 {
   assert(cards < combinations.size());
@@ -90,10 +88,8 @@ void Combinations::runUniques(const unsigned cards)
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
   Ranks2 ranks;
-  Ranks ranksOld;
 
   ranks.resize(cards);
-  ranksOld.resize(cards);
   unsigned uniqueIndex = 0;
 
 vector<unsigned> hist(1000);
@@ -120,27 +116,6 @@ vector<unsigned> hist(1000);
       /* */
       unsigned term, playNo;
       ranks.setPlays(plays, playNo, term);
-
-      // CombEntry ce;
-      // ranksOld.set(holding, ce);
-      // unsigned termOld = 99, playNoOld;
-      // ranksOld.setPlays(playsOld, playNoOld, term);
-/*
-if (plays.size() != playsOld.size())
-{
-  if (term != termOld)
-    cout << "term mismatch\n";
-  cout << "holding " << holding << ": " << plays.size() << " " <<
-    playsOld.size() << endl;
-  for (auto& play: plays)
-    cout << play.str();
-  cout <<endl;
-  for (auto& play: playsOld)
-    cout << play.str();
-  cout <<endl;
-assert(false);
-}
-*/
       hist[playNo]++;
       /* */
 /*
@@ -182,7 +157,7 @@ void Combinations::runUniqueThread(
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
 
-  Ranks ranks;
+  Ranks2 ranks;
   ranks.resize(cards);
   unsigned holding;
 

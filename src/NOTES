@@ -9,9 +9,8 @@
   How to do efficiently? Just keep track of old ranks that are disappearing? How?
   But we don't need card *names* ever here?
 
-- Put the fullCount vectors inside the north/south/opps structs?
+- Take vector<char> and delete from fullCount
 - Better name than RankInfo3, maybe FullRankInfo
-- Get rid of Ranks.cpp
 - Get rid of RankInfo
 - Rename RankInfo to ReducedRankInfo
 - RankInfo goes inside Ranks2.cpp
@@ -19,17 +18,12 @@
 - play output should use full ranks as characters
   EW are named HH, hh, ...
   x's only from 9 on down, so may not be used at all
-- Rename CONVERT_NORTH to POSITION_NORTH etc.
+  Implemented: DEBUG
 
 
 Optimizations
 - If LHO void, RHO is more restricted
 - If opps play Q and we have KJ (so 1 rank in between), always prefer K to J.
-
-- canonical: 
-  - c2c looks wrong?
-
-
 
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values

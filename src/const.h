@@ -16,9 +16,9 @@ using namespace std;
 
 enum CardPosition
 {
-  CONVERT_NORTH = 0,
-  CONVERT_SOUTH = 1,
-  CONVERT_OPPS = 2
+  POSITION_NORTH = 0,
+  POSITION_SOUTH = 1,
+  POSITION_OPPS = 2
 };
 
 enum PairPosition

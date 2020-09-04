@@ -56,9 +56,9 @@ Ranks2::Ranks2()
   south.ranks.clear();
   opps.ranks.clear();
 
-  fullCountNorth.clear();
-  fullCountSouth.clear();
-  fullCountOpps.clear();
+  north.fullCount.clear();
+  south.fullCount.clear();
+  opps.fullCount.clear();
 }
 
 
@@ -120,11 +120,11 @@ void Ranks2::setConstants()
         HOLDING3_RANK_FACTOR[index] = HOLDING3_FACTOR[sum];
 
         HOLDING3_RANK_ADDER[index] = 
-          HOLDING3_ADDER[oppCount][CONVERT_OPPS] *
+          HOLDING3_ADDER[oppCount][POSITION_OPPS] *
             HOLDING3_FACTOR[decl1Count + decl2Count] +
-          HOLDING3_ADDER[decl1Count][CONVERT_NORTH] *
+          HOLDING3_ADDER[decl1Count][POSITION_NORTH] *
             HOLDING3_FACTOR[decl2Count] +
-          HOLDING3_ADDER[decl2Count][CONVERT_SOUTH];
+          HOLDING3_ADDER[decl2Count][POSITION_SOUTH];
 
         HOLDING2_RANK_SHIFT[index] = HOLDING2_SHIFT[sum];
 
@@ -154,15 +154,15 @@ void Ranks2::resize(const unsigned cardsIn)
     opps.ranks[card].cards.resize(cards+1);
   }
 
-  fullCountNorth.resize(cards+1);
-  fullCountSouth.resize(cards+1);
-  fullCountOpps.resize(cards+1);
+  north.fullCount.resize(cards+1);
+  south.fullCount.resize(cards+1);
+  opps.fullCount.resize(cards+1);
 
   for (unsigned card = 0; card < cards+1; card++)
   {
-    fullCountNorth[card].cards.resize(cards+1);
-    fullCountSouth[card].cards.resize(cards+1);
-    fullCountOpps[card].cards.resize(cards+1);
+    north.fullCount[card].cards.resize(cards+1);
+    south.fullCount[card].cards.resize(cards+1);
+    opps.fullCount[card].cards.resize(cards+1);
   }
 
   maxRank = cards;
@@ -187,9 +187,9 @@ void Ranks2::clear()
 
   for (unsigned rank = 0; rank <= maxRank; rank++)
   {
-    fullCountNorth[rank].clear();
-    fullCountSouth[rank].clear();
-    fullCountOpps[rank].clear();
+    north.fullCount[rank].clear();
+    south.fullCount[rank].clear();
+    opps.fullCount[rank].clear();
   }
 
   maxRank = 0;
@@ -203,7 +203,7 @@ void Ranks2::setRanks()
   // If the first card belongs to EW, there will be an uptick (from 0).
   // If it does belong to NS, there will only be an uptick if there
   // is a count > 0, which will not be the case.
-  bool prev_is_NS = ((holding % 3) == CONVERT_OPPS);
+  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
   unsigned posNorth = 1;
   unsigned posSouth = 1;
   unsigned posOpps = 0;
@@ -215,12 +215,13 @@ void Ranks2::setRanks()
   bool firstSouth = true;
   bool firstOpps = true;
   opps.setVoid(true); // Have to do it first to make max come out right
-  fullCountOpps[0].add('-');
+  // fullCountOpps[0].add('-');
+  opps.fullCount[0].add('-');
 
   for (unsigned i = imin; i < imin+cards; i++)
   {
     const unsigned c = h % 3;
-    if (c == CONVERT_OPPS)
+    if (c == POSITION_OPPS)
     {
       if (prev_is_NS)
       {
@@ -229,7 +230,7 @@ void Ranks2::setRanks()
       }
 
       opps.update(posOpps, maxRank, CARD_NAMES[i], firstOpps);
-      fullCountOpps[maxRank].add(CARD_NAMES[i]);
+      opps.fullCount[maxRank].add(CARD_NAMES[i]);
       prev_is_NS = false;
     }
     else
@@ -243,15 +244,15 @@ void Ranks2::setRanks()
           posSouth++;
       }
 
-      if (c == CONVERT_NORTH)
+      if (c == POSITION_NORTH)
       {
         north.update(posNorth, maxRank, CARD_NAMES[i], firstNorth);
-        fullCountNorth[maxRank].add(CARD_NAMES[i]);
+        north.fullCount[maxRank].add(CARD_NAMES[i]);
       }
       else
       {
         south.update(posSouth, maxRank, CARD_NAMES[i], firstSouth);
-        fullCountSouth[maxRank].add(CARD_NAMES[i]);
+        south.fullCount[maxRank].add(CARD_NAMES[i]);
       }
 
       prev_is_NS = true;
@@ -264,9 +265,9 @@ void Ranks2::setRanks()
   south.setVoid(false);
 
   if (north.len == 0)
-    fullCountNorth[0].add('-');
+    north.fullCount[0].add('-');
   if (south.len == 0)
-    fullCountSouth[0].add('-');
+    south.fullCount[0].add('-');
 
   north.setSingleRank();
   south.setSingleRank();
@@ -318,7 +319,7 @@ bool Ranks2::dominates(
 }
 
 
-unsigned Ranks2::canonical(
+unsigned Ranks2::canonicalTrinary(
   const vector<RankInfo3>& fullCount1,
   const vector<RankInfo3>& fullCount2) const
 {
@@ -328,7 +329,7 @@ unsigned Ranks2::canonical(
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (fullCountOpps[rank].count << 8) | 
+      (opps.fullCount[rank].count << 8) | 
       (fullCount1[rank].count << 4) | 
        fullCount2[rank].count;
 
@@ -340,7 +341,7 @@ unsigned Ranks2::canonical(
 }
 
 
-void Ranks2::canonicalUpdate(
+void Ranks2::canonicalBoth(
   const vector<RankInfo3>& fullCount1,
   const vector<RankInfo3>& fullCount2,
   unsigned& holding3,
@@ -355,7 +356,7 @@ void Ranks2::canonicalUpdate(
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (fullCountOpps[rank].count << 8) | 
+      (opps.fullCount[rank].count << 8) | 
       (fullCount1[rank].count << 4) | 
        fullCount2[rank].count;
 
@@ -383,12 +384,12 @@ void Ranks2::set(
   if (combEntry.rotateFlag)
   {
     combEntry.canonicalHolding = 
-      Ranks2::canonical(fullCountSouth, fullCountNorth);
+      Ranks2::canonicalTrinary(south.fullCount, north.fullCount);
   }
   else
   {
     combEntry.canonicalHolding = 
-      Ranks2::canonical(fullCountNorth, fullCountSouth);
+      Ranks2::canonicalTrinary(north.fullCount, south.fullCount);
   }
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
@@ -489,12 +490,12 @@ void Ranks2::updateHoldings(
 {
   if (Ranks2::dominates(vec1, max1, vec2, max2))
   {
-    Ranks2::canonicalUpdate(
+    Ranks2::canonicalBoth(
       fullCount1, fullCount2, play.holdingNew3, play.holdingNew2);
   }
   else
   {
-    Ranks2::canonicalUpdate(
+    Ranks2::canonicalBoth(
       fullCount2, fullCount1, play.holdingNew3, play.holdingNew2);
   }
 }
@@ -516,7 +517,7 @@ void Ranks2::setPlaysSideWithVoid(
       continue;
 
     fullCount1[lead].count--;
-    fullCountOpps[0].count--;
+    opps.fullCount[0].count--;
 
     for (unsigned pardPos = partner.minPos; 
         pardPos <= partner.maxPos; pardPos++)
@@ -535,7 +536,7 @@ void Ranks2::setPlaysSideWithVoid(
         // TODO Lowest of rho cards < toBeat (no subterfuge left)
         // Lowest of rho cards > toBeat
 
-        fullCountOpps[rho].count--;
+        opps.fullCount[rho].count--;
           
         // Register the new play.
         if (playNo >= plays.size())
@@ -548,12 +549,12 @@ void Ranks2::setPlaysSideWithVoid(
           leader.maxPos, partner.maxPos, 
           fullCount1, fullCount2, play);
 
-        fullCountOpps[rho].count++;
+        opps.fullCount[rho].count++;
       }
       fullCount2[pard].count++;
     }
     fullCount1[lead].count++;
-    fullCountOpps[0].count++;
+    opps.fullCount[0].count++;
   }
 }
 
@@ -578,7 +579,7 @@ void Ranks2::setPlaysSideWithoutVoid(
     for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
     {
       const unsigned lho = opps.ranks[lhoPos].rank;
-      fullCountOpps[lho].count--;
+      opps.fullCount[lho].count--;
 
       for (unsigned pardPos = partner.minPos; 
           pardPos <= partner.maxPos; pardPos++)
@@ -594,10 +595,10 @@ void Ranks2::setPlaysSideWithoutVoid(
           const unsigned rho = opps.ranks[rhoPos].rank;
 
           // Maybe the same single card has been played already.
-          if (fullCountOpps[rho].count == 0)
+          if (opps.fullCount[rho].count == 0)
             continue;
           
-          fullCountOpps[rho].count--;
+          opps.fullCount[rho].count--;
 
           // Register the new play.
           if (playNo >= plays.size())
@@ -610,11 +611,11 @@ void Ranks2::setPlaysSideWithoutVoid(
             leader.maxPos, partner.maxPos, 
             fullCount1, fullCount2, play);
         
-          fullCountOpps[rho].count++;
+          opps.fullCount[rho].count++;
         }
         fullCount2[pard].count++;
       }
-      fullCountOpps[lho].count++;
+      opps.fullCount[lho].count++;
     }
     fullCount1[lead].count++;
   }
@@ -668,10 +669,11 @@ CombinationType Ranks2::setPlays(
   if (Ranks2::trivial(terminalValue))
     return COMB_TRIVIAL;
 
+  // TODO Don't need to pass .fullCount separately
   Ranks2::setPlaysSide(north, south, SIDE_NORTH, 
-    fullCountNorth, fullCountSouth, plays, playNo);
+    north.fullCount, south.fullCount, plays, playNo);
   Ranks2::setPlaysSide(south, north, SIDE_SOUTH, 
-    fullCountSouth, fullCountNorth, plays, playNo);
+    south.fullCount, north.fullCount, plays, playNo);
   return COMB_OTHER;
 }
 
@@ -685,7 +687,7 @@ void Ranks2::strSetFullNames(
   // As it is only required when we want str(), it is not calculated
   // by default in setRanks.
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
-  bool prev_is_NS = ((holding % 3) == CONVERT_OPPS);
+  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
   unsigned h = holding;
   unsigned rank = 0;
   unsigned minRankOpps = 0;
@@ -695,7 +697,7 @@ void Ranks2::strSetFullNames(
   for (unsigned i = imin; i < imin+cards; i++)
   {
     const unsigned c = h % 3;
-    if (c == CONVERT_OPPS)
+    if (c == POSITION_OPPS)
     {
       if (prev_is_NS)
         rank++;
@@ -714,7 +716,7 @@ void Ranks2::strSetFullNames(
       if (! prev_is_NS)
         rank++;
 
-      if (c == CONVERT_NORTH)
+      if (c == POSITION_NORTH)
         namesNorth[rank] = CARD_NAMES[i] + namesNorth[rank];
       else
         namesSouth[rank] = CARD_NAMES[i] + namesSouth[rank];

@@ -20,7 +20,6 @@ struct CombEntry
   unsigned canonicalHolding;
   unsigned canonicalIndex;
   bool rotateFlag;
-  vector<char> canonical2comb;
   // Once we have a Combination, probably
   // Combination * combinationPtr;
 };
