@@ -125,13 +125,9 @@ class Ranks
       const unsigned pard) const;
 
     void updateHoldings(
-      const vector<ReducedRankInfo>& vec1,
-      const vector<ReducedRankInfo>& vec2,
-      const unsigned max1,
-      const unsigned max2,
-      const vector<unsigned>& fullCount1,
-      const vector<unsigned>& fullCount2,
-      PlayEntry& play);
+      const PositionInfo& leader,
+      const PositionInfo& partner,
+      PlayEntry& play) const;
 
     void setPlaysSideWithVoid(
       PositionInfo& leader,

@@ -463,23 +463,22 @@ bool Ranks::pardOK(
 
 
 void Ranks::updateHoldings(
-  const vector<ReducedRankInfo>& vec1,
-  const vector<ReducedRankInfo>& vec2,
-  const unsigned max1,
-  const unsigned max2,
-  const vector<unsigned>& fullCount1,
-  const vector<unsigned>& fullCount2,
-  PlayEntry& play)
+  const PositionInfo& leader,
+  const PositionInfo& partner,
+  PlayEntry& play) const
 {
-  if (Ranks::dominates(vec1, max1, vec2, max2))
+  if (Ranks::dominates(leader.ranks, leader.maxPos, 
+    partner.ranks, partner.maxPos))
   {
     Ranks::canonicalBoth(
-      fullCount1, fullCount2, play.holdingNew3, play.holdingNew2);
+      leader.fullCount, partner.fullCount, 
+        play.holdingNew3, play.holdingNew2);
   }
   else
   {
     Ranks::canonicalBoth(
-      fullCount2, fullCount1, play.holdingNew3, play.holdingNew2);
+      partner.fullCount, leader.fullCount, 
+        play.holdingNew3, play.holdingNew2);
   }
 }
 
@@ -526,9 +525,7 @@ void Ranks::setPlaysSideWithVoid(
         PlayEntry& play = plays[playNo++];
         play.update(side, lead, 0, pard, rho);
 
-        Ranks::updateHoldings(leader.ranks, partner.ranks, 
-          leader.maxPos, partner.maxPos, 
-          leader.fullCount, partner.fullCount, play);
+        Ranks::updateHoldings(leader, partner, play);
 
         opps.fullCount[rho]++;
       }
@@ -586,9 +583,7 @@ void Ranks::setPlaysSideWithoutVoid(
           PlayEntry& play = plays[playNo++];
           play.update(side, lead, lho, pard, rho);
 
-          Ranks::updateHoldings(leader.ranks, partner.ranks, 
-            leader.maxPos, partner.maxPos, 
-            leader.fullCount, partner.fullCount, play);
+          Ranks::updateHoldings(leader, partner, play);
         
           opps.fullCount[rho]++;
         }
