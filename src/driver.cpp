@@ -43,7 +43,7 @@ int main(int argc, char * argv[])
   cout << ranks.str();
   */
 
-  /* */
+  /*
   Ranks2 ranks;
   CombEntry ce;
   ranks.resize(13);
@@ -51,9 +51,9 @@ int main(int argc, char * argv[])
   cout << ranks.str();
   cout << "canonical holding " << ce.canonicalHolding << endl;
   // exit(0);
-  /* */
+  */
 
-  /* */
+  /*
   vector<PlayEntry> plays;
   unsigned term, playNo;
   ranks.setPlays(plays, playNo, term);
@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
   for (unsigned i = 0; i < playNo; i++)
     cout << plays[i].str();
   exit(0);
-  /* */
+  */
 
   // Set up combinations.
 
