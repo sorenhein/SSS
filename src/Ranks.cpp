@@ -117,7 +117,7 @@ void Ranks::setConstants()
   for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
   {
     HOLDING2_ADDER[c].resize(2);
-    HOLDING2_ADDER[c][1] = (c == 0 ? 0 : (1 << c) - 1);
+    HOLDING2_ADDER[c][1] = (c == 0u ? 0u : (1u << c) - 1u);
     HOLDING2_ADDER[c][0] = 0;
   }
 

@@ -38,7 +38,7 @@ WARN_FLAGS	= 		\
 	-Wno-long-long
 
 # COMPILE_FLAGS	= -O0 -flto -mtune=generic -fno-use-linker-plugin -ggdb
-COMPILE_FLAGS	= -O3 -flto -mtune=generic \
+COMPILE_FLAGS	= -O3 -flto -mtune=generic -std=c++17 \
 		-fno-use-linker-plugin $(WARN_FLAGS) 
 
 LINK1_FLAGS	= 
