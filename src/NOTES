@@ -1,30 +1,10 @@
-- Move PositionInfo into an own file?
-- Turn dominates into a method of PositionInfo (>=) ?
-
-- Add comment (TODO) to Ranks.cpp:
-- Do need for each play a map from new rank to old one
-
-  AJ
-      Q, T
-  K
-
-  When play K - J T, want to map A -> A, K -> Q so 2 -> 5, 1 -> 3
-  How to do efficiently? Just keep track of old ranks that are disappearing? How?
-  But we don't need card *names* ever here?
-
-- play output should use full ranks as characters
-  EW are named HH, hh, ...
-  x's only from 9 on down, so may not be used at all
-  Implemented: DEBUG
+If play gets accessed from updateHoldings using play.updateHoldings(),
+then play is completely encapsulated in Ranks.
 
 plays get stored in outside method so it's easier to turn into a
 tree later.
 
 Space for plays comes from Combination.
-
-Optimizations
-- If LHO void, RHO is more restricted
-- If opps play Q and we have KJ (so 1 rank in between), always prefer K to J.
 
 ------
 

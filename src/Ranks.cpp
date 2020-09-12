@@ -35,6 +35,23 @@
  *   instructions needed.
  * - The rank arrays are only zeroed out to the minimum extent between
  *   usages.
+ *
+ * TODO
+ * - Derive a vector mapping new, collapsed ranks to original ones.
+ *   Store it in plays.  Idea: In the play generation loop, keep track
+ *   of ranks that are disappearing, storing them in a vector of original
+ *   ranks.  When making the new holding3, keep track of skipped ranks
+ *   and fill out the vector in this way.
+ * - dominates() could be a method ">=" of PositionInfo.
+ * - Debug that str() is still working the new way (correct card names).
+ * - Once LHO is known to be void, RHO should win cheaply or duck
+ *   all the way.  This goes in setPlaysWithVoid().
+ * - It would be possible in principle to detect when LHO plays the K
+ *   in front of AQ (then never play the queen).  Only when the king
+ *   is the single card of its rank.  Probably too much overhead to
+ *   check for it?
+ * - It's probably safe always to play the ace from partner when
+ *   LHO plays a rank just below it (the "king").
  */
 
 const vector<unsigned> PLAY_CHUNK_SIZE =
@@ -504,14 +521,9 @@ void Ranks::setPlaysSideWithVoid(
 
       partner.fullCount[pard]--;
 
-      // toBeat = max(lead, pard)
       for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
       {
         const unsigned rho = opps.ranks[rhoPos].rank;
-
-        // TODO Lowest of rho cards < toBeat (no subterfuge left)
-        // Lowest of rho cards > toBeat
-
         opps.fullCount[rho]--;
           
         // Register the new play.
