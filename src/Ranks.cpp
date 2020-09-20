@@ -42,8 +42,6 @@
  *   of ranks that are disappearing, storing them in a vector of original
  *   ranks.  When making the new holding3, keep track of skipped ranks
  *   and fill out the vector in this way.
- * - Once LHO is known to be void, RHO should win cheaply or duck
- *   all the way.  This goes in setPlaysWithVoid().
  * - It would be possible in principle to detect when LHO plays the K
  *   in front of AQ (then never play the queen).  Only when the king
  *   is the single card of its rank.  Probably too much overhead to
@@ -475,10 +473,15 @@ void Ranks::setPlaysSideWithVoid(
         continue;
 
       partner.fullCount[pard]--;
+      const unsigned toBeat = max(lead, pard);
 
       for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
       {
         const unsigned rho = opps.ranks[rhoPos].rank;
+        // If LHO is known to be void, RHO can duck completely.
+        if (rho < toBeat && rho != opps.minRank)
+          continue;
+
         opps.fullCount[rho]--;
           
         // Register the new play.
@@ -491,6 +494,10 @@ void Ranks::setPlaysSideWithVoid(
         Ranks::updateHoldings(leader, partner, play);
 
         opps.fullCount[rho]++;
+
+        // If RHO wins, he should do so as cheaply as possible.
+        if (rho > toBeat)
+          break;
       }
       partner.fullCount[pard]++;
     }
