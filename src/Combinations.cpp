@@ -104,7 +104,7 @@ vector<unsigned> hist(1000);
     ranks.set(holding, combs[holding]);
 
     counts[cards].total++;
-    if (holding == combs[holding].canonicalHolding)
+    if (holding == combs[holding].canonicalHolding3)
     {
       assert(uniqueIndex < uniqs.size());
       combs[holding].canonicalIndex = uniqueIndex;
@@ -172,7 +172,7 @@ void Combinations::runUniqueThread(
     ranks.set(holding, combs[holding]);
 
     threadCounts[thid].total++;
-    if (holding == combs[holding].canonicalHolding)
+    if (holding == combs[holding].canonicalHolding3)
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());

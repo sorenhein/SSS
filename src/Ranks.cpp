@@ -383,13 +383,13 @@ void Ranks::set(
   combEntry.rotateFlag = ! Ranks::dominates(north, south);
 
   if (combEntry.rotateFlag)
-    combEntry.canonicalHolding = 
-      Ranks::canonicalTrinary(south.fullCount, north.fullCount);
+    Ranks::canonicalBoth(south.fullCount, north.fullCount,
+      combEntry.canonicalHolding3, combEntry.canonicalHolding2);
   else
-    combEntry.canonicalHolding = 
-      Ranks::canonicalTrinary(north.fullCount, south.fullCount);
+   Ranks::canonicalBoth(north.fullCount, south.fullCount,
+      combEntry.canonicalHolding3, combEntry.canonicalHolding2);
 
-  combEntry.canonicalFlag = (holding == combEntry.canonicalHolding);
+  combEntry.canonicalFlag = (holding == combEntry.canonicalHolding3);
 }
 
 
@@ -481,15 +481,13 @@ void Ranks::updateHoldings(
 {
   if (Ranks::dominates(leader, partner))
   {
-    Ranks::canonicalBoth(
-      leader.fullCount, partner.fullCount, 
-        play.holdingNew3, play.holdingNew2);
+    play.holdingNew = 
+      Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
   }
   else
   {
-    Ranks::canonicalBoth(
-      partner.fullCount, leader.fullCount, 
-        play.holdingNew3, play.holdingNew2);
+    play.holdingNew = 
+      Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
   }
 }
 

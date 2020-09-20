@@ -17,7 +17,8 @@ using namespace std;
 struct CombEntry
 {
   bool canonicalFlag;
-  unsigned canonicalHolding;
+  unsigned canonicalHolding3; // Trinary
+  unsigned canonicalHolding2; // Binary
   unsigned canonicalIndex;
   bool rotateFlag;
   // Once we have a Combination, probably
@@ -34,8 +35,7 @@ struct PlayEntry
   unsigned trickNS;
   bool knownVoidWest;
   bool knownVoidEast;
-  unsigned holdingNew3;
-  unsigned holdingNew2;
+  unsigned holdingNew;
 
   void update(
     const SidePosition sideIn,
@@ -74,8 +74,7 @@ struct PlayEntry
       setw(5) << "Win?" <<
       setw(5) << "W vd" <<
       setw(5) << "E vd" <<
-      setw(10) << "Holding3" <<
-      setw(10) << "Holding2" <<
+      setw(10) << "Holding" <<
       endl;
     return ss.str();
   }
@@ -92,8 +91,7 @@ struct PlayEntry
       setw(5) << (trickNS == 1 ? "+" : "") <<
       setw(5) << (knownVoidWest ? "yes" : "") <<
       setw(5) << (knownVoidEast ? "yes" : "") <<
-      setw(10) << holdingNew3 <<
-      setw(10) << holdingNew2 <<
+      setw(10) << holdingNew <<
       endl;
     return ss.str();
   }
