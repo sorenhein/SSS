@@ -35,17 +35,6 @@
  *   instructions needed.
  * - The rank arrays are only zeroed out to the minimum extent between
  *   usages.
- *
- * TODO
- * - Derive a vector mapping new, collapsed ranks to original ones.
- *   Store it in plays.  Idea: In the play generation loop, keep track
- *   of ranks that are disappearing, storing them in a vector of original
- *   ranks.  When making the new holding3, keep track of skipped ranks
- *   and fill out the vector in this way.
- * - It would be possible in principle to detect when LHO plays the K
- *   in front of AQ (then never play the queen).  Only when the king
- *   is the single card of its rank.  Probably too much overhead to
- *   check for it?
  */
 
 const vector<unsigned> PLAY_CHUNK_SIZE =
@@ -433,21 +422,14 @@ bool Ranks::pardOK(
 }
 
 
-void Ranks::updateHoldings(
+unsigned Ranks::updateHoldings(
   const PositionInfo& leader,
-  const PositionInfo& partner,
-  PlayEntry& play) const
+  const PositionInfo& partner) const
 {
   if (leader >= partner)
-  {
-    play.holdingNew = 
-      Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
-  }
+    return Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
   else
-  {
-    play.holdingNew = 
-      Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
-  }
+    return Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
 }
 
 
@@ -493,9 +475,8 @@ void Ranks::setPlaysSideWithVoid(
           plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
 
         PlayEntry& play = plays[playNo++];
-        play.update(side, lead, 0, pard, rho);
-
-        Ranks::updateHoldings(leader, partner, play);
+        play.update(side, lead, 0, pard, rho,
+          Ranks::updateHoldings(leader, partner));
 
         opps.fullCount[rho]++;
 
@@ -518,6 +499,12 @@ void Ranks::setPlaysSideWithoutVoid(
   vector<PlayEntry>& plays,
   unsigned &playNo)
 {
+  // We keep track of the rank numbers that disappear after the trick.
+  // This is needed in order to tell later on how ranks in later tricks
+  // map to current ranks.  We only need this when LHO is not void,
+  // as we won't be looking at rank translation if that's the case.
+  bool leadCollapse, lhoCollapse, pardCollapse, rhoCollapse;
+
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
     const unsigned lead = leader.ranks[leadPos].rank;
@@ -525,11 +512,13 @@ void Ranks::setPlaysSideWithoutVoid(
       continue;
 
     leader.fullCount[lead]--;
+    leadCollapse = (leader.fullCount[lead] == 0);
 
     for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
     {
       const unsigned lho = opps.ranks[lhoPos].rank;
       opps.fullCount[lho]--;
+      lhoCollapse = (opps.fullCount[lho] == 0);
 
       for (unsigned pardPos = partner.minPos; 
           pardPos <= partner.maxPos; pardPos++)
@@ -539,6 +528,7 @@ void Ranks::setPlaysSideWithoutVoid(
           continue;
 
         partner.fullCount[pard]--;
+        pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
 
         for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
         {
@@ -549,15 +539,16 @@ void Ranks::setPlaysSideWithoutVoid(
             continue;
           
           opps.fullCount[rho]--;
+          rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
 
           // Register the new play.
           if (playNo >= plays.size())
             plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
 
           PlayEntry& play = plays[playNo++];
-          play.update(side, lead, lho, pard, rho);
-
-          Ranks::updateHoldings(leader, partner, play);
+          play.update(side, lead, lho, pard, rho,
+            Ranks::updateHoldings(leader, partner),
+            leadCollapse, lhoCollapse, pardCollapse, rhoCollapse);
         
           opps.fullCount[rho]++;
         }

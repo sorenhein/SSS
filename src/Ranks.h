@@ -194,10 +194,9 @@ class Ranks
       const unsigned toBeat,
       const unsigned pard) const;
 
-    void updateHoldings(
+    unsigned updateHoldings(
       const PositionInfo& leader,
-      const PositionInfo& partner,
-      PlayEntry& play) const;
+      const PositionInfo& partner) const;
 
     void setPlaysSideWithVoid(
       PositionInfo& leader,
