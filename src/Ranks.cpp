@@ -17,7 +17,7 @@
  * The set() method sets up the rank data and determines whether the
  * holding is canonical, i.e. whether or not it can be reduced to
  * another equivalent holding.  
- * - It is determined which side "dominates", i.e. which side has
+ * - It is determined which side dominates, i.e. which side has
  *   higher or more high cards.
  * - If the dominant side has cards of the same rank as the other side, 
  *   then the higher of these cards are given to the dominant side.
@@ -42,8 +42,6 @@
  *   of ranks that are disappearing, storing them in a vector of original
  *   ranks.  When making the new holding3, keep track of skipped ranks
  *   and fill out the vector in this way.
- * - dominates() could be a method ">=" of PositionInfo.
- * - Debug that str() is still working the new way (correct card names).
  * - Once LHO is known to be void, RHO should win cheaply or duck
  *   all the way.  This goes in setPlaysWithVoid().
  * - It would be possible in principle to detect when LHO plays the K
@@ -281,48 +279,6 @@ void Ranks::setRanks()
 }
 
 
-bool Ranks::dominates(
-  const PositionInfo& first,
-  const PositionInfo& second) const
-{
-  // The rank vectors may not be of the same effective size.
-  unsigned pos1 = first.maxPos + 1;  // One beyond end, as we first advance
-  unsigned pos2 = second.maxPos + 1;
-
-  while (true)
-  {
-    while (true)
-    {
-      // If we run out of vec2, vec1 wins even if it also runs out.
-      if (pos2 == 0)
-        return true;
-
-      if (second.ranks[--pos2].count)
-        break;
-    }
-
-    while (true)
-    {
-      // Otherwise vec2 wins.
-      if (pos1 == 0)
-        return false;
-
-      if (first.ranks[--pos1].count)
-        break;
-    }
-
-    if (first.ranks[pos1].rank > second.ranks[pos2].rank)
-      return true;
-    if (first.ranks[pos1].rank < second.ranks[pos2].rank)
-      return false;
-    if (first.ranks[pos1].count > second.ranks[pos2].count)
-      return true;
-    if (first.ranks[pos1].count < second.ranks[pos2].count)
-      return false;
-  }
-}
-
-
 unsigned Ranks::canonicalTrinary(
   const vector<unsigned>& fullCount1,
   const vector<unsigned>& fullCount2) const
@@ -380,7 +336,7 @@ void Ranks::set(
   holding = holdingIn;
   Ranks::setRanks();
 
-  combEntry.rotateFlag = ! Ranks::dominates(north, south);
+  combEntry.rotateFlag = ! (north >= south);
 
   if (combEntry.rotateFlag)
     Ranks::canonicalBoth(south.fullCount, north.fullCount,
@@ -434,7 +390,8 @@ bool Ranks::leadOK(
 {
   // By construction, count is always > 0.
   if (partner.len == 0)
-  { // If we have the top rank opposite a void, always play it.
+  { 
+    // If we have the top rank opposite a void, always play it.
     if (leader.maxRank == maxRank && lead < maxRank)
       return false;
   }
@@ -479,7 +436,7 @@ void Ranks::updateHoldings(
   const PositionInfo& partner,
   PlayEntry& play) const
 {
-  if (Ranks::dominates(leader, partner))
+  if (leader >= partner)
   {
     play.holdingNew = 
       Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);

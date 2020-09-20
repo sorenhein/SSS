@@ -111,6 +111,45 @@ class Ranks
       {
         singleRank = (len >= 1 && minRank == maxRank);
       }
+
+      bool operator >= (const PositionInfo& p2) const
+      {
+        // The rank vectors may not be of the same effective size.
+        unsigned pos1 = maxPos + 1;  // One beyond end
+        unsigned pos2 = p2.maxPos + 1;
+
+        while (true)
+        {
+          while (true)
+          {
+            // If we run out of p2, this wins even if it also runs out.
+            if (pos2 == 0)
+              return true;
+      
+            if (p2.ranks[--pos2].count)
+              break;
+          }
+
+          while (true)
+          {
+            // Otherwise p2 wins.
+            if (pos1 == 0)
+              return false;
+
+            if (ranks[--pos1].count)
+              break;
+          }
+
+          if (ranks[pos1].rank > p2.ranks[pos2].rank)
+            return true;
+          if (ranks[pos1].rank < p2.ranks[pos2].rank)
+            return false;
+          if (ranks[pos1].count > p2.ranks[pos2].count)
+            return true;
+          if (ranks[pos1].count < p2.ranks[pos2].count)
+            return false;
+        }
+      }
     };
 
 
