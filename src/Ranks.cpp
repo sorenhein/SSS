@@ -46,8 +46,6 @@
  *   in front of AQ (then never play the queen).  Only when the king
  *   is the single card of its rank.  Probably too much overhead to
  *   check for it?
- * - It's probably safe always to play the ace from partner when
- *   LHO plays a rank just below it (the "king").
  */
 
 const vector<unsigned> PLAY_CHUNK_SIZE =
@@ -424,7 +422,13 @@ bool Ranks::pardOK(
   if (pard > toBeat)
     return true;
 
-  // Play the lowest of losing cards.
+  // If LHO plays a "king" and partner has the "ace", there is no
+  // point in not playing the ace.
+  if (toBeat == opps.maxRank &&
+      partner.maxRank > toBeat)
+    return false;
+
+  // Play the lowest of irrelevant cards.
   return (pard == partner.minRank);
 }
 
