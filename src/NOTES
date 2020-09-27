@@ -1,10 +1,14 @@
-If play gets accessed from updateHoldings using play.updateHoldings(),
-then play is completely encapsulated in Ranks.
+Combination.cpp (new) contains Plays, similar to vector<PlayEntry>.
+plays.resize(cards).
+plays.add(), like today's update, but allocates space if needed.
+plays.str(), header and loop
 
-plays get stored in outside method so it's easier to turn into a
-tree later.
+Then plays gets a tree structure.  Ranks gets simplified accordingly.
 
-Space for plays comes from Combination.
+Distribution should know which of the distributions are still feasible
+if cards 1, 2 are played.  (The rotation remains a somewhat open issue.)
+This would be a vector of numbers, and probably a fixed size so also
+the number with the actual size.
 
 ------
 

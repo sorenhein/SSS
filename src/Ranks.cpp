@@ -422,14 +422,19 @@ bool Ranks::pardOK(
 }
 
 
-unsigned Ranks::updateHoldings(
+void Ranks::updateHoldings(
   const PositionInfo& leader,
-  const PositionInfo& partner) const
+  const PositionInfo& partner,
+  PlayEntry& play) const
 {
   if (leader >= partner)
-    return Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
+    play.updateHolding(
+      Ranks::canonicalTrinary(leader.fullCount, partner.fullCount), false);
   else
-    return Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
+  {
+    play.updateHolding(
+      Ranks::canonicalTrinary(partner.fullCount, leader.fullCount), true);
+  }
 }
 
 
@@ -475,8 +480,8 @@ void Ranks::setPlaysSideWithVoid(
           plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
 
         PlayEntry& play = plays[playNo++];
-        play.update(side, lead, 0, pard, rho,
-          Ranks::updateHoldings(leader, partner));
+        play.update(side, lead, 0, pard, rho);
+        Ranks::updateHoldings(leader, partner, play);
 
         opps.fullCount[rho]++;
 
@@ -547,8 +552,8 @@ void Ranks::setPlaysSideWithoutVoid(
 
           PlayEntry& play = plays[playNo++];
           play.update(side, lead, lho, pard, rho,
-            Ranks::updateHoldings(leader, partner),
             leadCollapse, lhoCollapse, pardCollapse, rhoCollapse);
+          Ranks::updateHoldings(leader, partner, play);
         
           opps.fullCount[rho]++;
         }

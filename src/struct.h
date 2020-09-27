@@ -33,9 +33,13 @@ struct PlayEntry
   unsigned pard;
   unsigned rho;
   unsigned trickNS;
+
   bool knownVoidWest;
   bool knownVoidEast;
+
   unsigned holdingNew;
+  bool rotateNew;
+
   bool leadCollapse; // Does the lead rank go away after this trick?
   bool lhoCollapse;
   bool pardCollapse;
@@ -46,8 +50,7 @@ struct PlayEntry
     const unsigned leadIn,
     const unsigned lhoIn,
     const unsigned pardIn,
-    const unsigned rhoIn,
-    const unsigned holdingNewIn)
+    const unsigned rhoIn)
   {
     side = sideIn;
     lead = leadIn;
@@ -65,7 +68,6 @@ struct PlayEntry
       knownVoidWest = (lho == 0);
       knownVoidEast = (rho == 0);
     }
-    holdingNew = holdingNewIn;
   }
 
   void update(
@@ -74,18 +76,24 @@ struct PlayEntry
     const unsigned lhoIn,
     const unsigned pardIn,
     const unsigned rhoIn,
-    const unsigned holdingNewIn,
     const bool leadCollapseIn,
     const bool lhoCollapseIn,
     const bool pardCollapseIn,
     const bool rhoCollapseIn)
   {
-    PlayEntry::update(sideIn, leadIn, lhoIn, pardIn, rhoIn,
-      holdingNewIn);
+    PlayEntry::update(sideIn, leadIn, lhoIn, pardIn, rhoIn);
     leadCollapse = leadCollapseIn;
     lhoCollapse = lhoCollapseIn;
     pardCollapse = pardCollapseIn;
     rhoCollapse = rhoCollapseIn;
+  }
+
+  void updateHolding(
+    const unsigned holdingNewIn,
+    const bool rotateNewIn)
+  {
+    holdingNew = holdingNewIn;
+    rotateNew = rotateNewIn;
   }
 
   string strHeader() const

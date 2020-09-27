@@ -94,7 +94,6 @@ void Combinations::runUniques(const unsigned cards)
 
 vector<unsigned> hist(1000);
   vector<PlayEntry> plays;
-  vector<PlayEntry> playsOld;
 
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
