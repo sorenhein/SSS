@@ -131,4 +131,56 @@ struct PlayEntry
   }
 };
 
+struct Plays
+{
+  const vector<unsigned> PLAY_CHUNK_SIZE =
+  {
+      1, //  0
+      2, //  1
+      2, //  2
+      2, //  3
+      4, //  4
+      6, //  5
+     10, //  6
+     15, //  7
+     25, //  8
+     40, //  9
+     50, // 10
+     70, // 11
+     90, // 12
+    110, // 13
+    130, // 14
+    150, // 15
+  };
+
+  unsigned chunk;
+  vector<PlayEntry> playRecord;
+  unsigned nextNo;
+
+  void resize(const unsigned cards)
+  {
+    chunk = PLAY_CHUNK_SIZE[cards];
+    playRecord.resize(chunk);
+    nextNo = 0;
+  }
+
+  unsigned size() const
+  {
+    return nextNo;
+  }
+
+  void reset()
+  {
+    nextNo = 0;
+  }
+
+  PlayEntry& next()
+  {
+    if (nextNo >= playRecord.size())
+      playRecord.resize(playRecord.size() + chunk);
+    
+    return playRecord[nextNo++];
+  }
+};
+
 #endif

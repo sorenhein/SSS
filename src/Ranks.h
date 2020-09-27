@@ -9,6 +9,7 @@ using namespace std;
 
 struct CombEntry;
 struct PlayEntry;
+struct Plays;
 
 
 class Ranks
@@ -203,22 +204,19 @@ class Ranks
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
-      vector<PlayEntry>& plays,
-      unsigned& playNo);
+      Plays& plays);
 
     void setPlaysSideWithoutVoid(
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
-      vector<PlayEntry>& plays,
-      unsigned& playNo);
+      Plays& plays);
 
     void setPlaysSide(
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
-      vector<PlayEntry>& plays,
-      unsigned& playNo);
+      Plays& plays);
 
     void strSetFullNames(
       vector<string>& namesNorth,
@@ -242,8 +240,7 @@ class Ranks
       CombEntry& combEntry);
 
     CombinationType setPlays(
-      vector<PlayEntry>& plays,
-      unsigned& playNo,
+      Plays& plays,
       unsigned& terminalValue);
 
     string str() const;

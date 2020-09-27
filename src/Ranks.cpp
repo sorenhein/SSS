@@ -37,26 +37,6 @@
  *   usages.
  */
 
-const vector<unsigned> PLAY_CHUNK_SIZE =
-{
-    1, //  0
-    2, //  1
-    2, //  2
-    2, //  3
-    4, //  4
-    6, //  5
-   10, //  6
-   15, //  7
-   25, //  8
-   40, //  9
-   50, // 10
-   70, // 11
-   90, // 12
-  110, // 13
-  130, // 14
-  150, // 15
-};
-
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
@@ -442,8 +422,7 @@ void Ranks::setPlaysSideWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
-  vector<PlayEntry>& plays,
-  unsigned &playNo)
+  Plays& plays)
 {
   // For optimization we treat the case separately where LHO is void.
 
@@ -476,10 +455,7 @@ void Ranks::setPlaysSideWithVoid(
         opps.fullCount[rho]--;
           
         // Register the new play.
-        if (playNo >= plays.size())
-          plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
-
-        PlayEntry& play = plays[playNo++];
+        PlayEntry& play = plays.next();
         play.update(side, lead, 0, pard, rho);
         Ranks::updateHoldings(leader, partner, play);
 
@@ -501,8 +477,7 @@ void Ranks::setPlaysSideWithoutVoid(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
-  vector<PlayEntry>& plays,
-  unsigned &playNo)
+  Plays& plays)
 {
   // We keep track of the rank numbers that disappear after the trick.
   // This is needed in order to tell later on how ranks in later tricks
@@ -547,10 +522,7 @@ void Ranks::setPlaysSideWithoutVoid(
           rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
 
           // Register the new play.
-          if (playNo >= plays.size())
-            plays.resize(plays.size() + PLAY_CHUNK_SIZE[cards]);
-
-          PlayEntry& play = plays[playNo++];
+          PlayEntry& play = plays.next();
           play.update(side, lead, lho, pard, rho,
             leadCollapse, lhoCollapse, pardCollapse, rhoCollapse);
           Ranks::updateHoldings(leader, partner, play);
@@ -570,8 +542,7 @@ void Ranks::setPlaysSide(
   PositionInfo& leader,
   PositionInfo& partner,
   const SidePosition side,
-  vector<PlayEntry>& plays,
-  unsigned &playNo)
+  Plays& plays)
 {
   if (leader.len == 0)
     return;
@@ -589,29 +560,23 @@ void Ranks::setPlaysSide(
       leader.minRank >= partner.maxRank)
     return;
 
-  Ranks::setPlaysSideWithVoid(leader, partner, side, plays, playNo);
-  Ranks::setPlaysSideWithoutVoid(leader, partner, side, plays, playNo);
+  Ranks::setPlaysSideWithVoid(leader, partner, side, plays);
+  Ranks::setPlaysSideWithoutVoid(leader, partner, side, plays);
 }
 
 
 CombinationType Ranks::setPlays(
-  vector<PlayEntry>& plays,
-  unsigned& playNo,
+  Plays& plays,
   unsigned& terminalValue)
 {
   // If COMB_TRIVIAL, then only terminalValue is set.
   // Otherwise, plays are set.
-  // TODO: Should probably be a tree structure.
-  // TODO: Use space allocation in a Combination.
-  plays.clear();
-  plays.resize(PLAY_CHUNK_SIZE[cards]);
-  playNo = 0;
 
   if (Ranks::trivial(terminalValue))
     return COMB_TRIVIAL;
 
-  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays, playNo);
-  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays, playNo);
+  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);
+  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays);
   return COMB_OTHER;
 }
 
