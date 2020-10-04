@@ -10,6 +10,13 @@
 using namespace std;
 
 
+struct DistID
+{
+  unsigned cards; // Smallest number of NS+EW cards needed
+  unsigned holding; // Canonical EW holding
+};
+
+
 class Distribution
 {
   private:
@@ -118,6 +125,8 @@ class Distribution
       }
     };
 
+    unsigned cards;
+
     vector<unsigned> full2reduced;
     vector<unsigned> reduced2full;
     unsigned rankSize; // Reduced ranks
@@ -125,6 +134,8 @@ class Distribution
     SideInfo opponents;
 
     vector<DistInfo> distributions;
+
+    Distribution const * distCanonical;
 
 
     void setBinomial();
@@ -134,10 +145,6 @@ class Distribution
     void shrink(
       const unsigned maxFullRank,
       const unsigned maxReducedRank);
-
-    void setRanks(
-      const unsigned cards,
-      const unsigned holding2);
 
     void mirror(unsigned& distIndex);
 
@@ -150,13 +157,19 @@ class Distribution
 
     void reset();
 
-    unsigned set(
+    void setRanks(
       const unsigned cards,
       const unsigned holding2); // Binary, not trinary format
 
-    unsigned setAlternative(
-      const unsigned cards,
-      const unsigned holding2); // Does the identical thing
+    unsigned split();
+
+    unsigned splitAlternative(); // Does the identical thing
+
+    void setPtr(Distribution const * distCanonicalIn);
+
+    unsigned size() const;
+
+    DistID getID() const;
 
     string str() const;
 

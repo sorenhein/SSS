@@ -46,6 +46,7 @@ void Distributions::reset()
   maxCards = 0;
   distributions.clear();
   counts.clear();
+  uniques.clear();
 }
 
 
@@ -69,8 +70,12 @@ void Distributions::resize(const unsigned maxCardsIn)
 
   // We count the total number of card splits for East and West.
   counts.resize(maxCardsIn+1);
+  uniques.resize(maxCardsIn+1);
   for (unsigned cards = 0; cards < counts.size(); cards++)
+  {
     counts[cards] = 0;
+    uniques[cards] = 0;
+  }
 }
 
 
@@ -78,11 +83,26 @@ void Distributions::runUniques(const unsigned cards)
 {
   assert(cards < distributions.size());
   assert(cards < counts.size());
+  assert(cards < uniques.size());
 
   vector<Distribution>& dists = distributions[cards];
 
   for (unsigned holding = 0; holding < dists.size(); holding++)
-    counts[cards] += dists[holding].setAlternative(cards, holding);
+  {
+    dists[holding].setRanks(cards, holding);
+
+    DistID distID = dists[holding].getID();
+    if (distID.cards == cards && distID.holding == holding)
+    {
+      uniques[cards]++;
+      counts[cards] += dists[holding].splitAlternative();
+    }
+    else
+    {
+      dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
+      counts[cards] += dists[holding].size();
+    }
+  }
 }
 
 
@@ -92,6 +112,7 @@ void Distributions::runUniqueThread(
 {
   assert(cards < distributions.size());
   assert(thid < threadCounts.size());
+  assert(thid < threadUniques.size());
 
   vector<Distribution>& dists = distributions[cards];
 
@@ -105,7 +126,8 @@ void Distributions::runUniqueThread(
     if (holding >= counterMax)
       break;
 
-    threadCounts[thid] += dists[holding].setAlternative(cards, holding);
+    dists[holding].setRanks(cards, holding);
+    threadCounts[thid] += dists[holding].splitAlternative();
   }
 }
 
@@ -155,6 +177,7 @@ string Distributions::str(const unsigned cards) const
   ss <<
     setw(5) << "Cards" <<
     setw(9) << "Count" <<
+    setw(9) << "Uniques" <<
     setw(9) << "Dists" <<
     setw(9) << "Avg." <<
     "\n";
@@ -168,6 +191,7 @@ string Distributions::str(const unsigned cards) const
     ss <<
       setw(5) << c <<
       setw(9) << distributions[c].size() <<
+      setw(9) << uniques[c] <<
       setw(9) << counts[c] <<
       setw(9) << fixed << setprecision(2) <<
         static_cast<double>(counts[c]) / distributions[c].size() << 

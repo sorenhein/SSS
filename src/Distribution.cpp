@@ -65,6 +65,7 @@ Distribution::~Distribution()
 void Distribution::reset()
 {
   distributions.clear();
+  distCanonical = nullptr;
 }
 
 
@@ -123,9 +124,10 @@ void Distribution::shrink(
 
 
 void Distribution::setRanks(
-  const unsigned cards,
+  const unsigned cardsIn,
   const unsigned holding2)
 {
+  cards = cardsIn;
   // We go with a minimal representation of East-West in terms of ranks,
   // so the rank numbers will be smaller.  We keep a correspondence
   // back and forth with the outside world.
@@ -181,7 +183,6 @@ void Distribution::setRanks(
     h >>= 1;
   }
 
-
   // Shrink to fit.
   Distribution::shrink(maxFullRank, maxReducedRank);
 }
@@ -210,8 +211,6 @@ void Distribution::mirror(unsigned& distIndex)
 
   for (unsigned d = dtop; d-- > 0; )
   {
-assert(d < distributions.size());
-assert(distIndex < distributions.size());
     oldDist = &distributions[d];
     newDist = &distributions[distIndex++];
 
@@ -222,11 +221,8 @@ assert(distIndex < distributions.size());
 }
 
 
-unsigned Distribution::set(
-  const unsigned cards,
-  const unsigned holding2)
+unsigned Distribution::split()
 {
-  Distribution::setRanks(cards, holding2);
   if (opponents.len == 0)
     return 1;
 
@@ -283,15 +279,13 @@ unsigned Distribution::set(
 }
 
 
-unsigned Distribution::setAlternative(
-  const unsigned cards,
-  const unsigned holding2)
+unsigned Distribution::splitAlternative()
 {
   // I thought it might be faster to have two vectors whose sizes
   // don't change (much), rather than a list.  But it turns out to
   // be about the same.  I've left the code in.
 
-  Distribution::setRanks(cards, holding2);
+  // Distribution::setRanks(cards, holding2);
   if (opponents.len == 0)
     return 1;
 
@@ -396,6 +390,51 @@ unsigned Distribution::setAlternative(
 
   Distribution::mirror(distIndex);
   return distIndex;
+}
+
+
+void Distribution::setPtr(Distribution const * distCanonicalIn)
+{
+  distCanonical = distCanonicalIn;
+}
+
+
+unsigned Distribution::size() const
+{
+  if (distCanonical == nullptr)
+    return distributions.size();
+  else
+    return distCanonical->size();
+}
+
+
+DistID Distribution::getID() const
+{
+  DistID res;
+
+  // The canonical holding arises when EW have the lowest card and
+  // when each NS rank consists of exactly 1 card.  So effectively
+  // the canonical holding is a binary representation of a composition
+  // of len cards into the particular rank profile.  Therefore the
+  // number of such representations is the number of compositions.
+
+  // The number of bits needed to represent the canonical holding,
+  // i.e. the number of cards that both sides need, is.
+  res.cards = opponents.len + rankSize - 1;
+
+  // This assumes that PAIR_EW is 1.
+  assert(PAIR_EW == 1);
+
+  res.holding = 0;
+  for (unsigned r = rankSize; r-- > 0; )
+  {
+    // Make room for bits.
+    // If we need e.g. 3 bits, they are going to be "011".
+    const unsigned bits = opponents.counts[r] + 1;
+    res.holding = (res.holding << bits) | ((1 << (bits-1)) - 1);
+  }
+
+  return res;
 }
 
 

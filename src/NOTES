@@ -1,9 +1,7 @@
-Combination.cpp (new) contains Plays, similar to vector<PlayEntry>.
-plays.resize(cards).
-plays.add(), like today's update, but allocates space if needed.
-plays.str(), header and loop
+runUniques in driver.cpp: Switch back to multi-threaded versions
+at some point?
 
-Then plays gets a tree structure.  Ranks gets simplified accordingly.
+plays gets a tree structure.  Ranks gets simplified accordingly.
 
 Distribution should know which of the distributions are still feasible
 if cards 1, 2 are played.  (The rotation remains a somewhat open issue.)

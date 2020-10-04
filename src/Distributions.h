@@ -23,6 +23,10 @@ class Distributions
     vector<unsigned> counts;
     vector<unsigned> threadCounts;
 
+    // Only canonical distributions are processed in detail.
+    vector<unsigned> uniques;
+    vector<unsigned> threadUniques;
+
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counter;
 
