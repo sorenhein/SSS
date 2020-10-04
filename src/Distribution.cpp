@@ -390,7 +390,6 @@ void Distribution::splitAlternative()
   }
 
   Distribution::mirror(distIndex);
-  // return distIndex;
 }
 
 
@@ -438,6 +437,59 @@ DistID Distribution::getID() const
   }
 
   return res;
+}
+
+
+void Distribution::setSurvivors()
+{
+  distSurvivors.resize(rankSize);
+  for (unsigned w = 0; w < rankSize; w++)
+    distSurvivors[w].resize(rankSize);
+
+  const unsigned dlast = distributions.size() - 1;
+  assert(distributions[0].west.len == 0);
+  assert(distributions[dlast].east.len == 0);
+
+  // West void.
+  for (unsigned e = 1; e < rankSize; e++)
+    distSurvivors[0][e].push_back(0);
+
+  // East void.
+  for (unsigned w = 1; w < rankSize; w++)
+    distSurvivors[w][0].push_back(dlast);
+
+  // General case.
+  // Could mirror around the middle to save a bit of time,
+  // but it's marginal.
+  for (unsigned d = 1; d < dlast; d++)
+  {
+    const DistInfo& dist = distributions[d];
+    for (unsigned w = 1; w < rankSize; w++)
+    {
+      if (dist.west.counts[w] == 0)
+        continue;
+
+      for (unsigned e = 1; e < rankSize; e++)
+      {
+        if (dist.east.counts[e] == 0)
+           continue;
+
+        distSurvivors[w][e].push_back(d);
+      }
+    }
+  }
+}
+
+
+const list<unsigned>& Distribution::survivors(
+  const unsigned westRank,
+  const unsigned eastRank) const
+{
+  assert(westRank != 0 || eastRank != 0);
+  assert(westRank < rankSize);
+  assert(eastRank < rankSize);
+
+  return distSurvivors[westRank][eastRank];
 }
 
 

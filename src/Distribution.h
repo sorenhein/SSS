@@ -137,6 +137,8 @@ class Distribution
 
     Distribution const * distCanonical;
 
+    vector<vector<list<unsigned>>> distSurvivors;
+
 
     void setBinomial();
 
@@ -162,13 +164,19 @@ class Distribution
       const unsigned holding2); // Binary, not trinary format
 
     void split();
-    void splitAlternative(); // Does the identical thing, but faster
+    void splitAlternative(); // Does the identical thing, maybe faster
 
     void setPtr(Distribution const * distCanonicalIn);
 
     unsigned size() const;
 
     DistID getID() const;
+
+    void setSurvivors();
+
+    const list<unsigned>& survivors(
+      const unsigned westRank,
+      const unsigned eastRank) const;
 
     string str() const;
 
