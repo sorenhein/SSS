@@ -79,6 +79,7 @@ int main(int argc, char * argv[])
 
   timers.stop(TIMER_COMBINATIONS);
 
+  cout << "\n";
   cout << combinations.strUniques();
 
 
@@ -96,15 +97,14 @@ int main(int argc, char * argv[])
 
   for (unsigned cards = 1; cards <= control.cards(); cards++)
   {
-    cout << "Cards " << setw(2) << right << cards << endl;
-
     // distributions.runUniquesMT(cards, control.numThreads());
     distributions.runUniques(cards);
   }
 
   timers.stop(TIMER_DISTRIBUTIONS);
-  cout << "\n" << timers.str();
 
   cout << distributions.str();
+
+  cout << "\n" << timers.str();
 }
 

@@ -20,6 +20,18 @@ class Combinations
     {
       unsigned total;
       unsigned unique;
+
+      void reset()
+      {
+        total = 0;
+        unique = 0;
+      }
+
+      void operator +=(const CountEntry& c2)
+      {
+        total += c2.total;
+        unique += c2.unique;
+      }
     };
 
     unsigned maxCards;
@@ -27,8 +39,11 @@ class Combinations
     vector<vector<CombEntry>> combinations;
     vector<vector<unsigned>> uniques; // Probably gets more structure
 
-    vector<CountEntry> counts;
-    vector<CountEntry> threadCounts;
+    vector<CountEntry> combCounts;
+    vector<CountEntry> threadCombCounts;
+
+    vector<CountEntry> playCounts;
+    vector<CountEntry> threadPlayCounts;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding

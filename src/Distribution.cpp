@@ -221,10 +221,10 @@ void Distribution::mirror(unsigned& distIndex)
 }
 
 
-unsigned Distribution::split()
+void Distribution::split()
 {
   if (opponents.len == 0)
-    return 1;
+    return;
 
   list<StackInfo> stack; // Unfinished expansions
 
@@ -275,19 +275,17 @@ unsigned Distribution::split()
   }
 
   Distribution::mirror(distIndex);
-  return distIndex;
 }
 
 
-unsigned Distribution::splitAlternative()
+void Distribution::splitAlternative()
 {
   // I thought it might be faster to have two vectors whose sizes
   // don't change (much), rather than a list.  But it turns out to
   // be about the same.  I've left the code in.
 
-  // Distribution::setRanks(cards, holding2);
   if (opponents.len == 0)
-    return 1;
+    return;
 
   vector<StackInfo> stack1(CHUNK_SIZE[cards]); // Unfinished expansion
   vector<StackInfo> stack2(CHUNK_SIZE[cards]); // Unfinished expansion
@@ -389,7 +387,7 @@ unsigned Distribution::splitAlternative()
   }
 
   Distribution::mirror(distIndex);
-  return distIndex;
+  // return distIndex;
 }
 
 
@@ -401,10 +399,12 @@ void Distribution::setPtr(Distribution const * distCanonicalIn)
 
 unsigned Distribution::size() const
 {
-  if (distCanonical == nullptr)
-    return distributions.size();
-  else
+  if (distCanonical)
     return distCanonical->size();
+  else if (opponents.len == 0)
+    return 1;
+  else
+    return distributions.size();
 }
 
 

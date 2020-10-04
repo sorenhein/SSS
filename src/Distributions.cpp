@@ -95,13 +95,12 @@ void Distributions::runUniques(const unsigned cards)
     if (distID.cards == cards && distID.holding == holding)
     {
       uniques[cards]++;
-      counts[cards] += dists[holding].splitAlternative();
+      dists[holding].splitAlternative();
     }
     else
-    {
       dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
-      counts[cards] += dists[holding].size();
-    }
+
+    counts[cards] += dists[holding].size();
   }
 }
 
@@ -127,7 +126,20 @@ void Distributions::runUniqueThread(
       break;
 
     dists[holding].setRanks(cards, holding);
-    threadCounts[thid] += dists[holding].splitAlternative();
+
+    // dists[holding].splitAlternative();
+    // threadCounts[thid] += dists[holding].size();
+
+    DistID distID = dists[holding].getID();
+    if (distID.cards == cards && distID.holding == holding)
+    {
+      threadUniques[thid]++;
+      dists[holding].splitAlternative();
+    }
+    else
+      dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
+
+    threadCounts[thid] += dists[holding].size();
   }
 }
 
@@ -144,6 +156,9 @@ void Distributions::runUniquesMT(
   threadCounts.clear();
   threadCounts.resize(numThreads);
 
+  threadUniques.clear();
+  threadUniques.resize(numThreads);
+
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Distributions::runUniqueThread, 
       this, cards, thid);
@@ -155,7 +170,10 @@ void Distributions::runUniquesMT(
   }
 
   for (unsigned thid = 0; thid < numThreads; thid++)
+  {
     counts[cards] += threadCounts[thid];
+    uniques[cards] += threadUniques[thid];
+  }
 }
 
 

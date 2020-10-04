@@ -161,9 +161,8 @@ class Distribution
       const unsigned cards,
       const unsigned holding2); // Binary, not trinary format
 
-    unsigned split();
-
-    unsigned splitAlternative(); // Does the identical thing
+    void split();
+    void splitAlternative(); // Does the identical thing, but faster
 
     void setPtr(Distribution const * distCanonicalIn);
 

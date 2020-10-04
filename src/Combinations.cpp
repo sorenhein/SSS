@@ -45,7 +45,8 @@ void Combinations::reset()
   maxCards = 0;
   combinations.clear();
   uniques.clear();
-  counts.clear();
+  combCounts.clear();
+  playCounts.clear();
 }
 
 
@@ -70,11 +71,12 @@ void Combinations::resize(const unsigned maxCardsIn)
     uniques[cards].resize(UNIQUE_COUNT[cards]);
   }
 
-  counts.resize(maxCardsIn+1);
-  for (unsigned cards = 0; cards < counts.size(); cards++)
+  combCounts.resize(maxCardsIn+1);
+  playCounts.resize(maxCardsIn+1);
+  for (unsigned cards = 0; cards < combCounts.size(); cards++)
   {
-    counts[cards].total = 0;
-    counts[cards].unique = 0;
+    combCounts[cards].reset();
+    playCounts[cards].reset();
   }
 }
 
@@ -83,7 +85,8 @@ void Combinations::runUniques(const unsigned cards)
 {
   assert(cards < combinations.size());
   assert(cards < uniques.size());
-  assert(cards < counts.size());
+  assert(cards < combCounts.size());
+  assert(cards < playCounts.size());
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
@@ -92,19 +95,14 @@ void Combinations::runUniques(const unsigned cards)
   ranks.resize(cards);
   unsigned uniqueIndex = 0;
 
-vector<unsigned> hist(1000);
-  // vector<PlayEntry> plays;
   Plays plays;
   plays.resize(cards);
 
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
-// cout << "holding " << holding << endl;
-// if (holding == 59 && cards == 5)
-  // cout << "HERE\n";
     ranks.set(holding, combs[holding]);
 
-    counts[cards].total++;
+    combCounts[cards].total++;
     if (holding == combs[holding].canonicalHolding3)
     {
       assert(uniqueIndex < uniqs.size());
@@ -112,39 +110,15 @@ vector<unsigned> hist(1000);
       uniqs[uniqueIndex] = holding;
       uniqueIndex++;
 
-      counts[cards].unique++;
+      combCounts[cards].unique++;
 
-      /* */
       unsigned term;
       ranks.setPlays(plays, term);
-      hist[plays.size()]++;
+      playCounts[cards].unique++;
+      playCounts[cards].total += plays.size();
       plays.reset();
-      /* */
-/*
-if (plays.size() >= 600)
-{
-  string north, south;
-  Convert convert;
-  convert.holding2cards(holding, cards, north, south);
-  cout << "holding " << holding << " cards " << cards <<
-    " size " << plays.size() << " north " << north << "south " <<
-    south << endl;
-}
-*/
     }
   }
-
-unsigned sum = 0;
-unsigned count = 0;
-for (unsigned i = 0; i < hist.size(); i++)
-{
-  sum += i * hist[i];
-  count += hist[i];
-}
-if (count >0)
-cout << "Avg " << fixed << setprecision(2) <<
-  static_cast<float>(sum)/static_cast<float>(count) << endl;
-
 }
 
 
@@ -154,7 +128,7 @@ void Combinations::runUniqueThread(
 {
   assert(cards < combinations.size());
   assert(cards < uniques.size());
-  assert(thid < threadCounts.size());
+  assert(thid < threadCombCounts.size());
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
@@ -173,7 +147,7 @@ void Combinations::runUniqueThread(
 
     ranks.set(holding, combs[holding]);
 
-    threadCounts[thid].total++;
+    threadCombCounts[thid].total++;
     if (holding == combs[holding].canonicalHolding3)
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
@@ -182,7 +156,7 @@ void Combinations::runUniqueThread(
       combs[holding].canonicalIndex = uniqueIndex;
       uniqs[uniqueIndex] = holding;
 
-      threadCounts[thid].unique++;
+      threadCombCounts[thid].unique++;
     }
   }
 }
@@ -198,8 +172,8 @@ void Combinations::runUniquesMT(
   vector<thread *> threads;
   threads.resize(numThreads);
 
-  threadCounts.clear();
-  threadCounts.resize(numThreads);
+  threadCombCounts.clear();
+  threadCombCounts.resize(numThreads);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
@@ -213,8 +187,10 @@ void Combinations::runUniquesMT(
 
   for (unsigned thid = 0; thid < numThreads; thid++)
   {
-    counts[cards].total += threadCounts[thid].total;
-    counts[cards].unique += threadCounts[thid].unique;
+    combCounts[cards].total += threadCombCounts[thid].total;
+    combCounts[cards].unique += threadCombCounts[thid].unique;
+    // Test
+    // combCounts[cards] += threadCombCounts[thid];
   }
 }
 
@@ -236,24 +212,27 @@ string Combinations::strUniques(const unsigned cards) const
   stringstream ss;
   ss <<
     setw(5) << "Cards" <<
-    setw(9) << "Total" <<
+    setw(9) << "Combos" <<
     setw(9) << "Unique" <<
     setw(9) << "%" <<
+    setw(9) << "Plays" <<
     "\n";
 
   for (unsigned c = cmin; c <= cmax; c++)
   {
-    assert(c < counts.size());
-    if (counts[c].total == 0)
+    assert(c < combCounts.size());
+    if (combCounts[c].total == 0)
       continue;
 
     ss <<
       setw(5) << c <<
-      setw(9) << counts[c].total <<
-      setw(9) << counts[c].unique <<
+      setw(9) << combCounts[c].total <<
+      setw(9) << combCounts[c].unique <<
       setw(8) << fixed << setprecision(2) <<
-        (100. * counts[c].unique) / counts[c].total <<
-        "%\n";
+        (100. * combCounts[c].unique) / combCounts[c].total << "%" << 
+      setw(9) << fixed << setprecision(2) <<
+        playCounts[c].total / static_cast<double>(playCounts[c].unique) <<
+        "\n";
   }
 
   return ss.str() + "\n";
