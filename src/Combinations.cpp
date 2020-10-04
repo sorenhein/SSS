@@ -90,8 +90,8 @@ void Combinations::runUniques(const unsigned cards)
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
-  Ranks ranks;
 
+  Ranks ranks;
   ranks.resize(cards);
   unsigned uniqueIndex = 0;
 
@@ -129,6 +129,7 @@ void Combinations::runUniqueThread(
   assert(cards < combinations.size());
   assert(cards < uniques.size());
   assert(thid < threadCombCounts.size());
+  assert(thid < threadPlayCounts.size());
 
   vector<CombEntry>& combs = combinations[cards];
   vector<unsigned>& uniqs = uniques[cards];
@@ -136,6 +137,9 @@ void Combinations::runUniqueThread(
   Ranks ranks;
   ranks.resize(cards);
   unsigned holding;
+
+  Plays plays;
+  plays.resize(cards);
 
   const unsigned counterMax = combs.size();
 
@@ -157,6 +161,12 @@ void Combinations::runUniqueThread(
       uniqs[uniqueIndex] = holding;
 
       threadCombCounts[thid].unique++;
+
+      unsigned term;
+      ranks.setPlays(plays, term);
+      threadPlayCounts[thid].unique++;
+      threadPlayCounts[thid].total += plays.size();
+      plays.reset();
     }
   }
 }
@@ -175,6 +185,9 @@ void Combinations::runUniquesMT(
   threadCombCounts.clear();
   threadCombCounts.resize(numThreads);
 
+  threadPlayCounts.clear();
+  threadPlayCounts.resize(numThreads);
+
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
       this, cards, thid);
@@ -187,10 +200,8 @@ void Combinations::runUniquesMT(
 
   for (unsigned thid = 0; thid < numThreads; thid++)
   {
-    combCounts[cards].total += threadCombCounts[thid].total;
-    combCounts[cards].unique += threadCombCounts[thid].unique;
-    // Test
-    // combCounts[cards] += threadCombCounts[thid];
+    combCounts[cards] += threadCombCounts[thid];
+    playCounts[cards] += threadPlayCounts[thid];
   }
 }
 

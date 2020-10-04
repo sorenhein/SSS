@@ -1,6 +1,3 @@
-runUniques in driver.cpp: Switch back to multi-threaded versions
-at some point?
-
 plays gets a tree structure.  Ranks gets simplified accordingly.
 
 Distribution should know which of the distributions are still feasible

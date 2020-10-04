@@ -38,7 +38,9 @@ const vector<unsigned> CHUNK_SIZE =
 };
 
 
-once_flag onceFlag;
+mutex mtxDist;
+static bool init_flag = false;
+
 vector<vector<unsigned>> binomial;
 vector<vector<char>> names;
 
@@ -47,13 +49,14 @@ Distribution::Distribution()
 {
   Distribution::reset();
 
-  // https://stackoverflow.com/questions/8412630/
-  // how-to-execute-a-piece-of-code-only-once
-  if (static auto called = false; ! exchange(called, true))
+  mtxDist.lock();
+  if (! init_flag)
   {
     Distribution::setBinomial();
     Distribution::setNames();
+    init_flag = true;
   }
+  mtxDist.unlock();
 }
 
 

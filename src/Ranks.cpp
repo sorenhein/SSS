@@ -3,6 +3,7 @@
 #include <sstream>
 #include <algorithm>
 #include <utility>
+#include <mutex>
 #include <cassert>
 
 #include "Ranks.h"
@@ -37,6 +38,9 @@
  *   usages.
  */
 
+mutex mtxRanks;
+static bool init_flag = false;
+
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
@@ -46,10 +50,13 @@ vector<unsigned> HOLDING2_RANK_ADDER;
 
 Ranks::Ranks()
 {
-  // https://stackoverflow.com/questions/8412630/
-  // how-to-execute-a-piece-of-code-only-once
-  if (static auto called = false; ! exchange(called, true))
+  mtxRanks.lock();
+  if (! init_flag)
+  {
     Ranks::setConstants();
+    init_flag = true;
+  }
+  mtxRanks.unlock();
 
   north.clear();
   south.clear();
@@ -79,6 +86,9 @@ void Ranks::setConstants()
   HOLDING3_FACTOR[0] = 1;
   for (unsigned c = 1; c < HOLDING3_FACTOR.size(); c++)
     HOLDING3_FACTOR[c] = 3 * HOLDING3_FACTOR[c-1];
+
+  assert(POSITION_NORTH == 0);
+  assert(POSITION_SOUTH == 1);
 
   HOLDING3_ADDER.resize(MAX_CARDS+1);
   for (unsigned c = 0; c < HOLDING3_FACTOR.size(); c++)
