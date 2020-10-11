@@ -6,6 +6,7 @@
 #include <mutex>
 #include <cassert>
 
+#include "Plays.h"
 #include "Ranks.h"
 
 #include "struct.h"

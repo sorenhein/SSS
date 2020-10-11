@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
+#include "Plays.h"
 #include "Ranks.h"
 
 // http://oeis.org/A051450
