@@ -51,6 +51,10 @@ struct PlayEntry
     const unsigned lhoIn,
     const unsigned pardIn,
     const unsigned rhoIn,
+    const bool leadCollapseIn,
+    const bool lhoCollapseIn,
+    const bool pardCollapseIn,
+    const bool rhoCollapseIn,
     const unsigned holding3In,
     const bool rotateFlagIn)
   {
@@ -59,8 +63,13 @@ struct PlayEntry
     lho = lhoIn;
     pard = pardIn;
     rho = rhoIn;
+    leadCollapse = leadCollapseIn;
+    lhoCollapse = lhoCollapseIn;
+    pardCollapse = pardCollapseIn;
+    rhoCollapse = rhoCollapseIn;
     holdingNew = holding3In;
     rotateNew = rotateFlagIn;
+
     trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
     if (side == SIDE_NORTH)
     {
@@ -72,27 +81,6 @@ struct PlayEntry
       knownVoidWest = (lho == 0);
       knownVoidEast = (rho == 0);
     }
-  }
-
-  void update(
-    const SidePosition sideIn,
-    const unsigned leadIn,
-    const unsigned lhoIn,
-    const unsigned pardIn,
-    const unsigned rhoIn,
-    const bool leadCollapseIn,
-    const bool lhoCollapseIn,
-    const bool pardCollapseIn,
-    const bool rhoCollapseIn,
-    const unsigned holding3In,
-    const bool rotateFlagIn)
-  {
-    PlayEntry::update(sideIn, leadIn, lhoIn, pardIn, rhoIn,
-      holding3In, rotateFlagIn);
-    leadCollapse = leadCollapseIn;
-    lhoCollapse = lhoCollapseIn;
-    pardCollapse = pardCollapseIn;
-    rhoCollapse = rhoCollapseIn;
   }
 
   string strHeader() const
@@ -173,12 +161,38 @@ struct Plays
     nextNo = 0;
   }
 
+  /*
   PlayEntry& next()
   {
     if (nextNo >= playRecord.size())
       playRecord.resize(playRecord.size() + chunk);
     
     return playRecord[nextNo++];
+  }
+  */
+
+  void log(
+    const SidePosition sideIn,
+    const unsigned leadIn,
+    const unsigned lhoIn,
+    const unsigned pardIn,
+    const unsigned rhoIn,
+    const bool leadCollapseIn,
+    const bool lhoCollapseIn,
+    const bool pardCollapseIn,
+    const bool rhoCollapseIn,
+    const unsigned holding3In,
+    const bool rotateFlagIn)
+  {
+    if (nextNo >= playRecord.size())
+      playRecord.resize(playRecord.size() + chunk);
+    
+    playRecord[nextNo].update(
+      sideIn, leadIn, lhoIn, pardIn, rhoIn,
+      leadCollapseIn, lhoCollapseIn, pardCollapseIn, rhoCollapseIn,
+      holding3In, rotateFlagIn);
+
+    nextNo++;
   }
 };
 

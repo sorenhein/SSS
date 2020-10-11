@@ -440,6 +440,7 @@ void Ranks::setPlaysSideWithVoid(
   // For optimization we treat the case separately where LHO is void.
   unsigned holding3;
   bool rotateFlag;
+  bool leadCollapse, pardCollapse, rhoCollapse;
 
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -448,6 +449,7 @@ void Ranks::setPlaysSideWithVoid(
       continue;
 
     leader.fullCount[lead]--;
+    leadCollapse = (leader.fullCount[lead] == 0);
     opps.fullCount[0]--;
 
     for (unsigned pardPos = partner.minPos; 
@@ -458,6 +460,7 @@ void Ranks::setPlaysSideWithVoid(
         continue;
 
       partner.fullCount[pard]--;
+      pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
       const unsigned toBeat = max(lead, pard);
 
       for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
@@ -468,10 +471,13 @@ void Ranks::setPlaysSideWithVoid(
           continue;
 
         opps.fullCount[rho]--;
+        rhoCollapse = (opps.fullCount[rho] == 0);
           
         // Register the new play.
         Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-        plays.next().update(side, lead, 0, pard, rho, holding3, rotateFlag);
+        plays.log(side, lead, 0, pard, rho, 
+          leadCollapse, false, pardCollapse, rhoCollapse,
+          holding3, rotateFlag);
 
         opps.fullCount[rho]++;
 
@@ -539,7 +545,7 @@ void Ranks::setPlaysSideWithoutVoid(
 
           // Register the new play.
           Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-          plays.next().update(side, lead, lho, pard, rho,
+          plays.log(side, lead, lho, pard, rho,
             leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
             holding3, rotateFlag);
         
