@@ -2,115 +2,121 @@
 #define SSS_PLAYS_H
 
 #include <vector>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
+#include <string>
 
 #include "const.h"
 
 using namespace std;
 
 
+struct ChunkEntry
+{
+  unsigned lead;
+  unsigned lho;
+  unsigned pard;
+  unsigned rho;
+};
+
+
 class Plays
 {
   private:
 
-    struct PlayEntry
+    struct LeadNode
     {
       SidePosition side;
       unsigned lead;
+    };
+
+    struct LhoNode
+    {
       unsigned lho;
+
+      LeadNode * leadPtr;
+    };
+
+    struct PardNode
+    {
       unsigned pard;
+
+      LhoNode * lhoPtr;
+      
+    };
+
+    struct RhoNode
+    {
       unsigned rho;
-      unsigned trickNS;
-
-      bool knownVoidWest;
-      bool knownVoidEast;
-
-      unsigned holdingNew;
-      bool rotateNew;
 
       bool leadCollapse; // Does the lead rank go away after this trick?
       bool lhoCollapse;
       bool pardCollapse;
       bool rhoCollapse;
 
-      void update(
-        const SidePosition sideIn,
-        const unsigned leadIn,
-        const unsigned lhoIn,
-        const unsigned pardIn,
-        const unsigned rhoIn,
-        const bool leadCollapseIn,
-        const bool lhoCollapseIn,
-        const bool pardCollapseIn,
-        const bool rhoCollapseIn,
-        const unsigned holding3In,
-        const bool rotateFlagIn)
-      {
-        side = sideIn;
-        lead = leadIn;
-        lho = lhoIn;
-        pard = pardIn;
-        rho = rhoIn;
-        leadCollapse = leadCollapseIn;
-        lhoCollapse = lhoCollapseIn;
-        pardCollapse = pardCollapseIn;
-        rhoCollapse = rhoCollapseIn;
-        holdingNew = holding3In;
-        rotateNew = rotateFlagIn;
+      unsigned holdingNew;
+      bool rotateNew;
 
-        trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
-        if (side == SIDE_NORTH)
-        {
-          knownVoidWest = (rho == 0);
-          knownVoidEast = (lho == 0);
-        }
-        else
-        {
-          knownVoidWest = (lho == 0);
-          knownVoidEast = (rho == 0);
-        }
-      }
+      unsigned trickNS;
 
-      string strHeader() const
-      {
-        stringstream ss;
-        ss << right << 
-          setw(4) << "Side" <<
-          setw(5) << "Lead" <<
-          setw(5) << "LHO" <<
-          setw(5) << "Pard" <<
-          setw(5) << "RHO" <<
-          setw(5) << "Win?" <<
-          setw(5) << "W vd" <<
-          setw(5) << "E vd" <<
-          setw(10) << "Holding" <<
-          endl;
-        return ss.str();
-      }
+      bool knownVoidLho;
+      bool knownVoidRho;
 
-      string str() const
-      {
-        stringstream ss;
-        ss << right << 
-          setw(4) << (side == SIDE_NORTH ? "N" : "S") <<
-          setw(5) << lead <<
-          setw(5) << (lho == 0 ? "-" : to_string(lho)) <<
-          setw(5) << (pard == 0 ? "-" : to_string(pard)) <<
-          setw(5) << (rho == 0 ? "-" : to_string(rho)) <<
-          setw(5) << (trickNS == 1 ? "+" : "") <<
-          setw(5) << (knownVoidWest ? "yes" : "") <<
-          setw(5) << (knownVoidEast ? "yes" : "") <<
-          setw(10) << holdingNew <<
-          endl;
-        return ss.str();
-      }
+      PardNode * pardPtr;
     };
 
-    unsigned chunk;
-    vector<PlayEntry> playRecord;
-    unsigned nextNo;
+    vector<LeadNode> leadNodes;
+    vector<LhoNode> lhoNodes;
+    vector<PardNode> pardNodes;
+    vector<RhoNode> rhoNodes;
+
+    unsigned leadNext;
+    unsigned lhoNext;
+    unsigned pardNext;
+    unsigned rhoNext;
+
+    // The plays come through in order, so we don't have to look up
+    // the new play completely.  We just have to check how much of the
+    // new play is the same as the old one.
+    SidePosition sidePrev;
+    unsigned leadPrev;
+    unsigned lhoPrev;
+    unsigned pardPrev;
+
+    LeadNode * leadPrevPtr;
+    LhoNode * lhoPrevPtr;
+    PardNode * pardPrevPtr;
+
+    ChunkEntry chunk;
+
+
+    LeadNode * logLead(
+      const SidePosition side,
+      const unsigned lead,
+      bool& newFlag);
+
+    LhoNode * logLho(
+      const unsigned lho,
+      LeadNode * leadPtr,
+      bool& newFlag);
+
+    PardNode * logPard(
+      const unsigned pard,
+      LhoNode * lhoPtr,
+      bool& newFlag);
+
+    void logRho(
+      const unsigned rho,
+      const bool leadCollapse,
+      const bool lhoCollapse,
+      const bool pardCollapse,
+      const bool rhoCollapse,
+      const unsigned holding3,
+      const bool rotateFlag,
+      const unsigned trickNS,
+      const bool knownVoidLho,
+      const bool knownVoidRho,
+      PardNode * pardPtr);
+
+    string strHeader() const;
 
   public:
     
@@ -125,18 +131,19 @@ class Plays
     unsigned size() const;
 
     void log(
-      const SidePosition sideIn,
-      const unsigned leadIn,
-      const unsigned lhoIn,
-      const unsigned pardIn,
-      const unsigned rhoIn,
-      const bool leadCollapseIn,
-      const bool lhoCollapseIn,
-      const bool pardCollapseIn,
-      const bool rhoCollapseIn,
-      const unsigned holding3In,
-      const bool rotateFlagIn);
+      const SidePosition side,
+      const unsigned lead,
+      const unsigned lho,
+      const unsigned pard,
+      const unsigned rho,
+      const bool leadCollapse,
+      const bool lhoCollapse,
+      const bool pardCollapse,
+      const bool rhoCollapse,
+      const unsigned holding3,
+      const bool rotateFlag);
 
+   string str() const;
 };
 
 #endif
