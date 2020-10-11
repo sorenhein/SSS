@@ -198,7 +198,8 @@ class Ranks
     void updateHoldings(
       const PositionInfo& leader,
       const PositionInfo& partner,
-      PlayEntry& play) const;
+      unsigned& holding3,
+      bool& rotateFlag) const;
 
     void setPlaysSideWithVoid(
       PositionInfo& leader,

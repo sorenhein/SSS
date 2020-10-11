@@ -415,15 +415,18 @@ bool Ranks::pardOK(
 void Ranks::updateHoldings(
   const PositionInfo& leader,
   const PositionInfo& partner,
-  PlayEntry& play) const
+  unsigned& holding3,
+  bool& rotateFlag) const
 {
   if (leader >= partner)
-    play.updateHolding(
-      Ranks::canonicalTrinary(leader.fullCount, partner.fullCount), false);
+  {
+    holding3 = Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
+    rotateFlag = false;
+  }
   else
   {
-    play.updateHolding(
-      Ranks::canonicalTrinary(partner.fullCount, leader.fullCount), true);
+    holding3 = Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
+    rotateFlag = true;
   }
 }
 
@@ -435,6 +438,8 @@ void Ranks::setPlaysSideWithVoid(
   Plays& plays)
 {
   // For optimization we treat the case separately where LHO is void.
+  unsigned holding3;
+  bool rotateFlag;
 
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -465,9 +470,8 @@ void Ranks::setPlaysSideWithVoid(
         opps.fullCount[rho]--;
           
         // Register the new play.
-        PlayEntry& play = plays.next();
-        play.update(side, lead, 0, pard, rho);
-        Ranks::updateHoldings(leader, partner, play);
+        Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+        plays.next().update(side, lead, 0, pard, rho, holding3, rotateFlag);
 
         opps.fullCount[rho]++;
 
@@ -493,6 +497,8 @@ void Ranks::setPlaysSideWithoutVoid(
   // This is needed in order to tell later on how ranks in later tricks
   // map to current ranks.  We only need this when LHO is not void,
   // as we won't be looking at rank translation if that's the case.
+  unsigned holding3;
+  bool rotateFlag;
   bool leadCollapse, lhoCollapse, pardCollapse, rhoCollapse;
 
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
@@ -532,10 +538,10 @@ void Ranks::setPlaysSideWithoutVoid(
           rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
 
           // Register the new play.
-          PlayEntry& play = plays.next();
-          play.update(side, lead, lho, pard, rho,
-            leadCollapse, lhoCollapse, pardCollapse, rhoCollapse);
-          Ranks::updateHoldings(leader, partner, play);
+          Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+          plays.next().update(side, lead, lho, pard, rho,
+            leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
+            holding3, rotateFlag);
         
           opps.fullCount[rho]++;
         }

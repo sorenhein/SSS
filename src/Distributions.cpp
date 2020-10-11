@@ -197,9 +197,9 @@ string Distributions::str(const unsigned cards) const
   ss <<
     setw(5) << "Cards" <<
     setw(9) << "Count" <<
-    setw(9) << "Uniques" <<
     setw(9) << "Dists" <<
     setw(9) << "Avg." <<
+    setw(9) << "Uniques" <<
     "\n";
 
   for (unsigned c = cmin; c <= cmax; c++)
@@ -211,10 +211,10 @@ string Distributions::str(const unsigned cards) const
     ss <<
       setw(5) << c <<
       setw(9) << distributions[c].size() <<
-      setw(9) << uniques[c] <<
       setw(9) << counts[c] <<
       setw(9) << fixed << setprecision(2) <<
         static_cast<double>(counts[c]) / distributions[c].size() << 
+      setw(9) << uniques[c] <<
       "\n";
   }
 

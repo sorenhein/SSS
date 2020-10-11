@@ -50,13 +50,17 @@ struct PlayEntry
     const unsigned leadIn,
     const unsigned lhoIn,
     const unsigned pardIn,
-    const unsigned rhoIn)
+    const unsigned rhoIn,
+    const unsigned holding3In,
+    const bool rotateFlagIn)
   {
     side = sideIn;
     lead = leadIn;
     lho = lhoIn;
     pard = pardIn;
     rho = rhoIn;
+    holdingNew = holding3In;
+    rotateNew = rotateFlagIn;
     trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
     if (side == SIDE_NORTH)
     {
@@ -79,21 +83,16 @@ struct PlayEntry
     const bool leadCollapseIn,
     const bool lhoCollapseIn,
     const bool pardCollapseIn,
-    const bool rhoCollapseIn)
+    const bool rhoCollapseIn,
+    const unsigned holding3In,
+    const bool rotateFlagIn)
   {
-    PlayEntry::update(sideIn, leadIn, lhoIn, pardIn, rhoIn);
+    PlayEntry::update(sideIn, leadIn, lhoIn, pardIn, rhoIn,
+      holding3In, rotateFlagIn);
     leadCollapse = leadCollapseIn;
     lhoCollapse = lhoCollapseIn;
     pardCollapse = pardCollapseIn;
     rhoCollapse = rhoCollapseIn;
-  }
-
-  void updateHolding(
-    const unsigned holdingNewIn,
-    const bool rotateNewIn)
-  {
-    holdingNew = holdingNewIn;
-    rotateNew = rotateNewIn;
   }
 
   string strHeader() const

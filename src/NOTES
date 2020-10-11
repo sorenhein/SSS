@@ -1,9 +1,19 @@
-plays gets a tree structure.  Ranks gets simplified accordingly.
+Plays goes into Combination
+- next -> nextPlay
+- size -> sizePlay
+- resize -> resizePlay
+- reset -> resetPlay
 
-Distribution should know which of the distributions are still feasible
-if cards 1, 2 are played.  (The rotation remains a somewhat open issue.)
-This would be a vector of numbers, and probably a fixed size so also
-the number with the actual size.
+PlayEntry
+- Goes away as such
+- Combination.nextPlay just selects the next play, internally
+- update methods updates that next play
+
+In Combination
+- The plays go in a tree structure
+
+
+
 
 ------
 
