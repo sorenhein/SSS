@@ -9,7 +9,7 @@ using namespace std;
 
 struct CombEntry;
 struct PlayEntry;
-struct Plays;
+class Plays;
 
 
 class Ranks

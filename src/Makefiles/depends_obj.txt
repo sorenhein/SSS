@@ -1,9 +1,10 @@
 driver.obj: Combinations.h struct.h const.h Distributions.h Distribution.h
 driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h stats/Timers.h
 driver.obj: stats/Timer.h Ranks.h
-Ranks.obj: Ranks.h struct.h const.h
+Ranks.obj: Plays.h const.h Ranks.h struct.h
+Plays.obj: Plays.h const.h
 Combination.obj: Combination.h struct.h const.h
-Combinations.obj: Combinations.h struct.h const.h Ranks.h
+Combinations.obj: Combinations.h struct.h const.h Plays.h Ranks.h
 Distribution.obj: Distribution.h struct.h const.h
 Distributions.obj: Distributions.h Distribution.h struct.h const.h
 inputs/Convert.obj: inputs/Convert.h const.h
