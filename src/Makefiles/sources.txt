@@ -12,5 +12,8 @@ SOURCE_FILES    =                       \
                 inputs/Entity.cpp       \
                 inputs/parse.cpp        \
                                         \
+                strategies/Tvector.cpp  \
+                strategies/Tvectors.cpp \
+                                        \
                 stats/Timer.cpp         \
                 stats/Timers.cpp

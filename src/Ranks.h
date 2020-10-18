@@ -8,7 +8,6 @@
 using namespace std;
 
 struct CombEntry;
-struct PlayEntry;
 class Plays;
 
 

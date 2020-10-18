@@ -1,18 +1,12 @@
+strategies/
+  Strategy: For now just a flat vector
+  Strategies: For now a collection of Strategy
+
 Plays goes into Combination
 - next -> nextPlay
 - size -> sizePlay
 - resize -> resizePlay
 - reset -> resetPlay
-
-PlayEntry
-- Goes away as such
-- Combination.nextPlay just selects the next play, internally
-- update methods updates that next play
-
-In Combination
-- The plays go in a tree structure
-
-
 
 
 ------

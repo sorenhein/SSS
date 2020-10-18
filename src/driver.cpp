@@ -70,16 +70,27 @@ int main(int argc, char * argv[])
   // exit(0);
   */
 
-  /*
-  vector<PlayEntry> plays;
-  unsigned term, playNo;
-  ranks.setPlays(plays, playNo, term);
-  cout << "size " << playNo << endl << endl;
-  cout << plays[0].strHeader();
-  for (unsigned i = 0; i < playNo; i++)
-    cout << plays[i].str();
-  exit(0);
-  */
+  // Distribution dist;
+  // dist.set(5, 27);
+  // cout << dist.str();
+  // exit(0);
+
+  // Set up distributions.
+
+  distributions.resize(control.cards());
+
+  timers.start(TIMER_DISTRIBUTIONS);
+
+  for (unsigned cards = 1; cards <= control.cards(); cards++)
+  {
+    // distributions.runUniquesMT(cards, control.numThreads());
+    distributions.runUniques(cards);
+  }
+
+  timers.stop(TIMER_DISTRIBUTIONS);
+
+  cout << distributions.str();
+
 
   // Set up combinations.
 
@@ -102,27 +113,6 @@ int main(int argc, char * argv[])
 
 
   // combinations.tmp(control.cards(), control.holding());
-  // Distribution dist;
-  // dist.set(5, 27);
-  // cout << dist.str();
-  // exit(0);
-
-  // Set up distributions.
-
-  distributions.resize(control.cards());
-
-  timers.start(TIMER_DISTRIBUTIONS);
-
-  for (unsigned cards = 1; cards <= control.cards(); cards++)
-  {
-    // distributions.runUniquesMT(cards, control.numThreads());
-    distributions.runUniques(cards);
-  }
-
-  timers.stop(TIMER_DISTRIBUTIONS);
-
-  cout << distributions.str();
-
   cout << "\n" << timers.str();
 }
 
