@@ -101,6 +101,7 @@ void Combinations::runUniques(const unsigned cards)
 
   for (unsigned holding = 0; holding < combs.size(); holding++)
   {
+// cout << "combs holding " << holding << endl;
     ranks.set(holding, combs[holding]);
 
     combCounts[cards].total++;

@@ -6,25 +6,25 @@
 #include "Plays.h"
 
 
-// TODO Refine
+// It's not that important to hit these, but this works
 const vector<ChunkEntry> CHUNK_SIZE =
 {
   {  1,   1,   1,   1}, //  0
-  {  2,   2,   2,   2}, //  1
-  {  2,   2,   2,   2}, //  2
-  {  2,   2,   2,   2}, //  3
-  {  4,   4,   4,   4}, //  4
-  {  6,   6,   6,   6}, //  5
-  { 10,  10,  10,  10}, //  6
-  { 15,  15,  15,  15}, //  7
-  { 25,  25,  25,  25}, //  8
-  { 40,  40,  40,  40}, //  9
-  { 50,  50,  50,  50}, // 10
-  { 70,  70,  70,  70}, // 11
-  { 90,  90,  90,  90}, // 12
-  {110, 110, 110, 110}, // 13
-  {130, 130, 130, 130}, // 14
-  {150, 150, 150, 150}  // 15
+  {  1,   1,   1,   1}, //  1
+  {  1,   1,   1,   1}, //  2
+  {  1,   1,   1,   1}, //  3
+  {  4,   6,   6,  12}, //  4
+  {  4,   8,   8,  16}, //  5
+  {  6,  12,  12,  16}, //  6
+  {  6,  12,  16,  32}, //  7
+  {  8,  12,  20,  40}, //  8
+  { 10,  18,  24,  72}, //  9
+  { 10,  20,  32, 100}, // 10
+  { 12,  24,  48, 144}, // 11
+  { 12,  28,  60, 208}, // 12
+  { 12,  36,  80, 300}, // 13
+  { 12,  42, 100, 432}, // 14
+  { 14,  50, 128, 600}  // 15
 };
 
 
@@ -46,6 +46,11 @@ void Plays::reset()
   lhoPrev = numeric_limits<unsigned>::max();
   pardPrev = numeric_limits<unsigned>::max();
 
+  leadNext = 0;
+  lhoNext = 0;
+  pardNext = 0;
+  rhoNext = 0;
+
   leadPrevPtr = nullptr;
   lhoPrevPtr = nullptr;
   pardPrevPtr = nullptr;
@@ -60,11 +65,6 @@ void Plays::resize(const unsigned cards)
   lhoNodes.resize(chunk.lho);
   pardNodes.resize(chunk.pard);
   rhoNodes.resize(chunk.rho);
-
-  leadNext = 0;
-  lhoNext = 0;
-  pardNext = 0;
-  rhoNext = 0;
 }
 
 
@@ -110,7 +110,7 @@ Plays::LhoNode * Plays::logLho(
   if (newFlag == false && lho == lhoPrev)
     return lhoPrevPtr;
   
-  if (lhoNext > lhoNodes.size())
+  if (lhoNext >= lhoNodes.size())
     lhoNodes.resize(lhoNodes.size() + chunk.lho);
 
   newFlag = true;
@@ -133,7 +133,7 @@ Plays::PardNode * Plays::logPard(
   if (newFlag == false && pard == pardPrev)
     return pardPrevPtr;
 
-  if (pardNext > pardNodes.size())
+  if (pardNext >= pardNodes.size())
     pardNodes.resize(pardNodes.size() + chunk.pard);
 
   newFlag = true;
@@ -161,7 +161,7 @@ void Plays::logRho(
   const bool knownVoidRho,
   PardNode * pardPtr)
 {
-  if (rhoNext > rhoNodes.size())
+  if (rhoNext >= rhoNodes.size())
     rhoNodes.resize(rhoNodes.size() + chunk.rho);
 
   RhoNode& node = rhoNodes[rhoNext++];
@@ -232,8 +232,9 @@ string Plays::str() const
   stringstream ss;
   ss << Plays::strHeader();
 
-  for (const auto& rhoNode: rhoNodes)
+  for (unsigned rno = 0; rno < rhoNext; rno++)
   {
+    const auto& rhoNode = rhoNodes[rno];
     PardNode const * pardPtr = rhoNode.pardPtr;
     LhoNode const * lhoPtr = pardPtr->lhoPtr;
     LeadNode const * leadPtr = lhoPtr->leadPtr;
@@ -252,3 +253,4 @@ string Plays::str() const
   }
   return ss.str();
 }
+
