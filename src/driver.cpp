@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
 
   if (control.debugArgs())
     cout << control.str();
-
+  
   /*
   Ranks ranks;
   CombEntry ce;

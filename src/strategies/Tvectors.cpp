@@ -32,17 +32,21 @@ void Tvectors::log(const Tvector& tv)
 
   // tv cannot beat anything with a higher weight.
   while (riter != results.end() && riter->weight() > tv.weight())
-    riter++;
+  {
+    if (riter->compare(tv) == COMPARE_GREATER_THAN)
+      return;
+    else
+      riter++;
+  }
 
   while (riter != results.end() && riter->weight() == tv.weight())
   {
-    // They might be the same.
+    // They might be the same if they have the same weight.
     if (riter->compare(tv) == COMPARE_EQUAL)
       return;
+    else
+      riter++;
   }
-
-  if (riter == results.end())
-    return;
 
   // The new vector must be inserted.
   riter = next(results.insert(riter, tv));
@@ -71,11 +75,12 @@ string Tvectors::strHeader(const string& title) const
   if (title != "")
     ss << title << "\n";
 
-  ss << setw(4) << left << "Dist";
+  ss << setw(4) << left << "Dist" << right;
 
   for (unsigned i = 0; i < results.size(); i++)
     ss << setw(4) << i;
   ss << "\n";
+
   ss << string(4 + 4 * results.size(), '-') << "\n";
 
   return ss.str();
@@ -85,7 +90,8 @@ string Tvectors::strHeader(const string& title) const
 string Tvectors::strWeights() const
 {
   stringstream ss;
-  ss << setw(4) << "";
+  ss << string(4 + 4 * results.size(), '-') << "\n";
+  ss << setw(4) << "Wgt";
   for (const auto& res: results)
     ss << setw(4) << res.weight();
   return ss.str() + "\n";
@@ -109,13 +115,14 @@ string Tvectors::str(const string& title) const
   }
 
   // Use the iterator for the first Tvector to get the distributions.
-  auto iter0 = iters.front();
-  while (iter0 != itersEnd.front())
+  while (iters.front() != itersEnd.front())
   {
-    ss << setw(4) << left << iter0->dist;
+    ss << setw(4) << left << iters.front()->dist << right;
     for (auto& iter: iters)
     {
       ss << setw(4) << iter->tricks;
+
+      // This looks funny, but it's the content of iters that is modified.
       iter++;
     }
     ss << "\n";

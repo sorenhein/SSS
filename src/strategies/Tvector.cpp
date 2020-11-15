@@ -136,7 +136,7 @@ void Tvector::mergeDown(const Tvector& tv2)
   {
     if (iter1 == results.end() || iter1->dist > iter2->dist)
     {
-      results.push_back(* iter2);
+      results.insert(iter1, * iter2);
       weightInt += iter2->tricks;
       iter2++;
     }
@@ -151,6 +151,8 @@ void Tvector::mergeDown(const Tvector& tv2)
         weightInt += iter2->tricks - iter1->tricks;
         iter1->tricks = iter2->tricks;
       }
+      iter1++;
+      iter2++;
     }
   }
 }

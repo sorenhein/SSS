@@ -30,7 +30,7 @@ struct TrickEntry
 
   bool operator > (const TrickEntry& te2) const
   {
-    return(tricks < te2.tricks);
+    return(tricks > te2.tricks);
   }
 };
 

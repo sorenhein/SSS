@@ -1,6 +1,6 @@
 driver.obj: Combinations.h struct.h const.h Distributions.h Distribution.h
 driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h stats/Timers.h
-driver.obj: stats/Timer.h Ranks.h
+driver.obj: stats/Timer.h Ranks.h Plays.h strategies/Tvector.h
 Ranks.obj: Plays.h const.h Ranks.h struct.h
 Plays.obj: Plays.h const.h
 Combination.obj: Combination.h struct.h const.h
@@ -12,5 +12,7 @@ inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
+strategies/Tvector.obj: strategies/Tvector.h
+strategies/Tvectors.obj: strategies/Tvectors.h strategies/Tvector.h
 stats/Timer.obj: stats/Timer.h
 stats/Timers.obj: stats/Timers.h stats/Timer.h
