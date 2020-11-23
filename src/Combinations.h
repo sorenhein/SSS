@@ -7,6 +7,7 @@
 #include <atomic>
 #include <mutex>
 
+#include "Combination.h"
 #include "struct.h"
 
 using namespace std;
@@ -36,8 +37,8 @@ class Combinations
 
     unsigned maxCards;
 
-    vector<vector<CombEntry>> combinations;
-    vector<vector<unsigned>> uniques; // Probably gets more structure
+    vector<vector<CombEntry>> combEntries;
+    vector<vector<Combination>> uniques;
 
     vector<CountEntry> combCounts;
     vector<CountEntry> threadCombCounts;

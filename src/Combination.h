@@ -8,6 +8,10 @@
 
 using namespace std;
 
+struct CombEntry;
+class Ranks;
+class Plays;
+
 
 class Combination
 {
@@ -22,6 +26,11 @@ class Combination
     ~Combination();
 
     void reset();
+
+    void strategize(
+      const CombEntry& centry,
+      Ranks& ranks,
+      Plays& plays);
 
     string str() const;
 

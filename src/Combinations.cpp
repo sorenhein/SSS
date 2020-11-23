@@ -44,7 +44,7 @@ Combinations::~Combinations()
 void Combinations::reset()
 {
   maxCards = 0;
-  combinations.clear();
+  combEntries.clear();
   uniques.clear();
   combCounts.clear();
   playCounts.clear();
@@ -55,7 +55,7 @@ void Combinations::resize(const unsigned maxCardsIn)
 {
   maxCards = maxCardsIn;
 
-  combinations.resize(maxCardsIn+1);
+  combEntries.resize(maxCardsIn+1);
   uniques.resize(maxCardsIn+1);
 
   // There are three combinations with 1 card: It may be with
@@ -63,9 +63,9 @@ void Combinations::resize(const unsigned maxCardsIn)
   unsigned numCombinations = 3;
 
   // for (unsigned cards = 1; cards <= maxCards; cards++)
-  for (unsigned cards = 1; cards < combinations.size(); cards++)
+  for (unsigned cards = 1; cards < combEntries.size(); cards++)
   {
-    combinations[cards].resize(numCombinations);
+    combEntries[cards].resize(numCombinations);
     numCombinations *= 3;
 
     assert(cards < UNIQUE_COUNT.size());
@@ -84,13 +84,13 @@ void Combinations::resize(const unsigned maxCardsIn)
 
 void Combinations::runUniques(const unsigned cards)
 {
-  assert(cards < combinations.size());
+  assert(cards < combEntries.size());
   assert(cards < uniques.size());
   assert(cards < combCounts.size());
   assert(cards < playCounts.size());
 
-  vector<CombEntry>& combs = combinations[cards];
-  vector<unsigned>& uniqs = uniques[cards];
+  vector<CombEntry>& centries = combEntries[cards];
+  vector<Combination>& uniqs = uniques[cards];
 
   Ranks ranks;
   ranks.resize(cards);
@@ -99,26 +99,29 @@ void Combinations::runUniques(const unsigned cards)
   Plays plays;
   plays.resize(cards);
 
-  for (unsigned holding = 0; holding < combs.size(); holding++)
+  for (unsigned holding = 0; holding < centries.size(); holding++)
   {
 // cout << "combs holding " << holding << endl;
-    ranks.set(holding, combs[holding]);
+    CombEntry& centry = centries[holding];
+    ranks.set(holding, centry);
 
     combCounts[cards].total++;
-    if (holding == combs[holding].canonicalHolding3)
+    if (holding == centry.canonicalHolding3)
     {
-      assert(uniqueIndex < uniqs.size());
-      combs[holding].canonicalIndex = uniqueIndex;
-      uniqs[uniqueIndex] = holding;
-      uniqueIndex++;
-
       combCounts[cards].unique++;
 
-      unsigned term;
-      ranks.setPlays(plays, term);
+      assert(uniqueIndex < uniqs.size());
+      centry.canonicalIndex = uniqueIndex;
+      Combination& comb = uniqs[uniqueIndex];
+      uniqueIndex++;
+
+      // Plays is cleared and rewritten, so it is only an optimization
+      // not to let Combination make its own plays.
+      comb.strategize(centry, ranks, plays);
+
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
-      plays.reset();
+
     }
   }
 }
@@ -128,13 +131,13 @@ void Combinations::runUniqueThread(
   const unsigned cards,
   const unsigned thid)
 {
-  assert(cards < combinations.size());
+  assert(cards < combEntries.size());
   assert(cards < uniques.size());
   assert(thid < threadCombCounts.size());
   assert(thid < threadPlayCounts.size());
 
-  vector<CombEntry>& combs = combinations[cards];
-  vector<unsigned>& uniqs = uniques[cards];
+  vector<CombEntry>& centries = combEntries[cards];
+  vector<Combination>& uniqs = uniques[cards];
 
   Ranks ranks;
   ranks.resize(cards);
@@ -143,7 +146,7 @@ void Combinations::runUniqueThread(
   Plays plays;
   plays.resize(cards);
 
-  const unsigned counterMax = combs.size();
+  const unsigned counterMax = centries.size();
 
   while (true)
   {
@@ -151,24 +154,23 @@ void Combinations::runUniqueThread(
     if (holding >= counterMax)
       break;
 
-    ranks.set(holding, combs[holding]);
+    CombEntry& centry = centries[holding];
+    ranks.set(holding, centry);
 
     threadCombCounts[thid].total++;
-    if (holding == combs[holding].canonicalHolding3)
+    if (holding == centries[holding].canonicalHolding3)
     {
-      const unsigned uniqueIndex = counterUnique++; // Atomic
-      assert(uniqueIndex < uniqs.size());
-
-      combs[holding].canonicalIndex = uniqueIndex;
-      uniqs[uniqueIndex] = holding;
-
       threadCombCounts[thid].unique++;
 
-      unsigned term;
-      ranks.setPlays(plays, term);
+      const unsigned uniqueIndex = counterUnique++; // Atomic
+      assert(uniqueIndex < uniqs.size());
+      centry.canonicalIndex = uniqueIndex;
+      Combination& comb = uniqs[uniqueIndex];
+
+      comb.strategize(centry, ranks, plays);
+
       threadPlayCounts[thid].unique++;
       threadPlayCounts[thid].total += plays.size();
-      plays.reset();
     }
   }
 }
