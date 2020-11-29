@@ -1,3 +1,11 @@
+Map the holding3 at the end of a play to a * combination.
+- Ranks must also log the number of remaining cards
+
+Get the distribution at the beginning of a combination and pass it
+in to strategize().
+
+
+
 strategies/
   Strategy: For now just a flat vector
   Strategies: For now a collection of Strategy

@@ -52,6 +52,7 @@ class Plays
       bool pardCollapse;
       bool rhoCollapse;
 
+      unsigned cardsNew;
       unsigned holdingNew;
       bool rotateNew;
 
@@ -59,9 +60,12 @@ class Plays
 
       bool knownVoidLho;
       bool knownVoidRho;
+      bool voidPard;
 
       PardNode * pardPtr;
     };
+
+    unsigned cards;
 
     vector<LeadNode> leadNodes;
     vector<LhoNode> lhoNodes;
@@ -114,6 +118,7 @@ class Plays
       const unsigned trickNS,
       const bool knownVoidLho,
       const bool knownVoidRho,
+      const bool voidPard,
       PardNode * pardPtr);
 
     string strHeader() const;
@@ -126,7 +131,7 @@ class Plays
 
     void reset();
 
-    void resize(const unsigned cards);
+    void resize(const unsigned cardsIn);
 
     unsigned size() const;
 

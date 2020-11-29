@@ -399,6 +399,12 @@ void Distribution::setPtr(Distribution const * distCanonicalIn)
 }
 
 
+Distribution const * Distribution::getPtr() const
+{
+  return distCanonical;
+}
+
+
 unsigned Distribution::size() const
 {
   if (distCanonical)
@@ -412,8 +418,6 @@ unsigned Distribution::size() const
 
 DistID Distribution::getID() const
 {
-  DistID res;
-
   // The canonical holding arises when EW have the lowest card and
   // when each NS rank consists of exactly 1 card.  So effectively
   // the canonical holding is a binary representation of a composition
@@ -422,6 +426,7 @@ DistID Distribution::getID() const
 
   // The number of bits needed to represent the canonical holding,
   // i.e. the number of cards that both sides need, is.
+  DistID res;
   res.cards = opponents.len + rankSize - 1;
 
   // This assumes that PAIR_EW is 1.

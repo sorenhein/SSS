@@ -50,6 +50,10 @@ class Distributions
       const unsigned cards,
       const unsigned numThreads);
 
+    Distribution const * ptr(
+      const unsigned cards,
+      const unsigned holding2) const;
+
     string str(const int unsigned = 0) const;
 
 };

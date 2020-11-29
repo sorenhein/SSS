@@ -168,6 +168,8 @@ class Distribution
 
     void setPtr(Distribution const * distCanonicalIn);
 
+    Distribution const * getPtr() const;
+
     unsigned size() const;
 
     DistID getID() const;

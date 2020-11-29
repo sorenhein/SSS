@@ -5,6 +5,8 @@
 #include <cassert>
 
 #include "Combination.h"
+#include "Distributions.h"
+#include "Distribution.h"
 #include "Ranks.h"
 #include "Plays.h"
 #include "struct.h"
@@ -28,9 +30,12 @@ void Combination::reset()
 
 void Combination::strategize(
   const CombEntry& centry,
+  const Distributions& distributions,
   Ranks& ranks,
   Plays& plays)
 {
+  distPtr = distributions.ptr(ranks.size(), centry.canonicalHolding2);
+
   plays.reset();
 
   unsigned term;

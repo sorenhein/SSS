@@ -12,6 +12,8 @@
 
 using namespace std;
 
+class Distributions;
+
 
 class Combinations
 {
@@ -52,6 +54,7 @@ class Combinations
 
     void runUniqueThread(
       const unsigned cards,
+      Distributions const * distributions,
       const unsigned thid);
 
   public:
@@ -64,10 +67,13 @@ class Combinations
 
     void resize(const unsigned maxCardsIn);
 
-    void runUniques(const unsigned cards);
+    void runUniques(
+      const unsigned cards,
+      const Distributions& distributions);
 
     void runUniquesMT(
       const unsigned cards,
+      const Distributions& distributions,
       const unsigned numThreads);
 
     string strUniques(const int unsigned = 0) const;

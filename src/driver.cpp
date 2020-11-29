@@ -103,7 +103,7 @@ int main(int argc, char * argv[])
     cout << "Cards " << setw(2) << right << cards << endl;
 
     // combinations.runUniquesMT(cards, control.numThreads());
-    combinations.runUniques(cards);
+    combinations.runUniques(cards, distributions);
   }
 
   timers.stop(TIMER_COMBINATIONS);

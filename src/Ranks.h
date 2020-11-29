@@ -235,6 +235,8 @@ class Ranks
 
     void resize(const unsigned cardsIn);
 
+    unsigned size() const;
+
     void set(
       const unsigned holdingIn,
       CombEntry& combEntry);

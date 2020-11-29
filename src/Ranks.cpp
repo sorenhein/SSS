@@ -172,6 +172,12 @@ void Ranks::resize(const unsigned cardsIn)
 }
 
 
+unsigned Ranks::size() const
+{
+  return cards;
+}
+
+
 void Ranks::zero()
 {
   north.zero();

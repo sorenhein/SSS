@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
+#include "Distributions.h"
 #include "Plays.h"
 #include "Ranks.h"
 
@@ -82,7 +83,9 @@ void Combinations::resize(const unsigned maxCardsIn)
 }
 
 
-void Combinations::runUniques(const unsigned cards)
+void Combinations::runUniques(
+  const unsigned cards,
+  const Distributions& distributions)
 {
   assert(cards < combEntries.size());
   assert(cards < uniques.size());
@@ -117,7 +120,7 @@ void Combinations::runUniques(const unsigned cards)
 
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
-      comb.strategize(centry, ranks, plays);
+      comb.strategize(centry, distributions, ranks, plays);
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
@@ -129,6 +132,7 @@ void Combinations::runUniques(const unsigned cards)
 
 void Combinations::runUniqueThread(
   const unsigned cards,
+  Distributions const * distributions,
   const unsigned thid)
 {
   assert(cards < combEntries.size());
@@ -167,7 +171,7 @@ void Combinations::runUniqueThread(
       centry.canonicalIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
-      comb.strategize(centry, ranks, plays);
+      comb.strategize(centry, * distributions, ranks, plays);
 
       threadPlayCounts[thid].unique++;
       threadPlayCounts[thid].total += plays.size();
@@ -178,6 +182,7 @@ void Combinations::runUniqueThread(
 
 void Combinations::runUniquesMT(
   const unsigned cards,
+  const Distributions& distributions,
   const unsigned numThreads)
 {
   counterHolding = 0;
@@ -194,7 +199,7 @@ void Combinations::runUniquesMT(
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
-      this, cards, thid);
+      this, cards, &distributions, thid);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
   {

@@ -57,8 +57,9 @@ void Plays::reset()
 }
 
 
-void Plays::resize(const unsigned cards)
+void Plays::resize(const unsigned cardsIn)
 {
+  cards = cardsIn;
   chunk = CHUNK_SIZE[cards];
 
   leadNodes.resize(chunk.lead);
@@ -159,6 +160,7 @@ void Plays::logRho(
   const unsigned trickNS,
   const bool knownVoidLho,
   const bool knownVoidRho,
+  const bool voidPard,
   PardNode * pardPtr)
 {
   if (rhoNext >= rhoNodes.size())
@@ -170,11 +172,16 @@ void Plays::logRho(
   node.lhoCollapse = lhoCollapse;
   node.pardCollapse = pardCollapse;
   node.rhoCollapse = rhoCollapse;
+  node.cardsNew = cards +
+    (knownVoidLho ? 1 : 0) + 
+    (knownVoidRho ? 1 : 0) +
+    (voidPard ? 1 : 0) - 4;
   node.holdingNew = holding3;
   node.rotateNew = rotateFlag;
   node.trickNS = trickNS;
   node.knownVoidLho = knownVoidLho;
   node.knownVoidRho = knownVoidRho;
+  node.voidPard = voidPard;
   node.pardPtr = pardPtr;
 }
 
@@ -200,11 +207,12 @@ void Plays::log(
   const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
   const bool knownVoidLho = (lho == 0);
   const bool knownVoidRho = (rho == 0);
+  const bool voidPard = (pard == 0);
 
   Plays::logRho(rho,
     leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
     holding3, rotateFlag,
-    trickNS, knownVoidLho, knownVoidRho,
+    trickNS, knownVoidLho, knownVoidRho, voidPard,
     pardPtr);
 }
 
