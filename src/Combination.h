@@ -9,6 +9,7 @@
 using namespace std;
 
 struct CombEntry;
+class Combinations;
 class Distributions;
 class Distribution;
 class Ranks;
@@ -33,6 +34,7 @@ class Combination
 
     void strategize(
       const CombEntry& centry,
+      const Combinations& combinations,
       const Distributions& distributions,
       Ranks& ranks,
       Plays& plays);

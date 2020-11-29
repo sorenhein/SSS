@@ -3,6 +3,7 @@
 #include <sstream>
 #include <limits>
 
+#include "Combinations.h"
 #include "Plays.h"
 
 
@@ -214,6 +215,20 @@ void Plays::log(
     holding3, rotateFlag,
     trickNS, knownVoidLho, knownVoidRho, voidPard,
     pardPtr);
+}
+
+
+void Plays::setCombPtrs(const Combinations& combinations)
+{
+  for (auto& rhoNode: rhoNodes)
+    rhoNode.combPtr = 
+      combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
+  {
+    // Get from cardsNew, holdingNew to comPtr
+    // Use combinations.getPtr()
+    // Look up combEntries[c][h].canonicalIndex
+    // Look up in uniques[c][unique index]
+  }
 }
 
 

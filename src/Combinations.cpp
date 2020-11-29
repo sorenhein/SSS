@@ -120,7 +120,7 @@ void Combinations::runUniques(
 
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
-      comb.strategize(centry, distributions, ranks, plays);
+      comb.strategize(centry, * this, distributions, ranks, plays);
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
@@ -171,7 +171,7 @@ void Combinations::runUniqueThread(
       centry.canonicalIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
-      comb.strategize(centry, * distributions, ranks, plays);
+      comb.strategize(centry, * this, * distributions, ranks, plays);
 
       threadPlayCounts[thid].unique++;
       threadPlayCounts[thid].total += plays.size();
@@ -212,6 +212,15 @@ void Combinations::runUniquesMT(
     combCounts[cards] += threadCombCounts[thid];
     playCounts[cards] += threadPlayCounts[thid];
   }
+}
+
+
+Combination const * Combinations::getPtr(
+  const unsigned cards,
+  const unsigned holding3) const
+{
+  const unsigned ui = combEntries[cards][holding3].canonicalIndex;
+  return &uniques[cards][ui];
 }
 
 

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cassert>
 
+#include "Combinations.h"
 #include "Combination.h"
 #include "Distributions.h"
 #include "Distribution.h"
@@ -30,6 +31,7 @@ void Combination::reset()
 
 void Combination::strategize(
   const CombEntry& centry,
+  const Combinations& combinations,
   const Distributions& distributions,
   Ranks& ranks,
   Plays& plays)
@@ -40,6 +42,8 @@ void Combination::strategize(
 
   unsigned term;
   ranks.setPlays(plays, term);
+
+  plays.setCombPtrs(combinations);
 
   // Like UNUSED
   unsigned h = centry.canonicalHolding3;

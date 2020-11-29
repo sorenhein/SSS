@@ -76,6 +76,10 @@ class Combinations
       const Distributions& distributions,
       const unsigned numThreads);
 
+    Combination const * getPtr(
+      const unsigned cards,
+      const unsigned holding3) const;
+
     string strUniques(const int unsigned = 0) const;
 
 };

@@ -8,6 +8,9 @@
 
 using namespace std;
 
+class Combinations;
+class Combination;
+
 
 struct ChunkEntry
 {
@@ -55,6 +58,7 @@ class Plays
       unsigned cardsNew;
       unsigned holdingNew;
       bool rotateNew;
+      Combination const * combPtr;
 
       unsigned trickNS;
 
@@ -147,6 +151,8 @@ class Plays
       const bool rhoCollapse,
       const unsigned holding3,
       const bool rotateFlag);
+
+   void setCombPtrs(const Combinations& combinations);
 
    string str() const;
 };
