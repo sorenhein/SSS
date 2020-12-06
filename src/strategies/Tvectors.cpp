@@ -22,7 +22,7 @@ void Tvectors::reset()
 }
 
 
-void Tvectors::log(const Tvector& tv)
+void Tvectors::operator +=(const Tvector& tv)
 {
   // The results list is in descending order of weights.
   // The new Tvector dominates everything with a lower weight and
@@ -62,10 +62,47 @@ void Tvectors::log(const Tvector& tv)
 }
 
 
-void Tvectors::log(const Tvectors& tvs)
+void Tvectors::operator +=(const Tvectors& tvs)
 {
   for (auto& tv: tvs.results)
-    Tvectors::log(tv);
+    * this += tv;
+}
+
+
+void Tvectors::operator *=(const Tvectors& tvs2)
+{
+  const unsigned len2 = tvs2.results.size();
+  if (len2 == 0)
+    // Keep the current results.
+    return;
+
+  const unsigned len1 = results.size();
+  if (len1 == 0)
+  {
+    // Keep the new results.
+    results = tvs2.results;
+    return;
+  }
+
+  if (len1 == 1 && len2 == 1)
+  {
+    results.front() *= tvs2.results.front();
+    return;
+  }
+
+  // General case.  The implementation is straightforward but probably
+  // inefficient.  Maybe there's a faster way to do it in place.
+  list<Tvector> resultsOwn = results;
+  Tvector tmp;
+  for (auto& tv1: resultsOwn)
+  {
+    for (auto& tv2: tvs2.results)
+    {
+      tmp = tv1;
+      tmp *= tv2;
+      *this += tmp;
+    }
+  }
 }
 
 

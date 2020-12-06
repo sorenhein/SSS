@@ -1,9 +1,23 @@
-Map the holding3 at the end of a play to a * combination.
-- Ranks must also log the number of remaining cards
+In Plays, or maybe in Combination
 
-Get the distribution at the beginning of a combination and pass it
-in to strategize().
+- For each RHO node
+  - Use combPtr to get strategies, rotating if needed
+  - Figure out the distribution numbers from distPtr
+  - Cross them onto the pardPtr node
+- For each pard node
+  - += them onto the LHO node
+- For each LHO node
+  - *= them onto lead node
+- For each lead node
+  - += them togethero
 
+Becomes more complicated when we have to keep track of:
+
+- Winning ranks for NS
+- Winning plays/strategies such as "cash ace"
+  - Sometimes NS have several ways to reach its optimum; keep them all
+- Noting the inequalities on EW plays that are needed to stabilize
+  an NS strategy
 
 
 strategies/

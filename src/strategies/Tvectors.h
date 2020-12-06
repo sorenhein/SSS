@@ -30,9 +30,11 @@ class Tvectors
 
     void reset();
 
-    void log(const Tvector& tv);
+    void operator +=(const Tvector& tv);
 
-    void log(const Tvectors& tvs);
+    void operator +=(const Tvectors& tvs);
+
+    void operator *=(const Tvectors& tvs);
 
     string str(const string& title = "") const;
 };

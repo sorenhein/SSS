@@ -65,7 +65,7 @@ class Tvector
 
     Compare compare(const Tvector& tv2) const;
 
-    void mergeDown(const Tvector& tv2);
+    void operator *=(const Tvector& tv2);
 
     unsigned weight() const;
 

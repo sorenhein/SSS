@@ -125,7 +125,7 @@ Compare Tvector::compare(const Tvector& tv2) const
 }
 
 
-void Tvector::mergeDown(const Tvector& tv2)
+void Tvector::operator *=(const Tvector& tv2)
 {
   // Here we don't have to have the same length or distributions.
   
