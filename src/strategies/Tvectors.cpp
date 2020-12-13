@@ -118,6 +118,15 @@ void Tvectors::operator *=(const Tvectors& tvs2)
 }
 
 
+void Tvectors::adapt(
+  const list<unsigned>& numbersNew,
+  const bool rotateFlag)
+{
+  for (auto& tv: results)
+    tv.adapt(numbersNew, rotateFlag);
+}
+
+
 string Tvectors::strHeader(const string& title) const
 {
   stringstream ss;

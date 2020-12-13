@@ -31,6 +31,8 @@ class Plays
     {
       SidePosition side;
       unsigned lead;
+
+      Tvectors strategies;
     };
 
     struct LhoNode
@@ -38,6 +40,8 @@ class Plays
       unsigned lho;
 
       LeadNode * leadPtr;
+
+      Tvectors strategies;
     };
 
     struct PardNode
@@ -45,7 +49,8 @@ class Plays
       unsigned pard;
 
       LhoNode * lhoPtr;
-      
+
+      Tvectors strategies;
     };
 
     struct RhoNode

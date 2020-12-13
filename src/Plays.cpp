@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "Combinations.h"
+#include "Distribution.h"
 #include "Plays.h"
 
 
@@ -98,6 +99,7 @@ Plays::LeadNode * Plays::logLead(
   LeadNode& node = leadNodes[leadNext++];
   node.side = side;
   node.lead = lead;
+  node.strategies.reset();
 
   leadPrevPtr = &node;
   return leadPrevPtr;
@@ -121,6 +123,7 @@ Plays::LhoNode * Plays::logLho(
   LhoNode& node = lhoNodes[lhoNext++];
   node.lho = lho;
   node.leadPtr = leadPtr;
+  node.strategies.reset();
 
   lhoPrevPtr = &node;
   return lhoPrevPtr;
@@ -144,6 +147,7 @@ Plays::PardNode * Plays::logPard(
   PardNode& node = pardNodes[pardNext++];
   node.pard = pard;
   node.lhoPtr = lhoPtr;
+  node.strategies.reset();
 
   pardPrevPtr = &node;
   return pardPrevPtr;
@@ -232,39 +236,44 @@ void Plays::strategize(
   Distribution const * distPtr,
   Tvectors& strategies)
 {
-  strategies.reset();
-  UNUSED(distPtr);
+  // This yields strategies where EW have "too much" choice.
+  // Therefore the question is going to be whether EW can hold NS
+  // to these outcomes by spreading their probability mass well.
+  // This will be done subsequently.
 
-  // For each rhoNode
-  //   Note rho, lho (two play levels up) and rotateNew
-  //   distPtr->survivors(lho, rho, rotateNew) -- rotate not implemented
-  //   Gives us list of distribution numbers at our play level
-  //
-  //   combPtr->strategies() gives a Tvector
-  //   Should be able to rotate it
-  //   Probably Combination should cache a rotated copy
-  //   A Tvectors should be able to mirror itself
-  //   Fail if 0 strategies
-  //
-  //   Make a new Tvectors with the right distribution numbers
-  //   (assert the right number of distributions)
-  //
-  //   The PardNode should have a Tvectors
-  //   *= the new Tvectors onto it
-  // end
-  //
-  // For each pard node
-  //   The LhoNode should have a Tvectors
-  //   += the new Tvectors onto it
-  //
-  // For each LHO node
-  //   The LeadNode should have a Tvectors
-  //   *= the new Tvectors onto it
-  //
-  // For each lead node
-  //   strategies += the new Tvectors
-  //
-  // When do the Tvectors get reset at the beginning of a Plays?
+  Tvectors tvs;
+  for (auto& rhoNode: rhoNodes)
+  {
+    // Find the distribution numbers that are still possible.
+    // TODO We could possibly cache lho in RhoNode (saves looking it up).
+    unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
+    const auto& survivors = distPtr->survivors(lho, rhoNode.rho);
+    
+    // Get the strategy from the following combination.  This will
+    // have to be renumbered and possibly rotated.
+    tvs = rhoNode.combPtr->strategies();
+    tvs.adapt(survivors, rhoNode.rotateNew);
+
+    // Add it to the partner node by cross product.
+    rhoNode.pardPtr->strategies *= tvs;
+  }
+
+  for (auto& pardNode: pardNodes)
+  {
+    // Add the partner strategy to the LHO node.
+    pardNode.lhoPtr->strategies += pardNode.strategies;
+  }
+
+  for (auto& lhoNode: lhoNodes)
+  {
+    // Add the LHO strategy to the lead node by cross product.
+    lhoNode.leadPtr->strategies *= lhoNode.strategies;
+  }
+
+  // Add up the lead strategies.
+  strategies.reset();
+  for (auto& leadNode: leadNodes)
+    strategies += leadNode.strategies;
 }
 
 

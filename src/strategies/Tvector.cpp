@@ -174,6 +174,27 @@ void Tvector::operator *=(const Tvector& tv2)
 }
 
 
+void Tvector::adapt(
+  const list<unsigned>& numbersNew,
+  const bool rotateFlag)
+{
+  assert(numbersNew.size() == results.size());
+
+  if (rotateFlag)
+    results.reverse();
+
+  auto iter1 = results.begin();
+  auto iter2 = numbersNew.begin();
+
+  while (iter1 != results.end())
+  {
+    iter1->dist = * iter2;
+    iter1++;
+    iter2++;
+  }
+}
+
+
 unsigned Tvector::weight() const
 {
   return weightInt;

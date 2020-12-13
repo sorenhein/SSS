@@ -40,6 +40,10 @@ class Tvectors
 
     void operator *=(const Tvectors& tvs);
 
+    void adapt(
+      const list<unsigned>& numbersNew,
+      const bool rotateFlag);
+
     string str(const string& title = "") const;
 };
 

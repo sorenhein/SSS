@@ -71,6 +71,10 @@ class Tvector
 
     void operator *=(const Tvector& tv2);
 
+    void adapt(
+      const list<unsigned>& numbersNew,
+      const bool rotateFlag);
+
     unsigned weight() const;
 
     string str(const string& title = "") const;

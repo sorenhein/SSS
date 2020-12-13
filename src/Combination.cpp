@@ -52,10 +52,13 @@ const Tvectors& Combination::strategize(
     return strats;
   }
 
+cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
   plays.setCombPtrs(combinations);
+cout << "B " << centry.canonicalHolding3 << endl;
 
   plays.strategize(distPtr, strats);
+cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
