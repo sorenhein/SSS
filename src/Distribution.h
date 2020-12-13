@@ -150,6 +150,10 @@ class Distribution
 
     void mirror(unsigned& distIndex);
 
+    const list<unsigned>& survivorsReduced(
+      const unsigned westRank,
+      const unsigned eastRank) const;
+
 
   public:
 

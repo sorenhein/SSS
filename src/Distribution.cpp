@@ -490,11 +490,32 @@ const list<unsigned>& Distribution::survivors(
   const unsigned westRank,
   const unsigned eastRank) const
 {
+  // This method uses full (externally visible) ranks.
+  assert(westRank != 0 || eastRank != 0);
+  assert(westRank < full2reduced.size());
+  assert(eastRank < full2reduced.size());
+
+  return Distribution::survivorsReduced(
+    full2reduced[westRank],
+    full2reduced[eastRank]);
+}
+
+
+const list<unsigned>& Distribution::survivorsReduced(
+  const unsigned westRank,
+  const unsigned eastRank) const
+{
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
 
-  return distSurvivors[westRank][eastRank];
+cout << "  reduced " << westRank << " " << eastRank << 
+  (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
+
+  if (distCanonical == nullptr)
+    return distSurvivors[westRank][eastRank];
+  else
+    return distCanonical->survivorsReduced(westRank, eastRank);
 }
 
 

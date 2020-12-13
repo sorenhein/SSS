@@ -247,6 +247,7 @@ void Plays::strategize(
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
     unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
+cout << "LHO " << lho << " RHO " << rhoNode.rho << endl;
     const auto& survivors = distPtr->survivors(lho, rhoNode.rho);
     
     // Get the strategy from the following combination.  This will
