@@ -1,16 +1,5 @@
 In Plays, or maybe in Combination
 
-- For each RHO node
-  - Use combPtr to get strategies, rotating if needed
-  - Figure out the distribution numbers from distPtr
-  - Cross them onto the pardPtr node
-- For each pard node
-  - += them onto the LHO node
-- For each LHO node
-  - *= them onto lead node
-- For each lead node
-  - += them togethero
-
 Becomes more complicated when we have to keep track of:
 
 - Winning ranks for NS
@@ -18,18 +7,6 @@ Becomes more complicated when we have to keep track of:
   - Sometimes NS have several ways to reach its optimum; keep them all
 - Noting the inequalities on EW plays that are needed to stabilize
   an NS strategy
-
-
-strategies/
-  Strategy: For now just a flat vector
-  Strategies: For now a collection of Strategy
-
-Plays goes into Combination
-- next -> nextPlay
-- size -> sizePlay
-- resize -> resizePlay
-- reset -> resetPlay
-
 
 ------
 

@@ -4,12 +4,14 @@
 #include <vector>
 #include <string>
 
+#include "strategies/Tvectors.h"
 #include "const.h"
 
 using namespace std;
 
 class Combinations;
 class Combination;
+class Distribution;
 
 
 struct ChunkEntry
@@ -153,6 +155,10 @@ class Plays
       const bool rotateFlag);
 
    void setCombPtrs(const Combinations& combinations);
+
+   void strategize(
+     Distribution const * distPtr,
+     Tvectors& strategies);
 
    string str() const;
 };

@@ -29,24 +29,42 @@ void Combination::reset()
 }
 
 
-void Combination::strategize(
+const Tvectors& Combination::strategize(
   const CombEntry& centry,
   const Combinations& combinations,
   const Distributions& distributions,
   Ranks& ranks,
   Plays& plays)
 {
+  // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptr(ranks.size(), centry.canonicalHolding2);
 
-  plays.reset();
-
+  // Make the plays.
   unsigned term;
-  ranks.setPlays(plays, term);
+  plays.reset();
+  const CombinationType ctype = ranks.setPlays(plays, term);
+  
+  // If it's a trivial situation, make the strategies.
+  if (ctype == COMB_TRIVIAL)
+  {
+    // Fill out a single constant strategy with the right value and size.
+    strats.setTrivial(term, distPtr->size());
+    return strats;
+  }
 
+  // Complete the plays such that their ends point to combinations.
   plays.setCombPtrs(combinations);
 
-  // Like UNUSED
-  unsigned h = centry.canonicalHolding3;
-  h++;
+  plays.strategize(distPtr, strats);
+
+  // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
+
+  return strats;
+}
+
+
+const Tvectors& Combination::strategies() const
+{
+  return strats;
 }
 

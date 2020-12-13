@@ -30,6 +30,22 @@ void Tvector::reset()
 }
 
 
+void Tvector::logTrivial(
+  const unsigned value,
+  const unsigned len)
+{
+  results.clear();
+  for (unsigned i = 0; i < len; i++)
+  {
+    results.emplace_back(TrickEntry());
+    TrickEntry& te = results.back();
+    te.dist = i;
+    te.tricks = value;
+  }
+  weightInt = value * len;
+}
+
+
 void Tvector::log(
   const vector<unsigned>& distributions,
   const vector<unsigned>& tricks)

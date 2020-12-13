@@ -22,6 +22,18 @@ void Tvectors::reset()
 }
 
 
+void Tvectors::setTrivial(
+  const unsigned term,
+  const unsigned len)
+{
+  Tvector tv;
+  tv.logTrivial(term, len);
+
+  Tvectors::reset();
+  results.push_back(tv);
+}
+
+
 void Tvectors::operator +=(const Tvector& tv)
 {
   // The results list is in descending order of weights.

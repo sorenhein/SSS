@@ -60,9 +60,9 @@ void Distributions::resize(const unsigned maxCardsIn)
   // vector covering both East and West.
   // There are 2 E-W distributions with 1 card: Either they have it
   // or they don't.
-  unsigned numDistributions = 2;
+  unsigned numDistributions = 1;
 
-  for (unsigned cards = 1; cards < distributions.size(); cards++)
+  for (unsigned cards = 0; cards < distributions.size(); cards++)
   {
     distributions[cards].resize(numDistributions);
     numDistributions <<= 1;

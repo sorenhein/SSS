@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 
+#include "strategies/Tvectors.h"
 #include "struct.h"
 
 using namespace std;
@@ -22,6 +23,7 @@ class Combination
 
     Distribution const * distPtr;
 
+    Tvectors strats;
 
 
   public:
@@ -32,12 +34,14 @@ class Combination
 
     void reset();
 
-    void strategize(
+    const Tvectors& strategize(
       const CombEntry& centry,
       const Combinations& combinations,
       const Distributions& distributions,
       Ranks& ranks,
       Plays& plays);
+
+    const Tvectors& strategies() const;
 
     string str() const;
 

@@ -56,6 +56,10 @@ class Tvector
 
     void reset();
 
+    void logTrivial(
+      const unsigned value,
+      const unsigned len);
+
     void log(
       const vector<unsigned>& distributions,
       const vector<unsigned>& tricks);

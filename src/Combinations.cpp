@@ -61,10 +61,10 @@ void Combinations::resize(const unsigned maxCardsIn)
 
   // There are three combinations with 1 card: It may be with
   // North, South or the opponents.
-  unsigned numCombinations = 3;
+  unsigned numCombinations = 1;
 
   // for (unsigned cards = 1; cards <= maxCards; cards++)
-  for (unsigned cards = 1; cards < combEntries.size(); cards++)
+  for (unsigned cards = 0; cards < combEntries.size(); cards++)
   {
     combEntries[cards].resize(numCombinations);
     numCombinations *= 3;

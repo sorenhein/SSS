@@ -30,6 +30,10 @@ class Tvectors
 
     void reset();
 
+    void setTrivial(
+      const unsigned value,
+      const unsigned len);
+
     void operator +=(const Tvector& tv);
 
     void operator +=(const Tvectors& tvs);

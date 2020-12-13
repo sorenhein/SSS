@@ -223,12 +223,48 @@ void Plays::setCombPtrs(const Combinations& combinations)
   for (auto& rhoNode: rhoNodes)
     rhoNode.combPtr = 
       combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
-  {
-    // Get from cardsNew, holdingNew to comPtr
-    // Use combinations.getPtr()
-    // Look up combEntries[c][h].canonicalIndex
-    // Look up in uniques[c][unique index]
-  }
+}
+
+
+#include "const.h"
+
+void Plays::strategize(
+  Distribution const * distPtr,
+  Tvectors& strategies)
+{
+  strategies.reset();
+  UNUSED(distPtr);
+
+  // For each rhoNode
+  //   Note rho, lho (two play levels up) and rotateNew
+  //   distPtr->survivors(lho, rho, rotateNew) -- rotate not implemented
+  //   Gives us list of distribution numbers at our play level
+  //
+  //   combPtr->strategies() gives a Tvector
+  //   Should be able to rotate it
+  //   Probably Combination should cache a rotated copy
+  //   A Tvectors should be able to mirror itself
+  //   Fail if 0 strategies
+  //
+  //   Make a new Tvectors with the right distribution numbers
+  //   (assert the right number of distributions)
+  //
+  //   The PardNode should have a Tvectors
+  //   *= the new Tvectors onto it
+  // end
+  //
+  // For each pard node
+  //   The LhoNode should have a Tvectors
+  //   += the new Tvectors onto it
+  //
+  // For each LHO node
+  //   The LeadNode should have a Tvectors
+  //   *= the new Tvectors onto it
+  //
+  // For each lead node
+  //   strategies += the new Tvectors
+  //
+  // When do the Tvectors get reset at the beginning of a Plays?
 }
 
 
