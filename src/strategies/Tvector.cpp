@@ -64,6 +64,26 @@ void Tvector::log(
 }
 
 
+bool Tvector::operator == (const Tvector& tv2) const
+{
+  const unsigned n = results.size();
+  assert(tv2.results.size() == n);
+
+  list<TrickEntry>::const_iterator iter1 = results.cbegin();
+  list<TrickEntry>::const_iterator iter2 = tv2.results.cbegin();
+
+  while (iter1 != results.end())
+  {
+    if (* iter1 != * iter2)
+      return false;
+
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
 bool Tvector::operator >= (const Tvector& tv2) const
 {
   const unsigned n = results.size();
@@ -177,12 +197,45 @@ void Tvector::operator *=(const Tvector& tv2)
 void Tvector::adapt(
   const list<unsigned>& numbersNew,
   const unsigned trickNS,
+  const bool lhoVoidFlag,
+  const bool rhoVoidFlag,
   const bool rotateFlag)
 {
-  assert(numbersNew.size() == results.size());
+  if (lhoVoidFlag || rhoVoidFlag)
+  {
+    assert(numbersNew.size() == 1);
+    assert(results.size() > 1);
+  }
+  else
+    assert(numbersNew.size() == results.size());
 
   if (rotateFlag)
     results.reverse();
+
+  // LHO and RHO void flag pertain to the this rotation state
+  // (parent's frame of reference).
+
+  assert(! lhoVoidFlag || ! rhoVoidFlag);
+  if (lhoVoidFlag)
+  {
+    // Only keep the first result.
+    results.erase(next(results.begin()), results.end());
+    auto& result = results.front();
+    result.dist = numbersNew.front();
+    result.tricks += trickNS;
+    weightInt = result.tricks;
+    return;
+  }
+  else if (rhoVoidFlag)
+  {
+    // Only keep the last result.
+    results.erase(results.begin(), prev(results.end()));
+    auto& result = results.front();
+    result.dist = numbersNew.front();
+    result.tricks += trickNS;
+    weightInt = result.tricks;
+    return;
+  }
 
   auto iter1 = results.begin();
   auto iter2 = numbersNew.begin();
@@ -195,6 +248,12 @@ void Tvector::adapt(
     iter1++;
     iter2++;
   }
+}
+
+
+unsigned Tvector::size() const
+{
+  return results.size();
 }
 
 

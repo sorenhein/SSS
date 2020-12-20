@@ -134,7 +134,7 @@ void Distribution::setRanks(
   // We go with a minimal representation of East-West in terms of ranks,
   // so the rank numbers will be smaller.  We keep a correspondence
   // back and forth with the outside world.
-  full2reduced.resize(cards);
+  full2reduced.resize(cards+1);
   reduced2full.resize(cards);
   opponents.counts.resize(cards);
   
@@ -142,8 +142,8 @@ void Distribution::setRanks(
 
   // The full rank is the rank used in Combinations.
   // East-West might have ranks 1, 3 and 5, for example.
-  unsigned nextFullRank = 0;
-  unsigned maxFullRank = 0;
+  unsigned nextFullRank = 1;
+  unsigned maxFullRank = 1;
 
   // The reduced rank is used internally in Distribution and only
   // considers the East-West ranks which might be 0, 1 and 2.
@@ -447,21 +447,25 @@ DistID Distribution::getID() const
 
 void Distribution::setSurvivors()
 {
+  // The internal reduced ranks are 0-based.
+  // The external full ranks are 1-based, and "0" means "void".
+  // The survivors matrix is expressed in reduced ranks.
+  // Therefore we need the void separately.
+
+  // West void.
+  distSurvivorsWestVoid.clear();
+  distSurvivorsWestVoid.push_back(0);
+  assert(distributions[0].west.len == 0);
+
+  // East void.
+  const unsigned dlast = distributions.size() - 1;
+  distSurvivorsEastVoid.clear();
+  distSurvivorsEastVoid.push_back(dlast);
+  assert(distributions[dlast].east.len == 0);
+
   distSurvivors.resize(rankSize);
   for (unsigned w = 0; w < rankSize; w++)
     distSurvivors[w].resize(rankSize);
-
-  const unsigned dlast = distributions.size() - 1;
-  assert(distributions[0].west.len == 0);
-  assert(distributions[dlast].east.len == 0);
-
-  // West void.
-  for (unsigned e = 1; e < rankSize; e++)
-    distSurvivors[0][e].push_back(0);
-
-  // East void.
-  for (unsigned w = 1; w < rankSize; w++)
-    distSurvivors[w][0].push_back(dlast);
 
   // General case.
   // Could mirror around the middle to save a bit of time,
@@ -469,12 +473,12 @@ void Distribution::setSurvivors()
   for (unsigned d = 1; d < dlast; d++)
   {
     const DistInfo& dist = distributions[d];
-    for (unsigned w = 1; w < rankSize; w++)
+    for (unsigned w = 0; w < rankSize; w++)
     {
       if (dist.west.counts[w] == 0)
         continue;
 
-      for (unsigned e = 1; e < rankSize; e++)
+      for (unsigned e = 0; e < rankSize; e++)
       {
         if (dist.east.counts[e] == 0)
            continue;
@@ -491,13 +495,32 @@ const list<unsigned>& Distribution::survivors(
   const unsigned eastRank) const
 {
   // This method uses full (externally visible) ranks.
+cout << "west " << westRank << " east " << eastRank << " ref " <<
+  full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
 
-  return Distribution::survivorsReduced(
-    full2reduced[westRank],
-    full2reduced[eastRank]);
+  if (westRank == 0)
+    return Distribution::survivorsWestVoid();
+  else if (eastRank == 0)
+    return Distribution::survivorsEastVoid();
+  else
+    return Distribution::survivorsReduced(
+      full2reduced[westRank],
+      full2reduced[eastRank]);
+}
+
+
+const list<unsigned>& Distribution::survivorsWestVoid() const
+{
+  return distSurvivorsWestVoid;
+}
+
+
+const list<unsigned>& Distribution::survivorsEastVoid() const
+{
+  return distSurvivorsEastVoid;
 }
 
 
@@ -505,7 +528,7 @@ const list<unsigned>& Distribution::survivorsReduced(
   const unsigned westRank,
   const unsigned eastRank) const
 {
-  assert(westRank != 0 || eastRank != 0);
+  // Voids are not possible here.
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
 

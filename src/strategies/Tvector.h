@@ -28,8 +28,15 @@ struct TrickEntry
     return(tricks < te2.tricks);
   }
 
+  bool operator != (const TrickEntry& te2) const
+  {
+    assert(dist == te2.dist);
+    return(tricks != te2.tricks);
+  }
+
   bool operator > (const TrickEntry& te2) const
   {
+    assert(dist == te2.dist);
     return(tricks > te2.tricks);
   }
 };
@@ -64,6 +71,7 @@ class Tvector
       const vector<unsigned>& distributions,
       const vector<unsigned>& tricks);
 
+    bool operator == (const Tvector& tv2) const;
     bool operator >= (const Tvector& tv2) const;
     bool operator > (const Tvector& tv2) const;
 
@@ -74,7 +82,11 @@ class Tvector
     void adapt(
       const list<unsigned>& numbersNew,
       const unsigned trickNS,
+      const bool lhoVoidFlag,
+      const bool rhoVoidFlag,
       const bool rotateFlag);
+
+    unsigned size() const;
 
     unsigned weight() const;
 

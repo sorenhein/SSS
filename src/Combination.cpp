@@ -56,6 +56,8 @@ cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
   plays.setCombPtrs(combinations);
 cout << "B " << centry.canonicalHolding3 << endl;
+cout << "Plays\n" << plays.str() << "\n";
+cout << "Distribution\n" << distPtr->str() << "\n";
 
   plays.strategize(distPtr, strats);
 cout << "C " << centry.canonicalHolding3 << endl;

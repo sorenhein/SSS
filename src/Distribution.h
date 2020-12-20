@@ -138,6 +138,8 @@ class Distribution
     Distribution const * distCanonical;
 
     vector<vector<list<unsigned>>> distSurvivors;
+    list<unsigned> distSurvivorsWestVoid;
+    list<unsigned> distSurvivorsEastVoid;
 
 
     void setBinomial();
@@ -153,6 +155,9 @@ class Distribution
     const list<unsigned>& survivorsReduced(
       const unsigned westRank,
       const unsigned eastRank) const;
+
+    const list<unsigned>& survivorsWestVoid() const;
+    const list<unsigned>& survivorsEastVoid() const;
 
 
   public:

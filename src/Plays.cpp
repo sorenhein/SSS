@@ -249,14 +249,23 @@ void Plays::strategize(
     unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
 cout << "LHO " << lho << " RHO " << rhoNode.rho << endl;
     const auto& survivors = distPtr->survivors(lho, rhoNode.rho);
+for (auto v: survivors)
+  cout << "survivor " << v << endl;
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
     tvs = rhoNode.combPtr->strategies();
-    tvs.adapt(survivors, rhoNode.trickNS, rhoNode.rotateNew);
+cout << tvs.str("Tvectors");
+    tvs.adapt(survivors, 
+      rhoNode.trickNS, 
+      lho == 0,
+      rhoNode.rho == 0,
+      rhoNode.rotateNew);
+cout << tvs.str("Tvectors after adapt");
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
+cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
   }
 
   for (auto& pardNode: pardNodes)

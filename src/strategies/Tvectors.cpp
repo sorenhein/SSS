@@ -118,13 +118,40 @@ void Tvectors::operator *=(const Tvectors& tvs2)
 }
 
 
+void Tvectors::collapseOnVoid()
+{
+  assert(results.size() > 0);
+  const auto& tvfront = results.front();
+  assert(tvfront.size() == 1);
+
+  if (results.size() == 1)
+    return;
+
+  auto iter = next(results.begin());
+  while (iter != results.end())
+  {
+    // They must all be the same.
+    assert(tvfront == * iter);
+    iter++;
+  }
+
+  // Only keep the first, as they're all the same.
+  results.erase(next(results.begin()), results.end());
+}
+
+
 void Tvectors::adapt(
   const list<unsigned>& numbersNew,
   const unsigned trickNS,
+  const bool lhoVoidFlag,
+  const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(numbersNew, trickNS, rotateFlag);
+    tv.adapt(numbersNew, trickNS, lhoVoidFlag, rhoVoidFlag, rotateFlag);
+
+  if (lhoVoidFlag || rhoVoidFlag)
+    Tvectors::collapseOnVoid();
 }
 
 

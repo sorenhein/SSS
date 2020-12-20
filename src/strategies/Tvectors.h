@@ -17,6 +17,8 @@ class Tvectors
 
     list<Tvector> results;
 
+    void collapseOnVoid();
+
     string strHeader(const string& title) const;
 
     string strWeights() const;
@@ -43,6 +45,8 @@ class Tvectors
     void adapt(
       const list<unsigned>& numbersNew,
       const unsigned trickNS,
+      const bool lhoVoidFlag,
+      const bool rhoVoidFlag,
       const bool rotateFlag);
 
     string str(const string& title = "") const;

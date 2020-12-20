@@ -1,11 +1,17 @@
-driver.obj: Combinations.h Combination.h struct.h const.h Distributions.h
+driver.obj: Combinations.h Combination.h strategies/Tvectors.h
+driver.obj: strategies/Tvector.h struct.h const.h Distributions.h
 driver.obj: Distribution.h inputs/Control.h inputs/Entity.h inputs/Convert.h
 driver.obj: stats/Timers.h stats/Timer.h Ranks.h Plays.h
-Ranks.obj: Plays.h const.h Ranks.h struct.h
-Plays.obj: Plays.h const.h
-Combination.obj: Combination.h struct.h const.h Ranks.h Plays.h
-Combinations.obj: Combinations.h Combination.h struct.h const.h Plays.h
-Combinations.obj: Ranks.h
+Ranks.obj: Plays.h strategies/Tvectors.h strategies/Tvector.h const.h Ranks.h
+Ranks.obj: struct.h
+Plays.obj: Combinations.h Combination.h strategies/Tvectors.h
+Plays.obj: strategies/Tvector.h struct.h const.h Distribution.h Plays.h
+Combination.obj: Combinations.h Combination.h strategies/Tvectors.h
+Combination.obj: strategies/Tvector.h struct.h const.h Distributions.h
+Combination.obj: Distribution.h Ranks.h Plays.h
+Combinations.obj: Combinations.h Combination.h strategies/Tvectors.h
+Combinations.obj: strategies/Tvector.h struct.h const.h Distributions.h
+Combinations.obj: Distribution.h Plays.h Ranks.h
 Distribution.obj: Distribution.h struct.h const.h
 Distributions.obj: Distributions.h Distribution.h struct.h const.h
 inputs/Convert.obj: inputs/Convert.h const.h
