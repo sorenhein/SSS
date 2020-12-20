@@ -245,6 +245,7 @@ void Tvector::adapt(
     iter1->dist = * iter2;
     // TODO Could make two loops, one for trickNS 1 vs 0, for speed.
     iter1->tricks += trickNS; 
+    weightInt += trickNS;
     iter1++;
     iter2++;
   }

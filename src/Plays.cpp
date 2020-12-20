@@ -241,9 +241,17 @@ void Plays::strategize(
   // to these outcomes by spreading their probability mass well.
   // This will be done subsequently.
 
+cout << "Node counts:" << endl;
+cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
+cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
+cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
+cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+
   Tvectors tvs;
-  for (auto& rhoNode: rhoNodes)
+  for (unsigned rno = 0; rno < rhoNext; rno++)
   {
+    const auto& rhoNode = rhoNodes[rno];
+cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
     unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
@@ -268,22 +276,35 @@ cout << tvs.str("Tvectors after adapt");
 cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
   }
 
-  for (auto& pardNode: pardNodes)
+cout << "Done with RHO nodes" << endl << endl;
+
+  for (unsigned pno = 0; pno < pardNext; pno++)
   {
+    const auto& pardNode = pardNodes[pno];
+cout << "pard node for " << pardNode.pard << endl;
+
     // Add the partner strategy to the LHO node.
     pardNode.lhoPtr->strategies += pardNode.strategies;
   }
 
-  for (auto& lhoNode: lhoNodes)
+cout << "Done with pard nodes" << endl << endl;
+  for (unsigned lno = 0; lno < lhoNext; lno++)
   {
+    const auto& lhoNode = lhoNodes[lno];
     // Add the LHO strategy to the lead node by cross product.
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
   }
 
+cout << "Done with LHO nodes" << endl << endl;
   // Add up the lead strategies.
   strategies.reset();
-  for (auto& leadNode: leadNodes)
+  for (unsigned ldno = 0; ldno < leadNext; ldno++)
+  {
+    const auto& leadNode = leadNodes[ldno];
     strategies += leadNode.strategies;
+  }
+
+  cout << strategies.str("Done with all nodes");
 }
 
 
