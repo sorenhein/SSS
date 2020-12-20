@@ -253,7 +253,7 @@ cout << "LHO " << lho << " RHO " << rhoNode.rho << endl;
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
     tvs = rhoNode.combPtr->strategies();
-    tvs.adapt(survivors, rhoNode.rotateNew);
+    tvs.adapt(survivors, rhoNode.trickNS, rhoNode.rotateNew);
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;

@@ -120,10 +120,11 @@ void Tvectors::operator *=(const Tvectors& tvs2)
 
 void Tvectors::adapt(
   const list<unsigned>& numbersNew,
+  const unsigned trickNS,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(numbersNew, rotateFlag);
+    tv.adapt(numbersNew, trickNS, rotateFlag);
 }
 
 

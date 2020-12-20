@@ -176,6 +176,7 @@ void Tvector::operator *=(const Tvector& tv2)
 
 void Tvector::adapt(
   const list<unsigned>& numbersNew,
+  const unsigned trickNS,
   const bool rotateFlag)
 {
   assert(numbersNew.size() == results.size());
@@ -189,6 +190,8 @@ void Tvector::adapt(
   while (iter1 != results.end())
   {
     iter1->dist = * iter2;
+    // TODO Could make two loops, one for trickNS 1 vs 0, for speed.
+    iter1->tricks += trickNS; 
     iter1++;
     iter2++;
   }

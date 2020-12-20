@@ -42,6 +42,7 @@ class Tvectors
 
     void adapt(
       const list<unsigned>& numbersNew,
+      const unsigned trickNS,
       const bool rotateFlag);
 
     string str(const string& title = "") const;

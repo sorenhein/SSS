@@ -73,6 +73,7 @@ class Tvector
 
     void adapt(
       const list<unsigned>& numbersNew,
+      const unsigned trickNS,
       const bool rotateFlag);
 
     unsigned weight() const;
