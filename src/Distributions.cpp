@@ -179,7 +179,7 @@ void Distributions::runUniquesMT(
 }
 
 
-Distribution const * Distributions::ptr(
+Distribution const * Distributions::ptrCanonical(
   const unsigned cards,
   const unsigned holding2) const
 {
@@ -187,11 +187,25 @@ Distribution const * Distributions::ptr(
 
   Distribution const * p = dist.getPtr();
   if (p == nullptr)
+{
+cout << "distributions ptr(" << cards << ", " << holding2 << ") is canonical\n";
     // If there is a null pointer, it was a canonical distribution.
     return &dist;
+}
   else
+{
+cout << "distributions ptr(" << cards << ", " << holding2 << ") isn't canonical\n";
    // Otherwise it wasn't.
    return p;
+}
+}
+
+
+Distribution const * Distributions::ptrNoncanonical(
+  const unsigned cards,
+  const unsigned holding2) const
+{
+  return &distributions[cards][holding2];
 }
 
 

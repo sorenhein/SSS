@@ -514,13 +514,21 @@ cout << "west " << westRank << " east " << eastRank << " ref " <<
 
 const list<unsigned>& Distribution::survivorsWestVoid() const
 {
-  return distSurvivorsWestVoid;
+  if (distCanonical == nullptr)
+    // This distribution is canonical.
+    return distSurvivorsWestVoid;
+  else
+    return distCanonical->survivorsWestVoid();
 }
 
 
 const list<unsigned>& Distribution::survivorsEastVoid() const
 {
-  return distSurvivorsEastVoid;
+  if (distCanonical == nullptr)
+    // This distribution is canonical.
+    return distSurvivorsEastVoid;
+  else
+    return distCanonical->survivorsEastVoid();
 }
 
 
@@ -544,6 +552,10 @@ cout << "  reduced " << westRank << " " << eastRank <<
 
 string Distribution::str() const
 {
+  if (distCanonical != nullptr)
+    return "Distribution is not canonical.\n\n" +
+      distCanonical->str();
+
   if (distributions.empty())
     return "No distributions\n";
 

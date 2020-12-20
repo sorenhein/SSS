@@ -36,8 +36,11 @@ const Tvectors& Combination::strategize(
   Ranks& ranks,
   Plays& plays)
 {
+cout << "cholding2 is " << centry.canonicalHolding2 <<endl;
+
   // Look up a pointer to the EW distribution of this combination.
-  distPtr = distributions.ptr(ranks.size(), centry.canonicalHolding2);
+  distPtr = distributions.ptrNoncanonical(
+    ranks.size(), centry.canonicalHolding2);
 
   // Make the plays.
   unsigned term;

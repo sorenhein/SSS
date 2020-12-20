@@ -1,6 +1,16 @@
-In Plays, or maybe in Combination
+Bug in Plays, logging:
+- The plays are in fact not in order.
+- Instead they are in order for LHO void, and then in order for rest
+- So we need something else in Plays to detect previously seen starts,
+  both for lead, LHO, pard and RHO(?)
 
-Becomes more complicated when we have to keep track of:
+Optimization in Ranks:
+- With AQ / - missing KJ, on Ace never drop King (partner will show
+  out and the lead was the top card)
+- With KJ / - missing AQ, on K never play Q (partner HAS shown out,
+  so always win trick)
+
+Plays become more complicated when we have to keep track of:
 
 - Winning ranks for NS
 - Winning plays/strategies such as "cash ace"
@@ -12,13 +22,4 @@ Becomes more complicated when we have to keep track of:
 
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
-
-* CombEntry -> Combination?
-* In Combination, generate all tricks
-  - Some dist's are impossible because E or W known to be void
-  - And some because of HCP or other limitations
-  - Set up the tree
-  - Have a dist vector that corresponds to next-level dists
-  - Know which ones are possible
-  - Know which cards correspond to next-level cards (and ranks)
 

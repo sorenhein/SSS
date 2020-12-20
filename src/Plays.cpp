@@ -291,6 +291,7 @@ cout << "Done with pard nodes" << endl << endl;
   for (unsigned lno = 0; lno < lhoNext; lno++)
   {
     const auto& lhoNode = lhoNodes[lno];
+cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
   }
@@ -301,6 +302,7 @@ cout << "Done with LHO nodes" << endl << endl;
   for (unsigned ldno = 0; ldno < leadNext; ldno++)
   {
     const auto& leadNode = leadNodes[ldno];
+cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
   }
 

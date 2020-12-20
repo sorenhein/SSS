@@ -50,7 +50,11 @@ class Distributions
       const unsigned cards,
       const unsigned numThreads);
 
-    Distribution const * ptr(
+    Distribution const * ptrCanonical(
+      const unsigned cards,
+      const unsigned holding2) const;
+
+    Distribution const * ptrNoncanonical(
       const unsigned cards,
       const unsigned holding2) const;
 
