@@ -200,24 +200,12 @@ class Ranks
       unsigned& holding3,
       bool& rotateFlag) const;
 
-    void setPlaysSideWithVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
-      const SidePosition side,
-      Plays& plays);
-
     void setPlaysLeadWithVoid(
       PositionInfo& leader,
       PositionInfo& partner,
       const SidePosition side,
       const unsigned lead,
       const bool leadCollapse,
-      Plays& plays);
-
-    void setPlaysSideWithoutVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
-      const SidePosition side,
       Plays& plays);
 
     void setPlaysLeadWithoutVoid(

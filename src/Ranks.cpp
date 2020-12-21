@@ -450,6 +450,7 @@ void Ranks::setPlaysLeadWithVoid(
   bool rotateFlag;
   bool pardCollapse, rhoCollapse;
 
+  opps.fullCount[0]--;
   for (unsigned pardPos = partner.minPos; 
       pardPos <= partner.maxPos; pardPos++)
   {
@@ -485,6 +486,7 @@ void Ranks::setPlaysLeadWithVoid(
     }
     partner.fullCount[pard]++;
   }
+  opps.fullCount[0]++;
 }
 
 
@@ -542,63 +544,6 @@ void Ranks::setPlaysLeadWithoutVoid(
 }
 
 
-void Ranks::setPlaysSideWithVoid(
-  PositionInfo& leader,
-  PositionInfo& partner,
-  const SidePosition side,
-  Plays& plays)
-{
-  // For optimization we treat the case separately where LHO is void.
-  bool leadCollapse;
-
-  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
-  {
-    const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks::leadOK(leader, partner, lead))
-      continue;
-
-    leader.fullCount[lead]--;
-    leadCollapse = (leader.fullCount[lead] == 0);
-    opps.fullCount[0]--;
-
-    Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,
-      leadCollapse, plays);
-
-    opps.fullCount[0]++;
-    leader.fullCount[lead]++;
-  }
-}
-
-
-void Ranks::setPlaysSideWithoutVoid(
-  PositionInfo& leader,
-  PositionInfo& partner,
-  const SidePosition side,
-  Plays& plays)
-{
-  // We keep track of the rank numbers that disappear after the trick.
-  // This is needed in order to tell later on how ranks in later tricks
-  // map to current ranks.  We only need this when LHO is not void,
-  // as we won't be looking at rank translation if that's the case.
-  bool leadCollapse;
-
-  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
-  {
-    const unsigned lead = leader.ranks[leadPos].rank;
-    if (! Ranks::leadOK(leader, partner, lead))
-      continue;
-
-    leader.fullCount[lead]--;
-    leadCollapse = (leader.fullCount[lead] == 0);
-
-    Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
-      leadCollapse, plays);
-
-    leader.fullCount[lead]++;
-  }
-}
-
-
 void Ranks::setPlaysSide(
   PositionInfo& leader,
   PositionInfo& partner,
@@ -621,8 +566,26 @@ void Ranks::setPlaysSide(
       leader.minRank >= partner.maxRank)
     return;
 
-  Ranks::setPlaysSideWithVoid(leader, partner, side, plays);
-  Ranks::setPlaysSideWithoutVoid(leader, partner, side, plays);
+  bool leadCollapse;
+
+  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
+  {
+    const unsigned lead = leader.ranks[leadPos].rank;
+    if (! Ranks::leadOK(leader, partner, lead))
+      continue;
+
+    leader.fullCount[lead]--;
+    leadCollapse = (leader.fullCount[lead] == 0);
+
+    // For optimization we treat the case separately where LHO is void.
+    Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,
+      leadCollapse, plays);
+
+    Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
+      leadCollapse, plays);
+
+    leader.fullCount[lead]++;
+  }
 }
 
 
