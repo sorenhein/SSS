@@ -120,6 +120,7 @@ void Combinations::runUniques(
 
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
+
       comb.strategize(centry, * this, distributions, ranks, plays);
 
       playCounts[cards].unique++;

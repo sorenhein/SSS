@@ -36,7 +36,7 @@ const Tvectors& Combination::strategize(
   Ranks& ranks,
   Plays& plays)
 {
-cout << "cholding2 is " << centry.canonicalHolding2 <<endl;
+// cout << "cholding2 is " << centry.canonicalHolding2 <<endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
@@ -54,6 +54,8 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<endl;
     strats.setTrivial(term, distPtr->size());
     return strats;
   }
+
+return strats;
 
 cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.

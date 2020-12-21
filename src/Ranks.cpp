@@ -438,6 +438,56 @@ void Ranks::updateHoldings(
 }
 
 
+void Ranks::setPlaysLeadWithVoid(
+  PositionInfo& leader,
+  PositionInfo& partner,
+  const SidePosition side,
+  const unsigned lead,
+  const bool leadCollapse,
+  Plays& plays)
+{
+  unsigned holding3;
+  bool rotateFlag;
+  bool pardCollapse, rhoCollapse;
+
+  for (unsigned pardPos = partner.minPos; 
+      pardPos <= partner.maxPos; pardPos++)
+  {
+    const unsigned pard = partner.ranks[pardPos].rank;
+    if (! Ranks::pardOK(partner, lead, pard))
+      continue;
+
+    partner.fullCount[pard]--;
+    pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
+    const unsigned toBeat = max(lead, pard);
+
+    for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
+    {
+      const unsigned rho = opps.ranks[rhoPos].rank;
+      // If LHO is known to be void, RHO can duck completely.
+      if (rho < toBeat && rho != opps.minRank)
+        continue;
+
+      opps.fullCount[rho]--;
+      rhoCollapse = (opps.fullCount[rho] == 0);
+          
+      // Register the new play.
+      Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+      plays.log(side, lead, 0, pard, rho, 
+        leadCollapse, false, pardCollapse, rhoCollapse,
+        holding3, rotateFlag);
+
+      opps.fullCount[rho]++;
+
+      // If RHO wins, he should do so as cheaply as possible.
+      if (rho > toBeat)
+        break;
+    }
+    partner.fullCount[pard]++;
+  }
+}
+
+
 void Ranks::setPlaysSideWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
@@ -445,9 +495,7 @@ void Ranks::setPlaysSideWithVoid(
   Plays& plays)
 {
   // For optimization we treat the case separately where LHO is void.
-  unsigned holding3;
-  bool rotateFlag;
-  bool leadCollapse, pardCollapse, rhoCollapse;
+  bool leadCollapse;
 
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -459,43 +507,11 @@ void Ranks::setPlaysSideWithVoid(
     leadCollapse = (leader.fullCount[lead] == 0);
     opps.fullCount[0]--;
 
-    for (unsigned pardPos = partner.minPos; 
-        pardPos <= partner.maxPos; pardPos++)
-    {
-      const unsigned pard = partner.ranks[pardPos].rank;
-      if (! Ranks::pardOK(partner, lead, pard))
-        continue;
+    Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,
+      leadCollapse, plays);
 
-      partner.fullCount[pard]--;
-      pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
-      const unsigned toBeat = max(lead, pard);
-
-      for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
-      {
-        const unsigned rho = opps.ranks[rhoPos].rank;
-        // If LHO is known to be void, RHO can duck completely.
-        if (rho < toBeat && rho != opps.minRank)
-          continue;
-
-        opps.fullCount[rho]--;
-        rhoCollapse = (opps.fullCount[rho] == 0);
-          
-        // Register the new play.
-        Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-        plays.log(side, lead, 0, pard, rho, 
-          leadCollapse, false, pardCollapse, rhoCollapse,
-          holding3, rotateFlag);
-
-        opps.fullCount[rho]++;
-
-        // If RHO wins, he should do so as cheaply as possible.
-        if (rho > toBeat)
-          break;
-      }
-      partner.fullCount[pard]++;
-    }
-    leader.fullCount[lead]++;
     opps.fullCount[0]++;
+    leader.fullCount[lead]++;
   }
 }
 
