@@ -220,6 +220,14 @@ class Ranks
       const SidePosition side,
       Plays& plays);
 
+    void setPlaysLeadWithoutVoid(
+      PositionInfo& leader,
+      PositionInfo& partner,
+      const SidePosition side,
+      const unsigned lead,
+      const bool leadCollapse,
+      Plays& plays);
+
     void setPlaysSide(
       PositionInfo& leader,
       PositionInfo& partner,

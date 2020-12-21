@@ -488,6 +488,60 @@ void Ranks::setPlaysLeadWithVoid(
 }
 
 
+void Ranks::setPlaysLeadWithoutVoid(
+  PositionInfo& leader,
+  PositionInfo& partner,
+  const SidePosition side,
+  const unsigned lead,
+  const bool leadCollapse,
+  Plays& plays)
+{
+  unsigned holding3;
+  bool rotateFlag;
+  bool lhoCollapse, pardCollapse, rhoCollapse;
+
+  for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
+  {
+    const unsigned lho = opps.ranks[lhoPos].rank;
+    opps.fullCount[lho]--;
+    lhoCollapse = (opps.fullCount[lho] == 0);
+
+    for (unsigned pardPos = partner.minPos; 
+        pardPos <= partner.maxPos; pardPos++)
+    {
+      const unsigned pard = partner.ranks[pardPos].rank;
+      if (! Ranks::pardOK(partner, max(lead, lho), pard))
+        continue;
+
+      partner.fullCount[pard]--;
+      pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
+
+      for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
+      {
+        const unsigned rho = opps.ranks[rhoPos].rank;
+
+        // Maybe the same single card has been played already.
+        if (opps.fullCount[rho] == 0)
+          continue;
+          
+        opps.fullCount[rho]--;
+        rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
+
+        // Register the new play.
+        Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+        plays.log(side, lead, lho, pard, rho,
+          leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
+          holding3, rotateFlag);
+      
+        opps.fullCount[rho]++;
+      }
+      partner.fullCount[pard]++;
+    }
+    opps.fullCount[lho]++;
+  }
+}
+
+
 void Ranks::setPlaysSideWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
@@ -526,9 +580,7 @@ void Ranks::setPlaysSideWithoutVoid(
   // This is needed in order to tell later on how ranks in later tricks
   // map to current ranks.  We only need this when LHO is not void,
   // as we won't be looking at rank translation if that's the case.
-  unsigned holding3;
-  bool rotateFlag;
-  bool leadCollapse, lhoCollapse, pardCollapse, rhoCollapse;
+  bool leadCollapse;
 
   for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
   {
@@ -539,45 +591,9 @@ void Ranks::setPlaysSideWithoutVoid(
     leader.fullCount[lead]--;
     leadCollapse = (leader.fullCount[lead] == 0);
 
-    for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
-    {
-      const unsigned lho = opps.ranks[lhoPos].rank;
-      opps.fullCount[lho]--;
-      lhoCollapse = (opps.fullCount[lho] == 0);
+    Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
+      leadCollapse, plays);
 
-      for (unsigned pardPos = partner.minPos; 
-          pardPos <= partner.maxPos; pardPos++)
-      {
-        const unsigned pard = partner.ranks[pardPos].rank;
-        if (! Ranks::pardOK(partner, max(lead, lho), pard))
-          continue;
-
-        partner.fullCount[pard]--;
-        pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
-
-        for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
-        {
-          const unsigned rho = opps.ranks[rhoPos].rank;
-
-          // Maybe the same single card has been played already.
-          if (opps.fullCount[rho] == 0)
-            continue;
-          
-          opps.fullCount[rho]--;
-          rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
-
-          // Register the new play.
-          Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-          plays.log(side, lead, lho, pard, rho,
-            leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
-            holding3, rotateFlag);
-        
-          opps.fullCount[rho]++;
-        }
-        partner.fullCount[pard]++;
-      }
-      opps.fullCount[lho]++;
-    }
     leader.fullCount[lead]++;
   }
 }
