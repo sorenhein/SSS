@@ -105,6 +105,8 @@ void Tvectors::operator *=(const Tvectors& tvs2)
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
   list<Tvector> resultsOwn = results;
+  results.clear();
+
   Tvector tmp;
   for (auto& tv1: resultsOwn)
   {

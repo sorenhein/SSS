@@ -274,6 +274,7 @@ cout << tvs.str("Tvectors after adapt");
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
 cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
+cout << "Address" << rhoNode.pardPtr << endl;
   }
 
 cout << "Done with RHO nodes" << endl << endl;
@@ -282,9 +283,12 @@ cout << "Done with RHO nodes" << endl << endl;
   {
     const auto& pardNode = pardNodes[pno];
 cout << "pard node for " << pardNode.pard << endl;
+cout << "Address" << &pardNode << endl;
 
     // Add the partner strategy to the LHO node.
+cout << pardNode.strategies.str("Adding");
     pardNode.lhoPtr->strategies += pardNode.strategies;
+cout << pardNode.lhoPtr->strategies.str("LHO node");
   }
 
 cout << "Done with pard nodes" << endl << endl;
@@ -293,7 +297,9 @@ cout << "Done with pard nodes" << endl << endl;
     const auto& lhoNode = lhoNodes[lno];
 cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
+cout << lhoNode.strategies.str("Adding");
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
+cout << lhoNode.leadPtr->strategies.str("Lead node");
   }
 
 cout << "Done with LHO nodes" << endl << endl;
@@ -304,6 +310,7 @@ cout << "Done with LHO nodes" << endl << endl;
     const auto& leadNode = leadNodes[ldno];
 cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
+cout << strategies.str("Final");
   }
 
   cout << strategies.str("Done with all nodes");

@@ -55,11 +55,15 @@ const Tvectors& Combination::strategize(
     return strats;
   }
 
-return strats;
+// return strats;
 
 cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
   plays.setCombPtrs(combinations);
+if (centry.canonicalHolding3 == 68)
+{
+  cout << "HERE\n";
+}
 cout << "B " << centry.canonicalHolding3 << endl;
 cout << "Plays\n" << plays.str() << "\n";
 cout << "Distribution\n" << distPtr->str() << "\n";
