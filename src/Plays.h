@@ -88,6 +88,11 @@ class Plays
     unsigned pardNext;
     unsigned rhoNext;
 
+    list<LeadNode>::iterator leadNextIter;
+    list<LhoNode>::iterator lhoNextIter;
+    list<PardNode>::iterator pardNextIter;
+    list<RhoNode>::iterator rhoNextIter;
+
     // The plays come through in order, so we don't have to look up
     // the new play completely.  We just have to check how much of the
     // new play is the same as the old one.

@@ -63,7 +63,7 @@ if (centry.canonicalHolding3 == 208)
 
 cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
-if (centry.canonicalHolding3 == 208)
+if (centry.canonicalHolding3 == 548)
 {
   cout << "HERE\n";
 }

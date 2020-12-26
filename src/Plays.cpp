@@ -53,6 +53,11 @@ void Plays::reset()
   pardNext = 0;
   rhoNext = 0;
 
+  leadNextIter = leadNodes.begin();
+  lhoNextIter = lhoNodes.begin();
+  pardNextIter = pardNodes.begin();
+  rhoNextIter = rhoNodes.begin();
+
   leadPrevPtr = nullptr;
   lhoPrevPtr = nullptr;
   pardPrevPtr = nullptr;
@@ -89,14 +94,20 @@ Plays::LeadNode * Plays::logLead(
     return leadPrevPtr;
   }
 
-  if (leadNext >= leadNodes.size())
-    leadNodes.resize(leadNodes.size() + chunk.lead);
+  // if (leadNext >= leadNodes.size())
+    // leadNodes.resize(leadNodes.size() + chunk.lead);
+  if (leadNextIter == leadNodes.end())
+    leadNextIter = leadNodes.insert(leadNextIter, chunk.lead, LeadNode());
 
   newFlag = true;
   sidePrev = side;
   leadPrev = lead;
 
-  LeadNode& node = leadNodes[leadNext++];
+  // LeadNode& node = leadNodes[leadNext++];
+  LeadNode& node = * leadNextIter;
+  leadNext++;
+  leadNextIter++;
+
   node.side = side;
   node.lead = lead;
   node.strategies.reset();
@@ -114,13 +125,19 @@ Plays::LhoNode * Plays::logLho(
   if (newFlag == false && lho == lhoPrev)
     return lhoPrevPtr;
   
-  if (lhoNext >= lhoNodes.size())
-    lhoNodes.resize(lhoNodes.size() + chunk.lho);
+  // if (lhoNext >= lhoNodes.size())
+    // lhoNodes.resize(lhoNodes.size() + chunk.lho);
+  if (lhoNextIter == lhoNodes.end())
+    lhoNextIter = lhoNodes.insert(lhoNextIter, chunk.lho, LhoNode());
 
   newFlag = true;
   lhoPrev = lho;
 
-  LhoNode& node = lhoNodes[lhoNext++];
+  // LhoNode& node = lhoNodes[lhoNext++];
+  LhoNode& node = * lhoNextIter;
+  lhoNext++;
+  lhoNextIter++;
+
   node.lho = lho;
   node.leadPtr = leadPtr;
   node.strategies.reset();
@@ -138,13 +155,19 @@ Plays::PardNode * Plays::logPard(
   if (newFlag == false && pard == pardPrev)
     return pardPrevPtr;
 
-  if (pardNext >= pardNodes.size())
-    pardNodes.resize(pardNodes.size() + chunk.pard);
+  // if (pardNext >= pardNodes.size())
+    // pardNodes.resize(pardNodes.size() + chunk.pard);
+  if (pardNextIter == pardNodes.end())
+    pardNextIter = pardNodes.insert(pardNextIter, chunk.pard, PardNode());
 
   newFlag = true;
   pardPrev = pard;
 
-  PardNode& node = pardNodes[pardNext++];
+  // PardNode& node = pardNodes[pardNext++];
+  PardNode& node = * pardNextIter;
+  pardNext++;
+  pardNextIter++;
+
   node.pard = pard;
   node.lhoPtr = lhoPtr;
   node.strategies.reset();
@@ -168,10 +191,16 @@ void Plays::logRho(
   const bool voidPard,
   PardNode * pardPtr)
 {
-  if (rhoNext >= rhoNodes.size())
-    rhoNodes.resize(rhoNodes.size() + chunk.rho);
+  // if (rhoNext >= rhoNodes.size())
+    // rhoNodes.resize(rhoNodes.size() + chunk.rho);
+  if (rhoNextIter == rhoNodes.end())
+    rhoNextIter = rhoNodes.insert(rhoNextIter, chunk.rho, RhoNode());
 
-  RhoNode& node = rhoNodes[rhoNext++];
+  // RhoNode& node = rhoNodes[rhoNext++];
+  RhoNode& node = * rhoNextIter;
+  rhoNext++;
+  rhoNextIter++;
+
   node.rho = rho;
   node.leadCollapse = leadCollapse;
   node.lhoCollapse = lhoCollapse;
@@ -224,13 +253,13 @@ void Plays::log(
 
 void Plays::setCombPtrs(const Combinations& combinations)
 {
-if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
-  cout << "HERE4" << endl;
+// if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
+  // cout << "HERE4" << endl;
   for (auto& rhoNode: rhoNodes)
     rhoNode.combPtr = 
       combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
-if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
-  cout << "HERE5" << endl;
+// if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
+  // cout << "HERE5" << endl;
 }
 
 
@@ -252,9 +281,12 @@ cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   Tvectors tvs;
-  for (unsigned rno = 0; rno < rhoNext; rno++)
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
+  // for (unsigned rno = 0; rno < rhoNext; rno++)
   {
-    const auto& rhoNode = rhoNodes[rno];
+    // const auto& rhoNode = rhoNodes[rno];
+    const auto& rhoNode = * rhoIter;
+
 cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
@@ -293,16 +325,17 @@ cout << tvs.str("Tvectors after adapt");
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
 cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
-cout << "Address" << rhoNode.pardPtr << endl;
   }
 
 cout << "Done with RHO nodes" << endl << endl;
 
-  for (unsigned pno = 0; pno < pardNext; pno++)
+  // for (unsigned pno = 0; pno < pardNext; pno++)
+  for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; pardIter++)
   {
-    const auto& pardNode = pardNodes[pno];
+    // const auto& pardNode = pardNodes[pno];
+    const auto& pardNode = * pardIter;
+
 cout << "pard node for " << pardNode.pard << endl;
-cout << "Address" << &pardNode << endl;
 
     // Add the partner strategy to the LHO node.
 cout << pardNode.strategies.str("Adding");
@@ -311,9 +344,12 @@ cout << pardNode.lhoPtr->strategies.str("LHO node");
   }
 
 cout << "Done with pard nodes" << endl << endl;
-  for (unsigned lno = 0; lno < lhoNext; lno++)
+  // for (unsigned lno = 0; lno < lhoNext; lno++)
+  for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; lhoIter++)
   {
-    const auto& lhoNode = lhoNodes[lno];
+    // const auto& lhoNode = lhoNodes[lno];
+    const auto& lhoNode = * lhoIter;
+
 cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
 cout << lhoNode.strategies.str("Adding");
@@ -324,9 +360,12 @@ cout << lhoNode.leadPtr->strategies.str("Lead node");
 cout << "Done with LHO nodes" << endl << endl;
   // Add up the lead strategies.
   strategies.reset();
-  for (unsigned ldno = 0; ldno < leadNext; ldno++)
+  // for (unsigned ldno = 0; ldno < leadNext; ldno++)
+  for (auto ldIter = leadNodes.begin(); ldIter != leadNextIter; ldIter++)
   {
-    const auto& leadNode = leadNodes[ldno];
+    // const auto& leadNode = leadNodes[ldno];
+    const auto& leadNode = * ldIter;
+
 cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
 cout << strategies.str("Final");
@@ -359,9 +398,11 @@ string Plays::str() const
   stringstream ss;
   ss << Plays::strHeader();
 
-  for (unsigned rno = 0; rno < rhoNext; rno++)
+  // for (unsigned rno = 0; rno < rhoNext; rno++)
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
   {
-    const auto& rhoNode = rhoNodes[rno];
+    // const auto& rhoNode = rhoNodes[rno];
+    const auto& rhoNode = * rhoIter;
     PardNode const * pardPtr = rhoNode.pardPtr;
     LhoNode const * lhoPtr = pardPtr->lhoPtr;
     LeadNode const * leadPtr = lhoPtr->leadPtr;
