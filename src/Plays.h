@@ -78,10 +78,10 @@ class Plays
 
     unsigned cards;
 
-    vector<LeadNode> leadNodes;
-    vector<LhoNode> lhoNodes;
-    vector<PardNode> pardNodes;
-    vector<RhoNode> rhoNodes;
+    list<LeadNode> leadNodes;
+    list<LhoNode> lhoNodes;
+    list<PardNode> pardNodes;
+    list<RhoNode> rhoNodes;
 
     unsigned leadNext;
     unsigned lhoNext;

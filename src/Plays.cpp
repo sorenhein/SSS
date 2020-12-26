@@ -224,9 +224,13 @@ void Plays::log(
 
 void Plays::setCombPtrs(const Combinations& combinations)
 {
+if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
+  cout << "HERE4" << endl;
   for (auto& rhoNode: rhoNodes)
     rhoNode.combPtr = 
       combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
+if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
+  cout << "HERE5" << endl;
 }
 
 
@@ -254,20 +258,35 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
-    unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
-cout << "LHO " << lho << " RHO " << rhoNode.rho << endl;
-    const auto& survivors = distPtr->survivors(lho, rhoNode.rho);
+    const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
+    const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
+cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
+
+    unsigned first, second;
+    if (side == SIDE_NORTH)
+    {
+      first = rhoNode.rho;
+      second = lho;
+    }
+    else
+    {
+      first = lho;
+      second = rhoNode.rho;
+    }
+
+    const auto& survivors = distPtr->survivors(first, second);
+
 for (auto v: survivors)
   cout << "survivor " << v << endl;
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
     tvs = rhoNode.combPtr->strategies();
-cout << tvs.str("Tvectors");
+cout << tvs.str("Tvectors") << endl;
     tvs.adapt(survivors, 
       rhoNode.trickNS, 
-      lho == 0,
-      rhoNode.rho == 0,
+      first == 0,
+      second == 0,
       rhoNode.rotateNew);
 cout << tvs.str("Tvectors after adapt");
 

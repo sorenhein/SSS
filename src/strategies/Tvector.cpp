@@ -201,13 +201,15 @@ void Tvector::adapt(
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
+  const unsigned len1 = results.size();
+
   if (lhoVoidFlag || rhoVoidFlag)
   {
     assert(numbersNew.size() == 1);
-    assert(results.size() > 1);
+    assert(len1 >= 1);
   }
   else
-    assert(numbersNew.size() == results.size());
+    assert(numbersNew.size() == len1);
 
   if (rotateFlag)
     results.reverse();
@@ -219,7 +221,9 @@ void Tvector::adapt(
   if (lhoVoidFlag)
   {
     // Only keep the first result.
-    results.erase(next(results.begin()), results.end());
+    if (len1 > 1)
+      results.erase(next(results.begin()), results.end());
+
     auto& result = results.front();
     result.dist = numbersNew.front();
     result.tricks += trickNS;
@@ -229,7 +233,9 @@ void Tvector::adapt(
   else if (rhoVoidFlag)
   {
     // Only keep the last result.
-    results.erase(results.begin(), prev(results.end()));
+    if (len1 > 1)
+      results.erase(results.begin(), prev(results.end()));
+
     auto& result = results.front();
     result.dist = numbersNew.front();
     result.tricks += trickNS;

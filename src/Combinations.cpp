@@ -109,7 +109,8 @@ void Combinations::runUniques(
     ranks.set(holding, centry);
 
     combCounts[cards].total++;
-    if (holding == centry.canonicalHolding3)
+    const unsigned canonicalHolding3 = centry.canonicalHolding3;
+    if (holding == canonicalHolding3)
     {
       combCounts[cards].unique++;
 
@@ -121,11 +122,15 @@ void Combinations::runUniques(
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
+// cout << ranks.str();
       comb.strategize(centry, * this, distributions, ranks, plays);
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
-
+    }
+    else
+    {
+      centry.canonicalIndex = centries[canonicalHolding3].canonicalIndex;
     }
   }
 }
@@ -163,7 +168,8 @@ void Combinations::runUniqueThread(
     ranks.set(holding, centry);
 
     threadCombCounts[thid].total++;
-    if (holding == centries[holding].canonicalHolding3)
+    const unsigned canonicalHolding3 = centry.canonicalHolding3;
+    if (holding == canonicalHolding3)
     {
       threadCombCounts[thid].unique++;
 
@@ -176,6 +182,10 @@ void Combinations::runUniqueThread(
 
       threadPlayCounts[thid].unique++;
       threadPlayCounts[thid].total += plays.size();
+    }
+    else
+    {
+      centry.canonicalIndex = centries[canonicalHolding3].canonicalIndex;
     }
   }
 }
