@@ -143,14 +143,14 @@ void Tvectors::collapseOnVoid()
 
 
 void Tvectors::adapt(
-  const list<unsigned>& numbersNew,
+  const list<Survivor>& survivors,
   const unsigned trickNS,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(numbersNew, trickNS, lhoVoidFlag, rhoVoidFlag, rotateFlag);
+    tv.adapt(survivors, trickNS, lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)
     Tvectors::collapseOnVoid();

@@ -5,6 +5,8 @@
 #include <list>
 #include <cassert>
 
+#include "../struct.h"
+
 using namespace std;
 
 
@@ -80,7 +82,7 @@ class Tvector
     void operator *=(const Tvector& tv2);
 
     void adapt(
-      const list<unsigned>& numbersNew,
+      const list<Survivor>& survivors,
       const unsigned trickNS,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

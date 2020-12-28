@@ -309,7 +309,7 @@ cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
     const auto& survivors = distPtr->survivors(first, second);
 
 for (auto v: survivors)
-  cout << "survivor " << v << endl;
+  cout << "survivor " << v.fullNo << ", " << v.reducedNo << endl;
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.

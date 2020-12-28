@@ -195,7 +195,7 @@ void Tvector::operator *=(const Tvector& tv2)
 
 
 void Tvector::adapt(
-  const list<unsigned>& numbersNew,
+  const list<Survivor>& survivors,
   const unsigned trickNS,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
@@ -205,11 +205,11 @@ void Tvector::adapt(
 
   if (lhoVoidFlag || rhoVoidFlag)
   {
-    assert(numbersNew.size() == 1);
+    assert(survivors.size() == 1);
     assert(len1 >= 1);
   }
   else
-    assert(numbersNew.size() == len1);
+    assert(survivors.size() == len1);
 
   if (rotateFlag)
     results.reverse();
@@ -225,7 +225,7 @@ void Tvector::adapt(
       results.erase(next(results.begin()), results.end());
 
     auto& result = results.front();
-    result.dist = numbersNew.front();
+    result.dist = survivors.front().fullNo; // TODO
     result.tricks += trickNS;
     weightInt = result.tricks;
     return;
@@ -237,18 +237,18 @@ void Tvector::adapt(
       results.erase(results.begin(), prev(results.end()));
 
     auto& result = results.front();
-    result.dist = numbersNew.front();
+    result.dist = survivors.front().fullNo; // TODO
     result.tricks += trickNS;
     weightInt = result.tricks;
     return;
   }
 
   auto iter1 = results.begin();
-  auto iter2 = numbersNew.begin();
+  auto iter2 = survivors.begin();
 
   while (iter1 != results.end())
   {
-    iter1->dist = * iter2;
+    iter1->dist = iter2->fullNo; // TODO
     // TODO Could make two loops, one for trickNS 1 vs 0, for speed.
     iter1->tricks += trickNS; 
     weightInt += trickNS;

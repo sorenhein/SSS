@@ -4,9 +4,11 @@
 // These vectors represent partial declarer strategies, so they
 // always have the same lengths and distribution numbers.
 
-#include "Tvector.h"
-
 #include <list>
+
+#include "Tvector.h"
+#include "../struct.h"
+
 
 using namespace std;
 
@@ -43,7 +45,7 @@ class Tvectors
     void operator *=(const Tvectors& tvs);
 
     void adapt(
-      const list<unsigned>& numbersNew,
+      const list<Survivor>& survivors,
       const unsigned trickNS,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
