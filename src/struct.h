@@ -73,4 +73,21 @@ struct Survivors
 };
 
 
+struct SurvivorMatrix
+{
+  vector<vector<Survivors>> data;
+
+  void resize(const unsigned len)
+  {
+    data.resize(len);
+    for (unsigned w = 0; w < len; w++)
+    {
+      data[w].resize(len);
+      for (unsigned e = 0; e < len; e++)
+        data[w][e].reducedSize = 0;
+    }
+  };
+};
+
+
 #endif

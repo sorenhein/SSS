@@ -34,6 +34,18 @@ class Distribution
         len = 0;
       }
 
+      bool operator != (const SideInfo& side2)
+      {
+        if (len != side2.len || counts.size() != side2.counts.size())
+          return true;
+
+        for (unsigned rank = 0; rank < counts.size(); rank++)
+          if (counts[rank] != side2.counts[rank])
+            return false;
+        
+        return true;
+      };
+
       void add(
         const unsigned rank,
         const unsigned count)
@@ -52,6 +64,22 @@ class Distribution
           counts[rank] = side1.counts[rank] - side2.counts[rank];
         len = side1.len - side2.len;
       }
+
+      void collapse1(const unsigned rank)
+      {
+        // rank gets collapsed onto rank-1 which must be non-void.
+        assert(rank > 1);
+        counts[rank-1] += counts[rank];
+        counts[rank] = 0;
+      };
+
+      void collapse2(const unsigned rank)
+      {
+        // rank gets collapsed onto rank-2 which must be non-void.
+        assert(rank > 2);
+        counts[rank-2] += counts[rank];
+        counts[rank] = 0;
+      };
 
       string str(const vector<char>& names) const
       {
@@ -137,7 +165,9 @@ class Distribution
 
     Distribution const * distCanonical;
 
-    vector<vector<Survivors>> distSurvivors;
+    SurvivorMatrix distSurvivors;
+    vector<SurvivorMatrix> distSurvivorsCollapse1;
+    vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
     Survivors distSurvivorsWestVoid;
     Survivors distSurvivorsEastVoid;
 

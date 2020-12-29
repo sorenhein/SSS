@@ -466,27 +466,94 @@ void Distribution::setSurvivors()
   assert(distributions[dlast].east.len == 0);
 
   distSurvivors.resize(rankSize);
-  for (unsigned w = 0; w < rankSize; w++)
-    distSurvivors[w].resize(rankSize);
+  // for (unsigned w = 0; w < rankSize; w++)
+  // {
+    // distSurvivors[w].resize(rankSize);
+    // for (unsigned e = 0; e < rankSize; e++)
+      // distSurvivors[w][e].reducedSize = 0;
+  // }
+
+  // We collapse downward, so rank 1 always survives and rank 2
+  // may collapse onto rank 1.
+  distSurvivorsCollapse1.resize(rankSize);
+  for (unsigned c1 = 2; c1 < rankSize; c1++)
+    distSurvivorsCollapse1[c1].resize(rankSize);
+
+  distSurvivorsCollapse2.resize(rankSize);
+  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  {
+    distSurvivorsCollapse2[c1].resize(rankSize);
+    for (unsigned c2 = 2; c2 < rankSize; c2++)
+      distSurvivorsCollapse2[c1][c2].resize(rankSize);
+  }
 
   // General case.
   // Could mirror around the middle to save a bit of time,
   // but it's marginal.
+  vector<SideInfo> westPrevCollapse1;
+  westPrevCollapse1.resize(rankSize);
+  for (unsigned c1 = 2; c1 < rankSize; c1++)
+    westPrevCollapse1[c1].reset(rankSize);
+
+  vector<vector<SideInfo>> westPrevCollapse2;
+  westPrevCollapse2.resize(rankSize);
+  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  {
+    westPrevCollapse2[c1].resize(rankSize);
+    for (unsigned c2 = 2; c2 < rankSize; c2++)
+      westPrevCollapse2[c1][c2].reset(rankSize);
+  }
+
   for (unsigned d = 1; d < dlast; d++)
   {
     const DistInfo& dist = distributions[d];
+    // TODO Probably 1 .. rankSize enough here as well?
     for (unsigned w = 0; w < rankSize; w++)
     {
       if (dist.west.counts[w] == 0)
         continue;
 
+      // TODO Probably 1 .. rankSize enough here as well?
       for (unsigned e = 0; e < rankSize; e++)
       {
         if (dist.east.counts[e] == 0)
            continue;
 
-        distSurvivors[w][e].push_back({d, distSurvivors[w][e].reducedSize});
-        distSurvivors[w][e].reducedSize++;
+        distSurvivors.data[w][e].push_back(
+          {d, distSurvivors.data[w][e].reducedSize});
+        distSurvivors.data[w][e].reducedSize++;
+
+        for (unsigned c1 = 2; c1 < rankSize; c1++)
+        {
+          SideInfo westCollapse1 = dist.west;
+          westCollapse1.collapse1(c1);
+          distSurvivorsCollapse1[c1].data[w][e].push_back(
+            {d, distSurvivorsCollapse1[c1].data[w][e].reducedSize});
+
+          if (westCollapse1 != westPrevCollapse1[c1])
+            distSurvivorsCollapse1[c1].data[w][e].reducedSize++;
+
+          westPrevCollapse1[c1] = westCollapse1;
+
+          for (unsigned c2 = c1+1; c2 < rankSize; c2++)
+          {
+            SideInfo westCollapse2 = westCollapse1;
+            westCollapse2.collapse2(c2);
+            distSurvivorsCollapse2[c1][c2].data[w][e].push_back(
+              {d, distSurvivorsCollapse2[c1][c2].data[w][e].reducedSize});
+
+            distSurvivorsCollapse2[c2][c1].data[w][e].push_back(
+              {d, distSurvivorsCollapse2[c2][c1].data[w][e].reducedSize});
+
+            if (westCollapse2 != westPrevCollapse2[c1][c2])
+            {
+              distSurvivorsCollapse2[c1][c2].data[w][e].reducedSize++;
+              distSurvivorsCollapse2[c2][c1].data[w][e].reducedSize++;
+            }
+
+            westPrevCollapse2[c1][c2] = westCollapse2;
+          }
+        }
       }
     }
   }
@@ -547,7 +614,7 @@ cout << "  reduced " << westRank << " " << eastRank <<
   (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
 
   if (distCanonical == nullptr)
-    return distSurvivors[westRank][eastRank];
+    return distSurvivors.data[westRank][eastRank];
   else
     return distCanonical->survivorsReduced(westRank, eastRank);
 }

@@ -289,7 +289,12 @@ void Tvector::adapt(
     assert(len1 >= 1);
   }
   else
+  {
+    if (len1 != survivors.sizeReduced())
+      cout << "results length " << len1 << ", reduced survivors " <<
+        survivors.sizeReduced() << endl;
     assert(survivors.sizeReduced() == len1);
+  }
 
   if (rotateFlag)
     results.reverse();
