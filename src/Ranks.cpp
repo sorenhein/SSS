@@ -459,7 +459,9 @@ void Ranks::setPlaysLeadWithVoid(
       continue;
 
     partner.fullCount[pard]--;
-    pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
+    pardCollapse = (pard > 1 && 
+      pard < maxRank &&
+      partner.fullCount[pard] == 0);
     const unsigned toBeat = max(lead, pard);
 
     for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
@@ -516,7 +518,9 @@ void Ranks::setPlaysLeadWithoutVoid(
         continue;
 
       partner.fullCount[pard]--;
-      pardCollapse = (pard > 0 && partner.fullCount[pard] == 0);
+      pardCollapse = (pard > 1 && 
+        pard != maxRank &&
+        partner.fullCount[pard] == 0);
 
       for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
       {
@@ -575,7 +579,9 @@ void Ranks::setPlaysSide(
       continue;
 
     leader.fullCount[lead]--;
-    leadCollapse = (leader.fullCount[lead] == 0);
+    leadCollapse = (leader.fullCount[lead] == 0 && 
+      lead != 1 &&
+      lead != maxRank);
 
     // For optimization we treat the case separately where LHO is void.
     Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,

@@ -186,6 +186,17 @@ class Distribution
       const unsigned westRank,
       const unsigned eastRank) const;
 
+    const Survivors& survivorsReducedCollapse1(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1) const;
+
+    const Survivors& survivorsReducedCollapse2(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1,
+      const unsigned collapse2) const;
+
     const Survivors& survivorsWestVoid() const;
     const Survivors& survivorsEastVoid() const;
 
@@ -218,6 +229,17 @@ class Distribution
     const Survivors& survivors(
       const unsigned westRank,
       const unsigned eastRank) const;
+
+    const Survivors& survivorsCollapse1(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1) const;
+
+    const Survivors& survivorsCollapse2(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1,
+      const unsigned collapse2) const;
 
     string str() const;
 

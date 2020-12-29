@@ -306,7 +306,27 @@ cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
       second = rhoNode.rho;
     }
 
-    const auto& survivors = distPtr->survivors(first, second);
+    Survivors survivors;
+    if (lho == 0 || rhoNode.rho == 0)
+      survivors = distPtr->survivors(first, second);
+    else if (rhoNode.leadCollapse && rhoNode.pardCollapse)
+    {
+      const unsigned pard = rhoNode.pardPtr->pard;
+      const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
+      survivors = distPtr->survivorsCollapse2(first, second, pard+1, lead+1);
+    }
+    else if (rhoNode.leadCollapse)
+    {
+      const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
+      survivors = distPtr->survivorsCollapse1(first, second, lead+1);
+    }
+    else if (rhoNode.pardCollapse)
+    {
+      const unsigned pard = rhoNode.pardPtr->pard;
+      survivors = distPtr->survivorsCollapse1(first, second, pard+1);
+    }
+    else
+      survivors = distPtr->survivors(first, second);
 
 for (auto v: survivors.distNumbers)
   cout << "survivor " << v.fullNo << ", " << v.reducedNo << endl;
