@@ -68,7 +68,7 @@ class Distribution
       void collapse1(const unsigned rank)
       {
         // rank gets collapsed onto rank-1 which must be non-void.
-        assert(rank > 1);
+        assert(rank > 0);
         counts[rank-1] += counts[rank];
         counts[rank] = 0;
       };
@@ -76,7 +76,7 @@ class Distribution
       void collapse2(const unsigned rank)
       {
         // rank gets collapsed onto rank-2 which must be non-void.
-        assert(rank > 2);
+        assert(rank > 1);
         counts[rank-2] += counts[rank];
         counts[rank] = 0;
       };

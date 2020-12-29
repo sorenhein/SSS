@@ -476,14 +476,14 @@ void Distribution::setSurvivors()
   // We collapse downward, so rank 1 always survives and rank 2
   // may collapse onto rank 1.
   distSurvivorsCollapse1.resize(rankSize);
-  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
     distSurvivorsCollapse1[c1].resize(rankSize);
 
   distSurvivorsCollapse2.resize(rankSize);
-  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
   {
     distSurvivorsCollapse2[c1].resize(rankSize);
-    for (unsigned c2 = 2; c2 < rankSize; c2++)
+    for (unsigned c2 = 1; c2 < rankSize; c2++)
       distSurvivorsCollapse2[c1][c2].resize(rankSize);
   }
 
@@ -492,28 +492,26 @@ void Distribution::setSurvivors()
   // but it's marginal.
   vector<SideInfo> westPrevCollapse1;
   westPrevCollapse1.resize(rankSize);
-  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
     westPrevCollapse1[c1].reset(rankSize);
 
   vector<vector<SideInfo>> westPrevCollapse2;
   westPrevCollapse2.resize(rankSize);
-  for (unsigned c1 = 2; c1 < rankSize; c1++)
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
   {
     westPrevCollapse2[c1].resize(rankSize);
-    for (unsigned c2 = 2; c2 < rankSize; c2++)
+    for (unsigned c2 = 1; c2 < rankSize; c2++)
       westPrevCollapse2[c1][c2].reset(rankSize);
   }
 
   for (unsigned d = 1; d < dlast; d++)
   {
     const DistInfo& dist = distributions[d];
-    // TODO Probably 1 .. rankSize enough here as well?
     for (unsigned w = 0; w < rankSize; w++)
     {
       if (dist.west.counts[w] == 0)
         continue;
 
-      // TODO Probably 1 .. rankSize enough here as well?
       for (unsigned e = 0; e < rankSize; e++)
       {
         if (dist.east.counts[e] == 0)
@@ -523,7 +521,7 @@ void Distribution::setSurvivors()
           {d, distSurvivors.data[w][e].reducedSize});
         distSurvivors.data[w][e].reducedSize++;
 
-        for (unsigned c1 = 2; c1 < rankSize; c1++)
+        for (unsigned c1 = 1; c1 < rankSize; c1++)
         {
           SideInfo westCollapse1 = dist.west;
           westCollapse1.collapse1(c1);
@@ -588,25 +586,38 @@ const Survivors& Distribution::survivorsCollapse1(
   const unsigned collapse1) const
 {
   // This method uses full (externally visible) ranks.
-cout << "Collapse1 west " << westRank << " east " << eastRank << " ref " <<
-  full2reduced.size() << endl;
+cout << "Collapse1 west " << westRank << " east " << eastRank << 
+  " collapse1 " << collapse1 <<
+  " ref " << full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
 
   if (westRank == 0)
+  {
+cout << "West void" << endl;
     return Distribution::survivorsWestVoid();
+  }
   else if (eastRank == 0)
+  {
+cout << "East void" << endl;
     return Distribution::survivorsEastVoid();
-  else if (collapse1 <= 1 || collapse1 >= rankSize)
+  }
+  else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
+  {
+cout << "Not really collapsed" << endl;
     return Distribution::survivorsReduced(
       full2reduced[westRank],
       full2reduced[eastRank]);
+  }
   else
+  {
+cout << "Regular collapse" << endl;
     return Distribution::survivorsReducedCollapse1(
       full2reduced[westRank],
       full2reduced[eastRank],
       full2reduced[collapse1]);
+  }
 }
 
 
@@ -629,7 +640,7 @@ cout << "Collapse2 west " << westRank << " east " << eastRank << " ref " <<
     return Distribution::survivorsEastVoid();
   else if (collapse1 <= 1 || collapse1 >= rankSize)
   {
-    if (collapse2 <= 2 || collapse2 >= rankSize)
+    if (collapse2 <= 2 || collapse2 >= full2reduced.size())
       return Distribution::survivorsReduced(
         full2reduced[westRank],
         full2reduced[eastRank]);
@@ -639,7 +650,7 @@ cout << "Collapse2 west " << westRank << " east " << eastRank << " ref " <<
         full2reduced[eastRank],
         full2reduced[collapse2]);
   }
-  else if (collapse2 <= 2 || collapse2 >= rankSize)
+  else if (collapse2 <= 2 || collapse2 >= full2reduced.size())
       return Distribution::survivorsReducedCollapse1(
         full2reduced[westRank],
         full2reduced[eastRank],
@@ -699,9 +710,10 @@ const Survivors& Distribution::survivorsReducedCollapse1(
   // Voids are not possible here.
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
-  assert(collapse1 >= 2 && collapse1 < rankSize);
+  assert(collapse1 >= 1 && collapse1 < rankSize);
 
 cout << "  collapse1 reduced " << westRank << " " << eastRank << 
+  " collapse1 " << collapse1 <<
   (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
 
   if (distCanonical == nullptr)
@@ -721,7 +733,7 @@ const Survivors& Distribution::survivorsReducedCollapse2(
   // Voids are not possible here.
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
-  assert(collapse1 >= 2 && collapse1 < rankSize);
+  assert(collapse1 >= 1 && collapse1 < rankSize);
 
 cout << "  collapse2 reduced " << westRank << " " << eastRank << 
   (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
