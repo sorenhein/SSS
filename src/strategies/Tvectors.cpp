@@ -143,7 +143,7 @@ void Tvectors::collapseOnVoid()
 
 
 void Tvectors::adapt(
-  const list<Survivor>& survivors,
+  const Survivors& survivors,
   const unsigned trickNS,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,

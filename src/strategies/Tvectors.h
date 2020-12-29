@@ -45,7 +45,7 @@ class Tvectors
     void operator *=(const Tvectors& tvs);
 
     void adapt(
-      const list<Survivor>& survivors,
+      const Survivors& survivors,
       const unsigned trickNS,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

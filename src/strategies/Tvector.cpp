@@ -194,22 +194,102 @@ void Tvector::operator *=(const Tvector& tv2)
 }
 
 
+void Tvector::updateSingle(
+  const unsigned fullNo,
+  const unsigned trickNS)
+{
+  auto& result = results.front();
+  result.dist = fullNo;
+  result.tricks += trickNS;
+  weightInt = result.tricks;
+}
+
+
+void Tvector::updateSameLength(
+  const Survivors& survivors,
+  const unsigned trickNS)
+{
+  auto iter1 = results.begin();
+  auto iter2 = survivors.distNumbers.begin();
+
+  // This is just an optimization for speed.
+  if (trickNS)
+  {
+    while (iter1 != results.end())
+    {
+      iter1->dist = iter2->fullNo;
+      iter1->tricks += trickNS; 
+      weightInt += trickNS;
+      iter1++;
+      iter2++;
+    }
+  }
+  else
+  {
+    while (iter1 != results.end())
+    {
+      iter1->dist = iter2->fullNo;
+      iter1++;
+      iter2++;
+    }
+  }
+}
+
+
+void Tvector::updateAndGrow(
+  const Survivors& survivors,
+  const unsigned trickNS)
+{
+  auto iter1 = results.begin();
+  auto iter2 = survivors.distNumbers.begin();
+  
+  unsigned prevReduced = numeric_limits<unsigned>::max();
+  while (iter2 != survivors.distNumbers.end())
+  {
+    if (iter2->reducedNo == prevReduced)
+    {
+      // Grow the result vector by copying the predecessor.
+      iter1 = results.insert(iter1, * prev(iter1));
+      iter1->dist = iter2->fullNo;
+      weightInt += iter1->tricks;
+    }
+    else
+    {
+      iter1->dist = iter2->fullNo;
+      iter1->tricks += trickNS;
+      weightInt += trickNS;
+    }
+    prevReduced = iter2->reducedNo;
+    iter1++;
+    iter2++;
+  }
+}
+
+
 void Tvector::adapt(
-  const list<Survivor>& survivors,
+  const Survivors& survivors,
   const unsigned trickNS,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
-  const unsigned len1 = results.size();
+  // Our Tvector results may stem from a rank-reduced child combination.
+  // The survivors may have more entries because they come from the
+  // parent combination.
+  // Our Tvector may be about to get cross-multiplied onto another
+  // parent combination.  So it needs to have the full number of
+  // entries, and the results list needs to grow.
 
+  assert(! lhoVoidFlag || ! rhoVoidFlag);
+
+  const unsigned len1 = results.size();
   if (lhoVoidFlag || rhoVoidFlag)
   {
-    assert(survivors.size() == 1);
+    assert(survivors.sizeFull() == 1);
     assert(len1 >= 1);
   }
   else
-    assert(survivors.size() == len1);
+    assert(survivors.sizeReduced() == len1);
 
   if (rotateFlag)
     results.reverse();
@@ -217,18 +297,13 @@ void Tvector::adapt(
   // LHO and RHO void flag pertain to the this rotation state
   // (parent's frame of reference).
 
-  assert(! lhoVoidFlag || ! rhoVoidFlag);
   if (lhoVoidFlag)
   {
     // Only keep the first result.
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
-    auto& result = results.front();
-    result.dist = survivors.front().fullNo; // TODO
-    result.tricks += trickNS;
-    weightInt = result.tricks;
-    return;
+    Tvector::updateSingle(survivors.distNumbers.front().fullNo, trickNS);
   }
   else if (rhoVoidFlag)
   {
@@ -236,24 +311,19 @@ void Tvector::adapt(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
-    auto& result = results.front();
-    result.dist = survivors.front().fullNo; // TODO
-    result.tricks += trickNS;
-    weightInt = result.tricks;
-    return;
+    Tvector::updateSingle(survivors.distNumbers.front().fullNo, trickNS);
   }
-
-  auto iter1 = results.begin();
-  auto iter2 = survivors.begin();
-
-  while (iter1 != results.end())
+  else if (survivors.sizeFull() == len1)
   {
-    iter1->dist = iter2->fullNo; // TODO
-    // TODO Could make two loops, one for trickNS 1 vs 0, for speed.
-    iter1->tricks += trickNS; 
-    weightInt += trickNS;
-    iter1++;
-    iter2++;
+    // No rank reduction.
+    Tvector::updateSameLength(survivors, trickNS);
+  }
+  else
+  {
+    // This is the general case.
+    // TODO
+    assert(false);
+    Tvector::updateAndGrow(survivors, trickNS);
   }
 }
 

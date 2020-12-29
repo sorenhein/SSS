@@ -81,8 +81,20 @@ class Tvector
 
     void operator *=(const Tvector& tv2);
 
+    void updateSingle(
+      const unsigned fullNo,
+      const unsigned trickNS);
+
+    void updateSameLength(
+      const Survivors& survivors,
+      const unsigned trickNS);
+
+    void updateAndGrow(
+      const Survivors& survivors,
+      const unsigned trickNS);
+
     void adapt(
-      const list<Survivor>& survivors,
+      const Survivors& survivors,
       const unsigned trickNS,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

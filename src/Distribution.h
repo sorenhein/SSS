@@ -137,9 +137,9 @@ class Distribution
 
     Distribution const * distCanonical;
 
-    vector<vector<list<Survivor>>> distSurvivors;
-    list<Survivor> distSurvivorsWestVoid;
-    list<Survivor> distSurvivorsEastVoid;
+    vector<vector<Survivors>> distSurvivors;
+    Survivors distSurvivorsWestVoid;
+    Survivors distSurvivorsEastVoid;
 
 
     void setBinomial();
@@ -152,12 +152,12 @@ class Distribution
 
     void mirror(unsigned& distIndex);
 
-    const list<Survivor>& survivorsReduced(
+    const Survivors& survivorsReduced(
       const unsigned westRank,
       const unsigned eastRank) const;
 
-    const list<Survivor>& survivorsWestVoid() const;
-    const list<Survivor>& survivorsEastVoid() const;
+    const Survivors& survivorsWestVoid() const;
+    const Survivors& survivorsEastVoid() const;
 
 
   public:
@@ -185,7 +185,7 @@ class Distribution
 
     void setSurvivors();
 
-    const list<Survivor>& survivors(
+    const Survivors& survivors(
       const unsigned westRank,
       const unsigned eastRank) const;
 

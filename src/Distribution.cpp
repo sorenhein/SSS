@@ -455,12 +455,14 @@ void Distribution::setSurvivors()
   // West void.
   distSurvivorsWestVoid.clear();
   distSurvivorsWestVoid.push_back({0, 0});
+  distSurvivorsWestVoid.reducedSize = 1;
   assert(distributions[0].west.len == 0);
 
   // East void.
   const unsigned dlast = distributions.size() - 1;
   distSurvivorsEastVoid.clear();
   distSurvivorsEastVoid.push_back({dlast, 0});
+  distSurvivorsEastVoid.reducedSize = 1;
   assert(distributions[dlast].east.len == 0);
 
   distSurvivors.resize(rankSize);
@@ -483,14 +485,15 @@ void Distribution::setSurvivors()
         if (dist.east.counts[e] == 0)
            continue;
 
-        distSurvivors[w][e].push_back({d, 0}); // TODO
+        distSurvivors[w][e].push_back({d, distSurvivors[w][e].reducedSize});
+        distSurvivors[w][e].reducedSize++;
       }
     }
   }
 }
 
 
-const list<Survivor>& Distribution::survivors(
+const Survivors& Distribution::survivors(
   const unsigned westRank,
   const unsigned eastRank) const
 {
@@ -512,7 +515,7 @@ cout << "west " << westRank << " east " << eastRank << " ref " <<
 }
 
 
-const list<Survivor>& Distribution::survivorsWestVoid() const
+const Survivors& Distribution::survivorsWestVoid() const
 {
   if (distCanonical == nullptr)
     // This distribution is canonical.
@@ -522,7 +525,7 @@ const list<Survivor>& Distribution::survivorsWestVoid() const
 }
 
 
-const list<Survivor>& Distribution::survivorsEastVoid() const
+const Survivors& Distribution::survivorsEastVoid() const
 {
   if (distCanonical == nullptr)
     // This distribution is canonical.
@@ -532,7 +535,7 @@ const list<Survivor>& Distribution::survivorsEastVoid() const
 }
 
 
-const list<Survivor>& Distribution::survivorsReduced(
+const Survivors& Distribution::survivorsReduced(
   const unsigned westRank,
   const unsigned eastRank) const
 {

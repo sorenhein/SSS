@@ -39,4 +39,38 @@ struct Survivor
   unsigned reducedNo;
 };
 
+
+struct Survivors
+{
+  list<Survivor> distNumbers;
+  unsigned reducedSize;
+
+  void clear()
+  {
+    distNumbers.clear();
+    reducedSize = 0;
+  };
+
+  void resize(const unsigned len)
+  {
+    distNumbers.resize(len);
+  };
+
+  void push_back(const Survivor& survivor)
+  {
+    distNumbers.push_back(survivor);
+  };
+
+  unsigned sizeFull() const
+  {
+    return distNumbers.size();
+  };
+
+  unsigned sizeReduced() const
+  {
+    return reducedSize;
+  };
+};
+
+
 #endif
