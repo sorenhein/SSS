@@ -96,6 +96,10 @@ void Distributions::runUniques(const unsigned cards)
     {
       uniques[cards]++;
       dists[holding].splitAlternative();
+if (cards == 5 && holding == 21)
+{
+  cout << "HERE\n";
+}
       dists[holding].setSurvivors();
     }
     else

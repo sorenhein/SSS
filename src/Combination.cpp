@@ -36,7 +36,8 @@ const Tvectors& Combination::strategize(
   Ranks& ranks,
   Plays& plays)
 {
-// cout << "cholding2 is " << centry.canonicalHolding2 <<endl;
+cout << "cholding2 is " << centry.canonicalHolding2 << 
+  ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(

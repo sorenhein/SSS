@@ -445,13 +445,8 @@ DistID Distribution::getID() const
 }
 
 
-void Distribution::setSurvivors()
+void Distribution::setSurvivorsVoid()
 {
-  // The internal reduced ranks are 0-based.
-  // The external full ranks are 1-based, and "0" means "void".
-  // The survivors matrix is expressed in reduced ranks.
-  // Therefore we need the void separately.
-
   // West void.
   distSurvivorsWestVoid.clear();
   distSurvivorsWestVoid.push_back({0, 0});
@@ -464,46 +459,17 @@ void Distribution::setSurvivors()
   distSurvivorsEastVoid.push_back({dlast, 0});
   distSurvivorsEastVoid.reducedSize = 1;
   assert(distributions[dlast].east.len == 0);
+}
 
-  distSurvivors.resize(rankSize);
-  // for (unsigned w = 0; w < rankSize; w++)
-  // {
-    // distSurvivors[w].resize(rankSize);
-    // for (unsigned e = 0; e < rankSize; e++)
-      // distSurvivors[w][e].reducedSize = 0;
-  // }
 
-  // We collapse downward, so rank 1 always survives and rank 2
-  // may collapse onto rank 1.
-  distSurvivorsCollapse1.resize(rankSize);
-  for (unsigned c1 = 1; c1 < rankSize; c1++)
-    distSurvivorsCollapse1[c1].resize(rankSize);
-
-  distSurvivorsCollapse2.resize(rankSize);
-  for (unsigned c1 = 1; c1 < rankSize; c1++)
-  {
-    distSurvivorsCollapse2[c1].resize(rankSize);
-    for (unsigned c2 = 1; c2 < rankSize; c2++)
-      distSurvivorsCollapse2[c1][c2].resize(rankSize);
-  }
-
-  // General case.
+void Distribution::setSurvivorsGeneral()
+{
+  // Make the survivors in the absence of rank collapses.
   // Could mirror around the middle to save a bit of time,
   // but it's marginal.
-  vector<SideInfo> westPrevCollapse1;
-  westPrevCollapse1.resize(rankSize);
-  for (unsigned c1 = 1; c1 < rankSize; c1++)
-    westPrevCollapse1[c1].reset(rankSize);
 
-  vector<vector<SideInfo>> westPrevCollapse2;
-  westPrevCollapse2.resize(rankSize);
-  for (unsigned c1 = 1; c1 < rankSize; c1++)
-  {
-    westPrevCollapse2[c1].resize(rankSize);
-    for (unsigned c2 = 1; c2 < rankSize; c2++)
-      westPrevCollapse2[c1][c2].reset(rankSize);
-  }
-
+  const unsigned dlast = distributions.size() - 1;
+  distSurvivors.resize(rankSize);
   for (unsigned d = 1; d < dlast; d++)
   {
     const DistInfo& dist = distributions[d];
@@ -520,37 +486,154 @@ void Distribution::setSurvivors()
         distSurvivors.data[w][e].push_back(
           {d, distSurvivors.data[w][e].reducedSize});
         distSurvivors.data[w][e].reducedSize++;
+      }
+    }
+  }
+}
 
-        for (unsigned c1 = 1; c1 < rankSize; c1++)
+
+void Distribution::precalcSurvivorsCollapse1(
+  vector<vector<SideInfo>>& distCollapses1)
+{
+  const unsigned dlast = distributions.size() - 1;
+  distCollapses1.resize(rankSize);
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
+    distCollapses1[c1].resize(dlast);
+
+  for (unsigned d = 1; d < dlast; d++)
+  {
+    const DistInfo& dist = distributions[d];
+    for (unsigned c1 = 1; c1 < rankSize; c1++)
+    {
+      distCollapses1[c1][d] = dist.west;
+      distCollapses1[c1][d].collapse1(c1);
+    }
+  }
+}
+
+
+void Distribution::precalcSurvivorsCollapse2(
+  const vector<vector<SideInfo>>& distCollapses1,
+  vector<vector<vector<SideInfo>>>& distCollapses2)
+{
+  const unsigned dlast = distributions.size() - 1;
+  distCollapses2.resize(rankSize);
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
+  {
+    distCollapses2[c1].resize(rankSize);
+    for (unsigned c2 = 1; c2 < rankSize; c2++)
+      distCollapses2[c1][c2].resize(dlast);
+  }
+
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
+  {
+    if (c1+1 < rankSize)
+    {
+      // Special case where two adjacent ranks are collapsed.
+      for (unsigned d = 1; d < dlast; d++)
+      {
+        distCollapses2[c1][c1+1][d] = distCollapses1[c1][d];
+        distCollapses2[c1][c1+1][d].collapse2(c1+1);
+        distCollapses2[c1+1][c1][d] = distCollapses2[c1][c1+1][d];
+      }
+    }
+
+    for (unsigned c2 = c1+2; c2 < rankSize; c2++)
+    {
+      // General case where the collapses are independent.
+      for (unsigned d = 1; d < dlast; d++)
+      {
+        distCollapses2[c1][c2][d] = distCollapses1[c1][d];
+        distCollapses2[c1][c2][d].collapse1(c2);
+        distCollapses2[c2][c1][d] = distCollapses2[c1][c2][d];
+      }
+    }
+  }
+}
+
+
+void Distribution::collapseSurvivors(
+  const vector<SideInfo>& distCollapses,
+  const Survivors& survivorsUnreduced,
+  Survivors& survivorsReduced)
+{
+  // Start by copying the uncollapsed list (if this is the first collapse)
+  // or the once-collapsed list (if this is the second collapse).
+  survivorsReduced = survivorsUnreduced;
+
+  // If there is no prospect of collapsing anything, continue.
+  if (survivorsReduced.sizeFull() <= 1)
+    return;
+  
+  auto iterPrev = survivorsReduced.distNumbers.begin();
+  auto iter = next(iterPrev);
+  unsigned rankReduced = 0;
+
+  while (iter != survivorsReduced.distNumbers.end())
+  {
+    const unsigned dno = iter->fullNo;
+    const unsigned dnoPrev = iterPrev->fullNo;
+    if (distCollapses[dno] != distCollapses[dnoPrev])
+      rankReduced++;
+
+    iter->reducedNo = rankReduced;
+    iterPrev = iter;
+    iter++;
+  }
+
+  survivorsReduced.reducedSize = rankReduced+1;
+}
+  
+  
+void Distribution::setSurvivors()
+{
+  // The internal reduced ranks are 0-based.
+  // The external full ranks are 1-based, and "0" means "void".
+  // The survivors matrix is expressed in reduced ranks.
+  // Therefore we need the voids separately.
+  Distribution::setSurvivorsVoid();
+  Distribution::setSurvivorsGeneral();
+
+  // Pre-calculate the collapses of each distribution.
+  vector<vector<SideInfo>> distCollapses1;
+  Distribution::precalcSurvivorsCollapse1(distCollapses1);
+
+  vector<vector<vector<SideInfo>>> distCollapses2;
+  Distribution::precalcSurvivorsCollapse2(distCollapses1, distCollapses2);
+
+  // We collapse downward, so rank 1 always survives and rank 2
+  // may collapse onto rank 1.
+  distSurvivorsCollapse1.resize(rankSize);
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
+    distSurvivorsCollapse1[c1].resize(rankSize);
+
+  distSurvivorsCollapse2.resize(rankSize);
+  for (unsigned c1 = 1; c1 < rankSize; c1++)
+  {
+    distSurvivorsCollapse2[c1].resize(rankSize);
+    for (unsigned c2 = 1; c2 < rankSize; c2++)
+      distSurvivorsCollapse2[c1][c2].resize(rankSize);
+  }
+
+  // Make the rank collapses.
+  for (unsigned w = 0; w < rankSize; w++)
+  {
+    for (unsigned e = 0; e < rankSize; e++)
+    {
+      for (unsigned c1 = 1; c1 < rankSize; c1++)
+      {
+        collapseSurvivors(distCollapses1[c1],
+          distSurvivors.data[w][e],
+          distSurvivorsCollapse1[c1].data[w][e]);
+
+        for (unsigned c2 = c1+1; c2 < rankSize; c2++)
         {
-          SideInfo westCollapse1 = dist.west;
-          westCollapse1.collapse1(c1);
-          distSurvivorsCollapse1[c1].data[w][e].push_back(
-            {d, distSurvivorsCollapse1[c1].data[w][e].reducedSize});
+          collapseSurvivors(distCollapses2[c1][c2],
+            distSurvivorsCollapse1[c1].data[w][e],
+            distSurvivorsCollapse2[c1][c2].data[w][e]);
 
-          if (westCollapse1 != westPrevCollapse1[c1])
-            distSurvivorsCollapse1[c1].data[w][e].reducedSize++;
-
-          westPrevCollapse1[c1] = westCollapse1;
-
-          for (unsigned c2 = c1+1; c2 < rankSize; c2++)
-          {
-            SideInfo westCollapse2 = westCollapse1;
-            westCollapse2.collapse2(c2);
-            distSurvivorsCollapse2[c1][c2].data[w][e].push_back(
-              {d, distSurvivorsCollapse2[c1][c2].data[w][e].reducedSize});
-
-            distSurvivorsCollapse2[c2][c1].data[w][e].push_back(
-              {d, distSurvivorsCollapse2[c2][c1].data[w][e].reducedSize});
-
-            if (westCollapse2 != westPrevCollapse2[c1][c2])
-            {
-              distSurvivorsCollapse2[c1][c2].data[w][e].reducedSize++;
-              distSurvivorsCollapse2[c2][c1].data[w][e].reducedSize++;
-            }
-
-            westPrevCollapse2[c1][c2] = westCollapse2;
-          }
+          distSurvivorsCollapse2[c2][c1].data[w][e] = 
+            distSurvivorsCollapse2[c1][c2].data[w][e];
         }
       }
     }

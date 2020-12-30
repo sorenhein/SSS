@@ -34,7 +34,12 @@ class Distribution
         len = 0;
       }
 
-      bool operator != (const SideInfo& side2)
+      void makeSentinel()
+      {
+        len = numeric_limits<unsigned>::max();
+      }
+
+      bool operator != (const SideInfo& side2) const
       {
         if (len != side2.len || counts.size() != side2.counts.size())
           return true;
@@ -181,6 +186,22 @@ class Distribution
       const unsigned maxReducedRank);
 
     void mirror(unsigned& distIndex);
+
+    void setSurvivorsVoid();
+
+    void setSurvivorsGeneral();
+
+    void precalcSurvivorsCollapse1(
+      vector<vector<SideInfo>>& distCollapse1);
+
+    void precalcSurvivorsCollapse2(
+      const vector<vector<SideInfo>>& distCollapse1,
+      vector<vector<vector<SideInfo>>>& distCollapse2);
+
+    void collapseSurvivors(
+      const vector<SideInfo>& distCollapses,
+      const Survivors& survivorsUnreduced,
+      Survivors& survivorsReduced);
 
     const Survivors& survivorsReduced(
       const unsigned westRank,
