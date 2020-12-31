@@ -686,7 +686,8 @@ cout << "West void" << endl;
 cout << "East void" << endl;
     return Distribution::survivorsEastVoid();
   }
-  else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
+  // else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
+  else if (collapse1 <= 1)
   {
 cout << "Not really collapsed" << endl;
     return Distribution::survivorsReduced(
@@ -711,7 +712,9 @@ const Survivors& Distribution::survivorsCollapse2(
   const unsigned collapse2) const
 {
   // This method uses full (externally visible) ranks.
-cout << "Collapse2 west " << westRank << " east " << eastRank << " ref " <<
+cout << "Collapse2 west " << westRank << " east " << eastRank << 
+  " collapses " << collapse1 <<", " << collapse2 <<
+  " ref " <<
   full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
@@ -721,29 +724,44 @@ cout << "Collapse2 west " << westRank << " east " << eastRank << " ref " <<
     return Distribution::survivorsWestVoid();
   else if (eastRank == 0)
     return Distribution::survivorsEastVoid();
-  else if (collapse1 <= 1 || collapse1 >= rankSize)
+  // else if (collapse1 <= 1 || collapse1 >= rankSize)
+  else if (collapse1 <= 1)
   {
-    if (collapse2 <= 2 || collapse2 >= full2reduced.size())
+// TODO Do these discards ever happen?  Do we have to test for them?
+// Can we avoid them in Ranks.cpp?
+cout << "Discarding collapse1\n";
+    // if (collapse2 <= 2 || collapse2 >= full2reduced.size())
+    if (collapse2 <= 1 || collapse1 == collapse2)
+    {
+cout << "Discarding collapse2\n";
       return Distribution::survivorsReduced(
         full2reduced[westRank],
         full2reduced[eastRank]);
+    }
     else
       return Distribution::survivorsReducedCollapse1(
         full2reduced[westRank],
         full2reduced[eastRank],
         full2reduced[collapse2]);
   }
-  else if (collapse2 <= 2 || collapse2 >= full2reduced.size())
+  // else if (collapse2 <= 2 || collapse2 >= full2reduced.size())
+  else if (collapse2 <= 1)
+  {
+cout << "Discarding collapse2\n";
       return Distribution::survivorsReducedCollapse1(
         full2reduced[westRank],
         full2reduced[eastRank],
         full2reduced[collapse1]);
+  }
   else
+  {
+cout << "Discarding nothing\n";
     return Distribution::survivorsReducedCollapse2(
       full2reduced[westRank],
       full2reduced[eastRank],
       full2reduced[collapse1],
       full2reduced[collapse2]);
+  }
 }
 
 
