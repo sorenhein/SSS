@@ -123,21 +123,26 @@ void Tvectors::operator *=(const Tvectors& tvs2)
 void Tvectors::collapseOnVoid()
 {
   assert(results.size() > 0);
-  const auto& tvfront = results.front();
-  assert(tvfront.size() == 1);
-
   if (results.size() == 1)
-    return;
-
-  auto iter = next(results.begin());
-  while (iter != results.end())
   {
-    // They must all be the same.
-    assert(tvfront == * iter);
-    iter++;
+    assert(results.front().size() == 1);
+    return;
   }
 
-  // Only keep the first, as they're all the same.
+  // Find the best one for declarer.
+  auto iterTV = results.begin();
+  assert(iterTV->size() == 1);
+
+  // Find the best one for declarer.
+  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+  {
+    assert(iter->size() == 1);
+    if (* iter > * iterTV)
+      iterTV = iter;
+  }
+
+  // Copy it to the front and remove the others.
+  results.front() = * iterTV;
   results.erase(next(results.begin()), results.end());
 }
 
