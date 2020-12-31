@@ -327,7 +327,7 @@ void Tvector::adapt(
   {
     // This is the general case.
     // TODO
-    assert(false);
+    // assert(false);
     Tvector::updateAndGrow(survivors, trickNS);
   }
 }

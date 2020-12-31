@@ -46,9 +46,9 @@ class Distribution
 
         for (unsigned rank = 0; rank < counts.size(); rank++)
           if (counts[rank] != side2.counts[rank])
-            return false;
+            return true;
         
-        return true;
+        return false;
       };
 
       void add(
