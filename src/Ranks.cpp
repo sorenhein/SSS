@@ -461,7 +461,8 @@ void Ranks::setPlaysLeadWithVoid(
     partner.fullCount[pard]--;
     pardCollapse = (pard > 1 && 
       pard < maxRank &&
-      partner.fullCount[pard] == 0);
+      partner.fullCount[pard] == 0 &&
+      leader.fullCount[pard] == 0);
     const unsigned toBeat = max(lead, pard);
 
     for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
@@ -520,7 +521,8 @@ void Ranks::setPlaysLeadWithoutVoid(
       partner.fullCount[pard]--;
       pardCollapse = (pard > 1 && 
         pard != maxRank &&
-        partner.fullCount[pard] == 0);
+        partner.fullCount[pard] == 0 &&
+        leader.fullCount[pard] == 0);
 
       for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
       {
@@ -580,6 +582,7 @@ void Ranks::setPlaysSide(
 
     leader.fullCount[lead]--;
     leadCollapse = (leader.fullCount[lead] == 0 && 
+      partner.fullCount[lead] == 0 &&
       lead != 1 &&
       lead != maxRank);
 
