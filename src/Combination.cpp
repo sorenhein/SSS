@@ -64,17 +64,17 @@ if (centry.canonicalHolding3 == 208)
 
 cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
-if (centry.canonicalHolding3 == 548)
-{
-  cout << "HERE\n";
-}
+// if (ranks.size() == 8 && centry.canonicalHolding3 == 530)
+// {
+  // cout << "HERE\n";
+// }
   plays.setCombPtrs(combinations);
-cout << "B " << centry.canonicalHolding3 << endl;
-cout << "Plays\n" << plays.str() << endl;
-cout << "Distribution\n" << distPtr->str() << endl;
+// cout << "B " << centry.canonicalHolding3 << endl;
+// cout << "Plays\n" << plays.str() << endl;
+// cout << "Distribution\n" << distPtr->str() << endl;
 
   plays.strategize(distPtr, strats);
-cout << "C " << centry.canonicalHolding3 << endl;
+// cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 

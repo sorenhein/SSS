@@ -287,12 +287,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // const auto& rhoNode = rhoNodes[rno];
     const auto& rhoNode = * rhoIter;
 
-cout << "Start of RHO node loop" << endl;
+// cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
     const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
     const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
-cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
+// cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
 
     unsigned first, second;
     if (side == SIDE_NORTH)
@@ -328,26 +328,26 @@ cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
     else
       survivors = distPtr->survivors(first, second);
 
-for (auto v: survivors.distNumbers)
-  cout << "survivor " << v.fullNo << ", " << v.reducedNo << endl;
+// for (auto v: survivors.distNumbers)
+  // cout << "survivor " << v.fullNo << ", " << v.reducedNo << endl;
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
     tvs = rhoNode.combPtr->strategies();
-cout << tvs.str("Tvectors") << endl;
+// cout << tvs.str("Tvectors") << endl;
     tvs.adapt(survivors, 
       rhoNode.trickNS, 
       first == 0,
       second == 0,
       rhoNode.rotateNew);
-cout << tvs.str("Tvectors after adapt");
+// cout << tvs.str("Tvectors after adapt");
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
-cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
+// cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
   }
 
-cout << "Done with RHO nodes" << endl << endl;
+// cout << "Done with RHO nodes" << endl << endl;
 
   // for (unsigned pno = 0; pno < pardNext; pno++)
   for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; pardIter++)
@@ -355,29 +355,29 @@ cout << "Done with RHO nodes" << endl << endl;
     // const auto& pardNode = pardNodes[pno];
     const auto& pardNode = * pardIter;
 
-cout << "pard node for " << pardNode.pard << endl;
+// cout << "pard node for " << pardNode.pard << endl;
 
     // Add the partner strategy to the LHO node.
-cout << pardNode.strategies.str("Adding");
+// cout << pardNode.strategies.str("Adding");
     pardNode.lhoPtr->strategies += pardNode.strategies;
-cout << pardNode.lhoPtr->strategies.str("LHO node");
+// cout << pardNode.lhoPtr->strategies.str("LHO node");
   }
 
-cout << "Done with pard nodes" << endl << endl;
+// cout << "Done with pard nodes" << endl << endl;
   // for (unsigned lno = 0; lno < lhoNext; lno++)
   for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; lhoIter++)
   {
     // const auto& lhoNode = lhoNodes[lno];
     const auto& lhoNode = * lhoIter;
 
-cout << "LHO node for " << lhoNode.lho << endl;
+// cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
-cout << lhoNode.strategies.str("Adding");
+// cout << lhoNode.strategies.str("Adding");
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
-cout << lhoNode.leadPtr->strategies.str("Lead node");
+// cout << lhoNode.leadPtr->strategies.str("Lead node");
   }
 
-cout << "Done with LHO nodes" << endl << endl;
+// cout << "Done with LHO nodes" << endl << endl;
   // Add up the lead strategies.
   strategies.reset();
   // for (unsigned ldno = 0; ldno < leadNext; ldno++)
@@ -386,12 +386,12 @@ cout << "Done with LHO nodes" << endl << endl;
     // const auto& leadNode = leadNodes[ldno];
     const auto& leadNode = * ldIter;
 
-cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
+// cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
-cout << strategies.str("Final");
+// cout << strategies.str("Final");
   }
 
-  cout << strategies.str("Done with all nodes");
+  cout << strategies.str("Strategy");
 }
 
 

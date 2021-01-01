@@ -240,28 +240,27 @@ void Tvector::updateAndGrow(
   const Survivors& survivors,
   const unsigned trickNS)
 {
-  auto iter1 = results.begin();
-  auto iter2 = survivors.distNumbers.begin();
-  
-  unsigned prevReduced = numeric_limits<unsigned>::max();
-  while (iter2 != survivors.distNumbers.end())
+  // Make an indexable vector copy of the results that need to grow.
+  vector<TrickEntry> resultsOld;
+  resultsOld.resize(results.size());
+
+  unsigned r = 0;
+  for (auto& res: results)
+    resultsOld[r++] = res;
+
+  // Overwrite the old results list.
+  results.resize(survivors.distNumbers.size());
+  auto iterSurvivors = survivors.distNumbers.begin();
+  weightInt = 0;
+
+  for (auto& res: results)
   {
-    if (iter2->reducedNo == prevReduced)
-    {
-      // Grow the result vector by copying the predecessor.
-      iter1 = results.insert(iter1, * prev(iter1));
-      iter1->dist = iter2->fullNo;
-      weightInt += iter1->tricks;
-    }
-    else
-    {
-      iter1->dist = iter2->fullNo;
-      iter1->tricks += trickNS;
-      weightInt += trickNS;
-    }
-    prevReduced = iter2->reducedNo;
-    iter1++;
-    iter2++;
+    // Use the survivor's full distribution number and the 
+    // corresponding result entry as the trick count.
+    res.dist = iterSurvivors->fullNo;
+    res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
+    weightInt += res.tricks;
+    iterSurvivors++;
   }
 }
 
@@ -299,7 +298,7 @@ void Tvector::adapt(
   if (rotateFlag)
     results.reverse();
 
-  // LHO and RHO void flag pertain to the this rotation state
+  // LHO and RHO void flags pertain to the this rotation state
   // (parent's frame of reference).
 
   if (lhoVoidFlag)

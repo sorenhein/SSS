@@ -1,8 +1,25 @@
-Bug in Plays, logging:
-- The plays are in fact not in order.
-- Instead they are in order for LHO void, and then in order for rest
-- So we need something else in Plays to detect previously seen starts,
-  both for lead, LHO, pard and RHO(?)
+Does it get permanently stuck on 12 / 398582?
+KJ975 / void missing AQT86xx.
+
+Takes several hours (3+) even to do 12 cards.  This doesn't scale.
+Some combinations have absurd numbers of combinations, e.g.
+KJ975 /3 missing AQT864 has 3880 strategies and 64 distributions.
+
+Probably the *= of Tvectors from following combinations creates
+a lot of combinations and comparisons.
+
+How do we get the complexity down again?
+- Some of the most complex ones have spurious ranks, so we just need
+  to find them and then cut off below that ranks.  But we do need to
+  solve at least once.
+- The *= can be improved to do partial comparisons before full ones.
+- Are there plays that can be cut out?  3-6: Never any reason to
+  play 5 rather than 7.
+- Even so, how can it take that long??
+- Can simplify manually: AQT8 / 64 missing KJ9753.  We can never
+  take a rank trick < 8. |S| <= |N|.  Max S <= Max N.  But this only
+  gets some of the tough ones.
+
 
 Optimization in Ranks:
 - With AQ / - missing KJ, on Ace never drop King (partner will show

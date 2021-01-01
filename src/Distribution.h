@@ -21,6 +21,13 @@ class Distribution
 {
   private:
 
+    enum SideCompare
+    {
+      SC_SAME = 0,
+      SC_DIFFERENT_LENGTH = 1,
+      SC_DIFFERENT_VALUES = 2
+    };
+
     struct SideInfo
     {
       vector<unsigned> counts; // For each (reduced) rank
@@ -49,6 +56,18 @@ class Distribution
             return true;
         
         return false;
+      };
+
+      SideCompare compare(const SideInfo& side2) const
+      {
+        if (len != side2.len || counts.size() != side2.counts.size())
+          return SC_DIFFERENT_LENGTH;
+        
+        for (unsigned rank = 0; rank < counts.size(); rank++)
+          if (counts[rank] != side2.counts[rank])
+            return SC_DIFFERENT_VALUES;
+        
+        return SC_SAME;
       };
 
       void add(
