@@ -1,5 +1,51 @@
+Ideas for speeding up Tvector
+---
+- Initially just a flat list
+- organize(ordered list of distributions in groups)
+  makes partial sums for the groups
+  also makes a kind of hash for equality checking (group sums)
+- partials()
+  returns ordered list of partial sums for groups
+- prioritize(ordered list of groups)
+  sets the order of comparison.  Top group is the one where the vector
+  is relatively highest.  So if you want to beat this vector, you
+  compare first to the toughest comparison in order to lose quickly.
+  If you want to lose to this vector, you first try to lose to its
+  weakest group in order to fail quickly
+- == first uses the hash and then individually
+- > uses the prioritized groups and then individually
+
+Ideas for speeding up Tvectors
+---
+* Organization
+  - Histogram of vector weights, each bucket containing a list
+* In +=
+  - First check for equality
+    If it works, we're done
+  - Then check whether we're dominated by something
+    If yes, we're done
+  - Add ourselves to the histogram
+  - Then check whether we dominate something
+    If yes, remove it
+* In *=
+  - Start with the largest times one vector
+  - organize() each vector with a list, maybe co-prime "hash"
+  - Figure out the partials
+  - Sort them
+  - prioritize() each vector
+  - Then go through the other second vectors
+  - After ~ 20% of the second vectors, re-sort and re-prioritize()
+
+
+
 Does it get permanently stuck on 12 / 398582?
 KJ975 / void missing AQT86xx.
+It seems we stall when multiplying 906 * 540 strategies.
+Or thereafter, 20k * 44 :-)
+
+Can we run cards <= 10 and then run 11 / 132902 separately?
+It has 9660 strategies.  KJ96 / void, missing AQT87xx.
+The 6 does matter.
 
 Takes several hours (3+) even to do 12 cards.  This doesn't scale.
 Some combinations have absurd numbers of combinations, e.g.

@@ -35,46 +35,6 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
   
-  /*
-  Ranks ranks;
-  CombEntry ce;
-  ranks.resize(4);
-  ranks.set(60, ce);
-  cout << ranks.str();
-
-  Plays plays;
-  plays.resize(4);
-  unsigned term;
-  cout << "trying to set plays" << endl;
-  ranks.setPlays(plays, term);
-  cout << "done setting plays" << endl;
-  cout << plays.str();
-  plays.reset();
-  */
-
-  /* 
-  Ranks ranks;
-  CombEntry ce;
-  ranks.resize(13);
-  ranks.set(464920, ce);
-  cout << ranks.str();
-  */
-
-  /*
-  Ranks ranks;
-  CombEntry ce;
-  ranks.resize(13);
-  ranks.set(464920, ce);
-  cout << ranks.str();
-  cout << "canonical holding " << ce.canonicalHolding << endl;
-  // exit(0);
-  */
-
-  // Distribution dist;
-  // dist.set(5, 27);
-  // cout << dist.str();
-  // exit(0);
-
   // Set up distributions.
 
   distributions.resize(control.cards());
@@ -98,7 +58,8 @@ int main(int argc, char * argv[])
 
   timers.start(TIMER_COMBINATIONS);
 
-  for (unsigned cards = 0; cards <= control.cards(); cards++)
+  // for (unsigned cards = 0; cards <= control.cards(); cards++)
+  for (unsigned cards = 0; cards <= 10; cards++)
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
@@ -114,5 +75,10 @@ int main(int argc, char * argv[])
 
   // combinations.tmp(control.cards(), control.holding());
   cout << "\n" << timers.str();
+  
+  // combinations.runSpecific(11, 132902, distributions);
+  // combinations.runSpecific(12, 132889, distributions);
+  combinations.runSpecific(12, 398582, distributions);
+
 }
 

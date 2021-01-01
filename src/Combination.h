@@ -39,7 +39,8 @@ class Combination
       const Combinations& combinations,
       const Distributions& distributions,
       Ranks& ranks,
-      Plays& plays);
+      Plays& plays,
+      bool debugFlag = false);
 
     const Tvectors& strategies() const;
 

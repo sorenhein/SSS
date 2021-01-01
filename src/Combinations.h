@@ -67,6 +67,11 @@ class Combinations
 
     void resize(const unsigned maxCardsIn);
 
+    void runSpecific(
+      const unsigned cards,
+      const unsigned holding,
+      const Distributions& distributions);
+
     void runUniques(
       const unsigned cards,
       const Distributions& distributions);

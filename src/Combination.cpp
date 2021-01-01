@@ -34,7 +34,8 @@ const Tvectors& Combination::strategize(
   const Combinations& combinations,
   const Distributions& distributions,
   Ranks& ranks,
-  Plays& plays)
+  Plays& plays,
+  bool debugFlag)
 {
 cout << "cholding2 is " << centry.canonicalHolding2 << 
   ", size " << ranks.size() << endl;
@@ -70,10 +71,13 @@ cout << "A " << centry.canonicalHolding3 << endl;
 // }
   plays.setCombPtrs(combinations);
 // cout << "B " << centry.canonicalHolding3 << endl;
-// cout << "Plays\n" << plays.str() << endl;
-// cout << "Distribution\n" << distPtr->str() << endl;
+if (debugFlag)
+{
+  cout << "Plays\n" << plays.str() << endl;
+  cout << "Distribution\n" << distPtr->str() << endl;
+}
 
-  plays.strategize(distPtr, strats);
+  plays.strategize(distPtr, strats, debugFlag);
 // cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)

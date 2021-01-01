@@ -168,7 +168,8 @@ class Plays
 
    void strategize(
      Distribution const * distPtr,
-     Tvectors& strategies);
+     Tvectors& strategies,
+     bool debugFlag = false);
 
    string str() const;
 };

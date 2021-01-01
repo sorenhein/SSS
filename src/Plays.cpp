@@ -267,7 +267,8 @@ void Plays::setCombPtrs(const Combinations& combinations)
 
 void Plays::strategize(
   Distribution const * distPtr,
-  Tvectors& strategies)
+  Tvectors& strategies,
+  bool debugFlag)
 {
   // This yields strategies where EW have "too much" choice.
   // Therefore the question is going to be whether EW can hold NS
@@ -287,12 +288,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // const auto& rhoNode = rhoNodes[rno];
     const auto& rhoNode = * rhoIter;
 
-// cout << "Start of RHO node loop" << endl;
+if (debugFlag)
+  cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
     const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
     const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
-// cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
+if (debugFlag)
+  cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
 
     unsigned first, second;
     if (side == SIDE_NORTH)
@@ -340,14 +343,16 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       first == 0,
       second == 0,
       rhoNode.rotateNew);
-// cout << tvs.str("Tvectors after adapt");
+if (debugFlag)
+  cout << tvs.str("Tvectors after adapt");
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
 // cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
   }
 
-// cout << "Done with RHO nodes" << endl << endl;
+if (debugFlag)
+  cout << "Done with RHO nodes" << endl << endl;
 
   // for (unsigned pno = 0; pno < pardNext; pno++)
   for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; pardIter++)
@@ -355,29 +360,37 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // const auto& pardNode = pardNodes[pno];
     const auto& pardNode = * pardIter;
 
-// cout << "pard node for " << pardNode.pard << endl;
+if (debugFlag)
+ cout << "pard node for " << pardNode.pard << endl;
 
     // Add the partner strategy to the LHO node.
-// cout << pardNode.strategies.str("Adding");
+if (debugFlag)
+  cout << pardNode.strategies.str("Adding");
     pardNode.lhoPtr->strategies += pardNode.strategies;
-// cout << pardNode.lhoPtr->strategies.str("LHO node");
+if (debugFlag)
+  cout << pardNode.lhoPtr->strategies.str("LHO node");
   }
 
-// cout << "Done with pard nodes" << endl << endl;
+if (debugFlag)
+  cout << "Done with pard nodes" << endl << endl;
   // for (unsigned lno = 0; lno < lhoNext; lno++)
   for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; lhoIter++)
   {
     // const auto& lhoNode = lhoNodes[lno];
     const auto& lhoNode = * lhoIter;
 
-// cout << "LHO node for " << lhoNode.lho << endl;
+if (debugFlag)
+  cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
-// cout << lhoNode.strategies.str("Adding");
+if (debugFlag)
+  cout << lhoNode.strategies.str("Adding") << endl;
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
-// cout << lhoNode.leadPtr->strategies.str("Lead node");
+if (debugFlag)
+  cout << lhoNode.leadPtr->strategies.str("Lead node");
   }
 
-// cout << "Done with LHO nodes" << endl << endl;
+if (debugFlag)
+  cout << "Done with LHO nodes" << endl << endl;
   // Add up the lead strategies.
   strategies.reset();
   // for (unsigned ldno = 0; ldno < leadNext; ldno++)
@@ -386,9 +399,11 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // const auto& leadNode = leadNodes[ldno];
     const auto& leadNode = * ldIter;
 
-// cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
+if (debugFlag)
+  cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
-// cout << strategies.str("Final");
+if (debugFlag)
+  cout << strategies.str("Final");
   }
 
   cout << strategies.str("Strategy");
