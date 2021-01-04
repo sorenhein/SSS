@@ -1,3 +1,79 @@
+Play eliminations, based on KJ975 missing AQT8xx, so
+whenever partner is void:
+
+* In fourth hand where LHO is void, always win cheaply or play lowest
+  if you can't win
+* In second hand when RHO will show up as void, ditto
+* Never lose a trick 5 x void x, where the 5 collapses ranks 6 and xx,
+  so SOMEBODY must have been able to win the 6
+* Partner is not in the game, so we can do Plays::strategize differently
+  - Say the trick goes 5 x void 8.  There are 68 strategies and a
+    number of distributions that match.
+  - Say it goes 5 6 x 8.  The same number of strategies and distributions,
+    but the distributions are partially different.
+  - It's as if the rank collapse happened before the trick in this case
+  - So the 68 strategies should not be tested 68^2.  Instead they
+    should just be merged, #0 with #0, #1 with #1 etc.
+* Effectively the two EW plays are made simultaneously, and some of
+  them are are crossed with each other in a simpler way
+* In fact this also happens in normal fourth-hand play, as long as
+  we're not winning the trick with either of the about-to-collapse
+  ranks
+
+Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
+and shorter than all North cards, so their ranks can't matter.
+
+* Before we merge two strategies, first find the constant distributions
+  - If they overlap between strategies, they come out completely
+    and are added back in at the end.  They are merged down first.
+  - If they don't overlap, they stay out and are added back in, too.
+* In the merged strategy, the two non-overlaps' origins in the original
+  strategies are stored
+  - Before merging, we study the non-overlaps
+  - How many really distinct ones are there?
+  - If not a lot, consider a complete cross-table (matrix) of
+    relationships (dominates, is dominated by, is different)
+  - Also three lists for each one of dominates, is dominated by etc.
+  - Can index by the weight of the non-overlapping part?
+* In a new merge, the non-overlaps are just copied over
+  - We can tell by looking at other merges whether we have a chance
+    or dominating or being dominated by
+* The overlaps do have to be made properly
+  - Can stop if the two overlaps are already "contradictory"
+  - Even if we don't stop, some theories can be eliminated
+  - Their weight is a first indication of possible domination
+  - Then drill down into pieces
+* In a merge, start looking for identities?  (Empirical question)
+* Then look for being dominated?
+  - The accepted strategy has a profile across buckets, and we can
+    make statistics
+  - We pick our own strongest bucket first and try to beat other
+    stored strategies 
+
+Carve out the distributions with constant values?
+
+The cross product has an overlapping part and a non-overlapping one.
+Let's write two vectors (o1, no1) * (o2, no2).
+
+no1          o1, o2       no2
+.... ++++++++++++++++++++
+     ++++++++++++++++++++ ----
+
+We already know that v1 is "prime" with the other vectors from set 1 (S1).
+
+Could we organize S1 by its overlapping and non-overlapping parts somehow?
+
+(Carve out the parts of no1 and no2 that are constant as they will
+remain constant in any product.)
+
+As the non-overlap is only a part of the overall distributions, there
+will be some vectors that are dominated or equal to others over that
+range, even thought they're not overall.
+
+
+
+
+
 Ideas for speeding up Tvector
 ---
 - Initially just a flat list
