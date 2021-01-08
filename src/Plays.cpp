@@ -410,6 +410,148 @@ if (debugFlag)
 }
 
 
+void Plays::strategizeVoid(
+  Distribution const * distPtr,
+  Tvectors& strategies,
+  bool debugFlag)
+{
+  // This yields strategies where EW have "too much" choice.
+  // Therefore the question is going to be whether EW can hold NS
+  // to these outcomes by spreading their probability mass well.
+  // This will be done subsequently.
+
+  // This version of strategize() makes use of the fact that 
+  // partner is void.  Therefore the EW plays are in a sense part
+  // of a coordinated play that partner cannot disrupt.
+
+cout << "Void node counts:" << endl;
+cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
+cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
+cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
+cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+
+  // For exploration we turn the plays back into a vector.
+  // Each play is stored in a PlayInfo.
+
+  struct PlayInfo
+  {
+    SidePosition side;
+    unsigned lead;
+    unsigned lho;
+    unsigned rho;
+    bool leadCollapse;
+    unsigned holding3;
+    unsigned leadNo;
+
+    Tvectors strategies;
+
+    string str(const string& header)
+    {
+      stringstream ss;
+      ss << header << ": " << 
+        lead << " " << lho << " void " << rho << " " <<
+        setw(6) << holding3 << " (lead no " << leadNo << ")";
+      if (leadCollapse)
+        ss << " collapse lead";
+      ss << "\n" << strategies.str("Strategy");
+      return ss.str() + "\n";
+    };
+  };
+
+  vector<PlayInfo> playInfo;
+  playInfo.resize(rhoNodes.size());
+
+  // We also store a vector of constant minimum outcomes for each lead.
+  vector<Tvector> minima;
+  minima.resize(leadNodes.size());
+
+  vector<Tvector> constants;
+  constants.resize(leadNodes.size());
+
+  unsigned pno = 0;
+  unsigned mno = 0;
+  unsigned mlast = rhoNodes.front().pardPtr->lhoPtr->leadPtr->lead;
+
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
+      rhoIter++, pno++)
+  {
+    const auto& rhoNode = * rhoIter;
+    auto& play = playInfo[pno];
+
+    play.side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
+    play.lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
+    play.lho = rhoNode.pardPtr->lhoPtr->lho;
+    play.rho = rhoNode.rho;
+    play.leadCollapse = rhoNode.leadCollapse;
+    play.holding3 = rhoNode.holdingNew;
+
+    assert(play.side == SIDE_NORTH);
+
+    if (play.lead != mlast)
+    {
+      mno++;
+      mlast = play.lead;
+    }
+
+    play.leadNo = mno;
+
+    Survivors survivors;
+    if (play.lho == 0 || play.rho == 0)
+      survivors = distPtr->survivors(play.rho, play.lho);
+    else if (play.leadCollapse)
+    {
+      survivors = distPtr->survivorsCollapse1(play.rho, play.lho, 
+        play.lead + 1);
+    }
+    else
+      survivors = distPtr->survivors(play.rho, play.lho);
+
+    play.strategies = rhoNode.combPtr->strategies();
+    play.strategies.adapt(survivors, 
+      rhoNode.trickNS, 
+      play.rho == 0,
+      play.lho == 0,
+      rhoNode.rotateNew);
+
+    Tvector cst = play.strategies.constants();
+
+    minima[play.leadNo] *= play.strategies.lower();
+    constants[play.leadNo] *= cst;
+    
+    if (debugFlag)
+    {
+      cout << play.str("Vector " + to_string(pno)) << endl;
+      cout << cst.str("Constants") << endl;
+      cout << minima[play.leadNo].str("Minima") << endl;
+      cout << constants[play.leadNo].str("Cumul constants") << endl;
+    }
+  }
+
+  // So now we know for a given lead that certain distributions can
+  // be factored out from the individual strategies: Those constants
+  // that are also minima.
+
+  // Manual combinations.
+  Tvectors tvs = playInfo[0].strategies;
+  tvs *= playInfo[1].strategies;
+  cout << tvs.str("Strategy 0 + 1") << "\n";
+
+  tvs = playInfo[2].strategies;
+  tvs *= playInfo[9].strategies;
+  tvs *= playInfo[15].strategies;
+  tvs *= playInfo[21].strategies;
+  tvs *= playInfo[27].strategies;
+  tvs *= playInfo[33].strategies;
+  cout << tvs.str("Strategy 2 + 9 + 15 + 21 + 27 + 33") << "\n";
+
+  tvs = playInfo[68].strategies;
+  tvs *= playInfo[67].strategies;
+  cout << tvs.str("Strategy 68 + 67") << "\n";
+  
+  strategies = playInfo[0].strategies;
+}
+
+
 string Plays::strHeader() const
 {
   stringstream ss;

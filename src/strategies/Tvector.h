@@ -81,6 +81,10 @@ class Tvector
 
     void operator *=(const Tvector& tv2);
 
+    void constrict(Tvector& constants) const;
+
+    void lower(Tvector& minima) const;
+
     void updateSingle(
       const unsigned fullNo,
       const unsigned trickNS);

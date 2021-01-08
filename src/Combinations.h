@@ -72,6 +72,11 @@ class Combinations
       const unsigned holding,
       const Distributions& distributions);
 
+    void runSpecificVoid(
+      const unsigned cards,
+      const unsigned holding,
+      const Distributions& distributions);
+
     void runUniques(
       const unsigned cards,
       const Distributions& distributions);

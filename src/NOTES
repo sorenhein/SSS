@@ -1,3 +1,30 @@
+- Tvector::same(Tvector& tv2) const
+  Reduces tv2 to those elements there the dist is the same and the
+  tricks are the same.  There may be dists in this that are not in tv2.
+- Tvectors::purge(const Tvector& constants)
+  Cuts out the distributions in constants.
+  Some distributions in constants may not be in this.
+  May check that tricks > constant:tricks.
+  Adjust weights too.
+- Tvectors::reinstate(const Tvector& constants)
+  Puts the constant distributions back.
+  They must not already be there.
+  Adjust weights too.
+
+In Plays.cpp the logic is:
+
+loop over playInfo
+  play.strategies.purge(reductions[play.leadNo])
+
+Then try some of the manual combinations
+
+Then
+
+loop over playInfo
+  play.strategies.reinstante(reductions[play.leadNo])
+  
+
+
 Play eliminations, based on KJ975 missing AQT8xx, so
 whenever partner is void:
 
@@ -19,6 +46,28 @@ whenever partner is void:
 * In fact this also happens in normal fourth-hand play, as long as
   we're not winning the trick with either of the about-to-collapse
   ranks
+
+More ideas:
+* Treat K A x the same as J Q x?  They end up in the same next
+  combination, with the cards from the same side.  So then merge
+  using |=, not *= ?
+* Is there ever a case for playing a card above the 5 unnecessarily?
+  So K A 6 rather than K A x ?  Not sure.  There are probably fewer
+  strategies.  Can we show that declarer can always win the same as
+  before, plus more?  Effectively some of the (12?) next strategies
+  go away, as some values in the table go up.
+  - Maybe the reason not to do it is that e.g. KJ98 is just better
+    than KJ97.  The former has 4 strategies, the latter 12.
+    We can tell how they correspond.  Probably each of the 12
+    is dominated by one of the 4. So declarer could choose to 
+    replace some subset of the 12 by #0 of the 4, some other subset
+    by #1, etc.  This will never be worse and will sometimes be
+    better.  The defense should not allow that.
+  - Does this differentiate from the QT protective falsecard?
+    From KJ97 we end up in either KJ9 missing AQxx or ATxx.
+    So KJT missing AQxx or KQT missing AJxx.
+    In the former the only play for 2 tricks is to drop the Q.
+    In the latter we can either duck out the A, or drop the J(x).
 
 Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
 and shorter than all North cards, so their ranks can't matter.

@@ -158,6 +158,40 @@ void Tvectors::collapseOnVoid()
 }
 
 
+Tvector Tvectors::constants() const
+{
+  // Return a Tvector of those distributions (and tricks) for which
+  // this Tvectors is constant.
+
+  assert(results.size() > 0);
+  if (results.size() == 1)
+    return results.front();
+
+  Tvector csts = results.front();
+  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+    iter->constrict(csts);
+
+  return csts;
+}
+
+
+Tvector Tvectors::lower() const
+{
+  // Return the distribution-wise minimum.
+
+  assert(results.size() > 0);
+  if (results.size() == 1)
+    return results.front();
+
+  Tvector minima = results.front();
+  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+    iter->lower(minima);
+
+  return minima;
+
+}
+
+
 void Tvectors::adapt(
   const Survivors& survivors,
   const unsigned trickNS,

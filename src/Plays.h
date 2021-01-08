@@ -171,6 +171,11 @@ class Plays
      Tvectors& strategies,
      bool debugFlag = false);
 
+   void strategizeVoid(
+     Distribution const * distPtr,
+     Tvectors& strategies,
+     bool debugFlag = false);
+
    string str() const;
 };
 

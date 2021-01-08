@@ -194,6 +194,55 @@ void Tvector::operator *=(const Tvector& tv2)
 }
 
 
+void Tvector::constrict(Tvector& constants) const
+{
+  // The constants vector is a running collection of TrickEntry
+  // elements for those distributions (in a Tvectors) that have
+  // constant results.  If the result of this current Tvector
+  // differs from constants for a given distribution, that 
+  // distribution is removed from constants.  A distribution that
+  // is in constants must also be in this Tvector.
+
+  auto iter1 = results.begin();
+  auto iter2 = constants.results.begin();
+
+  while (iter2 != constants.results.end())
+  {
+    while (iter1 != results.end() && iter1->dist < iter2->dist)
+      iter1++;
+
+    assert(iter1 != results.end());
+    assert(iter1->dist == iter2->dist);
+
+    if (iter1->tricks == iter2->tricks)
+      iter2++;
+    else
+      iter2 = constants.results.erase(iter2);
+  }
+}
+
+
+void Tvector::lower(Tvector& minima) const
+{
+  // This returns the distribution-wise minimum.
+  assert(results.size() == minima.size());
+
+  auto iter1 = results.begin();
+  auto iter2 = minima.results.begin();
+
+  while (iter2 != minima.results.end())
+  {
+    assert(iter1->dist == iter2->dist);
+    
+    if (iter1->tricks < iter2->tricks)
+      iter2->tricks = iter1->tricks;
+    
+    iter1++;
+    iter2++;
+  }
+}
+
+
 void Tvector::updateSingle(
   const unsigned fullNo,
   const unsigned trickNS)

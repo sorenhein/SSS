@@ -42,6 +42,14 @@ class Combination
       Plays& plays,
       bool debugFlag = false);
 
+    const Tvectors& strategizeVoid(
+      const CombEntry& centry,
+      const Combinations& combinations,
+      const Distributions& distributions,
+      Ranks& ranks,
+      Plays& plays,
+      bool debugFlag = false);
+
     const Tvectors& strategies() const;
 
     string str() const;

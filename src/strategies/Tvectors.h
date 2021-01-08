@@ -44,6 +44,10 @@ class Tvectors
 
     void operator *=(const Tvectors& tvs);
 
+    Tvector constants() const; // TODO Return reference?
+
+    Tvector lower() const; // TODO Return reference?
+
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,

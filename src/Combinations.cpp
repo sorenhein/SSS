@@ -114,6 +114,37 @@ void Combinations::runSpecific(
 }
 
 
+void Combinations::runSpecificVoid(
+  const unsigned cards,
+  const unsigned holding,
+  const Distributions& distributions)
+{
+  assert(cards < combEntries.size());
+
+  Ranks ranks;
+  ranks.resize(cards);
+  
+  Plays plays;
+  plays.resize(cards);
+
+  CombEntry& centry = combEntries[cards][holding];
+  ranks.set(holding, centry);
+
+  const unsigned canonicalHolding3 = centry.canonicalHolding3;
+  if (holding != canonicalHolding3)
+  {
+    cout << "Specific (cards, holding) = (" << cards << ", " <<
+      holding << ") is not canonical." << endl;
+    return;
+  }
+
+  cout << ranks.str();
+
+  Combination comb;
+  comb.strategizeVoid(centry, * this, distributions, ranks, plays, true);
+}
+
+
 void Combinations::runUniques(
   const unsigned cards,
   const Distributions& distributions)
