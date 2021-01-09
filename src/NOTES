@@ -1,6 +1,3 @@
-- Tvector::same(Tvector& tv2) const
-  Reduces tv2 to those elements there the dist is the same and the
-  tricks are the same.  There may be dists in this that are not in tv2.
 - Tvectors::purge(const Tvector& constants)
   Cuts out the distributions in constants.
   Some distributions in constants may not be in this.

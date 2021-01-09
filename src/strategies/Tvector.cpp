@@ -205,6 +205,7 @@ void Tvector::constrict(Tvector& constants) const
 
   auto iter1 = results.begin();
   auto iter2 = constants.results.begin();
+  weightInt = 0;
 
   while (iter2 != constants.results.end())
   {
@@ -215,7 +216,10 @@ void Tvector::constrict(Tvector& constants) const
     assert(iter1->dist == iter2->dist);
 
     if (iter1->tricks == iter2->tricks)
+    {
       iter2++;
+      weightInt += iter2->tricks;
+    }
     else
       iter2 = constants.results.erase(iter2);
   }
@@ -224,7 +228,9 @@ void Tvector::constrict(Tvector& constants) const
 
 void Tvector::lower(Tvector& minima) const
 {
-  // This returns the distribution-wise minimum.
+  // This calculates the distribution-wise minimum.
+  // The identical distributions must be present.
+
   assert(results.size() == minima.size());
 
   auto iter1 = results.begin();

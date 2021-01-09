@@ -527,6 +527,16 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     }
   }
 
+  // Now only keep those constants (for a given lead) that
+  // correspond to the minimum achievable outcome.
+
+  for (unsigned i = 0; i < constants.size(); i++)
+  {
+    minima[i].constrict(constants[i]);
+    cout << constants[i].str("Constrained constants " +
+      to_string(i)) << endl;
+  }
+
   // So now we know for a given lead that certain distributions can
   // be factored out from the individual strategies: Those constants
   // that are also minima.
