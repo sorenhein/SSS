@@ -85,6 +85,8 @@ class Tvector
 
     void lower(Tvector& minima) const;
 
+    void purge(const Tvector& constants);
+
     void updateSingle(
       const unsigned fullNo,
       const unsigned trickNS);

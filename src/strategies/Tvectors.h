@@ -48,6 +48,8 @@ class Tvectors
 
     Tvector lower() const; // TODO Return reference?
 
+    void purge(const Tvector& constants);
+
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,

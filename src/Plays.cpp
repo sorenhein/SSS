@@ -461,7 +461,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<PlayInfo> playInfo;
   playInfo.resize(rhoNodes.size());
 
-  // We also store a vector of constant minimum outcomes for each lead.
+  // Store a vector of constant minimum outcomes for each lead.
   vector<Tvector> minima;
   minima.resize(leadNodes.size());
 
@@ -527,7 +527,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     }
   }
 
-  // Now only keep those constants (for a given lead) that
+  // Only keep those constants (for a given lead) that
   // correspond to the minimum achievable outcome.
 
   for (unsigned i = 0; i < constants.size(); i++)
@@ -535,6 +535,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     minima[i].constrict(constants[i]);
     cout << constants[i].str("Constrained constants " +
       to_string(i)) << endl;
+  }
+
+  // Remove those constants from the corresponding strategies.
+  for (auto& play: playInfo)
+  {
+    cout << play.str("Purging play") << endl;
+    play.strategies.purge(constants[play.leadNo]);
+    cout << play.strategies.str("Purged strategy") << "\n";
   }
 
   // So now we know for a given lead that certain distributions can

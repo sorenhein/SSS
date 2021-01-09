@@ -205,7 +205,7 @@ void Tvector::constrict(Tvector& constants) const
 
   auto iter1 = results.begin();
   auto iter2 = constants.results.begin();
-  weightInt = 0;
+  constants.weightInt = 0;
 
   while (iter2 != constants.results.end())
   {
@@ -218,7 +218,7 @@ void Tvector::constrict(Tvector& constants) const
     if (iter1->tricks == iter2->tricks)
     {
       iter2++;
-      weightInt += iter2->tricks;
+      constants.weightInt += iter2->tricks;
     }
     else
       iter2 = constants.results.erase(iter2);
@@ -245,6 +245,40 @@ void Tvector::lower(Tvector& minima) const
     
     iter1++;
     iter2++;
+  }
+}
+
+
+void Tvector::purge(const Tvector& constants)
+{
+  // Removes results corresponding to all distributions in
+  // constants.  The distributions don't all have to be present
+  // in results, but those that are will be removed.
+
+  auto iter1 = results.begin();
+  auto iter2 = constants.results.begin();
+
+  while (iter2 != constants.results.end())
+  {
+    while (iter1 != results.end() && iter1->dist < iter2->dist)
+      iter1++;
+
+    if (iter1 == results.end())
+      return;
+
+    if (iter1->dist == iter2->dist)
+    {
+      assert(iter1->tricks >= iter2->tricks);
+      weightInt -= iter1->tricks;
+      iter1 = results.erase(iter1);
+      iter2++;
+    }
+    else
+    {
+      while (iter2 != constants.results.end() && 
+          iter1->dist > iter2->dist)
+        iter2++;
+    }
   }
 }
 

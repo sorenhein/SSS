@@ -1,8 +1,8 @@
-- Tvectors::purge(const Tvector& constants)
-  Cuts out the distributions in constants.
-  Some distributions in constants may not be in this.
-  May check that tricks > constant:tricks.
-  Adjust weights too.
+There's nowhere (after 7 lead) where d54 is constantly 2 tricks.
+But after 7 6 void 8, it's either 1 or 2 tricks.
+This is better than always 2 tricks.
+Therefore in strategy 67, why would EW ever give the chance for 3 tricks?
+
 - Tvectors::reinstate(const Tvector& constants)
   Puts the constant distributions back.
   They must not already be there.

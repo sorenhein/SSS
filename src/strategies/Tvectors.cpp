@@ -188,7 +188,20 @@ Tvector Tvectors::lower() const
     iter->lower(minima);
 
   return minima;
+}
 
+
+void Tvectors::purge(const Tvector& constants)
+{
+  // TODO Can perhaps be done inline.
+  auto oldResults = results;
+  Tvectors::reset();
+
+  for (auto& result: oldResults)
+  {
+    result.purge(constants);
+    * this += result;
+  }
 }
 
 
