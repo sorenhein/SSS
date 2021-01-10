@@ -267,15 +267,16 @@ void Tvector::constrict(Tvector& constants) const
   // elements for those distributions (in a Tvectors) that have
   // constant results.  If the result of this current Tvector
   // differs from constants for a given distribution, that 
-  // distribution is removed from constants.  A distribution that
-  // is in constants must also be in this Tvector.
+  // distribution is removed from constants.
+  //
+  // If there are distributions in constants that are not in this,
+  // they are removed.
   // 
   // In the case where this Tvector contains the minima, it
   // is component-wise <= constants.  Therefore there is no harm
   // in comparing the tricks >= rather than == below.
   //
   // This behavior is useful when limiting non-constant plays.
-  //
 
   auto iter1 = results.begin();
   auto iter2 = constants.results.begin();
@@ -286,7 +287,13 @@ void Tvector::constrict(Tvector& constants) const
     while (iter1 != results.end() && iter1->dist < iter2->dist)
       iter1++;
 
-    assert(iter1 != results.end());
+    if (iter1 == results.end())
+    {
+      iter2 = constants.results.erase(iter2, constants.results.end());
+      return;
+    }
+
+    /*
     if (iter1->dist != iter2->dist)
     {
       cout << "HERE\n";
@@ -295,16 +302,25 @@ void Tvector::constrict(Tvector& constants) const
       cout << "iter1 " << iter1->dist << ": " << iter1->tricks << endl;
       cout << "iter2 " << iter2->dist << ": " << iter2->tricks << endl;
     }
+    */
 
-    assert(iter1->dist == iter2->dist);
-
-    if (iter1->tricks >= iter2->tricks)
+    if (iter1->dist == iter2->dist)
     {
-      iter2++;
-      constants.weightInt += iter2->tricks;
+      if (iter1->tricks >= iter2->tricks)
+      {
+        iter2++;
+        constants.weightInt += iter2->tricks;
+      }
+      else
+        iter2 = constants.results.erase(iter2);
     }
     else
-      iter2 = constants.results.erase(iter2);
+    {
+      while (iter2 != constants.results.end() && 
+          iter1->dist > iter2->dist)
+        iter2 = constants.results.erase(iter2);
+    }
+    // assert(iter1->dist == iter2->dist);
   }
 }
 

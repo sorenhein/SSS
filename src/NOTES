@@ -1,3 +1,36 @@
+P46 reduces from (2, 23) to (1, 1) which creates a new constant.
+Not sure if it's a good one, but probably it is (d22).
+Same for P52 (d20, d22).
+Same for P58 (d20, d22).
+Same for P67 (d73).
+Same for P68 (d73, d75).
+Same for P69 (d73, d75).
+Same for P85 (d22).
+
+P82 is odder (d13).
+P83 is odder (d13).
+P88 is odder (d82).
+P94 is odder (d82).
+P96 is odder (d35, d36, d41, d42, d55, d45, d61, d62, d67, d71, d82).
+P97 is odder (d22, d82).
+P102 is odder (d13, d24, d28, d33, d34, d39, d40, d53, d54, d59, d60).
+P103 is odder (d22).
+P106 is odder (d73).
+P108 is odder (d13, d73).
+P109 is odder (d73).
+P121 is odder (d13, d14).
+P122 is odder (d13, d17).
+P123 is odder (d14, d17).
+P127 is odder (d81, d82).
+P133 (d78, d82).
+P136 (d35, d37, d41, d43, d55, d57, d61, d63, d67, d71, d82).
+P139 (d78, d81).
+P142 (d78, d81).
+P147 (d13, d24, d28, d32, d34, d38, d40, d50, d54, d58, d60).
+
+Actually, check for new constant or dominated distributions after
+this initial pass of constant and non-constant?
+
 There's nowhere (after 7 lead) where d54 is constantly 2 tricks.
 But after 7 6 void 8, it's either 1 or 2 tricks.
 This is better than always 2 tricks.

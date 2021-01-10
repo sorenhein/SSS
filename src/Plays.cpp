@@ -597,13 +597,19 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     const unsigned num0 = play.strategies.size();
     const unsigned dist0 = play.strategies.numDists();
 
-    cout << play.strategies.str("Pre purging strategy") << endl;
+    // cout << play.strategies.str("Pre purging strategy") << endl;
 
     // Limit the maximum vector to those entries that are <= play.lower.
     Tvector max = maxima[play.leadNo];
-    cout << max.str("max") << endl;
-    cout << play.lower.str("play.lower") << endl;
+    // cout << max.str("max") << endl;
+    // cout << play.lower.str("play.lower") << endl;
     play.lower.constrict(max);
+
+    if (max.size() == 0)
+    {
+      cout << "Nothing to purge\n";
+      continue;
+    }
 
     cout << max.str("to purge") << endl;
 
@@ -616,8 +622,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       num1 << ", " << dist1 << ")\n";
     cout << play.strategies.str("Purged non-constant strategy") << "\n";
     
-    if (num1 == 0)
+    // TODO Maybe clear play.strategies
+    if (num1 == 0 || dist1 == 0)
+    {
       play.empty = true;
+      cout << "Strategy is now empty\n";
+      continue;
+    }
+
   }
 
   
