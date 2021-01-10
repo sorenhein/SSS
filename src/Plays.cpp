@@ -435,6 +435,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   struct PlayInfo
   {
+    unsigned number;
+
     SidePosition side;
     unsigned lead;
     unsigned lho;
@@ -466,8 +468,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     };
   };
 
-  vector<PlayInfo> playInfo;
-  playInfo.resize(rhoNodes.size());
+  list<PlayInfo> playInfo;
+  playInfo.resize(rhoNext);
 
   // Store vectors of extreme outcomes for each lead.
   vector<Tvector> minima, maxima;
@@ -480,13 +482,15 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   unsigned pno = 0;
   unsigned mno = 0;
   unsigned mlast = rhoNodes.front().pardPtr->lhoPtr->leadPtr->lead;
+  auto piter = playInfo.begin();
 
   for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
-      rhoIter++, pno++)
+      rhoIter++, piter++, pno++)
   {
     const auto& rhoNode = * rhoIter;
-    auto& play = playInfo[pno];
+    auto& play = * piter;
 
+    play.number = pno;
     play.side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
     play.lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
     play.lho = rhoNode.pardPtr->lhoPtr->lho;
@@ -526,8 +530,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);
-    // Tvector cst = play.strategies.constants();
-    // minima[play.leadNo] *= play.strategies.lower();
 
     constants[play.leadNo] *= cst;
     minima[play.leadNo] *= play.lower;
@@ -553,9 +555,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   // Remove those constants from the corresponding strategies.
-  for (unsigned p = 0; p < rhoNext; p++)
+  for (auto& play: playInfo)
   {
-    auto& play = playInfo[p];
+    const unsigned p = play.number;
     cout << play.str("Purging constant play" + to_string(p), false) << 
       endl;
 
@@ -585,9 +587,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   // never enter that strategy, so the distribution can be removed
   // from the strategy.
 
-  for (unsigned p = 0; p < rhoNext; p++)
+  for (auto& play: playInfo)
   {
-    auto& play = playInfo[p];
+    const unsigned p = play.number;
     if (play.empty)
       continue;
 
@@ -629,9 +631,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       cout << "Strategy is now empty\n";
       continue;
     }
-
   }
-
   
 
   // So now we know for a given lead that certain distributions can
@@ -639,6 +639,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   // that are also minima.
 
   // Manual combinations.
+  /*
   Tvectors tvs = playInfo[0].strategies;
   tvs *= playInfo[1].strategies;
   cout << tvs.str("Strategy 0 + 1") << "\n";
@@ -656,6 +657,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   cout << tvs.str("Strategy 68 + 67") << "\n";
   
   strategies = playInfo[0].strategies;
+  */
+  strategies = playInfo.front().strategies;
 }
 
 
