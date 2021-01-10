@@ -446,7 +446,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     unsigned leadNo;
 
     Tvectors strategies;
-    bool empty;
 
     Tvector lower;
     Tvector upper;
@@ -520,7 +519,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       survivors = distPtr->survivors(play.rho, play.lho);
 
     play.strategies = rhoNode.combPtr->strategies();
-    play.empty = false;
 
     play.strategies.adapt(survivors, 
       rhoNode.trickNS, 
@@ -555,8 +553,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   // Remove those constants from the corresponding strategies.
-  for (auto& play: playInfo)
+  // Collect all strategies with a single vector into an overall vector.
+  Tvectors simple;
+  unsigned simpleCount = 0;
+
+  piter = playInfo.begin();
+  while (piter != playInfo.end())
   {
+    auto& play = * piter;
     const unsigned p = play.number;
     cout << play.str("Purging constant play" + to_string(p), false) << 
       endl;
@@ -577,8 +581,19 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     
     // TODO Maybe clear play.strategies
     if (num1 == 0 || dist1 == 0)
-      play.empty = true;
+      piter = playInfo.erase(piter);
+    else if (num1 == 1)
+    {
+      simple *= play.strategies;
+      piter = playInfo.erase(piter);
+      simpleCount++;
+    }
+    else
+      piter++;
   }
+
+  cout << "Removed " << simpleCount << " strategies\n";
+  cout << simple.str("simple");
 
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
@@ -587,11 +602,11 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   // never enter that strategy, so the distribution can be removed
   // from the strategy.
 
-  for (auto& play: playInfo)
+  piter = playInfo.begin();
+  while (piter != playInfo.end())
   {
+    auto& play = * piter;
     const unsigned p = play.number;
-    if (play.empty)
-      continue;
 
     cout << play.str("Purging non-constant play " + to_string(p), false) << 
       endl;
@@ -610,6 +625,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     if (max.size() == 0)
     {
       cout << "Nothing to purge\n";
+      piter++;
       continue;
     }
 
@@ -624,14 +640,20 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       num1 << ", " << dist1 << ")\n";
     cout << play.strategies.str("Purged non-constant strategy") << "\n";
     
-    // TODO Maybe clear play.strategies
     if (num1 == 0 || dist1 == 0)
+      piter = playInfo.erase(piter);
+    else if (num1 == 1)
     {
-      play.empty = true;
-      cout << "Strategy is now empty\n";
-      continue;
+      simple *= play.strategies;
+      piter = playInfo.erase(piter);
+      simpleCount++;
     }
+    else
+      piter++;
   }
+
+  cout << "Removed a total of " << simpleCount << " strategies\n";
+  cout << simple.str("simple");
   
 
   // So now we know for a given lead that certain distributions can

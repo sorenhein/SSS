@@ -27,6 +27,11 @@ P136 (d35, d37, d41, d43, d55, d57, d61, d63, d67, d71, d82).
 P139 (d78, d81).
 P142 (d78, d81).
 P147 (d13, d24, d28, d32, d34, d38, d40, d50, d54, d58, d60).
+P148 (d14, d17).
+P160 (d14).
+P163 (d18, d20).
+P166 (d81).
+P184 (d75, d77).
 
 Actually, check for new constant or dominated distributions after
 this initial pass of constant and non-constant?
