@@ -81,11 +81,14 @@ class Tvector
 
     void operator *=(const Tvector& tv2);
 
+    void bound(
+      Tvector& constants,
+      Tvector& lower,
+      Tvector& upper) const;
+
     void constrict(Tvector& constants) const;
 
-    void lower(Tvector& minima) const;
-
-    void purge(const Tvector& constants);
+    unsigned purge(const Tvector& constants);
 
     void updateSingle(
       const unsigned fullNo,

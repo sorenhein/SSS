@@ -131,6 +131,21 @@ if (flag)
 }
 
 
+unsigned Tvectors::size() const
+{
+  return results.size();
+}
+
+
+unsigned Tvectors::numDists() const
+{
+  if (results.empty())
+    return 0;
+  else
+    return results.front().size();
+}
+
+
 void Tvectors::collapseOnVoid()
 {
   assert(results.size() > 0);
@@ -158,50 +173,47 @@ void Tvectors::collapseOnVoid()
 }
 
 
-Tvector Tvectors::constants() const
+void Tvectors::bound(
+  Tvector& constants,
+  Tvector& lower,
+  Tvector& upper) const
 {
-  // Return a Tvector of those distributions (and tricks) for which
-  // this Tvectors is constant.
-
+  // Calculate Tvector values to summarize this Tvectors.
+  // constants is the set of constant strategies.  Other Tvectors
+  // may have other constant values, or non-constant ones, that
+  // may be lower or higher than this results.  There are only
+  // entries for those distributions that have constant tricks.
+  // lower and upper and the bounds.  They exist for each
+  // distribution.
+  
   assert(results.size() > 0);
+
+  constants = results.front();
+  lower = results.front();
+  upper = results.front();
+
   if (results.size() == 1)
-    return results.front();
+    return;
 
-  Tvector csts = results.front();
   for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->constrict(csts);
-
-  return csts;
+    iter->bound(constants, lower, upper);
 }
 
 
-Tvector Tvectors::lower() const
-{
-  // Return the distribution-wise minimum.
-
-  assert(results.size() > 0);
-  if (results.size() == 1)
-    return results.front();
-
-  Tvector minima = results.front();
-  for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->lower(minima);
-
-  return minima;
-}
-
-
-void Tvectors::purge(const Tvector& constants)
+unsigned Tvectors::purge(const Tvector& constants)
 {
   // TODO Can perhaps be done inline.
+  // Returns number of distributions purged.
   auto oldResults = results;
   Tvectors::reset();
+  unsigned num = 0;
 
   for (auto& result: oldResults)
   {
-    result.purge(constants);
+    num = result.purge(constants);
     * this += result;
   }
+  return num;
 }
 
 

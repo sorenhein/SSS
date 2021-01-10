@@ -2,6 +2,19 @@ There's nowhere (after 7 lead) where d54 is constantly 2 tricks.
 But after 7 6 void 8, it's either 1 or 2 tricks.
 This is better than always 2 tricks.
 Therefore in strategy 67, why would EW ever give the chance for 3 tricks?
+- We need not only the constant, low strategies, but also some
+  variable, low ones that may dominate variable, higher ones
+- When making constants, make also the lower and upper bounds for
+  that strategy, in two Tvectors
+- Then we may not need lower()
+- Once we've eliminated constants, we can also mark empty strategies
+  (when #d == 0, then clear it and perhaps mark it in PlayInfo)
+- Keep track of the best (lower) upper bound that we see for a given play
+- Also store the lower bound vector for each strategy
+- Then for each Tvectors, figure out its specific purge vector
+  consisting of distributions where the lowest upper bound is <=
+  its lower bound
+- Then purge these, too
 
 - Tvectors::reinstate(const Tvector& constants)
   Puts the constant distributions back.

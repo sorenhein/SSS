@@ -444,8 +444,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     unsigned leadNo;
 
     Tvectors strategies;
+    bool empty;
 
-    string str(const string& header)
+    Tvector lower;
+    Tvector upper;
+
+    string str(
+      const string& header,
+      const bool fullFlag = true) const
     {
       stringstream ss;
       ss << header << ": " << 
@@ -453,7 +459,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
         setw(6) << holding3 << " (lead no " << leadNo << ")";
       if (leadCollapse)
         ss << " collapse lead";
-      ss << "\n" << strategies.str("Strategy");
+      ss << "\n";
+      if (fullFlag)
+        ss << strategies.str("Strategy");
       return ss.str() + "\n";
     };
   };
@@ -461,9 +469,10 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<PlayInfo> playInfo;
   playInfo.resize(rhoNodes.size());
 
-  // Store a vector of constant minimum outcomes for each lead.
-  vector<Tvector> minima;
+  // Store vectors of extreme outcomes for each lead.
+  vector<Tvector> minima, maxima;
   minima.resize(leadNodes.size());
+  maxima.resize(leadNodes.size());
 
   vector<Tvector> constants;
   constants.resize(leadNodes.size());
@@ -507,16 +516,22 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       survivors = distPtr->survivors(play.rho, play.lho);
 
     play.strategies = rhoNode.combPtr->strategies();
+    play.empty = false;
+
     play.strategies.adapt(survivors, 
       rhoNode.trickNS, 
       play.rho == 0,
       play.lho == 0,
       rhoNode.rotateNew);
 
-    Tvector cst = play.strategies.constants();
+    Tvector cst;
+    play.strategies.bound(cst, play.lower, play.upper);
+    // Tvector cst = play.strategies.constants();
+    // minima[play.leadNo] *= play.strategies.lower();
 
-    minima[play.leadNo] *= play.strategies.lower();
     constants[play.leadNo] *= cst;
+    minima[play.leadNo] *= play.lower;
+    maxima[play.leadNo] *= play.upper;
     
     if (debugFlag)
     {
@@ -538,12 +553,74 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   // Remove those constants from the corresponding strategies.
-  for (auto& play: playInfo)
+  for (unsigned p = 0; p < rhoNext; p++)
   {
-    cout << play.str("Purging play") << endl;
+    auto& play = playInfo[p];
+    cout << play.str("Purging constant play" + to_string(p), false) << 
+      endl;
+
+    const unsigned num0 = play.strategies.size();
+    const unsigned dist0 = play.strategies.numDists();
+
     play.strategies.purge(constants[play.leadNo]);
-    cout << play.strategies.str("Purged strategy") << "\n";
+    play.lower.purge(constants[play.leadNo]);
+    play.upper.purge(constants[play.leadNo]);
+
+    const unsigned num1 = play.strategies.size();
+    const unsigned dist1 = play.strategies.numDists();
+
+    cout << "(" << num0 << ", " << dist0 << ") -> (" <<
+      num1 << ", " << dist1 << ")\n";
+    cout << play.strategies.str("Purged constant strategy") << "\n";
+    
+    // TODO Maybe clear play.strategies
+    if (num1 == 0 || dist1 == 0)
+      play.empty = true;
   }
+
+  // Let's say the range of outcomes for a given strategy is
+  // (min, max) for a given distribution.  Let's also say that
+  // the lowest maximum that any strategy achieves is M.  This is
+  // all for a given lead.  Then if M <= min, the defenders will
+  // never enter that strategy, so the distribution can be removed
+  // from the strategy.
+
+  for (unsigned p = 0; p < rhoNext; p++)
+  {
+    auto& play = playInfo[p];
+    if (play.empty)
+      continue;
+
+    cout << play.str("Purging non-constant play " + to_string(p), false) << 
+      endl;
+
+    const unsigned num0 = play.strategies.size();
+    const unsigned dist0 = play.strategies.numDists();
+
+    cout << play.strategies.str("Pre purging strategy") << endl;
+
+    // Limit the maximum vector to those entries that are <= play.lower.
+    Tvector max = maxima[play.leadNo];
+    cout << max.str("max") << endl;
+    cout << play.lower.str("play.lower") << endl;
+    play.lower.constrict(max);
+
+    cout << max.str("to purge") << endl;
+
+    play.strategies.purge(max);
+
+    const unsigned num1 = play.strategies.size();
+    const unsigned dist1 = play.strategies.numDists();
+
+    cout << "(" << num0 << ", " << dist0 << ") -> (" <<
+      num1 << ", " << dist1 << ")\n";
+    cout << play.strategies.str("Purged non-constant strategy") << "\n";
+    
+    if (num1 == 0)
+      play.empty = true;
+  }
+
+  
 
   // So now we know for a given lead that certain distributions can
   // be factored out from the individual strategies: Those constants

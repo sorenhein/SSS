@@ -194,6 +194,73 @@ void Tvector::operator *=(const Tvector& tv2)
 }
 
 
+void Tvector::bound(
+  Tvector& constants,
+  Tvector& lower,
+  Tvector& upper) const
+{
+  // Each of the three vectors is a running collection of TrickEntry
+  // elements summarizing the distributions (in a parent Tvectors).
+  // - constants is the constant results.  If tricks deviate,
+  //   the corresponding distribution is removed below.
+  // - lower is the lowest trick value for the distribution.
+  //   There is always an entry for each distribution.
+  // - upper is the highest trick value for the distribution.
+
+  auto iter = results.begin();
+  auto iterConst = constants.results.begin();
+  auto iterLower = lower.results.begin();
+  auto iterUpper = upper.results.begin();
+
+  while (iter != results.end())
+  {
+    if (iter->tricks < iterLower->tricks)
+    {
+      assert(iter->dist == iterLower->dist);
+      iterLower->tricks = iter->tricks;
+    }
+    else if (iter->tricks > iterUpper->tricks)
+    {
+      assert(iter->dist == iterUpper->dist);
+      iterUpper->tricks = iter->tricks;
+    }
+
+    if (iter->dist == iterConst->dist)
+    {
+      if (iter->tricks == iterConst->tricks)
+        iterConst++;
+      else
+      {
+        // Only constants has a vector "meaning", so we only keep 
+        // track of its weight.
+        constants.weightInt -= iterConst->tricks;
+        iterConst = constants.results.erase(iterConst);
+      }
+    }
+    else
+    {
+      if (iter->dist >= iterConst->dist)
+      {
+        cout << "HERE\n";
+        cout << Tvector::str("Tvector");
+        cout << constants.str("constants");
+        cout << lower.str("lower");
+        cout << upper.str("upper");
+        cout << "iter " << iter->dist << ": " << iter->tricks << endl;
+        cout << "iterConst " << iterConst->dist << ": " << iterConst->tricks << endl;
+        cout << "iterLower " << iterLower->dist << ": " << iterLower->tricks << endl;
+        cout << "iterUpper " << iterUpper->dist << ": " << iterUpper->tricks << endl;
+      }
+      assert(iter->dist < iterConst->dist);
+    }
+    
+    iter++;
+    iterLower++;
+    iterUpper++;
+  }
+}
+
+
 void Tvector::constrict(Tvector& constants) const
 {
   // The constants vector is a running collection of TrickEntry
@@ -202,6 +269,13 @@ void Tvector::constrict(Tvector& constants) const
   // differs from constants for a given distribution, that 
   // distribution is removed from constants.  A distribution that
   // is in constants must also be in this Tvector.
+  // 
+  // In the case where this Tvector contains the minima, it
+  // is component-wise <= constants.  Therefore there is no harm
+  // in comparing the tricks >= rather than == below.
+  //
+  // This behavior is useful when limiting non-constant plays.
+  //
 
   auto iter1 = results.begin();
   auto iter2 = constants.results.begin();
@@ -213,9 +287,18 @@ void Tvector::constrict(Tvector& constants) const
       iter1++;
 
     assert(iter1 != results.end());
+    if (iter1->dist != iter2->dist)
+    {
+      cout << "HERE\n";
+      cout << Tvector::str("Tvector");
+      cout << constants.str("constants");
+      cout << "iter1 " << iter1->dist << ": " << iter1->tricks << endl;
+      cout << "iter2 " << iter2->dist << ": " << iter2->tricks << endl;
+    }
+
     assert(iter1->dist == iter2->dist);
 
-    if (iter1->tricks == iter2->tricks)
+    if (iter1->tricks >= iter2->tricks)
     {
       iter2++;
       constants.weightInt += iter2->tricks;
@@ -226,37 +309,16 @@ void Tvector::constrict(Tvector& constants) const
 }
 
 
-void Tvector::lower(Tvector& minima) const
-{
-  // This calculates the distribution-wise minimum.
-  // The identical distributions must be present.
-
-  assert(results.size() == minima.size());
-
-  auto iter1 = results.begin();
-  auto iter2 = minima.results.begin();
-
-  while (iter2 != minima.results.end())
-  {
-    assert(iter1->dist == iter2->dist);
-    
-    if (iter1->tricks < iter2->tricks)
-      iter2->tricks = iter1->tricks;
-    
-    iter1++;
-    iter2++;
-  }
-}
-
-
-void Tvector::purge(const Tvector& constants)
+unsigned Tvector::purge(const Tvector& constants)
 {
   // Removes results corresponding to all distributions in
   // constants.  The distributions don't all have to be present
   // in results, but those that are will be removed.
+  // Returns number of purges.
 
   auto iter1 = results.begin();
   auto iter2 = constants.results.begin();
+  unsigned num = 0;
 
   while (iter2 != constants.results.end())
   {
@@ -264,7 +326,7 @@ void Tvector::purge(const Tvector& constants)
       iter1++;
 
     if (iter1 == results.end())
-      return;
+      return num;
 
     if (iter1->dist == iter2->dist)
     {
@@ -272,6 +334,7 @@ void Tvector::purge(const Tvector& constants)
       weightInt -= iter1->tricks;
       iter1 = results.erase(iter1);
       iter2++;
+      num++;
     }
     else
     {
@@ -280,6 +343,7 @@ void Tvector::purge(const Tvector& constants)
         iter2++;
     }
   }
+  return num;
 }
 
 

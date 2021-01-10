@@ -44,11 +44,15 @@ class Tvectors
 
     void operator *=(const Tvectors& tvs);
 
-    Tvector constants() const; // TODO Return reference?
+    unsigned size() const;
+    unsigned numDists() const;
 
-    Tvector lower() const; // TODO Return reference?
+    void bound(
+      Tvector& constants,
+      Tvector& lower,
+      Tvector& upper) const;
 
-    void purge(const Tvector& constants);
+    unsigned purge(const Tvector& constants);
 
     void adapt(
       const Survivors& survivors,
