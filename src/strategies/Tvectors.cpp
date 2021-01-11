@@ -107,26 +107,44 @@ void Tvectors::operator *=(const Tvectors& tvs2)
   list<Tvector> resultsOwn = results;
   results.clear();
 
-bool flag = (resultsOwn.size() > 300 && tvs2.results.size() > 300);
   Tvector tmp;
-unsigned i1 = 0;
-if (flag)
-  cout << "Starting multiply of " << resultsOwn.size() << " * " <<
-    tvs2.results.size() << ", size now " << results.size() << endl;
   for (auto& tv1: resultsOwn)
   {
-if (flag)
-{
- cout << "first index " << i1 << ", size now " <<
-   results.size() << endl;
- i1++;
-}
     for (auto& tv2: tvs2.results)
     {
       tmp = tv1;
       tmp *= tv2;
       *this += tmp;
     }
+  }
+}
+
+
+void Tvectors::operator *=(const Tvector& tv2)
+{
+  if (results.size() == 0)
+    * this += tv2;
+  else
+  {
+    for (auto& tv1: results)
+      tv1 *= tv2;
+  }
+}
+
+
+void Tvectors::operator |=(const Tvectors& tvs2)
+{
+  // Vector-wise combination.
+  assert(results.size() == tvs2.results.size());
+
+  auto riter = results.begin();
+  auto riter2 = tvs2.results.begin();
+
+  while (riter != results.end())
+  {
+    * riter *= * riter2;
+    riter++;
+    riter2++;
   }
 }
 

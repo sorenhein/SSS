@@ -554,7 +554,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
-  Tvectors simple;
+  vector<Tvectors> simple;
+  simple.resize(leadNodes.size());
   unsigned simpleCount = 0;
 
   piter = playInfo.begin();
@@ -562,7 +563,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   {
     auto& play = * piter;
     const unsigned p = play.number;
-    cout << play.str("Purging constant play" + to_string(p), false) << 
+    cout << play.str("Purging constant play " + to_string(p), false) << 
       endl;
 
     const unsigned num0 = play.strategies.size();
@@ -579,12 +580,20 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       num1 << ", " << dist1 << ")\n";
     cout << play.strategies.str("Purged constant strategy") << "\n";
     
-    // TODO Maybe clear play.strategies
     if (num1 == 0 || dist1 == 0)
+    {
+      // Nothing left.
       piter = playInfo.erase(piter);
+      simpleCount++;
+    }
     else if (num1 == 1)
     {
-      simple *= play.strategies;
+      // One strategy left.
+cout << "About to grow simple" << endl;
+cout << "size " << simple[play.leadNo].size() << endl;
+cout << simple[play.leadNo].str("simple") << endl;
+
+      simple[play.leadNo] *= play.strategies;
       piter = playInfo.erase(piter);
       simpleCount++;
     }
@@ -593,7 +602,10 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   cout << "Removed " << simpleCount << " strategies\n";
-  cout << simple.str("simple");
+  cout << "Size now " << playInfo.size() << endl;
+
+  for (auto s: simple)
+    cout << s.str("simple");
 
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
@@ -641,10 +653,15 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     cout << play.strategies.str("Purged non-constant strategy") << "\n";
     
     if (num1 == 0 || dist1 == 0)
+    {
+      // Nothing left.
       piter = playInfo.erase(piter);
+      simpleCount++;
+    }
     else if (num1 == 1)
     {
-      simple *= play.strategies;
+      // One strategy left.
+      simple[play.leadNo] *= play.strategies;
       piter = playInfo.erase(piter);
       simpleCount++;
     }
@@ -653,7 +670,133 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   cout << "Removed a total of " << simpleCount << " strategies\n";
-  cout << simple.str("simple");
+  cout << "Size now " << playInfo.size() << endl;
+  for (unsigned s = 0; s < simple.size(); s++)
+    cout << simple[s].str("simple " + to_string(s));
+
+  cout << "Complex plays\n\n";
+  for (auto& play: playInfo)
+  {
+    cout << setw(3) << right << play.number << ": " <<
+      setw(2) << play.side << " " << 
+      setw(2) << play.lead << " " << 
+      setw(2) << play.lho << " " << 
+      setw(2) << play.rho << ", " <<
+      setw(2) << play.leadNo << ": " << 
+      setw(3) << play.strategies.size() <<
+      setw(3) << play.strategies.numDists() << endl;
+  }
+
+  // Look for rank collapses that happen "during the trick".
+  // For example, with KJ975 missing 7 cards, if declarer leads the 5,
+  // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
+  // be the same, but even during the trick declarer should not distinguish
+  // between the 6 and the x.  We don't give up on the difference, but we
+  // merge the strategies vector by vector, and not by cross product.
+
+  piter = playInfo.begin();
+  while (piter != playInfo.end())
+  {
+    auto& play = * piter;
+    const unsigned p = play.number;
+    if (! play.leadCollapse)
+    {
+      piter++;
+      continue;
+    }
+
+    if (play.lho >= play.lead+3 && play.rho == play.lead-1)
+    {
+      // Find the matching RHO play.
+      auto piter2 = next(piter);
+      while (piter2 != playInfo.end() && 
+          (piter2->lho != play.lho || piter2->rho != play.lead+1))
+        piter2++;
+
+      assert(piter2 != playInfo.end());
+cout << piter->str("piter");
+cout << piter2->str("piter2");
+cout << endl;
+      assert(piter->strategies.size() == piter2->strategies.size());
+      assert(piter->holding3 == piter2->holding3);
+
+      piter->strategies |= piter2->strategies;
+      playInfo.erase(piter2);
+    }
+    else if (play.rho >= play.lead+3 && play.lho == play.lead-1)
+    {
+      // Find the matching LHO play.
+      auto piter2 = next(piter);
+      while (piter2 != playInfo.end() && 
+          (piter2->rho != play.rho || piter2->lho != play.lead+1))
+        piter2++;
+
+      assert(piter2 != playInfo.end());
+cout << piter->str("piter");
+cout << piter2->str("piter2");
+cout << endl;
+      assert(piter->strategies.size() == piter2->strategies.size());
+      assert(piter->holding3 == piter2->holding3);
+
+      piter->strategies |= piter2->strategies;
+      playInfo.erase(piter2);
+      simpleCount++;
+    }
+    piter++;
+  }
+
+  cout << "Removed a total of " << simpleCount << " strategies\n";
+  cout << "Size now " << playInfo.size() << endl;
+
+  cout << "Complex plays\n\n";
+  for (auto& play: playInfo)
+  {
+    cout << setw(3) << right << play.number << ": " <<
+      setw(2) << play.side << " " << 
+      setw(2) << play.lead << " " << 
+      setw(2) << play.lho << " " << 
+      setw(2) << play.rho << ", " <<
+      setw(2) << play.leadNo << ": " << 
+      setw(3) << play.strategies.size() <<
+      setw(3) << play.strategies.numDists() << endl;
+  }
+
+
+  // Combine the plays into an overall strategy.
+
+  vector<Tvectors> leadStrats;
+  leadStrats.resize(leadNext);
+
+  for (auto& play: playInfo)
+  {
+    cout << "Multiplying play " << play.number << " for lead " <<
+      play.leadNo << ", size " << leadStrats[play.leadNo].size() << endl;
+
+    leadStrats[play.leadNo] *= play.strategies;
+
+    cout << " Now " << play.number << " for lead " <<
+      play.leadNo << ", size " << leadStrats[play.leadNo].size() << endl;
+    cout << leadStrats[play.leadNo].str("Strategy") << "\n";
+  }
+
+  for (unsigned l = 0; l < leadStrats.size(); l++)
+  {
+    cout << constants[l].str("constants " + to_string(l));
+    leadStrats[l] *= constants[l];
+    cout << leadStrats[l].str("Strategy with constants " + to_string(l)) << "\n";
+  }
+
+  strategies.reset();
+  for (auto& ls: leadStrats)
+  {
+    cout << "Adding " << ls.size() << " to " << strategies.size() << endl;
+    cout << ls.str("Adding") << "\n";
+    strategies += ls;
+    cout << " Now " << strategies.size() << " to " << strategies.size() << endl;
+    cout << strategies.str("Added") << "\n";
+  }
+
+  cout << "Final size " << strategies.size() << endl;
   
 
   // So now we know for a given lead that certain distributions can

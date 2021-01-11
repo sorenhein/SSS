@@ -43,6 +43,9 @@ class Tvectors
     void operator +=(const Tvectors& tvs);
 
     void operator *=(const Tvectors& tvs);
+    void operator *=(const Tvector& tv);
+
+    void operator |=(const Tvectors& tvs);
 
     unsigned size() const;
     unsigned numDists() const;

@@ -1,129 +1,33 @@
-P46 reduces from (2, 23) to (1, 1) which creates a new constant.
-Not sure if it's a good one, but probably it is (d22).
-Same for P52 (d20, d22).
-Same for P58 (d20, d22).
-Same for P67 (d73).
-Same for P68 (d73, d75).
-Same for P69 (d73, d75).
-Same for P85 (d22).
+Summary of speed-up considerations
+----------------------------------
 
-P82 is odder (d13).
-P83 is odder (d13).
-P88 is odder (d82).
-P94 is odder (d82).
-P96 is odder (d35, d36, d41, d42, d55, d45, d61, d62, d67, d71, d82).
-P97 is odder (d22, d82).
-P102 is odder (d13, d24, d28, d33, d34, d39, d40, d53, d54, d59, d60).
-P103 is odder (d22).
-P106 is odder (d73).
-P108 is odder (d13, d73).
-P109 is odder (d73).
-P121 is odder (d13, d14).
-P122 is odder (d13, d17).
-P123 is odder (d14, d17).
-P127 is odder (d81, d82).
-P133 (d78, d82).
-P136 (d35, d37, d41, d43, d55, d57, d61, d63, d67, d71, d82).
-P139 (d78, d81).
-P142 (d78, d81).
-P147 (d13, d24, d28, d32, d34, d38, d40, d50, d54, d58, d60).
-P148 (d14, d17).
-P160 (d14).
-P163 (d18, d20).
-P166 (d81).
-P184 (d75, d77).
+Rank equivalence
 
-Actually, check for new constant or dominated distributions after
-this initial pass of constant and non-constant?
+* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions with the
+  normal analysis, and still needs 58 distributions the new way
+* When we lead the 7, the defenders with 4/5 cards can probably pick
+  constant plays that leave declarer no recourse
+* With 3 cards, the defenders can choose to yield "KJ9" or "KJT",
+  no matter what the lead is (as long as they're not forced to
+  play the Q or A, which again leads to no declarer choice)
+* So in a sense the small cards x, 8 and T don't matter!
+* We have to recognize this somehow, as strategies will merge
 
-There's nowhere (after 7 lead) where d54 is constantly 2 tricks.
-But after 7 6 void 8, it's either 1 or 2 tricks.
-This is better than always 2 tricks.
-Therefore in strategy 67, why would EW ever give the chance for 3 tricks?
-- We need not only the constant, low strategies, but also some
-  variable, low ones that may dominate variable, higher ones
-- When making constants, make also the lower and upper bounds for
-  that strategy, in two Tvectors
-- Then we may not need lower()
-- Once we've eliminated constants, we can also mark empty strategies
-  (when #d == 0, then clear it and perhaps mark it in PlayInfo)
-- Keep track of the best (lower) upper bound that we see for a given play
-- Also store the lower bound vector for each strategy
-- Then for each Tvectors, figure out its specific purge vector
-  consisting of distributions where the lowest upper bound is <=
-  its lower bound
-- Then purge these, too
+Similarity
 
-- Tvectors::reinstate(const Tvector& constants)
-  Puts the constant distributions back.
-  They must not already be there.
-  Adjust weights too.
-
-In Plays.cpp the logic is:
-
-loop over playInfo
-  play.strategies.purge(reductions[play.leadNo])
-
-Then try some of the manual combinations
-
-Then
-
-loop over playInfo
-  play.strategies.reinstante(reductions[play.leadNo])
-  
-
-
-Play eliminations, based on KJ975 missing AQT8xx, so
-whenever partner is void:
-
-* In fourth hand where LHO is void, always win cheaply or play lowest
-  if you can't win
-* In second hand when RHO will show up as void, ditto
-* Never lose a trick 5 x void x, where the 5 collapses ranks 6 and xx,
-  so SOMEBODY must have been able to win the 6
-* Partner is not in the game, so we can do Plays::strategize differently
-  - Say the trick goes 5 x void 8.  There are 68 strategies and a
-    number of distributions that match.
-  - Say it goes 5 6 x 8.  The same number of strategies and distributions,
-    but the distributions are partially different.
-  - It's as if the rank collapse happened before the trick in this case
-  - So the 68 strategies should not be tested 68^2.  Instead they
-    should just be merged, #0 with #0, #1 with #1 etc.
-* Effectively the two EW plays are made simultaneously, and some of
-  them are are crossed with each other in a simpler way
-* In fact this also happens in normal fourth-hand play, as long as
-  we're not winning the trick with either of the about-to-collapse
-  ranks
-
-More ideas:
 * Treat K A x the same as J Q x?  They end up in the same next
   combination, with the cards from the same side.  So then merge
   using |=, not *= ?
-* Is there ever a case for playing a card above the 5 unnecessarily?
-  So K A 6 rather than K A x ?  Not sure.  There are probably fewer
-  strategies.  Can we show that declarer can always win the same as
-  before, plus more?  Effectively some of the (12?) next strategies
-  go away, as some values in the table go up.
-  - Maybe the reason not to do it is that e.g. KJ98 is just better
-    than KJ97.  The former has 4 strategies, the latter 12.
-    We can tell how they correspond.  Probably each of the 12
-    is dominated by one of the 4. So declarer could choose to 
-    replace some subset of the 12 by #0 of the 4, some other subset
-    by #1, etc.  This will never be worse and will sometimes be
-    better.  The defense should not allow that.
-  - Does this differentiate from the QT protective falsecard?
-    From KJ97 we end up in either KJ9 missing AQxx or ATxx.
-    So KJT missing AQxx or KQT missing AJxx.
-    In the former the only play for 2 tricks is to drop the Q.
-    In the latter we can either duck out the A, or drop the J(x).
+  - Probably not a good idea
 
-Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
-and shorter than all North cards, so their ranks can't matter.
+Improve *= efficiency
 
-* Before we merge two strategies, first find the constant distributions
-  - If they overlap between strategies, they come out completely
-    and are added back in at the end.  They are merged down first.
-  - If they don't overlap, they stay out and are added back in, too.
+* If merge doesn't change the vector, no need to compare
+* Short strategy, e.g. with 3 distributions
+  - Somehow split into overlapping/in-band and other/out-of-band
+    distributions
+  - Is there a way to tell in some cases that something will be
+    a surviving strategy?
 * In the merged strategy, the two non-overlaps' origins in the original
   strategies are stored
   - Before merging, we study the non-overlaps
@@ -146,33 +50,6 @@ and shorter than all North cards, so their ranks can't matter.
     make statistics
   - We pick our own strongest bucket first and try to beat other
     stored strategies 
-
-Carve out the distributions with constant values?
-
-The cross product has an overlapping part and a non-overlapping one.
-Let's write two vectors (o1, no1) * (o2, no2).
-
-no1          o1, o2       no2
-.... ++++++++++++++++++++
-     ++++++++++++++++++++ ----
-
-We already know that v1 is "prime" with the other vectors from set 1 (S1).
-
-Could we organize S1 by its overlapping and non-overlapping parts somehow?
-
-(Carve out the parts of no1 and no2 that are constant as they will
-remain constant in any product.)
-
-As the non-overlap is only a part of the overall distributions, there
-will be some vectors that are dominated or equal to others over that
-range, even thought they're not overall.
-
-
-
-
-
-Ideas for speeding up Tvector
----
 - Initially just a flat list
 - organize(ordered list of distributions in groups)
   makes partial sums for the groups
@@ -187,9 +64,6 @@ Ideas for speeding up Tvector
   weakest group in order to fail quickly
 - == first uses the hash and then individually
 - > uses the prioritized groups and then individually
-
-Ideas for speeding up Tvectors
----
 * Organization
   - Histogram of vector weights, each bucket containing a list
 * In +=
@@ -208,37 +82,32 @@ Ideas for speeding up Tvectors
   - prioritize() each vector
   - Then go through the other second vectors
   - After ~ 20% of the second vectors, re-sort and re-prioritize()
+* Ordering of strategies in *= sequence?!
+  - Maybe do the two "halves" and then merge to break symmetry?!
+*
 
+Speed-ups:
 
+- Tvectors::reinstate(const Tvector& constants)
+  Puts the constant distributions back.
+  They must not already be there.
+  Adjust weights too.
 
-Does it get permanently stuck on 12 / 398582?
-KJ975 / void missing AQT86xx.
-It seems we stall when multiplying 906 * 540 strategies.
-Or thereafter, 20k * 44 :-)
+Play eliminations
+-----------------
 
-Can we run cards <= 10 and then run 11 / 132902 separately?
-It has 9660 strategies.  KJ96 / void, missing AQT87xx.
-The 6 does matter.
+Play eliminations, based on KJ975 missing AQT8xx, so
+whenever partner is void:
 
-Takes several hours (3+) even to do 12 cards.  This doesn't scale.
-Some combinations have absurd numbers of combinations, e.g.
-KJ975 /3 missing AQT864 has 3880 strategies and 64 distributions.
+* In fourth hand where LHO is void, always win cheaply or play lowest
+  if you can't win
+* In second hand when RHO will show up as void, ditto
 
-Probably the *= of Tvectors from following combinations creates
-a lot of combinations and comparisons.
-
-How do we get the complexity down again?
-- Some of the most complex ones have spurious ranks, so we just need
-  to find them and then cut off below that ranks.  But we do need to
-  solve at least once.
-- The *= can be improved to do partial comparisons before full ones.
-- Are there plays that can be cut out?  3-6: Never any reason to
-  play 5 rather than 7.
-- Even so, how can it take that long??
+Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
+and shorter than all North cards, so their ranks can't matter.
 - Can simplify manually: AQT8 / 64 missing KJ9753.  We can never
   take a rank trick < 8. |S| <= |N|.  Max S <= Max N.  But this only
   gets some of the tough ones.
-
 
 Optimization in Ranks:
 - With AQ / - missing KJ, on Ace never drop King (partner will show
@@ -248,7 +117,10 @@ Optimization in Ranks:
 - Maybe in 4th hand when NS are down to <= 1 card after this trick,
   KJ with AQxx outstanding for example (6/548).
 
-Plays become more complicated when we have to keep track of:
+How do we get the complexity down again?
+- The *= can be improved to do partial comparisons before full ones.
+
+
 
 - Winning ranks for NS
 - Winning plays/strategies such as "cash ace"
