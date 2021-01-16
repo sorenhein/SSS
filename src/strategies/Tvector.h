@@ -7,6 +7,8 @@
 
 #include "../struct.h"
 
+#include "Winner.h"
+
 using namespace std;
 
 
@@ -23,6 +25,7 @@ struct TrickEntry
 {
   unsigned dist;
   unsigned tricks;
+  Winner winner;
 
   bool operator < (const TrickEntry& te2) const
   {
@@ -40,6 +43,15 @@ struct TrickEntry
   {
     assert(dist == te2.dist);
     return(tricks > te2.tricks);
+  }
+
+  void set(
+    const unsigned tricksIn,
+    const unsigned rank,
+    const WinningSide winningSide)
+  {
+    tricks = tricksIn;
+    winner.set(rank, winningSide);
   }
 };
 
@@ -66,7 +78,7 @@ class Tvector
     void reset();
 
     void logTrivial(
-      const unsigned value,
+      const TrickEntry& trivialEntry,
       const unsigned len);
 
     void log(

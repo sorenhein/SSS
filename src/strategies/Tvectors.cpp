@@ -23,11 +23,11 @@ void Tvectors::reset()
 
 
 void Tvectors::setTrivial(
-  const unsigned term,
+  const TrickEntry& trivialEntry,
   const unsigned len)
 {
   Tvector tv;
-  tv.logTrivial(term, len);
+  tv.logTrivial(trivialEntry, len);
 
   Tvectors::reset();
   results.push_back(tv);

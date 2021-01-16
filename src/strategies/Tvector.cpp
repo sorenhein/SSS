@@ -31,7 +31,7 @@ void Tvector::reset()
 
 
 void Tvector::logTrivial(
-  const unsigned value,
+  const TrickEntry& trivialEntry,
   const unsigned len)
 {
   results.clear();
@@ -40,9 +40,10 @@ void Tvector::logTrivial(
     results.emplace_back(TrickEntry());
     TrickEntry& te = results.back();
     te.dist = i;
-    te.tricks = value;
+    te.tricks = trivialEntry.tricks;
+    te.winner = trivialEntry.winner;
   }
-  weightInt = value * len;
+  weightInt = trivialEntry.tricks * len;
 }
 
 

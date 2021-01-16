@@ -35,7 +35,7 @@ class Tvectors
     void reset();
 
     void setTrivial(
-      const unsigned value,
+      const TrickEntry& trivialEntry,
       const unsigned len);
 
     void operator +=(const Tvector& tv);

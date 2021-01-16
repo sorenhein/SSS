@@ -7,6 +7,7 @@
 
 using namespace std;
 
+struct TrickEntry;
 struct CombEntry;
 class Plays;
 
@@ -182,7 +183,11 @@ class Ranks
       unsigned& holding3,
       unsigned& holding2) const;
 
-    bool trivial(unsigned& terminalValue) const;
+    void trivialRanked(
+      const unsigned tricks,
+      TrickEntry& trivialEntry) const;
+
+    bool trivial(TrickEntry& trivialEntry) const;
 
     bool leadOK(
       const PositionInfo& leader,
@@ -247,7 +252,7 @@ class Ranks
 
     CombinationType setPlays(
       Plays& plays,
-      unsigned& terminalValue);
+      TrickEntry& trivialEntry);
 
     string str() const;
 };

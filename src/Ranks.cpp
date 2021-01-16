@@ -9,6 +9,8 @@
 #include "Plays.h"
 #include "Ranks.h"
 
+#include "strategies/Tvector.h"
+
 #include "struct.h"
 #include "const.h"
 
@@ -331,33 +333,59 @@ void Ranks::set(
 }
 
 
-bool Ranks::trivial(unsigned& terminalValue) const
+void Ranks::trivialRanked(
+  const unsigned tricks,
+  TrickEntry& trivialEntry) const
+{
+  unsigned rankFull;
+  WinningSide winner;
+  if (north.maxRank == maxRank)
+  {
+    rankFull = north.ranks[maxRank].rank;
+    winner = (south.maxRank == maxRank ? WIN_EITHER : WIN_NORTH);
+  }
+  else
+  {
+    rankFull = south.ranks[maxRank].rank;
+    winner = WIN_SOUTH;
+  }
+
+  trivialEntry.set(tricks, rankFull, winner);
+}
+
+
+bool Ranks::trivial(TrickEntry& trivialEntry) const
 {
   if (north.len == 0 && south.len == 0)
   {
-    terminalValue = 0;
+    trivialEntry.set(0, 0, WIN_NONE);
     return true;
   }
 
   if (opps.len == 0)
   {
-    terminalValue = max(north.len, south.len);
+    trivialEntry.set(max(north.len, south.len), 0, WIN_NONE);
     return true;
   }
 
   if (north.len <= 1 && south.len <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    terminalValue = (opps.maxRank != maxRank);
+    if (opps.maxRank == maxRank)
+      trivialEntry.set(0, 0, WIN_NONE);
+    else
+      Ranks::trivialRanked(1, trivialEntry);
+
     return true;
   }
 
   if (opps.len <= 1)
   {
     if (opps.maxRank == maxRank)
-      terminalValue = max(north.len, south.len) - 1;
+      trivialEntry.set(max(north.len, south.len) - 1, 0, WIN_NONE);
     else
-      terminalValue = max(north.len, south.len);
+      Ranks::trivialRanked(max(north.len, south.len), trivialEntry);
+
     return true;
   }
 
@@ -600,12 +628,12 @@ void Ranks::setPlaysSide(
 
 CombinationType Ranks::setPlays(
   Plays& plays,
-  unsigned& terminalValue)
+  TrickEntry& trivialEntry)
 {
   // If COMB_TRIVIAL, then only terminalValue is set.
   // Otherwise, plays are set.
 
-  if (Ranks::trivial(terminalValue))
+  if (Ranks::trivial(trivialEntry))
     return COMB_TRIVIAL;
 
   Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);

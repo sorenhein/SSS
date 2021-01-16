@@ -14,6 +14,7 @@ SOURCE_FILES    =                       \
                                         \
                 strategies/Tvector.cpp  \
                 strategies/Tvectors.cpp \
+                strategies/Winner.cpp   \
                                         \
                 stats/Timer.cpp         \
                 stats/Timers.cpp
