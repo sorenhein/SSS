@@ -263,6 +263,154 @@ void Ranks::setRanks()
 }
 
 
+void Ranks::setOrderTablesLose(
+  PositionInfo& posInfo,
+  const WinningSide side)
+{
+  const unsigned l = posInfo.maxRank+1;
+  posInfo.remaindersLose.resize(l);
+
+  // r is the full-rank index that we're punching out.
+  for (unsigned r = 1; r < l; r++)
+  {
+assert(r < posInfo.fullCount.size());
+    if (posInfo.fullCount[r] == 0)
+      continue;
+
+assert(r < posInfo.remaindersLose.size());
+    vector<Winner>& remList = posInfo.remaindersLose[r];
+    remList.resize(posInfo.len);
+    unsigned pos = 0;
+
+    // Fill out remList with information about the remaining cards, 
+    // starting from below.
+    for (unsigned s = 1; s < l; s++)
+    {
+assert(s < posInfo.fullCount.size());
+      const unsigned val = posInfo.fullCount[s];
+      if (val == 0)
+        continue;
+
+      const unsigned depth = (r == s ? val-1 : val);
+      for (unsigned d = 1; d < depth; d++, pos++)
+      {
+assert(pos < remList.size());
+        remList[pos].setFull(side, s, d, pos);
+      }
+    }
+
+    remList.resize(pos);
+  }
+}
+
+
+void Ranks::setOrderTablesWin(
+  PositionInfo& posInfo,
+  const WinningSide side,
+  const PositionInfo& otherInfo,
+  const WinningSide otherSide)
+{
+  const unsigned lThis = posInfo.maxRank+1;
+  const unsigned lOther = otherInfo.maxRank+1;
+  posInfo.remaindersWin.resize(lThis);
+
+  // rThis is the full-rank index of the posInfo that we're punching out.
+  for (unsigned rThis = 1; rThis < lThis; rThis++)
+  {
+    if (posInfo.fullCount[rThis] == 0)
+      continue;
+
+    posInfo.remaindersWin[rThis].resize(lOther);
+    
+    // rOther is the full-rank index of the other card played.
+    for (unsigned rOther = 0; rOther < lOther; rOther++)
+    {
+      vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
+      remList.resize(posInfo.len);
+
+      // One of our cards is presumed to be the winner of trick.
+      WinningSide winSide;
+      unsigned winRank;
+      if (rThis > rOther)
+      {
+        winSide = side;
+        winRank = rThis;
+      }
+      else if (rThis < rOther)
+      {
+        winSide = otherSide;
+        winRank = rOther;
+      }
+      else
+      {
+        winSide = WIN_EITHER;
+        winRank = rThis;
+      }
+
+      unsigned pos = 0;
+
+      for (unsigned s = 1; s < lThis; s++)
+      {
+        const unsigned val = posInfo.fullCount[s];
+        if (val == 0)
+          continue;
+
+        const unsigned depth = (rThis == s ? val-1 : val);
+        for (unsigned d = 1; d < depth; d++, pos++)
+          remList[pos].setFull(winSide, winRank, d, pos);
+      }
+
+      remList.resize(pos);
+    }
+  }
+}
+
+
+void Ranks::setOrderTables()
+{
+  // Example: North AQx, South JT8, defenders have 7 cards.
+  // 
+  // Rank Cards North South
+  //    1     x     1     0
+  //    2   3-7     0     0
+  //    3     8     0     1
+  //    4     9     0     0
+  //    5    JT     0     2
+  //    6     Q     1     0
+  //    7     K     0     0
+  //    8     A     1     0
+  //
+  // Then the order table for North (from below) is 1, 6, 8.
+  // For South it is 3, 5, 5.  Each of these also has a depth, so
+  // for South it is actually 3(1), 5(2), 5(1) with the highest
+  // of equals being played first.
+  //
+  // If North plays the Q on the first trick, then North has 1, 8.
+  // So this is the reduced or punched-out order table for North's Q.
+  //
+  // The purpose of these tables is to figure out the lowest winning
+  // rank in the current combination that corresponds to a winner in 
+  // a following combination.  Let's say NS win this trick with the Q.
+  // Then if the lowest winner of the next combination in the ace,
+  // we're going to stick with the Q.  Conceptually in this case,
+  //
+  // North winner[North plays Q][South plays 8] = 1(x), 6(Q!).
+  // The last one is not the ace, as it is higher than the Q.
+  // South winner[North plays Q][South plays 8] = 5(T), 5(J).
+  //
+  // We need tables for each of North and South, for the case when
+  // we win or lose the current trick, and yielding the list of ranks
+  // and depths that will be the lowest winners overall, taking into
+  // account the winner of the following combination.
+
+  Ranks::setOrderTablesLose(north, WIN_NORTH);
+  Ranks::setOrderTablesLose(south, WIN_SOUTH);
+
+  Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
+  Ranks::setOrderTablesWin(south, WIN_SOUTH, north, WIN_NORTH);
+}
+
+
 unsigned Ranks::canonicalTrinary(
   const vector<unsigned>& fullCount1,
   const vector<unsigned>& fullCount2) const
@@ -319,6 +467,7 @@ void Ranks::set(
 {
   holding = holdingIn;
   Ranks::setRanks();
+  Ranks::setOrderTables();
 
   combEntry.rotateFlag = ! (north >= south);
 

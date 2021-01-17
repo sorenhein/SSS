@@ -23,8 +23,14 @@ class Winner
 {
   private:
 
-    unsigned rank;
+    // If North has AKx (ranks 5 and 1), then rank is 5, depth is 1
+    // if it's the A rather than the K, and number is 3 (x, K, A).
+    // See also Ranks::setOrderTables().
+
     WinningSide side;
+    unsigned rank;
+    unsigned depth;
+    unsigned number;
 
 
   public:
@@ -38,6 +44,12 @@ class Winner
     void set(
       const unsigned rankIn,
       const WinningSide sideIn);
+
+    void setFull(
+      const WinningSide sideIn,
+      const unsigned rankIn,
+      const unsigned depthIn,
+      const unsigned number);
 
     string str() const;
 };

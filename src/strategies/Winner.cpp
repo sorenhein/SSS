@@ -33,6 +33,19 @@ void Winner::set(
 }
 
 
+void Winner::setFull(
+  const WinningSide sideIn,
+  const unsigned rankIn,
+  const unsigned depthIn,
+  const unsigned numberIn)
+{
+  side = sideIn;
+  rank = rankIn;
+  depth = depthIn;
+  number = numberIn;
+}
+
+
 string Winner::str() const
 {
   stringstream ss;

@@ -12,6 +12,8 @@
 #include "Plays.h"
 #include "struct.h"
 
+#include "strategies/Tvector.h"
+
 
 Combination::Combination()
 {
@@ -45,19 +47,19 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
     ranks.size(), centry.canonicalHolding2);
 
   // Make the plays.
-  unsigned term;
+  TrickEntry trivialEntry;
   plays.reset();
-if (centry.canonicalHolding3 == 208)
+if (centry.canonicalHolding3 == 546)
 {
   cout << "HERE0\n";
 }
-  const CombinationType ctype = ranks.setPlays(plays, term);
+  const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
   
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)
   {
     // Fill out a single constant strategy with the right value and size.
-    strats.setTrivial(term, distPtr->size());
+    strats.setTrivial(trivialEntry, distPtr->size());
     return strats;
   }
 
@@ -102,19 +104,19 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
     ranks.size(), centry.canonicalHolding2);
 
   // Make the plays.
-  unsigned term;
+  TrickEntry trivialEntry;
   plays.reset();
 if (centry.canonicalHolding3 == 208)
 {
   cout << "HERE0\n";
 }
-  const CombinationType ctype = ranks.setPlays(plays, term);
+  const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
   
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)
   {
     // Fill out a single constant strategy with the right value and size.
-    strats.setTrivial(term, distPtr->size());
+    strats.setTrivial(trivialEntry, distPtr->size());
     return strats;
   }
 

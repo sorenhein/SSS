@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "strategies/Winner.h"
+
 #include "const.h"
 
 using namespace std;
@@ -45,6 +47,9 @@ class Ranks
 
       bool singleRank;
       unsigned len;
+
+      vector<vector<vector<Winner>>> remaindersWin;
+      vector<vector<Winner>> remaindersLose;
 
       void resize(const unsigned cardsIn)
       {
@@ -168,6 +173,18 @@ class Ranks
     void zero();
 
     void setRanks();
+
+    void setOrderTablesLose(
+      PositionInfo& posInfo,
+      const WinningSide side);
+
+    void setOrderTablesWin(
+      PositionInfo& posInfo,
+      const WinningSide side,
+      const PositionInfo& otherInfo,
+      const WinningSide otherSide);
+
+    void setOrderTables();
 
     bool dominates(
       const PositionInfo& first,
