@@ -615,6 +615,42 @@ void Ranks::updateHoldings(
 }
 
 
+void Ranks::logPlay(
+  Plays& plays,
+  const PositionInfo& leader,
+  const PositionInfo& partner,
+  const SidePosition side,
+  const unsigned lead,
+  const unsigned lho,
+  const unsigned pard,
+  const unsigned rho,
+  const bool leadCollapse,
+  const bool pardCollapse,
+  const unsigned holding3,
+  const bool rotateFlag) const
+{
+  const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
+
+  vector<Winner> const * leadOrderPtr;
+  vector<Winner> const * pardOrderPtr;
+
+  if (trickNS)
+  {
+    leadOrderPtr = &leader.remaindersWin[lead][pard];
+    pardOrderPtr = &partner.remaindersWin[pard][lead];
+  }
+  else
+  {
+    leadOrderPtr = &leader.remaindersLose[lead];
+    pardOrderPtr = &partner.remaindersLose[pard];
+  }
+
+  plays.logFull(side, lead, lho, pard, rho, 
+    trickNS, leadCollapse, pardCollapse,
+    leadOrderPtr, pardOrderPtr, holding3, rotateFlag);
+}
+
+
 void Ranks::setPlaysLeadWithVoid(
   PositionInfo& leader,
   PositionInfo& partner,
@@ -654,9 +690,11 @@ void Ranks::setPlaysLeadWithVoid(
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-      plays.log(side, lead, 0, pard, rho, 
-        leadCollapse, false, pardCollapse, rhoCollapse,
-        holding3, rotateFlag);
+      Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
+        leadCollapse, pardCollapse, holding3, rotateFlag);
+      // plays.log(side, lead, 0, pard, rho, 
+        // leadCollapse, false, pardCollapse, rhoCollapse,
+        // holding3, rotateFlag);
 
       opps.fullCount[rho]++;
 
@@ -714,9 +752,11 @@ void Ranks::setPlaysLeadWithoutVoid(
 
         // Register the new play.
         Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
-        plays.log(side, lead, lho, pard, rho,
-          leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
-          holding3, rotateFlag);
+        Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
+          leadCollapse, pardCollapse, holding3, rotateFlag);
+        // plays.log(side, lead, lho, pard, rho,
+          // leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
+          // holding3, rotateFlag);
       
         opps.fullCount[rho]++;
       }

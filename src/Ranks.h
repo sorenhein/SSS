@@ -222,6 +222,20 @@ class Ranks
       unsigned& holding3,
       bool& rotateFlag) const;
 
+    void logPlay(
+      Plays& plays,
+      const PositionInfo& leader,
+      const PositionInfo& partner,
+      const SidePosition side,
+      const unsigned lead,
+      const unsigned lho,
+      const unsigned pard,
+      const unsigned rho,
+      const bool leadCollapse,
+      const bool pardCollapse,
+      const unsigned holding3,
+      const bool rotateFlag) const;
+
     void setPlaysLeadWithVoid(
       PositionInfo& leader,
       PositionInfo& partner,

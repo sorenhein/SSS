@@ -220,6 +220,46 @@ void Plays::logRho(
 }
 
 
+void Plays::logRhoNew(
+  const unsigned rho,
+  const bool leadCollapse,
+  const bool pardCollapse,
+  vector<Winner> const * leadOrderPtr,
+  vector<Winner> const * pardOrderPtr,
+  const unsigned holding3,
+  const bool rotateFlag,
+  const unsigned trickNS,
+  const bool knownVoidLho,
+  const bool knownVoidRho,
+  const bool voidPard,
+  PardNode * pardPtr)
+{
+  if (rhoNextIter == rhoNodes.end())
+    rhoNextIter = rhoNodes.insert(rhoNextIter, chunk.rho, RhoNode());
+
+  RhoNode& node = * rhoNextIter;
+  rhoNext++;
+  rhoNextIter++;
+
+  node.rho = rho;
+  node.leadCollapse = leadCollapse;
+  node.pardCollapse = pardCollapse;
+  node.cardsNew = cards +
+    (knownVoidLho ? 1 : 0) + 
+    (knownVoidRho ? 1 : 0) +
+    (voidPard ? 1 : 0) - 4;
+  node.leadOrderPtr = leadOrderPtr;
+  node.pardOrderPtr = pardOrderPtr;
+  node.holdingNew = holding3;
+  node.rotateNew = rotateFlag;
+  node.trickNS = trickNS;
+  node.knownVoidLho = knownVoidLho;
+  node.knownVoidRho = knownVoidRho;
+  node.voidPard = voidPard;
+  node.pardPtr = pardPtr;
+}
+
+
 void Plays::log(
   const SidePosition side,
   const unsigned lead,
@@ -245,6 +285,40 @@ void Plays::log(
 
   Plays::logRho(rho,
     leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
+    holding3, rotateFlag,
+    trickNS, knownVoidLho, knownVoidRho, voidPard,
+    pardPtr);
+}
+
+
+void Plays::logFull(
+  const SidePosition side,
+  const unsigned lead,
+  const unsigned lho,
+  const unsigned pard,
+  const unsigned rho,
+  const unsigned trickNS,
+  const bool leadCollapse,
+  const bool pardCollapse,
+  vector<Winner> const * leadOrderPtr,
+  vector<Winner> const * pardOrderPtr,
+  const unsigned holding3,
+  const bool rotateFlag)
+{
+  // The pointers assume that the Ranks object still exists!
+
+  bool newFlag;
+  LeadNode * leadPtr = Plays::logLead(side, lead, newFlag);
+  LhoNode * lhoPtr = Plays::logLho(lho, leadPtr, newFlag);
+  PardNode * pardPtr = Plays::logPard(pard, lhoPtr, newFlag);
+
+  const bool knownVoidLho = (lho == 0);
+  const bool knownVoidRho = (rho == 0);
+  const bool voidPard = (pard == 0);
+
+  Plays::logRhoNew(rho,
+    leadCollapse, pardCollapse, 
+    leadOrderPtr, pardOrderPtr,
     holding3, rotateFlag,
     trickNS, knownVoidLho, knownVoidRho, voidPard,
     pardPtr);

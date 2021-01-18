@@ -73,6 +73,9 @@ class Plays
       bool knownVoidRho;
       bool voidPard;
 
+      vector<Winner> const * leadOrderPtr;
+      vector<Winner> const * pardOrderPtr;
+
       PardNode * pardPtr;
     };
 
@@ -137,6 +140,20 @@ class Plays
       const bool voidPard,
       PardNode * pardPtr);
 
+    void logRhoNew(
+      const unsigned rho,
+      const bool leadCollapse,
+      const bool pardCollapse,
+      vector<Winner> const * leadOrderPtr,
+      vector<Winner> const * pardOrderPtr,
+      const unsigned holding3,
+      const bool rotateFlag,
+      const unsigned trickNS,
+      const bool knownVoidLho,
+      const bool knownVoidRho,
+      const bool voidPard,
+      PardNode * pardPtr);
+
     string strHeader() const;
 
   public:
@@ -161,6 +178,20 @@ class Plays
       const bool lhoCollapse,
       const bool pardCollapse,
       const bool rhoCollapse,
+      const unsigned holding3,
+      const bool rotateFlag);
+
+    void logFull(
+      const SidePosition side,
+      const unsigned lead,
+      const unsigned lho,
+      const unsigned pard,
+      const unsigned rho,
+      const unsigned trickNS,
+      const bool leadCollapse,
+      const bool pardCollapse,
+      vector<Winner> const * leadOrderPtr,
+      vector<Winner> const * pardOrderPtr,
       const unsigned holding3,
       const bool rotateFlag);
 
