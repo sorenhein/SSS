@@ -139,6 +139,8 @@ void Combinations::runSpecificVoid(
   }
 
   cout << ranks.str();
+  setlocale(LC_ALL, "en_US.UTF-8");
+  wcout << ranks.strDiagram();
 
   Combination comb;
   comb.strategizeVoid(centry, * this, distributions, ranks, plays, true);

@@ -267,6 +267,10 @@ class Ranks
       const string& cards,
       const string& player) const;
 
+    wstring strPlays(
+      const PositionInfo& posInfo,
+      const vector<string>& names) const;
+
   public:
 
     Ranks();
@@ -286,6 +290,8 @@ class Ranks
       TrickEntry& trivialEntry);
 
     string str() const;
+
+    wstring strDiagram() const;
 };
 
 #endif

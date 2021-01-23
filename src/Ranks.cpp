@@ -3,6 +3,7 @@
 #include <sstream>
 #include <algorithm>
 #include <utility>
+#include <codecvt>
 #include <mutex>
 #include <cassert>
 
@@ -920,6 +921,22 @@ string Ranks::strPosition(
 }
 
 
+wstring Ranks::strPlays(
+  const PositionInfo& posInfo,
+  const vector<string>& names) const
+{
+  if (posInfo.len == 0)
+    return L"-";
+
+  string s = "";
+  for (unsigned rank = maxRank; rank > 0; rank--)
+    s += names[rank];
+
+  wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
+  return conv.from_bytes(s);
+}
+
+
 string Ranks::str() const
 {
   stringstream ss;
@@ -946,5 +963,25 @@ string Ranks::str() const
   }
 
   return ss.str() + "\n";
+}
+
+
+wstring Ranks::strDiagram() const
+{
+  vector<string> namesNorth(cards+1);
+  vector<string> namesSouth(cards+1);
+  vector<string> namesOpps(cards+1);
+  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
+
+  // Makes a little box out of Unicode characters.
+  wstringstream ss;
+  ss << 
+    "    " << Ranks::strPlays(north, namesNorth) << "\n" <<
+    "    " << L"\u2554\u2550\u2550\u2557\n" <<
+    "    " << L"\u2551  \u2551 miss " <<
+      Ranks::strPlays(opps, namesOpps) << "\n" <<
+    "    " << L"\u255A\u2550\u2550\u255D\n" <<
+    "    " << Ranks::strPlays(south, namesSouth) << "\n";
+  return ss.str();
 }
 
