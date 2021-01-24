@@ -536,7 +536,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
         ss << " collapse lead";
       ss << "\n";
       if (fullFlag)
-        ss << strategies.str("Strategy");
+        ss << strategies.str("Strategy", true);
       return ss.str() + "\n";
     };
   };

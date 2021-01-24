@@ -21,9 +21,11 @@ class Tvectors
 
     void collapseOnVoid();
 
-    string strHeader(const string& title) const;
+    string strHeader(
+      const string& title,
+      const bool rankFlag) const;
 
-    string strWeights() const;
+    string strWeights(const bool rankFlag) const;
 
 
   public:
@@ -64,7 +66,9 @@ class Tvectors
       const bool rhoVoidFlag,
       const bool rotateFlag);
 
-    string str(const string& title = "") const;
+    string str(
+      const string& title = "",
+      const bool rankFlag = false) const;
 };
 
 #endif

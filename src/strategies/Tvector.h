@@ -53,6 +53,16 @@ struct TrickEntry
     tricks = tricksIn;
     winner.set(rank, winningSide);
   }
+
+
+  string strEntry(const bool rankFlag) const
+  {
+    stringstream ss;
+    ss << setw(4) << tricks;
+    if (rankFlag)
+      ss << setw(4) << winner.strEntry();
+    return ss.str();
+  }
 };
 
 

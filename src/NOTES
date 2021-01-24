@@ -1,3 +1,10 @@
+2. adapt() must update ranks
+3. += is more or less unchanged, but if two vectors are equal,
+   and NS can pick one, then hopefully one dominates the other
+   (or they are equal) in terms of ranks.  Otherwise assert
+4. *= gives EW a choice if the number of tricks is equal.
+   
+
 Summary of speed-up considerations
 ----------------------------------
 

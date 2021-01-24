@@ -250,42 +250,50 @@ void Tvectors::adapt(
 }
 
 
-string Tvectors::strHeader(const string& title) const
+string Tvectors::strHeader(
+  const string& title,
+  const bool rankFlag) const
 {
   stringstream ss;
   if (title != "")
     ss << title << "\n";
 
+  const unsigned incr = (rankFlag ? 8 : 4);
+
   ss << setw(4) << left << "Dist" << right;
 
   for (unsigned i = 0; i < results.size(); i++)
-    ss << setw(4) << i;
+    ss << setw(incr) << i;
   ss << "\n";
 
-  ss << string(4 + 4 * results.size(), '-') << "\n";
+  ss << string(4 + incr * results.size(), '-') << "\n";
 
   return ss.str();
 }
 
 
-string Tvectors::strWeights() const
+string Tvectors::strWeights(const bool rankFlag) const
 {
   stringstream ss;
-  ss << string(4 + 4 * results.size(), '-') << "\n";
+
+  const unsigned incr = (rankFlag ? 8 : 4);
+  ss << string(4 + incr * results.size(), '-') << "\n";
   ss << setw(4) << "Wgt";
   for (const auto& res: results)
-    ss << setw(4) << res.weight();
+    ss << setw(incr) << res.weight();
   return ss.str() + "\n";
 }
 
 
-string Tvectors::str(const string& title) const
+string Tvectors::str(
+  const string& title,
+  const bool rankFlag) const
 {
   if (results.size() == 0)
     return "";
 
   stringstream ss;
-  ss << Tvectors::strHeader(title);
+  ss << Tvectors::strHeader(title, rankFlag);
 
   // Make a list of iterators -- one per Tvector.
   list<list<TrickEntry>::const_iterator> iters, itersEnd;
@@ -301,7 +309,7 @@ string Tvectors::str(const string& title) const
     ss << setw(4) << left << iters.front()->dist << right;
     for (auto& iter: iters)
     {
-      ss << setw(4) << iter->tricks;
+      ss << iter->strEntry(rankFlag);
 
       // This looks funny, but it's the content of iters that is modified.
       iter++;
@@ -309,7 +317,7 @@ string Tvectors::str(const string& title) const
     ss << "\n";
   }
 
-  ss << Tvectors::strWeights();
+  ss << Tvectors::strWeights(rankFlag);
 
   return ss.str();
 }

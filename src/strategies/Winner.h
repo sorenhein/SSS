@@ -52,6 +52,8 @@ class Winner
       const unsigned number);
 
     string str() const;
+
+    string strEntry() const;
 };
 
 #endif

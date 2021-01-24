@@ -63,3 +63,28 @@ string Winner::str() const
   return ss.str() + "\n";
 }
 
+
+string Winner::strEntry() const
+{
+  stringstream ss;
+
+  if (side == WIN_NORTH)
+    ss << "N";
+  else if (side == WIN_SOUTH)
+    ss << "S";
+  else if (side == WIN_EITHER)
+    ss << "B";
+  else
+    ss << "-";
+  
+  ss << hex << uppercase << rank << dec;
+  if (depth == 2)
+    ss << "'";
+  else if (depth == 3)
+    ss << "\"";
+  else if (depth > 3)
+    ss << "+";
+  
+  return ss.str();
+}
+
