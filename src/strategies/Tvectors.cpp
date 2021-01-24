@@ -238,12 +238,15 @@ unsigned Tvectors::purge(const Tvector& constants)
 void Tvectors::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
+  const vector<Winner>& northOrder,
+  const vector<Winner>& southOrder,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(survivors, trickNS, lhoVoidFlag, rhoVoidFlag, rotateFlag);
+    tv.adapt(survivors, trickNS, northOrder, southOrder,
+      lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)
     Tvectors::collapseOnVoid();

@@ -62,6 +62,8 @@ class Tvectors
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,
+      const vector<Winner>& northOrder, // Relative to parent,
+      const vector<Winner>& southOrder, // so after rotation
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

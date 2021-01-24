@@ -47,13 +47,14 @@ struct TrickEntry
 
   void set(
     const unsigned tricksIn,
+    const WinningSide side,
     const unsigned rank,
-    const WinningSide winningSide)
+    const unsigned depth,
+    const unsigned number)
   {
     tricks = tricksIn;
-    winner.set(rank, winningSide);
+    winner.set(side, rank, depth, number);
   }
-
 
   string strEntry(const bool rankFlag) const
   {
@@ -127,6 +128,8 @@ class Tvector
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,
+      const vector<Winner>& northOrder,
+      const vector<Winner>& southOrder,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

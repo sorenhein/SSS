@@ -174,6 +174,11 @@ class Ranks
 
     void setRanks();
 
+    void countNumbers(
+      vector<unsigned>& numbers,
+      const PositionInfo& posInfo,
+      const unsigned vlen) const;
+
     void setOrderTablesLose(
       PositionInfo& posInfo,
       const WinningSide side);

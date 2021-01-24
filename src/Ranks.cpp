@@ -264,10 +264,30 @@ void Ranks::setRanks()
 }
 
 
+void Ranks::countNumbers(
+  vector<unsigned>& numbers,
+  const PositionInfo& posInfo,
+  const unsigned vlen) const
+{
+  // Works for vlen == 1 too, i.e. a void.
+  numbers.resize(vlen);
+  unsigned running = 0;
+  for (unsigned r = 0; r < vlen; r++)
+  {
+    running += posInfo.fullCount[r];
+    numbers[r] = running;
+  }
+}
+
+
 void Ranks::setOrderTablesLose(
   PositionInfo& posInfo,
   const WinningSide side)
 {
+  // NS lose this trick, so the only question is how to map the
+  // remaining NS cards (potential later winners) up to the cards
+  // in this trick.
+
   const unsigned l = posInfo.maxRank+1;
   posInfo.remaindersLose.resize(l);
 
@@ -292,11 +312,12 @@ assert(s < posInfo.fullCount.size());
       if (val == 0)
         continue;
 
+      // If this is the card we're punching out, reduce the depth by 1.
       const unsigned depth = (r == s ? val-1 : val);
       for (unsigned d = 1; d < depth; d++, pos++)
       {
 assert(pos < remList.size());
-        remList[pos].setFull(side, s, d, pos);
+        remList[pos].set(side, s, d, pos);
       }
     }
 
@@ -311,9 +332,22 @@ void Ranks::setOrderTablesWin(
   const PositionInfo& otherInfo,
   const WinningSide otherSide)
 {
+  // NS win this trick, so the winner to which a later NS winner maps
+  // is more complicated to determine than in setOrderTablesLose().
+  // It can either be the current-trick or the later-trick winner.
+  // Also, either or those can be a single-side or a two-side winner.
+
   const unsigned lThis = posInfo.maxRank+1;
   const unsigned lOther = otherInfo.maxRank+1;
   posInfo.remaindersWin.resize(lThis);
+
+  // Count the numbers of each relevant NS card.
+  vector<unsigned> numThis, numOther;
+  Ranks::countNumbers(numThis, posInfo, lThis);
+  Ranks::countNumbers(numOther, otherInfo, lOther);
+
+  Winner current;
+  unsigned crank;
 
   // rThis is the full-rank index of the posInfo that we're punching out.
   for (unsigned rThis = 1; rThis < lThis; rThis++)
@@ -329,36 +363,46 @@ void Ranks::setOrderTablesWin(
       vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
       remList.resize(posInfo.len);
 
-      // One of our cards is presumed to be the winner of trick.
-      WinningSide winSide;
-      unsigned winRank;
+      current.reset();
       if (rThis > rOther)
       {
-        winSide = side;
-        winRank = rThis;
+        current.set(side, rThis, 1, numThis[rThis]);
+        crank = rThis;
       }
       else if (rThis < rOther)
       {
-        winSide = otherSide;
-        winRank = rOther;
+        current.set(otherSide, rOther, 1, numOther[rOther]);
+        crank = rOther;
       }
       else
       {
-        winSide = WIN_EITHER;
-        winRank = rThis;
+        current.set(side, rThis, 1, numThis[rThis]);
+        current.set(otherSide, rOther, 1, numOther[rOther]);
+        crank = rThis;
       }
 
+      // Punch out each later leader card and pick the lowest winner
+      // among that card and the current winner.
       unsigned pos = 0;
-
       for (unsigned s = 1; s < lThis; s++)
       {
         const unsigned val = posInfo.fullCount[s];
         if (val == 0)
           continue;
 
-        const unsigned depth = (rThis == s ? val-1 : val);
-        for (unsigned d = 1; d < depth; d++, pos++)
-          remList[pos].setFull(winSide, winRank, d, pos);
+        if (s <= crank)
+        {
+          // The later leader card is lower.
+          const unsigned depth = (rThis == s ? val-1 : val);
+          for (unsigned d = 1; d < depth; d++, pos++)
+            remList[pos].set(side, s, d, pos);
+        }
+        else if (s > crank)
+        {
+          // The current winner is lower.
+          for (unsigned d = 1; d < val; d++, pos++)
+            remList[pos] = current;
+        }
       }
 
       remList.resize(pos);
@@ -487,20 +531,13 @@ void Ranks::trivialRanked(
   const unsigned tricks,
   TrickEntry& trivialEntry) const
 {
-  unsigned rankFull;
-  WinningSide winner;
   if (north.maxRank == maxRank)
-  {
-    rankFull = north.ranks[maxRank].rank;
-    winner = (south.maxRank == maxRank ? WIN_EITHER : WIN_NORTH);
-  }
-  else
-  {
-    rankFull = south.ranks[maxRank].rank;
-    winner = WIN_SOUTH;
-  }
+    trivialEntry.set(tricks, WIN_NORTH, north.ranks[maxRank].rank, 
+      1, north.len);
 
-  trivialEntry.set(tricks, rankFull, winner);
+  if (south.maxRank == maxRank)
+    trivialEntry.set(tricks, WIN_SOUTH, south.ranks[maxRank].rank, 
+      1, south.len);
 }
 
 
@@ -508,13 +545,13 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
 {
   if (north.len == 0 && south.len == 0)
   {
-    trivialEntry.set(0, 0, WIN_NONE);
+    trivialEntry.set(0, WIN_NONE, 0, 0, 0);
     return true;
   }
 
   if (opps.len == 0)
   {
-    trivialEntry.set(max(north.len, south.len), 0, WIN_NONE);
+    trivialEntry.set(max(north.len, south.len), WIN_NONE, 0, 0, 0);
     return true;
   }
 
@@ -522,7 +559,7 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
   {
     // North-South win their last trick if they have the highest card.
     if (opps.maxRank == maxRank)
-      trivialEntry.set(0, 0, WIN_NONE);
+      trivialEntry.set(0, WIN_NONE, 0, 0, 0);
     else
       Ranks::trivialRanked(1, trivialEntry);
 
@@ -532,7 +569,7 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
   if (opps.len <= 1)
   {
     if (opps.maxRank == maxRank)
-      trivialEntry.set(max(north.len, south.len) - 1, 0, WIN_NONE);
+      trivialEntry.set(max(north.len, south.len)-1, WIN_NONE, 0, 0, 0);
     else
       Ranks::trivialRanked(max(north.len, south.len), trivialEntry);
 

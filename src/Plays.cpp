@@ -371,14 +371,20 @@ if (debugFlag)
 if (debugFlag)
   cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
 
+    vector<Winner> const * northOrderPtr;
+    vector<Winner> const * southOrderPtr;
     unsigned first, second;
     if (side == SIDE_NORTH)
     {
+      northOrderPtr = rhoNode.leadOrderPtr;
+      southOrderPtr = rhoNode.pardOrderPtr;
       first = rhoNode.rho;
       second = lho;
     }
     else
     {
+      southOrderPtr = rhoNode.leadOrderPtr;
+      northOrderPtr = rhoNode.pardOrderPtr;
       first = lho;
       second = rhoNode.rho;
     }
@@ -412,8 +418,11 @@ if (debugFlag)
     // have to be renumbered and possibly rotated.
     tvs = rhoNode.combPtr->strategies();
 // cout << tvs.str("Tvectors") << endl;
+
     tvs.adapt(survivors, 
       rhoNode.trickNS, 
+      * northOrderPtr,
+      * southOrderPtr,
       first == 0,
       second == 0,
       rhoNode.rotateNew);
@@ -594,8 +603,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     play.strategies = rhoNode.combPtr->strategies();
 
+    // adapt() renumbers distributions from combPtr.
+    // It also renumbers winners within strategies.
     play.strategies.adapt(survivors, 
       rhoNode.trickNS, 
+      * rhoNode.leadOrderPtr,
+      * rhoNode.pardOrderPtr,
       play.rho == 0,
       play.lho == 0,
       rhoNode.rotateNew);

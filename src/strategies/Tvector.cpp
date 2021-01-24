@@ -438,6 +438,8 @@ void Tvector::updateAndGrow(
 void Tvector::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
+  const vector<Winner>& northOrder, // Relative to parent,
+  const vector<Winner>& southOrder, // so after rotation
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
@@ -466,7 +468,17 @@ void Tvector::adapt(
   }
 
   if (rotateFlag)
+  {
     results.reverse();
+
+    // We also have to to fix the NS winner orientation.
+    for (auto& te: results)
+      te.winner.flip();
+  }
+
+  // Update the winners.
+    for (auto& te: results)
+      te.winner.update(northOrder, southOrder);
 
   // LHO and RHO void flags pertain to the this rotation state
   // (parent's frame of reference).
