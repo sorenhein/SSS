@@ -1,4 +1,26 @@
+Trivial cases:
+* NS both void: WIN_NONE, 0, 0
+* Opps both void: WIN_NONE, maxlen, 0
+* N and/or S one card:
+  - Wins: N, S or EITHER depending on cards
+  - Loses: WIN_NONE, 0, 0
+
+Updates:
+* NS win the top trick, may be N, S or EITHER
+  - Was NONE: The new winner is entered.  Can perhaps use the
+    lowest in the north or south vectors.
+  - Was N or S:
+    - One is a clear rank lower: Just update
+    - One is the same rank, different depth:
+      - From same side: Update
+      - From other side: Needs to be some kind of EITHER
+      - From either side: Map both up, keep as EITHER
+  - Was EITHER:
+    etc.
+
+
 2. adapt() must update ranks
+2a. Also updateAndGrow
 3. += is more or less unchanged, but if two vectors are equal,
    and NS can pick one, then hopefully one dominates the other
    (or they are equal) in terms of ranks.  Otherwise assert
