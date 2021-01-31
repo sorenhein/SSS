@@ -40,6 +40,7 @@ const Tvectors& Combination::strategize(
   bool debugFlag)
 {
 cout << "cholding2 is " << centry.canonicalHolding2 << 
+  ", can3 is " << centry.canonicalHolding3 <<
   ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
@@ -49,7 +50,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   // Make the plays.
   TrickEntry trivialEntry;
   plays.reset();
-if (centry.canonicalHolding3 == 546)
+if (centry.canonicalHolding3 == 8 && ranks.size() == 4)
 {
   cout << "HERE0\n";
 }

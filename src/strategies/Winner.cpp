@@ -43,7 +43,10 @@ void Winner::set(
     else if (mode == WIN_SOUTH_ONLY)
       mode = WIN_NS_DECIDE;
     else
+    {
+cout << "About to fail" << endl;
       assert(false);
+    }
   }
   else if (sideIn == WIN_SOUTH)
   {

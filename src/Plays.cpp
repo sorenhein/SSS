@@ -419,6 +419,7 @@ if (debugFlag)
     tvs = rhoNode.combPtr->strategies();
 // cout << tvs.str("Tvectors") << endl;
 
+    // TODO Just pass in the RHO node in some form?
     tvs.adapt(survivors, 
       rhoNode.trickNS, 
       * northOrderPtr,

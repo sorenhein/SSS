@@ -287,8 +287,11 @@ void Ranks::setOrderTablesLose(
   // NS lose this trick, so the only question is how to map the
   // remaining NS cards (potential later winners) up to the cards
   // in this trick.
+  // If ths posInfo side is void, the result ends up with a single,
+  // empty entry at position (rank) 0.
 
   const unsigned l = posInfo.maxRank+1;
+  posInfo.remaindersLose.clear();
   posInfo.remaindersLose.resize(l);
 
   // r is the full-rank index that we're punching out.
@@ -312,9 +315,10 @@ assert(s < posInfo.fullCount.size());
       if (val == 0)
         continue;
 
-      // If this is the card we're punching out, reduce the depth by 1.
-      const unsigned depth = (r == s ? val-1 : val);
-      for (unsigned d = 1; d < depth; d++, pos++)
+      // If this is the card we're punching out, reduce the depth by 1
+      // by starting with the second such card.
+      const unsigned start = (r == s ? 1 : 0);
+      for (unsigned d = start; d < val; d++, pos++)
       {
 assert(pos < remList.size());
         remList[pos].set(side, s, d, pos);
@@ -335,10 +339,11 @@ void Ranks::setOrderTablesWin(
   // NS win this trick, so the winner to which a later NS winner maps
   // is more complicated to determine than in setOrderTablesLose().
   // It can either be the current-trick or the later-trick winner.
-  // Also, either or those can be a single-side or a two-side winner.
+  // Also, either of those can be a single-side or a two-side winner.
 
   const unsigned lThis = posInfo.maxRank+1;
   const unsigned lOther = otherInfo.maxRank+1;
+  posInfo.remaindersWin.clear();
   posInfo.remaindersWin.resize(lThis);
 
   // Count the numbers of each relevant NS card.
@@ -350,7 +355,8 @@ void Ranks::setOrderTablesWin(
   unsigned crank;
 
   // rThis is the full-rank index of the posInfo that we're punching out.
-  for (unsigned rThis = 1; rThis < lThis; rThis++)
+  // The posInfo side may be void.
+  for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
     if (posInfo.fullCount[rThis] == 0)
       continue;
@@ -362,6 +368,8 @@ void Ranks::setOrderTablesWin(
     {
       vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
       remList.resize(posInfo.len);
+cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
+  endl;
 
       current.reset();
       if (rThis > rOther)
@@ -393,19 +401,27 @@ void Ranks::setOrderTablesWin(
         if (s <= crank)
         {
           // The later leader card is lower.
-          const unsigned depth = (rThis == s ? val-1 : val);
-          for (unsigned d = 1; d < depth; d++, pos++)
+          const unsigned start = (rThis == s ? 1 : 0);
+cout << "Later s << " << s << " start " << start << ", val " << val << 
+  ", pos " << pos <<endl;
+          for (unsigned d = start; d < val; d++, pos++)
             remList[pos].set(side, s, d, pos);
+cout << "  pos now " << pos << endl;
         }
         else if (s > crank)
         {
-          // The current winner is lower.
-          for (unsigned d = 1; d < val; d++, pos++)
+cout << "Copy val << " << val << 
+  ", pos " << pos <<endl;
+          // The current winner is lower, so we map to it.
+          for (unsigned d = 0; d < val; d++, pos++)
             remList[pos] = current;
+cout << "  pos now " << pos << endl;
         }
       }
 
       remList.resize(pos);
+cout << "final[" << rThis << "][" << rOther << "] size " << pos <<
+  endl;
     }
   }
 }
@@ -436,7 +452,7 @@ void Ranks::setOrderTables()
   // The purpose of these tables is to figure out the lowest winning
   // rank in the current combination that corresponds to a winner in 
   // a following combination.  Let's say NS win this trick with the Q.
-  // Then if the lowest winner of the next combination in the ace,
+  // Then if the lowest winner of the next combination is the ace,
   // we're going to stick with the Q.  Conceptually in this case,
   //
   // North winner[North plays Q][South plays 8] = 1(x), 6(Q!).
@@ -529,15 +545,15 @@ void Ranks::set(
 
 void Ranks::trivialRanked(
   const unsigned tricks,
+  const unsigned winRank,
   TrickEntry& trivialEntry) const
 {
-  if (north.maxRank == maxRank)
-    trivialEntry.set(tricks, WIN_NORTH, north.ranks[maxRank].rank, 
-      1, north.len);
+  // Play the highest card.
+  if (north.maxRank == winRank)
+    trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.len-1);
 
-  if (south.maxRank == maxRank)
-    trivialEntry.set(tricks, WIN_SOUTH, south.ranks[maxRank].rank, 
-      1, south.len);
+  if (south.maxRank == winRank)
+    trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.len-1);
 }
 
 
@@ -561,17 +577,18 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
     if (opps.maxRank == maxRank)
       trivialEntry.set(0, WIN_NONE, 0, 0, 0);
     else
-      Ranks::trivialRanked(1, trivialEntry);
+      Ranks::trivialRanked(1, opps.maxRank+1, trivialEntry);
 
     return true;
   }
 
-  if (opps.len <= 1)
+  if (opps.len == 1)
   {
     if (opps.maxRank == maxRank)
       trivialEntry.set(max(north.len, south.len)-1, WIN_NONE, 0, 0, 0);
     else
-      Ranks::trivialRanked(max(north.len, south.len), trivialEntry);
+      Ranks::trivialRanked(max(north.len, south.len), opps.maxRank+1, 
+        trivialEntry);
 
     return true;
   }
@@ -672,16 +689,28 @@ void Ranks::logPlay(
   vector<Winner> const * leadOrderPtr;
   vector<Winner> const * pardOrderPtr;
 
+cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
+  ", " << pard << ", " << rho << ", trick " << trickNS << endl;
+
   if (trickNS)
   {
+assert(lead < leader.remaindersWin.size());
+assert(pard < leader.remaindersWin[lead].size());
     leadOrderPtr = &leader.remaindersWin[lead][pard];
+assert(pard < partner.remaindersWin.size());
+assert(lead < partner.remaindersWin[pard].size());
     pardOrderPtr = &partner.remaindersWin[pard][lead];
   }
   else
   {
+assert(lead < leader.remaindersLose.size());
     leadOrderPtr = &leader.remaindersLose[lead];
+assert(pard < partner.remaindersLose.size());
     pardOrderPtr = &partner.remaindersLose[pard];
   }
+
+cout << "Ranks::logPlay " << leadOrderPtr->size() << ", " <<
+  pardOrderPtr->size() << endl;
 
   plays.logFull(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
