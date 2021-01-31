@@ -368,8 +368,9 @@ if (debugFlag)
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
     const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
     const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
-if (debugFlag)
-  cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << endl;
+// if (debugFlag)
+  cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << 
+    " rotate " << (rhoNode.rotateNew ? "yes" : "no") << endl;
 
     vector<Winner> const * northOrderPtr;
     vector<Winner> const * southOrderPtr;

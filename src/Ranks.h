@@ -156,6 +156,22 @@ class Ranks
             return false;
         }
       }
+
+      bool greater(const PositionInfo& p2) const
+      {
+        const unsigned l = fullCount.size();
+        if (l == 0)
+          return true;
+
+        for (unsigned rank = l-1; rank > 0; rank--) // Exclude void
+        {
+          if (fullCount[rank] > p2.fullCount[rank])
+            return true;
+          if (fullCount[rank] < p2.fullCount[rank])
+            return false;
+        }
+        return true;
+      }
     };
 
 
@@ -225,6 +241,7 @@ class Ranks
     void updateHoldings(
       const PositionInfo& leader,
       const PositionInfo& partner,
+      const SidePosition side,
       unsigned& holding3,
       bool& rotateFlag) const;
 

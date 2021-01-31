@@ -530,6 +530,14 @@ void Ranks::set(
   Ranks::setRanks();
   Ranks::setOrderTables();
 
+bool b1 = (north >= south);
+bool b2 = north.greater(south);
+if (b1 != b2)
+{
+  // TODO Switch to greater()
+  cout << "About to fail" << endl;
+}
+assert(b1 == b2);
   combEntry.rotateFlag = ! (north >= south);
 
   if (combEntry.rotateFlag)
@@ -654,18 +662,28 @@ bool Ranks::pardOK(
 void Ranks::updateHoldings(
   const PositionInfo& leader,
   const PositionInfo& partner,
+  const SidePosition side,
   unsigned& holding3,
   bool& rotateFlag) const
 {
-  if (leader >= partner)
+  // if (leader >= partner)
+  // TODO Switch to greater(), rename it >=
+  if (leader.greater(partner))
   {
+cout << "leader >= partner, side " << (side == SIDE_NORTH ?
+  "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
-    rotateFlag = false;
+    // rotateFlag is absolute.
+    // If the leader is South, then rotate.
+    rotateFlag = (side == SIDE_SOUTH);
   }
   else
   {
+cout << "leader < partner, side " << (side == SIDE_NORTH ?
+  "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
-    rotateFlag = true;
+    // If the leader is South, then don't rotate.
+    rotateFlag = (side == SIDE_NORTH);
   }
 }
 
@@ -756,7 +774,7 @@ void Ranks::setPlaysLeadWithVoid(
       rhoCollapse = (opps.fullCount[rho] == 0);
           
       // Register the new play.
-      Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+      Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
         leadCollapse, pardCollapse, holding3, rotateFlag);
       // plays.log(side, lead, 0, pard, rho, 
@@ -818,7 +836,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
 
         // Register the new play.
-        Ranks::updateHoldings(leader, partner, holding3, rotateFlag);
+        Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
         Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
           leadCollapse, pardCollapse, holding3, rotateFlag);
         // plays.log(side, lead, lho, pard, rho,
