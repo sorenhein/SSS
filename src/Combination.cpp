@@ -50,7 +50,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   // Make the plays.
   TrickEntry trivialEntry;
   plays.reset();
-if (centry.canonicalHolding3 == 68 && ranks.size() == 5)
+if (centry.canonicalHolding3 == 203 && ranks.size() == 7)
 {
   cout << "HERE0\n";
 }

@@ -157,8 +157,11 @@ class Ranks
         }
       }
 
-      bool greater(const PositionInfo& p2) const
+      bool greater(
+        const PositionInfo& p2,
+        const PositionInfo& opps) const
       {
+        /*
         const unsigned l = fullCount.size();
         if (l == 0)
           return true;
@@ -171,6 +174,27 @@ class Ranks
             return false;
         }
         return true;
+        */
+
+        // There may be rank collapses from played EW cards.
+        unsigned run1 = 0;
+        unsigned run2 = 0;
+        for (unsigned r = max(maxRank, p2.maxRank); ; r -= 2)
+        {
+          run1 += fullCount[r];
+          run2 += p2.fullCount[r];
+          if (r > 2 && opps.fullCount[r-1] == 0)
+            continue;  // EW collapse
+          else if (run1 > run2)
+            return true;
+          else if (run1 < run2)
+            return false;
+          else if (r <= 2)
+            return true; // Nothing else happens, so equality
+          
+          run1 = 0;
+          run2 = 0;
+        }
       }
     };
 

@@ -477,6 +477,9 @@ unsigned Ranks::canonicalTrinary(
   const vector<unsigned>& fullCount2) const
 {
   // This is similar to canonicalNew, but only does holding3.
+  // Actually it only generates a canonical holding3 if there is
+  // no rank reduction among the opponents' cards.  Therefore
+  // Combinations::getPtr looks up the canonical index.
   unsigned holding3 = 0;
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
@@ -531,7 +534,7 @@ void Ranks::set(
   Ranks::setOrderTables();
 
 bool b1 = (north >= south);
-bool b2 = north.greater(south);
+bool b2 = north.greater(south, opps);
 if (b1 != b2)
 {
   // TODO Switch to greater()
@@ -668,7 +671,7 @@ void Ranks::updateHoldings(
 {
   // if (leader >= partner)
   // TODO Switch to greater(), rename it >=
-  if (leader.greater(partner))
+  if (leader.greater(partner, opps))
   {
 cout << "leader >= partner, side " << (side == SIDE_NORTH ?
   "North" : "South") << endl;
