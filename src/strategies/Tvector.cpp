@@ -429,6 +429,7 @@ void Tvector::updateAndGrow(
     // corresponding result entry as the trick count.
     res.dist = iterSurvivors->fullNo;
     res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
+    res.winner = resultsOld[iterSurvivors->reducedNo].winner;
     weightInt += res.tricks;
     iterSurvivors++;
   }

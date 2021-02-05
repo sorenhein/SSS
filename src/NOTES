@@ -1,15 +1,3 @@
-Ranks::greater still doesn't quite work.
-AK / JT9 (7/203) when the first trick goes A - Q - 9 - void:
-We are left with K / JT missing the 8, or effectively
-A / KQ missing the J.
-The problem is that this is a rotation, but we can't easily tell
-by using greater() on fullCount.  KQ still look like JT which are
-lower rank than the A before the Q collapsed them.
-If there are 1 or 2 collapses with EW, then we probably need to
-collapse the fullCount arrays in order to (a) compare them and 
-(b) generate the new holding3.  No, (b) the holding is taken care
-of in Combinations::getPtr.
-
 Updates:
 * NS win the top trick, may be N, S or EITHER
   - Was NONE: The new winner is entered.  Can perhaps use the
