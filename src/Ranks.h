@@ -51,6 +51,9 @@ class Ranks
       vector<vector<vector<Winner>>> remaindersWin;
       vector<vector<Winner>> remaindersLose;
 
+      // The numbers of each relevant NS card.
+      vector<unsigned> numRank;
+
       void resize(const unsigned cardsIn)
       {
         // Worst case, leaving room for voids at rank 0.
@@ -230,6 +233,16 @@ class Ranks
       const WinningSide otherSide);
 
     void setOrderTables();
+
+    void resizeOrderTablesLose(
+      PositionInfo& posInfo;
+      const PositionInfo& otherInfo);
+
+    void resizeOrderTablesWin(
+      PositionInfo& posInfo,
+      const PositionInfo& otherInfo);
+
+    void resizeOrderTables();
 
     bool dominates(
       const PositionInfo& first,
