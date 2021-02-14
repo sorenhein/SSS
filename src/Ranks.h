@@ -234,9 +234,7 @@ class Ranks
 
     void setOrderTables();
 
-    void resizeOrderTablesLose(
-      PositionInfo& posInfo;
-      const PositionInfo& otherInfo);
+    void resizeOrderTablesLose(PositionInfo& posInfo);
 
     void resizeOrderTablesWin(
       PositionInfo& posInfo,

@@ -472,9 +472,7 @@ void Ranks::setOrderTables()
 }
 
 
-void Ranks::resizeOrderTablesLose(
-  PositionInfo& posInfo,
-  const PositionInfo& otherInfo)
+void Ranks::resizeOrderTablesLose(PositionInfo& posInfo)
 {
   // NS lose this trick, so the only question is how to map the
   // remaining NS cards (potential later winners) up to the cards
@@ -502,84 +500,16 @@ void Ranks::resizeOrderTablesWin(
   posInfo.remaindersWin.clear();
   posInfo.remaindersWin.resize(lThis);
 
+  for (unsigned rThis = 0; rThis < lThis; rThis++)
+  {
+    if (posInfo.fullCount[rThis] > 0)
+      posInfo.remaindersWin[rThis].resize(lOther);
+  }
+
   // Count the numbers of each relevant NS card.
   vector<unsigned> numThis, numOther;
   Ranks::countNumbers(numThis, posInfo, lThis);
   Ranks::countNumbers(numOther, otherInfo, lOther);
-
-  Winner current;
-  unsigned crank;
-
-  // rThis is the full-rank index of the posInfo that we're punching out.
-  // The posInfo side may be void.
-  for (unsigned rThis = 0; rThis < lThis; rThis++)
-  {
-    if (posInfo.fullCount[rThis] == 0)
-      continue;
-
-    posInfo.remaindersWin[rThis].resize(lOther);
-    
-    // rOther is the full-rank index of the other card played.
-    for (unsigned rOther = 0; rOther < lOther; rOther++)
-    {
-      vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
-      remList.resize(posInfo.len);
-cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
-  endl;
-
-      current.reset();
-      if (rThis > rOther)
-      {
-        current.set(side, rThis, 1, numThis[rThis]);
-        crank = rThis;
-      }
-      else if (rThis < rOther)
-      {
-        current.set(otherSide, rOther, 1, numOther[rOther]);
-        crank = rOther;
-      }
-      else
-      {
-        current.set(side, rThis, 1, numThis[rThis]);
-        current.set(otherSide, rOther, 1, numOther[rOther]);
-        crank = rThis;
-      }
-
-      // Punch out each later leader card and pick the lowest winner
-      // among that card and the current winner.
-      unsigned pos = 0;
-      for (unsigned s = 1; s < lThis; s++)
-      {
-        const unsigned val = posInfo.fullCount[s];
-        if (val == 0)
-          continue;
-
-        if (s <= crank)
-        {
-          // The later leader card is lower.
-          const unsigned start = (rThis == s ? 1 : 0);
-cout << "Later s << " << s << " start " << start << ", val " << val << 
-  ", pos " << pos <<endl;
-          for (unsigned d = start; d < val; d++, pos++)
-            remList[pos].set(side, s, d, pos);
-cout << "  pos now " << pos << endl;
-        }
-        else if (s > crank)
-        {
-cout << "Copy val << " << val << 
-  ", pos " << pos <<endl;
-          // The current winner is lower, so we map to it.
-          for (unsigned d = 0; d < val; d++, pos++)
-            remList[pos] = current;
-cout << "  pos now " << pos << endl;
-        }
-      }
-
-      remList.resize(pos);
-cout << "final[" << rThis << "][" << rOther << "] size " << pos <<
-  endl;
-    }
-  }
 }
 
 
@@ -620,8 +550,8 @@ void Ranks::resizeOrderTables()
   // and depths that will be the lowest winners overall, taking into
   // account the winner of the following combination.
 
-  Ranks::resizeOrderTablesLose(north, south);
-  Ranks::resizeOrderTablesLose(south, north);
+  Ranks::resizeOrderTablesLose(north);
+  Ranks::resizeOrderTablesLose(south);
 
   Ranks::resizeOrderTablesWin(north, south);
   Ranks::resizeOrderTablesWin(south, north);
@@ -688,7 +618,9 @@ void Ranks::set(
   holding = holdingIn;
   Ranks::setRanks();
   Ranks::setOrderTables();
-  Ranks::resizeOrderTables();
+
+  // TODO Activate.
+  // Ranks::resizeOrderTables();
 
 bool b1 = (north >= south);
 bool b2 = north.greater(south, opps);
