@@ -219,8 +219,7 @@ class Ranks
 
     void countNumbers(
       vector<unsigned>& numbers,
-      const PositionInfo& posInfo,
-      const unsigned vlen) const;
+      const PositionInfo& posInfo) const;
 
     void setOrderTablesLose(
       PositionInfo& posInfo,

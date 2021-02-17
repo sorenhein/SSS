@@ -266,16 +266,22 @@ void Ranks::setRanks()
 
 void Ranks::countNumbers(
   vector<unsigned>& numbers,
-  const PositionInfo& posInfo,
-  const unsigned vlen) const
+  const PositionInfo& posInfo) const
 {
-  // Works for vlen == 1 too, i.e. a void.
-  numbers.resize(vlen);
-  unsigned running = 0;
-  for (unsigned r = 0; r < vlen; r++)
+  if (posInfo.len == 0)
   {
-    running += posInfo.fullCount[r];
+    // TODO Hopefully won't be necessary in new code
+    numbers.resize(1);
+    return;
+  }
+
+  // The highest card has number len-1 and it's downhill from there.
+  numbers.resize(posInfo.maxRank+1);
+  unsigned running = posInfo.len-1;
+  for (unsigned r = posInfo.maxRank; r > 0; r--)
+  {
     numbers[r] = running;
+    running -= posInfo.fullCount[r];
   }
 }
 
@@ -304,6 +310,8 @@ assert(r < posInfo.fullCount.size());
 assert(r < posInfo.remaindersLose.size());
     vector<Winner>& remList = posInfo.remaindersLose[r];
     remList.resize(posInfo.len);
+
+    // The position counts up from the lowest card which is 0.
     unsigned pos = 0;
 
     // Fill out remList with information about the remaining cards, 
@@ -315,7 +323,8 @@ assert(s < posInfo.fullCount.size());
       if (val == 0)
         continue;
 
-      // If this is the card we're punching out, reduce the depth by 1
+      // The depth is 0 if this is the highest of equals of that rank.
+      // If this is the card we're punching out, increase the depth by 1
       // by starting with the second such card.
       const unsigned start = (r == s ? 1 : 0);
       for (unsigned d = start; d < val; d++, pos++)
@@ -348,14 +357,15 @@ void Ranks::setOrderTablesWin(
 
   // Count the numbers of each relevant NS card.
   vector<unsigned> numThis, numOther;
-  Ranks::countNumbers(numThis, posInfo, lThis);
-  Ranks::countNumbers(numOther, otherInfo, lOther);
+  Ranks::countNumbers(numThis, posInfo);
+  Ranks::countNumbers(numOther, otherInfo);
 
   Winner current;
   unsigned crank;
 
   // rThis is the full-rank index of the posInfo that we're punching out.
   // The posInfo side may be void.
+  // TODO No it can't really?
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
     if (posInfo.fullCount[rThis] == 0)
@@ -366,6 +376,15 @@ void Ranks::setOrderTablesWin(
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
     {
+      if (otherInfo.fullCount[rOther] == 0)
+        continue;
+
+      // Will hopefully not be necessary in new code.
+      if (rThis == 0 && rOther == 0)
+        continue;
+
+assert(rThis < posInfo.remaindersWin.size());
+assert(rOther < posInfo.remaindersWin[rThis].size());
       vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
       remList.resize(posInfo.len);
 cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
@@ -374,21 +393,32 @@ cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
       current.reset();
       if (rThis > rOther)
       {
-        current.set(side, rThis, 1, numThis[rThis]);
+        // The depth starts from 0.
+if (rThis >= numThis.size())
+{
+  cout << "About to fail\n";
+  cout << rThis << ", " << numThis.size() << endl;
+}
+assert(rThis < numThis.size());
+        current.set(side, rThis, 0, numThis[rThis]);
         crank = rThis;
       }
       else if (rThis < rOther)
       {
-        current.set(otherSide, rOther, 1, numOther[rOther]);
+assert(rOther < numOther.size());
+        current.set(otherSide, rOther, 0, numOther[rOther]);
         crank = rOther;
       }
       else
       {
-        current.set(side, rThis, 1, numThis[rThis]);
-        current.set(otherSide, rOther, 1, numOther[rOther]);
+assert(rThis < numThis.size());
+assert(rOther < numOther.size());
+        current.set(side, rThis, 0, numThis[rThis]);
+        current.set(otherSide, rOther, 0, numOther[rOther]);
         crank = rThis;
       }
 
+      // The position counts up from the lowest card which is 0.
       // Punch out each later leader card and pick the lowest winner
       // among that card and the current winner.
       unsigned pos = 0;
@@ -405,16 +435,23 @@ cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
 cout << "Later s << " << s << " start " << start << ", val " << val << 
   ", pos " << pos <<endl;
           for (unsigned d = start; d < val; d++, pos++)
+{
+assert(pos < remList.size());
             remList[pos].set(side, s, d, pos);
+}
 cout << "  pos now " << pos << endl;
         }
         else if (s > crank)
         {
 cout << "Copy val << " << val << 
   ", pos " << pos <<endl;
+assert(pos < remList.size());
           // The current winner is lower, so we map to it.
           for (unsigned d = 0; d < val; d++, pos++)
+{
+assert(pos < remList.size());
             remList[pos] = current;
+}
 cout << "  pos now " << pos << endl;
         }
       }
@@ -508,8 +545,8 @@ void Ranks::resizeOrderTablesWin(
 
   // Count the numbers of each relevant NS card.
   vector<unsigned> numThis, numOther;
-  Ranks::countNumbers(numThis, posInfo, lThis);
-  Ranks::countNumbers(numOther, otherInfo, lOther);
+  Ranks::countNumbers(numThis, posInfo);
+  Ranks::countNumbers(numOther, otherInfo);
 }
 
 
@@ -640,6 +677,7 @@ assert(b1 == b2);
       combEntry.canonicalHolding3, combEntry.canonicalHolding2);
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding3);
+cout << "Done with Ranks::set" << endl;
 }
 
 

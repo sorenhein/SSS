@@ -111,8 +111,26 @@ void Winner::update(
   {
     assert(north.number < northOrder.size());
     assert(south.number < southOrder.size());
-    * this = northOrder[north.number];
-    * this = southOrder[south.number];
+    north = northOrder[north.number].north;
+    south = southOrder[south.number].south;
+
+    // As a result of the mapping to parent ranks, North and South
+    // may actually be different ranks now.  As North-South choose,
+    // they only keep the higher one.
+    if (north.rank > south.rank)
+    {
+      // Only North survives.
+      south.reset();
+      mode = WIN_NORTH_ONLY;
+    }
+    else if (south.rank > north.rank)
+    {
+      north.reset();
+      mode = WIN_SOUTH_ONLY;
+    }
+
+    // * this = northOrder[north.number];
+    // * this = southOrder[south.number];
   }
   else if (mode != WIN_EMPTY)
     // Should not happen.
