@@ -130,6 +130,7 @@ class Tvector
       const unsigned trickNS,
       const vector<Winner>& northOrder,
       const vector<Winner>& southOrder,
+      const Winner& currBest,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

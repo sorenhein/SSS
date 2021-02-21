@@ -355,12 +355,15 @@ void Ranks::setOrderTablesWin(
   posInfo.remaindersWin.clear();
   posInfo.remaindersWin.resize(lThis);
 
+  posInfo.best.clear();
+  posInfo.best.resize(lThis);
+
   // Count the numbers of each relevant NS card.
   vector<unsigned> numThis, numOther;
   Ranks::countNumbers(numThis, posInfo);
   Ranks::countNumbers(numOther, otherInfo);
 
-  Winner current;
+  // Winner current;
   unsigned crank;
 
   // rThis is the full-rank index of the posInfo that we're punching out.
@@ -372,6 +375,7 @@ void Ranks::setOrderTablesWin(
       continue;
 
     posInfo.remaindersWin[rThis].resize(lOther);
+    posInfo.best[rThis].resize(lOther);
     
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
@@ -390,6 +394,7 @@ assert(rOther < posInfo.remaindersWin[rThis].size());
 cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
   endl;
 
+      Winner& current = posInfo.best[rThis][rOther];
       current.reset();
       if (rThis > rOther)
       {
@@ -862,7 +867,8 @@ cout << "Ranks::logPlay " << leadOrderPtr->size() << ", " <<
 
   plays.logFull(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
-    leadOrderPtr, pardOrderPtr, holding3, rotateFlag);
+    leadOrderPtr, pardOrderPtr, &leader.best[lead][pard],
+    holding3, rotateFlag);
 }
 
 

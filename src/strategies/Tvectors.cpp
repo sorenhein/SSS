@@ -240,12 +240,13 @@ void Tvectors::adapt(
   const unsigned trickNS,
   const vector<Winner>& northOrder,
   const vector<Winner>& southOrder,
+  const Winner& currBest,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(survivors, trickNS, northOrder, southOrder,
+    tv.adapt(survivors, trickNS, northOrder, southOrder, currBest,
       lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)

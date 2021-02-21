@@ -50,9 +50,11 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   // Make the plays.
   TrickEntry trivialEntry;
   plays.reset();
+bool debugFlagTmp = false;
 if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
 {
   cout << "HERE0\n";
+  debugFlagTmp = true;
 }
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
   
@@ -80,7 +82,8 @@ if (debugFlag)
   cout << "Distribution\n" << distPtr->str() << endl;
 }
 
-  plays.strategize(distPtr, strats, debugFlag);
+  plays.strategize(distPtr, strats, debugFlagTmp);
+  // plays.strategize(distPtr, strats, debugFlag);
 // cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)

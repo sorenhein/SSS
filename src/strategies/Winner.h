@@ -90,7 +90,9 @@ class Winner
 
     void update(
       const vector<Winner>& northOrder,
-      const vector<Winner>& southOrder);
+      const vector<Winner>& southOrder,
+      const Winner& currBest,
+      const unsigned trickNS);
 
     string str() const;
 

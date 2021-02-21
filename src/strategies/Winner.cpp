@@ -93,7 +93,9 @@ void Winner::flip()
 
 void Winner::update(
   const vector<Winner>& northOrder,
-  const vector<Winner>& southOrder)
+  const vector<Winner>& southOrder,
+  const Winner& currBest,
+  const unsigned trickNS)
 {
   if (mode == WIN_NORTH_ONLY)
   {
@@ -132,7 +134,20 @@ void Winner::update(
     // * this = northOrder[north.number];
     // * this = southOrder[south.number];
   }
-  else if (mode != WIN_EMPTY)
+  else if (mode == WIN_EMPTY)
+  {
+    // We weren't winning anything by ranks.
+    if (trickNS)
+    {
+      // The current winner is the overall winner.
+      * this = currBest;
+    }
+    else
+    {
+      // Stick with the empty winner.
+    }
+  }
+  else // if (mode != WIN_EMPTY)
     // Should not happen.
     assert(false);
 }

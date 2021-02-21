@@ -75,6 +75,7 @@ class Plays
 
       vector<Winner> const * leadOrderPtr;
       vector<Winner> const * pardOrderPtr;
+      Winner const * currBestPtr;
 
       PardNode * pardPtr;
     };
@@ -146,6 +147,7 @@ class Plays
       const bool pardCollapse,
       vector<Winner> const * leadOrderPtr,
       vector<Winner> const * pardOrderPtr,
+      Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag,
       const unsigned trickNS,
@@ -192,6 +194,7 @@ class Plays
       const bool pardCollapse,
       vector<Winner> const * leadOrderPtr,
       vector<Winner> const * pardOrderPtr,
+      Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag);
 

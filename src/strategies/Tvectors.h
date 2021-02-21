@@ -64,6 +64,7 @@ class Tvectors
       const unsigned trickNS,
       const vector<Winner>& northOrder, // Relative to parent,
       const vector<Winner>& southOrder, // so after rotation
+      const Winner& currBest,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

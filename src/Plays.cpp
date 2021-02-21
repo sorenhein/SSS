@@ -226,6 +226,7 @@ void Plays::logRhoNew(
   const bool pardCollapse,
   vector<Winner> const * leadOrderPtr,
   vector<Winner> const * pardOrderPtr,
+  Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag,
   const unsigned trickNS,
@@ -250,6 +251,7 @@ void Plays::logRhoNew(
     (voidPard ? 1 : 0) - 4;
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
+  node.currBestPtr = currBestPtr;
   node.holdingNew = holding3;
   node.rotateNew = rotateFlag;
   node.trickNS = trickNS;
@@ -302,6 +304,7 @@ void Plays::logFull(
   const bool pardCollapse,
   vector<Winner> const * leadOrderPtr,
   vector<Winner> const * pardOrderPtr,
+  Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag)
 {
@@ -318,7 +321,7 @@ void Plays::logFull(
 
   Plays::logRhoNew(rho,
     leadCollapse, pardCollapse, 
-    leadOrderPtr, pardOrderPtr,
+    leadOrderPtr, pardOrderPtr, currBestPtr,
     holding3, rotateFlag,
     trickNS, knownVoidLho, knownVoidRho, voidPard,
     pardPtr);
@@ -425,11 +428,12 @@ if (debugFlag)
       rhoNode.trickNS, 
       * northOrderPtr,
       * southOrderPtr,
+      * rhoNode.currBestPtr,
       first == 0,
       second == 0,
       rhoNode.rotateNew);
 if (debugFlag)
-  cout << tvs.str("Tvectors after adapt");
+  cout << tvs.str("Tvectors after adapt", true);
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
@@ -611,6 +615,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       rhoNode.trickNS, 
       * rhoNode.leadOrderPtr,
       * rhoNode.pardOrderPtr,
+      * rhoNode.currBestPtr,
       play.rho == 0,
       play.lho == 0,
       rhoNode.rotateNew);
