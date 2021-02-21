@@ -77,6 +77,33 @@ cout << "About to fail" << endl;
 }
 
 
+bool Winner::operator !=(const Winner& w2) const
+{
+  if (mode != w2.mode)
+  {
+cout << "B0" << endl;
+    return true;
+}
+  if (mode == WIN_EMPTY)
+  {
+cout << "B1" << endl;
+    return false;
+  }
+  if (mode != WIN_SOUTH_ONLY && north != w2.north)
+  {
+cout << "B2" << endl;
+    return true;
+  }
+  if (mode != WIN_NORTH_ONLY && south != w2.south)
+  {
+cout << "B3" << endl;
+    return true;
+  }
+cout << "B4" << endl;
+  return false;
+}
+
+
 void Winner::operator *=(const Winner& w2)
 {
   // The opponents have the choice.
@@ -97,7 +124,7 @@ void Winner::operator *=(const Winner& w2)
     }
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      if (north == w2.north)
+      if (north <= w2.north)
       {
         // Rather than letting NS decide, the opponents choose the
         // side they can enforce.  Here it means changing nothing.
@@ -106,6 +133,9 @@ void Winner::operator *=(const Winner& w2)
       {
         // Let's find an example of this.
         // When would EW choose NS_DECIDE rather than the north only?
+        cout << "Position 1" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
         assert(false);
       }
     }
@@ -113,6 +143,9 @@ void Winner::operator *=(const Winner& w2)
     {
       // Let's find an example of this.
       // When would EW choose EW_DECIDE rather than the north only?
+        cout << "Position 2" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_EMPTY)
@@ -120,7 +153,12 @@ void Winner::operator *=(const Winner& w2)
       // OK as is.
     }
     else
+    {
+      cout << "Position 3" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
+    }
   }
   else if (mode == WIN_SOUTH_ONLY)
   {
@@ -139,7 +177,7 @@ void Winner::operator *=(const Winner& w2)
       south *= w2.south;
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      if (south == w2.south)
+      if (south <= w2.south)
       {
         // Rather than letting NS decide, the opponents choose the
         // side they can enforce.  Here it means changing nothing.
@@ -148,6 +186,9 @@ void Winner::operator *=(const Winner& w2)
       {
         // Let's find an example of this.
         // When would EW choose NS_DECIDE rather than the north only?
+        cout << "Position 4" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
         assert(false);
       }
     }
@@ -155,6 +196,9 @@ void Winner::operator *=(const Winner& w2)
     {
       // Let's find an example of this.
       // When would EW choose EW_DECIDE rather than the north only?
+        cout << "Position 5" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
         assert(false);
     }
     else if (w2.mode == WIN_EMPTY)
@@ -162,13 +206,18 @@ void Winner::operator *=(const Winner& w2)
       // OK as is.
     }
     else
+    {
+      cout << "Position 6" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
+    }
   }
   else if (mode == WIN_NS_DECIDE)
   {
     if (w2.mode == WIN_NORTH_ONLY)
     {
-      if (north == w2.north)
+      if (north <= w2.north)
       {
         // Rather than letting NS decide, the opponents choose the
         // side they can enforce.
@@ -178,12 +227,15 @@ void Winner::operator *=(const Winner& w2)
       else
       {
         // Example?
+        cout << "Position 7" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
         assert(false);
       }
     }
     else if (w2.mode == WIN_SOUTH_ONLY)
     {
-      if (south == w2.south)
+      if (south <= w2.south)
       {
         // Rather than letting NS decide, the opponents choose the
         // side they can enforce.
@@ -193,17 +245,29 @@ void Winner::operator *=(const Winner& w2)
       else
       {
         // Example?
+        cout << "Position 8" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug();
         assert(false);
       }
     }
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      // Example?
-      assert(false);
+      if (* this != w2)
+      {
+        // Example?
+        cout << "Position 9" <<  endl;
+        cout << Winner::strDebug();
+        cout << w2.strDebug() << endl;
+        assert(false);
+      }
     }
     else if (w2.mode == WIN_EW_DECIDE)
     {
       // Example?
+      cout << "Position 10" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_EMPTY)
@@ -211,28 +275,45 @@ void Winner::operator *=(const Winner& w2)
       // OK as is.
     }
     else
+    {
+      cout << "Position 11" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
+    }
   }
   else if (mode == WIN_EW_DECIDE)
   {
     if (w2.mode == WIN_NORTH_ONLY)
     {
       // Example?
+      cout << "Position 12" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_SOUTH_ONLY)
     {
       // Example?
+      cout << "Position 13" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_NS_DECIDE)
     {
       // Example?
+      cout << "Position 14" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_EW_DECIDE)
     {
       // Example?
+      cout << "Position 15" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
     }
     else if (w2.mode == WIN_EMPTY)
@@ -240,14 +321,24 @@ void Winner::operator *=(const Winner& w2)
       // OK as is.
     }
     else
+    {
+      cout << "Position 16" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
+    }
   }
   else if (mode == WIN_EMPTY)
   {
     * this = w2;
   }
   else
+  {
+    cout << "Position 17" <<  endl;
+    cout << Winner::strDebug();
+    cout << w2.strDebug();
     assert(false);
+  }
 }
 
 
@@ -386,5 +477,20 @@ string Winner::strEntry() const
   }
   
   return ss.str();
+}
+
+
+string Winner::strDebug() const
+{
+  stringstream ss;
+
+  ss << Winner::str();
+  ss << "North rank " << north.rank << 
+    ", depth " << north.depth << 
+      ", number " << north.number << endl;
+  ss << "South rank " << south.rank << 
+    ", depth " << south.depth << 
+      ", number " << south.number << endl;
+  return ss.str() + "\n";
 }
 

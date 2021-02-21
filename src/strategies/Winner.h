@@ -65,9 +65,19 @@ class Winner
         return (rank > sw2.rank);
       }
 
+      bool operator >=(const SideWinner& sw2) const
+      {
+        return (rank >= sw2.rank);
+      }
+
       bool operator <(const SideWinner& sw2) const
       {
         return (rank < sw2.rank);
+      }
+
+      bool operator <=(const SideWinner& sw2) const
+      {
+        return (rank <= sw2.rank);
       }
 
       bool operator ==(const SideWinner& sw2) const
@@ -76,6 +86,20 @@ class Winner
         return (rank == sw2.rank &&
             depth == sw2.depth &&
             number == sw2.number);
+      }
+
+      bool operator !=(const SideWinner& sw2) const
+      {
+        // Only really need rank and number.
+cout << "rank " << (rank == sw2.rank ? "same" : "diff") << " " <<
+  rank << " " << sw2.rank << endl;
+cout << "depth " << (depth == sw2.depth ? "same" : "diff") << " " <<
+  depth << " " << sw2.depth << endl;
+cout << "number " << (number == sw2.number ? "same" : "diff") << " " <<
+  number << " " << sw2.number << endl;
+        return (rank != sw2.rank ||
+            depth != sw2.depth ||
+            number != sw2.number);
       }
 
       bool sameRank(const SideWinner& sw2) const
@@ -97,9 +121,13 @@ class Winner
     WinnerMode mode;
 
 
+    bool operator !=(const Winner& w2) const;
+
     string strSingleSided(
       const string& name,
       const SideWinner& winner) const;
+
+    string strDebug() const;
 
 
   public:
