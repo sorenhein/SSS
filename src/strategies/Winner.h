@@ -37,6 +37,14 @@ class Winner
       WIN_NOT_SET = 5 // Neutral state
     };
 
+    enum WinnerCompare
+    {
+      WIN_FIRST = 0,
+      WIN_SECOND = 1,
+      WIN_EQUAL = 2,
+      WIN_UNSET = 3
+    };
+
     struct SideWinner
     {
       unsigned rank;
@@ -60,6 +68,16 @@ class Winner
         number = numberIn;
       }
 
+      bool outranks(const SideWinner& sw2) const
+      {
+        return (rank > sw2.rank);
+      }
+
+      bool sameRank(const SideWinner& sw2) const
+      {
+        return (rank == sw2.rank);
+      }
+
       bool operator >(const SideWinner& sw2) const
       {
         return (rank > sw2.rank);
@@ -67,7 +85,22 @@ class Winner
 
       bool operator >=(const SideWinner& sw2) const
       {
-        return (rank >= sw2.rank);
+        if (rank > sw2.rank)
+          return true;
+        else if (rank < sw2.rank)
+          return false;
+        else
+          return (number >= sw2.number);
+      }
+
+      WinnerCompare compare(const SideWinner& sw2) const
+      {
+        if (number > sw2.number)
+          return WIN_FIRST;
+        else if (number < sw2.number)
+          return WIN_SECOND;
+        else
+          return WIN_EQUAL;
       }
 
       bool operator <(const SideWinner& sw2) const
@@ -77,7 +110,12 @@ class Winner
 
       bool operator <=(const SideWinner& sw2) const
       {
-        return (rank <= sw2.rank);
+        if (rank < sw2.rank)
+          return true;
+        else if (rank > sw2.rank)
+          return false;
+        else
+          return (number <= sw2.number);
       }
 
       bool operator ==(const SideWinner& sw2) const
@@ -100,11 +138,6 @@ cout << "number " << (number == sw2.number ? "same" : "diff") << " " <<
         return (rank != sw2.rank ||
             depth != sw2.depth ||
             number != sw2.number);
-      }
-
-      bool sameRank(const SideWinner& sw2) const
-      {
-        return (rank == sw2.rank);
       }
 
       void operator *=(const SideWinner& sw2)

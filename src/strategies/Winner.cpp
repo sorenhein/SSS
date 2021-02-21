@@ -107,27 +107,43 @@ cout << "B4" << endl;
 void Winner::operator *=(const Winner& w2)
 {
   // The opponents have the choice.
+
+  if (w2.mode == WIN_EMPTY)
+  {
+    // OK as is.
+    return;
+  }
+  else if (mode == WIN_EMPTY)
+  {
+    * this = w2;
+    return;
+  }
+
   if (mode == WIN_NORTH_ONLY)
   {
     if (w2.mode == WIN_NORTH_ONLY)
       north *= w2.north;
     else if (w2.mode == WIN_SOUTH_ONLY)
     {
-      if (north > w2.south)
+      if (north.outranks(w2.south))
         * this = w2;
       else if (north.sameRank(w2.south))
       {
         south = w2.south;
         mode = WIN_EW_DECIDE;
       }
-      // Do nothing if North has a lower rank.
+      else
+      {
+        // Do nothing if North has a lower rank.
+      }
     }
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      if (north <= w2.north)
+      if (w2.north >= north)
       {
-        // Rather than letting NS decide, the opponents choose the
-        // side they can enforce.  Here it means changing nothing.
+        // The current winner is no higher, and it has no option
+        // of a South play at NS's discretion.  So the current winner 
+        // dominates from EW's perspective, and we change nothing.
       }
       else
       {
@@ -135,7 +151,7 @@ void Winner::operator *=(const Winner& w2)
         // When would EW choose NS_DECIDE rather than the north only?
         cout << "Position 1" <<  endl;
         cout << Winner::strDebug();
-        cout << w2.strDebug();
+        cout << w2.strDebug() << flush;
         assert(false);
       }
     }
@@ -143,14 +159,10 @@ void Winner::operator *=(const Winner& w2)
     {
       // Let's find an example of this.
       // When would EW choose EW_DECIDE rather than the north only?
-        cout << "Position 2" <<  endl;
-        cout << Winner::strDebug();
-        cout << w2.strDebug();
+      cout << "Position 2" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
       assert(false);
-    }
-    else if (w2.mode == WIN_EMPTY)
-    {
-      // OK as is.
     }
     else
     {
@@ -164,23 +176,27 @@ void Winner::operator *=(const Winner& w2)
   {
     if (w2.mode == WIN_NORTH_ONLY)
     {
-      if (south > w2.north)
+      if (south.outranks(w2.north))
         * this = w2;
       else if (south.sameRank(w2.north))
       {
         north = w2.north;
         mode = WIN_EW_DECIDE;
       }
-      // Do nothing if South has a lower rank.
+      else
+      {
+        // Do nothing if South has a lower rank.
+      }
     }
     else if (w2.mode == WIN_SOUTH_ONLY)
       south *= w2.south;
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      if (south <= w2.south)
+      if (w2.south >= south)
       {
-        // Rather than letting NS decide, the opponents choose the
-        // side they can enforce.  Here it means changing nothing.
+        // The current winner is no higher, and it has no option
+        // of a North play at NS's discretion.  So the current winner 
+        // dominates from EW's perspective, and we change nothing.
       }
       else
       {
@@ -196,14 +212,10 @@ void Winner::operator *=(const Winner& w2)
     {
       // Let's find an example of this.
       // When would EW choose EW_DECIDE rather than the north only?
-        cout << "Position 5" <<  endl;
-        cout << Winner::strDebug();
-        cout << w2.strDebug();
-        assert(false);
-    }
-    else if (w2.mode == WIN_EMPTY)
-    {
-      // OK as is.
+      cout << "Position 5" <<  endl;
+      cout << Winner::strDebug();
+      cout << w2.strDebug();
+      assert(false);
     }
     else
     {
@@ -217,12 +229,12 @@ void Winner::operator *=(const Winner& w2)
   {
     if (w2.mode == WIN_NORTH_ONLY)
     {
-      if (north <= w2.north)
+      if (north >= w2.north)
       {
-        // Rather than letting NS decide, the opponents choose the
-        // side they can enforce.
-        south.reset();
-        mode = WIN_NORTH_ONLY;
+        // The w2 winner is no higher, and it has no option
+        // of a South play at NS's discretion.  So the w2 winner 
+        // dominates from EW's perspective.
+        * this = w2;
       }
       else
       {
@@ -235,12 +247,12 @@ void Winner::operator *=(const Winner& w2)
     }
     else if (w2.mode == WIN_SOUTH_ONLY)
     {
-      if (south <= w2.south)
+      if (south >= w2.south)
       {
-        // Rather than letting NS decide, the opponents choose the
-        // side they can enforce.
-        north.reset();
-        mode = WIN_SOUTH_ONLY;
+        // The w2 winner is no higher, and it has no option
+        // of a South play at NS's discretion.  So the w2 winner 
+        // dominates from EW's perspective.
+        * this = w2;
       }
       else
       {
@@ -253,7 +265,21 @@ void Winner::operator *=(const Winner& w2)
     }
     else if (w2.mode == WIN_NS_DECIDE)
     {
-      if (* this != w2)
+      // TODO Some kind of domination?
+      const WinnerCompare cmpNorth = north.compare(w2.north);
+      const WinnerCompare cmpSouth = south.compare(w2.north);
+
+      if ((cmpNorth == WIN_SECOND || cmpNorth == WIN_EQUAL) &&
+          (cmpSouth == WIN_SECOND || cmpSouth == WIN_EQUAL))
+      {
+        // OK as is.
+      }
+      else if ((cmpNorth == WIN_FIRST || cmpNorth == WIN_EQUAL) &&
+          (cmpSouth == WIN_FIRST || cmpSouth == WIN_EQUAL))
+      {
+        * this = w2;
+      }
+      else
       {
         // Example?
         cout << "Position 9" <<  endl;
@@ -269,10 +295,6 @@ void Winner::operator *=(const Winner& w2)
       cout << Winner::strDebug();
       cout << w2.strDebug();
       assert(false);
-    }
-    else if (w2.mode == WIN_EMPTY)
-    {
-      // OK as is.
     }
     else
     {
@@ -316,10 +338,6 @@ void Winner::operator *=(const Winner& w2)
       cout << w2.strDebug();
       assert(false);
     }
-    else if (w2.mode == WIN_EMPTY)
-    {
-      // OK as is.
-    }
     else
     {
       cout << "Position 16" <<  endl;
@@ -327,10 +345,6 @@ void Winner::operator *=(const Winner& w2)
       cout << w2.strDebug();
       assert(false);
     }
-  }
-  else if (mode == WIN_EMPTY)
-  {
-    * this = w2;
   }
   else
   {
