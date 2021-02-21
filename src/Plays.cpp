@@ -437,7 +437,7 @@ if (debugFlag)
 
     // Add it to the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
-// cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product");
+cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product", true);
   }
 
 if (debugFlag)
@@ -454,10 +454,10 @@ if (debugFlag)
 
     // Add the partner strategy to the LHO node.
 if (debugFlag)
-  cout << pardNode.strategies.str("Adding");
+  cout << pardNode.strategies.str("Adding", true);
     pardNode.lhoPtr->strategies += pardNode.strategies;
 if (debugFlag)
-  cout << pardNode.lhoPtr->strategies.str("LHO node");
+  cout << pardNode.lhoPtr->strategies.str("LHO node", true);
   }
 
 if (debugFlag)
@@ -472,10 +472,10 @@ if (debugFlag)
   cout << "LHO node for " << lhoNode.lho << endl;
     // Add the LHO strategy to the lead node by cross product.
 if (debugFlag)
-  cout << lhoNode.strategies.str("Adding") << endl;
+  cout << lhoNode.strategies.str("Adding", true) << endl;
     lhoNode.leadPtr->strategies *= lhoNode.strategies;
 if (debugFlag)
-  cout << lhoNode.leadPtr->strategies.str("Lead node");
+  cout << lhoNode.leadPtr->strategies.str("Lead node", true);
   }
 
 if (debugFlag)
@@ -492,10 +492,10 @@ if (debugFlag)
   cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
     strategies += leadNode.strategies;
 if (debugFlag)
-  cout << strategies.str("Final");
+  cout << strategies.str("Final", true);
   }
 
-  cout << strategies.str("Strategy");
+  cout << strategies.str("Strategy", true);
 }
 
 

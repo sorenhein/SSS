@@ -1,23 +1,12 @@
-Updates:
-* NS win the top trick, may be N, S or EITHER
-  - Was NONE: The new winner is entered.  Can perhaps use the
-    lowest in the north or south vectors.
-  - Was N or S:
-    - One is a clear rank lower: Just update
-    - One is the same rank, different depth:
-      - From same side: Update
-      - From other side: Needs to be some kind of EITHER
-      - From either side: Map both up, keep as EITHER
-  - Was EITHER:
-    etc.
+Rank tracking
+* updateAndGrow(): Does it add winner correctly, too?
+* += is more or less unchanged, but if two vectors are equal,
+  and NS can pick one, then hopefully one dominates the other
+  (or they are equal) in terms of ranks.  Otherwise assert
+* Tvector: add method lowestWinner()
+* Tvectors: ditto
+* Somehow map to the holding without lower cards than this mattering
 
-
-2. adapt() must update ranks
-2a. Also updateAndGrow
-3. += is more or less unchanged, but if two vectors are equal,
-   and NS can pick one, then hopefully one dominates the other
-   (or they are equal) in terms of ranks.  Otherwise assert
-4. *= gives EW a choice if the number of tricks is equal.
    
 
 Summary of speed-up considerations

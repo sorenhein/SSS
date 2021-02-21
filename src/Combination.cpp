@@ -51,7 +51,8 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   TrickEntry trivialEntry;
   plays.reset();
 bool debugFlagTmp = false;
-if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
+// if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
+if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
 {
   cout << "HERE0\n";
   debugFlagTmp = true;

@@ -59,6 +59,36 @@ class Winner
         depth = depthIn;
         number = numberIn;
       }
+
+      bool operator >(const SideWinner& sw2) const
+      {
+        return (rank > sw2.rank);
+      }
+
+      bool operator <(const SideWinner& sw2) const
+      {
+        return (rank < sw2.rank);
+      }
+
+      bool operator ==(const SideWinner& sw2) const
+      {
+        // Only really need rank and number.
+        return (rank == sw2.rank &&
+            depth == sw2.depth &&
+            number == sw2.number);
+      }
+
+      bool sameRank(const SideWinner& sw2) const
+      {
+        return (rank == sw2.rank);
+      }
+
+      void operator *=(const SideWinner& sw2)
+      {
+        // The opponents choose the lowest card.
+        if (number > sw2.number)
+          * this = sw2;
+      }
     };
 
     SideWinner north;
@@ -85,6 +115,8 @@ class Winner
       const unsigned rankIn,
       const unsigned depthIn,
       const unsigned number);
+
+    void operator *= (const Winner& w2);
 
     void flip();
 

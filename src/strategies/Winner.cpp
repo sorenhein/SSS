@@ -77,6 +77,180 @@ cout << "About to fail" << endl;
 }
 
 
+void Winner::operator *=(const Winner& w2)
+{
+  // The opponents have the choice.
+  if (mode == WIN_NORTH_ONLY)
+  {
+    if (w2.mode == WIN_NORTH_ONLY)
+      north *= w2.north;
+    else if (w2.mode == WIN_SOUTH_ONLY)
+    {
+      if (north > w2.south)
+        * this = w2;
+      else if (north.sameRank(w2.south))
+      {
+        south = w2.south;
+        mode = WIN_EW_DECIDE;
+      }
+      // Do nothing if North has a lower rank.
+    }
+    else if (w2.mode == WIN_NS_DECIDE)
+    {
+      if (north == w2.north)
+      {
+        // Rather than letting NS decide, the opponents choose the
+        // side they can enforce.  Here it means changing nothing.
+      }
+      else
+      {
+        // Let's find an example of this.
+        // When would EW choose NS_DECIDE rather than the north only?
+        assert(false);
+      }
+    }
+    else if (w2.mode == WIN_EW_DECIDE)
+    {
+      // Let's find an example of this.
+      // When would EW choose EW_DECIDE rather than the north only?
+      assert(false);
+    }
+    else if (w2.mode == WIN_EMPTY)
+    {
+      // OK as is.
+    }
+    else
+      assert(false);
+  }
+  else if (mode == WIN_SOUTH_ONLY)
+  {
+    if (w2.mode == WIN_NORTH_ONLY)
+    {
+      if (south > w2.north)
+        * this = w2;
+      else if (south.sameRank(w2.north))
+      {
+        north = w2.north;
+        mode = WIN_EW_DECIDE;
+      }
+      // Do nothing if South has a lower rank.
+    }
+    else if (w2.mode == WIN_SOUTH_ONLY)
+      south *= w2.south;
+    else if (w2.mode == WIN_NS_DECIDE)
+    {
+      if (south == w2.south)
+      {
+        // Rather than letting NS decide, the opponents choose the
+        // side they can enforce.  Here it means changing nothing.
+      }
+      else
+      {
+        // Let's find an example of this.
+        // When would EW choose NS_DECIDE rather than the north only?
+        assert(false);
+      }
+    }
+    else if (w2.mode == WIN_EW_DECIDE)
+    {
+      // Let's find an example of this.
+      // When would EW choose EW_DECIDE rather than the north only?
+        assert(false);
+    }
+    else if (w2.mode == WIN_EMPTY)
+    {
+      // OK as is.
+    }
+    else
+      assert(false);
+  }
+  else if (mode == WIN_NS_DECIDE)
+  {
+    if (w2.mode == WIN_NORTH_ONLY)
+    {
+      if (north == w2.north)
+      {
+        // Rather than letting NS decide, the opponents choose the
+        // side they can enforce.
+        south.reset();
+        mode = WIN_NORTH_ONLY;
+      }
+      else
+      {
+        // Example?
+        assert(false);
+      }
+    }
+    else if (w2.mode == WIN_SOUTH_ONLY)
+    {
+      if (south == w2.south)
+      {
+        // Rather than letting NS decide, the opponents choose the
+        // side they can enforce.
+        north.reset();
+        mode = WIN_SOUTH_ONLY;
+      }
+      else
+      {
+        // Example?
+        assert(false);
+      }
+    }
+    else if (w2.mode == WIN_NS_DECIDE)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_EW_DECIDE)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_EMPTY)
+    {
+      // OK as is.
+    }
+    else
+      assert(false);
+  }
+  else if (mode == WIN_EW_DECIDE)
+  {
+    if (w2.mode == WIN_NORTH_ONLY)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_SOUTH_ONLY)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_NS_DECIDE)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_EW_DECIDE)
+    {
+      // Example?
+      assert(false);
+    }
+    else if (w2.mode == WIN_EMPTY)
+    {
+      // OK as is.
+    }
+    else
+      assert(false);
+  }
+  else if (mode == WIN_EMPTY)
+  {
+    * this = w2;
+  }
+  else
+    assert(false);
+}
+
+
 void Winner::flip()
 {
   // Flips North and South.

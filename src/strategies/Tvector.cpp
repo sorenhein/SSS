@@ -185,8 +185,15 @@ void Tvector::operator *=(const Tvector& tv2)
     {
       if (iter1->tricks > iter2->tricks)
       {
+        // Take the one with the lower number of tricks.
         weightInt += iter2->tricks - iter1->tricks;
         iter1->tricks = iter2->tricks;
+        iter1->winner = iter2->winner;
+      }
+      else if (iter1->tricks == iter2->tricks)
+      {
+        // Opponents can choose among the two winners.
+        iter1->winner *= iter2->winner;
       }
       iter1++;
       iter2++;
