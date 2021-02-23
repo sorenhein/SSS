@@ -1,16 +1,16 @@
-#ifndef SSS_WINNER_H
-#define SSS_WINNER_H
+#ifndef SSS_SUBWINNER_H
+#define SSS_SUBWINNER_H
 
 #include <vector>
 #include <list>
 #include <cassert>
 
-#include "Subwinner.h"
+#include "Sidewinner.h"
 
 using namespace std;
 
 
-class Winner
+class Subwinner
 {
   private:
 
@@ -18,33 +18,24 @@ class Winner
     // if it's the A rather than the K, and number is 3 (x, K, A).
     // See also Ranks::setOrderTables().
 
-    enum WinnerMode
+    enum SubwinnerMode
     {
-      WIN_NORTH_ONLY = 0,
-      WIN_SOUTH_ONLY = 1,
-      WIN_NS_DECIDE = 2,
-      WIN_EW_DECIDE = 3,
-      WIN_EMPTY = 4, // No rank winner, but something is known
-      WIN_NOT_SET = 5 // Neutral state
+      SUBWIN_NORTH_ONLY = 0,
+      SUBWIN_SOUTH_ONLY = 1,
+      SUBWIN_BOTH = 2,
+      SUBWIN_NOT_SET = 3
     };
 
-    list<Subwinner> subwinners;
-
-
-    bool operator != (const Winner& w2) const;
-
-    string strSingleSided(
-      const string& name,
-      const Sidewinner& winner) const;
-
-    string strDebug() const;
+    Sidewinner north;
+    Sidewinner south;
+    SubwinnerMode mode;
 
 
   public:
 
-    Winner();
+    Subwinner();
 
-    ~Winner();
+    ~Subwinner();
 
     void reset();
 
@@ -54,7 +45,10 @@ class Winner
       const unsigned depthIn,
       const unsigned number);
 
-    void operator *= (const Winner& w2);
+    bool operator == (const Subwinner& w2) const;
+    bool operator != (const Subwinner& w2) const;
+
+    void operator *= (const Subwinner& w2);
 
     void flip();
 
@@ -66,7 +60,7 @@ class Winner
 
     string str() const;
 
-    string strEntry() const;
+    string strDebug() const;
 };
 
 #endif

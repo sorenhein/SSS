@@ -224,9 +224,9 @@ void Plays::logRhoNew(
   const unsigned rho,
   const bool leadCollapse,
   const bool pardCollapse,
-  vector<Winner> const * leadOrderPtr,
-  vector<Winner> const * pardOrderPtr,
-  Winner const * currBestPtr,
+  vector<Subwinner> const * leadOrderPtr,
+  vector<Subwinner> const * pardOrderPtr,
+  Subwinner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag,
   const unsigned trickNS,
@@ -302,9 +302,9 @@ void Plays::logFull(
   const unsigned trickNS,
   const bool leadCollapse,
   const bool pardCollapse,
-  vector<Winner> const * leadOrderPtr,
-  vector<Winner> const * pardOrderPtr,
-  Winner const * currBestPtr,
+  vector<Subwinner> const * leadOrderPtr,
+  vector<Subwinner> const * pardOrderPtr,
+  Subwinner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag)
 {
@@ -375,8 +375,8 @@ if (debugFlag)
   cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << 
     " rotate " << (rhoNode.rotateNew ? "yes" : "no") << endl;
 
-    vector<Winner> const * northOrderPtr;
-    vector<Winner> const * southOrderPtr;
+    vector<Subwinner> const * northOrderPtr;
+    vector<Subwinner> const * southOrderPtr;
     unsigned first, second;
     if (side == SIDE_NORTH)
     {

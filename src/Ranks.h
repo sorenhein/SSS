@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "strategies/Winner.h"
+#include "strategies/Subwinner.h"
 
 #include "const.h"
 
@@ -51,16 +51,16 @@ class Ranks
       // remaindersWin maps winners in subsequent tricks to winners
       // in the current reference frame, given that NS win this trick.
       // The first indices are the first and second plays to this trick.
-      vector<vector<vector<Winner>>> remaindersWin;
+      vector<vector<vector<Subwinner>>> remaindersWin;
 
       // remaindersLose maps winners in subsequent tricks to winners
       // in the current reference frame, given that NS lose this trick.
-      vector<vector<Winner>> remaindersLose;
+      vector<vector<Subwinner>> remaindersLose;
 
       // The best card(s) that NS play to this trick, whether or not
       // they win it.  If they win, then the winner is interesting.
       // The indices are the first and second plays to this trick.
-      vector<vector<Winner>> best;
+      vector<vector<Subwinner>> best;
 
       // The numbers of each relevant NS card.
       vector<unsigned> numRank;

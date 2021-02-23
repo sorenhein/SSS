@@ -73,9 +73,9 @@ class Plays
       bool knownVoidRho;
       bool voidPard;
 
-      vector<Winner> const * leadOrderPtr;
-      vector<Winner> const * pardOrderPtr;
-      Winner const * currBestPtr;
+      vector<Subwinner> const * leadOrderPtr;
+      vector<Subwinner> const * pardOrderPtr;
+      Subwinner const * currBestPtr;
 
       PardNode * pardPtr;
     };
@@ -145,9 +145,9 @@ class Plays
       const unsigned rho,
       const bool leadCollapse,
       const bool pardCollapse,
-      vector<Winner> const * leadOrderPtr,
-      vector<Winner> const * pardOrderPtr,
-      Winner const * currBestPtr,
+      vector<Subwinner> const * leadOrderPtr,
+      vector<Subwinner> const * pardOrderPtr,
+      Subwinner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag,
       const unsigned trickNS,
@@ -192,9 +192,9 @@ class Plays
       const unsigned trickNS,
       const bool leadCollapse,
       const bool pardCollapse,
-      vector<Winner> const * leadOrderPtr,
-      vector<Winner> const * pardOrderPtr,
-      Winner const * currBestPtr,
+      vector<Subwinner> const * leadOrderPtr,
+      vector<Subwinner> const * pardOrderPtr,
+      Subwinner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag);
 

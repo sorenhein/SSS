@@ -238,9 +238,9 @@ unsigned Tvectors::purge(const Tvector& constants)
 void Tvectors::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
-  const vector<Winner>& northOrder,
-  const vector<Winner>& southOrder,
-  const Winner& currBest,
+  const vector<Subwinner>& northOrder,
+  const vector<Subwinner>& southOrder,
+  const Subwinner& currBest,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)

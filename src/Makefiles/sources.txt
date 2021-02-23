@@ -12,6 +12,8 @@ SOURCE_FILES    =                       \
                 inputs/Entity.cpp       \
                 inputs/parse.cpp        \
                                         \
+                strategies/Sidewinner.cpp \
+                strategies/Subwinner.cpp \
                 strategies/Tvector.cpp  \
                 strategies/Tvectors.cpp \
                 strategies/Winner.cpp   \

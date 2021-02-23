@@ -1,5 +1,36 @@
+KQ / J9 missing AT: EW can make NS choose between K (duck) and QJ (win).
+QJ / K9: Same, here it's Q and KJ.
+KJ / Q9: K or JQ.
+It seems true that not just the K should be the winner in the end.
+So maybe Winner needs an EW choice between entire N/S pairs.
+In a way, the problem is that that we could simplify to KQ / xx or
+to Kx / Qx. In fact, here probably it's an EW choice between K and Q.
+And these should definitely both survive.
+Maybe a way to look at KQ/J9 is that it's an EW choice between
+(North #1 and (North #2/South #1)).  If NS choose North #2, it's
+North #2.  Otherwise it's North #1/South #1.  Both these require two
+tops.
+N #a and (North #b/South #a) [*] -- try to get into a balanced shape
+where it's the same number of top cards needed. See how many of that
+rank (rank(N) == rank(S)) are used.
+#a > #b: North #b or (North #a/South/#a)
+
+I think the solution is:
+- Winner has up to two sets of sub-winners, each with N-S components
+- The above is represented as 
+  1. sub-winner North #b
+  2. sub-winner North #a South #a, so "top two with 1-2 from North"
+- So NS accept that EW's choice means NS must use both N #a and S #a
+  if NS choose to use S #a.  This is a bit more of a constraint than
+  absolutely needed, but does it ever harm?
+- So for each NS choice, we merge with N #a, and hopefully that 
+  balances out the #tops used in total
+- Then we put these as two sub-winners at NS's choice
+- A trivial choice of ranks goes in different sub-winners as it's 
+  a NS choice, not within a sub-winner as that means using both cards
+
+
 Rank tracking
-* updateAndGrow(): Does it add winner correctly, too?
 * += is more or less unchanged, but if two vectors are equal,
   and NS can pick one, then hopefully one dominates the other
   (or they are equal) in terms of ranks.  Otherwise assert

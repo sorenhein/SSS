@@ -10,8 +10,6 @@
 #include "Plays.h"
 #include "Ranks.h"
 
-#include "strategies/Tvector.h"
-
 #include "struct.h"
 #include "const.h"
 
@@ -308,7 +306,7 @@ assert(r < posInfo.fullCount.size());
       continue;
 
 assert(r < posInfo.remaindersLose.size());
-    vector<Winner>& remList = posInfo.remaindersLose[r];
+    vector<Subwinner>& remList = posInfo.remaindersLose[r];
     remList.resize(posInfo.len);
 
     // The position counts up from the lowest card which is 0.
@@ -389,12 +387,12 @@ void Ranks::setOrderTablesWin(
 
 assert(rThis < posInfo.remaindersWin.size());
 assert(rOther < posInfo.remaindersWin[rThis].size());
-      vector<Winner>& remList = posInfo.remaindersWin[rThis][rOther];
+      vector<Subwinner>& remList = posInfo.remaindersWin[rThis][rOther];
       remList.resize(posInfo.len);
 cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
   endl;
 
-      Winner& current = posInfo.best[rThis][rOther];
+      Subwinner& current = posInfo.best[rThis][rOther];
       current.reset();
       if (rThis > rOther)
       {
@@ -839,8 +837,8 @@ void Ranks::logPlay(
 {
   const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
 
-  vector<Winner> const * leadOrderPtr;
-  vector<Winner> const * pardOrderPtr;
+  vector<Subwinner> const * leadOrderPtr;
+  vector<Subwinner> const * pardOrderPtr;
 
 cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
   ", " << pard << ", " << rho << ", trick " << trickNS << endl;
