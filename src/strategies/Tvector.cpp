@@ -446,9 +446,9 @@ void Tvector::updateAndGrow(
 void Tvector::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
-  const vector<Subwinner>& northOrder, // Relative to parent,
-  const vector<Subwinner>& southOrder, // so after rotation
-  const Subwinner& currBest,
+  vector<Sidewinner> const * northOrderPtr, // Relative to parent,
+  vector<Sidewinner> const * southOrderPtr, // so after rotation
+  Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
@@ -487,7 +487,7 @@ void Tvector::adapt(
 
   // Update the winners.
     for (auto& te: results)
-      te.winner.update(northOrder, southOrder, currBest, trickNS);
+      te.winner.update(northOrderPtr, southOrderPtr, currBestPtr);
 
   // LHO and RHO void flags pertain to the this rotation state
   // (parent's frame of reference).

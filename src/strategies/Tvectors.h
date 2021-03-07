@@ -7,7 +7,7 @@
 #include <list>
 
 #include "Tvector.h"
-#include "Subwinner.h"
+#include "Winner.h"
 #include "../struct.h"
 
 
@@ -63,9 +63,9 @@ class Tvectors
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,
-      const vector<Subwinner>& northOrder, // Relative to parent,
-      const vector<Subwinner>& southOrder, // so after rotation
-      const Subwinner& currBest,
+      vector<Sidewinner> const * northOrderPtr, // Relative to parent,
+      vector<Sidewinner> const * southOrderPtr, // so after rotation
+      Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

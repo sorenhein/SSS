@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "strategies/Subwinner.h"
+#include "strategies/Winner.h"
 
 #include "const.h"
 
@@ -48,19 +48,14 @@ class Ranks
       bool singleRank;
       unsigned len;
 
-      // remaindersWin maps winners in subsequent tricks to winners
-      // in the current reference frame, given that NS win this trick.
-      // The first indices are the first and second plays to this trick.
-      vector<vector<vector<Subwinner>>> remaindersWin;
-
-      // remaindersLose maps winners in subsequent tricks to winners
-      // in the current reference frame, given that NS lose this trick.
-      vector<vector<Subwinner>> remaindersLose;
+      // remainders maps winners in subsequent tricks to winners
+      // in the current reference frame.
+      vector<vector<Sidewinner>> remainders;
 
       // The best card(s) that NS play to this trick, whether or not
       // they win it.  If they win, then the winner is interesting.
       // The indices are the first and second plays to this trick.
-      vector<vector<Subwinner>> best;
+      vector<vector<Winner>> best;
 
       // The numbers of each relevant NS card.
       vector<unsigned> numRank;
@@ -232,9 +227,7 @@ class Ranks
       vector<unsigned>& numbers,
       const PositionInfo& posInfo) const;
 
-    void setOrderTablesLose(
-      PositionInfo& posInfo,
-      const WinningSide side);
+    void setOrderTablesRemainder(PositionInfo& posInfo);
 
     void setOrderTablesWin(
       PositionInfo& posInfo,
@@ -244,7 +237,7 @@ class Ranks
 
     void setOrderTables();
 
-    void resizeOrderTablesLose(PositionInfo& posInfo);
+    // void resizeOrderTablesLose(PositionInfo& posInfo);
 
     void resizeOrderTablesWin(
       PositionInfo& posInfo,

@@ -284,19 +284,38 @@ void Ranks::countNumbers(
 }
 
 
-void Ranks::setOrderTablesLose(
-  PositionInfo& posInfo,
-  const WinningSide side)
+void Ranks::setOrderTablesRemainder(PositionInfo& posInfo)
 {
-  // NS lose this trick, so the only question is how to map the
-  // remaining NS cards (potential later winners) up to the cards
-  // in this trick.
-  // If ths posInfo side is void, the result ends up with a single,
-  // empty entry at position (rank) 0.
+  // Example: North AQx, South JT8, defenders have 7 cards.
+  // 
+  // Rank Cards North South
+  //    1     x     1     0
+  //    2   3-7     0     0
+  //    3     8     0     1
+  //    4     9     0     0
+  //    5    JT     0     2
+  //    6     Q     1     0
+  //    7     K     0     0
+  //    8     A     1     0
+  //
+  // Then the order table for North (from below) is 1, 6, 8.
+  // For South it is 3, 5, 5.  Each of these also has a depth, so
+  // for South it is actually 3(0), 5(1), 5(0) with the highest
+  // of equals being played first.
+  //
+  // If North plays the Q on the first trick, then North has 1, 8.
+  // So this is the reduced or punched-out order table for North's Q.
+  //
+  // The purpose of these tables is to figure out the lowest winning
+  // rank in the current combination that corresponds to 
+  // a following combination.
+  //
+  // If the posInfo side is void, there is an (unset) entry at
+  // position 0 of the list for the void "card".
 
   const unsigned l = posInfo.maxRank+1;
-  posInfo.remaindersLose.clear();
-  posInfo.remaindersLose.resize(l);
+  posInfo.remainders.clear();
+  posInfo.remainders.resize(l);
 
   // r is the full-rank index that we're punching out.
   for (unsigned r = 1; r < l; r++)
@@ -305,8 +324,8 @@ assert(r < posInfo.fullCount.size());
     if (posInfo.fullCount[r] == 0)
       continue;
 
-assert(r < posInfo.remaindersLose.size());
-    vector<Subwinner>& remList = posInfo.remaindersLose[r];
+assert(r < posInfo.remainders.size());
+    vector<Sidewinner>& remList = posInfo.remainders[r];
     remList.resize(posInfo.len);
 
     // The position counts up from the lowest card which is 0.
@@ -328,7 +347,7 @@ assert(s < posInfo.fullCount.size());
       for (unsigned d = start; d < val; d++, pos++)
       {
 assert(pos < remList.size());
-        remList[pos].set(side, s, d, pos);
+        remList[pos].set(s, d, pos);
       }
     }
 
@@ -350,18 +369,15 @@ void Ranks::setOrderTablesWin(
 
   const unsigned lThis = posInfo.maxRank+1;
   const unsigned lOther = otherInfo.maxRank+1;
-  posInfo.remaindersWin.clear();
-  posInfo.remaindersWin.resize(lThis);
 
   posInfo.best.clear();
   posInfo.best.resize(lThis);
 
-  // Count the numbers of each relevant NS card.
+  // Count the numbers of each rank.
   vector<unsigned> numThis, numOther;
   Ranks::countNumbers(numThis, posInfo);
   Ranks::countNumbers(numOther, otherInfo);
 
-  // Winner current;
   unsigned crank;
 
   // rThis is the full-rank index of the posInfo that we're punching out.
@@ -372,7 +388,6 @@ void Ranks::setOrderTablesWin(
     if (posInfo.fullCount[rThis] == 0)
       continue;
 
-    posInfo.remaindersWin[rThis].resize(lOther);
     posInfo.best[rThis].resize(lOther);
     
     // rOther is the full-rank index of the other card played.
@@ -385,23 +400,14 @@ void Ranks::setOrderTablesWin(
       if (rThis == 0 && rOther == 0)
         continue;
 
-assert(rThis < posInfo.remaindersWin.size());
-assert(rOther < posInfo.remaindersWin[rThis].size());
-      vector<Subwinner>& remList = posInfo.remaindersWin[rThis][rOther];
-      remList.resize(posInfo.len);
-cout << "win[" << rThis << "][" << rOther << "] size " << posInfo.len <<
-  endl;
+assert(rThis < posInfo.best.size());
+assert(rOther < posInfo.best[rThis].size());
 
-      Subwinner& current = posInfo.best[rThis][rOther];
+      Winner& current = posInfo.best[rThis][rOther];
       current.reset();
       if (rThis > rOther)
       {
         // The depth starts from 0.
-if (rThis >= numThis.size())
-{
-  cout << "About to fail\n";
-  cout << rThis << ", " << numThis.size() << endl;
-}
 assert(rThis < numThis.size());
         current.set(side, rThis, 0, numThis[rThis]);
         crank = rThis;
@@ -416,52 +422,12 @@ assert(rOther < numOther.size());
       {
 assert(rThis < numThis.size());
 assert(rOther < numOther.size());
+        // Make two sub-winners as NS in some sense choose.
         current.set(side, rThis, 0, numThis[rThis]);
         current.set(otherSide, rOther, 0, numOther[rOther]);
         crank = rThis;
       }
 
-      // The position counts up from the lowest card which is 0.
-      // Punch out each later leader card and pick the lowest winner
-      // among that card and the current winner.
-      unsigned pos = 0;
-      for (unsigned s = 1; s < lThis; s++)
-      {
-        const unsigned val = posInfo.fullCount[s];
-        if (val == 0)
-          continue;
-
-        if (s <= crank)
-        {
-          // The later leader card is lower.
-          const unsigned start = (rThis == s ? 1 : 0);
-cout << "Later s << " << s << " start " << start << ", val " << val << 
-  ", pos " << pos <<endl;
-          for (unsigned d = start; d < val; d++, pos++)
-{
-assert(pos < remList.size());
-            remList[pos].set(side, s, d, pos);
-}
-cout << "  pos now " << pos << endl;
-        }
-        else if (s > crank)
-        {
-cout << "Copy val << " << val << 
-  ", pos " << pos <<endl;
-assert(pos < remList.size());
-          // The current winner is lower, so we map to it.
-          for (unsigned d = 0; d < val; d++, pos++)
-{
-assert(pos < remList.size());
-            remList[pos] = current;
-}
-cout << "  pos now " << pos << endl;
-        }
-      }
-
-      remList.resize(pos);
-cout << "final[" << rThis << "][" << rOther << "] size " << pos <<
-  endl;
     }
   }
 }
@@ -504,25 +470,11 @@ void Ranks::setOrderTables()
   // and depths that will be the lowest winners overall, taking into
   // account the winner of the following combination.
 
-  Ranks::setOrderTablesLose(north, WIN_NORTH);
-  Ranks::setOrderTablesLose(south, WIN_SOUTH);
+  Ranks::setOrderTablesRemainder(north);
+  Ranks::setOrderTablesRemainder(south);
 
   Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
   Ranks::setOrderTablesWin(south, WIN_SOUTH, north, WIN_NORTH);
-}
-
-
-void Ranks::resizeOrderTablesLose(PositionInfo& posInfo)
-{
-  // NS lose this trick, so the only question is how to map the
-  // remaining NS cards (potential later winners) up to the cards
-  // in this trick.
-  // If ths posInfo side is void, the result ends up with a single,
-  // empty entry at position (rank) 0.
-
-  const unsigned l = posInfo.maxRank+1;
-  posInfo.remaindersLose.clear();
-  posInfo.remaindersLose.resize(l);
 }
 
 
@@ -537,62 +489,21 @@ void Ranks::resizeOrderTablesWin(
 
   const unsigned lThis = posInfo.maxRank+1;
   const unsigned lOther = otherInfo.maxRank+1;
-  posInfo.remaindersWin.clear();
-  posInfo.remaindersWin.resize(lThis);
+
+  posInfo.best.resize(lThis);
 
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
-    if (posInfo.fullCount[rThis] > 0)
-      posInfo.remaindersWin[rThis].resize(lOther);
-  }
+    if (posInfo.fullCount[rThis] == 0)
+      continue;
 
-  // Count the numbers of each relevant NS card.
-  vector<unsigned> numThis, numOther;
-  Ranks::countNumbers(numThis, posInfo);
-  Ranks::countNumbers(numOther, otherInfo);
+    posInfo.best[rThis].resize(lOther);
+  }
 }
 
 
 void Ranks::resizeOrderTables()
 {
-  // Example: North AQx, South JT8, defenders have 7 cards.
-  // 
-  // Rank Cards North South
-  //    1     x     1     0
-  //    2   3-7     0     0
-  //    3     8     0     1
-  //    4     9     0     0
-  //    5    JT     0     2
-  //    6     Q     1     0
-  //    7     K     0     0
-  //    8     A     1     0
-  //
-  // Then the order table for North (from below) is 1, 6, 8.
-  // For South it is 3, 5, 5.  Each of these also has a depth, so
-  // for South it is actually 3(1), 5(2), 5(1) with the highest
-  // of equals being played first.
-  //
-  // If North plays the Q on the first trick, then North has 1, 8.
-  // So this is the reduced or punched-out order table for North's Q.
-  //
-  // The purpose of these tables is to figure out the lowest winning
-  // rank in the current combination that corresponds to a winner in 
-  // a following combination.  Let's say NS win this trick with the Q.
-  // Then if the lowest winner of the next combination is the ace,
-  // we're going to stick with the Q.  Conceptually in this case,
-  //
-  // North winner[North plays Q][South plays 8] = 1(x), 6(Q!).
-  // The last one is not the ace, as it is higher than the Q.
-  // South winner[North plays Q][South plays 8] = 5(T), 5(J).
-  //
-  // We need tables for each of North and South, for the case when
-  // we win or lose the current trick, and yielding the list of ranks
-  // and depths that will be the lowest winners overall, taking into
-  // account the winner of the following combination.
-
-  Ranks::resizeOrderTablesLose(north);
-  Ranks::resizeOrderTablesLose(south);
-
   Ranks::resizeOrderTablesWin(north, south);
   Ranks::resizeOrderTablesWin(south, north);
 }
@@ -837,35 +748,47 @@ void Ranks::logPlay(
 {
   const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
 
-  vector<Subwinner> const * leadOrderPtr;
-  vector<Subwinner> const * pardOrderPtr;
+  vector<Sidewinner> const * leadOrderPtr;
+  vector<Sidewinner> const * pardOrderPtr;
+
+  if (lead == 0)
+    leadOrderPtr = nullptr;
+  else
+  {
+assert(lead < leader.remainders.size());
+    leadOrderPtr = &leader.remainders[lead];
+  }
+
+  if (pard == 0)
+    pardOrderPtr = nullptr;
+  else
+  {
+assert(pard < partner.remainders.size());
+    pardOrderPtr = &partner.remainders[lead];
+  }
+
+  Winner const * winPtr;
+  if (! trickNS)
+    winPtr = nullptr;
+  else
+  {
+    // TODO Probably generate on the fly if not already set.
+assert(lead < leader.best.size());
+assert(pard < leader.best[lead].size());
+    winPtr = &leader.best[lead][pard];
+    
+  }
 
 cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
   ", " << pard << ", " << rho << ", trick " << trickNS << endl;
 
-  if (trickNS)
-  {
-assert(lead < leader.remaindersWin.size());
-assert(pard < leader.remaindersWin[lead].size());
-    leadOrderPtr = &leader.remaindersWin[lead][pard];
-assert(pard < partner.remaindersWin.size());
-assert(lead < partner.remaindersWin[pard].size());
-    pardOrderPtr = &partner.remaindersWin[pard][lead];
-  }
-  else
-  {
-assert(lead < leader.remaindersLose.size());
-    leadOrderPtr = &leader.remaindersLose[lead];
-assert(pard < partner.remaindersLose.size());
-    pardOrderPtr = &partner.remaindersLose[pard];
-  }
-
-cout << "Ranks::logPlay " << leadOrderPtr->size() << ", " <<
-  pardOrderPtr->size() << endl;
+cout << "Ranks::logPlay " << 
+  (leadOrderPtr ? to_string(leadOrderPtr->size()) : "null") << ", " <<
+  (pardOrderPtr ? to_string(pardOrderPtr->size()) : "null") << endl;
 
   plays.logFull(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
-    leadOrderPtr, pardOrderPtr, &leader.best[lead][pard],
+    leadOrderPtr, pardOrderPtr, winPtr,
     holding3, rotateFlag);
 }
 

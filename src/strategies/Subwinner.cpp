@@ -46,6 +46,8 @@ void Subwinner::set(
     south.set(rankIn, depthIn, numberIn);
     mode = SUBWIN_SOUTH_ONLY;
   }
+  else if (sideIn == WIN_NONE)
+    mode = SUBWIN_NOT_SET;
   else
     assert(false);
 }
@@ -274,29 +276,32 @@ void Subwinner::flip()
 
 
 void Subwinner::update(
-  const vector<Subwinner>& northOrder,
-  const vector<Subwinner>& southOrder,
-  const Subwinner& currBest,
-  const unsigned trickNS)
+  vector<Sidewinner> const * northOrderPtr,
+  vector<Sidewinner> const * southOrderPtr)
 {
   if (mode == SUBWIN_NORTH_ONLY)
   {
     // This may also change the winning side.
-    assert(north.no() < northOrder.size());
-    * this = northOrder[north.no()];
+    assert(northOrderPtr != nullptr);
+    assert(north.no() < northOrderPtr->size());
+    north = (* northOrderPtr)[north.no()];
   }
   else if (mode == SUBWIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
-    assert(south.no() < southOrder.size());
-    * this = southOrder[south.no()];
+    assert(southOrderPtr != nullptr);
+    assert(south.no() < southOrderPtr->size());
+    south = (* southOrderPtr)[south.no()];
   }
   else if (mode == SUBWIN_BOTH)
   {
-    assert(north.no() < northOrder.size());
-    assert(south.no() < southOrder.size());
-    north = northOrder[north.no()].north;
-    south = southOrder[south.no()].south;
+    assert(northOrderPtr != nullptr);
+    assert(north.no() < northOrderPtr->size());
+    north = (* northOrderPtr)[north.no()];
+
+    assert(southOrderPtr != nullptr);
+    assert(south.no() < southOrderPtr->size());
+    south = (* southOrderPtr)[south.no()];
 
     // As a result of the mapping to parent ranks, North and South
     // may actually be different ranks now.  As North-South choose,
@@ -315,16 +320,7 @@ void Subwinner::update(
   }
   else if (mode == SUBWIN_NOT_SET)
   {
-    // We weren't winning anything by ranks.
-    if (trickNS)
-    {
-      // The current winner is the overall winner.
-      * this = currBest;
-    }
-    else
-    {
-      // Stick with the empty winner.
-    }
+    // Stick with the empty winner.
   }
   else
     // Should not happen.

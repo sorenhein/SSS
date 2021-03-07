@@ -59,10 +59,9 @@ class Winner
     void flip();
 
     void update(
-      const vector<Subwinner>& northOrder,
-      const vector<Subwinner>& southOrder,
-      const Subwinner& currBest,
-      const unsigned trickNS);
+      vector<Sidewinner> const * northOrderPtr,
+      vector<Sidewinner> const * southOrderPtr,
+      Winner const * currBestPtr);
 
     string str() const;
 

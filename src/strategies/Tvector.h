@@ -128,9 +128,9 @@ class Tvector
     void adapt(
       const Survivors& survivors,
       const unsigned trickNS,
-      const vector<Subwinner>& northOrder,
-      const vector<Subwinner>& southOrder,
-      const Subwinner& currBest,
+      vector<Sidewinner> const * northOrderPtr,
+      vector<Sidewinner> const * southOrderPtr,
+      Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

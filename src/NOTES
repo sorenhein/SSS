@@ -1,3 +1,10 @@
+Ranks:
+- The this-trick winner is a Winner
+- The next-trick translation ignores this Winner and is stored
+  in a Sidewinner
+- In Winner, we first translate up any later winners
+- If there are later and this winners, we multiply them together
+
 KQ / J9 missing AT: EW can make NS choose between K (duck) and QJ (win).
 QJ / K9: Same, here it's Q and KJ.
 KJ / Q9: K or JQ.

@@ -106,13 +106,15 @@ void Winner::flip()
 
 
 void Winner::update(
-  const vector<Subwinner>& northOrder,
-  const vector<Subwinner>& southOrder,
-  const Subwinner& currBest,
-  const unsigned trickNS)
+  vector<Sidewinner> const * northOrderPtr,
+  vector<Sidewinner> const * southOrderPtr,
+  Winner const * currBestPtr)
 {
   for (auto& subwinner: subwinners)
-    subwinner.update(northOrder, southOrder, currBest, trickNS);
+    subwinner.update(northOrderPtr, southOrderPtr);
+
+  if (currBestPtr)
+    * this *= * currBestPtr;
 }
 
 

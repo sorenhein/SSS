@@ -224,9 +224,9 @@ void Plays::logRhoNew(
   const unsigned rho,
   const bool leadCollapse,
   const bool pardCollapse,
-  vector<Subwinner> const * leadOrderPtr,
-  vector<Subwinner> const * pardOrderPtr,
-  Subwinner const * currBestPtr,
+  vector<Sidewinner> const * leadOrderPtr,
+  vector<Sidewinner> const * pardOrderPtr,
+  Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag,
   const unsigned trickNS,
@@ -302,9 +302,9 @@ void Plays::logFull(
   const unsigned trickNS,
   const bool leadCollapse,
   const bool pardCollapse,
-  vector<Subwinner> const * leadOrderPtr,
-  vector<Subwinner> const * pardOrderPtr,
-  Subwinner const * currBestPtr,
+  vector<Sidewinner> const * leadOrderPtr,
+  vector<Sidewinner> const * pardOrderPtr,
+  Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag)
 {
@@ -375,8 +375,8 @@ if (debugFlag)
   cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << 
     " rotate " << (rhoNode.rotateNew ? "yes" : "no") << endl;
 
-    vector<Subwinner> const * northOrderPtr;
-    vector<Subwinner> const * southOrderPtr;
+    vector<Sidewinner> const * northOrderPtr;
+    vector<Sidewinner> const * southOrderPtr;
     unsigned first, second;
     if (side == SIDE_NORTH)
     {
@@ -426,9 +426,9 @@ if (debugFlag)
     // TODO Just pass in the RHO node in some form?
     tvs.adapt(survivors, 
       rhoNode.trickNS, 
-      * northOrderPtr,
-      * southOrderPtr,
-      * rhoNode.currBestPtr,
+      northOrderPtr,
+      southOrderPtr,
+      rhoNode.currBestPtr,
       first == 0,
       second == 0,
       rhoNode.rotateNew);
@@ -613,9 +613,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // It also renumbers winners within strategies.
     play.strategies.adapt(survivors, 
       rhoNode.trickNS, 
-      * rhoNode.leadOrderPtr,
-      * rhoNode.pardOrderPtr,
-      * rhoNode.currBestPtr,
+      rhoNode.leadOrderPtr,
+      rhoNode.pardOrderPtr,
+      rhoNode.currBestPtr,
       play.rho == 0,
       play.lho == 0,
       rhoNode.rotateNew);
