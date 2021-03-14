@@ -96,6 +96,8 @@ void Winner::integrate(const Subwinner& swNew)
       // The existing subwinner is inferior.
       switer = subwinners.erase(switer);
     }
+    else
+      switer++;
   }
 
   subwinners.push_back(swNew);

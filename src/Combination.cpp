@@ -52,12 +52,16 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   plays.reset();
 bool debugFlagTmp = false;
 // if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
-if (centry.canonicalHolding3 == 176 && ranks.size() == 6)
+if (centry.canonicalHolding3 == 61 && ranks.size() == 5)
 {
   cout << "HERE0\n";
   debugFlagTmp = true;
+
 }
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+
+  if (debugFlagTmp)
+    plays.printPointers();
   
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)
@@ -83,7 +87,16 @@ if (debugFlag)
   cout << "Distribution\n" << distPtr->str() << endl;
 }
 
-  plays.strategize(distPtr, strats, debugFlagTmp);
+  if (debugFlagTmp)
+  {
+    cout << "HEREx\n";
+    plays.printPointers();
+  }
+
+  // TODO Probably don't need to pass in ranks to make memory
+  // stay alive.
+
+  plays.strategize(ranks, distPtr, strats, debugFlagTmp);
   // plays.strategize(distPtr, strats, debugFlag);
 // cout << "C " << centry.canonicalHolding3 << endl;
 

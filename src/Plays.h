@@ -12,6 +12,7 @@ using namespace std;
 class Combinations;
 class Combination;
 class Distribution;
+class Ranks;
 
 
 struct ChunkEntry
@@ -201,6 +202,7 @@ class Plays
    void setCombPtrs(const Combinations& combinations);
 
    void strategize(
+     const Ranks& ranks,
      Distribution const * distPtr,
      Tvectors& strategies,
      bool debugFlag = false);
@@ -211,6 +213,9 @@ class Plays
      bool debugFlag = false);
 
    string str() const;
+
+   // TMP
+   void printPointers() const;
 };
 
 #endif

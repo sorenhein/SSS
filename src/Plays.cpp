@@ -6,6 +6,7 @@
 #include "Combinations.h"
 #include "Distribution.h"
 #include "Plays.h"
+#include "Ranks.h"
 
 
 // It's not that important to hit these, but this works
@@ -343,6 +344,7 @@ void Plays::setCombPtrs(const Combinations& combinations)
 #include "const.h"
 
 void Plays::strategize(
+  const Ranks& ranks,
   Distribution const * distPtr,
   Tvectors& strategies,
   bool debugFlag)
@@ -352,11 +354,19 @@ void Plays::strategize(
   // to these outcomes by spreading their probability mass well.
   // This will be done subsequently.
 
+  UNUSED(ranks);
+
 cout << "Node counts:" << endl;
 cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
 cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
 cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+
+if (debugFlag)
+{
+  cout << "HERE1\n";
+  Plays::printPointers();
+}
 
   Tvectors tvs;
   for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
@@ -968,3 +978,25 @@ string Plays::str() const
   return ss.str();
 }
 
+
+// TMP
+
+void Plays::printPointers() const
+{
+  unsigned rno = 0;
+  for (auto& rhoNode: rhoNodes)
+  {
+    cout << setw(2) << rno << " ";
+    if (rhoNode.leadOrderPtr)
+      cout << rhoNode.leadOrderPtr << setw(4) << rhoNode.leadOrderPtr->size();
+    else
+      cout << "null";
+    cout << " ";
+    if (rhoNode.pardOrderPtr)
+      cout << rhoNode.pardOrderPtr << setw(4) << rhoNode.pardOrderPtr->size();
+    else
+      cout << "null";
+    cout << "\n";
+    rno++;
+  }
+}
