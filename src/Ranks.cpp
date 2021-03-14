@@ -326,7 +326,7 @@ assert(r < posInfo.fullCount.size());
 
 assert(r < posInfo.remainders.size());
     vector<Sidewinner>& remList = posInfo.remainders[r];
-    remList.resize(posInfo.len);
+    remList.resize(posInfo.len); // TODO len-1?
 
     // The position counts up from the lowest card which is 0.
     unsigned pos = 0;
@@ -347,6 +347,8 @@ assert(s < posInfo.fullCount.size());
       for (unsigned d = start; d < val; d++, pos++)
       {
 assert(pos < remList.size());
+// cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos << 
+  // ", remList length" << remList.size() << endl;
         remList[pos].set(s, d, pos);
       }
     }
@@ -470,7 +472,9 @@ void Ranks::setOrderTables()
   // and depths that will be the lowest winners overall, taking into
   // account the winner of the following combination.
 
+// cout << "setting remainder for North\n";
   Ranks::setOrderTablesRemainder(north);
+// cout << "setting remainder for South\n";
   Ranks::setOrderTablesRemainder(south);
 
   Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
@@ -756,6 +760,7 @@ void Ranks::logPlay(
   else
   {
 assert(lead < leader.remainders.size());
+// cout << "Looking up lead " << lead << endl;
     leadOrderPtr = &leader.remainders[lead];
   }
 
@@ -764,7 +769,8 @@ assert(lead < leader.remainders.size());
   else
   {
 assert(pard < partner.remainders.size());
-    pardOrderPtr = &partner.remainders[lead];
+// cout << "Looking up pard " << pard << endl;
+    pardOrderPtr = &partner.remainders[pard];
   }
 
   Winner const * winPtr;
@@ -779,12 +785,12 @@ assert(pard < leader.best[lead].size());
     
   }
 
-cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
-  ", " << pard << ", " << rho << ", trick " << trickNS << endl;
+// cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
+  // ", " << pard << ", " << rho << ", trick " << trickNS << endl;
 
-cout << "Ranks::logPlay " << 
-  (leadOrderPtr ? to_string(leadOrderPtr->size()) : "null") << ", " <<
-  (pardOrderPtr ? to_string(pardOrderPtr->size()) : "null") << endl;
+// cout << "Ranks::logPlay " << 
+  // (leadOrderPtr ? to_string(leadOrderPtr->size()) : "null") << ", " <<
+  // (pardOrderPtr ? to_string(pardOrderPtr->size()) : "null") << endl;
 
   plays.logFull(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
