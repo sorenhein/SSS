@@ -379,10 +379,13 @@ if (debugFlag)
   cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
+    const unsigned pard0 = rhoNode.pardPtr->pard;
+    const unsigned lead0 = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
     const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
     const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
 // if (debugFlag)
-  cout << "side " << side << " LHO " << lho << " RHO " << rhoNode.rho << 
+  cout << "side " << side << " lead " << lead0 << " LHO " << lho << 
+    " pard " << pard0 << " RHO " << rhoNode.rho << 
     " rotate " << (rhoNode.rotateNew ? "yes" : "no") << endl;
 
     vector<Sidewinner> const * northOrderPtr;
