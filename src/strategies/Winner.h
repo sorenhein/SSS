@@ -33,6 +33,8 @@ class Winner
 
     bool operator != (const Winner& w2) const;
 
+    void integrate(const Subwinner& swNew);
+
     string strSingleSided(
       const string& name,
       const Sidewinner& winner) const;

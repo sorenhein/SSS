@@ -45,10 +45,12 @@ class Subwinner
       const unsigned depthIn,
       const unsigned number);
 
-    bool operator == (const Subwinner& w2) const;
-    bool operator != (const Subwinner& w2) const;
+    bool operator == (const Subwinner& sw2) const;
+    bool operator != (const Subwinner& sw2) const;
 
-    void operator *= (const Subwinner& w2);
+    void operator *= (const Subwinner& sw2);
+
+    WinnerCompare declarerPrefers(const Subwinner& sw2) const;
 
     void flip();
 

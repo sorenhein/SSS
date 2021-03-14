@@ -53,208 +53,151 @@ void Subwinner::set(
 }
 
 
-bool Subwinner::operator == (const Subwinner& w2) const
+bool Subwinner::operator == (const Subwinner& sw2) const
 {
-  if (mode != w2.mode)
+  if (mode != sw2.mode)
     return false;
   if (mode == SUBWIN_NOT_SET)
     return true;
-  if (mode != SUBWIN_SOUTH_ONLY && north != w2.north)
+  if (mode != SUBWIN_SOUTH_ONLY && north != sw2.north)
     return false;
-  if (mode != SUBWIN_NORTH_ONLY && south != w2.south)
+  if (mode != SUBWIN_NORTH_ONLY && south != sw2.south)
     return false;
 
   return true;
 }
 
 
-bool Subwinner::operator != (const Subwinner& w2) const
+bool Subwinner::operator != (const Subwinner& sw2) const
 {
-  return ! (* this == w2);
+  return ! (* this == sw2);
 }
 
 
-void Subwinner::operator *= (const Subwinner& w2)
+void Subwinner::operator *= (const Subwinner& sw2)
 {
   // The opponents have the choice.
 
-  if (w2.mode == SUBWIN_NOT_SET)
+  if (sw2.mode == SUBWIN_NOT_SET)
   {
     // OK as is.
     return;
   }
   else if (mode == SUBWIN_NOT_SET)
   {
-    * this = w2;
+    * this = sw2;
     return;
   }
 
-  if (mode == SUBWIN_NORTH_ONLY)
+  if (sw2.mode == SUBWIN_NORTH_ONLY || sw2.mode == SUBWIN_BOTH)
   {
-    if (w2.mode == SUBWIN_NORTH_ONLY)
-      north *= w2.north;
-    else if (w2.mode == SUBWIN_SOUTH_ONLY)
-    {
-      if (north.rankExceeds(w2.south))
-        * this = w2;
-      else if (north.rankSame(w2.south))
-      {
-        south = w2.south;
-        mode = SUBWIN_BOTH;
-      }
-      else
-      {
-        // Do nothing if North has a lower rank.
-      }
-    }
-    else if (w2.mode == SUBWIN_BOTH)
-    {
-      if (w2.north >= north)
-      {
-        // The current winner is no higher, and it has no option
-        // of a South play at NS's discretion.  So the current winner 
-        // dominates from EW's perspective, and we change nothing.
-      }
-      else
-      {
-        // Let's find an example of this.
-        // When would EW choose NS_DECIDE rather than the north only?
-        cout << "Position 1" <<  endl;
-        cout << Subwinner::strDebug();
-        cout << w2.strDebug() << flush;
-        assert(false);
-      }
-    }
+    // sw2.north is set.
+    if (mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH)
+      north *= sw2.north;
     else
     {
-      cout << "Position 3" <<  endl;
-      cout << Subwinner::strDebug();
-      cout << w2.strDebug();
-      assert(false);
+      // As north wasn't set, south must be.
+      north = sw2.north;
+      mode = SUBWIN_BOTH;
     }
   }
-  else if (mode == SUBWIN_SOUTH_ONLY)
-  {
-    if (w2.mode == SUBWIN_NORTH_ONLY)
-    {
-      if (south.rankExceeds(w2.north))
-        * this = w2;
-      else if (south.rankSame(w2.north))
-      {
-        north = w2.north;
-        mode = SUBWIN_BOTH;
-      }
-      else
-      {
-        // Do nothing if South has a lower rank.
-      }
-    }
-    else if (w2.mode == SUBWIN_SOUTH_ONLY)
-      south *= w2.south;
-    else if (w2.mode == SUBWIN_BOTH)
-    {
-      if (w2.south >= south)
-      {
-        // The current winner is no higher, and it has no option
-        // of a North play at NS's discretion.  So the current winner 
-        // dominates from EW's perspective, and we change nothing.
-      }
-      else
-      {
-        // Let's find an example of this.
-        // When would EW choose NS_DECIDE rather than the north only?
-        cout << "Position 4" <<  endl;
-        cout << Subwinner::strDebug();
-        cout << w2.strDebug();
-        assert(false);
-      }
-    }
-    else
-    {
-      cout << "Position 6" <<  endl;
-      cout << Subwinner::strDebug();
-      cout << w2.strDebug();
-      assert(false);
-    }
-  }
-  else if (mode == SUBWIN_BOTH)
-  {
-    if (w2.mode == SUBWIN_NORTH_ONLY)
-    {
-      if (north >= w2.north)
-      {
-        // The w2 winner is no higher, and it has no option
-        // of a South play at NS's discretion.  So the w2 winner 
-        // dominates from EW's perspective.
-        * this = w2;
-      }
-      else
-      {
-        // Example?
-        cout << "Position 7" <<  endl;
-        cout << Subwinner::strDebug();
-        cout << w2.strDebug();
-        assert(false);
-      }
-    }
-    else if (w2.mode == SUBWIN_SOUTH_ONLY)
-    {
-      if (south >= w2.south)
-      {
-        // The w2 winner is no higher, and it has no option
-        // of a South play at NS's discretion.  So the w2 winner 
-        // dominates from EW's perspective.
-        * this = w2;
-      }
-      else
-      {
-        // Example?
-        cout << "Position 8" <<  endl;
-        cout << Subwinner::strDebug();
-        cout << w2.strDebug();
-        assert(false);
-      }
-    }
-    else if (w2.mode == SUBWIN_BOTH)
-    {
-      // TODO Some kind of domination?
-      const WinnerCompare cmpNorth = north.compare(w2.north);
-      const WinnerCompare cmpSouth = south.compare(w2.north);
 
-      if ((cmpNorth == WIN_SECOND || cmpNorth == WIN_EQUAL) &&
-          (cmpSouth == WIN_SECOND || cmpSouth == WIN_EQUAL))
-      {
-        // OK as is.
-      }
-      else if ((cmpNorth == WIN_FIRST || cmpNorth == WIN_EQUAL) &&
-          (cmpSouth == WIN_FIRST || cmpSouth == WIN_EQUAL))
-      {
-        * this = w2;
-      }
-      else
-      {
-        // Example?
-        cout << "Position 9" <<  endl;
-        cout << Subwinner::strDebug();
-        cout << w2.strDebug() << endl;
-        assert(false);
-      }
-    }
+  if (sw2.mode == SUBWIN_SOUTH_ONLY || sw2.mode == SUBWIN_BOTH)
+  {
+    // w2.south is set.
+    if (mode == SUBWIN_SOUTH_ONLY || sw2.mode == SUBWIN_BOTH)
+      south *= sw2.south;
     else
     {
-      cout << "Position 11" <<  endl;
-      cout << Subwinner::strDebug();
-      cout << w2.strDebug();
-      assert(false);
+      // As south wasn't set, north must be.
+      south = sw2.south;
+      mode = SUBWIN_BOTH;
     }
+  }
+
+  if (mode == SUBWIN_BOTH)
+  {
+    if (north.rankExceeds(south))
+      mode = SUBWIN_SOUTH_ONLY;
+    else if (south.rankExceeds(north))
+      mode = SUBWIN_NORTH_ONLY;
+  }
+}
+
+
+WinnerCompare Subwinner::declarerPrefers(const Subwinner& sw2) const
+{
+  assert(mode != SUBWIN_NOT_SET);
+  assert(sw2.mode != SUBWIN_NOT_SET);
+
+  // TODO Maybe Subwinner should know the rank.
+  Sidewinner const * active1 =
+      (mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH ?
+        &north : &south);
+  Sidewinner const * active2 =
+      (sw2.mode == SUBWIN_NORTH_ONLY || sw2.mode == SUBWIN_BOTH ? 
+        &sw2.north : &sw2.south);
+
+  if (active1->rankExceeds(* active2))
+    return WIN_FIRST;
+  else if (active2->rankExceeds(* active1))
+    return WIN_SECOND;
+
+  // So now the two Subwinners have the same rank.
+  // TODO Might be nice to have SubwinnerMode as a 2-bit vector
+  // or to have separate North and South bits.
+
+  WinnerCompare northPrefer, southPrefer;
+  if (mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH)
+  {
+    if (sw2.mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH)
+      northPrefer = north.compare(sw2.north);
+    else
+      // North prefers no restriction.
+      northPrefer = WIN_SECOND;
   }
   else
   {
-    cout << "Position 17" <<  endl;
-    cout << Subwinner::strDebug();
-    cout << w2.strDebug();
-    assert(false);
+    if (sw2.mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH)
+      // North prefers no restriction.
+      northPrefer = WIN_FIRST;
+    else
+      // Both are missing, so it doesn't matter.
+      northPrefer = WIN_EQUAL;
   }
+  
+  if (mode == SUBWIN_SOUTH_ONLY || mode == SUBWIN_BOTH)
+  {
+    if (sw2.mode == SUBWIN_SOUTH_ONLY || mode == SUBWIN_BOTH)
+      southPrefer = south.compare(sw2.north);
+    else
+      // South prefers no restriction.
+      southPrefer = WIN_SECOND;
+  }
+  else
+  {
+    if (sw2.mode == SUBWIN_SOUTH_ONLY || mode == SUBWIN_BOTH)
+      // South prefers no restriction.
+      southPrefer = WIN_FIRST;
+    else
+      // Both are missing, so it doesn't matter.
+      southPrefer = WIN_EQUAL;
+  }
+
+  // TODO Can set up a matrix lookup as well.
+  //
+  // N|S 1  2  =
+  // 1   1  != 1
+  // 2   != 2  2
+  // =   1  2  =
+  if (northPrefer == southPrefer)
+    return northPrefer;
+  else if (northPrefer == SUBWIN_BOTH)
+    return southPrefer;
+  else if (southPrefer == SUBWIN_BOTH)
+    return northPrefer;
+  else
+    return WIN_DIFFERENT;
 }
 
 

@@ -75,6 +75,33 @@ bool Winner::operator != (const Winner& w2) const
 }
 
 
+void Winner::integrate(const Subwinner& swNew)
+{
+  // subwinners are a minimal set.
+  // The new subwinner may dominate existing subwinners.
+  // It may also be dominated by at least one existing subwinner.
+  // If neither is true, then it is a new subwinner.
+
+  auto switer = subwinners.begin();
+  while (switer != subwinners.end())
+  {
+    const WinnerCompare cmp = switer->declarerPrefers(swNew);
+    if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
+    {
+      // The new subwinner is inferior.
+      return;
+    }
+    else if (cmp == WIN_SECOND)
+    {
+      // The existing subwinner is inferior.
+      switer = subwinners.erase(switer);
+    }
+  }
+
+  subwinners.push_back(swNew);
+}
+
+
 void Winner::operator *= (const Winner& w2)
 {
   // The opponents have the choice.
@@ -90,11 +117,19 @@ void Winner::operator *= (const Winner& w2)
     return;
   }
 
-  // For now:
-  assert(subwinners.size() == 1);
-  assert(w2.subwinners.size() == 1);
+  // This is surely inefficient.
+  Winner w1 = * this;
+  Winner::reset();
 
-  subwinners.front() *= w2.subwinners.front();
+  for (auto& sw1: w1.subwinners)
+  {
+    for (auto& sw2: w2.subwinners)
+    {
+      Subwinner sw = sw1;
+      sw *= sw2;
+      Winner::integrate(sw);
+    }
+  }
 }
 
 

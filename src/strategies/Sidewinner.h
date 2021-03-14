@@ -8,12 +8,16 @@
 using namespace std;
 
 
+// Sidewinner itself cannot be different, but this is also used
+// to compare subwinners.
+
 enum WinnerCompare
 {
   WIN_FIRST = 0,
   WIN_SECOND = 1,
   WIN_EQUAL = 2,
-  WIN_UNSET = 3
+  WIN_DIFFERENT = 3,
+  WIN_UNSET = 4
 };
 
 
