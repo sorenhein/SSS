@@ -1,40 +1,80 @@
-Ranks:
-- The this-trick winner is a Winner
-- The next-trick translation ignores this Winner and is stored
-  in a Sidewinner
-- In Winner, we first translate up any later winners
-- If there are later and this winners, we multiply them together
-
+March 2021
+----------
 KQ / J9 missing AT: EW can make NS choose between K (duck) and QJ (win).
 QJ / K9: Same, here it's Q and KJ.
 KJ / Q9: K or JQ.
 It seems true that not just the K should be the winner in the end.
-So maybe Winner needs an EW choice between entire N/S pairs.
 In a way, the problem is that that we could simplify to KQ / xx or
 to Kx / Qx. In fact, here probably it's an EW choice between K and Q.
 And these should definitely both survive.
-Maybe a way to look at KQ/J9 is that it's an EW choice between
-(North #1 and (North #2/South #1)).  If NS choose North #2, it's
-North #2.  Otherwise it's North #1/South #1.  Both these require two
-tops.
-N #a and (North #b/South #a) [*] -- try to get into a balanced shape
-where it's the same number of top cards needed. See how many of that
-rank (rank(N) == rank(S)) are used.
-#a > #b: North #b or (North #a/South/#a)
 
-I think the solution is:
-- Winner has up to two sets of sub-winners, each with N-S components
-- The above is represented as 
-  1. sub-winner North #b
-  2. sub-winner North #a South #a, so "top two with 1-2 from North"
-- So NS accept that EW's choice means NS must use both N #a and S #a
-  if NS choose to use S #a.  This is a bit more of a constraint than
-  absolutely needed, but does it ever harm?
-- So for each NS choice, we merge with N #a, and hopefully that 
-  balances out the #tops used in total
-- Then we put these as two sub-winners at NS's choice
-- A trivial choice of ranks goes in different sub-winners as it's 
-  a NS choice, not within a sub-winner as that means using both cards
+So in these three cases more generally, the first trick can go
+N1 wins, then no more tricks for NS.
+It can also go
+N1 loses, then NS just have a choice between N2 and S1.
+N1 * (N2 + S1) = N2 + N1*S1.
+This means we can either view it as KQ / xx or as Kx / Qx.
+
+2021-03-21
+----------
+Issues
+1. 10/4025, AK76 / QT9 missing J85:
+   a. 7 5 T 8 has T as winner!  (Play 4)
+   b. T - A 5 segfaults, probably because it's a rotation
+
+2. Drilling down from this, if the first trick goes 7 - T J,
+   it leaves us with 7/128 so AK9 / QJ missing T8.  Because of 
+   optimizations in Ranks.cpp, we don't get to see all the combinations
+   of ranks that can happen.  So if it goes Q - 9 8, we have
+   SQ * (NA + SJ) = NA*SQ + SJ = NA*SQ,
+   as we'd always prefer the choice between NA and SQ to a forced SJ.
+   This of course assumes that we win with the SQ and not the SJ in 
+   the first trick.
+
+3. It could also have gone e.g. Q T A 8 which is a choice NA + SQ.
+   This is better (more flexible) for NS than just SQ which is the
+   current outcome when d = 2.
+
+4. It could also go A - Q 8, so
+   (NA + SQ) * (NK + SJ) = NK + SJ + NK*SQ + NA*SJ = NK + SJ, 
+   as NK*SQ is worse for NS than just NK.
+
+5. But it could also go A - J 8, so
+   (NA + SJ) * (NK + SQ) = NK + SJ + NA*SQ + NK*SJ = NK + SJ + NA*SQ,
+   which makes sense.  We can reduce to AKx / xx, xx / AKx or Axx / Kx.
+
+6. Or it could go K - Q 8(?), so
+   (NK + SQ) * (NA + SJ) = NK + SJ + NA*SQ + NK*SJ = #5
+
+7. Or it could go K - J 8, so
+   (NK + SJ) * (NA + SQ) = NK + SJ + NA*SJ + NK*SQ = #4
+   
+   So how do we make sure to get the second and not the first result?
+
+8. Another example: AKx / JT missing Qxx.
+   J x x: NK*SJ.
+   J Q A: NA * (NK * ST) = NK*ST.
+
+   T x x: NK*ST.
+   T Q A: NA * (NK * SJ) = NK*SJ.
+
+   It looks as if EW can force NK*ST no matter how South starts.
+   I suppose that's as it should be.  So we can always start with the
+   highest rank -- it doesn't matter.
+
+9. Problem #1 is that Ranks optimizes away plays that are relevant
+   for ranks in this case.  So Ranks could have a full-play mode, needed
+   to calculate the tables of relevant ranks (stored in files).  And
+   a reduced-play mode as now.
+
+10.Problem #2 is when NS have a shared winner in the current trick.
+   It's not clear then which depths were played. Can we just choose
+   the highest from one side and the lowest from the other? Or do we
+   need to consider two such combinations? Here it would work.
+   
+
+Still need to look at += at vector level and choose among equal-trick
+vectors the one with the best rank profile (can we need both?).
 
 
 Rank tracking

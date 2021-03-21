@@ -280,8 +280,7 @@ string Subwinner::str() const
   else if (mode == SUBWIN_NOT_SET)
     return "-";
   else
-    // Not ideal
-    return north.str("B");
+    return north.str("N") + south.str("S", false);
 }
 
 

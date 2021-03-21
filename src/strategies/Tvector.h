@@ -61,7 +61,7 @@ struct TrickEntry
     stringstream ss;
     ss << setw(4) << tricks;
     if (rankFlag)
-      ss << setw(4) << winner.strEntry();
+      ss << setw(8) << winner.strEntry();
     return ss.str();
   }
 };

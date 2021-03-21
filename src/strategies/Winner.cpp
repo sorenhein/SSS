@@ -158,8 +158,18 @@ void Winner::update(
 string Winner::strEntry() const
 {
   string s = "";
+  bool firstFlag = true;
   for (auto& subwinner: subwinners)
-    s += subwinner.str();
+  {
+    if (firstFlag)
+    {
+      firstFlag = false;
+      s += subwinner.str();
+    }
+    else
+      // Join with a comma in between.
+      s += "," + subwinner.str();
+  }
   return s;
 }
 

@@ -262,7 +262,7 @@ string Tvectors::strHeader(
   if (title != "")
     ss << title << "\n";
 
-  const unsigned incr = (rankFlag ? 8 : 4);
+  const unsigned incr = (rankFlag ? 12 : 4);
 
   ss << setw(4) << left << "Dist" << right;
 
@@ -280,7 +280,7 @@ string Tvectors::strWeights(const bool rankFlag) const
 {
   stringstream ss;
 
-  const unsigned incr = (rankFlag ? 8 : 4);
+  const unsigned incr = (rankFlag ? 12 : 4);
   ss << string(4 + incr * results.size(), '-') << "\n";
   ss << setw(4) << "Wgt";
   for (const auto& res: results)

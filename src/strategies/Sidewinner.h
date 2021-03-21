@@ -54,7 +54,9 @@ class Sidewinner
 
     unsigned no() const;
 
-    string str(const string& name) const;
+    string str(
+      const string& name,
+      const bool rankFlag = true) const;
 
     string strDebug(const string& name) const;
 };

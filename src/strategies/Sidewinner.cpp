@@ -100,10 +100,15 @@ unsigned Sidewinner::no() const
 }
 
 
-string Sidewinner::str(const string& name) const
+string Sidewinner::str(
+  const string& name,
+  const bool rankFlag) const
 {
   stringstream ss;
-  ss << name << hex << uppercase << rank << dec;
+  if (rankFlag)
+    ss << hex << uppercase << rank << dec;
+
+  ss << name;
   if (depth == 2)
     ss << "'";
   else if (depth == 3)
