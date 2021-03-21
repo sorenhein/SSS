@@ -119,6 +119,18 @@ void Winner::operator *= (const Winner& w2)
     return;
   }
 
+  // All subwinners of a winner are of the same rank.
+  if (w2.rankExceeds(* this))
+  {
+    // OK as is: Stick with the lower rank.
+    return;
+  }
+  else if (Winner::rankExceeds(w2))
+  {
+    * this = w2;
+    return;
+  }
+
   // This is surely inefficient.
   Winner w1 = * this;
   Winner::reset();
@@ -152,6 +164,14 @@ void Winner::update(
 
   if (currBestPtr)
     * this *= * currBestPtr;
+}
+
+
+bool Winner::rankExceeds(const Winner& w2) const
+{
+  // This requires both winners to have subwinners.
+  // Each winner has consistent ranks.
+  return (subwinners.front().rankExceeds(w2.subwinners.front()));
 }
 
 

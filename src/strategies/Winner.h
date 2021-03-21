@@ -35,6 +35,8 @@ class Winner
 
     void integrate(const Subwinner& swNew);
 
+    bool rankExceeds(const Winner& w2) const;
+
     string strSingleSided(
       const string& name,
       const Sidewinner& winner) const;

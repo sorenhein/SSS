@@ -58,6 +58,8 @@ class Subwinner
       vector<Sidewinner> const * northOrderPtr,
       vector<Sidewinner> const * southOrderPtr);
 
+    bool rankExceeds(const Subwinner& sw2) const;
+
     string str() const;
 
     string strDebug() const;

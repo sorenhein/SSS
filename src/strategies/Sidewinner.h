@@ -47,6 +47,7 @@ class Sidewinner
 
     WinnerCompare compare(const Sidewinner& sw2) const;
 
+    unsigned getRank() const;
     bool rankSame(const Sidewinner& sw2) const;
     bool rankExceeds(const Sidewinner& sw2) const;
 

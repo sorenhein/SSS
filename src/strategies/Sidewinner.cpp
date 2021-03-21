@@ -74,6 +74,12 @@ WinnerCompare Sidewinner::compare(const Sidewinner& sw2) const
 }
 
 
+unsigned Sidewinner::getRank() const
+{
+  return rank;
+}
+
+
 bool Sidewinner::rankSame(const Sidewinner& sw2) const
 {
   return (rank == sw2.rank);

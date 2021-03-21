@@ -271,6 +271,20 @@ void Subwinner::update(
 }
 
 
+bool Subwinner::rankExceeds(const Subwinner& sw2) const
+{
+  // TODO Maybe Subwinner should know its rank.
+  const unsigned rank1 =
+      (mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH ?
+        north.getRank() : south.getRank());
+  const unsigned rank2 =
+      (sw2.mode == SUBWIN_NORTH_ONLY || sw2.mode == SUBWIN_BOTH ?
+        sw2.north.getRank() : sw2.south.getRank());
+
+  return (rank1 > rank2);
+}
+
+
 string Subwinner::str() const
 {
   if (mode == SUBWIN_NORTH_ONLY)
