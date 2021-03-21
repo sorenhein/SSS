@@ -207,9 +207,10 @@ void Subwinner::flip()
     return;
 
   // Flips North and South.
+  // TODO Try std::swap?
   Sidewinner tmp = north;
   north = south;
-  south = north;
+  south = tmp;
 
   if (mode == SUBWIN_NORTH_ONLY)
     mode = SUBWIN_SOUTH_ONLY;
