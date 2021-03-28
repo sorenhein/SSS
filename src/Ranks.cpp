@@ -64,9 +64,9 @@ Ranks::Ranks()
   south.clear();
   opps.clear();
 
-  namesNorthNew.clear();
-  namesSouthNew.clear();
-  namesOppsNew.clear();
+  namesNorth.clear();
+  namesSouth.clear();
+  namesOpps.clear();
 
   cardsNorth.clear();
   cardsSouth.clear();
@@ -179,9 +179,9 @@ void Ranks::resize(const unsigned cardsIn)
 
   maxRank = cards;
 
-  namesNorthNew.resize(cards+1);
-  namesSouthNew.resize(cards+1);
-  namesOppsNew.resize(cards+1);
+  namesNorth.resize(cards+1);
+  namesSouth.resize(cards+1);
+  namesOpps.resize(cards+1);
 
   cardsNorth.resize(cards+1);
   cardsSouth.resize(cards+1);
@@ -203,12 +203,12 @@ void Ranks::zero()
 
   maxRank = 0;
 
-  for (unsigned i = 0; i < namesNorthNew.size(); i++)
-    namesNorthNew[i].clear();
-  for (unsigned i = 0; i < namesSouthNew.size(); i++)
-    namesSouthNew[i].clear();
-  for (unsigned i = 0; i < namesOppsNew.size(); i++)
-    namesOppsNew[i].clear();
+  for (unsigned i = 0; i < namesNorth.size(); i++)
+    namesNorth[i].clear();
+  for (unsigned i = 0; i < namesSouth.size(); i++)
+    namesSouth[i].clear();
+  for (unsigned i = 0; i < namesOpps.size(); i++)
+    namesOpps[i].clear();
 }
 
 
@@ -314,12 +314,6 @@ void Ranks::setRanksNew()
   unsigned depthSouth = 0;
   unsigned depthOpps = 0;
 
-  // TMP
-  vector<string> namesNorth(cards+1);
-  vector<string> namesSouth(cards+1);
-  vector<string> namesOpps(cards+1);
-  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
-
   // Have to set opps here already, as opps are not definitely void
   // but may be void, so we don't want the maximum values to get
   // reset to 0 by calling setVoid() after the loop below.
@@ -328,7 +322,6 @@ void Ranks::setRanksNew()
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
 
-// cout<<"Start"<<endl;
   for (unsigned i = imin; i < imin+cards; i++)
   {
     const unsigned c = h % 3;
@@ -402,25 +395,19 @@ void Ranks::setRanksNew()
   south.setSingleRank();
   opps.setSingleRank();
 
-  vector<string> namesNorthNewer;
-  namesNorthNewer.resize(cards+1);
   for (unsigned n = numberNorth; n-- > 0; )
   {
     auto& c = cardsNorth[n];
-    namesNorthNewer[c.getRank()] += c.getName();
+    namesNorth[c.getRank()] += c.getName();
   }
 
-  vector<string> namesSouthNewer;
-  namesSouthNewer.resize(cards+1);
   for (unsigned n = numberSouth; n-- > 0; )
   {
     auto& c = cardsSouth[n];
-    namesSouthNewer[c.getRank()] += c.getName();
+    namesSouth[c.getRank()] += c.getName();
   }
 
   // For the opponents we don't distinguish as much.
-  vector<string> namesOppsNewer;
-  namesOppsNewer.resize(cards+1);
   unsigned index = 0;
   unsigned rankPrev = numeric_limits<unsigned>::max();
   for (unsigned n = numberOpps; n-- > 0; )
@@ -434,69 +421,16 @@ void Ranks::setRanksNew()
     if (opps.fullCount[r] > 1)
     {
       if (r == opps.minRank && iMinOpps <= 6) // ~ an eight
-        namesOppsNewer[r] = string(opps.fullCount[r], 'x');
+        namesOpps[r] = string(opps.fullCount[r], 'x');
       else
-        namesOppsNewer[r] = 
+        namesOpps[r] = 
           string(opps.fullCount[r], GENERIC_NAMES[index]);
       index++;
     }
     else if (opps.fullCount[r] == 1)
     {
-      namesOppsNewer[r] = c.getName();
+      namesOpps[r] = c.getName();
     }
-  }
-
-  if (north.len > 0)
-  {
-    for (unsigned r = 1; r <= maxRank; r++)
-    {
-      if (namesNorth[r] != namesNorthNewer[r])
-      {
-        cout << "ERR r " << r << ": '" <<
-          namesNorth[r]<< "' vs '" << namesNorthNewer[r] << "'" <<endl;
-        assert(false);
-      }
-    }
-  }
-  else
-  {
-    assert(numberNorth == 0);
-  }
-
-  if (south.len > 0)
-  {
-    for (unsigned r = 1; r <= maxRank; r++)
-    {
-      if (namesSouth[r] != namesSouthNewer[r])
-      {
-        cout << "ERR r " << r << ": '" <<
-          namesSouth[r]<< "' vs '" << namesSouthNewer[r] << "'" <<endl;
-        assert(false);
-      }
-    }
-  }
-  else
-  {
-    assert(numberSouth == 0);
-  }
-
-  if (opps.len > 0)
-  {
-    for (unsigned r = 1; r <= maxRank; r++)
-    {
-      if (namesOpps[r] != namesOppsNewer[r])
-      {
-        cout << "ERR r " << r << ": '" <<
-          namesOpps[r]<< "' vs '" << namesOppsNewer[r] << "'" << endl;
-wcout << Ranks::strDiagram() << endl;
-cout << Ranks::str() << endl;
-        assert(false);
-      }
-    }
-  }
-  else
-  {
-    assert(numberOpps == 0);
   }
 }
 
@@ -1208,78 +1142,6 @@ CombinationType Ranks::setPlays(
 }
 
 
-void Ranks::strSetFullNames(
-  vector<string>& namesNorth,
-  vector<string>& namesSouth,
-  vector<string>& namesOpps) const
-{
-  // Start by full names. This is a small version of setRanks().
-  // As it is only required when we want str(), it is not calculated
-  // by default in setRanks.
-
-  const unsigned imin = (cards > 13 ? 0 : 13-cards);
-  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
-  unsigned h = holding;
-  unsigned rank = 0;
-  unsigned minRankOpps = 0;
-  unsigned maxRankOpps = 0;
-  unsigned iMinOpps = 0;
-
-  for (unsigned i = imin; i < imin+cards; i++)
-  {
-    const unsigned c = h % 3;
-    if (c == POSITION_OPPS)
-    {
-      if (prev_is_NS)
-        rank++;
-
-      namesOpps[rank] = CARD_NAMES[i] + namesOpps[rank];
-      if (minRankOpps == 0)
-      {
-        minRankOpps = rank;
-        iMinOpps = i;
-      }
-      maxRankOpps = rank;
-      prev_is_NS = false;
-    }
-    else
-    {
-      if (! prev_is_NS)
-        rank++;
-
-      if (c == POSITION_NORTH)
-        namesNorth[rank] = CARD_NAMES[i] + namesNorth[rank];
-      else
-        namesSouth[rank] = CARD_NAMES[i] + namesSouth[rank];
-
-      prev_is_NS = true;
-    }
-
-    h /= 3;
-  }
-
-  // Make the last multiple opponent rank into x's if it seems
-  // low enough.
-  if (namesOpps[minRankOpps].size() > 1 && iMinOpps <= 6) // An eight
-  {
-    namesOpps[minRankOpps] = string(namesOpps[minRankOpps].size(), 'x');
-    minRankOpps++;
-  }
-  
-  // Replace multiple opponent ranks from the top with HH, etc.
-  unsigned index = 0;
-  for (rank = maxRankOpps+1; rank-- > minRankOpps; )
-  {
-    if (namesOpps[rank].size() > 1)
-    {
-      namesOpps[rank] = 
-        string(namesOpps[rank].size(), GENERIC_NAMES[index]);
-      index++;
-    }
-  }
-}
-
-
 string Ranks::strPosition(
   const string& cardString,
   const string& player) const
@@ -1324,11 +1186,6 @@ string Ranks::str() const
     setw(8) << "Opps" <<  setw(4) << "#" << setw(6) << "cards" << 
     "\n";
 
-  vector<string> namesNorth(cards+1);
-  vector<string> namesSouth(cards+1);
-  vector<string> namesOpps(cards+1);
-  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
-
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     ss <<
@@ -1344,11 +1201,6 @@ string Ranks::str() const
 
 wstring Ranks::strDiagram() const
 {
-  vector<string> namesNorth(cards+1);
-  vector<string> namesSouth(cards+1);
-  vector<string> namesOpps(cards+1);
-  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
-
   // Makes a little box out of Unicode characters.
   wstringstream ss;
   ss << 
