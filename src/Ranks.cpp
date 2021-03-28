@@ -577,15 +577,7 @@ void Ranks::set(
   // TODO Activate.
   // Ranks::resizeOrderTables();
 
-bool b1 = (north >= south);
-bool b2 = north.greater(south, opps);
-if (b1 != b2)
-{
-  // TODO Switch to greater()
-  cout << "About to fail" << endl;
-}
-assert(b1 == b2);
-  combEntry.rotateFlag = ! (north >= south);
+  combEntry.rotateFlag = ! (north.greater(south, opps));
 
   if (combEntry.rotateFlag)
     Ranks::canonicalBoth(south.fullCount, north.fullCount,
@@ -714,8 +706,6 @@ void Ranks::updateHoldings(
   unsigned& holding3,
   bool& rotateFlag) const
 {
-  // if (leader >= partner)
-  // TODO Switch to greater(), rename it >=
   if (leader.greater(partner, opps))
   {
 cout << "leader >= partner, side " << (side == SIDE_NORTH ?

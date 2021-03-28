@@ -17,6 +17,10 @@ This means we can either view it as KQ / xx or as Kx / Qx.
 
 2021-03-21
 ----------
+Make a version of Ranks::setPlays with fewer optimizations:
+- Don't have to save partner's cards of equal rank
+- When equal rank, all depth combinations
+
 Issues
 1. 10/4025, AK76 / QT9 missing J85:
    a. 7 5 T 8 has T as winner!  (Play 4)

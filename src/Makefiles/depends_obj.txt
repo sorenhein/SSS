@@ -3,25 +3,26 @@ driver.obj: strategies/Tvector.h struct.h const.h strategies/Winner.h
 driver.obj: strategies/Subwinner.h strategies/Sidewinner.h const.h struct.h
 driver.obj: Distributions.h Distribution.h inputs/Control.h inputs/Entity.h
 driver.obj: inputs/Convert.h stats/Timers.h stats/Timer.h Ranks.h
-driver.obj: strategies/Subwinner.h Plays.h
+driver.obj: strategies/Winner.h Plays.h
 Ranks.obj: Plays.h strategies/Tvectors.h strategies/Tvector.h struct.h
 Ranks.obj: const.h strategies/Winner.h strategies/Subwinner.h
-Ranks.obj: strategies/Sidewinner.h const.h Ranks.h strategies/Subwinner.h
+Ranks.obj: strategies/Sidewinner.h const.h Ranks.h strategies/Winner.h
 Ranks.obj: struct.h
+Player.obj: Player.h strategies/Winner.h struct.h const.h
 Plays.obj: Combinations.h Combination.h strategies/Tvectors.h
 Plays.obj: strategies/Tvector.h struct.h const.h strategies/Winner.h
 Plays.obj: strategies/Subwinner.h strategies/Sidewinner.h const.h struct.h
-Plays.obj: Distribution.h Plays.h
+Plays.obj: Distribution.h Plays.h Ranks.h strategies/Winner.h
 Combination.obj: Combinations.h Combination.h strategies/Tvectors.h
 Combination.obj: strategies/Tvector.h struct.h const.h strategies/Winner.h
 Combination.obj: strategies/Subwinner.h strategies/Sidewinner.h const.h
 Combination.obj: struct.h Distributions.h Distribution.h Ranks.h
-Combination.obj: strategies/Subwinner.h Plays.h strategies/Tvector.h
+Combination.obj: strategies/Winner.h Plays.h strategies/Tvector.h
 Combinations.obj: Combinations.h Combination.h strategies/Tvectors.h
 Combinations.obj: strategies/Tvector.h struct.h const.h strategies/Winner.h
 Combinations.obj: strategies/Subwinner.h strategies/Sidewinner.h const.h
 Combinations.obj: struct.h Distributions.h Distribution.h Plays.h Ranks.h
-Combinations.obj: strategies/Subwinner.h
+Combinations.obj: strategies/Winner.h
 Distribution.obj: Distribution.h struct.h const.h
 Distributions.obj: Distributions.h Distribution.h struct.h
 inputs/Convert.obj: inputs/Convert.h const.h
