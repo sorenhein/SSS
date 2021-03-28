@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
   timers.start(TIMER_COMBINATIONS);
 
   // for (unsigned cards = 0; cards <= control.cards(); cards++)
-  for (unsigned cards = 0; cards <= 10; cards++)
+  for (unsigned cards = 0; cards <= 13; cards++)
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 
@@ -81,9 +81,9 @@ int main(int argc, char * argv[])
 
   // combinations.runSpecificVoid(6, 546, distributions);
 
-  combinations.runSpecificVoid(9, 14762, distributions);
+  // combinations.runSpecificVoid(9, 14762, distributions);
 
-  combinations.runSpecificVoid(12, 398582, distributions);
+  // combinations.runSpecificVoid(12, 398582, distributions);
 
 }
 

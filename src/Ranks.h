@@ -216,12 +216,17 @@ class Ranks
     unsigned cards;
     unsigned maxRank;
 
+    vector<string> namesNorthNew;
+    vector<string> namesSouthNew;
+    vector<string> namesOppsNew;
+
 
     void setConstants();
 
     void zero();
 
     void setRanks();
+    void setRanksNew(); // Also does strings.  Will replace setRanks
 
     void countNumbers(
       vector<unsigned>& numbers,

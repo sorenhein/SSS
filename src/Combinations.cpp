@@ -186,8 +186,12 @@ void Combinations::runUniques(
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
+UNUSED(comb);
+UNUSED(distributions);
+/*
 cout << ranks.str();
       comb.strategize(centry, * this, distributions, ranks, plays);
+*/
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();

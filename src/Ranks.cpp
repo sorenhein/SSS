@@ -63,6 +63,10 @@ Ranks::Ranks()
   north.clear();
   south.clear();
   opps.clear();
+
+  namesNorthNew.clear();
+  namesSouthNew.clear();
+  namesOppsNew.clear();
 }
 
 
@@ -170,6 +174,10 @@ void Ranks::resize(const unsigned cardsIn)
   opps.resize(cards);
 
   maxRank = cards;
+
+  namesNorthNew.resize(cards+1);
+  namesSouthNew.resize(cards+1);
+  namesOppsNew.resize(cards+1);
 }
 
 
@@ -186,6 +194,13 @@ void Ranks::zero()
   opps.zero();
 
   maxRank = 0;
+
+  for (unsigned i = 0; i < namesNorthNew.size(); i++)
+    namesNorthNew[i].clear();
+  for (unsigned i = 0; i < namesSouthNew.size(); i++)
+    namesSouthNew[i].clear();
+  for (unsigned i = 0; i < namesOppsNew.size(); i++)
+    namesOppsNew[i].clear();
 }
 
 
@@ -259,6 +274,124 @@ void Ranks::setRanks()
   north.setSingleRank();
   south.setSingleRank();
   opps.setSingleRank();
+}
+
+
+void Ranks::setRanksNew()
+{
+  Ranks::zero();
+
+  // We choose prev_is_NS ("the previously seen card belonged to NS")
+  // such that the first real card we see will result in an increase
+  // in maxRank, i.e. in the running rank.  Therefore we will never
+  // write to rank = 0 (void) in the loop itself.
+  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
+
+  unsigned posNorth = 1;
+  unsigned posSouth = 1;
+  unsigned posOpps = 0;
+
+  bool firstNorth = true;
+  bool firstSouth = true;
+  bool firstOpps = true;
+
+  // Keep track of opponents for the string names.
+  unsigned minRankOpps = 0;
+  unsigned iMinOpps = 0;
+
+  // Have to set opps here already, as opps are not definitely void
+  // but may be void, so we don't want the maximum values to get
+  // reset to 0 by calling setVoid() after the loop below.
+  opps.setVoid(true); // Have to do it first to make max come out right
+
+  const unsigned imin = (cards > 13 ? 0 : 13-cards);
+  unsigned h = holding;
+
+  for (unsigned i = imin; i < imin+cards; i++)
+  {
+    const unsigned c = h % 3;
+    if (c == POSITION_OPPS)
+    {
+      if (prev_is_NS)
+      {
+        maxRank++;
+        posOpps++;
+      }
+
+      opps.update(posOpps, maxRank, firstOpps);
+
+      // Update the strings.
+      namesOppsNew[maxRank] += CARD_NAMES[i];
+      if (minRankOpps == 0)
+      {
+        minRankOpps = maxRank;
+        iMinOpps = i;
+      }
+
+      prev_is_NS = false;
+    }
+    else
+    {
+      if (! prev_is_NS)
+      {
+        // We could get a mix of positions within the same rank,
+        // not necessarily sorted by position.
+        maxRank++;
+        if (north.ranks[posNorth].count > 0)
+          posNorth++;
+        if (south.ranks[posSouth].count > 0)
+          posSouth++;
+      }
+
+      if (c == POSITION_NORTH)
+      {
+        north.update(posNorth, maxRank, firstNorth);
+        namesNorthNew[maxRank] += CARD_NAMES[i];
+      }
+      else
+      {
+        south.update(posSouth, maxRank, firstSouth);
+        namesSouthNew[maxRank] += CARD_NAMES[i];
+      }
+
+      prev_is_NS = true;
+    }
+
+    h /= 3;
+  }
+
+  north.setVoid(false);
+  south.setVoid(false);
+
+  north.setSingleRank();
+  south.setSingleRank();
+  opps.setSingleRank();
+
+  // It's faster to make the rank strings in the wrong order and
+  // then to flip them here.
+  reverse(namesNorthNew.begin(), namesNorthNew.end());
+  reverse(namesSouthNew.begin(), namesSouthNew.end());
+  reverse(namesOppsNew.begin(), namesOppsNew.end());
+
+  // Make the last multiple opponent rank into x's if it seems
+  // low enough.
+  if (namesOppsNew[minRankOpps].size() > 1 && iMinOpps <= 6) // An eight
+  {
+    namesOppsNew[minRankOpps] = string(namesOppsNew[minRankOpps].size(), 'x');
+    minRankOpps++;
+  }
+  
+  // Replace multiple opponent ranks from the top with HH, etc.
+  unsigned index = 0;
+  for (unsigned rank = maxRank+1; rank-- > 1; )
+  {
+    if (namesOppsNew[rank].size() > 1)
+    {
+      namesOppsNew[rank] = 
+        string(namesOppsNew[rank].size(), GENERIC_NAMES[index]);
+      index++;
+    }
+  }
 }
 
 
@@ -571,8 +704,9 @@ void Ranks::set(
   CombEntry& combEntry)
 {
   holding = holdingIn;
-  Ranks::setRanks();
-  Ranks::setOrderTables();
+  // Ranks::setRanks();
+  Ranks::setRanksNew();
+  // Ranks::setOrderTables();
 
   // TODO Activate.
   // Ranks::resizeOrderTables();
@@ -587,7 +721,6 @@ void Ranks::set(
       combEntry.canonicalHolding3, combEntry.canonicalHolding2);
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding3);
-cout << "Done with Ranks::set" << endl;
 }
 
 
@@ -708,8 +841,8 @@ void Ranks::updateHoldings(
 {
   if (leader.greater(partner, opps))
   {
-cout << "leader >= partner, side " << (side == SIDE_NORTH ?
-  "North" : "South") << endl;
+// cout << "leader >= partner, side " << (side == SIDE_NORTH ?
+  // "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
     // rotateFlag is absolute.
     // If the leader is South, then rotate.
@@ -717,8 +850,8 @@ cout << "leader >= partner, side " << (side == SIDE_NORTH ?
   }
   else
   {
-cout << "leader < partner, side " << (side == SIDE_NORTH ?
-  "North" : "South") << endl;
+// cout << "leader < partner, side " << (side == SIDE_NORTH ?
+  // "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
     // If the leader is South, then don't rotate.
     rotateFlag = (side == SIDE_NORTH);

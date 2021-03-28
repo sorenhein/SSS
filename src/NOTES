@@ -1,3 +1,10 @@
+1. Why does the rank stuff take 10 seconds now?
+2. How much slower is Ranks::setRanksNew?  Switch to it?
+3. Put string stuff into Player
+
+
+
+
 March 2021
 ----------
 KQ / J9 missing AT: EW can make NS choose between K (duck) and QJ (win).

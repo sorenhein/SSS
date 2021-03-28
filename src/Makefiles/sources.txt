@@ -13,6 +13,7 @@ SOURCE_FILES    =                       \
                 inputs/Entity.cpp       \
                 inputs/parse.cpp        \
                                         \
+                strategies/Card.cpp     \
                 strategies/Sidewinner.cpp \
                 strategies/Subwinner.cpp \
                 strategies/Tvector.cpp  \
