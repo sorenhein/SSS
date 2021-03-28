@@ -395,13 +395,13 @@ void Ranks::setRanksNew()
   south.setSingleRank();
   opps.setSingleRank();
 
-  for (unsigned n = numberNorth; n-- > 0; )
+  for (unsigned n = north.len; n-- > 0; )
   {
     auto& c = cardsNorth[n];
     namesNorth[c.getRank()] += c.getName();
   }
 
-  for (unsigned n = numberSouth; n-- > 0; )
+  for (unsigned n = south.len; n-- > 0; )
   {
     auto& c = cardsSouth[n];
     namesSouth[c.getRank()] += c.getName();
@@ -410,7 +410,7 @@ void Ranks::setRanksNew()
   // For the opponents we don't distinguish as much.
   unsigned index = 0;
   unsigned rankPrev = numeric_limits<unsigned>::max();
-  for (unsigned n = numberOpps; n-- > 0; )
+  for (unsigned n = opps.len; n-- > 0; )
   {
     auto& c = cardsOpps[n];
     const unsigned r = c.getRank();
@@ -433,6 +433,12 @@ void Ranks::setRanksNew()
     }
   }
 }
+
+
+void Ranks::setNames()
+{
+}
+
 
 
 void Ranks::countNumbers(
@@ -746,6 +752,7 @@ void Ranks::set(
   holding = holdingIn;
   // Ranks::setRanks();
   Ranks::setRanksNew();
+  Ranks::setNames();
   // Ranks::setOrderTables();
 
   // TODO Activate.

@@ -217,11 +217,11 @@ class Ranks
     unsigned cards;
     unsigned maxRank;
 
-    vector<string> namesNorthNew;
-    vector<string> namesSouthNew;
-    vector<string> namesOppsNew;
+    vector<string> namesNorth; // Indexed by rank
+    vector<string> namesSouth;
+    vector<string> namesOpps;
 
-    vector<Card> cardsNorth;
+    vector<Card> cardsNorth; // Indexed by number
     vector<Card> cardsSouth;
     vector<Card> cardsOpps;
 
@@ -232,6 +232,8 @@ class Ranks
 
     void setRanks();
     void setRanksNew(); // Also does strings.  Will replace setRanks
+
+    void setNames();
 
     void countNumbers(
       vector<unsigned>& numbers,
@@ -328,11 +330,6 @@ class Ranks
       PositionInfo& partner,
       const SidePosition side,
       Plays& plays);
-
-    void strSetFullNames(
-      vector<string>& namesNorth,
-      vector<string>& namesSouth,
-      vector<string>& namesOpps) const;
 
     string strPosition(
       const string& cards,
