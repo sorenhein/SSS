@@ -403,23 +403,19 @@ void Ranks::setRanksNew()
   opps.setSingleRank();
 
   vector<string> namesNorthNewer;
-  namesNorthNewer.resize(namesNorthNew.size());
+  namesNorthNewer.resize(cards+1);
   for (unsigned n = numberNorth; n-- > 0; )
   {
-assert(n < cardsNorth.size());
     auto&c = cardsNorth[n];
-assert(c.getRank() < namesNorthNewer.size());
     namesNorthNewer[c.getRank()] += c.getName();
   }
 
   vector<string> namesSouthNewer;
-  namesSouthNewer.resize(namesSouthNew.size());
+  namesSouthNewer.resize(cards+1);
   for (unsigned n = numberSouth; n-- > 0; )
   {
-assert(n < cardsSouth.size());
     auto&c = cardsSouth[n];
-assert(c.getRank() < namesSouth.size());
-    namesSouth[c.getRank()] += c.getName();
+    namesSouthNewer[c.getRank()] += c.getName();
   }
 
   if (north.len > 0)
