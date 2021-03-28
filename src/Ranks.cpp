@@ -67,6 +67,10 @@ Ranks::Ranks()
   namesNorthNew.clear();
   namesSouthNew.clear();
   namesOppsNew.clear();
+
+  cardsNorth.clear();
+  cardsSouth.clear();
+  cardsOpps.clear();
 }
 
 
@@ -178,6 +182,10 @@ void Ranks::resize(const unsigned cardsIn)
   namesNorthNew.resize(cards+1);
   namesSouthNew.resize(cards+1);
   namesOppsNew.resize(cards+1);
+
+  cardsNorth.resize(cards+1);
+  cardsSouth.resize(cards+1);
+  cardsOpps.resize(cards+1);
 }
 
 
@@ -299,6 +307,19 @@ void Ranks::setRanksNew()
   unsigned minRankOpps = 0;
   unsigned iMinOpps = 0;
 
+  unsigned numberNorth = 0;
+  unsigned numberSouth = 0;
+  unsigned numberOpps = 0;
+  unsigned depthNorth = 0;
+  unsigned depthSouth = 0;
+  unsigned depthOpps = 0;
+
+  // TMP
+  vector<string> namesNorth(cards+1);
+  vector<string> namesSouth(cards+1);
+  vector<string> namesOpps(cards+1);
+  Ranks::strSetFullNames(namesNorth, namesSouth, namesOpps);
+
   // Have to set opps here already, as opps are not definitely void
   // but may be void, so we don't want the maximum values to get
   // reset to 0 by calling setVoid() after the loop below.
@@ -307,6 +328,7 @@ void Ranks::setRanksNew()
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
 
+// cout<<"Start"<<endl;
   for (unsigned i = imin; i < imin+cards; i++)
   {
     const unsigned c = h % 3;
@@ -316,12 +338,16 @@ void Ranks::setRanksNew()
       {
         maxRank++;
         posOpps++;
+        depthOpps = 0;
       }
 
       opps.update(posOpps, maxRank, firstOpps);
+      cardsOpps[numberOpps].set(maxRank, depthOpps, numberOpps, 
+        CARD_NAMES[i]);
+      depthOpps++;
+      numberOpps++;
 
       // Update the strings.
-      namesOppsNew[maxRank] += CARD_NAMES[i];
       if (minRankOpps == 0)
       {
         minRankOpps = maxRank;
@@ -337,6 +363,9 @@ void Ranks::setRanksNew()
         // We could get a mix of positions within the same rank,
         // not necessarily sorted by position.
         maxRank++;
+        depthNorth = 0;
+        depthSouth = 0;
+
         if (north.ranks[posNorth].count > 0)
           posNorth++;
         if (south.ranks[posSouth].count > 0)
@@ -346,12 +375,18 @@ void Ranks::setRanksNew()
       if (c == POSITION_NORTH)
       {
         north.update(posNorth, maxRank, firstNorth);
-        namesNorthNew[maxRank] += CARD_NAMES[i];
+        cardsNorth[numberNorth].set(maxRank, depthNorth, numberNorth, 
+          CARD_NAMES[i]);
+        depthNorth++;
+        numberNorth++;
       }
       else
       {
         south.update(posSouth, maxRank, firstSouth);
-        namesSouthNew[maxRank] += CARD_NAMES[i];
+        cardsSouth[numberSouth].set(maxRank, depthSouth, numberSouth,
+          CARD_NAMES[i]);
+        depthSouth++;
+        numberSouth++;
       }
 
       prev_is_NS = true;
@@ -367,14 +402,64 @@ void Ranks::setRanksNew()
   south.setSingleRank();
   opps.setSingleRank();
 
-  // It's faster to make the rank strings in the wrong order and
-  // then to flip them here.
-  reverse(namesNorthNew.begin(), namesNorthNew.end());
-  reverse(namesSouthNew.begin(), namesSouthNew.end());
-  reverse(namesOppsNew.begin(), namesOppsNew.end());
+  vector<string> namesNorthNewer;
+  namesNorthNewer.resize(namesNorthNew.size());
+  for (unsigned n = numberNorth; n-- > 0; )
+  {
+assert(n < cardsNorth.size());
+    auto&c = cardsNorth[n];
+assert(c.getRank() < namesNorthNewer.size());
+    namesNorthNewer[c.getRank()] += c.getName();
+  }
+
+  vector<string> namesSouthNewer;
+  namesSouthNewer.resize(namesSouthNew.size());
+  for (unsigned n = numberSouth; n-- > 0; )
+  {
+assert(n < cardsSouth.size());
+    auto&c = cardsSouth[n];
+assert(c.getRank() < namesSouth.size());
+    namesSouth[c.getRank()] += c.getName();
+  }
+
+  if (north.len > 0)
+  {
+    for (unsigned r = 1; r <= maxRank; r++)
+    {
+      if (namesNorth[r] != namesNorthNewer[r])
+      {
+        cout << "ERR r " << r << ": '" <<
+          namesNorth[r]<< "' vs '" << namesNorthNewer[r] << "'" <<endl;
+        assert(false);
+      }
+    }
+  }
+  else
+  {
+    assert(numberNorth == 0);
+  }
+
+  if (south.len > 0)
+  {
+    for (unsigned r = 1; r <= maxRank; r++)
+    {
+      if (namesSouth[r] != namesSouthNewer[r])
+      {
+        cout << "ERR r " << r << ": '" <<
+          namesSouth[r]<< "' vs '" << namesSouthNewer[r] << "'" <<endl;
+        assert(false);
+      }
+    }
+  }
+  else
+  {
+    assert(numberSouth == 0);
+  }
+
 
   // Make the last multiple opponent rank into x's if it seems
   // low enough.
+/*
   if (namesOppsNew[minRankOpps].size() > 1 && iMinOpps <= 6) // An eight
   {
     namesOppsNew[minRankOpps] = string(namesOppsNew[minRankOpps].size(), 'x');
@@ -392,6 +477,7 @@ void Ranks::setRanksNew()
       index++;
     }
   }
+*/
 }
 
 

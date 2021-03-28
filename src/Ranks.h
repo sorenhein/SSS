@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "strategies/Winner.h"
+#include "strategies/Card.h"
 
 #include "const.h"
 
@@ -219,6 +220,10 @@ class Ranks
     vector<string> namesNorthNew;
     vector<string> namesSouthNew;
     vector<string> namesOppsNew;
+
+    vector<Card> cardsNorth;
+    vector<Card> cardsSouth;
+    vector<Card> cardsOpps;
 
 
     void setConstants();
