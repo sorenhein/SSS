@@ -406,7 +406,7 @@ void Ranks::setRanksNew()
   namesNorthNewer.resize(cards+1);
   for (unsigned n = numberNorth; n-- > 0; )
   {
-    auto&c = cardsNorth[n];
+    auto& c = cardsNorth[n];
     namesNorthNewer[c.getRank()] += c.getName();
   }
 
@@ -414,8 +414,36 @@ void Ranks::setRanksNew()
   namesSouthNewer.resize(cards+1);
   for (unsigned n = numberSouth; n-- > 0; )
   {
-    auto&c = cardsSouth[n];
+    auto& c = cardsSouth[n];
     namesSouthNewer[c.getRank()] += c.getName();
+  }
+
+  // For the opponents we don't distinguish as much.
+  vector<string> namesOppsNewer;
+  namesOppsNewer.resize(cards+1);
+  unsigned index = 0;
+  unsigned rankPrev = numeric_limits<unsigned>::max();
+  for (unsigned n = numberOpps; n-- > 0; )
+  {
+    auto& c = cardsOpps[n];
+    const unsigned r = c.getRank();
+    if (r == rankPrev)
+      continue;
+
+    rankPrev = r;
+    if (opps.fullCount[r] > 1)
+    {
+      if (r == opps.minRank && iMinOpps <= 6) // ~ an eight
+        namesOppsNewer[r] = string(opps.fullCount[r], 'x');
+      else
+        namesOppsNewer[r] = 
+          string(opps.fullCount[r], GENERIC_NAMES[index]);
+      index++;
+    }
+    else if (opps.fullCount[r] == 1)
+    {
+      namesOppsNewer[r] = c.getName();
+    }
   }
 
   if (north.len > 0)
@@ -452,28 +480,24 @@ void Ranks::setRanksNew()
     assert(numberSouth == 0);
   }
 
-
-  // Make the last multiple opponent rank into x's if it seems
-  // low enough.
-/*
-  if (namesOppsNew[minRankOpps].size() > 1 && iMinOpps <= 6) // An eight
+  if (opps.len > 0)
   {
-    namesOppsNew[minRankOpps] = string(namesOppsNew[minRankOpps].size(), 'x');
-    minRankOpps++;
-  }
-  
-  // Replace multiple opponent ranks from the top with HH, etc.
-  unsigned index = 0;
-  for (unsigned rank = maxRank+1; rank-- > 1; )
-  {
-    if (namesOppsNew[rank].size() > 1)
+    for (unsigned r = 1; r <= maxRank; r++)
     {
-      namesOppsNew[rank] = 
-        string(namesOppsNew[rank].size(), GENERIC_NAMES[index]);
-      index++;
+      if (namesOpps[r] != namesOppsNewer[r])
+      {
+        cout << "ERR r " << r << ": '" <<
+          namesOpps[r]<< "' vs '" << namesOppsNewer[r] << "'" << endl;
+wcout << Ranks::strDiagram() << endl;
+cout << Ranks::str() << endl;
+        assert(false);
+      }
     }
   }
-*/
+  else
+  {
+    assert(numberOpps == 0);
+  }
 }
 
 
