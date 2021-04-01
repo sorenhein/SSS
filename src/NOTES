@@ -2,6 +2,10 @@
 2. How much slower is Ranks::setRanksNew?  Switch to it?
 3. Put string stuff into Player
 
+In Ranks/Player
+- Player:begin, end go over ranks
+- ranks does not have voids in it
+- The ranks loops must be debugged with new structureZ
 
 
 

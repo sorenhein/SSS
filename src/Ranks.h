@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Player.h"
+
 #include "strategies/Winner.h"
 #include "strategies/Card.h"
 
@@ -51,7 +53,7 @@ class Ranks
 
       // remainders maps winners in subsequent tricks to winners
       // in the current reference frame.
-      vector<vector<Sidewinner>> remainders;
+      vector<vector<Card>> remainders;
 
       // The best card(s) that NS play to this trick, whether or not
       // they win it.  If they win, then the winner is interesting.
@@ -209,9 +211,12 @@ class Ranks
     };
 
 
-    PositionInfo north;
-    PositionInfo south;
-    PositionInfo opps;
+    // PositionInfo north;
+    // PositionInfo south;
+    // PositionInfo opps;
+    Player north;
+    Player south;
+    Player opps;
 
     unsigned holding;
     unsigned cards;
@@ -239,7 +244,9 @@ class Ranks
       vector<unsigned>& numbers,
       const PositionInfo& posInfo) const;
 
-    void setOrderTablesRemainder(PositionInfo& posInfo);
+    void setOrderTablesRemainder(
+      Player& posInfo,
+      const vector<string>& names);
 
     void setOrderTablesWin(
       PositionInfo& posInfo,
@@ -262,12 +269,14 @@ class Ranks
       const PositionInfo& second) const;
 
     unsigned canonicalTrinary(
-      const vector<unsigned>& fullCount1,
-      const vector<unsigned>& fullCount2) const;
+      const Player& dominant,
+      const Player& recessive) const;
+      // const vector<unsigned>& fullCount1,
+      // const vector<unsigned>& fullCount2) const;
 
     void canonicalBoth(
-      const vector<unsigned>& fullCount1,
-      const vector<unsigned>& fullCount2,
+      const Player& dominant,
+      const Player& recessive,
       unsigned& holding3,
       unsigned& holding2) const;
 
@@ -279,26 +288,26 @@ class Ranks
     bool trivial(TrickEntry& trivialEntry) const;
 
     bool leadOK(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      const Player& leader,
+      const Player& partner,
       const unsigned lead) const;
 
     bool pardOK(
-      const PositionInfo& partner,
+      const Player& partner,
       const unsigned toBeat,
       const unsigned pard) const;
 
     void updateHoldings(
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      const Player& leader,
+      const Player& partner,
       const SidePosition side,
       unsigned& holding3,
       bool& rotateFlag) const;
 
     void logPlay(
       Plays& plays,
-      const PositionInfo& leader,
-      const PositionInfo& partner,
+      const Player& leader,
+      const Player& partner,
       const SidePosition side,
       const unsigned lead,
       const unsigned lho,
@@ -310,24 +319,24 @@ class Ranks
       const bool rotateFlag) const;
 
     void setPlaysLeadWithVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      Player& leader,
+      Player& partner,
       const SidePosition side,
       const unsigned lead,
       const bool leadCollapse,
       Plays& plays);
 
     void setPlaysLeadWithoutVoid(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      Player& leader,
+      Player& partner,
       const SidePosition side,
       const unsigned lead,
       const bool leadCollapse,
       Plays& plays);
 
     void setPlaysSide(
-      PositionInfo& leader,
-      PositionInfo& partner,
+      Player& leader,
+      Player& partner,
       const SidePosition side,
       Plays& plays);
 
@@ -336,7 +345,7 @@ class Ranks
       const string& player) const;
 
     wstring strPlays(
-      const PositionInfo& posInfo,
+      const Player& posInfo,
       const vector<string>& names) const;
 
   public:

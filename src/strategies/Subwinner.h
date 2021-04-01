@@ -5,7 +5,8 @@
 #include <list>
 #include <cassert>
 
-#include "Sidewinner.h"
+#include "Card.h"
+#include "../const.h"
 
 using namespace std;
 
@@ -26,8 +27,8 @@ class Subwinner
       SUBWIN_NOT_SET = 3
     };
 
-    Sidewinner north;
-    Sidewinner south;
+    Card north;
+    Card south;
     SubwinnerMode mode;
 
 
@@ -43,7 +44,8 @@ class Subwinner
       const WinningSide sideIn,
       const unsigned rankIn,
       const unsigned depthIn,
-      const unsigned number);
+      const unsigned number,
+      const char nameIn);
 
     bool operator == (const Subwinner& sw2) const;
     bool operator != (const Subwinner& sw2) const;
@@ -55,8 +57,8 @@ class Subwinner
     void flip();
 
     void update(
-      vector<Sidewinner> const * northOrderPtr,
-      vector<Sidewinner> const * southOrderPtr);
+      vector<Card> const * northOrderPtr,
+      vector<Card> const * southOrderPtr);
 
     bool rankExceeds(const Subwinner& sw2) const;
 

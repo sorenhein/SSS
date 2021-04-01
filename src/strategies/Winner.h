@@ -6,6 +6,7 @@
 #include <cassert>
 
 #include "Subwinner.h"
+#include "Card.h"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ class Winner
 
     string strSingleSided(
       const string& name,
-      const Sidewinner& winner) const;
+      const Card& winner) const;
 
     string strDebug() const;
 
@@ -56,15 +57,16 @@ class Winner
       const WinningSide sideIn,
       const unsigned rankIn,
       const unsigned depthIn,
-      const unsigned number);
+      const unsigned numberIn,
+      const char nameIn);
 
     void operator *= (const Winner& w2);
 
     void flip();
 
     void update(
-      vector<Sidewinner> const * northOrderPtr,
-      vector<Sidewinner> const * southOrderPtr,
+      vector<Card> const * northOrderPtr,
+      vector<Card> const * southOrderPtr,
       Winner const * currBestPtr);
 
     string str() const;

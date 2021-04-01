@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+#include "strategies/Card.h"
 #include "strategies/Tvectors.h"
 #include "const.h"
 
@@ -74,8 +75,8 @@ class Plays
       bool knownVoidRho;
       bool voidPard;
 
-      vector<Sidewinner> const * leadOrderPtr;
-      vector<Sidewinner> const * pardOrderPtr;
+      vector<Card> const * leadOrderPtr;
+      vector<Card> const * pardOrderPtr;
       Winner const * currBestPtr;
 
       PardNode * pardPtr;
@@ -146,8 +147,8 @@ class Plays
       const unsigned rho,
       const bool leadCollapse,
       const bool pardCollapse,
-      vector<Sidewinner> const * leadOrderPtr,
-      vector<Sidewinner> const * pardOrderPtr,
+      vector<Card> const * leadOrderPtr,
+      vector<Card> const * pardOrderPtr,
       Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag,
@@ -193,8 +194,8 @@ class Plays
       const unsigned trickNS,
       const bool leadCollapse,
       const bool pardCollapse,
-      vector<Sidewinner> const * leadOrderPtr,
-      vector<Sidewinner> const * pardOrderPtr,
+      vector<Card> const * leadOrderPtr,
+      vector<Card> const * pardOrderPtr,
       Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag);

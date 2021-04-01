@@ -29,7 +29,8 @@ void Subwinner::set(
   const WinningSide sideIn,
   const unsigned rankIn,
   const unsigned depthIn,
-  const unsigned numberIn)
+  const unsigned numberIn,
+  const char nameIn)
 {
   // This doesn't reset the winner, so the method can be used to build
   // up a winner with more than one component if called twice.
@@ -38,12 +39,12 @@ void Subwinner::set(
   assert(mode == SUBWIN_NOT_SET);
   if (sideIn == WIN_NORTH)
   {
-    north.set(rankIn, depthIn, numberIn);
+    north.set(rankIn, depthIn, numberIn, nameIn);
     mode = SUBWIN_NORTH_ONLY;
   }
   else if (sideIn == WIN_SOUTH)
   {
-    south.set(rankIn, depthIn, numberIn);
+    south.set(rankIn, depthIn, numberIn, nameIn);
     mode = SUBWIN_SOUTH_ONLY;
   }
   else if (sideIn == WIN_NONE)
@@ -131,10 +132,10 @@ WinnerCompare Subwinner::declarerPrefers(const Subwinner& sw2) const
   assert(sw2.mode != SUBWIN_NOT_SET);
 
   // TODO Maybe Subwinner should know the rank.
-  Sidewinner const * active1 =
+  Card const * active1 =
       (mode == SUBWIN_NORTH_ONLY || mode == SUBWIN_BOTH ?
         &north : &south);
-  Sidewinner const * active2 =
+  Card const * active2 =
       (sw2.mode == SUBWIN_NORTH_ONLY || sw2.mode == SUBWIN_BOTH ? 
         &sw2.north : &sw2.south);
 
@@ -208,7 +209,7 @@ void Subwinner::flip()
 
   // Flips North and South.
   // TODO Try std::swap?
-  Sidewinner tmp = north;
+  Card tmp = north;
   north = south;
   south = tmp;
 
@@ -220,32 +221,32 @@ void Subwinner::flip()
 
 
 void Subwinner::update(
-  vector<Sidewinner> const * northOrderPtr,
-  vector<Sidewinner> const * southOrderPtr)
+  vector<Card> const * northOrderPtr,
+  vector<Card> const * southOrderPtr)
 {
   if (mode == SUBWIN_NORTH_ONLY)
   {
     // This may also change the winning side.
     assert(northOrderPtr != nullptr);
-    assert(north.no() < northOrderPtr->size());
-    north = (* northOrderPtr)[north.no()];
+    assert(north.getNumber() < northOrderPtr->size());
+    north = (* northOrderPtr)[north.getNumber()];
   }
   else if (mode == SUBWIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
     assert(southOrderPtr != nullptr);
-    assert(south.no() < southOrderPtr->size());
-    south = (* southOrderPtr)[south.no()];
+    assert(south.getNumber() < southOrderPtr->size());
+    south = (* southOrderPtr)[south.getNumber()];
   }
   else if (mode == SUBWIN_BOTH)
   {
     assert(northOrderPtr != nullptr);
-    assert(north.no() < northOrderPtr->size());
-    north = (* northOrderPtr)[north.no()];
+    assert(north.getNumber() < northOrderPtr->size());
+    north = (* northOrderPtr)[north.getNumber()];
 
     assert(southOrderPtr != nullptr);
-    assert(south.no() < southOrderPtr->size());
-    south = (* southOrderPtr)[south.no()];
+    assert(south.getNumber() < southOrderPtr->size());
+    south = (* southOrderPtr)[south.getNumber()];
 
     // As a result of the mapping to parent ranks, North and South
     // may actually be different ranks now.  As North-South choose,

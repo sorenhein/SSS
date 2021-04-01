@@ -446,8 +446,8 @@ void Tvector::updateAndGrow(
 void Tvector::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
-  vector<Sidewinner> const * northOrderPtr, // Relative to parent,
-  vector<Sidewinner> const * southOrderPtr, // so after rotation
+  vector<Card> const * northOrderPtr, // Relative to parent,
+  vector<Card> const * southOrderPtr, // so after rotation
   Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,

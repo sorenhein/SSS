@@ -238,8 +238,8 @@ unsigned Tvectors::purge(const Tvector& constants)
 void Tvectors::adapt(
   const Survivors& survivors,
   const unsigned trickNS,
-  vector<Sidewinner> const * northOrderPtr,
-  vector<Sidewinner> const * southOrderPtr,
+  vector<Card> const * northOrderPtr,
+  vector<Card> const * southOrderPtr,
   Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,

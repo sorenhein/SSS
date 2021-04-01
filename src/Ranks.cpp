@@ -173,9 +173,9 @@ void Ranks::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
-  north.resize(cards);
-  south.resize(cards);
-  opps.resize(cards);
+  north.resize(cards, POSITION_NORTH);
+  south.resize(cards, POSITION_SOUTH);
+  opps.resize(cards, POSITION_OPPS);
 
   maxRank = cards;
 
@@ -259,9 +259,11 @@ void Ranks::setRanks()
         // We could get a mix of positions within the same rank,
         // not necessarily sorted by position.
         maxRank++;
-        if (north.ranks[posNorth].count > 0)
+        // if (north.ranks[posNorth].count > 0)
+        if (north.hasReducedRank(posNorth))
           posNorth++;
-        if (south.ranks[posSouth].count > 0)
+        // if (south.ranks[posSouth].count > 0)
+        if (south.hasReducedRank(posSouth))
           posSouth++;
       }
 
@@ -359,9 +361,11 @@ void Ranks::setRanksNew()
         depthNorth = 0;
         depthSouth = 0;
 
-        if (north.ranks[posNorth].count > 0)
+        // if (north.ranks[posNorth].count > 0)
+        if (north.hasReducedRank(posNorth))
           posNorth++;
-        if (south.ranks[posSouth].count > 0)
+        // if (south.ranks[posSouth].count > 0)
+        if (south.hasReducedRank(posSouth))
           posSouth++;
       }
 
@@ -395,6 +399,19 @@ void Ranks::setRanksNew()
   south.setSingleRank();
   opps.setSingleRank();
 
+  // TODO Can we derive this in Player, perhaps by letting update
+  // also store the first i value?
+  opps.setTMP(iMinOpps);
+}
+
+
+void Ranks::setNames()
+{
+  north.setNames(cardsNorth, true, namesNorth);
+  south.setNames(cardsSouth, true, namesSouth);
+  opps.setNames(cardsOpps, false, namesOpps);
+
+  /*
   for (unsigned n = north.len; n-- > 0; )
   {
     auto& c = cardsNorth[n];
@@ -432,11 +449,7 @@ void Ranks::setRanksNew()
       namesOpps[r] = c.getName();
     }
   }
-}
-
-
-void Ranks::setNames()
-{
+  */
 }
 
 
@@ -463,8 +476,12 @@ void Ranks::countNumbers(
 }
 
 
-void Ranks::setOrderTablesRemainder(PositionInfo& posInfo)
+void Ranks::setOrderTablesRemainder(
+  Player& posInfo,
+  const vector<string>& names)
 {
+  posInfo.setRemainders(names);
+
   // Example: North AQx, South JT8, defenders have 7 cards.
   // 
   // Rank Cards North South
@@ -492,6 +509,7 @@ void Ranks::setOrderTablesRemainder(PositionInfo& posInfo)
   // If the posInfo side is void, there is an (unset) entry at
   // position 0 of the list for the void "card".
 
+  /*
   const unsigned l = posInfo.maxRank+1;
   posInfo.remainders.clear();
   posInfo.remainders.resize(l);
@@ -534,9 +552,11 @@ assert(pos < remList.size());
 
     remList.resize(pos);
   }
+  */
 }
 
 
+/*
 void Ranks::setOrderTablesWin(
   PositionInfo& posInfo,
   const WinningSide side,
@@ -612,6 +632,7 @@ assert(rOther < numOther.size());
     }
   }
 }
+*/
 
 
 void Ranks::setOrderTables()
@@ -652,12 +673,14 @@ void Ranks::setOrderTables()
   // account the winner of the following combination.
 
 // cout << "setting remainder for North\n";
-  Ranks::setOrderTablesRemainder(north);
+  Ranks::setOrderTablesRemainder(north, namesNorth);
 // cout << "setting remainder for South\n";
-  Ranks::setOrderTablesRemainder(south);
+  Ranks::setOrderTablesRemainder(south, namesSouth);
 
-  Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
-  Ranks::setOrderTablesWin(south, WIN_SOUTH, north, WIN_NORTH);
+  // Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
+  // Ranks::setOrderTablesWin(south, WIN_SOUTH, north, WIN_NORTH);
+  north.setBest(south, namesNorth, namesSouth);
+  south.setBest(north, namesSouth, namesNorth);
 }
 
 
@@ -687,14 +710,18 @@ void Ranks::resizeOrderTablesWin(
 
 void Ranks::resizeOrderTables()
 {
-  Ranks::resizeOrderTablesWin(north, south);
-  Ranks::resizeOrderTablesWin(south, north);
+  // Ranks::resizeOrderTablesWin(north, south);
+  // Ranks::resizeOrderTablesWin(south, north);
+  north.resizeBest(south);
+  south.resizeBest(north);
 }
 
 
 unsigned Ranks::canonicalTrinary(
-  const vector<unsigned>& fullCount1,
-  const vector<unsigned>& fullCount2) const
+  const Player& dominant,
+  const Player& recessive) const
+  // const vector<unsigned>& fullCount1,
+  // const vector<unsigned>& fullCount2) const
 {
   // This is similar to canonicalNew, but only does holding3.
   // Actually it only generates a canonical holding3 if there is
@@ -704,10 +731,15 @@ unsigned Ranks::canonicalTrinary(
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
+    // const unsigned index = 
+      // (opps.fullCount[rank] << 8) | 
+      // (fullCount1[rank] << 4) | 
+       // fullCount2[rank];
+
     const unsigned index = 
-      (opps.fullCount[rank] << 8) | 
-      (fullCount1[rank] << 4) | 
-       fullCount2[rank];
+      (opps.count(rank) << 8) | 
+      (dominant.count(rank) << 4) | 
+       recessive.count(rank);
 
     holding3 = 
       HOLDING3_RANK_FACTOR[index] * holding3 +
@@ -718,8 +750,8 @@ unsigned Ranks::canonicalTrinary(
 
 
 void Ranks::canonicalBoth(
-  const vector<unsigned>& fullCount1,
-  const vector<unsigned>& fullCount2,
+  const Player& dominant,
+  const Player& recessive,
   unsigned& holding3,
   unsigned& holding2) const
 {
@@ -731,9 +763,9 @@ void Ranks::canonicalBoth(
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (opps.fullCount[rank] << 8) | 
-      (fullCount1[rank] << 4) | 
-       fullCount2[rank];
+      (opps.count(rank) << 8) | 
+      (dominant.count(rank) << 4) | 
+       recessive.count(rank);
 
     holding3 = 
       HOLDING3_RANK_FACTOR[index] * holding3 +
@@ -761,10 +793,10 @@ void Ranks::set(
   combEntry.rotateFlag = ! (north.greater(south, opps));
 
   if (combEntry.rotateFlag)
-    Ranks::canonicalBoth(south.fullCount, north.fullCount,
+    Ranks::canonicalBoth(south, north,
       combEntry.canonicalHolding3, combEntry.canonicalHolding2);
   else
-   Ranks::canonicalBoth(north.fullCount, south.fullCount,
+   Ranks::canonicalBoth(north, south,
       combEntry.canonicalHolding3, combEntry.canonicalHolding2);
 
   combEntry.canonicalFlag = (holding == combEntry.canonicalHolding3);
@@ -777,46 +809,52 @@ void Ranks::trivialRanked(
   TrickEntry& trivialEntry) const
 {
   // Play the highest card.
-  if (north.maxRank == winRank)
-    trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.len-1);
+  if (north.maxFullRank() == winRank)
+    trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.length()-1,
+      namesNorth[winRank].at(0));
 
-  if (south.maxRank == winRank)
-    trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.len-1);
+  if (south.maxFullRank() == winRank)
+    trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.length()-1,
+      namesSouth[winRank].at(0));
 }
 
 
 bool Ranks::trivial(TrickEntry& trivialEntry) const
 {
-  if (north.len == 0 && south.len == 0)
+  if (north.isVoid() && south.isVoid())
   {
-    trivialEntry.set(0, WIN_NONE, 0, 0, 0);
+    trivialEntry.set(0, WIN_NONE, 0, 0, 0,' ');
     return true;
   }
 
-  if (opps.len == 0)
+  if (opps.isVoid())
   {
-    trivialEntry.set(max(north.len, south.len), WIN_NONE, 0, 0, 0);
+    trivialEntry.set(max(north.length(), south.length()), 
+      WIN_NONE, 0, 0, 0, ' ');
     return true;
   }
 
-  if (north.len <= 1 && south.len <= 1)
+  if (north.length() <= 1 && south.length() <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    if (opps.maxRank == maxRank)
-      trivialEntry.set(0, WIN_NONE, 0, 0, 0);
+    if (opps.maxFullRank() == maxRank)
+      trivialEntry.set(0, WIN_NONE, 0, 0, 0, ' ');
     else
-      Ranks::trivialRanked(1, opps.maxRank+1, trivialEntry);
+      // TODO Isn't this the same as maxRank?
+      Ranks::trivialRanked(1, opps.maxFullRank()+1, trivialEntry);
 
     return true;
   }
 
-  if (opps.len == 1)
+  if (opps.length() == 1)
   {
-    if (opps.maxRank == maxRank)
-      trivialEntry.set(max(north.len, south.len)-1, WIN_NONE, 0, 0, 0);
+    if (opps.maxFullRank() == maxRank)
+      trivialEntry.set(max(north.length(), south.length())-1, 
+        WIN_NONE, 0, 0, 0, ' ');
     else
-      Ranks::trivialRanked(max(north.len, south.len), opps.maxRank+1, 
-        trivialEntry);
+      // TODO Isn't this the same as maxRank?
+      Ranks::trivialRanked(max(north.length(), south.length()), 
+        opps.maxFullRank()+1, trivialEntry);
 
     return true;
   }
@@ -826,26 +864,27 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
 
 
 bool Ranks::leadOK(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  const Player& leader,
+  const Player& partner,
   const unsigned lead) const
 {
   // By construction, count is always > 0.
-  if (partner.len == 0)
+  if (partner.isVoid())
   { 
     // If we have the top rank opposite a void, always play it.
-    if (leader.maxRank == maxRank && lead < maxRank)
+    if (leader.maxFullRank() == maxRank && lead < maxRank)
       return false;
   }
-  else if (! leader.singleRank)
+  else if (! leader.isSingleRanked())
   {
     // Both sides have 2+ ranks.  
-    if (lead >= partner.maxRank)
+    if (lead >= partner.maxFullRank())
     {
       // Again, don't lead a too-high card.
       return false;
     }
-    else if (lead <= partner.minRank && lead > leader.minRank)
+    else if (lead <= partner.minFullRank() && 
+      lead > leader.minFullRank())
     {
       // If partner's lowest card is at least as high, lead lowest.
       return false;
@@ -856,12 +895,12 @@ bool Ranks::leadOK(
 
 
 bool Ranks::pardOK(
-  const PositionInfo& partner,
+  const Player& partner,
   const unsigned toBeat,
   const unsigned pard) const
 {
   // Always "play" a void.
-  if (partner.len == 0)
+  if (partner.isVoid())
     return true;
 
   // No rule concerning high cards.
@@ -870,18 +909,18 @@ bool Ranks::pardOK(
 
   // If LHO plays a "king" and partner has the "ace", there is no
   // point in not playing the ace.
-  if (toBeat == opps.maxRank &&
-      partner.maxRank > toBeat)
+  if (toBeat == opps.maxFullRank() &&
+      partner.maxFullRank() > toBeat)
     return false;
 
   // Play the lowest of irrelevant cards.
-  return (pard == partner.minRank);
+  return (pard == partner.minFullRank());
 }
 
 
 void Ranks::updateHoldings(
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  const Player& leader,
+  const Player& partner,
   const SidePosition side,
   unsigned& holding3,
   bool& rotateFlag) const
@@ -890,7 +929,7 @@ void Ranks::updateHoldings(
   {
 // cout << "leader >= partner, side " << (side == SIDE_NORTH ?
   // "North" : "South") << endl;
-    holding3 = Ranks::canonicalTrinary(leader.fullCount, partner.fullCount);
+    holding3 = Ranks::canonicalTrinary(leader, partner);
     // rotateFlag is absolute.
     // If the leader is South, then rotate.
     rotateFlag = (side == SIDE_SOUTH);
@@ -899,7 +938,7 @@ void Ranks::updateHoldings(
   {
 // cout << "leader < partner, side " << (side == SIDE_NORTH ?
   // "North" : "South") << endl;
-    holding3 = Ranks::canonicalTrinary(partner.fullCount, leader.fullCount);
+    holding3 = Ranks::canonicalTrinary(partner, leader);
     // If the leader is South, then don't rotate.
     rotateFlag = (side == SIDE_NORTH);
   }
@@ -908,8 +947,8 @@ void Ranks::updateHoldings(
 
 void Ranks::logPlay(
   Plays& plays,
-  const PositionInfo& leader,
-  const PositionInfo& partner,
+  const Player& leader,
+  const Player& partner,
   const SidePosition side,
   const unsigned lead,
   const unsigned lho,
@@ -922,25 +961,27 @@ void Ranks::logPlay(
 {
   const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
 
-  vector<Sidewinner> const * leadOrderPtr;
-  vector<Sidewinner> const * pardOrderPtr;
+  vector<Card> const * leadOrderPtr;
+  vector<Card> const * pardOrderPtr;
 
   if (lead == 0)
     leadOrderPtr = nullptr;
   else
   {
-assert(lead < leader.remainders.size());
+// assert(lead < leader.remainders.size());
 // cout << "Looking up lead " << lead << endl;
-    leadOrderPtr = &leader.remainders[lead];
+    // leadOrderPtr = &leader.remainders[lead];
+    leadOrderPtr = &leader.remainder(lead);
   }
 
   if (pard == 0)
     pardOrderPtr = nullptr;
   else
   {
-assert(pard < partner.remainders.size());
+// assert(pard < partner.remainders.size());
 // cout << "Looking up pard " << pard << endl;
-    pardOrderPtr = &partner.remainders[pard];
+    // pardOrderPtr = &partner.remainders[pard];
+    pardOrderPtr = &partner.remainder(pard);
   }
 
   Winner const * winPtr;
@@ -949,10 +990,10 @@ assert(pard < partner.remainders.size());
   else
   {
     // TODO Probably generate on the fly if not already set.
-assert(lead < leader.best.size());
-assert(pard < leader.best[lead].size());
-    winPtr = &leader.best[lead][pard];
-    
+// assert(lead < leader.best.size());
+// assert(pard < leader.best[lead].size());
+    // winPtr = &leader.best[lead][pard];
+    winPtr = &leader.getWinner(lead, pard);
   }
 
 // cout << "Ranks::logPlay " << side << ", " << lead << ", " << lho <<
@@ -970,8 +1011,8 @@ assert(pard < leader.best[lead].size());
 
 
 void Ranks::setPlaysLeadWithVoid(
-  PositionInfo& leader,
-  PositionInfo& partner,
+  Player& leader,
+  Player& partner,
   const SidePosition side,
   const unsigned lead,
   const bool leadCollapse,
@@ -981,30 +1022,32 @@ void Ranks::setPlaysLeadWithVoid(
   bool rotateFlag;
   bool pardCollapse, rhoCollapse;
 
-  opps.fullCount[0]--;
-  for (unsigned pardPos = partner.minPos; 
-      pardPos <= partner.maxPos; pardPos++)
+  opps.playFull(0);
+  for (unsigned pardPos = partner.minNumber(); 
+      pardPos <= partner.maxNumber(); pardPos++)
   {
-    const unsigned pard = partner.ranks[pardPos].rank;
+    // const unsigned pard = partner.ranks[pardPos].rank;
+    const unsigned pard = partner.rankOfNumber(pardPos);
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
-    partner.fullCount[pard]--;
+    partner.playFull(pard);
     pardCollapse = (pard > 1 && 
       pard < maxRank &&
-      partner.fullCount[pard] == 0 &&
-      leader.fullCount[pard] == 0);
+      ! partner.hasFullRank(pard) &&
+      ! leader.hasFullRank(pard));
     const unsigned toBeat = max(lead, pard);
 
-    for (unsigned rhoPos = 1; rhoPos <= opps.maxPos; rhoPos++)
+    for (unsigned rhoPos = 1; rhoPos <= opps.maxNumber(); rhoPos++)
     {
-      const unsigned rho = opps.ranks[rhoPos].rank;
+      // const unsigned rho = opps.ranks[rhoPos].rank;
+      const unsigned rho = opps.rankOfNumber(rhoPos);
       // If LHO is known to be void, RHO can duck completely.
-      if (rho < toBeat && rho != opps.minRank)
+      if (rho < toBeat && rho != opps.minFullRank())
         continue;
 
-      opps.fullCount[rho]--;
-      rhoCollapse = (opps.fullCount[rho] == 0);
+      opps.playFull(rho);
+      rhoCollapse = ! opps.hasFullRank(rho);
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -1014,21 +1057,21 @@ void Ranks::setPlaysLeadWithVoid(
         // leadCollapse, false, pardCollapse, rhoCollapse,
         // holding3, rotateFlag);
 
-      opps.fullCount[rho]++;
+      opps.restoreFull(rho);
 
       // If RHO wins, he should do so as cheaply as possible.
       if (rho > toBeat)
         break;
     }
-    partner.fullCount[pard]++;
+    partner.restoreFull(pard);
   }
-  opps.fullCount[0]++;
+  opps.restoreFull(0);
 }
 
 
 void Ranks::setPlaysLeadWithoutVoid(
-  PositionInfo& leader,
-  PositionInfo& partner,
+  Player& leader,
+  Player& partner,
   const SidePosition side,
   const unsigned lead,
   const bool leadCollapse,
@@ -1038,35 +1081,38 @@ void Ranks::setPlaysLeadWithoutVoid(
   bool rotateFlag;
   bool lhoCollapse, pardCollapse, rhoCollapse;
 
-  for (unsigned lhoPos = 1; lhoPos <= opps.maxPos; lhoPos++)
+  for (unsigned lhoPos = 1; lhoPos <= opps.maxNumber(); lhoPos++)
   {
-    const unsigned lho = opps.ranks[lhoPos].rank;
-    opps.fullCount[lho]--;
-    lhoCollapse = (opps.fullCount[lho] == 0);
+    // const unsigned lho = opps.ranks[lhoPos].rank;
+    const unsigned lho = opps.rankOfNumber(lhoPos);
+    opps.playFull(lho);
+    lhoCollapse = ! opps.hasFullRank(lho);
 
-    for (unsigned pardPos = partner.minPos; 
-        pardPos <= partner.maxPos; pardPos++)
+    for (unsigned pardPos = partner.minNumber(); 
+        pardPos <= partner.maxNumber(); pardPos++)
     {
-      const unsigned pard = partner.ranks[pardPos].rank;
+      // const unsigned pard = partner.ranks[pardPos].rank;
+      const unsigned pard = partner.rankOfNumber(pardPos);
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
-      partner.fullCount[pard]--;
+      partner.playFull(pard);
       pardCollapse = (pard > 1 && 
         pard != maxRank &&
-        partner.fullCount[pard] == 0 &&
-        leader.fullCount[pard] == 0);
+        ! partner.hasFullRank(pard) &&
+        ! leader.hasFullRank(pard));
 
-      for (unsigned rhoPos = 0; rhoPos <= opps.maxPos; rhoPos++)
+      for (unsigned rhoPos = 0; rhoPos <= opps.maxNumber(); rhoPos++)
       {
-        const unsigned rho = opps.ranks[rhoPos].rank;
+        // const unsigned rho = opps.ranks[rhoPos].rank;
+        const unsigned rho = opps.rankOfNumber(rhoPos);
 
         // Maybe the same single card has been played already.
-        if (opps.fullCount[rho] == 0)
+        if (! opps.hasFullRank(rho))
           continue;
           
-        opps.fullCount[rho]--;
-        rhoCollapse = (rho > 0 && opps.fullCount[rho] == 0);
+        opps.playFull(rho);
+        rhoCollapse = (rho > 0 && ! opps.hasFullRank(rho));
 
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -1076,48 +1122,50 @@ void Ranks::setPlaysLeadWithoutVoid(
           // leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
           // holding3, rotateFlag);
       
-        opps.fullCount[rho]++;
+        opps.restoreFull(rho);
       }
-      partner.fullCount[pard]++;
+      partner.restoreFull(pard);
     }
-    opps.fullCount[lho]++;
+    opps.restoreFull(lho);
   }
 }
 
 
 void Ranks::setPlaysSide(
-  PositionInfo& leader,
-  PositionInfo& partner,
+  Player& leader,
+  Player& partner,
   const SidePosition side,
   Plays& plays)
 {
-  if (leader.len == 0)
+  if (leader.isVoid())
     return;
 
   // Always lead the singleton rank.  If both have this, lead the
   // higher one, or if they're the same, the first one.
-  if (partner.singleRank &&
-      (! leader.singleRank || leader.maxRank < partner.maxRank ||
-        (leader.maxRank == partner.maxRank && side == SIDE_SOUTH)))
+  if (partner.isSingleRanked() &&
+      (! leader.isSingleRanked() || 
+          leader.maxFullRank() < partner.maxFullRank() ||
+        (leader.maxFullRank() == partner.maxFullRank() && side == SIDE_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
-  if (! leader.singleRank && 
-      partner.len > 0 && 
-      leader.minRank >= partner.maxRank)
+  if (! leader.isSingleRanked() && 
+      ! partner.isVoid() && 
+      leader.minFullRank() >= partner.maxFullRank())
     return;
 
   bool leadCollapse;
 
-  for (unsigned leadPos = 1; leadPos <= leader.maxPos; leadPos++)
+  for (unsigned leadPos = 1; leadPos <= leader.maxNumber(); leadPos++)
   {
-    const unsigned lead = leader.ranks[leadPos].rank;
+    // const unsigned lead = leader.ranks[leadPos].rank;
+    const unsigned lead = leader.rankOfNumber(leadPos);
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    leader.fullCount[lead]--;
-    leadCollapse = (leader.fullCount[lead] == 0 && 
-      partner.fullCount[lead] == 0 &&
+    leader.playFull(lead);
+    leadCollapse = (! leader.hasFullRank(lead) && 
+      ! partner.hasFullRank(lead) &&
       lead != 1 &&
       lead != maxRank);
 
@@ -1128,7 +1176,7 @@ void Ranks::setPlaysSide(
     Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
       leadCollapse, plays);
 
-    leader.fullCount[lead]++;
+    leader.restoreFull(lead);
   }
 }
 
@@ -1167,10 +1215,10 @@ string Ranks::strPosition(
 
 
 wstring Ranks::strPlays(
-  const PositionInfo& posInfo,
+  const Player& player,
   const vector<string>& names) const
 {
-  if (posInfo.len == 0)
+  if (player.isVoid())
     return L"-";
 
   string s = "";

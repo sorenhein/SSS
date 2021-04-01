@@ -45,12 +45,13 @@ void Winner::set(
   const WinningSide sideIn,
   const unsigned rankIn,
   const unsigned depthIn,
-  const unsigned numberIn)
+  const unsigned numberIn,
+  const char nameIn)
 {
   // Makes a new subwinner every time.
   subwinners.emplace_back(Subwinner());
   Subwinner& sw = subwinners.back();
-  sw.set(sideIn, rankIn, depthIn, numberIn);
+  sw.set(sideIn, rankIn, depthIn, numberIn, nameIn);
 }
 
 
@@ -155,8 +156,8 @@ void Winner::flip()
 
 
 void Winner::update(
-  vector<Sidewinner> const * northOrderPtr,
-  vector<Sidewinner> const * southOrderPtr,
+  vector<Card> const * northOrderPtr,
+  vector<Card> const * southOrderPtr,
   Winner const * currBestPtr)
 {
   for (auto& subwinner: subwinners)
