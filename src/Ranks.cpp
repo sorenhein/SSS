@@ -212,82 +212,8 @@ void Ranks::zero()
 }
 
 
+
 void Ranks::setRanks()
-{
-  Ranks::zero();
-
-  // We choose prev_is_NS ("the previously seen card belonged to NS")
-  // such that the first real card we see will result in an increase
-  // in maxRank, i.e. in the running rank.  Therefore we will never
-  // write to rank = 0 (void) in the loop itself.
-  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
-
-  unsigned posNorth = 1;
-  unsigned posSouth = 1;
-  unsigned posOpps = 0;
-
-  bool firstNorth = true;
-  bool firstSouth = true;
-  bool firstOpps = true;
-
-  // Have to set opps here already, as opps are not definitely void
-  // but may be void, so we don't want the maximum values to get
-  // reset to 0 by calling setVoid() after the loop below.
-  opps.setVoid(true); // Have to do it first to make max come out right
-
-  const unsigned imin = (cards > 13 ? 0 : 13-cards);
-  unsigned h = holding;
-
-  for (unsigned i = imin; i < imin+cards; i++)
-  {
-    const unsigned c = h % 3;
-    if (c == POSITION_OPPS)
-    {
-      if (prev_is_NS)
-      {
-        maxRank++;
-        posOpps++;
-      }
-
-      opps.update(posOpps, maxRank, firstOpps);
-      prev_is_NS = false;
-    }
-    else
-    {
-      if (! prev_is_NS)
-      {
-        // We could get a mix of positions within the same rank,
-        // not necessarily sorted by position.
-        maxRank++;
-        // if (north.ranks[posNorth].count > 0)
-        if (north.hasReducedRank(posNorth))
-          posNorth++;
-        // if (south.ranks[posSouth].count > 0)
-        if (south.hasReducedRank(posSouth))
-          posSouth++;
-      }
-
-      if (c == POSITION_NORTH)
-        north.update(posNorth, maxRank, firstNorth);
-      else
-        south.update(posSouth, maxRank, firstSouth);
-
-      prev_is_NS = true;
-    }
-
-    h /= 3;
-  }
-
-  north.setVoid(false);
-  south.setVoid(false);
-
-  north.setSingleRank();
-  south.setSingleRank();
-  opps.setSingleRank();
-}
-
-
-void Ranks::setRanksNew()
 {
   Ranks::zero();
 
@@ -454,6 +380,7 @@ void Ranks::setNames()
 
 
 
+/*
 void Ranks::countNumbers(
   vector<unsigned>& numbers,
   const PositionInfo& posInfo) const
@@ -474,6 +401,7 @@ void Ranks::countNumbers(
     running -= posInfo.fullCount[r];
   }
 }
+*/
 
 
 void Ranks::setOrderTablesRemainder(
@@ -481,158 +409,7 @@ void Ranks::setOrderTablesRemainder(
   const vector<string>& names)
 {
   posInfo.setRemainders(names);
-
-  // Example: North AQx, South JT8, defenders have 7 cards.
-  // 
-  // Rank Cards North South
-  //    1     x     1     0
-  //    2   3-7     0     0
-  //    3     8     0     1
-  //    4     9     0     0
-  //    5    JT     0     2
-  //    6     Q     1     0
-  //    7     K     0     0
-  //    8     A     1     0
-  //
-  // Then the order table for North (from below) is 1, 6, 8.
-  // For South it is 3, 5, 5.  Each of these also has a depth, so
-  // for South it is actually 3(0), 5(1), 5(0) with the highest
-  // of equals being played first.
-  //
-  // If North plays the Q on the first trick, then North has 1, 8.
-  // So this is the reduced or punched-out order table for North's Q.
-  //
-  // The purpose of these tables is to figure out the lowest winning
-  // rank in the current combination that corresponds to 
-  // a following combination.
-  //
-  // If the posInfo side is void, there is an (unset) entry at
-  // position 0 of the list for the void "card".
-
-  /*
-  const unsigned l = posInfo.maxRank+1;
-  posInfo.remainders.clear();
-  posInfo.remainders.resize(l);
-
-  // r is the full-rank index that we're punching out.
-  for (unsigned r = 1; r < l; r++)
-  {
-assert(r < posInfo.fullCount.size());
-    if (posInfo.fullCount[r] == 0)
-      continue;
-
-assert(r < posInfo.remainders.size());
-    vector<Sidewinner>& remList = posInfo.remainders[r];
-    remList.resize(posInfo.len); // TODO len-1?
-
-    // The position counts up from the lowest card which is 0.
-    unsigned pos = 0;
-
-    // Fill out remList with information about the remaining cards, 
-    // starting from below.
-    for (unsigned s = 1; s < l; s++)
-    {
-assert(s < posInfo.fullCount.size());
-      const unsigned val = posInfo.fullCount[s];
-      if (val == 0)
-        continue;
-
-      // The depth is 0 if this is the highest of equals of that rank.
-      // If this is the card we're punching out, increase the depth by 1
-      // by starting with the second such card.
-      const unsigned start = (r == s ? 1 : 0);
-      for (unsigned d = start; d < val; d++, pos++)
-      {
-assert(pos < remList.size());
-// cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos << 
-  // ", remList length" << remList.size() << endl;
-        remList[pos].set(s, d, pos);
-      }
-    }
-
-    remList.resize(pos);
-  }
-  */
 }
-
-
-/*
-void Ranks::setOrderTablesWin(
-  PositionInfo& posInfo,
-  const WinningSide side,
-  const PositionInfo& otherInfo,
-  const WinningSide otherSide)
-{
-  // NS win this trick, so the winner to which a later NS winner maps
-  // is more complicated to determine than in setOrderTablesLose().
-  // It can either be the current-trick or the later-trick winner.
-  // Also, either of those can be a single-side or a two-side winner.
-
-  const unsigned lThis = posInfo.maxRank+1;
-  const unsigned lOther = otherInfo.maxRank+1;
-
-  posInfo.best.clear();
-  posInfo.best.resize(lThis);
-
-  // Count the numbers of each rank.
-  vector<unsigned> numThis, numOther;
-  Ranks::countNumbers(numThis, posInfo);
-  Ranks::countNumbers(numOther, otherInfo);
-
-  unsigned crank;
-
-  // rThis is the full-rank index of the posInfo that we're punching out.
-  // The posInfo side may be void.
-  // TODO No it can't really?
-  for (unsigned rThis = 0; rThis < lThis; rThis++)
-  {
-    if (posInfo.fullCount[rThis] == 0)
-      continue;
-
-    posInfo.best[rThis].resize(lOther);
-    
-    // rOther is the full-rank index of the other card played.
-    for (unsigned rOther = 0; rOther < lOther; rOther++)
-    {
-      if (otherInfo.fullCount[rOther] == 0)
-        continue;
-
-      // Will hopefully not be necessary in new code.
-      if (rThis == 0 && rOther == 0)
-        continue;
-
-assert(rThis < posInfo.best.size());
-assert(rOther < posInfo.best[rThis].size());
-
-      Winner& current = posInfo.best[rThis][rOther];
-      current.reset();
-      if (rThis > rOther)
-      {
-        // The depth starts from 0.
-assert(rThis < numThis.size());
-        current.set(side, rThis, 0, numThis[rThis]);
-        crank = rThis;
-      }
-      else if (rThis < rOther)
-      {
-assert(rOther < numOther.size());
-        current.set(otherSide, rOther, 0, numOther[rOther]);
-        crank = rOther;
-      }
-      else
-      {
-assert(rThis < numThis.size());
-assert(rOther < numOther.size());
-        // Make two sub-winners as NS in some sense choose.
-        current.set(side, rThis, 0, numThis[rThis]);
-        current.set(otherSide, rOther, 0, numOther[rOther]);
-        crank = rThis;
-      }
-
-    }
-  }
-}
-*/
 
 
 void Ranks::setOrderTables()
@@ -672,48 +449,11 @@ void Ranks::setOrderTables()
   // and depths that will be the lowest winners overall, taking into
   // account the winner of the following combination.
 
-// cout << "setting remainder for North\n";
   Ranks::setOrderTablesRemainder(north, namesNorth);
-// cout << "setting remainder for South\n";
   Ranks::setOrderTablesRemainder(south, namesSouth);
 
-  // Ranks::setOrderTablesWin(north, WIN_NORTH, south, WIN_SOUTH);
-  // Ranks::setOrderTablesWin(south, WIN_SOUTH, north, WIN_NORTH);
   north.setBest(south, namesNorth, namesSouth);
   south.setBest(north, namesSouth, namesNorth);
-}
-
-
-void Ranks::resizeOrderTablesWin(
-  PositionInfo& posInfo,
-  const PositionInfo& otherInfo)
-{
-  // NS win this trick, so the winner to which a later NS winner maps
-  // is more complicated to determine than in setOrderTablesLose().
-  // It can either be the current-trick or the later-trick winner.
-  // Also, either of those can be a single-side or a two-side winner.
-
-  const unsigned lThis = posInfo.maxRank+1;
-  const unsigned lOther = otherInfo.maxRank+1;
-
-  posInfo.best.resize(lThis);
-
-  for (unsigned rThis = 0; rThis < lThis; rThis++)
-  {
-    if (posInfo.fullCount[rThis] == 0)
-      continue;
-
-    posInfo.best[rThis].resize(lOther);
-  }
-}
-
-
-void Ranks::resizeOrderTables()
-{
-  // Ranks::resizeOrderTablesWin(north, south);
-  // Ranks::resizeOrderTablesWin(south, north);
-  north.resizeBest(south);
-  south.resizeBest(north);
 }
 
 
@@ -782,13 +522,9 @@ void Ranks::set(
   CombEntry& combEntry)
 {
   holding = holdingIn;
-  // Ranks::setRanks();
-  Ranks::setRanksNew();
+  Ranks::setRanks();
   Ranks::setNames();
   Ranks::setOrderTables();
-
-  // TODO Activate.
-  // Ranks::resizeOrderTables();
 
   combEntry.rotateFlag = ! (north.greater(south, opps));
 
@@ -1053,9 +789,6 @@ void Ranks::setPlaysLeadWithVoid(
       Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
         leadCollapse, pardCollapse, holding3, rotateFlag);
-      // plays.log(side, lead, 0, pard, rho, 
-        // leadCollapse, false, pardCollapse, rhoCollapse,
-        // holding3, rotateFlag);
 
       opps.restoreFull(rho);
 
@@ -1118,9 +851,6 @@ void Ranks::setPlaysLeadWithoutVoid(
         Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
         Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
           leadCollapse, pardCollapse, holding3, rotateFlag);
-        // plays.log(side, lead, lho, pard, rho,
-          // leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
-          // holding3, rotateFlag);
       
         opps.restoreFull(rho);
       }
