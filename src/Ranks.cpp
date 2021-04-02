@@ -1,9 +1,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <algorithm>
-#include <utility>
-#include <codecvt>
 #include <mutex>
 #include <cassert>
 
@@ -14,7 +11,7 @@
 #include "const.h"
 
 /*
- * This class performs some rank manipulation for an entire hand
+ * This class performs rank manipulation for an entire hand
  * consisting of North, South and opposing cards.
  *
  * The set() method sets up the rank data and determines whether the
@@ -208,10 +205,6 @@ void Ranks::setRanks()
   bool firstSouth = true;
   bool firstOpps = true;
 
-  // Keep track of opponents for the string names.
-  unsigned minRankOpps = 0;
-  unsigned iMinOpps = 0;
-
   unsigned numberNorth = 0;
   unsigned numberSouth = 0;
   unsigned numberOpps = 0;
@@ -240,17 +233,8 @@ void Ranks::setRanks()
       }
 
       opps.update(posOpps, maxRank, depthOpps, numberOpps, i, firstOpps);
-      // cardsOpps[numberOpps].set(maxRank, depthOpps, numberOpps, 
-        // CARD_NAMES[i]);
       depthOpps++;
       numberOpps++;
-
-      // Update the strings.
-      if (minRankOpps == 0)
-      {
-        minRankOpps = maxRank;
-        iMinOpps = i;
-      }
 
       prev_is_NS = false;
     }
@@ -273,16 +257,12 @@ void Ranks::setRanks()
       if (c == POSITION_NORTH)
       {
         north.update(posNorth, maxRank, depthNorth, numberNorth, i, firstNorth);
-        // cardsNorth[numberNorth].set(maxRank, depthNorth, numberNorth, 
-          // CARD_NAMES[i]);
         depthNorth++;
         numberNorth++;
       }
       else
       {
         south.update(posSouth, maxRank, depthSouth, numberSouth, i, firstSouth);
-        // cardsSouth[numberSouth].set(maxRank, depthSouth, numberSouth,
-          // CARD_NAMES[i]);
         depthSouth++;
         numberSouth++;
       }
@@ -299,10 +279,6 @@ void Ranks::setRanks()
   north.setSingleRank();
   south.setSingleRank();
   opps.setSingleRank();
-
-  // TODO Can we derive this in Player, perhaps by letting update
-  // also store the first i value?
-  opps.setTMP(iMinOpps);
 }
 
 
@@ -752,7 +728,6 @@ void Ranks::setPlaysSide(
 
   for (unsigned leadPos = 1; leadPos <= leader.maxNumber(); leadPos++)
   {
-    // const unsigned lead = leader.ranks[leadPos].rank;
     const unsigned lead = leader.rankOfNumber(leadPos);
     if (! Ranks::leadOK(leader, partner, lead))
       continue;

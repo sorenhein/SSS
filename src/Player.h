@@ -37,6 +37,7 @@ class Player
     vector<unsigned> fullCount;
     unsigned maxRank;
     unsigned minRank;
+    unsigned minAbsCardNumber;
 
     vector<string> names;
     vector<Card> cards;
@@ -123,7 +124,6 @@ class Player
     unsigned minNumber() const;
     unsigned maxNumber() const;
     unsigned rankOfNumber(const unsigned no) const;
-    void setTMP(const unsigned iMin);
 
     const vector<Card>& remainder(const unsigned rank) const;
 

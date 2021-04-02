@@ -103,6 +103,7 @@ void Player::update(
   {
     minPos = position;
     minRank = rank;
+    minAbsCardNumber = absCardNumber;
     firstFlag = false;
   }
 
@@ -161,7 +162,7 @@ void Player::setNames(const bool declarerFlag)
       rankPrev = r;
       if (fullCount[r] > 1)
       {
-        if (r == minRank && iMinOpps <= 6) // ~ an eight
+        if (r == minRank && minAbsCardNumber <= 6) // ~ an eight
           names[r] = string(fullCount[r], 'x');
         else
           names[r] = string(fullCount[r], GENERIC_NAMES[index]);
@@ -453,13 +454,6 @@ unsigned Player::rankOfNumber(const unsigned no) const
 {
   assert(no < ranks.size());
   return ranks[no].rank;
-}
-
-
-void Player::setTMP(const unsigned iMin)
-{
-  // TMP
-  iMinOpps = iMin;
 }
 
 
