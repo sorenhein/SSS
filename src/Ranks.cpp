@@ -201,9 +201,9 @@ void Ranks::setRanks()
   unsigned posSouth = 1;
   unsigned posOpps = 0;
 
-  bool firstNorth = true;
-  bool firstSouth = true;
-  bool firstOpps = true;
+  // bool firstNorth = true;
+  // bool firstSouth = true;
+  // bool firstOpps = true;
 
   unsigned numberNorth = 0;
   unsigned numberSouth = 0;
@@ -232,7 +232,7 @@ void Ranks::setRanks()
         depthOpps = 0;
       }
 
-      opps.update(posOpps, maxRank, depthOpps, numberOpps, i, firstOpps);
+      opps.update(posOpps, maxRank, depthOpps, numberOpps, i);
       depthOpps++;
       numberOpps++;
 
@@ -256,13 +256,13 @@ void Ranks::setRanks()
 
       if (c == POSITION_NORTH)
       {
-        north.update(posNorth, maxRank, depthNorth, numberNorth, i, firstNorth);
+        north.update(posNorth, maxRank, depthNorth, numberNorth, i);
         depthNorth++;
         numberNorth++;
       }
       else
       {
-        south.update(posSouth, maxRank, depthSouth, numberSouth, i, firstSouth);
+        south.update(posSouth, maxRank, depthSouth, numberSouth, i);
         depthSouth++;
         numberSouth++;
       }

@@ -26,6 +26,15 @@ Player::~Player()
 }
 
 
+void Player::clear()
+{
+  ranks.clear();
+  fullCount.clear();
+  names.clear();
+  cards.clear();
+}
+
+
 void Player::resize(
   const unsigned cardsIn,
   const CardPosition sideIn)
@@ -61,15 +70,6 @@ void Player::resizeBest(const Player& partner)
 }
 
 
-void Player::clear()
-{
-  ranks.clear();
-  fullCount.clear();
-  names.clear();
-  cards.clear();
-}
-
-
 void Player::zero()
 {
   for (unsigned pos = 0; pos <= maxPos; pos++)
@@ -82,6 +82,8 @@ void Player::zero()
     names[i].clear();
         
   len = 0;
+
+  firstUpdateFlag = true;
 }
 
 
@@ -90,8 +92,7 @@ void Player::update(
   const unsigned rank,
   const unsigned depth,
   const unsigned number,
-  const unsigned absCardNumber,
-  bool& firstFlag)
+  const unsigned absCardNumber)
 {
   ranks[position].add(rank);
   maxPos = position;
@@ -99,12 +100,12 @@ void Player::update(
   fullCount[rank]++;
   maxRank = rank;
 
-  if (firstFlag)
+  if (firstUpdateFlag)
   {
     minPos = position;
     minRank = rank;
     minAbsCardNumber = absCardNumber;
-    firstFlag = false;
+    firstUpdateFlag = false;
   }
 
   len++;

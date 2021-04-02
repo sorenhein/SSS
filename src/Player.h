@@ -38,6 +38,7 @@ class Player
     unsigned maxRank;
     unsigned minRank;
     unsigned minAbsCardNumber;
+    bool firstUpdateFlag;
 
     vector<string> names;
     vector<Card> cards;
@@ -63,9 +64,6 @@ class Player
 
     void countNumbers(vector<unsigned>& numbers) const;
 
-    // TMP
-    unsigned iMinOpps;
-
     string playerName() const;
 
 
@@ -75,13 +73,13 @@ class Player
 
     ~Player();
 
+    void clear(); // Empties the vectors
+
     void resize(
       const unsigned cardsIn,
       const CardPosition sideIn);
 
     void resizeBest(const Player& partner);
-
-    void clear(); // Empties the vectors
 
     void zero(); // Keeps the vectors, but sets them to zero
 
@@ -90,8 +88,7 @@ class Player
       const unsigned rank,
       const unsigned depth,
       const unsigned number,
-      const unsigned absCardNumber,
-      bool& firstFlag);
+      const unsigned absCardNumber);
 
     void setVoid(const bool forceFlag);
 
