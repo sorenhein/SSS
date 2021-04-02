@@ -165,8 +165,6 @@ void Ranks::resize(const unsigned cardsIn)
   north.resize(cards, POSITION_NORTH);
   south.resize(cards, POSITION_SOUTH);
   opps.resize(cards, POSITION_OPPS);
-
-  maxRank = cards;
 }
 
 
@@ -186,7 +184,6 @@ void Ranks::zero()
 }
 
 
-
 void Ranks::setRanks()
 {
   Ranks::zero();
@@ -197,18 +194,10 @@ void Ranks::setRanks()
   // write to rank = 0 (void) in the loop itself.
   bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
 
-  unsigned posNorth = 1;
-  unsigned posSouth = 1;
-  unsigned posOpps = 0;
-
-  unsigned depthNorth = 0;
-  unsigned depthSouth = 0;
-  unsigned depthOpps = 0;
-
   // Have to set opps here already, as opps are not definitely void
-  // but may be void, so we don't want the maximum values to get
+  // but may be , so we don't want the maximum values to get
   // reset to 0 by calling setVoid() after the loop below.
-  opps.setVoid(true); // Have to do it first to make max come out right
+  opps.setVoid(true);
 
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
@@ -221,13 +210,10 @@ void Ranks::setRanks()
       if (prev_is_NS)
       {
         maxRank++;
-        posOpps++;
-        depthOpps = 0;
         opps.updateStep();
       }
 
-      opps.update(posOpps, maxRank, depthOpps, i);
-      depthOpps++;
+      opps.update(maxRank, i);
 
       prev_is_NS = false;
     }
@@ -236,30 +222,17 @@ void Ranks::setRanks()
       if (! prev_is_NS)
       {
         // We could get a mix of positions within the same rank,
-        // not necessarily sorted by position.
+        // not necessarily sorted by position.  So we have to treat
+        // North and South separately.
         maxRank++;
-        depthNorth = 0;
-        depthSouth = 0;
-
-        if (north.hasReducedRank(posNorth))
-          posNorth++;
-        if (south.hasReducedRank(posSouth))
-          posSouth++;
-        
         north.updateStep();
         south.updateStep();
       }
 
       if (c == POSITION_NORTH)
-      {
-        north.update(posNorth, maxRank, depthNorth, i);
-        depthNorth++;
-      }
+        north.update(maxRank, i);
       else
-      {
-        south.update(posSouth, maxRank, depthSouth, i);
-        depthSouth++;
-      }
+        south.update(maxRank, i);
 
       prev_is_NS = true;
     }
@@ -279,10 +252,8 @@ void Ranks::setRanks()
 unsigned Ranks::canonicalTrinary(
   const Player& dominant,
   const Player& recessive) const
-  // const vector<unsigned>& fullCount1,
-  // const vector<unsigned>& fullCount2) const
 {
-  // This is similar to canonicalNew, but only does holding3.
+  // This is similar to canonicalBoth, but only does holding3.
   // Actually it only generates a canonical holding3 if there is
   // no rank reduction among the opponents' cards.  Therefore
   // Combinations::getPtr looks up the canonical index.
@@ -290,11 +261,6 @@ unsigned Ranks::canonicalTrinary(
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
-    // const unsigned index = 
-      // (opps.fullCount[rank] << 8) | 
-      // (fullCount1[rank] << 4) | 
-       // fullCount2[rank];
-
     const unsigned index = 
       (opps.count(rank) << 8) | 
       (dominant.count(rank) << 4) | 
@@ -374,18 +340,11 @@ void Ranks::trivialRanked(
 {
   // Play the highest card.
   if (north.maxFullRank() == winRank)
-  {
-    // trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.length()-1,
-      // namesNorth[winRank].at(0));
     trivialEntry.set(tricks, WIN_NORTH, north.top());
-  }
 
+  // If both declarer sides have winners, keep both as a choice.
   if (south.maxFullRank() == winRank)
-  {
-    // trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.length()-1,
-      // namesSouth[winRank].at(0));
     trivialEntry.set(tricks, WIN_SOUTH, south.top());
-  }
 }
 
 
@@ -393,14 +352,13 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
 {
   if (north.isVoid() && south.isVoid())
   {
-    trivialEntry.set(0, WIN_NONE, 0, 0, 0,' ');
+    trivialEntry.setEmpty(0);
     return true;
   }
 
   if (opps.isVoid())
   {
-    trivialEntry.set(max(north.length(), south.length()), 
-      WIN_NONE, 0, 0, 0, ' ');
+    trivialEntry.setEmpty(max(north.length(), south.length()));
     return true;
   }
 
@@ -408,7 +366,7 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
   {
     // North-South win their last trick if they have the highest card.
     if (opps.maxFullRank() == maxRank)
-      trivialEntry.set(0, WIN_NONE, 0, 0, 0, ' ');
+      trivialEntry.setEmpty(0);
     else
       // TODO Isn't this the same as maxRank?
       Ranks::trivialRanked(1, opps.maxFullRank()+1, trivialEntry);
@@ -419,8 +377,7 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
   if (opps.length() == 1)
   {
     if (opps.maxFullRank() == maxRank)
-      trivialEntry.set(max(north.length(), south.length())-1, 
-        WIN_NONE, 0, 0, 0, ' ');
+      trivialEntry.setEmpty(max(north.length(), south.length())-1);
     else
       // TODO Isn't this the same as maxRank?
       Ranks::trivialRanked(max(north.length(), south.length()), 

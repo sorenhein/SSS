@@ -64,6 +64,8 @@ class Winner
       const WinningSide sideIn,
       const Card& card);
 
+    void setEmpty();
+
     void operator *= (const Winner& w2);
 
     void flip();

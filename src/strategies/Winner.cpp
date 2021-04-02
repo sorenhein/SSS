@@ -55,6 +55,15 @@ void Winner::set(
 }
 
 
+void Winner::setEmpty()
+{
+  // Makes a new subwinner every time.
+  subwinners.emplace_back(Subwinner());
+  Subwinner& sw = subwinners.back();
+  sw.setEmpty();
+}
+
+
 void Winner::set(
   const WinningSide sideIn,
   const Card& card)

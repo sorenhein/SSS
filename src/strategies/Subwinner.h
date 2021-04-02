@@ -51,6 +51,8 @@ class Subwinner
       const WinningSide sideIn,
       const Card& card);
 
+    void setEmpty();
+
     bool operator == (const Subwinner& sw2) const;
     bool operator != (const Subwinner& sw2) const;
 

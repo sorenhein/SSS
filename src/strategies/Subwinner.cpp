@@ -80,6 +80,13 @@ void Subwinner::set(
 }
 
 
+void Subwinner::setEmpty()
+{
+  // Do nothing.
+  assert(mode == SUBWIN_NOT_SET);
+}
+
+
 bool Subwinner::operator == (const Subwinner& sw2) const
 {
   if (mode != sw2.mode)

@@ -105,23 +105,18 @@ void Player::updateStep()
 
 
 void Player::update(
-  const unsigned position,
   const unsigned rank,
-  const unsigned depth,
   const unsigned absCardNumber)
 {
-assert(position == posNext);
-assert(depth == depthNext);
-
-  ranks[position].add(rank);
-  maxPos = position;
+  ranks[posNext].add(rank);
+  maxPos = posNext;
 
   fullCount[rank]++;
   maxRank = rank;
 
   if (firstUpdateFlag)
   {
-    minPos = position;
+    minPos = posNext;
     minRank = rank;
     minAbsCardNumber = absCardNumber;
     firstUpdateFlag = false;
@@ -129,7 +124,7 @@ assert(depth == depthNext);
 
   len++;
   
-  cards[numberNextCard].set(rank, depth, numberNextCard, 
+  cards[numberNextCard].set(rank, depthNext, numberNextCard, 
     CARD_NAMES[absCardNumber]);
   numberNextCard++;
   depthNext++;

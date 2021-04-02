@@ -66,6 +66,12 @@ struct TrickEntry
     winner.set(side, card);
   }
 
+  void setEmpty(const unsigned tricksIn)
+  {
+    tricks = tricksIn;
+    winner.setEmpty();
+  }
+
   string strEntry(const bool rankFlag) const
   {
     stringstream ss;

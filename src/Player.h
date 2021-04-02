@@ -89,9 +89,7 @@ class Player
     void updateStep();
 
     void update(
-      const unsigned position,
       const unsigned rank,
-      const unsigned depth,
       const unsigned absCardNumber);
 
     void setVoid(const bool forceFlag);
