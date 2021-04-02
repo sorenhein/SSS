@@ -13,24 +13,11 @@ class Player
 {
   private:
 
-    struct Rank
-    {
-      unsigned rank;
-      unsigned count;
+    // ranks is a compact list of the ranks that occur in fullCount.
+    // So if fullCount has entries at 3, 7 and 9, then ranks will
+    // contain 3, 7 and 9.
+    vector<unsigned> ranks;
 
-      Rank()
-      {
-        count = 0;
-      }
-
-      void add(const unsigned rankIn)
-      {
-        rank = rankIn;
-        count++;
-      }
-    };
-
-    vector<Rank> ranks;
     unsigned maxPos;
     unsigned minPos;
     unsigned cardCount;

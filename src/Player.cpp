@@ -74,7 +74,7 @@ void Player::resizeBest(const Player& partner)
 void Player::zero()
 {
   for (unsigned pos = 0; pos <= maxPos; pos++)
-    ranks[pos].count = 0;
+    ranks[pos] = 0;
 
   for (unsigned rank = 0; rank <= maxRank; rank++)
     fullCount[rank] = 0;
@@ -111,7 +111,7 @@ void Player::update(
   const unsigned rank,
   const unsigned absCardNumber)
 {
-  ranks[posNext].add(rank);
+  ranks[posNext] = rank;
   maxPos = posNext;
 
   fullCount[rank]++;
@@ -138,7 +138,7 @@ void Player::setVoid(const bool forceFlag)
 {
   if (forceFlag || len == 0)
   {
-    ranks[0].add(0);
+    ranks[0] = 0;
     minPos = 0;
     maxPos = 0;
 
@@ -472,7 +472,7 @@ unsigned Player::maxNumber() const
 unsigned Player::rankOfNumber(const unsigned no) const
 {
   assert(no < ranks.size());
-  return ranks[no].rank;
+  return ranks[no];
 }
 
 
