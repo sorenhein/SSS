@@ -779,7 +779,7 @@ CombinationType Ranks::setPlays(
   Plays& plays,
   TrickEntry& trivialEntry)
 {
-  // If COMB_TRIVIAL, then only terminalValue is set.
+  // If COMB_TRIVIAL, only terminalValue is set.
   // Otherwise, plays are set.
 
   if (Ranks::trivial(trivialEntry))
@@ -791,63 +791,38 @@ CombinationType Ranks::setPlays(
 }
 
 
-/*
-string Ranks::strPosition(
-  const string& cardString,
-  const string& player) const
-{
-  stringstream ss;
-  if (cardString.empty())
-    ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
-  else
-    ss << 
-      setw(8) << player << 
-      setw(4) << cardString.size() << 
-      setw(6) << cardString;
-
-  return ss.str();
-}
-*/
-
-
 string Ranks::strTable() const
 {
   // Makes a table with one rank per line.
   stringstream ss;
-  ss << "Ranks:\n";
-
-  ss <<  right <<
-    setw(8) << "North" << setw(4) << "#" << setw(6) << "cards" <<
-    setw(8) << "South" << setw(4) << "#" << setw(6) << "cards" <<
-    setw(8) << "Opps" <<  setw(4) << "#" << setw(6) << "cards" << 
+  ss << right <<
+    north.strRankHeader() <<
+    south.strRankHeader() <<
+    opps.strRankHeader() <<
     "\n";
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
-  {
     ss <<
       north.strRank(rank) <<
       south.strRank(rank) <<
       opps.strRank(rank) <<
-      // Ranks::strPosition(namesNorth[rank], "North") <<
-      // Ranks::strPosition(namesSouth[rank], "South") <<
-      // Ranks::strPosition(namesOpps[rank], "Opps") <<
       "\n";
-  }
 
   return ss.str() + "\n";
 }
 
 
-wstring Ranks::strDiagram() const
+wstring Ranks::wstrDiagram() const
 {
   // Makes a little box out of Unicode characters.
-  wstringstream ss;
-  ss << 
+  wstringstream wss;
+  wss << 
     "    " << north.wstr() << "\n" <<
     "    " << L"\u2554\u2550\u2550\u2557\n" <<
     "    " << L"\u2551  \u2551 miss " << opps.wstr() << "\n" <<
     "    " << L"\u255A\u2550\u2550\u255D\n" <<
     "    " << south.wstr() << "\n";
-  return ss.str();
+
+  return wss.str();
 }
 

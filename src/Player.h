@@ -137,6 +137,7 @@ class Player
 
     unsigned count(const unsigned rank) const;
 
+    string strRankHeader() const;
     string strRank(const unsigned rank) const;
 
     wstring wstr() const;

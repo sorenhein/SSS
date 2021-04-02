@@ -140,7 +140,7 @@ void Combinations::runSpecificVoid(
 
   cout << ranks.strTable();
   setlocale(LC_ALL, "en_US.UTF-8");
-  wcout << ranks.strDiagram();
+  wcout << ranks.wstrDiagram();
 
   Combination comb;
   comb.strategizeVoid(centry, * this, distributions, ranks, plays, true);

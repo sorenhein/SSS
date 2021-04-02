@@ -509,6 +509,18 @@ string Player::playerName() const
 }
 
 
+string Player::strRankHeader() const
+{
+  stringstream ss;
+  ss << right <<
+    setw(8) << Player::playerName() <<
+    setw(4) << "#" <<
+    setw(6) << "cards";
+
+  return ss.str();
+}
+
+
 string Player::strRank(const unsigned rank) const
 {
   stringstream ss;

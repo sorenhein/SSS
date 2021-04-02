@@ -123,7 +123,7 @@ class Ranks
 
     string strTable() const;
 
-    wstring strDiagram() const;
+    wstring wstrDiagram() const;
 };
 
 #endif
