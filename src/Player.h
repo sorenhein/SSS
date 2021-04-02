@@ -33,6 +33,7 @@ class Player
     vector<Rank> ranks;
     unsigned maxPos;
     unsigned minPos;
+    unsigned cardCount;
 
     vector<unsigned> fullCount;
     unsigned maxRank;
@@ -86,7 +87,7 @@ class Player
 
     void zero(); // Keeps the vectors, but sets them to zero
 
-    void updateStep();
+    void updateStep(const unsigned rankNew);
 
     void update(
       const unsigned rank,

@@ -47,6 +47,7 @@ void Player::resize(
   names.resize(cardsIn+1);
   cards.resize(cardsIn+1);
 
+  cardCount = cardsIn;
   maxRank = cardsIn;
 
   side = sideIn;
@@ -86,17 +87,19 @@ void Player::zero()
   numberNextCard = 0;
   firstUpdateFlag = true;
 
+  maxRank = cardCount;
+
   depthNext = 0;
   posNext = 1;
 }
 
 
-void Player::updateStep()
+void Player::updateStep(const unsigned rankNew)
 {
   // Back down to the first card of the next rank.
   depthNext = 0;
 
-  if (ranks[posNext].count > 0)
+  if (rankNew == maxRank+2)
   {
     // Player has this reduced rank already, so we advance.
     posNext++;
@@ -141,7 +144,11 @@ void Player::setVoid(const bool forceFlag)
 
     fullCount[0] = 1;
     minRank = 0;
-    maxRank = 0;
+
+    // Only null out maxRank when it's a real void, and not just
+    // a preliminary void for opponents at the beginning of setRanks().
+    if (! forceFlag)
+      maxRank = 0;
   }
 }
 

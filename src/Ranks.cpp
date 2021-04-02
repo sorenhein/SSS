@@ -210,7 +210,7 @@ void Ranks::setRanks()
       if (prev_is_NS)
       {
         maxRank++;
-        opps.updateStep();
+        opps.updateStep(maxRank);
       }
 
       opps.update(maxRank, i);
@@ -225,8 +225,8 @@ void Ranks::setRanks()
         // not necessarily sorted by position.  So we have to treat
         // North and South separately.
         maxRank++;
-        north.updateStep();
-        south.updateStep();
+        north.updateStep(maxRank);
+        south.updateStep(maxRank);
       }
 
       if (c == POSITION_NORTH)
