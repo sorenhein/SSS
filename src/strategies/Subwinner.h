@@ -47,6 +47,10 @@ class Subwinner
       const unsigned number,
       const char nameIn);
 
+    void set(
+      const WinningSide sideIn,
+      const Card& card);
+
     bool operator == (const Subwinner& sw2) const;
     bool operator != (const Subwinner& sw2) const;
 

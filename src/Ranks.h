@@ -26,14 +26,6 @@ class Ranks
     unsigned cards;
     unsigned maxRank;
 
-    vector<string> namesNorth; // Indexed by rank
-    vector<string> namesSouth;
-    vector<string> namesOpps;
-
-    vector<Card> cardsNorth; // Indexed by number
-    vector<Card> cardsSouth;
-    vector<Card> cardsOpps;
-
 
     void setConstants();
 
@@ -111,14 +103,6 @@ class Ranks
       const SidePosition side,
       Plays& plays);
 
-    string strPosition(
-      const string& cards,
-      const string& player) const;
-
-    wstring strPlays(
-      const Player& posInfo,
-      const vector<string>& names) const;
-
   public:
 
     Ranks();
@@ -137,7 +121,7 @@ class Ranks
       Plays& plays,
       TrickEntry& trivialEntry);
 
-    string str() const;
+    string strTable() const;
 
     wstring strDiagram() const;
 };

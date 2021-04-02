@@ -60,6 +60,10 @@ class Winner
       const unsigned numberIn,
       const char nameIn);
 
+    void set(
+      const WinningSide sideIn,
+      const Card& card);
+
     void operator *= (const Winner& w2);
 
     void flip();

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <codecvt>
 #include <cassert>
 
 #include "Player.h"
@@ -34,6 +35,9 @@ void Player::resize(
   maxPos = cardsIn;
 
   fullCount.resize(cardsIn+1);
+  names.resize(cardsIn+1);
+  cards.resize(cardsIn+1);
+
   maxRank = cardsIn;
 
   side = sideIn;
@@ -61,6 +65,8 @@ void Player::clear()
 {
   ranks.clear();
   fullCount.clear();
+  names.clear();
+  cards.clear();
 }
 
 
@@ -71,6 +77,9 @@ void Player::zero()
 
   for (unsigned rank = 0; rank <= maxRank; rank++)
     fullCount[rank] = 0;
+
+  for (unsigned i = 0; i < names.size(); i++)
+    names[i].clear();
         
   len = 0;
 }
@@ -79,6 +88,9 @@ void Player::zero()
 void Player::update(
   const unsigned position,
   const unsigned rank,
+  const unsigned depth,
+  const unsigned number,
+  const unsigned absCardNumber,
   bool& firstFlag)
 {
   ranks[position].add(rank);
@@ -95,6 +107,8 @@ void Player::update(
   }
 
   len++;
+  
+  cards[number].set(rank, depth, number, CARD_NAMES[absCardNumber]);
 }
 
 
@@ -119,10 +133,7 @@ void Player::setSingleRank()
 }
 
 
-void Player::setNames(
-  const vector<Card>& cards,
-  const bool declarerFlag,
-  vector<string>& names)
+void Player::setNames(const bool declarerFlag)
 {
   if (declarerFlag)
   {
@@ -165,7 +176,7 @@ void Player::setNames(
 }
 
 
-void Player::setRemainders(const vector<string>& names)
+void Player::setRemainders()
 {
   // Example: North AQx, South JT8, defenders have 7 cards.
   //
@@ -260,10 +271,7 @@ void Player::countNumbers(vector<unsigned>& numbers) const
 }
 
 
-void Player::setBest(
-  const Player& partner,
-  const vector<string>& namesOwn,
-  const vector<string>& namesPartner)
+void Player::setBest(const Player& partner)
 {
   // NS win this trick, so the winner to which a later NS winner maps
   // is more complicated to determine than in setOrderTablesLose().
@@ -327,14 +335,14 @@ assert(rOther < best[rThis].size());
       {
         // The depth starts from 0.
 assert(rThis < numThis.size());
-        current.set(wside, rThis, 0, numThis[rThis], namesOwn[rThis].at(0));
+        current.set(wside, rThis, 0, numThis[rThis], names[rThis].at(0));
         crank = rThis;
       }
       else if (rThis < rOther)
       {
 assert(rOther < numOther.size());
         current.set(pside, rOther, 0, numOther[rOther],
-          namesPartner[rOther].at(0));
+          partner.names[rOther].at(0));
         crank = rOther;
       }
       else
@@ -343,9 +351,9 @@ assert(rThis < numThis.size());
 assert(rOther < numOther.size());
         // Make two sub-winners as NS in some sense choose.
         current.set(wside, rThis, 0, numThis[rThis],
-          namesOwn[rThis].at(0));
+          names[rThis].at(0));
         current.set(pside, rOther, 0, numOther[rOther],
-          namesPartner[rOther].at(0));
+          partner.names[rOther].at(0));
         crank = rThis;
       }
     }
@@ -389,6 +397,13 @@ bool Player::greater(
     run1 = 0;
     run2 = 0;
   }
+}
+
+
+const Card& Player::top() const
+{
+  assert(len > 0);
+  return cards[len-1];
 }
 
 
@@ -480,5 +495,45 @@ bool Player::isSingleRanked() const
 unsigned Player::count(const unsigned rankIn) const
 {
   return fullCount[rankIn];
+}
+
+
+string Player::playerName() const
+{
+  if (side == POSITION_NORTH)
+    return "North";
+  else if (side == POSITION_SOUTH)
+    return "South";
+  else
+    return "Opps";
+}
+
+
+string Player::strRank(const unsigned rank) const
+{
+  stringstream ss;
+  if (fullCount[rank] == 0)
+    ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
+  else
+    ss << 
+      setw(8) << Player::playerName() <<
+      setw(4) << fullCount[rank] <<
+      setw(6) << names[rank];
+
+  return ss.str();
+}
+
+
+wstring Player::wstr() const
+{
+  if (len == 0)
+    return L"-";
+
+  string s = "";
+  for (unsigned rank = maxRank; rank > 0; rank--)
+    s += names[rank];
+
+  wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
+  return conv.from_bytes(s);
 }
 

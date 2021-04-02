@@ -38,6 +38,9 @@ class Player
     unsigned maxRank;
     unsigned minRank;
 
+    vector<string> names;
+    vector<Card> cards;
+
     bool singleRank;
     unsigned len;
 
@@ -62,6 +65,8 @@ class Player
     // TMP
     unsigned iMinOpps;
 
+    string playerName() const;
+
 
   public:
 
@@ -82,24 +87,20 @@ class Player
     void update(
       const unsigned position,
       const unsigned rank,
+      const unsigned depth,
+      const unsigned number,
+      const unsigned absCardNumber,
       bool& firstFlag);
 
     void setVoid(const bool forceFlag);
 
     void setSingleRank();
 
-    // TODO Both cards and names should transition to Player
-    void setNames(
-      const vector<Card>& cards,
-      const bool declarerFlag,
-      vector<string>& names);
+    void setNames(const bool declarerFlag);
 
-    void setRemainders(const vector<string>& names);
+    void setRemainders();
 
-    void setBest(
-      const Player& partner,
-      const vector<string>& namesOwn,
-      const vector<string>& namesPartner);
+    void setBest(const Player& partner);
 
     void playFull(const unsigned rankFullIn);
     void restoreFull(const unsigned rankFullIn);
@@ -108,6 +109,8 @@ class Player
       const Player& p2,
       const Player& opps) const;
     
+    const Card& top() const;
+
     bool hasReducedRank(const unsigned rankIn) const;
     bool hasFullRank(const unsigned rankFullIn) const;
 
@@ -133,6 +136,10 @@ class Player
     bool isSingleRanked() const;
 
     unsigned count(const unsigned rank) const;
+
+    string strRank(const unsigned rank) const;
+
+    wstring wstr() const;
 };
 
 #endif

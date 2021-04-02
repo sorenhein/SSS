@@ -55,6 +55,17 @@ void Winner::set(
 }
 
 
+void Winner::set(
+  const WinningSide sideIn,
+  const Card& card)
+{
+  // Makes a new subwinner every time.
+  subwinners.emplace_back(Subwinner());
+  Subwinner& sw = subwinners.back();
+  sw.set(sideIn, card);
+}
+
+
 bool Winner::operator != (const Winner& w2) const
 {
   // This is a simple first implementation that assumes the same order.

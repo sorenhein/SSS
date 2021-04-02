@@ -107,7 +107,7 @@ void Combinations::runSpecific(
     return;
   }
 
-  cout << ranks.str();
+  cout << ranks.strTable();
 
   Combination comb;
   comb.strategize(centry, * this, distributions, ranks, plays, true);
@@ -138,7 +138,7 @@ void Combinations::runSpecificVoid(
     return;
   }
 
-  cout << ranks.str();
+  cout << ranks.strTable();
   setlocale(LC_ALL, "en_US.UTF-8");
   wcout << ranks.strDiagram();
 
@@ -193,7 +193,7 @@ if (cards == 4 && holding == 6)
 // UNUSED(comb);
 // UNUSED(distributions);
 /* */
-cout << ranks.str();
+cout << ranks.strTable();
       comb.strategize(centry, * this, distributions, ranks, plays);
 /* */
 

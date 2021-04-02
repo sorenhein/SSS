@@ -54,6 +54,32 @@ void Subwinner::set(
 }
 
 
+void Subwinner::set(
+  const WinningSide sideIn,
+  const Card& card)
+{
+  // This doesn't reset the winner, so the method can be used to build
+  // up a winner with more than one component if called twice.
+  // In that case, NS decide among the options.
+
+  assert(mode == SUBWIN_NOT_SET);
+  if (sideIn == WIN_NORTH)
+  {
+    north = card;
+    mode = SUBWIN_NORTH_ONLY;
+  }
+  else if (sideIn == WIN_SOUTH)
+  {
+    south = card;
+    mode = SUBWIN_SOUTH_ONLY;
+  }
+  else if (sideIn == WIN_NONE)
+    mode = SUBWIN_NOT_SET;
+  else
+    assert(false);
+}
+
+
 bool Subwinner::operator == (const Subwinner& sw2) const
 {
   if (mode != sw2.mode)

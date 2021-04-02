@@ -63,14 +63,6 @@ Ranks::Ranks()
   north.clear();
   south.clear();
   opps.clear();
-
-  namesNorth.clear();
-  namesSouth.clear();
-  namesOpps.clear();
-
-  cardsNorth.clear();
-  cardsSouth.clear();
-  cardsOpps.clear();
 }
 
 
@@ -178,14 +170,6 @@ void Ranks::resize(const unsigned cardsIn)
   opps.resize(cards, POSITION_OPPS);
 
   maxRank = cards;
-
-  namesNorth.resize(cards+1);
-  namesSouth.resize(cards+1);
-  namesOpps.resize(cards+1);
-
-  cardsNorth.resize(cards+1);
-  cardsSouth.resize(cards+1);
-  cardsOpps.resize(cards+1);
 }
 
 
@@ -202,13 +186,6 @@ void Ranks::zero()
   opps.zero();
 
   maxRank = 0;
-
-  for (unsigned i = 0; i < namesNorth.size(); i++)
-    namesNorth[i].clear();
-  for (unsigned i = 0; i < namesSouth.size(); i++)
-    namesSouth[i].clear();
-  for (unsigned i = 0; i < namesOpps.size(); i++)
-    namesOpps[i].clear();
 }
 
 
@@ -262,9 +239,9 @@ void Ranks::setRanks()
         depthOpps = 0;
       }
 
-      opps.update(posOpps, maxRank, firstOpps);
-      cardsOpps[numberOpps].set(maxRank, depthOpps, numberOpps, 
-        CARD_NAMES[i]);
+      opps.update(posOpps, maxRank, depthOpps, numberOpps, i, firstOpps);
+      // cardsOpps[numberOpps].set(maxRank, depthOpps, numberOpps, 
+        // CARD_NAMES[i]);
       depthOpps++;
       numberOpps++;
 
@@ -287,27 +264,25 @@ void Ranks::setRanks()
         depthNorth = 0;
         depthSouth = 0;
 
-        // if (north.ranks[posNorth].count > 0)
         if (north.hasReducedRank(posNorth))
           posNorth++;
-        // if (south.ranks[posSouth].count > 0)
         if (south.hasReducedRank(posSouth))
           posSouth++;
       }
 
       if (c == POSITION_NORTH)
       {
-        north.update(posNorth, maxRank, firstNorth);
-        cardsNorth[numberNorth].set(maxRank, depthNorth, numberNorth, 
-          CARD_NAMES[i]);
+        north.update(posNorth, maxRank, depthNorth, numberNorth, i, firstNorth);
+        // cardsNorth[numberNorth].set(maxRank, depthNorth, numberNorth, 
+          // CARD_NAMES[i]);
         depthNorth++;
         numberNorth++;
       }
       else
       {
-        south.update(posSouth, maxRank, firstSouth);
-        cardsSouth[numberSouth].set(maxRank, depthSouth, numberSouth,
-          CARD_NAMES[i]);
+        south.update(posSouth, maxRank, depthSouth, numberSouth, i, firstSouth);
+        // cardsSouth[numberSouth].set(maxRank, depthSouth, numberSouth,
+          // CARD_NAMES[i]);
         depthSouth++;
         numberSouth++;
       }
@@ -399,15 +374,15 @@ void Ranks::set(
 
   Ranks::setRanks();
 
-  north.setNames(cardsNorth, true, namesNorth);
-  south.setNames(cardsSouth, true, namesSouth);
-  opps.setNames(cardsOpps, false, namesOpps);
+  north.setNames(true);
+  south.setNames(true);
+  opps.setNames(false);
 
-  north.setRemainders(namesNorth);
-  south.setRemainders(namesSouth);
+  north.setRemainders();
+  south.setRemainders();
 
-  north.setBest(south, namesNorth, namesSouth);
-  south.setBest(north, namesSouth, namesNorth);
+  north.setBest(south);
+  south.setBest(north);
 
   combEntry.rotateFlag = ! (north.greater(south, opps));
 
@@ -429,12 +404,18 @@ void Ranks::trivialRanked(
 {
   // Play the highest card.
   if (north.maxFullRank() == winRank)
-    trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.length()-1,
-      namesNorth[winRank].at(0));
+  {
+    // trivialEntry.set(tricks, WIN_NORTH, winRank, 0, north.length()-1,
+      // namesNorth[winRank].at(0));
+    trivialEntry.set(tricks, WIN_NORTH, north.top());
+  }
 
   if (south.maxFullRank() == winRank)
-    trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.length()-1,
-      namesSouth[winRank].at(0));
+  {
+    // trivialEntry.set(tricks, WIN_SOUTH, winRank, 0, south.length()-1,
+      // namesSouth[winRank].at(0));
+    trivialEntry.set(tricks, WIN_SOUTH, south.top());
+  }
 }
 
 
@@ -810,6 +791,7 @@ CombinationType Ranks::setPlays(
 }
 
 
+/*
 string Ranks::strPosition(
   const string& cardString,
   const string& player) const
@@ -825,26 +807,12 @@ string Ranks::strPosition(
 
   return ss.str();
 }
+*/
 
 
-wstring Ranks::strPlays(
-  const Player& player,
-  const vector<string>& names) const
+string Ranks::strTable() const
 {
-  if (player.isVoid())
-    return L"-";
-
-  string s = "";
-  for (unsigned rank = maxRank; rank > 0; rank--)
-    s += names[rank];
-
-  wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
-  return conv.from_bytes(s);
-}
-
-
-string Ranks::str() const
-{
+  // Makes a table with one rank per line.
   stringstream ss;
   ss << "Ranks:\n";
 
@@ -857,9 +825,12 @@ string Ranks::str() const
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
   {
     ss <<
-      Ranks::strPosition(namesNorth[rank], "North") <<
-      Ranks::strPosition(namesSouth[rank], "South") <<
-      Ranks::strPosition(namesOpps[rank], "Opps") <<
+      north.strRank(rank) <<
+      south.strRank(rank) <<
+      opps.strRank(rank) <<
+      // Ranks::strPosition(namesNorth[rank], "North") <<
+      // Ranks::strPosition(namesSouth[rank], "South") <<
+      // Ranks::strPosition(namesOpps[rank], "Opps") <<
       "\n";
   }
 
@@ -872,12 +843,11 @@ wstring Ranks::strDiagram() const
   // Makes a little box out of Unicode characters.
   wstringstream ss;
   ss << 
-    "    " << Ranks::strPlays(north, namesNorth) << "\n" <<
+    "    " << north.wstr() << "\n" <<
     "    " << L"\u2554\u2550\u2550\u2557\n" <<
-    "    " << L"\u2551  \u2551 miss " <<
-      Ranks::strPlays(opps, namesOpps) << "\n" <<
+    "    " << L"\u2551  \u2551 miss " << opps.wstr() << "\n" <<
     "    " << L"\u255A\u2550\u2550\u255D\n" <<
-    "    " << Ranks::strPlays(south, namesSouth) << "\n";
+    "    " << south.wstr() << "\n";
   return ss.str();
 }
 
