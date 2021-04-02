@@ -111,8 +111,7 @@ class Player
     
     const Card& top() const;
 
-    bool hasReducedRank(const unsigned rankIn) const;
-    bool hasFullRank(const unsigned rankFullIn) const;
+    bool hasRank(const unsigned rankIn) const;
 
     unsigned length() const;
 

@@ -426,15 +426,9 @@ const Card& Player::top() const
 }
 
 
-bool Player::hasReducedRank(const unsigned rankIn) const
+bool Player::hasRank(const unsigned rankIn) const
 {
-  return (ranks[rankIn].count > 0);
-}
-
-
-bool Player::hasFullRank(const unsigned rankFullIn) const
-{
-  return (fullCount[rankFullIn] > 0);
+  return (fullCount[rankIn] > 0);
 }
 
 

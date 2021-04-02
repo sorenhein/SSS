@@ -335,16 +335,20 @@ void Ranks::set(
 
 void Ranks::trivialRanked(
   const unsigned tricks,
-  const unsigned winRank,
   TrickEntry& trivialEntry) const
 {
-  // Play the highest card.
-  if (north.maxFullRank() == winRank)
-    trivialEntry.set(tricks, WIN_NORTH, north.top());
+  if (opps.hasRank(maxRank))
+    trivialEntry.setEmpty(tricks-1);
+  else
+  {
+    // Play the highest card.
+    if (north.hasRank(maxRank))
+      trivialEntry.set(tricks, WIN_NORTH, north.top());
 
-  // If both declarer sides have winners, keep both as a choice.
-  if (south.maxFullRank() == winRank)
-    trivialEntry.set(tricks, WIN_SOUTH, south.top());
+    // If both declarer sides have winners, keep both as a choice.
+    if (south.hasRank(maxRank))
+      trivialEntry.set(tricks, WIN_SOUTH, south.top());
+  }
 }
 
 
@@ -365,24 +369,14 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
   if (north.length() <= 1 && south.length() <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    if (opps.maxFullRank() == maxRank)
-      trivialEntry.setEmpty(0);
-    else
-      // TODO Isn't this the same as maxRank?
-      Ranks::trivialRanked(1, opps.maxFullRank()+1, trivialEntry);
-
+    Ranks::trivialRanked(1, trivialEntry);
     return true;
   }
 
   if (opps.length() == 1)
   {
-    if (opps.maxFullRank() == maxRank)
-      trivialEntry.setEmpty(max(north.length(), south.length())-1);
-    else
-      // TODO Isn't this the same as maxRank?
-      Ranks::trivialRanked(max(north.length(), south.length()), 
-        opps.maxFullRank()+1, trivialEntry);
-
+    // North-South win it all, or almost, if opponents have one card left.
+    Ranks::trivialRanked(max(north.length(), south.length()), trivialEntry);
     return true;
   }
 
@@ -561,8 +555,8 @@ void Ranks::setPlaysLeadWithVoid(
     partner.playFull(pard);
     pardCollapse = (pard > 1 && 
       pard < maxRank &&
-      ! partner.hasFullRank(pard) &&
-      ! leader.hasFullRank(pard));
+      ! partner.hasRank(pard) &&
+      ! leader.hasRank(pard));
     const unsigned toBeat = max(lead, pard);
 
     for (unsigned rhoPos = 1; rhoPos <= opps.maxNumber(); rhoPos++)
@@ -574,7 +568,7 @@ void Ranks::setPlaysLeadWithVoid(
         continue;
 
       opps.playFull(rho);
-      rhoCollapse = ! opps.hasFullRank(rho);
+      rhoCollapse = ! opps.hasRank(rho);
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -610,7 +604,7 @@ void Ranks::setPlaysLeadWithoutVoid(
     // const unsigned lho = opps.ranks[lhoPos].rank;
     const unsigned lho = opps.rankOfNumber(lhoPos);
     opps.playFull(lho);
-    lhoCollapse = ! opps.hasFullRank(lho);
+    lhoCollapse = ! opps.hasRank(lho);
 
     for (unsigned pardPos = partner.minNumber(); 
         pardPos <= partner.maxNumber(); pardPos++)
@@ -623,8 +617,8 @@ void Ranks::setPlaysLeadWithoutVoid(
       partner.playFull(pard);
       pardCollapse = (pard > 1 && 
         pard != maxRank &&
-        ! partner.hasFullRank(pard) &&
-        ! leader.hasFullRank(pard));
+        ! partner.hasRank(pard) &&
+        ! leader.hasRank(pard));
 
       for (unsigned rhoPos = 0; rhoPos <= opps.maxNumber(); rhoPos++)
       {
@@ -632,11 +626,11 @@ void Ranks::setPlaysLeadWithoutVoid(
         const unsigned rho = opps.rankOfNumber(rhoPos);
 
         // Maybe the same single card has been played already.
-        if (! opps.hasFullRank(rho))
+        if (! opps.hasRank(rho))
           continue;
           
         opps.playFull(rho);
-        rhoCollapse = (rho > 0 && ! opps.hasFullRank(rho));
+        rhoCollapse = (rho > 0 && ! opps.hasRank(rho));
 
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -684,8 +678,8 @@ void Ranks::setPlaysSide(
       continue;
 
     leader.playFull(lead);
-    leadCollapse = (! leader.hasFullRank(lead) && 
-      ! partner.hasFullRank(lead) &&
+    leadCollapse = (! leader.hasRank(lead) && 
+      ! partner.hasRank(lead) &&
       lead != 1 &&
       lead != maxRank);
 

@@ -45,7 +45,6 @@ class Ranks
 
     void trivialRanked(
       const unsigned tricks,
-      const unsigned winRank,
       TrickEntry& trivialEntry) const;
 
     bool trivial(TrickEntry& trivialEntry) const;
