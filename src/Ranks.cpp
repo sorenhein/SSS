@@ -785,7 +785,7 @@ void Ranks::set(
   // Ranks::setRanks();
   Ranks::setRanksNew();
   Ranks::setNames();
-  // Ranks::setOrderTables();
+  Ranks::setOrderTables();
 
   // TODO Activate.
   // Ranks::resizeOrderTables();

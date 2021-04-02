@@ -228,9 +228,10 @@ assert(s < fullCount.size());
       for (unsigned d = start; d < val; d++, pos++)
       {
 assert(pos < remList.size());
+// TODO Use cardsNorth from Ranks once it's over here instead?
 // cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos <<
   // ", remList length" << remList.size() << endl;
-        remList[pos].set(s, d, pos, names[r].at(d));
+        remList[pos].set(s, d, pos, names[s].at(d));
       }
     }
 

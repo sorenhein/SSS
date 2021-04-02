@@ -169,6 +169,10 @@ void Combinations::runUniques(
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
 // cout << "combs holding " << holding << endl;
+if (cards == 4 && holding == 6)
+{
+  cout << "FAIL" << endl;
+}
     CombEntry& centry = centries[holding];
     ranks.set(holding, centry);
 
@@ -186,12 +190,12 @@ void Combinations::runUniques(
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
-UNUSED(comb);
-UNUSED(distributions);
-/*
+// UNUSED(comb);
+// UNUSED(distributions);
+/* */
 cout << ranks.str();
       comb.strategize(centry, * this, distributions, ranks, plays);
-*/
+/* */
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
