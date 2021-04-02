@@ -4,11 +4,8 @@
 #include <vector>
 
 #include "Player.h"
-
-#include "strategies/Winner.h"
 #include "strategies/Card.h"
 
-#include "const.h"
 
 using namespace std;
 
@@ -44,19 +41,9 @@ class Ranks
 
     void setRanks();
 
-    void setNames();
-
-    void setOrderTablesRemainder(
-      Player& posInfo,
-      const vector<string>& names);
-
-    void setOrderTables();
-
     unsigned canonicalTrinary(
       const Player& dominant,
       const Player& recessive) const;
-      // const vector<unsigned>& fullCount1,
-      // const vector<unsigned>& fullCount2) const;
 
     void canonicalBoth(
       const Player& dominant,

@@ -331,132 +331,6 @@ void Ranks::setRanks()
 }
 
 
-void Ranks::setNames()
-{
-  north.setNames(cardsNorth, true, namesNorth);
-  south.setNames(cardsSouth, true, namesSouth);
-  opps.setNames(cardsOpps, false, namesOpps);
-
-  /*
-  for (unsigned n = north.len; n-- > 0; )
-  {
-    auto& c = cardsNorth[n];
-    namesNorth[c.getRank()] += c.getName();
-  }
-
-  for (unsigned n = south.len; n-- > 0; )
-  {
-    auto& c = cardsSouth[n];
-    namesSouth[c.getRank()] += c.getName();
-  }
-
-  // For the opponents we don't distinguish as much.
-  unsigned index = 0;
-  unsigned rankPrev = numeric_limits<unsigned>::max();
-  for (unsigned n = opps.len; n-- > 0; )
-  {
-    auto& c = cardsOpps[n];
-    const unsigned r = c.getRank();
-    if (r == rankPrev)
-      continue;
-
-    rankPrev = r;
-    if (opps.fullCount[r] > 1)
-    {
-      if (r == opps.minRank && iMinOpps <= 6) // ~ an eight
-        namesOpps[r] = string(opps.fullCount[r], 'x');
-      else
-        namesOpps[r] = 
-          string(opps.fullCount[r], GENERIC_NAMES[index]);
-      index++;
-    }
-    else if (opps.fullCount[r] == 1)
-    {
-      namesOpps[r] = c.getName();
-    }
-  }
-  */
-}
-
-
-
-/*
-void Ranks::countNumbers(
-  vector<unsigned>& numbers,
-  const PositionInfo& posInfo) const
-{
-  if (posInfo.len == 0)
-  {
-    // TODO Hopefully won't be necessary in new code
-    numbers.resize(1);
-    return;
-  }
-
-  // The highest card has number len-1 and it's downhill from there.
-  numbers.resize(posInfo.maxRank+1);
-  unsigned running = posInfo.len-1;
-  for (unsigned r = posInfo.maxRank; r > 0; r--)
-  {
-    numbers[r] = running;
-    running -= posInfo.fullCount[r];
-  }
-}
-*/
-
-
-void Ranks::setOrderTablesRemainder(
-  Player& posInfo,
-  const vector<string>& names)
-{
-  posInfo.setRemainders(names);
-}
-
-
-void Ranks::setOrderTables()
-{
-  // Example: North AQx, South JT8, defenders have 7 cards.
-  // 
-  // Rank Cards North South
-  //    1     x     1     0
-  //    2   3-7     0     0
-  //    3     8     0     1
-  //    4     9     0     0
-  //    5    JT     0     2
-  //    6     Q     1     0
-  //    7     K     0     0
-  //    8     A     1     0
-  //
-  // Then the order table for North (from below) is 1, 6, 8.
-  // For South it is 3, 5, 5.  Each of these also has a depth, so
-  // for South it is actually 3(1), 5(2), 5(1) with the highest
-  // of equals being played first.
-  //
-  // If North plays the Q on the first trick, then North has 1, 8.
-  // So this is the reduced or punched-out order table for North's Q.
-  //
-  // The purpose of these tables is to figure out the lowest winning
-  // rank in the current combination that corresponds to a winner in 
-  // a following combination.  Let's say NS win this trick with the Q.
-  // Then if the lowest winner of the next combination is the ace,
-  // we're going to stick with the Q.  Conceptually in this case,
-  //
-  // North winner[North plays Q][South plays 8] = 1(x), 6(Q!).
-  // The last one is not the ace, as it is higher than the Q.
-  // South winner[North plays Q][South plays 8] = 5(T), 5(J).
-  //
-  // We need tables for each of North and South, for the case when
-  // we win or lose the current trick, and yielding the list of ranks
-  // and depths that will be the lowest winners overall, taking into
-  // account the winner of the following combination.
-
-  Ranks::setOrderTablesRemainder(north, namesNorth);
-  Ranks::setOrderTablesRemainder(south, namesSouth);
-
-  north.setBest(south, namesNorth, namesSouth);
-  south.setBest(north, namesSouth, namesNorth);
-}
-
-
 unsigned Ranks::canonicalTrinary(
   const Player& dominant,
   const Player& recessive) const
@@ -522,9 +396,18 @@ void Ranks::set(
   CombEntry& combEntry)
 {
   holding = holdingIn;
+
   Ranks::setRanks();
-  Ranks::setNames();
-  Ranks::setOrderTables();
+
+  north.setNames(cardsNorth, true, namesNorth);
+  south.setNames(cardsSouth, true, namesSouth);
+  opps.setNames(cardsOpps, false, namesOpps);
+
+  north.setRemainders(namesNorth);
+  south.setRemainders(namesSouth);
+
+  north.setBest(south, namesNorth, namesSouth);
+  south.setBest(north, namesSouth, namesNorth);
 
   combEntry.rotateFlag = ! (north.greater(south, opps));
 
