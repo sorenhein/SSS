@@ -31,6 +31,9 @@ class Player
     unsigned posNext;
     bool firstUpdateFlag;
 
+    // Running index for the iteration over ranks.
+    unsigned rankIndex;
+
     vector<string> names;
     vector<Card> cards;
 
@@ -89,6 +92,8 @@ class Player
     void setRemainders();
 
     void setBest(const Player& partner);
+
+    unsigned next();
 
     void playFull(const unsigned rankFullIn);
     void restoreFull(const unsigned rankFullIn);

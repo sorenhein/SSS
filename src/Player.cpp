@@ -91,6 +91,8 @@ void Player::zero()
 
   depthNext = 0;
   posNext = 1;
+
+  rankIndex = 1;
 }
 
 
@@ -384,6 +386,23 @@ assert(rOther < numOther.size());
       }
     }
   }
+}
+
+
+unsigned Player::next()
+{
+  // This is an iterator over ranks, the collection of ranks.
+  // It does not return voids, so it only works for players who
+  // are not void.  It returns 0 when it has run out of ranks,
+  // and rewinds itself automatically.
+  
+  if (rankIndex > maxPos)
+  {
+    rankIndex = 1;
+    return 0;
+  }
+  else
+    return ranks[rankIndex++];
 }
 
 

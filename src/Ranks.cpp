@@ -671,9 +671,15 @@ void Ranks::setPlaysSide(
 
   bool leadCollapse;
 
-  for (unsigned leadPos = 1; leadPos <= leader.maxNumber(); leadPos++)
+//list<unsigned> direct, iterated;
+//while (unsigned r = leader.next())
+  //direct.push_back(r);
+
+  while (unsigned lead = leader.next())
+  //for (unsigned leadPos = 1; leadPos <= leader.maxNumber(); leadPos++)
   {
-    const unsigned lead = leader.rankOfNumber(leadPos);
+    //const unsigned lead = leader.rankOfNumber(leadPos);
+//iterated.push_back(lead);
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
@@ -692,6 +698,19 @@ void Ranks::setPlaysSide(
 
     leader.restoreFull(lead);
   }
+
+/*
+if (direct.size() != iterated.size())
+{
+  cout << "LENDIFF " << direct.size() << " != " << iterated.size() << endl;
+}
+assert(direct.size() == iterated.size());
+for (auto it1 = direct.begin(), it2 = iterated.begin();
+  it1 != direct.end(); it1++, it2++)
+{
+  assert(* it1 == * it2);
+}
+*/
 }
 
 
