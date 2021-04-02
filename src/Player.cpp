@@ -83,7 +83,24 @@ void Player::zero()
         
   len = 0;
 
+  numberNextCard = 0;
   firstUpdateFlag = true;
+
+  depthNext = 0;
+  posNext = 1;
+}
+
+
+void Player::updateStep()
+{
+  // Back down to the first card of the next rank.
+  depthNext = 0;
+
+  if (ranks[posNext].count > 0)
+  {
+    // Player has this reduced rank already, so we advance.
+    posNext++;
+  }
 }
 
 
@@ -91,9 +108,11 @@ void Player::update(
   const unsigned position,
   const unsigned rank,
   const unsigned depth,
-  const unsigned number,
   const unsigned absCardNumber)
 {
+assert(position == posNext);
+assert(depth == depthNext);
+
   ranks[position].add(rank);
   maxPos = position;
 
@@ -110,7 +129,10 @@ void Player::update(
 
   len++;
   
-  cards[number].set(rank, depth, number, CARD_NAMES[absCardNumber]);
+  cards[numberNextCard].set(rank, depth, numberNextCard, 
+    CARD_NAMES[absCardNumber]);
+  numberNextCard++;
+  depthNext++;
 }
 
 

@@ -38,6 +38,9 @@ class Player
     unsigned maxRank;
     unsigned minRank;
     unsigned minAbsCardNumber;
+    unsigned numberNextCard;
+    unsigned depthNext;
+    unsigned posNext;
     bool firstUpdateFlag;
 
     vector<string> names;
@@ -83,11 +86,12 @@ class Player
 
     void zero(); // Keeps the vectors, but sets them to zero
 
+    void updateStep();
+
     void update(
       const unsigned position,
       const unsigned rank,
       const unsigned depth,
-      const unsigned number,
       const unsigned absCardNumber);
 
     void setVoid(const bool forceFlag);

@@ -201,13 +201,6 @@ void Ranks::setRanks()
   unsigned posSouth = 1;
   unsigned posOpps = 0;
 
-  // bool firstNorth = true;
-  // bool firstSouth = true;
-  // bool firstOpps = true;
-
-  unsigned numberNorth = 0;
-  unsigned numberSouth = 0;
-  unsigned numberOpps = 0;
   unsigned depthNorth = 0;
   unsigned depthSouth = 0;
   unsigned depthOpps = 0;
@@ -230,11 +223,11 @@ void Ranks::setRanks()
         maxRank++;
         posOpps++;
         depthOpps = 0;
+        opps.updateStep();
       }
 
-      opps.update(posOpps, maxRank, depthOpps, numberOpps, i);
+      opps.update(posOpps, maxRank, depthOpps, i);
       depthOpps++;
-      numberOpps++;
 
       prev_is_NS = false;
     }
@@ -252,19 +245,20 @@ void Ranks::setRanks()
           posNorth++;
         if (south.hasReducedRank(posSouth))
           posSouth++;
+        
+        north.updateStep();
+        south.updateStep();
       }
 
       if (c == POSITION_NORTH)
       {
-        north.update(posNorth, maxRank, depthNorth, numberNorth, i);
+        north.update(posNorth, maxRank, depthNorth, i);
         depthNorth++;
-        numberNorth++;
       }
       else
       {
-        south.update(posSouth, maxRank, depthSouth, numberSouth, i);
+        south.update(posSouth, maxRank, depthSouth, i);
         depthSouth++;
-        numberSouth++;
       }
 
       prev_is_NS = true;
