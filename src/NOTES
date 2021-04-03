@@ -1,11 +1,31 @@
-1. Why does the rank stuff take 10 seconds now?
-2. How much slower is Ranks::setRanksNew?  Switch to it?
-3. Put string stuff into Player
+In Player, move to rankInfo and delete fullCount and names.
+remainders can actually be cards together with the number of the
+card played.  If the later winner to be translated has a number >=
+the card played, then later#+1, otherwise just later#.
 
-In Ranks/Player
-- Player:begin, end go over ranks
-- ranks does not have voids in it
-- The ranks loops must be debugged with new structureZ
+best can use rankInfo[rank1].ptr and partner.rankInfo[rank2].ptr
+as the two cards for the winner.
+
+Don't keep resizing best.  Keep it at maximum size.  When we're
+debugging, we may clear each winner perhaps.
+
+In Ranks, log plays into a struct that is passed directly to Plays.
+
+Divide Ranks optimizations into those that always make sense, and
+those that only make sense when we don't care about winners.
+
+Can maybe parametrize Player by full/rank-only loop.  Only needed
+for North and South.
+
+Can maybe parametrize the Ranks optimizations in the same way.
+
+Streamline the Player post-processing into a single call.
+
+Streamline Player variables and name them temporary loop variables.
+
+
+
+1. Why does the rank stuff take 10 seconds now?
 
 
 

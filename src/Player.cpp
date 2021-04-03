@@ -6,9 +6,6 @@
 
 #include "Player.h"
 
-#include "struct.h"
-#include "const.h"
-
 /*
  * This class keeps track of player holdings within Ranks.  There is
  * one instance for North, one for South, and one for opposing cards.
@@ -31,9 +28,12 @@ void Player::clear()
   fullCount.clear();
   names.clear();
 
+  // Is this clearing needed or used?
+  rankInfo.clear();
+
   cards.clear();
-  cardsPtrNew.clear();
-  ranksPtrNew.clear();
+  cardsPtr.clear();
+  ranksPtr.clear();
 }
 
 
@@ -44,6 +44,8 @@ void Player::resize(
   // Worst case, leaving room for voids at rank 0.
   fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
+
+  rankInfo.resize(cardsIn+1);
 
   cards.clear();
 
@@ -62,6 +64,7 @@ void Player::resizeBest(const Player& partner)
 
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
+assert(fullCount[rThis] == rankInfo[rThis].count);
     if (fullCount[rThis] == 0)
       continue;
 
@@ -77,17 +80,19 @@ void Player::zero()
 
   for (unsigned i = 0; i < names.size(); i++)
     names[i].clear();
+
+  for (auto& ri: rankInfo)
+    ri.clear();
         
   len = 0;
 
   numberNextCard = 0;
-  numberNextCardNew = 0;
   firstUpdateFlag = true;
 
   cards.clear();
 
-  cardsPtrNew.clear();
-  ranksPtrNew.clear();
+  cardsPtr.clear();
+  ranksPtr.clear();
 
   maxRank = numeric_limits<unsigned>::max();
 
@@ -119,6 +124,7 @@ void Player::update(
   fullCount[rank]++;
   maxRank = rank;
 
+
   if (firstUpdateFlag)
   {
     minRank = rank;
@@ -130,21 +136,22 @@ void Player::update(
   
   cards.emplace_back(Card());
   Card * cptr = &cards.back();
-  cptr->set(rank, depthNext, numberNextCard, 
-    CARD_NAMES[absCardNumber]);
+  cptr->set(rank, depthNext, numberNextCard, CARD_NAMES[absCardNumber]);
 
-  cardsPtrNew.push_back(cptr);
+  cardsPtr.push_back(cptr);
 
   if (firstOfRankFlag)
   {
-    ranksPtrNew.push_back(cptr);
+    ranksPtr.push_back(cptr);
     firstOfRankFlag = false;
   }
   else
-    ranksPtrNew.back() = cptr;
+    ranksPtr.back() = cptr;
+
+  rankInfo[rank].count++;
+  rankInfo[rank].ptr = cptr;
 
   numberNextCard++;
-  numberNextCardNew++;
   depthNext++;
 }
 
@@ -156,12 +163,15 @@ void Player::setVoid(const bool forceFlag)
     fullCount[0] = 1;
     minRank = 0;
 
-    // For North-South, a void goes in cardsNew, cardsPtrNew and
-    // ranksPtrNew.  This is recognized by forceFlag == false.
+    rankInfo[0].count = 1;
+    rankInfo[0].ptr = nullptr;
+
+    // For North-South, a void goes in cardsNew, cardsPtr and
+    // ranksPtr.  This is recognized by forceFlag == false.
     //
     // For the defenders, a possible void does go in cardsNew
     // (so that we can use a pointer to it), but it does not go
-    // in cardsPtrNew and ranksPtrNew.  Therefore the voids do not
+    // in cardsPtr and ranksPtr.  Therefore the voids do not
     // show up in iterations, and they have to be processed
     // explicitly.
 
@@ -171,8 +181,8 @@ void Player::setVoid(const bool forceFlag)
     {
       maxRank = 0;
       cards.emplace_back(Card());
-      cardsPtrNew.push_back(&cards[0]);
-      ranksPtrNew.push_back(&cards[0]);
+      cardsPtr.push_back(&cards.front());
+      ranksPtr.push_back(&cards.front());
     }
   }
 }
@@ -180,7 +190,7 @@ void Player::setVoid(const bool forceFlag)
 
 void Player::setSingleRank()
 {
-  singleRank = (len >= 1 && minRank == maxRank);
+  singleRank = (len >= 1 && ranksPtr.size() == 1);
 }
 
 
@@ -189,7 +199,10 @@ void Player::setNames(const bool declarerFlag)
   if (declarerFlag)
   {
     for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
+    {
       names[cit->getRank()] += cit->getName();
+      rankInfo[cit->getRank()].names += cit->getName();
+    }
   }
   else
   {
@@ -204,17 +217,21 @@ void Player::setNames(const bool declarerFlag)
         continue;
 
       rankPrev = r;
+assert(rankInfo[r].count == fullCount[r]);
       if (fullCount[r] > 1)
       {
-        if (r == minRank && minAbsCardNumber <= 6) // ~ an eight
-          names[r] = string(fullCount[r], 'x');
-        else
-          names[r] = string(fullCount[r], GENERIC_NAMES[index]);
+        // Turn <= ~ an eight into 'x'.
+        const char rep = (r == minRank && minAbsCardNumber <= 6 ?
+          'x' : GENERIC_NAMES[index]);
+
+        names[r] = string(fullCount[r], rep);
+        rankInfo[r].names = names[r];
         index++;
       }
       else if (fullCount[r] == 1)
       {
         names[r] = cit->getName();
+        rankInfo[r].names = cit->getName();
       }
     }
   }
@@ -258,6 +275,7 @@ void Player::setRemainders()
   for (unsigned r = 1; r < l; r++)
   {
 assert(r < fullCount.size());
+assert(rankInfo[r].count == fullCount[r]);
     if (fullCount[r] == 0)
       continue;
 
@@ -273,6 +291,7 @@ assert(r < remainders.size());
     for (unsigned s = 1; s < l; s++)
     {
 assert(s < fullCount.size());
+assert(rankInfo[s].count == fullCount[s]);
       const unsigned val = fullCount[s];
       if (val == 0)
         continue;
@@ -311,6 +330,7 @@ void Player::countNumbers(vector<unsigned>& numbers) const
   for (unsigned r = maxRank; r > 0; r--)
   {
     numbers[r] = running;
+assert(rankInfo[r].count == fullCount[r]);
     running -= fullCount[r];
   }
 }
@@ -356,6 +376,7 @@ void Player::setBest(const Player& partner)
   // TODO No it can't really?
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
+assert(rankInfo[rThis].count == fullCount[rThis]);
     if (fullCount[rThis] == 0)
       continue;
 
@@ -364,6 +385,7 @@ void Player::setBest(const Player& partner)
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
     {
+assert(partner.rankInfo[rOther].count == partner.fullCount[rOther]);
       if (partner.fullCount[rOther] == 0)
         continue;
 
@@ -380,6 +402,12 @@ assert(rOther < best[rThis].size());
       {
         // The depth starts from 0.
 assert(rThis < numThis.size());
+
+// Card ctmp;
+// ctmp.set(rThis, 0, numThis[rThis], names[rThis].at(0));
+// assert(rThis < cardsPtr.size());
+// assert(ctmp.identical(* cardsPtr[rThis]));
+
         current.set(wside, rThis, 0, numThis[rThis], names[rThis].at(0));
         crank = rThis;
       }
@@ -408,14 +436,17 @@ assert(rOther < numOther.size());
 
 void Player::playFull(const unsigned rankFullIn)
 {
+assert(rankInfo[rankFullIn].count == fullCount[rankFullIn]);
   assert(fullCount[rankFullIn] > 0);
   fullCount[rankFullIn]--;
+rankInfo[rankFullIn].count--;
 }
 
 
 void Player::restoreFull(const unsigned rankFullIn)
 {
   fullCount[rankFullIn]++;
+rankInfo[rankFullIn].count++;
 }
 
 
@@ -428,8 +459,13 @@ bool Player::greater(
   unsigned run2 = 0;
   for (unsigned r = max(maxRank, p2.maxRank); ; r -= 2)
   {
+assert(fullCount[r] == rankInfo[r].count);
+assert(p2.fullCount[r] == p2.rankInfo[r].count);
     run1 += fullCount[r];
     run2 += p2.fullCount[r];
+if (r > 2)
+  assert(opps.fullCount[r-1] == opps.rankInfo[r-1].count);
+
     if (r > 2 && opps.fullCount[r-1] == 0)
       continue;  // EW collapse
     else if (run1 > run2)
@@ -454,6 +490,7 @@ const Card& Player::top() const
 
 bool Player::hasRank(const unsigned rankIn) const
 {
+assert(fullCount[rankIn] == rankInfo[rankIn].count);
   return (fullCount[rankIn] > 0);
 }
 
@@ -495,7 +532,7 @@ const Winner& Player::getWinner(
 
 const deque<Card const *>& Player::getCards() const
 {
- return ranksPtrNew;
+ return ranksPtr;
 }
 
 
@@ -513,6 +550,7 @@ bool Player::isSingleRanked() const
 
 unsigned Player::count(const unsigned rankIn) const
 {
+assert(fullCount[rankIn] == rankInfo[rankIn].count);
   return fullCount[rankIn];
 }
 
@@ -543,6 +581,7 @@ string Player::strRankHeader() const
 string Player::strRank(const unsigned rank) const
 {
   stringstream ss;
+assert(fullCount[rank] == rankInfo[rank].count);
   if (fullCount[rank] == 0)
     ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
   else
@@ -557,12 +596,23 @@ string Player::strRank(const unsigned rank) const
 
 wstring Player::wstr() const
 {
+  // string t = "";
+  // for (auto it = names.rbegin(); it != names.rend(); it++)
+    // t += * it;
+
   if (len == 0)
+  {
+// if (t != "-")
+// {
+  // assert(t == "-");
+// }
     return L"-";
+  }
 
   string s = "";
   for (unsigned rank = maxRank; rank > 0; rank--)
     s += names[rank];
+// assert(t == s);
 
   wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
   return conv.from_bytes(s);

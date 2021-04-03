@@ -193,6 +193,7 @@ if (cards == 1 && holding == 2)
 // UNUSED(comb);
 // UNUSED(distributions);
 /* */
+// wcout << ranks.wstrDiagram();
 cout << ranks.strTable();
       comb.strategize(centry, * this, distributions, ranks, plays);
 /* */
