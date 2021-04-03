@@ -448,18 +448,16 @@ void Ranks::updateHoldings(
 {
   if (leader.greater(partner, opps))
   {
-// cout << "leader >= partner, side " << (side == SIDE_NORTH ?
-  // "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(leader, partner);
+
     // rotateFlag is absolute.
     // If the leader is South, then rotate.
     rotateFlag = (side == SIDE_SOUTH);
   }
   else
   {
-// cout << "leader < partner, side " << (side == SIDE_NORTH ?
-  // "North" : "South") << endl;
     holding3 = Ranks::canonicalTrinary(partner, leader);
+
     // If the leader is South, then don't rotate.
     rotateFlag = (side == SIDE_NORTH);
   }
@@ -488,22 +486,12 @@ void Ranks::logPlay(
   if (lead == 0)
     leadOrderPtr = nullptr;
   else
-  {
-// assert(lead < leader.remainders.size());
-// cout << "Looking up lead " << lead << endl;
-    // leadOrderPtr = &leader.remainders[lead];
     leadOrderPtr = &leader.remainder(lead);
-  }
 
   if (pard == 0)
     pardOrderPtr = nullptr;
   else
-  {
-// assert(pard < partner.remainders.size());
-// cout << "Looking up pard " << pard << endl;
-    // pardOrderPtr = &partner.remainders[pard];
     pardOrderPtr = &partner.remainder(pard);
-  }
 
   Winner const * winPtr;
   if (! trickNS)
@@ -511,9 +499,6 @@ void Ranks::logPlay(
   else
   {
     // TODO Probably generate on the fly if not already set.
-// assert(lead < leader.best.size());
-// assert(pard < leader.best[lead].size());
-    // winPtr = &leader.best[lead][pard];
     winPtr = &leader.getWinner(lead, pard);
   }
 
@@ -544,11 +529,10 @@ void Ranks::setPlaysLeadWithVoid(
   bool pardCollapse, rhoCollapse;
 
   opps.playFull(0);
-  for (unsigned pardPos = partner.minNumber(); 
-      pardPos <= partner.maxNumber(); pardPos++)
+
+  for (auto& pardCard: partner.getCards())
   {
-    // const unsigned pard = partner.ranks[pardPos].rank;
-    const unsigned pard = partner.rankOfNumber(pardPos);
+    const unsigned pard = pardCard->getRank();
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
@@ -559,10 +543,16 @@ void Ranks::setPlaysLeadWithVoid(
       ! leader.hasRank(pard));
     const unsigned toBeat = max(lead, pard);
 
+// list<unsigned> direct, iterated;
+// for (auto& c: opps.getCards())
+  // direct.push_back(c->getRank());
+
     for (unsigned rhoPos = 1; rhoPos <= opps.maxNumber(); rhoPos++)
+    // for (auto& rhoCard: opps.getCards())
     {
-      // const unsigned rho = opps.ranks[rhoPos].rank;
       const unsigned rho = opps.rankOfNumber(rhoPos);
+      // const unsigned rho = rhoCard->getRank();
+// iterated.push_back(rho);
       // If LHO is known to be void, RHO can duck completely.
       if (rho < toBeat && rho != opps.minFullRank())
         continue;
@@ -581,8 +571,41 @@ void Ranks::setPlaysLeadWithVoid(
       if (rho > toBeat)
         break;
     }
+
+/*
+if (direct.size() != iterated.size())
+{
+  cout << "LENDIFF " << direct.size() << " != " << iterated.size() << endl;
+  cout << "direct\n";
+  for (unsigned i: direct)
+    cout << i << endl;
+  cout << "iterated\n";
+  for (unsigned i: iterated)
+    cout << i << endl;
+  if (opps.maxNumber() != direct.size())
+    assert(direct.size() == iterated.size());
+}
+else
+{
+  for (auto it1 = direct.begin(), it2 = iterated.begin();
+    it1 != direct.end(); it1++, it2++)
+  {
+    if (* it1 != * it2)
+    {
+    cout << "direct\n";
+    for (unsigned i: direct)
+      cout << i << endl;
+    cout << "iterated\n";
+    for (unsigned i: iterated)
+      cout << i << endl;
+    }
+    assert(* it1 == * it2);
+  }
+}
+*/
     partner.restoreFull(pard);
   }
+
   opps.restoreFull(0);
 }
 
@@ -599,18 +622,14 @@ void Ranks::setPlaysLeadWithoutVoid(
   bool rotateFlag;
   bool lhoCollapse, pardCollapse, rhoCollapse;
 
-  for (unsigned lhoPos = 1; lhoPos <= opps.maxNumber(); lhoPos++)
+  while (unsigned lho = opps.next())
   {
-    // const unsigned lho = opps.ranks[lhoPos].rank;
-    const unsigned lho = opps.rankOfNumber(lhoPos);
     opps.playFull(lho);
     lhoCollapse = ! opps.hasRank(lho);
 
-    for (unsigned pardPos = partner.minNumber(); 
-        pardPos <= partner.maxNumber(); pardPos++)
+    for (auto& pardCard: partner.getCards())
     {
-      // const unsigned pard = partner.ranks[pardPos].rank;
-      const unsigned pard = partner.rankOfNumber(pardPos);
+      const unsigned pard = pardCard->getRank();
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
@@ -622,7 +641,6 @@ void Ranks::setPlaysLeadWithoutVoid(
 
       for (unsigned rhoPos = 0; rhoPos <= opps.maxNumber(); rhoPos++)
       {
-        // const unsigned rho = opps.ranks[rhoPos].rank;
         const unsigned rho = opps.rankOfNumber(rhoPos);
 
         // Maybe the same single card has been played already.
@@ -641,8 +659,10 @@ void Ranks::setPlaysLeadWithoutVoid(
       }
       partner.restoreFull(pard);
     }
+
     opps.restoreFull(lho);
-  }
+
+ }
 }
 
 
@@ -671,15 +691,9 @@ void Ranks::setPlaysSide(
 
   bool leadCollapse;
 
-//list<unsigned> direct, iterated;
-//while (unsigned r = leader.next())
-  //direct.push_back(r);
-
-  while (unsigned lead = leader.next())
-  //for (unsigned leadPos = 1; leadPos <= leader.maxNumber(); leadPos++)
+  for (auto& leadCard: leader.getCards())
   {
-    //const unsigned lead = leader.rankOfNumber(leadPos);
-//iterated.push_back(lead);
+    const unsigned lead = leadCard->getRank();
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
@@ -698,19 +712,6 @@ void Ranks::setPlaysSide(
 
     leader.restoreFull(lead);
   }
-
-/*
-if (direct.size() != iterated.size())
-{
-  cout << "LENDIFF " << direct.size() << " != " << iterated.size() << endl;
-}
-assert(direct.size() == iterated.size());
-for (auto it1 = direct.begin(), it2 = iterated.begin();
-  it1 != direct.end(); it1++, it2++)
-{
-  assert(* it1 == * it2);
-}
-*/
 }
 
 

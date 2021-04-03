@@ -12,7 +12,7 @@ void Card::reset()
   rank = 0;
   depth = 0;
   number = 0;
-  name = 0;
+  name = '-';
 }
 
 

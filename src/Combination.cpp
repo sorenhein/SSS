@@ -96,7 +96,11 @@ if (debugFlag)
   // TODO Probably don't need to pass in ranks to make memory
   // stay alive.
 
-  plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+  // This is the favored one.
+  // plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+
+
+  // This is not used.
   // plays.strategize(distPtr, strats, debugFlag);
 // cout << "C " << centry.canonicalHolding3 << endl;
 

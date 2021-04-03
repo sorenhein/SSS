@@ -32,6 +32,10 @@ void Player::clear()
   fullCount.clear();
   names.clear();
   cards.clear();
+
+  cardsNew.clear();
+  cardsPtrNew.clear();
+  ranksPtrNew.clear();
 }
 
 
@@ -46,6 +50,8 @@ void Player::resize(
   fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
   cards.resize(cardsIn+1);
+
+  cardsNew.resize(cardsIn+1);
 
   cardCount = cardsIn;
   maxRank = cardsIn;
@@ -85,7 +91,11 @@ void Player::zero()
   len = 0;
 
   numberNextCard = 0;
+  numberNextCardNew = 0;
   firstUpdateFlag = true;
+
+  cardsPtrNew.clear();
+  ranksPtrNew.clear();
 
   maxRank = cardCount;
 
@@ -93,6 +103,8 @@ void Player::zero()
   posNext = 1;
 
   rankIndex = 1;
+
+  firstOfRankFlag = true;
 }
 
 
@@ -105,6 +117,7 @@ void Player::updateStep(const unsigned rankNew)
   {
     // Player has this reduced rank already, so we advance.
     posNext++;
+    firstOfRankFlag = true;
   }
 }
 
@@ -131,8 +144,30 @@ void Player::update(
   
   cards[numberNextCard].set(rank, depthNext, numberNextCard, 
     CARD_NAMES[absCardNumber]);
+
+  cardsNew[numberNextCardNew] = cards[numberNextCard];
+
+  Card const * cptr = &cardsNew[numberNextCardNew];
+  cardsPtrNew.push_back(cptr);
+
+  if (firstOfRankFlag)
+  {
+    ranksPtrNew.push_back(cptr);
+    firstOfRankFlag = false;
+  }
+  else
+    ranksPtrNew.back() = cptr;
+
   numberNextCard++;
+  numberNextCardNew++;
   depthNext++;
+
+// cout << "SIZES " << Player::playerName() << " cards " << cards.size() <<
+  // " numberNext " << numberNextCard << 
+  // " cardsNew " << cardsNew.size() << 
+  // " cardsPtrNew " << cardsPtrNew.size() <<
+  // " ranksPtrNew " << ranksPtrNew.size() << endl;
+
 }
 
 
@@ -147,10 +182,25 @@ void Player::setVoid(const bool forceFlag)
     fullCount[0] = 1;
     minRank = 0;
 
+    cardsNew[0].reset();
+
+    // For North-South, a void goes in cardsNew, cardsPtrNew and
+    // ranksPtrNew.  This is recognized by forceFlag == false.
+    //
+    // For the defenders, a possible void does go in cardsNew
+    // (so that we can use a pointer to it), but it does not go
+    // in cardsPtrNew and ranksPtrNew.  Therefore the voids do not
+    // show up in iterations, and they have to be processed
+    // explicitly.
+
     // Only null out maxRank when it's a real void, and not just
     // a preliminary void for opponents at the beginning of setRanks().
     if (! forceFlag)
+    {
       maxRank = 0;
+      cardsPtrNew.push_back(&cardsNew[0]);
+      ranksPtrNew.push_back(&cardsNew[0]);
+    }
   }
 }
 
@@ -509,6 +559,12 @@ const Winner& Player::getWinner(
   assert(lead < best.size());
   assert(pard < best[lead].size());
   return best[lead][pard];
+}
+
+
+const deque<Card const *>& Player::getCards() const
+{
+ return ranksPtrNew;
 }
 
 

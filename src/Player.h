@@ -2,6 +2,7 @@
 #define SSS_PLAYER_H
 
 #include <vector>
+#include <deque>
 
 #include "strategies/Card.h"
 #include "strategies/Winner.h"
@@ -36,6 +37,13 @@ class Player
 
     vector<string> names;
     vector<Card> cards;
+
+    bool firstOfRankFlag;
+    unsigned numberNextCardNew;
+    vector<Card> cardsNew;
+    deque<Card const *> cardsPtrNew;
+    deque<Card const *> ranksPtrNew;
+
 
     bool singleRank;
     unsigned len;
@@ -121,6 +129,8 @@ class Player
     const Winner& getWinner(
       const unsigned lead,
       const unsigned pard) const;
+
+    const deque<Card const *>& getCards() const;
 
     bool isVoid() const;
 
