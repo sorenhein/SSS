@@ -31,7 +31,7 @@ void Player::clear()
   fullCount.clear();
   names.clear();
 
-  cardsNewer.clear();
+  cards.clear();
   cardsPtrNew.clear();
   ranksPtrNew.clear();
 }
@@ -45,7 +45,7 @@ void Player::resize(
   fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
 
-  cardsNewer.clear();
+  cards.clear();
 
   maxRank = cardsIn;
 
@@ -84,7 +84,7 @@ void Player::zero()
   numberNextCardNew = 0;
   firstUpdateFlag = true;
 
-  cardsNewer.clear();
+  cards.clear();
 
   cardsPtrNew.clear();
   ranksPtrNew.clear();
@@ -128,8 +128,8 @@ void Player::update(
 
   len++;
   
-  cardsNewer.emplace_back(Card());
-  Card * cptr = &cardsNewer.back();
+  cards.emplace_back(Card());
+  Card * cptr = &cards.back();
   cptr->set(rank, depthNext, numberNextCard, 
     CARD_NAMES[absCardNumber]);
 
@@ -170,9 +170,9 @@ void Player::setVoid(const bool forceFlag)
     if (! forceFlag)
     {
       maxRank = 0;
-      cardsNewer.emplace_back(Card());
-      cardsPtrNew.push_back(&cardsNewer[0]);
-      ranksPtrNew.push_back(&cardsNewer[0]);
+      cards.emplace_back(Card());
+      cardsPtrNew.push_back(&cards[0]);
+      ranksPtrNew.push_back(&cards[0]);
     }
   }
 }
@@ -188,7 +188,7 @@ void Player::setNames(const bool declarerFlag)
 {
   if (declarerFlag)
   {
-    for (auto cit = cardsNewer.rbegin(); cit != cardsNewer.rend(); cit++)
+    for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
       names[cit->getRank()] += cit->getName();
   }
   else
@@ -197,7 +197,7 @@ void Player::setNames(const bool declarerFlag)
     unsigned index = 0;
     unsigned rankPrev = numeric_limits<unsigned>::max();
 
-    for (auto cit = cardsNewer.rbegin(); cit != cardsNewer.rend(); cit++)
+    for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
     {
       const unsigned r = cit->getRank();
       if (r == rankPrev)
@@ -447,8 +447,8 @@ bool Player::greater(
 
 const Card& Player::top() const
 {
-  assert(! cardsNewer.empty());
-  return cardsNewer.back();
+  assert(! cards.empty());
+  return cards.back();
 }
 
 
