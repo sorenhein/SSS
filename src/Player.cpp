@@ -28,7 +28,6 @@ Player::~Player()
 
 void Player::clear()
 {
-  ranks.clear();
   fullCount.clear();
   names.clear();
   cards.clear();
@@ -44,9 +43,6 @@ void Player::resize(
   const CardPosition sideIn)
 {
   // Worst case, leaving room for voids at rank 0.
-  ranks.resize(cardsIn+1);
-  maxPos = cardsIn;
-
   fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
   cards.resize(cardsIn+1);
@@ -79,9 +75,6 @@ void Player::resizeBest(const Player& partner)
 
 void Player::zero()
 {
-  for (unsigned pos = 0; pos <= maxPos; pos++)
-    ranks[pos] = 0;
-
   for (unsigned rank = 0; rank <= maxRank; rank++)
     fullCount[rank] = 0;
 
@@ -126,15 +119,11 @@ void Player::update(
   const unsigned rank,
   const unsigned absCardNumber)
 {
-  ranks[posNext] = rank;
-  maxPos = posNext;
-
   fullCount[rank]++;
   maxRank = rank;
 
   if (firstUpdateFlag)
   {
-    minPos = posNext;
     minRank = rank;
     minAbsCardNumber = absCardNumber;
     firstUpdateFlag = false;
@@ -175,10 +164,6 @@ void Player::setVoid(const bool forceFlag)
 {
   if (forceFlag || len == 0)
   {
-    ranks[0] = 0;
-    minPos = 0;
-    maxPos = 0;
-
     fullCount[0] = 1;
     minRank = 0;
 

@@ -17,10 +17,8 @@ class Player
     // ranks is a compact list of the ranks that occur in fullCount.
     // So if fullCount has entries at 3, 7 and 9, then ranks will
     // contain 3, 7 and 9.
-    vector<unsigned> ranks;
 
-    unsigned maxPos;
-    unsigned minPos;
+
     unsigned cardCount;
 
     vector<unsigned> fullCount;
