@@ -49,7 +49,6 @@ void Player::resize(
 
   cardsNew.resize(cardsIn+1);
 
-  cardCount = cardsIn;
   maxRank = cardsIn;
 
   side = sideIn;
@@ -75,7 +74,7 @@ void Player::resizeBest(const Player& partner)
 
 void Player::zero()
 {
-  for (unsigned rank = 0; rank <= maxRank; rank++)
+  for (unsigned rank = 0; rank < fullCount.size(); rank++)
     fullCount[rank] = 0;
 
   for (unsigned i = 0; i < names.size(); i++)
@@ -90,12 +89,10 @@ void Player::zero()
   cardsPtrNew.clear();
   ranksPtrNew.clear();
 
-  maxRank = cardCount;
+  maxRank = numeric_limits<unsigned>::max();
 
   depthNext = 0;
   posNext = 1;
-
-  rankIndex = 1;
 
   firstOfRankFlag = true;
 }
@@ -216,7 +213,7 @@ void Player::setNames(const bool declarerFlag)
     // TODO Could do something with rbegin and rend
     for (unsigned number = len; number-- > 0; )
     {
-      auto& c = cards[number];
+      auto& c = cardsNew[number];
       const unsigned r = c.getRank();
       if (r == rankPrev)
         continue;
@@ -466,7 +463,7 @@ bool Player::greater(
 const Card& Player::top() const
 {
   assert(len > 0);
-  return cards[len-1];
+  return cardsNew[len-1];
 }
 
 

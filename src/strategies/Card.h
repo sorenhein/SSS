@@ -33,6 +33,7 @@ class Card
     bool operator != (const Card& card2) const;
     bool operator <= (const Card& card2) const;
     bool operator < (const Card& card2) const;
+    bool identical(const Card& card2) const;
 
     WinnerCompare compare(const Card& card2) const;
 

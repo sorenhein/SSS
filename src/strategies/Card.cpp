@@ -65,6 +65,15 @@ bool Card::operator < (const Card& sw2) const
 }
 
 
+bool Card::identical(const Card& sw2) const
+{
+  return (rank == sw2.rank &&
+      depth == sw2.depth &&
+      number == sw2.number &&
+      name == sw2.name);
+}
+
+
 WinnerCompare Card::compare(const Card& sw2) const
 {
   if (number > sw2.number)

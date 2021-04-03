@@ -19,8 +19,6 @@ class Player
     // contain 3, 7 and 9.
 
 
-    unsigned cardCount;
-
     vector<unsigned> fullCount;
     unsigned maxRank;
     unsigned minRank;
@@ -29,9 +27,6 @@ class Player
     unsigned depthNext;
     unsigned posNext;
     bool firstUpdateFlag;
-
-    // Running index for the iteration over ranks.
-    unsigned rankIndex;
 
     vector<string> names;
     vector<Card> cards;
