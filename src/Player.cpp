@@ -30,7 +30,6 @@ void Player::clear()
 {
   fullCount.clear();
   names.clear();
-  cards.clear();
 
   cardsNewer.clear();
   cardsPtrNew.clear();
@@ -45,7 +44,6 @@ void Player::resize(
   // Worst case, leaving room for voids at rank 0.
   fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
-  cards.resize(cardsIn+1);
 
   cardsNewer.clear();
 
@@ -130,12 +128,11 @@ void Player::update(
 
   len++;
   
-  cards[numberNextCard].set(rank, depthNext, numberNextCard, 
+  cardsNewer.emplace_back(Card());
+  Card * cptr = &cardsNewer.back();
+  cptr->set(rank, depthNext, numberNextCard, 
     CARD_NAMES[absCardNumber]);
 
-  cardsNewer.push_back(cards[numberNextCard]);
-
-  Card const * cptr = &cardsNewer[numberNextCardNew];
   cardsPtrNew.push_back(cptr);
 
   if (firstOfRankFlag)
@@ -191,12 +188,8 @@ void Player::setNames(const bool declarerFlag)
 {
   if (declarerFlag)
   {
-    // TODO Could do something with rbegin and rend
-    for (unsigned number = len; number-- > 0; )
-    {
-      auto& c = cards[number];
-      names[c.getRank()] += c.getName();
-    }
+    for (auto cit = cardsNewer.rbegin(); cit != cardsNewer.rend(); cit++)
+      names[cit->getRank()] += cit->getName();
   }
   else
   {
@@ -204,12 +197,9 @@ void Player::setNames(const bool declarerFlag)
     unsigned index = 0;
     unsigned rankPrev = numeric_limits<unsigned>::max();
 
-    // TODO Could do something with rbegin and rend
-assert(len == cardsNewer.size());
-    for (unsigned number = len; number-- > 0; )
+    for (auto cit = cardsNewer.rbegin(); cit != cardsNewer.rend(); cit++)
     {
-      auto& c = cardsNewer[number];
-      const unsigned r = c.getRank();
+      const unsigned r = cit->getRank();
       if (r == rankPrev)
         continue;
 
@@ -224,7 +214,7 @@ assert(len == cardsNewer.size());
       }
       else if (fullCount[r] == 1)
       {
-        names[r] = c.getName();
+        names[r] = cit->getName();
       }
     }
   }

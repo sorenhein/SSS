@@ -29,7 +29,6 @@ class Player
     bool firstUpdateFlag;
 
     vector<string> names;
-    vector<Card> cards;
 
     bool firstOfRankFlag;
     unsigned numberNextCardNew;
