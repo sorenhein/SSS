@@ -7,6 +7,12 @@
 using namespace std;
 
 
+Card::Card()
+{
+  Card::reset();
+}
+
+
 void Card::reset()
 {
   rank = 0;

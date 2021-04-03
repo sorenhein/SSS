@@ -32,7 +32,7 @@ void Player::clear()
   names.clear();
   cards.clear();
 
-  cardsNew.clear();
+  cardsNewer.clear();
   cardsPtrNew.clear();
   ranksPtrNew.clear();
 }
@@ -47,7 +47,7 @@ void Player::resize(
   names.resize(cardsIn+1);
   cards.resize(cardsIn+1);
 
-  cardsNew.resize(cardsIn+1);
+  cardsNewer.clear();
 
   maxRank = cardsIn;
 
@@ -85,6 +85,8 @@ void Player::zero()
   numberNextCard = 0;
   numberNextCardNew = 0;
   firstUpdateFlag = true;
+
+  cardsNewer.clear();
 
   cardsPtrNew.clear();
   ranksPtrNew.clear();
@@ -131,9 +133,9 @@ void Player::update(
   cards[numberNextCard].set(rank, depthNext, numberNextCard, 
     CARD_NAMES[absCardNumber]);
 
-  cardsNew[numberNextCardNew] = cards[numberNextCard];
+  cardsNewer.push_back(cards[numberNextCard]);
 
-  Card const * cptr = &cardsNew[numberNextCardNew];
+  Card const * cptr = &cardsNewer[numberNextCardNew];
   cardsPtrNew.push_back(cptr);
 
   if (firstOfRankFlag)
@@ -147,13 +149,6 @@ void Player::update(
   numberNextCard++;
   numberNextCardNew++;
   depthNext++;
-
-// cout << "SIZES " << Player::playerName() << " cards " << cards.size() <<
-  // " numberNext " << numberNextCard << 
-  // " cardsNew " << cardsNew.size() << 
-  // " cardsPtrNew " << cardsPtrNew.size() <<
-  // " ranksPtrNew " << ranksPtrNew.size() << endl;
-
 }
 
 
@@ -163,8 +158,6 @@ void Player::setVoid(const bool forceFlag)
   {
     fullCount[0] = 1;
     minRank = 0;
-
-    cardsNew[0].reset();
 
     // For North-South, a void goes in cardsNew, cardsPtrNew and
     // ranksPtrNew.  This is recognized by forceFlag == false.
@@ -180,8 +173,9 @@ void Player::setVoid(const bool forceFlag)
     if (! forceFlag)
     {
       maxRank = 0;
-      cardsPtrNew.push_back(&cardsNew[0]);
-      ranksPtrNew.push_back(&cardsNew[0]);
+      cardsNewer.emplace_back(Card());
+      cardsPtrNew.push_back(&cardsNewer[0]);
+      ranksPtrNew.push_back(&cardsNewer[0]);
     }
   }
 }
@@ -211,9 +205,10 @@ void Player::setNames(const bool declarerFlag)
     unsigned rankPrev = numeric_limits<unsigned>::max();
 
     // TODO Could do something with rbegin and rend
+assert(len == cardsNewer.size());
     for (unsigned number = len; number-- > 0; )
     {
-      auto& c = cardsNew[number];
+      auto& c = cardsNewer[number];
       const unsigned r = c.getRank();
       if (r == rankPrev)
         continue;
@@ -462,8 +457,8 @@ bool Player::greater(
 
 const Card& Player::top() const
 {
-  assert(len > 0);
-  return cardsNew[len-1];
+  assert(! cardsNewer.empty());
+  return cardsNewer.back();
 }
 
 

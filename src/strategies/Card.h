@@ -19,6 +19,8 @@ class Card
 
   public:
 
+    Card();
+
     void reset();
 
     void set(

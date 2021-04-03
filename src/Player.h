@@ -33,7 +33,7 @@ class Player
 
     bool firstOfRankFlag;
     unsigned numberNextCardNew;
-    vector<Card> cardsNew;
+    deque<Card> cardsNewer;
     deque<Card const *> cardsPtrNew;
     deque<Card const *> ranksPtrNew;
 

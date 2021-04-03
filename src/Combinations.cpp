@@ -169,7 +169,7 @@ void Combinations::runUniques(
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
 // cout << "combs holding " << holding << endl;
-if (cards == 4 && holding == 6)
+if (cards == 1 && holding == 2)
 {
   cout << "FAIL" << endl;
 }

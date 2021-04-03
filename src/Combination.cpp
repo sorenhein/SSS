@@ -52,7 +52,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   plays.reset();
 bool debugFlagTmp = false;
 // if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
-if (centry.canonicalHolding3 == 5 && ranks.size() == 4)
+if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
 {
   cout << "HERE0\n";
   debugFlagTmp = true;
