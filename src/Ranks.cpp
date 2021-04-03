@@ -526,7 +526,7 @@ void Ranks::setPlaysLeadWithVoid(
 {
   unsigned holding3;
   bool rotateFlag;
-  bool pardCollapse, rhoCollapse;
+  bool pardCollapse;
 
   opps.playFull(0);
 
@@ -543,22 +543,14 @@ void Ranks::setPlaysLeadWithVoid(
       ! leader.hasRank(pard));
     const unsigned toBeat = max(lead, pard);
 
-// list<unsigned> direct, iterated;
-// for (auto& c: opps.getCards())
-  // direct.push_back(c->getRank());
-
-    for (unsigned rhoPos = 1; rhoPos <= opps.maxNumber(); rhoPos++)
-    // for (auto& rhoCard: opps.getCards())
+    for (auto& rhoCard: opps.getCards())
     {
-      const unsigned rho = opps.rankOfNumber(rhoPos);
-      // const unsigned rho = rhoCard->getRank();
-// iterated.push_back(rho);
+      const unsigned rho = rhoCard->getRank();
       // If LHO is known to be void, RHO can duck completely.
       if (rho < toBeat && rho != opps.minFullRank())
         continue;
 
       opps.playFull(rho);
-      rhoCollapse = ! opps.hasRank(rho);
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -572,37 +564,6 @@ void Ranks::setPlaysLeadWithVoid(
         break;
     }
 
-/*
-if (direct.size() != iterated.size())
-{
-  cout << "LENDIFF " << direct.size() << " != " << iterated.size() << endl;
-  cout << "direct\n";
-  for (unsigned i: direct)
-    cout << i << endl;
-  cout << "iterated\n";
-  for (unsigned i: iterated)
-    cout << i << endl;
-  if (opps.maxNumber() != direct.size())
-    assert(direct.size() == iterated.size());
-}
-else
-{
-  for (auto it1 = direct.begin(), it2 = iterated.begin();
-    it1 != direct.end(); it1++, it2++)
-  {
-    if (* it1 != * it2)
-    {
-    cout << "direct\n";
-    for (unsigned i: direct)
-      cout << i << endl;
-    cout << "iterated\n";
-    for (unsigned i: iterated)
-      cout << i << endl;
-    }
-    assert(* it1 == * it2);
-  }
-}
-*/
     partner.restoreFull(pard);
   }
 
@@ -620,12 +581,12 @@ void Ranks::setPlaysLeadWithoutVoid(
 {
   unsigned holding3;
   bool rotateFlag;
-  bool lhoCollapse, pardCollapse, rhoCollapse;
+  bool pardCollapse;
 
-  while (unsigned lho = opps.next())
+  for (auto& lhoCard: opps.getCards())
   {
+    const unsigned lho = lhoCard->getRank();
     opps.playFull(lho);
-    lhoCollapse = ! opps.hasRank(lho);
 
     for (auto& pardCard: partner.getCards())
     {
@@ -639,16 +600,26 @@ void Ranks::setPlaysLeadWithoutVoid(
         ! partner.hasRank(pard) &&
         ! leader.hasRank(pard));
 
-      for (unsigned rhoPos = 0; rhoPos <= opps.maxNumber(); rhoPos++)
+      // As LHO is not void, RHO may show out.  We do this separately,
+      // as it is more convenient to store the plays in Player this way.
+      // We don't need to "play" the void, as it does not affect
+      // the holdings.
+
+      Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
+      Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, 0,
+        leadCollapse, pardCollapse, holding3, rotateFlag);
+      
+      // This loop excludes the RHO void.
+      for (auto& rhoCard: opps.getCards())
       {
-        const unsigned rho = opps.rankOfNumber(rhoPos);
+        const unsigned rho = rhoCard->getRank();
 
         // Maybe the same single card has been played already.
         if (! opps.hasRank(rho))
           continue;
           
         opps.playFull(rho);
-        rhoCollapse = (rho > 0 && ! opps.hasRank(rho));
+        // rhoCollapse = (rho > 0 && ! opps.hasRank(rho));
 
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
@@ -657,12 +628,11 @@ void Ranks::setPlaysLeadWithoutVoid(
       
         opps.restoreFull(rho);
       }
+
       partner.restoreFull(pard);
     }
-
     opps.restoreFull(lho);
-
- }
+  }
 }
 
 

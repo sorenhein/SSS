@@ -101,8 +101,6 @@ class Player
 
     void setBest(const Player& partner);
 
-    unsigned next();
-
     void playFull(const unsigned rankFullIn);
     void restoreFull(const unsigned rankFullIn);
 
@@ -118,11 +116,6 @@ class Player
 
     unsigned minFullRank() const;
     unsigned maxFullRank() const;
-
-    // TODO Temporary, should be a loop in Player.
-    unsigned minNumber() const;
-    unsigned maxNumber() const;
-    unsigned rankOfNumber(const unsigned no) const;
 
     const vector<Card>& remainder(const unsigned rank) const;
 
