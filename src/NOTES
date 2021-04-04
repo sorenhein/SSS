@@ -23,6 +23,8 @@ Streamline the Player post-processing into a single call.
 
 Streamline Player variables and name them temporary loop variables.
 
+Break up struct.h, make a Survivors.h (class? protect data?)
+
 
 
 1. Why does the rank stuff take 10 seconds now?

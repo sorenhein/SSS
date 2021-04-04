@@ -100,7 +100,6 @@ class Player
 
     vector<RankInfo> rankInfo;
 
-    vector<unsigned> fullCount;
     vector<string> names;
 
     unsigned maxRank;

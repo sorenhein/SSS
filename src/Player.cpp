@@ -25,7 +25,6 @@ Player::~Player()
 
 void Player::clear()
 {
-  fullCount.clear();
   names.clear();
 
   // Is this clearing needed or used?
@@ -42,7 +41,6 @@ void Player::resize(
   const CardPosition sideIn)
 {
   // Worst case, leaving room for voids at rank 0.
-  fullCount.resize(cardsIn+1);
   names.resize(cardsIn+1);
 
   rankInfo.resize(cardsIn+1);
@@ -64,8 +62,7 @@ void Player::resizeBest(const Player& partner)
 
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
-assert(fullCount[rThis] == rankInfo[rThis].count);
-    if (fullCount[rThis] == 0)
+    if (rankInfo[rThis].count == 0)
       continue;
 
     best[rThis].resize(lOther);
@@ -75,9 +72,6 @@ assert(fullCount[rThis] == rankInfo[rThis].count);
 
 void Player::zero()
 {
-  for (unsigned rank = 0; rank < fullCount.size(); rank++)
-    fullCount[rank] = 0;
-
   for (unsigned i = 0; i < names.size(); i++)
     names[i].clear();
 
@@ -121,7 +115,6 @@ void Player::update(
   const unsigned rank,
   const unsigned absCardNumber)
 {
-  fullCount[rank]++;
   maxRank = rank;
 
 
@@ -160,7 +153,6 @@ void Player::setVoid(const bool forceFlag)
 {
   if (forceFlag || len == 0)
   {
-    fullCount[0] = 1;
     minRank = 0;
 
     rankInfo[0].count = 1;
@@ -217,18 +209,18 @@ void Player::setNames(const bool declarerFlag)
         continue;
 
       rankPrev = r;
-assert(rankInfo[r].count == fullCount[r]);
-      if (fullCount[r] > 1)
+      const unsigned count = rankInfo[r].count;
+      if (count > 1)
       {
         // Turn <= ~ an eight into 'x'.
         const char rep = (r == minRank && minAbsCardNumber <= 6 ?
           'x' : GENERIC_NAMES[index]);
 
-        names[r] = string(fullCount[r], rep);
+        names[r] = string(count, rep);
         rankInfo[r].names = names[r];
         index++;
       }
-      else if (fullCount[r] == 1)
+      else if (count == 1)
       {
         names[r] = cit->getName();
         rankInfo[r].names = cit->getName();
@@ -274,9 +266,7 @@ void Player::setRemainders()
   // r is the full-rank index that we're punching out.
   for (unsigned r = 1; r < l; r++)
   {
-assert(r < fullCount.size());
-assert(rankInfo[r].count == fullCount[r]);
-    if (fullCount[r] == 0)
+    if (rankInfo[r].count == 0)
       continue;
 
 assert(r < remainders.size());
@@ -290,9 +280,7 @@ assert(r < remainders.size());
     // starting from below.
     for (unsigned s = 1; s < l; s++)
     {
-assert(s < fullCount.size());
-assert(rankInfo[s].count == fullCount[s]);
-      const unsigned val = fullCount[s];
+      const unsigned val = rankInfo[s].count;
       if (val == 0)
         continue;
 
@@ -330,8 +318,7 @@ void Player::countNumbers(vector<unsigned>& numbers) const
   for (unsigned r = maxRank; r > 0; r--)
   {
     numbers[r] = running;
-assert(rankInfo[r].count == fullCount[r]);
-    running -= fullCount[r];
+    running -= rankInfo[r].count;
   }
 }
 
@@ -376,8 +363,7 @@ void Player::setBest(const Player& partner)
   // TODO No it can't really?
   for (unsigned rThis = 0; rThis < lThis; rThis++)
   {
-assert(rankInfo[rThis].count == fullCount[rThis]);
-    if (fullCount[rThis] == 0)
+    if (rankInfo[rThis].count == 0)
       continue;
 
     best[rThis].resize(lOther);
@@ -385,8 +371,7 @@ assert(rankInfo[rThis].count == fullCount[rThis]);
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
     {
-assert(partner.rankInfo[rOther].count == partner.fullCount[rOther]);
-      if (partner.fullCount[rOther] == 0)
+      if (partner.rankInfo[rOther].count == 0)
         continue;
 
       // Will hopefully not be necessary in new code.
@@ -436,17 +421,14 @@ assert(rOther < numOther.size());
 
 void Player::playFull(const unsigned rankFullIn)
 {
-assert(rankInfo[rankFullIn].count == fullCount[rankFullIn]);
-  assert(fullCount[rankFullIn] > 0);
-  fullCount[rankFullIn]--;
-rankInfo[rankFullIn].count--;
+  assert(rankInfo[rankFullIn].count > 0);
+  rankInfo[rankFullIn].count--;
 }
 
 
 void Player::restoreFull(const unsigned rankFullIn)
 {
-  fullCount[rankFullIn]++;
-rankInfo[rankFullIn].count++;
+  rankInfo[rankFullIn].count++;
 }
 
 
@@ -459,14 +441,11 @@ bool Player::greater(
   unsigned run2 = 0;
   for (unsigned r = max(maxRank, p2.maxRank); ; r -= 2)
   {
-assert(fullCount[r] == rankInfo[r].count);
-assert(p2.fullCount[r] == p2.rankInfo[r].count);
-    run1 += fullCount[r];
-    run2 += p2.fullCount[r];
-if (r > 2)
-  assert(opps.fullCount[r-1] == opps.rankInfo[r-1].count);
+    run1 += rankInfo[r].count;
+    run2 += p2.rankInfo[r].count;
 
-    if (r > 2 && opps.fullCount[r-1] == 0)
+    // TODO Could use a has() method?
+    if (r > 2 && opps.rankInfo[r-1].count == 0)
       continue;  // EW collapse
     else if (run1 > run2)
       return true;
@@ -490,8 +469,7 @@ const Card& Player::top() const
 
 bool Player::hasRank(const unsigned rankIn) const
 {
-assert(fullCount[rankIn] == rankInfo[rankIn].count);
-  return (fullCount[rankIn] > 0);
+  return (rankInfo[rankIn].count > 0);
 }
 
 
@@ -550,8 +528,7 @@ bool Player::isSingleRanked() const
 
 unsigned Player::count(const unsigned rankIn) const
 {
-assert(fullCount[rankIn] == rankInfo[rankIn].count);
-  return fullCount[rankIn];
+  return rankInfo[rankIn].count;
 }
 
 
@@ -581,13 +558,12 @@ string Player::strRankHeader() const
 string Player::strRank(const unsigned rank) const
 {
   stringstream ss;
-assert(fullCount[rank] == rankInfo[rank].count);
-  if (fullCount[rank] == 0)
+  if (rankInfo[rank].count == 0)
     ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
   else
     ss << 
       setw(8) << Player::playerName() <<
-      setw(4) << fullCount[rank] <<
+      setw(4) << rankInfo[rank].count <<
       setw(6) << names[rank];
 
   return ss.str();
