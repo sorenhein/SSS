@@ -97,7 +97,7 @@ if (debugFlag)
   // stay alive.
 
   // This is the favored one.
-  // plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+  plays.strategize(ranks, distPtr, strats, debugFlagTmp);
 
 
   // This is not used.

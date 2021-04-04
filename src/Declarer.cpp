@@ -144,6 +144,7 @@ assert(r < remainders.size());
 
     // The position counts up from the lowest card which is 0.
     unsigned pos = 0;
+    unsigned number = 0;
 
     // Fill out remList with information about the remaining cards,
     // starting from below.
@@ -157,6 +158,8 @@ assert(r < remainders.size());
       // If this is the card we're punching out, increase the depth by 1
       // by starting with the second such card.
       const unsigned start = (r == s ? 1 : 0);
+
+/*
       for (unsigned d = start; d < val; d++, pos++)
       {
 assert(pos < remList.size());
@@ -165,12 +168,25 @@ assert(pos < remList.size());
   // ", remList length" << remList.size() << endl;
         remList[pos].set(s, d, pos, rankInfo[s].names.at(d));
       }
+*/
+
+      // Start at the highest depth.
+      for (unsigned d = val; d-- > start; pos++, number++)
+      {
+assert(pos < remList.size());
+        remList[pos].set(s, d, number, rankInfo[s].names.at(d));
+      }
+
+      if (r == s)
+        number++;
+
+
     }
 
     remList.resize(pos);
     assert(pos+1 == cards.size());
 
-    /* */
+    /*
     for (unsigned p = 0, cno = 0; p < pos; p++, cno++)
     {
       if (cards[cno].getRank() == r &&
@@ -179,7 +195,8 @@ assert(pos < remList.size());
 
       if (!cards[cno].identical(remList[p]))
       {
-        cout << "p " << p << ", cno " << cno << endl;
+wcout << Player::wstr() << endl;
+        cout << "p " << p << ", cno " << cno << ", r " << r << endl;
         cout << "remList (presumed OK)\n";
         for (unsigned p1 = 0; p1 < pos; p1++)
           cout << p1 << ": " << remList[p1].strDebug(Player::playerName());
@@ -190,7 +207,7 @@ assert(pos < remList.size());
         assert(cards[cno].identical(remList[p]));
       }
     }
-    /* */
+    */
   }
 }
 
