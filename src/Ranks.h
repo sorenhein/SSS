@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "Player.h"
+#include "Declarer.h"
+#include "Opponents.h"
 #include "Play.h"
-#include "strategies/Card.h"
 
 
 using namespace std;
@@ -19,9 +19,9 @@ class Ranks
 {
   private:
 
-    Player north;
-    Player south;
-    Player opps;
+    Declarer north;
+    Declarer south;
+    Opponents opps;
 
     unsigned holding;
     unsigned cards;
@@ -39,12 +39,12 @@ class Ranks
     void setRanks();
 
     unsigned canonicalTrinary(
-      const Player& dominant,
-      const Player& recessive) const;
+      const Declarer& dominant,
+      const Declarer& recessive) const;
 
     void canonicalBoth(
-      const Player& dominant,
-      const Player& recessive,
+      const Declarer& dominant,
+      const Declarer& recessive,
       unsigned& holding3,
       unsigned& holding2) const;
 
@@ -55,26 +55,26 @@ class Ranks
     bool trivial(TrickEntry& trivialEntry) const;
 
     bool leadOK(
-      const Player& leader,
-      const Player& partner,
+      const Declarer& leader,
+      const Declarer& partner,
       const unsigned lead) const;
 
     bool pardOK(
-      const Player& partner,
+      const Declarer& partner,
       const unsigned toBeat,
       const unsigned pard) const;
 
     void updateHoldings(
-      const Player& leader,
-      const Player& partner,
+      const Declarer& leader,
+      const Declarer& partner,
       const SidePosition side,
       unsigned& holding3,
       bool& rotateFlag) const;
 
     void logPlay(
       Plays& plays,
-      const Player& leader,
-      const Player& partner,
+      const Declarer& leader,
+      const Declarer& partner,
       const SidePosition side,
       const unsigned lead,
       const unsigned lho,
@@ -86,24 +86,24 @@ class Ranks
       const bool rotateFlag) const;
 
     void setPlaysLeadWithVoid(
-      Player& leader,
-      Player& partner,
+      Declarer& leader,
+      Declarer& partner,
       const SidePosition side,
       const unsigned lead,
       const bool leadCollapse,
       Plays& plays);
 
     void setPlaysLeadWithoutVoid(
-      Player& leader,
-      Player& partner,
+      Declarer& leader,
+      Declarer& partner,
       const SidePosition side,
       const unsigned lead,
       const bool leadCollapse,
       Plays& plays);
 
     void setPlaysSide(
-      Player& leader,
-      Player& partner,
+      Declarer& leader,
+      Declarer& partner,
       const SidePosition side,
       Plays& plays);
 

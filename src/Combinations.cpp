@@ -169,7 +169,7 @@ void Combinations::runUniques(
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
 // cout << "combs holding " << holding << endl;
-if (cards == 1 && holding == 2)
+if (cards == 3 && holding == 15)
 {
   cout << "FAIL" << endl;
 }
@@ -182,6 +182,7 @@ if (cards == 1 && holding == 2)
     {
       combCounts[cards].unique++;
 
+// cout << "uniqueIndex " << uniqueIndex << " vs " << uniqs.size() << endl;
       assert(uniqueIndex < uniqs.size());
       centry.canonicalIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];

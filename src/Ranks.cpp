@@ -197,7 +197,7 @@ void Ranks::setRanks()
   // Have to set opps here already, as opps are not definitely void
   // but may be , so we don't want the maximum values to get
   // reset to 0 by calling setVoid() after the loop below.
-  opps.setVoid(true);
+  opps.setVoid();
 
   const unsigned imin = (cards > 13 ? 0 : 13-cards);
   unsigned h = holding;
@@ -240,18 +240,17 @@ void Ranks::setRanks()
     h /= 3;
   }
 
-  north.setVoid(false);
-  south.setVoid(false);
+  north.setVoid();
+  south.setVoid();
 
   north.setSingleRank();
   south.setSingleRank();
-  opps.setSingleRank();
 }
 
 
 unsigned Ranks::canonicalTrinary(
-  const Player& dominant,
-  const Player& recessive) const
+  const Declarer& dominant,
+  const Declarer& recessive) const
 {
   // This is similar to canonicalBoth, but only does holding3.
   // Actually it only generates a canonical holding3 if there is
@@ -275,8 +274,8 @@ unsigned Ranks::canonicalTrinary(
 
 
 void Ranks::canonicalBoth(
-  const Player& dominant,
-  const Player& recessive,
+  const Declarer& dominant,
+  const Declarer& recessive,
   unsigned& holding3,
   unsigned& holding2) const
 {
@@ -310,9 +309,9 @@ void Ranks::set(
 
   Ranks::setRanks();
 
-  north.setNames(true);
-  south.setNames(true);
-  opps.setNames(false);
+  north.setNames();
+  south.setNames();
+  opps.setNames();
 
   north.setRemainders();
   south.setRemainders();
@@ -385,8 +384,8 @@ bool Ranks::trivial(TrickEntry& trivialEntry) const
 
 
 bool Ranks::leadOK(
-  const Player& leader,
-  const Player& partner,
+  const Declarer& leader,
+  const Declarer& partner,
   const unsigned lead) const
 {
   // By construction, count is always > 0.
@@ -416,7 +415,7 @@ bool Ranks::leadOK(
 
 
 bool Ranks::pardOK(
-  const Player& partner,
+  const Declarer& partner,
   const unsigned toBeat,
   const unsigned pard) const
 {
@@ -440,8 +439,8 @@ bool Ranks::pardOK(
 
 
 void Ranks::updateHoldings(
-  const Player& leader,
-  const Player& partner,
+  const Declarer& leader,
+  const Declarer& partner,
   const SidePosition side,
   unsigned& holding3,
   bool& rotateFlag) const
@@ -466,8 +465,8 @@ void Ranks::updateHoldings(
 
 void Ranks::logPlay(
   Plays& plays,
-  const Player& leader,
-  const Player& partner,
+  const Declarer& leader,
+  const Declarer& partner,
   const SidePosition side,
   const unsigned lead,
   const unsigned lho,
@@ -517,8 +516,8 @@ void Ranks::logPlay(
 
 
 void Ranks::setPlaysLeadWithVoid(
-  Player& leader,
-  Player& partner,
+  Declarer& leader,
+  Declarer& partner,
   const SidePosition side,
   const unsigned lead,
   const bool leadCollapse,
@@ -530,7 +529,7 @@ void Ranks::setPlaysLeadWithVoid(
 
   opps.playFull(0);
 
-  for (auto& pardCard: partner.getCards())
+  for (auto& pardCard: partner.getCards(false))
   {
     const unsigned pard = pardCard->getRank();
     if (! Ranks::pardOK(partner, lead, pard))
@@ -572,8 +571,8 @@ void Ranks::setPlaysLeadWithVoid(
 
 
 void Ranks::setPlaysLeadWithoutVoid(
-  Player& leader,
-  Player& partner,
+  Declarer& leader,
+  Declarer& partner,
   const SidePosition side,
   const unsigned lead,
   const bool leadCollapse,
@@ -588,7 +587,7 @@ void Ranks::setPlaysLeadWithoutVoid(
     const unsigned lho = lhoCard->getRank();
     opps.playFull(lho);
 
-    for (auto& pardCard: partner.getCards())
+    for (auto& pardCard: partner.getCards(false))
     {
       const unsigned pard = pardCard->getRank();
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
@@ -637,8 +636,8 @@ void Ranks::setPlaysLeadWithoutVoid(
 
 
 void Ranks::setPlaysSide(
-  Player& leader,
-  Player& partner,
+  Declarer& leader,
+  Declarer& partner,
   const SidePosition side,
   Plays& plays)
 {
@@ -666,7 +665,7 @@ void Ranks::setPlaysSide(
   else
     play.side = POSITION_SOUTH;
 
-  for (auto& leadCard: leader.getCards())
+  for (auto& leadCard: leader.getCards(false))
   // for (play.leadPtr: leader.getCards())
   // Probably some const magic to figure out to appease the compiler.
   // Maybe getCards() makes a const Card const * ?

@@ -2,6 +2,8 @@ SOURCE_FILES    =                       \
                 driver.cpp              \
                 Ranks.cpp               \
                 Player.cpp              \
+                  Declarer.cpp          \
+                  Opponents.cpp         \
                 Plays.cpp               \
                 Combination.cpp         \
                 Combinations.cpp        \

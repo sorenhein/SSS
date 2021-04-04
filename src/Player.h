@@ -12,7 +12,7 @@ using namespace std;
 
 class Player
 {
-  private:
+  protected:
 
     /* Example with 9 cards and 6 ranks:
      *      
