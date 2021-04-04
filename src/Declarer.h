@@ -27,22 +27,23 @@ class Declarer: public Player
     vector<vector<Winner>> best;
 
 
+    void setVoid();
+
+    void setSingleRank();
+
+    void setRemainders();
+
     void countNumbers(vector<unsigned>& numbers) const;
 
+    void setBest(const Declarer& partner);
 
   public:
 
     void resizeBest(const Declarer& partner);
 
-    void setVoid();
-
-    void setSingleRank();
-
     void setNames();
 
-    void setRemainders();
-
-    void setBest(const Declarer& partner);
+    void finish(const Declarer& partner);
 
     bool greater(
       const Declarer& p2,

@@ -13,7 +13,6 @@ class Opponents: public Player
   private:
 
 
-
   public:
 
     void setVoid();

@@ -59,6 +59,9 @@ void Declarer::setSingleRank()
 
 void Declarer::setNames()
 {
+  // As setVoid may create an extra "card", this must be done first.
+  Declarer::setVoid();
+
   for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
     rankInfo[cit->getRank()].names += cit->getName();
 }
@@ -270,6 +273,14 @@ assert(rOther < numOther.size());
       }
     }
   }
+}
+
+
+void Declarer::finish(const Declarer& partner)
+{
+  Declarer::setSingleRank();
+  Declarer::setRemainders();
+  Declarer::setBest(partner);
 }
 
 

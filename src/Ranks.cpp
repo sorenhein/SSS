@@ -184,7 +184,7 @@ void Ranks::zero()
 }
 
 
-void Ranks::setRanks()
+void Ranks::setPlayers()
 {
   Ranks::zero();
 
@@ -240,11 +240,14 @@ void Ranks::setRanks()
     h /= 3;
   }
 
-  north.setVoid();
-  south.setVoid();
+  // We have to have the names of BOTH players' cards before calling
+  // finish(), as it relies on this.
+  north.setNames();
+  south.setNames();
+  opps.setNames();
 
-  north.setSingleRank();
-  south.setSingleRank();
+  north.finish(south);
+  south.finish(north);
 }
 
 
@@ -307,17 +310,7 @@ void Ranks::set(
 {
   holding = holdingIn;
 
-  Ranks::setRanks();
-
-  north.setNames();
-  south.setNames();
-  opps.setNames();
-
-  north.setRemainders();
-  south.setRemainders();
-
-  north.setBest(south);
-  south.setBest(north);
+  Ranks::setPlayers();
 
   combEntry.rotateFlag = ! (north.greater(south, opps));
 
