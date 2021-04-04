@@ -100,8 +100,6 @@ class Player
 
     vector<RankInfo> rankInfo;
 
-    vector<string> names;
-
     unsigned maxRank;
     unsigned minRank;
     unsigned minAbsCardNumber;

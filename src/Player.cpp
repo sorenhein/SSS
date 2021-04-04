@@ -25,8 +25,6 @@ Player::~Player()
 
 void Player::clear()
 {
-  names.clear();
-
   // Is this clearing needed or used?
   rankInfo.clear();
 
@@ -41,8 +39,6 @@ void Player::resize(
   const CardPosition sideIn)
 {
   // Worst case, leaving room for voids at rank 0.
-  names.resize(cardsIn+1);
-
   rankInfo.resize(cardsIn+1);
 
   cards.clear();
@@ -72,9 +68,6 @@ void Player::resizeBest(const Player& partner)
 
 void Player::zero()
 {
-  for (unsigned i = 0; i < names.size(); i++)
-    names[i].clear();
-
   for (auto& ri: rankInfo)
     ri.clear();
         
@@ -191,10 +184,7 @@ void Player::setNames(const bool declarerFlag)
   if (declarerFlag)
   {
     for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
-    {
-      names[cit->getRank()] += cit->getName();
       rankInfo[cit->getRank()].names += cit->getName();
-    }
   }
   else
   {
@@ -216,15 +206,11 @@ void Player::setNames(const bool declarerFlag)
         const char rep = (r == minRank && minAbsCardNumber <= 6 ?
           'x' : GENERIC_NAMES[index]);
 
-        names[r] = string(count, rep);
-        rankInfo[r].names = names[r];
+        rankInfo[r].names = string(count, rep);
         index++;
       }
       else if (count == 1)
-      {
-        names[r] = cit->getName();
         rankInfo[r].names = cit->getName();
-      }
     }
   }
 }
@@ -294,8 +280,7 @@ assert(pos < remList.size());
 // TODO Use cardsNorth from Ranks once it's over here instead?
 // cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos <<
   // ", remList length" << remList.size() << endl;
-assert(names[s] == rankInfo[s].names);
-        remList[pos].set(s, d, pos, names[s].at(d));
+        remList[pos].set(s, d, pos, rankInfo[s].names.at(d));
       }
     }
 
@@ -393,17 +378,15 @@ assert(rThis < numThis.size());
 // ctmp.set(rThis, 0, numThis[rThis], names[rThis].at(0));
 // assert(rThis < cardsPtr.size());
 // assert(ctmp.identical(* cardsPtr[rThis]));
-assert(names[rThis] == rankInfo[rThis].names);
 
-        current.set(wside, rThis, 0, numThis[rThis], names[rThis].at(0));
+        current.set(wside, rThis, 0, numThis[rThis], rankInfo[rThis].names.at(0));
         crank = rThis;
       }
       else if (rThis < rOther)
       {
 assert(rOther < numOther.size());
-assert(partner.names[rOther] == partner.rankInfo[rOther].names);
         current.set(pside, rOther, 0, numOther[rOther],
-          partner.names[rOther].at(0));
+          partner.rankInfo[rOther].names.at(0));
         crank = rOther;
       }
       else
@@ -411,12 +394,10 @@ assert(partner.names[rOther] == partner.rankInfo[rOther].names);
 assert(rThis < numThis.size());
 assert(rOther < numOther.size());
         // Make two sub-winners as NS in some sense choose.
-assert(names[rThis] == rankInfo[rThis].names);
-assert(partner.names[rOther] == partner.rankInfo[rOther].names);
         current.set(wside, rThis, 0, numThis[rThis],
-          names[rThis].at(0));
+          rankInfo[rThis].names.at(0));
         current.set(pside, rOther, 0, numOther[rOther],
-          partner.names[rOther].at(0));
+          partner.rankInfo[rOther].names.at(0));
         crank = rThis;
       }
     }
@@ -567,11 +548,10 @@ string Player::strRank(const unsigned rank) const
     ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
   else
   {
-assert(names[rank] == rankInfo[rank].names);
     ss << 
       setw(8) << Player::playerName() <<
       setw(4) << rankInfo[rank].count <<
-      setw(6) << names[rank];
+      setw(6) << rankInfo[rank].names;
   }
 
   return ss.str();
@@ -596,8 +576,7 @@ wstring Player::wstr() const
   string s = "";
   for (unsigned rank = maxRank; rank > 0; rank--)
 {
-assert(names[rank] == rankInfo[rank].names);
-    s += names[rank];
+    s += rankInfo[rank].names;
 }
 // assert(t == s);
 
