@@ -325,11 +325,15 @@ if (debugFlag)
 
     vector<Card> const * northOrderPtr;
     vector<Card> const * southOrderPtr;
+    deque<Card const *> const * northDequePtr;
+    deque<Card const *> const * southDequePtr;
     unsigned first, second;
     if (side == SIDE_NORTH)
     {
       northOrderPtr = rhoNode.leadOrderPtr;
       southOrderPtr = rhoNode.pardOrderPtr;
+      northDequePtr = rhoNode.leadDequePtr;
+      southDequePtr = rhoNode.pardDequePtr;
       first = rhoNode.rho;
       second = lho;
     }
@@ -337,6 +341,8 @@ if (debugFlag)
     {
       southOrderPtr = rhoNode.leadOrderPtr;
       northOrderPtr = rhoNode.pardOrderPtr;
+      southDequePtr = rhoNode.leadDequePtr;
+      northDequePtr = rhoNode.pardDequePtr;
       first = lho;
       second = rhoNode.rho;
     }
@@ -376,6 +382,8 @@ if (debugFlag)
       rhoNode.trickNS, 
       northOrderPtr,
       southOrderPtr,
+      northDequePtr,
+      southDequePtr,
       rhoNode.currBestPtr,
       first == 0,
       second == 0,
@@ -563,6 +571,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       rhoNode.trickNS, 
       rhoNode.leadOrderPtr,
       rhoNode.pardOrderPtr,
+      rhoNode.leadDequePtr,
+      rhoNode.pardDequePtr,
       rhoNode.currBestPtr,
       play.rho == 0,
       play.lho == 0,

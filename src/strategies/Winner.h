@@ -73,6 +73,8 @@ class Winner
     void update(
       vector<Card> const * northOrderPtr,
       vector<Card> const * southOrderPtr,
+      deque<Card const *> const * northDequePtr,
+      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr);
 
     string str() const;

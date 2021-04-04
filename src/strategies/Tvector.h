@@ -146,6 +146,8 @@ class Tvector
       const unsigned trickNS,
       vector<Card> const * northOrderPtr,
       vector<Card> const * southOrderPtr,
+      deque<Card const *> const * northDequePtr,
+      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

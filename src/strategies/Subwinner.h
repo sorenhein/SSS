@@ -2,6 +2,7 @@
 #define SSS_SUBWINNER_H
 
 #include <vector>
+#include <deque>
 #include <list>
 #include <cassert>
 
@@ -64,7 +65,9 @@ class Subwinner
 
     void update(
       vector<Card> const * northOrderPtr,
-      vector<Card> const * southOrderPtr);
+      vector<Card> const * southOrderPtr,
+      deque<Card const *> const * northDequePtr,
+      deque<Card const *> const * southDequePtr);
 
     bool rankExceeds(const Subwinner& sw2) const;
 

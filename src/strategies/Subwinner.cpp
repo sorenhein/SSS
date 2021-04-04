@@ -255,7 +255,9 @@ void Subwinner::flip()
 
 void Subwinner::update(
   vector<Card> const * northOrderPtr,
-  vector<Card> const * southOrderPtr)
+  vector<Card> const * southOrderPtr,
+  deque<Card const *> const * northDequePtr,
+  deque<Card const *> const * southDequePtr)
 {
   if (mode == SUBWIN_NORTH_ONLY)
   {
@@ -263,6 +265,8 @@ void Subwinner::update(
     assert(northOrderPtr != nullptr);
     assert(north.getNumber() < northOrderPtr->size());
     north = (* northOrderPtr)[north.getNumber()];
+
+UNUSED(northDequePtr);
   }
   else if (mode == SUBWIN_SOUTH_ONLY)
   {
@@ -270,6 +274,8 @@ void Subwinner::update(
     assert(southOrderPtr != nullptr);
     assert(south.getNumber() < southOrderPtr->size());
     south = (* southOrderPtr)[south.getNumber()];
+
+UNUSED(southDequePtr);
   }
   else if (mode == SUBWIN_BOTH)
   {
@@ -277,9 +283,13 @@ void Subwinner::update(
     assert(north.getNumber() < northOrderPtr->size());
     north = (* northOrderPtr)[north.getNumber()];
 
+UNUSED(northDequePtr);
+
     assert(southOrderPtr != nullptr);
     assert(south.getNumber() < southOrderPtr->size());
     south = (* southOrderPtr)[south.getNumber()];
+
+UNUSED(southDequePtr);
 
     // As a result of the mapping to parent ranks, North and South
     // may actually be different ranks now.  As North-South choose,

@@ -66,6 +66,8 @@ class Tvectors
       const unsigned trickNS,
       vector<Card> const * northOrderPtr, // Relative to parent,
       vector<Card> const * southOrderPtr, // so after rotation
+      deque<Card const *> const * northDequePtr,
+      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

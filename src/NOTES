@@ -1,4 +1,6 @@
-In Player, move to rankInfo and delete fullCount and names.
+Work some more on creating and using Play from Ranks through to 
+Subwinner, where the deque readout can be compared with remainders.
+
 remainders can actually be cards together with the number of the
 card played.  If the later winner to be translated has a number >=
 the card played, then later#+1, otherwise just later#.
