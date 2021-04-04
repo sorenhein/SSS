@@ -31,6 +31,8 @@ class Declarer: public Player
 
     void setSingleRank();
 
+    void fixDepths();
+
     void setRemainders();
 
     void countNumbers(vector<unsigned>& numbers) const;

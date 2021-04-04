@@ -36,7 +36,7 @@ class Ranks
 
     void zero();
 
-    void setRanks();
+    void setPlayers();
 
     unsigned canonicalTrinary(
       const Declarer& dominant,

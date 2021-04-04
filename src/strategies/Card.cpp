@@ -135,6 +135,14 @@ char Card::getName() const
 }
 
 
+void Card::flipDepth(const unsigned maxDepth)
+{
+  // Depths arise in Ranks in opposite order (see comment in
+  // Declarer::fixDepths), so we have to flip them afterwards.
+  depth = maxDepth - depth;
+}
+
+
 string Card::str(
   const string& side,
   const bool rankFlag) const

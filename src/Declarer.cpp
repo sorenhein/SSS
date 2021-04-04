@@ -67,6 +67,38 @@ void Declarer::setNames()
 }
 
 
+void Declarer::fixDepths()
+{
+  // In Ranks we loop through the cards from the bottom up, so they
+  // are numbered from 0 up.  Also, the depths within a rank are
+  // numbered from 0 up.  The depths are not used that much, but
+  // when we print the card in Card, it is useful for depth == 0 to
+  // be the highest and not the lowest card within a rank.  In this
+  // way we can easily decorate the names in a useful way.
+  // We cannot avoid the problem by looping the other way in Ranks --
+  // then we'd have the problem with the ranks.
+  // So we fix (flip) the ranks from from e.g. 0, 1, 2 to 2, 1, 0
+  // in this inelegant piece of post-processing.
+
+  for (unsigned cno = 0; cno < cards.size(); cno++)
+  {
+    if (cards[cno].getDepth() == 1)
+    {
+      // Find the index past the current rank (may be beyond the end).
+      unsigned dno = cno+1;
+      while (dno < cards.size() && cards[dno].getDepth() > 0)
+        dno++;
+
+      unsigned maxDepth = dno - cno;
+
+      // Flip the ranks, starting from the zero depth.
+      for (cno--; cno < dno; cno++)
+        cards[cno].flipDepth(maxDepth);
+    }
+  }
+}
+
+
 void Declarer::setRemainders()
 {
   // Example: North AQx, South JT8, defenders have 7 cards.
@@ -138,7 +170,7 @@ assert(pos < remList.size());
     remList.resize(pos);
     assert(pos+1 == cards.size());
 
-    /*
+    /* */
     for (unsigned p = 0, cno = 0; p < pos; p++, cno++)
     {
       if (cards[cno].getRank() == r &&
@@ -148,14 +180,17 @@ assert(pos < remList.size());
       if (!cards[cno].identical(remList[p]))
       {
         cout << "p " << p << ", cno " << cno << endl;
+        cout << "remList (presumed OK)\n";
         for (unsigned p1 = 0; p1 < pos; p1++)
-          cout << p1 << ": " << remList[p1].strDebug(Player::playerName()) << endl;
+          cout << p1 << ": " << remList[p1].strDebug(Player::playerName());
+        cout << endl << "cards list (trying to match)\n";
         for (unsigned c1 = 0; c1 < cards.size(); c1++)
-          cout << c1 << ": " << cards[c1].strDebug(Player::playerName()) << endl;
+          cout << c1 << ": " << cards[c1].strDebug(Player::playerName());
+        cout << endl;
         assert(cards[cno].identical(remList[p]));
       }
     }
-    */
+    /* */
   }
 }
 
@@ -279,6 +314,7 @@ assert(rOther < numOther.size());
 void Declarer::finish(const Declarer& partner)
 {
   Declarer::setSingleRank();
+  Declarer::fixDepths();
   Declarer::setRemainders();
   Declarer::setBest(partner);
 }

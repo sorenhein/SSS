@@ -49,6 +49,8 @@ class Card
     unsigned getNumber() const;
     char getName() const;
 
+    void flipDepth(const unsigned maxDepth);
+
     string str(
       const string& side,
       const bool rankFlag = true) const;
