@@ -33,7 +33,6 @@ inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
 strategies/Card.obj: strategies/Card.h const.h
-strategies/Sidewinner.obj: strategies/Sidewinner.h const.h
 strategies/Subwinner.obj: strategies/Subwinner.h strategies/Card.h const.h
 strategies/Tvector.obj: strategies/Tvector.h struct.h const.h
 strategies/Tvector.obj: strategies/Winner.h strategies/Subwinner.h

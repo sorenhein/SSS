@@ -45,6 +45,7 @@ class Card
     void operator *= (const Card& card2);
 
     unsigned getRank() const;
+    unsigned getDepth() const;
     unsigned getNumber() const;
     char getName() const;
 

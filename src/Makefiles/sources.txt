@@ -14,7 +14,6 @@ SOURCE_FILES    =                       \
                 inputs/parse.cpp        \
                                         \
                 strategies/Card.cpp     \
-                strategies/Sidewinner.cpp \
                 strategies/Subwinner.cpp \
                 strategies/Tvector.cpp  \
                 strategies/Tvectors.cpp \

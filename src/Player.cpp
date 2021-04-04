@@ -285,6 +285,24 @@ assert(pos < remList.size());
     }
 
     remList.resize(pos);
+    assert(pos+1 == cards.size());
+
+    for (unsigned p = 0, cno = 0; p < pos; p++, cno++)
+    {
+      if (cards[cno].getRank() == r &&
+          cards[cno].getDepth() == 0)
+        cno++;
+
+      if (!cards[cno].identical(remList[p]))
+      {
+        cout << "p " << p << ", cno " << cno << endl;
+        for (unsigned p1 = 0; p1 < pos; p1++)
+          cout << p1 << ": " << remList[p1].strDebug(Player::playerName()) << endl;
+        for (unsigned c1 = 0; c1 < cards.size(); c1++)
+          cout << c1 << ": " << cards[c1].strDebug(Player::playerName()) << endl;
+        assert(cards[cno].identical(remList[p]));
+      }
+    }
   }
 }
 

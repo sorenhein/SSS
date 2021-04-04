@@ -117,6 +117,12 @@ unsigned Card::getRank() const
 }
 
 
+unsigned Card::getDepth() const
+{
+  return depth;
+}
+
+
 unsigned Card::getNumber() const
 {
   return number;
