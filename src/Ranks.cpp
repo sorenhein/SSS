@@ -509,7 +509,7 @@ void Ranks::logPlay(
   // (leadOrderPtr ? to_string(leadOrderPtr->size()) : "null") << ", " <<
   // (pardOrderPtr ? to_string(pardOrderPtr->size()) : "null") << endl;
 
-  plays.logFull(side, lead, lho, pard, rho, 
+  plays.log(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
     leadOrderPtr, pardOrderPtr, winPtr,
     holding3, rotateFlag);

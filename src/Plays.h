@@ -132,20 +132,6 @@ class Plays
     void logRho(
       const unsigned rho,
       const bool leadCollapse,
-      const bool lhoCollapse,
-      const bool pardCollapse,
-      const bool rhoCollapse,
-      const unsigned holding3,
-      const bool rotateFlag,
-      const unsigned trickNS,
-      const bool knownVoidLho,
-      const bool knownVoidRho,
-      const bool voidPard,
-      PardNode * pardPtr);
-
-    void logRhoNew(
-      const unsigned rho,
-      const bool leadCollapse,
       const bool pardCollapse,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
@@ -173,19 +159,6 @@ class Plays
     unsigned size() const;
 
     void log(
-      const SidePosition side,
-      const unsigned lead,
-      const unsigned lho,
-      const unsigned pard,
-      const unsigned rho,
-      const bool leadCollapse,
-      const bool lhoCollapse,
-      const bool pardCollapse,
-      const bool rhoCollapse,
-      const unsigned holding3,
-      const bool rotateFlag);
-
-    void logFull(
       const SidePosition side,
       const unsigned lead,
       const unsigned lho,

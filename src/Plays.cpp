@@ -181,49 +181,6 @@ Plays::PardNode * Plays::logPard(
 void Plays::logRho(
   const unsigned rho,
   const bool leadCollapse,
-  const bool lhoCollapse,
-  const bool pardCollapse,
-  const bool rhoCollapse,
-  const unsigned holding3,
-  const bool rotateFlag,
-  const unsigned trickNS,
-  const bool knownVoidLho,
-  const bool knownVoidRho,
-  const bool voidPard,
-  PardNode * pardPtr)
-{
-  // if (rhoNext >= rhoNodes.size())
-    // rhoNodes.resize(rhoNodes.size() + chunk.rho);
-  if (rhoNextIter == rhoNodes.end())
-    rhoNextIter = rhoNodes.insert(rhoNextIter, chunk.rho, RhoNode());
-
-  // RhoNode& node = rhoNodes[rhoNext++];
-  RhoNode& node = * rhoNextIter;
-  rhoNext++;
-  rhoNextIter++;
-
-  node.rho = rho;
-  node.leadCollapse = leadCollapse;
-  node.lhoCollapse = lhoCollapse;
-  node.pardCollapse = pardCollapse;
-  node.rhoCollapse = rhoCollapse;
-  node.cardsNew = cards +
-    (knownVoidLho ? 1 : 0) + 
-    (knownVoidRho ? 1 : 0) +
-    (voidPard ? 1 : 0) - 4;
-  node.holdingNew = holding3;
-  node.rotateNew = rotateFlag;
-  node.trickNS = trickNS;
-  node.knownVoidLho = knownVoidLho;
-  node.knownVoidRho = knownVoidRho;
-  node.voidPard = voidPard;
-  node.pardPtr = pardPtr;
-}
-
-
-void Plays::logRhoNew(
-  const unsigned rho,
-  const bool leadCollapse,
   const bool pardCollapse,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
@@ -269,37 +226,6 @@ void Plays::log(
   const unsigned lho,
   const unsigned pard,
   const unsigned rho,
-  const bool leadCollapse,
-  const bool lhoCollapse,
-  const bool pardCollapse,
-  const bool rhoCollapse,
-  const unsigned holding3,
-  const bool rotateFlag)
-{
-  bool newFlag;
-  LeadNode * leadPtr = Plays::logLead(side, lead, newFlag);
-  LhoNode * lhoPtr = Plays::logLho(lho, leadPtr, newFlag);
-  PardNode * pardPtr = Plays::logPard(pard, lhoPtr, newFlag);
-
-  const unsigned trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
-  const bool knownVoidLho = (lho == 0);
-  const bool knownVoidRho = (rho == 0);
-  const bool voidPard = (pard == 0);
-
-  Plays::logRho(rho,
-    leadCollapse, lhoCollapse, pardCollapse, rhoCollapse,
-    holding3, rotateFlag,
-    trickNS, knownVoidLho, knownVoidRho, voidPard,
-    pardPtr);
-}
-
-
-void Plays::logFull(
-  const SidePosition side,
-  const unsigned lead,
-  const unsigned lho,
-  const unsigned pard,
-  const unsigned rho,
   const unsigned trickNS,
   const bool leadCollapse,
   const bool pardCollapse,
@@ -320,7 +246,7 @@ void Plays::logFull(
   const bool knownVoidRho = (rho == 0);
   const bool voidPard = (pard == 0);
 
-  Plays::logRhoNew(rho,
+  Plays::logRho(rho,
     leadCollapse, pardCollapse, 
     leadOrderPtr, pardOrderPtr, currBestPtr,
     holding3, rotateFlag,
