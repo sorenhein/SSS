@@ -78,6 +78,8 @@ class Plays
 
       vector<Card> const * leadOrderPtr;
       vector<Card> const * pardOrderPtr;
+      deque<Card const *> const * leadDequePtr;
+      deque<Card const *> const * pardDequePtr;
       Winner const * currBestPtr;
 
       PardNode * pardPtr;
@@ -136,6 +138,8 @@ class Plays
       const bool pardCollapse,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
+      deque<Card const *> const * leadDequePtr,
+      deque<Card const *> const * pardDequePtr,
       Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag,
@@ -170,6 +174,8 @@ class Plays
       const bool pardCollapse,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
+      deque<Card const *> const * leadDequePtr,
+      deque<Card const *> const * pardDequePtr,
       Winner const * currBestPtr,
       const unsigned holding3,
       const bool rotateFlag);

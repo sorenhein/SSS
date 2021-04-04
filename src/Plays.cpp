@@ -185,6 +185,8 @@ void Plays::logRho(
   const bool pardCollapse,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
+  deque<Card const *> const * leadDequePtr,
+  deque<Card const *> const * pardDequePtr,
   Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag,
@@ -210,6 +212,8 @@ void Plays::logRho(
     (voidPard ? 1 : 0) - 4;
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
+  node.leadDequePtr = leadDequePtr;
+  node.pardDequePtr = pardDequePtr;
   node.currBestPtr = currBestPtr;
   node.holdingNew = holding3;
   node.rotateNew = rotateFlag;
@@ -232,6 +236,8 @@ void Plays::log(
   const bool pardCollapse,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
+  deque<Card const *> const * leadDequePtr,
+  deque<Card const *> const * pardDequePtr,
   Winner const * currBestPtr,
   const unsigned holding3,
   const bool rotateFlag)
@@ -249,7 +255,9 @@ void Plays::log(
 
   Plays::logRho(rho,
     leadCollapse, pardCollapse, 
-    leadOrderPtr, pardOrderPtr, currBestPtr,
+    leadOrderPtr, pardOrderPtr, 
+    leadDequePtr, pardDequePtr,
+    currBestPtr,
     holding3, rotateFlag,
     trickNS, knownVoidLho, knownVoidRho, voidPard,
     pardPtr);

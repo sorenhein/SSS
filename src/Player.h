@@ -186,7 +186,7 @@ class Player
       const unsigned lead,
       const unsigned pard) const;
 
-    const deque<Card const *>& getCards() const;
+    // const deque<Card const *>& getCards() const;
 
     bool isVoid() const;
 

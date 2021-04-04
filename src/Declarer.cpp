@@ -392,9 +392,6 @@ const Winner& Declarer::getWinner(
 
 const deque<Card const *>& Declarer::getCards(const bool fullFlag) const
 {
-  // TODO
-  assert(! fullFlag);
-
   if (fullFlag)
     return cardsPtr;
   else

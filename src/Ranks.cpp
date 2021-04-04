@@ -474,16 +474,30 @@ void Ranks::logPlay(
 
   vector<Card> const * leadOrderPtr;
   vector<Card> const * pardOrderPtr;
+  deque<Card const *> const * leadDequePtr;
+  deque<Card const *> const * pardDequePtr;
 
   if (lead == 0)
+  {
     leadOrderPtr = nullptr;
+    leadDequePtr = nullptr;
+  }
   else
+  {
     leadOrderPtr = &leader.remainder(lead);
+    leadDequePtr = &leader.getCards(true);
+  }
 
   if (pard == 0)
+  {
     pardOrderPtr = nullptr;
+    pardDequePtr = nullptr;
+  }
   else
+  {
     pardOrderPtr = &partner.remainder(pard);
+    pardDequePtr = &partner.getCards(true);
+  }
 
   Winner const * winPtr;
   if (! trickNS)
@@ -503,7 +517,9 @@ void Ranks::logPlay(
 
   plays.log(side, lead, lho, pard, rho, 
     trickNS, leadCollapse, pardCollapse,
-    leadOrderPtr, pardOrderPtr, winPtr,
+    leadOrderPtr, pardOrderPtr, 
+    leadDequePtr, pardDequePtr,
+    winPtr,
     holding3, rotateFlag);
 }
 
