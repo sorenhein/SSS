@@ -661,9 +661,18 @@ void Ranks::setPlaysSide(
 
   bool leadCollapse;
 
+  if (side == SIDE_NORTH)
+    play.side = POSITION_NORTH;
+  else
+    play.side = POSITION_SOUTH;
+
   for (auto& leadCard: leader.getCards())
+  // for (play.leadPtr: leader.getCards())
+  // Probably some const magic to figure out to appease the compiler.
+  // Maybe getCards() makes a const Card const * ?
   {
-    const unsigned lead = leadCard->getRank();
+    play.leadPtr = leadCard;
+    const unsigned lead = play.leadPtr->getRank();
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 

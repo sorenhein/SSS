@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Player.h"
+#include "Play.h"
 #include "strategies/Card.h"
 
 
@@ -25,6 +26,10 @@ class Ranks
     unsigned holding;
     unsigned cards;
     unsigned maxRank;
+
+    // This is a global variable for convenience.  It does not need
+    // to be stored in Ranks between invocations.
+    Play play;
 
 
     void setConstants();

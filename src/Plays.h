@@ -6,6 +6,7 @@
 
 #include "strategies/Card.h"
 #include "strategies/Tvectors.h"
+#include "Play.h"
 #include "const.h"
 
 using namespace std;

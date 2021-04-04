@@ -7,6 +7,7 @@
 #include "Distribution.h"
 #include "Plays.h"
 #include "Ranks.h"
+#include "struct.h"
 
 
 // It's not that important to hit these, but this works
