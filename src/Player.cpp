@@ -294,6 +294,7 @@ assert(pos < remList.size());
 // TODO Use cardsNorth from Ranks once it's over here instead?
 // cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos <<
   // ", remList length" << remList.size() << endl;
+assert(names[s] == rankInfo[s].names);
         remList[pos].set(s, d, pos, names[s].at(d));
       }
     }
@@ -392,6 +393,7 @@ assert(rThis < numThis.size());
 // ctmp.set(rThis, 0, numThis[rThis], names[rThis].at(0));
 // assert(rThis < cardsPtr.size());
 // assert(ctmp.identical(* cardsPtr[rThis]));
+assert(names[rThis] == rankInfo[rThis].names);
 
         current.set(wside, rThis, 0, numThis[rThis], names[rThis].at(0));
         crank = rThis;
@@ -399,6 +401,7 @@ assert(rThis < numThis.size());
       else if (rThis < rOther)
       {
 assert(rOther < numOther.size());
+assert(partner.names[rOther] == partner.rankInfo[rOther].names);
         current.set(pside, rOther, 0, numOther[rOther],
           partner.names[rOther].at(0));
         crank = rOther;
@@ -408,6 +411,8 @@ assert(rOther < numOther.size());
 assert(rThis < numThis.size());
 assert(rOther < numOther.size());
         // Make two sub-winners as NS in some sense choose.
+assert(names[rThis] == rankInfo[rThis].names);
+assert(partner.names[rOther] == partner.rankInfo[rOther].names);
         current.set(wside, rThis, 0, numThis[rThis],
           names[rThis].at(0));
         current.set(pside, rOther, 0, numOther[rOther],
@@ -561,10 +566,13 @@ string Player::strRank(const unsigned rank) const
   if (rankInfo[rank].count == 0)
     ss << setw(8) << "-" << setw(4) << "-" << setw(6) << "-";
   else
+  {
+assert(names[rank] == rankInfo[rank].names);
     ss << 
       setw(8) << Player::playerName() <<
       setw(4) << rankInfo[rank].count <<
       setw(6) << names[rank];
+  }
 
   return ss.str();
 }
@@ -587,7 +595,10 @@ wstring Player::wstr() const
 
   string s = "";
   for (unsigned rank = maxRank; rank > 0; rank--)
+{
+assert(names[rank] == rankInfo[rank].names);
     s += names[rank];
+}
 // assert(t == s);
 
   wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;

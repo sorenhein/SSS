@@ -81,9 +81,9 @@ class Player
 
     struct RankInfo
     {
-      unsigned count;
-      string names;
-      Card const * ptr;
+      unsigned count; // Number of player's cards with that rank
+      string names; // Names of all such cards
+      Card const * ptr; // Pointer to the top card with that rank
 
       RankInfo()
       {
