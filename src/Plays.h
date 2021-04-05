@@ -70,12 +70,6 @@ class Plays
       bool rotateNew;
       Combination const * combPtr;
 
-      unsigned trickNS;
-
-      bool knownVoidLho;
-      bool knownVoidRho;
-      bool voidPard;
-
       vector<Card> const * leadOrderPtr;
       vector<Card> const * pardOrderPtr;
       deque<Card const *> const * leadDequePtr;

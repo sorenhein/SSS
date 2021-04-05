@@ -2,14 +2,16 @@
 #define SSS_PLAY_H
 
 #include <deque>
+#include <string>
 
-#include "strategies/Card.h"
 #include "const.h"
 
 
 using namespace std;
 
 class Combination;
+class Card;
+class Winner;
 
 
 struct Play
@@ -52,6 +54,14 @@ struct Play
   // The combination following the current trick.  This does not get
   // set directly in Ranks.
   Combination const * combPtr; // UNSET
+
+  
+  unsigned lead(const bool fullFlag = false) const;
+  unsigned lho(const bool fullFlag = false) const;
+  unsigned pard(const bool fullFlag = false) const;
+  unsigned rho(const bool fullFlag = false) const;
+
+  string strTrick(const unsigned number) const;
 };
 
 #endif

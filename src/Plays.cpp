@@ -198,7 +198,7 @@ void Plays::logRho(
   node.currBestPtr = play.currBestPtr;
   node.holdingNew = play.holding3;
   node.rotateNew = play.rotateFlag;
-  node.trickNS = play.trickNS;
+  // node.trickNS = play.trickNS;
   node.pardPtr = pardPtr;
 
   // TMP
@@ -258,7 +258,8 @@ if (debugFlag)
 }
 
   Tvectors tvs;
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
+  unsigned rno = 0;
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++, rno++)
   // for (unsigned rno = 0; rno < rhoNext; rno++)
   {
     // const auto& rhoNode = rhoNodes[rno];
@@ -268,15 +269,13 @@ if (debugFlag)
   cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
-    const unsigned pard0 = rhoNode.play.pardPtr->getRank();
-    const unsigned lead0 = rhoNode.play.leadPtr->getRank();
-    const unsigned lho = rhoNode.play.lhoPtr->getRank();
+    const unsigned pard0 = rhoNode.play.pard();
+    const unsigned lead0 = rhoNode.play.lead();
+    const unsigned lho = rhoNode.play.lho();
     const unsigned side = rhoNode.play.side;
 
 // if (debugFlag)
-  cout << "side " << side << " lead " << lead0 << " LHO " << lho << 
-    " pard " << pard0 << " RHO " << rhoNode.rho << 
-    " rotate " << (rhoNode.rotateNew ? "yes" : "no") << endl;
+  cout << rhoNode.play.strTrick(rno);
 
     vector<Card> const * northOrderPtr;
     vector<Card> const * southOrderPtr;
@@ -334,7 +333,7 @@ if (debugFlag)
 
     // TODO Just pass in the RHO node in some form?
     tvs.adapt(survivors, 
-      rhoNode.trickNS, 
+      rhoNode.play.trickNS, 
       northOrderPtr,
       southOrderPtr,
       northDequePtr,
@@ -523,7 +522,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // adapt() renumbers distributions from combPtr.
     // It also renumbers winners within strategies.
     play.strategies.adapt(survivors, 
-      rhoNode.trickNS, 
+      rhoNode.play.trickNS, 
       rhoNode.leadOrderPtr,
       rhoNode.pardOrderPtr,
       rhoNode.leadDequePtr,
@@ -872,7 +871,7 @@ string Plays::str() const
       setw(5) << (lhoPtr->lho == 0 ? "-" : to_string(lhoPtr->lho)) <<
       setw(5) << (pardPtr->pard == 0 ? "-" : to_string(pardPtr->pard)) <<
       setw(5) << (rhoNode.rho == 0 ? "-" : to_string(rhoNode.rho)) <<
-      setw(5) << (rhoNode.trickNS == 1 ? "+" : "") <<
+      setw(5) << (rhoNode.play.trickNS == 1 ? "+" : "") <<
       setw(5) << (lhoPtr->lho == 0 ? "yes" : "") <<
       setw(5) << (rhoNode.rho == 0 ? "yes" : "") <<
       setw(10) << rhoNode.holdingNew <<

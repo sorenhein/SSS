@@ -13,6 +13,7 @@ Player.obj: Player.h strategies/Card.h strategies/Winner.h
 Declarer.obj: Declarer.h Player.h strategies/Card.h strategies/Winner.h
 Declarer.obj: Opponents.h
 Opponents.obj: Opponents.h Player.h strategies/Card.h strategies/Winner.h
+Play.obj: Play.h const.h strategies/Card.h
 Plays.obj: Combinations.h Combination.h strategies/Tvectors.h
 Plays.obj: strategies/Tvector.h struct.h const.h strategies/Winner.h
 Plays.obj: strategies/Subwinner.h strategies/Card.h const.h struct.h

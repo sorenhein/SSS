@@ -4,6 +4,7 @@ SOURCE_FILES    =                       \
                 Player.cpp              \
                   Declarer.cpp          \
                   Opponents.cpp         \
+                Play.cpp                \
                 Plays.cpp               \
                 Combination.cpp         \
                 Combinations.cpp        \
