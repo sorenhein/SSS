@@ -268,10 +268,11 @@ if (debugFlag)
   cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
     // TODO We could possibly cache lho in RhoNode (saves looking it up).
-    const unsigned pard0 = rhoNode.pardPtr->pard;
-    const unsigned lead0 = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-    const unsigned lho = rhoNode.pardPtr->lhoPtr->lho;
-    const unsigned side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
+    const unsigned pard0 = rhoNode.play.pardPtr->getRank();
+    const unsigned lead0 = rhoNode.play.leadPtr->getRank();
+    const unsigned lho = rhoNode.play.lhoPtr->getRank();
+    const unsigned side = rhoNode.play.side;
+
 // if (debugFlag)
   cout << "side " << side << " lead " << lead0 << " LHO " << lho << 
     " pard " << pard0 << " RHO " << rhoNode.rho << 
@@ -282,7 +283,7 @@ if (debugFlag)
     deque<Card const *> const * northDequePtr;
     deque<Card const *> const * southDequePtr;
     unsigned first, second;
-    if (side == SIDE_NORTH)
+    if (rhoNode.play.side == POSITION_NORTH)
     {
       northOrderPtr = rhoNode.leadOrderPtr;
       southOrderPtr = rhoNode.pardOrderPtr;
