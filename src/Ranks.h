@@ -27,10 +27,6 @@ class Ranks
     unsigned cards;
     unsigned maxRank;
 
-    // This is a global variable for convenience.  It does not need
-    // to be stored in Ranks between invocations.
-    Play play;
-
 
     void setConstants();
 
@@ -90,7 +86,8 @@ class Ranks
       Declarer& partner,
       const SidePosition side,
       const unsigned lead,
-      const bool leadCollapse,
+      // const bool leadCollapse,
+      Play& play,
       Plays& plays);
 
     void setPlaysLeadWithoutVoid(
@@ -98,7 +95,8 @@ class Ranks
       Declarer& partner,
       const SidePosition side,
       const unsigned lead,
-      const bool leadCollapse,
+      // const bool leadCollapse,
+      Play& play,
       Plays& plays);
 
     void setPlaysSide(

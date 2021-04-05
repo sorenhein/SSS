@@ -14,14 +14,14 @@ class Combination;
 
 struct Play
 {
-  CardPosition side;
-  Card const * leadPtr;
+  CardPosition side; // set
+  Card const * leadPtr; // set
   Card const * lhoPtr;
-  Card const * pardPtr;
+  Card const * pardPtr; // set twice
   Card const * rhoPtr;
 
   bool leadCollapse; // true if the lead rank goes away after the trick
-  bool pardCollapse;
+  bool pardCollapse; // set twice
 
   unsigned trickNS; // 1 iff North-South win the trick
 
@@ -44,8 +44,8 @@ struct Play
 
   // Information about the place the play came from.
   unsigned cardCount;
-  unsigned holding3;
-  bool rotateFlag;
+  unsigned holding3; // set 3x
+  bool rotateFlag; // set 3x
 
   // The combination following the current trick.  This does not get
   // set directly in Ranks.

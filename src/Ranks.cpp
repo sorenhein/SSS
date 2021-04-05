@@ -529,23 +529,26 @@ void Ranks::setPlaysLeadWithVoid(
   Declarer& partner,
   const SidePosition side,
   const unsigned lead,
-  const bool leadCollapse,
+  // const bool leadCollapse,
+  Play& play,
   Plays& plays)
 {
-  unsigned holding3;
-  bool rotateFlag;
-  bool pardCollapse;
+  // unsigned holding3;
+  // bool rotateFlag;
+  // bool pardCollapse;
 
   opps.playFull(0);
 
-  for (auto& pardCard: partner.getCards(false))
+  // for (auto& pardCard: partner.getCards(false))
+  for (auto pardPtr: partner.getCards(false))
   {
-    const unsigned pard = pardCard->getRank();
+    play.pardPtr = pardPtr;
+    const unsigned pard = pardPtr->getRank();
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
     partner.playFull(pard);
-    pardCollapse = (pard > 1 && 
+    play.pardCollapse = (pard > 1 && 
       pard < maxRank &&
       ! partner.hasRank(pard) &&
       ! leader.hasRank(pard));
@@ -561,9 +564,9 @@ void Ranks::setPlaysLeadWithVoid(
       opps.playFull(rho);
           
       // Register the new play.
-      Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
+      Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
-        leadCollapse, pardCollapse, holding3, rotateFlag);
+        play.leadCollapse, play.pardCollapse, play.holding3, play.rotateFlag);
 
       opps.restoreFull(rho);
 
@@ -584,26 +587,28 @@ void Ranks::setPlaysLeadWithoutVoid(
   Declarer& partner,
   const SidePosition side,
   const unsigned lead,
-  const bool leadCollapse,
+  // const bool leadCollapse,
+  Play& play,
   Plays& plays)
 {
-  unsigned holding3;
-  bool rotateFlag;
-  bool pardCollapse;
+  // unsigned holding3;
+  // bool rotateFlag;
+  // bool pardCollapse;
 
   for (auto& lhoCard: opps.getCards())
   {
     const unsigned lho = lhoCard->getRank();
     opps.playFull(lho);
 
-    for (auto& pardCard: partner.getCards(false))
+    for (auto pardPtr: partner.getCards(false))
     {
-      const unsigned pard = pardCard->getRank();
+      play.pardPtr = pardPtr;
+      const unsigned pard = pardPtr->getRank();
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
       partner.playFull(pard);
-      pardCollapse = (pard > 1 && 
+      play.pardCollapse = (pard > 1 && 
         pard != maxRank &&
         ! partner.hasRank(pard) &&
         ! leader.hasRank(pard));
@@ -613,9 +618,9 @@ void Ranks::setPlaysLeadWithoutVoid(
       // We don't need to "play" the void, as it does not affect
       // the holdings.
 
-      Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
+      Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, 0,
-        leadCollapse, pardCollapse, holding3, rotateFlag);
+        play.leadCollapse, play.pardCollapse, play.holding3, play.rotateFlag);
       
       // This loop excludes the RHO void.
       for (auto& rhoCard: opps.getCards())
@@ -630,9 +635,9 @@ void Ranks::setPlaysLeadWithoutVoid(
         // rhoCollapse = (rho > 0 && ! opps.hasRank(rho));
 
         // Register the new play.
-        Ranks::updateHoldings(leader, partner, side, holding3, rotateFlag);
+        Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
         Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
-          leadCollapse, pardCollapse, holding3, rotateFlag);
+          play.leadCollapse, play.pardCollapse, play.holding3, play.rotateFlag);
       
         opps.restoreFull(rho);
       }
@@ -667,35 +672,35 @@ void Ranks::setPlaysSide(
       leader.minFullRank() >= partner.maxFullRank())
     return;
 
-  bool leadCollapse;
+  // bool leadCollapse;
 
+  Play play;
   if (side == SIDE_NORTH)
     play.side = POSITION_NORTH;
   else
     play.side = POSITION_SOUTH;
 
-  for (auto& leadCard: leader.getCards(false))
-  // for (play.leadPtr: leader.getCards())
-  // Probably some const magic to figure out to appease the compiler.
-  // Maybe getCards() makes a const Card const * ?
+  for (auto leadPtr: leader.getCards(false))
   {
-    play.leadPtr = leadCard;
+    // I wish I could write for (play.leadPtr: ...), but a declaration
+    // is required.
+    play.leadPtr = leadPtr;
     const unsigned lead = play.leadPtr->getRank();
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
     leader.playFull(lead);
-    leadCollapse = (! leader.hasRank(lead) && 
+    play.leadCollapse = (! leader.hasRank(lead) && 
       ! partner.hasRank(lead) &&
       lead != 1 &&
       lead != maxRank);
 
     // For optimization we treat the case separately where LHO is void.
     Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,
-      leadCollapse, plays);
+      play, plays);
 
     Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
-      leadCollapse, plays);
+      play, plays);
 
     leader.restoreFull(lead);
   }
