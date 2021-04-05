@@ -210,25 +210,12 @@ string Player::strRank(const unsigned rank) const
 
 wstring Player::wstr() const
 {
-  // string t = "";
-  // for (auto it = names.rbegin(); it != names.rend(); it++)
-    // t += * it;
-
   if (len == 0)
-  {
-// if (t != "-")
-// {
-  // assert(t == "-");
-// }
     return L"-";
-  }
 
   string s = "";
-  for (unsigned rank = maxRank; rank > 0; rank--)
-{
-    s += rankInfo[rank].names;
-}
-// assert(t == s);
+  for (auto it = rankInfo.rbegin(); it != rankInfo.rend(); it++)
+    s += it->names;
 
   wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
   return conv.from_bytes(s);

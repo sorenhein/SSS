@@ -25,7 +25,7 @@ class Ranks
 
     unsigned holding;
     unsigned cards;
-    unsigned maxRank;
+    unsigned maxGlobalRank;
 
 
     void setConstants();

@@ -13,20 +13,15 @@
  */
 
 
-void Declarer::resizeBest(const Declarer& partner)
+void Declarer::resize(
+  const unsigned cardsIn,
+  const CardPosition sideIn)
 {
-  const unsigned lThis = maxRank+1;
-  const unsigned lOther = partner.maxRank+1;
+  Player::resize(cardsIn, sideIn);
 
-  best.resize(lThis);
-
-  for (unsigned rThis = 0; rThis < lThis; rThis++)
-  {
-    if (rankInfo[rThis].count == 0)
-      continue;
-
-    best[rThis].resize(lOther);
-  }
+  best.resize(cardsIn+1);
+  for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
+    best[rThis].resize(cardsIn+1);
 }
 
 
@@ -37,6 +32,7 @@ void Declarer::setVoid()
 
   // A real void.
   minRank = 0;
+  maxRank = 0;
 
   rankInfo[0].count = 1;
   rankInfo[0].ptr = nullptr;
@@ -44,7 +40,6 @@ void Declarer::setVoid()
   // For North-South, a void goes in cardsNew, cardsPtr and
   // ranksPtr.  This is recognized by forceFlag == false.
 
- maxRank = 0;
   cards.emplace_back(Card());
   cardsPtr.push_back(&cards.front());
   ranksPtr.push_back(&cards.front());
@@ -129,8 +124,8 @@ void Declarer::setBest(const Declarer& partner)
   const unsigned lThis = maxRank+1;
   const unsigned lOther = partner.maxRank+1;
 
-  best.clear();
-  best.resize(lThis);
+  // best.clear();
+  // best.resize(lThis);
 
   // Count the numbers of each rank.
   vector<unsigned> numThis, numOther;
@@ -162,7 +157,7 @@ void Declarer::setBest(const Declarer& partner)
     if (rankInfo[rThis].count == 0)
       continue;
 
-    best[rThis].resize(lOther);
+    // best[rThis].resize(lOther);
 
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
@@ -250,16 +245,16 @@ bool Declarer::greater(
     run1 += rankInfo[r].count;
     run2 += p2.rankInfo[r].count;
 
-    // TODO Could use a has() method?
-    // if (r > 2 && opps.rankInfo[r-1].count == 0)
     if (r > 2 && ! opps.hasRank(r-1))
-      continue;  // EW collapse
+      // EW collapse
+      continue;  
     else if (run1 > run2)
       return true;
     else if (run1 < run2)
       return false;
     else if (r <= 2)
-      return true; // Nothing else happens, so equality
+      // Nothing else happens, so equality
+      return true; 
     
     run1 = 0;
     run2 = 0;

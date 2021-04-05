@@ -34,7 +34,9 @@ int main(int argc, char * argv[])
 
   if (control.debugArgs())
     cout << control.str();
-  
+
+  setlocale(LC_ALL, "en_US.UTF-8");
+
   // Set up distributions.
 
   distributions.resize(control.cards());

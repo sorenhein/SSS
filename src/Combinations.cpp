@@ -139,7 +139,6 @@ void Combinations::runSpecificVoid(
   }
 
   cout << ranks.strTable();
-  setlocale(LC_ALL, "en_US.UTF-8");
   wcout << ranks.wstrDiagram();
 
   Combination comb;
@@ -194,6 +193,7 @@ if (cards == 3 && holding == 15)
 // UNUSED(comb);
 // UNUSED(distributions);
 /* */
+// TODO Maybe only do this once, centrally?
 // wcout << ranks.wstrDiagram();
 cout << ranks.strTable();
       comb.strategize(centry, * this, distributions, ranks, plays);

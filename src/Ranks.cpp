@@ -180,7 +180,7 @@ void Ranks::zero()
   south.zero();
   opps.zero();
 
-  maxRank = 0;
+  maxGlobalRank = 0;
 }
 
 
@@ -190,7 +190,7 @@ void Ranks::setPlayers()
 
   // We choose prev_is_NS ("the previously seen card belonged to NS")
   // such that the first real card we see will result in an increase
-  // in maxRank, i.e. in the running rank.  Therefore we will never
+  // in maxGlobalRank, i.e. in the running rank.  Therefore we will never
   // write to rank = 0 (void) in the loop itself.
   bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
 
@@ -209,11 +209,11 @@ void Ranks::setPlayers()
     {
       if (prev_is_NS)
       {
-        maxRank++;
-        opps.updateStep(maxRank);
+        maxGlobalRank++;
+        opps.updateStep(maxGlobalRank);
       }
 
-      opps.update(maxRank, i);
+      opps.update(maxGlobalRank, i);
 
       prev_is_NS = false;
     }
@@ -224,15 +224,15 @@ void Ranks::setPlayers()
         // We could get a mix of positions within the same rank,
         // not necessarily sorted by position.  So we have to treat
         // North and South separately.
-        maxRank++;
-        north.updateStep(maxRank);
-        south.updateStep(maxRank);
+        maxGlobalRank++;
+        north.updateStep(maxGlobalRank);
+        south.updateStep(maxGlobalRank);
       }
 
       if (c == POSITION_NORTH)
-        north.update(maxRank, i);
+        north.update(maxGlobalRank, i);
       else
-        south.update(maxRank, i);
+        south.update(maxGlobalRank, i);
 
       prev_is_NS = true;
     }
@@ -265,7 +265,7 @@ unsigned Ranks::canonicalTrinary(
   // Therefore Combinations::getPtr looks up the canonical index.
   unsigned holding3 = 0;
 
-  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
+  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
       (opps.count(rank) << 8) | 
@@ -291,7 +291,7 @@ void Ranks::canonicalBoth(
   holding3 = 0;
   holding2 = 0;
 
-  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
+  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
       (opps.count(rank) << 8) | 
@@ -333,16 +333,16 @@ void Ranks::trivialRanked(
   const unsigned tricks,
   TrickEntry& trivialEntry) const
 {
-  if (opps.hasRank(maxRank))
+  if (opps.hasRank(maxGlobalRank))
     trivialEntry.setEmpty(tricks-1);
   else
   {
     // Play the highest card.
-    if (north.hasRank(maxRank))
+    if (north.hasRank(maxGlobalRank))
       trivialEntry.set(tricks, WIN_NORTH, north.top());
 
     // If both declarer sides have winners, keep both as a choice.
-    if (south.hasRank(maxRank))
+    if (south.hasRank(maxGlobalRank))
       trivialEntry.set(tricks, WIN_SOUTH, south.top());
   }
 }
@@ -389,7 +389,7 @@ bool Ranks::leadOK(
   if (partner.isVoid())
   { 
     // If we have the top rank opposite a void, always play it.
-    if (leader.maxFullRank() == maxRank && lead < maxRank)
+    if (leader.maxFullRank() == maxGlobalRank && lead < maxGlobalRank)
       return false;
   }
   else if (! leader.isSingleRanked())
@@ -509,7 +509,7 @@ void Ranks::setPlaysLeadWithVoid(
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
-    play.pardCollapse = partner.playRank(pard, leader, maxRank);
+    play.pardCollapse = partner.playRank(pard, leader, maxGlobalRank);
 
     const unsigned toBeat = max(lead, pard);
 
@@ -561,7 +561,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
-      play.pardCollapse = partner.playRank(pard, leader, maxRank);
+      play.pardCollapse = partner.playRank(pard, leader, maxGlobalRank);
 
       // As LHO is not void, RHO may show out.  We do this separately,
       // as it is more convenient to store the plays in Player this way.
@@ -631,7 +631,7 @@ void Ranks::setPlaysSide(
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    play.leadCollapse = leader.playRank(lead, partner, maxRank);
+    play.leadCollapse = leader.playRank(lead, partner, maxGlobalRank);
 
     // For optimization we treat the case separately where LHO is void.
     Ranks::setPlaysLeadWithVoid(leader, partner, lead, play, plays);
@@ -675,7 +675,7 @@ string Ranks::strTable() const
     opps.strRankHeader() <<
     "\n";
 
-  for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
+  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
     ss <<
       north.strRank(rank) <<
       south.strRank(rank) <<

@@ -41,7 +41,9 @@ class Declarer: public Player
 
   public:
 
-    void resizeBest(const Declarer& partner);
+    void resize(
+      const unsigned cardsIn,
+      const CardPosition sideIn);
 
     void setNames();
 
