@@ -118,8 +118,9 @@ class Plays
 
 
     LeadNode * logLead(
-      const SidePosition side,
-      const unsigned lead,
+      // const SidePosition side,
+      // const unsigned lead,
+      const Play& play,
       bool& newFlag);
 
     LhoNode * logLho(
@@ -133,12 +134,8 @@ class Plays
       bool& newFlag);
 
     void logRho(
-      const unsigned rho,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
-      const bool knownVoidLho,
-      const bool knownVoidRho,
-      const bool voidPard,
       const Play& play,
       PardNode * pardPtr);
 
@@ -157,7 +154,7 @@ class Plays
     unsigned size() const;
 
     void log(
-      const SidePosition side,
+      // const SidePosition side,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
       const Play& play);

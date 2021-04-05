@@ -460,7 +460,6 @@ void Ranks::logPlay(
   Plays& plays,
   const Declarer& leader,
   const Declarer& partner,
-  const SidePosition side,
   Play& play) const
 {
   play.trickNS = (max(play.leadPtr->getRank(), play.pardPtr->getRank()) > max(play.lhoPtr->getRank(), play.rhoPtr->getRank()) ? 1 : 0);
@@ -516,7 +515,8 @@ void Ranks::logPlay(
     play.currBestPtr = winPtr;
   }
 
-  plays.log(side, leadOrderPtr, pardOrderPtr, play);
+  plays.log(//side, 
+    leadOrderPtr, pardOrderPtr, play);
 }
 
 
@@ -557,7 +557,7 @@ void Ranks::setPlaysLeadWithVoid(
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, side, play);
+      Ranks::logPlay(plays, leader, partner, play);
 
       opps.restoreFull(rho);
 
@@ -608,7 +608,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       play.rhoPtr = opps.voidPtr();
       Ranks::updateHoldings(leader, partner, side, 
         play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, side, play);
+      Ranks::logPlay(plays, leader, partner, play);
       
       // This loop excludes the RHO void.
       for (auto& rhoPtr: opps.getCards())
@@ -625,7 +625,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, 
           play.holding3, play.rotateFlag);
-        Ranks::logPlay(plays, leader, partner, side, play);
+        Ranks::logPlay(plays, leader, partner, play);
       
         opps.restoreFull(rho);
       }

@@ -85,10 +85,12 @@ unsigned Plays::size() const
 
 
 Plays::LeadNode * Plays::logLead(
-  const SidePosition side,
-  const unsigned lead,
+  const Play& play,
   bool& newFlag)
 {
+  const SidePosition side = (play.side == POSITION_NORTH ? SIDE_NORTH : SIDE_SOUTH);
+  const unsigned lead = play.leadPtr->getRank();
+
   // We use the fact that plays arrive in order.
   if (side == sidePrev && lead == leadPrev)
   {
@@ -96,8 +98,6 @@ Plays::LeadNode * Plays::logLead(
     return leadPrevPtr;
   }
 
-  // if (leadNext >= leadNodes.size())
-    // leadNodes.resize(leadNodes.size() + chunk.lead);
   if (leadNextIter == leadNodes.end())
     leadNextIter = leadNodes.insert(leadNextIter, chunk.lead, LeadNode());
 
@@ -105,7 +105,6 @@ Plays::LeadNode * Plays::logLead(
   sidePrev = side;
   leadPrev = lead;
 
-  // LeadNode& node = leadNodes[leadNext++];
   LeadNode& node = * leadNextIter;
   leadNext++;
   leadNextIter++;
@@ -127,15 +126,12 @@ Plays::LhoNode * Plays::logLho(
   if (newFlag == false && lho == lhoPrev)
     return lhoPrevPtr;
   
-  // if (lhoNext >= lhoNodes.size())
-    // lhoNodes.resize(lhoNodes.size() + chunk.lho);
   if (lhoNextIter == lhoNodes.end())
     lhoNextIter = lhoNodes.insert(lhoNextIter, chunk.lho, LhoNode());
 
   newFlag = true;
   lhoPrev = lho;
 
-  // LhoNode& node = lhoNodes[lhoNext++];
   LhoNode& node = * lhoNextIter;
   lhoNext++;
   lhoNextIter++;
@@ -180,12 +176,8 @@ Plays::PardNode * Plays::logPard(
 
 
 void Plays::logRho(
-  const unsigned rho,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
-  const bool knownVoidLho,
-  const bool knownVoidRho,
-  const bool voidPard,
   const Play& play,
   PardNode * pardPtr)
 {
@@ -196,14 +188,10 @@ void Plays::logRho(
   rhoNext++;
   rhoNextIter++;
 
-  node.rho = rho;
+  node.rho = play.rhoPtr->getRank();
   node.leadCollapse = play.leadCollapse;
   node.pardCollapse = play.pardCollapse;
-  node.cardsNew = cards +
-    (knownVoidLho ? 1 : 0) + 
-    (knownVoidRho ? 1 : 0) +
-    (voidPard ? 1 : 0) - 4;
-assert(node.cardsNew == play.cardsLeft);
+  node.cardsNew = play.cardsLeft;
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
   node.leadDequePtr = play.leaderCardsPtr;
@@ -212,15 +200,11 @@ assert(node.cardsNew == play.cardsLeft);
   node.holdingNew = play.holding3;
   node.rotateNew = play.rotateFlag;
   node.trickNS = play.trickNS;
-  node.knownVoidLho = knownVoidLho;
-  node.knownVoidRho = knownVoidRho;
-  node.voidPard = voidPard;
   node.pardPtr = pardPtr;
 }
 
 
 void Plays::log(
-  const SidePosition side,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
   const Play& play)
@@ -228,21 +212,13 @@ void Plays::log(
   // The pointers assume that the Ranks object still exists!
 
   bool newFlag;
-  LeadNode * leadPtr = Plays::logLead(side, play.leadPtr->getRank(), 
-    newFlag);
+  LeadNode * leadPtr = Plays::logLead(play, newFlag);
   LhoNode * lhoPtr = Plays::logLho(play.lhoPtr->getRank(), leadPtr, 
     newFlag);
   PardNode * pardPtr = Plays::logPard(play.pardPtr->getRank(), lhoPtr, 
     newFlag);
 
-  const bool knownVoidLho = (play.lhoPtr->getRank() == 0);
-  const bool knownVoidRho = (play.rhoPtr->getRank() == 0);
-  const bool voidPard = (play.pardPtr->getRank() == 0);
-
-  Plays::logRho(play.rhoPtr->getRank(),
-    leadOrderPtr, pardOrderPtr, 
-    knownVoidLho, knownVoidRho, voidPard,
-    play, pardPtr);
+  Plays::logRho(leadOrderPtr, pardOrderPtr, play, pardPtr);
 }
 
 
@@ -889,13 +865,6 @@ string Plays::str() const
     LhoNode const * lhoPtr = pardPtr->lhoPtr;
     LeadNode const * leadPtr = lhoPtr->leadPtr;
 
-bool b1 = rhoNode.knownVoidLho;
-bool b2 = (lhoPtr->lho == 0);
-assert(b1 == b2);
-bool b3 = rhoNode.knownVoidRho;
-bool b4 = (rhoNode.rho == 0);
-assert(b3 == b4);
-
     ss << right <<
       setw(4) << (leadPtr->side == SIDE_NORTH ? "N" : "S") <<
       setw(5) << leadPtr->lead <<
@@ -903,8 +872,8 @@ assert(b3 == b4);
       setw(5) << (pardPtr->pard == 0 ? "-" : to_string(pardPtr->pard)) <<
       setw(5) << (rhoNode.rho == 0 ? "-" : to_string(rhoNode.rho)) <<
       setw(5) << (rhoNode.trickNS == 1 ? "+" : "") <<
-      setw(5) << (rhoNode.knownVoidLho ? "yes" : "") <<
-      setw(5) << (rhoNode.knownVoidRho ? "yes" : "") <<
+      setw(5) << (lhoPtr->lho == 0 ? "yes" : "") <<
+      setw(5) << (rhoNode.rho == 0 ? "yes" : "") <<
       setw(10) << rhoNode.holdingNew <<
       endl;
   }

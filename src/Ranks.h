@@ -71,7 +71,6 @@ class Ranks
       Plays& plays,
       const Declarer& leader,
       const Declarer& partner,
-      const SidePosition side,
       Play& play) const;
 
     void setPlaysLeadWithVoid(
