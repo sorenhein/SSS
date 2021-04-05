@@ -65,10 +65,9 @@ class Subwinner
 
     void flip();
 
-    void update(
-      const Play& play,
-      vector<Card> const * northOrderPtr,
-      vector<Card> const * southOrderPtr);
+    void update(const Play& play);
+      // vector<Card> const * northOrderPtr,
+      // vector<Card> const * southOrderPtr);
 
     bool rankExceeds(const Subwinner& sw2) const;
 

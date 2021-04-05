@@ -74,8 +74,6 @@ class Winner
 
     void update(
       const Play& play,
-      vector<Card> const * northOrderPtr,
-      vector<Card> const * southOrderPtr,
       Winner const * currBestPtr);
 
     string str() const;

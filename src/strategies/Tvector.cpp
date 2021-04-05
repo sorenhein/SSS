@@ -447,8 +447,6 @@ void Tvector::adapt(
   const Play& play,
   const Survivors& survivors,
   const unsigned trickNS,
-  vector<Card> const * northOrderPtr, // Relative to parent,
-  vector<Card> const * southOrderPtr, // so after rotation
   Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
@@ -488,7 +486,7 @@ void Tvector::adapt(
 
   // Update the winners.
     for (auto& te: results)
-      te.winner.update(play, northOrderPtr, southOrderPtr, currBestPtr);
+      te.winner.update(play, currBestPtr);
 
   // LHO and RHO void flags pertain to the this rotation state
   // (parent's frame of reference).

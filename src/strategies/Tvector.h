@@ -147,8 +147,6 @@ class Tvector
       const Play& play,
       const Survivors& survivors,
       const unsigned trickNS,
-      vector<Card> const * northOrderPtr,
-      vector<Card> const * southOrderPtr,
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

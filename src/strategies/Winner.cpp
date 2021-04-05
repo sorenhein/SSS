@@ -177,12 +177,10 @@ void Winner::flip()
 
 void Winner::update(
   const Play& play,
-  vector<Card> const * northOrderPtr,
-  vector<Card> const * southOrderPtr,
   Winner const * currBestPtr)
 {
   for (auto& subwinner: subwinners)
-    subwinner.update(play, northOrderPtr, southOrderPtr);
+    subwinner.update(play);
 
   if (currBestPtr)
     * this *= * currBestPtr;

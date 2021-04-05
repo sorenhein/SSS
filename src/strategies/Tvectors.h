@@ -66,8 +66,6 @@ class Tvectors
       const Play& play,
       const Survivors& survivors,
       const unsigned trickNS,
-      vector<Card> const * northOrderPtr, // Relative to parent,
-      vector<Card> const * southOrderPtr, // so after rotation
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

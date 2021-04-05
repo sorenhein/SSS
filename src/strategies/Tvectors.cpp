@@ -239,15 +239,13 @@ void Tvectors::adapt(
   const Play& play,
   const Survivors& survivors,
   const unsigned trickNS,
-  vector<Card> const * northOrderPtr,
-  vector<Card> const * southOrderPtr,
   Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(play, survivors, trickNS, northOrderPtr, southOrderPtr, 
+    tv.adapt(play, survivors, trickNS,
       currBestPtr, lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)

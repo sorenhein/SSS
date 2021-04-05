@@ -254,50 +254,22 @@ void Subwinner::flip()
 }
 
 
-void Subwinner::update(
-  const Play& play,
-  vector<Card> const * northOrderPtr,
-  vector<Card> const * southOrderPtr)
+void Subwinner::update(const Play& play)
 {
-UNUSED(play);
-
   if (mode == SUBWIN_NORTH_ONLY)
   {
     // This may also change the winning side.
-    assert(northOrderPtr != nullptr);
-    assert(north.getNumber() < northOrderPtr->size());
-
-Card altNorth = * play.northTranslate(north.getNumber());
-
-    north = (* northOrderPtr)[north.getNumber()];
-
-assert(altNorth.identical(north));
+    north = * play.northTranslate(north.getNumber());
   }
   else if (mode == SUBWIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
-    assert(southOrderPtr != nullptr);
-    assert(south.getNumber() < southOrderPtr->size());
-
-Card altSouth = * play.southTranslate(south.getNumber());
-
-    south = (* southOrderPtr)[south.getNumber()];
-
-assert(altSouth.identical(south));
+    south = * play.southTranslate(south.getNumber());
   }
   else if (mode == SUBWIN_BOTH)
   {
-    assert(northOrderPtr != nullptr);
-    assert(north.getNumber() < northOrderPtr->size());
-Card altNorth = * play.northTranslate(north.getNumber());
-    north = (* northOrderPtr)[north.getNumber()];
-assert(altNorth.identical(north));
-
-    assert(southOrderPtr != nullptr);
-    assert(south.getNumber() < southOrderPtr->size());
-Card altSouth = * play.southTranslate(south.getNumber());
-    south = (* southOrderPtr)[south.getNumber()];
-assert(altSouth.identical(south));
+    north = * play.northTranslate(north.getNumber());
+    south = * play.southTranslate(south.getNumber());
 
     // As a result of the mapping to parent ranks, North and South
     // may actually be different ranks now.  As North-South choose,
