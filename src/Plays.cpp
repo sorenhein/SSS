@@ -322,12 +322,12 @@ if (debugFlag)
 // cout << tvs.str("Tvectors") << endl;
 
     // TODO Just pass in the RHO node in some form?
-    tvs.adapt(survivors, 
+    tvs.adapt(
+      rhoNode.play,
+      survivors, 
       rhoNode.play.trickNS, 
       northOrderPtr,
       southOrderPtr,
-      northDequePtr,
-      southDequePtr,
       rhoNode.play.currBestPtr,
       first == 0,
       second == 0,
@@ -511,12 +511,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     // adapt() renumbers distributions from combPtr.
     // It also renumbers winners within strategies.
-    play.strategies.adapt(survivors, 
+    play.strategies.adapt(
+      rhoNode.play,
+      survivors, 
       rhoNode.play.trickNS, 
       rhoNode.leadOrderPtr,
       rhoNode.pardOrderPtr,
-      rhoNode.play.leaderCardsPtr,
-      rhoNode.play.partnerCardsPtr,
       rhoNode.play.currBestPtr,
       play.rho == 0,
       play.lho == 0,

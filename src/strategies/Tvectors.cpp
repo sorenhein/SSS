@@ -236,21 +236,19 @@ unsigned Tvectors::purge(const Tvector& constants)
 
 
 void Tvectors::adapt(
+  const Play& play,
   const Survivors& survivors,
   const unsigned trickNS,
   vector<Card> const * northOrderPtr,
   vector<Card> const * southOrderPtr,
-  deque<Card const *> const * northDequePtr,
-  deque<Card const *> const * southDequePtr,
   Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
-    tv.adapt(survivors, trickNS, northOrderPtr, southOrderPtr, 
-      northDequePtr, southDequePtr, currBestPtr,
-      lhoVoidFlag, rhoVoidFlag, rotateFlag);
+    tv.adapt(play, survivors, trickNS, northOrderPtr, southOrderPtr, 
+      currBestPtr, lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)
     Tvectors::collapseOnVoid();

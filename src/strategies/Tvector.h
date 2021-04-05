@@ -9,6 +9,8 @@
 
 #include "Winner.h"
 
+struct Play;
+
 using namespace std;
 
 
@@ -142,12 +144,11 @@ class Tvector
       const unsigned trickNS);
 
     void adapt(
+      const Play& play,
       const Survivors& survivors,
       const unsigned trickNS,
       vector<Card> const * northOrderPtr,
       vector<Card> const * southOrderPtr,
-      deque<Card const *> const * northDequePtr,
-      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

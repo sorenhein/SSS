@@ -11,6 +11,7 @@
 #include "Card.h"
 #include "../struct.h"
 
+struct Play;
 
 using namespace std;
 
@@ -62,12 +63,11 @@ class Tvectors
     unsigned purge(const Tvector& constants);
 
     void adapt(
+      const Play& play,
       const Survivors& survivors,
       const unsigned trickNS,
       vector<Card> const * northOrderPtr, // Relative to parent,
       vector<Card> const * southOrderPtr, // so after rotation
-      deque<Card const *> const * northDequePtr,
-      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,

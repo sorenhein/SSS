@@ -8,6 +8,8 @@
 #include "Subwinner.h"
 #include "Card.h"
 
+struct Play;
+
 using namespace std;
 
 
@@ -71,10 +73,9 @@ class Winner
     void flip();
 
     void update(
+      const Play& play,
       vector<Card> const * northOrderPtr,
       vector<Card> const * southOrderPtr,
-      deque<Card const *> const * northDequePtr,
-      deque<Card const *> const * southDequePtr,
       Winner const * currBestPtr);
 
     string str() const;

@@ -9,6 +9,8 @@
 #include "Card.h"
 #include "../const.h"
 
+struct Play;
+
 using namespace std;
 
 
@@ -64,10 +66,9 @@ class Subwinner
     void flip();
 
     void update(
+      const Play& play,
       vector<Card> const * northOrderPtr,
-      vector<Card> const * southOrderPtr,
-      deque<Card const *> const * northDequePtr,
-      deque<Card const *> const * southDequePtr);
+      vector<Card> const * southOrderPtr);
 
     bool rankExceeds(const Subwinner& sw2) const;
 
