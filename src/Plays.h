@@ -136,9 +136,6 @@ class Plays
       const unsigned rho,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
-      deque<Card const *> const * leadDequePtr,
-      deque<Card const *> const * pardDequePtr,
-      Winner const * currBestPtr,
       const bool knownVoidLho,
       const bool knownVoidRho,
       const bool voidPard,
@@ -161,15 +158,8 @@ class Plays
 
     void log(
       const SidePosition side,
-      // const unsigned lead,
-      // const unsigned lho,
-      // const unsigned pard,
-      // const unsigned rho,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
-      deque<Card const *> const * leadDequePtr,
-      deque<Card const *> const * pardDequePtr,
-      Winner const * currBestPtr,
       const Play& play);
 
    void setCombPtrs(const Combinations& combinations);

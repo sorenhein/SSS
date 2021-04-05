@@ -14,18 +14,16 @@ class Combination;
 
 struct Play
 {
-  CardPosition side; // set
-  Card const * leadPtr; // set
+  CardPosition side;
+  Card const * leadPtr;
   Card const * lhoPtr;
-  Card const * pardPtr; // set twice
+  Card const * pardPtr;
   Card const * rhoPtr;
 
   bool leadCollapse; // true if the lead rank goes away after the trick
-  // set
-  bool pardCollapse; // set twice
+  bool pardCollapse;
 
   unsigned trickNS; // 1 iff North-South win the trick
-  // set
 
   // The leader cards are used to map subsequent winners up to current
   // ones.  Once the leader has played a card, there is one card less
@@ -34,8 +32,8 @@ struct Play
   // As we know the number of the current lead, we can perform this map.
   // This is used for tracking rank winners in overall combinations.
 
-  deque<Card> const * leaderCardsPtr;
-  deque<Card> const * partnerCardsPtr;
+  deque<Card const *> const * leaderCardsPtr;
+  deque<Card const *> const * partnerCardsPtr;
 
   // There is a "winner" associated with the current trick.  If 
   // North-South didn't win the trick, it is the nullptr.  If one of
@@ -46,12 +44,12 @@ struct Play
 
   // Information about the place the play came from.
   unsigned cardCount;
-  unsigned holding3; // set 3x
-  bool rotateFlag; // set 3x
+  unsigned holding3;
+  bool rotateFlag;
 
   // The combination following the current trick.  This does not get
   // set directly in Ranks.
-  Combination const * combPtr;
+  Combination const * combPtr; // UNSET
 };
 
 #endif

@@ -470,48 +470,48 @@ void Ranks::logPlay(
   deque<Card const *> const * leadDequePtr;
   deque<Card const *> const * pardDequePtr;
 
-bool b1 = play.leadPtr->isVoid();
-bool b2 = (play.leadPtr->getRank() == 0);
-assert(b1 == b2);
-  if (play.leadPtr->getRank() == 0)
+  play.cardCount = cards;
+
+  if (play.leadPtr->isVoid())
   {
     leadOrderPtr = nullptr;
     leadDequePtr = nullptr;
+    play.leaderCardsPtr = nullptr;
   }
   else
   {
     leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
     leadDequePtr = &leader.getCards(true);
+    play.leaderCardsPtr = leadDequePtr;
   }
 
-  // isVoid?
-bool b3 = play.pardPtr->isVoid();
-bool b4 = (play.pardPtr->getRank() == 0);
-assert(b3 == b4);
-  if (play.pardPtr->getRank() == 0)
+  if (play.pardPtr->isVoid())
   {
     pardOrderPtr = nullptr;
     pardDequePtr = nullptr;
+    play.partnerCardsPtr = nullptr;
   }
   else
   {
     pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
     pardDequePtr = &partner.getCards(true);
+    play.partnerCardsPtr = pardDequePtr;
   }
 
   Winner const * winPtr;
   if (! play.trickNS)
+  {
     winPtr = nullptr;
+    play.currBestPtr = nullptr;
+  }
   else
   {
     // TODO Probably generate on the fly if not already set.
     winPtr = &leader.getWinner(play.leadPtr->getRank(), play.pardPtr->getRank());
+    play.currBestPtr = winPtr;
   }
 
-  plays.log(side, 
-    leadOrderPtr, pardOrderPtr, 
-    leadDequePtr, pardDequePtr,
-    winPtr, play);
+  plays.log(side, leadOrderPtr, pardOrderPtr, play);
 }
 
 
@@ -520,7 +520,6 @@ void Ranks::setPlaysLeadWithVoid(
   Declarer& partner,
   const SidePosition side,
   const unsigned lead,
-  // const bool leadCollapse,
   Play& play,
   Plays& plays)
 {

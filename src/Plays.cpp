@@ -183,9 +183,6 @@ void Plays::logRho(
   const unsigned rho,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
-  deque<Card const *> const * leadDequePtr,
-  deque<Card const *> const * pardDequePtr,
-  Winner const * currBestPtr,
   const bool knownVoidLho,
   const bool knownVoidRho,
   const bool voidPard,
@@ -208,9 +205,9 @@ void Plays::logRho(
     (voidPard ? 1 : 0) - 4;
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
-  node.leadDequePtr = leadDequePtr;
-  node.pardDequePtr = pardDequePtr;
-  node.currBestPtr = currBestPtr;
+  node.leadDequePtr = play.leaderCardsPtr;
+  node.pardDequePtr = play.partnerCardsPtr;
+  node.currBestPtr = play.currBestPtr;
   node.holdingNew = play.holding3;
   node.rotateNew = play.rotateFlag;
   node.trickNS = play.trickNS;
@@ -225,17 +222,17 @@ void Plays::log(
   const SidePosition side,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
-  deque<Card const *> const * leadDequePtr,
-  deque<Card const *> const * pardDequePtr,
-  Winner const * currBestPtr,
   const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
 
   bool newFlag;
-  LeadNode * leadPtr = Plays::logLead(side, play.leadPtr->getRank(), newFlag);
-  LhoNode * lhoPtr = Plays::logLho(play.lhoPtr->getRank(), leadPtr, newFlag);
-  PardNode * pardPtr = Plays::logPard(play.pardPtr->getRank(), lhoPtr, newFlag);
+  LeadNode * leadPtr = Plays::logLead(side, play.leadPtr->getRank(), 
+    newFlag);
+  LhoNode * lhoPtr = Plays::logLho(play.lhoPtr->getRank(), leadPtr, 
+    newFlag);
+  PardNode * pardPtr = Plays::logPard(play.pardPtr->getRank(), lhoPtr, 
+    newFlag);
 
   const bool knownVoidLho = (play.lhoPtr->getRank() == 0);
   const bool knownVoidRho = (play.rhoPtr->getRank() == 0);
@@ -243,8 +240,6 @@ void Plays::log(
 
   Plays::logRho(play.rhoPtr->getRank(),
     leadOrderPtr, pardOrderPtr, 
-    leadDequePtr, pardDequePtr,
-    currBestPtr,
     knownVoidLho, knownVoidRho, voidPard,
     play, pardPtr);
 }
