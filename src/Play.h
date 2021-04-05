@@ -21,9 +21,11 @@ struct Play
   Card const * rhoPtr;
 
   bool leadCollapse; // true if the lead rank goes away after the trick
+  // set
   bool pardCollapse; // set twice
 
   unsigned trickNS; // 1 iff North-South win the trick
+  // set
 
   // The leader cards are used to map subsequent winners up to current
   // ones.  Once the leader has played a card, there is one card less

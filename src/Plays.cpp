@@ -240,9 +240,16 @@ void Plays::log(
   deque<Card const *> const * pardDequePtr,
   Winner const * currBestPtr,
   const unsigned holding3,
-  const bool rotateFlag)
+  const bool rotateFlag,
+  const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
+
+assert(trickNS == play.trickNS);
+assert(leadCollapse == play.leadCollapse);
+assert(pardCollapse == play.pardCollapse);
+assert(holding3 == play.holding3);
+assert(rotateFlag == play.rotateFlag);
 
   bool newFlag;
   LeadNode * leadPtr = Plays::logLead(side, lead, newFlag);

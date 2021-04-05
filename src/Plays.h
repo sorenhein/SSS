@@ -178,7 +178,8 @@ class Plays
       deque<Card const *> const * pardDequePtr,
       Winner const * currBestPtr,
       const unsigned holding3,
-      const bool rotateFlag);
+      const bool rotateFlag,
+      const Play& play);
 
    void setCombPtrs(const Combinations& combinations);
 

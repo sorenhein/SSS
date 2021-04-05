@@ -79,7 +79,8 @@ class Ranks
       const bool leadCollapse,
       const bool pardCollapse,
       const unsigned holding3,
-      const bool rotateFlag) const;
+      const bool rotateFlag,
+      Play& play) const;
 
     void setPlaysLeadWithVoid(
       Declarer& leader,
