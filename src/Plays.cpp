@@ -181,19 +181,15 @@ Plays::PardNode * Plays::logPard(
 
 void Plays::logRho(
   const unsigned rho,
-  const bool leadCollapse,
-  const bool pardCollapse,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
   deque<Card const *> const * leadDequePtr,
   deque<Card const *> const * pardDequePtr,
   Winner const * currBestPtr,
-  const unsigned holding3,
-  const bool rotateFlag,
-  const unsigned trickNS,
   const bool knownVoidLho,
   const bool knownVoidRho,
   const bool voidPard,
+  const Play& play,
   PardNode * pardPtr)
 {
   if (rhoNextIter == rhoNodes.end())
@@ -204,8 +200,8 @@ void Plays::logRho(
   rhoNextIter++;
 
   node.rho = rho;
-  node.leadCollapse = leadCollapse;
-  node.pardCollapse = pardCollapse;
+  node.leadCollapse = play.leadCollapse;
+  node.pardCollapse = play.pardCollapse;
   node.cardsNew = cards +
     (knownVoidLho ? 1 : 0) + 
     (knownVoidRho ? 1 : 0) +
@@ -215,9 +211,9 @@ void Plays::logRho(
   node.leadDequePtr = leadDequePtr;
   node.pardDequePtr = pardDequePtr;
   node.currBestPtr = currBestPtr;
-  node.holdingNew = holding3;
-  node.rotateNew = rotateFlag;
-  node.trickNS = trickNS;
+  node.holdingNew = play.holding3;
+  node.rotateNew = play.rotateFlag;
+  node.trickNS = play.trickNS;
   node.knownVoidLho = knownVoidLho;
   node.knownVoidRho = knownVoidRho;
   node.voidPard = voidPard;
@@ -231,25 +227,14 @@ void Plays::log(
   const unsigned lho,
   const unsigned pard,
   const unsigned rho,
-  const unsigned trickNS,
-  const bool leadCollapse,
-  const bool pardCollapse,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
   deque<Card const *> const * leadDequePtr,
   deque<Card const *> const * pardDequePtr,
   Winner const * currBestPtr,
-  const unsigned holding3,
-  const bool rotateFlag,
   const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
-
-assert(trickNS == play.trickNS);
-assert(leadCollapse == play.leadCollapse);
-assert(pardCollapse == play.pardCollapse);
-assert(holding3 == play.holding3);
-assert(rotateFlag == play.rotateFlag);
 
   bool newFlag;
   LeadNode * leadPtr = Plays::logLead(side, lead, newFlag);
@@ -261,13 +246,11 @@ assert(rotateFlag == play.rotateFlag);
   const bool voidPard = (pard == 0);
 
   Plays::logRho(rho,
-    leadCollapse, pardCollapse, 
     leadOrderPtr, pardOrderPtr, 
     leadDequePtr, pardDequePtr,
     currBestPtr,
-    holding3, rotateFlag,
-    trickNS, knownVoidLho, knownVoidRho, voidPard,
-    pardPtr);
+    knownVoidLho, knownVoidRho, voidPard,
+    play, pardPtr);
 }
 
 

@@ -76,10 +76,6 @@ class Ranks
       const unsigned lho,
       const unsigned pard,
       const unsigned rho,
-      const bool leadCollapse,
-      const bool pardCollapse,
-      const unsigned holding3,
-      const bool rotateFlag,
       Play& play) const;
 
     void setPlaysLeadWithVoid(

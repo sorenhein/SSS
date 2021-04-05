@@ -134,19 +134,15 @@ class Plays
 
     void logRho(
       const unsigned rho,
-      const bool leadCollapse,
-      const bool pardCollapse,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
       deque<Card const *> const * leadDequePtr,
       deque<Card const *> const * pardDequePtr,
       Winner const * currBestPtr,
-      const unsigned holding3,
-      const bool rotateFlag,
-      const unsigned trickNS,
       const bool knownVoidLho,
       const bool knownVoidRho,
       const bool voidPard,
+      const Play& play,
       PardNode * pardPtr);
 
     string strHeader() const;
@@ -169,16 +165,11 @@ class Plays
       const unsigned lho,
       const unsigned pard,
       const unsigned rho,
-      const unsigned trickNS,
-      const bool leadCollapse,
-      const bool pardCollapse,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
       deque<Card const *> const * leadDequePtr,
       deque<Card const *> const * pardDequePtr,
       Winner const * currBestPtr,
-      const unsigned holding3,
-      const bool rotateFlag,
       const Play& play);
 
    void setCombPtrs(const Combinations& combinations);

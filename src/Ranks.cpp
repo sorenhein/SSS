@@ -465,10 +465,6 @@ void Ranks::logPlay(
   const unsigned lho,
   const unsigned pard,
   const unsigned rho,
-  const bool leadCollapse,
-  const bool pardCollapse,
-  const unsigned holding3,
-  const bool rotateFlag,
   Play& play) const
 {
   play.trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
@@ -509,17 +505,10 @@ void Ranks::logPlay(
     winPtr = &leader.getWinner(lead, pard);
   }
 
-assert(holding3 == play.holding3);
-assert(rotateFlag == play.rotateFlag);
-assert(leadCollapse == play.leadCollapse);
-assert(pardCollapse == play.pardCollapse);
-
   plays.log(side, lead, lho, pard, rho, 
-    play.trickNS, leadCollapse, pardCollapse,
     leadOrderPtr, pardOrderPtr, 
     leadDequePtr, pardDequePtr,
     winPtr,
-    holding3, rotateFlag,
     play);
 }
 
@@ -566,8 +555,7 @@ void Ranks::setPlaysLeadWithVoid(
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
-        play.leadCollapse, play.pardCollapse, 
-        play.holding3, play.rotateFlag, play);
+        play);
 
       opps.restoreFull(rho);
 
@@ -617,8 +605,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       Ranks::updateHoldings(leader, partner, side, 
         play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, 0,
-        play.leadCollapse, play.pardCollapse, 
-        play.holding3, play.rotateFlag, play);
+        play);
       
       // This loop excludes the RHO void.
       for (auto& rhoCard: opps.getCards())
@@ -635,8 +622,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         Ranks::updateHoldings(leader, partner, side, 
           play.holding3, play.rotateFlag);
         Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
-          play.leadCollapse, play.pardCollapse, 
-          play.holding3, play.rotateFlag, play);
+          play);
       
         opps.restoreFull(rho);
       }
