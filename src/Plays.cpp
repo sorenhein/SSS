@@ -203,6 +203,7 @@ void Plays::logRho(
     (knownVoidLho ? 1 : 0) + 
     (knownVoidRho ? 1 : 0) +
     (voidPard ? 1 : 0) - 4;
+assert(node.cardsNew == play.cardsLeft);
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
   node.leadDequePtr = play.leaderCardsPtr;
@@ -887,6 +888,13 @@ string Plays::str() const
     PardNode const * pardPtr = rhoNode.pardPtr;
     LhoNode const * lhoPtr = pardPtr->lhoPtr;
     LeadNode const * leadPtr = lhoPtr->leadPtr;
+
+bool b1 = rhoNode.knownVoidLho;
+bool b2 = (lhoPtr->lho == 0);
+assert(b1 == b2);
+bool b3 = rhoNode.knownVoidRho;
+bool b4 = (rhoNode.rho == 0);
+assert(b3 == b4);
 
     ss << right <<
       setw(4) << (leadPtr->side == SIDE_NORTH ? "N" : "S") <<

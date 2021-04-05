@@ -43,7 +43,9 @@ struct Play
   Winner const * currBestPtr;
 
   // Information about the place the play came from.
-  unsigned cardCount;
+  unsigned cardsLeft;
+
+  // TODO Do we need these two if we have combPtr?
   unsigned holding3;
   bool rotateFlag;
 

@@ -470,7 +470,12 @@ void Ranks::logPlay(
   deque<Card const *> const * leadDequePtr;
   deque<Card const *> const * pardDequePtr;
 
-  play.cardCount = cards;
+  // Number of cards in play after this trick;
+  play.cardsLeft = cards +
+    (play.lhoPtr->isVoid() ? 1 : 0) +
+    (play.pardPtr->isVoid() ? 1 : 0) +
+    (play.rhoPtr->isVoid() ? 1 : 0) -
+    4;
 
   if (play.leadPtr->isVoid())
   {
