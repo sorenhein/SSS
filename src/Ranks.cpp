@@ -602,7 +602,7 @@ void Ranks::setPlaysLeadWithoutVoid(
 void Ranks::setPlaysSide(
   Declarer& leader,
   Declarer& partner,
-  const SidePosition side,
+  Play& play,
   Plays& plays)
 {
   if (leader.isVoid())
@@ -613,7 +613,7 @@ void Ranks::setPlaysSide(
   if (partner.isSingleRanked() &&
       (! leader.isSingleRanked() || 
           leader.maxFullRank() < partner.maxFullRank() ||
-        (leader.maxFullRank() == partner.maxFullRank() && side == SIDE_SOUTH)))
+        (leader.maxFullRank() == partner.maxFullRank() && play.side == POSITION_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
@@ -621,12 +621,6 @@ void Ranks::setPlaysSide(
       ! partner.isVoid() && 
       leader.minFullRank() >= partner.maxFullRank())
     return;
-
-  Play play;
-  if (side == SIDE_NORTH)
-    play.side = POSITION_NORTH;
-  else
-    play.side = POSITION_SOUTH;
 
   for (auto& leadPtr: leader.getCards(false))
   {
@@ -659,8 +653,14 @@ CombinationType Ranks::setPlays(
   if (Ranks::trivial(trivialEntry))
     return COMB_TRIVIAL;
 
-  Ranks::setPlaysSide(north, south, SIDE_NORTH, plays);
-  Ranks::setPlaysSide(south, north, SIDE_SOUTH, plays);
+  Play play;
+
+  // This will remain unchanged for all plays from this side.
+  play.side = POSITION_NORTH;
+  Ranks::setPlaysSide(north, south, play, plays);
+
+  play.side = POSITION_SOUTH;
+  Ranks::setPlaysSide(south, north, play, plays);
   return COMB_OTHER;
 }
 

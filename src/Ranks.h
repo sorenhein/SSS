@@ -83,7 +83,7 @@ class Ranks
     void setPlaysSide(
       Declarer& leader,
       Declarer& partner,
-      const SidePosition side,
+      Play& play,
       Plays& plays);
 
   public:
