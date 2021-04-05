@@ -62,8 +62,7 @@ class Ranks
 
     void updateHoldings(Play& play) const;
 
-    void logPlay(
-      Plays& plays,
+    void finish(
       const Declarer& leader,
       Play& play) const;
 

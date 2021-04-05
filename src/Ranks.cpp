@@ -456,11 +456,12 @@ void Ranks::updateHoldings(Play& play) const
 }
 
 
-void Ranks::logPlay(
-  Plays& plays,
+void Ranks::finish(
   const Declarer& leader,
   Play& play) const
 {
+  Ranks::updateHoldings(play);
+
   play.trickNS = (max(play.lead(), play.pard()) > 
       max(play.lho(), play.rho()) ? 1 : 0);
 
@@ -488,8 +489,6 @@ void Ranks::logPlay(
     // TODO Probably generate on the fly if not already set.
     play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
   }
-
-  plays.log(play);
 }
 
 
@@ -528,8 +527,8 @@ void Ranks::setPlaysLeadWithVoid(
       opps.playFull(rho);
           
       // Register the new play.
-      Ranks::updateHoldings(play);
-      Ranks::logPlay(plays, leader, play);
+      Ranks::finish(leader, play);
+      plays.log(play);
 
       opps.restoreFull(rho);
 
@@ -576,9 +575,10 @@ void Ranks::setPlaysLeadWithoutVoid(
       // We don't need to "play" the void, as it does not affect
       // the holdings.
 
+      // Register the void play.
       play.rhoPtr = opps.voidPtr();
-      Ranks::updateHoldings(play);
-      Ranks::logPlay(plays, leader, play);
+      Ranks::finish(leader, play);
+      plays.log(play);
       
       // This loop excludes the RHO void.
       for (auto& rhoPtr: opps.getCards())
@@ -593,8 +593,8 @@ void Ranks::setPlaysLeadWithoutVoid(
         opps.playFull(rho);
 
         // Register the new play.
-        Ranks::updateHoldings(play);
-        Ranks::logPlay(plays, leader, play);
+        Ranks::finish(leader, play);
+        plays.log(play);
       
         opps.restoreFull(rho);
       }
