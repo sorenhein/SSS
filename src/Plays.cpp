@@ -175,8 +175,6 @@ Plays::PardNode * Plays::logPard(
 
 
 void Plays::logRho(
-  vector<Card> const * leadOrderPtr,
-  vector<Card> const * pardOrderPtr,
   const Play& play,
   PardNode * pardPtr)
 {
@@ -187,8 +185,6 @@ void Plays::logRho(
   rhoNext++;
   rhoNextIter++;
 
-  node.leadOrderPtr = leadOrderPtr;
-  node.pardOrderPtr = pardOrderPtr;
   node.pardPtr = pardPtr;
 
   // TMP
@@ -196,10 +192,7 @@ void Plays::logRho(
 }
 
 
-void Plays::log(
-  vector<Card> const * leadOrderPtr,
-  vector<Card> const * pardOrderPtr,
-  const Play& play)
+void Plays::log(const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
 
@@ -208,7 +201,7 @@ void Plays::log(
   LhoNode * lhoPtr = Plays::logLho(play, leadPtr, newFlag);
   PardNode * pardPtr = Plays::logPard(play, lhoPtr, newFlag);
 
-  Plays::logRho(leadOrderPtr, pardOrderPtr, play, pardPtr);
+  Plays::logRho(play, pardPtr);
 }
 
 
@@ -241,12 +234,6 @@ cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
 cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
-if (debugFlag)
-{
-  cout << "HERE1\n";
-  Plays::printPointers();
-}
-
   Tvectors tvs;
   unsigned rno = 0;
   for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++, rno++)
@@ -267,26 +254,14 @@ if (debugFlag)
 // if (debugFlag)
   cout << rhoNode.play.strTrick(rno);
 
-    vector<Card> const * northOrderPtr;
-    vector<Card> const * southOrderPtr;
-    // deque<Card const *> const * northDequePtr;
-    // deque<Card const *> const * southDequePtr;
     unsigned first, second;
     if (rhoNode.play.side == POSITION_NORTH)
     {
-      northOrderPtr = rhoNode.leadOrderPtr;
-      southOrderPtr = rhoNode.pardOrderPtr;
-      // northDequePtr = rhoNode.play.leaderCardsPtr;
-      // southDequePtr = rhoNode.play.partnerCardsPtr;
       first = rhoNode.play.rho();
       second = lho;
     }
     else
     {
-      southOrderPtr = rhoNode.leadOrderPtr;
-      northOrderPtr = rhoNode.pardOrderPtr;
-      // southDequePtr = rhoNode.play.leaderCardsPtr;
-      // northDequePtr = rhoNode.play.partnerCardsPtr;
       first = lho;
       second = rhoNode.play.rho();
     }
@@ -866,25 +841,3 @@ string Plays::str() const
   return ss.str();
 }
 
-
-// TMP
-
-void Plays::printPointers() const
-{
-  unsigned rno = 0;
-  for (auto& rhoNode: rhoNodes)
-  {
-    cout << setw(2) << rno << " ";
-    if (rhoNode.leadOrderPtr)
-      cout << rhoNode.leadOrderPtr << setw(4) << rhoNode.leadOrderPtr->size();
-    else
-      cout << "null";
-    cout << " ";
-    if (rhoNode.pardOrderPtr)
-      cout << rhoNode.pardOrderPtr << setw(4) << rhoNode.pardOrderPtr->size();
-    else
-      cout << "null";
-    cout << "\n";
-    rno++;
-  }
-}

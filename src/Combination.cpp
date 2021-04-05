@@ -60,9 +60,6 @@ if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
 }
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
-  if (debugFlagTmp)
-    plays.printPointers();
-  
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)
   {
@@ -86,12 +83,6 @@ if (debugFlag)
   cout << "Plays\n" << plays.str() << endl;
   cout << "Distribution\n" << distPtr->str() << endl;
 }
-
-  if (debugFlagTmp)
-  {
-    cout << "HEREx\n";
-    plays.printPointers();
-  }
 
   // TODO Probably don't need to pass in ranks to make memory
   // stay alive.

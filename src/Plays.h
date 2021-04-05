@@ -58,9 +58,6 @@ class Plays
 
     struct RhoNode
     {
-      vector<Card> const * leadOrderPtr;
-      vector<Card> const * pardOrderPtr;
-
       PardNode * pardPtr;
 
       // TMP
@@ -114,8 +111,6 @@ class Plays
       bool& newFlag);
 
     void logRho(
-      vector<Card> const * leadOrderPtr,
-      vector<Card> const * pardOrderPtr,
       const Play& play,
       PardNode * pardPtr);
 
@@ -133,11 +128,7 @@ class Plays
 
     unsigned size() const;
 
-    void log(
-      // const SidePosition side,
-      vector<Card> const * leadOrderPtr,
-      vector<Card> const * pardOrderPtr,
-      const Play& play);
+    void log(const Play& play);
 
    void setCombPtrs(const Combinations& combinations);
 
@@ -153,9 +144,6 @@ class Plays
      bool debugFlag = false);
 
    string str() const;
-
-   // TMP
-   void printPointers() const;
 };
 
 #endif

@@ -459,15 +459,12 @@ void Ranks::updateHoldings(
 void Ranks::logPlay(
   Plays& plays,
   const Declarer& leader,
-  const Declarer& partner,
   Play& play) const
 {
   play.trickNS = (max(play.leadPtr->getRank(), play.pardPtr->getRank()) > max(play.lhoPtr->getRank(), play.rhoPtr->getRank()) ? 1 : 0);
 
-  vector<Card> const * leadOrderPtr;
-  vector<Card> const * pardOrderPtr;
-  // deque<Card const *> const * leadDequePtr;
-  // deque<Card const *> const * pardDequePtr;
+  // vector<Card> const * leadOrderPtr;
+  // vector<Card> const * pardOrderPtr;
 
   // Number of cards in play after this trick;
   play.cardsLeft = cards +
@@ -486,31 +483,15 @@ void Ranks::logPlay(
   else
     play.southCardsPtr = &south.getCards(true);
 
-  if (play.leadPtr->isVoid())
-  {
-    leadOrderPtr = nullptr;
-    // leadDequePtr = nullptr;
-    // play.leaderCardsPtr = nullptr;
-  }
-  else
-  {
-    leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
-    // leadDequePtr = &leader.getCards(true);
-    // play.leaderCardsPtr = leadDequePtr;
-  }
+  // if (play.leadPtr->isVoid())
+    // leadOrderPtr = nullptr;
+  // else
+    // leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
 
-  if (play.pardPtr->isVoid())
-  {
-    pardOrderPtr = nullptr;
-    // pardDequePtr = nullptr;
-    // play.partnerCardsPtr = nullptr;
-  }
-  else
-  {
-    pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
-    // pardDequePtr = &partner.getCards(true);
-    // play.partnerCardsPtr = pardDequePtr;
-  }
+  // if (play.pardPtr->isVoid())
+    // pardOrderPtr = nullptr;
+  // else
+    // pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
 
   Winner const * winPtr;
   if (! play.trickNS)
@@ -525,8 +506,7 @@ void Ranks::logPlay(
     play.currBestPtr = winPtr;
   }
 
-  plays.log(//side, 
-    leadOrderPtr, pardOrderPtr, play);
+  plays.log(play);
 }
 
 
@@ -567,7 +547,7 @@ void Ranks::setPlaysLeadWithVoid(
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, play);
+      Ranks::logPlay(plays, leader, play);
 
       opps.restoreFull(rho);
 
@@ -618,7 +598,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       play.rhoPtr = opps.voidPtr();
       Ranks::updateHoldings(leader, partner, side, 
         play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, play);
+      Ranks::logPlay(plays, leader, play);
       
       // This loop excludes the RHO void.
       for (auto& rhoPtr: opps.getCards())
@@ -635,7 +615,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, 
           play.holding3, play.rotateFlag);
-        Ranks::logPlay(plays, leader, partner, play);
+        Ranks::logPlay(plays, leader, play);
       
         opps.restoreFull(rho);
       }

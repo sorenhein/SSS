@@ -70,7 +70,6 @@ class Ranks
     void logPlay(
       Plays& plays,
       const Declarer& leader,
-      const Declarer& partner,
       Play& play) const;
 
     void setPlaysLeadWithVoid(
