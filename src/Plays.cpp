@@ -269,15 +269,15 @@ if (debugFlag)
 
     vector<Card> const * northOrderPtr;
     vector<Card> const * southOrderPtr;
-    deque<Card const *> const * northDequePtr;
-    deque<Card const *> const * southDequePtr;
+    // deque<Card const *> const * northDequePtr;
+    // deque<Card const *> const * southDequePtr;
     unsigned first, second;
     if (rhoNode.play.side == POSITION_NORTH)
     {
       northOrderPtr = rhoNode.leadOrderPtr;
       southOrderPtr = rhoNode.pardOrderPtr;
-      northDequePtr = rhoNode.play.leaderCardsPtr;
-      southDequePtr = rhoNode.play.partnerCardsPtr;
+      // northDequePtr = rhoNode.play.leaderCardsPtr;
+      // southDequePtr = rhoNode.play.partnerCardsPtr;
       first = rhoNode.play.rho();
       second = lho;
     }
@@ -285,8 +285,8 @@ if (debugFlag)
     {
       southOrderPtr = rhoNode.leadOrderPtr;
       northOrderPtr = rhoNode.pardOrderPtr;
-      southDequePtr = rhoNode.play.leaderCardsPtr;
-      northDequePtr = rhoNode.play.partnerCardsPtr;
+      // southDequePtr = rhoNode.play.leaderCardsPtr;
+      // northDequePtr = rhoNode.play.partnerCardsPtr;
       first = lho;
       second = rhoNode.play.rho();
     }

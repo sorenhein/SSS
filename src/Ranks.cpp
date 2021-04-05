@@ -466,8 +466,8 @@ void Ranks::logPlay(
 
   vector<Card> const * leadOrderPtr;
   vector<Card> const * pardOrderPtr;
-  deque<Card const *> const * leadDequePtr;
-  deque<Card const *> const * pardDequePtr;
+  // deque<Card const *> const * leadDequePtr;
+  // deque<Card const *> const * pardDequePtr;
 
   // Number of cards in play after this trick;
   play.cardsLeft = cards +
@@ -476,30 +476,40 @@ void Ranks::logPlay(
     (play.rhoPtr->isVoid() ? 1 : 0) -
     4;
 
+  if (north.isVoid())
+    play.northCardsPtr = nullptr;
+  else
+    play.northCardsPtr = &north.getCards(true);
+
+  if (south.isVoid())
+    play.southCardsPtr = nullptr;
+  else
+    play.southCardsPtr = &south.getCards(true);
+
   if (play.leadPtr->isVoid())
   {
     leadOrderPtr = nullptr;
-    leadDequePtr = nullptr;
-    play.leaderCardsPtr = nullptr;
+    // leadDequePtr = nullptr;
+    // play.leaderCardsPtr = nullptr;
   }
   else
   {
     leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
-    leadDequePtr = &leader.getCards(true);
-    play.leaderCardsPtr = leadDequePtr;
+    // leadDequePtr = &leader.getCards(true);
+    // play.leaderCardsPtr = leadDequePtr;
   }
 
   if (play.pardPtr->isVoid())
   {
     pardOrderPtr = nullptr;
-    pardDequePtr = nullptr;
-    play.partnerCardsPtr = nullptr;
+    // pardDequePtr = nullptr;
+    // play.partnerCardsPtr = nullptr;
   }
   else
   {
     pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
-    pardDequePtr = &partner.getCards(true);
-    play.partnerCardsPtr = pardDequePtr;
+    // pardDequePtr = &partner.getCards(true);
+    // play.partnerCardsPtr = pardDequePtr;
   }
 
   Winner const * winPtr;

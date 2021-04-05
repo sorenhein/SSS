@@ -34,8 +34,8 @@ struct Play
   // As we know the number of the current lead, we can perform this map.
   // This is used for tracking rank winners in overall combinations.
 
-  deque<Card const *> const * leaderCardsPtr;
-  deque<Card const *> const * partnerCardsPtr;
+  deque<Card const *> const * northCardsPtr;
+  deque<Card const *> const * southCardsPtr;
 
   // There is a "winner" associated with the current trick.  If 
   // North-South didn't win the trick, it is the nullptr.  If one of
