@@ -119,10 +119,11 @@ Plays::LeadNode * Plays::logLead(
 
 
 Plays::LhoNode * Plays::logLho(
-  const unsigned lho,
+  const Play& play,
   LeadNode * leadPtr,
   bool& newFlag)
 {
+  const unsigned lho = play.lhoPtr->getRank();
   if (newFlag == false && lho == lhoPrev)
     return lhoPrevPtr;
   
@@ -146,22 +147,20 @@ Plays::LhoNode * Plays::logLho(
 
 
 Plays::PardNode * Plays::logPard(
-  const unsigned pard,
+  const Play& play,
   LhoNode * lhoPtr,
   bool& newFlag)
 {
+  const unsigned pard = play.pardPtr->getRank();
   if (newFlag == false && pard == pardPrev)
     return pardPrevPtr;
 
-  // if (pardNext >= pardNodes.size())
-    // pardNodes.resize(pardNodes.size() + chunk.pard);
   if (pardNextIter == pardNodes.end())
     pardNextIter = pardNodes.insert(pardNextIter, chunk.pard, PardNode());
 
   newFlag = true;
   pardPrev = pard;
 
-  // PardNode& node = pardNodes[pardNext++];
   PardNode& node = * pardNextIter;
   pardNext++;
   pardNextIter++;
@@ -201,6 +200,9 @@ void Plays::logRho(
   node.rotateNew = play.rotateFlag;
   node.trickNS = play.trickNS;
   node.pardPtr = pardPtr;
+
+  // TMP
+  node.play = play;
 }
 
 
@@ -213,10 +215,8 @@ void Plays::log(
 
   bool newFlag;
   LeadNode * leadPtr = Plays::logLead(play, newFlag);
-  LhoNode * lhoPtr = Plays::logLho(play.lhoPtr->getRank(), leadPtr, 
-    newFlag);
-  PardNode * pardPtr = Plays::logPard(play.pardPtr->getRank(), lhoPtr, 
-    newFlag);
+  LhoNode * lhoPtr = Plays::logLho(play, leadPtr, newFlag);
+  PardNode * pardPtr = Plays::logPard(play, lhoPtr, newFlag);
 
   Plays::logRho(leadOrderPtr, pardOrderPtr, play, pardPtr);
 }

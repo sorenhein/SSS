@@ -83,6 +83,9 @@ class Plays
       Winner const * currBestPtr;
 
       PardNode * pardPtr;
+
+      // TMP
+      Play play;
     };
 
     unsigned cards;
@@ -118,18 +121,16 @@ class Plays
 
 
     LeadNode * logLead(
-      // const SidePosition side,
-      // const unsigned lead,
       const Play& play,
       bool& newFlag);
 
     LhoNode * logLho(
-      const unsigned lho,
+      const Play& play,
       LeadNode * leadPtr,
       bool& newFlag);
 
     PardNode * logPard(
-      const unsigned pard,
+      const Play& play,
       LhoNode * lhoPtr,
       bool& newFlag);
 
