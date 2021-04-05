@@ -44,8 +44,6 @@ class Winner
       const string& name,
       const Card& winner) const;
 
-    string strDebug() const;
-
 
   public:
 
@@ -70,6 +68,8 @@ class Winner
 
     void operator *= (const Winner& w2);
 
+    bool operator == (const Winner& w2) const;
+
     void flip();
 
     void update(
@@ -79,6 +79,8 @@ class Winner
     string str() const;
 
     string strEntry() const;
+
+    string strDebug() const;
 };
 
 #endif

@@ -22,6 +22,10 @@ void Declarer::resize(
   best.resize(cardsIn+1);
   for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
     best[rThis].resize(cardsIn+1);
+
+  bestNew.resize(cardsIn+1);
+  for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
+    bestNew[rThis].resize(cardsIn+1);
 }
 
 
@@ -116,16 +120,12 @@ void Declarer::countNumbers(vector<unsigned>& numbers) const
 
 void Declarer::setBest(const Declarer& partner)
 {
-  // NS win this trick, so the winner to which a later NS winner maps
-  // is more complicated to determine than in setOrderTablesLose().
-  // It can either be the current-trick or the later-trick winner.
-  // Also, either of those can be a single-side or a two-side winner.
+  // We pre-calculate the Winner that arises for any combination of
+  // a lead and a partner card, assuming that the declaring side does
+  // in fact win the trick.
 
   const unsigned lThis = maxRank+1;
   const unsigned lOther = partner.maxRank+1;
-
-  // best.clear();
-  // best.resize(lThis);
 
   // Count the numbers of each rank.
   vector<unsigned> numThis, numOther;
@@ -157,8 +157,6 @@ void Declarer::setBest(const Declarer& partner)
     if (rankInfo[rThis].count == 0)
       continue;
 
-    // best[rThis].resize(lOther);
-
     // rOther is the full-rank index of the other card played.
     for (unsigned rOther = 0; rOther < lOther; rOther++)
     {
@@ -171,13 +169,14 @@ void Declarer::setBest(const Declarer& partner)
 
 assert(rThis < best.size());
 assert(rOther < best[rThis].size());
+assert(rThis < numThis.size());
+assert(rOther < numOther.size());
 
       Winner& current = best[rThis][rOther];
       current.reset();
       if (rThis > rOther)
       {
         // The depth starts from 0.
-assert(rThis < numThis.size());
 
 // Card ctmp;
 // ctmp.set(rThis, 0, numThis[rThis], names[rThis].at(0));
@@ -189,21 +188,68 @@ assert(rThis < numThis.size());
       }
       else if (rThis < rOther)
       {
-assert(rOther < numOther.size());
         current.set(pside, rOther, 0, numOther[rOther],
           partner.rankInfo[rOther].names.at(0));
         crank = rOther;
       }
       else
       {
-assert(rThis < numThis.size());
-assert(rOther < numOther.size());
         // Make two sub-winners as NS in some sense choose.
         current.set(wside, rThis, 0, numThis[rThis],
           rankInfo[rThis].names.at(0));
         current.set(pside, rOther, 0, numOther[rOther],
           partner.rankInfo[rOther].names.at(0));
         crank = rThis;
+      }
+    }
+  }
+}
+
+
+void Declarer::setBestNew(const Declarer& partner)
+{
+  // We pre-calculate the Winner that arises for any combination of
+  // a lead and a partner card, assuming that the declaring side does
+  // in fact win the trick.
+
+assert(side != POSITION_OPPS);
+  WinningSide wside, pside;
+  if (side == POSITION_NORTH)
+  {
+    wside = WIN_NORTH;
+    pside = WIN_SOUTH;
+  }
+  else
+  {
+    wside = WIN_SOUTH;
+    pside = WIN_NORTH;
+  }
+
+  // Loop over the unique cards with depth 0 among different ranks.
+  for (auto& rankTop: ranksPtr)
+  {
+    const unsigned rLead = rankTop->getRank();
+assert(rLead < bestNew.size());
+    for (auto& rankTopOther: partner.ranksPtr)
+    {
+      const unsigned rPard = rankTopOther->getRank();
+assert(rPard < bestNew[rLead].size());
+      
+      Winner& current = bestNew[rLead][rPard];
+      current.reset();
+
+      if (rLead > rPard)
+      {
+        current.set(wside, * rankTop);
+      }
+      else if (rLead < rPard)
+      {
+        current.set(pside, * rankTopOther);
+      }
+      else
+      {
+        current.set(wside, * rankTop);
+        current.set(pside, * rankTopOther);
       }
     }
   }
@@ -230,6 +276,7 @@ void Declarer::finish(const Declarer& partner)
   Declarer::setSingleRank();
   Declarer::fixDepths();
   Declarer::setBest(partner);
+  Declarer::setBestNew(partner);
 }
 
 
@@ -276,6 +323,16 @@ const Winner& Declarer::getWinner(
   assert(lead < best.size());
   assert(pard < best[lead].size());
   return best[lead][pard];
+}
+
+
+const Winner& Declarer::getWinnerNew(
+  const unsigned lead,
+  const unsigned pard) const
+{
+  assert(lead < bestNew.size());
+  assert(pard < bestNew[lead].size());
+  return bestNew[lead][pard];
 }
 
 

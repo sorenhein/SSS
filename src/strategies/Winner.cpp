@@ -96,6 +96,12 @@ bool Winner::operator != (const Winner& w2) const
 }
 
 
+bool Winner::operator == (const Winner& w2) const
+{
+  return ! (* this != w2);
+}
+
+
 void Winner::integrate(const Subwinner& swNew)
 {
   // subwinners are a minimal set.

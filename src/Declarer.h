@@ -25,6 +25,7 @@ class Declarer: public Player
     // they win it.  If they win, then the winner is interesting.
     // The indices are the first and second plays to this trick.
     vector<vector<Winner>> best;
+    vector<vector<Winner>> bestNew;
 
 
     void setVoid();
@@ -38,6 +39,7 @@ class Declarer: public Player
     void countNumbers(vector<unsigned>& numbers) const;
 
     void setBest(const Declarer& partner);
+    void setBestNew(const Declarer& partner);
 
   public:
 
@@ -61,6 +63,10 @@ class Declarer: public Player
     const Card& top() const;
 
     const Winner& getWinner(
+      const unsigned lead,
+      const unsigned pard) const;
+
+    const Winner& getWinnerNew(
       const unsigned lead,
       const unsigned pard) const;
 
