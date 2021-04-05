@@ -61,6 +61,9 @@ struct Play
   unsigned pard(const bool fullFlag = false) const;
   unsigned rho(const bool fullFlag = false) const;
 
+  Card const * northTranslate(const unsigned number) const;
+  Card const * southTranslate(const unsigned number) const;
+
   string strTrick(const unsigned number) const;
 };
 

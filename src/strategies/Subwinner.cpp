@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "Subwinner.h"
+#include "../Play.h"
 
 
 Subwinner::Subwinner()
@@ -265,24 +266,38 @@ UNUSED(play);
     // This may also change the winning side.
     assert(northOrderPtr != nullptr);
     assert(north.getNumber() < northOrderPtr->size());
+
+Card altNorth = * play.northTranslate(north.getNumber());
+
     north = (* northOrderPtr)[north.getNumber()];
+
+assert(altNorth.identical(north));
   }
   else if (mode == SUBWIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
     assert(southOrderPtr != nullptr);
     assert(south.getNumber() < southOrderPtr->size());
+
+Card altSouth = * play.southTranslate(south.getNumber());
+
     south = (* southOrderPtr)[south.getNumber()];
+
+assert(altSouth.identical(south));
   }
   else if (mode == SUBWIN_BOTH)
   {
     assert(northOrderPtr != nullptr);
     assert(north.getNumber() < northOrderPtr->size());
+Card altNorth = * play.northTranslate(north.getNumber());
     north = (* northOrderPtr)[north.getNumber()];
+assert(altNorth.identical(north));
 
     assert(southOrderPtr != nullptr);
     assert(south.getNumber() < southOrderPtr->size());
+Card altSouth = * play.southTranslate(south.getNumber());
     south = (* southOrderPtr)[south.getNumber()];
+assert(altSouth.identical(south));
 
     // As a result of the mapping to parent ranks, North and South
     // may actually be different ranks now.  As North-South choose,
