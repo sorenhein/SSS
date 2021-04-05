@@ -45,6 +45,11 @@ class Declarer: public Player
 
     void setNames();
 
+    bool playRank(
+      const unsigned rank,
+      const Declarer& partner,
+      const unsigned maxGlobalRank);
+
     void finish(const Declarer& partner);
 
     bool greater(

@@ -53,6 +53,13 @@ void Opponents::setNames()
 }
 
 
+void Opponents::playRank(const unsigned rank)
+{
+  assert(rankInfo[rank].count > 0);
+  rankInfo[rank].count--;
+}
+
+
 const deque<Card const *>& Opponents::getCards() const
 {
   // Always only the ranks, not the complete set of cards.

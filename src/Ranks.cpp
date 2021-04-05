@@ -499,7 +499,7 @@ void Ranks::setPlaysLeadWithVoid(
   Play& play,
   Plays& plays)
 {
-  opps.playFull(0);
+  opps.playRank(0);
   play.lhoPtr = opps.voidPtr();
 
   for (auto& pardPtr: partner.getCards(false))
@@ -509,11 +509,8 @@ void Ranks::setPlaysLeadWithVoid(
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
-    partner.playFull(pard);
-    play.pardCollapse = (pard > 1 && 
-      pard < maxRank &&
-      ! partner.hasRank(pard) &&
-      ! leader.hasRank(pard));
+    play.pardCollapse = partner.playRank(pard, leader, maxRank);
+
     const unsigned toBeat = max(lead, pard);
 
     for (auto& rhoPtr: opps.getCards())
@@ -524,23 +521,23 @@ void Ranks::setPlaysLeadWithVoid(
       if (rho < toBeat && rho != opps.minFullRank())
         continue;
 
-      opps.playFull(rho);
+      opps.playRank(rho);
           
       // Register the new play.
       Ranks::finish(leader, play);
       plays.log(play);
 
-      opps.restoreFull(rho);
+      opps.restoreRank(rho);
 
       // If RHO wins, he should do so as cheaply as possible.
       if (rho > toBeat)
         break;
     }
 
-    partner.restoreFull(pard);
+    partner.restoreRank(pard);
   }
 
-  opps.restoreFull(0);
+  opps.restoreRank(0);
 }
 
 
@@ -555,7 +552,7 @@ void Ranks::setPlaysLeadWithoutVoid(
   {
     play.lhoPtr = lhoPtr;
     const unsigned lho = lhoPtr->getRank();
-    opps.playFull(lho);
+    opps.playRank(lho);
 
     for (auto& pardPtr: partner.getCards(false))
     {
@@ -564,11 +561,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
-      partner.playFull(pard);
-      play.pardCollapse = (pard > 1 && 
-        pard != maxRank &&
-        ! partner.hasRank(pard) &&
-        ! leader.hasRank(pard));
+      play.pardCollapse = partner.playRank(pard, leader, maxRank);
 
       // As LHO is not void, RHO may show out.  We do this separately,
       // as it is more convenient to store the plays in Player this way.
@@ -590,18 +583,18 @@ void Ranks::setPlaysLeadWithoutVoid(
         if (! opps.hasRank(rho))
           continue;
           
-        opps.playFull(rho);
+        opps.playRank(rho);
 
         // Register the new play.
         Ranks::finish(leader, play);
         plays.log(play);
       
-        opps.restoreFull(rho);
+        opps.restoreRank(rho);
       }
 
-      partner.restoreFull(pard);
+      partner.restoreRank(pard);
     }
-    opps.restoreFull(lho);
+    opps.restoreRank(lho);
   }
 }
 
@@ -644,18 +637,14 @@ void Ranks::setPlaysSide(
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
-    leader.playFull(lead);
-    play.leadCollapse = (! leader.hasRank(lead) && 
-      ! partner.hasRank(lead) &&
-      lead != 1 &&
-      lead != maxRank);
+    play.leadCollapse = leader.playRank(lead, partner, maxRank);
 
     // For optimization we treat the case separately where LHO is void.
     Ranks::setPlaysLeadWithVoid(leader, partner, lead, play, plays);
 
     Ranks::setPlaysLeadWithoutVoid(leader, partner, lead, play, plays);
 
-    leader.restoreFull(lead);
+    leader.restoreRank(lead);
   }
 }
 

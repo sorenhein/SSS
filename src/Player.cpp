@@ -126,16 +126,9 @@ void Player::update(
 }
 
 
-void Player::playFull(const unsigned rankFullIn)
+void Player::restoreRank(const unsigned rank)
 {
-  assert(rankInfo[rankFullIn].count > 0);
-  rankInfo[rankFullIn].count--;
-}
-
-
-void Player::restoreFull(const unsigned rankFullIn)
-{
-  rankInfo[rankFullIn].count++;
+  rankInfo[rank].count++;
 }
 
 

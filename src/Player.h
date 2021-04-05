@@ -164,8 +164,10 @@ class Player
 
     void setBest(const Player& partner);
 
-    void playFull(const unsigned rankFullIn);
-    void restoreFull(const unsigned rankFullIn);
+    // This method has a companion, playRank.  For Declarer it
+    // returns a collapse flag, for Opponents it doesn't.
+    // Therefore these methods are in the respective classes.
+    void restoreRank(const unsigned rank);
 
     bool greater(
       const Player& p2,

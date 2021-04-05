@@ -215,11 +215,25 @@ assert(rOther < numOther.size());
 }
 
 
+bool Declarer::playRank(
+  const unsigned rank,
+  const Declarer& partner,
+  const unsigned maxGlobalRank)
+{
+  assert(rankInfo[rank].count > 0);
+  rankInfo[rank].count--;
+
+  return (rank > 1 &&
+    rank != maxGlobalRank &&
+    ! Declarer::hasRank(rank) &&
+    ! partner.hasRank(rank));
+}
+
+
 void Declarer::finish(const Declarer& partner)
 {
   Declarer::setSingleRank();
   Declarer::fixDepths();
-  // Declarer::setRemainders();
   Declarer::setBest(partner);
 }
 
