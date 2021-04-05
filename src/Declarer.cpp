@@ -124,94 +124,6 @@ void Declarer::setBest(const Declarer& partner)
   // a lead and a partner card, assuming that the declaring side does
   // in fact win the trick.
 
-  const unsigned lThis = maxRank+1;
-  const unsigned lOther = partner.maxRank+1;
-
-  // Count the numbers of each rank.
-  vector<unsigned> numThis, numOther;
-  Declarer::countNumbers(numThis);
-  partner.countNumbers(numOther);
-
-  unsigned crank;
-
-  // TODO Can we store CardPosition in Winner, too?  Or do we need
-  // WinningSide?
-  assert(side != POSITION_OPPS);
-  WinningSide wside, pside;
-  if (side == POSITION_NORTH)
-  {
-    wside = WIN_NORTH;
-    pside = WIN_SOUTH;
-  }
-  else
-  {
-    wside = WIN_SOUTH;
-    pside = WIN_NORTH;
-  }
-
-  // rThis is the full-rank index of the posInfo that we're punching out.
-  // The posInfo side may be void.
-  // TODO No it can't really?
-  for (unsigned rThis = 0; rThis < lThis; rThis++)
-  {
-    if (rankInfo[rThis].count == 0)
-      continue;
-
-    // rOther is the full-rank index of the other card played.
-    for (unsigned rOther = 0; rOther < lOther; rOther++)
-    {
-      if (partner.rankInfo[rOther].count == 0)
-        continue;
-
-      // Will hopefully not be necessary in new code.
-      if (rThis == 0 && rOther == 0)
-        continue;
-
-assert(rThis < best.size());
-assert(rOther < best[rThis].size());
-assert(rThis < numThis.size());
-assert(rOther < numOther.size());
-
-      Winner& current = best[rThis][rOther];
-      current.reset();
-      if (rThis > rOther)
-      {
-        // The depth starts from 0.
-
-// Card ctmp;
-// ctmp.set(rThis, 0, numThis[rThis], names[rThis].at(0));
-// assert(rThis < cardsPtr.size());
-// assert(ctmp.identical(* cardsPtr[rThis]));
-
-        current.set(wside, rThis, 0, numThis[rThis], rankInfo[rThis].names.at(0));
-        crank = rThis;
-      }
-      else if (rThis < rOther)
-      {
-        current.set(pside, rOther, 0, numOther[rOther],
-          partner.rankInfo[rOther].names.at(0));
-        crank = rOther;
-      }
-      else
-      {
-        // Make two sub-winners as NS in some sense choose.
-        current.set(wside, rThis, 0, numThis[rThis],
-          rankInfo[rThis].names.at(0));
-        current.set(pside, rOther, 0, numOther[rOther],
-          partner.rankInfo[rOther].names.at(0));
-        crank = rThis;
-      }
-    }
-  }
-}
-
-
-void Declarer::setBestNew(const Declarer& partner)
-{
-  // We pre-calculate the Winner that arises for any combination of
-  // a lead and a partner card, assuming that the declaring side does
-  // in fact win the trick.
-
 assert(side != POSITION_OPPS);
   WinningSide wside, pside;
   if (side == POSITION_NORTH)
@@ -276,7 +188,6 @@ void Declarer::finish(const Declarer& partner)
   Declarer::setSingleRank();
   Declarer::fixDepths();
   Declarer::setBest(partner);
-  Declarer::setBestNew(partner);
 }
 
 
@@ -317,16 +228,6 @@ const Card& Declarer::top() const
 
 
 const Winner& Declarer::getWinner(
-  const unsigned lead,
-  const unsigned pard) const
-{
-  assert(lead < best.size());
-  assert(pard < best[lead].size());
-  return best[lead][pard];
-}
-
-
-const Winner& Declarer::getWinnerNew(
   const unsigned lead,
   const unsigned pard) const
 {

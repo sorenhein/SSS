@@ -190,13 +190,14 @@ if (cards == 3 && holding == 15)
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
-// UNUSED(comb);
-// UNUSED(distributions);
+UNUSED(comb);
+UNUSED(distributions);
 /* */
 // TODO Maybe only do this once, centrally?
 // wcout << ranks.wstrDiagram();
-cout << ranks.strTable();
-      comb.strategize(centry, * this, distributions, ranks, plays);
+
+// cout << ranks.strTable();
+      // comb.strategize(centry, * this, distributions, ranks, plays);
 /* */
 
       playCounts[cards].unique++;

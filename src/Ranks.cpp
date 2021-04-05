@@ -487,9 +487,11 @@ void Ranks::finish(
   else
   {
     // TODO Probably generate on the fly if not already set.
+
     play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
 
-    const Winner& wnew = leader.getWinnerNew(play.lead(), play.pard());
+    // assert(wnew == * play.currBestPtr);
+    /*
     if (! (wnew == * play.currBestPtr))
     {
       cout << "Original winner\n";
@@ -497,8 +499,8 @@ void Ranks::finish(
       cout << "New winner\n";
       cout << wnew.strDebug();
       cout << endl;
-      assert(wnew == * play.currBestPtr);
     }
+    */
   }
 }
 

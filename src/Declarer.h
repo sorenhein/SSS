@@ -34,12 +34,9 @@ class Declarer: public Player
 
     void fixDepths();
 
-    // void setRemainders();
-
     void countNumbers(vector<unsigned>& numbers) const;
 
     void setBest(const Declarer& partner);
-    void setBestNew(const Declarer& partner);
 
   public:
 
@@ -63,10 +60,6 @@ class Declarer: public Player
     const Card& top() const;
 
     const Winner& getWinner(
-      const unsigned lead,
-      const unsigned pard) const;
-
-    const Winner& getWinnerNew(
       const unsigned lead,
       const unsigned pard) const;
 

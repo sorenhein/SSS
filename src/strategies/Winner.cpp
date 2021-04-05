@@ -77,6 +77,12 @@ void Winner::set(
 
 bool Winner::operator != (const Winner& w2) const
 {
+  return ! (* this == w2);
+}
+
+
+bool Winner::operator == (const Winner& w2) const
+{
   // This is a simple first implementation that assumes the same order.
   if (subwinners.size() != w2.subwinners.size())
     return false;
@@ -93,12 +99,6 @@ bool Winner::operator != (const Winner& w2) const
   }
 
   return true;
-}
-
-
-bool Winner::operator == (const Winner& w2) const
-{
-  return ! (* this != w2);
 }
 
 
