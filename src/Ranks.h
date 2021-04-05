@@ -64,6 +64,7 @@ class Ranks
       const Declarer& leader,
       const Declarer& partner,
       const SidePosition side,
+      Play& play,
       unsigned& holding3,
       bool& rotateFlag) const;
 

@@ -256,9 +256,13 @@ unsigned Ranks::canonicalTrinary(
   const Declarer& recessive) const
 {
   // This is similar to canonicalBoth, but only does holding3.
-  // Actually it only generates a canonical holding3 if there is
-  // no rank reduction among the opponents' cards.  Therefore
-  // Combinations::getPtr looks up the canonical index.
+  // Actually it is only guaranteed to generate a canonical holding3 
+  // if there is no rank reduction among the opponents' cards.  
+  // For example, with AJ / KT missing Q9, if the trick goes
+  // T, Q, A, - then we're left with J /K missing the 9, where
+  // either side is >= the other.  Therefore the rotateFlag and the
+  // order will depend on the order of comparison.
+  // Therefore Combinations::getPtr looks up the canonical index.
   unsigned holding3 = 0;
 
   for (unsigned rank = maxRank; rank > 0; rank--) // Exclude void
@@ -435,9 +439,17 @@ void Ranks::updateHoldings(
   const Declarer& leader,
   const Declarer& partner,
   const SidePosition side,
+  Play& play,
   unsigned& holding3,
   bool& rotateFlag) const
 {
+UNUSED(leader);
+UNUSED(partner);
+UNUSED(side);
+UNUSED(holding3);
+UNUSED(rotateFlag);
+
+  /*
   if (leader.greater(partner, opps))
   {
     holding3 = Ranks::canonicalTrinary(leader, partner);
@@ -453,6 +465,24 @@ void Ranks::updateHoldings(
     // If the leader is South, then don't rotate.
     rotateFlag = (side == SIDE_NORTH);
   }
+  */
+
+  if (north.greater(south, opps))
+  {
+    play.holding3 = Ranks::canonicalTrinary(north, south);
+
+    // North (without the played card) is still >= South (without
+    // the played card).  So we can justify not rotating, but see
+    // also the comment in canonicalTrinary().
+    play.rotateFlag = false;
+  }
+  else
+  {
+    // South is strictly greater than North, so there is no
+    // ambiguity here.
+    play.holding3 = Ranks::canonicalTrinary(south, north);
+    play.rotateFlag = true;
+  }
 }
 
 
@@ -461,7 +491,8 @@ void Ranks::logPlay(
   const Declarer& leader,
   Play& play) const
 {
-  play.trickNS = (max(play.leadPtr->getRank(), play.pardPtr->getRank()) > max(play.lhoPtr->getRank(), play.rhoPtr->getRank()) ? 1 : 0);
+  play.trickNS = (max(play.lead(), play.pard()) > 
+      max(play.lho(), play.rho()) ? 1 : 0);
 
   // Number of cards in play after this trick;
   play.cardsLeft = cards +
@@ -480,17 +511,12 @@ void Ranks::logPlay(
   else
     play.southCardsPtr = &south.getCards(true);
 
-  Winner const * winPtr;
   if (! play.trickNS)
-  {
-    winPtr = nullptr;
     play.currBestPtr = nullptr;
-  }
   else
   {
     // TODO Probably generate on the fly if not already set.
-    winPtr = &leader.getWinner(play.leadPtr->getRank(), play.pardPtr->getRank());
-    play.currBestPtr = winPtr;
+    play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
   }
 
   plays.log(play);
@@ -533,7 +559,7 @@ void Ranks::setPlaysLeadWithVoid(
       opps.playFull(rho);
           
       // Register the new play.
-      Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
+      Ranks::updateHoldings(leader, partner, side, play, play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, play);
 
       opps.restoreFull(rho);
@@ -584,7 +610,7 @@ void Ranks::setPlaysLeadWithoutVoid(
 
       play.rhoPtr = opps.voidPtr();
       Ranks::updateHoldings(leader, partner, side, 
-        play.holding3, play.rotateFlag);
+        play, play.holding3, play.rotateFlag);
       Ranks::logPlay(plays, leader, play);
       
       // This loop excludes the RHO void.
@@ -601,7 +627,7 @@ void Ranks::setPlaysLeadWithoutVoid(
 
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, 
-          play.holding3, play.rotateFlag);
+          play, play.holding3, play.rotateFlag);
         Ranks::logPlay(plays, leader, play);
       
         opps.restoreFull(rho);
