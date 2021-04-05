@@ -188,17 +188,11 @@ void Plays::logRho(
   rhoNextIter++;
 
   node.rho = play.rhoPtr->getRank();
-  node.leadCollapse = play.leadCollapse;
-  node.pardCollapse = play.pardCollapse;
-  node.cardsNew = play.cardsLeft;
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
   node.leadDequePtr = play.leaderCardsPtr;
   node.pardDequePtr = play.partnerCardsPtr;
   node.currBestPtr = play.currBestPtr;
-  node.holdingNew = play.holding3;
-  node.rotateNew = play.rotateFlag;
-  // node.trickNS = play.trickNS;
   node.pardPtr = pardPtr;
 
   // TMP
@@ -226,7 +220,7 @@ void Plays::setCombPtrs(const Combinations& combinations)
 {
   for (auto& rhoNode: rhoNodes)
     rhoNode.combPtr = 
-      combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
+      combinations.getPtr(rhoNode.play.cardsLeft, rhoNode.play.holding3);
 }
 
 
@@ -304,18 +298,18 @@ if (debugFlag)
     Survivors survivors;
     if (lho == 0 || rhoNode.rho == 0)
       survivors = distPtr->survivors(first, second);
-    else if (rhoNode.leadCollapse && rhoNode.pardCollapse)
+    else if (rhoNode.play.leadCollapse && rhoNode.play.pardCollapse)
     {
       const unsigned pard = rhoNode.pardPtr->pard;
       const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
       survivors = distPtr->survivorsCollapse2(first, second, pard+1, lead+1);
     }
-    else if (rhoNode.leadCollapse)
+    else if (rhoNode.play.leadCollapse)
     {
       const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
       survivors = distPtr->survivorsCollapse1(first, second, lead+1);
     }
-    else if (rhoNode.pardCollapse)
+    else if (rhoNode.play.pardCollapse)
     {
       const unsigned pard = rhoNode.pardPtr->pard;
       survivors = distPtr->survivorsCollapse1(first, second, pard+1);
@@ -341,7 +335,7 @@ if (debugFlag)
       rhoNode.currBestPtr,
       first == 0,
       second == 0,
-      rhoNode.rotateNew);
+      rhoNode.play.rotateFlag);
 if (debugFlag)
   cout << tvs.str("Tvectors after adapt", true);
 
@@ -493,8 +487,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     play.lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
     play.lho = rhoNode.pardPtr->lhoPtr->lho;
     play.rho = rhoNode.rho;
-    play.leadCollapse = rhoNode.leadCollapse;
-    play.holding3 = rhoNode.holdingNew;
+    play.leadCollapse = rhoNode.play.leadCollapse;
+    play.holding3 = rhoNode.play.holding3;
 
     assert(play.side == SIDE_NORTH);
 
@@ -530,7 +524,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       rhoNode.currBestPtr,
       play.rho == 0,
       play.lho == 0,
-      rhoNode.rotateNew);
+      rhoNode.play.rotateFlag);
 
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);
@@ -874,7 +868,7 @@ string Plays::str() const
       setw(5) << (rhoNode.play.trickNS == 1 ? "+" : "") <<
       setw(5) << (lhoPtr->lho == 0 ? "yes" : "") <<
       setw(5) << (rhoNode.rho == 0 ? "yes" : "") <<
-      setw(10) << rhoNode.holdingNew <<
+      setw(10) << rhoNode.play.holding3 <<
       endl;
   }
   return ss.str();

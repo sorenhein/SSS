@@ -60,14 +60,6 @@ class Plays
     {
       unsigned rho;
 
-      bool leadCollapse; // Does the lead rank go away after this trick?
-      bool lhoCollapse;
-      bool pardCollapse;
-      bool rhoCollapse;
-
-      unsigned cardsNew;
-      unsigned holdingNew;
-      bool rotateNew;
       Combination const * combPtr;
 
       vector<Card> const * leadOrderPtr;
