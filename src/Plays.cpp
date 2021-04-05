@@ -187,12 +187,8 @@ void Plays::logRho(
   rhoNext++;
   rhoNextIter++;
 
-  node.rho = play.rhoPtr->getRank();
   node.leadOrderPtr = leadOrderPtr;
   node.pardOrderPtr = pardOrderPtr;
-  node.leadDequePtr = play.leaderCardsPtr;
-  node.pardDequePtr = play.partnerCardsPtr;
-  node.currBestPtr = play.currBestPtr;
   node.pardPtr = pardPtr;
 
   // TMP
@@ -219,7 +215,7 @@ void Plays::log(
 void Plays::setCombPtrs(const Combinations& combinations)
 {
   for (auto& rhoNode: rhoNodes)
-    rhoNode.combPtr = 
+    rhoNode.play.combPtr = 
       combinations.getPtr(rhoNode.play.cardsLeft, rhoNode.play.holding3);
 }
 
@@ -280,23 +276,23 @@ if (debugFlag)
     {
       northOrderPtr = rhoNode.leadOrderPtr;
       southOrderPtr = rhoNode.pardOrderPtr;
-      northDequePtr = rhoNode.leadDequePtr;
-      southDequePtr = rhoNode.pardDequePtr;
-      first = rhoNode.rho;
+      northDequePtr = rhoNode.play.leaderCardsPtr;
+      southDequePtr = rhoNode.play.partnerCardsPtr;
+      first = rhoNode.play.rho();
       second = lho;
     }
     else
     {
       southOrderPtr = rhoNode.leadOrderPtr;
       northOrderPtr = rhoNode.pardOrderPtr;
-      southDequePtr = rhoNode.leadDequePtr;
-      northDequePtr = rhoNode.pardDequePtr;
+      southDequePtr = rhoNode.play.leaderCardsPtr;
+      northDequePtr = rhoNode.play.partnerCardsPtr;
       first = lho;
-      second = rhoNode.rho;
+      second = rhoNode.play.rho();
     }
 
     Survivors survivors;
-    if (lho == 0 || rhoNode.rho == 0)
+    if (lho == 0 || rhoNode.play.rho() == 0)
       survivors = distPtr->survivors(first, second);
     else if (rhoNode.play.leadCollapse && rhoNode.play.pardCollapse)
     {
@@ -322,7 +318,7 @@ if (debugFlag)
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
-    tvs = rhoNode.combPtr->strategies();
+    tvs = rhoNode.play.combPtr->strategies();
 // cout << tvs.str("Tvectors") << endl;
 
     // TODO Just pass in the RHO node in some form?
@@ -332,7 +328,7 @@ if (debugFlag)
       southOrderPtr,
       northDequePtr,
       southDequePtr,
-      rhoNode.currBestPtr,
+      rhoNode.play.currBestPtr,
       first == 0,
       second == 0,
       rhoNode.play.rotateFlag);
@@ -486,7 +482,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     play.side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
     play.lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
     play.lho = rhoNode.pardPtr->lhoPtr->lho;
-    play.rho = rhoNode.rho;
+    play.rho = rhoNode.play.rho();
     play.leadCollapse = rhoNode.play.leadCollapse;
     play.holding3 = rhoNode.play.holding3;
 
@@ -511,7 +507,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     else
       survivors = distPtr->survivors(play.rho, play.lho);
 
-    play.strategies = rhoNode.combPtr->strategies();
+    play.strategies = rhoNode.play.combPtr->strategies();
 
     // adapt() renumbers distributions from combPtr.
     // It also renumbers winners within strategies.
@@ -519,9 +515,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       rhoNode.play.trickNS, 
       rhoNode.leadOrderPtr,
       rhoNode.pardOrderPtr,
-      rhoNode.leadDequePtr,
-      rhoNode.pardDequePtr,
-      rhoNode.currBestPtr,
+      rhoNode.play.leaderCardsPtr,
+      rhoNode.play.partnerCardsPtr,
+      rhoNode.play.currBestPtr,
       play.rho == 0,
       play.lho == 0,
       rhoNode.play.rotateFlag);
@@ -864,10 +860,10 @@ string Plays::str() const
       setw(5) << leadPtr->lead <<
       setw(5) << (lhoPtr->lho == 0 ? "-" : to_string(lhoPtr->lho)) <<
       setw(5) << (pardPtr->pard == 0 ? "-" : to_string(pardPtr->pard)) <<
-      setw(5) << (rhoNode.rho == 0 ? "-" : to_string(rhoNode.rho)) <<
+      setw(5) << (rhoNode.play.rho() == 0 ? "-" : to_string(rhoNode.play.rho())) <<
       setw(5) << (rhoNode.play.trickNS == 1 ? "+" : "") <<
       setw(5) << (lhoPtr->lho == 0 ? "yes" : "") <<
-      setw(5) << (rhoNode.rho == 0 ? "yes" : "") <<
+      setw(5) << (rhoNode.play.rho() == 0 ? "yes" : "") <<
       setw(10) << rhoNode.play.holding3 <<
       endl;
   }

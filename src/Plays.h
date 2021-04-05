@@ -58,15 +58,8 @@ class Plays
 
     struct RhoNode
     {
-      unsigned rho;
-
-      Combination const * combPtr;
-
       vector<Card> const * leadOrderPtr;
       vector<Card> const * pardOrderPtr;
-      deque<Card const *> const * leadDequePtr;
-      deque<Card const *> const * pardDequePtr;
-      Winner const * currBestPtr;
 
       PardNode * pardPtr;
 
