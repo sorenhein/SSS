@@ -435,38 +435,8 @@ bool Ranks::pardOK(
 }
 
 
-void Ranks::updateHoldings(
-  const Declarer& leader,
-  const Declarer& partner,
-  const SidePosition side,
-  Play& play,
-  unsigned& holding3,
-  bool& rotateFlag) const
+void Ranks::updateHoldings(Play& play) const
 {
-UNUSED(leader);
-UNUSED(partner);
-UNUSED(side);
-UNUSED(holding3);
-UNUSED(rotateFlag);
-
-  /*
-  if (leader.greater(partner, opps))
-  {
-    holding3 = Ranks::canonicalTrinary(leader, partner);
-
-    // rotateFlag is absolute.
-    // If the leader is South, then rotate.
-    rotateFlag = (side == SIDE_SOUTH);
-  }
-  else
-  {
-    holding3 = Ranks::canonicalTrinary(partner, leader);
-
-    // If the leader is South, then don't rotate.
-    rotateFlag = (side == SIDE_NORTH);
-  }
-  */
-
   if (north.greater(south, opps))
   {
     play.holding3 = Ranks::canonicalTrinary(north, south);
@@ -526,7 +496,6 @@ void Ranks::logPlay(
 void Ranks::setPlaysLeadWithVoid(
   Declarer& leader,
   Declarer& partner,
-  const SidePosition side,
   const unsigned lead,
   Play& play,
   Plays& plays)
@@ -559,7 +528,7 @@ void Ranks::setPlaysLeadWithVoid(
       opps.playFull(rho);
           
       // Register the new play.
-      Ranks::updateHoldings(leader, partner, side, play, play.holding3, play.rotateFlag);
+      Ranks::updateHoldings(play);
       Ranks::logPlay(plays, leader, play);
 
       opps.restoreFull(rho);
@@ -579,7 +548,6 @@ void Ranks::setPlaysLeadWithVoid(
 void Ranks::setPlaysLeadWithoutVoid(
   Declarer& leader,
   Declarer& partner,
-  const SidePosition side,
   const unsigned lead,
   Play& play,
   Plays& plays)
@@ -609,8 +577,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       // the holdings.
 
       play.rhoPtr = opps.voidPtr();
-      Ranks::updateHoldings(leader, partner, side, 
-        play, play.holding3, play.rotateFlag);
+      Ranks::updateHoldings(play);
       Ranks::logPlay(plays, leader, play);
       
       // This loop excludes the RHO void.
@@ -626,8 +593,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         opps.playFull(rho);
 
         // Register the new play.
-        Ranks::updateHoldings(leader, partner, side, 
-          play, play.holding3, play.rotateFlag);
+        Ranks::updateHoldings(play);
         Ranks::logPlay(plays, leader, play);
       
         opps.restoreFull(rho);
@@ -685,11 +651,9 @@ void Ranks::setPlaysSide(
       lead != maxRank);
 
     // For optimization we treat the case separately where LHO is void.
-    Ranks::setPlaysLeadWithVoid(leader, partner, side, lead,
-      play, plays);
+    Ranks::setPlaysLeadWithVoid(leader, partner, lead, play, plays);
 
-    Ranks::setPlaysLeadWithoutVoid(leader, partner, side, lead,
-      play, plays);
+    Ranks::setPlaysLeadWithoutVoid(leader, partner, lead, play, plays);
 
     leader.restoreFull(lead);
   }

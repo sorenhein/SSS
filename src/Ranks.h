@@ -60,13 +60,7 @@ class Ranks
       const unsigned toBeat,
       const unsigned pard) const;
 
-    void updateHoldings(
-      const Declarer& leader,
-      const Declarer& partner,
-      const SidePosition side,
-      Play& play,
-      unsigned& holding3,
-      bool& rotateFlag) const;
+    void updateHoldings(Play& play) const;
 
     void logPlay(
       Plays& plays,
@@ -76,7 +70,6 @@ class Ranks
     void setPlaysLeadWithVoid(
       Declarer& leader,
       Declarer& partner,
-      const SidePosition side,
       const unsigned lead,
       Play& play,
       Plays& plays);
@@ -84,7 +77,6 @@ class Ranks
     void setPlaysLeadWithoutVoid(
       Declarer& leader,
       Declarer& partner,
-      const SidePosition side,
       const unsigned lead,
       Play& play,
       Plays& plays);
