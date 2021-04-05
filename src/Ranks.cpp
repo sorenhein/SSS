@@ -463,9 +463,6 @@ void Ranks::logPlay(
 {
   play.trickNS = (max(play.leadPtr->getRank(), play.pardPtr->getRank()) > max(play.lhoPtr->getRank(), play.rhoPtr->getRank()) ? 1 : 0);
 
-  // vector<Card> const * leadOrderPtr;
-  // vector<Card> const * pardOrderPtr;
-
   // Number of cards in play after this trick;
   play.cardsLeft = cards +
     (play.lhoPtr->isVoid() ? 1 : 0) +
@@ -482,16 +479,6 @@ void Ranks::logPlay(
     play.southCardsPtr = nullptr;
   else
     play.southCardsPtr = &south.getCards(true);
-
-  // if (play.leadPtr->isVoid())
-    // leadOrderPtr = nullptr;
-  // else
-    // leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
-
-  // if (play.pardPtr->isVoid())
-    // pardOrderPtr = nullptr;
-  // else
-    // pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
 
   Winner const * winPtr;
   if (! play.trickNS)

@@ -19,7 +19,7 @@ class Declarer: public Player
 
     // remainders maps winners in subsequent tricks to winners
     // in the current reference frame.
-    vector<vector<Card>> remainders;
+    // vector<vector<Card>> remainders;
 
     // The best card(s) that NS play to this trick, whether or not
     // they win it.  If they win, then the winner is interesting.
@@ -33,7 +33,7 @@ class Declarer: public Player
 
     void fixDepths();
 
-    void setRemainders();
+    // void setRemainders();
 
     void countNumbers(vector<unsigned>& numbers) const;
 
@@ -52,8 +52,6 @@ class Declarer: public Player
       const Opponents& opps) const;
     
     const Card& top() const;
-
-    const vector<Card>& remainder(const unsigned rank) const;
 
     const Winner& getWinner(
       const unsigned lead,

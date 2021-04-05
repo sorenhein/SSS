@@ -180,13 +180,9 @@ class Player
     unsigned minFullRank() const;
     unsigned maxFullRank() const;
 
-    const vector<Card>& remainder(const unsigned rank) const;
-
     const Winner& getWinner(
       const unsigned lead,
       const unsigned pard) const;
-
-    // const deque<Card const *>& getCards() const;
 
     bool isVoid() const;
 

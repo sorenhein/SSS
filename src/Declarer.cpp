@@ -99,119 +99,6 @@ void Declarer::fixDepths()
 }
 
 
-void Declarer::setRemainders()
-{
-  // Example: North AQx, South JT8, defenders have 7 cards.
-  //
-  // Rank Cards North South
-  //    1     x     1     0
-  //    2   3-7     0     0
-  //    3     8     0     1
-  //    4     9     0     0
-  //    5    JT     0     2
-  //    6     Q     1     0
-  //    7     K     0     0
-  //    8     A     1     0
-  //
-  // Then the order table for North (from below) is 1, 6, 8.
-  // For South it is 3, 5, 5.  Each of these also has a depth, so
-  // for South it is actually 3(0), 5(1), 5(0) with the highest
-  // of equals being played first.
-  //
-  // If North plays the Q on the first trick, then North has 1, 8.
-  // So this is the reduced or punched-out order table for North's Q.
-  //
-  // The purpose of these tables is to figure out the lowest winning
-  // rank in the current combination that corresponds to
-  // a following combination.
-  //
-  // If the posInfo side is void, there is an (unset) entry at
-  // position 0 of the list for the void "card".
-
-  const unsigned l = maxRank+1;
-  remainders.clear();
-  remainders.resize(l);
-
-  // r is the full-rank index that we're punching out.
-  for (unsigned r = 1; r < l; r++)
-  {
-    if (rankInfo[r].count == 0)
-      continue;
-
-assert(r < remainders.size());
-    vector<Card>& remList = remainders[r];
-    remList.resize(len); // TODO len-1?
-
-    // The position counts up from the lowest card which is 0.
-    unsigned pos = 0;
-    unsigned number = 0;
-
-    // Fill out remList with information about the remaining cards,
-    // starting from below.
-    for (unsigned s = 1; s < l; s++)
-    {
-      const unsigned val = rankInfo[s].count;
-      if (val == 0)
-        continue;
-
-      // The depth is 0 if this is the highest of equals of that rank.
-      // If this is the card we're punching out, increase the depth by 1
-      // by starting with the second such card.
-      const unsigned start = (r == s ? 1 : 0);
-
-/*
-      for (unsigned d = start; d < val; d++, pos++)
-      {
-assert(pos < remList.size());
-// TODO Use cardsNorth from Ranks once it's over here instead?
-// cout << "r " << r << " s " << s << ": d " << d << ", pos " << pos <<
-  // ", remList length" << remList.size() << endl;
-        remList[pos].set(s, d, pos, rankInfo[s].names.at(d));
-      }
-*/
-
-      // Start at the highest depth.
-      for (unsigned d = val; d-- > start; pos++, number++)
-      {
-assert(pos < remList.size());
-        remList[pos].set(s, d, number, rankInfo[s].names.at(d));
-      }
-
-      if (r == s)
-        number++;
-
-
-    }
-
-    remList.resize(pos);
-    assert(pos+1 == cards.size());
-
-    /*
-    for (unsigned p = 0, cno = 0; p < pos; p++, cno++)
-    {
-      if (cards[cno].getRank() == r &&
-          cards[cno].getDepth() == 0)
-        cno++;
-
-      if (!cards[cno].identical(remList[p]))
-      {
-wcout << Player::wstr() << endl;
-        cout << "p " << p << ", cno " << cno << ", r " << r << endl;
-        cout << "remList (presumed OK)\n";
-        for (unsigned p1 = 0; p1 < pos; p1++)
-          cout << p1 << ": " << remList[p1].strDebug(Player::playerName());
-        cout << endl << "cards list (trying to match)\n";
-        for (unsigned c1 = 0; c1 < cards.size(); c1++)
-          cout << c1 << ": " << cards[c1].strDebug(Player::playerName());
-        cout << endl;
-        assert(cards[cno].identical(remList[p]));
-      }
-    }
-    */
-  }
-}
-
-
 void Declarer::countNumbers(vector<unsigned>& numbers) const
 {
   // TODO Probably we can just use cards to look this up?
@@ -332,7 +219,7 @@ void Declarer::finish(const Declarer& partner)
 {
   Declarer::setSingleRank();
   Declarer::fixDepths();
-  Declarer::setRemainders();
+  // Declarer::setRemainders();
   Declarer::setBest(partner);
 }
 
@@ -370,13 +257,6 @@ const Card& Declarer::top() const
 {
   assert(! cards.empty());
   return cards.back();
-}
-
-
-const vector<Card>& Declarer::remainder(const unsigned rank) const
-{
-  assert(rank < remainders.size());
-  return remainders[rank];
 }
 
 
