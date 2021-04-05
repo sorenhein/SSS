@@ -223,10 +223,6 @@ void Plays::logRho(
 
 void Plays::log(
   const SidePosition side,
-  const unsigned lead,
-  const unsigned lho,
-  const unsigned pard,
-  const unsigned rho,
   vector<Card> const * leadOrderPtr,
   vector<Card> const * pardOrderPtr,
   deque<Card const *> const * leadDequePtr,
@@ -237,15 +233,15 @@ void Plays::log(
   // The pointers assume that the Ranks object still exists!
 
   bool newFlag;
-  LeadNode * leadPtr = Plays::logLead(side, lead, newFlag);
-  LhoNode * lhoPtr = Plays::logLho(lho, leadPtr, newFlag);
-  PardNode * pardPtr = Plays::logPard(pard, lhoPtr, newFlag);
+  LeadNode * leadPtr = Plays::logLead(side, play.leadPtr->getRank(), newFlag);
+  LhoNode * lhoPtr = Plays::logLho(play.lhoPtr->getRank(), leadPtr, newFlag);
+  PardNode * pardPtr = Plays::logPard(play.pardPtr->getRank(), lhoPtr, newFlag);
 
-  const bool knownVoidLho = (lho == 0);
-  const bool knownVoidRho = (rho == 0);
-  const bool voidPard = (pard == 0);
+  const bool knownVoidLho = (play.lhoPtr->getRank() == 0);
+  const bool knownVoidRho = (play.rhoPtr->getRank() == 0);
+  const bool voidPard = (play.pardPtr->getRank() == 0);
 
-  Plays::logRho(rho,
+  Plays::logRho(play.rhoPtr->getRank(),
     leadOrderPtr, pardOrderPtr, 
     leadDequePtr, pardDequePtr,
     currBestPtr,
@@ -256,13 +252,9 @@ void Plays::log(
 
 void Plays::setCombPtrs(const Combinations& combinations)
 {
-// if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
-  // cout << "HERE4" << endl;
   for (auto& rhoNode: rhoNodes)
     rhoNode.combPtr = 
       combinations.getPtr(rhoNode.cardsNew, rhoNode.holdingNew);
-// if (rhoNext > 0 && rhoNodes[0].pardPtr->pard > 32)
-  // cout << "HERE5" << endl;
 }
 
 

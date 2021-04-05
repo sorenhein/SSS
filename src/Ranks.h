@@ -72,10 +72,6 @@ class Ranks
       const Declarer& leader,
       const Declarer& partner,
       const SidePosition side,
-      const unsigned lead,
-      const unsigned lho,
-      const unsigned pard,
-      const unsigned rho,
       Play& play) const;
 
     void setPlaysLeadWithVoid(
@@ -83,7 +79,6 @@ class Ranks
       Declarer& partner,
       const SidePosition side,
       const unsigned lead,
-      // const bool leadCollapse,
       Play& play,
       Plays& plays);
 
@@ -92,7 +87,6 @@ class Ranks
       Declarer& partner,
       const SidePosition side,
       const unsigned lead,
-      // const bool leadCollapse,
       Play& play,
       Plays& plays);
 

@@ -91,6 +91,12 @@ WinnerCompare Card::compare(const Card& sw2) const
 }
 
 
+bool Card::isVoid() const
+{
+  return (rank == 0);
+}
+
+
 bool Card::rankSame(const Card& sw2) const
 {
   return (rank == sw2.rank);

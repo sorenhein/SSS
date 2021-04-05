@@ -59,3 +59,8 @@ const deque<Card const *>& Opponents::getCards() const
   return ranksPtr;
 }
 
+
+Card const * Opponents::voidPtr() const
+{
+  return &voidCard;
+}

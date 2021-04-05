@@ -461,38 +461,41 @@ void Ranks::logPlay(
   const Declarer& leader,
   const Declarer& partner,
   const SidePosition side,
-  const unsigned lead,
-  const unsigned lho,
-  const unsigned pard,
-  const unsigned rho,
   Play& play) const
 {
-  play.trickNS = (max(lead, pard) > max(lho, rho) ? 1 : 0);
+  play.trickNS = (max(play.leadPtr->getRank(), play.pardPtr->getRank()) > max(play.lhoPtr->getRank(), play.rhoPtr->getRank()) ? 1 : 0);
 
   vector<Card> const * leadOrderPtr;
   vector<Card> const * pardOrderPtr;
   deque<Card const *> const * leadDequePtr;
   deque<Card const *> const * pardDequePtr;
 
-  if (lead == 0)
+bool b1 = play.leadPtr->isVoid();
+bool b2 = (play.leadPtr->getRank() == 0);
+assert(b1 == b2);
+  if (play.leadPtr->getRank() == 0)
   {
     leadOrderPtr = nullptr;
     leadDequePtr = nullptr;
   }
   else
   {
-    leadOrderPtr = &leader.remainder(lead);
+    leadOrderPtr = &leader.remainder(play.leadPtr->getRank());
     leadDequePtr = &leader.getCards(true);
   }
 
-  if (pard == 0)
+  // isVoid?
+bool b3 = play.pardPtr->isVoid();
+bool b4 = (play.pardPtr->getRank() == 0);
+assert(b3 == b4);
+  if (play.pardPtr->getRank() == 0)
   {
     pardOrderPtr = nullptr;
     pardDequePtr = nullptr;
   }
   else
   {
-    pardOrderPtr = &partner.remainder(pard);
+    pardOrderPtr = &partner.remainder(play.pardPtr->getRank());
     pardDequePtr = &partner.getCards(true);
   }
 
@@ -502,14 +505,13 @@ void Ranks::logPlay(
   else
   {
     // TODO Probably generate on the fly if not already set.
-    winPtr = &leader.getWinner(lead, pard);
+    winPtr = &leader.getWinner(play.leadPtr->getRank(), play.pardPtr->getRank());
   }
 
-  plays.log(side, lead, lho, pard, rho, 
+  plays.log(side, 
     leadOrderPtr, pardOrderPtr, 
     leadDequePtr, pardDequePtr,
-    winPtr,
-    play);
+    winPtr, play);
 }
 
 
@@ -522,14 +524,10 @@ void Ranks::setPlaysLeadWithVoid(
   Play& play,
   Plays& plays)
 {
-  // unsigned holding3;
-  // bool rotateFlag;
-  // bool pardCollapse;
-
   opps.playFull(0);
+  play.lhoPtr = opps.voidPtr();
 
-  // for (auto& pardCard: partner.getCards(false))
-  for (auto pardPtr: partner.getCards(false))
+  for (auto& pardPtr: partner.getCards(false))
   {
     play.pardPtr = pardPtr;
     const unsigned pard = pardPtr->getRank();
@@ -543,9 +541,10 @@ void Ranks::setPlaysLeadWithVoid(
       ! leader.hasRank(pard));
     const unsigned toBeat = max(lead, pard);
 
-    for (auto& rhoCard: opps.getCards())
+    for (auto& rhoPtr: opps.getCards())
     {
-      const unsigned rho = rhoCard->getRank();
+      play.rhoPtr = rhoPtr;
+      const unsigned rho = rhoPtr->getRank();
       // If LHO is known to be void, RHO can duck completely.
       if (rho < toBeat && rho != opps.minFullRank())
         continue;
@@ -554,8 +553,7 @@ void Ranks::setPlaysLeadWithVoid(
           
       // Register the new play.
       Ranks::updateHoldings(leader, partner, side, play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, side, lead, 0, pard, rho,
-        play);
+      Ranks::logPlay(plays, leader, partner, side, play);
 
       opps.restoreFull(rho);
 
@@ -579,12 +577,13 @@ void Ranks::setPlaysLeadWithoutVoid(
   Play& play,
   Plays& plays)
 {
-  for (auto& lhoCard: opps.getCards())
+  for (auto& lhoPtr: opps.getCards())
   {
-    const unsigned lho = lhoCard->getRank();
+    play.lhoPtr = lhoPtr;
+    const unsigned lho = lhoPtr->getRank();
     opps.playFull(lho);
 
-    for (auto pardPtr: partner.getCards(false))
+    for (auto& pardPtr: partner.getCards(false))
     {
       play.pardPtr = pardPtr;
       const unsigned pard = pardPtr->getRank();
@@ -602,15 +601,16 @@ void Ranks::setPlaysLeadWithoutVoid(
       // We don't need to "play" the void, as it does not affect
       // the holdings.
 
+      play.rhoPtr = opps.voidPtr();
       Ranks::updateHoldings(leader, partner, side, 
         play.holding3, play.rotateFlag);
-      Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, 0,
-        play);
+      Ranks::logPlay(plays, leader, partner, side, play);
       
       // This loop excludes the RHO void.
-      for (auto& rhoCard: opps.getCards())
+      for (auto& rhoPtr: opps.getCards())
       {
-        const unsigned rho = rhoCard->getRank();
+        play.rhoPtr = rhoPtr;
+        const unsigned rho = rhoPtr->getRank();
 
         // Maybe the same single card has been played already.
         if (! opps.hasRank(rho))
@@ -621,8 +621,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         // Register the new play.
         Ranks::updateHoldings(leader, partner, side, 
           play.holding3, play.rotateFlag);
-        Ranks::logPlay(plays, leader, partner, side, lead, lho, pard, rho,
-          play);
+        Ranks::logPlay(plays, leader, partner, side, play);
       
         opps.restoreFull(rho);
       }
@@ -657,15 +656,13 @@ void Ranks::setPlaysSide(
       leader.minFullRank() >= partner.maxFullRank())
     return;
 
-  // bool leadCollapse;
-
   Play play;
   if (side == SIDE_NORTH)
     play.side = POSITION_NORTH;
   else
     play.side = POSITION_SOUTH;
 
-  for (auto leadPtr: leader.getCards(false))
+  for (auto& leadPtr: leader.getCards(false))
   {
     // I wish I could write for (play.leadPtr: ...), but a declaration
     // is required.

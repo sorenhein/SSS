@@ -39,6 +39,8 @@ class Card
 
     WinnerCompare compare(const Card& card2) const;
 
+    bool isVoid() const;
+
     bool rankSame(const Card& card2) const;
     bool rankExceeds(const Card& card2) const;
 

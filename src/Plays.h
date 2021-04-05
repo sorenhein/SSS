@@ -161,10 +161,10 @@ class Plays
 
     void log(
       const SidePosition side,
-      const unsigned lead,
-      const unsigned lho,
-      const unsigned pard,
-      const unsigned rho,
+      // const unsigned lead,
+      // const unsigned lho,
+      // const unsigned pard,
+      // const unsigned rho,
       vector<Card> const * leadOrderPtr,
       vector<Card> const * pardOrderPtr,
       deque<Card const *> const * leadDequePtr,
