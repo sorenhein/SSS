@@ -255,6 +255,7 @@ if (debugFlag)
   cout << rhoNode.play.strTrick(rno);
 
     const Play& play = rhoNode.play;
+    Survivors survivors;
 
     unsigned westRank, eastRank;
     if (play.side == POSITION_NORTH)
@@ -268,8 +269,7 @@ if (debugFlag)
       eastRank = play.rho();
     }
 
-    Survivors survivors;
-    if (lho == 0 || rhoNode.play.rho() == 0)
+    if (westRank == 0 || eastRank == 0)
       survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
     else if (rhoNode.play.leadCollapse && rhoNode.play.pardCollapse)
     {
