@@ -7,7 +7,7 @@
 #include "Plays.h"
 #include "Ranks.h"
 
-#include "struct.h"
+#include "CombEntry.h"
 #include "const.h"
 
 /*
@@ -454,6 +454,10 @@ void Ranks::updateHoldings(Play& play) const
 
 void Ranks::finish(Play& play) const
 {
+  // This could be a method in Play, but we'd have to pass in not
+  // only play but also north and south, so we might as well leave
+  // it here.
+
   Ranks::updateHoldings(play);
 
   play.trickNS = (max(play.lead(), play.pard()) > 

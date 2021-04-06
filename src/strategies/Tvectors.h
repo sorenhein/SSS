@@ -9,9 +9,9 @@
 #include "Tvector.h"
 #include "Winner.h"
 #include "Card.h"
-#include "../struct.h"
 
 struct Play;
+struct Survivors;
 
 using namespace std;
 

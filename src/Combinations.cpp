@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
+#include "CombEntry.h"
 #include "Distributions.h"
 #include "Plays.h"
 #include "Ranks.h"

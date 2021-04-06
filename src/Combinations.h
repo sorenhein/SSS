@@ -8,7 +8,6 @@
 #include <mutex>
 
 #include "Combination.h"
-#include "struct.h"
 
 using namespace std;
 

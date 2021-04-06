@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Tvectors.h"
+#include "../Survivor.h"
 
 
 Tvectors::Tvectors()

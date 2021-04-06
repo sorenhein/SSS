@@ -2,10 +2,8 @@
 #define SSS_COMBINATION_H
 
 #include <string>
-#include <list>
 
 #include "strategies/Tvectors.h"
-#include "struct.h"
 
 using namespace std;
 

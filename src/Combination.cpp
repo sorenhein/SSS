@@ -10,7 +10,7 @@
 #include "Distribution.h"
 #include "Ranks.h"
 #include "Plays.h"
-#include "struct.h"
+#include "CombEntry.h"
 
 #include "strategies/Tvector.h"
 

@@ -1,11 +1,14 @@
 #ifndef SSS_TVECTOR_H
 #define SSS_TVECTOR_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <cassert>
 
-#include "../struct.h"
+#include "../Survivor.h"
 
 #include "Winner.h"
 
