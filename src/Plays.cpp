@@ -245,11 +245,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 if (debugFlag)
   cout << "Start of RHO node loop" << endl;
     // Find the distribution numbers that are still possible.
-    // TODO We could possibly cache lho in RhoNode (saves looking it up).
-    const unsigned pard0 = rhoNode.play.pard();
-    const unsigned lead0 = rhoNode.play.lead();
-    const unsigned lho = rhoNode.play.lho();
-    const unsigned side = rhoNode.play.side;
 
 // if (debugFlag)
   cout << rhoNode.play.strTrick(rno);
@@ -271,21 +266,20 @@ if (debugFlag)
 
     if (westRank == 0 || eastRank == 0)
       survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
-    else if (rhoNode.play.leadCollapse && rhoNode.play.pardCollapse)
+    else if (play.leadCollapse && play.pardCollapse)
     {
-      const unsigned pard = rhoNode.pardPtr->pard;
-      const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-      survivors = distPtr->survivorsCollapse2(westRank, eastRank, pard+1, lead+1);
+      survivors = distPtr->survivorsCollapse2(
+        westRank, eastRank, play.pard()+1, play.lead()+1);
     }
-    else if (rhoNode.play.leadCollapse)
+    else if (play.leadCollapse)
     {
-      const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-      survivors = distPtr->survivorsCollapse1(westRank, eastRank, lead+1);
+      survivors = distPtr->survivorsCollapse1(
+        westRank, eastRank, play.lead()+1);
     }
-    else if (rhoNode.play.pardCollapse)
+    else if (play.pardCollapse)
     {
-      const unsigned pard = rhoNode.pardPtr->pard;
-      survivors = distPtr->survivorsCollapse1(westRank, eastRank, pard+1);
+      survivors = distPtr->survivorsCollapse1(
+        westRank, eastRank, play.pard()+1);
     }
     else
       survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
