@@ -56,10 +56,6 @@ Ranks::Ranks()
     init_flag = true;
   }
   mtxRanks.unlock();
-
-  north.clear();
-  south.clear();
-  opps.clear();
 }
 
 

@@ -75,6 +75,9 @@ class Player
      *
      */
 
+    Side side;
+    unsigned len;
+
     deque<Card> cards;
     deque<Card const *> cardsPtr;
     deque<Card const *> ranksPtr;
@@ -112,9 +115,7 @@ class Player
 
 
     bool singleRank;
-    unsigned len;
 
-    Side side;
 
 
     void setVoid(const bool forceFlag);
@@ -132,13 +133,11 @@ class Player
 
     ~Player();
 
-    void clear(); // Empties the vectors
-
     void resize(
       const unsigned cardsIn,
       const Side sideIn);
 
-    void zero(); // Keeps the vectors, but sets them to zero
+    void zero(); // Keeps rankInfo, but sets stored vectors to zero
 
     void updateStep(const unsigned rankNew);
 

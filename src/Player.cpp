@@ -15,23 +15,11 @@
 
 Player::Player()
 {
-  Player::clear();
 }
 
 
 Player::~Player()
 {
-}
-
-
-void Player::clear()
-{
-  // Is this clearing needed or used?
-  rankInfo.clear();
-
-  cards.clear();
-  cardsPtr.clear();
-  ranksPtr.clear();
 }
 
 
@@ -41,17 +29,16 @@ void Player::resize(
 {
   // Worst case, leaving room for voids at rank 0.
   rankInfo.resize(cardsIn+1);
-
-  cards.clear();
-
-  maxRank = cardsIn;
-
   side = sideIn;
 }
 
 
 void Player::zero()
 {
+  cards.clear();
+  cardsPtr.clear();
+  ranksPtr.clear();
+
   for (auto& ri: rankInfo)
     ri.clear();
         
@@ -59,11 +46,6 @@ void Player::zero()
 
   numberNextCard = 0;
   firstUpdateFlag = true;
-
-  cards.clear();
-
-  cardsPtr.clear();
-  ranksPtr.clear();
 
   maxRank = numeric_limits<unsigned>::max();
 
