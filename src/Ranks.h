@@ -107,6 +107,9 @@ class Ranks
     string strTable() const;
 
     wstring wstrDiagram() const;
+
+    // TODO TMP
+    unsigned setsTMP() const;
 };
 
 #endif

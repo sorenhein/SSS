@@ -490,17 +490,11 @@ void Ranks::finish(
 
     play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
 
-    // assert(wnew == * play.currBestPtr);
-    /*
-    if (! (wnew == * play.currBestPtr))
-    {
-      cout << "Original winner\n";
-      cout << play.currBestPtr->strDebug();
-      cout << "New winner\n";
-      cout << wnew.strDebug();
-      cout << endl;
-    }
-    */
+    // Winner winTMP;
+    // leader.setBestEntry(* play.leadPtr, *play.pardPtr, winTMP);
+    // TODO Won't work as it goes out of scope
+    // play.currBestPtr = &winTMP;
+    // assert(* play.currBestPtr == winTMP);
   }
 }
 

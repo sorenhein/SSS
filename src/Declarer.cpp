@@ -26,6 +26,9 @@ void Declarer::resize(
   bestNew.resize(cardsIn+1);
   for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
     bestNew[rThis].resize(cardsIn+1);
+
+  // TODO TMP
+  sets = 0;
 }
 
 
@@ -118,6 +121,39 @@ void Declarer::countNumbers(vector<unsigned>& numbers) const
 }
 
 
+void Declarer::setBestEntry(
+  const Card& lead,
+  const Card& pard,
+  Winner& winner) const
+{
+  WinningSide wside, pside;
+  // TODO If we keep this version, can pre-calculate these.
+  // We could also put the method in Winner as it doesn't really
+  // need anything from Declarer.
+  if (side == POSITION_NORTH)
+  {
+    wside = WIN_NORTH;
+    pside = WIN_SOUTH;
+  }
+  else
+  {
+    wside = WIN_SOUTH;
+    pside = WIN_NORTH;
+  }
+
+  if (lead.getRank() > pard.getRank())
+    winner.set(wside, lead);
+  else if (lead.getRank() < pard.getRank())
+    winner.set(pside, pard);
+  else
+  {
+    winner.set(wside, lead);
+    winner.set(pside, pard);
+  }
+
+}
+
+
 void Declarer::setBest(const Declarer& partner)
 {
   // We pre-calculate the Winner that arises for any combination of
@@ -151,13 +187,9 @@ assert(rPard < bestNew[rLead].size());
       current.reset();
 
       if (rLead > rPard)
-      {
         current.set(wside, * rankTop);
-      }
       else if (rLead < rPard)
-      {
         current.set(pside, * rankTopOther);
-      }
       else
       {
         current.set(wside, * rankTop);
@@ -187,7 +219,8 @@ void Declarer::finish(const Declarer& partner)
 {
   Declarer::setSingleRank();
   Declarer::fixDepths();
-  Declarer::setBest(partner);
+  UNUSED(partner);
+  // Declarer::setBest(partner);
 }
 
 
@@ -250,4 +283,3 @@ bool Declarer::isSingleRanked() const
 {
   return singleRank;
 }
-

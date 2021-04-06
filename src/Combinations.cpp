@@ -197,7 +197,7 @@ UNUSED(distributions);
 // wcout << ranks.wstrDiagram();
 
 // cout << ranks.strTable();
-      // comb.strategize(centry, * this, distributions, ranks, plays);
+      comb.strategize(centry, * this, distributions, ranks, plays);
 /* */
 
       playCounts[cards].unique++;

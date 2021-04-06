@@ -27,6 +27,9 @@ class Declarer: public Player
     vector<vector<Winner>> best;
     vector<vector<Winner>> bestNew;
 
+    // TODO TMP
+    unsigned sets;
+
 
     void setVoid();
 
@@ -62,6 +65,12 @@ class Declarer: public Player
     const Winner& getWinner(
       const unsigned lead,
       const unsigned pard) const;
+
+    // TMP
+    void setBestEntry(
+      const Card& lead,
+      const Card& pard,
+      Winner& winner) const;
 
     // Unlike in Opponents, this can get either ranks or cards.
     const deque<Card const *>& getCards(const bool fullFlag) const;

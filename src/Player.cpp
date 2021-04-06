@@ -220,4 +220,3 @@ wstring Player::wstr() const
   wstring_convert<codecvt_utf8_utf16<wchar_t>> conv;
   return conv.from_bytes(s);
 }
-
