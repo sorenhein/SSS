@@ -220,7 +220,7 @@ void Declarer::finish(const Declarer& partner)
   Declarer::setSingleRank();
   Declarer::fixDepths();
   UNUSED(partner);
-  // Declarer::setBest(partner);
+  Declarer::setBest(partner);
 }
 
 

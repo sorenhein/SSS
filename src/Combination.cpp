@@ -69,7 +69,7 @@ if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
   }
 
 // TODO TMP
-return strats;
+// return strats;
 
 cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.

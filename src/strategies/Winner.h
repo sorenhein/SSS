@@ -55,14 +55,12 @@ class Winner
 
     void set(
       const WinningSide sideIn,
-      const unsigned rankIn,
-      const unsigned depthIn,
-      const unsigned numberIn,
-      const char nameIn);
+      const Card& card);
 
     void set(
-      const WinningSide sideIn,
-      const Card& card);
+      const CardPosition leadSide,
+      const Card& lead,
+      const Card& pard);
 
     void setEmpty();
 

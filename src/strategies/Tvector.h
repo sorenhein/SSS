@@ -50,18 +50,6 @@ struct TrickEntry
   void set(
     const unsigned tricksIn,
     const WinningSide side,
-    const unsigned rank,
-    const unsigned depth,
-    const unsigned number,
-    const char name)
-  {
-    tricks = tricksIn;
-    winner.set(side, rank, depth, number, name);
-  }
-
-  void set(
-    const unsigned tricksIn,
-    const WinningSide side,
     const Card& card)
   {
     tricks = tricksIn;

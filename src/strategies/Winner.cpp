@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cassert>
 
+#include "../Play.h"
 #include "Winner.h"
 
 /*
@@ -41,20 +42,6 @@ void Winner::reset()
 }
 
 
-void Winner::set(
-  const WinningSide sideIn,
-  const unsigned rankIn,
-  const unsigned depthIn,
-  const unsigned numberIn,
-  const char nameIn)
-{
-  // Makes a new subwinner every time.
-  subwinners.emplace_back(Subwinner());
-  Subwinner& sw = subwinners.back();
-  sw.set(sideIn, rankIn, depthIn, numberIn, nameIn);
-}
-
-
 void Winner::setEmpty()
 {
   // Makes a new subwinner every time.
@@ -72,6 +59,38 @@ void Winner::set(
   subwinners.emplace_back(Subwinner());
   Subwinner& sw = subwinners.back();
   sw.set(sideIn, card);
+}
+
+
+void Winner::set(
+  const CardPosition leadSide,
+  const Card& lead,
+  const Card& pard)
+{
+  WinningSide wside, pside;
+  // TODO If we keep this version, can pre-calculate these.
+  // We could also put the method in Winner as it doesn't really
+  // need anything from Declarer.
+  if (leadSide == POSITION_NORTH)
+  {
+    wside = WIN_NORTH;
+    pside = WIN_SOUTH;
+  }
+  else
+  {
+    wside = WIN_SOUTH;
+    pside = WIN_NORTH;
+  }
+
+  if (lead.getRank() > pard.getRank())
+    Winner::set(wside, lead);
+  else if (lead.getRank() < pard.getRank())
+    Winner::set(pside, pard);
+  else
+  {
+    Winner::set(wside, lead);
+    Winner::set(pside, pard);
+  }
 }
 
 
@@ -188,8 +207,17 @@ void Winner::update(
   for (auto& subwinner: subwinners)
     subwinner.update(play);
 
-  if (currBestPtr)
-    * this *= * currBestPtr;
+// if (currBestPtr)
+// {
+  // assert(play.trickNS);
+  // assert(* currBestPtr == play.currBest);
+// }
+// else
+  // assert(! play.trickNS);
+  // if (currBestPtr)
+  UNUSED(currBestPtr);
+  if (play.trickNS)
+    * this *= play.currBest;
 }
 
 

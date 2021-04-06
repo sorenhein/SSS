@@ -488,13 +488,13 @@ void Ranks::finish(
   {
     // TODO Probably generate on the fly if not already set.
 
-    play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
+UNUSED(leader);
+    // play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
 
-    // Winner winTMP;
-    // leader.setBestEntry(* play.leadPtr, *play.pardPtr, winTMP);
-    // TODO Won't work as it goes out of scope
-    // play.currBestPtr = &winTMP;
-    // assert(* play.currBestPtr == winTMP);
+    play.currBest.reset();
+    play.currBest.set(play.side, * play.leadPtr, * play.pardPtr);
+
+    // assert(* play.currBestPtr == play.currBest);
   }
 }
 

@@ -4,6 +4,7 @@
 #include <deque>
 #include <string>
 
+#include "strategies/Winner.h"
 #include "const.h"
 
 
@@ -43,6 +44,7 @@ struct Play
   // is the winner.  If both players played the same rank, then we
   // keep them both, as this is a choice for North-South.
   Winner const * currBestPtr;
+  Winner currBest;
 
   // Information about the place the play came from.
   unsigned cardsLeft;
