@@ -239,14 +239,13 @@ void Tvectors::adapt(
   const Play& play,
   const Survivors& survivors,
   const unsigned trickNS,
-  Winner const * currBestPtr,
   const bool lhoVoidFlag,
   const bool rhoVoidFlag,
   const bool rotateFlag)
 {
   for (auto& tv: results)
     tv.adapt(play, survivors, trickNS,
-      currBestPtr, lhoVoidFlag, rhoVoidFlag, rotateFlag);
+      lhoVoidFlag, rhoVoidFlag, rotateFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)
     Tvectors::collapseOnVoid();

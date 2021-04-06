@@ -456,9 +456,7 @@ void Ranks::updateHoldings(Play& play) const
 }
 
 
-void Ranks::finish(
-  const Declarer& leader,
-  Play& play) const
+void Ranks::finish(Play& play) const
 {
   Ranks::updateHoldings(play);
 
@@ -482,19 +480,10 @@ void Ranks::finish(
   else
     play.southCardsPtr = &south.getCards(true);
 
-  if (! play.trickNS)
-    play.currBestPtr = nullptr;
-  else
+  if (play.trickNS)
   {
-    // TODO Probably generate on the fly if not already set.
-
-UNUSED(leader);
-    // play.currBestPtr = &leader.getWinner(play.lead(), play.pard());
-
     play.currBest.reset();
     play.currBest.set(play.side, * play.leadPtr, * play.pardPtr);
-
-    // assert(* play.currBestPtr == play.currBest);
   }
 }
 
@@ -531,7 +520,7 @@ void Ranks::setPlaysLeadWithVoid(
       opps.playRank(rho);
           
       // Register the new play.
-      Ranks::finish(leader, play);
+      Ranks::finish(play);
       plays.log(play);
 
       opps.restoreRank(rho);
@@ -577,7 +566,7 @@ void Ranks::setPlaysLeadWithoutVoid(
 
       // Register the void play.
       play.rhoPtr = opps.voidPtr();
-      Ranks::finish(leader, play);
+      Ranks::finish(play);
       plays.log(play);
       
       // This loop excludes the RHO void.
@@ -593,7 +582,7 @@ void Ranks::setPlaysLeadWithoutVoid(
         opps.playRank(rho);
 
         // Register the new play.
-        Ranks::finish(leader, play);
+        Ranks::finish(play);
         plays.log(play);
       
         opps.restoreRank(rho);

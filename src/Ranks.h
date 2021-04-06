@@ -62,9 +62,7 @@ class Ranks
 
     void updateHoldings(Play& play) const;
 
-    void finish(
-      const Declarer& leader,
-      Play& play) const;
+    void finish(Play& play) const;
 
     void setPlaysLeadWithVoid(
       Declarer& leader,

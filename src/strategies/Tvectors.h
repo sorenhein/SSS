@@ -66,7 +66,6 @@ class Tvectors
       const Play& play,
       const Survivors& survivors,
       const unsigned trickNS,
-      Winner const * currBestPtr,
       const bool lhoVoidFlag,
       const bool rhoVoidFlag,
       const bool rotateFlag);

@@ -301,7 +301,6 @@ if (debugFlag)
       rhoNode.play,
       survivors, 
       rhoNode.play.trickNS, 
-      rhoNode.play.currBestPtr,
       first == 0,
       second == 0,
       rhoNode.play.rotateFlag);
@@ -488,7 +487,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       rhoNode.play,
       survivors, 
       rhoNode.play.trickNS, 
-      rhoNode.play.currBestPtr,
       play.rho == 0,
       play.lho == 0,
       rhoNode.play.rotateFlag);

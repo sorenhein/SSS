@@ -70,9 +70,7 @@ class Winner
 
     void flip();
 
-    void update(
-      const Play& play,
-      Winner const * currBestPtr);
+    void update(const Play& play);
 
     string str() const;
 

@@ -200,22 +200,11 @@ void Winner::flip()
 }
 
 
-void Winner::update(
-  const Play& play,
-  Winner const * currBestPtr)
+void Winner::update(const Play& play)
 {
   for (auto& subwinner: subwinners)
     subwinner.update(play);
 
-// if (currBestPtr)
-// {
-  // assert(play.trickNS);
-  // assert(* currBestPtr == play.currBest);
-// }
-// else
-  // assert(! play.trickNS);
-  // if (currBestPtr)
-  UNUSED(currBestPtr);
   if (play.trickNS)
     * this *= play.currBest;
 }
