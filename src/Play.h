@@ -17,7 +17,7 @@ class Winner;
 
 struct Play
 {
-  CardPosition side;
+  Side side;
   Card const * leadPtr;
   Card const * lhoPtr;
   Card const * pardPtr;

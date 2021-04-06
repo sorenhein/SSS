@@ -37,7 +37,7 @@ void Player::clear()
 
 void Player::resize(
   const unsigned cardsIn,
-  const CardPosition sideIn)
+  const Side sideIn)
 {
   // Worst case, leaving room for voids at rank 0.
   rankInfo.resize(cardsIn+1);

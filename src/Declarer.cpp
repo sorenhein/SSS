@@ -13,14 +13,6 @@
  */
 
 
-void Declarer::resize(
-  const unsigned cardsIn,
-  const CardPosition sideIn)
-{
-  Player::resize(cardsIn, sideIn);
-}
-
-
 void Declarer::setVoid()
 {
   if (len > 0)
@@ -33,8 +25,7 @@ void Declarer::setVoid()
   rankInfo[0].count = 1;
   rankInfo[0].ptr = nullptr;
 
-  // For North-South, a void goes in cardsNew, cardsPtr and
-  // ranksPtr.  This is recognized by forceFlag == false.
+  // For North-South, a void goes in cards, cardsPtr and ranksPtr.
 
   cards.emplace_back(Card());
   cardsPtr.push_back(&cards.front());
@@ -98,6 +89,7 @@ bool Declarer::playRank(
   assert(rankInfo[rank].count > 0);
   rankInfo[rank].count--;
 
+  // This is the collapse flag where a rank disappears meaningfully.
   return (rank > 1 &&
     rank != maxGlobalRank &&
     ! Declarer::hasRank(rank) &&

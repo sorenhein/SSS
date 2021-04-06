@@ -58,7 +58,7 @@ class Winner
       const Card& card);
 
     void set(
-      const CardPosition leadSide,
+      const Side leadSide,
       const Card& lead,
       const Card& pard);
 

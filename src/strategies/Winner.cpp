@@ -63,7 +63,7 @@ void Winner::set(
 
 
 void Winner::set(
-  const CardPosition leadSide,
+  const Side leadSide,
   const Card& lead,
   const Card& pard)
 {

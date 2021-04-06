@@ -27,10 +27,6 @@ class Declarer: public Player
 
   public:
 
-    void resize(
-      const unsigned cardsIn,
-      const CardPosition sideIn);
-
     void setNames();
 
     bool playRank(

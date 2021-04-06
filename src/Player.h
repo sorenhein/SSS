@@ -114,21 +114,14 @@ class Player
     bool singleRank;
     unsigned len;
 
-    // TODO CardPosition should have a more general name such as
-    // Side.
-    CardPosition side;
-
-    // remainders maps winners in subsequent tricks to winners
-    // in the current reference frame.
-    vector<vector<Card>> remainders;
-
-    // The best card(s) that NS play to this trick, whether or not
-    // they win it.  If they win, then the winner is interesting.
-    // The indices are the first and second plays to this trick.
-    vector<vector<Winner>> best;
+    Side side;
 
 
-    void countNumbers(vector<unsigned>& numbers) const;
+    void setVoid(const bool forceFlag);
+
+    void setSingleRank();
+
+    void setNames(const bool declarerFlag);
 
     string playerName() const;
 
@@ -143,9 +136,7 @@ class Player
 
     void resize(
       const unsigned cardsIn,
-      const CardPosition sideIn);
-
-    void resizeBest(const Player& partner);
+      const Side sideIn);
 
     void zero(); // Keeps the vectors, but sets them to zero
 
@@ -155,19 +146,6 @@ class Player
       const unsigned rank,
       const unsigned absCardNumber);
 
-    void setVoid(const bool forceFlag);
-
-    void setSingleRank();
-
-    void setNames(const bool declarerFlag);
-
-    void setRemainders();
-
-    void setBest(const Player& partner);
-
-    // This method has a companion, playRank.  For Declarer it
-    // returns a collapse flag, for Opponents it doesn't.
-    // Therefore these methods are in the respective classes.
     void restoreRank(const unsigned rank);
 
     bool greater(
@@ -182,10 +160,6 @@ class Player
 
     unsigned minFullRank() const;
     unsigned maxFullRank() const;
-
-    const Winner& getWinner(
-      const unsigned lead,
-      const unsigned pard) const;
 
     bool isVoid() const;
 

@@ -16,8 +16,6 @@
 void Opponents::setVoid()
 {
   // A void among other possibilities.
-  // TODO Does this even show up in the result, as maxPos isn't set?
-  // Can we just do away with the method?
   minRank = 0;
   rankInfo[0].count = 1;
   rankInfo[0].ptr = nullptr;

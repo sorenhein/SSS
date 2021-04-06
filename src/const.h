@@ -14,7 +14,7 @@ using namespace std;
 
 #define GENERIC_NAMES "HhGgIiJj"
 
-enum CardPosition
+enum Side
 {
   POSITION_NORTH = 0,
   POSITION_SOUTH = 1,
