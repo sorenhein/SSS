@@ -1,6 +1,9 @@
 #ifndef SSS_SURVIVOR_H
 #define SSS_SURVIVOR_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <list>
 
 
@@ -51,6 +54,16 @@ struct Survivors
   unsigned sizeReduced() const
   {
     return reducedSize;
+  };
+
+  string str() const
+  {
+    stringstream ss;
+    ss << "Survivors\n";
+    for (auto& s: distNumbers)
+      ss << s.fullNo << ", " << s.reducedNo << endl;
+    return ss.str() + "\n";
+
   };
 };
 

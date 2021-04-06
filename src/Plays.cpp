@@ -254,42 +254,46 @@ if (debugFlag)
 // if (debugFlag)
   cout << rhoNode.play.strTrick(rno);
 
-    unsigned first, second;
-    if (rhoNode.play.side == POSITION_NORTH)
+    const Play& play = rhoNode.play;
+
+    unsigned westRank, eastRank;
+    if (play.side == POSITION_NORTH)
     {
-      first = rhoNode.play.rho();
-      second = lho;
+      westRank = play.rho();
+      eastRank = play.lho();
     }
     else
     {
-      first = lho;
-      second = rhoNode.play.rho();
+      westRank = play.lho();
+      eastRank = play.rho();
     }
 
     Survivors survivors;
     if (lho == 0 || rhoNode.play.rho() == 0)
-      survivors = distPtr->survivors(first, second);
+      survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
     else if (rhoNode.play.leadCollapse && rhoNode.play.pardCollapse)
     {
       const unsigned pard = rhoNode.pardPtr->pard;
       const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-      survivors = distPtr->survivorsCollapse2(first, second, pard+1, lead+1);
+      survivors = distPtr->survivorsCollapse2(westRank, eastRank, pard+1, lead+1);
     }
     else if (rhoNode.play.leadCollapse)
     {
       const unsigned lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-      survivors = distPtr->survivorsCollapse1(first, second, lead+1);
+      survivors = distPtr->survivorsCollapse1(westRank, eastRank, lead+1);
     }
     else if (rhoNode.play.pardCollapse)
     {
       const unsigned pard = rhoNode.pardPtr->pard;
-      survivors = distPtr->survivorsCollapse1(first, second, pard+1);
+      survivors = distPtr->survivorsCollapse1(westRank, eastRank, pard+1);
     }
     else
-      survivors = distPtr->survivors(first, second);
+      survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
 
-// for (auto v: survivors.distNumbers)
-  // cout << "survivor " << v.fullNo << ", " << v.reducedNo << endl;
+
+    // const Survivors& survivorsNew = distPtr->survivors(rhoNode.play);
+
+    // cout << survivors.str();
     
     // Get the strategy from the following combination.  This will
     // have to be renumbered and possibly rotated.
@@ -300,8 +304,8 @@ if (debugFlag)
     tvs.adapt(
       rhoNode.play,
       survivors, 
-      first == 0,
-      second == 0);
+      westRank == 0,
+      eastRank == 0);
 if (debugFlag)
   cout << tvs.str("Tvectors after adapt", true);
 
@@ -466,16 +470,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     play.leadNo = mno;
 
-    Survivors survivors;
-    if (play.lho == 0 || play.rho == 0)
-      survivors = distPtr->survivors(play.rho, play.lho);
-    else if (play.leadCollapse)
-    {
-      survivors = distPtr->survivorsCollapse1(play.rho, play.lho, 
-        play.lead + 1);
-    }
-    else
-      survivors = distPtr->survivors(play.rho, play.lho);
+    const Survivors& survivors = distPtr->survivors(rhoNode.play);
 
     play.strategies = rhoNode.play.combPtr->strategies();
 

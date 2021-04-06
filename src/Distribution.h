@@ -6,6 +6,9 @@
 
 #include "Survivor.h"
 
+struct Play;
+
+
 using namespace std;
 
 
@@ -111,7 +114,7 @@ class Distribution
 
     void setSurvivors();
 
-    const Survivors& survivors(
+    const Survivors& survivorsUncollapsed(
       const unsigned westRank,
       const unsigned eastRank) const;
 
@@ -125,6 +128,8 @@ class Distribution
       const unsigned eastRank,
       const unsigned collapse1,
       const unsigned collapse2) const;
+
+    const Survivors& survivors(const Play& play) const;
 
     string str() const;
 

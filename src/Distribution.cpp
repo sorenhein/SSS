@@ -7,6 +7,7 @@
 #include <cassert>
 
 #include "Distribution.h"
+#include "Play.h"
 #include "const.h"
 
 
@@ -667,7 +668,7 @@ void Distribution::setSurvivors()
 }
 
 
-const Survivors& Distribution::survivors(
+const Survivors& Distribution::survivorsUncollapsed(
   const unsigned westRank,
   const unsigned eastRank) const
 {
@@ -870,6 +871,44 @@ const Survivors& Distribution::survivorsReducedCollapse2(
   else
     return distCanonical->survivorsReducedCollapse2(westRank, eastRank, 
       collapse1, collapse2);
+}
+
+
+const Survivors& Distribution::survivors(const Play& play) const
+{
+  unsigned westRank, eastRank;
+  if (play.side == POSITION_NORTH)
+  {
+    westRank = play.rho();
+    eastRank = play.lho();
+  }
+  else
+  {
+    westRank = play.lho();
+    eastRank = play.rho();
+  }
+
+  if (westRank == 0 || eastRank == 0)
+  {
+    return Distribution::survivorsUncollapsed(westRank, eastRank);
+  }
+  else if (play.leadCollapse && play.pardCollapse)
+  {
+    return Distribution::survivorsCollapse2(
+      westRank, eastRank, play.pard()+1, play.lead()+1);
+  }
+  else if (play.leadCollapse)
+  {
+    return Distribution::survivorsCollapse1(
+      westRank, eastRank, play.lead()+1);
+  }
+  else if (play.pardCollapse)
+  {
+    return Distribution::survivorsCollapse1(
+      westRank, eastRank, play.pard()+1);
+  }
+  else
+    return Distribution::survivorsUncollapsed(westRank, eastRank);
 }
 
 
