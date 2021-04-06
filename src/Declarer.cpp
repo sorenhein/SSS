@@ -21,9 +21,7 @@ void Declarer::setVoid()
   // A real void.
   minRank = 0;
   maxRank = 0;
-
   rankInfo[0].count = 1;
-  rankInfo[0].ptr = nullptr;
 
   // For North-South, a void goes in cards, cardsPtr and ranksPtr.
 

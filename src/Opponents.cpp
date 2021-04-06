@@ -18,7 +18,6 @@ void Opponents::setVoid()
   // A void among other possibilities.
   minRank = 0;
   rankInfo[0].count = 1;
-  rankInfo[0].ptr = nullptr;
 }
 
 

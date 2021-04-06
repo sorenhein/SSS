@@ -74,9 +74,6 @@ void Player::update(
   const unsigned rank,
   const unsigned absCardNumber)
 {
-  maxRank = rank;
-
-
   if (firstUpdateFlag)
   {
     minRank = rank;
@@ -85,6 +82,7 @@ void Player::update(
   }
 
   len++;
+  maxRank = rank;
   
   cards.emplace_back(Card());
   Card * cptr = &cards.back();
@@ -100,8 +98,8 @@ void Player::update(
   else
     ranksPtr.back() = cptr;
 
+  // This may be an overwrite with the same value, but no matter.
   rankInfo[rank].count++;
-  rankInfo[rank].ptr = cptr;
 
   numberNextCard++;
   depthNext++;

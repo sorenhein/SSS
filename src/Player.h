@@ -86,8 +86,6 @@ class Player
     {
       unsigned count; // Number of player's cards with that rank
       string names; // Names of all such cards
-      Card const * ptr; // Pointer to the top card with that rank
-      // TODO Do we need this?
 
       RankInfo()
       {
@@ -98,24 +96,23 @@ class Player
       {
         count = 0;
         names = "";
-        ptr = nullptr;
       };
     };
 
     vector<RankInfo> rankInfo;
 
-    unsigned maxRank;
+    // This are long-term variables.
+    bool singleRank;
     unsigned minRank;
+    unsigned maxRank;
     unsigned minAbsCardNumber;
+
+    // These are only used during updates, but are global for ease.
     unsigned numberNextCard;
     unsigned depthNext;
     unsigned posNext;
     bool firstUpdateFlag;
     bool firstOfRankFlag;
-
-
-    bool singleRank;
-
 
 
     void setVoid(const bool forceFlag);
