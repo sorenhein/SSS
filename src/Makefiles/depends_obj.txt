@@ -48,7 +48,7 @@ strategies/Subwinner.obj: Play.h strategies/Winner.h const.h
 strategies/Tvector.obj: strategies/Tvector.h Survivor.h strategies/Winner.h
 strategies/Tvector.obj: strategies/Subwinner.h strategies/Card.h const.h
 strategies/Tvectors.obj: strategies/Tvectors.h strategies/Tvector.h
-strategies/Tvectors.obj: Survivor.h strategies/Winner.h
+strategies/Tvectors.obj: Survivor.h strategies/Winner.h Play.h
 strategies/Tvectors.obj: strategies/Subwinner.h strategies/Card.h const.h
 strategies/Winner.obj: Play.h strategies/Winner.h const.h strategies/Winner.h
 strategies/Winner.obj: strategies/Subwinner.h strategies/Card.h const.h

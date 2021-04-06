@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "Tvector.h"
+#include "../Play.h"
 
 // TODO Dominance can probably be implemented more efficiently.
 // For example the "weight" (sum of all trick counts) indicates
@@ -446,10 +447,8 @@ void Tvector::updateAndGrow(
 void Tvector::adapt(
   const Play& play,
   const Survivors& survivors,
-  const unsigned trickNS,
   const bool lhoVoidFlag,
-  const bool rhoVoidFlag,
-  const bool rotateFlag)
+  const bool rhoVoidFlag)
 {
   // Our Tvector results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
@@ -474,7 +473,7 @@ void Tvector::adapt(
     assert(survivors.sizeReduced() == len1);
   }
 
-  if (rotateFlag)
+  if (play.rotateFlag)
   {
     results.reverse();
 
@@ -496,7 +495,8 @@ void Tvector::adapt(
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
-    Tvector::updateSingle(survivors.distNumbers.front().fullNo, trickNS);
+    Tvector::updateSingle(survivors.distNumbers.front().fullNo, 
+      play.trickNS);
   }
   else if (rhoVoidFlag)
   {
@@ -504,19 +504,20 @@ void Tvector::adapt(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
-    Tvector::updateSingle(survivors.distNumbers.front().fullNo, trickNS);
+    Tvector::updateSingle(survivors.distNumbers.front().fullNo, 
+      play.trickNS);
   }
   else if (survivors.sizeFull() == len1)
   {
     // No rank reduction.
-    Tvector::updateSameLength(survivors, trickNS);
+    Tvector::updateSameLength(survivors, play.trickNS);
   }
   else
   {
     // This is the general case.
     // TODO
     // assert(false);
-    Tvector::updateAndGrow(survivors, trickNS);
+    Tvector::updateAndGrow(survivors, play.trickNS);
   }
 }
 

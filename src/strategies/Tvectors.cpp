@@ -239,14 +239,11 @@ unsigned Tvectors::purge(const Tvector& constants)
 void Tvectors::adapt(
   const Play& play,
   const Survivors& survivors,
-  const unsigned trickNS,
   const bool lhoVoidFlag,
-  const bool rhoVoidFlag,
-  const bool rotateFlag)
+  const bool rhoVoidFlag)
 {
   for (auto& tv: results)
-    tv.adapt(play, survivors, trickNS,
-      lhoVoidFlag, rhoVoidFlag, rotateFlag);
+    tv.adapt(play, survivors, lhoVoidFlag, rhoVoidFlag);
 
   if (lhoVoidFlag || rhoVoidFlag)
     Tvectors::collapseOnVoid();

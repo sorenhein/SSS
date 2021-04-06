@@ -300,10 +300,8 @@ if (debugFlag)
     tvs.adapt(
       rhoNode.play,
       survivors, 
-      rhoNode.play.trickNS, 
       first == 0,
-      second == 0,
-      rhoNode.play.rotateFlag);
+      second == 0);
 if (debugFlag)
   cout << tvs.str("Tvectors after adapt", true);
 
@@ -486,10 +484,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     play.strategies.adapt(
       rhoNode.play,
       survivors, 
-      rhoNode.play.trickNS, 
       play.rho == 0,
-      play.lho == 0,
-      rhoNode.play.rotateFlag);
+      play.lho == 0);
 
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);
