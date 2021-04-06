@@ -18,17 +18,6 @@ void Declarer::resize(
   const CardPosition sideIn)
 {
   Player::resize(cardsIn, sideIn);
-
-  best.resize(cardsIn+1);
-  for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
-    best[rThis].resize(cardsIn+1);
-
-  bestNew.resize(cardsIn+1);
-  for (unsigned rThis = 0; rThis <= cardsIn; rThis++)
-    bestNew[rThis].resize(cardsIn+1);
-
-  // TODO TMP
-  sets = 0;
 }
 
 
@@ -101,105 +90,6 @@ void Declarer::fixDepths()
 }
 
 
-void Declarer::countNumbers(vector<unsigned>& numbers) const
-{
-  // TODO Probably we can just use cards to look this up?
-  if (len == 0)
-  {
-    // TODO Hopefully won't be necessary long-term.
-    numbers.resize(1);
-    return;
-  }
-
-  numbers.resize(maxRank+1);
-  unsigned running = len-1;
-  for (unsigned r = maxRank; r > 0; r--)
-  {
-    numbers[r] = running;
-    running -= rankInfo[r].count;
-  }
-}
-
-
-void Declarer::setBestEntry(
-  const Card& lead,
-  const Card& pard,
-  Winner& winner) const
-{
-  WinningSide wside, pside;
-  // TODO If we keep this version, can pre-calculate these.
-  // We could also put the method in Winner as it doesn't really
-  // need anything from Declarer.
-  if (side == POSITION_NORTH)
-  {
-    wside = WIN_NORTH;
-    pside = WIN_SOUTH;
-  }
-  else
-  {
-    wside = WIN_SOUTH;
-    pside = WIN_NORTH;
-  }
-
-  if (lead.getRank() > pard.getRank())
-    winner.set(wside, lead);
-  else if (lead.getRank() < pard.getRank())
-    winner.set(pside, pard);
-  else
-  {
-    winner.set(wside, lead);
-    winner.set(pside, pard);
-  }
-
-}
-
-
-void Declarer::setBest(const Declarer& partner)
-{
-  // We pre-calculate the Winner that arises for any combination of
-  // a lead and a partner card, assuming that the declaring side does
-  // in fact win the trick.
-
-assert(side != POSITION_OPPS);
-  WinningSide wside, pside;
-  if (side == POSITION_NORTH)
-  {
-    wside = WIN_NORTH;
-    pside = WIN_SOUTH;
-  }
-  else
-  {
-    wside = WIN_SOUTH;
-    pside = WIN_NORTH;
-  }
-
-  // Loop over the unique cards with depth 0 among different ranks.
-  for (auto& rankTop: ranksPtr)
-  {
-    const unsigned rLead = rankTop->getRank();
-assert(rLead < bestNew.size());
-    for (auto& rankTopOther: partner.ranksPtr)
-    {
-      const unsigned rPard = rankTopOther->getRank();
-assert(rPard < bestNew[rLead].size());
-      
-      Winner& current = bestNew[rLead][rPard];
-      current.reset();
-
-      if (rLead > rPard)
-        current.set(wside, * rankTop);
-      else if (rLead < rPard)
-        current.set(pside, * rankTopOther);
-      else
-      {
-        current.set(wside, * rankTop);
-        current.set(pside, * rankTopOther);
-      }
-    }
-  }
-}
-
-
 bool Declarer::playRank(
   const unsigned rank,
   const Declarer& partner,
@@ -215,12 +105,10 @@ bool Declarer::playRank(
 }
 
 
-void Declarer::finish(const Declarer& partner)
+void Declarer::finish()
 {
   Declarer::setSingleRank();
   Declarer::fixDepths();
-  UNUSED(partner);
-  Declarer::setBest(partner);
 }
 
 
@@ -257,16 +145,6 @@ const Card& Declarer::top() const
 {
   assert(! cards.empty());
   return cards.back();
-}
-
-
-const Winner& Declarer::getWinner(
-  const unsigned lead,
-  const unsigned pard) const
-{
-  assert(lead < bestNew.size());
-  assert(pard < bestNew[lead].size());
-  return bestNew[lead][pard];
 }
 
 

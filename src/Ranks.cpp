@@ -246,8 +246,8 @@ void Ranks::setPlayers()
   south.setNames();
   opps.setNames();
 
-  north.finish(south);
-  south.finish(north);
+  north.finish();
+  south.finish();
 }
 
 
