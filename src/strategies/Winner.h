@@ -58,9 +58,8 @@ class Winner
       const Card& card);
 
     void set(
-      const Side leadSide,
-      const Card& lead,
-      const Card& pard);
+      const Card& north,
+      const Card& south);
 
     void setEmpty();
 

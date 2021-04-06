@@ -478,8 +478,10 @@ void Ranks::finish(Play& play) const
 
   if (play.trickNS)
   {
-    play.currBest.reset();
-    play.currBest.set(play.side, * play.leadPtr, * play.pardPtr);
+    if (play.side == POSITION_NORTH)
+      play.currBest.set(* play.leadPtr, * play.pardPtr);
+    else
+      play.currBest.set(* play.pardPtr, * play.leadPtr);
   }
 }
 

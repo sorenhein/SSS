@@ -63,33 +63,19 @@ void Winner::set(
 
 
 void Winner::set(
-  const Side leadSide,
-  const Card& lead,
-  const Card& pard)
+  const Card& north,
+  const Card& south)
 {
-  WinningSide wside, pside;
-  // TODO If we keep this version, can pre-calculate these.
-  // We could also put the method in Winner as it doesn't really
-  // need anything from Declarer.
-  if (leadSide == POSITION_NORTH)
-  {
-    wside = WIN_NORTH;
-    pside = WIN_SOUTH;
-  }
-  else
-  {
-    wside = WIN_SOUTH;
-    pside = WIN_NORTH;
-  }
+  Winner::reset();
 
-  if (lead.getRank() > pard.getRank())
-    Winner::set(wside, lead);
-  else if (lead.getRank() < pard.getRank())
-    Winner::set(pside, pard);
+  if (north.getRank() > south.getRank())
+    Winner::set(WIN_NORTH, north);
+  else if (north.getRank() < south.getRank())
+    Winner::set(WIN_SOUTH, south);
   else
   {
-    Winner::set(wside, lead);
-    Winner::set(pside, pard);
+    Winner::set(WIN_NORTH, north);
+    Winner::set(WIN_SOUTH, south);
   }
 }
 
