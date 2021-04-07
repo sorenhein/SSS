@@ -889,9 +889,7 @@ const Survivors& Distribution::survivors(const Play& play) const
   }
 
   if (westRank == 0 || eastRank == 0)
-  {
     return Distribution::survivorsUncollapsed(westRank, eastRank);
-  }
   else if (play.leadCollapse && play.pardCollapse)
   {
     return Distribution::survivorsCollapse2(

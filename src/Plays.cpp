@@ -228,6 +228,7 @@ void Plays::strategize(
 
   UNUSED(ranks);
 
+// Turn into a string method in Plays.
 cout << "Node counts:" << endl;
 cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
 cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
@@ -236,21 +237,18 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   Tvectors tvs;
   unsigned rno = 0;
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++, rno++)
-  // for (unsigned rno = 0; rno < rhoNext; rno++)
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
+      rhoIter++, rno++)
   {
-    // const auto& rhoNode = rhoNodes[rno];
     const auto& rhoNode = * rhoIter;
 
 if (debugFlag)
   cout << "Start of RHO node loop" << endl;
-    // Find the distribution numbers that are still possible.
 
 // if (debugFlag)
   cout << rhoNode.play.strTrick(rno);
 
     const Play& play = rhoNode.play;
-    Survivors survivors;
 
     unsigned westRank, eastRank;
     if (play.side == POSITION_NORTH)
@@ -264,28 +262,8 @@ if (debugFlag)
       eastRank = play.rho();
     }
 
-    if (westRank == 0 || eastRank == 0)
-      survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
-    else if (play.leadCollapse && play.pardCollapse)
-    {
-      survivors = distPtr->survivorsCollapse2(
-        westRank, eastRank, play.pard()+1, play.lead()+1);
-    }
-    else if (play.leadCollapse)
-    {
-      survivors = distPtr->survivorsCollapse1(
-        westRank, eastRank, play.lead()+1);
-    }
-    else if (play.pardCollapse)
-    {
-      survivors = distPtr->survivorsCollapse1(
-        westRank, eastRank, play.pard()+1);
-    }
-    else
-      survivors = distPtr->survivorsUncollapsed(westRank, eastRank);
-
-
-    // const Survivors& survivorsNew = distPtr->survivors(rhoNode.play);
+    // Find the distribution numbers that are still possible.
+    const Survivors& survivors = distPtr->survivors(rhoNode.play);
 
     // cout << survivors.str();
     
@@ -295,6 +273,8 @@ if (debugFlag)
 // cout << tvs.str("Tvectors") << endl;
 
     // TODO Just pass in the RHO node in some form?
+    // See if we can't derive westRank == 0 and eastRank == 0 where
+    // we need them in Tvectors.
     tvs.adapt(
       rhoNode.play,
       survivors, 
