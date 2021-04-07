@@ -114,6 +114,10 @@ class Plays
       const Play& play,
       PardNode * pardPtr);
 
+    void strategizeRHO(
+      Distribution const * distPtr,
+      const bool debugFlag);
+
     string strHeader() const;
 
   public:

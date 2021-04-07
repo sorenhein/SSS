@@ -64,9 +64,7 @@ class Tvectors
 
     void adapt(
       const Play& play,
-      const Survivors& survivors,
-      const bool lhoVoidFlag,
-      const bool rhoVoidFlag);
+      const Survivors& survivors);
 
     string str(
       const string& title = "",

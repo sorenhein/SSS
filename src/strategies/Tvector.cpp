@@ -446,9 +446,7 @@ void Tvector::updateAndGrow(
 
 void Tvector::adapt(
   const Play& play,
-  const Survivors& survivors,
-  const bool lhoVoidFlag,
-  const bool rhoVoidFlag)
+  const Survivors& survivors)
 {
   // Our Tvector results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
@@ -457,21 +455,28 @@ void Tvector::adapt(
   // parent combination.  So it needs to have the full number of
   // entries, and the results list needs to grow.
 
-  assert(! lhoVoidFlag || ! rhoVoidFlag);
+  bool westVoidFlag, eastVoidFlag;
+  if (play.side == POSITION_NORTH)
+  {
+    westVoidFlag = play.rhoPtr->isVoid();
+    eastVoidFlag = play.lhoPtr->isVoid();
+  }
+  else
+  {
+    westVoidFlag = play.lhoPtr->isVoid();
+    eastVoidFlag = play.rhoPtr->isVoid();
+  }
+
+  assert(! westVoidFlag || ! eastVoidFlag);
 
   const unsigned len1 = results.size();
-  if (lhoVoidFlag || rhoVoidFlag)
+  if (westVoidFlag || eastVoidFlag)
   {
     assert(survivors.sizeFull() == 1);
     assert(len1 >= 1);
   }
   else
-  {
-    if (len1 != survivors.sizeReduced())
-      cout << "results length " << len1 << ", reduced survivors " <<
-        survivors.sizeReduced() << endl;
     assert(survivors.sizeReduced() == len1);
-  }
 
   if (play.rotateFlag)
   {
@@ -486,10 +491,7 @@ void Tvector::adapt(
     for (auto& te: results)
       te.winner.update(play);
 
-  // LHO and RHO void flags pertain to the this rotation state
-  // (parent's frame of reference).
-
-  if (lhoVoidFlag)
+  if (westVoidFlag)
   {
     // Only keep the first result.
     if (len1 > 1)
@@ -498,7 +500,7 @@ void Tvector::adapt(
     Tvector::updateSingle(survivors.distNumbers.front().fullNo, 
       play.trickNS);
   }
-  else if (rhoVoidFlag)
+  else if (eastVoidFlag)
   {
     // Only keep the last result.
     if (len1 > 1)
@@ -515,8 +517,6 @@ void Tvector::adapt(
   else
   {
     // This is the general case.
-    // TODO
-    // assert(false);
     Tvector::updateAndGrow(survivors, play.trickNS);
   }
 }

@@ -215,6 +215,43 @@ void Plays::setCombPtrs(const Combinations& combinations)
 
 #include "const.h"
 
+
+void Plays::strategizeRHO(
+  Distribution const * distPtr,
+  const bool debugFlag)
+{
+  Tvectors tvs;
+  unsigned rno = 0;
+
+  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
+      rhoIter++, rno++)
+  {
+    const auto& rhoNode = * rhoIter;
+    if (debugFlag)
+      cout << rhoNode.play.strTrick(rno);
+
+    // Find the distribution numbers that are still possible.
+    const Survivors& survivors = distPtr->survivors(rhoNode.play);
+
+    // Get the strategy from the following combination.  
+    tvs = rhoNode.play.combPtr->strategies();
+    if (debugFlag)
+      cout << tvs.str("Strategy of next trick") << endl;
+
+    // Renumber and rotate the strategy.
+    tvs.adapt(rhoNode.play, survivors);
+    if (debugFlag)
+      cout << tvs.str("Adapted strategy of next trick", true);
+
+    // Add it to the partner node by cross product.
+    rhoNode.pardPtr->strategies *= tvs;
+    if (debugFlag)
+      cout << rhoNode.pardPtr->strategies.str(
+        "Cumulative RHO strategy after this trick", true);
+  }
+}
+
+
 void Plays::strategize(
   const Ranks& ranks,
   Distribution const * distPtr,
@@ -226,6 +263,8 @@ void Plays::strategize(
   // to these outcomes by spreading their probability mass well.
   // This will be done subsequently.
 
+  // TODO Maybe tiered debugFlag to control the amount of info.
+  // (debugVector & DEBUG_RHO)
   UNUSED(ranks);
 
 // Turn into a string method in Plays.
@@ -235,61 +274,7 @@ cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
 cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
-  Tvectors tvs;
-  unsigned rno = 0;
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
-      rhoIter++, rno++)
-  {
-    const auto& rhoNode = * rhoIter;
-
-if (debugFlag)
-  cout << "Start of RHO node loop" << endl;
-
-// if (debugFlag)
-  cout << rhoNode.play.strTrick(rno);
-
-    const Play& play = rhoNode.play;
-
-    unsigned westRank, eastRank;
-    if (play.side == POSITION_NORTH)
-    {
-      westRank = play.rho();
-      eastRank = play.lho();
-    }
-    else
-    {
-      westRank = play.lho();
-      eastRank = play.rho();
-    }
-
-    // Find the distribution numbers that are still possible.
-    const Survivors& survivors = distPtr->survivors(rhoNode.play);
-
-    // cout << survivors.str();
-    
-    // Get the strategy from the following combination.  This will
-    // have to be renumbered and possibly rotated.
-    tvs = rhoNode.play.combPtr->strategies();
-// cout << tvs.str("Tvectors") << endl;
-
-    // TODO Just pass in the RHO node in some form?
-    // See if we can't derive westRank == 0 and eastRank == 0 where
-    // we need them in Tvectors.
-    tvs.adapt(
-      rhoNode.play,
-      survivors, 
-      westRank == 0,
-      eastRank == 0);
-if (debugFlag)
-  cout << tvs.str("Tvectors after adapt", true);
-
-    // Add it to the partner node by cross product.
-    rhoNode.pardPtr->strategies *= tvs;
-cout << rhoNode.pardPtr->strategies.str("Cum. Tvectors after cross-product", true);
-  }
-
-if (debugFlag)
-  cout << "Done with RHO nodes" << endl << endl;
+  strategizeRHO(distPtr, debugFlag);
 
   // for (unsigned pno = 0; pno < pardNext; pno++)
   for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; pardIter++)
@@ -452,9 +437,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     // It also renumbers winners within strategies.
     play.strategies.adapt(
       rhoNode.play,
-      survivors, 
-      play.rho == 0,
-      play.lho == 0);
+      survivors);
 
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);

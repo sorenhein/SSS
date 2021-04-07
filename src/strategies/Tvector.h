@@ -136,9 +136,7 @@ class Tvector
 
     void adapt(
       const Play& play,
-      const Survivors& survivors,
-      const bool lhoVoidFlag,
-      const bool rhoVoidFlag);
+      const Survivors& survivors);
 
     unsigned size() const;
 

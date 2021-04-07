@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Tvectors.h"
+#include "../Play.h"
 #include "../Survivor.h"
 
 
@@ -238,14 +239,12 @@ unsigned Tvectors::purge(const Tvector& constants)
 
 void Tvectors::adapt(
   const Play& play,
-  const Survivors& survivors,
-  const bool lhoVoidFlag,
-  const bool rhoVoidFlag)
+  const Survivors& survivors)
 {
   for (auto& tv: results)
-    tv.adapt(play, survivors, lhoVoidFlag, rhoVoidFlag);
+    tv.adapt(play, survivors);
 
-  if (lhoVoidFlag || rhoVoidFlag)
+  if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Tvectors::collapseOnVoid();
 }
 
