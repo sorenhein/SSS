@@ -269,7 +269,7 @@ void Plays::strategizePard(const bool debugFlag)
       // TODO See above
       cout << "pard node for " << pardNode.pard << endl;
 
-    // Add the partner strategy to the LHO node.
+    // This is the partner strategy.
     if (debugFlag)
       cout << pardNode.strategies.str("Adding partner strategy", true);
 
@@ -282,64 +282,106 @@ void Plays::strategizePard(const bool debugFlag)
 }
 
 
+void Plays::strategizeLHO(const bool debugFlag)
+{
+  unsigned lno = 0;
+
+  for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; 
+      lhoIter++, lno)
+  {
+    const auto& lhoNode = * lhoIter;
+    if (debugFlag)
+      // TODO
+      cout << "LHO node for " << lhoNode.lho << endl;
+
+    // This is the LHO strategy.
+    if (debugFlag)
+      cout << lhoNode.strategies.str("Adding LHO strategy", true) << endl;
+
+    // Combine the LHO strategy with the lead node by cross product.
+    lhoNode.leadPtr->strategies *= lhoNode.strategies;
+    if (debugFlag)
+      cout << lhoNode.leadPtr->strategies.str(
+        "Cumulative lead strategy after this multiplication", true);
+  }
+}
+
+
+void Plays::strategizeLead(
+  Tvectors& strategies,
+  const bool debugFlag)
+{
+  strategies.reset();
+  unsigned lno = 0;
+
+  for (auto ldIter = leadNodes.begin(); ldIter != leadNextIter; 
+      ldIter++, lno++)
+  {
+    const auto& leadNode = * ldIter;
+    if (debugFlag)
+      // TODO
+      cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
+
+    // This is the lead strategy.
+    if (debugFlag)
+      cout << leadNode.strategies.str("Adding LHO strategy", true) << endl;
+      
+    // Add it to the overall strategy.
+    strategies += leadNode.strategies;
+    if (debugFlag)
+      cout << strategies.str(
+        "Cumulative lead strategy after this addition", true);
+  }
+}
+
+
 void Plays::strategize(
   const Ranks& ranks,
   Distribution const * distPtr,
   Tvectors& strategies,
   bool debugFlag)
 {
-  // This yields strategies where EW have "too much" choice.
-  // Therefore the question is going to be whether EW can hold NS
-  // to these outcomes by spreading their probability mass well.
-  // This will be done subsequently.
+  // TODO
+  // Tiered debugFlag
+
+  // The plays are propagated backwards up to a strategy for the
+  // entire trick.  When the defenders have the choice, strategies
+  // are "multiplied" together.  The math for this is shown in 
+  // the strategies/ files, but in general it creates more strategies
+  // and the rank choices are made to the opponents' advantage,
+  // so the defenders want to force declarer to use low ranks.
+  // The choice is at the level of each distribution.
+  // When declarer has the choice, the choice is at the level of
+  // overall strategies, and these are "added" together.  Again,
+  // the math is shown in the code, but the question is whether one
+  // strategy dominates another (taking more tricks for some
+  // distributions without taking fewer for others).
+  //
+  // This approach yields strategies where the defenders have 
+  // "too much" choice, because they get to act after seeing 
+  // declarer's plays up to that point.  Therefore the question is 
+  // going to be whether the defenders can hold declarer to these
+  // outcomes by spreading their probability mass well.
+  // This will be examined subsequently.
 
   // TODO Maybe tiered debugFlag to control the amount of info.
   // (debugVector & DEBUG_RHO)
   UNUSED(ranks);
 
-// Turn into a string method in Plays.
-cout << "Node counts:" << endl;
-cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
-cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
-cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
-cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+  // Turn into a string method in Plays.
+  // TODO If play is passed to Ranks, then this output will have
+  // to be at the end of the method.
+  cout << "Node counts:" << endl;
+  cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
+  cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
+  cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
+  cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   strategizeRHO(distPtr, debugFlag);
   strategizePard(debugFlag);
+  strategizeLHO(debugFlag);
+  strategizeLead(strategies, debugFlag);
 
-
-  // for (unsigned lno = 0; lno < lhoNext; lno++)
-  for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; lhoIter++)
-  {
-    // const auto& lhoNode = lhoNodes[lno];
-    const auto& lhoNode = * lhoIter;
-
-if (debugFlag)
-  cout << "LHO node for " << lhoNode.lho << endl;
-    // Add the LHO strategy to the lead node by cross product.
-if (debugFlag)
-  cout << lhoNode.strategies.str("Adding", true) << endl;
-    lhoNode.leadPtr->strategies *= lhoNode.strategies;
-if (debugFlag)
-  cout << lhoNode.leadPtr->strategies.str("Lead node", true);
-  }
-
-  // Add up the lead strategies.
-  strategies.reset();
-  // for (unsigned ldno = 0; ldno < leadNext; ldno++)
-  for (auto ldIter = leadNodes.begin(); ldIter != leadNextIter; ldIter++)
-  {
-    // const auto& leadNode = leadNodes[ldno];
-    const auto& leadNode = * ldIter;
-
-if (debugFlag)
-  cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
-    strategies += leadNode.strategies;
-if (debugFlag)
-  cout << strategies.str("Final", true);
-  }
-
-  cout << strategies.str("Strategy", true);
 }
 
 
@@ -751,6 +793,7 @@ cout << endl;
 }
 
 
+// TODO Move these two to Play
 string Plays::strHeader() const
 {
   stringstream ss;

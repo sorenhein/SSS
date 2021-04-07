@@ -120,6 +120,12 @@ class Plays
 
     void strategizePard(const bool debugFlag);
 
+    void strategizeLHO(const bool debugFlag);
+
+    void strategizeLead(
+      Tvectors& strategies,
+      const bool debugFlag);
+
     string strHeader() const;
 
   public:
