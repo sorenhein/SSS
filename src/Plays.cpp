@@ -228,6 +228,11 @@ void Plays::strategizeRHO(
   {
     const auto& rhoNode = * rhoIter;
     if (debugFlag)
+      // TODO Maybe add argument "RHO"
+      // Actually even more semantics: If RHO,
+      // Complete trick: a b c d
+      // If pard:
+      // Partial trick: a b c
       cout << rhoNode.play.strTrick(rno);
 
     // Find the distribution numbers that are still possible.
@@ -243,11 +248,36 @@ void Plays::strategizeRHO(
     if (debugFlag)
       cout << tvs.str("Adapted strategy of next trick", true);
 
-    // Add it to the partner node by cross product.
+    // Combine it with the partner node by cross product.
     rhoNode.pardPtr->strategies *= tvs;
     if (debugFlag)
       cout << rhoNode.pardPtr->strategies.str(
-        "Cumulative RHO strategy after this trick", true);
+        "Cumulative partner strategy after this trick", true);
+  }
+}
+
+
+void Plays::strategizePard(const bool debugFlag)
+{
+  unsigned pno = 0;
+
+  for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; 
+      pardIter++, pno)
+  {
+    const auto& pardNode = * pardIter;
+    if (debugFlag)
+      // TODO See above
+      cout << "pard node for " << pardNode.pard << endl;
+
+    // Add the partner strategy to the LHO node.
+    if (debugFlag)
+      cout << pardNode.strategies.str("Adding partner strategy", true);
+
+    // Add it to the LHO node.
+    pardNode.lhoPtr->strategies += pardNode.strategies;
+    if (debugFlag)
+      cout << pardNode.lhoPtr->strategies.str(
+        "Cumulative LHO strategy after this addition", true);
   }
 }
 
@@ -275,26 +305,9 @@ cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   strategizeRHO(distPtr, debugFlag);
+  strategizePard(debugFlag);
 
-  // for (unsigned pno = 0; pno < pardNext; pno++)
-  for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; pardIter++)
-  {
-    // const auto& pardNode = pardNodes[pno];
-    const auto& pardNode = * pardIter;
 
-if (debugFlag)
- cout << "pard node for " << pardNode.pard << endl;
-
-    // Add the partner strategy to the LHO node.
-if (debugFlag)
-  cout << pardNode.strategies.str("Adding", true);
-    pardNode.lhoPtr->strategies += pardNode.strategies;
-if (debugFlag)
-  cout << pardNode.lhoPtr->strategies.str("LHO node", true);
-  }
-
-if (debugFlag)
-  cout << "Done with pard nodes" << endl << endl;
   // for (unsigned lno = 0; lno < lhoNext; lno++)
   for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; lhoIter++)
   {
@@ -311,8 +324,6 @@ if (debugFlag)
   cout << lhoNode.leadPtr->strategies.str("Lead node", true);
   }
 
-if (debugFlag)
-  cout << "Done with LHO nodes" << endl << endl;
   // Add up the lead strategies.
   strategies.reset();
   // for (unsigned ldno = 0; ldno < leadNext; ldno++)

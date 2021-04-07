@@ -118,6 +118,8 @@ class Plays
       Distribution const * distPtr,
       const bool debugFlag);
 
+    void strategizePard(const bool debugFlag);
+
     string strHeader() const;
 
   public:
