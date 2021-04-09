@@ -390,14 +390,21 @@ void Plays::strategizeVoid(
   Tvectors& strategies,
   bool debugFlag)
 {
-  // This yields strategies where EW have "too much" choice.
-  // Therefore the question is going to be whether EW can hold NS
-  // to these outcomes by spreading their probability mass well.
-  // This will be done subsequently.
-
-  // This version of strategize() makes use of the fact that 
-  // partner is void.  Therefore the EW plays are in a sense part
-  // of a coordinated play that partner cannot disrupt.
+  // The normal strategize() method also works for combinations
+  // where partner is void.  But some of the most difficult,
+  // exponentially exploding combinations arise in this way.
+  // In particular, declarer may have roughly the same number of
+  // cards as the defenders together, and the ranks alternate
+  // without declarer having the ace; for example KJ975 missing
+  // 7 cards.
+  //
+  // From an optimization point of view, both defenders can 
+  // coordinate and play their cards without intrusion from partner.
+  // So there is really only one optimization step for both
+  // defenders together and only one for declarer, and not two
+  // each as in the general case.  This in itself does not reduce
+  // complexity appreciably, but there are some ideas that are
+  // perhaps expressed more naturally this way.
 
 cout << "Void node counts:" << endl;
 cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
