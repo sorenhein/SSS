@@ -381,14 +381,87 @@ void Plays::strategize(
   strategizePard(debugFlag);
   strategizeLHO(debugFlag);
   strategizeLead(strategies, debugFlag);
+}
 
+
+unsigned Plays::studyRHO(
+  Distribution const * distPtr,
+  const bool debugFlag)
+{
+  
+  unsigned playNo = 0;
+  unsigned leadNo = 0;
+  unsigned leadLast = rhoNodes.front().play.lead();
+
+  rhoStudyNodes.resize(rhoNext);
+  rhoStudyNextIter = rhoStudyNodes.begin();
+  for (auto rhoIter = rhoNodes.begin(); 
+    rhoIter != rhoNextIter; 
+    rhoIter++, rhoStudyNextIter++, playNo++)
+  {
+    const auto& rhoNode = * rhoIter;
+    auto& studyNode = * rhoStudyNextIter;
+    assert(rhoNode.play.side == SIDE_NORTH);
+
+    if (rhoNode.play.lead() != leadLast)
+    {
+      leadNo++;
+      leadLast = rhoNode.play.lead();
+    }
+
+    studyNode.play = &rhoNode.play;
+    studyNode.playNo = playNo;
+    studyNode.leadNo = leadNo;
+
+    studyNode.strategies = rhoNode.play.combPtr->strategies();
+    
+    // Renumber and rotate the strategy.
+    const Survivors& survivors = distPtr->survivors(rhoNode.play);
+    studyNode.strategies.adapt(rhoNode.play, survivors);
+
+    studyNode.strategies.bound(studyNode.bounds);
+
+    if (debugFlag)
+      cout << studyNode.bounds.str("Play" + to_string(studyNode.playNo));
+  }
+
+  return leadNo+1;
+}
+
+
+void Plays::studyGlobal(
+  vector<Bounds>& boundsLead,
+  const bool debugFlag)
+{
+  // Derive global bounds across all plays.
+  for (auto iter = rhoStudyNodes.begin(); iter != rhoStudyNextIter; iter++)
+  {
+    const auto& node = * iter;
+    const unsigned leadNo = node.leadNo;
+assert(leadNo < boundsLead.size());
+    boundsLead[leadNo].minima *= node.bounds.minima;
+    boundsLead[leadNo].maxima *= node.bounds.maxima;
+    boundsLead[leadNo].constants *= node.bounds.constants;
+  }
+
+  // Only keep those constants (for a given lead) that
+  // correspond to the minimum achievable outcome.
+  for (unsigned leadNo = 0; leadNo < boundsLead.size(); leadNo++)
+  {
+    auto& bound = boundsLead[leadNo];
+    bound.minima.constrict(bound.constants);
+
+    if (debugFlag)
+      cout << bound.constants.str("Constrained constants " +
+        to_string(leadNo)) << endl;
+  }
 }
 
 
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Tvectors& strategies,
-  bool debugFlag)
+  const bool debugFlag)
 {
   // The normal strategize() method also works for combinations
   // where partner is void.  But some of the most difficult,
@@ -399,7 +472,7 @@ void Plays::strategizeVoid(
   // 7 cards.
   //
   // From an optimization point of view, both defenders can 
-  // coordinate and play their cards without intrusion from partner.
+  // coordinate and play their cards without intrusion from dummy.
   // So there is really only one optimization step for both
   // defenders together and only one for declarer, and not two
   // each as in the general case.  This in itself does not reduce
@@ -411,6 +484,18 @@ cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
 cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
 cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
 cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+
+  // We study the strategies in more detail before multiplying
+  // and adding them together.  We start by deriving their minima
+  // and maxima across distributions, as well as those distributions
+  // that are constant within the set of strategies for a play.
+  // The results go in rhoStudyNodes.
+  const unsigned numLeads = Plays::studyRHO(distPtr, debugFlag);
+
+  // Then we derive the bounds for each lead separately.
+  vector<Bounds> boundsLead(numLeads);
+  Plays::studyGlobal(boundsLead, debugFlag);
+
 
   // For exploration we turn the plays back into a vector.
   // Each play is stored in a PlayInfo.
@@ -525,6 +610,38 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       to_string(i)) << endl;
   }
 
+  
+  assert(minima.size() >= boundsLead.size());
+  auto biter = boundsLead.begin();
+  unsigned i = 0;
+  for (auto citer = constants.begin(); 
+    citer != constants.end() && i < boundsLead.size();
+    citer++, biter++, i++)
+  {
+    assert(biter->constants == * citer);
+  }
+
+  assert(minima.size() >= boundsLead.size());
+  biter = boundsLead.begin();
+  for (auto citer = minima.begin(); 
+    citer != minima.end() && i < boundsLead.size();
+    citer++, biter++, i++)
+  {
+    assert(biter->minima == * citer);
+  }
+
+  assert(maxima.size() >= boundsLead.size());
+  biter = boundsLead.begin();
+  for (auto citer = maxima.begin(); 
+    citer != maxima.end() && i < boundsLead.size();
+    citer++, biter++, i++)
+  {
+    assert(biter->maxima == * citer);
+  }
+
+
+
+
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
   vector<Tvectors> simple;
@@ -541,6 +658,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     const unsigned num0 = play.strategies.size();
     const unsigned dist0 = play.strategies.numDists();
+
+assert(constants[play.leadNo] == boundsLead[play.leadNo].constants);
 
     play.strategies.purge(constants[play.leadNo]);
     play.lower.purge(constants[play.leadNo]);
@@ -602,6 +721,9 @@ cout << simple[play.leadNo].str("simple") << endl;
     // cout << play.strategies.str("Pre purging strategy") << endl;
 
     // Limit the maximum vector to those entries that are <= play.lower.
+
+assert(maxima[play.leadNo] == boundsLead[play.leadNo].maxima);
+
     Tvector max = maxima[play.leadNo];
     // cout << max.str("max") << endl;
     // cout << play.lower.str("play.lower") << endl;
@@ -754,6 +876,8 @@ cout << endl;
 
   for (unsigned l = 0; l < leadStrats.size(); l++)
   {
+assert(constants[l] == boundsLead[l].constants);
+
     cout << constants[l].str("constants " + to_string(l));
     leadStrats[l] *= constants[l];
     cout << leadStrats[l].str("Strategy with constants " + to_string(l)) << "\n";

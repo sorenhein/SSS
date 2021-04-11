@@ -16,6 +16,26 @@ struct Survivors;
 using namespace std;
 
 
+struct Bounds
+{
+  Tvector minima;
+  Tvector maxima;
+  Tvector constants;
+
+  string str(const string& title = "") const
+  {
+    stringstream ss;
+    if (title != "")
+      ss << title << endl;
+    ss <<
+      minima.str("Minima") << endl <<
+      maxima.str("Maxima") << endl <<
+      constants.str("Constants") << endl;
+    return ss.str();
+  };
+};
+
+
 class Tvectors
 {
   private:
@@ -59,6 +79,8 @@ class Tvectors
       Tvector& constants,
       Tvector& lower,
       Tvector& upper) const;
+
+    void bound(Bounds& bounds) const;
 
     unsigned purge(const Tvector& constants);
 

@@ -64,12 +64,25 @@ class Plays
       Play play;
     };
 
+    struct RhoStudyNode
+    {
+      Play const * play;
+      unsigned playNo;
+      unsigned leadNo;
+
+      Tvectors strategies;
+
+      // Distribution-wise statistics across all strategies in the play.
+      Bounds bounds;
+    };
+
     unsigned cards;
 
     list<LeadNode> leadNodes;
     list<LhoNode> lhoNodes;
     list<PardNode> pardNodes;
     list<RhoNode> rhoNodes;
+    deque<RhoStudyNode> rhoStudyNodes;
 
     unsigned leadNext;
     unsigned lhoNext;
@@ -80,6 +93,7 @@ class Plays
     list<LhoNode>::iterator lhoNextIter;
     list<PardNode>::iterator pardNextIter;
     list<RhoNode>::iterator rhoNextIter;
+    deque<RhoStudyNode>::iterator rhoStudyNextIter;
 
     // The plays come through in order, so we don't have to look up
     // the new play completely.  We just have to check how much of the
@@ -126,6 +140,14 @@ class Plays
       Tvectors& strategies,
       const bool debugFlag);
 
+    unsigned studyRHO(
+      Distribution const * distPtr,
+      const bool debugFlag);
+
+    void studyGlobal(
+      vector<Bounds>& boundsLead,
+      const bool debugFlag);
+
     string strHeader() const;
 
   public:
@@ -148,12 +170,12 @@ class Plays
      const Ranks& ranks,
      Distribution const * distPtr,
      Tvectors& strategies,
-     bool debugFlag = false);
+     const bool debugFlag = false);
 
    void strategizeVoid(
      Distribution const * distPtr,
      Tvectors& strategies,
-     bool debugFlag = false);
+     const bool debugFlag = false);
 
    string str() const;
 };

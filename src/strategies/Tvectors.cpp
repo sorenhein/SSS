@@ -220,6 +220,32 @@ void Tvectors::bound(
 }
 
 
+void Tvectors::bound(Bounds& bounds) const
+{
+  // Calculate Tvector values to summarize this Tvectors.
+  // constants is the set of constant strategies.  Other Tvectors
+  // may have other constant values, or non-constant ones, that
+  // may be lower or higher than this results.  There are only
+  // entries for those distributions that have constant tricks.
+  // lower and upper and the bounds.  They exist for each
+  // distribution.
+  
+  assert(results.size() > 0);
+
+  bounds.constants = results.front();
+  bounds.minima = results.front();
+  bounds.maxima = results.front();
+
+  if (results.size() == 1)
+    return;
+
+  // TODO Pass in a Bounds instead
+  // Eliminate the bounds with 3 arguments
+  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+    iter->bound(bounds.constants, bounds.minima, bounds.maxima);
+}
+
+
 unsigned Tvectors::purge(const Tvector& constants)
 {
   // TODO Can perhaps be done inline.
