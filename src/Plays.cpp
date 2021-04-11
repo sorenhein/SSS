@@ -445,13 +445,7 @@ void Plays::studyGlobal(
 assert(leadNo < boundsLead.size());
     boundsLead[leadNo].minima *= node.bounds.minima;
     boundsLead[leadNo].maxima *= node.bounds.maxima;
-cout << "Study leadNo " << leadNo << ": constants before\n";
-cout << boundsLead[leadNo].constants.str() << endl;
-cout << "New node constants\n";
-cout << node.bounds.constants.str() << endl;
     boundsLead[leadNo].constants *= node.bounds.constants;
-cout << "Study leadNo " << leadNo << ": constants after\n";
-cout << boundsLead[leadNo].constants.str() << endl;
   }
 
   // Only keep those constants (for a given lead) that
@@ -480,12 +474,8 @@ bool Plays::removePlay(
     return true;
   else if (strategies.size() == 1)
   {
-cout << "About to grow simpleStrat" << endl;
-cout << "size " << simpleStrat.size() << endl;
-cout << simpleStrat.str("simpleStrat") << endl;
     simpleStrat *= strategies;
-assert(simpleStrat.size() == 1);
-cout << simpleStrat.str("simpleStrat after") << endl;
+    assert(simpleStrat.size() == 1);
     return true;
   }
   else
@@ -509,27 +499,8 @@ void Plays::removeConstants(
     const unsigned leadNo = node.leadNo;
     const auto& constants = boundsLead[leadNo].constants;
 
-cout << "NEW leadNo purge " << leadNo << ", " << node.playNo << 
-  ": constants" << endl;
-cout << node.play->strTrick(node.playNo) << endl;
-cout << constants.str();
-cout << node.strategies.str("node before") << endl;
-    node.strategies.purge(constants);
-cout << node.strategies.str("node after") << endl;
-    node.bounds.minima.purge(constants);
-    node.bounds.maxima.purge(constants);
-
     if (Plays::removePlay(node.strategies, simpleStrats[leadNo]))
-    {
       iter = rhoStudyNodes.erase(iter);
-unsigned lno = 0;
-for (auto s: simpleStrats)
-{
-  cout << "After removePlay, simpleStrats for lead number " << lno << endl;
-  cout << s.str("simpleStrats");
-  lno++;
-}
-    }
     else
       iter++;
   }
@@ -671,18 +642,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<Tvectors> simpleStrats(numLeads);
   Plays::removeConstants(boundsLead, simpleStrats);
 
-  unsigned lno = 0;
-  for (auto s: simpleStrats)
-  {
-    cout << "right after remove, simpleStrats for lead number " << lno << endl;
-    cout << s.str("simpleStrats");
-    lno++;
-  }
-
-  // vector<Tvectors> simple;
-  // simple.resize(leadNodes.size());
-  // unsigned simpleCount = 0;
-
   piter = playInfo.begin();
   auto newiter = rhoStudyNodes.begin();
 
@@ -690,28 +649,13 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   {
     auto& play = * piter;
     const unsigned p = play.number;
-    cout << play.str("Purging constant play " + to_string(p), false) << 
-      endl;
 
     const unsigned num0 = play.strategies.size();
     const unsigned dist0 = play.strategies.numDists();
 
-cout << "OLD purge, lead no " << play.leadNo << ", " << play.number <<
-  ": constants" << endl;
-cout << boundsLead[play.leadNo].constants.str();
-cout << play.strategies.str("node before") << endl;
-    play.strategies.purge(boundsLead[play.leadNo].constants);
-cout << play.strategies.str("after before") << endl;
-    play.lower.purge(boundsLead[play.leadNo].constants);
-    play.upper.purge(boundsLead[play.leadNo].constants);
-
     const unsigned num1 = play.strategies.size();
     const unsigned dist1 = play.strategies.numDists();
 
-    cout << "(" << num0 << ", " << dist0 << ") -> (" <<
-      num1 << ", " << dist1 << ")\n";
-    cout << play.strategies.str("Purged constant strategy") << "\n";
-    
     if (num1 == 0 || dist1 == 0)
     {
       // Nothing left.
@@ -728,7 +672,7 @@ cout << play.strategies.str("after before") << endl;
 
   cout << "Size now " << playInfo.size() << endl;
 
-  lno = 0;
+  unsigned lno = 0;
   for (auto s: simpleStrats)
   {
     cout << "simpleStrats for lead number " << lno << endl;
