@@ -740,32 +740,18 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   // never enter that strategy, so the distribution can be removed
   // from the strategy.
 
-  auto simpleStratsCopy = simpleStrats;
-
   piter = playInfo.begin();
   while (piter != playInfo.end())
   {
     auto& play = * piter;
     const unsigned p = play.number;
 
-    cout << play.str("Purging non-constant play " + to_string(p), false) << 
-      endl;
-
-    const unsigned num0 = play.strategies.size();
-    const unsigned dist0 = play.strategies.numDists();
-
-    // cout << play.strategies.str("Pre purging strategy") << endl;
-
     // Limit the maximum vector to those entries that are <= play.lower.
-
     Tvector max = boundsLead[play.leadNo].maxima;
-    // cout << max.str("max") << endl;
-    // cout << play.lower.str("play.lower") << endl;
     play.lower.constrict(max);
 
     if (max.size() == 0)
     {
-      cout << "Nothing to purge\n";
       piter++;
       continue;
     }
@@ -777,10 +763,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     const unsigned num1 = play.strategies.size();
     const unsigned dist1 = play.strategies.numDists();
 
-    cout << "(" << num0 << ", " << dist0 << ") -> (" <<
-      num1 << ", " << dist1 << ")\n";
-    cout << play.strategies.str("Purged non-constant strategy") << "\n";
-    
     if (num1 == 0 || dist1 == 0)
     {
       // Nothing left.
@@ -789,16 +771,15 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     else if (num1 == 1)
     {
       // One strategy left.
-      simpleStratsCopy[play.leadNo] *= play.strategies;
       piter = playInfo.erase(piter);
     }
     else
       piter++;
   }
 
-assert(simpleStrats.size() == simpleStratsCopy.size());
-for (unsigned i = 0; i < simpleStrats.size(); i++)
-  assert(simpleStrats[i] == simpleStratsCopy[i]);
+// assert(simpleStrats.size() == simpleStratsCopy.size());
+// for (unsigned i = 0; i < simpleStrats.size(); i++)
+  // assert(simpleStrats[i] == simpleStratsCopy[i]);
 
   cout << "Size now " << playInfo.size() << endl;
   for (unsigned s = 0; s < simpleStrats.size(); s++)

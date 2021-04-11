@@ -156,6 +156,10 @@ class Plays
       const vector<Bounds>& boundsLead,
       vector<Tvectors>& simpleStrats);
 
+    void removeDominatedDefenses(
+      const vector<Bounds>& boundsLead,
+      vector<Tvectors>& simpleStrats);
+
     string strHeader() const;
 
   public:

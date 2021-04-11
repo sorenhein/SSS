@@ -1,26 +1,24 @@
-setBest:
-- Don't generate at all? (Baseline)
-- Generate on the fly?
-- Generate on the fly and cache if unseen (have to know what's unseen)?
+2021-04-11
 
+In Ranks, log plays into a struct that is passed directly to Plays.
 
+Plays to use number() not rank() always?
+
+Rename Tvectors Strategies, Tvector Strategy
+
+Loop over processLeadCollapses(): Once this is sanitized, I think 
+we don't need PlayInfo anymore.
+
+Not sure upper/maximum is doing much.
+Comment that maximum is the lowest upper.
+Do we check anywhere that constants are == the lowest possible outcome?
+Are we getting constants or simple plays back into strategies
+correctly and efficiently?
+Are there constants that are global across all leads and therefore
+only have to be added at the very end?
 
 4 cards / 8, AK / - (missing HH): The printed ranks in Play #2 are odd.
 
-Work some more on creating and using Play from Ranks through to 
-Subwinner, where the deque readout can be compared with remainders.
-
-remainders can actually be cards together with the number of the
-card played.  If the later winner to be translated has a number >=
-the card played, then later#+1, otherwise just later#.
-
-best can use rankInfo[rank1].ptr and partner.rankInfo[rank2].ptr
-as the two cards for the winner.
-
-Don't keep resizing best.  Keep it at maximum size.  When we're
-debugging, we may clear each winner perhaps.
-
-In Ranks, log plays into a struct that is passed directly to Plays.
 
 Divide Ranks optimizations into those that always make sense, and
 those that only make sense when we don't care about winners.
@@ -35,10 +33,6 @@ Streamline the Player post-processing into a single call.
 Streamline Player variables and name them temporary loop variables.
 
 Break up struct.h, make a Survivors.h (class? protect data?)
-
-
-
-1. Why does the rank stuff take 10 seconds now?
 
 
 
