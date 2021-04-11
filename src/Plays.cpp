@@ -679,9 +679,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     lno++;
   }
 
-  vector<Tvectors> simple;
-  simple.resize(leadNodes.size());
-  unsigned simpleCount = 0;
+  // vector<Tvectors> simple;
+  // simple.resize(leadNodes.size());
+  // unsigned simpleCount = 0;
 
   piter = playInfo.begin();
   auto newiter = rhoStudyNodes.begin();
@@ -716,35 +716,17 @@ cout << play.strategies.str("after before") << endl;
     {
       // Nothing left.
       piter = playInfo.erase(piter);
-      simpleCount++;
     }
     else if (num1 == 1)
     {
       // One strategy left.
-cout << "About to grow simple" << endl;
-cout << "size " << simple[play.leadNo].size() << endl;
-cout << simple[play.leadNo].str("simple") << endl;
-
-      simple[play.leadNo] *= play.strategies;
-cout << "Grew to\n";
-cout << simple[play.leadNo].str("simple") << endl;
       piter = playInfo.erase(piter);
-      simpleCount++;
     }
     else
       piter++;
   }
 
-  cout << "Removed " << simpleCount << " strategies\n";
   cout << "Size now " << playInfo.size() << endl;
-
-  lno = 0;
-  for (auto s: simple)
-  {
-    cout << "simple strategy for lead number " << lno << endl;
-    cout << s.str("simple");
-    lno++;
-  }
 
   lno = 0;
   for (auto s: simpleStrats)
@@ -753,13 +735,6 @@ cout << simple[play.leadNo].str("simple") << endl;
     cout << s.str("simpleStrats");
     lno++;
   }
-
-// assert(playInfo.size() == rhoStudyNodes.size());
-cout << "simple sizes " << simple.size() << ", " <<
-  simpleStrats.size() << endl;
-assert(simple.size() >= simpleStrats.size());
-for (unsigned i = 0; i < simpleStrats.size(); i++)
-  assert(simple[i] == simpleStrats[i]);
 
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
@@ -811,23 +786,20 @@ for (unsigned i = 0; i < simpleStrats.size(); i++)
     {
       // Nothing left.
       piter = playInfo.erase(piter);
-      simpleCount++;
     }
     else if (num1 == 1)
     {
       // One strategy left.
-      simple[play.leadNo] *= play.strategies;
+      simpleStrats[play.leadNo] *= play.strategies;
       piter = playInfo.erase(piter);
-      simpleCount++;
     }
     else
       piter++;
   }
 
-  cout << "Removed a total of " << simpleCount << " strategies\n";
   cout << "Size now " << playInfo.size() << endl;
-  for (unsigned s = 0; s < simple.size(); s++)
-    cout << simple[s].str("simple " + to_string(s));
+  for (unsigned s = 0; s < simpleStrats.size(); s++)
+    cout << simpleStrats[s].str("simple " + to_string(s));
 
   cout << "Complex plays\n\n";
   for (auto& play: playInfo)
@@ -895,12 +867,10 @@ cout << endl;
 
       piter->strategies |= piter2->strategies;
       playInfo.erase(piter2);
-      simpleCount++;
     }
     piter++;
   }
 
-  cout << "Removed a total of " << simpleCount << " strategies\n";
   cout << "Size now " << playInfo.size() << endl;
 
   cout << "Complex plays\n\n";
