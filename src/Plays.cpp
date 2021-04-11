@@ -499,6 +499,10 @@ void Plays::removeConstants(
     const unsigned leadNo = node.leadNo;
     const auto& constants = boundsLead[leadNo].constants;
 
+    node.strategies.purge(constants);
+    node.bounds.minima.purge(constants);
+    node.bounds.maxima.purge(constants);
+
     if (Plays::removePlay(node.strategies, simpleStrats[leadNo]))
       iter = rhoStudyNodes.erase(iter);
     else
@@ -642,6 +646,14 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<Tvectors> simpleStrats(numLeads);
   Plays::removeConstants(boundsLead, simpleStrats);
 
+  unsigned lno = 0;
+  for (auto s: simpleStrats)
+  {
+    cout << "right after remove, simpleStrats for lead number " << lno << endl;
+    cout << s.str("simpleStrats");
+    lno++;
+  }
+
   piter = playInfo.begin();
   auto newiter = rhoStudyNodes.begin();
 
@@ -649,9 +661,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   {
     auto& play = * piter;
     const unsigned p = play.number;
+    cout << play.str("Purging constant play " + to_string(p), false) << 
+      endl;
 
-    const unsigned num0 = play.strategies.size();
-    const unsigned dist0 = play.strategies.numDists();
+    play.strategies.purge(boundsLead[play.leadNo].constants);
+    play.lower.purge(boundsLead[play.leadNo].constants);
+    play.upper.purge(boundsLead[play.leadNo].constants);
 
     const unsigned num1 = play.strategies.size();
     const unsigned dist1 = play.strategies.numDists();
@@ -672,7 +687,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   cout << "Size now " << playInfo.size() << endl;
 
-  unsigned lno = 0;
+  lno = 0;
   for (auto s: simpleStrats)
   {
     cout << "simpleStrats for lead number " << lno << endl;
