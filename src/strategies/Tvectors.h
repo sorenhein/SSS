@@ -63,6 +63,8 @@ class Tvectors
       const TrickEntry& trivialEntry,
       const unsigned len);
 
+    bool operator == (const Tvectors& tvs);
+
     void operator +=(const Tvector& tv);
 
     void operator +=(const Tvectors& tvs);

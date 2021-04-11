@@ -422,7 +422,10 @@ unsigned Plays::studyRHO(
     studyNode.strategies.bound(studyNode.bounds);
 
     if (debugFlag)
-      cout << studyNode.bounds.str("Play" + to_string(studyNode.playNo));
+    {
+      cout << studyNode.strategies.str("Strategies");
+      cout << studyNode.bounds.str("Play " + to_string(studyNode.playNo));
+    }
   }
 
   return leadNo+1;
@@ -434,6 +437,7 @@ void Plays::studyGlobal(
   const bool debugFlag)
 {
   // Derive global bounds across all plays.
+
   for (auto iter = rhoStudyNodes.begin(); iter != rhoStudyNextIter; iter++)
   {
     const auto& node = * iter;
@@ -441,19 +445,93 @@ void Plays::studyGlobal(
 assert(leadNo < boundsLead.size());
     boundsLead[leadNo].minima *= node.bounds.minima;
     boundsLead[leadNo].maxima *= node.bounds.maxima;
+cout << "Study leadNo " << leadNo << ": constants before\n";
+cout << boundsLead[leadNo].constants.str() << endl;
+cout << "New node constants\n";
+cout << node.bounds.constants.str() << endl;
     boundsLead[leadNo].constants *= node.bounds.constants;
+cout << "Study leadNo " << leadNo << ": constants after\n";
+cout << boundsLead[leadNo].constants.str() << endl;
   }
 
   // Only keep those constants (for a given lead) that
   // correspond to the minimum achievable outcome.
-  for (unsigned leadNo = 0; leadNo < boundsLead.size(); leadNo++)
+  unsigned leadNo = 0;
+  for (auto& bound: boundsLead)
   {
-    auto& bound = boundsLead[leadNo];
     bound.minima.constrict(bound.constants);
 
     if (debugFlag)
       cout << bound.constants.str("Constrained constants " +
         to_string(leadNo)) << endl;
+
+    leadNo++;
+  }
+}
+
+
+bool Plays::removePlay(
+  const Tvectors& strategies,
+  Tvectors& simpleStrat) const
+{
+  if (strategies.numDists() == 0)
+    return true;
+  else if (strategies.size() == 0)
+    return true;
+  else if (strategies.size() == 1)
+  {
+cout << "About to grow simpleStrat" << endl;
+cout << "size " << simpleStrat.size() << endl;
+cout << simpleStrat.str("simpleStrat") << endl;
+    simpleStrat *= strategies;
+assert(simpleStrat.size() == 1);
+cout << simpleStrat.str("simpleStrat after") << endl;
+    return true;
+  }
+  else
+    return false;
+}
+
+
+void Plays::removeConstants(
+  const vector<Bounds>& boundsLead,
+  vector<Tvectors>& simpleStrats)
+{
+  // Remove constant distributions (for a given lead) from each 
+  // play with that lead.  If a play strategy melts away completely,
+  // remove it.  If there is only one strategy vector, also remove
+  // it and put in a special simple set of strategies.
+
+  auto iter = rhoStudyNodes.begin();
+  while (iter != rhoStudyNextIter)
+  {
+    auto& node = * iter;
+    const unsigned leadNo = node.leadNo;
+    const auto& constants = boundsLead[leadNo].constants;
+
+cout << "NEW leadNo purge " << leadNo << ", " << node.playNo << 
+  ": constants" << endl;
+cout << node.play->strTrick(node.playNo) << endl;
+cout << constants.str();
+cout << node.strategies.str("node before") << endl;
+    node.strategies.purge(constants);
+cout << node.strategies.str("node after") << endl;
+    node.bounds.minima.purge(constants);
+    node.bounds.maxima.purge(constants);
+
+    if (Plays::removePlay(node.strategies, simpleStrats[leadNo]))
+    {
+      iter = rhoStudyNodes.erase(iter);
+unsigned lno = 0;
+for (auto s: simpleStrats)
+{
+  cout << "After removePlay, simpleStrats for lead number " << lno << endl;
+  cout << s.str("simpleStrats");
+  lno++;
+}
+    }
+    else
+      iter++;
   }
 }
 
@@ -537,14 +615,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   list<PlayInfo> playInfo;
   playInfo.resize(rhoNext);
 
-  // Store vectors of extreme outcomes for each lead.
-  // vector<Tvector> minima, maxima;
-  // minima.resize(leadNodes.size());
-  // maxima.resize(leadNodes.size());
-
-  // vector<Tvector> constants;
-  // constants.resize(leadNodes.size());
-
   unsigned pno = 0;
   unsigned mno = 0;
   unsigned mlast = rhoNodes.front().pardPtr->lhoPtr->leadPtr->lead;
@@ -587,70 +657,35 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);
 
-    // constants[play.leadNo] *= cst;
-    // minima[play.leadNo] *= play.lower;
-    // maxima[play.leadNo] *= play.upper;
-    
     if (debugFlag)
     {
       cout << play.str("Vector " + to_string(pno)) << endl;
       cout << cst.str("Constants") << endl;
-      // cout << minima[play.leadNo].str("Minima") << endl;
-      // cout << constants[play.leadNo].str("Cumul constants") << endl;
     }
   }
 
-  // Only keep those constants (for a given lead) that
-  // correspond to the minimum achievable outcome.
-
-  // for (unsigned i = 0; i < constants.size(); i++)
-  // {
-    // minima[i].constrict(constants[i]);
-    // cout << constants[i].str("Constrained constants " +
-      // to_string(i)) << endl;
-  // }
-
   
-  /*
-  assert(minima.size() >= boundsLead.size());
-  auto biter = boundsLead.begin();
-  unsigned i = 0;
-  for (auto citer = constants.begin(); 
-    citer != constants.end() && i < boundsLead.size();
-    citer++, biter++, i++)
-  {
-    assert(biter->constants == * citer);
-  }
-
-  assert(minima.size() >= boundsLead.size());
-  biter = boundsLead.begin();
-  for (auto citer = minima.begin(); 
-    citer != minima.end() && i < boundsLead.size();
-    citer++, biter++, i++)
-  {
-    assert(biter->minima == * citer);
-  }
-
-  assert(maxima.size() >= boundsLead.size());
-  biter = boundsLead.begin();
-  for (auto citer = maxima.begin(); 
-    citer != maxima.end() && i < boundsLead.size();
-    citer++, biter++, i++)
-  {
-    assert(biter->maxima == * citer);
-  }
-  */
-
-
-
-
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
+
+  vector<Tvectors> simpleStrats(numLeads);
+  Plays::removeConstants(boundsLead, simpleStrats);
+
+  unsigned lno = 0;
+  for (auto s: simpleStrats)
+  {
+    cout << "right after remove, simpleStrats for lead number " << lno << endl;
+    cout << s.str("simpleStrats");
+    lno++;
+  }
+
   vector<Tvectors> simple;
   simple.resize(leadNodes.size());
   unsigned simpleCount = 0;
 
   piter = playInfo.begin();
+  auto newiter = rhoStudyNodes.begin();
+
   while (piter != playInfo.end())
   {
     auto& play = * piter;
@@ -661,7 +696,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     const unsigned num0 = play.strategies.size();
     const unsigned dist0 = play.strategies.numDists();
 
+cout << "OLD purge, lead no " << play.leadNo << ", " << play.number <<
+  ": constants" << endl;
+cout << boundsLead[play.leadNo].constants.str();
+cout << play.strategies.str("node before") << endl;
     play.strategies.purge(boundsLead[play.leadNo].constants);
+cout << play.strategies.str("after before") << endl;
     play.lower.purge(boundsLead[play.leadNo].constants);
     play.upper.purge(boundsLead[play.leadNo].constants);
 
@@ -686,6 +726,8 @@ cout << "size " << simple[play.leadNo].size() << endl;
 cout << simple[play.leadNo].str("simple") << endl;
 
       simple[play.leadNo] *= play.strategies;
+cout << "Grew to\n";
+cout << simple[play.leadNo].str("simple") << endl;
       piter = playInfo.erase(piter);
       simpleCount++;
     }
@@ -696,8 +738,28 @@ cout << simple[play.leadNo].str("simple") << endl;
   cout << "Removed " << simpleCount << " strategies\n";
   cout << "Size now " << playInfo.size() << endl;
 
+  lno = 0;
   for (auto s: simple)
+  {
+    cout << "simple strategy for lead number " << lno << endl;
     cout << s.str("simple");
+    lno++;
+  }
+
+  lno = 0;
+  for (auto s: simpleStrats)
+  {
+    cout << "simpleStrats for lead number " << lno << endl;
+    cout << s.str("simpleStrats");
+    lno++;
+  }
+
+// assert(playInfo.size() == rhoStudyNodes.size());
+cout << "simple sizes " << simple.size() << ", " <<
+  simpleStrats.size() << endl;
+assert(simple.size() >= simpleStrats.size());
+for (unsigned i = 0; i < simpleStrats.size(); i++)
+  assert(simple[i] == simpleStrats[i]);
 
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
@@ -916,6 +978,7 @@ cout << endl;
   
   strategies = playInfo[0].strategies;
   */
+assert(playInfo.size() > 0);
   strategies = playInfo.front().strategies;
 }
 

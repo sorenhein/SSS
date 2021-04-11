@@ -82,7 +82,7 @@ class Plays
     list<LhoNode> lhoNodes;
     list<PardNode> pardNodes;
     list<RhoNode> rhoNodes;
-    deque<RhoStudyNode> rhoStudyNodes;
+    list<RhoStudyNode> rhoStudyNodes;
 
     unsigned leadNext;
     unsigned lhoNext;
@@ -93,7 +93,7 @@ class Plays
     list<LhoNode>::iterator lhoNextIter;
     list<PardNode>::iterator pardNextIter;
     list<RhoNode>::iterator rhoNextIter;
-    deque<RhoStudyNode>::iterator rhoStudyNextIter;
+    list<RhoStudyNode>::iterator rhoStudyNextIter;
 
     // The plays come through in order, so we don't have to look up
     // the new play completely.  We just have to check how much of the
@@ -147,6 +147,14 @@ class Plays
     void studyGlobal(
       vector<Bounds>& boundsLead,
       const bool debugFlag);
+
+    bool removePlay(
+      const Tvectors& strategies,
+      Tvectors& simpleStrat) const;
+
+    void removeConstants(
+      const vector<Bounds>& boundsLead,
+      vector<Tvectors>& simpleStrats);
 
     string strHeader() const;
 

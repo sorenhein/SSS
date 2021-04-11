@@ -36,6 +36,24 @@ void Tvectors::setTrivial(
 }
 
 
+bool Tvectors::operator ==(const Tvectors& tvs)
+{
+  // TODO This assumes the same ordering, but it's a start.
+  if (Tvectors::size() != tvs.size())
+    return false;
+
+  auto iter2 = tvs.results.begin();
+  for (auto iter1 = results.begin(); iter1 != results.end(); 
+      iter1++, iter2++)
+  {
+    if (!(* iter1 == * iter2))
+      return false;
+  }
+
+  return true;
+}
+
+
 void Tvectors::operator +=(const Tvector& tv)
 {
   // The results list is in descending order of weights.
