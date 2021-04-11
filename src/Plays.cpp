@@ -511,6 +511,42 @@ void Plays::removeConstants(
 }
 
 
+void Plays::removeDominatedDefenses(
+  const vector<Bounds>& boundsLead,
+  vector<Tvectors>& simpleStrats)
+{
+  // For a given lead and a given distribution, let's say the range of 
+  // outcomes for a given defensive strategy is (min, max).  Let's also 
+  // say that the lowest maximum that any strategy achieves is M.
+  // Then if M <= min, the defenders will never enter that strategy
+  // with that distribution, so it can be removed from their options.
+
+  auto iter = rhoStudyNodes.begin();
+  while (iter != rhoStudyNextIter)
+  {
+    auto& node = * iter;
+
+    // Limit the maximum vector to those entries that are <= play.lower.
+    Tvector max = boundsLead[node.leadNo].maxima;
+    node.bounds.minima.constrict(max);
+    if (max.size() == 0)
+    {
+      // Nothing to purge.
+      iter++;
+      continue;
+    }
+
+cout << max.str("to purge") << endl;
+    node.strategies.purge(max);
+
+    if (Plays::removePlay(node.strategies, simpleStrats[node.leadNo]))
+      iter = rhoStudyNodes.erase(iter);
+    else
+      iter++;
+  }
+}
+
+
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Tvectors& strategies,
@@ -695,12 +731,16 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     lno++;
   }
 
+  Plays::removeDominatedDefenses(boundsLead, simpleStrats);
+
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
   // the lowest maximum that any strategy achieves is M.  This is
   // all for a given lead.  Then if M <= min, the defenders will
   // never enter that strategy, so the distribution can be removed
   // from the strategy.
+
+  auto simpleStratsCopy = simpleStrats;
 
   piter = playInfo.begin();
   while (piter != playInfo.end())
@@ -749,12 +789,16 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     else if (num1 == 1)
     {
       // One strategy left.
-      simpleStrats[play.leadNo] *= play.strategies;
+      simpleStratsCopy[play.leadNo] *= play.strategies;
       piter = playInfo.erase(piter);
     }
     else
       piter++;
   }
+
+assert(simpleStrats.size() == simpleStratsCopy.size());
+for (unsigned i = 0; i < simpleStrats.size(); i++)
+  assert(simpleStrats[i] == simpleStratsCopy[i]);
 
   cout << "Size now " << playInfo.size() << endl;
   for (unsigned s = 0; s < simpleStrats.size(); s++)
