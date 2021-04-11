@@ -538,12 +538,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   playInfo.resize(rhoNext);
 
   // Store vectors of extreme outcomes for each lead.
-  vector<Tvector> minima, maxima;
-  minima.resize(leadNodes.size());
-  maxima.resize(leadNodes.size());
+  // vector<Tvector> minima, maxima;
+  // minima.resize(leadNodes.size());
+  // maxima.resize(leadNodes.size());
 
-  vector<Tvector> constants;
-  constants.resize(leadNodes.size());
+  // vector<Tvector> constants;
+  // constants.resize(leadNodes.size());
 
   unsigned pno = 0;
   unsigned mno = 0;
@@ -587,30 +587,31 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     Tvector cst;
     play.strategies.bound(cst, play.lower, play.upper);
 
-    constants[play.leadNo] *= cst;
-    minima[play.leadNo] *= play.lower;
-    maxima[play.leadNo] *= play.upper;
+    // constants[play.leadNo] *= cst;
+    // minima[play.leadNo] *= play.lower;
+    // maxima[play.leadNo] *= play.upper;
     
     if (debugFlag)
     {
       cout << play.str("Vector " + to_string(pno)) << endl;
       cout << cst.str("Constants") << endl;
-      cout << minima[play.leadNo].str("Minima") << endl;
-      cout << constants[play.leadNo].str("Cumul constants") << endl;
+      // cout << minima[play.leadNo].str("Minima") << endl;
+      // cout << constants[play.leadNo].str("Cumul constants") << endl;
     }
   }
 
   // Only keep those constants (for a given lead) that
   // correspond to the minimum achievable outcome.
 
-  for (unsigned i = 0; i < constants.size(); i++)
-  {
-    minima[i].constrict(constants[i]);
-    cout << constants[i].str("Constrained constants " +
-      to_string(i)) << endl;
-  }
+  // for (unsigned i = 0; i < constants.size(); i++)
+  // {
+    // minima[i].constrict(constants[i]);
+    // cout << constants[i].str("Constrained constants " +
+      // to_string(i)) << endl;
+  // }
 
   
+  /*
   assert(minima.size() >= boundsLead.size());
   auto biter = boundsLead.begin();
   unsigned i = 0;
@@ -638,6 +639,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   {
     assert(biter->maxima == * citer);
   }
+  */
 
 
 
@@ -659,11 +661,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     const unsigned num0 = play.strategies.size();
     const unsigned dist0 = play.strategies.numDists();
 
-assert(constants[play.leadNo] == boundsLead[play.leadNo].constants);
-
-    play.strategies.purge(constants[play.leadNo]);
-    play.lower.purge(constants[play.leadNo]);
-    play.upper.purge(constants[play.leadNo]);
+    play.strategies.purge(boundsLead[play.leadNo].constants);
+    play.lower.purge(boundsLead[play.leadNo].constants);
+    play.upper.purge(boundsLead[play.leadNo].constants);
 
     const unsigned num1 = play.strategies.size();
     const unsigned dist1 = play.strategies.numDists();
@@ -722,9 +722,7 @@ cout << simple[play.leadNo].str("simple") << endl;
 
     // Limit the maximum vector to those entries that are <= play.lower.
 
-assert(maxima[play.leadNo] == boundsLead[play.leadNo].maxima);
-
-    Tvector max = maxima[play.leadNo];
+    Tvector max = boundsLead[play.leadNo].maxima;
     // cout << max.str("max") << endl;
     // cout << play.lower.str("play.lower") << endl;
     play.lower.constrict(max);
@@ -876,10 +874,8 @@ cout << endl;
 
   for (unsigned l = 0; l < leadStrats.size(); l++)
   {
-assert(constants[l] == boundsLead[l].constants);
-
-    cout << constants[l].str("constants " + to_string(l));
-    leadStrats[l] *= constants[l];
+    cout << boundsLead[l].constants.str("constants " + to_string(l));
+    leadStrats[l] *= boundsLead[l].constants;
     cout << leadStrats[l].str("Strategy with constants " + to_string(l)) << "\n";
   }
 
