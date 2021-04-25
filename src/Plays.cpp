@@ -621,6 +621,99 @@ void Plays::removeLaterCollapses()
 }
 
 
+void Plays::printTMP(
+  const string& title,
+  const PlayInfo& pinfo,
+  const RhoStudyNode& play)
+{
+  cout << title << "\n";
+  cout << "Original:\n";
+  cout << setw(3) << right << pinfo.number << ": " <<
+    setw(2) << pinfo.side << " " << 
+    setw(2) << pinfo.lead << " " << 
+    setw(2) << pinfo.lho << " " << 
+    setw(2) << pinfo.rho << ", " <<
+    setw(2) << pinfo.leadNo << ": " << 
+    setw(3) << pinfo.strategies.size() <<
+    setw(3) << pinfo.strategies.numDists() << endl;
+
+  cout << "New:\n";
+  cout << setw(3) << right << play.playNo << ": " <<
+    setw(2) << play.play->side << " " << 
+    setw(2) << play.play->lead() << " " << 
+    setw(2) << play.play->lho() << " " << 
+    setw(2) << play.play->rho() << ", " <<
+    setw(2) << play.leadNo << ": " << 
+    setw(3) << play.strategies.size() <<
+    setw(3) << play.strategies.numDists() << endl;
+}
+
+
+void Plays::checkTMP(
+  const string& title,
+  const list<PlayInfo>& playInfo)
+{
+  cout << title << "\n\n";
+  auto niter = rhoStudyNodes.begin();
+
+  for (auto& play: playInfo)
+  {
+    const auto& nplay = * (niter->play);
+    if (play.number != niter->playNo)
+    {
+      Plays::printTMP("playNo", play, * niter);
+      assert(false);
+    }
+
+    if (play.side != nplay.side)
+    {
+      Plays::printTMP("side", play, * niter);
+      assert(false);
+    }
+
+    if (play.lead != nplay.lead())
+    {
+      Plays::printTMP("lead", play, * niter);
+      assert(false);
+    }
+
+    if (play.lho != nplay.lho())
+    {
+      Plays::printTMP("lho", play, * niter);
+      assert(false);
+    }
+
+    if (play.rho != nplay.rho())
+    {
+      Plays::printTMP("rho", play, * niter);
+      assert(false);
+    }
+
+    if (play.leadNo != niter->leadNo)
+    {
+      Plays::printTMP("leadNo", play, * niter);
+      assert(false);
+    }
+
+    if (play.strategies.size() != niter->strategies.size())
+    {
+      Plays::printTMP("strat.size", play, * niter);
+      assert(false);
+    }
+
+    if (play.strategies.numDists() != niter->strategies.numDists())
+    {
+      Plays::printTMP("strat.dists", play, * niter);
+      assert(false);
+    }
+
+    niter++;
+  }
+
+  assert(niter == rhoStudyNextIter);
+}
+
+
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Tvectors& strategies,
@@ -659,43 +752,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<Bounds> boundsLead(numLeads);
   Plays::studyGlobal(boundsLead, debugFlag);
 
-
-  // For exploration we turn the plays back into a vector.
-  // Each play is stored in a PlayInfo.
-
-  struct PlayInfo
-  {
-    unsigned number;
-
-    SidePosition side;
-    unsigned lead;
-    unsigned lho;
-    unsigned rho;
-    bool leadCollapse;
-    unsigned holding3;
-    unsigned leadNo;
-
-    Tvectors strategies;
-
-    Tvector lower;
-    Tvector upper;
-
-    string str(
-      const string& header,
-      const bool fullFlag = true) const
-    {
-      stringstream ss;
-      ss << header << ": " << 
-        lead << " " << lho << " void " << rho << " " <<
-        setw(6) << holding3 << " (lead no " << leadNo << ")";
-      if (leadCollapse)
-        ss << " collapse lead";
-      ss << "\n";
-      if (fullFlag)
-        ss << strategies.str("Strategy", true);
-      return ss.str() + "\n";
-    };
-  };
 
   list<PlayInfo> playInfo;
   playInfo.resize(rhoNext);
@@ -933,46 +989,7 @@ cout << endl;
 
   Plays::removeLaterCollapses();
 
-  cout << "Complex plays\n\n";
-  auto niter = rhoStudyNodes.begin();
-  for (auto& play: playInfo)
-  {
-    cout << setw(3) << right << play.number << ": " <<
-      setw(2) << play.side << " " << 
-      setw(2) << play.lead << " " << 
-      setw(2) << play.lho << " " << 
-      setw(2) << play.rho << ", " <<
-      setw(2) << play.leadNo << ": " << 
-      setw(3) << play.strategies.size() <<
-      setw(3) << play.strategies.numDists() << endl;
-
-    const auto& nplay = * (niter->play);
-    assert(play.number == niter->playNo);
-    assert(play.side == nplay.side);
-    assert(play.lead == nplay.lead());
-    assert(play.lho == nplay.lho());
-    assert(play.rho == nplay.rho());
-    assert(play.leadNo == niter->leadNo);
-    assert(play.strategies.size() == niter->strategies.size());
-    if (play.strategies.numDists() != niter->strategies.numDists())
-    {
-      cout << "DIFF\n";
-    cout << setw(3) << right << niter->playNo << ": " <<
-      setw(2) << nplay.side << " " << 
-      setw(2) << nplay.lead() << " " << 
-      setw(2) << nplay.lho() << " " << 
-      setw(2) << nplay.rho() << ", " <<
-      setw(2) << niter->leadNo << ": " << 
-      setw(3) << niter->strategies.size() <<
-      setw(3) << niter->strategies.numDists() << endl;
-
-    }
-    // assert(play.strategies.numDists() == niter->strategies.numDists());
-    
-    niter++;
-  }
-
-  assert(niter == rhoStudyNextIter);
+  Plays::checkTMP("After removeLaterCollapses", playInfo);
 
 
 
