@@ -393,6 +393,8 @@ unsigned Plays::studyRHO(
   unsigned leadNo = 0;
   unsigned leadLast = rhoNodes.front().play.lead();
 
+  // TODO Just add them one by one?  Then we don't need NextIter
+  //  and we can use end().
   rhoStudyNodes.resize(rhoNext);
   rhoStudyNextIter = rhoStudyNodes.begin();
   for (auto rhoIter = rhoNodes.begin(); 
@@ -536,13 +538,85 @@ void Plays::removeDominatedDefenses(
       continue;
     }
 
-cout << max.str("to purge") << endl;
     node.strategies.purge(max);
 
     if (Plays::removePlay(node.strategies, simpleStrats[node.leadNo]))
       iter = rhoStudyNodes.erase(iter);
     else
       iter++;
+  }
+}
+
+
+void Plays::removeLaterCollapses()
+{
+  // Look for rank collapses that happen "during the trick".
+  // For example, with KJ975 missing 7 cards, if declarer leads the 5,
+  // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
+  // be the same, but even during the trick declarer should not distinguish
+  // between the 6 and the x.  We don't give up on the difference, but we
+  // merge the strategies vector by vector, and not by cross product.
+  // Declarer should not play differently based on a distinction that
+  // the defense can create without a real difference.
+
+  auto iter = rhoStudyNodes.begin();
+  while (iter != rhoStudyNextIter)
+  {
+    auto& node = * iter;
+
+    if (! node.play->leadCollapse || node.play->trickNS)
+    {
+      // Skip plays that do not have a lead collapsing.
+      // Also skip a trick won by declarer as the collapse cannot
+      // involve two defenders' cards that are played in this trick.
+      iter++;
+      continue;
+    }
+
+    const unsigned lhoRank = node.play->lho();
+    const unsigned rhoRank = node.play->rho();
+    const unsigned leadRank = node.play->lead();
+    const unsigned h3 = node.play->holding3;
+
+    if (rhoRank+1 == leadRank)
+    {
+      // As the defenders win the trick:
+      assert(lhoRank > leadRank);
+
+      // Find matching RHO plays.  There can be more than one, as
+      // we may have several plays of a given rank if that is what
+      // we asked for from Ranks.  As the plays are in lexicographic
+      // order, they will follow immediately.  As the LHO card may
+      // be the only defenders' card that is exactly one rank above
+      // the lead, there may be no matching plays.
+      auto iter2 = next(iter);
+      while (iter2 != rhoStudyNextIter && 
+          iter2->play->holding3 == h3)
+      {
+        iter->strategies |= iter2->strategies;
+        iter2 = rhoStudyNodes.erase(iter2);
+      }
+    }
+    else if (lhoRank+1 == leadRank)
+    {
+      assert(rhoRank > leadRank);
+
+      // Find matching LHO plays.  Unlike above, they will not be
+      // in order following the current play.
+      auto iter2 = next(iter);
+      while (iter2 != rhoStudyNextIter)
+      {
+        if (iter2->play->holding3 == h3 &&
+            iter2->play->lho() == lhoRank)
+        {
+          iter->strategies |= iter2->strategies;
+          iter2 = rhoStudyNodes.erase(iter2);
+        }
+        else
+          iter2++;
+      }
+    }
+    iter++;
   }
 }
 
@@ -818,18 +892,17 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
     if (play.lho >= play.lead+3 && play.rho == play.lead-1)
     {
-      // Find the matching RHO play.
+      // Find the matching RHO play.  As they are in lexicographic
+      // order, it will be the next one.
       auto piter2 = next(piter);
-      while (piter2 != playInfo.end() && 
-          (piter2->lho != play.lho || piter2->rho != play.lead+1))
-        piter2++;
-
       assert(piter2 != playInfo.end());
+      assert(piter2->rho == play.lead+1);
+      assert(piter->holding3 == piter2->holding3);
+      assert(piter->strategies.size() == piter2->strategies.size());
+
 cout << piter->str("piter");
 cout << piter2->str("piter2");
 cout << endl;
-      assert(piter->strategies.size() == piter2->strategies.size());
-      assert(piter->holding3 == piter2->holding3);
 
       piter->strategies |= piter2->strategies;
       playInfo.erase(piter2);
@@ -855,9 +928,13 @@ cout << endl;
     piter++;
   }
 
+
   cout << "Size now " << playInfo.size() << endl;
 
+  Plays::removeLaterCollapses();
+
   cout << "Complex plays\n\n";
+  auto niter = rhoStudyNodes.begin();
   for (auto& play: playInfo)
   {
     cout << setw(3) << right << play.number << ": " <<
@@ -868,7 +945,35 @@ cout << endl;
       setw(2) << play.leadNo << ": " << 
       setw(3) << play.strategies.size() <<
       setw(3) << play.strategies.numDists() << endl;
+
+    const auto& nplay = * (niter->play);
+    assert(play.number == niter->playNo);
+    assert(play.side == nplay.side);
+    assert(play.lead == nplay.lead());
+    assert(play.lho == nplay.lho());
+    assert(play.rho == nplay.rho());
+    assert(play.leadNo == niter->leadNo);
+    assert(play.strategies.size() == niter->strategies.size());
+    if (play.strategies.numDists() != niter->strategies.numDists())
+    {
+      cout << "DIFF\n";
+    cout << setw(3) << right << niter->playNo << ": " <<
+      setw(2) << nplay.side << " " << 
+      setw(2) << nplay.lead() << " " << 
+      setw(2) << nplay.lho() << " " << 
+      setw(2) << nplay.rho() << ", " <<
+      setw(2) << niter->leadNo << ": " << 
+      setw(3) << niter->strategies.size() <<
+      setw(3) << niter->strategies.numDists() << endl;
+
+    }
+    // assert(play.strategies.numDists() == niter->strategies.numDists());
+    
+    niter++;
   }
+
+  assert(niter == rhoStudyNextIter);
+
 
 
   // Combine the plays into an overall strategy.

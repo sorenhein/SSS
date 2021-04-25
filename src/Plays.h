@@ -160,6 +160,8 @@ class Plays
       const vector<Bounds>& boundsLead,
       vector<Tvectors>& simpleStrats);
 
+    void removeLaterCollapses();
+
     string strHeader() const;
 
   public:

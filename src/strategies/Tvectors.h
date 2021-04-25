@@ -18,8 +18,13 @@ using namespace std;
 
 struct Bounds
 {
+  // Actual minima.
   Tvector minima;
+
+  // The lowest maxima (so not the actual maxima).
   Tvector maxima;
+
+  // The lowest constant results.
   Tvector constants;
 
   string str(const string& title = "") const

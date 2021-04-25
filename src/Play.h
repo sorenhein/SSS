@@ -54,7 +54,7 @@ struct Play
 
   // The combination following the current trick.  This does not get
   // set directly in Ranks.
-  Combination const * combPtr; // UNSET
+  Combination const * combPtr;
 
   
   unsigned lead(const bool fullFlag = false) const;
