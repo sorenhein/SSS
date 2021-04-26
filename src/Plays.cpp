@@ -411,7 +411,7 @@ unsigned Plays::studyRHO(
       leadLast = rhoNode.play.lead();
     }
 
-    studyNode.play = &rhoNode.play;
+    studyNode.playPtr = &rhoNode.play;
     studyNode.playNo = playNo;
     studyNode.leadNo = leadNo;
 
@@ -565,7 +565,7 @@ void Plays::removeLaterCollapses()
   {
     auto& node = * iter;
 
-    if (! node.play->leadCollapse || node.play->trickNS)
+    if (! node.playPtr->leadCollapse || node.playPtr->trickNS)
     {
       // Skip plays that do not have a lead collapsing.
       // Also skip a trick won by declarer as the collapse cannot
@@ -574,10 +574,10 @@ void Plays::removeLaterCollapses()
       continue;
     }
 
-    const unsigned lhoRank = node.play->lho();
-    const unsigned rhoRank = node.play->rho();
-    const unsigned leadRank = node.play->lead();
-    const unsigned h3 = node.play->holding3;
+    const unsigned lhoRank = node.playPtr->lho();
+    const unsigned rhoRank = node.playPtr->rho();
+    const unsigned leadRank = node.playPtr->lead();
+    const unsigned h3 = node.playPtr->holding3;
 
     if (rhoRank+1 == leadRank)
     {
@@ -592,8 +592,8 @@ void Plays::removeLaterCollapses()
       // the lead, there may be no matching plays.
       auto iter2 = next(iter);
       while (iter2 != rhoStudyNextIter && 
-          iter2->play->holding3 == h3 &&
-          iter2->play->lho() == lhoRank)
+          iter2->playPtr->holding3 == h3 &&
+          iter2->playPtr->lho() == lhoRank)
       {
         iter->strategies |= iter2->strategies;
         iter2 = rhoStudyNodes.erase(iter2);
@@ -608,9 +608,9 @@ void Plays::removeLaterCollapses()
       auto iter2 = next(iter);
       while (iter2 != rhoStudyNextIter)
       {
-        if (iter2->play->holding3 == h3 &&
-            iter2->play->lead() == leadRank &&
-            iter2->play->rho() == rhoRank)
+        if (iter2->playPtr->holding3 == h3 &&
+            iter2->playPtr->lead() == leadRank &&
+            iter2->playPtr->rho() == rhoRank)
         {
           iter->strategies |= iter2->strategies;
           iter2 = rhoStudyNodes.erase(iter2);

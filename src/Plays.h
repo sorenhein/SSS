@@ -66,7 +66,7 @@ class Plays
 
     struct RhoStudyNode
     {
-      Play const * play;
+      Play const * playPtr;
       unsigned playNo;
       unsigned leadNo;
 
