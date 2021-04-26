@@ -756,59 +756,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   Plays::studyGlobal(boundsLead, debugFlag);
 
 
-  list<PlayInfo> playInfo;
-  playInfo.resize(rhoNext);
 
-  unsigned pno = 0;
-  unsigned mno = 0;
-  unsigned mlast = rhoNodes.front().pardPtr->lhoPtr->leadPtr->lead;
-  auto piter = playInfo.begin();
-
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
-      rhoIter++, piter++, pno++)
-  {
-    const auto& rhoNode = * rhoIter;
-    auto& play = * piter;
-
-    play.number = pno;
-    play.side = rhoNode.pardPtr->lhoPtr->leadPtr->side;
-    play.lead = rhoNode.pardPtr->lhoPtr->leadPtr->lead;
-    play.lho = rhoNode.pardPtr->lhoPtr->lho;
-    play.rho = rhoNode.play.rho();
-    play.leadCollapse = rhoNode.play.leadCollapse;
-    play.holding3 = rhoNode.play.holding3;
-
-    assert(play.side == SIDE_NORTH);
-
-    if (play.lead != mlast)
-    {
-      mno++;
-      mlast = play.lead;
-    }
-
-    play.leadNo = mno;
-
-    const Survivors& survivors = distPtr->survivors(rhoNode.play);
-
-    play.strategies = rhoNode.play.combPtr->strategies();
-
-    // adapt() renumbers distributions from combPtr.
-    // It also renumbers winners within strategies.
-    play.strategies.adapt(
-      rhoNode.play,
-      survivors);
-
-    Tvector cst;
-    play.strategies.bound(cst, play.lower, play.upper);
-
-    if (debugFlag)
-    {
-      cout << play.str("Vector " + to_string(pno)) << endl;
-      cout << cst.str("Constants") << endl;
-    }
-  }
-
-  Plays::checkTMP("After study", playInfo);
+  // Plays::checkTMP("After study", playInfo);
 
   
   // Remove those constants from the corresponding strategies.
@@ -825,40 +774,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     lno++;
   }
 
-  piter = playInfo.begin();
-  auto newiter = rhoStudyNodes.begin();
+  // cout << "Size now " << playInfo.size() << endl;
 
-  while (piter != playInfo.end())
-  {
-    auto& play = * piter;
-    const unsigned p = play.number;
-    cout << play.str("Purging constant play " + to_string(p), false) << 
-      endl;
-
-    play.strategies.purge(boundsLead[play.leadNo].constants);
-    play.lower.purge(boundsLead[play.leadNo].constants);
-    play.upper.purge(boundsLead[play.leadNo].constants);
-
-    const unsigned num1 = play.strategies.size();
-    const unsigned dist1 = play.strategies.numDists();
-
-    if (num1 == 0 || dist1 == 0)
-    {
-      // Nothing left.
-      piter = playInfo.erase(piter);
-    }
-    else if (num1 == 1)
-    {
-      // One strategy left.
-      piter = playInfo.erase(piter);
-    }
-    else
-      piter++;
-  }
-
-  cout << "Size now " << playInfo.size() << endl;
-
-  Plays::checkTMP("After removeConstants", playInfo);
+  // Plays::checkTMP("After removeConstants", playInfo);
 
 
   lno = 0;
@@ -872,135 +790,16 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   Plays::removeDominatedDefenses(boundsLead, simpleStrats);
 
 
-  // Let's say the range of outcomes for a given strategy is
-  // (min, max) for a given distribution.  Let's also say that
-  // the lowest maximum that any strategy achieves is M.  This is
-  // all for a given lead.  Then if M <= min, the defenders will
-  // never enter that strategy, so the distribution can be removed
-  // from the strategy.
-
-  piter = playInfo.begin();
-  while (piter != playInfo.end())
-  {
-    auto& play = * piter;
-    const unsigned p = play.number;
-
-    // Limit the maximum vector to those entries that are <= play.lower.
-    Tvector max = boundsLead[play.leadNo].maxima;
-    play.lower.constrict(max);
-
-    if (max.size() == 0)
-    {
-      piter++;
-      continue;
-    }
-
-    cout << max.str("to purge") << endl;
-
-    play.strategies.purge(max);
-
-    const unsigned num1 = play.strategies.size();
-    const unsigned dist1 = play.strategies.numDists();
-
-    if (num1 == 0 || dist1 == 0)
-    {
-      // Nothing left.
-      piter = playInfo.erase(piter);
-    }
-    else if (num1 == 1)
-    {
-      // One strategy left.
-      piter = playInfo.erase(piter);
-    }
-    else
-      piter++;
-  }
-
-// assert(simpleStrats.size() == simpleStratsCopy.size());
-// for (unsigned i = 0; i < simpleStrats.size(); i++)
-  // assert(simpleStrats[i] == simpleStratsCopy[i]);
-
-  cout << "Size now " << playInfo.size() << endl;
+  cout << "Size now " << rhoStudyNodes.size() << endl;
   for (unsigned s = 0; s < simpleStrats.size(); s++)
     cout << simpleStrats[s].str("simple " + to_string(s));
 
-  Plays::checkTMP("After removeDominated", playInfo);
+  // Plays::checkTMP("After removeDominated", playInfo);
 
-  cout << "Complex plays\n\n";
-  for (auto& play: playInfo)
-  {
-    cout << setw(3) << right << play.number << ": " <<
-      setw(2) << play.side << " " << 
-      setw(2) << play.lead << " " << 
-      setw(2) << play.lho << " " << 
-      setw(2) << play.rho << ", " <<
-      setw(2) << play.leadNo << ": " << 
-      setw(3) << play.strategies.size() <<
-      setw(3) << play.strategies.numDists() << endl;
-  }
-
-  // Look for rank collapses that happen "during the trick".
-  // For example, with KJ975 missing 7 cards, if declarer leads the 5,
-  // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
-  // be the same, but even during the trick declarer should not distinguish
-  // between the 6 and the x.  We don't give up on the difference, but we
-  // merge the strategies vector by vector, and not by cross product.
-
-  piter = playInfo.begin();
-  while (piter != playInfo.end())
-  {
-    auto& play = * piter;
-    const unsigned p = play.number;
-    if (! play.leadCollapse)
-    {
-      piter++;
-      continue;
-    }
-
-    if (play.lho >= play.lead+3 && play.rho == play.lead-1)
-    {
-      // Find the matching RHO play.  As they are in lexicographic
-      // order, it will be the next one.
-      auto piter2 = next(piter);
-      assert(piter2 != playInfo.end());
-      assert(piter2->rho == play.lead+1);
-      assert(piter->holding3 == piter2->holding3);
-      assert(piter->strategies.size() == piter2->strategies.size());
-
-cout << piter->str("piter LHO wins");
-cout << piter2->str("piter2 LHO wins");
-cout << endl;
-
-      piter->strategies |= piter2->strategies;
-      playInfo.erase(piter2);
-    }
-    else if (play.rho >= play.lead+3 && play.lho == play.lead-1)
-    {
-      // Find the matching LHO play.
-      auto piter2 = next(piter);
-      while (piter2 != playInfo.end() && 
-          (piter2->rho != play.rho || piter2->lho != play.lead+1))
-        piter2++;
-
-      assert(piter2 != playInfo.end());
-cout << piter->str("piter RHO wins");
-cout << piter2->str("piter2 RHO wins");
-cout << endl;
-      assert(piter->strategies.size() == piter2->strategies.size());
-      assert(piter->holding3 == piter2->holding3);
-
-      piter->strategies |= piter2->strategies;
-      playInfo.erase(piter2);
-    }
-    piter++;
-  }
-
-
-  cout << "Size now " << playInfo.size() << endl;
 
   Plays::removeLaterCollapses();
 
-  Plays::checkTMP("After removeLaterCollapses", playInfo);
+  // Plays::checkTMP("After removeLaterCollapses", playInfo);
 assert(rhoStudyNextIter == rhoStudyNodes.end());
 
 
