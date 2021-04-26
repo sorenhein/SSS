@@ -25,42 +25,6 @@ struct ChunkEntry
   unsigned rho;
 };
 
-// TODO TMP
-
-struct PlayInfo
-{
-  unsigned number;
-
-  SidePosition side;
-  unsigned lead;
-  unsigned lho;
-  unsigned rho;
-  bool leadCollapse;
-  unsigned holding3;
-  unsigned leadNo;
-
-  Tvectors strategies;
-
-  Tvector lower;
-  Tvector upper;
-
-  string str(
-    const string& header,
-    const bool fullFlag = true) const
-  {
-    stringstream ss;
-    ss << header << ": " <<
-      lead << " " << lho << " void " << rho << " " <<
-      setw(6) << holding3 << " (lead no " << leadNo << ")";
-    if (leadCollapse)
-      ss << " collapse lead";
-    ss << "\n";
-    if (fullFlag)
-      ss << strategies.str("Strategy", true);
-    return ss.str() + "\n";
-  };
-};
-
 
 class Plays
 {
@@ -197,15 +161,6 @@ class Plays
       vector<Tvectors>& simpleStrats);
 
     void removeLaterCollapses();
-
-    void printTMP(
-      const string& title,
-      const PlayInfo& pinfo,
-      const RhoStudyNode& play);
-
-    void checkTMP(
-      const string& title,
-      const list<PlayInfo>& playInfo); // TODO Remove
 
     string strHeader() const;
 

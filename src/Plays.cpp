@@ -624,99 +624,6 @@ void Plays::removeLaterCollapses()
 }
 
 
-void Plays::printTMP(
-  const string& title,
-  const PlayInfo& pinfo,
-  const RhoStudyNode& play)
-{
-  cout << title << "\n";
-  cout << "Original:\n";
-  cout << setw(3) << right << pinfo.number << ": " <<
-    setw(2) << pinfo.side << " " << 
-    setw(2) << pinfo.lead << " " << 
-    setw(2) << pinfo.lho << " " << 
-    setw(2) << pinfo.rho << ", " <<
-    setw(2) << pinfo.leadNo << ": " << 
-    setw(3) << pinfo.strategies.size() <<
-    setw(3) << pinfo.strategies.numDists() << endl;
-
-  cout << "New:\n";
-  cout << setw(3) << right << play.playNo << ": " <<
-    setw(2) << play.play->side << " " << 
-    setw(2) << play.play->lead() << " " << 
-    setw(2) << play.play->lho() << " " << 
-    setw(2) << play.play->rho() << ", " <<
-    setw(2) << play.leadNo << ": " << 
-    setw(3) << play.strategies.size() <<
-    setw(3) << play.strategies.numDists() << endl;
-}
-
-
-void Plays::checkTMP(
-  const string& title,
-  const list<PlayInfo>& playInfo)
-{
-  cout << title << "\n\n";
-  auto niter = rhoStudyNodes.begin();
-
-  for (auto& play: playInfo)
-  {
-    const auto& nplay = * (niter->play);
-    if (play.number != niter->playNo)
-    {
-      Plays::printTMP("playNo", play, * niter);
-      assert(false);
-    }
-
-    if (play.side != nplay.side)
-    {
-      Plays::printTMP("side", play, * niter);
-      assert(false);
-    }
-
-    if (play.lead != nplay.lead())
-    {
-      Plays::printTMP("lead", play, * niter);
-      assert(false);
-    }
-
-    if (play.lho != nplay.lho())
-    {
-      Plays::printTMP("lho", play, * niter);
-      assert(false);
-    }
-
-    if (play.rho != nplay.rho())
-    {
-      Plays::printTMP("rho", play, * niter);
-      assert(false);
-    }
-
-    if (play.leadNo != niter->leadNo)
-    {
-      Plays::printTMP("leadNo", play, * niter);
-      assert(false);
-    }
-
-    if (play.strategies.size() != niter->strategies.size())
-    {
-      Plays::printTMP("strat.size", play, * niter);
-      assert(false);
-    }
-
-    if (play.strategies.numDists() != niter->strategies.numDists())
-    {
-      Plays::printTMP("strat.dists", play, * niter);
-      assert(false);
-    }
-
-    niter++;
-  }
-
-  assert(niter == rhoStudyNextIter);
-}
-
-
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Tvectors& strategies,
@@ -755,31 +662,13 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   vector<Bounds> boundsLead(numLeads);
   Plays::studyGlobal(boundsLead, debugFlag);
 
-
-
-  // Plays::checkTMP("After study", playInfo);
-
-  
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
-
   vector<Tvectors> simpleStrats(numLeads);
   Plays::removeConstants(boundsLead, simpleStrats);
 
+  cout << "Size now " << rhoStudyNodes.size() << endl;
   unsigned lno = 0;
-  for (auto s: simpleStrats)
-  {
-    cout << "right after remove, simpleStrats for lead number " << lno << endl;
-    cout << s.str("simpleStrats");
-    lno++;
-  }
-
-  // cout << "Size now " << playInfo.size() << endl;
-
-  // Plays::checkTMP("After removeConstants", playInfo);
-
-
-  lno = 0;
   for (auto s: simpleStrats)
   {
     cout << "simpleStrats for lead number " << lno << endl;
@@ -787,24 +676,20 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     lno++;
   }
 
+  // Some defenses can be removed -- see comment in method.
   Plays::removeDominatedDefenses(boundsLead, simpleStrats);
-
 
   cout << "Size now " << rhoStudyNodes.size() << endl;
   for (unsigned s = 0; s < simpleStrats.size(); s++)
     cout << simpleStrats[s].str("simple " + to_string(s));
 
-  // Plays::checkTMP("After removeDominated", playInfo);
-
-
+  // Declarer should not get too clever about some defensive plays.
   Plays::removeLaterCollapses();
 
-  // Plays::checkTMP("After removeLaterCollapses", playInfo);
 assert(rhoStudyNextIter == rhoStudyNodes.end());
 
 
-  // Combine the plays into an overall strategy.
-
+  // Combine the plays into an overall strategy for each lead.
   vector<Tvectors> leadStrats;
   leadStrats.resize(leadNext);
 
@@ -820,9 +705,11 @@ assert(rhoStudyNextIter == rhoStudyNodes.end());
     cout << leadStrats[node.leadNo].str("Strategy") << "\n";
   }
 
+  // Add back the lead-specific constants.
   for (unsigned l = 0; l < leadStrats.size(); l++)
     leadStrats[l] *= boundsLead[l].constants;
 
+  // Combine the lead strategies into an overall strategy.
   for (auto& ls: leadStrats)
   {
     cout << "Adding " << ls.size() << " to " << strategies.size() << endl;
