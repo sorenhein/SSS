@@ -429,6 +429,7 @@ unsigned Plays::studyRHO(
       cout << studyNode.bounds.str("Play " + to_string(studyNode.playNo));
     }
   }
+assert(rhoStudyNextIter == rhoStudyNodes.end());
 
   return leadNo+1;
 }
@@ -591,7 +592,8 @@ void Plays::removeLaterCollapses()
       // the lead, there may be no matching plays.
       auto iter2 = next(iter);
       while (iter2 != rhoStudyNextIter && 
-          iter2->play->holding3 == h3)
+          iter2->play->holding3 == h3 &&
+          iter2->play->lho() == lhoRank)
       {
         iter->strategies |= iter2->strategies;
         iter2 = rhoStudyNodes.erase(iter2);
@@ -607,7 +609,8 @@ void Plays::removeLaterCollapses()
       while (iter2 != rhoStudyNextIter)
       {
         if (iter2->play->holding3 == h3 &&
-            iter2->play->lho() == lhoRank)
+            iter2->play->lead() == leadRank &&
+            iter2->play->rho() == rhoRank)
         {
           iter->strategies |= iter2->strategies;
           iter2 = rhoStudyNodes.erase(iter2);
@@ -805,6 +808,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
     }
   }
 
+  Plays::checkTMP("After study", playInfo);
+
   
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
@@ -853,6 +858,9 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   cout << "Size now " << playInfo.size() << endl;
 
+  Plays::checkTMP("After removeConstants", playInfo);
+
+
   lno = 0;
   for (auto s: simpleStrats)
   {
@@ -862,6 +870,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   }
 
   Plays::removeDominatedDefenses(boundsLead, simpleStrats);
+
 
   // Let's say the range of outcomes for a given strategy is
   // (min, max) for a given distribution.  Let's also say that
@@ -915,6 +924,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   for (unsigned s = 0; s < simpleStrats.size(); s++)
     cout << simpleStrats[s].str("simple " + to_string(s));
 
+  Plays::checkTMP("After removeDominated", playInfo);
+
   cout << "Complex plays\n\n";
   for (auto& play: playInfo)
   {
@@ -956,8 +967,8 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
       assert(piter->holding3 == piter2->holding3);
       assert(piter->strategies.size() == piter2->strategies.size());
 
-cout << piter->str("piter");
-cout << piter2->str("piter2");
+cout << piter->str("piter LHO wins");
+cout << piter2->str("piter2 LHO wins");
 cout << endl;
 
       piter->strategies |= piter2->strategies;
@@ -972,8 +983,8 @@ cout << endl;
         piter2++;
 
       assert(piter2 != playInfo.end());
-cout << piter->str("piter");
-cout << piter2->str("piter2");
+cout << piter->str("piter RHO wins");
+cout << piter2->str("piter2 RHO wins");
 cout << endl;
       assert(piter->strategies.size() == piter2->strategies.size());
       assert(piter->holding3 == piter2->holding3);
@@ -990,7 +1001,7 @@ cout << endl;
   Plays::removeLaterCollapses();
 
   Plays::checkTMP("After removeLaterCollapses", playInfo);
-
+assert(rhoStudyNextIter == rhoStudyNodes.end());
 
 
   // Combine the plays into an overall strategy.
