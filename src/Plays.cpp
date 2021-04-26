@@ -1000,14 +1000,35 @@ cout << endl;
 
   Plays::removeLaterCollapses();
 
+cout << "HERE0" << endl;
+
   Plays::checkTMP("After removeLaterCollapses", playInfo);
+cout << "HERE1" << endl;
 assert(rhoStudyNextIter == rhoStudyNodes.end());
+cout << "HERE2" << endl;
 
 
   // Combine the plays into an overall strategy.
 
   vector<Tvectors> leadStrats;
   leadStrats.resize(leadNext);
+
+  vector<Tvectors> leadStratsNew;
+  leadStratsNew.resize(leadNext);
+
+  for (auto& node: rhoStudyNodes)
+  // auto iter = rhoStudyNodes.begin();
+  // while (iter != rhoStudyNextIter)
+  // {
+    // auto& node = * iter;
+    leadStratsNew[node.leadNo] *= node.strategies;
+    // iter++;
+  // }
+cout << "HERE3" << endl;
+
+  for (unsigned l = 0; l < leadStrats.size(); l++)
+    leadStratsNew[l] *= boundsLead[l].constants;
+cout << "HERE4" << endl;
 
   for (auto& play: playInfo)
   {
@@ -1028,6 +1049,14 @@ assert(rhoStudyNextIter == rhoStudyNodes.end());
     cout << leadStrats[l].str("Strategy with constants " + to_string(l)) << "\n";
   }
 
+  for (unsigned l = 0; l < leadStrats.size(); l++)
+    assert(leadStrats[l] == leadStratsNew[l]);
+
+  Tvectors stratsNew;
+  stratsNew.reset();
+  for (auto& ls: leadStrats)
+    stratsNew += ls;
+
   strategies.reset();
   for (auto& ls: leadStrats)
   {
@@ -1040,6 +1069,7 @@ assert(rhoStudyNextIter == rhoStudyNodes.end());
 
   cout << "Final size " << strategies.size() << endl;
   
+assert(strategies == stratsNew);
 
   // So now we know for a given lead that certain distributions can
   // be factored out from the individual strategies: Those constants
@@ -1065,8 +1095,9 @@ assert(rhoStudyNextIter == rhoStudyNodes.end());
   
   strategies = playInfo[0].strategies;
   */
-assert(playInfo.size() > 0);
-  strategies = playInfo.front().strategies;
+
+// assert(playInfo.size() > 0);
+  // strategies = playInfo.front().strategies;
 }
 
 
