@@ -1000,12 +1000,8 @@ cout << endl;
 
   Plays::removeLaterCollapses();
 
-cout << "HERE0" << endl;
-
   Plays::checkTMP("After removeLaterCollapses", playInfo);
-cout << "HERE1" << endl;
 assert(rhoStudyNextIter == rhoStudyNodes.end());
-cout << "HERE2" << endl;
 
 
   // Combine the plays into an overall strategy.
@@ -1013,64 +1009,32 @@ cout << "HERE2" << endl;
   vector<Tvectors> leadStrats;
   leadStrats.resize(leadNext);
 
-  vector<Tvectors> leadStratsNew;
-  leadStratsNew.resize(leadNext);
-
   for (auto& node: rhoStudyNodes)
-  // auto iter = rhoStudyNodes.begin();
-  // while (iter != rhoStudyNextIter)
-  // {
-    // auto& node = * iter;
-    leadStratsNew[node.leadNo] *= node.strategies;
-    // iter++;
-  // }
-cout << "HERE3" << endl;
-
-  for (unsigned l = 0; l < leadStrats.size(); l++)
-    leadStratsNew[l] *= boundsLead[l].constants;
-cout << "HERE4" << endl;
-
-  for (auto& play: playInfo)
   {
-    cout << "Multiplying play " << play.number << " for lead " <<
-      play.leadNo << ", size " << leadStrats[play.leadNo].size() << endl;
+    cout << "Multiplying play " << node.playNo << " for lead " <<
+      node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
 
-    leadStrats[play.leadNo] *= play.strategies;
+    leadStrats[node.leadNo] *= node.strategies;
 
-    cout << " Now " << play.number << " for lead " <<
-      play.leadNo << ", size " << leadStrats[play.leadNo].size() << endl;
-    cout << leadStrats[play.leadNo].str("Strategy") << "\n";
+    cout << " Now " << node.playNo << " for lead " <<
+      node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
+    cout << leadStrats[node.leadNo].str("Strategy") << "\n";
   }
 
   for (unsigned l = 0; l < leadStrats.size(); l++)
-  {
-    cout << boundsLead[l].constants.str("constants " + to_string(l));
     leadStrats[l] *= boundsLead[l].constants;
-    cout << leadStrats[l].str("Strategy with constants " + to_string(l)) << "\n";
-  }
 
-  for (unsigned l = 0; l < leadStrats.size(); l++)
-    assert(leadStrats[l] == leadStratsNew[l]);
-
-  Tvectors stratsNew;
-  stratsNew.reset();
-  for (auto& ls: leadStrats)
-    stratsNew += ls;
-
-  strategies.reset();
   for (auto& ls: leadStrats)
   {
     cout << "Adding " << ls.size() << " to " << strategies.size() << endl;
     cout << ls.str("Adding") << "\n";
     strategies += ls;
-    cout << " Now " << strategies.size() << " to " << strategies.size() << endl;
+    cout << " Now " << strategies.size() << endl;
     cout << strategies.str("Added") << "\n";
   }
 
   cout << "Final size " << strategies.size() << endl;
   
-assert(strategies == stratsNew);
-
   // So now we know for a given lead that certain distributions can
   // be factored out from the individual strategies: Those constants
   // that are also minima.
