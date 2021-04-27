@@ -213,9 +213,6 @@ void Plays::setCombPtrs(const Combinations& combinations)
 }
 
 
-#include "const.h"
-
-
 void Plays::strategizeRHO(
   Distribution const * distPtr,
   const bool debugFlag)

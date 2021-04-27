@@ -175,20 +175,20 @@ class Plays
 
     void log(const Play& play);
 
-   void setCombPtrs(const Combinations& combinations);
+    void setCombPtrs(const Combinations& combinations);
 
-   void strategize(
-     const Ranks& ranks,
-     Distribution const * distPtr,
-     Tvectors& strategies,
-     const bool debugFlag = false);
+    void strategize(
+      const Ranks& ranks,
+      Distribution const * distPtr,
+      Tvectors& strategies,
+      const bool debugFlag = false);
 
-   void strategizeVoid(
-     Distribution const * distPtr,
-     Tvectors& strategies,
-     const bool debugFlag = false);
+    void strategizeVoid(
+      Distribution const * distPtr,
+      Tvectors& strategies,
+      const bool debugFlag = false);
 
-   string str() const;
+    string str() const;
 };
 
 #endif
