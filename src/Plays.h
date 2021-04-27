@@ -93,7 +93,6 @@ class Plays
     list<LhoNode>::iterator lhoNextIter;
     list<PardNode>::iterator pardNextIter;
     list<RhoNode>::iterator rhoNextIter;
-    list<RhoStudyNode>::iterator rhoStudyNextIter;
 
     // The plays come through in order, so we don't have to look up
     // the new play completely.  We just have to check how much of the

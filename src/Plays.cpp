@@ -396,7 +396,7 @@ unsigned Plays::studyRHO(
   // TODO Just add them one by one?  Then we don't need NextIter
   //  and we can use end().
   rhoStudyNodes.resize(rhoNext);
-  rhoStudyNextIter = rhoStudyNodes.begin();
+  auto rhoStudyNextIter = rhoStudyNodes.begin();
   for (auto rhoIter = rhoNodes.begin(); 
     rhoIter != rhoNextIter; 
     rhoIter++, rhoStudyNextIter++, playNo++)
@@ -429,7 +429,6 @@ unsigned Plays::studyRHO(
       cout << studyNode.bounds.str("Play " + to_string(studyNode.playNo));
     }
   }
-assert(rhoStudyNextIter == rhoStudyNodes.end());
 
   return leadNo+1;
 }
@@ -441,11 +440,9 @@ void Plays::studyGlobal(
 {
   // Derive global bounds across all plays.
 
-  for (auto iter = rhoStudyNodes.begin(); iter != rhoStudyNextIter; iter++)
+  for (auto& node: rhoStudyNodes)
   {
-    const auto& node = * iter;
     const unsigned leadNo = node.leadNo;
-assert(leadNo < boundsLead.size());
     boundsLead[leadNo].minima *= node.bounds.minima;
     boundsLead[leadNo].maxima *= node.bounds.maxima;
     boundsLead[leadNo].constants *= node.bounds.constants;
@@ -496,7 +493,7 @@ void Plays::removeConstants(
   // it and put in a special simple set of strategies.
 
   auto iter = rhoStudyNodes.begin();
-  while (iter != rhoStudyNextIter)
+  while (iter != rhoStudyNodes.end())
   {
     auto& node = * iter;
     const unsigned leadNo = node.leadNo;
@@ -525,7 +522,7 @@ void Plays::removeDominatedDefenses(
   // with that distribution, so it can be removed from their options.
 
   auto iter = rhoStudyNodes.begin();
-  while (iter != rhoStudyNextIter)
+  while (iter != rhoStudyNodes.end())
   {
     auto& node = * iter;
 
@@ -561,7 +558,7 @@ void Plays::removeLaterCollapses()
   // the defense can create without a real difference.
 
   auto iter = rhoStudyNodes.begin();
-  while (iter != rhoStudyNextIter)
+  while (iter != rhoStudyNodes.end())
   {
     auto& node = * iter;
 
@@ -591,7 +588,7 @@ void Plays::removeLaterCollapses()
       // be the only defenders' card that is exactly one rank above
       // the lead, there may be no matching plays.
       auto iter2 = next(iter);
-      while (iter2 != rhoStudyNextIter && 
+      while (iter2 != rhoStudyNodes.end() && 
           iter2->playPtr->holding3 == h3 &&
           iter2->playPtr->lho() == lhoRank)
       {
@@ -606,7 +603,7 @@ void Plays::removeLaterCollapses()
       // Find matching LHO plays.  Unlike above, they will not be
       // in order following the current play.
       auto iter2 = next(iter);
-      while (iter2 != rhoStudyNextIter)
+      while (iter2 != rhoStudyNodes.end())
       {
         if (iter2->playPtr->holding3 == h3 &&
             iter2->playPtr->lead() == leadRank &&
@@ -685,9 +682,6 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   // Declarer should not get too clever about some defensive plays.
   Plays::removeLaterCollapses();
-
-assert(rhoStudyNextIter == rhoStudyNodes.end());
-
 
   // Combine the plays into an overall strategy for each lead.
   vector<Tvectors> leadStrats;

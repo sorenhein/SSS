@@ -1,24 +1,24 @@
-2021-04-11
+2021-04-26
 
-In Ranks, log plays into a struct that is passed directly to Plays.
+Plays:
+- rhoStudyNextIter: Can't we just always use .end()?
+- Loop over list where possible, no iter
+- Check rank vs number used appropriately (I think it is)
+- Comment on upper, maximum etc. (done?)
+- Global constants, only add after += of lead strategies?
+- Log Plays in Ranks directly into a given struct
 
-Plays to use number() not rank() always?
+Tvectors etc.:
+- Rename to Strategies, Strategy
+- Check rank vs number used appropriately (I think it isn't)
 
-Rename Tvectors Strategies, Tvector Strategy
+Player:
+- Streamline the Player post-processing into a single call. (done?)
+- Streamline Player variables and name them temp loop variables. (done?)
 
-Loop over processLeadCollapses(): Once this is sanitized, I think 
-we don't need PlayInfo anymore.
-
-Not sure upper/maximum is doing much.
-Comment that maximum is the lowest upper.
-Do we check anywhere that constants are == the lowest possible outcome?
-Are we getting constants or simple plays back into strategies
-correctly and efficiently?
-Are there constants that are global across all leads and therefore
-only have to be added at the very end?
-
-4 cards / 8, AK / - (missing HH): The printed ranks in Play #2 are odd.
-
+Errors:
+- 4 cards / 8, AK / - (missing HH): The printed ranks in Play #2 are odd.
+- Sometimes no ranks at all, e.g. the 9-card void combination.
 
 Divide Ranks optimizations into those that always make sense, and
 those that only make sense when we don't care about winners.
@@ -27,12 +27,6 @@ Can maybe parametrize Player by full/rank-only loop.  Only needed
 for North and South.
 
 Can maybe parametrize the Ranks optimizations in the same way.
-
-Streamline the Player post-processing into a single call.
-
-Streamline Player variables and name them temporary loop variables.
-
-Break up struct.h, make a Survivors.h (class? protect data?)
 
 
 
