@@ -161,8 +161,6 @@ class Plays
 
     void removeLaterCollapses();
 
-    string strHeader() const;
-
   public:
     
     Plays();

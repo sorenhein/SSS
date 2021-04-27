@@ -115,14 +115,12 @@ string Play::strLine() const
 {
   stringstream ss;
 
-  // TODO Could switch to card names!
-
   ss << right <<
     setw(4) << (side == SIDE_NORTH ? "N" : "S") <<
-    setw(5) << leadPtr->getRank() <<
-    setw(5) << (lhoPtr->isVoid() ? "-" : to_string(lhoPtr->getRank())) <<
-    setw(5) << (pardPtr->isVoid() ? "-" : to_string(pardPtr->getRank())) <<
-    setw(5) << (rhoPtr->isVoid() ? "-" : to_string(rhoPtr->getRank())) <<
+    setw(5) << leadPtr->getName() <<
+    setw(5) << lhoPtr->getName() <<
+    setw(5) << pardPtr->getName() <<
+    setw(5) << rhoPtr->getName() <<
     setw(5) << (trickNS == 1 ? "+" : "") <<
     setw(5) << (lhoPtr->isVoid() ? "yes" : "") <<
     setw(5) << (rhoPtr->isVoid() ? "yes" : "") <<

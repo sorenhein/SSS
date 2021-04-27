@@ -66,6 +66,10 @@ struct Play
   Card const * southTranslate(const unsigned number) const;
 
   string strTrick(const unsigned number) const;
+
+  string strHeader() const;
+
+  string strLine() const;
 };
 
 #endif

@@ -745,51 +745,18 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 }
 
 
-// TODO Move these two to Play
-string Plays::strHeader() const
-{
-  stringstream ss;
-  ss << right <<
-    setw(4) << "Side" <<
-    setw(5) << "Lead" <<
-    setw(5) << "LHO" <<
-    setw(5) << "Pard" <<
-    setw(5) << "RHO" <<
-    setw(5) << "Win?" <<
-    setw(5) << "W vd" <<
-    setw(5) << "E vd" <<
-    setw(10) << "Holding" <<
-    endl;
-  return ss.str();
-}
-
-
 string Plays::str() const
 {
   stringstream ss;
-  ss << Plays::strHeader();
 
-  // for (unsigned rno = 0; rno < rhoNext; rno++)
+  assert(rhoNodes.begin() != rhoNextIter); // Later ! empty()
+
+  ss << rhoNodes.front().play.strHeader();
+
+  // Later for (auto& node: rhoNodes)
   for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
-  {
-    // const auto& rhoNode = rhoNodes[rno];
-    const auto& rhoNode = * rhoIter;
-    PardNode const * pardPtr = rhoNode.pardPtr;
-    LhoNode const * lhoPtr = pardPtr->lhoPtr;
-    LeadNode const * leadPtr = lhoPtr->leadPtr;
+    ss << rhoIter->play.strLine();
 
-    ss << right <<
-      setw(4) << (leadPtr->side == SIDE_NORTH ? "N" : "S") <<
-      setw(5) << leadPtr->lead <<
-      setw(5) << (lhoPtr->lho == 0 ? "-" : to_string(lhoPtr->lho)) <<
-      setw(5) << (pardPtr->pard == 0 ? "-" : to_string(pardPtr->pard)) <<
-      setw(5) << (rhoNode.play.rho() == 0 ? "-" : to_string(rhoNode.play.rho())) <<
-      setw(5) << (rhoNode.play.trickNS == 1 ? "+" : "") <<
-      setw(5) << (lhoPtr->lho == 0 ? "yes" : "") <<
-      setw(5) << (rhoNode.play.rho() == 0 ? "yes" : "") <<
-      setw(10) << rhoNode.play.holding3 <<
-      endl;
-  }
   return ss.str();
 }
 
