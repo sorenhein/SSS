@@ -97,7 +97,7 @@ void Nodes::resize(
 
 Node * Nodes::log(
   Node * parentPtr,
-  Play const * playPtr,
+  Play * playPtr,
   bool& newFlag)
 {
   // If the play doesn't differ in the relevant cards, no change.

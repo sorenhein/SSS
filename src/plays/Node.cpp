@@ -31,11 +31,17 @@ void Node::reset()
 
 void Node::set(
   Node * parentPtrIn,
-  Play const * playPtrIn)
+  Play * playPtrIn)
 {
   parentPtr = parentPtrIn;
   playPtr = playPtrIn;
   strats.reset();
+}
+
+
+void Node::setCombPtr(const Combinations& combinations)
+{
+  playPtr->setCombPtr(combinations);
 }
 
 

@@ -11,6 +11,7 @@
 
 using namespace std;
 
+class Combinations;
 class Combination;
 class Card;
 
@@ -61,6 +62,8 @@ struct Play
   unsigned lho(const bool fullFlag = false) const;
   unsigned pard(const bool fullFlag = false) const;
   unsigned rho(const bool fullFlag = false) const;
+
+  void setCombPtr(const Combinations& combinations);
 
   Card const * northTranslate(const unsigned number) const;
   Card const * southTranslate(const unsigned number) const;

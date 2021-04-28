@@ -53,7 +53,7 @@ class Nodes
 
     Node * log(
       Node * parentPtr,
-      Play const * playPtr,
+      Play * playPtr,
       bool& newFlag);
 
     list<Node>::iterator begin();

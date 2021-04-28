@@ -5,6 +5,8 @@
 
 #include "Play.h"
 
+#include "../Combinations.h"
+
 #include "../strategies/Card.h"
 
 
@@ -41,6 +43,12 @@ unsigned Play::rho(const bool fullFlag) const
     return rhoPtr->getNumber();
   else
     return rhoPtr->getRank(); 
+}
+
+
+void Play::setCombPtr(const Combinations& combinations)
+{
+  combPtr = combinations.getPtr(cardsLeft, holding3);
 }
 
 

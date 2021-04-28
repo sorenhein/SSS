@@ -227,7 +227,7 @@ void Plays::log(const Play& play)
 
   // The new way.  TODO In chunks, too.
   plays.push_back(play); 
-  const Play& playLogged = plays.back();
+  Play& playLogged = plays.back();
 
   bool newFlag2 = false;
   Node * leadNodePtr = nodesLead.log(&nodeMaster, &playLogged, newFlag2);
@@ -273,6 +273,9 @@ void Plays::setCombPtrs(const Combinations& combinations)
   for (auto& rhoNode: rhoNodes)
     rhoNode.play.combPtr = 
       combinations.getPtr(rhoNode.play.cardsLeft, rhoNode.play.holding3);
+  
+  for (auto& nodeRho: nodesRho)
+    nodeRho.setCombPtr(combinations);
 }
 
 
@@ -316,7 +319,6 @@ void Plays::strategizeRHO(
   }
 
 
-/*
   rno = 0;
   for (auto& nodeRho: nodesRho)
   {
@@ -332,7 +334,6 @@ void Plays::strategizeRHO(
     
     rno++;
   }
-*/
 }
 
 
@@ -361,8 +362,8 @@ void Plays::strategizePard(const bool debugFlag)
 
 
   // Add to the corresponding LHO node.
-  // for (auto& nodePard: nodesPard)
-    // nodePard.add(LEVEL_PARD, debugFlag);
+  for (auto& nodePard: nodesPard)
+    nodePard.add(LEVEL_PARD, debugFlag);
 }
 
 
@@ -391,8 +392,8 @@ void Plays::strategizeLHO(const bool debugFlag)
 
 
   // Combine it with the corresponding lead node by cross product.
-  // for (auto& nodeLho: nodesLho)
-    // nodeLho.cross(LEVEL_LHO, debugFlag);
+  for (auto& nodeLho: nodesLho)
+    nodeLho.cross(LEVEL_LHO, debugFlag);
 }
 
 
@@ -426,8 +427,8 @@ void Plays::strategizeLead(
   nodeMaster.reset();
   
   // Add up the lead strategies into an overall one.
-  // for (auto& nodeLead: nodesLead)
-    // nodeLead.add(LEVEL_LEAD, debugFlag);
+  for (auto& nodeLead: nodesLead)
+    nodeLead.add(LEVEL_LEAD, debugFlag);
 }
 
 
@@ -468,11 +469,6 @@ void Plays::strategize(
   // TODO If play is passed to Ranks, then this output will have
   // to be at the end of the method.
   cout << "Node counts:" << endl;
-  // cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
-  // cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
-  // cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
-  // cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
-
   cout << nodesRho.strCount();
   cout << nodesPard.strCount();
   cout << nodesLho.strCount();

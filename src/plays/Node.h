@@ -12,6 +12,7 @@
 using namespace std;
 
 class Distribution;
+class Combinations;
 struct Play;
 
 
@@ -24,7 +25,7 @@ class Node
 
     Node * parentPtr;
 
-    Play const * playPtr;
+    Play * playPtr;
 
     Strategies strats;
 
@@ -38,7 +39,9 @@ class Node
 
     void set(
       Node * parentPtr,
-      Play const * playPtr);
+      Play * playPtr);
+
+    void setCombPtr(const Combinations& combinations);
 
     void getStrategies(
       const Distribution& dist,
