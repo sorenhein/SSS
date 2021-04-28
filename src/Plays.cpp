@@ -233,7 +233,7 @@ void Plays::strategizeRHO(
   Distribution const * distPtr,
   const bool debugFlag)
 {
-  Tvectors tvs;
+  Strategies tvs;
   unsigned rno = 0;
 
   for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
@@ -321,7 +321,7 @@ void Plays::strategizeLHO(const bool debugFlag)
 
 
 void Plays::strategizeLead(
-  Tvectors& strategies,
+  Strategies& strategies,
   const bool debugFlag)
 {
   strategies.reset();
@@ -351,7 +351,7 @@ void Plays::strategizeLead(
 void Plays::strategize(
   const Ranks& ranks,
   Distribution const * distPtr,
-  Tvectors& strategies,
+  Strategies& strategies,
   bool debugFlag)
 {
   // TODO
@@ -478,8 +478,8 @@ void Plays::studyGlobal(
 
 
 bool Plays::removePlay(
-  const Tvectors& strategies,
-  Tvectors& simpleStrat) const
+  const Strategies& strategies,
+  Strategies& simpleStrat) const
 {
   if (strategies.numDists() == 0)
     return true;
@@ -498,7 +498,7 @@ bool Plays::removePlay(
 
 void Plays::removeConstants(
   const vector<Bounds>& boundsLead,
-  vector<Tvectors>& simpleStrats)
+  vector<Strategies>& simpleStrats)
 {
   // Remove constant distributions (for a given lead) from each 
   // play with that lead.  If a play strategy melts away completely,
@@ -526,7 +526,7 @@ void Plays::removeConstants(
 
 void Plays::removeDominatedDefenses(
   const vector<Bounds>& boundsLead,
-  vector<Tvectors>& simpleStrats)
+  vector<Strategies>& simpleStrats)
 {
   // For a given lead and a given distribution, let's say the range of 
   // outcomes for a given defensive strategy is (min, max).  Let's also 
@@ -636,7 +636,7 @@ void Plays::removeLaterCollapses()
 
 void Plays::strategizeVoid(
   Distribution const * distPtr,
-  Tvectors& strategies,
+  Strategies& strategies,
   const bool debugFlag)
 {
   // The normal strategize() method also works for combinations
@@ -674,7 +674,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
-  vector<Tvectors> simpleStrats(numLeads);
+  vector<Strategies> simpleStrats(numLeads);
   Plays::removeConstants(boundsLead, simpleStrats);
 
   cout << "Size now " << rhoStudyNodes.size() << endl;
@@ -697,7 +697,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
   Plays::removeLaterCollapses();
 
   // Combine the plays into an overall strategy for each lead.
-  vector<Tvectors> leadStrats;
+  vector<Strategies> leadStrats;
   leadStrats.resize(leadNext);
 
   for (auto& node: rhoStudyNodes)
@@ -734,7 +734,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   // Manual combinations.
   /*
-  Tvectors tvs = playInfo[0].strategies;
+  Strategies tvs = playInfo[0].strategies;
   tvs *= playInfo[1].strategies;
   cout << tvs.str("Strategy 0 + 1") << "\n";
 

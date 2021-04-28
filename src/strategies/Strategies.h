@@ -1,5 +1,5 @@
-#ifndef SSS_TVECTORS_H
-#define SSS_TVECTORS_H
+#ifndef SSS_STRATEGIES_H
+#define SSS_STRATEGIES_H
 
 // These vectors represent partial declarer strategies, so they
 // always have the same lengths and distribution numbers.
@@ -41,7 +41,7 @@ struct Bounds
 };
 
 
-class Tvectors
+class Strategies
 {
   private:
 
@@ -58,9 +58,9 @@ class Tvectors
 
   public:
 
-    Tvectors();
+    Strategies();
 
-    ~Tvectors();
+    ~Strategies();
 
     void reset();
 
@@ -68,16 +68,16 @@ class Tvectors
       const TrickEntry& trivialEntry,
       const unsigned len);
 
-    bool operator == (const Tvectors& tvs);
+    bool operator == (const Strategies& tvs);
 
     void operator +=(const Tvector& tv);
 
-    void operator +=(const Tvectors& tvs);
+    void operator +=(const Strategies& tvs);
 
-    void operator *=(const Tvectors& tvs);
+    void operator *=(const Strategies& tvs);
     void operator *=(const Tvector& tv);
 
-    void operator |=(const Tvectors& tvs);
+    void operator |=(const Strategies& tvs);
 
     unsigned size() const;
     unsigned numDists() const;

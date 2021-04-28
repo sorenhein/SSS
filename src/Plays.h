@@ -5,7 +5,7 @@
 #include <string>
 
 #include "strategies/Card.h"
-#include "strategies/Tvectors.h"
+#include "strategies/Strategies.h"
 #include "Play.h"
 #include "const.h"
 
@@ -35,7 +35,7 @@ class Plays
       SidePosition side;
       unsigned lead;
 
-      Tvectors strategies;
+      Strategies strategies;
     };
 
     struct LhoNode
@@ -44,7 +44,7 @@ class Plays
 
       LeadNode * leadPtr;
 
-      Tvectors strategies;
+      Strategies strategies;
     };
 
     struct PardNode
@@ -53,7 +53,7 @@ class Plays
 
       LhoNode * lhoPtr;
 
-      Tvectors strategies;
+      Strategies strategies;
     };
 
     struct RhoNode
@@ -70,7 +70,7 @@ class Plays
       unsigned playNo;
       unsigned leadNo;
 
-      Tvectors strategies;
+      Strategies strategies;
 
       // Distribution-wise statistics across all strategies in the play.
       Bounds bounds;
@@ -136,7 +136,7 @@ class Plays
     void strategizeLHO(const bool debugFlag);
 
     void strategizeLead(
-      Tvectors& strategies,
+      Strategies& strategies,
       const bool debugFlag);
 
     unsigned studyRHO(
@@ -148,16 +148,16 @@ class Plays
       const bool debugFlag);
 
     bool removePlay(
-      const Tvectors& strategies,
-      Tvectors& simpleStrat) const;
+      const Strategies& strategies,
+      Strategies& simpleStrat) const;
 
     void removeConstants(
       const vector<Bounds>& boundsLead,
-      vector<Tvectors>& simpleStrats);
+      vector<Strategies>& simpleStrats);
 
     void removeDominatedDefenses(
       const vector<Bounds>& boundsLead,
-      vector<Tvectors>& simpleStrats);
+      vector<Strategies>& simpleStrats);
 
     void removeLaterCollapses();
 
@@ -180,12 +180,12 @@ class Plays
     void strategize(
       const Ranks& ranks,
       Distribution const * distPtr,
-      Tvectors& strategies,
+      Strategies& strategies,
       const bool debugFlag = false);
 
     void strategizeVoid(
       Distribution const * distPtr,
-      Tvectors& strategies,
+      Strategies& strategies,
       const bool debugFlag = false);
 
     string str() const;

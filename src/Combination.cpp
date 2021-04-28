@@ -32,7 +32,7 @@ void Combination::reset()
 }
 
 
-const Tvectors& Combination::strategize(
+const Strategies& Combination::strategize(
   const CombEntry& centry,
   const Combinations& combinations,
   const Distributions& distributions,
@@ -103,7 +103,7 @@ if (debugFlag)
 }
 
 
-const Tvectors& Combination::strategizeVoid(
+const Strategies& Combination::strategizeVoid(
   const CombEntry& centry,
   const Combinations& combinations,
   const Distributions& distributions,
@@ -160,7 +160,7 @@ if (debugFlag)
 }
 
 
-const Tvectors& Combination::strategies() const
+const Strategies& Combination::strategies() const
 {
   return strats;
 }

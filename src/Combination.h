@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "strategies/Tvectors.h"
+#include "strategies/Strategies.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ class Combination
 
     Distribution const * distPtr;
 
-    Tvectors strats;
+    Strategies strats;
 
 
   public:
@@ -32,7 +32,7 @@ class Combination
 
     void reset();
 
-    const Tvectors& strategize(
+    const Strategies& strategize(
       const CombEntry& centry,
       const Combinations& combinations,
       const Distributions& distributions,
@@ -40,7 +40,7 @@ class Combination
       Plays& plays,
       bool debugFlag = false);
 
-    const Tvectors& strategizeVoid(
+    const Strategies& strategizeVoid(
       const CombEntry& centry,
       const Combinations& combinations,
       const Distributions& distributions,
@@ -48,7 +48,7 @@ class Combination
       Plays& plays,
       bool debugFlag = false);
 
-    const Tvectors& strategies() const;
+    const Strategies& strategies() const;
 
     string str() const;
 

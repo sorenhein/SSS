@@ -2,44 +2,44 @@
 #include <iomanip>
 #include <sstream>
 
-#include "Tvectors.h"
+#include "Strategies.h"
 #include "../Play.h"
 #include "../Survivor.h"
 
 
-Tvectors::Tvectors()
+Strategies::Strategies()
 {
-  Tvectors::reset();
+  Strategies::reset();
 }
 
 
-Tvectors::~Tvectors()
+Strategies::~Strategies()
 {
 }
 
 
-void Tvectors::reset()
+void Strategies::reset()
 {
   results.clear();
 }
 
 
-void Tvectors::setTrivial(
+void Strategies::setTrivial(
   const TrickEntry& trivialEntry,
   const unsigned len)
 {
   Tvector tv;
   tv.logTrivial(trivialEntry, len);
 
-  Tvectors::reset();
+  Strategies::reset();
   results.push_back(tv);
 }
 
 
-bool Tvectors::operator ==(const Tvectors& tvs)
+bool Strategies::operator ==(const Strategies& tvs)
 {
   // TODO This assumes the same ordering, but it's a start.
-  if (Tvectors::size() != tvs.size())
+  if (Strategies::size() != tvs.size())
     return false;
 
   auto iter2 = tvs.results.begin();
@@ -54,7 +54,7 @@ bool Tvectors::operator ==(const Tvectors& tvs)
 }
 
 
-void Tvectors::operator +=(const Tvector& tv)
+void Strategies::operator +=(const Tvector& tv)
 {
   // The results list is in descending order of weights.
   // The new Tvector dominates everything with a lower weight and
@@ -94,14 +94,14 @@ void Tvectors::operator +=(const Tvector& tv)
 }
 
 
-void Tvectors::operator +=(const Tvectors& tvs)
+void Strategies::operator +=(const Strategies& tvs)
 {
   for (auto& tv: tvs.results)
     * this += tv;
 }
 
 
-void Tvectors::operator *=(const Tvectors& tvs2)
+void Strategies::operator *=(const Strategies& tvs2)
 {
   const unsigned len2 = tvs2.results.size();
   if (len2 == 0)
@@ -140,7 +140,7 @@ void Tvectors::operator *=(const Tvectors& tvs2)
 }
 
 
-void Tvectors::operator *=(const Tvector& tv2)
+void Strategies::operator *=(const Tvector& tv2)
 {
   if (results.size() == 0)
     * this += tv2;
@@ -152,7 +152,7 @@ void Tvectors::operator *=(const Tvector& tv2)
 }
 
 
-void Tvectors::operator |=(const Tvectors& tvs2)
+void Strategies::operator |=(const Strategies& tvs2)
 {
   // Vector-wise combination.
   assert(results.size() == tvs2.results.size());
@@ -169,13 +169,13 @@ void Tvectors::operator |=(const Tvectors& tvs2)
 }
 
 
-unsigned Tvectors::size() const
+unsigned Strategies::size() const
 {
   return results.size();
 }
 
 
-unsigned Tvectors::numDists() const
+unsigned Strategies::numDists() const
 {
   if (results.empty())
     return 0;
@@ -184,7 +184,7 @@ unsigned Tvectors::numDists() const
 }
 
 
-void Tvectors::collapseOnVoid()
+void Strategies::collapseOnVoid()
 {
   assert(results.size() > 0);
   if (results.size() == 1)
@@ -211,13 +211,13 @@ void Tvectors::collapseOnVoid()
 }
 
 
-void Tvectors::bound(
+void Strategies::bound(
   Tvector& constants,
   Tvector& lower,
   Tvector& upper) const
 {
-  // Calculate Tvector values to summarize this Tvectors.
-  // constants is the set of constant strategies.  Other Tvectors
+  // Calculate Tvector values to summarize this Strategies.
+  // constants is the set of constant strategies.  Other Strategies
   // may have other constant values, or non-constant ones, that
   // may be lower or higher than this results.  There are only
   // entries for those distributions that have constant tricks.
@@ -238,10 +238,10 @@ void Tvectors::bound(
 }
 
 
-void Tvectors::bound(Bounds& bounds) const
+void Strategies::bound(Bounds& bounds) const
 {
-  // Calculate Tvector values to summarize this Tvectors.
-  // constants is the set of constant strategies.  Other Tvectors
+  // Calculate Tvector values to summarize this Strategies.
+  // constants is the set of constant strategies.  Other Strategies
   // may have other constant values, or non-constant ones, that
   // may be lower or higher than this results.  There are only
   // entries for those distributions that have constant tricks.
@@ -264,12 +264,12 @@ void Tvectors::bound(Bounds& bounds) const
 }
 
 
-unsigned Tvectors::purge(const Tvector& constants)
+unsigned Strategies::purge(const Tvector& constants)
 {
   // TODO Can perhaps be done inline.
   // Returns number of distributions purged.
   auto oldResults = results;
-  Tvectors::reset();
+  Strategies::reset();
   unsigned num = 0;
 
   for (auto& result: oldResults)
@@ -281,7 +281,7 @@ unsigned Tvectors::purge(const Tvector& constants)
 }
 
 
-void Tvectors::adapt(
+void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
@@ -289,11 +289,11 @@ void Tvectors::adapt(
     tv.adapt(play, survivors);
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
-    Tvectors::collapseOnVoid();
+    Strategies::collapseOnVoid();
 }
 
 
-string Tvectors::strHeader(
+string Strategies::strHeader(
   const string& title,
   const bool rankFlag) const
 {
@@ -315,7 +315,7 @@ string Tvectors::strHeader(
 }
 
 
-string Tvectors::strWeights(const bool rankFlag) const
+string Strategies::strWeights(const bool rankFlag) const
 {
   stringstream ss;
 
@@ -328,7 +328,7 @@ string Tvectors::strWeights(const bool rankFlag) const
 }
 
 
-string Tvectors::str(
+string Strategies::str(
   const string& title,
   const bool rankFlag) const
 {
@@ -336,7 +336,7 @@ string Tvectors::str(
     return "";
 
   stringstream ss;
-  ss << Tvectors::strHeader(title, rankFlag);
+  ss << Strategies::strHeader(title, rankFlag);
 
   // Make a list of iterators -- one per Tvector.
   list<list<TrickEntry>::const_iterator> iters, itersEnd;
@@ -360,7 +360,7 @@ string Tvectors::str(
     ss << "\n";
   }
 
-  ss << Tvectors::strWeights(rankFlag);
+  ss << Strategies::strWeights(rankFlag);
 
   return ss.str();
 }

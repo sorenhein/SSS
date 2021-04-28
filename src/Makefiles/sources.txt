@@ -1,27 +1,27 @@
-SOURCE_FILES    =                       \
-                driver.cpp              \
-                Play.cpp                \
-                Plays.cpp               \
-                Combination.cpp         \
-                Combinations.cpp        \
-                Distribution.cpp        \
-                Distributions.cpp       \
-                                        \
-                inputs/Convert.cpp      \
-                inputs/Control.cpp      \
-                inputs/Entity.cpp       \
-                inputs/parse.cpp        \
-                                        \
-                ranks/Ranks.cpp         \
-                ranks/Player.cpp        \
-                ranks/Declarer.cpp      \
-                ranks/Opponents.cpp     \
-                                        \
-                strategies/Card.cpp     \
-                strategies/Subwinner.cpp \
-                strategies/Tvector.cpp  \
-                strategies/Tvectors.cpp \
-                strategies/Winner.cpp   \
-                                        \
-                stats/Timer.cpp         \
+SOURCE_FILES    =                         \
+                driver.cpp                \
+                Play.cpp                  \
+                Plays.cpp                 \
+                Combination.cpp           \
+                Combinations.cpp          \
+                Distribution.cpp          \
+                Distributions.cpp         \
+                                          \
+                inputs/Convert.cpp        \
+                inputs/Control.cpp        \
+                inputs/Entity.cpp         \
+                inputs/parse.cpp          \
+                                          \
+                ranks/Ranks.cpp           \
+                ranks/Player.cpp          \
+                ranks/Declarer.cpp        \
+                ranks/Opponents.cpp       \
+                                          \
+                strategies/Card.cpp       \
+                strategies/Subwinner.cpp  \
+                strategies/Tvector.cpp    \
+                strategies/Strategies.cpp \
+                strategies/Winner.cpp     \
+                                          \
+                stats/Timer.cpp           \
                 stats/Timers.cpp

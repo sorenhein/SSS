@@ -209,7 +209,7 @@ void Tvector::bound(
   Tvector& upper) const
 {
   // Each of the three vectors is a running collection of TrickEntry
-  // elements summarizing the distributions (in a parent Tvectors).
+  // elements summarizing the distributions (in a parent Strategies).
   // - constants is the constant results.  If tricks deviate,
   //   the corresponding distribution is removed below.
   // - lower is the lowest trick value for the distribution.
@@ -273,7 +273,7 @@ void Tvector::bound(
 void Tvector::constrict(Tvector& constants) const
 {
   // The constants vector is a running collection of TrickEntry
-  // elements for those distributions (in a Tvectors) that have
+  // elements for those distributions (in a Strategies) that have
   // constant results.  If the result of this current Tvector
   // differs from constants for a given distribution, that 
   // distribution is removed from constants.
