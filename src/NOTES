@@ -1,13 +1,34 @@
+2021-04-28
+----------
+- Plays
+  - plays in chunks, too
+  - possibly add a playNo to each Node.  It only really makes sense
+    for RHO, as the others get overwritten.
+  - possibly add an orderNo which is the order (within lead, LHO etc.)
+    similar to leadNo in RhoStudyNode. Mainly useful for debugging.
+  - Add a Debug.h with bits for levels of debugging.
+  - Make a Plays method strNodeCounts().
+  - If we kept Combination::strats in a nodeMaster, we could pass this
+    to Plays and then not copy strats in strategize.
+  - Maybe RhoStudyNode is a derived class of Node which includes Bounds.
+    May also be useful with no pard void.
+  - How would it work with bounds in the non-void case?  Then the
+    constants would have to be per pard and not per lead
+  - Would it be faster than the non-bound approach?  Or only from
+    a certain problem size?
+  - That limit might depend on how fast Strategies are.  So maybe we
+    should optimize these before fixing the limits finally
+  - Statistics on #strategies, partly to make sure I'm not breaking anything
+  - Can the loop in studyRHO become a for (auto : nodesRho)?
+  - Check that number (not rank) is used appropriately
+  - Completely global constant results: Separate out, too?
+  - Log Play in Ranks directly into target data structure
+
+- Ranks
+  - number to start from 1 when non-void, not 0
+
+
 2021-04-26
-
-Plays:
-- Loop over list where possible, no iter
-- Check rank vs number used appropriately (I think it is)
-- Comment on upper, maximum etc. (done?)
-- Global constants, only add after += of lead strategies?
-- Log Plays in Ranks directly into a given struct
-
-To hook up Nodes, we also need a list<Play> plays; in Plays.
 
 Tvectors etc.:
 - Check rank vs number used appropriately (I think it isn't)

@@ -4,29 +4,18 @@
 #include <vector>
 #include <string>
 
-#include "../strategies/Card.h"
-#include "../strategies/Strategies.h"
-
 #include "Play.h"
 #include "Nodes.h"
+
+#include "../strategies/Strategies.h"
 
 #include "../const.h"
 
 using namespace std;
 
 class Combinations;
-class Combination;
 class Distribution;
 class Ranks;
-
-
-struct ChunkEntry
-{
-  unsigned lead;
-  unsigned lho;
-  unsigned pard;
-  unsigned rho;
-};
 
 
 class Plays
@@ -47,13 +36,16 @@ class Plays
 
     unsigned cards;
 
-    list<RhoStudyNode> rhoStudyNodes;
-
-    ChunkEntry chunk;
-
     list<Play> plays;
-    Nodes nodesRho, nodesPard, nodesLho, nodesLead;
+
+    Nodes nodesLead;
+    Nodes nodesLho;
+    Nodes nodesPard;
+    Nodes nodesRho;
     Node nodeMaster;
+
+    // For voids.
+    list<RhoStudyNode> rhoStudyNodes;
 
 
     void strategizeRHO(
