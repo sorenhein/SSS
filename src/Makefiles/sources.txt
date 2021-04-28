@@ -15,8 +15,9 @@ SOURCE_FILES    =                         \
                 ranks/Declarer.cpp        \
                 ranks/Opponents.cpp       \
                                           \
-                plays/Play.cpp            \
                 plays/Plays.cpp           \
+                plays/Play.cpp            \
+                plays/Nodes.cpp           \
                 plays/Node.cpp            \
                                           \
                 strategies/Strategies.cpp \

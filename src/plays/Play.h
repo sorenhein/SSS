@@ -65,6 +65,10 @@ struct Play
   Card const * northTranslate(const unsigned number) const;
   Card const * southTranslate(const unsigned number) const;
 
+  bool samePartial(
+    const Play& play2,
+    const Level level) const;
+
   string strPartialTrick(const Level level) const;
 
   string strTrick(const unsigned number) const;

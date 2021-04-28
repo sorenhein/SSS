@@ -35,6 +35,10 @@ class Node
 
     void reset();
 
+    void set(
+      Node * parentPtr,
+      Play const * playPtr);
+
     void operator *=(const Strategies strat2);
 
     string strPlay(const Level level) const;

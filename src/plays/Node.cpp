@@ -27,6 +27,16 @@ void Node::reset()
 }
 
 
+void Node::set(
+  Node * parentPtrIn,
+  Play const * playPtrIn)
+{
+  parentPtr = parentPtrIn;
+  playPtr = playPtrIn;
+  strategies.reset();
+}
+
+
 void Node::operator *=(const Strategies strat2)
 {
   strategies *= strat2;

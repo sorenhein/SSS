@@ -7,30 +7,7 @@ Plays:
 - Global constants, only add after += of lead strategies?
 - Log Plays in Ranks directly into a given struct
 
-struct Nodes
-{
-  Level level;
-  list<Node> nodes;
-  list<Node>::iterator nextIter;
-  Node const * prevPtr;
-  unsigned prevPlayPtr;
-  unsigned nextEntryNumber;
-  unsigned chunkSize;
-
-  void setChunkSize(unsigned csize)
-
-  our own begin() and end() methods
-  Also owns the growing of the list (hidden from the outside)
-
-  Play needs a method to test equality with a new play at a level.
-  If LEAD, then compare side AND lead.  If LHO, compare LHO, etc.
-
-  Then the logLead, logLho and logPard methods grow together.
-};
-
-Nodes leadNodes, lhoNodes, pardNodes;
-
-
+To hook up Nodes, we also need a list<Play> plays; in Plays.
 
 Tvectors etc.:
 - Check rank vs number used appropriately (I think it isn't)

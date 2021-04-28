@@ -77,6 +77,26 @@ Card const * Play::southTranslate(const unsigned number) const
 }
 
 
+bool Play::samePartial(
+  const Play& play2,
+  const Level level) const
+{
+  if (level == LEVEL_LEAD)
+    return (side == play2.side && Play::lead(true) == play2.lead(true));
+  else if (level == LEVEL_LHO)
+    return (Play::lho(true) == play2.lho(true));
+  else if (level == LEVEL_PARD)
+    return (Play::pard(true) == play2.pard(true));
+  else if (level == LEVEL_RHO)
+    return (Play::rho(true) == play2.rho(true));
+  else
+  {
+    assert(false);
+    return false;
+  }
+}
+
+
 string Play::strPartialTrick(const Level level) const
 {
   stringstream ss;
