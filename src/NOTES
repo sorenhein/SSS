@@ -53,7 +53,6 @@ Nodes leadNodes, lhoNodes, pardNodes;
 
 
 Tvectors etc.:
-- Rename to Strategies, Strategy
 - Check rank vs number used appropriately (I think it isn't)
 
 Player:

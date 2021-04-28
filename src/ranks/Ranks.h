@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../Play.h"
+#include "../plays/Play.h"
 
 #include "Declarer.h"
 #include "Opponents.h"

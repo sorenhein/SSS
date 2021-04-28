@@ -4,7 +4,8 @@
 #include <cassert>
 
 #include "Play.h"
-#include "strategies/Card.h"
+
+#include "../strategies/Card.h"
 
 
 unsigned Play::lead(const bool fullFlag) const

@@ -4,10 +4,12 @@
 #include <vector>
 #include <string>
 
-#include "strategies/Card.h"
-#include "strategies/Strategies.h"
+#include "../strategies/Card.h"
+#include "../strategies/Strategies.h"
+
 #include "Play.h"
-#include "const.h"
+
+#include "../const.h"
 
 using namespace std;
 

@@ -4,7 +4,8 @@
 #include <cassert>
 
 #include "Winner.h"
-#include "../Play.h"
+
+#include "../plays/Play.h"
 
 
 Winner::Winner()

@@ -22,7 +22,6 @@ Combinations combinations;
 Distributions distributions;
 
 
-#include "Plays.h"
 int main(int argc, char * argv[])
 {
   if (! control.parseCommandLine(argc, argv))

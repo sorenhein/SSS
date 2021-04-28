@@ -8,8 +8,9 @@
 #include "Combination.h"
 #include "Distributions.h"
 #include "Distribution.h"
-#include "Plays.h"
 #include "CombEntry.h"
+
+#include "plays/Plays.h"
 
 #include "ranks/Ranks.h"
 

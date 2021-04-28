@@ -7,7 +7,8 @@
 #include "Combinations.h"
 #include "CombEntry.h"
 #include "Distributions.h"
-#include "Plays.h"
+
+#include "plays/Plays.h"
 
 #include "ranks/Ranks.h"
 

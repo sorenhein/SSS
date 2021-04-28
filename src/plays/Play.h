@@ -4,8 +4,9 @@
 #include <deque>
 #include <string>
 
-#include "strategies/Winners.h"
-#include "const.h"
+#include "../strategies/Winners.h"
+
+#include "../const.h"
 
 
 using namespace std;

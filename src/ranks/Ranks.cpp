@@ -6,7 +6,8 @@
 
 #include "../const.h"
 #include "../CombEntry.h"
-#include "../Plays.h"
+
+#include "../plays/Plays.h"
 
 #include "Ranks.h"
 

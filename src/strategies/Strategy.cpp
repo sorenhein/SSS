@@ -4,7 +4,8 @@
 #include <cassert>
 
 #include "Strategy.h"
-#include "../Play.h"
+
+#include "../plays/Play.h"
 
 // TODO Dominance can probably be implemented more efficiently.
 // For example the "weight" (sum of all trick counts) indicates

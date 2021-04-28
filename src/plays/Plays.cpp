@@ -3,12 +3,13 @@
 #include <sstream>
 #include <limits>
 
-#include "Combinations.h"
-#include "Distribution.h"
 #include "Plays.h"
-#include "Survivor.h"
 
-#include "ranks/Ranks.h"
+#include "../Combinations.h"
+#include "../Distribution.h"
+#include "../Survivor.h"
+
+#include "../ranks/Ranks.h"
 
 // It's not that important to get these exactly right, but this works
 // For efficiency the lists of nodes are not cleared (for a given

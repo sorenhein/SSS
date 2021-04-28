@@ -3,9 +3,10 @@
 #include <sstream>
 #include <cassert>
 
-#include "../Play.h"
-
 #include "Winners.h"
+
+#include "../plays/Play.h"
+
 
 /*
    The winner is structured as a number of sub-winners that are

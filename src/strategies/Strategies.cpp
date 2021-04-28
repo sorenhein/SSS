@@ -3,7 +3,9 @@
 #include <sstream>
 
 #include "Strategies.h"
-#include "../Play.h"
+
+#include "../plays/Play.h"
+
 #include "../Survivor.h"
 
 

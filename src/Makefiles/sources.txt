@@ -1,7 +1,5 @@
 SOURCE_FILES    =                         \
                 driver.cpp                \
-                Play.cpp                  \
-                Plays.cpp                 \
                 Combination.cpp           \
                 Combinations.cpp          \
                 Distribution.cpp          \
@@ -16,6 +14,9 @@ SOURCE_FILES    =                         \
                 ranks/Player.cpp          \
                 ranks/Declarer.cpp        \
                 ranks/Opponents.cpp       \
+                                          \
+                plays/Play.cpp            \
+                plays/Plays.cpp           \
                                           \
                 strategies/Strategies.cpp \
                 strategies/Strategy.cpp   \
