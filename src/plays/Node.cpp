@@ -138,6 +138,12 @@ void Node::add(
 }
 
 
+const Strategies& Node::strategies() const
+{
+  return strats;
+}
+
+
 string Node::strPlay(const Level level) const
 {
   assert(playPtr != nullptr);

@@ -478,6 +478,9 @@ void Plays::strategize(
   strategizePard(debugFlag);
   strategizeLHO(debugFlag);
   strategizeLead(strategies, debugFlag);
+
+  assert(strategies.size() == nodeMaster.strategies().size());
+  assert(strategies == nodeMaster.strategies());
 }
 
 
