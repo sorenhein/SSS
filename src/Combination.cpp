@@ -8,9 +8,10 @@
 #include "Combination.h"
 #include "Distributions.h"
 #include "Distribution.h"
-#include "Ranks.h"
 #include "Plays.h"
 #include "CombEntry.h"
+
+#include "ranks/Ranks.h"
 
 #include "strategies/Tvector.h"
 

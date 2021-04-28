@@ -6,11 +6,18 @@
 #include "Combinations.h"
 #include "Distribution.h"
 #include "Plays.h"
-#include "Ranks.h"
 #include "Survivor.h"
 
+#include "ranks/Ranks.h"
 
-// It's not that important to hit these, but this works
+// It's not that important to get these exactly right, but this works
+// For efficiency the lists of nodes are not cleared (for a given
+// number of cards), and only a pointer to the last used element
+// and its number are changed.  The lists themselves are reset once
+// for each number of cards.  Therefore the lists will generally
+// have more entries than are used, and have to iterate up to
+// the stored end iterator and not up to end().
+
 const vector<ChunkEntry> CHUNK_SIZE =
 {
   {  1,   1,   1,   1}, //  0
@@ -88,8 +95,12 @@ Plays::LeadNode * Plays::logLead(
   const Play& play,
   bool& newFlag)
 {
+  // TODO Could we just make these right to begin with?
   const SidePosition side = (play.side == POSITION_NORTH ? SIDE_NORTH : SIDE_SOUTH);
   const unsigned lead = play.leadPtr->getRank();
+// TODO Move to lead(true), so the number.  Call the variable
+// something with number rather than lead.
+assert(lead == play.lead());
 
   // We use the fact that plays arrive in order.
   if (side == sidePrev && lead == leadPrev)
@@ -124,6 +135,8 @@ Plays::LhoNode * Plays::logLho(
   bool& newFlag)
 {
   const unsigned lho = play.lhoPtr->getRank();
+// TODO Move to lho(true).
+assert(lho == play.lho());
   if (newFlag == false && lho == lhoPrev)
     return lhoPrevPtr;
   
@@ -152,6 +165,8 @@ Plays::PardNode * Plays::logPard(
   bool& newFlag)
 {
   const unsigned pard = play.pardPtr->getRank();
+// TODO Move to pard(true).
+assert(pard == play.pard());
   if (newFlag == false && pard == pardPrev)
     return pardPrevPtr;
 
@@ -207,6 +222,7 @@ void Plays::log(const Play& play)
 
 void Plays::setCombPtrs(const Combinations& combinations)
 {
+  // TODO That's probably too many -- rhoNextIter
   for (auto& rhoNode: rhoNodes)
     rhoNode.play.combPtr = 
       combinations.getPtr(rhoNode.play.cardsLeft, rhoNode.play.holding3);

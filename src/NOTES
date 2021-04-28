@@ -1,12 +1,56 @@
 2021-04-26
 
 Plays:
-- rhoStudyNextIter: Can't we just always use .end()?
 - Loop over list where possible, no iter
 - Check rank vs number used appropriately (I think it is)
 - Comment on upper, maximum etc. (done?)
 - Global constants, only add after += of lead strategies?
 - Log Plays in Ranks directly into a given struct
+
+enum Level
+{
+  LEVEL_LEAD = 0,
+  LEVEL_LHO = 1,
+  LEVEL_PARD = 2
+};
+
+struct Node
+{
+  Play const * playPtr;
+  Tvectors strategies;
+
+  string str(const Levels levels)
+  {
+    if (levels == LEVEL_LEAD)
+      return (something based on playPtr)...
+    else if ...
+  };
+};
+
+struct Nodes
+{
+  Level level;
+  list<Node> nodes;
+  list<Node>::iterator nextIter;
+  Node const * prevPtr;
+  unsigned prevPlayPtr;
+  unsigned nextEntryNumber;
+  unsigned chunkSize;
+
+  void setChunkSize(unsigned csize)
+
+  our own begin() and end() methods
+  Also owns the growing of the list (hidden from the outside)
+
+  Play needs a method to test equality with a new play at a level.
+  If LEAD, then compare side AND lead.  If LHO, compare LHO, etc.
+
+  Then the logLead, logLho and logPard methods grow together.
+};
+
+Nodes leadNodes, lhoNodes, pardNodes;
+
+
 
 Tvectors etc.:
 - Rename to Strategies, Strategy

@@ -3,9 +3,10 @@
 
 #include <vector>
 
+#include "../Play.h"
+
 #include "Declarer.h"
 #include "Opponents.h"
-#include "Play.h"
 
 
 using namespace std;

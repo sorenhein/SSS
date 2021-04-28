@@ -4,8 +4,8 @@
 #include <vector>
 #include <deque>
 
-#include "strategies/Card.h"
-#include "strategies/Winner.h"
+#include "../strategies/Card.h"
+#include "../strategies/Winner.h"
 
 using namespace std;
 

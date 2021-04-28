@@ -1,9 +1,5 @@
 SOURCE_FILES    =                       \
                 driver.cpp              \
-                Ranks.cpp               \
-                Player.cpp              \
-                  Declarer.cpp          \
-                  Opponents.cpp         \
                 Play.cpp                \
                 Plays.cpp               \
                 Combination.cpp         \
@@ -15,6 +11,11 @@ SOURCE_FILES    =                       \
                 inputs/Control.cpp      \
                 inputs/Entity.cpp       \
                 inputs/parse.cpp        \
+                                        \
+                ranks/Ranks.cpp         \
+                ranks/Player.cpp        \
+                ranks/Declarer.cpp      \
+                ranks/Opponents.cpp     \
                                         \
                 strategies/Card.cpp     \
                 strategies/Subwinner.cpp \

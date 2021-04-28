@@ -8,7 +8,8 @@
 #include "CombEntry.h"
 #include "Distributions.h"
 #include "Plays.h"
-#include "Ranks.h"
+
+#include "ranks/Ranks.h"
 
 // http://oeis.org/A051450
 const vector<unsigned> UNIQUE_COUNT = 
