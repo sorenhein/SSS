@@ -10,7 +10,7 @@
 
 #include "../Survivor.h"
 
-#include "Winner.h"
+#include "Winners.h"
 
 struct Play;
 
@@ -30,7 +30,7 @@ struct TrickEntry
 {
   unsigned dist;
   unsigned tricks;
-  Winner winner;
+  Winners winners;
 
   bool operator < (const TrickEntry& te2) const
   {
@@ -56,13 +56,13 @@ struct TrickEntry
     const Card& card)
   {
     tricks = tricksIn;
-    winner.set(side, card);
+    winners.set(side, card);
   }
 
   void setEmpty(const unsigned tricksIn)
   {
     tricks = tricksIn;
-    winner.setEmpty();
+    winners.setEmpty();
   }
 
   string strEntry(const bool rankFlag) const
@@ -70,7 +70,7 @@ struct TrickEntry
     stringstream ss;
     ss << setw(4) << tricks;
     if (rankFlag)
-      ss << setw(8) << winner.strEntry();
+      ss << setw(8) << winners.strEntry();
     return ss.str();
   }
 };

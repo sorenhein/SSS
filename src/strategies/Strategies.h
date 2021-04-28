@@ -7,7 +7,6 @@
 #include <list>
 
 #include "Strategy.h"
-#include "Winner.h"
 #include "Card.h"
 
 struct Play;

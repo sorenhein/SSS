@@ -5,7 +5,6 @@
 #include <deque>
 
 #include "../strategies/Card.h"
-#include "../strategies/Winner.h"
 
 using namespace std;
 

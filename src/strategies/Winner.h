@@ -2,11 +2,12 @@
 #define SSS_WINNER_H
 
 #include <vector>
+#include <deque>
 #include <list>
 #include <cassert>
 
-#include "Subwinner.h"
 #include "Card.h"
+#include "../const.h"
 
 struct Play;
 
@@ -25,24 +26,13 @@ class Winner
     {
       WIN_NORTH_ONLY = 0,
       WIN_SOUTH_ONLY = 1,
-      WIN_NS_DECIDE = 2,
-      WIN_EW_DECIDE = 3,
-      WIN_EMPTY = 4, // No rank winner, but something is known
-      WIN_NOT_SET = 5 // Neutral state
+      WIN_BOTH = 2,
+      WIN_NOT_SET = 3
     };
 
-    list<Subwinner> subwinners;
-
-
-    bool operator != (const Winner& w2) const;
-
-    void integrate(const Subwinner& swNew);
-
-    bool rankExceeds(const Winner& w2) const;
-
-    string strSingleSided(
-      const string& name,
-      const Card& winner) const;
+    Card north;
+    Card south;
+    WinnerMode mode;
 
 
   public:
@@ -55,25 +45,33 @@ class Winner
 
     void set(
       const WinningSide sideIn,
-      const Card& card);
+      const unsigned rankIn,
+      const unsigned depthIn,
+      const unsigned number,
+      const char nameIn);
 
     void set(
-      const Card& north,
-      const Card& south);
+      const WinningSide sideIn,
+      const Card& card);
 
     void setEmpty();
 
-    void operator *= (const Winner& w2);
+    bool operator == (const Winner& sw2) const;
+    bool operator != (const Winner& sw2) const;
 
-    bool operator == (const Winner& w2) const;
+    void operator *= (const Winner& sw2);
+
+    WinnerCompare declarerPrefers(const Winner& sw2) const;
 
     void flip();
 
     void update(const Play& play);
+      // vector<Card> const * northOrderPtr,
+      // vector<Card> const * southOrderPtr);
+
+    bool rankExceeds(const Winner& sw2) const;
 
     string str() const;
-
-    string strEntry() const;
 
     string strDebug() const;
 };

@@ -19,8 +19,8 @@ SOURCE_FILES    =                         \
                                           \
                 strategies/Strategies.cpp \
                 strategies/Strategy.cpp   \
+                strategies/Winners.cpp    \
                 strategies/Winner.cpp     \
-                strategies/Subwinner.cpp  \
                 strategies/Card.cpp       \
                                           \
                 stats/Timer.cpp           \

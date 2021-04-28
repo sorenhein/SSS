@@ -3,26 +3,8 @@
 #include <sstream>
 #include <cassert>
 
-#include "../Play.h"
 #include "Winner.h"
-
-/*
-   The winner is structured as a number of sub-winners that are
-   added / OR'ed together.  Declarer can choose between the sub-winners.
-   Each sub-winner potentially has a North card and a South card that
-   are both required, so they are multiplied / AND'ed together.
-
-   In the following examples there are 6 cards in play, so EW have 2.
-
-   AK / xx: (N:K && S:-).
-   Ax / Kx: (N:A && S:K).
-   Kx / Qx: (N:K && S:K).
-   KQ / Jx: (N:Q) || (N:K && S:J).  So effectively, two tops.
-   KJ / Qx: (N:J) || (N:K && S:Q).  (This would not be canonical.)
-   KQ / JT: (N:Q) || (S:T) || (N:K && S:J).
-   AQ / JT: (N:Q) || (S:T).
-   AQ / Jx: (N:Q).
-*/
+#include "../Play.h"
 
 
 Winner::Winner()
@@ -38,16 +20,38 @@ Winner::~Winner()
 
 void Winner::reset()
 {
-  subwinners.clear();
+  north.reset();
+  south.reset();
+  mode = WIN_NOT_SET;
 }
 
 
-void Winner::setEmpty()
+void Winner::set(
+  const WinningSide sideIn,
+  const unsigned rankIn,
+  const unsigned depthIn,
+  const unsigned numberIn,
+  const char nameIn)
 {
-  // Makes a new subwinner every time.
-  subwinners.emplace_back(Subwinner());
-  Subwinner& sw = subwinners.back();
-  sw.setEmpty();
+  // This doesn't reset the winner, so the method can be used to build
+  // up a winner with more than one component if called twice.
+  // In that case, NS decide among the options.
+
+  assert(mode == WIN_NOT_SET);
+  if (sideIn == WIN_NORTH)
+  {
+    north.set(rankIn, depthIn, numberIn, nameIn);
+    mode = WIN_NORTH_ONLY;
+  }
+  else if (sideIn == WIN_SOUTH)
+  {
+    south.set(rankIn, depthIn, numberIn, nameIn);
+    mode = WIN_SOUTH_ONLY;
+  }
+  else if (sideIn == WIN_NONE)
+    mode = WIN_NOT_SET;
+  else
+    assert(false);
 }
 
 
@@ -55,179 +59,277 @@ void Winner::set(
   const WinningSide sideIn,
   const Card& card)
 {
-  // Makes a new subwinner every time.
-  subwinners.emplace_back(Subwinner());
-  Subwinner& sw = subwinners.back();
-  sw.set(sideIn, card);
-}
+  // This doesn't reset the winner, so the method can be used to build
+  // up a winner with more than one component if called twice.
+  // In that case, NS decide among the options.
 
-
-void Winner::set(
-  const Card& north,
-  const Card& south)
-{
-  Winner::reset();
-
-  if (north.getRank() > south.getRank())
-    Winner::set(WIN_NORTH, north);
-  else if (north.getRank() < south.getRank())
-    Winner::set(WIN_SOUTH, south);
+  assert(mode == WIN_NOT_SET);
+  if (sideIn == WIN_NORTH)
+  {
+    north = card;
+    mode = WIN_NORTH_ONLY;
+  }
+  else if (sideIn == WIN_SOUTH)
+  {
+    south = card;
+    mode = WIN_SOUTH_ONLY;
+  }
+  else if (sideIn == WIN_NONE)
+    mode = WIN_NOT_SET;
   else
-  {
-    Winner::set(WIN_NORTH, north);
-    Winner::set(WIN_SOUTH, south);
-  }
+    assert(false);
 }
 
 
-bool Winner::operator != (const Winner& w2) const
+void Winner::setEmpty()
 {
-  return ! (* this == w2);
+  // Do nothing.
+  assert(mode == WIN_NOT_SET);
 }
 
 
-bool Winner::operator == (const Winner& w2) const
+bool Winner::operator == (const Winner& sw2) const
 {
-  // This is a simple first implementation that assumes the same order.
-  if (subwinners.size() != w2.subwinners.size())
+  if (mode != sw2.mode)
     return false;
-
-  auto iter = subwinners.begin();
-  auto iter2 = w2.subwinners.begin();
-  while (iter != subwinners.end())
-  {
-    if (* iter != * iter2)
-      return false;
-    
-    iter++;
-    iter2++;
-  }
+  if (mode == WIN_NOT_SET)
+    return true;
+  if (mode != WIN_SOUTH_ONLY && north != sw2.north)
+    return false;
+  if (mode != WIN_NORTH_ONLY && south != sw2.south)
+    return false;
 
   return true;
 }
 
 
-void Winner::integrate(const Subwinner& swNew)
+bool Winner::operator != (const Winner& sw2) const
 {
-  // subwinners are a minimal set.
-  // The new subwinner may dominate existing subwinners.
-  // It may also be dominated by at least one existing subwinner.
-  // If neither is true, then it is a new subwinner.
-
-  auto switer = subwinners.begin();
-  while (switer != subwinners.end())
-  {
-    const WinnerCompare cmp = switer->declarerPrefers(swNew);
-    if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
-    {
-      // The new subwinner is inferior.
-      return;
-    }
-    else if (cmp == WIN_SECOND)
-    {
-      // The existing subwinner is inferior.
-      switer = subwinners.erase(switer);
-    }
-    else
-      switer++;
-  }
-
-  subwinners.push_back(swNew);
+  return ! (* this == sw2);
 }
 
 
-void Winner::operator *= (const Winner& w2)
+void Winner::operator *= (const Winner& sw2)
 {
   // The opponents have the choice.
 
-  if (w2.subwinners.size() == 0)
+  if (sw2.mode == WIN_NOT_SET)
   {
     // OK as is.
     return;
   }
-  else if (subwinners.size() == 0)
+  else if (mode == WIN_NOT_SET)
   {
-    * this = w2;
+    * this = sw2;
     return;
   }
 
-  // All subwinners of a winner are of the same rank.
-  if (w2.rankExceeds(* this))
+  if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
   {
-    // OK as is: Stick with the lower rank.
-    return;
-  }
-  else if (Winner::rankExceeds(w2))
-  {
-    * this = w2;
-    return;
-  }
-
-  // This is surely inefficient.
-  Winner w1 = * this;
-  Winner::reset();
-
-  for (auto& sw1: w1.subwinners)
-  {
-    for (auto& sw2: w2.subwinners)
+    // sw2.north is set.
+    if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+      north *= sw2.north;
+    else
     {
-      Subwinner sw = sw1;
-      sw *= sw2;
-      Winner::integrate(sw);
+      // As north wasn't set, south must be.
+      north = sw2.north;
+      mode = WIN_BOTH;
     }
   }
+
+  if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+  {
+    // w2.south is set.
+    if (mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+      south *= sw2.south;
+    else
+    {
+      // As south wasn't set, north must be.
+      south = sw2.south;
+      mode = WIN_BOTH;
+    }
+  }
+
+  if (mode == WIN_BOTH)
+  {
+    if (north.rankExceeds(south))
+      mode = WIN_SOUTH_ONLY;
+    else if (south.rankExceeds(north))
+      mode = WIN_NORTH_ONLY;
+  }
+}
+
+
+WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
+{
+  assert(mode != WIN_NOT_SET);
+  assert(sw2.mode != WIN_NOT_SET);
+
+  // TODO Maybe Winner should know the rank.
+  Card const * active1 =
+      (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
+        &north : &south);
+  Card const * active2 =
+      (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH ? 
+        &sw2.north : &sw2.south);
+
+  if (active1->rankExceeds(* active2))
+    return WIN_FIRST;
+  else if (active2->rankExceeds(* active1))
+    return WIN_SECOND;
+
+  // So now the two Winner's have the same rank.
+  // TODO Might be nice to have WinnerMode as a 2-bit vector
+  // or to have separate North and South bits.
+
+  WinnerCompare northPrefer, southPrefer;
+  if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+  {
+    if (sw2.mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+      northPrefer = north.compare(sw2.north);
+    else
+      // North prefers no restriction.
+      northPrefer = WIN_SECOND;
+  }
+  else
+  {
+    if (sw2.mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+      // North prefers no restriction.
+      northPrefer = WIN_FIRST;
+    else
+      // Both are missing, so it doesn't matter.
+      northPrefer = WIN_EQUAL;
+  }
+  
+  if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+  {
+    if (sw2.mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+      southPrefer = south.compare(sw2.north);
+    else
+      // South prefers no restriction.
+      southPrefer = WIN_SECOND;
+  }
+  else
+  {
+    if (sw2.mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+      // South prefers no restriction.
+      southPrefer = WIN_FIRST;
+    else
+      // Both are missing, so it doesn't matter.
+      southPrefer = WIN_EQUAL;
+  }
+
+  // TODO Can set up a matrix lookup as well.
+  //
+  // N|S 1  2  =
+  // 1   1  != 1
+  // 2   != 2  2
+  // =   1  2  =
+  if (northPrefer == southPrefer)
+    return northPrefer;
+  else if (northPrefer == WIN_BOTH)
+    return southPrefer;
+  else if (southPrefer == WIN_BOTH)
+    return northPrefer;
+  else
+    return WIN_DIFFERENT;
 }
 
 
 void Winner::flip()
 {
-  for (auto& subwinner: subwinners)
-    subwinner.flip();
+  if (mode == WIN_NOT_SET)
+    return;
+
+  // Flips North and South.
+  // TODO Try std::swap?
+  Card tmp = north;
+  north = south;
+  south = tmp;
+
+  if (mode == WIN_NORTH_ONLY)
+    mode = WIN_SOUTH_ONLY;
+  else if (mode == WIN_SOUTH_ONLY)
+    mode = WIN_NORTH_ONLY;
 }
 
 
 void Winner::update(const Play& play)
 {
-  for (auto& subwinner: subwinners)
-    subwinner.update(play);
-
-  if (play.trickNS)
-    * this *= play.currBest;
-}
-
-
-bool Winner::rankExceeds(const Winner& w2) const
-{
-  // This requires both winners to have subwinners.
-  // Each winner has consistent ranks.
-  return (subwinners.front().rankExceeds(w2.subwinners.front()));
-}
-
-
-string Winner::strEntry() const
-{
-  string s = "";
-  bool firstFlag = true;
-  for (auto& subwinner: subwinners)
+  if (mode == WIN_NORTH_ONLY)
   {
-    if (firstFlag)
-    {
-      firstFlag = false;
-      s += subwinner.str();
-    }
-    else
-      // Join with a comma in between.
-      s += "," + subwinner.str();
+    // This may also change the winning side.
+    north = * play.northTranslate(north.getNumber());
   }
-  return s;
+  else if (mode == WIN_SOUTH_ONLY)
+  {
+    // This may also change the winning side.
+    south = * play.southTranslate(south.getNumber());
+  }
+  else if (mode == WIN_BOTH)
+  {
+    north = * play.northTranslate(north.getNumber());
+    south = * play.southTranslate(south.getNumber());
+
+    // As a result of the mapping to parent ranks, North and South
+    // may actually be different ranks now.  As North-South choose,
+    // they only keep the higher one.
+    if (north.rankExceeds(south))
+    {
+      // Only North survives.
+      south.reset();
+      mode = WIN_NORTH_ONLY;
+    }
+    else if (south.rankExceeds(north))
+    {
+      north.reset();
+      mode = WIN_SOUTH_ONLY;
+    }
+  }
+  else if (mode == WIN_NOT_SET)
+  {
+    // Stick with the empty winner.
+  }
+  else
+    // Should not happen.
+    assert(false);
+}
+
+
+bool Winner::rankExceeds(const Winner& sw2) const
+{
+  // TODO Maybe Winner should know its rank.
+  const unsigned rank1 =
+      (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
+        north.getRank() : south.getRank());
+  const unsigned rank2 =
+      (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH ?
+        sw2.north.getRank() : sw2.south.getRank());
+
+  return (rank1 > rank2);
+}
+
+
+string Winner::str() const
+{
+  if (mode == WIN_NORTH_ONLY)
+    return north.str("N");
+  else if (mode == WIN_SOUTH_ONLY)
+    return south.str("S");
+  else if (mode == WIN_NOT_SET)
+    return "-";
+  else
+    return north.str("N") + south.str("S", false);
 }
 
 
 string Winner::strDebug() const
 {
-  string s = "";
-  for (auto& subwinner: subwinners)
-    s += subwinner.strDebug();
-  return s;
+  stringstream ss;
+  if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    ss << north.strDebug("N");
+  if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+    ss << south.strDebug("S");
+  return ss.str();
 }
 

@@ -42,7 +42,7 @@ void Strategy::logTrivial(
     TrickEntry& te = results.back();
     te.dist = i;
     te.tricks = trivialEntry.tricks;
-    te.winner = trivialEntry.winner;
+    te.winners = trivialEntry.winners;
   }
   weightInt = trivialEntry.tricks * len;
 }
@@ -189,12 +189,12 @@ void Strategy::operator *=(const Strategy& tv2)
         // Take the one with the lower number of tricks.
         weightInt += iter2->tricks - iter1->tricks;
         iter1->tricks = iter2->tricks;
-        iter1->winner = iter2->winner;
+        iter1->winners = iter2->winners;
       }
       else if (iter1->tricks == iter2->tricks)
       {
         // Opponents can choose among the two winners.
-        iter1->winner *= iter2->winner;
+        iter1->winners *= iter2->winners;
       }
       iter1++;
       iter2++;
@@ -437,7 +437,7 @@ void Strategy::updateAndGrow(
     // corresponding result entry as the trick count.
     res.dist = iterSurvivors->fullNo;
     res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
-    res.winner = resultsOld[iterSurvivors->reducedNo].winner;
+    res.winners = resultsOld[iterSurvivors->reducedNo].winners;
     weightInt += res.tricks;
     iterSurvivors++;
   }
@@ -484,12 +484,12 @@ void Strategy::adapt(
 
     // We also have to to fix the NS winner orientation.
     for (auto& te: results)
-      te.winner.flip();
+      te.winners.flip();
   }
 
   // Update the winners.
     for (auto& te: results)
-      te.winner.update(play);
+      te.winners.update(play);
 
   if (westVoidFlag)
   {
