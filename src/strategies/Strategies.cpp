@@ -28,7 +28,7 @@ void Strategies::setTrivial(
   const TrickEntry& trivialEntry,
   const unsigned len)
 {
-  Tvector tv;
+  Strategy tv;
   tv.logTrivial(trivialEntry, len);
 
   Strategies::reset();
@@ -54,11 +54,11 @@ bool Strategies::operator ==(const Strategies& tvs)
 }
 
 
-void Strategies::operator +=(const Tvector& tv)
+void Strategies::operator +=(const Strategy& tv)
 {
   // The results list is in descending order of weights.
-  // The new Tvector dominates everything with a lower weight and
-  // can only be dominated by a Tvector with at least its own weight.
+  // The new Strategy dominates everything with a lower weight and
+  // can only be dominated by a Strategy with at least its own weight.
   
   auto riter = results.begin();
 
@@ -124,10 +124,10 @@ void Strategies::operator *=(const Strategies& tvs2)
 
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
-  list<Tvector> resultsOwn = results;
+  list<Strategy> resultsOwn = results;
   results.clear();
 
-  Tvector tmp;
+  Strategy tmp;
   for (auto& tv1: resultsOwn)
   {
     for (auto& tv2: tvs2.results)
@@ -140,7 +140,7 @@ void Strategies::operator *=(const Strategies& tvs2)
 }
 
 
-void Strategies::operator *=(const Tvector& tv2)
+void Strategies::operator *=(const Strategy& tv2)
 {
   if (results.size() == 0)
     * this += tv2;
@@ -212,11 +212,11 @@ void Strategies::collapseOnVoid()
 
 
 void Strategies::bound(
-  Tvector& constants,
-  Tvector& lower,
-  Tvector& upper) const
+  Strategy& constants,
+  Strategy& lower,
+  Strategy& upper) const
 {
-  // Calculate Tvector values to summarize this Strategies.
+  // Calculate Strategy values to summarize this Strategies.
   // constants is the set of constant strategies.  Other Strategies
   // may have other constant values, or non-constant ones, that
   // may be lower or higher than this results.  There are only
@@ -240,7 +240,7 @@ void Strategies::bound(
 
 void Strategies::bound(Bounds& bounds) const
 {
-  // Calculate Tvector values to summarize this Strategies.
+  // Calculate Strategy values to summarize this Strategies.
   // constants is the set of constant strategies.  Other Strategies
   // may have other constant values, or non-constant ones, that
   // may be lower or higher than this results.  There are only
@@ -264,7 +264,7 @@ void Strategies::bound(Bounds& bounds) const
 }
 
 
-unsigned Strategies::purge(const Tvector& constants)
+unsigned Strategies::purge(const Strategy& constants)
 {
   // TODO Can perhaps be done inline.
   // Returns number of distributions purged.
@@ -338,7 +338,7 @@ string Strategies::str(
   stringstream ss;
   ss << Strategies::strHeader(title, rankFlag);
 
-  // Make a list of iterators -- one per Tvector.
+  // Make a list of iterators -- one per Strategy.
   list<list<TrickEntry>::const_iterator> iters, itersEnd;
   for (auto& res: results)
   {
@@ -346,7 +346,7 @@ string Strategies::str(
     itersEnd.push_back(res.end());
   }
 
-  // Use the iterator for the first Tvector to get the distributions.
+  // Use the iterator for the first Strategy to get the distributions.
   while (iters.front() != itersEnd.front())
   {
     ss << setw(4) << left << iters.front()->dist << right;

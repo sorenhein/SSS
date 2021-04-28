@@ -17,11 +17,11 @@ SOURCE_FILES    =                         \
                 ranks/Declarer.cpp        \
                 ranks/Opponents.cpp       \
                                           \
-                strategies/Card.cpp       \
-                strategies/Subwinner.cpp  \
-                strategies/Tvector.cpp    \
                 strategies/Strategies.cpp \
+                strategies/Strategy.cpp   \
                 strategies/Winner.cpp     \
+                strategies/Subwinner.cpp  \
+                strategies/Card.cpp       \
                                           \
                 stats/Timer.cpp           \
                 stats/Timers.cpp

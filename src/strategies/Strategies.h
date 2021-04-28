@@ -6,7 +6,7 @@
 
 #include <list>
 
-#include "Tvector.h"
+#include "Strategy.h"
 #include "Winner.h"
 #include "Card.h"
 
@@ -19,13 +19,13 @@ using namespace std;
 struct Bounds
 {
   // Actual minima.
-  Tvector minima;
+  Strategy minima;
 
   // The lowest maxima (so not the actual maxima).
-  Tvector maxima;
+  Strategy maxima;
 
   // The lowest constant results.
-  Tvector constants;
+  Strategy constants;
 
   string str(const string& title = "") const
   {
@@ -45,7 +45,7 @@ class Strategies
 {
   private:
 
-    list<Tvector> results;
+    list<Strategy> results;
 
     void collapseOnVoid();
 
@@ -70,12 +70,12 @@ class Strategies
 
     bool operator == (const Strategies& tvs);
 
-    void operator +=(const Tvector& tv);
+    void operator +=(const Strategy& tv);
 
     void operator +=(const Strategies& tvs);
 
     void operator *=(const Strategies& tvs);
-    void operator *=(const Tvector& tv);
+    void operator *=(const Strategy& tv);
 
     void operator |=(const Strategies& tvs);
 
@@ -83,13 +83,13 @@ class Strategies
     unsigned numDists() const;
 
     void bound(
-      Tvector& constants,
-      Tvector& lower,
-      Tvector& upper) const;
+      Strategy& constants,
+      Strategy& lower,
+      Strategy& upper) const;
 
     void bound(Bounds& bounds) const;
 
-    unsigned purge(const Tvector& constants);
+    unsigned purge(const Strategy& constants);
 
     void adapt(
       const Play& play,

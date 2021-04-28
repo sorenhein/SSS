@@ -3,7 +3,7 @@
 #include <sstream>
 #include <cassert>
 
-#include "Tvector.h"
+#include "Strategy.h"
 #include "../Play.h"
 
 // TODO Dominance can probably be implemented more efficiently.
@@ -14,24 +14,24 @@
 // of these statistics before doing the full loop.
 
 
-Tvector::Tvector()
+Strategy::Strategy()
 {
-  Tvector::reset();
+  Strategy::reset();
 }
 
 
-Tvector::~Tvector()
+Strategy::~Strategy()
 {
 }
 
 
-void Tvector::reset()
+void Strategy::reset()
 {
   results.clear();
 }
 
 
-void Tvector::logTrivial(
+void Strategy::logTrivial(
   const TrickEntry& trivialEntry,
   const unsigned len)
 {
@@ -48,7 +48,7 @@ void Tvector::logTrivial(
 }
 
 
-void Tvector::log(
+void Strategy::log(
   const vector<unsigned>& distributions,
   const vector<unsigned>& tricks)
 {
@@ -66,7 +66,7 @@ void Tvector::log(
 }
 
 
-bool Tvector::operator == (const Tvector& tv2) const
+bool Strategy::operator == (const Strategy& tv2) const
 {
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
@@ -86,7 +86,7 @@ bool Tvector::operator == (const Tvector& tv2) const
 }
 
 
-bool Tvector::operator >= (const Tvector& tv2) const
+bool Strategy::operator >= (const Strategy& tv2) const
 {
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
@@ -106,7 +106,7 @@ bool Tvector::operator >= (const Tvector& tv2) const
 }
 
 
-bool Tvector::operator > (const Tvector& tv2) const
+bool Strategy::operator > (const Strategy& tv2) const
 {
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
@@ -129,7 +129,7 @@ bool Tvector::operator > (const Tvector& tv2) const
 }
 
 
-Compare Tvector::compare(const Tvector& tv2) const
+Compare Strategy::compare(const Strategy& tv2) const
 {
   // Returns COMPARE_LESS_THAN if *this < tv2.
 
@@ -163,7 +163,7 @@ Compare Tvector::compare(const Tvector& tv2) const
 }
 
 
-void Tvector::operator *=(const Tvector& tv2)
+void Strategy::operator *=(const Strategy& tv2)
 {
   // Here we don't have to have the same length or distributions.
   
@@ -203,10 +203,10 @@ void Tvector::operator *=(const Tvector& tv2)
 }
 
 
-void Tvector::bound(
-  Tvector& constants,
-  Tvector& lower,
-  Tvector& upper) const
+void Strategy::bound(
+  Strategy& constants,
+  Strategy& lower,
+  Strategy& upper) const
 {
   // Each of the three vectors is a running collection of TrickEntry
   // elements summarizing the distributions (in a parent Strategies).
@@ -251,7 +251,7 @@ void Tvector::bound(
       if (iter->dist >= iterConst->dist)
       {
         cout << "HERE\n";
-        cout << Tvector::str("Tvector");
+        cout << Strategy::str("Strategy");
         cout << constants.str("constants");
         cout << lower.str("lower");
         cout << upper.str("upper");
@@ -270,18 +270,18 @@ void Tvector::bound(
 }
 
 
-void Tvector::constrict(Tvector& constants) const
+void Strategy::constrict(Strategy& constants) const
 {
   // The constants vector is a running collection of TrickEntry
   // elements for those distributions (in a Strategies) that have
-  // constant results.  If the result of this current Tvector
+  // constant results.  If the result of this current Strategy
   // differs from constants for a given distribution, that 
   // distribution is removed from constants.
   //
   // If there are distributions in constants that are not in this,
   // they are removed.
   // 
-  // In the case where this Tvector contains the minima, it
+  // In the case where this Strategy contains the minima, it
   // is component-wise <= constants.  Therefore there is no harm
   // in comparing the tricks >= rather than == below.
   //
@@ -306,7 +306,7 @@ void Tvector::constrict(Tvector& constants) const
     if (iter1->dist != iter2->dist)
     {
       cout << "HERE\n";
-      cout << Tvector::str("Tvector");
+      cout << Strategy::str("Strategy");
       cout << constants.str("constants");
       cout << "iter1 " << iter1->dist << ": " << iter1->tricks << endl;
       cout << "iter2 " << iter2->dist << ": " << iter2->tricks << endl;
@@ -334,7 +334,7 @@ void Tvector::constrict(Tvector& constants) const
 }
 
 
-unsigned Tvector::purge(const Tvector& constants)
+unsigned Strategy::purge(const Strategy& constants)
 {
   // Removes results corresponding to all distributions in
   // constants.  The distributions don't all have to be present
@@ -372,7 +372,7 @@ unsigned Tvector::purge(const Tvector& constants)
 }
 
 
-void Tvector::updateSingle(
+void Strategy::updateSingle(
   const unsigned fullNo,
   const unsigned trickNS)
 {
@@ -383,7 +383,7 @@ void Tvector::updateSingle(
 }
 
 
-void Tvector::updateSameLength(
+void Strategy::updateSameLength(
   const Survivors& survivors,
   const unsigned trickNS)
 {
@@ -414,7 +414,7 @@ void Tvector::updateSameLength(
 }
 
 
-void Tvector::updateAndGrow(
+void Strategy::updateAndGrow(
   const Survivors& survivors,
   const unsigned trickNS)
 {
@@ -444,14 +444,14 @@ void Tvector::updateAndGrow(
 }
 
 
-void Tvector::adapt(
+void Strategy::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-  // Our Tvector results may stem from a rank-reduced child combination.
+  // Our Strategy results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
   // parent combination.
-  // Our Tvector may be about to get cross-multiplied onto another
+  // Our Strategy may be about to get cross-multiplied onto another
   // parent combination.  So it needs to have the full number of
   // entries, and the results list needs to grow.
 
@@ -497,7 +497,7 @@ void Tvector::adapt(
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
-    Tvector::updateSingle(survivors.distNumbers.front().fullNo, 
+    Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
       play.trickNS);
   }
   else if (eastVoidFlag)
@@ -506,35 +506,35 @@ void Tvector::adapt(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
-    Tvector::updateSingle(survivors.distNumbers.front().fullNo, 
+    Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
       play.trickNS);
   }
   else if (survivors.sizeFull() == len1)
   {
     // No rank reduction.
-    Tvector::updateSameLength(survivors, play.trickNS);
+    Strategy::updateSameLength(survivors, play.trickNS);
   }
   else
   {
     // This is the general case.
-    Tvector::updateAndGrow(survivors, play.trickNS);
+    Strategy::updateAndGrow(survivors, play.trickNS);
   }
 }
 
 
-unsigned Tvector::size() const
+unsigned Strategy::size() const
 {
   return results.size();
 }
 
 
-unsigned Tvector::weight() const
+unsigned Strategy::weight() const
 {
   return weightInt;
 }
 
 
-string Tvector::str(const string& title) const
+string Strategy::str(const string& title) const
 {
   stringstream ss;
   if (title != "")

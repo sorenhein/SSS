@@ -1,5 +1,5 @@
-#ifndef SSS_TVECTOR_H
-#define SSS_TVECTOR_H
+#ifndef SSS_STRATEGY_H
+#define SSS_STRATEGY_H
 
 #include <iostream>
 #include <iomanip>
@@ -76,7 +76,7 @@ struct TrickEntry
 };
 
 
-class Tvector
+class Strategy
 {
   private:
 
@@ -86,9 +86,9 @@ class Tvector
 
   public:
 
-    Tvector();
+    Strategy();
 
-    ~Tvector();
+    ~Strategy();
 
     list<TrickEntry>::const_iterator begin() const 
       { return results.begin(); };
@@ -105,22 +105,22 @@ class Tvector
       const vector<unsigned>& distributions,
       const vector<unsigned>& tricks);
 
-    bool operator == (const Tvector& tv2) const;
-    bool operator >= (const Tvector& tv2) const;
-    bool operator > (const Tvector& tv2) const;
+    bool operator == (const Strategy& tv2) const;
+    bool operator >= (const Strategy& tv2) const;
+    bool operator > (const Strategy& tv2) const;
 
-    Compare compare(const Tvector& tv2) const;
+    Compare compare(const Strategy& tv2) const;
 
-    void operator *=(const Tvector& tv2);
+    void operator *=(const Strategy& tv2);
 
     void bound(
-      Tvector& constants,
-      Tvector& lower,
-      Tvector& upper) const;
+      Strategy& constants,
+      Strategy& lower,
+      Strategy& upper) const;
 
-    void constrict(Tvector& constants) const;
+    void constrict(Strategy& constants) const;
 
-    unsigned purge(const Tvector& constants);
+    unsigned purge(const Strategy& constants);
 
     void updateSingle(
       const unsigned fullNo,

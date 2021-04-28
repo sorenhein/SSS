@@ -540,7 +540,7 @@ void Plays::removeDominatedDefenses(
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
-    Tvector max = boundsLead[node.leadNo].maxima;
+    Strategy max = boundsLead[node.leadNo].maxima;
     node.bounds.minima.constrict(max);
     if (max.size() == 0)
     {

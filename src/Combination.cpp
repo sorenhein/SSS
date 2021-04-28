@@ -13,8 +13,6 @@
 
 #include "ranks/Ranks.h"
 
-#include "strategies/Tvector.h"
-
 
 Combination::Combination()
 {
