@@ -113,6 +113,7 @@ class Plays
 
     list<Play> plays;
     Nodes nodesRho, nodesPard, nodesLho, nodesLead;
+    Node nodeMaster;
 
 
     LeadNode * logLead(

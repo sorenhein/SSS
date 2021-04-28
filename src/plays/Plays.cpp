@@ -230,7 +230,7 @@ void Plays::log(const Play& play)
   const Play& playLogged = plays.back();
 
   bool newFlag2 = false;
-  Node * leadNodePtr = nodesLead.log(nullptr, &playLogged, newFlag2);
+  Node * leadNodePtr = nodesLead.log(&nodeMaster, &playLogged, newFlag2);
   Node * lhoNodePtr = nodesLho.log(leadNodePtr, &playLogged, newFlag2);
   Node * pardNodePtr = nodesPard.log(lhoNodePtr, &playLogged, newFlag2);
   (void) nodesRho.log(pardNodePtr, &playLogged, newFlag2);
@@ -314,6 +314,25 @@ void Plays::strategizeRHO(
       cout << rhoNode.pardPtr->strategies.str(
         "Cumulative partner strategy after this trick", true);
   }
+
+
+/*
+  rno = 0;
+  for (auto& nodeRho: nodesRho)
+  {
+    // For RHO nodes we have to populate the strategies first.
+    nodeRho.getStrategies(* distPtr, debugFlag);
+
+    // This prefixes the output in Node::cross.
+    if (debugFlag)
+      cout << "Play #" << rno << ", ";
+
+    // Combine it with the partner node by cross product.
+    nodeRho.cross(LEVEL_RHO, debugFlag);
+    
+    rno++;
+  }
+*/
 }
 
 
@@ -339,6 +358,11 @@ void Plays::strategizePard(const bool debugFlag)
       cout << pardNode.lhoPtr->strategies.str(
         "Cumulative LHO strategy after this addition", true);
   }
+
+
+  // Add to the corresponding LHO node.
+  // for (auto& nodePard: nodesPard)
+    // nodePard.add(LEVEL_PARD, debugFlag);
 }
 
 
@@ -364,6 +388,11 @@ void Plays::strategizeLHO(const bool debugFlag)
       cout << lhoNode.leadPtr->strategies.str(
         "Cumulative lead strategy after this multiplication", true);
   }
+
+
+  // Combine it with the corresponding lead node by cross product.
+  // for (auto& nodeLho: nodesLho)
+    // nodeLho.cross(LEVEL_LHO, debugFlag);
 }
 
 
@@ -392,6 +421,13 @@ void Plays::strategizeLead(
       cout << strategies.str(
         "Cumulative lead strategy after this addition", true);
   }
+
+
+  nodeMaster.reset();
+  
+  // Add up the lead strategies into an overall one.
+  // for (auto& nodeLead: nodesLead)
+    // nodeLead.add(LEVEL_LEAD, debugFlag);
 }
 
 

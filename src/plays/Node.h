@@ -11,6 +11,7 @@
 
 using namespace std;
 
+class Distribution;
 struct Play;
 
 
@@ -25,7 +26,7 @@ class Node
 
     Play const * playPtr;
 
-    Strategies strategies;
+    Strategies strats;
 
   public:
     
@@ -39,7 +40,17 @@ class Node
       Node * parentPtr,
       Play const * playPtr);
 
-    void operator *=(const Strategies strat2);
+    void getStrategies(
+      const Distribution& dist,
+      const bool debugFlag);
+
+    void cross(
+      const Level level,
+      const bool debugFlag);
+
+    void add(
+      const Level level,
+      const bool debugFlag);
 
     string strPlay(const Level level) const;
 
