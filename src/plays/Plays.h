@@ -8,7 +8,7 @@
 #include "../strategies/Strategies.h"
 
 #include "Play.h"
-#include "Node.h"
+#include "Nodes.h"
 
 #include "../const.h"
 
@@ -110,6 +110,9 @@ class Plays
     PardNode * pardPrevPtr;
 
     ChunkEntry chunk;
+
+    list<Play> plays;
+    Nodes nodesRho, nodesPard, nodesLho, nodesLead;
 
 
     LeadNode * logLead(

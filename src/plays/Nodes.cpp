@@ -59,10 +59,17 @@ void Nodes::reset()
 {
   level = LEVEL_SIZE;
   nodes.clear();
+  chunkSize = 0;
+  Nodes::clear();
+}
+
+
+void Nodes::clear()
+{
+  nextIter = nodes.begin();
   prevPtr = nullptr;
   prevPlayPtr = nullptr;
   nextEntryNumber = 0;
-  chunkSize = 0;
 }
 
 
@@ -94,7 +101,9 @@ Node * Nodes::log(
   bool& newFlag)
 {
   // If the play doesn't differ in the relevant cards, no change.
-  if (newFlag == false && playPtr->samePartial(* prevPlayPtr, level))
+  if (newFlag == false && 
+      prevPlayPtr != nullptr &&
+      playPtr->samePartial(* prevPlayPtr, level))
     return prevPtr;
 
   // If we have run out of space, make some more.
@@ -126,3 +135,34 @@ list<Node>::iterator Nodes::end()
   // The end of the used nodes.
   return nextIter;
 }
+
+
+unsigned Nodes::size() const
+{
+  return nodes.size();
+}
+
+
+unsigned Nodes::used() const
+{
+  return nextEntryNumber;
+}
+
+
+string Nodes::strCount() const
+{
+  stringstream ss;
+  if (level == LEVEL_LEAD)
+    ss << "Lead ";
+  else if (level == LEVEL_LHO)
+    ss << "LHO ";
+  else if (level == LEVEL_PARD)
+    ss << "Pard ";
+  else if (level == LEVEL_RHO)
+    ss << "RHO ";
+
+  ss << nodes.size() << " " << nextEntryNumber << "\n";
+
+  return ss.str();
+}
+

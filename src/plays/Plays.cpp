@@ -71,6 +71,14 @@ void Plays::reset()
   leadPrevPtr = nullptr;
   lhoPrevPtr = nullptr;
   pardPrevPtr = nullptr;
+
+  // TODO Add in chunks and leave in place
+  plays.clear();
+
+  nodesLead.clear();
+  nodesLho.clear();
+  nodesPard.clear();
+  nodesRho.clear();
 }
 
 
@@ -83,6 +91,11 @@ void Plays::resize(const unsigned cardsIn)
   lhoNodes.resize(chunk.lho);
   pardNodes.resize(chunk.pard);
   rhoNodes.resize(chunk.rho);
+
+  nodesLead.resize(LEVEL_LEAD, cardsIn);
+  nodesLho.resize(LEVEL_LHO, cardsIn);
+  nodesPard.resize(LEVEL_PARD, cardsIn);
+  nodesRho.resize(LEVEL_RHO, cardsIn);
 }
 
 
@@ -212,12 +225,45 @@ void Plays::log(const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
 
+  // The new way.  TODO In chunks, too.
+  plays.push_back(play); 
+  const Play& playLogged = plays.back();
+
+  bool newFlag2 = false;
+  Node * leadNodePtr = nodesLead.log(nullptr, &playLogged, newFlag2);
+  Node * lhoNodePtr = nodesLho.log(leadNodePtr, &playLogged, newFlag2);
+  Node * pardNodePtr = nodesPard.log(lhoNodePtr, &playLogged, newFlag2);
+  (void) nodesRho.log(pardNodePtr, &playLogged, newFlag2);
+
+  // The old way.
   bool newFlag;
   LeadNode * leadPtr = Plays::logLead(play, newFlag);
   LhoNode * lhoPtr = Plays::logLho(play, leadPtr, newFlag);
   PardNode * pardPtr = Plays::logPard(play, lhoPtr, newFlag);
 
   Plays::logRho(play, pardPtr);
+
+  assert(rhoNodes.size() == nodesRho.size());
+  assert(pardNodes.size() == nodesPard.size());
+  assert(lhoNodes.size() == nodesLho.size());
+  assert(leadNodes.size() == nodesLead.size());
+
+  if (rhoNext != nodesRho.used())
+  {
+    assert(rhoNext == nodesRho.used());
+  }
+  if (pardNext != nodesPard.used())
+  {
+    assert(pardNext == nodesPard.used());
+  }
+  if (lhoNext != nodesLho.used())
+  {
+    assert(lhoNext == nodesLho.used());
+  }
+  if (leadNext != nodesLead.used())
+  {
+    assert(leadNext == nodesLead.used());
+  }
 }
 
 
@@ -386,10 +432,15 @@ void Plays::strategize(
   // TODO If play is passed to Ranks, then this output will have
   // to be at the end of the method.
   cout << "Node counts:" << endl;
-  cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
-  cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
-  cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
-  cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+  // cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
+  // cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
+  // cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
+  // cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+
+  cout << nodesRho.strCount();
+  cout << nodesPard.strCount();
+  cout << nodesLho.strCount();
+  cout << nodesLead.strCount();
 
   strategizeRHO(distPtr, debugFlag);
   strategizePard(debugFlag);

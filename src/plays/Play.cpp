@@ -81,6 +81,24 @@ bool Play::samePartial(
   const Play& play2,
   const Level level) const
 {
+  // TODO When we switch to number rather than rank, we have a problem
+  // here: Both a void and a lowest card have number 0...
+
+  if (level == LEVEL_LEAD)
+    return (side == play2.side && Play::lead() == play2.lead());
+  else if (level == LEVEL_LHO)
+    return (Play::lho() == play2.lho());
+  else if (level == LEVEL_PARD)
+    return (Play::pard() == play2.pard());
+  else if (level == LEVEL_RHO)
+    return false;
+  else
+  {
+    assert(false);
+    return false;
+  }
+
+  /*
   if (level == LEVEL_LEAD)
     return (side == play2.side && Play::lead(true) == play2.lead(true));
   else if (level == LEVEL_LHO)
@@ -88,12 +106,13 @@ bool Play::samePartial(
   else if (level == LEVEL_PARD)
     return (Play::pard(true) == play2.pard(true));
   else if (level == LEVEL_RHO)
-    return (Play::rho(true) == play2.rho(true));
+    return false;
   else
   {
     assert(false);
     return false;
   }
+  */
 }
 
 

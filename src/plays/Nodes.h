@@ -45,6 +45,8 @@ class Nodes
 
     void reset();
 
+    void clear();
+
     void resize(
       const Level levelIn,
       const unsigned cards);
@@ -56,6 +58,11 @@ class Nodes
 
     list<Node>::iterator begin();
     list<Node>::iterator end();
+
+    unsigned size() const;
+    unsigned used() const;
+
+    string strCount() const;
 };
 
 #endif
