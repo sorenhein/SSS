@@ -17,6 +17,7 @@ SOURCE_FILES    =                         \
                                           \
                 plays/Play.cpp            \
                 plays/Plays.cpp           \
+                plays/Node.cpp            \
                                           \
                 strategies/Strategies.cpp \
                 strategies/Strategy.cpp   \

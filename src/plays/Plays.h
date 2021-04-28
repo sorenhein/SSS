@@ -8,6 +8,7 @@
 #include "../strategies/Strategies.h"
 
 #include "Play.h"
+#include "Node.h"
 
 #include "../const.h"
 

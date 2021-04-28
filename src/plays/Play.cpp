@@ -77,6 +77,33 @@ Card const * Play::southTranslate(const unsigned number) const
 }
 
 
+string Play::strPartialTrick(const Level level) const
+{
+  stringstream ss;
+
+  ss <<
+    (side == POSITION_NORTH ? "North" : "South") << ": " <<
+      leadPtr->getName() << " ";
+
+  if (level == LEVEL_RHO)
+  {
+    ss <<
+      lhoPtr->getName() << " " <<
+      pardPtr->getName() << " " <<
+      rhoPtr -> getName() << " (" <<
+      (rotateFlag ? "rotate" : "no rotate") << ")";
+  }
+  else if (level == LEVEL_PARD)
+    ss << lhoPtr->getName() << " " << pardPtr->getName();
+  else if (level == LEVEL_LHO)
+    ss << lhoPtr->getName() << " ";
+  else
+    assert(level == LEVEL_LEAD);
+
+  return ss.str() + "\n";
+}
+
+
 string Play::strTrick(const unsigned number) const
 {
   stringstream ss;

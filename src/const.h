@@ -33,6 +33,15 @@ enum SidePosition
   SIDE_SOUTH = 1
 };
 
+enum Level
+{
+  LEVEL_LEAD = 0,
+  LEVEL_LHO = 1,
+  LEVEL_PARD = 2,
+  LEVEL_RHO = 3,
+  LEVEL_SIZE = 4
+};
+
 enum WinningSide
 {
   WIN_NORTH = 0,

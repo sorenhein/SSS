@@ -7,26 +7,6 @@ Plays:
 - Global constants, only add after += of lead strategies?
 - Log Plays in Ranks directly into a given struct
 
-enum Level
-{
-  LEVEL_LEAD = 0,
-  LEVEL_LHO = 1,
-  LEVEL_PARD = 2
-};
-
-struct Node
-{
-  Play const * playPtr;
-  Tvectors strategies;
-
-  string str(const Levels levels)
-  {
-    if (levels == LEVEL_LEAD)
-      return (something based on playPtr)...
-    else if ...
-  };
-};
-
 struct Nodes
 {
   Level level;

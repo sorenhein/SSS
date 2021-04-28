@@ -65,6 +65,8 @@ struct Play
   Card const * northTranslate(const unsigned number) const;
   Card const * southTranslate(const unsigned number) const;
 
+  string strPartialTrick(const Level level) const;
+
   string strTrick(const unsigned number) const;
 
   string strHeader() const;
