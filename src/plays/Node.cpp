@@ -138,6 +138,12 @@ void Node::add(
 }
 
 
+const Play& Node::play() const
+{
+  return * playPtr;
+}
+
+
 const Strategies& Node::strategies() const
 {
   return strats;
@@ -148,6 +154,20 @@ string Node::strPlay(const Level level) const
 {
   assert(playPtr != nullptr);
   return playPtr->strPartialTrick(level);
+}
+
+
+string Node::strPlayLineHeader() const
+{
+  assert(playPtr != nullptr);
+  return playPtr->strHeader();
+}
+
+
+string Node::strPlayLine() const
+{
+  assert(playPtr != nullptr);
+  return playPtr->strLine();
 }
 
 

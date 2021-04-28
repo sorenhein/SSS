@@ -55,9 +55,15 @@ class Node
       const Level level,
       const bool debugFlag);
 
+    const Play& play() const;
+
     const Strategies& strategies() const;
 
     string strPlay(const Level level) const;
+
+    string strPlayLineHeader() const;
+
+    string strPlayLine() const;
 
     string str(
       const string& title = "",

@@ -53,25 +53,6 @@ Plays::~Plays()
 
 void Plays::reset()
 {
-  sidePrev = SIDE_NORTH; // Doesn't matter -- lead will be different
-  leadPrev = numeric_limits<unsigned>::max();
-  lhoPrev = numeric_limits<unsigned>::max();
-  pardPrev = numeric_limits<unsigned>::max();
-
-  leadNext = 0;
-  lhoNext = 0;
-  pardNext = 0;
-  rhoNext = 0;
-
-  leadNextIter = leadNodes.begin();
-  lhoNextIter = lhoNodes.begin();
-  pardNextIter = pardNodes.begin();
-  rhoNextIter = rhoNodes.begin();
-
-  leadPrevPtr = nullptr;
-  lhoPrevPtr = nullptr;
-  pardPrevPtr = nullptr;
-
   // TODO Add in chunks and leave in place
   plays.clear();
 
@@ -87,11 +68,6 @@ void Plays::resize(const unsigned cardsIn)
   cards = cardsIn;
   chunk = CHUNK_SIZE[cards];
 
-  leadNodes.resize(chunk.lead);
-  lhoNodes.resize(chunk.lho);
-  pardNodes.resize(chunk.pard);
-  rhoNodes.resize(chunk.rho);
-
   nodesLead.resize(LEVEL_LEAD, cardsIn);
   nodesLho.resize(LEVEL_LHO, cardsIn);
   nodesPard.resize(LEVEL_PARD, cardsIn);
@@ -101,123 +77,7 @@ void Plays::resize(const unsigned cardsIn)
 
 unsigned Plays::size() const
 {
-  return rhoNext;
-}
-
-
-Plays::LeadNode * Plays::logLead(
-  const Play& play,
-  bool& newFlag)
-{
-  // TODO Could we just make these right to begin with?
-  const SidePosition side = (play.side == POSITION_NORTH ? SIDE_NORTH : SIDE_SOUTH);
-  const unsigned lead = play.leadPtr->getRank();
-// TODO Move to lead(true), so the number.  Call the variable
-// something with number rather than lead.
-assert(lead == play.lead());
-
-  // We use the fact that plays arrive in order.
-  if (side == sidePrev && lead == leadPrev)
-  {
-    newFlag = false;
-    return leadPrevPtr;
-  }
-
-  if (leadNextIter == leadNodes.end())
-    leadNextIter = leadNodes.insert(leadNextIter, chunk.lead, LeadNode());
-
-  newFlag = true;
-  sidePrev = side;
-  leadPrev = lead;
-
-  LeadNode& node = * leadNextIter;
-  leadNext++;
-  leadNextIter++;
-
-  node.side = side;
-  node.lead = lead;
-  node.strategies.reset();
-
-  leadPrevPtr = &node;
-  return leadPrevPtr;
-}
-
-
-Plays::LhoNode * Plays::logLho(
-  const Play& play,
-  LeadNode * leadPtr,
-  bool& newFlag)
-{
-  const unsigned lho = play.lhoPtr->getRank();
-// TODO Move to lho(true).
-assert(lho == play.lho());
-  if (newFlag == false && lho == lhoPrev)
-    return lhoPrevPtr;
-  
-  if (lhoNextIter == lhoNodes.end())
-    lhoNextIter = lhoNodes.insert(lhoNextIter, chunk.lho, LhoNode());
-
-  newFlag = true;
-  lhoPrev = lho;
-
-  LhoNode& node = * lhoNextIter;
-  lhoNext++;
-  lhoNextIter++;
-
-  node.lho = lho;
-  node.leadPtr = leadPtr;
-  node.strategies.reset();
-
-  lhoPrevPtr = &node;
-  return lhoPrevPtr;
-}
-
-
-Plays::PardNode * Plays::logPard(
-  const Play& play,
-  LhoNode * lhoPtr,
-  bool& newFlag)
-{
-  const unsigned pard = play.pardPtr->getRank();
-// TODO Move to pard(true).
-assert(pard == play.pard());
-  if (newFlag == false && pard == pardPrev)
-    return pardPrevPtr;
-
-  if (pardNextIter == pardNodes.end())
-    pardNextIter = pardNodes.insert(pardNextIter, chunk.pard, PardNode());
-
-  newFlag = true;
-  pardPrev = pard;
-
-  PardNode& node = * pardNextIter;
-  pardNext++;
-  pardNextIter++;
-
-  node.pard = pard;
-  node.lhoPtr = lhoPtr;
-  node.strategies.reset();
-
-  pardPrevPtr = &node;
-  return pardPrevPtr;
-}
-
-
-void Plays::logRho(
-  const Play& play,
-  PardNode * pardPtr)
-{
-  if (rhoNextIter == rhoNodes.end())
-    rhoNextIter = rhoNodes.insert(rhoNextIter, chunk.rho, RhoNode());
-
-  RhoNode& node = * rhoNextIter;
-  rhoNext++;
-  rhoNextIter++;
-
-  node.pardPtr = pardPtr;
-
-  // TMP
-  node.play = play;
+  return nodesRho.used();
 }
 
 
@@ -225,7 +85,7 @@ void Plays::log(const Play& play)
 {
   // The pointers assume that the Ranks object still exists!
 
-  // The new way.  TODO In chunks, too.
+  // TODO In chunks, too.
   plays.push_back(play); 
   Play& playLogged = plays.back();
 
@@ -234,46 +94,11 @@ void Plays::log(const Play& play)
   Node * lhoNodePtr = nodesLho.log(leadNodePtr, &playLogged, newFlag2);
   Node * pardNodePtr = nodesPard.log(lhoNodePtr, &playLogged, newFlag2);
   (void) nodesRho.log(pardNodePtr, &playLogged, newFlag2);
-
-  // The old way.
-  bool newFlag;
-  LeadNode * leadPtr = Plays::logLead(play, newFlag);
-  LhoNode * lhoPtr = Plays::logLho(play, leadPtr, newFlag);
-  PardNode * pardPtr = Plays::logPard(play, lhoPtr, newFlag);
-
-  Plays::logRho(play, pardPtr);
-
-  assert(rhoNodes.size() == nodesRho.size());
-  assert(pardNodes.size() == nodesPard.size());
-  assert(lhoNodes.size() == nodesLho.size());
-  assert(leadNodes.size() == nodesLead.size());
-
-  if (rhoNext != nodesRho.used())
-  {
-    assert(rhoNext == nodesRho.used());
-  }
-  if (pardNext != nodesPard.used())
-  {
-    assert(pardNext == nodesPard.used());
-  }
-  if (lhoNext != nodesLho.used())
-  {
-    assert(lhoNext == nodesLho.used());
-  }
-  if (leadNext != nodesLead.used())
-  {
-    assert(leadNext == nodesLead.used());
-  }
 }
 
 
 void Plays::setCombPtrs(const Combinations& combinations)
 {
-  // TODO That's probably too many -- rhoNextIter
-  for (auto& rhoNode: rhoNodes)
-    rhoNode.play.combPtr = 
-      combinations.getPtr(rhoNode.play.cardsLeft, rhoNode.play.holding3);
-  
   for (auto& nodeRho: nodesRho)
     nodeRho.setCombPtr(combinations);
 }
@@ -283,43 +108,7 @@ void Plays::strategizeRHO(
   Distribution const * distPtr,
   const bool debugFlag)
 {
-  Strategies tvs;
   unsigned rno = 0;
-
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; 
-      rhoIter++, rno++)
-  {
-    const auto& rhoNode = * rhoIter;
-    if (debugFlag)
-      // TODO Maybe add argument "RHO"
-      // Actually even more semantics: If RHO,
-      // Complete trick: a b c d
-      // If pard:
-      // Partial trick: a b c
-      cout << rhoNode.play.strTrick(rno);
-
-    // Find the distribution numbers that are still possible.
-    const Survivors& survivors = distPtr->survivors(rhoNode.play);
-
-    // Get the strategy from the following combination.  
-    tvs = rhoNode.play.combPtr->strategies();
-    if (debugFlag)
-      cout << tvs.str("Strategy of next trick") << endl;
-
-    // Renumber and rotate the strategy.
-    tvs.adapt(rhoNode.play, survivors);
-    if (debugFlag)
-      cout << tvs.str("Adapted strategy of next trick", true);
-
-    // Combine it with the partner node by cross product.
-    rhoNode.pardPtr->strategies *= tvs;
-    if (debugFlag)
-      cout << rhoNode.pardPtr->strategies.str(
-        "Cumulative partner strategy after this trick", true);
-  }
-
-
-  rno = 0;
   for (auto& nodeRho: nodesRho)
   {
     // For RHO nodes we have to populate the strategies first.
@@ -339,28 +128,6 @@ void Plays::strategizeRHO(
 
 void Plays::strategizePard(const bool debugFlag)
 {
-  unsigned pno = 0;
-
-  for (auto pardIter = pardNodes.begin(); pardIter != pardNextIter; 
-      pardIter++, pno)
-  {
-    const auto& pardNode = * pardIter;
-    if (debugFlag)
-      // TODO See above
-      cout << "pard node for " << pardNode.pard << endl;
-
-    // This is the partner strategy.
-    if (debugFlag)
-      cout << pardNode.strategies.str("Adding partner strategy", true);
-
-    // Add it to the LHO node.
-    pardNode.lhoPtr->strategies += pardNode.strategies;
-    if (debugFlag)
-      cout << pardNode.lhoPtr->strategies.str(
-        "Cumulative LHO strategy after this addition", true);
-  }
-
-
   // Add to the corresponding LHO node.
   for (auto& nodePard: nodesPard)
     nodePard.add(LEVEL_PARD, debugFlag);
@@ -369,61 +136,14 @@ void Plays::strategizePard(const bool debugFlag)
 
 void Plays::strategizeLHO(const bool debugFlag)
 {
-  unsigned lno = 0;
-
-  for (auto lhoIter = lhoNodes.begin(); lhoIter != lhoNextIter; 
-      lhoIter++, lno)
-  {
-    const auto& lhoNode = * lhoIter;
-    if (debugFlag)
-      // TODO
-      cout << "LHO node for " << lhoNode.lho << endl;
-
-    // This is the LHO strategy.
-    if (debugFlag)
-      cout << lhoNode.strategies.str("Adding LHO strategy", true) << endl;
-
-    // Combine the LHO strategy with the lead node by cross product.
-    lhoNode.leadPtr->strategies *= lhoNode.strategies;
-    if (debugFlag)
-      cout << lhoNode.leadPtr->strategies.str(
-        "Cumulative lead strategy after this multiplication", true);
-  }
-
-
   // Combine it with the corresponding lead node by cross product.
   for (auto& nodeLho: nodesLho)
     nodeLho.cross(LEVEL_LHO, debugFlag);
 }
 
 
-void Plays::strategizeLead(
-  Strategies& strategies,
-  const bool debugFlag)
+void Plays::strategizeLead(const bool debugFlag)
 {
-  strategies.reset();
-  unsigned lno = 0;
-
-  for (auto ldIter = leadNodes.begin(); ldIter != leadNextIter; 
-      ldIter++, lno++)
-  {
-    const auto& leadNode = * ldIter;
-    if (debugFlag)
-      // TODO
-      cout << "Lead node for " << leadNode.side << " | " << leadNode.lead << endl;
-
-    // This is the lead strategy.
-    if (debugFlag)
-      cout << leadNode.strategies.str("Adding LHO strategy", true) << endl;
-      
-    // Add it to the overall strategy.
-    strategies += leadNode.strategies;
-    if (debugFlag)
-      cout << strategies.str(
-        "Cumulative lead strategy after this addition", true);
-  }
-
-
   nodeMaster.reset();
   
   // Add up the lead strategies into an overall one.
@@ -477,10 +197,11 @@ void Plays::strategize(
   strategizeRHO(distPtr, debugFlag);
   strategizePard(debugFlag);
   strategizeLHO(debugFlag);
-  strategizeLead(strategies, debugFlag);
+  strategizeLead(debugFlag);
 
-  assert(strategies.size() == nodeMaster.strategies().size());
-  assert(strategies == nodeMaster.strategies());
+  // TODO Can we pass out nodeMaster.strategies() directly?
+  // Does it stay in scope?
+  strategies = nodeMaster.strategies();
 }
 
 
@@ -488,38 +209,40 @@ unsigned Plays::studyRHO(
   Distribution const * distPtr,
   const bool debugFlag)
 {
-  
   unsigned playNo = 0;
   unsigned leadNo = 0;
-  unsigned leadLast = rhoNodes.front().play.lead();
 
-  // TODO Just add them one by one?  Then we don't need NextIter
-  //  and we can use end().
-  rhoStudyNodes.resize(rhoNext);
+  // TODO Do we make play() available from Node, or do we somehow
+  // make a derived VoidNode from Node.
+  unsigned leadLast = nodesRho.begin()->play().lead();
+
+  rhoStudyNodes.resize(nodesRho.used());
   auto rhoStudyNextIter = rhoStudyNodes.begin();
-  for (auto rhoIter = rhoNodes.begin(); 
-    rhoIter != rhoNextIter; 
+  for (auto rhoIter = nodesRho.begin(); 
+    rhoIter != nodesRho.end(); 
     rhoIter++, rhoStudyNextIter++, playNo++)
   {
     const auto& rhoNode = * rhoIter;
     auto& studyNode = * rhoStudyNextIter;
-    assert(rhoNode.play.side == SIDE_NORTH);
+    const Play& play = rhoNode.play();
 
-    if (rhoNode.play.lead() != leadLast)
+    assert(play.side == SIDE_NORTH);
+
+    if (play.lead() != leadLast)
     {
       leadNo++;
-      leadLast = rhoNode.play.lead();
+      leadLast = play.lead();
     }
 
-    studyNode.playPtr = &rhoNode.play;
+    studyNode.playPtr = &play;
     studyNode.playNo = playNo;
     studyNode.leadNo = leadNo;
 
-    studyNode.strategies = rhoNode.play.combPtr->strategies();
+    studyNode.strategies = play.combPtr->strategies();
     
     // Renumber and rotate the strategy.
-    const Survivors& survivors = distPtr->survivors(rhoNode.play);
-    studyNode.strategies.adapt(rhoNode.play, survivors);
+    const Survivors& survivors = distPtr->survivors(play);
+    studyNode.strategies.adapt(play, survivors);
 
     studyNode.strategies.bound(studyNode.bounds);
 
@@ -743,10 +466,10 @@ void Plays::strategizeVoid(
   // perhaps expressed more naturally this way.
 
 cout << "Void node counts:" << endl;
-cout << "RHO " << rhoNodes.size() << " " << rhoNext << endl;
-cout << "Pard " << pardNodes.size() << " " << pardNext << endl;
-cout << "LHO " << lhoNodes.size() << " " << lhoNext << endl;
-cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
+cout << nodesRho.strCount();
+cout << nodesPard.strCount();
+cout << nodesLho.strCount();
+cout << nodesLead.strCount();
 
   // We study the strategies in more detail before multiplying
   // and adding them together.  We start by deriving their minima
@@ -785,7 +508,7 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 
   // Combine the plays into an overall strategy for each lead.
   vector<Strategies> leadStrats;
-  leadStrats.resize(leadNext);
+  leadStrats.resize(nodesLead.used());
 
   for (auto& node: rhoStudyNodes)
   {
@@ -848,14 +571,12 @@ cout << "Lead " << leadNodes.size() << " " << leadNext << endl;
 string Plays::str() const
 {
   stringstream ss;
+  
+  assert(nodesRho.begin() != nodesRho.end());
 
-  assert(rhoNodes.begin() != rhoNextIter); // Later ! empty()
-
-  ss << rhoNodes.front().play.strHeader();
-
-  // Later for (auto& node: rhoNodes)
-  for (auto rhoIter = rhoNodes.begin(); rhoIter != rhoNextIter; rhoIter++)
-    ss << rhoIter->play.strLine();
+  ss << nodesRho.begin()->strPlayLineHeader();
+  for (auto& nodeRho: nodesRho)
+    ss << nodeRho.strPlayLine();
 
   return ss.str();
 }

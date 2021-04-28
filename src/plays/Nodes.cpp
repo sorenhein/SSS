@@ -137,6 +137,19 @@ list<Node>::iterator Nodes::end()
 }
 
 
+list<Node>::const_iterator Nodes::begin() const
+{
+  return nodes.begin();
+}
+
+
+list<Node>::const_iterator Nodes::end() const
+{
+  // The end of the used nodes.
+  return nextIter;
+}
+
+
 unsigned Nodes::size() const
 {
   return nodes.size();

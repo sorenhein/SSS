@@ -59,6 +59,9 @@ class Nodes
     list<Node>::iterator begin();
     list<Node>::iterator end();
 
+    list<Node>::const_iterator begin() const;
+    list<Node>::const_iterator end() const;
+
     unsigned size() const;
     unsigned used() const;
 
