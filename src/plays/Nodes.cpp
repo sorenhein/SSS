@@ -78,10 +78,13 @@ Node * Nodes::log(
   prevPlayPtr = playPtr;
 
   Node& node = * nextIter;
+  Node const * prevNodePtr = 
+    (nextIter == nodes.begin() ? nullptr : &* prev(nextIter));
+    
   nextIter++;
   nextEntryNumber++;
 
-  node.set(parentPtr, playPtr);
+  node.set(parentPtr, playPtr, prevNodePtr);
 
   prevPtr = &node;
   return prevPtr;

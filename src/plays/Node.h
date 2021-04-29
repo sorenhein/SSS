@@ -1,12 +1,9 @@
 #ifndef SSS_NODE_H
 #define SSS_NODE_H
 
-#include <list>
 #include <string>
 
 #include "../strategies/Strategies.h"
-
-#include "../const.h"
 
 
 using namespace std;
@@ -29,6 +26,9 @@ class Node
 
     Strategies strats;
 
+    // The number of the entry in the corresponding Nodes.
+    unsigned index;
+
   public:
     
     Node();
@@ -39,7 +39,8 @@ class Node
 
     void set(
       Node * parentPtr,
-      Play * playPtr);
+      Play * playPtr,
+      Node const * prevNodePtr);
 
     void setCombPtr(const Combinations& combinations);
 
@@ -59,6 +60,8 @@ class Node
 
     const Strategies& strategies() const;
 
+    unsigned indexParent() const;
+
     string strPlay(const Level level) const;
 
     string strPlayLineHeader() const;
@@ -68,6 +71,9 @@ class Node
     string str(
       const string& title = "",
       const bool rankFlag = false) const;
+
+    // TODO Delete
+    unsigned indexTMP() const;
 };
 
 #endif

@@ -26,16 +26,19 @@ void Node::reset()
   parentPtr = nullptr;
   playPtr = nullptr;
   strats.reset();
+  index = numeric_limits<unsigned>::max();
 }
 
 
 void Node::set(
   Node * parentPtrIn,
-  Play * playPtrIn)
+  Play * playPtrIn,
+  Node const * prevNodePtr)
 {
   parentPtr = parentPtrIn;
   playPtr = playPtrIn;
   strats.reset();
+  index = (prevNodePtr ? prevNodePtr->index+1 : 0);
 }
 
 
@@ -150,10 +153,18 @@ const Strategies& Node::strategies() const
 }
 
 
+unsigned Node::indexParent() const
+{
+  assert(parentPtr != nullptr);
+  return (parentPtr->index);
+}
+
+
 string Node::strPlay(const Level level) const
 {
   assert(playPtr != nullptr);
-  return playPtr->strPartialTrick(level);
+  return "Node index " + to_string(index) + ", " +
+    playPtr->strPartialTrick(level);
 }
 
 
@@ -176,4 +187,10 @@ string Node::str(
   const bool rankFlag) const
 {
   return strats.str(title, rankFlag);
+}
+
+
+unsigned Node::indexTMP() const
+{
+  return index;
 }

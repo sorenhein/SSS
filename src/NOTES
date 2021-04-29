@@ -1,27 +1,45 @@
 2021-04-28
 ----------
 - Plays
+  - Statistics on #strategies, partly to make sure I'm not breaking anything
+
   - plays in chunks, too
-  - possibly add a playNo to each Node.  It only really makes sense
-    for RHO, as the others get overwritten.
-  - possibly add an orderNo which is the order (within lead, LHO etc.)
-    similar to leadNo in RhoStudyNode. Mainly useful for debugging.
-  - Make a Plays method strNodeCounts().
+
+  - Log Play in Ranks directly into target data structure
+
+  - Make RhoStudyNode look more similar to Node
+
+    struct RhoStudyNode
+    {
+      Node node;
+      Bounds bounds;
+    };
+
+  - Then in void case, have a collapse method where for each RHO
+    node we follow the parentPtr up two levels
+  - Then the leadNo should no longer be needed, as the same as
+    indexParent()
+
+  - Bounds should go in Strategies...
+
   - If we kept Combination::strats in a nodeMaster, we could pass this
     to Plays and then not copy strats in strategize.
-  - Maybe RhoStudyNode is a derived class of Node which includes Bounds.
-    May also be useful with no pard void.
+
   - How would it work with bounds in the non-void case?  Then the
     constants would have to be per pard and not per lead
   - Would it be faster than the non-bound approach?  Or only from
     a certain problem size?
   - That limit might depend on how fast Strategies are.  So maybe we
     should optimize these before fixing the limits finally
-  - Statistics on #strategies, partly to make sure I'm not breaking anything
+
   - Can the loop in studyRHO become a for (auto : nodesRho)?
+
   - Check that number (not rank) is used appropriately
+
   - Completely global constant results: Separate out, too?
-  - Log Play in Ranks directly into target data structure
+
+  - Even the dynamic rank collapse would work for non-voids for RHO.
+    It is only for LHO that it is specialized to pard voids.
 
 - Ranks
   - number to start from 1 when non-void, not 0

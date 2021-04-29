@@ -2,6 +2,7 @@
 #define SSS_PLAYS_H
 
 #include <vector>
+#include <list>
 #include <string>
 
 #include "Play.h"
@@ -10,7 +11,6 @@
 
 #include "../strategies/Strategies.h"
 
-#include "../const.h"
 
 using namespace std;
 
@@ -80,6 +80,8 @@ class Plays
       vector<Strategies>& simpleStrats);
 
     void removeLaterCollapses();
+
+    string strNodeCounts() const;
 
   public:
     

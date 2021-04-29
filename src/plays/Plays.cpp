@@ -82,20 +82,13 @@ void Plays::strategizeRHO(
   const DebugPlay debugFlag)
 {
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  unsigned rno = 0;
   for (auto& nodeRho: nodesRho)
   {
     // For RHO nodes we have to populate the strategies first.
     nodeRho.getStrategies(* distPtr, debug);
 
-    // This prefixes the output in Node::cross.
-    if (debugFlag)
-      cout << "Play #" << rno << ", ";
-
     // Combine it with the partner node by cross product.
     nodeRho.cross(LEVEL_RHO, debug);
-    
-    rno++;
   }
 }
 
@@ -164,13 +157,7 @@ void Plays::strategize(
   // TODO If play is passed to Ranks, then this output will have
   // to be at the end of the method.
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-  {
-    cout << "Node counts:" << endl;
-    cout << nodesRho.strCount();
-    cout << nodesPard.strCount();
-    cout << nodesLho.strCount();
-    cout << nodesLead.strCount();
-  }
+    cout << Plays::strNodeCounts();
 
   strategizeRHO(distPtr, debugFlag);
   strategizePard(debugFlag);
@@ -216,6 +203,12 @@ unsigned Plays::studyRHO(
     studyNode.playPtr = &play;
     studyNode.playNo = playNo;
     studyNode.leadNo = leadNo;
+
+assert(playNo == rhoNode.indexTMP());
+
+// TODO This should work when we log void plays directly with
+// lead as the parent of RHO.
+// assert(leadNo == rhoNode.indexParent());
 
     studyNode.strategies = play.combPtr->strategies();
     
@@ -446,13 +439,7 @@ void Plays::strategizeVoid(
   // perhaps expressed more naturally this way.
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-  {
-    cout << "Void node counts:" << endl;
-    cout << nodesRho.strCount();
-    cout << nodesPard.strCount();
-    cout << nodesLho.strCount();
-    cout << nodesLead.strCount();
-  }
+    cout << Plays::strNodeCounts();
 
   // We study the strategies in more detail before multiplying
   // and adding them together.  We start by deriving their minima
@@ -460,6 +447,7 @@ void Plays::strategizeVoid(
   // that are constant within the set of strategies for a play.
   // The results go in rhoStudyNodes.
   const unsigned numLeads = Plays::studyRHO(distPtr, debugFlag);
+assert(numLeads == nodesLead.used());
 
   // Then we derive the bounds for each lead separately.
   vector<Bounds> boundsLead(numLeads);
@@ -572,6 +560,20 @@ void Plays::strategizeVoid(
 
 // assert(playInfo.size() > 0);
   // strategies = playInfo.front().strategies;
+}
+
+
+string Plays::strNodeCounts() const
+{
+  stringstream ss;
+
+  ss << "Node counts:" << 
+    nodesRho.strCount() <<
+    nodesPard.strCount() <<
+    nodesLho.strCount() <<
+    nodesLead.strCount() << "\n";
+
+  return ss.str();
 }
 
 
