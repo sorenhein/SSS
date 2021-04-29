@@ -79,49 +79,53 @@ void Plays::setCombPtrs(const Combinations& combinations)
 
 void Plays::strategizeRHO(
   Distribution const * distPtr,
-  const bool debugFlag)
+  const DebugPlay debugFlag)
 {
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   unsigned rno = 0;
   for (auto& nodeRho: nodesRho)
   {
     // For RHO nodes we have to populate the strategies first.
-    nodeRho.getStrategies(* distPtr, debugFlag);
+    nodeRho.getStrategies(* distPtr, debug);
 
     // This prefixes the output in Node::cross.
     if (debugFlag)
       cout << "Play #" << rno << ", ";
 
     // Combine it with the partner node by cross product.
-    nodeRho.cross(LEVEL_RHO, debugFlag);
+    nodeRho.cross(LEVEL_RHO, debug);
     
     rno++;
   }
 }
 
 
-void Plays::strategizePard(const bool debugFlag)
+void Plays::strategizePard(const DebugPlay debugFlag)
 {
   // Add to the corresponding LHO node.
+  const bool debug = ((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
   for (auto& nodePard: nodesPard)
-    nodePard.add(LEVEL_PARD, debugFlag);
+    nodePard.add(LEVEL_PARD, debug);
 }
 
 
-void Plays::strategizeLHO(const bool debugFlag)
+void Plays::strategizeLHO(const DebugPlay debugFlag)
 {
   // Combine it with the corresponding lead node by cross product.
+  const bool debug = ((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
   for (auto& nodeLho: nodesLho)
-    nodeLho.cross(LEVEL_LHO, debugFlag);
+    nodeLho.cross(LEVEL_LHO, debug);
 }
 
 
-void Plays::strategizeLead(const bool debugFlag)
+void Plays::strategizeLead(const DebugPlay debugFlag)
 {
   nodeMaster.reset();
   
   // Add up the lead strategies into an overall one.
+  const bool debug = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   for (auto& nodeLead: nodesLead)
-    nodeLead.add(LEVEL_LEAD, debugFlag);
+    nodeLead.add(LEVEL_LEAD, debug);
 }
 
 
@@ -129,7 +133,7 @@ void Plays::strategize(
   const Ranks& ranks,
   Distribution const * distPtr,
   Strategies& strategies,
-  bool debugFlag)
+  const DebugPlay debugFlag)
 {
   // TODO
   // Tiered debugFlag
@@ -154,18 +158,19 @@ void Plays::strategize(
   // outcomes by spreading their probability mass well.
   // This will be examined subsequently.
 
-  // TODO Maybe tiered debugFlag to control the amount of info.
-  // (debugVector & DEBUG_RHO)
   UNUSED(ranks);
 
   // Turn into a string method in Plays.
   // TODO If play is passed to Ranks, then this output will have
   // to be at the end of the method.
-  cout << "Node counts:" << endl;
-  cout << nodesRho.strCount();
-  cout << nodesPard.strCount();
-  cout << nodesLho.strCount();
-  cout << nodesLead.strCount();
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+  {
+    cout << "Node counts:" << endl;
+    cout << nodesRho.strCount();
+    cout << nodesPard.strCount();
+    cout << nodesLho.strCount();
+    cout << nodesLead.strCount();
+  }
 
   strategizeRHO(distPtr, debugFlag);
   strategizePard(debugFlag);
@@ -180,7 +185,7 @@ void Plays::strategize(
 
 unsigned Plays::studyRHO(
   Distribution const * distPtr,
-  const bool debugFlag)
+  const DebugPlay debugFlag)
 {
   unsigned playNo = 0;
   unsigned leadNo = 0;
@@ -188,6 +193,7 @@ unsigned Plays::studyRHO(
   // TODO Do we make play() available from Node, or do we somehow
   // make a derived VoidNode from Node.
   unsigned leadLast = nodesRho.begin()->play().lead();
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   rhoStudyNodes.resize(nodesRho.used());
   auto rhoStudyNextIter = rhoStudyNodes.begin();
@@ -219,7 +225,7 @@ unsigned Plays::studyRHO(
 
     studyNode.strategies.bound(studyNode.bounds);
 
-    if (debugFlag)
+    if (debug)
     {
       cout << studyNode.strategies.str("Strategies");
       cout << studyNode.bounds.str("Play " + to_string(studyNode.playNo));
@@ -232,10 +238,11 @@ unsigned Plays::studyRHO(
 
 void Plays::studyGlobal(
   vector<Bounds>& boundsLead,
-  const bool debugFlag)
+  const DebugPlay debugFlag)
 {
   // Derive global bounds across all plays.
 
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& node: rhoStudyNodes)
   {
     const unsigned leadNo = node.leadNo;
@@ -251,7 +258,7 @@ void Plays::studyGlobal(
   {
     bound.minima.constrict(bound.constants);
 
-    if (debugFlag)
+    if (debug)
       cout << bound.constants.str("Constrained constants " +
         to_string(leadNo)) << endl;
 
@@ -420,7 +427,7 @@ void Plays::removeLaterCollapses()
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Strategies& strategies,
-  const bool debugFlag)
+  const DebugPlay debugFlag)
 {
   // The normal strategize() method also works for combinations
   // where partner is void.  But some of the most difficult,
@@ -438,11 +445,14 @@ void Plays::strategizeVoid(
   // complexity appreciably, but there are some ideas that are
   // perhaps expressed more naturally this way.
 
-cout << "Void node counts:" << endl;
-cout << nodesRho.strCount();
-cout << nodesPard.strCount();
-cout << nodesLho.strCount();
-cout << nodesLead.strCount();
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+  {
+    cout << "Void node counts:" << endl;
+    cout << nodesRho.strCount();
+    cout << nodesPard.strCount();
+    cout << nodesLho.strCount();
+    cout << nodesLead.strCount();
+  }
 
   // We study the strategies in more detail before multiplying
   // and adding them together.  We start by deriving their minima
@@ -460,21 +470,30 @@ cout << nodesLead.strCount();
   vector<Strategies> simpleStrats(numLeads);
   Plays::removeConstants(boundsLead, simpleStrats);
 
-  cout << "Size now " << rhoStudyNodes.size() << endl;
-  unsigned lno = 0;
-  for (auto s: simpleStrats)
+  const bool debugRho = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  const bool debugLead = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+
+  if (debugRho)
   {
-    cout << "simpleStrats for lead number " << lno << endl;
-    cout << s.str("simpleStrats");
-    lno++;
+    cout << "Size now " << rhoStudyNodes.size() << endl;
+    unsigned lno = 0;
+    for (auto s: simpleStrats)
+    {
+      cout << "simpleStrats for lead number " << lno << endl;
+      cout << s.str("simpleStrats");
+      lno++;
+    }
   }
 
   // Some defenses can be removed -- see comment in method.
   Plays::removeDominatedDefenses(boundsLead, simpleStrats);
 
-  cout << "Size now " << rhoStudyNodes.size() << endl;
-  for (unsigned s = 0; s < simpleStrats.size(); s++)
-    cout << simpleStrats[s].str("simple " + to_string(s));
+  if (debugRho)
+  {
+    cout << "Size now " << rhoStudyNodes.size() << endl;
+    for (unsigned s = 0; s < simpleStrats.size(); s++)
+      cout << simpleStrats[s].str("simple " + to_string(s));
+  }
 
   // Declarer should not get too clever about some defensive plays.
   Plays::removeLaterCollapses();
@@ -485,14 +504,20 @@ cout << nodesLead.strCount();
 
   for (auto& node: rhoStudyNodes)
   {
-    cout << "Multiplying play " << node.playNo << " for lead " <<
-      node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
+    if (debugRho)
+    {
+      cout << "Multiplying play " << node.playNo << " for lead " <<
+        node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
+    }
 
     leadStrats[node.leadNo] *= node.strategies;
 
-    cout << " Now " << node.playNo << " for lead " <<
-      node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
-    cout << leadStrats[node.leadNo].str("Strategy") << "\n";
+    if (debugRho)
+    {
+      cout << " Now " << node.playNo << " for lead " <<
+        node.leadNo << ", size " << leadStrats[node.leadNo].size() << endl;
+      cout << leadStrats[node.leadNo].str("Strategy") << "\n";
+    }
   }
 
   // Add back the lead-specific constants.
@@ -502,14 +527,23 @@ cout << nodesLead.strCount();
   // Combine the lead strategies into an overall strategy.
   for (auto& ls: leadStrats)
   {
-    cout << "Adding " << ls.size() << " to " << strategies.size() << endl;
-    cout << ls.str("Adding") << "\n";
+    if (debugLead)
+    {
+      cout << "Adding " << ls.size() << " to " << strategies.size() << endl;
+      cout << ls.str("Adding") << "\n";
+    }
+
     strategies += ls;
-    cout << " Now " << strategies.size() << endl;
-    cout << strategies.str("Added") << "\n";
+
+    if (debugLead)
+    {
+      cout << " Now " << strategies.size() << endl;
+      cout << strategies.str("Added") << "\n";
+    }
   }
 
-  cout << "Final size " << strategies.size() << endl;
+  if (debugLead)
+    cout << "Final size " << strategies.size() << endl;
   
   // So now we know for a given lead that certain distributions can
   // be factored out from the individual strategies: Those constants

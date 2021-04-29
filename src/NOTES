@@ -6,7 +6,6 @@
     for RHO, as the others get overwritten.
   - possibly add an orderNo which is the order (within lead, LHO etc.)
     similar to leadNo in RhoStudyNode. Mainly useful for debugging.
-  - Add a Debug.h with bits for levels of debugging.
   - Make a Plays method strNodeCounts().
   - If we kept Combination::strats in a nodeMaster, we could pass this
     to Plays and then not copy strats in strategize.

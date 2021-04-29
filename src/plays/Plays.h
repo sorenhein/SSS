@@ -6,6 +6,7 @@
 
 #include "Play.h"
 #include "Nodes.h"
+#include "DebugPlay.h"
 
 #include "../strategies/Strategies.h"
 
@@ -50,21 +51,21 @@ class Plays
 
     void strategizeRHO(
       Distribution const * distPtr,
-      const bool debugFlag);
+      const DebugPlay debugFlag);
 
-    void strategizePard(const bool debugFlag);
+    void strategizePard(const DebugPlay debugFlag);
 
-    void strategizeLHO(const bool debugFlag);
+    void strategizeLHO(const DebugPlay debugFlag);
 
-    void strategizeLead(const bool debugFlag);
+    void strategizeLead(const DebugPlay debugFlag);
 
     unsigned studyRHO(
       Distribution const * distPtr,
-      const bool debugFlag);
+      const DebugPlay debugFlag);
 
     void studyGlobal(
       vector<Bounds>& boundsLead,
-      const bool debugFlag);
+      const DebugPlay debugFlag);
 
     bool removePlay(
       const Strategies& strategies,
@@ -100,12 +101,12 @@ class Plays
       const Ranks& ranks,
       Distribution const * distPtr,
       Strategies& strategies,
-      const bool debugFlag = false);
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     void strategizeVoid(
       Distribution const * distPtr,
       Strategies& strategies,
-      const bool debugFlag = false);
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     string str() const;
 };
