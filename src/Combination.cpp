@@ -49,7 +49,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
 
   // Make the plays.
   TrickEntry trivialEntry;
-  plays.reset();
+  plays.clear();
 DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
 // if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
 if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
@@ -119,7 +119,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
 
   // Make the plays.
   TrickEntry trivialEntry;
-  plays.reset();
+  plays.clear();
 if (centry.canonicalHolding3 == 208)
 {
   cout << "HERE0\n";

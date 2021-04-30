@@ -15,7 +15,8 @@
 
 Plays::Plays()
 {
-  Plays::reset();
+  playChunkSize = 0;
+  Plays::clear();
 }
 
 
@@ -24,10 +25,9 @@ Plays::~Plays()
 }
 
 
-void Plays::reset()
+void Plays::clear()
 {
-  // TODO Add in chunks and leave in place
-  plays.clear();
+  nextPlaysIter = plays.begin();
 
   nodesLead.clear();
   nodesLho.clear();
@@ -40,6 +40,9 @@ void Plays::reset()
 void Plays::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
+
+  playChunkSize = CHUNK_SIZE[cards].rho;
+  plays.resize(playChunkSize);
 
   nodesLead.resize(LEVEL_LEAD, cardsIn);
   nodesLho.resize(LEVEL_LHO, cardsIn);
@@ -58,9 +61,13 @@ void Plays::log(const Play& play)
 {
   // We assume that Ranks does not go out of scope!
 
-  // TODO In chunks, too.
-  plays.push_back(play); 
-  Play * playPtr = &plays.back();
+  // Make more play slots in chunks for efficiency.
+  if (nextPlaysIter == plays.end())
+    nextPlaysIter = plays.insert(nextPlaysIter, playChunkSize, Play());
+
+  * nextPlaysIter = play;
+  Play * playPtr = &* nextPlaysIter;
+  nextPlaysIter++;
 
   bool newFlag = false;
   Node * leadNodePtr = nodesLead.log(&nodeMaster, playPtr, newFlag);

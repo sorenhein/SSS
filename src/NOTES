@@ -1,8 +1,6 @@
 2021-04-28
 ----------
 - Plays
-  - plays in chunks, too
-
   - Log Play in Ranks directly into target data structure
 
   - Make RhoStudyNode look more similar to Node

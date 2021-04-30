@@ -37,7 +37,11 @@ class Plays
 
     unsigned cards;
 
+    // We could just always push to the back, but for efficiency
+    // we make more play slots in chunks.
     list<Play> plays;
+    list<Play>::iterator nextPlaysIter;
+    unsigned playChunkSize;
 
     Nodes nodesLead;
     Nodes nodesLho;
@@ -89,7 +93,7 @@ class Plays
 
     ~Plays();
 
-    void reset();
+    void clear();
 
     void resize(const unsigned cardsIn);
 
