@@ -47,6 +47,9 @@ class Combinations
     vector<CountEntry> playCounts;
     vector<CountEntry> threadPlayCounts;
 
+    vector<CountEntry> stratCounts;
+    vector<CountEntry> threadStratCounts;
+
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding
     atomic<unsigned> counterUnique; // Unique index

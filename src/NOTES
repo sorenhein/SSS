@@ -1,8 +1,6 @@
 2021-04-28
 ----------
 - Plays
-  - Statistics on #strategies, partly to make sure I'm not breaking anything
-
   - plays in chunks, too
 
   - Log Play in Ranks directly into target data structure

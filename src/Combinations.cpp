@@ -52,6 +52,7 @@ void Combinations::reset()
   uniques.clear();
   combCounts.clear();
   playCounts.clear();
+  stratCounts.clear();
 }
 
 
@@ -78,10 +79,12 @@ void Combinations::resize(const unsigned maxCardsIn)
 
   combCounts.resize(maxCardsIn+1);
   playCounts.resize(maxCardsIn+1);
+  stratCounts.resize(maxCardsIn+1);
   for (unsigned cards = 0; cards < combCounts.size(); cards++)
   {
     combCounts[cards].reset();
     playCounts[cards].reset();
+    stratCounts[cards].reset();
   }
 }
 
@@ -157,6 +160,7 @@ void Combinations::runUniques(
   assert(cards < uniques.size());
   assert(cards < combCounts.size());
   assert(cards < playCounts.size());
+  assert(cards < stratCounts.size());
 
   vector<CombEntry>& centries = combEntries[cards];
   vector<Combination>& uniqs = uniques[cards];
@@ -205,6 +209,9 @@ UNUSED(distributions);
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
+
+      stratCounts[cards].unique++;
+      stratCounts[cards].total += comb.strategies().size();
     }
     else
     {
@@ -286,6 +293,9 @@ void Combinations::runUniquesMT(
   threadPlayCounts.clear();
   threadPlayCounts.resize(numThreads);
 
+  threadStratCounts.clear();
+  threadStratCounts.resize(numThreads);
+
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
       this, cards, &distributions, thid);
@@ -300,6 +310,7 @@ void Combinations::runUniquesMT(
   {
     combCounts[cards] += threadCombCounts[thid];
     playCounts[cards] += threadPlayCounts[thid];
+    stratCounts[cards] += threadStratCounts[thid];
   }
 }
 
@@ -334,6 +345,7 @@ string Combinations::strUniques(const unsigned cards) const
     setw(9) << "Unique" <<
     setw(9) << "%" <<
     setw(9) << "Plays" <<
+    setw(9) << "Strats" <<
     "\n";
 
   for (unsigned c = cmin; c <= cmax; c++)
@@ -350,6 +362,8 @@ string Combinations::strUniques(const unsigned cards) const
         (100. * combCounts[c].unique) / combCounts[c].total << "%" << 
       setw(9) << fixed << setprecision(2) <<
         playCounts[c].total / static_cast<double>(playCounts[c].unique) <<
+      setw(9) << fixed << setprecision(2) <<
+        stratCounts[c].total / static_cast<double>(stratCounts[c].unique) <<
         "\n";
   }
 
