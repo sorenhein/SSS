@@ -182,7 +182,7 @@ void Plays::strategize(
 }
 
 
-unsigned Plays::studyRHO(
+void Plays::studyRHO(
   Distribution const * distPtr,
   const DebugPlay debugFlag)
 {
@@ -228,16 +228,17 @@ assert(playNo == rhoNode.indexTMP());
     const Survivors& survivors = distPtr->survivors(play);
     studyNode.strategies.adapt(play, survivors);
 
+    if (debug)
+      cout << studyNode.strategies.str("Strategies");
+  }
+
+  for (auto& studyNode: rhoStudyNodes)
+  {
     studyNode.strategies.bound(studyNode.bounds);
 
     if (debug)
-    {
-      cout << studyNode.strategies.str("Strategies");
-      cout << studyNode.bounds.str("Play " + to_string(studyNode.playNo));
-    }
+      cout << studyNode.bounds.str("Bounds " + to_string(studyNode.playNo));
   }
-
-  return leadNo+1;
 }
 
 
@@ -458,8 +459,8 @@ void Plays::strategizeVoid(
   // and maxima across distributions, as well as those distributions
   // that are constant within the set of strategies for a play.
   // The results go in rhoStudyNodes.
-  const unsigned numLeads = Plays::studyRHO(distPtr, debugFlag);
-assert(numLeads == nodesLead.used());
+  Plays::studyRHO(distPtr, debugFlag);
+  const unsigned numLeads = nodesLead.used();
 
   // Then we derive the bounds for each lead separately.
   vector<Bounds> boundsLead(numLeads);
