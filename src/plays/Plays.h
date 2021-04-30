@@ -35,6 +35,12 @@ class Plays
       Bounds bounds;
     };
 
+    struct RhoStudyNodeNew
+    {
+      Node node;
+      Bounds bounds;
+    };
+
     unsigned cards;
 
     // We could just always push to the back, but for efficiency
@@ -51,6 +57,7 @@ class Plays
 
     // For voids.
     list<RhoStudyNode> rhoStudyNodes;
+    list<RhoStudyNodeNew> rhoStudyNodesNew;
 
 
     void getStrategies(
@@ -65,12 +72,13 @@ class Plays
 
     void strategizeLead(const DebugPlay debugFlag);
 
-    unsigned studyRHO(
+    void studyRHO(
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
     void studyGlobal(
       vector<Bounds>& boundsLead,
+      vector<Bounds>& boundsLeadNew,
       const DebugPlay debugFlag);
 
     bool removePlay(

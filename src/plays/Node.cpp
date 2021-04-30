@@ -48,6 +48,14 @@ void Node::setCombPtr(const Combinations& combinations)
 }
 
 
+void Node::linkRhoToLead()
+{
+  // For plays where partner is void, we link the RHO node directly
+  // to the lead node.
+  parentPtr = parentPtr->parentPtr->parentPtr;
+}
+
+
 void Node::getStrategies(
   const Distribution& dist,
   const bool debugFlag)
@@ -138,6 +146,18 @@ void Node::add(
     cout << parentPtr->strats.str(
       "Cumulative " + s + " strategy after this trick", true);
   }
+}
+
+
+void Node:: operator *= (const Strategy& strat2)
+{
+  strats *= strat2;
+}
+
+
+void Node::operator |= (const Node& node2)
+{
+  strats |= node2.strats;
 }
 
 

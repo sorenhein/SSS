@@ -62,6 +62,8 @@ class Nodes
     list<Node>::const_iterator begin() const;
     list<Node>::const_iterator end() const;
 
+    void removeAllLaterCollapses();
+
     unsigned size() const;
     unsigned used() const;
 

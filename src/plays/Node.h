@@ -42,6 +42,8 @@ class Node
       Play * playPtr,
       Node const * prevNodePtr);
 
+    void linkRhoToLead();
+
     void setCombPtr(const Combinations& combinations);
 
     void getStrategies(
@@ -55,6 +57,10 @@ class Node
     void add(
       const Level level,
       const bool debugFlag);
+
+    void operator *=(const Strategy& strat2);
+
+    void operator |=(const Node& node2);
 
     const Play& play() const;
 
