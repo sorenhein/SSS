@@ -53,9 +53,11 @@ class Plays
     list<RhoStudyNode> rhoStudyNodes;
 
 
-    void strategizeRHO(
+    void getStrategies(
       Distribution const * distPtr,
       const DebugPlay debugFlag);
+
+    void strategizeRHO(const DebugPlay debugFlag);
 
     void strategizePard(const DebugPlay debugFlag);
 

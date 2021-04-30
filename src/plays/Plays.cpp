@@ -84,19 +84,23 @@ void Plays::setCombPtrs(const Combinations& combinations)
 }
 
 
-void Plays::strategizeRHO(
+void Plays::getStrategies(
   Distribution const * distPtr,
   const DebugPlay debugFlag)
 {
+  // For RHO nodes we have to populate the strategies first.
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& nodeRho: nodesRho)
-  {
-    // For RHO nodes we have to populate the strategies first.
     nodeRho.getStrategies(* distPtr, debug);
+}
 
-    // Combine it with the partner node by cross product.
+
+void Plays::strategizeRHO(const DebugPlay debugFlag)
+{
+  // Combine it with the corresponding partner node by cross product.
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  for (auto& nodeRho: nodesRho)
     nodeRho.cross(LEVEL_RHO, debug);
-  }
 }
 
 
@@ -166,10 +170,11 @@ void Plays::strategize(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
-  strategizeRHO(distPtr, debugFlag);
-  strategizePard(debugFlag);
-  strategizeLHO(debugFlag);
-  strategizeLead(debugFlag);
+  Plays::getStrategies(distPtr, debugFlag);
+  Plays::strategizeRHO(debugFlag);
+  Plays::strategizePard(debugFlag);
+  Plays::strategizeLHO(debugFlag);
+  Plays::strategizeLead(debugFlag);
 
   // TODO Can we pass out nodeMaster.strategies() directly?
   // Does it stay in scope?
