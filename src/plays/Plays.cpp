@@ -176,26 +176,6 @@ void Plays::strategize(
 }
 
 
-void Plays::studyGlobal(const DebugPlay debugFlag)
-{
-  // Derive global bounds across all plays.
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  // for (auto& nodeRho: rhoStudyNodesNew)
-  for (auto& nodeRho: nodesRho)
-    nodeRho.propagateBounds();
-
-  // Only keep those constants (for a given lead) that
-  // correspond to the minimum achievable outcome.
-  for (auto& nodeLead: nodesLead)
-  {
-    nodeLead.constrictConstantsToMinima();
-    if (debug)
-      cout << nodeLead.strBounds("Alt Constrained constants") << endl;
-  }
-}
-
-
 bool Plays::removePlay(
   const Strategies& strategies,
   Strategies& simpleStrat) const
@@ -215,14 +195,13 @@ bool Plays::removePlay(
 }
 
 
-void Plays::removeConstantsNew(vector<Strategies>& simpleStrats)
+void Plays::removeConstants(vector<Strategies>& simpleStrats)
 {
   // Remove constant distributions (for a given lead) from each 
   // play with that lead.  If a play strategy melts away completely,
   // remove it.  If there is only one strategy vector, also remove
   // it and put in a special simple set of strategies.
 
-  // auto iter = rhoStudyNodesNew.begin();
   auto iter = nodesRho.begin();
   while (iter != nodesRho.end())
   {
@@ -238,8 +217,7 @@ void Plays::removeConstantsNew(vector<Strategies>& simpleStrats)
 }
 
 
-void Plays::removeDominatedDefensesNew(
-  vector<Strategies>& simpleStrats)
+void Plays::removeDominatedDefenses(vector<Strategies>& simpleStrats)
 {
   // For a given lead and a given distribution, let's say the range of 
   // outcomes for a given defensive strategy is (min, max).  Let's also 
@@ -309,74 +287,62 @@ void Plays::strategizeVoid(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after void collapses");
 
-
-
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-
-
-
-  for (auto& nodeRhoNew: nodesRho)
+  // Derive bounds on the trick numbers for each play.
+  for (auto& node: nodesRho)
   {
-    nodeRhoNew.bound();
-
-    if (debug)
-      cout << nodeRhoNew.strBounds("Alt Bounds");
-    
-    // nodeRhoNew.bound();
+    node.bound();
+    if (debugFlag & DEBUGPLAY_RHO_DETAILS)
+      cout << node.strBounds("Bounds");
   }
 
-  // Then we derive the bounds for each lead separately.
-  Plays::studyGlobal(debugFlag);
+  // Derive global bounds for each lead.
+  for (auto& nodeRho: nodesRho)
+    nodeRho.propagateBounds();
 
-  // Remove those constants from the corresponding strategies.
+  // Only keep those constants (for a given lead) that correspond to 
+  // the minimum achievable outcome.
+  for (auto& nodeLead: nodesLead)
+  {
+    nodeLead.constrictConstantsToMinima();
+    if (debugFlag & DEBUGPLAY_RHO_DETAILS)
+      cout << nodeLead.strBounds("Minimum-constrained lead constants") << 
+        endl;
+  }
+
+  // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
-  const unsigned numLeads = nodesLead.used();
-  vector<Strategies> simpleStratsNew(numLeads);
-  Plays::removeConstantsNew(simpleStratsNew);
-
-  const bool debugRho = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  const bool debugLead = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+  vector<Strategies> simpleStrats(nodesLead.used());
+  Plays::removeConstants(simpleStrats);
 
   // Some defenses can be removed -- see comment in method.
-  Plays::removeDominatedDefensesNew(simpleStratsNew);
+  Plays::removeDominatedDefenses(simpleStrats);
 
-  if (debugRho)
+  if (debugFlag & DEBUGPLAY_RHO_DETAILS)
   {
-    cout << "Size New now " << nodesRho.size() << endl;
-    for (unsigned s = 0; s < simpleStratsNew.size(); s++)
-      cout << simpleStratsNew[s].str("simple New " + to_string(s));
+    for (unsigned s = 0; s < simpleStrats.size(); s++)
+      cout << simpleStrats[s].str("simple " + to_string(s));
   }
 
   // Combine the plays into an overall strategy for each lead.
-  // TODO Use one of the strategize methods?
-  const bool debugNew = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  // for (auto& nodeRho: rhoStudyNodesNew)
-  for (auto& nodeRho: nodesRho)
-    nodeRho.cross(LEVEL_RHO, debugNew);
+  // Note that the results end up in nodesLead due to the relinking.
+  Plays::strategizeRHO(debugFlag);
 
   // Add back the lead-specific constants.
   for (auto& nodeLead: nodesLead)
     nodeLead.activateBounds();
 
-  // TODO Could move propagate loop to here?
+  // TODO Don't we have to add simpleStrats back in?!
 
   // Combine the lead strategies into an overall strategy.
-  // TODO Use one of the strategize methods?
-  const bool debugNew2 = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-  for (auto& nodeLead: nodesLead)
-    nodeLead.add(LEVEL_LEAD, debugNew2);
-
+  Plays::strategizeLead(debugFlag);
   strategies = nodeMaster.strategies();
-  cout << strategies.str("Final strategy") << "\n";
-  cout << endl;
 
-  if (debugLead)
+  if (debugFlag & DEBUGPLAY_LEAD_DETAILS)
+  {
+    cout << strategies.str("Final strategy") << "\n\n";
     cout << "Final size " << strategies.size() << endl;
-  
-  // So now we know for a given lead that certain distributions can
-  // be factored out from the individual strategies: Those constants
-  // that are also minima.
+  }
+
 
   // Manual combinations.
   /*
@@ -398,9 +364,6 @@ void Plays::strategizeVoid(
   
   strategies = playInfo[0].strategies;
   */
-
-// assert(playInfo.size() > 0);
-  // strategies = playInfo.front().strategies;
 }
 
 
