@@ -139,9 +139,6 @@ void Plays::strategize(
   Strategies& strategies,
   const DebugPlay debugFlag)
 {
-  // TODO
-  // Tiered debugFlag
-
   // The plays are propagated backwards up to a strategy for the
   // entire trick.  When the defenders have the choice, strategies
   // are "multiplied" together.  The math for this is shown in 
@@ -164,9 +161,6 @@ void Plays::strategize(
 
   UNUSED(ranks);
 
-  // Turn into a string method in Plays.
-  // TODO If play is passed to Ranks, then this output will have
-  // to be at the end of the method.
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
@@ -292,69 +286,44 @@ void Plays::strategizeVoid(
   // cards as the defenders together, and the ranks alternate
   // without declarer having the ace; for example KJ975 missing
   // 7 cards.
-  //
-  // From an optimization point of view, both defenders can 
-  // coordinate and play their cards without intrusion from dummy.
-  // So there is really only one optimization step for both
-  // defenders together and only one for declarer, and not two
-  // each as in the general case.  This in itself does not reduce
-  // complexity appreciably, but there are some ideas that are
-  // perhaps expressed more naturally this way.
+
+  // When partner is void, both defenders can coordinate and play 
+  // their cards without intrusion from dummy.  So there is really 
+  // only one optimization step for both defenders together and only 
+  // one for declarer, and not two each as in the general case.  
+  // This in itself does not reduce complexity appreciably.
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts();
+    cout << Plays::strNodeCounts("before void collapses");
 
-  // We study the strategies in more detail before multiplying
-  // and adding them together.  We start by deriving their minima
-  // and maxima across distributions, as well as those distributions
-  // that are constant within the set of strategies for a play.
-  // The results go in rhoStudyNodes.
-  // Plays::studyRHO(distPtr, debugFlag);
-
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  Plays::getStrategies(distPtr, debugFlag);
-
-  nodesRho.removeAllLaterCollapses();
-
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-  {
-    cout << "Removed later collapses\n";
-    cout << Plays::strNodeCounts();
-  }
-
-  // Set up the parallel nodes.  Should not be necessary once
-  // Bounds migrate into Nodes.
-
-  /*
-  rhoStudyNodesNew.resize(nodesRho.used());
-  auto iterNew = rhoStudyNodesNew.begin();
-
-  for (auto rhoIter = nodesRho.begin(); rhoIter != nodesRho.end();
-    rhoIter++, iterNew++)
-  {
-    iterNew->node = * rhoIter;
-  }
-  */
-
-  // Link RHO nodes directly with lead nodes.
-  // Later on this will become a separate method.
-  // for (auto& nodeRhoNew: rhoStudyNodesNew)
+  // Link RHO nodes directly with lead nodes, skipping partner and LHO.
   for (auto& nodeRhoNew: nodesRho)
     nodeRhoNew.linkRhoToLead();
 
+  Plays::getStrategies(distPtr, debugFlag);
 
-  // for (auto& nodeRhoNew: rhoStudyNodesNew)
+  // Combine some plays around a lead collapse, removing others
+  // from the list of plays.  See comment in the method.
+  nodesRho.removeAllLaterCollapses();
+
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts("after void collapses");
+
+
+
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+
+
+
+
   for (auto& nodeRhoNew: nodesRho)
   {
-    // nodeRhoNew.node.strategies().bound(nodeRhoNew.bounds);
     nodeRhoNew.bound();
 
     if (debug)
       cout << nodeRhoNew.strBounds("Alt Bounds");
-      // cout << nodeRhoNew.bounds.str("Alt Bounds");
     
-    nodeRhoNew.bound();
+    // nodeRhoNew.bound();
   }
 
   // Then we derive the bounds for each lead separately.
@@ -435,11 +404,11 @@ void Plays::strategizeVoid(
 }
 
 
-string Plays::strNodeCounts() const
+string Plays::strNodeCounts(const string& title) const
 {
   stringstream ss;
 
-  ss << "Node counts:" << 
+  ss << "Node counts " << title << ":" << 
     nodesRho.strCount() <<
     nodesPard.strCount() <<
     nodesLho.strCount() <<
