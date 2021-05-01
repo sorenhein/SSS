@@ -68,15 +68,23 @@ class Node
 
     void propagateBounds();
 
+    void constrictConstantsToMinima();
+
+    void getConstrictedParentMaxima(Strategy& max);
+
     void activateBounds();
 
-    void purge(const Strategy& constants);
+    void purgeConstants();
+
+    void purgeSpecific(const Strategy& specifics);
 
     const Play& play() const;
 
     const Strategies& strategies() const;
 
     unsigned indexParent() const;
+
+    string strBounds(const string& title = "") const;
 
     string strPlay(const Level level) const;
 

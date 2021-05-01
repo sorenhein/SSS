@@ -179,15 +179,42 @@ void Node::propagateBounds()
 }
 
 
+void Node::constrictConstantsToMinima()
+{
+  bounds.minima.constrict(bounds.constants);
+}
+
+
+void Node::getConstrictedParentMaxima(Strategy& max)
+{
+  // Get the parent maxima (who's your daddy now?) and keep the
+  // ones that are <= the minima of the current node.  These are
+  // candidates for purging, as the defenders will not enter this
+  // node's strategy with the corresponding distribution.
+  max = parentPtr->bounds.maxima;
+  bounds.minima.constrict(max);
+}
+
+
 void Node::activateBounds()
 {
   strats *= bounds.constants;
 }
 
 
-void Node::purge(const Strategy& constants)
+void Node::purgeConstants()
 {
+  const auto& constants = parentPtr->bounds.constants;
+
   strats.purge(constants);
+  bounds.minima.purge(constants);
+  bounds.maxima.purge(constants);
+}
+
+
+void Node::purgeSpecific(const Strategy& specifics)
+{
+  strats.purge(specifics);
 }
 
 
@@ -207,6 +234,13 @@ unsigned Node::indexParent() const
 {
   assert(parentPtr != nullptr);
   return (parentPtr->index);
+}
+
+
+string Node::strBounds(const string& title) const
+{
+  return bounds.str(title);
+    
 }
 
 

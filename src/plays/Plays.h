@@ -38,7 +38,7 @@ class Plays
     struct RhoStudyNodeNew
     {
       Node node;
-      Bounds bounds;
+      // Bounds bounds;
     };
 
     unsigned cards;
@@ -77,8 +77,8 @@ class Plays
       const DebugPlay debugFlag);
 
     void studyGlobal(
-      vector<Bounds>& boundsLead,
-      vector<Bounds>& boundsLeadNew,
+      // vector<Bounds>& boundsLead,
+      // vector<Bounds>& boundsLeadNew,
       const DebugPlay debugFlag);
 
     bool removePlay(
@@ -90,7 +90,7 @@ class Plays
       vector<Strategies>& simpleStrats);
 
     void removeConstantsNew(
-      const vector<Bounds>& boundsLead,
+      // const vector<Bounds>& boundsLead,
       vector<Strategies>& simpleStrats);
 
     void removeDominatedDefenses(
@@ -98,7 +98,7 @@ class Plays
       vector<Strategies>& simpleStrats);
 
     void removeDominatedDefensesNew(
-      const vector<Bounds>& boundsLead,
+      // const vector<Bounds>& boundsLead,
       vector<Strategies>& simpleStrats);
 
     void removeLaterCollapses();

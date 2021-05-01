@@ -245,12 +245,13 @@ assert(playNo == rhoNode.indexTMP());
 
 
 void Plays::studyGlobal(
-  vector<Bounds>& boundsLead,
-  vector<Bounds>& boundsLeadNew,
+  // vector<Bounds>& boundsLead,
+  // vector<Bounds>& boundsLeadNew,
   const DebugPlay debugFlag)
 {
   // Derive global bounds across all plays.
 
+  /*
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& node: rhoStudyNodes)
   {
@@ -274,21 +275,34 @@ cout << "TRUE " << leadNo << endl;
 
     leadNo++;
   }
+  */
 
+  /*
   for (auto& nodeRho: rhoStudyNodesNew)
   {
     const unsigned leadNoNew = nodeRho.node.indexParent();
-cout << "TRUENEW " << leadNoNew << endl;
     boundsLeadNew[leadNoNew].minima *= nodeRho.bounds.minima;
     boundsLeadNew[leadNoNew].maxima *= nodeRho.bounds.maxima;
     boundsLeadNew[leadNoNew].constants *= nodeRho.bounds.constants;
   }
+  */
+
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   for (auto& nodeRho: rhoStudyNodesNew)
     nodeRho.node.propagateBounds();
 
   // Only keep those constants (for a given lead) that
   // correspond to the minimum achievable outcome.
+  for (auto& nodeLead: nodesLead)
+  {
+    nodeLead.constrictConstantsToMinima();
+    if (debug)
+      cout << nodeLead.strBounds("Alt Constrained constants") << endl;
+  }
+
+
+  /*
   for (auto& bound: boundsLeadNew)
   {
     bound.minima.constrict(bound.constants);
@@ -297,6 +311,7 @@ cout << "TRUENEW " << leadNoNew << endl;
     if (debug)
       cout << bound.constants.str("Alt Constrained constants") << endl;
   }
+  */
 
 }
 
@@ -349,7 +364,7 @@ void Plays::removeConstants(
 
 
 void Plays::removeConstantsNew(
-  const vector<Bounds>& boundsLead,
+  // const vector<Bounds>& boundsLead,
   vector<Strategies>& simpleStrats)
 {
   // Remove constant distributions (for a given lead) from each 
@@ -361,13 +376,13 @@ void Plays::removeConstantsNew(
   while (iter != rhoStudyNodesNew.end())
   {
     auto& node = * iter;
+    // const auto& constants = boundsLead[leadNo].constants;
+
+    node.node.purgeConstants();
+    // node.bounds.minima.purge(constants);
+    // node.bounds.maxima.purge(constants);
+
     const unsigned leadNo = node.node.indexParent();
-    const auto& constants = boundsLead[leadNo].constants;
-
-    node.node.purge(constants);
-    node.bounds.minima.purge(constants);
-    node.bounds.maxima.purge(constants);
-
     if (Plays::removePlay(node.node.strategies(), simpleStrats[leadNo]))
       iter = rhoStudyNodesNew.erase(iter);
     else
@@ -412,7 +427,7 @@ void Plays::removeDominatedDefenses(
 
 
 void Plays::removeDominatedDefensesNew(
-  const vector<Bounds>& boundsLead,
+  // const vector<Bounds>& boundsLead,
   vector<Strategies>& simpleStrats)
 {
   // For a given lead and a given distribution, let's say the range of 
@@ -421,15 +436,19 @@ void Plays::removeDominatedDefensesNew(
   // Then if M <= min, the defenders will never enter that strategy
   // with that distribution, so it can be removed from their options.
 
+  Strategy max;
   auto iter = rhoStudyNodesNew.begin();
   while (iter != rhoStudyNodesNew.end())
   {
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
-    const unsigned leadNo = node.node.indexParent();
-    Strategy max = boundsLead[leadNo].maxima;
-    node.bounds.minima.constrict(max);
+    node.node.getConstrictedParentMaxima(max);
+
+    // const unsigned leadNo = node.node.indexParent();
+    // Strategy max = boundsLead[leadNo].maxima;
+    // node.bounds.minima.constrict(max);
+
     if (max.size() == 0)
     {
       // Nothing to purge.
@@ -438,8 +457,10 @@ void Plays::removeDominatedDefensesNew(
     }
 
     // node.strategies.purge(max);
-    node.node.purge(max);
+    // node.node.purge(max);
+    node.node.purgeSpecific(max);
 
+    const unsigned leadNo = node.node.indexParent();
     if (Plays::removePlay(node.node.strategies(), simpleStrats[leadNo]))
       iter = rhoStudyNodesNew.erase(iter);
     else
@@ -552,12 +573,18 @@ void Plays::strategizeVoid(
   // and maxima across distributions, as well as those distributions
   // that are constant within the set of strategies for a play.
   // The results go in rhoStudyNodes.
-  Plays::studyRHO(distPtr, debugFlag);
+  // Plays::studyRHO(distPtr, debugFlag);
 
   // ------------------------
 
   // Declarer should not get too clever about some defensive plays.
-  Plays::removeLaterCollapses();
+  // Plays::removeLaterCollapses();
+
+  cout << "ABCDE0 " << nodesRho.size() << " " << nodesRho.used() << endl;
+
+  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  Plays::getStrategies(distPtr, debugFlag);
+  nodesRho.removeAllLaterCollapses();
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
   {
@@ -565,11 +592,6 @@ void Plays::strategizeVoid(
     cout << Plays::strNodeCounts();
   }
 
-  cout << "ABCDE0 " << nodesRho.size() << " " << nodesRho.used() << endl;
-
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  Plays::getStrategies(distPtr, debugFlag);
-  nodesRho.removeAllLaterCollapses();
 
   cout << "ABCDE1 " << nodesRho.size() << " " << nodesRho.used() << endl;
 
@@ -585,9 +607,10 @@ void Plays::strategizeVoid(
     iterNew->node = * rhoIter;
   }
 
-cout << "ABCD1 " << rhoStudyNodes.size () << " " <<
-  rhoStudyNodesNew.size() << endl;
+// cout << "ABCD1 " << rhoStudyNodes.size () << " " <<
+  // rhoStudyNodesNew.size() << endl;
 
+  /*
   cout << "AFTER only remove\n";
   for (auto& node: rhoStudyNodes)
   {
@@ -601,8 +624,7 @@ cout << "ABCD1 " << rhoStudyNodes.size () << " " <<
   {
     cout << node.node.strategies().str("Strategy", false);
   }
-
-
+  */
 
 
   /*
@@ -625,10 +647,12 @@ cout << "ABCD1 " << rhoStudyNodes.size () << " " <<
 
   for (auto& nodeRhoNew: rhoStudyNodesNew)
   {
-    nodeRhoNew.node.strategies().bound(nodeRhoNew.bounds);
+    // nodeRhoNew.node.strategies().bound(nodeRhoNew.bounds);
+    nodeRhoNew.node.bound();
 
     if (debug)
-      cout << nodeRhoNew.bounds.str("Alt Bounds");
+      cout << nodeRhoNew.node.strBounds("Alt Bounds");
+      // cout << nodeRhoNew.bounds.str("Alt Bounds");
     
     nodeRhoNew.node.bound();
   }
@@ -638,6 +662,7 @@ cout << "ABCD1 " << rhoStudyNodes.size () << " " <<
 
   const unsigned numLeads = nodesLead.used();
 
+/*
 cout << "ABC0 " << rhoStudyNodes.size () << " " <<
   rhoStudyNodesNew.size() << endl;
 
@@ -657,14 +682,16 @@ cout << "ABC1 " << rhoStudyNodes.size () << " " <<
   {
     cout << node.node.strategies().str("Strategy", false);
   }
+  */
 
 
 
   // Then we derive the bounds for each lead separately.
-  vector<Bounds> boundsLead(numLeads);
-  vector<Bounds> boundsLeadNew(numLeads);
-  Plays::studyGlobal(boundsLead, boundsLeadNew, debugFlag);
+  // vector<Bounds> boundsLead(numLeads);
+  // vector<Bounds> boundsLeadNew(numLeads);
+  Plays::studyGlobal(debugFlag);
 
+  /*
   cout << "BEFORE removeConstants\n";
   for (auto& node: rhoStudyNodes)
   {
@@ -672,6 +699,7 @@ cout << "ABC1 " << rhoStudyNodes.size () << " " <<
         node.leadNo << endl;
     cout << node.strategies.str("Strategy", false);
   }
+  */
 
   cout << "BEFORE removeConstantsNew\n";
   for (auto& node: rhoStudyNodesNew)
@@ -682,18 +710,20 @@ cout << "ABC1 " << rhoStudyNodes.size () << " " <<
 
   // Remove those constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall vector.
-  vector<Strategies> simpleStrats(numLeads);
-  Plays::removeConstants(boundsLead, simpleStrats);
+  // vector<Strategies> simpleStrats(numLeads);
+  // Plays::removeConstants(boundsLead, simpleStrats);
 
   vector<Strategies> simpleStratsNew(numLeads);
-  Plays::removeConstantsNew(boundsLeadNew, simpleStratsNew);
+  // Plays::removeConstantsNew(boundsLeadNew, simpleStratsNew);
+  Plays::removeConstantsNew(simpleStratsNew);
 
-cout << "ABC2 " << rhoStudyNodes.size () << " " <<
-  rhoStudyNodesNew.size() << endl;
+// cout << "ABC2 " << rhoStudyNodes.size () << " " <<
+  // rhoStudyNodesNew.size() << endl;
 
   const bool debugRho = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   const bool debugLead = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
+  /*
   if (debugRho)
   {
     cout << "Size now " << rhoStudyNodes.size() << endl;
@@ -705,7 +735,9 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
       lno++;
     }
   }
+  */
 
+  /*
   cout << "BEFORE removeDominatedDefenses\n";
   for (auto& node: rhoStudyNodes)
   {
@@ -713,24 +745,28 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
         node.leadNo << endl;
     cout << node.strategies.str("Strategy", false);
   }
+  */
 
+  /*
   cout << "BEFORE removeDominatedDefensesNew\n";
   for (auto& node: rhoStudyNodesNew)
   {
     cout << node.node.strategies().str("Strategy", false);
   }
+  */
 
   // Some defenses can be removed -- see comment in method.
-  Plays::removeDominatedDefenses(boundsLead, simpleStrats);
+  // Plays::removeDominatedDefenses(boundsLead, simpleStrats);
 
 
-  Plays::removeDominatedDefensesNew(boundsLeadNew, simpleStratsNew);
+  // Plays::removeDominatedDefensesNew(boundsLeadNew, simpleStratsNew);
+  Plays::removeDominatedDefensesNew(simpleStratsNew);
 
   if (debugRho)
   {
-    cout << "Size now " << rhoStudyNodes.size() << endl;
-    for (unsigned s = 0; s < simpleStrats.size(); s++)
-      cout << simpleStrats[s].str("simple " + to_string(s));
+    // cout << "Size now " << rhoStudyNodes.size() << endl;
+    // for (unsigned s = 0; s < simpleStrats.size(); s++)
+      // cout << simpleStrats[s].str("simple " + to_string(s));
 
     cout << "Size New now " << rhoStudyNodesNew.size() << endl;
     for (unsigned s = 0; s < simpleStratsNew.size(); s++)
@@ -741,6 +777,7 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
   // Plays::removeLaterCollapses();
 
   // Combine the plays into an overall strategy for each lead.
+  /*
   vector<Strategies> leadStrats;
   leadStrats.resize(nodesLead.used());
 
@@ -763,6 +800,7 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
       cout << leadStrats[node.leadNo].str("Strategy") << "\n";
     }
   }
+  */
 
   // This is like strategizeRho now.
   const bool debugNew = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
@@ -771,21 +809,17 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
 
 
   // Add back the lead-specific constants.
-  for (unsigned l = 0; l < leadStrats.size(); l++)
-    leadStrats[l] *= boundsLead[l].constants;
-
-  for (auto& nodeLead: nodesLead)
-    nodeLead.activateBounds();
+  // for (unsigned l = 0; l < leadStrats.size(); l++)
+    // leadStrats[l] *= boundsLead[l].constants;
 
   // Add back the lead-specific constants.
-  // for (auto& nodeRho: rhoStudyNodesNew)
-    // nodeRho.node *= nodeRho.bounds.constants;
-  // for (auto& nodeLead: nodesLead)
-    // nodeLead.node *= nodeLead.bounds.constants;
+  for (auto& nodeLead: nodesLead)
+    nodeLead.activateBounds();
 
   // TODO Could move propagate loop to here?
 
   // Combine the lead strategies into an overall strategy.
+  /*
   for (auto& ls: leadStrats)
   {
     if (debugLead)
@@ -802,18 +836,19 @@ cout << "ABC2 " << rhoStudyNodes.size () << " " <<
       cout << strategies.str("Added") << "\n";
     }
   }
+  */
 
   // This is like strategizeLead now.
   const bool debugNew2 = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   for (auto& nodeLead: nodesLead)
     nodeLead.add(LEVEL_LEAD, debugNew2);
 
-  auto strategiesNew = nodeMaster.strategies();
-  cout << strategiesNew.str("New untested") << "\n";
+  strategies = nodeMaster.strategies();
+  cout << strategies.str("New untested") << "\n";
   cout << endl;
 
   // TODO For later, when all is hooked up again.
-  assert(strategies == strategiesNew);
+  // assert(strategies == strategiesNew);
 
   if (debugLead)
     cout << "Final size " << strategies.size() << endl;
