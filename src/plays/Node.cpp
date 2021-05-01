@@ -93,7 +93,8 @@ void Node::cross(
     else
       assert(false);
 
-    cout << strats.str("Crossing " + s + "strategy", true);
+    // cout << strats.str("Crossing " + s + " strategy", true);
+    cout << strats.str("Crossing " + s + " strategy", false);
   }
 
   parentPtr->strats *= strats;
@@ -109,7 +110,8 @@ void Node::cross(
       assert(false);
 
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", true);
+      "Cumulative " + s + " strategy after this trick", false);
+      // "Cumulative " + s + " strategy after this trick", true);
   }
 }
 
@@ -130,7 +132,8 @@ void Node::add(
     else
       assert(false);
 
-    cout << strats.str("Adding " + s + " strategy", true);
+    cout << strats.str("Adding " + s + " strategy", false);
+    // cout << strats.str("Adding " + s + " strategy", true);
   }
 
   parentPtr->strats += strats;
@@ -144,7 +147,8 @@ void Node::add(
       s = "LHO";
 
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", true);
+      "Cumulative " + s + " strategy after this trick");
+      // "Cumulative " + s + " strategy after this trick", true);
   }
 }
 
@@ -158,6 +162,32 @@ void Node:: operator *= (const Strategy& strat2)
 void Node::operator |= (const Node& node2)
 {
   strats |= node2.strats;
+}
+
+
+void Node::bound()
+{
+  strats.bound(bounds);
+}
+
+
+void Node::propagateBounds()
+{
+  parentPtr->bounds.minima *= bounds.minima;
+  parentPtr->bounds.maxima *= bounds.maxima;
+  parentPtr->bounds.constants *= bounds.constants;
+}
+
+
+void Node::activateBounds()
+{
+  strats *= bounds.constants;
+}
+
+
+void Node::purge(const Strategy& constants)
+{
+  strats.purge(constants);
 }
 
 

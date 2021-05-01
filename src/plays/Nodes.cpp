@@ -171,6 +171,7 @@ void Nodes::removeAllLaterCollapses()
       {
         * iter |= * iter2;
         iter2 = nodes.erase(iter2);
+        nextEntryNumber--;
       }
     }
     else if (lhoRank+1 == leadRank)
@@ -188,6 +189,7 @@ void Nodes::removeAllLaterCollapses()
         {
           * iter |= * iter2;
           iter2 = nodes.erase(iter2);
+          nextEntryNumber--;
         }
         else
           iter2++;

@@ -26,6 +26,8 @@ class Node
 
     Strategies strats;
 
+    Bounds bounds;
+
     // The number of the entry in the corresponding Nodes.
     unsigned index;
 
@@ -61,6 +63,14 @@ class Node
     void operator *=(const Strategy& strat2);
 
     void operator |=(const Node& node2);
+
+    void bound();
+
+    void propagateBounds();
+
+    void activateBounds();
+
+    void purge(const Strategy& constants);
 
     const Play& play() const;
 

@@ -42,14 +42,22 @@ bool Strategies::operator ==(const Strategies& tvs)
 {
   // TODO This assumes the same ordering, but it's a start.
   if (Strategies::size() != tvs.size())
+  {
+cout << "Size " <<Strategies::size() << " vs " << tvs.size() << endl;
     return false;
+  }
 
+unsigned i = 0;
   auto iter2 = tvs.results.begin();
   for (auto iter1 = results.begin(); iter1 != results.end(); 
       iter1++, iter2++)
   {
     if (!(* iter1 == * iter2))
+    {
+cout << "ABOUT TO DIFFER " << i << "\n";
       return false;
+    }
+    i++;
   }
 
   return true;

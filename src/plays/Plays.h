@@ -89,7 +89,15 @@ class Plays
       const vector<Bounds>& boundsLead,
       vector<Strategies>& simpleStrats);
 
+    void removeConstantsNew(
+      const vector<Bounds>& boundsLead,
+      vector<Strategies>& simpleStrats);
+
     void removeDominatedDefenses(
+      const vector<Bounds>& boundsLead,
+      vector<Strategies>& simpleStrats);
+
+    void removeDominatedDefensesNew(
       const vector<Bounds>& boundsLead,
       vector<Strategies>& simpleStrats);
 
