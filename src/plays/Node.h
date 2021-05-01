@@ -26,6 +26,12 @@ class Node
 
     Strategies strats;
 
+    // These are only used when partner is void for now, so it is
+    // a bit of an extravagance to have them in all nodes.  If they
+    // stay confined to voids (and within voids, only RHO), perhaps
+    // they get their own derived class?
+    Strategies simpleStrats;
+
     Bounds bounds;
 
     // The number of the entry in the corresponding Nodes.
@@ -66,6 +72,8 @@ class Node
 
     void operator |=(const Node& node2);
 
+    bool removePlay();
+
     void bound();
 
     void propagateBounds();
@@ -80,11 +88,11 @@ class Node
 
     void purgeSpecific(const Strategy& specifics);
 
+    void integrateSimpleStrategies();
+
     const Play& play() const;
 
     const Strategies& strategies() const;
-
-    unsigned indexParent() const;
 
     string strBounds(const string& title = "") const;
 
@@ -94,12 +102,11 @@ class Node
 
     string strPlayLine() const;
 
+    string strSimple() const;
+
     string str(
       const string& title = "",
       const bool rankFlag = false) const;
-
-    // TODO Delete
-    unsigned indexTMP() const;
 };
 
 #endif

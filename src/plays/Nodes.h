@@ -71,6 +71,8 @@ class Nodes
     unsigned used() const;
 
     string strCount() const;
+
+    string strSimple() const;
 };
 
 #endif

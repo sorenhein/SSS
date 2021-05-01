@@ -208,26 +208,7 @@ void Plays::strategizeNew(
 }
 
 
-bool Plays::removePlay(
-  const Strategies& strategies,
-  Strategies& simpleStrat) const
-{
-  if (strategies.numDists() == 0)
-    return true;
-  else if (strategies.size() == 0)
-    return true;
-  else if (strategies.size() == 1)
-  {
-    simpleStrat *= strategies;
-    assert(simpleStrat.size() == 1);
-    return true;
-  }
-  else
-    return false;
-}
-
-
-void Plays::removeConstants(vector<Strategies>& simpleStrats)
+void Plays::removeConstants()
 {
   // Remove constant distributions (for a given lead) from each 
   // play with that lead.  If a play strategy melts away completely,
@@ -240,8 +221,7 @@ void Plays::removeConstants(vector<Strategies>& simpleStrats)
     auto& node = * iter;
     node.purgeConstants();
 
-    const unsigned leadNo = node.indexParent();
-    if (Plays::removePlay(node.strategies(), simpleStrats[leadNo]))
+    if (node.removePlay())
       iter = nodesRho.erase(iter);
     else
       iter++;
@@ -249,7 +229,7 @@ void Plays::removeConstants(vector<Strategies>& simpleStrats)
 }
 
 
-void Plays::removeDominatedDefenses(vector<Strategies>& simpleStrats)
+void Plays::removeDominatedDefenses()
 {
   // For a given lead and a given distribution, let's say the range of 
   // outcomes for a given defensive strategy is (min, max).  Let's also 
@@ -275,8 +255,7 @@ void Plays::removeDominatedDefenses(vector<Strategies>& simpleStrats)
 
     node.purgeSpecific(max);
 
-    const unsigned leadNo = node.indexParent();
-    if (Plays::removePlay(node.strategies(), simpleStrats[leadNo]))
+    if (node.removePlay())
       iter = nodesRho.erase(iter);
     else
       iter++;
@@ -343,31 +322,22 @@ void Plays::strategizeVoid(
   }
 
   // Remove the lead constants from the corresponding strategies.
-  // Collect all strategies with a single vector into an overall vector.
-  vector<Strategies> simpleStrats(nodesLead.used());
-  Plays::removeConstants(simpleStrats);
+  // Collect all strategies with a single vector into an overall strategy.
+  Plays::removeConstants();
 
   // Some defenses can be removed -- see comment in method.
-  Plays::removeDominatedDefenses(simpleStrats);
+  Plays::removeDominatedDefenses();
 
   if (debugFlag & DEBUGPLAY_RHO_DETAILS)
-  {
-    for (unsigned s = 0; s < simpleStrats.size(); s++)
-      cout << simpleStrats[s].str("simple " + to_string(s));
-  }
+    cout << nodesLead.strSimple();
 
   // Combine the plays into an overall strategy for each lead.
   // Note that the results end up in nodesLead due to the relinking.
   Plays::strategizeRHO(debugFlag);
 
   // Add back the simple strategies.
-  // TODO We could have simpleStrats in Node.
-  // Then in the remove... methods we would test if (node.removePlay())
-  // and this would load simpleStrats of the parent.
-  // Then this loop would be nodeLead.integrateSimpleStrategies()
-  // Nodes would have a nodesLead.strSimple() method.
   for (auto& nodeLead: nodesLead)
-    nodeLead *= simpleStrats[nodeLead.indexTMP()];
+    nodeLead.integrateSimpleStrategies();
 
   // Add back the lead-specific constants.
   for (auto& nodeLead: nodesLead)

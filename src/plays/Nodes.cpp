@@ -263,3 +263,12 @@ string Nodes::strCount() const
   return ss.str();
 }
 
+
+string Nodes::strSimple() const
+{
+  stringstream ss;
+  for (auto& node: nodes)
+    ss <<  node.strSimple();
+  return ss.str();
+}
+

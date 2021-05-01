@@ -26,6 +26,7 @@ void Node::reset()
   parentPtr = nullptr;
   playPtr = nullptr;
   strats.reset();
+  simpleStrats.reset();
   index = numeric_limits<unsigned>::max();
 }
 
@@ -38,6 +39,7 @@ void Node::set(
   parentPtr = parentPtrIn;
   playPtr = playPtrIn;
   strats.reset();
+  simpleStrats.reset();
   index = (prevNodePtr ? prevNodePtr->index+1 : 0);
 }
 
@@ -171,6 +173,23 @@ void Node::operator |= (const Node& node2)
 }
 
 
+bool Node::removePlay()
+{
+  if (strats.numDists() == 0)
+    return true;
+  else if (strats.size() == 0)
+    return true;
+  else if (strats.size() == 1)
+  {
+    parentPtr->simpleStrats *= strats;
+    assert(parentPtr->simpleStrats.size() == 1);
+    return true;
+  }
+  else
+    return false;
+}
+
+
 void Node::bound()
 {
   strats.bound(bounds);
@@ -224,6 +243,12 @@ void Node::purgeSpecific(const Strategy& specifics)
 }
 
 
+void Node::integrateSimpleStrategies()
+{
+  strats *= simpleStrats;
+}
+
+
 const Play& Node::play() const
 {
   return * playPtr;
@@ -233,13 +258,6 @@ const Play& Node::play() const
 const Strategies& Node::strategies() const
 {
   return strats;
-}
-
-
-unsigned Node::indexParent() const
-{
-  assert(parentPtr != nullptr);
-  return (parentPtr->index);
 }
 
 
@@ -272,6 +290,12 @@ string Node::strPlayLine() const
 }
 
 
+string Node::strSimple() const
+{
+  return simpleStrats.str("simple " + to_string(index));
+}
+
+
 string Node::str(
   const string& title,
   const bool rankFlag) const
@@ -279,8 +303,3 @@ string Node::str(
   return strats.str(title, rankFlag);
 }
 
-
-unsigned Node::indexTMP() const
-{
-  return index;
-}
