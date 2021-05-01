@@ -50,17 +50,15 @@ class Plays
 
     void strategizeLead(const DebugPlay debugFlag);
 
-    void studyGlobal(const DebugPlay debugFlag);
-
     bool removePlay(
       const Strategies& strategies,
       Strategies& simpleStrat) const;
 
-    void removeConstantsNew(vector<Strategies>& simpleStrats);
+    void removeConstants(vector<Strategies>& simpleStrats);
 
-    void removeDominatedDefensesNew(vector<Strategies>& simpleStrats);
+    void removeDominatedDefenses(vector<Strategies>& simpleStrats);
 
-    string strNodeCounts() const;
+    string strNodeCounts(const string& title = "") const;
 
   public:
     

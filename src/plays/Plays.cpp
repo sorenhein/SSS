@@ -295,7 +295,7 @@ void Plays::strategizeVoid(
       cout << node.strBounds("Bounds");
   }
 
-  // Derive global bounds for each lead.
+  // Derive global bounds for each lead, ending up in nodesLead.
   for (auto& nodeRho: nodesRho)
     nodeRho.propagateBounds();
 
