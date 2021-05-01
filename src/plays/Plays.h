@@ -76,30 +76,15 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
-    void studyGlobal(
-      // vector<Bounds>& boundsLead,
-      // vector<Bounds>& boundsLeadNew,
-      const DebugPlay debugFlag);
+    void studyGlobal(const DebugPlay debugFlag);
 
     bool removePlay(
       const Strategies& strategies,
       Strategies& simpleStrat) const;
 
-    void removeConstants(
-      const vector<Bounds>& boundsLead,
-      vector<Strategies>& simpleStrats);
+    void removeConstantsNew(vector<Strategies>& simpleStrats);
 
-    void removeConstantsNew(
-      // const vector<Bounds>& boundsLead,
-      vector<Strategies>& simpleStrats);
-
-    void removeDominatedDefenses(
-      const vector<Bounds>& boundsLead,
-      vector<Strategies>& simpleStrats);
-
-    void removeDominatedDefensesNew(
-      // const vector<Bounds>& boundsLead,
-      vector<Strategies>& simpleStrats);
+    void removeDominatedDefensesNew(vector<Strategies>& simpleStrats);
 
     void removeLaterCollapses();
 
