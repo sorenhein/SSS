@@ -82,6 +82,12 @@ class Plays
       Strategies& strategies,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
+    void strategizeNew(
+      const Ranks& ranks,
+      Distribution const * distPtr,
+      Strategies& strategies,
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
+
     void strategizeVoid(
       Distribution const * distPtr,
       Strategies& strategies,

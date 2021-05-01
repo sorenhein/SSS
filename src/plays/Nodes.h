@@ -64,7 +64,8 @@ class Nodes
 
     list<Node>::iterator erase(list<Node>::iterator iter);
 
-    void removeAllLaterCollapses();
+    void removeCollapsesRHO();
+    void removeCollapsesVoidLHO();
 
     unsigned size() const;
     unsigned used() const;

@@ -123,21 +123,16 @@ list<Node>::iterator Nodes::erase(list<Node>::iterator iter)
 }
 
 
-void Nodes::removeAllLaterCollapses()
+void Nodes::removeCollapsesRHO()
 {
   // Look for rank collapses that happen "during the trick".
-  // For example, with KJ975 missing 7 cards, if declarer leads the 5,
+  // For example, with KJ975 /void missing 7 cards, if declarer leads the 5,
   // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
   // be the same, but even during the trick declarer should not distinguish
   // between the 6 and the x.  We don't give up on the difference, but we
   // merge the strategies vector by vector, and not by cross product.
   // Declarer should not play differently based on a distinction that
   // the defense can create without a real difference.
-  //
-  // TODO Split into a general one for RHO only, and a void one
-  // for LHO only.
-  // TODO In order to hook this up instead of the corresponding
-  // method in Plays, we first need to move Bounds to Nodes, I think.
 
   auto iter = nodes.begin();
   while (iter != nextIter)
@@ -154,7 +149,10 @@ void Nodes::removeAllLaterCollapses()
       continue;
     }
 
+    // The test for the same pardRank is unnecessary if partner is
+    // known to be void.  The method also works if partner has cards.
     const unsigned lhoRank = play.lho();
+    const unsigned pardRank = play.pard();
     const unsigned rhoRank = play.rho();
     const unsigned leadRank = play.lead();
     const unsigned h3 = play.holding3;
@@ -173,6 +171,7 @@ void Nodes::removeAllLaterCollapses()
       auto iter2 = next(iter);
       while (iter2 != nextIter &&
           iter2->play().holding3 == h3 &&
+          iter2->play().pard() == pardRank &&
           iter2->play().lho() == lhoRank)
       {
         * iter |= * iter2;
@@ -180,7 +179,35 @@ void Nodes::removeAllLaterCollapses()
         nextEntryNumber--;
       }
     }
-    else if (lhoRank+1 == leadRank)
+    iter++;
+  }
+}
+
+
+void Nodes::removeCollapsesVoidLHO()
+{
+  // This is similar to removeCollapsesRHO().  It is only used when
+  // partner is void.
+
+  auto iter = nodes.begin();
+  while (iter != nextIter)
+  {
+    auto& node = * iter;
+    auto& play = node.play();
+
+    if (! play.leadCollapse || play.trickNS)
+    {
+      iter++;
+      continue;
+    }
+
+    // We don't test for pardRank as it is always 0.
+    const unsigned lhoRank = play.lho();
+    const unsigned rhoRank = play.rho();
+    const unsigned leadRank = play.lead();
+    const unsigned h3 = play.holding3;
+
+    if (lhoRank+1 == leadRank)
     {
       assert(rhoRank > leadRank);
 
@@ -203,6 +230,7 @@ void Nodes::removeAllLaterCollapses()
     }
     iter++;
   }
+
 }
 
 

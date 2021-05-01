@@ -60,6 +60,8 @@ class Node
       const Level level,
       const bool debugFlag);
 
+    void operator *=(const Strategies& strats2);
+
     void operator *=(const Strategy& strat2);
 
     void operator |=(const Node& node2);

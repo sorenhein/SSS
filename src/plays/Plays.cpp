@@ -161,10 +161,42 @@ void Plays::strategize(
 
   UNUSED(ranks);
 
+  Plays::getStrategies(distPtr, debugFlag);
+
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
+  Plays::strategizeRHO(debugFlag);
+  Plays::strategizePard(debugFlag);
+  Plays::strategizeLHO(debugFlag);
+  Plays::strategizeLead(debugFlag);
+
+  // TODO Can we pass out nodeMaster.strategies() directly?
+  // Does it stay in scope?
+  strategies = nodeMaster.strategies();
+}
+
+
+void Plays::strategizeNew(
+  const Ranks& ranks,
+  Distribution const * distPtr,
+  Strategies& strategies,
+  const DebugPlay debugFlag)
+{
+  UNUSED(ranks);
+
   Plays::getStrategies(distPtr, debugFlag);
+
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts("before RHO collapses");
+
+  // Combine some plays around a lead collapse, removing others
+  // from the list of plays.  See comment in the method.
+  nodesRho.removeCollapsesRHO();
+
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts("after RHO collapses");
+
   Plays::strategizeRHO(debugFlag);
   Plays::strategizePard(debugFlag);
   Plays::strategizeLHO(debugFlag);
@@ -271,18 +303,19 @@ void Plays::strategizeVoid(
   // one for declarer, and not two each as in the general case.  
   // This in itself does not reduce complexity appreciably.
 
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("before void collapses");
-
   // Link RHO nodes directly with lead nodes, skipping partner and LHO.
   for (auto& nodeRhoNew: nodesRho)
     nodeRhoNew.linkRhoToLead();
 
   Plays::getStrategies(distPtr, debugFlag);
 
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts("before void collapses");
+
   // Combine some plays around a lead collapse, removing others
   // from the list of plays.  See comment in the method.
-  nodesRho.removeAllLaterCollapses();
+  nodesRho.removeCollapsesRHO();
+  nodesRho.removeCollapsesVoidLHO();
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after void collapses");
@@ -327,11 +360,18 @@ void Plays::strategizeVoid(
   // Note that the results end up in nodesLead due to the relinking.
   Plays::strategizeRHO(debugFlag);
 
+  // Add back the simple strategies.
+  // TODO We could have simpleStrats in Node.
+  // Then in the remove... methods we would test if (node.removePlay())
+  // and this would load simpleStrats of the parent.
+  // Then this loop would be nodeLead.integrateSimpleStrategies()
+  // Nodes would have a nodesLead.strSimple() method.
+  for (auto& nodeLead: nodesLead)
+    nodeLead *= simpleStrats[nodeLead.indexTMP()];
+
   // Add back the lead-specific constants.
   for (auto& nodeLead: nodesLead)
     nodeLead.activateBounds();
-
-  // TODO Don't we have to add simpleStrats back in?!
 
   // Combine the lead strategies into an overall strategy.
   Plays::strategizeLead(debugFlag);

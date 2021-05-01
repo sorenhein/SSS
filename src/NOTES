@@ -1,20 +1,11 @@
 2021-04-28
 ----------
 - Plays
-  - Make RhoStudyNode look more similar to Node
-
-    struct RhoStudyNode
-    {
-      Node node;
-      Bounds bounds;
-    };
-
-  - Then in void case, have a collapse method where for each RHO
-    node we follow the parentPtr up two levels
-  - Then the leadNo should no longer be needed, as the same as
-    indexParent()
-
   - Bounds should go in Strategies...
+
+  - Check that strategizeNew only differs in #strategies when there
+    is a rank reduction, so we are eliminating some strategies that
+    "shouldn't be there" anyway.
 
   - If we kept Combination::strats in a nodeMaster, we could pass this
     to Plays and then not copy strats in strategize.
@@ -25,8 +16,6 @@
     a certain problem size?
   - That limit might depend on how fast Strategies are.  So maybe we
     should optimize these before fixing the limits finally
-
-  - Can the loop in studyRHO become a for (auto : nodesRho)?
 
   - Check that number (not rank) is used appropriately
 

@@ -153,6 +153,12 @@ void Node::add(
 }
 
 
+void Node:: operator *= (const Strategies& strats2)
+{
+  strats *= strats2;
+}
+
+
 void Node:: operator *= (const Strategy& strat2)
 {
   strats *= strat2;
