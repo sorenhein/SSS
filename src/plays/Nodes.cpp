@@ -117,6 +117,12 @@ list<Node>::const_iterator Nodes::end() const
 }
 
 
+list<Node>::iterator Nodes::erase(list<Node>::iterator iter)
+{
+  return nodes.erase(iter);
+}
+
+
 void Nodes::removeAllLaterCollapses()
 {
   // Look for rank collapses that happen "during the trick".

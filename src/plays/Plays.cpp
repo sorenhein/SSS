@@ -182,75 +182,14 @@ void Plays::strategize(
 }
 
 
-void Plays::studyRHO(
-  Distribution const * distPtr,
-  const DebugPlay debugFlag)
-{
-  unsigned playNo = 0;
-  unsigned leadNo = 0;
-
-  // TODO Do we make play() available from Node, or do we somehow
-  // make a derived VoidNode from Node.
-  unsigned leadLast = nodesRho.begin()->play().lead();
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  rhoStudyNodes.resize(nodesRho.used());
-
-  auto rhoStudyNextIter = rhoStudyNodes.begin();
-  for (auto rhoIter = nodesRho.begin(); 
-    rhoIter != nodesRho.end(); 
-    rhoIter++, rhoStudyNextIter++, playNo++)
-  {
-    const auto& rhoNode = * rhoIter;
-    auto& studyNode = * rhoStudyNextIter;
-    const Play& play = rhoNode.play();
-
-    assert(play.side == SIDE_NORTH);
-
-    if (play.lead() != leadLast)
-    {
-      leadNo++;
-      leadLast = play.lead();
-    }
-
-    studyNode.playPtr = &play;
-    studyNode.playNo = playNo;
-    studyNode.leadNo = leadNo;
-
-assert(playNo == rhoNode.indexTMP());
-
-// TODO This should work when we log void plays directly with
-// lead as the parent of RHO.
-// assert(leadNo == rhoNode.indexParent());
-
-    studyNode.strategies = play.combPtr->strategies();
-    
-    // Renumber and rotate the strategy.
-    const Survivors& survivors = distPtr->survivors(play);
-    studyNode.strategies.adapt(play, survivors);
-
-    if (debug)
-      cout << studyNode.strategies.str("Strategies");
-  }
-
-  for (auto& studyNode: rhoStudyNodes)
-  {
-    studyNode.strategies.bound(studyNode.bounds);
-
-    if (debug)
-      cout << studyNode.bounds.str("Bounds " + to_string(studyNode.playNo));
-  }
-
-}
-
-
 void Plays::studyGlobal(const DebugPlay debugFlag)
 {
   // Derive global bounds across all plays.
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
-  for (auto& nodeRho: rhoStudyNodesNew)
-    nodeRho.node.propagateBounds();
+  // for (auto& nodeRho: rhoStudyNodesNew)
+  for (auto& nodeRho: nodesRho)
+    nodeRho.propagateBounds();
 
   // Only keep those constants (for a given lead) that
   // correspond to the minimum achievable outcome.
@@ -289,15 +228,16 @@ void Plays::removeConstantsNew(vector<Strategies>& simpleStrats)
   // remove it.  If there is only one strategy vector, also remove
   // it and put in a special simple set of strategies.
 
-  auto iter = rhoStudyNodesNew.begin();
-  while (iter != rhoStudyNodesNew.end())
+  // auto iter = rhoStudyNodesNew.begin();
+  auto iter = nodesRho.begin();
+  while (iter != nodesRho.end())
   {
     auto& node = * iter;
-    node.node.purgeConstants();
+    node.purgeConstants();
 
-    const unsigned leadNo = node.node.indexParent();
-    if (Plays::removePlay(node.node.strategies(), simpleStrats[leadNo]))
-      iter = rhoStudyNodesNew.erase(iter);
+    const unsigned leadNo = node.indexParent();
+    if (Plays::removePlay(node.strategies(), simpleStrats[leadNo]))
+      iter = nodesRho.erase(iter);
     else
       iter++;
   }
@@ -314,13 +254,13 @@ void Plays::removeDominatedDefensesNew(
   // with that distribution, so it can be removed from their options.
 
   Strategy max;
-  auto iter = rhoStudyNodesNew.begin();
-  while (iter != rhoStudyNodesNew.end())
+  auto iter = nodesRho.begin();
+  while (iter != nodesRho.end())
   {
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
-    node.node.getConstrictedParentMaxima(max);
+    node.getConstrictedParentMaxima(max);
 
     if (max.size() == 0)
     {
@@ -329,88 +269,13 @@ void Plays::removeDominatedDefensesNew(
       continue;
     }
 
-    node.node.purgeSpecific(max);
+    node.purgeSpecific(max);
 
-    const unsigned leadNo = node.node.indexParent();
-    if (Plays::removePlay(node.node.strategies(), simpleStrats[leadNo]))
-      iter = rhoStudyNodesNew.erase(iter);
+    const unsigned leadNo = node.indexParent();
+    if (Plays::removePlay(node.strategies(), simpleStrats[leadNo]))
+      iter = nodesRho.erase(iter);
     else
       iter++;
-  }
-}
-
-
-void Plays::removeLaterCollapses()
-{
-  // Look for rank collapses that happen "during the trick".
-  // For example, with KJ975 missing 7 cards, if declarer leads the 5,
-  // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
-  // be the same, but even during the trick declarer should not distinguish
-  // between the 6 and the x.  We don't give up on the difference, but we
-  // merge the strategies vector by vector, and not by cross product.
-  // Declarer should not play differently based on a distinction that
-  // the defense can create without a real difference.
-
-  auto iter = rhoStudyNodes.begin();
-  while (iter != rhoStudyNodes.end())
-  {
-    auto& node = * iter;
-
-    if (! node.playPtr->leadCollapse || node.playPtr->trickNS)
-    {
-      // Skip plays that do not have a lead collapsing.
-      // Also skip a trick won by declarer as the collapse cannot
-      // involve two defenders' cards that are played in this trick.
-      iter++;
-      continue;
-    }
-
-    const unsigned lhoRank = node.playPtr->lho();
-    const unsigned rhoRank = node.playPtr->rho();
-    const unsigned leadRank = node.playPtr->lead();
-    const unsigned h3 = node.playPtr->holding3;
-
-    if (rhoRank+1 == leadRank)
-    {
-      // As the defenders win the trick:
-      assert(lhoRank > leadRank);
-
-      // Find matching RHO plays.  There can be more than one, as
-      // we may have several plays of a given rank if that is what
-      // we asked for from Ranks.  As the plays are in lexicographic
-      // order, they will follow immediately.  As the LHO card may
-      // be the only defenders' card that is exactly one rank above
-      // the lead, there may be no matching plays.
-      auto iter2 = next(iter);
-      while (iter2 != rhoStudyNodes.end() && 
-          iter2->playPtr->holding3 == h3 &&
-          iter2->playPtr->lho() == lhoRank)
-      {
-        iter->strategies |= iter2->strategies;
-        iter2 = rhoStudyNodes.erase(iter2);
-      }
-    }
-    else if (lhoRank+1 == leadRank)
-    {
-      assert(rhoRank > leadRank);
-
-      // Find matching LHO plays.  Unlike above, they will not be
-      // in order following the current play.
-      auto iter2 = next(iter);
-      while (iter2 != rhoStudyNodes.end())
-      {
-        if (iter2->playPtr->holding3 == h3 &&
-            iter2->playPtr->lead() == leadRank &&
-            iter2->playPtr->rho() == rhoRank)
-        {
-          iter->strategies |= iter2->strategies;
-          iter2 = rhoStudyNodes.erase(iter2);
-        }
-        else
-          iter2++;
-      }
-    }
-    iter++;
   }
 }
 
@@ -461,6 +326,7 @@ void Plays::strategizeVoid(
   // Set up the parallel nodes.  Should not be necessary once
   // Bounds migrate into Nodes.
 
+  /*
   rhoStudyNodesNew.resize(nodesRho.used());
   auto iterNew = rhoStudyNodesNew.begin();
 
@@ -469,23 +335,26 @@ void Plays::strategizeVoid(
   {
     iterNew->node = * rhoIter;
   }
+  */
 
   // Link RHO nodes directly with lead nodes.
   // Later on this will become a separate method.
-  for (auto& nodeRhoNew: rhoStudyNodesNew)
-    nodeRhoNew.node.linkRhoToLead();
+  // for (auto& nodeRhoNew: rhoStudyNodesNew)
+  for (auto& nodeRhoNew: nodesRho)
+    nodeRhoNew.linkRhoToLead();
 
 
-  for (auto& nodeRhoNew: rhoStudyNodesNew)
+  // for (auto& nodeRhoNew: rhoStudyNodesNew)
+  for (auto& nodeRhoNew: nodesRho)
   {
     // nodeRhoNew.node.strategies().bound(nodeRhoNew.bounds);
-    nodeRhoNew.node.bound();
+    nodeRhoNew.bound();
 
     if (debug)
-      cout << nodeRhoNew.node.strBounds("Alt Bounds");
+      cout << nodeRhoNew.strBounds("Alt Bounds");
       // cout << nodeRhoNew.bounds.str("Alt Bounds");
     
-    nodeRhoNew.node.bound();
+    nodeRhoNew.bound();
   }
 
   // Then we derive the bounds for each lead separately.
@@ -505,7 +374,7 @@ void Plays::strategizeVoid(
 
   if (debugRho)
   {
-    cout << "Size New now " << rhoStudyNodesNew.size() << endl;
+    cout << "Size New now " << nodesRho.size() << endl;
     for (unsigned s = 0; s < simpleStratsNew.size(); s++)
       cout << simpleStratsNew[s].str("simple New " + to_string(s));
   }
@@ -513,8 +382,9 @@ void Plays::strategizeVoid(
   // Combine the plays into an overall strategy for each lead.
   // TODO Use one of the strategize methods?
   const bool debugNew = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  for (auto& nodeRho: rhoStudyNodesNew)
-    nodeRho.node.cross(LEVEL_RHO, debugNew);
+  // for (auto& nodeRho: rhoStudyNodesNew)
+  for (auto& nodeRho: nodesRho)
+    nodeRho.cross(LEVEL_RHO, debugNew);
 
   // Add back the lead-specific constants.
   for (auto& nodeLead: nodesLead)

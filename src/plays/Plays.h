@@ -23,24 +23,6 @@ class Plays
 {
   private:
 
-    struct RhoStudyNode
-    {
-      Play const * playPtr;
-      unsigned playNo;
-      unsigned leadNo;
-
-      Strategies strategies;
-
-      // Distribution-wise statistics across all strategies in the play.
-      Bounds bounds;
-    };
-
-    struct RhoStudyNodeNew
-    {
-      Node node;
-      // Bounds bounds;
-    };
-
     unsigned cards;
 
     // We could just always push to the back, but for efficiency
@@ -55,10 +37,6 @@ class Plays
     Nodes nodesRho;
     Node nodeMaster;
 
-    // For voids.
-    list<RhoStudyNode> rhoStudyNodes;
-    list<RhoStudyNodeNew> rhoStudyNodesNew;
-
 
     void getStrategies(
       Distribution const * distPtr,
@@ -72,10 +50,6 @@ class Plays
 
     void strategizeLead(const DebugPlay debugFlag);
 
-    void studyRHO(
-      Distribution const * distPtr,
-      const DebugPlay debugFlag);
-
     void studyGlobal(const DebugPlay debugFlag);
 
     bool removePlay(
@@ -85,8 +59,6 @@ class Plays
     void removeConstantsNew(vector<Strategies>& simpleStrats);
 
     void removeDominatedDefensesNew(vector<Strategies>& simpleStrats);
-
-    void removeLaterCollapses();
 
     string strNodeCounts() const;
 
