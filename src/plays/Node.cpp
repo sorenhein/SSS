@@ -83,34 +83,21 @@ void Node::cross(
   const Level level,
   const bool debugFlag)
 {
+  assert(level == LEVEL_RHO || level == LEVEL_LHO);
+
   if (debugFlag)
   {
     cout << Node::strPlay(level);
-
-    string s;
-    if (level == LEVEL_RHO)
-      s = "RHO";
-    else if (level == LEVEL_LHO)
-      s = "LHO";
-    else
-      assert(false);
-
-    // cout << strats.str("Crossing " + s + " strategy", true);
+    const string s = (level == LEVEL_RHO ? "RHO" : "LHO");
     cout << strats.str("Crossing " + s + " strategy", false);
+    // cout << strats.str("Crossing " + s + " strategy", true);
   }
 
   parentPtr->strats *= strats;
 
   if (debugFlag)
   {
-    string s;
-    if (level == LEVEL_RHO)
-      s = "partner";
-    else if (level == LEVEL_LHO)
-      s = "lead";
-    else
-      assert(false);
-
+    const string s = (level == LEVEL_RHO ? "partner" : "lead");
     cout << parentPtr->strats.str(
       "Cumulative " + s + " strategy after this trick", false);
       // "Cumulative " + s + " strategy after this trick", true);
@@ -122,18 +109,12 @@ void Node::add(
   const Level level,
   const bool debugFlag)
 {
+  assert(level == LEVEL_LEAD || level == LEVEL_PARD);
+
   if (debugFlag)
   {
     cout << Node::strPlay(level);
-
-    string s;
-    if (level == LEVEL_PARD)
-      s = "partner";
-    else if (level == LEVEL_LEAD)
-      s = "lead";
-    else
-      assert(false);
-
+    const string s = (level == LEVEL_LEAD ? "lead" : "partner");
     cout << strats.str("Adding " + s + " strategy", false);
     // cout << strats.str("Adding " + s + " strategy", true);
   }
@@ -142,34 +123,11 @@ void Node::add(
 
   if (debugFlag)
   {
-    string s;
-    if (level == LEVEL_LEAD)
-      s = "overall";
-    else if (level == LEVEL_PARD)
-      s = "LHO";
-
+    const string s = (level == LEVEL_LEAD ? "overall" : "LHO");
     cout << parentPtr->strats.str(
       "Cumulative " + s + " strategy after this trick");
       // "Cumulative " + s + " strategy after this trick", true);
   }
-}
-
-
-void Node:: operator *= (const Strategies& strats2)
-{
-  strats *= strats2;
-}
-
-
-void Node:: operator *= (const Strategy& strat2)
-{
-  strats *= strat2;
-}
-
-
-void Node::operator |= (const Node& node2)
-{
-  strats |= node2.strats;
 }
 
 
@@ -198,9 +156,7 @@ void Node::bound()
 
 void Node::propagateBounds()
 {
-  parentPtr->bounds.minima *= bounds.minima;
-  parentPtr->bounds.maxima *= bounds.maxima;
-  parentPtr->bounds.constants *= bounds.constants;
+  parentPtr->bounds *= bounds;
 }
 
 
@@ -235,14 +191,6 @@ void Node::purgeConstants()
   bounds.minima.purge(constants);
   bounds.maxima.purge(constants);
 }
-
-
-/*
-void Node::purgeSpecific(const Strategy& specifics)
-{
-  strats.purge(specifics);
-}
-*/
 
 
 Node * Node::getParentPtr()

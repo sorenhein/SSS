@@ -66,12 +66,6 @@ class Node
       const Level level,
       const bool debugFlag);
 
-    void operator *=(const Strategies& strats2);
-
-    void operator *=(const Strategy& strat2);
-
-    void operator |=(const Node& node2);
-
     bool removePlay();
 
     void bound();
@@ -85,8 +79,6 @@ class Node
     void activateBounds();
 
     void purgeConstants();
-
-    // void purgeSpecific(const Strategy& specifics);
 
     Node * getParentPtr();
 

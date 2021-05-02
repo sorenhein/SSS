@@ -26,6 +26,13 @@ struct Bounds
   // The lowest constant results.
   Strategy constants;
 
+  void operator *= (const Bounds& bounds2)
+  {
+    minima *= bounds2.minima;
+    maxima *= bounds2.maxima;
+    constants *= bounds2.constants;
+  };
+
   string str(const string& title = "") const
   {
     stringstream ss;

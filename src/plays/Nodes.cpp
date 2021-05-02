@@ -270,7 +270,7 @@ void Nodes::removeCollapsesRHO()
           iter2->play().pard() == pardRank &&
           iter2->play().lho() == lhoRank)
       {
-        * iter |= * iter2;
+        iter->strategies() |= iter2->strategies();
         iter2 = nodes.erase(iter2);
         nextEntryNumber--;
       }
@@ -316,7 +316,7 @@ void Nodes::removeCollapsesVoidLHO()
             iter2->play().lead() == leadRank &&
             iter2->play().rho() == rhoRank)
         {
-          * iter |= * iter2;
+          iter->strategies() |= iter2->strategies();
           iter2 = nodes.erase(iter2);
           nextEntryNumber--;
         }
