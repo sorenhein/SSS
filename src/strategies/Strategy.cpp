@@ -271,7 +271,7 @@ void Strategy::bound(
 }
 
 
-void Strategy::constrict(Strategy& constants) const
+void Strategy::constrain(Strategy& constants) const
 {
   // The constants vector is a running collection of TrickEntry
   // elements for those distributions (in a Strategies) that have

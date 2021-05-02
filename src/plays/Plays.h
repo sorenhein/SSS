@@ -1,7 +1,6 @@
 #ifndef SSS_PLAYS_H
 #define SSS_PLAYS_H
 
-#include <vector>
 #include <list>
 #include <string>
 
@@ -9,14 +8,13 @@
 #include "Nodes.h"
 #include "DebugPlay.h"
 
-#include "../strategies/Strategies.h"
-
 
 using namespace std;
 
 class Combinations;
 class Distribution;
 class Ranks;
+class Strategies;
 
 
 class Plays

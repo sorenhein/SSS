@@ -150,7 +150,7 @@ void Nodes::makeBounds(const bool debugFlag)
       continue;
 
     prevParentPtr = parentPtr;
-    parentPtr->constrictConstantsToMinima();
+    parentPtr->constrainConstantsToMinima();
     if (debugFlag)
       cout << parentPtr->strBounds("Constrained parent constants") <<
         endl;
@@ -195,7 +195,7 @@ void Nodes::removeDominatedDefenses()
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
-    node.getConstrictedParentMaxima(max);
+    node.getConstrainedParentMaxima(max);
 
     if (max.size() == 0)
     {

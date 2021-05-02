@@ -204,20 +204,20 @@ void Node::propagateBounds()
 }
 
 
-void Node::constrictConstantsToMinima()
+void Node::constrainConstantsToMinima()
 {
-  bounds.minima.constrict(bounds.constants);
+  bounds.minima.constrain(bounds.constants);
 }
 
 
-void Node::getConstrictedParentMaxima(Strategy& max)
+void Node::getConstrainedParentMaxima(Strategy& max)
 {
   // Get the parent maxima (who's your daddy now?) and keep the
   // ones that are <= the minima of the current node.  These are
   // candidates for purging, as the defenders will not enter this
   // node's strategy with the corresponding distribution.
   max = parentPtr->bounds.maxima;
-  bounds.minima.constrict(max);
+  bounds.minima.constrain(max);
 }
 
 

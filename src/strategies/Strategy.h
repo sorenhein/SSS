@@ -118,7 +118,7 @@ class Strategy
       Strategy& lower,
       Strategy& upper) const;
 
-    void constrict(Strategy& constants) const;
+    void constrain(Strategy& constants) const;
 
     unsigned purge(const Strategy& constants);
 

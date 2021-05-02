@@ -78,9 +78,9 @@ class Node
 
     void propagateBounds();
 
-    void constrictConstantsToMinima();
+    void constrainConstantsToMinima();
 
-    void getConstrictedParentMaxima(Strategy& max);
+    void getConstrainedParentMaxima(Strategy& max);
 
     void activateBounds();
 
