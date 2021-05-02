@@ -50,10 +50,6 @@ class Plays
 
     void strategizeLead(const DebugPlay debugFlag);
 
-    void removeConstants();
-
-    void removeDominatedDefenses();
-
     string strNodeCounts(const string& title = "") const;
 
   public:

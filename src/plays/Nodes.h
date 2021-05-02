@@ -37,6 +37,12 @@ class Nodes
 
     unsigned chunkSize;
 
+
+    void removeConstants();
+
+    void removeDominatedDefenses();
+
+
   public:
     
     Nodes();
@@ -65,6 +71,8 @@ class Nodes
     list<Node>::iterator erase(list<Node>::iterator iter);
 
     void makeBounds(const bool debugFlag);
+
+    void extractSimpleStrategies();
 
     void removeCollapsesRHO();
     void removeCollapsesVoidLHO();

@@ -4,8 +4,6 @@
   strategizeRHO etc can become nodesRho.strategizeDefenders()
 
   - In strategizeVoid
-    - Then the two remove methods can also go into Nodes
-    nodesRho.extractSimpleStrategies
 
     constrict -> constrain
 

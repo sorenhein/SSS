@@ -208,61 +208,6 @@ void Plays::strategizeNew(
 }
 
 
-void Plays::removeConstants()
-{
-  // Remove constant distributions (for a given lead) from each 
-  // play with that lead.  If a play strategy melts away completely,
-  // remove it.  If there is only one strategy vector, also remove
-  // it and put in a special simple set of strategies.
-
-  auto iter = nodesRho.begin();
-  while (iter != nodesRho.end())
-  {
-    auto& node = * iter;
-    node.purgeConstants();
-
-    if (node.removePlay())
-      iter = nodesRho.erase(iter);
-    else
-      iter++;
-  }
-}
-
-
-void Plays::removeDominatedDefenses()
-{
-  // For a given lead and a given distribution, let's say the range of 
-  // outcomes for a given defensive strategy is (min, max).  Let's also 
-  // say that the lowest maximum that any strategy achieves is M.
-  // Then if M <= min, the defenders will never enter that strategy
-  // with that distribution, so it can be removed from their options.
-
-  Strategy max;
-  auto iter = nodesRho.begin();
-  while (iter != nodesRho.end())
-  {
-    auto& node = * iter;
-
-    // Limit the maximum vector to those entries that are <= play.lower.
-    node.getConstrictedParentMaxima(max);
-
-    if (max.size() == 0)
-    {
-      // Nothing to purge.
-      iter++;
-      continue;
-    }
-
-    node.purgeSpecific(max);
-
-    if (node.removePlay())
-      iter = nodesRho.erase(iter);
-    else
-      iter++;
-  }
-}
-
-
 void Plays::strategizeVoid(
   Distribution const * distPtr,
   Strategies& strategies,
@@ -306,10 +251,8 @@ void Plays::strategizeVoid(
 
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.
-  Plays::removeConstants();
-
   // Some defenses can be removed -- see comment in method.
-  Plays::removeDominatedDefenses();
+  nodesRho.extractSimpleStrategies();
 
   if (debugFlag & DEBUGPLAY_RHO_DETAILS)
     cout << nodesLead.strSimple();

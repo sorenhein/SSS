@@ -158,6 +158,73 @@ void Nodes::makeBounds(const bool debugFlag)
 }
 
 
+void Nodes::removeConstants()
+{
+  // Remove constant distributions (for a given lead) from each
+  // play with that lead.  If a play strategy melts away completely,
+  // remove it.  If there is only one strategy vector, also remove
+  // it and put in a special simple set of strategies.
+  auto iter = nodes.begin();
+  while (iter != nextIter)
+  {
+    iter->purgeConstants();
+
+    if (iter->removePlay())
+    {
+      iter = nodes.erase(iter);
+      nextEntryNumber--;
+    }
+    else
+      iter++;
+  }
+}
+
+
+void Nodes::removeDominatedDefenses()
+{
+  // For a given lead and a given distribution, let's say the range of
+  // outcomes for a given defensive strategy is (min, max).  Let's also
+  // say that the lowest maximum that any strategy achieves is M.
+  // Then if M <= min, the defenders will never enter that strategy
+  // with that distribution, so it can be removed from their options.
+
+  Strategy max;
+  auto iter = nodes.begin();
+  while (iter != nextIter)
+  {
+    auto& node = * iter;
+
+    // Limit the maximum vector to those entries that are <= play.lower.
+    node.getConstrictedParentMaxima(max);
+
+    if (max.size() == 0)
+    {
+      // Nothing to purge.
+      iter++;
+      continue;
+    }
+
+    node.purgeSpecific(max);
+
+    if (node.removePlay())
+    {
+      iter = nodes.erase(iter);
+      nextEntryNumber--;
+    }
+    else
+      iter++;
+  }
+
+}
+
+
+void Nodes::extractSimpleStrategies()
+{
+  Nodes::removeConstants();
+  Nodes::removeDominatedDefenses();
+}
+
+
 void Nodes::removeCollapsesRHO()
 {
   // Look for rank collapses that happen "during the trick".
