@@ -299,27 +299,10 @@ void Plays::strategizeVoid(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after void collapses");
 
-  // Derive bounds on the trick numbers for each play.
-  for (auto& node: nodesRho)
-  {
-    node.bound();
-    if (debugFlag & DEBUGPLAY_RHO_DETAILS)
-      cout << node.strBounds("Bounds");
-  }
-
-  // Derive global bounds for each lead, ending up in nodesLead.
-  for (auto& nodeRho: nodesRho)
-    nodeRho.propagateBounds();
-
-  // Only keep those constants (for a given lead) that correspond to 
-  // the minimum achievable outcome.
-  for (auto& nodeLead: nodesLead)
-  {
-    nodeLead.constrictConstantsToMinima();
-    if (debugFlag & DEBUGPLAY_RHO_DETAILS)
-      cout << nodeLead.strBounds("Minimum-constrained lead constants") << 
-        endl;
-  }
+  // Derive bounds on RHO outcomes for each lead in order to find
+  // constant outcomes, propagate them to the parent nodes (which are 
+  // nodesLead in this case), and remove them from the parent nodes.
+  nodesRho.makeBounds((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.

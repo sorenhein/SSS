@@ -88,6 +88,8 @@ class Node
 
     void purgeSpecific(const Strategy& specifics);
 
+    Node * getParentPtr();
+
     void integrateSimpleStrategies();
 
     const Play& play() const;

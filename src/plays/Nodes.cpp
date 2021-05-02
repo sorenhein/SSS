@@ -123,6 +123,41 @@ list<Node>::iterator Nodes::erase(list<Node>::iterator iter)
 }
 
 
+void Nodes::makeBounds(const bool debugFlag)
+{
+  // We currently only do this for RHO in Plays::strategizeVoid().
+  // Derive bounds on the trick numbers for each play.
+  // We can't iterate over (auto& node: nodes), as nodes is larger.
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+    iter->bound();
+    if (debugFlag)
+      cout << iter->strBounds("Bounds");
+  }
+
+  // Derive global bounds for each parent, ending up in nodesLead
+  // in the case of RHO when partner is void, in nodesPard otherwise.
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->propagateBounds();
+
+  // Only keep those constants (for a given parent play) that 
+  // correspond to the minimum achievable outcome.
+  Node * prevParentPtr = nullptr;
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+    Node * parentPtr = iter->getParentPtr();
+    if (parentPtr == prevParentPtr)
+      continue;
+
+    prevParentPtr = parentPtr;
+    parentPtr->constrictConstantsToMinima();
+    if (debugFlag)
+      cout << parentPtr->strBounds("Constrained parent constants") <<
+        endl;
+  }
+}
+
+
 void Nodes::removeCollapsesRHO()
 {
   // Look for rank collapses that happen "during the trick".

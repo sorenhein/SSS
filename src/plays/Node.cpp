@@ -243,6 +243,12 @@ void Node::purgeSpecific(const Strategy& specifics)
 }
 
 
+Node * Node::getParentPtr()
+{
+  return parentPtr;
+}
+
+
 void Node::integrateSimpleStrategies()
 {
   strats *= simpleStrats;

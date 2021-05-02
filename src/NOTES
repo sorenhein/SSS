@@ -1,8 +1,23 @@
 2021-04-28
 ----------
 - Plays
-  - Bounds should go in Strategies...
+  strategizeRHO etc can become nodesRho.strategizeDefenders()
 
+  - In strategizeVoid
+    - Then the two remove methods can also go into Nodes
+    nodesRho.extractSimpleStrategies
+
+    constrict -> constrain
+
+    Then we'd be close to using the same methods for non-void partner.
+
+
+  - Bounds should go in Strategies...
+    Node::strategies should perhaps not be const const, or can
+    we have an overloaded non-const one?
+
+  - Even the dynamic rank collapse would work for non-voids for RHO.
+    It is only for LHO that it is specialized to pard voids.
   - Check that strategizeNew only differs in #strategies when there
     is a rank reduction, so we are eliminating some strategies that
     "shouldn't be there" anyway.
@@ -21,8 +36,6 @@
 
   - Completely global constant results: Separate out, too?
 
-  - Even the dynamic rank collapse would work for non-voids for RHO.
-    It is only for LHO that it is specialized to pard voids.
 
 - Ranks
   - number to start from 1 when non-void, not 0

@@ -64,6 +64,8 @@ class Nodes
 
     list<Node>::iterator erase(list<Node>::iterator iter);
 
+    void makeBounds(const bool debugFlag);
+
     void removeCollapsesRHO();
     void removeCollapsesVoidLHO();
 
