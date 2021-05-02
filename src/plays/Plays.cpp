@@ -286,9 +286,9 @@ string Plays::str() const
   
   assert(nodesRho.begin() != nodesRho.end());
 
-  ss << nodesRho.begin()->strPlayLineHeader();
+  ss << nodesRho.begin()->play().strHeader();
   for (auto& nodeRho: nodesRho)
-    ss << nodeRho.strPlayLine();
+    ss << nodeRho.play().strLine();
 
   return ss.str();
 }

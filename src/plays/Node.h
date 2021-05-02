@@ -86,7 +86,7 @@ class Node
 
     void purgeConstants();
 
-    void purgeSpecific(const Strategy& specifics);
+    // void purgeSpecific(const Strategy& specifics);
 
     Node * getParentPtr();
 
@@ -94,21 +94,14 @@ class Node
 
     const Play& play() const;
 
+    Strategies& strategies();
     const Strategies& strategies() const;
 
     string strBounds(const string& title = "") const;
 
     string strPlay(const Level level) const;
 
-    string strPlayLineHeader() const;
-
-    string strPlayLine() const;
-
     string strSimple() const;
-
-    string str(
-      const string& title = "",
-      const bool rankFlag = false) const;
 };
 
 #endif

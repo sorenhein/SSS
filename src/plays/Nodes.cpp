@@ -198,7 +198,7 @@ void Nodes::removeDominatedDefenses()
       continue;
     }
 
-    node.purgeSpecific(max);
+    node.strategies().purge(max);
 
     if (node.removePlay())
     {

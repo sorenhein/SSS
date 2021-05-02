@@ -237,10 +237,12 @@ void Node::purgeConstants()
 }
 
 
+/*
 void Node::purgeSpecific(const Strategy& specifics)
 {
   strats.purge(specifics);
 }
+*/
 
 
 Node * Node::getParentPtr()
@@ -257,7 +259,14 @@ void Node::integrateSimpleStrategies()
 
 const Play& Node::play() const
 {
+  assert(playPtr != nullptr);
   return * playPtr;
+}
+
+
+Strategies& Node::strategies()
+{
+  return strats;
 }
 
 
@@ -282,30 +291,8 @@ string Node::strPlay(const Level level) const
 }
 
 
-string Node::strPlayLineHeader() const
-{
-  assert(playPtr != nullptr);
-  return playPtr->strHeader();
-}
-
-
-string Node::strPlayLine() const
-{
-  assert(playPtr != nullptr);
-  return playPtr->strLine();
-}
-
-
 string Node::strSimple() const
 {
   return simpleStrats.str("simple " + to_string(index));
-}
-
-
-string Node::str(
-  const string& title,
-  const bool rankFlag) const
-{
-  return strats.str(title, rankFlag);
 }
 
