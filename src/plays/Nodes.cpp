@@ -117,12 +117,6 @@ list<Node>::const_iterator Nodes::end() const
 }
 
 
-list<Node>::iterator Nodes::erase(list<Node>::iterator iter)
-{
-  return nodes.erase(iter);
-}
-
-
 void Nodes::makeBounds(const bool debugFlag)
 {
   // We currently only do this for RHO in Plays::strategizeVoid().
