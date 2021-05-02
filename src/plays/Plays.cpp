@@ -259,7 +259,8 @@ void Plays::strategizeVoid(
 
   // Combine the plays into an overall strategy for each lead.
   // Note that the results end up in nodesLead due to the relinking.
-  Plays::strategizeRHO(debugFlag);
+  // Plays::strategizeRHO(debugFlag);
+  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   // Add back the simple strategies.
   for (auto& nodeLead: nodesLead)

@@ -6,8 +6,6 @@
 
 #include "Node.h"
 
-#include "../const.h"
-
 
 using namespace std;
 
@@ -76,6 +74,8 @@ class Nodes
 
     void removeCollapsesRHO();
     void removeCollapsesVoidLHO();
+
+    void strategizeDefenders(const bool debugFlag);
 
     unsigned size() const;
     unsigned used() const;

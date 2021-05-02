@@ -332,7 +332,14 @@ void Nodes::removeCollapsesVoidLHO()
     }
     iter++;
   }
+}
 
+
+void Nodes::strategizeDefenders(const bool debugFlag)
+{
+  // Combine with the corresponding parent node by cross product.
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->cross(level, debugFlag);
 }
 
 
