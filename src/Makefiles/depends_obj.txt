@@ -50,13 +50,13 @@ plays/Play.obj: plays/Play.h strategies/Winners.h const.h Combinations.h
 plays/Play.obj: Combination.h strategies/Strategies.h strategies/Strategy.h
 plays/Play.obj: Survivor.h strategies/Winners.h strategies/Winner.h
 plays/Play.obj: strategies/Card.h strategies/Card.h
-plays/Nodes.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h const.h
-plays/Nodes.obj: plays/Play.h strategies/Winners.h plays/Chunks.h
-plays/Node.obj: plays/Node.h strategies/Strategies.h const.h plays/Play.h
-plays/Node.obj: strategies/Winners.h Distribution.h Survivor.h DistHelp.h
-plays/Node.obj: Combination.h strategies/Strategies.h strategies/Strategy.h
-plays/Node.obj: Survivor.h strategies/Winners.h strategies/Winner.h
-plays/Node.obj: strategies/Card.h
+plays/Nodes.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
+plays/Nodes.obj: plays/Play.h strategies/Winners.h const.h plays/Chunks.h
+plays/Node.obj: plays/Node.h strategies/Strategies.h plays/Play.h
+plays/Node.obj: strategies/Winners.h const.h Distribution.h Survivor.h
+plays/Node.obj: DistHelp.h Combination.h strategies/Strategies.h
+plays/Node.obj: strategies/Strategy.h Survivor.h strategies/Winners.h
+plays/Node.obj: strategies/Winner.h strategies/Card.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Strategy.h
 strategies/Strategies.obj: Survivor.h strategies/Winners.h
 strategies/Strategies.obj: strategies/Winner.h strategies/Card.h const.h

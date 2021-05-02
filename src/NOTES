@@ -1,7 +1,6 @@
 2021-04-28
 ----------
 - Plays
-  strategizeRHO etc can become nodesRho.strategizeDefenders()
 
   - In strategizeVoid
 

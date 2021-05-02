@@ -347,7 +347,7 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 void Nodes::strategizeDefenders(const bool debugFlag)
 {
   // Combine with the corresponding parent node by cross product.
-  assert(level == LEVEL_RHO || level == LEVEL_RHO);
+  assert(level == LEVEL_RHO || level == LEVEL_LHO);
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->cross(level, debugFlag);
 }

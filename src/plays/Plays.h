@@ -40,14 +40,6 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
-    void strategizeRHO(const DebugPlay debugFlag);
-
-    void strategizePard(const DebugPlay debugFlag);
-
-    void strategizeLHO(const DebugPlay debugFlag);
-
-    void strategizeLead(const DebugPlay debugFlag);
-
     string strNodeCounts(const string& title = "") const;
 
   public:

@@ -95,44 +95,6 @@ void Plays::getStrategies(
 }
 
 
-void Plays::strategizeRHO(const DebugPlay debugFlag)
-{
-  // Combine it with the corresponding partner node by cross product.
-  const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  for (auto& nodeRho: nodesRho)
-    nodeRho.cross(LEVEL_RHO, debug);
-}
-
-
-void Plays::strategizePard(const DebugPlay debugFlag)
-{
-  // Add to the corresponding LHO node.
-  const bool debug = ((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
-  for (auto& nodePard: nodesPard)
-    nodePard.add(LEVEL_PARD, debug);
-}
-
-
-void Plays::strategizeLHO(const DebugPlay debugFlag)
-{
-  // Combine it with the corresponding lead node by cross product.
-  const bool debug = ((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
-  for (auto& nodeLho: nodesLho)
-    nodeLho.cross(LEVEL_LHO, debug);
-}
-
-
-void Plays::strategizeLead(const DebugPlay debugFlag)
-{
-  nodeMaster.reset();
-  
-  // Add up the lead strategies into an overall one.
-  const bool debug = ((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-  for (auto& nodeLead: nodesLead)
-    nodeLead.add(LEVEL_LEAD, debug);
-}
-
-
 void Plays::strategize(
   const Ranks& ranks,
   Distribution const * distPtr,
@@ -166,10 +128,10 @@ void Plays::strategize(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
-  Plays::strategizeRHO(debugFlag);
-  Plays::strategizePard(debugFlag);
-  Plays::strategizeLHO(debugFlag);
-  Plays::strategizeLead(debugFlag);
+  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+  nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
   // TODO Can we pass out nodeMaster.strategies() directly?
   // Does it stay in scope?
@@ -197,10 +159,10 @@ void Plays::strategizeNew(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after RHO collapses");
 
-  Plays::strategizeRHO(debugFlag);
-  Plays::strategizePard(debugFlag);
-  Plays::strategizeLHO(debugFlag);
-  Plays::strategizeLead(debugFlag);
+  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+  nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
   // TODO Can we pass out nodeMaster.strategies() directly?
   // Does it stay in scope?
