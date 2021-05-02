@@ -259,7 +259,6 @@ void Plays::strategizeVoid(
 
   // Combine the plays into an overall strategy for each lead.
   // Note that the results end up in nodesLead due to the relinking.
-  // Plays::strategizeRHO(debugFlag);
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   // Add back the simple strategies.
@@ -271,7 +270,8 @@ void Plays::strategizeVoid(
     nodeLead.activateBounds();
 
   // Combine the lead strategies into an overall strategy.
-  Plays::strategizeLead(debugFlag);
+  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+
   strategies = nodeMaster.strategies();
 
   if (debugFlag & DEBUGPLAY_LEAD_DETAILS)

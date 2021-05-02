@@ -335,9 +335,19 @@ void Nodes::removeCollapsesVoidLHO()
 }
 
 
+void Nodes::strategizeDeclarer(const bool debugFlag)
+{
+  // Add to the corresponding parent node.
+  assert(level == LEVEL_PARD || level == LEVEL_LEAD);
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->add(LEVEL_PARD, debugFlag);
+}
+
+
 void Nodes::strategizeDefenders(const bool debugFlag)
 {
   // Combine with the corresponding parent node by cross product.
+  assert(level == LEVEL_RHO || level == LEVEL_RHO);
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->cross(level, debugFlag);
 }
