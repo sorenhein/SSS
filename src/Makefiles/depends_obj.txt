@@ -11,7 +11,7 @@ Combination.obj: CombEntry.h plays/Plays.h plays/Play.h strategies/Winners.h
 Combination.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
 Combination.obj: plays/DebugPlay.h ranks/Ranks.h plays/Play.h
 Combination.obj: ranks/Declarer.h ranks/Player.h strategies/Card.h
-Combination.obj: ranks/Opponents.h
+Combination.obj: ranks/Opponents.h stats/Timer.h
 Combinations.obj: Combinations.h Combination.h strategies/Strategies.h
 Combinations.obj: strategies/Strategy.h Survivor.h strategies/Winners.h
 Combinations.obj: strategies/Winner.h strategies/Card.h const.h CombEntry.h
@@ -20,7 +20,7 @@ Combinations.obj: plays/Plays.h plays/Play.h strategies/Winners.h
 Combinations.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
 Combinations.obj: plays/DebugPlay.h ranks/Ranks.h plays/Play.h
 Combinations.obj: ranks/Declarer.h ranks/Player.h strategies/Card.h
-Combinations.obj: ranks/Opponents.h
+Combinations.obj: ranks/Opponents.h stats/Timer.h
 Distribution.obj: plays/Play.h strategies/Winners.h const.h Distribution.h
 Distribution.obj: Survivor.h DistHelp.h const.h
 Distributions.obj: Distributions.h Distribution.h Survivor.h DistHelp.h

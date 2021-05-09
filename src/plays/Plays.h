@@ -50,6 +50,8 @@ class Plays
 
     void clear();
 
+    void clearStrategies();
+
     void resize(const unsigned cardsIn);
 
     unsigned size() const;

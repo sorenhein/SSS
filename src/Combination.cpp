@@ -14,6 +14,10 @@
 
 #include "ranks/Ranks.h"
 
+// TMP
+#include "stats/Timer.h"
+extern vector<Timer> timers1, timers2;
+
 
 Combination::Combination()
 {
@@ -39,9 +43,11 @@ const Strategies& Combination::strategize(
   Plays& plays,
   bool debugFlag)
 {
-cout << "cholding2 is " << centry.canonicalHolding2 << 
-  ", can3 is " << centry.canonicalHolding3 <<
-  ", size " << ranks.size() << endl;
+  cout << "Cards" << setw(3) << ranks.size() << ": " <<
+    centry.canonicalHolding3 << " / " <<
+    centry.canonicalHolding2 << endl;
+
+Strategies stmp;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
@@ -50,14 +56,11 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
   // Make the plays.
   TrickEntry trivialEntry;
   plays.clear();
-DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
-// if (centry.canonicalHolding3 == 204 && ranks.size() == 6)
-if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
-{
-  cout << "HERE0\n";
-  debugFlagTmp = static_cast<DebugPlay>(0x3f);
 
-}
+  DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
+  if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
+    debugFlagTmp = static_cast<DebugPlay>(0x3f);
+
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
   // If it's a trivial situation, make the strategies.
@@ -68,33 +71,35 @@ if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
     return strats;
   }
 
-// TODO TMP
-// return strats;
-
-cout << "A " << centry.canonicalHolding3 << endl;
   // Complete the plays such that their ends point to combinations.
-// if (ranks.size() == 8 && centry.canonicalHolding3 == 530)
-// {
-  // cout << "HERE\n";
-// }
   plays.setCombPtrs(combinations);
-// cout << "B " << centry.canonicalHolding3 << endl;
-if (debugFlag)
-{
-  cout << "Plays\n" << plays.str() << endl;
-  cout << "Distribution\n" << distPtr->str() << endl;
-}
+
+  if (debugFlag)
+  {
+    cout << "Plays\n" << plays.str() << endl;
+    cout << "Distribution\n" << distPtr->str() << endl;
+  }
 
   // TODO Probably don't need to pass in ranks to make memory
   // stay alive.
 
-  // This is the favored one.
+unsigned ps = plays.size();
+if (ps >= 100)
+  ps = 99;
+
+assert(ps < timers1.size());
+timers1[ps].start();
   plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+timers1[ps].stop();
 
+plays.clearStrategies();
 
-  // This is not used.
-  // plays.strategize(distPtr, strats, debugFlag);
-// cout << "C " << centry.canonicalHolding3 << endl;
+assert(ps < timers2.size());
+timers2[ps].start();
+  plays.strategizeNew(ranks, distPtr, stmp, debugFlagTmp);
+timers2[ps].stop();
+
+assert(strats == stmp);
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 

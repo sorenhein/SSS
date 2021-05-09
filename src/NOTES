@@ -1,7 +1,6 @@
 2021-04-28
 ----------
 - Plays
-  - Nodes and Node are now reasonably clean
   - Before we think about moving bounds from Node to Strategies
     more generally, think about performance (go up to 10-11 cards)
     - May have to have a duplicate Plays and compare strategies

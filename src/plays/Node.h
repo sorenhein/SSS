@@ -45,6 +45,8 @@ class Node
 
     void reset();
 
+    void resetStrategies();
+
     void set(
       Node * parentPtr,
       Play * playPtr,

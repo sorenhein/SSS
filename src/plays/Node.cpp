@@ -25,9 +25,16 @@ void Node::reset()
 {
   parentPtr = nullptr;
   playPtr = nullptr;
+  index = numeric_limits<unsigned>::max();
+
+  Node::resetStrategies();
+}
+
+
+void Node::resetStrategies()
+{
   strats.reset();
   simpleStrats.reset();
-  index = numeric_limits<unsigned>::max();
 }
 
 
