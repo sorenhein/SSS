@@ -664,6 +664,13 @@ CombinationType Ranks::setPlays(
 }
 
 
+bool Ranks::partnerVoid() const
+{
+  // North always has the cards if there is a void on declarer's side.
+  return south.isVoid();
+}
+
+
 string Ranks::strTable() const
 {
   // Makes a table with one rank per line.

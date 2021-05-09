@@ -103,6 +103,8 @@ class Ranks
       Plays& plays,
       TrickEntry& trivialEntry);
 
+    bool partnerVoid() const;
+
     string strTable() const;
 
     wstring wstrDiagram() const;

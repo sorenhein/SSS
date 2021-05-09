@@ -168,12 +168,10 @@ void Plays::strategizeNew(
 
   // Combine some plays around a lead collapse, removing others
   // from the list of plays.  See comment in the method.
-/*
   nodesRho.removeCollapsesRHO();
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after RHO collapses");
-*/
 
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);

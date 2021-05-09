@@ -1,34 +1,43 @@
+2021-05-09
+----------
+10 / 41388: 9 - 8 - void - J: getStrategies are not in descending
+weight order, probably because we threw away some strategies!
+Does this matter, or is it fixed when we multiply stategies anyway?
+
+I think removeCollapses() doesn't really work.  It eliminates some
+valid strategies in 10 / 41388.  I should probably give up on it.
+
+Time strategize with and without constant and domination removals.
+- In the first instance for RHO / pard
+  - Maybe also for LHO / lead
+  - There may be a wonky way to += Strategy vectors without first
+    collapsing the constants.  Is it worth it?
+
+Is the special void version then faster than the general one?
+Probably still worth it?
+
+Completely global constant results: Separate out, too?
+
+Why doesn't it work in Combination to make complete copies of
+everything?  It must be some stray pointers, but where?
+
+When we don't solve all Combination's because of ranks, we have
+to spread out the more concentrated distributions onto the current
+trick if needed.
+
+
 2021-04-28
 ----------
 - Plays
-  - Before we think about moving bounds from Node to Strategies
-    more generally, think about performance (go up to 10-11 cards)
-    - May have to have a duplicate Plays and compare strategies
-  - For non-voids, if we reduce RHO collapses, find cases where the
-    strategies change
-    - Find out whether it is justified
-    - Looking at timings, perhaps only for a certain complexity?
-  - Similarly for bounding and adding bounds back on
-    - In the first instance for RHO / pard
-    - Maybe also for LHO / lead
-    - There may be a wonky way to += Strategy vectors without first
-      collapsing the constants.  Is it worth it?
-  - If it makes sense (for a certain complexity?), move Bounds
-  - Then there is only only difference between void and non-void,
-    other than the complexity detection: collapse LHO
-
   - If we kept Combination::strats in a nodeMaster, we could pass this
     to Plays and then not copy strats in strategize.
 
-  - Check that number (not rank) is used appropriately
-
-  - Completely global constant results: Separate out, too?
-
 - Ranks
   - number to start from 1 when non-void, not 0
-
+  - Check that number (not rank) is used appropriately
 
 2021-04-26
+----------
 
 Tvectors etc.:
 - Check rank vs number used appropriately (I think it isn't)

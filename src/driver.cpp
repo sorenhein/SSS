@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
   timers.start(TIMER_COMBINATIONS);
 
   // for (unsigned cards = 0; cards <= control.cards(); cards++)
-  for (unsigned cards = 0; cards <= 9; cards++)
+  for (unsigned cards = 0; cards <= 10; cards++)
   {
     cout << "Cards " << setw(2) << right << cards << endl;
 

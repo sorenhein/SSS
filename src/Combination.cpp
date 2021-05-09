@@ -58,8 +58,13 @@ Strategies stmp;
   plays.clear();
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
-  if (centry.canonicalHolding3 == 2 && ranks.size() == 1)
+  if (centry.canonicalHolding3 == 41388 && ranks.size() == 10)
+  {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
+    cout << ranks.strTable();
+    wcout << ranks.wstrDiagram();
+    cout << distPtr->str();
+  }
 
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
@@ -99,7 +104,27 @@ timers2[ps].start();
   plays.strategizeNew(ranks, distPtr, stmp, debugFlagTmp);
 timers2[ps].stop();
 
-assert(strats == stmp);
+  if (! (strats == stmp))
+  {
+    if (ranks.partnerVoid())
+    {
+      cout << "VOID " << strats.size() << " vs " << stmp.size() << endl;
+      cout << ranks.strTable();
+      wcout << ranks.wstrDiagram();
+      cout << distPtr->str();
+      cout << strats.str("Old", false);
+      cout << stmp.str("New", false);
+    }
+    else
+    {
+      cout << "REGULAR " << strats.size() << " vs " << stmp.size() << endl;
+      cout << ranks.strTable();
+      wcout << ranks.wstrDiagram();
+      cout << distPtr->str();
+      cout << strats.str("Old", false);
+      cout << stmp.str("New", false);
+    }
+  }
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
