@@ -26,6 +26,13 @@ struct Bounds
   // The lowest constant results.
   Strategy constants;
 
+  void reset()
+  {
+    minima.reset();
+    maxima.reset();
+    constants.reset();
+  };
+
   void operator *= (const Bounds& bounds2)
   {
     minima *= bounds2.minima;

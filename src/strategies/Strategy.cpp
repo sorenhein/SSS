@@ -29,6 +29,7 @@ Strategy::~Strategy()
 void Strategy::reset()
 {
   results.clear();
+  weightInt = 0;
 }
 
 
@@ -303,23 +304,12 @@ void Strategy::constrain(Strategy& constants) const
       return;
     }
 
-    /*
-    if (iter1->dist != iter2->dist)
-    {
-      cout << "HERE\n";
-      cout << Strategy::str("Strategy");
-      cout << constants.str("constants");
-      cout << "iter1 " << iter1->dist << ": " << iter1->tricks << endl;
-      cout << "iter2 " << iter2->dist << ": " << iter2->tricks << endl;
-    }
-    */
-
     if (iter1->dist == iter2->dist)
     {
       if (iter1->tricks >= iter2->tricks)
       {
-        iter2++;
         constants.weightInt += iter2->tricks;
+        iter2++;
       }
       else
         iter2 = constants.results.erase(iter2);
@@ -330,7 +320,6 @@ void Strategy::constrain(Strategy& constants) const
           iter1->dist > iter2->dist)
         iter2 = constants.results.erase(iter2);
     }
-    // assert(iter1->dist == iter2->dist);
   }
 }
 

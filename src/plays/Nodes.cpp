@@ -338,12 +338,50 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 }
 
 
+void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
+{
+  // Add back the simple strategies.
+  assert(level == LEVEL_PARD || level == LEVEL_LEAD);
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->integrateSimpleStrategies();
+
+  // Add back the lead-specific constants.
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->activateBounds();
+
+  Nodes::strategizeDeclarer(debugFlag);
+}
+
+
 void Nodes::strategizeDefenders(const bool debugFlag)
 {
   // Combine with the corresponding parent node by cross product.
   assert(level == LEVEL_RHO || level == LEVEL_LHO);
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->cross(level, debugFlag);
+}
+
+
+void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
+{
+  // Derive bounds on RHO outcomes for each lead in order to find
+  // constant outcomes, propagate them to the parent nodes (which are
+  // may be nodesLead if partner is void; see Plays), and remove them 
+  // from the parent nodes.
+  assert(level == LEVEL_RHO || level == LEVEL_LHO);
+  Nodes::makeBounds(debugFlag);
+
+  // Remove the lead constants from the corresponding strategies.
+  // Collect all strategies with a single vector into an overall strategy.
+  // Some defenses can be removed -- see comment in method.
+  Nodes::extractSimpleStrategies();
+
+  if (debugFlag)
+    cout << Nodes::strSimple();
+
+  // Combine the plays into an overall strategy for each lead.
+  // Note that the results may end up in nodesLead due to the relinking.
+  Nodes::strategizeDefenders(debugFlag);
 }
 
 

@@ -35,6 +35,7 @@ void Node::resetStrategies()
 {
   strats.reset();
   simpleStrats.reset();
+  bounds.reset();
 }
 
 

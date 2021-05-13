@@ -74,7 +74,10 @@ class Nodes
     void removeCollapsesVoidLHO();
 
     void strategizeDeclarer(const bool debugFlag);
+    void strategizeDeclarerAdvanced(const bool debugFlag);
+
     void strategizeDefenders(const bool debugFlag);
+    void strategizeDefendersAdvanced(const bool debugFlag);
 
     unsigned size() const;
     unsigned used() const;
