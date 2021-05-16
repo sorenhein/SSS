@@ -19,6 +19,12 @@ class Nodes
   // Instead we allocate chunks whenever we run out of space.
   // begin() and end() only loop over the used part of the list.
 
+  struct ParentConstants
+  {
+    Node * parentPtr;
+    Strategy constants;
+  };
+
   private:
 
     Level level;
@@ -36,9 +42,13 @@ class Nodes
     unsigned chunkSize;
 
 
-    void removeConstants();
+    void makeBoundsSubset(
+      list<ParentConstants>& parents,
+      const bool debugFlag);
 
-    void removeDominatedDefenses();
+    void removeConstants(const bool debugFlag);
+
+    void removeDominatedDefenses(const bool debugFlag);
 
 
   public:
@@ -68,10 +78,7 @@ class Nodes
 
     void makeBounds(const bool debugFlag);
 
-    void extractSimpleStrategies();
-
-    void removeCollapsesRHO();
-    void removeCollapsesVoidLHO();
+    void extractSimpleStrategies(const bool debugFlag);
 
     void strategizeDeclarer(const bool debugFlag);
     void strategizeDeclarerAdvanced(const bool debugFlag);

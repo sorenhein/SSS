@@ -147,19 +147,25 @@ bool Node::removePlay()
     return true;
   else if (strats.size() == 1)
   {
-cout << "parents->simpleStrats was\n";
-cout << parentPtr->simpleStrats.str();
-cout << "play is " << playPtr->strPartialTrick(LEVEL_LHO);
-cout << "The Node strats are\n";
-cout << strats.str();
+// cout << "parents->simpleStrats was\n";
+// cout << parentPtr->simpleStrats.str();
+// cout << "play is " << playPtr->strPartialTrick(LEVEL_LHO);
+// cout << "The Node strats are\n";
+// cout << strats.str();
     parentPtr->simpleStrats *= strats;
-cout << "simpleStrats is\n";
-cout << parentPtr->simpleStrats.str();
+// cout << "simpleStrats is\n";
+// cout << parentPtr->simpleStrats.str();
     assert(parentPtr->simpleStrats.size() == 1);
     return true;
   }
   else
     return false;
+}
+
+
+void Node::clearBounds()
+{
+  bounds.reset();
 }
 
 
@@ -172,6 +178,12 @@ void Node::bound()
 void Node::propagateBounds()
 {
   parentPtr->bounds *= bounds;
+}
+
+
+void Node::augmentConstants(const Strategy& constants)
+{
+  bounds.constants *= constants;
 }
 
 
@@ -202,19 +214,37 @@ void Node::activateBounds()
 }
 
 
-void Node::purgeConstants()
+bool Node::purgeConstants()
 {
+  const unsigned sizeOld = strats.size();
+  if (sizeOld == 0 || strats.numDists() == 0)
+    return false;
+
   const auto& constants = parentPtr->bounds.constants;
-cout << "About to purge constants:\n";
-cout << constants.str();
-cout << "Strategies before are:\n";
-cout << strats.str();
+// cout << "About to purge constants:\n";
+// cout << constants.str();
+// cout << "Strategies before are:\n";
+// cout << strats.str();
 
   strats.purge(constants);
   bounds.minima.purge(constants);
   bounds.maxima.purge(constants);
-cout << "Strategies after are:\n";
-cout << strats.str();
+// cout << "Strategies after are:\n";
+// cout << strats.str();
+// cout << "Strat numbers " << sizeOld << " and now " << strats.size() << endl;
+
+  const unsigned sizeNew = strats.size();
+
+  // We only need to revisit a collapse to fewer, but still non-zero
+  // strategies.
+  /* */
+  if (sizeNew == 0 || strats.numDists() == 0)
+    return false;
+  else
+    return (strats.size() != sizeOld);
+  /* */
+
+  // return (strats.size() != sizeOld || strats.numDists() == 0);
 }
 
 
@@ -226,8 +256,8 @@ Node * Node::getParentPtr()
 
 void Node::integrateSimpleStrategies()
 {
-cout << "Simple strategy coming up\n";
-cout << simpleStrats.str();
+// cout << "Simple strategy coming up\n";
+// cout << simpleStrats.str();
   strats *= simpleStrats;
 }
 
@@ -248,6 +278,12 @@ Strategies& Node::strategies()
 const Strategies& Node::strategies() const
 {
   return strats;
+}
+
+
+const Strategy& Node::constants() const
+{
+  return bounds.constants;
 }
 
 

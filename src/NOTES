@@ -17,6 +17,11 @@ Then all the strategies distributions should somehow go through a
 more focused makeBounds where we only clear and update the bounds
 for those distributions, at our level and in the parent.
 
+So in Node, bound, propagateBounds and constrainConstantsToMinima
+could take an optional argument which is a pointer to the 
+distributions to consider.  Or it's pointer to a Strategies.
+
+
 
 
 2021-05-09

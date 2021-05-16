@@ -207,11 +207,6 @@ void Plays::strategizeVoid(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("before void collapses");
 
-  // Combine some plays around a lead collapse, removing others
-  // from the list of plays.  See comment in the method.
-  nodesRho.removeCollapsesRHO();
-  nodesRho.removeCollapsesVoidLHO();
-
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("after void collapses");
 
@@ -223,7 +218,8 @@ void Plays::strategizeVoid(
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.
   // Some defenses can be removed -- see comment in method.
-  nodesRho.extractSimpleStrategies();
+  nodesRho.extractSimpleStrategies(
+    (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   if (debugFlag & DEBUGPLAY_RHO_DETAILS)
     cout << nodesLead.strSimple();

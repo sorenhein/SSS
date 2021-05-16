@@ -124,9 +124,9 @@ void Nodes::makeBounds(const bool debugFlag)
   // We can't iterate over (auto& node: nodes), as nodes is larger.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-cout << "ABOUT TO BOUND\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
-cout << iter->strategies().str();
+// cout << "ABOUT TO BOUND\n";
+// cout << iter->play().strPartialTrick(LEVEL_LHO);
+// cout << iter->strategies().str();
     iter->bound();
     if (debugFlag)
     {
@@ -151,14 +151,14 @@ cout << iter->strategies().str();
     if (parentPtr == prevParentPtr)
       continue;
 
-cout << "Parent node before constraining:\n";
-cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
-cout << parentPtr->strBounds("Constrained parent constants") << endl;
+// cout << "Parent node before constraining:\n";
+// cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
+// cout << parentPtr->strBounds("Constrained parent constants") << endl;
     prevParentPtr = parentPtr;
     parentPtr->constrainConstantsToMinima();
     if (debugFlag)
     {
-cout << "Parent node after constraining:\n";
+      cout << "Parent node after constraining:\n";
       cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
       cout << parentPtr->strBounds("Constrained parent constants") <<
         endl;
@@ -167,24 +167,165 @@ cout << "Parent node after constraining:\n";
 }
 
 
-void Nodes::removeConstants()
+void Nodes::makeBoundsSubset(
+  list<ParentConstants>& parents,
+  const bool debugFlag)
+{
+  // If we reduced the number of strategies in a node as a result of
+  // purging the constants, we have to redo the bounds in that part of
+  // the tree, i.e. for all nodes feeding into the parent as well as
+  // for the parent itself.
+
+  auto piter = parents.begin();
+  auto iter = nodes.begin();
+  while (true)
+  {
+    auto pptr = piter->parentPtr;
+    while (iter != nextIter && iter->getParentPtr() != pptr) 
+      iter++;
+
+    while (iter != nextIter && iter->getParentPtr() == pptr)
+    {
+      iter->bound();
+      iter->propagateBounds();
+
+      if (debugFlag)
+      {
+        cout << "Redid bounds for " << 
+          iter->play().strPartialTrick(LEVEL_LHO);
+        cout << iter->strBounds("Bounds");
+      }
+      iter++;
+    }
+
+    // Clear the parent itself.
+    pptr->clearBounds();
+
+    if (++piter == parents.end())
+      break;
+  }
+
+  for (auto& parent: parents)
+  {
+    auto parentPtr = parent.parentPtr;
+    if (debugFlag)
+    {
+      cout << "Parent node before subset constraining:\n";
+      cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
+      cout << parentPtr->strBounds("Constrained parent constants") << endl;
+    }
+
+    parentPtr->constrainConstantsToMinima();
+
+    if (debugFlag)
+    {
+      cout << "Parent node after subset constraining:\n";
+      cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
+      cout << parentPtr->strBounds("Constrained parent constants") <<
+        endl;
+    }
+  }
+}
+
+
+void Nodes::removeConstants(const bool debugFlag)
 {
   // Remove constant distributions (for a given lead) from each
   // play with that lead.  If a play strategy melts away completely,
   // remove it.  If there is only one strategy vector, also remove
   // it and put in a special simple set of strategies.
+
+  list<ParentConstants> parents;
+
+  while (true)
+  {
+    bool shrinkFlag = false;
+    for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    {
+      if (debugFlag)
+      {
+        cout << "purgeConstants loop: " <<
+          iter->play().strPartialTrick(LEVEL_LHO);
+      }
+
+      if (iter->purgeConstants())
+      {
+        if (debugFlag)
+          cout << "New instance of changed number of strategies\n";
+        // Number of strategies shrank, so we have to redo the constants
+        // for this group of strategies mapping the the same parent.
+      
+        Node * parentPtr = iter->getParentPtr();
+        if (parents.empty() || parents.back().parentPtr != parentPtr)
+        {
+          // We have a new parent pointer to keep track of.
+          if (debugFlag)
+            cout << "New instance of affected parent\n";
+          parents.emplace_back(ParentConstants());
+          auto& pc = parents.back();
+          pc.parentPtr = parentPtr;
+          pc.constants = parentPtr->constants();
+// cout << "Stored parent constants\n";
+// cout <<pc.constants.str();
+          shrinkFlag = true;
+        }
+      }
+    }
+
+    if (! shrinkFlag)
+      break;
+
+    // Clear the bounds for all play with affected parents.
+    auto piter = parents.begin();
+    auto pptr = piter->parentPtr;
+    auto iter = nodes.begin();
+    while (true)
+    {
+      while (iter != nextIter && iter->getParentPtr() != pptr)
+        iter++;
+
+      while (iter != nextIter &&iter->getParentPtr() == pptr)
+      {
+// cout << "Clearing " << iter->play().strPartialTrick(LEVEL_LHO);
+        iter->clearBounds();
+        iter++;
+      }
+
+      // Clear the parent itself.
+// cout << "Clearing parent " << pptr->play().strPartialTrick(LEVEL_LEAD);
+      pptr->clearBounds();
+
+      if (++piter == parents.end())
+        break;
+    }
+
+    // Now we have to redo makeBounds and propagateBounds
+    Nodes::makeBoundsSubset(parents, debugFlag);
+    
+    // Finally we have to reinstate the parent constants we kept.
+    for (auto& parent: parents)
+    {
+// cout << "Augmenting parent" << endl;
+// cout << parent.parentPtr->play().strPartialTrick(LEVEL_LEAD);
+// cout << parent.parentPtr->strBounds("Parent constants before") << endl;
+// cout << "Augmenting with " << parent.constants.str();
+      parent.parentPtr->augmentConstants(parent.constants);
+// cout << parent.parentPtr->strBounds("Parent constants after") << endl;
+    }
+    parents.clear();
+  }
+
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
-cout << "removeConstants() loop\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
-    iter->purgeConstants();
-
     if (iter->removePlay())
     {
-cout << "Will remove play\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
-cout << iter->strategies().str();
+      if (debugFlag)
+      {
+        cout << "Will remove play\n";
+        cout << iter->play().strPartialTrick(LEVEL_LHO);
+        cout << iter->strategies().str();
+      }
       iter = nodes.erase(iter);
       nextEntryNumber--;
     }
@@ -194,7 +335,7 @@ cout << iter->strategies().str();
 }
 
 
-void Nodes::removeDominatedDefenses()
+void Nodes::removeDominatedDefenses(const bool debugFlag)
 {
   // For a given lead and a given distribution, let's say the range of
   // outcomes for a given defensive strategy is (min, max).  Let's also
@@ -206,8 +347,11 @@ void Nodes::removeDominatedDefenses()
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
-cout << "removeDominatedDefenses() loop\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
+    if (debugFlag)
+    {
+      cout << "removeDominatedDefenses() loop\n";
+      cout << iter->play().strPartialTrick(LEVEL_LHO);
+    }
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
@@ -220,15 +364,20 @@ cout << iter->play().strPartialTrick(LEVEL_LHO);
       continue;
     }
 
-cout << "Got max: " << max.str() << endl;
+    if (debugFlag)
+       cout << "Got max: " << max.str() << endl;
 
     node.strategies().purge(max);
+    // TODO Can this too shrink the number of strategies?
 
     if (node.removePlay())
     {
-cout << "Will remove dominated defense\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
-cout << iter->strategies().str();
+      if (debugFlag)
+      {
+        cout << "Will remove dominated defense\n";
+        cout << iter->play().strPartialTrick(LEVEL_LHO);
+        cout << iter->strategies().str();
+      }
       iter = nodes.erase(iter);
       nextEntryNumber--;
     }
@@ -236,125 +385,6 @@ cout << iter->strategies().str();
       iter++;
   }
 
-}
-
-
-void Nodes::extractSimpleStrategies()
-{
-  Nodes::removeConstants();
-cout << "Done removing constants\n";
-  Nodes::removeDominatedDefenses();
-cout << "Done removing dominated defenses\n";
-}
-
-
-void Nodes::removeCollapsesRHO()
-{
-  // Look for rank collapses that happen "during the trick".
-  // For example, with KJ975 /void missing 7 cards, if declarer leads the 5,
-  // the trick might go 5 - T - 6 or 5 - T - x.  After the trick they will
-  // be the same, but even during the trick declarer should not distinguish
-  // between the 6 and the x.  We don't give up on the difference, but we
-  // merge the strategies vector by vector, and not by cross product.
-  // Declarer should not play differently based on a distinction that
-  // the defense can create without a real difference.
-
-  auto iter = nodes.begin();
-  while (iter != nextIter)
-  {
-    auto& node = * iter;
-    auto& play = node.play();
-
-    if (! play.leadCollapse || play.trickNS)
-    {
-      // Skip plays that do not have a lead collapsing.
-      // Also skip a trick won by declarer as the collapse cannot
-      // involve two defenders' cards that are played in this trick.
-      iter++;
-      continue;
-    }
-
-    // The test for the same pardRank is unnecessary if partner is
-    // known to be void.  The method also works if partner has cards.
-    const unsigned lhoRank = play.lho();
-    const unsigned pardRank = play.pard();
-    const unsigned rhoRank = play.rho();
-    const unsigned leadRank = play.lead();
-    const unsigned h3 = play.holding3;
-
-    if (rhoRank+1 == leadRank)
-    {
-      // As the defenders win the trick:
-      assert(lhoRank > leadRank);
-
-      // Find matching RHO plays.  There can be more than one, as
-      // we may have several plays of a given rank if that is what
-      // we asked for from Ranks.  As the plays are in lexicographic
-      // order, they will follow immediately.  As the LHO card may
-      // be the only defenders' card that is exactly one rank above
-      // the lead, there may be no matching plays.
-      auto iter2 = next(iter);
-      while (iter2 != nextIter &&
-          iter2->play().holding3 == h3 &&
-          iter2->play().pard() == pardRank &&
-          iter2->play().lho() == lhoRank)
-      {
-        iter->strategies() |= iter2->strategies();
-        iter2 = nodes.erase(iter2);
-        nextEntryNumber--;
-      }
-    }
-    iter++;
-  }
-}
-
-
-void Nodes::removeCollapsesVoidLHO()
-{
-  // This is similar to removeCollapsesRHO().  It is only used when
-  // partner is void.
-
-  auto iter = nodes.begin();
-  while (iter != nextIter)
-  {
-    auto& node = * iter;
-    auto& play = node.play();
-
-    if (! play.leadCollapse || play.trickNS)
-    {
-      iter++;
-      continue;
-    }
-
-    // We don't test for pardRank as it is always 0.
-    const unsigned lhoRank = play.lho();
-    const unsigned rhoRank = play.rho();
-    const unsigned leadRank = play.lead();
-    const unsigned h3 = play.holding3;
-
-    if (lhoRank+1 == leadRank)
-    {
-      assert(rhoRank > leadRank);
-
-      // Find matching LHO plays.  Unlike above, they will not be
-      // in order following the current play.
-      auto iter2 = next(iter);
-      while (iter2 != nextIter)
-      {
-        if (iter2->play().holding3 == h3 &&
-            iter2->play().lead() == leadRank &&
-            iter2->play().rho() == rhoRank)
-        {
-          iter->strategies() |= iter2->strategies();
-          iter2 = nodes.erase(iter2);
-          nextEntryNumber--;
-        }
-        else
-          iter2++;
-      }
-    }
-    iter++;
-  }
 }
 
 
@@ -373,23 +403,23 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-cout << "Before integrateSimple\n";
-cout << iter->play().strPartialTrick(LEVEL_LEAD);
-cout << iter->strategies().str();
+// cout << "Before integrateSimple\n";
+// cout << iter->play().strPartialTrick(LEVEL_LEAD);
+// cout << iter->strategies().str();
     iter->integrateSimpleStrategies();
-cout << "After integrateSimple\n";
-cout << iter->strategies().str();
+// cout << "After integrateSimple\n";
+// cout << iter->strategies().str();
   }
 
   // Add back the lead-specific constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-cout << "Before activateBounds\n";
-cout << iter->play().strPartialTrick(LEVEL_LEAD);
-cout << iter->strategies().str();
+// cout << "Before activateBounds\n";
+// cout << iter->play().strPartialTrick(LEVEL_LEAD);
+// cout << iter->strategies().str();
     iter->activateBounds();
-cout << "After activateBounds\n";
-cout << iter->strategies().str();
+// cout << "After activateBounds\n";
+// cout << iter->strategies().str();
   }
 
   Nodes::strategizeDeclarer(debugFlag);
@@ -405,6 +435,15 @@ void Nodes::strategizeDefenders(const bool debugFlag)
 }
 
 
+void Nodes::extractSimpleStrategies(const bool debugFlag)
+{
+  Nodes::removeConstants(debugFlag);
+// cout << "Done removing constants\n";
+  Nodes::removeDominatedDefenses(debugFlag);
+// cout << "Done removing dominated defenses\n";
+}
+
+
 void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
 {
   // Derive bounds on RHO outcomes for each lead in order to find
@@ -417,8 +456,8 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.
   // Some defenses can be removed -- see comment in method.
-cout << "Before extractSimpleStrategies\n";
-  Nodes::extractSimpleStrategies();
+// cout << "Before extractSimpleStrategies\n";
+  Nodes::extractSimpleStrategies(debugFlag);
 
   if (debugFlag)
     cout << Nodes::strSimple();

@@ -70,9 +70,13 @@ class Node
 
     bool removePlay();
 
+    void clearBounds();
+
     void bound();
 
     void propagateBounds();
+
+    void augmentConstants(const Strategy& constants);
 
     void constrainConstantsToMinima();
 
@@ -80,7 +84,8 @@ class Node
 
     void activateBounds();
 
-    void purgeConstants();
+    // Returns true if number of strategies shrank.
+    bool purgeConstants();
 
     Node * getParentPtr();
 
@@ -90,6 +95,8 @@ class Node
 
     Strategies& strategies();
     const Strategies& strategies() const;
+
+    const Strategy& constants() const;
 
     string strBounds(const string& title = "") const;
 
