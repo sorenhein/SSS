@@ -166,14 +166,12 @@ void Plays::strategizeNew(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("Node counts");
 
-  nodesRho.strategizeDefendersAdvanced(
-    (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
 
-  nodesPard.strategizeDeclarerAdvanced(
-    (debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+  nodesLho.strategizeDefendersAdvanced((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
 
-  nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
-  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+  nodesLead.strategizeDeclarerAdvanced((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
   // TODO Can we pass out nodeMaster.strategies() directly?
   // Does it stay in scope?

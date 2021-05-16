@@ -48,6 +48,7 @@ cout << "Size " <<Strategies::size() << " vs " << tvs.size() << endl;
   }
 
 unsigned i = 0;
+  bool sameFlag = true;
   auto iter2 = tvs.results.begin();
   for (auto iter1 = results.begin(); iter1 != results.end(); 
       iter1++, iter2++)
@@ -55,9 +56,33 @@ unsigned i = 0;
     if (!(* iter1 == * iter2))
     {
 cout << "ABOUT TO DIFFER " << i << "\n";
-      return false;
+      sameFlag = false;
+      break;
     }
     i++;
+  }
+
+  if (sameFlag)
+    return true;
+
+  // Not very clever, detailed comparison.
+  for (auto iter1 = results.begin(); iter1 != results.end(); iter1++)
+  {
+    sameFlag = false;
+    for (iter2 = tvs.results.begin(); iter2 != tvs.results.end(); iter2++)
+    {
+      if (* iter1 == * iter2)
+      {
+        sameFlag = true;
+        break;
+      }
+    }
+
+    if (! sameFlag)
+    {
+cout << "ABOUT TO REALLY DIFFER\n";
+      return false;
+    }
   }
 
   return true;

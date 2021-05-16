@@ -124,9 +124,17 @@ void Nodes::makeBounds(const bool debugFlag)
   // We can't iterate over (auto& node: nodes), as nodes is larger.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
+cout << "ABOUT TO BOUND\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
+cout << iter->strategies().str();
     iter->bound();
     if (debugFlag)
+    {
+      // Only the right LEVEL if we start in the middle of the trick.
+      // Could pass in level to do it properly.
+      cout << iter->play().strPartialTrick(LEVEL_LHO);
       cout << iter->strBounds("Bounds");
+    }
   }
 
   // Derive global bounds for each parent, ending up in nodesLead
@@ -143,11 +151,18 @@ void Nodes::makeBounds(const bool debugFlag)
     if (parentPtr == prevParentPtr)
       continue;
 
+cout << "Parent node before constraining:\n";
+cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
+cout << parentPtr->strBounds("Constrained parent constants") << endl;
     prevParentPtr = parentPtr;
     parentPtr->constrainConstantsToMinima();
     if (debugFlag)
+    {
+cout << "Parent node after constraining:\n";
+      cout << parentPtr->play().strPartialTrick(LEVEL_LEAD);
       cout << parentPtr->strBounds("Constrained parent constants") <<
         endl;
+    }
   }
 }
 
@@ -161,10 +176,15 @@ void Nodes::removeConstants()
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
+cout << "removeConstants() loop\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
     iter->purgeConstants();
 
     if (iter->removePlay())
     {
+cout << "Will remove play\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
+cout << iter->strategies().str();
       iter = nodes.erase(iter);
       nextEntryNumber--;
     }
@@ -186,6 +206,8 @@ void Nodes::removeDominatedDefenses()
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
+cout << "removeDominatedDefenses() loop\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
@@ -198,10 +220,15 @@ void Nodes::removeDominatedDefenses()
       continue;
     }
 
+cout << "Got max: " << max.str() << endl;
+
     node.strategies().purge(max);
 
     if (node.removePlay())
     {
+cout << "Will remove dominated defense\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
+cout << iter->strategies().str();
       iter = nodes.erase(iter);
       nextEntryNumber--;
     }
@@ -215,7 +242,9 @@ void Nodes::removeDominatedDefenses()
 void Nodes::extractSimpleStrategies()
 {
   Nodes::removeConstants();
+cout << "Done removing constants\n";
   Nodes::removeDominatedDefenses();
+cout << "Done removing dominated defenses\n";
 }
 
 
@@ -343,11 +372,25 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
   // Add back the simple strategies.
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+cout << "Before integrateSimple\n";
+cout << iter->play().strPartialTrick(LEVEL_LEAD);
+cout << iter->strategies().str();
     iter->integrateSimpleStrategies();
+cout << "After integrateSimple\n";
+cout << iter->strategies().str();
+  }
 
   // Add back the lead-specific constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+cout << "Before activateBounds\n";
+cout << iter->play().strPartialTrick(LEVEL_LEAD);
+cout << iter->strategies().str();
     iter->activateBounds();
+cout << "After activateBounds\n";
+cout << iter->strategies().str();
+  }
 
   Nodes::strategizeDeclarer(debugFlag);
 }
@@ -374,6 +417,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.
   // Some defenses can be removed -- see comment in method.
+cout << "Before extractSimpleStrategies\n";
   Nodes::extractSimpleStrategies();
 
   if (debugFlag)

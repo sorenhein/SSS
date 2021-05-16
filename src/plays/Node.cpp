@@ -147,7 +147,14 @@ bool Node::removePlay()
     return true;
   else if (strats.size() == 1)
   {
+cout << "parents->simpleStrats was\n";
+cout << parentPtr->simpleStrats.str();
+cout << "play is " << playPtr->strPartialTrick(LEVEL_LHO);
+cout << "The Node strats are\n";
+cout << strats.str();
     parentPtr->simpleStrats *= strats;
+cout << "simpleStrats is\n";
+cout << parentPtr->simpleStrats.str();
     assert(parentPtr->simpleStrats.size() == 1);
     return true;
   }
@@ -181,6 +188,10 @@ void Node::getConstrainedParentMaxima(Strategy& max)
   // candidates for purging, as the defenders will not enter this
   // node's strategy with the corresponding distribution.
   max = parentPtr->bounds.maxima;
+cout << "Got parent maxima:\n";
+cout << max.str();
+cout << "Current node bounds:\n";
+cout << bounds.str();
   bounds.minima.constrain(max);
 }
 
@@ -194,10 +205,16 @@ void Node::activateBounds()
 void Node::purgeConstants()
 {
   const auto& constants = parentPtr->bounds.constants;
+cout << "About to purge constants:\n";
+cout << constants.str();
+cout << "Strategies before are:\n";
+cout << strats.str();
 
   strats.purge(constants);
   bounds.minima.purge(constants);
   bounds.maxima.purge(constants);
+cout << "Strategies after are:\n";
+cout << strats.str();
 }
 
 
@@ -209,6 +226,8 @@ Node * Node::getParentPtr()
 
 void Node::integrateSimpleStrategies()
 {
+cout << "Simple strategy coming up\n";
+cout << simpleStrats.str();
   strats *= simpleStrats;
 }
 

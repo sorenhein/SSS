@@ -236,7 +236,8 @@ void Strategy::bound(
       iterUpper->tricks = iter->tricks;
     }
 
-    if (iter->dist == iterConst->dist)
+    if (iterConst != constants.results.end() &&
+        iter->dist == iterConst->dist)
     {
       if (iter->tricks == iterConst->tricks)
         iterConst++;
@@ -250,7 +251,8 @@ void Strategy::bound(
     }
     else
     {
-      if (iter->dist >= iterConst->dist)
+      if (iterConst != constants.results.end() &&
+          iter->dist >= iterConst->dist)
       {
         cout << "HERE\n";
         cout << Strategy::str("Strategy");
@@ -261,8 +263,9 @@ void Strategy::bound(
         cout << "iterConst " << iterConst->dist << ": " << iterConst->tricks << endl;
         cout << "iterLower " << iterLower->dist << ": " << iterLower->tricks << endl;
         cout << "iterUpper " << iterUpper->dist << ": " << iterUpper->tricks << endl;
+        assert(iterConst != constants.results.end());
+        assert(iter->dist < iterConst->dist);
       }
-      assert(iter->dist < iterConst->dist);
     }
     
     iter++;
