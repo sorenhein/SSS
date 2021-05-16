@@ -207,8 +207,8 @@ void Strategy::operator *=(const Strategy& tv2)
 
 void Strategy::bound(
   Strategy& constants,
-  Strategy& lower,
-  Strategy& upper) const
+  Strategy& lower) const
+  // Strategy& upper) const
 {
   // Each of the three vectors is a running collection of TrickEntry
   // elements summarizing the distributions (in a parent Strategies).
@@ -221,7 +221,7 @@ void Strategy::bound(
   auto iter = results.begin();
   auto iterConst = constants.results.begin();
   auto iterLower = lower.results.begin();
-  auto iterUpper = upper.results.begin();
+  // auto iterUpper = upper.results.begin();
 
   while (iter != results.end())
   {
@@ -230,11 +230,13 @@ void Strategy::bound(
       assert(iter->dist == iterLower->dist);
       iterLower->tricks = iter->tricks;
     }
+    /*
     else if (iter->tricks > iterUpper->tricks)
     {
       assert(iter->dist == iterUpper->dist);
       iterUpper->tricks = iter->tricks;
     }
+    */
 
     if (iterConst != constants.results.end() &&
         iter->dist == iterConst->dist)
@@ -258,11 +260,11 @@ void Strategy::bound(
         cout << Strategy::str("Strategy");
         cout << constants.str("constants");
         cout << lower.str("lower");
-        cout << upper.str("upper");
+        // cout << upper.str("upper");
         cout << "iter " << iter->dist << ": " << iter->tricks << endl;
         cout << "iterConst " << iterConst->dist << ": " << iterConst->tricks << endl;
         cout << "iterLower " << iterLower->dist << ": " << iterLower->tricks << endl;
-        cout << "iterUpper " << iterUpper->dist << ": " << iterUpper->tricks << endl;
+        // cout << "iterUpper " << iterUpper->dist << ": " << iterUpper->tricks << endl;
         assert(iterConst != constants.results.end());
         assert(iter->dist < iterConst->dist);
       }
@@ -270,7 +272,7 @@ void Strategy::bound(
     
     iter++;
     iterLower++;
-    iterUpper++;
+    // iterUpper++;
   }
 }
 

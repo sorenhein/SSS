@@ -115,8 +115,8 @@ class Strategy
 
     void bound(
       Strategy& constants,
-      Strategy& lower,
-      Strategy& upper) const;
+      Strategy& lower) const;
+      // Strategy& upper) const;
 
     void constrain(Strategy& constants) const;
 

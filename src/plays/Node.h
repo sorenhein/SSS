@@ -80,7 +80,7 @@ class Node
 
     void constrainConstantsToMinima();
 
-    void getConstrainedParentMaxima(Strategy& max);
+    // void getConstrainedParentMaxima(Strategy& max);
 
     void activateBounds();
 

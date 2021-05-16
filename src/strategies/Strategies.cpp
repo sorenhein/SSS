@@ -248,8 +248,8 @@ void Strategies::collapseOnVoid()
 
 void Strategies::bound(
   Strategy& constants,
-  Strategy& lower,
-  Strategy& upper) const
+  Strategy& lower) const
+  // Strategy& upper) const
 {
   // Calculate Strategy values to summarize this Strategies.
   // constants is the set of constant strategies.  Other Strategies
@@ -263,13 +263,14 @@ void Strategies::bound(
 
   constants = results.front();
   lower = results.front();
-  upper = results.front();
+  // upper = results.front();
 
   if (results.size() == 1)
     return;
 
   for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->bound(constants, lower, upper);
+    iter->bound(constants, lower);
+    // iter->bound(constants, lower, upper);
 }
 
 
@@ -287,7 +288,7 @@ void Strategies::bound(Bounds& bounds) const
 
   bounds.constants = results.front();
   bounds.minima = results.front();
-  bounds.maxima = results.front();
+  // bounds.maxima = results.front();
 
   if (results.size() == 1)
     return;
@@ -295,7 +296,8 @@ void Strategies::bound(Bounds& bounds) const
   // TODO Pass in a Bounds instead
   // Eliminate the bounds with 3 arguments
   for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->bound(bounds.constants, bounds.minima, bounds.maxima);
+    // iter->bound(bounds.constants, bounds.minima, bounds.maxima);
+    iter->bound(bounds.constants, bounds.minima);
 }
 
 

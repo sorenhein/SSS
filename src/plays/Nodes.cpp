@@ -237,9 +237,11 @@ void Nodes::removeConstants(const bool debugFlag)
 
   list<ParentConstants> parents;
 
+  /*
   while (true)
   {
     bool shrinkFlag = false;
+  */
     for (auto iter = nodes.begin(); iter != nextIter; iter++)
     {
       if (debugFlag)
@@ -255,6 +257,7 @@ void Nodes::removeConstants(const bool debugFlag)
         // Number of strategies shrank, so we have to redo the constants
         // for this group of strategies mapping the the same parent.
       
+        /*
         Node * parentPtr = iter->getParentPtr();
         if (parents.empty() || parents.back().parentPtr != parentPtr)
         {
@@ -269,9 +272,11 @@ void Nodes::removeConstants(const bool debugFlag)
 // cout <<pc.constants.str();
           shrinkFlag = true;
         }
+        */
       }
     }
 
+    /*
     if (! shrinkFlag)
       break;
 
@@ -314,6 +319,7 @@ void Nodes::removeConstants(const bool debugFlag)
     }
     parents.clear();
   }
+  */
 
   auto iter = nodes.begin();
   while (iter != nextIter)
@@ -355,6 +361,7 @@ void Nodes::removeDominatedDefenses(const bool debugFlag)
     auto& node = * iter;
 
     // Limit the maximum vector to those entries that are <= play.lower.
+/*
     node.getConstrainedParentMaxima(max);
 
     if (max.size() == 0)
@@ -369,6 +376,7 @@ void Nodes::removeDominatedDefenses(const bool debugFlag)
 
     node.strategies().purge(max);
     // TODO Can this too shrink the number of strategies?
+*/
 
     if (node.removePlay())
     {
@@ -439,7 +447,7 @@ void Nodes::extractSimpleStrategies(const bool debugFlag)
 {
   Nodes::removeConstants(debugFlag);
 // cout << "Done removing constants\n";
-  Nodes::removeDominatedDefenses(debugFlag);
+// Nodes::removeDominatedDefenses(debugFlag);
 // cout << "Done removing dominated defenses\n";
 }
 

@@ -193,6 +193,7 @@ void Node::constrainConstantsToMinima()
 }
 
 
+/*
 void Node::getConstrainedParentMaxima(Strategy& max)
 {
   // Get the parent maxima (who's your daddy now?) and keep the
@@ -206,6 +207,7 @@ cout << "Current node bounds:\n";
 cout << bounds.str();
   bounds.minima.constrain(max);
 }
+*/
 
 
 void Node::activateBounds()
@@ -228,7 +230,7 @@ bool Node::purgeConstants()
 
   strats.purge(constants);
   bounds.minima.purge(constants);
-  bounds.maxima.purge(constants);
+  // bounds.maxima.purge(constants);
 // cout << "Strategies after are:\n";
 // cout << strats.str();
 // cout << "Strat numbers " << sizeOld << " and now " << strats.size() << endl;

@@ -21,7 +21,7 @@ struct Bounds
   Strategy minima;
 
   // The lowest maxima (so not the actual maxima).
-  Strategy maxima;
+  // Strategy maxima;
 
   // The lowest constant results.
   Strategy constants;
@@ -29,14 +29,14 @@ struct Bounds
   void reset()
   {
     minima.reset();
-    maxima.reset();
+    // maxima.reset();
     constants.reset();
   };
 
   void operator *= (const Bounds& bounds2)
   {
     minima *= bounds2.minima;
-    maxima *= bounds2.maxima;
+    // maxima *= bounds2.maxima;
     constants *= bounds2.constants;
   };
 
@@ -47,7 +47,7 @@ struct Bounds
       ss << title << endl;
     ss <<
       minima.str("Minima") << endl <<
-      maxima.str("Maxima") << endl <<
+      // maxima.str("Maxima") << endl <<
       constants.str("Constants") << endl;
     return ss.str();
   };
@@ -97,8 +97,8 @@ class Strategies
 
     void bound(
       Strategy& constants,
-      Strategy& lower,
-      Strategy& upper) const;
+      Strategy& lower) const;
+      // Strategy& upper) const;
 
     void bound(Bounds& bounds) const;
 
