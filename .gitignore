@@ -35,3 +35,4 @@ test/itest
 chapters/*
 scripts/*
 hash/*
+src/.vs/*
