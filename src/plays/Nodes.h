@@ -48,6 +48,10 @@ class Nodes
 
     void removeConstants(const bool debugFlag);
 
+    void makeRanges(const bool debugFlag);
+
+    void removeRanges(const bool debugFlag);
+
     void removeDominatedDefenses(const bool debugFlag);
 
 

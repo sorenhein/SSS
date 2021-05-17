@@ -60,6 +60,8 @@ class Strategies
 
     list<Strategy> results;
 
+    Ranges ranges;
+
     void collapseOnVoid();
 
     string strHeader(
@@ -104,9 +106,17 @@ class Strategies
 
     unsigned purge(const Strategy& constants);
 
+    void makeRanges();
+
+    void propagateRanges(const Strategies& child);
+
+    void purgeRanges(const Strategies& parent);
+
     void adapt(
       const Play& play,
       const Survivors& survivors);
+
+    string strRanges(const string& title = "") const;
 
     string str(
       const string& title = "",

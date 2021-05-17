@@ -75,6 +75,40 @@ struct TrickEntry
   }
 };
 
+struct RangeEntry
+{
+  unsigned dist;
+  unsigned lower;
+  unsigned upper;
+
+  void operator *= (const RangeEntry& range2)
+  {
+    if (range2.upper < upper ||
+        (range2.upper == upper && range2.lower < lower))
+    {
+      * this = range2;
+    }
+  };
+
+  bool operator < (const RangeEntry& range2) const
+  {
+    return (upper <= range2.lower &&
+        (range2.lower < range2.upper || lower < upper));
+  };
+
+  string str() const
+  {
+    stringstream ss;
+    ss << 
+      setw(2) << dist <<
+      setw(4) << lower <<
+      setw(4) << upper << endl;
+    return ss.str();
+  };
+};
+
+typedef list<RangeEntry> Ranges;
+
 
 class Strategy
 {
@@ -121,6 +155,14 @@ class Strategy
     void constrain(Strategy& constants) const;
 
     unsigned purge(const Strategy& constants);
+
+    void initRanges(Ranges& ranges);
+
+    void extendRanges(Ranges& ranges);
+
+    void purgeRanges(
+      Ranges& ranges,
+      const Ranges& parentRanges);
 
     void updateSingle(
       const unsigned fullNo,

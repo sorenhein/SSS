@@ -341,6 +341,69 @@ void Nodes::removeConstants(const bool debugFlag)
 }
 
 
+void Nodes::makeRanges(const bool debugFlag)
+{
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+// cout << "ABOUT TO MAKE RANGES\n";
+// cout << iter->play().strPartialTrick(LEVEL_LHO);
+// cout << iter->strategies().str();
+    iter->makeRanges();
+    if (debugFlag)
+    {
+      // Only the right LEVEL if we start in the middle of the trick.
+      // Could pass in level to do it properly.
+      cout << iter->play().strPartialTrick(LEVEL_LHO);
+      cout << iter->strRanges("Ranges");
+    }
+  }
+
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->propagateRanges();
+}
+
+
+void Nodes::removeRanges(const bool debugFlag)
+{
+  // For a given lead and a given distribution, let's say the range of
+  // outcomes for a given defensive strategy is (min, max).  Let's also
+  // say that the best global range is (MIN, MAX).  "Best" means it
+  // has the lowest MAX, and for a given MAX it has the lowest MIN.
+  // Then if MAX <= min and (max > min or MIN < MAX), the defenders will 
+  // never enter that strategy with that distribution, so it can be 
+  // removed from their options.
+
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+    if (debugFlag)
+    {
+      cout << "purgeRanges loop: " <<
+        iter->play().strPartialTrick(LEVEL_LHO);
+    }
+
+    iter->purgeRanges();
+  }
+
+  auto iter = nodes.begin();
+  while (iter != nextIter)
+  {
+    if (iter->removePlay())
+    {
+      if (debugFlag)
+      {
+        cout << "Will remove play after purge\n";
+        cout << iter->play().strPartialTrick(LEVEL_LHO);
+        cout << iter->strategies().str();
+      }
+      iter = nodes.erase(iter);
+      nextEntryNumber--;
+    }
+    else
+      iter++;
+  }
+}
+
+
 void Nodes::removeDominatedDefenses(const bool debugFlag)
 {
   // For a given lead and a given distribution, let's say the range of

@@ -318,6 +318,58 @@ unsigned Strategies::purge(const Strategy& constants)
 }
 
 
+void Strategies::makeRanges()
+{
+  if (results.empty())
+    return;
+
+  results.front().initRanges(ranges);
+
+  if (results.size() == 1)
+    return;
+
+  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+    iter->extendRanges(ranges);
+}
+
+
+void Strategies::propagateRanges(const Strategies& child)
+{
+  if (ranges.empty())
+  {
+    ranges = child.ranges;
+    return;
+  }
+
+  auto iter1 = ranges.begin();
+  auto iter2 = child.ranges.begin();
+
+  while (iter1 != ranges.end() && iter2 != child.ranges.end())
+  {
+    if (iter1->dist < iter2->dist)
+      iter1++;
+    else if (iter1->dist > iter2->dist)
+    {
+      ranges.insert(iter1, * iter2);
+      iter2++;
+    }
+    else
+    {
+      * iter1 *= * iter2;
+      iter1++;
+      iter2++;
+    }
+  }
+}
+
+
+void Strategies::purgeRanges(const Strategies& parent)
+{
+  for (auto iter = results.begin(); iter != results.end(); iter++)
+    iter->purgeRanges(ranges, parent.ranges);
+}
+
+
 void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
@@ -327,6 +379,19 @@ void Strategies::adapt(
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
+}
+
+
+string Strategies::strRanges(const string& title) const
+{
+  stringstream ss;
+  if (title != "")
+    ss << title << "\n";
+
+  for (auto& range: ranges)
+    ss << range.str();
+
+  return ss.str();
 }
 
 

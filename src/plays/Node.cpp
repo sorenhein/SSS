@@ -250,6 +250,28 @@ bool Node::purgeConstants()
 }
 
 
+void Node::makeRanges()
+{
+  strats.makeRanges();
+}
+
+
+void Node::propagateRanges()
+{
+  parentPtr->strats.propagateRanges(strats);
+}
+
+
+void Node::purgeRanges()
+{
+  const unsigned sizeOld = strats.size();
+  if (sizeOld == 0 || strats.numDists() == 0)
+    return;
+
+  strats.purgeRanges(parentPtr->strats);
+}
+
+
 Node * Node::getParentPtr()
 {
   return parentPtr;
@@ -292,7 +314,12 @@ const Strategy& Node::constants() const
 string Node::strBounds(const string& title) const
 {
   return bounds.str(title);
-    
+}
+
+
+string Node::strRanges(const string& title) const
+{
+  return strats.strRanges(title);
 }
 
 

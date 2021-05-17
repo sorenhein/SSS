@@ -87,6 +87,12 @@ class Node
     // Returns true if number of strategies shrank.
     bool purgeConstants();
 
+    void makeRanges();
+
+    void propagateRanges();
+
+    void purgeRanges();
+
     Node * getParentPtr();
 
     void integrateSimpleStrategies();
@@ -99,6 +105,8 @@ class Node
     const Strategy& constants() const;
 
     string strBounds(const string& title = "") const;
+
+    string strRanges(const string& title = "") const;
 
     string strPlay(const Level level) const;
 

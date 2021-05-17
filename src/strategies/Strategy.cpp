@@ -367,6 +367,78 @@ unsigned Strategy::purge(const Strategy& constants)
 }
 
 
+void Strategy::initRanges(Ranges& ranges)
+{
+  ranges.resize(results.size());
+  auto iter = results.begin();
+  auto riter = ranges.begin();
+
+  for (; iter != results.end(); iter++, riter++)
+  {
+    riter->dist = iter->dist;
+    riter->lower = iter->tricks;
+    riter->upper = iter->tricks;
+  }
+}
+
+
+void Strategy::extendRanges(Ranges& ranges)
+{
+  assert(results.size() == ranges.size());
+
+  auto iter = results.begin();
+  auto riter = ranges.begin();
+
+  for (; iter != results.end(); iter++, riter++)
+  {
+    assert(iter->dist == riter->dist);
+    if (iter->tricks < riter->lower)
+      riter->lower = iter->tricks;
+    if (iter->tricks > riter->upper)
+      riter->upper = iter->tricks;
+  }
+}
+
+
+void Strategy::purgeRanges(
+  Ranges& ranges,
+  const Ranges& parentRanges)
+{
+  // Removes those distributions from results for which the range
+  // is strictly worse than the lowest parent range (i.e. the best
+  // range for the defense).
+  // There may be more entries in parentRanges than in ranges,
+  // but not the other way round.  There are the same number of
+  // results and ranges.
+
+  assert(results.size() == ranges.size());
+
+  auto iterResults = results.begin();
+  auto iterRanges = ranges.begin();
+  auto iterParentRanges = parentRanges.begin();
+
+  while (iterResults != results.end() &&
+      iterParentRanges != parentRanges.end())
+  {
+    assert(iterResults->dist == iterRanges->dist);
+
+    while (iterParentRanges != parentRanges.end() &&
+        iterParentRanges->dist < iterResults->dist)
+      iterParentRanges++;
+
+    assert(iterParentRanges->dist == iterResults->dist);
+
+    if (* iterParentRanges < * iterRanges)
+    {
+      weightInt -= iterResults->tricks;
+      iterResults = results.erase(iterResults);
+      iterRanges = ranges.erase(iterRanges);
+      iterParentRanges++;
+    }
+  }
+}
+
+
 void Strategy::updateSingle(
   const unsigned fullNo,
   const unsigned trickNS)
