@@ -252,6 +252,8 @@ bool Node::purgeConstants()
 
 void Node::makeRanges()
 {
+  // TODO Could potentially eliminate this and two next methods
+  // by working with strategies()
   strats.makeRanges();
 }
 

@@ -401,6 +401,12 @@ void Nodes::removeRanges(const bool debugFlag)
     else
       iter++;
   }
+
+  // Now that we also have constants in Ranges, we need to:
+  // Loop over each node
+  //   If it's a new parent node, get the constants
+  //   add constant winners to the constants from this child node
+  //   multiply these back onto the parent node
 }
 
 

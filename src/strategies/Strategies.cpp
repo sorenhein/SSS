@@ -370,6 +370,42 @@ void Strategies::purgeRanges(const Strategies& parent)
 }
 
 
+void Strategies::getConstants(Strategy& constants) const
+{
+  // This is called for the parent and does not set the winners.
+  // TODO We could do this more efficiently if we had a resize
+  // of Strategy.
+  vector<unsigned> distributions(ranges.size());
+  vector<unsigned> tricks(ranges.size());
+
+  unsigned i = 0;
+  auto citer = constants.begin();
+  for (auto& range: ranges)
+  {
+    if (range.constant())
+    {
+      distributions[i] = range.dist;
+      tricks[i] = range.lower;
+      i++;
+    }
+  }
+
+  distributions.resize(i);
+  tricks.resize(i);
+
+  constants.log(distributions, tricks);
+}
+
+
+void Strategies::addConstantWinners(Strategy& constants) const
+{
+  // We are now in a child node.
+  // TODO Potentially make sub-classes of Node for Parent and Child.
+  for (auto& tv: results)
+    tv.addConstantWinners(constants);
+}
+
+
 void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
@@ -388,6 +424,8 @@ string Strategies::strRanges(const string& title) const
   if (title != "")
     ss << title << "\n";
 
+  if (! ranges.empty())
+    ss << ranges.front().strHeader();
   for (auto& range: ranges)
     ss << range.str();
 

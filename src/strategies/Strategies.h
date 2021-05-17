@@ -112,6 +112,10 @@ class Strategies
 
     void purgeRanges(const Strategies& parent);
 
+    void getConstants(Strategy& constants) const;
+
+    void addConstantWinners(Strategy& constants) const;
+
     void adapt(
       const Play& play,
       const Survivors& survivors);
