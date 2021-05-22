@@ -247,7 +247,7 @@ void Strategies::collapseOnVoid()
 
 
 void Strategies::bound(
-  Strategy& constants,
+  Strategy& constantsIn,
   Strategy& lower) const
   // Strategy& upper) const
 {
@@ -261,7 +261,7 @@ void Strategies::bound(
   
   assert(results.size() > 0);
 
-  constants = results.front();
+  constantsIn = results.front();
   lower = results.front();
   // upper = results.front();
 
@@ -269,8 +269,8 @@ void Strategies::bound(
     return;
 
   for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->bound(constants, lower);
-    // iter->bound(constants, lower, upper);
+    iter->bound(constantsIn, lower);
+    // iter->bound(constantsIn, lower, upper);
 }
 
 
@@ -301,7 +301,20 @@ void Strategies::bound(Bounds& bounds) const
 }
 
 
-unsigned Strategies::purge(const Strategy& constants)
+void Strategies::getLoopData(list<StratData>& stratData)
+{
+  auto siter = stratData.begin();
+  for (auto& strat: results)
+  {
+    siter->ptr = &strat;
+    siter->iter = strat.begin();
+    siter->end = strat.end();
+    siter++;
+  }
+}
+
+
+unsigned Strategies::purge(const Strategy& constantsIn)
 {
   // TODO Can perhaps be done inline.
   // Returns number of distributions purged.
@@ -311,10 +324,22 @@ unsigned Strategies::purge(const Strategy& constants)
 
   for (auto& result: oldResults)
   {
-    num = result.purge(constants);
+    num = result.purge(constantsIn);
     * this += result;
   }
   return num;
+}
+
+
+void Strategies::consolidate()
+{
+  // TODO Can perhaps be done inline.
+  // Would have to sort first (or last).
+  auto oldResults = results;
+  Strategies::reset();
+
+  for (auto& result: oldResults)
+    * this += result;
 }
 
 
@@ -344,15 +369,15 @@ void Strategies::propagateRanges(const Strategies& child)
   auto iter1 = ranges.begin();
   auto iter2 = child.ranges.begin();
 
-  while (iter1 != ranges.end() && iter2 != child.ranges.end())
+  while (iter2 != child.ranges.end())
   {
-    if (iter1->dist < iter2->dist)
-      iter1++;
-    else if (iter1->dist > iter2->dist)
+    if (iter1 == ranges.end() || iter1->dist > iter2->dist)
     {
       ranges.insert(iter1, * iter2);
       iter2++;
     }
+    else if (iter1->dist < iter2->dist)
+      iter1++;
     else
     {
       * iter1 *= * iter2;
@@ -370,7 +395,7 @@ void Strategies::purgeRanges(const Strategies& parent)
 }
 
 
-void Strategies::getConstants(Strategy& constants) const
+void Strategies::getConstants(Strategy& constantsIn) const
 {
   // This is called for the parent and does not set the winners.
   // TODO We could do this more efficiently if we had a resize
@@ -379,7 +404,7 @@ void Strategies::getConstants(Strategy& constants) const
   vector<unsigned> tricks(ranges.size());
 
   unsigned i = 0;
-  auto citer = constants.begin();
+  auto citer = constantsIn.begin();
   for (auto& range: ranges)
   {
     if (range.constant())
@@ -393,16 +418,22 @@ void Strategies::getConstants(Strategy& constants) const
   distributions.resize(i);
   tricks.resize(i);
 
-  constants.log(distributions, tricks);
+  constantsIn.log(distributions, tricks);
 }
 
 
-void Strategies::addConstantWinners(Strategy& constants) const
+const Ranges& Strategies::getRanges() const
+{
+  return ranges;
+}
+
+
+void Strategies::addConstantWinners(Strategy& constantsIn) const
 {
   // We are now in a child node.
   // TODO Potentially make sub-classes of Node for Parent and Child.
   for (auto& tv: results)
-    tv.addConstantWinners(constants);
+    tv.addConstantWinners(constantsIn);
 }
 
 

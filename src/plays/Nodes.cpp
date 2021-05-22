@@ -345,9 +345,9 @@ void Nodes::makeRanges(const bool debugFlag)
 {
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-// cout << "ABOUT TO MAKE RANGES\n";
-// cout << iter->play().strPartialTrick(LEVEL_LHO);
-// cout << iter->strategies().str();
+cout << "ABOUT TO MAKE RANGES\n";
+cout << iter->play().strPartialTrick(LEVEL_LHO);
+cout << iter->strategies().str();
     iter->makeRanges();
     if (debugFlag)
     {

@@ -149,12 +149,20 @@ class Strategy
 
     ~Strategy();
 
+    list<TrickEntry>::iterator begin()
+      { return results.begin(); };
+    list<TrickEntry>::iterator end()
+      { return results.end(); }
     list<TrickEntry>::const_iterator begin() const 
       { return results.begin(); };
     list<TrickEntry>::const_iterator end() const 
       { return results.end(); }
 
     void reset();
+
+    void resize(const unsigned len);
+
+    void eraseRest(list<TrickEntry>::iterator iter);
 
     void logTrivial(
       const TrickEntry& trivialEntry,
@@ -188,6 +196,8 @@ class Strategy
     void purgeRanges(
       Ranges& ranges,
       const Ranges& parentRanges);
+
+    void erase(list<TrickEntry>::iterator iter);
 
     void addConstantWinners(Strategy& constants) const;
 

@@ -34,6 +34,8 @@ class Node
 
     Bounds bounds;
 
+    Strategy constants;
+
     // The number of the entry in the corresponding Nodes.
     unsigned index;
 
@@ -84,6 +86,8 @@ class Node
 
     void activateBounds();
 
+    void activateConstants();
+
     // Returns true if number of strategies shrank.
     bool purgeConstants();
 
@@ -102,7 +106,7 @@ class Node
     Strategies& strategies();
     const Strategies& strategies() const;
 
-    const Strategy& constants() const;
+    const Strategy& getConstants() const;
 
     string strBounds(const string& title = "") const;
 

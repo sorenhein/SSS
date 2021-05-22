@@ -33,6 +33,18 @@ void Strategy::reset()
 }
 
 
+void Strategy::resize(const unsigned len)
+{
+  results.resize(len);
+}
+
+
+void Strategy::eraseRest(list<TrickEntry>::iterator iter)
+{
+  results.erase(iter, results.end());
+}
+
+
 void Strategy::logTrivial(
   const TrickEntry& trivialEntry,
   const unsigned len)
@@ -449,6 +461,14 @@ void Strategy::purgeRanges(
       iterParentRanges++;
     }
   }
+}
+
+
+void Strategy::erase(list<TrickEntry>::iterator iter)
+{
+  // No error checking.
+  weightInt -= iter->tricks;
+  results.erase(iter);
 }
 
 

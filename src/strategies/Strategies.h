@@ -53,6 +53,13 @@ struct Bounds
   };
 };
 
+struct StratData
+{
+  Strategy * ptr;
+  list<TrickEntry>::iterator iter;
+  list<TrickEntry>::iterator end;
+};
+
 
 class Strategies
 {
@@ -61,6 +68,9 @@ class Strategies
     list<Strategy> results;
 
     Ranges ranges;
+
+    Strategy constants;
+
 
     void collapseOnVoid();
 
@@ -104,7 +114,11 @@ class Strategies
 
     void bound(Bounds& bounds) const;
 
+    void getLoopData(list<StratData>& stratData);
+
     unsigned purge(const Strategy& constants);
+
+    void consolidate();
 
     void makeRanges();
 
@@ -112,7 +126,9 @@ class Strategies
 
     void purgeRanges(const Strategies& parent);
 
-    void getConstants(Strategy& constants) const;
+    void getConstants(Strategy& constantsIn) const;
+
+    const Ranges& getRanges() const;
 
     void addConstantWinners(Strategy& constants) const;
 

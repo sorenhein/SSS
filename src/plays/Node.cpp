@@ -181,9 +181,9 @@ void Node::propagateBounds()
 }
 
 
-void Node::augmentConstants(const Strategy& constants)
+void Node::augmentConstants(const Strategy& constantsIn)
 {
-  bounds.constants *= constants;
+  bounds.constants *= constantsIn;
 }
 
 
@@ -216,21 +216,27 @@ void Node::activateBounds()
 }
 
 
+void Node::activateConstants()
+{
+  strats *= constants;
+}
+
+
 bool Node::purgeConstants()
 {
   const unsigned sizeOld = strats.size();
   if (sizeOld == 0 || strats.numDists() == 0)
     return false;
 
-  const auto& constants = parentPtr->bounds.constants;
+  const auto& constantsLocal = parentPtr->bounds.constants;
 // cout << "About to purge constants:\n";
-// cout << constants.str();
+// cout << constantsLocal.str();
 // cout << "Strategies before are:\n";
 // cout << strats.str();
 
-  strats.purge(constants);
-  bounds.minima.purge(constants);
-  // bounds.maxima.purge(constants);
+  strats.purge(constantsLocal);
+  bounds.minima.purge(constantsLocal);
+  // bounds.maxima.purge(constantsLocal);
 // cout << "Strategies after are:\n";
 // cout << strats.str();
 // cout << "Strat numbers " << sizeOld << " and now " << strats.size() << endl;
@@ -270,7 +276,71 @@ void Node::purgeRanges()
   if (sizeOld == 0 || strats.numDists() == 0)
     return;
 
-  strats.purgeRanges(parentPtr->strats);
+  // Make a list of iterators -- one per Strategy.
+  // The iterators later step through one "row" (distribution) of
+  // all Strategy's in synchrony.
+  list<StratData> stratData(strats.size());
+  strats.getLoopData(stratData);
+
+  const Ranges& ownRanges = strats.getRanges();
+  auto riter = ownRanges.begin();
+
+  const Ranges& parentRanges = parentPtr->strats.getRanges();
+  constants.resize(parentRanges.size());
+  auto citer = constants.begin();
+  bool eraseFlag = false;
+
+  for (auto& parentRange: parentRanges)
+  {
+    // Get to the same distribution in each Strategy if it exists.
+    while (stratData.front().iter != stratData.front().end &&
+        stratData.front().iter->dist < parentRange.dist)
+    {
+      riter++;
+      for (auto& sd: stratData)
+        sd.iter++;
+    }
+
+    if (stratData.front().iter == stratData.front().end)
+      break;
+    else if (stratData.front().iter->dist > parentRange.dist)
+      continue;
+
+    if (parentRange.constant())
+    {
+      // Eliminate and store in constants.
+      citer->dist = stratData.front().iter->dist;
+      citer->tricks = parentRange.minimum;
+      citer->winners.reset();
+
+      for (auto& sd: stratData)
+      {
+        citer->winners *= sd.iter->winners;
+        sd.ptr->erase(sd.iter);
+      }
+      eraseFlag = true;
+      
+      citer++;
+    }
+    else if (parentRange < * riter)
+    {
+      assert(riter->dist == parentRange.dist);
+
+      // Eliminate dominated distribution within Strategies.
+      for (auto& sd: stratData)
+        sd.ptr->erase(sd.iter);
+
+      eraseFlag = true;
+    }
+  }
+
+  // Shrink to the size used.
+  constants.eraseRest(citer);
+
+  // The simplifications may have caused some strategies to be
+  // dominated that weren't before.
+  if (eraseFlag)
+    strats.consolidate();
 }
 
 
@@ -307,7 +377,7 @@ const Strategies& Node::strategies() const
 }
 
 
-const Strategy& Node::constants() const
+const Strategy& Node::getConstants() const
 {
   return bounds.constants;
 }
