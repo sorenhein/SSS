@@ -109,10 +109,8 @@ void Plays::getNextStrategies(
 }
 
 
-void Plays::strategize(
-  const Ranks& ranks,
+const Strategies& Plays::strategize(
   Distribution const * distPtr,
-  Strategies& strategies,
   const DebugPlay debugFlag)
 {
   // The plays are propagated backwards up to a strategy for the
@@ -135,32 +133,6 @@ void Plays::strategize(
   // outcomes by spreading their probability mass well.
   // This will be examined subsequently.
 
-  UNUSED(ranks);
-
-  Plays::getNextStrategies(distPtr, debugFlag);
-
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts();
-
-  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
-  nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
-  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-
-  // TODO Can we pass out nodeMaster.strategies() directly?
-  // Does it stay in scope?
-  strategies = nodeMaster.strategies();
-}
-
-
-void Plays::strategizeNew(
-  const Ranks& ranks,
-  Distribution const * distPtr,
-  Strategies& strategies,
-  const DebugPlay debugFlag)
-{
-  UNUSED(ranks);
-
   Plays::getNextStrategies(distPtr, debugFlag);
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
@@ -169,13 +141,33 @@ void Plays::strategizeNew(
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
 
-  nodesLho.strategizeDefendersAdvanced((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+  nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
-  nodesLead.strategizeDeclarerAdvanced((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+  return nodeMaster.strategies();
+}
 
-  // TODO Can we pass out nodeMaster.strategies() directly?
-  // Does it stay in scope?
-  strategies = nodeMaster.strategies();
+
+const Strategies& Plays::strategizeAdvanced(
+  Distribution const * distPtr,
+  const DebugPlay debugFlag)
+{
+  Plays::getNextStrategies(distPtr, debugFlag);
+
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts("Node counts");
+
+  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+
+  // Here we deal separately with constants and dominated plays.
+  nodesLho.strategizeDefendersAdvanced(
+    (debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+
+  nodesLead.strategizeDeclarerAdvanced(
+    (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+
+  return nodeMaster.strategies();
 }
 
 

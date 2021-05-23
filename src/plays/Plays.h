@@ -60,16 +60,12 @@ class Plays
 
     void setCombPtrs(const Combinations& combinations);
 
-    void strategize(
-      const Ranks& ranks,
+    const Strategies& strategize(
       Distribution const * distPtr,
-      Strategies& strategies,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
-    void strategizeNew(
-      const Ranks& ranks,
+    const Strategies& strategizeAdvanced(
       Distribution const * distPtr,
-      Strategies& strategies,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     void strategizeVoid(

@@ -47,8 +47,6 @@ const Strategies& Combination::strategize(
     centry.canonicalHolding3 << " / " <<
     centry.canonicalHolding2 << endl;
 
-Strategies stmp;
-
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
     ranks.size(), centry.canonicalHolding2);
@@ -95,14 +93,17 @@ if (ps >= 100)
 
 assert(ps < timers1.size());
 timers1[ps].start();
-  plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+  // plays.strategize(ranks, distPtr, strats, debugFlagTmp);
+  // plays.strategize(distPtr, strats, debugFlagTmp);
+  // TODO It gets copied here.  Keep a pointer instead?
+  strats = plays.strategize(distPtr, debugFlagTmp);
 timers1[ps].stop();
 
 plays.clearStrategies();
 
 assert(ps < timers2.size());
 timers2[ps].start();
-  plays.strategizeNew(ranks, distPtr, stmp, debugFlagTmp);
+const Strategies& stmp = plays.strategizeAdvanced(distPtr, debugFlagTmp);
 timers2[ps].stop();
 
   if (! (strats == stmp))
