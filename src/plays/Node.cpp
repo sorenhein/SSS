@@ -36,6 +36,7 @@ void Node::resetStrategies()
   strats.reset();
   simpleStrats.reset();
   bounds.reset();
+  constants.reset();
 }
 
 
@@ -218,6 +219,8 @@ void Node::activateBounds()
 
 void Node::activateConstants()
 {
+// cout << "Activating constants:\n";
+// cout << constants.str();
   strats *= constants;
 }
 
@@ -306,8 +309,11 @@ void Node::purgeRanges()
     else if (stratData.front().iter->dist > parentRange.dist)
       continue;
 
+// cout << "Parent range\n";
+// cout << parentRange.str();
     if (parentRange.constant())
     {
+// cout << "Parent range is constant\n";
       // Eliminate and store in constants.
       citer->dist = stratData.front().iter->dist;
       citer->tricks = parentRange.minimum;
@@ -316,14 +322,21 @@ void Node::purgeRanges()
       for (auto& sd: stratData)
       {
         citer->winners *= sd.iter->winners;
+// cout << "Strat was\n";
+// cout << sd.ptr->str();
         sd.ptr->erase(sd.iter);
+// cout << "Strat is\n";
+// cout << sd.ptr->str();
       }
       eraseFlag = true;
+// cout << "Constant\n";
+// cout << citer->strEntry(true) << endl;
       
       citer++;
     }
     else if (parentRange < * riter)
     {
+// cout << "Parent range dominates\n";
       assert(riter->dist == parentRange.dist);
 
       // Eliminate dominated distribution within Strategies.
@@ -336,11 +349,23 @@ void Node::purgeRanges()
 
   // Shrink to the size used.
   constants.eraseRest(citer);
+// cout << "Constants overall\n";
+// cout << constants.str();
+
+  parentPtr->constants *= constants;
+
+// cout << "Parent constants is overall\n";
+// cout << parentPtr->constants.str();
+
+// cout << "Strats before consol\n";
+// cout << strats.str();
 
   // The simplifications may have caused some strategies to be
   // dominated that weren't before.
   if (eraseFlag)
     strats.consolidate();
+// cout << "Strats after consol\n";
+// cout << strats.str();
 }
 
 

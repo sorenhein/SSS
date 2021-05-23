@@ -23,6 +23,7 @@ Strategies::~Strategies()
 void Strategies::reset()
 {
   results.clear();
+  ranges.clear();
 }
 
 

@@ -390,6 +390,7 @@ void Strategy::initRanges(Ranges& ranges)
     riter->dist = iter->dist;
     riter->lower = iter->tricks;
     riter->upper = iter->tricks;
+    riter->minimum = iter->tricks;
   }
 }
 
@@ -405,7 +406,10 @@ void Strategy::extendRanges(Ranges& ranges)
   {
     assert(iter->dist == riter->dist);
     if (iter->tricks < riter->lower)
+    {
       riter->lower = iter->tricks;
+      riter->minimum = iter->tricks;
+    }
     if (iter->tricks > riter->upper)
       riter->upper = iter->tricks;
   }

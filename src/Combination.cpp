@@ -59,7 +59,7 @@ Strategies stmp;
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
   // if (centry.canonicalHolding3 == 14480 && ranks.size() == 10)
-  if (centry.canonicalHolding3 == 14966 && ranks.size() == 10)
+  if (centry.canonicalHolding3 == 60 && ranks.size() == 5)
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
     cout << ranks.strTable();

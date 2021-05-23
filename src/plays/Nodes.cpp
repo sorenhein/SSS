@@ -287,6 +287,7 @@ void Nodes::removeConstants(const bool debugFlag)
     while (true)
     {
       while (iter != nextIter && iter->getParentPtr() != pptr)
+cout << iter->play().strPartialTrick(LEVEL_LEAD);
         iter++;
 
       while (iter != nextIter &&iter->getParentPtr() == pptr)
@@ -345,9 +346,9 @@ void Nodes::makeRanges(const bool debugFlag)
 {
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-cout << "ABOUT TO MAKE RANGES\n";
-cout << iter->play().strPartialTrick(LEVEL_LHO);
-cout << iter->strategies().str();
+// cout << "ABOUT TO MAKE RANGES\n";
+// cout << iter->play().strPartialTrick(LEVEL_LHO);
+// cout << iter->strategies().str();
     iter->makeRanges();
     if (debugFlag)
     {
@@ -358,8 +359,12 @@ cout << iter->strategies().str();
     }
   }
 
+// cout << "Done making ranges" << endl;
+
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->propagateRanges();
+
+// cout << "Done propagating ranges" << endl;
 }
 
 
@@ -478,12 +483,25 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 {
   // Add back the simple strategies.
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
+
+  /*
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+    cout << "Parent node\n";
+    cout << iter->play().strPartialTrick(LEVEL_LEAD);
+    cout << iter->strRanges("Ranges");
+  }
+  */
+
+
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
 // cout << "Before integrateSimple\n";
 // cout << iter->play().strPartialTrick(LEVEL_LEAD);
 // cout << iter->strategies().str();
+
     iter->integrateSimpleStrategies();
+
 // cout << "After integrateSimple\n";
 // cout << iter->strategies().str();
   }
@@ -491,11 +509,16 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
   // Add back the lead-specific constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-// cout << "Before activateBounds\n";
+// cout << "Before activateConstants\n";
 // cout << iter->play().strPartialTrick(LEVEL_LEAD);
 // cout << iter->strategies().str();
+
+    /*
     iter->activateBounds();
-// cout << "After activateBounds\n";
+    */
+    iter->activateConstants();
+
+// cout << "After activateConstants\n";
 // cout << iter->strategies().str();
   }
 
@@ -528,13 +551,19 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // may be nodesLead if partner is void; see Plays), and remove them 
   // from the parent nodes.
   assert(level == LEVEL_RHO || level == LEVEL_LHO);
+  /*
   Nodes::makeBounds(debugFlag);
+  */
+  Nodes::makeRanges(debugFlag);
 
   // Remove the lead constants from the corresponding strategies.
   // Collect all strategies with a single vector into an overall strategy.
   // Some defenses can be removed -- see comment in method.
 // cout << "Before extractSimpleStrategies\n";
+  /*
   Nodes::extractSimpleStrategies(debugFlag);
+  */
+  Nodes::removeRanges(debugFlag);
 
   if (debugFlag)
     cout << Nodes::strSimple();
@@ -542,6 +571,8 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // Combine the plays into an overall strategy for each lead.
   // Note that the results may end up in nodesLead due to the relinking.
   Nodes::strategizeDefenders(debugFlag);
+
+// cout << "DONE Def Adv" << endl;
 }
 
 
