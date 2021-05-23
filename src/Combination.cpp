@@ -92,18 +92,23 @@ if (ps >= 100)
   ps = 99;
 
 assert(ps < timers1.size());
-timers1[ps].start();
+if (ranks.partnerVoid())
+  timers1[ps].start();
   // plays.strategize(ranks, distPtr, strats, debugFlagTmp);
   // plays.strategize(distPtr, strats, debugFlagTmp);
   // TODO It gets copied here.  Keep a pointer instead?
   strats = plays.strategize(distPtr, debugFlagTmp);
-timers1[ps].stop();
+if (ranks.partnerVoid())
+  timers1[ps].stop();
 
+if (ranks.partnerVoid())
+{
 plays.clearStrategies();
 
 assert(ps < timers2.size());
 timers2[ps].start();
-const Strategies& stmp = plays.strategizeAdvanced(distPtr, debugFlagTmp);
+// const Strategies& stmp = plays.strategizeAdvanced(distPtr, debugFlagTmp);
+const Strategies& stmp = plays.strategizeVoid(distPtr, debugFlagTmp);
 timers2[ps].stop();
 
   if (! (strats == stmp))
@@ -127,6 +132,7 @@ timers2[ps].stop();
       cout << stmp.str("New", false);
     }
   }
+}
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 

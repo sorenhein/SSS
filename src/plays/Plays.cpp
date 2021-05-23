@@ -190,74 +190,13 @@ const Strategies& Plays::strategizeVoid(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("Void node counts");
 
-  nodesLho.strategizeDefendersAdvanced(
+  nodesRho.strategizeDefendersAdvanced(
     (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   nodesLead.strategizeDeclarerAdvanced(
     (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 
-/*
-  // Derive bounds on RHO outcomes for each lead in order to find
-  // constant outcomes, propagate them to the parent nodes (which are 
-  // nodesLead in this case), and remove them from the parent nodes.
-  nodesRho.makeBounds((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  // Remove the lead constants from the corresponding strategies.
-  // Collect all strategies with a single vector into an overall strategy.
-  // Some defenses can be removed -- see comment in method.
-  nodesRho.extractSimpleStrategies(
-    (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  if (debugFlag & DEBUGPLAY_RHO_DETAILS)
-    cout << nodesLead.strSimple();
-
-  // Combine the plays into an overall strategy for each lead.
-  // Note that the results end up in nodesLead due to the relinking.
-  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  // Add back the simple strategies.
-  for (auto& nodeLead: nodesLead)
-    nodeLead.integrateSimpleStrategies();
-
-  // Add back the lead-specific constants.
-  for (auto& nodeLead: nodesLead)
-    nodeLead.activateBounds();
-
-  // Combine the lead strategies into an overall strategy.
-  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-*/
-
   return nodeMaster.strategies();
-
-  /*
-  if (debugFlag & DEBUGPLAY_LEAD_DETAILS)
-  {
-    cout << strategies.str("Final strategy") << "\n\n";
-    cout << "Final size " << strategies.size() << endl;
-  }
-  */
-
-
-  // Manual combinations.
-  /*
-  Strategies tvs = playInfo[0].strategies;
-  tvs *= playInfo[1].strategies;
-  cout << tvs.str("Strategy 0 + 1") << "\n";
-
-  tvs = playInfo[2].strategies;
-  tvs *= playInfo[9].strategies;
-  tvs *= playInfo[15].strategies;
-  tvs *= playInfo[21].strategies;
-  tvs *= playInfo[27].strategies;
-  tvs *= playInfo[33].strategies;
-  cout << tvs.str("Strategy 2 + 9 + 15 + 21 + 27 + 33") << "\n";
-
-  tvs = playInfo[68].strategies;
-  tvs *= playInfo[67].strategies;
-  cout << tvs.str("Strategy 68 + 67") << "\n";
-  
-  strategies = playInfo[0].strategies;
-  */
 }
 
 
