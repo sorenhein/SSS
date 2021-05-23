@@ -328,7 +328,7 @@ void Ranks::set(
 
 void Ranks::trivialRanked(
   const unsigned tricks,
-  TrickEntry& trivialEntry) const
+  Result& trivialEntry) const
 {
   if (opps.hasRank(maxGlobalRank))
     trivialEntry.setEmpty(tricks-1);
@@ -345,7 +345,7 @@ void Ranks::trivialRanked(
 }
 
 
-bool Ranks::trivial(TrickEntry& trivialEntry) const
+bool Ranks::trivial(Result& trivialEntry) const
 {
   if (north.isVoid() && south.isVoid())
   {
@@ -644,7 +644,7 @@ void Ranks::setPlaysSide(
 
 CombinationType Ranks::setPlays(
   Plays& plays,
-  TrickEntry& trivialEntry)
+  Result& trivialEntry)
 {
   // If COMB_TRIVIAL, only terminalValue is set.
   // Otherwise, plays are set.

@@ -11,6 +11,7 @@
 #include "../Survivor.h"
 
 #include "Winners.h"
+#include "Result.h"
 
 struct Play;
 
@@ -25,55 +26,6 @@ enum Compare
   COMPARE_INCOMMENSURATE = 3
 };
 
-
-struct TrickEntry
-{
-  unsigned dist;
-  unsigned tricks;
-  Winners winners;
-
-  bool operator < (const TrickEntry& te2) const
-  {
-    assert(dist == te2.dist);
-    return(tricks < te2.tricks);
-  }
-
-  bool operator != (const TrickEntry& te2) const
-  {
-    assert(dist == te2.dist);
-    return(tricks != te2.tricks);
-  }
-
-  bool operator > (const TrickEntry& te2) const
-  {
-    assert(dist == te2.dist);
-    return(tricks > te2.tricks);
-  }
-
-  void set(
-    const unsigned tricksIn,
-    const WinningSide side,
-    const Card& card)
-  {
-    tricks = tricksIn;
-    winners.set(side, card);
-  }
-
-  void setEmpty(const unsigned tricksIn)
-  {
-    tricks = tricksIn;
-    winners.setEmpty();
-  }
-
-  string strEntry(const bool rankFlag) const
-  {
-    stringstream ss;
-    ss << setw(4) << tricks;
-    if (rankFlag)
-      ss << setw(8) << winners.strEntry();
-    return ss.str();
-  }
-};
 
 struct RangeEntry
 {
@@ -139,7 +91,7 @@ class Strategy
 {
   private:
 
-    list<TrickEntry> results;
+    list<Result> results;
     unsigned weightInt;
 
 
@@ -149,23 +101,23 @@ class Strategy
 
     ~Strategy();
 
-    list<TrickEntry>::iterator begin()
+    list<Result>::iterator begin()
       { return results.begin(); };
-    list<TrickEntry>::iterator end()
+    list<Result>::iterator end()
       { return results.end(); }
-    list<TrickEntry>::const_iterator begin() const 
+    list<Result>::const_iterator begin() const 
       { return results.begin(); };
-    list<TrickEntry>::const_iterator end() const 
+    list<Result>::const_iterator end() const 
       { return results.end(); }
 
     void reset();
 
     void resize(const unsigned len);
 
-    void eraseRest(list<TrickEntry>::iterator iter);
+    void eraseRest(list<Result>::iterator iter);
 
     void logTrivial(
-      const TrickEntry& trivialEntry,
+      const Result& trivialEntry,
       const unsigned len);
 
     void log(
@@ -197,7 +149,7 @@ class Strategy
       Ranges& ranges,
       const Ranges& parentRanges);
 
-    void erase(list<TrickEntry>::iterator iter);
+    void erase(list<Result>::iterator iter);
 
     void addConstantWinners(Strategy& constants) const;
 

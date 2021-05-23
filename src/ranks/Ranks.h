@@ -11,7 +11,7 @@
 
 using namespace std;
 
-struct TrickEntry;
+struct Result;
 struct CombEntry;
 class Plays;
 
@@ -47,9 +47,9 @@ class Ranks
 
     void trivialRanked(
       const unsigned tricks,
-      TrickEntry& trivialEntry) const;
+      Result& trivialEntry) const;
 
-    bool trivial(TrickEntry& trivialEntry) const;
+    bool trivial(Result& trivialEntry) const;
 
     bool leadOK(
       const Declarer& leader,
@@ -101,7 +101,7 @@ class Ranks
 
     CombinationType setPlays(
       Plays& plays,
-      TrickEntry& trivialEntry);
+      Result& trivialEntry);
 
     bool partnerVoid() const;
 

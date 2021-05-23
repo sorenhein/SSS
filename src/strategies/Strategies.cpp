@@ -28,7 +28,7 @@ void Strategies::reset()
 
 
 void Strategies::setTrivial(
-  const TrickEntry& trivialEntry,
+  const Result& trivialEntry,
   const unsigned len)
 {
   Strategy tv;
@@ -511,7 +511,7 @@ string Strategies::str(
   ss << Strategies::strHeader(title, rankFlag);
 
   // Make a list of iterators -- one per Strategy.
-  list<list<TrickEntry>::const_iterator> iters, itersEnd;
+  list<list<Result>::const_iterator> iters, itersEnd;
   for (auto& res: results)
   {
     iters.push_back(res.begin());

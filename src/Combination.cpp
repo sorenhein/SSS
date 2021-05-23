@@ -54,7 +54,7 @@ Strategies stmp;
     ranks.size(), centry.canonicalHolding2);
 
   // Make the plays.
-  TrickEntry trivialEntry;
+  Result trivialEntry;
   plays.clear();
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
@@ -149,7 +149,7 @@ cout << "cholding2 is " << centry.canonicalHolding2 <<
     ranks.size(), centry.canonicalHolding2);
 
   // Make the plays.
-  TrickEntry trivialEntry;
+  Result trivialEntry;
   plays.clear();
 if (centry.canonicalHolding3 == 208)
 {

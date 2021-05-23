@@ -56,8 +56,8 @@ struct Bounds
 struct StratData
 {
   Strategy * ptr;
-  list<TrickEntry>::iterator iter;
-  list<TrickEntry>::iterator end;
+  list<Result>::iterator iter;
+  list<Result>::iterator end;
 };
 
 
@@ -90,7 +90,7 @@ class Strategies
     void reset();
 
     void setTrivial(
-      const TrickEntry& trivialEntry,
+      const Result& trivialEntry,
       const unsigned len);
 
     bool operator == (const Strategies& tvs);

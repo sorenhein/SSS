@@ -39,21 +39,21 @@ void Strategy::resize(const unsigned len)
 }
 
 
-void Strategy::eraseRest(list<TrickEntry>::iterator iter)
+void Strategy::eraseRest(list<Result>::iterator iter)
 {
   results.erase(iter, results.end());
 }
 
 
 void Strategy::logTrivial(
-  const TrickEntry& trivialEntry,
+  const Result& trivialEntry,
   const unsigned len)
 {
   results.clear();
   for (unsigned i = 0; i < len; i++)
   {
-    results.emplace_back(TrickEntry());
-    TrickEntry& te = results.back();
+    results.emplace_back(Result());
+    Result& te = results.back();
     te.dist = i;
     te.tricks = trivialEntry.tricks;
     te.winners = trivialEntry.winners;
@@ -71,8 +71,8 @@ void Strategy::log(
   weightInt = 0;
   for (unsigned i = 0; i < distributions.size(); i++)
   {
-    results.emplace_back(TrickEntry());
-    TrickEntry& te = results.back();
+    results.emplace_back(Result());
+    Result& te = results.back();
     te.dist = distributions[i];
     te.tricks = tricks[i];
     weightInt += tricks[i];
@@ -85,8 +85,8 @@ bool Strategy::operator == (const Strategy& tv2) const
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
-  list<TrickEntry>::const_iterator iter1 = results.cbegin();
-  list<TrickEntry>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = tv2.results.cbegin();
 
   while (iter1 != results.end())
   {
@@ -105,8 +105,8 @@ bool Strategy::operator >= (const Strategy& tv2) const
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
-  list<TrickEntry>::const_iterator iter1 = results.cbegin();
-  list<TrickEntry>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = tv2.results.cbegin();
 
   while (iter1 != results.end())
   {
@@ -125,8 +125,8 @@ bool Strategy::operator > (const Strategy& tv2) const
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
-  list<TrickEntry>::const_iterator iter1 = results.cbegin();
-  list<TrickEntry>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = tv2.results.cbegin();
 
   bool greaterFlag = false;
   while (iter1 != results.end())
@@ -150,8 +150,8 @@ Compare Strategy::compare(const Strategy& tv2) const
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
-  list<TrickEntry>::const_iterator iter1 = results.cbegin();
-  list<TrickEntry>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = tv2.results.cbegin();
 
   bool possibleLT = true;
   bool possibleGT = true;
@@ -222,7 +222,7 @@ void Strategy::bound(
   Strategy& lower) const
   // Strategy& upper) const
 {
-  // Each of the three vectors is a running collection of TrickEntry
+  // Each of the three vectors is a running collection of Result
   // elements summarizing the distributions (in a parent Strategies).
   // - constants is the constant results.  If tricks deviate,
   //   the corresponding distribution is removed below.
@@ -291,7 +291,7 @@ void Strategy::bound(
 
 void Strategy::constrain(Strategy& constants) const
 {
-  // The constants vector is a running collection of TrickEntry
+  // The constants vector is a running collection of Result
   // elements for those distributions (in a Strategies) that have
   // constant results.  If the result of this current Strategy
   // differs from constants for a given distribution, that 
@@ -468,7 +468,7 @@ void Strategy::purgeRanges(
 }
 
 
-void Strategy::erase(list<TrickEntry>::iterator iter)
+void Strategy::erase(list<Result>::iterator iter)
 {
   // No error checking.
   weightInt -= iter->tricks;
@@ -542,7 +542,7 @@ void Strategy::updateAndGrow(
   const unsigned trickNS)
 {
   // Make an indexable vector copy of the results that need to grow.
-  vector<TrickEntry> resultsOld;
+  vector<Result> resultsOld;
   resultsOld.resize(results.size());
 
   unsigned r = 0;
