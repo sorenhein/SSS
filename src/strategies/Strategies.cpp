@@ -32,6 +32,8 @@ void Strategies::setTrivial(
   const Result& trivial,
   const unsigned len)
 {
+  // Repeat the trivial result len times.
+
   Strategies::reset();
   strategies.emplace_back(Strategy());
   Strategy& strat = strategies.back();
@@ -195,25 +197,6 @@ void Strategies::operator *= (const Strategies& strats2)
 }
 
 
-/*
-void Strategies::operator |= (const Strategies& tvs2)
-{
-  // Vector-wise combination.
-  assert(strategies.size() == tvs2.strategies.size());
-
-  auto riter = strategies.begin();
-  auto riter2 = tvs2.strategies.begin();
-
-  while (riter != strategies.end())
-  {
-    * riter *= * riter2;
-    riter++;
-    riter2++;
-  }
-}
-*/
-
-
 unsigned Strategies::size() const
 {
   return strategies.size();
@@ -238,26 +221,28 @@ void Strategies::collapseOnVoid()
     return;
   }
 
-  // Find the best one for declarer.
-  auto iterTV = strategies.begin();
-  assert(iterTV->size() == 1);
+  auto iterBest = strategies.begin();
+  assert(iterBest->size() == 1);
 
   // Find the best one for declarer.
-  for (auto iter = next(strategies.begin()); iter != strategies.end(); iter++)
+  for (auto iter = next(strategies.begin()); 
+      iter != strategies.end(); iter++)
   {
     assert(iter->size() == 1);
-    if (* iter > * iterTV)
-      iterTV = iter;
+    if (* iter > * iterBest)
+      iterBest = iter;
   }
 
   // Copy it to the front and remove the others.
-  strategies.front() = * iterTV;
+  strategies.front() = * iterBest;
   strategies.erase(next(strategies.begin()), strategies.end());
 }
 
 
 void Strategies::getLoopData(StratData& stratData)
 {
+  // This is used to loop over all strategies in synchrony, one
+  // distribution at a time.
   auto siter = stratData.data.begin();
   for (auto& strat: strategies)
   {
@@ -266,18 +251,6 @@ void Strategies::getLoopData(StratData& stratData)
     siter->end = strat.end();
     siter++;
   }
-}
-
-
-void Strategies::consolidate()
-{
-  // TODO Can perhaps be done inline.
-  // Would have to sort first (or last).
-  auto oldStrats = strategies;
-  Strategies::reset();
-
-  for (auto& strat: oldStrats)
-    * this += strat;
 }
 
 
@@ -291,13 +264,16 @@ void Strategies::makeRanges()
   if (strategies.size() == 1)
     return;
 
-  for (auto iter = next(strategies.begin()); iter != strategies.end(); iter++)
+  for (auto iter = next(strategies.begin()); 
+      iter != strategies.end(); iter++)
     iter->extendRanges(ranges);
 }
 
 
 void Strategies::propagateRanges(const Strategies& child)
 {
+  // This propagates the child's ranges to the current parent ranges.
+  // The distribution number has to match.
   if (ranges.empty())
   {
     ranges = child.ranges;
@@ -328,21 +304,19 @@ void Strategies::propagateRanges(const Strategies& child)
 
 void Strategies::purgeRanges(const Strategies& parent)
 {
-  for (auto iter = strategies.begin(); iter != strategies.end(); iter++)
-    iter->purgeRanges(ranges, parent.ranges);
+  for (auto& strat: strategies)
+    strat.purgeRanges(ranges, parent.ranges);
 }
 
 
-void Strategies::getConstants(Strategy& constantsIn) const
+void Strategies::getConstants(Strategy& constants) const
 {
   // This is called for the parent and does not set the winners.
-  // TODO We could do this more efficiently if we had a resize
-  // of Strategy.
+  // TODO It is not very efficient.
   vector<unsigned> distributions(ranges.size());
   vector<unsigned> tricks(ranges.size());
 
   unsigned i = 0;
-  auto citer = constantsIn.begin();
   for (auto& range: ranges)
   {
     if (range.constant())
@@ -356,7 +330,7 @@ void Strategies::getConstants(Strategy& constantsIn) const
   distributions.resize(i);
   tricks.resize(i);
 
-  constantsIn.log(distributions, tricks);
+  constants.log(distributions, tricks);
 }
 
 
@@ -366,12 +340,15 @@ const Ranges& Strategies::getRanges() const
 }
 
 
-void Strategies::addConstantWinners(Strategy& constantsIn) const
+void Strategies::consolidate()
 {
-  // We are now in a child node.
-  // TODO Potentially make sub-classes of Node for Parent and Child.
-  for (auto& tv: strategies)
-    tv.addConstantWinners(constantsIn);
+  // TODO Can perhaps be done inline.
+  // Would have to sort first (or last).
+  auto oldStrats = strategies;
+  Strategies::reset();
+
+  for (auto& strat: oldStrats)
+    * this += strat;
 }
 
 

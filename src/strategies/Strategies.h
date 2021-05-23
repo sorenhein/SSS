@@ -58,14 +58,10 @@ class Strategies
     void operator *= (const Strategy& strat);
     void operator *= (const Strategies& strats2);
 
-    // void operator |= (const Strategies& tvs);
-
     unsigned size() const;
     unsigned numDists() const;
 
     void getLoopData(StratData& stratData);
-
-    void consolidate();
 
     void makeRanges();
 
@@ -77,7 +73,7 @@ class Strategies
 
     const Ranges& getRanges() const;
 
-    void addConstantWinners(Strategy& constants) const;
+    void consolidate();
 
     void adapt(
       const Play& play,
