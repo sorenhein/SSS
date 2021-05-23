@@ -7,58 +7,13 @@
 #include <list>
 
 #include "Strategy.h"
-#include "Card.h"
+// #include "StratData.h"
 
+struct StratData;
 struct Play;
 struct Survivors;
 
 using namespace std;
-
-
-struct Bounds
-{
-  // Actual minima.
-  Strategy minima;
-
-  // The lowest maxima (so not the actual maxima).
-  // Strategy maxima;
-
-  // The lowest constant results.
-  Strategy constants;
-
-  void reset()
-  {
-    minima.reset();
-    // maxima.reset();
-    constants.reset();
-  };
-
-  void operator *= (const Bounds& bounds2)
-  {
-    minima *= bounds2.minima;
-    // maxima *= bounds2.maxima;
-    constants *= bounds2.constants;
-  };
-
-  string str(const string& title = "") const
-  {
-    stringstream ss;
-    if (title != "")
-      ss << title << endl;
-    ss <<
-      minima.str("Minima") << endl <<
-      // maxima.str("Maxima") << endl <<
-      constants.str("Constants") << endl;
-    return ss.str();
-  };
-};
-
-struct StratData
-{
-  Strategy * ptr;
-  list<Result>::iterator iter;
-  list<Result>::iterator end;
-};
 
 
 class Strategies
@@ -107,14 +62,7 @@ class Strategies
     unsigned size() const;
     unsigned numDists() const;
 
-    void bound(
-      Strategy& constants,
-      Strategy& lower) const;
-      // Strategy& upper) const;
-
-    void bound(Bounds& bounds) const;
-
-    void getLoopData(list<StratData>& stratData);
+    void getLoopData(StratData& stratData);
 
     unsigned purge(const Strategy& constants);
 

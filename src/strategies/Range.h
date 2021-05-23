@@ -64,4 +64,6 @@ struct Range
   };
 };
 
+typedef list<Range> Ranges;
+
 #endif

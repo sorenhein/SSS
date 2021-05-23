@@ -105,22 +105,6 @@ bool Play::samePartial(
     assert(false);
     return false;
   }
-
-  /*
-  if (level == LEVEL_LEAD)
-    return (side == play2.side && Play::lead(true) == play2.lead(true));
-  else if (level == LEVEL_LHO)
-    return (Play::lho(true) == play2.lho(true));
-  else if (level == LEVEL_PARD)
-    return (Play::pard(true) == play2.pard(true));
-  else if (level == LEVEL_RHO)
-    return false;
-  else
-  {
-    assert(false);
-    return false;
-  }
-  */
 }
 
 

@@ -9,6 +9,8 @@
 #include "../Distribution.h"
 #include "../Combination.h"
 
+#include "../strategies/StratData.h"
+
 
 Node::Node()
 {
@@ -102,68 +104,43 @@ void Node::purgeRanges()
   // Make a list of iterators -- one per Strategy.
   // The iterators later step through one "row" (distribution) of
   // all Strategy's in synchrony.
-  list<StratData> stratData(strats.size());
+  StratData stratData;
+  stratData.data.resize(strats.size());
   strats.getLoopData(stratData);
+  stratData.riter = strats.getRanges().begin();
 
-  const Ranges& ownRanges = strats.getRanges();
-  auto riter = ownRanges.begin();
-
-  const Ranges& parentRanges = parentPtr->strats.getRanges();
-  constants.resize(parentRanges.size());
+  constants.resize(parentPtr->strats.getRanges().size());
   auto citer = constants.begin();
+
   bool eraseFlag = false;
 
-  for (auto& parentRange: parentRanges)
+  for (auto& parentRange: parentPtr->strats.getRanges())
   {
     // Get to the same distribution in each Strategy if it exists.
-    while (stratData.front().iter != stratData.front().end &&
-        stratData.front().iter->dist < parentRange.dist)
-    {
-      riter++;
-      for (auto& sd: stratData)
-        sd.iter++;
-    }
-
-    if (stratData.front().iter == stratData.front().end)
+    const StratStatus status = stratData.advance(parentRange.dist);
+    if (status == STRATSTATUS_END)
       break;
-    else if (stratData.front().iter->dist > parentRange.dist)
+    else if (status == STRATSTATUS_FURTHER_DIST)
       continue;
 
     if (parentRange.constant())
     {
-      // Eliminate and store in constants.
-      citer->dist = stratData.front().iter->dist;
-      citer->tricks = parentRange.minimum;
-      citer->winners.reset();
-
-      for (auto& sd: stratData)
-      {
-        citer->winners *= sd.iter->winners;
-        sd.ptr->erase(sd.iter);
-      }
+      stratData.eraseConstantDist(* citer, parentRange.minimum);
       eraseFlag = true;
-      
       citer++;
     }
-    else if (parentRange < * riter)
+    else if (parentRange < * stratData.riter)
     {
-      assert(riter->dist == parentRange.dist);
-
-      // Eliminate dominated distribution within Strategies.
-      for (auto& sd: stratData)
-        sd.ptr->erase(sd.iter);
-
+      stratData.eraseDominatedDist();
       eraseFlag = true;
     }
   }
 
   // Shrink to the size used.
   constants.eraseRest(citer);
-
   parentPtr->constants *= constants;
 
-  // The simplifications may have caused some strategies to be
-  // dominated that weren't before.
+  // Some strategies may be dominated that weren't before.
   if (eraseFlag)
     strats.consolidate();
 }

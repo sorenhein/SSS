@@ -62,12 +62,12 @@ plays/Node.obj: strategies/Winners.h const.h Distribution.h Survivor.h
 plays/Node.obj: DistHelp.h Combination.h strategies/Strategies.h
 plays/Node.obj: strategies/Strategy.h Survivor.h strategies/Winners.h
 plays/Node.obj: strategies/Winner.h strategies/Card.h strategies/Result.h
-plays/Node.obj: strategies/Range.h
+plays/Node.obj: strategies/Range.h strategies/StratData.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Strategy.h
 strategies/Strategies.obj: Survivor.h strategies/Winners.h
 strategies/Strategies.obj: strategies/Winner.h strategies/Card.h const.h
 strategies/Strategies.obj: strategies/Result.h strategies/Range.h
-strategies/Strategies.obj: plays/Play.h
+strategies/Strategies.obj: strategies/StratData.h plays/Play.h
 strategies/Strategy.obj: strategies/Strategy.h Survivor.h
 strategies/Strategy.obj: strategies/Winners.h strategies/Winner.h
 strategies/Strategy.obj: strategies/Card.h const.h strategies/Result.h

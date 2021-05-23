@@ -27,8 +27,6 @@ enum Compare
   COMPARE_INCOMMENSURATE = 3
 };
 
-typedef list<Range> Ranges;
-
 
 class Strategy
 {

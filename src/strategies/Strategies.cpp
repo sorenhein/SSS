@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Strategies.h"
+#include "StratData.h"
 
 #include "../plays/Play.h"
 
@@ -247,64 +248,9 @@ void Strategies::collapseOnVoid()
 }
 
 
-void Strategies::bound(
-  Strategy& constantsIn,
-  Strategy& lower) const
-  // Strategy& upper) const
+void Strategies::getLoopData(StratData& stratData)
 {
-  // Calculate Strategy values to summarize this Strategies.
-  // constants is the set of constant strategies.  Other Strategies
-  // may have other constant values, or non-constant ones, that
-  // may be lower or higher than this results.  There are only
-  // entries for those distributions that have constant tricks.
-  // lower and upper and the bounds.  They exist for each
-  // distribution.
-  
-  assert(results.size() > 0);
-
-  constantsIn = results.front();
-  lower = results.front();
-  // upper = results.front();
-
-  if (results.size() == 1)
-    return;
-
-  for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    iter->bound(constantsIn, lower);
-    // iter->bound(constantsIn, lower, upper);
-}
-
-
-void Strategies::bound(Bounds& bounds) const
-{
-  // Calculate Strategy values to summarize this Strategies.
-  // constants is the set of constant strategies.  Other Strategies
-  // may have other constant values, or non-constant ones, that
-  // may be lower or higher than this results.  There are only
-  // entries for those distributions that have constant tricks.
-  // lower and upper and the bounds.  They exist for each
-  // distribution.
-  
-  assert(results.size() > 0);
-
-  bounds.constants = results.front();
-  bounds.minima = results.front();
-  // bounds.maxima = results.front();
-
-  if (results.size() == 1)
-    return;
-
-  // TODO Pass in a Bounds instead
-  // Eliminate the bounds with 3 arguments
-  for (auto iter = next(results.begin()); iter != results.end(); iter++)
-    // iter->bound(bounds.constants, bounds.minima, bounds.maxima);
-    iter->bound(bounds.constants, bounds.minima);
-}
-
-
-void Strategies::getLoopData(list<StratData>& stratData)
-{
-  auto siter = stratData.begin();
+  auto siter = stratData.data.begin();
   for (auto& strat: results)
   {
     siter->ptr = &strat;
