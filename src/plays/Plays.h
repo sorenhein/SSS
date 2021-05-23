@@ -68,9 +68,8 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
-    void strategizeVoid(
+    const Strategies& strategizeVoid(
       Distribution const * distPtr,
-      Strategies& strategies,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     string str() const;

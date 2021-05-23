@@ -183,7 +183,7 @@ if (debugFlag)
 }
 
   // plays.strategizeVoid(distPtr, strats, debugFlag);
-  plays.strategizeVoid(distPtr, strats, static_cast<DebugPlay>(0x3f));
+  strats = plays.strategizeVoid(distPtr, static_cast<DebugPlay>(0x3f));
 // cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)

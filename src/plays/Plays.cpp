@@ -171,24 +171,15 @@ const Strategies& Plays::strategizeAdvanced(
 }
 
 
-void Plays::strategizeVoid(
+const Strategies& Plays::strategizeVoid(
   Distribution const * distPtr,
-  Strategies& strategies,
   const DebugPlay debugFlag)
 {
-  // The normal strategize() method also works for combinations
-  // where partner is void.  But some of the most difficult,
-  // exponentially exploding combinations arise in this way.
-  // In particular, declarer may have roughly the same number of
-  // cards as the defenders together, and the ranks alternate
-  // without declarer having the ace; for example KJ975 missing
-  // 7 cards.
-
   // When partner is void, both defenders can coordinate and play 
   // their cards without intrusion from dummy.  So there is really 
   // only one optimization step for both defenders together and only 
   // one for declarer, and not two each as in the general case.  
-  // This in itself does not reduce complexity appreciably.
+  // We can save a bit of data shuffling.
 
   // Link RHO nodes directly with lead nodes, skipping partner and LHO.
   for (auto& nodeRhoNew: nodesRho)
@@ -236,13 +227,15 @@ void Plays::strategizeVoid(
   nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 */
 
-  strategies = nodeMaster.strategies();
+  return nodeMaster.strategies();
 
+  /*
   if (debugFlag & DEBUGPLAY_LEAD_DETAILS)
   {
     cout << strategies.str("Final strategy") << "\n\n";
     cout << "Final size " << strategies.size() << endl;
   }
+  */
 
 
   // Manual combinations.
