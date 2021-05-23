@@ -52,6 +52,23 @@ void Play::setCombPtr(const Combinations& combinations)
 }
 
 
+void Play::setVoidFlags(
+  bool& westFlag,
+  bool& eastFlag) const
+{
+  if (side == POSITION_NORTH)
+  {
+    westFlag = rhoPtr->isVoid();
+    eastFlag = lhoPtr->isVoid();
+  }
+  else
+  {
+    westFlag = lhoPtr->isVoid();
+    eastFlag = rhoPtr->isVoid();
+  }
+}
+
+
 Card const * Play::northTranslate(const unsigned number) const
 {
   unsigned northThisTrick;

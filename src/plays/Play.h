@@ -65,6 +65,10 @@ struct Play
 
   void setCombPtr(const Combinations& combinations);
 
+  void setVoidFlags(
+    bool& westFlag,
+    bool& eastFlag) const;
+
   Card const * northTranslate(const unsigned number) const;
   Card const * southTranslate(const unsigned number) const;
 

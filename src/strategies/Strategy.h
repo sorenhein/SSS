@@ -30,6 +30,18 @@ class Strategy
     unsigned weightInt;
 
 
+    void updateSingle(
+      const unsigned fullNo,
+      const unsigned trickNS);
+
+    void updateSameLength(
+      const Survivors& survivors,
+      const unsigned trickNS);
+
+    void updateAndGrow(
+      const Survivors& survivors,
+      const unsigned trickNS);
+
   public:
 
     Strategy();
@@ -65,15 +77,7 @@ class Strategy
 
     Compare compare(const Strategy& tv2) const;
 
-    void operator *=(const Strategy& tv2);
-
-    void bound(
-      Strategy& constants,
-      Strategy& lower) const;
-
-    void constrain(Strategy& constants) const;
-
-    unsigned purge(const Strategy& constants);
+    void operator *= (const Strategy& tv2);
 
     void initRanges(Ranges& ranges);
 
@@ -85,20 +89,6 @@ class Strategy
 
     void erase(list<Result>::iterator iter);
 
-    void addConstantWinners(Strategy& constants) const;
-
-    void updateSingle(
-      const unsigned fullNo,
-      const unsigned trickNS);
-
-    void updateSameLength(
-      const Survivors& survivors,
-      const unsigned trickNS);
-
-    void updateAndGrow(
-      const Survivors& survivors,
-      const unsigned trickNS);
-
     void adapt(
       const Play& play,
       const Survivors& survivors);
@@ -106,6 +96,8 @@ class Strategy
     unsigned size() const;
 
     unsigned weight() const;
+
+    void checkWeights() const;
 
     string str(const string& title = "") const;
 };

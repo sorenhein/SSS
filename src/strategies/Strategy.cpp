@@ -219,168 +219,6 @@ void Strategy::operator *=(const Strategy& tv2)
 }
 
 
-void Strategy::bound(
-  Strategy& constants,
-  Strategy& lower) const
-  // Strategy& upper) const
-{
-  // Each of the three vectors is a running collection of Result
-  // elements summarizing the distributions (in a parent Strategies).
-  // - constants is the constant results.  If tricks deviate,
-  //   the corresponding distribution is removed below.
-  // - lower is the lowest trick value for the distribution.
-  //   There is always an entry for each distribution.
-  // - upper is the highest trick value for the distribution.
-
-  auto iter = results.begin();
-  auto iterConst = constants.results.begin();
-  auto iterLower = lower.results.begin();
-  // auto iterUpper = upper.results.begin();
-
-  while (iter != results.end())
-  {
-    if (iter->tricks < iterLower->tricks)
-    {
-      assert(iter->dist == iterLower->dist);
-      iterLower->tricks = iter->tricks;
-    }
-    /*
-    else if (iter->tricks > iterUpper->tricks)
-    {
-      assert(iter->dist == iterUpper->dist);
-      iterUpper->tricks = iter->tricks;
-    }
-    */
-
-    if (iterConst != constants.results.end() &&
-        iter->dist == iterConst->dist)
-    {
-      if (iter->tricks == iterConst->tricks)
-        iterConst++;
-      else
-      {
-        // Only constants has a vector "meaning", so we only keep 
-        // track of its weight.
-        constants.weightInt -= iterConst->tricks;
-        iterConst = constants.results.erase(iterConst);
-      }
-    }
-    else
-    {
-      if (iterConst != constants.results.end() &&
-          iter->dist >= iterConst->dist)
-      {
-        cout << "HERE\n";
-        cout << Strategy::str("Strategy");
-        cout << constants.str("constants");
-        cout << lower.str("lower");
-        // cout << upper.str("upper");
-        cout << "iter " << iter->dist << ": " << iter->tricks << endl;
-        cout << "iterConst " << iterConst->dist << ": " << iterConst->tricks << endl;
-        cout << "iterLower " << iterLower->dist << ": " << iterLower->tricks << endl;
-        // cout << "iterUpper " << iterUpper->dist << ": " << iterUpper->tricks << endl;
-        assert(iterConst != constants.results.end());
-        assert(iter->dist < iterConst->dist);
-      }
-    }
-    
-    iter++;
-    iterLower++;
-    // iterUpper++;
-  }
-}
-
-
-void Strategy::constrain(Strategy& constants) const
-{
-  // The constants vector is a running collection of Result
-  // elements for those distributions (in a Strategies) that have
-  // constant results.  If the result of this current Strategy
-  // differs from constants for a given distribution, that 
-  // distribution is removed from constants.
-  //
-  // If there are distributions in constants that are not in this,
-  // they are removed.
-  // 
-  // In the case where this Strategy contains the minima, it
-  // is component-wise <= constants.  Therefore there is no harm
-  // in comparing the tricks >= rather than == below.
-  //
-  // This behavior is useful when limiting non-constant plays.
-
-  auto iter1 = results.begin();
-  auto iter2 = constants.results.begin();
-  constants.weightInt = 0;
-
-  while (iter2 != constants.results.end())
-  {
-    while (iter1 != results.end() && iter1->dist < iter2->dist)
-      iter1++;
-
-    if (iter1 == results.end())
-    {
-      iter2 = constants.results.erase(iter2, constants.results.end());
-      return;
-    }
-
-    if (iter1->dist == iter2->dist)
-    {
-      if (iter1->tricks >= iter2->tricks)
-      {
-        constants.weightInt += iter2->tricks;
-        iter2++;
-      }
-      else
-        iter2 = constants.results.erase(iter2);
-    }
-    else
-    {
-      while (iter2 != constants.results.end() && 
-          iter1->dist > iter2->dist)
-        iter2 = constants.results.erase(iter2);
-    }
-  }
-}
-
-
-unsigned Strategy::purge(const Strategy& constants)
-{
-  // Removes results corresponding to all distributions in
-  // constants.  The distributions don't all have to be present
-  // in results, but those that are will be removed.
-  // Returns number of purges.
-
-  auto iter1 = results.begin();
-  auto iter2 = constants.results.begin();
-  unsigned num = 0;
-
-  while (iter2 != constants.results.end())
-  {
-    while (iter1 != results.end() && iter1->dist < iter2->dist)
-      iter1++;
-
-    if (iter1 == results.end())
-      return num;
-
-    if (iter1->dist == iter2->dist)
-    {
-      assert(iter1->tricks >= iter2->tricks);
-      weightInt -= iter1->tricks;
-      iter1 = results.erase(iter1);
-      iter2++;
-      num++;
-    }
-    else
-    {
-      while (iter2 != constants.results.end() && 
-          iter1->dist > iter2->dist)
-        iter2++;
-    }
-  }
-  return num;
-}
-
-
 void Strategy::initRanges(Ranges& ranges)
 {
   ranges.resize(results.size());
@@ -462,25 +300,6 @@ void Strategy::erase(list<Result>::iterator iter)
   // No error checking.
   weightInt -= iter->tricks;
   results.erase(iter);
-}
-
-
-void Strategy::addConstantWinners(Strategy& constants) const
-{
-  // We are now in a child node.
-  auto riter = results.begin();
-  auto citer = constants.results.begin();
-  while (citer != constants.results.end())
-  {
-    while (riter != results.end() && riter->dist < citer->dist)
-      riter++;
-    
-    assert(riter != results.end());
-    assert(riter->dist == citer->dist);
-
-    citer->winners *= riter->winners;
-    citer++;
-  }
 }
 
 
@@ -568,17 +387,7 @@ void Strategy::adapt(
   // entries, and the results list needs to grow.
 
   bool westVoidFlag, eastVoidFlag;
-  if (play.side == POSITION_NORTH)
-  {
-    westVoidFlag = play.rhoPtr->isVoid();
-    eastVoidFlag = play.lhoPtr->isVoid();
-  }
-  else
-  {
-    westVoidFlag = play.lhoPtr->isVoid();
-    eastVoidFlag = play.rhoPtr->isVoid();
-  }
-
+  play.setVoidFlags(westVoidFlag, eastVoidFlag);
   assert(! westVoidFlag || ! eastVoidFlag);
 
   const unsigned len1 = results.size();
@@ -595,13 +404,13 @@ void Strategy::adapt(
     results.reverse();
 
     // We also have to to fix the NS winner orientation.
-    for (auto& te: results)
-      te.winners.flip();
+    for (auto& res: results)
+      res.winners.flip();
   }
 
   // Update the winners.
-    for (auto& te: results)
-      te.winners.update(play);
+    for (auto& res: results)
+      res.winners.update(play);
 
   if (westVoidFlag)
   {
@@ -646,6 +455,16 @@ unsigned Strategy::weight() const
 }
 
 
+void Strategy::checkWeights() const
+{
+  unsigned w = 0;
+  for (auto& res: results)
+    w += res.tricks;
+
+  assert(w == weightInt);
+}
+
+
 string Strategy::str(const string& title) const
 {
   stringstream ss;
@@ -656,10 +475,10 @@ string Strategy::str(const string& title) const
     setw(4) << left << "Dist" <<
     setw(6) << "Tricks" << "\n";
 
-  for (const auto& te: results)
+  for (auto& res: results)
     ss <<
-      setw(4) << te.dist <<
-      setw(6) << te.tricks << "\n";
+      setw(4) << res.dist <<
+      setw(6) << res.tricks << "\n";
 
   return ss.str();
 }

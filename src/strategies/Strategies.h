@@ -79,6 +79,8 @@ class Strategies
       const Play& play,
       const Survivors& survivors);
 
+    void checkWeights() const;
+
     string strRanges(const string& title = "") const;
 
     string str(

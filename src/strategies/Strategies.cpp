@@ -356,11 +356,18 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-  for (auto& tv: strategies)
-    tv.adapt(play, survivors);
+  for (auto& strat: strategies)
+    strat.adapt(play, survivors);
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
+}
+
+
+void Strategies::checkWeights() const
+{
+  for (auto& strat: strategies)
+    strat.checkWeights();    
 }
 
 
