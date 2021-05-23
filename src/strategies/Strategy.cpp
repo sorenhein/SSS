@@ -444,19 +444,6 @@ void Strategy::purgeRanges(
 
     assert(iterParentRanges->dist == iterResults->dist);
 
-    // TODO I think we could do
-    // if (iterParentRanges->constant())
-    // {
-    //   same
-    // }
-    // But then we might first add RangeEntry.mark() which sets
-    // a constantFlag.  And afterwards we have to get the constants
-    // out of this Strategy, ideally in a Strategy form that can
-    // be used at the top level to add back to the parent node
-    // (as we do now, but in a different setup).
-    // Once we have it from the parent, we need to find the 
-    // winners, too!
-
     if (* iterParentRanges < * iterRanges)
     {
       weightInt -= iterResults->tricks;

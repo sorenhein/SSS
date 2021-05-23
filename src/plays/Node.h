@@ -32,7 +32,7 @@ class Node
     // they get their own derived class?
     Strategies simpleStrats;
 
-    Bounds bounds;
+    // Bounds bounds;
 
     Strategy constants;
 
@@ -72,24 +72,7 @@ class Node
 
     bool removePlay();
 
-    void clearBounds();
-
-    void bound();
-
-    void propagateBounds();
-
-    void augmentConstants(const Strategy& constants);
-
-    void constrainConstantsToMinima();
-
-    // void getConstrainedParentMaxima(Strategy& max);
-
-    void activateBounds();
-
     void activateConstants();
-
-    // Returns true if number of strategies shrank.
-    bool purgeConstants();
 
     void makeRanges();
 
@@ -97,7 +80,7 @@ class Node
 
     void purgeRanges();
 
-    Node * getParentPtr();
+    // Node * getParentPtr();
 
     void integrateSimpleStrategies();
 
@@ -105,10 +88,6 @@ class Node
 
     Strategies& strategies();
     const Strategies& strategies() const;
-
-    const Strategy& getConstants() const;
-
-    string strBounds(const string& title = "") const;
 
     string strRanges(const string& title = "") const;
 

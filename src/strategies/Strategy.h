@@ -12,6 +12,7 @@
 
 #include "Winners.h"
 #include "Result.h"
+#include "Range.h"
 
 struct Play;
 
@@ -26,65 +27,7 @@ enum Compare
   COMPARE_INCOMMENSURATE = 3
 };
 
-
-struct RangeEntry
-{
-  unsigned dist;
-  unsigned lower;
-  unsigned upper;
-  unsigned minimum;
-
-  void operator *= (const RangeEntry& range2)
-  {
-    if (range2.minimum < minimum)
-      minimum = range2.minimum;
-
-    if (range2.upper < upper ||
-        (range2.upper == upper && range2.lower < lower))
-    {
-      lower = range2.lower;
-      upper = range2.upper;
-    }
-  };
-
-  bool operator < (const RangeEntry& range2) const
-  {
-    return (upper <= range2.lower &&
-        (range2.lower < range2.upper || lower < upper));
-  };
-
-  bool constant() const
-  {
-    // Or have a mark() that sets a constantFlag
-    return (lower == minimum && upper == minimum);
-  };
-
-  string strHeader() const
-  {
-    stringstream ss;
-    ss << 
-      setw(4) << right << "dist" <<
-      setw(4) << "lo" <<
-      setw(4) << "hi" << 
-      setw(4) << "min" << 
-      endl;
-    return ss.str();
-  };
-
-  string str() const
-  {
-    stringstream ss;
-    ss << 
-      setw(4) << dist <<
-      setw(4) << lower <<
-      setw(4) << upper << 
-      setw(4) << minimum << 
-      endl;
-    return ss.str();
-  };
-};
-
-typedef list<RangeEntry> Ranges;
+typedef list<Range> Ranges;
 
 
 class Strategy
@@ -135,7 +78,6 @@ class Strategy
     void bound(
       Strategy& constants,
       Strategy& lower) const;
-      // Strategy& upper) const;
 
     void constrain(Strategy& constants) const;
 
