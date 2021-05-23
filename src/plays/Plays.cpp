@@ -123,7 +123,7 @@ void Plays::strategizeSimpleFront(const DebugPlay debugFlag)
 }
 
 
-const Strategies& Plays::strategizeAdvanced(const DebugPlay debugFlag)
+void Plays::strategizeAdvanced(const DebugPlay debugFlag)
 {
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
@@ -134,30 +134,16 @@ const Strategies& Plays::strategizeAdvanced(const DebugPlay debugFlag)
 
   nodesLead.strategizeDeclarerAdvanced(
     (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-
-  return nodeMaster.strategies();
 }
 
 
-const Strategies& Plays::strategizeVoid(const DebugPlay debugFlag)
+void Plays::strategizeVoid(const DebugPlay debugFlag)
 {
-  // When partner is void, both defenders can coordinate and play 
-  // their cards without intrusion from dummy.  So there is really 
-  // only one optimization step for both defenders together and only 
-  // one for declarer, and not two each as in the general case.  
-  // We can save a bit of data shuffling.
-
-  // Link RHO nodes directly with lead nodes, skipping partner and LHO.
-  for (auto& nodeRhoNew: nodesRho)
-    nodeRhoNew.linkRhoToLead();
-
   nodesRho.strategizeDefendersAdvanced(
     (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
   nodesLead.strategizeDeclarerAdvanced(
     (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-
-  return nodeMaster.strategies();
 }
 
 
@@ -196,20 +182,26 @@ const Strategies& Plays::strategize(
     // Optimization is not used when the number of plays is low enough.
     Plays::strategizeSimpleBack(debugFlag);
     Plays::strategizeSimpleFront(debugFlag);
-    return nodeMaster.strategies();
   }
   else if (nodesRho.used() == nodesLho.used())
   {
-    // Partner is void.  Link RHO nodes directly with lead nodes.
+    // When partner is void, both defenders can coordinate and play 
+    // their cards without intrusion from dummy.  So there is really 
+    // only one optimization step for both defenders together and only 
+    // one for declarer, and not two each as in the general case.  
+    // We can save a bit of data shuffling by linking RHO nodes 
+    // directly with lead nodes.
     for (auto& nodeRhoNew: nodesRho)
       nodeRhoNew.linkRhoToLead();
     
-    return Plays::strategizeVoid(debugFlag);
+    Plays::strategizeVoid(debugFlag);
   }
   else
   {
-    return Plays::strategizeAdvanced(debugFlag);
+    Plays::strategizeAdvanced(debugFlag);
   }
+
+  return nodeMaster.strategies();
 }
 
 
