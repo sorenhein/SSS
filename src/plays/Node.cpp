@@ -66,7 +66,7 @@ void Node::linkRhoToLead()
 }
 
 
-void Node::getStrategies(
+void Node::getNextStrategies(
   const Distribution& dist,
   const bool debugFlag)
 {
@@ -84,85 +84,6 @@ void Node::getStrategies(
   strats.adapt(* playPtr, survivors);
   if (debugFlag)
     cout << strats.str("Adapted strategy of next trick", true);
-}
-
-
-void Node::cross(
-  const Level level,
-  const bool debugFlag)
-{
-  assert(level == LEVEL_RHO || level == LEVEL_LHO);
-
-  if (debugFlag)
-  {
-    cout << Node::strPlay(level);
-    const string s = (level == LEVEL_RHO ? "RHO" : "LHO");
-    cout << strats.str("Crossing " + s + " strategy", false);
-  }
-
-  parentPtr->strats *= strats;
-
-  if (debugFlag)
-  {
-    const string s = (level == LEVEL_RHO ? "partner" : "lead");
-    cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", false);
-  }
-}
-
-
-void Node::add(
-  const Level level,
-  const bool debugFlag)
-{
-  assert(level == LEVEL_LEAD || level == LEVEL_PARD);
-
-  if (debugFlag)
-  {
-    cout << Node::strPlay(level);
-    const string s = (level == LEVEL_LEAD ? "lead" : "partner");
-    cout << strats.str("Adding " + s + " strategy", false);
-  }
-
-  parentPtr->strats += strats;
-
-  if (debugFlag)
-  {
-    const string s = (level == LEVEL_LEAD ? "overall" : "LHO");
-    cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick");
-  }
-}
-
-
-bool Node::removePlay()
-{
-  if (strats.numDists() == 0)
-    return true;
-  else if (strats.size() == 0)
-    return true;
-  else if (strats.size() == 1)
-  {
-    parentPtr->simpleStrats *= strats;
-    assert(parentPtr->simpleStrats.size() == 1);
-    return true;
-  }
-  else
-    return false;
-}
-
-
-void Node::activateConstants()
-{
-  strats *= constants;
-}
-
-
-void Node::makeRanges()
-{
-  // TODO Could potentially eliminate this and two next methods
-  // by working with strategies()
-  strats.makeRanges();
 }
 
 
@@ -248,17 +169,75 @@ void Node::purgeRanges()
 }
 
 
-/*
-Node * Node::getParentPtr()
-{
-  return parentPtr;
-}
-*/
-
-
-void Node::integrateSimpleStrategies()
+void Node::reactivate()
 {
   strats *= simpleStrats;
+  strats *= constants;
+}
+
+
+void Node::cross(
+  const Level level,
+  const bool debugFlag)
+{
+  assert(level == LEVEL_RHO || level == LEVEL_LHO);
+
+  if (debugFlag)
+  {
+    cout << Node::strPlay(level);
+    const string s = (level == LEVEL_RHO ? "RHO" : "LHO");
+    cout << strats.str("Crossing " + s + " strategy", false);
+  }
+
+  parentPtr->strats *= strats;
+
+  if (debugFlag)
+  {
+    const string s = (level == LEVEL_RHO ? "partner" : "lead");
+    cout << parentPtr->strats.str(
+      "Cumulative " + s + " strategy after this trick", false);
+  }
+}
+
+
+void Node::add(
+  const Level level,
+  const bool debugFlag)
+{
+  assert(level == LEVEL_LEAD || level == LEVEL_PARD);
+
+  if (debugFlag)
+  {
+    cout << Node::strPlay(level);
+    const string s = (level == LEVEL_LEAD ? "lead" : "partner");
+    cout << strats.str("Adding " + s + " strategy", false);
+  }
+
+  parentPtr->strats += strats;
+
+  if (debugFlag)
+  {
+    const string s = (level == LEVEL_LEAD ? "overall" : "LHO");
+    cout << parentPtr->strats.str(
+      "Cumulative " + s + " strategy after this trick");
+  }
+}
+
+
+bool Node::removePlay()
+{
+  if (strats.numDists() == 0)
+    return true;
+  else if (strats.size() == 0)
+    return true;
+  else if (strats.size() == 1)
+  {
+    parentPtr->simpleStrats *= strats;
+    assert(parentPtr->simpleStrats.size() == 1);
+    return true;
+  }
+  else
+    return false;
 }
 
 

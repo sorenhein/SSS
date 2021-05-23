@@ -36,7 +36,7 @@ class Plays
     Node nodeMaster;
 
 
-    void getStrategies(
+    void getNextStrategies(
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 

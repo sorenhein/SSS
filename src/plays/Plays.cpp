@@ -98,14 +98,14 @@ void Plays::setCombPtrs(const Combinations& combinations)
 }
 
 
-void Plays::getStrategies(
+void Plays::getNextStrategies(
   Distribution const * distPtr,
   const DebugPlay debugFlag)
 {
   // For RHO nodes we have to populate the strategies first.
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& nodeRho: nodesRho)
-    nodeRho.getStrategies(* distPtr, debug);
+    nodeRho.getNextStrategies(* distPtr, debug);
 }
 
 
@@ -137,7 +137,7 @@ void Plays::strategize(
 
   UNUSED(ranks);
 
-  Plays::getStrategies(distPtr, debugFlag);
+  Plays::getNextStrategies(distPtr, debugFlag);
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
@@ -161,7 +161,7 @@ void Plays::strategizeNew(
 {
   UNUSED(ranks);
 
-  Plays::getStrategies(distPtr, debugFlag);
+  Plays::getNextStrategies(distPtr, debugFlag);
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("Node counts");
@@ -202,7 +202,7 @@ void Plays::strategizeVoid(
   for (auto& nodeRhoNew: nodesRho)
     nodeRhoNew.linkRhoToLead();
 
-  Plays::getStrategies(distPtr, debugFlag);
+  Plays::getNextStrategies(distPtr, debugFlag);
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts("Void node counts");

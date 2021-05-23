@@ -26,13 +26,7 @@ class Node
 
     Strategies strats;
 
-    // These are only used when partner is void for now, so it is
-    // a bit of an extravagance to have them in all nodes.  If they
-    // stay confined to voids (and within voids, only RHO), perhaps
-    // they get their own derived class?
     Strategies simpleStrats;
-
-    // Bounds bounds;
 
     Strategy constants;
 
@@ -54,13 +48,19 @@ class Node
       Play * playPtr,
       Node const * prevNodePtr);
 
-    void linkRhoToLead();
-
     void setCombPtr(const Combinations& combinations);
 
-    void getStrategies(
+    void linkRhoToLead();
+
+    void getNextStrategies(
       const Distribution& dist,
       const bool debugFlag);
+
+    void propagateRanges();
+
+    void purgeRanges();
+
+    void reactivate();
 
     void cross(
       const Level level,
@@ -71,18 +71,6 @@ class Node
       const bool debugFlag);
 
     bool removePlay();
-
-    void activateConstants();
-
-    void makeRanges();
-
-    void propagateRanges();
-
-    void purgeRanges();
-
-    // Node * getParentPtr();
-
-    void integrateSimpleStrategies();
 
     const Play& play() const;
 

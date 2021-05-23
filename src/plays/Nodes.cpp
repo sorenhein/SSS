@@ -147,13 +147,9 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
 
-  // Add back the simple strategies.
+  // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->integrateSimpleStrategies();
-
-  // Add back the lead-specific constants.
-  for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->activateConstants();
+    iter->reactivate();
 
   Nodes::strategizeDeclarer(debugFlag);
 }
@@ -179,7 +175,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // remove them from the parent nodes.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
-    iter->makeRanges();
+    iter->strategies().makeRanges();
     iter->propagateRanges();
   }
 
