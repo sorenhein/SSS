@@ -217,19 +217,36 @@ unsigned Nodes::used() const
 }
 
 
+string Nodes::strCountHeader() const
+{
+  stringstream ss;
+  ss << 
+    setw(6) << "Player" <<
+    setw(8) << right << "Alloc" <<
+    setw(8) << "Used" << "\n";
+
+  return ss.str();
+}
+
+
 string Nodes::strCount() const
 {
   stringstream ss;
-  if (level == LEVEL_LEAD)
-    ss << "Lead ";
-  else if (level == LEVEL_LHO)
-    ss << "LHO ";
-  else if (level == LEVEL_PARD)
-    ss << "Pard ";
-  else if (level == LEVEL_RHO)
-    ss << "RHO ";
 
-  ss << nodes.size() << " " << nextEntryNumber << "\n";
+  string p;
+  if (level == LEVEL_LEAD)
+    p = "Lead";
+  else if (level == LEVEL_LHO)
+    p = "LHO";
+  else if (level == LEVEL_PARD)
+    p = "Pard";
+  else if (level == LEVEL_RHO)
+    p = "RHO";
+
+  ss << 
+    setw(6) << left << p <<
+    setw(8) << right << nodes.size() << 
+    setw(8) << nextEntryNumber << "\n";
 
   return ss.str();
 }

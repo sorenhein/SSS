@@ -57,7 +57,7 @@ const Strategies& Combination::strategize(
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
   // if (centry.canonicalHolding3 == 14480 && ranks.size() == 10)
-  if (centry.canonicalHolding3 == 60 && ranks.size() == 5)
+  if (centry.canonicalHolding3 == 424 && ranks.size() == 7)
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
     cout << ranks.strTable();
@@ -84,55 +84,8 @@ const Strategies& Combination::strategize(
     cout << "Distribution\n" << distPtr->str() << endl;
   }
 
-  // TODO Probably don't need to pass in ranks to make memory
-  // stay alive.
-
-unsigned ps = plays.size();
-if (ps >= 100)
-  ps = 99;
-
-assert(ps < timers1.size());
-if (ranks.partnerVoid())
-  timers1[ps].start();
-  // plays.strategize(ranks, distPtr, strats, debugFlagTmp);
-  // plays.strategize(distPtr, strats, debugFlagTmp);
-  // TODO It gets copied here.  Keep a pointer instead?
+  plays.clearStrategies();
   strats = plays.strategize(distPtr, debugFlagTmp);
-if (ranks.partnerVoid())
-  timers1[ps].stop();
-
-if (ranks.partnerVoid())
-{
-plays.clearStrategies();
-
-assert(ps < timers2.size());
-timers2[ps].start();
-// const Strategies& stmp = plays.strategizeAdvanced(distPtr, debugFlagTmp);
-const Strategies& stmp = plays.strategizeVoid(distPtr, debugFlagTmp);
-timers2[ps].stop();
-
-  if (! (strats == stmp))
-  {
-    if (ranks.partnerVoid())
-    {
-      cout << "VOID " << strats.size() << " vs " << stmp.size() << endl;
-      cout << ranks.strTable();
-      wcout << ranks.wstrDiagram();
-      cout << distPtr->str();
-      cout << strats.str("Old", false);
-      cout << stmp.str("New", false);
-    }
-    else
-    {
-      cout << "REGULAR " << strats.size() << " vs " << stmp.size() << endl;
-      cout << ranks.strTable();
-      wcout << ranks.wstrDiagram();
-      cout << distPtr->str();
-      cout << strats.str("Old", false);
-      cout << stmp.str("New", false);
-    }
-  }
-}
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
@@ -189,7 +142,10 @@ if (debugFlag)
 }
 
   // plays.strategizeVoid(distPtr, strats, debugFlag);
-  strats = plays.strategizeVoid(distPtr, static_cast<DebugPlay>(0x3f));
+
+  // strats = plays.strategizeVoid(distPtr, static_cast<DebugPlay>(0x3f));
+  strats = plays.strategize(distPtr, static_cast<DebugPlay>(0x3f));
+
 // cout << "C " << centry.canonicalHolding3 << endl;
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)

@@ -109,9 +109,7 @@ void Plays::getNextStrategies(
 }
 
 
-const Strategies& Plays::strategize(
-  Distribution const * distPtr,
-  const DebugPlay debugFlag)
+const Strategies& Plays::strategizeSimple(const DebugPlay debugFlag)
 {
   // The plays are propagated backwards up to a strategy for the
   // entire trick.  When the defenders have the choice, strategies
@@ -133,11 +131,6 @@ const Strategies& Plays::strategize(
   // outcomes by spreading their probability mass well.
   // This will be examined subsequently.
 
-  Plays::getNextStrategies(distPtr, debugFlag);
-
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("Node counts");
-
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
 
@@ -148,15 +141,8 @@ const Strategies& Plays::strategize(
 }
 
 
-const Strategies& Plays::strategizeAdvanced(
-  Distribution const * distPtr,
-  const DebugPlay debugFlag)
+const Strategies& Plays::strategizeAdvanced(const DebugPlay debugFlag)
 {
-  Plays::getNextStrategies(distPtr, debugFlag);
-
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("Node counts");
-
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
 
@@ -171,9 +157,7 @@ const Strategies& Plays::strategizeAdvanced(
 }
 
 
-const Strategies& Plays::strategizeVoid(
-  Distribution const * distPtr,
-  const DebugPlay debugFlag)
+const Strategies& Plays::strategizeVoid(const DebugPlay debugFlag)
 {
   // When partner is void, both defenders can coordinate and play 
   // their cards without intrusion from dummy.  So there is really 
@@ -185,11 +169,6 @@ const Strategies& Plays::strategizeVoid(
   for (auto& nodeRhoNew: nodesRho)
     nodeRhoNew.linkRhoToLead();
 
-  Plays::getNextStrategies(distPtr, debugFlag);
-
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("Void node counts");
-
   nodesRho.strategizeDefendersAdvanced(
     (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
@@ -200,11 +179,50 @@ const Strategies& Plays::strategizeVoid(
 }
 
 
+const Strategies& Plays::strategize(
+  Distribution const * distPtr,
+  const DebugPlay debugFlag)
+{
+  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
+    cout << Plays::strNodeCounts();
+
+  Plays::getNextStrategies(distPtr, debugFlag);
+
+  if (nodesRho.used() == nodesLho.used())
+  {
+    // Partner is void.  Empirically it is a bit faster only to
+    // optimize when there is a large number of plays.
+    if (nodesRho.used() <= 30)
+    {
+      return Plays::strategizeSimple(debugFlag);
+    }
+    else
+    {
+      // Link RHO nodes directly with lead nodes, skipping partner and LHO.
+      for (auto& nodeRhoNew: nodesRho)
+        nodeRhoNew.linkRhoToLead();
+      
+      return Plays::strategizeVoid(debugFlag);
+    }
+  }
+  else if (nodesRho.used() <= 20)
+  {
+    // Same principle, slightly different threshold.
+    return Plays::strategizeSimple(debugFlag);
+  }
+  else
+  {
+    return Plays::strategizeAdvanced(debugFlag);
+  }
+}
+
+
 string Plays::strNodeCounts(const string& title) const
 {
   stringstream ss;
 
-  ss << "Node counts " << title << ":" << 
+  ss << "Node counts " << title << "\n" << 
+    nodesRho.strCountHeader() <<
     nodesRho.strCount() <<
     nodesPard.strCount() <<
     nodesLho.strCount() <<

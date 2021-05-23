@@ -75,6 +75,7 @@ class Nodes
     unsigned size() const;
     unsigned used() const;
 
+    string strCountHeader() const;
     string strCount() const;
 
     string strSimple() const;

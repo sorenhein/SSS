@@ -40,6 +40,15 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
+    const Strategies& strategizeSimple(
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
+
+    const Strategies& strategizeAdvanced(
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
+
+    const Strategies& strategizeVoid(
+      const DebugPlay debugFlag = DEBUGPLAY_NONE);
+
     string strNodeCounts(const string& title = "") const;
 
   public:
@@ -61,14 +70,6 @@ class Plays
     void setCombPtrs(const Combinations& combinations);
 
     const Strategies& strategize(
-      Distribution const * distPtr,
-      const DebugPlay debugFlag = DEBUGPLAY_NONE);
-
-    const Strategies& strategizeAdvanced(
-      Distribution const * distPtr,
-      const DebugPlay debugFlag = DEBUGPLAY_NONE);
-
-    const Strategies& strategizeVoid(
       Distribution const * distPtr,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
