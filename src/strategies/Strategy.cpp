@@ -7,6 +7,8 @@
 
 #include "../plays/Play.h"
 
+#include "../Survivor.h"
+
 // TODO Dominance can probably be implemented more efficiently.
 // For example the "weight" (sum of all trick counts) indicates
 // whether one vector can dominate another or not.  This can be

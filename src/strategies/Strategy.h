@@ -1,20 +1,14 @@
 #ifndef SSS_STRATEGY_H
 #define SSS_STRATEGY_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <vector>
 #include <list>
-#include <cassert>
+#include <string>
 
-#include "../Survivor.h"
-
-#include "Winners.h"
 #include "Result.h"
 #include "Range.h"
 
 struct Play;
+struct Survivors;
 
 using namespace std;
 

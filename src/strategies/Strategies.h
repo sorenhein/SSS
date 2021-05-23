@@ -5,9 +5,10 @@
 // always have the same lengths and distribution numbers.
 
 #include <list>
+#include <string>
 
 #include "Strategy.h"
-// #include "StratData.h"
+#include "Range.h"
 
 struct StratData;
 struct Play;
@@ -20,12 +21,13 @@ class Strategies
 {
   private:
 
-    list<Strategy> results;
+    list<Strategy> strategies;
 
     Ranges ranges;
 
-    Strategy constants;
 
+    bool sameOrdered(const Strategies& strats2);
+    bool sameUnordered(const Strategies& strats2);
 
     void collapseOnVoid();
 
@@ -45,26 +47,23 @@ class Strategies
     void reset();
 
     void setTrivial(
-      const Result& trivialEntry,
+      const Result& trivial,
       const unsigned len);
 
-    bool operator == (const Strategies& tvs);
+    bool operator == (const Strategies& strats2);
 
-    void operator +=(const Strategy& tv);
+    void operator += (const Strategy& strat);
+    void operator += (const Strategies& strats2);
 
-    void operator +=(const Strategies& tvs);
+    void operator *= (const Strategy& strat);
+    void operator *= (const Strategies& strats2);
 
-    void operator *=(const Strategies& tvs);
-    void operator *=(const Strategy& tv);
-
-    void operator |=(const Strategies& tvs);
+    // void operator |= (const Strategies& tvs);
 
     unsigned size() const;
     unsigned numDists() const;
 
     void getLoopData(StratData& stratData);
-
-    unsigned purge(const Strategy& constants);
 
     void consolidate();
 

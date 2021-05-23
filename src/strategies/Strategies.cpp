@@ -23,55 +23,52 @@ Strategies::~Strategies()
 
 void Strategies::reset()
 {
-  results.clear();
+  strategies.clear();
   ranges.clear();
 }
 
 
 void Strategies::setTrivial(
-  const Result& trivialEntry,
+  const Result& trivial,
   const unsigned len)
 {
-  Strategy tv;
-  tv.logTrivial(trivialEntry, len);
-
   Strategies::reset();
-  results.push_back(tv);
+  strategies.emplace_back(Strategy());
+  Strategy& strat = strategies.back();
+  strat.logTrivial(trivial, len);
 }
 
 
-bool Strategies::operator ==(const Strategies& tvs)
+bool Strategies::sameOrdered(const Strategies& strats2)
 {
-  // TODO This assumes the same ordering, but it's a start.
-  if (Strategies::size() != tvs.size())
-  {
-cout << "Size " <<Strategies::size() << " vs " << tvs.size() << endl;
-    return false;
-  }
+  // This assumes the same ordering.
 
-unsigned i = 0;
-  bool sameFlag = true;
-  auto iter2 = tvs.results.begin();
-  for (auto iter1 = results.begin(); iter1 != results.end(); 
-      iter1++, iter2++)
+  unsigned i = 0; // Could be used for debugging output, but isn't now.
+  auto iter2 = strats2.strategies.begin();
+
+  for (auto iter1 = strategies.begin(); iter1 != strategies.end(); 
+      iter1++, iter2++, i++)
   {
     if (!(* iter1 == * iter2))
-    {
-cout << "ABOUT TO DIFFER " << i << "\n";
-      sameFlag = false;
-      break;
-    }
-    i++;
+      return false;
   }
 
-  if (sameFlag)
-    return true;
+  return true;
+}
 
-  // Not very clever, detailed comparison.
-  for (auto iter1 = results.begin(); iter1 != results.end(); iter1++)
+
+bool Strategies::sameUnordered(const Strategies& strats2)
+{
+  // This is dreadfully slow.  We could make use of the 
+  // weight-ordered nature, and perhaps also the used-up matches,
+  // if this ever became a performance issue.  But I think it's
+  // mainly used for debugging.
+
+  for (auto iter1 = strategies.begin(); iter1 != strategies.end(); iter1++)
   {
-    sameFlag = false;
-    for (iter2 = tvs.results.begin(); iter2 != tvs.results.end(); iter2++)
+    bool sameFlag = false;
+    for (auto iter2 = strats2.strategies.begin(); 
+        iter2 != strats2.strategies.end(); iter2++)
     {
       if (* iter1 == * iter2)
       {
@@ -81,161 +78,172 @@ cout << "ABOUT TO DIFFER " << i << "\n";
     }
 
     if (! sameFlag)
-    {
-cout << "ABOUT TO REALLY DIFFER\n";
       return false;
-    }
   }
 
   return true;
 }
 
 
-void Strategies::operator +=(const Strategy& tv)
+bool Strategies::operator == (const Strategies& strats2)
 {
-  // The results list is in descending order of weights.
-  // The new Strategy dominates everything with a lower weight and
+  if (Strategies::size() != strats2.size())
+    return false;
+  else if (Strategies::sameOrdered(strats2))
+    return true;
+  else
+    return Strategies::sameUnordered(strats2);
+}
+
+
+void Strategies::operator += (const Strategy& strat)
+{
+  // The strategies list is in descending order of weights.
+  // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   
-  auto riter = results.begin();
+  auto iter = strategies.begin();
 
-  // tv cannot beat anything with a higher weight.
-  while (riter != results.end() && riter->weight() > tv.weight())
+  // strat cannot beat anything with a higher weight.
+  while (iter != strategies.end() && iter->weight() > strat.weight())
   {
-    if (riter->compare(tv) == COMPARE_GREATER_THAN)
+    if (iter->compare(strat) == COMPARE_GREATER_THAN)
+      // The new strat is dominated.
       return;
     else
-      riter++;
+      iter++;
   }
 
-  while (riter != results.end() && riter->weight() == tv.weight())
+  while (iter != strategies.end() && iter->weight() == strat.weight())
   {
     // They might be the same if they have the same weight.
-    if (riter->compare(tv) == COMPARE_EQUAL)
+    if (iter->compare(strat) == COMPARE_EQUAL)
       return;
     else
-      riter++;
+      iter++;
   }
 
   // The new vector must be inserted.
-  riter = next(results.insert(riter, tv));
+  iter = next(strategies.insert(iter, strat));
 
   // The new vector may dominate lighter vectors.
-  while (riter != results.end())
+  while (iter != strategies.end())
   {
-    if (tv > * riter)
-      riter = results.erase(riter);
+    if (strat > * iter)
+      iter = strategies.erase(iter);
     else
-      riter++;
+      iter++;
   }
 }
 
 
-void Strategies::operator +=(const Strategies& tvs)
+void Strategies::operator += (const Strategies& strats2)
 {
-  for (auto& tv: tvs.results)
-    * this += tv;
+  for (auto& strat2: strats2.strategies)
+    * this += strat2;
 }
 
 
-void Strategies::operator *=(const Strategies& tvs2)
+void Strategies::operator *= (const Strategy& strat)
 {
-  const unsigned len2 = tvs2.results.size();
+  if (strategies.empty())
+    * this += strat;
+  else
+  {
+    for (auto& strat1: strategies)
+      strat1 *= strat;
+  }
+}
+
+
+void Strategies::operator *= (const Strategies& strats2)
+{
+  const unsigned len2 = strats2.strategies.size();
   if (len2 == 0)
     // Keep the current results.
     return;
 
-  const unsigned len1 = results.size();
+  const unsigned len1 = strategies.size();
   if (len1 == 0)
   {
     // Keep the new results.
-    results = tvs2.results;
+    strategies = strats2.strategies;
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
-    results.front() *= tvs2.results.front();
+    strategies.front() *= strats2.strategies.front();
     return;
   }
 
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
-  list<Strategy> resultsOwn = results;
-  results.clear();
+  auto strategiesOwn = strategies;
+  strategies.clear();
 
-  Strategy tmp;
-  for (auto& tv1: resultsOwn)
+  Strategy stmp;
+  for (auto& strat1: strategiesOwn)
   {
-    for (auto& tv2: tvs2.results)
+    for (auto& strat2: strats2.strategies)
     {
-      tmp = tv1;
-      tmp *= tv2;
-      *this += tmp;
+      stmp = strat1;
+      stmp *= strat2;
+      *this += stmp;
     }
   }
 }
 
 
-void Strategies::operator *=(const Strategy& tv2)
-{
-  if (results.size() == 0)
-    * this += tv2;
-  else
-  {
-    for (auto& tv1: results)
-      tv1 *= tv2;
-  }
-}
-
-
-void Strategies::operator |=(const Strategies& tvs2)
+/*
+void Strategies::operator |= (const Strategies& tvs2)
 {
   // Vector-wise combination.
-  assert(results.size() == tvs2.results.size());
+  assert(strategies.size() == tvs2.strategies.size());
 
-  auto riter = results.begin();
-  auto riter2 = tvs2.results.begin();
+  auto riter = strategies.begin();
+  auto riter2 = tvs2.strategies.begin();
 
-  while (riter != results.end())
+  while (riter != strategies.end())
   {
     * riter *= * riter2;
     riter++;
     riter2++;
   }
 }
+*/
 
 
 unsigned Strategies::size() const
 {
-  return results.size();
+  return strategies.size();
 }
 
 
 unsigned Strategies::numDists() const
 {
-  if (results.empty())
+  if (strategies.empty())
     return 0;
   else
-    return results.front().size();
+    return strategies.front().size();
 }
 
 
 void Strategies::collapseOnVoid()
 {
-  assert(results.size() > 0);
-  if (results.size() == 1)
+  assert(strategies.size() > 0);
+  if (strategies.size() == 1)
   {
-    assert(results.front().size() == 1);
+    assert(strategies.front().size() == 1);
     return;
   }
 
   // Find the best one for declarer.
-  auto iterTV = results.begin();
+  auto iterTV = strategies.begin();
   assert(iterTV->size() == 1);
 
   // Find the best one for declarer.
-  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+  for (auto iter = next(strategies.begin()); iter != strategies.end(); iter++)
   {
     assert(iter->size() == 1);
     if (* iter > * iterTV)
@@ -243,15 +251,15 @@ void Strategies::collapseOnVoid()
   }
 
   // Copy it to the front and remove the others.
-  results.front() = * iterTV;
-  results.erase(next(results.begin()), results.end());
+  strategies.front() = * iterTV;
+  strategies.erase(next(strategies.begin()), strategies.end());
 }
 
 
 void Strategies::getLoopData(StratData& stratData)
 {
   auto siter = stratData.data.begin();
-  for (auto& strat: results)
+  for (auto& strat: strategies)
   {
     siter->ptr = &strat;
     siter->iter = strat.begin();
@@ -261,46 +269,29 @@ void Strategies::getLoopData(StratData& stratData)
 }
 
 
-unsigned Strategies::purge(const Strategy& constantsIn)
-{
-  // TODO Can perhaps be done inline.
-  // Returns number of distributions purged.
-  auto oldResults = results;
-  Strategies::reset();
-  unsigned num = 0;
-
-  for (auto& result: oldResults)
-  {
-    num = result.purge(constantsIn);
-    * this += result;
-  }
-  return num;
-}
-
-
 void Strategies::consolidate()
 {
   // TODO Can perhaps be done inline.
   // Would have to sort first (or last).
-  auto oldResults = results;
+  auto oldStrats = strategies;
   Strategies::reset();
 
-  for (auto& result: oldResults)
-    * this += result;
+  for (auto& strat: oldStrats)
+    * this += strat;
 }
 
 
 void Strategies::makeRanges()
 {
-  if (results.empty())
+  if (strategies.empty())
     return;
 
-  results.front().initRanges(ranges);
+  strategies.front().initRanges(ranges);
 
-  if (results.size() == 1)
+  if (strategies.size() == 1)
     return;
 
-  for (auto iter = next(results.begin()); iter != results.end(); iter++)
+  for (auto iter = next(strategies.begin()); iter != strategies.end(); iter++)
     iter->extendRanges(ranges);
 }
 
@@ -337,7 +328,7 @@ void Strategies::propagateRanges(const Strategies& child)
 
 void Strategies::purgeRanges(const Strategies& parent)
 {
-  for (auto iter = results.begin(); iter != results.end(); iter++)
+  for (auto iter = strategies.begin(); iter != strategies.end(); iter++)
     iter->purgeRanges(ranges, parent.ranges);
 }
 
@@ -379,7 +370,7 @@ void Strategies::addConstantWinners(Strategy& constantsIn) const
 {
   // We are now in a child node.
   // TODO Potentially make sub-classes of Node for Parent and Child.
-  for (auto& tv: results)
+  for (auto& tv: strategies)
     tv.addConstantWinners(constantsIn);
 }
 
@@ -388,7 +379,7 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-  for (auto& tv: results)
+  for (auto& tv: strategies)
     tv.adapt(play, survivors);
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
@@ -423,11 +414,11 @@ string Strategies::strHeader(
 
   ss << setw(4) << left << "Dist" << right;
 
-  for (unsigned i = 0; i < results.size(); i++)
+  for (unsigned i = 0; i < strategies.size(); i++)
     ss << setw(incr) << i;
   ss << "\n";
 
-  ss << string(4 + incr * results.size(), '-') << "\n";
+  ss << string(4 + incr * strategies.size(), '-') << "\n";
 
   return ss.str();
 }
@@ -438,9 +429,9 @@ string Strategies::strWeights(const bool rankFlag) const
   stringstream ss;
 
   const unsigned incr = (rankFlag ? 12 : 4);
-  ss << string(4 + incr * results.size(), '-') << "\n";
+  ss << string(4 + incr * strategies.size(), '-') << "\n";
   ss << setw(4) << "Wgt";
-  for (const auto& res: results)
+  for (const auto& res: strategies)
     ss << setw(incr) << res.weight();
   return ss.str() + "\n";
 }
@@ -450,7 +441,7 @@ string Strategies::str(
   const string& title,
   const bool rankFlag) const
 {
-  if (results.size() == 0)
+  if (strategies.size() == 0)
     return "";
 
   stringstream ss;
@@ -458,7 +449,7 @@ string Strategies::str(
 
   // Make a list of iterators -- one per Strategy.
   list<list<Result>::const_iterator> iters, itersEnd;
-  for (auto& res: results)
+  for (auto& res: strategies)
   {
     iters.push_back(res.begin());
     itersEnd.push_back(res.end());
