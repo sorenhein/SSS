@@ -117,29 +117,8 @@ list<Node>::const_iterator Nodes::end() const
 }
 
 
-void Nodes::makeRanges()
+void Nodes::removeNodes()
 {
-  for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->makeRanges();
-
-  for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->propagateRanges();
-}
-
-
-void Nodes::removeRanges()
-{
-  // For a given lead and a given distribution, let's say the range of
-  // outcomes for a given defensive strategy is (min, max).  Let's also
-  // say that the best global range is (MIN, MAX).  "Best" means it
-  // has the lowest MAX, and for a given MAX it has the lowest MIN.
-  // Then if MAX <= min and (max > min or MIN < MAX), the defenders will 
-  // never enter that strategy with that distribution, so it can be 
-  // removed from their options.
-
-  for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->purgeRanges();
-
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
@@ -156,8 +135,9 @@ void Nodes::removeRanges()
 
 void Nodes::strategizeDeclarer(const bool debugFlag)
 {
-  // Add to the corresponding parent node.
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
+
+  // Add to the corresponding parent node.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->add(LEVEL_PARD, debugFlag);
 }
@@ -181,8 +161,9 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 
 void Nodes::strategizeDefenders(const bool debugFlag)
 {
-  // Combine with the corresponding parent node by cross product.
   assert(level == LEVEL_RHO || level == LEVEL_LHO);
+
+  // Combine with the corresponding parent node by cross product.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->cross(level, debugFlag);
 }
@@ -196,12 +177,28 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // constant or dominated outcomes, propagate them to the parent nodes 
   // (which are may be nodesLead if partner is void; see Plays), and 
   // remove them from the parent nodes.
-  Nodes::makeRanges();
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
+    iter->makeRanges();
+    iter->propagateRanges();
+  }
 
-  // Remove the lead constants and dominated distributions from the 
-  // corresponding strategies.  Collect all strategies with a single 
-  // vector into an overall strategy.
-  Nodes::removeRanges();
+  // Remove constants into a separate strategy.
+  //
+  // Also, for a given lead and a given distribution, let's say the 
+  // range of outcomes for a given defensive strategy is (min, max).  
+  // Let's also say that the best global range is (MIN, MAX).  
+  // "Best" means it has the lowest MAX, and for a given MAX it has the 
+  // lowest MIN.
+  // Then if MAX <= min and (max > min or MIN < MAX), the defenders will 
+  // never enter that strategy with that distribution, so it can be 
+  // removed from their options.
+  // This has to be a separate loop, as all ranges have to propagate 
+  // up first.
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    iter->purgeRanges();
+
+  Nodes::removeNodes();
 
   if (debugFlag)
     cout << Nodes::strSimple();
@@ -209,7 +206,6 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // Combine the plays into an overall strategy for each lead.
   // Note that the results may end up in nodesLead due to the relinking.
   Nodes::strategizeDefenders(debugFlag);
-
 }
 
 

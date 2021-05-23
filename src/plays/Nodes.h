@@ -14,22 +14,18 @@ class Nodes
 {
   // Nodes are a collection of Node's with some information about
   // the Node's are hooked up.  Nodes knows its level (LHO, RHO, ...).
-  //
-  // For efficiency we don't add a new node every time log() is called.
-  // Instead we allocate chunks whenever we run out of space.
-  // begin() and end() only loop over the used part of the list.
 
-  struct ParentConstants
-  {
-    Node * parentPtr;
-    Strategy constants;
-  };
 
   private:
 
     Level level;
 
     list<Node> nodes;
+
+    // For efficiency we don't add a new node every time log() is called.
+    // Instead we allocate chunks whenever we run out of space.
+    // begin() and end() only loop over the used part of the list.
+    // The following variables are needed to keep track of this.
 
     list<Node>::iterator nextIter;
 
@@ -42,9 +38,7 @@ class Nodes
     unsigned chunkSize;
 
 
-    void makeRanges();
-
-    void removeRanges();
+    void removeNodes();
 
 
   public:
