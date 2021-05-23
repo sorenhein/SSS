@@ -40,8 +40,9 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
-    const Strategies& strategizeSimple(
-      const DebugPlay debugFlag = DEBUGPLAY_NONE);
+    void strategizeSimpleFront(const DebugPlay debugFlag);
+
+    void strategizeSimpleBack(const DebugPlay debugFlag);
 
     const Strategies& strategizeAdvanced(
       const DebugPlay debugFlag = DEBUGPLAY_NONE);

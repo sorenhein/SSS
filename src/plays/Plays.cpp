@@ -109,35 +109,17 @@ void Plays::getNextStrategies(
 }
 
 
-const Strategies& Plays::strategizeSimple(const DebugPlay debugFlag)
+void Plays::strategizeSimpleBack(const DebugPlay debugFlag)
 {
-  // The plays are propagated backwards up to a strategy for the
-  // entire trick.  When the defenders have the choice, strategies
-  // are "multiplied" together.  The math for this is shown in 
-  // the strategies/ files, but in general it creates more strategies
-  // and the rank choices are made to the opponents' advantage,
-  // so the defenders want to force declarer to use low ranks.
-  // The choice is at the level of each distribution.
-  // When declarer has the choice, the choice is at the level of
-  // overall strategies, and these are "added" together.  Again,
-  // the math is shown in the code, but the question is whether one
-  // strategy dominates another (taking more tricks for some
-  // distributions without taking fewer for others).
-  //
-  // This approach yields strategies where the defenders have 
-  // "too much" choice, because they get to act after seeing 
-  // declarer's plays up to that point.  Therefore the question is 
-  // going to be whether the defenders can hold declarer to these
-  // outcomes by spreading their probability mass well.
-  // This will be examined subsequently.
-
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+}
 
+
+void Plays::strategizeSimpleFront(const DebugPlay debugFlag)
+{
   nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
   nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-
-  return nodeMaster.strategies();
 }
 
 
@@ -183,32 +165,46 @@ const Strategies& Plays::strategize(
   Distribution const * distPtr,
   const DebugPlay debugFlag)
 {
+  // The plays are propagated backwards up to a strategy for the
+  // entire trick.  When the defenders have the choice, strategies
+  // are "multiplied" together.  The math for this is shown in 
+  // the strategies/ files, but in general it creates more strategies
+  // and the rank choices are made to the opponents' advantage,
+  // so the defenders want to force declarer to use low ranks.
+  // The choice is at the level of each distribution.
+  // When declarer has the choice, the choice is at the level of
+  // overall strategies, and these are "added" together.  Again,
+  // the math is shown in the code, but the question is whether one
+  // strategy dominates another (taking more tricks for some
+  // distributions without taking fewer for others).
+  //
+  // This approach yields strategies where the defenders have 
+  // "too much" choice, because they get to act after seeing 
+  // declarer's plays up to that point.  Therefore the question is 
+  // going to be whether the defenders can hold declarer to these
+  // outcomes by spreading their probability mass well.
+  // This will be examined subsequently.
+
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
   Plays::getNextStrategies(distPtr, debugFlag);
 
-  if (nodesRho.used() == nodesLho.used())
+  if (nodesRho.used() <= 20 ||
+     (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))
   {
-    // Partner is void.  Empirically it is a bit faster only to
-    // optimize when there is a large number of plays.
-    if (nodesRho.used() <= 30)
-    {
-      return Plays::strategizeSimple(debugFlag);
-    }
-    else
-    {
-      // Link RHO nodes directly with lead nodes, skipping partner and LHO.
-      for (auto& nodeRhoNew: nodesRho)
-        nodeRhoNew.linkRhoToLead();
-      
-      return Plays::strategizeVoid(debugFlag);
-    }
+    // Optimization is not used when the number of plays is low enough.
+    Plays::strategizeSimpleBack(debugFlag);
+    Plays::strategizeSimpleFront(debugFlag);
+    return nodeMaster.strategies();
   }
-  else if (nodesRho.used() <= 20)
+  else if (nodesRho.used() == nodesLho.used())
   {
-    // Same principle, slightly different threshold.
-    return Plays::strategizeSimple(debugFlag);
+    // Partner is void.  Link RHO nodes directly with lead nodes.
+    for (auto& nodeRhoNew: nodesRho)
+      nodeRhoNew.linkRhoToLead();
+    
+    return Plays::strategizeVoid(debugFlag);
   }
   else
   {
