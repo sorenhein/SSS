@@ -9,6 +9,10 @@
 
 #include "../Survivor.h"
 
+// TMP
+#include "../stats/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Strategies::Strategies()
 {
@@ -100,6 +104,7 @@ bool Strategies::operator == (const Strategies& strats2)
 
 void Strategies::operator += (const Strategy& strat)
 {
+timersStrat[1].start();
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
@@ -110,8 +115,11 @@ void Strategies::operator += (const Strategy& strat)
   while (iter != strategies.end() && iter->weight() > strat.weight())
   {
     if (iter->compare(strat) == COMPARE_GREATER_THAN)
+    {
+timersStrat[1].stop();
       // The new strat is dominated.
       return;
+    }
     else
       iter++;
   }
@@ -120,7 +128,10 @@ void Strategies::operator += (const Strategy& strat)
   {
     // They might be the same if they have the same weight.
     if (iter->compare(strat) == COMPARE_EQUAL)
+    {
+timersStrat[1].stop();
       return;
+    }
     else
       iter++;
   }
@@ -136,18 +147,22 @@ void Strategies::operator += (const Strategy& strat)
     else
       iter++;
   }
+timersStrat[1].stop();
 }
 
 
 void Strategies::operator += (const Strategies& strats2)
 {
+timersStrat[2].start();
   for (auto& strat2: strats2.strategies)
     * this += strat2;
+timersStrat[2].stop();
 }
 
 
 void Strategies::operator *= (const Strategy& strat)
 {
+timersStrat[3].start();
   if (strategies.empty())
     * this += strat;
   else
@@ -155,6 +170,7 @@ void Strategies::operator *= (const Strategy& strat)
     for (auto& strat1: strategies)
       strat1 *= strat;
   }
+timersStrat[3].stop();
 }
 
 
@@ -179,6 +195,7 @@ void Strategies::operator *= (const Strategies& strats2)
     return;
   }
 
+timersStrat[4].start();
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
   auto strategiesOwn = strategies;
@@ -194,6 +211,7 @@ void Strategies::operator *= (const Strategies& strats2)
       *this += stmp;
     }
   }
+timersStrat[4].stop();
 }
 
 
@@ -304,13 +322,16 @@ void Strategies::propagateRanges(const Strategies& child)
 
 void Strategies::purgeRanges(const Strategies& parent)
 {
+timersStrat[9].start();
   for (auto& strat: strategies)
     strat.purgeRanges(ranges, parent.ranges);
+timersStrat[9].stop();
 }
 
 
 void Strategies::getConstants(Strategy& constants) const
 {
+timersStrat[10].start();
   // This is called for the parent and does not set the winners.
   // TODO It is not very efficient.
   vector<unsigned> distributions(ranges.size());
@@ -331,6 +352,7 @@ void Strategies::getConstants(Strategy& constants) const
   tricks.resize(i);
 
   constants.log(distributions, tricks);
+timersStrat[10].stop();
 }
 
 
@@ -342,6 +364,7 @@ const Ranges& Strategies::getRanges() const
 
 void Strategies::consolidate()
 {
+timersStrat[11].start();
   // TODO Can perhaps be done inline.
   // Would have to sort first (or last).
   auto oldStrats = strategies;
@@ -349,6 +372,7 @@ void Strategies::consolidate()
 
   for (auto& strat: oldStrats)
     * this += strat;
+timersStrat[11].stop();
 }
 
 
@@ -356,11 +380,13 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
+timersStrat[12].start();
   for (auto& strat: strategies)
     strat.adapt(play, survivors);
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
+timersStrat[12].stop();
 }
 
 

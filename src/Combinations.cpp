@@ -14,7 +14,7 @@
 
 // TMP
 #include "stats/Timer.h"
-vector<Timer> timers1, timers2;
+vector<Timer> timersStrat;
 
 
 // http://oeis.org/A051450
@@ -59,8 +59,7 @@ void Combinations::reset()
   playCounts.clear();
   stratCounts.clear();
 
-  timers1.clear();
-  timers2.clear();
+  timersStrat.clear();
 }
 
 
@@ -95,8 +94,7 @@ void Combinations::resize(const unsigned maxCardsIn)
     stratCounts[cards].reset();
   }
 
-  timers1.resize(100);
-  timers2.resize(100);
+  timersStrat.resize(20);
 }
 
 
@@ -231,46 +229,20 @@ UNUSED(distributions);
   }
 
   // TMP Print timers
-  cout << "Play timers\n";
-  Timer sum1, sum2;
-  vector<Timer> decades1(10), decades2(10);
-  for (unsigned i = 0; i < 100; i++)
+  cout << "Strat timers\n";
+  Timer sum;
+  for (unsigned i = 0; i < timersStrat.size(); i++)
   {
-    string s = timers1[i].str(2);
+    string s = timersStrat[i].str(2);
     if (s == "")
       continue;
     s = s.substr(0, s.size()-1);
-    cout << setw(4) << i << s << timers2[i].str(2);
-    sum1 += timers1[i];
-    sum2 += timers2[i];
-    decades1[i / 10] += timers1[i];
-    decades2[i / 10] += timers2[i];
+    sum += timersStrat[i];
+    cout << setw(4) << i << s << "\n";
   }
-  cout << "---\n";
-  string s = sum1.str();
-  s = s.substr(0, s.size()-1);
-  cout << setw(4) << "Sum" << s << sum2.str() << "\n";
+  cout << "------------------------------\n";
+  cout << setw(4) << "" << sum.str(2) << endl;
 
-  cout << "Decades\n";
-  for (unsigned j = 0; j < 10; j++)
-  {
-    s = decades1[j].str(2);
-    if (s == "")
-      continue;
-    s = s.substr(0, s.size()-1);
-    cout << setw(4) << 10*j << s << decades2[j].str(2);
-  }
-
-  /*
-  cout << "\nNew\n";
-  for (unsigned i = 0; i < 100; i++)
-  {
-    string s = timers1[i].str(2);
-    if (s == "")
-      continue;
-    cout << setw(2) << i << s;
-  }
-  */
 }
 
 

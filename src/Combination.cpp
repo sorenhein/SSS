@@ -16,7 +16,6 @@
 
 // TMP
 #include "stats/Timer.h"
-extern vector<Timer> timers1, timers2;
 
 
 Combination::Combination()
