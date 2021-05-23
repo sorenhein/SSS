@@ -205,11 +205,15 @@ void Plays::strategizeVoid(
   Plays::getStrategies(distPtr, debugFlag);
 
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("before void collapses");
+    cout << Plays::strNodeCounts("Void node counts");
 
-  if (debugFlag & DEBUGPLAY_NODE_COUNTS)
-    cout << Plays::strNodeCounts("after void collapses");
+  nodesLho.strategizeDefendersAdvanced(
+    (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
+  nodesLead.strategizeDeclarerAdvanced(
+    (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+
+/*
   // Derive bounds on RHO outcomes for each lead in order to find
   // constant outcomes, propagate them to the parent nodes (which are 
   // nodesLead in this case), and remove them from the parent nodes.
@@ -238,6 +242,7 @@ void Plays::strategizeVoid(
 
   // Combine the lead strategies into an overall strategy.
   nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+*/
 
   strategies = nodeMaster.strategies();
 

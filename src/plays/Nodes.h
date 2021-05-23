@@ -42,17 +42,9 @@ class Nodes
     unsigned chunkSize;
 
 
-    void makeBoundsSubset(
-      list<ParentConstants>& parents,
-      const bool debugFlag);
+    void makeRanges();
 
-    void removeConstants(const bool debugFlag);
-
-    void makeRanges(const bool debugFlag);
-
-    void removeRanges(const bool debugFlag);
-
-    void removeDominatedDefenses(const bool debugFlag);
+    void removeRanges();
 
 
   public:
@@ -79,10 +71,6 @@ class Nodes
 
     list<Node>::const_iterator begin() const;
     list<Node>::const_iterator end() const;
-
-    void makeBounds(const bool debugFlag);
-
-    void extractSimpleStrategies(const bool debugFlag);
 
     void strategizeDeclarer(const bool debugFlag);
     void strategizeDeclarerAdvanced(const bool debugFlag);
