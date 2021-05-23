@@ -42,8 +42,6 @@ class Plays
 
     void strategizeSimpleFront(const DebugPlay debugFlag);
     void strategizeSimpleBack(const DebugPlay debugFlag);
-    void strategizeAdvanced(const DebugPlay debugFlag);
-    void strategizeVoid(const DebugPlay debugFlag);
 
     string strNodeCounts(const string& title = "") const;
 

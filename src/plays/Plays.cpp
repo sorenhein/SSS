@@ -123,30 +123,6 @@ void Plays::strategizeSimpleFront(const DebugPlay debugFlag)
 }
 
 
-void Plays::strategizeAdvanced(const DebugPlay debugFlag)
-{
-  nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
-
-  // Here we deal separately with constants and dominated plays.
-  nodesLho.strategizeDefendersAdvanced(
-    (debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
-
-  nodesLead.strategizeDeclarerAdvanced(
-    (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-}
-
-
-void Plays::strategizeVoid(const DebugPlay debugFlag)
-{
-  nodesRho.strategizeDefendersAdvanced(
-    (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-
-  nodesLead.strategizeDeclarerAdvanced(
-    (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-}
-
-
 const Strategies& Plays::strategize(
   Distribution const * distPtr,
   const DebugPlay debugFlag)
@@ -194,11 +170,22 @@ const Strategies& Plays::strategize(
     for (auto& nodeRhoNew: nodesRho)
       nodeRhoNew.linkRhoToLead();
     
-    Plays::strategizeVoid(debugFlag);
+    nodesRho.strategizeDefendersAdvanced(
+      (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
+
+    nodesLead.strategizeDeclarerAdvanced(
+      (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
   else
   {
-    Plays::strategizeAdvanced(debugFlag);
+    Plays::strategizeSimpleBack(debugFlag);
+
+    // Here we deal separately with constants and dominated plays.
+    nodesLho.strategizeDefendersAdvanced(
+      (debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
+
+    nodesLead.strategizeDeclarerAdvanced(
+      (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
 
   return nodeMaster.strategies();
