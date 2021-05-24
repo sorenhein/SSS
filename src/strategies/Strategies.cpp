@@ -168,9 +168,17 @@ void Strategies::markChanges(
   for (auto& strat: strats2.strategies)
   {
     auto iter = strategies.begin();
+    unsigned stratNo = 0;
     bool doneFlag = false;
     while (iter != strategies.end() && iter->weight() >= strat.weight())
     {
+      if (ownDeletions[stratNo])
+      {
+        iter++;
+        stratNo++;
+        continue;
+      }
+
       const auto c = iter->compare(strat);
       if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
       {
@@ -178,7 +186,10 @@ void Strategies::markChanges(
         break;
       }
       else
+      {
         iter++;
+        stratNo++;
+      }
     }
 
     if (doneFlag)
@@ -195,14 +206,14 @@ void Strategies::markChanges(
     {
       if (strat > * iter)
       {
-        const unsigned d = distance(strategies.begin(), iter);
-        if (ownDeletions[d] == 0)
+        if (ownDeletions[stratNo] == 0)
         {
           deletions.push_back(iter);
-          ownDeletions[d] = 1;
+          ownDeletions[stratNo] = 1;
         }
       }
       iter++;
+      stratNo++;
     }
   }
 }
@@ -238,59 +249,46 @@ void Strategies::operator += (const Strategies& strats2)
     * this = strats2;
     return;
   }
-  else if (strategies.size() == 1 && strats2.size() == 1)
+
+  const unsigned sno1 = strategies.size();
+  const unsigned sno2 = strats2.size();
+
+  if (sno1 == 1 && sno2 == 1)
   {
+    // Simplified case.
     Strategies::plusOneByOne(strats2);
-    return;
   }
+  else if (sno1 >= 20 && sno2 >= 20)
+  {
+    // Complex case.
 
-  // TMP New way
-  Strategies stmp = * this;
-
-  // unsigned sthis = strategies.size();
-  // unsigned sother = strats2.size();
-
-
-// Timer timer1, timer2;
 timersStrat[2].start();
-// timer1.start();
-  for (auto& strat2: strats2.strategies)
-    * this += strat2;
-// timer1.stop();
+
+    list<Addition> additions;
+    list<list<Strategy>::const_iterator> deletions;
+
+    Strategies::markChanges(strats2, additions, deletions);
+
+    for (auto& addition: additions)
+      strategies.insert(addition.iter, *(addition.ptr));
+
+    for (auto& deletion: deletions)
+      strategies.erase(deletion);
+
 timersStrat[2].stop();
+  }
+  else
+  {
+    // General case.
 
-
-timersStrat[18].start();
-
-// timer2.start();
-  list<Addition> additions;
-  list<list<Strategy>::const_iterator> deletions;
-
-  stmp.markChanges(strats2, additions, deletions);
-
-  for (auto& a: additions)
-    stmp.strategies.insert(a.iter, *(a.ptr));
-
-  for (auto& d: deletions)
-    stmp.strategies.erase(d);
-// timer2.stop();
-
-// cout << "TIMER " << sthis << " " << sother << endl;
-// cout << timer1.str(3);
-// cout << timer2.str(3);
-
-
-timersStrat[18].stop();
-
-assert(* this == stmp);
-
-
+    for (auto& strat2: strats2.strategies)
+      * this += strat2;
+  }
 }
 
 
 void Strategies::operator *= (const Strategy& strat)
 {
-timersStrat[3].start();
   if (strategies.empty())
     * this += strat;
   else
@@ -298,7 +296,6 @@ timersStrat[3].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
   }
-timersStrat[3].stop();
 }
 
 
@@ -323,7 +320,7 @@ void Strategies::operator *= (const Strategies& strats2)
     return;
   }
 
-timersStrat[4].start();
+timersStrat[3].start();
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
   auto strategiesOwn = strategies;
@@ -339,7 +336,7 @@ timersStrat[4].start();
       *this += stmp;
     }
   }
-timersStrat[4].stop();
+timersStrat[3].stop();
 }
 
 
