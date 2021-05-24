@@ -1,3 +1,28 @@
+2021-05-23
+----------
+Ideas for speeding up Strategies
+
++=
+* Allocate space in one large step if possible, not many small ones
+* Something in between each-distribution and weight
+  - Maybe sqrt(#) buckets, even distributed
+  - Or evenly spaced
+  - Or based on distributions derived from the specific Strategies
+  - Do a rough comparison first
+* Organization
+  - Histogram of vector weights, each bucket containing a list
+* In +=
+  - First check for equality
+    If it works, we're done
+  - Then check whether we're dominated by something
+    If yes, we're done
+  - Add ourselves to the histogram
+  - Then check whether we dominate something
+    If yes, remove it
+
+Why are Strategies::purgeRanges and getConstants never called?!
+
+
 2021-05-09
 ----------
 10 / 41388: 9 - 8 - void - J: getStrategies are not in descending
@@ -212,16 +237,6 @@ Improve *= efficiency
   weakest group in order to fail quickly
 - == first uses the hash and then individually
 - > uses the prioritized groups and then individually
-* Organization
-  - Histogram of vector weights, each bucket containing a list
-* In +=
-  - First check for equality
-    If it works, we're done
-  - Then check whether we're dominated by something
-    If yes, we're done
-  - Add ourselves to the histogram
-  - Then check whether we dominate something
-    If yes, remove it
 * In *=
   - Start with the largest times one vector
   - organize() each vector with a list, maybe co-prime "hash"

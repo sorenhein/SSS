@@ -153,10 +153,106 @@ timersStrat[1].stop();
 
 void Strategies::operator += (const Strategies& strats2)
 {
+  if (strategies.empty())
+  {
+    * this = strats2;
+    return;
+  }
+
+  // TMP New way
+  Strategies stmp = * this;
+  Strategies sold = * this;
+
+
 timersStrat[2].start();
   for (auto& strat2: strats2.strategies)
     * this += strat2;
 timersStrat[2].stop();
+
+
+  struct Addition
+  {
+    Strategy const * ptr;
+    list<Strategy>::iterator iter;
+  };
+
+timersStrat[18].start();
+
+  list<Addition> additions;
+  list<list<Strategy>::iterator> deletions;
+  vector<unsigned> delnos(stmp.size(), 0);
+
+  for (auto& strat: strats2.strategies)
+  {
+    auto iter = stmp.strategies.begin();
+    unsigned sno = 0;
+
+    bool doneFlag = false;
+    while (iter != stmp.strategies.end() && 
+        iter->weight() >= strat.weight())
+    {
+      const auto c = iter->compare(strat);
+      if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
+      {
+        doneFlag = true;
+        break;
+      }
+      else
+      {
+        iter++;
+        sno++;
+      }
+    }
+
+    if (doneFlag)
+      continue;
+
+    // Note for insertion.
+    additions.emplace_back(Addition());
+    auto& a = additions.back();
+    a.ptr = &strat;
+    a.iter = iter;
+
+    // The new vector may dominate lighter vectors.
+    while (iter != stmp.strategies.end())
+    {
+      if (strat > * iter)
+      {
+        if (delnos[sno] == 0)
+        {
+        deletions.push_back(iter);
+        delnos[sno] = 1;
+        }
+      }
+
+      iter++;
+      sno++;
+    }
+  }
+
+  for (auto& a: additions)
+  {
+    stmp.strategies.insert(a.iter, *(a.ptr));
+  }
+
+  for (auto& d: deletions)
+    stmp.strategies.erase(d);
+
+
+timersStrat[18].stop();
+
+/*
+if (!(* this == stmp))
+{
+  cout << sold.str("Original", true);
+  cout << strats2.str("Adding", true);
+  cout << Strategies::str("Correct", true);
+  cout << stmp.str("Wrong", true) << endl;
+}
+*/
+
+assert(* this == stmp);
+
 }
 
 
