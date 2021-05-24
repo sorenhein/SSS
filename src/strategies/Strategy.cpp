@@ -104,8 +104,7 @@ bool Strategy::operator == (const Strategy& tv2) const
 
 bool Strategy::operator >= (const Strategy& tv2) const
 {
-  const unsigned n = results.size();
-  assert(tv2.results.size() == n);
+  assert(tv2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = tv2.results.cbegin();

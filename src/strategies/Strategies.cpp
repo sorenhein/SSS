@@ -179,8 +179,7 @@ void Strategies::markChanges(
         continue;
       }
 
-      const auto c = iter->compare(strat);
-      if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
+      if (* iter >= strat)
       {
         doneFlag = true;
         break;

@@ -18,19 +18,16 @@ struct Result
 
   bool operator < (const Result& res2) const
   {
-    assert(dist == res2.dist);
     return(tricks < res2.tricks);
   }
 
   bool operator != (const Result& res2) const
   {
-    assert(dist == res2.dist);
     return(tricks != res2.tricks);
   }
 
   bool operator > (const Result& res2) const
   {
-    assert(dist == res2.dist);
     return(tricks > res2.tricks);
   }
 
