@@ -20,6 +20,13 @@ using namespace std;
 class Strategies
 {
   private:
+    
+    struct Addition
+    {
+      Strategy const * ptr;
+      list<Strategy>::const_iterator iter;
+    };
+
 
     list<Strategy> strategies;
 
@@ -28,6 +35,11 @@ class Strategies
 
     bool sameOrdered(const Strategies& strats2);
     bool sameUnordered(const Strategies& strats2);
+
+    void markChanges(
+      const Strategies& strats2,
+      list<Addition>& additions,
+      list<list<Strategy>::const_iterator>& deletions) const;
 
     void collapseOnVoid();
 

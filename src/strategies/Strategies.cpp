@@ -151,6 +151,63 @@ timersStrat[1].stop();
 }
 
 
+void Strategies::markChanges(
+  const Strategies& strats2,
+  list<Addition>& additions,
+  list<list<Strategy>::const_iterator>& deletions) const
+{
+  // The simple Strategies += Strategies adds an individual strategy
+  // to the LHS if it is not dominated.  Then the following
+  // strategies from the RHS are also compared to this, but we already
+  // know that there is no point.  This is a more complicated way
+  // to do the comparisons up front between all LHS and RHS pairs,
+  // but only updating LHS at the end.
+
+  vector<unsigned> ownDeletions(strategies.size(), 0);
+
+  for (auto& strat: strats2.strategies)
+  {
+    auto iter = strategies.begin();
+    bool doneFlag = false;
+    while (iter != strategies.end() && iter->weight() >= strat.weight())
+    {
+      const auto c = iter->compare(strat);
+      if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
+      {
+        doneFlag = true;
+        break;
+      }
+      else
+        iter++;
+    }
+
+    if (doneFlag)
+      continue;
+
+    // Note for insertion.
+    additions.emplace_back(Addition());
+    auto& addition = additions.back();
+    addition.ptr = &strat;
+    addition.iter = iter;
+
+    // The new vector may dominate lighter vectors.
+    while (iter != strategies.end())
+    {
+      if (strat > * iter)
+      {
+        const unsigned d = distance(strategies.begin(), iter);
+        if (ownDeletions[d] == 0)
+        {
+          deletions.push_back(iter);
+          ownDeletions[d] = 1;
+        }
+      }
+      iter++;
+    }
+  }
+}
+
+
 void Strategies::operator += (const Strategies& strats2)
 {
   if (strategies.empty())
@@ -161,7 +218,6 @@ void Strategies::operator += (const Strategies& strats2)
 
   // TMP New way
   Strategies stmp = * this;
-  Strategies sold = * this;
 
 
 timersStrat[2].start();
@@ -170,86 +226,21 @@ timersStrat[2].start();
 timersStrat[2].stop();
 
 
-  struct Addition
-  {
-    Strategy const * ptr;
-    list<Strategy>::iterator iter;
-  };
-
 timersStrat[18].start();
 
   list<Addition> additions;
-  list<list<Strategy>::iterator> deletions;
-  vector<unsigned> delnos(stmp.size(), 0);
+  list<list<Strategy>::const_iterator> deletions;
 
-  for (auto& strat: strats2.strategies)
-  {
-    auto iter = stmp.strategies.begin();
-    unsigned sno = 0;
-
-    bool doneFlag = false;
-    while (iter != stmp.strategies.end() && 
-        iter->weight() >= strat.weight())
-    {
-      const auto c = iter->compare(strat);
-      if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
-      {
-        doneFlag = true;
-        break;
-      }
-      else
-      {
-        iter++;
-        sno++;
-      }
-    }
-
-    if (doneFlag)
-      continue;
-
-    // Note for insertion.
-    additions.emplace_back(Addition());
-    auto& a = additions.back();
-    a.ptr = &strat;
-    a.iter = iter;
-
-    // The new vector may dominate lighter vectors.
-    while (iter != stmp.strategies.end())
-    {
-      if (strat > * iter)
-      {
-        if (delnos[sno] == 0)
-        {
-        deletions.push_back(iter);
-        delnos[sno] = 1;
-        }
-      }
-
-      iter++;
-      sno++;
-    }
-  }
+  stmp.markChanges(strats2, additions, deletions);
 
   for (auto& a: additions)
-  {
     stmp.strategies.insert(a.iter, *(a.ptr));
-  }
 
   for (auto& d: deletions)
     stmp.strategies.erase(d);
 
 
 timersStrat[18].stop();
-
-/*
-if (!(* this == stmp))
-{
-  cout << sold.str("Original", true);
-  cout << strats2.str("Adding", true);
-  cout << Strategies::str("Correct", true);
-  cout << stmp.str("Wrong", true) << endl;
-}
-*/
 
 assert(* this == stmp);
 
