@@ -110,25 +110,11 @@ timersStrat[1].start();
   // can only be dominated by a Strategy with at least its own weight.
   
   auto iter = strategies.begin();
-
-  // strat cannot beat anything with a higher weight.
-  while (iter != strategies.end() && iter->weight() > strat.weight())
+  while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
-    if (iter->compare(strat) == COMPARE_GREATER_THAN)
+    if (* iter >= strat)
     {
-timersStrat[1].stop();
       // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
-
-  while (iter != strategies.end() && iter->weight() == strat.weight())
-  {
-    // They might be the same if they have the same weight.
-    if (iter->compare(strat) == COMPARE_EQUAL)
-    {
 timersStrat[1].stop();
       return;
     }
