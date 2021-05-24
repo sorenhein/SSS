@@ -208,6 +208,29 @@ void Strategies::markChanges(
 }
 
 
+void Strategies::plusOneByOne(const Strategies& strats2)
+{
+  // Simple version when both Strategies are known to have size 1,
+  // as happens very frequently.
+
+  auto& str1 = strategies.front();
+  auto& str2 = strats2.strategies.front();
+  const auto c = str1.compare(str2);
+
+  if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
+    return;
+  else if (c == COMPARE_LESS_THAN)
+    * this = strats2;
+  else
+  {
+    if (str1.weight() >= str2.weight())
+      strategies.push_back(str2);
+    else
+      strategies.push_front(str2);
+  }
+}
+
+
 void Strategies::operator += (const Strategies& strats2)
 {
   if (strategies.empty())
@@ -215,19 +238,31 @@ void Strategies::operator += (const Strategies& strats2)
     * this = strats2;
     return;
   }
+  else if (strategies.size() == 1 && strats2.size() == 1)
+  {
+    Strategies::plusOneByOne(strats2);
+    return;
+  }
 
   // TMP New way
   Strategies stmp = * this;
 
+  // unsigned sthis = strategies.size();
+  // unsigned sother = strats2.size();
 
+
+// Timer timer1, timer2;
 timersStrat[2].start();
+// timer1.start();
   for (auto& strat2: strats2.strategies)
     * this += strat2;
+// timer1.stop();
 timersStrat[2].stop();
 
 
 timersStrat[18].start();
 
+// timer2.start();
   list<Addition> additions;
   list<list<Strategy>::const_iterator> deletions;
 
@@ -238,11 +273,17 @@ timersStrat[18].start();
 
   for (auto& d: deletions)
     stmp.strategies.erase(d);
+// timer2.stop();
+
+// cout << "TIMER " << sthis << " " << sother << endl;
+// cout << timer1.str(3);
+// cout << timer2.str(3);
 
 
 timersStrat[18].stop();
 
 assert(* this == stmp);
+
 
 }
 

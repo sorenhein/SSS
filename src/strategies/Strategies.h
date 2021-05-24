@@ -36,6 +36,8 @@ class Strategies
     bool sameOrdered(const Strategies& strats2);
     bool sameUnordered(const Strategies& strats2);
 
+    void plusOneByOne(const Strategies& strats2);
+
     void markChanges(
       const Strategies& strats2,
       list<Addition>& additions,
