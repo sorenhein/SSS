@@ -9,6 +9,10 @@
 
 #include "../Survivor.h"
 
+// TMP
+#include "../stats/Timer.h"
+extern vector<Timer> timersStrat;
+
 // TODO Dominance can probably be implemented more efficiently.
 // For example the "weight" (sum of all trick counts) indicates
 // whether one vector can dominate another or not.  This can be
@@ -32,6 +36,9 @@ void Strategy::reset()
 {
   results.clear();
   weightInt = 0;
+
+  summary.clear();
+  studiedFlag = false;
 }
 
 
@@ -82,8 +89,81 @@ void Strategy::log(
 }
 
 
+unsigned Strategy::numGroups() const
+{
+  if (results.empty())
+    return 0;
+
+  // May be 1.
+  return static_cast<unsigned>(sqrt(static_cast<float>(results.size())));
+}
+
+
+void Strategy::study(const unsigned groups)
+{
+  if (groups == 0)
+  {
+    if (! studiedFlag)
+    {
+      assert(! studiedFlag);
+    }
+    return;
+  }
+
+  // May already be studied?  Don't redo?
+
+vector<unsigned> copy;
+if (studiedFlag)
+{
+  assert(summary.size() == groups);
+  copy = summary;
+}
+
+  summary.clear();
+  summary.resize(groups);
+
+  unsigned i = 0;
+  for (auto& result: results)
+  {
+    summary[i % groups] += result.tricks;
+    i++;
+  }
+  studiedFlag = true;
+
+if (! copy.empty())
+{
+  for (i = 0; i < summary.size(); i++)
+  {
+    if (summary[i] != copy[i])
+    {
+      assert(false);
+    }
+  }
+}
+
+}
+
+
+void Strategy::restudy()
+{
+  const unsigned groups = Strategy::numGroups();
+
+  summary.clear();
+  summary.resize(groups);
+
+  unsigned i = 0;
+  for (auto& result: results)
+  {
+    summary[i % groups] += result.tricks;
+    i++;
+  }
+  studiedFlag = true;
+}
+
+
 bool Strategy::operator == (const Strategy& tv2) const
 {
+// timersStrat[11].start();
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
@@ -93,17 +173,43 @@ bool Strategy::operator == (const Strategy& tv2) const
   while (iter1 != results.end())
   {
     if (* iter1 != * iter2)
+{
+// timersStrat[11].stop();
       return false;
+}
 
     iter1++;
     iter2++;
   }
+// timersStrat[11].stop();
   return true;
+}
+
+
+bool Strategy::greaterEqual(const Strategy& strat2) const
+{
+  if (studiedFlag)
+  {
+    for (unsigned i = 0; i < summary.size(); i++)
+    {
+      if (summary[i] < strat2.summary[i])
+        return false;
+    }
+  }
+  else
+  {
+    // At least 2 groups?
+    assert(results.size() < 4);
+  }
+  
+  // Do the full comparison.
+  return (* this >= strat2);
 }
 
 
 bool Strategy::operator >= (const Strategy& tv2) const
 {
+// timersStrat[12].start();
   assert(tv2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
@@ -112,17 +218,22 @@ bool Strategy::operator >= (const Strategy& tv2) const
   while (iter1 != results.end())
   {
     if (* iter1 < * iter2)
+{
+// timersStrat[12].stop();
       return false;
+}
 
     iter1++;
     iter2++;
   }
+// timersStrat[12].stop();
   return true;
 }
 
 
 bool Strategy::operator > (const Strategy& tv2) const
 {
+// timersStrat[13].start();
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
@@ -133,13 +244,17 @@ bool Strategy::operator > (const Strategy& tv2) const
   while (iter1 != results.end())
   {
     if (* iter1 < * iter2)
+    {
+// timersStrat[13].stop();
       return false;
+    }
     else if (* iter1 > * iter2)
       greaterFlag = true;
 
     iter1++;
     iter2++;
   }
+// timersStrat[13].stop();
   return greaterFlag;
 }
 
@@ -148,6 +263,7 @@ Compare Strategy::compare(const Strategy& tv2) const
 {
   // Returns COMPARE_LESS_THAN if *this < tv2.
 
+// timersStrat[14].start();
   const unsigned n = results.size();
   assert(tv2.results.size() == n);
 
@@ -165,16 +281,25 @@ Compare Strategy::compare(const Strategy& tv2) const
       possibleGT = false;
     
     if (! possibleLT && ! possibleGT)
+    {
+// timersStrat[14].stop();
       return COMPARE_INCOMMENSURATE;
+    }
 
     iter1++;
     iter2++;
   }
 
   if (possibleLT)
+  {
+// timersStrat[14].stop();
     return (possibleGT ? COMPARE_EQUAL : COMPARE_LESS_THAN);
+  }
   else
+  {
+// timersStrat[14].stop();
     return COMPARE_GREATER_THAN;
+  }
 }
 
 
@@ -182,6 +307,7 @@ void Strategy::operator *=(const Strategy& tv2)
 {
   // Here we don't have to have the same length or distributions.
   
+// timersStrat[15].start();
   auto iter1 = results.begin();
   auto iter2 = tv2.results.begin();
 
@@ -215,11 +341,16 @@ void Strategy::operator *=(const Strategy& tv2)
       iter2++;
     }
   }
+
+  Strategy::restudy();
+
+// timersStrat[15].stop();
 }
 
 
 void Strategy::initRanges(Ranges& ranges)
 {
+// timersStrat[16].start();
   ranges.resize(results.size());
   auto iter = results.begin();
   auto riter = ranges.begin();
@@ -231,6 +362,7 @@ void Strategy::initRanges(Ranges& ranges)
     riter->upper = iter->tricks;
     riter->minimum = iter->tricks;
   }
+// timersStrat[16].stop();
 }
 
 
@@ -378,6 +510,7 @@ void Strategy::adapt(
   const Play& play,
   const Survivors& survivors)
 {
+// timersStrat[17].start();
   // Our Strategy results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
   // parent combination.
@@ -439,6 +572,9 @@ void Strategy::adapt(
     // This is the general case.
     Strategy::updateAndGrow(survivors, play.trickNS);
   }
+
+  Strategy::restudy();
+// timersStrat[17].stop();
 }
 
 
@@ -480,5 +616,17 @@ string Strategy::str(const string& title) const
       setw(6) << res.tricks << "\n";
 
   return ss.str();
+}
+
+
+bool Strategy::isStudiedTMP() const
+{
+  return studiedFlag;
+}
+
+
+unsigned Strategy::studyParameter() const
+{
+  return summary.size();
 }
 

@@ -1,6 +1,7 @@
 #ifndef SSS_STRATEGY_H
 #define SSS_STRATEGY_H
 
+#include <vector>
 #include <list>
 #include <string>
 
@@ -28,6 +29,10 @@ class Strategy
 
     list<Result> results;
     unsigned weightInt;
+
+    // Used for faster comparisons on average.
+    vector<unsigned> summary;
+    bool studiedFlag;
 
 
     void updateSingle(
@@ -71,9 +76,16 @@ class Strategy
       const vector<unsigned>& distributions,
       const vector<unsigned>& tricks);
 
+    unsigned numGroups() const;
+
+    void study(const unsigned groups);
+    void restudy();
+
     bool operator == (const Strategy& tv2) const;
     bool operator >= (const Strategy& tv2) const;
     bool operator > (const Strategy& tv2) const;
+
+    bool greaterEqual(const Strategy& strat2) const;
 
     Compare compare(const Strategy& tv2) const;
 
@@ -100,6 +112,9 @@ class Strategy
     void checkWeights() const;
 
     string str(const string& title = "") const;
+
+    bool isStudiedTMP() const;
+    unsigned studyParameter() const;
 };
 
 #endif

@@ -91,6 +91,20 @@ bool Strategies::sameUnordered(const Strategies& strats2)
 }
 
 
+void Strategies::study()
+{
+  if (strategies.empty())
+    return;
+
+  const unsigned groups = strategies.front().numGroups();
+  if (groups <= 1)
+    return;
+
+  for (auto& strategy: strategies)
+    strategy.study(groups);
+}
+
+
 bool Strategies::operator == (const Strategies& strats2)
 {
   if (Strategies::size() != strats2.size())
@@ -104,18 +118,37 @@ bool Strategies::operator == (const Strategies& strats2)
 
 void Strategies::operator += (const Strategy& strat)
 {
-timersStrat[1].start();
+timersStrat[0].start();
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   
+  if (strategies.empty())
+  {
+    strategies.push_back(strat);
+    Strategies::study();
+    return;
+  }
+
+if (Strategies::studyParameter() > 0 && 
+    strat.studyParameter() != Strategies::studyParameter())
+{
+  cout << "Study mismatch in Strategies += Strategy" << endl;
+  assert(false);
+}
+
   auto iter = strategies.begin();
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
+
+bool bright = (* iter >= strat);
+bool balt = iter->greaterEqual(strat);
+assert(bright == balt);
+
     if (* iter >= strat)
     {
       // The new strat is dominated.
-timersStrat[1].stop();
+timersStrat[0].stop();
       return;
     }
     else
@@ -133,7 +166,7 @@ timersStrat[1].stop();
     else
       iter++;
   }
-timersStrat[1].stop();
+timersStrat[0].stop();
 }
 
 
@@ -165,7 +198,7 @@ void Strategies::markChanges(
         continue;
       }
 
-      if (* iter >= strat)
+      if (iter->greaterEqual(strat))
       {
         doneFlag = true;
         break;
@@ -247,7 +280,7 @@ void Strategies::operator += (const Strategies& strats2)
   {
     // Complex case.
 
-timersStrat[2].start();
+timersStrat[1].start();
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
@@ -260,7 +293,7 @@ timersStrat[2].start();
     for (auto& deletion: deletions)
       strategies.erase(deletion);
 
-timersStrat[2].stop();
+timersStrat[1].stop();
   }
   else
   {
@@ -278,9 +311,16 @@ void Strategies::operator *= (const Strategy& strat)
     * this += strat;
   else
   {
+timersStrat[7].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
+timersStrat[7].stop();
   }
+
+// TMP Just to check
+// cout << "Checking at end of Strategies *= Strategy" << endl;
+Strategies::study();
+// cout << "Checked" << endl;
 }
 
 
@@ -288,24 +328,36 @@ void Strategies::operator *= (const Strategies& strats2)
 {
   const unsigned len2 = strats2.strategies.size();
   if (len2 == 0)
+  {
     // Keep the current results.
+// cout << "Checking at beginning of Strategies *= Strategies" << endl;
+Strategies::study();
+// cout << "Checked" << endl;
     return;
+  }
 
   const unsigned len1 = strategies.size();
   if (len1 == 0)
   {
     // Keep the new results.
     strategies = strats2.strategies;
+// cout << "Checking at mid1 of Strategies *= Strategies" << endl;
+Strategies::study();
+// cout << "Checked" << endl;
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
     strategies.front() *= strats2.strategies.front();
+    // Strategies::study();
+// cout << "Checking at mid2 of Strategies *= Strategies" << endl;
+Strategies::study();
+// cout << "Checked" << endl;
     return;
   }
 
-timersStrat[3].start();
+timersStrat[2].start();
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
   auto strategiesOwn = strategies;
@@ -318,10 +370,16 @@ timersStrat[3].start();
     {
       stmp = strat1;
       stmp *= strat2;
+      stmp.study(Strategies::studyParameter());
       *this += stmp;
     }
   }
-timersStrat[3].stop();
+timersStrat[2].stop();
+
+// TMP Just to check
+// cout << "Checking at end of Strategies *= Strategies" << endl;
+Strategies::study();
+// cout << "Checked" << endl;
 }
 
 
@@ -337,6 +395,15 @@ unsigned Strategies::numDists() const
     return 0;
   else
     return strategies.front().size();
+}
+
+
+unsigned Strategies::studyParameter() const
+{
+  if (strategies.empty())
+    return 0;
+
+  return strategies.front().studyParameter();
 }
 
 
@@ -432,16 +499,16 @@ void Strategies::propagateRanges(const Strategies& child)
 
 void Strategies::purgeRanges(const Strategies& parent)
 {
-timersStrat[9].start();
+timersStrat[3].start();
   for (auto& strat: strategies)
     strat.purgeRanges(ranges, parent.ranges);
-timersStrat[9].stop();
+timersStrat[3].stop();
 }
 
 
 void Strategies::getConstants(Strategy& constants) const
 {
-timersStrat[10].start();
+timersStrat[4].start();
   // This is called for the parent and does not set the winners.
   // TODO It is not very efficient.
   vector<unsigned> distributions(ranges.size());
@@ -462,7 +529,7 @@ timersStrat[10].start();
   tricks.resize(i);
 
   constants.log(distributions, tricks);
-timersStrat[10].stop();
+timersStrat[4].stop();
 }
 
 
@@ -474,7 +541,7 @@ const Ranges& Strategies::getRanges() const
 
 void Strategies::consolidate()
 {
-timersStrat[11].start();
+timersStrat[5].start();
   // TODO Can perhaps be done inline.
   // Would have to sort first (or last).
   auto oldStrats = strategies;
@@ -482,7 +549,7 @@ timersStrat[11].start();
 
   for (auto& strat: oldStrats)
     * this += strat;
-timersStrat[11].stop();
+timersStrat[5].stop();
 }
 
 
@@ -490,13 +557,13 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-timersStrat[12].start();
+timersStrat[6].start();
   for (auto& strat: strategies)
     strat.adapt(play, survivors);
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
-timersStrat[12].stop();
+timersStrat[6].stop();
 }
 
 

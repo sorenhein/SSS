@@ -11,6 +11,10 @@
 
 #include "../strategies/StratData.h"
 
+// TMP
+#include "../stats/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Node::Node()
 {
@@ -166,7 +170,11 @@ void Node::cross(
     cout << strats.str("Crossing " + s + " strategy", false);
   }
 
+timersStrat[18].start();
+parentPtr->strats.study();
+strats.study();
   parentPtr->strats *= strats;
+timersStrat[18].stop();
 
   if (debugFlag)
   {
@@ -190,7 +198,11 @@ void Node::add(
     cout << strats.str("Adding " + s + " strategy", false);
   }
 
+timersStrat[19].start();
+parentPtr->strats.study();
+strats.study();
   parentPtr->strats += strats;
+timersStrat[19].stop();
 
   if (debugFlag)
   {

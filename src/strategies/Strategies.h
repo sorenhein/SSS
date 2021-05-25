@@ -64,6 +64,8 @@ class Strategies
       const Result& trivial,
       const unsigned len);
 
+    void study();
+
     bool operator == (const Strategies& strats2);
 
     void operator += (const Strategy& strat);
@@ -74,6 +76,7 @@ class Strategies
 
     unsigned size() const;
     unsigned numDists() const;
+    unsigned studyParameter() const;
 
     void getLoopData(StratData& stratData);
 
