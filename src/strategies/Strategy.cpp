@@ -186,7 +186,7 @@ bool Strategy::operator == (const Strategy& tv2) const
 }
 
 
-bool Strategy::greaterEqual(const Strategy& strat2) const
+bool Strategy::operator >= (const Strategy& strat2) const
 {
   if (studiedFlag)
   {
@@ -203,17 +203,18 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
   }
   
   // Do the full comparison.
-  return (* this >= strat2);
+  return Strategy::greaterEqual(strat2);
+  // return (* this >= strat2);
 }
 
 
-bool Strategy::operator >= (const Strategy& tv2) const
+bool Strategy::greaterEqual(const Strategy& strat2) const
 {
 // timersStrat[12].start();
-  assert(tv2.results.size() == results.size());
+  assert(strat2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
 
   while (iter1 != results.end())
   {

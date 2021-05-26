@@ -114,7 +114,10 @@ bool Strategies::operator == (const Strategies& strats2)
 
 void Strategies::operator += (const Strategy& strat)
 {
-timersStrat[0].start();
+  // TODO When does this happen?
+  if (strat.size() == 0)
+    return;
+
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
@@ -122,28 +125,15 @@ timersStrat[0].start();
   if (strategies.empty())
   {
     strategies.push_back(strat);
-    // Strategies::study();
-timersStrat[0].stop();
     return;
   }
 
-if (Strategies::studyParameter() > 0 && 
-    strat.studyParameter() != Strategies::studyParameter())
-{
-  cout << "Study mismatch in Strategies += Strategy" << endl;
-  assert(false);
-}
-
+timersStrat[0].start();
   auto iter = strategies.begin();
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
 
-// bool bright = (* iter >= strat);
-// bool balt = iter->greaterEqual(strat);
-// assert(bright == balt);
-
-    // if (* iter >= strat)
-    if (iter->greaterEqual(strat))
+    if (* iter >= strat)
     {
       // The new strat is dominated.
 timersStrat[0].stop();
@@ -153,10 +143,14 @@ timersStrat[0].stop();
       iter++;
   }
 
-  // The new vector must be inserted.
+  // The new vector must be inserted.  This consumes about a third
+  // of the time of the overall method.
+timersStrat[9].start();
   iter = next(strategies.insert(iter, strat));
+timersStrat[9].stop();
 
-  // The new vector may dominate lighter vectors.
+  // The new vector may dominate lighter vectors. This only consumes
+  // 5-10% of the overall time.
   while (iter != strategies.end())
   {
     if (strat > * iter)
@@ -164,6 +158,7 @@ timersStrat[0].stop();
     else
       iter++;
   }
+
 timersStrat[0].stop();
 }
 
@@ -172,6 +167,7 @@ void Strategies::markChanges(
   const Strategies& strats2,
   list<Addition>& additions,
   list<list<Strategy>::const_iterator>& deletions) const
+  // list<deque<Strategy>::const_iterator>& deletions) const
 {
   // The simple Strategies += Strategies adds an individual strategy
   // to the LHS if it is not dominated.  Then the following
@@ -196,7 +192,8 @@ void Strategies::markChanges(
         continue;
       }
 
-      if (iter->greaterEqual(strat))
+      // if (iter->greaterEqual(strat))
+      if (* iter >= strat)
       {
         doneFlag = true;
         break;
@@ -282,6 +279,7 @@ timersStrat[1].start();
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
+    // list<deque<Strategy>::const_iterator> deletions;
 
     Strategies::markChanges(strats2, additions, deletions);
 

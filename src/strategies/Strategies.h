@@ -5,6 +5,7 @@
 // always have the same lengths and distribution numbers.
 
 #include <list>
+#include <deque>
 #include <string>
 
 #include "Strategy.h"
@@ -24,10 +25,12 @@ class Strategies
     struct Addition
     {
       Strategy const * ptr;
+      // deque<Strategy>::const_iterator iter;
       list<Strategy>::const_iterator iter;
     };
 
 
+    // deque<Strategy> strategies;
     list<Strategy> strategies;
 
     Ranges ranges;
@@ -42,6 +45,7 @@ class Strategies
       const Strategies& strats2,
       list<Addition>& additions,
       list<list<Strategy>::const_iterator>& deletions) const;
+      // list<deque<Strategy>::const_iterator>& deletions) const;
 
     void collapseOnVoid();
 
