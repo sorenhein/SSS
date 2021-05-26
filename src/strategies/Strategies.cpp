@@ -91,17 +91,13 @@ bool Strategies::sameUnordered(const Strategies& strats2)
 }
 
 
-void Strategies::study()
+void Strategies::restudy()
 {
   if (strategies.empty())
     return;
 
-  const unsigned groups = strategies.front().numGroups();
-  if (groups <= 1)
-    return;
-
   for (auto& strategy: strategies)
-    strategy.study(groups);
+    strategy.restudy();
 }
 
 
@@ -126,7 +122,8 @@ timersStrat[0].start();
   if (strategies.empty())
   {
     strategies.push_back(strat);
-    Strategies::study();
+    // Strategies::study();
+timersStrat[0].stop();
     return;
   }
 
@@ -141,11 +138,12 @@ if (Strategies::studyParameter() > 0 &&
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
 
-bool bright = (* iter >= strat);
-bool balt = iter->greaterEqual(strat);
-assert(bright == balt);
+// bool bright = (* iter >= strat);
+// bool balt = iter->greaterEqual(strat);
+// assert(bright == balt);
 
-    if (* iter >= strat)
+    // if (* iter >= strat)
+    if (iter->greaterEqual(strat))
     {
       // The new strat is dominated.
 timersStrat[0].stop();
@@ -299,8 +297,12 @@ timersStrat[1].stop();
   {
     // General case.
 
+timersStrat[3].start();
+
     for (auto& strat2: strats2.strategies)
       * this += strat2;
+
+timersStrat[3].stop();
   }
 }
 
@@ -319,7 +321,7 @@ timersStrat[7].stop();
 
 // TMP Just to check
 // cout << "Checking at end of Strategies *= Strategy" << endl;
-Strategies::study();
+// Strategies::study();
 // cout << "Checked" << endl;
 }
 
@@ -331,7 +333,7 @@ void Strategies::operator *= (const Strategies& strats2)
   {
     // Keep the current results.
 // cout << "Checking at beginning of Strategies *= Strategies" << endl;
-Strategies::study();
+// Strategies::study();
 // cout << "Checked" << endl;
     return;
   }
@@ -342,7 +344,7 @@ Strategies::study();
     // Keep the new results.
     strategies = strats2.strategies;
 // cout << "Checking at mid1 of Strategies *= Strategies" << endl;
-Strategies::study();
+// Strategies::study();
 // cout << "Checked" << endl;
     return;
   }
@@ -352,7 +354,7 @@ Strategies::study();
     strategies.front() *= strats2.strategies.front();
     // Strategies::study();
 // cout << "Checking at mid2 of Strategies *= Strategies" << endl;
-Strategies::study();
+// Strategies::study();
 // cout << "Checked" << endl;
     return;
   }
@@ -378,7 +380,7 @@ timersStrat[2].stop();
 
 // TMP Just to check
 // cout << "Checking at end of Strategies *= Strategies" << endl;
-Strategies::study();
+// Strategies::study();
 // cout << "Checked" << endl;
 }
 
@@ -544,11 +546,14 @@ void Strategies::consolidate()
 timersStrat[5].start();
   // TODO Can perhaps be done inline.
   // Would have to sort first (or last).
+  Strategies::restudy();
+
   auto oldStrats = strategies;
   Strategies::reset();
 
   for (auto& strat: oldStrats)
     * this += strat;
+  
 timersStrat[5].stop();
 }
 

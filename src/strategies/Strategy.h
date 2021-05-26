@@ -34,6 +34,7 @@ class Strategy
     vector<unsigned> summary;
     bool studiedFlag;
 
+    bool operator >= (const Strategy& tv2) const;
 
     void updateSingle(
       const unsigned fullNo,
@@ -82,7 +83,6 @@ class Strategy
     void restudy();
 
     bool operator == (const Strategy& tv2) const;
-    bool operator >= (const Strategy& tv2) const;
     bool operator > (const Strategy& tv2) const;
 
     bool greaterEqual(const Strategy& strat2) const;

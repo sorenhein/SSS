@@ -64,7 +64,7 @@ class Strategies
       const Result& trivial,
       const unsigned len);
 
-    void study();
+    void restudy();
 
     bool operator == (const Strategies& strats2);
 

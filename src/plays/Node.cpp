@@ -171,8 +171,8 @@ void Node::cross(
   }
 
 timersStrat[18].start();
-parentPtr->strats.study();
-strats.study();
+// parentPtr->strats.study();
+// strats.study();
   parentPtr->strats *= strats;
 timersStrat[18].stop();
 
@@ -199,8 +199,8 @@ void Node::add(
   }
 
 timersStrat[19].start();
-parentPtr->strats.study();
-strats.study();
+// parentPtr->strats.study();
+// strats.study();
   parentPtr->strats += strats;
 timersStrat[19].stop();
 
