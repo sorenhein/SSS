@@ -309,6 +309,58 @@ timersStrat[7].stop();
 }
 
 
+void Strategies::multiplyAdd(
+  const Strategy& strat1,
+  const Strategy& strat2)
+{
+  assert(strat1.size() > 0);
+  assert(strat2.size() > 0);
+
+  strategies.push_back(strat1);
+  auto& product = strategies.back();
+  product *= strat2;
+  auto piter = prev(strategies.end());
+
+  if (strategies.size() == 1)
+    return;
+
+  // The strategies list is in descending order of weights.
+  // The new Strategy might dominate everything with a lower weight and
+  // can only be dominated by a Strategy with at least its own weight.
+  
+  auto iter = strategies.begin();
+  while (iter != piter && iter->weight() >= product.weight())
+  {
+
+    if (* iter >= product)
+    {
+      // The new strat is dominated.
+      strategies.pop_back();
+      return;
+    }
+    else
+      iter++;
+  }
+
+  // The new vector must be inserted, i.e. spliced in.
+  strategies.splice(iter, strategies, piter);
+
+  // The new vector may dominate lighter vectors. This only consumes
+  // 5-10% of the overall time.
+assert(piter == prev(iter));
+  while (iter != strategies.end())
+  {
+    if (* piter > * iter)
+      iter = strategies.erase(iter);
+    else
+      iter++;
+  }
+
+
+
+}
+
+
 void Strategies::operator *= (const Strategies& strats2)
 {
   const unsigned len2 = strats2.strategies.size();
@@ -335,7 +387,7 @@ void Strategies::operator *= (const Strategies& strats2)
 timersStrat[2].start();
   // General case.  The implementation is straightforward but probably
   // inefficient.  Maybe there's a faster way to do it in place.
-  auto strategiesOwn = strategies;
+  auto strategiesOwn = move(strategies);
   strategies.clear();
 
   Strategy stmp;
@@ -507,7 +559,7 @@ timersStrat[5].start();
   // Would have to sort first (or last).
   Strategies::restudy();
 
-  auto oldStrats = strategies;
+  auto oldStrats = move(strategies);
   Strategies::reset();
 
   for (auto& strat: oldStrats)

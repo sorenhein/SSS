@@ -38,6 +38,10 @@ class Strategies
 
     void plusOneByOne(const Strategies& strats2);
 
+    void multiplyAdd(
+      const Strategy& strat1,
+      const Strategy& strat2);
+
     void markChanges(
       const Strategies& strats2,
       list<Addition>& additions,
