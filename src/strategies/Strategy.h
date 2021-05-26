@@ -36,6 +36,8 @@ class Strategy
 
     bool greaterEqual(const Strategy& strat2) const;
 
+    bool greater(const Strategy& strat2) const;
+
     void updateSingle(
       const unsigned fullNo,
       const unsigned trickNS);
@@ -79,8 +81,7 @@ class Strategy
 
     unsigned numGroups() const;
 
-    void study(const unsigned groups);
-    void restudy();
+    void study();
 
     bool operator == (const Strategy& tv2) const;
     bool operator >= (const Strategy& tv2) const;
@@ -112,9 +113,6 @@ class Strategy
     void checkWeights() const;
 
     string str(const string& title = "") const;
-
-    bool isStudiedTMP() const;
-    unsigned studyParameter() const;
 };
 
 #endif

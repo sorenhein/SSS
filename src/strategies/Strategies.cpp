@@ -97,7 +97,7 @@ void Strategies::restudy()
     return;
 
   for (auto& strategy: strategies)
-    strategy.restudy();
+    strategy.study();
 }
 
 
@@ -145,9 +145,7 @@ timersStrat[0].stop();
 
   // The new vector must be inserted.  This consumes about a third
   // of the time of the overall method.
-timersStrat[9].start();
   iter = next(strategies.insert(iter, strat));
-timersStrat[9].stop();
 
   // The new vector may dominate lighter vectors. This only consumes
   // 5-10% of the overall time.
@@ -167,7 +165,6 @@ void Strategies::markChanges(
   const Strategies& strats2,
   list<Addition>& additions,
   list<list<Strategy>::const_iterator>& deletions) const
-  // list<deque<Strategy>::const_iterator>& deletions) const
 {
   // The simple Strategies += Strategies adds an individual strategy
   // to the LHS if it is not dominated.  Then the following
@@ -274,12 +271,11 @@ void Strategies::operator += (const Strategies& strats2)
   else if (sno1 >= 20 && sno2 >= 20)
   {
     // Complex case.
-
-timersStrat[1].start();
+    // Rare, but very slow per invocation when it happens.
+    // Consumes perhaps 75% of the method time.
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
-    // list<deque<Strategy>::const_iterator> deletions;
 
     Strategies::markChanges(strats2, additions, deletions);
 
@@ -288,19 +284,13 @@ timersStrat[1].start();
 
     for (auto& deletion: deletions)
       strategies.erase(deletion);
-
-timersStrat[1].stop();
   }
   else
   {
     // General case.
-
-timersStrat[3].start();
-
+    // Frequent and fast, perhaps 25% of the method time.
     for (auto& strat2: strats2.strategies)
       * this += strat2;
-
-timersStrat[3].stop();
   }
 }
 
@@ -316,11 +306,6 @@ timersStrat[7].start();
       strat1 *= strat;
 timersStrat[7].stop();
   }
-
-// TMP Just to check
-// cout << "Checking at end of Strategies *= Strategy" << endl;
-// Strategies::study();
-// cout << "Checked" << endl;
 }
 
 
@@ -330,9 +315,6 @@ void Strategies::operator *= (const Strategies& strats2)
   if (len2 == 0)
   {
     // Keep the current results.
-// cout << "Checking at beginning of Strategies *= Strategies" << endl;
-// Strategies::study();
-// cout << "Checked" << endl;
     return;
   }
 
@@ -341,19 +323,12 @@ void Strategies::operator *= (const Strategies& strats2)
   {
     // Keep the new results.
     strategies = strats2.strategies;
-// cout << "Checking at mid1 of Strategies *= Strategies" << endl;
-// Strategies::study();
-// cout << "Checked" << endl;
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
     strategies.front() *= strats2.strategies.front();
-    // Strategies::study();
-// cout << "Checking at mid2 of Strategies *= Strategies" << endl;
-// Strategies::study();
-// cout << "Checked" << endl;
     return;
   }
 
@@ -370,16 +345,11 @@ timersStrat[2].start();
     {
       stmp = strat1;
       stmp *= strat2;
-      stmp.study(Strategies::studyParameter());
       *this += stmp;
     }
   }
 timersStrat[2].stop();
 
-// TMP Just to check
-// cout << "Checking at end of Strategies *= Strategies" << endl;
-// Strategies::study();
-// cout << "Checked" << endl;
 }
 
 
@@ -395,15 +365,6 @@ unsigned Strategies::numDists() const
     return 0;
   else
     return strategies.front().size();
-}
-
-
-unsigned Strategies::studyParameter() const
-{
-  if (strategies.empty())
-    return 0;
-
-  return strategies.front().studyParameter();
 }
 
 

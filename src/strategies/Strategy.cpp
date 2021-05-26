@@ -99,52 +99,7 @@ unsigned Strategy::numGroups() const
 }
 
 
-void Strategy::study(const unsigned groups)
-{
-  if (groups == 0)
-  {
-    if (! studiedFlag)
-    {
-      assert(! studiedFlag);
-    }
-    return;
-  }
-
-  // May already be studied?  Don't redo?
-
-vector<unsigned> copy;
-if (studiedFlag)
-{
-  assert(summary.size() == groups);
-  copy = summary;
-}
-
-  summary.clear();
-  summary.resize(groups);
-
-  unsigned i = 0;
-  for (auto& result: results)
-  {
-    summary[i % groups] += result.tricks;
-    i++;
-  }
-  studiedFlag = true;
-
-if (! copy.empty())
-{
-  for (i = 0; i < summary.size(); i++)
-  {
-    if (summary[i] != copy[i])
-    {
-      assert(false);
-    }
-  }
-}
-
-}
-
-
-void Strategy::restudy()
+void Strategy::study()
 {
   const unsigned groups = Strategy::numGroups();
 
@@ -186,6 +141,25 @@ bool Strategy::operator == (const Strategy& tv2) const
 }
 
 
+bool Strategy::greaterEqual(const Strategy& strat2) const
+{
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  while (iter1 != results.end())
+  {
+    if (* iter1 < * iter2)
+      return false;
+
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   if (studiedFlag)
@@ -204,59 +178,49 @@ bool Strategy::operator >= (const Strategy& strat2) const
   
   // Do the full comparison.
   return Strategy::greaterEqual(strat2);
-  // return (* this >= strat2);
 }
 
 
-bool Strategy::greaterEqual(const Strategy& strat2) const
+bool Strategy::greater(const Strategy& strat2) const
 {
-// timersStrat[12].start();
-  assert(strat2.results.size() == results.size());
+  const unsigned n = results.size();
+  assert(strat2.results.size() == n);
 
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  while (iter1 != results.end())
-  {
-    if (* iter1 < * iter2)
-{
-// timersStrat[12].stop();
-      return false;
-}
-
-    iter1++;
-    iter2++;
-  }
-// timersStrat[12].stop();
-  return true;
-}
-
-
-bool Strategy::operator > (const Strategy& tv2) const
-{
-// timersStrat[13].start();
-  const unsigned n = results.size();
-  assert(tv2.results.size() == n);
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = tv2.results.cbegin();
 
   bool greaterFlag = false;
   while (iter1 != results.end())
   {
     if (* iter1 < * iter2)
-    {
-// timersStrat[13].stop();
       return false;
-    }
     else if (* iter1 > * iter2)
       greaterFlag = true;
 
     iter1++;
     iter2++;
   }
-// timersStrat[13].stop();
   return greaterFlag;
+}
+
+
+bool Strategy::operator > (const Strategy& strat2) const
+{
+  if (studiedFlag)
+  {
+    for (unsigned i = 0; i < summary.size(); i++)
+    {
+      if (summary[i] < strat2.summary[i])
+        return false;
+    }
+  }
+  else
+  {
+    // At least 2 groups?
+    assert(results.size() < 4);
+  }
+
+  return Strategy::greater(strat2);
 }
 
 
@@ -343,7 +307,7 @@ void Strategy::operator *=(const Strategy& tv2)
     }
   }
 
-  Strategy::restudy();
+  Strategy::study();
 
 // timersStrat[15].stop();
 }
@@ -574,7 +538,7 @@ void Strategy::adapt(
     Strategy::updateAndGrow(survivors, play.trickNS);
   }
 
-  Strategy::restudy();
+  Strategy::study();
 // timersStrat[17].stop();
 }
 
@@ -617,17 +581,5 @@ string Strategy::str(const string& title) const
       setw(6) << res.tricks << "\n";
 
   return ss.str();
-}
-
-
-bool Strategy::isStudiedTMP() const
-{
-  return studiedFlag;
-}
-
-
-unsigned Strategy::studyParameter() const
-{
-  return summary.size();
 }
 

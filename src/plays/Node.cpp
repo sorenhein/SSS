@@ -170,11 +170,7 @@ void Node::cross(
     cout << strats.str("Crossing " + s + " strategy", false);
   }
 
-timersStrat[18].start();
-// parentPtr->strats.study();
-// strats.study();
   parentPtr->strats *= strats;
-timersStrat[18].stop();
 
   if (debugFlag)
   {
@@ -198,19 +194,7 @@ void Node::add(
     cout << strats.str("Adding " + s + " strategy", false);
   }
 
-timersStrat[19].start();
-// parentPtr->strats.study();
-// strats.study();
-if (parentPtr == nullptr)
-{
-  cout << Node::strPlay(level);
-  const string s = (level == LEVEL_LEAD ? "lead" : "partner");
-  cout << strats.str("Adding " + s + " strategy", false);
-  cout << endl;
-  assert(parentPtr != nullptr);
-}
   parentPtr->strats += strats;
-timersStrat[19].stop();
 
   if (debugFlag)
   {
