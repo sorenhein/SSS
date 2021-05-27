@@ -2,15 +2,13 @@
 ----------
 Ideas for speeding up Strategies
 
-Strategies *= Strategies
-- Copy out the current one (or the smallest one?)
-- In the multiply loop, already get a space at the end of Strategies
-  (the result)
-- Multiply it out in place, Strategies::multiplyAdd(str1, str2)
-- Once it's multiplied and studied, do the kind of comparison normally
-  done in += to see if it's dominated (erase)
-- Move it into the place of equal weight (how, efficiently?)
-- Erase dominated ones
+- Strategy::multiply
+  results.resize(strat1.results.size() + strat2.results.size());
+  Instead of insert: copy
+  Instead of push_back: ditto
+
+Add more global timing e.g. for Plays
+
 
 Why are Strategies::purgeRanges and getConstants never called?!
 
