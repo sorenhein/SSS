@@ -129,6 +129,7 @@ void Strategies::operator += (const Strategy& strat)
   }
 
 timersStrat[0].start();
+timersStrat[12].start();
   auto iter = strategies.begin();
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
@@ -136,17 +137,22 @@ timersStrat[0].start();
     if (* iter >= strat)
     {
       // The new strat is dominated.
+timersStrat[12].stop();
 timersStrat[0].stop();
       return;
     }
     else
       iter++;
   }
+timersStrat[12].stop();
 
+timersStrat[13].start();
   // The new vector must be inserted.  This consumes about a third
   // of the time of the overall method.
   iter = next(strategies.insert(iter, strat));
+timersStrat[13].stop();
 
+timersStrat[14].start();
   // The new vector may dominate lighter vectors. This only consumes
   // 5-10% of the overall time.
   while (iter != strategies.end())
@@ -156,6 +162,7 @@ timersStrat[0].stop();
     else
       iter++;
   }
+timersStrat[14].stop();
 
 timersStrat[0].stop();
 }
@@ -324,6 +331,7 @@ void Strategies::multiplyAdd(
   if (strategies.size() == 1)
     return;
 
+timersStrat[9].start();
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
@@ -336,18 +344,25 @@ void Strategies::multiplyAdd(
     {
       // The new strat is dominated.
       strategies.pop_back();
+timersStrat[9].stop();
       return;
     }
     else
       iter++;
   }
+timersStrat[9].stop();
 
+  // Already in the right place at the end?
+  if (iter == piter)
+    return;
+
+timersStrat[10].start();
   // The new vector must be inserted, i.e. spliced in.
   strategies.splice(iter, strategies, piter);
+timersStrat[10].stop();
 
-  // The new vector may dominate lighter vectors. This only consumes
-  // 5-10% of the overall time.
-assert(piter == prev(iter));
+timersStrat[11].start();
+  // The new vector may dominate lighter vectors.
   while (iter != strategies.end())
   {
     if (* piter > * iter)
@@ -355,9 +370,7 @@ assert(piter == prev(iter));
     else
       iter++;
   }
-
-
-
+timersStrat[11].stop();
 }
 
 
@@ -390,6 +403,14 @@ timersStrat[2].start();
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
+  /*
+  for (auto& strat1: strategiesOwn)
+    for (auto& strat2: strats2.strategies)
+      Strategies::multiplyAdd(strat1, strat2);
+      */
+
+
+  /*  */
   Strategy stmp;
   for (auto& strat1: strategiesOwn)
   {
@@ -400,6 +421,7 @@ timersStrat[2].start();
       *this += stmp;
     }
   }
+  /* */
 timersStrat[2].stop();
 
 }
