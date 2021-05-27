@@ -308,6 +308,7 @@ void Strategies::operator *= (const Strategy& strat)
     * this += strat;
   else
   {
+    // TODO Really?  No re-sorting and consolidating?
 timersStrat[7].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
@@ -320,21 +321,46 @@ void Strategies::multiplyAdd(
   const Strategy& strat1,
   const Strategy& strat2)
 {
-  assert(strat1.size() > 0);
-  assert(strat2.size() > 0);
-
-  strategies.push_back(strat1);
+  // This costs about half of the overall method time.
+timersStrat[9].start();
   auto& product = strategies.back();
-  product *= strat2;
+
+  // product = strat1;
+  // product *= strat2;
+  product.multiply(strat1, strat2);
+
+  /*
+  Strategy p2;
+  p2.multiply(strat1, strat2);
+  if (! (p2 == product))
+  {
+    cout << "strat1\n";
+    cout << strat1.str();
+    cout << "strat2\n";
+    cout << strat2.str();
+    cout << "product\n";
+    cout << product.str();
+    cout << "p2\n";
+    cout << p2.str();
+    assert(p2 == product);
+  }
+  */
+
+
   auto piter = prev(strategies.end());
+timersStrat[9].stop();
 
   if (strategies.size() == 1)
+  {
+    // Keep the product and make a new scratch-pad element.
+    strategies.emplace_back(Strategy());
     return;
+  }
 
-timersStrat[9].start();
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
+  // This checking costs about one third of the overall method time.
   
   auto iter = strategies.begin();
   while (iter != piter && iter->weight() >= product.weight())
@@ -343,26 +369,25 @@ timersStrat[9].start();
     if (* iter >= product)
     {
       // The new strat is dominated.
-      strategies.pop_back();
-timersStrat[9].stop();
       return;
     }
     else
       iter++;
   }
-timersStrat[9].stop();
 
   // Already in the right place at the end?
   if (iter == piter)
+  {
+    strategies.emplace_back(Strategy());
     return;
+  }
 
-timersStrat[10].start();
   // The new vector must be inserted, i.e. spliced in.
+  // This is super-fast.
   strategies.splice(iter, strategies, piter);
-timersStrat[10].stop();
 
-timersStrat[11].start();
-  // The new vector may dominate lighter vectors.
+  // The new vector may dominate lighter vectors.  This is also
+  // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
     if (* piter > * iter)
@@ -370,7 +395,9 @@ timersStrat[11].start();
     else
       iter++;
   }
-timersStrat[11].stop();
+
+  // Make a new scratch-pad element.
+  strategies.emplace_back(Strategy());
 }
 
 
@@ -398,30 +425,24 @@ void Strategies::operator *= (const Strategies& strats2)
   }
 
 timersStrat[2].start();
-  // General case.  The implementation is straightforward but probably
-  // inefficient.  Maybe there's a faster way to do it in place.
+  // This implementation of the general product attempts to reduce
+  // memory overhead.  The temporary product is formed in the last
+  // element of Strategies as a scratch pad.  If it turns out to be
+  // viable, it is already in Strategies and subject to move semantics.
+
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
-  /*
+  // Make room for the scratch-pad element.
+  strategies.emplace_back(Strategy());
+
   for (auto& strat1: strategiesOwn)
     for (auto& strat2: strats2.strategies)
       Strategies::multiplyAdd(strat1, strat2);
-      */
 
+  // Remove the scratch-pad element.
+  strategies.pop_back();
 
-  /*  */
-  Strategy stmp;
-  for (auto& strat1: strategiesOwn)
-  {
-    for (auto& strat2: strats2.strategies)
-    {
-      stmp = strat1;
-      stmp *= strat2;
-      *this += stmp;
-    }
-  }
-  /* */
 timersStrat[2].stop();
 
 }

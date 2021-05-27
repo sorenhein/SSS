@@ -313,6 +313,81 @@ void Strategy::operator *=(const Strategy& tv2)
 }
 
 
+void Strategy::multiply(
+  const Strategy& strat1,
+  const Strategy& strat2)
+{
+  // Here we don't have to have the same length or distributions.
+  
+// timersStrat[15].start();
+  Strategy::reset();
+  auto iter1 = strat1.results.begin();
+  auto iter2 = strat2.results.begin();
+
+  while (true)
+  {
+    if (iter1 == strat1.results.end())
+    {
+      if (iter2 != strat2.results.end())
+      {
+        results.insert(results.end(), iter2, strat2.results.end());
+        for (auto it = iter2; it != strat2.results.end(); it++)
+          weightInt += it->tricks;
+      }
+      break;
+    }
+    else if (iter2 == strat2.results.end())
+    {
+      results.insert(results.end(), iter1, strat1.results.end());
+      for (auto it = iter1; it != strat1.results.end(); it++)
+        weightInt += it->tricks;
+      break;
+    }
+
+    if (iter1->dist < iter2->dist)
+    {
+      results.push_back(* iter1);
+      weightInt += iter1->tricks;
+      iter1++;
+    }
+    else if (iter1->dist > iter2->dist)
+    {
+      results.push_back(* iter2);
+      weightInt += iter2->tricks;
+      iter2++;
+    }
+    else if (iter1->tricks < iter2->tricks)
+    {
+      // Take the one with the lower number of tricks.
+      results.push_back(* iter1);
+      weightInt += iter1->tricks;
+      iter1++;
+      iter2++;
+    }
+    else if (iter1->tricks > iter2->tricks)
+    {
+      results.push_back(* iter2);
+      weightInt += iter2->tricks;
+      iter1++;
+      iter2++;
+    }
+    else
+    {
+      // Opponents can choose among the two winners.
+      results.push_back(* iter1);
+      results.back().winners *= iter2->winners;
+      weightInt += iter1->tricks;
+      iter1++;
+      iter2++;
+    }
+  }
+
+  Strategy::study();
+
+// timersStrat[15].stop();
+}
+
+
 void Strategy::initRanges(Ranges& ranges)
 {
 // timersStrat[16].start();

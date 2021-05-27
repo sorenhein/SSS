@@ -92,6 +92,10 @@ class Strategy
 
     void operator *= (const Strategy& tv2);
 
+    void multiply(
+      const Strategy& strat1,
+      const Strategy& strat2);
+
     void initRanges(Ranges& ranges);
 
     void extendRanges(Ranges& ranges);
