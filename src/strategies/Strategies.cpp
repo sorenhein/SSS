@@ -13,6 +13,8 @@
 #include "../stats/Timer.h"
 extern vector<Timer> timersStrat;
 
+#define SCRATCH_CHUNK 10
+
 
 Strategies::Strategies()
 {
@@ -129,7 +131,6 @@ void Strategies::operator += (const Strategy& strat)
   }
 
 timersStrat[0].start();
-timersStrat[12].start();
   auto iter = strategies.begin();
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
@@ -137,22 +138,17 @@ timersStrat[12].start();
     if (* iter >= strat)
     {
       // The new strat is dominated.
-timersStrat[12].stop();
 timersStrat[0].stop();
       return;
     }
     else
       iter++;
   }
-timersStrat[12].stop();
 
-timersStrat[13].start();
   // The new vector must be inserted.  This consumes about a third
   // of the time of the overall method.
   iter = next(strategies.insert(iter, strat));
-timersStrat[13].stop();
 
-timersStrat[14].start();
   // The new vector may dominate lighter vectors. This only consumes
   // 5-10% of the overall time.
   while (iter != strategies.end())
@@ -162,7 +158,6 @@ timersStrat[14].start();
     else
       iter++;
   }
-timersStrat[14].stop();
 
 timersStrat[0].stop();
 }
@@ -317,77 +312,69 @@ timersStrat[7].stop();
 }
 
 
+#include <iterator>
+
 void Strategies::multiplyAdd(
   const Strategy& strat1,
   const Strategy& strat2)
 {
   // This costs about half of the overall method time.
-timersStrat[9].start();
+timersStrat[10].start();
   auto& product = strategies.back();
-
-  // product = strat1;
-  // product *= strat2;
   product.multiply(strat1, strat2);
 
-  /*
-  Strategy p2;
-  p2.multiply(strat1, strat2);
-  if (! (p2 == product))
-  {
-    cout << "strat1\n";
-    cout << strat1.str();
-    cout << "strat2\n";
-    cout << strat2.str();
-    cout << "product\n";
-    cout << product.str();
-    cout << "p2\n";
-    cout << p2.str();
-    assert(p2 == product);
-  }
-  */
-
-
   auto piter = prev(strategies.end());
-timersStrat[9].stop();
+timersStrat[10].stop();
 
+timersStrat[11].start();
   if (strategies.size() == 1)
   {
     // Keep the product and make a new scratch-pad element.
     strategies.emplace_back(Strategy());
+timersStrat[11].stop();
     return;
   }
+timersStrat[11].stop();
 
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   
+timersStrat[12].start();
   auto iter = strategies.begin();
-  while (iter != piter && iter->weight() >= product.weight())
+  while (iter != piter && iter->weight() >= piter->weight())
   {
 
-    if (* iter >= product)
+    if (* iter >= * piter)
     {
       // The new strat is dominated.
+timersStrat[12].stop();
       return;
     }
     else
       iter++;
   }
+timersStrat[12].stop();
 
   // Already in the right place at the end?
   if (iter == piter)
   {
+timersStrat[13].start();
     strategies.emplace_back(Strategy());
+timersStrat[13].stop();
     return;
   }
 
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
+timersStrat[14].start();
   strategies.splice(iter, strategies, piter);
+timersStrat[14].stop();
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
+timersStrat[15].start();
   while (iter != strategies.end())
   {
     if (* piter > * iter)
@@ -395,9 +382,105 @@ timersStrat[9].stop();
     else
       iter++;
   }
+timersStrat[15].stop();
 
   // Make a new scratch-pad element.
+timersStrat[16].start();
   strategies.emplace_back(Strategy());
+timersStrat[16].stop();
+}
+
+
+void Strategies::multiplyAdd(
+  const Strategy& strat1,
+  const Strategy& strat2,
+  list<Strategy>::iterator& iterScratch)
+{
+  // This costs about half of the overall method time.
+timersStrat[20].start();
+  iterScratch->multiply(strat1, strat2);
+timersStrat[20].stop();
+
+timersStrat[21].start();
+  if (strategies.size() == 1)
+  {
+    // Keep the product and make a new scratch-pad element.
+    // strategies.emplace_back(Strategy());
+
+    if (next(iterScratch) == strategies.end())
+      strategies.resize(strategies.size() + SCRATCH_CHUNK);
+
+    iterScratch++;
+timersStrat[21].stop();
+    return;
+  }
+timersStrat[21].stop();
+
+  // The strategies list is in descending order of weights.
+  // The new Strategy might dominate everything with a lower weight and
+  // can only be dominated by a Strategy with at least its own weight.
+  // This checking costs about one third of the overall method time.
+  
+timersStrat[22].start();
+  auto iter = strategies.begin();
+  while (iter != iterScratch && iter->weight() >= iterScratch->weight())
+  {
+
+    if (* iter >= * iterScratch)
+    {
+      // The new strat is dominated.
+timersStrat[22].stop();
+      return;
+    }
+    else
+      iter++;
+  }
+timersStrat[22].stop();
+
+  // Already in the right place at the end?
+  if (iter == iterScratch)
+  {
+timersStrat[23].start();
+    if (next(iterScratch) == strategies.end())
+      strategies.resize(strategies.size() + SCRATCH_CHUNK);
+
+    iterScratch++;
+timersStrat[23].stop();
+    return;
+  }
+
+  // The new vector must be inserted, i.e. spliced in.
+  // This is super-fast.
+timersStrat[24].start();
+  auto iterScratchNext = iterScratch;
+  iterScratchNext++;
+  strategies.splice(iter, strategies, iterScratch);
+timersStrat[24].stop();
+
+  // The new vector may dominate lighter vectors.  This is also
+  // quite efficient and doesn't happen so often.
+timersStrat[25].start();
+  while (iter != iterScratchNext)
+  {
+    if (* iterScratch > * iter)
+      iter = strategies.erase(iter);
+    else
+      iter++;
+  }
+timersStrat[25].stop();
+
+timersStrat[26].start();
+  // Make a new scratch-pad element.
+  // strategies.emplace_back(Strategy());
+  if (iterScratchNext == strategies.end())
+  {
+    iterScratchNext--;
+    strategies.resize(strategies.size() + SCRATCH_CHUNK);
+    iterScratchNext++;
+  }
+
+  iterScratch = iterScratchNext;
+timersStrat[26].stop();
 }
 
 
@@ -430,18 +513,57 @@ timersStrat[2].start();
   // element of Strategies as a scratch pad.  If it turns out to be
   // viable, it is already in Strategies and subject to move semantics.
 
+auto own = * this;
+
+Timer timer1;
+timer1.start();
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
-  // Make room for the scratch-pad element.
-  strategies.emplace_back(Strategy());
+  // if (len1 * len2 < 50)
+  // {
+    // Make room for the scratch-pad element.
+    strategies.emplace_back(Strategy());
+  
+    for (auto& strat1: strategiesOwn)
+      for (auto& strat2: strats2.strategies)
+        Strategies::multiplyAdd(strat1, strat2);
 
-  for (auto& strat1: strategiesOwn)
-    for (auto& strat2: strats2.strategies)
-      Strategies::multiplyAdd(strat1, strat2);
+    strategies.pop_back();
+timer1.stop();
+  // }
+  // else
+  // {
 
-  // Remove the scratch-pad element.
-  strategies.pop_back();
+    Strategies alt;
+Timer timer2;
+timer2.start();
+    alt.strategies.resize(SCRATCH_CHUNK);
+    auto iterScratch = alt.strategies.begin();
+
+    for (auto& strat1: strategiesOwn)
+      for (auto& strat2: strats2.strategies)
+        alt.multiplyAdd(strat1, strat2, iterScratch);
+
+    alt.strategies.erase(iterScratch, alt.strategies.end());
+timer2.stop();
+
+cout << "TIMER " << len1 << " " << len2 << "\n" <<
+timer1.str(4) << timer2.str(4) << endl;
+
+    // assert(alt.strategies == strategies);
+
+    /*
+    strategies.resize(SCRATCH_CHUNK);
+    auto iterScratch = strategies.begin();
+
+    for (auto& strat1: strategiesOwn)
+      for (auto& strat2: strats2.strategies)
+        Strategies::multiplyAdd(strat1, strat2, iterScratch);
+
+    strategies.erase(iterScratch, strategies.end());
+    */
+  // }
 
 timersStrat[2].stop();
 
@@ -559,33 +681,6 @@ timersStrat[3].start();
   for (auto& strat: strategies)
     strat.purgeRanges(ranges, parent.ranges);
 timersStrat[3].stop();
-}
-
-
-void Strategies::getConstants(Strategy& constants) const
-{
-timersStrat[4].start();
-  // This is called for the parent and does not set the winners.
-  // TODO It is not very efficient.
-  vector<unsigned> distributions(ranges.size());
-  vector<unsigned> tricks(ranges.size());
-
-  unsigned i = 0;
-  for (auto& range: ranges)
-  {
-    if (range.constant())
-    {
-      distributions[i] = range.dist;
-      tricks[i] = range.lower;
-      i++;
-    }
-  }
-
-  distributions.resize(i);
-  tricks.resize(i);
-
-  constants.log(distributions, tricks);
-timersStrat[4].stop();
 }
 
 

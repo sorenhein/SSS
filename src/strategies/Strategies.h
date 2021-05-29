@@ -42,6 +42,11 @@ class Strategies
       const Strategy& strat1,
       const Strategy& strat2);
 
+    void multiplyAdd(
+      const Strategy& strat1,
+      const Strategy& strat2,
+      list<Strategy>::iterator& iterScratch);
+
     void markChanges(
       const Strategies& strats2,
       list<Addition>& additions,
@@ -88,8 +93,6 @@ class Strategies
     void propagateRanges(const Strategies& child);
 
     void purgeRanges(const Strategies& parent);
-
-    void getConstants(Strategy& constantsIn) const;
 
     const Ranges& getRanges() const;
 
