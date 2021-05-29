@@ -598,8 +598,7 @@ const Ranges& Strategies::getRanges() const
 void Strategies::consolidate()
 {
 timersStrat[5].start();
-  // TODO Can perhaps be done inline.
-  // Would have to sort first (or last).
+
   Strategies::restudy();
 
   auto oldStrats = move(strategies);

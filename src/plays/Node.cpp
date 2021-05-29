@@ -11,10 +11,6 @@
 
 #include "../strategies/StratData.h"
 
-// TMP
-#include "../stats/Timer.h"
-extern vector<Timer> timersStrat;
-
 
 Node::Node()
 {

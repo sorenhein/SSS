@@ -25,10 +25,11 @@ void Timers::reset()
   for (auto& t: timers)
     t.reset();
   
-  names[TIMER_COMBINATIONS] = "Combinations";
   names[TIMER_DISTRIBUTIONS] = "Distributions";
-  names[TIMER_FILL_TREE] = "Fwd";
-  names[TIMER_DERIVE_STRAT] = "Bwd";
+  names[TIMER_COMBINATIONS] = "Combinations";
+  names[TIMER_RANKS] = "Ranks";
+  names[TIMER_PLAYS] = "Plays";
+  names[TIMER_STRATEGIZE] = "Strategize";
   names[TIMER_WRITE_CONST] = "Const";
   names[TIMER_WRITE_SIMPLE] = "Simple";
   names[TIMER_TEST_PURE] = "Pure";

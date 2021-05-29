@@ -56,8 +56,6 @@ int main(int argc, char * argv[])
 
   combinations.resize(control.cards());
 
-  timers.start(TIMER_COMBINATIONS);
-
   // for (unsigned cards = 0; cards <= control.cards(); cards++)
   for (unsigned cards = 0; cards <= 11; cards++)
   {
@@ -66,8 +64,6 @@ int main(int argc, char * argv[])
     // combinations.runUniquesMT(cards, control.numThreads());
     combinations.runUniques(cards, distributions);
   }
-
-  timers.stop(TIMER_COMBINATIONS);
 
   cout << "\n";
   cout << combinations.strUniques();

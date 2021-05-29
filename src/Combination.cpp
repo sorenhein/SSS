@@ -14,8 +14,9 @@
 
 #include "ranks/Ranks.h"
 
-// TMP
-#include "stats/Timer.h"
+#include "stats/Timers.h"
+
+extern Timers timers;
 
 
 Combination::Combination()
@@ -47,6 +48,7 @@ const Strategies& Combination::strategize(
     centry.canonicalHolding2 << endl;
 
   // Look up a pointer to the EW distribution of this combination.
+  timers.start(TIMER_PLAYS);
   distPtr = distributions.ptrNoncanonical(
     ranks.size(), centry.canonicalHolding2);
 
@@ -76,6 +78,7 @@ const Strategies& Combination::strategize(
 
   // Complete the plays such that their ends point to combinations.
   plays.setCombPtrs(combinations);
+  timers.stop(TIMER_PLAYS);
 
   if (debugFlag)
   {
@@ -84,7 +87,10 @@ const Strategies& Combination::strategize(
   }
 
   plays.clearStrategies();
+
+  timers.start(TIMER_STRATEGIZE);
   strats = plays.strategize(distPtr, debugFlagTmp);
+  timers.stop(TIMER_STRATEGIZE);
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 

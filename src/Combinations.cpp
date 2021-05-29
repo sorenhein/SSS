@@ -12,8 +12,11 @@
 
 #include "ranks/Ranks.h"
 
+#include "stats/Timers.h"
+
+extern Timers timers;
+
 // TMP
-#include "stats/Timer.h"
 vector<Timer> timersStrat;
 
 
@@ -183,13 +186,11 @@ void Combinations::runUniques(
 
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-// cout << "combs holding " << holding << endl;
-if (cards == 3 && holding == 15)
-{
-  cout << "FAIL" << endl;
-}
     CombEntry& centry = centries[holding];
+
+    timers.start(TIMER_RANKS);
     ranks.set(holding, centry);
+    timers.stop(TIMER_RANKS);
 
     combCounts[cards].total++;
     const unsigned canonicalHolding3 = centry.canonicalHolding3;
@@ -197,7 +198,6 @@ if (cards == 3 && holding == 15)
     {
       combCounts[cards].unique++;
 
-// cout << "uniqueIndex " << uniqueIndex << " vs " << uniqs.size() << endl;
       assert(uniqueIndex < uniqs.size());
       centry.canonicalIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
@@ -206,15 +206,7 @@ if (cards == 3 && holding == 15)
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
-UNUSED(comb);
-UNUSED(distributions);
-/* */
-// TODO Maybe only do this once, centrally?
-// wcout << ranks.wstrDiagram();
-
-// cout << ranks.strTable();
       comb.strategize(centry, * this, distributions, ranks, plays);
-/* */
 
       playCounts[cards].unique++;
       playCounts[cards].total += plays.size();
