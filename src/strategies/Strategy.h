@@ -55,6 +55,10 @@ class Strategy
       const Survivors& survivors,
       const unsigned trickNS);
 
+    void adaptResults(
+      const Play& play,
+      const Survivors& survivors);
+
   public:
 
     Strategy();
@@ -95,9 +99,7 @@ class Strategy
 
     bool operator > (const Strategy& tv2) const;
 
-    Compare compare(const Strategy& tv2) const;
-
-    void operator *= (const Strategy& tv2);
+    void operator *= (const Strategy& strat2);
 
     void multiply(
       const Strategy& strat1,

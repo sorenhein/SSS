@@ -152,10 +152,18 @@ timersStrat[0].stop();
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
+// const bool b1 = (strat >= * iter);
+
     if (strat > * iter)
+    {
+    // assert(b1);
       iter = strategies.erase(iter);
+    }
     else
+    {
+    // assert(!b1);
       iter++;
+    }
   }
 
 timersStrat[0].stop();
@@ -215,7 +223,7 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-      if (strat > * iter)
+      if (strat >= * iter)
       {
         if (ownDeletions[stratNo] == 0)
         {
@@ -237,11 +245,10 @@ void Strategies::plusOneByOne(const Strategies& strats2)
 
   auto& str1 = strategies.front();
   auto& str2 = strats2.strategies.front();
-  const auto c = str1.compare(str2);
 
-  if (c == COMPARE_GREATER_THAN || c == COMPARE_EQUAL)
+  if (str1 >= str2)
     return;
-  else if (c == COMPARE_LESS_THAN)
+  else if (str2 >= str1)
     * this = strats2;
   else
   {
@@ -364,7 +371,7 @@ void Strategies::multiplyAdd(
   // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
-    if (* piter > * iter)
+    if (* piter >= * iter)
       iter = strategies.erase(iter);
     else
       iter++;
@@ -425,7 +432,7 @@ void Strategies::multiplyAddNew(
   // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
-    if (* piter > * iter)
+    if (* piter >= * iter)
       iter = strategies.erase(iter);
     else
       iter++;
@@ -625,8 +632,14 @@ void Strategies::collapseOnVoid()
       iter != strategies.end(); iter++)
   {
     assert(iter->size() == 1);
+// const bool b1 = (* iter >= * iterBest);
     if (* iter > * iterBest)
+    {
+    // assert(b1);
       iterBest = iter;
+    }
+    // else
+    // assert(!b1);
   }
 
   // Copy it to the front and remove the others.

@@ -346,59 +346,13 @@ bool Strategy::operator > (const Strategy& strat2) const
 }
 
 
-Compare Strategy::compare(const Strategy& tv2) const
-{
-  // Returns COMPARE_LESS_THAN if *this < tv2.
-
-// timersStrat[14].start();
-  const unsigned n = results.size();
-  assert(tv2.results.size() == n);
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = tv2.results.cbegin();
-
-  bool possibleLT = true;
-  bool possibleGT = true;
-
-  while (iter1 != results.end())
-  {
-    if (* iter1 > * iter2)
-      possibleLT = false;
-    else if (* iter1 < * iter2)
-      possibleGT = false;
-    
-    if (! possibleLT && ! possibleGT)
-    {
-// timersStrat[14].stop();
-      return COMPARE_INCOMMENSURATE;
-    }
-
-    iter1++;
-    iter2++;
-  }
-
-  if (possibleLT)
-  {
-// timersStrat[14].stop();
-    return (possibleGT ? COMPARE_EQUAL : COMPARE_LESS_THAN);
-  }
-  else
-  {
-// timersStrat[14].stop();
-    return COMPARE_GREATER_THAN;
-  }
-}
-
-
-void Strategy::operator *=(const Strategy& tv2)
+void Strategy::operator *= (const Strategy& strat2)
 {
   // Here we don't have to have the same length or distributions.
-  
-// timersStrat[15].start();
   auto iter1 = results.begin();
-  auto iter2 = tv2.results.begin();
+  auto iter2 = strat2.results.begin();
 
-  while (iter2 != tv2.results.end())
+  while (iter2 != strat2.results.end())
   {
     if (iter1 == results.end() || iter1->dist > iter2->dist)
     {
@@ -410,7 +364,7 @@ void Strategy::operator *=(const Strategy& tv2)
     {
       iter1++;
     }
-    else
+    else 
     {
       if (iter1->tricks > iter2->tricks)
       {
@@ -629,18 +583,10 @@ void Strategy::updateAndGrow(
 }
 
 
-void Strategy::adapt(
+void Strategy::adaptResults(
   const Play& play,
   const Survivors& survivors)
 {
-  // Our Strategy results may stem from a rank-reduced child combination.
-  // The survivors may have more entries because they come from the
-  // parent combination.
-  // Our Strategy may be about to get cross-multiplied onto another
-  // parent combination.  So it needs to have the full number of
-  // entries, and the results list needs to grow.
-  // Overall this is not such an expensive method.
-
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
   assert(! westVoidFlag || ! eastVoidFlag);
@@ -653,19 +599,6 @@ void Strategy::adapt(
   }
   else
     assert(survivors.sizeReduced() == len1);
-
-  if (play.rotateFlag)
-  {
-    results.reverse();
-
-    // We also have to to fix the NS winner orientation.
-    for (auto& res: results)
-      res.winners.flip();
-  }
-
-  // Update the winners.  This takes about 12% of the method time.
-    for (auto& res: results)
-      res.winners.update(play);
 
   if (westVoidFlag)
   {
@@ -695,6 +628,35 @@ void Strategy::adapt(
     // This is the general case.  It takes ~55%.
     Strategy::updateAndGrow(survivors, play.trickNS);
   }
+}
+
+
+void Strategy::adapt(
+  const Play& play,
+  const Survivors& survivors)
+{
+  // Our Strategy results may stem from a rank-reduced child combination.
+  // The survivors may have more entries because they come from the
+  // parent combination.
+  // Our Strategy may be about to get cross-multiplied onto another
+  // parent combination.  So it needs to have the full number of
+  // entries, and the results list needs to grow.
+  // Overall this is not such an expensive method.
+
+  if (play.rotateFlag)
+  {
+    results.reverse();
+
+    // We also have to to fix the NS winner orientation.
+    for (auto& res: results)
+      res.winners.flip();
+  }
+
+  // Update the winners.  This takes about 12% of the method time.
+    for (auto& res: results)
+      res.winners.update(play);
+
+  Strategy::adaptResults(play, survivors);
 
   Strategy::study();
 }
