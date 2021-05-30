@@ -527,69 +527,43 @@ timersStrat[12].stop();
     return;
   }
 
-if (! ranges.empty() && ! strats2.ranges.empty())
-timersStrat[2].start();
   // This implementation of the general product attempts to reduce
   // memory overhead.  The temporary product is formed in the last
   // element of Strategies as a scratch pad.  If it turns out to be
   // viable, it is already in Strategies and subject to move semantics.
 
-// auto tmp = * this;
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
   strategies.emplace_back(Strategy());
-  
-  for (auto& strat1: strategiesOwn)
-    for (auto& strat2: strats2.strategies)
-      Strategies::multiplyAdd(strat1, strat2);
 
-  strategies.pop_back();
-
-if (! ranges.empty() && ! strats2.ranges.empty())
-timersStrat[2].stop();
-
-  if (! ranges.empty())
+  if (! ranges.empty() && ! strats2.ranges.empty())
   {
-    if (strats2.ranges.empty())
-    {
-      // Probably comes from reactivate().
-      return;
-    }
-
-    // We only use the minimum here.
-    Strategies alt;
-
 timersStrat[14].start();
+
+    // We only use the minima here.
     Ranges minima;
     Strategies::combinedLower(ranges, strats2.ranges, minima);
 
-    alt.strategies.emplace_back(Strategy());
+    for (auto& strat1: strategiesOwn)
+      for (auto& strat2: strats2.strategies)
+        Strategies::multiplyAddNew(strat1, strat2, minima);
+
+timersStrat[14].stop();
+  }
+  else
+  {
+    // Probably comes from reactivate().
+timersStrat[2].start();
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        alt.multiplyAddNew(strat1, strat2, minima);
+        Strategies::multiplyAdd(strat1, strat2);
 
-    alt.strategies.pop_back();
-timersStrat[14].stop();
-
-    /*
-    if (strategies != alt.strategies)
-    {
-      cout << "First factor\n";
-      cout << tmp.str();
-      cout << "Second factor\n";
-      cout << strats2.str();
-      cout << "Correct product\n";
-      cout << Strategies::str();
-      cout << "Alt product\n";
-      cout << alt.str();
-      assert(strategies == alt.strategies);
-    }
-    */
+timersStrat[2].stop();
   }
 
-
+  strategies.pop_back();
 }
 
 
