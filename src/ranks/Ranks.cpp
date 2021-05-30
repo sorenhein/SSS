@@ -327,7 +327,7 @@ void Ranks::set(
 
 
 void Ranks::trivialRanked(
-  const unsigned tricks,
+  const char tricks,
   Result& trivialEntry) const
 {
   if (opps.hasRank(maxGlobalRank))
@@ -355,7 +355,8 @@ bool Ranks::trivial(Result& trivialEntry) const
 
   if (opps.isVoid())
   {
-    trivialEntry.setEmpty(max(north.length(), south.length()));
+    trivialEntry.setEmpty(
+      static_cast<char>(max(north.length(), south.length())));
     return true;
   }
 
@@ -369,7 +370,8 @@ bool Ranks::trivial(Result& trivialEntry) const
   if (opps.length() == 1)
   {
     // North-South win it all, or almost, if opponents have one card left.
-    Ranks::trivialRanked(max(north.length(), south.length()), trivialEntry);
+    Ranks::trivialRanked(
+      static_cast<char>(max(north.length(), south.length())), trivialEntry);
     return true;
   }
 

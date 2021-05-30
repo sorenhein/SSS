@@ -45,15 +45,15 @@ class Strategy
 
     void updateSingle(
       const unsigned fullNo,
-      const unsigned trickNS);
+      const char trickNS);
 
     void updateSameLength(
       const Survivors& survivors,
-      const unsigned trickNS);
+      const char trickNS);
 
     void updateAndGrow(
       const Survivors& survivors,
-      const unsigned trickNS);
+      const char trickNS);
 
     void adaptResults(
       const Play& play,
@@ -84,7 +84,7 @@ class Strategy
 
     void log(
       const vector<unsigned>& distributions,
-      const vector<unsigned>& tricks);
+      const vector<char>& tricks);
 
     void study();
 

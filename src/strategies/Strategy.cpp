@@ -125,7 +125,7 @@ void Strategy::logTrivial(
 
 void Strategy::log(
   const vector<unsigned>& distributions,
-  const vector<unsigned>& tricks)
+  const vector<char>& tricks)
 {
   assert(distributions.size() == tricks.size());
 
@@ -467,7 +467,7 @@ void Strategy::eraseRest(list<Result>::iterator iter)
 
 void Strategy::updateSingle(
   const unsigned fullNo,
-  const unsigned trickNS)
+  const char trickNS)
 {
   auto& result = results.front();
   result.dist = fullNo;
@@ -478,7 +478,7 @@ void Strategy::updateSingle(
 
 void Strategy::updateSameLength(
   const Survivors& survivors,
-  const unsigned trickNS)
+  const char trickNS)
 {
   auto iter1 = results.begin();
   auto iter2 = survivors.distNumbers.begin();
@@ -509,7 +509,7 @@ void Strategy::updateSameLength(
 
 void Strategy::updateAndGrow(
   const Survivors& survivors,
-  const unsigned trickNS)
+  const char trickNS)
 {
   // Make an indexable vector copy of the results that need to grow.
   vector<Result> resultsOld;
@@ -641,7 +641,7 @@ string Strategy::str(const string& title) const
   for (auto& res: results)
     ss <<
       setw(4) << res.dist <<
-      setw(6) << res.tricks << "\n";
+      setw(6) << +res.tricks << "\n";
 
   return ss.str();
 }

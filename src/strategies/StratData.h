@@ -55,7 +55,7 @@ struct StratData
 
   void eraseConstantDist(
     Result& cresult,
-    const unsigned tricks)
+    const char tricks)
   {
     cresult.dist = data.front().iter->dist;
     cresult.tricks = tricks;

@@ -11,9 +11,9 @@ using namespace std;
 struct Range
 {
   unsigned dist;
-  unsigned lower;
-  unsigned upper;
-  unsigned minimum;
+  char lower;
+  char upper;
+  char minimum;
 
   void operator *= (const Range& range2)
   {
@@ -56,9 +56,9 @@ struct Range
     stringstream ss;
     ss << 
       setw(4) << dist <<
-      setw(4) << lower <<
-      setw(4) << upper << 
-      setw(4) << minimum << 
+      setw(4) << +lower <<
+      setw(4) << +upper << 
+      setw(4) << +minimum << 
       endl;
     return ss.str();
   };

@@ -13,7 +13,7 @@ using namespace std;
 struct Result
 {
   unsigned dist;
-  unsigned tricks;
+  char tricks;
   Winners winners;
 
   bool operator < (const Result& res2) const
@@ -32,7 +32,7 @@ struct Result
   }
 
   void set(
-    const unsigned tricksIn,
+    const char tricksIn,
     const WinningSide side,
     const Card& card)
   {
@@ -40,7 +40,7 @@ struct Result
     winners.set(side, card);
   }
 
-  void setEmpty(const unsigned tricksIn)
+  void setEmpty(const char tricksIn)
   {
     tricks = tricksIn;
     winners.setEmpty();
@@ -49,7 +49,7 @@ struct Result
   string strEntry(const bool rankFlag) const
   {
     stringstream ss;
-    ss << setw(4) << tricks;
+    ss << setw(4) << +tricks;
     if (rankFlag)
       ss << setw(8) << winners.strEntry();
     return ss.str();
