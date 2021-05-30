@@ -106,12 +106,6 @@ void Strategy::resize(const unsigned len)
 }
 
 
-void Strategy::eraseRest(list<Result>::iterator iter)
-{
-  results.erase(iter, results.end());
-}
-
-
 void Strategy::logTrivial(
   const Result& trivialEntry,
   const unsigned len)
@@ -446,8 +440,6 @@ void Strategy::multiply(
   const Strategy& strat2)
 {
   // Here we don't have to have the same length or distributions.
-  
-// timersStrat[15].start();
   Strategy::reset();
   auto iter1 = strat1.results.begin();
   auto iter2 = strat2.results.begin();
@@ -511,14 +503,11 @@ void Strategy::multiply(
   }
 
   Strategy::study();
-
-// timersStrat[15].stop();
 }
 
 
 void Strategy::initRanges(Ranges& ranges)
 {
-// timersStrat[16].start();
   ranges.resize(results.size());
   auto iter = results.begin();
   auto riter = ranges.begin();
@@ -530,7 +519,6 @@ void Strategy::initRanges(Ranges& ranges)
     riter->upper = iter->tricks;
     riter->minimum = iter->tricks;
   }
-// timersStrat[16].stop();
 }
 
 
@@ -555,50 +543,17 @@ void Strategy::extendRanges(Ranges& ranges)
 }
 
 
-void Strategy::purgeRanges(
-  Ranges& ranges,
-  const Ranges& parentRanges)
-{
-  // Removes those distributions from results for which the range
-  // is strictly worse than the lowest parent range (i.e. the best
-  // range for the defense).
-  // There may be more entries in parentRanges than in ranges,
-  // but not the other way round.  There are the same number of
-  // results and ranges.
-
-  assert(results.size() == ranges.size());
-
-  auto iterResults = results.begin();
-  auto iterRanges = ranges.begin();
-  auto iterParentRanges = parentRanges.begin();
-
-  while (iterResults != results.end() &&
-      iterParentRanges != parentRanges.end())
-  {
-    assert(iterResults->dist == iterRanges->dist);
-
-    while (iterParentRanges != parentRanges.end() &&
-        iterParentRanges->dist < iterResults->dist)
-      iterParentRanges++;
-
-    assert(iterParentRanges->dist == iterResults->dist);
-
-    if (* iterParentRanges < * iterRanges)
-    {
-      weightInt -= iterResults->tricks;
-      iterResults = results.erase(iterResults);
-      iterRanges = ranges.erase(iterRanges);
-      iterParentRanges++;
-    }
-  }
-}
-
-
 void Strategy::erase(list<Result>::iterator iter)
 {
   // No error checking.
   weightInt -= iter->tricks;
   results.erase(iter);
+}
+
+
+void Strategy::eraseRest(list<Result>::iterator iter)
+{
+  results.erase(iter, results.end());
 }
 
 
@@ -678,13 +633,13 @@ void Strategy::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-// timersStrat[17].start();
   // Our Strategy results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
   // parent combination.
   // Our Strategy may be about to get cross-multiplied onto another
   // parent combination.  So it needs to have the full number of
   // entries, and the results list needs to grow.
+  // Overall this is not such an expensive method.
 
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
@@ -708,13 +663,13 @@ void Strategy::adapt(
       res.winners.flip();
   }
 
-  // Update the winners.
+  // Update the winners.  This takes about 12% of the method time.
     for (auto& res: results)
       res.winners.update(play);
 
   if (westVoidFlag)
   {
-    // Only keep the first result.
+    // Only keep the first result.  This and the next take ~ 33%.
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
@@ -737,12 +692,11 @@ void Strategy::adapt(
   }
   else
   {
-    // This is the general case.
+    // This is the general case.  It takes ~55%.
     Strategy::updateAndGrow(survivors, play.trickNS);
   }
 
   Strategy::study();
-// timersStrat[17].stop();
 }
 
 
@@ -755,16 +709,6 @@ unsigned Strategy::size() const
 unsigned Strategy::weight() const
 {
   return weightInt;
-}
-
-
-void Strategy::checkWeights() const
-{
-  unsigned w = 0;
-  for (auto& res: results)
-    w += res.tricks;
-
-  assert(w == weightInt);
 }
 
 

@@ -698,15 +698,6 @@ void Strategies::propagateRanges(const Strategies& child)
 }
 
 
-void Strategies::purgeRanges(const Strategies& parent)
-{
-timersStrat[3].start();
-  for (auto& strat: strategies)
-    strat.purgeRanges(ranges, parent.ranges);
-timersStrat[3].stop();
-}
-
-
 const Ranges& Strategies::getRanges() const
 {
   return ranges;
@@ -738,13 +729,6 @@ timersStrat[6].start();
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
 timersStrat[6].stop();
-}
-
-
-void Strategies::checkWeights() const
-{
-  for (auto& strat: strategies)
-    strat.checkWeights();    
 }
 
 

@@ -97,8 +97,6 @@ class Strategies
 
     void propagateRanges(const Strategies& child);
 
-    void purgeRanges(const Strategies& parent);
-
     const Ranges& getRanges() const;
 
     void consolidate();
@@ -106,8 +104,6 @@ class Strategies
     void adapt(
       const Play& play,
       const Survivors& survivors);
-
-    void checkWeights() const;
 
     string strRanges(const string& title = "") const;
 

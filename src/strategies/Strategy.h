@@ -74,8 +74,6 @@ class Strategy
 
     void resize(const unsigned len);
 
-    void eraseRest(list<Result>::iterator iter);
-
     void logTrivial(
       const Result& trivialEntry,
       const unsigned len);
@@ -109,11 +107,8 @@ class Strategy
 
     void extendRanges(Ranges& ranges);
 
-    void purgeRanges(
-      Ranges& ranges,
-      const Ranges& parentRanges);
-
     void erase(list<Result>::iterator iter);
+    void eraseRest(list<Result>::iterator iter);
 
     void adapt(
       const Play& play,
@@ -122,8 +117,6 @@ class Strategy
     unsigned size() const;
 
     unsigned weight() const;
-
-    void checkWeights() const;
 
     string str(const string& title = "") const;
 };

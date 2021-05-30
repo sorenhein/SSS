@@ -7,7 +7,6 @@
 
 #include "../plays/Play.h"
 
-
 /*
    The winner is structured as a number of sub-winners that are
    added / OR'ed together.  Declarer can choose between the sub-winners.
@@ -165,8 +164,8 @@ void Winners::operator *= (const Winners& w2)
     return;
   }
 
-  // This is surely inefficient.
-  Winners w1 = * this;
+  // This could be faster, but it's not that slow.
+  Winners w1 = move(* this);
   Winners::reset();
 
   for (auto& sw1: w1.winners)
