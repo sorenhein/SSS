@@ -303,49 +303,6 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
-bool Strategy::greater(const Strategy& strat2) const
-{
-  const unsigned n = results.size();
-  assert(strat2.results.size() == n);
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  bool greaterFlag = false;
-  while (iter1 != results.end())
-  {
-    if (* iter1 < * iter2)
-      return false;
-    else if (* iter1 > * iter2)
-      greaterFlag = true;
-
-    iter1++;
-    iter2++;
-  }
-  return greaterFlag;
-}
-
-
-bool Strategy::operator > (const Strategy& strat2) const
-{
-  if (studiedFlag)
-  {
-    for (unsigned i = 0; i < summary.size(); i++)
-    {
-      if (summary[i] < strat2.summary[i])
-        return false;
-    }
-  }
-  else
-  {
-    // At least 2 groups?
-    assert(results.size() < 4);
-  }
-
-  return Strategy::greater(strat2);
-}
-
-
 void Strategy::operator *= (const Strategy& strat2)
 {
   // Here we don't have to have the same length or distributions.

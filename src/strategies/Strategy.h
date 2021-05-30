@@ -39,9 +39,9 @@ class Strategy
 
     void setConstants();
 
-    bool greaterEqual(const Strategy& strat2) const;
+    unsigned numGroups() const;
 
-    bool greater(const Strategy& strat2) const;
+    bool greaterEqual(const Strategy& strat2) const;
 
     void updateSingle(
       const unsigned fullNo,
@@ -86,8 +86,6 @@ class Strategy
       const vector<unsigned>& distributions,
       const vector<unsigned>& tricks);
 
-    unsigned numGroups() const;
-
     void study();
 
     void scrutinize(const Ranges& minima);
@@ -96,8 +94,6 @@ class Strategy
     bool operator >= (const Strategy& tv2) const;
 
     bool greaterEqualByProfile(const Strategy& strat2) const;
-
-    bool operator > (const Strategy& tv2) const;
 
     void operator *= (const Strategy& strat2);
 

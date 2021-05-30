@@ -152,18 +152,11 @@ timersStrat[0].stop();
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
-// const bool b1 = (strat >= * iter);
 
-    if (strat > * iter)
-    {
-    // assert(b1);
+    if (strat >= * iter)
       iter = strategies.erase(iter);
-    }
     else
-    {
-    // assert(!b1);
       iter++;
-    }
   }
 
 timersStrat[0].stop();
@@ -632,14 +625,8 @@ void Strategies::collapseOnVoid()
       iter != strategies.end(); iter++)
   {
     assert(iter->size() == 1);
-// const bool b1 = (* iter >= * iterBest);
-    if (* iter > * iterBest)
-    {
-    // assert(b1);
+    if (* iter >= * iterBest)
       iterBest = iter;
-    }
-    // else
-    // assert(!b1);
   }
 
   // Copy it to the front and remove the others.
