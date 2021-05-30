@@ -28,18 +28,12 @@ s1 | s2   >             =               <               !=
 - In any case, in the end, we have to multiply the non-overlaps
   only each strategy (and study it)
 
-Separate out a Summary class
-- In Strategies *= Strategies, when Ranges are available, study
-  each Strategies in even more detail, subtracting out the minimum
-  of the two strategies, hopefully fitting in 2 bits
-- Group 5 surpluses into a 10-bit number
-- Then when comparing, look up the two 10-bit numbers in a 
-  pre-computed table
-- Then there is also no need for a backup comparison, as it will
-  always work
+scrutinize()
+- Instead of consecutive groups of 5, find a stride.
+  numGroups or stride = (results.size() / 5) + 1
+  profiles is a vector<unsigned>
+- counter % stride is the profiles index
 
-
-Why are Strategies::purgeRanges and getConstants never called?!
 
 
 2021-05-09

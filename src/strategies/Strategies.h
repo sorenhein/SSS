@@ -57,6 +57,7 @@ class Strategies
     void combinedLower(
       const Ranges& ranges1,
       const Ranges& ranges2,
+      const bool keepConstantsFlag,
       Ranges& minima) const;
 
     string strHeader(
@@ -83,7 +84,7 @@ class Strategies
     bool operator == (const Strategies& strats2);
 
     void operator += (const Strategy& strat);
-    void operator += (const Strategies& strats2);
+    void operator += (Strategies& strats2); // TODO const if no ...
 
     void operator *= (const Strategy& strat);
     void operator *= (Strategies& strats2); // TODO const if no scrutinize

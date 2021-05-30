@@ -197,7 +197,6 @@ void Strategy::scrutinize(const Ranges& minima)
 
     if (counter == LOOKUP_GROUP - 1)
     {
-assert(profile < 1024);
       profiles.push_back(profile);
       counter = 0;
       profile = 0;
@@ -208,10 +207,7 @@ assert(profile < 1024);
   }
 
   if (counter > 0)
-  {
-assert(profile < 1024);
     profiles.push_back(profile);
-  }
 }
 
 

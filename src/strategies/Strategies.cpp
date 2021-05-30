@@ -191,8 +191,7 @@ void Strategies::markChanges(
         continue;
       }
 
-      // if (iter->greaterEqual(strat))
-      if (* iter >= strat)
+      if (iter->greaterEqualByProfile(strat))
       {
         doneFlag = true;
         break;
@@ -216,14 +215,21 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
+// const bool b1 = strat.greaterEqualByProfile(* iter);
       if (strat >= * iter)
+      // if (strat.greaterEqualByProfile(* iter))
       {
+      // assert(b1);
         if (ownDeletions[stratNo] == 0)
         {
           deletions.push_back(iter);
           ownDeletions[stratNo] = 1;
         }
       }
+      // else
+      // {
+       // assert(!b1);
+      // }
       iter++;
       stratNo++;
     }
@@ -253,7 +259,7 @@ void Strategies::plusOneByOne(const Strategies& strats2)
 }
 
 
-void Strategies::operator += (const Strategies& strats2)
+void Strategies::operator += (Strategies& strats2)
 {
   if (strategies.empty())
   {
@@ -278,7 +284,23 @@ void Strategies::operator += (const Strategies& strats2)
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
 
+timersStrat[20].start();
+    /* */
+    Strategies::makeRanges();
+    strats2.makeRanges();
+
+    // We only need the minima here, but we use the existing method
+    // for simplicity.
+    Strategies::propagateRanges(strats2);
+
+    for (auto& strat: strategies)
+      strat.scrutinize(ranges);
+    for (auto& strat: strats2.strategies)
+      strat.scrutinize(ranges);
+      /* */
+
     Strategies::markChanges(strats2, additions, deletions);
+timersStrat[20].stop();
 
     for (auto& addition: additions)
       strategies.insert(addition.iter, *(addition.ptr));
@@ -440,6 +462,7 @@ void Strategies::multiplyAddNew(
 void Strategies::combinedLower(
   const Ranges& ranges1, 
   const Ranges& ranges2,
+  const bool keepConstantsFlag,
   Ranges& minima) const
 {
   // Finds the overall lower envelope of two ranges, which is useful
@@ -455,7 +478,7 @@ void Strategies::combinedLower(
       if (iter2 != ranges2.end())
         for (auto it = iter2; it != ranges2.end(); it++)
         {
-          if (! it->constant())
+          if (keepConstantsFlag || ! it->constant())
             minima.push_back(* it);
         }
       break;
@@ -465,7 +488,7 @@ void Strategies::combinedLower(
       if (iter1 != ranges1.end())
         for (auto it = iter1; it != ranges1.end(); it++)
         {
-          if (! it->constant())
+          if (keepConstantsFlag || ! it->constant())
             minima.push_back(* it);
         }
       break;
@@ -473,13 +496,13 @@ void Strategies::combinedLower(
 
     if (iter1->dist < iter2->dist)
     {
-      if (! iter1->constant())
+      if (keepConstantsFlag || ! iter1->constant())
         minima.push_back(* iter1);
       iter1++;
     }
     else if (iter1->dist > iter2->dist)
     {
-      if (! iter2->constant())
+      if (keepConstantsFlag || ! iter2->constant())
         minima.push_back(* iter2);
       iter2++;
     }
@@ -487,12 +510,12 @@ void Strategies::combinedLower(
     {
       if (iter1->minimum <= iter2->minimum)
       {
-        if (! iter1->constant())
+        if (keepConstantsFlag || ! iter1->constant())
           minima.push_back(* iter1);
       }
       else
       {
-        if (! iter2->constant())
+        if (keepConstantsFlag || ! iter2->constant())
           minima.push_back(* iter2);
       }
       iter1++;
@@ -543,7 +566,7 @@ timersStrat[14].start();
 
     // We only use the minima here.
     Ranges minima;
-    Strategies::combinedLower(ranges, strats2.ranges, minima);
+    Strategies::combinedLower(ranges, strats2.ranges, false, minima);
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)

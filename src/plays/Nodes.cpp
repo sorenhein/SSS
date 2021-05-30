@@ -154,6 +154,7 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
 
+
   // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->reactivate();
