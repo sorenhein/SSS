@@ -12,6 +12,9 @@
 
 #include "../ranks/Ranks.h"
 
+#include "../stats/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Plays::Plays()
 {
@@ -150,7 +153,9 @@ const Strategies& Plays::strategize(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
+timersStrat[19].start();
   Plays::getNextStrategies(distPtr, debugFlag);
+timersStrat[19].stop();
 
   if (nodesRho.used() <= 20 ||
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))

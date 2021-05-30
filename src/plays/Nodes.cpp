@@ -7,6 +7,10 @@
 #include "Play.h"
 #include "Chunks.h"
 
+// TMP
+#include "../stats/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Nodes::Nodes()
 {
@@ -70,6 +74,7 @@ Node * Nodes::log(
       playPtr->samePartial(* prevPlayPtr, level))
     return prevPtr;
 
+timersStrat[17].start();
   // If we have run out of space, make some more.
   if (nextIter == nodes.end())
     nextIter = nodes.insert(nextIter, chunkSize, Node());
@@ -87,6 +92,7 @@ Node * Nodes::log(
   node.set(parentPtr, playPtr, prevNodePtr);
 
   prevPtr = &node;
+timersStrat[17].stop();
   return prevPtr;
 }
 
@@ -119,6 +125,7 @@ list<Node>::const_iterator Nodes::end() const
 
 void Nodes::removeNodes()
 {
+  // Quite fast.
   auto iter = nodes.begin();
   while (iter != nextIter)
   {
@@ -172,7 +179,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // Derive bounds on RHO outcomes for each lead in order to find
   // constant or dominated outcomes, propagate them to the parent nodes 
   // (which are may be nodesLead if partner is void; see Plays), and 
-  // remove them from the parent nodes.
+  // remove them from the parent nodes.  This is quite fast.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {
     iter->strategies().makeRanges();
@@ -191,8 +198,10 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // removed from their options.
   // This has to be a separate loop, as all ranges have to propagate 
   // up first.
+timersStrat[16].start();
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->purgeRanges();
+timersStrat[16].stop();
 
   Nodes::removeNodes();
 

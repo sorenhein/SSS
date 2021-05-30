@@ -65,9 +65,9 @@ string Timers::str(const int prec) const
   ss << string(13, '-') << "\n\n";
 
   ss << setw(24) << left << "Name" << 
-    setw(10) << right << "Sum" << 
-    setw(6) << right << "Count" << 
-    setw(10) << right << "Average" << "\n";
+    setw(13) << right << "Sum" << 
+    setw(10) << right << "Count" << 
+    setw(13) << right << "Average" << "\n";
 
   Timer timerSum;
   for (unsigned i = 0; i+1 < timers.size(); i++)
@@ -79,7 +79,7 @@ string Timers::str(const int prec) const
     }
   }
 
-  ss << string(50, '-') << "\n";
+  ss << string(60, '-') << "\n";
   ss << setw(24) << left << "THREAD SUM" << timerSum.str(prec) << "\n";
 
   // The last timer is presumed to be separate.

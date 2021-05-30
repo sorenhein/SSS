@@ -34,6 +34,11 @@ class Strategy
     vector<unsigned> summary;
     bool studiedFlag;
 
+    list<unsigned> profiles;
+
+
+    void setConstants();
+
     bool greaterEqual(const Strategy& strat2) const;
 
     bool greater(const Strategy& strat2) const;
@@ -83,8 +88,12 @@ class Strategy
 
     void study();
 
+    void scrutinize(const Ranges& minima);
+
     bool operator == (const Strategy& tv2) const;
     bool operator >= (const Strategy& tv2) const;
+
+    bool greaterEqualByProfile(const Strategy& strat2) const;
 
     bool operator > (const Strategy& tv2) const;
 

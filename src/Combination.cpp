@@ -58,7 +58,9 @@ const Strategies& Combination::strategize(
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
   // if (centry.canonicalHolding3 == 14480 && ranks.size() == 10)
-  if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
+  // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
+  // if (centry.canonicalHolding3 == 132889 && ranks.size() == 12)
+  if (centry.canonicalHolding3 == 1637 && ranks.size() == 8)
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
     cout << ranks.strTable();

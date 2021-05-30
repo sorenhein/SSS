@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <mutex>
 #include <cassert>
 
 #include "Strategy.h"
@@ -8,6 +9,14 @@
 #include "../plays/Play.h"
 
 #include "../Survivor.h"
+
+// Keep?
+
+mutex mtxStrategy;
+static bool init_flag = false;
+
+vector<char> lookupGE;
+
 
 // TMP
 #include "../stats/Timer.h"
@@ -23,12 +32,61 @@ extern vector<Timer> timersStrat;
 
 Strategy::Strategy()
 {
+  mtxStrategy.lock();
+  if (! init_flag)
+  {
+    Strategy::setConstants();
+    init_flag = true;
+  }
+  mtxStrategy.unlock();
+
   Strategy::reset();
 }
 
 
 Strategy::~Strategy()
 {
+}
+
+
+void Strategy::setConstants()
+{
+  // In order to speed up the comparison of Strategy's, we group
+  // their trick excesses (over the minimum) into a profile list,
+  // where each entry combines five entries into 10 bits.
+  // We can then look up two 10-bit profiles and get a partial answer.
+  
+  lookupGE.resize(1 << 20);
+  for (unsigned i = 0; i < (1 << 10); i++)
+  {
+    for (unsigned j = 0; j < (1 << 10); j++)
+    {
+      unsigned flagGE = 1;
+      unsigned i0 = i;
+      unsigned j0 = j;
+      for (unsigned p = 0; p < 5; p++)
+      {
+        const unsigned entry1 = (i0 & 0x3);
+        const unsigned entry2 = (j0 & 0x3);
+        if (entry1 < entry2)
+        {
+          flagGE = 0;
+          break;
+        }
+        else
+        {
+          i0 >>= 2;
+          j0 >>= 2;
+        }
+      }
+
+      if (flagGE)
+      {
+        const unsigned k = (i << 10) | j;
+        lookupGE[k] = 1;
+      }
+    }
+  }
 }
 
 
@@ -116,6 +174,49 @@ void Strategy::study()
 }
 
 
+void Strategy::scrutinize(const Ranges& minima)
+{
+  assert(minima.size() >= results.size());
+  profiles.clear();
+
+  auto riter = results.begin();
+  auto miter = minima.begin();
+
+  unsigned counter = 0;
+  unsigned profile = 0;
+  while (riter != results.end())
+  {
+    assert(miter != minima.end());
+    if (miter->dist < riter->dist)
+    {
+      miter++;
+      continue;
+    }
+
+    assert(riter->dist == miter->dist);
+
+    const unsigned diff = riter->tricks - miter->minimum;
+    assert(diff < 4); // Must fit in 2 bits for this to work
+
+    profile = (profile << 2) | diff;
+    counter++;
+
+    if (counter == 4)
+    {
+      profiles.push_back(profile);
+      counter = 0;
+      profile = 0;
+    }
+
+    riter++;
+    miter++;
+  }
+
+  if (counter > 0)
+    profiles.push_back(profile);
+}
+
+
 bool Strategy::operator == (const Strategy& tv2) const
 {
 // timersStrat[11].start();
@@ -156,6 +257,33 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
     iter1++;
     iter2++;
   }
+  return true;
+}
+
+
+bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
+{
+  assert(strat2.results.size() == results.size());
+
+  if (profiles.size() != strat2.profiles.size())
+  {
+    cout << "Profile size mismatch\n";
+    cout << profiles.size() << " vs. " << strat2.profiles.size() << endl;
+
+  }
+  assert(profiles.size() == strat2.profiles.size());
+
+  auto piter1 = profiles.begin();
+  auto piter2 = strat2.profiles.begin();
+  while ( piter1 != profiles.end())
+  {
+    if (! lookupGE[((* piter1) << 10) | (* piter2)])
+      return false;
+
+    piter1++;
+    piter2++;
+  }
+
   return true;
 }
 

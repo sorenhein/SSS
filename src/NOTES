@@ -2,12 +2,39 @@
 ----------
 Ideas for speeding up Strategies
 
-- Strategy::multiply
-  results.resize(strat1.results.size() + strat2.results.size());
-  Instead of insert: copy
-  Instead of push_back: ditto
+Strategies:multiplyAdd, i.e. Strategy::multiply
+- Find the overlapping distributions
+- Find the strat1-only distributions and their cross matrix
+- Find the strat2-only distributions and their cross matrix
+- When multiplying, only multiply the overlapping ones and note
+  the index of the non-overlapping regions
+- When comparing two of them, first examine the non-overlapping
+  results (>, =, <, !=)
 
-Add more global timing e.g. for Plays
+
+s1 | s2   >             =               <               !=
+>         >, !=         >, !=           just !=         just !=
+=         >, !=         any             <, !=           just !=      
+<         just !=       <, !=           <, !=           just !=
+!=        just !=       just !=         just !=         just !=
+
+- So in 9 of 16 cases we already know the result, and we just have
+  to find the right weight at which to insert (which could also be
+  a lookup...)
+- We also have the weight as an indicator >, =, <
+- In the other 7, we have to compare the overlapping bits as well
+- In any case, in the end, we have to multiply the non-overlaps
+  only each strategy (and study it)
+
+Separate out a Summary class
+- In Strategies *= Strategies, when Ranges are available, study
+  each Strategies in even more detail, subtracting out the minimum
+  of the two strategies, hopefully fitting in 2 bits
+- Group 5 surpluses into a 10-bit number
+- Then when comparing, look up the two 10-bit numbers in a 
+  pre-computed table
+- Then there is also no need for a backup comparison, as it will
+  always work
 
 
 Why are Strategies::purgeRanges and getConstants never called?!
@@ -172,62 +199,6 @@ Rank equivalence
   play the Q or A, which again leads to no declarer choice)
 * So in a sense the small cards x, 8 and T don't matter!
 * We have to recognize this somehow, as strategies will merge
-
-Improve *= efficiency
-
-* If merge doesn't change the vector, no need to compare
-* Short strategy, e.g. with 3 distributions
-  - Somehow split into overlapping/in-band and other/out-of-band
-    distributions
-  - Is there a way to tell in some cases that something will be
-    a surviving strategy?
-* In the merged strategy, the two non-overlaps' origins in the original
-  strategies are stored
-  - Before merging, we study the non-overlaps
-  - How many really distinct ones are there?
-  - If not a lot, consider a complete cross-table (matrix) of
-    relationships (dominates, is dominated by, is different)
-  - Also three lists for each one of dominates, is dominated by etc.
-  - Can index by the weight of the non-overlapping part?
-* In a new merge, the non-overlaps are just copied over
-  - We can tell by looking at other merges whether we have a chance
-    or dominating or being dominated by
-* The overlaps do have to be made properly
-  - Can stop if the two overlaps are already "contradictory"
-  - Even if we don't stop, some theories can be eliminated
-  - Their weight is a first indication of possible domination
-  - Then drill down into pieces
-* In a merge, start looking for identities?  (Empirical question)
-* Then look for being dominated?
-  - The accepted strategy has a profile across buckets, and we can
-    make statistics
-  - We pick our own strongest bucket first and try to beat other
-    stored strategies 
-- Initially just a flat list
-- organize(ordered list of distributions in groups)
-  makes partial sums for the groups
-  also makes a kind of hash for equality checking (group sums)
-- partials()
-  returns ordered list of partial sums for groups
-- prioritize(ordered list of groups)
-  sets the order of comparison.  Top group is the one where the vector
-  is relatively highest.  So if you want to beat this vector, you
-  compare first to the toughest comparison in order to lose quickly.
-  If you want to lose to this vector, you first try to lose to its
-  weakest group in order to fail quickly
-- == first uses the hash and then individually
-- > uses the prioritized groups and then individually
-* In *=
-  - Start with the largest times one vector
-  - organize() each vector with a list, maybe co-prime "hash"
-  - Figure out the partials
-  - Sort them
-  - prioritize() each vector
-  - Then go through the other second vectors
-  - After ~ 20% of the second vectors, re-sort and re-prioritize()
-* Ordering of strategies in *= sequence?!
-  - Maybe do the two "halves" and then merge to break symmetry?!
-*
 
 Play eliminations
 -----------------

@@ -13,8 +13,6 @@
 #include "../stats/Timer.h"
 extern vector<Timer> timersStrat;
 
-#define SCRATCH_CHUNK 10
-
 
 Strategies::Strategies()
 {
@@ -95,6 +93,7 @@ bool Strategies::sameUnordered(const Strategies& strats2)
 
 void Strategies::restudy()
 {
+  // Very fast.
   if (strategies.empty())
     return;
 
@@ -300,48 +299,43 @@ void Strategies::operator += (const Strategies& strats2)
 void Strategies::operator *= (const Strategy& strat)
 {
   if (strategies.empty())
+  {
+timersStrat[7].start();
     * this += strat;
+timersStrat[7].stop();
+  }
   else
   {
     // TODO Really?  No re-sorting and consolidating?
-timersStrat[7].start();
+timersStrat[8].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
-timersStrat[7].stop();
+timersStrat[8].stop();
   }
 }
 
-
-#include <iterator>
 
 void Strategies::multiplyAdd(
   const Strategy& strat1,
   const Strategy& strat2)
 {
-  // This costs about half of the overall method time.
-timersStrat[10].start();
+  // This costs about two thirds of the overall method time.
   auto& product = strategies.back();
   product.multiply(strat1, strat2);
-
   auto piter = prev(strategies.end());
-timersStrat[10].stop();
 
-timersStrat[11].start();
   if (strategies.size() == 1)
   {
     // Keep the product and make a new scratch-pad element.
     strategies.emplace_back(Strategy());
-timersStrat[11].stop();
     return;
   }
-timersStrat[11].stop();
 
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   
-timersStrat[12].start();
   auto iter = strategies.begin();
   while (iter != piter && iter->weight() >= piter->weight())
   {
@@ -349,32 +343,25 @@ timersStrat[12].start();
     if (* iter >= * piter)
     {
       // The new strat is dominated.
-timersStrat[12].stop();
       return;
     }
     else
       iter++;
   }
-timersStrat[12].stop();
 
   // Already in the right place at the end?
   if (iter == piter)
   {
-timersStrat[13].start();
     strategies.emplace_back(Strategy());
-timersStrat[13].stop();
     return;
   }
 
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
-timersStrat[14].start();
   strategies.splice(iter, strategies, piter);
-timersStrat[14].stop();
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
-timersStrat[15].start();
   while (iter != strategies.end())
   {
     if (* piter > * iter)
@@ -382,109 +369,139 @@ timersStrat[15].start();
     else
       iter++;
   }
-timersStrat[15].stop();
 
   // Make a new scratch-pad element.
-timersStrat[16].start();
   strategies.emplace_back(Strategy());
-timersStrat[16].stop();
 }
 
 
-void Strategies::multiplyAdd(
+void Strategies::multiplyAddNew(
   const Strategy& strat1,
   const Strategy& strat2,
-  list<Strategy>::iterator& iterScratch)
+  const Ranges& minima)
 {
-  // This costs about half of the overall method time.
-timersStrat[20].start();
-  iterScratch->multiply(strat1, strat2);
-timersStrat[20].stop();
+  // This costs about two thirds of the overall method time.
+  auto& product = strategies.back();
+  product.multiply(strat1, strat2);
+  product.scrutinize(minima);
+  auto piter = prev(strategies.end());
 
-timersStrat[21].start();
   if (strategies.size() == 1)
   {
     // Keep the product and make a new scratch-pad element.
-    // strategies.emplace_back(Strategy());
-
-    if (next(iterScratch) == strategies.end())
-      strategies.resize(strategies.size() + SCRATCH_CHUNK);
-
-    iterScratch++;
-timersStrat[21].stop();
+    strategies.emplace_back(Strategy());
     return;
   }
-timersStrat[21].stop();
 
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   
-timersStrat[22].start();
   auto iter = strategies.begin();
-  while (iter != iterScratch && iter->weight() >= iterScratch->weight())
+  while (iter != piter && iter->weight() >= piter->weight())
   {
-
-    if (* iter >= * iterScratch)
+    if (iter->greaterEqualByProfile(* piter))
     {
       // The new strat is dominated.
-timersStrat[22].stop();
       return;
     }
     else
       iter++;
   }
-timersStrat[22].stop();
 
   // Already in the right place at the end?
-  if (iter == iterScratch)
+  if (iter == piter)
   {
-timersStrat[23].start();
-    if (next(iterScratch) == strategies.end())
-      strategies.resize(strategies.size() + SCRATCH_CHUNK);
-
-    iterScratch++;
-timersStrat[23].stop();
+    strategies.emplace_back(Strategy());
     return;
   }
 
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
-timersStrat[24].start();
-  auto iterScratchNext = iterScratch;
-  iterScratchNext++;
-  strategies.splice(iter, strategies, iterScratch);
-timersStrat[24].stop();
+  strategies.splice(iter, strategies, piter);
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
-timersStrat[25].start();
-  while (iter != iterScratchNext)
+  while (iter != strategies.end())
   {
-    if (* iterScratch > * iter)
+    if (* piter > * iter)
       iter = strategies.erase(iter);
     else
       iter++;
   }
-timersStrat[25].stop();
 
-timersStrat[26].start();
   // Make a new scratch-pad element.
-  // strategies.emplace_back(Strategy());
-  if (iterScratchNext == strategies.end())
-  {
-    iterScratchNext--;
-    strategies.resize(strategies.size() + SCRATCH_CHUNK);
-    iterScratchNext++;
-  }
-
-  iterScratch = iterScratchNext;
-timersStrat[26].stop();
+  strategies.emplace_back(Strategy());
 }
 
 
-void Strategies::operator *= (const Strategies& strats2)
+void Strategies::combinedLower(
+  const Ranges& ranges1, 
+  const Ranges& ranges2,
+  Ranges& minima) const
+{
+  // Finds the overall lower envelope of two ranges, which is useful
+  // before multiplying together two Strategies.
+
+  auto iter1 = ranges1.begin();
+  auto iter2 = ranges2.begin();
+
+  while (true)
+  {
+    if (iter1 == ranges1.end())
+    {
+      if (iter2 != ranges2.end())
+        for (auto it = iter2; it != ranges2.end(); it++)
+        {
+          if (! it->constant())
+            minima.push_back(* it);
+        }
+      break;
+    }
+    else if (iter2 == ranges2.end())
+    {
+      if (iter1 != ranges1.end())
+        for (auto it = iter1; it != ranges1.end(); it++)
+        {
+          if (! it->constant())
+            minima.push_back(* it);
+        }
+      break;
+    }
+
+    if (iter1->dist < iter2->dist)
+    {
+      if (! iter1->constant())
+        minima.push_back(* iter1);
+      iter1++;
+    }
+    else if (iter1->dist > iter2->dist)
+    {
+      if (! iter2->constant())
+        minima.push_back(* iter2);
+      iter2++;
+    }
+    else
+    {
+      if (iter1->minimum <= iter2->minimum)
+      {
+        if (! iter1->constant())
+          minima.push_back(* iter1);
+      }
+      else
+      {
+        if (! iter2->constant())
+          minima.push_back(* iter2);
+      }
+      iter1++;
+      iter2++;
+    }
+  }
+}
+
+
+void Strategies::operator *= (Strategies& strats2)
 {
   const unsigned len2 = strats2.strategies.size();
   if (len2 == 0)
@@ -496,76 +513,81 @@ void Strategies::operator *= (const Strategies& strats2)
   const unsigned len1 = strategies.size();
   if (len1 == 0)
   {
-    // Keep the new results.
+    // Keep the new results.  Very fast.
     strategies = strats2.strategies;
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
+timersStrat[12].start();
     strategies.front() *= strats2.strategies.front();
+timersStrat[12].stop();
     return;
   }
 
+if (! ranges.empty() && ! strats2.ranges.empty())
 timersStrat[2].start();
   // This implementation of the general product attempts to reduce
   // memory overhead.  The temporary product is formed in the last
   // element of Strategies as a scratch pad.  If it turns out to be
   // viable, it is already in Strategies and subject to move semantics.
 
-auto own = * this;
-
-Timer timer1;
-timer1.start();
+// auto tmp = * this;
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
-  // if (len1 * len2 < 50)
-  // {
-    // Make room for the scratch-pad element.
-    strategies.emplace_back(Strategy());
+  strategies.emplace_back(Strategy());
   
-    for (auto& strat1: strategiesOwn)
-      for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAdd(strat1, strat2);
+  for (auto& strat1: strategiesOwn)
+    for (auto& strat2: strats2.strategies)
+      Strategies::multiplyAdd(strat1, strat2);
 
-    strategies.pop_back();
-timer1.stop();
-  // }
-  // else
-  // {
+  strategies.pop_back();
 
+if (! ranges.empty() && ! strats2.ranges.empty())
+timersStrat[2].stop();
+
+  if (! ranges.empty())
+  {
+    if (strats2.ranges.empty())
+    {
+      // Probably comes from reactivate().
+      return;
+    }
+
+    // We only use the minimum here.
     Strategies alt;
-Timer timer2;
-timer2.start();
-    alt.strategies.resize(SCRATCH_CHUNK);
-    auto iterScratch = alt.strategies.begin();
+
+timersStrat[14].start();
+    Ranges minima;
+    Strategies::combinedLower(ranges, strats2.ranges, minima);
+
+    alt.strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        alt.multiplyAdd(strat1, strat2, iterScratch);
+        alt.multiplyAddNew(strat1, strat2, minima);
 
-    alt.strategies.erase(iterScratch, alt.strategies.end());
-timer2.stop();
-
-cout << "TIMER " << len1 << " " << len2 << "\n" <<
-timer1.str(4) << timer2.str(4) << endl;
-
-    // assert(alt.strategies == strategies);
+    alt.strategies.pop_back();
+timersStrat[14].stop();
 
     /*
-    strategies.resize(SCRATCH_CHUNK);
-    auto iterScratch = strategies.begin();
-
-    for (auto& strat1: strategiesOwn)
-      for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAdd(strat1, strat2, iterScratch);
-
-    strategies.erase(iterScratch, strategies.end());
+    if (strategies != alt.strategies)
+    {
+      cout << "First factor\n";
+      cout << tmp.str();
+      cout << "Second factor\n";
+      cout << strats2.str();
+      cout << "Correct product\n";
+      cout << Strategies::str();
+      cout << "Alt product\n";
+      cout << alt.str();
+      assert(strategies == alt.strategies);
+    }
     */
-  // }
+  }
 
-timersStrat[2].stop();
 
 }
 
@@ -587,6 +609,7 @@ unsigned Strategies::numDists() const
 
 void Strategies::collapseOnVoid()
 {
+  // Very fast.
   assert(strategies.size() > 0);
   if (strategies.size() == 1)
   {
@@ -692,17 +715,15 @@ const Ranges& Strategies::getRanges() const
 
 void Strategies::consolidate()
 {
-timersStrat[5].start();
+  // Acceptably fast.
 
   Strategies::restudy();
 
   auto oldStrats = move(strategies);
-  Strategies::reset();
+  strategies.clear();  // But leave ranges intact
 
   for (auto& strat: oldStrats)
     * this += strat;
-  
-timersStrat[5].stop();
 }
 
 

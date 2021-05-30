@@ -42,10 +42,10 @@ class Strategies
       const Strategy& strat1,
       const Strategy& strat2);
 
-    void multiplyAdd(
+    void multiplyAddNew(
       const Strategy& strat1,
       const Strategy& strat2,
-      list<Strategy>::iterator& iterScratch);
+      const Ranges& minima);
 
     void markChanges(
       const Strategies& strats2,
@@ -53,6 +53,11 @@ class Strategies
       list<list<Strategy>::const_iterator>& deletions) const;
 
     void collapseOnVoid();
+
+    void combinedLower(
+      const Ranges& ranges1,
+      const Ranges& ranges2,
+      Ranges& minima) const;
 
     string strHeader(
       const string& title,
@@ -81,7 +86,7 @@ class Strategies
     void operator += (const Strategies& strats2);
 
     void operator *= (const Strategy& strat);
-    void operator *= (const Strategies& strats2);
+    void operator *= (Strategies& strats2); // TODO const if no scrutinize
 
     unsigned size() const;
     unsigned numDists() const;
