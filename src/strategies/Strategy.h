@@ -90,7 +90,8 @@ class Strategy
 
     void scrutinize(const Ranges& minima);
 
-    bool operator == (const Strategy& tv2) const;
+    bool operator == (const Strategy& strat2) const;
+
     bool operator >= (const Strategy& tv2) const;
 
     bool greaterEqualByProfile(const Strategy& strat2) const;

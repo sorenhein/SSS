@@ -10,24 +10,25 @@
 
 #include "../Survivor.h"
 
-// Keep?
+
+// A major time drain is the component-wise comparison of results.  
+// There is an experimental implementation in which 5 result entries
+// are gathered into a 10-bit vector, and two such 10-bit vectors
+// are compared in a 20-bit lookup.  The lookup table must be global
+// and initialized once.
+
+#define LOOKUP_GROUP 5
+#define LOOKUP_BITS (LOOKUP_GROUP + LOOKUP_GROUP)
+#define LOOKUP_SIZE (LOOKUP_BITS + LOOKUP_BITS)
 
 mutex mtxStrategy;
 static bool init_flag = false;
-
 vector<char> lookupGE;
 
 
 // TMP
 #include "../stats/Timer.h"
 extern vector<Timer> timersStrat;
-
-// TODO Dominance can probably be implemented more efficiently.
-// For example the "weight" (sum of all trick counts) indicates
-// whether one vector can dominate another or not.  This can be
-// extended to halves or thirds etc. of the vectors.  So if we
-// can track these statistics efficiently, we can do a comparison
-// of these statistics before doing the full loop.
 
 
 Strategy::Strategy()
@@ -56,20 +57,22 @@ void Strategy::setConstants()
   // where each entry combines five entries into 10 bits.
   // We can then look up two 10-bit profiles and get a partial answer.
   
-  lookupGE.resize(1 << 20);
-  for (unsigned i = 0; i < (1 << 10); i++)
+  lookupGE.resize(1 << LOOKUP_SIZE);
+  for (unsigned i = 0; i < (1 << LOOKUP_BITS); i++)
   {
-    for (unsigned j = 0; j < (1 << 10); j++)
+    for (unsigned j = 0; j < (1 << LOOKUP_BITS); j++)
     {
       unsigned flagGE = 1;
       unsigned i0 = i;
       unsigned j0 = j;
-      for (unsigned p = 0; p < 5; p++)
+      for (unsigned p = 0; p < LOOKUP_GROUP; p++)
       {
+        // Break each index down into a two-bit number.
         const unsigned entry1 = (i0 & 0x3);
         const unsigned entry2 = (j0 & 0x3);
         if (entry1 < entry2)
         {
+          // Can no longer be >=.
           flagGE = 0;
           break;
         }
@@ -81,10 +84,7 @@ void Strategy::setConstants()
       }
 
       if (flagGE)
-      {
-        const unsigned k = (i << 10) | j;
-        lookupGE[k] = 1;
-      }
+        lookupGE[(i << LOOKUP_BITS) | j] = 1;
     }
   }
 }
@@ -195,8 +195,9 @@ void Strategy::scrutinize(const Ranges& minima)
     profile = (profile << 2) | diff;
     counter++;
 
-    if (counter == 4)
+    if (counter == LOOKUP_GROUP - 1)
     {
+assert(profile < 1024);
       profiles.push_back(profile);
       counter = 0;
       profile = 0;
@@ -207,31 +208,30 @@ void Strategy::scrutinize(const Ranges& minima)
   }
 
   if (counter > 0)
+  {
+assert(profile < 1024);
     profiles.push_back(profile);
+  }
 }
 
 
-bool Strategy::operator == (const Strategy& tv2) const
+bool Strategy::operator == (const Strategy& strat2) const
 {
-// timersStrat[11].start();
+  // For diagnostics.
   const unsigned n = results.size();
-  assert(tv2.results.size() == n);
+  assert(strat2.results.size() == n);
 
   list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = tv2.results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
 
   while (iter1 != results.end())
   {
     if (* iter1 != * iter2)
-{
-// timersStrat[11].stop();
       return false;
-}
 
     iter1++;
     iter2++;
   }
-// timersStrat[11].stop();
   return true;
 }
 
@@ -266,10 +266,11 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 
   }
   assert(profiles.size() == strat2.profiles.size());
+  assert(! profiles.empty());
 
   auto piter1 = profiles.begin();
   auto piter2 = strat2.profiles.begin();
-  while ( piter1 != profiles.end())
+  while (piter1 != profiles.end())
   {
     if (! lookupGE[((* piter1) << 10) | (* piter2)])
       return false;

@@ -420,12 +420,13 @@ void Strategies::multiplyAddNew(
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
   strategies.splice(iter, strategies, piter);
+  piter = prev(iter);
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
-    if (* piter >= * iter)
+    if (piter->greaterEqualByProfile(* iter))
       iter = strategies.erase(iter);
     else
       iter++;

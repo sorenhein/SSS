@@ -2,6 +2,8 @@
 ----------
 Ideas for speeding up Strategies
 
+Make things like Result smaller (char might be enough for dist and tricks)
+
 Strategies:multiplyAdd, i.e. Strategy::multiply
 - Find the overlapping distributions
 - Find the strat1-only distributions and their cross matrix
