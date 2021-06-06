@@ -814,7 +814,7 @@ Strategies strCopy = * this;
 
   if (! ranges.empty() && ! strats2.ranges.empty())
   {
-/*
+/* */
 timersStrat[21].start();
 
 // cout << strCopy.str("strategiesOwn");
@@ -839,12 +839,6 @@ timersStrat[22].start();
     Ranges minima2;
     Strategies::combinedLower(ranges, strats2.ranges, false, minima2);
 
-// cout << "scrutinizing" << endl;
-    for (auto& strat: strategiesOwn)
-      strat.scrutinize(ranges);
-    for (auto& strat: strats2.strategies)
-      strat.scrutinize(ranges);
-// cout << "scrutinized" << endl;
 timersStrat[22].stop();
 
 timersStrat[23].start();
@@ -854,10 +848,10 @@ timersStrat[23].start();
     extendedStrats.emplace_back(ExtendedStrategy());
 
     unsigned i = 0;
-    for (auto& strat1: strategiesOwn)
+    for (auto& strat1: splitOwn.shared.strategies)
     {
       unsigned j = 0;
-      for (auto& strat2: strats2.strategies)
+      for (auto& strat2: splitOther.shared.strategies)
       {
         stmp.multiplyAddNewer(strat1, strat2, minima2,
           splitOwn, splitOther, i, j, extendedStrats);
@@ -865,39 +859,52 @@ timersStrat[23].start();
       }
       i++;
     }
+
 timersStrat[23].stop();
 
-    // TODO
+    // TODO This won't be in weight order!
     // Add back the non-overlapping results.
-*/
+timersStrat[24].start();
+    for (auto& es: extendedStrats)
+    {
+      es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
+      es.overlap *= * splitOther.ownPtrs[es.indexOther];
+      stmp.strategies.push_back(move(es.overlap));
+    }
 
+    stmp.strategies.pop_back();
+timersStrat[24].stop();
+/* */
+    
+  
 timersStrat[14].start();
 
     // We only use the minima here.
     Ranges minima;
     Strategies::combinedLower(ranges, strats2.ranges, false, minima);
 
-/*
-cout << "ranges\n";
-cout << ranges.front().strHeader();
-for (auto& range: ranges)
-  cout << range.str();
-cout << "strats2.ranges\n";
-cout << strats2.ranges.front().strHeader();
-for (auto& range: strats2.ranges)
-  cout << range.str();
-cout << "minima\n";
-cout << minima.front().strHeader();
-for (auto& range: minima)
-  cout << range.str();
-  */
-
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
         Strategies::multiplyAddNew(strat1, strat2, minima);
 
+    strategies.pop_back();
+
 timersStrat[14].stop();
 
+/* */
+timersStrat[25].start();
+    // if (! (stmp == * this))
+    {
+      cout << strCopy.str("strategiesOwn");
+      cout << strats2.str("strats2.strategies");
+      cout << stmp.str("newer product");
+      cout << Strategies::str("old product");
+
+      // assert(false);
+      assert(stmp == * this);
+    }
+timersStrat[25].stop();
+/* */
 
 
   }
@@ -910,10 +917,12 @@ timersStrat[2].start();
       for (auto& strat2: strats2.strategies)
         Strategies::multiplyAdd(strat1, strat2);
 
+    strategies.pop_back();
+
+
 timersStrat[2].stop();
   }
 
-  strategies.pop_back();
 }
 
 
