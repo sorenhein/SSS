@@ -77,7 +77,7 @@ class Strategies
 
     void setTrivial(
       const Result& trivial,
-      const unsigned len);
+      const unsigned char len);
 
     void restudy();
 

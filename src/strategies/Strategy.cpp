@@ -109,10 +109,10 @@ void Strategy::resize(const unsigned len)
 
 void Strategy::logTrivial(
   const Result& trivialEntry,
-  const unsigned len)
+  const unsigned char len)
 {
   results.clear();
-  for (unsigned i = 0; i < len; i++)
+  for (unsigned char i = 0; i < len; i++)
   {
     results.emplace_back(Result());
     Result& te = results.back();
@@ -125,7 +125,7 @@ void Strategy::logTrivial(
 
 
 void Strategy::log(
-  const vector<unsigned>& distributions,
+  const vector<unsigned char>& distributions,
   const vector<unsigned char>& tricks)
 {
   assert(distributions.size() == tricks.size());
@@ -472,7 +472,7 @@ void Strategy::eraseRest(list<Result>::iterator iter)
 
 
 void Strategy::updateSingle(
-  const unsigned fullNo,
+  const unsigned char fullNo,
   const unsigned char trickNS)
 {
   auto& result = results.front();

@@ -448,7 +448,8 @@ void Distribution::setSurvivorsVoid()
   // East void.
   assert(distributions.size() > 0);
 
-  const unsigned dlast = distributions.size() - 1;
+  const unsigned char dlast = 
+    static_cast<unsigned char>(distributions.size() - 1);
   distSurvivorsEastVoid.clear();
   distSurvivorsEastVoid.push_back({dlast, 0});
   distSurvivorsEastVoid.reducedSize = 1;
@@ -462,9 +463,10 @@ void Distribution::setSurvivorsGeneral()
   // Could mirror around the middle to save a bit of time,
   // but it's marginal.
 
-  const unsigned dlast = distributions.size() - 1;
+  const unsigned char dlast = 
+    static_cast<unsigned char>(distributions.size() - 1);
   distSurvivors.resize(rankSize);
-  for (unsigned d = 1; d < dlast; d++)
+  for (unsigned char d = 1; d < dlast; d++)
   {
     const DistInfo& dist = distributions[d];
     for (unsigned w = 0; w < rankSize; w++)
@@ -560,12 +562,12 @@ void Distribution::collapseSurvivors(
     return;
   
   auto iter = next(survivorsReduced.distNumbers.begin());
-  unsigned rankLastReduced = 0;
-  unsigned rankCurrentReduced;
+  unsigned char rankLastReduced = 0;
+  unsigned char rankCurrentReduced;
 
   while (iter != survivorsReduced.distNumbers.end())
   {
-    const unsigned dno = iter->fullNo;
+    const unsigned char dno = iter->fullNo;
 
     // Look back until we run out of distributions with the same
     // length.  The distributions are not necessarily in perfect

@@ -74,7 +74,8 @@ const Strategies& Combination::strategize(
   if (ctype == COMB_TRIVIAL)
   {
     // Fill out a single constant strategy with the right value and size.
-    strats.setTrivial(trivialEntry, distPtr->size());
+    strats.setTrivial(trivialEntry, 
+      static_cast<unsigned char>(distPtr->size()));
     return strats;
   }
 
@@ -128,7 +129,8 @@ if (centry.canonicalHolding3 == 208)
   if (ctype == COMB_TRIVIAL)
   {
     // Fill out a single constant strategy with the right value and size.
-    strats.setTrivial(trivialEntry, distPtr->size());
+    strats.setTrivial(trivialEntry, 
+      static_cast<unsigned char>(distPtr->size()));
     return strats;
   }
 

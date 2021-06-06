@@ -34,7 +34,7 @@ void Strategies::reset()
 
 void Strategies::setTrivial(
   const Result& trivial,
-  const unsigned len)
+  const unsigned char len)
 {
   // Repeat the trivial result len times.
 

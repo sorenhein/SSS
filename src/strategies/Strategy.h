@@ -44,7 +44,7 @@ class Strategy
     bool greaterEqual(const Strategy& strat2) const;
 
     void updateSingle(
-      const unsigned fullNo,
+      const unsigned char fullNo,
       const unsigned char trickNS);
 
     void updateSameLength(
@@ -80,10 +80,10 @@ class Strategy
 
     void logTrivial(
       const Result& trivialEntry,
-      const unsigned len);
+      const unsigned char len);
 
     void log(
-      const vector<unsigned>& distributions,
+      const vector<unsigned char>& distributions,
       const vector<unsigned char>& tricks);
 
     void study();

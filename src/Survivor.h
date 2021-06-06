@@ -20,15 +20,15 @@ using namespace std;
 
 struct Survivor
 {
-  unsigned fullNo;
-  unsigned reducedNo;
+  unsigned char fullNo;
+  unsigned char reducedNo;
 };
 
 
 struct Survivors
 {
   list<Survivor> distNumbers;
-  unsigned reducedSize;
+  unsigned char reducedSize;
 
   void clear()
   {
@@ -51,7 +51,7 @@ struct Survivors
     return distNumbers.size();
   };
 
-  unsigned sizeReduced() const
+  unsigned char sizeReduced() const
   {
     return reducedSize;
   };
@@ -61,7 +61,7 @@ struct Survivors
     stringstream ss;
     ss << "Survivors\n";
     for (auto& s: distNumbers)
-      ss << s.fullNo << ", " << s.reducedNo << endl;
+      ss << +s.fullNo << ", " << +s.reducedNo << endl;
     return ss.str() + "\n";
 
   };

@@ -12,7 +12,7 @@ using namespace std;
 
 struct Result
 {
-  unsigned dist;
+  unsigned char dist;
   unsigned char tricks;
   Winners winners;
 
