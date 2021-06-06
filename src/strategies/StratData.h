@@ -34,8 +34,27 @@ struct StratData
   list<StratDatum> data;
   Ranges::const_iterator riter;
 
+  unsigned char dist()
+  {
+    assert(! data.empty());
+    return data.front().iter->dist;
+  };
+
+  StratStatus advance()
+  {
+    // Advance one row.
+    for (auto& sd: data)
+      sd.iter++;
+
+    if (data.front().iter == data.front().end)
+      return STRATSTATUS_END;
+    else
+      return STRATSTATUS_FURTHER_DIST;
+  };
+
   StratStatus advance(const unsigned dist)
   {
+    // Advance to dist.
     while (data.front().iter != data.front().end &&
         data.front().iter->dist < dist)
     {

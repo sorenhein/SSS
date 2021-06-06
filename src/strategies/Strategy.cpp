@@ -142,6 +142,13 @@ void Strategy::log(
 }
 
 
+void Strategy::push_back(const Result& result)
+{
+  results.push_back(result);
+  weightInt += result.tricks;
+}
+
+
 unsigned Strategy::numGroups() const
 {
   if (results.empty())
@@ -282,6 +289,61 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
   }
 
   return true;
+}
+
+
+Compare Strategy::compareByProfile(const Strategy& strat2) const
+{
+  assert(strat2.results.size() == results.size());
+
+  if (profiles.size() != strat2.profiles.size())
+  {
+    cout << "Profile size mismatch\n";
+    cout << profiles.size() << " vs. " << strat2.profiles.size() << endl;
+
+  }
+  assert(profiles.size() == strat2.profiles.size());
+  assert(! profiles.empty());
+
+  auto piter1 = profiles.begin();
+  auto piter2 = strat2.profiles.begin();
+  bool greaterFlag = false;
+  bool lowerFlag = false;
+  while (piter1 != profiles.end())
+  {
+    const unsigned char b1 = lookupGE[((* piter1) << 10) | (* piter2)];
+    const unsigned char b2 = lookupGE[((* piter2) << 10) | (* piter1)];
+
+    if (b1)
+    {
+      if (! b2)
+      {
+        if (lowerFlag)
+          return COMPARE_INCOMMENSURATE;
+          
+        greaterFlag = true;
+      }
+    }
+    else if (b2)
+    {
+      if (greaterFlag)
+        return COMPARE_INCOMMENSURATE;
+
+      lowerFlag = true;
+    }
+    else
+      return COMPARE_INCOMMENSURATE;
+
+    piter1++;
+    piter2++;
+  }
+
+  if (greaterFlag)
+    return COMPARE_GREATER_THAN;
+  else if (lowerFlag)
+    return COMPARE_LESS_THAN;
+  else
+    return COMPARE_EQUAL;
 }
 
 

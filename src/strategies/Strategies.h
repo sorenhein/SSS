@@ -13,8 +13,11 @@
 struct StratData;
 struct Play;
 struct Survivors;
+struct SplitStrategies;
+struct ExtendedStrategy;
 
 using namespace std;
+
 
 
 class Strategies
@@ -47,10 +50,33 @@ class Strategies
       const Strategy& strat2,
       const Ranges& minima);
 
+    void multiplyAddNewer(
+      const Strategy& strat1,
+      const Strategy& strat2,
+      const Ranges& minima,
+      const SplitStrategies& splitOwn,
+      const SplitStrategies& splitOther,
+      const unsigned indexOwn,
+      const unsigned indexOther,
+      list<ExtendedStrategy>& extendedStrategies);
+
     void markChanges(
       const Strategies& strats2,
       list<Addition>& additions,
       list<list<Strategy>::const_iterator>& deletions) const;
+
+    // TMP If this works, should perhaps go in some class?
+    void setSplit(
+      Strategies& stratsToSplit,
+      const Strategy& strat2,
+      SplitStrategies& split) const;
+
+    // TMP If this works, should perhaps go in some class?
+    bool greaterEqual(
+      const ExtendedStrategy& es1,
+      const ExtendedStrategy& es2,
+      const SplitStrategies& split1,
+      const SplitStrategies& split2) const;
 
     void collapseOnVoid();
 
@@ -114,5 +140,22 @@ class Strategies
       const string& title = "",
       const bool rankFlag = false) const;
 };
+
+
+struct ExtendedStrategy
+{
+  Strategy overlap;
+  unsigned indexOwn;
+  unsigned indexOther;
+};
+
+struct SplitStrategies
+{
+  Strategies own;
+  Strategies shared;
+  vector<Strategy *> ownPtrs;
+  vector<vector<Compare>> matrix;
+};
+
 
 #endif

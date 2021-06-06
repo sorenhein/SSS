@@ -86,6 +86,8 @@ class Strategy
       const vector<unsigned char>& distributions,
       const vector<unsigned char>& tricks);
 
+    void push_back(const Result& result);
+
     void study();
 
     void scrutinize(const Ranges& minima);
@@ -95,6 +97,7 @@ class Strategy
     bool operator >= (const Strategy& tv2) const;
 
     bool greaterEqualByProfile(const Strategy& strat2) const;
+    Compare compareByProfile(const Strategy& strat2) const;
 
     void operator *= (const Strategy& strat2);
 

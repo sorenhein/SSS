@@ -7,10 +7,6 @@
 #include "Play.h"
 #include "Chunks.h"
 
-// TMP
-#include "../stats/Timer.h"
-extern vector<Timer> timersStrat;
-
 
 Nodes::Nodes()
 {
@@ -74,7 +70,6 @@ Node * Nodes::log(
       playPtr->samePartial(* prevPlayPtr, level))
     return prevPtr;
 
-timersStrat[17].start();
   // If we have run out of space, make some more.
   if (nextIter == nodes.end())
     nextIter = nodes.insert(nextIter, chunkSize, Node());
@@ -92,7 +87,6 @@ timersStrat[17].start();
   node.set(parentPtr, playPtr, prevNodePtr);
 
   prevPtr = &node;
-timersStrat[17].stop();
   return prevPtr;
 }
 
@@ -154,7 +148,6 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
 
-
   // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->reactivate();
@@ -199,10 +192,8 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // removed from their options.
   // This has to be a separate loop, as all ranges have to propagate 
   // up first.
-timersStrat[16].start();
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->purgeRanges();
-timersStrat[16].stop();
 
   Nodes::removeNodes();
 
