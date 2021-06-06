@@ -26,7 +26,7 @@ class Ranks
 
     unsigned holding;
     unsigned cards;
-    unsigned maxGlobalRank;
+    unsigned char maxGlobalRank;
 
 
     void setConstants();
@@ -46,7 +46,7 @@ class Ranks
       unsigned& holding2) const;
 
     void trivialRanked(
-      const char tricks,
+      const unsigned char tricks,
       Result& trivialEntry) const;
 
     bool trivial(Result& trivialEntry) const;
@@ -54,12 +54,12 @@ class Ranks
     bool leadOK(
       const Declarer& leader,
       const Declarer& partner,
-      const unsigned lead) const;
+      const unsigned char lead) const;
 
     bool pardOK(
       const Declarer& partner,
-      const unsigned toBeat,
-      const unsigned pard) const;
+      const unsigned char toBeat,
+      const unsigned char pard) const;
 
     void updateHoldings(Play& play) const;
 
@@ -68,14 +68,14 @@ class Ranks
     void setPlaysLeadWithVoid(
       Declarer& leader,
       Declarer& partner,
-      const unsigned lead,
+      const unsigned char lead,
       Play& play,
       Plays& plays);
 
     void setPlaysLeadWithoutVoid(
       Declarer& leader,
       Declarer& partner,
-      const unsigned lead,
+      const unsigned char lead,
       Play& play,
       Plays& plays);
 

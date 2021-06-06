@@ -27,7 +27,7 @@ struct Play
   bool leadCollapse; // true if the lead rank goes away after the trick
   bool pardCollapse;
 
-  char trickNS; // 1 iff North-South win the trick
+  unsigned char trickNS; // 1 iff North-South win the trick
 
   // The leader cards are used to map subsequent winners up to current
   // ones.  Once the leader has played a card, there is one card less

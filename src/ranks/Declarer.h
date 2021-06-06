@@ -30,9 +30,9 @@ class Declarer: public Player
     void setNames();
 
     bool playRank(
-      const unsigned rank,
+      const unsigned char rank,
       const Declarer& partner,
-      const unsigned maxGlobalRank);
+      const unsigned char maxGlobalRank);
 
     void finish();
 

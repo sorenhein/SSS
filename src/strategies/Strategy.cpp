@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <mutex>
+#include <math.h>
 #include <cassert>
 
 #include "Strategy.h"
@@ -23,7 +24,7 @@
 
 mutex mtxStrategy;
 static bool init_flag = false;
-vector<char> lookupGE;
+vector<unsigned char> lookupGE;
 
 
 // TMP
@@ -125,7 +126,7 @@ void Strategy::logTrivial(
 
 void Strategy::log(
   const vector<unsigned>& distributions,
-  const vector<char>& tricks)
+  const vector<unsigned char>& tricks)
 {
   assert(distributions.size() == tricks.size());
 
@@ -170,7 +171,12 @@ void Strategy::study()
 
 void Strategy::scrutinize(const Ranges& minima)
 {
+  if (minima.size() < results.size())
+  {
+  cout << "minima " << minima.size() << " vs. " << results.size() << endl;
+  cout << Strategy::str();
   assert(minima.size() >= results.size());
+  }
   profiles.clear();
 
   auto riter = results.begin();
@@ -323,7 +329,7 @@ void Strategy::operator *= (const Strategy& strat2)
       if (iter1->tricks > iter2->tricks)
       {
         // Take the one with the lower number of tricks.
-        weightInt += iter2->tricks - iter1->tricks;
+        weightInt += static_cast<unsigned>(iter2->tricks - iter1->tricks);
         iter1->tricks = iter2->tricks;
         iter1->winners = iter2->winners;
       }
@@ -451,11 +457,11 @@ void Strategy::extendRanges(Ranges& ranges)
 }
 
 
-void Strategy::erase(list<Result>::iterator iter)
+list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
   weightInt -= iter->tricks;
-  results.erase(iter);
+  return results.erase(iter);
 }
 
 
@@ -467,7 +473,7 @@ void Strategy::eraseRest(list<Result>::iterator iter)
 
 void Strategy::updateSingle(
   const unsigned fullNo,
-  const char trickNS)
+  const unsigned char trickNS)
 {
   auto& result = results.front();
   result.dist = fullNo;
@@ -478,7 +484,7 @@ void Strategy::updateSingle(
 
 void Strategy::updateSameLength(
   const Survivors& survivors,
-  const char trickNS)
+  const unsigned char trickNS)
 {
   auto iter1 = results.begin();
   auto iter2 = survivors.distNumbers.begin();
@@ -509,7 +515,7 @@ void Strategy::updateSameLength(
 
 void Strategy::updateAndGrow(
   const Survivors& survivors,
-  const char trickNS)
+  const unsigned char trickNS)
 {
   // Make an indexable vector copy of the results that need to grow.
   vector<Result> resultsOld;

@@ -23,10 +23,10 @@ void Card::reset()
 
 
 void Card::set(
-  const unsigned rankIn,
-  const unsigned depthIn,
-  const unsigned numberIn,
-  const char nameIn)
+  const unsigned char rankIn,
+  const unsigned char depthIn,
+  const unsigned char numberIn,
+  const unsigned char nameIn)
 {
   rank = rankIn;
   depth = depthIn;
@@ -117,31 +117,31 @@ void Card::operator *= (const Card& sw2)
 }
 
 
-unsigned Card::getRank() const
+unsigned char Card::getRank() const
 {
   return rank;
 }
 
 
-unsigned Card::getDepth() const
+unsigned char Card::getDepth() const
 {
   return depth;
 }
 
 
-unsigned Card::getNumber() const
+unsigned char Card::getNumber() const
 {
   return number;
 }
 
 
-char Card::getName() const
+unsigned char Card::getName() const
 {
   return name;
 }
 
 
-void Card::flipDepth(const unsigned maxDepth)
+void Card::flipDepth(const unsigned char maxDepth)
 {
   // Depths arise in Ranks in opposite order (see comment in
   // Declarer::fixDepths), so we have to flip them afterwards.
@@ -155,7 +155,7 @@ string Card::str(
 {
   stringstream ss;
   if (rankFlag)
-    ss << hex << uppercase << rank << dec;
+    ss << hex << uppercase << +rank << dec;
 
   ss << side;
   if (depth == 2)
@@ -172,9 +172,9 @@ string Card::strDebug(const string& side) const
 {
   stringstream ss;
   ss << side << ": " <<
-    "rank " << rank <<
-    " depth " << depth <<
-    " number " << number << 
+    "rank " << +rank <<
+    " depth " << +depth <<
+    " number " << +number << 
     " name " << name <<
     endl;
   return ss.str();

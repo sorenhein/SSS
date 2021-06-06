@@ -1,11 +1,81 @@
-driver.o: Combinations.h struct.h inputs/Control.h inputs/Entity.h
-driver.o: inputs/Convert.h stats/Timers.h stats/Timer.h
-Ranks.o: Ranks.h struct.h const.h
-Combinations.o: Combinations.h struct.h Ranks.h
+driver.o: Combinations.h Combination.h strategies/Strategies.h
+driver.o: strategies/Strategy.h strategies/Result.h strategies/Winners.h
+driver.o: strategies/Winner.h strategies/Card.h const.h strategies/Range.h
+driver.o: Distributions.h Distribution.h Survivor.h DistHelp.h
+driver.o: inputs/Control.h inputs/Entity.h inputs/Convert.h stats/Timers.h
+driver.o: stats/Timer.h
+Combination.o: Combinations.h Combination.h strategies/Strategies.h
+Combination.o: strategies/Strategy.h strategies/Result.h
+Combination.o: strategies/Winners.h strategies/Winner.h strategies/Card.h
+Combination.o: const.h strategies/Range.h Distributions.h Distribution.h
+Combination.o: Survivor.h DistHelp.h CombEntry.h plays/Plays.h plays/Play.h
+Combination.o: strategies/Winners.h plays/Nodes.h plays/Node.h
+Combination.o: strategies/Strategies.h plays/DebugPlay.h ranks/Ranks.h
+Combination.o: plays/Play.h ranks/Declarer.h ranks/Player.h
+Combination.o: strategies/Card.h ranks/Opponents.h stats/Timers.h
+Combination.o: stats/Timer.h
+Combinations.o: Combinations.h Combination.h strategies/Strategies.h
+Combinations.o: strategies/Strategy.h strategies/Result.h
+Combinations.o: strategies/Winners.h strategies/Winner.h strategies/Card.h
+Combinations.o: const.h strategies/Range.h CombEntry.h Distributions.h
+Combinations.o: Distribution.h Survivor.h DistHelp.h plays/Plays.h
+Combinations.o: plays/Play.h strategies/Winners.h plays/Nodes.h
+Combinations.o: plays/Node.h strategies/Strategies.h plays/DebugPlay.h
+Combinations.o: ranks/Ranks.h plays/Play.h ranks/Declarer.h ranks/Player.h
+Combinations.o: strategies/Card.h ranks/Opponents.h stats/Timers.h
+Combinations.o: stats/Timer.h
+Distribution.o: plays/Play.h strategies/Winners.h const.h Distribution.h
+Distribution.o: Survivor.h DistHelp.h const.h
+Distributions.o: Distributions.h Distribution.h Survivor.h DistHelp.h
 inputs/Convert.o: inputs/Convert.h const.h
 inputs/Control.o: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.o: inputs/parse.h const.h
 inputs/Entity.o: inputs/Entity.h inputs/parse.h
 inputs/parse.o: inputs/parse.h
+ranks/Ranks.o: const.h CombEntry.h plays/Plays.h plays/Play.h
+ranks/Ranks.o: strategies/Winners.h plays/Nodes.h plays/Node.h
+ranks/Ranks.o: strategies/Strategies.h plays/DebugPlay.h ranks/Ranks.h
+ranks/Ranks.o: plays/Play.h ranks/Declarer.h ranks/Player.h
+ranks/Ranks.o: strategies/Card.h ranks/Opponents.h
+ranks/Player.o: ranks/Player.h strategies/Card.h
+ranks/Declarer.o: ranks/Declarer.h ranks/Player.h strategies/Card.h
+ranks/Declarer.o: ranks/Opponents.h
+ranks/Opponents.o: ranks/Opponents.h ranks/Player.h strategies/Card.h
+plays/Plays.o: plays/Plays.h plays/Play.h strategies/Winners.h const.h
+plays/Plays.o: plays/Nodes.h plays/Node.h strategies/Strategies.h
+plays/Plays.o: plays/DebugPlay.h plays/Chunks.h Combinations.h
+plays/Plays.o: Combination.h strategies/Strategies.h strategies/Strategy.h
+plays/Plays.o: strategies/Result.h strategies/Winners.h strategies/Winner.h
+plays/Plays.o: strategies/Card.h strategies/Range.h Distribution.h
+plays/Plays.o: Survivor.h DistHelp.h Survivor.h ranks/Ranks.h plays/Play.h
+plays/Plays.o: ranks/Declarer.h ranks/Player.h strategies/Card.h
+plays/Plays.o: ranks/Opponents.h stats/Timer.h
+plays/Play.o: plays/Play.h strategies/Winners.h const.h Combinations.h
+plays/Play.o: Combination.h strategies/Strategies.h strategies/Strategy.h
+plays/Play.o: strategies/Result.h strategies/Winners.h strategies/Winner.h
+plays/Play.o: strategies/Card.h strategies/Range.h strategies/Card.h
+plays/Nodes.o: plays/Nodes.h plays/Node.h strategies/Strategies.h
+plays/Nodes.o: plays/Play.h strategies/Winners.h const.h plays/Chunks.h
+plays/Nodes.o: stats/Timer.h
+plays/Node.o: plays/Node.h strategies/Strategies.h plays/Play.h
+plays/Node.o: strategies/Winners.h const.h Distribution.h Survivor.h
+plays/Node.o: DistHelp.h Combination.h strategies/Strategies.h
+plays/Node.o: strategies/Strategy.h strategies/Result.h
+plays/Node.o: strategies/Winners.h strategies/Winner.h strategies/Card.h
+plays/Node.o: strategies/Range.h strategies/StratData.h
+strategies/Strategies.o: strategies/Strategies.h strategies/Strategy.h
+strategies/Strategies.o: strategies/Result.h strategies/Winners.h
+strategies/Strategies.o: strategies/Winner.h strategies/Card.h const.h
+strategies/Strategies.o: strategies/Range.h strategies/StratData.h
+strategies/Strategies.o: plays/Play.h Survivor.h stats/Timer.h
+strategies/Strategy.o: strategies/Strategy.h strategies/Result.h
+strategies/Strategy.o: strategies/Winners.h strategies/Winner.h
+strategies/Strategy.o: strategies/Card.h const.h strategies/Range.h
+strategies/Strategy.o: plays/Play.h Survivor.h stats/Timer.h
+strategies/Winners.o: strategies/Winners.h strategies/Winner.h
+strategies/Winners.o: strategies/Card.h const.h plays/Play.h
+strategies/Winner.o: strategies/Winner.h strategies/Card.h const.h
+strategies/Winner.o: plays/Play.h
+strategies/Card.o: strategies/Card.h const.h
 stats/Timer.o: stats/Timer.h
 stats/Timers.o: stats/Timers.h stats/Timer.h

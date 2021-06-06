@@ -25,11 +25,11 @@ void Opponents::setNames()
 {
   // For the opponents we simplify more than for North-South.
   unsigned index = 0;
-  unsigned rankPrev = numeric_limits<unsigned>::max();
+  unsigned char rankPrev = numeric_limits<unsigned char>::max();
 
   for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
   {
-    const unsigned r = cit->getRank();
+    const unsigned char r = cit->getRank();
     if (r == rankPrev)
       continue;
 
@@ -45,12 +45,12 @@ void Opponents::setNames()
       index++;
     }
     else if (count == 1)
-      rankInfo[r].names = cit->getName();
+      rankInfo[r].names = static_cast<char>(cit->getName());
   }
 }
 
 
-void Opponents::playRank(const unsigned rank)
+void Opponents::playRank(const unsigned char rank)
 {
   assert(rankInfo[rank].count > 0);
   rankInfo[rank].count--;

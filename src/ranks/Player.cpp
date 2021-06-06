@@ -47,7 +47,7 @@ void Player::zero()
   numberNextCard = 0;
   firstUpdateFlag = true;
 
-  maxRank = numeric_limits<unsigned>::max();
+  maxRank = numeric_limits<unsigned char>::max();
 
   depthNext = 0;
   posNext = 1;
@@ -56,7 +56,7 @@ void Player::zero()
 }
 
 
-void Player::updateStep(const unsigned rankNew)
+void Player::updateStep(const unsigned char rankNew)
 {
   // Back down to the first card of the next rank.
   depthNext = 0;
@@ -71,8 +71,8 @@ void Player::updateStep(const unsigned rankNew)
 
 
 void Player::update(
-  const unsigned rank,
-  const unsigned absCardNumber)
+  const unsigned char rank,
+  const unsigned char absCardNumber)
 {
   if (firstUpdateFlag)
   {
@@ -86,7 +86,8 @@ void Player::update(
   
   cards.emplace_back(Card());
   Card * cptr = &cards.back();
-  cptr->set(rank, depthNext, numberNextCard, CARD_NAMES[absCardNumber]);
+  cptr->set(rank, depthNext, numberNextCard, 
+    static_cast<unsigned char>(CARD_NAMES[absCardNumber]));
 
   cardsPtr.push_back(cptr);
 
@@ -106,13 +107,13 @@ void Player::update(
 }
 
 
-void Player::restoreRank(const unsigned rank)
+void Player::restoreRank(const unsigned char rank)
 {
   rankInfo[rank].count++;
 }
 
 
-bool Player::hasRank(const unsigned rankIn) const
+bool Player::hasRank(const unsigned char rankIn) const
 {
   return (rankInfo[rankIn].count > 0);
 }
@@ -124,13 +125,13 @@ unsigned Player::length() const
 }
 
 
-unsigned Player::minFullRank() const
+unsigned char Player::minFullRank() const
 {
   return minRank;
 }
 
 
-unsigned Player::maxFullRank() const
+unsigned char Player::maxFullRank() const
 {
   return maxRank;
 }
@@ -142,7 +143,7 @@ bool Player::isVoid() const
 }
 
 
-unsigned Player::count(const unsigned rankIn) const
+unsigned char Player::count(const unsigned char rankIn) const
 {
   return rankInfo[rankIn].count;
 }
@@ -171,7 +172,7 @@ string Player::strRankHeader() const
 }
 
 
-string Player::strRank(const unsigned rank) const
+string Player::strRank(const unsigned char rank) const
 {
   stringstream ss;
   if (rankInfo[rank].count == 0)
@@ -180,7 +181,7 @@ string Player::strRank(const unsigned rank) const
   {
     ss << 
       setw(8) << Player::playerName() <<
-      setw(4) << rankInfo[rank].count <<
+      setw(4) << +rankInfo[rank].count <<
       setw(6) << rankInfo[rank].names;
   }
 

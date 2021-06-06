@@ -12,10 +12,10 @@ class Card
 {
   private:
 
-    unsigned rank;
-    unsigned depth; // 0 for highest card with that rank
-    unsigned number; // 0 for lowest card with that player
-    char name;
+    unsigned char rank;
+    unsigned char depth; // 0 for highest card with that rank
+    unsigned char number; // 0 for lowest card with that player
+    unsigned char name;
 
   public:
 
@@ -24,10 +24,10 @@ class Card
     void reset();
 
     void set(
-      const unsigned rankIn,
-      const unsigned depthIn,
-      const unsigned numberIn,
-      const char nameIn);
+      const unsigned char rankIn,
+      const unsigned char depthIn,
+      const unsigned char numberIn,
+      const unsigned char nameIn);
 
     bool operator > (const Card& card2) const;
     bool operator >= (const Card& card2) const;
@@ -46,12 +46,12 @@ class Card
 
     void operator *= (const Card& card2);
 
-    unsigned getRank() const;
-    unsigned getDepth() const;
-    unsigned getNumber() const;
-    char getName() const;
+    unsigned char getRank() const;
+    unsigned char getDepth() const;
+    unsigned char getNumber() const;
+    unsigned char getName() const;
 
-    void flipDepth(const unsigned maxDepth);
+    void flipDepth(const unsigned char maxDepth);
 
     string str(
       const string& side,

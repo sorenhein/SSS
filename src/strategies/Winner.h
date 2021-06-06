@@ -45,10 +45,10 @@ class Winner
 
     void set(
       const WinningSide sideIn,
-      const unsigned rankIn,
-      const unsigned depthIn,
-      const unsigned number,
-      const char nameIn);
+      const unsigned char rankIn,
+      const unsigned char depthIn,
+      const unsigned char number,
+      const unsigned char nameIn);
 
     void set(
       const WinningSide sideIn,
@@ -66,8 +66,6 @@ class Winner
     void flip();
 
     void update(const Play& play);
-      // vector<Card> const * northOrderPtr,
-      // vector<Card> const * southOrderPtr);
 
     bool rankExceeds(const Winner& sw2) const;
 

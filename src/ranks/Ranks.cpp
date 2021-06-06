@@ -196,10 +196,11 @@ void Ranks::setPlayers()
   // reset to 0 by calling setVoid() after the loop below.
   opps.setVoid();
 
-  const unsigned imin = (cards > 13 ? 0 : 13-cards);
+  const unsigned char cardsChar = static_cast<unsigned char>(cards);
+  const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar);
   unsigned h = holding;
 
-  for (unsigned i = imin; i < imin+cards; i++)
+  for (unsigned char i = imin; i < imin+cardsChar; i++)
   {
     const unsigned c = h % 3;
     if (c == POSITION_OPPS)
@@ -262,12 +263,12 @@ unsigned Ranks::canonicalTrinary(
   // Therefore Combinations::getPtr looks up the canonical index.
   unsigned holding3 = 0;
 
-  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (opps.count(rank) << 8) | 
-      (dominant.count(rank) << 4) | 
-       recessive.count(rank);
+      (static_cast<unsigned>(opps.count(rank)) << 8) | 
+      (static_cast<unsigned>(dominant.count(rank)) << 4) | 
+       static_cast<unsigned>(recessive.count(rank));
 
     holding3 = 
       HOLDING3_RANK_FACTOR[index] * holding3 +
@@ -288,12 +289,12 @@ void Ranks::canonicalBoth(
   holding3 = 0;
   holding2 = 0;
 
-  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (opps.count(rank) << 8) | 
-      (dominant.count(rank) << 4) | 
-       recessive.count(rank);
+      (static_cast<unsigned>(opps.count(rank)) << 8) | 
+      (static_cast<unsigned>(dominant.count(rank)) << 4) | 
+       static_cast<unsigned>(recessive.count(rank));
 
     holding3 = 
       HOLDING3_RANK_FACTOR[index] * holding3 +
@@ -327,7 +328,7 @@ void Ranks::set(
 
 
 void Ranks::trivialRanked(
-  const char tricks,
+  const unsigned char tricks,
   Result& trivialEntry) const
 {
   if (opps.hasRank(maxGlobalRank))
@@ -356,7 +357,7 @@ bool Ranks::trivial(Result& trivialEntry) const
   if (opps.isVoid())
   {
     trivialEntry.setEmpty(
-      static_cast<char>(max(north.length(), south.length())));
+      static_cast<unsigned char>(max(north.length(), south.length())));
     return true;
   }
 
@@ -371,7 +372,7 @@ bool Ranks::trivial(Result& trivialEntry) const
   {
     // North-South win it all, or almost, if opponents have one card left.
     Ranks::trivialRanked(
-      static_cast<char>(max(north.length(), south.length())), trivialEntry);
+      static_cast<unsigned char>(max(north.length(), south.length())), trivialEntry);
     return true;
   }
 
@@ -382,7 +383,7 @@ bool Ranks::trivial(Result& trivialEntry) const
 bool Ranks::leadOK(
   const Declarer& leader,
   const Declarer& partner,
-  const unsigned lead) const
+  const unsigned char lead) const
 {
   // By construction, count is always > 0.
   if (partner.isVoid())
@@ -412,8 +413,8 @@ bool Ranks::leadOK(
 
 bool Ranks::pardOK(
   const Declarer& partner,
-  const unsigned toBeat,
-  const unsigned pard) const
+  const unsigned char toBeat,
+  const unsigned char pard) const
 {
   // Always "play" a void.
   if (partner.isVoid())
@@ -496,7 +497,7 @@ void Ranks::finish(Play& play) const
 void Ranks::setPlaysLeadWithVoid(
   Declarer& leader,
   Declarer& partner,
-  const unsigned lead,
+  const unsigned char lead,
   Play& play,
   Plays& plays)
 {
@@ -506,18 +507,18 @@ void Ranks::setPlaysLeadWithVoid(
   for (auto& pardPtr: partner.getCards(false))
   {
     play.pardPtr = pardPtr;
-    const unsigned pard = pardPtr->getRank();
+    const unsigned char pard = pardPtr->getRank();
     if (! Ranks::pardOK(partner, lead, pard))
       continue;
 
     play.pardCollapse = partner.playRank(pard, leader, maxGlobalRank);
 
-    const unsigned toBeat = max(lead, pard);
+    const unsigned char toBeat = max(lead, pard);
 
     for (auto& rhoPtr: opps.getCards())
     {
       play.rhoPtr = rhoPtr;
-      const unsigned rho = rhoPtr->getRank();
+      const unsigned char rho = rhoPtr->getRank();
       // If LHO is known to be void, RHO can duck completely.
       if (rho < toBeat && rho != opps.minFullRank())
         continue;
@@ -545,20 +546,20 @@ void Ranks::setPlaysLeadWithVoid(
 void Ranks::setPlaysLeadWithoutVoid(
   Declarer& leader,
   Declarer& partner,
-  const unsigned lead,
+  const unsigned char lead,
   Play& play,
   Plays& plays)
 {
   for (auto& lhoPtr: opps.getCards())
   {
     play.lhoPtr = lhoPtr;
-    const unsigned lho = lhoPtr->getRank();
+    const unsigned char lho = lhoPtr->getRank();
     opps.playRank(lho);
 
     for (auto& pardPtr: partner.getCards(false))
     {
       play.pardPtr = pardPtr;
-      const unsigned pard = pardPtr->getRank();
+      const unsigned char pard = pardPtr->getRank();
       if (! Ranks::pardOK(partner, max(lead, lho), pard))
         continue;
 
@@ -578,7 +579,7 @@ void Ranks::setPlaysLeadWithoutVoid(
       for (auto& rhoPtr: opps.getCards())
       {
         play.rhoPtr = rhoPtr;
-        const unsigned rho = rhoPtr->getRank();
+        const unsigned char rho = rhoPtr->getRank();
 
         // Maybe the same single card has been played already.
         if (! opps.hasRank(rho))
@@ -628,7 +629,7 @@ void Ranks::setPlaysSide(
     // I wish I could write for (play.leadPtr: ...), but a declaration
     // is required.
     play.leadPtr = leadPtr;
-    const unsigned lead = play.leadPtr->getRank();
+    const unsigned char lead = play.leadPtr->getRank();
     if (! Ranks::leadOK(leader, partner, lead))
       continue;
 
@@ -683,7 +684,7 @@ string Ranks::strTable() const
     opps.strRankHeader() <<
     "\n";
 
-  for (unsigned rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
     ss <<
       north.strRank(rank) <<
       south.strRank(rank) <<

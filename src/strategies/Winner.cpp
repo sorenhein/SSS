@@ -29,10 +29,10 @@ void Winner::reset()
 
 void Winner::set(
   const WinningSide sideIn,
-  const unsigned rankIn,
-  const unsigned depthIn,
-  const unsigned numberIn,
-  const char nameIn)
+  const unsigned char rankIn,
+  const unsigned char depthIn,
+  const unsigned char numberIn,
+  const unsigned char nameIn)
 {
   // This doesn't reset the winner, so the method can be used to build
   // up a winner with more than one component if called twice.
@@ -228,9 +228,9 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   // =   1  2  =
   if (northPrefer == southPrefer)
     return northPrefer;
-  else if (northPrefer == WIN_BOTH)
+  else if (northPrefer == WIN_EQUAL)
     return southPrefer;
-  else if (southPrefer == WIN_BOTH)
+  else if (southPrefer == WIN_EQUAL)
     return northPrefer;
   else
     return WIN_DIFFERENT;

@@ -215,9 +215,7 @@ void Combinations::runUniques(
       stratCounts[cards].total += comb.strategies().size();
     }
     else
-    {
       centry.canonicalIndex = centries[canonicalHolding3].canonicalIndex;
-    }
   }
 
   // TMP Print timers

@@ -25,7 +25,7 @@ struct StratDatum
 
   void erase()
   {
-    ptr->erase(iter);
+    iter = ptr->erase(iter);
   };
 };
 
@@ -55,13 +55,14 @@ struct StratData
 
   void eraseConstantDist(
     Result& cresult,
-    const char tricks)
+    const unsigned char tricks)
   {
     cresult.dist = data.front().iter->dist;
     cresult.tricks = tricks;
     
     cresult.winners.reset();
 
+    riter++;
     for (auto& sd: data)
     {
       cresult.winners *= sd.iter->winners;
@@ -71,6 +72,7 @@ struct StratData
 
   void eraseDominatedDist()
   {
+    riter++;
     for (auto& sd: data)
       sd.erase();
   };

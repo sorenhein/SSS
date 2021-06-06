@@ -111,20 +111,10 @@ void Distribution::shrink(
   const unsigned maxFullRank,
   const unsigned maxReducedRank)
 {
-  if (opponents.len > 0)
-  {
-    rankSize = maxReducedRank + 1;
-    full2reduced.resize(maxFullRank+1);
-    reduced2full.resize(rankSize);
-    opponents.counts.resize(rankSize);
-  }
-  else
-  {
-    rankSize = 0;
-    full2reduced.clear();
-    reduced2full.clear();
-    opponents.counts.clear();
-  }
+  rankSize = maxReducedRank + 1;
+  full2reduced.resize(maxFullRank+1);
+  reduced2full.resize(rankSize);
+  opponents.counts.resize(rankSize);
 }
 
 
@@ -409,10 +399,10 @@ Distribution const * Distribution::getPtr() const
 
 unsigned Distribution::size() const
 {
-  if (distCanonical)
-    return distCanonical->size();
-  else if (opponents.len == 0)
+  if (opponents.len == 0)
     return 1;
+  else if (distCanonical)
+    return distCanonical->size();
   else
     return distributions.size();
 }
@@ -440,7 +430,7 @@ DistID Distribution::getID() const
     // Make room for bits.
     // If we need e.g. 3 bits, they are going to be "011".
     const unsigned bits = opponents.counts[r] + 1;
-    res.holding = (res.holding << bits) | ((1 << (bits-1)) - 1);
+    res.holding = (res.holding << bits) | ((1u << (bits-1)) - 1u);
   }
 
   return res;
@@ -456,6 +446,8 @@ void Distribution::setSurvivorsVoid()
   assert(distributions[0].west.len == 0);
 
   // East void.
+  assert(distributions.size() > 0);
+
   const unsigned dlast = distributions.size() - 1;
   distSurvivorsEastVoid.clear();
   distSurvivorsEastVoid.push_back({dlast, 0});
@@ -640,7 +632,6 @@ void Distribution::setSurvivors()
     for (unsigned c2 = 1; c2 < rankSize; c2++)
       distSurvivorsCollapse2[c1][c2].resize(rankSize);
   }
-
   // Make the rank collapses.
   for (unsigned w = 0; w < rankSize; w++)
   {

@@ -45,15 +45,15 @@ class Strategy
 
     void updateSingle(
       const unsigned fullNo,
-      const char trickNS);
+      const unsigned char trickNS);
 
     void updateSameLength(
       const Survivors& survivors,
-      const char trickNS);
+      const unsigned char trickNS);
 
     void updateAndGrow(
       const Survivors& survivors,
-      const char trickNS);
+      const unsigned char trickNS);
 
     void adaptResults(
       const Play& play,
@@ -84,7 +84,7 @@ class Strategy
 
     void log(
       const vector<unsigned>& distributions,
-      const vector<char>& tricks);
+      const vector<unsigned char>& tricks);
 
     void study();
 
@@ -106,7 +106,7 @@ class Strategy
 
     void extendRanges(Ranges& ranges);
 
-    void erase(list<Result>::iterator iter);
+    list<Result>::iterator erase(list<Result>::iterator& iter);
     void eraseRest(list<Result>::iterator iter);
 
     void adapt(

@@ -555,6 +555,8 @@ timersStrat[12].stop();
   // element of Strategies as a scratch pad.  If it turns out to be
   // viable, it is already in Strategies and subject to move semantics.
 
+// cout << Strategies::str("strategies");
+// cout << strats2.str("strats2");
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
@@ -567,6 +569,21 @@ timersStrat[14].start();
     // We only use the minima here.
     Ranges minima;
     Strategies::combinedLower(ranges, strats2.ranges, false, minima);
+
+/*
+cout << "ranges\n";
+cout << ranges.front().strHeader();
+for (auto& range: ranges)
+  cout << range.str();
+cout << "strats2.ranges\n";
+cout << strats2.ranges.front().strHeader();
+for (auto& range: strats2.ranges)
+  cout << range.str();
+cout << "minima\n";
+cout << minima.front().strHeader();
+for (auto& range: minima)
+  cout << range.str();
+  */
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
@@ -758,7 +775,7 @@ string Strategies::strHeader(
   ss << setw(4) << left << "Dist" << right;
 
   for (unsigned i = 0; i < strategies.size(); i++)
-    ss << setw(incr) << i;
+    ss << setw(static_cast<int>(incr)) << i;
   ss << "\n";
 
   ss << string(4 + incr * strategies.size(), '-') << "\n";
@@ -775,7 +792,7 @@ string Strategies::strWeights(const bool rankFlag) const
   ss << string(4 + incr * strategies.size(), '-') << "\n";
   ss << setw(4) << "Wgt";
   for (const auto& res: strategies)
-    ss << setw(incr) << res.weight();
+    ss << setw(static_cast<int>(incr)) << res.weight();
   return ss.str() + "\n";
 }
 

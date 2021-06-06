@@ -22,7 +22,7 @@ class Opponents: public Player
 
     void setNames();
 
-    void playRank(const unsigned rank);
+    void playRank(const unsigned char rank);
 
     // Unlike in Declarer, this can only return the ranks.
     const deque<Card const *>& getCards() const;

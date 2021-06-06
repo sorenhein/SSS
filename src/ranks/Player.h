@@ -83,7 +83,7 @@ class Player
 
     struct RankInfo
     {
-      unsigned count; // Number of player's cards with that rank
+      unsigned char count; // Number of player's cards with that rank
       string names; // Names of all such cards
 
       RankInfo()
@@ -102,14 +102,14 @@ class Player
 
     // This are long-term variables.
     bool singleRank;
-    unsigned minRank;
-    unsigned maxRank;
-    unsigned minAbsCardNumber;
+    unsigned char minRank;
+    unsigned char maxRank;
+    unsigned char minAbsCardNumber;
 
     // These are only used during updates, but are global for ease.
-    unsigned numberNextCard;
-    unsigned depthNext;
-    unsigned posNext;
+    unsigned char numberNextCard;
+    unsigned char depthNext;
+    unsigned char posNext;
     bool firstUpdateFlag;
     bool firstOfRankFlag;
 
@@ -135,13 +135,13 @@ class Player
 
     void zero(); // Keeps rankInfo, but sets stored vectors to zero
 
-    void updateStep(const unsigned rankNew);
+    void updateStep(const unsigned char rankNew);
 
     void update(
-      const unsigned rank,
-      const unsigned absCardNumber);
+      const unsigned char rank,
+      const unsigned char absCardNumber);
 
-    void restoreRank(const unsigned rank);
+    void restoreRank(const unsigned char rank);
 
     bool greater(
       const Player& p2,
@@ -149,21 +149,21 @@ class Player
     
     const Card& top() const;
 
-    bool hasRank(const unsigned rankIn) const;
+    bool hasRank(const unsigned char rankIn) const;
 
     unsigned length() const;
 
-    unsigned minFullRank() const;
-    unsigned maxFullRank() const;
+    unsigned char minFullRank() const;
+    unsigned char maxFullRank() const;
 
     bool isVoid() const;
 
     bool isSingleRanked() const;
 
-    unsigned count(const unsigned rank) const;
+    unsigned char count(const unsigned char rank) const;
 
     string strRankHeader() const;
-    string strRank(const unsigned rank) const;
+    string strRank(const unsigned char rank) const;
 
     wstring wstr() const;
 };

@@ -179,7 +179,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
 
   // Derive bounds on RHO outcomes for each lead in order to find
   // constant or dominated outcomes, propagate them to the parent nodes 
-  // (which are may be nodesLead if partner is void; see Plays), and 
+  // (which may be nodesLead if partner is void; see Plays), and 
   // remove them from the parent nodes.  This is quite fast.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
   {

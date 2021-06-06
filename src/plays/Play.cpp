@@ -192,7 +192,7 @@ string Play::strLine() const
   stringstream ss;
 
   ss << right <<
-    setw(4) << (side == SIDE_NORTH ? "N" : "S") <<
+    setw(4) << (side == POSITION_NORTH ? "N" : "S") <<
     setw(5) << leadPtr->getName() <<
     setw(5) << lhoPtr->getName() <<
     setw(5) << pardPtr->getName() <<

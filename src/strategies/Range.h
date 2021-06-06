@@ -11,9 +11,9 @@ using namespace std;
 struct Range
 {
   unsigned dist;
-  char lower;
-  char upper;
-  char minimum;
+  unsigned char lower;
+  unsigned char upper;
+  unsigned char minimum;
 
   void operator *= (const Range& range2)
   {

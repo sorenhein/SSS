@@ -43,7 +43,8 @@ void Declarer::setNames()
   Declarer::setVoid();
 
   for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
-    rankInfo[cit->getRank()].names += cit->getName();
+    rankInfo[cit->getRank()].names += 
+      static_cast<char>(cit->getName());
 }
 
 
@@ -60,16 +61,17 @@ void Declarer::fixDepths()
   // So we fix (flip) the ranks from from e.g. 0, 1, 2 to 2, 1, 0
   // in this inelegant piece of post-processing.
 
-  for (unsigned cno = 0; cno < cards.size(); cno++)
+  const unsigned char csize = static_cast<unsigned char>(cards.size());
+  for (unsigned char cno = 0; cno < csize; cno++)
   {
     if (cards[cno].getDepth() == 1)
     {
       // Find the index past the current rank (may be beyond the end).
-      unsigned dno = cno+1;
-      while (dno < cards.size() && cards[dno].getDepth() > 0)
+      unsigned char dno = cno+1;
+      while (dno < csize && cards[dno].getDepth() > 0)
         dno++;
 
-      unsigned maxDepth = dno - cno;
+      unsigned char maxDepth = dno - cno;
 
       // Flip the ranks, starting from the zero depth.
       for (cno--; cno < dno; cno++)
@@ -80,9 +82,9 @@ void Declarer::fixDepths()
 
 
 bool Declarer::playRank(
-  const unsigned rank,
+  const unsigned char rank,
   const Declarer& partner,
-  const unsigned maxGlobalRank)
+  const unsigned char maxGlobalRank)
 {
   assert(rankInfo[rank].count > 0);
   rankInfo[rank].count--;
@@ -109,7 +111,7 @@ bool Declarer::greater(
   // There may be rank collapses from played EW cards.
   unsigned run1 = 0;
   unsigned run2 = 0;
-  for (unsigned r = max(maxRank, p2.maxRank); ; r -= 2)
+  for (unsigned char r = max(maxRank, p2.maxRank); ; r -= 2)
   {
     run1 += rankInfo[r].count;
     run2 += p2.rankInfo[r].count;

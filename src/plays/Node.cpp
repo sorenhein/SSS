@@ -142,7 +142,15 @@ void Node::purgeRanges()
 
   // Some strategies may be dominated that weren't before.
   if (eraseFlag)
+  {
+    // TODO, perhaps: 9/1910
+    // After erasing, d = 8 goes from 2-3 to 3 constant, and this
+    // is now dominated by 2-3.  So we could potentially redo the
+    // loop, only for dominance and not for constants this time.
+    // We'd have to regenerate stratData first, at least the iter
+    // and riter, to rewind.
     strats.consolidate();
+  }
 }
 
 
