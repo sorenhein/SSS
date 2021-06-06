@@ -1,39 +1,18 @@
-2021-05-23
+2021-06-05
 ----------
 Ideas for speeding up Strategies
 
-Make things like Result smaller (char might be enough for dist and tricks)
-
-Strategies:multiplyAdd, i.e. Strategy::multiply
-- Find the overlapping distributions
-- Find the strat1-only distributions and their cross matrix
-- Find the strat2-only distributions and their cross matrix
-- When multiplying, only multiply the overlapping ones and note
-  the index of the non-overlapping regions
-- When comparing two of them, first examine the non-overlapping
-  results (>, =, <, !=)
-
-
-s1 | s2   >             =               <               !=
->         >, !=         >, !=           just !=         just !=
-=         >, !=         any             <, !=           just !=      
-<         just !=       <, !=           <, !=           just !=
-!=        just !=       just !=         just !=         just !=
-
-- So in 9 of 16 cases we already know the result, and we just have
-  to find the right weight at which to insert (which could also be
-  a lookup...)
-- We also have the weight as an indicator >, =, <
-- In the other 7, we have to compare the overlapping bits as well
-- In any case, in the end, we have to multiply the non-overlaps
-  only each strategy (and study it)
-
-scrutinize()
-- Instead of consecutive groups of 5, find a stride.
-  numGroups or stride = (results.size() / 5) + 1
-  profiles is a vector<unsigned>
-- counter % stride is the profiles index
-
+- Multiplying out the extended strategies
+  - Could have the final strategies in-place
+  - Extended strategies just have pointers to each strategy?
+  - 350 ms out of 1800 ms, somewhat meaningful
+- Main lever is multiplyAddNewer itself
+  - Within that, multiply() is 60%+ of the method
+  - Potentially don't study() in multiply()
+- Look at the overall methods used and their call trees
+- Split out something from Strategy or Strategies?
+  adapt?
+  scrutinize and compare
 
 
 2021-05-09

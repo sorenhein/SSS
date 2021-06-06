@@ -505,8 +505,10 @@ void Strategies::multiplyAddNewer(
   const unsigned indexOther,
   list<ExtendedStrategy>& extendedStrategies)
 {
+timersStrat[25].start();
   auto& lastEntry = extendedStrategies.back();
   lastEntry.overlap.multiply(strat1, strat2);
+timersStrat[25].stop();
   lastEntry.overlap.scrutinize(minima);
   lastEntry.indexOwn = indexOwn;
   lastEntry.indexOther = indexOther;
@@ -805,9 +807,6 @@ timersStrat[12].stop();
   // element of Strategies as a scratch pad.  If it turns out to be
   // viable, it is already in Strategies and subject to move semantics.
 
-// cout << Strategies::str("strategies");
-// cout << strats2.str("strats2");
-
 Strategies strCopy = * this;
 
   auto strategiesOwn = move(strategies);
@@ -817,84 +816,87 @@ Strategies strCopy = * this;
 
   if (! ranges.empty() && ! strats2.ranges.empty())
   {
-/* */
+    if (len1 >= 10 && len2 >= 10)
+    {
+      // Make a complex optimization.
+
 timersStrat[21].start();
 
-// cout << strCopy.str("strategiesOwn");
-// cout << strats2.str("strats2.strategies");
+      // Split out unique and overlapping distributions.
+// Timer timer1;
+// timer1.start();
+      SplitStrategies splitOwn, splitOther;
+      Strategies::setSplit(strCopy, strats2.strategies.front(), splitOwn);
 
-    // Split out unique and overlapping distributions.
-    SplitStrategies splitOwn, splitOther;
-    Strategies::setSplit(strCopy, strats2.strategies.front(), splitOwn);
-
-// cout << splitOwn.own.str("own1");
-// cout << splitOwn.shared.str("shared1");
-
-    Strategies::setSplit(strats2, strategiesOwn.front(), splitOther);
-
-// cout << splitOwn.own.str("own2");
-// cout << splitOwn.shared.str("shared2");
+      Strategies::setSplit(strats2, strategiesOwn.front(), splitOther);
 
 timersStrat[21].stop();
 
 timersStrat[22].start();
-    // Same as below, I guess.
-    Ranges minima2;
-    Strategies::combinedLower(ranges, strats2.ranges, false, minima2);
+      // Same as below, I guess.
+      Ranges minima2;
+      Strategies::combinedLower(ranges, strats2.ranges, false, minima2);
 
 timersStrat[22].stop();
 
 timersStrat[23].start();
-    // Multiply out the matrices.
-    Strategies stmp;
-    list<ExtendedStrategy> extendedStrats;
-    extendedStrats.emplace_back(ExtendedStrategy());
+      // Multiply out the matrices.
+      Strategies stmp;
+      list<ExtendedStrategy> extendedStrats;
+      extendedStrats.emplace_back(ExtendedStrategy());
 
-    unsigned i = 0;
-    for (auto& strat1: splitOwn.shared.strategies)
-    {
-      unsigned j = 0;
-      for (auto& strat2: splitOther.shared.strategies)
+      unsigned i = 0;
+      for (auto& strat1: splitOwn.shared.strategies)
       {
-        stmp.multiplyAddNewer(strat1, strat2, minima2,
-          splitOwn, splitOther, i, j, extendedStrats);
-        j++;
+        unsigned j = 0;
+        for (auto& strat2: splitOther.shared.strategies)
+        {
+          stmp.multiplyAddNewer(strat1, strat2, minima2,
+            splitOwn, splitOther, i, j, extendedStrats);
+          j++;
+        }
+        i++;
       }
-      i++;
-    }
 
 timersStrat[23].stop();
 
-    // TODO This won't be in weight order!
     // Add back the non-overlapping results.
 timersStrat[24].start();
-    for (auto& es: extendedStrats)
-    {
-      es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
-      es.overlap *= * splitOther.ownPtrs[es.indexOther];
-      stmp.strategies.push_back(move(es.overlap));
-    }
+      for (auto& es: extendedStrats)
+      {
+        es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
+        es.overlap *= * splitOther.ownPtrs[es.indexOther];
+        stmp.strategies.push_back(move(es.overlap));
+      }
 
-    stmp.strategies.pop_back();
+      stmp.strategies.pop_back();
+// timer1.stop();
 timersStrat[24].stop();
 /* */
     
   
-timersStrat[14].start();
+timersStrat[15].start();
 
-    // We only use the minima here.
-    Ranges minima;
-    Strategies::combinedLower(ranges, strats2.ranges, false, minima);
+// Timer timer2;
+// timer2.start();
+      // We only use the minima here.
+      Ranges minima;
+      Strategies::combinedLower(ranges, strats2.ranges, false, minima);
 
-    for (auto& strat1: strategiesOwn)
-      for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAddNew(strat1, strat2, minima);
+      for (auto& strat1: strategiesOwn)
+        for (auto& strat2: strats2.strategies)
+          Strategies::multiplyAddNew(strat1, strat2, minima);
 
-    strategies.pop_back();
+      strategies.pop_back();
+// timer2.stop();
 
-timersStrat[14].stop();
+// cout << "TIMER " << len1 << " " << len2 << endl;
+// cout << timer1.str(4);
+// cout << timer2.str(4);
 
-/* */
+timersStrat[15].stop();
+
+/*
 timersStrat[25].start();
     if (! (stmp == * this))
     {
@@ -906,7 +908,27 @@ timersStrat[25].start();
       assert(false);
     }
 timersStrat[25].stop();
-/* */
+*/
+
+    }
+    else
+    {
+      // Stick with the more straightforward implementation.
+timersStrat[14].start();
+
+      // We only use the minima here.
+      Ranges minima;
+      Strategies::combinedLower(ranges, strats2.ranges, false, minima);
+
+      for (auto& strat1: strategiesOwn)
+        for (auto& strat2: strats2.strategies)
+          Strategies::multiplyAddNew(strat1, strat2, minima);
+
+      strategies.pop_back();
+
+timersStrat[14].stop();
+
+    }
 
 
   }
