@@ -147,6 +147,7 @@ struct ExtendedStrategy
   Strategy overlap;
   unsigned indexOwn;
   unsigned indexOther;
+  unsigned weight;
 };
 
 struct SplitStrategies

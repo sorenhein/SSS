@@ -510,6 +510,9 @@ void Strategies::multiplyAddNewer(
   lastEntry.overlap.scrutinize(minima);
   lastEntry.indexOwn = indexOwn;
   lastEntry.indexOther = indexOther;
+  lastEntry.weight = lastEntry.overlap.weight() +
+    splitOwn.ownPtrs[indexOwn]->weight() +
+    splitOther.ownPtrs[indexOther]->weight();
 
   auto piter = prev(extendedStrategies.end());
 
@@ -526,7 +529,7 @@ void Strategies::multiplyAddNewer(
   // This checking costs about one third of the overall method time.
   
   auto iter = extendedStrategies.begin();
-  while (iter != piter && iter->overlap.weight() >= piter->overlap.weight())
+  while (iter != piter && iter->weight >= piter->weight)
   {
     // TMP if (somehow iter->overlap is >= piter->overlap)
     if (Strategies::greaterEqual(* iter, * piter, splitOwn, splitOther))
@@ -893,15 +896,14 @@ timersStrat[14].stop();
 
 /* */
 timersStrat[25].start();
-    // if (! (stmp == * this))
+    if (! (stmp == * this))
     {
       cout << strCopy.str("strategiesOwn");
       cout << strats2.str("strats2.strategies");
       cout << stmp.str("newer product");
       cout << Strategies::str("old product");
 
-      // assert(false);
-      assert(stmp == * this);
+      assert(false);
     }
 timersStrat[25].stop();
 /* */
