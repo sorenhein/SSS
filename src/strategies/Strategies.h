@@ -75,6 +75,8 @@ class Strategies
 
     void reset();
 
+    Strategy& front();
+
     void setTrivial(
       const Result& trivial,
       const unsigned char len);

@@ -26,7 +26,7 @@ class Node
 
     Strategies strats;
 
-    Strategies simpleStrats;
+    Strategy simpleStrat;
 
     Strategy constants;
 

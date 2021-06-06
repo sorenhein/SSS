@@ -36,7 +36,7 @@ void Node::reset()
 void Node::resetStrategies()
 {
   strats.reset();
-  simpleStrats.reset();
+  simpleStrat.reset();
   constants.reset();
 }
 
@@ -49,7 +49,7 @@ void Node::set(
   parentPtr = parentPtrIn;
   playPtr = playPtrIn;
   strats.reset();
-  simpleStrats.reset();
+  simpleStrat.reset();
   index = (prevNodePtr ? prevNodePtr->index+1 : 0);
 }
 
@@ -156,8 +156,8 @@ void Node::purgeRanges()
 
 void Node::reactivate()
 {
-  strats *= simpleStrats;
-  strats *= constants;
+  simpleStrat *= constants;
+  strats *= simpleStrat;
 }
 
 
@@ -217,8 +217,7 @@ bool Node::removePlay()
     return true;
   else if (strats.size() == 1)
   {
-    parentPtr->simpleStrats *= strats;
-    assert(parentPtr->simpleStrats.size() == 1);
+    parentPtr->simpleStrat *= strats.front();
     return true;
   }
   else
@@ -261,6 +260,6 @@ string Node::strPlay(const Level level) const
 
 string Node::strSimple() const
 {
-  return simpleStrats.str("simple " + to_string(index));
+  return simpleStrat.str("simple " + to_string(index));
 }
 

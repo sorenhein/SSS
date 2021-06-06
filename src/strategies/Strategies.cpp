@@ -32,6 +32,12 @@ void Strategies::reset()
 }
 
 
+Strategy& Strategies::front()
+{
+  return strategies.front();
+}
+
+
 void Strategies::setTrivial(
   const Result& trivial,
   const unsigned char len)
