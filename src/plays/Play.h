@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_PLAY_H
 #define SSS_PLAY_H
 
@@ -49,7 +57,6 @@ struct Play
   // Information about the place the play came from.
   unsigned cardsLeft;
 
-  // TODO Do we need these two if we have combPtr?
   unsigned holding3;
   bool rotateFlag;
 

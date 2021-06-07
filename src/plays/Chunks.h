@@ -1,3 +1,12 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
+
 #ifndef SSS_CHUNKS_H
 #define SSS_CHUNKS_H
 

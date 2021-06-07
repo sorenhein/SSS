@@ -1,19 +1,20 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <limits>
 
 #include "Plays.h"
 #include "Chunks.h"
 
 #include "../Combinations.h"
 #include "../Distribution.h"
-#include "../Survivor.h"
-
-#include "../ranks/Ranks.h"
-
-#include "../stats/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Plays::Plays()
@@ -153,9 +154,9 @@ const Strategies& Plays::strategize(
   if (debugFlag & DEBUGPLAY_NODE_COUNTS)
     cout << Plays::strNodeCounts();
 
-timersStrat[19].start();
+  // This is a quite expensive method, as it also adapts plays
+  // to the current trick.
   Plays::getNextStrategies(distPtr, debugFlag);
-timersStrat[19].stop();
 
   if (nodesRho.used() <= 20 ||
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))

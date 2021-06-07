@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_PLAYS_H
 #define SSS_PLAYS_H
 
@@ -13,7 +21,6 @@ using namespace std;
 
 class Combinations;
 class Distribution;
-class Ranks;
 class Strategies;
 
 

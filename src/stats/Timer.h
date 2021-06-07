@@ -1,6 +1,12 @@
 /*
-    A simple timer class.
- */
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
+// A simple timer class.
 
 #ifndef SSS_TIMER_H
 #define SSS_TIMER_H
