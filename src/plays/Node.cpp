@@ -105,8 +105,7 @@ void Node::propagateRanges()
 
 void Node::purgeRanges()
 {
-  const unsigned sizeOld = strats.size();
-  if (sizeOld == 0 || strats.numDists() == 0)
+  if (strats.empty())
     return;
 
   // Make a list of iterators -- one per Strategy.
@@ -219,9 +218,7 @@ void Node::add(
 
 bool Node::removePlay()
 {
-  if (strats.numDists() == 0)
-    return true;
-  else if (strats.size() == 0)
+  if (strats.empty())
     return true;
   else if (strats.size() == 1)
   {

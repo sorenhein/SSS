@@ -117,6 +117,7 @@ class Strategy
       const Survivors& survivors);
 
     unsigned size() const;
+    bool empty() const;
 
     unsigned weight() const;
 

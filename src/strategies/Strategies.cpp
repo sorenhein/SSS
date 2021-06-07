@@ -32,12 +32,6 @@ void Strategies::reset()
 }
 
 
-Strategy& Strategies::front()
-{
-  return strategies.front();
-}
-
-
 void Strategies::setTrivial(
   const Result& trivial,
   const unsigned char len)
@@ -51,15 +45,25 @@ void Strategies::setTrivial(
 }
 
 
+void Strategies::restudy()
+{
+  // Very fast.
+  if (strategies.empty())
+    return;
+
+  for (auto& strategy: strategies)
+    strategy.study();
+}
+
+
 bool Strategies::sameOrdered(const Strategies& strats2)
 {
   // This assumes the same ordering.
 
-  unsigned i = 0; // Could be used for debugging output, but isn't now.
   auto iter2 = strats2.strategies.begin();
 
   for (auto iter1 = strategies.begin(); iter1 != strategies.end(); 
-      iter1++, iter2++, i++)
+      iter1++, iter2++)
   {
     if (!(* iter1 == * iter2))
       return false;
@@ -94,17 +98,6 @@ bool Strategies::sameUnordered(const Strategies& strats2)
   }
 
   return true;
-}
-
-
-void Strategies::restudy()
-{
-  // Very fast.
-  if (strategies.empty())
-    return;
-
-  for (auto& strategy: strategies)
-    strategy.study();
 }
 
 
@@ -950,6 +943,12 @@ timersStrat[2].stop();
 }
 
 
+const Strategy& Strategies::front() const
+{
+  return strategies.front();
+}
+
+
 unsigned Strategies::size() const
 {
   return strategies.size();
@@ -962,6 +961,11 @@ unsigned Strategies::numDists() const
     return 0;
   else
     return strategies.front().size();
+}
+
+bool Strategies::empty() const
+{
+  return (strategies.empty() || strategies.front().empty());
 }
 
 

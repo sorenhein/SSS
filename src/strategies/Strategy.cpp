@@ -690,6 +690,12 @@ unsigned Strategy::size() const
 }
 
 
+bool Strategy::empty() const
+{
+  return results.empty();
+}
+
+
 unsigned Strategy::weight() const
 {
   return weightInt;

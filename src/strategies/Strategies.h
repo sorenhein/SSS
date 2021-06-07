@@ -36,8 +36,12 @@ class Strategies
     Ranges ranges;
 
 
+    void restudy();
+
     bool sameOrdered(const Strategies& strats2);
     bool sameUnordered(const Strategies& strats2);
+
+    unsigned numDists() const;
 
     void plusOneByOne(const Strategies& strats2);
 
@@ -92,6 +96,7 @@ class Strategies
 
     string strWeights(const bool rankFlag) const;
 
+    void operator += (const Strategy& strat);
 
   public:
 
@@ -101,24 +106,21 @@ class Strategies
 
     void reset();
 
-    Strategy& front();
-
     void setTrivial(
       const Result& trivial,
       const unsigned char len);
 
-    void restudy();
-
     bool operator == (const Strategies& strats2);
 
-    void operator += (const Strategy& strat);
     void operator += (Strategies& strats2); // TODO const if no ...
 
     void operator *= (const Strategy& strat);
     void operator *= (Strategies& strats2); // TODO const if no scrutinize
 
+    const Strategy& front() const;
+
     unsigned size() const;
-    unsigned numDists() const;
+    bool empty() const;
 
     void getLoopData(StratData& stratData);
 
@@ -128,11 +130,11 @@ class Strategies
 
     const Ranges& getRanges() const;
 
-    void consolidate();
-
     void adapt(
       const Play& play,
       const Survivors& survivors);
+
+    void consolidate();
 
     string strRanges(const string& title = "") const;
 
