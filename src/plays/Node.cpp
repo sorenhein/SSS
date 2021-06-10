@@ -147,6 +147,8 @@ void Node::purgeRanges()
   constants.eraseRest(citer);
   parentPtr->constants *= constants;
 
+  strats.scrutinize(parentPtr->strats.getRanges());
+
   // Some strategies may be dominated that weren't before.
   if (eraseFlag)
   {

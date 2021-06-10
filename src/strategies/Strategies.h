@@ -18,6 +18,7 @@ struct ExtendedStrategy;
 
 using namespace std;
 
+typedef bool (Strategy::*ComparatorType)(const Strategy& strat) const;
 
 
 class Strategies
@@ -42,6 +43,10 @@ class Strategies
 
     bool sameOrdered(const Strategies& strats2) const;
     bool sameUnordered(const Strategies& strats2) const;
+
+    void addStrategy(
+      const Strategy& strategy,
+      ComparatorType comparator);
 
     unsigned numDists() const;
 
@@ -99,7 +104,6 @@ class Strategies
     string strWeights(const bool rankFlag) const;
 
     void operator += (const Strategy& strat);
-    void add(const Strategy& strat);
 
 
   public:
@@ -139,6 +143,8 @@ class Strategies
       const Survivors& survivors);
 
     void consolidate();
+
+    void scrutinize(const Ranges& rangesIn);
 
     string strRanges(const string& title = "") const;
 

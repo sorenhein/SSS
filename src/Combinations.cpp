@@ -97,7 +97,7 @@ void Combinations::resize(const unsigned maxCardsIn)
     stratCounts[cards].reset();
   }
 
-  timersStrat.resize(30);
+  timersStrat.resize(40);
 }
 
 

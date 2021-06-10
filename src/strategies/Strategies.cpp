@@ -113,33 +113,27 @@ bool Strategies::operator == (const Strategies& strats2) const
 }
 
 
-void Strategies::operator += (const Strategy& strat)
+void Strategies::addStrategy(
+  const Strategy& strat,
+  ComparatorType comparator)
 {
-  // TODO When does this happen?
-  if (strat.size() == 0)
-    return;
-
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   
   if (strategies.empty())
   {
+    // This happens in consolidate() with the first entry.
     strategies.push_back(strat);
     return;
   }
 
-timersStrat[0].start();
   auto iter = strategies.begin();
   while (iter != strategies.end() && iter->weight() >= strat.weight())
   {
-
-    if (* iter >= strat)
-    {
-      // The new strat is dominated.
-timersStrat[0].stop();
+    // Is the new strat dominated?
+    if (((* iter).*comparator)(strat))
       return;
-    }
     else
       iter++;
   }
@@ -152,62 +146,29 @@ timersStrat[0].stop();
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
-
-    if (strat >= * iter)
+    if ((strat.*comparator)(* iter))
       iter = strategies.erase(iter);
     else
       iter++;
   }
-
-timersStrat[0].stop();
 }
 
 
-void Strategies::add(const Strategy& strat)
+void Strategies::operator += (const Strategy& strat)
 {
-/*
-  // TODO When does this happen?
-  if (strat.size() == 0)
-    return;
+  // Gets called from consolidate and from += strats.
 
-  // The strategies list is in descending order of weights.
-  // The new Strategy might dominate everything with a lower weight and
-  // can only be dominated by a Strategy with at least its own weight.
-  
-  if (strategies.empty())
+  if (scrutinizedFlag)
   {
-    strategies.push_back(strat);
-    return;
+timersStrat[0].start();
+    Strategies::addStrategy(strat, &Strategy::greaterEqualByProfile);
+timersStrat[0].stop();
   }
-*/
-
-  auto iter = strategies.begin();
-  while (iter != strategies.end() && iter->weight() >= strat.weight())
+  else
   {
-    if (iter->greaterEqualByProfile(strat))
-    // if (* iter >= strat)
-    {
-      // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
-
-  // The new vector must be inserted.  This consumes about a third
-  // of the time of the overall method.
-  iter = next(strategies.insert(iter, strat));
-
-  // The new vector may dominate lighter vectors. This only consumes
-  // 5-10% of the overall time.
-  while (iter != strategies.end())
-  {
-
-    if (strat.greaterEqualByProfile(* iter))
-    // if (strat >= * iter)
-      iter = strategies.erase(iter);
-    else
-      iter++;
+timersStrat[1].start();
+    Strategies::addStrategy(strat, &Strategy::operator >=);
+timersStrat[1].stop();
   }
 }
 
@@ -308,6 +269,8 @@ void Strategies::operator += (Strategies& strats2)
     * this = strats2;
     return;
   }
+  else if (strats2.empty())
+    return;
 
   const unsigned sno1 = strategies.size();
   const unsigned sno2 = strats2.size();
@@ -369,11 +332,12 @@ timersStrat[26].start();
       strat.scrutinize(stmp.ranges);
     for (auto& strat: strats2.strategies)
       strat.scrutinize(stmp.ranges);
+    stmp.scrutinizedFlag = true;
 timersStrat[26].stop();
 
 timersStrat[27].start();
     for (auto& strat2: strats2.strategies)
-      stmp.add(strat2);
+      stmp += strat2;
 timersStrat[27].stop();
 
     for (auto& strat2: strats2.strategies)
@@ -1032,6 +996,7 @@ unsigned Strategies::numDists() const
     return strategies.front().size();
 }
 
+
 bool Strategies::empty() const
 {
   return (strategies.empty() || strategies.front().empty());
@@ -1135,24 +1100,6 @@ const Ranges& Strategies::getRanges() const
 }
 
 
-void Strategies::consolidate()
-{
-  // Acceptably fast.
-
-  Strategies::restudy();
-
-  auto oldStrats = move(strategies);
-  strategies.clear();  // But leave ranges intact
-
-  for (auto& strat: oldStrats)
-  {
-timersStrat[28].start();
-    * this += strat;
-timersStrat[28].stop();
-  }
-}
-
-
 void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
@@ -1163,7 +1110,37 @@ timersStrat[6].start();
 
   if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
     Strategies::collapseOnVoid();
+
+  scrutinizedFlag = false;
+
 timersStrat[6].stop();
+}
+
+
+void Strategies::consolidate()
+{
+  // Acceptably fast.
+  if (Strategies::empty())
+    return;
+
+  Strategies::restudy();
+
+  auto oldStrats = move(strategies);
+  strategies.clear();  // But leave ranges intact
+
+timersStrat[28].start();
+  for (auto& strat: oldStrats)
+    * this += strat;
+timersStrat[28].stop();
+}
+
+
+void Strategies::scrutinize(const Ranges& rangesIn)
+{
+  for (auto& strat: strategies)
+    strat.scrutinize(rangesIn);
+
+  scrutinizedFlag = true;
 }
 
 
