@@ -37,6 +37,7 @@ class Strategies
     Ranges ranges;
 
     bool scrutinizedFlag;
+    Ranges const * parentRangesPtr;
 
 
     void restudy();

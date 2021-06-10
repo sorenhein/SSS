@@ -289,6 +289,28 @@ void Strategies::operator += (Strategies& strats2)
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
 
+if (scrutinizedFlag)
+{
+  timersStrat[36].start();
+  timersStrat[36].stop();
+}
+else
+{
+  timersStrat[37].start();
+  timersStrat[37].stop();
+}
+
+if (strats2.scrutinizedFlag)
+{
+  timersStrat[38].start();
+  timersStrat[38].stop();
+}
+else
+{
+  timersStrat[39].start();
+  timersStrat[39].stop();
+}
+
 timersStrat[20].start();
     /* */
     Strategies::makeRanges();
@@ -361,10 +383,14 @@ void Strategies::operator *= (const Strategy& strat)
   else
   {
     // TODO Really?  No re-sorting and consolidating?
+
 timersStrat[8].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
+
+    // Strategies::consolidate();
 timersStrat[8].stop();
+
   }
 }
 
@@ -413,6 +439,7 @@ void Strategies::multiplyAdd(
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
   strategies.splice(iter, strategies, piter);
+  piter = prev(iter);
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
@@ -817,6 +844,7 @@ void Strategies::operator *= (Strategies& strats2)
   {
     // Keep the new results.  Very fast.
     strategies = strats2.strategies;
+    // TODO scrutinizedFlag? ranges? * this = strats2 ?
     return;
   }
 
@@ -835,6 +863,7 @@ timersStrat[12].stop();
 
 Strategies strCopy = * this;
 
+  bool sownFlag = scrutinizedFlag;
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
@@ -962,6 +991,17 @@ timersStrat[14].stop();
   {
     // Probably comes from reactivate().
 timersStrat[2].start();
+
+    if (sownFlag)
+    {
+timersStrat[33].start();
+timersStrat[33].stop();
+    }
+    if (strats2.scrutinizedFlag)
+    {
+timersStrat[34].start();
+timersStrat[34].stop();
+    }
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
@@ -1123,6 +1163,19 @@ void Strategies::consolidate()
   if (Strategies::empty())
     return;
 
+  if (strategies.size() == 1)
+  {
+    // Don't have to do anything.
+timersStrat[32].start();
+timersStrat[32].stop();
+  }
+  else if (strategies.size() == 2)
+  {
+    // Just have to check whether to swap the two.
+timersStrat[31].start();
+timersStrat[31].stop();
+  }
+
   Strategies::restudy();
 
   auto oldStrats = move(strategies);
@@ -1140,6 +1193,8 @@ void Strategies::scrutinize(const Ranges& rangesIn)
   for (auto& strat: strategies)
     strat.scrutinize(rangesIn);
 
+  // Keep a copy and assume it does not go out of range.
+  parentRangesPtr = &rangesIn;
   scrutinizedFlag = true;
 }
 
