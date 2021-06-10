@@ -2,6 +2,9 @@
 ----------
 Ideas for speeding up Strategies
 
+Maybe have a dirty flag in Strategy
+See when it gets triggered in a += or *=.
+
 - Multiplying out the extended strategies
   - Could have the final strategies in-place
   - Extended strategies just have pointers to each strategy?

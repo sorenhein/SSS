@@ -268,12 +268,15 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
   assert(strat2.results.size() == results.size());
 
+  /*
   if (profiles.size() != strat2.profiles.size())
   {
     cout << "Profile size mismatch\n";
     cout << profiles.size() << " vs. " << strat2.profiles.size() << endl;
 
   }
+  */
+
   assert(profiles.size() == strat2.profiles.size());
   assert(! profiles.empty());
 

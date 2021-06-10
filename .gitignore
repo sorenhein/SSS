@@ -36,3 +36,11 @@ chapters/*
 scripts/*
 hash/*
 src/.vs/*
+
+src/.cccc
+src/.cccc/*
+src/html
+src/html/*
+src/latex
+src/latex/*
+src/CodeGraphData/*

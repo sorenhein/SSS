@@ -35,11 +35,13 @@ class Strategies
 
     Ranges ranges;
 
+    bool scrutinizedFlag;
+
 
     void restudy();
 
-    bool sameOrdered(const Strategies& strats2);
-    bool sameUnordered(const Strategies& strats2);
+    bool sameOrdered(const Strategies& strats2) const;
+    bool sameUnordered(const Strategies& strats2) const;
 
     unsigned numDists() const;
 
@@ -97,6 +99,8 @@ class Strategies
     string strWeights(const bool rankFlag) const;
 
     void operator += (const Strategy& strat);
+    void add(const Strategy& strat);
+
 
   public:
 
@@ -110,7 +114,7 @@ class Strategies
       const Result& trivial,
       const unsigned char len);
 
-    bool operator == (const Strategies& strats2);
+    bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2); // TODO const if no ...
 

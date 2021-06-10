@@ -29,6 +29,7 @@ void Strategies::reset()
 {
   strategies.clear();
   ranges.clear();
+  scrutinizedFlag = false;
 }
 
 
@@ -56,7 +57,7 @@ void Strategies::restudy()
 }
 
 
-bool Strategies::sameOrdered(const Strategies& strats2)
+bool Strategies::sameOrdered(const Strategies& strats2) const
 {
   // This assumes the same ordering.
 
@@ -73,7 +74,7 @@ bool Strategies::sameOrdered(const Strategies& strats2)
 }
 
 
-bool Strategies::sameUnordered(const Strategies& strats2)
+bool Strategies::sameUnordered(const Strategies& strats2) const
 {
   // This is dreadfully slow.  We could make use of the 
   // weight-ordered nature, and perhaps also the used-up matches,
@@ -101,7 +102,7 @@ bool Strategies::sameUnordered(const Strategies& strats2)
 }
 
 
-bool Strategies::operator == (const Strategies& strats2)
+bool Strategies::operator == (const Strategies& strats2) const
 {
   if (Strategies::size() != strats2.size())
     return false;
@@ -162,6 +163,55 @@ timersStrat[0].stop();
 }
 
 
+void Strategies::add(const Strategy& strat)
+{
+/*
+  // TODO When does this happen?
+  if (strat.size() == 0)
+    return;
+
+  // The strategies list is in descending order of weights.
+  // The new Strategy might dominate everything with a lower weight and
+  // can only be dominated by a Strategy with at least its own weight.
+  
+  if (strategies.empty())
+  {
+    strategies.push_back(strat);
+    return;
+  }
+*/
+
+  auto iter = strategies.begin();
+  while (iter != strategies.end() && iter->weight() >= strat.weight())
+  {
+    if (iter->greaterEqualByProfile(strat))
+    // if (* iter >= strat)
+    {
+      // The new strat is dominated.
+      return;
+    }
+    else
+      iter++;
+  }
+
+  // The new vector must be inserted.  This consumes about a third
+  // of the time of the overall method.
+  iter = next(strategies.insert(iter, strat));
+
+  // The new vector may dominate lighter vectors. This only consumes
+  // 5-10% of the overall time.
+  while (iter != strategies.end())
+  {
+
+    if (strat.greaterEqualByProfile(* iter))
+    // if (strat >= * iter)
+      iter = strategies.erase(iter);
+    else
+      iter++;
+  }
+}
+
+
 void Strategies::markChanges(
   const Strategies& strats2,
   list<Addition>& additions,
@@ -214,21 +264,14 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-// const bool b1 = strat.greaterEqualByProfile(* iter);
-      if (strat >= * iter)
-      // if (strat.greaterEqualByProfile(* iter))
+      if (strat.greaterEqualByProfile(* iter))
       {
-      // assert(b1);
         if (ownDeletions[stratNo] == 0)
         {
           deletions.push_back(iter);
           ownDeletions[stratNo] = 1;
         }
       }
-      // else
-      // {
-       // assert(!b1);
-      // }
       iter++;
       stratNo++;
     }
@@ -299,6 +342,7 @@ timersStrat[20].start();
       /* */
 
     Strategies::markChanges(strats2, additions, deletions);
+
 timersStrat[20].stop();
 
     for (auto& addition: additions)
@@ -311,8 +355,35 @@ timersStrat[20].stop();
   {
     // General case.
     // Frequent and fast, perhaps 25% of the method time.
+    Strategies stmp = * this;
+
+timersStrat[26].start();
+    stmp.makeRanges();
+    strats2.makeRanges();
+
+    // We only need the minima here, but we use the existing method
+    // for simplicity.
+    stmp.propagateRanges(strats2);
+
+    for (auto& strat: stmp.strategies)
+      strat.scrutinize(stmp.ranges);
+    for (auto& strat: strats2.strategies)
+      strat.scrutinize(stmp.ranges);
+timersStrat[26].stop();
+
+timersStrat[27].start();
     for (auto& strat2: strats2.strategies)
+      stmp.add(strat2);
+timersStrat[27].stop();
+
+    for (auto& strat2: strats2.strategies)
+    {
+timersStrat[29].start();
       * this += strat2;
+timersStrat[29].stop();
+    }
+
+assert(stmp == *this);
   }
 }
 
@@ -321,9 +392,7 @@ void Strategies::operator *= (const Strategy& strat)
 {
   if (strategies.empty())
   {
-timersStrat[7].start();
-    * this += strat;
-timersStrat[7].stop();
+    strategies.push_back(strat);
   }
   else
   {
@@ -1076,7 +1145,11 @@ void Strategies::consolidate()
   strategies.clear();  // But leave ranges intact
 
   for (auto& strat: oldStrats)
+  {
+timersStrat[28].start();
     * this += strat;
+timersStrat[28].stop();
+  }
 }
 
 
