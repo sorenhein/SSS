@@ -798,49 +798,31 @@ void Strategies::operator *= (Strategies& strats2)
     return;
   }
 
-
-  if (ranges.empty())
+  if (ranges.empty() || len1 < 10 || len2 < 10)
   {
 timersStrat[0].start();
 
-    // This implementation of the general product attempts to reduce
+    // This implementation of the general product reduces
     // memory overhead.  The temporary product is formed in the last
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
-    // TODO Could we also use New() here?  Would it be faster?
+    ComparatorType comp = (ranges.empty() ? &Strategy::operator >= :
+      &Strategy::greaterEqualByProfile);
+
     auto strategiesOwn = move(strategies);
     strategies.clear();
     strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAddStrategy(strat1, strat2,
-          &Strategy::operator >=);
+        Strategies::multiplyAddStrategy(strat1, strat2, comp);
+          // &Strategy::operator >=);
 
     strategies.pop_back();
 
 timersStrat[0].stop();
-  }
-  else if (len1 < 10 || len2 < 10)
-  {
-timersStrat[1].start();
-
-    // As *this is a parent node, its ranges includes the child
-    // node's ranges.  Use the faster comparison.
-
-    auto strategiesOwn = move(strategies);
-    strategies.clear();
-    strategies.emplace_back(Strategy());
-
-    for (auto& strat1: strategiesOwn)
-      for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAddStrategy(strat1, strat2,
-          &Strategy::greaterEqualByProfile);
-
-    strategies.pop_back();
-
-timersStrat[1].stop();
+    return;
   }
   else
   {
@@ -880,6 +862,7 @@ timersStrat[2].start();
     extendedStrats.pop_back();
 
 timersStrat[2].stop();
+  }
 
 timersStrat[3].start();
 
@@ -895,7 +878,6 @@ timersStrat[3].start();
       }
 
 timersStrat[3].stop();
-  }
 }
 
 
