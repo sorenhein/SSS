@@ -868,11 +868,10 @@ timersStrat[12].stop();
 
 Strategies strCopy = * this;
 
-  bool sownFlag = scrutinizedFlag;
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
-  strategies.emplace_back(Strategy());
+  // strategies.emplace_back(Strategy());
 
   if (! ranges.empty() && ! strats2.ranges.empty())
   {
@@ -892,7 +891,6 @@ timersStrat[21].stop();
 
 timersStrat[23].start();
       // Multiply out the matrices.
-      Strategies stmp;
       list<ExtendedStrategy> extendedStrats;
       extendedStrats.emplace_back(ExtendedStrategy());
 
@@ -905,12 +903,14 @@ timersStrat[23].start();
         unsigned j = 0;
         for (auto& strat2: splitOther.shared.strategies)
         {
-          stmp.multiplyAddNewer(strat1, strat2, ranges,
+          Strategies::multiplyAddNewer(strat1, strat2, ranges,
             splitOwn, splitOther, i, j, extendedStrats);
           j++;
         }
         i++;
       }
+
+      extendedStrats.pop_back();
 
 timersStrat[23].stop();
 
@@ -922,54 +922,17 @@ timersStrat[24].start();
       {
         es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
         es.overlap *= * splitOther.ownPtrs[es.indexOther];
-        stmp.strategies.push_back(move(es.overlap));
+        strategies.push_back(move(es.overlap));
       }
 
-      stmp.strategies.pop_back();
 timersStrat[24].stop();
-/* */
-    
-  
-timersStrat[15].start();
-
-// Timer timer2;
-// timer2.start();
-      // We only use the minima here.
-      Ranges minima;
-      Strategies::combinedLower(ranges, strats2.ranges, false, minima);
-
-      for (auto& strat1: strategiesOwn)
-        for (auto& strat2: strats2.strategies)
-          Strategies::multiplyAddNew(strat1, strat2, minima);
-
-      strategies.pop_back();
-// timer2.stop();
-
-// cout << "TIMER " << len1 << " " << len2 << endl;
-// cout << timer1.str(4);
-// cout << timer2.str(4);
-
-timersStrat[15].stop();
-
-/* */
-timersStrat[25].start();
-    if (! (stmp == * this))
-    {
-      cout << strCopy.str("strategiesOwn");
-      cout << strats2.str("strats2.strategies");
-      cout << stmp.str("newer product");
-      cout << Strategies::str("old product");
-
-      assert(false);
-    }
-timersStrat[25].stop();
-/* */
-
     }
     else
     {
-      // Stick with the more straightforward implementation.
 timersStrat[14].start();
+
+      // Stick with the more straightforward implementation.
+      strategies.emplace_back(Strategy());
 
       // We only use the minima here.
       Ranges minima;
@@ -982,33 +945,20 @@ timersStrat[14].start();
       strategies.pop_back();
 
 timersStrat[14].stop();
-
     }
-
-
   }
   else
   {
-    // Probably comes from reactivate().
 timersStrat[2].start();
 
-    if (sownFlag)
-    {
-timersStrat[33].start();
-timersStrat[33].stop();
-    }
-    if (strats2.scrutinizedFlag)
-    {
-timersStrat[34].start();
-timersStrat[34].stop();
-    }
+    // Probably comes from reactivate().
+    strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
         Strategies::multiplyAdd(strat1, strat2);
 
     strategies.pop_back();
-
 
 timersStrat[2].stop();
   }
