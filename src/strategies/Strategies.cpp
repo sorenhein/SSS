@@ -859,10 +859,10 @@ void Strategies::operator *= (Strategies& strats2)
   }
 
 
-Strategies strCopy = * this;
+// Strategies strCopy = * this;
 
-  auto strategiesOwn = move(strategies);
-  strategies.clear();
+  // auto strategiesOwn = move(strategies);
+  // strategies.clear();
 
   if (ranges.empty())
   {
@@ -874,6 +874,8 @@ timersStrat[0].start();
     // viable, it is already in Strategies and subject to move semantics.
 
     // TODO Could we also use New() here?  Would it be faster?
+    auto strategiesOwn = move(strategies);
+    strategies.clear();
     strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
@@ -891,6 +893,8 @@ timersStrat[1].start();
     // As *this is a parent node, its ranges includes the child
     // node's ranges.  Use the faster comparison.
 
+    auto strategiesOwn = move(strategies);
+    strategies.clear();
     strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
@@ -910,6 +914,10 @@ timersStrat[2].start();
     // that are unique to each of them.  We split these out, and we
     // pre-compare within each Strategies.  This makes it faster to
     // compare products from each Strategies.
+
+    Strategies strCopy = * this;
+    auto strategiesOwn = move(strategies);
+    strategies.clear();
 
     SplitStrategies splitOwn, splitOther;
     strCopy.setSplit(strats2.strategies.front(), splitOwn);
@@ -937,6 +945,7 @@ timersStrat[2].start();
 timersStrat[2].stop();
 
 timersStrat[3].start();
+
 
     // Add back the non-overlapping results.
     // TODO Could take advantage of non-overlap and do
