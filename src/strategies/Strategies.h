@@ -39,6 +39,8 @@ class Strategies
     bool scrutinizedFlag;
 
 
+    void collapseOnVoid();
+
     void consolidateTwo();
 
     void restudy();
@@ -52,14 +54,19 @@ class Strategies
 
     void plusOneByOne(const Strategies& strats2);
 
+    void markChanges(
+      const Strategies& strats2,
+      list<Addition>& additions,
+      list<list<Strategy>::const_iterator>& deletions) const;
+
+
+
+
     void multiplyAddStrategy(
       const Strategy& strat1,
       const Strategy& strat2,
       ComparatorType comparator);
 
-
-
-    unsigned numDists() const;
 
 
     void multiplyAddNewer(
@@ -70,11 +77,6 @@ class Strategies
       const unsigned indexOwn,
       const unsigned indexOther,
       list<ExtendedStrategy>& extendedStrategies);
-
-    void markChanges(
-      const Strategies& strats2,
-      list<Addition>& additions,
-      list<list<Strategy>::const_iterator>& deletions) const;
 
     // TMP If this works, should perhaps go in some class?
     void setSplit(
@@ -87,8 +89,6 @@ class Strategies
       const ExtendedStrategy& es2,
       const SplitStrategies& split1,
       const SplitStrategies& split2) const;
-
-    void collapseOnVoid();
 
     string strHeader(
       const string& title,
@@ -121,13 +121,12 @@ class Strategies
 
     bool operator == (const Strategies& strats2) const;
 
-    void operator += (Strategies& strats2); // TODO const if no ...
+    void operator += (Strategies& strats2);
 
     void operator *= (const Strategy& strat);
-    void operator *= (Strategies& strats2); // TODO const if no scrutinize
+    void operator *= (Strategies& strats2);
 
     const Strategy& front() const;
-
     unsigned size() const;
     bool empty() const;
 

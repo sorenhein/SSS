@@ -52,6 +52,33 @@ void Strategies::setTrivial(
 }
 
 
+void Strategies::collapseOnVoid()
+{
+  assert(strategies.size() > 0);
+  if (strategies.size() == 1)
+  {
+    assert(strategies.front().size() == 1);
+    return;
+  }
+
+  auto iterBest = strategies.begin();
+  assert(iterBest->size() == 1);
+
+  // Find the best one for declarer.
+  for (auto iter = next(strategies.begin()); 
+      iter != strategies.end(); iter++)
+  {
+    assert(iter->size() == 1);
+    if (* iter >= * iterBest)
+      iterBest = iter;
+  }
+
+  // Copy it to the front and remove the others.
+  strategies.front() = * iterBest;
+  strategies.erase(next(strategies.begin()), strategies.end());
+}
+
+
 void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
@@ -448,6 +475,12 @@ timersStrat[29].stop();
 }
 
 
+/************************************************************
+ *                                                          *
+ * operator *= Strategy                                     *
+ *                                                          *
+ ************************************************************/
+
 void Strategies::operator *= (const Strategy& strat)
 {
   if (strategies.empty())
@@ -468,6 +501,12 @@ timersStrat[8].stop();
   }
 }
 
+
+/************************************************************
+ *                                                          *
+ * operator *= Strategies and many helper methods           *
+ *                                                          *
+ ************************************************************/
 
 void Strategies::multiplyAddStrategy(
   const Strategy& strat1,
@@ -747,7 +786,7 @@ void Strategies::setSplit(
   for (unsigned i = 0; i < ssize; i++)
     split.matrix[i].resize(ssize);
 
-  if (split.own.numDists() == 0)
+  if (split.own.empty())
   {
     for (unsigned i = 0; i < ssize; i++)
       for (unsigned j = 0; j < ssize; j++)
@@ -898,6 +937,12 @@ timersStrat[5].stop();
 }
 
 
+/************************************************************
+ *                                                          *
+ * Utilities                                                *
+ *                                                          *
+ ************************************************************/
+
 const Strategy& Strategies::front() const
 {
   return strategies.front();
@@ -910,46 +955,9 @@ unsigned Strategies::size() const
 }
 
 
-unsigned Strategies::numDists() const
-{
-  if (strategies.empty())
-    return 0;
-  else
-    return strategies.front().size();
-}
-
-
 bool Strategies::empty() const
 {
   return (strategies.empty() || strategies.front().empty());
-}
-
-
-void Strategies::collapseOnVoid()
-{
-  // Very fast.
-  assert(strategies.size() > 0);
-  if (strategies.size() == 1)
-  {
-    assert(strategies.front().size() == 1);
-    return;
-  }
-
-  auto iterBest = strategies.begin();
-  assert(iterBest->size() == 1);
-
-  // Find the best one for declarer.
-  for (auto iter = next(strategies.begin()); 
-      iter != strategies.end(); iter++)
-  {
-    assert(iter->size() == 1);
-    if (* iter >= * iterBest)
-      iterBest = iter;
-  }
-
-  // Copy it to the front and remove the others.
-  strategies.front() = * iterBest;
-  strategies.erase(next(strategies.begin()), strategies.end());
 }
 
 
@@ -967,6 +975,12 @@ void Strategies::getLoopData(StratData& stratData)
   }
 }
 
+
+/************************************************************
+ *                                                          *
+ * Ranges methods                                           *
+ *                                                          *
+ ************************************************************/
 
 void Strategies::makeRanges()
 {
