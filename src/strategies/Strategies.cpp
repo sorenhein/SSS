@@ -396,76 +396,16 @@ timersStrat[8].stop();
 }
 
 
-void Strategies::multiplyAdd(
-  const Strategy& strat1,
-  const Strategy& strat2)
-{
-  // This costs about two thirds of the overall method time.
-  auto& product = strategies.back();
-  product.multiply(strat1, strat2);
-  auto piter = prev(strategies.end());
-
-  if (strategies.size() == 1)
-  {
-    // Keep the product and make a new scratch-pad element.
-    strategies.emplace_back(Strategy());
-    return;
-  }
-
-  // The strategies list is in descending order of weights.
-  // The new Strategy might dominate everything with a lower weight and
-  // can only be dominated by a Strategy with at least its own weight.
-  // This checking costs about one third of the overall method time.
-  
-  auto iter = strategies.begin();
-  while (iter != piter && iter->weight() >= piter->weight())
-  {
-
-    if (* iter >= * piter)
-    {
-      // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
-
-  // Already in the right place at the end?
-  if (iter == piter)
-  {
-    strategies.emplace_back(Strategy());
-    return;
-  }
-
-  // The new vector must be inserted, i.e. spliced in.
-  // This is super-fast.
-  strategies.splice(iter, strategies, piter);
-  piter = prev(iter);
-
-  // The new vector may dominate lighter vectors.  This is also
-  // quite efficient and doesn't happen so often.
-  while (iter != strategies.end())
-  {
-    if (* piter >= * iter)
-      iter = strategies.erase(iter);
-    else
-      iter++;
-  }
-
-  // Make a new scratch-pad element.
-  strategies.emplace_back(Strategy());
-}
-
-
-void Strategies::multiplyAddNew(
+void Strategies::multiplyAddStrategy(
   const Strategy& strat1,
   const Strategy& strat2,
-  const Ranges& minima)
+  ComparatorType comparator)
 {
   // This costs about two thirds of the overall method time.
   auto& product = strategies.back();
   product.multiply(strat1, strat2);
-  product.scrutinize(minima);
+  if (! ranges.empty())
+    product.scrutinize(ranges);
   auto piter = prev(strategies.end());
 
   if (strategies.size() == 1)
@@ -483,7 +423,7 @@ void Strategies::multiplyAddNew(
   auto iter = strategies.begin();
   while (iter != piter && iter->weight() >= piter->weight())
   {
-    if (iter->greaterEqualByProfile(* piter))
+    if (((* iter).*comparator)(* piter))
     {
       // The new strat is dominated.
       return;
@@ -508,7 +448,7 @@ void Strategies::multiplyAddNew(
   // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
-    if (piter->greaterEqualByProfile(* iter))
+    if (((* piter).*comparator)(* iter))
       iter = strategies.erase(iter);
     else
       iter++;
@@ -859,11 +799,6 @@ void Strategies::operator *= (Strategies& strats2)
   }
 
 
-// Strategies strCopy = * this;
-
-  // auto strategiesOwn = move(strategies);
-  // strategies.clear();
-
   if (ranges.empty())
   {
 timersStrat[0].start();
@@ -880,7 +815,8 @@ timersStrat[0].start();
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAdd(strat1, strat2);
+        Strategies::multiplyAddStrategy(strat1, strat2,
+          &Strategy::operator >=);
 
     strategies.pop_back();
 
@@ -899,7 +835,8 @@ timersStrat[1].start();
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAddNew(strat1, strat2, ranges);
+        Strategies::multiplyAddStrategy(strat1, strat2,
+          &Strategy::greaterEqualByProfile);
 
     strategies.pop_back();
 

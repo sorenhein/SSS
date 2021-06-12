@@ -53,14 +53,10 @@ class Strategies
 
     void plusOneByOne(const Strategies& strats2);
 
-    void multiplyAdd(
-      const Strategy& strat1,
-      const Strategy& strat2);
-
-    void multiplyAddNew(
+    void multiplyAddStrategy(
       const Strategy& strat1,
       const Strategy& strat2,
-      const Ranges& minima);
+      ComparatorType comparator);
 
     void multiplyAddNewer(
       const Strategy& strat1,
