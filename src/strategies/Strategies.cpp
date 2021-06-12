@@ -30,9 +30,14 @@ void Strategies::reset()
   strategies.clear();
   ranges.clear();
   scrutinizedFlag = false;
-  parentRangesPtr = nullptr;
 }
 
+
+/************************************************************
+ *                                                          *
+ * Ways in which new Strategies arise: setTrivial and adapt *
+ *                                                          *
+ ************************************************************/
 
 void Strategies::setTrivial(
   const Result& trivial,
@@ -47,9 +52,86 @@ void Strategies::setTrivial(
 }
 
 
+void Strategies::adapt(
+  const Play& play,
+  const Survivors& survivors)
+{
+  // Adapt the Strategies of a following play to this trick by
+  // rotating, mapping etc.  This is a somewhat expensive method.
+
+  for (auto& strat: strategies)
+    strat.adapt(play, survivors);
+
+  if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
+    Strategies::collapseOnVoid();
+
+  scrutinizedFlag = false;
+}
+
+
+/************************************************************
+ *                                                          *
+ * Cleaning up an existing strategy                         *
+ *                                                          *
+ ************************************************************/
+
+void Strategies::consolidateTwo()
+{
+  // Check whether to swap the two and whether one is dominated.
+
+  auto iter1 = strategies.begin();
+  auto iter2 = next(iter1);
+  if (iter1->weight() < iter2->weight())
+  {
+    if (iter2->greaterEqualByProfile(* iter1))
+      strategies.pop_front();
+    else
+      iter_swap(iter1, iter2);
+  }
+  else if (iter1->greaterEqualByProfile(* iter2))
+    strategies.pop_back();
+  else
+    iter_swap(iter1, iter2);
+}
+
+
+void Strategies::consolidate()
+{
+  // Used when a strategy may have gone out of order.  
+  // In Node::purgeRanges individual distributions may have been
+  // removed from Strategies, so that the strategies are no longer
+  // in order and may even have dominations among them.
+
+  if (Strategies::empty())
+    return;
+
+  Strategies::restudy();
+
+  if (strategies.size() == 1)
+  {
+    // Don't have to do anything.
+    return;
+  }
+  else if (strategies.size() == 2)
+  {
+    // The general way also works in this case, and it is just
+    // a small optimization.
+    Strategies::consolidateTwo();
+    return;
+  }
+  else
+  {
+    auto oldStrats = move(strategies);
+    strategies.clear();  // But leave ranges intact
+
+    for (auto& strat: oldStrats)
+      * this += strat;
+  }
+}
+
+
 void Strategies::restudy()
 {
-  // Very fast.
   if (strategies.empty())
     return;
 
@@ -57,6 +139,21 @@ void Strategies::restudy()
     strategy.study();
 }
 
+
+void Strategies::scrutinize(const Ranges& rangesIn)
+{
+  for (auto& strat: strategies)
+    strat.scrutinize(rangesIn);
+
+  scrutinizedFlag = true;
+}
+
+
+/************************************************************
+ *                                                          *
+ * operator == and two helper methods                       *
+ *                                                          *
+ ************************************************************/
 
 bool Strategies::sameOrdered(const Strategies& strats2) const
 {
@@ -114,6 +211,12 @@ bool Strategies::operator == (const Strategies& strats2) const
 }
 
 
+/************************************************************
+ *                                                          *
+ * operator += Strategy and a helper method                 *
+ *                                                          *
+ ************************************************************/
+
 void Strategies::addStrategy(
   const Strategy& strat,
   ComparatorType comparator)
@@ -170,6 +273,34 @@ timersStrat[0].stop();
 timersStrat[1].start();
     Strategies::addStrategy(strat, &Strategy::operator >=);
 timersStrat[1].stop();
+  }
+}
+
+
+/************************************************************
+ *                                                          *
+ * operator += Strategies and helper methods                *
+ *                                                          *
+ ************************************************************/
+
+void Strategies::plusOneByOne(const Strategies& strats2)
+{
+  // Simple version when both Strategies are known to have size 1,
+  // as happens very frequently.
+
+  auto& str1 = strategies.front();
+  auto& str2 = strats2.strategies.front();
+
+  if (str1 >= str2)
+    return;
+  else if (str2 >= str1)
+    * this = strats2;
+  else
+  {
+    if (str1.weight() >= str2.weight())
+      strategies.push_back(str2);
+    else
+      strategies.push_front(str2);
   }
 }
 
@@ -241,28 +372,6 @@ void Strategies::markChanges(
 }
 
 
-void Strategies::plusOneByOne(const Strategies& strats2)
-{
-  // Simple version when both Strategies are known to have size 1,
-  // as happens very frequently.
-
-  auto& str1 = strategies.front();
-  auto& str2 = strats2.strategies.front();
-
-  if (str1 >= str2)
-    return;
-  else if (str2 >= str1)
-    * this = strats2;
-  else
-  {
-    if (str1.weight() >= str2.weight())
-      strategies.push_back(str2);
-    else
-      strategies.push_front(str2);
-  }
-}
-
-
 void Strategies::operator += (Strategies& strats2)
 {
   if (strategies.empty())
@@ -283,34 +392,12 @@ void Strategies::operator += (Strategies& strats2)
   }
   else if (sno1 >= 20 && sno2 >= 20)
   {
-    // Complex case.
     // Rare, but very slow per invocation when it happens.
-    // Consumes perhaps 75% of the method time.
+    // Consumes perhaps 75% of the method time, so more optimized.
 
-    list<Addition> additions;
-    list<list<Strategy>::const_iterator> deletions;
-
-if (scrutinizedFlag)
-{
-  timersStrat[36].start();
-  timersStrat[36].stop();
-}
-else
-{
-  timersStrat[37].start();
-  timersStrat[37].stop();
-}
-
-if (strats2.scrutinizedFlag)
-{
-  timersStrat[38].start();
-  timersStrat[38].stop();
-}
-else
-{
-  timersStrat[39].start();
-  timersStrat[39].stop();
-}
+    // TODO Don't know why this is yet.
+    assert(! scrutinizedFlag);
+    assert(! strats2.scrutinizedFlag);
 
 timersStrat[20].start();
     /* */
@@ -321,12 +408,18 @@ timersStrat[20].start();
     // for simplicity.
     Strategies::propagateRanges(strats2);
 
+    // Strategies::scrutinize(ranges);
+    // strats2.scrutinize(ranges);
+
+    /* */
     for (auto& strat: strategies)
       strat.scrutinize(ranges);
     for (auto& strat: strats2.strategies)
       strat.scrutinize(ranges);
       /* */
 
+    list<Addition> additions;
+    list<list<Strategy>::const_iterator> deletions;
     Strategies::markChanges(strats2, additions, deletions);
 
 timersStrat[20].stop();
@@ -341,36 +434,16 @@ timersStrat[20].stop();
   {
     // General case.
     // Frequent and fast, perhaps 25% of the method time.
-    Strategies stmp = * this;
 
-timersStrat[26].start();
-    stmp.makeRanges();
-    strats2.makeRanges();
+    // TODO Don't know why this is yet.
+    assert(! scrutinizedFlag);
+    assert(! strats2.scrutinizedFlag);
 
-    // We only need the minima here, but we use the existing method
-    // for simplicity.
-    stmp.propagateRanges(strats2);
-
-    for (auto& strat: stmp.strategies)
-      strat.scrutinize(stmp.ranges);
-    for (auto& strat: strats2.strategies)
-      strat.scrutinize(stmp.ranges);
-    stmp.scrutinizedFlag = true;
-timersStrat[26].stop();
-
-timersStrat[27].start();
-    for (auto& strat2: strats2.strategies)
-      stmp += strat2;
-timersStrat[27].stop();
-
-    for (auto& strat2: strats2.strategies)
-    {
 timersStrat[29].start();
+    for (auto& strat2: strats2.strategies)
       * this += strat2;
 timersStrat[29].stop();
-    }
 
-assert(stmp == *this);
   }
 }
 
@@ -733,15 +806,29 @@ void Strategies::operator *= (Strategies& strats2)
 
   if (ranges.empty() || len1 < 10 || len2 < 10)
   {
-timersStrat[0].start();
 
     // This implementation of the general product reduces
     // memory overhead.  The temporary product is formed in the last
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
-    ComparatorType comp = (ranges.empty() ? &Strategy::operator >= :
-      &Strategy::greaterEqualByProfile);
+    ComparatorType comp;
+    unsigned tno;
+    if (ranges.empty())
+    {
+      comp = &Strategy::operator >=;
+      tno = 2;
+    }
+    else
+    {
+      comp = &Strategy::greaterEqualByProfile;
+      tno = 3;
+    }
+
+timersStrat[tno].start();
+
+    // ComparatorType comp = (ranges.empty() ? &Strategy::operator >= :
+      // &Strategy::greaterEqualByProfile);
 
     auto strategiesOwn = move(strategies);
     strategies.clear();
@@ -753,12 +840,12 @@ timersStrat[0].start();
 
     strategies.pop_back();
 
-timersStrat[0].stop();
+timersStrat[tno].stop();
     return;
   }
   else
   {
-timersStrat[2].start();
+timersStrat[4].start();
 
     // This is the most complex version.  The two Strategies have
     // distributions that are overlapping as well as distributions
@@ -792,9 +879,9 @@ timersStrat[2].start();
 
     extendedStrats.pop_back();
 
-timersStrat[2].stop();
+timersStrat[4].stop();
 
-timersStrat[3].start();
+timersStrat[5].start();
 
     // Add back the non-overlapping results.
     // TODO Could take advantage of non-overlap and do
@@ -806,7 +893,7 @@ timersStrat[3].start();
       strategies.push_back(move(es.overlap));
     }
 
-timersStrat[3].stop();
+timersStrat[5].stop();
   }
 }
 
@@ -935,65 +1022,11 @@ const Ranges& Strategies::getRanges() const
 }
 
 
-void Strategies::adapt(
-  const Play& play,
-  const Survivors& survivors)
-{
-timersStrat[6].start();
-  for (auto& strat: strategies)
-    strat.adapt(play, survivors);
-
-  if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
-    Strategies::collapseOnVoid();
-
-  scrutinizedFlag = false;
-  parentRangesPtr = nullptr;
-
-timersStrat[6].stop();
-}
-
-
-void Strategies::consolidate()
-{
-  // Acceptably fast.
-  if (Strategies::empty())
-    return;
-
-  if (strategies.size() == 1)
-  {
-    // Don't have to do anything.
-timersStrat[32].start();
-timersStrat[32].stop();
-  }
-  else if (strategies.size() == 2)
-  {
-    // Just have to check whether to swap the two.
-timersStrat[31].start();
-timersStrat[31].stop();
-  }
-
-  Strategies::restudy();
-
-  auto oldStrats = move(strategies);
-  strategies.clear();  // But leave ranges intact
-
-timersStrat[28].start();
-  for (auto& strat: oldStrats)
-    * this += strat;
-timersStrat[28].stop();
-}
-
-
-void Strategies::scrutinize(const Ranges& rangesIn)
-{
-  for (auto& strat: strategies)
-    strat.scrutinize(rangesIn);
-
-  // Keep a copy and assume it does not go out of range.
-  scrutinizedFlag = true;
-  parentRangesPtr = &rangesIn;
-}
-
+/************************************************************
+ *                                                          *
+ * string methods                                           *
+ *                                                          *
+ ************************************************************/
 
 string Strategies::strRanges(const string& title) const
 {

@@ -37,8 +37,9 @@ class Strategies
     Ranges ranges;
 
     bool scrutinizedFlag;
-    Ranges const * parentRangesPtr;
 
+
+    void consolidateTwo();
 
     void restudy();
 
@@ -49,14 +50,17 @@ class Strategies
       const Strategy& strategy,
       ComparatorType comparator);
 
-    unsigned numDists() const;
-
     void plusOneByOne(const Strategies& strats2);
 
     void multiplyAddStrategy(
       const Strategy& strat1,
       const Strategy& strat2,
       ComparatorType comparator);
+
+
+
+    unsigned numDists() const;
+
 
     void multiplyAddNewer(
       const Strategy& strat1,
@@ -107,6 +111,14 @@ class Strategies
       const Result& trivial,
       const unsigned char len);
 
+    void adapt(
+      const Play& play,
+      const Survivors& survivors);
+
+    void consolidate();
+
+    void scrutinize(const Ranges& rangesIn);
+
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2); // TODO const if no ...
@@ -126,14 +138,6 @@ class Strategies
     void propagateRanges(const Strategies& child);
 
     const Ranges& getRanges() const;
-
-    void adapt(
-      const Play& play,
-      const Survivors& survivors);
-
-    void consolidate();
-
-    void scrutinize(const Ranges& rangesIn);
 
     string strRanges(const string& title = "") const;
 
