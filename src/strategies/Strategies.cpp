@@ -833,7 +833,7 @@ void Strategies::setSplit(
 void Strategies::operator *= (Strategies& strats2)
 {
   // This method only gets called from Nodes::cross, which means
-  // that * this is a parent node and strats2 is a child node.
+  // that *this is a parent node and strats2 is a child node.
   // If the method is used differently, unexpected behavior may
   // occur!
 
@@ -847,111 +847,33 @@ void Strategies::operator *= (Strategies& strats2)
   const unsigned len1 = strategies.size();
   if (len1 == 0)
   {
-    // Keep the new results.  Very fast.
+    // Keep the new results, but don't change ranges.
     strategies = strats2.strategies;
-    // TODO scrutinizedFlag? ranges? * this = strats2 ?
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
-timersStrat[12].start();
     strategies.front() *= strats2.strategies.front();
-timersStrat[12].stop();
     return;
   }
 
-  // This implementation of the general product attempts to reduce
-  // memory overhead.  The temporary product is formed in the last
-  // element of Strategies as a scratch pad.  If it turns out to be
-  // viable, it is already in Strategies and subject to move semantics.
 
 Strategies strCopy = * this;
 
   auto strategiesOwn = move(strategies);
   strategies.clear();
 
-  // strategies.emplace_back(Strategy());
-
-  if (! ranges.empty() && ! strats2.ranges.empty())
+  if (ranges.empty())
   {
-    if (len1 >= 10 && len2 >= 10)
-    {
-      // Make a complex optimization.
+timersStrat[0].start();
 
-timersStrat[21].start();
+    // This implementation of the general product attempts to reduce
+    // memory overhead.  The temporary product is formed in the last
+    // element of Strategies as a scratch pad.  If it turns out to be
+    // viable, it is already in Strategies and subject to move semantics.
 
-      // Split out unique and overlapping distributions.
-      SplitStrategies splitOwn, splitOther;
-      strCopy.setSplit(strats2.strategies.front(), splitOwn);
-
-      strats2.setSplit(strategiesOwn.front(), splitOther);
-
-timersStrat[21].stop();
-
-timersStrat[23].start();
-      // Multiply out the matrices.
-      list<ExtendedStrategy> extendedStrats;
-      extendedStrats.emplace_back(ExtendedStrategy());
-
-      // As * this is a parent node, its ranges includes the child
-      // node's ranges.
-
-      unsigned i = 0;
-      for (auto& strat1: splitOwn.shared.strategies)
-      {
-        unsigned j = 0;
-        for (auto& strat2: splitOther.shared.strategies)
-        {
-          Strategies::multiplyAddNewer(strat1, strat2, ranges,
-            splitOwn, splitOther, i, j, extendedStrats);
-          j++;
-        }
-        i++;
-      }
-
-      extendedStrats.pop_back();
-
-timersStrat[23].stop();
-
-    // Add back the non-overlapping results.
-    // TODO Could take advantage of non-overlap and do
-    // both products in one?
-timersStrat[24].start();
-      for (auto& es: extendedStrats)
-      {
-        es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
-        es.overlap *= * splitOther.ownPtrs[es.indexOther];
-        strategies.push_back(move(es.overlap));
-      }
-
-timersStrat[24].stop();
-    }
-    else
-    {
-timersStrat[14].start();
-
-      // Stick with the more straightforward implementation.
-      strategies.emplace_back(Strategy());
-
-      // We only use the minima here.
-      Ranges minima;
-      Strategies::combinedLower(ranges, strats2.ranges, false, minima);
-
-      for (auto& strat1: strategiesOwn)
-        for (auto& strat2: strats2.strategies)
-          Strategies::multiplyAddNew(strat1, strat2, minima);
-
-      strategies.pop_back();
-
-timersStrat[14].stop();
-    }
-  }
-  else
-  {
-timersStrat[2].start();
-
-    // Probably comes from reactivate().
+    // TODO Could we also use New() here?  Would it be faster?
     strategies.emplace_back(Strategy());
 
     for (auto& strat1: strategiesOwn)
@@ -960,9 +882,74 @@ timersStrat[2].start();
 
     strategies.pop_back();
 
-timersStrat[2].stop();
+timersStrat[0].stop();
   }
+  else if (len1 < 10 || len2 < 10)
+  {
+timersStrat[1].start();
 
+    // As *this is a parent node, its ranges includes the child
+    // node's ranges.  Use the faster comparison.
+
+    strategies.emplace_back(Strategy());
+
+    for (auto& strat1: strategiesOwn)
+      for (auto& strat2: strats2.strategies)
+        Strategies::multiplyAddNew(strat1, strat2, ranges);
+
+    strategies.pop_back();
+
+timersStrat[1].stop();
+  }
+  else
+  {
+timersStrat[2].start();
+
+    // This is the most complex version.  The two Strategies have
+    // distributions that are overlapping as well as distributions
+    // that are unique to each of them.  We split these out, and we
+    // pre-compare within each Strategies.  This makes it faster to
+    // compare products from each Strategies.
+
+    SplitStrategies splitOwn, splitOther;
+    strCopy.setSplit(strats2.strategies.front(), splitOwn);
+    strats2.setSplit(strategiesOwn.front(), splitOther);
+
+    // Multiply out the matrices.
+    list<ExtendedStrategy> extendedStrats;
+    extendedStrats.emplace_back(ExtendedStrategy());
+
+    unsigned i = 0;
+    for (auto& strat1: splitOwn.shared.strategies)
+    {
+      unsigned j = 0;
+      for (auto& strat2: splitOther.shared.strategies)
+      {
+        Strategies::multiplyAddNewer(strat1, strat2, ranges,
+          splitOwn, splitOther, i, j, extendedStrats);
+        j++;
+      }
+      i++;
+    }
+
+    extendedStrats.pop_back();
+
+timersStrat[2].stop();
+
+timersStrat[3].start();
+
+    // Add back the non-overlapping results.
+    // TODO Could take advantage of non-overlap and do
+    // both products in one?
+      for (auto& es: extendedStrats)
+      {
+        es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
+        es.overlap *= * splitOther.ownPtrs[es.indexOther];
+        strategies.push_back(move(es.overlap));
+      }
+
+timersStrat[3].stop();
+  }
 }
 
 
