@@ -79,9 +79,8 @@ class Strategies
 
     // TMP If this works, should perhaps go in some class?
     void setSplit(
-      Strategies& stratsToSplit,
       const Strategy& strat2,
-      SplitStrategies& split) const;
+      SplitStrategies& split);
 
     // TMP If this works, should perhaps go in some class?
     bool greaterEqual(

@@ -30,6 +30,7 @@ void Strategies::reset()
   strategies.clear();
   ranges.clear();
   scrutinizedFlag = false;
+  parentRangesPtr = nullptr;
 }
 
 
@@ -690,23 +691,22 @@ void Strategies::combinedLower(
 
 
 void Strategies::setSplit(
-  Strategies& stratsToSplit,
   const Strategy& strat2,
-  SplitStrategies& split) const
+  SplitStrategies& split)
 {
   // Split our strategies by distribution into one group (own) with
   // those distributions that are unique to us, and another (shared)
   // with distributions that overlap.  This is relative to strat2.
 
   // All our Strategy's have the same distributions, so we pick one.
-  const unsigned ssize = stratsToSplit.size();
+  const unsigned ssize = Strategies::size();
 
   // List of iterators to a Result of each Strategy in stratsToSplit.
   // All are in sync to point to a given distribution.
   // They move in sync down across the Strategy's.
   StratData stratData;
   stratData.data.resize(ssize);
-  stratsToSplit.getLoopData(stratData);
+  Strategies::getLoopData(stratData);
 
   split.own.strategies.resize(ssize);
   split.shared.strategies.resize(ssize);
@@ -881,9 +881,9 @@ timersStrat[21].start();
 // Timer timer1;
 // timer1.start();
       SplitStrategies splitOwn, splitOther;
-      Strategies::setSplit(strCopy, strats2.strategies.front(), splitOwn);
+      strCopy.setSplit(strats2.strategies.front(), splitOwn);
 
-      Strategies::setSplit(strats2, strategiesOwn.front(), splitOther);
+      strats2.setSplit(strategiesOwn.front(), splitOther);
 
 timersStrat[21].stop();
 
@@ -899,6 +899,9 @@ timersStrat[23].start();
       Strategies stmp;
       list<ExtendedStrategy> extendedStrats;
       extendedStrats.emplace_back(ExtendedStrategy());
+
+      // Note that we use the parentRanges, so we cleared only
+      // strategies above.  Unclean?
 
       unsigned i = 0;
       for (auto& strat1: splitOwn.shared.strategies)
@@ -916,6 +919,8 @@ timersStrat[23].start();
 timersStrat[23].stop();
 
     // Add back the non-overlapping results.
+    // TODO Could take advantage of non-overlap and do
+    // both products in one?
 timersStrat[24].start();
       for (auto& es: extendedStrats)
       {
@@ -951,7 +956,7 @@ timersStrat[15].start();
 
 timersStrat[15].stop();
 
-/*
+/* */
 timersStrat[25].start();
     if (! (stmp == * this))
     {
@@ -963,7 +968,7 @@ timersStrat[25].start();
       assert(false);
     }
 timersStrat[25].stop();
-*/
+/* */
 
     }
     else
@@ -1152,6 +1157,7 @@ timersStrat[6].start();
     Strategies::collapseOnVoid();
 
   scrutinizedFlag = false;
+  parentRangesPtr = nullptr;
 
 timersStrat[6].stop();
 }
@@ -1194,8 +1200,8 @@ void Strategies::scrutinize(const Ranges& rangesIn)
     strat.scrutinize(rangesIn);
 
   // Keep a copy and assume it does not go out of range.
-  parentRangesPtr = &rangesIn;
   scrutinizedFlag = true;
+  parentRangesPtr = &rangesIn;
 }
 
 
