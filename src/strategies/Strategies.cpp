@@ -832,6 +832,11 @@ void Strategies::setSplit(
 
 void Strategies::operator *= (Strategies& strats2)
 {
+  // This method only gets called from Nodes::cross, which means
+  // that * this is a parent node and strats2 is a child node.
+  // If the method is used differently, unexpected behavior may
+  // occur!
+
   const unsigned len2 = strats2.strategies.size();
   if (len2 == 0)
   {
@@ -878,8 +883,6 @@ Strategies strCopy = * this;
 timersStrat[21].start();
 
       // Split out unique and overlapping distributions.
-// Timer timer1;
-// timer1.start();
       SplitStrategies splitOwn, splitOther;
       strCopy.setSplit(strats2.strategies.front(), splitOwn);
 
@@ -887,21 +890,14 @@ timersStrat[21].start();
 
 timersStrat[21].stop();
 
-timersStrat[22].start();
-      // Same as below, I guess.
-      Ranges minima2;
-      Strategies::combinedLower(ranges, strats2.ranges, false, minima2);
-
-timersStrat[22].stop();
-
 timersStrat[23].start();
       // Multiply out the matrices.
       Strategies stmp;
       list<ExtendedStrategy> extendedStrats;
       extendedStrats.emplace_back(ExtendedStrategy());
 
-      // Note that we use the parentRanges, so we cleared only
-      // strategies above.  Unclean?
+      // As * this is a parent node, its ranges includes the child
+      // node's ranges.
 
       unsigned i = 0;
       for (auto& strat1: splitOwn.shared.strategies)
@@ -909,7 +905,7 @@ timersStrat[23].start();
         unsigned j = 0;
         for (auto& strat2: splitOther.shared.strategies)
         {
-          stmp.multiplyAddNewer(strat1, strat2, minima2,
+          stmp.multiplyAddNewer(strat1, strat2, ranges,
             splitOwn, splitOther, i, j, extendedStrats);
           j++;
         }
@@ -930,7 +926,6 @@ timersStrat[24].start();
       }
 
       stmp.strategies.pop_back();
-// timer1.stop();
 timersStrat[24].stop();
 /* */
     
