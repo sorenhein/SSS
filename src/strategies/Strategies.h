@@ -61,7 +61,6 @@ class Strategies
     void multiplyAddNewer(
       const Strategy& strat1,
       const Strategy& strat2,
-      const Ranges& minima,
       const SplitStrategies& splitOwn,
       const SplitStrategies& splitOther,
       const unsigned indexOwn,
@@ -86,12 +85,6 @@ class Strategies
       const SplitStrategies& split2) const;
 
     void collapseOnVoid();
-
-    void combinedLower(
-      const Ranges& ranges1,
-      const Ranges& ranges2,
-      const bool keepConstantsFlag,
-      Ranges& minima) const;
 
     string strHeader(
       const string& title,

@@ -492,7 +492,6 @@ bool Strategies::greaterEqual(
 void Strategies::multiplyAddNewer(
   const Strategy& strat1,
   const Strategy& strat2,
-  const Ranges& minima,
   const SplitStrategies& splitOwn,
   const SplitStrategies& splitOther,
   const unsigned indexOwn,
@@ -503,7 +502,7 @@ timersStrat[25].start();
   auto& lastEntry = extendedStrategies.back();
   lastEntry.overlap.multiply(strat1, strat2);
 timersStrat[25].stop();
-  lastEntry.overlap.scrutinize(minima);
+  lastEntry.overlap.scrutinize(ranges);
   lastEntry.indexOwn = indexOwn;
   lastEntry.indexOther = indexOther;
   lastEntry.weight = lastEntry.overlap.weight() +
@@ -561,72 +560,6 @@ timersStrat[25].stop();
 
   // Make a new scratch-pad element.
   extendedStrategies.emplace_back(ExtendedStrategy());
-}
-
-
-void Strategies::combinedLower(
-  const Ranges& ranges1, 
-  const Ranges& ranges2,
-  const bool keepConstantsFlag,
-  Ranges& minima) const
-{
-  // Finds the overall lower envelope of two ranges, which is useful
-  // before multiplying together two Strategies.
-
-  auto iter1 = ranges1.begin();
-  auto iter2 = ranges2.begin();
-
-  while (true)
-  {
-    if (iter1 == ranges1.end())
-    {
-      if (iter2 != ranges2.end())
-        for (auto it = iter2; it != ranges2.end(); it++)
-        {
-          if (keepConstantsFlag || ! it->constant())
-            minima.push_back(* it);
-        }
-      break;
-    }
-    else if (iter2 == ranges2.end())
-    {
-      if (iter1 != ranges1.end())
-        for (auto it = iter1; it != ranges1.end(); it++)
-        {
-          if (keepConstantsFlag || ! it->constant())
-            minima.push_back(* it);
-        }
-      break;
-    }
-
-    if (iter1->dist < iter2->dist)
-    {
-      if (keepConstantsFlag || ! iter1->constant())
-        minima.push_back(* iter1);
-      iter1++;
-    }
-    else if (iter1->dist > iter2->dist)
-    {
-      if (keepConstantsFlag || ! iter2->constant())
-        minima.push_back(* iter2);
-      iter2++;
-    }
-    else
-    {
-      if (iter1->minimum <= iter2->minimum)
-      {
-        if (keepConstantsFlag || ! iter1->constant())
-          minima.push_back(* iter1);
-      }
-      else
-      {
-        if (keepConstantsFlag || ! iter2->constant())
-          minima.push_back(* iter2);
-      }
-      iter1++;
-      iter2++;
-    }
-  }
 }
 
 
@@ -817,7 +750,6 @@ timersStrat[0].start();
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
         Strategies::multiplyAddStrategy(strat1, strat2, comp);
-          // &Strategy::operator >=);
 
     strategies.pop_back();
 
@@ -834,13 +766,12 @@ timersStrat[2].start();
     // pre-compare within each Strategies.  This makes it faster to
     // compare products from each Strategies.
 
-    Strategies strCopy = * this;
+    SplitStrategies splitOwn, splitOther;
+    Strategies::setSplit(strats2.strategies.front(), splitOwn);
+    strats2.setSplit(strategies.front(), splitOther);
+
     auto strategiesOwn = move(strategies);
     strategies.clear();
-
-    SplitStrategies splitOwn, splitOther;
-    strCopy.setSplit(strats2.strategies.front(), splitOwn);
-    strats2.setSplit(strategiesOwn.front(), splitOther);
 
     // Multiply out the matrices.
     list<ExtendedStrategy> extendedStrats;
@@ -852,7 +783,7 @@ timersStrat[2].start();
       unsigned j = 0;
       for (auto& strat2: splitOther.shared.strategies)
       {
-        Strategies::multiplyAddNewer(strat1, strat2, ranges,
+        Strategies::multiplyAddNewer(strat1, strat2,
           splitOwn, splitOther, i, j, extendedStrats);
         j++;
       }
@@ -862,22 +793,21 @@ timersStrat[2].start();
     extendedStrats.pop_back();
 
 timersStrat[2].stop();
-  }
 
 timersStrat[3].start();
-
 
     // Add back the non-overlapping results.
     // TODO Could take advantage of non-overlap and do
     // both products in one?
-      for (auto& es: extendedStrats)
-      {
-        es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
-        es.overlap *= * splitOther.ownPtrs[es.indexOther];
-        strategies.push_back(move(es.overlap));
-      }
+    for (auto& es: extendedStrats)
+    {
+      es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
+      es.overlap *= * splitOther.ownPtrs[es.indexOther];
+      strategies.push_back(move(es.overlap));
+    }
 
 timersStrat[3].stop();
+  }
 }
 
 
