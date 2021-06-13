@@ -14,7 +14,6 @@ struct StratData;
 struct Play;
 struct Survivors;
 struct SplitStrategies;
-struct ExtendedStrategy;
 
 using namespace std;
 
@@ -23,12 +22,22 @@ typedef bool (Strategy::*ComparatorType)(const Strategy& strat) const;
 
 class Strategies
 {
+  friend class Splits;
+
   private:
     
     struct Addition
     {
       Strategy const * ptr;
       list<Strategy>::const_iterator iter;
+    };
+
+    struct ExtendedStrategy
+    {
+      Strategy overlap;
+      unsigned indexOwn;
+      unsigned indexOther;
+      unsigned weight;
     };
 
 
@@ -146,14 +155,6 @@ class Strategies
 };
 
 
-struct ExtendedStrategy
-{
-  Strategy overlap;
-  unsigned indexOwn;
-  unsigned indexOther;
-  unsigned weight;
-};
-
 struct SplitStrategies
 {
   Strategies own;
@@ -161,6 +162,5 @@ struct SplitStrategies
   vector<Strategy *> ownPtrs;
   vector<vector<Compare>> matrix;
 };
-
 
 #endif

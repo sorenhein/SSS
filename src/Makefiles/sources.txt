@@ -22,6 +22,9 @@ SOURCE_FILES    =                         \
                                           \
                 strategies/Strategies.cpp \
                 strategies/Strategy.cpp   \
+                strategies/Extensions.cpp \
+                strategies/Extension.cpp  \
+                strategies/Splits.cpp     \
                 strategies/Winners.cpp    \
                 strategies/Winner.cpp     \
                 strategies/Card.cpp       \

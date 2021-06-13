@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Strategies.h"
+#include "Extensions.h"
 #include "StratData.h"
 
 #include "../plays/Play.h"
@@ -712,14 +713,12 @@ void Strategies::setSplit(
     if (riter == strat2.end())
     {
       // A unique distribution.
-// cout << "unique dist finished " << +stratData.dist() << endl;
       ownIter = split.own.strategies.begin();
       for (auto& sd: stratData.data)
       {
         ownIter->push_back(* sd.iter);
         ownIter++;
       }
-// cout << split.own.str("split.own now");
 
       if (stratData.advance() == STRATSTATUS_END)
         break;
@@ -729,7 +728,6 @@ void Strategies::setSplit(
 
     if (riter->dist < stratData.dist())
     {
-// cout << "dist " << +riter->dist << " only in other" << endl;
       // Distribution that is only in strat2.
       riter++;
       continue;
@@ -739,14 +737,12 @@ void Strategies::setSplit(
     while (stratData.dist() < riter->dist)
     {
       // A unique distribution.
-// cout << "unique dist non-finished " << +stratData.dist() << endl;
       ownIter = split.own.strategies.begin();
       for (auto& sd: stratData.data)
       {
         ownIter->push_back(* sd.iter);
         ownIter++;
       }
-// cout << split.own.str("split.own now");
 
       if (stratData.advance() == STRATSTATUS_END)
       {
@@ -761,14 +757,12 @@ void Strategies::setSplit(
     if (riter->dist == stratData.dist())
     {
       // A shared distribution.
-// cout << "shared dist " << +riter->dist << endl;
       auto sharedIter = split.shared.strategies.begin();
       for (auto& sd: stratData.data)
       {
         sharedIter->push_back(* sd.iter);
         sharedIter++;
       }
-// cout << split.shared.str("split.shared now");
 
       if (stratData.advance() == STRATSTATUS_END)
         break;
@@ -891,6 +885,14 @@ timersStrat[4].start();
     // that are unique to each of them.  We split these out, and we
     // pre-compare within each Strategies.  This makes it faster to
     // compare products from each Strategies.
+
+timersStrat[10].start();
+    Extensions extensions;
+    extensions.split(* this, strats2.strategies.front(), 
+      EXTENSION_SPLIT1);
+    extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
+timersStrat[10].stop();
+
 
     SplitStrategies splitOwn, splitOther;
     Strategies::setSplit(strats2.strategies.front(), splitOwn);
