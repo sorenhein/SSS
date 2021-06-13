@@ -57,6 +57,8 @@ class Splits
 
     const list<Strategy>& sharedStrategies() const;
 
+    const Strategy& ownStrategy(const unsigned index) const;
+
     Compare compare(
       const unsigned index1,
       const unsigned index2) const;

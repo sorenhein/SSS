@@ -182,6 +182,12 @@ const list<Strategy>& Splits::sharedStrategies() const
 }
 
 
+const Strategy& Splits::ownStrategy(const unsigned index) const
+{
+ return * ownPtrs[index];
+}
+
+
 Compare Splits::compare(
   const unsigned index1,
   const unsigned index2) const

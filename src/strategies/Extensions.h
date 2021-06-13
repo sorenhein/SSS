@@ -59,7 +59,7 @@ class Extensions
     
     void multiply(const Ranges& ranges);
 
-    void flatten(Strategies& strategies);
+    void flatten(list<Strategy>& strategies);
 };
 
 #endif

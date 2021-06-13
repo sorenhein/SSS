@@ -47,6 +47,11 @@ class Extension
       const unsigned index2,
       const unsigned weightUniques);
 
+    void flatten(
+      list<Strategy>& strategies,
+      const Strategy& strat1,
+      const Strategy& strat2);
+
     bool operator >= (const Extension& ext2) const;
 
     unsigned index1() const;

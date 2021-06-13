@@ -50,6 +50,18 @@ void Extension::finish(
 }
 
 
+void Extension::flatten(
+  list<Strategy>& strategies,
+  const Strategy& strat1,
+  const Strategy& strat2)
+{
+  // TODO Make a two-product optimized method?
+  overlap *= strat1;
+  overlap *= strat2;
+  strategies.push_back(move(overlap));
+}
+
+
 bool Extension::operator >= (const Extension& ext2) const
 {
   return overlap.greaterEqualByProfile(ext2.overlap);

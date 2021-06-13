@@ -894,6 +894,9 @@ timersStrat[10].start();
     extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
 
     extensions.multiply(ranges);
+
+    Strategies stmp;
+    extensions.flatten(stmp.strategies);
 timersStrat[10].stop();
 
 
@@ -939,6 +942,8 @@ timersStrat[5].start();
     }
 
 timersStrat[5].stop();
+    
+    assert(stmp == * this);
   }
 }
 
