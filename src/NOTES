@@ -1,21 +1,8 @@
-2021-06-05
+2021-06-13
 ----------
-Ideas for speeding up Strategies
 
-Maybe have a dirty flag in Strategy
-See when it gets triggered in a += or *=.
+When is restudy called?  Is it optimal?
 
-- Multiplying out the extended strategies
-  - Could have the final strategies in-place
-  - Extended strategies just have pointers to each strategy?
-  - 350 ms out of 1800 ms, somewhat meaningful
-- Main lever is multiplyAddNewer itself
-  - Within that, multiply() is 60%+ of the method
-  - Potentially don't study() in multiply()
-- Look at the overall methods used and their call trees
-- Split out something from Strategy or Strategies?
-  adapt?
-  scrutinize and compare
 
 
 2021-05-09

@@ -84,6 +84,8 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
+timersStrat[0].start();
+
   // Adapt the Strategies of a following play to this trick by
   // rotating, mapping etc.  This is a somewhat expensive method.
 
@@ -94,6 +96,8 @@ void Strategies::adapt(
     Strategies::collapseOnVoid();
 
   scrutinizedFlag = false;
+
+timersStrat[0].stop();
 }
 
 
@@ -149,11 +153,15 @@ void Strategies::consolidate()
   }
   else
   {
+timersStrat[1].start();
+
     auto oldStrats = move(strategies);
     strategies.clear();  // But leave ranges intact
 
     for (auto& strat: oldStrats)
       * this += strat;
+
+timersStrat[1].stop();
   }
 }
 
@@ -290,18 +298,23 @@ void Strategies::operator += (const Strategy& strat)
 {
   // Gets called from consolidate and from += strats.
 
+  ComparatorType comp;
+  unsigned tno;
   if (scrutinizedFlag)
   {
-timersStrat[0].start();
-    Strategies::addStrategy(strat, &Strategy::greaterEqualByProfile);
-timersStrat[0].stop();
+    comp = &Strategy::greaterEqualByProfile;
+    tno = 2;
   }
   else
   {
-timersStrat[1].start();
-    Strategies::addStrategy(strat, &Strategy::operator >=);
-timersStrat[1].stop();
+    comp = &Strategy::operator >=;
+    tno = 3;
   }
+
+timersStrat[tno].start();
+  Strategies::addStrategy(strat, comp);
+timersStrat[tno].stop();
+
 }
 
 
@@ -423,54 +436,42 @@ void Strategies::operator += (Strategies& strats2)
     // Rare, but very slow per invocation when it happens.
     // Consumes perhaps 75% of the method time, so more optimized.
 
-    // TODO Don't know why this is yet.
-    assert(! scrutinizedFlag);
-    assert(! strats2.scrutinizedFlag);
+timersStrat[4].start();
 
-timersStrat[20].start();
-    /* */
+    // We only need the minima here, but we use the existing method.
     Strategies::makeRanges();
     strats2.makeRanges();
-
-    // We only need the minima here, but we use the existing method
-    // for simplicity.
     Strategies::propagateRanges(strats2);
 
-    // Strategies::scrutinize(ranges);
-    // strats2.scrutinize(ranges);
-
-    /* */
-    for (auto& strat: strategies)
-      strat.scrutinize(ranges);
-    for (auto& strat: strats2.strategies)
-      strat.scrutinize(ranges);
-      /* */
+    Strategies::scrutinize(ranges);
+    strats2.scrutinize(ranges);
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
     Strategies::markChanges(strats2, additions, deletions);
-
-timersStrat[20].stop();
 
     for (auto& addition: additions)
       strategies.insert(addition.iter, *(addition.ptr));
 
     for (auto& deletion: deletions)
       strategies.erase(deletion);
+
+timersStrat[4].stop();
   }
   else
   {
-    // General case.
-    // Frequent and fast, perhaps 25% of the method time.
+timersStrat[5].start();
 
-    // TODO Don't know why this is yet.
-    assert(! scrutinizedFlag);
-    assert(! strats2.scrutinizedFlag);
+    // General case.  Frequent and fast, perhaps 25% of the method time.
 
-timersStrat[29].start();
+    // We may inherit a set scrutinizedFlag from the previous branch.
+    // But it's generally not worth in this this case.
+    scrutinizedFlag = false;
+
     for (auto& strat2: strats2.strategies)
       * this += strat2;
-timersStrat[29].stop();
+
+timersStrat[5].stop();
 
   }
 }
@@ -492,12 +493,12 @@ void Strategies::operator *= (const Strategy& strat)
   {
     // TODO Really?  No re-sorting and consolidating?
 
-timersStrat[8].start();
+timersStrat[6].start();
     for (auto& strat1: strategies)
       strat1 *= strat;
 
     // Strategies::consolidate();
-timersStrat[8].stop();
+timersStrat[6].stop();
 
   }
 }
@@ -613,12 +614,12 @@ void Strategies::operator *= (Strategies& strats2)
     if (ranges.empty())
     {
       comp = &Strategy::operator >=;
-      tno = 2;
+      tno = 7;
     }
     else
     {
       comp = &Strategy::greaterEqualByProfile;
-      tno = 3;
+      tno = 8;
     }
 
 timersStrat[tno].start();
@@ -649,7 +650,7 @@ timersStrat[tno].stop();
     // Strategies.  This makes it faster to compare products from each 
     // Strategies.
 
-timersStrat[4].start();
+timersStrat[9].start();
 
     Extensions extensions;
     extensions.split(* this, strats2.strategies.front(), 
@@ -661,7 +662,7 @@ timersStrat[4].start();
     strategies.clear();
     extensions.flatten(strategies);
 
-timersStrat[4].stop();
+timersStrat[9].stop();
   }
 }
 
@@ -693,7 +694,9 @@ bool Strategies::empty() const
 void Strategies::getLoopData(StratData& stratData)
 {
   // This is used to loop over all strategies in synchrony, one
-  // distribution at a time.
+  // distribution at a time.  If the caller is going to change
+  // anything inside Strategies with this, the caller must also
+  // consider the effect on scrutinizedFlag.
   auto siter = stratData.data.begin();
   for (auto& strat: strategies)
   {
