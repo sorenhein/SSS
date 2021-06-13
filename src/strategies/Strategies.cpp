@@ -572,243 +572,6 @@ void Strategies::multiplyAddStrategy(
 }
 
 
-bool Strategies::greaterEqual(
-  const ExtendedStrategy& es1,
-  const ExtendedStrategy& es2,
-  const SplitStrategies& split1,
-  const SplitStrategies& split2) const
-{
-  // cout << "es1 " << es1.indexOwn << ", " << es1.indexOther << endl;
-  // cout << "es2 " << es2.indexOwn << ", " << es2.indexOther << endl;
-  // cout << "split1 " << split1.matrix.size() << " x " <<
-    // split1.matrix[0].size() << endl;
-  // cout << "split2 " << split2.matrix.size() << " x " <<
-    // split2.matrix[0].size() << endl;
-// assert(es1.indexOwn < split1.matrix.size());
-// assert(es2.indexOwn < split1.matrix.size());
-
-  const Compare c1 = split1.matrix[es1.indexOwn][es2.indexOwn];
-  if (c1 == COMPARE_LESS_THAN || c1 == COMPARE_INCOMMENSURATE)
-    return false;
-
-// assert(es1.indexOther < split2.matrix.size());
-// assert(es2.indexOther < split2.matrix.size());
-
-  const Compare c2 = split2.matrix[es1.indexOther][es2.indexOther];
-  if (c2 == COMPARE_LESS_THAN || c2 == COMPARE_INCOMMENSURATE)
-    return false;
-
-  return es1.overlap.greaterEqualByProfile(es2.overlap);
-}
-
-
-void Strategies::multiplyAddNewer(
-  const Strategy& strat1,
-  const Strategy& strat2,
-  const SplitStrategies& splitOwn,
-  const SplitStrategies& splitOther,
-  const unsigned indexOwn,
-  const unsigned indexOther,
-  list<ExtendedStrategy>& extendedStrategies)
-{
-timersStrat[25].start();
-  auto& lastEntry = extendedStrategies.back();
-  lastEntry.overlap.multiply(strat1, strat2);
-timersStrat[25].stop();
-  lastEntry.overlap.scrutinize(ranges);
-  lastEntry.indexOwn = indexOwn;
-  lastEntry.indexOther = indexOther;
-  lastEntry.weight = lastEntry.overlap.weight() +
-    splitOwn.ownPtrs[indexOwn]->weight() +
-    splitOther.ownPtrs[indexOther]->weight();
-
-  auto piter = prev(extendedStrategies.end());
-
-  if (extendedStrategies.size() == 1)
-  {
-    // Keep the product and make a new scratch-pad element.
-    extendedStrategies.emplace_back(ExtendedStrategy());
-    return;
-  }
-
-  // The strategies list is in descending order of weights.
-  // The new Strategy might dominate everything with a lower weight and
-  // can only be dominated by a Strategy with at least its own weight.
-  // This checking costs about one third of the overall method time.
-  
-  auto iter = extendedStrategies.begin();
-  while (iter != piter && iter->weight >= piter->weight)
-  {
-    // TMP if (somehow iter->overlap is >= piter->overlap)
-    if (Strategies::greaterEqual(* iter, * piter, splitOwn, splitOther))
-    {
-      // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
-
-  // Already in the right place at the end?
-  if (iter == piter)
-  {
-    extendedStrategies.emplace_back(ExtendedStrategy());
-    return;
-  }
-
-  // The new vector must be inserted, i.e. spliced in.
-  // This is super-fast.
-  extendedStrategies.splice(iter, extendedStrategies, piter);
-  piter = prev(iter);
-
-  // The new vector may dominate lighter vectors.  This is also
-  // quite efficient and doesn't happen so often.
-  while (iter != extendedStrategies.end())
-  {
-    if (Strategies::greaterEqual(* piter, * iter, splitOwn, splitOther))
-      iter = extendedStrategies.erase(iter);
-    else
-      iter++;
-  }
-
-  // Make a new scratch-pad element.
-  extendedStrategies.emplace_back(ExtendedStrategy());
-}
-
-
-void Strategies::setSplit(
-  const Strategy& strat2,
-  SplitStrategies& split)
-{
-  // Split our strategies by distribution into one group (own) with
-  // those distributions that are unique to us, and another (shared)
-  // with distributions that overlap.  This is relative to strat2.
-
-  // All our Strategy's have the same distributions, so we pick one.
-  const unsigned ssize = Strategies::size();
-
-  // List of iterators to a Result of each Strategy in stratsToSplit.
-  // All are in sync to point to a given distribution.
-  // They move in sync down across the Strategy's.
-  StratData stratData;
-  stratData.data.resize(ssize);
-  Strategies::getLoopData(stratData);
-
-  split.own.strategies.resize(ssize);
-  split.shared.strategies.resize(ssize);
-
-  // Pointers to each of the own, unique partial Strategy's,
-  // for later use.
-  split.ownPtrs.resize(ssize);
-  auto ownIter = split.own.strategies.begin();
-  for (unsigned i = 0; i < ssize; i++, ownIter++)
-    split.ownPtrs[i] = &* ownIter;
-
-  // strat2 is an example of a Strategy that we use to split 
-  // stratsToSplit according to the distributions.
-
-  auto riter = strat2.begin();
-  while (true)
-  {
-    if (riter == strat2.end())
-    {
-      // A unique distribution.
-      ownIter = split.own.strategies.begin();
-      for (auto& sd: stratData.data)
-      {
-        ownIter->push_back(* sd.iter);
-        ownIter++;
-      }
-
-      if (stratData.advance() == STRATSTATUS_END)
-        break;
-      else
-        continue;
-    }
-
-    if (riter->dist < stratData.dist())
-    {
-      // Distribution that is only in strat2.
-      riter++;
-      continue;
-    }
-
-    bool endFlag = false;
-    while (stratData.dist() < riter->dist)
-    {
-      // A unique distribution.
-      ownIter = split.own.strategies.begin();
-      for (auto& sd: stratData.data)
-      {
-        ownIter->push_back(* sd.iter);
-        ownIter++;
-      }
-
-      if (stratData.advance() == STRATSTATUS_END)
-      {
-        endFlag = true;
-        break;
-      }
-    }
-
-    if (endFlag)
-      break;
-
-    if (riter->dist == stratData.dist())
-    {
-      // A shared distribution.
-      auto sharedIter = split.shared.strategies.begin();
-      for (auto& sd: stratData.data)
-      {
-        sharedIter->push_back(* sd.iter);
-        sharedIter++;
-      }
-
-      if (stratData.advance() == STRATSTATUS_END)
-        break;
-    }
-
-    riter++;
-  }
-
-
-  split.own.makeRanges();
-  for (auto& own: split.own.strategies)
-    own.scrutinize(split.own.ranges);
-
-  split.matrix.resize(ssize);
-  for (unsigned i = 0; i < ssize; i++)
-    split.matrix[i].resize(ssize);
-
-  if (split.own.empty())
-  {
-    for (unsigned i = 0; i < ssize; i++)
-      for (unsigned j = 0; j < ssize; j++)
-        split.matrix[i][j] = COMPARE_EQUAL;
-  }
-  else
-  {
-    for (unsigned i = 0; i < ssize; i++)
-    {
-      split.matrix[i][i] = COMPARE_EQUAL;
-      for (unsigned j = 0; j < i; j++)
-      {
-        Compare c = split.ownPtrs[i]->compareByProfile(* split.ownPtrs[j]);
-        split.matrix[i][j] = c;
-
-        // Flip for the anti-symmetric position.
-        if (c == COMPARE_LESS_THAN)
-          split.matrix[j][i] = COMPARE_GREATER_THAN;
-        else if (c == COMPARE_GREATER_THAN)
-          split.matrix[j][i] = COMPARE_LESS_THAN;
-        else
-          split.matrix[j][i] = c;
-      }
-    }
-  }
-}
-
-
 void Strategies::operator *= (Strategies& strats2)
 {
   // This method only gets called from Nodes::cross, which means
@@ -878,16 +641,16 @@ timersStrat[tno].stop();
   }
   else
   {
-timersStrat[4].start();
 
     // This is the most complex version, and I may have gotten a bit
-    // carried away....  The two Strategies have distributions that are 
+    // carried away...  The two Strategies have distributions that are 
     // overlapping as well as distributions that are unique to each of 
     // them.  We split these out, and we pre-compare within each 
     // Strategies.  This makes it faster to compare products from each 
     // Strategies.
 
-timersStrat[10].start();
+timersStrat[4].start();
+
     Extensions extensions;
     extensions.split(* this, strats2.strategies.front(), 
       EXTENSION_SPLIT1);
@@ -895,55 +658,10 @@ timersStrat[10].start();
 
     extensions.multiply(ranges);
 
-    Strategies stmp;
-    extensions.flatten(stmp.strategies);
-timersStrat[10].stop();
-
-
-    SplitStrategies splitOwn, splitOther;
-    Strategies::setSplit(strats2.strategies.front(), splitOwn);
-    strats2.setSplit(strategies.front(), splitOther);
-
-
-    auto strategiesOwn = move(strategies);
     strategies.clear();
-
-    // Multiply out the matrices.
-    list<ExtendedStrategy> extendedStrats;
-    extendedStrats.emplace_back(ExtendedStrategy());
-
-    unsigned i = 0;
-    for (auto& strat1: splitOwn.shared.strategies)
-    {
-      unsigned j = 0;
-      for (auto& strat2: splitOther.shared.strategies)
-      {
-        Strategies::multiplyAddNewer(strat1, strat2,
-          splitOwn, splitOther, i, j, extendedStrats);
-        j++;
-      }
-      i++;
-    }
-
-    extendedStrats.pop_back();
+    extensions.flatten(strategies);
 
 timersStrat[4].stop();
-
-timersStrat[5].start();
-
-    // Add back the non-overlapping results.
-    // TODO Could take advantage of non-overlap and do
-    // both products in one?
-    for (auto& es: extendedStrats)
-    {
-      es.overlap *= * splitOwn.ownPtrs[es.indexOwn];
-      es.overlap *= * splitOther.ownPtrs[es.indexOther];
-      strategies.push_back(move(es.overlap));
-    }
-
-timersStrat[5].stop();
-    
-    assert(stmp == * this);
   }
 }
 

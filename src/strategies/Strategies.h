@@ -32,14 +32,6 @@ class Strategies
       list<Strategy>::const_iterator iter;
     };
 
-    struct ExtendedStrategy
-    {
-      Strategy overlap;
-      unsigned indexOwn;
-      unsigned indexOther;
-      unsigned weight;
-    };
-
 
     list<Strategy> strategies;
 
@@ -68,36 +60,11 @@ class Strategies
       list<Addition>& additions,
       list<list<Strategy>::const_iterator>& deletions) const;
 
-
-
-
     void multiplyAddStrategy(
       const Strategy& strat1,
       const Strategy& strat2,
       ComparatorType comparator);
 
-
-
-    void multiplyAddNewer(
-      const Strategy& strat1,
-      const Strategy& strat2,
-      const SplitStrategies& splitOwn,
-      const SplitStrategies& splitOther,
-      const unsigned indexOwn,
-      const unsigned indexOther,
-      list<ExtendedStrategy>& extendedStrategies);
-
-    // TMP If this works, should perhaps go in some class?
-    void setSplit(
-      const Strategy& strat2,
-      SplitStrategies& split);
-
-    // TMP If this works, should perhaps go in some class?
-    bool greaterEqual(
-      const ExtendedStrategy& es1,
-      const ExtendedStrategy& es2,
-      const SplitStrategies& split1,
-      const SplitStrategies& split2) const;
 
     string strHeader(
       const string& title,
@@ -152,15 +119,6 @@ class Strategies
     string str(
       const string& title = "",
       const bool rankFlag = false) const;
-};
-
-
-struct SplitStrategies
-{
-  Strategies own;
-  Strategies shared;
-  vector<Strategy *> ownPtrs;
-  vector<vector<Compare>> matrix;
 };
 
 #endif
