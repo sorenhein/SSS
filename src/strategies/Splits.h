@@ -54,6 +54,14 @@ class Splits
     void split(
       Strategies& strategies,
       const Strategy& counterpart);
+
+    const list<Strategy>& sharedStrategies() const;
+
+    Compare compare(
+      const unsigned index1,
+      const unsigned index2) const;
+
+    unsigned weight(const unsigned index) const;
 };
 
 #endif

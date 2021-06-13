@@ -29,6 +29,21 @@ class Extensions
     Splits splits1;
     Splits splits2;
 
+
+    void makeEntry(
+      const Strategy& strat1,
+      const Strategy& strat2,
+      const Ranges& ranges,
+      const unsigned index1,
+      const unsigned index2);
+
+    bool greaterEqual(
+      const Extension& ext1,
+      const Extension& ext2) const;
+
+    void add();
+
+
   public:
 
     Extensions();
@@ -42,7 +57,7 @@ class Extensions
       const Strategy& counterpart,
       const ExtensionSplit split);
     
-    void multiply();
+    void multiply(const Ranges& ranges);
 
     void flatten(Strategies& strategies);
 };

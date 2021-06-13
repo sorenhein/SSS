@@ -175,3 +175,23 @@ void Splits::split(
   Splits::setMatrix();
 }
 
+
+const list<Strategy>& Splits::sharedStrategies() const
+{
+  return shared.strategies;
+}
+
+
+Compare Splits::compare(
+  const unsigned index1,
+  const unsigned index2) const
+{
+  return matrix[index1][index2];
+}
+
+
+unsigned Splits::weight(const unsigned index) const
+{
+  return ownPtrs[index]->weight();
+}
+

@@ -880,23 +880,27 @@ timersStrat[tno].stop();
   {
 timersStrat[4].start();
 
-    // This is the most complex version.  The two Strategies have
-    // distributions that are overlapping as well as distributions
-    // that are unique to each of them.  We split these out, and we
-    // pre-compare within each Strategies.  This makes it faster to
-    // compare products from each Strategies.
+    // This is the most complex version, and I may have gotten a bit
+    // carried away....  The two Strategies have distributions that are 
+    // overlapping as well as distributions that are unique to each of 
+    // them.  We split these out, and we pre-compare within each 
+    // Strategies.  This makes it faster to compare products from each 
+    // Strategies.
 
 timersStrat[10].start();
     Extensions extensions;
     extensions.split(* this, strats2.strategies.front(), 
       EXTENSION_SPLIT1);
     extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
+
+    extensions.multiply(ranges);
 timersStrat[10].stop();
 
 
     SplitStrategies splitOwn, splitOther;
     Strategies::setSplit(strats2.strategies.front(), splitOwn);
     strats2.setSplit(strategies.front(), splitOther);
+
 
     auto strategiesOwn = move(strategies);
     strategies.clear();

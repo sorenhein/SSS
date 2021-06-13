@@ -28,6 +28,46 @@ void Extension::reset()
 }
 
 
+void Extension::multiply(
+  const Strategy& strat1,
+  const Strategy& strat2,
+  const Ranges& ranges)
+{
+  overlap.multiply(strat1, strat2);
+  overlap.scrutinize(ranges);
+}
+
+
+void Extension::finish(
+  const unsigned index1,
+  const unsigned index2,
+  const unsigned weightUniques)
+{
+  index1Int = index1;
+  index2Int = index2;
+
+  weightInt = overlap.weight() + weightUniques;
+}
+
+
+bool Extension::operator >= (const Extension& ext2) const
+{
+  return overlap.greaterEqualByProfile(ext2.overlap);
+}
+
+
+unsigned Extension::index1() const
+{
+  return index1Int;
+}
+
+
+unsigned Extension::index2() const
+{
+  return index2Int;
+}
+
+
 unsigned Extension::weight() const
 {
   return weightInt;

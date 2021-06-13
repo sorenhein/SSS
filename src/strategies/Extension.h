@@ -23,8 +23,8 @@ class Extension
 
     Strategy overlap;
 
-    unsigned index1;
-    unsigned index2;
+    unsigned index1Int;
+    unsigned index2Int;
 
     unsigned weightInt;
 
@@ -37,6 +37,20 @@ class Extension
 
     void reset();
 
+    void multiply(
+      const Strategy& strat1,
+      const Strategy& strat2,
+      const Ranges& ranges);
+
+    void finish(
+      const unsigned index1,
+      const unsigned index2,
+      const unsigned weightUniques);
+
+    bool operator >= (const Extension& ext2) const;
+
+    unsigned index1() const;
+    unsigned index2() const;
     unsigned weight() const;
 
 };
