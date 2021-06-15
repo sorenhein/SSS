@@ -42,7 +42,7 @@ void Strategy::reset()
 {
   results.clear();
   weightInt = 0;
-  study2.reset();
+  study.reset();
 }
 
 
@@ -74,7 +74,7 @@ void Strategy::push_back(const Result& result)
 {
   results.push_back(result);
   weightInt += result.tricks;
-  study2.unstudy();
+  study.unstudy();
 }
 
 
@@ -82,14 +82,14 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
   weightInt -= iter->tricks;
-  study2.unstudy();
+  study.unstudy();
   return results.erase(iter);
 }
 
 
 void Strategy::eraseRest(list<Result>::iterator iter)
 {
-  study2.unstudy();
+  study.unstudy();
   results.erase(iter, results.end());
 }
 
@@ -99,7 +99,7 @@ void Strategy::logTrivial(
   const unsigned char len)
 {
   results.clear();
-  study2.unstudy();
+  study.unstudy();
 
   for (unsigned char i = 0; i < len; i++)
   {
@@ -120,7 +120,7 @@ void Strategy::log(
   assert(distributions.size() == tricks.size());
 
   weightInt = 0;
-  study2.unstudy();
+  study.unstudy();
 
   for (unsigned i = 0; i < distributions.size(); i++)
   {
@@ -133,15 +133,15 @@ void Strategy::log(
 }
 
 
-void Strategy::study()
+void Strategy::restudy()
 {
-  study2.study(results);
+  study.study(results);
 }
 
 
-void Strategy::scrutinize(const Ranges& minima)
+void Strategy::scrutinize(const Ranges& ranges)
 {
-  study2.scrutinize(results, minima);
+  study.scrutinize(results, ranges);
 }
 
 
@@ -196,7 +196,7 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  if (! study2.maybeGreaterEqual(strat2.study2))
+  if (! study.maybeGreaterEqual(strat2.study))
     return false;
   else
     return Strategy::greaterEqual(strat2);
@@ -205,13 +205,13 @@ bool Strategy::operator >= (const Strategy& strat2) const
 
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
-  return study2.greaterEqualByProfile(strat2.study2);
+  return study.greaterEqualByProfile(strat2.study);
 }
 
 
 Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
-  return study2.compareByProfile(strat2.study2);
+  return study.compareByProfile(strat2.study);
 }
 
 
@@ -258,7 +258,7 @@ void Strategy::operator *= (const Strategy& strat2)
     }
   }
 
-  Strategy::study();
+  study.study(results);
 }
 
 
@@ -329,7 +329,7 @@ void Strategy::multiply(
     }
   }
 
-  Strategy::study();
+  study.study(results);
 }
 
 
@@ -529,7 +529,7 @@ void Strategy::adapt(
 
   Strategy::adaptResults(play, survivors);
 
-  Strategy::study();
+  study.study(results);
 }
 
 

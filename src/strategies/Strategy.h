@@ -26,7 +26,7 @@ class Strategy
     unsigned weightInt;
 
     // Used for faster comparisons on average.
-    Study study2;
+    Study study;
 
 
     void setConstants();
@@ -88,9 +88,9 @@ class Strategy
       const vector<unsigned char>& distributions,
       const vector<unsigned char>& tricks);
 
-    void study();
+    void restudy();
 
-    void scrutinize(const Ranges& minima);
+    void scrutinize(const Ranges& ranges);
 
     bool operator == (const Strategy& strat2) const;
 

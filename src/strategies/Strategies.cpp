@@ -169,7 +169,7 @@ timersStrat[1].stop();
 void Strategies::restudy()
 {
   for (auto& strategy: strategies)
-    strategy.study();
+    strategy.restudy();
 }
 
 
