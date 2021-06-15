@@ -26,17 +26,10 @@ class Strategy
     unsigned weightInt;
 
     // Used for faster comparisons on average.
-    vector<unsigned> summary;
-    bool studiedFlag;
-
-    list<unsigned> profiles;
-
     Study study2;
 
 
     void setConstants();
-
-    unsigned numGroups() const;
 
     bool greaterEqual(const Strategy& strat2) const;
 

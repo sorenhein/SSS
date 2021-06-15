@@ -22,11 +22,6 @@
 #define LOOKUP_BITS (LOOKUP_GROUP + LOOKUP_GROUP)
 #define LOOKUP_SIZE (LOOKUP_BITS + LOOKUP_BITS)
 
-mutex mtxStrategy;
-static bool init_flag = false;
-vector<unsigned char> lookupGE;
-
-
 // TMP
 #include "../stats/Timer.h"
 extern vector<Timer> timersStrat;
@@ -34,14 +29,6 @@ extern vector<Timer> timersStrat;
 
 Strategy::Strategy()
 {
-  mtxStrategy.lock();
-  if (! init_flag)
-  {
-    Strategy::setConstants();
-    init_flag = true;
-  }
-  mtxStrategy.unlock();
-
   Strategy::reset();
 }
 
@@ -51,56 +38,10 @@ Strategy::~Strategy()
 }
 
 
-void Strategy::setConstants()
-{
-  // In order to speed up the comparison of Strategy's, we group
-  // their trick excesses (over the minimum) into a profile list,
-  // where each entry combines five entries into 10 bits.
-  // We can then look up two 10-bit profiles and get a partial answer.
-  
-  lookupGE.resize(1 << LOOKUP_SIZE);
-  for (unsigned i = 0; i < (1 << LOOKUP_BITS); i++)
-  {
-    for (unsigned j = 0; j < (1 << LOOKUP_BITS); j++)
-    {
-      unsigned flagGE = 1;
-      unsigned i0 = i;
-      unsigned j0 = j;
-      for (unsigned p = 0; p < LOOKUP_GROUP; p++)
-      {
-        // Break each index down into a two-bit number.
-        const unsigned entry1 = (i0 & 0x3);
-        const unsigned entry2 = (j0 & 0x3);
-        if (entry1 < entry2)
-        {
-          // Can no longer be >=.
-          flagGE = 0;
-          break;
-        }
-        else
-        {
-          i0 >>= 2;
-          j0 >>= 2;
-        }
-      }
-
-      if (flagGE)
-        lookupGE[(i << LOOKUP_BITS) | j] = 1;
-    }
-  }
-}
-
-
 void Strategy::reset()
 {
   results.clear();
   weightInt = 0;
-
-  summary.clear();
-  studiedFlag = false;
-
-  profiles.clear();
-
   study2.reset();
 }
 
@@ -133,7 +74,6 @@ void Strategy::push_back(const Result& result)
 {
   results.push_back(result);
   weightInt += result.tricks;
-  studiedFlag = false;
   study2.unstudy();
 }
 
@@ -142,7 +82,6 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
   weightInt -= iter->tricks;
-  studiedFlag = false;
   study2.unstudy();
   return results.erase(iter);
 }
@@ -150,7 +89,6 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 
 void Strategy::eraseRest(list<Result>::iterator iter)
 {
-  studiedFlag = false;
   study2.unstudy();
   results.erase(iter, results.end());
 }
@@ -161,7 +99,6 @@ void Strategy::logTrivial(
   const unsigned char len)
 {
   results.clear();
-  studiedFlag = false;
   study2.unstudy();
 
   for (unsigned char i = 0; i < len; i++)
@@ -183,7 +120,6 @@ void Strategy::log(
   assert(distributions.size() == tricks.size());
 
   weightInt = 0;
-  studiedFlag = false;
   study2.unstudy();
 
   for (unsigned i = 0; i < distributions.size(); i++)
@@ -197,76 +133,14 @@ void Strategy::log(
 }
 
 
-unsigned Strategy::numGroups() const
-{
-  if (results.empty())
-    return 0;
-
-  // May be 1.
-  return static_cast<unsigned>(sqrt(static_cast<float>(results.size())));
-}
-
-
 void Strategy::study()
 {
-  const unsigned groups = Strategy::numGroups();
-
-  summary.clear();
-  summary.resize(groups);
-
-  unsigned i = 0;
-  for (auto& result: results)
-  {
-    summary[i % groups] += result.tricks;
-    i++;
-  }
-  studiedFlag = true;
-
   study2.study(results);
 }
 
 
 void Strategy::scrutinize(const Ranges& minima)
 {
-  assert(minima.size() >= results.size());
-  profiles.clear();
-
-  auto riter = results.begin();
-  auto miter = minima.begin();
-
-  unsigned counter = 0;
-  unsigned profile = 0;
-  while (riter != results.end())
-  {
-    assert(miter != minima.end());
-    if (miter->dist < riter->dist)
-    {
-      miter++;
-      continue;
-    }
-
-    assert(riter->dist == miter->dist);
-
-    const unsigned diff = riter->tricks - miter->minimum;
-    assert(diff < 4); // Must fit in 2 bits for this to work
-
-    profile = (profile << 2) | diff;
-    counter++;
-
-    if (counter == LOOKUP_GROUP - 1)
-    {
-      profiles.push_back(profile);
-      counter = 0;
-      profile = 0;
-    }
-
-    riter++;
-    miter++;
-  }
-
-  if (counter > 0)
-    profiles.push_back(profile);
-
   study2.scrutinize(results, minima);
 }
 
@@ -322,125 +196,22 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-
-  assert(studiedFlag);
-  assert(study2.studied());
-
-const bool b = study2.maybeGreaterEqual(strat2.study2);
-
-  for (unsigned i = 0; i < summary.size(); i++)
-  {
-    if (summary[i] < strat2.summary[i])
-    {
-assert(! b);
-      return false;
-    }
-  }
-  
-assert(b);
-
-  // Do the full comparison.
-  return Strategy::greaterEqual(strat2);
+  if (! study2.maybeGreaterEqual(strat2.study2))
+    return false;
+  else
+    return Strategy::greaterEqual(strat2);
 }
 
 
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
-  // This used the scrutinized results, which must exist.
-
-  assert(strat2.results.size() == results.size());
-  assert(profiles.size() == strat2.profiles.size());
-  assert(! profiles.empty());
-
-const bool b = study2.greaterEqualByProfile(strat2.study2);
-
-  auto piter1 = profiles.begin();
-  auto piter2 = strat2.profiles.begin();
-  while (piter1 != profiles.end())
-  {
-    if (! lookupGE[((* piter1) << 10) | (* piter2)])
-    {
-assert(! b);
-      return false;
-    }
-
-    piter1++;
-    piter2++;
-  }
-
-assert(b);
-  return true;
+  return study2.greaterEqualByProfile(strat2.study2);
 }
 
 
 Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
-const Compare c = study2.compareByProfile(strat2.study2);
-
-  // This too uses the scrutinized results.
-
-  assert(strat2.results.size() == results.size());
-  assert(profiles.size() == strat2.profiles.size());
-  assert(! profiles.empty());
-
-  auto piter1 = profiles.begin();
-  auto piter2 = strat2.profiles.begin();
-  bool greaterFlag = false;
-  bool lowerFlag = false;
-  while (piter1 != profiles.end())
-  {
-    const unsigned char b1 = lookupGE[((* piter1) << 10) | (* piter2)];
-    const unsigned char b2 = lookupGE[((* piter2) << 10) | (* piter1)];
-
-    if (b1)
-    {
-      if (! b2)
-      {
-        if (lowerFlag)
-        {
-assert(c == COMPARE_INCOMMENSURATE);
-          return COMPARE_INCOMMENSURATE;
-        }
-          
-        greaterFlag = true;
-      }
-    }
-    else if (b2)
-    {
-      if (greaterFlag)
-      {
-assert(c == COMPARE_INCOMMENSURATE);
-        return COMPARE_INCOMMENSURATE;
-      }
-
-      lowerFlag = true;
-    }
-    else
-    {
-assert(c == COMPARE_INCOMMENSURATE);
-      return COMPARE_INCOMMENSURATE;
-    }
-
-    piter1++;
-    piter2++;
-  }
-
-
-  if (greaterFlag)
-  {
-assert(c == COMPARE_GREATER_THAN);
-    return COMPARE_GREATER_THAN;
-  }
-  else if (lowerFlag)
-  {
-assert(c == COMPARE_LESS_THAN);
-    return COMPARE_LESS_THAN;
-  }
-  else
-  {
-assert(c == COMPARE_EQUAL);
-    return COMPARE_EQUAL;
-  }
+  return study2.compareByProfile(strat2.study2);
 }
 
 
