@@ -166,6 +166,9 @@ void Node::purgeRanges()
 void Node::reactivate()
 {
   simpleStrat *= constants;
+
+  // As simpleStrat is completely complementary to strats,
+  // we do not need to re-sort and consolidate.
   strats *= simpleStrat;
 }
 

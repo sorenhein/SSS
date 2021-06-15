@@ -13,8 +13,8 @@
 
 
 // A major time drain is the component-wise comparison of results.  
-// There is an experimental implementation in which 5 result entries
-// are gathered into a 10-bit vector, and two such 10-bit vectors
+// In the most optimized implementation, 5 result entries are
+// gathered into a 10-bit vector, and two such 10-bit vectors
 // are compared in a 20-bit lookup.  The lookup table must be global
 // and initialized once.
 
@@ -98,6 +98,8 @@ void Strategy::reset()
 
   summary.clear();
   studiedFlag = false;
+
+  profiles.clear();
 }
 
 
@@ -107,11 +109,55 @@ void Strategy::resize(const unsigned len)
 }
 
 
+unsigned Strategy::size() const
+{
+  return results.size();
+}
+
+
+bool Strategy::empty() const
+{
+  return results.empty();
+}
+
+
+unsigned Strategy::weight() const
+{
+  return weightInt;
+}
+
+
+void Strategy::push_back(const Result& result)
+{
+  results.push_back(result);
+  weightInt += result.tricks;
+  studiedFlag = false;
+}
+
+
+list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
+{
+  // No error checking.
+  weightInt -= iter->tricks;
+  studiedFlag = false;
+  return results.erase(iter);
+}
+
+
+void Strategy::eraseRest(list<Result>::iterator iter)
+{
+  studiedFlag = false;
+  results.erase(iter, results.end());
+}
+
+
 void Strategy::logTrivial(
   const Result& trivialEntry,
   const unsigned char len)
 {
   results.clear();
+  studiedFlag = false;
+
   for (unsigned char i = 0; i < len; i++)
   {
     results.emplace_back(Result());
@@ -131,6 +177,8 @@ void Strategy::log(
   assert(distributions.size() == tricks.size());
 
   weightInt = 0;
+  studiedFlag = false;
+
   for (unsigned i = 0; i < distributions.size(); i++)
   {
     results.emplace_back(Result());
@@ -139,13 +187,6 @@ void Strategy::log(
     te.tricks = tricks[i];
     weightInt += tricks[i];
   }
-}
-
-
-void Strategy::push_back(const Result& result)
-{
-  results.push_back(result);
-  weightInt += result.tricks;
 }
 
 
@@ -178,12 +219,7 @@ void Strategy::study()
 
 void Strategy::scrutinize(const Ranges& minima)
 {
-  if (minima.size() < results.size())
-  {
-  cout << "minima " << minima.size() << " vs. " << results.size() << endl;
-  cout << Strategy::str();
   assert(minima.size() >= results.size());
-  }
   profiles.clear();
 
   auto riter = results.begin();
@@ -224,6 +260,12 @@ void Strategy::scrutinize(const Ranges& minima)
 }
 
 
+/************************************************************
+ *                                                          *
+ * Comparison methods                                       *
+ *                                                          *
+ ************************************************************/
+
 bool Strategy::operator == (const Strategy& strat2) const
 {
   // For diagnostics.
@@ -247,6 +289,8 @@ bool Strategy::operator == (const Strategy& strat2) const
 
 bool Strategy::greaterEqual(const Strategy& strat2) const
 {
+  // This is the basic method with no fanciness.
+
   assert(strat2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
@@ -264,19 +308,28 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
 }
 
 
+bool Strategy::operator >= (const Strategy& strat2) const
+{
+  // This uses studied results if possible, otherwise the basic method.
+
+  assert(studiedFlag);
+
+  for (unsigned i = 0; i < summary.size(); i++)
+  {
+    if (summary[i] < strat2.summary[i])
+      return false;
+  }
+  
+  // Do the full comparison.
+  return Strategy::greaterEqual(strat2);
+}
+
+
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
+  // This used the scrutinized results, which must exist.
+
   assert(strat2.results.size() == results.size());
-
-  /*
-  if (profiles.size() != strat2.profiles.size())
-  {
-    cout << "Profile size mismatch\n";
-    cout << profiles.size() << " vs. " << strat2.profiles.size() << endl;
-
-  }
-  */
-
   assert(profiles.size() == strat2.profiles.size());
   assert(! profiles.empty());
 
@@ -297,14 +350,9 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 
 Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
+  // This too uses the scrutinized results.
+
   assert(strat2.results.size() == results.size());
-
-  if (profiles.size() != strat2.profiles.size())
-  {
-    cout << "Profile size mismatch\n";
-    cout << profiles.size() << " vs. " << strat2.profiles.size() << endl;
-
-  }
   assert(profiles.size() == strat2.profiles.size());
   assert(! profiles.empty());
 
@@ -350,26 +398,11 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
 }
 
 
-bool Strategy::operator >= (const Strategy& strat2) const
-{
-  if (studiedFlag)
-  {
-    for (unsigned i = 0; i < summary.size(); i++)
-    {
-      if (summary[i] < strat2.summary[i])
-        return false;
-    }
-  }
-  else
-  {
-    // At least 2 groups?
-    assert(results.size() < 4);
-  }
-  
-  // Do the full comparison.
-  return Strategy::greaterEqual(strat2);
-}
-
+/************************************************************
+ *                                                          *
+ * *= and multiply methods (including study)                *
+ *                                                          *
+ ************************************************************/
 
 void Strategy::operator *= (const Strategy& strat2)
 {
@@ -409,8 +442,6 @@ void Strategy::operator *= (const Strategy& strat2)
   }
 
   Strategy::study();
-
-// timersStrat[15].stop();
 }
 
 
@@ -485,6 +516,12 @@ void Strategy::multiply(
 }
 
 
+/************************************************************
+ *                                                          *
+ * Range methods                                            *
+ *                                                          *
+ ************************************************************/
+
 void Strategy::initRanges(Ranges& ranges)
 {
   ranges.resize(results.size());
@@ -522,19 +559,11 @@ void Strategy::extendRanges(Ranges& ranges)
 }
 
 
-list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
-{
-  // No error checking.
-  weightInt -= iter->tricks;
-  return results.erase(iter);
-}
-
-
-void Strategy::eraseRest(list<Result>::iterator iter)
-{
-  results.erase(iter, results.end());
-}
-
+/************************************************************
+ *                                                          *
+ * adapt and helper methods (including study)               *
+ *                                                          *
+ ************************************************************/
 
 void Strategy::updateSingle(
   const unsigned char fullNo,
@@ -687,23 +716,11 @@ void Strategy::adapt(
 }
 
 
-unsigned Strategy::size() const
-{
-  return results.size();
-}
-
-
-bool Strategy::empty() const
-{
-  return results.empty();
-}
-
-
-unsigned Strategy::weight() const
-{
-  return weightInt;
-}
-
+/************************************************************
+ *                                                          *
+ * string methods                                           *
+ *                                                          *
+ ************************************************************/
 
 string Strategy::str(const string& title) const
 {

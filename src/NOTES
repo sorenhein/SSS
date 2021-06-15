@@ -1,8 +1,8 @@
-2021-06-13
+2021-06-15
 ----------
 
-When is restudy called?  Is it optimal?
-
+Strategy: Maybe move the sophisticated comparisons into separate class,
+Study.cpp
 
 
 2021-05-09

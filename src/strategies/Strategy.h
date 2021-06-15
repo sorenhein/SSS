@@ -78,6 +78,18 @@ class Strategy
 
     void resize(const unsigned len);
 
+    unsigned size() const;
+
+    bool empty() const;
+
+    void push_back(const Result& result);
+
+    unsigned weight() const;
+
+    list<Result>::iterator erase(list<Result>::iterator& iter);
+
+    void eraseRest(list<Result>::iterator iter);
+
     void logTrivial(
       const Result& trivialEntry,
       const unsigned char len);
@@ -85,8 +97,6 @@ class Strategy
     void log(
       const vector<unsigned char>& distributions,
       const vector<unsigned char>& tricks);
-
-    void push_back(const Result& result);
 
     void study();
 
@@ -109,17 +119,9 @@ class Strategy
 
     void extendRanges(Ranges& ranges);
 
-    list<Result>::iterator erase(list<Result>::iterator& iter);
-    void eraseRest(list<Result>::iterator iter);
-
     void adapt(
       const Play& play,
       const Survivors& survivors);
-
-    unsigned size() const;
-    bool empty() const;
-
-    unsigned weight() const;
 
     string str(const string& title = "") const;
 };

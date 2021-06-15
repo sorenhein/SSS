@@ -168,9 +168,6 @@ timersStrat[1].stop();
 
 void Strategies::restudy()
 {
-  if (strategies.empty())
-    return;
-
   for (auto& strategy: strategies)
     strategy.study();
 }
@@ -485,21 +482,22 @@ timersStrat[5].stop();
 
 void Strategies::operator *= (const Strategy& strat)
 {
+  // This does not re-sort and consolidate strategies.  If that
+  // needs to be done, the caller must do it.  It is currently only
+  // called from Node::reactivate().
+
   if (strategies.empty())
   {
     strategies.push_back(strat);
   }
   else
   {
-    // TODO Really?  No re-sorting and consolidating?
-
 timersStrat[6].start();
+
     for (auto& strat1: strategies)
       strat1 *= strat;
 
-    // Strategies::consolidate();
 timersStrat[6].stop();
-
   }
 }
 
