@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 
+#include "Study.h"
 #include "Result.h"
 #include "Range.h"
 
@@ -29,6 +30,8 @@ class Strategy
     bool studiedFlag;
 
     list<unsigned> profiles;
+
+    Study study2;
 
 
     void setConstants();

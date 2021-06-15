@@ -43,6 +43,10 @@ class Study
       const list<Result>& results,
       const Ranges& ranges);
 
+    void unstudy();
+
+    bool studied() const;
+
     bool maybeGreaterEqual(const Study& study2) const;
 
     bool greaterEqualByProfile(const Study& study2) const;

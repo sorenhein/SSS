@@ -154,6 +154,18 @@ void Study::scrutinize(
 }
 
 
+void Study::unstudy()
+{
+  studiedFlag = false;
+}
+
+
+bool Study::studied() const
+{
+  return studiedFlag;
+}
+
+
 bool Study::maybeGreaterEqual(const Study& study2) const
 {
   // This uses studied results if possible, otherwise the basic method.

@@ -100,6 +100,8 @@ void Strategy::reset()
   studiedFlag = false;
 
   profiles.clear();
+
+  study2.reset();
 }
 
 
@@ -132,6 +134,7 @@ void Strategy::push_back(const Result& result)
   results.push_back(result);
   weightInt += result.tricks;
   studiedFlag = false;
+  study2.unstudy();
 }
 
 
@@ -140,6 +143,7 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
   // No error checking.
   weightInt -= iter->tricks;
   studiedFlag = false;
+  study2.unstudy();
   return results.erase(iter);
 }
 
@@ -147,6 +151,7 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 void Strategy::eraseRest(list<Result>::iterator iter)
 {
   studiedFlag = false;
+  study2.unstudy();
   results.erase(iter, results.end());
 }
 
@@ -157,6 +162,7 @@ void Strategy::logTrivial(
 {
   results.clear();
   studiedFlag = false;
+  study2.unstudy();
 
   for (unsigned char i = 0; i < len; i++)
   {
@@ -178,6 +184,7 @@ void Strategy::log(
 
   weightInt = 0;
   studiedFlag = false;
+  study2.unstudy();
 
   for (unsigned i = 0; i < distributions.size(); i++)
   {
@@ -214,6 +221,8 @@ void Strategy::study()
     i++;
   }
   studiedFlag = true;
+
+  study2.study(results);
 }
 
 
@@ -257,6 +266,8 @@ void Strategy::scrutinize(const Ranges& minima)
 
   if (counter > 0)
     profiles.push_back(profile);
+
+  study2.scrutinize(results, minima);
 }
 
 
@@ -313,13 +324,21 @@ bool Strategy::operator >= (const Strategy& strat2) const
   // This uses studied results if possible, otherwise the basic method.
 
   assert(studiedFlag);
+  assert(study2.studied());
+
+const bool b = study2.maybeGreaterEqual(strat2.study2);
 
   for (unsigned i = 0; i < summary.size(); i++)
   {
     if (summary[i] < strat2.summary[i])
+    {
+assert(! b);
       return false;
+    }
   }
   
+assert(b);
+
   // Do the full comparison.
   return Strategy::greaterEqual(strat2);
 }
@@ -333,23 +352,31 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
   assert(profiles.size() == strat2.profiles.size());
   assert(! profiles.empty());
 
+const bool b = study2.greaterEqualByProfile(strat2.study2);
+
   auto piter1 = profiles.begin();
   auto piter2 = strat2.profiles.begin();
   while (piter1 != profiles.end())
   {
     if (! lookupGE[((* piter1) << 10) | (* piter2)])
+    {
+assert(! b);
       return false;
+    }
 
     piter1++;
     piter2++;
   }
 
+assert(b);
   return true;
 }
 
 
 Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
+const Compare c = study2.compareByProfile(strat2.study2);
+
   // This too uses the scrutinized results.
 
   assert(strat2.results.size() == results.size());
@@ -370,7 +397,10 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
       if (! b2)
       {
         if (lowerFlag)
+        {
+assert(c == COMPARE_INCOMMENSURATE);
           return COMPARE_INCOMMENSURATE;
+        }
           
         greaterFlag = true;
       }
@@ -378,23 +408,39 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
     else if (b2)
     {
       if (greaterFlag)
+      {
+assert(c == COMPARE_INCOMMENSURATE);
         return COMPARE_INCOMMENSURATE;
+      }
 
       lowerFlag = true;
     }
     else
+    {
+assert(c == COMPARE_INCOMMENSURATE);
       return COMPARE_INCOMMENSURATE;
+    }
 
     piter1++;
     piter2++;
   }
 
+
   if (greaterFlag)
+  {
+assert(c == COMPARE_GREATER_THAN);
     return COMPARE_GREATER_THAN;
+  }
   else if (lowerFlag)
+  {
+assert(c == COMPARE_LESS_THAN);
     return COMPARE_LESS_THAN;
+  }
   else
+  {
+assert(c == COMPARE_EQUAL);
     return COMPARE_EQUAL;
+  }
 }
 
 
