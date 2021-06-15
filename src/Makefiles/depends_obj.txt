@@ -71,6 +71,9 @@ strategies/Strategy.obj: strategies/Strategy.h strategies/Result.h
 strategies/Strategy.obj: strategies/Winners.h strategies/Winner.h
 strategies/Strategy.obj: strategies/Card.h const.h strategies/Range.h
 strategies/Strategy.obj: plays/Play.h Survivor.h stats/Timer.h
+strategies/Study.obj: strategies/Study.h strategies/Result.h
+strategies/Study.obj: strategies/Winners.h strategies/Winner.h
+strategies/Study.obj: strategies/Card.h const.h strategies/Range.h
 strategies/Extensions.obj: strategies/Extensions.h strategies/Strategies.h
 strategies/Extensions.obj: strategies/Strategy.h strategies/Result.h
 strategies/Extensions.obj: strategies/Winners.h strategies/Winner.h

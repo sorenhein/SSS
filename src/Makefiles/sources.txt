@@ -22,6 +22,7 @@ SOURCE_FILES    =                         \
                                           \
                 strategies/Strategies.cpp \
                 strategies/Strategy.cpp   \
+                strategies/Study.cpp      \
                 strategies/Extensions.cpp \
                 strategies/Extension.cpp  \
                 strategies/Splits.cpp     \

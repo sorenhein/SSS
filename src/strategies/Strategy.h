@@ -8,19 +8,13 @@
 #include "Result.h"
 #include "Range.h"
 
+#include "../const.h"
+
 struct Play;
 struct Survivors;
 
 using namespace std;
 
-
-enum Compare
-{
-  COMPARE_LESS_THAN = 0,
-  COMPARE_EQUAL = 1,
-  COMPARE_GREATER_THAN = 2,
-  COMPARE_INCOMMENSURATE = 3
-};
 
 
 class Strategy
