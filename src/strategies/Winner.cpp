@@ -300,6 +300,13 @@ void Winner::update(const Play& play)
 bool Winner::rankExceeds(const Winner& sw2) const
 {
   // TODO Maybe Winner should know its rank.
+
+  if (mode == WIN_NOT_SET && sw2.mode != WIN_NOT_SET)
+    // Being unset is like having an "infinite" winning rank.
+    return true;
+  else if (sw2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
+    return false;
+
   const unsigned rank1 =
       (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
         north.getRank() : south.getRank());

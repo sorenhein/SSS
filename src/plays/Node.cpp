@@ -88,12 +88,16 @@ void Node::getNextStrategies(
   // Get the strategy from the following combination.
   strats = playPtr->combPtr->strategies();
   if (debugFlag)
-    cout << strats.str("Strategy of next trick") << endl;
+  {
+    cout << Node::strPlay(LEVEL_RHO);
+    cout << playPtr->strLine() << "\n";
+    cout << strats.str("Strategy of next trick", true) << endl;
+  }
 
   // Renumber and rotate the strategy.
   strats.adapt(* playPtr, survivors);
   if (debugFlag)
-    cout << strats.str("Adapted strategy of next trick", true);
+    cout << strats.str("Adapted strategy of next trick", true) << "\n";
 }
 
 
@@ -183,7 +187,7 @@ void Node::cross(
   {
     cout << Node::strPlay(level);
     const string s = (level == LEVEL_RHO ? "RHO" : "LHO");
-    cout << strats.str("Crossing " + s + " strategy", false);
+    cout << strats.str("Crossing " + s + " strategy", true);
   }
 
   parentPtr->strats *= strats;
@@ -192,7 +196,7 @@ void Node::cross(
   {
     const string s = (level == LEVEL_RHO ? "partner" : "lead");
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", false);
+      "Cumulative " + s + " strategy after this trick", true);
   }
 }
 
@@ -207,7 +211,7 @@ void Node::add(
   {
     cout << Node::strPlay(level);
     const string s = (level == LEVEL_LEAD ? "lead" : "partner");
-    cout << strats.str("Adding " + s + " strategy", false);
+    cout << strats.str("Adding " + s + " strategy", true);
   }
 
   parentPtr->strats += strats;
@@ -216,7 +220,7 @@ void Node::add(
   {
     const string s = (level == LEVEL_LEAD ? "overall" : "LHO");
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick");
+      "Cumulative " + s + " strategy after this trick", true);
   }
 }
 

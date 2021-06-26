@@ -1,3 +1,17 @@
+2021-06-26
+----------
+7 / 150, AK8 / QT missing J9
+
+   After T - A 9,
+         T 9 A -,
+         T J A -,
+   we falsely get AQ.  Should be AK or AQ.
+
+4 / 15 after T - A 9 is:  K8 / Q missing J, or AJ / K missing Q.
+Its survivors at the 4/15 level are NA or SK.
+They should become NK or SQ, and then
+NA * (NK + SQ) = NK + NA * SQ.
+
 
 2021-05-09
 ----------
