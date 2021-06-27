@@ -118,7 +118,12 @@ void Winners::integrate(const Winner& swNew)
   auto switer = winners.begin();
   while (switer != winners.end())
   {
+// cout << "integrate:\n";
+// cout << switer->strDebug();
+// cout << "with\n";
+// cout << swNew.strDebug();
     const WinnerCompare cmp = switer->declarerPrefers(swNew);
+// cout << "cmp " << cmp << endl;
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
       // The new subwinner is inferior.
@@ -168,13 +173,18 @@ void Winners::operator *= (const Winners& w2)
   Winners w1 = move(* this);
   Winners::reset();
 
+// cout << "Multiplying winners\n";
   for (auto& sw1: w1.winners)
   {
     for (auto& sw2: w2.winners)
     {
       Winner sw = sw1;
+// cout << "LHS " << sw.strDebug();
+// cout << "RHS " << sw2.strDebug();
       sw *= sw2;
+// cout <<"Prd\n" << sw.strDebug();
       Winners::integrate(sw);
+// cout << "Winners after *=\n" << Winners::strDebug();
     }
   }
 }

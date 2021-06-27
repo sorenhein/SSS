@@ -212,7 +212,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   }
   else
   {
-    if (sw2.mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+    if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
       // South prefers no restriction.
       southPrefer = WIN_FIRST;
     else

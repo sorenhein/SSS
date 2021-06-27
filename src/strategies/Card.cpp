@@ -158,11 +158,11 @@ string Card::str(
     ss << hex << uppercase << +rank << dec;
 
   ss << side;
-  if (depth == 2)
+  if (depth == 1)
     ss << "'";
-  else if (depth == 3)
+  else if (depth == 2)
     ss << "\"";
-  else if (depth > 3)
+  else if (depth > 2)
     ss << "+";
   return ss.str();
 }
