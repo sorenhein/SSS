@@ -81,6 +81,13 @@ void Winners::set(
 }
 
 
+bool Winners::empty() const
+{
+  const unsigned s = winners.size();
+  return (s == 0 || (s == 1 && winners.front().empty()));
+}
+
+
 bool Winners::operator != (const Winners& w2) const
 {
   return ! (* this == w2);
@@ -146,12 +153,14 @@ void Winners::operator *= (const Winners& w2)
 {
   // The opponents have the choice.
 
-  if (w2.winners.size() == 0)
+  // if (w2.winners.size() == 0)
+  if (w2.empty())
   {
     // OK as is.
     return;
   }
-  else if (winners.size() == 0)
+  // else if (winners.size() == 0)
+  else if (Winners::empty())
   {
     * this = w2;
     return;
@@ -186,6 +195,30 @@ void Winners::operator *= (const Winners& w2)
       Winners::integrate(sw);
 // cout << "Winners after *=\n" << Winners::strDebug();
     }
+  }
+}
+
+
+WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
+{
+  const unsigned s1 = winners.size();
+  const unsigned s2 = w2.winners.size();
+
+  if (Winners::empty())
+    // Declarer prefers no restrictions.
+    return (w2.empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (w2.empty())
+    return WIN_SECOND;
+  else if (winners.size() == 1 && w2.winners.size() == 1)
+  {
+    return winners.front().declarerPrefers(w2.winners.front());
+  }
+  else
+  {
+    cout << "w1 " << Winners::strDebug();
+    cout << "w2 " << w2.strDebug() << endl;
+    assert(false);
+    return WIN_DIFFERENT;
   }
 }
 

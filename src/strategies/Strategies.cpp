@@ -271,12 +271,18 @@ void Strategies::addStrategy(
     {
 if (iter->weight() == strat.weight())
 {
-  // cout << "HERE1 addStrategy\n";
-  // cout << iter->str("iter");
-  // cout << strat.str("str");
-  // assert(false);
+  if (iter->consolidateByRank(strat))
+  {
 timersStrat[28].start();
 timersStrat[28].stop();
+  }
+  else
+  {
+  }
+  cout << "HERE1 addStrategy\n";
+  cout << iter->str("iter");
+  cout << strat.str("str") << endl;
+  assert(false);
 }
       return;
     }
@@ -292,8 +298,6 @@ timersStrat[28].stop();
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
-    if ((strat.*comparator)(* iter))
-    {
 if (iter->weight() == strat.weight())
 {
   cout << "HERE2 addStrategy\n";
@@ -303,8 +307,9 @@ if (iter->weight() == strat.weight())
 // timersStrat[29].start();
 // timersStrat[29].stop();
 }
+
+    if ((strat.*comparator)(* iter))
       iter = strategies.erase(iter);
-    }
     else
       iter++;
   }

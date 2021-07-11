@@ -82,6 +82,12 @@ void Winner::set(
 }
 
 
+bool Winner::empty() const
+{
+  return (mode == WIN_NOT_SET);
+}
+
+
 void Winner::setEmpty()
 {
   // Do nothing.

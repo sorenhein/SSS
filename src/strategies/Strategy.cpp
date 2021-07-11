@@ -217,6 +217,65 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
 
 /************************************************************
  *                                                          *
+ * Consolidate equal-weight Strategy's by rank if possible  *
+ *                                                          *
+ ************************************************************/
+
+bool Strategy::consolidateByRank(const Strategy& strat2)
+{
+  // So far this only tests for ==, >= and <=.
+  // TODO We can consolidate a single difference as well, perhaps.
+
+  assert(results.size() == strat2.results.size());
+  assert(! results.empty());
+
+  auto iter1 = results.begin();
+  auto iter2 = strat2.results.begin();
+  bool greaterFlag = false;
+  bool lowerFlag = false;
+
+  while (iter1 != results.end())
+  {
+    WinnerCompare cmp = iter1->winners.compareForDeclarer(iter2->winners);
+
+    if (cmp == WIN_FIRST)
+    {
+      if (lowerFlag)
+        return false;
+
+      greaterFlag = true;
+    }
+    else if (cmp == WIN_SECOND)
+    {
+      if (greaterFlag)
+        return false;
+
+      lowerFlag = true;
+    }
+    else if (cmp == WIN_EQUAL)
+    {
+      // Nothing to do.
+    }
+    else
+    {
+      // Incommensurate.
+      return false;
+    }
+
+    iter1++;
+    iter2++;
+  }
+
+  // The flags cannot both be set, or we would have returned above.
+  if (lowerFlag)
+    * this = strat2;
+  
+  return true;
+}
+
+
+/************************************************************
+ *                                                          *
  * *= and multiply methods (including study)                *
  *                                                          *
  ************************************************************/

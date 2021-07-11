@@ -99,6 +99,8 @@ class Strategy
     bool greaterEqualByProfile(const Strategy& strat2) const;
     Compare compareByProfile(const Strategy& strat2) const;
 
+    bool consolidateByRank(const Strategy& strat2);
+
     void operator *= (const Strategy& strat2);
 
     void multiply(

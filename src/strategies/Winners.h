@@ -63,9 +63,13 @@ class Winners
 
     void setEmpty();
 
+    bool empty() const;
+
     void operator *= (const Winners& w2);
 
     bool operator == (const Winners& w2) const;
+
+    WinnerCompare compareForDeclarer(const Winners& w2) const;
 
     void flip();
 

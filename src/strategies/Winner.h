@@ -54,6 +54,8 @@ class Winner
       const WinningSide sideIn,
       const Card& card);
 
+    bool empty() const;
+
     void setEmpty();
 
     bool operator == (const Winner& sw2) const;
