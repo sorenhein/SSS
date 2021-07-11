@@ -122,8 +122,6 @@ void Strategies::consolidateTwo()
   }
   else if (iter1->greaterEqualByProfile(* iter2))
     strategies.pop_back();
-  else
-    iter_swap(iter1, iter2);
 }
 
 
@@ -270,7 +268,18 @@ void Strategies::addStrategy(
   {
     // Is the new strat dominated?
     if (((* iter).*comparator)(strat))
+    {
+if (iter->weight() == strat.weight())
+{
+  // cout << "HERE1 addStrategy\n";
+  // cout << iter->str("iter");
+  // cout << strat.str("str");
+  // assert(false);
+timersStrat[28].start();
+timersStrat[28].stop();
+}
       return;
+    }
     else
       iter++;
   }
@@ -284,7 +293,18 @@ void Strategies::addStrategy(
   while (iter != strategies.end())
   {
     if ((strat.*comparator)(* iter))
+    {
+if (iter->weight() == strat.weight())
+{
+  cout << "HERE2 addStrategy\n";
+  cout << iter->str("iter");
+  cout << strat.str("str") << endl;
+  assert(false);
+// timersStrat[29].start();
+// timersStrat[29].stop();
+}
       iter = strategies.erase(iter);
+    }
     else
       iter++;
   }

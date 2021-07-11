@@ -551,7 +551,7 @@ string Strategy::str(const string& title) const
 
   for (auto& res: results)
     ss <<
-      setw(4) << res.dist <<
+      setw(4) << +res.dist <<
       setw(6) << +res.tricks << "\n";
 
   return ss.str();

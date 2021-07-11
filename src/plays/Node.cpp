@@ -162,6 +162,7 @@ void Node::purgeRanges()
     // loop, only for dominance and not for constants this time.
     // We'd have to regenerate stratData first, at least the iter
     // and riter, to rewind.
+
     strats.consolidate();
   }
 }
@@ -274,6 +275,9 @@ string Node::strPlay(const Level level) const
 
 string Node::strSimple() const
 {
-  return simpleStrat.str("simple " + to_string(index));
+  if (simpleStrat.empty())
+    return "";
+  else
+    return simpleStrat.str("simple " + to_string(index));
 }
 

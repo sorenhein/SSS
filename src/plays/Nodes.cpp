@@ -178,7 +178,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
 {
   assert(level == LEVEL_RHO || level == LEVEL_LHO);
 
-  // Derive bounds on RHO outcomes for each lead in order to find
+  // Derive bounds on defender outcomes for each lead in order to find
   // constant or dominated outcomes, propagate them to the parent nodes 
   // (which may be nodesLead if partner is void; see Plays), and 
   // remove them from the parent nodes.  This is quite fast.
@@ -264,8 +264,8 @@ string Nodes::strCount() const
 string Nodes::strSimple() const
 {
   stringstream ss;
-  for (auto& node: nodes)
-    ss <<  node.strSimple();
+  for (auto iter = nodes.begin(); iter != nextIter; iter++)
+    ss <<  iter->strSimple();
   return ss.str();
 }
 
