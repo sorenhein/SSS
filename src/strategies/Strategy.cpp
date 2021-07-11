@@ -233,6 +233,11 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
   auto iter2 = strat2.results.begin();
   bool greaterFlag = false;
   bool lowerFlag = false;
+  bool differentFlag = false;
+
+  // Keep of track of the (hopefully) only set of Winners that differ.
+  Winners * wptr1 = nullptr;
+  Winners const * wptr2 = nullptr;
 
   while (iter1 != results.end())
   {
@@ -241,14 +246,20 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
     if (cmp == WIN_FIRST)
     {
       if (lowerFlag)
+      {
+cout << "consolidate: Both > and < appear" << endl;
         return false;
+      }
 
       greaterFlag = true;
     }
     else if (cmp == WIN_SECOND)
     {
       if (greaterFlag)
+      {
+cout << "consolidate: Both > and < appear" << endl;
         return false;
+      }
 
       lowerFlag = true;
     }
@@ -258,12 +269,38 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
     }
     else
     {
-      // Incommensurate.
-      return false;
+      if (differentFlag)
+      {
+cout << "consolidate: More than one difference" << endl;
+        // Can't deal with two differences.
+        return false;
+      }
+
+      differentFlag = true;
+      wptr1 = &(iter1->winners);
+      wptr2 = &(iter2->winners);
     }
 
     iter1++;
     iter2++;
+  }
+
+  if (differentFlag)
+  {
+    if (greaterFlag || lowerFlag)
+    {
+cout << "consolidate: Both different and </>" << endl;
+      // Too complicated.
+      return false;
+    }
+
+    if (wptr1->consolidate(* wptr2))
+      return true;
+    else
+    {
+cout << "consolidate: Could not combine Winners" << endl;
+      return false;
+    }
   }
 
   // The flags cannot both be set, or we would have returned above.

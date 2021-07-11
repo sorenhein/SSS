@@ -223,6 +223,35 @@ WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
 }
 
 
+bool Winners::consolidate(const Winners& w2)
+{
+  assert(! Winners::empty());
+  assert(! w2.empty());
+
+  if (winners.size() == 1 && w2.winners.size() == 1)
+  {
+    if (winners.front().consolidate(w2.winners.front()))
+      return true;
+    else
+    {
+      cout << "Don't know how to consolidate these simple winners:\n";
+      cout << "w1 " << Winners::strDebug();
+      cout << "w2 " << w2.strDebug() << endl;
+      assert(false);
+      return false;
+    }
+  }
+  else
+  {
+    cout << "Don't know how to consolidate these complex winners:\n";
+    cout << "w1 " << Winners::strDebug();
+    cout << "w2 " << w2.strDebug() << endl;
+    assert(false);
+    return false;
+  }
+}
+
+
 void Winners::flip()
 {
   for (auto& winner: winners)
@@ -250,6 +279,9 @@ bool Winners::rankExceeds(const Winners& w2) const
 
 string Winners::strEntry() const
 {
+  if (Winners::empty())
+    return "-";
+
   string s = "";
   bool firstFlag = true;
   for (auto& winner: winners)

@@ -65,6 +65,8 @@ class Winner
 
     WinnerCompare declarerPrefers(const Winner& sw2) const;
 
+    bool consolidate(const Winner& sw2);
+
     void flip();
 
     void update(const Play& play);

@@ -71,6 +71,8 @@ class Winners
 
     WinnerCompare compareForDeclarer(const Winners& w2) const;
 
+    bool consolidate(const Winners& w2);
+
     void flip();
 
     void update(const Play& play);

@@ -278,11 +278,11 @@ timersStrat[28].stop();
   }
   else
   {
-  }
   cout << "HERE1 addStrategy\n";
   cout << iter->str("iter");
   cout << strat.str("str") << endl;
   assert(false);
+  }
 }
       return;
     }
