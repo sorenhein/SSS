@@ -186,7 +186,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   WinnerCompare northPrefer, southPrefer;
   if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
   {
-    if (sw2.mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
       northPrefer = north.compare(sw2.north);
     else
       // North prefers no restriction.
@@ -194,7 +194,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   }
   else
   {
-    if (sw2.mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
       // North prefers no restriction.
       northPrefer = WIN_FIRST;
     else
@@ -204,7 +204,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   
   if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
   {
-    if (sw2.mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+    if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
       southPrefer = south.compare(sw2.north);
     else
       // South prefers no restriction.
