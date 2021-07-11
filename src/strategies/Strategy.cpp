@@ -635,7 +635,9 @@ void Strategy::adapt(
  *                                                          *
  ************************************************************/
 
-string Strategy::str(const string& title) const
+string Strategy::str(
+  const string& title,
+  const bool rankFlag) const
 {
   stringstream ss;
   if (title != "")
@@ -645,10 +647,20 @@ string Strategy::str(const string& title) const
     setw(4) << left << "Dist" <<
     setw(6) << "Tricks" << "\n";
 
-  for (auto& res: results)
-    ss <<
-      setw(4) << +res.dist <<
-      setw(6) << +res.tricks << "\n";
+  if (rankFlag)
+  {
+    for (auto& res: results)
+      ss <<
+        setw(4) << +res.dist <<
+        setw(6) << res.strEntry(rankFlag) << "\n";
+  }
+  else
+  {
+    for (auto& res: results)
+      ss <<
+        setw(4) << +res.dist <<
+        setw(6) << +res.tricks << "\n";
+  }
 
   return ss.str();
 }

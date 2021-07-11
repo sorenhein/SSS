@@ -1,59 +1,25 @@
-2021-07-06
+2021-07-11
 ----------
 Places where Strategy's are compared:
-* Strategies::addStrategy
+* Strategies::addStrategy [implemented rank equality here only for now]
 * Strategies::multiplyAddStrategy
 * Extensions::add
 
-7/532, AQ9 / J8 missing KT:
+8/1283, AJ / K98 missing QT7:
+The "constants" when starting with the 9, for example, have different
+winners for the hook and the top.  When they are reinstated, this
+information is lost.
 
-When leading the 8:
-Cumulative LHO strategy after this trick
-Dist           0           1
-----------------------------
-0      2      5N   2      5N
-1      2       -   3      5N
-2      3      5N   3      5N
-3      3      3N   2      5N
-----------------------------
- Wgt          10          10
-
-When leading the J:
-Adding partner strategy
-Dist           0           1
-----------------------------
-0      2      5N   2      5N
-1      2       -   3      5N
-2      3      5N   3      5N
-3      3   ** 3S   2      5N
-----------------------------
- Wgt          10          10
-
-We only consider the play J T 9 and not J T Q: Winning rank is 3S (J).
-With J T Q we'd get 3N (Q).  So in a sense there should be a second
-strategy with 3N.  In this particular case we could merge them into
-3N,3S (declarer's choice).
-Declarer would then prefer to have the choice, so when merging with
-the 8 lead, we'd get the 3N,3S strategy.
-BUT it's not really true that NS can choose between 3N and 3S, is it?
-
-If we have AJ9 / Q8 instead, it would look the same in our terms.
-When we lead the 8, we'd win the J (3N) if they duck as they must.
-When we lead the Q, we'd win the Q or in a sense the J if we play it.
-
-Maybe it's not so wrong to say that we win with 3N,3S.
-It just doesn't mean that we'd get the same results and strategies
-if we only held AQ9 / xx and A9x / Qx.
-
-Let's say we have AKx / Qx and we can win with AK or with AQ.
-See below:  Either 5NS or 5N'.  In this case we'd get the same
-results and strategies with AKx / xx and with Axx / Kx.
-
-So to be getting on, it seems we should be able to merge 3N and 3S
-into 3N,3S -- at least when they are the only difference.
-
-And if we start to permit other plays (J T Q), do we widen the scope?
-
+Likely solution (will cost some efficiency):
+Introduce a rankEqualityFlag.
+In
+* Nodes::strategizeDefendersAdvanced,
+* Strategies::makeRanges,
+* Nodes::propagateRanges,
+* Node::purgeRanges,
+only let something be a constant (with the flag set) when
+the ranks too are the same.  For constants it's clear.  For dominated
+ranges, we don't need to look at the ranks.
 
 
 2021-06-27: Rank vector reductions
