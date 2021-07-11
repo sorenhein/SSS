@@ -63,6 +63,8 @@ class Winner
 
     void operator *= (const Winner& sw2);
 
+    unsigned char rank() const;
+
     WinnerCompare declarerPrefers(const Winner& sw2) const;
 
     bool consolidate(const Winner& sw2);

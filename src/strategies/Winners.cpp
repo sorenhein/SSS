@@ -259,10 +259,51 @@ void Winners::flip()
 }
 
 
+void Winners::limitByRank()
+{
+  // It can happen that the North and South ranks from the next trick
+  // are of the same rank, but they are mapped to different ranks in
+  // the current trick, and they are combined by declarer's choice.
+  // So we check that all Winner's have the same rank and remove any
+  // that are lower than the maximum rank.
+  unsigned char min = numeric_limits<unsigned char>::max();
+  unsigned char max = 0;
+
+  // Find the range of ranks.
+  for (auto& winner: winners)
+  {
+    const unsigned char rank = winner.rank();
+    if (rank == numeric_limits<unsigned char>::max())
+      continue;
+
+    if (rank < min)
+      min = rank;
+    if (rank > max)
+      max = rank;
+  }
+
+  if (min == max)
+    return;
+
+  // Remove Winner's of too-low rank.
+  auto iter = winners.begin();
+  while (iter != winners.end())
+  {
+    if (iter->rank() < max)
+      iter = winners.erase(iter);
+    else
+      iter++;
+  }
+}
+
+
 void Winners::update(const Play& play)
 {
   for (auto& winner: winners)
     winner.update(play);
+
+  if (winners.size() >= 2)
+    Winners::limitByRank();
 
   if (play.trickNS)
     * this *= play.currBest;

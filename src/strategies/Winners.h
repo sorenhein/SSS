@@ -40,6 +40,8 @@ class Winners
 
     bool rankExceeds(const Winners& w2) const;
 
+    void limitByRank();
+
     string strSingleSided(
       const string& name,
       const Card& winner) const;

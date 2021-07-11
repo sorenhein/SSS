@@ -167,6 +167,17 @@ void Winner::operator *= (const Winner& sw2)
 }
 
 
+unsigned char Winner::rank() const
+{
+  if (mode == WIN_NOT_SET)
+    return numeric_limits<unsigned char>::max();
+  else if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    return north.getRank();
+  else
+    return south.getRank();
+}
+
+
 WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
 {
   assert(mode != WIN_NOT_SET);
