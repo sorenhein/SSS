@@ -105,6 +105,7 @@ class Strategies
     const Strategy& front() const;
     unsigned size() const;
     bool empty() const;
+    bool ordered() const;
 
     void getLoopData(StratData& stratData);
 

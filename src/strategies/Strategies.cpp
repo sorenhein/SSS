@@ -709,6 +709,19 @@ bool Strategies::empty() const
 }
 
 
+bool Strategies::ordered() const
+{
+  // Check that the strategies are ordered by descending weight.
+  for (auto iter = strategies.begin(); iter != prev(strategies.end()); 
+      iter++)
+  {
+    if (iter->weight() < next(iter)->weight())
+      return false;
+  }
+  return true;
+}
+
+
 void Strategies::getLoopData(StratData& stratData)
 {
   // This is used to loop over all strategies in synchrony, one

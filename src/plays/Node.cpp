@@ -171,10 +171,20 @@ void Node::purgeRanges()
 void Node::reactivate()
 {
   simpleStrat *= constants;
+  strats *= simpleStrat;
 
   // As simpleStrat is completely complementary to strats,
-  // we do not need to re-sort and consolidate.
-  strats *= simpleStrat;
+  // we often do not need to re-sort and consolidate.
+  // But it can happen that the defenders can hold declarer to a
+  // constant 2 tricks (10/16907, lead 7, then rising with the king),
+  // or the defender can give declarer several choices in the range
+  // of 1-3 tricks.  Since the defenders move after declarer 
+  // publishes his strategy, he will never get 3 tricks.  When
+  // the simple strategy is multiplied back here, weights can change
+  // and therefore the ordering can also change.
+
+  if (! strats.ordered())
+    strats.consolidate();
 }
 
 
