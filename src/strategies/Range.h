@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "Result.h"
+
 using namespace std;
 
 
@@ -14,6 +16,26 @@ struct Range
   unsigned char lower;
   unsigned char upper;
   unsigned char minimum;
+
+  void init(const Result& result)
+  {
+    dist = result.dist;
+    lower = result.tricks;
+    upper = result.tricks;
+    minimum = result.tricks;
+  };
+
+  void extend(const Result& result)
+  {
+    assert(dist == result.dist);
+    if (result.tricks < lower)
+    {
+      lower = result.tricks;
+      minimum = result.tricks;
+    }
+    if (result.tricks > upper)
+      upper = result.tricks;
+  };
 
   void operator *= (const Range& range2)
   {

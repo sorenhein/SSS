@@ -99,5 +99,8 @@ strategies/Winners.obj: strategies/Card.h const.h plays/Play.h
 strategies/Winner.obj: strategies/Winner.h strategies/Card.h const.h
 strategies/Winner.obj: plays/Play.h
 strategies/Card.obj: strategies/Card.h const.h
+strategies/RangesNew.obj: strategies/RangesNew.h strategies/Range.h
+strategies/RangesNew.obj: strategies/Result.h strategies/Winners.h
+strategies/RangesNew.obj: strategies/Winner.h strategies/Card.h const.h
 stats/Timer.obj: stats/Timer.h
 stats/Timers.obj: stats/Timers.h stats/Timer.h
