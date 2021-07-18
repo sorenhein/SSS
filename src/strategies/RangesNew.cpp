@@ -7,7 +7,37 @@
 #include "Result.h"
 
 
-RangesNew::RangesNew(const bool winnersFlagIn)
+RangesNew::RangesNew()
+{
+  RangesNew::reset();
+}
+
+
+RangesNew::~RangesNew()
+{
+  if (rangesPtr)
+    delete rangesPtr;
+}
+
+
+void RangesNew::reset()
+{
+  if (rangesPtr)
+    rangesPtr = nullptr;
+
+  winnersFlag = false;
+}
+
+
+bool RangesNew::empty() const
+{
+  return (rangesPtr == nullptr || rangesPtr->empty());
+}
+
+
+void RangesNew::init(
+  const list<Result>& results,
+  const bool winnersFlagIn)
 {
   winnersFlag = winnersFlagIn;
 
@@ -16,29 +46,7 @@ RangesNew::RangesNew(const bool winnersFlagIn)
     rangesPtr = new list<Range>;
   else
     rangesPtr = new list<Range>;
-}
 
-
-RangesNew::~RangesNew()
-{
-  delete rangesPtr;
-}
-
-
-void RangesNew::reset()
-{
-  rangesPtr->clear();
-}
-
-
-bool RangesNew::empty() const
-{
-  return rangesPtr->empty();
-}
-
-
-void RangesNew::init(const list<Result>& results)
-{
   rangesPtr->resize(results.size());
   auto resIter = results.begin();
 
@@ -52,6 +60,7 @@ void RangesNew::init(const list<Result>& results)
 
 void RangesNew::extend(const list<Result>& results)
 {
+  assert(rangesPtr);
   assert(results.size() == rangesPtr->size());
 
   auto resIter = results.begin();
@@ -66,11 +75,14 @@ void RangesNew::extend(const list<Result>& results)
 
 void RangesNew::operator *= (const RangesNew& r2)
 {
-  if (rangesPtr->empty())
+  if (rangesPtr == nullptr || rangesPtr->empty())
   {
     * this = r2;
     return;
   }
+  
+  if (r2.rangesPtr == nullptr)
+    return;
 
   auto iter1 = rangesPtr->begin();
   auto iter2 = r2.rangesPtr->begin();
@@ -96,6 +108,9 @@ void RangesNew::operator *= (const RangesNew& r2)
 
 string RangesNew::str() const
 {
+  if (rangesPtr == nullptr)
+    return "";
+
   string s = "";
   for (auto& range: * rangesPtr)
     s += range.str();

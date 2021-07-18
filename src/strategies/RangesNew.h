@@ -22,7 +22,7 @@ class RangesNew
 
   public:
 
-    RangesNew(const bool winnersFlagIn);
+    RangesNew();
 
     ~RangesNew();
 
@@ -39,7 +39,9 @@ class RangesNew
 
     bool empty() const;
 
-    void init(const list<Result>& results);
+    void init(
+      const list<Result>& results,
+      const bool winnersFlagIn);
 
     void extend(const list<Result>& results);
 
