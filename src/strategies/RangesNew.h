@@ -26,6 +26,15 @@ class RangesNew
 
     ~RangesNew();
 
+    list<Range>::iterator begin()
+      { return rangesPtr->begin(); };
+    list<Range>::iterator end()
+      { return rangesPtr->end(); }
+    list<Range>::const_iterator begin() const
+      { return rangesPtr->begin(); };
+    list<Range>::const_iterator end() const
+      { return rangesPtr->end(); }
+
     void reset();
 
     bool empty() const;
