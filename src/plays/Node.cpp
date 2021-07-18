@@ -128,7 +128,7 @@ void Node::purgeRanges()
   for (auto& parentRange: parentPtr->strats.getRanges())
   {
     // Get to the same distribution in each Strategy if it exists.
-    const StratStatus status = stratData.advance(parentRange.dist);
+    const StratStatus status = stratData.advance(parentRange.dist());
     if (status == STRATSTATUS_END)
       break;
     else if (status == STRATSTATUS_FURTHER_DIST)
@@ -136,7 +136,7 @@ void Node::purgeRanges()
 
     if (parentRange.constant())
     {
-      stratData.eraseConstantDist(* citer, parentRange.minimum);
+      stratData.eraseConstantDist(* citer, parentRange.min());
       eraseFlag = true;
       citer++;
     }

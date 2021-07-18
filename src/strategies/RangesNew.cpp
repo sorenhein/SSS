@@ -89,12 +89,12 @@ void RangesNew::operator *= (const RangesNew& r2)
 
   while (iter2 != r2.rangesPtr->end())
   {
-    if (iter1 == rangesPtr->end() || iter1->dist > iter2->dist)
+    if (iter1 == rangesPtr->end() || iter1->dist() > iter2->dist())
     {
       rangesPtr->insert(iter1, * iter2);
       iter2++;
     }
-    else if (iter1->dist < iter2->dist)
+    else if (iter1->dist() < iter2->dist())
       iter1++;
     else
     {

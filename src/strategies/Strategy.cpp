@@ -443,10 +443,11 @@ void Strategy::initRanges(Ranges& ranges)
 
   for (; iter != results.end(); iter++, riter++)
   {
-    riter->dist = iter->dist;
-    riter->lower = iter->tricks;
-    riter->upper = iter->tricks;
-    riter->minimum = iter->tricks;
+    riter->init(* iter);
+    // riter->dist = iter->dist;
+    // riter->lower = iter->tricks;
+    // riter->upper = iter->tricks;
+    // riter->minimum = iter->tricks;
   }
 }
 
@@ -460,14 +461,15 @@ void Strategy::extendRanges(Ranges& ranges)
 
   for (; iter != results.end(); iter++, riter++)
   {
-    assert(iter->dist == riter->dist);
-    if (iter->tricks < riter->lower)
-    {
-      riter->lower = iter->tricks;
-      riter->minimum = iter->tricks;
-    }
-    if (iter->tricks > riter->upper)
-      riter->upper = iter->tricks;
+    riter->extend(* iter);
+    // assert(iter->dist == riter->dist);
+    // if (iter->tricks < riter->lower)
+    // {
+      // riter->lower = iter->tricks;
+      // riter->minimum = iter->tricks;
+    // }
+    // if (iter->tricks > riter->upper)
+      // riter->upper = iter->tricks;
   }
 }
 

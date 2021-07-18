@@ -10,80 +10,94 @@
 using namespace std;
 
 
-struct Range
+class Range
 {
-  unsigned char dist;
-  unsigned char lower;
-  unsigned char upper;
-  unsigned char minimum;
+  private:
 
-  void init(const Result& result)
-  {
-    dist = result.dist;
-    lower = result.tricks;
-    upper = result.tricks;
-    minimum = result.tricks;
-  };
+    unsigned char distribution;
+    unsigned char lower;
+    unsigned char upper;
+    unsigned char minimum;
 
-  void extend(const Result& result)
-  {
-    assert(dist == result.dist);
-    if (result.tricks < lower)
+  public:
+
+    void init(const Result& result)
     {
+      distribution = result.dist;
       lower = result.tricks;
-      minimum = result.tricks;
-    }
-    if (result.tricks > upper)
       upper = result.tricks;
-  };
+      minimum = result.tricks;
+    };
 
-  void operator *= (const Range& range2)
-  {
-    if (range2.minimum < minimum)
-      minimum = range2.minimum;
-
-    if (range2.upper < upper ||
-        (range2.upper == upper && range2.lower < lower))
+    void extend(const Result& result)
     {
-      lower = range2.lower;
-      upper = range2.upper;
-    }
-  };
+      assert(distribution == result.dist);
+      if (result.tricks < lower)
+      {
+        lower = result.tricks;
+        minimum = result.tricks;
+      }
+      if (result.tricks > upper)
+        upper = result.tricks;
+    };
 
-  bool operator < (const Range& range2) const
-  {
-    return (upper <= range2.lower &&
-        (range2.lower < range2.upper || lower < upper));
-  };
+    void operator *= (const Range& range2)
+    {
+      if (range2.minimum < minimum)
+        minimum = range2.minimum;
 
-  bool constant() const
-  {
-    return (lower == minimum && upper == minimum);
-  };
+      if (range2.upper < upper ||
+          (range2.upper == upper && range2.lower < lower))
+      {
+        lower = range2.lower;
+        upper = range2.upper;
+      }
+    };
 
-  string strHeader() const
-  {
-    stringstream ss;
-    ss << 
-      setw(4) << right << "dist" <<
-      setw(4) << "lo" <<
-      setw(4) << "hi" << 
-      setw(4) << "min" << 
-      endl;
-    return ss.str();
-  };
+    bool operator < (const Range& range2) const
+    {
+      return (upper <= range2.lower &&
+          (range2.lower < range2.upper || lower < upper));
+    };
 
-  string str() const
-  {
-    stringstream ss;
-    ss << 
-      setw(4) << +dist <<
-      setw(4) << +lower <<
-      setw(4) << +upper << 
-      setw(4) << +minimum << 
-      endl;
-    return ss.str();
-  };
+    bool constant() const
+    {
+      return (lower == minimum && upper == minimum);
+    };
+
+    string strHeader() const
+    {
+      stringstream ss;
+      ss << 
+        setw(4) << right << "dist" <<
+        setw(4) << "lo" <<
+        setw(4) << "hi" << 
+        setw(4) << "min" << 
+        endl;
+      return ss.str();
+    };
+
+    unsigned char dist() const
+    {
+      return distribution;
+    };
+
+    unsigned char min() const
+    {
+      return minimum;
+    };
+
+    string str() const
+    {
+      stringstream ss;
+      ss << 
+        setw(4) << +distribution <<
+        setw(4) << +lower <<
+        setw(4) << +upper << 
+        setw(4) << +minimum << 
+        endl;
+      return ss.str();
+    };
 };
 
 typedef list<Range> Ranges;

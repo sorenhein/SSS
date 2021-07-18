@@ -783,12 +783,12 @@ void Strategies::propagateRanges(const Strategies& child)
 
   while (iter2 != child.ranges.end())
   {
-    if (iter1 == ranges.end() || iter1->dist > iter2->dist)
+    if (iter1 == ranges.end() || iter1->dist() > iter2->dist())
     {
       ranges.insert(iter1, * iter2);
       iter2++;
     }
-    else if (iter1->dist < iter2->dist)
+    else if (iter1->dist() < iter2->dist())
       iter1++;
     else
     {
