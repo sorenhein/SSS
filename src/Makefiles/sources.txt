@@ -29,7 +29,7 @@ SOURCE_FILES    =                         \
                 strategies/Winners.cpp    \
                 strategies/Winner.cpp     \
                 strategies/Card.cpp       \
-                strategies/RangesNew.cpp  \
+                strategies/Ranges.cpp     \
                                           \
                 stats/Timer.cpp           \
                 stats/Timers.cpp

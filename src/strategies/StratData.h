@@ -32,7 +32,7 @@ struct StratDatum
 struct StratData
 {
   list<StratDatum> data;
-  Ranges::const_iterator riter;
+  list<Range>::const_iterator riter;
 
   unsigned char dist()
   {

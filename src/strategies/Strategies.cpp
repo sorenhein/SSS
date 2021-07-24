@@ -171,7 +171,7 @@ void Strategies::restudy()
 }
 
 
-void Strategies::scrutinize(const RangesNew& rangesIn)
+void Strategies::scrutinize(const Ranges& rangesIn)
 {
   for (auto& strat: strategies)
     strat.scrutinize(rangesIn);
@@ -774,38 +774,10 @@ void Strategies::propagateRanges(const Strategies& child)
   // The distribution number has to match.
 
   rangesNew *= child.rangesNew;
-
-  /*
-  if (rangesNew.empty())
-  {
-    rangesNew = child.rangesNew;
-    return;
-  }
-
-  auto iter1 = rangesNew.begin();
-  auto iter2 = child.rangesNew.begin();
-
-  while (iter2 != child.rangesNew.end())
-  {
-    if (iter1 == rangesNew.end() || iter1->dist() > iter2->dist())
-    {
-      rangesNew.insert(iter1, * iter2);
-      iter2++;
-    }
-    else if (iter1->dist() < iter2->dist())
-      iter1++;
-    else
-    {
-      * iter1 *= * iter2;
-      iter1++;
-      iter2++;
-    }
-  }
-  */
 }
 
 
-const RangesNew& Strategies::getRanges() const
+const Ranges& Strategies::getRanges() const
 {
   return rangesNew;
 }

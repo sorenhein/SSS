@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class RangesNew;
+class Ranges;
 
 
 class Extension
@@ -42,7 +42,7 @@ class Extension
     void multiply(
       const Strategy& strat1,
       const Strategy& strat2,
-      const RangesNew& ranges);
+      const Ranges& ranges);
 
     void finish(
       const unsigned index1,

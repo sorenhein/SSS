@@ -3,41 +3,41 @@
 #include <sstream>
 #include <cassert>
 
-#include "RangesNew.h"
+#include "Ranges.h"
 #include "Result.h"
 
 
-RangesNew::RangesNew()
+Ranges::Ranges()
 {
-  RangesNew::reset();
+  Ranges::reset();
 }
 
 
-RangesNew::~RangesNew()
+Ranges::~Ranges()
 {
 }
 
 
-void RangesNew::reset()
+void Ranges::reset()
 {
   ranges.clear();
   winnersFlag = false;
 }
 
 
-bool RangesNew::empty() const
+bool Ranges::empty() const
 {
   return ranges.empty();
 }
 
 
-unsigned RangesNew::size() const
+unsigned Ranges::size() const
 {
   return ranges.size();
 }
 
 
-void RangesNew::init(
+void Ranges::init(
   const list<Result>& results,
   const bool winnersFlagIn)
 {
@@ -60,7 +60,7 @@ void RangesNew::init(
 }
 
 
-void RangesNew::extend(const list<Result>& results)
+void Ranges::extend(const list<Result>& results)
 {
   assert(results.size() == ranges.size());
   if (results.empty())
@@ -76,9 +76,9 @@ void RangesNew::extend(const list<Result>& results)
 }
 
 
-void RangesNew::operator *= (const RangesNew& r2)
+void Ranges::operator *= (const Ranges& r2)
 {
-  if (RangesNew::empty())
+  if (Ranges::empty())
   {
     if (! r2.empty())
     {
@@ -113,7 +113,7 @@ void RangesNew::operator *= (const RangesNew& r2)
 }
 
 
-string RangesNew::strHeader() const
+string Ranges::strHeader() const
 {
   if (ranges.empty())
     return "";
@@ -122,7 +122,7 @@ string RangesNew::strHeader() const
 }
 
 
-string RangesNew::str() const
+string Ranges::str() const
 {
   string s = "";
   for (auto& range: ranges)

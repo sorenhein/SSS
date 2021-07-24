@@ -31,7 +31,7 @@ void Extension::reset()
 void Extension::multiply(
   const Strategy& strat1,
   const Strategy& strat2,
-  const RangesNew& ranges)
+  const Ranges& ranges)
 {
   overlap.multiply(strat1, strat2);
   overlap.scrutinize(ranges);

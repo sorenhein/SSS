@@ -7,7 +7,7 @@
 #include "Strategies.h"
 #include "Extension.h"
 #include "Splits.h"
-#include "RangesNew.h"
+#include "Ranges.h"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ class Extensions
     void makeEntry(
       const Strategy& strat1,
       const Strategy& strat2,
-      const RangesNew& ranges,
+      const Ranges& ranges,
       const unsigned index1,
       const unsigned index2);
 
@@ -58,7 +58,7 @@ class Extensions
       const Strategy& counterpart,
       const ExtensionSplit split);
     
-    void multiply(const RangesNew& ranges);
+    void multiply(const Ranges& ranges);
 
     void flatten(list<Strategy>& strategies);
 };

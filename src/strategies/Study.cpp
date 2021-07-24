@@ -111,7 +111,7 @@ void Study::study(const list<Result>& results)
 
 void Study::scrutinize(
   const list<Result>& results,
-  const RangesNew& ranges)
+  const Ranges& ranges)
 {
   assert(ranges.size() >= results.size());
   profiles.clear();

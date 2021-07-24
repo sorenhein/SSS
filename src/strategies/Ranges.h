@@ -11,7 +11,7 @@ using namespace std;
 struct Result;
 
 
-class RangesNew
+class Ranges
 {
   private:
 
@@ -22,18 +22,14 @@ class RangesNew
 
   public:
 
-    RangesNew();
+    Ranges();
 
-    ~RangesNew();
+    ~Ranges();
 
-    list<Range>::iterator begin()
-      { return ranges.begin(); };
-    list<Range>::iterator end()
-      { return ranges.end(); }
-    list<Range>::const_iterator begin() const
-      { return ranges.begin(); };
-    list<Range>::const_iterator end() const
-      { return ranges.end(); }
+    list<Range>::iterator begin() { return ranges.begin(); };
+    list<Range>::iterator end() { return ranges.end(); }
+    list<Range>::const_iterator begin() const { return ranges.begin(); };
+    list<Range>::const_iterator end() const { return ranges.end(); }
 
     void reset();
 
@@ -47,7 +43,7 @@ class RangesNew
 
     void extend(const list<Result>& results);
 
-    void operator *= (const RangesNew& r2);
+    void operator *= (const Ranges& r2);
 
     string strHeader() const;
 
