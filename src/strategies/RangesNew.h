@@ -15,7 +15,7 @@ class RangesNew
 {
   private:
 
-    list<Range> * rangesPtr;
+    list<Range> ranges;
 
     bool winnersFlag;
 
@@ -27,17 +27,19 @@ class RangesNew
     ~RangesNew();
 
     list<Range>::iterator begin()
-      { return rangesPtr->begin(); };
+      { return ranges.begin(); };
     list<Range>::iterator end()
-      { return rangesPtr->end(); }
+      { return ranges.end(); }
     list<Range>::const_iterator begin() const
-      { return rangesPtr->begin(); };
+      { return ranges.begin(); };
     list<Range>::const_iterator end() const
-      { return rangesPtr->end(); }
+      { return ranges.end(); }
 
     void reset();
 
     bool empty() const;
+
+    unsigned size() const;
 
     void init(
       const list<Result>& results,
@@ -46,6 +48,8 @@ class RangesNew
     void extend(const list<Result>& results);
 
     void operator *= (const RangesNew& r2);
+
+    string strHeader() const;
 
     string str() const;
 };

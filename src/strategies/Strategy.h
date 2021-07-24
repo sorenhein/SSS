@@ -7,7 +7,7 @@
 
 #include "Study.h"
 #include "Result.h"
-#include "Range.h"
+#include "RangesNew.h"
 
 #include "../const.h"
 
@@ -90,7 +90,7 @@ class Strategy
 
     void restudy();
 
-    void scrutinize(const Ranges& ranges);
+    void scrutinize(const RangesNew& ranges);
 
     bool operator == (const Strategy& strat2) const;
 
@@ -107,9 +107,9 @@ class Strategy
       const Strategy& strat1,
       const Strategy& strat2);
 
-    void initRanges(Ranges& ranges);
+    void initRanges(RangesNew& ranges);
 
-    void extendRanges(Ranges& ranges);
+    void extendRanges(RangesNew& ranges);
 
     void adapt(
       const Play& play,

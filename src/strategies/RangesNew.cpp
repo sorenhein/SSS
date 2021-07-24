@@ -15,23 +15,25 @@ RangesNew::RangesNew()
 
 RangesNew::~RangesNew()
 {
-  if (rangesPtr)
-    delete rangesPtr;
 }
 
 
 void RangesNew::reset()
 {
-  if (rangesPtr)
-    rangesPtr = nullptr;
-
+  ranges.clear();
   winnersFlag = false;
 }
 
 
 bool RangesNew::empty() const
 {
-  return (rangesPtr == nullptr || rangesPtr->empty());
+  return ranges.empty();
+}
+
+
+unsigned RangesNew::size() const
+{
+  return ranges.size();
 }
 
 
@@ -41,16 +43,16 @@ void RangesNew::init(
 {
   winnersFlag = winnersFlagIn;
 
-  if (winnersFlag)
-    // TODO Differentiate
-    rangesPtr = new list<Range>;
-  else
-    rangesPtr = new list<Range>;
+  if (results.empty())
+  {
+    ranges.clear();
+    return;
+  }
 
-  rangesPtr->resize(results.size());
+  ranges.resize(results.size());
   auto resIter = results.begin();
 
-  for (auto& range: * rangesPtr)
+  for (auto& range: ranges)
   {
     range.init(* resIter);
     resIter++;
@@ -60,12 +62,13 @@ void RangesNew::init(
 
 void RangesNew::extend(const list<Result>& results)
 {
-  assert(rangesPtr);
-  assert(results.size() == rangesPtr->size());
+  assert(results.size() == ranges.size());
+  if (results.empty())
+    return;
 
   auto resIter = results.begin();
 
-  for (auto& range: * rangesPtr)
+  for (auto& range: ranges)
   {
     range.extend(* resIter);
     resIter++;
@@ -75,23 +78,27 @@ void RangesNew::extend(const list<Result>& results)
 
 void RangesNew::operator *= (const RangesNew& r2)
 {
-  if (rangesPtr == nullptr || rangesPtr->empty())
+  if (RangesNew::empty())
   {
-    * this = r2;
+    if (! r2.empty())
+    {
+      ranges.assign(r2.ranges.begin(), r2.ranges.end());
+      winnersFlag = r2.winnersFlag;
+    }
     return;
   }
   
-  if (r2.rangesPtr == nullptr)
+  if (r2.empty())
     return;
 
-  auto iter1 = rangesPtr->begin();
-  auto iter2 = r2.rangesPtr->begin();
+  auto iter1 = ranges.begin();
+  auto iter2 = r2.ranges.begin();
 
-  while (iter2 != r2.rangesPtr->end())
+  while (iter2 != r2.ranges.end())
   {
-    if (iter1 == rangesPtr->end() || iter1->dist() > iter2->dist())
+    if (iter1 == ranges.end() || iter1->dist() > iter2->dist())
     {
-      rangesPtr->insert(iter1, * iter2);
+      ranges.insert(iter1, * iter2);
       iter2++;
     }
     else if (iter1->dist() < iter2->dist())
@@ -106,13 +113,19 @@ void RangesNew::operator *= (const RangesNew& r2)
 }
 
 
+string RangesNew::strHeader() const
+{
+  if (ranges.empty())
+    return "";
+  else
+    return ranges.front().strHeader();
+}
+
+
 string RangesNew::str() const
 {
-  if (rangesPtr == nullptr)
-    return "";
-
   string s = "";
-  for (auto& range: * rangesPtr)
+  for (auto& range: ranges)
     s += range.str();
   return s;
 }

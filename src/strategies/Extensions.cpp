@@ -46,7 +46,7 @@ void Extensions::split(
 void Extensions::makeEntry(
   const Strategy& strat1,
   const Strategy& strat2,
-  const Ranges& ranges,
+  const RangesNew& ranges,
   const unsigned index1,
   const unsigned index2)
 {
@@ -129,7 +129,7 @@ void Extensions::add()
 }
 
 
-void Extensions::multiply(const Ranges& ranges)
+void Extensions::multiply(const RangesNew& ranges)
 {
   // Multiply the two splits efficiently.
 

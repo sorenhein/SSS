@@ -8,7 +8,8 @@
 #include <string>
 
 #include "Strategy.h"
-#include "Range.h"
+// #include "Range.h"
+#include "RangesNew.h"
 
 struct StratData;
 struct Play;
@@ -35,7 +36,8 @@ class Strategies
 
     list<Strategy> strategies;
 
-    Ranges ranges;
+    // Ranges ranges;
+    RangesNew rangesNew;
 
     bool scrutinizedFlag;
 
@@ -93,7 +95,7 @@ class Strategies
 
     void consolidate();
 
-    void scrutinize(const Ranges& rangesIn);
+    void scrutinize(const RangesNew& rangesIn);
 
     bool operator == (const Strategies& strats2) const;
 
@@ -113,7 +115,7 @@ class Strategies
 
     void propagateRanges(const Strategies& child);
 
-    const Ranges& getRanges() const;
+    const RangesNew& getRanges() const;
 
     string strRanges(const string& title = "") const;
 

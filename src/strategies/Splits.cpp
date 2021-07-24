@@ -124,7 +124,7 @@ void Splits::setPointers()
 void Splits::setMatrix()
 {
   own.makeRanges();
-  own.scrutinize(own.ranges);
+  own.scrutinize(own.rangesNew);
 
   matrix.resize(count);
   for (unsigned i = 0; i < count; i++)

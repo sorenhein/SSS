@@ -139,7 +139,7 @@ void Strategy::restudy()
 }
 
 
-void Strategy::scrutinize(const Ranges& ranges)
+void Strategy::scrutinize(const RangesNew& ranges)
 {
   study.scrutinize(results, ranges);
 }
@@ -435,8 +435,12 @@ void Strategy::multiply(
  *                                                          *
  ************************************************************/
 
-void Strategy::initRanges(Ranges& ranges)
+void Strategy::initRanges(RangesNew& ranges)
 {
+  // TODO "false" means no winners.
+  ranges.init(results, false);
+
+  /*
   ranges.resize(results.size());
   auto iter = results.begin();
   auto riter = ranges.begin();
@@ -449,11 +453,14 @@ void Strategy::initRanges(Ranges& ranges)
     // riter->upper = iter->tricks;
     // riter->minimum = iter->tricks;
   }
+  */
 }
 
 
-void Strategy::extendRanges(Ranges& ranges)
+void Strategy::extendRanges(RangesNew& ranges)
 {
+  ranges.extend(results);
+  /*
   assert(results.size() == ranges.size());
 
   auto iter = results.begin();
@@ -471,6 +478,7 @@ void Strategy::extendRanges(Ranges& ranges)
     // if (iter->tricks > riter->upper)
       // riter->upper = iter->tricks;
   }
+  */
 }
 
 

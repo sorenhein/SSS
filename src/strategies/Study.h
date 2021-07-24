@@ -5,7 +5,7 @@
 #include <list>
 
 #include "Result.h"
-#include "Range.h"
+#include "RangesNew.h"
 
 #include "../const.h"
 
@@ -41,7 +41,7 @@ class Study
 
     void scrutinize(
       const list<Result>& results,
-      const Ranges& ranges);
+      const RangesNew& ranges);
 
     void unstudy();
 

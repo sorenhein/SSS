@@ -29,7 +29,7 @@ Strategies::~Strategies()
 void Strategies::reset()
 {
   strategies.clear();
-  ranges.clear();
+  rangesNew.reset();
   scrutinizedFlag = false;
 }
 
@@ -171,7 +171,7 @@ void Strategies::restudy()
 }
 
 
-void Strategies::scrutinize(const Ranges& rangesIn)
+void Strategies::scrutinize(const RangesNew& rangesIn)
 {
   for (auto& strat: strategies)
     strat.scrutinize(rangesIn);
@@ -467,8 +467,8 @@ timersStrat[4].start();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
 
-    Strategies::scrutinize(ranges);
-    strats2.scrutinize(ranges);
+    Strategies::scrutinize(rangesNew);
+    strats2.scrutinize(rangesNew);
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
@@ -543,8 +543,8 @@ void Strategies::multiplyAddStrategy(
   // This costs about two thirds of the overall method time.
   auto& product = strategies.back();
   product.multiply(strat1, strat2);
-  if (! ranges.empty())
-    product.scrutinize(ranges);
+  if (! rangesNew.empty())
+    product.scrutinize(rangesNew);
   auto piter = prev(strategies.end());
 
   if (strategies.size() == 1)
@@ -626,7 +626,7 @@ void Strategies::operator *= (Strategies& strats2)
     return;
   }
 
-  if (ranges.empty() || len1 < 10 || len2 < 10)
+  if (rangesNew.empty() || len1 < 10 || len2 < 10)
   {
 
     // This implementation of the general product reduces
@@ -636,7 +636,7 @@ void Strategies::operator *= (Strategies& strats2)
 
     ComparatorType comp;
     unsigned tno;
-    if (ranges.empty())
+    if (rangesNew.empty())
     {
       comp = &Strategy::operator >=;
       tno = 7;
@@ -682,7 +682,7 @@ timersStrat[9].start();
       EXTENSION_SPLIT1);
     extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
 
-    extensions.multiply(ranges);
+    extensions.multiply(rangesNew);
 
     strategies.clear();
     extensions.flatten(strategies);
@@ -757,14 +757,14 @@ void Strategies::makeRanges()
   if (strategies.empty())
     return;
 
-  strategies.front().initRanges(ranges);
+  strategies.front().initRanges(rangesNew);
 
   if (strategies.size() == 1)
     return;
 
   for (auto iter = next(strategies.begin()); 
       iter != strategies.end(); iter++)
-    iter->extendRanges(ranges);
+    iter->extendRanges(rangesNew);
 }
 
 
@@ -772,20 +772,24 @@ void Strategies::propagateRanges(const Strategies& child)
 {
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
-  if (ranges.empty())
+
+  rangesNew *= child.rangesNew;
+
+  /*
+  if (rangesNew.empty())
   {
-    ranges = child.ranges;
+    rangesNew = child.rangesNew;
     return;
   }
 
-  auto iter1 = ranges.begin();
-  auto iter2 = child.ranges.begin();
+  auto iter1 = rangesNew.begin();
+  auto iter2 = child.rangesNew.begin();
 
-  while (iter2 != child.ranges.end())
+  while (iter2 != child.rangesNew.end())
   {
-    if (iter1 == ranges.end() || iter1->dist() > iter2->dist())
+    if (iter1 == rangesNew.end() || iter1->dist() > iter2->dist())
     {
-      ranges.insert(iter1, * iter2);
+      rangesNew.insert(iter1, * iter2);
       iter2++;
     }
     else if (iter1->dist() < iter2->dist())
@@ -797,12 +801,13 @@ void Strategies::propagateRanges(const Strategies& child)
       iter2++;
     }
   }
+  */
 }
 
 
-const Ranges& Strategies::getRanges() const
+const RangesNew& Strategies::getRanges() const
 {
-  return ranges;
+  return rangesNew;
 }
 
 
@@ -818,9 +823,10 @@ string Strategies::strRanges(const string& title) const
   if (title != "")
     ss << title << "\n";
 
-  if (! ranges.empty())
-    ss << ranges.front().strHeader();
-  for (auto& range: ranges)
+  ss << rangesNew.strHeader();
+  // if (! rangesNew.empty())
+    // ss << rangesNew.front().strHeader();
+  for (auto& range: rangesNew)
     ss << range.str();
 
   return ss.str();
