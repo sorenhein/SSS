@@ -45,8 +45,9 @@ void Range::operator *= (const Range& range2)
 
 bool Range::operator < (const Range& range2) const
 {
-  return (upper <= range2.lower &&
-      (range2.lower < range2.upper || lower < upper));
+  return (upper < range2.lower ||
+    (upper == range2.lower &&
+      (range2.lower < range2.upper || lower < upper)));
 }
 
 
@@ -54,6 +55,7 @@ bool Range::constant() const
 {
   return (lower == minimum && upper == minimum);
 }
+
 
 string Range::strHeader() const
 {

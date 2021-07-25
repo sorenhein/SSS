@@ -106,6 +106,9 @@ strategies/Card.obj: strategies/Card.h const.h
 strategies/Range.obj: strategies/Range.h strategies/Result.h
 strategies/Range.obj: strategies/Winners.h strategies/Winner.h
 strategies/Range.obj: strategies/Card.h const.h
+strategies/RangeComplete.obj: strategies/RangeComplete.h strategies/Winners.h
+strategies/RangeComplete.obj: strategies/Winner.h strategies/Card.h const.h
+strategies/RangeComplete.obj: strategies/Result.h
 strategies/Ranges.obj: strategies/Ranges.h strategies/Range.h
 strategies/Ranges.obj: strategies/Result.h strategies/Winners.h
 strategies/Ranges.obj: strategies/Winner.h strategies/Card.h const.h

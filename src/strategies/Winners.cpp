@@ -97,6 +97,7 @@ bool Winners::operator != (const Winners& w2) const
 bool Winners::operator == (const Winners& w2) const
 {
   // This is a simple first implementation that assumes the same order.
+  // TODO Generalize.
   if (winners.size() != w2.winners.size())
     return false;
 
@@ -112,6 +113,28 @@ bool Winners::operator == (const Winners& w2) const
   }
 
   return true;
+
+
+  /*
+  const unsigned s1 = winners.size();
+  const unsigned s2 = w2.winners.size();
+
+  if (Winners::empty())
+    return w2.empty();
+  else if (w2.empty())
+    return false;
+  else if (winners.size() == 1 && w2.winners.size() == 1)
+  {
+    return winners.front() == w2.winners.front();
+  }
+  else
+  {
+    cout << "w1 " << Winners::strDebug();
+    cout << "w2 " << w2.strDebug() << endl;
+    assert(false);
+    return WIN_DIFFERENT;
+  }
+  */
 }
 
 
