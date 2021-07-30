@@ -33,5 +33,6 @@ SOURCE_FILES    =                         \
                 strategies/RangeComplete.cpp \
                 strategies/Ranges.cpp     \
                                           \
+                stats/Comparer.cpp        \
                 stats/Timer.cpp           \
                 stats/Timers.cpp
