@@ -232,14 +232,50 @@ WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
     return (w2.empty() ? WIN_EQUAL : WIN_FIRST);
   else if (w2.empty())
     return WIN_SECOND;
-  else if (winners.size() == 1 && w2.winners.size() == 1)
-  {
+  else if (s1 == 1 && s2 == 1)
     return winners.front().declarerPrefers(w2.winners.front());
+  else if (winners.front().rankExceeds(w2.winners.front()))
+    return WIN_FIRST;
+  else if (w2.winners.front().rankExceeds(winners.front()))
+    return WIN_SECOND;
+  else if (s1 == 1)
+  {
+    for (auto& w: w2.winners)
+    {
+      if (winners.front() == w)
+        // Declarer prefer the current Winners, as it has fewer
+        // restrictions.
+        return WIN_FIRST;
+    }
+
+    cout << "w1 size " << winners.size() << endl;
+    cout << Winners::strDebug();
+    cout << "w2 size " << w2.winners.size() << endl;
+    cout << w2.strDebug() << endl;
+    assert(false);
+    return WIN_DIFFERENT;
+  }
+  else if (s2 == 1)
+  {
+    for (auto& w: winners)
+    {
+      if (w2.winners.front() == w)
+        return WIN_SECOND;
+    }
+
+    cout << "w1 size " << winners.size() << endl;
+    cout << Winners::strDebug();
+    cout << "w2 size " << w2.winners.size() << endl;
+    cout << w2.strDebug() << endl;
+    assert(false);
+    return WIN_DIFFERENT;
   }
   else
   {
-    cout << "w1 " << Winners::strDebug();
-    cout << "w2 " << w2.strDebug() << endl;
+    cout << "w1 size " << winners.size() << endl;
+    cout << Winners::strDebug();
+    cout << "w2 size " << w2.winners.size() << endl;
+    cout << w2.strDebug() << endl;
     assert(false);
     return WIN_DIFFERENT;
   }
