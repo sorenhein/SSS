@@ -80,24 +80,11 @@ void Comparer::makeMarginals(
 }
 
 
-void Comparer::makeSums(
-  vector<unsigned>& sum1,
-  vector<unsigned>& sum2) const
-{
-  vector<vector<unsigned>> marginal1, marginal2;
-  Comparer::makeMarginals(marginal1, marginal2);
-
-  Comparer::summarize(marginal1, sum1);
-  Comparer::summarize(marginal2, sum2);
-}
-
-
 void Comparer::summarize(
   const vector<vector<unsigned>>& marginal,
   vector<unsigned>& sum) const
 {
-  sum.clear();
-  sum.resize(marginal.size());
+  sum.resize(WIN_UNSET);
 
   for (auto& elem: marginal)
   {
@@ -119,10 +106,48 @@ void Comparer::summarize(
 }
 
 
+void Comparer::makeSums(
+  vector<unsigned>& sum1,
+  vector<unsigned>& sum2) const
+{
+  vector<vector<unsigned>> marginal1, marginal2;
+
+  marginal1.resize(dim1);
+  for (unsigned i = 0; i < dim1; i++)
+    marginal1[i].resize(WIN_UNSET);
+
+  marginal2.resize(dim2);
+  for (unsigned j = 0; j < dim2; j++)
+    marginal2[j].resize(WIN_UNSET);
+
+  Comparer::makeMarginals(marginal1, marginal2);
+
+  Comparer::summarize(marginal1, sum1);
+  Comparer::summarize(marginal2, sum2);
+}
+
+
 WinnerCompare Comparer::compare() const
 {
   vector<unsigned> sum1, sum2;
   Comparer::makeSums(sum1, sum2);
+
+/* */
+cout << "sum1\n";
+cout << "FIRST  " << sum1[WIN_FIRST] << "\n";
+cout << "SECOND " << sum1[WIN_SECOND] << "\n";
+cout << "EQUAL  " << sum1[WIN_EQUAL] << "\n";
+cout << "DIFF   " << sum1[WIN_DIFFERENT] << "\n";
+cout << "\n";
+
+cout << "sum1\n";
+cout << "FIRST  " << sum2[WIN_FIRST] << "\n";
+cout << "SECOND " << sum2[WIN_SECOND] << "\n";
+cout << "EQUAL  " << sum2[WIN_EQUAL] << "\n";
+cout << "DIFF   " << sum2[WIN_DIFFERENT] << "\n";
+cout << "\n";
+
+/* */
 
   if (sum1[WIN_DIFFERENT] && sum2[WIN_DIFFERENT])
     return WIN_DIFFERENT;
@@ -136,20 +161,16 @@ WinnerCompare Comparer::compare() const
   if (sum1[WIN_DIFFERENT])
   {
     // Only #2 can be better for declarer.
-    if (sum2[WIN_SECOND])
+    if (! sum2[WIN_FIRST])
       return WIN_SECOND;
-    else if (! sum2[WIN_FIRST])
-      return WIN_EQUAL;
     else
       return WIN_DIFFERENT;
   }
   else if (sum2[WIN_DIFFERENT])
   {
     // Only #1 can be better for declarer.
-    if (sum1[WIN_FIRST])
+    if (! sum1[WIN_SECOND])
       return WIN_FIRST;
-    else if (! sum1[WIN_SECOND])
-      return WIN_EQUAL;
     else
       return WIN_DIFFERENT;
   }
@@ -177,7 +198,7 @@ bool Comparer::equal() const
 string Comparer::strHeader() const
 {
   stringstream ss;
-  ss << setw(3) << " | ";
+  ss << setw(3) << "" << " | ";
   for (unsigned j = 0; j < dim2; j++)
     ss << setw(3) << j;
   ss << "\n";
@@ -209,6 +230,8 @@ string Comparer::str() const
         s = "?";
       ss << setw(3) << s;
     }
+    ss << "\n";
   }
+  ss << endl;
   return ss.str();
 }

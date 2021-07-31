@@ -7,6 +7,8 @@
 
 #include "../plays/Play.h"
 
+#include "../stats/Comparer.h"
+
 /*
    The winner is structured as a number of sub-winners that are
    added / OR'ed together.  Declarer can choose between the sub-winners.
@@ -96,6 +98,7 @@ bool Winners::operator != (const Winners& w2) const
 
 bool Winners::operator == (const Winners& w2) const
 {
+/*
   // This is a simple first implementation that assumes the same order.
   // TODO Generalize.
   if (winners.size() != w2.winners.size())
@@ -113,9 +116,9 @@ bool Winners::operator == (const Winners& w2) const
   }
 
   return true;
+*/
 
 
-  /*
   const unsigned s1 = winners.size();
   const unsigned s2 = w2.winners.size();
 
@@ -127,14 +130,47 @@ bool Winners::operator == (const Winners& w2) const
   {
     return winners.front() == w2.winners.front();
   }
+  else if (winners.size() != w2.winners.size())
+  {
+    return false;
+  }
   else
   {
-    cout << "w1 " << Winners::strDebug();
-    cout << "w2 " << w2.strDebug() << endl;
-    assert(false);
-    return WIN_DIFFERENT;
+    cout << "w1 size " << winners.size() << endl;
+    cout << Winners::strDebug();
+    cout << "w2 size " << w2.winners.size() << endl;
+    cout << w2.strDebug() << endl;
+
+    Comparer comparer;
+    comparer.resize(s1, s2);
+
+    unsigned n1 = 0;
+    for (auto& win1: winners)
+    {
+      unsigned n2 = 0;
+      for (auto& win2: w2.winners)
+      {
+        comparer.log(n1, n2, win1.declarerPrefers(win2));
+        n2++;
+      }
+      n1++;
+    }
+
+    cout << comparer.str();
+    WinnerCompare c = comparer.compare();
+    if (c == WIN_FIRST)
+      cout << "WIN_FIRST\n";
+    else if (c == WIN_SECOND)
+      cout << "WIN_SECOND\n";
+    else if (c == WIN_EQUAL)
+      cout << "WIN_EQUAL\n";
+    else
+      cout << "WIN_DIFFERENT\n";
+
+    return (c == WIN_EQUAL);
+
+    // return (comparer.compare() == WIN_EQUAL);
   }
-  */
 }
 
 
@@ -238,46 +274,45 @@ WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
     return WIN_FIRST;
   else if (w2.winners.front().rankExceeds(winners.front()))
     return WIN_SECOND;
-  else if (s1 == 1)
-  {
-    for (auto& w: w2.winners)
-    {
-      if (winners.front() == w)
-        // Declarer prefer the current Winners, as it has fewer
-        // restrictions.
-        return WIN_FIRST;
-    }
-
-    cout << "w1 size " << winners.size() << endl;
-    cout << Winners::strDebug();
-    cout << "w2 size " << w2.winners.size() << endl;
-    cout << w2.strDebug() << endl;
-    assert(false);
-    return WIN_DIFFERENT;
-  }
-  else if (s2 == 1)
-  {
-    for (auto& w: winners)
-    {
-      if (w2.winners.front() == w)
-        return WIN_SECOND;
-    }
-
-    cout << "w1 size " << winners.size() << endl;
-    cout << Winners::strDebug();
-    cout << "w2 size " << w2.winners.size() << endl;
-    cout << w2.strDebug() << endl;
-    assert(false);
-    return WIN_DIFFERENT;
-  }
   else
   {
+    Comparer comparer;
+    comparer.resize(s1, s2);
+
+    /*
     cout << "w1 size " << winners.size() << endl;
     cout << Winners::strDebug();
     cout << "w2 size " << w2.winners.size() << endl;
     cout << w2.strDebug() << endl;
-    assert(false);
-    return WIN_DIFFERENT;
+    */
+
+    unsigned n1 = 0;
+    for (auto& win1: winners)
+    {
+      unsigned n2 = 0;
+      for (auto& win2: w2.winners)
+      {
+        comparer.log(n1, n2, win1.declarerPrefers(win2));
+        n2++;
+      }
+      n1++;
+    }
+
+    /*
+    cout << comparer.str();
+    WinnerCompare c = comparer.compare();
+    if (c == WIN_FIRST)
+      cout << "WIN_FIRST\n";
+    else if (c == WIN_SECOND)
+      cout << "WIN_SECOND\n";
+    else if (c == WIN_EQUAL)
+      cout << "WIN_EQUAL\n";
+    else
+      cout << "WIN_DIFFERENT\n";
+
+    return c;
+    */
+    return comparer.compare();
   }
 }
 

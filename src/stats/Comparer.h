@@ -23,13 +23,13 @@ class Comparer
       vector<vector<unsigned>>& marginal1,
       vector<vector<unsigned>>& marginal2) const;
 
-    void makeSums(
-      vector<unsigned>& sum1,
-      vector<unsigned>& sum2) const;
-
     void summarize(
       const vector<vector<unsigned>>& marginal,
       vector<unsigned>& sum) const;
+
+    void makeSums(
+      vector<unsigned>& sum1,
+      vector<unsigned>& sum2) const;
 
     string strHeader() const;
 

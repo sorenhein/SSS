@@ -222,7 +222,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
   {
     if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
-      southPrefer = south.compare(sw2.north);
+      southPrefer = south.compare(sw2.south);
     else
       // South prefers no restriction.
       southPrefer = WIN_SECOND;
