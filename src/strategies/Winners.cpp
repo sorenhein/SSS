@@ -90,6 +90,24 @@ bool Winners::empty() const
 }
 
 
+void Winners::fillComparer(
+  Comparer& comparer,
+  const Winners& w2) const
+{
+  unsigned n1 = 0;
+  for (auto& win1: winners)
+  {
+    unsigned n2 = 0;
+    for (auto& win2: w2.winners)
+    {
+      comparer.log(n1, n2, win1.declarerPrefers(win2));
+      n2++;
+    }
+    n1++;
+  }
+}
+
+
 bool Winners::operator != (const Winners& w2) const
 {
   return ! (* this == w2);
@@ -98,27 +116,6 @@ bool Winners::operator != (const Winners& w2) const
 
 bool Winners::operator == (const Winners& w2) const
 {
-/*
-  // This is a simple first implementation that assumes the same order.
-  // TODO Generalize.
-  if (winners.size() != w2.winners.size())
-    return false;
-
-  auto iter = winners.begin();
-  auto iter2 = w2.winners.begin();
-  while (iter != winners.end())
-  {
-    if (* iter != * iter2)
-      return false;
-    
-    iter++;
-    iter2++;
-  }
-
-  return true;
-*/
-
-
   const unsigned s1 = winners.size();
   const unsigned s2 = w2.winners.size();
 
@@ -143,19 +140,9 @@ bool Winners::operator == (const Winners& w2) const
 
     Comparer comparer;
     comparer.resize(s1, s2);
+    Winners::fillComparer(comparer, w2);
 
-    unsigned n1 = 0;
-    for (auto& win1: winners)
-    {
-      unsigned n2 = 0;
-      for (auto& win2: w2.winners)
-      {
-        comparer.log(n1, n2, win1.declarerPrefers(win2));
-        n2++;
-      }
-      n1++;
-    }
-
+    /*
     cout << comparer.str();
     WinnerCompare c = comparer.compare();
     if (c == WIN_FIRST)
@@ -168,8 +155,9 @@ bool Winners::operator == (const Winners& w2) const
       cout << "WIN_DIFFERENT\n";
 
     return (c == WIN_EQUAL);
+    */
 
-    // return (comparer.compare() == WIN_EQUAL);
+    return (comparer.compare() == WIN_EQUAL);
   }
 }
 
@@ -278,25 +266,7 @@ WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
   {
     Comparer comparer;
     comparer.resize(s1, s2);
-
-    /*
-    cout << "w1 size " << winners.size() << endl;
-    cout << Winners::strDebug();
-    cout << "w2 size " << w2.winners.size() << endl;
-    cout << w2.strDebug() << endl;
-    */
-
-    unsigned n1 = 0;
-    for (auto& win1: winners)
-    {
-      unsigned n2 = 0;
-      for (auto& win2: w2.winners)
-      {
-        comparer.log(n1, n2, win1.declarerPrefers(win2));
-        n2++;
-      }
-      n1++;
-    }
+    Winners::fillComparer(comparer, w2);
 
     /*
     cout << comparer.str();
@@ -391,13 +361,42 @@ void Winners::limitByRank()
 }
 
 
+void Winners::consolidate()
+{
+  // It can also happen that Winner::update throws out one side,
+  // e.g. the South rank, because the mapped rank is lower than
+  // the mapped North rank.  That can mean that the reduced winner
+  // dominates other Winner's.
+  
+  if (winners.size() == 2)
+  {
+    const WinnerCompare c = 
+      winners.front().declarerPrefers(winners.back());
+    if (c == WIN_FIRST || c == WIN_EQUAL)
+      winners.pop_back();
+    else if (c == WIN_SECOND)
+      winners.pop_front();
+  }
+  else
+  {
+    // If this ever happens, we can probably make a Comparer and
+    // get back the numbers of Winner's to erase.
+    assert(false);
+  }
+}
+
+
 void Winners::update(const Play& play)
 {
   for (auto& winner: winners)
     winner.update(play);
 
   if (winners.size() >= 2)
+  {
     Winners::limitByRank();
+    if (winners.size() >= 2) // May have shrunk in limitByRank
+      Winners::consolidate();
+  }
 
   if (play.trickNS)
     * this *= play.currBest;

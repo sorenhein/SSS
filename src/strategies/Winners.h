@@ -9,6 +9,7 @@
 #include "Card.h"
 
 struct Play;
+class Comparer;
 
 using namespace std;
 
@@ -17,22 +18,12 @@ class Winners
 {
   private:
 
-    // If North has AKx (ranks 5 and 1), then rank is 5, depth is 1
-    // if it's the A rather than the K, and number is 3 (x, K, A).
-    // See also Ranks::setOrderTables().
-
-    enum WinnersMode
-    {
-      WINS_NORTH_ONLY = 0,
-      WINS_SOUTH_ONLY = 1,
-      WINS_NS_DECIDE = 2,
-      WINS_EW_DECIDE = 3,
-      WINS_EMPTY = 4, // No rank winner, but something is known
-      WINS_NOT_SET = 5 // Neutral state
-    };
-
     list<Winner> winners;
 
+
+    void fillComparer(
+      Comparer& comparer,
+      const Winners& w2) const;
 
     bool operator != (const Winners& w2) const;
 
@@ -41,6 +32,8 @@ class Winners
     bool rankExceeds(const Winners& w2) const;
 
     void limitByRank();
+
+    void consolidate();
 
     string strSingleSided(
       const string& name,

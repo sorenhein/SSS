@@ -251,3 +251,11 @@ AT / J98 missing KQ7, 8 / 2039 I think.  This may have something
 to do with the limited leads in the play module?  It seems we can
 play AT / J9x for 2 tricks against KQx no matter what our x is.
 
+
+10/41207, KQ7 / T96 missing AJ85.
+If trick starts 7 5 T J, we still have KQ / 96 missing A8.
+This is the same as KQ / J9 missing AT.  When we look it up, we
+rightly get 3N' or 3NS, so Q or KJ.  When we map this to the original
+suit, we get Q or K9.  I guess the 9 is somehow removed by rank.
+But the problem is that we're left with K or Q, which is redundant
+and causes the == to blow up in this case.
