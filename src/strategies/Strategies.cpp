@@ -269,7 +269,7 @@ void Strategies::addStrategy(
     // Is the new strat dominated?
     if (((* iter).*comparator)(strat))
     {
-/*
+/* */
 if (iter->weight() == strat.weight())
 {
   if (iter->consolidateByRank(strat))
@@ -285,7 +285,7 @@ timersStrat[28].stop();
   assert(false);
   }
 }
-*/
+/* */
       return;
     }
     else

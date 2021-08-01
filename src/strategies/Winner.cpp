@@ -146,7 +146,7 @@ void Winner::operator *= (const Winner& sw2)
 
   if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
   {
-    // w2.south is set.
+    // sw2.south is set.
     if (mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
       south *= sw2.south;
     else
@@ -163,6 +163,43 @@ void Winner::operator *= (const Winner& sw2)
       mode = WIN_SOUTH_ONLY;
     else if (south.rankExceeds(north))
       mode = WIN_NORTH_ONLY;
+  }
+}
+
+
+void Winner::operator |= (const Winner& sw2)
+{
+  // Declarer has the choice.
+
+  if (sw2.mode == WIN_NOT_SET)
+  {
+    // Declarer prefers no restriction.
+    * this = sw2;
+    return;
+  }
+  else if (mode == WIN_NOT_SET)
+    return;
+
+  if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
+  {
+    // sw2.north is set.  Leave our north empty if it is empty.
+    if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+      north |= sw2.north;
+  }
+
+  if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+  {
+    // sw2.south is set.
+    if (mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+      south |= sw2.south;
+  }
+
+  if (mode == WIN_BOTH)
+  {
+    if (north.rankExceeds(south))
+      mode = WIN_NORTH_ONLY;
+    else if (south.rankExceeds(north))
+      mode = WIN_SOUTH_ONLY;
   }
 }
 
@@ -314,18 +351,18 @@ void Winner::update(const Play& play)
     south = * play.southTranslate(south.getNumber());
 
     // As a result of the mapping to parent ranks, North and South
-    // may actually be different ranks now.  As North-South choose,
-    // they only keep the higher one.
+    // may actually be different ranks now.  In a Winner declarer
+    // needs both, so only only keep the higher one.
     if (north.rankExceeds(south))
     {
-      // Only North survives.
-      south.reset();
-      mode = WIN_NORTH_ONLY;
+      // Only South survives.
+      north.reset();
+      mode = WIN_SOUTH_ONLY;
     }
     else if (south.rankExceeds(north))
     {
-      north.reset();
-      mode = WIN_SOUTH_ONLY;
+      south.reset();
+      mode = WIN_NORTH_ONLY;
     }
   }
   else if (mode == WIN_NOT_SET)

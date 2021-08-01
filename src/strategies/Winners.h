@@ -62,6 +62,8 @@ class Winners
 
     void operator *= (const Winners& w2);
 
+    void operator |= (const Winners& w2);
+
     bool operator == (const Winners& w2) const;
 
     WinnerCompare compareForDeclarer(const Winners& w2) const;

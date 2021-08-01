@@ -200,13 +200,11 @@ void Winners::operator *= (const Winners& w2)
 {
   // The opponents have the choice.
 
-  // if (w2.winners.size() == 0)
   if (w2.empty())
   {
     // OK as is.
     return;
   }
-  // else if (winners.size() == 0)
   else if (Winners::empty())
   {
     * this = w2;
@@ -241,6 +239,55 @@ void Winners::operator *= (const Winners& w2)
 // cout <<"Prd\n" << sw.strDebug();
       Winners::integrate(sw);
 // cout << "Winners after *=\n" << Winners::strDebug();
+    }
+  }
+}
+
+
+void Winners::operator |= (const Winners& w2)
+{
+  // Declarer has the choice.  This is complementary to *=.
+
+  if (Winners::empty())
+  {
+    // OK as is: Declarer wants no constraints.
+    return;
+  }
+  else if (w2.empty())
+  {
+    * this = w2;
+    return;
+  }
+
+  // All winner's of a winner are of the same rank.
+  if (w2.rankExceeds(* this))
+  {
+    // Go with the higher rank.
+    * this = w2;
+    return;
+  }
+  else if (Winners::rankExceeds(w2))
+  {
+    // OK as is: Stick with the lower rank.
+    return;
+  }
+
+  // This could be faster, but it's not that slow.
+  Winners w1 = move(* this);
+  Winners::reset();
+
+// cout << "Multiplying winners upward\n";
+  for (auto& sw1: w1.winners)
+  {
+    for (auto& sw2: w2.winners)
+    {
+      Winner sw = sw1;
+// cout << "LHS " << sw.strDebug();
+// cout << "RHS " << sw2.strDebug();
+      sw |= sw2;
+// cout <<"Prd\n" << sw.strDebug();
+      Winners::integrate(sw);
+// cout << "Winners after |=\n" << Winners::strDebug();
     }
   }
 }

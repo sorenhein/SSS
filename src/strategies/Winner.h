@@ -62,6 +62,7 @@ class Winner
     bool operator != (const Winner& sw2) const;
 
     void operator *= (const Winner& sw2);
+    void operator |= (const Winner& sw2);
 
     unsigned char rank() const;
 

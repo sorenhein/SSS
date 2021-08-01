@@ -124,6 +124,9 @@ void Node::purgeRanges()
   auto citer = constants.begin();
 
   bool eraseFlag = false;
+cout << "Starting node\n";
+cout << Node::strPlay(LEVEL_LHO);
+cout << strats.str("Starting", true);
 
   for (auto& parentRange: parentPtr->strats.getRanges())
   {
@@ -136,12 +139,22 @@ void Node::purgeRanges()
 
     if (parentRange.constant())
     {
-      stratData.eraseConstantDist(* citer, parentRange.min());
+      stratData.eraseConstantDist(* citer, 
+        parentRange.min(), parentRange.constantWinners());
       eraseFlag = true;
+cout << "Erased constant " << citer->strEntry(true) << "\n";
+cout << "Parent range\n";
+cout << parentRange.strHeader();
+cout << parentRange.str();
       citer++;
     }
     else if (parentRange < * stratData.riter)
     {
+cout << "Erasing range\n";
+cout << "Parent range\n";
+cout << parentRange.strHeader();
+cout << parentRange.str();
+cout << "Dominated range\n" << stratData.riter->str();
       stratData.eraseDominatedDist();
       eraseFlag = true;
     }
@@ -149,6 +162,7 @@ void Node::purgeRanges()
 
   // Shrink to the size used.
   constants.eraseRest(citer);
+cout << constants.str("Constants now", true);
   parentPtr->constants *= constants;
 
   strats.scrutinize(parentPtr->strats.getRanges());
@@ -165,6 +179,7 @@ void Node::purgeRanges()
 
     strats.consolidate();
   }
+cout << strats.str("Ending", true);
 }
 
 

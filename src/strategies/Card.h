@@ -45,6 +45,7 @@ class Card
     bool rankExceeds(const Card& card2) const;
 
     void operator *= (const Card& card2);
+    void operator |= (const Card& card2);
 
     unsigned char getRank() const;
     unsigned char getDepth() const;

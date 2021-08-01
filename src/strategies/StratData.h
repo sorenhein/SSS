@@ -74,19 +74,24 @@ struct StratData
 
   void eraseConstantDist(
     Result& cresult,
-    const unsigned char tricks)
+    const unsigned char tricks,
+    const Winners& cwinners)
   {
     cresult.dist = data.front().iter->dist;
     cresult.tricks = tricks;
     
-    cresult.winners.reset();
+    // cresult.winners.reset();
+    cresult.winners = cwinners;
 
+    StratData::eraseDominatedDist();
+    /*
     riter++;
     for (auto& sd: data)
     {
       cresult.winners *= sd.iter->winners;
       sd.erase();
     }
+    */
   };
 
   void eraseDominatedDist()

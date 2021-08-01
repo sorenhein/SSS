@@ -117,6 +117,14 @@ void Card::operator *= (const Card& sw2)
 }
 
 
+void Card::operator |= (const Card &sw2)
+{
+  // Choose the highest card.
+  if (number < sw2.number)
+    * this = sw2;
+}
+
+
 unsigned char Card::getRank() const
 {
   return rank;

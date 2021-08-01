@@ -14,8 +14,8 @@ void RangeComplete::init(const Result& result)
   upper = result.tricks;
   minimum = result.tricks;
 
-  winnersHigh.reset();
-  winnersLow.reset();
+  winnersHigh = result.winners;
+  winnersLow = result.winners;
 }
 
 
@@ -37,7 +37,7 @@ void RangeComplete::extend(const Result& result)
     winnersHigh = result.winners;
   }
   else if (result.tricks == upper)
-    winnersHigh *= result.winners;
+    winnersHigh |= result.winners;
 }
 
 
@@ -91,6 +91,12 @@ bool RangeComplete::constant() const
   return (lower == minimum && 
     upper == minimum &&
     winnersHigh == winnersLow);
+}
+
+
+const Winners& RangeComplete::constantWinners() const
+{
+  return winnersLow;  // Either one, as range assumed constant
 }
 
 
