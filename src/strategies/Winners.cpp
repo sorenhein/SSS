@@ -272,6 +272,10 @@ void Winners::operator |= (const Winners& w2)
     return;
   }
 
+  for (auto& sw2: w2.winners)
+    Winners::integrate(sw2);
+
+/*
   // This could be faster, but it's not that slow.
   Winners w1 = move(* this);
   Winners::reset();
@@ -290,6 +294,7 @@ void Winners::operator |= (const Winners& w2)
 // cout << "Winners after |=\n" << Winners::strDebug();
     }
   }
+*/
 }
 
 

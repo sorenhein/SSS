@@ -160,17 +160,18 @@ cout << "\n";
 
   if (sum1[WIN_DIFFERENT])
   {
-    // Only #2 can be better for declarer.
-    if (! sum2[WIN_FIRST])
-      return WIN_SECOND;
+    // Only #1 can be better for declarer, as there is a declarer option
+    // in #1 that is not present in #2.
+    if (! sum2[WIN_SECOND])
+      return WIN_FIRST;
     else
       return WIN_DIFFERENT;
   }
   else if (sum2[WIN_DIFFERENT])
   {
-    // Only #1 can be better for declarer.
-    if (! sum1[WIN_SECOND])
-      return WIN_FIRST;
+    // Only #2 can be better for declarer.
+    if (! sum1[WIN_FIRST])
+      return WIN_SECOND;
     else
       return WIN_DIFFERENT;
   }

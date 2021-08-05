@@ -61,7 +61,9 @@ const Strategies& Combination::strategize(
   // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
   // if (centry.canonicalHolding3 == 132889 && ranks.size() == 12)
   // if (centry.canonicalHolding3 == 4025 && ranks.size() == 10)
-  if (centry.canonicalHolding3 == 1608 && ranks.size() == 8)
+  // if (centry.canonicalHolding3 == 1608 && ranks.size() == 8)
+  // if (centry.canonicalHolding3 == 1598 && ranks.size() == 8)
+  if (centry.canonicalHolding3 == 1585 && ranks.size() == 8)
   // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
