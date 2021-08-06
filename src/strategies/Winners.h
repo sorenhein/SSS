@@ -27,7 +27,7 @@ class Winners
 
     bool operator != (const Winners& w2) const;
 
-    void integrate(const Winner& swNew);
+    void operator += (const Winner& swNew);
 
     bool rankExceeds(const Winners& w2) const;
 
@@ -62,13 +62,13 @@ class Winners
 
     void operator *= (const Winners& w2);
 
+    void operator += (const Winners& w2);
+
     void operator |= (const Winners& w2);
 
     bool operator == (const Winners& w2) const;
 
     WinnerCompare compareForDeclarer(const Winners& w2) const;
-
-    bool consolidate(const Winners& w2);
 
     void flip();
 

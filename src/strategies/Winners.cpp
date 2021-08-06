@@ -162,7 +162,7 @@ bool Winners::operator == (const Winners& w2) const
 }
 
 
-void Winners::integrate(const Winner& swNew)
+void Winners::operator += (const Winner& swNew)
 {
   // winners are a minimal set.
   // The new subwinner may dominate existing winners.
@@ -237,10 +237,43 @@ void Winners::operator *= (const Winners& w2)
 // cout << "RHS " << sw2.strDebug();
       sw *= sw2;
 // cout <<"Prd\n" << sw.strDebug();
-      Winners::integrate(sw);
+      // Winners::integrate(sw);
+      * this += sw;
 // cout << "Winners after *=\n" << Winners::strDebug();
     }
   }
+}
+
+
+void Winners::operator += (const Winners& w2)
+{
+  assert(! Winners::empty());
+  assert(! w2.empty());
+
+  for (auto& sw2: w2.winners)
+    * this += sw2;
+    // Winners::integrate(sw2);
+
+    /*
+  if (winners.size() == 1 && w2.winners.size() == 1)
+  {
+
+    if (winners.front().consolidate(w2.winners.front()))
+      return;
+    else
+    {
+      cout << "Don't know how to consolidate these simple winners:\n";
+      cout << "w1 " << Winners::strDebug();
+      cout << "w2 " << w2.strDebug() << endl;
+      assert(false);
+    }
+  }
+  else
+  {
+    for (auto& sw2: w2.winners)
+      Winners::integrate(sw2);
+  }
+    */
 }
 
 
@@ -273,28 +306,8 @@ void Winners::operator |= (const Winners& w2)
   }
 
   for (auto& sw2: w2.winners)
-    Winners::integrate(sw2);
-
-/*
-  // This could be faster, but it's not that slow.
-  Winners w1 = move(* this);
-  Winners::reset();
-
-// cout << "Multiplying winners upward\n";
-  for (auto& sw1: w1.winners)
-  {
-    for (auto& sw2: w2.winners)
-    {
-      Winner sw = sw1;
-// cout << "LHS " << sw.strDebug();
-// cout << "RHS " << sw2.strDebug();
-      sw |= sw2;
-// cout <<"Prd\n" << sw.strDebug();
-      Winners::integrate(sw);
-// cout << "Winners after |=\n" << Winners::strDebug();
-    }
-  }
-*/
+    * this += sw2;
+    // Winners::integrate(sw2);
 }
 
 
@@ -319,51 +332,7 @@ WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
     Comparer comparer;
     comparer.resize(s1, s2);
     Winners::fillComparer(comparer, w2);
-
-    /*
-    cout << comparer.str();
-    WinnerCompare c = comparer.compare();
-    if (c == WIN_FIRST)
-      cout << "WIN_FIRST\n";
-    else if (c == WIN_SECOND)
-      cout << "WIN_SECOND\n";
-    else if (c == WIN_EQUAL)
-      cout << "WIN_EQUAL\n";
-    else
-      cout << "WIN_DIFFERENT\n";
-
-    return c;
-    */
     return comparer.compare();
-  }
-}
-
-
-bool Winners::consolidate(const Winners& w2)
-{
-  assert(! Winners::empty());
-  assert(! w2.empty());
-
-  if (winners.size() == 1 && w2.winners.size() == 1)
-  {
-    if (winners.front().consolidate(w2.winners.front()))
-      return true;
-    else
-    {
-      cout << "Don't know how to consolidate these simple winners:\n";
-      cout << "w1 " << Winners::strDebug();
-      cout << "w2 " << w2.strDebug() << endl;
-      assert(false);
-      return false;
-    }
-  }
-  else
-  {
-    cout << "Don't know how to consolidate these complex winners:\n";
-    cout << "w1 " << Winners::strDebug();
-    cout << "w2 " << w2.strDebug() << endl;
-    assert(false);
-    return false;
   }
 }
 

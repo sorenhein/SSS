@@ -153,7 +153,7 @@ void Strategy::scrutinize(const Ranges& ranges)
 
 bool Strategy::operator == (const Strategy& strat2) const
 {
-  // For diagnostics.
+  // For diagnostics.  This is by tricks only, not by winners.
   const unsigned n = results.size();
   assert(strat2.results.size() == n);
 
@@ -162,7 +162,8 @@ bool Strategy::operator == (const Strategy& strat2) const
 
   while (iter1 != results.end())
   {
-    if (* iter1 != * iter2)
+    // if (* iter1 != * iter2)
+    if (iter1->differentTricks(* iter2))
       return false;
 
     iter1++;
@@ -175,11 +176,34 @@ bool Strategy::operator == (const Strategy& strat2) const
 bool Strategy::greaterEqual(const Strategy& strat2) const
 {
   // This is the basic method with no fanciness.
+  // It goes by tricks first, and only if there is complete equality
+  // does it consider winners.
 
   assert(strat2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  bool winFlag = false;
+  while (iter1 != results.end())
+  {
+    const WinnerCompare c = iter1->compareByTricks(* iter2);
+    // if (iter1->fewerTricks(* iter2))
+    // if (* iter1 < * iter2)
+    if (c == WIN_SECOND)
+      return false;
+    else if (c == WIN_FIRST)
+      winFlag = true;
+
+    iter1++;
+    iter2++;
+  }
+
+  if (winFlag)
+    return true;
+
+  iter1 = results.cbegin();
+  iter2 = strat2.results.cbegin();
 
   while (iter1 != results.end())
   {
@@ -189,6 +213,7 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
     iter1++;
     iter2++;
   }
+
   return true;
 }
 
@@ -229,6 +254,7 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
   assert(results.size() == strat2.results.size());
   assert(! results.empty());
 
+cout << "STARTING CONSOLIDATEBYRANK\n";
   auto iter1 = results.begin();
   auto iter2 = strat2.results.begin();
   bool greaterFlag = false;
@@ -294,6 +320,10 @@ cout << "consolidate: Both different and </>" << endl;
       return false;
     }
 
+    // if (wptr1->consolidate(* wptr2))
+    * wptr1 += * wptr2;
+
+    /*
     if (wptr1->consolidate(* wptr2))
       return true;
     else
@@ -301,6 +331,7 @@ cout << "consolidate: Both different and </>" << endl;
 cout << "consolidate: Could not combine Winners" << endl;
       return false;
     }
+    */
   }
 
   // The flags cannot both be set, or we would have returned above.

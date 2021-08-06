@@ -291,30 +291,6 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
 }
 
 
-bool Winner::consolidate(const Winner& sw2)
-{
-  assert(mode != WIN_NOT_SET);
-  assert(sw2.mode != WIN_NOT_SET);
-
-  if (mode == WIN_NORTH_ONLY && sw2.mode == WIN_SOUTH_ONLY)
-  {
-    assert(north.rankSame(sw2.south));
-    south = sw2.south;
-    mode = WIN_BOTH;
-    return true;
-  }
-  else if (mode == WIN_SOUTH_ONLY && sw2.mode == WIN_NORTH_ONLY)
-  {
-    assert(south.rankSame(sw2.north));
-    north = sw2.north;
-    mode = WIN_BOTH;
-    return true;
-  }
-  else
-    return false;
-}
-
-
 void Winner::flip()
 {
   if (mode == WIN_NOT_SET)
