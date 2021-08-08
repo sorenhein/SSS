@@ -215,7 +215,7 @@ void Winner::operator += (const Winner& winner2)
 unsigned char Winner::rank() const
 {
   if (mode == WIN_NOT_SET)
-    return numeric_limits<unsigned char>::max();
+    return UCHAR_NOT_SET;
   else if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
     return north.getRank();
   else

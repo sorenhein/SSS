@@ -60,6 +60,7 @@ enum CombinationType
 
 
 const unsigned UNSIGNED_NOT_SET = numeric_limits<unsigned>::max();
+const unsigned UCHAR_NOT_SET = numeric_limits<unsigned char>::max();
 
 #define UNUSED(x) ((void)(true ? 0 : ((x), void(), 0)))
 

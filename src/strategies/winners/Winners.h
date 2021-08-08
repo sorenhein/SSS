@@ -22,13 +22,13 @@ class Winners
 
     void fillComparer(
       Comparer& comparer,
-      const Winners& w2) const;
+      const Winners& winners2) const;
 
-    bool operator != (const Winners& w2) const;
+    bool operator != (const Winners& winners2) const;
 
-    void operator += (const Winner& swNew);
+    void operator += (const Winner& winner2);
 
-    bool rankExceeds(const Winners& w2) const;
+    bool rankExceeds(const Winners& winners2) const;
 
     void limitByRank();
 
@@ -59,13 +59,13 @@ class Winners
 
     bool empty() const;
 
-    void operator *= (const Winners& w2);
+    void operator *= (const Winners& winners2);
 
-    void operator += (const Winners& w2);
+    void operator += (const Winners& winners2);
 
-    void operator |= (const Winners& w2);
+    void operator |= (const Winners& winners2);
 
-    bool operator == (const Winners& w2) const;
+    bool operator == (const Winners& winners2) const;
 
     Compare compareForDeclarer(const Winners& w2) const;
 

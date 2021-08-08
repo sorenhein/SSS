@@ -92,13 +92,13 @@ bool Winners::empty() const
 
 void Winners::fillComparer(
   Comparer& comparer,
-  const Winners& w2) const
+  const Winners& winners2) const
 {
   unsigned n1 = 0;
   for (auto& win1: winners)
   {
     unsigned n2 = 0;
-    for (auto& win2: w2.winners)
+    for (auto& win2: winners2.winners)
     {
       comparer.log(n1, n2, win1.declarerPrefers(win2));
       n2++;
@@ -108,76 +108,50 @@ void Winners::fillComparer(
 }
 
 
-bool Winners::operator != (const Winners& w2) const
+bool Winners::operator != (const Winners& winners2) const
 {
-  return ! (* this == w2);
+  return ! (* this == winners2);
 }
 
 
-bool Winners::operator == (const Winners& w2) const
+bool Winners::operator == (const Winners& winners2) const
 {
   const unsigned s1 = winners.size();
-  const unsigned s2 = w2.winners.size();
+  const unsigned s2 = winners2.winners.size();
 
   if (Winners::empty())
-    return w2.empty();
-  else if (w2.empty())
+    return winners2.empty();
+  else if (winners2.empty())
     return false;
-  else if (winners.size() == 1 && w2.winners.size() == 1)
+  else if (winners.size() == 1 && winners2.winners.size() == 1)
   {
-    return winners.front() == w2.winners.front();
+    return winners.front() == winners2.winners.front();
   }
-  else if (winners.size() != w2.winners.size())
+  else if (winners.size() != winners2.winners.size())
   {
     return false;
   }
   else
   {
-    cout << "w1 size " << winners.size() << endl;
-    cout << Winners::strDebug();
-    cout << "w2 size " << w2.winners.size() << endl;
-    cout << w2.strDebug() << endl;
-
     Comparer comparer;
     comparer.resize(s1, s2);
-    Winners::fillComparer(comparer, w2);
-
-    /*
-    cout << comparer.str();
-    Compare c = comparer.compare();
-    if (c == WIN_FIRST)
-      cout << "WIN_FIRST\n";
-    else if (c == WIN_SECOND)
-      cout << "WIN_SECOND\n";
-    else if (c == WIN_EQUAL)
-      cout << "WIN_EQUAL\n";
-    else
-      cout << "WIN_DIFFERENT\n";
-
-    return (c == WIN_EQUAL);
-    */
-
+    Winners::fillComparer(comparer, winners2);
     return (comparer.compare() == WIN_EQUAL);
   }
 }
 
 
-void Winners::operator += (const Winner& swNew)
+void Winners::operator += (const Winner& winner2)
 {
   // winners are a minimal set.
   // The new subwinner may dominate existing winners.
   // It may also be dominated by at least one existing winner.
   // If neither is true, then it is a new winner.
 
-  auto switer = winners.begin();
-  while (switer != winners.end())
+  auto witer = winners.begin();
+  while (witer != winners.end())
   {
-// cout << "integrate:\n";
-// cout << switer->strDebug();
-// cout << "with\n";
-// cout << swNew.strDebug();
-    const Compare cmp = switer->declarerPrefers(swNew);
-// cout << "cmp " << cmp << endl;
+    const Compare cmp = witer->declarerPrefers(winner2);
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
       // The new subwinner is inferior.
@@ -186,98 +160,70 @@ void Winners::operator += (const Winner& swNew)
     else if (cmp == WIN_SECOND)
     {
       // The existing subwinner is inferior.
-      switer = winners.erase(switer);
+      witer = winners.erase(witer);
     }
     else
-      switer++;
+      witer++;
   }
 
-  winners.push_back(swNew);
+  winners.push_back(winner2);
 }
 
 
-void Winners::operator *= (const Winners& w2)
+void Winners::operator *= (const Winners& winners2)
 {
   // The opponents have the choice.
 
-  if (w2.empty())
+  if (winners2.empty())
   {
     // OK as is.
     return;
   }
   else if (Winners::empty())
   {
-    * this = w2;
+    * this = winners2;
     return;
   }
 
   // All winner's of a winner are of the same rank.
-  if (w2.rankExceeds(* this))
+  if (winners2.rankExceeds(* this))
   {
     // OK as is: Stick with the lower rank.
     return;
   }
-  else if (Winners::rankExceeds(w2))
+  else if (Winners::rankExceeds(winners2))
   {
-    * this = w2;
+    * this = winners2;
     return;
   }
 
   // This could be faster, but it's not that slow.
-  Winners w1 = move(* this);
+  Winners winners1 = move(* this);
   Winners::reset();
 
-// cout << "Multiplying winners\n";
-  for (auto& sw1: w1.winners)
+  for (auto& win1: winners1.winners)
   {
-    for (auto& sw2: w2.winners)
+    for (auto& win2: winners2.winners)
     {
-      Winner sw = sw1;
-// cout << "LHS " << sw.strDebug();
-// cout << "RHS " << sw2.strDebug();
-      sw *= sw2;
-// cout <<"Prd\n" << sw.strDebug();
-      // Winners::integrate(sw);
-      * this += sw;
-// cout << "Winners after *=\n" << Winners::strDebug();
+      Winner wprod = win1;
+      wprod *= win2;
+      * this += wprod;
     }
   }
 }
 
 
-void Winners::operator += (const Winners& w2)
+void Winners::operator += (const Winners& winners2)
 {
   assert(! Winners::empty());
-  assert(! w2.empty());
+  assert(! winners2.empty());
 
-  for (auto& sw2: w2.winners)
-    * this += sw2;
-    // Winners::integrate(sw2);
-
-    /*
-  if (winners.size() == 1 && w2.winners.size() == 1)
-  {
-
-    if (winners.front().consolidate(w2.winners.front()))
-      return;
-    else
-    {
-      cout << "Don't know how to consolidate these simple winners:\n";
-      cout << "w1 " << Winners::strDebug();
-      cout << "w2 " << w2.strDebug() << endl;
-      assert(false);
-    }
-  }
-  else
-  {
-    for (auto& sw2: w2.winners)
-      Winners::integrate(sw2);
-  }
-    */
+  for (auto& win2: winners2.winners)
+    * this += win2;
 }
 
 
-void Winners::operator |= (const Winners& w2)
+void Winners::operator |= (const Winners& winners2)
 {
   // Declarer has the choice.  This is complementary to *=.
 
@@ -286,52 +232,51 @@ void Winners::operator |= (const Winners& w2)
     // OK as is: Declarer wants no constraints.
     return;
   }
-  else if (w2.empty())
+  else if (winners2.empty())
   {
-    * this = w2;
+    * this = winners2;
     return;
   }
 
   // All winner's of a winner are of the same rank.
-  if (w2.rankExceeds(* this))
+  if (winners2.rankExceeds(* this))
   {
     // Go with the higher rank.
-    * this = w2;
+    * this = winners2;
     return;
   }
-  else if (Winners::rankExceeds(w2))
+  else if (Winners::rankExceeds(winners2))
   {
     // OK as is: Stick with the lower rank.
     return;
   }
 
-  for (auto& sw2: w2.winners)
-    * this += sw2;
-    // Winners::integrate(sw2);
+  for (auto& win2: winners2.winners)
+    * this += win2;
 }
 
 
-Compare Winners::compareForDeclarer(const Winners& w2) const
+Compare Winners::compareForDeclarer(const Winners& winners2) const
 {
   const unsigned s1 = winners.size();
-  const unsigned s2 = w2.winners.size();
+  const unsigned s2 = winners2.winners.size();
 
   if (Winners::empty())
     // Declarer prefers no restrictions.
-    return (w2.empty() ? WIN_EQUAL : WIN_FIRST);
-  else if (w2.empty())
+    return (winners2.empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (winners2.empty())
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
-    return winners.front().declarerPrefers(w2.winners.front());
-  else if (winners.front().rankExceeds(w2.winners.front()))
+    return winners.front().declarerPrefers(winners2.winners.front());
+  else if (winners.front().rankExceeds(winners2.winners.front()))
     return WIN_FIRST;
-  else if (w2.winners.front().rankExceeds(winners.front()))
+  else if (winners2.winners.front().rankExceeds(winners.front()))
     return WIN_SECOND;
   else
   {
     Comparer comparer;
     comparer.resize(s1, s2);
-    Winners::fillComparer(comparer, w2);
+    Winners::fillComparer(comparer, winners2);
     return comparer.compare();
   }
 }
@@ -358,7 +303,7 @@ void Winners::limitByRank()
   for (auto& winner: winners)
   {
     const unsigned char rank = winner.rank();
-    if (rank == numeric_limits<unsigned char>::max())
+    if (rank == UCHAR_NOT_SET)
       continue;
 
     if (rank < min)
@@ -423,11 +368,11 @@ void Winners::update(const Play& play)
 }
 
 
-bool Winners::rankExceeds(const Winners& w2) const
+bool Winners::rankExceeds(const Winners& winners2) const
 {
   // This requires both winners to have winner's.
   // Each winner has consistent ranks.
-  return (winners.front().rankExceeds(w2.winners.front()));
+  return (winners.front().rankExceeds(winners2.winners.front()));
 }
 
 
