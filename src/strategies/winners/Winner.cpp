@@ -226,21 +226,7 @@ void Winner::operator += (const Winner& winner2)
 
 unsigned char Winner::getRank() const
 {
-  if (mode == WIN_NOT_SET)
-  {
-assert(rank == UCHAR_NOT_SET);
-    return UCHAR_NOT_SET;
-  }
-  else if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
-  {
-assert(rank == north.getRank());
-    return north.getRank();
-  }
-  else
-  {
-assert(rank == south.getRank());
-    return south.getRank();
-  }
+  return rank;
 }
 
 
@@ -249,24 +235,10 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
   assert(mode != WIN_NOT_SET);
   assert(winner2.mode != WIN_NOT_SET);
 
-  // TODO Maybe Winner should know the rank.
-  Card const * active1 =
-      (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
-        &north : &south);
-  Card const * active2 =
-      (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH ? 
-        &winner2.north : &winner2.south);
-
-  if (active1->rankExceeds(* active2))
-  {
-assert(rank > winner2.rank);
+  if (rank > winner2.rank)
     return WIN_FIRST;
-  }
-  else if (active2->rankExceeds(* active1))
-  {
-assert(rank < winner2.rank);
+  else if (rank < winner2.rank)
     return WIN_SECOND;
-  }
 
   // So now the two Winner's have the same rank.
   // TODO Might be nice to have WinnerMode as a 2-bit vector
@@ -397,22 +369,18 @@ bool Winner::rankExceeds(const Winner& winner2) const
   // TODO Maybe Winner should know its rank.
 
   if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
+  {
     // Being unset is like having an "infinite" winning rank.
+    assert(rank > winner2.rank);
     return true;
+  }
   else if (winner2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
+  {
+    assert(rank < winner2.rank);
     return false;
+  }
 
-  const unsigned rank1 =
-      (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
-        north.getRank() : south.getRank());
-  const unsigned rank2 =
-      (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH ?
-        winner2.north.getRank() : winner2.south.getRank());
-
-assert(rank1 == rank);
-assert(rank2 == winner2.rank);
-
-  return (rank1 > rank2);
+  return (rank > winner2.rank);
 }
 
 

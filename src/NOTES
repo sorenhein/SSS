@@ -1,8 +1,6 @@
 2021-08-06
 ----------
 1. Implement all places where Strategy's are compared
-2. Let != Strategy run.  Don't assert(false)
-3. Check that it runs to completion
 4. All places where the equivalent of greaterEqual occurs
 5. Clean up code in strategies/*
  . Write a way to get the *= Winners of a Strategy
