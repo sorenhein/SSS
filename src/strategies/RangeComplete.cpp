@@ -41,7 +41,7 @@ void RangeComplete::extend(const Result& result)
     winnersHigh = result.winners;
   }
   else if (result.tricks == upper)
-    winnersHigh |= result.winners;
+    winnersHigh += result.winners;
 }
 
 
@@ -140,7 +140,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   else if (c == WIN_DIFFERENT)
   {
     // Make the extension.
-    winnersHigh |= range2.winnersHigh;
+    winnersHigh += range2.winnersHigh;
     winnersLow *= range2.winnersLow;
   }
 
@@ -158,7 +158,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   else
   {
     // Make the extension.
-    winnersHigh |= range2.winnersHigh;
+    winnersHigh += range2.winnersHigh;
     winnersLow *= range2.winnersLow;
   }
 }

@@ -215,16 +215,6 @@ void Winners::operator *= (const Winners& winners2)
 
 void Winners::operator += (const Winners& winners2)
 {
-  assert(! Winners::empty());
-  assert(! winners2.empty());
-
-  for (auto& win2: winners2.winners)
-    * this += win2;
-}
-
-
-void Winners::operator |= (const Winners& winners2)
-{
   // Declarer has the choice.  This is complementary to *=.
 
   if (Winners::empty())

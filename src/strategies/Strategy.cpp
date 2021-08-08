@@ -254,7 +254,6 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
   assert(results.size() == strat2.results.size());
   assert(! results.empty());
 
-cout << "STARTING CONSOLIDATEBYRANK\n";
   auto iter1 = results.begin();
   auto iter2 = strat2.results.begin();
   bool greaterFlag = false;
