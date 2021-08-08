@@ -4,8 +4,9 @@
 #include <vector>
 #include <list>
 
-#include "Result.h"
-#include "Ranges.h"
+#include "../Result.h"
+
+class Ranges;
 
 using namespace std;
 

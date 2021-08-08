@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "Strategies.h"
+#include "../Strategies.h"
 
 using namespace std;
 

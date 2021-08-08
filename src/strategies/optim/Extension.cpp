@@ -3,10 +3,10 @@
 #include <sstream>
 
 #include "Extension.h"
-#include "StratData.h"
+#include "../StratData.h"
 
 // TMP
-#include "../utils/Timer.h"
+#include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
 

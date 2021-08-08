@@ -1,39 +1,40 @@
-SOURCE_FILES    =                         \
-                driver.cpp                \
-                Combination.cpp           \
-                Combinations.cpp          \
-                Distribution.cpp          \
-                Distributions.cpp         \
-                                          \
-                inputs/Convert.cpp        \
-                inputs/Control.cpp        \
-                inputs/Entity.cpp         \
-                inputs/parse.cpp          \
-                                          \
-                ranks/Ranks.cpp           \
-                ranks/Player.cpp          \
-                ranks/Declarer.cpp        \
-                ranks/Opponents.cpp       \
-                                          \
-                plays/Plays.cpp           \
-                plays/Play.cpp            \
-                plays/Nodes.cpp           \
-                plays/Node.cpp            \
-                                          \
-                strategies/Strategies.cpp \
-                strategies/Strategy.cpp   \
-                strategies/Study.cpp      \
-                strategies/Extensions.cpp \
-                strategies/Extension.cpp  \
-                strategies/Splits.cpp     \
-                strategies/Range.cpp      \
-                strategies/RangeComplete.cpp \
-                strategies/Ranges.cpp     \
-                                          \
-                strategies/winners/Winners.cpp    \
-                strategies/winners/Winner.cpp     \
-                                          \
-                utils/Card.cpp            \
-                utils/Comparer.cpp        \
-                utils/Timer.cpp           \
+SOURCE_FILES    =                               \
+                driver.cpp                      \
+                Combination.cpp                 \
+                Combinations.cpp                \
+                Distribution.cpp                \
+                Distributions.cpp               \
+                                                \
+                inputs/Convert.cpp              \
+                inputs/Control.cpp              \
+                inputs/Entity.cpp               \
+                inputs/parse.cpp                \
+                                                \
+                ranks/Ranks.cpp                 \
+                ranks/Player.cpp                \
+                ranks/Declarer.cpp              \
+                ranks/Opponents.cpp             \
+                                                \
+                plays/Plays.cpp                 \
+                plays/Play.cpp                  \
+                plays/Nodes.cpp                 \
+                plays/Node.cpp                  \
+                                                \
+                strategies/Strategies.cpp       \
+                strategies/Strategy.cpp         \
+                strategies/Range.cpp            \
+                strategies/RangeComplete.cpp    \
+                strategies/Ranges.cpp           \
+                                                \
+                strategies/optim/Study.cpp      \
+                strategies/optim/Extensions.cpp \
+                strategies/optim/Extension.cpp  \
+                strategies/optim/Splits.cpp     \
+                                                \
+                strategies/winners/Winners.cpp  \
+                strategies/winners/Winner.cpp   \
+                                                \
+                utils/Card.cpp                  \
+                utils/Comparer.cpp              \
+                utils/Timer.cpp                 \
                 utils/Timers.cpp

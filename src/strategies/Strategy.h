@@ -5,7 +5,7 @@
 #include <list>
 #include <string>
 
-#include "Study.h"
+#include "optim/Study.h"
 #include "Result.h"
 #include "Ranges.h"
 

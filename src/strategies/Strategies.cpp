@@ -3,8 +3,9 @@
 #include <sstream>
 
 #include "Strategies.h"
-#include "Extensions.h"
 #include "StratData.h"
+
+#include "optim/Extensions.h"
 
 #include "../plays/Play.h"
 
