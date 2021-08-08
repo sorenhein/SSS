@@ -28,11 +28,11 @@ SOURCE_FILES    =                         \
                 strategies/Splits.cpp     \
                 strategies/Winners.cpp    \
                 strategies/Winner.cpp     \
-                strategies/Card.cpp       \
                 strategies/Range.cpp      \
                 strategies/RangeComplete.cpp \
                 strategies/Ranges.cpp     \
                                           \
+                utils/Card.cpp            \
                 utils/Comparer.cpp        \
                 utils/Timer.cpp           \
                 utils/Timers.cpp

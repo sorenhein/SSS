@@ -4,7 +4,7 @@
 #include <vector>
 #include <deque>
 
-#include "../strategies/Card.h"
+#include "../utils/Card.h"
 #include "../const.h"
 
 using namespace std;

@@ -6,8 +6,8 @@
 #include <list>
 #include <cassert>
 
-#include "Card.h"
 #include "../const.h"
+#include "../utils/Card.h"
 #include "../utils/Compare.h"
 
 struct Play;

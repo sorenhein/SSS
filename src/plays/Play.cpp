@@ -15,7 +15,7 @@
 
 #include "../Combinations.h"
 
-#include "../strategies/Card.h"
+#include "../utils/Card.h"
 
 
 unsigned Play::lead(const bool fullFlag) const
