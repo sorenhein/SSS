@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -132,23 +140,6 @@ WinnerCompare Comparer::compare() const
   vector<unsigned> sum1, sum2;
   Comparer::makeSums(sum1, sum2);
 
-/* */
-cout << "sum1\n";
-cout << "FIRST  " << sum1[WIN_FIRST] << "\n";
-cout << "SECOND " << sum1[WIN_SECOND] << "\n";
-cout << "EQUAL  " << sum1[WIN_EQUAL] << "\n";
-cout << "DIFF   " << sum1[WIN_DIFFERENT] << "\n";
-cout << "\n";
-
-cout << "sum1\n";
-cout << "FIRST  " << sum2[WIN_FIRST] << "\n";
-cout << "SECOND " << sum2[WIN_SECOND] << "\n";
-cout << "EQUAL  " << sum2[WIN_EQUAL] << "\n";
-cout << "DIFF   " << sum2[WIN_DIFFERENT] << "\n";
-cout << "\n";
-
-/* */
-
   if (sum1[WIN_DIFFERENT] && sum2[WIN_DIFFERENT])
     return WIN_DIFFERENT;
 
@@ -236,3 +227,4 @@ string Comparer::str() const
   ss << endl;
   return ss.str();
 }
+
