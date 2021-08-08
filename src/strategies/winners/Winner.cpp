@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -5,7 +13,7 @@
 
 #include "Winner.h"
 
-#include "../plays/Play.h"
+#include "../../plays/Play.h"
 
 
 Winner::Winner()
@@ -95,64 +103,64 @@ void Winner::setEmpty()
 }
 
 
-bool Winner::operator == (const Winner& sw2) const
+bool Winner::operator == (const Winner& winner2) const
 {
-  if (mode != sw2.mode)
+  if (mode != winner2.mode)
     return false;
   if (mode == WIN_NOT_SET)
     return true;
-  if (mode != WIN_SOUTH_ONLY && north != sw2.north)
+  if (mode != WIN_SOUTH_ONLY && north != winner2.north)
     return false;
-  if (mode != WIN_NORTH_ONLY && south != sw2.south)
+  if (mode != WIN_NORTH_ONLY && south != winner2.south)
     return false;
 
   return true;
 }
 
 
-bool Winner::operator != (const Winner& sw2) const
+bool Winner::operator != (const Winner& winner2) const
 {
-  return ! (* this == sw2);
+  return ! (* this == winner2);
 }
 
 
-void Winner::operator *= (const Winner& sw2)
+void Winner::operator *= (const Winner& winner2)
 {
   // The opponents have the choice.
 
-  if (sw2.mode == WIN_NOT_SET)
+  if (winner2.mode == WIN_NOT_SET)
   {
     // OK as is.
     return;
   }
   else if (mode == WIN_NOT_SET)
   {
-    * this = sw2;
+    * this = winner2;
     return;
   }
 
-  if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
+  if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
   {
-    // sw2.north is set.
+    // winner2.north is set.
     if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
-      north *= sw2.north;
+      north *= winner2.north;
     else
     {
       // As north wasn't set, south must be.
-      north = sw2.north;
+      north = winner2.north;
       mode = WIN_BOTH;
     }
   }
 
-  if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+  if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
   {
-    // sw2.south is set.
-    if (mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
-      south *= sw2.south;
+    // winner2.south is set.
+    if (mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+      south *= winner2.south;
     else
     {
       // As south wasn't set, north must be.
-      south = sw2.south;
+      south = winner2.south;
       mode = WIN_BOTH;
     }
   }
@@ -167,31 +175,31 @@ void Winner::operator *= (const Winner& sw2)
 }
 
 
-void Winner::operator |= (const Winner& sw2)
+void Winner::operator += (const Winner& winner2)
 {
   // Declarer has the choice.
 
-  if (sw2.mode == WIN_NOT_SET)
+  if (winner2.mode == WIN_NOT_SET)
   {
     // Declarer prefers no restriction.
-    * this = sw2;
+    * this = winner2;
     return;
   }
   else if (mode == WIN_NOT_SET)
     return;
 
-  if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
+  if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
   {
-    // sw2.north is set.  Leave our north empty if it is empty.
+    // winner2.north is set.  Leave our north empty if it is empty.
     if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
-      north |= sw2.north;
+      north += winner2.north;
   }
 
-  if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+  if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
   {
-    // sw2.south is set.
-    if (mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
-      south |= sw2.south;
+    // winner2.south is set.
+    if (mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+      south += winner2.south;
   }
 
   if (mode == WIN_BOTH)
@@ -215,18 +223,18 @@ unsigned char Winner::rank() const
 }
 
 
-Compare Winner::declarerPrefers(const Winner& sw2) const
+Compare Winner::declarerPrefers(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
-  assert(sw2.mode != WIN_NOT_SET);
+  assert(winner2.mode != WIN_NOT_SET);
 
   // TODO Maybe Winner should know the rank.
   Card const * active1 =
       (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
         &north : &south);
   Card const * active2 =
-      (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH ? 
-        &sw2.north : &sw2.south);
+      (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH ? 
+        &winner2.north : &winner2.south);
 
   if (active1->rankExceeds(* active2))
     return WIN_FIRST;
@@ -240,15 +248,15 @@ Compare Winner::declarerPrefers(const Winner& sw2) const
   Compare northPrefer, southPrefer;
   if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
   {
-    if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
-      northPrefer = north.compare(sw2.north);
+    if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
+      northPrefer = north.compare(winner2.north);
     else
       // North prefers no restriction.
       northPrefer = WIN_SECOND;
   }
   else
   {
-    if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)
+    if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
       // North prefers no restriction.
       northPrefer = WIN_FIRST;
     else
@@ -258,15 +266,15 @@ Compare Winner::declarerPrefers(const Winner& sw2) const
   
   if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
   {
-    if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
-      southPrefer = south.compare(sw2.south);
+    if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+      southPrefer = south.compare(winner2.south);
     else
       // South prefers no restriction.
       southPrefer = WIN_SECOND;
   }
   else
   {
-    if (sw2.mode == WIN_SOUTH_ONLY || sw2.mode == WIN_BOTH)
+    if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
       // South prefers no restriction.
       southPrefer = WIN_FIRST;
     else
@@ -351,22 +359,22 @@ void Winner::update(const Play& play)
 }
 
 
-bool Winner::rankExceeds(const Winner& sw2) const
+bool Winner::rankExceeds(const Winner& winner2) const
 {
   // TODO Maybe Winner should know its rank.
 
-  if (mode == WIN_NOT_SET && sw2.mode != WIN_NOT_SET)
+  if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
     // Being unset is like having an "infinite" winning rank.
     return true;
-  else if (sw2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
+  else if (winner2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
     return false;
 
   const unsigned rank1 =
       (mode == WIN_NORTH_ONLY || mode == WIN_BOTH ?
         north.getRank() : south.getRank());
   const unsigned rank2 =
-      (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH ?
-        sw2.north.getRank() : sw2.south.getRank());
+      (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH ?
+        winner2.north.getRank() : winner2.south.getRank());
 
   return (rank1 > rank2);
 }

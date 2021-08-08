@@ -5,9 +5,9 @@
 
 #include "Winners.h"
 
-#include "../plays/Play.h"
+#include "../../plays/Play.h"
 
-#include "../utils/Comparer.h"
+#include "../../utils/Comparer.h"
 
 /*
    The winner is structured as a number of sub-winners that are

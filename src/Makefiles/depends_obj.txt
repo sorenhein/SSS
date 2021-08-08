@@ -1,33 +1,35 @@
 driver.obj: Combinations.h Combination.h strategies/Strategies.h
 driver.obj: strategies/Strategy.h strategies/Study.h strategies/Result.h
-driver.obj: strategies/Winners.h strategies/Winner.h const.h utils/Card.h
-driver.obj: utils/Compare.h strategies/Ranges.h strategies/RangeComplete.h
-driver.obj: Distributions.h Distribution.h Survivor.h DistHelp.h
-driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h utils/Timers.h
-driver.obj: utils/Timer.h
+driver.obj: strategies/winners/Winners.h strategies/winners/Winner.h const.h
+driver.obj: utils/Card.h utils/Compare.h utils/Compare.h strategies/Ranges.h
+driver.obj: strategies/RangeComplete.h Distributions.h Distribution.h
+driver.obj: Survivor.h DistHelp.h inputs/Control.h inputs/Entity.h
+driver.obj: inputs/Convert.h utils/Timers.h utils/Timer.h
 Combination.obj: Combinations.h Combination.h strategies/Strategies.h
 Combination.obj: strategies/Strategy.h strategies/Study.h strategies/Result.h
-Combination.obj: strategies/Winners.h strategies/Winner.h const.h
-Combination.obj: utils/Card.h utils/Compare.h strategies/Ranges.h
-Combination.obj: strategies/RangeComplete.h Distributions.h Distribution.h
-Combination.obj: Survivor.h DistHelp.h CombEntry.h plays/Plays.h plays/Play.h
-Combination.obj: strategies/Winners.h plays/Nodes.h plays/Node.h
-Combination.obj: strategies/Strategies.h plays/DebugPlay.h ranks/Ranks.h
-Combination.obj: plays/Play.h ranks/Declarer.h ranks/Player.h
-Combination.obj: ranks/Opponents.h utils/Timers.h utils/Timer.h
+Combination.obj: strategies/winners/Winners.h strategies/winners/Winner.h
+Combination.obj: const.h utils/Card.h utils/Compare.h utils/Compare.h
+Combination.obj: strategies/Ranges.h strategies/RangeComplete.h
+Combination.obj: Distributions.h Distribution.h Survivor.h DistHelp.h
+Combination.obj: CombEntry.h plays/Plays.h plays/Play.h
+Combination.obj: strategies/winners/Winners.h const.h plays/Nodes.h
+Combination.obj: plays/Node.h strategies/Strategies.h plays/DebugPlay.h
+Combination.obj: ranks/Ranks.h plays/Play.h ranks/Declarer.h ranks/Player.h
+Combination.obj: utils/Card.h ranks/Opponents.h utils/Timers.h utils/Timer.h
 Combinations.obj: Combinations.h Combination.h strategies/Strategies.h
 Combinations.obj: strategies/Strategy.h strategies/Study.h
-Combinations.obj: strategies/Result.h strategies/Winners.h
-Combinations.obj: strategies/Winner.h const.h utils/Card.h utils/Compare.h
-Combinations.obj: strategies/Ranges.h strategies/RangeComplete.h CombEntry.h
-Combinations.obj: Distributions.h Distribution.h Survivor.h DistHelp.h
-Combinations.obj: plays/Plays.h plays/Play.h strategies/Winners.h
+Combinations.obj: strategies/Result.h strategies/winners/Winners.h
+Combinations.obj: strategies/winners/Winner.h const.h utils/Card.h
+Combinations.obj: utils/Compare.h utils/Compare.h strategies/Ranges.h
+Combinations.obj: strategies/RangeComplete.h CombEntry.h Distributions.h
+Combinations.obj: Distribution.h Survivor.h DistHelp.h plays/Plays.h
+Combinations.obj: plays/Play.h strategies/winners/Winners.h const.h
 Combinations.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
 Combinations.obj: plays/DebugPlay.h ranks/Ranks.h plays/Play.h
-Combinations.obj: ranks/Declarer.h ranks/Player.h ranks/Opponents.h
-Combinations.obj: utils/Timers.h utils/Timer.h
-Distribution.obj: plays/Play.h strategies/Winners.h const.h Distribution.h
-Distribution.obj: Survivor.h DistHelp.h const.h
+Combinations.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
+Combinations.obj: ranks/Opponents.h utils/Timers.h utils/Timer.h
+Distribution.obj: plays/Play.h strategies/winners/Winners.h const.h
+Distribution.obj: Distribution.h Survivor.h DistHelp.h const.h
 Distributions.obj: Distributions.h Distribution.h Survivor.h DistHelp.h
 inputs/Convert.obj: inputs/Convert.h const.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
@@ -35,89 +37,104 @@ inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
 ranks/Ranks.obj: const.h CombEntry.h plays/Plays.h plays/Play.h
-ranks/Ranks.obj: strategies/Winners.h plays/Nodes.h plays/Node.h
+ranks/Ranks.obj: strategies/winners/Winners.h plays/Nodes.h plays/Node.h
 ranks/Ranks.obj: strategies/Strategies.h plays/DebugPlay.h ranks/Ranks.h
 ranks/Ranks.obj: plays/Play.h ranks/Declarer.h ranks/Player.h utils/Card.h
-ranks/Ranks.obj: utils/Compare.h ranks/Opponents.h
-ranks/Player.obj: ranks/Player.h utils/Card.h utils/Compare.h const.h
-ranks/Declarer.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
-ranks/Declarer.obj: utils/Compare.h const.h ranks/Opponents.h
-ranks/Opponents.obj: ranks/Opponents.h ranks/Player.h utils/Card.h
-ranks/Opponents.obj: utils/Compare.h const.h
-plays/Plays.obj: plays/Plays.h plays/Play.h strategies/Winners.h const.h
-plays/Plays.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
+ranks/Ranks.obj: ranks/Opponents.h
+ranks/Player.obj: ranks/Player.h utils/Card.h const.h
+ranks/Declarer.obj: ranks/Declarer.h ranks/Player.h utils/Card.h const.h
+ranks/Declarer.obj: ranks/Opponents.h
+ranks/Opponents.obj: ranks/Opponents.h ranks/Player.h utils/Card.h const.h
+plays/Plays.obj: plays/Plays.h plays/Play.h strategies/winners/Winners.h
+plays/Plays.obj: const.h plays/Nodes.h plays/Node.h strategies/Strategies.h
 plays/Plays.obj: plays/DebugPlay.h plays/Chunks.h Combinations.h
 plays/Plays.obj: Combination.h strategies/Strategies.h strategies/Strategy.h
-plays/Plays.obj: strategies/Study.h strategies/Result.h strategies/Winners.h
-plays/Plays.obj: strategies/Winner.h utils/Card.h utils/Compare.h
+plays/Plays.obj: strategies/Study.h strategies/Result.h
+plays/Plays.obj: strategies/winners/Winners.h strategies/winners/Winner.h
+plays/Plays.obj: const.h utils/Card.h utils/Compare.h utils/Compare.h
 plays/Plays.obj: strategies/Ranges.h strategies/RangeComplete.h
 plays/Plays.obj: Distribution.h Survivor.h DistHelp.h
-plays/Play.obj: plays/Play.h strategies/Winners.h const.h Combinations.h
-plays/Play.obj: Combination.h strategies/Strategies.h strategies/Strategy.h
-plays/Play.obj: strategies/Study.h strategies/Result.h strategies/Winners.h
-plays/Play.obj: strategies/Winner.h utils/Card.h utils/Compare.h
-plays/Play.obj: strategies/Ranges.h strategies/RangeComplete.h
+plays/Play.obj: plays/Play.h strategies/winners/Winners.h const.h
+plays/Play.obj: Combinations.h Combination.h strategies/Strategies.h
+plays/Play.obj: strategies/Strategy.h strategies/Study.h strategies/Result.h
+plays/Play.obj: strategies/winners/Winners.h strategies/winners/Winner.h
+plays/Play.obj: const.h utils/Card.h utils/Compare.h utils/Compare.h
+plays/Play.obj: strategies/Ranges.h strategies/RangeComplete.h utils/Card.h
 plays/Nodes.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
-plays/Nodes.obj: plays/Play.h strategies/Winners.h const.h plays/Chunks.h
+plays/Nodes.obj: plays/Play.h strategies/winners/Winners.h const.h
+plays/Nodes.obj: plays/Chunks.h
 plays/Node.obj: plays/Node.h strategies/Strategies.h plays/Play.h
-plays/Node.obj: strategies/Winners.h const.h Distribution.h Survivor.h
-plays/Node.obj: DistHelp.h Combination.h strategies/Strategies.h
+plays/Node.obj: strategies/winners/Winners.h const.h Distribution.h
+plays/Node.obj: Survivor.h DistHelp.h Combination.h strategies/Strategies.h
 plays/Node.obj: strategies/Strategy.h strategies/Study.h strategies/Result.h
-plays/Node.obj: strategies/Winners.h strategies/Winner.h utils/Card.h
-plays/Node.obj: utils/Compare.h strategies/Ranges.h
-plays/Node.obj: strategies/RangeComplete.h strategies/StratData.h
+plays/Node.obj: strategies/winners/Winners.h strategies/winners/Winner.h
+plays/Node.obj: const.h utils/Card.h utils/Compare.h utils/Compare.h
+plays/Node.obj: strategies/Ranges.h strategies/RangeComplete.h
+plays/Node.obj: strategies/StratData.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Strategy.h
 strategies/Strategies.obj: strategies/Study.h strategies/Result.h
-strategies/Strategies.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Strategies.obj: utils/Card.h utils/Compare.h strategies/Ranges.h
-strategies/Strategies.obj: strategies/RangeComplete.h strategies/Extensions.h
-strategies/Strategies.obj: strategies/Extension.h strategies/Splits.h
-strategies/Strategies.obj: strategies/StratData.h plays/Play.h Survivor.h
-strategies/Strategies.obj: utils/Timer.h
+strategies/Strategies.obj: strategies/winners/Winners.h
+strategies/Strategies.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Strategies.obj: utils/Compare.h utils/Compare.h
+strategies/Strategies.obj: strategies/Ranges.h strategies/RangeComplete.h
+strategies/Strategies.obj: strategies/Extensions.h strategies/Extension.h
+strategies/Strategies.obj: strategies/Splits.h strategies/StratData.h
+strategies/Strategies.obj: plays/Play.h Survivor.h utils/Timer.h
 strategies/Strategy.obj: strategies/Strategy.h strategies/Study.h
-strategies/Strategy.obj: strategies/Result.h strategies/Winners.h
-strategies/Strategy.obj: strategies/Winner.h const.h utils/Card.h
-strategies/Strategy.obj: utils/Compare.h strategies/Ranges.h
+strategies/Strategy.obj: strategies/Result.h strategies/winners/Winners.h
+strategies/Strategy.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Strategy.obj: utils/Compare.h utils/Compare.h strategies/Ranges.h
 strategies/Strategy.obj: strategies/RangeComplete.h plays/Play.h Survivor.h
 strategies/Strategy.obj: utils/Timer.h
 strategies/Study.obj: strategies/Study.h strategies/Result.h
-strategies/Study.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Study.obj: utils/Card.h utils/Compare.h strategies/Ranges.h
+strategies/Study.obj: strategies/winners/Winners.h
+strategies/Study.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Study.obj: utils/Compare.h utils/Compare.h strategies/Ranges.h
 strategies/Study.obj: strategies/RangeComplete.h
 strategies/Extensions.obj: strategies/Extensions.h strategies/Strategies.h
 strategies/Extensions.obj: strategies/Strategy.h strategies/Study.h
-strategies/Extensions.obj: strategies/Result.h strategies/Winners.h
-strategies/Extensions.obj: strategies/Winner.h const.h utils/Card.h
-strategies/Extensions.obj: utils/Compare.h strategies/Ranges.h
-strategies/Extensions.obj: strategies/RangeComplete.h strategies/Extension.h
-strategies/Extensions.obj: strategies/Splits.h utils/Timer.h
+strategies/Extensions.obj: strategies/Result.h strategies/winners/Winners.h
+strategies/Extensions.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Extensions.obj: utils/Compare.h utils/Compare.h
+strategies/Extensions.obj: strategies/Ranges.h strategies/RangeComplete.h
+strategies/Extensions.obj: strategies/Extension.h strategies/Splits.h
+strategies/Extensions.obj: utils/Timer.h
 strategies/Extension.obj: strategies/Extension.h strategies/Strategy.h
 strategies/Extension.obj: strategies/Study.h strategies/Result.h
-strategies/Extension.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Extension.obj: utils/Card.h utils/Compare.h strategies/Ranges.h
+strategies/Extension.obj: strategies/winners/Winners.h
+strategies/Extension.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Extension.obj: utils/Compare.h utils/Compare.h strategies/Ranges.h
 strategies/Extension.obj: strategies/RangeComplete.h strategies/StratData.h
 strategies/Extension.obj: utils/Timer.h
 strategies/Splits.obj: strategies/Splits.h strategies/Strategies.h
 strategies/Splits.obj: strategies/Strategy.h strategies/Study.h
-strategies/Splits.obj: strategies/Result.h strategies/Winners.h
-strategies/Splits.obj: strategies/Winner.h const.h utils/Card.h
-strategies/Splits.obj: utils/Compare.h strategies/Ranges.h
+strategies/Splits.obj: strategies/Result.h strategies/winners/Winners.h
+strategies/Splits.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Splits.obj: utils/Compare.h utils/Compare.h strategies/Ranges.h
 strategies/Splits.obj: strategies/RangeComplete.h strategies/StratData.h
 strategies/Splits.obj: utils/Timer.h
-strategies/Winners.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Winners.obj: utils/Card.h utils/Compare.h plays/Play.h
-strategies/Winners.obj: utils/Comparer.h utils/Compare.h
-strategies/Winner.obj: strategies/Winner.h const.h utils/Card.h
-strategies/Winner.obj: utils/Compare.h plays/Play.h
 strategies/Range.obj: strategies/Range.h strategies/Result.h
-strategies/Range.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Range.obj: utils/Card.h utils/Compare.h
-strategies/RangeComplete.obj: strategies/RangeComplete.h strategies/Winners.h
-strategies/RangeComplete.obj: strategies/Winner.h const.h utils/Card.h
-strategies/RangeComplete.obj: utils/Compare.h strategies/Result.h
+strategies/Range.obj: strategies/winners/Winners.h
+strategies/Range.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Range.obj: utils/Compare.h utils/Compare.h
+strategies/RangeComplete.obj: strategies/RangeComplete.h
+strategies/RangeComplete.obj: strategies/winners/Winners.h
+strategies/RangeComplete.obj: strategies/winners/Winner.h const.h
+strategies/RangeComplete.obj: utils/Card.h utils/Compare.h utils/Compare.h
+strategies/RangeComplete.obj: strategies/Result.h
 strategies/Ranges.obj: strategies/Ranges.h strategies/RangeComplete.h
-strategies/Ranges.obj: strategies/Winners.h strategies/Winner.h const.h
-strategies/Ranges.obj: utils/Card.h utils/Compare.h strategies/Result.h
+strategies/Ranges.obj: strategies/winners/Winners.h
+strategies/Ranges.obj: strategies/winners/Winner.h const.h utils/Card.h
+strategies/Ranges.obj: utils/Compare.h utils/Compare.h strategies/Result.h
+strategies/winners/Winners.obj: strategies/winners/Winners.h
+strategies/winners/Winners.obj: strategies/winners/Winner.h const.h
+strategies/winners/Winners.obj: utils/Card.h utils/Compare.h utils/Compare.h
+strategies/winners/Winners.obj: plays/Play.h strategies/winners/Winners.h
+strategies/winners/Winners.obj: const.h utils/Comparer.h utils/Compare.h
+strategies/winners/Winner.obj: strategies/winners/Winner.h const.h
+strategies/winners/Winner.obj: utils/Card.h utils/Compare.h utils/Compare.h
+strategies/winners/Winner.obj: plays/Play.h strategies/winners/Winners.h
+strategies/winners/Winner.obj: const.h
 utils/Card.obj: utils/Card.h utils/Compare.h
 utils/Comparer.obj: utils/Comparer.h utils/Compare.h
 utils/Timer.obj: utils/Timer.h

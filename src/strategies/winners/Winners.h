@@ -6,7 +6,6 @@
 #include <cassert>
 
 #include "Winner.h"
-#include "../utils/Card.h"
 
 struct Play;
 class Comparer;

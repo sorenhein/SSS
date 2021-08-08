@@ -1,14 +1,17 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_WINNER_H
 #define SSS_WINNER_H
 
-#include <vector>
-#include <deque>
-#include <list>
-#include <cassert>
-
-#include "../const.h"
-#include "../utils/Card.h"
-#include "../utils/Compare.h"
+#include "../../const.h"
+#include "../../utils/Card.h"
+#include "../../utils/Compare.h"
 
 struct Play;
 
@@ -59,21 +62,21 @@ class Winner
 
     void setEmpty();
 
-    bool operator == (const Winner& sw2) const;
-    bool operator != (const Winner& sw2) const;
+    bool operator == (const Winner& winner2) const;
+    bool operator != (const Winner& winner2) const;
 
-    void operator *= (const Winner& sw2);
-    void operator |= (const Winner& sw2);
+    void operator *= (const Winner& winner2);
+    void operator += (const Winner& winner2);
 
     unsigned char rank() const;
 
-    Compare declarerPrefers(const Winner& sw2) const;
+    Compare declarerPrefers(const Winner& winner2) const;
 
     void flip();
 
     void update(const Play& play);
 
-    bool rankExceeds(const Winner& sw2) const;
+    bool rankExceeds(const Winner& winner2) const;
 
     string str() const;
 

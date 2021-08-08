@@ -43,56 +43,56 @@ void Card::set(
 }
 
 
-bool Card::operator > (const Card& sw2) const
+bool Card::operator > (const Card& card2) const
 {
-  return (number > sw2.number);
+  return (number > card2.number);
 }
 
 
-bool Card::operator >= (const Card& sw2) const
+bool Card::operator >= (const Card& card2) const
 {
-  return (number >= sw2.number);
+  return (number >= card2.number);
 }
 
 
-bool Card::operator == (const Card& sw2) const
+bool Card::operator == (const Card& card2) const
 {
-  return (number == sw2.number);
+  return (number == card2.number);
 }
 
 
-bool Card::operator != (const Card& sw2) const
+bool Card::operator != (const Card& card2) const
 {
-  return (number != sw2.number);
+  return (number != card2.number);
 }
 
 
-bool Card::operator <= (const Card& sw2) const
+bool Card::operator <= (const Card& card2) const
 {
-  return (number >= sw2.number);
+  return (number >= card2.number);
 }
 
 
-bool Card::operator < (const Card& sw2) const
+bool Card::operator < (const Card& card2) const
 {
-  return (number < sw2.number);
+  return (number < card2.number);
 }
 
 
-bool Card::identical(const Card& sw2) const
+bool Card::identical(const Card& card2) const
 {
-  return (rank == sw2.rank &&
-      depth == sw2.depth &&
-      number == sw2.number &&
-      name == sw2.name);
+  return (rank == card2.rank &&
+      depth == card2.depth &&
+      number == card2.number &&
+      name == card2.name);
 }
 
 
-Compare Card::compare(const Card& sw2) const
+Compare Card::compare(const Card& card2) const
 {
-  if (number > sw2.number)
+  if (number > card2.number)
     return WIN_FIRST;
-  else if (number < sw2.number)
+  else if (number < card2.number)
     return WIN_SECOND;
   else
     return WIN_EQUAL;
@@ -105,31 +105,31 @@ bool Card::isVoid() const
 }
 
 
-bool Card::rankSame(const Card& sw2) const
+bool Card::rankSame(const Card& card2) const
 {
-  return (rank == sw2.rank);
+  return (rank == card2.rank);
 }
 
 
-bool Card::rankExceeds(const Card& sw2) const
+bool Card::rankExceeds(const Card& card2) const
 {
-  return (rank > sw2.rank);
+  return (rank > card2.rank);
 }
 
 
-void Card::operator *= (const Card& sw2)
+void Card::operator *= (const Card& card2)
 {
   // Choose the lowest card.
-  if (number > sw2.number)
-    * this = sw2;
+  if (number > card2.number)
+    * this = card2;
 }
 
 
-void Card::operator |= (const Card &sw2)
+void Card::operator += (const Card &card2)
 {
   // Choose the highest card.
-  if (number < sw2.number)
-    * this = sw2;
+  if (number < card2.number)
+    * this = card2;
 }
 
 
