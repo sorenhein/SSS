@@ -37,6 +37,7 @@ class Winner
     Card north;
     Card south;
     WinnerMode mode;
+    unsigned char rank;
 
 
   public:
@@ -68,7 +69,7 @@ class Winner
     void operator *= (const Winner& winner2);
     void operator += (const Winner& winner2);
 
-    unsigned char rank() const;
+    unsigned char getRank() const;
 
     Compare declarerPrefers(const Winner& winner2) const;
 

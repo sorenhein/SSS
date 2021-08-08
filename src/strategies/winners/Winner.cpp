@@ -32,6 +32,7 @@ void Winner::reset()
   north.reset();
   south.reset();
   mode = WIN_NOT_SET;
+  rank = UCHAR_NOT_SET;
 }
 
 
@@ -47,6 +48,8 @@ void Winner::set(
   // In that case, NS decide among the options.
 
   assert(mode == WIN_NOT_SET);
+  rank = rankIn;
+
   if (sideIn == WIN_NORTH)
   {
     north.set(rankIn, depthIn, numberIn, nameIn);
@@ -73,6 +76,9 @@ void Winner::set(
   // In that case, NS decide among the options.
 
   assert(mode == WIN_NOT_SET);
+  if (sideIn != WIN_NONE)
+    rank = card.getRank();
+
   if (sideIn == WIN_NORTH)
   {
     north = card;
@@ -139,6 +145,9 @@ void Winner::operator *= (const Winner& winner2)
     return;
   }
 
+  if (winner2.rank < rank)
+    rank = winner2.rank;
+
   if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
   {
     // winner2.north is set.
@@ -188,6 +197,9 @@ void Winner::operator += (const Winner& winner2)
   else if (mode == WIN_NOT_SET)
     return;
 
+  if (winner2.rank > rank)
+    rank = winner2.rank;
+
   if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
   {
     // winner2.north is set.  Leave our north empty if it is empty.
@@ -212,14 +224,23 @@ void Winner::operator += (const Winner& winner2)
 }
 
 
-unsigned char Winner::rank() const
+unsigned char Winner::getRank() const
 {
   if (mode == WIN_NOT_SET)
+  {
+assert(rank == UCHAR_NOT_SET);
     return UCHAR_NOT_SET;
+  }
   else if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+  {
+assert(rank == north.getRank());
     return north.getRank();
+  }
   else
+  {
+assert(rank == south.getRank());
     return south.getRank();
+  }
 }
 
 
@@ -237,9 +258,15 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
         &winner2.north : &winner2.south);
 
   if (active1->rankExceeds(* active2))
+  {
+assert(rank > winner2.rank);
     return WIN_FIRST;
+  }
   else if (active2->rankExceeds(* active1))
+  {
+assert(rank < winner2.rank);
     return WIN_SECOND;
+  }
 
   // So now the two Winner's have the same rank.
   // TODO Might be nice to have WinnerMode as a 2-bit vector
@@ -323,11 +350,13 @@ void Winner::update(const Play& play)
   {
     // This may also change the winning side.
     north = * play.northTranslate(north.getNumber());
+    rank = north.getRank();
   }
   else if (mode == WIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
     south = * play.southTranslate(south.getNumber());
+    rank = south.getRank();
   }
   else if (mode == WIN_BOTH)
   {
@@ -342,12 +371,16 @@ void Winner::update(const Play& play)
       // Only South survives.
       north.reset();
       mode = WIN_SOUTH_ONLY;
+      rank = south.getRank();
     }
     else if (south.rankExceeds(north))
     {
       south.reset();
       mode = WIN_NORTH_ONLY;
+      rank = north.getRank();
     }
+    else
+     rank = north.getRank(); // Pick one
   }
   else if (mode == WIN_NOT_SET)
   {
@@ -375,6 +408,9 @@ bool Winner::rankExceeds(const Winner& winner2) const
   const unsigned rank2 =
       (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH ?
         winner2.north.getRank() : winner2.south.getRank());
+
+assert(rank1 == rank);
+assert(rank2 == winner2.rank);
 
   return (rank1 > rank2);
 }

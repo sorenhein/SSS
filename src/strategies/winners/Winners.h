@@ -1,7 +1,14 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_WINNERS_H
 #define SSS_WINNERS_H
 
-#include <vector>
 #include <list>
 #include <cassert>
 

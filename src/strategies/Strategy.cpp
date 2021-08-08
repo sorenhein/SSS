@@ -273,6 +273,8 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
       if (lowerFlag)
       {
 cout << "consolidate: Both > and < appear" << endl;
+        cout << Strategy::str("first", true);
+        cout << strat2.str("second", true) << endl;
         return false;
       }
 
@@ -283,6 +285,8 @@ cout << "consolidate: Both > and < appear" << endl;
       if (greaterFlag)
       {
 cout << "consolidate: Both > and < appear" << endl;
+        cout << Strategy::str("first", true);
+        cout << strat2.str("second", true) << endl;
         return false;
       }
 
@@ -297,6 +301,8 @@ cout << "consolidate: Both > and < appear" << endl;
       if (differentFlag)
       {
 cout << "consolidate: More than one difference" << endl;
+        cout << Strategy::str("first", true);
+        cout << strat2.str("second", true) << endl;
         // Can't deal with two differences.
         return false;
       }
@@ -315,22 +321,13 @@ cout << "consolidate: More than one difference" << endl;
     if (greaterFlag || lowerFlag)
     {
 cout << "consolidate: Both different and </>" << endl;
+        cout << Strategy::str("first", true);
+        cout << strat2.str("second", true) << endl;
       // Too complicated.
       return false;
     }
 
-    // if (wptr1->consolidate(* wptr2))
     * wptr1 += * wptr2;
-
-    /*
-    if (wptr1->consolidate(* wptr2))
-      return true;
-    else
-    {
-cout << "consolidate: Could not combine Winners" << endl;
-      return false;
-    }
-    */
   }
 
   // The flags cannot both be set, or we would have returned above.

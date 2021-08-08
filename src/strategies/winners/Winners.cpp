@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -292,7 +300,7 @@ void Winners::limitByRank()
   // Find the range of ranks.
   for (auto& winner: winners)
   {
-    const unsigned char rank = winner.rank();
+    const unsigned char rank = winner.getRank();
     if (rank == UCHAR_NOT_SET)
       continue;
 
@@ -309,7 +317,7 @@ void Winners::limitByRank()
   auto iter = winners.begin();
   while (iter != winners.end())
   {
-    if (iter->rank() < max)
+    if (iter->getRank() < max)
       iter = winners.erase(iter);
     else
       iter++;

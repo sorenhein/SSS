@@ -7,7 +7,7 @@
 */
 
 // Compares vectors, taking into account the possibility that
-// there not be an ordering available.
+// there may not be an ordering available.
 
 #ifndef SSS_COMPARER_H
 #define SSS_COMPARER_H

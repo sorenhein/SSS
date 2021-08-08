@@ -16,6 +16,7 @@
 9. Shift Nodes from ranks to numbers, should not change anything
 A. Look at Plays without optimizations, as a mode
 B. Cmd line argument for debugged distribution
+C. Control the output by debug flag again
 
 
 Strategy::greaterEqual is only called from Strategy: >= Strategy.

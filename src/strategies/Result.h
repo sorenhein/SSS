@@ -17,11 +17,7 @@ struct Result
   Winners winners;
 
   // TODO Remove some of all these comparators again
-
-  bool fewerTricks(const Result& res2) const
-  {
-    return (tricks < res2.tricks);
-  }
+  // Should it be differentTricks or differentCompletely?
 
   bool differentTricks(const Result& res2) const
   {
@@ -29,16 +25,6 @@ struct Result
       return true;
     else
       return (winners.compareForDeclarer(res2.winners) != WIN_EQUAL);
-  }
-
-  bool moreTricks(const Result& res2) const
-  {
-    if (tricks > res2.tricks)
-      return true;
-    else if (tricks < res2.tricks)
-      return false;
-    else
-      return (winners.compareForDeclarer(res2.winners) == WIN_FIRST);
   }
 
   Compare compareByTricks(const Result& res2) const
@@ -59,6 +45,22 @@ struct Result
       return false;
     else
       return (winners.compareForDeclarer(res2.winners) == WIN_SECOND);
+  }
+
+  /*
+  bool fewerTricks(const Result& res2) const
+  {
+    return (tricks < res2.tricks);
+  }
+
+  bool moreTricks(const Result& res2) const
+  {
+    if (tricks > res2.tricks)
+      return true;
+    else if (tricks < res2.tricks)
+      return false;
+    else
+      return (winners.compareForDeclarer(res2.winners) == WIN_FIRST);
   }
 
   bool operator != (const Result& res2) const
@@ -88,6 +90,7 @@ struct Result
     else
       return winners.compareForDeclarer(res2.winners);
   }
+  */
 
   void set(
     const unsigned char tricksIn,

@@ -270,24 +270,26 @@ void Strategies::addStrategy(
     // Is the new strat dominated?
     if (((* iter).*comparator)(strat))
     {
-/* */
-if (iter->weight() == strat.weight())
-{
-  if (iter->consolidateByRank(strat))
-  {
+      if (iter->weight() == strat.weight())
+      {
+        if (iter->consolidateByRank(strat))
+        {
+          // Same tricks, and ranks can be dominated.
 timersStrat[28].start();
 timersStrat[28].stop();
-  }
-  else
-  {
-  cout << "HERE1 addStrategy\n";
-  cout << iter->str("iter", true);
-  cout << strat.str("str", true) << endl;
-  assert(false);
-  }
-}
-/* */
-      return;
+          return;
+        }
+        else
+        {
+          iter++;
+          cout << "HERE1 addStrategy\n";
+          // cout << iter->str("iter", true);
+          // cout << strat.str("str", true) << endl;
+          // assert(false);
+        }
+      }
+      else
+        iter++;
     }
     else
       iter++;
