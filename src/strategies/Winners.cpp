@@ -7,7 +7,7 @@
 
 #include "../plays/Play.h"
 
-#include "../stats/Comparer.h"
+#include "../utils/Comparer.h"
 
 /*
    The winner is structured as a number of sub-winners that are

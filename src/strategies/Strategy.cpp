@@ -23,7 +23,7 @@
 #define LOOKUP_SIZE (LOOKUP_BITS + LOOKUP_BITS)
 
 // TMP
-#include "../stats/Timer.h"
+#include "../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
 

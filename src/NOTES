@@ -15,6 +15,7 @@
    starts from 1, not 0, so is distinguishable in Nodes from void
 9. Shift Nodes from ranks to numbers, should not change anything
 A. Look at Plays without optimizations, as a mode
+B. Cmd line argument for debugged distribution
 
 
 Strategy::greaterEqual is only called from Strategy: >= Strategy.
@@ -147,6 +148,10 @@ Look at making number in Ranks start from 1, not 0, so that
 in Nodes we can go by number and not be rank in organizing the
 plays into ranks.
 
+- I think this involves switching to fullFlag in Play.h, and then
+- samePartial will make different comparisons, but
+- then void == 0 and lowest == 1, otherwise we get aliasing
+
 Divide Ranks optimizations into those that always make sense, and
 those that only make sense when we don't care about winners.
 
@@ -270,8 +275,6 @@ and shorter than all North cards, so their ranks can't matter.
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 
-
-Rename stats directory to utils?
 
 11/18752, AK8 / T765 missing QJ94.
 If trick starts 7 9 A void (d = 11), we currently get a winning

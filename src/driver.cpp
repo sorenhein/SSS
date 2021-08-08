@@ -7,7 +7,7 @@
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
 
-#include "stats/Timers.h"
+#include "utils/Timers.h"
 
 Timers timers;
 
