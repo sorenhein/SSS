@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 
-#include "../const.h"
+#include "Compare.h"
 
 using namespace std;
 
@@ -27,7 +27,7 @@ class Comparer
     unsigned dim1;
     unsigned dim2;
 
-    vector<vector<WinnerCompare>> matrix;
+    vector<vector<Compare>> matrix;
 
 
     void makeMarginals(
@@ -57,14 +57,14 @@ class Comparer
     void log(
       const unsigned n1,
       const unsigned n2,
-      const WinnerCompare cmp);
+      const Compare cmp);
 
     bool logForEquality(
       const unsigned n1,
       const unsigned n2,
-      const WinnerCompare cmp);
+      const Compare cmp);
 
-    WinnerCompare compare() const;
+    Compare compare() const;
 
     bool equal() const;
 

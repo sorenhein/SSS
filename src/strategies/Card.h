@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../const.h"
+#include "../utils/Compare.h"
 
 using namespace std;
 
@@ -37,7 +37,7 @@ class Card
     bool operator < (const Card& card2) const;
     bool identical(const Card& card2) const;
 
-    WinnerCompare compare(const Card& card2) const;
+    Compare compare(const Card& card2) const;
 
     bool isVoid() const;
 

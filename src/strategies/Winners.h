@@ -68,7 +68,7 @@ class Winners
 
     bool operator == (const Winners& w2) const;
 
-    WinnerCompare compareForDeclarer(const Winners& w2) const;
+    Compare compareForDeclarer(const Winners& w2) const;
 
     void flip();
 

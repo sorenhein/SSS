@@ -215,7 +215,7 @@ unsigned char Winner::rank() const
 }
 
 
-WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
+Compare Winner::declarerPrefers(const Winner& sw2) const
 {
   assert(mode != WIN_NOT_SET);
   assert(sw2.mode != WIN_NOT_SET);
@@ -237,7 +237,7 @@ WinnerCompare Winner::declarerPrefers(const Winner& sw2) const
   // TODO Might be nice to have WinnerMode as a 2-bit vector
   // or to have separate North and South bits.
 
-  WinnerCompare northPrefer, southPrefer;
+  Compare northPrefer, southPrefer;
   if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
   {
     if (sw2.mode == WIN_NORTH_ONLY || sw2.mode == WIN_BOTH)

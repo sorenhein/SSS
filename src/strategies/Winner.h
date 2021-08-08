@@ -8,6 +8,7 @@
 
 #include "Card.h"
 #include "../const.h"
+#include "../utils/Compare.h"
 
 struct Play;
 
@@ -66,7 +67,7 @@ class Winner
 
     unsigned char rank() const;
 
-    WinnerCompare declarerPrefers(const Winner& sw2) const;
+    Compare declarerPrefers(const Winner& sw2) const;
 
     void flip();
 

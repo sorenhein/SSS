@@ -80,7 +80,7 @@ bool Card::identical(const Card& sw2) const
 }
 
 
-WinnerCompare Card::compare(const Card& sw2) const
+Compare Card::compare(const Card& sw2) const
 {
   if (number > sw2.number)
     return WIN_FIRST;

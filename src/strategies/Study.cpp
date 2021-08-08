@@ -210,7 +210,7 @@ bool Study::greaterEqualByProfile(const Study& study2) const
 }
 
 
-WinnerCompare Study::compareByProfile(const Study& study2) const
+Compare Study::compareByProfile(const Study& study2) const
 {
   // This too uses the scrutinized results.
 

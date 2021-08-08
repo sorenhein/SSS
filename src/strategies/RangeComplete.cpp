@@ -93,8 +93,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // Now the two ranges have the same trick interval, but it may
   // or may not be a constant interval (lower == upper).
 
-  const WinnerCompare c = 
-    winnersHigh.compareForDeclarer(range2.winnersHigh);
+  const Compare c = winnersHigh.compareForDeclarer(range2.winnersHigh);
 
   if (lower < upper)
   {
@@ -111,8 +110,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     }
 
     // In case of a tie, we prefer the lowest winner on the other end.
-    const WinnerCompare d = 
-      winnersLow.compareForDeclarer(range2.winnersLow);
+    const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
 
     if (d == WIN_FIRST)
     {
@@ -147,8 +145,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   }
 
   // Now the high winners are the same.
-  const WinnerCompare d = 
-    winnersLow.compareForDeclarer(range2.winnersLow);
+  const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
 
   if (d == WIN_SECOND || d == WIN_EQUAL)
     return;
@@ -175,8 +172,7 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
   // The Winners method is from declarer's perspective, so c is
   // WIN_FIRST if declarer prefers our own winnersHigh.  
   // In this method we are taking the defenders' perspective.
-  const WinnerCompare c = 
-    winnersHigh.compareForDeclarer(range2.winnersLow);
+  const Compare c = winnersHigh.compareForDeclarer(range2.winnersLow);
 
   if (c == WIN_SECOND)
     return true;

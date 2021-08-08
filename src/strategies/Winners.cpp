@@ -144,7 +144,7 @@ bool Winners::operator == (const Winners& w2) const
 
     /*
     cout << comparer.str();
-    WinnerCompare c = comparer.compare();
+    Compare c = comparer.compare();
     if (c == WIN_FIRST)
       cout << "WIN_FIRST\n";
     else if (c == WIN_SECOND)
@@ -176,7 +176,7 @@ void Winners::operator += (const Winner& swNew)
 // cout << switer->strDebug();
 // cout << "with\n";
 // cout << swNew.strDebug();
-    const WinnerCompare cmp = switer->declarerPrefers(swNew);
+    const Compare cmp = switer->declarerPrefers(swNew);
 // cout << "cmp " << cmp << endl;
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
@@ -311,7 +311,7 @@ void Winners::operator |= (const Winners& w2)
 }
 
 
-WinnerCompare Winners::compareForDeclarer(const Winners& w2) const
+Compare Winners::compareForDeclarer(const Winners& w2) const
 {
   const unsigned s1 = winners.size();
   const unsigned s2 = w2.winners.size();
@@ -391,8 +391,7 @@ void Winners::consolidate()
   
   if (winners.size() == 2)
   {
-    const WinnerCompare c = 
-      winners.front().declarerPrefers(winners.back());
+    const Compare c = winners.front().declarerPrefers(winners.back());
     if (c == WIN_FIRST || c == WIN_EQUAL)
       winners.pop_back();
     else if (c == WIN_SECOND)

@@ -7,8 +7,6 @@
 #include "Result.h"
 #include "Ranges.h"
 
-#include "../const.h"
-
 using namespace std;
 
 
@@ -51,7 +49,7 @@ class Study
 
     bool greaterEqualByProfile(const Study& study2) const;
 
-    WinnerCompare compareByProfile(const Study& study2) const;
+    Compare compareByProfile(const Study& study2) const;
 };
 
 #endif

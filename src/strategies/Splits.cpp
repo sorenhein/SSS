@@ -143,7 +143,7 @@ void Splits::setMatrix()
       matrix[i][i] = WIN_EQUAL;
       for (unsigned j = 0; j < i; j++)
       {
-        const WinnerCompare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
+        const Compare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
         matrix[i][j] = c;
 
         // Flip for the anti-symmetric position.
@@ -188,7 +188,7 @@ const Strategy& Splits::ownStrategy(const unsigned index) const
 }
 
 
-WinnerCompare Splits::compare(
+Compare Splits::compare(
   const unsigned index1,
   const unsigned index2) const
 {

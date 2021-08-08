@@ -61,11 +61,11 @@ bool Extensions::greaterEqual(
   const Extension& ext1,
   const Extension& ext2) const
 {
-  const WinnerCompare c1 = splits1.compare(ext1.index1(), ext2.index1());
+  const Compare c1 = splits1.compare(ext1.index1(), ext2.index1());
   if (c1 == WIN_SECOND || c1 == WIN_DIFFERENT)
     return false;
 
-  const WinnerCompare c2 = splits2.compare(ext1.index2(), ext2. index2());
+  const Compare c2 = splits2.compare(ext1.index2(), ext2. index2());
   if (c2 == WIN_SECOND || c2 == WIN_DIFFERENT)
     return false;
 

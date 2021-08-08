@@ -50,15 +50,6 @@ enum WinningSide
   WIN_NONE = 3
 };
 
-enum WinnerCompare
-{
-  WIN_FIRST = 0,
-  WIN_SECOND = 1,
-  WIN_EQUAL = 2,
-  WIN_DIFFERENT = 3,
-  WIN_UNSET = 4
-};
-
 enum CombinationType
 {
   COMB_TRIVIAL = 0,

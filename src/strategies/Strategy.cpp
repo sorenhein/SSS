@@ -187,7 +187,7 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
   bool winFlag = false;
   while (iter1 != results.end())
   {
-    const WinnerCompare c = iter1->compareByTricks(* iter2);
+    const Compare c = iter1->compareByTricks(* iter2);
     // if (iter1->fewerTricks(* iter2))
     // if (* iter1 < * iter2)
     if (c == WIN_SECOND)
@@ -234,7 +234,7 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 }
 
 
-WinnerCompare Strategy::compareByProfile(const Strategy& strat2) const
+Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
   return study.compareByProfile(strat2.study);
 }
@@ -267,7 +267,7 @@ cout << "STARTING CONSOLIDATEBYRANK\n";
 
   while (iter1 != results.end())
   {
-    WinnerCompare cmp = iter1->winners.compareForDeclarer(iter2->winners);
+    const Compare cmp = iter1->winners.compareForDeclarer(iter2->winners);
 
     if (cmp == WIN_FIRST)
     {

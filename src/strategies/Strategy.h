@@ -9,8 +9,6 @@
 #include "Result.h"
 #include "Ranges.h"
 
-#include "../const.h"
-
 struct Play;
 struct Survivors;
 
@@ -97,7 +95,7 @@ class Strategy
     bool operator >= (const Strategy& tv2) const;
 
     bool greaterEqualByProfile(const Strategy& strat2) const;
-    WinnerCompare compareByProfile(const Strategy& strat2) const;
+    Compare compareByProfile(const Strategy& strat2) const;
 
     bool consolidateByRank(const Strategy& strat2);
 

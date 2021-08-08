@@ -41,7 +41,7 @@ struct Result
       return (winners.compareForDeclarer(res2.winners) == WIN_FIRST);
   }
 
-  WinnerCompare compareByTricks(const Result& res2) const
+  Compare compareByTricks(const Result& res2) const
   {
     if (tricks > res2.tricks)
       return WIN_FIRST;
@@ -79,7 +79,7 @@ struct Result
       return (winners.compareForDeclarer(res2.winners) == WIN_FIRST);
   }
 
-  WinnerCompare compareCompletely(const Result& res2) const
+  Compare compareCompletely(const Result& res2) const
   {
     if (tricks > res2.tricks)
       return WIN_FIRST;
