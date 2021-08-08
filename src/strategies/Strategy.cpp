@@ -234,7 +234,7 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 }
 
 
-Compare Strategy::compareByProfile(const Strategy& strat2) const
+WinnerCompare Strategy::compareByProfile(const Strategy& strat2) const
 {
   return study.compareByProfile(strat2.study);
 }

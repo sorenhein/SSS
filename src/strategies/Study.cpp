@@ -17,7 +17,7 @@
 
 mutex mtxStudy;
 static bool init_flag = false;
-vector<unsigned char> lookupGE2;
+vector<unsigned char> lookupGE;
 
 
 Study::Study()
@@ -46,7 +46,7 @@ void Study::setConstants()
   // where each entry combines five entries into 10 bits.
   // We can then look up two 10-bit profiles and get a partial answer.
   
-  lookupGE2.resize(1 << LOOKUP_SIZE);
+  lookupGE.resize(1 << LOOKUP_SIZE);
   for (unsigned i = 0; i < (1 << LOOKUP_BITS); i++)
   {
     for (unsigned j = 0; j < (1 << LOOKUP_BITS); j++)
@@ -73,7 +73,7 @@ void Study::setConstants()
       }
 
       if (flagGE)
-        lookupGE2[(i << LOOKUP_BITS) | j] = 1;
+        lookupGE[(i << LOOKUP_BITS) | j] = 1;
     }
   }
 }
@@ -199,7 +199,7 @@ bool Study::greaterEqualByProfile(const Study& study2) const
   auto piter2 = study2.profiles.begin();
   while (piter1 != profiles.end())
   {
-    if (! lookupGE2[((* piter1) << 10) | (* piter2)])
+    if (! lookupGE[((* piter1) << 10) | (* piter2)])
       return false;
 
     piter1++;
@@ -210,7 +210,7 @@ bool Study::greaterEqualByProfile(const Study& study2) const
 }
 
 
-Compare Study::compareByProfile(const Study& study2) const
+WinnerCompare Study::compareByProfile(const Study& study2) const
 {
   // This too uses the scrutinized results.
 
@@ -223,15 +223,15 @@ Compare Study::compareByProfile(const Study& study2) const
   bool lowerFlag = false;
   while (piter1 != profiles.end())
   {
-    const unsigned char b1 = lookupGE2[((* piter1) << 10) | (* piter2)];
-    const unsigned char b2 = lookupGE2[((* piter2) << 10) | (* piter1)];
+    const unsigned char b1 = lookupGE[((* piter1) << 10) | (* piter2)];
+    const unsigned char b2 = lookupGE[((* piter2) << 10) | (* piter1)];
 
     if (b1)
     {
       if (! b2)
       {
         if (lowerFlag)
-          return COMPARE_INCOMMENSURATE;
+          return WIN_DIFFERENT;
           
         greaterFlag = true;
       }
@@ -239,22 +239,22 @@ Compare Study::compareByProfile(const Study& study2) const
     else if (b2)
     {
       if (greaterFlag)
-        return COMPARE_INCOMMENSURATE;
+        return WIN_DIFFERENT;
 
       lowerFlag = true;
     }
     else
-      return COMPARE_INCOMMENSURATE;
+      return WIN_DIFFERENT;
 
     piter1++;
     piter2++;
   }
 
   if (greaterFlag)
-    return COMPARE_GREATER_THAN;
+    return WIN_FIRST;
   else if (lowerFlag)
-    return COMPARE_LESS_THAN;
+    return WIN_SECOND;
   else
-    return COMPARE_EQUAL;
+    return WIN_EQUAL;
 }
 

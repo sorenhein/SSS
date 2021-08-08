@@ -25,7 +25,7 @@ class Splits
 
     vector<Strategy const *> ownPtrs;
 
-    vector<vector<Compare>> matrix;
+    vector<vector<WinnerCompare>> matrix;
 
     unsigned count;
 
@@ -59,7 +59,7 @@ class Splits
 
     const Strategy& ownStrategy(const unsigned index) const;
 
-    Compare compare(
+    WinnerCompare compare(
       const unsigned index1,
       const unsigned index2) const;
 

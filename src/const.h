@@ -67,14 +67,6 @@ enum CombinationType
   COMB_OTHER = 3
 };
 
-enum Compare
-{
-  COMPARE_LESS_THAN = 0,
-  COMPARE_EQUAL = 1,
-  COMPARE_GREATER_THAN = 2,
-  COMPARE_INCOMMENSURATE = 3
-};
-
 
 const unsigned UNSIGNED_NOT_SET = numeric_limits<unsigned>::max();
 
