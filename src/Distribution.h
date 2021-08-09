@@ -88,6 +88,8 @@ class Distribution
     const Survivors& survivorsWestVoid() const;
     const Survivors& survivorsEastVoid() const;
 
+    string strHeader() const;
+
 
   public:
 

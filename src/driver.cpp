@@ -33,6 +33,12 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
+  if (! control.loop())
+  {
+    cout << "Don't know yet how to run single holdings.\n";
+    exit(0);
+  }
+
   setlocale(LC_ALL, "en_US.UTF-8");
 
   // Set up distributions.

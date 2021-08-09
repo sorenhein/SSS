@@ -74,7 +74,9 @@ void Control::configure()
     { "-s", "--south", CORRESPONDENCE_STRING, CTRL_SOUTH, "", 
       "South's hand (x's are possible and encouraged)." },
     { "-h", "--holding", CORRESPONDENCE_INT, CTRL_HOLDING, "-1",
-      "Holding in hex (alternative to -n and -s)." },
+      "Holding in dec/hex, e.g. 0x1295 (replaces -n and -s)." },
+    { "-H", "--hlength", CORRESPONDENCE_INT, CTRL_HOLDING_LENGTH, "13",
+      "Holding length." },
     { "-c", "--cards", CORRESPONDENCE_INT, CTRL_CARDS, "13",
       "Number of cards (default: 13)." },
     { "-l", "--lower", CORRESPONDENCE_INT, CTRL_WEST_MIN, "0",
@@ -95,6 +97,16 @@ void Control::configure()
     { "-e", "--expect", CORRESPONDENCE_DOUBLE, CTRL_EXPECT, "-1.",
       "Average tricks expected (e.g. from Roudinesco's book)." },
 
+    { "-a", "--loop", CORRESPONDENCE_BOOL, CTRL_LOOP_FLAG, "yes",
+      "Loop over combinations, not single-shot (default: true)." },
+    { "-A", "--ranks", CORRESPONDENCE_BOOL, CTRL_ALL_RANKS_FLAG, "yes",
+      "In loop (implies -a), process all ranks (default: true)." },
+
+    { "-R", "--read", CORRESPONDENCE_STRING, CTRL_READ_BINARY_DIRECTORY, 
+      "", "Read directory of binary files with rank information." },
+    { "-W", "--write", CORRESPONDENCE_STRING, CTRL_WRITE_BINARY_DIRECTORY, 
+      "", "Write directory of binary files with rank information." },
+
     { "-i", "--input", CORRESPONDENCE_STRING, CTRL_INPUT_FILE, "",
       "Input batch file with command-line strings." },
     { "-f", "--file", CORRESPONDENCE_STRING, CTRL_CONTROL_FILE, "",
@@ -103,7 +115,7 @@ void Control::configure()
       "Text to print (e.g. Roudinesco page and number)." },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
-      "0x001: Some\n"
+      "0x001: Identification and basic results\n"
       "0x002: More" },
     { "-d", "--debug", CORRESPONDENCE_BIT_VECTOR, CTRL_DEBUG, "0x0",
       "Output verbosity (default: 0x0).  Bits:\n"
@@ -198,7 +210,8 @@ bool Control::completeHoldings()
   if (n.empty() &&
       s.empty() &&
       h == -1 &&
-      Control::inputFile().empty())
+      Control::inputFile().empty() &&
+      ! Control::loop())
   {
     cout << "Need an input combination or an input file.\n";
     return false;
@@ -316,6 +329,13 @@ unsigned Control::holding() const
 }
 
 
+unsigned Control::holdingLength() const
+{
+  const int h = entry.getInt(CTRL_HOLDING_LENGTH);
+  return (h == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(h));
+}
+
+
 unsigned Control::cards() const
 {
   const int c = entry.getInt(CTRL_CARDS);
@@ -365,9 +385,33 @@ unsigned Control::goal() const
 }
 
 
+bool Control::loop() const
+{
+  return entry.getBool(CTRL_LOOP_FLAG);
+}
+
+
+bool Control::loopAllRanks() const
+{
+  return entry.getBool(CTRL_ALL_RANKS_FLAG);
+}
+
+
 double Control::expect() const
 {
   return entry.getDouble(CTRL_EXPECT);
+}
+
+
+const string& Control::binaryInputDir() const
+{
+  return entry.getString(CTRL_READ_BINARY_DIRECTORY);
+}
+
+
+const string& Control::binaryOutputDir() const
+{
+  return entry.getString(CTRL_WRITE_BINARY_DIRECTORY);
 }
 
 
@@ -444,6 +488,12 @@ string Control::strHex(const int val) const
 }
 
 
+string Control::strBool(const bool val) const
+{
+  return (val ? "yes" : "no");
+}
+
+
 string Control::strDouble(const double val) const
 {
   if (val < 0.)
@@ -453,7 +503,6 @@ string Control::strDouble(const double val) const
   ss << setprecision(2) << val;
   return ss.str();
 }
-
 
 string Control::strBitVector(
   const vector<int>& bits,
@@ -507,8 +556,7 @@ string Control::str() const
       case CORRESPONDENCE_STRING_MAP:
       case CORRESPONDENCE_FLOAT_VECTOR:
       case CORRESPONDENCE_BOOL:
-        cout << "Haven't learned: " << 
-          static_cast<unsigned>(cmd.corrType) << "\n";
+        val = Control::strBool(entry.getBool(cmd.no));
         break;
       case CORRESPONDENCE_INT_VECTOR:
         doc = Control::strBitVector(entry.getIntVector(cmd.no), doc);

@@ -904,6 +904,18 @@ const Survivors& Distribution::survivors(const Play& play) const
 }
 
 
+string Distribution::strHeader() const
+{
+  stringstream ss;
+  ss << 
+    setw(4) << right << "Dist" <<
+    setw(8) <<  "West" << 
+    setw(8) <<  "East" << 
+    setw(8) <<  "Cases" << "\n";
+  return ss.str();
+}
+
+
 string Distribution::str() const
 {
   if (distCanonical != nullptr)
@@ -914,9 +926,12 @@ string Distribution::str() const
     return "No distributions\n";
 
   stringstream ss;
+  ss << Distribution::strHeader();
+
   for (unsigned d = 0; d < distributions.size(); d++)
   {
     ss << 
+      setw(4) << d <<
       setw(8) << distributions[d].west.str(names[rankSize]) <<
       setw(8) << distributions[d].east.str(names[rankSize]) <<
       setw(8) << distributions[d].cases << "\n";

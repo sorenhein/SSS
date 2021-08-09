@@ -19,11 +19,14 @@ enum ControlFieldStrings
   CTRL_CONTROL_FILE = 3,
   CTRL_TEXT = 4,
 
-  CTRL_SIMPLE_DIRECTORY = 5,
-  CTRL_CONSTANT_DIRECTORY = 6,
-  CTRL_ROUDI_DIRECTORY = 7,
+  CTRL_READ_BINARY_DIRECTORY = 5,
+  CTRL_WRITE_BINARY_DIRECTORY = 6,
 
-  CTRL_STRINGS_SIZE = 8
+  CTRL_SIMPLE_DIRECTORY = 7,
+  CTRL_CONSTANT_DIRECTORY = 8,
+  CTRL_ROUDI_DIRECTORY = 9,
+
+  CTRL_STRINGS_SIZE = 10
 };
 
 enum ControlIntVectors
@@ -36,26 +39,29 @@ enum ControlIntVectors
 
 enum ControlBools
 {
-  CTRL_BOOLS_SIZE = 0
+  CTRL_LOOP_FLAG = 0,
+  CTRL_ALL_RANKS_FLAG = 1,
+  CTRL_BOOLS_SIZE = 2
 };
 
 enum ControlInts
 {
   CTRL_HOLDING = 0,
-  CTRL_CARDS = 1,
+  CTRL_HOLDING_LENGTH = 1,
+  CTRL_CARDS = 2,
 
-  CTRL_WEST_MIN = 2,
-  CTRL_WEST_MAX = 3,
-  CTRL_WEST_VACANT = 4,
-  CTRL_EAST_MIN = 5,
-  CTRL_EAST_MAX = 6,
-  CTRL_EAST_VACANT = 7,
+  CTRL_WEST_MIN = 3,
+  CTRL_WEST_MAX = 4,
+  CTRL_WEST_VACANT = 5,
+  CTRL_EAST_MIN = 6,
+  CTRL_EAST_MAX = 7,
+  CTRL_EAST_VACANT = 8,
 
-  CTRL_GOAL = 8,
+  CTRL_GOAL = 9,
 
-  CTRL_NUM_THREADS = 9,
+  CTRL_NUM_THREADS = 10,
 
-  CTRL_INTS_SIZE = 10
+  CTRL_INTS_SIZE = 11
 };
 
 enum ControlDoubles
@@ -95,6 +101,7 @@ class Control
     void configure();
 
     string strHex(const int val) const;
+    string strBool(const bool val) const;
     string strDouble(const double val) const;
     string strBitVector(
       const vector<int>& bits,
@@ -121,6 +128,7 @@ class Control
     const string& north() const;
     const string& south() const;
     unsigned holding() const;
+    unsigned holdingLength() const;
     unsigned cards() const;
     unsigned westMin() const;
     unsigned westMax() const;
@@ -131,6 +139,12 @@ class Control
 
     unsigned goal() const;
     double expect() const;
+
+    bool loop() const;
+    bool loopAllRanks() const;
+
+    const string& binaryInputDir() const;
+    const string& binaryOutputDir() const;
 
     const string& inputFile() const; 
     const string& controlFile() const; 

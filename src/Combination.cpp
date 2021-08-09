@@ -10,12 +10,15 @@
 #include "Distribution.h"
 #include "CombEntry.h"
 
+#include "inputs/Control.h"
+
 #include "plays/Plays.h"
 
 #include "ranks/Ranks.h"
 
 #include "utils/Timers.h"
 
+extern Control control;
 extern Timers timers;
 
 
@@ -44,8 +47,9 @@ const Strategies& Combination::strategize(
   bool debugFlag)
 {
   cout << "Cards" << setw(3) << ranks.size() << ": " <<
-    centry.canonicalHolding3 << " / " <<
-    centry.canonicalHolding2 << endl;
+    centry.canonicalHolding3 << " | " <<
+    "0x" << hex << centry.canonicalHolding3 << " / " <<
+    dec << centry.canonicalHolding2 << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
@@ -57,22 +61,31 @@ const Strategies& Combination::strategize(
   plays.clear();
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
+
   // if (centry.canonicalHolding3 == 14480 && ranks.size() == 10)
   // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
   // if (centry.canonicalHolding3 == 132889 && ranks.size() == 12)
   // if (centry.canonicalHolding3 == 4025 && ranks.size() == 10)
   // if (centry.canonicalHolding3 == 4801 && ranks.size() == 8)
-  if (centry.canonicalHolding3 == 4757 && ranks.size() == 9)
+  // if (centry.canonicalHolding3 == 4757 && ranks.size() == 9)
   // if (centry.canonicalHolding3 == 4801 && ranks.size() == 8)
   // if (centry.canonicalHolding3 == 1608 && ranks.size() == 8)
   // if (centry.canonicalHolding3 == 1598 && ranks.size() == 8)
   // if (centry.canonicalHolding3 == 1585 && ranks.size() == 8)
   // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
+
+  if (control.holding() != 0 &&
+      centry.canonicalHolding3 == control.holding() &&
+      ranks.size () == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
+  }
+
+  if (debugFlagTmp || control.outputBit0())
+  {
+    wcout << "\n" << ranks.wstrDiagram() << "\n";
     cout << ranks.strTable();
-    wcout << ranks.wstrDiagram();
-    cout << distPtr->str();
+    cout << "Distributions\n" << distPtr->str() << "\n";
   }
 
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
@@ -83,6 +96,9 @@ const Strategies& Combination::strategize(
     // Fill out a single constant strategy with the right value and size.
     strats.setTrivial(trivialEntry, 
       static_cast<unsigned char>(distPtr->size()));
+
+    if (control.outputBit0())
+      cout << strats.str("Trivial result", true) << "\n";
     return strats;
   }
 
@@ -104,6 +120,9 @@ const Strategies& Combination::strategize(
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
+  if (control.outputBit0())
+    cout << strats.str("Result", true) << "\n";
+
   return strats;
 }
 
@@ -116,8 +135,7 @@ const Strategies& Combination::strategizeVoid(
   Plays& plays,
   bool debugFlag)
 {
-cout << "cholding2 is " << centry.canonicalHolding2 << 
-  ", size " << ranks.size() << endl;
+cout << "cholding2 is " << centry.canonicalHolding2 << ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
