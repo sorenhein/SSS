@@ -43,6 +43,14 @@ void Card::set(
 }
 
 
+void Card::updateName(const unsigned char nameIn)
+{
+  // Used for opponents' cards once we know to replace, say, '6' or '7'
+  // with 'x'.
+  name = nameIn;
+}
+
+
 bool Card::operator > (const Card& card2) const
 {
   return (number > card2.number);

@@ -98,6 +98,14 @@ timersStrat[0].start();
 
   scrutinizedFlag = false;
 
+  if (strategies.size() > 1 && ! Strategies::ordered())
+  {
+    strategies.sort([](const Strategy& strat1, const Strategy& strat2)
+    {
+      return (strat1.weight() > strat2.weight());
+    });
+  }
+
 timersStrat[0].stop();
 }
 
@@ -788,6 +796,23 @@ const Ranges& Strategies::getRanges() const
 
 /************************************************************
  *                                                          *
+ * Winners methods                                          *
+ *                                                          *
+ ************************************************************/
+
+const Winners Strategies::winners() const
+{
+  Winners wOverall;
+
+  for (const auto& res: strategies)
+    wOverall *= res.winners();
+
+  return wOverall;
+}
+
+
+/************************************************************
+ *                                                          *
  * string methods                                           *
  *                                                          *
  ************************************************************/
@@ -843,6 +868,29 @@ string Strategies::strWeights(const bool rankFlag) const
 }
 
 
+string Strategies::strWinners() const
+{
+  stringstream ss;
+  ss << setw(4) << "Win";
+
+  Winners wOverall;
+  for (const auto& res: strategies)
+  {
+    Winners wStrat = res.winners();
+    ss << setw(12) << wStrat.strEntry();
+    wOverall *= wStrat;
+  }
+  ss << "\n";
+
+  if (strategies.size() > 1)
+    ss <<
+      setw(4) << "Prod" <<
+      setw(12) << wOverall.strEntry() << "\n\n";
+
+  return ss.str();
+}
+
+
 string Strategies::str(
   const string& title,
   const bool rankFlag) const
@@ -876,6 +924,9 @@ string Strategies::str(
   }
 
   ss << Strategies::strWeights(rankFlag);
+
+  if (rankFlag)
+    ss << Strategies::strWinners();
 
   return ss.str();
 }

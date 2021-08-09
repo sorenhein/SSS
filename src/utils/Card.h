@@ -37,6 +37,8 @@ class Card
       const unsigned char numberIn,
       const unsigned char nameIn);
 
+    void updateName(const unsigned char nameIn);
+
     bool operator > (const Card& card2) const;
     bool operator >= (const Card& card2) const;
     bool operator == (const Card& card2) const;

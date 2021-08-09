@@ -1,21 +1,12 @@
-2021-08-06
-----------
-1. Implement all places where Strategy's are compared
-4. All places where the equivalent of greaterEqual occurs
-5. Clean up code in strategies/*
- . Write a way to get the *= Winners of a Strategy
- . Should be of a few basic forms, i.e. "2 of 3 tops"
- . What else is there?
- . Is it an artifact of not yet having all plays considered?
-6. Check all the numbered issues below.  Make list of open ones
-7. Clean up this NOTES
-8. Shift something in Plays or Ranks such that the card number
-   starts from 1, not 0, so is distinguishable in Nodes from void
-9. Shift Nodes from ranks to numbers, should not change anything
-A. Look at Plays without optimizations, as a mode
-B. Cmd line argument for debugged distribution
-C. Control the output by debug flag again
+Strategies += Strategies by rank comparison
+-------------------------------------------
+Places where Strategy's are compared:
+* Strategies::addStrategy [implemented rank equality here only for now]
+* Strategies::multiplyAddStrategy
+* Extensions::add
 
+* All places where the equivalent of greaterEqual occurs
+* Clean up Strategies code/directory
 
 Strategy::greaterEqual is only called from Strategy: >= Strategy.
 Certainly if #tricks is lower anywhere, we should return false.
@@ -26,229 +17,53 @@ Presumably this sort of things shows up in all the way that we can
 Strategies += Strategy, which probably is centered in
 Strategies += Strategies as well.  It includes Extensions.
 
-
-2021-07-11
-----------
-Places where Strategy's are compared:
-* Strategies::addStrategy [implemented rank equality here only for now]
-* Strategies::multiplyAddStrategy
-* Extensions::add
-
-8/1283, AJ / K98 missing QT7:
-The "constants" when starting with the 9, for example, have different
-winners for the hook and the top.  When they are reinstated, this
-information is lost.
-
-Likely solution (will cost some efficiency):
-Introduce a rankEqualityFlag.
-In
-* Nodes::strategizeDefendersAdvanced,
-* Strategies::makeRanges,
-* Nodes::propagateRanges,
-* Node::purgeRanges,
-only let something be a constant (with the flag set) when
-the ranks too are the same.  For constants it's clear.  For dominated
-ranges, we don't need to look at the ranks.
+See if we can make two types of Result as well, and select on
+whether the Winners matter.
 
 
-2021-06-27: Rank vector reductions
-----------
-
-AK8 / QT missing J9, 7 / 150: Comes down to
-
-Lead the 8:
-
-Dist           0
-----------------
-0      3     5NS
-1      3      5S
-2      3      5S
-3      3     5NS
-----------------
- Wgt          12
-
-Lead the T:
-
-Dist           0
-----------------
-0      3 5N',5NS
-1      3      5N
-2      3      5N
-3      3 5N',5NS
-----------------
- Wgt          12
-
-As a Strategy has a weight, so it should have a winners that
-summarizes the lowest winners.  In the example, 5NS and 5N',5NS.
-These should get updated whenever the Strategy has some finality,
-e.g. after a multiplication or an adaptation, or perhaps only
-at the Strategies level after e.g. a += Strategies.
-
-When comparing two strategies, if the trick profiles are identical,
-prefer the one with the better (for declarer) winners.  In the
-example, 5N',5NS as it is more flexible than 5NS.
-
-10/4025, AK76 / QT9 missing J85:
-Now behaves quite sensibly.  Open questions:
-1. Node index 34, T J A 5
-   RHO strategy for d = 3 (H/hx, i.e. J/85) is 4 tricks, 6NS.
-   Are we missing 6N',6NS because of the holding we end up in
-   after the trick, with 6 cards?  K76 / Q9 missing 8, so
-   AT9 / KQ missing J.  Quite possibly.
-2. Similarly to 7/150, we end up with two partner strategies.
-   One has 6N',6NS in some middle distributions, the other
-   only 6NS.  As stated this is probably not complete.  But 
-   nonetheless, they both need 6N'S in at least one case.
-   So in that sense they're the same.  Actually one will dominate
-   the other because of these secondary ranks in this case.
-
-Dist           0
-----------------
-0      4    6N'S
-1      4     6NS
-2      4     6NS
-3      4     6NS
-4      4     6NS
-5      4     6NS
-6      4     6NS
-7      4    6N'S
-----------------
- Wgt          32
-
-Dist           0
-----------------
-0      4    6N'S
-1      4 6N',6NS
-2      4 6N',6NS
-3      4     6NS
-4      4     6NS
-5      4 6N',6NS
-6      4 6N',6NS
-7      4    6N'S
-----------------
- Wgt          32
+Ranges
+------
+* Put in new directory
+* See about virtual class configured at runtime
 
 
-Will there be cases where two Strategy's are just different in
-this regard? Empirical question.
-
-Rank tracking
-* Tvector: add method lowestWinner()
-* Tvectors: ditto
-* Somehow map to the holding without lower cards than this mattering
-
-
-2021-06:27: Other rank-related stuff
-----------
-
-Will it be important that certain plays are excluded in Ranks?
-
-Look at making number in Ranks start from 1, not 0, so that
-in Nodes we can go by number and not be rank in organizing the
-plays into ranks.
-
-- I think this involves switching to fullFlag in Play.h, and then
-- samePartial will make different comparisons, but
-- then void == 0 and lowest == 1, otherwise we get aliasing
-
-Divide Ranks optimizations into those that always make sense, and
-those that only make sense when we don't care about winners.
-
-Can maybe parametrize Player by full/rank-only loop.  Only needed
-for North and South.
-
-Can maybe parametrize the Ranks optimizations in the same way.
-
-Optimization in Ranks:
-- With AQ / - missing KJ, on Ace never drop King (partner will show
-  out and the lead was the top card)
-- With KJ / - missing AQ, on K never play Q (partner HAS shown out,
-  so always win trick)
-- Maybe in 4th hand when NS are down to <= 1 card after this trick,
-  KJ with AQxx outstanding for example (6/548).
+Ranks stored in tables
+----------------------
+* Write and read binary files with holdings to run vs. not
+* Is it true that a minimal combination does not need non-minimal
+  ones to solve?  If not, we would either solve the non-minimal
+  ones, or look up the non-minimal one (probably better) and
+  map the smaller number of distributions to the current case somehow
 
 
-2021-05-09
-----------
-10 / 41388: 9 - 8 - void - J: getStrategies are not in descending
-weight order, probably because we threw away some strategies!
-Does this matter, or is it fixed when we multiply stategies anyway?
-
-Why doesn't it work in Combination to make complete copies of
-everything?  It must be some stray pointers, but where?
-
-When we don't solve all Combination's because of ranks, we have
-to spread out the more concentrated distributions onto the current
-trick if needed.
+Overall rank of a Combination
+-----------------------------
+* Some best winners have choices ("top 2 of 3")
+  - Leave all cards that may win at declarer's choice, even though
+    that combination could simplify to several others
+* All unused cards can be set to x in order to get the base case
+* Could validate by limiting strategies to those that don't
+  distinguish by x.  But how to detect?  Maybe once we know the
+  plays that go with each strategy
 
 
-2021-04-26
-----------
+Limited Plays considered
+------------------------
+* Shift something in Plays or Ranks such that the card number
+  starts from 1, not 0, so is distinguishable in Nodes from void
+  - I think this involves switching to fullFlag in Play.h, and then
+  - samePartial will make different comparisons, but
+  - then void == 0 and lowest == 1, otherwise we get aliasing
 
-Player:
-- Streamline the Player post-processing into a single call. (done?)
-- Streamline Player variables and name them temp loop variables. (done?)
+* Divide Ranks optimizations into those that always make sense, and
+  those that only make sense when we don't care about winners.
+* Can maybe parametrize Player by full/rank-only loop.  Only needed
+  for North and South.
+* Can maybe parametrize the Ranks optimizations in the same way.
 
-Errors:
-- 4 cards / 8, AK / - (missing HH): The printed ranks in Play #2 are odd.
-- Sometimes no ranks at all, e.g. the 9-card void combination.
-
-
-
-March 2021
-----------
-KQ / J9 missing AT: EW can make NS choose between K (duck) and QJ (win).
-QJ / K9: Same, here it's Q and KJ.
-KJ / Q9: K or JQ.
-It seems true that not just the K should be the winner in the end.
-In a way, the problem is that that we could simplify to KQ / xx or
-to Kx / Qx. In fact, here probably it's an EW choice between K and Q.
-And these should definitely both survive.
-
-So in these three cases more generally, the first trick can go
-N1 wins, then no more tricks for NS.
-It can also go
-N1 loses, then NS just have a choice between N2 and S1.
-N1 * (N2 + S1) = N2 + N1*S1.
-This means we can either view it as KQ / xx or as Kx / Qx.
-
-2021-03-21
-----------
 Make a version of Ranks::setPlays with fewer optimizations:
 - Don't have to save partner's cards of equal rank
 - When equal rank, all depth combinations
-
-
-9. Problem #1 is that Ranks optimizes away plays that are relevant
-   for ranks in this case.  So Ranks could have a full-play mode, needed
-   to calculate the tables of relevant ranks (stored in files).  And
-   a reduced-play mode as now.
-
-10.Problem #2 is when NS have a shared winner in the current trick.
-   It's not clear then which depths were played. Can we just choose
-   the highest from one side and the lowest from the other? Or do we
-   need to consider two such combinations? Here it would work.
-   
-
-   
-
-Summary of speed-up considerations
-----------------------------------
-
-Rank equivalence
-
-* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions with the
-  normal analysis, and still needs 58 distributions the new way
-* When we lead the 7, the defenders with 4/5 cards can probably pick
-  constant plays that leave declarer no recourse
-* With 3 cards, the defenders can choose to yield "KJ9" or "KJT",
-  no matter what the lead is (as long as they're not forced to
-  play the Q or A, which again leads to no declarer choice)
-* So in a sense the small cards x, 8 and T don't matter!
-* We have to recognize this somehow, as strategies will merge
-
-Play eliminations
------------------
 
 Play eliminations, based on KJ975 missing AQT8xx, so
 whenever partner is void:
@@ -263,30 +78,43 @@ and shorter than all North cards, so their ranks can't matter.
   take a rank trick < 8. |S| <= |N|.  Max S <= Max N.  But this only
   gets some of the tough ones.
 
-- Winning ranks for NS
-- Winning plays/strategies such as "cash ace"
+* Actual optimizations that are probably missing today
+- With AQ / - missing KJ, on Ace never drop King (partner will show
+  out and the lead was the top card)
+- With KJ / - missing AQ, on K never play Q (partner HAS shown out,
+  so always win trick)
+- Maybe in 4th hand when NS are down to <= 1 card after this trick,
+  KJ with AQxx outstanding for example (6/548).
+
+
+Rank issues due to limited Plays considered
+-------------------------------------------
+*  8 /  1585, AQ8 / JT7 missing K9.  See spreadsheet.
+*  9 /  4757, AQ8 / JT7.  See spreadsheet.
+* 11 / 18752, AK8 / T765.  The result is 2S" (the 5) -- not needed.
+
+
+Only symmetric strategies with complex voids?
+---------------------------------------------
+* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
+
+
+Winning NS plays in semantic form
+---------------------------------
+* Winning plays/strategies such as "cash ace"
   - Sometimes NS have several ways to reach its optimum; keep them all
-- Noting the inequalities on EW plays that are needed to stabilize
+* Noting the inequalities on EW plays that are needed to stabilize
   an NS strategy
 
-------
 
+Applying constraints to defensive holdings
+------------------------------------------
 * Distribution::limit, using a struct that Control returns
   - We will fail for now on some HCP values
 
 
-11/18752, AK8 / T765 missing QJ94.
-If trick starts 7 9 A void (d = 11), we currently get a winning
-rank of 2S" (which is the 5).  This comes from the lookup of
-AT / J98 missing KQ7, 8 / 2039 I think.  This may have something
-to do with the limited leads in the play module?  It seems we can
-play AT / J9x for 2 tricks against KQx no matter what our x is.
+Bug / behavior?
+---------------
+Why doesn't it work in Combination to make complete copies of
+everything?  It must be some stray pointers, but where?
 
-
-10/41207, KQ7 / T96 missing AJ85.
-If trick starts 7 5 T J, we still have KQ / 96 missing A8.
-This is the same as KQ / J9 missing AT.  When we look it up, we
-rightly get 3N' or 3NS, so Q or KJ.  When we map this to the original
-suit, we get Q or K9.  I guess the 9 is somehow removed by rank.
-But the problem is that we're left with K or Q, which is redundant
-and causes the == to blow up in this case.

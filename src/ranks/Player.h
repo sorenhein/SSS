@@ -101,7 +101,7 @@ class Player
 
     vector<RankInfo> rankInfo;
 
-    // This are long-term variables.
+    // These are long-term variables.
     bool singleRank;
     unsigned char minRank;
     unsigned char maxRank;

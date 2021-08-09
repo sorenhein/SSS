@@ -73,6 +73,8 @@ class Strategies
 
     string strWeights(const bool rankFlag) const;
 
+    string strWinners() const;
+
     void operator += (const Strategy& strat);
 
 
@@ -115,6 +117,8 @@ class Strategies
     void propagateRanges(const Strategies& child);
 
     const Ranges& getRanges() const;
+
+    const Winners winners() const;
 
     string strRanges(const string& title = "") const;
 

@@ -623,12 +623,28 @@ void Strategy::adapt(
   }
 
   // Update the winners.  This takes about 12% of the method time.
-    for (auto& res: results)
-      res.winners.update(play);
+  for (auto& res: results)
+    res.winners.update(play);
 
   Strategy::adaptResults(play, survivors);
 
   study.study(results);
+}
+
+
+/************************************************************
+ *                                                          *
+ * Winners                                                  *
+ *                                                          *
+ ************************************************************/
+
+const Winners Strategy::winners() const
+{
+  Winners w;
+  for (auto& res: results)
+    w *= res.winners;
+
+  return w;
 }
 
 

@@ -26,22 +26,27 @@ void Opponents::setNames()
   // For the opponents we simplify more than for North-South.
   unsigned index = 0;
   unsigned char rankPrev = numeric_limits<unsigned char>::max();
+  char rep = '?';
 
   for (auto cit = cards.rbegin(); cit != cards.rend(); cit++)
   {
     const unsigned char r = cit->getRank();
     if (r == rankPrev)
+    {
+      cit->updateName(static_cast<unsigned char>(rep));
       continue;
+    }
 
     rankPrev = r;
     const unsigned count = rankInfo[r].count;
     if (count > 1)
     {
       // Turn <= ~ an eight into 'x'.
-      const char rep = (r == minRank && minAbsCardNumber <= 6 ?
+      rep = (r == minRank && minAbsCardNumber <= 6 ?
         'x' : GENERIC_NAMES[index]);
 
       rankInfo[r].names = string(count, rep);
+      cit->updateName(static_cast<unsigned char>(rep));
       index++;
     }
     else if (count == 1)

@@ -113,6 +113,8 @@ class Strategy
       const Play& play,
       const Survivors& survivors);
 
+    const Winners winners() const;
+
     string str(
       const string& title = "",
       const bool rankFlag = false) const;
