@@ -201,7 +201,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
   // This has to be a separate loop, as all ranges have to propagate 
   // up first.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->purgeRanges();
+    iter->purgeRanges(debugFlag);
 
   Nodes::removeNodes();
 

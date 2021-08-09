@@ -107,7 +107,7 @@ void Node::propagateRanges()
 }
 
 
-void Node::purgeRanges()
+void Node::purgeRanges(const bool debugFlag)
 {
   if (strats.empty())
     return;
@@ -124,9 +124,12 @@ void Node::purgeRanges()
   auto citer = constants.begin();
 
   bool eraseFlag = false;
-cout << "Starting node\n";
-cout << Node::strPlay(LEVEL_LHO);
-cout << strats.str("Starting", true);
+  if (debugFlag)
+  {
+    cout << "\nPurging ranges: " 
+      << Node::strPlay(LEVEL_LHO);
+    cout << strats.str("Starting point", true);
+  }
 
   for (auto& parentRange: parentPtr->strats.getRanges())
   {
@@ -142,27 +145,31 @@ cout << strats.str("Starting", true);
       stratData.eraseConstantDist(* citer, 
         parentRange.min(), parentRange.constantWinners());
       eraseFlag = true;
-cout << "Erased constant " << citer->strEntry(true) << "\n";
-cout << "Parent range\n";
-cout << parentRange.strHeader();
-cout << parentRange.str();
       citer++;
+
+      if (debugFlag)
+      {
+        cout << "Erased constant for parent range:\n";
+        cout << parentRange.strHeader();
+        cout << parentRange.str();
+      }
     }
     else if (parentRange < * stratData.riter)
     {
-cout << "Erasing range\n";
-cout << "Parent range\n";
-cout << parentRange.strHeader();
-cout << parentRange.str();
-cout << "Dominated range\n" << stratData.riter->str();
       stratData.eraseDominatedDist();
       eraseFlag = true;
+
+      if (debugFlag)
+      {
+        cout << "Erased dominated range for parent range:\n";
+        cout << parentRange.strHeader();
+        cout << parentRange.str();
+      }
     }
   }
 
   // Shrink to the size used.
   constants.eraseRest(citer);
-cout << constants.str("Constants now", true);
   parentPtr->constants *= constants;
 
   strats.scrutinize(parentPtr->strats.getRanges());
@@ -178,8 +185,13 @@ cout << constants.str("Constants now", true);
     // and riter, to rewind.
 
     strats.consolidate();
+
+    if (debugFlag)
+    {
+      cout << constants.str("\nNew constants", true) << "\n";
+      cout << strats.str("Ranges after purging", true);
+    }
   }
-cout << strats.str("Ending", true);
 }
 
 

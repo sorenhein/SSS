@@ -66,7 +66,7 @@ class Node
 
     void propagateRanges();
 
-    void purgeRanges();
+    void purgeRanges(const bool debugFlag);
 
     void reactivate();
 
