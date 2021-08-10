@@ -136,6 +136,27 @@ bool Winner::operator != (const Winner& winner2) const
 }
 
 
+void Winner::multiplySide(
+  Card& own,
+  const Card& other,
+  const WinnerMode otherMode,
+  const unsigned bitmask)
+{
+  if (otherMode & bitmask)
+  {
+    if (mode & bitmask)
+      own *= other;
+    else
+    {
+      // As this side wasn't set, the other must be.
+      own = other;
+      mode = WIN_BOTH;
+    }
+  }
+}
+
+
+
 void Winner::operator *= (const Winner& winner2)
 {
   // The opponents have the choice.
@@ -154,29 +175,8 @@ void Winner::operator *= (const Winner& winner2)
   if (winner2.rank < rank)
     rank = winner2.rank;
 
-  if (winner2.mode & WIN_NORTH_SET)
-  {
-    if (mode & WIN_NORTH_SET)
-      north *= winner2.north;
-    else
-    {
-      // As north wasn't set, south must be.
-      north = winner2.north;
-      mode = WIN_BOTH;
-    }
-  }
-
-  if (winner2.mode & WIN_SOUTH_SET)
-  {
-    if (mode & WIN_SOUTH_SET)
-      south *= winner2.south;
-    else
-    {
-      // As south wasn't set, north must be.
-      south = winner2.south;
-      mode = WIN_BOTH;
-    }
-  }
+  Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
+  Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
 
   if (mode == WIN_BOTH)
   {
@@ -364,8 +364,6 @@ void Winner::update(const Play& play)
 
 bool Winner::rankExceeds(const Winner& winner2) const
 {
-  // TODO Maybe Winner should know its rank.
-
   if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
   {
     // Being unset is like having an "infinite" winning rank.

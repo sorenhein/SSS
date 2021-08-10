@@ -42,6 +42,12 @@ class Winner
     unsigned char rank;
 
 
+    void multiplySide(
+      Card& own,
+      const Card& other,
+      const WinnerMode otherMode,
+      const unsigned bitmask);
+
     Compare declarerPrefersSide(
       const Card& own,
       const Card& other,
