@@ -42,6 +42,13 @@ class Winner
     unsigned char rank;
 
 
+    Compare declarerPrefersSide(
+      const Card& own,
+      const Card& other,
+      const WinnerMode otherMode,
+      const unsigned bitmask) const;
+
+
   public:
 
     Winner();

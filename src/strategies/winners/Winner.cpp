@@ -234,6 +234,33 @@ unsigned char Winner::getRank() const
 }
 
 
+Compare Winner::declarerPrefersSide(
+  const Card& own,
+  const Card& other,
+  const WinnerMode otherMode,
+  const unsigned bitmask) const
+{
+  if (mode & bitmask)
+  {
+    if (otherMode & bitmask)
+      return own.compare(other);
+    else
+      // Declarer prefers no restriction.
+      return WIN_SECOND;
+  }
+  else
+  {
+    if (otherMode & bitmask)
+      // Declarer prefers no restriction.
+      return WIN_FIRST;
+    else
+      // Both are missing, so it doesn't matter.
+      return WIN_EQUAL;
+  }
+}
+
+
+
 Compare Winner::declarerPrefers(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
@@ -245,47 +272,14 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
     return WIN_SECOND;
 
   // So now the two Winner's have the same rank.
-  // TODO Might be nice to have WinnerMode as a 2-bit vector
-  // or to have separate North and South bits.
 
-  Compare northPrefer, southPrefer;
-  if (mode & WIN_NORTH_SET)
-  {
-    if (winner2.mode & WIN_NORTH_SET)
-      northPrefer = north.compare(winner2.north);
-    else
-      // North prefers no restriction.
-      northPrefer = WIN_SECOND;
-  }
-  else
-  {
-    if (winner2.mode & WIN_NORTH_SET)
-      // North prefers no restriction.
-      northPrefer = WIN_FIRST;
-    else
-      // Both are missing, so it doesn't matter.
-      northPrefer = WIN_EQUAL;
-  }
-  
-  if (mode & WIN_SOUTH_SET)
-  {
-    if (winner2.mode & WIN_SOUTH_SET)
-      southPrefer = south.compare(winner2.south);
-    else
-      // South prefers no restriction.
-      southPrefer = WIN_SECOND;
-  }
-  else
-  {
-    if (winner2.mode & WIN_SOUTH_SET)
-      // South prefers no restriction.
-      southPrefer = WIN_FIRST;
-    else
-      // Both are missing, so it doesn't matter.
-      southPrefer = WIN_EQUAL;
-  }
+  const Compare northPrefer = Winner::declarerPrefersSide(
+    north, winner2.north, winner2.mode, WIN_NORTH_SET);
 
-  // TODO Can set up a matrix lookup as well.
+  const Compare southPrefer = Winner::declarerPrefersSide(
+    south, winner2.south, winner2.mode, WIN_SOUTH_SET);
+
+  // Probably a matrix lookup isn't faster.
   //
   // N|S 1  2  =
   // 1   1  != 1
