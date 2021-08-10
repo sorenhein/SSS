@@ -266,9 +266,9 @@ Compare Winners::compareForDeclarer(const Winners& winners2) const
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
     return winners.front().declarerPrefers(winners2.winners.front());
-  else if (winners.front().rankExceeds(winners2.winners.front()))
+  else if (Winners::rankExceeds(winners2))
     return WIN_FIRST;
-  else if (winners2.winners.front().rankExceeds(winners.front()))
+  else if (winners2.rankExceeds(* this))
     return WIN_SECOND;
   else
   {

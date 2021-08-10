@@ -302,10 +302,7 @@ void Winner::flip()
     return;
 
   // Flips North and South.
-  // TODO Try std::swap?
-  Card tmp = north;
-  north = south;
-  south = tmp;
+  swap(north, south);
 
   if (mode == WIN_NORTH_ONLY)
     mode = WIN_SOUTH_ONLY;
