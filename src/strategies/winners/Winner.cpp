@@ -15,6 +15,9 @@
 
 #include "../../plays/Play.h"
 
+#define WIN_NORTH_SET 0x1
+#define WIN_SOUTH_SET 0x2
+
 
 Winner::Winner()
 {
@@ -113,11 +116,14 @@ bool Winner::operator == (const Winner& winner2) const
 {
   if (mode != winner2.mode)
     return false;
+
   if (mode == WIN_NOT_SET)
     return true;
-  if (mode != WIN_SOUTH_ONLY && north != winner2.north)
+
+  if ((mode & WIN_NORTH_SET) && north != winner2.north)
     return false;
-  if (mode != WIN_NORTH_ONLY && south != winner2.south)
+
+  if ((mode & WIN_SOUTH_SET) && south != winner2.south)
     return false;
 
   return true;
@@ -148,10 +154,9 @@ void Winner::operator *= (const Winner& winner2)
   if (winner2.rank < rank)
     rank = winner2.rank;
 
-  if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
+  if (winner2.mode & WIN_NORTH_SET)
   {
-    // winner2.north is set.
-    if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    if (mode & WIN_NORTH_SET)
       north *= winner2.north;
     else
     {
@@ -161,10 +166,9 @@ void Winner::operator *= (const Winner& winner2)
     }
   }
 
-  if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+  if (winner2.mode & WIN_SOUTH_SET)
   {
-    // winner2.south is set.
-    if (mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+    if (mode & WIN_SOUTH_SET)
       south *= winner2.south;
     else
     {
@@ -200,17 +204,17 @@ void Winner::operator += (const Winner& winner2)
   if (winner2.rank > rank)
     rank = winner2.rank;
 
-  if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
+  if (winner2.mode & WIN_NORTH_SET)
   {
     // winner2.north is set.  Leave our north empty if it is empty.
-    if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+    if (mode & WIN_NORTH_SET)
       north += winner2.north;
   }
 
-  if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+  if (winner2.mode & WIN_SOUTH_SET)
   {
     // winner2.south is set.
-    if (mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+    if (mode & WIN_SOUTH_SET)
       south += winner2.south;
   }
 
@@ -245,9 +249,9 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
   // or to have separate North and South bits.
 
   Compare northPrefer, southPrefer;
-  if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+  if (mode & WIN_NORTH_SET)
   {
-    if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
+    if (winner2.mode & WIN_NORTH_SET)
       northPrefer = north.compare(winner2.north);
     else
       // North prefers no restriction.
@@ -255,7 +259,7 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
   }
   else
   {
-    if (winner2.mode == WIN_NORTH_ONLY || winner2.mode == WIN_BOTH)
+    if (winner2.mode & WIN_NORTH_SET)
       // North prefers no restriction.
       northPrefer = WIN_FIRST;
     else
@@ -263,9 +267,9 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
       northPrefer = WIN_EQUAL;
   }
   
-  if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+  if (mode & WIN_SOUTH_SET)
   {
-    if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+    if (winner2.mode & WIN_SOUTH_SET)
       southPrefer = south.compare(winner2.south);
     else
       // South prefers no restriction.
@@ -273,7 +277,7 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
   }
   else
   {
-    if (winner2.mode == WIN_SOUTH_ONLY || winner2.mode == WIN_BOTH)
+    if (winner2.mode & WIN_SOUTH_SET)
       // South prefers no restriction.
       southPrefer = WIN_FIRST;
     else
@@ -400,9 +404,9 @@ string Winner::str() const
 string Winner::strDebug() const
 {
   stringstream ss;
-  if (mode == WIN_NORTH_ONLY || mode == WIN_BOTH)
+  if (mode & WIN_NORTH_SET)
     ss << north.strDebug("N");
-  if (mode == WIN_SOUTH_ONLY || mode == WIN_BOTH)
+  if (mode & WIN_SOUTH_SET)
     ss << south.strDebug("S");
   return ss.str();
 }

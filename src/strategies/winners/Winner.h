@@ -26,12 +26,14 @@ class Winner
     // if it's the A rather than the K, and number is 3 (x, K, A).
     // See also Ranks::setOrderTables().
 
+    // Encoding is suitable for binary trickery in Winner.cpp
+
     enum WinnerMode
     {
-      WIN_NORTH_ONLY = 0,
-      WIN_SOUTH_ONLY = 1,
-      WIN_BOTH = 2,
-      WIN_NOT_SET = 3
+      WIN_NOT_SET = 0,
+      WIN_NORTH_ONLY = 1,
+      WIN_SOUTH_ONLY = 2,
+      WIN_BOTH = 3
     };
 
     Card north;

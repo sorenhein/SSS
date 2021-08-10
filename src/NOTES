@@ -118,3 +118,6 @@ Bug / behavior?
 Why doesn't it work in Combination to make complete copies of
 everything?  It must be some stray pointers, but where?
 
+
+
+Node index: print is irritating for the early plays.
