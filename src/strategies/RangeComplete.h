@@ -2,13 +2,10 @@
 #define SSS_RANGECOMPLETE_H
 
 #include "Result.h"
-#include "winners/Winners.h"
 
 #include <string>
 
 using namespace std;
-
-// class Result;
 
 
 class RangeComplete
@@ -16,23 +13,7 @@ class RangeComplete
   private:
 
     unsigned char distribution;
-    unsigned char lower;
-    unsigned char upper;
     unsigned char minimum;
-
-    // Unlike Range, this class takes into account the Winner's when
-    // tracking and comparing for a given distribution.
-    // Let's say one Strategy has 2-3 tricks and the highest Winner
-    // for 3 tricks is 4N.  Another strategy has 3 tricks and the
-    // lowest winner is 6NS.  Then the defense would never choose the
-    // second one, because even if the number of tricks could be the
-    // same (3), the winner would be worse for the defense.
-    // The general rule is to look at
-    // 1. The highest winner at the highest number of tricks, vs.
-    // 2. The lowest winner at the lowest number of tricks.
-
-    Winners winnersHigh; // 1.
-    Winners winnersLow;  // 2.
 
     Result resultHigh;
     Result resultLow;
@@ -48,7 +29,6 @@ class RangeComplete
     bool operator < (const RangeComplete& range2) const;
 
     bool constant() const;
-    const Winners& constantWinners() const;
     const Result& constantResult() const;
 
     string strHeader(const bool rankFlag) const;

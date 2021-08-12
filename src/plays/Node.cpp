@@ -142,8 +142,8 @@ void Node::purgeRanges(const bool debugFlag)
 
     if (parentRange.constant())
     {
-      stratData.eraseConstantDist(* citer, 
-        parentRange.min(), parentRange.constantWinners());
+      * citer = parentRange.constantResult();
+      stratData.eraseDominatedDist();
       eraseFlag = true;
       citer++;
 

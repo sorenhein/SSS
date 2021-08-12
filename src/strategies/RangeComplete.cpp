@@ -10,12 +10,7 @@
 void RangeComplete::init(const Result& result)
 {
   distribution = result.dist();
-  lower = result.tricks();
-  upper = result.tricks();
   minimum = result.tricks();
-
-  winnersHigh = result.winners();
-  winnersLow = result.winners();
 
   resultLow = result;
   resultHigh = result;
@@ -29,25 +24,10 @@ void RangeComplete::extend(const Result& result)
   // "outward" when we need to.  Any Result is within its range.
 
   assert(distribution == result.dist());
-  if (result.tricks() < lower)
-  {
+  if (result.tricks() < minimum)
     minimum = result.tricks();
-    lower = result.tricks();
-    winnersLow = result.winners();
-  }
-  else if (result.tricks() == lower)
-    winnersLow *= result.winners();
 
   resultLow *= result;
-
-  if (result.tricks() > upper)
-  {
-    upper = result.tricks();
-    winnersHigh = result.winners();
-  }
-  else if (result.tricks() == upper)
-    winnersHigh += result.winners();
-
   resultHigh += result;
 }
 
@@ -82,32 +62,26 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   if (range2.minimum < minimum)
     minimum = range2.minimum;
 
-  if (range2.upper > upper)
+  if (range2.resultHigh.tricks() > resultHigh.tricks())
     return;
 
-  if (range2.upper < upper || range2.lower < lower)
+  if (range2.resultHigh.tricks() < resultHigh.tricks() || 
+      range2.resultLow.tricks() < resultLow.tricks())
   {
-    lower = range2.lower;
-    upper = range2.upper;
-    winnersHigh = range2.winnersHigh;
-    winnersLow = range2.winnersLow;
-
     resultLow = range2.resultLow;
     resultHigh = range2.resultHigh;
     return;
   }
 
-  if (range2.lower > lower)
+  if (range2.resultLow.tricks() > resultLow.tricks())
     return;
 
   // Now the two ranges have the same trick interval, but it may
   // or may not be a constant interval (lower == upper).
 
-  const Compare c = winnersHigh.compareForDeclarer(range2.winnersHigh);
-  const Compare c1 = resultHigh.compareCompletely(range2.resultHigh);
-  assert(c == c1);
+  const Compare c = resultHigh.compareCompletely(range2.resultHigh);
 
-  if (lower < upper)
+  if (resultLow.tricks() < resultHigh.tricks())
   {
     // We can just pick one of the ranges.  This is only used for an 
     // optimization anyway.
@@ -115,24 +89,18 @@ void RangeComplete::operator *= (const RangeComplete& range2)
       return;
     else if (c == WIN_FIRST)
     {
-      // If declarer prefers the first winner, then the defenders don't.
-      winnersHigh = range2.winnersHigh;
-      winnersLow = range2.winnersLow;
-
+      // If declarer prefers the first result, then the defenders don't.
       resultHigh = range2.resultHigh;
       resultLow = range2.resultLow;
       return;
     }
 
     // In case of a tie, we prefer the lowest winner on the other end.
-    const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
+    const Compare d = resultLow.compareCompletely(range2.resultLow);
 
     if (d == WIN_FIRST)
     {
       // Same idea: We only give up on our range if it loses.
-      winnersHigh = range2.winnersHigh;
-      winnersLow = range2.winnersLow;
-
       resultHigh = range2.resultHigh;
       resultLow = range2.resultLow;
     }
@@ -151,9 +119,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     return;
   else if (c == WIN_FIRST)
   {
-    winnersHigh = range2.winnersHigh;
-    winnersLow = range2.winnersLow;
-
     resultHigh = range2.resultHigh;
     resultLow = range2.resultLow;
     return;
@@ -161,25 +126,17 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   else if (c == WIN_DIFFERENT)
   {
     // Make the extension.
-    winnersHigh += range2.winnersHigh;
-    winnersLow *= range2.winnersLow;
-    
     resultHigh += range2.resultHigh;
     resultLow *= range2.resultLow;
   }
 
   // Now the high winners are the same.
-  const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
-  const Compare d1 = resultLow.compareCompletely(range2.resultLow);
-  assert(d == d1);
+  const Compare d = resultLow.compareCompletely(range2.resultLow);
 
   if (d == WIN_SECOND || d == WIN_EQUAL)
     return;
   else if (d == WIN_FIRST)
   {
-    winnersHigh = range2.winnersHigh;
-    winnersLow = range2.winnersLow;
-    
     resultHigh = range2.resultHigh;
     resultLow = range2.resultLow;
     return;
@@ -187,9 +144,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   else
   {
     // Make the extension.
-    winnersHigh += range2.winnersHigh;
-    winnersLow *= range2.winnersLow;
-    
     resultHigh += range2.resultHigh;
     resultLow *= range2.resultLow;
   }
@@ -198,40 +152,29 @@ void RangeComplete::operator *= (const RangeComplete& range2)
 
 bool RangeComplete::operator < (const RangeComplete& range2) const
 {
-  if (upper != range2.lower)
-    return (upper < range2.lower);
+  if (resultHigh.tricks() != range2.resultLow.tricks())
+    return (resultHigh.tricks() < range2.resultLow.tricks());
 
-  // The Winners method is from declarer's perspective, so c is
-  // WIN_FIRST if declarer prefers our own winnersHigh.  
-  // In this method we are taking the defenders' perspective.
-  const Compare c = winnersHigh.compareForDeclarer(range2.winnersLow);
-  const Compare c1 = resultHigh.compareCompletely(range2.resultLow);
-  assert(c == c1);
+  // Compare from declarer's perspective, so c is WIN_FIRST if 
+  // declarer prefers our own winnersHigh.  In this method we are 
+  // taking the defenders' perspective.
+  const Compare c = resultHigh.compareCompletely(range2.resultLow);
 
   if (c == WIN_SECOND)
     return true;
   else if (c != WIN_EQUAL)
     return false;
   else
-    return (range2.lower < range2.upper || lower < upper);
+    return (range2.resultLow.tricks() < range2.resultHigh.tricks() || 
+        resultLow.tricks() < resultHigh.tricks());
 }
 
 
 bool RangeComplete::constant() const
 {
-  const bool b1 = (lower == minimum && upper == minimum && resultHigh == resultLow);
-  const bool b2 = (lower == minimum && upper == minimum && winnersHigh == winnersLow);
-  assert(b1 == b2);
-
-  return (lower == minimum && 
-    upper == minimum &&
-    winnersHigh == winnersLow);
-}
-
-
-const Winners& RangeComplete::constantWinners() const
-{
-  return winnersLow;  // Either one, as range assumed constant
+  return (resultLow.tricks() == minimum && 
+    resultHigh.tricks() == minimum &&
+    resultHigh == resultLow);
 }
 
 
@@ -277,3 +220,4 @@ string RangeComplete::str(const bool rankFlag) const
     endl;
   return ss.str();
 }
+
