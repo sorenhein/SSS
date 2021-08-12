@@ -182,6 +182,21 @@ class Result
     winners *= winnersInternal;
   }
 
+  string strHeaderEntry(
+    const bool rankFlag,
+    const string& title = "") const
+  {
+    stringstream ss;
+    if (rankFlag)
+      ss << 
+        setw(4) << "Tr" <<
+        setw(8) << (title == "" ? "Win" : title);
+    else
+      ss << setw(4) << (title == "" ? "Tr" : title);
+
+    return ss.str();
+  }
+
   string strEntry(const bool rankFlag) const
   {
     stringstream ss;

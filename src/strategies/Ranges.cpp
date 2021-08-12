@@ -118,7 +118,7 @@ string Ranges::strHeader() const
   if (ranges.empty())
     return "";
   else
-    return ranges.front().strHeader();
+    return ranges.front().strHeader(false);
 }
 
 
@@ -126,6 +126,6 @@ string Ranges::str() const
 {
   string s = "";
   for (auto& range: ranges)
-    s += range.str();
+    s += range.str(false);
   return s;
 }

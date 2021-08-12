@@ -824,10 +824,8 @@ string Strategies::strRanges(const string& title) const
     ss << title << "\n";
 
   ss << rangesNew.strHeader();
-  // if (! rangesNew.empty())
-    // ss << rangesNew.front().strHeader();
   for (auto& range: rangesNew)
-    ss << range.str();
+    ss << range.str(true);
 
   return ss.str();
 }

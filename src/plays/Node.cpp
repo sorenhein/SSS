@@ -150,8 +150,8 @@ void Node::purgeRanges(const bool debugFlag)
       if (debugFlag)
       {
         cout << "Erased constant for parent range:\n";
-        cout << parentRange.strHeader();
-        cout << parentRange.str();
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
       }
     }
     else if (parentRange < * stratData.riter)
@@ -162,8 +162,8 @@ void Node::purgeRanges(const bool debugFlag)
       if (debugFlag)
       {
         cout << "Erased dominated range for parent range:\n";
-        cout << parentRange.strHeader();
-        cout << parentRange.str();
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
       }
     }
   }

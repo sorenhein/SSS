@@ -241,16 +241,14 @@ const Result& RangeComplete::constantResult() const
 }
 
 
-string RangeComplete::strHeader() const
+string RangeComplete::strHeader(const bool rankFlag) const
 {
   stringstream ss;
   ss << 
     setw(4) << right << "dist" <<
-    setw(4) << "lo" <<
-    setw(4) << "hi" << 
     setw(4) << "min" << 
-    setw(6) << "Wlo" << 
-    setw(6) << "Whi" << 
+    resultLow.strHeaderEntry(rankFlag, "Low") <<
+    resultHigh.strHeaderEntry(rankFlag, "High") <<
     endl;
   return ss.str();
 }
@@ -268,16 +266,14 @@ unsigned char RangeComplete::min() const
 }
 
 
-string RangeComplete::str() const
+string RangeComplete::str(const bool rankFlag) const
 {
   stringstream ss;
   ss << 
     setw(4) << +distribution <<
-    setw(4) << +lower <<
-    setw(4) << +upper << 
     setw(4) << +minimum << 
-    setw(6) << winnersLow.strEntry() << 
-    setw(6) << winnersHigh.strEntry() << 
+    resultLow.strEntry(rankFlag) <<
+    resultHigh.strEntry(rankFlag) <<
     endl;
   return ss.str();
 }

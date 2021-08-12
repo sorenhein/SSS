@@ -51,13 +51,13 @@ class RangeComplete
     const Winners& constantWinners() const;
     const Result& constantResult() const;
 
-    string strHeader() const;
+    string strHeader(const bool rankFlag) const;
 
     unsigned char dist() const;
 
     unsigned char min() const;
 
-    string str() const;
+    string str(const bool rankFlag) const;
 };
 
 #endif
