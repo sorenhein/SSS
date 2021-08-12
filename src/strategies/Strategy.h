@@ -82,9 +82,11 @@ class Strategy
       const Result& trivialEntry,
       const unsigned char len);
 
+    /*
     void log(
       const vector<unsigned char>& distributions,
       const vector<unsigned char>& tricks);
+      */
 
     void restudy();
 

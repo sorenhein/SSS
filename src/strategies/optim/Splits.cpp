@@ -73,7 +73,7 @@ void Splits::splitDistributions(
         continue;
     }
 
-    if (riter->dist < stratData.dist())
+    if (riter->dist() < stratData.dist())
     {
       // Distribution that is only in strat2.
       riter++;
@@ -81,7 +81,7 @@ void Splits::splitDistributions(
     }
 
     bool endFlag = false;
-    while (stratData.dist() < riter->dist)
+    while (stratData.dist() < riter->dist())
     {
       // A unique distribution.
       Splits::pushDistribution(own, stratData);
@@ -96,7 +96,7 @@ void Splits::splitDistributions(
     if (endFlag)
       break;
 
-    if (riter->dist == stratData.dist())
+    if (riter->dist() == stratData.dist())
     {
       // A shared distribution.
       Splits::pushDistribution(shared, stratData);

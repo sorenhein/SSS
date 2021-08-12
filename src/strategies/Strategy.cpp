@@ -73,7 +73,7 @@ unsigned Strategy::weight() const
 void Strategy::push_back(const Result& result)
 {
   results.push_back(result);
-  weightInt += result.tricks;
+  weightInt += result.tricks();
   study.unstudy();
 }
 
@@ -81,7 +81,7 @@ void Strategy::push_back(const Result& result)
 list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
-  weightInt -= iter->tricks;
+  weightInt -= iter->tricks();
   study.unstudy();
   return results.erase(iter);
 }
@@ -105,14 +105,18 @@ void Strategy::logTrivial(
   {
     results.emplace_back(Result());
     Result& te = results.back();
-    te.dist = i;
-    te.tricks = trivialEntry.tricks;
-    te.winners = trivialEntry.winners;
+    te.set(i, trivialEntry.tricks(), trivialEntry.winners());
+    // TODO Can trivialEntry contain its distribution, so that we
+    // just copy trivialEntry here?
+    // te.dist = i;
+    // te.tricks = trivialEntry.tricks;
+    // te.winners = trivialEntry.winners;
   }
-  weightInt = trivialEntry.tricks * len;
+  weightInt = trivialEntry.tricks() * len;
 }
 
 
+/*
 void Strategy::log(
   const vector<unsigned char>& distributions,
   const vector<unsigned char>& tricks)
@@ -131,6 +135,7 @@ void Strategy::log(
     weightInt += tricks[i];
   }
 }
+*/
 
 
 void Strategy::restudy()
@@ -266,7 +271,7 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
 
   while (iter1 != results.end())
   {
-    const Compare cmp = iter1->winners.compareForDeclarer(iter2->winners);
+    const Compare cmp = iter1->winners().compareForDeclarer(iter2->winners());
 
     if (cmp == WIN_FIRST)
     {
@@ -308,8 +313,8 @@ cout << "consolidate: More than one difference" << endl;
       }
 
       differentFlag = true;
-      wptr1 = &(iter1->winners);
-      wptr2 = &(iter2->winners);
+      wptr1 = &(iter1->winners());
+      wptr2 = &(iter2->winners());
     }
 
     iter1++;
@@ -352,30 +357,32 @@ void Strategy::operator *= (const Strategy& strat2)
 
   while (iter2 != strat2.results.end())
   {
-    if (iter1 == results.end() || iter1->dist > iter2->dist)
+    if (iter1 == results.end() || iter1->dist() > iter2->dist())
     {
       results.insert(iter1, * iter2);
-      weightInt += iter2->tricks;
+      weightInt += iter2->tricks();
       iter2++;
     }
-    else if (iter1->dist < iter2->dist)
+    else if (iter1->dist() < iter2->dist())
     {
       iter1++;
     }
     else 
     {
-      if (iter1->tricks > iter2->tricks)
-      {
-        // Take the one with the lower number of tricks.
-        weightInt += static_cast<unsigned>(iter2->tricks - iter1->tricks);
-        iter1->tricks = iter2->tricks;
-        iter1->winners = iter2->winners;
+      if (iter1->tricks() > iter2->tricks())
+        weightInt += static_cast<unsigned>(iter2->tricks() - iter1->tricks());
+      * iter1 *= * iter2;
+        // iter1->tricks = iter2->tricks;
+        // iter1->winners = iter2->winners;
+        // * iter1 = * iter2;
+      /*
       }
-      else if (iter1->tricks == iter2->tricks)
+      else if (iter1->tricks() == iter2->tricks())
       {
         // Opponents can choose among the two winners.
         iter1->winners *= iter2->winners;
       }
+      */
       iter1++;
       iter2++;
     }
@@ -402,7 +409,7 @@ void Strategy::multiply(
       {
         results.insert(results.end(), iter2, strat2.results.end());
         for (auto it = iter2; it != strat2.results.end(); it++)
-          weightInt += it->tricks;
+          weightInt += it->tricks();
       }
       break;
     }
@@ -410,34 +417,34 @@ void Strategy::multiply(
     {
       results.insert(results.end(), iter1, strat1.results.end());
       for (auto it = iter1; it != strat1.results.end(); it++)
-        weightInt += it->tricks;
+        weightInt += it->tricks();
       break;
     }
 
-    if (iter1->dist < iter2->dist)
+    if (iter1->dist() < iter2->dist())
     {
       results.push_back(* iter1);
-      weightInt += iter1->tricks;
+      weightInt += iter1->tricks();
       iter1++;
     }
-    else if (iter1->dist > iter2->dist)
+    else if (iter1->dist() > iter2->dist())
     {
       results.push_back(* iter2);
-      weightInt += iter2->tricks;
+      weightInt += iter2->tricks();
       iter2++;
     }
-    else if (iter1->tricks < iter2->tricks)
+    else if (iter1->tricks() < iter2->tricks())
     {
       // Take the one with the lower number of tricks.
       results.push_back(* iter1);
-      weightInt += iter1->tricks;
+      weightInt += iter1->tricks();
       iter1++;
       iter2++;
     }
-    else if (iter1->tricks > iter2->tricks)
+    else if (iter1->tricks() > iter2->tricks())
     {
       results.push_back(* iter2);
-      weightInt += iter2->tricks;
+      weightInt += iter2->tricks();
       iter1++;
       iter2++;
     }
@@ -445,8 +452,9 @@ void Strategy::multiply(
     {
       // Opponents can choose among the two winners.
       results.push_back(* iter1);
-      results.back().winners *= iter2->winners;
-      weightInt += iter1->tricks;
+      // TODO results.back() *= * iter2; ?
+      results.back().winners() *= iter2->winners();
+      weightInt += iter1->tricks();
       iter1++;
       iter2++;
     }
@@ -486,9 +494,10 @@ void Strategy::updateSingle(
   const unsigned char trickNS)
 {
   auto& result = results.front();
-  result.dist = fullNo;
-  result.tricks += trickNS;
-  weightInt = result.tricks;
+  result.update(fullNo, trickNS);
+  // result.dist = fullNo;
+  // result.tricks += trickNS;
+  weightInt = result.tricks();
 }
 
 
@@ -504,8 +513,9 @@ void Strategy::updateSameLength(
   {
     while (iter1 != results.end())
     {
-      iter1->dist = iter2->fullNo;
-      iter1->tricks += trickNS; 
+      // iter1->dist = iter2->fullNo;
+      // iter1->tricks += trickNS; 
+      iter1->update(iter2->fullNo, trickNS);
       weightInt += trickNS;
       iter1++;
       iter2++;
@@ -515,7 +525,8 @@ void Strategy::updateSameLength(
   {
     while (iter1 != results.end())
     {
-      iter1->dist = iter2->fullNo;
+      // iter1->dist = iter2->fullNo;
+      iter1->update(iter2->fullNo);
       iter1++;
       iter2++;
     }
@@ -544,10 +555,14 @@ void Strategy::updateAndGrow(
   {
     // Use the survivor's full distribution number and the 
     // corresponding result entry as the trick count.
-    res.dist = iterSurvivors->fullNo;
-    res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
-    res.winners = resultsOld[iterSurvivors->reducedNo].winners;
-    weightInt += res.tricks;
+    // res.dist = iterSurvivors->fullNo;
+    // res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
+    // res.winners = resultsOld[iterSurvivors->reducedNo].winners;
+    res.set(iterSurvivors->fullNo,
+      resultsOld[iterSurvivors->reducedNo].tricks() + trickNS,
+      resultsOld[iterSurvivors->reducedNo].winners());
+
+    weightInt += res.tricks();
     iterSurvivors++;
   }
 }
@@ -619,12 +634,14 @@ void Strategy::adapt(
 
     // We also have to to fix the NS winner orientation.
     for (auto& res: results)
-      res.winners.flip();
+      res.winners().flip();
   }
 
   // Update the winners.  This takes about 12% of the method time.
+  // TODO This should become part of adaptResults and should then
+  // make it more general: Put the winners update into Result.
   for (auto& res: results)
-    res.winners.update(play);
+    res.winners().update(play);
 
   Strategy::adaptResults(play, survivors);
 
@@ -642,7 +659,7 @@ const Winners Strategy::winners() const
 {
   Winners w;
   for (auto& res: results)
-    w *= res.winners;
+    w *= res.winners();
 
   return w;
 }
@@ -668,17 +685,19 @@ string Strategy::str(
 
   if (rankFlag)
   {
+    // TODO Could be string method of result
     for (auto& res: results)
       ss <<
-        setw(4) << +res.dist <<
+        setw(4) << +res.dist() <<
         setw(6) << res.strEntry(rankFlag) << "\n";
   }
   else
   {
+    // TODO Could be string method of result
     for (auto& res: results)
       ss <<
-        setw(4) << +res.dist <<
-        setw(6) << +res.tricks << "\n";
+        setw(4) << +res.dist() <<
+        setw(6) << +res.tricks() << "\n";
   }
 
   return ss.str();

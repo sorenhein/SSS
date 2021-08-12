@@ -9,13 +9,13 @@
 
 void RangeComplete::init(const Result& result)
 {
-  distribution = result.dist;
-  lower = result.tricks;
-  upper = result.tricks;
-  minimum = result.tricks;
+  distribution = result.dist();
+  lower = result.tricks();
+  upper = result.tricks();
+  minimum = result.tricks();
 
-  winnersHigh = result.winners;
-  winnersLow = result.winners;
+  winnersHigh = result.winners();
+  winnersLow = result.winners();
 }
 
 
@@ -25,23 +25,23 @@ void RangeComplete::extend(const Result& result)
   // which is as tight as we can make it, but still rounded
   // "outward" when we need to.  Any Result is within its range.
 
-  assert(distribution == result.dist);
-  if (result.tricks < lower)
+  assert(distribution == result.dist());
+  if (result.tricks() < lower)
   {
-    lower = result.tricks;
-    minimum = result.tricks;
-    winnersLow = result.winners;
+    lower = result.tricks();
+    minimum = result.tricks();
+    winnersLow = result.winners();
   }
-  else if (result.tricks == lower)
-    winnersLow *= result.winners;
+  else if (result.tricks() == lower)
+    winnersLow *= result.winners();
 
-  if (result.tricks > upper)
+  if (result.tricks() > upper)
   {
-    upper = result.tricks;
-    winnersHigh = result.winners;
+    upper = result.tricks();
+    winnersHigh = result.winners();
   }
-  else if (result.tricks == upper)
-    winnersHigh += result.winners;
+  else if (result.tricks() == upper)
+    winnersHigh += result.winners();
 }
 
 

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-struct Result;
+class Result;
 
 
 class Range

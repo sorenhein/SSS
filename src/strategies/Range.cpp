@@ -9,23 +9,23 @@
 
 void Range::init(const Result& result)
 {
-  distribution = result.dist;
-  lower = result.tricks;
-  upper = result.tricks;
-  minimum = result.tricks;
+  distribution = result.dist();
+  lower = result.tricks();
+  upper = result.tricks();
+  minimum = result.tricks();
 }
 
 
 void Range::extend(const Result& result)
 {
-  assert(distribution == result.dist);
-  if (result.tricks < lower)
+  assert(distribution == result.dist());
+  if (result.tricks() < lower)
   {
-    lower = result.tricks;
-    minimum = result.tricks;
+    lower = result.tricks();
+    minimum = result.tricks();
   }
-  if (result.tricks > upper)
-    upper = result.tricks;
+  if (result.tricks() > upper)
+    upper = result.tricks();
 }
 
 

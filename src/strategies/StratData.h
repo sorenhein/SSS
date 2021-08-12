@@ -37,7 +37,7 @@ struct StratData
   unsigned char dist()
   {
     assert(! data.empty());
-    return data.front().iter->dist;
+    return data.front().iter->dist();
   };
 
   StratStatus advance()
@@ -56,7 +56,7 @@ struct StratData
   {
     // Advance to dist.
     while (data.front().iter != data.front().end &&
-        data.front().iter->dist < dist)
+        data.front().iter->dist() < dist)
     {
       riter++;
       for (auto& sd: data)
@@ -65,7 +65,7 @@ struct StratData
 
     if (data.front().iter == data.front().end)
       return STRATSTATUS_END;
-    else if (data.front().iter->dist > dist)
+    else if (data.front().iter->dist() > dist)
       return STRATSTATUS_FURTHER_DIST;
     else
       return STRATSTATUS_SAME_DIST;
@@ -77,11 +77,11 @@ struct StratData
     const unsigned char tricks,
     const Winners& cwinners)
   {
-    cresult.dist = data.front().iter->dist;
-    cresult.tricks = tricks;
-    
-    // cresult.winners.reset();
-    cresult.winners = cwinners;
+    // cresult.dist = data.front().iter->dist;
+    // cresult.tricks = tricks;
+    // cresult.winners = cwinners;
+
+    cresult.set(data.front().iter->dist(), tricks, cwinners);
 
     StratData::eraseDominatedDist();
     /*

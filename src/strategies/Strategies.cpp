@@ -912,7 +912,7 @@ string Strategies::str(
   // Use the iterator for the first Strategy to get the distributions.
   while (iters.front() != itersEnd.front())
   {
-    ss << setw(4) << left << +iters.front()->dist << right;
+    ss << setw(4) << left << +iters.front()->dist() << right;
     for (auto& iter: iters)
     {
       ss << iter->strEntry(rankFlag);

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-struct Result;
+class Result;
 struct CombEntry;
 class Plays;
 
