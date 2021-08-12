@@ -30,12 +30,6 @@ class Result
     return tricksInternal;
   }
 
-  // TODO Should be const-const only
-  Winners& winners()
-  {
-    return winnersInternal;
-  }
-
   const Winners& winners() const
   {
     return winnersInternal;
@@ -148,12 +142,22 @@ class Result
     distInternal = distIn;
   }
 
+  void flip()
+  {
+    winnersInternal.flip();
+  }
+
   void update(
     const unsigned char distIn,
     const unsigned char trickNS)
   {
     distInternal = distIn;
     tricksInternal += trickNS;
+  }
+
+  void update(const Play& play)
+  {
+    winnersInternal.update(play);
   }
 
   void operator *= (const Result& result2)
@@ -163,6 +167,15 @@ class Result
       * this = result2;
     else if (tricksInternal == result2.tricksInternal)
       winnersInternal *= result2.winnersInternal;
+  }
+
+  void operator += (const Result& result2)
+  {
+    // Keep the "upper" one.
+    if (tricksInternal < result2.tricksInternal)
+      * this = result2;
+    else if (tricksInternal == result2.tricksInternal)
+      winnersInternal += result2.winnersInternal;
   }
 
   string strEntry(const bool rankFlag) const

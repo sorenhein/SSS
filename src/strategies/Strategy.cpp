@@ -108,34 +108,9 @@ void Strategy::logTrivial(
     te.set(i, trivialEntry.tricks(), trivialEntry.winners());
     // TODO Can trivialEntry contain its distribution, so that we
     // just copy trivialEntry here?
-    // te.dist = i;
-    // te.tricks = trivialEntry.tricks;
-    // te.winners = trivialEntry.winners;
   }
   weightInt = trivialEntry.tricks() * len;
 }
-
-
-/*
-void Strategy::log(
-  const vector<unsigned char>& distributions,
-  const vector<unsigned char>& tricks)
-{
-  assert(distributions.size() == tricks.size());
-
-  weightInt = 0;
-  study.unstudy();
-
-  for (unsigned i = 0; i < distributions.size(); i++)
-  {
-    results.emplace_back(Result());
-    Result& te = results.back();
-    te.dist = distributions[i];
-    te.tricks = tricks[i];
-    weightInt += tricks[i];
-  }
-}
-*/
 
 
 void Strategy::restudy()
@@ -266,8 +241,8 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
   bool differentFlag = false;
 
   // Keep of track of the (hopefully) only set of Winners that differ.
-  Winners * wptr1 = nullptr;
-  Winners const * wptr2 = nullptr;
+  Result * rptr1 = nullptr;
+  Result const * rptr2 = nullptr;
 
   while (iter1 != results.end())
   {
@@ -313,8 +288,8 @@ cout << "consolidate: More than one difference" << endl;
       }
 
       differentFlag = true;
-      wptr1 = &(iter1->winners());
-      wptr2 = &(iter2->winners());
+      rptr1 = &* iter1;
+      rptr2 = &* iter2;
     }
 
     iter1++;
@@ -332,7 +307,7 @@ cout << "consolidate: Both different and </>" << endl;
       return false;
     }
 
-    * wptr1 += * wptr2;
+    * rptr1 += * rptr2;
   }
 
   // The flags cannot both be set, or we would have returned above.
@@ -372,17 +347,7 @@ void Strategy::operator *= (const Strategy& strat2)
       if (iter1->tricks() > iter2->tricks())
         weightInt += static_cast<unsigned>(iter2->tricks() - iter1->tricks());
       * iter1 *= * iter2;
-        // iter1->tricks = iter2->tricks;
-        // iter1->winners = iter2->winners;
-        // * iter1 = * iter2;
-      /*
-      }
-      else if (iter1->tricks() == iter2->tricks())
-      {
-        // Opponents can choose among the two winners.
-        iter1->winners *= iter2->winners;
-      }
-      */
+
       iter1++;
       iter2++;
     }
@@ -452,8 +417,7 @@ void Strategy::multiply(
     {
       // Opponents can choose among the two winners.
       results.push_back(* iter1);
-      // TODO results.back() *= * iter2; ?
-      results.back().winners() *= iter2->winners();
+      results.back() *= * iter2;
       weightInt += iter1->tricks();
       iter1++;
       iter2++;
@@ -495,8 +459,6 @@ void Strategy::updateSingle(
 {
   auto& result = results.front();
   result.update(fullNo, trickNS);
-  // result.dist = fullNo;
-  // result.tricks += trickNS;
   weightInt = result.tricks();
 }
 
@@ -513,8 +475,6 @@ void Strategy::updateSameLength(
   {
     while (iter1 != results.end())
     {
-      // iter1->dist = iter2->fullNo;
-      // iter1->tricks += trickNS; 
       iter1->update(iter2->fullNo, trickNS);
       weightInt += trickNS;
       iter1++;
@@ -555,9 +515,6 @@ void Strategy::updateAndGrow(
   {
     // Use the survivor's full distribution number and the 
     // corresponding result entry as the trick count.
-    // res.dist = iterSurvivors->fullNo;
-    // res.tricks = resultsOld[iterSurvivors->reducedNo].tricks + trickNS;
-    // res.winners = resultsOld[iterSurvivors->reducedNo].winners;
     res.set(iterSurvivors->fullNo,
       resultsOld[iterSurvivors->reducedNo].tricks() + trickNS,
       resultsOld[iterSurvivors->reducedNo].winners());
@@ -634,14 +591,14 @@ void Strategy::adapt(
 
     // We also have to to fix the NS winner orientation.
     for (auto& res: results)
-      res.winners().flip();
+      res.flip();
   }
 
   // Update the winners.  This takes about 12% of the method time.
   // TODO This should become part of adaptResults and should then
   // make it more general: Put the winners update into Result.
   for (auto& res: results)
-    res.winners().update(play);
+    res.update(play);
 
   Strategy::adaptResults(play, survivors);
 
