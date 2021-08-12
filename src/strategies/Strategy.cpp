@@ -620,7 +620,7 @@ const Winners Strategy::winners() const
 {
   Winners w;
   for (auto& res: results)
-    w *= res.winners();
+    res.multiply(w);
 
   return w;
 }
@@ -636,30 +636,14 @@ string Strategy::str(
   const string& title,
   const bool rankFlag) const
 {
-  stringstream ss;
-  if (title != "")
-    ss << title << "\n";
-  
-  ss << 
-    setw(4) << left << "Dist" <<
-    setw(6) << "Tricks" << "\n";
+  if (results.empty())
+    return "";
 
-  if (rankFlag)
-  {
-    // TODO Could be string method of result
-    for (auto& res: results)
-      ss <<
-        setw(4) << +res.dist() <<
-        setw(6) << res.strEntry(rankFlag) << "\n";
-  }
-  else
-  {
-    // TODO Could be string method of result
-    for (auto& res: results)
-      ss <<
-        setw(4) << +res.dist() <<
-        setw(6) << +res.tricks() << "\n";
-  }
+  stringstream ss;
+  ss << results.front().strHeader(title);
+
+  for (auto& res: results)
+    ss << res.str(rankFlag);
 
   return ss.str();
 }

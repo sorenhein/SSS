@@ -112,15 +112,6 @@ class Result
   }
 
   void set(
-    const unsigned char tricksIn,
-    const WinningSide side,
-    const Card& card)
-  {
-    tricksInternal = tricksIn;
-    winnersInternal.set(side, card);
-  }
-
-  void set(
     const unsigned char distIn,
     const unsigned char tricksIn,
     const Winners& winnersIn)
@@ -177,13 +168,43 @@ class Result
     else if (tricksInternal == result2.tricksInternal)
       winnersInternal += result2.winnersInternal;
   }
+  
+  void multiply(Winners& winners) const
+  {
+    winners *= winnersInternal;
+  }
 
   string strEntry(const bool rankFlag) const
   {
     stringstream ss;
     ss << setw(4) << +tricksInternal;
+
     if (rankFlag)
       ss << setw(8) << winnersInternal.strEntry();
+
+    return ss.str();
+  }
+
+  string strHeader(const string& title) const
+  {
+    stringstream ss;
+    if (title != "")
+      ss << title << "\n";
+
+    ss <<
+      setw(4) << left << "Dist" <<
+      setw(6) << "Tricks" << "\n";
+
+    return ss.str();
+  }
+
+  string str(const bool rankFlag) const
+  {
+    stringstream ss;
+    ss << 
+      setw(4) << +distInternal << 
+      setw(6) << Result::strEntry(rankFlag) << "\n";
+
     return ss.str();
   }
 };
