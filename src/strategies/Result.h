@@ -99,17 +99,17 @@ class Result
     else
       return (winners.compareForDeclarer(res2.winners) == WIN_FIRST);
   }
+  */
 
   Compare compareCompletely(const Result& res2) const
   {
-    if (tricks > res2.tricks)
+    if (tricksInternal > res2.tricksInternal)
       return WIN_FIRST;
-    else if (tricks < res2.tricks)
+    else if (tricksInternal < res2.tricksInternal)
       return WIN_SECOND;
     else
-      return winners.compareForDeclarer(res2.winners);
+      return winnersInternal.compareForDeclarer(res2.winnersInternal);
   }
-  */
 
   void set(
     const unsigned char tricksIn,
@@ -137,7 +137,7 @@ class Result
   }
 
   // TMP Should be a more comprehensive update method
-  void update(const unsigned char distIn)
+  void updateDist(const unsigned char distIn)
   {
     distInternal = distIn;
   }

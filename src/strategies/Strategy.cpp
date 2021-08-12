@@ -103,11 +103,14 @@ void Strategy::logTrivial(
 
   for (unsigned char i = 0; i < len; i++)
   {
-    results.emplace_back(Result());
-    Result& te = results.back();
-    te.set(i, trivialEntry.tricks(), trivialEntry.winners());
+    // results.emplace_back(Result());
+    // Result& te = results.back();
+    // te.set(i, trivialEntry.tricks(), trivialEntry.winners());
+
     // TODO Can trivialEntry contain its distribution, so that we
     // just copy trivialEntry here?
+    results.emplace_back(trivialEntry);
+    results.back().updateDist(i);
   }
   weightInt = trivialEntry.tricks() * len;
 }
@@ -246,7 +249,8 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
 
   while (iter1 != results.end())
   {
-    const Compare cmp = iter1->winners().compareForDeclarer(iter2->winners());
+    // const Compare cmp = iter1->winners().compareForDeclarer(iter2->winners());
+    const Compare cmp = iter1->compareCompletely(* iter2);
 
     if (cmp == WIN_FIRST)
     {
@@ -486,7 +490,7 @@ void Strategy::updateSameLength(
     while (iter1 != results.end())
     {
       // iter1->dist = iter2->fullNo;
-      iter1->update(iter2->fullNo);
+      iter1->updateDist(iter2->fullNo);
       iter1++;
       iter2++;
     }
