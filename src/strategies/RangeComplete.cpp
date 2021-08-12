@@ -105,6 +105,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
 
   const Compare c = winnersHigh.compareForDeclarer(range2.winnersHigh);
   const Compare c1 = resultHigh.compareCompletely(range2.resultHigh);
+  assert(c == c1);
 
   if (lower < upper)
   {
@@ -170,6 +171,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // Now the high winners are the same.
   const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
   const Compare d1 = resultLow.compareCompletely(range2.resultLow);
+  assert(d == d1);
 
   if (d == WIN_SECOND || d == WIN_EQUAL)
     return;
@@ -203,6 +205,8 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
   // WIN_FIRST if declarer prefers our own winnersHigh.  
   // In this method we are taking the defenders' perspective.
   const Compare c = winnersHigh.compareForDeclarer(range2.winnersLow);
+  const Compare c1 = resultHigh.compareCompletely(range2.resultLow);
+  assert(c == c1);
 
   if (c == WIN_SECOND)
     return true;
@@ -215,7 +219,9 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
 
 bool RangeComplete::constant() const
 {
-  const bool b1 = (resultHigh == resultLow);
+  const bool b1 = (lower == minimum && upper == minimum && resultHigh == resultLow);
+  const bool b2 = (lower == minimum && upper == minimum && winnersHigh == winnersLow);
+  assert(b1 == b2);
 
   return (lower == minimum && 
     upper == minimum &&
@@ -226,6 +232,12 @@ bool RangeComplete::constant() const
 const Winners& RangeComplete::constantWinners() const
 {
   return winnersLow;  // Either one, as range assumed constant
+}
+
+
+const Result& RangeComplete::constantResult() const
+{
+  return resultLow;  // Either one, as range assumed constant
 }
 
 

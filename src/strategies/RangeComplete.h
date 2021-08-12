@@ -49,6 +49,7 @@ class RangeComplete
 
     bool constant() const;
     const Winners& constantWinners() const;
+    const Result& constantResult() const;
 
     string strHeader() const;
 
