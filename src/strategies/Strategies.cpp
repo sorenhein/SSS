@@ -800,14 +800,18 @@ const Ranges& Strategies::getRanges() const
  *                                                          *
  ************************************************************/
 
-const Winners Strategies::winners() const
+const Result Strategies::resultLowest() const
 {
-  Winners wOverall;
+  Result resultLowest;
 
-  for (const auto& res: strategies)
-    wOverall *= res.winners();
+  for (const auto& strat: strategies)
+  {
+    const Result res = strat.resultLowest();
+    resultLowest *= res;
+    // wOverall *= res.winners();
+  }
 
-  return wOverall;
+  return resultLowest;
 }
 
 
@@ -871,19 +875,19 @@ string Strategies::strWinners() const
   stringstream ss;
   ss << setw(4) << "Win";
 
-  Winners wOverall;
-  for (const auto& res: strategies)
+  Result resLowest;
+  for (const auto& strat: strategies)
   {
-    Winners wStrat = res.winners();
-    ss << setw(12) << wStrat.strEntry();
-    wOverall *= wStrat;
+    const Result res = strat.resultLowest();
+    ss << setw(12) << res.strWinners();
+    resLowest *= res;
   }
   ss << "\n";
 
   if (strategies.size() > 1)
     ss <<
       setw(4) << "Prod" <<
-      setw(12) << wOverall.strEntry() << "\n\n";
+      setw(12) << resLowest.strWinners() << "\n\n";
 
   return ss.str();
 }

@@ -109,7 +109,7 @@ class Strategy
       const Play& play,
       const Survivors& survivors);
 
-    const Winners winners() const;
+    const Result resultLowest() const;
 
     string str(
       const string& title = "",

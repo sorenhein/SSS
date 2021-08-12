@@ -118,7 +118,7 @@ class Strategies
 
     const Ranges& getRanges() const;
 
-    const Winners winners() const;
+    const Result resultLowest() const;
 
     string strRanges(const string& title = "") const;
 

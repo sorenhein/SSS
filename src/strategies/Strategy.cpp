@@ -237,7 +237,7 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
   bool lowerFlag = false;
   bool differentFlag = false;
 
-  // Keep of track of the (hopefully) only set of Winners that differ.
+  // Keep of track of the (hopefully) only set of Result's that differ.
   Result * rptr1 = nullptr;
   Result const * rptr2 = nullptr;
 
@@ -608,13 +608,13 @@ void Strategy::adapt(
  *                                                          *
  ************************************************************/
 
-const Winners Strategy::winners() const
+const Result Strategy::resultLowest() const
 {
-  Winners w;
+  Result resLowest;
   for (auto& res: results)
-    res.multiply(w);
+    res.multiply(resLowest);
 
-  return w;
+  return resLowest;
 }
 
 

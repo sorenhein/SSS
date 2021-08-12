@@ -177,9 +177,10 @@ class Result
       winnersInternal += result2.winnersInternal;
   }
   
-  void multiply(Winners& winners) const
+  void multiply(Result& result) const
   {
-    winners *= winnersInternal;
+    result.winnersInternal *= winnersInternal;
+    // winners *= winnersInternal;
   }
 
   string strHeaderEntry(
@@ -206,6 +207,11 @@ class Result
       ss << setw(8) << winnersInternal.strEntry();
 
     return ss.str();
+  }
+
+  string strWinners() const
+  {
+    return winnersInternal.strEntry();
   }
 
   string strHeader(const string& title) const
