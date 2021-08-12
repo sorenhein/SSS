@@ -1,13 +1,14 @@
 #ifndef SSS_RANGECOMPLETE_H
 #define SSS_RANGECOMPLETE_H
 
+#include "Result.h"
 #include "winners/Winners.h"
 
 #include <string>
 
 using namespace std;
 
-class Result;
+// class Result;
 
 
 class RangeComplete
@@ -32,6 +33,9 @@ class RangeComplete
 
     Winners winnersHigh; // 1.
     Winners winnersLow;  // 2.
+
+    Result resultHigh;
+    Result resultLow;
 
   public:
 

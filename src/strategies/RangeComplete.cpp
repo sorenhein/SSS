@@ -16,6 +16,9 @@ void RangeComplete::init(const Result& result)
 
   winnersHigh = result.winners();
   winnersLow = result.winners();
+
+  resultLow = result;
+  resultHigh = result;
 }
 
 
@@ -28,12 +31,14 @@ void RangeComplete::extend(const Result& result)
   assert(distribution == result.dist());
   if (result.tricks() < lower)
   {
-    lower = result.tricks();
     minimum = result.tricks();
+    lower = result.tricks();
     winnersLow = result.winners();
   }
   else if (result.tricks() == lower)
     winnersLow *= result.winners();
+
+  resultLow *= result;
 
   if (result.tricks() > upper)
   {
@@ -42,6 +47,8 @@ void RangeComplete::extend(const Result& result)
   }
   else if (result.tricks() == upper)
     winnersHigh += result.winners();
+
+  resultHigh += result;
 }
 
 
@@ -84,6 +91,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     upper = range2.upper;
     winnersHigh = range2.winnersHigh;
     winnersLow = range2.winnersLow;
+
+    resultLow = range2.resultLow;
+    resultHigh = range2.resultHigh;
     return;
   }
 
@@ -94,6 +104,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // or may not be a constant interval (lower == upper).
 
   const Compare c = winnersHigh.compareForDeclarer(range2.winnersHigh);
+  const Compare c1 = resultHigh.compareCompletely(range2.resultHigh);
 
   if (lower < upper)
   {
@@ -106,6 +117,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
       // If declarer prefers the first winner, then the defenders don't.
       winnersHigh = range2.winnersHigh;
       winnersLow = range2.winnersLow;
+
+      resultHigh = range2.resultHigh;
+      resultLow = range2.resultLow;
       return;
     }
 
@@ -117,6 +131,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
       // Same idea: We only give up on our range if it loses.
       winnersHigh = range2.winnersHigh;
       winnersLow = range2.winnersLow;
+
+      resultHigh = range2.resultHigh;
+      resultLow = range2.resultLow;
     }
     return;
   }
@@ -135,6 +152,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   {
     winnersHigh = range2.winnersHigh;
     winnersLow = range2.winnersLow;
+
+    resultHigh = range2.resultHigh;
+    resultLow = range2.resultLow;
     return;
   }
   else if (c == WIN_DIFFERENT)
@@ -142,10 +162,14 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     // Make the extension.
     winnersHigh += range2.winnersHigh;
     winnersLow *= range2.winnersLow;
+    
+    resultHigh += range2.resultHigh;
+    resultLow *= range2.resultLow;
   }
 
   // Now the high winners are the same.
   const Compare d = winnersLow.compareForDeclarer(range2.winnersLow);
+  const Compare d1 = resultLow.compareCompletely(range2.resultLow);
 
   if (d == WIN_SECOND || d == WIN_EQUAL)
     return;
@@ -153,6 +177,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   {
     winnersHigh = range2.winnersHigh;
     winnersLow = range2.winnersLow;
+    
+    resultHigh = range2.resultHigh;
+    resultLow = range2.resultLow;
     return;
   }
   else
@@ -160,6 +187,9 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     // Make the extension.
     winnersHigh += range2.winnersHigh;
     winnersLow *= range2.winnersLow;
+    
+    resultHigh += range2.resultHigh;
+    resultLow *= range2.resultLow;
   }
 }
 
@@ -185,6 +215,8 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
 
 bool RangeComplete::constant() const
 {
+  const bool b1 = (resultHigh == resultLow);
+
   return (lower == minimum && 
     upper == minimum &&
     winnersHigh == winnersLow);

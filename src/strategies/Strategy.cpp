@@ -103,12 +103,6 @@ void Strategy::logTrivial(
 
   for (unsigned char i = 0; i < len; i++)
   {
-    // results.emplace_back(Result());
-    // Result& te = results.back();
-    // te.set(i, trivialEntry.tricks(), trivialEntry.winners());
-
-    // TODO Can trivialEntry contain its distribution, so that we
-    // just copy trivialEntry here?
     results.emplace_back(trivialEntry);
     results.back().updateDist(i);
   }
@@ -249,7 +243,6 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
 
   while (iter1 != results.end())
   {
-    // const Compare cmp = iter1->winners().compareForDeclarer(iter2->winners());
     const Compare cmp = iter1->compareCompletely(* iter2);
 
     if (cmp == WIN_FIRST)
@@ -519,9 +512,8 @@ void Strategy::updateAndGrow(
   {
     // Use the survivor's full distribution number and the 
     // corresponding result entry as the trick count.
-    res.set(iterSurvivors->fullNo,
-      resultsOld[iterSurvivors->reducedNo].tricks() + trickNS,
-      resultsOld[iterSurvivors->reducedNo].winners());
+    res = resultsOld[iterSurvivors->reducedNo];
+    res.update(iterSurvivors->fullNo, trickNS);
 
     weightInt += res.tricks();
     iterSurvivors++;

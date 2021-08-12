@@ -101,6 +101,14 @@ class Result
   }
   */
 
+  bool operator == (const Result& res2) const
+  {
+    if (tricksInternal != res2.tricksInternal)
+      return false;
+    else
+      return (winnersInternal.compareForDeclarer(res2.winnersInternal) == WIN_EQUAL);
+  }
+
   Compare compareCompletely(const Result& res2) const
   {
     if (tricksInternal > res2.tricksInternal)
