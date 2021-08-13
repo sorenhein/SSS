@@ -37,11 +37,13 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // To "multiply" two ranges is effectively to take the lowest
   // range (completely), accordingly to some ordering metric.
   // This "lowest" range is used for two purposes:
+  //
   // 1. If the range dominates (is below) another within a
   //    set of Strategies (Nodes) with the same parent, then
   //    the dominated range can be removed.  This is only an
   //    optimization, so if we miss a domination, it's not the
   //    end of the world.
+  //
   // 2. If the range is truly constant (and minimal), it
   //    dominates all Strategies for that parent.  Our detection
   //    of constancy must be perfect and must dominate all other
@@ -59,9 +61,54 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // We compare ranges in the first place according to upper,
   // then lower, then the winners.
 
+
   if (range2.minimum < minimum)
     minimum = range2.minimum;
+  // minimum *= range2.minimum;
 
+  /*
+  const Compare cHigh = resultHigh.compareCompletely(range2.resultHigh);
+
+  if (cHigh == WIN_FIRST)
+  {
+    // Declarer prefers * this, so the defense doesn't.
+    resultLow = range2.resultLow;
+    resultHigh = range2.resultHigh;
+    return;
+  }
+  else if (cHigh == WIN_SECOND)
+  {
+    return;
+  }
+  else if (cHigh == WIN_DIFFERENT)
+  {
+    resultLow *= range2.resultLow;
+    resultHigh += range2.resultHigh;
+    return;
+  }
+
+  const Compare cLow = resultLow.compareCompletely(range2.resultLow);
+
+  if (cLow == WIN_FIRST)
+  {
+    resultLow = range2.resultLow;
+    resultHigh = range2.resultHigh;
+    return;
+  }
+  else if (cLow == WIN_SECOND || cLow == WIN_EQUAL)
+  {
+    return;
+  }
+  else // WIN_DIFFERENT
+  {
+    resultLow *= range2.resultLow;
+    resultHigh += range2.resultHigh;
+    return;
+  }
+  */
+
+
+/* */
   if (range2.resultHigh.tricks() > resultHigh.tricks())
     return;
 
@@ -147,6 +194,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     resultHigh += range2.resultHigh;
     resultLow *= range2.resultLow;
   }
+  /* */
 }
 
 
