@@ -61,7 +61,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // We compare ranges in the first place according to upper,
   // then lower, then the winners.
 
-
   if (range2.minimum < minimum)
     minimum = range2.minimum;
   // minimum *= range2.minimum;
@@ -109,12 +108,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
 
 bool RangeComplete::operator < (const RangeComplete& range2) const
 {
-  if (resultHigh.tricks() != range2.resultLow.tricks())
-    return (resultHigh.tricks() < range2.resultLow.tricks());
-
-  // Compare from declarer's perspective, so c is WIN_FIRST if 
-  // declarer prefers our own winnersHigh.  In this method we are 
-  // taking the defenders' perspective.
   const Compare c = resultHigh.compareCompletely(range2.resultLow);
 
   if (c == WIN_SECOND)
@@ -122,8 +115,8 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
   else if (c != WIN_EQUAL)
     return false;
   else
-    return (range2.resultLow.tricks() < range2.resultHigh.tricks() || 
-        resultLow.tricks() < resultHigh.tricks());
+    return (resultLow != resultHigh ||
+      range2.resultLow != range2.resultHigh);
 }
 
 
