@@ -12,9 +12,7 @@ class RangeComplete
 {
   private:
 
-    unsigned char distribution;
-    unsigned char minimum;
-
+    Result minimum;
     Result resultHigh;
     Result resultLow;
 

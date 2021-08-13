@@ -9,9 +9,7 @@
 
 void RangeComplete::init(const Result& result)
 {
-  distribution = result.dist();
-  minimum = result.tricks();
-
+  minimum = result;
   resultLow = result;
   resultHigh = result;
 }
@@ -23,10 +21,9 @@ void RangeComplete::extend(const Result& result)
   // which is as tight as we can make it, but still rounded
   // "outward" when we need to.  Any Result is within its range.
 
-  assert(distribution == result.dist());
-  if (result.tricks() < minimum)
-    minimum = result.tricks();
+  assert(minimum.dist() == result.dist());
 
+  minimum *= result;
   resultLow *= result;
   resultHigh += result;
 }
@@ -61,9 +58,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
   // We compare ranges in the first place according to upper,
   // then lower, then the winners.
 
-  if (range2.minimum < minimum)
-    minimum = range2.minimum;
-  // minimum *= range2.minimum;
+  minimum *= range2.minimum;
 
   const Compare cHigh = resultHigh.compareCompletely(range2.resultHigh);
 
@@ -122,9 +117,7 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
 
 bool RangeComplete::constant() const
 {
-  return (resultLow.tricks() == minimum && 
-    resultHigh.tricks() == minimum &&
-    resultHigh == resultLow);
+  return (resultLow == minimum && resultHigh == minimum);
 }
 
 
@@ -139,7 +132,7 @@ string RangeComplete::strHeader(const bool rankFlag) const
   stringstream ss;
   ss << 
     setw(4) << right << "dist" <<
-    setw(4) << "min" << 
+    minimum.strHeaderEntry(rankFlag, "Min") <<
     resultLow.strHeaderEntry(rankFlag, "Low") <<
     resultHigh.strHeaderEntry(rankFlag, "High") <<
     endl;
@@ -149,13 +142,13 @@ string RangeComplete::strHeader(const bool rankFlag) const
 
 unsigned char RangeComplete::dist() const
 {
-  return distribution;
+  return minimum.dist();
 }
 
 
 unsigned char RangeComplete::min() const
 {
-  return minimum;
+  return minimum.tricks();
 }
 
 
@@ -163,8 +156,8 @@ string RangeComplete::str(const bool rankFlag) const
 {
   stringstream ss;
   ss << 
-    setw(4) << +distribution <<
-    setw(4) << +minimum << 
+    setw(4) << +minimum.dist() <<
+    minimum.strEntry(rankFlag) <<
     resultLow.strEntry(rankFlag) <<
     resultHigh.strEntry(rankFlag) <<
     endl;
