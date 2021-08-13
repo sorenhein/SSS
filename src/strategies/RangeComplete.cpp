@@ -66,7 +66,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     minimum = range2.minimum;
   // minimum *= range2.minimum;
 
-  /*
   const Compare cHigh = resultHigh.compareCompletely(range2.resultHigh);
 
   if (cHigh == WIN_FIRST)
@@ -105,96 +104,6 @@ void RangeComplete::operator *= (const RangeComplete& range2)
     resultHigh += range2.resultHigh;
     return;
   }
-  */
-
-
-/* */
-  if (range2.resultHigh.tricks() > resultHigh.tricks())
-    return;
-
-  if (range2.resultHigh.tricks() < resultHigh.tricks() || 
-      range2.resultLow.tricks() < resultLow.tricks())
-  {
-    resultLow = range2.resultLow;
-    resultHigh = range2.resultHigh;
-    return;
-  }
-
-  if (range2.resultLow.tricks() > resultLow.tricks())
-    return;
-
-  // Now the two ranges have the same trick interval, but it may
-  // or may not be a constant interval (lower == upper).
-
-  const Compare c = resultHigh.compareCompletely(range2.resultHigh);
-
-  if (resultLow.tricks() < resultHigh.tricks())
-  {
-    // We can just pick one of the ranges.  This is only used for an 
-    // optimization anyway.
-    if (c == WIN_SECOND || c == WIN_DIFFERENT)
-      return;
-    else if (c == WIN_FIRST)
-    {
-      // If declarer prefers the first result, then the defenders don't.
-      resultHigh = range2.resultHigh;
-      resultLow = range2.resultLow;
-      return;
-    }
-
-    // In case of a tie, we prefer the lowest winner on the other end.
-    const Compare d = resultLow.compareCompletely(range2.resultLow);
-
-    if (d == WIN_FIRST)
-    {
-      // Same idea: We only give up on our range if it loses.
-      resultHigh = range2.resultHigh;
-      resultLow = range2.resultLow;
-    }
-    return;
-  }
-
-  // Now the two ranges have a constant trick number.  In some
-  // case we effectively expand the range as if it had been
-  // extend()'ed above.
-  // (a) 5N vs (b) 5S becomes (a*b) 5NS to (a|b) 5N/5S.
-  // (a) 5N vs (b) 5NS stays 5NS as (b) < (a).
-  // (a) 5N vs (b) 5N/5S stays 5N as (a) < (b).
-  // (a) 5NS vs (b) 5N/5S stays 5NS as (a) < (b).
-
-  if (c == WIN_SECOND)
-    return;
-  else if (c == WIN_FIRST)
-  {
-    resultHigh = range2.resultHigh;
-    resultLow = range2.resultLow;
-    return;
-  }
-  else if (c == WIN_DIFFERENT)
-  {
-    // Make the extension.
-    resultHigh += range2.resultHigh;
-    resultLow *= range2.resultLow;
-  }
-
-  // Now the high winners are the same.
-  const Compare d = resultLow.compareCompletely(range2.resultLow);
-
-  if (d == WIN_SECOND || d == WIN_EQUAL)
-    return;
-  else if (d == WIN_FIRST)
-  {
-    resultHigh = range2.resultHigh;
-    resultLow = range2.resultLow;
-    return;
-  }
-  else
-  {
-    // Make the extension.
-    resultHigh += range2.resultHigh;
-    resultLow *= range2.resultLow;
-  }
-  /* */
 }
 
 
