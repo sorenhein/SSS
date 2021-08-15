@@ -25,15 +25,15 @@ class Result
       const unsigned char tricksIn,
       const Winners& winnersIn);
 
-    void setEmpty(const unsigned char tricksIn);
+    void setDist(const unsigned char distIn);
+
+    void setTricks(const unsigned char tricksIn);
 
     void update(
       const unsigned char distIn,
       const unsigned char trickNS);
 
     void update(const Play& play);
-
-    void updateDist(const unsigned char distIn);
 
     void flip();
 

@@ -19,7 +19,13 @@ void Result::set(
 }
 
 
-void Result::setEmpty(const unsigned char tricks)
+void Result::setDist(const unsigned char dist)
+{
+  distInt = dist;
+}
+
+
+void Result::setTricks(const unsigned char tricks)
 {
   tricksInt = tricks;
   winnersInt.setEmpty();
@@ -38,13 +44,6 @@ void Result::update(
 void Result::update(const Play& play)
 {
   winnersInt.update(play);
-}
-
-
-// TMP Should be a more comprehensive update method
-void Result::updateDist(const unsigned char dist)
-{
-  distInt = dist;
 }
 
 

@@ -329,10 +329,10 @@ void Ranks::set(
 
 void Ranks::trivialRanked(
   const unsigned char tricks,
-  Result& trivialEntry) const
+  Result& trivial) const
 {
   if (opps.hasRank(maxGlobalRank))
-    trivialEntry.setEmpty(tricks-1);
+    trivial.setTricks(tricks-1);
   else
   {
     // Play the highest card.
@@ -344,22 +344,22 @@ void Ranks::trivialRanked(
     if (south.hasRank(maxGlobalRank))
       winners.set(WIN_SOUTH, south.top());
 
-    trivialEntry.set(0, tricks, winners);
+    trivial.set(0, tricks, winners);
   }
 }
 
 
-bool Ranks::trivial(Result& trivialEntry) const
+bool Ranks::makeTrivial(Result& trivial) const
 {
   if (north.isVoid() && south.isVoid())
   {
-    trivialEntry.setEmpty(0);
+    trivial.setTricks(0);
     return true;
   }
 
   if (opps.isVoid())
   {
-    trivialEntry.setEmpty(
+    trivial.setTricks(
       static_cast<unsigned char>(max(north.length(), south.length())));
     return true;
   }
@@ -367,7 +367,7 @@ bool Ranks::trivial(Result& trivialEntry) const
   if (north.length() <= 1 && south.length() <= 1)
   {
     // North-South win their last trick if they have the highest card.
-    Ranks::trivialRanked(1, trivialEntry);
+    Ranks::trivialRanked(1, trivial);
     return true;
   }
 
@@ -375,7 +375,7 @@ bool Ranks::trivial(Result& trivialEntry) const
   {
     // North-South win it all, or almost, if opponents have one card left.
     Ranks::trivialRanked(
-      static_cast<unsigned char>(max(north.length(), south.length())), trivialEntry);
+      static_cast<unsigned char>(max(north.length(), south.length())), trivial);
     return true;
   }
 
@@ -650,12 +650,12 @@ void Ranks::setPlaysSide(
 
 CombinationType Ranks::setPlays(
   Plays& plays,
-  Result& trivialEntry)
+  Result& trivial)
 {
   // If COMB_TRIVIAL, only terminalValue is set.
   // Otherwise, plays are set.
 
-  if (Ranks::trivial(trivialEntry))
+  if (Ranks::makeTrivial(trivial))
     return COMB_TRIVIAL;
 
   Play play;

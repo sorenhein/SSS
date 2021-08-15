@@ -104,7 +104,7 @@ void Strategy::logTrivial(
   for (unsigned char i = 0; i < len; i++)
   {
     results.emplace_back(trivialEntry);
-    results.back().updateDist(i);
+    results.back().setDist(i);
   }
   weightInt = trivialEntry.tricks() * len;
 }
@@ -482,8 +482,7 @@ void Strategy::updateSameLength(
   {
     while (iter1 != results.end())
     {
-      // iter1->dist = iter2->fullNo;
-      iter1->updateDist(iter2->fullNo);
+      iter1->setDist(iter2->fullNo);
       iter1++;
       iter2++;
     }

@@ -47,9 +47,9 @@ class Ranks
 
     void trivialRanked(
       const unsigned char tricks,
-      Result& trivialEntry) const;
+      Result& trivial) const;
 
-    bool trivial(Result& trivialEntry) const;
+    bool makeTrivial(Result& trivial) const;
 
     bool leadOK(
       const Declarer& leader,
@@ -101,7 +101,7 @@ class Ranks
 
     CombinationType setPlays(
       Plays& plays,
-      Result& trivialEntry);
+      Result& trivial);
 
     bool partnerVoid() const;
 
