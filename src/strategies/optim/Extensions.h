@@ -4,10 +4,12 @@
 #include <list>
 #include <string>
 
-#include "../Strategies.h"
-#include "../Ranges.h"
 #include "Extension.h"
 #include "Splits.h"
+
+#include "../Strategies.h"
+
+#include "../result/Ranges.h"
 
 using namespace std;
 

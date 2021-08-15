@@ -6,8 +6,9 @@
 #include <string>
 
 #include "optim/Study.h"
-#include "Result.h"
-#include "Ranges.h"
+
+#include "result/Result.h"
+#include "result/Ranges.h"
 
 struct Play;
 struct Survivors;

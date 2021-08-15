@@ -4,7 +4,8 @@
 #include <cassert>
 
 #include "Study.h"
-#include "../Ranges.h"
+
+#include "../result/Ranges.h"
 
 // A major time drain is the component-wise comparison of results.  
 // In the most optimized implementation, 5 result entries are

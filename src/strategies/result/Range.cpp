@@ -3,11 +3,11 @@
 #include <sstream>
 #include <cassert>
 
-#include "RangeComplete.h"
+#include "Range.h"
 #include "Result.h"
 
 
-void RangeComplete::init(const Result& result)
+void Range::init(const Result& result)
 {
   minimum = result;
   resultLow = result;
@@ -15,7 +15,7 @@ void RangeComplete::init(const Result& result)
 }
 
 
-void RangeComplete::extend(const Result& result)
+void Range::extend(const Result& result)
 {
   // The range is in general a container for the actual Result's
   // which is as tight as we can make it, but still rounded
@@ -29,7 +29,7 @@ void RangeComplete::extend(const Result& result)
 }
 
 
-void RangeComplete::operator *= (const RangeComplete& range2)
+void Range::operator *= (const Range& range2)
 {
   // To "multiply" two ranges is effectively to take the lowest
   // range (completely), accordingly to some ordering metric.
@@ -101,7 +101,7 @@ void RangeComplete::operator *= (const RangeComplete& range2)
 }
 
 
-bool RangeComplete::operator < (const RangeComplete& range2) const
+bool Range::operator < (const Range& range2) const
 {
   const Compare c = resultHigh.compareCompletely(range2.resultLow);
 
@@ -115,19 +115,19 @@ bool RangeComplete::operator < (const RangeComplete& range2) const
 }
 
 
-bool RangeComplete::constant() const
+bool Range::constant() const
 {
   return (resultLow == minimum && resultHigh == minimum);
 }
 
 
-const Result& RangeComplete::constantResult() const
+const Result& Range::constantResult() const
 {
   return resultLow;  // Either one, as range assumed constant
 }
 
 
-string RangeComplete::strHeader(const bool rankFlag) const
+string Range::strHeader(const bool rankFlag) const
 {
   stringstream ss;
   ss << 
@@ -140,19 +140,19 @@ string RangeComplete::strHeader(const bool rankFlag) const
 }
 
 
-unsigned char RangeComplete::dist() const
+unsigned char Range::dist() const
 {
   return minimum.dist();
 }
 
 
-unsigned char RangeComplete::min() const
+unsigned char Range::min() const
 {
   return minimum.tricks();
 }
 
 
-string RangeComplete::str(const bool rankFlag) const
+string Range::str(const bool rankFlag) const
 {
   stringstream ss;
   ss << 

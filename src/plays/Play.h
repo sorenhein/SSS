@@ -12,7 +12,7 @@
 #include <deque>
 #include <string>
 
-#include "../strategies/winners/Winners.h"
+#include "../strategies/result/Winners.h"
 
 #include "../const.h"
 

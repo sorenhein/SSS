@@ -8,7 +8,7 @@
 #include <string>
 
 #include "Strategy.h"
-#include "Ranges.h"
+#include "result/Ranges.h"
 
 struct StratData;
 struct Play;

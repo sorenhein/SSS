@@ -1,8 +1,8 @@
 #ifndef SSS_STRATDATA_H
 #define SSS_STRATDATA_H
 
-#include "Result.h"
-#include "RangeComplete.h"
+#include "result/Result.h"
+#include "result/Range.h"
 
 using namespace std;
 
@@ -32,7 +32,7 @@ struct StratDatum
 struct StratData
 {
   list<StratDatum> data;
-  list<RangeComplete>::const_iterator riter;
+  list<Range>::const_iterator riter;
 
   unsigned char dist()
   {

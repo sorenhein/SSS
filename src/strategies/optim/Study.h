@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-#include "../Result.h"
+#include "../result/Result.h"
 
 class Ranges;
 

@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "RangeComplete.h"
+#include "Range.h"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ class Ranges
 {
   private:
 
-    list<RangeComplete> ranges;
+    list<Range> ranges;
 
     bool winnersFlag;
 
@@ -26,10 +26,10 @@ class Ranges
 
     ~Ranges();
 
-    list<RangeComplete>::iterator begin() { return ranges.begin(); };
-    list<RangeComplete>::iterator end() { return ranges.end(); }
-    list<RangeComplete>::const_iterator begin() const { return ranges.begin(); };
-    list<RangeComplete>::const_iterator end() const { return ranges.end(); }
+    list<Range>::iterator begin() { return ranges.begin(); };
+    list<Range>::iterator end() { return ranges.end(); }
+    list<Range>::const_iterator begin() const { return ranges.begin(); };
+    list<Range>::const_iterator end() const { return ranges.end(); }
 
     void reset();
 

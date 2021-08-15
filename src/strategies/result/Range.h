@@ -1,21 +1,20 @@
 #ifndef SSS_RANGE_H
 #define SSS_RANGE_H
 
+#include "Result.h"
+
 #include <string>
 
 using namespace std;
-
-class Result;
 
 
 class Range
 {
   private:
 
-    unsigned char distribution;
-    unsigned char lower;
-    unsigned char upper;
-    unsigned char minimum;
+    Result minimum;
+    Result resultHigh;
+    Result resultLow;
 
   public:
 
@@ -28,14 +27,15 @@ class Range
     bool operator < (const Range& range2) const;
 
     bool constant() const;
+    const Result& constantResult() const;
 
-    string strHeader() const;
+    string strHeader(const bool rankFlag) const;
 
     unsigned char dist() const;
 
     unsigned char min() const;
 
-    string str() const;
+    string str(const bool rankFlag) const;
 };
 
 #endif

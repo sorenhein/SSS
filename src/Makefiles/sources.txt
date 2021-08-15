@@ -22,17 +22,17 @@ SOURCE_FILES    =                               \
                                                 \
                 strategies/Strategies.cpp       \
                 strategies/Strategy.cpp         \
-                strategies/Range.cpp            \
-                strategies/RangeComplete.cpp    \
-                strategies/Ranges.cpp           \
                                                 \
                 strategies/optim/Study.cpp      \
                 strategies/optim/Extensions.cpp \
                 strategies/optim/Extension.cpp  \
                 strategies/optim/Splits.cpp     \
                                                 \
-                strategies/winners/Winners.cpp  \
-                strategies/winners/Winner.cpp   \
+                strategies/result/Range.cpp     \
+                strategies/result/Ranges.cpp    \
+                strategies/result/Result.cpp    \
+                strategies/result/Winners.cpp   \
+                strategies/result/Winner.cpp    \
                                                 \
                 utils/Card.cpp                  \
                 utils/Comparer.cpp              \
