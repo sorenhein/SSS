@@ -37,29 +37,27 @@ class Result
 
     void flip();
 
-    bool differentTricks(const Result& res2) const;
-
-    Compare compareByTricks(const Result& res2) const;
+    void multiplyWinnersOnto(Result& result) const;
 
     void operator *= (const Result& result2);
 
     void operator += (const Result& result2);
   
-    void multiply(Result& result) const;
-
     bool operator < (const Result& res2) const;
 
     bool operator == (const Result& res2) const;
 
     bool operator != (const Result& res2) const;
 
-    Compare compareCompletely(const Result& res2) const;
+    bool differentTricks(const Result& res2) const;
+
+    Compare compareByTricks(const Result& res2) const;
+
+    Compare compareForDeclarer(const Result& res2) const;
 
     unsigned char dist() const;
 
     unsigned char tricks() const;
-
-    const Winners& winners() const;
 
     string strHeaderEntry(
       const bool rankFlag,

@@ -54,23 +54,10 @@ void Result::flip()
 }
 
 
-bool Result::differentTricks(const Result& res2) const
+void Result::multiplyWinnersOnto(Result& result) const
 {
-  if (tricksInt != res2.tricksInt)
-    return true;
-  else
-    return (winnersInt.compareForDeclarer(res2.winnersInt) != WIN_EQUAL);
-}
-
-
-Compare Result::compareByTricks(const Result& res2) const
-{
-  if (tricksInt > res2.tricksInt)
-    return WIN_FIRST;
-  else if (tricksInt < res2.tricksInt)
-    return WIN_SECOND;
-  else
-    return WIN_EQUAL;
+  result.winnersInt *= winnersInt;
+  
 }
 
 
@@ -94,12 +81,6 @@ void Result::operator += (const Result& result2)
 }
 
   
-void Result::multiply(Result& result) const
-{
-  result.winnersInt *= winnersInt;
-}
-
-
 bool Result::operator < (const Result& res2) const
 {
   if (tricksInt < res2.tricksInt)
@@ -126,7 +107,27 @@ bool Result::operator != (const Result& res2) const
 }
 
 
-Compare Result::compareCompletely(const Result& res2) const
+bool Result::differentTricks(const Result& res2) const
+{
+  if (tricksInt != res2.tricksInt)
+    return true;
+  else
+    return (winnersInt.compareForDeclarer(res2.winnersInt) != WIN_EQUAL);
+}
+
+
+Compare Result::compareByTricks(const Result& res2) const
+{
+  if (tricksInt > res2.tricksInt)
+    return WIN_FIRST;
+  else if (tricksInt < res2.tricksInt)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+}
+
+
+Compare Result::compareForDeclarer(const Result& res2) const
 {
   if (tricksInt > res2.tricksInt)
     return WIN_FIRST;
@@ -146,12 +147,6 @@ unsigned char Result::dist() const
 unsigned char Result::tricks() const
 {
   return tricksInt;
-}
-
-
-const Winners& Result::winners() const
-{
-  return winnersInt;
 }
 
 

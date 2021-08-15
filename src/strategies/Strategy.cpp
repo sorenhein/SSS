@@ -243,7 +243,7 @@ bool Strategy::consolidateByRank(const Strategy& strat2)
 
   while (iter1 != results.end())
   {
-    const Compare cmp = iter1->compareCompletely(* iter2);
+    const Compare cmp = iter1->compareForDeclarer(* iter2);
 
     if (cmp == WIN_FIRST)
     {
@@ -612,7 +612,7 @@ const Result Strategy::resultLowest() const
 {
   Result resLowest;
   for (auto& res: results)
-    res.multiply(resLowest);
+    res.multiplyWinnersOnto(resLowest);
 
   return resLowest;
 }
