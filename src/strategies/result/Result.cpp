@@ -106,15 +106,6 @@ bool Result::operator != (const Result& res2) const
 }
 
 
-bool Result::differentTricks(const Result& res2) const
-{
-  if (tricksInt != res2.tricksInt)
-    return true;
-  else
-    return (winnersInt.compareForDeclarer(res2.winnersInt) != WIN_EQUAL);
-}
-
-
 Compare Result::compareByTricks(const Result& res2) const
 {
   if (tricksInt > res2.tricksInt)

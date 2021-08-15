@@ -139,8 +139,7 @@ bool Strategy::operator == (const Strategy& strat2) const
 
   while (iter1 != results.end())
   {
-    // if (* iter1 != * iter2)
-    if (iter1->differentTricks(* iter2))
+    if (* iter1 != * iter2)
       return false;
 
     iter1++;

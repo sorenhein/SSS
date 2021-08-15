@@ -49,8 +49,6 @@ class Result
 
     bool operator != (const Result& res2) const;
 
-    bool differentTricks(const Result& res2) const;
-
     Compare compareByTricks(const Result& res2) const;
 
     Compare compareForDeclarer(const Result& res2) const;
