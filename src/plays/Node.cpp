@@ -168,6 +168,13 @@ void Node::purgeRanges(const bool debugFlag)
     }
   }
 
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal in purge *=\n";
+  cout << endl;
+  assert(false);
+}
+
   // Shrink to the size used.
   constants.eraseRest(citer);
   parentPtr->constants *= constants;
@@ -192,6 +199,13 @@ void Node::purgeRanges(const bool debugFlag)
       cout << strats.str("Ranges after purging", true);
     }
   }
+
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal at end of purge *=\n";
+  cout << endl;
+  assert(false);
+}
 }
 
 
@@ -210,8 +224,13 @@ void Node::reactivate()
   // the simple strategy is multiplied back here, weights can change
   // and therefore the ordering can also change.
 
-  if (! strats.ordered())
+  // if (! strats.ordered())
+  if (! simpleStrat.empty())
+  {
+cout << strats.str("consolidating", true);
     strats.consolidate();
+cout << strats.str("consolidated", true);
+  }
 }
 
 
@@ -228,7 +247,22 @@ void Node::cross(
     cout << strats.str("Crossing " + s + " strategy", true);
   }
 
+  cout << parentPtr->strats.str("Before", true);
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal before *=\n";
+  cout << parentPtr->strats.str("Before", true);
+  cout << endl;
+  assert(false);
+}
   parentPtr->strats *= strats;
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal after *=\n";
+  cout << parentPtr->strats.str("After", true);
+  cout << endl;
+  assert(false);
+}
 
   if (debugFlag)
   {
@@ -316,5 +350,14 @@ string Node::strSimple() const
     return "";
   else
     return simpleStrat.str("simple " + to_string(index));
+}
+
+
+string Node::strSimpleParent() const
+{
+  if (parentPtr->simpleStrat.empty())
+    return "";
+  else
+    return parentPtr->simpleStrat.str("simple " + to_string(index), true);
 }
 

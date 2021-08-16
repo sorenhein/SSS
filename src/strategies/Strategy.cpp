@@ -266,11 +266,21 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 
 bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
+cout << Strategy::str("first", true);
+cout << strat2.str("second", true);
   // This uses studied results if possible, otherwise the basic method.
   if (! study.maybeGreaterEqual(strat2.study))
+  {
+cout << "maybe: false\n";
     return false;
+  }
   else
-    return Strategy::greaterEqualByTricks(strat2);
+  {
+    const bool b = Strategy::greaterEqualByTricks(strat2);
+cout << "by tricks: " << b << endl;
+return b;
+    // return Strategy::greaterEqualByTricks(strat2);
+  }
 }
 
 

@@ -42,7 +42,7 @@ class Strategies
 
     void collapseOnVoid();
 
-    void consolidateTwo();
+    void consolidateTwo(ComparatorType comparator);
 
     void restudy();
 

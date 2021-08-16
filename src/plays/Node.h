@@ -90,6 +90,7 @@ class Node
     string strPlay(const Level level) const;
 
     string strSimple() const;
+    string strSimpleParent() const;
 };
 
 #endif

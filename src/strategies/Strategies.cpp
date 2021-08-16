@@ -116,7 +116,7 @@ timersStrat[0].stop();
  *                                                          *
  ************************************************************/
 
-void Strategies::consolidateTwo()
+void Strategies::consolidateTwo(ComparatorType comparator)
 {
   // Check whether to swap the two and whether one is dominated.
 
@@ -124,18 +124,34 @@ void Strategies::consolidateTwo()
   auto iter2 = next(iter1);
   if (iter1->weight() < iter2->weight())
   {
-    if (iter2->greaterEqualByProfile(* iter1))
+cout << "Case: <\n";
+    if (((* iter2).*comparator)(* iter1))
+    {
+cout << "GE\n";
       strategies.pop_front();
+    }
     else
+    {
+cout << "Swap\n";
       iter_swap(iter1, iter2);
+    }
   }
   else if (iter2->weight() < iter1->weight())
   {
-    if (iter1->greaterEqualByProfile(* iter2))
+cout << "Case: >\n";
+    if (((* iter1).*comparator)(* iter2))
+    {
+cout << "Profile > too\n";
       strategies.pop_back();
+    }
+    else
+    {
+cout << "Profile NOT >\n";
+    }
   }
   else
   {
+cout << "Case: Same weight\n";
     const Compare c = iter1->compare(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
       strategies.pop_back();
@@ -157,20 +173,27 @@ void Strategies::consolidate()
 
   Strategies::restudy();
 
+cout << "consolidate: scrutinizeFlag " << scrutinizedFlag << endl;
   if (strategies.size() == 1)
   {
+cout << "Case: 1\n";
     // Don't have to do anything.
     return;
   }
   else if (strategies.size() == 2)
   {
+cout << "Case: 2\n";
     // The general way also works in this case, and it is just
     // a small optimization.
-    Strategies::consolidateTwo();
+    ComparatorType comp = (scrutinizedFlag ? 
+      &Strategy::greaterEqualByProfile : &Strategy::greaterEqualByStudy);
+
+    Strategies::consolidateTwo(comp);
     return;
   }
   else
   {
+cout << "Case: More\n";
 timersStrat[1].start();
 
     auto oldStrats = move(strategies);
@@ -306,8 +329,7 @@ void Strategies::addStrategy(
         return;
       else if (c == WIN_SECOND)
       {
-        * iter = strat;
-        return;
+        iter = strategies.erase(iter);
       }
       else
         iter++;
@@ -595,15 +617,22 @@ void Strategies::multiplyAddStrategy(
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
       const Compare c = iter->compare(* piter);
+cout << "comparator positive, c " << c << endl;
       if (c == WIN_FIRST || c == WIN_EQUAL)
-        return;
-      else if (c == WIN_SECOND)
       {
-        * iter = * piter;
+cout << ">= with ranks\n";
         return;
       }
+      else if (c == WIN_SECOND)
+      {
+cout << "< with ranks\n";
+        iter = strategies.erase(iter);
+      }
       else
+      {
+cout << "different with ranks\n";
         iter++;
+      }
     }
     else
       iter++;
@@ -674,15 +703,17 @@ void Strategies::operator *= (Strategies& strats2)
 
     ComparatorType comp;
     unsigned tno;
-    if (ranges.empty())
-    {
-      comp = &Strategy::greaterEqualByStudy;
-      tno = 7;
-    }
-    else
+    // if (ranges.empty())
+cout << "scrutinizedFlag " << scrutinizedFlag << endl;
+    if (scrutinizedFlag)
     {
       comp = &Strategy::greaterEqualByProfile;
       tno = 8;
+    }
+    else
+    {
+      comp = &Strategy::greaterEqualByStudy;
+      tno = 7;
     }
 
 timersStrat[tno].start();

@@ -111,8 +111,7 @@ void Extensions::add()
         return;
       else if (c == WIN_SECOND)
       {
-        * iter = * piter;
-        return;
+        iter = extensions.erase(iter);
       }
       else
         iter++;

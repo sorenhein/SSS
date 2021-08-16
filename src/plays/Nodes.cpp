@@ -158,7 +158,25 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 
   // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
+{
+  if (! iter->strategies().minimal())
+  {
+    cout << "Non-minimal in DeclarerAdvanced before\n";
+    cout << endl;
+    assert(false);
+  }
+
+
     iter->reactivate();
+
+  if (! iter->strategies().minimal())
+  {
+    cout << "Non-minimal in DeclarerAdvanced after\n";
+    cout << iter->strategies().str("here", true);
+    cout << endl;
+    assert(false);
+  }
+}
 
   Nodes::strategizeDeclarer(debugFlag);
 }
@@ -263,9 +281,9 @@ string Nodes::strCount() const
 
 string Nodes::strSimple() const
 {
-  stringstream ss;
-  for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    ss <<  iter->strSimple();
-  return ss.str();
+  if (nextIter == nodes.end())
+    return "";
+  else
+    return nodes.begin()->strSimpleParent();
 }
 
