@@ -30,7 +30,10 @@ class Strategy
 
     void setConstants();
 
-    bool greaterEqual(const Strategy& strat2) const;
+    // Trick-level, but returns a full-level cumulator.
+    bool greaterEqualCumulator(
+      const Strategy& strat2,
+      unsigned& cum) const;
 
     void updateSingle(
       const unsigned char fullNo,
@@ -80,21 +83,28 @@ class Strategy
     void eraseRest(list<Result>::iterator iter);
 
     void logTrivial(
-      const Result& trivialEntry,
+      const Result& trivial,
       const unsigned char len);
 
     void restudy();
 
     void scrutinize(const Ranges& ranges);
 
+    // Full Result level
     bool operator == (const Strategy& strat2) const;
 
-    bool operator >= (const Strategy& tv2) const;
+    // Full Result level
+    bool greaterEqual(const Strategy& strat2) const;
+    bool operator >= (const Strategy& strat2) const;
 
+    // Full Result level
+    Compare compare(const Strategy& strat2) const;
+
+    // Trick-level
     bool greaterEqualByProfile(const Strategy& strat2) const;
+    bool greaterEqualByStudy(const Strategy& strat2) const;
+    bool greaterEqualByTricks(const Strategy& strat2) const;
     Compare compareByProfile(const Strategy& strat2) const;
-
-    bool consolidateByRank(const Strategy& strat2);
 
     void operator *= (const Strategy& strat2);
 

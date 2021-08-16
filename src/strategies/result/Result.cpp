@@ -128,6 +128,25 @@ Compare Result::compareForDeclarer(const Result& res2) const
 }
 
 
+CompareDetail Result::compareInDetail(const Result& res2) const
+{
+  if (tricksInt > res2.tricksInt)
+    return WIN_FIRST_PRIMARY;
+  else if (tricksInt < res2.tricksInt)
+    return WIN_SECOND_PRIMARY;
+
+  const Compare c = winnersInt.compareForDeclarer(res2.winnersInt);
+  if (c == WIN_FIRST)
+    return WIN_FIRST_SECONDARY;
+  else if (c == WIN_SECOND)
+    return WIN_SECOND_SECONDARY;
+  else if (c == WIN_EQUAL)
+    return WIN_EQUAL_OVERALL;
+  else
+    return WIN_DIFFERENT_OVERALL;
+}
+
+
 unsigned char Result::dist() const
 {
   return distInt;

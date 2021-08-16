@@ -194,6 +194,13 @@ const Strategies& Plays::strategize(
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
 
+if (! nodeMaster.strategies().minimal())
+{
+  cout << nodeMaster.strategies().str("NON-MINIMAL", true);
+  cout << endl;
+  assert(false);
+}
+
   return nodeMaster.strategies();
 }
 

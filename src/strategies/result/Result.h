@@ -8,6 +8,21 @@
 using namespace std;
 
 
+enum CompareDetail
+{
+  WIN_NEUTRAL_OVERALL = 0x0,
+  WIN_EQUAL_OVERALL = 0x1,
+  WIN_FIRST_PRIMARY = 0x2,
+  WIN_SECOND_PRIMARY = 0x4,
+  WIN_FIRST_SECONDARY = 0x8,
+  WIN_SECOND_SECONDARY = 0x10,
+  WIN_DIFFERENT_OVERALL = 0x20
+};
+
+#define WIN_FIRST_OVERALL 0xa
+#define WIN_SECOND_OVERALL 0x14
+
+
 class Result
 {
   private:
@@ -52,6 +67,8 @@ class Result
     Compare compareByTricks(const Result& res2) const;
 
     Compare compareForDeclarer(const Result& res2) const;
+
+    CompareDetail compareInDetail(const Result& res2) const;
 
     unsigned char dist() const;
 

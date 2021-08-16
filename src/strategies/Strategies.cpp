@@ -30,7 +30,7 @@ Strategies::~Strategies()
 void Strategies::reset()
 {
   strategies.clear();
-  rangesNew.reset();
+  ranges.reset();
   scrutinizedFlag = false;
 }
 
@@ -129,8 +129,19 @@ void Strategies::consolidateTwo()
     else
       iter_swap(iter1, iter2);
   }
-  else if (iter1->greaterEqualByProfile(* iter2))
-    strategies.pop_back();
+  else if (iter2->weight() < iter1->weight())
+  {
+    if (iter1->greaterEqualByProfile(* iter2))
+      strategies.pop_back();
+  }
+  else
+  {
+    const Compare c = iter1->compare(* iter2);
+    if (c == WIN_FIRST || c == WIN_EQUAL)
+      strategies.pop_back();
+    else if (c == WIN_SECOND)
+      strategies.pop_front();
+  }
 }
 
 
@@ -273,28 +284,30 @@ void Strategies::addStrategy(
   }
 
   auto iter = strategies.begin();
-  while (iter != strategies.end() && iter->weight() >= strat.weight())
+  while (iter != strategies.end() && iter->weight() > strat.weight())
   {
-    // Is the new strat dominated?
+    // Only the new strat may be dominated.
+    // Only a trick comparison is needed.
+    if (((* iter).*comparator)(strat))
+      return;
+    else
+      iter++;
+  }
+
+  while (iter != strategies.end() && iter->weight() == strat.weight())
+  {
+    // Here it could go either way, and we have to look in detail.
     if (((* iter).*comparator)(strat))
     {
-      if (iter->weight() == strat.weight())
+      // They are the same weight and the tricks are identical.
+      // The dominance could go either way, or they may be different.
+      const Compare c = iter->compare(strat);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return;
+      else if (c == WIN_SECOND)
       {
-        if (iter->consolidateByRank(strat))
-        {
-          // Same tricks, and ranks can be dominated.
-timersStrat[28].start();
-timersStrat[28].stop();
-          return;
-        }
-        else
-        {
-          iter++;
-          cout << "HERE1 addStrategy\n";
-          // cout << iter->str("iter", true);
-          // cout << strat.str("str", true) << endl;
-          // assert(false);
-        }
+        * iter = strat;
+        return;
       }
       else
         iter++;
@@ -302,6 +315,7 @@ timersStrat[28].stop();
     else
       iter++;
   }
+
 
   // The new vector must be inserted.  This consumes about a third
   // of the time of the overall method.
@@ -311,16 +325,6 @@ timersStrat[28].stop();
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
-if (iter->weight() == strat.weight())
-{
-  cout << "HERE2 addStrategy\n";
-  cout << iter->str("iter");
-  cout << strat.str("str") << endl;
-  assert(false);
-// timersStrat[29].start();
-// timersStrat[29].stop();
-}
-
     if ((strat.*comparator)(* iter))
       iter = strategies.erase(iter);
     else
@@ -342,7 +346,7 @@ void Strategies::operator += (const Strategy& strat)
   }
   else
   {
-    comp = &Strategy::operator >=;
+    comp = &Strategy::greaterEqualByStudy;
     tno = 3;
   }
 
@@ -409,7 +413,8 @@ void Strategies::markChanges(
         continue;
       }
 
-      if (iter->greaterEqualByProfile(strat))
+      if (iter->greaterEqualByProfile(strat) &&
+          iter->greaterEqual(strat))
       {
         doneFlag = true;
         break;
@@ -433,7 +438,8 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-      if (strat.greaterEqualByProfile(* iter))
+      if (strat.greaterEqualByProfile(* iter) &&
+          strat.greaterEqual(strat))
       {
         if (ownDeletions[stratNo] == 0)
         {
@@ -478,8 +484,8 @@ timersStrat[4].start();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
 
-    Strategies::scrutinize(rangesNew);
-    strats2.scrutinize(rangesNew);
+    Strategies::scrutinize(ranges);
+    strats2.scrutinize(ranges);
 
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
@@ -554,8 +560,8 @@ void Strategies::multiplyAddStrategy(
   // This costs about two thirds of the overall method time.
   auto& product = strategies.back();
   product.multiply(strat1, strat2);
-  if (! rangesNew.empty())
-    product.scrutinize(rangesNew);
+  if (! ranges.empty())
+    product.scrutinize(ranges);
   auto piter = prev(strategies.end());
 
   if (strategies.size() == 1)
@@ -571,12 +577,33 @@ void Strategies::multiplyAddStrategy(
   // This checking costs about one third of the overall method time.
   
   auto iter = strategies.begin();
-  while (iter != piter && iter->weight() >= piter->weight())
+  while (iter != piter && iter->weight() > piter->weight())
   {
     if (((* iter).*comparator)(* piter))
     {
       // The new strat is dominated.
       return;
+    }
+    else
+      iter++;
+  }
+
+  while (iter != piter && iter->weight() == piter->weight())
+  {
+    if (((* iter).*comparator)(* piter))
+    {
+      // They are the same weight and the tricks are identical.
+      // The dominance could go either way, or they may be different.
+      const Compare c = iter->compare(* piter);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return;
+      else if (c == WIN_SECOND)
+      {
+        * iter = * piter;
+        return;
+      }
+      else
+        iter++;
     }
     else
       iter++;
@@ -637,7 +664,7 @@ void Strategies::operator *= (Strategies& strats2)
     return;
   }
 
-  if (rangesNew.empty() || len1 < 10 || len2 < 10)
+  if (ranges.empty() || len1 < 10 || len2 < 10)
   {
 
     // This implementation of the general product reduces
@@ -647,9 +674,9 @@ void Strategies::operator *= (Strategies& strats2)
 
     ComparatorType comp;
     unsigned tno;
-    if (rangesNew.empty())
+    if (ranges.empty())
     {
-      comp = &Strategy::operator >=;
+      comp = &Strategy::greaterEqualByStudy;
       tno = 7;
     }
     else
@@ -693,7 +720,7 @@ timersStrat[9].start();
       EXTENSION_SPLIT1);
     extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
 
-    extensions.multiply(rangesNew);
+    extensions.multiply(ranges);
 
     strategies.clear();
     extensions.flatten(strategies);
@@ -740,6 +767,23 @@ bool Strategies::ordered() const
 }
 
 
+bool Strategies::minimal() const
+{
+  // This is only for diagnostics.
+  if (strategies.size() <= 1)
+    return true;
+
+  for (auto iter1 = strategies.begin(); iter1 != prev(strategies.end());
+      iter1++)
+  {
+    for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++)
+      if (iter1->compare(* iter2) != WIN_DIFFERENT)
+        return false;
+  }
+  return true;
+}
+
+
 void Strategies::getLoopData(StratData& stratData)
 {
   // This is used to loop over all strategies in synchrony, one
@@ -768,14 +812,14 @@ void Strategies::makeRanges()
   if (strategies.empty())
     return;
 
-  strategies.front().initRanges(rangesNew);
+  strategies.front().initRanges(ranges);
 
   if (strategies.size() == 1)
     return;
 
   for (auto iter = next(strategies.begin()); 
       iter != strategies.end(); iter++)
-    iter->extendRanges(rangesNew);
+    iter->extendRanges(ranges);
 }
 
 
@@ -784,13 +828,13 @@ void Strategies::propagateRanges(const Strategies& child)
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
-  rangesNew *= child.rangesNew;
+  ranges*= child.ranges;
 }
 
 
 const Ranges& Strategies::getRanges() const
 {
-  return rangesNew;
+  return ranges;
 }
 
 
@@ -805,11 +849,7 @@ const Result Strategies::resultLowest() const
   Result resultLowest;
 
   for (const auto& strat: strategies)
-  {
-    const Result res = strat.resultLowest();
-    resultLowest *= res;
-    // wOverall *= res.winners();
-  }
+    resultLowest *= strat.resultLowest();
 
   return resultLowest;
 }
@@ -827,8 +867,8 @@ string Strategies::strRanges(const string& title) const
   if (title != "")
     ss << title << "\n";
 
-  ss << rangesNew.strHeader();
-  for (auto& range: rangesNew)
+  ss << ranges.strHeader();
+  for (auto& range: ranges)
     ss << range.str(true);
 
   return ss.str();

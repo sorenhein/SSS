@@ -91,12 +91,31 @@ void Extensions::add()
   // This checking costs about one third of the overall method time.
   
   auto iter = extensions.begin();
-  while (iter != piter && iter->weight() >= piter->weight())
+  while (iter != piter && iter->weight() > piter->weight())
   {
     if (Extensions::greaterEqual(* iter, * piter))
     {
       // The new strat is dominated.
       return;
+    }
+    else
+      iter++;
+  }
+
+  while (iter != piter && iter->weight() == piter->weight())
+  {
+    if (Extensions::greaterEqual(* iter, * piter))
+    {
+      const Compare c = iter->compare(* piter);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return;
+      else if (c == WIN_SECOND)
+      {
+        * iter = * piter;
+        return;
+      }
+      else
+        iter++;
     }
     else
       iter++;

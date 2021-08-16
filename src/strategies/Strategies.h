@@ -35,8 +35,7 @@ class Strategies
 
     list<Strategy> strategies;
 
-    // Ranges ranges;
-    Ranges rangesNew;
+    Ranges ranges;
 
     bool scrutinizedFlag;
 
@@ -47,6 +46,7 @@ class Strategies
 
     void restudy();
 
+    // Full Result level
     bool sameOrdered(const Strategies& strats2) const;
     bool sameUnordered(const Strategies& strats2) const;
 
@@ -98,6 +98,7 @@ class Strategies
 
     void scrutinize(const Ranges& rangesIn);
 
+    // Full Result level
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2);
@@ -109,6 +110,7 @@ class Strategies
     unsigned size() const;
     bool empty() const;
     bool ordered() const;
+    bool minimal() const;
 
     void getLoopData(StratData& stratData);
 

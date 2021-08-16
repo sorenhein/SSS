@@ -1,32 +1,20 @@
-TEMP
+Checks
+------
+* Range optimization in Nodes (on/off)
+* Strategies *= optimization (on/off)
+* No Strategies not minimal(), ordered()
+* When a Strategies can be simplified to others due to rank,
+  somehow check that those strategies that only rely on ranks
+  >= the minimum ones have exactly the same Strategies, incl. ranks
 
 Strategies += Strategies by rank comparison
 -------------------------------------------
-Places where Strategy's are compared:
-* Strategies::addStrategy [implemented rank equality here only for now]
-* Strategies::multiplyAddStrategy
-* Extensions::add
-
-* All places where the equivalent of greaterEqual occurs
-* Clean up Strategies code/directory
-
-Strategy::greaterEqual is only called from Strategy: >= Strategy.
-Certainly if #tricks is lower anywhere, we should return false.
-If if's higher anywhere (but not lower anywhere), it's true.
-If it's equal everywhere, we have to look at the ranks too.
-
-Presumably this sort of things shows up in all the way that we can
-Strategies += Strategy, which probably is centered in
-Strategies += Strategies as well.  It includes Extensions.
-
-See if we can make two types of Result as well, and select on
-whether the Winners matter.
-
-
-Ranges
-------
-* Put in new directory
-* See about virtual class configured at runtime
+* Get to work again...
+* Clean up Strategies code/directory again, especially the numbers
+  and types of comparison methods
+* Also optimize for speed again.  If we only need an ==, a compare
+  is perhaps not needed, etc.
+* When we know equality for tricks, we only need equality for ranks
 
 
 Ranks stored in tables

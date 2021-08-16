@@ -55,6 +55,7 @@ class Extension
       const Strategy& strat2);
 
     bool operator >= (const Extension& ext2) const;
+    Compare compare(const Extension& ext2) const;
 
     unsigned index1() const;
     unsigned index2() const;

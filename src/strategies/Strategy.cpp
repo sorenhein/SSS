@@ -95,7 +95,7 @@ void Strategy::eraseRest(list<Result>::iterator iter)
 
 
 void Strategy::logTrivial(
-  const Result& trivialEntry,
+  const Result& trivial,
   const unsigned char len)
 {
   results.clear();
@@ -103,10 +103,10 @@ void Strategy::logTrivial(
 
   for (unsigned char i = 0; i < len; i++)
   {
-    results.emplace_back(trivialEntry);
+    results.emplace_back(trivial);
     results.back().setDist(i);
   }
-  weightInt = trivialEntry.tricks() * len;
+  weightInt = trivial.tricks() * len;
 }
 
 
@@ -130,7 +130,7 @@ void Strategy::scrutinize(const Ranges& ranges)
 
 bool Strategy::operator == (const Strategy& strat2) const
 {
-  // For diagnostics.  This is by tricks only, not by winners.
+  // For diagnostics.
   const unsigned n = results.size();
   assert(strat2.results.size() == n);
 
@@ -149,48 +149,52 @@ bool Strategy::operator == (const Strategy& strat2) const
 }
 
 
+bool Strategy::greaterEqualCumulator(
+  const Strategy& strat2,
+  unsigned& cum) const
+{
+  // This method supports others that perform complete comparisons.
+  // This one returns true if the trick comparison still permits >=,
+  // and if so, cum is the cumulative bit vector of returns for
+  // further processing.
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  cum = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    const CompareDetail c = iter1->compareInDetail(* iter2);
+    if (c & WIN_SECOND_PRIMARY)
+      return false;
+
+    cum |= c;
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
 bool Strategy::greaterEqual(const Strategy& strat2) const
 {
   // This is the basic method with no fanciness.
   // It goes by tricks first, and only if there is complete equality
   // does it consider winners.
 
-  assert(strat2.results.size() == results.size());
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  bool winFlag = false;
-  while (iter1 != results.end())
-  {
-    const Compare c = iter1->compareByTricks(* iter2);
-    // if (iter1->fewerTricks(* iter2))
-    // if (* iter1 < * iter2)
-    if (c == WIN_SECOND)
-      return false;
-    else if (c == WIN_FIRST)
-      winFlag = true;
-
-    iter1++;
-    iter2++;
-  }
-
-  if (winFlag)
+  unsigned cum;
+  if (! Strategy::greaterEqualCumulator(strat2, cum))
+    return false;
+  
+  if (cum & WIN_FIRST_PRIMARY)
     return true;
-
-  iter1 = results.cbegin();
-  iter2 = strat2.results.cbegin();
-
-  while (iter1 != results.end())
-  {
-    if (* iter1 < * iter2)
-      return false;
-
-    iter1++;
-    iter2++;
-  }
-
-  return true;
+  else if (cum & WIN_SECOND_SECONDARY)
+    return false;
+  else if (cum & WIN_DIFFERENT_OVERALL)
+    return false;
+  else
+    return true;
 }
 
 
@@ -204,113 +208,83 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
+Compare Strategy::compare(const Strategy& strat2) const
+{
+  // This is only for diagnostics.
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  unsigned cum = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    cum |= iter1->compareInDetail(* iter2);
+    iter1++;
+    iter2++;
+  }
+
+  // Can this go in a ComparerDetail class, or somewhere else?
+  // Or even in a table lookup (64)?
+  if (cum & WIN_FIRST_PRIMARY)
+  {
+    if (cum & WIN_SECOND_PRIMARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (cum & WIN_SECOND_PRIMARY)
+    return WIN_SECOND;
+  else if (cum & WIN_FIRST_SECONDARY)
+  {
+    if (cum & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT;
+    else if (cum & WIN_DIFFERENT_OVERALL)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (cum & WIN_SECOND_SECONDARY)
+  {
+    if (cum & WIN_DIFFERENT_OVERALL)
+      return WIN_DIFFERENT;
+    else
+      return WIN_SECOND;
+  }
+  else if (cum & WIN_DIFFERENT_OVERALL)
+    return WIN_DIFFERENT;
+  else
+    return WIN_EQUAL;
+}
+
+
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
   return study.greaterEqualByProfile(strat2.study);
 }
 
 
-Compare Strategy::compareByProfile(const Strategy& strat2) const
+bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
-  return study.compareByProfile(strat2.study);
+  // This uses studied results if possible, otherwise the basic method.
+  if (! study.maybeGreaterEqual(strat2.study))
+    return false;
+  else
+    return Strategy::greaterEqualByTricks(strat2);
 }
 
 
-/************************************************************
- *                                                          *
- * Consolidate equal-weight Strategy's by rank if possible  *
- *                                                          *
- ************************************************************/
-
-bool Strategy::consolidateByRank(const Strategy& strat2)
+bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
 {
-  // So far this only tests for ==, >= and <=.
-  // TODO We can consolidate a single difference as well, perhaps.
+  // The ByProfile method is preferable if the profile is available.
+  unsigned cum;
+  return Strategy::greaterEqualCumulator(strat2, cum);
+}
 
-  assert(results.size() == strat2.results.size());
-  assert(! results.empty());
 
-  auto iter1 = results.begin();
-  auto iter2 = strat2.results.begin();
-  bool greaterFlag = false;
-  bool lowerFlag = false;
-  bool differentFlag = false;
-
-  // Keep of track of the (hopefully) only set of Result's that differ.
-  Result * rptr1 = nullptr;
-  Result const * rptr2 = nullptr;
-
-  while (iter1 != results.end())
-  {
-    const Compare cmp = iter1->compareForDeclarer(* iter2);
-
-    if (cmp == WIN_FIRST)
-    {
-      if (lowerFlag)
-      {
-cout << "consolidate: Both > and < appear" << endl;
-        cout << Strategy::str("first", true);
-        cout << strat2.str("second", true) << endl;
-        return false;
-      }
-
-      greaterFlag = true;
-    }
-    else if (cmp == WIN_SECOND)
-    {
-      if (greaterFlag)
-      {
-cout << "consolidate: Both > and < appear" << endl;
-        cout << Strategy::str("first", true);
-        cout << strat2.str("second", true) << endl;
-        return false;
-      }
-
-      lowerFlag = true;
-    }
-    else if (cmp == WIN_EQUAL)
-    {
-      // Nothing to do.
-    }
-    else
-    {
-      if (differentFlag)
-      {
-cout << "consolidate: More than one difference" << endl;
-        cout << Strategy::str("first", true);
-        cout << strat2.str("second", true) << endl;
-        // Can't deal with two differences.
-        return false;
-      }
-
-      differentFlag = true;
-      rptr1 = &* iter1;
-      rptr2 = &* iter2;
-    }
-
-    iter1++;
-    iter2++;
-  }
-
-  if (differentFlag)
-  {
-    if (greaterFlag || lowerFlag)
-    {
-cout << "consolidate: Both different and </>" << endl;
-        cout << Strategy::str("first", true);
-        cout << strat2.str("second", true) << endl;
-      // Too complicated.
-      return false;
-    }
-
-    * rptr1 += * rptr2;
-  }
-
-  // The flags cannot both be set, or we would have returned above.
-  if (lowerFlag)
-    * this = strat2;
-  
-  return true;
+Compare Strategy::compareByProfile(const Strategy& strat2) const
+{
+  return study.compareByProfile(strat2.study);
 }
 
 
@@ -341,7 +315,8 @@ void Strategy::operator *= (const Strategy& strat2)
     else 
     {
       if (iter1->tricks() > iter2->tricks())
-        weightInt += static_cast<unsigned>(iter2->tricks() - iter1->tricks());
+        weightInt += static_cast<unsigned>
+          (iter2->tricks() - iter1->tricks());
       * iter1 *= * iter2;
 
       iter1++;
