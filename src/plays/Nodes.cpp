@@ -148,7 +148,16 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 
   // Add to the corresponding parent node.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
+  {
     iter->add(LEVEL_PARD, debugFlag);
+if (! iter->strategies().minimal())
+{
+  cout << "Non-minimal in strategizeDeclarer after\n";
+  cout << iter->strategies().str("here", true);
+  cout << endl;
+  assert(false);
+}
+  }
 }
 
 

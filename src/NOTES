@@ -1,3 +1,11 @@
+10 / 33431
+Problem happens in strats += strats
+"The hard way", so both have >= 20 strategies
+I guess we can print out ownDeletions and addition numbers of strats2
+Then we can tell which index combination break minimal()
+And then we can wonder why one method flags it and another one doesn't
+
+
 Checks
 ------
 * Range optimization in Nodes (on/off)

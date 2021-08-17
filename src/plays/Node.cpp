@@ -227,9 +227,9 @@ void Node::reactivate()
   // if (! strats.ordered())
   if (! simpleStrat.empty())
   {
-cout << strats.str("consolidating", true);
+// cout << strats.str("consolidating", true);
     strats.consolidate();
-cout << strats.str("consolidated", true);
+// cout << strats.str("consolidated", true);
   }
 }
 
@@ -286,6 +286,12 @@ void Node::add(
     cout << strats.str("Adding " + s + " strategy", true);
   }
 
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal in add before +=\n";
+  cout << endl;
+  assert(false);
+}
   parentPtr->strats += strats;
 
   if (debugFlag)
@@ -294,6 +300,13 @@ void Node::add(
     cout << parentPtr->strats.str(
       "Cumulative " + s + " strategy after this trick", true);
   }
+
+if (! parentPtr->strats.minimal())
+{
+  cout << "Non-minimal in add after +=\n";
+  cout << endl;
+  assert(false);
+}
 }
 
 

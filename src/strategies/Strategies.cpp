@@ -124,34 +124,34 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   auto iter2 = next(iter1);
   if (iter1->weight() < iter2->weight())
   {
-cout << "Case: <\n";
+// cout << "Case: <\n";
     if (((* iter2).*comparator)(* iter1))
     {
-cout << "GE\n";
+// cout << "GE\n";
       strategies.pop_front();
     }
     else
     {
-cout << "Swap\n";
+// cout << "Swap\n";
       iter_swap(iter1, iter2);
     }
   }
   else if (iter2->weight() < iter1->weight())
   {
-cout << "Case: >\n";
+// cout << "Case: >\n";
     if (((* iter1).*comparator)(* iter2))
     {
-cout << "Profile > too\n";
+// cout << "Profile > too\n";
       strategies.pop_back();
     }
     else
     {
-cout << "Profile NOT >\n";
+// cout << "Profile NOT >\n";
     }
   }
   else
   {
-cout << "Case: Same weight\n";
+// cout << "Case: Same weight\n";
     const Compare c = iter1->compare(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
       strategies.pop_back();
@@ -173,16 +173,16 @@ void Strategies::consolidate()
 
   Strategies::restudy();
 
-cout << "consolidate: scrutinizeFlag " << scrutinizedFlag << endl;
+// cout << "consolidate: scrutinizeFlag " << scrutinizedFlag << endl;
   if (strategies.size() == 1)
   {
-cout << "Case: 1\n";
+// cout << "Case: 1\n";
     // Don't have to do anything.
     return;
   }
   else if (strategies.size() == 2)
   {
-cout << "Case: 2\n";
+// cout << "Case: 2\n";
     // The general way also works in this case, and it is just
     // a small optimization.
     ComparatorType comp = (scrutinizedFlag ? 
@@ -193,7 +193,7 @@ cout << "Case: 2\n";
   }
   else
   {
-cout << "Case: More\n";
+// cout << "Case: More\n";
 timersStrat[1].start();
 
     auto oldStrats = move(strategies);
@@ -426,26 +426,50 @@ void Strategies::markChanges(
     auto iter = strategies.begin();
     unsigned stratNo = 0;
     bool doneFlag = false;
-    while (iter != strategies.end() && iter->weight() >= strat.weight())
+    while (iter != strategies.end() && iter->weight() > strat.weight())
     {
-      if (ownDeletions[stratNo])
+      if (ownDeletions[stratNo] ||
+          ! iter->greaterEqualByProfile(strat))
+      {
+        iter++;
+        stratNo++;
+        continue;
+      }
+      else
+      {
+        doneFlag = true;
+        break;
+      }
+    }
+
+    if (doneFlag)
+      continue;
+
+    while (iter != strategies.end() && iter->weight() == strat.weight())
+    {
+      if (ownDeletions[stratNo] ||
+          ! iter->greaterEqualByProfile(strat))
       {
         iter++;
         stratNo++;
         continue;
       }
 
-      if (iter->greaterEqualByProfile(strat) &&
-          iter->greaterEqual(strat))
+      // Now the trick vectors are identical.
+      // TODO Use Strategy::compare or something optimized?
+      if (iter->greaterEqual(strat))
       {
         doneFlag = true;
         break;
       }
-      else
+      else if (strat.greaterEqual(* iter))
       {
-        iter++;
-        stratNo++;
+        deletions.push_back(iter);
+        ownDeletions[stratNo] = 1;
       }
+
+      iter++;
+      stratNo++;
     }
 
     if (doneFlag)
@@ -461,7 +485,7 @@ void Strategies::markChanges(
     while (iter != strategies.end())
     {
       if (strat.greaterEqualByProfile(* iter) &&
-          strat.greaterEqual(strat))
+          strat.greaterEqual(* iter))
       {
         if (ownDeletions[stratNo] == 0)
         {
@@ -502,6 +526,8 @@ void Strategies::operator += (Strategies& strats2)
 timersStrat[4].start();
 
     // We only need the minima here, but we use the existing method.
+
+cout << "strats += strats the hard way\n";
     Strategies::makeRanges();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
@@ -617,20 +643,20 @@ void Strategies::multiplyAddStrategy(
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
       const Compare c = iter->compare(* piter);
-cout << "comparator positive, c " << c << endl;
+// cout << "comparator positive, c " << c << endl;
       if (c == WIN_FIRST || c == WIN_EQUAL)
       {
-cout << ">= with ranks\n";
+// cout << ">= with ranks\n";
         return;
       }
       else if (c == WIN_SECOND)
       {
-cout << "< with ranks\n";
+// cout << "< with ranks\n";
         iter = strategies.erase(iter);
       }
       else
       {
-cout << "different with ranks\n";
+// cout << "different with ranks\n";
         iter++;
       }
     }
