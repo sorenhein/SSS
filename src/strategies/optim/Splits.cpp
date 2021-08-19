@@ -143,24 +143,17 @@ void Splits::setMatrix()
       matrix[i][i] = WIN_EQUAL_OVERALL;
       for (unsigned j = 0; j < i; j++)
       {
-        // Compare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
-
-        // Seems wasteful
-        bool b12 = (ownPtrs[i]->greaterEqualByProfile)(* ownPtrs[j]);
-        bool b21 = (ownPtrs[j]->greaterEqualByProfile)(* ownPtrs[i]);
+        Compare b = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
         CompareDetail c;
-        if (b12)
-        {
-          // If number and profile of tricks are the same, go deeper.
-          if (b21)
-            c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
-          else
-            c = WIN_FIRST_PRIMARY;
-        }
-        else if (b21)
+
+        if (b == WIN_EQUAL)
+          c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
+        else if (b == WIN_FIRST)
+          c = WIN_FIRST_PRIMARY;
+        else if (b == WIN_SECOND)
           c = WIN_SECOND_PRIMARY;
         else
-          c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
+          c = WIN_DIFFERENT_PRIMARY;
 
         matrix[i][j] = c;
 
@@ -210,30 +203,67 @@ const Strategy& Splits::ownStrategy(const unsigned index) const
 }
 
 
-Compare Splits::compare(
-  const unsigned index1,
-  const unsigned index2) const
-{
-  switch(matrix[index1][index2])
-  {
-    case WIN_NEUTRAL_OVERALL: return WIN_UNSET;
-    case WIN_EQUAL_OVERALL: return WIN_EQUAL;
-    case WIN_FIRST_PRIMARY: return WIN_FIRST;
-    case WIN_SECOND_PRIMARY: return WIN_SECOND;
-    case WIN_FIRST_SECONDARY: return WIN_FIRST;
-    case WIN_SECOND_SECONDARY: return WIN_SECOND;
-    case WIN_DIFFERENT_PRIMARY: return WIN_DIFFERENT;
-    case WIN_DIFFERENT_SECONDARY: return WIN_DIFFERENT;
-  }
-  return WIN_UNSET;
-}
-
-
+/* */
 CompareDetail Splits::compareDetail(
   const unsigned index1,
   const unsigned index2) const
 {
   return matrix[index1][index2];
+}
+/* */
+
+
+Compare Splits::comparePrimary(
+  const unsigned index1,
+  const unsigned index2) const
+{
+  if (ownPtrs[index1]->empty())
+    return (ownPtrs[index2]->empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (ownPtrs[index2]->empty())
+    return WIN_SECOND;
+  else
+    return ownPtrs[index1]->compareByProfile(* ownPtrs[index2]);
+}
+
+Compare Splits::compareSecondary(
+  const unsigned index1,
+  const unsigned index2) const
+{
+  if (ownPtrs[index1]->empty())
+    return (ownPtrs[index2]->empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (ownPtrs[index2]->empty())
+    return WIN_SECOND;
+
+  // TODO Delete
+  assert(ownPtrs[index1]->compareByProfile(* ownPtrs[index2]) == WIN_EQUAL);
+
+  const CompareDetail c = 
+    ownPtrs[index1]->compareDetail(* ownPtrs[index2]);
+
+  if (c == WIN_NEUTRAL_OVERALL)
+    return WIN_UNSET;
+  else if (c == WIN_EQUAL_OVERALL)
+    return WIN_EQUAL;
+  else if (c == WIN_FIRST_PRIMARY)
+  {
+    assert(false);
+    return WIN_FIRST;
+  }
+  else if (c == WIN_SECOND_PRIMARY)
+  {
+    assert(false);
+    return WIN_SECOND;
+  }
+  else if (c == WIN_FIRST_SECONDARY)
+    return WIN_FIRST;
+  else if (c == WIN_SECOND_SECONDARY)
+    return WIN_SECOND;
+  else if (c == WIN_DIFFERENT_PRIMARY)
+    return WIN_DIFFERENT;
+  else if (c == WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+  else
+    return WIN_UNSET;
 }
 
 

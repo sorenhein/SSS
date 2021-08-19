@@ -59,11 +59,15 @@ class Splits
 
     const Strategy& ownStrategy(const unsigned index) const;
 
-    Compare compare(
+    CompareDetail compareDetail(
       const unsigned index1,
       const unsigned index2) const;
 
-    CompareDetail compareDetail(
+    Compare comparePrimary(
+      const unsigned index1,
+      const unsigned index2) const;
+
+    Compare compareSecondary(
       const unsigned index1,
       const unsigned index2) const;
 
