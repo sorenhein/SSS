@@ -148,16 +148,7 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 
   // Add to the corresponding parent node.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
-  {
     iter->add(LEVEL_PARD, debugFlag);
-if (! iter->strategies().minimal())
-{
-  cout << "Non-minimal in strategizeDeclarer after\n";
-  cout << iter->strategies().str("here", true);
-  cout << endl;
-  assert(false);
-}
-  }
 }
 
 
@@ -167,27 +158,7 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
 
   // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
-{
-  if (! iter->strategies().minimal() || debugFlag)
-  {
-    cout << "Non-minimal in DeclarerAdvanced before\n";
-    cout << iter->strategies().str("here", true);
-    cout << endl;
-    if (! debugFlag)
-      assert(false);
-  }
-
-
     iter->reactivate();
-
-  if (! iter->strategies().minimal())
-  {
-    cout << "Non-minimal in DeclarerAdvanced after\n";
-    cout << iter->strategies().str("here", true);
-    cout << endl;
-    assert(false);
-  }
-}
 
   Nodes::strategizeDeclarer(debugFlag);
 }

@@ -124,34 +124,22 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   auto iter2 = next(iter1);
   if (iter1->weight() < iter2->weight())
   {
-// cout << "Case: <\n";
     if (((* iter2).*comparator)(* iter1))
     {
-// cout << "GE\n";
       strategies.pop_front();
     }
     else
     {
-// cout << "Swap\n";
       iter_swap(iter1, iter2);
     }
   }
   else if (iter2->weight() < iter1->weight())
   {
-// cout << "Case: >\n";
     if (((* iter1).*comparator)(* iter2))
-    {
-// cout << "Profile > too\n";
       strategies.pop_back();
-    }
-    else
-    {
-// cout << "Profile NOT >\n";
-    }
   }
   else
   {
-// cout << "Case: Same weight\n";
     const Compare c = iter1->compare(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
       strategies.pop_back();
@@ -173,16 +161,13 @@ void Strategies::consolidate()
 
   Strategies::restudy();
 
-// cout << "consolidate: scrutinizeFlag " << scrutinizedFlag << endl;
   if (strategies.size() == 1)
   {
-// cout << "Case: 1\n";
     // Don't have to do anything.
     return;
   }
   else if (strategies.size() == 2)
   {
-// cout << "Case: 2\n";
     // The general way also works in this case, and it is just
     // a small optimization.
     ComparatorType comp = (scrutinizedFlag ? 
@@ -193,7 +178,6 @@ void Strategies::consolidate()
   }
   else
   {
-// cout << "Case: More\n";
 timersStrat[1].start();
 
     auto oldStrats = move(strategies);
@@ -527,7 +511,6 @@ timersStrat[4].start();
 
     // We only need the minima here, but we use the existing method.
 
-cout << "strats += strats the hard way\n";
     Strategies::makeRanges();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
@@ -645,22 +628,12 @@ void Strategies::multiplyAddStrategy(
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
       const Compare c = iter->compare(* piter);
-// cout << "comparator positive, c " << c << endl;
       if (c == WIN_FIRST || c == WIN_EQUAL)
-      {
-// cout << ">= with ranks\n";
         return;
-      }
       else if (c == WIN_SECOND)
-      {
-// cout << "< with ranks\n";
         iter = strategies.erase(iter);
-      }
       else
-      {
-// cout << "different with ranks\n";
         iter++;
-      }
     }
     else
       iter++;
@@ -719,8 +692,6 @@ void Strategies::operator *= (Strategies& strats2)
 
   if (len1 == 1 && len2 == 1)
   {
-cout << "scrutinizedFlag 1*1 " << scrutinizedFlag << ", " << 
-  strats2.scrutinizedFlag << endl;
     strategies.front() *= strats2.strategies.front();
     scrutinizedFlag = false;
     return;
@@ -736,9 +707,6 @@ cout << "scrutinizedFlag 1*1 " << scrutinizedFlag << ", " <<
 
     ComparatorType comp;
     unsigned tno;
-    // if (ranges.empty())
-cout << "scrutinizedFlag MAC " << scrutinizedFlag << ", " << 
-  strats2.scrutinizedFlag << endl;
 
     // TODO Just to make it work.  Slow?
     Strategies::makeRanges();
@@ -760,9 +728,6 @@ cout << "scrutinizedFlag MAC " << scrutinizedFlag << ", " <<
     }
 
 timersStrat[tno].start();
-
-    // ComparatorType comp = (ranges.empty() ? &Strategy::operator >= :
-      // &Strategy::greaterEqualByProfile);
 
     auto strategiesOwn = move(strategies);
     strategies.clear();
@@ -789,12 +754,6 @@ timersStrat[tno].stop();
     // Strategies.  This makes it faster to compare products from each 
     // Strategies.
 
-cout << "Complex multiply" << endl;
-cout << "scrutinizedFlag COMPLEX " << scrutinizedFlag << ", " << 
-  strats2.scrutinizedFlag << endl;
-cout << Strategies::str("first before", true);
-cout << strats2.str("second before", true);
-
     // TODO Just to make it work.  Slow? Already scrutinized?
     Strategies::makeRanges();
     strats2.makeRanges();
@@ -820,8 +779,6 @@ timersStrat[9].start();
     extensions.flatten(strategies);
 
     scrutinizedFlag = false;
-
-cout << Strategies::str("strategies after", true);
 
 timersStrat[9].stop();
   }

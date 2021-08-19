@@ -168,13 +168,6 @@ void Node::purgeRanges(const bool debugFlag)
     }
   }
 
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal in purge *=\n";
-  cout << endl;
-  assert(false);
-}
-
   // Shrink to the size used.
   constants.eraseRest(citer);
   parentPtr->constants *= constants;
@@ -199,13 +192,6 @@ if (! parentPtr->strats.minimal())
       cout << strats.str("Ranges after purging", true);
     }
   }
-
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal at end of purge *=\n";
-  cout << endl;
-  assert(false);
-}
 }
 
 
@@ -229,9 +215,7 @@ void Node::reactivate()
   {
     // TODO Maybe only when real simpleStrats non-empty?
     // Constants don't change anything?
-// cout << strats.str("consolidating", true);
     strats.consolidate();
-// cout << strats.str("consolidated", true);
   }
 }
 
@@ -249,22 +233,7 @@ void Node::cross(
     cout << strats.str("Crossing " + s + " strategy", true);
   }
 
-  cout << parentPtr->strats.str("Before", true);
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal before *=\n";
-  cout << parentPtr->strats.str("Before", true);
-  cout << endl;
-  assert(false);
-}
   parentPtr->strats *= strats;
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal after *=\n";
-  cout << parentPtr->strats.str("After", true);
-  cout << endl;
-  assert(false);
-}
 
   if (debugFlag)
   {
@@ -288,12 +257,6 @@ void Node::add(
     cout << strats.str("Adding " + s + " strategy", true);
   }
 
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal in add before +=\n";
-  cout << endl;
-  assert(false);
-}
   parentPtr->strats += strats;
 
   if (debugFlag)
@@ -302,13 +265,6 @@ if (! parentPtr->strats.minimal())
     cout << parentPtr->strats.str(
       "Cumulative " + s + " strategy after this trick", true);
   }
-
-if (! parentPtr->strats.minimal())
-{
-  cout << "Non-minimal in add after +=\n";
-  cout << endl;
-  assert(false);
-}
 }
 
 

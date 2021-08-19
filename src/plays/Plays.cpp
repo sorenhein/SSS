@@ -164,7 +164,6 @@ const Strategies& Plays::strategize(
     // Optimization is not used when the number of plays is low enough.
     Plays::strategizeSimpleBack(debugFlag);
     Plays::strategizeSimpleFront(debugFlag);
-cout << "BRANCH 0\n";
   }
   else if (nodesRho.used() == nodesLho.used())
   {
@@ -182,7 +181,6 @@ cout << "BRANCH 0\n";
 
     nodesLead.strategizeDeclarerAdvanced(
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-cout << "BRANCH 1\n";
   }
   else
   {
@@ -194,15 +192,17 @@ cout << "BRANCH 1\n";
 
     nodesLead.strategizeDeclarerAdvanced(
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
-cout << "BRANCH 2\n";
   }
 
-if (! nodeMaster.strategies().minimal())
-{
-  cout << nodeMaster.strategies().str("NON-MINIMAL", true);
-  cout << endl;
-  assert(false);
-}
+#if 0
+  // TODO Better control of how this (slow) test happens.
+  if (! nodeMaster.strategies().minimal())
+  {
+    cout << nodeMaster.strategies().str("NON-MINIMAL", true);
+    cout << endl;
+    assert(false);
+  }
+#endif
 
   return nodeMaster.strategies();
 }

@@ -1,26 +1,8 @@
-I think Extensions is messed up.
-- In Splits, the matrix comparison should probably store
-  the winner (first, second, equal, different) but should also
-  consider whether by tricks or by rank only
-- In Extensions, when we add:
-  - If weights > weights, then it can only be a tricks dominance.
-    Weights include the entire weight.  We need the splits >= to
-    be by tricks.  A ranks dominance the wrong way round is OK
-  - If weights < weights, similarly
-  - If same weights, Extensions::greaterEqual uses first the
-    splits and then Strategy::compare (by ranks).  The splits
-    have to be >= by ranks.
-  - So we need two kinds of split compare: By tricks and by ranks
-  - Can store using the detailed compare format in one number
-
-
-
-10 / 33431
-Problem happens in strats += strats
-"The hard way", so both have >= 20 strategies
-I guess we can print out ownDeletions and addition numbers of strats2
-Then we can tell which index combination break minimal()
-And then we can wonder why one method flags it and another one doesn't
+Speed
+-----
+Plays now take 26 sec: Why?
+Strategize has of course become slower (44 sec).
+Let's clean up the code before we optimize it.
 
 
 Checks

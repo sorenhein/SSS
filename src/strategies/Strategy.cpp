@@ -151,25 +151,25 @@ bool Strategy::operator == (const Strategy& strat2) const
 
 bool Strategy::greaterEqualCumulator(
   const Strategy& strat2,
-  unsigned& cum) const
+  unsigned& cumul) const
 {
   // This method supports others that perform complete comparisons.
   // This one returns true if the trick comparison still permits >=,
-  // and if so, cum is the cumulative bit vector of returns for
+  // and if so, cumul is the cumulative bit vector of returns for
   // further processing.
   assert(strat2.results.size() == results.size());
 
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = strat2.results.cbegin();
 
-  cum = WIN_NEUTRAL_OVERALL;
+  cumul = WIN_NEUTRAL_OVERALL;
   while (iter1 != results.end())
   {
     const CompareDetail c = iter1->compareInDetail(* iter2);
     if (c & WIN_SECOND_PRIMARY)
       return false;
 
-    cum |= c;
+    cumul |= c;
     iter1++;
     iter2++;
   }
@@ -183,15 +183,15 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
   // It goes by tricks first, and only if there is complete equality
   // does it consider winners.
 
-  unsigned cum;
-  if (! Strategy::greaterEqualCumulator(strat2, cum))
+  unsigned cumul;
+  if (! Strategy::greaterEqualCumulator(strat2, cumul))
     return false;
   
-  if (cum & WIN_FIRST_PRIMARY)
+  if (cumul & WIN_FIRST_PRIMARY)
     return true;
-  else if (cum & WIN_SECOND_SECONDARY)
+  else if (cumul & WIN_SECOND_SECONDARY)
     return false;
-  else if (cum & WIN_DIFFERENT_SECONDARY)
+  else if (cumul & WIN_DIFFERENT_SECONDARY)
     return false;
   else
     return true;
@@ -230,35 +230,35 @@ Compare Strategy::compare(const Strategy& strat2) const
   // This is only for diagnostics.
   assert(strat2.results.size() == results.size());
 
-  unsigned cum = Strategy::makeCumulator(strat2);
+  unsigned cumul = Strategy::makeCumulator(strat2);
 
   // Can this go in a ComparerDetail class, or somewhere else?
   // Or even in a table lookup (64)?
 
-  if (cum & WIN_DIFFERENT_PRIMARY)
+  if (cumul & WIN_DIFFERENT_PRIMARY)
     return WIN_DIFFERENT;
 
-  if (cum & WIN_FIRST_PRIMARY)
+  if (cumul & WIN_FIRST_PRIMARY)
   {
-    if (cum & WIN_SECOND_PRIMARY)
+    if (cumul & WIN_SECOND_PRIMARY)
       return WIN_DIFFERENT;
     else
       return WIN_FIRST;
   }
-  else if (cum & WIN_SECOND_PRIMARY)
+  else if (cumul & WIN_SECOND_PRIMARY)
     return WIN_SECOND;
 
-  if (cum & WIN_DIFFERENT_SECONDARY)
+  if (cumul & WIN_DIFFERENT_SECONDARY)
     return WIN_DIFFERENT;
 
-  if (cum & WIN_FIRST_SECONDARY)
+  if (cumul & WIN_FIRST_SECONDARY)
   {
-    if (cum & WIN_SECOND_SECONDARY)
+    if (cumul & WIN_SECOND_SECONDARY)
       return WIN_DIFFERENT;
     else
       return WIN_FIRST;
   }
-  else if (cum & WIN_SECOND_SECONDARY)
+  else if (cumul & WIN_SECOND_SECONDARY)
     return WIN_SECOND;
   else
     return WIN_EQUAL;
@@ -270,35 +270,35 @@ CompareDetail Strategy::compareDetail(const Strategy& strat2) const
   // This is only for diagnostics.
   assert(strat2.results.size() == results.size());
 
-  unsigned cum = Strategy::makeCumulator(strat2);
+  unsigned cumul = Strategy::makeCumulator(strat2);
 
   // Can this go in a ComparerDetail class, or somewhere else?
   // Or even in a table lookup (64)?
 
-  if (cum & WIN_DIFFERENT_PRIMARY)
+  if (cumul & WIN_DIFFERENT_PRIMARY)
     return WIN_DIFFERENT_PRIMARY;
 
-  if (cum & WIN_FIRST_PRIMARY)
+  if (cumul & WIN_FIRST_PRIMARY)
   {
-    if (cum & WIN_SECOND_PRIMARY)
+    if (cumul & WIN_SECOND_PRIMARY)
       return WIN_DIFFERENT_PRIMARY;
     else
       return WIN_FIRST_PRIMARY;
   }
-  else if (cum & WIN_SECOND_PRIMARY)
+  else if (cumul & WIN_SECOND_PRIMARY)
     return WIN_SECOND_PRIMARY;
 
-  if (cum & WIN_DIFFERENT_SECONDARY)
+  if (cumul & WIN_DIFFERENT_SECONDARY)
     return WIN_DIFFERENT_SECONDARY;
 
-  if (cum & WIN_FIRST_SECONDARY)
+  if (cumul & WIN_FIRST_SECONDARY)
   {
-    if (cum & WIN_SECOND_SECONDARY)
+    if (cumul & WIN_SECOND_SECONDARY)
       return WIN_DIFFERENT_SECONDARY;
     else
       return WIN_FIRST_SECONDARY;
   }
-  else if (cum & WIN_SECOND_SECONDARY)
+  else if (cumul & WIN_SECOND_SECONDARY)
     return WIN_SECOND_SECONDARY;
   else
     return WIN_EQUAL_OVERALL;
@@ -313,29 +313,19 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 
 bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
-// cout << Strategy::str("first", true);
-// cout << strat2.str("second", true);
   // This uses studied results if possible, otherwise the basic method.
   if (! study.maybeGreaterEqual(strat2.study))
-  {
-// cout << "maybe: false\n";
     return false;
-  }
   else
-  {
-    // const bool b = Strategy::greaterEqualByTricks(strat2);
-// cout << "by tricks: " << b << endl;
-// return b;
     return Strategy::greaterEqualByTricks(strat2);
-  }
 }
 
 
 bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
 {
   // The ByProfile method is preferable if the profile is available.
-  unsigned cum;
-  return Strategy::greaterEqualCumulator(strat2, cum);
+  unsigned cumul;
+  return Strategy::greaterEqualCumulator(strat2, cumul);
 }
 
 
