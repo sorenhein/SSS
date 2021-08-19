@@ -121,7 +121,7 @@ void Splits::setPointers()
 }
 
 
-void Splits::setMatrix()
+void Splits::setMatrix(ComparatorType comp)
 {
   own.makeRanges();
   own.scrutinize(own.ranges);
@@ -134,23 +134,45 @@ void Splits::setMatrix()
   {
     for (unsigned i = 0; i < count; i++)
       for (unsigned j = 0; j < count; j++)
-        matrix[i][j] = WIN_EQUAL;
+        matrix[i][j] = WIN_EQUAL_OVERALL;
   }
   else
   {
     for (unsigned i = 0; i < count; i++)
     {
-      matrix[i][i] = WIN_EQUAL;
+      matrix[i][i] = WIN_EQUAL_OVERALL;
       for (unsigned j = 0; j < i; j++)
       {
-        const Compare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
+        // Compare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
+
+        // Seems wasteful
+        bool b12 = ((* ownPtrs[i]).* comp)(* ownPtrs[j]);
+        bool b21 = ((* ownPtrs[j]).* comp)(* ownPtrs[i]);
+        CompareDetail c;
+        if (b12)
+        {
+          // If number and profile of tricks are the same, go deeper.
+          if (b21)
+            c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
+          else
+            c = WIN_FIRST_PRIMARY;
+        }
+        else if (b21)
+          c = WIN_SECOND_PRIMARY;
+        else
+          c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
+
         matrix[i][j] = c;
 
         // Flip for the anti-symmetric position.
-        if (c == WIN_SECOND)
-          matrix[j][i] = WIN_FIRST;
-        else if (c == WIN_FIRST)
-          matrix[j][i] = WIN_SECOND;
+        if (c == WIN_SECOND_PRIMARY)
+          matrix[j][i] = WIN_FIRST_PRIMARY;
+        else if (c == WIN_SECOND_SECONDARY)
+          matrix[j][i] = WIN_FIRST_SECONDARY;
+        else if (c == WIN_FIRST_PRIMARY)
+          matrix[j][i] = WIN_SECOND_PRIMARY;
+        else if (c == WIN_FIRST_SECONDARY)
+          matrix[j][i] = WIN_SECOND_SECONDARY;
         else
           matrix[j][i] = c;
       }
@@ -161,7 +183,8 @@ void Splits::setMatrix()
 
 void Splits::split(
   Strategies& strategies,
-  const Strategy& counterpart)
+  const Strategy& counterpart,
+  ComparatorType comp)
 {
   count = strategies.size();
 
@@ -172,7 +195,7 @@ void Splits::split(
 
   Splits::setPointers();
 
-  Splits::setMatrix();
+  Splits::setMatrix(comp);
 }
 
 
@@ -189,6 +212,25 @@ const Strategy& Splits::ownStrategy(const unsigned index) const
 
 
 Compare Splits::compare(
+  const unsigned index1,
+  const unsigned index2) const
+{
+  switch(matrix[index1][index2])
+  {
+    case WIN_NEUTRAL_OVERALL: return WIN_UNSET;
+    case WIN_EQUAL_OVERALL: return WIN_EQUAL;
+    case WIN_FIRST_PRIMARY: return WIN_FIRST;
+    case WIN_SECOND_PRIMARY: return WIN_SECOND;
+    case WIN_FIRST_SECONDARY: return WIN_FIRST;
+    case WIN_SECOND_SECONDARY: return WIN_SECOND;
+    case WIN_DIFFERENT_PRIMARY: return WIN_DIFFERENT;
+    case WIN_DIFFERENT_SECONDARY: return WIN_DIFFERENT;
+  }
+  return WIN_UNSET;
+}
+
+
+CompareDetail Splits::compareDetail(
   const unsigned index1,
   const unsigned index2) const
 {

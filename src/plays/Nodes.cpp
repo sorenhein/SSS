@@ -168,11 +168,13 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
   // Add back the simple strategies and the constants.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
 {
-  if (! iter->strategies().minimal())
+  if (! iter->strategies().minimal() || debugFlag)
   {
     cout << "Non-minimal in DeclarerAdvanced before\n";
+    cout << iter->strategies().str("here", true);
     cout << endl;
-    assert(false);
+    if (! debugFlag)
+      assert(false);
   }
 
 

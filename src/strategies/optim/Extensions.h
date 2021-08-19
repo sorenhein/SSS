@@ -40,9 +40,15 @@ class Extensions
       const unsigned index1,
       const unsigned index2);
 
-    bool greaterEqual(
+    bool greaterEqualByTricks(
       const Extension& ext1,
-      const Extension& ext2) const;
+      const Extension& ext2,
+      CompareDetail& compOverlap) const;
+
+    Compare compareDetail(
+      const Extension& ext1,
+      const Extension& ext2,
+      const CompareDetail& compOverlap) const;
 
     void add();
 
@@ -58,6 +64,7 @@ class Extensions
     void split(
       Strategies& strategies,
       const Strategy& counterpart,
+      ComparatorType comp,
       const ExtensionSplit split);
     
     void multiply(const Ranges& ranges);

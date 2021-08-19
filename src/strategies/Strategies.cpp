@@ -554,7 +554,7 @@ timersStrat[5].start();
     // General case.  Frequent and fast, perhaps 25% of the method time.
 
     // We may inherit a set scrutinizedFlag from the previous branch.
-    // But it's generally not worth in this this case.
+    // But it's generally not worth it this case.
     scrutinizedFlag = false;
 
     for (auto& strat2: strats2.strategies)
@@ -591,6 +591,8 @@ timersStrat[6].start();
 
 timersStrat[6].stop();
   }
+  // Addition: Correct?
+  scrutinizedFlag = false;
 }
 
 
@@ -710,12 +712,17 @@ void Strategies::operator *= (Strategies& strats2)
   {
     // Keep the new results, but don't change ranges.
     strategies = strats2.strategies;
+    // Addition
+    scrutinizedFlag = strats2.scrutinizedFlag;
     return;
   }
 
   if (len1 == 1 && len2 == 1)
   {
+cout << "scrutinizedFlag 1*1 " << scrutinizedFlag << ", " << 
+  strats2.scrutinizedFlag << endl;
     strategies.front() *= strats2.strategies.front();
+    scrutinizedFlag = false;
     return;
   }
 
@@ -730,7 +737,17 @@ void Strategies::operator *= (Strategies& strats2)
     ComparatorType comp;
     unsigned tno;
     // if (ranges.empty())
-cout << "scrutinizedFlag " << scrutinizedFlag << endl;
+cout << "scrutinizedFlag MAC " << scrutinizedFlag << ", " << 
+  strats2.scrutinizedFlag << endl;
+
+    // TODO Just to make it work.  Slow?
+    Strategies::makeRanges();
+    strats2.makeRanges();
+    Strategies::propagateRanges(strats2);
+
+    Strategies::scrutinize(ranges);
+    strats2.scrutinize(ranges);
+
     if (scrutinizedFlag)
     {
       comp = &Strategy::greaterEqualByProfile;
@@ -757,6 +774,8 @@ timersStrat[tno].start();
 
     strategies.pop_back();
 
+    scrutinizedFlag = false;
+
 timersStrat[tno].stop();
     return;
   }
@@ -770,17 +789,39 @@ timersStrat[tno].stop();
     // Strategies.  This makes it faster to compare products from each 
     // Strategies.
 
+cout << "Complex multiply" << endl;
+cout << "scrutinizedFlag COMPLEX " << scrutinizedFlag << ", " << 
+  strats2.scrutinizedFlag << endl;
+cout << Strategies::str("first before", true);
+cout << strats2.str("second before", true);
+
+    // TODO Just to make it work.  Slow? Already scrutinized?
+    Strategies::makeRanges();
+    strats2.makeRanges();
+    Strategies::propagateRanges(strats2);
+
+    Strategies::scrutinize(ranges);
+    strats2.scrutinize(ranges);
+
 timersStrat[9].start();
+
+    ComparatorType comp = (scrutinizedFlag ? 
+      &Strategy::greaterEqualByProfile : &Strategy::greaterEqualByStudy);
 
     Extensions extensions;
     extensions.split(* this, strats2.strategies.front(), 
-      EXTENSION_SPLIT1);
-    extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
+      comp, EXTENSION_SPLIT1);
+    extensions.split(strats2, strategies.front(), 
+      comp, EXTENSION_SPLIT2);
 
     extensions.multiply(ranges);
 
     strategies.clear();
     extensions.flatten(strategies);
+
+    scrutinizedFlag = false;
+
+cout << Strategies::str("strategies after", true);
 
 timersStrat[9].stop();
   }
@@ -830,12 +871,17 @@ bool Strategies::minimal() const
   if (strategies.size() <= 1)
     return true;
 
+  unsigned i = 0;
   for (auto iter1 = strategies.begin(); iter1 != prev(strategies.end());
-      iter1++)
+      iter1++, i++)
   {
-    for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++)
+    unsigned j = i+1;
+    for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++, j++)
       if (iter1->compare(* iter2) != WIN_DIFFERENT)
+      {
+        cout << "Minimal violation " << i << ", " << j << endl;
         return false;
+      }
   }
   return true;
 }

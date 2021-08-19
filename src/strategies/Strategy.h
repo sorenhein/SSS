@@ -35,6 +35,8 @@ class Strategy
       const Strategy& strat2,
       unsigned& cum) const;
 
+    unsigned makeCumulator(const Strategy& strat2) const;
+
     void updateSingle(
       const unsigned char fullNo,
       const unsigned char trickNS);
@@ -99,6 +101,7 @@ class Strategy
 
     // Full Result level
     Compare compare(const Strategy& strat2) const;
+    CompareDetail compareDetail(const Strategy& strat2) const;
 
     // Trick-level
     bool greaterEqualByProfile(const Strategy& strat2) const;

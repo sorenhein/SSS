@@ -25,7 +25,7 @@ class Splits
 
     vector<Strategy const *> ownPtrs;
 
-    vector<vector<Compare>> matrix;
+    vector<vector<CompareDetail>> matrix;
 
     unsigned count;
 
@@ -40,7 +40,7 @@ class Splits
 
     void setPointers();
 
-    void setMatrix();
+    void setMatrix(ComparatorType comp);
 
 
   public:
@@ -53,13 +53,18 @@ class Splits
 
     void split(
       Strategies& strategies,
-      const Strategy& counterpart);
+      const Strategy& counterpart,
+      ComparatorType comp);
 
     const list<Strategy>& sharedStrategies() const;
 
     const Strategy& ownStrategy(const unsigned index) const;
 
     Compare compare(
+      const unsigned index1,
+      const unsigned index2) const;
+
+    CompareDetail compareDetail(
       const unsigned index1,
       const unsigned index2) const;
 

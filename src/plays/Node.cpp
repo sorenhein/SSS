@@ -227,6 +227,8 @@ void Node::reactivate()
   // if (! strats.ordered())
   if (! simpleStrat.empty())
   {
+    // TODO Maybe only when real simpleStrats non-empty?
+    // Constants don't change anything?
 // cout << strats.str("consolidating", true);
     strats.consolidate();
 // cout << strats.str("consolidated", true);

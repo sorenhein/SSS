@@ -143,7 +143,7 @@ CompareDetail Result::compareInDetail(const Result& res2) const
   else if (c == WIN_EQUAL)
     return WIN_EQUAL_OVERALL;
   else
-    return WIN_DIFFERENT_OVERALL;
+    return WIN_DIFFERENT_SECONDARY;
 }
 
 

@@ -191,7 +191,7 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
     return true;
   else if (cum & WIN_SECOND_SECONDARY)
     return false;
-  else if (cum & WIN_DIFFERENT_OVERALL)
+  else if (cum & WIN_DIFFERENT_SECONDARY)
     return false;
   else
     return true;
@@ -208,24 +208,36 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
+unsigned Strategy::makeCumulator(const Strategy& strat2) const
+{
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  unsigned cumul = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    cumul |= iter1->compareInDetail(* iter2);
+    iter1++;
+    iter2++;
+  }
+
+  return cumul;
+}
+
+
 Compare Strategy::compare(const Strategy& strat2) const
 {
   // This is only for diagnostics.
   assert(strat2.results.size() == results.size());
 
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  unsigned cum = WIN_NEUTRAL_OVERALL;
-  while (iter1 != results.end())
-  {
-    cum |= iter1->compareInDetail(* iter2);
-    iter1++;
-    iter2++;
-  }
+  unsigned cum = Strategy::makeCumulator(strat2);
 
   // Can this go in a ComparerDetail class, or somewhere else?
   // Or even in a table lookup (64)?
+
+  if (cum & WIN_DIFFERENT_PRIMARY)
+    return WIN_DIFFERENT;
+
   if (cum & WIN_FIRST_PRIMARY)
   {
     if (cum & WIN_SECOND_PRIMARY)
@@ -235,26 +247,61 @@ Compare Strategy::compare(const Strategy& strat2) const
   }
   else if (cum & WIN_SECOND_PRIMARY)
     return WIN_SECOND;
-  else if (cum & WIN_FIRST_SECONDARY)
+
+  if (cum & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+
+  if (cum & WIN_FIRST_SECONDARY)
   {
     if (cum & WIN_SECOND_SECONDARY)
-      return WIN_DIFFERENT;
-    else if (cum & WIN_DIFFERENT_OVERALL)
       return WIN_DIFFERENT;
     else
       return WIN_FIRST;
   }
   else if (cum & WIN_SECOND_SECONDARY)
-  {
-    if (cum & WIN_DIFFERENT_OVERALL)
-      return WIN_DIFFERENT;
-    else
-      return WIN_SECOND;
-  }
-  else if (cum & WIN_DIFFERENT_OVERALL)
-    return WIN_DIFFERENT;
+    return WIN_SECOND;
   else
     return WIN_EQUAL;
+}
+
+
+CompareDetail Strategy::compareDetail(const Strategy& strat2) const
+{
+  // This is only for diagnostics.
+  assert(strat2.results.size() == results.size());
+
+  unsigned cum = Strategy::makeCumulator(strat2);
+
+  // Can this go in a ComparerDetail class, or somewhere else?
+  // Or even in a table lookup (64)?
+
+  if (cum & WIN_DIFFERENT_PRIMARY)
+    return WIN_DIFFERENT_PRIMARY;
+
+  if (cum & WIN_FIRST_PRIMARY)
+  {
+    if (cum & WIN_SECOND_PRIMARY)
+      return WIN_DIFFERENT_PRIMARY;
+    else
+      return WIN_FIRST_PRIMARY;
+  }
+  else if (cum & WIN_SECOND_PRIMARY)
+    return WIN_SECOND_PRIMARY;
+
+  if (cum & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT_SECONDARY;
+
+  if (cum & WIN_FIRST_SECONDARY)
+  {
+    if (cum & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT_SECONDARY;
+    else
+      return WIN_FIRST_SECONDARY;
+  }
+  else if (cum & WIN_SECOND_SECONDARY)
+    return WIN_SECOND_SECONDARY;
+  else
+    return WIN_EQUAL_OVERALL;
 }
 
 
@@ -296,6 +343,7 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
   return study.compareByProfile(strat2.study);
 }
+
 
 
 /************************************************************

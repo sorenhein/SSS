@@ -31,15 +31,16 @@ void Extensions::reset()
 void Extensions::split(
   Strategies& strategies,
   const Strategy& counterpart,
+  ComparatorType comp,
   const ExtensionSplit split)
 {
   // Split strategies into unique and overlapping parts with the
   // distributions in counterpart.
 
   if (split == EXTENSION_SPLIT1)
-    splits1.split(strategies, counterpart);
+    splits1.split(strategies, counterpart, comp);
   else
-    splits2.split(strategies, counterpart);
+    splits2.split(strategies, counterpart, comp);
 }
 
 
@@ -57,19 +58,67 @@ void Extensions::makeEntry(
 }
 
 
-bool Extensions::greaterEqual(
+bool Extensions::greaterEqualByTricks(
   const Extension& ext1,
-  const Extension& ext2) const
+  const Extension& ext2,
+  CompareDetail& compOverlap) const
 {
-  const Compare c1 = splits1.compare(ext1.index1(), ext2.index1());
-  if (c1 == WIN_SECOND || c1 == WIN_DIFFERENT)
+  const CompareDetail c1 = splits1.compareDetail(ext1.index1(), ext2.index1());
+  if (c1 == WIN_SECOND_PRIMARY || c1 == WIN_DIFFERENT_PRIMARY)
     return false;
 
-  const Compare c2 = splits2.compare(ext1.index2(), ext2. index2());
-  if (c2 == WIN_SECOND || c2 == WIN_DIFFERENT)
+  const CompareDetail c2 = splits2.compareDetail(ext1.index2(), ext2.index2());
+  if (c2 == WIN_SECOND_PRIMARY || c2 == WIN_DIFFERENT_PRIMARY)
     return false;
 
-  return (ext1 >= ext2);
+  compOverlap = ext1.compareDetail(ext2);
+  if (compOverlap == WIN_SECOND_PRIMARY || 
+      compOverlap == WIN_DIFFERENT_PRIMARY)
+    return false;
+
+  return true;
+}
+
+
+Compare Extensions::compareDetail(
+  const Extension& ext1,
+  const Extension& ext2,
+  const CompareDetail& compOverlap) const
+{
+  const CompareDetail c1 = splits1.compareDetail(ext1.index1(), ext2.index1());
+  const CompareDetail c2 = splits2.compareDetail(ext1.index2(), ext2.index2());
+  CompareDetail cum = static_cast<CompareDetail>(c1 | c2 | compOverlap);
+
+  // Like in the Strategy compare methods, this could go somewhere
+  // more central.
+
+  if (cum & WIN_DIFFERENT_PRIMARY)
+    return WIN_DIFFERENT;
+
+  if (cum & WIN_FIRST_PRIMARY)
+  {
+    if (cum & WIN_SECOND_PRIMARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (cum & WIN_SECOND_PRIMARY)
+    return WIN_SECOND;
+
+  if (cum & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+
+  if (cum & WIN_FIRST_SECONDARY)
+  {
+    if (cum & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (cum & WIN_SECOND_SECONDARY)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
 }
 
 
@@ -90,10 +139,11 @@ void Extensions::add()
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   
+  CompareDetail c;
   auto iter = extensions.begin();
   while (iter != piter && iter->weight() > piter->weight())
   {
-    if (Extensions::greaterEqual(* iter, * piter))
+    if (Extensions::greaterEqualByTricks(* iter, * piter, c))
     {
       // The new strat is dominated.
       return;
@@ -104,12 +154,13 @@ void Extensions::add()
 
   while (iter != piter && iter->weight() == piter->weight())
   {
-    if (Extensions::greaterEqual(* iter, * piter))
+    if (Extensions::greaterEqualByTricks(* iter, * piter, c))
     {
-      const Compare c = iter->compare(* piter);
-      if (c == WIN_FIRST || c == WIN_EQUAL)
+      // Same tricks.
+      Compare d = Extensions::compareDetail(* iter, * piter, c);
+      if (d == WIN_FIRST || d == WIN_EQUAL)
         return;
-      else if (c == WIN_SECOND)
+      else if (d == WIN_SECOND)
       {
         iter = extensions.erase(iter);
       }
@@ -136,7 +187,7 @@ void Extensions::add()
   // quite efficient and doesn't happen so often.
   while (iter != extensions.end())
   {
-    if (Extensions::greaterEqual(* piter, * iter))
+    if (Extensions::greaterEqualByTricks(* piter, * iter, c))
       iter = extensions.erase(iter);
     else
       iter++;
