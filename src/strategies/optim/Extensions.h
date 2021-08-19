@@ -61,6 +61,7 @@ class Extensions
 
     void reset();
 
+    // The strategies must be scrutinized
     void split(
       Strategies& strategies,
       const Strategy& counterpart,
