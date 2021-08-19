@@ -31,9 +31,9 @@ class Winners
       Comparer& comparer,
       const Winners& winners2) const;
 
-    bool operator != (const Winners& winners2) const;
-
     void operator += (const Winner& winner2);
+
+    bool operator != (const Winners& winners2) const;
 
     bool rankExceeds(const Winners& winners2) const;
 
@@ -54,6 +54,8 @@ class Winners
 
     void reset();
 
+    void setEmpty();
+
     void set(
       const WinningSide sideIn,
       const Card& card);
@@ -62,17 +64,15 @@ class Winners
       const Card& north,
       const Card& south);
 
-    void setEmpty();
-
     bool empty() const;
-
-    void operator *= (const Winners& winners2);
 
     void operator += (const Winners& winners2);
 
+    void operator *= (const Winners& winners2);
+
     bool operator == (const Winners& winners2) const;
 
-    Compare compareForDeclarer(const Winners& w2) const;
+    Compare compare(const Winners& w2) const;
 
     void flip();
 

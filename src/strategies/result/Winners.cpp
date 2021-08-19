@@ -116,39 +116,6 @@ void Winners::fillComparer(
 }
 
 
-bool Winners::operator != (const Winners& winners2) const
-{
-  return ! (* this == winners2);
-}
-
-
-bool Winners::operator == (const Winners& winners2) const
-{
-  const unsigned s1 = winners.size();
-  const unsigned s2 = winners2.winners.size();
-
-  if (Winners::empty())
-    return winners2.empty();
-  else if (winners2.empty())
-    return false;
-  else if (winners.size() == 1 && winners2.winners.size() == 1)
-  {
-    return winners.front() == winners2.winners.front();
-  }
-  else if (winners.size() != winners2.winners.size())
-  {
-    return false;
-  }
-  else
-  {
-    Comparer comparer;
-    comparer.resize(s1, s2);
-    Winners::fillComparer(comparer, winners2);
-    return (comparer.compare() == WIN_EQUAL);
-  }
-}
-
-
 void Winners::operator += (const Winner& winner2)
 {
   // winners are a minimal set.
@@ -175,6 +142,39 @@ void Winners::operator += (const Winner& winner2)
   }
 
   winners.push_back(winner2);
+}
+
+
+void Winners::operator += (const Winners& winners2)
+{
+  // Declarer has the choice.  This is complementary to *=.
+
+  if (Winners::empty())
+  {
+    // OK as is: Declarer wants no constraints.
+    return;
+  }
+  else if (winners2.empty())
+  {
+    * this = winners2;
+    return;
+  }
+
+  // All winner's of a winner are of the same rank.
+  if (winners2.rankExceeds(* this))
+  {
+    // Go with the higher rank.
+    * this = winners2;
+    return;
+  }
+  else if (Winners::rankExceeds(winners2))
+  {
+    // OK as is: Stick with the lower rank.
+    return;
+  }
+
+  for (auto& win2: winners2.winners)
+    * this += win2;
 }
 
 
@@ -221,40 +221,40 @@ void Winners::operator *= (const Winners& winners2)
 }
 
 
-void Winners::operator += (const Winners& winners2)
+bool Winners::operator != (const Winners& winners2) const
 {
-  // Declarer has the choice.  This is complementary to *=.
-
-  if (Winners::empty())
-  {
-    // OK as is: Declarer wants no constraints.
-    return;
-  }
-  else if (winners2.empty())
-  {
-    * this = winners2;
-    return;
-  }
-
-  // All winner's of a winner are of the same rank.
-  if (winners2.rankExceeds(* this))
-  {
-    // Go with the higher rank.
-    * this = winners2;
-    return;
-  }
-  else if (Winners::rankExceeds(winners2))
-  {
-    // OK as is: Stick with the lower rank.
-    return;
-  }
-
-  for (auto& win2: winners2.winners)
-    * this += win2;
+  return ! (* this == winners2);
 }
 
 
-Compare Winners::compareForDeclarer(const Winners& winners2) const
+bool Winners::operator == (const Winners& winners2) const
+{
+  const unsigned s1 = winners.size();
+  const unsigned s2 = winners2.winners.size();
+
+  if (Winners::empty())
+    return winners2.empty();
+  else if (winners2.empty())
+    return false;
+  else if (winners.size() == 1 && winners2.winners.size() == 1)
+  {
+    return winners.front() == winners2.winners.front();
+  }
+  else if (winners.size() != winners2.winners.size())
+  {
+    return false;
+  }
+  else
+  {
+    Comparer comparer;
+    comparer.resize(s1, s2);
+    Winners::fillComparer(comparer, winners2);
+    return (comparer.compare() == WIN_EQUAL);
+  }
+}
+
+
+Compare Winners::compare(const Winners& winners2) const
 {
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();

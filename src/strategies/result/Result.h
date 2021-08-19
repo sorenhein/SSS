@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_RESULT_H
 #define SSS_RESULT_H
 
@@ -59,11 +67,11 @@ class Result
 
     void operator += (const Result& result2);
   
-    bool operator < (const Result& res2) const;
-
     bool operator == (const Result& res2) const;
 
     bool operator != (const Result& res2) const;
+
+    bool operator < (const Result& res2) const;
 
     Compare compareByTricks(const Result& res2) const;
 

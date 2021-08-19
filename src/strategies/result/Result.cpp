@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -80,6 +88,21 @@ void Result::operator += (const Result& result2)
 }
 
   
+bool Result::operator == (const Result& res2) const
+{
+  if (tricksInt != res2.tricksInt)
+    return false;
+  else
+    return (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
+}
+
+
+bool Result::operator != (const Result& res2) const
+{
+  return ! (* this == res2);
+}
+
+
 bool Result::operator < (const Result& res2) const
 {
   if (tricksInt < res2.tricksInt)
@@ -87,22 +110,7 @@ bool Result::operator < (const Result& res2) const
   else if (tricksInt > res2.tricksInt)
     return false;
   else
-    return (winnersInt.compareForDeclarer(res2.winnersInt) == WIN_SECOND);
-}
-
-
-bool Result::operator == (const Result& res2) const
-{
-  if (tricksInt != res2.tricksInt)
-    return false;
-  else
-    return (winnersInt.compareForDeclarer(res2.winnersInt) == WIN_EQUAL);
-}
-
-
-bool Result::operator != (const Result& res2) const
-{
-  return ! (* this == res2);
+    return (winnersInt.compare(res2.winnersInt) == WIN_SECOND);
 }
 
 
@@ -124,7 +132,7 @@ Compare Result::compareForDeclarer(const Result& res2) const
   else if (tricksInt < res2.tricksInt)
     return WIN_SECOND;
   else
-    return winnersInt.compareForDeclarer(res2.winnersInt);
+    return winnersInt.compare(res2.winnersInt);
 }
 
 
@@ -135,7 +143,7 @@ CompareDetail Result::compareInDetail(const Result& res2) const
   else if (tricksInt < res2.tricksInt)
     return WIN_SECOND_PRIMARY;
 
-  const Compare c = winnersInt.compareForDeclarer(res2.winnersInt);
+  const Compare c = winnersInt.compare(res2.winnersInt);
   if (c == WIN_FIRST)
     return WIN_FIRST_SECONDARY;
   else if (c == WIN_SECOND)

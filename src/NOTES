@@ -4,6 +4,13 @@ Plays now take 26 sec: Why?
 Strategize has of course become slower (44 sec).
 Let's clean up the code before we optimize it.
 
+Winner comparison: Maybe max unsigned as void?  Then simpler
+comparisons.
+
+Only have <= / lessEqual comparisons, not a mixture.
+
+Avoid matrix in Extensions after all, compare on the fly?
+
 
 Checks
 ------
