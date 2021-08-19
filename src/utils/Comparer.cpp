@@ -46,7 +46,7 @@ void Comparer::resize(
 void Comparer::log(
   const unsigned n1,
   const unsigned n2,
-  const Compare cmp)
+  const CompareType cmp)
 {
   assert(n1 < dim1);
   assert(n2 < dim2);
@@ -54,10 +54,19 @@ void Comparer::log(
 }
 
 
-bool Comparer::logForEquality(
+void Comparer::log(
   const unsigned n1,
   const unsigned n2,
   const Compare cmp)
+{
+  Comparer::log(n1, n2, cmp.value());
+}
+
+
+bool Comparer::logForEquality(
+  const unsigned n1,
+  const unsigned n2,
+  const CompareType cmp)
 {
   assert(n1 < dim1);
   assert(n2 < dim2);
@@ -80,7 +89,7 @@ void Comparer::makeMarginals(
   {
     for (unsigned j = 0; j < dim2; j++)
     {
-      const Compare c = matrix[i][j];
+      const CompareType c = matrix[i][j];
       marginal1[i][c]++;
       marginal2[j][c]++;
     }
@@ -135,7 +144,7 @@ void Comparer::makeSums(
 }
 
 
-Compare Comparer::compare() const
+CompareType Comparer::compare() const
 {
   vector<unsigned> sum1, sum2;
   Comparer::makeSums(sum1, sum2);

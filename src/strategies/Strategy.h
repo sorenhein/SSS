@@ -100,7 +100,7 @@ class Strategy
     bool operator >= (const Strategy& strat2) const;
 
     // Full Result level
-    Compare compare(const Strategy& strat2) const;
+    CompareType compare(const Strategy& strat2) const;
     CompareDetail compareDetail(const Strategy& strat2) const;
 
     // Trick-level

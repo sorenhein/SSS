@@ -225,7 +225,7 @@ unsigned Strategy::makeCumulator(const Strategy& strat2) const
 }
 
 
-Compare Strategy::compare(const Strategy& strat2) const
+CompareType Strategy::compare(const Strategy& strat2) const
 {
   // This is only for diagnostics.
   assert(strat2.results.size() == results.size());

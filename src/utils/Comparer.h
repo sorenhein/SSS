@@ -27,7 +27,7 @@ class Comparer
     unsigned dim1;
     unsigned dim2;
 
-    vector<vector<Compare>> matrix;
+    vector<vector<CompareType>> matrix;
 
 
     void makeMarginals(
@@ -57,14 +57,19 @@ class Comparer
     void log(
       const unsigned n1,
       const unsigned n2,
+      const CompareType cmp);
+
+    void log(
+      const unsigned n1,
+      const unsigned n2,
       const Compare cmp);
 
     bool logForEquality(
       const unsigned n1,
       const unsigned n2,
-      const Compare cmp);
+      const CompareType cmp);
 
-    Compare compare() const;
+    CompareType compare() const;
 
     bool equal() const;
 

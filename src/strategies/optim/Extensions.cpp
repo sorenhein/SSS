@@ -134,7 +134,11 @@ Compare Extensions::compareDetail(
   }
   else if (compOverlap == WIN_EQUAL_OVERALL)
   {
-    cnew = (cnew1 == cnew2 ? cnew1 : WIN_DIFFERENT);
+    if (cnew1 == cnew2)
+      cnew = cnew1;
+    else
+      cnew = WIN_DIFFERENT;
+    // cnew = (cnew1 == cnew2 ? cnew1 : WIN_DIFFERENT);
   }
   else if (cnew1 == cnew2)
   {
@@ -187,27 +191,27 @@ Compare Extensions::compareDetail(
   {
     if (cum & WIN_SECOND_SECONDARY)
     {
-      if (cnew != WIN_DIFFERENT)
-      {
-        cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
-          ", compOverlap " << compOverlap << endl;
-        cout << "cnew " << cnew << endl;
-        cout << "c1 " << c1 << ", c2 " << c2 << endl;
-        cout << "cum " << cum << endl;
-      }
+      // if (cnew != WIN_DIFFERENT)
+      // {
+        // cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
+          // ", compOverlap " << compOverlap << endl;
+        // cout << "cnew " << cnew << endl;
+        // cout << "c1 " << c1 << ", c2 " << c2 << endl;
+        // cout << "cum " << cum << endl;
+      // }
       assert(cnew == WIN_DIFFERENT);
       return WIN_DIFFERENT;
     }
     else
     {
-      if (cnew != WIN_FIRST)
-      {
-        cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
-          ", compOverlap " << compOverlap << endl;
-        cout << "cnew " << cnew << endl;
-        cout << "c1 " << c1 << ", c2 " << c2 << endl;
-        cout << "cum " << cum << endl;
-      }
+      // if (cnew != WIN_FIRST)
+      // {
+        // cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
+          // ", compOverlap " << compOverlap << endl;
+        // cout << "cnew " << cnew << endl;
+        // cout << "c1 " << c1 << ", c2 " << c2 << endl;
+        // cout << "cum " << cum << endl;
+      // }
       assert(cnew == WIN_FIRST);
       return WIN_FIRST;
     }
