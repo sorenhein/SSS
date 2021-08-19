@@ -746,15 +746,19 @@ timersStrat[tno].stop();
   }
   else
   {
-
     // This is the most complex version, and I may have gotten a bit
     // carried away...  The two Strategies have distributions that are 
     // overlapping as well as distributions that are unique to each of 
     // them.  We split these out, and we pre-compare within each 
     // Strategies.  This makes it faster to compare products from each 
     // Strategies.
+    //
+    // Even though Extensions splits Strategy's into own and shared
+    // by distribution, we can still look up scrutinized data by
+    // distribution in the corresponding tables for the Strategy's.
 
-    // TODO Just to make it work.  Slow? Already scrutinized?
+timersStrat[9].start();
+
     Strategies::makeRanges();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
@@ -762,16 +766,9 @@ timersStrat[tno].stop();
     Strategies::scrutinize(ranges);
     strats2.scrutinize(ranges);
 
-timersStrat[9].start();
-
-    ComparatorType comp = (scrutinizedFlag ? 
-      &Strategy::greaterEqualByProfile : &Strategy::greaterEqualByStudy);
-
     Extensions extensions;
-    extensions.split(* this, strats2.strategies.front(), 
-      comp, EXTENSION_SPLIT1);
-    extensions.split(strats2, strategies.front(), 
-      comp, EXTENSION_SPLIT2);
+    extensions.split(* this, strats2.strategies.front(), EXTENSION_SPLIT1);
+    extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
 
     extensions.multiply(ranges);
 

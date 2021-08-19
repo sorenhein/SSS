@@ -40,7 +40,7 @@ class Splits
 
     void setPointers();
 
-    void setMatrix(ComparatorType comp);
+    void setMatrix();
 
 
   public:
@@ -53,8 +53,7 @@ class Splits
 
     void split(
       Strategies& strategies,
-      const Strategy& counterpart,
-      ComparatorType comp);
+      const Strategy& counterpart);
 
     const list<Strategy>& sharedStrategies() const;
 

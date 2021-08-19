@@ -64,7 +64,6 @@ class Extensions
     void split(
       Strategies& strategies,
       const Strategy& counterpart,
-      ComparatorType comp,
       const ExtensionSplit split);
     
     void multiply(const Ranges& ranges);

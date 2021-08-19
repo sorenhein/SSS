@@ -62,16 +62,6 @@ void Extension::flatten(
 }
 
 
-/*
-bool Extension::operator >= (const Extension& ext2) const
-{
-  // return overlap.greaterEqualByProfile(ext2.overlap);
-  const Compare c = overlap.compare(ext2.overlap);
-  return (c == WIN_FIRST || c == WIN_EQUAL);
-}
-*/
-
-
 Compare Extension::compare(const Extension& ext2) const
 {
   return overlap.compare(ext2.overlap);

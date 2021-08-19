@@ -68,7 +68,7 @@ void Range::operator *= (const Range& range2)
 
   minimum *= range2.minimum;
 
-  const Compare cHigh = resultHigh.compareForDeclarer(range2.resultHigh);
+  const Compare cHigh = resultHigh.compareComplete(range2.resultHigh);
 
   if (cHigh == WIN_FIRST)
   {
@@ -88,7 +88,7 @@ void Range::operator *= (const Range& range2)
     return;
   }
 
-  const Compare cLow = resultLow.compareForDeclarer(range2.resultLow);
+  const Compare cLow = resultLow.compareComplete(range2.resultLow);
 
   if (cLow == WIN_FIRST)
   {
@@ -111,7 +111,7 @@ void Range::operator *= (const Range& range2)
 
 bool Range::operator < (const Range& range2) const
 {
-  const Compare c = resultHigh.compareForDeclarer(range2.resultLow);
+  const Compare c = resultHigh.compareComplete(range2.resultLow);
 
   if (c == WIN_SECOND)
     return true;

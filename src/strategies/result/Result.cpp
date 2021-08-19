@@ -103,29 +103,7 @@ bool Result::operator != (const Result& res2) const
 }
 
 
-bool Result::operator < (const Result& res2) const
-{
-  if (tricksInt < res2.tricksInt)
-    return true;
-  else if (tricksInt > res2.tricksInt)
-    return false;
-  else
-    return (winnersInt.compare(res2.winnersInt) == WIN_SECOND);
-}
-
-
-Compare Result::compareByTricks(const Result& res2) const
-{
-  if (tricksInt > res2.tricksInt)
-    return WIN_FIRST;
-  else if (tricksInt < res2.tricksInt)
-    return WIN_SECOND;
-  else
-    return WIN_EQUAL;
-}
-
-
-Compare Result::compareForDeclarer(const Result& res2) const
+Compare Result::compareComplete(const Result& res2) const
 {
   if (tricksInt > res2.tricksInt)
     return WIN_FIRST;

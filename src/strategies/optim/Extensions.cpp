@@ -31,16 +31,15 @@ void Extensions::reset()
 void Extensions::split(
   Strategies& strategies,
   const Strategy& counterpart,
-  ComparatorType comp,
   const ExtensionSplit split)
 {
   // Split strategies into unique and overlapping parts with the
   // distributions in counterpart.
 
   if (split == EXTENSION_SPLIT1)
-    splits1.split(strategies, counterpart, comp);
+    splits1.split(strategies, counterpart);
   else
-    splits2.split(strategies, counterpart, comp);
+    splits2.split(strategies, counterpart);
 }
 
 
@@ -135,7 +134,7 @@ void Extensions::add()
   }
 
   // The strategies list is in descending order of weights.
-  // The new Strategy might dominate everything with a lower weight and
+  // The new Strategy might dominate anything with a lower weight and
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   

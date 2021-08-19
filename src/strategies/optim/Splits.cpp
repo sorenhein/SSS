@@ -121,7 +121,7 @@ void Splits::setPointers()
 }
 
 
-void Splits::setMatrix(ComparatorType comp)
+void Splits::setMatrix()
 {
   own.makeRanges();
   own.scrutinize(own.ranges);
@@ -146,8 +146,8 @@ void Splits::setMatrix(ComparatorType comp)
         // Compare c = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
 
         // Seems wasteful
-        bool b12 = ((* ownPtrs[i]).* comp)(* ownPtrs[j]);
-        bool b21 = ((* ownPtrs[j]).* comp)(* ownPtrs[i]);
+        bool b12 = (ownPtrs[i]->greaterEqualByProfile)(* ownPtrs[j]);
+        bool b21 = (ownPtrs[j]->greaterEqualByProfile)(* ownPtrs[i]);
         CompareDetail c;
         if (b12)
         {
@@ -183,8 +183,7 @@ void Splits::setMatrix(ComparatorType comp)
 
 void Splits::split(
   Strategies& strategies,
-  const Strategy& counterpart,
-  ComparatorType comp)
+  const Strategy& counterpart)
 {
   count = strategies.size();
 
@@ -195,7 +194,7 @@ void Splits::split(
 
   Splits::setPointers();
 
-  Splits::setMatrix(comp);
+  Splits::setMatrix();
 }
 
 

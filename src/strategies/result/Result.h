@@ -71,11 +71,7 @@ class Result
 
     bool operator != (const Result& res2) const;
 
-    bool operator < (const Result& res2) const;
-
-    Compare compareByTricks(const Result& res2) const;
-
-    Compare compareForDeclarer(const Result& res2) const;
+    Compare compareComplete(const Result& res2) const;
 
     CompareDetail compareInDetail(const Result& res2) const;
 
