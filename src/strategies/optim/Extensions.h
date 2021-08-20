@@ -1,17 +1,24 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_EXTENSIONS_H
 #define SSS_EXTENSIONS_H
 
 #include <list>
-#include <string>
 
 #include "Extension.h"
 #include "Splits.h"
 
-#include "../Strategies.h"
-
-#include "../result/Ranges.h"
-
 using namespace std;
+
+class Strategies;
+class Strategy;
+class Ranges;
 
 
 enum ExtensionSplit

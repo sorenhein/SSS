@@ -1,13 +1,12 @@
-#include <iostream>
-#include <iomanip>
-#include <sstream>
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
 
 #include "Extension.h"
-#include "../StratData.h"
-
-// TMP
-#include "../../utils/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Extension::Extension()
@@ -55,7 +54,6 @@ void Extension::flatten(
   const Strategy& strat1,
   const Strategy& strat2)
 {
-  // TODO Make a two-product optimized method?
   overlap *= strat1;
   overlap *= strat2;
   strategies.push_back(move(overlap));

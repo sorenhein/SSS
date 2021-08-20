@@ -1,8 +1,15 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_EXTENSION_H
 #define SSS_EXTENSION_H
 
 #include <list>
-#include <string>
 
 #include "../Strategy.h"
 
@@ -59,9 +66,10 @@ class Extension
     Compare compareSecondary(const Extension& ext2) const;
 
     unsigned index1() const;
-    unsigned index2() const;
-    unsigned weight() const;
 
+    unsigned index2() const;
+
+    unsigned weight() const;
 };
 
 #endif

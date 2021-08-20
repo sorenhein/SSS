@@ -1,12 +1,16 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 
 #include "Extensions.h"
-
-// TMP
-#include "../../utils/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Extensions::Extensions()
