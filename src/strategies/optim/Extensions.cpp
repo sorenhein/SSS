@@ -60,16 +60,13 @@ void Extensions::makeEntry(
 
 bool Extensions::greaterEqualByTricks(
   const Extension& ext1,
-  const Extension& ext2,
-  CompareDetail& compOverlap) const
+  const Extension& ext2) const
 {
   if (! splits1.lessEqualPrimary(ext2.index1(), ext1.index1()))
     return false;
 
   if (! splits2.lessEqualPrimary(ext2.index2(), ext1.index2()))
     return false;
-
-  compOverlap = ext1.compareDetail(ext2);
 
   return ext2.lessEqualPrimary(ext1);
 }
@@ -242,11 +239,10 @@ void Extensions::add()
   // can only be dominated by a Strategy with at least its own weight.
   // This checking costs about one third of the overall method time.
   
-  CompareDetail c;
   auto iter = extensions.begin();
   while (iter != piter && iter->weight() > piter->weight())
   {
-    if (Extensions::greaterEqualByTricks(* iter, * piter, c))
+    if (Extensions::greaterEqualByTricks(* iter, * piter))
     {
       // The new strat is dominated.
       return;
@@ -255,11 +251,15 @@ void Extensions::add()
       iter++;
   }
 
+  CompareDetail c;
+
   while (iter != piter && iter->weight() == piter->weight())
   {
-    if (Extensions::greaterEqualByTricks(* iter, * piter, c))
+    if (Extensions::greaterEqualByTricks(* iter, * piter))
     {
       // Same tricks.
+      c = iter->compareDetail(* piter);
+
       Compare d = Extensions::compareDetail(* iter, * piter, c);
       if (d == WIN_FIRST || d == WIN_EQUAL)
         return;
@@ -290,7 +290,7 @@ void Extensions::add()
   // quite efficient and doesn't happen so often.
   while (iter != extensions.end())
   {
-    if (Extensions::greaterEqualByTricks(* piter, * iter, c))
+    if (Extensions::greaterEqualByTricks(* piter, * iter))
       iter = extensions.erase(iter);
     else
       iter++;

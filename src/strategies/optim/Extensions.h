@@ -42,8 +42,7 @@ class Extensions
 
     bool greaterEqualByTricks(
       const Extension& ext1,
-      const Extension& ext2,
-      CompareDetail& compOverlap) const;
+      const Extension& ext2) const;
 
     Compare compareDetail(
       const Extension& ext1,
