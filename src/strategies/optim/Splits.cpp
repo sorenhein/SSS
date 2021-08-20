@@ -123,9 +123,6 @@ void Splits::setPointers()
 
 void Splits::setMatrix()
 {
-  own.makeRanges();
-  own.scrutinize(own.ranges);
-
   matrix.resize(count);
   for (unsigned i = 0; i < count; i++)
     matrix[i].resize(count);
@@ -176,7 +173,8 @@ void Splits::setMatrix()
 
 void Splits::split(
   Strategies& strategies,
-  const Strategy& counterpart)
+  const Strategy& counterpart,
+  const Ranges& ranges)
 {
   count = strategies.size();
 
@@ -186,6 +184,8 @@ void Splits::split(
   Splits::splitDistributions(strategies, counterpart);
 
   Splits::setPointers();
+
+  own.scrutinize(ranges);
 
   Splits::setMatrix();
 }

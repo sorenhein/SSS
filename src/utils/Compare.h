@@ -37,15 +37,15 @@ class Compare
       val = cmp;
     };
 
-    CompareType value() const
-    {
-      return val;
-    };
-
     Compare& operator = (const CompareType& cmp)
     {
       val = cmp;
       return * this;
+    };
+
+    CompareType value() const
+    {
+      return val;
     };
 
     bool operator == (const CompareType& cmp) const
@@ -61,6 +61,16 @@ class Compare
     bool operator != (const CompareType& cmp) const
     {
       return (val != cmp);
+    };
+
+    void operator *= (const Compare cmp)
+    {
+      if (cmp.val == WIN_EQUAL || cmp.val == val)
+        return;
+      else if (val == WIN_EQUAL)
+        val = cmp.val;
+      else
+        val = WIN_DIFFERENT;
     };
 };
 

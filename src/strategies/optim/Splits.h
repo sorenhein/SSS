@@ -53,7 +53,8 @@ class Splits
 
     void split(
       Strategies& strategies,
-      const Strategy& counterpart);
+      const Strategy& counterpart,
+      const Ranges& ranges);
 
     const list<Strategy>& sharedStrategies() const;
 

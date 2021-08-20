@@ -31,15 +31,16 @@ void Extensions::reset()
 void Extensions::split(
   Strategies& strategies,
   const Strategy& counterpart,
+  const Ranges& ranges,
   const ExtensionSplit split)
 {
   // Split strategies into unique and overlapping parts with the
   // distributions in counterpart.
 
   if (split == EXTENSION_SPLIT1)
-    splits1.split(strategies, counterpart);
+    splits1.split(strategies, counterpart, ranges);
   else
-    splits2.split(strategies, counterpart);
+    splits2.split(strategies, counterpart, ranges);
 }
 
 

@@ -754,8 +754,7 @@ timersStrat[tno].stop();
     // Strategies.
     //
     // Even though Extensions splits Strategy's into own and shared
-    // by distribution, we can still look up scrutinized data by
-    // distribution in the corresponding tables for the Strategy's.
+    // by distribution, we can still share the central ranges.
 
 timersStrat[9].start();
 
@@ -763,12 +762,11 @@ timersStrat[9].start();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
 
-    Strategies::scrutinize(ranges);
-    strats2.scrutinize(ranges);
-
     Extensions extensions;
-    extensions.split(* this, strats2.strategies.front(), EXTENSION_SPLIT1);
-    extensions.split(strats2, strategies.front(), EXTENSION_SPLIT2);
+    extensions.split(* this, strats2.strategies.front(), 
+      ranges, EXTENSION_SPLIT1);
+    extensions.split(strats2, strategies.front(), 
+      ranges, EXTENSION_SPLIT2);
 
     extensions.multiply(ranges);
 
