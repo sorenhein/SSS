@@ -74,6 +74,12 @@ CompareDetail Extension::compareDetail(const Extension& ext2) const
 }
 
 
+bool Extension::lessEqualPrimary(const Extension& ext2) const
+{
+  return overlap.lessEqualPrimaryScrutinized(ext2.overlap);
+}
+
+
 unsigned Extension::index1() const
 {
   return index1Int;

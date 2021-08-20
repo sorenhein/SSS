@@ -203,6 +203,20 @@ const Strategy& Splits::ownStrategy(const unsigned index) const
 }
 
 
+bool Splits::lessEqualPrimary(
+  const unsigned index1,
+  const unsigned index2) const
+{
+  // TODO Aren't they always both empty or none empty?
+  if (ownPtrs[index1]->empty())
+    return (ownPtrs[index2]->empty() ? true : false);
+  else if (ownPtrs[index2]->empty())
+    return false;
+  else
+    return ownPtrs[index1]->lessEqualPrimaryScrutinized(* ownPtrs[index2]);
+}
+
+
 /* */
 CompareDetail Splits::compareDetail(
   const unsigned index1,

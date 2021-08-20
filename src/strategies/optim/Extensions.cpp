@@ -63,38 +63,15 @@ bool Extensions::greaterEqualByTricks(
   const Extension& ext2,
   CompareDetail& compOverlap) const
 {
-  const CompareDetail c1 = splits1.compareDetail(ext1.index1(), ext2.index1());
-
-  const Compare n1 = splits1.comparePrimary(ext1.index1(), ext2.index1());
-
-  if (c1 == WIN_SECOND_PRIMARY || c1 == WIN_DIFFERENT_PRIMARY)
-  {
-    assert(n1 == WIN_SECOND || n1 == WIN_DIFFERENT);
+  if (! splits1.lessEqualPrimary(ext2.index1(), ext1.index1()))
     return false;
-  }
-  else
-  {
-    assert(n1 != WIN_SECOND && n1 != WIN_DIFFERENT);
-  }
 
-  const CompareDetail c2 = splits2.compareDetail(ext1.index2(), ext2.index2());
-
-  const Compare n2 = splits2.comparePrimary(ext1.index2(), ext2.index2());
-
-  if (c2 == WIN_SECOND_PRIMARY || c2 == WIN_DIFFERENT_PRIMARY)
-  {
-    assert(n2 == WIN_SECOND || n2 == WIN_DIFFERENT);
+  if (! splits2.lessEqualPrimary(ext2.index2(), ext1.index2()))
     return false;
-  }
-  else
-    assert(n2 != WIN_SECOND && n2 != WIN_DIFFERENT);
 
   compOverlap = ext1.compareDetail(ext2);
-  if (compOverlap == WIN_SECOND_PRIMARY || 
-      compOverlap == WIN_DIFFERENT_PRIMARY)
-    return false;
 
-  return true;
+  return ext2.lessEqualPrimary(ext1);
 }
 
 
