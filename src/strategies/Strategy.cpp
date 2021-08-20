@@ -334,6 +334,19 @@ Compare Strategy::compareByProfile(const Strategy& strat2) const
   return study.compareByProfile(strat2.study);
 }
 
+///// ----------------  The new comparators? ------------
+
+bool Strategy::lessEqualPrimaryScrutinized(const Strategy& strat2) const
+{
+  // The caller must ensure that the strategies have been scrutinized.
+  return study.lessEqualScrutinized(strat2.study);
+}
+
+
+Compare Strategy::comparePrimaryScrutinized(const Strategy& strat2) const
+{
+  return study.comparePrimaryScrutinized(strat2.study);
+}
 
 
 /************************************************************

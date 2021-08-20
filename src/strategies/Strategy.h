@@ -109,6 +109,10 @@ class Strategy
     bool greaterEqualByTricks(const Strategy& strat2) const;
     Compare compareByProfile(const Strategy& strat2) const;
 
+    bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
+
+    Compare comparePrimaryScrutinized(const Strategy& strat2) const;
+
     void operator *= (const Strategy& strat2);
 
     void multiply(

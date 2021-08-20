@@ -212,6 +212,28 @@ bool Study::greaterEqualByProfile(const Study& study2) const
 }
 
 
+bool Study::lessEqualScrutinized(const Study& study2) const
+{
+  // This used the scrutinized results, which must exist.
+
+  assert(profiles.size() == study2.profiles.size());
+  assert(! profiles.empty());
+
+  auto piter1 = profiles.begin();
+  auto piter2 = study2.profiles.begin();
+  while (piter1 != profiles.end())
+  {
+    if (! lookupGE[((* piter2) << 10) | (* piter1)])
+      return false;
+
+    piter1++;
+    piter2++;
+  }
+
+  return true;
+}
+
+
 Compare Study::compareByProfile(const Study& study2) const
 {
   // This too uses the scrutinized results.
@@ -258,5 +280,11 @@ Compare Study::compareByProfile(const Study& study2) const
     return WIN_SECOND;
   else
     return WIN_EQUAL;
+}
+
+
+Compare Study::comparePrimaryScrutinized(const Study& study2) const
+{
+  return Study::compareByProfile(study2);
 }
 
