@@ -58,17 +58,16 @@ void Extensions::makeEntry(
 }
 
 
-bool Extensions::greaterEqualByTricks(
+bool Extensions::lessEqualPrimary(
   const Extension& ext1,
   const Extension& ext2) const
 {
-  if (! splits1.lessEqualPrimary(ext2.index1(), ext1.index1()))
+  if (! splits1.lessEqualPrimary(ext1.index1(), ext2.index1()))
     return false;
-
-  if (! splits2.lessEqualPrimary(ext2.index2(), ext1.index2()))
+  else if (! splits2.lessEqualPrimary(ext1.index2(), ext2.index2()))
     return false;
-
-  return ext2.lessEqualPrimary(ext1);
+  else
+    return ext1.lessEqualPrimary(ext2);
 }
 
 
@@ -242,7 +241,7 @@ void Extensions::add()
   auto iter = extensions.begin();
   while (iter != piter && iter->weight() > piter->weight())
   {
-    if (Extensions::greaterEqualByTricks(* iter, * piter))
+    if (Extensions::lessEqualPrimary(* piter, * iter))
     {
       // The new strat is dominated.
       return;
@@ -255,7 +254,7 @@ void Extensions::add()
 
   while (iter != piter && iter->weight() == piter->weight())
   {
-    if (Extensions::greaterEqualByTricks(* iter, * piter))
+    if (Extensions::lessEqualPrimary(* piter, * iter))
     {
       // Same tricks.
       c = iter->compareDetail(* piter);
@@ -290,7 +289,7 @@ void Extensions::add()
   // quite efficient and doesn't happen so often.
   while (iter != extensions.end())
   {
-    if (Extensions::greaterEqualByTricks(* piter, * iter))
+    if (Extensions::lessEqualPrimary(* iter, * piter))
       iter = extensions.erase(iter);
     else
       iter++;

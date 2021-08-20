@@ -40,7 +40,13 @@ class Extensions
       const unsigned index1,
       const unsigned index2);
 
+    /*
     bool greaterEqualByTricks(
+      const Extension& ext1,
+      const Extension& ext2) const;
+      */
+
+    bool lessEqualPrimary(
       const Extension& ext1,
       const Extension& ext2) const;
 
