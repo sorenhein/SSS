@@ -25,8 +25,6 @@ class Splits
 
     vector<Strategy const *> ownPtrs;
 
-    vector<vector<CompareDetail>> matrix;
-
     unsigned count;
 
 
@@ -39,8 +37,6 @@ class Splits
       const Strategy& counterpart);
 
     void setPointers();
-
-    void setMatrix();
 
 
   public:
@@ -61,10 +57,6 @@ class Splits
     const Strategy& ownStrategy(const unsigned index) const;
 
     bool lessEqualPrimary(
-      const unsigned index1,
-      const unsigned index2) const;
-
-    CompareDetail compareDetail(
       const unsigned index1,
       const unsigned index2) const;
 

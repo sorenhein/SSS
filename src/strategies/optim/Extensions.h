@@ -44,7 +44,7 @@ class Extensions
       const Extension& ext1,
       const Extension& ext2) const;
 
-    Compare compareDetail(
+    Compare compareSecondary(
       const Extension& ext1,
       const Extension& ext2) const;
 

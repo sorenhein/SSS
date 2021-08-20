@@ -71,154 +71,15 @@ bool Extensions::lessEqualPrimary(
 }
 
 
-Compare Extensions::compareDetail(
+Compare Extensions::compareSecondary(
   const Extension& ext1,
   const Extension& ext2) const
 {
-  const CompareDetail c1 = splits1.compareDetail(ext1.index1(), ext2.index1());
-  const CompareDetail c2 = splits2.compareDetail(ext1.index2(), ext2.index2());
-  const CompareDetail compOverlap = ext1.compareDetail(ext2);
+  Compare c = splits1.compareSecondary(ext1.index1(), ext2.index1());
+  c *= splits2.compareSecondary(ext1.index2(), ext2.index2());
+  c *= ext1.compareSecondary(ext2);
 
-  CompareDetail cum = static_cast<CompareDetail>(c1 | c2 | compOverlap);
-
-  const Compare cnew1 = splits1.compareSecondary(ext1.index1(), ext2.index1());
-  const Compare cnew2 = splits2.compareSecondary(ext1.index2(), ext2.index2());
-
-  assert(compOverlap == WIN_EQUAL_OVERALL ||
-         compOverlap == WIN_FIRST_SECONDARY ||
-         compOverlap == WIN_SECOND_SECONDARY ||
-         compOverlap == WIN_DIFFERENT_SECONDARY);
-
-
-  // TODO Need a Compare class with a proper combine() or += or *=
-  Compare cnew;
-  if (cnew1 == WIN_DIFFERENT || 
-      cnew2 == WIN_DIFFERENT ||
-      compOverlap == WIN_DIFFERENT_SECONDARY)
-    cnew = WIN_DIFFERENT;
-  else if (cnew1 == WIN_EQUAL)
-  {
-    if (compOverlap == WIN_EQUAL_OVERALL)
-      cnew = cnew2;
-    else if (compOverlap == WIN_FIRST_SECONDARY)
-      cnew = (cnew2 == WIN_SECOND ? WIN_DIFFERENT : WIN_FIRST);
-    else if (compOverlap == WIN_SECOND_SECONDARY)
-      cnew = (cnew2 == WIN_FIRST ? WIN_DIFFERENT : WIN_SECOND);
-    else
-    {
-      assert(false);
-      cnew = WIN_UNSET;
-    }
-      
-  }
-  else if (cnew2 == WIN_EQUAL)
-  {
-    if (compOverlap == WIN_EQUAL_OVERALL)
-      cnew = cnew1;
-    else if (compOverlap == WIN_SECOND_SECONDARY)
-      cnew = (cnew1 == WIN_SECOND ? WIN_SECOND : WIN_DIFFERENT);
-    else if (compOverlap == WIN_FIRST_SECONDARY)
-      cnew = (cnew1 == WIN_FIRST ? WIN_FIRST : WIN_DIFFERENT);
-    else
-    {
-      assert(false);
-      cnew = WIN_UNSET;
-    }
-  }
-  else if (compOverlap == WIN_EQUAL_OVERALL)
-  {
-    if (cnew1 == cnew2)
-      cnew = cnew1;
-    else
-      cnew = WIN_DIFFERENT;
-    // cnew = (cnew1 == cnew2 ? cnew1 : WIN_DIFFERENT);
-  }
-  else if (cnew1 == cnew2)
-  {
-    if (cnew1 == WIN_FIRST && compOverlap == WIN_FIRST_SECONDARY)
-      cnew = WIN_FIRST;
-    else if (cnew1 == WIN_SECOND && compOverlap == WIN_SECOND_SECONDARY)
-      cnew = WIN_SECOND;
-    else
-      cnew = WIN_DIFFERENT;
-  }
-  else
-    cnew = WIN_DIFFERENT;
-
-
-  // Like in the Strategy compare methods, this could go somewhere
-  // more central.
-
-  if (cum & WIN_DIFFERENT_PRIMARY)
-  {
-    assert(cnew == WIN_DIFFERENT);
-    return WIN_DIFFERENT;
-  }
-
-  if (cum & WIN_FIRST_PRIMARY)
-  {
-    if (cum & WIN_SECOND_PRIMARY)
-    {
-      assert(cnew == WIN_DIFFERENT);
-      return WIN_DIFFERENT;
-    }
-    else
-    {
-      assert(cnew == WIN_FIRST);
-      return WIN_FIRST;
-    }
-  }
-  else if (cum & WIN_SECOND_PRIMARY)
-  {
-    assert(cnew == WIN_SECOND);
-    return WIN_SECOND;
-  }
-
-  if (cum & WIN_DIFFERENT_SECONDARY)
-  {
-    assert(cnew == WIN_DIFFERENT);
-    return WIN_DIFFERENT;
-  }
-
-  if (cum & WIN_FIRST_SECONDARY)
-  {
-    if (cum & WIN_SECOND_SECONDARY)
-    {
-      // if (cnew != WIN_DIFFERENT)
-      // {
-        // cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
-          // ", compOverlap " << compOverlap << endl;
-        // cout << "cnew " << cnew << endl;
-        // cout << "c1 " << c1 << ", c2 " << c2 << endl;
-        // cout << "cum " << cum << endl;
-      // }
-      assert(cnew == WIN_DIFFERENT);
-      return WIN_DIFFERENT;
-    }
-    else
-    {
-      // if (cnew != WIN_FIRST)
-      // {
-        // cout << "cnew1 " << cnew1 << ", cnew2 " << cnew2 << 
-          // ", compOverlap " << compOverlap << endl;
-        // cout << "cnew " << cnew << endl;
-        // cout << "c1 " << c1 << ", c2 " << c2 << endl;
-        // cout << "cum " << cum << endl;
-      // }
-      assert(cnew == WIN_FIRST);
-      return WIN_FIRST;
-    }
-  }
-  else if (cum & WIN_SECOND_SECONDARY)
-  {
-    assert(cnew == WIN_SECOND);
-    return WIN_SECOND;
-  }
-  else
-  {
-    assert(cnew == WIN_EQUAL);
-    return WIN_EQUAL;
-  }
+  return c;
 }
 
 
@@ -256,8 +117,8 @@ void Extensions::add()
     if (Extensions::lessEqualPrimary(* piter, * iter))
     {
       // Same tricks.
-      Compare c = Extensions::compareDetail(* iter, * piter);
-      if (c == WIN_FIRST || d == WIN_EQUAL)
+      Compare c = Extensions::compareSecondary(* iter, * piter);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
         return;
       else if (c == WIN_SECOND)
       {

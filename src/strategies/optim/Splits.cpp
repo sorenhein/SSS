@@ -26,7 +26,6 @@ void Splits::reset()
   own.reset();
   shared.reset();
   ownPtrs.clear();
-  matrix.clear();
   count = 0;
 }
 
@@ -121,56 +120,6 @@ void Splits::setPointers()
 }
 
 
-void Splits::setMatrix()
-{
-  matrix.resize(count);
-  for (unsigned i = 0; i < count; i++)
-    matrix[i].resize(count);
-
-  if (own.empty())
-  {
-    for (unsigned i = 0; i < count; i++)
-      for (unsigned j = 0; j < count; j++)
-        matrix[i][j] = WIN_EQUAL_OVERALL;
-  }
-  else
-  {
-    for (unsigned i = 0; i < count; i++)
-    {
-      matrix[i][i] = WIN_EQUAL_OVERALL;
-      for (unsigned j = 0; j < i; j++)
-      {
-        Compare b = ownPtrs[i]->compareByProfile(* ownPtrs[j]);
-        CompareDetail c;
-
-        if (b == WIN_EQUAL)
-          c = ownPtrs[i]->compareDetail(* ownPtrs[j]);
-        else if (b == WIN_FIRST)
-          c = WIN_FIRST_PRIMARY;
-        else if (b == WIN_SECOND)
-          c = WIN_SECOND_PRIMARY;
-        else
-          c = WIN_DIFFERENT_PRIMARY;
-
-        matrix[i][j] = c;
-
-        // Flip for the anti-symmetric position.
-        if (c == WIN_SECOND_PRIMARY)
-          matrix[j][i] = WIN_FIRST_PRIMARY;
-        else if (c == WIN_SECOND_SECONDARY)
-          matrix[j][i] = WIN_FIRST_SECONDARY;
-        else if (c == WIN_FIRST_PRIMARY)
-          matrix[j][i] = WIN_SECOND_PRIMARY;
-        else if (c == WIN_FIRST_SECONDARY)
-          matrix[j][i] = WIN_SECOND_SECONDARY;
-        else
-          matrix[j][i] = c;
-      }
-    }
-  }
-}
-
-
 void Splits::split(
   Strategies& strategies,
   const Strategy& counterpart,
@@ -186,8 +135,6 @@ void Splits::split(
   Splits::setPointers();
 
   own.scrutinize(ranges);
-
-  Splits::setMatrix();
 }
 
 
@@ -215,16 +162,6 @@ bool Splits::lessEqualPrimary(
   else
     return ownPtrs[index1]->lessEqualPrimaryScrutinized(* ownPtrs[index2]);
 }
-
-
-/* */
-CompareDetail Splits::compareDetail(
-  const unsigned index1,
-  const unsigned index2) const
-{
-  return matrix[index1][index2];
-}
-/* */
 
 
 Compare Splits::comparePrimary(

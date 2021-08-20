@@ -54,10 +54,9 @@ class Extension
       const Strategy& strat1,
       const Strategy& strat2);
 
-    Compare compare(const Extension& ext2) const;
-    CompareDetail compareDetail(const Extension& ext2) const;
-
     bool lessEqualPrimary(const Extension& ext2) const;
+
+    Compare compareSecondary(const Extension& ext2) const;
 
     unsigned index1() const;
     unsigned index2() const;

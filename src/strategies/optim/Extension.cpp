@@ -62,15 +62,9 @@ void Extension::flatten(
 }
 
 
-Compare Extension::compare(const Extension& ext2) const
+Compare Extension::compareSecondary(const Extension& ext2) const
 {
-  return overlap.compare(ext2.overlap);
-}
-
-
-CompareDetail Extension::compareDetail(const Extension& ext2) const
-{
-  return overlap.compareDetail(ext2.overlap);
+  return overlap.compareSecondary(ext2.overlap);
 }
 
 
