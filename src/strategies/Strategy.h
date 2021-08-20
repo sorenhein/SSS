@@ -112,6 +112,7 @@ class Strategy
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;
+    Compare compareSecondary(const Strategy& strat2) const;
 
     void operator *= (const Strategy& strat2);
 

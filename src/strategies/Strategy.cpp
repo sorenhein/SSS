@@ -349,6 +349,39 @@ Compare Strategy::comparePrimaryScrutinized(const Strategy& strat2) const
 }
 
 
+Compare Strategy::compareSecondary(const Strategy& strat2) const
+{
+  assert(strat2.results.size() == results.size());
+
+  unsigned cumul = Strategy::makeCumulator(strat2);
+
+  // Can this go in a ComparerDetail class, or somewhere else?
+  // Or even in a table lookup (64)?
+
+  if ((cumul & WIN_FIRST_PRIMARY) ||
+      (cumul & WIN_SECOND_PRIMARY) ||
+      (cumul & WIN_DIFFERENT_PRIMARY))
+  {
+    assert(false);
+  }
+
+  if (cumul & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+
+  if (cumul & WIN_FIRST_SECONDARY)
+  {
+    if (cumul & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (cumul & WIN_SECOND_SECONDARY)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+}
+
+
 /************************************************************
  *                                                          *
  * *= and multiply methods (including study)                *
