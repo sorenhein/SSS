@@ -73,11 +73,12 @@ bool Extensions::lessEqualPrimary(
 
 Compare Extensions::compareDetail(
   const Extension& ext1,
-  const Extension& ext2,
-  const CompareDetail& compOverlap) const
+  const Extension& ext2) const
 {
   const CompareDetail c1 = splits1.compareDetail(ext1.index1(), ext2.index1());
   const CompareDetail c2 = splits2.compareDetail(ext1.index2(), ext2.index2());
+  const CompareDetail compOverlap = ext1.compareDetail(ext2);
+
   CompareDetail cum = static_cast<CompareDetail>(c1 | c2 | compOverlap);
 
   const Compare cnew1 = splits1.compareSecondary(ext1.index1(), ext2.index1());
@@ -250,19 +251,15 @@ void Extensions::add()
       iter++;
   }
 
-  CompareDetail c;
-
   while (iter != piter && iter->weight() == piter->weight())
   {
     if (Extensions::lessEqualPrimary(* piter, * iter))
     {
       // Same tricks.
-      c = iter->compareDetail(* piter);
-
-      Compare d = Extensions::compareDetail(* iter, * piter, c);
-      if (d == WIN_FIRST || d == WIN_EQUAL)
+      Compare c = Extensions::compareDetail(* iter, * piter);
+      if (c == WIN_FIRST || d == WIN_EQUAL)
         return;
-      else if (d == WIN_SECOND)
+      else if (c == WIN_SECOND)
       {
         iter = extensions.erase(iter);
       }

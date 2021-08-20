@@ -244,63 +244,16 @@ Compare Splits::compareSecondary(
   const unsigned index1,
   const unsigned index2) const
 {
+  // This assumes a primary identity, which could be tested with
+  // ownPtrs[index1]->compareByProfile(* ownPtrs[index2]) == WIN_EQUAL
+
+  // Can empty() happen?
   if (ownPtrs[index1]->empty())
     return (ownPtrs[index2]->empty() ? WIN_EQUAL : WIN_FIRST);
   else if (ownPtrs[index2]->empty())
     return WIN_SECOND;
-
-  // TODO Delete
-  assert(ownPtrs[index1]->compareByProfile(* ownPtrs[index2]) == WIN_EQUAL);
-
-  const CompareDetail c = 
-    ownPtrs[index1]->compareDetail(* ownPtrs[index2]);
-  const Compare d = ownPtrs[index1]->compareSecondary(* ownPtrs[index2]);
-
-  if (c == WIN_NEUTRAL_OVERALL)
-  {
-    assert(d == WIN_UNSET);
-    return WIN_UNSET;
-  }
-  else if (c == WIN_EQUAL_OVERALL)
-  {
-    assert(d == WIN_EQUAL);
-    return WIN_EQUAL;
-  }
-  else if (c == WIN_FIRST_PRIMARY)
-  {
-    assert(false);
-    return WIN_FIRST;
-  }
-  else if (c == WIN_SECOND_PRIMARY)
-  {
-    assert(false);
-    return WIN_SECOND;
-  }
-  else if (c == WIN_FIRST_SECONDARY)
-  {
-    assert(d == WIN_FIRST);
-    return WIN_FIRST;
-  }
-  else if (c == WIN_SECOND_SECONDARY)
-  {
-    assert(d == WIN_SECOND);
-    return WIN_SECOND;
-  }
-  else if (c == WIN_DIFFERENT_PRIMARY)
-  {
-    assert(d == WIN_DIFFERENT);
-    return WIN_DIFFERENT;
-  }
-  else if (c == WIN_DIFFERENT_SECONDARY)
-  {
-    assert(d == WIN_DIFFERENT);
-    return WIN_DIFFERENT;
-  }
   else
-  {
-    assert(d == WIN_UNSET);
-    return WIN_UNSET;
-  }
+    return ownPtrs[index1]->compareSecondary(* ownPtrs[index2]);
 }
 
 
