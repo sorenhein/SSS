@@ -657,7 +657,7 @@ void Strategies::multiplyAddStrategy(
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
-      const Compare c = iter->compareCompleteBasic(* piter);
+      const Compare c = iter->compareSecondary(* piter);
       if (c == WIN_FIRST || c == WIN_EQUAL)
         return;
       else if (c == WIN_SECOND)
@@ -693,13 +693,7 @@ void Strategies::multiplyAddStrategy(
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
-  while (iter != strategies.end())
-  {
-    if (((* iter).*lessEqualMethod)(* piter))
-      iter = strategies.erase(iter);
-    else
-      iter++;
-  }
+  Strategies::eraseDominatedLighter(iter, lessEqualMethod, * piter);
 
   // Make a new scratch-pad element.
   strategies.emplace_back(Strategy());
