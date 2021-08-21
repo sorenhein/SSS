@@ -48,6 +48,44 @@ void Extensions::split(
 }
 
 
+bool Extensions::productDominatedHeavier(
+  list<Extension>::iterator& iter,
+  list<Extension>::iterator& piter) const
+{
+  // piter comes after iter and is the new product which may or
+  // may not be dominated by earlier Extension's.
+
+  while (iter != piter && iter->weight() > piter->weight())
+  {
+    if (piter->lessEqualPrimary(* iter))
+    {
+      // The new strat is dominated.
+      return true;
+    }
+    else
+      iter++;
+  }
+  return false;
+}
+
+
+void Extensions::eraseDominatedLighter(
+  list<Extension>::iterator& iter,
+  list<Extension>::iterator& piter)
+{
+  // piter comes before iter and is the new product which may
+  // dominate later Extension's.
+
+  while (iter != extensions.end())
+  {
+    if (iter->lessEqualPrimary(* piter))
+      iter = extensions.erase(iter);
+    else
+      iter++;
+  }
+}
+
+
 void Extensions::add()
 {
   // Process the scratchpad element.
@@ -66,16 +104,10 @@ void Extensions::add()
   // This checking costs about one third of the overall method time.
   
   auto iter = extensions.begin();
-  while (iter != piter && iter->weight() > piter->weight())
-  {
-    if (piter->lessEqualPrimary(* iter))
-    {
-      // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
+
+  if (Extensions::productDominatedHeavier(iter, piter))
+    // The new strat is dominated by an Extension with more weight.
+    return;
 
   while (iter != piter && iter->weight() == piter->weight())
   {
@@ -108,13 +140,7 @@ void Extensions::add()
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
-  while (iter != extensions.end())
-  {
-    if (iter->lessEqualPrimary(* piter))
-      iter = extensions.erase(iter);
-    else
-      iter++;
-  }
+  Extensions::eraseDominatedLighter(iter, piter);
 
   // Make a new scratch-pad element.
   extensions.emplace_back(Extension());

@@ -39,6 +39,15 @@ class Extensions
     Splits splits1;
     Splits splits2;
 
+
+    bool productDominatedHeavier(
+      list<Extension>::iterator& iter,
+      list<Extension>::iterator& piter) const;
+
+    void eraseDominatedLighter(
+      list<Extension>::iterator& iter,
+      list<Extension>::iterator& piter);
+
     void add();
 
   public:
