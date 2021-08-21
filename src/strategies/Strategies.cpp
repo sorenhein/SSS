@@ -294,6 +294,48 @@ bool Strategies::addendDominatedHeavier(
 }
 
 
+bool Strategies::processSameWeights(
+  list<Strategy>::iterator& iter,
+  ComparatorType lessEqualMethod,
+  const Strategy& addend)
+{
+  while (iter != strategies.end() && iter->weight() == addend.weight())
+  {
+    // Here it could go either way, and we have to look in detail.
+    if ((addend.*lessEqualMethod)(* iter))
+    {
+      // They are the same weight and the tricks are identical.
+      // The dominance could go either way, or they may be different.
+      const Compare c = iter->compareSecondary(addend);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return true;
+      else if (c == WIN_SECOND)
+        iter = strategies.erase(iter);
+      else
+        iter++;
+    }
+    else
+      iter++;
+  }
+  return false;
+}
+
+
+void Strategies::eraseDominatedLighter(
+  list<Strategy>::iterator& iter,
+  ComparatorType lessEqualMethod,
+  const Strategy& addend)
+{
+  while (iter != strategies.end())
+  {
+    if (((* iter).*lessEqualMethod)(addend))
+      iter = strategies.erase(iter);
+    else
+      iter++;
+  }
+}
+
+
 void Strategies::addStrategy(
   const Strategy& strat,
   ComparatorType lessEqualMethod)
@@ -312,30 +354,12 @@ void Strategies::addStrategy(
   auto iter = strategies.begin();
 
   if (Strategies::addendDominatedHeavier(iter, lessEqualMethod, strat))
-    // The new strat is domination by a Strategy with more weiht.
+    // The new strat is domination by a Strategy with more weight.
     return;
 
-  while (iter != strategies.end() && iter->weight() == strat.weight())
-  {
-    // Here it could go either way, and we have to look in detail.
-    if ((strat.*lessEqualMethod)(* iter))
-    {
-      // They are the same weight and the tricks are identical.
-      // The dominance could go either way, or they may be different.
-      const Compare c = iter->compareSecondary(strat);
-      if (c == WIN_FIRST || c == WIN_EQUAL)
-        return;
-      else if (c == WIN_SECOND)
-      {
-        iter = strategies.erase(iter);
-      }
-      else
-        iter++;
-    }
-    else
-      iter++;
-  }
-
+  if (Strategies::processSameWeights(iter, lessEqualMethod, strat))
+    // The new strat is dominated by a Strategy with equal weight.
+    return;
 
   // The new vector must be inserted.  This consumes about a third
   // of the time of the overall method.
@@ -343,13 +367,7 @@ void Strategies::addStrategy(
 
   // The new vector may dominate lighter vectors. This only consumes
   // 5-10% of the overall time.
-  while (iter != strategies.end())
-  {
-    if (((* iter).*lessEqualMethod)(strat))
-      iter = strategies.erase(iter);
-    else
-      iter++;
-  }
+  Strategies::eraseDominatedLighter(iter, lessEqualMethod, strat);
 }
 
 

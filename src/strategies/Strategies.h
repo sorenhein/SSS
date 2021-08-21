@@ -55,6 +55,16 @@ class Strategies
       ComparatorType lessEqualMethod,
       const Strategy& addend) const;
 
+    bool processSameWeights(
+      list<Strategy>::iterator& iter,
+      ComparatorType lessEqualMethod,
+      const Strategy& addend);
+
+    void eraseDominatedLighter(
+      list<Strategy>::iterator& iter,
+      ComparatorType lessEqualMethod,
+      const Strategy& addend);
+
     void addStrategy(
       const Strategy& strategy,
       ComparatorType lessEqualMethod);
