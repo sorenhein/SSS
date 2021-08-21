@@ -124,7 +124,7 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   auto iter2 = next(iter1);
   if (iter1->weight() < iter2->weight())
   {
-    if (((* iter2).*comparator)(* iter1))
+    if (((* iter1).*comparator)(* iter2))
     {
       strategies.pop_front();
     }
@@ -135,7 +135,7 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   }
   else if (iter2->weight() < iter1->weight())
   {
-    if (((* iter1).*comparator)(* iter2))
+    if (((* iter2).*comparator)(* iter1))
       strategies.pop_back();
   }
   else
@@ -171,10 +171,8 @@ void Strategies::consolidate()
     // The general way also works in this case, and it is just
     // a small optimization.
     ComparatorType comp = (scrutinizedFlag ? 
-      &Strategy::greaterEqualByProfile : &Strategy::greaterEqualByStudy);
-    // ComparatorType comp = (scrutinizedFlag ? 
-      // &Strategy::lessEqualPrimaryScrutinized : 
-      // &Strategy::lessEqualPrimaryStudied);
+      &Strategy::lessEqualPrimaryScrutinized : 
+      &Strategy::lessEqualPrimaryStudied);
 
     Strategies::consolidateTwo(comp);
     return;
