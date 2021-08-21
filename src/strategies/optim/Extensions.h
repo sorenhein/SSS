@@ -42,7 +42,7 @@ class Extensions
 
     bool productDominatedHeavier(
       list<Extension>::iterator& iter,
-      list<Extension>::iterator& piter) const;
+      const Extension& product) const;
 
     bool processSameWeights(
       list<Extension>::iterator& iter,

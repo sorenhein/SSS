@@ -50,6 +50,11 @@ class Strategies
     bool sameOrdered(const Strategies& strats2) const;
     bool sameUnordered(const Strategies& strats2) const;
 
+    bool addendDominatedHeavier(
+      list<Strategy>::iterator& iter,
+      ComparatorType lessEqualMethod,
+      const Strategy& addend) const;
+
     void addStrategy(
       const Strategy& strategy,
       ComparatorType lessEqualMethod);

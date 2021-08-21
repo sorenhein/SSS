@@ -276,6 +276,24 @@ bool Strategies::operator == (const Strategies& strats2) const
  *                                                          *
  ************************************************************/
 
+bool Strategies::addendDominatedHeavier(
+  list<Strategy>::iterator& iter,
+  ComparatorType lessEqualMethod,
+  const Strategy& addend) const
+{
+  while (iter != strategies.end() && iter->weight() > addend.weight())
+  {
+    // Only the new strat may be dominated.
+    // Only a trick comparison is needed.
+    if ((addend.*lessEqualMethod)(* iter))
+      return true;
+    else
+      iter++;
+  }
+  return false;
+}
+
+
 void Strategies::addStrategy(
   const Strategy& strat,
   ComparatorType lessEqualMethod)
@@ -292,15 +310,10 @@ void Strategies::addStrategy(
   }
 
   auto iter = strategies.begin();
-  while (iter != strategies.end() && iter->weight() > strat.weight())
-  {
-    // Only the new strat may be dominated.
-    // Only a trick comparison is needed.
-    if ((strat.*lessEqualMethod)(* iter))
-      return;
-    else
-      iter++;
-  }
+
+  if (Strategies::addendDominatedHeavier(iter, lessEqualMethod, strat))
+    // The new strat is domination by a Strategy with more weiht.
+    return;
 
   while (iter != strategies.end() && iter->weight() == strat.weight())
   {
@@ -309,7 +322,7 @@ void Strategies::addStrategy(
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
-      const Compare c = iter->compareCompleteBasic(strat);
+      const Compare c = iter->compareSecondary(strat);
       if (c == WIN_FIRST || c == WIN_EQUAL)
         return;
       else if (c == WIN_SECOND)
@@ -441,13 +454,13 @@ void Strategies::markChanges(
       }
 
       // Now the trick vectors are identical.
-      // TODO Use Strategy::compare or something optimized?
-      if (strat.lessEqualCompleteBasic(* iter))
+      const Compare c = strat.compareSecondary(* iter);
+      if (c == WIN_EQUAL || c == WIN_SECOND)
       {
         doneFlag = true;
         break;
       }
-      else if (iter->lessEqualCompleteBasic(strat))
+      else if (c == WIN_FIRST)
       {
         deletions.push_back(iter);
         ownDeletions[stratNo] = 1;
@@ -538,7 +551,7 @@ timersStrat[5].start();
     // General case.  Frequent and fast, perhaps 25% of the method time.
 
     // We may inherit a set scrutinizedFlag from the previous branch.
-    // But it's generally not worth it this case.
+    // But it's generally not worth it in this case.
     scrutinizedFlag = false;
 
     for (auto& strat2: strats2.strategies)

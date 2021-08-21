@@ -50,14 +50,14 @@ void Extensions::split(
 
 bool Extensions::productDominatedHeavier(
   list<Extension>::iterator& iter,
-  list<Extension>::iterator& piter) const
+  const Extension& product) const
 {
-  // piter comes after iter and is the new product which may or
+  // product comes after iter and is the new product which may or
   // may not be dominated by earlier Extension's.
 
-  while (iter != piter && iter->weight() > piter->weight())
+  while (iter->weight() > product.weight())
   {
-    if (piter->lessEqualPrimary(* iter))
+    if (product.lessEqualPrimary(* iter))
     {
       // The new strat is dominated.
       return true;
@@ -133,7 +133,7 @@ void Extensions::add()
   
   auto iter = extensions.begin();
 
-  if (Extensions::productDominatedHeavier(iter, piter))
+  if (Extensions::productDominatedHeavier(iter, * piter))
     // The new strat is dominated by an Extension with more weight.
     return;
 
