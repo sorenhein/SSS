@@ -158,6 +158,51 @@ bool Strategy::cumulate(
 }
 
 
+bool Strategy::cumulatePrimary(
+  const Strategy& strat2,
+  const bool earlyStopFlag,
+  unsigned& cumul) const
+{
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  cumul = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    const CompareDetail c = iter1->comparePrimaryInDetail(* iter2);
+    if (earlyStopFlag && (c & WIN_FIRST_PRIMARY))
+      return false;
+
+    cumul |= c;
+    iter1++;
+    iter2++;
+  }
+
+  return true;
+}
+
+
+void Strategy::cumulateSecondary(
+  const Strategy& strat2,
+  unsigned& cumul) const
+{
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  cumul = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    cumul |= iter1->compareSecondaryInDetail(* iter2);
+    iter1++;
+    iter2++;
+  }
+}
+
+
 bool Strategy::operator == (const Strategy& strat2) const
 {
   // For diagnostics.  It is effectively also a complete and
@@ -214,6 +259,18 @@ CompareType Strategy::compareCompleteBasic(const Strategy& strat2) const
 }
 
 
+Compare Strategy::compareSecondary(const Strategy& strat2) const
+{
+  // As we ignore tricks, this is in a sense basic.
+  assert(strat2.results.size() == results.size());
+
+  unsigned cumul;
+  Strategy::cumulateSecondary(strat2, cumul);
+
+  return compressCompareSecondaryDetail(cumul);
+}
+
+
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
@@ -244,9 +301,8 @@ bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 
 bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
 {
-  // The ByProfile method is preferable if the profile is available.
-  unsigned cumul;
-  return strat2.cumulate(* this, true, cumul);
+  unsigned cumul2;
+  return strat2.cumulatePrimary(* this, true, cumul2);
 }
 
 
@@ -262,41 +318,6 @@ bool Strategy::lessEqualPrimaryScrutinized(const Strategy& strat2) const
 Compare Strategy::comparePrimaryScrutinized(const Strategy& strat2) const
 {
   return study.comparePrimaryScrutinized(strat2.study);
-}
-
-
-Compare Strategy::compareSecondary(const Strategy& strat2) const
-{
-  assert(strat2.results.size() == results.size());
-
-  // unsigned cumul = Strategy::makeCumulator(strat2);
-  unsigned cumul;
-  Strategy::cumulate(strat2, false, cumul);
-
-  // Can this go in a ComparerDetail class, or somewhere else?
-  // Or even in a table lookup (64)?
-
-  if ((cumul & WIN_FIRST_PRIMARY) ||
-      (cumul & WIN_SECOND_PRIMARY) ||
-      (cumul & WIN_DIFFERENT_PRIMARY))
-  {
-    assert(false);
-  }
-
-  if (cumul & WIN_DIFFERENT_SECONDARY)
-    return WIN_DIFFERENT;
-
-  if (cumul & WIN_FIRST_SECONDARY)
-  {
-    if (cumul & WIN_SECOND_SECONDARY)
-      return WIN_DIFFERENT;
-    else
-      return WIN_FIRST;
-  }
-  else if (cumul & WIN_SECOND_SECONDARY)
-    return WIN_SECOND;
-  else
-    return WIN_EQUAL;
 }
 
 

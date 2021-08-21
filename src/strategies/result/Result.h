@@ -30,8 +30,12 @@ enum CompareDetail
 
 #define WIN_FIRST_OVERALL 0xa
 #define WIN_SECOND_OVERALL 0x14
+#define WIN_PRIMARY (WIN_FIRST_PRIMARY | WIN_SECOND_PRIMARY | \
+  WIN_DIFFERENT_PRIMARY)
 
+CompareType compressCore(const unsigned detail);
 CompareType compressCompareDetail(const unsigned detail);
+CompareType compressCompareSecondaryDetail(const unsigned detail);
 
 
 class Result
@@ -73,7 +77,11 @@ class Result
 
     bool operator != (const Result& res2) const;
 
+    CompareDetail comparePrimaryInDetail(const Result& res2) const;
+
     Compare compareComplete(const Result& res2) const;
+
+    CompareDetail compareSecondaryInDetail(const Result& res2) const;
 
     CompareDetail compareInDetail(const Result& res2) const;
 

@@ -37,6 +37,15 @@ class Strategy
       const bool earlyStopFlag,
       unsigned& cumul) const;
 
+    bool cumulatePrimary(
+      const Strategy& strat2,
+      const bool earlyStopFlag,
+      unsigned& cumul) const;
+
+    void cumulateSecondary(
+      const Strategy& strat2,
+      unsigned& cumul) const;
+
     void updateSingle(
       const unsigned char fullNo,
       const unsigned char trickNS);
@@ -95,10 +104,14 @@ class Strategy
 
     // ***************** Comparisons ****************
 
-    // Full Result level (basic, unoptimized)
+    // Full Result level (basic, unaccelerated)
     bool operator == (const Strategy& strat2) const;
+
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
+
     CompareType compareCompleteBasic(const Strategy& strat2) const;
+
+    Compare compareSecondary(const Strategy& strat2) const;
 
     // Full Result level
     bool operator >= (const Strategy& strat2) const;
@@ -111,7 +124,6 @@ class Strategy
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;
-    Compare compareSecondary(const Strategy& strat2) const;
 
 
     // ******************* Multiply *****************

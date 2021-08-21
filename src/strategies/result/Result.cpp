@@ -14,7 +14,27 @@
 #include "Result.h"
 
 
-// First a non-class method. 
+// First three non-class methods. 
+
+CompareType compressCore(const unsigned detail)
+{
+  if (detail & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+
+  if (detail & WIN_FIRST_SECONDARY)
+  {
+    if (detail & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (detail & WIN_SECOND_SECONDARY)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+}
+
+
 CompareType compressCompareDetail(const unsigned detail)
 {
   if (detail & WIN_DIFFERENT_PRIMARY)
@@ -30,20 +50,14 @@ CompareType compressCompareDetail(const unsigned detail)
   else if (detail & WIN_SECOND_PRIMARY)
     return WIN_SECOND;
 
-  if (detail & WIN_DIFFERENT_SECONDARY)
-    return WIN_DIFFERENT;
+  return compressCore(detail);
+}
 
-  if (detail & WIN_FIRST_SECONDARY)
-  {
-    if (detail & WIN_SECOND_SECONDARY)
-      return WIN_DIFFERENT;
-    else
-      return WIN_FIRST;
-  }
-  else if (detail & WIN_SECOND_SECONDARY)
-    return WIN_SECOND;
-  else
-    return WIN_EQUAL;
+
+CompareType compressCompareSecondaryDetail(const unsigned detail)
+{
+  assert((detail & WIN_PRIMARY) == 0);
+  return compressCore(detail);
 }
 
 
@@ -134,6 +148,17 @@ bool Result::operator != (const Result& res2) const
 }
 
 
+CompareDetail Result::comparePrimaryInDetail(const Result& res2) const
+{
+  if (tricksInt > res2.tricksInt)
+    return WIN_FIRST_PRIMARY;
+  else if (tricksInt < res2.tricksInt)
+    return WIN_SECOND_PRIMARY;
+  else
+    return WIN_EQUAL_OVERALL;
+}
+
+
 Compare Result::compareComplete(const Result& res2) const
 {
   if (tricksInt > res2.tricksInt)
@@ -145,12 +170,9 @@ Compare Result::compareComplete(const Result& res2) const
 }
 
 
-CompareDetail Result::compareInDetail(const Result& res2) const
+CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
 {
-  if (tricksInt > res2.tricksInt)
-    return WIN_FIRST_PRIMARY;
-  else if (tricksInt < res2.tricksInt)
-    return WIN_SECOND_PRIMARY;
+  assert(tricksInt == res2.tricksInt);
 
   const Compare c = winnersInt.compare(res2.winnersInt);
   if (c == WIN_FIRST)
@@ -161,6 +183,17 @@ CompareDetail Result::compareInDetail(const Result& res2) const
     return WIN_EQUAL_OVERALL;
   else
     return WIN_DIFFERENT_SECONDARY;
+}
+
+
+CompareDetail Result::compareInDetail(const Result& res2) const
+{
+  if (tricksInt > res2.tricksInt)
+    return WIN_FIRST_PRIMARY;
+  else if (tricksInt < res2.tricksInt)
+    return WIN_SECOND_PRIMARY;
+  else
+    return Result::compareSecondaryInDetail(res2);
 }
 
 
