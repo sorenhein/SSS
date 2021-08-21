@@ -39,27 +39,7 @@ class Extensions
     Splits splits1;
     Splits splits2;
 
-
-    /* */
-    void makeEntry(
-      const Strategy& strat1,
-      const Strategy& strat2,
-      const Ranges& ranges,
-      const unsigned index1,
-      const unsigned index2);
-
-    bool lessEqualPrimary(
-      const Extension& ext1,
-      const Extension& ext2) const;
-
-    Compare compareSecondary(
-      const Extension& ext1,
-      const Extension& ext2) const;
-      /* */
-
     void add();
-    void addNew();
-
 
   public:
 

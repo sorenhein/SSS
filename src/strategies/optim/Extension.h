@@ -36,9 +36,6 @@ class Extension
     Strategy const * own1ptr;
     Strategy const * own2ptr;
 
-    unsigned index1Int;
-    unsigned index2Int;
-
     unsigned weightInt;
 
 
@@ -50,45 +47,18 @@ class Extension
 
     void reset();
 
-    void multiplyNew(
+    void multiply(
       const Split& strat1,
       const Split& strat2,
       const Ranges& ranges);
 
-    /* */
-    void multiply(
-      const Strategy& strat1,
-      const Strategy& strat2,
-      const Ranges& ranges);
-
-    void finish(
-      const unsigned index1,
-      const unsigned index2,
-      const unsigned weightUniques);
-
-    void flatten(
-      list<Strategy>& strategies,
-      const Strategy& strat1,
-      const Strategy& strat2);
-      /* */
-
-    void flattenNew(list<Strategy>& strategies);
+    void flatten(list<Strategy>& strategies);
 
     bool lessEqualPrimary(const Extension& ext2) const;
-    bool lessEqualPrimaryNew(const Extension& ext2) const;
 
     Compare compareSecondary(const Extension& ext2) const;
-    Compare compareSecondaryNew(const Extension& ext2) const;
-
-    unsigned index1() const;
-
-    unsigned index2() const;
 
     unsigned weight() const;
-
-    void strOld(const Strategy& own1, const Strategy& own2) const;
-
-    void strNew() const;
 };
 
 #endif
