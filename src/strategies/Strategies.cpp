@@ -116,7 +116,7 @@ timersStrat[0].stop();
  *                                                          *
  ************************************************************/
 
-void Strategies::consolidateTwo(ComparatorType comparator)
+void Strategies::consolidateTwo(ComparatorType lessEqualMethod)
 {
   // Check whether to swap the two and whether one is dominated.
 
@@ -124,7 +124,7 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   auto iter2 = next(iter1);
   if (iter1->weight() < iter2->weight())
   {
-    if (((* iter1).*comparator)(* iter2))
+    if (((* iter1).*lessEqualMethod)(* iter2))
     {
       strategies.pop_front();
     }
@@ -135,7 +135,7 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   }
   else if (iter2->weight() < iter1->weight())
   {
-    if (((* iter2).*comparator)(* iter1))
+    if (((* iter2).*lessEqualMethod)(* iter1))
       strategies.pop_back();
   }
   else
@@ -278,7 +278,7 @@ bool Strategies::operator == (const Strategies& strats2) const
 
 void Strategies::addStrategy(
   const Strategy& strat,
-  ComparatorType comparator)
+  ComparatorType lessEqualMethod)
 {
   // The strategies list is in descending order of weights.
   // The new Strategy might dominate everything with a lower weight and
@@ -296,7 +296,7 @@ void Strategies::addStrategy(
   {
     // Only the new strat may be dominated.
     // Only a trick comparison is needed.
-    if (((* iter).*comparator)(strat))
+    if ((strat.*lessEqualMethod)(* iter))
       return;
     else
       iter++;
@@ -305,7 +305,7 @@ void Strategies::addStrategy(
   while (iter != strategies.end() && iter->weight() == strat.weight())
   {
     // Here it could go either way, and we have to look in detail.
-    if (((* iter).*comparator)(strat))
+    if ((strat.*lessEqualMethod)(* iter))
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
@@ -332,7 +332,7 @@ void Strategies::addStrategy(
   // 5-10% of the overall time.
   while (iter != strategies.end())
   {
-    if ((strat.*comparator)(* iter))
+    if (((* iter).*lessEqualMethod)(strat))
       iter = strategies.erase(iter);
     else
       iter++;
@@ -348,12 +348,12 @@ void Strategies::operator += (const Strategy& strat)
   unsigned tno;
   if (scrutinizedFlag)
   {
-    comp = &Strategy::greaterEqualByProfile;
+    comp = &Strategy::lessEqualPrimaryScrutinized;
     tno = 2;
   }
   else
   {
-    comp = &Strategy::greaterEqualByStudy;
+    comp = &Strategy::lessEqualPrimaryStudied;
     tno = 3;
   }
 
@@ -415,7 +415,6 @@ void Strategies::markChanges(
     {
       if (ownDeletions[stratNo] ||
           ! strat.lessEqualPrimaryScrutinized(* iter))
-          // ! iter->greaterEqualByProfile(strat))
       {
         iter++;
         stratNo++;
@@ -435,7 +434,6 @@ void Strategies::markChanges(
     {
       if (ownDeletions[stratNo] ||
           ! strat.lessEqualPrimaryScrutinized(* iter))
-          // ! iter->greaterEqualByProfile(strat))
       {
         iter++;
         stratNo++;
@@ -471,7 +469,6 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-      // if (strat.greaterEqualByProfile(* iter) &&
       if (iter->lessEqualPrimaryScrutinized(strat) &&
           iter->lessEqualCompleteBasic(strat))
       {

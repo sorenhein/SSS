@@ -42,7 +42,7 @@ class Strategies
 
     void collapseOnVoid();
 
-    void consolidateTwo(ComparatorType comparator);
+    void consolidateTwo(ComparatorType lessEqualMethod);
 
     void restudy();
 
@@ -52,7 +52,7 @@ class Strategies
 
     void addStrategy(
       const Strategy& strategy,
-      ComparatorType comparator);
+      ComparatorType lessEqualMethod);
 
     void plusOneByOne(const Strategies& strats2);
 
