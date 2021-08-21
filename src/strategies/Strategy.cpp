@@ -164,32 +164,8 @@ bool Strategy::cumulate(
   const bool earlyStopFlag,
   unsigned& cumul) const
 {
-  // This method supports others that perform complete comparisons.
-  // It returns true if the trick comparison still permits <=,
-  // even though the secondary comparison perhaps would not.
-  // If true, cumul is the cumulative bit vector of returns for
-  // further processing.  If true, the flag causes the method to
-  // return (false) as soon as <= is no longer possible, and the
-  // cumulator will then not be complete.
-
-  assert(strat2.results.size() == results.size());
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  cumul = WIN_NEUTRAL_OVERALL;
-  while (iter1 != results.end())
-  {
-    const CompareDetail c = iter1->compareInDetail(* iter2);
-    if (earlyStopFlag && (c & WIN_FIRST_PRIMARY))
-      return false;
-
-    cumul |= c;
-    iter1++;
-    iter2++;
-  }
-
-  return true;
+  return Strategy::cumulateCommon(strat2, earlyStopFlag,
+    &Result::compareInDetail, cumul);
 }
 
 
@@ -198,24 +174,8 @@ bool Strategy::cumulatePrimary(
   const bool earlyStopFlag,
   unsigned& cumul) const
 {
-  assert(strat2.results.size() == results.size());
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  cumul = WIN_NEUTRAL_OVERALL;
-  while (iter1 != results.end())
-  {
-    const CompareDetail c = iter1->comparePrimaryInDetail(* iter2);
-    if (earlyStopFlag && (c & WIN_FIRST_PRIMARY))
-      return false;
-
-    cumul |= c;
-    iter1++;
-    iter2++;
-  }
-
-  return true;
+  return Strategy::cumulateCommon(strat2, earlyStopFlag,
+    &Result::comparePrimaryInDetail, cumul);
 }
 
 
@@ -223,18 +183,8 @@ void Strategy::cumulateSecondary(
   const Strategy& strat2,
   unsigned& cumul) const
 {
-  assert(strat2.results.size() == results.size());
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  cumul = WIN_NEUTRAL_OVERALL;
-  while (iter1 != results.end())
-  {
-    cumul |= iter1->compareSecondaryInDetail(* iter2);
-    iter1++;
-    iter2++;
-  }
+  Strategy::cumulateCommon(strat2, false,
+    &Result::compareSecondaryInDetail, cumul);
 }
 
 
@@ -330,15 +280,12 @@ bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
   if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else
-    return Strategy::greaterEqualByTricks(strat2);
+  {
+    unsigned cumul;
+    return strat2.cumulatePrimary(* this, true, cumul);
+  }
 }
 
-
-bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
-{
-  unsigned cumul2;
-  return strat2.cumulatePrimary(* this, true, cumul2);
-}
 
 
 ///// ----------------  The new comparators? ------------
