@@ -217,69 +217,24 @@ CompareType Strategy::compareCompleteBasic(const Strategy& strat2) const
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  // if (! study.maybeGreaterEqual(strat2.study))
   if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else
     return strat2.lessEqualCompleteBasic(* this);
-    // return Strategy::greaterEqual(strat2);
 }
 
 
-CompareDetail Strategy::compareDetail(const Strategy& strat2) const
-{
-  // This is only for diagnostics.
-  assert(strat2.results.size() == results.size());
-
-  // unsigned cumul = Strategy::makeCumulator(strat2);
-  unsigned cumul;
-  Strategy::cumulate(strat2, false, cumul);
-
-
-  // Can this go in a ComparerDetail class, or somewhere else?
-  // Or even in a table lookup (64)?
-
-  if (cumul & WIN_DIFFERENT_PRIMARY)
-    return WIN_DIFFERENT_PRIMARY;
-
-  if (cumul & WIN_FIRST_PRIMARY)
-  {
-    if (cumul & WIN_SECOND_PRIMARY)
-      return WIN_DIFFERENT_PRIMARY;
-    else
-      return WIN_FIRST_PRIMARY;
-  }
-  else if (cumul & WIN_SECOND_PRIMARY)
-    return WIN_SECOND_PRIMARY;
-
-  if (cumul & WIN_DIFFERENT_SECONDARY)
-    return WIN_DIFFERENT_SECONDARY;
-
-  if (cumul & WIN_FIRST_SECONDARY)
-  {
-    if (cumul & WIN_SECOND_SECONDARY)
-      return WIN_DIFFERENT_SECONDARY;
-    else
-      return WIN_FIRST_SECONDARY;
-  }
-  else if (cumul & WIN_SECOND_SECONDARY)
-    return WIN_SECOND_SECONDARY;
-  else
-    return WIN_EQUAL_OVERALL;
-}
-
-
+/* */
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
-  // return study.greaterEqualByProfile(strat2.study);
   return strat2.study.lessEqualScrutinized(study);
 }
+/* */
 
 
 bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  // if (! study.maybeGreaterEqual(strat2.study))
   if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else

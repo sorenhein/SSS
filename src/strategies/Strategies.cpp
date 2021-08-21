@@ -413,7 +413,8 @@ void Strategies::markChanges(
     while (iter != strategies.end() && iter->weight() > strat.weight())
     {
       if (ownDeletions[stratNo] ||
-          ! iter->greaterEqualByProfile(strat))
+          ! strat.lessEqualPrimaryScrutinized(* iter))
+          // ! iter->greaterEqualByProfile(strat))
       {
         iter++;
         stratNo++;
@@ -432,7 +433,8 @@ void Strategies::markChanges(
     while (iter != strategies.end() && iter->weight() == strat.weight())
     {
       if (ownDeletions[stratNo] ||
-          ! iter->greaterEqualByProfile(strat))
+          ! strat.lessEqualPrimaryScrutinized(* iter))
+          // ! iter->greaterEqualByProfile(strat))
       {
         iter++;
         stratNo++;
@@ -468,7 +470,8 @@ void Strategies::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-      if (strat.greaterEqualByProfile(* iter) &&
+      // if (strat.greaterEqualByProfile(* iter) &&
+      if (iter->lessEqualPrimaryScrutinized(strat) &&
           iter->lessEqualCompleteBasic(strat))
       {
         if (ownDeletions[stratNo] == 0)

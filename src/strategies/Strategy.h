@@ -103,9 +103,6 @@ class Strategy
     // Full Result level
     bool operator >= (const Strategy& strat2) const;
 
-    // Full Result level
-    CompareDetail compareDetail(const Strategy& strat2) const;
-
     // Trick-level
     bool greaterEqualByProfile(const Strategy& strat2) const;
     bool greaterEqualByStudy(const Strategy& strat2) const;
