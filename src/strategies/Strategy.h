@@ -15,6 +15,8 @@ struct Survivors;
 using namespace std;
 
 
+typedef CompareDetail (Result::*CumulateType)(const Result& res2) const;
+
 
 class Strategy
 {
@@ -31,6 +33,17 @@ class Strategy
 
     // Returns true if <= is still possible at the trick level.
     // Terminates as soon as this becomes impossible if flag is set.
+
+    bool cumulateCommon(
+      const Strategy& strat2,
+      const bool earlyStopFlag,
+      CumulateType methodPtr,
+      unsigned& cumul) const;
+
+    bool cumulateCommon(
+      const Strategy& strat2,
+      const bool earlyStopFlag,
+      unsigned& cumul) const;
 
     bool cumulate(
       const Strategy& strat2,

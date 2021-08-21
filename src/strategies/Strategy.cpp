@@ -124,6 +124,41 @@ void Strategy::scrutinize(const Ranges& ranges)
  *                                                          *
  ************************************************************/
 
+bool Strategy::cumulateCommon(
+  const Strategy& strat2,
+  const bool earlyStopFlag,
+  CumulateType methodPtr,
+  unsigned& cumul) const
+{
+  // This method supports others that perform complete comparisons.
+  // It returns true if the trick comparison still permits <=,
+  // even though the secondary comparison perhaps would not.
+  // If true, cumul is the cumulative bit vector of returns for
+  // further processing.  If true, the flag causes the method to
+  // return (false) as soon as <= is no longer possible, and the
+  // cumulator will then not be complete.
+
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  cumul = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    const CompareDetail c = ((* iter1).*methodPtr)(* iter2);
+    if (earlyStopFlag && (c & WIN_FIRST_PRIMARY))
+      return false;
+
+    cumul |= c;
+    iter1++;
+    iter2++;
+  }
+
+  return true;
+}
+
+
 bool Strategy::cumulate(
   const Strategy& strat2,
   const bool earlyStopFlag,
