@@ -196,6 +196,9 @@ bool Strategy::operator == (const Strategy& strat2) const
   const unsigned n = results.size();
   assert(strat2.results.size() == n);
 
+  if (weightInt != strat2.weightInt)
+    return false;
+
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = strat2.results.cbegin();
 

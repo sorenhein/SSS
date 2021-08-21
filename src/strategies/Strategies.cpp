@@ -650,33 +650,9 @@ void Strategies::multiplyAddStrategy(
     return;
 
 
-  /* */
-  while (iter != piter && iter->weight() == piter->weight())
-  {
-    if (((* piter).*lessEqualMethod)(* iter))
-    {
-      // They are the same weight and the tricks are identical.
-      // The dominance could go either way, or they may be different.
-      const Compare c = iter->compareSecondary(* piter);
-      if (c == WIN_FIRST || c == WIN_EQUAL)
-        return;
-      else if (c == WIN_SECOND)
-        iter = strategies.erase(iter);
-      else
-        iter++;
-    }
-    else
-      iter++;
-  }
-  /* */
-
-  // I think the problem is that lessEqualMethod is not definitive?
-  // compareCompleteBasic and compareSecondary are not the same here?
-  /*
   if (Strategies::processSameWeights(iter, piter, lessEqualMethod, * piter))
     // piter is dominated by a Strategy with equal weight.
     return;
-    */
 
 
   // Already in the right place at the end?
