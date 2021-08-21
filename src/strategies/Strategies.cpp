@@ -296,10 +296,11 @@ bool Strategies::addendDominatedHeavier(
 
 bool Strategies::processSameWeights(
   list<Strategy>::iterator& iter,
+  list<Strategy>::iterator& iterEnd,
   ComparatorType lessEqualMethod,
   const Strategy& addend)
 {
-  while (iter != strategies.end() && iter->weight() == addend.weight())
+  while (iter != iterEnd && iter->weight() == addend.weight())
   {
     // Here it could go either way, and we have to look in detail.
     if ((addend.*lessEqualMethod)(* iter))
@@ -354,10 +355,11 @@ void Strategies::addStrategy(
   auto iter = strategies.begin();
 
   if (Strategies::addendDominatedHeavier(iter, lessEqualMethod, strat))
-    // The new strat is domination by a Strategy with more weight.
+    // The new strat is dominated by a Strategy with more weight.
     return;
 
-  if (Strategies::processSameWeights(iter, lessEqualMethod, strat))
+  auto iterEnd = strategies.end();
+  if (Strategies::processSameWeights(iter, iterEnd, lessEqualMethod, strat))
     // The new strat is dominated by a Strategy with equal weight.
     return;
 
@@ -642,17 +644,13 @@ void Strategies::multiplyAddStrategy(
   // This checking costs about one third of the overall method time.
   
   auto iter = strategies.begin();
-  while (iter != piter && iter->weight() > piter->weight())
-  {
-    if (((* piter).*lessEqualMethod)(* iter))
-    {
-      // The new strat is dominated.
-      return;
-    }
-    else
-      iter++;
-  }
 
+  if (Strategies::addendDominatedHeavier(iter, lessEqualMethod, * piter))
+    // piter is dominated by a Strategy with more weight.
+    return;
+
+
+  /* */
   while (iter != piter && iter->weight() == piter->weight())
   {
     if (((* piter).*lessEqualMethod)(* iter))
@@ -670,6 +668,16 @@ void Strategies::multiplyAddStrategy(
     else
       iter++;
   }
+  /* */
+
+  // I think the problem is that lessEqualMethod is not definitive?
+  // compareCompleteBasic and compareSecondary are not the same here?
+  /*
+  if (Strategies::processSameWeights(iter, piter, lessEqualMethod, * piter))
+    // piter is dominated by a Strategy with equal weight.
+    return;
+    */
+
 
   // Already in the right place at the end?
   if (iter == piter)

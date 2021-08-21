@@ -57,6 +57,7 @@ class Strategies
 
     bool processSameWeights(
       list<Strategy>::iterator& iter,
+      list<Strategy>::iterator& iterEnd,
       ComparatorType lessEqualMethod,
       const Strategy& addend);
 
