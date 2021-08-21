@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <mutex>
 #include <math.h>
@@ -111,6 +119,18 @@ void Study::study(const list<Result>& results)
 }
 
 
+void Study::unstudy()
+{
+  studiedFlag = false;
+}
+
+
+bool Study::studied() const
+{
+  return studiedFlag;
+}
+
+
 void Study::scrutinize(
   const list<Result>& results,
   const Ranges& ranges)
@@ -160,18 +180,6 @@ void Study::scrutinize(
 }
 
 
-void Study::unstudy()
-{
-  studiedFlag = false;
-}
-
-
-bool Study::studied() const
-{
-  return studiedFlag;
-}
-
-
 bool Study::maybeGreaterEqual(const Study& study2) const
 {
   // This uses studied results if possible, otherwise the basic method.
@@ -186,28 +194,6 @@ bool Study::maybeGreaterEqual(const Study& study2) const
 
   // Expect the caller to do the full comparison.  The summaries may
   // still hide differences.
-  return true;
-}
-
-
-bool Study::greaterEqualByProfile(const Study& study2) const
-{
-  // This used the scrutinized results, which must exist.
-
-  assert(profiles.size() == study2.profiles.size());
-  assert(! profiles.empty());
-
-  auto piter1 = profiles.begin();
-  auto piter2 = study2.profiles.begin();
-  while (piter1 != profiles.end())
-  {
-    if (! lookupGE[((* piter1) << 10) | (* piter2)])
-      return false;
-
-    piter1++;
-    piter2++;
-  }
-
   return true;
 }
 
@@ -234,7 +220,7 @@ bool Study::lessEqualScrutinized(const Study& study2) const
 }
 
 
-Compare Study::compareByProfile(const Study& study2) const
+Compare Study::comparePrimaryScrutinized(const Study& study2) const
 {
   // This too uses the scrutinized results.
 
@@ -280,11 +266,5 @@ Compare Study::compareByProfile(const Study& study2) const
     return WIN_SECOND;
   else
     return WIN_EQUAL;
-}
-
-
-Compare Study::comparePrimaryScrutinized(const Study& study2) const
-{
-  return Study::compareByProfile(study2);
 }
 

@@ -25,7 +25,7 @@ void Extension::reset()
   overlap.reset();
   own1ptr = nullptr;
   own2ptr = nullptr;
-  weightInt = 0;
+  weightOverall = 0;
 }
 
 
@@ -40,7 +40,11 @@ void Extension::multiply(
   own1ptr = split1.ownPtr;
   own2ptr = split2.ownPtr;
 
-  weightInt = overlap.weight() + own1ptr->weight() + own2ptr->weight();
+  weightOverlap = overlap.weight();
+  weightOwn1 = own1ptr->weight();
+  weightOwn2 = own2ptr->weight();
+
+  weightOverall = weightOverlap + weightOwn1 + weightOwn2;
 }
 
 
@@ -52,9 +56,19 @@ void Extension::flatten(list<Strategy>& strategies)
 }
 
 
+bool Extension::weightLessEqual(const Extension& ext2) const
+{
+  return (weightOwn1 <= ext2.weightOwn1 &&
+      weightOwn2 <= ext2.weightOwn2 &&
+      weightOverlap <= ext2.weightOverlap);
+}
+
+
 bool Extension::lessEqualPrimary(const Extension& ext2) const
 {
-  if (! own1ptr->lessEqualPrimaryScrutinized(* ext2.own1ptr))
+  if (! Extension::weightLessEqual(ext2))
+    return false;
+  else if (! own1ptr->lessEqualPrimaryScrutinized(* ext2.own1ptr))
     return false;
   else if (! own2ptr->lessEqualPrimaryScrutinized(* ext2.own2ptr))
     return false;
@@ -75,6 +89,6 @@ Compare Extension::compareSecondary(const Extension& ext2) const
 
 unsigned Extension::weight() const
 {
-  return weightInt;
+  return weightOverall;
 }
 

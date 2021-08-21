@@ -307,7 +307,8 @@ CompareDetail Strategy::compareDetail(const Strategy& strat2) const
 
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
-  return study.greaterEqualByProfile(strat2.study);
+  // return study.greaterEqualByProfile(strat2.study);
+  return strat2.study.lessEqualScrutinized(study);
 }
 
 
@@ -331,7 +332,7 @@ bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
 
 Compare Strategy::compareByProfile(const Strategy& strat2) const
 {
-  return study.compareByProfile(strat2.study);
+  return study.comparePrimaryScrutinized(strat2.study);
 }
 
 ///// ----------------  The new comparators? ------------

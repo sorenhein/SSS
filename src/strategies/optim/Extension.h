@@ -27,7 +27,7 @@ class Extension
     // multiplied.  The overlap in terms of distribution is stored
     // in a Strategy.  The unique distributions of the factors are
     // stored in a different place (Extensions), but the extension
-    // knows its index within that place.  The weight of the
+    // knows a pointer to the unique Strategy's.  The weight of the
     // Extension is the weight of the Strategy plus the weights of
     // the unique components.
 
@@ -36,7 +36,12 @@ class Extension
     Strategy const * own1ptr;
     Strategy const * own2ptr;
 
-    unsigned weightInt;
+    unsigned weightOverall;
+    unsigned weightOverlap;
+    unsigned weightOwn1;
+    unsigned weightOwn2;
+
+    bool weightLessEqual(const Extension& ext2) const;
 
 
   public:

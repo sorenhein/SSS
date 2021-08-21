@@ -1,12 +1,21 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_STUDY_H
 #define SSS_STUDY_H
 
 #include <vector>
 #include <list>
 
-#include "../result/Result.h"
+#include "../../utils/Compare.h"
 
 class Ranges;
+class Result;
 
 using namespace std;
 
@@ -38,21 +47,17 @@ class Study
 
     void study(const list<Result>& results);
 
-    void scrutinize(
-      const list<Result>& results,
-      const Ranges& ranges);
-
     void unstudy();
 
     bool studied() const;
 
+    void scrutinize(
+      const list<Result>& results,
+      const Ranges& ranges);
+
     bool maybeGreaterEqual(const Study& study2) const;
 
-    bool greaterEqualByProfile(const Study& study2) const;
-
     bool lessEqualScrutinized(const Study& study2) const;
-
-    Compare compareByProfile(const Study& study2) const;
 
     Compare comparePrimaryScrutinized(const Study& study2) const;
 };
