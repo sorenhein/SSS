@@ -44,6 +44,10 @@ class Extensions
       list<Extension>::iterator& iter,
       list<Extension>::iterator& piter) const;
 
+    bool processSameWeights(
+      list<Extension>::iterator& iter,
+      list<Extension>::iterator& piter);
+
     void eraseDominatedLighter(
       list<Extension>::iterator& iter,
       list<Extension>::iterator& piter);

@@ -69,6 +69,34 @@ bool Extensions::productDominatedHeavier(
 }
 
 
+bool Extensions::processSameWeights(
+  list<Extension>::iterator& iter,
+  list<Extension>::iterator& piter)
+{
+  // piter comes after iter and is the new product.  If there is
+  // a domination, it may go in either direction.  Returns true
+  // if the new product is dominated.
+
+  while (iter != piter && iter->weight() == piter->weight())
+  {
+    if (piter->lessEqualPrimary(* iter))
+    {
+      // Same tricks.
+      Compare c = iter->compareSecondary(* piter);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return true;
+      else if (c == WIN_SECOND)
+        iter = extensions.erase(iter);
+      else
+        iter++;
+    }
+    else
+      iter++;
+  }
+  return false;
+}
+
+
 void Extensions::eraseDominatedLighter(
   list<Extension>::iterator& iter,
   list<Extension>::iterator& piter)
@@ -109,22 +137,9 @@ void Extensions::add()
     // The new strat is dominated by an Extension with more weight.
     return;
 
-  while (iter != piter && iter->weight() == piter->weight())
-  {
-    if (piter->lessEqualPrimary(* iter))
-    {
-      // Same tricks.
-      Compare c = iter->compareSecondary(* piter);
-      if (c == WIN_FIRST || c == WIN_EQUAL)
-        return;
-      else if (c == WIN_SECOND)
-        iter = extensions.erase(iter);
-      else
-        iter++;
-    }
-    else
-      iter++;
-  }
+  if (Extensions::processSameWeights(iter, piter))
+    // The new strat is dominated by an Extension with equal weight.
+    return;
 
   // Already in the right place at the end?
   if (iter == piter)
