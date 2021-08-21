@@ -33,6 +33,7 @@ void Splits::reset()
 {
   own.reset();
   shared.reset();
+  splits.clear();
   ownPtrs.clear();
   count = 0;
 }
@@ -124,7 +125,34 @@ void Splits::setPointers()
   ownPtrs.resize(count);
   auto ownIter = own.strategies.begin();
   for (unsigned i = 0; i < count; i++, ownIter++)
+  {
+// if (i == 0  || i == 1)
+// {
+  // cout << "setPointers: old " << i << " element\n";
+  // cout << ownIter->str("here", true);
+// }
     ownPtrs[i] = &* ownIter;
+  }
+
+  splits.resize(count);
+  auto ownIterNew = own.strategies.begin();
+  auto sharedIter = shared.strategies.begin();
+  auto splitIter = splits.begin();
+  for (unsigned i = 0; i < count; 
+      i++, ownIterNew++, sharedIter++, splitIter++)
+  {
+    splitIter->ownPtr = &* ownIterNew;
+    splitIter->sharedPtr = &* sharedIter;
+
+// if (i == 0  || i == 1)
+// {
+  // cout << "setPointers: new " << i << " element\n";
+  // cout << splitIter->ownPtr->str("here", true);
+// }
+  }
+
+  // cout << endl;
+  // assert(false);
 }
 
 
@@ -149,6 +177,12 @@ void Splits::split(
 const list<Strategy>& Splits::sharedStrategies() const
 {
   return shared.strategies;
+}
+
+
+const list<Split>& Splits::splitStrategies() const
+{
+  return splits;
 }
 
 

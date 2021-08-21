@@ -12,6 +12,7 @@
 #include <list>
 #include <string>
 
+#include "Split.h"
 #include "../Strategies.h"
 
 using namespace std;
@@ -30,6 +31,8 @@ class Splits
     Strategies own;
 
     Strategies shared;
+
+    list<Split> splits;
 
     vector<Strategy const *> ownPtrs;
 
@@ -61,6 +64,8 @@ class Splits
       const Ranges& ranges);
 
     const list<Strategy>& sharedStrategies() const;
+
+    const list<Split>& splitStrategies() const;
 
     const Strategy& ownStrategy(const unsigned index) const;
 

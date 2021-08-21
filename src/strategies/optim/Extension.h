@@ -11,6 +11,7 @@
 
 #include <list>
 
+#include "Split.h"
 #include "../Strategy.h"
 
 using namespace std;
@@ -32,6 +33,9 @@ class Extension
 
     Strategy overlap;
 
+    Strategy const * own1ptr;
+    Strategy const * own2ptr;
+
     unsigned index1Int;
     unsigned index2Int;
 
@@ -46,6 +50,12 @@ class Extension
 
     void reset();
 
+    void multiplyNew(
+      const Split& strat1,
+      const Split& strat2,
+      const Ranges& ranges);
+
+    /* */
     void multiply(
       const Strategy& strat1,
       const Strategy& strat2,
@@ -60,16 +70,25 @@ class Extension
       list<Strategy>& strategies,
       const Strategy& strat1,
       const Strategy& strat2);
+      /* */
+
+    void flattenNew(list<Strategy>& strategies);
 
     bool lessEqualPrimary(const Extension& ext2) const;
+    bool lessEqualPrimaryNew(const Extension& ext2) const;
 
     Compare compareSecondary(const Extension& ext2) const;
+    Compare compareSecondaryNew(const Extension& ext2) const;
 
     unsigned index1() const;
 
     unsigned index2() const;
 
     unsigned weight() const;
+
+    void strOld(const Strategy& own1, const Strategy& own2) const;
+
+    void strNew() const;
 };
 
 #endif

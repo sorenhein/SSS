@@ -217,7 +217,7 @@ bool Study::lessEqualScrutinized(const Study& study2) const
   // This used the scrutinized results, which must exist.
 
   assert(profiles.size() == study2.profiles.size());
-  assert(! profiles.empty());
+  // assert(! profiles.empty());
 
   auto piter1 = profiles.begin();
   auto piter2 = study2.profiles.begin();

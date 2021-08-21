@@ -1,5 +1,11 @@
-Actually I still don't understand why scrutinize works in the
-complex case...
+Put Splits into Extension?  Can still keep Splits as a class.
+
+Use own and shared weights too before comparing tricks?
+
+
+
+
+Rename and maybe turn around methods in Study.
 
 Speed
 -----
@@ -11,8 +17,6 @@ Winner comparison: Maybe max unsigned as void?  Then simpler
 comparisons.
 
 Only have <= / lessEqual comparisons, not a mixture.
-
-Avoid matrix in Extensions after all, compare on the fly?
 
 
 Checks

@@ -36,10 +36,13 @@ class Extensions
 
     list<Extension> extensions;
 
+    list<Extension> extensionsNew;
+
     Splits splits1;
     Splits splits2;
 
 
+    /* */
     void makeEntry(
       const Strategy& strat1,
       const Strategy& strat2,
@@ -54,8 +57,10 @@ class Extensions
     Compare compareSecondary(
       const Extension& ext1,
       const Extension& ext2) const;
+      /* */
 
     void add();
+    void addNew();
 
 
   public:
