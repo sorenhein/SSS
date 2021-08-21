@@ -13,7 +13,38 @@
 
 #include "Result.h"
 
-// TODO Clean up operators
+
+// First a non-class method. 
+CompareType compressCompareDetail(const unsigned detail)
+{
+  if (detail & WIN_DIFFERENT_PRIMARY)
+    return WIN_DIFFERENT;
+
+  if (detail & WIN_FIRST_PRIMARY)
+  {
+    if (detail & WIN_SECOND_PRIMARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (detail & WIN_SECOND_PRIMARY)
+    return WIN_SECOND;
+
+  if (detail & WIN_DIFFERENT_SECONDARY)
+    return WIN_DIFFERENT;
+
+  if (detail & WIN_FIRST_SECONDARY)
+  {
+    if (detail & WIN_SECOND_SECONDARY)
+      return WIN_DIFFERENT;
+    else
+      return WIN_FIRST;
+  }
+  else if (detail & WIN_SECOND_SECONDARY)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+}
 
 
 void Result::set(

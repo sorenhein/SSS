@@ -31,6 +31,8 @@ enum CompareDetail
 #define WIN_FIRST_OVERALL 0xa
 #define WIN_SECOND_OVERALL 0x14
 
+CompareType compressCompareDetail(const unsigned detail);
+
 
 class Result
 {

@@ -140,7 +140,7 @@ void Strategies::consolidateTwo(ComparatorType comparator)
   }
   else
   {
-    const Compare c = iter1->compare(* iter2);
+    const Compare c = iter1->compareCompleteBasic(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
       strategies.pop_back();
     else if (c == WIN_SECOND)
@@ -308,7 +308,7 @@ void Strategies::addStrategy(
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
-      const Compare c = iter->compare(strat);
+      const Compare c = iter->compareCompleteBasic(strat);
       if (c == WIN_FIRST || c == WIN_EQUAL)
         return;
       else if (c == WIN_SECOND)
@@ -627,7 +627,7 @@ void Strategies::multiplyAddStrategy(
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
-      const Compare c = iter->compare(* piter);
+      const Compare c = iter->compareCompleteBasic(* piter);
       if (c == WIN_FIRST || c == WIN_EQUAL)
         return;
       else if (c == WIN_SECOND)
@@ -829,7 +829,7 @@ bool Strategies::minimal() const
   {
     unsigned j = i+1;
     for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++, j++)
-      if (iter1->compare(* iter2) != WIN_DIFFERENT)
+      if (iter1->compareCompleteBasic(* iter2) != WIN_DIFFERENT)
       {
         cout << "Minimal violation " << i << ", " << j << endl;
         return false;

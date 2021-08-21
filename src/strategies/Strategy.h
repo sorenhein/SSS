@@ -30,17 +30,12 @@ class Strategy
     void setConstants();
 
     // Returns true if <= is still possible at the trick level.
+    // Terminates as soon as this becomes impossible if flag is set.
 
     bool cumulate(
       const Strategy& strat2,
       const bool earlyStopFlag,
       unsigned& cumul) const;
-
-    bool greaterEqualCumulator(
-      const Strategy& strat2,
-      unsigned& cumul) const;
-
-    unsigned makeCumulator(const Strategy& strat2) const;
 
     void updateSingle(
       const unsigned char fullNo,
@@ -100,17 +95,15 @@ class Strategy
 
     // ***************** Comparisons ****************
 
-    // Full Result level
+    // Full Result level (basic, unoptimized)
     bool operator == (const Strategy& strat2) const;
-
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
+    CompareType compareCompleteBasic(const Strategy& strat2) const;
 
     // Full Result level
-    // bool greaterEqual(const Strategy& strat2) const;
     bool operator >= (const Strategy& strat2) const;
 
     // Full Result level
-    CompareType compare(const Strategy& strat2) const;
     CompareDetail compareDetail(const Strategy& strat2) const;
 
     // Trick-level

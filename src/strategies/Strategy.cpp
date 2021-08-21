@@ -124,27 +124,6 @@ void Strategy::scrutinize(const Ranges& ranges)
  *                                                          *
  ************************************************************/
 
-bool Strategy::operator == (const Strategy& strat2) const
-{
-  // For diagnostics.
-  const unsigned n = results.size();
-  assert(strat2.results.size() == n);
-
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  while (iter1 != results.end())
-  {
-    if (* iter1 != * iter2)
-      return false;
-
-    iter1++;
-    iter2++;
-  }
-  return true;
-}
-
-
 bool Strategy::cumulate(
   const Strategy& strat2,
   const bool earlyStopFlag,
@@ -174,32 +153,27 @@ bool Strategy::cumulate(
     iter1++;
     iter2++;
   }
-  return true;
 
+  return true;
 }
 
 
-bool Strategy::greaterEqualCumulator(
-  const Strategy& strat2,
-  unsigned& cumul) const
+bool Strategy::operator == (const Strategy& strat2) const
 {
-  // This method supports others that perform complete comparisons.
-  // This one returns true if the trick comparison still permits >=,
-  // and if so, cumul is the cumulative bit vector of returns for
-  // further processing.
-  assert(strat2.results.size() == results.size());
+  // For diagnostics.  It is effectively also a complete and
+  // basic method, but it carries the conventional name.
+
+  const unsigned n = results.size();
+  assert(strat2.results.size() == n);
 
   list<Result>::const_iterator iter1 = results.cbegin();
   list<Result>::const_iterator iter2 = strat2.results.cbegin();
 
-  cumul = WIN_NEUTRAL_OVERALL;
   while (iter1 != results.end())
   {
-    const CompareDetail c = iter1->compareInDetail(* iter2);
-    if (c & WIN_SECOND_PRIMARY)
+    if (* iter1 != * iter2)
       return false;
 
-    cumul |= c;
     iter1++;
     iter2++;
   }
@@ -228,6 +202,18 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
 }
 
 
+CompareType Strategy::compareCompleteBasic(const Strategy& strat2) const
+{
+  // This is mainly for diagnostics.
+  assert(strat2.results.size() == results.size());
+
+  unsigned cumul;
+  Strategy::cumulate(strat2, false, cumul);
+
+  return compressCompareDetail(cumul);
+}
+
+
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
@@ -240,69 +226,15 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
-unsigned Strategy::makeCumulator(const Strategy& strat2) const
-{
-  list<Result>::const_iterator iter1 = results.cbegin();
-  list<Result>::const_iterator iter2 = strat2.results.cbegin();
-
-  unsigned cumul = WIN_NEUTRAL_OVERALL;
-  while (iter1 != results.end())
-  {
-    cumul |= iter1->compareInDetail(* iter2);
-    iter1++;
-    iter2++;
-  }
-
-  return cumul;
-}
-
-
-CompareType Strategy::compare(const Strategy& strat2) const
-{
-  // This is only for diagnostics.
-  assert(strat2.results.size() == results.size());
-
-  unsigned cumul = Strategy::makeCumulator(strat2);
-
-  // Can this go in a ComparerDetail class, or somewhere else?
-  // Or even in a table lookup (64)?
-
-  if (cumul & WIN_DIFFERENT_PRIMARY)
-    return WIN_DIFFERENT;
-
-  if (cumul & WIN_FIRST_PRIMARY)
-  {
-    if (cumul & WIN_SECOND_PRIMARY)
-      return WIN_DIFFERENT;
-    else
-      return WIN_FIRST;
-  }
-  else if (cumul & WIN_SECOND_PRIMARY)
-    return WIN_SECOND;
-
-  if (cumul & WIN_DIFFERENT_SECONDARY)
-    return WIN_DIFFERENT;
-
-  if (cumul & WIN_FIRST_SECONDARY)
-  {
-    if (cumul & WIN_SECOND_SECONDARY)
-      return WIN_DIFFERENT;
-    else
-      return WIN_FIRST;
-  }
-  else if (cumul & WIN_SECOND_SECONDARY)
-    return WIN_SECOND;
-  else
-    return WIN_EQUAL;
-}
-
-
 CompareDetail Strategy::compareDetail(const Strategy& strat2) const
 {
   // This is only for diagnostics.
   assert(strat2.results.size() == results.size());
 
-  unsigned cumul = Strategy::makeCumulator(strat2);
+  // unsigned cumul = Strategy::makeCumulator(strat2);
+  unsigned cumul;
+  Strategy::cumulate(strat2, false, cumul);
+
 
   // Can this go in a ComparerDetail class, or somewhere else?
   // Or even in a table lookup (64)?
@@ -359,7 +291,7 @@ bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
 {
   // The ByProfile method is preferable if the profile is available.
   unsigned cumul;
-  return Strategy::greaterEqualCumulator(strat2, cumul);
+  return strat2.cumulate(* this, true, cumul);
 }
 
 
@@ -382,7 +314,9 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
 {
   assert(strat2.results.size() == results.size());
 
-  unsigned cumul = Strategy::makeCumulator(strat2);
+  // unsigned cumul = Strategy::makeCumulator(strat2);
+  unsigned cumul;
+  Strategy::cumulate(strat2, false, cumul);
 
   // Can this go in a ComparerDetail class, or somewhere else?
   // Or even in a table lookup (64)?
