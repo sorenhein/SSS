@@ -228,27 +228,6 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
 }
 
 
-bool Strategy::greaterEqual(const Strategy& strat2) const
-{
-  // This is the basic method with no fanciness.
-  // It goes by tricks first, and only if there is complete equality
-  // does it consider winners.
-
-  unsigned cumul;
-  if (! Strategy::greaterEqualCumulator(strat2, cumul))
-    return false;
-  
-  if (cumul & WIN_FIRST_PRIMARY)
-    return true;
-  else if (cumul & WIN_SECOND_SECONDARY)
-    return false;
-  else if (cumul & WIN_DIFFERENT_SECONDARY)
-    return false;
-  else
-    return true;
-}
-
-
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
@@ -256,7 +235,8 @@ bool Strategy::operator >= (const Strategy& strat2) const
   if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else
-    return Strategy::greaterEqual(strat2);
+    return strat2.lessEqualCompleteBasic(* this);
+    // return Strategy::greaterEqual(strat2);
 }
 
 

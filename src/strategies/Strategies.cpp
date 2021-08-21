@@ -441,12 +441,12 @@ void Strategies::markChanges(
 
       // Now the trick vectors are identical.
       // TODO Use Strategy::compare or something optimized?
-      if (iter->greaterEqual(strat))
+      if (strat.lessEqualCompleteBasic(* iter))
       {
         doneFlag = true;
         break;
       }
-      else if (strat.greaterEqual(* iter))
+      else if (iter->lessEqualCompleteBasic(strat))
       {
         deletions.push_back(iter);
         ownDeletions[stratNo] = 1;
@@ -469,7 +469,7 @@ void Strategies::markChanges(
     while (iter != strategies.end())
     {
       if (strat.greaterEqualByProfile(* iter) &&
-          strat.greaterEqual(* iter))
+          iter->lessEqualCompleteBasic(strat))
       {
         if (ownDeletions[stratNo] == 0)
         {

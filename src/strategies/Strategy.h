@@ -106,7 +106,7 @@ class Strategy
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
 
     // Full Result level
-    bool greaterEqual(const Strategy& strat2) const;
+    // bool greaterEqual(const Strategy& strat2) const;
     bool operator >= (const Strategy& strat2) const;
 
     // Full Result level
