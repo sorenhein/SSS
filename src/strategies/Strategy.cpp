@@ -201,7 +201,8 @@ bool Strategy::greaterEqual(const Strategy& strat2) const
 bool Strategy::operator >= (const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  if (! study.maybeGreaterEqual(strat2.study))
+  // if (! study.maybeGreaterEqual(strat2.study))
+  if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else
     return Strategy::greaterEqual(strat2);
@@ -315,7 +316,8 @@ bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  if (! study.maybeGreaterEqual(strat2.study))
+  // if (! study.maybeGreaterEqual(strat2.study))
+  if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else
     return Strategy::greaterEqualByTricks(strat2);

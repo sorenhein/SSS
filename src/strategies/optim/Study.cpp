@@ -180,7 +180,7 @@ void Study::scrutinize(
 }
 
 
-bool Study::maybeGreaterEqual(const Study& study2) const
+bool Study::maybeLessEqualStudied(const Study& study2) const
 {
   // This uses studied results if possible, otherwise the basic method.
 
@@ -188,7 +188,7 @@ bool Study::maybeGreaterEqual(const Study& study2) const
 
   for (unsigned i = 0; i < summary.size(); i++)
   {
-    if (summary[i] < study2.summary[i])
+    if (summary[i] > study2.summary[i])
       return false;
   }
 
@@ -200,10 +200,11 @@ bool Study::maybeGreaterEqual(const Study& study2) const
 
 bool Study::lessEqualScrutinized(const Study& study2) const
 {
-  // This used the scrutinized results, which must exist.
+  // This uses the scrutinized results, which must exist.
+  // The existence cannot be checked from here, as it is at the
+  // Strategies level.
 
   assert(profiles.size() == study2.profiles.size());
-  // assert(! profiles.empty());
 
   auto piter1 = profiles.begin();
   auto piter2 = study2.profiles.begin();

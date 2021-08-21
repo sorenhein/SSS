@@ -55,7 +55,7 @@ class Study
       const list<Result>& results,
       const Ranges& ranges);
 
-    bool maybeGreaterEqual(const Study& study2) const;
+    bool maybeLessEqualStudied(const Study& study2) const;
 
     bool lessEqualScrutinized(const Study& study2) const;
 
