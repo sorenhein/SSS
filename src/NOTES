@@ -1,11 +1,8 @@
-Put Splits into Extension?  Can still keep Splits as a class.
-
-Use own and shared weights too before comparing tricks?
-
-
+Also put comments for blocks of methods in Strategy.
+Turn methods around to lessEqual: Basic, Studied, Scrutinized.
+Maybe combine the cumulator makers (flag controls early end).  Time it.
 
 
-Rename and maybe turn around methods in Study.
 
 Speed
 -----

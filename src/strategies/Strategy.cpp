@@ -1,26 +1,22 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <mutex>
-#include <math.h>
+// #include <math.h>
 #include <cassert>
 
 #include "Strategy.h"
+#include "result/Ranges.h"
 
 #include "../plays/Play.h"
-
 #include "../Survivor.h"
-
-
-// A major time drain is the component-wise comparison of results.  
-// In the most optimized implementation, 5 result entries are
-// gathered into a 10-bit vector, and two such 10-bit vectors
-// are compared in a 20-bit lookup.  The lookup table must be global
-// and initialized once.
-
-#define LOOKUP_GROUP 5
-#define LOOKUP_BITS (LOOKUP_GROUP + LOOKUP_GROUP)
-#define LOOKUP_SIZE (LOOKUP_BITS + LOOKUP_BITS)
 
 // TMP
 #include "../utils/Timer.h"
@@ -149,6 +145,40 @@ bool Strategy::operator == (const Strategy& strat2) const
 }
 
 
+bool Strategy::cumulate(
+  const Strategy& strat2,
+  const bool earlyStopFlag,
+  unsigned& cumul) const
+{
+  // This method supports others that perform complete comparisons.
+  // It returns true if the trick comparison still permits <=,
+  // even though the secondary comparison perhaps would not.
+  // If true, cumul is the cumulative bit vector of returns for
+  // further processing.  If true, the flag causes the method to
+  // return (false) as soon as <= is no longer possible, and the
+  // cumulator will then not be complete.
+
+  assert(strat2.results.size() == results.size());
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  cumul = WIN_NEUTRAL_OVERALL;
+  while (iter1 != results.end())
+  {
+    const CompareDetail c = iter1->compareInDetail(* iter2);
+    if (earlyStopFlag && (c & WIN_FIRST_PRIMARY))
+      return false;
+
+    cumul |= c;
+    iter1++;
+    iter2++;
+  }
+  return true;
+
+}
+
+
 bool Strategy::greaterEqualCumulator(
   const Strategy& strat2,
   unsigned& cumul) const
@@ -174,6 +204,27 @@ bool Strategy::greaterEqualCumulator(
     iter2++;
   }
   return true;
+}
+
+
+bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
+{
+  // This is complete in the sense that it includes both the primary
+  // and secondary aspects of the Result's.  It is basic in the sense
+  // that it does not rely on studied or scrutinizes Result's.
+
+  unsigned cumul;
+  if (! Strategy::cumulate(strat2, true, cumul))
+    return false;
+  
+  if (cumul & WIN_SECOND_PRIMARY)
+    return true;
+  else if (cumul & WIN_FIRST_SECONDARY)
+    return false;
+  else if (cumul & WIN_DIFFERENT_SECONDARY)
+    return false;
+  else
+    return true;
 }
 
 
@@ -331,11 +382,6 @@ bool Strategy::greaterEqualByTricks(const Strategy& strat2) const
   return Strategy::greaterEqualCumulator(strat2, cumul);
 }
 
-
-Compare Strategy::compareByProfile(const Strategy& strat2) const
-{
-  return study.comparePrimaryScrutinized(strat2.study);
-}
 
 ///// ----------------  The new comparators? ------------
 
@@ -504,8 +550,8 @@ void Strategy::multiply(
 
 void Strategy::initRanges(Ranges& ranges)
 {
-  // TODO "false" means no winners.
-  ranges.init(results, false);
+  // TODO "false" should mean no winners, but currently ignored.
+  ranges.init(results, true);
 }
 
 

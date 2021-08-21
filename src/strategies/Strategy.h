@@ -5,11 +5,10 @@
 #include <list>
 #include <string>
 
+#include "result/Result.h"
 #include "optim/Study.h"
 
-#include "result/Result.h"
-#include "result/Ranges.h"
-
+class Ranges;
 struct Play;
 struct Survivors;
 
@@ -30,10 +29,16 @@ class Strategy
 
     void setConstants();
 
-    // Trick-level, but returns a full-level cumulator.
+    // Returns true if <= is still possible at the trick level.
+
+    bool cumulate(
+      const Strategy& strat2,
+      const bool earlyStopFlag,
+      unsigned& cumul) const;
+
     bool greaterEqualCumulator(
       const Strategy& strat2,
-      unsigned& cum) const;
+      unsigned& cumul) const;
 
     unsigned makeCumulator(const Strategy& strat2) const;
 
@@ -76,9 +81,9 @@ class Strategy
 
     bool empty() const;
 
-    void push_back(const Result& result);
-
     unsigned weight() const;
+
+    void push_back(const Result& result);
 
     list<Result>::iterator erase(list<Result>::iterator& iter);
 
@@ -92,8 +97,13 @@ class Strategy
 
     void scrutinize(const Ranges& ranges);
 
+
+    // ***************** Comparisons ****************
+
     // Full Result level
     bool operator == (const Strategy& strat2) const;
+
+    bool lessEqualCompleteBasic(const Strategy& strat2) const;
 
     // Full Result level
     bool greaterEqual(const Strategy& strat2) const;
@@ -107,12 +117,14 @@ class Strategy
     bool greaterEqualByProfile(const Strategy& strat2) const;
     bool greaterEqualByStudy(const Strategy& strat2) const;
     bool greaterEqualByTricks(const Strategy& strat2) const;
-    Compare compareByProfile(const Strategy& strat2) const;
 
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;
     Compare compareSecondary(const Strategy& strat2) const;
+
+
+    // ******************* Multiply *****************
 
     void operator *= (const Strategy& strat2);
 
@@ -120,15 +132,27 @@ class Strategy
       const Strategy& strat1,
       const Strategy& strat2);
 
+
+    // ******************** Ranges ******************
+
     void initRanges(Ranges& ranges);
 
     void extendRanges(Ranges& ranges);
+
+
+    // ******************** Adapt *******************
 
     void adapt(
       const Play& play,
       const Survivors& survivors);
 
+
+    // ******************* Winners ******************
+
     const Result resultLowest() const;
+
+
+    // ******************* Strings ******************
 
     string str(
       const string& title = "",

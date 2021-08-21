@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_STRATDATA_H
 #define SSS_STRATDATA_H
 
@@ -10,12 +18,14 @@ using namespace std;
 // This is used to iterate over an ensemble of Strategy's in synchrony,
 // i.e. one distribution at a time.
 
+
 enum StratStatus
 {
   STRATSTATUS_SAME_DIST = 0,
   STRATSTATUS_FURTHER_DIST = 1,
   STRATSTATUS_END = 2
 };
+
 
 struct StratDatum
 {
@@ -28,6 +38,7 @@ struct StratDatum
     iter = ptr->erase(iter);
   };
 };
+
 
 struct StratData
 {
