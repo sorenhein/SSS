@@ -64,7 +64,7 @@ class Strategies
     void multiplyAddStrategy(
       const Strategy& strat1,
       const Strategy& strat2,
-      ComparatorType comparator);
+      ComparatorType lessEqualMethod);
 
 
     string strHeader(

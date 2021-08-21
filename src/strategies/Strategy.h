@@ -130,8 +130,6 @@ class Strategy
     bool operator >= (const Strategy& strat2) const;
 
     // Trick-level
-    bool greaterEqualByProfile(const Strategy& strat2) const;
-    bool greaterEqualByStudy(const Strategy& strat2) const;
     bool lessEqualPrimaryStudied(const Strategy& strat2) const;
 
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;

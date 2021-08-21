@@ -170,11 +170,11 @@ void Strategies::consolidate()
   {
     // The general way also works in this case, and it is just
     // a small optimization.
-    ComparatorType comp = (scrutinizedFlag ? 
+    ComparatorType lessEqualMethod = (scrutinizedFlag ? 
       &Strategy::lessEqualPrimaryScrutinized : 
       &Strategy::lessEqualPrimaryStudied);
 
-    Strategies::consolidateTwo(comp);
+    Strategies::consolidateTwo(lessEqualMethod);
     return;
   }
   else
@@ -344,21 +344,21 @@ void Strategies::operator += (const Strategy& strat)
 {
   // Gets called from consolidate and from += strats.
 
-  ComparatorType comp;
+  ComparatorType lessEqualMethod;
   unsigned tno;
   if (scrutinizedFlag)
   {
-    comp = &Strategy::lessEqualPrimaryScrutinized;
+    lessEqualMethod = &Strategy::lessEqualPrimaryScrutinized;
     tno = 2;
   }
   else
   {
-    comp = &Strategy::lessEqualPrimaryStudied;
+    lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
     tno = 3;
   }
 
 timersStrat[tno].start();
-  Strategies::addStrategy(strat, comp);
+  Strategies::addStrategy(strat, lessEqualMethod);
 timersStrat[tno].stop();
 
 }
@@ -589,7 +589,7 @@ timersStrat[6].stop();
 void Strategies::multiplyAddStrategy(
   const Strategy& strat1,
   const Strategy& strat2,
-  ComparatorType comparator)
+  ComparatorType lessEqualMethod)
 {
   // This costs about two thirds of the overall method time.
   auto& product = strategies.back();
@@ -613,7 +613,7 @@ void Strategies::multiplyAddStrategy(
   auto iter = strategies.begin();
   while (iter != piter && iter->weight() > piter->weight())
   {
-    if (((* iter).*comparator)(* piter))
+    if (((* piter).*lessEqualMethod)(* iter))
     {
       // The new strat is dominated.
       return;
@@ -624,7 +624,7 @@ void Strategies::multiplyAddStrategy(
 
   while (iter != piter && iter->weight() == piter->weight())
   {
-    if (((* iter).*comparator)(* piter))
+    if (((* piter).*lessEqualMethod)(* iter))
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
@@ -656,7 +656,7 @@ void Strategies::multiplyAddStrategy(
   // quite efficient and doesn't happen so often.
   while (iter != strategies.end())
   {
-    if (((* piter).*comparator)(* iter))
+    if (((* iter).*lessEqualMethod)(* piter))
       iter = strategies.erase(iter);
     else
       iter++;
@@ -706,7 +706,7 @@ void Strategies::operator *= (Strategies& strats2)
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
-    ComparatorType comp;
+    ComparatorType lessEqualMethod;
     unsigned tno;
 
     // TODO Just to make it work.  Slow?
@@ -719,12 +719,12 @@ void Strategies::operator *= (Strategies& strats2)
 
     if (scrutinizedFlag)
     {
-      comp = &Strategy::greaterEqualByProfile;
+      lessEqualMethod = &Strategy::lessEqualPrimaryScrutinized;
       tno = 8;
     }
     else
     {
-      comp = &Strategy::greaterEqualByStudy;
+      lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
       tno = 7;
     }
 
@@ -736,7 +736,7 @@ timersStrat[tno].start();
 
     for (auto& strat1: strategiesOwn)
       for (auto& strat2: strats2.strategies)
-        Strategies::multiplyAddStrategy(strat1, strat2, comp);
+        Strategies::multiplyAddStrategy(strat1, strat2, lessEqualMethod);
 
     strategies.pop_back();
 
