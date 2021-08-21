@@ -172,6 +172,9 @@ void Strategies::consolidate()
     // a small optimization.
     ComparatorType comp = (scrutinizedFlag ? 
       &Strategy::greaterEqualByProfile : &Strategy::greaterEqualByStudy);
+    // ComparatorType comp = (scrutinizedFlag ? 
+      // &Strategy::lessEqualPrimaryScrutinized : 
+      // &Strategy::lessEqualPrimaryStudied);
 
     Strategies::consolidateTwo(comp);
     return;
