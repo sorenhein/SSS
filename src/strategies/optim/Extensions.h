@@ -36,8 +36,6 @@ class Extensions
 
     list<Extension> extensions;
 
-    list<Extension> extensionsNew;
-
     Splits splits1;
     Splits splits2;
 

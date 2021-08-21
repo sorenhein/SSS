@@ -27,7 +27,6 @@ Extensions::~Extensions()
 void Extensions::reset()
 {
   extensions.clear();
-  extensionsNew.clear();
   splits1.reset();
   splits2.reset();
 }
@@ -49,7 +48,7 @@ void Extensions::split(
 }
 
 
-/* */
+/*
 void Extensions::makeEntry(
   const Strategy& strat1,
   const Strategy& strat2,
@@ -100,9 +99,10 @@ Compare Extensions::compareSecondary(
 
   return c;
 }
-/* */
+*/
 
 
+/*
 void Extensions::add()
 {
   // Process the scratchpad element.
@@ -207,17 +207,18 @@ void Extensions::add()
   // Make a new scratch-pad element.
   extensions.emplace_back(Extension());
 }
+*/
 
 
-void Extensions::addNew()
+void Extensions::add()
 {
   // Process the scratchpad element.
-  auto piter = prev(extensionsNew.end());
+  auto piter = prev(extensions.end());
 
-  if (extensionsNew.size() == 1)
+  if (extensions.size() == 1)
   {
     // Keep the product and make a new scratch-pad element.
-    extensionsNew.emplace_back(Extension());
+    extensions.emplace_back(Extension());
     return;
   }
 
@@ -228,7 +229,7 @@ void Extensions::addNew()
   
 // cout << "STARTNEW" << endl;
 // piter->strNew();
-  auto iter = extensionsNew.begin();
+  auto iter = extensions.begin();
   while (iter != piter && iter->weight() > piter->weight())
   {
 
@@ -262,7 +263,7 @@ void Extensions::addNew()
       else if (c == WIN_SECOND)
       {
 // cout << "A4\n";
-        iter = extensionsNew.erase(iter);
+        iter = extensions.erase(iter);
       }
       else
       {
@@ -280,24 +281,24 @@ void Extensions::addNew()
   // Already in the right place at the end?
   if (iter == piter)
   {
-    extensionsNew.emplace_back(Extension());
+    extensions.emplace_back(Extension());
 // cout << "A7\n";
     return;
   }
 
   // The new vector must be inserted, i.e. spliced in.
   // This is super-fast.
-  extensionsNew.splice(iter, extensionsNew, piter);
+  extensions.splice(iter, extensions, piter);
   piter = prev(iter);
 
   // The new vector may dominate lighter vectors.  This is also
   // quite efficient and doesn't happen so often.
-  while (iter != extensionsNew.end())
+  while (iter != extensions.end())
   {
     if (iter->lessEqualPrimaryNew(* piter))
     {
 // cout << "A8\n";
-      iter = extensionsNew.erase(iter);
+      iter = extensions.erase(iter);
     }
     else
     {
@@ -307,7 +308,7 @@ void Extensions::addNew()
   }
 
   // Make a new scratch-pad element.
-  extensionsNew.emplace_back(Extension());
+  extensions.emplace_back(Extension());
 }
 
 
@@ -319,18 +320,14 @@ void Extensions::multiply(const Ranges& ranges)
   // Scratchpad element.
   extensions.emplace_back(Extension());
 
-  /* */
+  /*
   unsigned i = 0;
   for (auto& strat1: splits1.sharedStrategies())
   {
     unsigned j = 0;
     for (auto& strat2: splits2.sharedStrategies())
     {
-// cout << "Making old entry " << i << ", " << j << endl;
       Extensions::makeEntry(strat1, strat2, ranges, i, j);
-// extensions.back().strOld(
-      // splits1.ownStrategy(extensions.back().index1()), 
-      // splits2.ownStrategy(extensions.back().index2()));
       Extensions::add();
       j++;
     }
@@ -339,47 +336,37 @@ void Extensions::multiply(const Ranges& ranges)
 
   // Remove scratchpad element.
   extensions.pop_back();
-  /* */
-
-// cout << "Done adding the old way" << endl;
-
-  // Scratchpad element.
-  extensionsNew.emplace_back(Extension());
+  */
 
   for (auto& split1: splits1.splitStrategies())
   {
     for (auto& split2: splits2.splitStrategies())
     {
-      auto& entry = extensionsNew.back();
+      auto& entry = extensions.back();
       entry.multiplyNew(split1, split2, ranges);
-// cout << "Multiplied the new way" << endl;
-// cout << "Before adding" << endl;
-// entry.strNew();
-// cout << "Calling addNew" << endl;
-      Extensions::addNew();
+      Extensions::add();
     }
   }
 
   // Remove scratchpad element.
-  extensionsNew.pop_back();
+  extensions.pop_back();
 }
 
 
 void Extensions::flatten(list<Strategy>& strategies)
 {
   // Add back the non-overlapping results explicitly.
-  /* */
+  /*
   for (auto& ext: extensions)
     ext.flatten(strategies, 
       splits1.ownStrategy(ext.index1()), 
       splits2.ownStrategy(ext.index2()));
-      /* */
+      */
 
-  list<Strategy> strats2;
+  for (auto& ext: extensions)
+    ext.flattenNew(strategies);
 
-  for (auto& ext: extensionsNew)
-    ext.flattenNew(strats2);
-
+  /*
   if (strategies.size() != strats2.size())
   {
     cout << "Different sizes: " << strategies.size() << " vs " <<
@@ -408,5 +395,6 @@ void Extensions::flatten(list<Strategy>& strategies)
     siter2++;
     i++;
   }
+  */
 }
 
