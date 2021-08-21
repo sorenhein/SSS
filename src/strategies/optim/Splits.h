@@ -34,8 +34,6 @@ class Splits
 
     list<Split> splits;
 
-    vector<Strategy const *> ownPtrs;
-
     unsigned count;
 
 
@@ -63,25 +61,7 @@ class Splits
       const Strategy& counterpart,
       const Ranges& ranges);
 
-    const list<Strategy>& sharedStrategies() const;
-
     const list<Split>& splitStrategies() const;
-
-    const Strategy& ownStrategy(const unsigned index) const;
-
-    bool lessEqualPrimary(
-      const unsigned index1,
-      const unsigned index2) const;
-
-    Compare comparePrimary(
-      const unsigned index1,
-      const unsigned index2) const;
-
-    Compare compareSecondary(
-      const unsigned index1,
-      const unsigned index2) const;
-
-    unsigned weight(const unsigned index) const;
 };
 
 #endif

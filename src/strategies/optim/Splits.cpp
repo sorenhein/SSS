@@ -13,10 +13,6 @@
 #include "Splits.h"
 #include "../StratData.h"
 
-// TMP
-#include "../../utils/Timer.h"
-extern vector<Timer> timersStrat;
-
 
 Splits::Splits()
 {
@@ -34,7 +30,6 @@ void Splits::reset()
   own.reset();
   shared.reset();
   splits.clear();
-  ownPtrs.clear();
   count = 0;
 }
 
@@ -122,37 +117,18 @@ void Splits::setPointers()
 {
   // Pointers to each of the own, unique partial Strategy's,
   // for later use.
-  ownPtrs.resize(count);
-  auto ownIter = own.strategies.begin();
-  for (unsigned i = 0; i < count; i++, ownIter++)
-  {
-// if (i == 0  || i == 1)
-// {
-  // cout << "setPointers: old " << i << " element\n";
-  // cout << ownIter->str("here", true);
-// }
-    ownPtrs[i] = &* ownIter;
-  }
 
   splits.resize(count);
-  auto ownIterNew = own.strategies.begin();
+  auto ownIter = own.strategies.begin();
   auto sharedIter = shared.strategies.begin();
   auto splitIter = splits.begin();
+
   for (unsigned i = 0; i < count; 
-      i++, ownIterNew++, sharedIter++, splitIter++)
+      i++, ownIter++, sharedIter++, splitIter++)
   {
-    splitIter->ownPtr = &* ownIterNew;
+    splitIter->ownPtr = &* ownIter;
     splitIter->sharedPtr = &* sharedIter;
-
-// if (i == 0  || i == 1)
-// {
-  // cout << "setPointers: new " << i << " element\n";
-  // cout << splitIter->ownPtr->str("here", true);
-// }
   }
-
-  // cout << endl;
-  // assert(false);
 }
 
 
@@ -174,70 +150,8 @@ void Splits::split(
 }
 
 
-const list<Strategy>& Splits::sharedStrategies() const
-{
-  return shared.strategies;
-}
-
-
 const list<Split>& Splits::splitStrategies() const
 {
   return splits;
-}
-
-
-const Strategy& Splits::ownStrategy(const unsigned index) const
-{
- return * ownPtrs[index];
-}
-
-
-bool Splits::lessEqualPrimary(
-  const unsigned index1,
-  const unsigned index2) const
-{
-  // TODO Aren't they always both empty or none empty?
-  if (ownPtrs[index1]->empty())
-    return (ownPtrs[index2]->empty() ? true : false);
-  else if (ownPtrs[index2]->empty())
-    return false;
-  else
-    return ownPtrs[index1]->lessEqualPrimaryScrutinized(* ownPtrs[index2]);
-}
-
-
-Compare Splits::comparePrimary(
-  const unsigned index1,
-  const unsigned index2) const
-{
-  if (ownPtrs[index1]->empty())
-    return (ownPtrs[index2]->empty() ? WIN_EQUAL : WIN_FIRST);
-  else if (ownPtrs[index2]->empty())
-    return WIN_SECOND;
-  else
-    return ownPtrs[index1]->compareByProfile(* ownPtrs[index2]);
-}
-
-
-Compare Splits::compareSecondary(
-  const unsigned index1,
-  const unsigned index2) const
-{
-  // This assumes a primary identity, which could be tested with
-  // ownPtrs[index1]->compareByProfile(* ownPtrs[index2]) == WIN_EQUAL
-
-  // Can empty() happen?
-  if (ownPtrs[index1]->empty())
-    return (ownPtrs[index2]->empty() ? WIN_EQUAL : WIN_FIRST);
-  else if (ownPtrs[index2]->empty())
-    return WIN_SECOND;
-  else
-    return ownPtrs[index1]->compareSecondary(* ownPtrs[index2]);
-}
-
-
-unsigned Splits::weight(const unsigned index) const
-{
-  return ownPtrs[index]->weight();
 }
 

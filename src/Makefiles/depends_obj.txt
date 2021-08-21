@@ -93,10 +93,10 @@ strategies/Strategies.obj: strategies/result/Range.h
 strategies/Strategies.obj: strategies/result/Result.h strategies/StratData.h
 strategies/Strategies.obj: strategies/result/Range.h
 strategies/Strategies.obj: strategies/optim/Extensions.h
-strategies/Strategies.obj: strategies/optim/Extension.h strategies/Strategy.h
+strategies/Strategies.obj: strategies/optim/Extension.h
+strategies/Strategies.obj: strategies/optim/Split.h strategies/Strategy.h
 strategies/Strategies.obj: strategies/optim/Splits.h strategies/Strategies.h
-strategies/Strategies.obj: strategies/result/Ranges.h plays/Play.h Survivor.h
-strategies/Strategies.obj: utils/Timer.h
+strategies/Strategies.obj: plays/Play.h Survivor.h utils/Timer.h
 strategies/Strategy.obj: strategies/Strategy.h strategies/optim/Study.h
 strategies/Strategy.obj: strategies/result/Result.h
 strategies/Strategy.obj: strategies/result/Winners.h
@@ -112,20 +112,22 @@ strategies/optim/Study.obj: strategies/result/Winners.h
 strategies/optim/Study.obj: strategies/result/Winner.h const.h utils/Card.h
 strategies/optim/Study.obj: utils/Compare.h utils/Compare.h
 strategies/optim/Study.obj: strategies/result/Ranges.h
+strategies/optim/Study.obj: strategies/result/Range.h
+strategies/optim/Study.obj: strategies/result/Result.h
 strategies/optim/Extensions.obj: strategies/optim/Extensions.h
 strategies/optim/Extensions.obj: strategies/optim/Extension.h
+strategies/optim/Extensions.obj: strategies/optim/Split.h
 strategies/optim/Extensions.obj: strategies/Strategy.h
 strategies/optim/Extensions.obj: strategies/optim/Splits.h
 strategies/optim/Extensions.obj: strategies/Strategies.h
-strategies/optim/Extensions.obj: strategies/result/Ranges.h utils/Timer.h
 strategies/optim/Extension.obj: strategies/optim/Extension.h
-strategies/optim/Extension.obj: strategies/Strategy.h strategies/StratData.h
-strategies/optim/Extension.obj: strategies/result/Result.h
-strategies/optim/Extension.obj: strategies/result/Range.h utils/Timer.h
+strategies/optim/Extension.obj: strategies/optim/Split.h
+strategies/optim/Extension.obj: strategies/Strategy.h
 strategies/optim/Splits.obj: strategies/optim/Splits.h
-strategies/optim/Splits.obj: strategies/Strategies.h strategies/StratData.h
+strategies/optim/Splits.obj: strategies/optim/Split.h strategies/Strategies.h
+strategies/optim/Splits.obj: strategies/StratData.h
 strategies/optim/Splits.obj: strategies/result/Result.h
-strategies/optim/Splits.obj: strategies/result/Range.h utils/Timer.h
+strategies/optim/Splits.obj: strategies/result/Range.h
 strategies/result/Range.obj: strategies/result/Range.h
 strategies/result/Range.obj: strategies/result/Result.h
 strategies/result/Ranges.obj: strategies/result/Ranges.h
