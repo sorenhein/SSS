@@ -266,7 +266,8 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
-bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
+/*
+ * bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
   return strat2.lessEqualPrimaryScrutinized(* this);
 }
@@ -276,6 +277,7 @@ bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
   return strat2.lessEqualPrimaryStudied(* this);
 }
+*/
 
 
 bool Strategy::lessEqualPrimaryStudied(const Strategy& strat2) const
