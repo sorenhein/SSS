@@ -266,26 +266,29 @@ bool Strategy::operator >= (const Strategy& strat2) const
 }
 
 
-/* */
 bool Strategy::greaterEqualByProfile(const Strategy& strat2) const
 {
-  return strat2.study.lessEqualScrutinized(study);
+  return strat2.lessEqualPrimaryScrutinized(* this);
 }
-/* */
 
 
 bool Strategy::greaterEqualByStudy(const Strategy& strat2) const
 {
+  return strat2.lessEqualPrimaryStudied(* this);
+}
+
+
+bool Strategy::lessEqualPrimaryStudied(const Strategy& strat2) const
+{
   // This uses studied results if possible, otherwise the basic method.
-  if (! strat2.study.maybeLessEqualStudied(study))
+  if (! study.maybeLessEqualStudied(strat2.study))
     return false;
   else
   {
     unsigned cumul;
-    return strat2.cumulatePrimary(* this, true, cumul);
+    return Strategy::cumulatePrimary(strat2, true, cumul);
   }
 }
-
 
 
 ///// ----------------  The new comparators? ------------
