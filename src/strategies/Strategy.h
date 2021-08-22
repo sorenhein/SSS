@@ -132,6 +132,8 @@ class Strategy
     // Trick-level
     bool lessEqualPrimaryStudied(const Strategy& strat2) const;
 
+    bool lessEqualCompleteStudied(const Strategy& strat2) const;
+
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;

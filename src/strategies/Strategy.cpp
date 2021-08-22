@@ -9,7 +9,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-// #include <math.h>
 #include <cassert>
 
 #include "Strategy.h"
@@ -259,27 +258,20 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
 }
 
 
+bool Strategy::lessEqualCompleteStudied(const Strategy& strat2) const
+{
+  if (! study.maybeLessEqualStudied(strat2.study))
+    return false;
+  else
+    return Strategy::lessEqualCompleteBasic(strat2);
+}
+
+
 bool Strategy::operator >= (const Strategy& strat2) const
 {
-  // This is used in Strategies in two places:
+  // This is used in Strategies in one place:
   // collapseOnVoid: Not sure what goes on here anymore (line 74)
-  // plusOneByOne: Called onlyfrom += Strategies (line 371, 373 origin)
-  // Presumably it should use the same comparators as other ways in
-  // += Strategies.
-  // += Strategy uses 
-  // either lessEqualPrimaryScrutinized or lessEqualPrimaryStudied,
-  // and then compareSecondary.
-  // += Strategies uses
-  // lessEqualPrimaryScrutinized and then
-  // compareSecondary.
-  //
-  // This might become compareCompleteStudied, which first calls a 
-  // new study.compareStudied, which returns WIN_FIRST, WIN_SECOND,
-  // WIN_UNSET.  If the latter, we call compareCompleteBasic.
-  //
-  // For collapseOnVoid I'm not sure.  But this should work for +=.
 
-  // This uses studied results if possible, otherwise the basic method.
   if (! strat2.study.maybeLessEqualStudied(study))
     return false;
   else

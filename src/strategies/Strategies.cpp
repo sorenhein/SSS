@@ -411,10 +411,12 @@ void Strategies::plusOneByOne(const Strategies& strats2)
   auto& str1 = strategies.front();
   auto& str2 = strats2.strategies.front();
 
-  if (str1 >= str2)
+  if (str2.lessEqualCompleteStudied(str1))
     return;
-  else if (str2 >= str1)
+  else if (str1.lessEqualCompleteStudied(str2))
+  {
     * this = strats2;
+  }
   else
   {
     if (str1.weight() >= str2.weight())
