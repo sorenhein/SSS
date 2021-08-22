@@ -9,7 +9,7 @@
 #ifndef SSS_WINNER_H
 #define SSS_WINNER_H
 
-#include "../../const.h"
+#include "../../utils/table.h"
 #include "../../utils/Card.h"
 #include "../../utils/Compare.h"
 

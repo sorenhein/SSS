@@ -3,10 +3,11 @@
 
 #include <vector>
 
-#include "../plays/Play.h"
-
 #include "Declarer.h"
 #include "Opponents.h"
+
+#include "../plays/Play.h"
+#include "../utils/CombinationType.h"
 
 
 using namespace std;

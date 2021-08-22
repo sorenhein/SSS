@@ -4,6 +4,7 @@
 #include "Convert.h"
 
 #include "../const.h"
+#include "../utils/table.h"
 
 
 Convert::Convert()

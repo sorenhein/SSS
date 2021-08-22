@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Player.h"
+#include "../const.h"
 
 /*
  * This class keeps track of player holdings within Ranks.  

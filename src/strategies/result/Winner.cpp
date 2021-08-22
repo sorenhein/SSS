@@ -14,6 +14,7 @@
 #include "Winner.h"
 
 #include "../../plays/Play.h"
+#include "../../const.h"
 
 #define WIN_NORTH_SET 0x1
 #define WIN_SOUTH_SET 0x2

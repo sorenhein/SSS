@@ -14,8 +14,8 @@
 #include "Winners.h"
 
 #include "../../plays/Play.h"
-
 #include "../../utils/Comparer.h"
+#include "../../const.h"
 
 /*
    Winners consist of Winner's.  Each Winner may have N, S or both set.

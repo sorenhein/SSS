@@ -14,8 +14,6 @@
 
 #include "../strategies/result/Winners.h"
 
-#include "../const.h"
-
 
 using namespace std;
 

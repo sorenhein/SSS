@@ -4,12 +4,11 @@
 #include <mutex>
 #include <cassert>
 
-#include "../const.h"
-#include "../CombEntry.h"
+#include "Ranks.h"
 
 #include "../plays/Plays.h"
-
-#include "Ranks.h"
+#include "../CombEntry.h"
+#include "../const.h"
 
 /*
  * This class performs rank manipulation for an entire hand

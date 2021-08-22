@@ -5,7 +5,7 @@
 #include <deque>
 
 #include "../utils/Card.h"
-#include "../const.h"
+#include "../utils/table.h"
 
 using namespace std;
 

@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Opponents.h"
+#include "../const.h"
 
 /*
  * This is a specialized class derived from Player.  Its members

@@ -12,8 +12,6 @@
 #include "const.h"
 
 
-const string genericNames = "HhGgIiJj";
-
 // The full size sequence is:
 // http://oeis.org/A000792 (has something to do with partitions)
 // Note that c(n) = 3 * c(n-3) for n >= 4.
@@ -102,7 +100,7 @@ void Distribution::setNames()
     vec.resize(numRanks);
     vec[0] = 'x';
     for (unsigned rank = 1; rank < numRanks; rank++)
-      vec[rank] = genericNames.at(numRanks-rank-1);
+      vec[rank] = string(GENERIC_NAMES).at(numRanks-rank-1);
   }
 }
 
