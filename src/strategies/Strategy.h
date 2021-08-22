@@ -167,6 +167,8 @@ class Strategy
       const Play& play,
       const Survivors& survivors);
 
+    void addComponentwise(const Strategy& strat2);
+
 
     // ******************* Winners ******************
 
