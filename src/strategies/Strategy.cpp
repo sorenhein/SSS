@@ -553,6 +553,9 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
+    for (auto& res: results)
+      res.update(play);
+
     Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
       play.trickNS);
   }
@@ -562,16 +565,25 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
+    for (auto& res: results)
+      res.update(play);
+
     Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
       play.trickNS);
   }
   else if (survivors.sizeFull() == len1)
   {
+    for (auto& res: results)
+      res.update(play);
+
     // No rank reduction.
     Strategy::updateSameLength(survivors, play.trickNS);
   }
   else
   {
+    for (auto& res: results)
+      res.update(play);
+
     // This is the general case.  It takes ~55%.
     Strategy::updateAndGrow(survivors, play.trickNS);
   }
@@ -598,12 +610,6 @@ void Strategy::adapt(
     for (auto& res: results)
       res.flip();
   }
-
-  // Update the winners.  This takes about 12% of the method time.
-  // TODO This should become part of adaptResults and should then
-  // make it more general: Put the winners update into Result.
-  for (auto& res: results)
-    res.update(play);
 
   Strategy::adaptResults(play, survivors);
 
