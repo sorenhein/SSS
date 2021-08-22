@@ -871,7 +871,7 @@ const Survivors& Distribution::survivorsReducedCollapse2(
 const Survivors& Distribution::survivors(const Play& play) const
 {
   unsigned westRank, eastRank;
-  if (play.side == POSITION_NORTH)
+  if (play.side == SIDE_NORTH)
   {
     westRank = play.rho();
     eastRank = play.lho();

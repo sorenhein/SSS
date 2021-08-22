@@ -83,8 +83,8 @@ void Ranks::setConstants()
   for (unsigned c = 1; c < HOLDING3_FACTOR.size(); c++)
     HOLDING3_FACTOR[c] = 3 * HOLDING3_FACTOR[c-1];
 
-  assert(POSITION_NORTH == 0);
-  assert(POSITION_SOUTH == 1);
+  assert(SIDE_NORTH == 0);
+  assert(SIDE_SOUTH == 1);
 
   HOLDING3_ADDER.resize(MAX_CARDS+1);
   for (unsigned c = 0; c < HOLDING3_FACTOR.size(); c++)
@@ -137,11 +137,11 @@ void Ranks::setConstants()
         HOLDING3_RANK_FACTOR[index] = HOLDING3_FACTOR[sum];
 
         HOLDING3_RANK_ADDER[index] = 
-          HOLDING3_ADDER[oppCount][POSITION_OPPS] *
+          HOLDING3_ADDER[oppCount][SIDE_OPPS] *
             HOLDING3_FACTOR[decl1Count + decl2Count] +
-          HOLDING3_ADDER[decl1Count][POSITION_NORTH] *
+          HOLDING3_ADDER[decl1Count][SIDE_NORTH] *
             HOLDING3_FACTOR[decl2Count] +
-          HOLDING3_ADDER[decl2Count][POSITION_SOUTH];
+          HOLDING3_ADDER[decl2Count][SIDE_SOUTH];
 
         HOLDING2_RANK_SHIFT[index] = HOLDING2_SHIFT[sum];
 
@@ -159,9 +159,9 @@ void Ranks::resize(const unsigned cardsIn)
 {
   cards = cardsIn;
 
-  north.resize(cards, POSITION_NORTH);
-  south.resize(cards, POSITION_SOUTH);
-  opps.resize(cards, POSITION_OPPS);
+  north.resize(cards, SIDE_NORTH);
+  south.resize(cards, SIDE_SOUTH);
+  opps.resize(cards, SIDE_OPPS);
 }
 
 
@@ -189,7 +189,7 @@ void Ranks::setPlayers()
   // such that the first real card we see will result in an increase
   // in maxGlobalRank, i.e. in the running rank.  Therefore we will never
   // write to rank = 0 (void) in the loop itself.
-  bool prev_is_NS = ((holding % 3) == POSITION_OPPS);
+  bool prev_is_NS = ((holding % 3) == SIDE_OPPS);
 
   // Have to set opps here already, as opps are not definitely void
   // but may be , so we don't want the maximum values to get
@@ -203,7 +203,7 @@ void Ranks::setPlayers()
   for (unsigned char i = imin; i < imin+cardsChar; i++)
   {
     const unsigned c = h % 3;
-    if (c == POSITION_OPPS)
+    if (c == SIDE_OPPS)
     {
       if (prev_is_NS)
       {
@@ -227,7 +227,7 @@ void Ranks::setPlayers()
         south.updateStep(maxGlobalRank);
       }
 
-      if (c == POSITION_NORTH)
+      if (c == SIDE_NORTH)
         north.update(maxGlobalRank, i);
       else
         south.update(maxGlobalRank, i);
@@ -489,7 +489,7 @@ void Ranks::finish(Play& play) const
 
   if (play.trickNS)
   {
-    if (play.side == POSITION_NORTH)
+    if (play.side == SIDE_NORTH)
       play.currBest.set(* play.leadPtr, * play.pardPtr);
     else
       play.currBest.set(* play.pardPtr, * play.leadPtr);
@@ -618,7 +618,7 @@ void Ranks::setPlaysSide(
   if (partner.isSingleRanked() &&
       (! leader.isSingleRanked() || 
           leader.maxFullRank() < partner.maxFullRank() ||
-        (leader.maxFullRank() == partner.maxFullRank() && play.side == POSITION_SOUTH)))
+        (leader.maxFullRank() == partner.maxFullRank() && play.side == SIDE_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
@@ -661,10 +661,10 @@ CombinationType Ranks::setPlays(
   Play play;
 
   // This will remain unchanged for all plays from this side.
-  play.side = POSITION_NORTH;
+  play.side = SIDE_NORTH;
   Ranks::setPlaysSide(north, south, play, plays);
 
-  play.side = POSITION_SOUTH;
+  play.side = SIDE_SOUTH;
   Ranks::setPlaysSide(south, north, play, plays);
   return COMB_OTHER;
 }

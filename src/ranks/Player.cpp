@@ -151,9 +151,9 @@ unsigned char Player::count(const unsigned char rankIn) const
 
 string Player::playerName() const
 {
-  if (side == POSITION_NORTH)
+  if (side == SIDE_NORTH)
     return "North";
-  else if (side == POSITION_SOUTH)
+  else if (side == SIDE_SOUTH)
     return "South";
   else
     return "Opps";

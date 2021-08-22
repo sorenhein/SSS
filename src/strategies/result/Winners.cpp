@@ -18,21 +18,14 @@
 #include "../../utils/Comparer.h"
 
 /*
-   The winner is structured as a number of sub-winners that are
-   added / OR'ed together.  Declarer can choose between the sub-winners.
-   Each sub-winner potentially has a North card and a South card that
-   are both required, so they are multiplied / AND'ed together.
+   Winners consist of Winner's.  Each Winner may have N, S or both set.
+   If set, they are both needed.  The Winners are at declarer's choice.
+   We think of a Winner as a product and Winners as a sum.
 
-   In the following examples there are 6 cards in play, so EW have 2.
+   Adding Winners means concatenating them and checking that there is
+   no domination.
 
-   AK / xx: (N:K && S:-).
-   Ax / Kx: (N:A && S:K).
-   Kx / Qx: (N:K && S:K).
-   KQ / Jx: (N:Q) || (N:K && S:J).  So effectively, two tops.
-   KJ / Qx: (N:J) || (N:K && S:Q).  (This would not be canonical.)
-   KQ / JT: (N:Q) || (S:T) || (N:K && S:J).
-   AQ / JT: (N:Q) || (S:T).
-   AQ / Jx: (N:Q).
+   Multiplying Winners means multiplying together the individual sums.
 */
 
 
@@ -119,7 +112,7 @@ void Winners::fillComparer(
 void Winners::operator += (const Winner& winner2)
 {
   // winners are a minimal set.
-  // The new subwinner may dominate existing winners.
+  // The new winner may dominate existing winners.
   // It may also be dominated by at least one existing winner.
   // If neither is true, then it is a new winner.
 

@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <mutex>
-#include <math.h>
 #include <cassert>
 
 #include "Study.h"
@@ -141,7 +140,7 @@ void Study::scrutinize(
   auto riter = results.begin();
   auto miter = ranges.begin();
 
-  // TODO We combine consecutive results in groups of 5.
+  // IDEA: We combine consecutive results in groups of 5.
   // It might be better to space them out, so that the results
   // from 0, 6, 12, 18, ... (for example) go into the same group.
 

@@ -16,21 +16,16 @@ using namespace std;
 
 enum Side
 {
-  POSITION_NORTH = 0,
-  POSITION_SOUTH = 1,
-  POSITION_OPPS = 2
+  SIDE_NORTH = 0,
+  SIDE_SOUTH = 1,
+  SIDE_OPPS = 2,
+  SIDE_NONE = 3
 };
 
-enum PairPosition
+enum Pair
 {
   PAIR_NS = 0,
   PAIR_EW = 1
-};
-
-enum SidePosition
-{
-  SIDE_NORTH = 0,
-  SIDE_SOUTH = 1
 };
 
 enum Level

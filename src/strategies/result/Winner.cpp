@@ -156,7 +156,6 @@ void Winner::multiplySide(
 }
 
 
-
 void Winner::operator *= (const Winner& winner2)
 {
   // The opponents have the choice.

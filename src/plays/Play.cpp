@@ -64,7 +64,7 @@ void Play::setVoidFlags(
   bool& westFlag,
   bool& eastFlag) const
 {
-  if (side == POSITION_NORTH)
+  if (side == SIDE_NORTH)
   {
     westFlag = rhoPtr->isVoid();
     eastFlag = lhoPtr->isVoid();
@@ -80,7 +80,7 @@ void Play::setVoidFlags(
 Card const * Play::northTranslate(const unsigned number) const
 {
   unsigned northThisTrick;
-  if (side == POSITION_NORTH)
+  if (side == SIDE_NORTH)
     northThisTrick = leadPtr->getNumber();
   else
     northThisTrick = pardPtr->getNumber();
@@ -98,7 +98,7 @@ Card const * Play::northTranslate(const unsigned number) const
 Card const * Play::southTranslate(const unsigned number) const
 {
   unsigned southThisTrick;
-  if (side == POSITION_NORTH)
+  if (side == SIDE_NORTH)
     southThisTrick = pardPtr->getNumber();
   else
     southThisTrick = leadPtr->getNumber();
@@ -138,7 +138,7 @@ string Play::strPartialTrick(const Level level) const
   stringstream ss;
 
   ss <<
-    (side == POSITION_NORTH ? "North" : "South") << ": " <<
+    (side == SIDE_NORTH ? "North" : "South") << ": " <<
       leadPtr->getName() << " ";
 
   if (level == LEVEL_RHO)
@@ -164,7 +164,7 @@ string Play::strTrick(const unsigned number) const
 {
   stringstream ss;
   ss << "Play #" << number << ", " <<
-    (side == POSITION_NORTH ? "North" : "South") << ": " <<
+    (side == SIDE_NORTH ? "North" : "South") << ": " <<
     leadPtr->getName() << " " <<
     lhoPtr->getName() << " " <<
     pardPtr->getName() << " " <<
@@ -200,7 +200,7 @@ string Play::strLine() const
   stringstream ss;
 
   ss << right <<
-    setw(4) << (side == POSITION_NORTH ? "N" : "S") <<
+    setw(4) << (side == SIDE_NORTH ? "N" : "S") <<
     setw(5) << leadPtr->getName() <<
     setw(5) << lhoPtr->getName() <<
     setw(5) << pardPtr->getName() <<

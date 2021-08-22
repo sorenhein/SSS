@@ -11,11 +11,11 @@
 
 #include <list>
 
-#include "Split.h"
 #include "../Strategy.h"
 
 using namespace std;
 
+struct Split;
 class Ranges;
 
 

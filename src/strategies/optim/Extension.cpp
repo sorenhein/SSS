@@ -7,6 +7,7 @@
 */
 
 #include "Extension.h"
+#include "Split.h"
 
 
 Extension::Extension()

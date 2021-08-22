@@ -131,3 +131,9 @@ everything?  It must be some stray pointers, but where?
 Node index: print is irritating for the early plays.
 Output for e.g. 11 cards all in one hand: More space.
 Output also the rank in a rank listing of cards.
+
+
+TODO
+----
+Winner.cpp: Go more elegantly / faster by rank not set? Don't have
+to test for mode, can just compare rank?

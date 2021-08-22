@@ -37,9 +37,9 @@ bool Convert::holding2cards(
   {
     assert(i < MAX_CARDS);
     const unsigned c = h % 3;
-    if (c == POSITION_NORTH)
+    if (c == SIDE_NORTH)
       north = CARD_NAMES[i] + north;
-    else if (c == POSITION_SOUTH)
+    else if (c == SIDE_SOUTH)
       south = CARD_NAMES[i] + south;
     
     h /= 3;
@@ -80,16 +80,16 @@ bool Convert::cards2holding(
 
     if (ncard == nextCard)
     {
-      h = POSITION_NORTH;
+      h = SIDE_NORTH;
       nindex++;
     }
     else if (scard == nextCard)
     {
-      h = POSITION_SOUTH;
+      h = SIDE_SOUTH;
       sindex++;
     }
     else
-      h = POSITION_OPPS;
+      h = SIDE_OPPS;
     
     holding = 3*holding + h;
     count++;
@@ -109,21 +109,21 @@ bool Convert::cards2holding(
 
   // Shift up the holding before filling in the x's.
   for (unsigned i = 0; i < cards - count - num_x; i++)
-    holding = 3*holding + POSITION_OPPS;
+    holding = 3*holding + SIDE_OPPS;
 
   // North gets the first x's.
   for (unsigned i = nindex; i < nlen; i++)
   {
     if (north.at(i) != 'x')
       return false;
-    holding = 3*holding + POSITION_NORTH;
+    holding = 3*holding + SIDE_NORTH;
   }
 
   for (unsigned i = sindex; i < slen; i++)
   {
     if (south.at(i) != 'x')
       return false;
-    holding = 3*holding + POSITION_SOUTH;
+    holding = 3*holding + SIDE_SOUTH;
   }
   
   return true;
