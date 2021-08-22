@@ -141,9 +141,6 @@ class Strategy
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;
 
-    // Penalty-box comparator
-
-    bool operator >= (const Strategy& strat2) const;
 
     // ******************* Multiply *****************
 

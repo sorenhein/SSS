@@ -17,9 +17,6 @@
 #include "../plays/Play.h"
 #include "../Survivor.h"
 
-// TMP
-#include "../utils/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Strategy::Strategy()
@@ -264,18 +261,6 @@ bool Strategy::lessEqualCompleteStudied(const Strategy& strat2) const
     return false;
   else
     return Strategy::lessEqualCompleteBasic(strat2);
-}
-
-
-bool Strategy::operator >= (const Strategy& strat2) const
-{
-  // This is used in Strategies in one place:
-  // collapseOnVoid: Not sure what goes on here anymore (line 74)
-
-  if (! strat2.study.maybeLessEqualStudied(study))
-    return false;
-  else
-    return strat2.lessEqualCompleteBasic(* this);
 }
 
 
