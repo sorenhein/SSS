@@ -57,49 +57,21 @@ void Strategies::setTrivial(
 void Strategies::collapseOnVoid()
 {
   assert(strategies.size() > 0);
+  assert(strategies.front().size() == 1);
+
   if (strategies.size() == 1)
-  {
-    assert(strategies.front().size() == 1);
     return;
-  }
 
-  Strategies stmp = * this;
-  Strategies scopy = * this;
-
-  auto iterBest = strategies.begin();
-  assert(iterBest->size() == 1);
-
-  // Find the best one for declarer.
+  // Find the best one for declarer, as everything is revealed.
+  auto& first = strategies.front();
   for (auto iter = next(strategies.begin()); 
       iter != strategies.end(); iter++)
   {
-    assert(iter->size() == 1);
-    if (* iter >= * iterBest)
-      iterBest = iter;
-  }
-
-  // Copy it to the front and remove the others.
-  strategies.front() = * iterBest;
-  strategies.erase(next(strategies.begin()), strategies.end());
-
-  auto& first = stmp.strategies.front();
-  for (auto iter = next(stmp.strategies.begin()); 
-      iter != stmp.strategies.end(); iter++)
-  {
-    assert(iter->size() == 1);
     first.addComponentwise(* iter);
   }
-  stmp.strategies.erase(next(stmp.strategies.begin()), stmp.strategies.end());
 
-  if (! (stmp == * this))
-  {
-    cout << "WARN\n";
-    cout << scopy.str("scopy", true) << endl;
-    cout << Strategies::str("strategies", true);
-    cout << stmp.str("stmp", true) << endl;
-    // assert(false);
-  }
-
+  // Only keep the first, best one.
+  strategies.erase(next(strategies.begin()), strategies.end());
 }
 
 
