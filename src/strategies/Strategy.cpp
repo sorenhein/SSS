@@ -465,8 +465,7 @@ void Strategy::updateSingle(
   const unsigned char fullNo)
 {
   auto& result = results.front();
-  result.update(play);
-  result.update(fullNo, play.trickNS);
+  result.update(play, fullNo);
   weightInt = result.tricks();
 }
 

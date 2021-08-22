@@ -13,6 +13,8 @@
 
 #include "Result.h"
 
+#include "../../plays/Play.h"
+
 
 // First three non-class methods. 
 
@@ -96,6 +98,16 @@ void Result::update(
 
 void Result::update(const Play& play)
 {
+  winnersInt.update(play);
+}
+
+
+void Result::update(
+  const Play& play,
+  const unsigned char dist)
+{
+  distInt = dist;
+  tricksInt += play.trickNS;
   winnersInt.update(play);
 }
 

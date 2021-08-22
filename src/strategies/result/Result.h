@@ -65,6 +65,10 @@ class Result
 
     void update(const Play& play);
 
+    void update(
+      const Play& play,
+      const unsigned char dist);
+
     void flip();
 
     void multiplyWinnersOnto(Result& result) const;
