@@ -461,29 +461,33 @@ void Strategy::extendRanges(Ranges& ranges)
  ************************************************************/
 
 void Strategy::updateSingle(
-  const unsigned char fullNo,
-  const unsigned char trickNS)
+  const Play& play,
+  const unsigned char fullNo)
 {
   auto& result = results.front();
-  result.update(fullNo, trickNS);
+  result.update(play);
+  result.update(fullNo, play.trickNS);
   weightInt = result.tricks();
 }
 
 
 void Strategy::updateSameLength(
-  const Survivors& survivors,
-  const unsigned char trickNS)
+  const Play& play,
+  const Survivors& survivors)
 {
+  for (auto& res: results)
+    res.update(play);
+
   auto iter1 = results.begin();
   auto iter2 = survivors.distNumbers.begin();
 
   // This is just an optimization for speed.
-  if (trickNS)
+  if (play.trickNS)
   {
     while (iter1 != results.end())
     {
-      iter1->update(iter2->fullNo, trickNS);
-      weightInt += trickNS;
+      iter1->update(iter2->fullNo, play.trickNS);
+      weightInt += play.trickNS;
       iter1++;
       iter2++;
     }
@@ -501,9 +505,12 @@ void Strategy::updateSameLength(
 
 
 void Strategy::updateAndGrow(
-  const Survivors& survivors,
-  const unsigned char trickNS)
+  const Play& play,
+  const Survivors& survivors)
 {
+  for (auto& res: results)
+    res.update(play);
+
   // Make an indexable vector copy of the results that need to grow.
   vector<Result> resultsOld;
   resultsOld.resize(results.size());
@@ -522,7 +529,7 @@ void Strategy::updateAndGrow(
     // Use the survivor's full distribution number and the 
     // corresponding result entry as the trick count.
     res = resultsOld[iterSurvivors->reducedNo];
-    res.update(iterSurvivors->fullNo, trickNS);
+    res.update(iterSurvivors->fullNo, play.trickNS);
 
     weightInt += res.tricks();
     iterSurvivors++;
@@ -553,11 +560,7 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
-    for (auto& res: results)
-      res.update(play);
-
-    Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
-      play.trickNS);
+    Strategy::updateSingle(play, survivors.distNumbers.front().fullNo);
   }
   else if (eastVoidFlag)
   {
@@ -565,27 +568,17 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
-    for (auto& res: results)
-      res.update(play);
-
-    Strategy::updateSingle(survivors.distNumbers.front().fullNo, 
-      play.trickNS);
+    Strategy::updateSingle(play, survivors.distNumbers.front().fullNo);
   }
   else if (survivors.sizeFull() == len1)
   {
-    for (auto& res: results)
-      res.update(play);
-
     // No rank reduction.
-    Strategy::updateSameLength(survivors, play.trickNS);
+    Strategy::updateSameLength(play, survivors);
   }
   else
   {
-    for (auto& res: results)
-      res.update(play);
-
     // This is the general case.  It takes ~55%.
-    Strategy::updateAndGrow(survivors, play.trickNS);
+    Strategy::updateAndGrow(play, survivors);
   }
 }
 

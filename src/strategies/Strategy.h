@@ -60,16 +60,16 @@ class Strategy
       unsigned& cumul) const;
 
     void updateSingle(
-      const unsigned char fullNo,
-      const unsigned char trickNS);
+      const Play& play,
+      const unsigned char fullNo);
 
     void updateSameLength(
-      const Survivors& survivors,
-      const unsigned char trickNS);
+      const Play& play,
+      const Survivors& survivors);
 
     void updateAndGrow(
-      const Survivors& survivors,
-      const unsigned char trickNS);
+      const Play& play,
+      const Survivors& survivors);
 
     void adaptResults(
       const Play& play,
