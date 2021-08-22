@@ -117,7 +117,8 @@ class Strategy
 
     // ***************** Comparisons ****************
 
-    // Full Result level (basic, unaccelerated)
+    // Basic, unaccelerated comparators
+
     bool operator == (const Strategy& strat2) const;
 
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
@@ -126,18 +127,23 @@ class Strategy
 
     Compare compareSecondary(const Strategy& strat2) const;
 
-    // Full Result level
-    bool operator >= (const Strategy& strat2) const;
-
-    // Trick-level
-    bool lessEqualPrimaryStudied(const Strategy& strat2) const;
+    // Study-level comparators
 
     bool lessEqualCompleteStudied(const Strategy& strat2) const;
+
+    CompareType compareCompleteStudied(const Strategy& strat2) const;
+
+    bool lessEqualPrimaryStudied(const Strategy& strat2) const;
+
+    // Scrutiny-level comparators
 
     bool lessEqualPrimaryScrutinized(const Strategy& strat2) const;
 
     Compare comparePrimaryScrutinized(const Strategy& strat2) const;
 
+    // Penalty-box comparator
+
+    bool operator >= (const Strategy& strat2) const;
 
     // ******************* Multiply *****************
 

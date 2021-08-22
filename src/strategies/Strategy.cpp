@@ -292,6 +292,40 @@ bool Strategy::lessEqualPrimaryStudied(const Strategy& strat2) const
 }
 
 
+CompareType Strategy::compareCompleteStudied(
+  const Strategy& strat2) const
+{
+  // The first method only goes as far as the studied results allows.
+  // Unlike in the other methods:
+  //                  >=   ==   <=   !=
+  // WIN_EQUAL        poss poss poss poss
+  // WIN_FIRST        poss           poss
+  // WIN_SECOND                 poss poss
+  // WIN_DIFFERENT                   poss
+
+  const CompareType c = study.comparePartialPrimaryStudied(strat2.study);
+  if (c == WIN_FIRST)
+  {
+    if (strat2.lessEqualCompleteBasic(* this))
+      return WIN_FIRST;
+    else
+      return WIN_DIFFERENT;
+  }
+  else if (c == WIN_SECOND)
+  {
+    if (Strategy::lessEqualCompleteBasic(strat2))
+      return WIN_SECOND;
+    else
+      return WIN_DIFFERENT;
+  }
+  else if (c == WIN_EQUAL)
+    return Strategy::compareCompleteBasic(strat2);
+  else
+    return WIN_DIFFERENT;
+
+}
+
+
 bool Strategy::lessEqualPrimaryScrutinized(const Strategy& strat2) const
 {
   // The caller must ensure that the strategies have been scrutinized.

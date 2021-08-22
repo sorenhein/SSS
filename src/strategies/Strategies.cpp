@@ -408,15 +408,15 @@ void Strategies::plusOneByOne(const Strategies& strats2)
   // Simple version when both Strategies are known to have size 1,
   // as happens very frequently.
 
-  auto& str1 = strategies.front();
-  auto& str2 = strats2.strategies.front();
+  const auto& str1 = strategies.front();
+  const auto& str2 = strats2.strategies.front();
 
-  if (str2.lessEqualCompleteStudied(str1))
+  const CompareType c = str1.compareCompleteStudied(str2);
+  
+  if (c == WIN_FIRST || c == WIN_EQUAL)
     return;
-  else if (str1.lessEqualCompleteStudied(str2))
-  {
+  else if (c == WIN_SECOND)
     * this = strats2;
-  }
   else
   {
     if (str1.weight() >= str2.weight())
@@ -536,7 +536,9 @@ void Strategies::operator += (Strategies& strats2)
   if (sno1 == 1 && sno2 == 1)
   {
     // Simplified case.
+timersStrat[15].start();
     Strategies::plusOneByOne(strats2);
+timersStrat[15].stop();
   }
   else if (sno1 >= 20 && sno2 >= 20)
   {

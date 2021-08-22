@@ -197,6 +197,36 @@ bool Study::maybeLessEqualStudied(const Study& study2) const
 }
 
 
+CompareType Study::comparePartialPrimaryStudied(const Study& study2) const
+{
+  // This only goes as far as the studied results allows.
+  // Unlike in the other methods: 
+  //                  >=   ==   <=   !=
+  // WIN_EQUAL        poss poss poss poss
+  // WIN_FIRST        poss           poss
+  // WIN_SECOND                 poss poss
+  // WIN_DIFFERENT                   poss
+
+  assert(studiedFlag);
+
+  bool greaterFlag = false;
+  bool lowerFlag = false;
+  
+  for (unsigned i = 0; i < summary.size(); i++)
+  {
+    if (summary[i] > study2.summary[i])
+      greaterFlag = true;
+    else if (summary[i] < study2.summary[i])
+      lowerFlag = true;
+  }
+
+  if (greaterFlag)
+    return (lowerFlag ? WIN_DIFFERENT : WIN_FIRST);
+  else
+    return (lowerFlag ? WIN_SECOND : WIN_EQUAL);
+}
+
+
 bool Study::lessEqualScrutinized(const Study& study2) const
 {
   // This uses the scrutinized results, which must exist.
