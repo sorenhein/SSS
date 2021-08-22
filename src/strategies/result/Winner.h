@@ -64,14 +64,14 @@ class Winner
     void reset();
 
     void set(
-      const WinningSide sideIn,
+      const Side sideIn,
       const unsigned char rankIn,
       const unsigned char depthIn,
       const unsigned char number,
       const unsigned char nameIn);
 
     void set(
-      const WinningSide sideIn,
+      const Side sideIn,
       const Card& card);
 
     bool empty() const;

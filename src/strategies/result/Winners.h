@@ -57,7 +57,7 @@ class Winners
     void setEmpty();
 
     void set(
-      const WinningSide sideIn,
+      const Side sideIn,
       const Card& card);
 
     void set(

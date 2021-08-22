@@ -338,11 +338,11 @@ void Ranks::trivialRanked(
     // Play the highest card.
     Winners winners;
     if (north.hasRank(maxGlobalRank))
-      winners.set(WIN_NORTH, north.top());
+      winners.set(SIDE_NORTH, north.top());
 
     // If both declarer sides have winners, keep both as a choice.
     if (south.hasRank(maxGlobalRank))
-      winners.set(WIN_SOUTH, south.top());
+      winners.set(SIDE_SOUTH, south.top());
 
     trivial.set(0, tricks, winners);
   }

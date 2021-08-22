@@ -40,7 +40,7 @@ void Winner::reset()
 
 
 void Winner::set(
-  const WinningSide sideIn,
+  const Side sideIn,
   const unsigned char rankIn,
   const unsigned char depthIn,
   const unsigned char numberIn,
@@ -53,17 +53,17 @@ void Winner::set(
   assert(mode == WIN_NOT_SET);
   rank = rankIn;
 
-  if (sideIn == WIN_NORTH)
+  if (sideIn == SIDE_NORTH)
   {
     north.set(rankIn, depthIn, numberIn, nameIn);
     mode = WIN_NORTH_ONLY;
   }
-  else if (sideIn == WIN_SOUTH)
+  else if (sideIn == SIDE_SOUTH)
   {
     south.set(rankIn, depthIn, numberIn, nameIn);
     mode = WIN_SOUTH_ONLY;
   }
-  else if (sideIn == WIN_NONE)
+  else if (sideIn == SIDE_NONE)
     mode = WIN_NOT_SET;
   else
     assert(false);
@@ -71,7 +71,7 @@ void Winner::set(
 
 
 void Winner::set(
-  const WinningSide sideIn,
+  const Side sideIn,
   const Card& card)
 {
   // This doesn't reset the winner, so the method can be used to build
@@ -79,20 +79,20 @@ void Winner::set(
   // In that case, NS decide among the options.
 
   assert(mode == WIN_NOT_SET);
-  if (sideIn != WIN_NONE)
+  if (sideIn != SIDE_NONE)
     rank = card.getRank();
 
-  if (sideIn == WIN_NORTH)
+  if (sideIn == SIDE_NORTH)
   {
     north = card;
     mode = WIN_NORTH_ONLY;
   }
-  else if (sideIn == WIN_SOUTH)
+  else if (sideIn == SIDE_SOUTH)
   {
     south = card;
     mode = WIN_SOUTH_ONLY;
   }
-  else if (sideIn == WIN_NONE)
+  else if (sideIn == SIDE_NONE)
     mode = WIN_NOT_SET;
   else
     assert(false);

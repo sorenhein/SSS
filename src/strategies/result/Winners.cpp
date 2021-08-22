@@ -56,7 +56,7 @@ void Winners::setEmpty()
 
 
 void Winners::set(
-  const WinningSide sideIn,
+  const Side sideIn,
   const Card& card)
 {
   // Makes a new subwinner every time.
@@ -73,13 +73,13 @@ void Winners::set(
   Winners::reset();
 
   if (north.getRank() > south.getRank())
-    Winners::set(WIN_NORTH, north);
+    Winners::set(SIDE_NORTH, north);
   else if (north.getRank() < south.getRank())
-    Winners::set(WIN_SOUTH, south);
+    Winners::set(SIDE_SOUTH, south);
   else
   {
-    Winners::set(WIN_NORTH, north);
-    Winners::set(WIN_SOUTH, south);
+    Winners::set(SIDE_NORTH, north);
+    Winners::set(SIDE_SOUTH, south);
   }
 }
 

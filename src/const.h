@@ -37,14 +37,6 @@ enum Level
   LEVEL_SIZE = 4
 };
 
-enum WinningSide
-{
-  WIN_NORTH = 0,
-  WIN_SOUTH = 1,
-  WIN_EITHER = 2,
-  WIN_NONE = 3
-};
-
 enum CombinationType
 {
   COMB_TRIVIAL = 0,
