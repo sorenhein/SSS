@@ -474,31 +474,18 @@ void Strategy::updateSameLength(
   const Play& play,
   const Survivors& survivors)
 {
-  for (auto& res: results)
-    res.update(play);
+  // for (auto& res: results)
+    // res.update(play);
 
   auto iter1 = results.begin();
   auto iter2 = survivors.distNumbers.begin();
 
-  // This is just an optimization for speed.
-  if (play.trickNS)
+  while (iter1 != results.end())
   {
-    while (iter1 != results.end())
-    {
-      iter1->update(iter2->fullNo, play.trickNS);
-      weightInt += play.trickNS;
-      iter1++;
-      iter2++;
-    }
-  }
-  else
-  {
-    while (iter1 != results.end())
-    {
-      iter1->setDist(iter2->fullNo);
-      iter1++;
-      iter2++;
-    }
+    iter1->update(play, iter2->fullNo);
+    weightInt += play.trickNS;
+    iter1++;
+    iter2++;
   }
 }
 
@@ -507,16 +494,17 @@ void Strategy::updateAndGrow(
   const Play& play,
   const Survivors& survivors)
 {
-  for (auto& res: results)
-    res.update(play);
-
   // Make an indexable vector copy of the results that need to grow.
   vector<Result> resultsOld;
   resultsOld.resize(results.size());
 
   unsigned r = 0;
   for (auto& res: results)
+  {
+    // The distribution will get overwritten below
+    res.update(play, 0);
     resultsOld[r++] = res;
+  }
 
   // Overwrite the old results list.
   results.resize(survivors.distNumbers.size());
@@ -528,7 +516,7 @@ void Strategy::updateAndGrow(
     // Use the survivor's full distribution number and the 
     // corresponding result entry as the trick count.
     res = resultsOld[iterSurvivors->reducedNo];
-    res.update(iterSurvivors->fullNo, play.trickNS);
+    res.setDist(iterSurvivors->fullNo);
 
     weightInt += res.tricks();
     iterSurvivors++;

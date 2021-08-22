@@ -60,12 +60,6 @@ class Result
     void setTricks(const unsigned char tricksIn);
 
     void update(
-      const unsigned char distIn,
-      const unsigned char trickNS);
-
-    void update(const Play& play);
-
-    void update(
       const Play& play,
       const unsigned char dist);
 

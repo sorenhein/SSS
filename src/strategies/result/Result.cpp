@@ -88,21 +88,6 @@ void Result::setTricks(const unsigned char tricks)
 
 
 void Result::update(
-  const unsigned char dist,
-  const unsigned char trickNS)
-{
-  distInt = dist;
-  tricksInt += trickNS;
-}
-
-
-void Result::update(const Play& play)
-{
-  winnersInt.update(play);
-}
-
-
-void Result::update(
   const Play& play,
   const unsigned char dist)
 {

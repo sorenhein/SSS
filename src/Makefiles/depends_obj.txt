@@ -101,7 +101,7 @@ strategies/Strategy.obj: strategies/result/Winner.h utils/table.h
 strategies/Strategy.obj: utils/Card.h utils/Compare.h utils/Compare.h
 strategies/Strategy.obj: strategies/optim/Study.h strategies/result/Ranges.h
 strategies/Strategy.obj: strategies/result/Range.h strategies/result/Result.h
-strategies/Strategy.obj: plays/Play.h Survivor.h utils/Timer.h
+strategies/Strategy.obj: plays/Play.h Survivor.h
 strategies/optim/Study.obj: strategies/optim/Study.h utils/Compare.h
 strategies/optim/Study.obj: strategies/result/Ranges.h
 strategies/optim/Study.obj: strategies/result/Range.h
@@ -128,7 +128,8 @@ strategies/result/Range.obj: strategies/result/Result.h
 strategies/result/Ranges.obj: strategies/result/Ranges.h
 strategies/result/Ranges.obj: strategies/result/Range.h
 strategies/result/Ranges.obj: strategies/result/Result.h
-strategies/result/Result.obj: strategies/result/Result.h
+strategies/result/Result.obj: strategies/result/Result.h plays/Play.h
+strategies/result/Result.obj: strategies/result/Winners.h
 strategies/result/Winners.obj: strategies/result/Winners.h
 strategies/result/Winners.obj: strategies/result/Winner.h utils/table.h
 strategies/result/Winners.obj: utils/Card.h utils/Compare.h utils/Compare.h
