@@ -238,17 +238,14 @@ void Winner::operator += (const Winner& winner2)
 {
   // Declarer has the choice.
 
-  if (winner2.mode == WIN_NOT_SET)
+  if (winner2.mode == WIN_NOT_SET || rank > winner2.rank)
   {
     // Declarer prefers no restriction.
     * this = winner2;
     return;
   }
-  else if (mode == WIN_NOT_SET)
+  else if (mode == WIN_NOT_SET || rank < winner2.rank)
     return;
-
-  if (winner2.rank > rank)
-    rank = winner2.rank;
 
   if (winner2.mode & WIN_NORTH_SET)
   {
@@ -262,14 +259,6 @@ void Winner::operator += (const Winner& winner2)
     // winner2.south is set.
     if (mode & WIN_SOUTH_SET)
       south += winner2.south;
-  }
-
-  if (mode == WIN_BOTH)
-  {
-    if (north.rankExceeds(south))
-      mode = WIN_NORTH_ONLY;
-    else if (south.rankExceeds(north))
-      mode = WIN_SOUTH_ONLY;
   }
 }
 
