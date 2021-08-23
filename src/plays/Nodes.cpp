@@ -148,7 +148,7 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 
   // Add to the corresponding parent node.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
-    iter->add(LEVEL_PARD, debugFlag);
+    iter->add(level, debugFlag);
 }
 
 

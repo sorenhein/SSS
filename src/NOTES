@@ -32,7 +32,6 @@ Strategies:
 Check study and scrutinize (where are they turned on?)
 - Can we avoid the scrutinize in Node?
 - Then scrutinize could be private (Extension a friend, too)?
-Node index: print is irritating for the early plays.
 Winner.cpp: Go more elegantly / faster by rank not set? Don't have
 to test for mode, can just compare rank?
 
