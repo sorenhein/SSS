@@ -73,8 +73,9 @@ enum ControlDoubles
 
 enum ControlOutput
 {
-  CTRL_OUTPUT_BIT0 = 0,
-  CTRL_OUTPUT_BIT1 = 1
+  CTRL_OUTPUT_HOLDING = 0,
+  CTRL_OUTPUT_BASIC_RESULTS = 1,
+  CTRL_OUTPUT_BIT2 = 2
 };
 
 enum ControlDebug
@@ -149,8 +150,11 @@ class Control
     const string& inputFile() const; 
     const string& controlFile() const; 
     const string& text() const; 
-    bool outputBit0() const; 
-    bool outputBit1() const; 
+
+    bool outputHolding() const; 
+    bool outputBasicResults() const; 
+    bool outputBit2() const; 
+
     bool debugArgs() const; 
     bool debugBit1() const; 
 

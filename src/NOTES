@@ -1,8 +1,23 @@
-Also put comments for blocks of methods in Strategy.
-Turn methods around to lessEqual: Basic, Studied, Scrutinized.
-Maybe combine the cumulator makers (flag controls early end).  Time it.
+Speed:
+- With only limited output, ~ 40 seconds
+  -  1 sec Distributions, Ranks
+  -  5 sec Plays
+  - 34 sec Strategize
 
-
+Strategies:
+Check study and scrutinize (where are they turned on?)
+- Can we avoid the scrutinize in Node?
+- Then scrutinize could be private (Extension a friend, too)?
+Check that comparisons are "minimal"
+Introduce a flag for comparing winners or not
+- Input flag
+Write a perl script to process and line up outputs (sometimes
+  fewer strategies, but always the same #trick profiles)
+Node index: print is irritating for the early plays.
+Output for e.g. 11 cards all in one hand: More space.
+Output also the rank in a rank listing of cards.
+Winner.cpp: Go more elegantly / faster by rank not set? Don't have
+to test for mode, can just compare rank?
 
 Speed
 -----
@@ -12,9 +27,6 @@ Let's clean up the code before we optimize it.
 
 Winner comparison: Maybe max unsigned as void?  Then simpler
 comparisons.
-
-Only have <= / lessEqual comparisons, not a mixture.
-
 
 Checks
 ------
@@ -27,7 +39,6 @@ Checks
 
 Strategies += Strategies by rank comparison
 -------------------------------------------
-* Get to work again...
 * Clean up Strategies code/directory again, especially the numbers
   and types of comparison methods
 * Also optimize for speed again.  If we only need an ==, a compare
@@ -127,13 +138,5 @@ Why doesn't it work in Combination to make complete copies of
 everything?  It must be some stray pointers, but where?
 
 
-
-Node index: print is irritating for the early plays.
-Output for e.g. 11 cards all in one hand: More space.
-Output also the rank in a rank listing of cards.
-
-
 TODO
 ----
-Winner.cpp: Go more elegantly / faster by rank not set? Don't have
-to test for mode, can just compare rank?

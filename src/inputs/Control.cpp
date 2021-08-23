@@ -115,10 +115,11 @@ void Control::configure()
       "Text to print (e.g. Roudinesco page and number)." },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
-      "0x001: Identification and basic results\n"
-      "0x002: More" },
+      "0x001: Identification of holding\n"
+      "0x002: Diagram, ranks, distributions and basic results\n"
+      "0x004: More" },
     { "-d", "--debug", CORRESPONDENCE_BIT_VECTOR, CTRL_DEBUG, "0x0",
-      "Output verbosity (default: 0x0).  Bits:\n"
+      "Debug verbosity (default: 0x0).  Bits:\n"
       "0x001: Input arguments\n"
       "0x002: More" },
     { "-T", "--threads", CORRESPONDENCE_INT, CTRL_NUM_THREADS, "1",
@@ -433,14 +434,20 @@ const string& Control::text() const
 }
 
 
-bool Control::outputBit0() const
+bool Control::outputHolding() const
 {
-  return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_BIT0] != 0);
+  return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_HOLDING] != 0);
 }
 
-bool Control::outputBit1() const
+bool Control::outputBasicResults() const
 {
-  return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_BIT1] != 0);
+  return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_BASIC_RESULTS] != 0);
+}
+
+
+bool Control::outputBit2() const
+{
+  return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_BIT2] != 0);
 }
 
 

@@ -46,10 +46,13 @@ const Strategies& Combination::strategize(
   Plays& plays,
   bool debugFlag)
 {
-  cout << "Cards" << setw(3) << ranks.size() << ": " <<
-    centry.canonicalHolding3 << " | " <<
-    "0x" << hex << centry.canonicalHolding3 << " / " <<
-    dec << centry.canonicalHolding2 << endl;
+  if (control.outputHolding())
+  {
+    cout << "Cards" << setw(3) << ranks.size() << ": " <<
+      centry.canonicalHolding3 << " | " <<
+      "0x" << hex << centry.canonicalHolding3 << " / " <<
+      dec << centry.canonicalHolding2 << endl;
+  }
 
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
@@ -81,7 +84,7 @@ const Strategies& Combination::strategize(
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
   }
 
-  if (debugFlagTmp || control.outputBit0())
+  if (debugFlagTmp || control.outputBasicResults())
   {
     wcout << "\n" << ranks.wstrDiagram() << "\n";
     cout << ranks.strTable();
@@ -97,7 +100,7 @@ const Strategies& Combination::strategize(
     strats.setTrivial(trivialEntry, 
       static_cast<unsigned char>(distPtr->size()));
 
-    if (control.outputBit0())
+    if (control.outputBasicResults())
       cout << strats.str("Trivial result", true) << "\n";
     return strats;
   }
@@ -120,7 +123,7 @@ const Strategies& Combination::strategize(
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
-  if (control.outputBit0())
+  if (control.outputBasicResults())
     cout << strats.str("Result", true) << "\n";
 
   return strats;

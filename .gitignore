@@ -44,3 +44,7 @@ src/html/*
 src/latex
 src/latex/*
 src/CodeGraphData/*
+
+src/[abcd]
+
+src/SSS/*

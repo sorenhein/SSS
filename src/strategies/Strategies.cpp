@@ -694,6 +694,7 @@ void Strategies::operator *= (Strategies& strats2)
     // Keep the new results, but don't change ranges.
     strategies = strats2.strategies;
     // Addition
+    // TODO Just copy the whole thing, * this = strats2 ?
     scrutinizedFlag = strats2.scrutinizedFlag;
     return;
   }
