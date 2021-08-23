@@ -681,6 +681,7 @@ string Ranks::strTable() const
   // Makes a table with one rank per line.
   stringstream ss;
   ss << right <<
+    "Rank" <<
     north.strRankHeader() <<
     south.strRankHeader() <<
     opps.strRankHeader() <<
@@ -688,6 +689,7 @@ string Ranks::strTable() const
 
   for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
     ss <<
+      setw(4) << right << +rank <<
       north.strRank(rank) <<
       south.strRank(rank) <<
       opps.strRank(rank) <<

@@ -907,8 +907,8 @@ string Distribution::strHeader() const
   stringstream ss;
   ss << 
     setw(4) << right << "Dist" <<
-    setw(8) <<  "West" << 
-    setw(8) <<  "East" << 
+    setw(14) <<  "West" << 
+    setw(14) <<  "East" << 
     setw(8) <<  "Cases" << "\n";
   return ss.str();
 }
@@ -930,8 +930,8 @@ string Distribution::str() const
   {
     ss << 
       setw(4) << d <<
-      setw(8) << distributions[d].west.str(names[rankSize]) <<
-      setw(8) << distributions[d].east.str(names[rankSize]) <<
+      setw(14) << distributions[d].west.str(names[rankSize]) <<
+      setw(14) << distributions[d].east.str(names[rankSize]) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();

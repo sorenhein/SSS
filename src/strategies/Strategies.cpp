@@ -47,10 +47,12 @@ void Strategies::setTrivial(
 {
   // Repeat the trivial result len times.
 
+timersStrat[0].start();
   Strategies::reset();
   strategies.emplace_back(Strategy());
   Strategy& strat = strategies.back();
   strat.logTrivial(trivial, len);
+timersStrat[0].stop();
 }
 
 
@@ -62,6 +64,7 @@ void Strategies::collapseOnVoid()
   if (strategies.size() == 1)
     return;
 
+timersStrat[1].start();
   // Find the best one for declarer, as everything is revealed.
   auto& first = strategies.front();
   for (auto iter = next(strategies.begin()); 
@@ -72,6 +75,7 @@ void Strategies::collapseOnVoid()
 
   // Only keep the first, best one.
   strategies.erase(next(strategies.begin()), strategies.end());
+timersStrat[1].stop();
 }
 
 
@@ -79,7 +83,7 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-timersStrat[0].start();
+timersStrat[2].start();
 
   // Adapt the Strategies of a following play to this trick by
   // rotating, mapping etc.  This is a somewhat expensive method.
@@ -100,7 +104,7 @@ timersStrat[0].start();
     });
   }
 
-timersStrat[0].stop();
+timersStrat[2].stop();
 }
 
 
@@ -112,6 +116,7 @@ timersStrat[0].stop();
 
 void Strategies::consolidateTwo(ComparatorType lessEqualMethod)
 {
+timersStrat[3].start();
   // Check whether to swap the two and whether one is dominated.
 
   auto iter1 = strategies.begin();
@@ -140,6 +145,7 @@ void Strategies::consolidateTwo(ComparatorType lessEqualMethod)
     else if (c == WIN_SECOND)
       strategies.pop_front();
   }
+timersStrat[3].stop();
 }
 
 
@@ -173,7 +179,7 @@ void Strategies::consolidate()
   }
   else
   {
-timersStrat[1].start();
+timersStrat[4].start();
 
     auto oldStrats = move(strategies);
     strategies.clear();  // But leave ranges intact
@@ -181,24 +187,28 @@ timersStrat[1].start();
     for (auto& strat: oldStrats)
       * this += strat;
 
-timersStrat[1].stop();
+timersStrat[4].stop();
   }
 }
 
 
 void Strategies::restudy()
 {
+timersStrat[5].start();
   for (auto& strategy: strategies)
     strategy.restudy();
+timersStrat[5].stop();
 }
 
 
 void Strategies::scrutinize(const Ranges& rangesIn)
 {
+timersStrat[6].start();
   for (auto& strat: strategies)
     strat.scrutinize(rangesIn);
 
   scrutinizedFlag = true;
+timersStrat[6].stop();
 }
 
 
@@ -376,12 +386,12 @@ void Strategies::operator += (const Strategy& strat)
   if (scrutinizedFlag)
   {
     lessEqualMethod = &Strategy::lessEqualPrimaryScrutinized;
-    tno = 2;
+    tno = 7;
   }
   else
   {
     lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
-    tno = 3;
+    tno = 8;
   }
 
 timersStrat[tno].start();
@@ -530,16 +540,16 @@ void Strategies::operator += (Strategies& strats2)
   if (sno1 == 1 && sno2 == 1)
   {
     // Simplified case.
-timersStrat[15].start();
+timersStrat[9].start();
     Strategies::plusOneByOne(strats2);
-timersStrat[15].stop();
+timersStrat[9].stop();
   }
   else if (sno1 >= 20 && sno2 >= 20)
   {
     // Rare, but very slow per invocation when it happens.
     // Consumes perhaps 75% of the method time, so more optimized.
 
-timersStrat[4].start();
+timersStrat[10].start();
 
     // We only need the minima here, but we use the existing method.
 
@@ -560,11 +570,11 @@ timersStrat[4].start();
     for (auto& deletion: deletions)
       strategies.erase(deletion);
 
-timersStrat[4].stop();
+timersStrat[10].stop();
   }
   else
   {
-timersStrat[5].start();
+timersStrat[11].start();
 
     // General case.  Frequent and fast, perhaps 25% of the method time.
 
@@ -575,7 +585,7 @@ timersStrat[5].start();
     for (auto& strat2: strats2.strategies)
       * this += strat2;
 
-timersStrat[5].stop();
+timersStrat[11].stop();
 
   }
 }
@@ -599,12 +609,12 @@ void Strategies::operator *= (const Strategy& strat)
   }
   else
   {
-timersStrat[6].start();
+timersStrat[12].start();
 
     for (auto& strat1: strategies)
       strat1 *= strat;
 
-timersStrat[6].stop();
+timersStrat[12].stop();
   }
   // Addition: Correct?
   scrutinizedFlag = false;
@@ -701,7 +711,9 @@ void Strategies::operator *= (Strategies& strats2)
 
   if (len1 == 1 && len2 == 1)
   {
+timersStrat[13].start();
     strategies.front() *= strats2.strategies.front();
+timersStrat[13].stop();
     scrutinizedFlag = false;
     return;
   }
@@ -714,6 +726,7 @@ void Strategies::operator *= (Strategies& strats2)
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
+timersStrat[14].start();
     ComparatorType lessEqualMethod;
     unsigned tno;
 
@@ -732,11 +745,12 @@ void Strategies::operator *= (Strategies& strats2)
     }
     else
     {
+assert(false);
       lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
       tno = 7;
     }
 
-timersStrat[tno].start();
+// timersStrat[tno].start();
 
     auto strategiesOwn = move(strategies);
     strategies.clear();
@@ -750,7 +764,8 @@ timersStrat[tno].start();
 
     scrutinizedFlag = false;
 
-timersStrat[tno].stop();
+timersStrat[14].stop();
+// timersStrat[tno].stop();
     return;
   }
   else
@@ -765,7 +780,7 @@ timersStrat[tno].stop();
     // Even though Extensions splits Strategy's into own and shared
     // by distribution, we can still share the central ranges.
 
-timersStrat[9].start();
+timersStrat[15].start();
 
     Strategies::makeRanges();
     strats2.makeRanges();
@@ -784,7 +799,7 @@ timersStrat[9].start();
 
     scrutinizedFlag = false;
 
-timersStrat[9].stop();
+timersStrat[15].stop();
   }
 }
 
@@ -881,9 +896,11 @@ void Strategies::makeRanges()
   if (strategies.size() == 1)
     return;
 
+timersStrat[16].start();
   for (auto iter = next(strategies.begin()); 
       iter != strategies.end(); iter++)
     iter->extendRanges(ranges);
+timersStrat[16].stop();
 }
 
 
@@ -892,7 +909,9 @@ void Strategies::propagateRanges(const Strategies& child)
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
+timersStrat[17].start();
   ranges*= child.ranges;
+timersStrat[17].stop();
 }
 
 
@@ -910,11 +929,13 @@ const Ranges& Strategies::getRanges() const
 
 const Result Strategies::resultLowest() const
 {
+timersStrat[18].start();
   Result resultLowest;
 
   for (const auto& strat: strategies)
     resultLowest *= strat.resultLowest();
 
+timersStrat[18].start();
   return resultLowest;
 }
 

@@ -4,26 +4,37 @@ Speed:
   -  5 sec Plays
   - 34 sec Strategize
 
+Find the other 7 seconds (or most of them)
+
+-r could be for run flags
+- Play-level choice (void, optimized, normal)
+- Range optimization or not
+- Various choiced in Strategies
+- Use ranks for comparisons or not (if yes, they are also in
+  debug output)
+- Control plays, either all plays or only optimized ones
+
+Then we could have a script to compare outputs
+- All 2^n versions
+- Line counts
+- Times elapsed
+- Actual strategies
+- If with/without rank, compare appropriately by other script
+
+-d
+- Check that comparisons are minimal
+  - Optimize the code for this
+  - Also optimize Strategies == even though it doesn't matter
+    - Start at ==, only do upper triangle of matrix
+
+
 Strategies:
 Check study and scrutinize (where are they turned on?)
 - Can we avoid the scrutinize in Node?
 - Then scrutinize could be private (Extension a friend, too)?
-Check that comparisons are "minimal"
-Introduce a flag for comparing winners or not
-- Input flag
-Write a perl script to process and line up outputs (sometimes
-  fewer strategies, but always the same #trick profiles)
 Node index: print is irritating for the early plays.
-Output for e.g. 11 cards all in one hand: More space.
-Output also the rank in a rank listing of cards.
 Winner.cpp: Go more elegantly / faster by rank not set? Don't have
 to test for mode, can just compare rank?
-
-Speed
------
-Plays now take 26 sec: Why?
-Strategize has of course become slower (44 sec).
-Let's clean up the code before we optimize it.
 
 Winner comparison: Maybe max unsigned as void?  Then simpler
 comparisons.

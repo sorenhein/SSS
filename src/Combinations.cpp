@@ -98,6 +98,25 @@ void Combinations::resize(const unsigned maxCardsIn)
   }
 
   timersStrat.resize(40);
+  timersStrat[ 0].name("Strats::setTrivial");
+  timersStrat[ 1].name("Strats::collapseOnVoid (core)");
+  timersStrat[ 2].name("Strats::adapt");
+  timersStrat[ 3].name("Strats::consolidateTwo");
+  timersStrat[ 4].name("Strats::consolidate (general)");
+  timersStrat[ 5].name("Strats::restudy");
+  timersStrat[ 6].name("Strats::scrutinize");
+  timersStrat[ 7].name("Strats::+= strat (scrut)");
+  timersStrat[ 8].name("Strats::+= strat (studied)");
+  timersStrat[ 9].name("Strats::plusOneByOne");
+  timersStrat[10].name("Strats::+= strats (20+)");
+  timersStrat[11].name("Strats::+= strats (rest)");
+  timersStrat[12].name("Strats::*= strat");
+  timersStrat[13].name("Strats::*= strats (1*1)");
+  timersStrat[14].name("Strats::*= strats (<10)");
+  timersStrat[15].name("Strats::*= strats (>=10)");
+  timersStrat[16].name("Strats::makeRanges (core)");
+  timersStrat[17].name("Strats::propagateRanges");
+  timersStrat[18].name("Strats::resultLowest");
 }
 
 

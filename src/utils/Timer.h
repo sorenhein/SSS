@@ -16,6 +16,8 @@
 #include <chrono>
 #pragma warning(pop)
 
+#include <string>
+
 using namespace std;
 
 
@@ -27,6 +29,8 @@ class Timer
 
     double sum;
 
+    string label;
+
     std::chrono::time_point<std::chrono::high_resolution_clock> begin;
 
 
@@ -37,6 +41,8 @@ class Timer
     ~Timer();
 
     void reset();
+
+    void name(const string& nameIn);
 
     void start();
 

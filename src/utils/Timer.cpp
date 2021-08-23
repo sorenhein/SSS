@@ -27,6 +27,13 @@ void Timer::reset()
 {
   no = 0;
   sum = 0.;
+  label = "";
+}
+
+
+void Timer::name(const string& nameIn)
+{
+  label = nameIn;
 }
 
 
@@ -104,6 +111,10 @@ string Timer::str(const int prec) const
 
   if (no > 1)
     ss << setw(10) << sum / (1000. * no) << " ms";
+
+  if (! label.empty())
+    ss << "  " << left << label;
+
   return ss.str() + "\n";
 }
 
