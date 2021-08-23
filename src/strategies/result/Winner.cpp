@@ -234,35 +234,6 @@ void Winner::operator *= (const Winner& winner2)
 }
 
 
-void Winner::operator += (const Winner& winner2)
-{
-  // Declarer has the choice.
-
-  if (winner2.mode == WIN_NOT_SET || rank > winner2.rank)
-  {
-    // Declarer prefers no restriction.
-    * this = winner2;
-    return;
-  }
-  else if (mode == WIN_NOT_SET || rank < winner2.rank)
-    return;
-
-  if (winner2.mode & WIN_NORTH_SET)
-  {
-    // winner2.north is set.  Leave our north empty if it is empty.
-    if (mode & WIN_NORTH_SET)
-      north += winner2.north;
-  }
-
-  if (winner2.mode & WIN_SOUTH_SET)
-  {
-    // winner2.south is set.
-    if (mode & WIN_SOUTH_SET)
-      south += winner2.south;
-  }
-}
-
-
 unsigned char Winner::getRank() const
 {
   return rank;

@@ -82,7 +82,6 @@ class Winner
     bool operator != (const Winner& winner2) const;
 
     void operator *= (const Winner& winner2);
-    void operator += (const Winner& winner2);
 
     unsigned char getRank() const;
 
