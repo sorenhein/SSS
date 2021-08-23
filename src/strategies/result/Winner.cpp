@@ -161,7 +161,7 @@ void Winner::operator *= (const Winner& winner2)
 {
   // The opponents have the choice.
 
-  if (winner2.mode == WIN_NOT_SET)
+  if (winner2.mode == WIN_NOT_SET || rank < winner2.rank)
   {
     // OK as is.
     return;
@@ -172,8 +172,65 @@ void Winner::operator *= (const Winner& winner2)
     return;
   }
 
-  Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
-  Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
+  /* 
+   Long-hand.  Can be written more compactly as:
+   Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
+   Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
+   But the below seems at least as fast.
+   */
+
+  if (mode == WIN_NORTH_ONLY)
+  {
+    if (winner2.mode == WIN_NORTH_ONLY)
+    {
+      north *= winner2.north;
+    }
+    else if (winner2.mode == WIN_SOUTH_ONLY)
+    {
+      mode = WIN_BOTH;
+      south = winner2.south;
+    }
+    else // winner2.mode == WIN_BOTH
+    {
+      mode = WIN_BOTH;
+      north *= winner2.north;
+      south = winner2.south;
+    }
+  }
+  else if (mode == WIN_SOUTH_ONLY)
+  {
+    if (winner2.mode == WIN_NORTH_ONLY)
+    {
+      mode = WIN_BOTH;
+      north = winner2.north;
+    }
+    else if (winner2.mode == WIN_SOUTH_ONLY)
+    {
+      south *= winner2.south;
+    }
+    else // winner2.mode == WIN_BOTH
+    {
+      mode = WIN_BOTH;
+      north = winner2.north;
+      south *= winner2.south;
+    }
+  }
+  else // wtmp.mode == WIN_BOTH
+  {
+    if (winner2.mode == WIN_NORTH_ONLY)
+    {
+      north *= winner2.north;
+    }
+    else if (winner2.mode == WIN_SOUTH_ONLY)
+    {
+      south *= winner2.south;
+    }
+    else // winner2.mode == WIN_BOTH
+    {
+      north *= winner2.north;
+      south *= winner2.south;
+    }
+  }
 }
 
 
