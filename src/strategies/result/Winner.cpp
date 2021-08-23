@@ -166,25 +166,14 @@ void Winner::operator *= (const Winner& winner2)
     // OK as is.
     return;
   }
-  else if (mode == WIN_NOT_SET)
+  else if (mode == WIN_NOT_SET || winner2.rank < rank)
   {
     * this = winner2;
     return;
   }
 
-  if (winner2.rank < rank)
-    rank = winner2.rank;
-
   Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
   Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
-
-  if (mode == WIN_BOTH)
-  {
-    if (north.rankExceeds(south))
-      mode = WIN_SOUTH_ONLY;
-    else if (south.rankExceeds(north))
-      mode = WIN_NORTH_ONLY;
-  }
 }
 
 
