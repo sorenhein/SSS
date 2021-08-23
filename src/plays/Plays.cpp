@@ -16,6 +16,9 @@
 #include "../Combinations.h"
 #include "../Distribution.h"
 
+#include "../utils/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Plays::Plays()
 {
@@ -156,7 +159,9 @@ const Strategies& Plays::strategize(
 
   // This is a quite expensive method, as it also adapts plays
   // to the current trick.
+timersStrat[20].start();
   Plays::getNextStrategies(distPtr, debugFlag);
+timersStrat[20].stop();
 
   if (nodesRho.used() <= 20 ||
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))

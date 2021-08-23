@@ -117,6 +117,7 @@ void Combinations::resize(const unsigned maxCardsIn)
   timersStrat[16].name("Strats::makeRanges (core)");
   timersStrat[17].name("Strats::propagateRanges");
   timersStrat[18].name("Strats::resultLowest");
+  timersStrat[20].name("Plays::getNextStrategies");
 }
 
 
@@ -238,7 +239,7 @@ void Combinations::runUniques(
   }
 
   // TMP Print timers
-  cout << "Strat timers\n";
+  cout << "Individual timers\n";
   Timer sum;
   for (unsigned i = 0; i < timersStrat.size(); i++)
   {
@@ -249,7 +250,7 @@ void Combinations::runUniques(
     sum += timersStrat[i];
     cout << setw(4) << i << s << "\n";
   }
-  cout << "------------------------------\n";
+  cout << string(70, '-') << "\n";
   cout << setw(4) << "" << sum.str(2) << endl;
 
 }

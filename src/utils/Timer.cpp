@@ -109,7 +109,7 @@ string Timer::str(const int prec) const
 
   ss << Timer::strNumber();
 
-  if (no > 1)
+  if (no >= 1)
     ss << setw(10) << sum / (1000. * no) << " ms";
 
   if (! label.empty())
