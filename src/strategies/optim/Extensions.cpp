@@ -184,11 +184,11 @@ void Extensions::multiply(const Ranges& ranges)
 }
 
 
-void Extensions::flatten(list<Strategy>& strategies)
+void Extensions::flatten(Slist& slist)
 {
   // Add back the non-overlapping results explicitly.
 
   for (auto& ext: extensions)
-    ext.flatten(strategies);
+    ext.flatten(slist);
 }
 

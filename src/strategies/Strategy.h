@@ -153,9 +153,9 @@ class Strategy
 
     // ******************** Ranges ******************
 
-    void initRanges(Ranges& ranges);
+    void initRanges(Ranges& ranges) const;
 
-    void extendRanges(Ranges& ranges);
+    void extendRanges(Ranges& ranges) const;
 
 
     // ******************** Adapt *******************

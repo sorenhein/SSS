@@ -8,6 +8,7 @@
 
 #include "Extension.h"
 #include "Split.h"
+#include "../Slist.h"
 
 
 Extension::Extension()
@@ -49,11 +50,11 @@ void Extension::multiply(
 }
 
 
-void Extension::flatten(list<Strategy>& strategies)
+void Extension::flatten(Slist& slist)
 {
   overlap *= * own1ptr;
   overlap *= * own2ptr;
-  strategies.push_back(move(overlap));
+  slist.push_back(move(overlap));
 }
 
 

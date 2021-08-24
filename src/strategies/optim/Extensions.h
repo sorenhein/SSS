@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class Strategies;
+class Slist;
 class Strategy;
 class Ranges;
 
@@ -70,7 +70,7 @@ class Extensions
     
     void multiply(const Ranges& ranges);
 
-    void flatten(list<Strategy>& strategies);
+    void flatten(Slist& slist);
 };
 
 #endif

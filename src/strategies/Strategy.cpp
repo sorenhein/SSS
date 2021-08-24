@@ -441,14 +441,14 @@ void Strategy::multiply(
  *                                                          *
  ************************************************************/
 
-void Strategy::initRanges(Ranges& ranges)
+void Strategy::initRanges(Ranges& ranges) const
 {
   // TODO "false" should mean no winners, but currently ignored.
   ranges.init(results, true);
 }
 
 
-void Strategy::extendRanges(Ranges& ranges)
+void Strategy::extendRanges(Ranges& ranges) const
 {
   ranges.extend(results);
 }

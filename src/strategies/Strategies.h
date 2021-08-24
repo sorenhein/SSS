@@ -15,13 +15,11 @@
 #include <list>
 #include <string>
 
-#include "Strategy.h"
+#include "Slist.h"
 #include "result/Ranges.h"
 
-struct StratData;
 struct Play;
 struct Survivors;
-struct SplitStrategies;
 
 using namespace std;
 
@@ -34,14 +32,7 @@ class Strategies
 
   private:
     
-    struct Addition
-    {
-      Strategy const * ptr;
-      list<Strategy>::const_iterator iter;
-    };
-
-
-    list<Strategy> strategies;
+    Slist slist;
 
     Ranges ranges;
 
@@ -55,51 +46,6 @@ class Strategies
     void restudy();
 
     void scrutinize(const Ranges& rangesIn);
-
-    // Full Result level
-    bool sameOrdered(const Strategies& strats2) const;
-    bool sameUnordered(const Strategies& strats2) const;
-
-    bool addendDominatedHeavier(
-      list<Strategy>::iterator& iter,
-      ComparatorType lessEqualMethod,
-      const Strategy& addend) const;
-
-    bool processSameWeights(
-      list<Strategy>::iterator& iter,
-      list<Strategy>::iterator& iterEnd,
-      ComparatorType lessEqualMethod,
-      const Strategy& addend);
-
-    void eraseDominatedLighter(
-      list<Strategy>::iterator& iter,
-      ComparatorType lessEqualMethod,
-      const Strategy& addend);
-
-    void addStrategy(
-      const Strategy& strategy,
-      ComparatorType lessEqualMethod);
-
-    void plusOneByOne(const Strategies& strats2);
-
-    void markChanges(
-      const Strategies& strats2,
-      list<Addition>& additions,
-      list<list<Strategy>::const_iterator>& deletions) const;
-
-    void multiplyAddStrategy(
-      const Strategy& strat1,
-      const Strategy& strat2,
-      ComparatorType lessEqualMethod);
-
-
-    string strHeader(
-      const string& title,
-      const bool rankFlag) const;
-
-    string strWeights(const bool rankFlag) const;
-
-    string strWinners() const;
 
     void operator += (const Strategy& strat);
 

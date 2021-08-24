@@ -15,6 +15,7 @@
 
 using namespace std;
 
+class Slist;
 struct Split;
 class Ranges;
 
@@ -57,7 +58,7 @@ class Extension
       const Split& strat2,
       const Ranges& ranges);
 
-    void flatten(list<Strategy>& strategies);
+    void flatten(Slist& slist);
 
     bool lessEqualPrimary(const Extension& ext2) const;
 

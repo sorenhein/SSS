@@ -38,7 +38,7 @@ void Splits::pushDistribution(
   Strategies& strats,
   const StratData& stratData)
 {
-  auto siter = strats.strategies.begin();
+  auto siter = strats.slist.begin();
   for (auto& sd: stratData.data)
   {
     siter->push_back(* sd.iter);
@@ -119,8 +119,8 @@ void Splits::setPointers()
   // for later use.
 
   splits.resize(count);
-  auto ownIter = own.strategies.begin();
-  auto sharedIter = shared.strategies.begin();
+  auto ownIter = own.slist.begin();
+  auto sharedIter = shared.slist.begin();
   auto splitIter = splits.begin();
 
   for (unsigned i = 0; i < count; 
@@ -139,8 +139,8 @@ void Splits::split(
 {
   count = strategies.size();
 
-  own.strategies.resize(count);
-  shared.strategies.resize(count);
+  own.slist.resize(count);
+  shared.slist.resize(count);
 
   Splits::splitDistributions(strategies, counterpart);
 
