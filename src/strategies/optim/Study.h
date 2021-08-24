@@ -61,7 +61,6 @@ class Study
 
     bool lessEqualScrutinized(const Study& study2) const;
 
-
     Compare comparePrimaryScrutinized(const Study& study2) const;
 };
 

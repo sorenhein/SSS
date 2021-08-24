@@ -207,7 +207,6 @@ void Node::reactivate()
   // the simple strategy is multiplied back here, weights can change
   // and therefore the ordering can also change.
 
-  // if (! strats.ordered())
   if (! simpleStrat.empty())
   {
     // TODO Maybe only when real simpleStrats non-empty?
