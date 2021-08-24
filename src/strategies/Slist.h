@@ -157,10 +157,18 @@ class Slist
 
     void getLoopData(StratData& stratData);
 
+    bool purgeRanges(
+      Strategy& constants,
+      const Ranges& rangesOwn,
+      const Ranges& rangesParent,
+      const bool debugFlag);
+
     void splitDistributions(
       const Strategy& counterpart,
       Slist& own,
       Slist& shared);
+
+    void makeRanges(Ranges& ranges) const;
 
     const Result resultLowest() const;
 

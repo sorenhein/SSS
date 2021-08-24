@@ -11,12 +11,9 @@
 #include <sstream>
 
 #include "Strategies.h"
-#include "StratData.h"
-
 #include "optim/Extensions.h"
 
 #include "../plays/Play.h"
-
 #include "../Survivor.h"
 
 // TMP
@@ -494,18 +491,8 @@ void Strategies::reactivate(
 
 void Strategies::makeRanges()
 {
-  if (slist.empty())
-    return;
-
-  slist.front().initRanges(ranges);
-
-  if (slist.size() == 1)
-    return;
-
 timersStrat[16].start();
-  for (auto iter = next(slist.begin()); 
-      iter != slist.end(); iter++)
-    iter->extendRanges(ranges);
+  slist.makeRanges(ranges);
 timersStrat[16].stop();
 }
 
@@ -529,58 +516,8 @@ bool Strategies::purgeRanges(
   if (slist.empty())
     return false;
 
-  // Make a list of iterators -- one per Strategy.
-  // The iterators later step through one "row" (distribution) of
-  // all Strategy's in synchrony.
-  StratData stratData;
-  stratData.data.resize(slist.size());
-  slist.getLoopData(stratData);
-  stratData.riter = Strategies::getRanges().begin();
-
-  constants.resize(rangesParent.size());
-  auto citer = constants.begin();
-
-  bool eraseFlag = false;
-
-  for (auto& parentRange: rangesParent)
-  {
-    // Get to the same distribution in each Strategy if it exists.
-    const StratStatus status = stratData.advance(parentRange.dist());
-    if (status == STRATSTATUS_END)
-      break;
-    else if (status == STRATSTATUS_FURTHER_DIST)
-      continue;
-
-    if (parentRange.constant())
-    {
-      * citer = parentRange.constantResult();
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-      citer++;
-
-      if (debugFlag)
-      {
-        cout << "Erased constant for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-    else if (parentRange < * stratData.riter)
-    {
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-
-      if (debugFlag)
-      {
-        cout << "Erased dominated range for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-  }
-
-  // Shrink to the size used.
-  constants.eraseRest(citer);
+  const bool eraseFlag = slist.purgeRanges(constants,
+    ranges, rangesParent, debugFlag);
 
   if (! eraseFlag)
     return false;
@@ -634,15 +571,7 @@ timersStrat[18].start();
 
 string Strategies::strRanges(const string& title) const
 {
-  stringstream ss;
-  if (title != "")
-    ss << title << "\n";
-
-  ss << ranges.strHeader();
-  for (auto& range: ranges)
-    ss << range.str(true);
-
-  return ss.str();
+  return ranges.str(title);
 }
 
 

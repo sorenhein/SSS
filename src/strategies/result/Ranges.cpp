@@ -130,10 +130,15 @@ string Ranges::strHeader() const
 }
 
 
-string Ranges::str() const
+string Ranges::str(const string& title) const
 {
   string s = "";
+  if (title != "")
+    s += title + "\n";
+
+  s += Ranges::strHeader();
   for (auto& range: ranges)
     s += range.str(false);
+
   return s;
 }

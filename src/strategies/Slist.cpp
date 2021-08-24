@@ -669,6 +669,69 @@ void Slist::getLoopData(StratData& stratData)
 }
 
 
+bool Slist::purgeRanges(
+  Strategy& constants,
+  const Ranges& rangesOwn,
+  const Ranges& rangesParent,
+  const bool debugFlag)
+{
+  // Make a list of iterators -- one per Strategy.
+  // The iterators later step through one "row" (distribution) of
+  // all Strategy's in synchrony.
+  StratData stratData;
+  stratData.data.resize(strategies.size());
+  Slist::getLoopData(stratData);
+  stratData.riter = rangesOwn.begin();
+
+  constants.resize(rangesParent.size());
+  auto citer = constants.begin();
+
+  bool eraseFlag = false;
+
+  for (auto& parentRange: rangesParent)
+  {
+    // Get to the same distribution in each Strategy if it exists.
+    const StratStatus status = stratData.advance(parentRange.dist());
+    if (status == STRATSTATUS_END)
+      break;
+    else if (status == STRATSTATUS_FURTHER_DIST)
+      continue;
+
+    if (parentRange.constant())
+    {
+      * citer = parentRange.constantResult();
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+      citer++;
+
+      if (debugFlag)
+      {
+        cout << "Erased constant for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+    else if (parentRange < * stratData.riter)
+    {
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+
+      if (debugFlag)
+      {
+        cout << "Erased dominated range for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+  }
+
+  // Shrink to the size used.
+  constants.eraseRest(citer);
+
+  return eraseFlag;
+}
+
+
 void Slist::pushDistribution(const StratData& stratData)
 {
   auto siter = strategies.begin();
@@ -744,6 +807,22 @@ void Slist::splitDistributions(
 
     riter++;
   }
+}
+
+
+void Slist::makeRanges(Ranges& ranges) const
+{
+  if (strategies.empty())
+    return;
+
+  strategies.front().initRanges(ranges);
+
+  if (strategies.size() == 1)
+    return;
+
+  for (auto iter = next(strategies.begin());
+      iter != strategies.end(); iter++)
+    iter->extendRanges(ranges);
 }
 
 

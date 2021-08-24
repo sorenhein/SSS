@@ -55,7 +55,7 @@ class Ranges
 
     string strHeader() const;
 
-    string str() const;
+    string str(const string& title = "") const;
 };
 
 #endif

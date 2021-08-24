@@ -94,12 +94,12 @@ class Strategies
 
     void propagateRanges(const Strategies& child);
 
-    const Ranges& getRanges() const;
-
     bool purgeRanges(
       Strategy& constants,
       const Ranges& rangesParent,
       const bool debugFlag);
+
+    const Ranges& getRanges() const;
 
     const Result resultLowest() const;
 
