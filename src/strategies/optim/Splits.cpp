@@ -11,7 +11,6 @@
 #include <sstream>
 
 #include "Splits.h"
-#include "../StratData.h"
 
 
 Splits::Splits()
@@ -31,85 +30,6 @@ void Splits::reset()
   shared.reset();
   splits.clear();
   count = 0;
-}
-
-
-void Splits::pushDistribution(
-  Strategies& strats,
-  const StratData& stratData)
-{
-  auto siter = strats.slist.begin();
-  for (auto& sd: stratData.data)
-  {
-    siter->push_back(* sd.iter);
-    siter++;
-  }
-}
-
-
-void Splits::splitDistributions(
-  Strategies& strategies,
-  const Strategy& counterpart)
-{
-  // Split our strategies by distribution into one group (own) with
-  // those distributions that are unique to us, and another (shared)
-  // with distributions that overlap.  This is relative to counterpart.
-
-  // List of iterators to a Result of each Strategy in stratsToSplit.
-  // All are in sync to point to a given distribution.
-  // They move in sync down across the Strategy's.
-  StratData stratData;
-  stratData.data.resize(count);
-  strategies.getLoopData(stratData);
-
-  auto riter = counterpart.begin();
-  while (true)
-  {
-    if (riter == counterpart.end())
-    {
-      // A unique distribution.
-      Splits::pushDistribution(own, stratData);
-
-      if (stratData.advance() == STRATSTATUS_END)
-        break;
-      else
-        continue;
-    }
-
-    if (riter->dist() < stratData.dist())
-    {
-      // Distribution that is only in strat2.
-      riter++;
-      continue;
-    }
-
-    bool endFlag = false;
-    while (stratData.dist() < riter->dist())
-    {
-      // A unique distribution.
-      Splits::pushDistribution(own, stratData);
-
-      if (stratData.advance() == STRATSTATUS_END)
-      {
-        endFlag = true;
-        break;
-      }
-    }
-
-    if (endFlag)
-      break;
-
-    if (riter->dist() == stratData.dist())
-    {
-      // A shared distribution.
-      Splits::pushDistribution(shared, stratData);
-
-      if (stratData.advance() == STRATSTATUS_END)
-        break;
-    }
-
-    riter++;
-  }
 }
 
 
@@ -142,7 +62,7 @@ void Splits::split(
   own.slist.resize(count);
   shared.slist.resize(count);
 
-  Splits::splitDistributions(strategies, counterpart);
+  strategies.splitDistributions(counterpart, own, shared);
 
   Splits::setPointers();
 

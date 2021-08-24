@@ -59,6 +59,8 @@ class Slist
       ComparatorType lessEqualMethod,
       const Strategy& addend);
 
+    void pushDistribution(const StratData& stratData);
+
 
     string strHeader(
       const string& title,
@@ -154,6 +156,11 @@ class Slist
     bool minimal() const;
 
     void getLoopData(StratData& stratData);
+
+    void splitDistributions(
+      const Strategy& counterpart,
+      Slist& own,
+      Slist& shared);
 
     const Result resultLowest() const;
 

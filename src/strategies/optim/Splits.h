@@ -37,14 +37,6 @@ class Splits
     unsigned count;
 
 
-    void pushDistribution(
-      Strategies& strats,
-      const StratData& stratData);
-
-    void splitDistributions(
-      Strategies& strategies,
-      const Strategy& counterpart);
-
     void setPointers();
 
 

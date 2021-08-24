@@ -451,16 +451,39 @@ bool Strategies::minimal() const
 }
 
 
-/* */
-void Strategies::getLoopData(StratData& stratData)
+void Strategies::splitDistributions(
+  const Strategy& counterpart,
+  Strategies& own,
+  Strategies& shared)
 {
-  // This is used to loop over all strategies in synchrony, one
-  // distribution at a time.  If the caller is going to change
-  // anything inside Strategies with this, the caller must also
-  // consider the effect on scrutinizedFlag.
-  slist.getLoopData(stratData);
+  slist.splitDistributions(counterpart, own.slist, shared.slist);
 }
-/* */
+
+
+void Strategies::reactivate(
+  Strategy& simpleStrat, // TODO const?
+  const Strategy& constants)
+{
+  simpleStrat *= constants;
+  * this *= simpleStrat;
+
+  // As simpleStrat is completely complementary to strats,
+  // we often do not need to re-sort and consolidate.
+  // But it can happen that the defenders can hold declarer to a
+  // constant 2 tricks (10/16907, lead 7, then rising with the king),
+  // or the defender can give declarer several choices in the range
+  // of 1-3 tricks.  Since the defenders move after declarer
+  // publishes his strategy, he will never get 3 tricks.  When
+  // the simple strategy is multiplied back here, weights can change
+  // and therefore the ordering can also change.
+
+  if (! simpleStrat.empty())
+  {
+    // TODO Maybe only when real simpleStrats non-empty?
+    // Constants don't change anything?
+    Strategies::consolidate();
+  }
+}
 
 
 /************************************************************

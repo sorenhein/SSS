@@ -47,6 +47,8 @@ class Strategies
 
     void scrutinize(const Ranges& rangesIn);
 
+    void consolidate();
+
     void operator += (const Strategy& strat);
 
 
@@ -66,9 +68,6 @@ class Strategies
       const Play& play,
       const Survivors& survivors);
 
-    void consolidate();
-
-    // Full Result level
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2);
@@ -82,7 +81,14 @@ class Strategies
     bool ordered() const;
     bool minimal() const;
 
-    void getLoopData(StratData& stratData);
+    void splitDistributions(
+      const Strategy& counterpart,
+      Strategies& own,
+      Strategies& shared);
+
+    void reactivate(
+      Strategy& simpleStrat,
+      const Strategy& constants);
 
     void makeRanges();
 
