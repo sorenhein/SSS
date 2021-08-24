@@ -1,3 +1,11 @@
+Winner::declarerPrefers can probably either become or be split into
+a secondary compare that ignores tricks.  Look in Winners at all
+usages.
+
+Rename declarerPrefers to lessEqual, ...
+
+Should Strategy.cpp be split into a couple of files?
+
 -r could be for run flags
 - Play-level choice (void, optimized, normal)
 - Range optimization or not

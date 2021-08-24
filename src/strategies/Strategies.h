@@ -46,6 +46,8 @@ class Strategies
 
     void restudy();
 
+    void scrutinize(const Ranges& rangesIn);
+
     // Full Result level
     bool sameOrdered(const Strategies& strats2) const;
     bool sameUnordered(const Strategies& strats2) const;
@@ -111,8 +113,6 @@ class Strategies
       const Survivors& survivors);
 
     void consolidate();
-
-    void scrutinize(const Ranges& rangesIn);
 
     // Full Result level
     bool operator == (const Strategies& strats2) const;

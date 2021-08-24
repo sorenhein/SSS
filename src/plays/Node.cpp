@@ -172,25 +172,22 @@ void Node::purgeRanges(const bool debugFlag)
   constants.eraseRest(citer);
   parentPtr->constants *= constants;
 
-  strats.scrutinize(parentPtr->strats.getRanges());
+  if (! eraseFlag)
+    return;
 
   // Some strategies may be dominated that weren't before.
-  if (eraseFlag)
+  strats.consolidate();
+
+  // It could happen that a strategy has become dominated after
+  // the erasures.  To take advantage of this we'd have to redo
+  // the loop (only for dominance, not for constants), so we'd
+  // regenerate stratData first.  But this is just an optimization
+  // anyway, so we'll stop here.
+
+  if (debugFlag)
   {
-    // TODO, perhaps: 9/1910
-    // After erasing, d = 8 goes from 2-3 to 3 constant, and this
-    // is now dominated by 2-3.  So we could potentially redo the
-    // loop, only for dominance and not for constants this time.
-    // We'd have to regenerate stratData first, at least the iter
-    // and riter, to rewind.
-
-    strats.consolidate();
-
-    if (debugFlag)
-    {
-      cout << constants.str("\nNew constants", true) << "\n";
-      cout << strats.str("Ranges after purging", true);
-    }
+    cout << constants.str("\nNew constants", true) << "\n";
+    cout << strats.str("Ranges after purging", true);
   }
 }
 
