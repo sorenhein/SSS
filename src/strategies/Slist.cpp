@@ -29,6 +29,12 @@ Slist::~Slist()
 }
 
 
+/************************************************************
+ *                                                          *
+ * Utilities                                                *
+ *                                                          *
+ ************************************************************/
+
 void Slist::clear()
 {
   strategies.clear();
@@ -41,9 +47,33 @@ void Slist::resize(const unsigned len)
 }
 
 
+const Strategy& Slist::front() const
+{
+  return strategies.front();
+}
+
+
+void Slist::push_back(const Strategy& strategy)
+{
+  strategies.push_back(strategy);
+}
+
+
+unsigned Slist::size() const
+{
+  return strategies.size();
+}
+
+
+bool Slist::empty() const
+{
+  return (strategies.empty() || strategies.front().empty());
+}
+
+
 /************************************************************
  *                                                          *
- * Ways in which a new Slist arises : setTrivial and adapt  *
+ * Ways in which a new Slist arises: setTrivial and adapt   *
  *                                                          *
  ************************************************************/
 
@@ -176,15 +206,6 @@ bool Slist::sameOrdered(const Slist& slist2) const
 
 bool Slist::sameUnordered(const Slist& slist2) const
 {
-  // This is dreadfully slow.  We could make use of the 
-  // weight-ordered nature, and perhaps also the used-up matches,
-  // if this ever became a performance issue.  But I think it's
-  // mainly used for debugging.
-
-  // TODO Could nonetheless streamline this.  Start on the diagonal,
-  // only make half the comparisons.  This will tend to do sameOrdered
-  // as a special case
-
   for (auto iter1 = strategies.begin(); iter1 != strategies.end(); iter1++)
   {
     bool sameFlag = false;
@@ -208,6 +229,13 @@ bool Slist::sameUnordered(const Slist& slist2) const
 
 bool Slist::operator == (const Slist& slist2) const
 {
+  // This is dreadfully slow, but it is mainly used for debugging.
+  // If we did want to speed this up, we would loop over i and then
+  // over j >= i (upper triangle of matrix).  By starting at j = i
+  // we would get the frequent case where the lists are ordered.
+  // Then we'd add some methods in Comparer where we would stop
+  // if a row had no equal, or a column had more than one equal.
+
   if (Slist::size() != slist2.size())
     return false;
   else if (Slist::sameOrdered(slist2))
@@ -219,7 +247,7 @@ bool Slist::operator == (const Slist& slist2) const
 
 /************************************************************
  *                                                          *
- * operator += Strategy and a helper method                 *
+ * addStrategy (+= strat) and helper methods                *
  *                                                          *
  ************************************************************/
 
@@ -320,80 +348,64 @@ void Slist::addStrategy(
 }
 
 
-void Slist::add(
-  const Slist& slist2,
-  ComparatorType lessEqualMethod)
+void Slist::addStrategyInplace(ComparatorType lessEqualMethod)
 {
-  for (auto& strategy: slist2)
-    Slist::addStrategy(strategy, lessEqualMethod);
-}
+  // For efficiency the product was placed straight into the back
+  // of slist.  It may dominate or be dominated by others, or it
+  // may be in the wrong place.
+
+  if (strategies.size() == 1)
+  {
+    // Keep the product, so make a new scratch-pad element.
+    strategies.emplace_back(Strategy());
+    return;
+  }
+
+  // The strategies list is in descending order of weights.
+  // The new Strategy might dominate everything with a lower weight and
+  // can only be dominated by a Strategy with at least its own weight.
+  // This checking costs about one third of the overall method time.
+  
+  auto iter = strategies.begin();
+  auto piter = prev(strategies.end());
+
+  if (Slist::addendDominatedHeavier(iter, lessEqualMethod, * piter))
+    // piter is dominated by a Strategy with more weight.
+    return;
 
 
-void Slist::multiply(
-  const Slist& slist2,
-  const Ranges& ranges,
-  ComparatorType lessEqualMethod)
-{
-  // This is the only place where scrutinize is used, and it's a
-  // bit annoying, but hard to avoid.  We'd have to have this whole
-  // loop in Strategies.
-  auto strategiesOwn = move(strategies);
-  strategies.clear();
+  if (Slist::processSameWeights(iter, piter, lessEqualMethod, * piter))
+    // piter is dominated by a Strategy with equal weight.
+    return;
+
+
+  if (iter == piter)
+  {
+    // Already in the right place at the end.
+    // Keep the product, so make a new scratch-pad element.
+    strategies.emplace_back(Strategy());
+    return;
+  }
+
+  // The new vector must be inserted, i.e. spliced in.
+  // This is super-fast.
+  strategies.splice(iter, strategies, piter);
+  piter = prev(iter);
+
+  // The new vector may dominate lighter vectors.  This is also
+  // quite efficient and doesn't happen so often.
+  Slist::eraseDominatedLighter(iter, lessEqualMethod, * piter);
+
+  // Make a new scratch-pad element.
   strategies.emplace_back(Strategy());
-
-  for (auto& strat1: strategiesOwn)
-    for (auto& strat2: slist2.strategies)
-    {
-      // TODO Either this goes back into multiplyAddStrategy,
-      // or we merge addStrategy and multiplyAddStrategy somehow
-      auto& product = strategies.back();
-      product.multiply(strat1, strat2);
-      if (! ranges.empty())
-        product.scrutinize(ranges);
-
-      Slist::multiplyAddStrategy(lessEqualMethod);
-      // Slist::multiplyAddStrategy(product, lessEqualMethod);
-    }
-
-  strategies.pop_back();
-}
-
-
-void Slist::multiplyOneByOne(const Slist& slist2)
-{
-  strategies.front() *= slist2.front();
 }
 
 
 /************************************************************
  *                                                          *
- * operator += helper methods                               *
+ * addStrategies (+= strats) and helper methods             *
  *                                                          *
  ************************************************************/
-
-void Slist::plusOneByOne(const Slist& slist2)
-{
-  // Simple version when both Slist's are known to have size 1,
-  // as happens very frequently.
-
-  const auto& str1 = strategies.front();
-  const auto& str2 = slist2.strategies.front();
-
-  const CompareType c = str1.compareCompleteStudied(str2);
-  
-  if (c == WIN_FIRST || c == WIN_EQUAL)
-    return;
-  else if (c == WIN_SECOND)
-    * this = slist2;
-  else
-  {
-    if (str1.weight() >= str2.weight())
-      strategies.push_back(str2);
-    else
-      strategies.push_front(str2);
-  }
-}
-
 
 void Slist::markChanges(
   const Slist& slist2,
@@ -472,6 +484,8 @@ void Slist::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
+      // TODO Is there a more target secondary comparison?
+      // Does it matter much?
       if (iter->lessEqualPrimaryScrutinized(strat) &&
           iter->lessEqualCompleteBasic(strat))
       {
@@ -500,6 +514,50 @@ void Slist::processChanges(
 }
 
 
+void Slist::addStrategies(
+  const Slist& slist2,
+  ComparatorType lessEqualMethod)
+{
+  for (auto& strategy: slist2.strategies)
+    Slist::addStrategy(strategy, lessEqualMethod);
+}
+
+
+void Slist::addStrategiesScrutinized(const Slist& slist2)
+{
+  list<Addition> additions;
+  list<list<Strategy>::const_iterator> deletions;
+
+  Slist::markChanges(slist2, additions, deletions);
+
+  Slist::processChanges(additions, deletions);
+}
+
+
+void Slist::plusOneByOne(const Slist& slist2)
+{
+  // Simple version when both Slist's are known to have size 1,
+  // as happens very frequently.
+
+  const auto& str1 = strategies.front();
+  const auto& str2 = slist2.strategies.front();
+
+  const CompareType c = str1.compareCompleteStudied(str2);
+  
+  if (c == WIN_FIRST || c == WIN_EQUAL)
+    return;
+  else if (c == WIN_SECOND)
+    * this = slist2;
+  else
+  {
+    if (str1.weight() >= str2.weight())
+      strategies.push_back(str2);
+    else
+      strategies.push_front(str2);
+  }
+}
+
+
 /************************************************************
  *                                                          *
  * operator *= Strategy                                     *
@@ -519,131 +577,48 @@ void Slist::operator *= (const Strategy& strat)
 
 /************************************************************
  *                                                          *
- * operator *= Strategies helper methods                    *
+ * operator *= Strategies                                   *
  *                                                          *
  ************************************************************/
 
-void Slist::multiplyAddStrategy(ComparatorType lessEqualMethod)
+void Slist::multiply(
+  const Slist& slist2,
+  const Ranges& ranges,
+  ComparatorType lessEqualMethod)
 {
-  // For efficiency the product was placed straight into the back
-  // of slist.  It may or may not belong there or anywhere else.
-  auto piter = prev(strategies.end());
-
-  if (strategies.size() == 1)
-  {
-    // Keep the product and make a new scratch-pad element.
-    strategies.emplace_back(Strategy());
-    return;
-  }
-
-  // The strategies list is in descending order of weights.
-  // The new Strategy might dominate everything with a lower weight and
-  // can only be dominated by a Strategy with at least its own weight.
-  // This checking costs about one third of the overall method time.
-  
-  auto iter = strategies.begin();
-
-  if (Slist::addendDominatedHeavier(iter, lessEqualMethod, * piter))
-    // piter is dominated by a Strategy with more weight.
-    return;
-
-
-  if (Slist::processSameWeights(iter, piter, lessEqualMethod, * piter))
-    // piter is dominated by a Strategy with equal weight.
-    return;
-
-
-  // Already in the right place at the end?
-  if (iter == piter)
-  {
-    strategies.emplace_back(Strategy());
-    return;
-  }
-
-  // The new vector must be inserted, i.e. spliced in.
-  // This is super-fast.
-  strategies.splice(iter, strategies, piter);
-  piter = prev(iter);
-
-  // The new vector may dominate lighter vectors.  This is also
-  // quite efficient and doesn't happen so often.
-  Slist::eraseDominatedLighter(iter, lessEqualMethod, * piter);
-
-  // Make a new scratch-pad element.
+  // This is the only place where scrutinize is used, and it's a
+  // bit annoying, but hard to avoid.  We'd have to have this whole
+  // loop in Strategies.
+  auto strategiesOwn = move(strategies);
+  strategies.clear();
   strategies.emplace_back(Strategy());
+
+  for (auto& strat1: strategiesOwn)
+    for (auto& strat2: slist2.strategies)
+    {
+      auto& product = strategies.back();
+      product.multiply(strat1, strat2);
+      if (! ranges.empty())
+        product.scrutinize(ranges);
+
+      Slist::addStrategyInplace(lessEqualMethod);
+    }
+
+  strategies.pop_back();
+}
+
+
+void Slist::multiplyOneByOne(const Slist& slist2)
+{
+  strategies.front() *= slist2.front();
 }
 
 
 /************************************************************
  *                                                          *
- * Utilities                                                *
+ * Splits                                                   *
  *                                                          *
  ************************************************************/
-
-const Strategy& Slist::front() const
-{
-  return strategies.front();
-}
-
-
-Strategy& Slist::back()
-{
-  return strategies.back();
-}
-
-
-void Slist::push_back(const Strategy& strategy)
-{
-  strategies.push_back(strategy);
-}
-
-
-unsigned Slist::size() const
-{
-  return strategies.size();
-}
-
-
-bool Slist::empty() const
-{
-  return (strategies.empty() || strategies.front().empty());
-}
-
-
-bool Slist::ordered() const
-{
-  // Check that the strategies are ordered by descending weight.
-  for (auto iter = strategies.begin(); iter != prev(strategies.end()); 
-      iter++)
-  {
-    if (iter->weight() < next(iter)->weight())
-      return false;
-  }
-  return true;
-}
-
-
-bool Slist::minimal() const
-{
-  // This is only for diagnostics.
-  if (strategies.size() <= 1)
-    return true;
-
-  unsigned i = 0;
-  for (auto iter1 = strategies.begin(); iter1 != prev(strategies.end());
-      iter1++, i++)
-  {
-    unsigned j = i+1;
-    for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++, j++)
-      if (iter1->compareCompleteBasic(* iter2) != WIN_DIFFERENT)
-      {
-        cout << "Minimal violation " << i << ", " << j << endl;
-        return false;
-      }
-  }
-  return true;
-}
-
 
 void Slist::getLoopData(StratData& stratData)
 {
@@ -651,6 +626,7 @@ void Slist::getLoopData(StratData& stratData)
   // distribution at a time.  If the caller is going to change
   // anything inside Slist with this, the caller must also
   // consider the effect on scrutinizedFlag.
+
   // TODO Put this method in StratData?
   auto siter = stratData.data.begin();
   for (auto& strat: strategies)
@@ -663,71 +639,9 @@ void Slist::getLoopData(StratData& stratData)
 }
 
 
-bool Slist::purgeRanges(
-  Strategy& constants,
-  const Ranges& rangesOwn,
-  const Ranges& rangesParent,
-  const bool debugFlag)
-{
-  // Make a list of iterators -- one per Strategy.
-  // The iterators later step through one "row" (distribution) of
-  // all Strategy's in synchrony.
-  StratData stratData;
-  stratData.data.resize(strategies.size());
-  Slist::getLoopData(stratData);
-  stratData.riter = rangesOwn.begin();
-
-  constants.resize(rangesParent.size());
-  auto citer = constants.begin();
-
-  bool eraseFlag = false;
-
-  for (auto& parentRange: rangesParent)
-  {
-    // Get to the same distribution in each Strategy if it exists.
-    const StratStatus status = stratData.advance(parentRange.dist());
-    if (status == STRATSTATUS_END)
-      break;
-    else if (status == STRATSTATUS_FURTHER_DIST)
-      continue;
-
-    if (parentRange.constant())
-    {
-      * citer = parentRange.constantResult();
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-      citer++;
-
-      if (debugFlag)
-      {
-        cout << "Erased constant for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-    else if (parentRange < * stratData.riter)
-    {
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-
-      if (debugFlag)
-      {
-        cout << "Erased dominated range for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-  }
-
-  // Shrink to the size used.
-  constants.eraseRest(citer);
-
-  return eraseFlag;
-}
-
-
 void Slist::pushDistribution(const StratData& stratData)
 {
+  // TODO Can this go in StratData?
   auto siter = strategies.begin();
   for (auto& sd: stratData.data)
   {
@@ -804,6 +718,12 @@ void Slist::splitDistributions(
 }
 
 
+/************************************************************
+ *                                                          *
+ * Ranges                                                   *
+ *                                                          *
+ ************************************************************/
+
 void Slist::makeRanges(Ranges& ranges) const
 {
   if (strategies.empty())
@@ -817,6 +737,69 @@ void Slist::makeRanges(Ranges& ranges) const
   for (auto iter = next(strategies.begin());
       iter != strategies.end(); iter++)
     iter->extendRanges(ranges);
+}
+
+
+bool Slist::purgeRanges(
+  Strategy& constants,
+  const Ranges& rangesOwn,
+  const Ranges& rangesParent,
+  const bool debugFlag)
+{
+  // Make a list of iterators -- one per Strategy.
+  // The iterators later step through one "row" (distribution) of
+  // all Strategy's in synchrony.
+  StratData stratData;
+  stratData.data.resize(strategies.size());
+  Slist::getLoopData(stratData);
+  stratData.riter = rangesOwn.begin();
+
+  constants.resize(rangesParent.size());
+  auto citer = constants.begin();
+
+  bool eraseFlag = false;
+
+  for (auto& parentRange: rangesParent)
+  {
+    // Get to the same distribution in each Strategy if it exists.
+    const StratStatus status = stratData.advance(parentRange.dist());
+    if (status == STRATSTATUS_END)
+      break;
+    else if (status == STRATSTATUS_FURTHER_DIST)
+      continue;
+
+    if (parentRange.constant())
+    {
+      * citer = parentRange.constantResult();
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+      citer++;
+
+      if (debugFlag)
+      {
+        cout << "Erased constant for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+    else if (parentRange < * stratData.riter)
+    {
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+
+      if (debugFlag)
+      {
+        cout << "Erased dominated range for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+  }
+
+  // Shrink to the size used.
+  constants.eraseRest(citer);
+
+  return eraseFlag;
 }
 
 
@@ -834,6 +817,48 @@ const Result Slist::resultLowest() const
     resultLowest *= strat.resultLowest();
 
   return resultLowest;
+}
+
+
+/************************************************************
+ *                                                          *
+ * Utilities                                                *
+ *                                                          *
+ ************************************************************/
+
+
+bool Slist::ordered() const
+{
+  // Check that the strategies are ordered by descending weight.
+  for (auto iter = strategies.begin(); iter != prev(strategies.end()); 
+      iter++)
+  {
+    if (iter->weight() < next(iter)->weight())
+      return false;
+  }
+  return true;
+}
+
+
+bool Slist::minimal() const
+{
+  // This is only for diagnostics.
+  if (strategies.size() <= 1)
+    return true;
+
+  unsigned i = 0;
+  for (auto iter1 = strategies.begin(); iter1 != prev(strategies.end());
+      iter1++, i++)
+  {
+    unsigned j = i+1;
+    for (auto iter2 = next(iter1); iter2 != strategies.end(); iter2++, j++)
+      if (iter1->compareCompleteBasic(* iter2) != WIN_DIFFERENT)
+      {
+        cout << "Minimal violation " << i << ", " << j << endl;
+        return false;
+      }
+  }
+  return true;
 }
 
 

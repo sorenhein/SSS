@@ -63,16 +63,6 @@ timersStrat[0].stop();
 }
 
 
-void Strategies::collapseOnVoid()
-{
-timersStrat[1].start();
-
-  slist.collapseOnVoid();
-
-timersStrat[1].stop();
-}
-
-
 void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
@@ -215,12 +205,16 @@ timersStrat[8].start();
     Strategies::scrutinize(ranges);
     strats2.scrutinize(ranges);
 
+    slist.addStrategiesScrutinized(strats2.slist);
+
+/*
     // TODO Make a Slist method, avoid making Additions global.
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
     slist.markChanges(strats2.slist, additions, deletions);
 
     slist.processChanges(additions, deletions);
+    */
 
 timersStrat[8].stop();
   }
@@ -234,7 +228,7 @@ timersStrat[9].start();
     // But it's generally not worth it in this case.
     scrutinizedFlag = false;
 
-    slist.add(strats2.slist, &Strategy::lessEqualPrimaryStudied);
+    slist.addStrategies(strats2.slist, &Strategy::lessEqualPrimaryStudied);
 
 timersStrat[9].stop();
   }

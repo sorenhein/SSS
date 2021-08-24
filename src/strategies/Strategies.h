@@ -39,8 +39,6 @@ class Strategies
     bool scrutinizedFlag;
 
 
-    void collapseOnVoid();
-
     void consolidateTwo(ComparatorType lessEqualMethod);
 
     void restudy();
