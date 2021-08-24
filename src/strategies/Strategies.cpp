@@ -50,13 +50,15 @@ void Strategies::setTrivial(
   const Result& trivial,
   const unsigned char len)
 {
+timersStrat[0].start();
+
   // Repeat the trivial result len times.
 
-timersStrat[0].start();
   ranges.reset();
   scrutinizedFlag = false;
 
   slist.setTrivial(trivial, len);
+
 timersStrat[0].stop();
 }
 
@@ -64,7 +66,9 @@ timersStrat[0].stop();
 void Strategies::collapseOnVoid()
 {
 timersStrat[1].start();
+
   slist.collapseOnVoid();
+
 timersStrat[1].stop();
 }
 
@@ -74,8 +78,10 @@ void Strategies::adapt(
   const Survivors& survivors)
 {
 timersStrat[2].start();
+
   slist.adapt(play, survivors);
   scrutinizedFlag = false;
+
 timersStrat[2].stop();
 }
 
@@ -85,14 +91,6 @@ timersStrat[2].stop();
  * Cleaning up an existing strategy                         *
  *                                                          *
  ************************************************************/
-
-void Strategies::consolidateTwo(ComparatorType lessEqualMethod)
-{
-timersStrat[3].start();
-  slist.consolidateTwo(lessEqualMethod);
-timersStrat[3].stop();
-}
-
 
 void Strategies::consolidate()
 {
@@ -113,6 +111,8 @@ void Strategies::consolidate()
   }
   else if (slist.size() == 2)
   {
+timersStrat[3].start();
+
     // The general way also works in this case, and it is just
     // a small optimization.
     ComparatorType lessEqualMethod = (scrutinizedFlag ? 
@@ -120,6 +120,8 @@ void Strategies::consolidate()
       &Strategy::lessEqualPrimaryStudied);
 
     slist.consolidateTwo(lessEqualMethod);
+
+timersStrat[3].stop();
     return;
   }
   else
@@ -129,6 +131,7 @@ timersStrat[4].start();
     // But leave ranges intact.
     // The method was not explicit until now -- is it right?
     slist.consolidate(&Strategy::lessEqualPrimaryStudied);
+
 timersStrat[4].stop();
   }
 }
@@ -137,8 +140,10 @@ timersStrat[4].stop();
 void Strategies::restudy()
 {
 timersStrat[5].start();
+
   for (auto& strategy: slist)
     strategy.restudy();
+
 timersStrat[5].stop();
 }
 
@@ -146,10 +151,12 @@ timersStrat[5].stop();
 void Strategies::scrutinize(const Ranges& rangesIn)
 {
 timersStrat[6].start();
+
   for (auto& strategy: slist)
     strategy.scrutinize(rangesIn);
 
   scrutinizedFlag = true;
+
 timersStrat[6].stop();
 }
 
@@ -163,36 +170,6 @@ timersStrat[6].stop();
 bool Strategies::operator == (const Strategies& strats2) const
 {
   return (slist == strats2.slist);
-}
-
-
-/************************************************************
- *                                                          *
- * operator += Strategy                                     *
- *                                                          *
- ************************************************************/
-
-void Strategies::operator += (const Strategy& strat)
-{
-  // Gets called from consolidate and from += strats.
-
-  ComparatorType lessEqualMethod;
-  unsigned tno;
-  if (scrutinizedFlag)
-  {
-    lessEqualMethod = &Strategy::lessEqualPrimaryScrutinized;
-    tno = 7;
-  }
-  else
-  {
-    lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
-    tno = 8;
-  }
-
-timersStrat[tno].start();
-  slist.addStrategy(strat, lessEqualMethod);
-timersStrat[tno].stop();
-
 }
 
 
@@ -218,16 +195,16 @@ void Strategies::operator += (Strategies& strats2)
   if (sno1 == 1 && sno2 == 1)
   {
     // Simplified case.
-timersStrat[9].start();
+timersStrat[7].start();
     slist.plusOneByOne(strats2.slist);
-timersStrat[9].stop();
+timersStrat[7].stop();
   }
   else if (sno1 >= 20 && sno2 >= 20)
   {
     // Rare, but very slow per invocation when it happens.
     // Consumes perhaps 75% of the method time, so more optimized.
 
-timersStrat[10].start();
+timersStrat[8].start();
 
     // We only need the minima here, but we use the existing method.
 
@@ -244,11 +221,11 @@ timersStrat[10].start();
 
     slist.processChanges(additions, deletions);
 
-timersStrat[10].stop();
+timersStrat[8].stop();
   }
   else
   {
-timersStrat[11].start();
+timersStrat[9].start();
 
     // General case.  Frequent and fast, perhaps 25% of the method time.
 
@@ -258,8 +235,7 @@ timersStrat[11].start();
 
     slist.add(strats2.slist, &Strategy::lessEqualPrimaryStudied);
 
-timersStrat[11].stop();
-
+timersStrat[9].stop();
   }
 }
 
@@ -282,11 +258,11 @@ void Strategies::operator *= (const Strategy& strat)
   }
   else
   {
-timersStrat[12].start();
+timersStrat[10].start();
 
     slist *= strat;
 
-timersStrat[12].stop();
+timersStrat[10].stop();
   }
   // Addition: Correct?
   scrutinizedFlag = false;
@@ -326,25 +302,26 @@ void Strategies::operator *= (Strategies& strats2)
 
   if (len1 == 1 && len2 == 1)
   {
-timersStrat[13].start();
-    // slist.front() *= strats2.slist.front();
+timersStrat[11].start();
+
     slist.multiplyOneByOne(strats2.slist);
-timersStrat[13].stop();
     scrutinizedFlag = false;
+
+timersStrat[11].stop();
     return;
   }
 
   if (ranges.empty() || len1 < 10 || len2 < 10)
   {
+timersStrat[12].start();
 
     // This implementation of the general product reduces
     // memory overhead.  The temporary product is formed in the last
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
-timersStrat[14].start();
-    ComparatorType lessEqualMethod;
-    unsigned tno;
+    ComparatorType lessEqualMethod =
+      &Strategy::lessEqualPrimaryScrutinized;
 
     // TODO Just to make it work.  Slow?
     Strategies::makeRanges();
@@ -354,30 +331,17 @@ timersStrat[14].start();
     Strategies::scrutinize(ranges);
     strats2.scrutinize(ranges);
 
-    if (scrutinizedFlag)
-    {
-      lessEqualMethod = &Strategy::lessEqualPrimaryScrutinized;
-      tno = 8;
-    }
-    else
-    {
-assert(false);
-      lessEqualMethod = &Strategy::lessEqualPrimaryStudied;
-      tno = 7;
-    }
-
-// timersStrat[tno].start();
-
     slist.multiply(strats2.slist, ranges, lessEqualMethod);
 
     scrutinizedFlag = false;
 
-timersStrat[14].stop();
-// timersStrat[tno].stop();
+timersStrat[12].stop();
     return;
   }
   else
   {
+timersStrat[13].start();
+
     // This is the most complex version, and I may have gotten a bit
     // carried away...  The two Strategies have distributions that are 
     // overlapping as well as distributions that are unique to each of 
@@ -388,7 +352,6 @@ timersStrat[14].stop();
     // Even though Extensions splits Strategy's into own and shared
     // by distribution, we can still share the central ranges.
 
-timersStrat[15].start();
 
     Strategies::makeRanges();
     strats2.makeRanges();
@@ -407,7 +370,7 @@ timersStrat[15].start();
 
     scrutinizedFlag = false;
 
-timersStrat[15].stop();
+timersStrat[13].stop();
   }
 }
 
@@ -491,20 +454,24 @@ void Strategies::reactivate(
 
 void Strategies::makeRanges()
 {
-timersStrat[16].start();
+timersStrat[14].start();
+
   slist.makeRanges(ranges);
-timersStrat[16].stop();
+
+timersStrat[14].stop();
 }
 
 
 void Strategies::propagateRanges(const Strategies& child)
 {
+timersStrat[15].start();
+
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
-timersStrat[17].start();
   ranges*= child.ranges;
-timersStrat[17].stop();
+
+timersStrat[15].stop();
 }
 
 
@@ -516,28 +483,32 @@ bool Strategies::purgeRanges(
   if (slist.empty())
     return false;
 
+timersStrat[16].start();
+
   const bool eraseFlag = slist.purgeRanges(constants,
     ranges, rangesParent, debugFlag);
 
-  if (! eraseFlag)
-    return false;
-
-  // Some strategies may be dominated that weren't before.
-  Strategies::consolidate();
-
-  // It could happen that a strategy has become dominated after
-  // the erasures.  To take advantage of this we'd have to redo
-  // the loop (only for dominance, not for constants), so we'd
-  // regenerate stratData first.  But this is just an optimization
-  // anyway, so we'll stop here.
-
-  if (debugFlag)
+  if (eraseFlag)
   {
-    cout << constants.str("\nNew constants", true) << "\n";
-    cout << Strategies::str("Ranges after purging", true);
+    // Some strategies may be dominated that weren't before.
+    Strategies::consolidate();
+
+    // It could happen that a strategy has become dominated after
+    // the erasures.  To take advantage of this we'd have to redo
+    // the loop (only for dominance, not for constants), so we'd
+    // regenerate stratData first.  But this is just an optimization
+    // anyway, so we'll stop here.
+
+    if (debugFlag)
+    {
+      cout << constants.str("\nNew constants", true) << "\n";
+      cout << Strategies::str("Ranges after purging", true);
+    }
   }
 
-  return true;
+timersStrat[16].stop();
+
+  return eraseFlag;
 }
 
 
@@ -555,9 +526,11 @@ const Ranges& Strategies::getRanges() const
 
 const Result Strategies::resultLowest() const
 {
-timersStrat[18].start();
+timersStrat[17].start();
+
   auto& res = slist.resultLowest();
-timersStrat[18].start();
+
+timersStrat[17].start();
   return res;
   // TODO Is this broken?
 }

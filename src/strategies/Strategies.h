@@ -49,8 +49,6 @@ class Strategies
 
     void consolidate();
 
-    void operator += (const Strategy& strat);
-
 
   public:
 

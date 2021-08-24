@@ -105,18 +105,17 @@ void Combinations::resize(const unsigned maxCardsIn)
   timersStrat[ 4].name("Strats::consolidate (general)");
   timersStrat[ 5].name("Strats::restudy");
   timersStrat[ 6].name("Strats::scrutinize");
-  timersStrat[ 7].name("Strats::+= strat (scrut)");
-  timersStrat[ 8].name("Strats::+= strat (studied)");
-  timersStrat[ 9].name("Strats::plusOneByOne");
-  timersStrat[10].name("Strats::+= strats (20+)");
-  timersStrat[11].name("Strats::+= strats (rest)");
-  timersStrat[12].name("Strats::*= strat");
-  timersStrat[13].name("Strats::*= strats (1*1)");
-  timersStrat[14].name("Strats::*= strats (<10)");
-  timersStrat[15].name("Strats::*= strats (>=10)");
-  timersStrat[16].name("Strats::makeRanges (core)");
-  timersStrat[17].name("Strats::propagateRanges");
-  timersStrat[18].name("Strats::resultLowest");
+  timersStrat[ 7].name("Strats::+= strats (1+1)");
+  timersStrat[ 8].name("Strats::+= strats (20+)");
+  timersStrat[ 9].name("Strats::+= strats (rest)");
+  timersStrat[10].name("Strats::*= strat");
+  timersStrat[11].name("Strats::*= strats (1*1)");
+  timersStrat[12].name("Strats::*= strats (<10)");
+  timersStrat[13].name("Strats::*= strats (>=10)");
+  timersStrat[14].name("Strats::makeRanges");
+  timersStrat[15].name("Strats::propagateRanges");
+  timersStrat[16].name("Strats::purgeRanges");
+  timersStrat[17].name("Strats::resultLowest");
   timersStrat[20].name("Plays::getNextStrategies");
 }
 
