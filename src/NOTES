@@ -4,7 +4,13 @@ usages.
 
 Rename declarerPrefers to lessEqual, ...
 
-Should Strategy.cpp be split into a couple of files?
+Slist should never choose its own comparators; pass in as method ptrs.
+
+Make Slist clean, internally and with respect to Strategies.
+Order the methods sensibly and consistently with Strategies.
+
+In Strategies, get study, scrutinize and methods cleaned up.
+
 
 -r could be for run flags
 - Play-level choice (void, optimized, normal)

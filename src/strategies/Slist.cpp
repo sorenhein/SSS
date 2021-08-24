@@ -13,14 +13,9 @@
 #include "Slist.h"
 #include "StratData.h"
 
+#include "result/Ranges.h"
 #include "../plays/Play.h"
 #include "../Survivor.h"
-#include "result/Ranges.h"
-
-
-// TMP
-#include "../utils/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Slist::Slist()
@@ -60,8 +55,7 @@ void Slist::setTrivial(
 
   Slist::clear();
   strategies.emplace_back(Strategy());
-  Strategy& strat = strategies.back();
-  strat.logTrivial(trivial, len);
+  strategies.back().logTrivial(trivial, len);
 }
 
 
@@ -111,26 +105,22 @@ void Slist::adapt(
 
 /************************************************************
  *                                                          *
- * Cleaning up an existing Slist                            *
+ * Consolidating an Slist                                   *
  *                                                          *
  ************************************************************/
 
 void Slist::consolidateTwo(ComparatorType lessEqualMethod)
 {
   // Check whether to swap the two and whether one is dominated.
-
   auto iter1 = strategies.begin();
   auto iter2 = next(iter1);
+
   if (iter1->weight() < iter2->weight())
   {
     if (((* iter1).*lessEqualMethod)(* iter2))
-    {
       strategies.pop_front();
-    }
     else
-    {
       iter_swap(iter1, iter2);
-    }
   }
   else if (iter2->weight() < iter1->weight())
   {
@@ -139,6 +129,7 @@ void Slist::consolidateTwo(ComparatorType lessEqualMethod)
   }
   else
   {
+    // TODO Same weight: Can take advantage?
     const Compare c = iter1->compareCompleteBasic(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
       strategies.pop_back();
@@ -150,13 +141,13 @@ void Slist::consolidateTwo(ComparatorType lessEqualMethod)
 
 void Slist::consolidate(ComparatorType lessEqualMethod)
 {
-  // Used when a strategy may have gone out of order.  
+  // Used when a strategy may have gone out of order or
+  // dominations may have arisen.
   auto oldStrats = move(strategies);
-  strategies.clear();  // But leave ranges intact
+  strategies.clear();
 
   for (auto& strat: oldStrats)
     Slist::addStrategy(strat, lessEqualMethod);
-    // * this += strat;
 }
 
 
@@ -189,6 +180,10 @@ bool Slist::sameUnordered(const Slist& slist2) const
   // weight-ordered nature, and perhaps also the used-up matches,
   // if this ever became a performance issue.  But I think it's
   // mainly used for debugging.
+
+  // TODO Could nonetheless streamline this.  Start on the diagonal,
+  // only make half the comparisons.  This will tend to do sameOrdered
+  // as a special case
 
   for (auto iter1 = strategies.begin(); iter1 != strategies.end(); iter1++)
   {
@@ -656,8 +651,7 @@ void Slist::getLoopData(StratData& stratData)
   // distribution at a time.  If the caller is going to change
   // anything inside Slist with this, the caller must also
   // consider the effect on scrutinizedFlag.
-  // TODO Make getLoopData local to Slist?
-  // TODO How then does the outside world know to update scrutiny, ...?
+  // TODO Put this method in StratData?
   auto siter = stratData.data.begin();
   for (auto& strat: strategies)
   {
@@ -916,6 +910,8 @@ string Slist::str(
 
   stringstream ss;
   ss << Slist::strHeader(title, rankFlag);
+
+// TODO Can we do this with StratData?
 
   // Make a list of iterators -- one per Strategy.
   list<list<Result>::const_iterator> iters, itersEnd;

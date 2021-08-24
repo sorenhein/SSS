@@ -215,6 +215,7 @@ timersStrat[8].start();
     Strategies::scrutinize(ranges);
     strats2.scrutinize(ranges);
 
+    // TODO Make a Slist method, avoid making Additions global.
     list<Addition> additions;
     list<list<Strategy>::const_iterator> deletions;
     slist.markChanges(strats2.slist, additions, deletions);
@@ -357,6 +358,8 @@ timersStrat[13].start();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
 
+    // TODO Could make an Extensions method multiply with these
+    // arguments.
     Extensions extensions;
     extensions.split(* this, strats2.slist.front(), 
       ranges, EXTENSION_SPLIT1);
@@ -424,6 +427,7 @@ void Strategies::reactivate(
   Strategy& simpleStrat, // TODO const?
   const Strategy& constants)
 {
+  // TODO Time this method, too
   simpleStrat *= constants;
   * this *= simpleStrat;
 
