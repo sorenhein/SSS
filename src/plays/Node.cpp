@@ -17,8 +17,6 @@
 #include "../Distribution.h"
 #include "../Combination.h"
 
-#include "../strategies/StratData.h"
-
 
 Node::Node()
 {
@@ -109,86 +107,16 @@ void Node::propagateRanges()
 
 void Node::purgeRanges(const bool debugFlag)
 {
-  if (strats.empty())
-    return;
+  const bool eraseFlag = strats.purgeRanges(
+    constants, parentPtr->strats.getRanges(), debugFlag);
 
-  // Make a list of iterators -- one per Strategy.
-  // The iterators later step through one "row" (distribution) of
-  // all Strategy's in synchrony.
-  StratData stratData;
-  stratData.data.resize(strats.size());
-  strats.getLoopData(stratData);
-  stratData.riter = strats.getRanges().begin();
-
-  constants.resize(parentPtr->strats.getRanges().size());
-  auto citer = constants.begin();
-
-  bool eraseFlag = false;
-  if (debugFlag)
-  {
-    cout << "\nPurging ranges: " 
-      << Node::strPlay(LEVEL_LHO);
+  if (eraseFlag && debugFlag)
+  { 
+    cout << "\nPurging ranges: " << Node::strPlay(LEVEL_LHO);
     cout << strats.str("Starting point", true);
   }
 
-  for (auto& parentRange: parentPtr->strats.getRanges())
-  {
-    // Get to the same distribution in each Strategy if it exists.
-    const StratStatus status = stratData.advance(parentRange.dist());
-    if (status == STRATSTATUS_END)
-      break;
-    else if (status == STRATSTATUS_FURTHER_DIST)
-      continue;
-
-    if (parentRange.constant())
-    {
-      * citer = parentRange.constantResult();
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-      citer++;
-
-      if (debugFlag)
-      {
-        cout << "Erased constant for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-    else if (parentRange < * stratData.riter)
-    {
-      stratData.eraseDominatedDist();
-      eraseFlag = true;
-
-      if (debugFlag)
-      {
-        cout << "Erased dominated range for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
-      }
-    }
-  }
-
-  // Shrink to the size used.
-  constants.eraseRest(citer);
   parentPtr->constants *= constants;
-
-  if (! eraseFlag)
-    return;
-
-  // Some strategies may be dominated that weren't before.
-  strats.consolidate();
-
-  // It could happen that a strategy has become dominated after
-  // the erasures.  To take advantage of this we'd have to redo
-  // the loop (only for dominance, not for constants), so we'd
-  // regenerate stratData first.  But this is just an optimization
-  // anyway, so we'll stop here.
-
-  if (debugFlag)
-  {
-    cout << constants.str("\nNew constants", true) << "\n";
-    cout << strats.str("Ranges after purging", true);
-  }
 }
 
 

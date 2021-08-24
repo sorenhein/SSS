@@ -90,6 +90,11 @@ class Strategies
 
     const Ranges& getRanges() const;
 
+    bool purgeRanges(
+      Strategy& constants,
+      const Ranges& rangesParent,
+      const bool debugFlag);
+
     const Result resultLowest() const;
 
     string strRanges(const string& title = "") const;

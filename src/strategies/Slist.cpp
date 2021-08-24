@@ -12,11 +12,11 @@
 
 #include "Slist.h"
 #include "StratData.h"
-#include "result/Ranges.h"
 
 #include "../plays/Play.h"
-
 #include "../Survivor.h"
+#include "result/Ranges.h"
+
 
 // TMP
 #include "../utils/Timer.h"

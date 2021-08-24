@@ -371,25 +371,6 @@ assert(false);
 
 // timersStrat[tno].start();
 
-    /*
-    auto strategiesOwn = move(strategies);
-    strategies.clear();
-    strategies.emplace_back(Strategy());
-
-    for (auto& strat1: strategiesOwn)
-      for (auto& strat2: strats2.strategies)
-      {
-        auto& product = slist.back();
-        product.multiply(strat1, strat2);
-        if (! ranges.empty())
-          product.scrutinize(ranges);
-
-        Slist::multiplyAddStrategy(product, lessEqualMethod);
-      }
-
-    strategies.pop_back();
-    */
-
     slist.multiply(strats2.slist, ranges, lessEqualMethod);
 
     scrutinizedFlag = false;
@@ -470,6 +451,7 @@ bool Strategies::minimal() const
 }
 
 
+/* */
 void Strategies::getLoopData(StratData& stratData)
 {
   // This is used to loop over all strategies in synchrony, one
@@ -478,6 +460,7 @@ void Strategies::getLoopData(StratData& stratData)
   // consider the effect on scrutinizedFlag.
   slist.getLoopData(stratData);
 }
+/* */
 
 
 /************************************************************
@@ -512,6 +495,89 @@ void Strategies::propagateRanges(const Strategies& child)
 timersStrat[17].start();
   ranges*= child.ranges;
 timersStrat[17].stop();
+}
+
+
+bool Strategies::purgeRanges(
+  Strategy& constants,
+  const Ranges& rangesParent,
+  const bool debugFlag)
+{
+  if (slist.empty())
+    return false;
+
+  // Make a list of iterators -- one per Strategy.
+  // The iterators later step through one "row" (distribution) of
+  // all Strategy's in synchrony.
+  StratData stratData;
+  stratData.data.resize(slist.size());
+  slist.getLoopData(stratData);
+  stratData.riter = Strategies::getRanges().begin();
+
+  constants.resize(rangesParent.size());
+  auto citer = constants.begin();
+
+  bool eraseFlag = false;
+
+  for (auto& parentRange: rangesParent)
+  {
+    // Get to the same distribution in each Strategy if it exists.
+    const StratStatus status = stratData.advance(parentRange.dist());
+    if (status == STRATSTATUS_END)
+      break;
+    else if (status == STRATSTATUS_FURTHER_DIST)
+      continue;
+
+    if (parentRange.constant())
+    {
+      * citer = parentRange.constantResult();
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+      citer++;
+
+      if (debugFlag)
+      {
+        cout << "Erased constant for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+    else if (parentRange < * stratData.riter)
+    {
+      stratData.eraseDominatedDist();
+      eraseFlag = true;
+
+      if (debugFlag)
+      {
+        cout << "Erased dominated range for parent range:\n";
+        cout << parentRange.strHeader(true);
+        cout << parentRange.str(true);
+      }
+    }
+  }
+
+  // Shrink to the size used.
+  constants.eraseRest(citer);
+
+  if (! eraseFlag)
+    return false;
+
+  // Some strategies may be dominated that weren't before.
+  Strategies::consolidate();
+
+  // It could happen that a strategy has become dominated after
+  // the erasures.  To take advantage of this we'd have to redo
+  // the loop (only for dominance, not for constants), so we'd
+  // regenerate stratData first.  But this is just an optimization
+  // anyway, so we'll stop here.
+
+  if (debugFlag)
+  {
+    cout << constants.str("\nNew constants", true) << "\n";
+    cout << Strategies::str("Ranges after purging", true);
+  }
+
+  return true;
 }
 
 
