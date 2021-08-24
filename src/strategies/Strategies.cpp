@@ -32,11 +32,35 @@ Strategies::~Strategies()
 }
 
 
+/************************************************************
+ *                                                          *
+ * Simple methods                                           *
+ *                                                          *
+ ************************************************************/
+
 void Strategies::reset()
 {
   slist.clear();
   ranges.reset();
   scrutinizedFlag = false;
+}
+
+
+const Strategy& Strategies::front() const
+{
+  return slist.front();
+}
+
+
+unsigned Strategies::size() const
+{
+  return slist.size();
+}
+
+
+bool Strategies::empty() const
+{
+  return slist.empty();
 }
 
 
@@ -78,7 +102,7 @@ timersStrat[2].stop();
 
 /************************************************************
  *                                                          *
- * Cleaning up an existing strategy                         *
+ * Consolidating, studying and scrutinizing (internal)      *
  *                                                          *
  ************************************************************/
 
@@ -127,6 +151,33 @@ timersStrat[4].stop();
 }
 
 
+void Strategies::reactivate(
+  Strategy& simpleStrat, // TODO const?
+  const Strategy& constants)
+{
+  // TODO Time this method, too
+  simpleStrat *= constants;
+  * this *= simpleStrat;
+
+  // As simpleStrat is completely complementary to strats,
+  // we often do not need to re-sort and consolidate.
+  // But it can happen that the defenders can hold declarer to a
+  // constant 2 tricks (10/16907, lead 7, then rising with the king),
+  // or the defender can give declarer several choices in the range
+  // of 1-3 tricks.  Since the defenders move after declarer
+  // publishes his strategy, he will never get 3 tricks.  When
+  // the simple strategy is multiplied back here, weights can change
+  // and therefore the ordering can also change.
+
+  if (! simpleStrat.empty())
+  {
+    // TODO Maybe only when real simpleStrats non-empty?
+    // Constants don't change anything?
+    Strategies::consolidate();
+  }
+}
+
+
 void Strategies::restudy()
 {
 timersStrat[5].start();
@@ -153,7 +204,7 @@ timersStrat[6].stop();
 
 /************************************************************
  *                                                          *
- * operator == and two helper methods                       *
+ * operator ==                                              *
  *                                                          *
  ************************************************************/
 
@@ -165,7 +216,7 @@ bool Strategies::operator == (const Strategies& strats2) const
 
 /************************************************************
  *                                                          *
- * operator += Strategies and helper methods                *
+ * operator += Strategies                                   *
  *                                                          *
  ************************************************************/
 
@@ -206,15 +257,6 @@ timersStrat[8].start();
     strats2.scrutinize(ranges);
 
     slist.addStrategiesScrutinized(strats2.slist);
-
-/*
-    // TODO Make a Slist method, avoid making Additions global.
-    list<Addition> additions;
-    list<list<Strategy>::const_iterator> deletions;
-    slist.markChanges(strats2.slist, additions, deletions);
-
-    slist.processChanges(additions, deletions);
-    */
 
 timersStrat[8].stop();
   }
@@ -374,39 +416,9 @@ timersStrat[13].stop();
 
 /************************************************************
  *                                                          *
- * Utilities                                                *
+ * Splits                                                   *
  *                                                          *
  ************************************************************/
-
-const Strategy& Strategies::front() const
-{
-  return slist.front();
-}
-
-
-unsigned Strategies::size() const
-{
-  return slist.size();
-}
-
-
-bool Strategies::empty() const
-{
-  return slist.empty();
-}
-
-
-bool Strategies::ordered() const
-{
-  return slist.ordered();
-}
-
-
-bool Strategies::minimal() const
-{
-  return slist.minimal();
-}
-
 
 void Strategies::splitDistributions(
   const Strategy& counterpart,
@@ -414,33 +426,6 @@ void Strategies::splitDistributions(
   Strategies& shared)
 {
   slist.splitDistributions(counterpart, own.slist, shared.slist);
-}
-
-
-void Strategies::reactivate(
-  Strategy& simpleStrat, // TODO const?
-  const Strategy& constants)
-{
-  // TODO Time this method, too
-  simpleStrat *= constants;
-  * this *= simpleStrat;
-
-  // As simpleStrat is completely complementary to strats,
-  // we often do not need to re-sort and consolidate.
-  // But it can happen that the defenders can hold declarer to a
-  // constant 2 tricks (10/16907, lead 7, then rising with the king),
-  // or the defender can give declarer several choices in the range
-  // of 1-3 tricks.  Since the defenders move after declarer
-  // publishes his strategy, he will never get 3 tricks.  When
-  // the simple strategy is multiplied back here, weights can change
-  // and therefore the ordering can also change.
-
-  if (! simpleStrat.empty())
-  {
-    // TODO Maybe only when real simpleStrats non-empty?
-    // Constants don't change anything?
-    Strategies::consolidate();
-  }
 }
 
 
@@ -531,6 +516,24 @@ timersStrat[17].start();
 timersStrat[17].start();
   return res;
   // TODO Is this broken?
+}
+
+
+/************************************************************
+ *                                                          *
+ * Utilities                                                *
+ *                                                          *
+ ************************************************************/
+
+bool Strategies::ordered() const
+{
+  return slist.ordered();
+}
+
+
+bool Strategies::minimal() const
+{
+  return slist.minimal();
 }
 
 

@@ -39,13 +39,11 @@ class Strategies
     bool scrutinizedFlag;
 
 
-    void consolidateTwo(ComparatorType lessEqualMethod);
+    void consolidate();
 
     void restudy();
 
     void scrutinize(const Ranges& rangesIn);
-
-    void consolidate();
 
 
   public:
@@ -56,6 +54,12 @@ class Strategies
 
     void reset();
 
+    const Strategy& front() const;
+
+    unsigned size() const;
+
+    bool empty() const;
+
     void setTrivial(
       const Result& trivial,
       const unsigned char len);
@@ -64,27 +68,22 @@ class Strategies
       const Play& play,
       const Survivors& survivors);
 
+    void reactivate(
+      Strategy& simpleStrat,
+      const Strategy& constants);
+
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2);
 
     void operator *= (const Strategy& strat);
-    void operator *= (Strategies& strats2);
 
-    const Strategy& front() const;
-    unsigned size() const;
-    bool empty() const;
-    bool ordered() const;
-    bool minimal() const;
+    void operator *= (Strategies& strats2);
 
     void splitDistributions(
       const Strategy& counterpart,
       Strategies& own,
       Strategies& shared);
-
-    void reactivate(
-      Strategy& simpleStrat,
-      const Strategy& constants);
 
     void makeRanges();
 
@@ -98,6 +97,10 @@ class Strategies
     const Ranges& getRanges() const;
 
     const Result resultLowest() const;
+
+    bool ordered() const;
+
+    bool minimal() const;
 
     string strRanges(const string& title = "") const;
 

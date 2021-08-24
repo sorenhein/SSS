@@ -94,8 +94,8 @@ class Slist
 
     ~Slist();
 
-    // Utilities.  The ones with direct access to strategies should
-    // be used sparingly.  begin() and end() are only used in
+    // Simple methods.  The ones with direct access to strategies 
+    // should be used sparingly.  begin() and end() are only used in
     // Strategies::restudy and Strategies::scrutinized in order to
     // avoid more calls of Strategy::restudy() and 
     // Strategy::scrutinize() in Slist.  front() is only used

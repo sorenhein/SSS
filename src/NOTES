@@ -1,15 +1,22 @@
 Winner::declarerPrefers can probably either become or be split into
 a secondary compare that ignores tricks.  Look in Winners at all
 usages.
-
 Rename declarerPrefers to lessEqual, ...
 
-Slist should never choose its own comparators; pass in as method ptrs.
+Winner.cpp: Go more elegantly / faster by rank not set? Don't have
+to test for mode, can just compare rank?
 
-Make Slist clean, internally and with respect to Strategies.
-Order the methods sensibly and consistently with Strategies.
+Winner comparison: Maybe max unsigned as void?  Then simpler
+comparisons.
+
+
+Go through all TODO's in Strategies and Slist.
 
 In Strategies, get study, scrutinize and methods cleaned up.
+Study might also be an active act, not something that Strategy
+does itself.  Time it.
+
+Check that the comparators are sensible and minimal.
 
 
 -r could be for run flags
@@ -34,16 +41,6 @@ Then we could have a script to compare outputs
     - Start at ==, only do upper triangle of matrix
 
 
-Strategies:
-Check study and scrutinize (where are they turned on?)
-- Can we avoid the scrutinize in Node?
-- Then scrutinize could be private (Extension a friend, too)?
-Winner.cpp: Go more elegantly / faster by rank not set? Don't have
-to test for mode, can just compare rank?
-
-Winner comparison: Maybe max unsigned as void?  Then simpler
-comparisons.
-
 Checks
 ------
 * Range optimization in Nodes (on/off)
@@ -52,14 +49,6 @@ Checks
 * When a Strategies can be simplified to others due to rank,
   somehow check that those strategies that only rely on ranks
   >= the minimum ones have exactly the same Strategies, incl. ranks
-
-Strategies += Strategies by rank comparison
--------------------------------------------
-* Clean up Strategies code/directory again, especially the numbers
-  and types of comparison methods
-* Also optimize for speed again.  If we only need an ==, a compare
-  is perhaps not needed, etc.
-* When we know equality for tricks, we only need equality for ranks
 
 
 Ranks stored in tables
