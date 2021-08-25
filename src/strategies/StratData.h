@@ -30,8 +30,8 @@ enum StratStatus
 struct StratDatum
 {
   Strategy * ptr;
-  list<Result>::iterator iter;
-  list<Result>::iterator end;
+  list<Result>::const_iterator iter;
+  list<Result>::const_iterator end;
 
   void erase()
   {
@@ -59,6 +59,19 @@ struct StratData
     }
   };
 
+  void fill(const list<Strategy>& strategies)
+  {
+    data.resize(strategies.size());
+    auto siter = strategies.begin();
+    for (auto& sd: data)
+    {
+      auto& s = * siter;
+      sd.iter = s.begin();
+      sd.end = s.end();
+      siter++;
+    }
+  };
+
   void pushDistributionOnto(list<Strategy>& strategies)
   {
     // Pushes a distribution (a row) onto strategies.
@@ -74,6 +87,12 @@ struct StratData
   {
     assert(! data.empty());
     return data.front().iter->dist();
+  };
+
+  bool done() const
+  {
+    assert(! data.empty());
+    return (data.front().iter == data.front().end);
   };
 
   StratStatus advance()

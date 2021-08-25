@@ -79,6 +79,16 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 }
 
 
+list<Result>::const_iterator Strategy::erase(
+  list<Result>::const_iterator& iter)
+{
+  // No error checking.
+  weightInt -= iter->tricks();
+  studied.unstudy();
+  return results.erase(iter);
+}
+
+
 void Strategy::eraseRest(list<Result>::iterator iter)
 {
   studied.unstudy();

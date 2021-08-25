@@ -103,6 +103,7 @@ class Strategy
     void push_back(const Result& result);
 
     list<Result>::iterator erase(list<Result>::iterator& iter);
+    list<Result>::const_iterator erase(list<Result>::const_iterator& iter);
 
     void eraseRest(list<Result>::iterator iter);
 

@@ -903,28 +903,19 @@ string Slist::str(
   stringstream ss;
   ss << Slist::strHeader(title, rankFlag);
 
-// TODO Can we do this with StratData?
+  StratData stratData;
+  stratData.fill(strategies);
 
-  // Make a list of iterators -- one per Strategy.
-  list<list<Result>::const_iterator> iters, itersEnd;
-  for (auto& res: strategies)
+  while (! stratData.done())
   {
-    iters.push_back(res.begin());
-    itersEnd.push_back(res.end());
-  }
+    ss << setw(4) << left << +stratData.dist() << right;
 
-  // Use the iterator for the first Strategy to get the distributions.
-  while (iters.front() != itersEnd.front())
-  {
-    ss << setw(4) << left << +iters.front()->dist() << right;
-    for (auto& iter: iters)
-    {
-      ss << iter->strEntry(rankFlag);
+    for (auto& sd: stratData.data)
+      ss << sd.iter->strEntry(rankFlag);
 
-      // This looks funny, but it's the content of iters that is modified.
-      iter++;
-    }
     ss << "\n";
+
+    stratData.advance();
   }
 
   ss << Slist::strWeights(rankFlag);

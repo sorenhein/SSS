@@ -18,9 +18,6 @@ does itself.  Time it.
 
 Check that the comparators are sensible and minimal.
 
-StratData could be used in str()?  Its ptr could be const?
-Is the ptr even used?
-
 
 -r could be for run flags
 - Play-level choice (void, optimized, normal)
