@@ -48,6 +48,16 @@ void Extensions::split(
 }
 
 
+void Extensions::split(
+  Slist& slist1,
+  Slist& slist2,
+  const Ranges& ranges)
+{
+  Extensions::split(slist1, slist2.front(), ranges, EXTENSION_SPLIT1);
+  Extensions::split(slist2, slist1.front(), ranges, EXTENSION_SPLIT2);
+}
+
+
 bool Extensions::productDominatedHeavier(
   list<Extension>::iterator& iter,
   const Extension& product) const
@@ -188,6 +198,7 @@ void Extensions::flatten(Slist& slist)
 {
   // Add back the non-overlapping results explicitly.
 
+  slist.clear();
   for (auto& ext: extensions)
     ext.flatten(slist);
 }

@@ -21,18 +21,18 @@ class Strategy;
 class Ranges;
 
 
-enum ExtensionSplit
-{
- EXTENSION_SPLIT1 = 0,
- EXTENSION_SPLIT2 = 1
-};
-
-
 class Extensions
 {
   private:
 
     // An Extensions is parallel to a Strategies.
+
+    enum ExtensionSplit
+    {
+     EXTENSION_SPLIT1 = 0,
+     EXTENSION_SPLIT2 = 1
+    };
+
 
     list<Extension> extensions;
 
@@ -40,6 +40,12 @@ class Extensions
     Splits splits2;
 
 
+    void split(
+      Slist& slist,
+      const Strategy& counterpart,
+      const Ranges& ranges,
+      const ExtensionSplit split);
+    
     bool productDominatedHeavier(
       list<Extension>::iterator& iter,
       const Extension& product) const;
@@ -63,10 +69,9 @@ class Extensions
     void reset();
 
     void split(
-      Slist& slist,
-      const Strategy& counterpart,
-      const Ranges& ranges,
-      const ExtensionSplit split);
+      Slist& slist1,
+      Slist& slist2,
+      const Ranges& ranges);
     
     void multiply(const Ranges& ranges);
 

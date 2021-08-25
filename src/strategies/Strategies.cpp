@@ -248,33 +248,25 @@ timersStrat[5].stop();
   {
 timersStrat[6].start();
 
-    // This is the most complex version, and I may have gotten a bit
-    // carried away...  The two Strategies have distributions that are 
-    // overlapping as well as distributions that are unique to each of 
-    // them.  We split these out, and we pre-compare within each 
-    // Strategies.  This makes it faster to compare products from each 
-    // Strategies.
+    // The two Strategies have distributions that are overlapping 
+    // as well as distributions that are unique to each of them.  
+    // We split these out, and we pre-compare within each Strategies.  
     //
     // Even though Extensions splits Strategy's into own and shared
     // by distribution, we can still share the central ranges.
-
+    //
+    // TODO Is it possible that the ranges were already set
+    // during purgeRanges?  Can we tell by whether ranges are
+    // non-zero?
 
     Strategies::makeRanges();
     strats2.makeRanges();
     Strategies::propagateRanges(strats2);
 
-    // TODO Could make an Extensions method multiply with these
-    // arguments.
-    // Uses lessEqualPrimary and then compareSecondary.
     Extensions extensions;
-    extensions.split(slist, strats2.slist.front(), 
-      ranges, EXTENSION_SPLIT1);
-    extensions.split(strats2.slist, slist.front(), 
-      ranges, EXTENSION_SPLIT2);
-
+    extensions.split(slist, strats2.slist, ranges);
     extensions.multiply(ranges);
 
-    slist.clear();
     extensions.flatten(slist);
 
 timersStrat[6].stop();
