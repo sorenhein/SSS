@@ -196,7 +196,7 @@ void Slist::consolidateTwo(ComparatorType lessEqualMethod)
 }
 
 
-void Slist::consolidate(ComparatorType lessEqualMethod)
+void Slist::consolidateGeneral(ComparatorType lessEqualMethod)
 {
   // Used when a strategy may have gone out of order or
   // dominations may have arisen.
@@ -209,9 +209,8 @@ void Slist::consolidate(ComparatorType lessEqualMethod)
 }
 
 
-void Slist::consolidateChoice(ComparatorType lessEqualMethod)
+void Slist::consolidate(ComparatorType lessEqualMethod)
 {
-  // TODO Only when there is something to study?
   for (auto& strategy: strategies)
     strategy.study();
 
@@ -223,7 +222,7 @@ void Slist::consolidateChoice(ComparatorType lessEqualMethod)
     Slist::consolidateTwo(lessEqualMethod);
   else
   {
-    Slist::consolidate(lessEqualMethod);
+    Slist::consolidateGeneral(lessEqualMethod);
   }
 }
 
@@ -460,12 +459,11 @@ void Slist::markChanges(
   list<list<Strategy>::const_iterator>& deletions,
   ComparatorType lessEqualMethod) const
 {
-  // The simple Strategies += Strategies adds an individual strategy
-  // to the LHS if it is not dominated.  Then the following
-  // strategies from the RHS are also compared to this, but we already
-  // know that there is no point.  This is a more complicated way
-  // to do the comparisons up front between all LHS and RHS pairs,
-  // but only updating LHS at the end.
+  // A simple way is to add an individual strategy to the LHS if it is 
+  // not dominated.  Then the following strategies from the RHS are 
+  // also compared to this, but we already know that there is no point.  
+  // This is a more complicated way to do the comparisons up front 
+  // between all LHS and RHS pairs, but only updating LHS at the end.
 
   vector<unsigned> ownDeletions(strategies.size(), 0);
 
@@ -478,7 +476,6 @@ void Slist::markChanges(
     {
       if (ownDeletions[stratNo] ||
           ! (strat.*lessEqualMethod)(* iter))
-          // ! strat.lessEqualPrimaryScrutinized(* iter))
       {
         iter++;
         stratNo++;
@@ -498,7 +495,6 @@ void Slist::markChanges(
     {
       if (ownDeletions[stratNo] ||
           ! (strat.*lessEqualMethod)(* iter))
-          // ! strat.lessEqualPrimaryScrutinized(* iter))
       {
         iter++;
         stratNo++;
@@ -534,9 +530,6 @@ void Slist::markChanges(
     // The new vector may dominate lighter vectors.
     while (iter != strategies.end())
     {
-      // TODO Is there a more target secondary comparison?
-      // Does it matter much?
-      // if (iter->lessEqualPrimaryScrutinized(strat) &&
       if (((* iter).*lessEqualMethod)(strat) &&
           iter->lessEqualCompleteBasic(strat))
       {
@@ -615,7 +608,7 @@ void Slist::multiply(
 {
   // Only turn off consolidateFlag if we're sure that multiplying
   // by strat does not cause Slist to unconsolidate.
-  // The input method is only used for consolidaring.
+  // The input method is only used for consolidating.
 
   if (strategies.empty())
     strategies.push_back(strat);
@@ -625,17 +618,7 @@ void Slist::multiply(
       strat1 *= strat;
     
     if (consolidateFlag)
-      Slist::consolidateChoice(lessEqualMethod);
-
-    /*
-    if (consolidateFlag && strategies.size() >= 2)
-    {
-      if (strategies.size() == 2)
-        Slist::consolidateTwo(lessEqualMethod);
-      else
-        Slist::consolidate(lessEqualMethod);
-    }
-    */
+      Slist::consolidate(lessEqualMethod);
   }
 }
 
@@ -645,6 +628,12 @@ void Slist::multiply(
  * operator *= Strategies                                   *
  *                                                          *
  ************************************************************/
+
+void Slist::multiplyOneByOne(const Slist& slist2)
+{
+  strategies.front() *= slist2.front();
+}
+
 
 void Slist::multiply(
   const Slist& slist2,
@@ -670,12 +659,6 @@ void Slist::multiply(
     }
 
   strategies.pop_back();
-}
-
-
-void Slist::multiplyOneByOne(const Slist& slist2)
-{
-  strategies.front() *= slist2.front();
 }
 
 
@@ -831,8 +814,8 @@ bool Slist::purgeRanges(
   // Shrink to the size used.
   constants.eraseRest(citer);
 
-  // if (eraseFlag)
-    // Slist::consolidateChoice(&Strategy::lessEqualPrimaryStudied);
+  if (eraseFlag)
+    Slist::consolidate(&Strategy::lessEqualPrimaryStudied);
 
   return eraseFlag;
 }

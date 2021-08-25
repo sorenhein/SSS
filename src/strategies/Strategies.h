@@ -34,10 +34,6 @@ class Strategies
 
     Ranges ranges;
 
-    bool scrutinizedFlag;
-
-
-    void consolidate();
 
     void scrutinize(const Ranges& rangesIn);
 

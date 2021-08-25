@@ -42,7 +42,6 @@ void Strategies::reset()
 {
   slist.clear();
   ranges.reset();
-  scrutinizedFlag = false;
 }
 
 
@@ -76,10 +75,8 @@ void Strategies::setTrivial(
 {
   // Repeat the trivial result len times.
 
-  ranges.reset();
-  scrutinizedFlag = false;
-
   slist.setTrivial(trivial, len);
+  ranges.reset();
 }
 
 
@@ -90,7 +87,6 @@ void Strategies::adapt(
 timersStrat[2].start();
 
   slist.adapt(play, survivors);
-  scrutinizedFlag = false;
 
 timersStrat[2].stop();
 }
@@ -98,33 +94,15 @@ timersStrat[2].stop();
 
 /************************************************************
  *                                                          *
- * Consolidating, studying and scrutinizing (internal)      *
+ * Reactivating and scrutinizing (internal)                 *
  *                                                          *
  ************************************************************/
-
-void Strategies::consolidate()
-{
-  // Used when a strategy may have gone out of order.  
-  // In Node::purgeRanges individual distributions may have been
-  // removed from Strategies, so that the strategies are no longer
-  // in order and may even have dominations among them.
-  // In reactivate, the changes may also have had such an effect.
-
-timersStrat[3].start();
-
-   slist.consolidateChoice(&Strategy::lessEqualPrimaryStudied);
-
-timersStrat[3].stop();
-}
-
 
 void Strategies::reactivate(
   const Strategy& simpleStrat,
   const Strategy& constants)
 {
 timersStrat[4].start();
-
-  scrutinizedFlag = false;
 
   if (simpleStrat.empty())
   {
@@ -154,8 +132,6 @@ timersStrat[6].start();
 
   for (auto& strategy: slist)
     strategy.scrutinize(rangesIn);
-
-  scrutinizedFlag = true;
 
 timersStrat[6].stop();
 }
@@ -237,7 +213,6 @@ void Strategies::operator *= (Strategies& strats2)
     slist = strats2.slist;
     // Addition
     // TODO Just copy the whole thing, * this = strats2 ?
-    scrutinizedFlag = strats2.scrutinizedFlag;
     return;
   }
 
@@ -246,7 +221,6 @@ void Strategies::operator *= (Strategies& strats2)
 timersStrat[11].start();
 
     slist.multiplyOneByOne(strats2.slist);
-    scrutinizedFlag = false;
 
 timersStrat[11].stop();
     return;
@@ -273,8 +247,6 @@ timersStrat[12].start();
     strats2.scrutinize(ranges);
 
     slist.multiply(strats2.slist, ranges, lessEqualMethod);
-
-    scrutinizedFlag = false;
 
 timersStrat[12].stop();
     return;
@@ -311,8 +283,6 @@ timersStrat[13].start();
 
     slist.clear();
     extensions.flatten(slist);
-
-    scrutinizedFlag = false;
 
 timersStrat[13].stop();
   }
@@ -361,22 +331,10 @@ timersStrat[16].start();
   const bool eraseFlag = slist.purgeRanges(constants,
     ranges, rangesParent, debugFlag);
 
-  if (eraseFlag)
+  if (eraseFlag && debugFlag)
   {
-    // Some strategies may be dominated that weren't before.
-    Strategies::consolidate();
-
-    // It could happen that a strategy has become dominated after
-    // the erasures.  To take advantage of this we'd have to redo
-    // the loop (only for dominance, not for constants), so we'd
-    // regenerate stratData first.  But this is just an optimization
-    // anyway, so we'll stop here.
-
-    if (debugFlag)
-    {
-      cout << constants.str("\nNew constants", true) << "\n";
-      cout << Strategies::str("Ranges after purging", true);
-    }
+    cout << constants.str("\nNew constants", true) << "\n";
+    cout << Strategies::str("Ranges after purging", true);
   }
 
 timersStrat[16].stop();
@@ -399,13 +357,7 @@ const Ranges& Strategies::getRanges() const
 
 const Result Strategies::resultLowest() const
 {
-timersStrat[17].start();
-
-  auto& res = slist.resultLowest();
-
-timersStrat[17].start();
-  return res;
-  // TODO Is this broken?
+  return slist.resultLowest();
 }
 
 

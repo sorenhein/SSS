@@ -42,10 +42,17 @@ class Slist
 
     void collapseOnVoid();
 
+    // Uses compareComplateBasic if needed.
     unsigned consolidateAnyTwo(
       list<Strategy>::iterator& iter1,
       list<Strategy>::iterator& iter2,
       ComparatorType lessEqualMethod);
+
+    // Uses compareComplateBasic if needed.
+    void consolidateTwo(ComparatorType lessEqualMethod);
+
+    // Uses compareSecondary if needed.
+    void consolidateGeneral(ComparatorType lessEqualMethod);
 
     bool sameOrdered(const Slist& slist2) const;
     bool sameUnordered(const Slist& slist2) const;
@@ -135,12 +142,7 @@ class Slist
 
     // Consolidate.
 
-    // Uses compareComplateBasic if needed.
-    void consolidateTwo(ComparatorType lessEqualMethod);
-
-    // Uses compareSecondary if needed.
     void consolidate(ComparatorType lessEqualMethod);
-    void consolidateChoice(ComparatorType lessEqualMethod);
 
 
     // Comparator (full Result equality).
@@ -176,14 +178,14 @@ class Slist
 
     // Multiply strategies.
 
+    // Uses strat * strat, so probably implicitly study.
+    void multiplyOneByOne(const Slist& slist2);
+
     // Uses addStrategyInplace which uses compareSecondary if needed.
     void multiply(
       const Slist& slist2,
       const Ranges& ranges,
       ComparatorType lessEqualMethod);
-
-    // Uses strat * strat, so probably implicitly study.
-    void multiplyOneByOne(const Slist& slist2);
 
 
     // Splits.
