@@ -620,25 +620,6 @@ void Slist::multiplyOneByOne(const Slist& slist2)
  *                                                          *
  ************************************************************/
 
-void Slist::getLoopData(StratData& stratData)
-{
-  // This is used to loop over all Strategy's in synchrony, one
-  // distribution at a time.  If the caller is going to change
-  // anything inside Slist with this, the caller must also
-  // consider the effect on scrutinizedFlag.
-
-  // TODO Put this method in StratData?
-  auto siter = stratData.data.begin();
-  for (auto& strat: strategies)
-  {
-    siter->ptr = &strat;
-    siter->iter = strat.begin();
-    siter->end = strat.end();
-    siter++;
-  }
-}
-
-
 void Slist::pushDistribution(const StratData& stratData)
 {
   // TODO Can this go in StratData?
@@ -664,8 +645,7 @@ void Slist::splitDistributions(
   // All are in sync to point to a given distribution.
   // They move in sync down across the Strategy's.
   StratData stratData;
-  stratData.data.resize(strategies.size());
-  Slist::getLoopData(stratData);
+  stratData.fill(strategies);
 
   auto riter = counterpart.begin();
   while (true)
@@ -750,8 +730,7 @@ bool Slist::purgeRanges(
   // The iterators later step through one "row" (distribution) of
   // all Strategy's in synchrony.
   StratData stratData;
-  stratData.data.resize(strategies.size());
-  Slist::getLoopData(stratData);
+  stratData.fill(strategies);
   stratData.riter = rangesOwn.begin();
 
   constants.resize(rangesParent.size());

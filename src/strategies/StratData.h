@@ -45,6 +45,20 @@ struct StratData
   list<StratDatum> data;
   list<Range>::const_iterator riter;
 
+  void fill(list<Strategy>& strategies)
+  {
+    data.resize(strategies.size());
+    auto siter = strategies.begin();
+    for (auto& sd: data)
+    {
+      auto& s = * siter;
+      sd.ptr = &s;
+      sd.iter = s.begin();
+      sd.end = s.end();
+      siter++;
+    }
+  };
+
   unsigned char dist()
   {
     assert(! data.empty());
