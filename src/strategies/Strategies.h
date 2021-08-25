@@ -28,8 +28,6 @@ typedef bool (Strategy::*ComparatorType)(const Strategy& strat) const;
 
 class Strategies
 {
-  friend class Splits;
-
   private:
     
     Slist slist;
@@ -41,7 +39,7 @@ class Strategies
 
     void consolidate();
 
-    void restudy();
+    void study();
 
     void scrutinize(const Ranges& rangesIn);
 
@@ -79,11 +77,6 @@ class Strategies
     void operator *= (const Strategy& strat);
 
     void operator *= (Strategies& strats2);
-
-    void splitDistributions(
-      const Strategy& counterpart,
-      Strategies& own,
-      Strategies& shared);
 
     void makeRanges();
 

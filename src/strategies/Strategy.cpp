@@ -34,7 +34,7 @@ void Strategy::reset()
 {
   results.clear();
   weightInt = 0;
-  study.reset();
+  studied.reset();
 }
 
 
@@ -66,7 +66,7 @@ void Strategy::push_back(const Result& result)
 {
   results.push_back(result);
   weightInt += result.tricks();
-  study.unstudy();
+  studied.unstudy();
 }
 
 
@@ -74,14 +74,14 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
   weightInt -= iter->tricks();
-  study.unstudy();
+  studied.unstudy();
   return results.erase(iter);
 }
 
 
 void Strategy::eraseRest(list<Result>::iterator iter)
 {
-  study.unstudy();
+  studied.unstudy();
   results.erase(iter, results.end());
 }
 
@@ -91,7 +91,7 @@ void Strategy::logTrivial(
   const unsigned char len)
 {
   results.clear();
-  study.unstudy();
+  studied.unstudy();
 
   for (unsigned char i = 0; i < len; i++)
   {
@@ -102,15 +102,15 @@ void Strategy::logTrivial(
 }
 
 
-void Strategy::restudy()
+void Strategy::study()
 {
-  study.study(results);
+  studied.study(results);
 }
 
 
 void Strategy::scrutinize(const Ranges& ranges)
 {
-  study.scrutinize(results, ranges);
+  studied.scrutinize(results, ranges);
 }
 
 
@@ -257,7 +257,7 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
 
 bool Strategy::lessEqualCompleteStudied(const Strategy& strat2) const
 {
-  if (! study.maybeLessEqualStudied(strat2.study))
+  if (! studied.maybeLessEqualStudied(strat2.studied))
     return false;
   else
     return Strategy::lessEqualCompleteBasic(strat2);
@@ -267,7 +267,7 @@ bool Strategy::lessEqualCompleteStudied(const Strategy& strat2) const
 bool Strategy::lessEqualPrimaryStudied(const Strategy& strat2) const
 {
   // This uses studied results if possible, otherwise the basic method.
-  if (! study.maybeLessEqualStudied(strat2.study))
+  if (! studied.maybeLessEqualStudied(strat2.studied))
     return false;
   else
   {
@@ -288,7 +288,9 @@ CompareType Strategy::compareCompleteStudied(
   // WIN_SECOND                 poss poss
   // WIN_DIFFERENT                   poss
 
-  const CompareType c = study.comparePartialPrimaryStudied(strat2.study);
+  const CompareType c = studied.comparePartialPrimaryStudied(
+    strat2.studied);
+
   if (c == WIN_FIRST)
   {
     if (strat2.lessEqualCompleteBasic(* this))
@@ -314,13 +316,13 @@ CompareType Strategy::compareCompleteStudied(
 bool Strategy::lessEqualPrimaryScrutinized(const Strategy& strat2) const
 {
   // The caller must ensure that the strategies have been scrutinized.
-  return study.lessEqualScrutinized(strat2.study);
+  return studied.lessEqualScrutinized(strat2.studied);
 }
 
 
 Compare Strategy::comparePrimaryScrutinized(const Strategy& strat2) const
 {
-  return study.comparePrimaryScrutinized(strat2.study);
+  return studied.comparePrimaryScrutinized(strat2.studied);
 }
 
 
@@ -360,7 +362,7 @@ void Strategy::operator *= (const Strategy& strat2)
     }
   }
 
-  study.study(results);
+  studied.study(results);
 }
 
 
@@ -431,7 +433,7 @@ void Strategy::multiply(
     }
   }
 
-  study.study(results);
+  studied.study(results);
 }
 
 
@@ -593,7 +595,7 @@ void Strategy::adapt(
 
   Strategy::adaptResults(play, survivors);
 
-  study.study(results);
+  studied.study(results);
 }
 
 

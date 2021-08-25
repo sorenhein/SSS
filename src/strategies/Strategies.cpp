@@ -116,7 +116,7 @@ void Strategies::consolidate()
   if (Strategies::empty())
     return;
 
-  Strategies::restudy();
+  Strategies::study();
 
   if (slist.size() == 1)
   {
@@ -178,12 +178,12 @@ void Strategies::reactivate(
 }
 
 
-void Strategies::restudy()
+void Strategies::study()
 {
 timersStrat[5].start();
 
   for (auto& strategy: slist)
-    strategy.restudy();
+    strategy.study();
 
 timersStrat[5].stop();
 }
@@ -396,10 +396,11 @@ timersStrat[13].start();
 
     // TODO Could make an Extensions method multiply with these
     // arguments.
+    // Uses lessEqualPrimary and then compareSecondary.
     Extensions extensions;
-    extensions.split(* this, strats2.slist.front(), 
+    extensions.split(slist, strats2.slist.front(), 
       ranges, EXTENSION_SPLIT1);
-    extensions.split(strats2, slist.front(), 
+    extensions.split(strats2.slist, slist.front(), 
       ranges, EXTENSION_SPLIT2);
 
     extensions.multiply(ranges);
@@ -411,21 +412,6 @@ timersStrat[13].start();
 
 timersStrat[13].stop();
   }
-}
-
-
-/************************************************************
- *                                                          *
- * Splits                                                   *
- *                                                          *
- ************************************************************/
-
-void Strategies::splitDistributions(
-  const Strategy& counterpart,
-  Strategies& own,
-  Strategies& shared)
-{
-  slist.splitDistributions(counterpart, own.slist, shared.slist);
 }
 
 

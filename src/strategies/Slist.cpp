@@ -673,7 +673,7 @@ void Slist::splitDistributions(
     if (riter == counterpart.end())
     {
       // A unique distribution.
-      own.pushDistribution( stratData);
+      own.pushDistribution(stratData);
 
       if (stratData.advance() == STRATSTATUS_END)
         break;

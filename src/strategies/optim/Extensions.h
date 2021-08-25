@@ -63,7 +63,7 @@ class Extensions
     void reset();
 
     void split(
-      Strategies& strategies,
+      Slist& slist,
       const Strategy& counterpart,
       const Ranges& ranges,
       const ExtensionSplit split);

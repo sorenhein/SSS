@@ -26,8 +26,8 @@ Splits::~Splits()
 
 void Splits::reset()
 {
-  own.reset();
-  shared.reset();
+  own.clear();
+  shared.clear();
   splits.clear();
   count = 0;
 }
@@ -39,8 +39,8 @@ void Splits::setPointers()
   // for later use.
 
   splits.resize(count);
-  auto ownIter = own.slist.begin();
-  auto sharedIter = shared.slist.begin();
+  auto ownIter = own.begin();
+  auto sharedIter = shared.begin();
   auto splitIter = splits.begin();
 
   for (unsigned i = 0; i < count; 
@@ -53,20 +53,21 @@ void Splits::setPointers()
 
 
 void Splits::split(
-  Strategies& strategies,
+  Slist& slist,
   const Strategy& counterpart,
   const Ranges& ranges)
 {
-  count = strategies.size();
+  count = slist.size();
 
-  own.slist.resize(count);
-  shared.slist.resize(count);
+  own.resize(count);
+  shared.resize(count);
 
-  strategies.splitDistributions(counterpart, own, shared);
+  slist.splitDistributions(counterpart, own, shared);
 
   Splits::setPointers();
 
-  own.scrutinize(ranges);
+  for (auto& strategy: own)
+    strategy.scrutinize(ranges);
 }
 
 

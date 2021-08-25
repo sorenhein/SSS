@@ -26,7 +26,7 @@ class Strategy
     unsigned weightInt;
 
     // Used for faster comparisons on average.
-    Study study;
+    Study studied;
 
 
     void setConstants();
@@ -110,7 +110,7 @@ class Strategy
       const Result& trivial,
       const unsigned char len);
 
-    void restudy();
+    void study();
 
     void scrutinize(const Ranges& ranges);
 

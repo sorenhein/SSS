@@ -13,7 +13,7 @@
 #include <string>
 
 #include "Split.h"
-#include "../Strategies.h"
+#include "../Slist.h"
 
 using namespace std;
 
@@ -28,9 +28,9 @@ class Splits
     // they came, and a cross matrix of pre-calculated comparisons
     // of the own Strategy's.
 
-    Strategies own;
+    Slist own;
 
-    Strategies shared;
+    Slist shared;
 
     list<Split> splits;
 
@@ -49,7 +49,7 @@ class Splits
     void reset();
 
     void split(
-      Strategies& strategies,
+      Slist& strategies,
       const Strategy& counterpart,
       const Ranges& ranges);
 

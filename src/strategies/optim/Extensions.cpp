@@ -33,7 +33,7 @@ void Extensions::reset()
 
 
 void Extensions::split(
-  Strategies& strategies,
+  Slist& slist,
   const Strategy& counterpart,
   const Ranges& ranges,
   const ExtensionSplit split)
@@ -42,9 +42,9 @@ void Extensions::split(
   // distributions in counterpart.
 
   if (split == EXTENSION_SPLIT1)
-    splits1.split(strategies, counterpart, ranges);
+    splits1.split(slist, counterpart, ranges);
   else
-    splits2.split(strategies, counterpart, ranges);
+    splits2.split(slist, counterpart, ranges);
 }
 
 
