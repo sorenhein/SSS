@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "Card.h"
+#include "../const.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ void Card::reset()
 {
   rank = 0;
   depth = 0;
-  number = 0;
+  number = UCHAR_NOT_SET;
   name = '-';
 }
 

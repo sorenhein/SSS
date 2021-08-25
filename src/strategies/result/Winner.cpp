@@ -240,33 +240,6 @@ unsigned char Winner::getRank() const
 }
 
 
-Compare Winner::declarerPrefersSide(
-  const Card& own,
-  const Card& other,
-  const WinnerMode otherMode,
-  const unsigned bitmask) const
-{
-  if (mode & bitmask)
-  {
-    if (otherMode & bitmask)
-      return own.compare(other);
-    else
-      // Declarer prefers no restriction.
-      return WIN_SECOND;
-  }
-  else
-  {
-    if (otherMode & bitmask)
-      // Declarer prefers no restriction.
-      return WIN_FIRST;
-    else
-      // Both are missing, so it doesn't matter.
-      return WIN_EQUAL;
-  }
-}
-
-
-
 Compare Winner::declarerPrefers(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
@@ -277,13 +250,10 @@ Compare Winner::declarerPrefers(const Winner& winner2) const
   else if (rank < winner2.rank)
     return WIN_SECOND;
 
-  // So now the two Winner's have the same rank.
-
-  const Compare northPrefer = Winner::declarerPrefersSide(
-    north, winner2.north, winner2.mode, WIN_NORTH_SET);
-
-  const Compare southPrefer = Winner::declarerPrefersSide(
-    south, winner2.south, winner2.mode, WIN_SOUTH_SET);
+  // We don't have to check whether something is set, as an unset
+  // card has a maximum card number which declarer prefers.
+  const Compare northPrefer = north.compare(winner2.north);
+  const Compare southPrefer = south.compare(winner2.south);
 
   // Probably a matrix lookup isn't faster.
   //

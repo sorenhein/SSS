@@ -48,12 +48,6 @@ class Winner
       const WinnerMode otherMode,
       const unsigned bitmask);
 
-    Compare declarerPrefersSide(
-      const Card& own,
-      const Card& other,
-      const WinnerMode otherMode,
-      const unsigned bitmask) const;
-
 
   public:
 
