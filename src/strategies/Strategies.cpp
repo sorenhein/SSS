@@ -223,41 +223,15 @@ void Strategies::operator += (Strategies& strats2)
   if (sno1 == 1 && sno2 == 1)
   {
     // Simplified case.
-timersStrat[7].start();
     slist.plusOneByOne(strats2.slist);
-timersStrat[7].stop();
-  }
-  else if (sno1 >= 20 && sno2 >= 20)
-  {
-    // Rare, but very slow per invocation when it happens.
-    // Consumes perhaps 75% of the method time, so more optimized.
-
-timersStrat[8].start();
-
-    // We only need the minima here, but we use the existing method.
-
-    Strategies::makeRanges();
-    strats2.makeRanges();
-    Strategies::propagateRanges(strats2);
-
-    Strategies::scrutinize(ranges);
-    strats2.scrutinize(ranges);
-
-    slist.addStrategiesScrutinized(strats2.slist);
-
-timersStrat[8].stop();
   }
   else
   {
 timersStrat[9].start();
 
-    // General case.  Frequent and fast, perhaps 25% of the method time.
-
-    // We may inherit a set scrutinizedFlag from the previous branch.
-    // But it's generally not worth it in this case.
-    scrutinizedFlag = false;
-
-    slist.addStrategies(strats2.slist, &Strategy::lessEqualPrimaryStudied);
+    // Scrutinize doesn't help here, even for large strategies.
+    slist.addStrategies(strats2.slist, 
+      &Strategy::lessEqualPrimaryStudied);
 
 timersStrat[9].stop();
   }

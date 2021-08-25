@@ -438,7 +438,8 @@ void Slist::addStrategyInplace(ComparatorType lessEqualMethod)
 void Slist::markChanges(
   const Slist& slist2,
   list<Addition>& additions,
-  list<list<Strategy>::const_iterator>& deletions) const
+  list<list<Strategy>::const_iterator>& deletions,
+  ComparatorType lessEqualMethod) const
 {
   // The simple Strategies += Strategies adds an individual strategy
   // to the LHS if it is not dominated.  Then the following
@@ -457,7 +458,8 @@ void Slist::markChanges(
     while (iter != strategies.end() && iter->weight() > strat.weight())
     {
       if (ownDeletions[stratNo] ||
-          ! strat.lessEqualPrimaryScrutinized(* iter))
+          ! (strat.*lessEqualMethod)(* iter))
+          // ! strat.lessEqualPrimaryScrutinized(* iter))
       {
         iter++;
         stratNo++;
@@ -476,7 +478,8 @@ void Slist::markChanges(
     while (iter != strategies.end() && iter->weight() == strat.weight())
     {
       if (ownDeletions[stratNo] ||
-          ! strat.lessEqualPrimaryScrutinized(* iter))
+          ! (strat.*lessEqualMethod)(* iter))
+          // ! strat.lessEqualPrimaryScrutinized(* iter))
       {
         iter++;
         stratNo++;
@@ -514,7 +517,8 @@ void Slist::markChanges(
     {
       // TODO Is there a more target secondary comparison?
       // Does it matter much?
-      if (iter->lessEqualPrimaryScrutinized(strat) &&
+      // if (iter->lessEqualPrimaryScrutinized(strat) &&
+      if (((* iter).*lessEqualMethod)(strat) &&
           iter->lessEqualCompleteBasic(strat))
       {
         if (ownDeletions[stratNo] == 0)
@@ -546,17 +550,10 @@ void Slist::addStrategies(
   const Slist& slist2,
   ComparatorType lessEqualMethod)
 {
-  for (auto& strategy: slist2.strategies)
-    Slist::addStrategy(strategy, lessEqualMethod);
-}
-
-
-void Slist::addStrategiesScrutinized(const Slist& slist2)
-{
   list<Addition> additions;
   list<list<Strategy>::const_iterator> deletions;
 
-  Slist::markChanges(slist2, additions, deletions);
+  Slist::markChanges(slist2, additions, deletions, lessEqualMethod);
 
   Slist::processChanges(additions, deletions);
 }

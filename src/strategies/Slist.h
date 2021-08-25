@@ -67,12 +67,18 @@ class Slist
       ComparatorType lessEqualMethod,
       const Strategy& addend);
 
+    // Uses compareSecondary if needed.
+    void addStrategy(
+      const Strategy& strategy,
+      ComparatorType lessEqualMethod);
+
     // Uses lessEqualPrimaryScrutinized and then if needed,
     // compareSecondary or lessEqualCompleteBasic.
     void markChanges(
       const Slist& slist2,
       list<Addition>& additions,
-      list<list<Strategy>::const_iterator>& deletions) const;
+      list<list<Strategy>::const_iterator>& deletions,
+      ComparatorType lessEqualMethod) const;
 
     void processChanges(
       list<Addition>& additions,
@@ -144,11 +150,6 @@ class Slist
     // Addition.  If lessEqualMethod matches, then compareSecondary.
 
     // Uses compareSecondary if needed.
-    void addStrategy(
-      const Strategy& strategy,
-      ComparatorType lessEqualMethod);
-
-    // Uses compareSecondary if needed.
     void addStrategyInplace(ComparatorType lessEqualMethod);
 
 
@@ -158,10 +159,6 @@ class Slist
     void addStrategies(
       const Slist& slist2,
       ComparatorType lessEqualMethod);
-
-    // Uses lessEqualPrimaryScrutinized and then if needed,
-    // compareSecondary.
-    void addStrategiesScrutinized(const Slist& slist2);
 
     // Uses compareCompleteStudied.
     void plusOneByOne(const Slist& slist2);
