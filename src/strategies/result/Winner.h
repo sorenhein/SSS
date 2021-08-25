@@ -79,7 +79,7 @@ class Winner
 
     unsigned char getRank() const;
 
-    Compare declarerPrefers(const Winner& winner2) const;
+    Compare compare(const Winner& winner2) const;
 
     void flip();
 

@@ -101,7 +101,7 @@ void Winners::fillComparer(
     unsigned n2 = 0;
     for (auto& win2: winners2.winners)
     {
-      comparer.log(n1, n2, win1.declarerPrefers(win2));
+      comparer.log(n1, n2, win1.compare(win2));
       n2++;
     }
     n1++;
@@ -119,7 +119,7 @@ void Winners::operator += (const Winner& winner2)
   auto witer = winners.begin();
   while (witer != winners.end())
   {
-    const Compare cmp = witer->declarerPrefers(winner2);
+    const Compare cmp = witer->compare(winner2);
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
       // The new subwinner is inferior.
@@ -258,7 +258,7 @@ Compare Winners::compare(const Winners& winners2) const
   else if (winners2.empty())
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
-    return winners.front().declarerPrefers(winners2.winners.front());
+    return winners.front().compare(winners2.winners.front());
   else if (Winners::rankExceeds(winners2))
     return WIN_FIRST;
   else if (winners2.rankExceeds(* this))
@@ -327,7 +327,7 @@ void Winners::consolidate()
   
   if (winners.size() == 2)
   {
-    const Compare c = winners.front().declarerPrefers(winners.back());
+    const Compare c = winners.front().compare(winners.back());
     if (c == WIN_FIRST || c == WIN_EQUAL)
       winners.pop_back();
     else if (c == WIN_SECOND)

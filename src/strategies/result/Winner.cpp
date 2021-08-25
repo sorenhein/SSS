@@ -240,10 +240,14 @@ unsigned char Winner::getRank() const
 }
 
 
-Compare Winner::declarerPrefers(const Winner& winner2) const
+Compare Winner::compare(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
   assert(winner2.mode != WIN_NOT_SET);
+
+  // We have to test for rank first, as we might have this Winner as
+  // South rank 4 number 0, and winner2 as 
+  // North rank 2 number 0.
 
   if (rank > winner2.rank)
     return WIN_FIRST;

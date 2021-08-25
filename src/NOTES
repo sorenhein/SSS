@@ -1,15 +1,3 @@
-Winner::declarerPrefers can probably either become or be split into
-a secondary compare that ignores tricks.  Look in Winners at all
-usages.
-Rename declarerPrefers to lessEqual, ...
-
-Winner.cpp: Go more elegantly / faster by rank not set? Don't have
-to test for mode, can just compare rank?
-
-Winner comparison: Maybe max unsigned as void?  Then simpler
-comparisons.
-
-
 Go through all TODO's in Strategies and Slist.
 
 In Strategies, get study, scrutinize and methods cleaned up.
