@@ -589,12 +589,14 @@ void Slist::plusOneByOne(const Slist& slist2)
  *                                                          *
  ************************************************************/
 
-void Slist::operator *= (const Strategy& strat)
+void Slist::multiply(
+  const Strategy& strat,
+  ComparatorType lessEqualMethod,
+  const bool consolidateFlag)
 {
-  // This does not re-sort and consolidate strategies.  If that
-  // needs to be done, the caller must do it.  It is currently only
-  // called from Node::reactivate().
-  // TODO Update comment.  Dissolve method?
+  // Only turn off consolidateFlag if we're sure that multiplying
+  // by strat does not cause Slist to unconsolidate.
+  // The input method is only used for consolidaring.
 
   if (strategies.empty())
     strategies.push_back(strat);
@@ -602,6 +604,14 @@ void Slist::operator *= (const Strategy& strat)
   {
     for (auto& strat1: strategies)
       strat1 *= strat;
+    
+    if (consolidateFlag && strategies.size() >= 2)
+    {
+      if (strategies.size() == 2)
+        Slist::consolidateTwo(lessEqualMethod);
+      else
+        Slist::consolidate(lessEqualMethod);
+    }
   }
 }
 

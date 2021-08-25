@@ -167,7 +167,10 @@ class Slist
     // Multiply strategy.
 
     // Uses strat *= strat, so probably implicitly study.
-    void operator *= (const Strategy& strat);
+    void multiply(
+      const Strategy& strat,
+      ComparatorType lessEqualMethod,
+      const bool consolidateFlag = true);
 
 
     // Multiply strategies.

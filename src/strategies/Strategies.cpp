@@ -148,10 +148,12 @@ timersStrat[4].start();
 
   if (simpleStrat.empty())
   {
-    // Constants don't throw off the consolidation.
     if (! constants.empty())
-      slist *= constants;
-    return;
+    {
+      // Constants don't throw off the consolidation.
+      // The method argument is unused as we don't consolidate.
+      slist.multiply(constants, &Strategy::lessEqualPrimaryStudied, false);
+    }
   }
   else
   {
@@ -159,16 +161,10 @@ timersStrat[4].start();
     if (! constants.empty())
       st *= constants;
 
-    slist *= st;
-
-timersStrat[4].stop();
-
-    // Timing is already counted once above.
-    Strategies::consolidate();
+    slist.multiply(st, &Strategy::lessEqualPrimaryStudied);
   }
 
-  // TODO Put the consolidate in *= strat in slist.
-  // Maybe not even have a *= strat in Stragies.
+timersStrat[4].stop();
 }
 
 
