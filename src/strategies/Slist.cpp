@@ -596,8 +596,13 @@ void Slist::operator *= (const Strategy& strat)
   // called from Node::reactivate().
   // TODO Update comment.  Dissolve method?
 
-  for (auto& strat1: strategies)
-    strat1 *= strat;
+  if (strategies.empty())
+    strategies.push_back(strat);
+  else
+  {
+    for (auto& strat1: strategies)
+      strat1 *= strat;
+  }
 }
 
 

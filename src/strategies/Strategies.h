@@ -67,14 +67,12 @@ class Strategies
       const Survivors& survivors);
 
     void reactivate(
-      Strategy& simpleStrat,
+      const Strategy& simpleStrat,
       const Strategy& constants);
 
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2);
-
-    void operator *= (const Strategy& strat);
 
     void operator *= (Strategies& strats2);
 

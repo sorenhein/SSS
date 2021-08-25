@@ -101,8 +101,8 @@ void Combinations::resize(const unsigned maxCardsIn)
   timersStrat[ 0].name("Strats::setTrivial");
   timersStrat[ 1].name("Strats::collapseOnVoid (core)");
   timersStrat[ 2].name("Strats::adapt");
-  timersStrat[ 3].name("Strats::consolidateTwo");
-  timersStrat[ 4].name("Strats::consolidate (general)");
+  timersStrat[ 3].name("Strats::consolidate (general)");
+  timersStrat[ 4].name("Strats::reactivate");
   timersStrat[ 5].name("Strats::restudy");
   timersStrat[ 6].name("Strats::scrutinize");
   timersStrat[ 7].name("Strats::+= strats (1+1)");

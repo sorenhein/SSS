@@ -127,41 +127,48 @@ void Strategies::consolidate()
   }
   else
   {
-timersStrat[4].start();
+timersStrat[3].start();
 
     // It actually causes a slowdown to scrutinize here,
     // even for quite large strategies.
     slist.consolidate(&Strategy::lessEqualPrimaryStudied);
 
-timersStrat[4].stop();
+timersStrat[3].stop();
   }
 }
 
 
 void Strategies::reactivate(
-  Strategy& simpleStrat, // TODO const?
+  const Strategy& simpleStrat,
   const Strategy& constants)
 {
-  // TODO Time this method, too
-  simpleStrat *= constants;
-  * this *= simpleStrat;
+timersStrat[4].start();
 
-  // As simpleStrat is completely complementary to strats,
-  // we often do not need to re-sort and consolidate.
-  // But it can happen that the defenders can hold declarer to a
-  // constant 2 tricks (10/16907, lead 7, then rising with the king),
-  // or the defender can give declarer several choices in the range
-  // of 1-3 tricks.  Since the defenders move after declarer
-  // publishes his strategy, he will never get 3 tricks.  When
-  // the simple strategy is multiplied back here, weights can change
-  // and therefore the ordering can also change.
+  scrutinizedFlag = false;
 
-  if (! simpleStrat.empty())
+  if (simpleStrat.empty())
   {
-    // TODO Maybe only when real simpleStrats non-empty?
-    // Constants don't change anything?
+    // Constants don't throw off the consolidation.
+    if (! constants.empty())
+      slist *= constants;
+    return;
+  }
+  else
+  {
+    Strategy st = simpleStrat;
+    if (! constants.empty())
+      st *= constants;
+
+    slist *= st;
+
+timersStrat[4].stop();
+
+    // Timing is already counted once above.
     Strategies::consolidate();
   }
+
+  // TODO Put the consolidate in *= strat in slist.
+  // Maybe not even have a *= strat in Stragies.
 }
 
 
@@ -235,35 +242,6 @@ timersStrat[9].start();
 
 timersStrat[9].stop();
   }
-}
-
-
-/************************************************************
- *                                                          *
- * operator *= Strategy                                     *
- *                                                          *
- ************************************************************/
-
-void Strategies::operator *= (const Strategy& strat)
-{
-  // This does not re-sort and consolidate strategies.  If that
-  // needs to be done, the caller must do it.  It is currently only
-  // called from Node::reactivate().
-
-  if (slist.empty())
-  {
-    slist.push_back(strat);
-  }
-  else
-  {
-timersStrat[10].start();
-
-    slist *= strat;
-
-timersStrat[10].stop();
-  }
-  // Addition: Correct?
-  scrutinizedFlag = false;
 }
 
 
