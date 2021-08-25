@@ -140,6 +140,7 @@ class Slist
 
     // Uses compareSecondary if needed.
     void consolidate(ComparatorType lessEqualMethod);
+    void consolidateChoice(ComparatorType lessEqualMethod);
 
 
     // Comparator (full Result equality).

@@ -39,8 +39,6 @@ class Strategies
 
     void consolidate();
 
-    void study();
-
     void scrutinize(const Ranges& rangesIn);
 
 

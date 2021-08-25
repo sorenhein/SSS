@@ -110,31 +110,11 @@ void Strategies::consolidate()
   // in order and may even have dominations among them.
   // In reactivate, the changes may also have had such an effect.
 
-  Strategies::study();
-
-  if (slist.size() <= 1 || Strategies::empty())
-  {
-    // Don't have to do anything.
-    return;
-  }
-  else if (slist.size() == 2)
-  {
-    // The general way also works in this case, and it is just
-    // a small, but meaningful optimization.
-
-    slist.consolidateTwo(&Strategy::lessEqualPrimaryStudied);
-    return;
-  }
-  else
-  {
 timersStrat[3].start();
 
-    // It actually causes a slowdown to scrutinize here,
-    // even for quite large strategies.
-    slist.consolidate(&Strategy::lessEqualPrimaryStudied);
+   slist.consolidateChoice(&Strategy::lessEqualPrimaryStudied);
 
 timersStrat[3].stop();
-  }
 }
 
 
@@ -165,17 +145,6 @@ timersStrat[4].start();
   }
 
 timersStrat[4].stop();
-}
-
-
-void Strategies::study()
-{
-timersStrat[5].start();
-
-  for (auto& strategy: slist)
-    strategy.study();
-
-timersStrat[5].stop();
 }
 
 

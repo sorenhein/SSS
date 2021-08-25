@@ -209,6 +209,25 @@ void Slist::consolidate(ComparatorType lessEqualMethod)
 }
 
 
+void Slist::consolidateChoice(ComparatorType lessEqualMethod)
+{
+  // TODO Only when there is something to study?
+  for (auto& strategy: strategies)
+    strategy.study();
+
+  const unsigned s = strategies.size();
+
+  if (s <= 1 || Slist::empty())
+    return;
+  else if (s == 2)
+    Slist::consolidateTwo(lessEqualMethod);
+  else
+  {
+    Slist::consolidate(lessEqualMethod);
+  }
+}
+
+
 /************************************************************
  *                                                          *
  * operator == and two helper methods                       *
@@ -605,6 +624,10 @@ void Slist::multiply(
     for (auto& strat1: strategies)
       strat1 *= strat;
     
+    if (consolidateFlag)
+      Slist::consolidateChoice(lessEqualMethod);
+
+    /*
     if (consolidateFlag && strategies.size() >= 2)
     {
       if (strategies.size() == 2)
@@ -612,6 +635,7 @@ void Slist::multiply(
       else
         Slist::consolidate(lessEqualMethod);
     }
+    */
   }
 }
 
@@ -806,6 +830,9 @@ bool Slist::purgeRanges(
 
   // Shrink to the size used.
   constants.eraseRest(citer);
+
+  // if (eraseFlag)
+    // Slist::consolidateChoice(&Strategy::lessEqualPrimaryStudied);
 
   return eraseFlag;
 }
