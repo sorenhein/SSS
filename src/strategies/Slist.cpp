@@ -139,33 +139,60 @@ void Slist::adapt(
  *                                                          *
  ************************************************************/
 
-void Slist::consolidateTwo(ComparatorType lessEqualMethod)
+unsigned Slist::consolidateAnyTwo(
+  list<Strategy>::iterator& iter1,
+  list<Strategy>::iterator& iter2,
+  ComparatorType lessEqualMethod)
 {
   // Check whether to swap the two and whether one is dominated.
-  auto iter1 = strategies.begin();
-  auto iter2 = next(iter1);
 
   if (iter1->weight() < iter2->weight())
   {
     if (((* iter1).*lessEqualMethod)(* iter2))
-      strategies.pop_front();
+    {
+      iter1 = strategies.erase(iter1);
+      return 1; // Erased #1
+    }
     else
+    {
       iter_swap(iter1, iter2);
+      return 3; // Swapped
+    }
   }
   else if (iter2->weight() < iter1->weight())
   {
     if (((* iter2).*lessEqualMethod)(* iter1))
-      strategies.pop_back();
+    {
+      iter2 = strategies.erase(iter2);
+      return 2;
+    }
   }
   else
   {
-    // TODO Same weight: Can take advantage?
+    // The weights are the same, but the trick distribution could
+    // still be different.  So we can't use compareSecondary and we
+    // have to use compareCompleteBasic.
     const Compare c = iter1->compareCompleteBasic(* iter2);
     if (c == WIN_FIRST || c == WIN_EQUAL)
-      strategies.pop_back();
+    {
+      iter2 = strategies.erase(iter2);
+      return 2;
+    }
     else if (c == WIN_SECOND)
-      strategies.pop_front();
+    {
+      iter1 = strategies.erase(iter1);
+      return 1;
+    }
   }
+  return 0;
+}
+
+
+void Slist::consolidateTwo(ComparatorType lessEqualMethod)
+{
+  auto iter1 = strategies.begin();
+  auto iter2 = next(iter1);
+  Slist::consolidateAnyTwo(iter1, iter2, lessEqualMethod);
 }
 
 
@@ -173,6 +200,7 @@ void Slist::consolidate(ComparatorType lessEqualMethod)
 {
   // Used when a strategy may have gone out of order or
   // dominations may have arisen.
+
   auto oldStrats = move(strategies);
   strategies.clear();
 
@@ -569,6 +597,7 @@ void Slist::operator *= (const Strategy& strat)
   // This does not re-sort and consolidate strategies.  If that
   // needs to be done, the caller must do it.  It is currently only
   // called from Node::reactivate().
+  // TODO Update comment.  Dissolve method?
 
   for (auto& strat1: strategies)
     strat1 *= strat;

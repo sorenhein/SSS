@@ -42,6 +42,11 @@ class Slist
 
     void collapseOnVoid();
 
+    unsigned consolidateAnyTwo(
+      list<Strategy>::iterator& iter1,
+      list<Strategy>::iterator& iter2,
+      ComparatorType lessEqualMethod);
+
     bool sameOrdered(const Slist& slist2) const;
     bool sameUnordered(const Slist& slist2) const;
 
@@ -80,8 +85,6 @@ class Slist
     string strWeights(const bool rankFlag) const;
 
     string strWinners() const;
-
-    // void operator += (const Strategy& strat);
 
 
   public:

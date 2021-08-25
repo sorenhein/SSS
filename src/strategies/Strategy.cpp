@@ -80,7 +80,7 @@ list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 
 
 list<Result>::const_iterator Strategy::erase(
-  list<Result>::const_iterator& iter)
+    list<Result>::const_iterator& iter)
 {
   // No error checking.
   weightInt -= iter->tricks();
@@ -97,8 +97,8 @@ void Strategy::eraseRest(list<Result>::iterator iter)
 
 
 void Strategy::logTrivial(
-  const Result& trivial,
-  const unsigned char len)
+    const Result& trivial,
+    const unsigned char len)
 {
   results.clear();
   studied.unstudy();
@@ -131,10 +131,10 @@ void Strategy::scrutinize(const Ranges& ranges)
  ************************************************************/
 
 bool Strategy::cumulateCommon(
-  const Strategy& strat2,
-  const bool earlyStopFlag,
-  CumulateType methodPtr,
-  unsigned& cumul) const
+    const Strategy& strat2,
+    const bool earlyStopFlag,
+    CumulateType methodPtr,
+    unsigned& cumul) const
 {
   // This method supports others that perform complete comparisons.
   // It returns true if the trick comparison still permits <=,
@@ -166,31 +166,31 @@ bool Strategy::cumulateCommon(
 
 
 bool Strategy::cumulate(
-  const Strategy& strat2,
-  const bool earlyStopFlag,
-  unsigned& cumul) const
+    const Strategy& strat2,
+    const bool earlyStopFlag,
+    unsigned& cumul) const
 {
   return Strategy::cumulateCommon(strat2, earlyStopFlag,
-    &Result::compareInDetail, cumul);
+      &Result::compareInDetail, cumul);
 }
 
 
 bool Strategy::cumulatePrimary(
-  const Strategy& strat2,
-  const bool earlyStopFlag,
-  unsigned& cumul) const
+    const Strategy& strat2,
+    const bool earlyStopFlag,
+    unsigned& cumul) const
 {
   return Strategy::cumulateCommon(strat2, earlyStopFlag,
-    &Result::comparePrimaryInDetail, cumul);
+      &Result::comparePrimaryInDetail, cumul);
 }
 
 
 void Strategy::cumulateSecondary(
-  const Strategy& strat2,
-  unsigned& cumul) const
+    const Strategy& strat2,
+    unsigned& cumul) const
 {
   Strategy::cumulateCommon(strat2, false,
-    &Result::compareSecondaryInDetail, cumul);
+      &Result::compareSecondaryInDetail, cumul);
 }
 
 

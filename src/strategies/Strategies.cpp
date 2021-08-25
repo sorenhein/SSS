@@ -74,16 +74,12 @@ void Strategies::setTrivial(
   const Result& trivial,
   const unsigned char len)
 {
-timersStrat[0].start();
-
   // Repeat the trivial result len times.
 
   ranges.reset();
   scrutinizedFlag = false;
 
   slist.setTrivial(trivial, len);
-
-timersStrat[0].stop();
 }
 
 
@@ -112,38 +108,29 @@ void Strategies::consolidate()
   // In Node::purgeRanges individual distributions may have been
   // removed from Strategies, so that the strategies are no longer
   // in order and may even have dominations among them.
-
-  if (Strategies::empty())
-    return;
+  // In reactivate, the changes may also have had such an effect.
 
   Strategies::study();
 
-  if (slist.size() == 1)
+  if (slist.size() <= 1 || Strategies::empty())
   {
     // Don't have to do anything.
     return;
   }
   else if (slist.size() == 2)
   {
-timersStrat[3].start();
-
     // The general way also works in this case, and it is just
-    // a small optimization.
-    ComparatorType lessEqualMethod = (scrutinizedFlag ? 
-      &Strategy::lessEqualPrimaryScrutinized : 
-      &Strategy::lessEqualPrimaryStudied);
+    // a small, but meaningful optimization.
 
-    slist.consolidateTwo(lessEqualMethod);
-
-timersStrat[3].stop();
+    slist.consolidateTwo(&Strategy::lessEqualPrimaryStudied);
     return;
   }
   else
   {
 timersStrat[4].start();
 
-    // But leave ranges intact.
-    // The method was not explicit until now -- is it right?
+    // It actually causes a slowdown to scrutinize here,
+    // even for quite large strategies.
     slist.consolidate(&Strategy::lessEqualPrimaryStudied);
 
 timersStrat[4].stop();
