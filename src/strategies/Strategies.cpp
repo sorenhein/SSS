@@ -84,11 +84,11 @@ void Strategies::adapt(
   const Play& play,
   const Survivors& survivors)
 {
-timersStrat[2].start();
+timersStrat[0].start();
 
   slist.adapt(play, survivors);
 
-timersStrat[2].stop();
+timersStrat[0].stop();
 }
 
 
@@ -102,7 +102,7 @@ void Strategies::reactivate(
   const Strategy& simpleStrat,
   const Strategy& constants)
 {
-timersStrat[4].start();
+timersStrat[1].start();
 
   if (simpleStrat.empty())
   {
@@ -122,18 +122,18 @@ timersStrat[4].start();
     slist.multiply(st, &Strategy::lessEqualPrimaryStudied);
   }
 
-timersStrat[4].stop();
+timersStrat[1].stop();
 }
 
 
 void Strategies::scrutinize(const Ranges& rangesIn)
 {
-timersStrat[6].start();
+timersStrat[2].start();
 
   for (auto& strategy: slist)
     strategy.scrutinize(rangesIn);
 
-timersStrat[6].stop();
+timersStrat[2].stop();
 }
 
 
@@ -175,13 +175,13 @@ void Strategies::operator += (Strategies& strats2)
   }
   else
   {
-timersStrat[9].start();
+timersStrat[3].start();
 
     // Scrutinize doesn't help here, even for large strategies.
     slist.addStrategies(strats2.slist, 
       &Strategy::lessEqualPrimaryStudied);
 
-timersStrat[9].stop();
+timersStrat[3].stop();
   }
 }
 
@@ -199,36 +199,29 @@ void Strategies::operator *= (Strategies& strats2)
   // If the method is used differently, unexpected behavior may
   // occur!
 
-  const unsigned len2 = strats2.slist.size();
-  if (len2 == 0)
-  {
-    // Keep the current results.
-    return;
-  }
-
   const unsigned len1 = slist.size();
-  if (len1 == 0)
+  const unsigned len2 = strats2.slist.size();
+
+  if (len2 == 0)
+    return;
+  else if (len1 == 0)
   {
-    // Keep the new results, but don't change ranges.
-    slist = strats2.slist;
-    // Addition
-    // TODO Just copy the whole thing, * this = strats2 ?
+    * this = strats2;
     return;
   }
-
-  if (len1 == 1 && len2 == 1)
+  else if (len1 == 1 && len2 == 1)
   {
-timersStrat[11].start();
+timersStrat[4].start();
 
     slist.multiplyOneByOne(strats2.slist);
 
-timersStrat[11].stop();
+timersStrat[4].stop();
     return;
   }
 
   if (ranges.empty() || len1 < 10 || len2 < 10)
   {
-timersStrat[12].start();
+timersStrat[5].start();
 
     // This implementation of the general product reduces
     // memory overhead.  The temporary product is formed in the last
@@ -248,12 +241,12 @@ timersStrat[12].start();
 
     slist.multiply(strats2.slist, ranges, lessEqualMethod);
 
-timersStrat[12].stop();
+timersStrat[5].stop();
     return;
   }
   else
   {
-timersStrat[13].start();
+timersStrat[6].start();
 
     // This is the most complex version, and I may have gotten a bit
     // carried away...  The two Strategies have distributions that are 
@@ -284,7 +277,7 @@ timersStrat[13].start();
     slist.clear();
     extensions.flatten(slist);
 
-timersStrat[13].stop();
+timersStrat[6].stop();
   }
 }
 
@@ -297,24 +290,24 @@ timersStrat[13].stop();
 
 void Strategies::makeRanges()
 {
-timersStrat[14].start();
+timersStrat[7].start();
 
   slist.makeRanges(ranges);
 
-timersStrat[14].stop();
+timersStrat[7].stop();
 }
 
 
 void Strategies::propagateRanges(const Strategies& child)
 {
-timersStrat[15].start();
+timersStrat[8].start();
 
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
   ranges*= child.ranges;
 
-timersStrat[15].stop();
+timersStrat[8].stop();
 }
 
 
@@ -326,7 +319,7 @@ bool Strategies::purgeRanges(
   if (slist.empty())
     return false;
 
-timersStrat[16].start();
+timersStrat[9].start();
 
   const bool eraseFlag = slist.purgeRanges(constants,
     ranges, rangesParent, debugFlag);
@@ -337,7 +330,7 @@ timersStrat[16].start();
     cout << Strategies::str("Ranges after purging", true);
   }
 
-timersStrat[16].stop();
+timersStrat[9].stop();
 
   return eraseFlag;
 }
