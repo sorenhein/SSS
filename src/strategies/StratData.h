@@ -59,6 +59,17 @@ struct StratData
     }
   };
 
+  void pushDistributionOnto(list<Strategy>& strategies)
+  {
+    // Pushes a distribution (a row) onto strategies.
+    auto siter = strategies.begin();
+    for (auto& sd: data)
+    {
+      siter->push_back(* sd.iter);
+      siter++;
+    }
+  };
+
   unsigned char dist()
   {
     assert(! data.empty());

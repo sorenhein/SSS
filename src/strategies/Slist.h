@@ -73,8 +73,6 @@ class Slist
       list<Addition>& additions,
       list<list<Strategy>::const_iterator>& deletions);
 
-    void pushDistribution(const StratData& stratData);
-
     string strHeader(
       const string& title,
       const bool rankFlag) const;

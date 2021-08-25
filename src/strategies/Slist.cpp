@@ -620,18 +620,6 @@ void Slist::multiplyOneByOne(const Slist& slist2)
  *                                                          *
  ************************************************************/
 
-void Slist::pushDistribution(const StratData& stratData)
-{
-  // TODO Can this go in StratData?
-  auto siter = strategies.begin();
-  for (auto& sd: stratData.data)
-  {
-    siter->push_back(* sd.iter);
-    siter++;
-  }
-}
-
-
 void Slist::splitDistributions(
   const Strategy& counterpart,
   Slist& own,
@@ -653,7 +641,7 @@ void Slist::splitDistributions(
     if (riter == counterpart.end())
     {
       // A unique distribution.
-      own.pushDistribution(stratData);
+      stratData.pushDistributionOnto(own.strategies);
 
       if (stratData.advance() == STRATSTATUS_END)
         break;
@@ -672,7 +660,7 @@ void Slist::splitDistributions(
     while (stratData.dist() < riter->dist())
     {
       // A unique distribution.
-      own.pushDistribution(stratData);
+      stratData.pushDistributionOnto(own.strategies);
 
       if (stratData.advance() == STRATSTATUS_END)
       {
@@ -687,7 +675,7 @@ void Slist::splitDistributions(
     if (riter->dist() == stratData.dist())
     {
       // A shared distribution.
-      shared.pushDistribution(stratData);
+      stratData.pushDistributionOnto(shared.strategies);
 
       if (stratData.advance() == STRATSTATUS_END)
         break;
