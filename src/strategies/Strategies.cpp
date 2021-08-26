@@ -220,43 +220,37 @@ timersStrat[4].start();
 timersStrat[4].stop();
     return;
   }
-
-  if (ranges.empty() || len1 < 10 || len2 < 10)
+  else if (ranges.empty())
   {
 timersStrat[5].start();
+
+    slist.multiply(strats2.slist, ranges, 
+      &Strategy::lessEqualPrimaryStudied);
+
+timersStrat[5].stop();
+  }
+  else if (len1 < 10 || len2 < 10)
+  {
+timersStrat[6].start();
 
     // This implementation of the general product reduces
     // memory overhead.  The temporary product is formed in the last
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
-    if (ranges.empty())
-    {
-      for (auto& strategies: slist)
-        strategies.study();
+    // Use the existing ranges, presumed correct.
+    Strategies::scrutinize(ranges);
+    strats2.scrutinize(ranges);
 
-      for (auto& strategies: strats2.slist)
-        strategies.study();
+    slist.multiply(strats2.slist, ranges, 
+      &Strategy::lessEqualPrimaryScrutinized);
 
-      slist.multiply(strats2.slist, ranges, 
-        &Strategy::lessEqualPrimaryStudied);
-    }
-    else
-    {
-      // Use the existing ranges, presumed correct.
-      Strategies::scrutinize(ranges);
-      strats2.scrutinize(ranges);
-
-      slist.multiply(strats2.slist, ranges, 
-        &Strategy::lessEqualPrimaryScrutinized);
-    }
-
-timersStrat[5].stop();
+timersStrat[6].stop();
     return;
   }
   else
   {
-timersStrat[6].start();
+timersStrat[7].start();
 
     // The two Strategies have distributions that are overlapping 
     // as well as distributions that are unique to each of them.  
@@ -272,7 +266,7 @@ timersStrat[6].start();
 
     extensions.flatten(slist);
 
-timersStrat[6].stop();
+timersStrat[7].stop();
   }
 }
 
@@ -285,24 +279,24 @@ timersStrat[6].stop();
 
 void Strategies::makeRanges()
 {
-timersStrat[7].start();
+timersStrat[8].start();
 
   slist.makeRanges(ranges);
 
-timersStrat[7].stop();
+timersStrat[8].stop();
 }
 
 
 void Strategies::propagateRanges(const Strategies& child)
 {
-timersStrat[8].start();
+timersStrat[9].start();
 
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
   ranges*= child.ranges;
 
-timersStrat[8].stop();
+timersStrat[9].stop();
 }
 
 
@@ -314,7 +308,7 @@ bool Strategies::purgeRanges(
   if (slist.empty())
     return false;
 
-timersStrat[9].start();
+timersStrat[10].start();
 
   const bool eraseFlag = slist.purgeRanges(constants,
     ranges, rangesParent, debugFlag);
@@ -325,7 +319,7 @@ timersStrat[9].start();
     cout << Strategies::str("Ranges after purging", true);
   }
 
-timersStrat[9].stop();
+timersStrat[10].stop();
 
   return eraseFlag;
 }
