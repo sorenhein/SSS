@@ -251,67 +251,6 @@ timersStrat[5].start();
         &Strategy::lessEqualPrimaryScrutinized);
     }
 
-
-/*
-    ComparatorType lessEqualMethod =
-      &Strategy::lessEqualPrimaryScrutinized;
-
-// cout << ranges.str("pre-existing parent (easy branch)") << endl;
-// cout << strats2.ranges.str("pre-existing child (easy branch)") << endl;
-
-    // TODO Just to make it work.  Slow?
-Ranges rtmp;
-if (ranges.empty())
-{
-Strategies stmp1 = * this;
-Strategies stmp2 = strats2;
-stmp1.makeRanges();
-stmp2.makeRanges();
-stmp1.propagateRanges(stmp2);
-rtmp = stmp1.ranges;
-
-cout << "Made a temp ranges";
-cout << rtmp.str("tmp");
-
-cout << stmp1.str("stmp1");
-cout << stmp2.str("stmp2");
-
-    // Strategies::makeRanges();
-    // strats2.makeRanges();
-    // Strategies::propagateRanges(strats2);
-}
-else
-{
-  rtmp = ranges;
-// cout << "Kept the input ranges\n";
-// cout << rtmp.str("input");
-}
-
-    Strategies::scrutinize(rtmp);
-    strats2.scrutinize(rtmp);
-
-    slist.multiply(strats2.slist, rtmp, lessEqualMethod);
-
-    **
-    Strategies::scrutinize(ranges);
-    strats2.scrutinize(ranges);
-
-    slist.multiply(strats2.slist, ranges, lessEqualMethod);
-    */
-
-    /* */
-
-    /*
-    for (auto& strategies: slist)
-      strategies.study();
-
-    for (auto& strategies: strats2.slist)
-      strategies.study();
-
-    slist.multiply(strats2.slist, ranges, 
-      &Strategy::lessEqualPrimaryStudied);
-      */
-
 timersStrat[5].stop();
     return;
   }
@@ -325,23 +264,7 @@ timersStrat[6].start();
     //
     // Even though Extensions splits Strategy's into own and shared
     // by distribution, we can still share the central ranges.
-    //
-    // TODO Is it possible that the ranges were already set
-    // during purgeRanges?  Can we tell by whether ranges are
-    // non-zero?
-
-// cout << ranges.str("pre-existing parent (hard branch)") << endl;
-// cout << strats2.ranges.str("pre-existing child (hard branch)") << endl;
-
-    /* */
-    // Strategies::makeRanges();
-// cout << ranges.str("new parent");
-    // strats2.makeRanges();
-// cout << strats2.ranges.str("new child");
-    // Strategies::propagateRanges(strats2);
-// cout << ranges.str("propagated parent parent");
-
-/* */
+    // By assumption, ranges exists and is valid.
 
     Extensions extensions;
     extensions.split(slist, strats2.slist, ranges);
