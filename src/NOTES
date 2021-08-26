@@ -1,7 +1,5 @@
 Ranks output: left flush the cards
 
-Result output with r = 7 still has ranks, why?
-
 Use rank flag to turn down Result comparisons or comparisons
 in Slist.cpp
 

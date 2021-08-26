@@ -166,8 +166,8 @@ string Player::strRankHeader() const
   stringstream ss;
   ss << right <<
     setw(6) << Player::playerName() <<
-    setw(3) << "#" <<
-    setw(12) << "cards";
+    setw(3) << "#" << " " <<
+    setw(12) << left << "cards";
 
   return ss.str();
 }
@@ -177,16 +177,16 @@ string Player::strRank(const unsigned char rank) const
 {
   stringstream ss;
   if (rankInfo[rank].count == 0)
-    ss << 
+    ss << right <<
       setw(6) << "-" << 
-      setw(3) << "-" << 
-      setw(12) << "-";
+      setw(3) << "-" << " " <<
+      setw(12) << left << "-";
   else
   {
-    ss << 
+    ss << right <<
       setw(6) << Player::playerName() <<
-      setw(3) << +rankInfo[rank].count <<
-      setw(12) << rankInfo[rank].names;
+      setw(3) << +rankInfo[rank].count << " " <<
+      setw(12) << left << rankInfo[rank].names;
   }
 
   return ss.str();

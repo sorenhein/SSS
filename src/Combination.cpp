@@ -101,7 +101,8 @@ const Strategies& Combination::strategize(
       static_cast<unsigned char>(distPtr->size()));
 
     if (control.outputBasicResults())
-      cout << strats.str("Trivial result", true) << "\n";
+      cout << strats.str("Trivial result", 
+        control.runRankComparisons()) << "\n";
     return strats;
   }
 
@@ -124,7 +125,8 @@ const Strategies& Combination::strategize(
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
   if (control.outputBasicResults())
-    cout << strats.str("Result", true) << "\n";
+    cout << strats.str("Result", 
+      control.runRankComparisons()) << "\n";
 
   return strats;
 }
