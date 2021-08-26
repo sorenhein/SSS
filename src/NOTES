@@ -6,6 +6,8 @@ does itself.  Time it.
 
 Check that the comparators are sensible and minimal.
 
+Ranks output: left flush the cards
+
 
 -r could be for run flags
 - Play-level choice (void, optimized, normal)

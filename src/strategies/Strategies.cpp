@@ -196,8 +196,9 @@ void Strategies::operator *= (Strategies& strats2)
 {
   // This method only gets called from Nodes::cross, which means
   // that *this is a parent node and strats2 is a child node.
-  // If the method is used differently, unexpected behavior may
-  // occur!
+  // It is essential that if this->ranges is non-empty, it is a 
+  // valid range for both this->slist and for strats2->slist.  
+  // This method does not change any of these ranges.
 
   const unsigned len1 = slist.size();
   const unsigned len2 = strats2.slist.size();
@@ -206,7 +207,8 @@ void Strategies::operator *= (Strategies& strats2)
     return;
   else if (len1 == 0)
   {
-    * this = strats2;
+    // As * this is a parent node, preserve its ranges.
+    slist = strats2.slist;
     return;
   }
   else if (len1 == 1 && len2 == 1)
@@ -228,18 +230,87 @@ timersStrat[5].start();
     // element of Strategies as a scratch pad.  If it turns out to be
     // viable, it is already in Strategies and subject to move semantics.
 
+    if (ranges.empty())
+    {
+      for (auto& strategies: slist)
+        strategies.study();
+
+      for (auto& strategies: strats2.slist)
+        strategies.study();
+
+      slist.multiply(strats2.slist, ranges, 
+        &Strategy::lessEqualPrimaryStudied);
+    }
+    else
+    {
+      // Use the existing ranges, presumed correct.
+      Strategies::scrutinize(ranges);
+      strats2.scrutinize(ranges);
+
+      slist.multiply(strats2.slist, ranges, 
+        &Strategy::lessEqualPrimaryScrutinized);
+    }
+
+
+/*
     ComparatorType lessEqualMethod =
       &Strategy::lessEqualPrimaryScrutinized;
 
-    // TODO Just to make it work.  Slow?
-    Strategies::makeRanges();
-    strats2.makeRanges();
-    Strategies::propagateRanges(strats2);
+// cout << ranges.str("pre-existing parent (easy branch)") << endl;
+// cout << strats2.ranges.str("pre-existing child (easy branch)") << endl;
 
+    // TODO Just to make it work.  Slow?
+Ranges rtmp;
+if (ranges.empty())
+{
+Strategies stmp1 = * this;
+Strategies stmp2 = strats2;
+stmp1.makeRanges();
+stmp2.makeRanges();
+stmp1.propagateRanges(stmp2);
+rtmp = stmp1.ranges;
+
+cout << "Made a temp ranges";
+cout << rtmp.str("tmp");
+
+cout << stmp1.str("stmp1");
+cout << stmp2.str("stmp2");
+
+    // Strategies::makeRanges();
+    // strats2.makeRanges();
+    // Strategies::propagateRanges(strats2);
+}
+else
+{
+  rtmp = ranges;
+// cout << "Kept the input ranges\n";
+// cout << rtmp.str("input");
+}
+
+    Strategies::scrutinize(rtmp);
+    strats2.scrutinize(rtmp);
+
+    slist.multiply(strats2.slist, rtmp, lessEqualMethod);
+
+    **
     Strategies::scrutinize(ranges);
     strats2.scrutinize(ranges);
 
     slist.multiply(strats2.slist, ranges, lessEqualMethod);
+    */
+
+    /* */
+
+    /*
+    for (auto& strategies: slist)
+      strategies.study();
+
+    for (auto& strategies: strats2.slist)
+      strategies.study();
+
+    slist.multiply(strats2.slist, ranges, 
+      &Strategy::lessEqualPrimaryStudied);
+      */
 
 timersStrat[5].stop();
     return;
@@ -259,9 +330,18 @@ timersStrat[6].start();
     // during purgeRanges?  Can we tell by whether ranges are
     // non-zero?
 
-    Strategies::makeRanges();
-    strats2.makeRanges();
-    Strategies::propagateRanges(strats2);
+// cout << ranges.str("pre-existing parent (hard branch)") << endl;
+// cout << strats2.ranges.str("pre-existing child (hard branch)") << endl;
+
+    /* */
+    // Strategies::makeRanges();
+// cout << ranges.str("new parent");
+    // strats2.makeRanges();
+// cout << strats2.ranges.str("new child");
+    // Strategies::propagateRanges(strats2);
+// cout << ranges.str("propagated parent parent");
+
+/* */
 
     Extensions extensions;
     extensions.split(slist, strats2.slist, ranges);

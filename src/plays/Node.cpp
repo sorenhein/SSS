@@ -113,7 +113,7 @@ void Node::purgeRanges(const bool debugFlag)
   if (eraseFlag && debugFlag)
   { 
     cout << "\nPurging ranges: " << Node::strPlay(LEVEL_LHO);
-    cout << strats.str("Starting point", true);
+    cout << strats.str("End point", true);
   }
 
   parentPtr->constants *= constants;
