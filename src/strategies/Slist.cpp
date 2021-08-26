@@ -16,6 +16,9 @@
 #include "result/Ranges.h"
 #include "../plays/Play.h"
 #include "../Survivor.h"
+#include "../inputs/Control.h"
+
+extern Control control;
 
 
 Slist::Slist()
@@ -793,8 +796,8 @@ bool Slist::purgeRanges(
       if (debugFlag)
       {
         cout << "Erased constant for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
+        cout << parentRange.strHeader(control.runRankComparisons());
+        cout << parentRange.str(control.runRankComparisons());
       }
     }
     else if (parentRange < * stratData.riter)
@@ -805,8 +808,8 @@ bool Slist::purgeRanges(
       if (debugFlag)
       {
         cout << "Erased dominated range for parent range:\n";
-        cout << parentRange.strHeader(true);
-        cout << parentRange.str(true);
+        cout << parentRange.strHeader(control.runRankComparisons());
+        cout << parentRange.str(control.runRankComparisons());
       }
     }
   }

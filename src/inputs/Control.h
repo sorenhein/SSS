@@ -33,8 +33,9 @@ enum ControlIntVectors
 {
   CTRL_OUTPUT = 0,
   CTRL_DEBUG = 1,
+  CTRL_RUN = 2,
 
-  CTRL_INT_VECTORS_SIZE = 2
+  CTRL_INT_VECTORS_SIZE = 3
 };
 
 enum ControlBools
@@ -71,6 +72,14 @@ enum ControlDoubles
   CTRL_DOUBLES_SIZE = 1
 };
 
+enum ControlRun
+{
+  CTRL_RUN_FULL_PLAYS = 0,
+  CTRL_RUN_ADVANCED_NODES = 1,
+  CTRL_RUN_STRATEGY_OPT = 2,
+  CTRL_RUN_RANK_COMPARE = 3
+};
+
 enum ControlOutput
 {
   CTRL_OUTPUT_HOLDING = 0,
@@ -81,7 +90,8 @@ enum ControlOutput
 enum ControlDebug
 {
   CTRL_DEBUG_ARGS = 0,
-  CTRL_DEBUG_BIT1 = 1
+  CTRL_DEBUG_STRAT_WELL_FORMED = 1,
+  CTRL_DEBUG_BIT2 = 2
 };
 
 
@@ -151,12 +161,18 @@ class Control
     const string& controlFile() const; 
     const string& text() const; 
 
+    bool runFullPlays() const;
+    bool runAdvancedNodes() const;
+    bool runStrategyOptimizations() const;
+    bool runRankComparisons() const;
+
     bool outputHolding() const; 
     bool outputBasicResults() const; 
     bool outputBit2() const; 
 
     bool debugArgs() const; 
-    bool debugBit1() const; 
+    bool debugStratWellFormed() const;
+    bool debugBit2() const; 
 
     const string& simpleDir() const;
     const string& constantDir() const;

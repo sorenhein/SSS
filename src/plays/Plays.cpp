@@ -15,6 +15,9 @@
 
 #include "../Combinations.h"
 #include "../Distribution.h"
+#include "../inputs/Control.h"
+
+extern Control control;
 
 #include "../utils/Timer.h"
 extern vector<Timer> timersStrat;
@@ -163,7 +166,8 @@ timersStrat[20].start();
   Plays::getNextStrategies(distPtr, debugFlag);
 timersStrat[20].stop();
 
-  if (nodesRho.used() <= 20 ||
+  if (! control.runAdvancedNodes() ||
+      nodesRho.used() <= 20 ||
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))
   {
     // Optimization is not used when the number of plays is low enough.
@@ -199,15 +203,23 @@ timersStrat[20].stop();
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
 
-#if 0
-  // TODO Better control of how this (slow) test happens.
-  if (! nodeMaster.strategies().minimal())
+  if (control.debugStratWellFormed())
   {
-    cout << nodeMaster.strategies().str("NON-MINIMAL", true);
-    cout << endl;
-    assert(false);
+    if (! nodeMaster.strategies().minimal())
+    {
+      cout << nodeMaster.strategies().str("NON-MINIMAL", 
+        control.runRankComparisons());
+      cout << endl;
+      assert(false);
+    }
+    else if (! nodeMaster.strategies().ordered())
+    {
+      cout << nodeMaster.strategies().str("NON_ORDERED", 
+        control.runRankComparisons());
+      cout << endl;
+      assert(false);
+    }
   }
-#endif
 
   return nodeMaster.strategies();
 }

@@ -16,6 +16,9 @@
 
 #include "../Distribution.h"
 #include "../Combination.h"
+#include "../inputs/Control.h"
+
+extern Control control;
 
 
 Node::Node()
@@ -89,13 +92,17 @@ void Node::getNextStrategies(
   {
     cout << Node::strPlay(LEVEL_RHO);
     cout << playPtr->strLine() << "\n";
-    cout << strats.str("Strategy of next trick", true) << endl;
+    cout << 
+      strats.str("Strategy of next trick", control.runRankComparisons()) <<
+      endl;
   }
 
   // Renumber and rotate the strategy.
   strats.adapt(* playPtr, survivors);
   if (debugFlag)
-    cout << strats.str("Adapted strategy of next trick", true) << "\n";
+    cout << 
+      strats.str("Adapted strategy of next trick", 
+        control.runRankComparisons()) << "\n";
 }
 
 
@@ -113,7 +120,8 @@ void Node::purgeRanges(const bool debugFlag)
   if (eraseFlag && debugFlag)
   { 
     cout << "\nPurging ranges: " << Node::strPlay(LEVEL_LHO);
-    cout << strats.str("End point", true);
+    cout << strats.str("End point", 
+      control.runRankComparisons());
   }
 
   parentPtr->constants *= constants;
@@ -136,7 +144,8 @@ void Node::cross(
   {
     cout << Node::strPlay(level);
     const string s = (level == LEVEL_RHO ? "RHO" : "LHO");
-    cout << strats.str("Crossing " + s + " strategy", true);
+    cout << strats.str("Crossing " + s + " strategy", 
+      control.runRankComparisons());
   }
 
   parentPtr->strats *= strats;
@@ -145,7 +154,8 @@ void Node::cross(
   {
     const string s = (level == LEVEL_RHO ? "partner" : "lead");
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", true);
+      "Cumulative " + s + " strategy after this trick", 
+        control.runRankComparisons());
   }
 }
 
@@ -160,7 +170,8 @@ void Node::add(
   {
     cout << Node::strPlay(level);
     const string s = (level == LEVEL_LEAD ? "lead" : "partner");
-    cout << strats.str("Adding " + s + " strategy", true);
+    cout << strats.str("Adding " + s + " strategy", 
+      control.runRankComparisons());
   }
 
   parentPtr->strats += strats;
@@ -169,7 +180,8 @@ void Node::add(
   {
     const string s = (level == LEVEL_LEAD ? "overall" : "LHO");
     cout << parentPtr->strats.str(
-      "Cumulative " + s + " strategy after this trick", true);
+      "Cumulative " + s + " strategy after this trick", 
+        control.runRankComparisons());
   }
 }
 
@@ -235,6 +247,7 @@ string Node::strSimpleParent() const
   if (parentPtr->simpleStrat.empty())
     return "";
   else
-    return parentPtr->simpleStrat.str("simple " + to_string(index), true);
+    return parentPtr->simpleStrat.str("simple " + to_string(index), 
+      control.runRankComparisons());
 }
 

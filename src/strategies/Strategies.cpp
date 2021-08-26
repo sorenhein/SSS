@@ -15,6 +15,9 @@
 
 #include "../plays/Play.h"
 #include "../Survivor.h"
+#include "../inputs/Control.h"
+
+extern Control control;
 
 // TMP
 #include "../utils/Timer.h"
@@ -168,7 +171,8 @@ void Strategies::operator += (Strategies& strats2)
   const unsigned sno1 = slist.size();
   const unsigned sno2 = strats2.slist.size();
 
-  if (sno1 == 1 && sno2 == 1)
+  if (control.runStrategyOptimizations() &&
+      sno1 == 1 && sno2 == 1)
   {
     // Simplified case.
     slist.plusOneByOne(strats2.slist);
@@ -211,7 +215,7 @@ void Strategies::operator *= (Strategies& strats2)
     slist = strats2.slist;
     return;
   }
-  else if (len1 == 1 && len2 == 1)
+  else if (control.runStrategyOptimizations() && len1 == 1 && len2 == 1)
   {
 timersStrat[4].start();
 
@@ -220,7 +224,7 @@ timersStrat[4].start();
 timersStrat[4].stop();
     return;
   }
-  else if (ranges.empty())
+  else if (! control.runStrategyOptimizations() || ranges.empty())
   {
 timersStrat[5].start();
 
@@ -315,8 +319,10 @@ timersStrat[10].start();
 
   if (eraseFlag && debugFlag)
   {
-    cout << constants.str("\nNew constants", true) << "\n";
-    cout << Strategies::str("Ranges after purging", true);
+    cout << constants.str("\nNew constants", 
+      control.runRankComparisons()) << "\n";
+    cout << Strategies::str("Ranges after purging", 
+      control.runRankComparisons());
   }
 
 timersStrat[10].stop();

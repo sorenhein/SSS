@@ -1,21 +1,14 @@
-Go through all TODO's in Strategies and Slist.
-
-In Strategies, get study, scrutinize and methods cleaned up.
-Study might also be an active act, not something that Strategy
-does itself.  Time it.
-
-Check that the comparators are sensible and minimal.
-
 Ranks output: left flush the cards
 
+Result output with r = 7 still has ranks, why?
 
--r could be for run flags
-- Play-level choice (void, optimized, normal)
-- Range optimization or not
-- Various choiced in Strategies
-- Use ranks for comparisons or not (if yes, they are also in
-  debug output)
-- Control plays, either all plays or only optimized ones
+Use rank flag to turn down Result comparisons or comparisons
+in Slist.cpp
+
+How much faster does it get?
+
+Write an output of the holdings to which a holding might be reduced,
+and output this
 
 Then we could have a script to compare outputs
 - All 2^n versions
@@ -25,20 +18,17 @@ Then we could have a script to compare outputs
 - If with/without rank, compare appropriately by other script
 
 -d
-- Check that comparisons are minimal
-  - Optimize the code for this
-  - Also optimize Strategies == even though it doesn't matter
+  - Optimize the code for minimal()
+  - Also optimize for Strategies == even though it doesn't matter
     - Start at ==, only do upper triangle of matrix
 
 
 Checks
 ------
-* Range optimization in Nodes (on/off)
+* Node optimization (on/off)
 * Strategies *= optimization (on/off)
-* No Strategies not minimal(), ordered()
-* When a Strategies can be simplified to others due to rank,
-  somehow check that those strategies that only rely on ranks
-  >= the minimum ones have exactly the same Strategies, incl. ranks
+
+Check speed and identity of results
 
 
 Ranks stored in tables
@@ -135,3 +125,4 @@ everything?  It must be some stray pointers, but where?
 
 TODO
 ----
+Not all features of Control.cpp are implemented yet

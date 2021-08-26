@@ -113,15 +113,21 @@ void Control::configure()
       "Control file with further settings." },
     { "-t", "--text", CORRESPONDENCE_STRING, CTRL_TEXT, "",
       "Text to print (e.g. Roudinesco page and number)." },
+    { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0xf",
+      "Output verbosity (default: 0xf).  Bits:\n"
+      "0x001: All N-S plays, including within ranks\n"
+      "0x002: Advanced strategizing including ranges and voids\n"
+      "0x004: Optimizations when calculating strategies\n"
+      "0x008: Consider ranks when comparing strategies"
+      },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
       "0x001: Identification of holding\n"
-      "0x002: Diagram, ranks, distributions and basic results\n"
-      "0x004: More" },
+      "0x002: Diagram, ranks, distributions and basic results" },
     { "-d", "--debug", CORRESPONDENCE_BIT_VECTOR, CTRL_DEBUG, "0x0",
       "Debug verbosity (default: 0x0).  Bits:\n"
       "0x001: Input arguments\n"
-      "0x002: More" },
+      "0x002: Check that final strategies are minimal and ordered" },
     { "-T", "--threads", CORRESPONDENCE_INT, CTRL_NUM_THREADS, "1",
       "Number of threads." }
   };
@@ -434,6 +440,27 @@ const string& Control::text() const
 }
 
 
+bool Control::runFullPlays() const
+{
+  // TODO Implement
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_FULL_PLAYS] != 0);
+}
+
+bool Control::runAdvancedNodes() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_ADVANCED_NODES] != 0);
+}
+
+bool Control::runStrategyOptimizations() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_STRATEGY_OPT] != 0);
+}
+
+bool Control::runRankComparisons() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_RANK_COMPARE] != 0);
+}
+
 bool Control::outputHolding() const
 {
   return (entry.getIntVector(CTRL_OUTPUT)[CTRL_OUTPUT_HOLDING] != 0);
@@ -457,9 +484,14 @@ bool Control::debugArgs() const
 }
 
 
-bool Control::debugBit1() const
+bool Control::debugStratWellFormed() const
 {
-  return (entry.getIntVector(CTRL_DEBUG)[CTRL_DEBUG_BIT1] != 0);
+  return (entry.getIntVector(CTRL_DEBUG)[CTRL_DEBUG_STRAT_WELL_FORMED] != 0);
+}
+
+bool Control::debugBit2() const
+{
+  return (entry.getIntVector(CTRL_DEBUG)[CTRL_DEBUG_BIT2] != 0);
 }
 
 

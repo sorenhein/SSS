@@ -16,6 +16,9 @@
 
 #include "../plays/Play.h"
 #include "../Survivor.h"
+#include "../inputs/Control.h"
+
+extern Control control;
 
 
 
@@ -455,8 +458,7 @@ void Strategy::multiply(
 
 void Strategy::initRanges(Ranges& ranges) const
 {
-  // TODO "false" should mean no winners, but currently ignored.
-  ranges.init(results, true);
+  ranges.init(results, control.runRankComparisons());
 }
 
 
