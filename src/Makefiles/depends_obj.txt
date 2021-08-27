@@ -134,7 +134,8 @@ strategies/result/Ranges.obj: strategies/result/Ranges.h
 strategies/result/Ranges.obj: strategies/result/Range.h
 strategies/result/Ranges.obj: strategies/result/Result.h
 strategies/result/Result.obj: strategies/result/Result.h plays/Play.h
-strategies/result/Result.obj: strategies/result/Winners.h
+strategies/result/Result.obj: strategies/result/Winners.h inputs/Control.h
+strategies/result/Result.obj: inputs/Entity.h
 strategies/result/Winners.obj: strategies/result/Winners.h
 strategies/result/Winners.obj: strategies/result/Winner.h utils/table.h
 strategies/result/Winners.obj: utils/Card.h utils/Compare.h utils/Compare.h

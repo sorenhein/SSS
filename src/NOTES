@@ -1,7 +1,6 @@
-Ranks output: left flush the cards
-
 Use rank flag to turn down Result comparisons or comparisons
-in Slist.cpp
+* in Slist.cpp, probably don't even have to change Result
+* in Range.cpp or Range.cpp, can we achieve something like Slist?
 
 How much faster does it get?
 

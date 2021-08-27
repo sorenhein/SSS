@@ -14,6 +14,9 @@
 #include "Result.h"
 
 #include "../../plays/Play.h"
+#include "../../inputs/Control.h"
+
+extern Control control;
 
 
 // First three non-class methods. 
@@ -63,6 +66,18 @@ CompareType compressCompareSecondaryDetail(const unsigned detail)
 }
 
 
+Result::Result()
+{
+  distInt = 0;
+  tricksInt = 0;
+}
+
+
+Result::~Result()
+{
+}
+
+
 void Result::set(
   const unsigned char dist,
   const unsigned char tricks,
@@ -70,7 +85,9 @@ void Result::set(
 {
   distInt = dist;
   tricksInt = tricks;
-  winnersInt = winners;
+
+  if (control.runRankComparisons())
+    winnersInt = winners;
 }
 
 
@@ -93,19 +110,25 @@ void Result::update(
 {
   distInt = dist;
   tricksInt += play.trickNS;
-  winnersInt.update(play);
+
+  if (control.runRankComparisons())
+    winnersInt.update(play);
 }
 
 
 void Result::flip()
 {
-  winnersInt.flip();
+  if (control.runRankComparisons())
+    winnersInt.flip();
 }
 
 
 void Result::multiplyWinnersOnto(Result& result) const
 {
-  result.winnersInt *= winnersInt;
+  if (control.runRankComparisons())
+  {
+    result.winnersInt *= winnersInt;
+  }
   
 }
 
@@ -116,7 +139,10 @@ void Result::operator *= (const Result& result2)
   if (tricksInt > result2.tricksInt)
     * this = result2;
   else if (tricksInt == result2.tricksInt)
-    winnersInt *= result2.winnersInt;
+  {
+    if (control.runRankComparisons())
+      winnersInt *= result2.winnersInt;
+  }
 }
 
 
@@ -126,7 +152,10 @@ void Result::operator += (const Result& result2)
   if (tricksInt < result2.tricksInt)
     * this = result2;
   else if (tricksInt == result2.tricksInt)
-    winnersInt += result2.winnersInt;
+  {
+    if (control.runRankComparisons())
+      winnersInt += result2.winnersInt;
+  }
 }
 
   
@@ -134,6 +163,8 @@ bool Result::operator == (const Result& res2) const
 {
   if (tricksInt != res2.tricksInt)
     return false;
+  else if (! control.runRankComparisons())
+    return true;
   else
     return (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
 }
@@ -162,6 +193,8 @@ Compare Result::compareComplete(const Result& res2) const
     return WIN_FIRST;
   else if (tricksInt < res2.tricksInt)
     return WIN_SECOND;
+  else if (! control.runRankComparisons())
+    return WIN_EQUAL;
   else
     return winnersInt.compare(res2.winnersInt);
 }
@@ -170,6 +203,9 @@ Compare Result::compareComplete(const Result& res2) const
 CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
 {
   assert(tricksInt == res2.tricksInt);
+
+  if (! control.runRankComparisons())
+    return WIN_EQUAL_OVERALL;
 
   const Compare c = winnersInt.compare(res2.winnersInt);
   if (c == WIN_FIRST)
@@ -189,6 +225,8 @@ CompareDetail Result::compareInDetail(const Result& res2) const
     return WIN_FIRST_PRIMARY;
   else if (tricksInt < res2.tricksInt)
     return WIN_SECOND_PRIMARY;
+  else if (! control.runRankComparisons())
+    return WIN_EQUAL_OVERALL;
   else
     return Result::compareSecondaryInDetail(res2);
 }
