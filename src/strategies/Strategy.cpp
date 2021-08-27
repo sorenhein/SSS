@@ -230,8 +230,16 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
   // that it does not rely on studied or scrutinizes Result's.
 
   unsigned cumul;
-  if (! Strategy::cumulate(strat2, true, cumul))
-    return false;
+
+  if (control.runRankComparisons())
+  {
+    if (! Strategy::cumulate(strat2, true, cumul))
+      return false;
+  }
+  else
+  {
+    return Strategy::cumulatePrimary(strat2, true, cumul);
+  }
   
   if (cumul & WIN_SECOND_PRIMARY)
     return true;
@@ -260,6 +268,10 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
 {
   // As we ignore tricks, this is in a sense basic.
   assert(strat2.results.size() == results.size());
+
+  // Result will catch this as well, but no point in checking.
+  if (! control.runRankComparisons())
+    return WIN_EQUAL;
 
   unsigned cumul;
   Strategy::cumulateSecondary(strat2, cumul);
