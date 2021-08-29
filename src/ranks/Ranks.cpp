@@ -280,6 +280,7 @@ unsigned Ranks::canonicalTrinary(
 void Ranks::canonicalBoth(
   const Declarer& dominant,
   const Declarer& recessive,
+  const Opponents& opponents,
   unsigned& holding3,
   unsigned& holding2) const
 {
@@ -291,7 +292,7 @@ void Ranks::canonicalBoth(
   for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
     const unsigned index = 
-      (static_cast<unsigned>(opps.count(rank)) << 8) | 
+      (static_cast<unsigned>(opponents.count(rank)) << 8) | 
       (static_cast<unsigned>(dominant.count(rank)) << 4) | 
        static_cast<unsigned>(recessive.count(rank));
 
@@ -305,7 +306,21 @@ void Ranks::canonicalBoth(
 }
 
 
-void Ranks::set(
+void Ranks::setRanks(CombReference& combRef) const
+{
+  combRef.rotateFlag = ! (north.greater(south, opps));
+
+  if (combRef.rotateFlag)
+    Ranks::canonicalBoth(south, north, opps,
+      combRef.holding3, combRef.holding2);
+  else
+   Ranks::canonicalBoth(north, south, opps,
+      combRef.holding3, combRef.holding2);
+
+}
+
+
+void Ranks::setRanks(
   const unsigned holdingIn,
   CombEntry& combEntry)
 {
@@ -313,14 +328,17 @@ void Ranks::set(
 
   Ranks::setPlayers();
 
+  Ranks::setRanks(combEntry.canonical);
+  /*
   combEntry.canonical.rotateFlag = ! (north.greater(south, opps));
 
   if (combEntry.canonical.rotateFlag)
-    Ranks::canonicalBoth(south, north,
+    Ranks::canonicalBoth(south, north, opps,
       combEntry.canonical.holding3, combEntry.canonical.holding2);
   else
-   Ranks::canonicalBoth(north, south,
+   Ranks::canonicalBoth(north, south, opps,
       combEntry.canonical.holding3, combEntry.canonical.holding2);
+      */
 
   combEntry.canonicalFlag = (holding == combEntry.canonical.holding3);
 }
@@ -673,6 +691,55 @@ bool Ranks::partnerVoid() const
 {
   // North always has the cards if there is a void on declarer's side.
   return south.isVoid();
+}
+
+
+bool Ranks::getMinimals(
+  const Result& result,
+  list<CombReference>& minimals) const
+{
+  // Returns true and does not fill minimal if the combination is 
+  // already minimal.  The implementation is slow and dirty.
+
+  for (auto& winner: result.winnersInt.winners)
+  {
+    Card cardNorth = winner.north;
+    Card cardSouth = winner.south;
+    Ranks ranksTmp = * this;
+
+    bool changeFlag = false;
+
+    if (ranksTmp.north.needsUpshift(cardNorth) ||
+        ranksTmp.south.needsUpshift(cardSouth))
+    {
+      // Declarer may have AK / - missing the Q.  This is the same
+      // as AQ / - missing the K, but it requires room for a new rank.
+      ranksTmp.north.upshift(2);
+      ranksTmp.south.upshift(2);
+      ranksTmp.opps.upshift(2);
+      cardNorth.upshift(2);
+      cardSouth.upshift(2);
+      ranksTmp.maxGlobalRank += 2;
+      changeFlag = true;
+    }
+
+    if (ranksTmp.north.minimize(cardNorth))
+      changeFlag = true;
+
+    if (ranksTmp.south.minimize(cardSouth))
+      changeFlag = true;
+
+    if (changeFlag)
+    {
+      CombReference combRef;
+      ranksTmp.setRanks(combRef);
+
+      assert(combRef.holding3 != holding);
+      minimals.emplace_back(combRef);
+    }
+  }
+
+  return minimals.empty();
 }
 
 

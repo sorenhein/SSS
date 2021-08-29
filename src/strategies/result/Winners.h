@@ -22,6 +22,8 @@ using namespace std;
 
 class Winners
 {
+  friend class Ranks;
+
   private:
 
     list<Winner> winners;

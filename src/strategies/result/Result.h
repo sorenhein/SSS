@@ -40,6 +40,8 @@ CompareType compressCompareSecondaryDetail(const unsigned detail);
 
 class Result
 {
+  friend class Ranks;
+
   private:
 
     unsigned char distInt;

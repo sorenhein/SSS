@@ -1,7 +1,7 @@
 #ifndef SSS_RANKS_H
 #define SSS_RANKS_H
 
-#include <vector>
+#include <list>
 
 #include "Declarer.h"
 #include "Opponents.h"
@@ -14,6 +14,7 @@ using namespace std;
 
 class Result;
 struct CombEntry;
+struct CombReference;
 class Plays;
 
 
@@ -43,8 +44,11 @@ class Ranks
     void canonicalBoth(
       const Declarer& dominant,
       const Declarer& recessive,
+      const Opponents& opponents,
       unsigned& holding3,
       unsigned& holding2) const;
+
+    void setRanks(CombReference& combRef) const;
 
     void trivialRanked(
       const unsigned char tricks,
@@ -96,7 +100,7 @@ class Ranks
 
     unsigned size() const;
 
-    void set(
+    void setRanks(
       const unsigned holdingIn,
       CombEntry& combEntry);
 
@@ -106,12 +110,13 @@ class Ranks
 
     bool partnerVoid() const;
 
+    bool getMinimals(
+      const Result& result,
+      list<CombReference>& minimals) const;
+
     string strTable() const;
 
     wstring wstrDiagram() const;
-
-    // TODO TMP
-    unsigned setsTMP() const;
 };
 
 #endif

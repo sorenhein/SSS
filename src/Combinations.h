@@ -2,6 +2,7 @@
 #define SSS_COMBINATIONS_H
 
 #include <vector>
+#include <list>
 #include <string>
 #include <iostream>
 #include <iomanip>

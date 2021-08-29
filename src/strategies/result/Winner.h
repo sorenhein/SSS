@@ -20,6 +20,8 @@ using namespace std;
 
 class Winner
 {
+  friend class Ranks;
+
   private:
 
     // If North has AKx (ranks 5 and 1), then rank is 5, depth is 1

@@ -153,3 +153,63 @@ bool Declarer::isSingleRanked() const
 {
   return singleRank;
 }
+
+
+bool Declarer::needsUpshift(const Card& card) const
+{
+  // We need to shift up all ranks when
+  // 1. The rank we're splitting is our lowest rank, and
+  // 2. We have to split the rank.
+
+  // The lowest winner must be higher than an opposing card.
+  const unsigned rank = card.getRank();
+  assert(rank > 1);
+
+  // There is no need to shift up if there is a lower rank.
+  if (rank > minRank)
+    return false;
+
+  assert(rank < rankInfo.size());
+  const unsigned ourCount = rankInfo[rank].count;
+
+  const unsigned depth = card.getDepth();
+  assert(depth+1 <= ourCount);
+
+  // Check whether we have to split the rank.
+  return (depth+1 < ourCount);
+}
+
+
+bool Declarer::minimize(const Card& card)
+{
+  // When we need to split ranks, this is where to do it.
+  // We may also just shift down entire ranks to our lowest one.
+
+  const unsigned char rank = card.getRank();
+  const unsigned char depth = card.getDepth();
+  const unsigned char ourCount = rankInfo[rank].count;
+
+  if (depth+1 == ourCount)
+    return false;
+
+  assert(rank >= 3);
+  unsigned char rest = ourCount - (depth+1);
+  rankInfo[rank].count -= rest;
+
+  for (unsigned r = minRank; r < rank; r++)
+  {
+    rest += rankInfo[r].count;
+    rankInfo[r].count = 0;
+  }
+
+  // Shift down as far as possible.
+  unsigned char minRankNew = minRank % 2;
+  if (minRankNew == 0)
+    minRankNew = 2;
+
+  minRank = minRankNew;
+  rankInfo[minRank].count += rest;
+
+  return true;
+}
+

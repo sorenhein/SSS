@@ -118,7 +118,7 @@ void Combinations::runSpecific(
   plays.resize(cards);
 
   CombEntry& centry = combEntries[cards][holding];
-  ranks.set(holding, centry);
+  ranks.setRanks(holding, centry);
 
   const unsigned canonicalHolding3 = centry.canonical.holding3;
   if (holding != canonicalHolding3)
@@ -149,7 +149,7 @@ void Combinations::runSpecificVoid(
   plays.resize(cards);
 
   CombEntry& centry = combEntries[cards][holding];
-  ranks.set(holding, centry);
+  ranks.setRanks(holding, centry);
 
   const unsigned canonicalHolding3 = centry.canonical.holding3;
   if (holding != canonicalHolding3)
@@ -167,26 +167,17 @@ void Combinations::runSpecificVoid(
 }
 
 
-
-#include "const.h"
 bool Combinations::getMinimals(
   const Strategies& strategies,
   const Ranks& ranks,
   list<CombReference>& minimals) const
 {
+  // Returns true when the combination is already minimal,
+  // in which case the set remains empty.
+
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
-
-  // TODO
-  // Size of minimals is size of winners
-  // For each winner in winners
-  //   iter to winner, iter to minimals
-  //   ranks.minimalEntry(winner, CombReference& to minimals entry)
-  // Sort them?
-
-  UNUSED(ranks);
-  UNUSED(minimals);
-  return false;
+  return ranks.getMinimals(resultLowest, minimals);
 }
 
 
@@ -213,7 +204,7 @@ void Combinations::runUniques(
     CombEntry& centry = centries[holding];
 
     timers.start(TIMER_RANKS);
-    ranks.set(holding, centry);
+    ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
     const unsigned canonicalHolding3 = centry.canonical.holding3;
@@ -291,7 +282,7 @@ void Combinations::runUniqueThread(
       break;
 
     CombEntry& centry = centries[holding];
-    ranks.set(holding, centry);
+    ranks.setRanks(holding, centry);
 
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
