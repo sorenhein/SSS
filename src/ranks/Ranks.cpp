@@ -313,16 +313,16 @@ void Ranks::set(
 
   Ranks::setPlayers();
 
-  combEntry.rotateFlag = ! (north.greater(south, opps));
+  combEntry.canonical.rotateFlag = ! (north.greater(south, opps));
 
-  if (combEntry.rotateFlag)
+  if (combEntry.canonical.rotateFlag)
     Ranks::canonicalBoth(south, north,
-      combEntry.canonicalHolding3, combEntry.canonicalHolding2);
+      combEntry.canonical.holding3, combEntry.canonical.holding2);
   else
    Ranks::canonicalBoth(north, south,
-      combEntry.canonicalHolding3, combEntry.canonicalHolding2);
+      combEntry.canonical.holding3, combEntry.canonical.holding2);
 
-  combEntry.canonicalFlag = (holding == combEntry.canonicalHolding3);
+  combEntry.canonicalFlag = (holding == combEntry.canonical.holding3);
 }
 
 

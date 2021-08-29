@@ -49,15 +49,13 @@ const Strategies& Combination::strategize(
   if (control.outputHolding())
   {
     cout << "Cards" << setw(3) << ranks.size() << ": " <<
-      centry.canonicalHolding3 << " | " <<
-      "0x" << hex << centry.canonicalHolding3 << " / " <<
-      dec << centry.canonicalHolding2 << endl;
+      centry.canonical.str() << endl;
   }
 
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.canonicalHolding2);
+    ranks.size(), centry.canonical.holding2);
 
   // Make the plays.
   Result trivialEntry;
@@ -65,20 +63,8 @@ const Strategies& Combination::strategize(
 
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
 
-  // if (centry.canonicalHolding3 == 14480 && ranks.size() == 10)
-  // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
-  // if (centry.canonicalHolding3 == 132889 && ranks.size() == 12)
-  // if (centry.canonicalHolding3 == 4025 && ranks.size() == 10)
-  // if (centry.canonicalHolding3 == 4801 && ranks.size() == 8)
-  // if (centry.canonicalHolding3 == 4757 && ranks.size() == 9)
-  // if (centry.canonicalHolding3 == 4801 && ranks.size() == 8)
-  // if (centry.canonicalHolding3 == 1608 && ranks.size() == 8)
-  // if (centry.canonicalHolding3 == 1598 && ranks.size() == 8)
-  // if (centry.canonicalHolding3 == 1585 && ranks.size() == 8)
-  // if (centry.canonicalHolding3 == 59 && ranks.size() == 5)
-
   if (control.holding() != 0 &&
-      centry.canonicalHolding3 == control.holding() &&
+      centry.canonical.holding3 == control.holding() &&
       ranks.size () == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
@@ -140,16 +126,16 @@ const Strategies& Combination::strategizeVoid(
   Plays& plays,
   bool debugFlag)
 {
-cout << "cholding2 is " << centry.canonicalHolding2 << ", size " << ranks.size() << endl;
+cout << "cholding2 is " << centry.canonical.holding2 << ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.canonicalHolding2);
+    ranks.size(), centry.canonical.holding2);
 
   // Make the plays.
   Result trivialEntry;
   plays.clear();
-if (centry.canonicalHolding3 == 208)
+if (centry.canonical.holding3 == 208)
 {
   cout << "HERE0\n";
 }
@@ -166,7 +152,7 @@ if (centry.canonicalHolding3 == 208)
 
 // return strats;
 
-cout << "A " << centry.canonicalHolding3 << endl;
+cout << "A " << centry.canonical.holding3 << endl;
   // Complete the plays such that their ends point to combinations.
 // if (ranks.size() == 8 && centry.canonicalHolding3 == 530)
 // {

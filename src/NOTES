@@ -1,11 +1,20 @@
-Use rank flag to turn down Result comparisons or comparisons
-* in Slist.cpp, probably don't even have to change Result
-* in Range.cpp or Range.cpp, can we achieve something like Slist?
+Each strategy in a strategies has a winners which may have multiple
+options for declarer.  I think we want to know that an entire 
+holding can be treated as an entire other holding.  So that would
+argue for using the overall winners of the holding.
 
-How much faster does it get?
+For each such overall winner:
+- Figure out the minimal holding when setting all non-winners as
+  low as possible.  Assume it's not the same as the current one --
+  otherwise stop.
+- From the current holding, group the distributions by ignoring
+  lower cards than the winner.
+- Ignore strategy's where a group does not have the same #tricks.
+  Declarer is paying attention to cards that he shouldn't.
+- Make a synthetic, reduced strategies of what we expect (fewer,
+  collapsed distributions + probably fewer strategies)
+- Compare against the minimal holding above by == on tricks only
 
-Write an output of the holdings to which a holding might be reduced,
-and output this
 
 Then we could have a script to compare outputs
 - All 2^n versions

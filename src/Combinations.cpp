@@ -128,7 +128,7 @@ void Combinations::runSpecific(
   CombEntry& centry = combEntries[cards][holding];
   ranks.set(holding, centry);
 
-  const unsigned canonicalHolding3 = centry.canonicalHolding3;
+  const unsigned canonicalHolding3 = centry.canonical.holding3;
   if (holding != canonicalHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
@@ -159,7 +159,7 @@ void Combinations::runSpecificVoid(
   CombEntry& centry = combEntries[cards][holding];
   ranks.set(holding, centry);
 
-  const unsigned canonicalHolding3 = centry.canonicalHolding3;
+  const unsigned canonicalHolding3 = centry.canonical.holding3;
   if (holding != canonicalHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
@@ -204,13 +204,13 @@ void Combinations::runUniques(
     timers.stop(TIMER_RANKS);
 
     combCounts[cards].total++;
-    const unsigned canonicalHolding3 = centry.canonicalHolding3;
+    const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
       combCounts[cards].unique++;
 
       assert(uniqueIndex < uniqs.size());
-      centry.canonicalIndex = uniqueIndex;
+      centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -224,9 +224,11 @@ void Combinations::runUniques(
 
       stratCounts[cards].unique++;
       stratCounts[cards].total += comb.strategies().size();
+
+
     }
     else
-      centry.canonicalIndex = centries[canonicalHolding3].canonicalIndex;
+      centry.canonical.index = centries[canonicalHolding3].canonical.index;
   }
 
   // TMP Print timers
@@ -279,14 +281,14 @@ void Combinations::runUniqueThread(
     ranks.set(holding, centry);
 
     threadCombCounts[thid].total++;
-    const unsigned canonicalHolding3 = centry.canonicalHolding3;
+    const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
       threadCombCounts[thid].unique++;
 
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());
-      centry.canonicalIndex = uniqueIndex;
+      centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
       comb.strategize(centry, * this, * distributions, ranks, plays);
@@ -296,7 +298,7 @@ void Combinations::runUniqueThread(
     }
     else
     {
-      centry.canonicalIndex = centries[canonicalHolding3].canonicalIndex;
+      centry.canonical.index = centries[canonicalHolding3].canonical.index;
     }
   }
 }
@@ -345,7 +347,7 @@ Combination const * Combinations::getPtr(
   const unsigned cards,
   const unsigned holding3) const
 {
-  const unsigned ui = combEntries[cards][holding3].canonicalIndex;
+  const unsigned ui = combEntries[cards][holding3].canonical.index;
   return &uniques[cards][ui];
 }
 
