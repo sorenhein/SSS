@@ -209,7 +209,7 @@ class Slist
 
     // Winners.
 
-    const Result resultLowest() const;
+    void getResultLowest(Result& result) const;
 
 
     // Debug utilities.

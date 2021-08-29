@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include <atomic>
 #include <mutex>
@@ -12,6 +15,7 @@
 using namespace std;
 
 class Distributions;
+struct CombReference;
 
 
 class Combinations
@@ -21,18 +25,68 @@ class Combinations
     struct CountEntry
     {
       unsigned total;
-      unsigned unique;
+      unsigned count;
 
       void reset()
       {
         total = 0;
-        unique = 0;
+        count = 0;
       }
 
-      void operator +=(const CountEntry& c2)
+      void operator += (const CountEntry& c2)
       {
         total += c2.total;
-        unique += c2.unique;
+        count += c2.count;
+      }
+
+      void operator += (const unsigned t)
+      {
+        total += t;
+        count++;
+      }
+
+      string strAverage() const
+      {
+        stringstream ss;
+        ss << fixed << setprecision(2) << 
+          total / static_cast<double>(count);
+        return ss.str();
+      }
+    };
+
+    struct CountPair
+    {
+      CountEntry unique;
+      CountEntry minimal;
+
+      void reset()
+      {
+        unique.reset();
+        minimal.reset();
+      }
+
+      void operator += (const CountPair& cp)
+      {
+        unique += cp.unique;
+        minimal += cp.minimal;
+      }
+    };
+
+    struct CombCountEntry
+    {
+      CountPair plays;
+      CountPair strats;
+
+      void reset()
+      {
+        plays.reset();
+        strats.reset();
+      }
+
+      void operator += (const CombCountEntry& cce)
+      {
+        plays += cce.plays;
+        strats += cce.strats;
       }
     };
 
@@ -41,18 +95,20 @@ class Combinations
     vector<vector<CombEntry>> combEntries;
     vector<vector<Combination>> uniques;
 
-    vector<CountEntry> combCounts;
-    vector<CountEntry> threadCombCounts;
+    // Indexed by cards
+    vector<CombCountEntry> countStats;
 
-    vector<CountEntry> playCounts;
-    vector<CountEntry> threadPlayCounts;
-
-    vector<CountEntry> stratCounts;
-    vector<CountEntry> threadStratCounts;
+    // Indexed by thread ID and collapsed into countStats
+    vector<CombCountEntry> threadCountStats;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding
     atomic<unsigned> counterUnique; // Unique index
+
+    bool getMinimals(
+      const Strategies& strategies,
+      const Ranks& ranks,
+      list<CombReference>& minimals) const;
 
     void runUniqueThread(
       const unsigned cards,

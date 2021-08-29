@@ -81,7 +81,7 @@ class Strategies
 
     const Ranges& getRanges() const;
 
-    const Result resultLowest() const;
+    void getResultLowest(Result& result) const;
 
     bool ordered() const;
 

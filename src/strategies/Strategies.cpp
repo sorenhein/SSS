@@ -343,9 +343,9 @@ const Ranges& Strategies::getRanges() const
  *                                                          *
  ************************************************************/
 
-const Result Strategies::resultLowest() const
+void Strategies::getResultLowest(Result& result) const
 {
-  return slist.resultLowest();
+  slist.getResultLowest(result);
 }
 
 

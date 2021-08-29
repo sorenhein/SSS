@@ -830,14 +830,10 @@ bool Slist::purgeRanges(
  *                                                          *
  ************************************************************/
 
-const Result Slist::resultLowest() const
+void Slist::getResultLowest(Result& result) const
 {
-  Result resultLowest;
-
   for (const auto& strat: strategies)
-    resultLowest *= strat.resultLowest();
-
-  return resultLowest;
+    result *= strat.resultLowest();
 }
 
 

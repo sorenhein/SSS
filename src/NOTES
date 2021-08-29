@@ -1,3 +1,18 @@
+Winners resultLowest = strats.resultLowest();
+in Combination.cpp
+
+Maybe pass in as strats.setresultLowest(resultLowest)
+to cut down on copying.
+Anyway, for each Winner in Winners:
+ranks.minimalEntry(const Winner& winner);
+Should set a CombEntry which get
+
+Combination gets a list< unsigned> holdingsReduced
+Each reduced one gets pushed onto the list, perhaps
+keeping it sorted
+
+
+
 Each strategy in a strategies has a winners which may have multiple
 options for declarer.  I think we want to know that an entire 
 holding can be treated as an entire other holding.  So that would

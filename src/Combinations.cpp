@@ -58,9 +58,7 @@ void Combinations::reset()
   maxCards = 0;
   combEntries.clear();
   uniques.clear();
-  combCounts.clear();
-  playCounts.clear();
-  stratCounts.clear();
+  countStats.clear();
 
   timersStrat.clear();
 }
@@ -87,15 +85,9 @@ void Combinations::resize(const unsigned maxCardsIn)
     uniques[cards].resize(UNIQUE_COUNT[cards]);
   }
 
-  combCounts.resize(maxCardsIn+1);
-  playCounts.resize(maxCardsIn+1);
-  stratCounts.resize(maxCardsIn+1);
-  for (unsigned cards = 0; cards < combCounts.size(); cards++)
-  {
-    combCounts[cards].reset();
-    playCounts[cards].reset();
-    stratCounts[cards].reset();
-  }
+  countStats.resize(maxCardsIn+1);
+  for (unsigned cards = 0; cards < maxCardsIn+1; cards++)
+    countStats[cards].reset();
 
   timersStrat.resize(40);
   timersStrat[ 0].name("Strats::adapt");
@@ -175,15 +167,36 @@ void Combinations::runSpecificVoid(
 }
 
 
+
+#include "const.h"
+bool Combinations::getMinimals(
+  const Strategies& strategies,
+  const Ranks& ranks,
+  list<CombReference>& minimals) const
+{
+  Result resultLowest;
+  strategies.getResultLowest(resultLowest);
+
+  // TODO
+  // Size of minimals is size of winners
+  // For each winner in winners
+  //   iter to winner, iter to minimals
+  //   ranks.minimalEntry(winner, CombReference& to minimals entry)
+  // Sort them?
+
+  UNUSED(ranks);
+  UNUSED(minimals);
+  return false;
+}
+
+
 void Combinations::runUniques(
   const unsigned cards,
   const Distributions& distributions)
 {
   assert(cards < combEntries.size());
   assert(cards < uniques.size());
-  assert(cards < combCounts.size());
-  assert(cards < playCounts.size());
-  assert(cards < stratCounts.size());
+  assert(cards < countStats.size());
 
   vector<CombEntry>& centries = combEntries[cards];
   vector<Combination>& uniqs = uniques[cards];
@@ -203,12 +216,9 @@ void Combinations::runUniques(
     ranks.set(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    combCounts[cards].total++;
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
-      combCounts[cards].unique++;
-
       assert(uniqueIndex < uniqs.size());
       centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
@@ -219,13 +229,17 @@ void Combinations::runUniques(
 
       comb.strategize(centry, * this, distributions, ranks, plays);
 
-      playCounts[cards].unique++;
-      playCounts[cards].total += plays.size();
+      countStats[cards].plays.unique += plays.size();
+      countStats[cards].strats.unique += comb.strategies().size();
 
-      stratCounts[cards].unique++;
-      stratCounts[cards].total += comb.strategies().size();
+      centry.minimalFlag =
+        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
 
-
+      if (centry.minimalFlag)
+      {
+        countStats[cards].plays.minimal += plays.size();
+        countStats[cards].strats.minimal += comb.strategies().size();
+      }
     }
     else
       centry.canonical.index = centries[canonicalHolding3].canonical.index;
@@ -256,8 +270,7 @@ void Combinations::runUniqueThread(
 {
   assert(cards < combEntries.size());
   assert(cards < uniques.size());
-  assert(thid < threadCombCounts.size());
-  assert(thid < threadPlayCounts.size());
+  assert(thid < threadCountStats.size());
 
   vector<CombEntry>& centries = combEntries[cards];
   vector<Combination>& uniqs = uniques[cards];
@@ -280,12 +293,9 @@ void Combinations::runUniqueThread(
     CombEntry& centry = centries[holding];
     ranks.set(holding, centry);
 
-    threadCombCounts[thid].total++;
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
-      threadCombCounts[thid].unique++;
-
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());
       centry.canonical.index = uniqueIndex;
@@ -293,13 +303,20 @@ void Combinations::runUniqueThread(
 
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
-      threadPlayCounts[thid].unique++;
-      threadPlayCounts[thid].total += plays.size();
+      threadCountStats[thid].plays.unique += plays.size();
+      threadCountStats[thid].strats.unique += comb.strategies().size();
+
+      centry.minimalFlag =
+        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+
+      if (centry.minimalFlag)
+      {
+        threadCountStats[thid].plays.minimal += plays.size();
+        threadCountStats[thid].strats.minimal += comb.strategies().size();
+      }
     }
     else
-    {
       centry.canonical.index = centries[canonicalHolding3].canonical.index;
-    }
   }
 }
 
@@ -309,20 +326,16 @@ void Combinations::runUniquesMT(
   const Distributions& distributions,
   const unsigned numThreads)
 {
+  // TODO Untested since changes to statistics gathering.
+
   counterHolding = 0;
   counterUnique = 0;
 
   vector<thread *> threads;
   threads.resize(numThreads);
 
-  threadCombCounts.clear();
-  threadCombCounts.resize(numThreads);
-
-  threadPlayCounts.clear();
-  threadPlayCounts.resize(numThreads);
-
-  threadStratCounts.clear();
-  threadStratCounts.resize(numThreads);
+  threadCountStats.clear();
+  threadCountStats.resize(numThreads);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
@@ -335,11 +348,7 @@ void Combinations::runUniquesMT(
   }
 
   for (unsigned thid = 0; thid < numThreads; thid++)
-  {
-    combCounts[cards] += threadCombCounts[thid];
-    playCounts[cards] += threadPlayCounts[thid];
-    stratCounts[cards] += threadStratCounts[thid];
-  }
+    countStats[cards] += threadCountStats[thid];
 }
 
 
@@ -370,29 +379,34 @@ string Combinations::strUniques(const unsigned cards) const
   ss <<
     setw(5) << "Cards" <<
     setw(9) << "Combos" <<
-    setw(9) << "Unique" <<
-    setw(9) << "%" <<
-    setw(9) << "Plays" <<
-    setw(9) << "Strats" <<
+    setw(8) << "Unique" <<
+    setw(8) << "Plays" <<
+    setw(8) << "Strats" <<
+    setw(8) << "Minimal" <<
+    setw(8) << "Plays" <<
+    setw(8) << "Strats" <<
     "\n";
 
   for (unsigned c = cmin; c <= cmax; c++)
   {
-    assert(c < combCounts.size());
-    if (combCounts[c].total == 0)
+    assert(c < maxCards+1);
+    if (countStats[c].plays.unique.count == 0)
       continue;
 
     ss <<
       setw(5) << c <<
-      setw(9) << combCounts[c].total <<
-      setw(9) << combCounts[c].unique <<
-      setw(8) << fixed << setprecision(2) <<
-        (100. * combCounts[c].unique) / combCounts[c].total << "%" << 
-      setw(9) << fixed << setprecision(2) <<
-        playCounts[c].total / static_cast<double>(playCounts[c].unique) <<
-      setw(9) << fixed << setprecision(2) <<
-        stratCounts[c].total / static_cast<double>(stratCounts[c].unique) <<
-        "\n";
+      setw(9) << combEntries[c].size() <<
+      setw(8) << countStats[c].plays.unique.count <<
+      setw(8) << countStats[c].plays.unique.strAverage() <<
+      setw(8) << countStats[c].strats.unique.strAverage();
+
+    if (countStats[c].plays.minimal.count > 0)
+      ss <<
+      setw(8) << countStats[c].plays.minimal.count <<
+      setw(8) << countStats[c].plays.minimal.strAverage() <<
+      setw(8) << countStats[c].strats.minimal.strAverage();
+
+    ss << "\n";
   }
 
   return ss.str() + "\n";

@@ -40,7 +40,7 @@ struct CombReference
       dec << holding2;
 
     return ss.str();
-  };
+  }
 };
 
 
