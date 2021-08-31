@@ -142,7 +142,7 @@ class Player
       const unsigned char rank,
       const unsigned char absCardNumber);
 
-    void upshift(const unsigned shift);
+    void upshift(const unsigned char shift);
 
     void restoreRank(const unsigned char rank);
 

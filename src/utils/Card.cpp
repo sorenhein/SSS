@@ -56,7 +56,8 @@ void Card::upshift(const unsigned char shift)
 {
   // This is used when generating minimal combinations in order to
   // make room for some additional low cards in certain cases.
-  rank += shift;
+  if (rank > 0)
+    rank += shift;
 }
 
 

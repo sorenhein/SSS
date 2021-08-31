@@ -160,13 +160,17 @@ bool Declarer::needsUpshift(const Card& card) const
   // We need to shift up all ranks when
   // 1. The rank we're splitting is our lowest rank, and
   // 2. We have to split the rank.
+  // The implementation may assume that the NS and EW ranks
+  // alternate.
 
   // The lowest winner must be higher than an opposing card.
   const unsigned rank = card.getRank();
-  assert(rank > 1);
+  if (rank == 0)
+    return false;
 
   // There is no need to shift up if there is a lower rank.
-  if (rank > minRank)
+  assert(rank > 1);
+  if (rank > minRank || rank >= 3)
     return false;
 
   assert(rank < rankInfo.size());
@@ -186,6 +190,9 @@ bool Declarer::minimize(const Card& card)
   // We may also just shift down entire ranks to our lowest one.
 
   const unsigned char rank = card.getRank();
+  if (rank == 0)
+    return false;
+
   const unsigned char depth = card.getDepth();
   const unsigned char ourCount = rankInfo[rank].count;
 

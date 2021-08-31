@@ -714,12 +714,13 @@ bool Ranks::getMinimals(
     {
       // Declarer may have AK / - missing the Q.  This is the same
       // as AQ / - missing the K, but it requires room for a new rank.
-      ranksTmp.north.upshift(2);
-      ranksTmp.south.upshift(2);
-      ranksTmp.opps.upshift(2);
-      cardNorth.upshift(2);
-      cardSouth.upshift(2);
-      ranksTmp.maxGlobalRank += 2;
+      ranksTmp.north.upshift(1);
+      ranksTmp.south.upshift(1);
+      ranksTmp.opps.upshift(1);
+      ranksTmp.maxGlobalRank++;
+
+      cardNorth.upshift(1);
+      cardSouth.upshift(1);
       changeFlag = true;
     }
 
@@ -731,10 +732,13 @@ bool Ranks::getMinimals(
 
     if (changeFlag)
     {
+// cout << "Changed rank table\n";
+// cout << ranksTmp.strTable();
       CombReference combRef;
       ranksTmp.setRanks(combRef);
 
       assert(combRef.holding3 != holding);
+cout << "Minimal holding " << combRef.str() << endl;
       minimals.emplace_back(combRef);
     }
   }

@@ -1,15 +1,14 @@
-Winners resultLowest = strats.resultLowest();
-in Combination.cpp
+"Trivial result"
+- Also get a Prod?
+- Also rank-reduce?
 
-Maybe pass in as strats.setresultLowest(resultLowest)
-to cut down on copying.
-Anyway, for each Winner in Winners:
-ranks.minimalEntry(const Winner& winner);
-Should set a CombEntry which get
-
-Combination gets a list< unsigned> holdingsReduced
-Each reduced one gets pushed onto the list, perhaps
-keeping it sorted
+10 / 17867, AJ6 / T98 missing HH75
+Reduces to (on this calculation, may be wrong)
+Axx / JT9 missing HH87
+So
+1. The J goes away (no North rank 4 needed)
+2. It doesn't just to to 6
+3. The 75 are also merged
 
 
 

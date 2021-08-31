@@ -108,7 +108,7 @@ void Player::update(
 }
 
 
-void Player::upshift(const unsigned shift)
+void Player::upshift(const unsigned char shift)
 {
   // Shifts the entire rankInfo vector up to make room for low
   // cards in some cases.  This is intended for making minimal
@@ -118,11 +118,14 @@ void Player::upshift(const unsigned shift)
   if (maxRank == 0)
     return;
 
-  assert(maxRank+shift <= rankInfo.size());
+  assert(maxRank+shift < static_cast<unsigned char>(rankInfo.size()));
 
-  // Shift up by two ranks.
-  for (unsigned r = maxRank; r >= 1; r--)
+  // Shift up.
+  for (unsigned r = maxRank; r >= minRank; r--)
     rankInfo[r+shift] = rankInfo[r];
+
+  for (unsigned char r = minRank; r < minRank+shift; r++)
+    rankInfo[r].clear();
 
   minRank += static_cast<unsigned char>(shift);
   maxRank += static_cast<unsigned char>(shift);
