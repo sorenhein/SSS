@@ -713,6 +713,34 @@ void Ranks::finishMinimal(
 }
 
 
+void Ranks::remainingMinimal(
+  const unsigned char criticalRank,
+  unsigned char& index,
+  Ranks& ranksNew) const
+{
+  unsigned char nr, sr, oppr;
+  for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
+  {
+    nr = north.count(rank);
+    sr = south.count(rank);
+    oppr = opps.count(rank);
+    if (nr == 0 && sr == 0 && oppr == 0)
+      break;
+
+    ranksNew.maxGlobalRank++;
+    if (oppr == 0)
+    {
+      ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, index);
+      ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, index);
+    }
+    else if (nr == 0 && sr == 0)
+      ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, index);
+    else
+      assert(false);
+  }
+}
+
+
 bool Ranks::getMinimals(
   const Result& result,
   list<CombReference>& minimals) const
@@ -796,26 +824,7 @@ bool Ranks::getMinimals(
       ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sr, i);
 
       // Copy the remaining ranks.
-      unsigned char oppr;
-      for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
-      {
-        nr = north.count(rank);
-        sr = south.count(rank);
-        oppr = opps.count(rank);
-        if (nr == 0 && sr == 0 && oppr == 0)
-          break;
-
-        ranksTmp.maxGlobalRank++;
-        if (oppr == 0)
-        {
-          ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nr, i);
-          ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sr, i);
-        }
-        else if (nr == 0 && sr == 0)
-          ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
-        else
-          assert(false);
-      }
+      Ranks::remainingMinimal(criticalRank, i, ranksTmp);
 
       ranksTmp.finishMinimal(holding, minimals);
     }

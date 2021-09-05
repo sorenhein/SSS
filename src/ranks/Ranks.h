@@ -90,6 +90,11 @@ class Ranks
       Play& play,
       Plays& plays);
 
+    void remainingMinimal(
+      const unsigned char criticalRank,
+      unsigned char& index,
+      Ranks& ranksNew) const;
+
     void finishMinimal(
       const unsigned holdingRef,
       list<CombReference>& minimals);
