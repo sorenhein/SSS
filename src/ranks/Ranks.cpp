@@ -8,7 +8,11 @@
 
 #include "../plays/Plays.h"
 #include "../CombEntry.h"
+#include "../inputs/Control.h"
 #include "../const.h"
+
+extern Control control;
+
 
 /*
  * This class performs rank manipulation for an entire hand
@@ -713,6 +717,28 @@ void Ranks::finishMinimal(
 }
 
 
+void Ranks::losingMinimal(
+  unsigned char& index,
+  Ranks& ranksNew) const
+{
+  const unsigned char nx = static_cast<unsigned char>(north.length());
+  const unsigned char sx = static_cast<unsigned char>(south.length());
+  if (nx > 0 || sx > 0)
+  {
+    ranksNew.maxGlobalRank++;
+    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, index);
+    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, index);
+  }
+
+  const unsigned char oppr = static_cast<unsigned char>(opps.length());
+  if (oppr > 0)
+  {
+    ranksNew.maxGlobalRank++;
+    ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, index);
+  }
+}
+
+
 void Ranks::lowMinimal(
   const unsigned char criticalRank, 
   const Winner& winner, 
@@ -801,33 +827,17 @@ bool Ranks::getMinimals(
     ranksTmp.zero();
     ranksTmp.opps.setVoid();
 
-    unsigned char i = (cardsChar > 13 ? 0 : 13-cardsChar);
+    unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
 
     // Declarer wins no tricks on rank.
-    const unsigned char nx = static_cast<unsigned char>(north.length());
-    const unsigned char sx = static_cast<unsigned char>(south.length());
-    if (nx > 0 || sx > 0)
-    {
-      ranksTmp.maxGlobalRank++;
-      ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
-      ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
-    }
+    Ranks::losingMinimal(index, ranksTmp);
 
-    const unsigned char oppr = static_cast<unsigned char>(opps.length());
-    if (oppr > 0)
-    {
-      ranksTmp.maxGlobalRank++;
-      ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
-
-    }
-      ranksTmp.finishMinimal(holding, minimals);
+    ranksTmp.finishMinimal(holding, minimals);
   }
   else
   {
     for (auto& winner: result.winnersInt.winners)
     {
-      unsigned char i = (cardsChar > 13 ? 0 : 13-cardsChar);
-
       Ranks ranksTmp;
       ranksTmp.resize(cards);
       ranksTmp.zero();
@@ -839,13 +849,14 @@ bool Ranks::getMinimals(
       assert(criticalRank > 0);
 
       // Do both sides' low cards below the critical points.
-      Ranks::lowMinimal(criticalRank, winner, i, ranksTmp);
+      unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
+      Ranks::lowMinimal(criticalRank, winner, index, ranksTmp);
 
       // Do declarer's counts at the critical rank.
-      Ranks::criticalMinimal(winner, i, ranksTmp);
+      Ranks::criticalMinimal(winner, index, ranksTmp);
 
       // Copy the remaining ranks.
-      Ranks::remainingMinimal(criticalRank, i, ranksTmp);
+      Ranks::remainingMinimal(criticalRank, index, ranksTmp);
 
       ranksTmp.finishMinimal(holding, minimals);
     }
@@ -854,8 +865,12 @@ bool Ranks::getMinimals(
   // It can happen that we map to the same minimal holding in more ways.
   minimals.sort();
   minimals.unique();
-  for (auto& m: minimals)
-    cout << "Minimal holding: " << m.holding3 << endl;
+
+  if (control.outputHolding())
+  {
+    for (auto& m: minimals)
+      cout << "Minimal holding: " << m.holding3 << endl;
+  }
 
   return minimals.empty();
 }
