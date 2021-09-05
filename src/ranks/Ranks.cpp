@@ -694,6 +694,25 @@ bool Ranks::partnerVoid() const
 }
 
 
+void Ranks::finishMinimal(
+  const unsigned holdingRef,
+  list<CombReference>& minimals)
+{
+  Ranks::north.setNames();
+  Ranks::south.setNames();
+  Ranks::opps.setNames();
+
+  Ranks::north.finish();
+  Ranks::south.finish();
+
+  // Check whether the new minimal holding is different.
+  CombReference combRef;
+  Ranks::setRanks(combRef);
+  if (combRef.holding3 != holdingRef)
+    minimals.emplace_back(combRef);
+}
+
+
 bool Ranks::getMinimals(
   const Result& result,
   list<CombReference>& minimals) const
@@ -703,22 +722,19 @@ bool Ranks::getMinimals(
   // It follows Ranks::setPlayers() in structure.
 
   const unsigned char cardsChar = static_cast<unsigned char>(cards);
-  for (auto& winner: result.winnersInt.winners)
+
+  if (result.winnersInt.winners.empty())
   {
+    Ranks ranksTmp;
+    ranksTmp.resize(cards);
+    ranksTmp.zero();
+    ranksTmp.opps.setVoid();
+
     unsigned char i = (cardsChar > 13 ? 0 : 13-cardsChar);
 
-    Ranks ranksTmp;
-    ranksTmp.opps.setVoid();
-    ranksTmp.maxGlobalRank = 0;
-
-    // An unset winner has rank 0.
-    const unsigned char criticalRank = 
-      max(winner.north.getRank(), winner.south.getRank());
-
-    // Do the x's, i.e. all N-S cards below the critical rank.
-    // It is possible that N-S have no x's.
-    const unsigned char nx = north.countBelow(criticalRank, winner.north);
-    const unsigned char sx = south.countBelow(criticalRank, winner.south);
+    // Declarer wins no tricks on rank.
+    const unsigned char nx = static_cast<unsigned char>(north.length());
+    const unsigned char sx = static_cast<unsigned char>(south.length());
     if (nx > 0 || sx > 0)
     {
       ranksTmp.maxGlobalRank++;
@@ -726,55 +742,89 @@ bool Ranks::getMinimals(
       ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
     }
 
-    // Do the opponents' x's.  These must exist as a winner has
-    // to beat something by definition.
-    const unsigned char ox = opps.countBelow(criticalRank);
-    assert(ox > 0);
-    ranksTmp.maxGlobalRank++;
-    ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, ox, i);
-
-    // Do declarer's counts at the critical rank.
-    ranksTmp.maxGlobalRank++;
-    unsigned char nr = 
-      (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
-    unsigned char sr = 
-      (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
-
-    unsigned char oppr;
-    ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
-    ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
-
-    // Copy the remaining ranks.
-    for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
+    const unsigned char oppr = static_cast<unsigned char>(opps.length());
+    if (oppr > 0)
     {
       ranksTmp.maxGlobalRank++;
-      nr = north.count(rank);
-      sr = south.count(rank);
-      oppr = opps.count(rank);
-      if (oppr == 0)
+      ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
+
+    }
+      ranksTmp.finishMinimal(holding, minimals);
+  }
+  else
+  {
+    for (auto& winner: result.winnersInt.winners)
+    {
+      unsigned char i = (cardsChar > 13 ? 0 : 13-cardsChar);
+
+      Ranks ranksTmp;
+      ranksTmp.resize(cards);
+      ranksTmp.zero();
+      ranksTmp.opps.setVoid();
+
+      // An unset winner has rank 0.
+      const unsigned char criticalRank = 
+        max(winner.north.getRank(), winner.south.getRank());
+      assert(criticalRank > 0);
+
+      // Do the x's, i.e. all N-S cards below the critical rank.
+      // It is possible that N-S have no x's.
+      const unsigned char nx = north.countBelow(criticalRank, winner.north);
+      const unsigned char sx = south.countBelow(criticalRank, winner.south);
+      if (nx > 0 || sx > 0)
       {
-        if (nr == 0 && sr == 0)
-          break;
-        
+        ranksTmp.maxGlobalRank++;
         ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
         ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
       }
-      else if (nr == 0 && sr == 0)
-        ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
-      else
-        assert(false);
-    }
 
-    // Check whether the new minimal holding is different.
-    CombReference combRef;
-    ranksTmp.setRanks(combRef);
-    if (combRef.holding3 != holding)
-    {
-// cout << "Changed rank table\n";
-// cout << ranksTmp.strTable();
-      minimals.emplace_back(combRef);
+      // Do the opponents' x's.  These must exist as a winner has
+      // to beat something by definition.
+      const unsigned char ox = opps.countBelow(criticalRank);
+      assert(ox > 0);
+      ranksTmp.maxGlobalRank++;
+      ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, ox, i);
+
+      // Do declarer's counts at the critical rank.
+      ranksTmp.maxGlobalRank++;
+      unsigned char nr = 
+        (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
+      unsigned char sr = 
+        (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
+
+      ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nr, i);
+      ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sr, i);
+
+      // Copy the remaining ranks.
+      unsigned char oppr;
+      for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
+      {
+        nr = north.count(rank);
+        sr = south.count(rank);
+        oppr = opps.count(rank);
+        if (nr == 0 && sr == 0 && oppr == 0)
+          break;
+
+        ranksTmp.maxGlobalRank++;
+        if (oppr == 0)
+        {
+          ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nr, i);
+          ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sr, i);
+        }
+        else if (nr == 0 && sr == 0)
+          ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
+        else
+          assert(false);
+      }
+
+      ranksTmp.finishMinimal(holding, minimals);
     }
   }
+
+  minimals.sort();
+  minimals.unique();
+  for (auto& m: minimals)
+    cout << "Minimal holding: " << m.holding3 << endl;
 
   return minimals.empty();
 }

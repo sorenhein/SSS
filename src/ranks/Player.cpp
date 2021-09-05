@@ -161,6 +161,7 @@ unsigned char Player::count(const unsigned char rankIn) const
   return rankInfo[rankIn].count;
 }
 
+
 unsigned char Player::countBelow(const unsigned char rank) const
 {
   unsigned char c = 0;
@@ -185,7 +186,7 @@ unsigned char Player::countBelow(
   unsigned char c = Player::countBelow(rank);
 
   if (card.getRank() == 0)
-    return c;
+    return c + rankInfo[rank].count;
   else
     return c + rankInfo[rank].count - (card.getDepth()+1);
 }

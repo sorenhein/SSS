@@ -90,6 +90,10 @@ class Ranks
       Play& play,
       Plays& plays);
 
+    void finishMinimal(
+      const unsigned holdingRef,
+      list<CombReference>& minimals);
+
   public:
 
     Ranks();

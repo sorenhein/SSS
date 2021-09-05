@@ -30,6 +30,16 @@ struct CombReference
   // Once we have a Combination, probably
   // Combination * combinationPtr;
   
+  bool operator < (const CombReference& cr2) const
+  {
+    return (holding3 < cr2.holding3);
+  }
+
+  bool operator == (const CombReference& cr2) const
+  {
+    return (holding3 == cr2.holding3);
+  }
+
   string str() const
   {
     stringstream ss;
