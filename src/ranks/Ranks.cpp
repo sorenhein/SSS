@@ -713,6 +713,49 @@ void Ranks::finishMinimal(
 }
 
 
+void Ranks::lowMinimal(
+  const unsigned char criticalRank, 
+  const Winner& winner, 
+  unsigned char& index, 
+  Ranks& ranksNew) const
+{
+  // Do the x's, i.e. all N-S cards below the critical rank.
+  // It is possible that N-S have no x's.
+  const unsigned char nx = north.countBelow(criticalRank, winner.north);
+  const unsigned char sx = south.countBelow(criticalRank, winner.south);
+  if (nx > 0 || sx > 0)
+  {
+    ranksNew.maxGlobalRank++;
+    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, index);
+    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, index);
+  }
+
+  // Do the opponents' x's.  These must exist as a winner has
+  // to beat something by definition.
+  const unsigned char ox = opps.countBelow(criticalRank);
+  assert(ox > 0);
+  ranksNew.maxGlobalRank++;
+  ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, ox, index);
+}
+
+
+void Ranks::criticalMinimal(
+  const Winner& winner,
+  unsigned char& index,
+  Ranks& ranksNew) const
+{
+  // Do declarer's counts at the critical rank.
+  ranksNew.maxGlobalRank++;
+  unsigned char nr = 
+    (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
+  unsigned char sr = 
+    (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
+
+  ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, index);
+  ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, index);
+}
+
+
 void Ranks::remainingMinimal(
   const unsigned char criticalRank,
   unsigned char& index,
@@ -795,33 +838,11 @@ bool Ranks::getMinimals(
         max(winner.north.getRank(), winner.south.getRank());
       assert(criticalRank > 0);
 
-      // Do the x's, i.e. all N-S cards below the critical rank.
-      // It is possible that N-S have no x's.
-      const unsigned char nx = north.countBelow(criticalRank, winner.north);
-      const unsigned char sx = south.countBelow(criticalRank, winner.south);
-      if (nx > 0 || sx > 0)
-      {
-        ranksTmp.maxGlobalRank++;
-        ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
-        ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
-      }
-
-      // Do the opponents' x's.  These must exist as a winner has
-      // to beat something by definition.
-      const unsigned char ox = opps.countBelow(criticalRank);
-      assert(ox > 0);
-      ranksTmp.maxGlobalRank++;
-      ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, ox, i);
+      // Do both sides' low cards below the critical points.
+      Ranks::lowMinimal(criticalRank, winner, i, ranksTmp);
 
       // Do declarer's counts at the critical rank.
-      ranksTmp.maxGlobalRank++;
-      unsigned char nr = 
-        (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
-      unsigned char sr = 
-        (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
-
-      ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nr, i);
-      ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sr, i);
+      Ranks::criticalMinimal(winner, i, ranksTmp);
 
       // Copy the remaining ranks.
       Ranks::remainingMinimal(criticalRank, i, ranksTmp);
@@ -830,6 +851,7 @@ bool Ranks::getMinimals(
     }
   }
 
+  // It can happen that we map to the same minimal holding in more ways.
   minimals.sort();
   minimals.unique();
   for (auto& m: minimals)
