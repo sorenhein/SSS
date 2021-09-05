@@ -142,7 +142,10 @@ class Player
       const unsigned char rank,
       const unsigned char absCardNumber);
 
-    void upshift(const unsigned char shift);
+    void updateSeveral(
+      const unsigned char rank,
+      const unsigned char count,
+      unsigned char& index);
 
     void restoreRank(const unsigned char rank);
 
@@ -161,9 +164,15 @@ class Player
 
     bool isVoid() const;
 
-    bool isSingleRanked() const;
+    // bool isSingleRanked() const;
 
     unsigned char count(const unsigned char rank) const;
+
+    unsigned char countBelow(const unsigned char rank) const;
+
+    unsigned char countBelow(
+      const unsigned char rank,
+      const Card& card) const;
 
     string strRankHeader() const;
     string strRank(const unsigned char rank) const;

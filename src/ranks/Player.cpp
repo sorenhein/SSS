@@ -108,27 +108,15 @@ void Player::update(
 }
 
 
-void Player::upshift(const unsigned char shift)
+void Player::updateSeveral(
+  const unsigned char rank,
+  const unsigned char count,
+  unsigned char& index)
 {
-  // Shifts the entire rankInfo vector up to make room for low
-  // cards in some cases.  This is intended for making minimal
-  // combinations.
-  
-  // Deal with voids.
-  if (maxRank == 0)
-    return;
+  Player::updateStep(rank);
 
-  assert(maxRank+shift < static_cast<unsigned char>(rankInfo.size()));
-
-  // Shift up.
-  for (unsigned r = maxRank; r >= minRank; r--)
-    rankInfo[r+shift] = rankInfo[r];
-
-  for (unsigned char r = minRank; r < minRank+shift; r++)
-    rankInfo[r].clear();
-
-  minRank += static_cast<unsigned char>(shift);
-  maxRank += static_cast<unsigned char>(shift);
+  for (unsigned char i = 0; i < count; i++, index++)
+    Player::update(rank, index);
 }
 
 
@@ -171,6 +159,35 @@ bool Player::isVoid() const
 unsigned char Player::count(const unsigned char rankIn) const
 {
   return rankInfo[rankIn].count;
+}
+
+unsigned char Player::countBelow(const unsigned char rank) const
+{
+  unsigned char c = 0;
+  for (unsigned r = 1; r < rank; r++)
+    c += rankInfo[r].count;
+  
+  return c;
+}
+
+
+unsigned char Player::countBelow(
+  const unsigned char rank,
+  const Card& card) const
+{
+  // This is a specialized method that is used when determining
+  // minimal holdings where all cards below a critical rank/card
+  // are considered x's.  The winning card may be in the middle
+  // of a declarer rank.
+  // Here we count the cards < the winning card if it exists.
+  // If it doesn't, then just everything below the rank.
+
+  unsigned char c = Player::countBelow(rank);
+
+  if (card.getRank() == 0)
+    return c;
+  else
+    return c + rankInfo[rank].count - (card.getDepth()+1);
 }
 
 

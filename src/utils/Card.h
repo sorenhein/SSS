@@ -39,8 +39,6 @@ class Card
 
     void updateName(const unsigned char nameIn);
 
-    void upshift(const unsigned char shift);
-
     bool operator > (const Card& card2) const;
     bool operator >= (const Card& card2) const;
     bool operator == (const Card& card2) const;

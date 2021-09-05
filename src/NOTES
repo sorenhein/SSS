@@ -1,6 +1,76 @@
+More systematic way derived from Ranks::setPlayers
+- Player gets updateSeveral(rank, &index, count)
+  {
+    Player::updateStep(rank)
+    for (index = absCardNumber; index < absCardNumber+count; index++)
+      Player::update(rank, index)
+    // so index gets incremented
+  }
+
+- Need 
+  Opps::getXs(rank), all < rank (an NS rank)
+  Declarer::getXs(criticalRank, card)
+  Player::updateSeveral(rank, iCurrent, count)
+  Player::getCount(rank)
+  Declarer::getCount(rank, card)
+
+- opps.setVoid()
+- set i = imin as in Ranks::setPlayers
+  maxGlobalRank = 0
+  criticalRank = cardNorth.getRank() or cardSouth.getRank()
+
+- nx = north.getXs(criticalRank, cardNorth)
+  sx = south.getXs(criticalRank, cardSouth)
+  if (nx > 0 || sx > 0)
+  {
+    maxGlobalRank++
+    north.updateSeveral(maxGlobalRank, i, nx)
+    south.updateSeveral(maxGlobalRank, i, sx)
+  }
+
+- ox = opps.getXs(criticalRank), must be > 0 I think
+- maxGlobalRank++
+  opps.updateSeveral(maxGlobalRank, ox)
+
+- maxGlobalRank++
+  nr = north.getCount(criticalRank, cardNorth)
+  sr = south.getCount(criticalRank, cardSouth)
+  north.updateSeveral(maxGlobalRank, nr)
+  i += nr
+  south.updateSeveral(maxGlobalRank, sr)
+  i += sr
+
+- for (rank = criticalRank +1; rank <= cards; rank++)
+  {
+    maxGlobalRank++
+    // Does not assume alternating ranks
+    nr = 
+    sr =
+    or = 
+    if (or == 0)
+    {
+      if(nr+sr == 0)
+        break;
+
+      nr = north.getCount(rank)
+      north.updateSeveral(rank, nr)
+      sr = ...
+    }
+    else if (nr+sr == 0)
+    {
+      or = opps.getCount(rank)
+      opps.updateSeveral(rank, or)
+    }
+    else
+      assert(false)
+  }
+
+
+No explicit desctructors
+
+
 "Trivial result"
-- Also get a Prod?
-- Also rank-reduce?
+- Also get a Prod in the print output?
 
 10 / 17867, AJ6 / T98 missing HH75
 Reduces to (on this calculation, may be wrong)

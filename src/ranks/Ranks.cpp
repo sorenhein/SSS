@@ -191,7 +191,7 @@ void Ranks::setPlayers()
   bool prev_is_NS = ((holding % 3) == SIDE_OPPS);
 
   // Have to set opps here already, as opps are not definitely void
-  // but may be , so we don't want the maximum values to get
+  // but may be, so we don't want the maximum values to get
   // reset to 0 by calling setVoid() after the loop below.
   opps.setVoid();
 
@@ -699,46 +699,79 @@ bool Ranks::getMinimals(
   list<CombReference>& minimals) const
 {
   // Returns true and does not fill minimal if the combination is 
-  // already minimal.  The implementation is slow and dirty.
+  // already minimal.  The implementation is slow and methodical...
+  // It follows Ranks::setPlayers() in structure.
 
+  const unsigned char cardsChar = static_cast<unsigned char>(cards);
   for (auto& winner: result.winnersInt.winners)
   {
-    Card cardNorth = winner.north;
-    Card cardSouth = winner.south;
-    Ranks ranksTmp = * this;
+    unsigned char i = (cardsChar > 13 ? 0 : 13-cardsChar);
 
-    bool changeFlag = false;
+    Ranks ranksTmp;
+    ranksTmp.opps.setVoid();
+    ranksTmp.maxGlobalRank = 0;
 
-    if (ranksTmp.north.needsUpshift(cardNorth) ||
-        ranksTmp.south.needsUpshift(cardSouth))
+    // An unset winner has rank 0.
+    const unsigned char criticalRank = 
+      max(winner.north.getRank(), winner.south.getRank());
+
+    // Do the x's, i.e. all N-S cards below the critical rank.
+    // It is possible that N-S have no x's.
+    const unsigned char nx = north.countBelow(criticalRank, winner.north);
+    const unsigned char sx = south.countBelow(criticalRank, winner.south);
+    if (nx > 0 || sx > 0)
     {
-      // Declarer may have AK / - missing the Q.  This is the same
-      // as AQ / - missing the K, but it requires room for a new rank.
-      ranksTmp.north.upshift(1);
-      ranksTmp.south.upshift(1);
-      ranksTmp.opps.upshift(1);
       ranksTmp.maxGlobalRank++;
-
-      cardNorth.upshift(1);
-      cardSouth.upshift(1);
-      changeFlag = true;
+      ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
+      ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
     }
 
-    if (ranksTmp.north.minimize(cardNorth))
-      changeFlag = true;
+    // Do the opponents' x's.  These must exist as a winner has
+    // to beat something by definition.
+    const unsigned char ox = opps.countBelow(criticalRank);
+    assert(ox > 0);
+    ranksTmp.maxGlobalRank++;
+    ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, ox, i);
 
-    if (ranksTmp.south.minimize(cardSouth))
-      changeFlag = true;
+    // Do declarer's counts at the critical rank.
+    ranksTmp.maxGlobalRank++;
+    unsigned char nr = 
+      (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
+    unsigned char sr = 
+      (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
 
-    if (changeFlag)
+    unsigned char oppr;
+    ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
+    ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
+
+    // Copy the remaining ranks.
+    for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
+    {
+      ranksTmp.maxGlobalRank++;
+      nr = north.count(rank);
+      sr = south.count(rank);
+      oppr = opps.count(rank);
+      if (oppr == 0)
+      {
+        if (nr == 0 && sr == 0)
+          break;
+        
+        ranksTmp.north.updateSeveral(ranksTmp.maxGlobalRank, nx, i);
+        ranksTmp.south.updateSeveral(ranksTmp.maxGlobalRank, sx, i);
+      }
+      else if (nr == 0 && sr == 0)
+        ranksTmp.opps.updateSeveral(ranksTmp.maxGlobalRank, oppr, i);
+      else
+        assert(false);
+    }
+
+    // Check whether the new minimal holding is different.
+    CombReference combRef;
+    ranksTmp.setRanks(combRef);
+    if (combRef.holding3 != holding)
     {
 // cout << "Changed rank table\n";
 // cout << ranksTmp.strTable();
-      CombReference combRef;
-      ranksTmp.setRanks(combRef);
-
-      assert(combRef.holding3 != holding);
-cout << "Minimal holding " << combRef.str() << endl;
       minimals.emplace_back(combRef);
     }
   }
