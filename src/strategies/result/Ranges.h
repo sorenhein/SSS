@@ -32,8 +32,6 @@ class Ranges
 
     Ranges();
 
-    ~Ranges();
-
     list<Range>::iterator begin() { return ranges.begin(); };
     list<Range>::iterator end() { return ranges.end(); }
     list<Range>::const_iterator begin() const { return ranges.begin(); };

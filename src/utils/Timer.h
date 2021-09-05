@@ -38,8 +38,6 @@ class Timer
 
     Timer();
 
-    ~Timer();
-
     void reset();
 
     void name(const string& nameIn);

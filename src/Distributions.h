@@ -38,8 +38,6 @@ class Distributions
 
     Distributions();
 
-    ~Distributions();
-
     void reset();
 
     void resize(const unsigned maxCardsIn);

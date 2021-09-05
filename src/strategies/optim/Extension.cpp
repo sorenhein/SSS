@@ -17,11 +17,6 @@ Extension::Extension()
 }
 
 
-Extension::~Extension()
-{
-}
-
-
 void Extension::reset()
 {
   overlap.reset();

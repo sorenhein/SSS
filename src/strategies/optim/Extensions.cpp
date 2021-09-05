@@ -19,11 +19,6 @@ Extensions::Extensions()
 }
 
 
-Extensions::~Extensions()
-{
-}
-
-
 void Extensions::reset()
 {
   extensions.clear();

@@ -45,8 +45,6 @@ class Node
     
     Node();
 
-    ~Node();
-
     void reset();
 
     void resetStrategies();

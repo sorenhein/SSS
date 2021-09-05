@@ -54,8 +54,6 @@ class Result
 
     Result();
 
-    ~Result();
-
     void set(
       const unsigned char distIn,
       const unsigned char tricksIn,

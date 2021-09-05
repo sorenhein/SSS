@@ -118,8 +118,6 @@ class Ranks
 
     Ranks();
 
-    ~Ranks();
-
     void resize(const unsigned cardsIn);
 
     unsigned size() const;

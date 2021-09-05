@@ -29,11 +29,6 @@ Strategy::Strategy()
 }
 
 
-Strategy::~Strategy()
-{
-}
-
-
 void Strategy::reset()
 {
   results.clear();

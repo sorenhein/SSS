@@ -48,11 +48,6 @@ Combinations::Combinations()
 }
 
 
-Combinations::~Combinations()
-{
-}
-
-
 void Combinations::reset()
 {
   maxCards = 0;

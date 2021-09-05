@@ -28,11 +28,6 @@ Control::Control()
 }
 
 
-Control::~Control()
-{
-}
-
-
 void Control::reset()
 {
   fields.clear();

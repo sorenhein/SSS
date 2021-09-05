@@ -28,8 +28,6 @@ class Combination
 
     Combination();
 
-    ~Combination();
-
     void reset();
 
     const Strategies& strategize(

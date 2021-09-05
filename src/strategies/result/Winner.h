@@ -55,8 +55,6 @@ class Winner
 
     Winner();
 
-    ~Winner();
-
     void reset();
 
     void set(

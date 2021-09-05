@@ -13,11 +13,6 @@ Convert::Convert()
 }
 
 
-Convert::~Convert()
-{
-}
-
-
 void Convert::reset()
 {
 }

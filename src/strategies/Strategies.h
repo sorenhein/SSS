@@ -42,8 +42,6 @@ class Strategies
 
     Strategies();
 
-    ~Strategies();
-
     void reset();
 
     const Strategy& front() const;

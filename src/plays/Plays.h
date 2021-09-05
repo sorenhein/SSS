@@ -56,8 +56,6 @@ class Plays
     
     Plays();
 
-    ~Plays();
-
     void clear();
 
     void clearStrategies();

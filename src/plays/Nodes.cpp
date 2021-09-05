@@ -22,11 +22,6 @@ Nodes::Nodes()
 }
 
 
-Nodes::~Nodes()
-{
-}
-
-
 void Nodes::reset()
 {
   level = LEVEL_SIZE;

@@ -53,8 +53,6 @@ class Nodes
     
     Nodes();
 
-    ~Nodes();
-
     void reset();
 
     void clear();

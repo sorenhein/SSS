@@ -49,8 +49,6 @@ class Extension
 
     Extension();
 
-    ~Extension();
-
     void reset();
 
     void multiply(

@@ -60,11 +60,6 @@ Distribution::Distribution()
 }
 
 
-Distribution::~Distribution()
-{
-}
-
-
 void Distribution::reset()
 {
   distributions.clear();

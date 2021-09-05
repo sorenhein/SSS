@@ -43,11 +43,6 @@ Study::Study()
 }
 
 
-Study::~Study()
-{
-}
-
-
 void Study::setConstants()
 {
   // In order to speed up the comparison of Strategy's, we group

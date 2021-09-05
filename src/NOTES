@@ -5,8 +5,6 @@ Validate minimal strategies
 
 - symmetrize too-large void strategies that we receive
 
-- No explicit desctructors
-
 
 -d
   - Optimize the code for minimal()

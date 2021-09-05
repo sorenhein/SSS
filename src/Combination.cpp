@@ -28,11 +28,6 @@ Combination::Combination()
 }
 
 
-Combination::~Combination()
-{
-}
-
-
 void Combination::reset()
 {
 }

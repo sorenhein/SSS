@@ -27,11 +27,6 @@ Node::Node()
 }
 
 
-Node::~Node()
-{
-}
-
-
 void Node::reset()
 {
   parentPtr = nullptr;

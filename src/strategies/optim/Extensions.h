@@ -64,8 +64,6 @@ class Extensions
 
     Extensions();
 
-    ~Extensions();
-
     void reset();
 
     void split(

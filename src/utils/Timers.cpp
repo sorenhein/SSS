@@ -20,11 +20,6 @@ Timers::Timers()
 }
 
 
-Timers::~Timers()
-{
-}
-
-
 void Timers::reset()
 {
   timers.resize(TIMER_SIZE);

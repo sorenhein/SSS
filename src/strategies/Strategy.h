@@ -79,8 +79,6 @@ class Strategy
 
     Strategy();
 
-    ~Strategy();
-
     list<Result>::iterator begin()
       { return results.begin(); };
     list<Result>::iterator end()

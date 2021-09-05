@@ -52,8 +52,6 @@ class Winners
 
     Winners();
 
-    ~Winners();
-
     void reset();
 
     void setEmpty();

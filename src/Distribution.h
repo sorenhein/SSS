@@ -95,8 +95,6 @@ class Distribution
 
     Distribution();
 
-    ~Distribution();
-
     void reset();
 
     void setRanks(

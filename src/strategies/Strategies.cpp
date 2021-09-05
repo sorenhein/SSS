@@ -30,11 +30,6 @@ Strategies::Strategies()
 }
 
 
-Strategies::~Strategies()
-{
-}
-
-
 /************************************************************
  *                                                          *
  * Simple methods                                           *

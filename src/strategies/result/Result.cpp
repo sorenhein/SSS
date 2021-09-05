@@ -73,11 +73,6 @@ Result::Result()
 }
 
 
-Result::~Result()
-{
-}
-
-
 void Result::set(
   const unsigned char dist,
   const unsigned char tricks,

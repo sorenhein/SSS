@@ -18,11 +18,6 @@ Timer::Timer()
 }
 
 
-Timer::~Timer()
-{
-}
-
-
 void Timer::reset()
 {
   no = 0;

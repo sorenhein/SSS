@@ -71,8 +71,6 @@ class Entity
 
     Entity();
 
-    ~Entity();
-
     void clear();
 
     void init(const vector<unsigned>& fieldCounts);

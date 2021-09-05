@@ -51,8 +51,6 @@ class Timers
 
     Timers();
 
-    ~Timers();
-
     void reset();
 
     void start(const TimerName tname);

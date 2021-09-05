@@ -104,8 +104,6 @@ class Slist
 
     Slist();
 
-    ~Slist();
-
     // Simple methods.  The ones with direct access to strategies 
     // should be used sparingly.  begin() and end() are only used in
     // Strategies::study and Strategies::scrutinized in order to

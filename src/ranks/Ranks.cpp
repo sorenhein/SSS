@@ -63,11 +63,6 @@ Ranks::Ranks()
 }
 
 
-Ranks::~Ranks()
-{
-}
-
-
 void Ranks::setConstants()
 {
   // First we set up tables for a single count of a certain position

@@ -12,11 +12,11 @@
 #include <mutex>
 
 #include "Combination.h"
+#include "CombEntry.h"
 
 using namespace std;
 
 class Distributions;
-struct CombReference;
 
 
 class Combinations
@@ -128,8 +128,6 @@ class Combinations
   public:
 
     Combinations();
-
-    ~Combinations();
 
     void reset();
 

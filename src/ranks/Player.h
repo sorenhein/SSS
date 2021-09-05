@@ -128,8 +128,6 @@ class Player
 
     Player();
 
-    ~Player();
-
     void resize(
       const unsigned cardsIn,
       const Side sideIn);

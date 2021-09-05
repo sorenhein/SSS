@@ -26,11 +26,6 @@ Winner::Winner()
 }
 
 
-Winner::~Winner()
-{
-}
-
-
 void Winner::reset()
 {
   north.reset();

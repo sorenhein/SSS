@@ -19,11 +19,6 @@ Splits::Splits()
 }
 
 
-Splits::~Splits()
-{
-}
-
-
 void Splits::reset()
 {
   own.clear();

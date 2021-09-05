@@ -19,11 +19,6 @@ Player::Player()
 }
 
 
-Player::~Player()
-{
-}
-
-
 void Player::resize(
   const unsigned cardsIn,
   const Side sideIn)

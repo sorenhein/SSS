@@ -36,11 +36,6 @@ Distributions::Distributions()
 }
 
 
-Distributions::~Distributions()
-{
-}
-
-
 void Distributions::reset()
 {
   maxCards = 0;

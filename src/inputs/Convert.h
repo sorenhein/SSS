@@ -16,8 +16,6 @@ class Convert
 
     Convert();
 
-    ~Convert();
-
     void reset();
 
     bool holding2cards(

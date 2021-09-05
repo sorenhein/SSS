@@ -17,11 +17,6 @@ Entity::Entity()
 }
 
 
-Entity::~Entity()
-{
-}
-
-
 void Entity::clear()
 {
   strings.clear();

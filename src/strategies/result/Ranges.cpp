@@ -21,11 +21,6 @@ Ranges::Ranges()
 }
 
 
-Ranges::~Ranges()
-{
-}
-
-
 void Ranges::reset()
 {
   ranges.clear();

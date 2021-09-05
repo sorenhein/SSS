@@ -44,8 +44,6 @@ class Splits
 
     Splits();
 
-    ~Splits();
-
     void reset();
 
     void split(

@@ -35,11 +35,6 @@ Winners::Winners()
 }
 
 
-Winners::~Winners()
-{
-}
-
-
 void Winners::reset()
 {
   winners.clear();

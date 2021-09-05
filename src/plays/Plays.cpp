@@ -30,11 +30,6 @@ Plays::Plays()
 }
 
 
-Plays::~Plays()
-{
-}
-
-
 void Plays::clear()
 {
   nextPlaysIter = plays.begin();

@@ -41,8 +41,6 @@ class Study
 
     Study();
 
-    ~Study();
-
     void reset();
 
     void study(const list<Result>& results);

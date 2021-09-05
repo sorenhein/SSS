@@ -123,8 +123,6 @@ class Control
 
     Control();
 
-    ~Control();
-
     void reset();
 
     bool parseCommandLine(
