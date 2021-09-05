@@ -133,6 +133,23 @@ struct StratData
     for (auto& sd: data)
       sd.erase();
   };
+
+  bool sameTricks() const
+  {
+    unsigned t = numeric_limits<unsigned>::max();
+    bool firstFlag = true;
+    for (auto& sd: data)
+    {
+      if (firstFlag)
+      {
+        t = sd.iter->tricks();
+        firstFlag = false;
+      }
+      else if (t != sd.iter->tricks())
+        return false;
+    }
+    return true;
+  };
 };
 
 #endif

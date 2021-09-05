@@ -219,6 +219,10 @@ class Slist
     // Uses compareCompleteBasic.
     bool minimal() const;
 
+    bool constantTricks() const;
+
+    bool sameTricks() const;
+
 
     // String methods.
 

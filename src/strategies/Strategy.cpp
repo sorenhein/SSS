@@ -17,6 +17,7 @@
 #include "../plays/Play.h"
 #include "../Survivor.h"
 #include "../inputs/Control.h"
+#include "../const.h"
 
 extern Control control;
 
@@ -56,6 +57,24 @@ unsigned Strategy::size() const
 bool Strategy::empty() const
 {
   return results.empty();
+}
+
+
+bool Strategy::constantTricks() const
+{
+  unsigned t = UNSIGNED_NOT_SET;
+  bool firstFlag = true;
+  for (auto& res: results)
+  {
+    if (firstFlag)
+    {
+      t = res.tricks();
+      firstFlag = false;
+    }
+    else if (t != res.tricks())
+      return false;
+  }
+  return true;
 }
 
 

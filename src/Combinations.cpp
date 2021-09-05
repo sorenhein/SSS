@@ -230,6 +230,21 @@ void Combinations::runUniques(
       {
         countStats[cards].plays.minimal += plays.size();
         countStats[cards].strats.minimal += comb.strategies().size();
+
+        if (comb.strategies().size() != 1)
+          continue;
+
+        if (comb.strategies().constantTricks())
+        {
+          // Could have multiple strategy's differing by rank.
+          countStats[cards].plays.constant += plays.size();
+          countStats[cards].strats.constant += comb.strategies().size();
+        }
+        else if (comb.strategies().sameTricks())
+        {
+          countStats[cards].plays.simple += plays.size();
+          countStats[cards].strats.simple += comb.strategies().size();
+        }
       }
     }
     else
@@ -376,6 +391,12 @@ string Combinations::strUniques(const unsigned cards) const
     setw(8) << "Minimal" <<
     setw(8) << "Plays" <<
     setw(8) << "Strats" <<
+    setw(8) << "Const" <<
+    setw(8) << "Plays" <<
+    setw(8) << "Strats" <<
+    setw(8) << "Simple" <<
+    setw(8) << "Plays" <<
+    setw(8) << "Strats" <<
     "\n";
 
   for (unsigned c = cmin; c <= cmax; c++)
@@ -391,11 +412,20 @@ string Combinations::strUniques(const unsigned cards) const
       setw(8) << countStats[c].plays.unique.strAverage() <<
       setw(8) << countStats[c].strats.unique.strAverage();
 
-    if (countStats[c].plays.minimal.count > 0)
-      ss <<
+    ss <<
       setw(8) << countStats[c].plays.minimal.count <<
       setw(8) << countStats[c].plays.minimal.strAverage() <<
       setw(8) << countStats[c].strats.minimal.strAverage();
+
+    ss <<
+      setw(8) << countStats[c].plays.constant.count <<
+      setw(8) << countStats[c].plays.constant.strAverage() <<
+      setw(8) << countStats[c].strats.constant.strAverage();
+
+    ss <<
+      setw(8) << countStats[c].plays.simple.count <<
+      setw(8) << countStats[c].plays.simple.strAverage() <<
+      setw(8) << countStats[c].strats.simple.strAverage();
 
     ss << "\n";
   }

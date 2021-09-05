@@ -48,6 +48,9 @@ class Combinations
 
       string strAverage() const
       {
+        if (count == 0)
+          return "-";
+
         stringstream ss;
         ss << fixed << setprecision(2) << 
           total / static_cast<double>(count);
@@ -59,17 +62,23 @@ class Combinations
     {
       CountEntry unique;
       CountEntry minimal;
+      CountEntry constant;
+      CountEntry simple;
 
       void reset()
       {
         unique.reset();
         minimal.reset();
+        constant.reset();
+        simple.reset();
       }
 
       void operator += (const CountPair& cp)
       {
         unique += cp.unique;
         minimal += cp.minimal;
+        constant += cp.constant;
+        simple += cp.simple;
       }
     };
 

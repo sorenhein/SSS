@@ -879,6 +879,32 @@ bool Slist::minimal() const
 }
 
 
+bool Slist::constantTricks() const
+{
+  for (auto& strategy: strategies)
+    if (! strategy.constantTricks())
+      return false;
+
+  return true;
+}
+
+
+bool Slist::sameTricks() const
+{
+  StratData stratData;
+  stratData.fill(strategies);
+
+  while (! stratData.done())
+  {
+    if (! stratData.sameTricks())
+      return false;
+    stratData.advance();
+  }
+
+  return true;
+}
+
+
 /************************************************************
  *                                                          *
  * string methods                                           *

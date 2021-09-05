@@ -87,6 +87,10 @@ class Strategies
 
     bool minimal() const;
 
+    bool constantTricks() const;
+
+    bool sameTricks() const;
+
     string strRanges(const string& title = "") const;
 
     string str(

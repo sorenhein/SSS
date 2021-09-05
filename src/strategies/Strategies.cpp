@@ -367,6 +367,21 @@ bool Strategies::minimal() const
 }
 
 
+bool Strategies::constantTricks() const
+{
+  return slist.constantTricks();
+}
+
+
+bool Strategies::sameTricks() const
+{
+  if (slist.size() == 1)
+    return true;
+  else
+    return slist.sameTricks();
+}
+
+
 /************************************************************
  *                                                          *
  * string methods                                           *
