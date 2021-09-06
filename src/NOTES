@@ -1,3 +1,105 @@
+Distribution
+------------
+Maybe pre-store this, as it's likely to be quite fast
+For each possible NS splitting rank, which starts above the highest
+EW rank and goes down to above the lowest EW rank
+
+Loop over distributions (DistInfo)
+  If change in length, it's a new one
+  If different in the ranks > the divider, it's a new one
+  Otherwise it isn't
+  Build up a vector<vector<unsigned char>>, perhaps
+  The first index is the external, full rank that NS split on
+  The second index is the full distribution number
+  The value is the reduced count
+
+// reducer is the full (external) NS rank on which we reduce.
+// It makes no sense to reduce on rank 0 (void).  
+// Even rank 1 would not cause any reduction.
+
+reductionMatrix.resize(full2reduced.size() + 1);
+
+for (unsigned reducer = 1; reducer <= full2reduced.size(); reducer++)
+{
+  bool firstFlag = true;
+  unsigned nextReduced = 0;
+  vector<unsigned>& reduction = reductionMatrix[reducer];
+  reduction.resize(distributions.size());
+
+  for (unsigned d = 0; d < distributions.size(); d++)
+  {
+    if (firstFlag)
+    {
+      reduction[d] = nextReduced++;
+      firstFlag = false;
+      continue;
+    }
+
+    bool changeFlag = false;
+    for (rankFull: reverse from full2reduced.size() to 0, careful unsigned)
+    {
+      // Stop when we've run out of meaningful ranks
+      if (rankFull <= reducer)
+        break;
+
+      const unsigned rankReduced = full2reduced[rankFull];
+      if (distributions[d].west.counts[rankReduced] !=
+          distributions[d-1].west.counts[rankReduced] ||
+          distributions[d].east.counts[rankReduced] !=
+          distributions[d-1].east.counts[rankReduced])
+      {
+        changeFlag = true;
+        break;
+      }
+    }
+
+    reduction[d] = nextReduced;
+
+    if (changeFlag)
+      nextReduced++;
+  }
+}
+
+vector<unsigned char>& reductions(const unsigned char fullRank) const
+{
+  return reductionMatrix[fullRank];
+}
+
+Then in Combinations, say in runUniques after we have ! minimalFlag:
+if some control flag:
+  for each minimal in minimals:
+    figure out the critical rank (store it in CombEntry);
+    auto& reduction = distributions[centry.holding2].reductions(fullRank);
+
+    // Remove winners, collapse distributions
+    Strategies strategiesOwn = comb.strategies();
+    strategiesOwn.collapse(reduction);
+
+    Strategies strategiesMinimal = centries[minimal.holding3];
+    strategiesMinimal.collapseTricks();
+
+    assert(strategiesOwn == strategiesMinimal);
+
+
+Actually we reduce, and that's one test.  We also want to be able to
+expand.  And we can test that all the expansions to our holding
+(only if there are several, of course) yield the same tricks and
+strategies.  So there are two tests.
+
+
+
+
+Use CombinationType in CombEntry
+NON_CANONICAL
+NON_MINIMAL
+CONSTANT (includes TRIVIAL)
+SIMPLE
+COMPLEX
+Maybe these are indices in Combinations.h into a counter
+The print-out then becomes more generic, and there is a string as
+a header for each block in the count output
+
+
 Validate minimal strategies
 - Strip the ranks
 - Collapse the distributions according to some map or algorithm
@@ -110,6 +212,25 @@ Bug / behavior?
 ---------------
 Why doesn't it work in Combination to make complete copies of
 everything?  It must be some stray pointers, but where?
+
+Mixed strategies
+----------------
+In the end we may not have to do so much LP.  EW must find play for
+each distribution that work against all NS strategies.  EW get into
+trouble when they need to vary their play depending on what NS do.
+So we keep track of all plays that work in various situations, and we
+take the intersection which is often not empty.
+
+I'm hoping this will also give rise to the mandatory falsecards that
+protect not this holding, but some other holding.
+
+Perhaps represent all the NS strategies as some kind of tree with the
+branching points that they will actually make use of.
+
+In the end there will be the combinations with mixed potential.  But
+I think we can do all the above independent of external constraints.
+So we can actually tell in the abstract which combinations have the
+potential for mixed strategies, even without knowing the constraints?!
 
 
 TODO

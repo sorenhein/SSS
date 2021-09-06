@@ -70,6 +70,21 @@ class Distribution
       const Survivors& survivorsUnreduced,
       Survivors& survivorsReduced);
 
+    const Survivors& survivorsUncollapsed(
+      const unsigned westRank,
+      const unsigned eastRank) const;
+
+    const Survivors& survivorsCollapse1(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1) const;
+
+    const Survivors& survivorsCollapse2(
+      const unsigned westRank,
+      const unsigned eastRank,
+      const unsigned collapse1,
+      const unsigned collapse2) const;
+
     const Survivors& survivorsReduced(
       const unsigned westRank,
       const unsigned eastRank) const;
@@ -113,21 +128,6 @@ class Distribution
     DistID getID() const;
 
     void setSurvivors();
-
-    const Survivors& survivorsUncollapsed(
-      const unsigned westRank,
-      const unsigned eastRank) const;
-
-    const Survivors& survivorsCollapse1(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1) const;
-
-    const Survivors& survivorsCollapse2(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1,
-      const unsigned collapse2) const;
 
     const Survivors& survivors(const Play& play) const;
 
