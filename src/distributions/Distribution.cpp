@@ -459,6 +459,8 @@ void Distribution::setSurvivorsVoid()
 void Distribution::setSurvivorsGeneral()
 {
   // Make the survivors in the absence of rank collapses.
+  distSurvivors.setGeneral(distributions, rankSize);
+  /*
   // Could mirror around the middle to save a bit of time,
   // but it's marginal.
 
@@ -485,6 +487,7 @@ void Distribution::setSurvivorsGeneral()
       }
     }
   }
+  */
 }
 
 

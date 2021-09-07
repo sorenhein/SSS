@@ -186,6 +186,38 @@ struct SurvivorMatrix
         // data[w][e].reducedSize = 0;
     }
   };
+
+  void setGeneral(
+    const vector<DistInfo>& distributions,
+    const unsigned rankSize)
+  {
+    // Make the survivors in the absence of rank collapses.
+    // Could mirror around the middle to save a bit of time,
+    // but it's marginal.
+
+    const unsigned char dlast =
+      static_cast<unsigned char>(distributions.size() - 1);
+    SurvivorMatrix::resize(rankSize);
+    for (unsigned char d = 1; d < dlast; d++)
+    {
+      const DistInfo& dist = distributions[d];
+      for (unsigned w = 0; w < rankSize; w++)
+      {
+        if (dist.west.counts[w] == 0)
+          continue;
+
+        for (unsigned e = 0; e < rankSize; e++)
+        {
+          if (dist.east.counts[e] == 0)
+             continue;
+
+          data[w][e].push_back({d, data[w][e].sizeReduced()});
+          // TODO Put in push_back?
+          data[w][e].incrSizeReduced();
+        }
+      }
+    }
+  };
 };
 
 #endif
