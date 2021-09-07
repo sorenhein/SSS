@@ -47,7 +47,8 @@ class Distribution
 
     SurvivorMatrix distSurvivors;
     SurvivorsCollapsed distSurvivorsCollapse1;
-    vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
+    vector<SurvivorsCollapsed> distSurvivorsCollapse2;
+    // vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
     SurvivorList distSurvivorsWestVoid;
     SurvivorList distSurvivorsEastVoid;
 
