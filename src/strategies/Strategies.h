@@ -19,7 +19,7 @@
 #include "result/Ranges.h"
 
 struct Play;
-struct SurvivorList;
+class SurvivorList;
 
 using namespace std;
 

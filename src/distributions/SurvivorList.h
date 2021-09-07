@@ -9,10 +9,13 @@
 #ifndef SSS_SURVIVORLIST_H
 #define SSS_SURVIVORLIST_H
 
+#include <vector>
 #include <list>
 
 
 using namespace std;
+
+struct SideInfo;
 
 
 // Survivor is used in the context of rank-reduced distributions.
@@ -23,32 +26,50 @@ using namespace std;
 // distribution.  The fullNo is the parent number and the reducedNo
 // is the child number.
 
-struct SurvivorList
+struct Survivor
 {
-  struct Survivor
-  {
-    unsigned char fullNo;
-    unsigned char reducedNo;
-  };
+  unsigned char fullNo;
+  unsigned char reducedNo;
+};
 
 
-  list<Survivor> distNumbers;
-  unsigned char reducedSize;
+class SurvivorList
+{
+  private:
+
+    list<Survivor> distNumbers;
+
+    unsigned char reducedSize;
 
 
-  SurvivorList();
+  public:
 
-  void clear();
+    SurvivorList();
 
-  void resize(const unsigned len);
+    void clear();
 
-  void push_back(const Survivor& survivor);
+    void resize(const unsigned len);
 
-  unsigned sizeFull() const;
+    void push_back(const Survivor& survivor);
 
-  unsigned char sizeReduced() const;
+    const Survivor& front() const;
 
-  string str() const;
+    list<Survivor>::const_iterator begin() const;
+    list<Survivor>::const_iterator end() const;
+
+    void collapse(
+      const vector<SideInfo>& distCollapses,
+      const SurvivorList& survivorsUnreduced);
+
+    void setSizeReduced(const unsigned char len);
+
+    void incrSizeReduced();
+
+    unsigned sizeFull() const;
+
+    unsigned char sizeReduced() const;
+
+    string str() const;
 };
 
 #endif

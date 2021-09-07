@@ -516,11 +516,8 @@ void Strategy::updateSameLength(
   const Play& play,
   const SurvivorList& survivors)
 {
-  // for (auto& res: results)
-    // res.update(play);
-
   auto iter1 = results.begin();
-  auto iter2 = survivors.distNumbers.begin();
+  auto iter2 = survivors.begin();
 
   while (iter1 != results.end())
   {
@@ -549,8 +546,8 @@ void Strategy::updateAndGrow(
   }
 
   // Overwrite the old results list.
-  results.resize(survivors.distNumbers.size());
-  auto iterSurvivors = survivors.distNumbers.begin();
+  results.resize(survivors.sizeFull());
+  auto iterSurvivors = survivors.begin();
   weightInt = 0;
 
   for (auto& res: results)
@@ -589,7 +586,7 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(next(results.begin()), results.end());
 
-    Strategy::updateSingle(play, survivors.distNumbers.front().fullNo);
+    Strategy::updateSingle(play, survivors.front().fullNo);
   }
   else if (eastVoidFlag)
   {
@@ -597,7 +594,7 @@ void Strategy::adaptResults(
     if (len1 > 1)
       results.erase(results.begin(), prev(results.end()));
 
-    Strategy::updateSingle(play, survivors.distNumbers.front().fullNo);
+    Strategy::updateSingle(play, survivors.front().fullNo);
   }
   else if (survivors.sizeFull() == len1)
   {

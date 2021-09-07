@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "SurvivorList.h"
+#include "DistHelp.h"
 
 
 SurvivorList::SurvivorList()
@@ -39,9 +40,95 @@ void SurvivorList::push_back(const Survivor& survivor)
 }
 
 
+const Survivor& SurvivorList::front() const
+{
+  return distNumbers.front();
+}
+
+
+list<Survivor>::const_iterator SurvivorList::begin() const
+{
+  return distNumbers.begin();
+}
+
+
+list<Survivor>::const_iterator SurvivorList::end() const
+{
+  return distNumbers.end();
+}
+
+
+void SurvivorList::collapse(
+  const vector<SideInfo>& distCollapses,
+  const SurvivorList& survivorsUnreduced)
+{
+  // Start by copying the uncollapsed list (if this is the first collapse)
+  // or the once-collapsed list (if this is the second collapse).
+  * this = survivorsUnreduced;
+
+  // If there is no prospect of collapsing anything, continue.
+  if (distNumbers.size() <= 1)
+    return;
+
+  auto iter = next(distNumbers.begin());
+  unsigned char rankLastReduced = 0;
+  unsigned char rankCurrentReduced;
+
+  while (iter != distNumbers.end())
+  {
+    const unsigned char dno = iter->fullNo;
+
+    // Look back until we run out of distributions with the same
+    // length.  The distributions are not necessarily in perfect
+    // order for a rank collapse, but they are in length order for sure.
+    auto iterPrev = prev(iter);
+    while (true)
+    {
+      const unsigned dnoPrev = iterPrev->fullNo;
+      const SideCompare compare = distCollapses[dno].compare(
+        distCollapses[dnoPrev]);
+
+      if (compare == SC_DIFFERENT_LENGTH ||
+          (compare == SC_DIFFERENT_VALUES &&
+            iterPrev == distNumbers.begin()))
+      {
+        // There is no identical previous rank collapse.
+        rankLastReduced++;
+        rankCurrentReduced = rankLastReduced;
+        break;
+      }
+      else if (compare == SC_SAME)
+      {
+        rankCurrentReduced = iterPrev->reducedNo;
+        break;
+      }
+      else
+        iterPrev--;
+    }
+
+    iter->reducedNo = rankCurrentReduced;
+    iter++;
+  }
+
+  reducedSize = rankLastReduced + 1;
+}
+
+
 unsigned SurvivorList::sizeFull() const
 {
   return distNumbers.size();
+}
+
+
+void SurvivorList::setSizeReduced(const unsigned char len)
+{
+  reducedSize = len;
+}
+
+
+void SurvivorList::incrSizeReduced()
+{
+  reducedSize++;
 }
 
 

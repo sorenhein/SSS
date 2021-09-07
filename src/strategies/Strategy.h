@@ -10,7 +10,7 @@
 
 class Ranges;
 struct Play;
-struct SurvivorList;
+class SurvivorList;
 
 using namespace std;
 

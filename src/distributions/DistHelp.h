@@ -180,8 +180,10 @@ struct SurvivorMatrix
     for (unsigned w = 0; w < len; w++)
     {
       data[w].resize(len);
+      // TODO Put in SurvivorList::resize?
       for (unsigned e = 0; e < len; e++)
-        data[w][e].reducedSize = 0;
+        data[w][e].setSizeReduced(0);
+        // data[w][e].reducedSize = 0;
     }
   };
 };

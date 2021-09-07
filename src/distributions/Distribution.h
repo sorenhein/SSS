@@ -13,6 +13,8 @@
 #include <string>
 
 #include "SurvivorList.h"
+#include "DistHelp.h"
+
 
 struct Play;
 
@@ -30,8 +32,6 @@ struct DistID
 class Distribution
 {
   private:
-
-    #include "DistHelp.h"
 
     unsigned cards;
 

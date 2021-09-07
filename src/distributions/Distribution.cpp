@@ -444,7 +444,8 @@ void Distribution::setSurvivorsVoid()
   // West void.
   distSurvivorsWestVoid.clear();
   distSurvivorsWestVoid.push_back({0, 0});
-  distSurvivorsWestVoid.reducedSize = 1;
+  distSurvivorsWestVoid.setSizeReduced(1);
+  // distSurvivorsWestVoid.reducedSize = 1;
   assert(distributions[0].west.len == 0);
 
   // East void.
@@ -454,7 +455,8 @@ void Distribution::setSurvivorsVoid()
     static_cast<unsigned char>(distributions.size() - 1);
   distSurvivorsEastVoid.clear();
   distSurvivorsEastVoid.push_back({dlast, 0});
-  distSurvivorsEastVoid.reducedSize = 1;
+  distSurvivorsEastVoid.setSizeReduced(1);
+  // distSurvivorsEastVoid.reducedSize = 1;
   assert(distributions[dlast].east.len == 0);
 }
 
@@ -482,8 +484,11 @@ void Distribution::setSurvivorsGeneral()
            continue;
 
         distSurvivors.data[w][e].push_back(
-          {d, distSurvivors.data[w][e].reducedSize});
-        distSurvivors.data[w][e].reducedSize++;
+          {d, distSurvivors.data[w][e].sizeReduced()});
+          // {d, distSurvivors.data[w][e].reducedSize});
+        // distSurvivors.data[w][e].reducedSize++;
+        // TODO Put in push_back?
+        distSurvivors.data[w][e].incrSizeReduced();
       }
     }
   }
@@ -555,55 +560,7 @@ void Distribution::collapseSurvivors(
   const SurvivorList& survivorsUnreduced,
   SurvivorList& survivorsReduced)
 {
-  // Start by copying the uncollapsed list (if this is the first collapse)
-  // or the once-collapsed list (if this is the second collapse).
-  survivorsReduced = survivorsUnreduced;
-
-  // If there is no prospect of collapsing anything, continue.
-  if (survivorsReduced.sizeFull() <= 1)
-    return;
-  
-  auto iter = next(survivorsReduced.distNumbers.begin());
-  unsigned char rankLastReduced = 0;
-  unsigned char rankCurrentReduced;
-
-  while (iter != survivorsReduced.distNumbers.end())
-  {
-    const unsigned char dno = iter->fullNo;
-
-    // Look back until we run out of distributions with the same
-    // length.  The distributions are not necessarily in perfect
-    // order for a rank collapse, but they are in length order for sure.
-    auto iterPrev = prev(iter);
-    while (true)
-    {
-      const unsigned dnoPrev = iterPrev->fullNo;
-      const SideCompare compare = distCollapses[dno].compare(
-        distCollapses[dnoPrev]);
-
-      if (compare == SC_DIFFERENT_LENGTH ||
-          (compare == SC_DIFFERENT_VALUES && 
-            iterPrev == survivorsReduced.distNumbers.begin()))
-      {
-        // There is no identical previous rank collapse.
-        rankLastReduced++;
-        rankCurrentReduced = rankLastReduced;
-        break;
-      }
-      else if (compare == SC_SAME)
-      {
-        rankCurrentReduced = iterPrev->reducedNo;
-        break;
-      }
-      else
-        iterPrev--;
-    }
-
-    iter->reducedNo = rankCurrentReduced;
-    iter++;
-  }
-
-  survivorsReduced.reducedSize = rankLastReduced + 1;
+  survivorsReduced.collapse(distCollapses, survivorsUnreduced);
 }
   
   
