@@ -9,6 +9,13 @@
 #ifndef SSS_DISTHELP_H
 #define SSS_DISTHELP_H
 
+#include <vector>
+
+#include "SurvivorList.h"
+
+using namespace std;
+
+
 // These helper structures are only intended for Distribution.h
 // within the private section.  Therefore the file does not include
 // files that are needed (they are already included in Distribution.h).

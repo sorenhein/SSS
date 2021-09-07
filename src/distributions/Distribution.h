@@ -13,6 +13,7 @@
 #include <string>
 
 #include "SurvivorList.h"
+#include "Survivors.h"
 #include "DistHelp.h"
 
 
@@ -45,12 +46,7 @@ class Distribution
 
     Distribution const * distCanonical;
 
-    SurvivorMatrix distSurvivors;
-    SurvivorsCollapsed distSurvivorsCollapse1;
-    vector<SurvivorsCollapsed> distSurvivorsCollapse2;
-    // vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
-    SurvivorList distSurvivorsWestVoid;
-    SurvivorList distSurvivorsEastVoid;
+    Survivors survivors;
 
 
     void setBinomial();
@@ -63,22 +59,7 @@ class Distribution
 
     void mirror(unsigned& distIndex);
 
-    void setSurvivorsVoid();
-
-    void setSurvivorsGeneral();
-
-    void precalcSurvivorsCollapse1(
-      vector<vector<SideInfo>>& distCollapse1);
-
-    void precalcSurvivorsCollapse2(
-      const vector<vector<SideInfo>>& distCollapse1,
-      vector<vector<vector<SideInfo>>>& distCollapse2);
-
-    void collapseSurvivors(
-      const vector<SideInfo>& distCollapses,
-      const SurvivorList& survivorsUnreduced,
-      SurvivorList& survivorsReduced);
-
+    /* */
     const SurvivorList& survivorsUncollapsed(
       const unsigned westRank,
       const unsigned eastRank) const;
@@ -93,6 +74,7 @@ class Distribution
       const unsigned eastRank,
       const unsigned collapse1,
       const unsigned collapse2) const;
+      /* */
 
     const SurvivorList& survivorsReduced(
       const unsigned westRank,
@@ -138,7 +120,7 @@ class Distribution
 
     void setSurvivors();
 
-    const SurvivorList& survivors(const Play& play) const;
+    const SurvivorList& getSurvivors(const Play& play) const;
 
     string str() const;
 

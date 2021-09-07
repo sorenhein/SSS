@@ -81,7 +81,7 @@ void Node::getNextStrategies(
   // This method should only be used for an RHO node.
 
   // Find the distribution numbers that are still possible.
-  const SurvivorList& survivors = dist.survivors(* playPtr);
+  const SurvivorList& survivors = dist.getSurvivors(* playPtr);
 
   // Get the strategy from the following combination.
   strats = playPtr->combPtr->strategies();

@@ -6,6 +6,7 @@ SOURCE_FILES    =                               \
                 distributions/Distribution.cpp  \
                 distributions/Distributions.cpp \
                 distributions/SurvivorList.cpp  \
+                distributions/Survivors.cpp     \
                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \
