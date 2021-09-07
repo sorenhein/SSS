@@ -58,6 +58,26 @@ list<Survivor>::const_iterator SurvivorList::end() const
 }
 
 
+bool SurvivorList::operator == (const SurvivorList& sl2) const
+{
+  if (reducedSize != sl2.reducedSize)
+    return false;
+
+  if (distNumbers.size() != distNumbers.size())
+    return false;
+
+  auto iter1 = distNumbers.begin();
+  auto iter2 = sl2.distNumbers.begin();
+
+  while (iter1 != distNumbers.end())
+  {
+    if (* iter1 != * iter2)
+      return false;
+  }
+  return true;
+}
+
+
 void SurvivorList::setVoid(const unsigned char fullDistNo)
 {
   distNumbers.clear();

@@ -480,8 +480,6 @@ void Distribution::setSurvivorsGeneral()
 
         distSurvivors.data[w][e].push_back(
           {d, distSurvivors.data[w][e].sizeReduced()});
-          // {d, distSurvivors.data[w][e].reducedSize});
-        // distSurvivors.data[w][e].reducedSize++;
         // TODO Put in push_back?
         distSurvivors.data[w][e].incrSizeReduced();
       }
@@ -621,8 +619,6 @@ const SurvivorList& Distribution::survivorsUncollapsed(
   const unsigned eastRank) const
 {
   // This method uses full (externally visible) ranks.
-// cout << "west " << westRank << " east " << eastRank << " ref " <<
-  // full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
@@ -644,34 +640,29 @@ const SurvivorList& Distribution::survivorsCollapse1(
   const unsigned collapse1) const
 {
   // This method uses full (externally visible) ranks.
-// cout << "Collapse1 west " << westRank << " east " << eastRank << 
-  // " collapse1 " << collapse1 <<
-  // " ref " << full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
 
   if (westRank == 0)
   {
-// cout << "West void" << endl;
     return Distribution::survivorsWestVoid();
   }
   else if (eastRank == 0)
   {
-// cout << "East void" << endl;
     return Distribution::survivorsEastVoid();
   }
   // else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
   else if (collapse1 <= 1)
   {
-// cout << "Not really collapsed" << endl;
+    // Not really collapsed
     return Distribution::survivorsReduced(
       full2reduced[westRank],
       full2reduced[eastRank]);
   }
   else
   {
-// cout << "Regular collapse" << endl;
+    // Regular collapse
     return Distribution::survivorsReducedCollapse1(
       full2reduced[westRank],
       full2reduced[eastRank],
@@ -687,10 +678,6 @@ const SurvivorList& Distribution::survivorsCollapse2(
   const unsigned collapse2) const
 {
   // This method uses full (externally visible) ranks.
-// cout << "Collapse2 west " << westRank << " east " << eastRank << 
-  // " collapses " << collapse1 <<", " << collapse2 <<
-  // " ref " <<
-  // full2reduced.size() << endl;
   assert(westRank != 0 || eastRank != 0);
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
@@ -699,16 +686,13 @@ const SurvivorList& Distribution::survivorsCollapse2(
     return Distribution::survivorsWestVoid();
   else if (eastRank == 0)
     return Distribution::survivorsEastVoid();
-  // else if (collapse1 <= 1 || collapse1 >= rankSize)
   else if (collapse1 <= 1)
   {
 // TODO Do these discards ever happen?  Do we have to test for them?
 // Can we avoid them in Ranks.cpp?
-// cout << "Discarding collapse1\n";
-    // if (collapse2 <= 2 || collapse2 >= full2reduced.size())
     if (collapse2 <= 1 || collapse1 == collapse2)
     {
-// cout << "Discarding collapse2\n";
+      // Discarding collapse2
       return Distribution::survivorsReduced(
         full2reduced[westRank],
         full2reduced[eastRank]);
@@ -719,10 +703,9 @@ const SurvivorList& Distribution::survivorsCollapse2(
         full2reduced[eastRank],
         full2reduced[collapse2]);
   }
-  // else if (collapse2 <= 2 || collapse2 >= full2reduced.size())
   else if (collapse2 <= 1)
   {
-// cout << "Discarding collapse2\n";
+    // Discarding collapse2
       return Distribution::survivorsReducedCollapse1(
         full2reduced[westRank],
         full2reduced[eastRank],
@@ -730,7 +713,7 @@ const SurvivorList& Distribution::survivorsCollapse2(
   }
   else
   {
-// cout << "Discarding nothing\n";
+    // Discarding nothing
     return Distribution::survivorsReducedCollapse2(
       full2reduced[westRank],
       full2reduced[eastRank],
@@ -746,7 +729,12 @@ const SurvivorList& Distribution::survivorsWestVoid() const
     // This distribution is canonical.
     return distSurvivorsWestVoid;
   else
+  {
+// assert(distCanonical->distSurvivorsWestVoid ==
+       // distCanonical->survivorsWestVoid());
+
     return distCanonical->survivorsWestVoid();
+  }
 }
 
 
@@ -756,7 +744,13 @@ const SurvivorList& Distribution::survivorsEastVoid() const
     // This distribution is canonical.
     return distSurvivorsEastVoid;
   else
+  {
+// This is not always true, e.g. 4/8: Why?
+// assert(distCanonical->distSurvivorsEastVoid ==
+       // distCanonical->survivorsEastVoid());
+
     return distCanonical->survivorsEastVoid();
+  }
 }
 
 
@@ -767,9 +761,6 @@ const SurvivorList& Distribution::survivorsReduced(
   // Voids are not possible here.
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
-
-// cout << "  reduced " << westRank << " " << eastRank << 
-  // (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
 
   if (distCanonical == nullptr)
     return distSurvivors.data[westRank][eastRank];
@@ -787,10 +778,6 @@ const SurvivorList& Distribution::survivorsReducedCollapse1(
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
   assert(collapse1 >= 1 && collapse1 < rankSize);
-
-// cout << "  collapse1 reduced " << westRank << " " << eastRank << 
-  // " collapse1 " << collapse1 <<
-  // (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
 
   if (distCanonical == nullptr)
     return distSurvivorsCollapse1[collapse1].data[westRank][eastRank];
@@ -810,9 +797,6 @@ const SurvivorList& Distribution::survivorsReducedCollapse2(
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
   assert(collapse1 >= 1 && collapse1 < rankSize);
-
-// cout << "  collapse2 reduced " << westRank << " " << eastRank << 
-  // (distCanonical == nullptr ? " canonical" : " not canonical") << endl;
 
   if (distCanonical == nullptr)
     return distSurvivorsCollapse2[collapse1][collapse2].data[westRank][eastRank];

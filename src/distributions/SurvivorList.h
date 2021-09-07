@@ -30,6 +30,16 @@ struct Survivor
 {
   unsigned char fullNo;
   unsigned char reducedNo;
+
+  bool operator == (const Survivor& s2) const
+  {
+    return (fullNo == s2.fullNo && reducedNo == s2.reducedNo);
+  }
+
+  bool operator != (const Survivor& s2) const
+  {
+    return ! (* this == s2);
+  }
 };
 
 
@@ -56,6 +66,8 @@ class SurvivorList
 
     list<Survivor>::const_iterator begin() const;
     list<Survivor>::const_iterator end() const;
+
+    bool operator == (const SurvivorList& sl2) const;
 
     void setVoid(const unsigned char);
 
