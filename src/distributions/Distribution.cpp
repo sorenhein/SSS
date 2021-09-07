@@ -441,22 +441,17 @@ DistID Distribution::getID() const
 
 void Distribution::setSurvivorsVoid()
 {
+  assert(distributions.size() > 0);
+
   // West void.
-  distSurvivorsWestVoid.clear();
-  distSurvivorsWestVoid.push_back({0, 0});
-  distSurvivorsWestVoid.setSizeReduced(1);
-  // distSurvivorsWestVoid.reducedSize = 1;
+  distSurvivorsWestVoid.setVoid(0);
   assert(distributions[0].west.len == 0);
 
   // East void.
-  assert(distributions.size() > 0);
-
   const unsigned char dlast = 
     static_cast<unsigned char>(distributions.size() - 1);
-  distSurvivorsEastVoid.clear();
-  distSurvivorsEastVoid.push_back({dlast, 0});
-  distSurvivorsEastVoid.setSizeReduced(1);
-  // distSurvivorsEastVoid.reducedSize = 1;
+
+  distSurvivorsEastVoid.setVoid(dlast);
   assert(distributions[dlast].east.len == 0);
 }
 

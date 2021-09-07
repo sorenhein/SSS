@@ -58,6 +58,14 @@ list<Survivor>::const_iterator SurvivorList::end() const
 }
 
 
+void SurvivorList::setVoid(const unsigned char fullDistNo)
+{
+  distNumbers.clear();
+  SurvivorList::push_back({fullDistNo, 0});
+  reducedSize = 1;
+}
+
+
 void SurvivorList::collapse(
   const vector<SideInfo>& distCollapses,
   const SurvivorList& survivorsUnreduced)

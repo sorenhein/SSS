@@ -57,6 +57,8 @@ class SurvivorList
     list<Survivor>::const_iterator begin() const;
     list<Survivor>::const_iterator end() const;
 
+    void setVoid(const unsigned char);
+
     void collapse(
       const vector<SideInfo>& distCollapses,
       const SurvivorList& survivorsUnreduced);
