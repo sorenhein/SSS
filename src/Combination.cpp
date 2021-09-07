@@ -6,9 +6,10 @@
 
 #include "Combinations.h"
 #include "Combination.h"
-#include "Distributions.h"
-#include "Distribution.h"
 #include "CombEntry.h"
+
+#include "distributions/Distributions.h"
+#include "distributions/Distribution.h"
 
 #include "inputs/Control.h"
 

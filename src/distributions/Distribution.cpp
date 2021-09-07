@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2021 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -6,10 +14,11 @@
 #include <utility>
 #include <cassert>
 
-#include "plays/Play.h"
-
 #include "Distribution.h"
-#include "const.h"
+
+#include "../plays/Play.h"
+
+#include "../const.h"
 
 
 // The full size sequence is:

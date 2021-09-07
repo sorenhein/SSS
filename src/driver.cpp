@@ -2,7 +2,8 @@
 #include <iomanip>
 
 #include "Combinations.h"
-#include "Distributions.h"
+
+#include "distributions/Distributions.h"
 
 #include "inputs/Control.h"
 #include "inputs/Convert.h"

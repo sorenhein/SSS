@@ -2,23 +2,24 @@ SOURCE_FILES    =                               \
                 driver.cpp                      \
                 Combination.cpp                 \
                 Combinations.cpp                \
-                Distribution.cpp                \
-                Distributions.cpp               \
+                                                \
+                distributions/Distribution.cpp  \
+                distributions/Distributions.cpp \
                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \
                 inputs/Entity.cpp               \
                 inputs/parse.cpp                \
                                                 \
-                ranks/Ranks.cpp                 \
-                ranks/Player.cpp                \
-                ranks/Declarer.cpp              \
-                ranks/Opponents.cpp             \
-                                                \
                 plays/Plays.cpp                 \
                 plays/Play.cpp                  \
                 plays/Nodes.cpp                 \
                 plays/Node.cpp                  \
+                                                \
+                ranks/Ranks.cpp                 \
+                ranks/Player.cpp                \
+                ranks/Declarer.cpp              \
+                ranks/Opponents.cpp             \
                                                 \
                 strategies/Slist.cpp            \
                 strategies/Strategies.cpp       \

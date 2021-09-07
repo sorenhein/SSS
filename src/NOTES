@@ -1,5 +1,13 @@
 Distribution
 ------------
+Could we move survivor processing out of Distribution.cpp?
+Survivors -> SurvivorList
+Make a distributions directory
+
+Then maybe a Reduction and a Reductions
+A Reduction is a map (vector) from unreduced to reduced numbers.
+
+
 Maybe pre-store this, as it's likely to be quite fast
 For each possible NS splitting rank, which starts above the highest
 EW rank and goes down to above the lowest EW rank
