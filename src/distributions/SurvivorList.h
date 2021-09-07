@@ -9,9 +9,6 @@
 #ifndef SSS_SURVIVORLIST_H
 #define SSS_SURVIVORLIST_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <list>
 
 
@@ -26,53 +23,32 @@ using namespace std;
 // distribution.  The fullNo is the parent number and the reducedNo
 // is the child number.
 
-struct Survivor
-{
-  unsigned char fullNo;
-  unsigned char reducedNo;
-};
-
-
 struct SurvivorList
 {
+  struct Survivor
+  {
+    unsigned char fullNo;
+    unsigned char reducedNo;
+  };
+
+
   list<Survivor> distNumbers;
   unsigned char reducedSize;
 
-  void clear()
-  {
-    distNumbers.clear();
-    reducedSize = 0;
-  };
 
-  void resize(const unsigned len)
-  {
-    distNumbers.resize(len);
-  };
+  SurvivorList();
 
-  void push_back(const Survivor& survivor)
-  {
-    distNumbers.push_back(survivor);
-  };
+  void clear();
 
-  unsigned sizeFull() const
-  {
-    return distNumbers.size();
-  };
+  void resize(const unsigned len);
 
-  unsigned char sizeReduced() const
-  {
-    return reducedSize;
-  };
+  void push_back(const Survivor& survivor);
 
-  string str() const
-  {
-    stringstream ss;
-    ss << "Survivor list\n";
-    for (auto& s: distNumbers)
-      ss << +s.fullNo << ", " << +s.reducedNo << endl;
-    return ss.str() + "\n";
+  unsigned sizeFull() const;
 
-  };
+  unsigned char sizeReduced() const;
+
+  string str() const;
 };
 
 #endif
