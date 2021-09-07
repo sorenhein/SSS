@@ -14,8 +14,10 @@
 #include "Node.h"
 #include "Play.h"
 
-#include "../Distribution.h"
 #include "../Combination.h"
+
+#include "../distributions/Distribution.h"
+
 #include "../inputs/Control.h"
 
 extern Control control;
@@ -79,7 +81,7 @@ void Node::getNextStrategies(
   // This method should only be used for an RHO node.
 
   // Find the distribution numbers that are still possible.
-  const Survivors& survivors = dist.survivors(* playPtr);
+  const SurvivorList& survivors = dist.survivors(* playPtr);
 
   // Get the strategy from the following combination.
   strats = playPtr->combPtr->strategies();

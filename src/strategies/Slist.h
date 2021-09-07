@@ -18,7 +18,7 @@
 struct StratData;
 class Ranges;
 struct Play;
-struct Survivors;
+struct SurvivorList;
 
 using namespace std;
 
@@ -135,7 +135,7 @@ class Slist
 
     void adapt(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
 
     // Consolidate.

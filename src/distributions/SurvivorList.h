@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_SURVIVOR_H
-#define SSS_SURVIVOR_H
+#ifndef SSS_SURVIVORLIST_H
+#define SSS_SURVIVORLIST_H
 
 #include <iostream>
 #include <iomanip>
@@ -33,7 +33,7 @@ struct Survivor
 };
 
 
-struct Survivors
+struct SurvivorList
 {
   list<Survivor> distNumbers;
   unsigned char reducedSize;
@@ -67,7 +67,7 @@ struct Survivors
   string str() const
   {
     stringstream ss;
-    ss << "Survivors\n";
+    ss << "Survivor list\n";
     for (auto& s: distNumbers)
       ss << +s.fullNo << ", " << +s.reducedNo << endl;
     return ss.str() + "\n";

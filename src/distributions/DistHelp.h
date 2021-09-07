@@ -172,7 +172,7 @@ struct DistInfo
 
 struct SurvivorMatrix
 {
-  vector<vector<Survivors>> data;
+  vector<vector<SurvivorList>> data;
 
   void resize(const unsigned len)
   {

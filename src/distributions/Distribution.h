@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "Survivor.h"
+#include "SurvivorList.h"
 
 struct Play;
 
@@ -48,8 +48,8 @@ class Distribution
     SurvivorMatrix distSurvivors;
     vector<SurvivorMatrix> distSurvivorsCollapse1;
     vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
-    Survivors distSurvivorsWestVoid;
-    Survivors distSurvivorsEastVoid;
+    SurvivorList distSurvivorsWestVoid;
+    SurvivorList distSurvivorsEastVoid;
 
 
     void setBinomial();
@@ -75,41 +75,41 @@ class Distribution
 
     void collapseSurvivors(
       const vector<SideInfo>& distCollapses,
-      const Survivors& survivorsUnreduced,
-      Survivors& survivorsReduced);
+      const SurvivorList& survivorsUnreduced,
+      SurvivorList& survivorsReduced);
 
-    const Survivors& survivorsUncollapsed(
+    const SurvivorList& survivorsUncollapsed(
       const unsigned westRank,
       const unsigned eastRank) const;
 
-    const Survivors& survivorsCollapse1(
+    const SurvivorList& survivorsCollapse1(
       const unsigned westRank,
       const unsigned eastRank,
       const unsigned collapse1) const;
 
-    const Survivors& survivorsCollapse2(
+    const SurvivorList& survivorsCollapse2(
       const unsigned westRank,
       const unsigned eastRank,
       const unsigned collapse1,
       const unsigned collapse2) const;
 
-    const Survivors& survivorsReduced(
+    const SurvivorList& survivorsReduced(
       const unsigned westRank,
       const unsigned eastRank) const;
 
-    const Survivors& survivorsReducedCollapse1(
+    const SurvivorList& survivorsReducedCollapse1(
       const unsigned westRank,
       const unsigned eastRank,
       const unsigned collapse1) const;
 
-    const Survivors& survivorsReducedCollapse2(
+    const SurvivorList& survivorsReducedCollapse2(
       const unsigned westRank,
       const unsigned eastRank,
       const unsigned collapse1,
       const unsigned collapse2) const;
 
-    const Survivors& survivorsWestVoid() const;
-    const Survivors& survivorsEastVoid() const;
+    const SurvivorList& survivorsWestVoid() const;
+    const SurvivorList& survivorsEastVoid() const;
 
     string strHeader() const;
 
@@ -137,7 +137,7 @@ class Distribution
 
     void setSurvivors();
 
-    const Survivors& survivors(const Play& play) const;
+    const SurvivorList& survivors(const Play& play) const;
 
     string str() const;
 

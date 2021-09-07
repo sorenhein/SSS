@@ -15,7 +15,9 @@
 
 #include "result/Ranges.h"
 #include "../plays/Play.h"
-#include "../Survivor.h"
+
+#include "../distributions/SurvivorList.h"
+
 #include "../inputs/Control.h"
 
 extern Control control;
@@ -110,7 +112,7 @@ void Slist::collapseOnVoid()
 
 void Slist::adapt(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
   // Adapt the Slist of a following play to this trick by
   // rotating, mapping etc.  This is a somewhat expensive method.

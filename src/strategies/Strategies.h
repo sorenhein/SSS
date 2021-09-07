@@ -19,7 +19,7 @@
 #include "result/Ranges.h"
 
 struct Play;
-struct Survivors;
+struct SurvivorList;
 
 using namespace std;
 
@@ -56,7 +56,7 @@ class Strategies
 
     void adapt(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
     void reactivate(
       const Strategy& simpleStrat,

@@ -14,7 +14,9 @@
 #include "optim/Extensions.h"
 
 #include "../plays/Play.h"
-#include "../Survivor.h"
+
+#include "../distributions/SurvivorList.h"
+
 #include "../inputs/Control.h"
 
 extern Control control;
@@ -80,7 +82,7 @@ void Strategies::setTrivial(
 
 void Strategies::adapt(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
 timersStrat[0].start();
 

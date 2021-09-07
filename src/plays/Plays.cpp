@@ -14,7 +14,9 @@
 #include "Chunks.h"
 
 #include "../Combinations.h"
-#include "../Distribution.h"
+
+#include "../distributions/Distribution.h"
+
 #include "../inputs/Control.h"
 
 extern Control control;

@@ -15,7 +15,9 @@
 #include "result/Ranges.h"
 
 #include "../plays/Play.h"
-#include "../Survivor.h"
+
+#include "../distributions/SurvivorList.h"
+
 #include "../inputs/Control.h"
 #include "../const.h"
 
@@ -512,7 +514,7 @@ void Strategy::updateSingle(
 
 void Strategy::updateSameLength(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
   // for (auto& res: results)
     // res.update(play);
@@ -532,7 +534,7 @@ void Strategy::updateSameLength(
 
 void Strategy::updateAndGrow(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
   // Make an indexable vector copy of the results that need to grow.
   vector<Result> resultsOld;
@@ -566,7 +568,7 @@ void Strategy::updateAndGrow(
 
 void Strategy::adaptResults(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
@@ -612,7 +614,7 @@ void Strategy::adaptResults(
 
 void Strategy::adapt(
   const Play& play,
-  const Survivors& survivors)
+  const SurvivorList& survivors)
 {
   // Our Strategy results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the

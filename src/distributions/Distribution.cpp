@@ -552,8 +552,8 @@ void Distribution::precalcSurvivorsCollapse2(
 
 void Distribution::collapseSurvivors(
   const vector<SideInfo>& distCollapses,
-  const Survivors& survivorsUnreduced,
-  Survivors& survivorsReduced)
+  const SurvivorList& survivorsUnreduced,
+  SurvivorList& survivorsReduced)
 {
   // Start by copying the uncollapsed list (if this is the first collapse)
   // or the once-collapsed list (if this is the second collapse).
@@ -664,7 +664,7 @@ void Distribution::setSurvivors()
 }
 
 
-const Survivors& Distribution::survivorsUncollapsed(
+const SurvivorList& Distribution::survivorsUncollapsed(
   const unsigned westRank,
   const unsigned eastRank) const
 {
@@ -686,7 +686,7 @@ const Survivors& Distribution::survivorsUncollapsed(
 }
 
 
-const Survivors& Distribution::survivorsCollapse1(
+const SurvivorList& Distribution::survivorsCollapse1(
   const unsigned westRank,
   const unsigned eastRank,
   const unsigned collapse1) const
@@ -728,7 +728,7 @@ const Survivors& Distribution::survivorsCollapse1(
 }
 
 
-const Survivors& Distribution::survivorsCollapse2(
+const SurvivorList& Distribution::survivorsCollapse2(
   const unsigned westRank,
   const unsigned eastRank,
   const unsigned collapse1,
@@ -788,7 +788,7 @@ const Survivors& Distribution::survivorsCollapse2(
 }
 
 
-const Survivors& Distribution::survivorsWestVoid() const
+const SurvivorList& Distribution::survivorsWestVoid() const
 {
   if (distCanonical == nullptr)
     // This distribution is canonical.
@@ -798,7 +798,7 @@ const Survivors& Distribution::survivorsWestVoid() const
 }
 
 
-const Survivors& Distribution::survivorsEastVoid() const
+const SurvivorList& Distribution::survivorsEastVoid() const
 {
   if (distCanonical == nullptr)
     // This distribution is canonical.
@@ -808,7 +808,7 @@ const Survivors& Distribution::survivorsEastVoid() const
 }
 
 
-const Survivors& Distribution::survivorsReduced(
+const SurvivorList& Distribution::survivorsReduced(
   const unsigned westRank,
   const unsigned eastRank) const
 {
@@ -826,7 +826,7 @@ const Survivors& Distribution::survivorsReduced(
 }
 
 
-const Survivors& Distribution::survivorsReducedCollapse1(
+const SurvivorList& Distribution::survivorsReducedCollapse1(
   const unsigned westRank,
   const unsigned eastRank,
   const unsigned collapse1) const
@@ -848,7 +848,7 @@ const Survivors& Distribution::survivorsReducedCollapse1(
 }
 
 
-const Survivors& Distribution::survivorsReducedCollapse2(
+const SurvivorList& Distribution::survivorsReducedCollapse2(
   const unsigned westRank,
   const unsigned eastRank,
   const unsigned collapse1,
@@ -870,7 +870,7 @@ const Survivors& Distribution::survivorsReducedCollapse2(
 }
 
 
-const Survivors& Distribution::survivors(const Play& play) const
+const SurvivorList& Distribution::survivors(const Play& play) const
 {
   unsigned westRank, eastRank;
   if (play.side == SIDE_NORTH)

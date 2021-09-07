@@ -6,7 +6,8 @@
 
 #include "Combinations.h"
 #include "CombEntry.h"
-#include "Distributions.h"
+
+#include "distributions/Distributions.h"
 
 #include "plays/Plays.h"
 

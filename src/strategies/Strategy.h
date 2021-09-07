@@ -10,7 +10,7 @@
 
 class Ranges;
 struct Play;
-struct Survivors;
+struct SurvivorList;
 
 using namespace std;
 
@@ -65,15 +65,15 @@ class Strategy
 
     void updateSameLength(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
     void updateAndGrow(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
     void adaptResults(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
   public:
 
@@ -163,7 +163,7 @@ class Strategy
 
     void adapt(
       const Play& play,
-      const Survivors& survivors);
+      const SurvivorList& survivors);
 
     void addComponentwise(const Strategy& strat2);
 
