@@ -460,34 +460,6 @@ void Distribution::setSurvivorsGeneral()
 {
   // Make the survivors in the absence of rank collapses.
   distSurvivors.setGeneral(distributions, rankSize);
-  /*
-  // Could mirror around the middle to save a bit of time,
-  // but it's marginal.
-
-  const unsigned char dlast = 
-    static_cast<unsigned char>(distributions.size() - 1);
-  distSurvivors.resize(rankSize);
-  for (unsigned char d = 1; d < dlast; d++)
-  {
-    const DistInfo& dist = distributions[d];
-    for (unsigned w = 0; w < rankSize; w++)
-    {
-      if (dist.west.counts[w] == 0)
-        continue;
-
-      for (unsigned e = 0; e < rankSize; e++)
-      {
-        if (dist.east.counts[e] == 0)
-           continue;
-
-        distSurvivors.data[w][e].push_back(
-          {d, distSurvivors.data[w][e].sizeReduced()});
-        // TODO Put in push_back?
-        distSurvivors.data[w][e].incrSizeReduced();
-      }
-    }
-  }
-  */
 }
 
 
@@ -579,8 +551,6 @@ void Distribution::setSurvivors()
   // We collapse downward, so rank 1 always survives and rank 2
   // may collapse onto rank 1.
   distSurvivorsCollapse1.resize(rankSize);
-  for (unsigned c1 = 1; c1 < rankSize; c1++)
-    distSurvivorsCollapse1[c1].resize(rankSize);
 
   distSurvivorsCollapse2.resize(rankSize);
   for (unsigned c1 = 1; c1 < rankSize; c1++)
@@ -596,15 +566,15 @@ void Distribution::setSurvivors()
     {
       for (unsigned c1 = 1; c1 < rankSize; c1++)
       {
-        collapseSurvivors(distCollapses1[c1],
-          distSurvivors.data[w][e],
-          distSurvivorsCollapse1[c1].data[w][e]);
+        distSurvivorsCollapse1.matrix(c1).data[w][e].collapse(
+          distCollapses1[c1],
+          distSurvivors.data[w][e]);
 
         for (unsigned c2 = c1+1; c2 < rankSize; c2++)
         {
-          collapseSurvivors(distCollapses2[c1][c2],
-            distSurvivorsCollapse1[c1].data[w][e],
-            distSurvivorsCollapse2[c1][c2].data[w][e]);
+          distSurvivorsCollapse2[c1][c2].data[w][e].collapse(
+            distCollapses2[c1][c2],
+            distSurvivorsCollapse1.matrix(c1).data[w][e]);
 
           // TODO Could perhaps order c1 and c2 when calling,
           // such that we only need half the matrix.
@@ -783,7 +753,7 @@ const SurvivorList& Distribution::survivorsReducedCollapse1(
   assert(collapse1 >= 1 && collapse1 < rankSize);
 
   if (distCanonical == nullptr)
-    return distSurvivorsCollapse1[collapse1].data[westRank][eastRank];
+    return distSurvivorsCollapse1.matrix(collapse1).data[westRank][eastRank];
   else
     return distCanonical->survivorsReducedCollapse1(westRank, eastRank, 
       collapse1);

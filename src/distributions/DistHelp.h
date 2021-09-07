@@ -220,4 +220,29 @@ struct SurvivorMatrix
   };
 };
 
+struct SurvivorsCollapsed
+{
+  vector<SurvivorMatrix> singleCollapses;
+
+  void resize(const unsigned rankSize)
+  {
+    singleCollapses.resize(rankSize);
+
+    for (unsigned c1 = 1; c1 < rankSize; c1++)
+      singleCollapses[c1].resize(rankSize);
+  };
+
+  SurvivorMatrix& matrix(const unsigned cardNo1)
+  {
+    assert(cardNo1 < singleCollapses.size());
+    return singleCollapses[cardNo1];
+  };
+
+  const SurvivorMatrix& matrix(const unsigned cardNo1) const
+  {
+    assert(cardNo1 < singleCollapses.size());
+    return singleCollapses[cardNo1];
+  };
+};
+
 #endif

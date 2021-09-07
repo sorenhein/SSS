@@ -46,7 +46,7 @@ class Distribution
     Distribution const * distCanonical;
 
     SurvivorMatrix distSurvivors;
-    vector<SurvivorMatrix> distSurvivorsCollapse1;
+    SurvivorsCollapsed distSurvivorsCollapse1;
     vector<vector<SurvivorMatrix>> distSurvivorsCollapse2;
     SurvivorList distSurvivorsWestVoid;
     SurvivorList distSurvivorsEastVoid;
