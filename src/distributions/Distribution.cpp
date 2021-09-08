@@ -454,46 +454,23 @@ const SurvivorList& Distribution::survivorsUncollapsed(
   else if (eastVoidFlag)
     return Distribution::survivorsEastVoid();
   else
+  {
+    // TODO Why can this happen?
+    // Because it's called once with known void, once without voids!
     return Distribution::survivorsReduced(
       westRankReduced,
       eastRankReduced);
+  }
 }
 
 
 const SurvivorList& Distribution::survivorsCollapse1(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1) const
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced,
+  const unsigned collapseReduced) const
 {
-  // This method uses full (externally visible) ranks.
-  assert(westRank != 0 || eastRank != 0);
-  assert(westRank < full2reduced.size());
-  assert(eastRank < full2reduced.size());
-
-  if (westRank == 0)
-  {
-    return Distribution::survivorsWestVoid();
-  }
-  else if (eastRank == 0)
-  {
-    return Distribution::survivorsEastVoid();
-  }
-  // else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
-  else if (collapse1 <= 1)
-  {
-    // Not really collapsed
-    return Distribution::survivorsReduced(
-      full2reduced[westRank],
-      full2reduced[eastRank]);
-  }
-  else
-  {
-    // Regular collapse
-    return Distribution::survivorsReducedCollapse1(
-      full2reduced[westRank],
-      full2reduced[eastRank],
-      full2reduced[collapse1]);
-  }
+  return Distribution::survivorsReducedCollapse1(
+    westRankReduced, eastRankReduced, collapseReduced);
 }
 
 
@@ -509,11 +486,18 @@ const SurvivorList& Distribution::survivorsCollapse2(
   assert(eastRank < full2reduced.size());
 
   if (westRank == 0)
+  {
+assert(false);
     return Distribution::survivorsWestVoid();
+  }
   else if (eastRank == 0)
+  {
+assert(false);
     return Distribution::survivorsEastVoid();
+  }
   else if (collapse1 <= 1)
   {
+assert(false);
 // TODO Do these discards ever happen?  Do we have to test for them?
 // Can we avoid them in Ranks.cpp?
     if (collapse2 <= 1 || collapse1 == collapse2)
@@ -531,6 +515,7 @@ const SurvivorList& Distribution::survivorsCollapse2(
   }
   else if (collapse2 <= 1)
   {
+assert(false);
     // Discarding collapse2
       return Distribution::survivorsReducedCollapse1(
         full2reduced[westRank],
@@ -694,6 +679,8 @@ else
   const unsigned westRankReduced = full2reduced[westRank];
   const unsigned eastRankReduced = full2reduced[eastRank];
 
+  // These are the corresponding EW ranks that may have to be collapsed.
+  // They have to be 1 higher (alternating ranks).
   const unsigned collapseLeadReduced =
     (play.leadCollapse ? full2reduced[play.lead()+1] : 0);
   const unsigned collapsePardReduced =
@@ -709,19 +696,10 @@ else
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
 
-  if (westRank == 0 || eastRank == 0)
-  {
-    assert(westVoidFlag || eastVoidFlag);
-  }
-  else
-  {
-    assert(! westVoidFlag && ! eastVoidFlag);
-  }
-
-
   /* */
   if (westRank == 0 || eastRank == 0)
   {
+assert(westVoidFlag || eastVoidFlag);
     return Distribution::survivorsUncollapsed(
       westRankReduced, eastRankReduced,
       westVoidFlag, eastVoidFlag);
@@ -734,18 +712,17 @@ else
   else if (play.leadCollapse)
   {
     return Distribution::survivorsCollapse1(
-      westRank, eastRank, play.lead()+1);
+      westRankReduced, eastRankReduced, collapseLeadReduced);
   }
   else if (play.pardCollapse)
   {
     return Distribution::survivorsCollapse1(
-      westRank, eastRank, play.pard()+1);
+      westRankReduced, eastRankReduced, collapsePardReduced);
   }
   else
     return Distribution::survivorsUncollapsed(
       westRankReduced, eastRankReduced,
       westVoidFlag, eastVoidFlag);
-    // westRank, eastRank);
   /* */
 }
 

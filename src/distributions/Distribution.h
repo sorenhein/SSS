@@ -67,9 +67,9 @@ class Distribution
       const bool eastVoidFlag) const;
 
     const SurvivorList& survivorsCollapse1(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1) const;
+      const unsigned westRankReduced,
+      const unsigned eastRankReduced,
+      const unsigned collapseReduced) const;
 
     const SurvivorList& survivorsCollapse2(
       const unsigned westRank,
