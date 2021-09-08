@@ -14,6 +14,7 @@
 
 #include "SurvivorList.h"
 #include "Survivors.h"
+#include "Reductions.h"
 #include "DistHelp.h"
 
 
@@ -47,6 +48,8 @@ class Distribution
     Distribution const * distCanonical;
 
     Survivors survivors;
+
+    Reductions reductions;
 
 
     void setBinomial();
