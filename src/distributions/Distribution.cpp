@@ -601,36 +601,73 @@ else
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
 
-  /* */
   if (westVoidFlag)
-    return Distribution::survivorsWestVoid();
+  {
+    // return Distribution::survivorsWestVoid();
+
+    if (distCanonical == nullptr)
+      // This distribution is canonical.
+      return survivors.survivorsWestVoid();
+    else
+    {
+      assert(distCanonical->distCanonical == nullptr);
+      return distCanonical->survivorsWestVoid();
+    }
+  }
   else if (eastVoidFlag)
-    return Distribution::survivorsEastVoid();
+  {
+    if (distCanonical == nullptr)
+      // This distribution is canonical.
+      return survivors.survivorsEastVoid();
+    else
+    {
+      assert(distCanonical->distCanonical == nullptr);
+      return distCanonical->survivorsEastVoid();
+    }
+  }
   else if (play.leadCollapse && play.pardCollapse)
   {
-    return Distribution::survivorsReducedCollapse2(
-      westRankReduced, eastRankReduced,
-      collapsePardReduced, collapseLeadReduced);
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
 
+    if (distCanonical == nullptr)
+      return survivors.survivorsReducedCollapse2(
+        westRankReduced, eastRankReduced,
+        collapsePardReduced, collapseLeadReduced); 
+    else
+      return distCanonical->survivorsReducedCollapse2(
+        westRankReduced, eastRankReduced, 
+        collapsePardReduced, collapseLeadReduced);
   }
   else if (play.leadCollapse)
   {
-    return Distribution::survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapseLeadReduced);
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
 
+    if (distCanonical == nullptr)
+      return survivors.survivorsReducedCollapse1(
+        westRankReduced, eastRankReduced, collapseLeadReduced);
+    else
+      return distCanonical->survivorsReducedCollapse1(
+        westRankReduced, eastRankReduced, collapseLeadReduced);
   }
   else if (play.pardCollapse)
   {
-    // return Distribution::survivorsCollapse1(
-      // westRankReduced, eastRankReduced, collapsePardReduced);
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
 
-    return Distribution::survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapsePardReduced);
+    if (distCanonical == nullptr)
+      return survivors.survivorsReducedCollapse1(
+        westRankReduced, eastRankReduced, collapsePardReduced);
+    else
+      return distCanonical->survivorsReducedCollapse1(
+        westRankReduced, eastRankReduced, collapsePardReduced);
   }
   else
-    return Distribution::survivorsReduced(
-      westRankReduced, eastRankReduced);
-  /* */
+  {
+    if (distCanonical == nullptr)
+      return survivors.survivorsReduced(westRankReduced, eastRankReduced);
+    else
+      return distCanonical->survivorsReduced(westRankReduced, eastRankReduced);
+  }
 }
 
 
