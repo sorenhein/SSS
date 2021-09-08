@@ -567,6 +567,7 @@ const SurvivorList& Distribution::survivorsWestVoid() const
   {
 // assert(distCanonical->distSurvivorsWestVoid ==
        // distCanonical->survivorsWestVoid());
+assert(distCanonical->distCanonical == nullptr);
 
     return distCanonical->survivorsWestVoid();
   }
@@ -584,6 +585,8 @@ const SurvivorList& Distribution::survivorsEastVoid() const
 // This is not always true, e.g. 4/8: Why?
 // assert(distCanonical->distSurvivorsEastVoid ==
        // distCanonical->survivorsEastVoid());
+
+assert(distCanonical->distCanonical == nullptr);
 
     return distCanonical->survivorsEastVoid();
   }
@@ -646,6 +649,32 @@ const SurvivorList& Distribution::survivorsReducedCollapse2(
 
 const SurvivorList& Distribution::getSurvivors(const Play& play) const
 {
+  // This doesn't work.
+  // I think the reason is: Let's say West is void.
+  // D::survivorsUncollapsed
+  // Will test and potentially use "our" full2reduced
+  //   D::survivorsWestVoid
+  //   If not canonical, will return 
+  //
+  // canonical survivors::survivorsUncollapsed
+  // Will use "their" full2reduced
+  //
+  // Maybe the solution is first to map westRank and eastRank
+  // to the reduced versions and then always to pass these.
+  // Then Survivors doesn't need to know full2reduced either.
+  //
+
+  /*
+  Distribution const * dptr = (distCanonical ? distCanonical : this);
+cout << play.strLine();
+if (distCanonical)
+  cout << "Switch to canonical" << endl;
+else
+  cout << "Already canonical" << endl;
+
+  return dptr->survivors.getSurvivors(play);
+  */
+
   unsigned westRank, eastRank;
   if (play.side == SIDE_NORTH)
   {
@@ -658,6 +687,27 @@ const SurvivorList& Distribution::getSurvivors(const Play& play) const
     eastRank = play.rho();
   }
 
+  // assert(westRank < rankSize);
+  // assert(eastRank < rankSize);
+  assert(westRank < full2reduced.size());
+  assert(eastRank < full2reduced.size());
+  assert(westRank > 0 || eastRank > 0);
+  const unsigned westRankReduced = full2reduced[westRank];
+  const unsigned eastRankReduced = full2reduced[eastRank];
+
+  const unsigned collapseLeadReduced =
+    (play.leadCollapse ? full2reduced[play.lead()+1] : 0);
+  const unsigned collapsePardReduced =
+    (play.pardCollapse ? full2reduced[play.pard()+1] : 0);
+
+  /*
+  Distribution const * dptr = (distCanonical ? distCanonical : this);
+  return dptr->survivors.getSurvivors(play,
+    westRankReduced, eastRankReduced, 
+    collapseLeadReduced, collapsePardReduced);
+    */
+
+  /* */
   if (westRank == 0 || eastRank == 0)
     return Distribution::survivorsUncollapsed(westRank, eastRank);
   else if (play.leadCollapse && play.pardCollapse)
@@ -677,6 +727,7 @@ const SurvivorList& Distribution::getSurvivors(const Play& play) const
   }
   else
     return Distribution::survivorsUncollapsed(westRank, eastRank);
+  /* */
 }
 
 

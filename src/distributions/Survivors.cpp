@@ -179,109 +179,131 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
 
 
 const SurvivorList& Survivors::survivorsUncollapsed(
-  const unsigned westRank,
-  const unsigned eastRank) const
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced) const
 {
   // This method uses full (externally visible) ranks.
-  assert(westRank != 0 || eastRank != 0);
-  assert(westRank < full2reducedPtr->size());
-  assert(eastRank < full2reducedPtr->size());
+  // assert(westRank != 0 || eastRank != 0);
+  // assert(westRank < full2reducedPtr->size());
+  // assert(eastRank < full2reducedPtr->size());
 
-  if (westRank == 0)
+  if (westRankReduced == 0)
     return Survivors::survivorsWestVoid();
-  else if (eastRank == 0)
+  else if (eastRankReduced == 0)
     return Survivors::survivorsEastVoid();
   else
     return Survivors::survivorsReduced(
-      (* full2reducedPtr)[westRank],
-      (* full2reducedPtr)[eastRank]);
+      westRankReduced,
+      eastRankReduced);
+      // (* full2reducedPtr)[westRank],
+      // (* full2reducedPtr)[eastRank]);
 }
 
 
 const SurvivorList& Survivors::survivorsCollapse1(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1) const
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced,
+  const unsigned collapseReduced) const
 {
   // This method uses full (externally visible) ranks.
-  assert(westRank != 0 || eastRank != 0);
-  assert(westRank < full2reducedPtr->size());
-  assert(eastRank < full2reducedPtr->size());
+  // assert(westRank != 0 || eastRank != 0);
+  // assert(westRank < full2reducedPtr->size());
+  // assert(eastRank < full2reducedPtr->size());
 
-  if (westRank == 0)
+  if (westRankReduced == 0)
   {
     return Survivors::survivorsWestVoid();
   }
-  else if (eastRank == 0)
+  else if (eastRankReduced == 0)
   {
     return Survivors::survivorsEastVoid();
   }
   // else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
-  else if (collapse1 <= 1)
+  else if (collapseReduced <= 1)
   {
     // Not really collapsed
     return Survivors::survivorsReduced(
-      (* full2reducedPtr)[westRank],
-      (* full2reducedPtr)[eastRank]);
+      westRankReduced,
+      eastRankReduced);
+      // (* full2reducedPtr)[westRank],
+      // (* full2reducedPtr)[eastRank]);
   }
   else
   {
     // Regular collapse
     return Survivors::survivorsReducedCollapse1(
-      (* full2reducedPtr)[westRank],
-      (* full2reducedPtr)[eastRank],
-      (* full2reducedPtr)[collapse1]);
+      westRankReduced,
+      eastRankReduced,
+      collapseReduced);
+      // (* full2reducedPtr)[westRank],
+      // (* full2reducedPtr)[eastRank],
+      // (* full2reducedPtr)[collapse1]);
   }
 }
 
 const SurvivorList& Survivors::survivorsCollapse2(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1,
-  const unsigned collapse2) const
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced,
+  const unsigned collapsePardReduced,
+  const unsigned collapseLeadReduced) const
+  // const unsigned collapse1,
+  // const unsigned collapse2) const
 {
   // This method uses full (externally visible) ranks.
-  assert(westRank != 0 || eastRank != 0);
-  assert(westRank < full2reducedPtr->size());
-  assert(eastRank < full2reducedPtr->size());
+  // assert(westRank != 0 || eastRank != 0);
+  // assert(westRank < full2reducedPtr->size());
+  // assert(eastRank < full2reducedPtr->size());
 
-  if (westRank == 0)
+  if (westRankReduced == 0)
     return Survivors::survivorsWestVoid();
-  else if (eastRank == 0)
+  else if (eastRankReduced == 0)
     return Survivors::survivorsEastVoid();
-  else if (collapse1 <= 1)
+  // else if (collapse1 <= 1)
+  else if (collapsePardReduced <= 1)
   {
 // TODO Do these discards ever happen?  Do we have to test for them?
 // Can we avoid them in Ranks.cpp?
-    if (collapse2 <= 1 || collapse1 == collapse2)
+    if (collapseLeadReduced <= 1 || collapsePardReduced == collapseLeadReduced)
     {
       // Discarding collapse2
       return Survivors::survivorsReduced(
-        (* full2reducedPtr)[westRank],
-        (* full2reducedPtr)[eastRank]);
+        westRankReduced,
+        eastRankReduced);
+        // (* full2reducedPtr)[westRank],
+        // (* full2reducedPtr)[eastRank]);
     }
     else
       return Survivors::survivorsReducedCollapse1(
-        (* full2reducedPtr)[westRank],
-        (* full2reducedPtr)[eastRank],
-        (* full2reducedPtr)[collapse2]);
+        westRankReduced,
+        eastRankReduced,
+        collapseLeadReduced);
+        // (* full2reducedPtr)[westRank],
+        // (* full2reducedPtr)[eastRank],
+        // (* full2reducedPtr)[collapse2]);
   }
-  else if (collapse2 <= 1)
+  else if (collapseLeadReduced <= 1)
   {
     // Discarding collapse2
       return Survivors::survivorsReducedCollapse1(
-        (* full2reducedPtr)[westRank],
-        (* full2reducedPtr)[eastRank],
-        (* full2reducedPtr)[collapse1]);
+        westRankReduced,
+        eastRankReduced,
+        collapsePardReduced);
+        // (* full2reducedPtr)[westRank],
+        // (* full2reducedPtr)[eastRank],
+        // (* full2reducedPtr)[collapse1]);
   }
   else
   {
     // Discarding nothing
     return Survivors::survivorsReducedCollapse2(
-      (* full2reducedPtr)[westRank],
-      (* full2reducedPtr)[eastRank],
-      (* full2reducedPtr)[collapse1],
-      (* full2reducedPtr)[collapse2]);
+        westRankReduced,
+        eastRankReduced,
+        collapsePardReduced,
+        collapseLeadReduced);
+      // (* full2reducedPtr)[westRank],
+      // (* full2reducedPtr)[eastRank],
+      // (* full2reducedPtr)[collapse1],
+      // (* full2reducedPtr)[collapse2]);
   }
 }
 
@@ -335,5 +357,52 @@ const SurvivorList& Survivors::survivorsReducedCollapse2(
   assert(westRank < rankSize);
   assert(eastRank < rankSize);
   return sm.data[westRank][eastRank];
+}
+
+
+const SurvivorList& Survivors::getSurvivors(
+  const Play& play,
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced,
+  const unsigned collapseLeadReduced,
+  const unsigned collapsePardReduced) const
+{
+  /*
+  unsigned westRank, eastRank;
+  if (play.side == SIDE_NORTH)
+  {
+    westRank = play.rho();
+    eastRank = play.lho();
+  }
+  else
+  {
+    westRank = play.lho();
+    eastRank = play.rho();
+  }
+  */
+
+  if (westRankReduced == 0 || eastRankReduced == 0)
+    return Survivors::survivorsUncollapsed(westRankReduced, eastRankReduced);
+  else if (play.leadCollapse && play.pardCollapse)
+  {
+    return Survivors::survivorsCollapse2(
+      westRankReduced, eastRankReduced, 
+      collapsePardReduced, collapseLeadReduced);
+      // westRankReduced, eastRankReduced, play.pard()+1, play.lead()+1);
+  }
+  else if (play.leadCollapse)
+  {
+    return Survivors::survivorsCollapse1(
+      westRankReduced, eastRankReduced, collapseLeadReduced);
+      // westRank, eastRank, play.lead()+1);
+  }
+  else if (play.pardCollapse)
+  {
+    return Survivors::survivorsCollapse1(
+      westRankReduced, eastRankReduced, collapsePardReduced);
+      // westRank, eastRank, play.pard()+1);
+  }
+  else
+    return Survivors::survivorsUncollapsed(westRankReduced, eastRankReduced);
 }
 

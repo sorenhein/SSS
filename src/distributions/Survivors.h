@@ -57,19 +57,19 @@ class Survivors
       SurvivorList& survivorsReduced);
 
     const SurvivorList& survivorsUncollapsed(
-      const unsigned westRank,
-      const unsigned eastRank) const;
+      const unsigned westRankReduced,
+      const unsigned eastRankReduced) const;
 
     const SurvivorList& survivorsCollapse1(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1) const;
+      const unsigned westRankReduced,
+      const unsigned eastRankReduced,
+      const unsigned collapseReduced) const;
 
     const SurvivorList& survivorsCollapse2(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1,
-      const unsigned collapse2) const;
+      const unsigned westRankReduced,
+      const unsigned eastRankReduced,
+      const unsigned collapsePardReduced,
+      const unsigned collapseLeadReduced) const;
 
   public:
 
@@ -100,6 +100,12 @@ class Survivors
       const unsigned collapse1,
       const unsigned collapse2) const;
 
+    const SurvivorList& getSurvivors(
+      const Play& play,
+      const unsigned westRankReduced,
+      const unsigned eastRankReduced,
+      const unsigned collapseLeadReduced,
+      const unsigned collapsePardReduced) const;
 };
 
 #endif
