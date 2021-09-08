@@ -15,13 +15,20 @@
 
 #include "../plays/Play.h"
 
-// TODO Set rankSize once and for all, don't keep passing around
+/*
+   There are several cases to consider:
+   - West or East is void, and only one distribution survives.
+   - No collapse occurs.
+   - One collapse occurs.
+   - Two collapses occur.
+
+   We pre-calculate several tables that make the lookup faster.
+ */
 
 
 Survivors::Survivors()
 {
   rankSize = 0;
-  // full2reducedPtr = nullptr;
 }
 
 
@@ -29,7 +36,6 @@ void Survivors::setGlobal(const unsigned rankSizeIn)
   // const vector<unsigned>& full2reduced)
 {
   rankSize = rankSizeIn;
-  // full2reducedPtr = &full2reduced;
 }
 
 
@@ -142,11 +148,7 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
 
   distSurvivorsCollapse2.resize(rankSize);
   for (unsigned c1 = 1; c1 < rankSize; c1++)
-  // {
     distSurvivorsCollapse2[c1].resize(rankSize);
-    // for (unsigned c2 = 1; c2 < rankSize; c2++)
-      // distSurvivorsCollapse2[c1][c2].resize(rankSize);
-  // }
 
   // Make the rank collapses.
   for (unsigned w = 0; w < rankSize; w++)
@@ -161,7 +163,6 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
 
         for (unsigned c2 = c1+1; c2 < rankSize; c2++)
         {
-          // distSurvivorsCollapse2[c1][c2].data[w][e].collapse(
           distSurvivorsCollapse2[c1].matrix(c2).data[w][e].collapse(
             distCollapses2[c1][c2],
             distSurvivorsCollapse1.matrix(c1).data[w][e]);
@@ -173,136 +174,6 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
         }
       }
     }
-  }
-}
-
-
-const SurvivorList& Survivors::survivorsUncollapsed(
-  const unsigned westRankReduced,
-  const unsigned eastRankReduced) const
-{
-  // This method uses full (externally visible) ranks.
-  // assert(westRank != 0 || eastRank != 0);
-  // assert(westRank < full2reducedPtr->size());
-  // assert(eastRank < full2reducedPtr->size());
-
-  if (westRankReduced == 0)
-    return Survivors::survivorsWestVoid();
-  else if (eastRankReduced == 0)
-    return Survivors::survivorsEastVoid();
-  else
-    return Survivors::survivorsReduced(
-      westRankReduced,
-      eastRankReduced);
-      // (* full2reducedPtr)[westRank],
-      // (* full2reducedPtr)[eastRank]);
-}
-
-
-const SurvivorList& Survivors::survivorsCollapse1(
-  const unsigned westRankReduced,
-  const unsigned eastRankReduced,
-  const unsigned collapseReduced) const
-{
-  // This method uses full (externally visible) ranks.
-  // assert(westRank != 0 || eastRank != 0);
-  // assert(westRank < full2reducedPtr->size());
-  // assert(eastRank < full2reducedPtr->size());
-
-  if (westRankReduced == 0)
-  {
-    return Survivors::survivorsWestVoid();
-  }
-  else if (eastRankReduced == 0)
-  {
-    return Survivors::survivorsEastVoid();
-  }
-  // else if (collapse1 <= 1 || collapse1 >= full2reduced.size())
-  else if (collapseReduced <= 1)
-  {
-    // Not really collapsed
-    return Survivors::survivorsReduced(
-      westRankReduced,
-      eastRankReduced);
-      // (* full2reducedPtr)[westRank],
-      // (* full2reducedPtr)[eastRank]);
-  }
-  else
-  {
-    // Regular collapse
-    return Survivors::survivorsReducedCollapse1(
-      westRankReduced,
-      eastRankReduced,
-      collapseReduced);
-      // (* full2reducedPtr)[westRank],
-      // (* full2reducedPtr)[eastRank],
-      // (* full2reducedPtr)[collapse1]);
-  }
-}
-
-const SurvivorList& Survivors::survivorsCollapse2(
-  const unsigned westRankReduced,
-  const unsigned eastRankReduced,
-  const unsigned collapsePardReduced,
-  const unsigned collapseLeadReduced) const
-  // const unsigned collapse1,
-  // const unsigned collapse2) const
-{
-  // This method uses full (externally visible) ranks.
-  // assert(westRank != 0 || eastRank != 0);
-  // assert(westRank < full2reducedPtr->size());
-  // assert(eastRank < full2reducedPtr->size());
-
-  if (westRankReduced == 0)
-    return Survivors::survivorsWestVoid();
-  else if (eastRankReduced == 0)
-    return Survivors::survivorsEastVoid();
-  // else if (collapse1 <= 1)
-  else if (collapsePardReduced <= 1)
-  {
-// TODO Do these discards ever happen?  Do we have to test for them?
-// Can we avoid them in Ranks.cpp?
-    if (collapseLeadReduced <= 1 || collapsePardReduced == collapseLeadReduced)
-    {
-      // Discarding collapse2
-      return Survivors::survivorsReduced(
-        westRankReduced,
-        eastRankReduced);
-        // (* full2reducedPtr)[westRank],
-        // (* full2reducedPtr)[eastRank]);
-    }
-    else
-      return Survivors::survivorsReducedCollapse1(
-        westRankReduced,
-        eastRankReduced,
-        collapseLeadReduced);
-        // (* full2reducedPtr)[westRank],
-        // (* full2reducedPtr)[eastRank],
-        // (* full2reducedPtr)[collapse2]);
-  }
-  else if (collapseLeadReduced <= 1)
-  {
-    // Discarding collapse2
-      return Survivors::survivorsReducedCollapse1(
-        westRankReduced,
-        eastRankReduced,
-        collapsePardReduced);
-        // (* full2reducedPtr)[westRank],
-        // (* full2reducedPtr)[eastRank],
-        // (* full2reducedPtr)[collapse1]);
-  }
-  else
-  {
-    // Discarding nothing
-    return Survivors::survivorsReducedCollapse2(
-        westRankReduced,
-        eastRankReduced,
-        collapsePardReduced,
-        collapseLeadReduced);
-      // (* full2reducedPtr)[westRank],
-      // (* full2reducedPtr)[eastRank],
-      // (* full2reducedPtr)[collapse1],
-      // (* full2reducedPtr)[collapse2]);
   }
 }
 

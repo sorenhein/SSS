@@ -67,35 +67,6 @@ class Survivors
       const vector<vector<SideInfo>>& distCollapse1,
       vector<vector<vector<SideInfo>>>& distCollapse2);
 
-    void collapseSurvivors(
-      const vector<SideInfo>& distCollapses,
-      const SurvivorList& survivorsUnreduced,
-      SurvivorList& survivorsReduced);
-
-    const SurvivorList& survivorsUncollapsed(
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced) const;
-
-    const SurvivorList& survivorsCollapse1(
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced,
-      const unsigned collapseReduced) const;
-
-    const SurvivorList& survivorsCollapse2(
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced,
-      const unsigned collapsePardReduced,
-      const unsigned collapseLeadReduced) const;
-
-  public:
-
-    Survivors();
-
-    void setGlobal(const unsigned rankSize);
-      // const vector<unsigned>& full2reduced);
-
-    void setSurvivors(const vector<DistInfo>& distributions);
-
     const SurvivorList& survivorsWestVoid() const;
 
     const SurvivorList& survivorsEastVoid() const;
@@ -114,6 +85,15 @@ class Survivors
       const unsigned eastRank,
       const unsigned collapse1,
       const unsigned collapse2) const;
+
+
+  public:
+
+    Survivors();
+
+    void setGlobal(const unsigned rankSize);
+
+    void setSurvivors(const vector<DistInfo>& distributions);
 
     const SurvivorList& getSurvivors(const SurvivorControl& sc) const;
 };
