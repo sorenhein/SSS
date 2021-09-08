@@ -59,25 +59,6 @@ class Distribution
 
     void mirror(unsigned& distIndex);
 
-    /* */
-    const SurvivorList& survivorsUncollapsed(
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced,
-      const bool westVoidFlag,
-      const bool eastVoidFlag) const;
-
-    const SurvivorList& survivorsCollapse1(
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced,
-      const unsigned collapseReduced) const;
-
-    const SurvivorList& survivorsCollapse2(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1,
-      const unsigned collapse2) const;
-      /* */
-
     const SurvivorList& survivorsReduced(
       const unsigned westRank,
       const unsigned eastRank) const;
