@@ -442,22 +442,21 @@ DistID Distribution::getID() const
 
 /* */
 const SurvivorList& Distribution::survivorsUncollapsed(
-  const unsigned westRank,
-  const unsigned eastRank) const
+  const unsigned westRankReduced,
+  const unsigned eastRankReduced,
+  const bool westVoidFlag,
+  const bool eastVoidFlag) const
 {
-  // This method uses full (externally visible) ranks.
-  assert(westRank != 0 || eastRank != 0);
-  assert(westRank < full2reduced.size());
-  assert(eastRank < full2reduced.size());
+  // This method uses reduced (internally visible) ranks.
 
-  if (westRank == 0)
+  if (westVoidFlag)
     return Distribution::survivorsWestVoid();
-  else if (eastRank == 0)
+  else if (eastVoidFlag)
     return Distribution::survivorsEastVoid();
   else
     return Distribution::survivorsReduced(
-      full2reduced[westRank],
-      full2reduced[eastRank]);
+      westRankReduced,
+      eastRankReduced);
 }
 
 
@@ -552,7 +551,7 @@ const SurvivorList& Distribution::survivorsCollapse2(
 
 void Distribution::setSurvivors()
 {
-  survivors.setGlobal(rankSize, full2reduced);
+  survivors.setGlobal(rankSize);
   survivors.setSurvivors(distributions);
 }
 
@@ -707,9 +706,26 @@ else
     collapseLeadReduced, collapsePardReduced);
     */
 
+  bool westVoidFlag, eastVoidFlag;
+  play.setVoidFlags(westVoidFlag, eastVoidFlag);
+
+  if (westRank == 0 || eastRank == 0)
+  {
+    assert(westVoidFlag || eastVoidFlag);
+  }
+  else
+  {
+    assert(! westVoidFlag && ! eastVoidFlag);
+  }
+
+
   /* */
   if (westRank == 0 || eastRank == 0)
-    return Distribution::survivorsUncollapsed(westRank, eastRank);
+  {
+    return Distribution::survivorsUncollapsed(
+      westRankReduced, eastRankReduced,
+      westVoidFlag, eastVoidFlag);
+  }
   else if (play.leadCollapse && play.pardCollapse)
   {
     return Distribution::survivorsCollapse2(
@@ -726,7 +742,10 @@ else
       westRank, eastRank, play.pard()+1);
   }
   else
-    return Distribution::survivorsUncollapsed(westRank, eastRank);
+    return Distribution::survivorsUncollapsed(
+      westRankReduced, eastRankReduced,
+      westVoidFlag, eastVoidFlag);
+    // westRank, eastRank);
   /* */
 }
 

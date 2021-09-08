@@ -21,16 +21,15 @@
 Survivors::Survivors()
 {
   rankSize = 0;
-  full2reducedPtr = nullptr;
+  // full2reducedPtr = nullptr;
 }
 
 
-void Survivors::setGlobal(
-  const unsigned rankSizeIn,
-  const vector<unsigned>& full2reduced)
+void Survivors::setGlobal(const unsigned rankSizeIn)
+  // const vector<unsigned>& full2reduced)
 {
   rankSize = rankSizeIn;
-  full2reducedPtr = &full2reduced;
+  // full2reducedPtr = &full2reduced;
 }
 
 

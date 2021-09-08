@@ -25,7 +25,7 @@ class Survivors
 
     unsigned rankSize;
 
-    vector<unsigned> const * full2reducedPtr;
+    // vector<unsigned> const * full2reducedPtr;
 
     SurvivorMatrix distSurvivors;
 
@@ -75,9 +75,8 @@ class Survivors
 
     Survivors();
 
-    void setGlobal(
-      const unsigned rankSize,
-      const vector<unsigned>& full2reduced);
+    void setGlobal(const unsigned rankSize);
+      // const vector<unsigned>& full2reduced);
 
     void setSurvivors(const vector<DistInfo>& distributions);
 
