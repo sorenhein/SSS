@@ -46,6 +46,22 @@ const vector<unsigned> CHUNK_SIZE =
  162  // 15 (really 324)
 };
 
+/*
+   Survivors are needed when we map the results of a subsequent trick
+   up to the current one.  The subsequent trick will have fewer
+   distributions in general.
+
+   Reductions are needed when we have solved for a rank reduction and
+   we want to calculate back and forth between a more complex and a
+   simpler, reduced combination (for the same trick level).
+
+   Some distributions are "canonical", and others are mapped to these
+   canonical ones with the distCanonical pointer.  There are only
+   explicit survivors and reductions for the canonical distributions.
+   The others can be derived from the mapping between externally
+   visible ranks and the internal ranks of a canonical distribution.
+ */
+
 
 mutex mtxDist;
 static bool init_flag = false;
@@ -446,96 +462,6 @@ void Distribution::setSurvivors()
 }
 
 
-const SurvivorList& Distribution::survivorsWestVoid() const
-{
-  if (distCanonical == nullptr)
-    // This distribution is canonical.
-    // return distSurvivorsWestVoid;
-    return survivors.survivorsWestVoid();
-  else
-  {
-// assert(distCanonical->distSurvivorsWestVoid ==
-       // distCanonical->survivorsWestVoid());
-assert(distCanonical->distCanonical == nullptr);
-
-    return distCanonical->survivorsWestVoid();
-  }
-}
-
-
-const SurvivorList& Distribution::survivorsEastVoid() const
-{
-  if (distCanonical == nullptr)
-    // This distribution is canonical.
-    // return distSurvivorsEastVoid;
-    return survivors.survivorsEastVoid();
-  else
-  {
-// This is not always true, e.g. 4/8: Why?
-// assert(distCanonical->distSurvivorsEastVoid ==
-       // distCanonical->survivorsEastVoid());
-
-assert(distCanonical->distCanonical == nullptr);
-
-    return distCanonical->survivorsEastVoid();
-  }
-}
-
-
-const SurvivorList& Distribution::survivorsReduced(
-  const unsigned westRank,
-  const unsigned eastRank) const
-{
-  // Voids are not possible here.
-  // assert(westRank < rankSize);
-  // assert(eastRank < rankSize);
-
-  if (distCanonical == nullptr)
-    return survivors.survivorsReduced(westRank, eastRank);
-  else
-    return distCanonical->survivorsReduced(westRank, eastRank);
-}
-
-
-const SurvivorList& Distribution::survivorsReducedCollapse1(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1) const
-{
-  // Voids are not possible here.
-  assert(westRank < rankSize);
-  assert(eastRank < rankSize);
-  assert(collapse1 >= 1 && collapse1 < rankSize);
-
-  if (distCanonical == nullptr)
-    return survivors.survivorsReducedCollapse1(
-      westRank, eastRank, collapse1);
-  else
-    return distCanonical->survivorsReducedCollapse1(westRank, eastRank, 
-      collapse1);
-}
-
-
-const SurvivorList& Distribution::survivorsReducedCollapse2(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1,
-  const unsigned collapse2) const
-{
-  // Voids are not possible here.
-  assert(westRank < rankSize);
-  assert(eastRank < rankSize);
-  assert(collapse1 >= 1 && collapse1 < rankSize);
-
-  if (distCanonical == nullptr)
-    return survivors.survivorsReducedCollapse2(westRank, eastRank,
-      collapse1, collapse2); 
-  else
-    return distCanonical->survivorsReducedCollapse2(westRank, eastRank, 
-      collapse1, collapse2);
-}
-
-
 const SurvivorList& Distribution::getSurvivors(const Play& play) const
 {
   // This doesn't work.
@@ -601,17 +527,95 @@ else
   bool westVoidFlag, eastVoidFlag;
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
 
+  if (distCanonical == nullptr)
+  {
+    // This distribution is canonical.
   if (westVoidFlag)
   {
-    // return Distribution::survivorsWestVoid();
+    return survivors.survivorsWestVoid();
+  }
+  else if (eastVoidFlag)
+  {
+    return survivors.survivorsEastVoid();
+  }
+  else if (play.leadCollapse && play.pardCollapse)
+  {
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
 
+    return survivors.survivorsReducedCollapse2(
+      westRankReduced, eastRankReduced,
+      collapsePardReduced, collapseLeadReduced); 
+  }
+  else if (play.leadCollapse)
+  {
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
+
+    return survivors.survivorsReducedCollapse1(
+      westRankReduced, eastRankReduced, collapseLeadReduced);
+  }
+  else if (play.pardCollapse)
+  {
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
+
+    return survivors.survivorsReducedCollapse1(
+      westRankReduced, eastRankReduced, collapsePardReduced);
+  }
+  else
+  {
+    return survivors.survivorsReduced(westRankReduced, eastRankReduced);
+  }
+  }
+  else
+  {
+    // This distribution is not canonical.
+  if (westVoidFlag)
+  {
+   return distCanonical->survivors.survivorsWestVoid();
+  }
+  else if (eastVoidFlag)
+  {
+    return distCanonical->survivors.survivorsEastVoid();
+  }
+  else if (play.leadCollapse && play.pardCollapse)
+  {
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
+
+    return distCanonical->survivors.survivorsReducedCollapse2(
+      westRankReduced, eastRankReduced, 
+      collapsePardReduced, collapseLeadReduced);
+  }
+  else if (play.leadCollapse)
+  {
+    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
+
+    return distCanonical->survivors.survivorsReducedCollapse1(
+      westRankReduced, eastRankReduced, collapseLeadReduced);
+  }
+  else if (play.pardCollapse)
+  {
+    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
+
+    return distCanonical->survivors.survivorsReducedCollapse1(
+      westRankReduced, eastRankReduced, collapsePardReduced);
+  }
+  else
+  {
+    return distCanonical->survivors.survivorsReduced(westRankReduced, eastRankReduced);
+  }
+  }
+
+  /*
+  if (westVoidFlag)
+  {
     if (distCanonical == nullptr)
       // This distribution is canonical.
       return survivors.survivorsWestVoid();
     else
     {
       assert(distCanonical->distCanonical == nullptr);
-      return distCanonical->survivorsWestVoid();
+      return distCanonical->survivors.survivorsWestVoid();
     }
   }
   else if (eastVoidFlag)
@@ -622,7 +626,7 @@ else
     else
     {
       assert(distCanonical->distCanonical == nullptr);
-      return distCanonical->survivorsEastVoid();
+      return distCanonical->survivors.survivorsEastVoid();
     }
   }
   else if (play.leadCollapse && play.pardCollapse)
@@ -635,7 +639,7 @@ else
         westRankReduced, eastRankReduced,
         collapsePardReduced, collapseLeadReduced); 
     else
-      return distCanonical->survivorsReducedCollapse2(
+      return distCanonical->survivors.survivorsReducedCollapse2(
         westRankReduced, eastRankReduced, 
         collapsePardReduced, collapseLeadReduced);
   }
@@ -647,7 +651,7 @@ else
       return survivors.survivorsReducedCollapse1(
         westRankReduced, eastRankReduced, collapseLeadReduced);
     else
-      return distCanonical->survivorsReducedCollapse1(
+      return distCanonical->survivors.survivorsReducedCollapse1(
         westRankReduced, eastRankReduced, collapseLeadReduced);
   }
   else if (play.pardCollapse)
@@ -658,7 +662,7 @@ else
       return survivors.survivorsReducedCollapse1(
         westRankReduced, eastRankReduced, collapsePardReduced);
     else
-      return distCanonical->survivorsReducedCollapse1(
+      return distCanonical->survivors.survivorsReducedCollapse1(
         westRankReduced, eastRankReduced, collapsePardReduced);
   }
   else
@@ -666,8 +670,9 @@ else
     if (distCanonical == nullptr)
       return survivors.survivorsReduced(westRankReduced, eastRankReduced);
     else
-      return distCanonical->survivorsReduced(westRankReduced, eastRankReduced);
+      return distCanonical->survivors.survivorsReduced(westRankReduced, eastRankReduced);
   }
+  */
 }
 
 
