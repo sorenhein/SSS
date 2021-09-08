@@ -89,7 +89,7 @@ string Timers::str(const int prec) const
   ss << setw(24) << left << names.back() << timers.back().str(prec);
 
   ss << setw(24) << left << "RATIO" << 
-    timers.back().strRatio(timerSum, prec) << endl << endl;
+    timers.back().strRatio(timerSum, prec) << "\n" << endl;
 
   return ss.str();
 }

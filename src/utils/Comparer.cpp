@@ -233,7 +233,7 @@ string Comparer::str() const
     }
     ss << "\n";
   }
-  ss << endl;
+  ss << "\n";
   return ss.str();
 }
 

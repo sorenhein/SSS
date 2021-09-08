@@ -455,10 +455,12 @@ DistID Distribution::getID() const
 }
 
 
-void Distribution::setSurvivors()
+void Distribution::setLookups()
 {
   survivors.setGlobal(rankSize);
   survivors.setSurvivors(distributions);
+
+  reductions.set(distributions, rankSize);
 }
 
 
@@ -506,6 +508,24 @@ const SurvivorList& Distribution::getSurvivors(const Play& play) const
   }
   else
     return distCanonical->survivors.getSurvivors(sc);
+}
+
+
+const Reduction& Distribution::getReduction(
+  const unsigned char rankNS) const
+{
+  assert(rankNS > 1 && rankNS <= full2reduced.size());
+
+  // All EW ranks < the NS rank are grouped together.
+  const unsigned rankReducedEW = full2reduced[rankNS-1];
+
+  if (distCanonical == nullptr)
+  {
+    // This distribution is canonical.
+    return reductions.get(rankReducedEW);
+  }
+  else
+    return distCanonical->reductions.get(rankReducedEW);
 }
 
 

@@ -91,7 +91,7 @@ void Node::getNextStrategies(
     cout << playPtr->strLine() << "\n";
     cout << 
       strats.str("Strategy of next trick", control.runRankComparisons()) <<
-      endl;
+      "\n";
   }
 
   // Renumber and rotate the strategy.

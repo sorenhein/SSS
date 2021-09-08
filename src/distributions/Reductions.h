@@ -40,7 +40,7 @@ class Reductions
       const vector<DistInfo>& distributions,
       const unsigned reducedRankSize);
 
-    const Reduction& get(const unsigned char rank) const;
+    const Reduction& get(const unsigned rank) const;
 };
 
 #endif

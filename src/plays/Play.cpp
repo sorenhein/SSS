@@ -169,7 +169,7 @@ string Play::strTrick(const unsigned number) const
     lhoPtr->getName() << " " <<
     pardPtr->getName() << " " <<
     rhoPtr -> getName() << " (" <<
-    (rotateFlag ? "rotate" : "no rotate") << ")" << endl;
+    (rotateFlag ? "rotate" : "no rotate") << ")" << "\n";
 
   return ss.str();
 }
@@ -189,7 +189,7 @@ string Play::strHeader() const
     setw(5) << "W vd" <<
     setw(5) << "E vd" <<
     setw(10) << "Holding" <<
-    endl;
+    "\n";
 
   return ss.str();
 }
@@ -209,7 +209,7 @@ string Play::strLine() const
     setw(5) << (lhoPtr->isVoid() ? "yes" : "") <<
     setw(5) << (rhoPtr->isVoid() ? "yes" : "") <<
     setw(10) << holding3 <<
-    endl;
+    "\n";
 
   return ss.str();
 }

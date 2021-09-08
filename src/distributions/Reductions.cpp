@@ -85,7 +85,7 @@ void Reductions::set(
 }
 
 
-const Reduction& Reductions::get(const unsigned char rank) const
+const Reduction& Reductions::get(const unsigned rank) const
 {
   assert(rank < reductions.size());
   return reductions[rank];

@@ -162,7 +162,7 @@ string SurvivorList::str() const
   stringstream ss;
   ss << "Survivor list\n";
   for (auto& s: distNumbers)
-    ss << +s.fullNo << ", " << +s.reducedNo << endl;
+    ss << +s.fullNo << ", " << +s.reducedNo << "\n";
   return ss.str() + "\n";
 }
 

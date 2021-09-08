@@ -143,7 +143,7 @@ string Range::strHeader(const bool rankFlag) const
     minimum.strHeaderEntry(rankFlag, "Min") <<
     resultLow.strHeaderEntry(rankFlag, "Low") <<
     resultHigh.strHeaderEntry(rankFlag, "High") <<
-    endl;
+    "\n";
   return ss.str();
 }
 
@@ -168,7 +168,7 @@ string Range::str(const bool rankFlag) const
     minimum.strEntry(rankFlag) <<
     resultLow.strEntry(rankFlag) <<
     resultHigh.strEntry(rankFlag) <<
-    endl;
+    "\n";
   return ss.str();
 }
 

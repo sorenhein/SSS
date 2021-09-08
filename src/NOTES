@@ -1,30 +1,50 @@
-Distribution
-------------
-
-
-Then in Combinations, say in runUniques after we have ! minimalFlag:
+Reduction
+---------
+In Combinations, in runUniques after we have ! minimalFlag:
 if some control flag:
+  
+  bool firstFlag = true
+  Strategies strategiesExpanded;
+
   for each minimal in minimals:
-    figure out the critical rank (store it in CombEntry);
-    auto& reduction = distributions[centry.holding2].reductions(fullRank);
+    figure out the critical rank (store it in CombEntry, too);
+    const auto& reduction = 
+      distributions[centry.holding2].getReductions(fullRank);
 
-    // Remove winners, collapse distributions
+    // Collapse distributions below the last NS rank that counts.
+    // Remove ranks and Consolidate.
     Strategies strategiesOwn = comb.strategies();
-    strategiesOwn.collapse(reduction);
+    strategiesOwn.collapseDistAndRanks(reduction);
 
+    // Remove ranks and consolidate.
     Strategies strategiesMinimal = centries[minimal.holding3];
-    strategiesMinimal.collapseTricks();
+    strategiesMinimal.collapseRanks();
 
+    // They should now be the same.
     assert(strategiesOwn == strategiesMinimal);
 
 
-Actually we reduce, and that's one test.  We also want to be able to
-expand.  And we can test that all the expansions to our holding
-(only if there are several, of course) yield the same tricks and
-strategies.  So there are two tests.
+    // Check that all expansions of minimal strategies are the same.
+    strategiesMinimal.expand(reduction);
 
-Also test that if we have say 4N" and 4S", perhaps we should also
-have 4N'S'.
+    if (firstFlag)
+    {
+      strategiesExpanded = strategiesMinimal;
+      firstFlag = false;
+    }
+    else
+    {
+      assert(strategiesExpanded == strategiesMinimal);
+    }
+
+  if there are multiple winners
+    // Calculate a number of total tops for each winner.
+    // 4N" is 3, 4N' is 2, 4NS is 2 etc.
+    // Should be the same for all winners.
+    // Also, there shouldn't be any winner missing.
+    // Not sure this is right, but start by saying that each side
+    // has a number of tops, so all combinations of the total should
+    // just be present.
 
 
 
@@ -40,13 +60,19 @@ The print-out then becomes more generic, and there is a string as
 a header for each block in the count output
 
 
-Validate minimal strategies
-- Strip the ranks
-- Collapse the distributions according to some map or algorithm
-- Compare strategies using == (optimize it at last?)
+Symmetrize too-large void strategies that we receive
+for all plays
+  if lho < rho
+    look for the play where rho < lho
+    check same holding
+    adapt both to this trick
+    multiply the strategies pairwise, but not the whole cross
+  else if lho == rho
+    nothing special
+  else if lho > rho
+    skip, as already processed
 
-- symmetrize too-large void strategies that we receive
-
+* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
 
 -d
   - Optimize the code for minimal()
@@ -69,17 +95,6 @@ Ranks stored in tables
   ones to solve?  If not, we would either solve the non-minimal
   ones, or look up the non-minimal one (probably better) and
   map the smaller number of distributions to the current case somehow
-
-
-Overall rank of a Combination
------------------------------
-* Some best winners have choices ("top 2 of 3")
-  - Leave all cards that may win at declarer's choice, even though
-    that combination could simplify to several others
-* All unused cards can be set to x in order to get the base case
-* Could validate by limiting strategies to those that don't
-  distinguish by x.  But how to detect?  Maybe once we know the
-  plays that go with each strategy
 
 
 Limited Plays considered
@@ -127,11 +142,6 @@ Rank issues due to limited Plays considered
 *  8 /  1585, AQ8 / JT7 missing K9.  See spreadsheet.
 *  9 /  4757, AQ8 / JT7.  See spreadsheet.
 * 11 / 18752, AK8 / T765.  The result is 2S" (the 5) -- not needed.
-
-
-Only symmetric strategies with complex voids?
----------------------------------------------
-* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
 
 
 Winning NS plays in semantic form

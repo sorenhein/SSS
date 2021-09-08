@@ -86,9 +86,11 @@ class Distribution
 
     DistID getID() const;
 
-    void setSurvivors();
+    void setLookups();
 
     const SurvivorList& getSurvivors(const Play& play) const;
+
+    const Reduction& getReduction(const unsigned char rankNS) const;
 
     string str() const;
 

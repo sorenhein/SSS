@@ -201,7 +201,7 @@ string Card::strDebug(const string& side) const
     " depth " << +depth <<
     " number " << +number << 
     " name " << name <<
-    endl;
+    "\n";
   return ss.str();
 }
 
