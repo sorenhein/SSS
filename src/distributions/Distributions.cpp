@@ -99,7 +99,7 @@ void Distributions::runUniques(const unsigned cards)
     {
       uniques[cards]++;
       dists[holding].splitAlternative();
-      dists[holding].setSurvivors();
+      dists[holding].setLookups();
     }
     else
       dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
@@ -139,7 +139,7 @@ void Distributions::runUniqueThread(
     {
       threadUniques[thid]++;
       dists[holding].splitAlternative();
-      dists[holding].setSurvivors();
+      dists[holding].setLookups();
     }
     else
       dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
