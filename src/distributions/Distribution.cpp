@@ -464,32 +464,6 @@ void Distribution::setSurvivors()
 
 const SurvivorList& Distribution::getSurvivors(const Play& play) const
 {
-  // This doesn't work.
-  // I think the reason is: Let's say West is void.
-  // D::survivorsUncollapsed
-  // Will test and potentially use "our" full2reduced
-  //   D::survivorsWestVoid
-  //   If not canonical, will return 
-  //
-  // canonical survivors::survivorsUncollapsed
-  // Will use "their" full2reduced
-  //
-  // Maybe the solution is first to map westRank and eastRank
-  // to the reduced versions and then always to pass these.
-  // Then Survivors doesn't need to know full2reduced either.
-  //
-
-  /*
-  Distribution const * dptr = (distCanonical ? distCanonical : this);
-cout << play.strLine();
-if (distCanonical)
-  cout << "Switch to canonical" << endl;
-else
-  cout << "Already canonical" << endl;
-
-  return dptr->survivors.getSurvivors(play);
-  */
-
   unsigned westRank, eastRank;
   if (play.side == SIDE_NORTH)
   {
@@ -505,174 +479,33 @@ else
   assert(westRank < full2reduced.size());
   assert(eastRank < full2reduced.size());
   assert(westRank > 0 || eastRank > 0);
-  const unsigned westRankReduced = full2reduced[westRank];
-  const unsigned eastRankReduced = full2reduced[eastRank];
-  assert(westRankReduced < rankSize);
-  assert(eastRankReduced < rankSize);
+
+  struct SurvivorControl sc;
+
+  sc.westRank = full2reduced[westRank];
+  sc.eastRank = full2reduced[eastRank];
+  assert(sc.westRank < rankSize);
+  assert(sc.eastRank < rankSize);
+
+  play.setVoidFlags(sc.westVoidFlag, sc.eastVoidFlag);
 
   // These are the corresponding EW ranks that may have to be collapsed.
   // They have to be 1 higher (alternating ranks).
-  const unsigned collapseLeadReduced =
-    (play.leadCollapse ? full2reduced[play.lead()+1] : 0);
-  const unsigned collapsePardReduced =
-    (play.pardCollapse ? full2reduced[play.pard()+1] : 0);
+  sc.collapseLead = (play.leadCollapse ? full2reduced[play.lead()+1] : 0);
+  sc.collapsePard = (play.pardCollapse ? full2reduced[play.pard()+1] : 0);
+  assert(sc.collapseLead < rankSize);
+  assert(sc.collapsePard < rankSize);
 
-  /*
-  Distribution const * dptr = (distCanonical ? distCanonical : this);
-  return dptr->survivors.getSurvivors(play,
-    westRankReduced, eastRankReduced, 
-    collapseLeadReduced, collapsePardReduced);
-    */
-
-  bool westVoidFlag, eastVoidFlag;
-  play.setVoidFlags(westVoidFlag, eastVoidFlag);
+  sc.collapseLeadFlag = play.leadCollapse;
+  sc.collapsePardFlag = play.pardCollapse;
 
   if (distCanonical == nullptr)
   {
     // This distribution is canonical.
-  if (westVoidFlag)
-  {
-    return survivors.survivorsWestVoid();
-  }
-  else if (eastVoidFlag)
-  {
-    return survivors.survivorsEastVoid();
-  }
-  else if (play.leadCollapse && play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    return survivors.survivorsReducedCollapse2(
-      westRankReduced, eastRankReduced,
-      collapsePardReduced, collapseLeadReduced); 
-  }
-  else if (play.leadCollapse)
-  {
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    return survivors.survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapseLeadReduced);
-  }
-  else if (play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-
-    return survivors.survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapsePardReduced);
+    return survivors.getSurvivors(sc);
   }
   else
-  {
-    return survivors.survivorsReduced(westRankReduced, eastRankReduced);
-  }
-  }
-  else
-  {
-    // This distribution is not canonical.
-  if (westVoidFlag)
-  {
-   return distCanonical->survivors.survivorsWestVoid();
-  }
-  else if (eastVoidFlag)
-  {
-    return distCanonical->survivors.survivorsEastVoid();
-  }
-  else if (play.leadCollapse && play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    return distCanonical->survivors.survivorsReducedCollapse2(
-      westRankReduced, eastRankReduced, 
-      collapsePardReduced, collapseLeadReduced);
-  }
-  else if (play.leadCollapse)
-  {
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    return distCanonical->survivors.survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapseLeadReduced);
-  }
-  else if (play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-
-    return distCanonical->survivors.survivorsReducedCollapse1(
-      westRankReduced, eastRankReduced, collapsePardReduced);
-  }
-  else
-  {
-    return distCanonical->survivors.survivorsReduced(westRankReduced, eastRankReduced);
-  }
-  }
-
-  /*
-  if (westVoidFlag)
-  {
-    if (distCanonical == nullptr)
-      // This distribution is canonical.
-      return survivors.survivorsWestVoid();
-    else
-    {
-      assert(distCanonical->distCanonical == nullptr);
-      return distCanonical->survivors.survivorsWestVoid();
-    }
-  }
-  else if (eastVoidFlag)
-  {
-    if (distCanonical == nullptr)
-      // This distribution is canonical.
-      return survivors.survivorsEastVoid();
-    else
-    {
-      assert(distCanonical->distCanonical == nullptr);
-      return distCanonical->survivors.survivorsEastVoid();
-    }
-  }
-  else if (play.leadCollapse && play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    if (distCanonical == nullptr)
-      return survivors.survivorsReducedCollapse2(
-        westRankReduced, eastRankReduced,
-        collapsePardReduced, collapseLeadReduced); 
-    else
-      return distCanonical->survivors.survivorsReducedCollapse2(
-        westRankReduced, eastRankReduced, 
-        collapsePardReduced, collapseLeadReduced);
-  }
-  else if (play.leadCollapse)
-  {
-    assert(collapseLeadReduced >= 1 && collapseLeadReduced < rankSize);
-
-    if (distCanonical == nullptr)
-      return survivors.survivorsReducedCollapse1(
-        westRankReduced, eastRankReduced, collapseLeadReduced);
-    else
-      return distCanonical->survivors.survivorsReducedCollapse1(
-        westRankReduced, eastRankReduced, collapseLeadReduced);
-  }
-  else if (play.pardCollapse)
-  {
-    assert(collapsePardReduced >= 1 && collapsePardReduced < rankSize);
-
-    if (distCanonical == nullptr)
-      return survivors.survivorsReducedCollapse1(
-        westRankReduced, eastRankReduced, collapsePardReduced);
-    else
-      return distCanonical->survivors.survivorsReducedCollapse1(
-        westRankReduced, eastRankReduced, collapsePardReduced);
-  }
-  else
-  {
-    if (distCanonical == nullptr)
-      return survivors.survivorsReduced(westRankReduced, eastRankReduced);
-    else
-      return distCanonical->survivors.survivorsReduced(westRankReduced, eastRankReduced);
-  }
-  */
+    return distCanonical->survivors.getSurvivors(sc);
 }
 
 

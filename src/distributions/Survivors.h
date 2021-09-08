@@ -19,6 +19,22 @@ struct Play;
 using namespace std;
 
 
+struct SurvivorControl
+{
+  // The ranks are all reduced, as they control the survivors of a
+  // canonical distribution.
+  
+  unsigned westRank;
+  unsigned eastRank;
+  bool westVoidFlag;
+  bool eastVoidFlag;
+  unsigned collapseLead;
+  unsigned collapsePard;
+  bool collapseLeadFlag;
+  bool collapsePardFlag;
+};
+
+
 class Survivors
 {
   private:
@@ -99,12 +115,7 @@ class Survivors
       const unsigned collapse1,
       const unsigned collapse2) const;
 
-    const SurvivorList& getSurvivors(
-      const Play& play,
-      const unsigned westRankReduced,
-      const unsigned eastRankReduced,
-      const unsigned collapseLeadReduced,
-      const unsigned collapsePardReduced) const;
+    const SurvivorList& getSurvivors(const SurvivorControl& sc) const;
 };
 
 #endif

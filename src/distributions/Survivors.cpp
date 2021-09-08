@@ -335,10 +335,6 @@ const SurvivorList& Survivors::survivorsReducedCollapse1(
   const unsigned eastRank,
   const unsigned collapse1) const
 {
-  assert(collapse1 >= 1 && collapse1 < rankSize);
-  assert(westRank < rankSize);
-  assert(eastRank < rankSize);
-
   return distSurvivorsCollapse1.matrix(collapse1).data[westRank][eastRank];
 }
 
@@ -349,59 +345,50 @@ const SurvivorList& Survivors::survivorsReducedCollapse2(
   const unsigned collapse1,
   const unsigned collapse2) const
 {
-  assert(collapse1 >= 1 && collapse1 < distSurvivorsCollapse2.size());
   const SurvivorMatrix& sm = 
     distSurvivorsCollapse2[collapse1].matrix(collapse2);
 
-  assert(westRank < rankSize);
-  assert(eastRank < rankSize);
   return sm.data[westRank][eastRank];
 }
 
 
-const SurvivorList& Survivors::getSurvivors(
-  const Play& play,
-  const unsigned westRankReduced,
-  const unsigned eastRankReduced,
-  const unsigned collapseLeadReduced,
-  const unsigned collapsePardReduced) const
+const SurvivorList& Survivors::getSurvivors(const SurvivorControl& sc) const
 {
-  /*
-  unsigned westRank, eastRank;
-  if (play.side == SIDE_NORTH)
+   if (sc.westVoidFlag)
   {
-    westRank = play.rho();
-    eastRank = play.lho();
+   return Survivors::survivorsWestVoid();
   }
-  else
+  else if (sc.eastVoidFlag)
   {
-    westRank = play.lho();
-    eastRank = play.rho();
+    return Survivors::survivorsEastVoid();
   }
-  */
+  else if (sc.collapseLeadFlag && sc.collapsePardFlag)
+  {
+    assert(sc.collapseLead >= 1);
+    assert(sc.collapsePard >= 1);
 
-  if (westRankReduced == 0 || eastRankReduced == 0)
-    return Survivors::survivorsUncollapsed(westRankReduced, eastRankReduced);
-  else if (play.leadCollapse && play.pardCollapse)
-  {
-    return Survivors::survivorsCollapse2(
-      westRankReduced, eastRankReduced, 
-      collapsePardReduced, collapseLeadReduced);
-      // westRankReduced, eastRankReduced, play.pard()+1, play.lead()+1);
+    return Survivors::survivorsReducedCollapse2(
+      sc.westRank, sc.eastRank,
+      sc.collapsePard, sc.collapseLead);
   }
-  else if (play.leadCollapse)
+  else if (sc.collapseLeadFlag)
   {
-    return Survivors::survivorsCollapse1(
-      westRankReduced, eastRankReduced, collapseLeadReduced);
-      // westRank, eastRank, play.lead()+1);
+    assert(sc.collapseLead >= 1);
+
+    return Survivors::survivorsReducedCollapse1(
+      sc.westRank, sc.eastRank, sc.collapseLead);
   }
-  else if (play.pardCollapse)
+  else if (sc.collapsePardFlag)
   {
-    return Survivors::survivorsCollapse1(
-      westRankReduced, eastRankReduced, collapsePardReduced);
-      // westRank, eastRank, play.pard()+1);
+    assert(sc.collapsePard >= 1);
+
+    return Survivors::survivorsReducedCollapse1(
+      sc.westRank, sc.eastRank, sc.collapsePard);
   }
   else
-    return Survivors::survivorsUncollapsed(westRankReduced, eastRankReduced);
+  {
+    return Survivors::survivorsReduced(sc.westRank, sc.eastRank);
+  }
+
 }
 
