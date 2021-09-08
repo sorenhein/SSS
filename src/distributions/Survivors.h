@@ -41,8 +41,6 @@ class Survivors
 
     unsigned rankSize;
 
-    // vector<unsigned> const * full2reducedPtr;
-
     SurvivorMatrix distSurvivors;
 
     SurvivorsCollapsed distSurvivorsCollapse1;
@@ -66,25 +64,6 @@ class Survivors
       const vector<DistInfo>& distributions,
       const vector<vector<SideInfo>>& distCollapse1,
       vector<vector<vector<SideInfo>>>& distCollapse2);
-
-    const SurvivorList& survivorsWestVoid() const;
-
-    const SurvivorList& survivorsEastVoid() const;
-
-    const SurvivorList& survivorsReduced(
-      const unsigned westRank,
-      const unsigned eastRank) const;
-
-    const SurvivorList& survivorsReducedCollapse1(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1) const;
-
-    const SurvivorList& survivorsReducedCollapse2(
-      const unsigned westRank,
-      const unsigned eastRank,
-      const unsigned collapse1,
-      const unsigned collapse2) const;
 
 
   public:

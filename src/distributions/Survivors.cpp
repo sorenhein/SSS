@@ -23,6 +23,8 @@
    - Two collapses occur.
 
    We pre-calculate several tables that make the lookup faster.
+
+   All ranks in Survivors are minimal, canonical ranks.
  */
 
 
@@ -33,7 +35,6 @@ Survivors::Survivors()
 
 
 void Survivors::setGlobal(const unsigned rankSizeIn)
-  // const vector<unsigned>& full2reduced)
 {
   rankSize = rankSizeIn;
 }
@@ -167,7 +168,7 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
             distCollapses2[c1][c2],
             distSurvivorsCollapse1.matrix(c1).data[w][e]);
 
-          // TODO Could perhaps order c1 and c2 when calling,
+          // Could perhaps order c1 and c2 when calling,
           // such that we only need half the matrix.
           distSurvivorsCollapse2[c2].matrix(c1).data[w][e] =
             distSurvivorsCollapse2[c1].matrix(c2).data[w][e];
@@ -178,88 +179,47 @@ void Survivors::setSurvivors(const vector<DistInfo>& distributions)
 }
 
 
-const SurvivorList& Survivors::survivorsWestVoid() const
-{
-  return distSurvivorsWestVoid;
-}
-
-
-const SurvivorList& Survivors::survivorsEastVoid() const
-{
-  return distSurvivorsEastVoid;
-}
-
-
-const SurvivorList& Survivors::survivorsReduced(
-  const unsigned westRank,
-  const unsigned eastRank) const
-{
-  assert(westRank < rankSize);
-  assert(eastRank < rankSize);
-
-  return distSurvivors.data[westRank][eastRank];
-}
-
-
-const SurvivorList& Survivors::survivorsReducedCollapse1(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1) const
-{
-  return distSurvivorsCollapse1.matrix(collapse1).data[westRank][eastRank];
-}
-
-
-const SurvivorList& Survivors::survivorsReducedCollapse2(
-  const unsigned westRank,
-  const unsigned eastRank,
-  const unsigned collapse1,
-  const unsigned collapse2) const
-{
-  const SurvivorMatrix& sm = 
-    distSurvivorsCollapse2[collapse1].matrix(collapse2);
-
-  return sm.data[westRank][eastRank];
-}
-
-
 const SurvivorList& Survivors::getSurvivors(const SurvivorControl& sc) const
 {
-   if (sc.westVoidFlag)
+  if (sc.westVoidFlag)
   {
-   return Survivors::survivorsWestVoid();
+    return distSurvivorsWestVoid;
   }
   else if (sc.eastVoidFlag)
   {
-    return Survivors::survivorsEastVoid();
+    return distSurvivorsEastVoid;
   }
   else if (sc.collapseLeadFlag && sc.collapsePardFlag)
   {
     assert(sc.collapseLead >= 1);
     assert(sc.collapsePard >= 1);
 
-    return Survivors::survivorsReducedCollapse2(
-      sc.westRank, sc.eastRank,
-      sc.collapsePard, sc.collapseLead);
+    const SurvivorMatrix& sm = 
+      distSurvivorsCollapse2[sc.collapsePard].matrix(sc.collapseLead);
+
+    return sm.data[sc.westRank][sc.eastRank];
   }
   else if (sc.collapseLeadFlag)
   {
     assert(sc.collapseLead >= 1);
 
-    return Survivors::survivorsReducedCollapse1(
-      sc.westRank, sc.eastRank, sc.collapseLead);
+    const SurvivorMatrix& sm = 
+      distSurvivorsCollapse1.matrix(sc.collapseLead);
+
+    return sm.data[sc.westRank][sc.eastRank];
   }
   else if (sc.collapsePardFlag)
   {
     assert(sc.collapsePard >= 1);
 
-    return Survivors::survivorsReducedCollapse1(
-      sc.westRank, sc.eastRank, sc.collapsePard);
+    const SurvivorMatrix& sm = 
+      distSurvivorsCollapse1.matrix(sc.collapsePard);
+
+    return sm.data[sc.westRank][sc.eastRank];
   }
   else
   {
-    return Survivors::survivorsReduced(sc.westRank, sc.eastRank);
+    return distSurvivors.data[sc.westRank][sc.eastRank];
   }
-
 }
 
