@@ -25,78 +25,80 @@ class Combinations
 
     struct CountEntry
     {
-      unsigned total;
       unsigned count;
+      unsigned totalPlays;
+      unsigned totalStrats;
 
       void reset()
       {
-        total = 0;
         count = 0;
+        totalPlays = 0;
+        totalStrats = 0;
       }
 
       void operator += (const CountEntry& c2)
       {
-        total += c2.total;
         count += c2.count;
+        totalPlays += c2.totalPlays;
+        totalStrats += c2.totalStrats;
       }
 
-      void operator += (const unsigned t)
+      void incr(
+        const unsigned plays,
+        const unsigned strats)
       {
-        total += t;
         count++;
+        totalPlays += plays;
+        totalStrats += strats;
       }
 
-      string strAverage() const
+      string strAverage(const unsigned num) const
       {
         if (count == 0)
           return "-";
 
         stringstream ss;
-        ss << fixed << setprecision(2) << 
-          total / static_cast<double>(count);
+        ss << fixed << setprecision(2) << num / static_cast<double>(count);
         return ss.str();
+      }
+
+      string strAveragePlays() const
+      {
+        return strAverage(totalPlays);
+      }
+
+      string strAverageStrats() const
+      {
+        return strAverage(totalStrats);
       }
     };
 
-    struct CountPair
+    struct CountPartition
     {
-      CountEntry unique;
-      CountEntry minimal;
-      CountEntry constant;
-      CountEntry simple;
+      vector<CountEntry> elements;
 
-      void reset()
+      void resize(const unsigned len)
       {
-        unique.reset();
-        minimal.reset();
-        constant.reset();
-        simple.reset();
+        elements.clear();
+        elements.resize(len);
       }
 
-      void operator += (const CountPair& cp)
+      void operator += (const CountPartition& cp)
       {
-        unique += cp.unique;
-        minimal += cp.minimal;
-        constant += cp.constant;
-        simple += cp.simple;
+        for (unsigned n = 0; n < elements.size(); n++)
+          elements[n] += cp.elements[n];
       }
     };
 
     struct CombCountEntry
     {
-      CountPair plays;
-      CountPair strats;
-
-      void reset()
-      {
-        plays.reset();
-        strats.reset();
-      }
+      vector<CountEntry> data;
 
       void operator += (const CombCountEntry& cce)
       {
-        plays += cce.plays;
-        strats += cce.strats;
+        assert(data.size() == cce.data.size());
+        for (unsigned n = 0; n < data.size(); n++)
+          data[n] += cce.data[n];
       }
     };
 
@@ -105,11 +107,18 @@ class Combinations
     vector<vector<CombEntry>> combEntries;
     vector<vector<Combination>> uniques;
 
-    // Indexed by cards
+    // Indexed by cards and then by CombinationType
     vector<CombCountEntry> countStats;
 
-    // Indexed by thread ID and collapsed into countStats
+    // Indexed by cards.  Non-canonical ones are not solved.
+    vector<unsigned> countNoncanonical;
+
+    // Indexed by thread ID and collapsed into countStats,
+    // and then by CombinationType
     vector<CombCountEntry> threadCountStats;
+
+    // Indexed by thread ID and collapsed into countNoncanonical.
+    vector<unsigned> threadCountNoncanonical;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding
@@ -119,6 +128,11 @@ class Combinations
       const Strategies& strategies,
       const Ranks& ranks,
       list<CombReference>& minimals) const;
+
+    CombinationType classify(
+      const bool minimalFlag,
+      const Strategies& strategies,
+      const Ranks& ranks) const;
 
     void runUniqueThread(
       const unsigned cards,

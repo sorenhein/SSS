@@ -668,11 +668,11 @@ CombinationType Ranks::setPlays(
   Plays& plays,
   Result& trivial)
 {
-  // If COMB_TRIVIAL, only terminalValue is set.
+  // If COMB_CONSTANT, only terminalValue is set.
   // Otherwise, plays are set.
 
   if (Ranks::makeTrivial(trivial))
-    return COMB_TRIVIAL;
+    return COMB_CONSTANT;
 
   Play play;
 
@@ -682,7 +682,7 @@ CombinationType Ranks::setPlays(
 
   play.side = SIDE_SOUTH;
   Ranks::setPlaysSide(south, north, play, plays);
-  return COMB_OTHER;
+  return COMB_SIZE;
 }
 
 

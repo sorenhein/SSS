@@ -76,7 +76,7 @@ const Strategies& Combination::strategize(
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
   // If it's a trivial situation, make the strategies.
-  if (ctype == COMB_TRIVIAL)
+  if (ctype == COMB_CONSTANT)
   {
     // Fill out a single constant strategy with the right value and size.
     strats.setTrivial(trivialEntry, 
@@ -104,7 +104,7 @@ const Strategies& Combination::strategize(
   strats = plays.strategize(distPtr, debugFlagTmp);
   timers.stop(TIMER_STRATEGIZE);
 
-  // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
+  // Make a note of the type of strategy? (COMB_CONSTANT etc.)
 
   if (control.outputBasicResults())
     cout << strats.str("Result", 
@@ -138,7 +138,7 @@ if (centry.canonical.holding3 == 208)
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
   
   // If it's a trivial situation, make the strategies.
-  if (ctype == COMB_TRIVIAL)
+  if (ctype == COMB_CONSTANT)
   {
     // Fill out a single constant strategy with the right value and size.
     strats.setTrivial(trivialEntry, 
@@ -169,7 +169,7 @@ if (debugFlag)
 
 // cout << "C " << centry.canonicalHolding3 << endl;
 
-  // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
+  // Make a note of the type of strategy? (COMB_CONSTANT etc.)
 
   return strats;
 }

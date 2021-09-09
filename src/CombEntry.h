@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "utils/CombinationType.h"
+
 using namespace std;
 
 
@@ -56,6 +58,9 @@ struct CombReference
 
 struct CombEntry
 {
+  // TODO Currently not yet used
+  CombinationType type;
+
   bool canonicalFlag;
   CombReference canonical;
   

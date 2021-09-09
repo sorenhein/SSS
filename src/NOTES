@@ -47,14 +47,6 @@ if some control flag:
     // just be present.
 
 
-
-
-Use CombinationType in CombEntry
-NON_CANONICAL
-NON_MINIMAL
-CONSTANT (includes TRIVIAL)
-SIMPLE
-COMPLEX
 Maybe these are indices in Combinations.h into a counter
 The print-out then becomes more generic, and there is a string as
 a header for each block in the count output
