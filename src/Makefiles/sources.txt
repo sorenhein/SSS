@@ -3,6 +3,7 @@ SOURCE_FILES    =                               \
                                                 \
                 combinations/Combination.cpp    \
                 combinations/Combinations.cpp   \
+                combinations/CombFiles.cpp      \
                                                 \
                 distributions/Distribution.cpp  \
                 distributions/Distributions.cpp \
