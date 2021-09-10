@@ -14,7 +14,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "utils/CombinationType.h"
+#include "../utils/CombinationType.h"
 
 using namespace std;
 

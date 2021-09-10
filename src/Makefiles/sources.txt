@@ -1,7 +1,8 @@
 SOURCE_FILES    =                               \
                 driver.cpp                      \
-                Combination.cpp                 \
-                Combinations.cpp                \
+                                                \
+                combinations/Combination.cpp    \
+                combinations/Combinations.cpp   \
                                                 \
                 distributions/Distribution.cpp  \
                 distributions/Distributions.cpp \

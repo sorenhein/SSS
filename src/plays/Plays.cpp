@@ -13,7 +13,7 @@
 #include "Plays.h"
 #include "Chunks.h"
 
-#include "../Combinations.h"
+#include "../combinations/Combinations.h"
 
 #include "../distributions/Distribution.h"
 

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "strategies/Strategies.h"
+#include "../strategies/Strategies.h"
 
 using namespace std;
 

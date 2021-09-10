@@ -8,16 +8,16 @@
 #include "Combination.h"
 #include "CombEntry.h"
 
-#include "distributions/Distributions.h"
-#include "distributions/Distribution.h"
+#include "../distributions/Distributions.h"
+#include "../distributions/Distribution.h"
 
-#include "inputs/Control.h"
+#include "../inputs/Control.h"
 
-#include "plays/Plays.h"
+#include "../plays/Plays.h"
 
-#include "ranks/Ranks.h"
+#include "../ranks/Ranks.h"
 
-#include "utils/Timers.h"
+#include "../utils/Timers.h"
 
 extern Control control;
 extern Timers timers;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "Combinations.h"
+#include "combinations/Combinations.h"
 
 #include "distributions/Distributions.h"
 
