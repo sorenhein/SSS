@@ -35,7 +35,7 @@ void CombFiles::readFile(
   const string& name,
   vector<T>& v) const
 {
-  ifstream is(name);
+  ifstream is(name, ios::in | ios::binary);
   
   // Determine the file length
   is.seekg(0, ios_base::end);
@@ -71,8 +71,8 @@ void CombFiles::unpack(
   // 3-5 combination type (should stay < 8 I think)
   // 0-2 Size of minimals (should be < 8 I think)
   
-  ce.canonicalFlag = ((data & 0x40) ? true : false);
-  ce.minimalFlag = ((data & 0x20) ? true : false);
+  ce.canonicalFlag = ((data & 0x80) ? true : false);
+  ce.minimalFlag = ((data & 0x40) ? true : false);
   ce.type = static_cast<CombinationType>((data >> 3) & 0x7);
   ce.minimals.resize(data & 0x7);
 }
@@ -99,8 +99,8 @@ void CombFiles::getHolding(
   // The second unsigned is holding3.
   
   const unsigned u1 = vHoldings[pos++];
-  cr.rotateFlag = ((u1 & 0x8000) ? true : false);
-  cr.holding2 = (u1 & 0x3fff);
+  cr.rotateFlag = ((u1 >> 31) ? true : false);
+  cr.holding2 = (u1 & 0x7fff);
 
   cr.holding3 = vHoldings[pos++];
 }
@@ -158,7 +158,7 @@ void CombFiles::writeFiles(
 {
   string nameControl, nameHoldings;
   const string prefix = 
-    (control.binaryInputDir() == "" ? "" : control.binaryOutputDir() + "/");
+    (control.binaryOutputDir() == "" ? "" : control.binaryOutputDir() + "/");
   CombFiles::makeNames(cards, prefix, nameControl, nameHoldings);
 
   vector<unsigned char> vControl;

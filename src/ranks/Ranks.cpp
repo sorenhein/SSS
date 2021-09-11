@@ -858,6 +858,10 @@ bool Ranks::getMinimals(
   }
 
   // It can happen that we map to the same minimal holding in more ways.
+  // Actually this can also include a rotation.  Here we use the
+  // CombReference == comparator which only compares holding3 and
+  // ignores holding2 and especially rotationFlag.
+
   minimals.sort();
   minimals.unique();
 

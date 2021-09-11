@@ -51,3 +51,5 @@ src/ref*
 src/SSS/*
 src/*.csv
 src/*.xlsx
+
+data/holdings/*.dat

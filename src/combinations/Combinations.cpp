@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Combinations.h"
+#include "CombFiles.h"
 #include "CombEntry.h"
 
 #include "../distributions/Distributions.h"
@@ -266,6 +267,19 @@ void Combinations::runUniques(
       countNoncanonical[cards]++;
     }
   }
+
+  // This is how to write files:
+  // CombFiles combFiles;
+  // combFiles.writeFiles(cards, centries);
+
+  // This is how to read files:
+  // vector<CombEntry> copy;
+  // copy.resize(centries.size());
+  // combFiles.readFiles(cards, copy);
+
+  // This is how to compare read and write.
+  // for (unsigned holding = 0; holding < centries.size(); holding++)
+    // assert(centries[holding] == copy[holding]);
 
   // TMP Print timers
   cout << "Individual timers\n";

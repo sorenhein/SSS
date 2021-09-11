@@ -39,7 +39,18 @@ struct CombReference
 
   bool operator == (const CombReference& cr2) const
   {
+    // Used narrowly to sort minimal holdings.
+    // Must be called == (or define custom comparator).
     return (holding3 == cr2.holding3);
+  }
+
+  bool equal(const CombReference& cr2) const
+  {
+    // This is are more complete comparison suitable for checking
+    // file read/write.
+    return (holding3 == cr2.holding3 &&
+        holding2 == cr2.holding2 &&
+        rotateFlag == cr2.rotateFlag);
   }
 
   string str() const
@@ -66,6 +77,53 @@ struct CombEntry
   
   bool minimalFlag;
   list<CombReference> minimals;
+
+
+  bool operator == (const CombEntry& ce2)
+  {
+    if (type != ce2.type)
+      return false;
+
+    if (canonicalFlag != ce2.canonicalFlag)
+      return false;
+
+    if (minimalFlag != ce2.minimalFlag)
+      return false;
+    
+    if (! canonicalFlag && ! (canonical.equal(ce2.canonical)))
+    {
+cout << "canonical diff\n";
+cout << canonical.str();
+cout << ce2.canonical.str();
+      return false;
+    }
+
+    if (! minimalFlag)
+    {
+      if (minimals.size() != ce2.minimals.size())
+      {
+cout << "min sizes " << minimals.size() << ", " << ce2.minimals.size() << endl;
+        return false;
+      }
+      
+      auto iter1 = minimals.begin();
+      auto iter2 = ce2.minimals.begin();
+      while (iter1 != minimals.end())
+      {
+        if (! iter1->equal(* iter2))
+        {
+cout << "min diff " << endl;
+cout << iter1->str() << endl;
+cout << iter2->str() << endl;
+          return false;
+        }
+        iter1++;
+        iter2++;
+      }
+    }
+
+    return true;
+  }
 };
 
 #endif
