@@ -204,14 +204,14 @@ timersStrat[20].stop();
   {
     if (! nodeMaster.strategies().minimal())
     {
-      cout << nodeMaster.strategies().str("NON-MINIMAL", 
+      cout << nodeMaster.strategies().str("ERROR: NON-MINIMAL", 
         control.runRankComparisons());
       cout << endl;
       assert(false);
     }
     else if (! nodeMaster.strategies().ordered())
     {
-      cout << nodeMaster.strategies().str("NON_ORDERED", 
+      cout << nodeMaster.strategies().str("ERROR: NON_ORDERED", 
         control.runRankComparisons());
       cout << endl;
       assert(false);

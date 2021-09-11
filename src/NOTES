@@ -47,10 +47,6 @@ if some control flag:
     // just be present.
 
 
-Maybe these are indices in Combinations.h into a counter
-The print-out then becomes more generic, and there is a string as
-a header for each block in the count output
-
 
 Symmetrize too-large void strategies that we receive
 for all plays
