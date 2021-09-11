@@ -7,14 +7,14 @@
 #include "Combinations.h"
 #include "CombEntry.h"
 
-#include "distributions/Distributions.h"
+#include "../distributions/Distributions.h"
 
-#include "plays/Plays.h"
+#include "../plays/Plays.h"
 
-#include "ranks/Ranks.h"
+#include "../ranks/Ranks.h"
 
-#include "inputs/Control.h"
-#include "utils/Timers.h"
+#include "../inputs/Control.h"
+#include "../utils/Timers.h"
 
 extern Control control;
 extern Timers timers;

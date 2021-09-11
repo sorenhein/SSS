@@ -13,7 +13,7 @@
 
 #include "Play.h"
 
-#include "../Combinations.h"
+#include "../combinations/Combinations.h"
 
 #include "../utils/Card.h"
 

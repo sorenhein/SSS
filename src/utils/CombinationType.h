@@ -9,7 +9,13 @@
 #ifndef SSS_COMBINATIONTYPE_H
 #define SSS_COMBINATIONTYPE_H
 
+#include <vector>
+#include <string>
 
+using namespace std;
+
+
+// If this ever exceeds 3 bits, we have a problem in CombFiles
 enum CombinationType
 {
   COMB_NON_MINIMAL = 0,

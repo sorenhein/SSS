@@ -14,7 +14,7 @@
 #include "Node.h"
 #include "Play.h"
 
-#include "../Combination.h"
+#include "../combinations/Combination.h"
 
 #include "../distributions/Distribution.h"
 

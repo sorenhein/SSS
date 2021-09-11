@@ -7,7 +7,7 @@
 #include "Ranks.h"
 
 #include "../plays/Plays.h"
-#include "../CombEntry.h"
+#include "../combinations/CombEntry.h"
 #include "../inputs/Control.h"
 #include "../const.h"
 
