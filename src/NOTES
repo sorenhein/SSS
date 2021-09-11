@@ -1,3 +1,16 @@
+Test CombFiles
+Implement the 3 tests below
+Also scale up the minima somehow, hopefullly each strategy has the
+  same tricks and same ranks except 4N vs 4S, and that will merge
+  into 4N,4S
+Make a map of input parameters, e.g. when we want ranks to be
+considered, and we use the minima, then the above has to work.
+Implement direct solving without first generating everything.
+Maybe flag to use minima.
+Implement symmetrize, find the right criteria, e.g. 10-13 when
+13 cards.
+
+
 Reduction
 ---------
 In Combinations, in runUniques after we have ! minimalFlag:
