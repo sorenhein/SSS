@@ -15,6 +15,8 @@
 #include "Strategy.h"
 #include "result/Ranges.h"
 
+#include "../distributions/Reductions.h"
+
 struct StratData;
 class Ranges;
 struct Play;
@@ -143,6 +145,15 @@ class Slist
     void consolidate(ComparatorType lessEqualMethod);
 
     void symmetrize();
+
+    
+    // Rank-check help methods.
+
+    void reduceByTricks(const Reduction& reduction);
+
+    void expand(
+      const Reduction& reduction,
+      const bool rotateFlag);
 
 
     // Comparator (full Result equality).

@@ -147,6 +147,30 @@ timersStrat[2].stop();
 
 /************************************************************
  *                                                          *
+ * Manipulating minimal strategies to check ranks           *
+ *                                                          *
+ ************************************************************/
+
+void Strategies::reduceByTricks(const Reduction& reduction)
+{
+  // Delete Strategy's where the number of tricks is not constant
+  // within each reduction group.  The number of distributions is
+  // unchanged.
+  slist.reduceByTricks(reduction);
+}
+
+
+void Strategies::expand(
+  const Reduction& reduction,
+  const bool rotateFlag)
+{
+  // Expand the strategies up using the reduction.
+  slist.expand(reduction, rotateFlag);
+}
+
+
+/************************************************************
+ *                                                          *
  * operator ==                                              *
  *                                                          *
  ************************************************************/

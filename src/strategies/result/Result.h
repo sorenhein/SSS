@@ -91,6 +91,8 @@ class Result
 
     unsigned char tricks() const;
 
+    unsigned char rank() const;
+
     string strHeaderEntry(
       const bool rankFlag,
       const string& title = "") const;

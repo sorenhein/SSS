@@ -160,6 +160,29 @@ void Strategy::scrutinize(const Ranges& ranges)
 
 /************************************************************
  *                                                          *
+ * Rank-check methods, mostly                               *
+ *                                                          *
+ ************************************************************/
+
+#include "../const.h"
+bool Strategy::constantTricksByReduction(const Reduction& reduction) const
+{
+  UNUSED(reduction);
+  return false;
+}
+
+
+void Strategy::expand(
+  const Reduction& reduction,
+  const bool rotateFlag)
+{
+  UNUSED(reduction);
+  UNUSED(rotateFlag);
+}
+
+
+/************************************************************
+ *                                                          *
  * Comparison methods                                       *
  *                                                          *
  ************************************************************/

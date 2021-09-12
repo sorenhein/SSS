@@ -1,13 +1,24 @@
-1. All minimals should have the same Reduction
+Continue in Strategy.cpp and Combinations::runUniques
 
-2. Strategies::expand(const Reduction&)
+0. Reduction becomes a struct in Reduction.h
+   Also includes map from reduced to full ranks, which I guess
+   we can also get from Distribution
+
+1. Strategy::expand(const Reduction&)
    Repeats and renumbers distributions
 
-4. Strategies::reducebyTricks(const Reduction&)
+2. Strategy::constantTricksByReduction(const Reduction&)
    Eliminate each strategy where the number of tricks is not constant
    within each reduction group.  Still has the same #distributions
 
-4. bool Strategy::mergeComplete(const Strategy&)
+3. Winners of each minimal should be the winner it was made from.
+   Maybe once it has been expanded, it is easier to compare.
+
+4. Reduce each non-minimal strategy.
+   Scale up each of the minimals, including rank maps.
+   Each should agree on the tricks.
+
+5. bool Strategy::mergeComplete(const Strategy&)
    Should have same tricks throughout
    Ranks should all be the same, except that one strategy can
    consistently have one constant rank (say 4N) and the other can
@@ -15,15 +26,11 @@
    merge and return true into 4N,4S
    If #1 is true, then this can be done directly without expansion.
 
-5. Reduce each non-minimal strategy.
-   Scale up each of the minimals.
-   Each should agree on the tricks.
-
-6. If there are several minimals, 
+   If there are several minimals, 
    a. They should scale up in a way that lets them merge one by one(?)
    b. That merge should be the original strategy(?)
 
-8. For void starting with 10-13 cards (assuming we solve up to 13
+6. For void starting with 10-13 cards (assuming we solve up to 13
    cards), it's always OK to symmetrize.  We do this:
    a. If we get above [100] strategies, we start over and only
       look up symmetrized strategies (so 6-8 and 8-6 are done together
@@ -32,7 +39,7 @@
    b. In the end, if we are above [16] strategies, we symmetrize
    c. If we know from lookup that something must be symmetric
 
-10. Go from only batch to solving a single distribution from scratch
+7. Go from only batch to solving a single distribution from scratch
    a. Basic idea is to make a list of the nodes you'll need
    b. Then make these recursively before you solve this node
    c. A lot of flags are the same, i.e. ranks or not, optimizations
@@ -48,6 +55,9 @@ A histogram of #strategies shows that we also get large numbers
 when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
 Maybe it's OK to limit next strategies to symmetric ones, too,
 when South becomes void and there are a lot of next strategies.
+
+Symmetrize 11 / 132902, KJ96 / void: From 132,902 to 166 strategies.
+Less than half the square root.
 
 
 Reduction

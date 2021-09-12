@@ -18,6 +18,8 @@
 #include "Slist.h"
 #include "result/Ranges.h"
 
+#include "../distributions/Reductions.h"
+
 struct Play;
 class SurvivorList;
 
@@ -63,6 +65,12 @@ class Strategies
       const Strategy& constants);
 
     void symmetrize();
+
+    void reduceByTricks(const Reduction& reduction);
+
+    void expand(
+      const Reduction& reduction,
+      const bool rotateFlag);
 
     bool operator == (const Strategies& strats2) const;
 

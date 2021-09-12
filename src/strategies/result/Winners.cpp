@@ -86,6 +86,15 @@ bool Winners::empty() const
 }
 
 
+unsigned char Winners::rank() const
+{
+  if (winners.empty())
+    return 0;
+  else
+    return winners.front().getRank();
+}
+
+
 void Winners::fillComparer(
   Comparer& comparer,
   const Winners& winners2) const

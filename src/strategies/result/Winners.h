@@ -66,6 +66,8 @@ class Winners
 
     bool empty() const;
 
+    unsigned char rank() const;
+
     void operator += (const Winners& winners2);
 
     void operator *= (const Winners& winners2);

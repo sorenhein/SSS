@@ -72,6 +72,12 @@ class Combinations
 
     void checkAllMinimals(const unsigned cards);
 
+    void checkReductions(
+      const unsigned cards,
+      const CombEntry& centry,
+      const Strategies& strategies,
+      const Distribution& distribution) const;
+
 
   public:
 

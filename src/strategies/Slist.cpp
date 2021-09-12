@@ -244,6 +244,38 @@ void Slist::symmetrize()
 
 /************************************************************
  *                                                          *
+ * Rank-check help methods, mostly                          *
+ *                                                          *
+ ************************************************************/
+
+void Slist::reduceByTricks(const Reduction& reduction)
+{
+  // Delete Strategy's where the number of tricks is not constant
+  // within each reduction group.  The number of distributions is
+  // unchanged.
+  auto iter = strategies.begin();
+  while (iter != strategies.end())
+  {
+    if (iter->constantTricksByReduction(reduction))
+      iter++;
+    else
+      iter = strategies.erase(iter);
+  }
+}
+
+
+void Slist::expand(
+  const Reduction& reduction,
+  const bool rotateFlag)
+{
+  // Expand the strategies up using the reduction.
+  for (auto& strategy: strategies)
+    strategy.expand(reduction, rotateFlag);
+}
+
+
+/************************************************************
+ *                                                          *
  * operator == and two helper methods                       *
  *                                                          *
  ************************************************************/

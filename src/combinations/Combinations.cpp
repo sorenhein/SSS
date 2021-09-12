@@ -242,6 +242,8 @@ void Combinations::runUniques(
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
+      // TODO Does canonicalFlag actually get set? Should it be?
+      // Could we even be solving the rotations as well?
       assert(uniqueIndex < uniqs.size());
       centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
@@ -260,6 +262,13 @@ void Combinations::runUniques(
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
+      
+      if (! centry.minimalFlag)
+      {
+        // TODO Control by some flag
+        Combinations::checkReductions(cards, centry, comb.strategies(), 
+          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+      }
     }
     else
     {
@@ -418,6 +427,58 @@ bool Combinations::checkMinimals(
   return true;
 }
 
+
+void Combinations::checkReductions(
+  const unsigned cards,
+  const CombEntry& centry,
+  const Strategies& strategies,
+  const Distribution& distribution) const
+{
+  // Get the reduction that underlies the whole method.
+  // TODO Could store the rank in CombEntry?
+  Result resultLowest;
+  strategies.getResultLowest(resultLowest);
+  const unsigned char rankCritical = resultLowest.rank();
+  const auto& reduction = distribution.getReduction(rankCritical);
+
+  // Delete Strategy's where the number of tricks is not constant
+  // within each reduction group.  The number of distributions is
+  // unchanged.
+  Strategies strategiesReduced = strategies;
+  strategiesReduced.reduceByTricks(reduction);
+
+  list<Strategies> strategiesExpanded;
+
+  for (auto& min: centry.minimals)
+  {
+    const auto& ceMin = combEntries[cards][min.holding3];
+
+    if (! ceMin.minimalFlag)
+    {
+      // This should not happen long-term, and short-term it is
+      // addressed in checkMinimals().
+      continue;
+    }
+
+    strategiesExpanded.emplace_back(Strategies());
+    Strategies& strategiesMin = strategiesExpanded.back();
+
+    // Get the strategies for the minimal reference.
+    // TODO Assert can be erased later
+    assert(ceMin.canonical.index < uniques[cards].size());
+    strategiesMin = uniques[cards][ceMin.canonical.index].strategies();
+
+    // Expand the strategies up using the reduction.
+    strategiesMin.expand(reduction, min.rotateFlag);
+  }
+
+  // TODO Checks:
+  // * The sum of the minimal winners should be the overall winner.
+  //   In other words, the minimal winner should be what the top says.
+  // * Each minimal strategy should agree in tricks with the top one.
+  // * The minimal ones should merge (strategy by strategy) into
+  //   the top one, including ranks in some sense.
+}
 
 
 bool Combinations::checkAndFixMinimals(

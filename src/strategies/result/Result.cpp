@@ -239,6 +239,15 @@ unsigned char Result::tricks() const
 }
 
 
+unsigned char Result::rank() const
+{
+  if (control.runRankComparisons())
+    return winnersInt.rank();
+  else
+    return 0;
+}
+
+
 string Result::strHeaderEntry(
   const bool rankFlag,
   const string& title) const

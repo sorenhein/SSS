@@ -8,6 +8,8 @@
 #include "result/Result.h"
 #include "optim/Study.h"
 
+#include "../distributions/Reductions.h"
+
 class Ranges;
 struct Play;
 class SurvivorList;
@@ -117,6 +119,13 @@ class Strategy
 
     void scrutinize(const Ranges& ranges);
 
+    // ************* Rank-check methods  ************
+
+    bool constantTricksByReduction(const Reduction& reduction) const;
+
+    void expand(
+      const Reduction& reduction,
+      const bool rotateFlag);
 
     // ***************** Comparisons ****************
 
