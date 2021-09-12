@@ -62,6 +62,17 @@ class Combinations
       Distributions const * distributions,
       const unsigned thid);
 
+    bool checkMinimals(
+      const vector<CombEntry>& centries,
+      const list<CombReference>& minimals) const;
+
+    bool checkAndFixMinimals(
+      const vector<CombEntry>& centries,
+      list<CombReference>& minimals) const;
+
+    void checkAllMinimals(const unsigned cards);
+
+
   public:
 
     Combinations();

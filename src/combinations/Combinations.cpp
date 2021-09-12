@@ -268,6 +268,10 @@ void Combinations::runUniques(
     }
   }
 
+  timersStrat[30].start();
+  Combinations::checkAllMinimals(cards);
+  timersStrat[30].stop();
+
   // This is how to write files:
   // CombFiles combFiles;
   // combFiles.writeFiles(cards, centries);
@@ -400,6 +404,78 @@ Combination const * Combinations::getPtr(
 {
   const unsigned ui = combEntries[cards][holding3].canonical.index;
   return &uniques[cards][ui];
+}
+
+
+bool Combinations::checkMinimals(
+  const vector<CombEntry>& centries,
+  const list<CombReference>& minimals) const
+{
+  for (auto& min: minimals)
+    if (! centries[min.holding3].minimalFlag)
+      return false;
+
+  return true;
+}
+
+
+
+bool Combinations::checkAndFixMinimals(
+  const vector<CombEntry>& centries,
+  list<CombReference>& minimals) const
+{
+  // Check that each non-minimal holding refers to minimal ones.
+  // We actually follow through and change the minimals.
+  // Once ranks are good, this method should no longer be needed.
+
+  bool changeFlag = false;
+  auto iter = minimals.begin();
+
+  while (iter != minimals.end())
+  {
+    const CombEntry& centry = centries[iter->holding3];
+
+    if (centry.minimalFlag)
+      iter++;
+    else
+    {
+      // Erase the non-minimal one and add the ones it points to.
+      // Take into account the rotation flag -- we want the product
+      // of all rotations to the really minimal holding.
+      for (auto& min: centry.minimals)
+      {
+        minimals.push_back(min);
+        CombReference& cr = minimals.back();
+        cr.rotateFlag ^= iter->rotateFlag;
+      }
+
+      iter = minimals.erase(iter);
+      changeFlag = true;
+    }
+  }
+
+  if (changeFlag)
+  {
+    minimals.sort();
+    minimals.unique();
+  }
+
+  return ! changeFlag;
+}
+
+
+void Combinations::checkAllMinimals(const unsigned cards)
+{
+  // Could also use checkMinimals here.
+  vector<CombEntry>& centries = combEntries[cards];
+
+  for (unsigned holding = 0; holding < centries.size(); holding++)
+  {
+    if (! Combinations::checkAndFixMinimals(
+      centries,
+      centries[holding].minimals))
+      cout << "ERROR: holding " << holding << " uses non-minimals\n";
+  }
 }
 
 

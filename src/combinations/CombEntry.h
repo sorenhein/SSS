@@ -91,32 +91,19 @@ struct CombEntry
       return false;
     
     if (! canonicalFlag && ! (canonical.equal(ce2.canonical)))
-    {
-cout << "canonical diff\n";
-cout << canonical.str();
-cout << ce2.canonical.str();
       return false;
-    }
 
     if (! minimalFlag)
     {
       if (minimals.size() != ce2.minimals.size())
-      {
-cout << "min sizes " << minimals.size() << ", " << ce2.minimals.size() << endl;
         return false;
-      }
       
       auto iter1 = minimals.begin();
       auto iter2 = ce2.minimals.begin();
       while (iter1 != minimals.end())
       {
         if (! iter1->equal(* iter2))
-        {
-cout << "min diff " << endl;
-cout << iter1->str() << endl;
-cout << iter2->str() << endl;
           return false;
-        }
         iter1++;
         iter2++;
       }

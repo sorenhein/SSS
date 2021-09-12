@@ -1,14 +1,53 @@
-Implement the 3 tests below
-Also scale up the minima somehow, hopefullly each strategy has the
-  same tricks and same ranks except 4N vs 4S, and that will merge
-  into 4N,4S
-Make a map of input parameters, e.g. when we want ranks to be
-considered, and we use the minima, then the above has to work.
-Implement direct solving without first generating everything.
-Maybe flag to use minima.
-Implement symmetrize, find the right criteria, e.g. 10-13 when
-13 cards.
+1. All minimals should have the same Reduction
 
+2. Strategies::expand(const Reduction&)
+   Repeats and renumbers distributions
+
+4. Strategies::reducebyTricks(const Reduction&)
+   Eliminate each strategy where the number of tricks is not constant
+   within each reduction group.  Still has the same #distributions
+
+4. bool Strategy::mergeComplete(const Strategy&)
+   Should have same tricks throughout
+   Ranks should all be the same, except that one strategy can
+   consistently have one constant rank (say 4N) and the other can
+   consistently have another constant rank (say 4S), and this would
+   merge and return true into 4N,4S
+   If #1 is true, then this can be done directly without expansion.
+
+5. Reduce each non-minimal strategy.
+   Scale up each of the minimals.
+   Each should agree on the tricks.
+
+6. If there are several minimals, 
+   a. They should scale up in a way that lets them merge one by one(?)
+   b. That merge should be the original strategy(?)
+
+7. Strategies::symmetrize and bool Strategy::symmetric
+   Anything that is not symmetric goes out
+   
+8. For void starting with 10-13 cards (assuming we solve up to 13
+   cards), it's always OK to symmetrize.  We do this:
+   a. If we get above [100] strategies, we start over and only
+      look up symmetrized strategies (so 6-8 and 8-6 are done together
+      and symmetrized against each other).  Multiply strategy by
+      strategy, I think, and don't do a complete cross
+   b. In the end, if we are above [16] strategies, we symmetrize
+   c. If we know from lookup that something must be symmetric
+
+9. Make a perl histogram of #strategies for each #cards
+
+10. Go from only batch to solving a single distribution from scratch
+   a. Basic idea is to make a list of the nodes you'll need
+   b. Then make these recursively before you solve this node
+   c. A lot of flags are the same, i.e. ranks or not, optimizations
+      turned on or not, debugging/checks on/off
+   d. Could switch to the minimal one (or one of them) and only
+      solve this
+
+
+1091 combinations generate a "check all minimals" error.
+This should hopefully be fixed once the ranks are correct.
 
 Reduction
 ---------
@@ -58,19 +97,6 @@ if some control flag:
     // has a number of tops, so all combinations of the total should
     // just be present.
 
-
-
-Symmetrize too-large void strategies that we receive
-for all plays
-  if lho < rho
-    look for the play where rho < lho
-    check same holding
-    adapt both to this trick
-    multiply the strategies pairwise, but not the whole cross
-  else if lho == rho
-    nothing special
-  else if lho > rho
-    skip, as already processed
 
 * 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
 
