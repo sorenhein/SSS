@@ -23,9 +23,6 @@
    a. They should scale up in a way that lets them merge one by one(?)
    b. That merge should be the original strategy(?)
 
-7. Strategies::symmetrize and bool Strategy::symmetric
-   Anything that is not symmetric goes out
-   
 8. For void starting with 10-13 cards (assuming we solve up to 13
    cards), it's always OK to symmetrize.  We do this:
    a. If we get above [100] strategies, we start over and only
@@ -34,8 +31,6 @@
       strategy, I think, and don't do a complete cross
    b. In the end, if we are above [16] strategies, we symmetrize
    c. If we know from lookup that something must be symmetric
-
-9. Make a perl histogram of #strategies for each #cards
 
 10. Go from only batch to solving a single distribution from scratch
    a. Basic idea is to make a list of the nodes you'll need
@@ -48,6 +43,12 @@
 
 1091 combinations generate a "check all minimals" error.
 This should hopefully be fixed once the ranks are correct.
+
+A histogram of #strategies shows that we also get large numbers
+when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
+Maybe it's OK to limit next strategies to symmetric ones, too,
+when South becomes void and there are a lot of next strategies.
+
 
 Reduction
 ---------

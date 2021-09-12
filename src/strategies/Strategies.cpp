@@ -126,6 +126,14 @@ timersStrat[1].stop();
 }
 
 
+void Strategies::symmetrize()
+{
+  // This method is mainly used to reduce complexity in cases where
+  // declarer has a void.
+  slist.symmetrize();
+}
+
+
 void Strategies::scrutinize(const Ranges& rangesIn)
 {
 timersStrat[2].start();

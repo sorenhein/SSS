@@ -227,6 +227,21 @@ void Slist::consolidate(ComparatorType lessEqualMethod)
 }
 
 
+void Slist::symmetrize()
+{
+  // This method is mainly used to reduce complexity in cases where
+  // declarer has a void.
+  auto iter = strategies.begin();
+  while (iter != strategies.end())
+  {
+    if (iter->symmetric())
+      iter++;
+    else
+      iter = strategies.erase(iter);
+  }
+}
+
+
 /************************************************************
  *                                                          *
  * operator == and two helper methods                       *

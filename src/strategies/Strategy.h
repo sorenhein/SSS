@@ -98,6 +98,8 @@ class Strategy
 
     bool constantTricks() const;
 
+    bool symmetric() const;
+
     unsigned weight() const;
 
     void push_back(const Result& result);

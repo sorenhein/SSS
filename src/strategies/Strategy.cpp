@@ -75,6 +75,21 @@ bool Strategy::constantTricks() const
 }
 
 
+bool Strategy::symmetric() const
+{
+  auto iter1 = results.begin();
+  auto iter2 = results.rbegin();
+  while (iter1->dist() < iter2->dist())
+  {
+    if (* iter1 != * iter2)
+      return false;
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
 unsigned Strategy::weight() const
 {
   return weightInt;

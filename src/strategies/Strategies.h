@@ -62,6 +62,8 @@ class Strategies
       const Strategy& simpleStrat,
       const Strategy& constants);
 
+    void symmetrize();
+
     bool operator == (const Strategies& strats2) const;
 
     void operator += (Strategies& strats2);

@@ -142,6 +142,8 @@ class Slist
 
     void consolidate(ComparatorType lessEqualMethod);
 
+    void symmetrize();
+
 
     // Comparator (full Result equality).
 
