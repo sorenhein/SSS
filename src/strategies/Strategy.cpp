@@ -17,6 +17,7 @@
 #include "../plays/Play.h"
 
 #include "../distributions/SurvivorList.h"
+#include "../distributions/Reduction.h"
 
 #include "../inputs/Control.h"
 #include "../const.h"

@@ -45,14 +45,14 @@ void Reductions::set(
 
     bool firstFlag = true;
     unsigned char nextReducedDist = 0;
-    Reduction& reduction = reductions[reducer];
-    reduction.resize(distributions.size());
+    auto& dist = reductions[reducer].dist;
+    dist.resize(distributions.size());
 
     for (unsigned d = 0; d < distributions.size(); d++)
     {
       if (firstFlag)
       {
-        reduction[d] = nextReducedDist++;
+        dist[d] = nextReducedDist++;
         firstFlag = false;
         continue;
       }
@@ -84,7 +84,7 @@ void Reductions::set(
         }
       }
 
-      reduction[d] = nextReducedDist;
+      dist[d] = nextReducedDist;
 
       if (changeFlag)
         nextReducedDist++;

@@ -1,7 +1,6 @@
 Continue in Strategy.cpp and Combinations::runUniques
 
-0. Reduction becomes a struct in Reduction.h
-   Also includes map from reduced to full ranks, which I guess
+0. Reduction also includes map from reduced to full ranks, which I guess
    we can also get from Distribution
 
 1. Strategy::expand(const Reduction&)

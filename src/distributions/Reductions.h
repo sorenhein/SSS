@@ -11,20 +11,19 @@
 
 #include <vector>
 
+#include "Reduction.h"
+
 
 using namespace std;
 
 struct DistInfo;
 
 
-// A Reduction is a mapping from unreduced to reduced distributions.
-typedef vector<unsigned char> Reduction;
-
-
 class Reductions
 {
   private:
 
+    // A Reduction is a mapping from unreduced to reduced distributions.
     // Indexed by the maximal, reduced EW rank to be reduced
     // (including that EW rank).  If it is the maximal EW rank,
     // then all ranks are to be reduced into a single one.

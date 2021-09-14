@@ -8,11 +8,10 @@
 #include "result/Result.h"
 #include "optim/Study.h"
 
-#include "../distributions/Reductions.h"
-
 class Ranges;
 struct Play;
 class SurvivorList;
+struct Reduction;
 
 using namespace std;
 
