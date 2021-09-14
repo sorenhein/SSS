@@ -514,10 +514,11 @@ const SurvivorList& Distribution::getSurvivors(const Play& play) const
 const Reduction& Distribution::getReduction(
   const unsigned char rankNS) const
 {
-  assert(rankNS > 1 && rankNS <= full2reduced.size());
+  assert(rankNS != 1 && rankNS <= full2reduced.size());
 
   // All EW ranks < the NS rank are grouped together.
-  const unsigned rankReducedEW = full2reduced[rankNS-1];
+  const unsigned rankReducedEW = 
+    (rankNS == 0 ? 0 : full2reduced[rankNS-1]);
 
   if (distCanonical == nullptr)
   {

@@ -38,8 +38,11 @@ void Reductions::set(
   reductions.clear();
   reductions.resize(reducedRankSize);
 
-  for (unsigned reducer = 1; reducer < reducedRankSize; reducer++)
+  for (unsigned reducer = 0; reducer < reducedRankSize; reducer++)
   {
+    // A reducer of 0 ("NS void") is actually like a maximal reducer.
+    const unsigned reducerEff = (reducer == 0 ? reducedRankSize : reducer);
+
     bool firstFlag = true;
     unsigned char nextReducedDist = 0;
     Reduction& reduction = reductions[reducer];
@@ -55,24 +58,29 @@ void Reductions::set(
       }
 
       bool changeFlag = false;
-      for (unsigned rank = reducedRankSize; rank-- > 0; )
-      {
-        if (rank <= reducer)
-        {
-          // We have run out of ranks that still count.
-          break;
-        }
 
-        if (distributions[d].west.counts[rank] !=
-            distributions[d-1].west.counts[rank] ||
-            distributions[d].east.counts[rank] !=
-            distributions[d-1].east.counts[rank])
+      // It's enough to look at West.
+      if (distributions[d].west.len != distributions[d-1].west.len)
+        changeFlag = true;
+      else
+      {
+        for (unsigned rank = reducedRankSize; rank-- > 0; )
         {
-          // If there is a difference in counts in the part of the
-          // distribution that still counts (> reducer), it is a new
-          // disitrbution in this sense.
-          changeFlag = true;
-          break;
+          if (rank <= reducerEff)
+          {
+            // We have run out of ranks that still count.
+            break;
+          }
+
+          if (distributions[d].west.counts[rank] !=
+              distributions[d-1].west.counts[rank])
+          {
+            // If there is a difference in counts in the part of the
+            // distribution that still counts (> reducer), it is a new
+            // distribution in this sense.
+            changeFlag = true;
+            break;
+          }
         }
       }
 
@@ -87,6 +95,11 @@ void Reductions::set(
 
 const Reduction& Reductions::get(const unsigned rank) const
 {
+if (rank >= reductions.size())
+{
+  cout << "rank " << rank << endl;
+  cout << "red.size " << reductions.size() << endl;
+}
   assert(rank < reductions.size());
   return reductions[rank];
 }
