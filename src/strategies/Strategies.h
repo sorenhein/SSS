@@ -74,6 +74,8 @@ class Strategies
 
     bool operator == (const Strategies& strats2) const;
 
+    bool equalPrimary(const Strategies& strats2) const;
+
     void operator += (Strategies& strats2);
 
     void operator *= (Strategies& strats2);

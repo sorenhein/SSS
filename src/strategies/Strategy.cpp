@@ -227,6 +227,8 @@ void Strategy::expand(
     for (auto& result: results)
       result.setDist(dsize - result.dist() - 1);
   }
+
+  studied.study(results);
 }
 
 
@@ -326,6 +328,29 @@ bool Strategy::operator == (const Strategy& strat2) const
 }
 
 
+bool Strategy::equalPrimaryBasic(const Strategy& strat2) const
+{
+  const unsigned n = results.size();
+  assert(strat2.results.size() == n);
+
+  if (weightInt != strat2.weightInt)
+    return false;
+
+  list<Result>::const_iterator iter1 = results.cbegin();
+  list<Result>::const_iterator iter2 = strat2.results.cbegin();
+
+  while (iter1 != results.end())
+  {
+    if (iter1->comparePrimaryInDetail(* iter2) != WIN_EQUAL_OVERALL)
+      return false;
+
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
 bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
 {
   // This is complete in the sense that it includes both the primary
@@ -380,6 +405,28 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
   Strategy::cumulateSecondary(strat2, cumul);
 
   return compressCompareSecondaryDetail(cumul);
+}
+
+
+bool Strategy::equalCompleteStudied(const Strategy& strat2) const
+{
+  if (! studied.maybeLessEqualStudied(strat2.studied))
+    return false;
+  else if (! strat2.studied.maybeLessEqualStudied(studied))
+    return false;
+  else
+    return (* this == strat2);
+}
+
+
+bool Strategy::equalPrimaryStudied(const Strategy& strat2) const
+{
+  if (! studied.maybeLessEqualStudied(strat2.studied))
+    return false;
+  else if (! strat2.studied.maybeLessEqualStudied(studied))
+    return false;
+  else
+    return Strategy::equalPrimaryBasic(strat2);
 }
 
 

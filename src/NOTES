@@ -1,11 +1,7 @@
-Continue in Strategy.cpp and Combinations::runUniques
+In Slist, clean up around equalPrimary.
+Then in Combinations.cpp, use equalPrimary for the second test.
+This also tests expand, constantTricksByReduction etc.
 
-1. Strategy::expand(const Reduction&)
-   Repeats and renumbers distributions
-
-2. Strategy::constantTricksByReduction(const Reduction&)
-   Eliminate each strategy where the number of tricks is not constant
-   within each reduction group.  Still has the same #distributions
 
 3. Winners of each minimal should be the winner it was made from.
    Maybe once it has been expanded, it is easier to compare.

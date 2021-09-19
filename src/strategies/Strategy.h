@@ -132,6 +132,8 @@ class Strategy
 
     bool operator == (const Strategy& strat2) const;
 
+    bool equalPrimaryBasic(const Strategy& strat2) const;
+
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
 
     CompareType compareCompleteBasic(const Strategy& strat2) const;
@@ -139,6 +141,10 @@ class Strategy
     Compare compareSecondary(const Strategy& strat2) const;
 
     // Study-level comparators
+
+    bool equalCompleteStudied(const Strategy& strat2) const;
+
+    bool equalPrimaryStudied(const Strategy& strat2) const;
 
     bool lessEqualCompleteStudied(const Strategy& strat2) const;
 

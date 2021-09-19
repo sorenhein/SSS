@@ -156,9 +156,13 @@ class Slist
       const bool rotateFlag);
 
 
-    // Comparator (full Result equality).
+    // Comparator (full Result equality in the first case).
 
     bool operator == (const Slist& slist2) const;
+
+    bool equalPrimary(
+      const Slist& slist2,
+      ComparatorType equalMethod) const;
 
 
     // Addition.  If lessEqualMethod matches, then compareSecondary.

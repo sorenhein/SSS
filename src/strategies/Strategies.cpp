@@ -181,6 +181,12 @@ bool Strategies::operator == (const Strategies& strats2) const
 }
 
 
+bool Strategies::equalPrimary(const Strategies& strats2) const
+{
+  return slist.equalPrimary(strats2.slist, &Strategy::equalPrimaryStudied);
+}
+
+
 /************************************************************
  *                                                          *
  * operator += Strategies                                   *

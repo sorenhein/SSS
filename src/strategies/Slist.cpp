@@ -323,6 +323,7 @@ bool Slist::sameUnordered(const Slist& slist2) const
 bool Slist::operator == (const Slist& slist2) const
 {
   // This is dreadfully slow, but it is mainly used for debugging.
+  // TODO
   // If we did want to speed this up, we would loop over i and then
   // over j >= i (upper triangle of matrix).  By starting at j = i
   // we would get the frequent case where the lists are ordered.
@@ -335,6 +336,21 @@ bool Slist::operator == (const Slist& slist2) const
     return true;
   else
     return Slist::sameUnordered(slist2);
+}
+
+
+#include "../const.h"
+bool Slist::equalPrimary(
+  const Slist& slist2,
+  ComparatorType equalMethod) const
+{
+  UNUSED(slist2);
+  UNUSED(equalMethod);
+
+  // TODO sameOrdered and sameUnordered gets a method argument.
+  // Strategy gets a method == called equalCompleteBasci.
+  // Then Slist::== uses this, and we use equalMethod.
+  return false;
 }
 
 
