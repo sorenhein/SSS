@@ -39,6 +39,8 @@ class Reductions
       const vector<DistInfo>& distributions,
       const unsigned reducedRankSize);
 
+    void setRankReduction(const vector<unsigned>& reduced2full);
+
     const Reduction& get(const unsigned rank) const;
 };
 

@@ -14,15 +14,15 @@
 
 using namespace std;
 
-struct DistInfo;
-struct Reduction;
 
+// A Reduction contains a mapping from unreduced to reduced distributions.
+// The rank mapping is actually the same for all Reduction's within
+// a Reductions, but we put it here for simplicity.
 
-// A Reduction is a mapping from unreduced to reduced distributions.
 struct Reduction
 {
-  vector<unsigned char> dist;
-  vector<unsigned> reduced2fullRanks;
+  vector<unsigned char> full2reducedDist;
+  vector<unsigned> const * reduced2fullRankPtr;
 };
 
 #endif

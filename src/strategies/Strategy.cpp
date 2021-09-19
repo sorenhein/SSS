@@ -165,11 +165,33 @@ void Strategy::scrutinize(const Ranges& ranges)
  *                                                          *
  ************************************************************/
 
-#include "../const.h"
-bool Strategy::constantTricksByReduction(const Reduction& reduction) const
+bool Strategy::constantTricksByReduction(
+  const Reduction& reduction) const
 {
-  UNUSED(reduction);
-  return false;
+  // Returns true if the number of tricks is constant within each 
+  // reduction group.
+
+  const auto& dist = reduction.full2reducedDist;
+  assert(dist.size() == results.size());
+
+  // Pick a "large" starting distribution. Tricks don't matter here.
+  unsigned char distGroup = static_cast<unsigned char>(dist.size()); 
+  unsigned char tricksGroup = 0;
+
+  for (auto& result: results)
+  {
+    const unsigned d = result.dist();
+    if (dist[d] != distGroup)
+    {
+      // New group.
+      distGroup = dist[d];
+      tricksGroup = result.tricks();
+    }
+    else if (result.tricks() != tricksGroup)
+      return false;
+  }
+
+  return true;
 }
 
 
@@ -177,8 +199,34 @@ void Strategy::expand(
   const Reduction& reduction,
   const bool rotateFlag)
 {
-  UNUSED(reduction);
-  UNUSED(rotateFlag);
+  // Modify this strategy (from a minimal strategy) up to a
+  // non-minimal one by renumbering and by shifting the winners.
+
+  const auto& dist = reduction.full2reducedDist;
+  const auto& rank = * reduction.reduced2fullRankPtr;
+
+  // Pick a "large" starting distribution.
+  const unsigned char dsize = static_cast<unsigned char>(dist.size()); 
+  unsigned char distGroup = dsize;
+
+  auto iter = results.begin();
+  for (unsigned char d = 0; d < dsize; d++)
+  {
+    // If it's still the same group, we need a new result.
+    if (d == distGroup)
+      iter = results.insert(iter, * iter);
+    else
+      distGroup = d;
+
+    iter->expand(d, rank);
+  }
+
+  if (rotateFlag)
+  {
+    results.reverse();
+    for (auto& result: results)
+      result.setDist(dsize - result.dist() - 1);
+  }
 }
 
 

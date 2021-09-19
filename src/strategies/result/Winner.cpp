@@ -334,6 +334,22 @@ void Winner::update(const Play& play)
 }
 
 
+void Winner::expand(const vector<unsigned>& reduced2fullRank)
+{
+  if (mode & WIN_NORTH_SET)
+  {
+    north.expand(reduced2fullRank);
+    rank = north.getRank();
+  }
+
+  if (mode & WIN_SOUTH_SET)
+  {
+    south.expand(reduced2fullRank);
+    rank = south.getRank();
+  }
+}
+
+
 bool Winner::rankExceeds(const Winner& winner2) const
 {
   if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)

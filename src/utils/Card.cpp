@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <cassert>
 
 #include "Card.h"
 #include "../const.h"
@@ -163,6 +164,13 @@ unsigned char Card::getNumber() const
 unsigned char Card::getName() const
 {
   return name;
+}
+
+
+void Card::expand(const vector<unsigned>& reduced2fullRank)
+{
+  assert(rank < reduced2fullRank.size());
+  rank = static_cast<unsigned char>(reduced2fullRank[rank]);
 }
 
 

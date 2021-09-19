@@ -45,7 +45,7 @@ void Reductions::set(
 
     bool firstFlag = true;
     unsigned char nextReducedDist = 0;
-    auto& dist = reductions[reducer].dist;
+    auto& dist = reductions[reducer].full2reducedDist;
     dist.resize(distributions.size());
 
     for (unsigned d = 0; d < distributions.size(); d++)
@@ -90,6 +90,13 @@ void Reductions::set(
         nextReducedDist++;
     }
   }
+}
+
+
+void Reductions::setRankReduction(const vector<unsigned>& reduced2full)
+{
+  for (auto& reduction: reductions)
+    reduction.reduced2fullRankPtr = &reduced2full;
 }
 
 

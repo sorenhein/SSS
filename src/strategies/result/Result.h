@@ -67,6 +67,10 @@ class Result
       const Play& play,
       const unsigned char dist);
 
+    void expand(
+      const unsigned char dist,
+      const vector<unsigned>& reduced2fullRank);
+
     void flip();
 
     void multiplyWinnersOnto(Result& result) const;

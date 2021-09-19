@@ -363,6 +363,13 @@ void Winners::update(const Play& play)
 }
 
 
+void Winners::expand(const vector<unsigned>& reduced2fullRank)
+{
+  for (auto& winner: winners)
+    winner.expand(reduced2fullRank);
+}
+
+
 bool Winners::rankExceeds(const Winners& winners2) const
 {
   // This requires both winners to have winner's.

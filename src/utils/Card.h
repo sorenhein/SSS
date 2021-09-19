@@ -9,6 +9,7 @@
 #ifndef SSS_CARD_H
 #define SSS_CARD_H
 
+#include <vector>
 #include <string>
 
 #include "../utils/Compare.h"
@@ -61,6 +62,8 @@ class Card
     unsigned char getDepth() const;
     unsigned char getNumber() const;
     unsigned char getName() const;
+
+    void expand(const vector<unsigned>& reduced2fullRank);
 
     void flipDepth(const unsigned char maxDepth);
 
