@@ -280,7 +280,9 @@ void Slist::expand(
  *                                                          *
  ************************************************************/
 
-bool Slist::sameOrdered(const Slist& slist2) const
+bool Slist::sameOrdered(
+  const Slist& slist2,
+  ComparatorType equalMethod) const
 {
   // This assumes the same ordering.
 
@@ -289,7 +291,7 @@ bool Slist::sameOrdered(const Slist& slist2) const
   for (auto iter1 = strategies.begin(); iter1 != strategies.end(); 
       iter1++, iter2++)
   {
-    if (!(* iter1 == * iter2))
+    if (! ((* iter1).*equalMethod)(* iter2))
       return false;
   }
 
@@ -297,7 +299,9 @@ bool Slist::sameOrdered(const Slist& slist2) const
 }
 
 
-bool Slist::sameUnordered(const Slist& slist2) const
+bool Slist::sameUnordered(
+  const Slist& slist2,
+  ComparatorType equalMethod) const
 {
   for (auto iter1 = strategies.begin(); iter1 != strategies.end(); iter1++)
   {
@@ -305,7 +309,7 @@ bool Slist::sameUnordered(const Slist& slist2) const
     for (auto iter2 = slist2.strategies.begin(); 
         iter2 != slist2.strategies.end(); iter2++)
     {
-      if (* iter1 == * iter2)
+      if (((* iter1).*equalMethod)(* iter2))
       {
         sameFlag = true;
         break;
@@ -322,8 +326,16 @@ bool Slist::sameUnordered(const Slist& slist2) const
 
 bool Slist::operator == (const Slist& slist2) const
 {
-  // This is dreadfully slow, but it is mainly used for debugging.
+  return Slist::equalByMethod(slist2, &Strategy::equalCompleteBasic);
+}
+
+
+bool Slist::equalByMethod(
+  const Slist& slist2,
+  ComparatorType equalMethod) const
+{
   // TODO
+  // This is dreadfully slow, but it is mainly used for debugging.
   // If we did want to speed this up, we would loop over i and then
   // over j >= i (upper triangle of matrix).  By starting at j = i
   // we would get the frequent case where the lists are ordered.
@@ -332,25 +344,10 @@ bool Slist::operator == (const Slist& slist2) const
 
   if (Slist::size() != slist2.size())
     return false;
-  else if (Slist::sameOrdered(slist2))
+  else if (Slist::sameOrdered(slist2, equalMethod))
     return true;
   else
-    return Slist::sameUnordered(slist2);
-}
-
-
-#include "../const.h"
-bool Slist::equalPrimary(
-  const Slist& slist2,
-  ComparatorType equalMethod) const
-{
-  UNUSED(slist2);
-  UNUSED(equalMethod);
-
-  // TODO sameOrdered and sameUnordered gets a method argument.
-  // Strategy gets a method == called equalCompleteBasci.
-  // Then Slist::== uses this, and we use equalMethod.
-  return false;
+    return Slist::sameUnordered(slist2, equalMethod);
 }
 
 

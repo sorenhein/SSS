@@ -328,6 +328,13 @@ bool Strategy::operator == (const Strategy& strat2) const
 }
 
 
+bool Strategy::equalCompleteBasic(const Strategy& strat2) const
+{
+  // Just an alias.
+  return (* this == strat2);
+}
+
+
 bool Strategy::equalPrimaryBasic(const Strategy& strat2) const
 {
   const unsigned n = results.size();

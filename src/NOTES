@@ -1,6 +1,9 @@
-In Slist, clean up around equalPrimary.
-Then in Combinations.cpp, use equalPrimary for the second test.
+In Combinations.cpp, use Strategies::equalPrimary(strats2),
+for the second test.
+
 This also tests expand, constantTricksByReduction etc.
+
+Look at speeding up Slist::equalByMethod.
 
 
 3. Winners of each minimal should be the winner it was made from.

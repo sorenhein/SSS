@@ -56,8 +56,13 @@ class Slist
     // Uses compareSecondary if needed.
     void consolidateGeneral(ComparatorType lessEqualMethod);
 
-    bool sameOrdered(const Slist& slist2) const;
-    bool sameUnordered(const Slist& slist2) const;
+    bool sameOrdered(
+      const Slist& slist2,
+      ComparatorType equalMethod) const;
+
+    bool sameUnordered(
+      const Slist& slist2,
+      ComparatorType equalMethod) const;
 
     bool addendDominatedHeavier(
       list<Strategy>::iterator& iter,
@@ -160,7 +165,7 @@ class Slist
 
     bool operator == (const Slist& slist2) const;
 
-    bool equalPrimary(
+    bool equalByMethod(
       const Slist& slist2,
       ComparatorType equalMethod) const;
 

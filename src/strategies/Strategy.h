@@ -131,6 +131,7 @@ class Strategy
     // Basic, unaccelerated comparators
 
     bool operator == (const Strategy& strat2) const;
+    bool equalCompleteBasic(const Strategy& strat2) const;
 
     bool equalPrimaryBasic(const Strategy& strat2) const;
 
