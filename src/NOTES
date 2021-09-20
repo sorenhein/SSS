@@ -1,3 +1,9 @@
+Make a CombCheck class with 
+checkMinimals,
+checkReductions.
+Has an internal getMinimalStrategies.
+Then there are three sub-checks.
+
 In Combinations.cpp, use Strategies::equalPrimary(strats2),
 for the second test.
 

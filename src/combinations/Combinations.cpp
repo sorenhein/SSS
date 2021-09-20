@@ -502,7 +502,7 @@ bool Combinations::checkAndFixMinimals(
     {
       // Erase the non-minimal one and add the ones it points to.
       // Take into account the rotation flag -- we want the product
-      // of all rotations to the really minimal holding.
+      // of all rotations to be the really minimal holding.
       for (auto& min: centry.minimals)
       {
         minimals.push_back(min);
@@ -535,7 +535,30 @@ void Combinations::checkAllMinimals(const unsigned cards)
     if (! Combinations::checkAndFixMinimals(
       centries,
       centries[holding].minimals))
+    {
       cout << "ERROR: holding " << holding << " uses non-minimals\n";
+    }
+  }
+}
+
+
+void Combinations::checkAllReductions(
+  const unsigned cards,
+  const Distributions& distributions) const
+{
+  const vector<CombEntry>& centries = combEntries[cards];
+  const vector<Combination>& uniqs = uniques[cards];
+
+  for (unsigned holding = 0; holding < centries.size(); holding++)
+  {
+    // Only look at non-minimal combinations.
+    const CombEntry& centry = centries[holding];
+    if (! centry.canonicalFlag || centry.minimalFlag)
+      continue;
+
+    const Combination& comb = uniqs[centry.canonical.index];
+    Combinations::checkReductions(cards, centry, comb.strategies(), 
+      * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
   }
 }
 

@@ -78,6 +78,10 @@ class Combinations
       const Strategies& strategies,
       const Distribution& distribution) const;
 
+    void checkAllReductions(
+      const unsigned cards,
+      const Distributions& distributions) const;
+
 
   public:
 
