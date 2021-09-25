@@ -59,6 +59,7 @@ combinations/Combinations.obj: combinations/CombEntry.h
 combinations/Combinations.obj: utils/CombinationType.h
 combinations/Combinations.obj: combinations/CombHelp.h
 combinations/Combinations.obj: combinations/CombFiles.h
+combinations/Combinations.obj: combinations/CombTest.h
 combinations/Combinations.obj: distributions/Distributions.h
 combinations/Combinations.obj: distributions/Distribution.h
 combinations/Combinations.obj: distributions/SurvivorList.h
@@ -74,6 +75,25 @@ combinations/Combinations.obj: utils/Timers.h utils/Timer.h
 combinations/CombFiles.obj: combinations/CombFiles.h combinations/CombEntry.h
 combinations/CombFiles.obj: utils/CombinationType.h inputs/Control.h
 combinations/CombFiles.obj: inputs/Entity.h
+combinations/CombTest.obj: distributions/Distributions.h
+combinations/CombTest.obj: distributions/Distribution.h
+combinations/CombTest.obj: distributions/SurvivorList.h
+combinations/CombTest.obj: distributions/Survivors.h distributions/DistHelp.h
+combinations/CombTest.obj: distributions/Reductions.h strategies/Strategies.h
+combinations/CombTest.obj: strategies/Slist.h strategies/Strategy.h
+combinations/CombTest.obj: strategies/result/Result.h
+combinations/CombTest.obj: strategies/result/Winners.h
+combinations/CombTest.obj: strategies/result/Winner.h utils/table.h
+combinations/CombTest.obj: utils/Card.h utils/Compare.h utils/Compare.h
+combinations/CombTest.obj: strategies/optim/Study.h
+combinations/CombTest.obj: strategies/result/Ranges.h
+combinations/CombTest.obj: strategies/result/Range.h
+combinations/CombTest.obj: strategies/result/Result.h
+combinations/CombTest.obj: distributions/Reductions.h
+combinations/CombTest.obj: distributions/Reduction.h
+combinations/CombTest.obj: combinations/Combination.h
+combinations/CombTest.obj: combinations/CombEntry.h utils/CombinationType.h
+combinations/CombTest.obj: combinations/CombTest.h
 distributions/Distribution.obj: distributions/Distribution.h
 distributions/Distribution.obj: distributions/SurvivorList.h
 distributions/Distribution.obj: distributions/Survivors.h

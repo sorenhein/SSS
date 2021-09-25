@@ -62,30 +62,11 @@ class Combinations
       Distributions const * distributions,
       const unsigned thid);
 
-    bool checkMinimals(
-      const vector<CombEntry>& centries,
-      const list<CombReference>& minimals) const;
-
-    bool checkAndFixMinimals(
-      const vector<CombEntry>& centries,
-      list<CombReference>& minimals) const;
-
-    void checkAllMinimals(const unsigned cards);
-
-    void checkReductions(
-      const unsigned cards,
-      const CombEntry& centry,
-      const Strategies& strategies,
-      const Distribution& distribution) const;
-
-    void checkAllReductions(
-      const unsigned cards,
-      const Distributions& distributions) const;
-
-
   public:
 
     Combinations();
+
+    void setTimerNames();
 
     void reset();
 

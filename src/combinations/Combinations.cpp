@@ -7,6 +7,7 @@
 #include "Combinations.h"
 #include "CombFiles.h"
 #include "CombEntry.h"
+#include "CombTest.h"
 
 #include "../distributions/Distributions.h"
 
@@ -52,6 +53,23 @@ Combinations::Combinations()
 }
 
 
+void Combinations::setTimerNames()
+{
+  timersStrat.resize(40);
+  timersStrat[ 0].name("Strats::adapt");
+  timersStrat[ 1].name("Strats::reactivate");
+  timersStrat[ 2].name("Strats::scrutinize");
+  timersStrat[ 3].name("Strats::+= strats (gen.)");
+  timersStrat[ 4].name("Strats::*= strats (1*1)");
+  timersStrat[ 5].name("Strats::*= strats (study)");
+  timersStrat[ 6].name("Strats::*= strats (<10)");
+  timersStrat[ 7].name("Strats::*= strats (>=10)");
+  timersStrat[ 8].name("Strats::makeRanges");
+  timersStrat[ 9].name("Strats::propagateRanges");
+  timersStrat[10].name("Strats::purgeRanges");
+}
+
+
 void Combinations::reset()
 {
   maxCards = 0;
@@ -61,6 +79,7 @@ void Combinations::reset()
   countNoncanonical.clear();
 
   timersStrat.clear();
+  Combinations::setTimerNames();
 }
 
 
@@ -93,19 +112,6 @@ void Combinations::resize(const unsigned maxCardsIn)
   }
 
   countNoncanonical.resize(maxCardsIn+1);
-
-  timersStrat.resize(40);
-  timersStrat[ 0].name("Strats::adapt");
-  timersStrat[ 1].name("Strats::reactivate");
-  timersStrat[ 2].name("Strats::scrutinize");
-  timersStrat[ 3].name("Strats::+= strats (gen.)");
-  timersStrat[ 4].name("Strats::*= strats (1*1)");
-  timersStrat[ 5].name("Strats::*= strats (study)");
-  timersStrat[ 6].name("Strats::*= strats (<10)");
-  timersStrat[ 7].name("Strats::*= strats (>=10)");
-  timersStrat[ 8].name("Strats::makeRanges");
-  timersStrat[ 9].name("Strats::propagateRanges");
-  timersStrat[10].name("Strats::purgeRanges");
 }
 
 
@@ -231,6 +237,8 @@ void Combinations::runUniques(
   Plays plays;
   plays.resize(cards);
 
+  CombTest ctest;
+
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
     CombEntry& centry = centries[holding];
@@ -242,8 +250,6 @@ void Combinations::runUniques(
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
-      // TODO Does canonicalFlag actually get set? Should it be?
-      // Could we even be solving the rotations as well?
       assert(uniqueIndex < uniqs.size());
       centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
@@ -263,12 +269,14 @@ void Combinations::runUniques(
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
       
+      /*
       if (! centry.minimalFlag)
       {
         // TODO Control by some flag
-        Combinations::checkReductions(cards, centry, comb.strategies(), 
+        ctest.checkReductions(cards, centry, comb.strategies(), 
           * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
       }
+      */
     }
     else
     {
@@ -277,9 +285,14 @@ void Combinations::runUniques(
     }
   }
 
+  // TODO Control by flags.
   timersStrat[30].start();
-  Combinations::checkAllMinimals(cards);
+  // ctest.checkAllReductions(cards, centries, uniqs, distributions);
   timersStrat[30].stop();
+
+  timersStrat[31].start();
+  ctest.checkAllMinimals(centries);
+  timersStrat[31].stop();
 
   // This is how to write files:
   // CombFiles combFiles;
@@ -413,153 +426,6 @@ Combination const * Combinations::getPtr(
 {
   const unsigned ui = combEntries[cards][holding3].canonical.index;
   return &uniques[cards][ui];
-}
-
-
-bool Combinations::checkMinimals(
-  const vector<CombEntry>& centries,
-  const list<CombReference>& minimals) const
-{
-  for (auto& min: minimals)
-    if (! centries[min.holding3].minimalFlag)
-      return false;
-
-  return true;
-}
-
-
-void Combinations::checkReductions(
-  const unsigned cards,
-  const CombEntry& centry,
-  const Strategies& strategies,
-  const Distribution& distribution) const
-{
-  // Get the reduction that underlies the whole method.
-  // TODO Could store the rank in CombEntry?
-  Result resultLowest;
-  strategies.getResultLowest(resultLowest);
-  const unsigned char rankCritical = resultLowest.rank();
-  const auto& reduction = distribution.getReduction(rankCritical);
-
-  // Delete Strategy's where the number of tricks is not constant
-  // within each reduction group.  The number of distributions is
-  // unchanged.
-  Strategies strategiesReduced = strategies;
-  strategiesReduced.reduceByTricks(reduction);
-
-  list<Strategies> strategiesExpanded;
-
-  for (auto& min: centry.minimals)
-  {
-    const auto& ceMin = combEntries[cards][min.holding3];
-
-    if (! ceMin.minimalFlag)
-    {
-      // This should not happen long-term, and short-term it is
-      // addressed in checkMinimals().
-      continue;
-    }
-
-    strategiesExpanded.emplace_back(Strategies());
-    Strategies& strategiesMin = strategiesExpanded.back();
-
-    // Get the strategies for the minimal reference.
-    // TODO Assert can be erased later
-    assert(ceMin.canonical.index < uniques[cards].size());
-    strategiesMin = uniques[cards][ceMin.canonical.index].strategies();
-
-    // Expand the strategies up using the reduction.
-    strategiesMin.expand(reduction, min.rotateFlag);
-  }
-
-  // TODO Checks:
-  // * The sum of the minimal winners should be the overall winner.
-  //   In other words, the minimal winner should be what the top says.
-  // * Each minimal strategy should agree in tricks with the top one.
-  // * The minimal ones should merge (strategy by strategy) into
-  //   the top one, including ranks in some sense.
-}
-
-
-bool Combinations::checkAndFixMinimals(
-  const vector<CombEntry>& centries,
-  list<CombReference>& minimals) const
-{
-  // Check that each non-minimal holding refers to minimal ones.
-  // We actually follow through and change the minimals.
-  // Once ranks are good, this method should no longer be needed.
-
-  bool changeFlag = false;
-  auto iter = minimals.begin();
-
-  while (iter != minimals.end())
-  {
-    const CombEntry& centry = centries[iter->holding3];
-
-    if (centry.minimalFlag)
-      iter++;
-    else
-    {
-      // Erase the non-minimal one and add the ones it points to.
-      // Take into account the rotation flag -- we want the product
-      // of all rotations to be the really minimal holding.
-      for (auto& min: centry.minimals)
-      {
-        minimals.push_back(min);
-        CombReference& cr = minimals.back();
-        cr.rotateFlag ^= iter->rotateFlag;
-      }
-
-      iter = minimals.erase(iter);
-      changeFlag = true;
-    }
-  }
-
-  if (changeFlag)
-  {
-    minimals.sort();
-    minimals.unique();
-  }
-
-  return ! changeFlag;
-}
-
-
-void Combinations::checkAllMinimals(const unsigned cards)
-{
-  // Could also use checkMinimals here.
-  vector<CombEntry>& centries = combEntries[cards];
-
-  for (unsigned holding = 0; holding < centries.size(); holding++)
-  {
-    if (! Combinations::checkAndFixMinimals(
-      centries,
-      centries[holding].minimals))
-    {
-      cout << "ERROR: holding " << holding << " uses non-minimals\n";
-    }
-  }
-}
-
-
-void Combinations::checkAllReductions(
-  const unsigned cards,
-  const Distributions& distributions) const
-{
-  const vector<CombEntry>& centries = combEntries[cards];
-  const vector<Combination>& uniqs = uniques[cards];
-
-  for (unsigned holding = 0; holding < centries.size(); holding++)
-  {
-    // Only look at non-minimal combinations.
-    const CombEntry& centry = centries[holding];
-    if (! centry.canonicalFlag || centry.minimalFlag)
-      continue;
-
-    const Combination& comb = uniqs[centry.canonical.index];
-    Combinations::checkReductions(cards, centry, comb.strategies(), 
-      * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
-  }
 }
 
 
