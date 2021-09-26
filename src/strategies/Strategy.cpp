@@ -214,21 +214,11 @@ void Strategy::expand(
   {
     // If it's still the same group, we need a new result.
     if (dist[dfull] == distGroup)
-    {
-cout << "inserting a repeat\n";
-cout << Strategy::str("was", true) << endl;
       iter = results.insert(iter, * iter);
-cout << Strategy::str("is", true) << endl;
-    }
     else
       distGroup = dist[dfull];
 
-cout << "result before\n";
-cout << iter->str(true) <<endl;
     iter->expand(dfull, rankAdder);
-cout << "result after\n";
-cout << iter->str(true) <<endl;
-cout << "this was d " << +dfull << "reduction " << +dist[dfull] << ", distGroup now " << +distGroup << endl;
     iter++;
   }
 

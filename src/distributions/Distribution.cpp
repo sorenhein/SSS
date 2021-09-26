@@ -341,8 +341,8 @@ void Distribution::splitAlternative()
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackElem.west;
-          if (gap > 0)
-             dist.add(rank, gap, binomial[available][gap]);
+           dist.add(rank, gap, 
+             stackElem.cases * binomial[available][gap]);
           dist.east.diff(opponents, dist.west);
 
           distIndex++;

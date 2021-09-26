@@ -97,19 +97,13 @@ void CombTest::checkReductions(
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
-cout << "resultLowest " << resultLowest.str(true) << endl;
-cout << "rankCritical " << +rankCritical << endl;
   const auto& reduction = distribution.getReduction(rankCritical);
-cout << "Reduction\n";
-cout << reduction.str() << endl;
 
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
   // unchanged.
   Strategies strategiesReduced = strategies;
-cout << strategiesReduced.str("full strategy", true);
   strategiesReduced.reduceByTricks(reduction);
-cout << strategiesReduced.str("reduced strategy", true);
 
   list<Strategies> strategiesExpanded;
 
@@ -130,6 +124,7 @@ cout << strategiesReduced.str("reduced strategy", true);
     // TODO Assert can be erased later
     assert(ceMin.canonical.index < uniqs.size());
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
+Strategies scopy = strategiesMin;
 
     // Expand the strategies up using the reduction.
     Result resultMinLowest;
@@ -137,13 +132,29 @@ cout << strategiesReduced.str("reduced strategy", true);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
-cout << "  " << strategiesMin.str("before expansion", true) << endl;
 
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 
-cout << "  " << strategiesMin.str("expansion", true) << endl;
+    if (strategiesMin == strategiesReduced)
+    {
+      cout << "MINIMUM MATCH\n";
+    }
+    else
+    {
+      cout << "MINIMUM MISMATCH\n";
+      cout << "resultLowest " << resultLowest.str(true) << endl;
+      cout << "rankCritical " << +rankCritical << endl;
+      cout << "Reduction\n";
+      cout << reduction.str() << endl;
+      cout << strategies.str("full strategy", true);
+      cout << strategiesReduced.str("reduced strategy", true);
+      cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
+      cout << "  " << scopy.str("before expansion", true) << endl;
+      cout << "  " << strategiesMin.str("expansion", true) << endl;
+    }
+
+
   }
 
   // TODO Checks:

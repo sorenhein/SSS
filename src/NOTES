@@ -1,11 +1,16 @@
-Make a CombCheck class with 
-checkMinimals,
-checkReductions.
-Has an internal getMinimalStrategies.
-Then there are three sub-checks.
+Open issues 2021-09-26
+----------------------
+1. Cannot really construct the distribution mapping purely sequentially.
+6/560 to 6/564
+d1, d2 are the same (OK)
+d4, d6 are also the same (not consecutive)
+d5, d7 too.
 
-In Combinations.cpp, use Strategies::equalPrimary(strats2),
-for the second test.
+2. minimals should not prune maps to same holding3 with different
+rotations.  It happens that 2N,2S maps to the same, so we'd only get
+2N and not 2S in that case.
+
+
 
 This also tests expand, constantTricksByReduction etc.
 
