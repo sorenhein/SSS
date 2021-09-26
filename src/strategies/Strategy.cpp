@@ -214,11 +214,18 @@ void Strategy::expand(
   {
     // If it's still the same group, we need a new result.
     if (dist[dfull] == distGroup)
-      iter = results.insert(iter, * iter);
+    {
+      // Rank adder was already added once.
+      iter = results.insert(iter, * prev(iter));
+      iter->expand(dfull, 0);
+      weightInt += iter->tricks();
+    }
     else
+    {
       distGroup = dist[dfull];
+      iter->expand(dfull, rankAdder);
+    }
 
-    iter->expand(dfull, rankAdder);
     iter++;
   }
 

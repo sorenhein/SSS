@@ -1,5 +1,25 @@
 Open issues 2021-09-26
 ----------------------
+0. 5/59, AQ/J missing KT reduces to 5/61, AQ/T missing KJ.
+The winning rank for NS is 2N, so the Q.
+But Reductions work in EW ranks.  So we have to figure out the EW
+rank, in Distribution terms, that corresponds to the NS rank.
+It is probably the #EW ranks below our NS rank, so here it is 1,
+assuming that we then limit to everything < the reducer (so reducer == 0
+still means "everything").
+If we could rely on NS and EW ranks to alternate, then
+NS 0: not possible
+NS 1: EW < 1
+NS 2: EW < 1
+NS 3: EW < 2
+NS 4: EW < 2
+EW < (NS+1) >> 1
+
+Proposed solution:
+Reductions::set: omit reducerEff.
+Distribution::getReduction: if NS == 0, use rankSize-1 (assumed >= 0).
+Otherwise use EW as shown.
+
 1. Cannot really construct the distribution mapping purely sequentially.
 6/560 to 6/564
 d1, d2 are the same (OK)

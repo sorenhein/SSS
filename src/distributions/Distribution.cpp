@@ -520,6 +520,9 @@ const Reduction& Distribution::getReduction(
   // All EW ranks < the NS rank are grouped together.
   const unsigned rankReducedEW = 
     (rankNS == 0 ? 0 : full2reduced[rankNS-1]);
+cout << "rank NS " << +rankNS << ", EW " << rankReducedEW << endl;
+for (unsigned i = 0; i < full2reduced.size(); i++)
+  cout << i << ": " << full2reduced[i]<< endl;
 
   if (distCanonical == nullptr)
   {

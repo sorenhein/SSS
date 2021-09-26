@@ -97,7 +97,9 @@ void CombTest::checkReductions(
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
+
   const auto& reduction = distribution.getReduction(rankCritical);
+
 if (reduction.full2reducedDist.size() != distribution.size())
 {
 cout << "About to fail on reduction size" << endl;
