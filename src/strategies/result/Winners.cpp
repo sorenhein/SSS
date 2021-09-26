@@ -363,10 +363,10 @@ void Winners::update(const Play& play)
 }
 
 
-void Winners::expand(const vector<unsigned>& reduced2fullRank)
+void Winners::expand(const char rankAdder)
 {
   for (auto& winner: winners)
-    winner.expand(reduced2fullRank);
+    winner.expand(rankAdder);
 }
 
 

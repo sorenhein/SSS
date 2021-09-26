@@ -70,6 +70,7 @@ class Strategies
 
     void expand(
       const Reduction& reduction,
+      const char rankAdder,
       const bool rotateFlag);
 
     bool operator == (const Strategies& strats2) const;

@@ -334,17 +334,17 @@ void Winner::update(const Play& play)
 }
 
 
-void Winner::expand(const vector<unsigned>& reduced2fullRank)
+void Winner::expand(const char rankAdder)
 {
   if (mode & WIN_NORTH_SET)
   {
-    north.expand(reduced2fullRank);
+    north.expand(rankAdder);
     rank = north.getRank();
   }
 
   if (mode & WIN_SOUTH_SET)
   {
-    south.expand(reduced2fullRank);
+    south.expand(rankAdder);
     rank = south.getRank();
   }
 }

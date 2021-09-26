@@ -40,7 +40,8 @@ void Reductions::set(
 
   for (unsigned reducer = 0; reducer < reducedRankSize; reducer++)
   {
-    // A reducer of 0 ("NS void") is actually like a maximal reducer.
+    // A reducer of 0 ("NS take no rank tricks") is actually like 
+    // a maximal reducer.
     const unsigned reducerEff = (reducer == 0 ? reducedRankSize : reducer);
 
     bool firstFlag = true;
@@ -52,7 +53,7 @@ void Reductions::set(
     {
       if (firstFlag)
       {
-        dist[d] = nextReducedDist++;
+        dist[d] = nextReducedDist;
         firstFlag = false;
         continue;
       }
@@ -84,19 +85,12 @@ void Reductions::set(
         }
       }
 
-      dist[d] = nextReducedDist;
-
       if (changeFlag)
         nextReducedDist++;
+
+      dist[d] = nextReducedDist;
     }
   }
-}
-
-
-void Reductions::setRankReduction(const vector<unsigned>& reduced2full)
-{
-  for (auto& reduction: reductions)
-    reduction.reduced2fullRankPtr = &reduced2full;
 }
 
 

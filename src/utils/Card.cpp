@@ -167,10 +167,9 @@ unsigned char Card::getName() const
 }
 
 
-void Card::expand(const vector<unsigned>& reduced2fullRank)
+void Card::expand(const char rankAdder)
 {
-  assert(rank < reduced2fullRank.size());
-  rank = static_cast<unsigned char>(reduced2fullRank[rank]);
+  rank = static_cast<unsigned char>(static_cast<char>(rank) + rankAdder);
 }
 
 

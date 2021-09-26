@@ -97,13 +97,19 @@ void CombTest::checkReductions(
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
+cout << "resultLowest " << resultLowest.str(true) << endl;
+cout << "rankCritical " << +rankCritical << endl;
   const auto& reduction = distribution.getReduction(rankCritical);
+cout << "Reduction\n";
+cout << reduction.str() << endl;
 
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
   // unchanged.
   Strategies strategiesReduced = strategies;
+cout << strategiesReduced.str("full strategy", true);
   strategiesReduced.reduceByTricks(reduction);
+cout << strategiesReduced.str("reduced strategy", true);
 
   list<Strategies> strategiesExpanded;
 
@@ -126,7 +132,18 @@ void CombTest::checkReductions(
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
 
     // Expand the strategies up using the reduction.
-    strategiesMin.expand(reduction, min.rotateFlag);
+    Result resultMinLowest;
+    strategiesMin.getResultLowest(resultMinLowest);
+    const char rankAdder = static_cast<char>(rankCritical) -
+      static_cast<char>(resultMinLowest.rank());
+
+cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
+cout << "  " << strategiesMin.str("before expansion", true) << endl;
+
+
+    strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
+
+cout << "  " << strategiesMin.str("expansion", true) << endl;
   }
 
   // TODO Checks:
@@ -150,6 +167,9 @@ void CombTest::checkAllReductions(
     const CombEntry& centry = centries[holding];
     if (! centry.canonicalFlag || centry.minimalFlag)
       continue;
+
+cout << "Checking: " <<
+  centry.canonical.str() << endl;
 
     const Combination& comb = uniqs[centry.canonical.index];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 

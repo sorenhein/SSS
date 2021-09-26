@@ -85,7 +85,7 @@ class Winner
 
     void update(const Play& play);
 
-    void expand(const vector<unsigned>& reduced2fullRank);
+    void expand(const char rankAdder);
 
     bool rankExceeds(const Winner& winner2) const;
 

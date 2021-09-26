@@ -124,6 +124,7 @@ class Strategy
 
     void expand(
       const Reduction& reduction,
+      const char rankAdder,
       const bool rotateFlag);
 
     // ***************** Comparisons ****************

@@ -9,6 +9,9 @@
 #ifndef SSS_REDUCTION_H
 #define SSS_REDUCTION_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <vector>
 
 
@@ -22,7 +25,19 @@ using namespace std;
 struct Reduction
 {
   vector<unsigned char> full2reducedDist;
-  vector<unsigned> const * reduced2fullRankPtr;
+
+  string str() const
+  {
+    stringstream ss;
+
+    ss << "Distribution map\n";
+    for (unsigned dfull = 0; dfull < full2reducedDist.size(); dfull++)
+      ss << 
+        setw(2) << dfull << 
+        setw(4) << +full2reducedDist[dfull]<< "\n";
+
+    return ss.str();
+  }
 };
 
 #endif

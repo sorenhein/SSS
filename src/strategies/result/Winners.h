@@ -80,7 +80,7 @@ class Winners
 
     void update(const Play& play);
 
-    void expand(const vector<unsigned>& reduced2fullRank);
+    void expand(const char rankAdder);
 
     string str() const;
 

@@ -63,7 +63,7 @@ class Card
     unsigned char getNumber() const;
     unsigned char getName() const;
 
-    void expand(const vector<unsigned>& reduced2fullRank);
+    void expand(const char rankAdder);
 
     void flipDepth(const unsigned char maxDepth);
 

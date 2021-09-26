@@ -69,7 +69,7 @@ class Result
 
     void expand(
       const unsigned char dist,
-      const vector<unsigned>& reduced2fullRank);
+      const char rankAdder);
 
     void flip();
 

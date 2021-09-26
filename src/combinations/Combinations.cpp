@@ -287,7 +287,7 @@ void Combinations::runUniques(
 
   // TODO Control by flags.
   timersStrat[30].start();
-  // ctest.checkAllReductions(cards, centries, uniqs, distributions);
+  ctest.checkAllReductions(cards, centries, uniqs, distributions);
   timersStrat[30].stop();
 
   timersStrat[31].start();

@@ -266,11 +266,12 @@ void Slist::reduceByTricks(const Reduction& reduction)
 
 void Slist::expand(
   const Reduction& reduction,
+  const char rankAdder,
   const bool rotateFlag)
 {
   // Expand the strategies up using the reduction.
   for (auto& strategy: strategies)
-    strategy.expand(reduction, rotateFlag);
+    strategy.expand(reduction, rankAdder, rotateFlag);
 }
 
 

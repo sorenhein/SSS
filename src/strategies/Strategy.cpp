@@ -197,28 +197,39 @@ bool Strategy::constantTricksByReduction(
 
 void Strategy::expand(
   const Reduction& reduction,
+  const char rankAdder,
   const bool rotateFlag)
 {
   // Modify this strategy (from a minimal strategy) up to a
   // non-minimal one by renumbering and by shifting the winners.
 
   const auto& dist = reduction.full2reducedDist;
-  const auto& rank = * reduction.reduced2fullRankPtr;
 
   // Pick a "large" starting distribution.
   const unsigned char dsize = static_cast<unsigned char>(dist.size()); 
   unsigned char distGroup = dsize;
 
   auto iter = results.begin();
-  for (unsigned char d = 0; d < dsize; d++)
+  for (unsigned char dfull = 0; dfull < dsize; dfull++)
   {
     // If it's still the same group, we need a new result.
-    if (d == distGroup)
+    if (dist[dfull] == distGroup)
+    {
+cout << "inserting a repeat\n";
+cout << Strategy::str("was", true) << endl;
       iter = results.insert(iter, * iter);
+cout << Strategy::str("is", true) << endl;
+    }
     else
-      distGroup = d;
+      distGroup = dist[dfull];
 
-    iter->expand(d, rank);
+cout << "result before\n";
+cout << iter->str(true) <<endl;
+    iter->expand(dfull, rankAdder);
+cout << "result after\n";
+cout << iter->str(true) <<endl;
+cout << "this was d " << +dfull << "reduction " << +dist[dfull] << ", distGroup now " << +distGroup << endl;
+    iter++;
   }
 
   if (rotateFlag)

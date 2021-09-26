@@ -461,7 +461,6 @@ void Distribution::setLookups()
   survivors.setSurvivors(distributions);
 
   reductions.set(distributions, rankSize);
-  reductions.setRankReduction(reduced2full);
 }
 
 

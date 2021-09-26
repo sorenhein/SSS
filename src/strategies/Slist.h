@@ -158,6 +158,7 @@ class Slist
 
     void expand(
       const Reduction& reduction,
+      const char adder,
       const bool rotateFlag);
 
 

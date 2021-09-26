@@ -113,11 +113,11 @@ void Result::update(
 
 void Result::expand(
   const unsigned char dist,
-  const vector<unsigned>& reduced2fullRank)
+  const char rankAdder)
 {
   // This is used to expand a minimal strategy to a general one.
   distInt = dist;
-  winnersInt.expand(reduced2fullRank);
+  winnersInt.expand(rankAdder);
 }
 
 
