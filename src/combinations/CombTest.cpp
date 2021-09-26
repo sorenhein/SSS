@@ -98,6 +98,11 @@ void CombTest::checkReductions(
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
   const auto& reduction = distribution.getReduction(rankCritical);
+if (reduction.full2reducedDist.size() != distribution.size())
+{
+cout << "About to fail on reduction size" << endl;
+assert(reduction.full2reducedDist.size() == distribution.size());
+}
 
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
@@ -131,8 +136,6 @@ Strategies scopy = strategiesMin;
     strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
-
-
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 
@@ -181,6 +184,11 @@ void CombTest::checkAllReductions(
 
 cout << "Checking: " <<
   centry.canonical.str() << endl;
+
+if (cards == 5 && holding == 164)
+{
+  cout << "HERE\n";
+}
 
     const Combination& comb = uniqs[centry.canonical.index];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 

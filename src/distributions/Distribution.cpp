@@ -268,7 +268,8 @@ void Distribution::split()
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackIter->west;
-          dist.add(rank, count, binomial[available][count]);
+          dist.add(rank, count, 
+            stackIter->cases * binomial[available][count]);
           dist.east.diff(opponents, dist.west);
 
           distIndex++;
@@ -316,7 +317,7 @@ void Distribution::splitAlternative()
   // Only do the first half and then mirror the other lengths.
   for (unsigned lenWest = 0; lenWest <= opponents.len / 2; lenWest++)
   {
-    (*stackRead)[0] = StackInfo(rankSize);
+    (*stackRead)[0] = StackInfo(rankSize+1);
     indexRead = 0;
     countRead = 1;
 
@@ -341,8 +342,8 @@ void Distribution::splitAlternative()
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackElem.west;
-           dist.add(rank, gap, 
-             stackElem.cases * binomial[available][gap]);
+          dist.add(rank, gap, 
+            stackElem.cases * binomial[available][gap]);
           dist.east.diff(opponents, dist.west);
 
           distIndex++;
