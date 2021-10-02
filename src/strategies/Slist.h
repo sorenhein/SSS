@@ -168,7 +168,8 @@ class Slist
 
     bool equalByMethod(
       const Slist& slist2,
-      ComparatorType equalMethod) const;
+      ComparatorType equalMethod,
+      const bool enforceSizeFlag = true) const;
 
 
     // Addition.  If lessEqualMethod matches, then compareSecondary.

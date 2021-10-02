@@ -182,9 +182,12 @@ bool Strategies::operator == (const Strategies& strats2) const
 }
 
 
-bool Strategies::equalPrimary(const Strategies& strats2) const
+bool Strategies::equalPrimary(
+  const Strategies& strats2,
+  const bool enforceSizeFlag) const
 {
-  return slist.equalByMethod(strats2.slist, &Strategy::equalPrimaryStudied);
+  return slist.equalByMethod(strats2.slist, 
+    &Strategy::equalPrimaryStudied, enforceSizeFlag);
 }
 
 

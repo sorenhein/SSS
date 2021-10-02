@@ -75,7 +75,9 @@ class Strategies
 
     bool operator == (const Strategies& strats2) const;
 
-    bool equalPrimary(const Strategies& strats2) const;
+    bool equalPrimary(
+      const Strategies& strats2,
+      const bool enforceSizeFlag = true) const;
 
     void operator += (Strategies& strats2);
 

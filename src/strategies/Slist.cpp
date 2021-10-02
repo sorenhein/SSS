@@ -336,7 +336,8 @@ bool Slist::operator == (const Slist& slist2) const
 
 bool Slist::equalByMethod(
   const Slist& slist2,
-  ComparatorType equalMethod) const
+  ComparatorType equalMethod,
+  const bool enforceSizeFlag) const
 {
   // TODO
   // This is dreadfully slow, but it is mainly used for debugging.
@@ -346,9 +347,9 @@ bool Slist::equalByMethod(
   // Then we'd add some methods in Comparer where we would stop
   // if a row had no equal, or a column had more than one equal.
 
-  if (Slist::size() != slist2.size())
+  if (enforceSizeFlag && Slist::size() != slist2.size())
     return false;
-  else if (Slist::sameOrdered(slist2, equalMethod))
+  else if (enforceSizeFlag && Slist::sameOrdered(slist2, equalMethod))
     return true;
   else
     return Slist::sameUnordered(slist2, equalMethod);

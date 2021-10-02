@@ -116,6 +116,7 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 
   for (auto& min: centry.minimals)
   {
+cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
@@ -124,6 +125,7 @@ assert(reduction.full2reducedDist.size() == distribution.size());
       continue;
     }
 
+cout << "Making space for min " << min.str() << endl;
     strategiesExpanded.emplace_back(Strategies());
     Strategies& strategiesMin = strategiesExpanded.back();
 
@@ -133,24 +135,27 @@ assert(reduction.full2reducedDist.size() == distribution.size());
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
 Strategies scopy = strategiesMin;
 
+cout << "Getting result for min " << min.str() << endl;
     // Expand the strategies up using the reduction.
     Result resultMinLowest;
     strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
+cout << "About to expand min " << min.str() << endl;
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
+cout << "Expanded min " << min.str() << endl;
 
-    if (strategiesMin.equalPrimary(strategiesReduced))
+    if (strategiesMin.equalPrimary(strategiesReduced, false))
     {
-      cout << "MINIMUM MATCH\n";
+      cout << "MINIMUM MATCH" << endl;
     }
     else
     {
-      cout << "MINIMUM MISMATCH\n";
+      cout << "MINIMUM MISMATCH" << endl;
       cout << "resultLowest " << resultLowest.str(true) << endl;
       cout << "rankCritical " << +rankCritical << endl;
-      cout << "Reduction\n";
+      cout << "Reduction" << endl;
       cout << reduction.str() << endl;
       cout << strategies.str("full strategy", true);
       cout << strategiesReduced.str("reduced strategy", true);
@@ -161,6 +166,8 @@ Strategies scopy = strategiesMin;
 
 
   }
+
+cout << "Loop fertig" << endl;
 
   // TODO Checks:
   // * The sum of the minimal winners should be the overall winner.
@@ -187,7 +194,7 @@ void CombTest::checkAllReductions(
 cout << "Checking: " <<
   centry.canonical.str() << endl;
 
-if (cards == 5 && holding == 164)
+if (cards == 6 && holding == 50)
 {
   cout << "HERE\n";
 }
