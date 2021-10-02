@@ -179,6 +179,7 @@ bool Study::maybeLessEqualStudied(const Study& study2) const
   // This uses studied results if possible, otherwise the basic method.
 
   assert(studiedFlag);
+  assert(study2.studiedFlag);
 
   for (unsigned i = 0; i < summary.size(); i++)
   {

@@ -257,7 +257,10 @@ void Slist::reduceByTricks(const Reduction& reduction)
   while (iter != strategies.end())
   {
     if (iter->constantTricksByReduction(reduction))
+    {
+      iter->study();
       iter++;
+    }
     else
       iter = strategies.erase(iter);
   }

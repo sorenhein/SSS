@@ -141,7 +141,7 @@ Strategies scopy = strategiesMin;
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 
-    if (strategiesMin == strategiesReduced)
+    if (strategiesMin.equalPrimary(strategiesReduced))
     {
       cout << "MINIMUM MATCH\n";
     }

@@ -40,10 +40,6 @@ void Reductions::set(
 
   for (unsigned reducer = 0; reducer < reducedRankSize; reducer++)
   {
-    // A reducer of 0 ("NS take no rank tricks") is actually like 
-    // a maximal reducer.
-    const unsigned reducerEff = (reducer == 0 ? reducedRankSize : reducer);
-
     bool firstFlag = true;
     unsigned char nextReducedDist = 0;
     auto& dist = reductions[reducer].full2reducedDist;
@@ -67,7 +63,7 @@ void Reductions::set(
       {
         for (unsigned rank = reducedRankSize; rank-- > 0; )
         {
-          if (rank <= reducerEff)
+          if (rank <= reducer)
           {
             // We have run out of ranks that still count.
             break;
