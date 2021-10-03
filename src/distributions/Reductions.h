@@ -30,6 +30,12 @@ class Reductions
     // The index is >= 1 as there is no reason to reduce the 0 index.
     vector<Reduction> reductions;
 
+    bool sameReduction(
+      const DistInfo& dist0,
+      const DistInfo& dist1,
+      const unsigned reducedRankSize,
+      const unsigned reducer) const;
+
 
   public:
 

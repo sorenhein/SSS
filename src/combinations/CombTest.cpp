@@ -143,6 +143,21 @@ cout << "Getting result for min " << min.str() << endl;
       static_cast<char>(resultMinLowest.rank());
 
 cout << "About to expand min " << min.str() << endl;
+if (min.holding3 == 564)
+{
+      cout << "MINIMUM BEFORE" << endl;
+      cout << "resultLowest " << resultLowest.str(true) << endl;
+      cout << "rankCritical " << +rankCritical << endl;
+      cout << "Reduction" << endl;
+      cout << reduction.str() << endl;
+      cout << strategies.str("full strategy", true);
+      cout << strategiesReduced.str("reduced strategy", true);
+      cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
+      cout << "  " << scopy.str("before expansion", true) << endl;
+      cout << "  " << strategiesMin.str("expansion", true) << endl;
+}
+
+
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 cout << "Expanded min " << min.str() << endl;
 

@@ -31,6 +31,7 @@ Reductions::Reductions()
 }
 
 
+/*
 void Reductions::set(
   const vector<DistInfo>& distributions,
   const unsigned reducedRankSize)
@@ -85,6 +86,76 @@ void Reductions::set(
         nextReducedDist++;
 
       dist[d] = nextReducedDist;
+    }
+  }
+}
+*/
+
+
+bool Reductions::sameReduction(
+  const DistInfo& dist0,
+  const DistInfo& dist1,
+  const unsigned reducedRankSize,
+  const unsigned reducer) const
+{
+  for (unsigned rank = reducedRankSize; rank-- > 0; )
+  {
+    if (rank <= reducer)
+    {
+      // We have run out of ranks that still count.
+      return true;
+    }
+
+    if (dist0.west.counts[rank] != dist1.west.counts[rank])
+    {
+      // If there is a difference in counts in the part of the
+      // distribution that still counts (> reducer), it is a new
+      // distribution in this sense.
+      return false;
+    }
+  }
+  return true;
+}
+
+
+void Reductions::set(
+  const vector<DistInfo>& distributions,
+  const unsigned reducedRankSize)
+{
+  reductions.clear();
+  reductions.resize(reducedRankSize);
+
+  for (unsigned reducer = 0; reducer < reducedRankSize; reducer++)
+  {
+    auto& dist = reductions[reducer].full2reducedDist;
+    dist.resize(distributions.size());
+
+    vector<unsigned char> seen(distributions.size(), 0);
+    unsigned char nextReducedDist = 0;
+
+    for (unsigned d = 0; d < distributions.size(); d++)
+    {
+      if (seen[d])
+        continue;
+
+      const unsigned dlen = distributions[d].west.len;
+      dist[d] = nextReducedDist;
+
+      for (unsigned dnext = d+1; dnext < distributions.size(); dnext++)
+      {
+        if (seen[dnext])
+          continue;
+        else if (distributions[dnext].west.len != dlen)
+          break;
+        else if (Reductions::sameReduction(
+            distributions[d], distributions[dnext], 
+            reducedRankSize, reducer))
+        {
+          seen[dnext] = 1;
+          dist[dnext] = nextReducedDist;
+        }
+      }
+      nextReducedDist++;
     }
   }
 }
