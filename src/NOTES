@@ -1,3 +1,17 @@
+1. Strategy::expand
+   Just make a vector of ptrs unless sizes are the same
+ 
+2. equalByMethod
+   Divide completely by size
+   assert size(v1) >= size(v2)?
+
+3. Does group-trick check even work?
+
+4. Sum of min ranks == parent rank?
+
+5. merge...
+
+
 Open issues 2021-09-26
 ----------------------
 1. Cannot really construct the distribution mapping purely sequentially.

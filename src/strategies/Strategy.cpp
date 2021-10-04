@@ -202,18 +202,29 @@ void Strategy::expand(
 {
   // Modify this strategy (from a minimal strategy) up to a
   // non-minimal one by renumbering and by shifting the winners.
+  // The distribution map may not be monotonic.
 
   const auto& dist = reduction.full2reducedDist;
-
-  // Pick a "large" starting distribution.
   const unsigned char dsize = static_cast<unsigned char>(dist.size()); 
-  unsigned char distGroup = dsize;
+
+  // The next regular, reduced distribution expected, i.e. 
+  // the current one + 1.  The reduced ones may not be in order, but
+  // the maximum should only increase one at at time.
+  unsigned char dredNext = 0;
+
+  // The immediately previous, reduced distribution that we used.
+  unsigned char dredPrev = dsize;
 
   auto iter = results.begin();
   for (unsigned char dfull = 0; dfull < dsize; dfull++)
   {
-    // If it's still the same group, we need a new result.
-    if (dist[dfull] == distGroup)
+    if (dist[dfull] == dredNext)
+    {
+      iter->expand(dfull, rankAdder);
+      dredPrev = dredNext;
+      dredNext++;
+    }
+    else if (dist[dfull] == dredPrev)
     {
       // Rank adder was already added once.
       iter = results.insert(iter, * prev(iter));
@@ -222,8 +233,18 @@ void Strategy::expand(
     }
     else
     {
-      distGroup = dist[dfull];
-      iter->expand(dfull, rankAdder);
+      // Go back.
+      unsigned char dprev = dfull-1;
+      auto iterPrev = prev(iter);
+      while (dist[dprev] != dist[dfull])
+      {
+        dprev--;
+        iterPrev--;
+      }
+
+      iter = results.insert(iter, * iterPrev);
+      iter->expand(dfull, 0);
+      weightInt += iter->tricks();
     }
 
     iter++;
