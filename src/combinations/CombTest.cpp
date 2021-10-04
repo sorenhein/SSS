@@ -209,7 +209,7 @@ void CombTest::checkAllReductions(
 cout << "Checking: " <<
   centry.canonical.str() << endl;
 
-if (cards == 6 && holding == 50)
+if (cards == 7 && holding == 563)
 {
   cout << "HERE\n";
 }

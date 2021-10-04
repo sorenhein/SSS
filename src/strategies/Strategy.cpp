@@ -223,6 +223,9 @@ void Strategy::expand(
       iter->expand(dfull, rankAdder);
       dredPrev = dredNext;
       dredNext++;
+// cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  // ", redNext " << +dredNext << endl;
+// cout << Strategy::str("full add", true);
     }
     else if (dist[dfull] == dredPrev)
     {
@@ -230,6 +233,9 @@ void Strategy::expand(
       iter = results.insert(iter, * prev(iter));
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
+// cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  // ", redNext " << +dredNext << endl;
+// cout << Strategy::str("prev add", true);
     }
     else
     {
@@ -245,6 +251,10 @@ void Strategy::expand(
       iter = results.insert(iter, * iterPrev);
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
+      dredPrev = dist[dprev];
+// cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  // ", redNext " << +dredNext << endl;
+// cout << Strategy::str("back add", true);
     }
 
     iter++;

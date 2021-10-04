@@ -1,5 +1,6 @@
-1. Strategy::expand
-   Just make a vector of ptrs unless sizes are the same
+Was 22,797 OK, 5,324 bad
+Is  25,210 OK, 2,911 bad
+Is  28,099 OK,    22 bad
  
 2. equalByMethod
    Divide completely by size
