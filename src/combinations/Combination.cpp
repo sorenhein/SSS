@@ -92,7 +92,7 @@ const Strategies& Combination::strategize(
   plays.setCombPtrs(combinations);
   timers.stop(TIMER_PLAYS);
 
-  if (debugFlag)
+  if (debugFlag || debugFlagTmp)
   {
     cout << "Plays\n" << plays.str() << endl;
     cout << "Distribution\n" << distPtr->str() << endl;
