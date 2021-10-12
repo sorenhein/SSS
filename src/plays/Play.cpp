@@ -56,7 +56,15 @@ unsigned Play::rho(const bool fullFlag) const
 
 void Play::setCombPtr(const Combinations& combinations)
 {
-  combPtr = combinations.getPtr(cardsLeft, holding3);
+  // TODO We don't deal with multiple minimals yet.
+  // Once ranks don't matter, we can switch to COMB_MIN_FULL
+  // (or abolish the whole parameter).
+  bool rotateMoreFlag;
+  combPtr = combinations.getPtr(cardsLeft, holding3, 
+    // COMB_MIN_IGNORE, rotateMoreFlag);
+    COMB_MIN_SINGLE, rotateMoreFlag);
+
+  rotateFlag ^= rotateMoreFlag;
 }
 
 

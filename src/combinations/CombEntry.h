@@ -111,6 +111,26 @@ struct CombEntry
 
     return true;
   }
+
+  string str() const
+  {
+    string s;
+    if (canonicalFlag)
+      s = "canonical, ";
+    else
+      s = "non-canonical, ";
+
+    if (minimalFlag)
+      s += "minimal\n";
+    else
+    {
+      s += "non-minimal, size " + to_string(minimals.size()) + "\n";
+      for (auto& m: minimals)
+        s += m.str();
+    }
+    
+    return s;
+  }
 };
 
 #endif

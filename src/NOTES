@@ -1,3 +1,36 @@
+Why doesn't minimal lookup and substitution work?
+I think it's because, say, 4/62 has 6 distributions and
+4/78 has 3.  So aren't there some distribution survivors
+that need to be mapped as well?
+
+Distribution.cpp has a distCanonical.
+But if the combination gets rerouted to a minimal one, then
+the distribution (and survivors) must be, too.
+Distribution::setPtr gets called from Distributions::runUniques
+and runUniqueThread.
+This is based on Distribution::getID which makes the canonical
+distribution with no reference to anything else.
+"Canonical" means something else for Distribution than for Combination.
+
+Actually the survivors can't be easily mapped: They're a lookup from
+cards played to a distribution map.  I guess we could map twice:
+First from minimal to canonical, then from canonical to parent.
+But even the map from minimal to non-minimal takes us back to 
+Strategies::expand, as in CombTest::checkReductions.
+
+But at the time when we're optimizing, we look up the combination ptr.
+Survivors have to be right at that point. The knowledge needed to
+expand from minimal to non-minimal must then be present in the
+combination somehow?  In order to get the reduction, we need
+the distribution. Probably also the rank of the lowest result in
+each strategies.  And the rotation from minimal to non-minimal.
+
+The combination ptr should perhaps be an index into the overall
+list of combinations.  It's a bit less efficient to look up the
+combination via the unique index.  But then we have most of the tools.
+We have to be able to ask Combinations.
+
+
 Was 22,797 OK, 5,324 bad
 Is  25,210 OK, 2,911 bad
 Is  28,099 OK,    22 bad

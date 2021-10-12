@@ -422,10 +422,55 @@ void Combinations::runUniquesMT(
 
 Combination const * Combinations::getPtr(
   const unsigned cards,
-  const unsigned holding3) const
+  const unsigned holding3,
+  const CombMinimumMode mode,
+  bool& rotateFlag) const
 {
-  const unsigned ui = combEntries[cards][holding3].canonical.index;
-  return &uniques[cards][ui];
+  const auto& centry = combEntries[cards][holding3];
+
+cout << "cards " << cards << ", holding3 " << holding3 << endl;
+cout << "centry " << centry.str() << endl;
+
+  const auto& ccan = (centry.canonicalFlag ? centry :
+    combEntries[cards][centry.canonical.holding3]);
+
+cout << "ccan " << ccan.str() << endl;
+
+  const unsigned msize = ccan.minimals.size();
+
+  if (mode == COMB_MIN_IGNORE ||
+      (mode == COMB_MIN_SINGLE && msize > 1) ||
+      ccan.minimalFlag)
+  {
+    // There is no additional rotation beyond what is stored elsewhere, 
+    // just the lookup.
+    rotateFlag = false;
+    const unsigned ui = ccan.canonical.index;
+cout << "normal branch" << endl;
+    return &uniques[cards][ui];
+  }
+  else
+  {
+    // The minimal version could be rotated.
+    // Pick the single minimal (or the first one of several, if flagged).
+    // if (msize == 0)
+    {
+      cout << "Tried to look up " << cards << ", " << holding3 << endl;
+      cout << "centry " << centry.canonicalFlag << ", " <<
+        centry.canonical.index << endl;
+      cout << centry.canonical.str() << endl;
+      cout << "ccan " << ccan.canonicalFlag << ", " <<
+        ccan.canonical.index << endl;
+      cout << ccan.canonical.str() << endl;
+    }
+    assert(msize != 0);
+    const auto& cref = ccan.minimals.front();
+
+    rotateFlag = cref.rotateFlag;
+    const unsigned ui = combEntries[cards][cref.holding3].canonical.index;
+cout << "new branch, ui " << ui << ", rot " << rotateFlag << endl;
+    return &uniques[cards][ui];
+  }
 }
 
 

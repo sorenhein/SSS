@@ -19,6 +19,13 @@ using namespace std;
 
 class Distributions;
 
+enum CombMinimumMode
+{
+  COMB_MIN_IGNORE = 0,
+  COMB_MIN_SINGLE = 1,
+  COMB_MIN_FULL = 2
+};
+
 
 class Combinations
 {
@@ -93,7 +100,9 @@ class Combinations
 
     Combination const * getPtr(
       const unsigned cards,
-      const unsigned holding3) const;
+      const unsigned holding3,
+      const CombMinimumMode mode,
+      bool& rotateFlag) const;
 
     string strUniques(const int unsigned = 0) const;
 
