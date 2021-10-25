@@ -175,6 +175,33 @@ if (debugFlag)
 }
 
 
+void Combination::reduce(const Distribution& distribution)
+{
+  // Eliminate Strategy's that distinguish between ranks below the
+  // last N-S rank to take a trick.  These Strategy's are not
+  // necessarily bad ones, but we do this for simplicity.
+
+  // TODO Could store in the CombEntr in Combinations?
+  Result resultLowest;
+  strats.getResultLowest(resultLowest);
+  const unsigned char rankCritical = resultLowest.rank();
+
+  const auto& reduction = distribution.getReduction(rankCritical);
+  assert(reduction.full2reducedDist.size() == distribution.size());
+
+  unsigned noBefore = strats.size();
+
+  strats.reduceByTricks(reduction);
+
+  if (strats.size() != noBefore &&
+      control.outputBasicResults())
+  {
+    cout << strats.str("Reduced result", 
+      control.runRankComparisons()) << "\n";
+  }
+}
+
+
 const Strategies& Combination::strategies() const
 {
   return strats;

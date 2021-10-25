@@ -46,6 +46,8 @@ class Combination
       Plays& plays,
       bool debugFlag = false);
 
+    void reduce(const Distribution& distribution);
+
     const Strategies& strategies() const;
 
     string str() const;

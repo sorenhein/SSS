@@ -522,9 +522,9 @@ const Reduction& Distribution::getReduction(
   // a maximal reducer.
   const unsigned rankReducedEW = 
     (rankNS == 0 ? rankSize-1 : full2reduced[rankNS-1]);
-cout << "rank NS " << +rankNS << ", EW " << rankReducedEW << endl;
-for (unsigned i = 0; i < full2reduced.size(); i++)
-  cout << i << ": " << full2reduced[i]<< endl;
+// cout << "rank NS " << +rankNS << ", EW " << rankReducedEW << endl;
+// for (unsigned i = 0; i < full2reduced.size(); i++)
+  // cout << i << ": " << full2reduced[i]<< endl;
 
   if (distCanonical == nullptr)
   {

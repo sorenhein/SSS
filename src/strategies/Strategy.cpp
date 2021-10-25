@@ -174,6 +174,22 @@ bool Strategy::constantTricksByReduction(
   const auto& dist = reduction.full2reducedDist;
   assert(dist.size() == results.size());
 
+  vector<unsigned char> reducedTricks(dist.size(), UCHAR_NOT_SET);
+
+  for (auto& result: results)
+  {
+    const unsigned reduced = dist[result.dist()];
+
+    if (reducedTricks[reduced] == UCHAR_NOT_SET)
+    {
+      // Store the group's trick count.
+      reducedTricks[reduced] = result.tricks();
+    }
+    else if (reducedTricks[reduced] != result.tricks())
+      return false;
+  }
+
+/*
   // Pick a "large" starting distribution. Tricks don't matter here.
   unsigned char distGroup = static_cast<unsigned char>(dist.size()); 
   unsigned char tricksGroup = 0;
@@ -190,6 +206,8 @@ bool Strategy::constantTricksByReduction(
     else if (result.tricks() != tricksGroup)
       return false;
   }
+*/
+  
 
   return true;
 }

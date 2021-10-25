@@ -262,6 +262,12 @@ void Combinations::runUniques(
 
       centry.minimalFlag =
         Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+      if (! centry.minimalFlag)
+      {
+        // TODO Control by some flag
+        comb.reduce(
+          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+      }
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
@@ -420,6 +426,8 @@ void Combinations::runUniquesMT(
 }
 
 
+#include "../const.h"
+
 Combination const * Combinations::getPtr(
   const unsigned cards,
   const unsigned holding3,
@@ -428,26 +436,30 @@ Combination const * Combinations::getPtr(
 {
   const auto& centry = combEntries[cards][holding3];
 
-cout << "cards " << cards << ", holding3 " << holding3 << endl;
-cout << "centry " << centry.str() << endl;
+// cout << "cards " << cards << ", holding3 " << holding3 << endl;
+// cout << "centry " << centry.str() << endl;
 
   const auto& ccan = (centry.canonicalFlag ? centry :
     combEntries[cards][centry.canonical.holding3]);
 
-cout << "ccan " << ccan.str() << endl;
+// cout << "ccan " << ccan.str() << endl;
 
   const unsigned msize = ccan.minimals.size();
+  UNUSED(mode);
 
+  /*
   if (mode == COMB_MIN_IGNORE ||
       (mode == COMB_MIN_SINGLE && msize > 1) ||
       ccan.minimalFlag)
   {
+  */
     // There is no additional rotation beyond what is stored elsewhere, 
     // just the lookup.
     rotateFlag = false;
     const unsigned ui = ccan.canonical.index;
-cout << "normal branch" << endl;
+// cout << "normal branch" << endl;
     return &uniques[cards][ui];
+  /*
   }
   else
   {
@@ -471,6 +483,7 @@ cout << "normal branch" << endl;
 cout << "new branch, ui " << ui << ", rot " << rotateFlag << endl;
     return &uniques[cards][ui];
   }
+  */
 }
 
 

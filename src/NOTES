@@ -1,3 +1,10 @@
+2021-10-25
+
+CombTest,checkReductions: Should now not need reduceByTricks.
+Just use strategies.
+
+
+
 Why doesn't minimal lookup and substitution work?
 I think it's because, say, 4/62 has 6 distributions and
 4/78 has 3.  So aren't there some distribution survivors
@@ -307,3 +314,4 @@ TODO
 Not all features of Control.cpp are implemented yet
 
 No / limited endl
+
