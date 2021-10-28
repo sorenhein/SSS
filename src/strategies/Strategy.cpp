@@ -225,6 +225,11 @@ void Strategy::expand(
   const auto& dist = reduction.full2reducedDist;
   const unsigned char dsize = static_cast<unsigned char>(dist.size()); 
 
+cout << "map\n";
+for (unsigned char d = 0; d < dsize; d++)
+  cout << +d << " " << +dist[d] << "\n";
+cout << "\n";
+
   // The next regular, reduced distribution expected, i.e. 
   // the current one + 1.  The reduced ones may not be in order, but
   // the maximum should only increase one at at time.
@@ -241,9 +246,9 @@ void Strategy::expand(
       iter->expand(dfull, rankAdder);
       dredPrev = dredNext;
       dredNext++;
-// cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  // ", redNext " << +dredNext << endl;
-// cout << Strategy::str("full add", true);
+cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  ", redNext " << +dredNext << endl;
+cout << Strategy::str("full add", true) << endl;
     }
     else if (dist[dfull] == dredPrev)
     {
@@ -251,9 +256,9 @@ void Strategy::expand(
       iter = results.insert(iter, * prev(iter));
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
-// cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  // ", redNext " << +dredNext << endl;
-// cout << Strategy::str("prev add", true);
+cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  ", redNext " << +dredNext << endl;
+cout << Strategy::str("prev add", true) << endl;
     }
     else
     {
@@ -270,14 +275,15 @@ void Strategy::expand(
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
       dredPrev = dist[dprev];
-// cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  // ", redNext " << +dredNext << endl;
-// cout << Strategy::str("back add", true);
+cout << "full " << +dfull << ", red prev " << +dredPrev <<
+  ", redNext " << +dredNext << endl;
+cout << Strategy::str("back add", true) << endl;
     }
 
     iter++;
   }
 
+cout << "done loop" << endl;
   if (rotateFlag)
   {
     results.reverse();
@@ -287,6 +293,7 @@ void Strategy::expand(
       result.flip();
     }
   }
+cout << "done rotating" << endl;
 
   studied.study(results);
 }

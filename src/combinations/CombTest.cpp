@@ -107,21 +107,13 @@ cout << "About to fail on reduction size" << endl;
 assert(reduction.full2reducedDist.size() == distribution.size());
 }
 
-  /*
-  // Delete Strategy's where the number of tricks is not constant
-  // within each reduction group.  The number of distributions is
-  // unchanged.
-  Strategies strategiesReduced = strategies;
-  strategiesReduced.reduceByTricks(reduction);
-  */
-
   list<Strategies> strategiesExpanded;
   Result resultCheck;
   bool firstFlag = true;
 
   for (auto& min: centry.minimals)
   {
-// cout << "Starting min loop " << min.str() << endl;
+cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
@@ -131,7 +123,7 @@ cout << "Skipping non-minimal entry\n";
       continue;
     }
 
-// cout << "Making space for min " << min.str() << endl;
+cout << "Making space for min " << min.str() << endl;
     strategiesExpanded.emplace_back(Strategies());
     Strategies& strategiesMin = strategiesExpanded.back();
 
@@ -141,20 +133,21 @@ cout << "Skipping non-minimal entry\n";
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
 Strategies scopy = strategiesMin;
 
-// cout << "Getting result for min " << min.str() << endl;
+cout << "Getting result for min " << min.str() << endl;
     // Expand the strategies up using the reduction.
     Result resultMinLowest;
     strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-// cout << "About to expand min " << min.strSimple() << endl;
-/*
-if (min.holding3 == 564)
+cout << "About to expand min " << min.strSimple() << endl;
+/* */
+if (min.holding3 == 1432)
 {
       cout << "MINIMUM BEFORE" << endl;
       cout << "resultLowest " << resultLowest.str(true) << endl;
       cout << "rankCritical " << +rankCritical << endl;
+      cout << "rankAdder " << +rankAdder << endl;
       cout << "Reduction" << endl;
       cout << reduction.str() << endl;
       cout << strategies.str("full strategy", true);
@@ -162,18 +155,18 @@ if (min.holding3 == 564)
       cout << "  " << scopy.str("before expansion", true) << endl;
       cout << "  " << strategiesMin.str("expansion", true) << endl;
 }
-*/
+/* */
 
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
-// cout << "Expanded min " << min.str() << endl;
-// cout << "  " << strategiesMin.str("expansion", true) << endl;
+cout << "Expanded min " << min.str() << endl;
+cout << "  " << strategiesMin.str("expansion", true) << endl;
 
     // The minimums have changed in general.
     Result resultMinNew;
     strategiesMin.getResultLowest(resultMinNew);
 
-// cout << "adding resultMinNew " << resultMinNew.str(true);
+cout << "adding resultMinNew " << resultMinNew.str(true);
     if (firstFlag)
     {
       // An empty result is better than anything, so we have to
@@ -183,7 +176,7 @@ if (min.holding3 == 564)
     }
     else
       resultCheck += resultMinNew;
-// cout << "resultCheck now " << resultCheck.str(true) << endl;
+cout << "resultCheck now " << resultCheck.str(true) << endl;
 
 
     if (strategiesMin.equalPrimary(strategies, false))
@@ -243,7 +236,7 @@ void CombTest::checkAllReductions(
 cout << "Checking: " <<
   centry.canonical.str() << endl;
 
-if (cards == 7 && holding == 563)
+if (cards == 9 && holding == 1232)
 {
   cout << "HERE\n";
 }

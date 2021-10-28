@@ -1,5 +1,54 @@
 2021-10-28
 
+Segmentation fault
+9/1232, AKT9 / Q8 missing Jxx, 6 distributions.
+One strategy: 4N'S so KQ, another 2N so T.
+The second one is spurious.
+
+9/1232 refers to 9/1288, AKT7 / Q6 which also has 6 distributions.
+But this is not minimal as the T is not needed.
+The winning rank in 1288 is 5N's = KQ.
+
+9/1432, AK87 / Q6 has only 4 distributions and is minimal.
+When we derive the reductions from a rank of 2N, we assume that we
+land at 9/1288, but actually this refers us to 9/1432.
+I guess we can fix this in two ways:
+1. The second strategy in 1232 is spurious to begin with,
+   so somehow avoid and all other non-minimal "minimals".
+2. Recognize that when we move along the minimal chain, we
+   are also deleting strategies with the rank that turns out
+   not to be needed after all.
+
+Concerning the first fix, the problem in 9/1232 arises when the
+play starts 8 J A -.  This leads to 6/89 AQJ/K missing xx, which is
+not canonical, or to 6/17 AKQ/J missing xx, which is canonical.
+The issue is the 2-0 split.
+
+When we cash AJ in the first trick: 2N+2S.
+Then in the second trick the K: 2N'.
+Product 2N'+2N's = 2N', so only the K.
+
+If we cashed QJ in the first trick (this doesn't happen): 2N"+2S.
+Then in the second trick the A: 2N.
+Product 2N"+2NS.
+
+Adding the two: 2N'+2NS.
+
+Then when we shift this up to 9/1232 for d = 5, we get T + KQ and
+not just T.  Then T should be eliminated when adapting, because it
+has a lower rank than KQ.  So then 9/1232 would in fact only have
+one strategy and not two.
+
+This requires the full set of plays which we don't have.  So let's 
+look at fix #2 instead for now.
+
+I guess one way is not to map the chain at all, and consciously to
+use a non-minimal 9/1288 instead of the minimal 9/1232.  But then
+we would not understand that 9/1232 has two strategies, assuming
+the T matters, and 9/1288 doesn't.
+
+
+
 Can now compare winning ranks among non-minimal entry and its
 minimal references.
 2074 errors.
@@ -8,8 +57,11 @@ minimal references.
   2 size 3
 
 Known reasons:
-- resultCheck is empty because the supposedly minimal reference
-  does not have minimalFlag set
+- Actual rank errors: 7/528, AQ7 / JT missing K9        3NS, 3S'
+  - 532: AQ9 / J8 missing KT, not minimal              (3N      Q)
+  - 544: AQT / 98 missing KJ, its minimal version       3N      Q
+  - 612: A98 / QJ missing KT, also minimal              3S'     J
+  So 3NS in the original 528 combination is somehow too broad.
 
 
 Why doesn't minimal lookup and substitution work?
