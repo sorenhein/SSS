@@ -116,7 +116,7 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 
   for (auto& min: centry.minimals)
   {
-cout << "Starting min loop " << min.str() << endl;
+// cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
@@ -125,7 +125,7 @@ cout << "Starting min loop " << min.str() << endl;
       continue;
     }
 
-cout << "Making space for min " << min.str() << endl;
+// cout << "Making space for min " << min.str() << endl;
     strategiesExpanded.emplace_back(Strategies());
     Strategies& strategiesMin = strategiesExpanded.back();
 
@@ -135,14 +135,15 @@ cout << "Making space for min " << min.str() << endl;
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
 Strategies scopy = strategiesMin;
 
-cout << "Getting result for min " << min.str() << endl;
+// cout << "Getting result for min " << min.str() << endl;
     // Expand the strategies up using the reduction.
     Result resultMinLowest;
     strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-cout << "About to expand min " << min.str() << endl;
+// cout << "About to expand min " << min.str() << endl;
+/*
 if (min.holding3 == 564)
 {
       cout << "MINIMUM BEFORE" << endl;
@@ -156,10 +157,11 @@ if (min.holding3 == 564)
       cout << "  " << scopy.str("before expansion", true) << endl;
       cout << "  " << strategiesMin.str("expansion", true) << endl;
 }
+*/
 
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
-cout << "Expanded min " << min.str() << endl;
+// cout << "Expanded min " << min.str() << endl;
 
     if (strategiesMin.equalPrimary(strategiesReduced, false))
     {
@@ -182,7 +184,7 @@ cout << "Expanded min " << min.str() << endl;
 
   }
 
-cout << "Loop fertig" << endl;
+// cout << "Loop fertig" << endl;
 
   // TODO Checks:
   // * The sum of the minimal winners should be the overall winner.
