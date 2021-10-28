@@ -1,7 +1,14 @@
-2021-10-25
+2021-10-28
 
-CombTest,checkReductions: Should now not need reduceByTricks.
-Just use strategies.
+Can now compare winning ranks among non-minimal entry and its
+minimal references.
+2074 errors.
+Known reasons:
+- resultCheck is empty because the supposedly minimal reference
+  does not have minimalFlag set
+- 3/5: A/K missing Q.  Refers in two ways to A/Q missing K, but
+  there is only one minimal entry.  Probably we consider them
+  unique (one must be rotated) where they're not.
 
 
 
