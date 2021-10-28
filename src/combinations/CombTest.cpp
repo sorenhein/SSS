@@ -148,7 +148,7 @@ Strategies scopy = strategiesMin;
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-// cout << "About to expand min " << min.str() << endl;
+// cout << "About to expand min " << min.strSimple() << endl;
 /*
 if (min.holding3 == 564)
 {
@@ -167,6 +167,7 @@ if (min.holding3 == 564)
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 // cout << "Expanded min " << min.str() << endl;
+// cout << "  " << strategiesMin.str("expansion", true) << endl;
 
     // The minimums have changed in general.
     Result resultMinNew;

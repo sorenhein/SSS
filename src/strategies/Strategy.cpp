@@ -282,7 +282,10 @@ void Strategy::expand(
   {
     results.reverse();
     for (auto& result: results)
+    {
       result.setDist(dsize - result.dist() - 1);
+      result.flip();
+    }
   }
 
   studied.study(results);

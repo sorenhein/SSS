@@ -3,13 +3,13 @@
 Can now compare winning ranks among non-minimal entry and its
 minimal references.
 2074 errors.
+753 size 1
+336 size 2
+  2 size 3
+
 Known reasons:
 - resultCheck is empty because the supposedly minimal reference
   does not have minimalFlag set
-- 3/5: A/K missing Q.  Refers in two ways to A/Q missing K, but
-  there is only one minimal entry.  Probably we consider them
-  unique (one must be rotated) where they're not.
-
 
 
 Why doesn't minimal lookup and substitution work?

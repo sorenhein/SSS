@@ -41,7 +41,9 @@ struct CombReference
   {
     // Used narrowly to sort minimal holdings.
     // Must be called == (or define custom comparator).
-    return (holding3 == cr2.holding3);
+
+    return this->equal(cr2);
+    // return (holding3 == cr2.holding3);
   }
 
   bool equal(const CombReference& cr2) const
@@ -63,6 +65,12 @@ struct CombReference
       dec << holding2;
 
     return ss.str();
+  }
+
+  string strSimple() const
+  {
+    return to_string(holding3) + " " +
+      (rotateFlag ? "(rot)" : "(nonrot)");
   }
 };
 
