@@ -94,6 +94,7 @@ void CombTest::checkReductions(
 {
   // Get the reduction that underlies the whole method.
   // TODO Could store the rank in CombEntry?
+
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
@@ -106,13 +107,9 @@ cout << "About to fail on reduction size" << endl;
 assert(reduction.full2reducedDist.size() == distribution.size());
 }
 
-  // Delete Strategy's where the number of tricks is not constant
-  // within each reduction group.  The number of distributions is
-  // unchanged.
-  Strategies strategiesReduced = strategies;
-  strategiesReduced.reduceByTricks(reduction);
-
   list<Strategies> strategiesExpanded;
+  Result resultCheck;
+  bool firstFlag = true;
 
   for (auto& min: centry.minimals)
   {
@@ -122,6 +119,7 @@ cout << "Starting min loop " << min.str() << endl;
     {
       // This should not happen long-term, and short-term it is
       // addressed in checkMinimals().
+cout << "Skipping non-minimal entry\n";
       continue;
     }
 
@@ -142,38 +140,58 @@ cout << "Getting result for min " << min.str() << endl;
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-cout << "About to expand min " << min.str() << endl;
-if (min.holding3 == 564)
+cout << "About to expand min " << min.strSimple() << endl;
+/* */
+if (min.holding3 == 1432)
 {
       cout << "MINIMUM BEFORE" << endl;
       cout << "resultLowest " << resultLowest.str(true) << endl;
       cout << "rankCritical " << +rankCritical << endl;
+      cout << "rankAdder " << +rankAdder << endl;
       cout << "Reduction" << endl;
       cout << reduction.str() << endl;
       cout << strategies.str("full strategy", true);
-      cout << strategiesReduced.str("reduced strategy", true);
       cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
       cout << "  " << scopy.str("before expansion", true) << endl;
       cout << "  " << strategiesMin.str("expansion", true) << endl;
 }
+/* */
 
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 cout << "Expanded min " << min.str() << endl;
+cout << "  " << strategiesMin.str("expansion", true) << endl;
 
-    if (strategiesMin.equalPrimary(strategiesReduced, false))
+    // The minimums have changed in general.
+    Result resultMinNew;
+    strategiesMin.getResultLowest(resultMinNew);
+
+cout << "adding resultMinNew " << resultMinNew.str(true);
+    if (firstFlag)
+    {
+      // An empty result is better than anything, so we have to
+      // start this way.
+      resultCheck = resultMinNew;
+      firstFlag = false;
+    }
+    else
+      resultCheck += resultMinNew;
+cout << "resultCheck now " << resultCheck.str(true) << endl;
+
+
+    if (strategiesMin.equalPrimary(strategies, false))
     {
       cout << "MINIMUM MATCH" << endl;
     }
     else
     {
       cout << "MINIMUM MISMATCH" << endl;
-      cout << "resultLowest " << resultLowest.str(true) << endl;
+      cout << "resultLowest " << resultLowest.str(true);
       cout << "rankCritical " << +rankCritical << endl;
       cout << "Reduction" << endl;
       cout << reduction.str() << endl;
       cout << strategies.str("full strategy", true);
-      cout << strategiesReduced.str("reduced strategy", true);
+      // cout << strategiesReduced.str("reduced strategy", true);
       cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
       cout << "  " << scopy.str("before expansion", true) << endl;
       cout << "  " << strategiesMin.str("expansion", true) << endl;
@@ -182,7 +200,16 @@ cout << "Expanded min " << min.str() << endl;
 
   }
 
-cout << "Loop fertig" << endl;
+  if (resultLowest != resultCheck)
+  {
+    cout << "WINNER MISMATCH, size " << centry.minimals.size() << endl;
+    cout << "resultLowest " << resultLowest.str(true) << endl;
+    cout << "resultCheck  " << resultCheck.str(true) << endl;
+  }
+  else
+    cout << "WINNER MATCH, size " << centry.minimals.size() << endl;
+
+// cout << "Loop fertig" << endl;
 
   // TODO Checks:
   // * The sum of the minimal winners should be the overall winner.
@@ -209,7 +236,7 @@ void CombTest::checkAllReductions(
 cout << "Checking: " <<
   centry.canonical.str() << endl;
 
-if (cards == 7 && holding == 563)
+if (cards == 9 && holding == 1232)
 {
   cout << "HERE\n";
 }

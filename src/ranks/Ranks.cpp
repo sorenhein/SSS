@@ -868,7 +868,7 @@ bool Ranks::getMinimals(
   if (control.outputHolding())
   {
     for (auto& m: minimals)
-      cout << "Minimal holding: " << m.holding3 << "\n";
+      cout << "Minimal holding: " << m.strSimple() << endl;
     cout << "\n";
   }
 
