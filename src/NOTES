@@ -1,3 +1,38 @@
+2021-11-21
+
+I think the solution is:
+- Combinations::getPtr also updates an argument rankAdder
+- If it's 0, the minimal is the same as the canonical
+- CombEntry gets a rankLowest (uchar)
+- Play.h gets a rankAdder which gets set like getPtr.
+  It is the adder (if any) from the combination to the minimal one.
+- When we use play pointers, we can translate minimal to 
+  non-minimal first depending on rankAdder and Distribution
+
+
+Let's say the actual combination we want to look up during optimization
+has a certain critical rank which we've stored separately in the
+combination.
+
+If the actual combination we get back from the stored getPtr has
+a lower critical rank, then it's a sign that we're looking at a
+minimal and not just a canonical rank.
+
+So we should be able in principle to do a similar translation from
+minimal to canonical as in CombTest::checkReductions. Our canonical
+combination could have a maximum rank among NS of M and a minimum
+rank among NS (that takes tricks) of m.  The minimal combination
+might have Mc, mc.  We should have M-m = Mc-mc, M > Mc.
+
+const auto reduction = distribution.getReduction(
+  m = M - Mc + mc);  // rankAdder = M - Mc = m - m ?!
+
+Then
+
+strategies.expand(reduction, rankAdder, min.rotateFlag);
+
+
+
 2021-10-25
 
 CombTest,checkReductions: Should now not need reduceByTricks.
