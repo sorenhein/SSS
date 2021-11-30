@@ -232,6 +232,7 @@ class Slist
     // Winners.
 
     void getResultLowest(Result& result) const;
+    void getResultHighest(Result& result) const;
 
 
     // Debug utilities.

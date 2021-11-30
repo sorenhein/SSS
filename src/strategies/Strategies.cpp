@@ -388,6 +388,12 @@ void Strategies::getResultLowest(Result& result) const
 }
 
 
+void Strategies::getResultHighest(Result& result) const
+{
+  slist.getResultHighest(result);
+}
+
+
 /************************************************************
  *                                                          *
  * Utilities                                                *

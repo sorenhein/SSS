@@ -99,6 +99,12 @@ void CombTest::checkReductions(
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
 
+  Result resultHighest;
+  strategies.getResultHighest(resultHighest);
+
+cout << "Result lowest  " << resultLowest.str(true);
+cout << "Result highest " << resultHighest.str(true);
+
   const auto& reduction = distribution.getReduction(rankCritical);
 
 if (reduction.full2reducedDist.size() != distribution.size())
@@ -233,7 +239,7 @@ void CombTest::checkAllReductions(
     if (! centry.canonicalFlag || centry.minimalFlag)
       continue;
 
-cout << "Checking: " <<
+cout << "Checking:  cards " << cards << ", " <<
   centry.canonical.str() << endl;
 
 if (cards == 9 && holding == 1232)
