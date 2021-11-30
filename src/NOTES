@@ -1,36 +1,5 @@
 2011-11-30
 
-Strategies::getWinningRankRange(&lo, &hi)
-
-9/1232, AKT9 / Q8
-The problem seems to be that it has two solutions, both with 4 tricks:
-KQ or T.  The latter is not a real solution, but it arises because not
-all plays are considered.
-
-Then 9/1288, AKT7 / Q6 is supposedly the minimal version and it only
-has one strategy (KQ).  It still has 6 distributions like 9/1232.
-
-But it too has a minimal one, 9/1432, AK87 / Q6, with 4 distributions.
-
-9/1232: 4N'S or 2N (spurious), 6 distributions
-9/1288: 5N'S
-9/1432: 3N'S
-
-If we had the maximal rank of any strategy winner M (and minimum m),
-then we could also tell what the minimum rank is that we should
-consider for 9/1232.
-
-M_orig = 4, m_orig = 2
-M_min = 3, m_min = 3
-m_orig_corrected = M_orig + m_min - M_min
-
-
-So we should be able in principle to do a similar translation from
-minimal to canonical as in CombTest::checkReductions. Our canonical
-combination could have a maximum rank among NS of M and a minimum
-rank among NS (that takes tricks) of m.  The minimal combination
-might have Mc, mc.  We should have M-m = Mc-mc, M > Mc.
-
 const auto reduction = distribution.getReduction(
   m = M - Mc + mc);  // rankAdder = M - Mc = m - m ?!
 

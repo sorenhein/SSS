@@ -149,6 +149,40 @@ void CombTest::checkReductions(
   // Get the reduction that underlies the whole method.
   // TODO Could store the rank in CombEntry?
 
+  list<unsigned char> rankLowest;
+  unsigned char range;
+  if (! CombTest::getMinimalRanges(centries, uniqs, centry,
+    rankLowest, range))
+  {
+    cout << "The range across minimals is apparently not unique.\n";
+    assert(false);
+  }
+
+  unsigned char rankLow, rankHigh;
+  strategies.getResultRange(rankLow, rankHigh);
+
+  if (rankHigh - rankLow != range)
+  {
+    cout << "Original strategy has different range than minima:\n";
+    cout << "Original range " << rankHigh << " - " << rankLow <<
+      " = " << rankHigh - rankLow << "\n";
+    cout << "Minimal range  " << range << endl;
+
+    const unsigned char rankCritical = rankHigh - range;
+
+    // TODO
+    // There should probably be more original strategies
+    assert(false);
+  }
+  else
+  {
+    // TODO
+    // strategies.size() should be the same for original and minima.
+  }
+
+
+  
+
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
