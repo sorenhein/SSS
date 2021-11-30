@@ -85,6 +85,60 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries)
 }
 
 
+bool CombTest::getMinimalRanges(
+  const vector<CombEntry>& centries,
+  const vector<Combination>& uniqs,
+  const CombEntry& centry,
+  list<unsigned char>& rankLowest,
+  unsigned char& range) const
+{
+  // In general, the strategies in checkReductions may have more
+  // strategy's than it should because some play was not considered.
+  // For example, 9/1232 (AKT9/Q8) has two strategies with the same
+  // tricks, one wiht 4N's (KQ) and one with 2N (K).  This has
+  // a pseudo-minimal version 9/1288 (AKT7/Q6) with only one
+  // strategy, but still 6 distributions too, 5N'S (KQ).  This has
+  // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).
+  // This method would then return (5, 3) and 0, where 0 is the
+  // difference between the highest and lowest winner among the
+  // minimal strategy's (so 5-5 or 3-3).  They should be the same
+  // for all minimals.
+
+  unsigned char rankLow, rankHigh;
+  bool firstFlag = true;
+  for (auto& min: centry.minimals)
+  {
+    const auto& ceMin = centries[min.holding3];
+    if (! ceMin.minimalFlag)
+    {
+      // This should not happen long-term, and short-term it is
+      // addressed in checkMinimals().
+      cout << "Skipping non-minimal entry\n";
+      continue;
+
+      assert(ceMin.canonical.index < uniqs.size());
+      const Strategies& strategiesMin = 
+        uniqs[ceMin.canonical.index].strategies();
+
+      strategiesMin.getResultRange(rankLow, rankHigh);
+      rankLowest.push_back(rankLow);
+
+      if (firstFlag)
+      {
+        range = rankHigh - rankLow;
+        firstFlag = false;
+      }
+      else if (rankHigh - rankLow != range)
+      {
+        cout << "Odd rank arrangement\n";
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+
 void CombTest::checkReductions(
   const vector<CombEntry>& centries,
   const vector<Combination>& uniqs,

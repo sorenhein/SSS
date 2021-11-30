@@ -394,6 +394,19 @@ void Strategies::getResultHighest(Result& result) const
 }
 
 
+void Strategies::getResultRange(
+  unsigned char& rankLow,
+  unsigned char& rankHigh) const
+{
+  Result resultLowest, resultHighest;
+  Strategies::getResultLowest(resultLowest);
+  rankLow = resultLowest.rank();
+
+  Strategies::getResultHighest(resultHighest);
+  rankHigh = resultHighest.rank();
+}
+
+
 /************************************************************
  *                                                          *
  * Utilities                                                *

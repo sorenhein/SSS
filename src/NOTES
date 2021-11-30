@@ -1,5 +1,7 @@
 2011-11-30
 
+Strategies::getWinningRankRange(&lo, &hi)
+
 9/1232, AKT9 / Q8
 The problem seems to be that it has two solutions, both with 4 tricks:
 KQ or T.  The latter is not a real solution, but it arises because not
@@ -41,26 +43,11 @@ have a winner >= m_orig_corrected.
 
 So in CombTest::checkReductions::
 
-bool CombTest::getMinimalRange(centries, uniqs, centry, &range)
-{
-  first = true
-  Loop over centry.minimals
-    Look up &s = uniqs[ceMin.canonical.index].strategies();
-    result lowest, highest -> range
-    if (first)
-      range = delta
-    else if (!= range)
-      return false
-    else
-      range is still OK
-  end loop
-  return true
-}
-
 if (! getMinimalRange)
   assert(don't know what to do)
 
 resultCritical = resultHighest - range
+Eliminate whole spurious strategies with a winner strictly below this
 Get the reduction for this
 
 Loop over centry.minimals

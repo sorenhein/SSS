@@ -96,6 +96,9 @@ class Strategies
 
     void getResultLowest(Result& result) const;
     void getResultHighest(Result& result) const;
+    void getResultRange(
+      unsigned char& rankLow,
+      unsigned char& rankHigh) const;
 
     bool ordered() const;
 
