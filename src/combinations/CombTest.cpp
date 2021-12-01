@@ -115,24 +115,24 @@ bool CombTest::getMinimalRanges(
       // addressed in checkMinimals().
       cout << "Skipping non-minimal entry\n";
       continue;
+    }
 
-      assert(ceMin.canonical.index < uniqs.size());
-      const Strategies& strategiesMin = 
-        uniqs[ceMin.canonical.index].strategies();
+    assert(ceMin.canonical.index < uniqs.size());
+    const Strategies& strategiesMin = 
+      uniqs[ceMin.canonical.index].strategies();
 
-      strategiesMin.getResultRange(rankLow, rankHigh);
-      rankLowest.push_back(rankLow);
+    strategiesMin.getResultRange(rankLow, rankHigh);
+    rankLowest.push_back(rankLow);
 
-      if (firstFlag)
-      {
-        range = rankHigh - rankLow;
-        firstFlag = false;
-      }
-      else if (rankHigh - rankLow != range)
-      {
-        cout << "Odd rank arrangement\n";
-        return false;
-      }
+    if (firstFlag)
+    {
+      range = rankHigh - rankLow;
+      firstFlag = false;
+    }
+    else if (rankHigh - rankLow != range)
+    {
+      cout << "Odd rank arrangement\n";
+      return false;
     }
   }
   return true;
@@ -164,14 +164,25 @@ void CombTest::checkReductions(
   if (rankHigh - rankLow != range)
   {
     cout << "Original strategy has different range than minima:\n";
-    cout << "Original range " << rankHigh << " - " << rankLow <<
+    cout << "Original range " << +rankHigh << " - " << +rankLow <<
       " = " << rankHigh - rankLow << "\n";
-    cout << "Minimal range  " << range << endl;
+    cout << "Minimal range  " << +range << endl;
+    for (auto& r: rankLowest)
+      cout << "rankLowest entry: " << +r << endl;
+
+    cout << strategies.str("strategies");
+
+    for (auto& min: centry.minimals)
+    {
+      const auto& ceMin = centries[min.holding3];
+      cout << ceMin.str();
+    }
 
     const unsigned char rankCritical = rankHigh - range;
 
     // TODO
     // There should probably be more original strategies
+    cout << endl;
     assert(false);
   }
   else
