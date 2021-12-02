@@ -23,12 +23,18 @@ class Combination
 
     Strategies strats;
 
+    unsigned char maxRank;
+
 
   public:
 
     Combination();
 
     void reset();
+
+    void setMaxRank(const unsigned char maxRankIn);
+
+    unsigned char getMaxRank() const;
 
     const Strategies& strategize(
       const CombEntry& centry,

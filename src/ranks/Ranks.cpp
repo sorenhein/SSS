@@ -876,6 +876,12 @@ bool Ranks::getMinimals(
 }
 
 
+unsigned char Ranks::maxRank() const
+{
+  return maxGlobalRank;
+}
+
+
 string Ranks::strTable() const
 {
   // Makes a table with one rank per line.

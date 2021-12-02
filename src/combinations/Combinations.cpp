@@ -255,6 +255,8 @@ void Combinations::runUniques(
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
+      comb.setMaxRank(ranks.maxRank());
+
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 

@@ -31,6 +31,19 @@ Combination::Combination()
 
 void Combination::reset()
 {
+  maxRank = 0;
+}
+
+
+void Combination::setMaxRank(const unsigned char maxRankIn)
+{
+  maxRank = maxRankIn;
+}
+
+
+unsigned char Combination::getMaxRank() const
+{
+  return maxRank;
 }
 
 

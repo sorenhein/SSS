@@ -136,6 +136,8 @@ class Ranks
       const Result& result,
       list<CombReference>& minimals) const;
 
+    unsigned char maxRank() const;
+
     string strTable() const;
 
     wstring wstrDiagram() const;
