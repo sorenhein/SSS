@@ -158,8 +158,9 @@ void CombTest::checkReductions(
     assert(false);
   }
 
-  unsigned char rankLow, rankHigh;
+  unsigned char rankLow, rankHigh, rankCritical;
   strategies.getResultRange(rankLow, rankHigh);
+  bool specialFlag;
 
   if (rankHigh - rankLow != range)
   {
@@ -178,24 +179,27 @@ void CombTest::checkReductions(
       cout << ceMin.str();
     }
 
-    const unsigned char rankCritical = rankHigh - range;
+    rankCritical = rankHigh - range;
+    specialFlag = true;
 
-    // TODO
-    // There should probably be more original strategies
-    cout << endl;
-    assert(false);
+    cout << "Moving critical rank from " << +rankLow << "to " <<
+      +rankCritical << endl;
   }
   else
   {
-    // TODO
-    // strategies.size() should be the same for original and minima.
+    rankCritical = rankLow;
+    specialFlag = false;
   }
+
+  // TODO If specialFlag, should strategies.size() exceed the
+  // minimal size?  If not, not?
 
 
   
 
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
+  /*
   const unsigned char rankCritical = resultLowest.rank();
 
   Result resultHighest;
@@ -203,6 +207,7 @@ void CombTest::checkReductions(
 
 cout << "Result lowest  " << resultLowest.str(true);
 cout << "Result highest " << resultHighest.str(true);
+*/
 
   const auto& reduction = distribution.getReduction(rankCritical);
 

@@ -1,4 +1,16 @@
-2011-11-30
+2021-12-02
+
+So now 9/1232 does get picked up.  The next problem is
+
+9/1340, AK / QT98.
+When play goes AJT-, it leaves 6/17, AKQ/J (xx), which resolves as
+needing the K if opps split 2-0.
+
+So maybe we shouldn't use the highest winning rank, but the
+highest NS rank, as the anchor.
+
+
+2021-11-30
 
 const auto reduction = distribution.getReduction(
   m = M - Mc + mc);  // rankAdder = M - Mc = m - m ?!
