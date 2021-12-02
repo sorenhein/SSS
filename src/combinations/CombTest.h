@@ -26,6 +26,7 @@ class CombTest
       const vector<Combination>& uniqs,
       const CombEntry& centry,
       const Strategies& strategies,
+      const unsigned char maxRank,
       const Distribution& distribution) const;
 
     bool getMinimalRanges(

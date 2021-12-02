@@ -100,11 +100,11 @@ bool CombTest::getMinimalRanges(
   // strategy, but still 6 distributions too, 5N'S (KQ).  This has
   // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).
   // This method would then return (5, 3) and 0, where 0 is the
-  // difference between the highest and lowest winner among the
-  // minimal strategy's (so 5-5 or 3-3).  They should be the same
-  // for all minimals.
+  // difference between the highest rank (whether or not it's ever a
+  // minimal winner) and lowest winner among the minimal strategy's 
+  // (so 5-5 or 3-3).  They should be the same for all minimals.
 
-  unsigned char rankLow, rankHigh;
+  unsigned char winRankLow, rankHigh;
   bool firstFlag = true;
   for (auto& min: centry.minimals)
   {
@@ -118,18 +118,23 @@ bool CombTest::getMinimalRanges(
     }
 
     assert(ceMin.canonical.index < uniqs.size());
-    const Strategies& strategiesMin = 
-      uniqs[ceMin.canonical.index].strategies();
+    const Combination& comb = uniqs[ceMin.canonical.index];
+    const Strategies& strategiesMin = comb.strategies();
 
-    strategiesMin.getResultRange(rankLow, rankHigh);
-    rankLowest.push_back(rankLow);
+    Result res;
+    strategiesMin.getResultLowest(res);
+    winRankLow = res.rank();
+    rankHigh = comb.getMaxRank();
+
+    // strategiesMin.getResultRange(rankLow, rankHigh);
+    rankLowest.push_back(winRankLow);
 
     if (firstFlag)
     {
-      range = rankHigh - rankLow;
+      range = rankHigh - winRankLow;
       firstFlag = false;
     }
-    else if (rankHigh - rankLow != range)
+    else if (rankHigh - winRankLow != range)
     {
       cout << "Odd rank arrangement\n";
       return false;
@@ -144,6 +149,7 @@ void CombTest::checkReductions(
   const vector<Combination>& uniqs,
   const CombEntry& centry,
   const Strategies& strategies,
+  const unsigned char maxRank,
   const Distribution& distribution) const
 {
   // Get the reduction that underlies the whole method.
@@ -158,15 +164,21 @@ void CombTest::checkReductions(
     assert(false);
   }
 
-  unsigned char rankLow, rankHigh, rankCritical;
-  strategies.getResultRange(rankLow, rankHigh);
+  Result res;
+  strategies.getResultLowest(res);
+  const unsigned char winRankLow = res.rank();
+
+  unsigned char rankCritical;
+
+  // strategies.getResultRange(rankLow, rankHigh);
   bool specialFlag;
 
-  if (rankHigh - rankLow != range)
+  // Void stays void.
+  if (maxRank - winRankLow != range && winRankLow != 0)
   {
     cout << "Original strategy has different range than minima:\n";
-    cout << "Original range " << +rankHigh << " - " << +rankLow <<
-      " = " << rankHigh - rankLow << "\n";
+    cout << "Original range " << +maxRank << " - " << +winRankLow <<
+      " = " << maxRank - winRankLow << "\n";
     cout << "Minimal range  " << +range << endl;
     for (auto& r: rankLowest)
       cout << "rankLowest entry: " << +r << endl;
@@ -179,15 +191,15 @@ void CombTest::checkReductions(
       cout << ceMin.str();
     }
 
-    rankCritical = rankHigh - range;
+    rankCritical = maxRank - range;
     specialFlag = true;
 
-    cout << "Moving critical rank from " << +rankLow << "to " <<
+    cout << "Moving critical rank from " << +winRankLow << " to " <<
       +rankCritical << endl;
   }
   else
   {
-    rankCritical = rankLow;
+    rankCritical = winRankLow;
     specialFlag = false;
   }
 
@@ -353,6 +365,7 @@ if (cards == 9 && holding == 1232)
 
     const Combination& comb = uniqs[centry.canonical.index];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 
+      comb.getMaxRank(),
       * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
   }
 }

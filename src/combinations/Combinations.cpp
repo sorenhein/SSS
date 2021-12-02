@@ -371,6 +371,8 @@ void Combinations::runUniqueThread(
       centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
+      comb.setMaxRank(ranks.maxRank());
+
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
       centry.minimalFlag =

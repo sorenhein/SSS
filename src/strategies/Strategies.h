@@ -94,6 +94,7 @@ class Strategies
 
     const Ranges& getRanges() const;
 
+    // TODO Do we need these long-term, all of them?
     void getResultLowest(Result& result) const;
     void getResultHighest(Result& result) const;
     void getResultRange(
