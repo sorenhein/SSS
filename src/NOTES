@@ -1,82 +1,32 @@
 2021-12-02
 
-So now 9/1232 does get picked up.  The next problem is
+9/13649, KQT / 987 missing AJ6
+Shows 2N,2S" (T or 7)
+max rank 4, low winner 2
 
-9/1340, AK / QT98.
-When play goes AJT-, it leaves 6/17, AKQ/J (xx), which resolves as
-needing the K if opps split 2-0.
+minimals
+9/13675, KQT / 876 missing AJ9
+shows 3N (T)
+max rank 5, low winner 3
 
-So maybe we shouldn't use the highest winning rank, but the
-highest NS rank, as the anchor.
+9/13735, KQ7 / T96 missing AJ8
+shows 5N' (Q)
+max rank 5, low winner 5
 
+Fails because the two minima don't have the same difference
+between max rank and low winner.
 
-2021-11-30
+I think the concrete problem is that with KT missing AJ in front,
+if West plays the ace, North will play the K and win with the T.
+But at the moment the plays are always from the top within a rank.
 
-const auto reduction = distribution.getReduction(
-  m = M - Mc + mc);  // rankAdder = M - Mc = m - m ?!
-
-Then
-
-strategies.expand(reduction, rankAdder, min.rotateFlag);
-
-We also need to limit our own strategies to those strategy's that
-have a winner >= m_orig_corrected.
-
-So in CombTest::checkReductions::
-
-if (! getMinimalRange)
-  assert(don't know what to do)
-
-resultCritical = resultHighest - range
-Eliminate whole spurious strategies with a winner strictly below this
-Get the reduction for this
-
-Loop over centry.minimals
-  rank adder
-  expand
-  compare primary tricks
-  
-
+We don't even have a way to do this differently.
 
 
 2021-10-25
 
 CombTest,checkReductions: Should now not need reduceByTricks.
 Just use strategies.
-
-
-
-Why doesn't minimal lookup and substitution work?
-I think it's because, say, 4/62 has 6 distributions and
-4/78 has 3.  So aren't there some distribution survivors
-that need to be mapped as well?
-
-Distribution.cpp has a distCanonical.
-But if the combination gets rerouted to a minimal one, then
-the distribution (and survivors) must be, too.
-Distribution::setPtr gets called from Distributions::runUniques
-and runUniqueThread.
-This is based on Distribution::getID which makes the canonical
-distribution with no reference to anything else.
-"Canonical" means something else for Distribution than for Combination.
-
-Actually the survivors can't be easily mapped: They're a lookup from
-cards played to a distribution map.  I guess we could map twice:
-First from minimal to canonical, then from canonical to parent.
-But even the map from minimal to non-minimal takes us back to 
-Strategies::expand, as in CombTest::checkReductions.
-
-But at the time when we're optimizing, we look up the combination ptr.
-Survivors have to be right at that point. The knowledge needed to
-expand from minimal to non-minimal must then be present in the
-combination somehow?  In order to get the reduction, we need
-the distribution. Probably also the rank of the lowest result in
-each strategies.  And the rotation from minimal to non-minimal.
-
-The combination ptr should perhaps be an index into the overall
-list of combinations.  It's a bit less efficient to look up the
-combination via the unique index.  But then we have most of the tools.
-We have to be able to ask Combinations.
 
 
 Was 22,797 OK, 5,324 bad

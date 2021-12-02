@@ -161,6 +161,20 @@ void CombTest::checkReductions(
     rankLowest, range))
   {
     cout << "The range across minimals is apparently not unique.\n";
+
+    for (auto& r: rankLowest)
+      cout << "rankLowest entry: " << +r << endl;
+
+    cout << strategies.str("strategies");
+
+    for (auto& min: centry.minimals)
+    {
+      const auto& ceMin = centries[min.holding3];
+      cout << ceMin.str();
+    }
+
+    cout << endl;
+
     assert(false);
   }
 
@@ -358,7 +372,7 @@ void CombTest::checkAllReductions(
 cout << "Checking:  cards " << cards << ", " <<
   centry.canonical.str() << endl;
 
-if (cards == 9 && holding == 1232)
+if (cards == 9 && holding == 13649)
 {
   cout << "HERE\n";
 }
