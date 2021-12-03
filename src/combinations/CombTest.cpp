@@ -160,7 +160,7 @@ void CombTest::checkReductions(
   if (! CombTest::getMinimalRanges(centries, uniqs, centry,
     rankLowest, range))
   {
-    cout << "The range across minimals is apparently not unique.\n";
+    cout << "WARNRANGE: The range across minimals is not unique.\n";
 
     for (auto& r: rankLowest)
       cout << "rankLowest entry: " << +r << endl;
@@ -174,8 +174,7 @@ void CombTest::checkReductions(
     }
 
     cout << endl;
-
-    assert(false);
+    return;
   }
 
   Result res;
