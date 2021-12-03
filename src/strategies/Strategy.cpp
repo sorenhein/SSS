@@ -189,26 +189,6 @@ bool Strategy::constantTricksByReduction(
       return false;
   }
 
-/*
-  // Pick a "large" starting distribution. Tricks don't matter here.
-  unsigned char distGroup = static_cast<unsigned char>(dist.size()); 
-  unsigned char tricksGroup = 0;
-
-  for (auto& result: results)
-  {
-    const unsigned d = result.dist();
-    if (dist[d] != distGroup)
-    {
-      // New group.
-      distGroup = dist[d];
-      tricksGroup = result.tricks();
-    }
-    else if (result.tricks() != tricksGroup)
-      return false;
-  }
-*/
-  
-
   return true;
 }
 
@@ -224,11 +204,6 @@ void Strategy::expand(
 
   const auto& dist = reduction.full2reducedDist;
   const unsigned char dsize = static_cast<unsigned char>(dist.size()); 
-
-cout << "map\n";
-for (unsigned char d = 0; d < dsize; d++)
-  cout << +d << " " << +dist[d] << "\n";
-cout << "\n";
 
   // The next regular, reduced distribution expected, i.e. 
   // the current one + 1.  The reduced ones may not be in order, but
@@ -246,9 +221,6 @@ cout << "\n";
       iter->expand(dfull, rankAdder);
       dredPrev = dredNext;
       dredNext++;
-cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  ", redNext " << +dredNext << endl;
-cout << Strategy::str("full add", true) << endl;
     }
     else if (dist[dfull] == dredPrev)
     {
@@ -256,9 +228,6 @@ cout << Strategy::str("full add", true) << endl;
       iter = results.insert(iter, * prev(iter));
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
-cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  ", redNext " << +dredNext << endl;
-cout << Strategy::str("prev add", true) << endl;
     }
     else
     {
@@ -275,15 +244,11 @@ cout << Strategy::str("prev add", true) << endl;
       iter->expand(dfull, 0);
       weightInt += iter->tricks();
       dredPrev = dist[dprev];
-cout << "full " << +dfull << ", red prev " << +dredPrev <<
-  ", redNext " << +dredNext << endl;
-cout << Strategy::str("back add", true) << endl;
     }
 
     iter++;
   }
 
-cout << "done loop" << endl;
   if (rotateFlag)
   {
     results.reverse();
@@ -293,7 +258,6 @@ cout << "done loop" << endl;
       result.flip();
     }
   }
-cout << "done rotating" << endl;
 
   studied.study(results);
 }

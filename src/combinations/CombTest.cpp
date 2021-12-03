@@ -113,7 +113,7 @@ bool CombTest::getMinimalRanges(
     {
       // This should not happen long-term, and short-term it is
       // addressed in checkMinimals().
-      cout << "Skipping non-minimal entry\n";
+      cout << "WARNSKIP: Skipping non-minimal entry\n";
       continue;
     }
 
@@ -189,6 +189,7 @@ void CombTest::checkReductions(
   // Void stays void.
   if (maxRank - winRankLow != range && winRankLow != 0)
   {
+    /*
     cout << "Original strategy has different range than minima:\n";
     cout << "Original range " << +maxRank << " - " << +winRankLow <<
       " = " << maxRank - winRankLow << "\n";
@@ -203,12 +204,13 @@ void CombTest::checkReductions(
       const auto& ceMin = centries[min.holding3];
       cout << ceMin.str();
     }
+    */
 
     rankCritical = maxRank - range;
     specialFlag = true;
 
-    cout << "Moving critical rank from " << +winRankLow << " to " <<
-      +rankCritical << endl;
+    // cout << "Moving critical rank from " << +winRankLow << " to " <<
+      // +rankCritical << endl;
   }
   else
   {
@@ -248,17 +250,17 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 
   for (auto& min: centry.minimals)
   {
-cout << "Starting min loop " << min.str() << endl;
+// cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
       // This should not happen long-term, and short-term it is
       // addressed in checkMinimals().
-cout << "Skipping non-minimal entry\n";
+// cout << "Skipping non-minimal entry\n";
       continue;
     }
 
-cout << "Making space for min " << min.str() << endl;
+// cout << "Making space for min " << min.str() << endl;
     strategiesExpanded.emplace_back(Strategies());
     Strategies& strategiesMin = strategiesExpanded.back();
 
@@ -268,15 +270,15 @@ cout << "Making space for min " << min.str() << endl;
     strategiesMin = uniqs[ceMin.canonical.index].strategies();
 Strategies scopy = strategiesMin;
 
-cout << "Getting result for min " << min.str() << endl;
+// cout << "Getting result for min " << min.str() << endl;
     // Expand the strategies up using the reduction.
     Result resultMinLowest;
     strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
       static_cast<char>(resultMinLowest.rank());
 
-cout << "About to expand min " << min.strSimple() << endl;
-/* */
+// cout << "About to expand min " << min.strSimple() << endl;
+/*
 if (min.holding3 == 1432)
 {
       cout << "MINIMUM BEFORE" << endl;
@@ -290,18 +292,18 @@ if (min.holding3 == 1432)
       cout << "  " << scopy.str("before expansion", true) << endl;
       cout << "  " << strategiesMin.str("expansion", true) << endl;
 }
-/* */
+*/
 
 
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
-cout << "Expanded min " << min.str() << endl;
-cout << "  " << strategiesMin.str("expansion", true) << endl;
+// cout << "Expanded min " << min.str() << endl;
+// cout << "  " << strategiesMin.str("expansion", true) << endl;
 
     // The minimums have changed in general.
     Result resultMinNew;
     strategiesMin.getResultLowest(resultMinNew);
 
-cout << "adding resultMinNew " << resultMinNew.str(true);
+// cout << "adding resultMinNew " << resultMinNew.str(true);
     if (firstFlag)
     {
       // An empty result is better than anything, so we have to
@@ -311,7 +313,7 @@ cout << "adding resultMinNew " << resultMinNew.str(true);
     }
     else
       resultCheck += resultMinNew;
-cout << "resultCheck now " << resultCheck.str(true) << endl;
+// cout << "resultCheck now " << resultCheck.str(true) << endl;
 
 
     if (strategiesMin.equalPrimary(strategies, false))

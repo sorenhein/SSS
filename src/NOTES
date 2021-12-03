@@ -1,3 +1,30 @@
+2021-12-03
+
+Output now cleanish again.
+
+29417   MINIMUM MATCH
+    0   MINIMUM MISMATCH
+
+25428   WINNER MATCH 1
+ 1314   WINNER MATCH 2
+
+  801   WINNER MISMATCH 1
+  217                   2
+   39                   3
+    1                   1
+    1                   1
+
+   26   WARNRANGE
+
+- Look at winner mismatches
+- Minimum matches: Also all ranks, not just tricks
+- Find a way to see whether we're missing minimals (AK and Q but not QJ)
+
+- strategies: fix in Combinations
+- Then CombTest is purely passive
+
+
+
 2021-12-02
 
 9/13649, KQT / 987 missing AJ6
