@@ -73,7 +73,7 @@ class Combinations
 
     void fixLowestWinningRanks(
       const unsigned cards,
-      const vector<CombEntry>& centries,
+      vector<CombEntry>& centries,
       vector<Combination>& uniqs);
 
 

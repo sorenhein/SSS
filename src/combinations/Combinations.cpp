@@ -297,8 +297,12 @@ void Combinations::runUniques(
     }
   }
 
-  timersStrat[32].start();
+  timersStrat[33].start();
   Combinations::fixMinimals(centries);
+  timersStrat[33].stop();
+
+  timersStrat[32].start();
+  Combinations::fixLowestWinningRanks(cards, centries, uniqs);
   timersStrat[32].stop();
 
   timersStrat[31].start();
@@ -479,7 +483,7 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
 
 void Combinations::fixLowestWinningRanks(
   const unsigned cards,
-  const vector<CombEntry>& centries,
+  vector<CombEntry>& centries,
   vector<Combination>& uniqs)
 {
   // When Plays are limited, a Combination may have some Strategy's
@@ -491,39 +495,67 @@ void Combinations::fixLowestWinningRanks(
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
     // Only look at non-minimal combinations.
-    const CombEntry& centry = centries[holding];
+    CombEntry& centry = centries[holding];
     if (! centry.canonicalFlag || centry.minimalFlag)
       continue;
-
-cout << "Fixing: cards " << cards << ", " << centry.canonical.str() << endl;
 
     Combination& comb = uniqs[centry.canonical.index];
 
     list<unsigned char> winRanksLow;
     unsigned char span;
+    unsigned len;
 
-    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
+    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span, len))
     {
+      cout << "Fixing " << cards << ", " << holding << endl;
       cout << "WARNRANGE1: The range across minimals is not unique.\n";
       continue;
     }
 
     // Void stays void.
     if (centry.winRankLow == 0 || 
-        comb.getMaxRank() - centry.winRankLow != span)
+        comb.getMaxRank() - centry.winRankLow == span)
       continue;
 
     const unsigned char rankCritical = comb.getMaxRank() - span;
 
+    cout << "Fixing " << cards << ", " << holding << endl;
     cout << "WARNCRITICAL1: Moving rank from " <<
       +centry.winRankLow << " to " << +rankCritical << endl;
 
-    const unsigned s0 = comb.strategies().size();
+    centry.winRankLow = rankCritical;
 
+    // Try to fix the actual Strategies.  If we already have the right
+    // number, give up and accept the mismatch in CombTest.
+
+    const unsigned s0 = comb.strategies().size();
+    if (s0 == len)
+    {
+      cout << "WARNKLUDGE: Changing rank, leaving strategies intact.\n";
+      continue;
+    }
+
+    if (s0 <= len)
+    {
+      cout << "WARNODDLENGTH PRE\n";
+    }
+
+    // TODO Should this always lead to a reduction?
     comb.reduceByWinner(rankCritical);
 
     cout << "WARNSHIFT: " << s0 << 
       " to " << comb.strategies().size() << endl;
+
+    if (comb.strategies().size() != len)
+    {
+      cout << "WARNODDLENGTH POST\n";
+    }
+    
+    if (control.outputBasicResults())
+    {
+      cout << comb.strategies().str("Cleaner result",
+        control.runRankComparisons()) << "\n";
+    }
   }
 }
 

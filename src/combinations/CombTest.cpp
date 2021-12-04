@@ -11,27 +11,17 @@
 #include "CombTest.h"
 
 
-bool CombTest::checkMinimals(
-  const vector<CombEntry>& centries,
-  const list<CombReference>& minimals) const
-{
-  for (auto& min: minimals)
-    if (! centries[min.holding3].minimalFlag)
-      return false;
-
-  return true;
-}
-
-
 void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-    if (! CombTest::checkMinimals(
-      centries,
-      centries[holding].minimals))
+    for (auto& min: centries[holding].minimals)
     {
-      cout << "ERROR: holding " << holding << " uses non-minimals\n";
+      if (! centries[min.holding3].minimalFlag)
+      {
+        cout << "ERROR: holding " << holding << " uses non-minimals\n";
+        break;
+      }
     }
   }
 }
@@ -49,8 +39,9 @@ void CombTest::checkReductions(
 
   list<unsigned char> winRanksLow;
   unsigned char span;
+  unsigned len;
 
-  if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
+  if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span, len))
   {
     cout << "WARNRANGE2: The range across minimals is not unique.\n";
 

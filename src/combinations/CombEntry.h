@@ -129,7 +129,8 @@ struct CombEntry
     const vector<CombEntry>& centries,
     const vector<Combination>& uniqs,
     list<unsigned char>& winRanksLow,
-    unsigned char& span) const
+    unsigned char& span,
+    unsigned& length) const
   {
     // In general, the strategies in checkReductions may have more
     // strategy's than it should because a play was not considered.
@@ -166,10 +167,17 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
       if (firstFlag)
       {
         span = rankHigh - ceMin.winRankLow;
+        length = comb.strategies().size();
         firstFlag = false;
       }
-      else if (rankHigh - ceMin.winRankLow != span)
-        return false;
+      else
+      {
+        if (rankHigh - ceMin.winRankLow != span)
+          return false;
+
+        if (comb.strategies().size() != length)
+          return false;
+      }
     }
     return true;
   }

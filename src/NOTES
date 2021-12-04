@@ -1,3 +1,19 @@
+2021-12-04
+
+9/1340 has 1 strategy using 2S' which should be sth higher.
+We can determine from the minimals that there should not be a strategy
+with a winner < 4.
+
+I suppose we could pretend (centry.winRankLow) that we really only
+use a higher rank, but leave Strategies intact.  Then we'd get a
+Strategies and Winners mismatch, which seems reasonable.
+
+Sometimes there are indeed strategies to be eliminated, I think.
+Here we'd need to go by the size of the Strategies and its minimals.
+The minimals should all have the same number.  If we already have
+that number, do as above.  If we have fewer, wTF?  If we have more,
+try to reduce and check that we get the right number, otherwise WTF?
+
 2021-12-03
 
 Output now cleanish again.

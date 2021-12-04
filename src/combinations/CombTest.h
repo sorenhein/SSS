@@ -17,10 +17,6 @@ class CombTest
 {
   private:
 
-    bool checkMinimals(
-      const vector<CombEntry>& centries,
-      const list<CombReference>& minimals) const;
-
     void checkReductions(
       const vector<CombEntry>& centries,
       const vector<Combination>& uniqs,

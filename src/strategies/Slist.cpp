@@ -274,7 +274,7 @@ void Slist::reduceByWinner(const unsigned char rankCritical)
   auto iter = strategies.begin();
   while (iter != strategies.end())
   {
-    if (iter->resultLowest().rank() < rankCritical)
+    if (iter->resultLowest().rank() >= rankCritical)
     {
       // TODO Do we need to study()?
       // iter->study();
