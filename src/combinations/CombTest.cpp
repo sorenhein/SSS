@@ -85,61 +85,6 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries)
 }
 
 
-bool CombTest::getMinimalRanges(
-  const vector<CombEntry>& centries,
-  const vector<Combination>& uniqs,
-  const CombEntry& centry,
-  list<unsigned char>& rankLowest,
-  unsigned char& range) const
-{
-  // In general, the strategies in checkReductions may have more
-  // strategy's than it should because some play was not considered.
-  // For example, 9/1232 (AKT9/Q8) has two strategies with the same
-  // tricks, one wiht 4N's (KQ) and one with 2N (K).  This has
-  // a pseudo-minimal version 9/1288 (AKT7/Q6) with only one
-  // strategy, but still 6 distributions too, 5N'S (KQ).  This has
-  // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).
-  // This method would then return (5, 3) and 0, where 0 is the
-  // difference between the highest rank (whether or not it's ever a
-  // minimal winner) and lowest winner among the minimal strategy's 
-  // (so 5-5 or 3-3).  They should be the same for all minimals.
-
-  unsigned char rankHigh;
-  bool firstFlag = true;
-  for (auto& min: centry.minimals)
-  {
-    const auto& ceMin = centries[min.holding3];
-    if (! ceMin.minimalFlag)
-    {
-      // This should not happen long-term, and short-term it is
-      // addressed in checkMinimals().
-      cout << "WARNSKIP: Skipping non-minimal entry\n";
-      continue;
-    }
-
-    assert(ceMin.canonical.index < uniqs.size());
-    const Combination& comb = uniqs[ceMin.canonical.index];
-
-    rankHigh = comb.getMaxRank();
-
-    // strategiesMin.getResultRange(rankLow, rankHigh);
-    rankLowest.push_back(ceMin.winRankLow);
-
-    if (firstFlag)
-    {
-      range = rankHigh - ceMin.winRankLow;
-      firstFlag = false;
-    }
-    else if (rankHigh - ceMin.winRankLow != range)
-    {
-      cout << "Odd rank arrangement\n";
-      return false;
-    }
-  }
-  return true;
-}
-
-
 void CombTest::checkReductions(
   const vector<CombEntry>& centries,
   const vector<Combination>& uniqs,
@@ -149,17 +94,17 @@ void CombTest::checkReductions(
   const Distribution& distribution) const
 {
   // Get the reduction that underlies the whole method.
-  // TODO Could store the rank in CombEntry?
 
-  list<unsigned char> rankLowest;
-  unsigned char range;
-  if (! CombTest::getMinimalRanges(centries, uniqs, centry,
-    rankLowest, range))
+  list<unsigned char> winRanksLow;
+  unsigned char span;
+
+  if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
   {
     cout << "WARNRANGE: The range across minimals is not unique.\n";
 
-    for (auto& r: rankLowest)
-      cout << "rankLowest entry: " << +r << endl;
+    /*
+    for (auto& r: winRanksLow)
+      cout << "winRanksLow entry: " << +r << endl;
 
     cout << strategies.str("strategies");
 
@@ -170,23 +115,28 @@ void CombTest::checkReductions(
     }
 
     cout << endl;
+    */
+
     return;
   }
 
   unsigned char rankCritical;
-
-  bool specialFlag;
-
-  // Void stays void.
-  if (maxRank - centry.winRankLow != range && centry.winRankLow != 0)
+  if (maxRank - centry.winRankLow != span && centry.winRankLow != 0)
   {
+    rankCritical = maxRank - span;
+
+    cout << "WARNCRITICAL: Moving rank from " << 
+      +centry.winRankLow << " to " << +rankCritical << endl;
+
     /*
     cout << "Original strategy has different range than minima:\n";
-    cout << "Original range " << +maxRank << " - " << +centry.winRankLow <<
+    cout << 
+      "Original range " << +maxRank << 
+      " - " << +centry.winRankLow <<
       " = " << maxRank - centry.winRankLow << "\n";
-    cout << "Minimal range  " << +range << endl;
-    for (auto& r: rankLowest)
-      cout << "rankLowest entry: " << +r << endl;
+    cout << "Minimal span " << +span << endl;
+    for (auto& r: winRanksLow)
+      cout << "winRanksLow entry: " << +r << endl;
 
     cout << strategies.str("strategies");
 
@@ -196,17 +146,11 @@ void CombTest::checkReductions(
       cout << ceMin.str();
     }
     */
-
-    rankCritical = maxRank - range;
-    specialFlag = true;
-
-    // cout << "Moving critical rank from " << +centry.winRankLow << " to " <<
-      // +rankCritical << endl;
   }
   else
   {
+    // Void stays void.
     rankCritical = centry.winRankLow;
-    specialFlag = false;
   }
 
   // TODO If specialFlag, should strategies.size() exceed the

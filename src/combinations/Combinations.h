@@ -69,6 +69,12 @@ class Combinations
       Distributions const * distributions,
       const unsigned thid);
 
+    void fixLowestWinningRanks(
+      const unsigned cards,
+      const vector<CombEntry>& centries,
+      const vector<Combination>& uniqs);
+
+
   public:
 
     Combinations();

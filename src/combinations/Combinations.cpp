@@ -444,54 +444,43 @@ Combination const * Combinations::getPtr(
 {
   const auto& centry = combEntries[cards][holding3];
 
-// cout << "cards " << cards << ", holding3 " << holding3 << endl;
-// cout << "centry " << centry.str() << endl;
-
   const auto& ccan = (centry.canonicalFlag ? centry :
     combEntries[cards][centry.canonical.holding3]);
 
-// cout << "ccan " << ccan.str() << endl;
-
-  const unsigned msize = ccan.minimals.size();
+  // TODO Delete parameters rotateFlag and mode
   UNUSED(mode);
+  rotateFlag = false;
 
-  /*
-  if (mode == COMB_MIN_IGNORE ||
-      (mode == COMB_MIN_SINGLE && msize > 1) ||
-      ccan.minimalFlag)
-  {
-  */
-    // There is no additional rotation beyond what is stored elsewhere, 
-    // just the lookup.
-    rotateFlag = false;
-    const unsigned ui = ccan.canonical.index;
-// cout << "normal branch" << endl;
-    return &uniques[cards][ui];
-  /*
-  }
-  else
-  {
-    // The minimal version could be rotated.
-    // Pick the single minimal (or the first one of several, if flagged).
-    // if (msize == 0)
-    {
-      cout << "Tried to look up " << cards << ", " << holding3 << endl;
-      cout << "centry " << centry.canonicalFlag << ", " <<
-        centry.canonical.index << endl;
-      cout << centry.canonical.str() << endl;
-      cout << "ccan " << ccan.canonicalFlag << ", " <<
-        ccan.canonical.index << endl;
-      cout << ccan.canonical.str() << endl;
-    }
-    assert(msize != 0);
-    const auto& cref = ccan.minimals.front();
+  const unsigned ui = ccan.canonical.index;
+  return &uniques[cards][ui];
+}
 
-    rotateFlag = cref.rotateFlag;
-    const unsigned ui = combEntries[cards][cref.holding3].canonical.index;
-cout << "new branch, ui " << ui << ", rot " << rotateFlag << endl;
-    return &uniques[cards][ui];
+
+void Combinations::fixLowestWinningRanks(
+  const unsigned cards,
+  const vector<CombEntry>& centries,
+  const vector<Combination>& uniqs)
+{
+  // When Plays are limited, a Combination may have some Strategy's
+  // that have too-low lowest winners.  We can notice this by looking
+  // at the (real) minimal combinations, as the difference between
+  // the highest occurring rank and the lowest winning rank should be
+  // the same.  When it isn't, we throw out such spurious Strategy's.
+
+  for (unsigned holding = 0; holding < centries.size(); holding++)
+  {
+    // Only look at non-minimal combinations.
+    const CombEntry& centry = centries[holding];
+    if (! centry.canonicalFlag || centry.minimalFlag)
+      continue;
+
+cout << "Fixing: cards " << cards << ", " << centry.canonical.str() << endl;
+
+    const Combination& comb = uniqs[centry.canonical.index];
+    UNUSED(comb);
+
   }
-  */
+
 }
 
 

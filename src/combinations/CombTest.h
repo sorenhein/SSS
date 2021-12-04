@@ -29,13 +29,6 @@ class CombTest
       const unsigned char maxRank,
       const Distribution& distribution) const;
 
-    bool getMinimalRanges(
-      const vector<CombEntry>& centries,
-      const vector<Combination>& uniqs,
-      const CombEntry& centry,
-      list<unsigned char>& rankLowest,
-      unsigned char& range) const;
-
 
   public:
 

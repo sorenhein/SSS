@@ -14,6 +14,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "Combination.h"
+
 #include "../utils/CombinationType.h"
 
 using namespace std;
@@ -119,6 +121,55 @@ struct CombEntry
       }
     }
 
+    return true;
+  }
+
+  bool getMinimalSpans(
+    const vector<CombEntry>& centries,
+    const vector<Combination>& uniqs,
+    list<unsigned char>& winRanksLow,
+    unsigned char& span) const
+  {
+    // In general, the strategies in checkReductions may have more
+    // strategy's than it should because a play was not considered.
+    // For example, 9/1232 (AKT9/Q8) has two strategies with the same
+    // tricks, one wiht 4N's (KQ) and one with 2N (K).  This has
+    // a pseudo-minimal version 9/1288 (AKT7/Q6) with only one
+    // strategy, but still 6 distributions too, 5N'S (KQ).  This has
+    // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).
+    // This method would then return (5, 3) and 0, where 0 is the
+    // difference between the highest rank (whether or not it's ever 
+    // a minimal winner) and lowest winner among the minimal 
+    // strategy's (so 5-5 or 3-3).  They should be the same for 
+    // all minimals.
+
+    unsigned char rankHigh;
+    bool firstFlag = true;
+    for (auto& min: minimals)
+    {
+      const auto& ceMin = centries[min.holding3];
+      if (! ceMin.minimalFlag)
+      {
+        // This should not happen long-term, and short-term it is
+        // addressed in checkMinimals().
+cout << "WARNSKIP: Skipping non-minimal entry\n";
+        continue;
+      }
+  
+      assert(ceMin.canonical.index < uniqs.size());
+      const Combination& comb = uniqs[ceMin.canonical.index];
+
+      rankHigh = comb.getMaxRank();
+      winRanksLow.push_back(ceMin.winRankLow);
+  
+      if (firstFlag)
+      {
+        span = rankHigh - ceMin.winRankLow;
+        firstFlag = false;
+      }
+      else if (rankHigh - ceMin.winRankLow != span)
+        return false;
+    }
     return true;
   }
 
