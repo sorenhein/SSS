@@ -215,6 +215,12 @@ void Combination::reduce(const Distribution& distribution)
 }
 
 
+void Combination::reduceByWinner(const unsigned char rankCritical)
+{
+  strats.reduceByWinner(rankCritical);
+}
+
+
 const Strategies& Combination::strategies() const
 {
   return strats;

@@ -160,6 +160,14 @@ void Strategies::reduceByTricks(const Reduction& reduction)
 }
 
 
+void Strategies::reduceByWinner(const unsigned char rankCritical)
+{
+  // Delete Strategy's where the lowest winner is below
+  // rankCritical.
+  slist.reduceByWinner(rankCritical);
+}
+
+
 void Strategies::expand(
   const Reduction& reduction,
   const char rankAdder,

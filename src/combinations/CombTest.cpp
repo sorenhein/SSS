@@ -100,7 +100,7 @@ void CombTest::checkReductions(
 
   if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
   {
-    cout << "WARNRANGE: The range across minimals is not unique.\n";
+    cout << "WARNRANGE2: The range across minimals is not unique.\n";
 
     /*
     for (auto& r: winRanksLow)
@@ -125,7 +125,7 @@ void CombTest::checkReductions(
   {
     rankCritical = maxRank - span;
 
-    cout << "WARNCRITICAL: Moving rank from " << 
+    cout << "WARNCRITICAL2: Moving rank from " << 
       +centry.winRankLow << " to " << +rankCritical << endl;
 
     /*

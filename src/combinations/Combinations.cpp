@@ -459,7 +459,7 @@ Combination const * Combinations::getPtr(
 void Combinations::fixLowestWinningRanks(
   const unsigned cards,
   const vector<CombEntry>& centries,
-  const vector<Combination>& uniqs)
+  vector<Combination>& uniqs)
 {
   // When Plays are limited, a Combination may have some Strategy's
   // that have too-low lowest winners.  We can notice this by looking
@@ -476,8 +476,32 @@ void Combinations::fixLowestWinningRanks(
 
 cout << "Fixing: cards " << cards << ", " << centry.canonical.str() << endl;
 
-    const Combination& comb = uniqs[centry.canonical.index];
-    UNUSED(comb);
+    Combination& comb = uniqs[centry.canonical.index];
+
+    list<unsigned char> winRanksLow;
+    unsigned char span;
+
+    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
+    {
+      cout << "WARNRANGE1: The range across minimals is not unique.\n";
+      continue;
+    }
+
+    // Void stays void.
+    if (centry.winRankLow == 0 || 
+        comb.getMaxRank() - centry.winRankLow != span)
+      continue;
+
+    const unsigned char rankCritical = comb.getMaxRank() - span;
+
+    cout << "WARNCRITICAL1: Moving rank from " <<
+      +centry.winRankLow << " to " << +rankCritical << endl;
+
+    const unsigned s0 = comb.strategies().size();
+
+    comb.reduceByWinner(rankCritical);
+
+    cout << "WARNSHIFT: " << s0 << " to " << comb.strategies().size() << endl;
 
   }
 

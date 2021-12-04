@@ -267,6 +267,25 @@ void Slist::reduceByTricks(const Reduction& reduction)
 }
 
 
+void Slist::reduceByWinner(const unsigned char rankCritical)
+{
+  // Delete Strategy's where the lowest winner is below
+  // rankCritical.
+  auto iter = strategies.begin();
+  while (iter != strategies.end())
+  {
+    if (iter->resultLowest().rank() < rankCritical)
+    {
+      // TODO Do we need to study()?
+      // iter->study();
+      iter++;
+    }
+    else
+      iter = strategies.erase(iter);
+  }
+}
+
+
 void Slist::expand(
   const Reduction& reduction,
   const char rankAdder,

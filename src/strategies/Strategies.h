@@ -68,6 +68,8 @@ class Strategies
 
     void reduceByTricks(const Reduction& reduction);
 
+    void reduceByWinner(const unsigned char rankCritical);
+
     void expand(
       const Reduction& reduction,
       const char rankAdder,
