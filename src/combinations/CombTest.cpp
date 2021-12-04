@@ -11,50 +11,6 @@
 #include "CombTest.h"
 
 
-bool CombTest::checkAndFixMinimals(
-  const vector<CombEntry>& centries,
-  list<CombReference>& minimals) const
-{
-  // Check that each non-minimal holding refers to minimal ones.
-  // We actually follow through and change the minimals.
-  // Once ranks are good, this method should no longer be needed.
-
-  bool changeFlag = false;
-  auto iter = minimals.begin();
-
-  while (iter != minimals.end())
-  {
-    const CombEntry& centry = centries[iter->holding3];
-
-    if (centry.minimalFlag)
-      iter++;
-    else
-    {
-      // Erase the non-minimal one and add the ones it points to.
-      // Take into account the rotation flag -- we want the product
-      // of all rotations to be the really minimal holding.
-      for (auto& min: centry.minimals)
-      {
-        minimals.push_back(min);
-        CombReference& cr = minimals.back();
-        cr.rotateFlag ^= iter->rotateFlag;
-      }
-
-      iter = minimals.erase(iter);
-      changeFlag = true;
-    }
-  }
-
-  if (changeFlag)
-  {
-    minimals.sort();
-    minimals.unique();
-  }
-
-  return ! changeFlag;
-}
-
-
 bool CombTest::checkMinimals(
   const vector<CombEntry>& centries,
   const list<CombReference>& minimals) const
@@ -67,15 +23,11 @@ bool CombTest::checkMinimals(
 }
 
 
-void CombTest::checkAllMinimals(vector<CombEntry>& centries)
+void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
-  // TODO Could also use checkMinimals here.
-  // Then centries can be const (and the whole method, too).
-  // But they have to be correct then...
-
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-    if (! CombTest::checkAndFixMinimals(
+    if (! CombTest::checkMinimals(
       centries,
       centries[holding].minimals))
     {

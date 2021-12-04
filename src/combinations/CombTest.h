@@ -32,11 +32,7 @@ class CombTest
 
   public:
 
-    bool checkAndFixMinimals(
-      const vector<CombEntry>& centries,
-      list<CombReference>& minimals) const;
-
-    void checkAllMinimals(vector<CombEntry>& centries);
+    void checkAllMinimals(vector<CombEntry>& centries) const;
 
     void checkAllReductions(
       const unsigned cards,
