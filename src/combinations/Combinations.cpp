@@ -274,6 +274,10 @@ void Combinations::runUniques(
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
 
+      Result res;
+      comb.strategies().getResultLowest(res);
+      centry.winRankLow = res.rank();
+
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
       

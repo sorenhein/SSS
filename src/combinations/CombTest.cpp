@@ -104,7 +104,7 @@ bool CombTest::getMinimalRanges(
   // minimal winner) and lowest winner among the minimal strategy's 
   // (so 5-5 or 3-3).  They should be the same for all minimals.
 
-  unsigned char winRankLow, rankHigh;
+  unsigned char rankHigh;
   bool firstFlag = true;
   for (auto& min: centry.minimals)
   {
@@ -119,22 +119,18 @@ bool CombTest::getMinimalRanges(
 
     assert(ceMin.canonical.index < uniqs.size());
     const Combination& comb = uniqs[ceMin.canonical.index];
-    const Strategies& strategiesMin = comb.strategies();
 
-    Result res;
-    strategiesMin.getResultLowest(res);
-    winRankLow = res.rank();
     rankHigh = comb.getMaxRank();
 
     // strategiesMin.getResultRange(rankLow, rankHigh);
-    rankLowest.push_back(winRankLow);
+    rankLowest.push_back(ceMin.winRankLow);
 
     if (firstFlag)
     {
-      range = rankHigh - winRankLow;
+      range = rankHigh - ceMin.winRankLow;
       firstFlag = false;
     }
-    else if (rankHigh - winRankLow != range)
+    else if (rankHigh - ceMin.winRankLow != range)
     {
       cout << "Odd rank arrangement\n";
       return false;
@@ -177,22 +173,17 @@ void CombTest::checkReductions(
     return;
   }
 
-  Result res;
-  strategies.getResultLowest(res);
-  const unsigned char winRankLow = res.rank();
-
   unsigned char rankCritical;
 
-  // strategies.getResultRange(rankLow, rankHigh);
   bool specialFlag;
 
   // Void stays void.
-  if (maxRank - winRankLow != range && winRankLow != 0)
+  if (maxRank - centry.winRankLow != range && centry.winRankLow != 0)
   {
     /*
     cout << "Original strategy has different range than minima:\n";
-    cout << "Original range " << +maxRank << " - " << +winRankLow <<
-      " = " << maxRank - winRankLow << "\n";
+    cout << "Original range " << +maxRank << " - " << +centry.winRankLow <<
+      " = " << maxRank - centry.winRankLow << "\n";
     cout << "Minimal range  " << +range << endl;
     for (auto& r: rankLowest)
       cout << "rankLowest entry: " << +r << endl;
@@ -209,12 +200,12 @@ void CombTest::checkReductions(
     rankCritical = maxRank - range;
     specialFlag = true;
 
-    // cout << "Moving critical rank from " << +winRankLow << " to " <<
+    // cout << "Moving critical rank from " << +centry.winRankLow << " to " <<
       // +rankCritical << endl;
   }
   else
   {
-    rankCritical = winRankLow;
+    rankCritical = centry.winRankLow;
     specialFlag = false;
   }
 
@@ -222,19 +213,8 @@ void CombTest::checkReductions(
   // minimal size?  If not, not?
 
 
-  
-
   Result resultLowest;
   strategies.getResultLowest(resultLowest);
-  /*
-  const unsigned char rankCritical = resultLowest.rank();
-
-  Result resultHighest;
-  strategies.getResultHighest(resultHighest);
-
-cout << "Result lowest  " << resultLowest.str(true);
-cout << "Result highest " << resultHighest.str(true);
-*/
 
   const auto& reduction = distribution.getReduction(rankCritical);
 
@@ -272,10 +252,8 @@ Strategies scopy = strategiesMin;
 
 // cout << "Getting result for min " << min.str() << endl;
     // Expand the strategies up using the reduction.
-    Result resultMinLowest;
-    strategiesMin.getResultLowest(resultMinLowest);
     const char rankAdder = static_cast<char>(rankCritical) -
-      static_cast<char>(resultMinLowest.rank());
+      static_cast<char>(ceMin.winRankLow);
 
 // cout << "About to expand min " << min.strSimple() << endl;
 /*

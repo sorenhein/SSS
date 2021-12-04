@@ -86,6 +86,8 @@ struct CombEntry
   bool minimalFlag;
   list<CombReference> minimals;
 
+  unsigned char winRankLow;
+
 
   bool operator == (const CombEntry& ce2)
   {
