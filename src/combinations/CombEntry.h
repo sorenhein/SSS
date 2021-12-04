@@ -124,6 +124,7 @@ struct CombEntry
     return true;
   }
 
+
   bool getMinimalSpans(
     const vector<CombEntry>& centries,
     const vector<Combination>& uniqs,
@@ -172,6 +173,50 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     }
     return true;
   }
+
+
+  bool fixMinimals(const vector<CombEntry>& centries)
+  {
+    // Check that each non-minimal holding refers to minimal ones.
+    // We actually follow through and change the minimals.
+    // Once ranks are good, this method should no longer be needed.
+    // Returns true if nothing is modified.
+ 
+    bool changeFlag = false;
+    auto iter = minimals.begin();
+ 
+    while (iter != minimals.end())
+    {
+      const CombEntry& centry = centries[iter->holding3];
+ 
+      if (centry.minimalFlag)
+        iter++;
+      else
+      {
+        // Erase the non-minimal one and add the ones it points to.
+        // Take into account the rotation flag -- we want the product
+        // of all rotations to be the really minimal holding.
+        for (auto& min: centry.minimals)
+        {
+          minimals.push_back(min);
+          CombReference& cr = minimals.back();
+          cr.rotateFlag ^= iter->rotateFlag;
+        }
+ 
+        iter = minimals.erase(iter);
+        changeFlag = true;
+      }
+    }
+ 
+    if (changeFlag)
+    {
+      minimals.sort();
+      minimals.unique();
+    }
+ 
+    return ! changeFlag;
+  }
+
 
   string str() const
   {

@@ -456,6 +456,23 @@ Combination const * Combinations::getPtr(
 }
 
 
+void Combinations::fixMinimals(vector<CombEntry>& centries)
+{
+  for (unsigned holding = 0; holding < centries.size(); holding++)
+  {
+    // Only look at non-minimal combinations.
+    const CombEntry& centry = centries[holding];
+    if (! centry.canonicalFlag || centry.minimalFlag)
+      continue;
+    
+    if (! centries[holding].fixMinimals(centries))
+    {
+      cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
+    }
+  }
+}
+
+
 void Combinations::fixLowestWinningRanks(
   const unsigned cards,
   const vector<CombEntry>& centries,
@@ -501,10 +518,9 @@ cout << "Fixing: cards " << cards << ", " << centry.canonical.str() << endl;
 
     comb.reduceByWinner(rankCritical);
 
-    cout << "WARNSHIFT: " << s0 << " to " << comb.strategies().size() << endl;
-
+    cout << "WARNSHIFT: " << s0 << 
+      " to " << comb.strategies().size() << endl;
   }
-
 }
 
 
