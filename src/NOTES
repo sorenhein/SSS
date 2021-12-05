@@ -1,3 +1,8 @@
+2021-12-05
+----------
+
+
+
 2021-12-04
 
 9/1340 has 1 strategy using 2S' which should be sth higher.
@@ -116,23 +121,7 @@ Is  28,099 OK,    22 bad
 
 Open issues 2021-09-26
 ----------------------
-1. Cannot really construct the distribution mapping purely sequentially.
-6/560 to 6/564
-d1, d2 are the same (OK)
-d4, d6 are also the same (not consecutive)
-d5, d7 too.
-Symmetrize also the middle distributions.
-
-2. minimals should not prune maps to same holding3 with different
-rotations.  It happens that 2N,2S maps to the same, so we'd only get
-2N and not 2S in that case.
-
-
-
-This also tests expand, constantTricksByReduction etc.
-
 Look at speeding up Slist::equalByMethod.
-
 
 3. Winners of each minimal should be the winner it was made from.
    Maybe once it has been expanded, it is easier to compare.
@@ -185,53 +174,6 @@ Less than half the square root.
 
 Reduction
 ---------
-In Combinations, in runUniques after we have ! minimalFlag:
-if some control flag:
-  
-  bool firstFlag = true
-  Strategies strategiesExpanded;
-
-  for each minimal in minimals:
-    figure out the critical rank (store it in CombEntry, too);
-    const auto& reduction = 
-      distributions[centry.holding2].getReductions(fullRank);
-
-    // Collapse distributions below the last NS rank that counts.
-    // Remove ranks and Consolidate.
-    Strategies strategiesOwn = comb.strategies();
-    strategiesOwn.collapseDistAndRanks(reduction);
-
-    // Remove ranks and consolidate.
-    Strategies strategiesMinimal = centries[minimal.holding3];
-    strategiesMinimal.collapseRanks();
-
-    // They should now be the same.
-    assert(strategiesOwn == strategiesMinimal);
-
-
-    // Check that all expansions of minimal strategies are the same.
-    strategiesMinimal.expand(reduction);
-
-    if (firstFlag)
-    {
-      strategiesExpanded = strategiesMinimal;
-      firstFlag = false;
-    }
-    else
-    {
-      assert(strategiesExpanded == strategiesMinimal);
-    }
-
-  if there are multiple winners
-    // Calculate a number of total tops for each winner.
-    // 4N" is 3, 4N' is 2, 4NS is 2 etc.
-    // Should be the same for all winners.
-    // Also, there shouldn't be any winner missing.
-    // Not sure this is right, but start by saying that each side
-    // has a number of tops, so all combinations of the total should
-    // just be present.
-
-
 * 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
 
 -d

@@ -195,7 +195,9 @@ void Ranks::setPlayers()
   opps.setVoid();
 
   const unsigned char cardsChar = static_cast<unsigned char>(cards);
-  const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar);
+
+  // Start the numbering from 1 in order to distinguish from void.
+  const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
   unsigned h = holding;
 
   for (unsigned char i = imin; i < imin+cardsChar; i++)

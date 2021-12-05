@@ -43,7 +43,7 @@ void Opponents::setNames()
     if (count > 1)
     {
       // Turn <= ~ an eight into 'x'.
-      rep = (r == minRank && minAbsCardNumber <= 6 ?
+      rep = (r == minRank && minAbsCardNumber <= 7 ?
         'x' : GENERIC_NAMES[index]);
 
       rankInfo[r].names = string(count, rep);

@@ -237,7 +237,7 @@ void Combinations::runUniques(
   Plays plays;
   plays.resize(cards);
 
-  CombTest ctest;
+  // CombTest ctest;
 
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
@@ -297,6 +297,7 @@ void Combinations::runUniques(
     }
   }
 
+/*
   timersStrat[33].start();
   Combinations::fixMinimals(centries);
   timersStrat[33].stop();
@@ -313,6 +314,7 @@ void Combinations::runUniques(
   timersStrat[30].start();
   ctest.checkAllReductions(cards, centries, uniqs, distributions);
   timersStrat[30].stop();
+*/
 
   // This is how to write files:
   // CombFiles combFiles;
