@@ -14,8 +14,10 @@
 #include "Play.h"
 
 #include "../combinations/Combinations.h"
-
+#include "../inputs/Control.h"
 #include "../utils/Card.h"
+
+extern Control control;
 
 
 unsigned Play::lead(const bool fullFlag) const
@@ -124,13 +126,14 @@ bool Play::samePartial(
 {
   // TODO When we switch to number rather than rank, we have a problem
   // here: Both a void and a lowest card have number 0...
+  const bool flag = control.runRankComparisons();
 
   if (level == LEVEL_LEAD)
-    return (side == play2.side && Play::lead() == play2.lead());
+    return (side == play2.side && Play::lead(flag) == play2.lead(flag));
   else if (level == LEVEL_LHO)
     return (Play::lho() == play2.lho());
   else if (level == LEVEL_PARD)
-    return (Play::pard() == play2.pard());
+    return (Play::pard(flag) == play2.pard(flag));
   else if (level == LEVEL_RHO)
     return false;
   else

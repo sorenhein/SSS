@@ -525,7 +525,8 @@ void Ranks::setPlaysLeadWithVoid(
   opps.playRank(0);
   play.lhoPtr = opps.voidPtr();
 
-  for (auto& pardPtr: partner.getCards(false))
+  // for (auto& pardPtr: partner.getCards(false))
+  for (auto& pardPtr: partner.getCards(control.runRankComparisons()))
   {
     play.pardPtr = pardPtr;
     const unsigned char pard = pardPtr->getRank();
@@ -577,7 +578,8 @@ void Ranks::setPlaysLeadWithoutVoid(
     const unsigned char lho = lhoPtr->getRank();
     opps.playRank(lho);
 
-    for (auto& pardPtr: partner.getCards(false))
+    // for (auto& pardPtr: partner.getCards(false))
+    for (auto& pardPtr: partner.getCards(control.runRankComparisons()))
     {
       play.pardPtr = pardPtr;
       const unsigned char pard = pardPtr->getRank();
@@ -645,7 +647,8 @@ void Ranks::setPlaysSide(
       leader.minFullRank() >= partner.maxFullRank())
     return;
 
-  for (auto& leadPtr: leader.getCards(false))
+  // for (auto& leadPtr: leader.getCards(false))
+  for (auto& leadPtr: leader.getCards(control.runRankComparisons()))
   {
     // I wish I could write for (play.leadPtr: ...), but a declaration
     // is required.

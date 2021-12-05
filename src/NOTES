@@ -1,5 +1,81 @@
 2021-12-05
 ----------
+Some additional optimizations with numbers, not ranks (xls)
+See how many total plays are made now
+See whether it would help to add some of the more marginal ideas
+
+5/17, AK/Q miss xx.
+
+        Start K         Start A
+0       2N' + 2NS       2N'
+1       2N' + 2S        2N + 2S
+2       2N' + 2NS       2N'
+MIN     2N' + 2NS       2N'
+
+This is reduced to a minimal product of 2N' and then there is a
+single minimal, 5/25 (AK/x missing xx).
+
+        5/25            5/51
+        AK/x            Ax/K
+0       3N' -> 2N'      3NS -> 2NS
+1       3N  -> 2N       3S  -> 2S
+2       3N' -> 2N'      3NS -> 2NS
+MIN     3N' -> 2N'      3NS -> 2NS
+
+We need to find both minimals and to clean this up.  Maybe:
+
+At the time when we start K-Q or KxQ, we have to declare whether the
+double winner is going to be 2N' or 2S.  Up to now we've kept the
+optionality in the Strategies, but that's probably wrong.  Instead
+
+d  K-Q(Q) K-Q(K) KHQ(Q) KHQ(K) A-Q(Q) A-Q(A) AHQ(Q) AHQ(A)
+0                2NS    2N'                  2N'S   2N'
+1                2S     2N'                  2S     2N
+2  2NS    2N'                  2N'S   2N'
+                               (bad)
+
+There are two strategies for each set of three first cards.
+E-W cause multiplications.
+
+d  start with K            start with A
+0  2NS  2NS  2N'  2N'      2N'S  2N'
+1  2S   2S   2N'  2N'      2S    2N
+2  2NS  2N'  2NS  2N'      2N'   2N'
+st #0   #1   #2   #3       #4    #5
+                  (bad)    (bad)
+mi 2NS  2N'S 2N'S                2N'
+
+#3 loses to #5
+#4 loses to #1
+
+#0 is definitely valid: "Cash" the Q
+#5 is also valid      : Cash the A
+The question is whether #1 and #2 are valid.
+I think we can't draw conclusions just from the worse products.
+They're also not dominated by anything else.
+The question is whether declarer can lead the K and then decide
+whether or not the Q is higher depending on East's play.  I guess not.
+
+If so, we have to find a way to restrict that.
+
+
+
+
+Once we have the two strategies, don't combine their winners.
+For each plus term, multiply out against its own strategy and simplify.
+Effectively, when starting with the ace, why want to win the Q?
+
+        Start K         Start A
+0       2NS             2N'
+1       2S              2N
+2       2NS             2N'
+MIN     2NS             2N'
+
+Then each of these leads to a minimal.  
+
+Another problem: 9/377 just fails, AKQ/JT9, quite early on.  Why?
+
+
 
 
 
