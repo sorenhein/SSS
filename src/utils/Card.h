@@ -23,7 +23,8 @@ class Card
 
     unsigned char rank;
     unsigned char depth; // 0 for highest card with that rank
-    unsigned char number; // 0 for lowest card with that player
+    unsigned char number; // 1 for lowest card with that player
+    unsigned char absNumber; // 1 for lowest card in that combination
     unsigned char name;
 
   public:
@@ -36,16 +37,13 @@ class Card
       const unsigned char rankIn,
       const unsigned char depthIn,
       const unsigned char numberIn,
+      const unsigned char absNumberIn,
       const unsigned char nameIn);
 
     void updateName(const unsigned char nameIn);
 
     bool operator > (const Card& card2) const;
-    bool operator >= (const Card& card2) const;
-    bool operator == (const Card& card2) const;
     bool operator != (const Card& card2) const;
-    bool operator <= (const Card& card2) const;
-    bool operator < (const Card& card2) const;
     bool identical(const Card& card2) const;
 
     Compare compare(const Card& card2) const;

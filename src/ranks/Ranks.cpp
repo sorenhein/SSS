@@ -330,16 +330,6 @@ void Ranks::setRanks(
   Ranks::setPlayers();
 
   Ranks::setRanks(combEntry.canonical);
-  /*
-  combEntry.canonical.rotateFlag = ! (north.greater(south, opps));
-
-  if (combEntry.canonical.rotateFlag)
-    Ranks::canonicalBoth(south, north, opps,
-      combEntry.canonical.holding3, combEntry.canonical.holding2);
-  else
-   Ranks::canonicalBoth(north, south, opps,
-      combEntry.canonical.holding3, combEntry.canonical.holding2);
-      */
 
   combEntry.canonicalFlag = (holding == combEntry.canonical.holding3);
 }
@@ -355,12 +345,30 @@ void Ranks::trivialRanked(
   {
     // Play the highest card.
     Winners winners;
+/*
     if (north.hasRank(maxGlobalRank))
       winners.set(SIDE_NORTH, north.top());
 
     // If both declarer sides have winners, keep both as a choice.
     if (south.hasRank(maxGlobalRank))
       winners.set(SIDE_SOUTH, south.top());
+*/
+
+    // TODO New idea -- does it work?
+    // Only go by the actual winner (gasp!).
+
+    /*
+    if (north.greater(south, opps))
+    {
+      winners.set(SIDE_NORTH, north.top());
+    }
+    else
+    {
+      winners.set(SIDE_SOUTH, south.top());
+    }
+    */
+
+    winners.set(north.top(), south.top());
 
     trivial.set(0, tricks, winners);
   }

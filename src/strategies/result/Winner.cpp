@@ -40,6 +40,7 @@ void Winner::set(
   const unsigned char rankIn,
   const unsigned char depthIn,
   const unsigned char numberIn,
+  const unsigned char absNumberIn,
   const unsigned char nameIn)
 {
   // This doesn't reset the winner, so the method can be used to build
@@ -51,12 +52,12 @@ void Winner::set(
 
   if (sideIn == SIDE_NORTH)
   {
-    north.set(rankIn, depthIn, numberIn, nameIn);
+    north.set(rankIn, depthIn, numberIn, absNumberIn, nameIn);
     mode = WIN_NORTH_ONLY;
   }
   else if (sideIn == SIDE_SOUTH)
   {
-    south.set(rankIn, depthIn, numberIn, nameIn);
+    south.set(rankIn, depthIn, numberIn, absNumberIn, nameIn);
     mode = WIN_SOUTH_ONLY;
   }
   else if (sideIn == SIDE_NONE)

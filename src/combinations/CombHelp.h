@@ -69,23 +69,6 @@ struct CountEntry
 };
 
 
-struct CountPartition
-{
-  vector<CountEntry> elements;
-
-  void resize(const unsigned len)
-  {
-    elements.clear();
-    elements.resize(len);
-  }
-
-  void operator += (const CountPartition& cp)
-  {
-    for (unsigned n = 0; n < elements.size(); n++)
-      elements[n] += cp.elements[n];
-  }
-};
-
 struct CombCountEntry
 {
   vector<CountEntry> data;

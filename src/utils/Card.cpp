@@ -28,6 +28,7 @@ void Card::reset()
   rank = 0;
   depth = 0;
   number = UCHAR_NOT_SET;
+  absNumber = UCHAR_NOT_SET;
   name = '-';
 }
 
@@ -36,11 +37,13 @@ void Card::set(
   const unsigned char rankIn,
   const unsigned char depthIn,
   const unsigned char numberIn,
+  const unsigned char absNumberIn,
   const unsigned char nameIn)
 {
   rank = rankIn;
   depth = depthIn;
   number = numberIn;
+  absNumber = absNumberIn;
   name = nameIn;
 }
 
@@ -55,37 +58,24 @@ void Card::updateName(const unsigned char nameIn)
 
 bool Card::operator > (const Card& card2) const
 {
-  return (number > card2.number);
-}
-
-
-bool Card::operator >= (const Card& card2) const
+/*
+if ((number > card2.number && absNumber <= card2.absNumber) ||
+    (number < card2.number && absNumber >= card2.absNumber))
 {
-  return (number >= card2.number);
+  cout << "n " << +number << ", n2 << " << +card2.number << endl;
+  cout << "a " << +absNumber << ", abs2 " << +card2.absNumber << endl;
+  cout << Card::strDebug("warnfirst");
+  cout << card2.strDebug("warnsecond");
 }
+*/
 
-
-bool Card::operator == (const Card& card2) const
-{
-  return (number == card2.number);
+  return (absNumber > card2.absNumber);
 }
 
 
 bool Card::operator != (const Card& card2) const
 {
-  return (number != card2.number);
-}
-
-
-bool Card::operator <= (const Card& card2) const
-{
-  return (number >= card2.number);
-}
-
-
-bool Card::operator < (const Card& card2) const
-{
-  return (number < card2.number);
+  return (absNumber != card2.absNumber);
 }
 
 
@@ -207,6 +197,7 @@ string Card::strDebug(const string& side) const
     "rank " << +rank <<
     " depth " << +depth <<
     " number " << +number << 
+    " absNumber " << +absNumber << 
     " name " << name <<
     "\n";
   return ss.str();

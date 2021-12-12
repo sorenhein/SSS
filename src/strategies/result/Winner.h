@@ -61,7 +61,8 @@ class Winner
       const Side sideIn,
       const unsigned char rankIn,
       const unsigned char depthIn,
-      const unsigned char number,
+      const unsigned char numberIn,
+      const unsigned char absNumberIn,
       const unsigned char nameIn);
 
     void set(

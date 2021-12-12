@@ -1,5 +1,26 @@
 2021-12-05
 ----------
+Ideas for ranks and no ranks.
+
+Ranks
+-----
+- Really solve the concrete combination, not canonical ones
+- Only solve ones where North has the ace (mark others as rotations)
+- So there's only one winner ever in a given trick (or none)
+  - AK/Q is AK and the Q doesn't matter
+  - We will still get minimals: AK/Q is AKx, AQ/K is either AK/x or A/Kx
+  - A/Kx and Ax/K are different
+
+No ranks
+--------
+- Non-canonicals are mapped the usual way
+- Non-minimal canonicals are solved by minimals
+- Minimals are solved normally (without winners)
+
+
+
+2021-12-05
+----------
 Some additional optimizations with numbers, not ranks (xls)
 See how many total plays are made now
 See whether it would help to add some of the more marginal ideas
@@ -219,7 +240,8 @@ Look at speeding up Slist::equalByMethod.
    b. That merge should be the original strategy(?)
 
 6. For void starting with 10-13 cards (assuming we solve up to 13
-   cards), it's always OK to symmetrize.  We do this:
+   cards), it's always OK to symmetrize, as we can never get there
+   from non-void combinations.  We do this:
    a. If we get above [100] strategies, we start over and only
       look up symmetrized strategies (so 6-8 and 8-6 are done together
       and symmetrized against each other).  Multiply strategy by

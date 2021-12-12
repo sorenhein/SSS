@@ -67,15 +67,16 @@ void Winners::set(
 {
   Winners::reset();
 
+  // TODO Can probably simplify to just > or not?
+
   if (north.getRank() > south.getRank())
     Winners::set(SIDE_NORTH, north);
   else if (north.getRank() < south.getRank())
     Winners::set(SIDE_SOUTH, south);
-  else
-  {
+  else if (north > south)
     Winners::set(SIDE_NORTH, north);
+  else
     Winners::set(SIDE_SOUTH, south);
-  }
 }
 
 

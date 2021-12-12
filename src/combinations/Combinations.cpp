@@ -250,6 +250,7 @@ void Combinations::runUniques(
     const unsigned canonicalHolding3 = centry.canonical.holding3;
     if (holding == canonicalHolding3)
     {
+      // TODO just centry.canonicalFlag?
       assert(uniqueIndex < uniqs.size());
       centry.canonical.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];

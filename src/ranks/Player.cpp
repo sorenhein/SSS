@@ -84,7 +84,7 @@ void Player::update(
   Card * cptr = &cards.back();
 
   // The card number starts at 1.
-  cptr->set(rank, depthNext, numberNextCard, 
+  cptr->set(rank, depthNext, numberNextCard, absCardNumber,
     static_cast<unsigned char>(CARD_NAMES[absCardNumber-1]));
 
   cardsPtr.push_back(cptr);
