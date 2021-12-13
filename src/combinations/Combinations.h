@@ -101,6 +101,10 @@ class Combinations
       const unsigned cards,
       const Distributions& distributions);
 
+    void runUniquesOld(
+      const unsigned cards,
+      const Distributions& distributions);
+
     void runUniquesMT(
       const unsigned cards,
       const Distributions& distributions,

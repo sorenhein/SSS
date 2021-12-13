@@ -1,3 +1,68 @@
+2021-12-12
+----------
+Ways to get Ranks to give exact and not canonical plays, removing
+up to 4 cards in the process:
+
+1. For each card (let's say from the largest on down):
+   - Separate out the high and low parts of holding3
+     - Divide by a table lookup factor to get the high part
+     - Subtract it out from holding3
+     - Separate out the card we're eliminating by division
+     - Subtract this out to get the low part
+     - Multiply the high part up by 3 less
+     - Add the low part
+2. Convert holding3 to holding4 and do it there:
+   a. Table lookup of 3^8 each, two in total, 6561 entries
+      Each entry is a 16-bit number in holding4 format
+      Piece them together
+   b. Do it with bit magic in Ranks::setPlayers
+      holding4 = 0
+      for (i)
+        holding4 = (holding4 >> 2) | (c << 2(cardsChar-1))
+3. When we want to knock out played cards, highest first:
+   absNum    maskLow    maskHigh
+   1       0x0000000   0x3fffffc
+   2       0x0000003   0x3fffff0
+   3       0x000000f   0x3ffffc0
+   4       0x000003f   0x3ffff00
+   5       0x00000ff   0x3fffc00
+   6       0x00003ff   0x3fff000
+   7       0x0000fff   0x3ffc000
+   8       0x0003fff   0x3ff0000
+   9       0x000ffff   0x3fc0000
+   10      0x003ffff   0x3f00000
+   11      0x00fffff   0x3c00000
+   12      0x03fffff   0x3000000
+   13      0x0ffffff   0x0000000
+
+   holding4 = ((holding4 & maskHigh[abs]) >> 2) | (holding4 & maskLow[abs]);
+
+   Start with one of the cards
+   for (punch)
+     punch it out
+     subtract 1 from later punches above this one
+   end
+
+   Or sort in descending order first
+
+4. Turning holding4 back into a holding3:
+   Two tables of 2^16 = 8 cards each (so works up to 15 cards)
+   h4High = holding4 >> 16
+   h4Low = holding4 & 0xffff
+   holding3 = 3^8 * table[h4High] + table[h4Low];
+
+5. Also need a way (for ranked plays) to tell whether a combination
+has North top > South top -- store this as a flag in Combinations
+
+Cleanup:
+Comb counts from Combinations to class/struct?
+Ranks line 517, 371: right?
+Declarer: greater?
+No Winners at all, once there's only ever 1?
+Card: When use number, when absNumber?
+
+5/17, 9/1340, 9/13649: Good test cases.
+
 2021-12-05
 ----------
 Ideas for ranks and no ranks.

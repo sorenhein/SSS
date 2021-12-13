@@ -237,6 +237,109 @@ void Combinations::runUniques(
   Plays plays;
   plays.resize(cards);
 
+  for (unsigned holding = 0; holding < centries.size(); holding++)
+  {
+    CombEntry& centry = centries[holding];
+
+    timers.start(TIMER_RANKS);
+    ranks.setRanks(holding, centry);
+    timers.stop(TIMER_RANKS);
+
+    const unsigned canonicalHolding3 = centry.canonical.holding3;
+    if (holding == canonicalHolding3)
+    {
+      // TODO just centry.canonicalFlag?
+      assert(uniqueIndex < uniqs.size());
+      centry.canonical.index = uniqueIndex;
+      Combination& comb = uniqs[uniqueIndex];
+      uniqueIndex++;
+
+      comb.setMaxRank(ranks.maxRank());
+
+      // Plays is cleared and rewritten, so it is only an optimization
+      // not to let Combination make its own plays.
+
+      comb.strategize(centry, * this, distributions, ranks, plays);
+
+      centry.minimalFlag =
+        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+      if (! centry.minimalFlag)
+      {
+        // TODO Control by some flag
+        comb.reduce(
+          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+      }
+
+      centry.type = Combinations::classify(
+        centry.minimalFlag, comb.strategies(), ranks);
+
+      Result res;
+      comb.strategies().getResultLowest(res);
+      centry.winRankLow = res.rank();
+
+      countStats[cards].data[centry.type].incr(
+        plays.size(), comb.strategies().size());
+    }
+    else
+    {
+      centry.canonical.index = centries[canonicalHolding3].canonical.index;
+      countNoncanonical[cards]++;
+    }
+  }
+
+  // This is how to write files:
+  // CombFiles combFiles;
+  // combFiles.writeFiles(cards, centries);
+
+  // This is how to read files:
+  // vector<CombEntry> copy;
+  // copy.resize(centries.size());
+  // combFiles.readFiles(cards, copy);
+
+  // This is how to compare read and write.
+  // for (unsigned holding = 0; holding < centries.size(); holding++)
+    // assert(centries[holding] == copy[holding]);
+
+  // TMP Print timers
+  cout << "Individual timers\n";
+  Timer sum;
+  for (unsigned i = 0; i < timersStrat.size(); i++)
+  {
+    string s = timersStrat[i].str(2);
+    if (s == "")
+      continue;
+    s = s.substr(0, s.size()-1);
+    sum += timersStrat[i];
+    cout << setw(4) << i << s << "\n";
+  }
+  cout << string(70, '-') << "\n";
+  cout << setw(4) << "" << sum.str(2) << endl;
+
+}
+
+
+void Combinations::runUniquesOld(
+  const unsigned cards,
+  const Distributions& distributions)
+{
+  // TODO Similar to runUniques, but later on this should become the
+  // loop over unranked combinations.  So here it makes sense to look
+  // at canonicals, also in Ranks (plays).
+
+  assert(cards < combEntries.size());
+  assert(cards < uniques.size());
+  assert(cards < countStats.size());
+
+  vector<CombEntry>& centries = combEntries[cards];
+  vector<Combination>& uniqs = uniques[cards];
+
+  Ranks ranks;
+  ranks.resize(cards);
+  unsigned uniqueIndex = 0;
+
+  Plays plays;
+  plays.resize(cards);
+
   // CombTest ctest;
 
   for (unsigned holding = 0; holding < centries.size(); holding++)
