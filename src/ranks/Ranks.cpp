@@ -45,11 +45,54 @@ extern Control control;
 mutex mtxRanks;
 static bool init_flag = false;
 
+vector<unsigned> HOLDING4_TO_HOLDING3;
+vector<unsigned> HOLDING3_TO_HOLDING4;
+
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
 vector<unsigned> HOLDING2_RANK_SHIFT;
 vector<unsigned> HOLDING2_RANK_ADDER;
+
+const vector<unsigned> HOLDING4_MASK_LOW =
+{
+  0x00000000, //  0
+  0x00000000, //  1
+  0x00000003, //  2
+  0x0000000f, //  3
+  0x0000003f, //  4
+  0x000000ff, //  5
+  0x000003ff, //  6
+  0x00000fff, //  7
+  0x00003fff, //  8
+  0x0000ffff, //  9
+  0x0003ffff, // 10
+  0x000fffff, // 11
+  0x003fffff, // 12
+  0x00ffffff, // 13
+  0x03ffffff, // 14
+  0x0fffffff  // 15
+};
+
+const vector<unsigned> HOLDING4_MASK_HIGH =
+{
+  0x3fffffff, //  0
+  0x3ffffffc, //  1
+  0x3ffffff0, //  2
+  0x3fffffc0, //  3
+  0x3fffff00, //  4
+  0x3ffffc00, //  5
+  0x3ffff000, //  6
+  0x3fffc000, //  7
+  0x3fff0000, //  8
+  0x3ffc0000, //  9
+  0x3ff00000, // 10
+  0x3fc00000, // 11
+  0x3f000000, // 12
+  0x3c000000, // 13
+  0x30000000, // 14
+  0x00000000  // 15
+};
 
 
 Ranks::Ranks()
@@ -57,6 +100,7 @@ Ranks::Ranks()
   mtxRanks.lock();
   if (! init_flag)
   {
+    setRankConstants4();
     setRankConstants23();
     init_flag = true;
   }
@@ -110,10 +154,15 @@ void Ranks::setPlayers()
   // Start the numbering from 1 in order to distinguish from void.
   const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
   unsigned h = holding3;
+  holding4 = 0;
 
   for (unsigned char i = imin; i < imin+cardsChar; i++)
   {
     const unsigned c = h % 3;
+
+    // Spread out so each trit occupies 2 bits cleanly.
+    holding4 = (holding4 >> 2) | (c << 2*(cardsChar-1));
+
     if (c == SIDE_OPPS)
     {
       if (prev_is_NS)

@@ -17,11 +17,60 @@
 using namespace std;
 
 
+extern vector<unsigned> HOLDING4_TO_HOLDING3;
+extern vector<unsigned> HOLDING3_TO_HOLDING4;
+
 extern vector<unsigned> HOLDING3_RANK_FACTOR;
 extern vector<unsigned> HOLDING3_RANK_ADDER;
 
 extern vector<unsigned> HOLDING2_RANK_SHIFT;
 extern vector<unsigned> HOLDING2_RANK_ADDER;
+
+
+void setRankConstants4()
+{
+  // Lookup of 8 cards in trit format.  There are 3^8 = 6561 entries,
+  // each with a 16-bit number.
+
+  // First make temporary tables with the square root of the numbers.
+  vector<unsigned> h4_to_h3_partial(256);
+  vector<unsigned> h3_to_h4_partial(81);
+
+  for (unsigned c0 = 0; c0 < 3; c0++)
+  {
+    for (unsigned c1 = 0; c1 < 3; c1++)
+    {
+      for (unsigned c2 = 0; c2 < 3; c2++)
+      {
+        for (unsigned c3 = 0; c3 < 3; c3++)
+        {
+          const unsigned h3 = 27*c0 + 9*c1 + 3*c2 + c3;
+          const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
+
+          h4_to_h3_partial[h4] = h3;
+          h3_to_h4_partial[h3] = h4;
+        }
+      }
+    }
+  }
+
+  // Then make the big tables.
+  HOLDING4_TO_HOLDING3.resize(65536);
+  HOLDING3_TO_HOLDING4.resize(6561);
+
+  for (unsigned p0 = 0; p0 < 81; p0++)
+  {
+    for (unsigned p1 = 0; p1 < 81; p1++)
+    {
+      const unsigned h3 = 81*p0 + p1;
+      const unsigned h4 = 
+        (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
+
+      HOLDING3_TO_HOLDING4[h3] = h4;
+      HOLDING4_TO_HOLDING3[h4] = h3;
+    }
+  }
+}
 
 
 void setRankConstants23()
@@ -111,10 +160,5 @@ void setRankConstants23()
       }
     }
   }
-}
-
-
-void setRankConstants4()
-{
 }
 
