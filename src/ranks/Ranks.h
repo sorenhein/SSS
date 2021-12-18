@@ -26,12 +26,11 @@ class Ranks
     Declarer south;
     Opponents opps;
 
-    unsigned holding;
+    unsigned holding3;
+    unsigned holding4;
     unsigned cards;
     unsigned char maxGlobalRank;
 
-
-    void setConstants();
 
     void zero();
 
@@ -123,7 +122,7 @@ class Ranks
     unsigned size() const;
 
     void setRanks(
-      const unsigned holdingIn,
+      const unsigned holding3In,
       CombEntry& combEntry);
 
     CombinationType setPlays(

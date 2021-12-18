@@ -9,7 +9,8 @@
 #include "../plays/Plays.h"
 #include "../combinations/CombEntry.h"
 #include "../inputs/Control.h"
-#include "../const.h"
+
+#include "cranks.h"
 
 extern Control control;
 
@@ -56,100 +57,10 @@ Ranks::Ranks()
   mtxRanks.lock();
   if (! init_flag)
   {
-    Ranks::setConstants();
+    setRankConstants23();
     init_flag = true;
   }
   mtxRanks.unlock();
-}
-
-
-void Ranks::setConstants()
-{
-  // First we set up tables for a single count of a certain position
-  // (North, South, opps).  The factor is a power of 3 or 2 in order
-  // to shift the trinary or binary holding up, and the adder is the
-  // value (in "trits" or in bits) to add to the holding.
-
-  vector<unsigned> HOLDING3_FACTOR;
-  vector<vector<unsigned>> HOLDING3_ADDER;
-
-  vector<unsigned> HOLDING2_SHIFT;
-  vector<vector<unsigned>> HOLDING2_ADDER;
-
-  HOLDING3_FACTOR.resize(MAX_CARDS+1);
-  HOLDING3_FACTOR[0] = 1;
-  for (unsigned c = 1; c < HOLDING3_FACTOR.size(); c++)
-    HOLDING3_FACTOR[c] = 3 * HOLDING3_FACTOR[c-1];
-
-  assert(SIDE_NORTH == 0);
-  assert(SIDE_SOUTH == 1);
-
-  HOLDING3_ADDER.resize(MAX_CARDS+1);
-  for (unsigned c = 0; c < HOLDING3_FACTOR.size(); c++)
-  {
-    HOLDING3_ADDER[c].resize(3);
-    HOLDING3_ADDER[c][2] = HOLDING3_FACTOR[c] - 1;
-    HOLDING3_ADDER[c][1] = HOLDING3_ADDER[c][2] / 2;
-    HOLDING3_ADDER[c][0] = 0;
-  }
-
-  HOLDING2_SHIFT.resize(MAX_CARDS+1);
-  for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
-    HOLDING2_SHIFT[c] = c;
-
-  HOLDING2_ADDER.resize(MAX_CARDS+1);
-  for (unsigned c = 0; c < HOLDING2_SHIFT.size(); c++)
-  {
-    HOLDING2_ADDER[c].resize(2);
-    HOLDING2_ADDER[c][1] = (c == 0u ? 0u : (1u << c) - 1u);
-    HOLDING2_ADDER[c][0] = 0;
-  }
-
-  // Then we set up tables for a complete rank, including counts with
-  // North, South and opps.  Of course either North+South or opps will
-  // have a rank, and not both, but the table works uniformly.
-
-  // We store the counts of a rank in a 12-bit word.  As we only consider
-  // a limited number of cards, we only fill out the table entries up
-  // to a sum of 16 cards.
-
-  assert(MAX_CARDS <= 15);
-  HOLDING3_RANK_FACTOR.resize(4096);
-  HOLDING3_RANK_ADDER.resize(4096);
-
-  HOLDING2_RANK_SHIFT.resize(4096);
-  HOLDING2_RANK_ADDER.resize(4096);
-
-  for (unsigned oppCount = 0; oppCount < 16; oppCount++)
-  {
-    for (unsigned decl1Count = 0; 
-        decl1Count <= MAX_CARDS - oppCount; decl1Count++)
-    {
-      for (unsigned decl2Count = 0; 
-          decl2Count <= MAX_CARDS - oppCount - decl1Count; decl2Count++)
-      {
-        const unsigned sum = oppCount + decl1Count + decl2Count;
-        const unsigned index = (oppCount << 8 ) |
-          (decl1Count << 4) | decl2Count;
-        
-        HOLDING3_RANK_FACTOR[index] = HOLDING3_FACTOR[sum];
-
-        HOLDING3_RANK_ADDER[index] = 
-          HOLDING3_ADDER[oppCount][SIDE_OPPS] *
-            HOLDING3_FACTOR[decl1Count + decl2Count] +
-          HOLDING3_ADDER[decl1Count][SIDE_NORTH] *
-            HOLDING3_FACTOR[decl2Count] +
-          HOLDING3_ADDER[decl2Count][SIDE_SOUTH];
-
-        HOLDING2_RANK_SHIFT[index] = HOLDING2_SHIFT[sum];
-
-        HOLDING2_RANK_ADDER[index] = 
-          (HOLDING2_ADDER[oppCount][PAIR_EW] << 
-            (decl1Count + decl2Count)) |
-          HOLDING2_ADDER[decl1Count + decl2Count][PAIR_NS];
-      }
-    }
-  }
 }
 
 
@@ -187,7 +98,7 @@ void Ranks::setPlayers()
   // such that the first real card we see will result in an increase
   // in maxGlobalRank, i.e. in the running rank.  Therefore we will never
   // write to rank = 0 (void) in the loop itself.
-  bool prev_is_NS = ((holding % 3) == SIDE_OPPS);
+  bool prev_is_NS = ((holding3 % 3) == SIDE_OPPS);
 
   // Have to set opps here already, as opps are not definitely void
   // but may be, so we don't want the maximum values to get
@@ -198,7 +109,7 @@ void Ranks::setPlayers()
 
   // Start the numbering from 1 in order to distinguish from void.
   const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
-  unsigned h = holding;
+  unsigned h = holding3;
 
   for (unsigned char i = imin; i < imin+cardsChar; i++)
   {
@@ -261,7 +172,7 @@ unsigned Ranks::canonicalTrinary(
   // either side is >= the other.  Therefore the rotateFlag and the
   // order will depend on the order of comparison.
   // Therefore Combinations::getPtr looks up the canonical index.
-  unsigned holding3 = 0;
+  unsigned h3 = 0;
 
   for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
@@ -270,11 +181,11 @@ unsigned Ranks::canonicalTrinary(
       (static_cast<unsigned>(dominant.count(rank)) << 4) | 
        static_cast<unsigned>(recessive.count(rank));
 
-    holding3 = 
-      HOLDING3_RANK_FACTOR[index] * holding3 +
+    h3 = 
+      HOLDING3_RANK_FACTOR[index] * h3 +
       HOLDING3_RANK_ADDER[index];
   }
-  return holding3;
+  return h3;
 }
 
 
@@ -282,13 +193,13 @@ void Ranks::canonicalBoth(
   const Declarer& dominant,
   const Declarer& recessive,
   const Opponents& opponents,
-  unsigned& holding3,
-  unsigned& holding2) const
+  unsigned& holding3In,
+  unsigned& holding2In) const
 {
   // This is similar to canonicalTrinary, but generates both the binary 
   // and trinary holdings.
-  holding3 = 0;
-  holding2 = 0;
+  holding3In = 0;
+  holding2In = 0;
 
   for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
   {
@@ -297,11 +208,11 @@ void Ranks::canonicalBoth(
       (static_cast<unsigned>(dominant.count(rank)) << 4) | 
        static_cast<unsigned>(recessive.count(rank));
 
-    holding3 = 
-      HOLDING3_RANK_FACTOR[index] * holding3 +
+    holding3In = 
+      HOLDING3_RANK_FACTOR[index] * holding3In +
       HOLDING3_RANK_ADDER[index];
-    holding2 = 
-      (holding2 << HOLDING2_RANK_SHIFT[index]) |
+    holding2In = 
+      (holding2In << HOLDING2_RANK_SHIFT[index]) |
       HOLDING2_RANK_ADDER[index];
   }
 }
@@ -322,16 +233,16 @@ void Ranks::setRanks(CombReference& combRef) const
 
 
 void Ranks::setRanks(
-  const unsigned holdingIn,
+  const unsigned holding3In,
   CombEntry& combEntry)
 {
-  holding = holdingIn;
+  holding3 = holding3In;
 
   Ranks::setPlayers();
 
   Ranks::setRanks(combEntry.canonical);
 
-  combEntry.canonicalFlag = (holding == combEntry.canonical.holding3);
+  combEntry.canonicalFlag = (holding3 == combEntry.canonical.holding3);
 }
 
 
@@ -840,7 +751,7 @@ bool Ranks::getMinimals(
     // Declarer wins no tricks on rank.
     Ranks::losingMinimal(index, ranksTmp);
 
-    ranksTmp.finishMinimal(holding, minimals);
+    ranksTmp.finishMinimal(holding3, minimals);
   }
   else
   {
@@ -866,7 +777,7 @@ bool Ranks::getMinimals(
       // Copy the remaining ranks.
       Ranks::remainingMinimal(criticalRank, index, ranksTmp);
 
-      ranksTmp.finishMinimal(holding, minimals);
+      ranksTmp.finishMinimal(holding3, minimals);
     }
   }
 
