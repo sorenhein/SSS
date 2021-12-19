@@ -46,53 +46,12 @@ mutex mtxRanks;
 static bool init_flag = false;
 
 vector<unsigned> HOLDING4_TO_HOLDING3;
-vector<unsigned> HOLDING3_TO_HOLDING4;
 
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
 vector<unsigned> HOLDING2_RANK_SHIFT;
 vector<unsigned> HOLDING2_RANK_ADDER;
-
-const vector<unsigned> HOLDING4_MASK_LOW =
-{
-  0x00000000, //  0
-  0x00000000, //  1
-  0x00000003, //  2
-  0x0000000f, //  3
-  0x0000003f, //  4
-  0x000000ff, //  5
-  0x000003ff, //  6
-  0x00000fff, //  7
-  0x00003fff, //  8
-  0x0000ffff, //  9
-  0x0003ffff, // 10
-  0x000fffff, // 11
-  0x003fffff, // 12
-  0x00ffffff, // 13
-  0x03ffffff, // 14
-  0x0fffffff  // 15
-};
-
-const vector<unsigned> HOLDING4_MASK_HIGH =
-{
-  0x3fffffff, //  0
-  0x3ffffffc, //  1
-  0x3ffffff0, //  2
-  0x3fffffc0, //  3
-  0x3fffff00, //  4
-  0x3ffffc00, //  5
-  0x3ffff000, //  6
-  0x3fffc000, //  7
-  0x3fff0000, //  8
-  0x3ffc0000, //  9
-  0x3ff00000, // 10
-  0x3fc00000, // 11
-  0x3f000000, // 12
-  0x3c000000, // 13
-  0x30000000, // 14
-  0x00000000  // 15
-};
 
 
 Ranks::Ranks()
@@ -426,21 +385,31 @@ bool Ranks::pardOK(
 
 void Ranks::updateHoldings(Play& play) const
 {
-  if (north.greater(south, opps))
+  if (control.runRankComparisons())
   {
-    play.holding3 = Ranks::canonicalTrinary(north, south);
+    // Don't do any canonical reduction -- just play the cards.
+    play.holding3 = uncanonicalTrinary(holding4, play);
 
-    // North (without the played card) is still >= South (without
-    // the played card).  So we can justify not rotating, but see
-    // also the comment in canonicalTrinary().
-    play.rotateFlag = false;
+    play.rotateFlag = ! north.greater(south, opps);
   }
   else
   {
-    // South is strictly greater than North, so there is no
-    // ambiguity here.
-    play.holding3 = Ranks::canonicalTrinary(south, north);
-    play.rotateFlag = true;
+    if (north.greater(south, opps))
+    {
+      play.holding3 = Ranks::canonicalTrinary(north, south);
+
+      // North (without the played card) is still >= South (without
+      // the played card).  So we can justify not rotating, but see
+      // also the comment in canonicalTrinary().
+      play.rotateFlag = false;
+    }
+    else
+  {
+      // South is strictly greater than North, so there is no
+      // ambiguity here.
+      play.holding3 = Ranks::canonicalTrinary(south, north);
+      play.rotateFlag = true;
+    }
   }
 }
 
