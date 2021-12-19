@@ -245,46 +245,36 @@ void Combinations::runUniques(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    const unsigned canonicalHolding3 = centry.canonical.holding3;
-    if (holding == canonicalHolding3)
+    assert(uniqueIndex < uniqs.size());
+    centry.canonical.index = uniqueIndex;
+    Combination& comb = uniqs[uniqueIndex];
+    uniqueIndex++;
+
+    comb.setMaxRank(ranks.maxRank());
+
+    // Plays is cleared and rewritten, so it is only an optimization
+    // not to let Combination make its own plays.
+
+    comb.strategize(centry, * this, distributions, ranks, plays);
+
+    centry.minimalFlag =
+      Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+    if (! centry.minimalFlag)
     {
-      // TODO just centry.canonicalFlag?
-      assert(uniqueIndex < uniqs.size());
-      centry.canonical.index = uniqueIndex;
-      Combination& comb = uniqs[uniqueIndex];
-      uniqueIndex++;
-
-      comb.setMaxRank(ranks.maxRank());
-
-      // Plays is cleared and rewritten, so it is only an optimization
-      // not to let Combination make its own plays.
-
-      comb.strategize(centry, * this, distributions, ranks, plays);
-
-      centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
-      if (! centry.minimalFlag)
-      {
-        // TODO Control by some flag
-        comb.reduce(
-          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
-      }
-
-      centry.type = Combinations::classify(
-        centry.minimalFlag, comb.strategies(), ranks);
-
-      Result res;
-      comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.rank();
-
-      countStats[cards].data[centry.type].incr(
-        plays.size(), comb.strategies().size());
+      // TODO Control by some flag
+      comb.reduce(
+        * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
     }
-    else
-    {
-      centry.canonical.index = centries[canonicalHolding3].canonical.index;
-      countNoncanonical[cards]++;
-    }
+
+    centry.type = Combinations::classify(
+      centry.minimalFlag, comb.strategies(), ranks);
+
+    Result res;
+    comb.strategies().getResultLowest(res);
+    centry.winRankLow = res.rank();
+
+    countStats[cards].data[centry.type].incr(
+      plays.size(), comb.strategies().size());
   }
 
   // This is how to write files:

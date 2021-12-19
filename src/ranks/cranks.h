@@ -18,10 +18,13 @@ void setRankConstants23();
 
 void setRankConstants4();
 
-unsigned holding4_to_holding3(const unsigned holding4);
-
 unsigned uncanonicalTrinary(
   const unsigned holding4,
   const Play& play);
+
+void uncanonicalBoth(
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2);
 
 #endif

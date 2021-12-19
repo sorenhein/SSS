@@ -21,7 +21,8 @@
 using namespace std;
 
 
-extern vector<unsigned> HOLDING4_TO_HOLDING3;
+vector<unsigned> HOLDING4_TO_HOLDING3;
+vector<unsigned> HOLDING4_TO_HOLDING2;
 
 vector<array<unsigned char, 4>> SORT4_PLAYS;
 
@@ -74,7 +75,18 @@ const vector<unsigned> HOLDING4_MASK_HIGH =
 
 void set4to3();
 
+void set4to2();
+
 void set4sort();
+
+unsigned holding4_to_holding3(const unsigned holding4);
+
+unsigned holding4_to_holding2(const unsigned holding4);
+
+void holding4_to_both(
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2);
 
 unsigned punchHolding4(
   const unsigned holding4,
@@ -83,8 +95,8 @@ unsigned punchHolding4(
 
 void set4to3()
 {
-  // Lookup of 8 cards in trit format.  There are 3^8 = 6561 entries,
-  // each with a 16-bit number.
+  // Lookup of 8 cards into trit format.  There are 4^8 = 65536 entries
+  // of holding4, and 3^8 = 6561 possible values of 8-trit sequences.
 
   // First make temporary tables with the square root of the numbers.
   vector<unsigned> h3_to_h4_partial(81);
@@ -118,6 +130,56 @@ void set4to3()
         (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
 
       HOLDING4_TO_HOLDING3[h4] = h3;
+    }
+  }
+}
+
+
+void set4to2()
+{
+  // Lookup of 8 cards into binary format.  There are 4^8 = 65536 entries
+  // of holding4, and 2^8 = 256 possible values of 8-bit sequences.
+
+  // First make temporary tables with the square root of the numbers.
+  vector<unsigned> h2_to_h4_partial(16);
+
+  for (unsigned c0 = 0; c0 < 3; c0++)
+  {
+    const unsigned b0 = (c0 == SIDE_OPPS ? 1 : 0);
+
+    for (unsigned c1 = 0; c1 < 3; c1++)
+    {
+      const unsigned b1 = (c1 == SIDE_OPPS ? 1 : 0);
+
+      for (unsigned c2 = 0; c2 < 3; c2++)
+      {
+        const unsigned b2 = (c2 == SIDE_OPPS ? 1 : 0);
+
+        for (unsigned c3 = 0; c3 < 3; c3++)
+        {
+          const unsigned b3 = (c3 == SIDE_OPPS ? 1 : 0);
+
+          const unsigned h2 = (b0 << 3) | (b1 << 2) | (b2 << 1) | b3;
+          const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
+
+          h2_to_h4_partial[h2] = h4;
+        }
+      }
+    }
+  }
+
+  // Then make the big tables.
+  HOLDING4_TO_HOLDING2.resize(65536);
+
+  for (unsigned p0 = 0; p0 < 16; p0++)
+  {
+    for (unsigned p1 = 0; p1 < 16; p1++)
+    {
+      const unsigned h2 = 16*p0 + p1;
+      const unsigned h4 = 
+        (h2_to_h4_partial[p0] << 4) | h2_to_h4_partial[p1];
+
+      HOLDING4_TO_HOLDING2[h4] = h2;
     }
   }
 }
@@ -185,6 +247,7 @@ void set4sort()
 void setRankConstants4()
 {
   set4to3();
+  set4to2();
   set4sort();
 }
 
@@ -286,6 +349,23 @@ unsigned holding4_to_holding3(const unsigned holding4)
 }
 
 
+unsigned holding4_to_holding2(const unsigned holding4)
+{
+  return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
+    HOLDING4_TO_HOLDING2[holding4 & 0xffff];
+}
+
+
+void holding4_to_both(
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2)
+{
+  holding3 = holding4_to_holding3(holding4);
+  holding2 = holding4_to_holding2(holding4);
+}
+
+
 unsigned punchHolding4(
   const unsigned holding4,
   const Play& play)
@@ -328,3 +408,12 @@ unsigned uncanonicalTrinary(
   return holding4_to_holding3(punchHolding4(holding4, play));
 }
 
+
+void uncanonicalBoth(
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2)
+{
+  holding4_to_both(holding4, holding3, holding2);
+}
+  

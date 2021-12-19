@@ -45,8 +45,6 @@ extern Control control;
 mutex mtxRanks;
 static bool init_flag = false;
 
-vector<unsigned> HOLDING4_TO_HOLDING3;
-
 vector<unsigned> HOLDING3_RANK_FACTOR;
 vector<unsigned> HOLDING3_RANK_ADDER;
 
@@ -228,15 +226,23 @@ void Ranks::canonicalBoth(
 
 void Ranks::setRanks(CombReference& combRef) const
 {
-  combRef.rotateFlag = ! (north.greater(south, opps));
-
-  if (combRef.rotateFlag)
-    Ranks::canonicalBoth(south, north, opps,
-      combRef.holding3, combRef.holding2);
+  if (control.runRankComparisons())
+  {
+    // TODO Check that we get back combRef.holding3 == holding3 ?
+    uncanonicalBoth(holding4, combRef.holding3, combRef.holding2);
+    combRef.rotateFlag = false;
+  }
   else
-   Ranks::canonicalBoth(north, south, opps,
-      combRef.holding3, combRef.holding2);
+  {
+    combRef.rotateFlag = ! (north.greater(south, opps));
 
+    if (combRef.rotateFlag)
+      Ranks::canonicalBoth(south, north, opps,
+        combRef.holding3, combRef.holding2);
+    else
+     Ranks::canonicalBoth(north, south, opps,
+        combRef.holding3, combRef.holding2);
+  }
 }
 
 
@@ -389,8 +395,7 @@ void Ranks::updateHoldings(Play& play) const
   {
     // Don't do any canonical reduction -- just play the cards.
     play.holding3 = uncanonicalTrinary(holding4, play);
-
-    play.rotateFlag = ! north.greater(south, opps);
+    play.rotateFlag = false;
   }
   else
   {
@@ -751,7 +756,7 @@ bool Ranks::getMinimals(
   const Result& result,
   list<CombReference>& minimals) const
 {
-  // Returns true and does not fill minimal if the combination is 
+  // Returns true and does not fill minimals if the combination is 
   // already minimal.  The implementation is slow and methodical...
   // It follows Ranks::setPlayers() in structure.
 
