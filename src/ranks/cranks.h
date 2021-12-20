@@ -29,4 +29,11 @@ void uncanonicalBoth(
   unsigned& holding3,
   unsigned& holding2);
 
+unsigned minimalizeRanked(
+  const unsigned criticalNumber,
+  const unsigned oppsCount,
+  const unsigned northCount,
+  const unsigned southCount,
+  const unsigned& holding4);
+
 #endif

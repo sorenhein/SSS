@@ -81,10 +81,17 @@ const vector<unsigned> HOLDING4_MASK_HIGH =
   0x00000000  // 15
 };
 
+vector<unsigned> NORTH_REPEATS;
+vector<unsigned> SOUTH_REPEATS;
+vector<unsigned> OPPS_REPEATS;
+
 
 void set4to32();
 
 void set4sort();
+
+void setRepeatsTable();
+void setRepeats();
 
 unsigned holding4_to_holding3(const unsigned holding4);
 unsigned holding4_to_holding2(const unsigned holding4);
@@ -255,10 +262,36 @@ void set4sort()
 }
 
 
+void setRepeatsTable(
+  const unsigned value,
+  vector<unsigned>& repeats)
+{
+  unsigned r = 0;
+  for (unsigned n = 0; n < repeats.size(); n++)
+  {
+    repeats[n] = r;
+    r = (r << 2) | value;
+  }
+}
+
+
+void setRepeats()
+{
+  NORTH_REPEATS.resize(16);
+  SOUTH_REPEATS.resize(16);
+  OPPS_REPEATS.resize(16);
+
+  setRepeatsTable(SIDE_NORTH, NORTH_REPEATS);
+  setRepeatsTable(SIDE_SOUTH, SOUTH_REPEATS);
+  setRepeatsTable(SIDE_OPPS, OPPS_REPEATS);
+}
+
+
 void setRankConstants4()
 {
   set4to32();
   set4sort();
+  setRepeats();
 }
 
 
@@ -459,5 +492,23 @@ void uncanonicalBoth(
   unsigned& holding2)
 {
   holding4_to_both(holding4, holding3, holding2);
+}
+
+
+unsigned minimalizeRanked(
+  const unsigned criticalNumber,
+  const unsigned oppsCount,
+  const unsigned northCount,
+  const unsigned southCount,
+  const unsigned& holding4)
+{
+  // Resort the low cards in the holding4 order opps, North, South.
+  assert(criticalNumber >= 2);
+  assert(criticalNumber == oppsCount + northCount + southCount);
+
+  return (holding4 & HOLDING4_MASK_HIGH[criticalNumber-1]) |
+    ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
+     (NORTH_REPEATS[northCount] << 2*southCount) |
+     SOUTH_REPEATS[southCount]);
 }
   

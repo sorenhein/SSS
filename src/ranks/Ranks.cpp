@@ -774,50 +774,105 @@ bool Ranks::getMinimals(
 
   const unsigned char cardsChar = static_cast<unsigned char>(cards);
 
-  if (result.winnersInt.winners.empty())
+  if (control.runRankComparisons())
   {
-cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
-    Ranks ranksTmp;
-    ranksTmp.resize(cards);
-    ranksTmp.zero();
-    ranksTmp.opps.setVoid();
+    if (result.winnersInt.winners.empty())
+    {
+      const unsigned h4minimal = minimalizeRanked(cards,
+        opps.length(), north.length(), south.length(), h4minimal);
 
-    unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
+      unsigned holdingMin3, holdingMin2;
+      uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
 
-    // Declarer wins no tricks on rank.
-    Ranks::losingMinimal(index, ranksTmp);
+      if (holding3 != holdingMin3)
+      {
+        CombReference combRef;
+        combRef.holding3 = holdingMin3;
+        combRef.holding2 = holdingMin2;
+        minimals.emplace_back(combRef);
+      }
+    }
+    else
+    {
+      for (auto& winner: result.winnersInt.winners)
+      {
+        const unsigned char criticalNumber = 
+          min(winner.north.getNumber(), winner.south.getNumber());
+      
+        // TODO Probably a more elegant way to do this based on numbers.
+        const unsigned char criticalRank = 
+          max(winner.north.getRank(), winner.south.getRank());
+        assert(criticalRank > 0);
 
-cout << "after losingMinimal:\n" << Ranks::strTable();
-cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
+        const unsigned oppsCount = opps.countBelow(criticalRank);
+        const unsigned northCount = 
+          north.countBelow(criticalRank, winner.north);
+        const unsigned southCount =
+          south.countBelow(criticalRank, winner.south);
 
-    ranksTmp.finishMinimal(holding3, minimals);
-cout << "after finishMinimal:\n" << Ranks::strTable();
+        const unsigned h4minimal = minimalizeRanked(criticalNumber, 
+          oppsCount, northCount, southCount, holding4);
+
+        unsigned holdingMin3, holdingMin2;
+        uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
+
+        if (holding3 != holdingMin3)
+        {
+          CombReference combRef;
+          combRef.holding3 = holdingMin3;
+          combRef.holding2 = holdingMin2;
+          minimals.emplace_back(combRef);
+        }
+      }
+    }
   }
   else
   {
-    for (auto& winner: result.winnersInt.winners)
+    if (result.winnersInt.winners.empty())
     {
+cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
       Ranks ranksTmp;
       ranksTmp.resize(cards);
       ranksTmp.zero();
       ranksTmp.opps.setVoid();
 
-      // An unset winner has rank 0.
-      const unsigned char criticalRank = 
-        max(winner.north.getRank(), winner.south.getRank());
-      assert(criticalRank > 0);
-
-      // Do both sides' low cards below the critical points.
       unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
-      Ranks::lowMinimal(criticalRank, winner, index, ranksTmp);
 
-      // Do declarer's counts at the critical rank.
-      Ranks::criticalMinimal(winner, index, ranksTmp);
+      // Declarer wins no tricks on rank.
+      Ranks::losingMinimal(index, ranksTmp);
 
-      // Copy the remaining ranks.
-      Ranks::remainingMinimal(criticalRank, index, ranksTmp);
+cout << "after losingMinimal:\n" << Ranks::strTable();
+cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
 
       ranksTmp.finishMinimal(holding3, minimals);
+cout << "after finishMinimal:\n" << Ranks::strTable();
+    }
+    else
+    {
+      for (auto& winner: result.winnersInt.winners)
+      {
+        Ranks ranksTmp;
+        ranksTmp.resize(cards);
+        ranksTmp.zero();
+        ranksTmp.opps.setVoid();
+
+        // An unset winner has rank 0.
+        const unsigned char criticalRank = 
+          max(winner.north.getRank(), winner.south.getRank());
+        assert(criticalRank > 0);
+
+        // Do both sides' low cards below the critical points.
+        unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
+        Ranks::lowMinimal(criticalRank, winner, index, ranksTmp);
+
+        // Do declarer's counts at the critical rank.
+        Ranks::criticalMinimal(winner, index, ranksTmp);
+
+        // Copy the remaining ranks.
+        Ranks::remainingMinimal(criticalRank, index, ranksTmp);
+
+        ranksTmp.finishMinimal(holding3, minimals);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 2021-12-19
 ----------
-Test the new uncanonical reductions.
+There's still a problem when minimal != current
 
 Maybe move all the tables from Ranks to cranks, then also the
 methods canonicalTrinary and canonicalBoth.

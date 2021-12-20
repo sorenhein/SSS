@@ -251,6 +251,7 @@ void Combinations::runUniques(
   {
     CombEntry& centry = centries[holding];
 
+cout << "STARTING ON HOLDING3 " << holding << "\n";
     timers.start(TIMER_RANKS);
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
