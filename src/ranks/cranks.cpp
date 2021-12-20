@@ -11,18 +11,27 @@
 #include <algorithm>
 #include <cassert>
 
-#include "../plays/Play.h"
-
 #include "cranks.h"
 
-#include "../const.h"
+#include "../plays/Play.h"
 #include "../utils/table.h"
+
+#include "../const.h"
+
+#define BINARY4 16
+#define BINARY8 256
+#define TRINARY4 81
+#define TRINARY8 6561
+#define QUARTENARY4 256
+#define QUARTENARY8 65536
 
 using namespace std;
 
 
 vector<unsigned> HOLDING4_TO_HOLDING3;
 vector<unsigned> HOLDING4_TO_HOLDING2;
+// TODO Probably unneeded after all
+vector<unsigned> HOLDING3_TO_HOLDING4;
 
 vector<array<unsigned char, 4>> SORT4_PLAYS;
 
@@ -73,15 +82,13 @@ const vector<unsigned> HOLDING4_MASK_HIGH =
 };
 
 
-void set4to3();
-
-void set4to2();
+void set4to32();
 
 void set4sort();
 
 unsigned holding4_to_holding3(const unsigned holding4);
-
 unsigned holding4_to_holding2(const unsigned holding4);
+unsigned holding3_to_holding4(const unsigned holding4);
 
 void holding4_to_both(
   const unsigned holding4,
@@ -93,93 +100,68 @@ unsigned punchHolding4(
   const Play& play);
 
 
-void set4to3()
+void set4to32()
 {
   // Lookup of 8 cards into trit format.  There are 4^8 = 65536 entries
-  // of holding4, and 3^8 = 6561 possible values of 8-trit sequences.
+  // of holding4, 3^8 = 6561 possible values of 8-trit sequences,
+  // and 2^8 = 256 possible values of 8-bit sequences.
 
   // First make temporary tables with the square root of the numbers.
-  vector<unsigned> h3_to_h4_partial(81);
-
-  for (unsigned c0 = 0; c0 < 3; c0++)
-  {
-    for (unsigned c1 = 0; c1 < 3; c1++)
-    {
-      for (unsigned c2 = 0; c2 < 3; c2++)
-      {
-        for (unsigned c3 = 0; c3 < 3; c3++)
-        {
-          const unsigned h3 = 27*c0 + 9*c1 + 3*c2 + c3;
-          const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
-
-          h3_to_h4_partial[h3] = h4;
-        }
-      }
-    }
-  }
-
-  // Then make the big tables.
-  HOLDING4_TO_HOLDING3.resize(65536);
-
-  for (unsigned p0 = 0; p0 < 81; p0++)
-  {
-    for (unsigned p1 = 0; p1 < 81; p1++)
-    {
-      const unsigned h3 = 81*p0 + p1;
-      const unsigned h4 = 
-        (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
-
-      HOLDING4_TO_HOLDING3[h4] = h3;
-    }
-  }
-}
-
-
-void set4to2()
-{
-  // Lookup of 8 cards into binary format.  There are 4^8 = 65536 entries
-  // of holding4, and 2^8 = 256 possible values of 8-bit sequences.
-
-  // First make temporary tables with the square root of the numbers.
-  vector<unsigned> h2_to_h4_partial(16);
+  vector<unsigned> h3_to_h4_partial(TRINARY4);
+  vector<unsigned> h3_to_h2_partial(TRINARY4);
 
   for (unsigned c0 = 0; c0 < 3; c0++)
   {
     const unsigned b0 = (c0 == SIDE_OPPS ? 1 : 0);
-
     for (unsigned c1 = 0; c1 < 3; c1++)
     {
       const unsigned b1 = (c1 == SIDE_OPPS ? 1 : 0);
-
       for (unsigned c2 = 0; c2 < 3; c2++)
       {
         const unsigned b2 = (c2 == SIDE_OPPS ? 1 : 0);
-
         for (unsigned c3 = 0; c3 < 3; c3++)
         {
           const unsigned b3 = (c3 == SIDE_OPPS ? 1 : 0);
-
           const unsigned h2 = (b0 << 3) | (b1 << 2) | (b2 << 1) | b3;
+          const unsigned h3 = 27*c0 + 9*c1 + 3*c2 + c3;
           const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
 
-          h2_to_h4_partial[h2] = h4;
+assert(h3 < h3_to_h4_partial.size());
+assert(h3 < h3_to_h2_partial.size());
+
+          h3_to_h4_partial[h3] = h4;
+          h3_to_h2_partial[h3] = h2;
         }
       }
     }
   }
 
   // Then make the big tables.
-  HOLDING4_TO_HOLDING2.resize(65536);
+  HOLDING4_TO_HOLDING3.resize(QUARTENARY8);
+  HOLDING4_TO_HOLDING2.resize(QUARTENARY8);
+  HOLDING3_TO_HOLDING4.resize(TRINARY8);
 
-  for (unsigned p0 = 0; p0 < 16; p0++)
+  for (unsigned p0 = 0; p0 < TRINARY4; p0++)
   {
-    for (unsigned p1 = 0; p1 < 16; p1++)
+    for (unsigned p1 = 0; p1 < TRINARY4; p1++)
     {
-      const unsigned h2 = 16*p0 + p1;
+assert(p0 < h3_to_h2_partial.size());
+assert(p1 < h3_to_h2_partial.size());
+assert(p0 < h3_to_h4_partial.size());
+assert(p1 < h3_to_h4_partial.size());
+
+      const unsigned h3 = TRINARY4*p0 + p1;
+      const unsigned h2 =
+        (h3_to_h2_partial[p0] << 4) | h3_to_h2_partial[p1];
       const unsigned h4 = 
-        (h2_to_h4_partial[p0] << 4) | h2_to_h4_partial[p1];
+        (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
+
+assert(h4 < HOLDING4_TO_HOLDING2.size());
+assert(h4 < HOLDING4_TO_HOLDING3.size());
 
       HOLDING4_TO_HOLDING2[h4] = h2;
+      HOLDING4_TO_HOLDING3[h4] = h3;
+      HOLDING3_TO_HOLDING4[h3] = h4;
     }
   }
 }
@@ -191,7 +173,7 @@ void set4sort()
   // The input consists of four groups of four bits each.
   // Voids (0) may repeat, but others may not.
 
-  SORT4_PLAYS.resize(65536);
+  SORT4_PLAYS.resize(QUARTENARY8);
   SORT4_PLAYS[0] = {0, 0, 0, 0};
 
   for (unsigned p0 = 1; p0 < 4; p0++)
@@ -209,6 +191,35 @@ void set4sort()
             static_cast<unsigned char>(p2),
             static_cast<unsigned char>(p3)
           };
+
+  assert(((p0 << 12) | (p1 << 8) | (p2 << 4) | p3) < 65536);
+  assert(((p0 << 12) | (p1 << 8) | (p3 << 4) | p2) < 65536);
+  assert(((p0 << 12) | (p2 << 8) | (p1 << 4) | p3) < 65536);
+  assert(((p0 << 12) | (p2 << 8) | (p3 << 4) | p1) < 65536);
+  assert(((p0 << 12) | (p3 << 8) | (p1 << 4) | p2) < 65536);
+  assert(((p0 << 12) | (p3 << 8) | (p2 << 4) | p1) < 65536);
+
+  assert(((p1 << 12) | (p0 << 8) | (p2 << 4) | p3) < 65536);
+  assert(((p1 << 12) | (p0 << 8) | (p3 << 4) | p2) < 65536);
+  assert(((p1 << 12) | (p2 << 8) | (p0 << 4) | p3) < 65536);
+  assert(((p1 << 12) | (p2 << 8) | (p3 << 4) | p0) < 65536);
+  assert(((p1 << 12) | (p3 << 8) | (p0 << 4) | p2) < 65536);
+  assert(((p1 << 12) | (p3 << 8) | (p2 << 4) | p0) < 65536);
+
+  assert(((p2 << 12) | (p1 << 8) | (p0 << 4) | p3) < 65536);
+  assert(((p2 << 12) | (p1 << 8) | (p3 << 4) | p0) < 65536);
+  assert(((p2 << 12) | (p0 << 8) | (p1 << 4) | p3) < 65536);
+  assert(((p2 << 12) | (p0 << 8) | (p3 << 4) | p1) < 65536);
+  assert(((p2 << 12) | (p3 << 8) | (p1 << 4) | p0) < 65536);
+  assert(((p2 << 12) | (p3 << 8) | (p0 << 4) | p1) < 65536);
+
+  assert(((p3 << 12) | (p1 << 8) | (p2 << 4) | p0) < 65536);
+  assert(((p3 << 12) | (p1 << 8) | (p0 << 4) | p2) < 65536);
+  assert(((p3 << 12) | (p2 << 8) | (p1 << 4) | p0) < 65536);
+  assert(((p3 << 12) | (p2 << 8) | (p0 << 4) | p1) < 65536);
+  assert(((p3 << 12) | (p0 << 8) | (p1 << 4) | p2) < 65536);
+  assert(((p3 << 12) | (p0 << 8) | (p2 << 4) | p1) < 65536);
+
 
           SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p2 << 4) | p3] = res;
           SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p3 << 4) | p2] = res;
@@ -246,8 +257,7 @@ void set4sort()
 
 void setRankConstants4()
 {
-  set4to3();
-  set4to2();
+  set4to32();
   set4sort();
 }
 
@@ -341,9 +351,18 @@ void setRankConstants23()
   }
 }
 
-
+#include <iostream>
 unsigned holding4_to_holding3(const unsigned holding4)
 {
+assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
+assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
+
+cout << "h4to3: " << holding4 << ", " <<
+  (holding4 >> 16) << ", " <<
+  (holding4 & 0xfff) << ", " <<
+  HOLDING4_TO_HOLDING3[holding4 >> 16] << ", " <<
+  HOLDING4_TO_HOLDING3[holding4 & 0xffff] << "\n";
+
   return 6561 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
     HOLDING4_TO_HOLDING3[holding4 & 0xffff];
 }
@@ -351,8 +370,27 @@ unsigned holding4_to_holding3(const unsigned holding4)
 
 unsigned holding4_to_holding2(const unsigned holding4)
 {
+assert((holding4 >> 16) < HOLDING4_TO_HOLDING2.size());
+assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
+
+cout << "h4to2: " << holding4 << ", " <<
+  (holding4 >> 16) << ", " <<
+  (holding4 & 0xfff) << ", " <<
+  HOLDING4_TO_HOLDING2[holding4 >> 16] << ", " <<
+  HOLDING4_TO_HOLDING2[holding4 & 0xffff] << "\n";
+
   return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
     HOLDING4_TO_HOLDING2[holding4 & 0xffff];
+}
+
+
+unsigned holding3_to_holding4(const unsigned holding3)
+{
+  const unsigned h3hi = holding3 / TRINARY8;
+  const unsigned h3lo = holding3 % TRINARY8;
+
+  return (QUARTENARY8 * HOLDING3_TO_HOLDING4[h3hi]) |
+    HOLDING3_TO_HOLDING4[h3lo];
 }
 
 
@@ -376,6 +414,8 @@ unsigned punchHolding4(
     (play.pardPtr->getNumber() << 4) |
      play.rhoPtr->getNumber();
 
+assert(playIndex < SORT4_PLAYS.size());
+
   const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
 
   unsigned punched = holding4;
@@ -392,6 +432,10 @@ unsigned punchHolding4(
       // Punch out the highest numbers first.
       // As 0 is a void, 1 is the first real card which occupies
       // the two lowest bits.
+
+assert(s < HOLDING4_MASK_HIGH.size());
+assert(s < HOLDING4_MASK_LOW.size());
+
       punched = ((punched & HOLDING4_MASK_HIGH[s]) >> 2) |
         (punched & HOLDING4_MASK_LOW[s]);
     }

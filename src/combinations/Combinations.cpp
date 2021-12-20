@@ -98,10 +98,20 @@ void Combinations::resize(const unsigned maxCardsIn)
   for (unsigned cards = 0; cards < combEntries.size(); cards++)
   {
     combEntries[cards].resize(numCombinations);
-    numCombinations *= 3;
 
-    assert(cards < UNIQUE_COUNT.size());
-    uniques[cards].resize(UNIQUE_COUNT[cards]);
+    if (control.runRankComparisons())
+    {
+      // TODO With symmetry we can ~ halve this later
+      // (1, 3-2, 9-1, 27-1, ...).
+      uniques[cards].resize(numCombinations);
+    }
+    else
+    {
+      assert(cards < UNIQUE_COUNT.size());
+      uniques[cards].resize(UNIQUE_COUNT[cards]);
+    }
+
+    numCombinations *= 3;
   }
 
   countStats.resize(maxCardsIn+1);
@@ -252,6 +262,8 @@ void Combinations::runUniques(
 
     comb.setMaxRank(ranks.maxRank());
 
+cout << "After setMaxRank:\n" << centry.str();
+
     // Plays is cleared and rewritten, so it is only an optimization
     // not to let Combination make its own plays.
 
@@ -259,6 +271,9 @@ void Combinations::runUniques(
 
     centry.minimalFlag =
       Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+
+cout << "After getMinimals:\n" << centry.str();
+
     if (! centry.minimalFlag)
     {
       // TODO Control by some flag

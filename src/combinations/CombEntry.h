@@ -234,6 +234,8 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     else
       s = "non-canonical, ";
 
+    s += canonical.str() + "\n";
+
     if (minimalFlag)
       s += "minimal\n";
     else

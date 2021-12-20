@@ -229,7 +229,15 @@ void Ranks::setRanks(CombReference& combRef) const
   if (control.runRankComparisons())
   {
     // TODO Check that we get back combRef.holding3 == holding3 ?
-    uncanonicalBoth(holding4, combRef.holding3, combRef.holding2);
+    Ranks::canonicalBoth(north, south, opps,
+      combRef.holding3, combRef.holding2);
+
+cout << "setRanks:\n";
+cout << "h2 " << combRef.holding2 << "\n";
+cout << "h3 " << combRef.holding3 << "\n";
+cout << "h4 " << holding4 << "\n";
+
+    // uncanonicalBoth(holding4, combRef.holding3, combRef.holding2);
     combRef.rotateFlag = false;
   }
   else
@@ -240,7 +248,7 @@ void Ranks::setRanks(CombReference& combRef) const
       Ranks::canonicalBoth(south, north, opps,
         combRef.holding3, combRef.holding2);
     else
-     Ranks::canonicalBoth(north, south, opps,
+      Ranks::canonicalBoth(north, south, opps,
         combRef.holding3, combRef.holding2);
   }
 }
@@ -654,6 +662,10 @@ void Ranks::finishMinimal(
   // Check whether the new minimal holding is different.
   CombReference combRef;
   Ranks::setRanks(combRef);
+
+cout << "finishMinimal different: reference " << holdingRef << 
+  ", constructed " << combRef.holding3 << endl;
+
   if (combRef.holding3 != holdingRef)
     minimals.emplace_back(combRef);
 }
@@ -764,6 +776,7 @@ bool Ranks::getMinimals(
 
   if (result.winnersInt.winners.empty())
   {
+cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
     Ranks ranksTmp;
     ranksTmp.resize(cards);
     ranksTmp.zero();
@@ -774,7 +787,11 @@ bool Ranks::getMinimals(
     // Declarer wins no tricks on rank.
     Ranks::losingMinimal(index, ranksTmp);
 
+cout << "after losingMinimal:\n" << Ranks::strTable();
+cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
+
     ranksTmp.finishMinimal(holding3, minimals);
+cout << "after finishMinimal:\n" << Ranks::strTable();
   }
   else
   {
