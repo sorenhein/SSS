@@ -90,23 +90,27 @@ class Ranks
       Plays& plays);
 
     void losingMinimal(
-      unsigned char& index,
+      unsigned char& relIndex,
+      unsigned char& absIndex,
       Ranks& ranksNew) const;
 
     void lowMinimal(
       const unsigned char criticalRank,
       const Winner& winner,
-      unsigned char& index,
+      unsigned char& relIndex,
+      unsigned char& absIndex,
       Ranks& ranksNew) const;
       
     void criticalMinimal(
       const Winner& winner,
-      unsigned char& index,
+      unsigned char& relIndex,
+      unsigned char& absIndex,
       Ranks& ranksNew) const;
 
     void remainingMinimal(
       const unsigned char criticalRank,
-      unsigned char& index,
+      unsigned char& relIndex,
+      unsigned char& absIndex,
       Ranks& ranksNew) const;
 
     void finishMinimal(

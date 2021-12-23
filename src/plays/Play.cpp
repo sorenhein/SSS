@@ -23,7 +23,9 @@ extern Control control;
 unsigned Play::lead(const bool fullFlag) const
 {
   if (fullFlag)
-    return leadPtr->getNumber();
+    return leadPtr->getAbsNumber();
+    // I think abs is right
+    // return leadPtr->getNumber();
   else
     return leadPtr->getRank();
 }

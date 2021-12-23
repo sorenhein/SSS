@@ -151,6 +151,12 @@ unsigned char Card::getNumber() const
 }
 
 
+unsigned char Card::getAbsNumber() const
+{
+  return absNumber;
+}
+
+
 unsigned char Card::getName() const
 {
   return name;

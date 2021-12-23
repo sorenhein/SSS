@@ -138,12 +138,14 @@ class Player
 
     void update(
       const unsigned char rank,
+      const unsigned char relCardNumber,
       const unsigned char absCardNumber);
 
     void updateSeveral(
       const unsigned char rank,
       const unsigned char count,
-      unsigned char& index);
+      unsigned char& relIindex,
+      unsigned char& absIndex);
 
     void restoreRank(const unsigned char rank);
 

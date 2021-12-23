@@ -30,7 +30,6 @@ void uncanonicalBoth(
   unsigned& holding2);
 
 unsigned minimalizeRanked(
-  const unsigned criticalNumber,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,

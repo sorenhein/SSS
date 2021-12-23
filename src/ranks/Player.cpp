@@ -68,6 +68,7 @@ void Player::updateStep(const unsigned char rankNew)
 
 void Player::update(
   const unsigned char rank,
+  const unsigned char relCardNumber,
   const unsigned char absCardNumber)
 {
   if (firstUpdateFlag)
@@ -84,7 +85,7 @@ void Player::update(
   Card * cptr = &cards.back();
 
   // The card number starts at 1.
-  cptr->set(rank, depthNext, numberNextCard, absCardNumber,
+  cptr->set(rank, depthNext, numberNextCard, relCardNumber,
     static_cast<unsigned char>(CARD_NAMES[absCardNumber-1]));
 
   cardsPtr.push_back(cptr);
@@ -108,12 +109,13 @@ void Player::update(
 void Player::updateSeveral(
   const unsigned char rank,
   const unsigned char count,
-  unsigned char& index)
+  unsigned char& relIndex,
+  unsigned char& absIndex)
 {
   Player::updateStep(rank);
 
-  for (unsigned char i = 0; i < count; i++, index++)
-    Player::update(rank, index);
+  for (unsigned char i = 0; i < count; i++, relIndex++, absIndex++)
+    Player::update(rank, relIndex, absIndex);
 }
 
 

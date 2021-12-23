@@ -270,6 +270,7 @@ cout << "After setMaxRank:\n" << centry.str();
 
     comb.strategize(centry, * this, distributions, ranks, plays);
 
+cout << "calling getMinimals " << endl;
     centry.minimalFlag =
       Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
 

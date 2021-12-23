@@ -496,17 +496,16 @@ void uncanonicalBoth(
 
 
 unsigned minimalizeRanked(
-  const unsigned criticalNumber,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,
   const unsigned& holding4)
 {
   // Resort the low cards in the holding4 order opps, North, South.
-  assert(criticalNumber >= 2);
-  assert(criticalNumber == oppsCount + northCount + southCount);
+  const unsigned lows = oppsCount + northCount + southCount;
+  assert(lows >= 1);
 
-  return (holding4 & HOLDING4_MASK_HIGH[criticalNumber-1]) |
+  return (holding4 & HOLDING4_MASK_HIGH[lows-1]) |
     ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
      (NORTH_REPEATS[northCount] << 2*southCount) |
      SOUTH_REPEATS[southCount]);

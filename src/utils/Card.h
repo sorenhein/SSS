@@ -59,6 +59,7 @@ class Card
     unsigned char getRank() const;
     unsigned char getDepth() const;
     unsigned char getNumber() const;
+    unsigned char getAbsNumber() const;
     unsigned char getName() const;
 
     void expand(const char rankAdder);

@@ -109,11 +109,12 @@ void Ranks::setPlayers()
   const unsigned char cardsChar = static_cast<unsigned char>(cards);
 
   // Start the numbering from 1 in order to distinguish from void.
-  const unsigned char imin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
+  const unsigned char absMin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
+  unsigned char rel = 1;
   unsigned h = holding3;
   holding4 = 0;
 
-  for (unsigned char i = imin; i < imin+cardsChar; i++)
+  for (unsigned char abs = absMin; abs < absMin+cardsChar; rel++, abs++)
   {
     const unsigned c = h % 3;
 
@@ -128,7 +129,7 @@ void Ranks::setPlayers()
         opps.updateStep(maxGlobalRank);
       }
 
-      opps.update(maxGlobalRank, i);
+      opps.update(maxGlobalRank, rel, abs);
 
       prev_is_NS = false;
     }
@@ -145,9 +146,9 @@ void Ranks::setPlayers()
       }
 
       if (c == SIDE_NORTH)
-        north.update(maxGlobalRank, i);
+        north.update(maxGlobalRank, rel, abs);
       else
-        south.update(maxGlobalRank, i);
+        south.update(maxGlobalRank, rel, abs);
 
       prev_is_NS = true;
     }
@@ -672,7 +673,8 @@ cout << "finishMinimal different: reference " << holdingRef <<
 
 
 void Ranks::losingMinimal(
-  unsigned char& index,
+  unsigned char& relIndex,
+  unsigned char& absIndex,
   Ranks& ranksNew) const
 {
   const unsigned char nx = static_cast<unsigned char>(north.length());
@@ -680,15 +682,18 @@ void Ranks::losingMinimal(
   if (nx > 0 || sx > 0)
   {
     ranksNew.maxGlobalRank++;
-    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, index);
-    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, index);
+    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, 
+      relIndex, absIndex);
+    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, 
+      relIndex, absIndex);
   }
 
   const unsigned char oppr = static_cast<unsigned char>(opps.length());
   if (oppr > 0)
   {
     ranksNew.maxGlobalRank++;
-    ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, index);
+    ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, 
+      relIndex, absIndex);
   }
 }
 
@@ -696,7 +701,8 @@ void Ranks::losingMinimal(
 void Ranks::lowMinimal(
   const unsigned char criticalRank, 
   const Winner& winner, 
-  unsigned char& index, 
+  unsigned char& relIndex, 
+  unsigned char& absIndex, 
   Ranks& ranksNew) const
 {
   // Do the x's, i.e. all N-S cards below the critical rank.
@@ -706,8 +712,10 @@ void Ranks::lowMinimal(
   if (nx > 0 || sx > 0)
   {
     ranksNew.maxGlobalRank++;
-    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, index);
-    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, index);
+    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, 
+      relIndex, absIndex);
+    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, 
+      relIndex, absIndex);
   }
 
   // Do the opponents' x's.  These must exist as a winner has
@@ -715,13 +723,15 @@ void Ranks::lowMinimal(
   const unsigned char ox = opps.countBelow(criticalRank);
   assert(ox > 0);
   ranksNew.maxGlobalRank++;
-  ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, ox, index);
+  ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, ox, 
+    relIndex, absIndex);
 }
 
 
 void Ranks::criticalMinimal(
   const Winner& winner,
-  unsigned char& index,
+  unsigned char& relIndex,
+  unsigned char& absIndex,
   Ranks& ranksNew) const
 {
   // Do declarer's counts at the critical rank.
@@ -731,14 +741,17 @@ void Ranks::criticalMinimal(
   unsigned char sr = 
     (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
 
-  ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, index);
-  ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, index);
+  ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, 
+    relIndex, absIndex);
+  ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, 
+    relIndex, absIndex);
 }
 
 
 void Ranks::remainingMinimal(
   const unsigned char criticalRank,
-  unsigned char& index,
+  unsigned char& relIndex,
+  unsigned char& absIndex,
   Ranks& ranksNew) const
 {
   unsigned char nr, sr, oppr;
@@ -753,11 +766,14 @@ void Ranks::remainingMinimal(
     ranksNew.maxGlobalRank++;
     if (oppr == 0)
     {
-      ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, index);
-      ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, index);
+      ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, 
+        relIndex, absIndex);
+      ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, 
+        relIndex, absIndex);
     }
     else if (nr == 0 && sr == 0)
-      ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, index);
+      ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, 
+        relIndex, absIndex);
     else
       assert(false);
   }
@@ -776,13 +792,25 @@ bool Ranks::getMinimals(
 
   if (control.runRankComparisons())
   {
-    if (result.winnersInt.winners.empty())
+    if (cards <= 2)
     {
-      const unsigned h4minimal = minimalizeRanked(cards,
-        opps.length(), north.length(), south.length(), h4minimal);
+      // Always minimal.
+cout << "Minimal by definition\n";
+      return true;
+    }
+    else if (result.winnersInt.winners.empty())
+    {
+cout << "Calling no-winner minimalizeRanked with:\n" <<
+  cards << ", " << opps.length() << ", " <<
+  north.length() << ", " << south.length() << ", holding4 " <<
+  holding4 << endl;
+      const unsigned h4minimal = minimalizeRanked(
+        opps.length(), north.length(), south.length(), holding4);
 
       unsigned holdingMin3, holdingMin2;
       uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
+cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 << 
+  ", h2 " << holdingMin2 << endl;
 
       if (holding3 != holdingMin3)
       {
@@ -797,12 +825,18 @@ bool Ranks::getMinimals(
       for (auto& winner: result.winnersInt.winners)
       {
         const unsigned char criticalNumber = 
-          min(winner.north.getNumber(), winner.south.getNumber());
+          min(winner.north.getAbsNumber(), winner.south.getAbsNumber());
       
         // TODO Probably a more elegant way to do this based on numbers.
         const unsigned char criticalRank = 
           max(winner.north.getRank(), winner.south.getRank());
         assert(criticalRank > 0);
+
+cout << "winner-based, winner " << winner.str() << endl;
+cout << "critNo " << +criticalNumber << endl;
+cout << "  N " << +winner.north.getNumber() << endl;
+cout << "  S " << +winner.south.getNumber() << endl;
+cout << "critRank " << +criticalRank << endl;
 
         const unsigned oppsCount = opps.countBelow(criticalRank);
         const unsigned northCount = 
@@ -810,11 +844,16 @@ bool Ranks::getMinimals(
         const unsigned southCount =
           south.countBelow(criticalRank, winner.south);
 
-        const unsigned h4minimal = minimalizeRanked(criticalNumber, 
+        const unsigned h4minimal = minimalizeRanked(
           oppsCount, northCount, southCount, holding4);
 
         unsigned holdingMin3, holdingMin2;
         uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
+
+cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
+  southCount << endl;
+cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
+  ", h2min " << holdingMin2 <<endl;
 
         if (holding3 != holdingMin3)
         {
@@ -836,10 +875,11 @@ cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
       ranksTmp.zero();
       ranksTmp.opps.setVoid();
 
-      unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
+      unsigned char absIndex = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
+      unsigned char relIndex = 1;
 
       // Declarer wins no tricks on rank.
-      Ranks::losingMinimal(index, ranksTmp);
+      Ranks::losingMinimal(relIndex, absIndex, ranksTmp);
 
 cout << "after losingMinimal:\n" << Ranks::strTable();
 cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
@@ -862,14 +902,17 @@ cout << "after finishMinimal:\n" << Ranks::strTable();
         assert(criticalRank > 0);
 
         // Do both sides' low cards below the critical points.
-        unsigned char index = (cardsChar > 13 ? 0 : 13-cardsChar);
-        Ranks::lowMinimal(criticalRank, winner, index, ranksTmp);
+        unsigned char absIndex = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
+        unsigned char relIndex = 1;
+
+        Ranks::lowMinimal(criticalRank, winner, 
+          relIndex, absIndex, ranksTmp);
 
         // Do declarer's counts at the critical rank.
-        Ranks::criticalMinimal(winner, index, ranksTmp);
+        Ranks::criticalMinimal(winner, relIndex, absIndex, ranksTmp);
 
         // Copy the remaining ranks.
-        Ranks::remainingMinimal(criticalRank, index, ranksTmp);
+        Ranks::remainingMinimal(criticalRank, relIndex, absIndex, ranksTmp);
 
         ranksTmp.finishMinimal(holding3, minimals);
       }
