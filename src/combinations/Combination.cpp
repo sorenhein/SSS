@@ -199,6 +199,14 @@ void Combination::reduce(const Distribution& distribution)
   strats.getResultLowest(resultLowest);
   const unsigned char rankCritical = resultLowest.rank();
 
+  // If N-S don't take any rank tricks at all, there should be
+  // no Strategy's to eliminate.
+  if (rankCritical == 0)
+  {
+    assert(strats.size() == 1);
+    return;
+  }
+
   const auto& reduction = distribution.getReduction(rankCritical);
   assert(reduction.full2reducedDist.size() == distribution.size());
 

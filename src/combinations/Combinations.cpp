@@ -274,14 +274,17 @@ cout << "calling getMinimals " << endl;
     centry.minimalFlag =
       Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
 
-cout << "After getMinimals:\n" << centry.str();
+cout << "After getMinimals, min " << centry.minimalFlag << 
+  ":\n" << centry.str();
 
     if (! centry.minimalFlag)
     {
+cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
       // TODO Control by some flag
       comb.reduce(
         * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
     }
+cout << "Got out alive" << endl;
 
     centry.type = Combinations::classify(
       centry.minimalFlag, comb.strategies(), ranks);

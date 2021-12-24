@@ -818,6 +818,8 @@ cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 <<
         combRef.holding3 = holdingMin3;
         combRef.holding2 = holdingMin2;
         minimals.emplace_back(combRef);
+cout << "Got a minimal different from original, new " <<
+  holdingMin3 << " vs " << holding3 << "\n";
       }
     }
     else
@@ -861,6 +863,7 @@ cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
           combRef.holding3 = holdingMin3;
           combRef.holding2 = holdingMin2;
           minimals.emplace_back(combRef);
+cout << "Got a winner minimal different from original\n";
         }
       }
     }
