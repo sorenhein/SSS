@@ -28,7 +28,9 @@ void Card::reset()
   rank = 0;
   depth = 0;
   number = UCHAR_NOT_SET;
-  absNumber = UCHAR_NOT_SET;
+  // TODO Try it with void as 0.
+  absNumber = 0;
+  // absNumber = UCHAR_NOT_SET;
   name = '-';
 }
 

@@ -1,6 +1,10 @@
-2021-12-19
+2021-12-24
 ----------
-There's still a problem when minimal != current
+uncanonicalTrinary problems.
+For example 4/8, AK missing HH.
+If KH--, we correctly get a new h4 of 2.
+If KH-H, this is considered as plays of 3202, repeating the 2?
+It seems EW must also be distinguished by absolute number.
 
 Maybe move all the tables from Ranks to cranks, then also the
 methods canonicalTrinary and canonicalBoth.

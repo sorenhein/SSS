@@ -183,7 +183,7 @@ void set4sort()
   SORT4_PLAYS.resize(QUARTENARY8);
   SORT4_PLAYS[0] = {0, 0, 0, 0};
 
-  for (unsigned p0 = 1; p0 < 4; p0++)
+  for (unsigned p0 = 1; p0 < 16; p0++)
   {
     for (unsigned p1 = 0; p1 < p0; p1++)
     {
@@ -442,14 +442,25 @@ unsigned punchHolding4(
   const Play& play)
 {
   const unsigned playIndex =
-    (play.leadPtr->getNumber() << 12) |
-    (play.lhoPtr->getNumber() << 8) |
-    (play.pardPtr->getNumber() << 4) |
-     play.rhoPtr->getNumber();
+    (play.leadPtr->getAbsNumber() << 12) |
+    (play.lhoPtr->getAbsNumber() << 8) |
+    (play.pardPtr->getAbsNumber() << 4) |
+     play.rhoPtr->getAbsNumber();
 
 assert(playIndex < SORT4_PLAYS.size());
 
   const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
+
+cout << "punch h4 " << holding4 << "\n";
+cout << "play " << play.strLine() << endl;
+cout << "pindex " << playIndex << "\n";
+cout << "lead " << +play.leadPtr->getAbsNumber() << endl;
+cout << "lho  " << +play.lhoPtr->getAbsNumber() << endl;
+cout << "pard " << +play.pardPtr->getAbsNumber() << endl;
+cout << "rho  " << +play.rhoPtr->getAbsNumber() << endl;
+for (unsigned i = 0; i < 4; i++)
+  cout << i << ": " << +sorted[i] << "\n";
+cout << "Starting on lookup" << endl;
 
   unsigned punched = holding4;
 
@@ -471,6 +482,8 @@ assert(s < HOLDING4_MASK_LOW.size());
 
       punched = ((punched & HOLDING4_MASK_HIGH[s]) >> 2) |
         (punched & HOLDING4_MASK_LOW[s]);
+
+cout << "s: " << +s << ", punched now " << punched << endl;
     }
   }
 
