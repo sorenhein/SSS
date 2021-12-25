@@ -1,10 +1,12 @@
 2021-12-24
 ----------
-uncanonicalTrinary problems.
-For example 4/8, AK missing HH.
-If KH--, we correctly get a new h4 of 2.
-If KH-H, this is considered as plays of 3202, repeating the 2?
-It seems EW must also be distinguished by absolute number.
+10/43051, QT6 / K9875 (for example), missing AJ
+We get 3NS for d=0, 3N for d=3 which corresponds to leading to the Q.
+We could also lead to the K and get 3N / 3NS.  Is the play left out
+of Ranks?
+
+Seems we crash out of 2 GB RAM during cards = 11?
+
 
 Maybe move all the tables from Ranks to cranks, then also the
 methods canonicalTrinary and canonicalBoth.

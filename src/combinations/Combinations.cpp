@@ -251,7 +251,7 @@ void Combinations::runUniques(
   {
     CombEntry& centry = centries[holding];
 
-cout << "STARTING ON HOLDING3 " << holding << "\n";
+// cout << "STARTING ON HOLDING3 " << holding << "\n";
     timers.start(TIMER_RANKS);
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
@@ -263,28 +263,28 @@ cout << "STARTING ON HOLDING3 " << holding << "\n";
 
     comb.setMaxRank(ranks.maxRank());
 
-cout << "After setMaxRank:\n" << centry.str();
+// cout << "After setMaxRank:\n" << centry.str();
 
     // Plays is cleared and rewritten, so it is only an optimization
     // not to let Combination make its own plays.
 
     comb.strategize(centry, * this, distributions, ranks, plays);
 
-cout << "calling getMinimals " << endl;
+// cout << "calling getMinimals " << endl;
     centry.minimalFlag =
       Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
 
-cout << "After getMinimals, min " << centry.minimalFlag << 
-  ":\n" << centry.str();
+// cout << "After getMinimals, min " << centry.minimalFlag << 
+  // ":\n" << centry.str();
 
     if (! centry.minimalFlag)
     {
-cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
+// cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
       // TODO Control by some flag
       comb.reduce(
         * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
     }
-cout << "Got out alive" << endl;
+// cout << "Got out alive" << endl;
 
     centry.type = Combinations::classify(
       centry.minimalFlag, comb.strategies(), ranks);

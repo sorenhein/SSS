@@ -233,10 +233,12 @@ void Ranks::setRanks(CombReference& combRef) const
     Ranks::canonicalBoth(north, south, opps,
       combRef.holding3, combRef.holding2);
 
+/*
 cout << "setRanks:\n";
 cout << "h2 " << combRef.holding2 << "\n";
 cout << "h3 " << combRef.holding3 << "\n";
 cout << "h4 " << holding4 << "\n";
+*/
 
     // uncanonicalBoth(holding4, combRef.holding3, combRef.holding2);
     combRef.rotateFlag = false;
@@ -795,22 +797,22 @@ bool Ranks::getMinimals(
     if (cards <= 2)
     {
       // Always minimal.
-cout << "Minimal by definition\n";
+// cout << "Minimal by definition\n";
       return true;
     }
     else if (result.winnersInt.winners.empty())
     {
-cout << "Calling no-winner minimalizeRanked with:\n" <<
-  cards << ", " << opps.length() << ", " <<
-  north.length() << ", " << south.length() << ", holding4 " <<
-  holding4 << endl;
+// cout << "Calling no-winner minimalizeRanked with:\n" <<
+  // cards << ", " << opps.length() << ", " <<
+  // north.length() << ", " << south.length() << ", holding4 " <<
+  // holding4 << endl;
       const unsigned h4minimal = minimalizeRanked(
         opps.length(), north.length(), south.length(), holding4);
 
       unsigned holdingMin3, holdingMin2;
       uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
-cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 << 
-  ", h2 " << holdingMin2 << endl;
+// cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 << 
+  // ", h2 " << holdingMin2 << endl;
 
       if (holding3 != holdingMin3)
       {
@@ -818,8 +820,8 @@ cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 <<
         combRef.holding3 = holdingMin3;
         combRef.holding2 = holdingMin2;
         minimals.emplace_back(combRef);
-cout << "Got a minimal different from original, new " <<
-  holdingMin3 << " vs " << holding3 << "\n";
+// cout << "Got a minimal different from original, new " <<
+  // holdingMin3 << " vs " << holding3 << "\n";
       }
     }
     else
@@ -834,11 +836,13 @@ cout << "Got a minimal different from original, new " <<
           max(winner.north.getRank(), winner.south.getRank());
         assert(criticalRank > 0);
 
+/*
 cout << "winner-based, winner " << winner.str() << endl;
 cout << "critNo " << +criticalNumber << endl;
 cout << "  N " << +winner.north.getNumber() << endl;
 cout << "  S " << +winner.south.getNumber() << endl;
 cout << "critRank " << +criticalRank << endl;
+*/
 
         const unsigned oppsCount = opps.countBelow(criticalRank);
         const unsigned northCount = 
@@ -852,10 +856,12 @@ cout << "critRank " << +criticalRank << endl;
         unsigned holdingMin3, holdingMin2;
         uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
 
+/*
 cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
   southCount << endl;
 cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
   ", h2min " << holdingMin2 <<endl;
+*/
 
         if (holding3 != holdingMin3)
         {
@@ -863,7 +869,7 @@ cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
           combRef.holding3 = holdingMin3;
           combRef.holding2 = holdingMin2;
           minimals.emplace_back(combRef);
-cout << "Got a winner minimal different from original\n";
+// cout << "Got a winner minimal different from original\n";
         }
       }
     }
@@ -872,7 +878,7 @@ cout << "Got a winner minimal different from original\n";
   {
     if (result.winnersInt.winners.empty())
     {
-cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
+// cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
       Ranks ranksTmp;
       ranksTmp.resize(cards);
       ranksTmp.zero();
@@ -884,11 +890,11 @@ cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
       // Declarer wins no tricks on rank.
       Ranks::losingMinimal(relIndex, absIndex, ranksTmp);
 
-cout << "after losingMinimal:\n" << Ranks::strTable();
-cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
+// cout << "after losingMinimal:\n" << Ranks::strTable();
+// cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
 
       ranksTmp.finishMinimal(holding3, minimals);
-cout << "after finishMinimal:\n" << Ranks::strTable();
+// cout << "after finishMinimal:\n" << Ranks::strTable();
     }
     else
     {

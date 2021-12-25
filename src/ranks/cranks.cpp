@@ -183,20 +183,33 @@ void set4sort()
   SORT4_PLAYS.resize(QUARTENARY8);
   SORT4_PLAYS[0] = {0, 0, 0, 0};
 
+  // If the cards were all by real absolute number, there would be
+  // no repetitions other than 0 (discards).  But E-W will seem to play 
+  // the same card if they play the same rank, so this is an efficient
+  // place to disentangle them.  For example, if the plays are
+  // N 4, E 3, S 0, W 3, then the second E-W card should have the
+  // absolute number 2 and not 3.
+
   for (unsigned p0 = 1; p0 < 16; p0++)
   {
-    for (unsigned p1 = 0; p1 < p0; p1++)
+    for (unsigned p1 = 0; p1 <= p0; p1++)
     {
-      for (unsigned p2 = 0; p2 < max(p1, 1u); p2++)
+      const unsigned p1adj = (p1 == p0 ? p1-1 : p1);
+
+      for (unsigned p2 = 0; p2 <= p1adj; p2++)
       {
-        for (unsigned p3 = 0; p3 < max(p2, 1u); p3++)
+        const unsigned p2adj = (p2 == p1 && p2 != 0 ? p2-1 : p2);
+
+        for (unsigned p3 = 0; p3 <= p2adj; p3++)
         {
+          const unsigned p3adj = (p3 == p2 && p3 != 0 ? p3-1 : p3);
+
           const array<unsigned char, 4> res = 
           { 
             static_cast<unsigned char>(p0), 
-            static_cast<unsigned char>(p1),
-            static_cast<unsigned char>(p2),
-            static_cast<unsigned char>(p3)
+            static_cast<unsigned char>(p1adj),
+            static_cast<unsigned char>(p2adj),
+            static_cast<unsigned char>(p3adj)
           };
 
   assert(((p0 << 12) | (p1 << 8) | (p2 << 4) | p3) < 65536);
@@ -390,11 +403,13 @@ unsigned holding4_to_holding3(const unsigned holding4)
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
 
+/*
 cout << "h4to3: " << holding4 << ", " <<
   (holding4 >> 16) << ", " <<
   (holding4 & 0xfff) << ", " <<
   HOLDING4_TO_HOLDING3[holding4 >> 16] << ", " <<
   HOLDING4_TO_HOLDING3[holding4 & 0xffff] << "\n";
+  */
 
   return 6561 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
     HOLDING4_TO_HOLDING3[holding4 & 0xffff];
@@ -406,11 +421,13 @@ unsigned holding4_to_holding2(const unsigned holding4)
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING2.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
 
+/*
 cout << "h4to2: " << holding4 << ", " <<
   (holding4 >> 16) << ", " <<
   (holding4 & 0xfff) << ", " <<
   HOLDING4_TO_HOLDING2[holding4 >> 16] << ", " <<
   HOLDING4_TO_HOLDING2[holding4 & 0xffff] << "\n";
+  */
 
   return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
     HOLDING4_TO_HOLDING2[holding4 & 0xffff];
@@ -451,6 +468,7 @@ assert(playIndex < SORT4_PLAYS.size());
 
   const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
 
+/*
 cout << "punch h4 " << holding4 << "\n";
 cout << "play " << play.strLine() << endl;
 cout << "pindex " << playIndex << "\n";
@@ -461,6 +479,7 @@ cout << "rho  " << +play.rhoPtr->getAbsNumber() << endl;
 for (unsigned i = 0; i < 4; i++)
   cout << i << ": " << +sorted[i] << "\n";
 cout << "Starting on lookup" << endl;
+*/
 
   unsigned punched = holding4;
 
@@ -483,7 +502,7 @@ assert(s < HOLDING4_MASK_LOW.size());
       punched = ((punched & HOLDING4_MASK_HIGH[s]) >> 2) |
         (punched & HOLDING4_MASK_LOW[s]);
 
-cout << "s: " << +s << ", punched now " << punched << endl;
+// cout << "s: " << +s << ", punched now " << punched << endl;
     }
   }
 

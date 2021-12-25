@@ -47,7 +47,7 @@ class Player
      *     3                c[3]
      *
      * ranksPtr (these are pointers to entries in the respective cards)
-     *        North South   Opps
+     *        North South   Opps     N   S   opp
      *     0   c[0]  c[1]   c[1], so 8 / J / 7
      *     1   c[2]         c[2], so A /   / 9
      *     2                c[3], so   /   / Q
