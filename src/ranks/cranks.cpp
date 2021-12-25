@@ -518,6 +518,12 @@ unsigned uncanonicalTrinary(
 }
 
 
+unsigned uncanonicalBinary(const unsigned holding4)
+{
+  return holding4_to_holding2(holding4);
+}
+
+
 void uncanonicalBoth(
   const unsigned holding4,
   unsigned& holding3,

@@ -58,7 +58,7 @@ const Strategies& Combination::strategize(
   if (control.outputHolding())
   {
     cout << "Cards" << setw(3) << ranks.size() << ": " <<
-      centry.canonical.str() << endl;
+      centry.own.str() << endl;
   }
 
   // Look up a pointer to the EW distribution of this combination.
@@ -73,7 +73,7 @@ const Strategies& Combination::strategize(
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
 
   if (control.holding() != 0 &&
-      centry.canonical.holding3 == control.holding() &&
+      centry.own.holding3 == control.holding() &&
       ranks.size () == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);

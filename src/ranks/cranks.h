@@ -24,6 +24,8 @@ unsigned uncanonicalTrinary(
   const unsigned holding4,
   const Play& play);
 
+unsigned uncanonicalBinary(const unsigned holding4);
+
 void uncanonicalBoth(
   const unsigned holding4,
   unsigned& holding3,

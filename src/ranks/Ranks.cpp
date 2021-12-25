@@ -225,36 +225,44 @@ void Ranks::canonicalBoth(
 }
 
 
+void Ranks::setOwnRanks(CombReference& combRef) const
+{
+  // For an uncanonical holding we indicate a rotation if South
+  // holds a higher top card than North.
+  if (north.isVoid())
+    combRef.rotateFlag = ! south.isVoid();
+  else if (south.isVoid())
+    combRef.rotateFlag = false;
+  else
+    combRef.rotateFlag = (south.top() > north.top());
+
+  combRef.holding3 = holding3;
+  combRef.holding2 = uncanonicalBinary(holding4);
+}
+
+
+void Ranks::setCanonicalRanks(CombReference& combRef) const
+{
+  combRef.rotateFlag = ! (north.greater(south, opps));
+
+  if (combRef.rotateFlag)
+    Ranks::canonicalBoth(south, north, opps,
+      combRef.holding3, combRef.holding2);
+  else
+    Ranks::canonicalBoth(north, south, opps,
+      combRef.holding3, combRef.holding2);
+}
+
+
+/*
 void Ranks::setRanks(CombReference& combRef) const
 {
   if (control.runRankComparisons())
-  {
-    // TODO Check that we get back combRef.holding3 == holding3 ?
-    Ranks::canonicalBoth(north, south, opps,
-      combRef.holding3, combRef.holding2);
-
-/*
-cout << "setRanks:\n";
-cout << "h2 " << combRef.holding2 << "\n";
-cout << "h3 " << combRef.holding3 << "\n";
-cout << "h4 " << holding4 << "\n";
-*/
-
-    // uncanonicalBoth(holding4, combRef.holding3, combRef.holding2);
-    combRef.rotateFlag = false;
-  }
+    Ranks::setOwnRanks(combRef);
   else
-  {
-    combRef.rotateFlag = ! (north.greater(south, opps));
-
-    if (combRef.rotateFlag)
-      Ranks::canonicalBoth(south, north, opps,
-        combRef.holding3, combRef.holding2);
-    else
-      Ranks::canonicalBoth(north, south, opps,
-        combRef.holding3, combRef.holding2);
-  }
+    Ranks::setCanonicalRanks(combRef);
 }
+*/
 
 
 void Ranks::setRanks(
@@ -265,7 +273,10 @@ void Ranks::setRanks(
 
   Ranks::setPlayers();
 
-  Ranks::setRanks(combEntry.canonical);
+  // Ranks::setRanks(combEntry.canonical);
+
+  Ranks::setOwnRanks(combEntry.own);
+  Ranks::setCanonicalRanks(combEntry.canonical);
 
   combEntry.canonicalFlag = (holding3 == combEntry.canonical.holding3);
 }
@@ -664,7 +675,7 @@ void Ranks::finishMinimal(
 
   // Check whether the new minimal holding is different.
   CombReference combRef;
-  Ranks::setRanks(combRef);
+  Ranks::setCanonicalRanks(combRef);
 
 cout << "finishMinimal different: reference " << holdingRef << 
   ", constructed " << combRef.holding3 << endl;

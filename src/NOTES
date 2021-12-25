@@ -1,3 +1,39 @@
+2021-12-25
+----------
+With combEntry.own we have a rotation problem.
+
+Solution:
+0. In Ranks, turn a part of setOwnRanks into isOriented() const.
+1. In Ranks::updateHoldings, say
+   orientedFlag = Ranks::isOriented();
+   play.holding3 = orientedTrinary(holding4, orientedFlag, play);
+   play.rotateFlag = orientedFlag;
+2. In uncanonicalTrinary -> orientedTrinary
+   Ugly hack? In holding4 we can flip the low bits of the quarts
+   by having an 010101... vector as long as the active length.
+   Then we don't need another table.
+
+4. In Combinations::getPtr, if ranked, check not canonical but
+   rotated.
+
+   if (ranked)
+   {
+     centry
+     const auto& cor = (centry.orientedFlag ? centry :
+       combEntries[cards][centry.oriented.holding3]);
+     
+     const unsigned ui = cor.oriented.index;
+     return ...
+   }
+   else
+   {
+      
+   }
+
+5. In Combinations::runUniques after setRanks
+   if (centry.own.rotateFlag)
+     skip
+
 2021-12-24
 ----------
 10/43051, QT6 / K9875 (for example), missing AJ
@@ -6,6 +42,10 @@ We could also lead to the K and get 3N / 3NS.  Is the play left out
 of Ranks?
 
 Seems we crash out of 2 GB RAM during cards = 11?
+- Some compiler flag?
+- Avoid rotations?
+- Cut Winners to Winner?
+- Why is output Cards 4: x not in order? Some reduced number instead?
 
 
 Maybe move all the tables from Ranks to cranks, then also the

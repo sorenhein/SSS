@@ -82,6 +82,8 @@ struct CombEntry
   // TODO Currently not yet used
   CombinationType type;
 
+  CombReference own;
+
   bool canonicalFlag;
   CombReference canonical;
   
@@ -234,7 +236,7 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     else
       s = "non-canonical, ";
 
-    s += canonical.str() + "\n";
+    s += own.str() + "\n";
 
     if (minimalFlag)
       s += "minimal\n";
