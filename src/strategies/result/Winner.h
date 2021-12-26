@@ -80,6 +80,8 @@ class Winner
 
     unsigned char getRank() const;
 
+    unsigned char getAbsNumber() const;
+
     Compare compare(const Winner& winner2) const;
 
     void flip();

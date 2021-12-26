@@ -610,14 +610,27 @@ void uncanonicalBoth(
 
 
 unsigned minimalizeRanked(
+  const bool rotateFlag,
+  const unsigned cards,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,
   const unsigned& holding4)
 {
-  // Resort the low cards in the holding4 order opps, North, South.
-  const unsigned lows = oppsCount + northCount + southCount;
-  assert(lows >= 1);
+  // Resort the low cards in the holding4 order opps, South, North
+  // (top to bottom).  This is the same as in e.g. Ranks::lowMinimal().
+
+  if (rotateFlag)
+  {
+    const unsigned holding4rot = holding4 ^ HOLDING4_ROTATE[cards];
+
+    return minimalizeRanked(false, cards, oppsCount,
+      southCount, northCount, holding4rot);
+  }
+  else
+  {
+    const unsigned lows = oppsCount + southCount + northCount;
+    assert(lows >= 1);
 
 /*
 cout << "top " << (holding4 & HOLDING4_MASK_HIGH[lows]) << endl;
@@ -627,9 +640,10 @@ cout << "nor " << (NORTH_REPEATS[northCount] << 2*southCount) << endl;
 cout << "sou " << SOUTH_REPEATS[southCount] <<  endl;
 */
 
-  return (holding4 & HOLDING4_MASK_HIGH[lows]) |
-    ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
-     (NORTH_REPEATS[northCount] << 2*southCount) |
-     SOUTH_REPEATS[southCount]);
+    return (holding4 & HOLDING4_MASK_HIGH[lows]) |
+      ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
+       (SOUTH_REPEATS[southCount] << 2*northCount) |
+       NORTH_REPEATS[northCount]);
+  }
 }
   

@@ -1,19 +1,32 @@
-2021-12-25
+2021-12-26
 ----------
-Also, it would be nice if "canonical" (ordered) was a property of
-the order, and "oriented" was if N has the top card.  Then canonical
-is ordered & oriented.  Then perhaps we only need one entry in
-combEntry which has a generic name, "reference".
+6/35, AKJ/Q missing HH: One strategy is to cash the ace and then
+maybe the king.  Another is to cash the queen.  But this doesn't just
+need 2S = Q, as the Q is lower than AK.  So I guess the Winner should
+really be strictly the card with the lowest absolute number.
 
-With combEntry.own we have a rotation problem.
+Is this actually a problem with play generation?
+6/51: AK9/Q missing JT also has 3S = Q for d=1, whereas the ace
+is enough.
 
-Solution:
+6/89 AQJ/K miss HH: 
+#0  #1
+K   Q
+K   A
+K   Q
+It is reasonable to keep both.
+But in Combinations::getMinimals we should have one result per
+Strategy and pass these to Ranks::getMinimals.
+Then for #0 we'd get Axx/K missing QJ,
+and  for #1 we'd get AQx/K missing JT.
 
-...
+So:
+Combinations::getMinimals
+Don't make one overall result for all strategies.
+Make a list of result's for each strategy, pass to Ranks::getMinimals.
 
-5. In Combinations::runUniques after setRanks
-   if (centry.own.rotateFlag)
-     skip
+
+
 
 2021-12-24
 ----------
@@ -24,21 +37,13 @@ of Ranks?
 
 Seems we crash out of 2 GB RAM during cards = 11?
 - Some compiler flag?
-- Avoid rotations?
 - Cut Winners to Winner?
-- Why is output Cards 4: x not in order? Some reduced number instead?
-
 
 Maybe move all the tables from Ranks to cranks, then also the
 methods canonicalTrinary and canonicalBoth.
 
-
-5. Also need a way (for ranked plays) to tell whether a combination
-has North top > South top -- store this as a flag in Combinations
-
 Cleanup:
 Comb counts from Combinations to class/struct?
-Ranks line 517, 371: right?
 Declarer: greater?
 No Winners at all, once there's only ever 1?
 Card: When use number, when absNumber?
@@ -51,12 +56,6 @@ Ideas for ranks and no ranks.
 
 Ranks
 -----
-- Really solve the concrete combination, not canonical ones
-- Only solve ones where North has the ace (mark others as rotations)
-- So there's only one winner ever in a given trick (or none)
-  - AK/Q is AK and the Q doesn't matter
-  - We will still get minimals: AK/Q is AKx, AQ/K is either AK/x or A/Kx
-  - A/Kx and Ax/K are different
 
 No ranks
 --------

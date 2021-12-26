@@ -748,8 +748,8 @@ void Ranks::lowMinimal(
 {
   // Do the x's, i.e. all N-S cards below the critical rank.
   // It is possible that N-S have no x's.
-  const unsigned char nx = north.countBelow(criticalRank, winner.north);
-  const unsigned char sx = south.countBelow(criticalRank, winner.south);
+  const unsigned char nx = north.countBelowRank(criticalRank, winner.north);
+  const unsigned char sx = south.countBelowRank(criticalRank, winner.south);
   if (nx > 0 || sx > 0)
   {
     ranksNew.maxGlobalRank++;
@@ -761,7 +761,7 @@ void Ranks::lowMinimal(
 
   // Do the opponents' x's.  These must exist as a winner has
   // to beat something by definition.
-  const unsigned char ox = opps.countBelow(criticalRank);
+  const unsigned char ox = opps.countBelowRank(criticalRank);
   assert(ox > 0);
   ranksNew.maxGlobalRank++;
   ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, ox, 
@@ -846,7 +846,7 @@ bool Ranks::getMinimals(
   // north.length() << ", " << south.length() << ", holding4 " <<
   // holding4 << endl;
 
-      const unsigned h4minimal = minimalizeRanked(
+      const unsigned h4minimal = minimalizeRanked(false, cards,
         opps.length(), north.length(), south.length(), holding4);
 
       if (h4minimal != holding4)
@@ -864,41 +864,89 @@ bool Ranks::getMinimals(
       for (auto& winner: result.winnersInt.winners)
       {
         const unsigned char criticalNumber = 
-          min(winner.north.getAbsNumber(), winner.south.getAbsNumber());
+          winner.getAbsNumber();
+          // min(winner.north.getAbsNumber(), winner.south.getAbsNumber());
       
         // TODO Probably a more elegant way to do this based on numbers.
+        /*
         const unsigned char criticalRank = 
           max(winner.north.getRank(), winner.south.getRank());
         assert(criticalRank > 0);
+        */
 
-/*
+/* */
 cout << "winner-based, winner " << winner.str() << endl;
 cout << "critNo " << +criticalNumber << endl;
-cout << "  N " << +winner.north.getNumber() << endl;
-cout << "  S " << +winner.south.getNumber() << endl;
-cout << "critRank " << +criticalRank << endl;
-*/
+cout << "  N " << +winner.north.getAbsNumber() << endl;
+cout << "  S " << +winner.south.getAbsNumber() << endl;
+/* */
 
+        /*
         const unsigned oppsCount = opps.countBelow(criticalRank);
         const unsigned northCount = 
           north.countBelow(criticalRank, winner.north);
         const unsigned southCount =
           south.countBelow(criticalRank, winner.south);
+          */
 
-        const unsigned h4minimal = minimalizeRanked(
+        const unsigned oppsCount = opps.countBelowAbsNumber(
+          criticalNumber);
+        const unsigned northCount = north.countBelowAbsNumber(
+          criticalNumber);
+        const unsigned southCount = south.countBelowAbsNumber(
+          criticalNumber);
+
+        const unsigned h4minimal = minimalizeRanked(false, cards,
           oppsCount, northCount, southCount, holding4);
 
-        unsigned holdingMin3, holdingMin2;
-        uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
+        if (holding4 != h4minimal)
+        {
+          unsigned holdingMin3, holdingMin2;
+          uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
 
-/*
+/* */
 cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
   southCount << endl;
 cout << "holding4 was " << holding4 << endl;
 cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
   ", h2min " << holdingMin2 <<endl;
-*/
+/* */
 
+          Ranks ranksTmp;
+          ranksTmp.resize(cards);
+          ranksTmp.holding3 = holdingMin3;
+          ranksTmp.setPlayers();
+
+cout << ranksTmp.strTable();
+
+          CombReference combRef;
+          ranksTmp.setReference(combRef);
+
+cout << combRef.str() << endl;
+
+          // All the ranksTmp stuff just determines rotation.
+          // Otherwise we'd be fine with orientedBoth().
+          // Maybe there's a way to simplify.
+          if (combRef.rotateFlag)
+          {
+            // holdingMin3 stacked low cards in the order
+            // opps - South - North, but now that we're rotating,
+            // it should have been opps - North - South.
+
+            const unsigned h4real = minimalizeRanked(true, cards,
+              oppsCount, northCount, southCount, holding4);
+
+            orientedBoth(false, cards, h4real,
+              combRef.holding3, combRef.holding2);
+
+cout << "Fixed\n" << combRef.str() << endl;
+
+          }
+
+          minimals.emplace_back(combRef);
+        }
+
+        /*
         if (holding3 != holdingMin3)
         {
           CombReference combRef;
@@ -907,6 +955,7 @@ cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
           minimals.emplace_back(combRef);
 // cout << "Got a winner minimal different from original\n";
         }
+        */
       }
     }
   }

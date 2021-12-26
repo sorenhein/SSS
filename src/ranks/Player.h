@@ -168,11 +168,13 @@ class Player
 
     unsigned char count(const unsigned char rank) const;
 
-    unsigned char countBelow(const unsigned char rank) const;
+    unsigned char countBelowRank(const unsigned char rank) const;
 
-    unsigned char countBelow(
+    unsigned char countBelowRank(
       const unsigned char rank,
       const Card& card) const;
+
+    unsigned char countBelowAbsNumber(const unsigned char rank) const;
 
     string strRankHeader() const;
     string strRank(const unsigned char rank) const;

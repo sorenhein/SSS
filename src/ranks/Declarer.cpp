@@ -124,8 +124,14 @@ bool Declarer::greater(
     else if (run1 < run2)
       return false;
     else if (r <= 2)
-      // Nothing else happens, so equality
-      return true; 
+    {
+      // Nothing else happens, so equality in this sense.
+      if (Declarer::isVoid())
+        return true;
+      else
+        return (Declarer::top() > p2.top());
+      // return true; 
+    }
     
     run1 = 0;
     run2 = 0;

@@ -44,6 +44,8 @@ void uncanonicalBoth(
   unsigned& holding2);
 
 unsigned minimalizeRanked(
+  const bool rotateFlag,
+  const unsigned cards,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,

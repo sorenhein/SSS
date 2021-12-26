@@ -236,6 +236,19 @@ unsigned char Winner::getRank() const
 }
 
 
+unsigned char Winner::getAbsNumber() const
+{
+  const unsigned char n = north.getAbsNumber();
+  const unsigned char s = south.getAbsNumber();
+  if (n == 0)
+    return s;
+  else if (s == 0)
+    return n;
+  else
+    return min(n, s);
+}
+
+
 Compare Winner::compare(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
