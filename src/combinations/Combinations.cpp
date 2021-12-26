@@ -256,45 +256,54 @@ void Combinations::runUniques(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    assert(uniqueIndex < uniqs.size());
-    centry.reference.index = uniqueIndex;
-    Combination& comb = uniqs[uniqueIndex];
-    uniqueIndex++;
+    const unsigned referenceHolding3 = centry.reference.holding3;
+    if (holding == referenceHolding3)
+    {
+      assert(uniqueIndex < uniqs.size());
+      centry.reference.index = uniqueIndex;
+      Combination& comb = uniqs[uniqueIndex];
+      uniqueIndex++;
 
-    comb.setMaxRank(ranks.maxRank());
+      comb.setMaxRank(ranks.maxRank());
 
 // cout << "After setMaxRank:\n" << centry.str();
 
     // Plays is cleared and rewritten, so it is only an optimization
     // not to let Combination make its own plays.
 
-    comb.strategize(centry, * this, distributions, ranks, plays);
+      comb.strategize(centry, * this, distributions, ranks, plays);
 
 // cout << "calling getMinimals " << endl;
-    centry.minimalFlag =
-      Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+      centry.minimalFlag =
+        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
 
 // cout << "After getMinimals, min " << centry.minimalFlag << 
   // ":\n" << centry.str();
 
-    if (! centry.minimalFlag)
-    {
+      if (! centry.minimalFlag)
+      {
 // cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
       // TODO Control by some flag
-      comb.reduce(
-        * distributions.ptrNoncanonical(cards, centry.reference.holding2));
-    }
+        comb.reduce(
+          * distributions.ptrNoncanonical(cards, centry.reference.holding2));
+      }
 // cout << "Got out alive" << endl;
 
-    centry.type = Combinations::classify(
-      centry.minimalFlag, comb.strategies(), ranks);
+      centry.type = Combinations::classify(
+        centry.minimalFlag, comb.strategies(), ranks);
 
-    Result res;
-    comb.strategies().getResultLowest(res);
-    centry.winRankLow = res.rank();
+      Result res;
+      comb.strategies().getResultLowest(res);
+      centry.winRankLow = res.rank();
 
-    countStats[cards].data[centry.type].incr(
-      plays.size(), comb.strategies().size());
+      countStats[cards].data[centry.type].incr(
+        plays.size(), comb.strategies().size());
+    }
+    else
+    {
+      centry.reference.index = centries[referenceHolding3].reference.index;
+      countNonreference[cards]++;
+    }
   }
 
   // This is how to write files:
@@ -694,7 +703,7 @@ string Combinations::strUniques(const unsigned cards) const
   ss <<
     setw(5) << "Cards" <<
     setw(9) << "Combos" <<
-    setw(9) << "Canon";
+    setw(9) << "Refs";
 
   for (auto& title: CombinationNames)
     ss <<
