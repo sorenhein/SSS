@@ -41,14 +41,14 @@ class Combinations
     vector<CombCountEntry> countStats;
 
     // Indexed by cards.  Non-canonical ones are not solved.
-    vector<unsigned> countNoncanonical;
+    vector<unsigned> countNonreference;
 
     // Indexed by thread ID and collapsed into countStats,
     // and then by CombinationType
     vector<CombCountEntry> threadCountStats;
 
     // Indexed by thread ID and collapsed into countNoncanonical.
-    vector<unsigned> threadCountNoncanonical;
+    vector<unsigned> threadCountNonreference;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding

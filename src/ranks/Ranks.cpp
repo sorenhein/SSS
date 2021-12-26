@@ -229,28 +229,53 @@ void Ranks::setOwnRanks(CombReference& combRef) const
 {
   // For an uncanonical holding we indicate a rotation if South
   // holds a higher top card than North.
+  /*
   if (north.isVoid())
     combRef.rotateFlag = ! south.isVoid();
   else if (south.isVoid())
     combRef.rotateFlag = false;
   else
     combRef.rotateFlag = (south.top() > north.top());
+    */
+
+  combRef.rotateFlag = ! (north.greater(south, opps));
 
   combRef.holding3 = holding3;
   combRef.holding2 = uncanonicalBinary(holding4);
 }
 
 
-void Ranks::setCanonicalRanks(CombReference& combRef) const
+void Ranks::setReference(CombReference& combRef) const
 {
+  // This method is called from setRanks directly, so the players,
+  // holding3 and holding4 are given.  If we're using ranked plays, 
+  // we can rely on holding3.
+  // It is also called from finishMinimal() which is only called when 
+  // the players have been set up correctly, but holding3 has not.
+  // In this case we're not using ranked plays.
+
+// cout << "Enter setRef\n";
   combRef.rotateFlag = ! (north.greater(south, opps));
 
-  if (combRef.rotateFlag)
-    Ranks::canonicalBoth(south, north, opps,
+  if (control.runRankComparisons())
+  {
+// cout << "Calling orientedBoth with rotate " << combRef.rotateFlag << endl;
+
+    orientedBoth(combRef.rotateFlag, cards, holding4,
       combRef.holding3, combRef.holding2);
+
+// cout << "Got h3 " << combRef.holding3 << ", h2 " << combRef.holding2 << endl;
+  }
   else
-    Ranks::canonicalBoth(north, south, opps,
-      combRef.holding3, combRef.holding2);
+  {
+    if (combRef.rotateFlag)
+      Ranks::canonicalBoth(south, north, opps,
+        combRef.holding3, combRef.holding2);
+    else
+      Ranks::canonicalBoth(north, south, opps,
+        combRef.holding3, combRef.holding2);
+  }
+
 }
 
 
@@ -276,9 +301,9 @@ void Ranks::setRanks(
   // Ranks::setRanks(combEntry.canonical);
 
   Ranks::setOwnRanks(combEntry.own);
-  Ranks::setCanonicalRanks(combEntry.canonical);
+  Ranks::setReference(combEntry.reference);
 
-  combEntry.canonicalFlag = (holding3 == combEntry.canonical.holding3);
+  combEntry.referenceFlag = (holding3 == combEntry.reference.holding3);
 }
 
 
@@ -416,8 +441,11 @@ void Ranks::updateHoldings(Play& play) const
   if (control.runRankComparisons())
   {
     // Don't do any canonical reduction -- just play the cards.
-    play.holding3 = uncanonicalTrinary(holding4, play);
-    play.rotateFlag = false;
+    play.rotateFlag = ! (north.greater(south, opps));
+    play.holding3 = orientedTrinary(play.cardsLeft, holding4, play);
+
+// cout << "updateHoldings:\n";
+// cout << play.strLine() << endl;
   }
   else
   {
@@ -447,8 +475,6 @@ void Ranks::finish(Play& play) const
   // only play but also north and south, so we might as well leave
   // it here.
 
-  Ranks::updateHoldings(play);
-
   play.trickNS = (max(play.lead(), play.pard()) > 
       max(play.lho(), play.rho()) ? 1 : 0);
 
@@ -458,6 +484,8 @@ void Ranks::finish(Play& play) const
     (play.pardPtr->isVoid() ? 1 : 0) +
     (play.rhoPtr->isVoid() ? 1 : 0) -
     4;
+
+  Ranks::updateHoldings(play);
 
   if (north.isVoid())
     play.northCardsPtr = nullptr;
@@ -675,10 +703,10 @@ void Ranks::finishMinimal(
 
   // Check whether the new minimal holding is different.
   CombReference combRef;
-  Ranks::setCanonicalRanks(combRef);
+  Ranks::setReference(combRef);
 
-cout << "finishMinimal different: reference " << holdingRef << 
-  ", constructed " << combRef.holding3 << endl;
+// cout << "finishMinimal different: reference " << holdingRef << 
+  // ", constructed " << combRef.holding3 << endl;
 
   if (combRef.holding3 != holdingRef)
     minimals.emplace_back(combRef);
@@ -817,22 +845,18 @@ bool Ranks::getMinimals(
   // cards << ", " << opps.length() << ", " <<
   // north.length() << ", " << south.length() << ", holding4 " <<
   // holding4 << endl;
+
       const unsigned h4minimal = minimalizeRanked(
         opps.length(), north.length(), south.length(), holding4);
 
-      unsigned holdingMin3, holdingMin2;
-      uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
-// cout << "Got h4 " << h4minimal << ", h3 " << holdingMin3 << 
-  // ", h2 " << holdingMin2 << endl;
-
-      if (holding3 != holdingMin3)
+      if (h4minimal != holding4)
       {
+        // Arrange North and South in the same order that greater()
+        // would choose.  In this case this is just the N-S lengths.
         CombReference combRef;
-        combRef.holding3 = holdingMin3;
-        combRef.holding2 = holdingMin2;
-        minimals.emplace_back(combRef);
-// cout << "Got a minimal different from original, new " <<
-  // holdingMin3 << " vs " << holding3 << "\n";
+        combRef.rotateFlag = (south.length() > north.length());
+        orientedBoth(combRef.rotateFlag, cards, h4minimal,
+          combRef.holding3, combRef.holding2);
       }
     }
     else
@@ -870,6 +894,7 @@ cout << "critRank " << +criticalRank << endl;
 /*
 cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
   southCount << endl;
+cout << "holding4 was " << holding4 << endl;
 cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
   ", h2min " << holdingMin2 <<endl;
 */

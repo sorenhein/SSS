@@ -76,7 +76,7 @@ void Combinations::reset()
   combEntries.clear();
   uniques.clear();
   countStats.clear();
-  countNoncanonical.clear();
+  countNonreference.clear();
 
   timersStrat.clear();
   Combinations::setTimerNames();
@@ -121,7 +121,7 @@ void Combinations::resize(const unsigned maxCardsIn)
     countStats[cards].data.resize(COMB_SIZE);
   }
 
-  countNoncanonical.resize(maxCardsIn+1);
+  countNonreference.resize(maxCardsIn+1);
 }
 
 
@@ -141,11 +141,11 @@ void Combinations::runSpecific(
   CombEntry& centry = combEntries[cards][holding];
   ranks.setRanks(holding, centry);
 
-  const unsigned canonicalHolding3 = centry.canonical.holding3;
-  if (holding != canonicalHolding3)
+  const unsigned referenceHolding3 = centry.reference.holding3;
+  if (holding != referenceHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
-      holding << ") is not canonical." << endl;
+      holding << ") is not reference." << endl;
     return;
   }
 
@@ -172,11 +172,11 @@ void Combinations::runSpecificVoid(
   CombEntry& centry = combEntries[cards][holding];
   ranks.setRanks(holding, centry);
 
-  const unsigned canonicalHolding3 = centry.canonical.holding3;
-  if (holding != canonicalHolding3)
+  const unsigned referenceHolding3 = centry.reference.holding3;
+  if (holding != referenceHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
-      holding << ") is not canonical." << endl;
+      holding << ") is not reference." << endl;
     return;
   }
 
@@ -257,7 +257,7 @@ void Combinations::runUniques(
     timers.stop(TIMER_RANKS);
 
     assert(uniqueIndex < uniqs.size());
-    centry.canonical.index = uniqueIndex;
+    centry.reference.index = uniqueIndex;
     Combination& comb = uniqs[uniqueIndex];
     uniqueIndex++;
 
@@ -282,7 +282,7 @@ void Combinations::runUniques(
 // cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
       // TODO Control by some flag
       comb.reduce(
-        * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+        * distributions.ptrNoncanonical(cards, centry.reference.holding2));
     }
 // cout << "Got out alive" << endl;
 
@@ -360,12 +360,12 @@ void Combinations::runUniquesOld(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    const unsigned canonicalHolding3 = centry.canonical.holding3;
-    if (holding == canonicalHolding3)
+    const unsigned referenceHolding3 = centry.reference.holding3;
+    if (holding == referenceHolding3)
     {
-      // TODO just centry.canonicalFlag?
+      // TODO just centry.referenceFlag?
       assert(uniqueIndex < uniqs.size());
-      centry.canonical.index = uniqueIndex;
+      centry.reference.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -382,7 +382,7 @@ void Combinations::runUniquesOld(
       {
         // TODO Control by some flag
         comb.reduce(
-          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+          * distributions.ptrNoncanonical(cards, centry.reference.holding2));
       }
 
       centry.type = Combinations::classify(
@@ -406,8 +406,8 @@ void Combinations::runUniquesOld(
     }
     else
     {
-      centry.canonical.index = centries[canonicalHolding3].canonical.index;
-      countNoncanonical[cards]++;
+      centry.reference.index = centries[referenceHolding3].reference.index;
+      countNonreference[cards]++;
     }
   }
 
@@ -491,12 +491,12 @@ void Combinations::runUniqueThread(
     CombEntry& centry = centries[holding];
     ranks.setRanks(holding, centry);
 
-    const unsigned canonicalHolding3 = centry.canonical.holding3;
-    if (holding == canonicalHolding3)
+    const unsigned referenceHolding3 = centry.reference.holding3;
+    if (holding == referenceHolding3)
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());
-      centry.canonical.index = uniqueIndex;
+      centry.reference.index = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
       comb.setMaxRank(ranks.maxRank());
@@ -514,8 +514,8 @@ void Combinations::runUniqueThread(
     }
     else
     {
-      centry.canonical.index = centries[canonicalHolding3].canonical.index;
-      threadCountNoncanonical[thid]++;
+      centry.reference.index = centries[referenceHolding3].reference.index;
+      threadCountNonreference[thid]++;
     }
   }
 }
@@ -537,8 +537,8 @@ void Combinations::runUniquesMT(
   threadCountStats.clear();
   threadCountStats.resize(numThreads);
 
-  threadCountNoncanonical.clear();
-  threadCountNoncanonical.resize(numThreads);
+  threadCountNonreference.clear();
+  threadCountNonreference.resize(numThreads);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
@@ -553,7 +553,7 @@ void Combinations::runUniquesMT(
   for (unsigned thid = 0; thid < numThreads; thid++)
   {
     countStats[cards] += threadCountStats[thid];
-    threadCountNoncanonical[cards] += threadCountNoncanonical[thid];
+    threadCountNonreference[cards] += threadCountNonreference[thid];
   }
 }
 
@@ -568,14 +568,14 @@ Combination const * Combinations::getPtr(
 {
   const auto& centry = combEntries[cards][holding3];
 
-  const auto& ccan = (centry.canonicalFlag ? centry :
-    combEntries[cards][centry.canonical.holding3]);
+  const auto& cref = (centry.referenceFlag ? centry :
+    combEntries[cards][centry.reference.holding3]);
 
   // TODO Delete parameters rotateFlag and mode
   UNUSED(mode);
   rotateFlag = false;
 
-  const unsigned ui = ccan.canonical.index;
+  const unsigned ui = cref.reference.index;
   return &uniques[cards][ui];
 }
 
@@ -586,7 +586,7 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
   {
     // Only look at non-minimal combinations.
     const CombEntry& centry = centries[holding];
-    if (! centry.canonicalFlag || centry.minimalFlag)
+    if (! centry.referenceFlag || centry.minimalFlag)
       continue;
     
     if (! centries[holding].fixMinimals(centries))
@@ -612,10 +612,10 @@ void Combinations::fixLowestWinningRanks(
   {
     // Only look at non-minimal combinations.
     CombEntry& centry = centries[holding];
-    if (! centry.canonicalFlag || centry.minimalFlag)
+    if (! centry.referenceFlag || centry.minimalFlag)
       continue;
 
-    Combination& comb = uniqs[centry.canonical.index];
+    Combination& comb = uniqs[centry.reference.index];
 
     list<unsigned char> winRanksLow;
     unsigned char span;
@@ -713,7 +713,7 @@ string Combinations::strUniques(const unsigned cards) const
     ss <<
       setw(5) << c <<
       setw(9) << combEntries[c].size() <<
-      setw(9) << combEntries[c].size() - countNoncanonical[c];
+      setw(9) << combEntries[c].size() - countNonreference[c];
 
     for (unsigned n = 0; n < COMB_SIZE; n++)
       ss <<

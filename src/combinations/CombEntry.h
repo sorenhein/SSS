@@ -84,8 +84,8 @@ struct CombEntry
 
   CombReference own;
 
-  bool canonicalFlag;
-  CombReference canonical;
+  bool referenceFlag;
+  CombReference reference;
   
   bool minimalFlag;
   list<CombReference> minimals;
@@ -98,13 +98,13 @@ struct CombEntry
     if (type != ce2.type)
       return false;
 
-    if (canonicalFlag != ce2.canonicalFlag)
+    if (referenceFlag != ce2.referenceFlag)
       return false;
 
     if (minimalFlag != ce2.minimalFlag)
       return false;
     
-    if (! canonicalFlag && ! (canonical.equal(ce2.canonical)))
+    if (! referenceFlag && ! (reference.equal(ce2.reference)))
       return false;
 
     if (! minimalFlag)
@@ -160,8 +160,8 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
         continue;
       }
   
-      assert(ceMin.canonical.index < uniqs.size());
-      const Combination& comb = uniqs[ceMin.canonical.index];
+      assert(ceMin.reference.index < uniqs.size());
+      const Combination& comb = uniqs[ceMin.reference.index];
 
       rankHigh = comb.getMaxRank();
       winRanksLow.push_back(ceMin.winRankLow);
@@ -231,10 +231,10 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
   string str() const
   {
     string s;
-    if (canonicalFlag)
-      s = "canonical, ";
+    if (referenceFlag)
+      s = "reference, ";
     else
-      s = "non-canonical, ";
+      s = "non-reference, ";
 
     s += own.str() + "\n";
 

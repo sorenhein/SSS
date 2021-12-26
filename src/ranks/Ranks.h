@@ -49,7 +49,7 @@ class Ranks
 
     void setOwnRanks(CombReference& combRef) const;
 
-    void setCanonicalRanks(CombReference& combRef) const;
+    void setReference(CombReference& combRef) const;
 
     // void setRanks(CombReference& combRef) const;
 

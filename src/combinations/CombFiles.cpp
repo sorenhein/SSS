@@ -71,7 +71,7 @@ void CombFiles::unpack(
   // 3-5 combination type (should stay < 8 I think)
   // 0-2 Size of minimals (should be < 8 I think)
   
-  ce.canonicalFlag = ((data & 0x80) ? true : false);
+  ce.referenceFlag = ((data & 0x80) ? true : false);
   ce.minimalFlag = ((data & 0x40) ? true : false);
   ce.type = static_cast<CombinationType>((data >> 3) & 0x7);
   ce.minimals.resize(data & 0x7);
@@ -85,7 +85,7 @@ void CombFiles::pack(
   data = (ce.minimals.size() & 0x7) |
     (static_cast<unsigned char>(ce.type << 3)) |
     ((ce.minimalFlag ? 1 : 0) << 6) |
-    ((ce.canonicalFlag ? 1 : 0) << 7);
+    ((ce.referenceFlag ? 1 : 0) << 7);
 }
 
 
@@ -140,14 +140,14 @@ void CombFiles::readFiles(
     CombEntry& ce = combinations[h];
     CombFiles::unpack(vControl[h], ce);
 
-    if (ce.canonicalFlag)
+    if (ce.referenceFlag)
     {
       // No canonical reference, as this is already canonical.
       for (auto& min: ce.minimals)
         CombFiles::getHolding(vHoldings, pos, min);
     }
     else
-      CombFiles::getHolding(vHoldings, pos, ce.canonical);
+      CombFiles::getHolding(vHoldings, pos, ce.reference);
   }
 }
 
@@ -175,13 +175,13 @@ void CombFiles::writeFiles(
     const CombEntry& ce = combinations[h];
     CombFiles::pack(ce, vControl[h]);
 
-    if (ce.canonicalFlag)
+    if (ce.referenceFlag)
     {
       for (auto& min: ce.minimals)
         CombFiles::putHolding(min, vHoldings, pos);
     }
     else
-      CombFiles::putHolding(ce.canonical, vHoldings, pos);
+      CombFiles::putHolding(ce.reference, vHoldings, pos);
   }
 
   vHoldings.resize(pos);

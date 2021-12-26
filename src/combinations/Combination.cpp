@@ -64,7 +64,7 @@ const Strategies& Combination::strategize(
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.canonical.holding2);
+    ranks.size(), centry.reference.holding2);
 
   // Make the plays.
   Result trivialEntry;
@@ -135,16 +135,16 @@ const Strategies& Combination::strategizeVoid(
   Plays& plays,
   bool debugFlag)
 {
-cout << "cholding2 is " << centry.canonical.holding2 << ", size " << ranks.size() << endl;
+cout << "cholding2 is " << centry.reference.holding2 << ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.canonical.holding2);
+    ranks.size(), centry.reference.holding2);
 
   // Make the plays.
   Result trivialEntry;
   plays.clear();
-if (centry.canonical.holding3 == 208)
+if (centry.reference.holding3 == 208)
 {
   cout << "HERE0\n";
 }
@@ -161,7 +161,7 @@ if (centry.canonical.holding3 == 208)
 
 // return strats;
 
-cout << "A " << centry.canonical.holding3 << endl;
+cout << "A " << centry.reference.holding3 << endl;
   // Complete the plays such that their ends point to combinations.
 // if (ranks.size() == 8 && centry.canonicalHolding3 == 530)
 // {

@@ -1,34 +1,15 @@
 2021-12-25
 ----------
+Also, it would be nice if "canonical" (ordered) was a property of
+the order, and "oriented" was if N has the top card.  Then canonical
+is ordered & oriented.  Then perhaps we only need one entry in
+combEntry which has a generic name, "reference".
+
 With combEntry.own we have a rotation problem.
 
 Solution:
-0. In Ranks, turn a part of setOwnRanks into isOriented() const.
-1. In Ranks::updateHoldings, say
-   orientedFlag = Ranks::isOriented();
-   play.holding3 = orientedTrinary(holding4, orientedFlag, play);
-   play.rotateFlag = orientedFlag;
-2. In uncanonicalTrinary -> orientedTrinary
-   Ugly hack? In holding4 we can flip the low bits of the quarts
-   by having an 010101... vector as long as the active length.
-   Then we don't need another table.
 
-4. In Combinations::getPtr, if ranked, check not canonical but
-   rotated.
-
-   if (ranked)
-   {
-     centry
-     const auto& cor = (centry.orientedFlag ? centry :
-       combEntries[cards][centry.oriented.holding3]);
-     
-     const unsigned ui = cor.oriented.index;
-     return ...
-   }
-   else
-   {
-      
-   }
+...
 
 5. In Combinations::runUniques after setRanks
    if (centry.own.rotateFlag)

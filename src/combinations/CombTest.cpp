@@ -133,8 +133,8 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 
     // Get the strategies for the minimal reference.
     // TODO Assert can be erased later
-    assert(ceMin.canonical.index < uniqs.size());
-    strategiesMin = uniqs[ceMin.canonical.index].strategies();
+    assert(ceMin.reference.index < uniqs.size());
+    strategiesMin = uniqs[ceMin.reference.index].strategies();
 Strategies scopy = strategiesMin;
 
 // cout << "Getting result for min " << min.str() << endl;
@@ -232,21 +232,21 @@ void CombTest::checkAllReductions(
   {
     // Only look at non-minimal combinations.
     const CombEntry& centry = centries[holding];
-    if (! centry.canonicalFlag || centry.minimalFlag)
+    if (! centry.referenceFlag || centry.minimalFlag)
       continue;
 
 cout << "Checking:  cards " << cards << ", " <<
-  centry.canonical.str() << endl;
+  centry.reference.str() << endl;
 
 if (cards == 9 && holding == 13649)
 {
   cout << "HERE\n";
 }
 
-    const Combination& comb = uniqs[centry.canonical.index];
+    const Combination& comb = uniqs[centry.reference.index];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 
       comb.getMaxRank(),
-      * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
+      * distributions.ptrNoncanonical(cards, centry.reference.holding2));
   }
 }
 

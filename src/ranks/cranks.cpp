@@ -85,6 +85,30 @@ vector<unsigned> NORTH_REPEATS;
 vector<unsigned> SOUTH_REPEATS;
 vector<unsigned> OPPS_REPEATS;
 
+// This is used to rotate a holding4.  We exploit that North and South
+// are coded as 0 and 1.  The vector is indexed by the number of cards
+// to get the right xor vector.
+
+const vector<unsigned> HOLDING4_ROTATE =
+{
+  0x00000000, //  0
+  0x00000001, //  1
+  0x00000005, //  2
+  0x00000015, //  3
+  0x00000055, //  4
+  0x00000155, //  5
+  0x00000555, //  6
+  0x00001555, //  7
+  0x00005555, //  8
+  0x00015555, //  9
+  0x00055555, // 10
+  0x00155555, // 11
+  0x00555555, // 12
+  0x01555555, // 13
+  0x05555555, // 14
+  0x15555555  // 15
+};
+
 
 void set4to32();
 
@@ -109,12 +133,18 @@ unsigned punchHolding4(
 
 void set4to32()
 {
+  // See comment of HOLDING4_ROTATE above.
+  // Actually this part would also work if they were swapped,
+  // but they have to share the same bit.
+  assert(SIDE_NORTH == 0 && SIDE_SOUTH == 1);
+
   // Lookup of 8 cards into trit format.  There are 4^8 = 65536 entries
   // of holding4, 3^8 = 6561 possible values of 8-trit sequences,
   // and 2^8 = 256 possible values of 8-bit sequences.
 
   // First make temporary tables with the square root of the numbers.
   vector<unsigned> h3_to_h4_partial(TRINARY4);
+  vector<unsigned> h3_to_h4_partial_shadow(TRINARY4);
   vector<unsigned> h3_to_h2_partial(TRINARY4);
 
   for (unsigned c0 = 0; c0 < 3; c0++)
@@ -133,11 +163,25 @@ void set4to32()
           const unsigned h3 = 27*c0 + 9*c1 + 3*c2 + c3;
           const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
 
+          // In a somewhat ugly hack, we also make a shadow holding4
+          // in which opponents are represented by 3, not 2.
+          // This is useful when we rotate a holding4, as North and
+          // South are mirrors (00 and 01), but the opponents (10)
+          // are "rotated" into 11.  It's either all of them or none.
+          const unsigned c0s = (c0 == 2 ? 3 : c0);
+          const unsigned c1s = (c1 == 2 ? 3 : c1);
+          const unsigned c2s = (c2 == 2 ? 3 : c2);
+          const unsigned c3s = (c3 == 2 ? 3 : c3);
+          const unsigned h4s = (c0s << 6) | (c1s << 4) | (c2s << 2) | c3s;
+
 assert(h3 < h3_to_h4_partial.size());
 assert(h3 < h3_to_h2_partial.size());
+assert(h4s < 256);
 
           h3_to_h4_partial[h3] = h4;
           h3_to_h2_partial[h3] = h2;
+
+          h3_to_h4_partial_shadow[h3] = h4s;
         }
       }
     }
@@ -162,12 +206,20 @@ assert(p1 < h3_to_h4_partial.size());
         (h3_to_h2_partial[p0] << 4) | h3_to_h2_partial[p1];
       const unsigned h4 = 
         (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
+      const unsigned h4s = 
+        (h3_to_h4_partial_shadow[p0] << 8) | h3_to_h4_partial_shadow[p1];
 
 assert(h4 < HOLDING4_TO_HOLDING2.size());
 assert(h4 < HOLDING4_TO_HOLDING3.size());
+assert(h4s < HOLDING4_TO_HOLDING2.size());
+assert(h4s < HOLDING4_TO_HOLDING3.size());
 
       HOLDING4_TO_HOLDING2[h4] = h2;
+      HOLDING4_TO_HOLDING2[h4s] = h2;
+
       HOLDING4_TO_HOLDING3[h4] = h3;
+      HOLDING4_TO_HOLDING3[h4s] = h3;
+
       HOLDING3_TO_HOLDING4[h3] = h4;
     }
   }
@@ -510,11 +562,35 @@ assert(s < HOLDING4_MASK_LOW.size());
 }
 
 
-unsigned uncanonicalTrinary(
+void orientedBoth(
+  const bool rotateFlag,
+  const unsigned cards,
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2)
+{
+  const unsigned holding4rot = (rotateFlag ?
+    (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
+
+// cout << "orientedBoth: h4 in " << holding4 << ", rot " << holding4rot <<endl;
+
+  holding4_to_both(holding4rot, holding3, holding2);
+}
+
+
+unsigned orientedTrinary(
+  const unsigned cards,
   const unsigned holding4,
   const Play& play)
 {
-  return holding4_to_holding3(punchHolding4(holding4, play));
+  unsigned holding4punched = punchHolding4(holding4, play);
+
+  // If play.rotateFlag is set, the trinary holding is rotated,
+  // so North and South are swapped.
+  if (play.rotateFlag)
+    holding4punched ^= HOLDING4_ROTATE[cards];
+
+  return holding4_to_holding3(holding4punched);
 }
 
 
@@ -543,7 +619,15 @@ unsigned minimalizeRanked(
   const unsigned lows = oppsCount + northCount + southCount;
   assert(lows >= 1);
 
-  return (holding4 & HOLDING4_MASK_HIGH[lows-1]) |
+/*
+cout << "top " << (holding4 & HOLDING4_MASK_HIGH[lows]) << endl;
+cout << "opp " << 
+  (OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) << endl;
+cout << "nor " << (NORTH_REPEATS[northCount] << 2*southCount) << endl;
+cout << "sou " << SOUTH_REPEATS[southCount] <<  endl;
+*/
+
+  return (holding4 & HOLDING4_MASK_HIGH[lows]) |
     ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
      (NORTH_REPEATS[northCount] << 2*southCount) |
      SOUTH_REPEATS[southCount]);
