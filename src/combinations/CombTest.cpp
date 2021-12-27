@@ -43,7 +43,7 @@ void CombTest::checkReductions(
 
   if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span, len))
   {
-    cout << "WARNRANGE2: The range across minimals is not unique.\n";
+    cout << "WARNRANGE2: The range across minimals is not unique." << endl;
 
     /*
     for (auto& r: winRanksLow)
@@ -62,6 +62,25 @@ void CombTest::checkReductions(
 
     return;
   }
+
+cout << "Entered CR with centry:\n";
+cout << centry.str();
+
+for (auto& r: winRanksLow)
+  cout << "winRanksLow entry: " << +r << endl;
+
+cout << strategies.str("strategies");
+
+for (auto& min: centry.minimals)
+{
+  const auto& ceMin = centries[min.holding3];
+  cout << ceMin.str();
+}
+
+cout << "span " << +span << endl;
+cout << "len  " << len << endl;
+cout << "maxRank " << +maxRank << endl;
+
 
   unsigned char rankCritical;
   if (maxRank - centry.winRankLow != span && centry.winRankLow != 0)
@@ -117,7 +136,7 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 
   for (auto& min: centry.minimals)
   {
-// cout << "Starting min loop " << min.str() << endl;
+cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
@@ -211,7 +230,7 @@ if (min.holding3 == 1432)
   else
     cout << "WINNER MATCH, size " << centry.minimals.size() << endl;
 
-// cout << "Loop fertig" << endl;
+cout << "Loop fertig" << endl;
 
   // TODO Checks:
   // * The sum of the minimal winners should be the overall winner.

@@ -22,6 +22,8 @@ using namespace std;
 
 class Winners
 {
+  // TODO Can we revoke this later?
+
   friend class Ranks;
 
   private:
@@ -67,6 +69,8 @@ class Winners
     bool empty() const;
 
     unsigned char rank() const;
+
+    unsigned char absNumber() const;
 
     void operator += (const Winners& winners2);
 

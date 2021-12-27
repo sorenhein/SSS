@@ -102,6 +102,7 @@ class Strategies
     void getResultRange(
       unsigned char& rankLow,
       unsigned char& rankHigh) const;
+    void getResultList(list<Result>& resultList) const;
 
     bool ordered() const;
 

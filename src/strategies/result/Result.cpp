@@ -258,6 +258,15 @@ unsigned char Result::rank() const
 }
 
 
+unsigned char Result::winAbsNumber() const
+{
+  if (control.runRankComparisons())
+    return winnersInt.absNumber();
+  else
+    return 0;
+}
+
+
 string Result::strHeaderEntry(
   const bool rankFlag,
   const string& title) const

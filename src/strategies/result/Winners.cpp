@@ -96,6 +96,18 @@ unsigned char Winners::rank() const
 }
 
 
+unsigned char Winners::absNumber() const
+{
+  if (winners.empty())
+    return 0;
+  else
+  {
+    assert(winners.size() == 1);
+    return winners.front().getAbsNumber();
+  }
+}
+
+
 void Winners::fillComparer(
   Comparer& comparer,
   const Winners& winners2) const

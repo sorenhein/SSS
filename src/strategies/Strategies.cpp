@@ -415,6 +415,12 @@ void Strategies::getResultRange(
 }
 
 
+void Strategies::getResultList(list<Result>& resultList) const
+{
+  slist.getResultList(resultList);
+}
+
+
 /************************************************************
  *                                                          *
  * Utilities                                                *

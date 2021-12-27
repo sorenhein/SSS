@@ -85,6 +85,8 @@ vector<unsigned> NORTH_REPEATS;
 vector<unsigned> SOUTH_REPEATS;
 vector<unsigned> OPPS_REPEATS;
 
+vector<unsigned> OPPS_REPEATS_ROTATE;
+
 // This is used to rotate a holding4.  We exploit that North and South
 // are coded as 0 and 1.  The vector is indexed by the number of cards
 // to get the right xor vector.
@@ -349,6 +351,10 @@ void setRepeats()
   setRepeatsTable(SIDE_NORTH, NORTH_REPEATS);
   setRepeatsTable(SIDE_SOUTH, SOUTH_REPEATS);
   setRepeatsTable(SIDE_OPPS, OPPS_REPEATS);
+
+  OPPS_REPEATS_ROTATE.resize(16);
+
+  setRepeatsTable(SIDE_NONE, OPPS_REPEATS_ROTATE);
 }
 
 
@@ -620,26 +626,34 @@ unsigned minimalizeRanked(
   // Resort the low cards in the holding4 order opps, South, North
   // (top to bottom).  This is the same as in e.g. Ranks::lowMinimal().
 
+  const unsigned lows = oppsCount + southCount + northCount;
+  assert(lows >= 1);
+
   if (rotateFlag)
   {
+    // The returned value will have SIDE_NONE (3) and not SIDE_OPPS
+    // for the opponents, but that's OK for the table lookups.
+    // The key is that they should all be 3's (or all 2's), hence
+    // OPPS_REPEAT_ROTATE.
     const unsigned holding4rot = holding4 ^ HOLDING4_ROTATE[cards];
 
-    return minimalizeRanked(false, cards, oppsCount,
-      southCount, northCount, holding4rot);
+/*
+cout << "rotate h4 to " << holding4rot << endl;
+cout << "h4mask " << (holding4rot & HOLDING4_MASK_HIGH[lows]) << endl;
+cout << "opprot " << (OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) << endl;
+cout << "south  " << (SOUTH_REPEATS[northCount] << 2*southCount) << endl;
+cout << "north  " << NORTH_REPEATS[southCount] << endl;
+*/
+
+    const unsigned holding4min = (holding4rot & HOLDING4_MASK_HIGH[lows]) |
+      ((OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) |
+       (SOUTH_REPEATS[northCount] << 2*southCount) |
+       NORTH_REPEATS[southCount]);
+
+    return holding4min;
   }
   else
   {
-    const unsigned lows = oppsCount + southCount + northCount;
-    assert(lows >= 1);
-
-/*
-cout << "top " << (holding4 & HOLDING4_MASK_HIGH[lows]) << endl;
-cout << "opp " << 
-  (OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) << endl;
-cout << "nor " << (NORTH_REPEATS[northCount] << 2*southCount) << endl;
-cout << "sou " << SOUTH_REPEATS[southCount] <<  endl;
-*/
-
     return (holding4 & HOLDING4_MASK_HIGH[lows]) |
       ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
        (SOUTH_REPEATS[southCount] << 2*northCount) |

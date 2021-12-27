@@ -40,6 +40,9 @@ CompareType compressCompareSecondaryDetail(const unsigned detail);
 
 class Result
 {
+  // TODO We probably mostly need the absolute number of winners,
+  // so probably we can revoke the friendship later.
+
   friend class Ranks;
 
   private:
@@ -96,6 +99,8 @@ class Result
     unsigned char tricks() const;
 
     unsigned char rank() const;
+
+    unsigned char winAbsNumber() const;
 
     string strHeaderEntry(
       const bool rankFlag,

@@ -927,6 +927,31 @@ void Slist::getResultHighest(Result& result) const
 }
 
 
+void Slist::getResultList(list<Result>& resultList) const
+{
+  resultList.clear();
+  for (const auto& strat: strategies)
+  {
+    const auto& res = strat.resultLowest();
+    if (res.winAbsNumber() > 0)
+      resultList.push_back(res);
+  }
+
+  if (resultList.size() <= 1)
+    return;
+
+  resultList.sort([](const Result& res1, const Result& res2)
+  {
+    return (res1.winAbsNumber() < res2.winAbsNumber());
+  });
+
+  resultList.unique([](const Result& res1, const Result& res2)
+  {
+    return (res1.winAbsNumber() == res2.winAbsNumber());
+  });
+}
+
+
 /************************************************************
  *                                                          *
  * Utilities                                                *

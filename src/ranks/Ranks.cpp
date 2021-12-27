@@ -822,7 +822,7 @@ void Ranks::remainingMinimal(
 
 
 bool Ranks::getMinimals(
-  const Result& result,
+  const list<Result>& resultList,
   list<CombReference>& minimals) const
 {
   // Returns true and does not fill minimals if the combination is 
@@ -839,7 +839,8 @@ bool Ranks::getMinimals(
 // cout << "Minimal by definition\n";
       return true;
     }
-    else if (result.winnersInt.winners.empty())
+    // else if (result.winnersInt.winners.empty())
+    else if (resultList.empty())
     {
 // cout << "Calling no-winner minimalizeRanked with:\n" <<
   // cards << ", " << opps.length() << ", " <<
@@ -861,10 +862,10 @@ bool Ranks::getMinimals(
     }
     else
     {
-      for (auto& winner: result.winnersInt.winners)
+      // for (auto& winner: result.winnersInt.winners)
+      for (auto& res: resultList)
       {
-        const unsigned char criticalNumber = 
-          winner.getAbsNumber();
+        const unsigned char criticalNumber = res.winAbsNumber();
           // min(winner.north.getAbsNumber(), winner.south.getAbsNumber());
       
         // TODO Probably a more elegant way to do this based on numbers.
@@ -875,10 +876,8 @@ bool Ranks::getMinimals(
         */
 
 /* */
-cout << "winner-based, winner " << winner.str() << endl;
+cout << "winner-based, result " << res.str(true) << endl;
 cout << "critNo " << +criticalNumber << endl;
-cout << "  N " << +winner.north.getAbsNumber() << endl;
-cout << "  S " << +winner.south.getAbsNumber() << endl;
 /* */
 
         /*
@@ -933,13 +932,17 @@ cout << combRef.str() << endl;
             // opps - South - North, but now that we're rotating,
             // it should have been opps - North - South.
 
+cout << "Calling with true, " << cards << ", " <<
+  oppsCount << " " << northCount << " " << southCount << ", " <<
+  holding4 << endl;
+
             const unsigned h4real = minimalizeRanked(true, cards,
               oppsCount, northCount, southCount, holding4);
 
             orientedBoth(false, cards, h4real,
               combRef.holding3, combRef.holding2);
 
-cout << "Fixed\n" << combRef.str() << endl;
+cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
 
           }
 
@@ -961,7 +964,8 @@ cout << "Fixed\n" << combRef.str() << endl;
   }
   else
   {
-    if (result.winnersInt.winners.empty())
+    // if (result.winnersInt.winners.empty())
+    if (resultList.empty())
     {
 // cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
       Ranks ranksTmp;
@@ -983,8 +987,14 @@ cout << "Fixed\n" << combRef.str() << endl;
     }
     else
     {
-      for (auto& winner: result.winnersInt.winners)
+      // for (auto& winner: result.winnersInt.winners)
+      // {
+      for (auto& res: resultList)
       {
+        auto& winners = res.winnersInt.winners;
+        assert(winners.size() == 1);
+        auto& winner = winners.front();
+
         Ranks ranksTmp;
         ranksTmp.resize(cards);
         ranksTmp.zero();

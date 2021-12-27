@@ -140,7 +140,7 @@ class Ranks
     bool partnerVoid() const;
 
     bool getMinimals(
-      const Result& result,
+      const list<Result>& resultList,
       list<CombReference>& minimals) const;
 
     unsigned char maxRank() const;

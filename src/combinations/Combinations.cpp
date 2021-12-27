@@ -196,9 +196,11 @@ bool Combinations::getMinimals(
   // Returns true when the combination is already minimal,
   // in which case the set remains empty.
 
-  Result resultLowest;
-  strategies.getResultLowest(resultLowest);
-  return ranks.getMinimals(resultLowest, minimals);
+  // Result resultLowest;
+  // strategies.getResultLowest(resultLowest);
+  list<Result> resultList;
+  strategies.getResultList(resultList);
+  return ranks.getMinimals(resultList, minimals);
 }
 
 
