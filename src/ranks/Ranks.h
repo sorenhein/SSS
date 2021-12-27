@@ -139,6 +139,10 @@ class Ranks
 
     bool partnerVoid() const;
 
+    bool minimal(
+      const unsigned char absNumber,
+      CombReference& combRef) const;
+
     bool getMinimals(
       const list<Result>& resultList,
       list<CombReference>& minimals) const;

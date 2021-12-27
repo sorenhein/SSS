@@ -132,6 +132,8 @@ cout << "maxRank " << +maxRank << endl;
 if (reduction.full2reducedDist.size() != distribution.size())
 {
 cout << "About to fail on reduction size" << endl;
+cout << "reduction size " << reduction.full2reducedDist.size() << endl;
+cout << "distribution size " << distribution.size() << endl;
 assert(reduction.full2reducedDist.size() == distribution.size());
 }
 

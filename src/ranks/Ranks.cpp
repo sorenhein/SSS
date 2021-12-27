@@ -821,6 +821,103 @@ void Ranks::remainingMinimal(
 }
 
 
+bool Ranks::minimal(
+  const unsigned char absNumber,
+  CombReference& combRef) const
+{
+  // Returns true if the minimal differs from Ranks.
+
+  // TODO This version just cuts off at absNumber on both sides.
+  // With AQ/K declarer can play K and then if needed the A.
+  // Or declarer can cash the A and then if needed the Q.
+  // With A-Q declarer doesn't actually need the K.
+  // Probably we should have a Winner instead with separate cutoffs
+  // for North and South.  But this means that one Winner may not
+  // be commensurate with another anymore.  Does this matter?
+
+  assert(control.runRankComparisons());
+
+  if (cards <= 2)
+  {
+    // Always minimal.
+    Ranks::setReference(combRef);
+    return false;
+  }
+  else if (absNumber == 0)
+  {
+    // Reorder the x's in the order opponents, South, North.
+    const unsigned h4minimal = minimalizeRanked(false, cards,
+      opps.length(), north.length(), south.length(), holding4);
+
+    if (h4minimal == holding4)
+    {
+      // If the reordering changed the holding, it's a new minimal.
+      Ranks::setReference(combRef);
+      return false;
+    }
+    else
+    {
+      // In setReference, rotateFlag is ! north.greater(south).
+      // In this case this turns into a comparison of lengths,
+      // without a need to create the hands.
+      combRef.rotateFlag = (south.length() > north.length());
+      orientedBoth(combRef.rotateFlag, cards, h4minimal,
+        combRef.holding3, combRef.holding2);
+      return true;
+    }
+  }
+  else
+  {
+    // Count the x's.
+    const unsigned oppsCount = opps.countBelowAbsNumber(absNumber);
+    const unsigned northCount = north.countBelowAbsNumber(absNumber);
+    const unsigned southCount = south.countBelowAbsNumber(absNumber);
+
+    // Reorder the x's.
+    const unsigned h4minimal = minimalizeRanked(false, cards,
+      oppsCount, northCount, southCount, holding4);
+
+    if (h4minimal == holding4)
+    {
+      // If the reordering changed the holding, it's a new minimal.
+      Ranks::setReference(combRef);
+      return false;
+    }
+    else
+    {
+      // This is clunky.
+
+      // TODO We could orient the ranked holdings simply by whether
+      // North holds the top card over South.  Then minimalizing the
+      // x's should not change the direction.  This probably causes
+      // several changes.
+      combRef.rotateFlag = false;
+      uncanonicalBoth(h4minimal, combRef.holding3, combRef.holding2);
+
+      Ranks ranksTmp;
+      ranksTmp.resize(cards);
+      ranksTmp.holding3 = combRef.holding3;
+      ranksTmp.setPlayers();
+      ranksTmp.setReference(combRef);
+
+      if (combRef.rotateFlag)
+      {
+        // When minimalizing we stacked low cards in the order
+        // opps - South - North, but now that we're rotating,
+        // it should have been opps - North - South.
+
+        const unsigned h4rot = minimalizeRanked(true, cards,
+          oppsCount, northCount, southCount, holding4);
+
+        orientedBoth(false, cards, h4rot,
+          combRef.holding3, combRef.holding2);
+      }
+      return true;
+    }
+  }
+}
+
+
 bool Ranks::getMinimals(
   const list<Result>& resultList,
   list<CombReference>& minimals) const
@@ -859,6 +956,15 @@ bool Ranks::getMinimals(
           combRef.holding3, combRef.holding2);
 
         minimals.emplace_back(combRef);
+
+        /*
+        CombReference combTmp;
+        const bool b = Ranks::minimal(0, combTmp);
+        assert(b == true);
+        assert(combRef.rotateFlag == combTmp.rotateFlag);
+        assert(combRef.holding3 == combTmp.holding3);
+        assert(combRef.holding2 == combTmp.holding2);
+        */
       }
     }
     else
@@ -933,6 +1039,15 @@ cout << "Calling with true, " << cards << ", " <<
           }
 
           minimals.emplace_back(combRef);
+
+          /*
+          CombReference combTmp;
+          const bool b = Ranks::minimal(criticalNumber, combTmp);
+          assert(b == true);
+          assert(combRef.rotateFlag == combTmp.rotateFlag);
+          assert(combRef.holding3 == combTmp.holding3);
+          assert(combRef.holding2 == combTmp.holding2);
+          */
         }
 
         /*
