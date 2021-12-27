@@ -812,7 +812,7 @@ void Strategy::addComponentwise(const Strategy& strat2)
 {
   // This method does not have any usual interpretation in terms
   // of defense (*=) or declarer play (+=).  It is used in order
-  // to pick the component-wise maximm (+=) in the case where at
+  // to pick the component-wise maximum (+=) in the case where at
   // least one defender is void, so declarer can pick the best result
   // (and there is only one result, actually).
 

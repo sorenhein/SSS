@@ -137,7 +137,7 @@ struct CombEntry
     // In general, the strategies in checkReductions may have more
     // strategy's than it should because a play was not considered.
     // For example, 9/1232 (AKT9/Q8) has two strategies with the same
-    // tricks, one wiht 4N's (KQ) and one with 2N (K).  This has
+    // tricks, one with 4N'S (KQ) and one with 2N (K).  This has
     // a pseudo-minimal version 9/1288 (AKT7/Q6) with only one
     // strategy, but still 6 distributions too, 5N'S (KQ).  This has
     // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).

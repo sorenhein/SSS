@@ -1,3 +1,105 @@
+2021-12-27
+----------
+It runs again now -- well, down to 11/159146 before it conks out.
+
+WARNCRITICAL1     0
+WARNCRITICAL2  5450
+WARNRANGE1        0
+WARNRANGE2      125     In getMinimalSpans may not need length equality
+NONMIN         6832
+KLUDGE            0
+ODDLEN            0
+SHIFT             0
+ERROR             0
+
+MINIMUM MATCH 34693
+MIN MISMATCH   2366
+WINNER MATCH1 28381
+WIN MISMATCH1  8606
+WIN MISMATCH2    36
+
+Why are we interested in minimals in the first place? Because we just
+want to solve these and then create the others as needed from these,
+rather than solve these others.
+
+
+Case A
+------
+5/59, AQ/J miss KT
+#0 fin, 2N, Q is like 5/61, AQ/T miss KJ (too has #0, #1: 3N, 5N)
+  Its #1 is like 5/75
+#1 top, 4N, A is like 5/75, AT/J miss KQ (#0 top, 3N)
+
+It's not right to say that 5/75 is THE minimal for 5/59.
+5/59 #0 has a minimal in the form of 5/61 #0 and 5/61 #1,
+which in turn becomes 5/61 #0 and 5/75 #0.
+And directly 5/75 #0.
+So effectively there are Strategy-level minimals 5/61 #0 and 5/75 #0.
+
+It would be OK to have 5/61 + 5/75 which must match 5/59.
+
+Case B
+------
+7/521, AQT/J missing Kxx:
+#0 finesse, needs QJ so 7/537 AQ8/J missing KHH is a minimal.
+#1 top, needs JT so it is effectively its own minimal.
+In checking, we could take 7/521 #0 = 7/537 #0 plus 7/521 #1.
+Then 7/521 #1 would be preferable to 7/537#1 to declarer.
+
+This needs itself as a minimal in at least some regard.
+It should work to have 7/521 + 7/537 which becames 7/521 again,
+as 7/537 #1 is not as good for declarer.
+
+Case C
+------
+AQ/K, can play as A maybe Q, or as K for sure.
+In the former case the K is not needed.
+So maybe we do need to keep track of each N *and* S winning card.
+And we make a minimal from AQ/K using AQ, it should then be
+AK/x and not stay at AQ/K.
+
+5/35 AQ/K miss HH.
+#0 K, K and maybe A.  Should become Ax/K. 5/51, K maybe A.
+#1 top, A and maybe Q.  Should become(!) AK/x, 5/25, A maybe "K".
+
+It should be OK to have 5/25 + 5/51.
+
+Summary
+-------
+* Each Strategy get a minimal.
+* Possibilities
+  - All Strategy's are minimal to itself
+    Nothing to check
+  - All Strategy's are non-minimal
+    Must add up to itself
+  - Some are, some aren't
+    The non-minimals must each be worse or equal to itself
+* 
+
+
+
+This makes Ranks::minimal different.  Even though K is > Q, it is
+shifted down because it is below the "maximum" South winner of \infty.
+
+
+Maybe Ranks gets a 
+
+bool Ranks::minimal(
+  const unsigned char absNumber, 
+  CombReference& combRef) const
+{
+  // Returns true if combRef is set with a minimal != the Ranks.
+}
+
+Then each Strategy gets a minimal CombReference, h3 == 0 if not set.
+When outputting Strategies, no Prod, but instead h3.
+
+Strategies is non-minimal if *all* Strategy's are non-minimal, 
+otherwise not.  Then each CombReference must be minimal, i.e. have
+at least one minimal Strategy.
+
+
+
 2021-12-26
 ----------
 6/35, AKJ/Q missing HH: One strategy is to cash the ace and then

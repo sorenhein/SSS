@@ -254,6 +254,17 @@ Compare Winner::compare(const Winner& winner2) const
   assert(mode != WIN_NOT_SET);
   assert(winner2.mode != WIN_NOT_SET);
 
+  const unsigned char abs0 = Winner::getAbsNumber();
+  const unsigned char abs1 = winner2.getAbsNumber();
+
+  if (abs0 > abs1)
+    return WIN_FIRST;
+  else if (abs0 < abs1)
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+
+/*
   // We have to test for rank first, as we might have this Winner as
   // South rank 4 number 0, and winner2 as 
   // North rank 2 number 0.
@@ -282,6 +293,7 @@ Compare Winner::compare(const Winner& winner2) const
     return northPrefer;
   else
     return WIN_DIFFERENT;
+*/
 }
 
 

@@ -310,6 +310,10 @@ void Combinations::runUniques(
     }
   }
 
+  timersStrat[33].start();
+  Combinations::fixMinimals(centries);
+  timersStrat[33].stop();
+
   timersStrat[31].start();
   ctest.checkAllMinimals(centries);
   timersStrat[31].stop();

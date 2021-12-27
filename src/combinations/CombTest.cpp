@@ -63,24 +63,6 @@ void CombTest::checkReductions(
     return;
   }
 
-cout << "Entered CR with centry:\n";
-cout << centry.str();
-
-for (auto& r: winRanksLow)
-  cout << "winRanksLow entry: " << +r << endl;
-
-cout << strategies.str("strategies");
-
-for (auto& min: centry.minimals)
-{
-  const auto& ceMin = centries[min.holding3];
-  cout << ceMin.str();
-}
-
-cout << "span " << +span << endl;
-cout << "len  " << len << endl;
-cout << "maxRank " << +maxRank << endl;
-
 
   unsigned char rankCritical;
   if (maxRank - centry.winRankLow != span && centry.winRankLow != 0)
@@ -90,7 +72,28 @@ cout << "maxRank " << +maxRank << endl;
     cout << "WARNCRITICAL2: Moving rank from " << 
       +centry.winRankLow << " to " << +rankCritical << endl;
 
-    /*
+if (rankCritical > 16)
+{
+cout << "Entered CR with centry:\n";
+cout << centry.str();
+
+for (auto& r: winRanksLow)
+  cout << "winRanksLow entry: " << +r << endl;
+
+cout << strategies.str("strategies", true);
+
+cout << "Minimals:\n";
+for (auto& min: centry.minimals)
+{
+  const auto& ceMin = centries[min.holding3];
+  cout << ceMin.str();
+}
+
+cout << "\nspan " << +span << endl;
+cout << "len  " << len << endl;
+cout << "maxRank " << +maxRank << endl;
+
+
     cout << "Original strategy has different range than minima:\n";
     cout << 
       "Original range " << +maxRank << 
@@ -107,7 +110,9 @@ cout << "maxRank " << +maxRank << endl;
       const auto& ceMin = centries[min.holding3];
       cout << ceMin.str();
     }
-    */
+  assert(false);
+
+}
   }
   else
   {

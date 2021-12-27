@@ -836,7 +836,6 @@ bool Ranks::getMinimals(
     if (cards <= 2)
     {
       // Always minimal.
-// cout << "Minimal by definition\n";
       return true;
     }
     // else if (result.winnersInt.winners.empty())
@@ -858,35 +857,20 @@ bool Ranks::getMinimals(
         combRef.rotateFlag = (south.length() > north.length());
         orientedBoth(combRef.rotateFlag, cards, h4minimal,
           combRef.holding3, combRef.holding2);
+
+        minimals.emplace_back(combRef);
       }
     }
     else
     {
-      // for (auto& winner: result.winnersInt.winners)
       for (auto& res: resultList)
       {
         const unsigned char criticalNumber = res.winAbsNumber();
-          // min(winner.north.getAbsNumber(), winner.south.getAbsNumber());
-      
-        // TODO Probably a more elegant way to do this based on numbers.
-        /*
-        const unsigned char criticalRank = 
-          max(winner.north.getRank(), winner.south.getRank());
-        assert(criticalRank > 0);
-        */
 
-/* */
+/*
 cout << "winner-based, result " << res.str(true) << endl;
 cout << "critNo " << +criticalNumber << endl;
-/* */
-
-        /*
-        const unsigned oppsCount = opps.countBelow(criticalRank);
-        const unsigned northCount = 
-          north.countBelow(criticalRank, winner.north);
-        const unsigned southCount =
-          south.countBelow(criticalRank, winner.south);
-          */
+*/
 
         const unsigned oppsCount = opps.countBelowAbsNumber(
           criticalNumber);
@@ -903,25 +887,25 @@ cout << "critNo " << +criticalNumber << endl;
           unsigned holdingMin3, holdingMin2;
           uncanonicalBoth(h4minimal, holdingMin3, holdingMin2);
 
-/* */
+/*
 cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
   southCount << endl;
 cout << "holding4 was " << holding4 << endl;
 cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
   ", h2min " << holdingMin2 <<endl;
-/* */
+*/
 
           Ranks ranksTmp;
           ranksTmp.resize(cards);
           ranksTmp.holding3 = holdingMin3;
           ranksTmp.setPlayers();
 
-cout << ranksTmp.strTable();
+// cout << ranksTmp.strTable();
 
           CombReference combRef;
           ranksTmp.setReference(combRef);
 
-cout << combRef.str() << endl;
+// cout << combRef.str() << endl;
 
           // All the ranksTmp stuff just determines rotation.
           // Otherwise we'd be fine with orientedBoth().
@@ -932,9 +916,11 @@ cout << combRef.str() << endl;
             // opps - South - North, but now that we're rotating,
             // it should have been opps - North - South.
 
+/*
 cout << "Calling with true, " << cards << ", " <<
   oppsCount << " " << northCount << " " << southCount << ", " <<
   holding4 << endl;
+  */
 
             const unsigned h4real = minimalizeRanked(true, cards,
               oppsCount, northCount, southCount, holding4);
@@ -942,7 +928,7 @@ cout << "Calling with true, " << cards << ", " <<
             orientedBoth(false, cards, h4real,
               combRef.holding3, combRef.holding2);
 
-cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
+// cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
 
           }
 
@@ -964,7 +950,6 @@ cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
   }
   else
   {
-    // if (result.winnersInt.winners.empty())
     if (resultList.empty())
     {
 // cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
@@ -987,8 +972,6 @@ cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
     }
     else
     {
-      // for (auto& winner: result.winnersInt.winners)
-      // {
       for (auto& res: resultList)
       {
         auto& winners = res.winnersInt.winners;
