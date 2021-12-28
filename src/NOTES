@@ -1,10 +1,20 @@
-2021-12-27
+2021-12-28
 ----------
-Overall partitioning
+Major next blocks:
+0. Clean up cranks and the bit magic in Ranks
+1. Winners both-sided, hopefully they stay at length 1
+2. Winners -> Winner, should save quite a lot of space
+3. Ranks skips interesting plays
+4. Rewrite CombTest
+   - 
 
-1. With ranks
-
-
+5. Continue partitioning of ace-high
+   - Non-canonical (not "greater") -> the canonical version
+   - Canonical may be completely non-minimal, so probably only
+     has 1 minimal?
+   - Canonical may be mixed, but then no reason to look at
+     minimals?  Might as well solve it since we have to anyway
+   - Canonical may be completely minimal
 
 
 2021-12-27

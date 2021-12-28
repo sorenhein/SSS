@@ -18,8 +18,6 @@ void setRankConstants23();
 
 void setRankConstants4();
 
-unsigned holding3_to_holding4(const unsigned holding3);
-
 void orientedBoth(
   const bool rotateFlag,
   const unsigned cards,
@@ -34,16 +32,7 @@ void orientedTrinary(
   unsigned& holding3,
   bool& rotateFlag);
 
-unsigned uncanonicalTrinary(
-  const unsigned holding4,
-  const Play& play);
-
 unsigned uncanonicalBinary(const unsigned holding4);
-
-void uncanonicalBoth(
-  const unsigned holding4,
-  unsigned& holding3,
-  unsigned& holding2);
 
 unsigned minimalizeRanked(
   const bool rotateFlag,

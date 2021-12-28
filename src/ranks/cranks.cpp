@@ -149,6 +149,8 @@ void set4sort();
 void setRepeatsTable();
 void setRepeats();
 
+unsigned holding3_to_holding4(const unsigned holding3);
+
 unsigned holding4_to_holding3(const unsigned holding4);
 unsigned holding4_to_holding2(const unsigned holding4);
 unsigned holding3_to_holding4(const unsigned holding4);
@@ -652,8 +654,6 @@ void orientedBoth(
   const unsigned holding4rot = (rotateFlag ?
     (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
 
-// cout << "orientedBoth: h4 in " << holding4 << ", rot " << holding4rot <<endl;
-
   holding4_to_both(holding4rot, holding3, holding2);
 }
 
@@ -689,10 +689,6 @@ void orientedTrinary(
   // If both North and South are void, that stays as a North winner.
   rotateFlag = holding4_to_rotate(holding4punched, play.cardsLeft);
 
-// cout << "orientedTrinary: holding4punched " << holding4punched << endl;
-// cout << "holding4 was " << holding4 << endl;
-// cout << "rotate " << rotateFlag << endl;
-
   // If rotateFlag is set, the trinary holding is rotated,
   // so North and South are swapped.
   if (rotateFlag)
@@ -705,15 +701,6 @@ void orientedTrinary(
 unsigned uncanonicalBinary(const unsigned holding4)
 {
   return holding4_to_holding2(holding4);
-}
-
-
-void uncanonicalBoth(
-  const unsigned holding4,
-  unsigned& holding3,
-  unsigned& holding2)
-{
-  holding4_to_both(holding4, holding3, holding2);
 }
 
 
