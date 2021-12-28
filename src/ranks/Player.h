@@ -164,15 +164,7 @@ class Player
 
     bool isVoid() const;
 
-    // bool isSingleRanked() const;
-
     unsigned char count(const unsigned char rank) const;
-
-    unsigned char countBelowRank(const unsigned char rank) const;
-
-    unsigned char countBelowRank(
-      const unsigned char rank,
-      const Card& card) const;
 
     unsigned char countBelowAbsNumber(const unsigned char rank) const;
 

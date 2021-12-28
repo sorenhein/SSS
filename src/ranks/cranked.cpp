@@ -565,6 +565,7 @@ void holding4toBoth(
 }
 
 
+#include <iostream>
 unsigned holding4punch(
   const unsigned holding4,
   const Play& play)
@@ -574,10 +575,10 @@ unsigned holding4punch(
   // from the actual play index.
 
   const unsigned playIndex =
-    (play.leadPtr->getAbsNumber() << 12) |
-    (play.lhoPtr->getAbsNumber() << 8) |
-    (play.pardPtr->getAbsNumber() << 4) |
-     play.rhoPtr->getAbsNumber();
+    (play.lead(true) << 12) |
+    (play.lho(true) << 8) |
+    (play.pard(true) << 4) |
+     play.rho(true);
 
   unsigned punched = holding4;
 

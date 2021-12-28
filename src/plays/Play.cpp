@@ -24,8 +24,6 @@ unsigned Play::lead(const bool fullFlag) const
 {
   if (fullFlag)
     return leadPtr->getAbsNumber();
-    // I think abs is right
-    // return leadPtr->getNumber();
   else
     return leadPtr->getRank();
 }
@@ -34,7 +32,7 @@ unsigned Play::lead(const bool fullFlag) const
 unsigned Play::lho(const bool fullFlag) const
 {
   if (fullFlag)
-    return lhoPtr->getNumber();
+    return lhoPtr->getAbsNumber();
   else
     return lhoPtr->getRank(); 
 }
@@ -43,7 +41,7 @@ unsigned Play::lho(const bool fullFlag) const
 unsigned Play::pard(const bool fullFlag) const
 {
   if (fullFlag)
-    return pardPtr->getNumber();
+    return pardPtr->getAbsNumber();
   else
     return pardPtr->getRank();
 }
@@ -52,7 +50,7 @@ unsigned Play::pard(const bool fullFlag) const
 unsigned Play::rho(const bool fullFlag) const
 {
   if (fullFlag)
-    return rhoPtr->getNumber();
+    return rhoPtr->getAbsNumber();
   else
     return rhoPtr->getRank(); 
 }

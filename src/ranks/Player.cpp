@@ -161,36 +161,6 @@ unsigned char Player::count(const unsigned char rankIn) const
 }
 
 
-unsigned char Player::countBelowRank(const unsigned char rank) const
-{
-  unsigned char c = 0;
-  for (unsigned r = 1; r < rank; r++)
-    c += rankInfo[r].count;
-  
-  return c;
-}
-
-
-unsigned char Player::countBelowRank(
-  const unsigned char rank,
-  const Card& card) const
-{
-  // This is a specialized method that is used when determining
-  // minimal holdings where all cards below a critical rank/card
-  // are considered x's.  The winning card may be in the middle
-  // of a declarer rank.
-  // Here we count the cards < the winning card if it exists.
-  // If it doesn't, then just everything below the rank.
-
-  unsigned char c = Player::countBelowRank(rank);
-
-  if (card.getRank() == 0)
-    return c + rankInfo[rank].count;
-  else
-    return c + rankInfo[rank].count - (card.getDepth()+1);
-}
-
-
 unsigned char Player::countBelowAbsNumber(
   const unsigned char absNumber) const
 {
