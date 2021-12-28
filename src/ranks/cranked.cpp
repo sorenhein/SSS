@@ -107,7 +107,7 @@ const vector<unsigned> HOLDING4_ROTATE =
 };
 
 // This is used to set SIDE_NONE's to unused high bits in a holding4.
-// Otherwise 00 will look like SIDE_NORTH which caused holding4_to_rotate
+// Otherwise 00 will look like SIDE_NORTH which caused holding4isRotated
 // not to detect the highest card correctly.
 
 const vector<unsigned> HOLDING4_NONE_HIGH =
@@ -141,22 +141,20 @@ void set4sort();
 void setRepeatsTable();
 void setRepeats();
 
-unsigned holding3_to_holding4(const unsigned holding3);
 
-unsigned holding4_to_holding3(const unsigned holding4);
-unsigned holding4_to_holding2(const unsigned holding4);
-unsigned holding3_to_holding4(const unsigned holding4);
+unsigned holding4to3(const unsigned holding4);
+unsigned holding4to2(const unsigned holding4);
 
-void holding4_to_both(
+void holding4toBoth(
   const unsigned holding4,
   unsigned& holding3,
   unsigned& holding2);
 
-unsigned punchHolding4(
+unsigned holding4punch(
   const unsigned holding4,
   const Play& play);
 
-bool holding4_to_rotate(
+bool holding4isRotated(
   const unsigned holding4,
    const unsigned cardsLeft);
 
@@ -428,7 +426,7 @@ void setRankedConstants()
 }
 
 
-unsigned holding4_to_holding3(const unsigned holding4)
+unsigned holding4to3(const unsigned holding4)
 {
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
@@ -438,7 +436,7 @@ assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
 }
 
 
-unsigned holding4_to_holding2(const unsigned holding4)
+unsigned holding4to2(const unsigned holding4)
 {
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING2.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
@@ -448,44 +446,36 @@ assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
 }
 
 
-unsigned holding3_to_holding4(const unsigned holding3)
-{
-  const unsigned h3hi = holding3 / TRINARY8;
-  const unsigned h3lo = holding3 % TRINARY8;
-
-  return (QUARTENARY8 * HOLDING3_TO_HOLDING4[h3hi]) |
-    HOLDING3_TO_HOLDING4[h3lo];
-}
-
-
-void holding4_to_both(
+void holding4toBoth(
   const unsigned holding4,
   unsigned& holding3,
   unsigned& holding2)
 {
-  holding3 = holding4_to_holding3(holding4);
-  holding2 = holding4_to_holding2(holding4);
+  holding3 = holding4to3(holding4);
+  holding2 = holding4to2(holding4);
 }
 
 
-unsigned punchHolding4(
+unsigned holding4punch(
   const unsigned holding4,
   const Play& play)
 {
+  // Punch the 2-bit cards out of holding4, shrinking it in the process.
+  // This is best done from above, so we look up the sorted cards
+  // from the actual play index.
+
   const unsigned playIndex =
     (play.leadPtr->getAbsNumber() << 12) |
     (play.lhoPtr->getAbsNumber() << 8) |
     (play.pardPtr->getAbsNumber() << 4) |
      play.rhoPtr->getAbsNumber();
 
-assert(playIndex < SORT4_PLAYS.size());
-
-  const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
-
   unsigned punched = holding4;
 
+  const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
   for (auto s: sorted)
   {
+    // Punch out cards in descending order.
     if (s == 0)
     {
       // Once we reach a void, all others are voids too.
@@ -493,16 +483,10 @@ assert(playIndex < SORT4_PLAYS.size());
     }
     else
     {
-      // Punch out the highest numbers first.
       // As 0 is a void, 1 is the first real card which occupies
       // the two lowest bits.
-
-assert(s < HOLDING4_MASK_HIGH.size());
-assert(s < HOLDING4_MASK_LOW.size());
-
       punched = ((punched & HOLDING4_MASK_HIGH[s]) >> 2) |
         (punched & HOLDING4_MASK_LOW[s]);
-
     }
   }
 
@@ -510,11 +494,15 @@ assert(s < HOLDING4_MASK_LOW.size());
 }
 
 
-bool holding4_to_rotate(
+bool holding4isRotated(
   const unsigned holding4,
   const unsigned cardsLeft)
 {
-  const unsigned holding4padded = holding4 | HOLDING4_NONE_HIGH[cardsLeft];
+  // Change the leading 00's to 10's so they don't look like
+  // actual North cards.
+
+  const unsigned holding4padded = 
+    holding4 | HOLDING4_NONE_HIGH[cardsLeft];
 
   if (HOLDING4_TOP[holding4padded >> 16] == SIDE_SOUTH)
     return true;
@@ -532,17 +520,17 @@ void rankedTrinary(
 {
   // Makes the plays and calculates holding3 including preset rotation.
 
-  unsigned holding4punched = punchHolding4(holding4, play);
+  unsigned holding4punched = holding4punch(holding4, play);
 
   // If both North and South are void, that stays as a North winner.
-  rotateFlag = holding4_to_rotate(holding4punched, play.cardsLeft);
+  rotateFlag = holding4isRotated(holding4punched, play.cardsLeft);
 
   // If rotateFlag is set, the trinary holding is rotated,
   // so North and South are swapped.
   if (rotateFlag)
     holding4punched ^= HOLDING4_ROTATE[cards];
 
-  holding3 = holding4_to_holding3(holding4punched);
+  holding3 = holding4to3(holding4punched);
 }
 
 
@@ -558,7 +546,7 @@ void rankedBoth(
   const unsigned holding4rot = (rotateFlag ?
     (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
 
-  holding4_to_both(holding4rot, holding3, holding2);
+  holding4toBoth(holding4rot, holding3, holding2);
 }
 
 
