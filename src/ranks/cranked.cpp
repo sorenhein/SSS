@@ -27,12 +27,17 @@
 using namespace std;
 
 
-vector<unsigned> HOLDING4_TO_HOLDING3;
-vector<unsigned> HOLDING4_TO_HOLDING2;
+/* -------------------------------------------------------- *
+ |                                                          |
+ | Helper vectors for initialization                        |
+ |                                                          |
+ * -------------------------------------------------------- */
 
-vector<array<unsigned char, 4>> SORT4_PLAYS;
-
-vector<unsigned char> HOLDING4_TOP;
+// This and the next vector are used to punch out a card from a
+// holding4 in the position indicated by the index (play).  
+// For example, if we are punching out number 3 (which is in bits 4-5), 
+// then the low mask selects the two lower cards (in bits 0-3) and
+// the high mask selects everything from number 4 (bit 6) upwards.
 
 const vector<unsigned> HOLDING4_MASK_LOW =
 {
@@ -128,19 +133,62 @@ const vector<unsigned> HOLDING4_NONE_HIGH =
 };
 
 
+/************************************************************
+ *                                                          *
+ * Actual vectors being initialized for later lookups       *
+ *                                                          *
+ ************************************************************/
+
+// 8-card maps including shadow holdings of holding4 (see below).
+// 65536 entries (2 bits per card).
+
+vector<unsigned> HOLDING4_TO_HOLDING3;
+vector<unsigned> HOLDING4_TO_HOLDING2;
+
+// 4-play map into sorted array.
+// 65536 entries (4 bits per play).
+
+vector<array<unsigned char, 4>> SORT4_PLAYS;
+
+// 8-card map into a 2-bit (00, 01, 02) indication of top card.
+// 65536 entries  (2 bits per card including shadows).
+
+vector<unsigned char> HOLDING4_TOP;
+
+
+
 /* -------------------------------------------------------- *
  |                                                          |
  | Helper functions for initialization                      |
  |                                                          |
  * -------------------------------------------------------- */
 
-unsigned char updateHasTop(
-  const unsigned char hasTop,
+unsigned holding4partialShadow(
+  const unsigned c0,
+  const unsigned c1,
+  const unsigned c2,
+  const unsigned c3);
+
+unsigned char updateTop(
+  const unsigned char top,
   const unsigned trit);
 
-void set4to32();
+unsigned char findTop(
+  const unsigned c0,
+  const unsigned c1,
+  const unsigned c2,
+  const unsigned c3);
 
-void set4sort();
+void set4holdings();
+
+void enterSorted(
+  const unsigned play0,
+  const unsigned play1,
+  const unsigned play2,
+  const unsigned play3,
+  const array<unsigned char, 4>& result);
+
+void set4sorts();
 
 void setRepeatsTable();
 
@@ -178,37 +226,78 @@ bool holding4isRotated(
  *                                                          *
  ************************************************************/
 
-unsigned char updateHasTop(
-  const unsigned char hasTop,
+unsigned holding4partialShadow(
+  const unsigned c0,
+  const unsigned c1,
+  const unsigned c2,
+  const unsigned c3)
+{
+  // Makes a partial shadow holding -- see comment below.
+  const unsigned c0s = (c0 == 2 ? 3 : c0);
+  const unsigned c1s = (c1 == 2 ? 3 : c1);
+  const unsigned c2s = (c2 == 2 ? 3 : c2);
+  const unsigned c3s = (c3 == 2 ? 3 : c3);
+
+  return ((c0s << 6) | (c1s << 4) | (c2s << 2) | c3s);
+}
+
+
+unsigned char updateTop(
+  const unsigned char top,
   const unsigned trit)
 {
   // This function helps to find the top card of a holding4.
 
-  if (hasTop == SIDE_NORTH || hasTop == SIDE_SOUTH)
-    return hasTop;
+  if (top == SIDE_NORTH || top == SIDE_SOUTH)
+    return top;
   else
     return static_cast<unsigned char>(trit);
 }
 
 
-void set4to32()
+unsigned char findTop(
+  const unsigned c0,
+  const unsigned c1,
+  const unsigned c2,
+  const unsigned c3)
+{
+  unsigned char top = SIDE_OPPS;
+  top = updateTop(top, c0);
+  top = updateTop(top, c1);
+  top = updateTop(top, c2);
+  top = updateTop(top, c3);
+  return top;
+}
+
+
+void set4holdings()
 {
   // We exploit in many places that North and South are coded as 0 and 1.
   // This is either a clever optimization or an ugly hack.
   assert(SIDE_NORTH == 0 && SIDE_SOUTH == 1);
 
-  // Lookup of 8 cards into trit format.  There are 4^8 = 65536 entries
-  // of holding4, 3^8 = 6561 possible values of 8-trit sequences,
-  // and 2^8 = 256 possible values of 8-bit sequences.
+  // Lookup of 8 cards.  There are:
+  // 4^8 = QUATERNARY8 entries of 8-quaternary sequences
+  // 3^8 = TRINARY8 possible values of 8-trit sequences, and
+  // 2^8 = BINARY8 possible values of 8-bit sequences.
 
   // First make temporary tables with the square root of the numbers,
   // so 4 cards each.
 
-  vector<unsigned> h3_to_h4_partial(TRINARY4);
+  // A recular map from a holding3 to a holding4.
+  vector<unsigned> h3to4partial(TRINARY4);
 
-  vector<unsigned> h3_to_h4_partial_shadow(TRINARY4);
-  vector<unsigned> h3_to_h2_partial(TRINARY4);
-  vector<unsigned char> h3_top_partial(TRINARY4);
+  // This is like h3to4partial, but with 11 instead of 10 for SIDE_OPPS
+  // in the holding4. The reason is that when a holding4 is rotated, 
+  // 10 becomes 11.  We catch this by storing corresponding entries in 
+  // the tables even though these don't occur in nature.
+  vector<unsigned> h3to4partialShadow(TRINARY4);
+
+  vector<unsigned> h3to2partial(TRINARY4);
+
+  // h3topPartial records whether North, South or nobody (yet) has
+  // the top card among the cards seen.
+  vector<unsigned char> h3topPartial(TRINARY4);
 
   for (unsigned c0 = 0; c0 < 3; c0++)
   {
@@ -222,39 +311,29 @@ void set4to32()
         for (unsigned c3 = 0; c3 < 3; c3++)
         {
           const unsigned b3 = (c3 == SIDE_OPPS ? 1 : 0);
+
+          // The partial holding2 consists of the four bits.
           const unsigned h2 = (b0 << 3) | (b1 << 2) | (b2 << 1) | b3;
+
+          // The partial holding3 consists of the four trits.
           const unsigned h3 = 27*c0 + 9*c1 + 3*c2 + c3;
+
+          // The partial holding4 is a more dispersed version of h3.
           const unsigned h4 = (c0 << 6) | (c1 << 4) | (c2 << 2) | c3;
 
-          // In a somewhat ugly hack, we also make a shadow holding4
-          // in which opponents are represented by 3, not 2.
-          // This is useful when we rotate a holding4, as North and
-          // South are mirrors (00 and 01), but the opponents (10)
-          // are "rotated" into 11.  It's either all of them or none.
-          const unsigned c0s = (c0 == 2 ? 3 : c0);
-          const unsigned c1s = (c1 == 2 ? 3 : c1);
-          const unsigned c2s = (c2 == 2 ? 3 : c2);
-          const unsigned c3s = (c3 == 2 ? 3 : c3);
-          const unsigned h4s = (c0s << 6) | (c1s << 4) | (c2s << 2) | c3s;
+          h3to4partial[h3] = h4;
 
-          h3_to_h4_partial[h3] = h4;
-          h3_to_h2_partial[h3] = h2;
+          h3to2partial[h3] = h2;
 
-          h3_to_h4_partial_shadow[h3] = h4s;
+          h3to4partialShadow[h3] = holding4partialShadow(c0, c1, c2, c3);
 
-          unsigned char hasTop = SIDE_OPPS;
-          hasTop = updateHasTop(hasTop, c0);
-          hasTop = updateHasTop(hasTop, c1);
-          hasTop = updateHasTop(hasTop, c2);
-          hasTop = updateHasTop(hasTop, c3);
-
-          h3_top_partial[h3] = hasTop; 
+          h3topPartial[h3] = findTop(c0, c1, c2, c3);
         }
       }
     }
   }
 
-  // Then make the big tables.
+  // Then make the 8-card tables.
   HOLDING4_TO_HOLDING3.resize(QUARTENARY8);
   HOLDING4_TO_HOLDING2.resize(QUARTENARY8);
   HOLDING4_TOP.resize(QUARTENARY8);
@@ -263,30 +342,28 @@ void set4to32()
   {
     for (unsigned p1 = 0; p1 < TRINARY4; p1++)
     {
+      const unsigned h2 = (h3to2partial[p0] << 4) | h3to2partial[p1];
       const unsigned h3 = TRINARY4*p0 + p1;
-      const unsigned h2 =
-        (h3_to_h2_partial[p0] << 4) | h3_to_h2_partial[p1];
-      const unsigned h4 = 
-        (h3_to_h4_partial[p0] << 8) | h3_to_h4_partial[p1];
-      const unsigned h4s = 
-        (h3_to_h4_partial_shadow[p0] << 8) | h3_to_h4_partial_shadow[p1];
+      const unsigned h4 = (h3to4partial[p0] << 8) | h3to4partial[p1];
+      const unsigned h4shadow = 
+        (h3to4partialShadow[p0] << 8) | h3to4partialShadow[p1];
 
       HOLDING4_TO_HOLDING2[h4] = h2;
-      HOLDING4_TO_HOLDING2[h4s] = h2;
+      HOLDING4_TO_HOLDING2[h4shadow] = h2;
 
       HOLDING4_TO_HOLDING3[h4] = h3;
-      HOLDING4_TO_HOLDING3[h4s] = h3;
+      HOLDING4_TO_HOLDING3[h4shadow] = h3;
 
-      const unsigned char top = h3_top_partial[p0];
+      const unsigned char top = h3topPartial[p0];
       if (top == SIDE_NORTH || top == SIDE_SOUTH)
       {
         HOLDING4_TOP[h4] = top;
-        HOLDING4_TOP[h4s] = top;
+        HOLDING4_TOP[h4shadow] = top;
       }
       else
       {
-        HOLDING4_TOP[h4] = h3_top_partial[p1];
-        HOLDING4_TOP[h4s] = h3_top_partial[p1];
+        HOLDING4_TOP[h4] = h3topPartial[p1];
+        HOLDING4_TOP[h4shadow] = h3topPartial[p1];
       }
 
     }
@@ -294,11 +371,24 @@ void set4to32()
 }
 
 
-void set4sort()
+void enterSorted(
+  const unsigned play0,
+  const unsigned play1,
+  const unsigned play2,
+  const unsigned play3,
+  const array<unsigned char, 4>& result)
+{
+  SORT4_PLAYS[(play0 << 12) | (play1 << 8) | (play2 << 4) | play3] = 
+    result;
+}
+
+
+void set4sorts()
 {
   // A given 16-bit input is mapped onto an array of four sorted plays.
   // The input consists of four groups of four bits each.
-  // Voids (0) may repeat, but others may not.
+  // Voids (0) may repeat.  Others may repeat once, as opponents
+  // may play the same rank twice in a trick.
 
   SORT4_PLAYS.resize(QUARTENARY8);
   SORT4_PLAYS[0] = {0, 0, 0, 0};
@@ -332,33 +422,33 @@ void set4sort()
             static_cast<unsigned char>(p3adj)
           };
 
-          SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p2 << 4) | p3] = res;
-          SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p3 << 4) | p2] = res;
-          SORT4_PLAYS[(p0 << 12) | (p2 << 8) | (p1 << 4) | p3] = res;
-          SORT4_PLAYS[(p0 << 12) | (p2 << 8) | (p3 << 4) | p1] = res;
-          SORT4_PLAYS[(p0 << 12) | (p3 << 8) | (p1 << 4) | p2] = res;
-          SORT4_PLAYS[(p0 << 12) | (p3 << 8) | (p2 << 4) | p1] = res;
+          enterSorted(p0, p1, p2, p3, res);
+          enterSorted(p0, p1, p3, p2, res);
+          enterSorted(p0, p2, p1, p3, res);
+          enterSorted(p0, p2, p3, p1, res);
+          enterSorted(p0, p3, p1, p2, res);
+          enterSorted(p0, p3, p2, p1, res);
 
-          SORT4_PLAYS[(p1 << 12) | (p0 << 8) | (p2 << 4) | p3] = res;
-          SORT4_PLAYS[(p1 << 12) | (p0 << 8) | (p3 << 4) | p2] = res;
-          SORT4_PLAYS[(p1 << 12) | (p2 << 8) | (p0 << 4) | p3] = res;
-          SORT4_PLAYS[(p1 << 12) | (p2 << 8) | (p3 << 4) | p0] = res;
-          SORT4_PLAYS[(p1 << 12) | (p3 << 8) | (p0 << 4) | p2] = res;
-          SORT4_PLAYS[(p1 << 12) | (p3 << 8) | (p2 << 4) | p0] = res;
+          enterSorted(p1, p0, p2, p3, res);
+          enterSorted(p1, p0, p3, p2, res);
+          enterSorted(p1, p2, p0, p3, res);
+          enterSorted(p1, p2, p3, p0, res);
+          enterSorted(p1, p3, p0, p2, res);
+          enterSorted(p1, p3, p2, p0, res);
 
-          SORT4_PLAYS[(p2 << 12) | (p1 << 8) | (p0 << 4) | p3] = res;
-          SORT4_PLAYS[(p2 << 12) | (p1 << 8) | (p3 << 4) | p0] = res;
-          SORT4_PLAYS[(p2 << 12) | (p0 << 8) | (p1 << 4) | p3] = res;
-          SORT4_PLAYS[(p2 << 12) | (p0 << 8) | (p3 << 4) | p1] = res;
-          SORT4_PLAYS[(p2 << 12) | (p3 << 8) | (p1 << 4) | p0] = res;
-          SORT4_PLAYS[(p2 << 12) | (p3 << 8) | (p0 << 4) | p1] = res;
+          enterSorted(p2, p1, p0, p3, res);
+          enterSorted(p2, p1, p3, p0, res);
+          enterSorted(p2, p0, p1, p3, res);
+          enterSorted(p2, p0, p3, p1, res);
+          enterSorted(p2, p3, p1, p0, res);
+          enterSorted(p2, p3, p0, p1, res);
 
-          SORT4_PLAYS[(p3 << 12) | (p1 << 8) | (p2 << 4) | p0] = res;
-          SORT4_PLAYS[(p3 << 12) | (p1 << 8) | (p0 << 4) | p2] = res;
-          SORT4_PLAYS[(p3 << 12) | (p2 << 8) | (p1 << 4) | p0] = res;
-          SORT4_PLAYS[(p3 << 12) | (p2 << 8) | (p0 << 4) | p1] = res;
-          SORT4_PLAYS[(p3 << 12) | (p0 << 8) | (p1 << 4) | p2] = res;
-          SORT4_PLAYS[(p3 << 12) | (p0 << 8) | (p2 << 4) | p1] = res;
+          enterSorted(p3, p1, p2, p0, res);
+          enterSorted(p3, p1, p0, p2, res);
+          enterSorted(p3, p2, p1, p0, res);
+          enterSorted(p3, p2, p0, p1, res);
+          enterSorted(p3, p0, p1, p2, res);
+          enterSorted(p3, p0, p2, p1, res);
         }
       }
     }
@@ -379,8 +469,9 @@ void setRepeatsTable(
 }
 
 
-void setRepeats()
+void set4repeats()
 {
+  // One entry for each number of cards.
   NORTH_REPEATS.resize(16);
   SOUTH_REPEATS.resize(16);
   OPPS_REPEATS.resize(16);
@@ -397,9 +488,9 @@ void setRepeats()
 
 void setRankedConstants()
 {
-  set4to32();
-  set4sort();
-  setRepeats();
+  set4holdings();
+  set4sorts();
+  set4repeats();
 }
 
 
@@ -411,14 +502,14 @@ void setRankedConstants()
 
 unsigned holding4to3(const unsigned holding4)
 {
-  return 6561 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
+  return TRINARY8 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
     HOLDING4_TO_HOLDING3[holding4 & 0xffff];
 }
 
 
 unsigned holding4to2(const unsigned holding4)
 {
-  return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
+  return BINARY8 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
     HOLDING4_TO_HOLDING2[holding4 & 0xffff];
 }
 
