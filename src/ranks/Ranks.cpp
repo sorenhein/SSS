@@ -52,7 +52,7 @@ Ranks::Ranks()
   mtxRanks.lock();
   if (! init_flag)
   {
-    setRankConstants4();
+    setRankedConstants();
     setCanonicalConstants();
     init_flag = true;
   }
@@ -169,8 +169,11 @@ void Ranks::setOwnRanks(CombReference& combRef) const
 
   combRef.rotateFlag = ! (north.tops(south));
 
-  combRef.holding3 = holding3;
-  combRef.holding2 = uncanonicalBinary(holding4);
+  // Actually this recalculates combRef.holding3 == holding3.
+  // TODO Does rotateflag matter here?  If so, pass to method?
+
+  rankedBoth(false, cards, holding4, 
+    combRef.holding3, combRef.holding2);
 }
 
 
@@ -187,7 +190,7 @@ void Ranks::setReference(CombReference& combRef) const
   {
     combRef.rotateFlag = ! (north.tops(south));
 
-    orientedBoth(combRef.rotateFlag, cards, holding4,
+    rankedBoth(combRef.rotateFlag, cards, holding4,
       combRef.holding3, combRef.holding2);
   }
   else
@@ -196,15 +199,11 @@ void Ranks::setReference(CombReference& combRef) const
 
     if (combRef.rotateFlag)
     {
-      // Ranks::canonicalBoth(south, north, opps,
-        // combRef.holding3, combRef.holding2);
       canonicalBoth(south, north, opps, maxGlobalRank,
         combRef.holding3, combRef.holding2);
     }
     else
     {
-      // Ranks::canonicalBoth(north, south, opps,
-        // combRef.holding3, combRef.holding2);
       canonicalBoth(north, south, opps, maxGlobalRank,
         combRef.holding3, combRef.holding2);
     }
@@ -343,7 +342,7 @@ void Ranks::updateHoldings(Play& play) const
     // been updated with the plays, so isVoid() and top() don't work.
     // Instead we do some bit magic to find the highest remaining card.
 
-    orientedTrinary(play.cardsLeft, holding4, play,
+    rankedTrinary(play.cardsLeft, holding4, play,
       play.holding3, play.rotateFlag);
   }
   else
@@ -352,7 +351,6 @@ void Ranks::updateHoldings(Play& play) const
     // See Declarer.cpp, greater()
     if (north.greater(south, opps))
     {
-      // play.holding3 = Ranks::canonicalTrinary(north, south);
       play.holding3 = canonicalTrinary(north, south, opps, maxGlobalRank);
 
       // North (without the played card) is still >= South (without
@@ -619,14 +617,14 @@ void Ranks::addMinimal(
   }
 
   // Keep the orientation.
-  const unsigned h4minimal = minimalizeRanked(rotateFlag, cards,
+  const unsigned h4minimal = rankedMinimalize(rotateFlag, cards,
     oppsCount, northCount, southCount, holding4);
 
   if (h4minimal != holding4)
   {
     CombReference combRef;
     combRef.rotateFlag = rotateFlag;
-    orientedBoth(rotateFlag, cards, h4minimal,
+    rankedBoth(rotateFlag, cards, h4minimal,
       combRef.holding3, combRef.holding2);
 
     minimals.emplace_back(combRef);

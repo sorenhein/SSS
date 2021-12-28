@@ -14,25 +14,23 @@ struct Play;
 
 // Functions for ranked calculations in Ranks.
 
-void setRankConstants4();
+void setRankedConstants();
 
-void orientedBoth(
-  const bool rotateFlag,
-  const unsigned cards,
-  const unsigned holding4,
-  unsigned& holding3,
-  unsigned& holding2);
-
-void orientedTrinary(
+void rankedTrinary(
   const unsigned cards,
   const unsigned holding4,
   const Play& play,
   unsigned& holding3,
   bool& rotateFlag);
 
-unsigned uncanonicalBinary(const unsigned holding4);
+void rankedBoth(
+  const bool rotateFlag,
+  const unsigned cards,
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2);
 
-unsigned minimalizeRanked(
+unsigned rankedMinimalize(
   const bool rotateFlag,
   const unsigned cards,
   const unsigned oppsCount,

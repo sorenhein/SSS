@@ -10,13 +10,11 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 
 #include "cranked.h"
 
 #include "../plays/Play.h"
 #include "../utils/table.h"
-
 #include "../const.h"
 
 #define BINARY4 16
@@ -234,9 +232,6 @@ assert(h4s < 256);
           has_top = update_has_top(has_top, static_cast<unsigned char>(c3));
 
           h3_top_partial[h3] = has_top; 
-// cout << "h3 " << h3 << 
-  // ", " << +c0 << " " << +c1 << " " << +c2 << " " << +c3 << 
-// ": has_top " << +has_top << endl;
         }
       }
     }
@@ -290,10 +285,6 @@ assert(h4s < HOLDING4_TO_HOLDING3.size());
         HOLDING4_TOP[h4s] = h3_top_partial[p1];
       }
 
-// cout << "p0 " << p0 << " p1 " << p1 << ": h4 " << h4 <<
-  // ", top0 " << +h3_top_partial[p0] << " top 1 " <<
-  // +h3_top_partial[p1] <<
-  // ", h4top " << +HOLDING4_TOP[h4] << "\n";
     }
   }
 }
@@ -429,7 +420,7 @@ void setRepeats()
 }
 
 
-void setRankConstants4()
+void setRankedConstants()
 {
   set4to32();
   set4sort();
@@ -442,14 +433,6 @@ unsigned holding4_to_holding3(const unsigned holding4)
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
 
-/*
-cout << "h4to3: " << holding4 << ", " <<
-  (holding4 >> 16) << ", " <<
-  (holding4 & 0xfff) << ", " <<
-  HOLDING4_TO_HOLDING3[holding4 >> 16] << ", " <<
-  HOLDING4_TO_HOLDING3[holding4 & 0xffff] << "\n";
-  */
-
   return 6561 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
     HOLDING4_TO_HOLDING3[holding4 & 0xffff];
 }
@@ -459,14 +442,6 @@ unsigned holding4_to_holding2(const unsigned holding4)
 {
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING2.size());
 assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
-
-/*
-cout << "h4to2: " << holding4 << ", " <<
-  (holding4 >> 16) << ", " <<
-  (holding4 & 0xfff) << ", " <<
-  HOLDING4_TO_HOLDING2[holding4 >> 16] << ", " <<
-  HOLDING4_TO_HOLDING2[holding4 & 0xffff] << "\n";
-  */
 
   return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
     HOLDING4_TO_HOLDING2[holding4 & 0xffff];
@@ -507,19 +482,6 @@ assert(playIndex < SORT4_PLAYS.size());
 
   const array<unsigned char, 4>& sorted = SORT4_PLAYS[playIndex];
 
-/*
-cout << "punch h4 " << holding4 << "\n";
-cout << "play " << play.strLine() << endl;
-cout << "pindex " << playIndex << "\n";
-cout << "lead " << +play.leadPtr->getAbsNumber() << endl;
-cout << "lho  " << +play.lhoPtr->getAbsNumber() << endl;
-cout << "pard " << +play.pardPtr->getAbsNumber() << endl;
-cout << "rho  " << +play.rhoPtr->getAbsNumber() << endl;
-for (unsigned i = 0; i < 4; i++)
-  cout << i << ": " << +sorted[i] << "\n";
-cout << "Starting on lookup" << endl;
-*/
-
   unsigned punched = holding4;
 
   for (auto s: sorted)
@@ -541,25 +503,10 @@ assert(s < HOLDING4_MASK_LOW.size());
       punched = ((punched & HOLDING4_MASK_HIGH[s]) >> 2) |
         (punched & HOLDING4_MASK_LOW[s]);
 
-// cout << "s: " << +s << ", punched now " << punched << endl;
     }
   }
 
   return punched;
-}
-
-
-void orientedBoth(
-  const bool rotateFlag,
-  const unsigned cards,
-  const unsigned holding4,
-  unsigned& holding3,
-  unsigned& holding2)
-{
-  const unsigned holding4rot = (rotateFlag ?
-    (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
-
-  holding4_to_both(holding4rot, holding3, holding2);
 }
 
 
@@ -569,12 +516,6 @@ bool holding4_to_rotate(
 {
   const unsigned holding4padded = holding4 | HOLDING4_NONE_HIGH[cardsLeft];
 
-// cout << "padded " << holding4padded << endl;
-// cout << "    hi " << (holding4padded >> 16) << endl;
-// cout << "    lo " << (holding4padded & 0xffff) << endl;
-// cout << "    hi " << +HOLDING4_TOP[(holding4padded >> 16)] << endl;
-// cout << "    lo " << +HOLDING4_TOP[(holding4padded & 0xffff)] << endl;
-
   if (HOLDING4_TOP[holding4padded >> 16] == SIDE_SOUTH)
     return true;
   else
@@ -582,13 +523,15 @@ bool holding4_to_rotate(
 }
 
 
-void orientedTrinary(
+void rankedTrinary(
   const unsigned cards,
   const unsigned holding4,
   const Play& play,
   unsigned& holding3,
   bool& rotateFlag)
 {
+  // Makes the plays and calculates holding3 including preset rotation.
+
   unsigned holding4punched = punchHolding4(holding4, play);
 
   // If both North and South are void, that stays as a North winner.
@@ -603,13 +546,23 @@ void orientedTrinary(
 }
 
 
-unsigned uncanonicalBinary(const unsigned holding4)
+void rankedBoth(
+  const bool rotateFlag,
+  const unsigned cards,
+  const unsigned holding4,
+  unsigned& holding3,
+  unsigned& holding2)
 {
-  return holding4_to_holding2(holding4);
+  // Turns holding4 into holding3 and holding2.  Can rotate.
+
+  const unsigned holding4rot = (rotateFlag ?
+    (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
+
+  holding4_to_both(holding4rot, holding3, holding2);
 }
 
 
-unsigned minimalizeRanked(
+unsigned rankedMinimalize(
   const bool rotateFlag,
   const unsigned cards,
   const unsigned oppsCount,
@@ -617,8 +570,8 @@ unsigned minimalizeRanked(
   const unsigned southCount,
   const unsigned& holding4)
 {
-  // Resort the low cards in the holding4 order opps, North, South
-  // (top to bottom).
+  // Redistributes the low cards in the holding4 order 
+  // opps, North, South (top to bottom).
 
   const unsigned lows = oppsCount + southCount + northCount;
   assert(lows >= 1);
@@ -631,24 +584,10 @@ unsigned minimalizeRanked(
     // OPPS_REPEAT_ROTATE.
     const unsigned holding4rot = holding4 ^ HOLDING4_ROTATE[cards];
 
-/*
-cout << "rotate h4 to " << holding4rot << endl;
-cout << "h4mask " << (holding4rot & HOLDING4_MASK_HIGH[lows]) << endl;
-cout << "opprot " << (OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) << endl;
-cout << "south  " << (SOUTH_REPEATS[northCount] << 2*southCount) << endl;
-cout << "north  " << NORTH_REPEATS[southCount] << endl;
-*/
-
-    const unsigned holding4min = (holding4rot & HOLDING4_MASK_HIGH[lows]) |
+    return (holding4rot & HOLDING4_MASK_HIGH[lows]) |
       ((OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) |
        (NORTH_REPEATS[southCount] << 2*northCount) |
        SOUTH_REPEATS[northCount]);
-
-       // orig
-       // (SOUTH_REPEATS[northCount] << 2*southCount) |
-       // NORTH_REPEATS[southCount]);
-
-    return holding4min;
   }
   else
   {
@@ -656,10 +595,6 @@ cout << "north  " << NORTH_REPEATS[southCount] << endl;
       ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
        (NORTH_REPEATS[northCount] << 2*southCount) |
        SOUTH_REPEATS[southCount]);
-
-       // orig
-       // (SOUTH_REPEATS[southCount] << 2*northCount) |
-       // NORTH_REPEATS[northCount]);
   }
 }
   
