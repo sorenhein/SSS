@@ -153,7 +153,7 @@ cout << "Starting min loop " << min.str() << endl;
       continue;
     }
 
-// cout << "Making space for min " << min.str() << endl;
+cout << "Making space for min " << min.str() << endl;
     strategiesExpanded.emplace_back(Strategies());
     Strategies& strategiesMin = strategiesExpanded.back();
 
@@ -189,6 +189,7 @@ if (min.holding3 == 1432)
     strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
 // cout << "Expanded min " << min.str() << endl;
 // cout << "  " << strategiesMin.str("expansion", true) << endl;
+// cout << "  " << strategies.str("original", true) << endl;
 
     // The minimums have changed in general.
     Result resultMinNew;
@@ -237,7 +238,7 @@ if (min.holding3 == 1432)
   else
     cout << "WINNER MATCH, size " << centry.minimals.size() << endl;
 
-cout << "Loop fertig" << endl;
+// cout << "Loop fertig" << endl;
 
   // TODO Checks:
   // * The sum of the minimal winners should be the overall winner.

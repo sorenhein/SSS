@@ -27,10 +27,12 @@ void orientedBoth(
   unsigned& holding3,
   unsigned& holding2);
 
-unsigned orientedTrinary(
+void orientedTrinary(
   const unsigned cards,
   const unsigned holding4,
-  const Play& play);
+  const Play& play,
+  unsigned& holding3,
+  bool& rotateFlag);
 
 unsigned uncanonicalTrinary(
   const unsigned holding4,

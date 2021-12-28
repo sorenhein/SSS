@@ -459,6 +459,8 @@ DistID Distribution::getID() const
 void Distribution::setLookups()
 {
   survivors.setGlobal(rankSize);
+
+if (distributions.size() > 0)
   survivors.setSurvivors(distributions);
 
   reductions.set(distributions, rankSize);

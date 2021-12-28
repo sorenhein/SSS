@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
 
   timers.start(TIMER_DISTRIBUTIONS);
 
-  for (unsigned cards = 1; cards <= control.cards(); cards++)
+  for (unsigned cards = 0; cards <= control.cards(); cards++)
   {
     // distributions.runUniquesMT(cards, control.numThreads());
     distributions.runUniques(cards);

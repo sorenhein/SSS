@@ -123,6 +123,15 @@ void Reductions::set(
   const unsigned reducedRankSize)
 {
   reductions.clear();
+
+  if (distributions.empty())
+  {
+    // Trivial version.
+    reductions.resize(1);
+    reductions[0].setTrivial();
+    return;
+  }
+
   reductions.resize(reducedRankSize);
 
   for (unsigned reducer = 0; reducer < reducedRankSize; reducer++)

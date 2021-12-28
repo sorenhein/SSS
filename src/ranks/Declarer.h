@@ -39,6 +39,8 @@ class Declarer: public Player
     bool greater(
       const Declarer& p2,
       const Opponents& opps) const;
+
+    bool tops(const Declarer& p2) const;
     
     const Card& top() const;
 

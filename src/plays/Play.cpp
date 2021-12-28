@@ -202,6 +202,7 @@ string Play::strHeader() const
     setw(5) << "W vd" <<
     setw(5) << "E vd" <<
     setw(10) << "Holding" <<
+    setw(4) << "Rot" <<
     "\n";
 
   return ss.str();
@@ -219,9 +220,10 @@ string Play::strLine() const
     setw(5) << pardPtr->getName() <<
     setw(5) << rhoPtr->getName() <<
     setw(5) << (trickNS == 1 ? "+" : "") <<
-    setw(5) << (lhoPtr->isVoid() ? "yes" : "") <<
-    setw(5) << (rhoPtr->isVoid() ? "yes" : "") <<
+    setw(5) << (lhoPtr->isVoid() ? "yes" : "-") <<
+    setw(5) << (rhoPtr->isVoid() ? "yes" : "-") <<
     setw(10) << holding3 <<
+    setw(4) << (rotateFlag ? "yes" : "-") <<
     "\n";
 
   return ss.str();

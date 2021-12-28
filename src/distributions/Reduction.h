@@ -26,6 +26,12 @@ struct Reduction
 {
   vector<unsigned char> full2reducedDist;
 
+  void setTrivial()
+  {
+    full2reducedDist.resize(1);
+    full2reducedDist[0] = 0;
+  }
+
   string str() const
   {
     stringstream ss;

@@ -10,6 +10,7 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 #include "cranks.h"
 
@@ -34,6 +35,8 @@ vector<unsigned> HOLDING4_TO_HOLDING2;
 vector<unsigned> HOLDING3_TO_HOLDING4;
 
 vector<array<unsigned char, 4>> SORT4_PLAYS;
+
+vector<unsigned char> HOLDING4_TOP;
 
 extern vector<unsigned> HOLDING3_RANK_FACTOR;
 extern vector<unsigned> HOLDING3_RANK_ADDER;
@@ -111,6 +114,33 @@ const vector<unsigned> HOLDING4_ROTATE =
   0x15555555  // 15
 };
 
+// This is used to set SIDE_NONE's to unused high bits in a holding4.
+// Otherwise 00 will look like SIDE_NORTH which caused holding4_to_rotate
+// not to detect the highest card correctly.
+
+const vector<unsigned> HOLDING4_NONE_HIGH =
+{
+  0xaaaaaaaa, //  0
+  0xaaaaaaa8, //  1
+  0xaaaaaaa0, //  2
+  0xaaaaaa80, //  3
+  0xaaaaaa00, //  4
+  0xaaaaa800, //  5
+  0xaaaaa000, //  6
+  0xaaaa8000, //  7
+  0xaaaa0000, //  8
+  0xaaa80000, //  9
+  0xaaa00000, // 10
+  0xaa800000, // 11
+  0xaa000000, // 12
+  0xa8000000, // 13
+  0xa0000000, // 14
+  0x80000000  // 15
+};
+
+unsigned char update_has_top(
+  const unsigned char has_top,
+  const unsigned char trit);
 
 void set4to32();
 
@@ -132,6 +162,21 @@ unsigned punchHolding4(
   const unsigned holding4,
   const Play& play);
 
+bool holding4_to_rotate(
+  const unsigned holding4,
+   const unsigned cardsLeft);
+
+
+unsigned char update_has_top(
+  const unsigned char has_top,
+  const unsigned char trit)
+{
+  if (has_top == SIDE_NORTH || has_top == SIDE_SOUTH)
+    return has_top;
+  else
+    return trit;
+}
+
 
 void set4to32()
 {
@@ -148,6 +193,7 @@ void set4to32()
   vector<unsigned> h3_to_h4_partial(TRINARY4);
   vector<unsigned> h3_to_h4_partial_shadow(TRINARY4);
   vector<unsigned> h3_to_h2_partial(TRINARY4);
+  vector<unsigned char> h3_top_partial(TRINARY4);
 
   for (unsigned c0 = 0; c0 < 3; c0++)
   {
@@ -184,6 +230,17 @@ assert(h4s < 256);
           h3_to_h2_partial[h3] = h2;
 
           h3_to_h4_partial_shadow[h3] = h4s;
+
+          unsigned char has_top = SIDE_OPPS;
+          has_top = update_has_top(has_top, static_cast<unsigned char>(c0));
+          has_top = update_has_top(has_top, static_cast<unsigned char>(c1));
+          has_top = update_has_top(has_top, static_cast<unsigned char>(c2));
+          has_top = update_has_top(has_top, static_cast<unsigned char>(c3));
+
+          h3_top_partial[h3] = has_top; 
+// cout << "h3 " << h3 << 
+  // ", " << +c0 << " " << +c1 << " " << +c2 << " " << +c3 << 
+// ": has_top " << +has_top << endl;
         }
       }
     }
@@ -193,6 +250,7 @@ assert(h4s < 256);
   HOLDING4_TO_HOLDING3.resize(QUARTENARY8);
   HOLDING4_TO_HOLDING2.resize(QUARTENARY8);
   HOLDING3_TO_HOLDING4.resize(TRINARY8);
+  HOLDING4_TOP.resize(QUARTENARY8);
 
   for (unsigned p0 = 0; p0 < TRINARY4; p0++)
   {
@@ -223,6 +281,23 @@ assert(h4s < HOLDING4_TO_HOLDING3.size());
       HOLDING4_TO_HOLDING3[h4s] = h3;
 
       HOLDING3_TO_HOLDING4[h3] = h4;
+
+      const unsigned char top = h3_top_partial[p0];
+      if (top == SIDE_NORTH || top == SIDE_SOUTH)
+      {
+        HOLDING4_TOP[h4] = top;
+        HOLDING4_TOP[h4s] = top;
+      }
+      else
+      {
+        HOLDING4_TOP[h4] = h3_top_partial[p1];
+        HOLDING4_TOP[h4s] = h3_top_partial[p1];
+      }
+
+// cout << "p0 " << p0 << " p1 " << p1 << ": h4 " << h4 <<
+  // ", top0 " << +h3_top_partial[p0] << " top 1 " <<
+  // +h3_top_partial[p1] <<
+  // ", h4top " << +HOLDING4_TOP[h4] << "\n";
     }
   }
 }
@@ -455,7 +530,6 @@ void setRankConstants23()
   }
 }
 
-#include <iostream>
 unsigned holding4_to_holding3(const unsigned holding4)
 {
 assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
@@ -584,19 +658,47 @@ void orientedBoth(
 }
 
 
-unsigned orientedTrinary(
+bool holding4_to_rotate(
+  const unsigned holding4,
+  const unsigned cardsLeft)
+{
+  const unsigned holding4padded = holding4 | HOLDING4_NONE_HIGH[cardsLeft];
+
+// cout << "padded " << holding4padded << endl;
+// cout << "    hi " << (holding4padded >> 16) << endl;
+// cout << "    lo " << (holding4padded & 0xffff) << endl;
+// cout << "    hi " << +HOLDING4_TOP[(holding4padded >> 16)] << endl;
+// cout << "    lo " << +HOLDING4_TOP[(holding4padded & 0xffff)] << endl;
+
+  if (HOLDING4_TOP[holding4padded >> 16] == SIDE_SOUTH)
+    return true;
+  else
+    return (HOLDING4_TOP[holding4padded & 0xffff] == SIDE_SOUTH);
+}
+
+
+void orientedTrinary(
   const unsigned cards,
   const unsigned holding4,
-  const Play& play)
+  const Play& play,
+  unsigned& holding3,
+  bool& rotateFlag)
 {
   unsigned holding4punched = punchHolding4(holding4, play);
 
-  // If play.rotateFlag is set, the trinary holding is rotated,
+  // If both North and South are void, that stays as a North winner.
+  rotateFlag = holding4_to_rotate(holding4punched, play.cardsLeft);
+
+// cout << "orientedTrinary: holding4punched " << holding4punched << endl;
+// cout << "holding4 was " << holding4 << endl;
+// cout << "rotate " << rotateFlag << endl;
+
+  // If rotateFlag is set, the trinary holding is rotated,
   // so North and South are swapped.
-  if (play.rotateFlag)
+  if (rotateFlag)
     holding4punched ^= HOLDING4_ROTATE[cards];
 
-  return holding4_to_holding3(holding4punched);
+  holding3 = holding4_to_holding3(holding4punched);
 }
 
 
@@ -623,8 +725,8 @@ unsigned minimalizeRanked(
   const unsigned southCount,
   const unsigned& holding4)
 {
-  // Resort the low cards in the holding4 order opps, South, North
-  // (top to bottom).  This is the same as in e.g. Ranks::lowMinimal().
+  // Resort the low cards in the holding4 order opps, North, South
+  // (top to bottom).
 
   const unsigned lows = oppsCount + southCount + northCount;
   assert(lows >= 1);
@@ -647,8 +749,12 @@ cout << "north  " << NORTH_REPEATS[southCount] << endl;
 
     const unsigned holding4min = (holding4rot & HOLDING4_MASK_HIGH[lows]) |
       ((OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) |
-       (SOUTH_REPEATS[northCount] << 2*southCount) |
-       NORTH_REPEATS[southCount]);
+       (NORTH_REPEATS[southCount] << 2*northCount) |
+       SOUTH_REPEATS[northCount]);
+
+       // orig
+       // (SOUTH_REPEATS[northCount] << 2*southCount) |
+       // NORTH_REPEATS[southCount]);
 
     return holding4min;
   }
@@ -656,8 +762,12 @@ cout << "north  " << NORTH_REPEATS[southCount] << endl;
   {
     return (holding4 & HOLDING4_MASK_HIGH[lows]) |
       ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
-       (SOUTH_REPEATS[southCount] << 2*northCount) |
-       NORTH_REPEATS[northCount]);
+       (NORTH_REPEATS[northCount] << 2*southCount) |
+       SOUTH_REPEATS[southCount]);
+
+       // orig
+       // (SOUTH_REPEATS[southCount] << 2*northCount) |
+       // NORTH_REPEATS[northCount]);
   }
 }
   

@@ -144,6 +144,8 @@ void Strategy::logTrivial(
     results.back().setDist(i);
   }
   weightInt = trivial.tricks() * len;
+
+  Strategy::study();
 }
 
 

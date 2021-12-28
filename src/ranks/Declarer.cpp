@@ -129,6 +129,9 @@ bool Declarer::greater(
       if (Declarer::isVoid())
         return true;
       else
+        // TODO Actually this seems wrong, at least when cards
+        // have been played, as these only change rankInfo and
+        // not cards.
         return (Declarer::top() > p2.top());
       // return true; 
     }
@@ -136,6 +139,20 @@ bool Declarer::greater(
     run1 = 0;
     run2 = 0;
   }
+}
+
+
+bool Declarer::tops(const Declarer& p2) const
+{
+  // This method is used to order ranked holdings.
+
+  if (Declarer::isVoid())
+    // Both void OK.
+    return p2.isVoid();
+  else if (p2.isVoid())
+    return true;
+  else
+    return (Declarer::top() > p2.top());
 }
 
 
