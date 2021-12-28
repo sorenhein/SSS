@@ -12,20 +12,20 @@ Overall partitioning
 It runs again now -- well, down to 11/159146 before it conks out.
 
 WARNCRITICAL1     0
-WARNCRITICAL2  5450
+WARNCRITICAL2  5198
 WARNRANGE1        0
-WARNRANGE2      125     In getMinimalSpans may not need length equality
-NONMIN         6832
+WARNRANGE2       68     In getMinimalSpans may not need length equality
+NONMIN         7579
 KLUDGE            0
 ODDLEN            0
 SHIFT             0
 ERROR             0
 
-MINIMUM MATCH 34693
-MIN MISMATCH   2366
-WINNER MATCH1 28381
-WIN MISMATCH1  8606
-WIN MISMATCH2    36
+MINIMUM MATCH 37478
+MIN MISMATCH   2491
+WINNER MATCH1 32709
+WIN MISMATCH1  8248
+WIN MISMATCH2    15
 
 Why are we interested in minimals in the first place? Because we just
 want to solve these and then create the others as needed from these,

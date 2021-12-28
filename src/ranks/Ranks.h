@@ -91,6 +91,10 @@ class Ranks
       Play& play,
       Plays& plays);
 
+    void addMinimal(
+      const unsigned char absNumber,
+      list<CombReference>& minimals) const;
+
 
   public:
 

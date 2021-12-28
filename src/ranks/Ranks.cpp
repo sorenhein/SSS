@@ -649,6 +649,47 @@ bool Ranks::partnerVoid() const
 }
 
 
+void Ranks::addMinimal(
+  const unsigned char absNumber,
+  list<CombReference>& minimals) const
+{
+  unsigned oppsCount, northCount, southCount;
+  bool rotateFlag;
+
+  if (absNumber == 0)
+  {
+    // Arrange North and South by length, which is all it takes here.
+    oppsCount = opps.length();
+    northCount = north.length();
+    southCount = south.length();
+    rotateFlag = (southCount > northCount);
+  }
+  else
+  {
+    // As there is a winner, North will still have the 
+    // highest card and there will never be a rotation.
+    oppsCount = opps.countBelowAbsNumber(absNumber);
+    northCount = north.countBelowAbsNumber(absNumber);
+    southCount = south.countBelowAbsNumber(absNumber);
+    rotateFlag = false;
+  }
+
+  // Keep the orientation.
+  const unsigned h4minimal = minimalizeRanked(rotateFlag, cards,
+    oppsCount, northCount, southCount, holding4);
+
+  if (h4minimal != holding4)
+  {
+    CombReference combRef;
+    combRef.rotateFlag = rotateFlag;
+    orientedBoth(rotateFlag, cards, h4minimal,
+      combRef.holding3, combRef.holding2);
+
+    minimals.emplace_back(combRef);
+  }
+}
+
+
 bool Ranks::getMinimals(
   const list<Result>& resultList,
   list<CombReference>& minimals) const
@@ -663,48 +704,12 @@ bool Ranks::getMinimals(
   }
   else if (resultList.empty())
   {
-    // Keep the orientation.
-    const unsigned h4minimal = minimalizeRanked(false, cards,
-      opps.length(), north.length(), south.length(), holding4);
-
-    if (h4minimal != holding4)
-    {
-      // Arrange North and South by length, which is all it takes
-      // in this case.
-      CombReference combRef;
-      combRef.rotateFlag = (south.length() > north.length());
-      orientedBoth(combRef.rotateFlag, cards, h4minimal,
-        combRef.holding3, combRef.holding2);
-
-      minimals.emplace_back(combRef);
-    }
+    Ranks::addMinimal(0, minimals);
   }
   else
   {
     for (auto& res: resultList)
-    {
-      const unsigned char absNumber = res.winAbsNumber();
-
-      const unsigned oppsCount = opps.countBelowAbsNumber(absNumber);
-      const unsigned northCount = north.countBelowAbsNumber(absNumber);
-      const unsigned southCount = south.countBelowAbsNumber(absNumber);
-
-      // Keep the orientation.
-      // As there is a winner, North will still have the 
-      // highest card and there will never be a rotation.
-      const unsigned h4minimal = minimalizeRanked(false, cards,
-        oppsCount, northCount, southCount, holding4);
-
-      if (holding4 != h4minimal)
-      {
-        CombReference combRef;
-        combRef.rotateFlag = false;
-        uncanonicalBoth(h4minimal, 
-          combRef.holding3, combRef.holding2);
-
-        minimals.emplace_back(combRef);
-      }
-    }
+      Ranks::addMinimal(res.winAbsNumber(), minimals);
   }
 
   // It can happen that we map to the same minimal holding in more ways.
