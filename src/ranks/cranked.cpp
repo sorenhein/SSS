@@ -29,8 +29,6 @@ using namespace std;
 
 vector<unsigned> HOLDING4_TO_HOLDING3;
 vector<unsigned> HOLDING4_TO_HOLDING2;
-// TODO Probably unneeded after all
-vector<unsigned> HOLDING3_TO_HOLDING4;
 
 vector<array<unsigned char, 4>> SORT4_PLAYS;
 
@@ -79,7 +77,6 @@ const vector<unsigned> HOLDING4_MASK_HIGH =
 vector<unsigned> NORTH_REPEATS;
 vector<unsigned> SOUTH_REPEATS;
 vector<unsigned> OPPS_REPEATS;
-
 vector<unsigned> OPPS_REPEATS_ROTATE;
 
 // This is used to rotate a holding4.  We exploit that North and South
@@ -130,19 +127,34 @@ const vector<unsigned> HOLDING4_NONE_HIGH =
   0x80000000  // 15
 };
 
-unsigned char update_has_top(
-  const unsigned char has_top,
-  const unsigned char trit);
+
+/* -------------------------------------------------------- *
+ |                                                          |
+ | Helper functions for initialization                      |
+ |                                                          |
+ * -------------------------------------------------------- */
+
+unsigned char updateHasTop(
+  const unsigned char hasTop,
+  const unsigned trit);
 
 void set4to32();
 
 void set4sort();
 
 void setRepeatsTable();
+
 void setRepeats();
 
 
+/* -------------------------------------------------------- *
+ |                                                          |
+ | Helper functions for run-time calculations               |
+ |                                                          |
+ * -------------------------------------------------------- */
+
 unsigned holding4to3(const unsigned holding4);
+
 unsigned holding4to2(const unsigned holding4);
 
 void holding4toBoth(
@@ -159,30 +171,41 @@ bool holding4isRotated(
    const unsigned cardsLeft);
 
 
-unsigned char update_has_top(
-  const unsigned char has_top,
-  const unsigned char trit)
+
+/************************************************************
+ *                                                          *
+ * Helper functions for initialization                      *
+ *                                                          *
+ ************************************************************/
+
+unsigned char updateHasTop(
+  const unsigned char hasTop,
+  const unsigned trit)
 {
-  if (has_top == SIDE_NORTH || has_top == SIDE_SOUTH)
-    return has_top;
+  // This function helps to find the top card of a holding4.
+
+  if (hasTop == SIDE_NORTH || hasTop == SIDE_SOUTH)
+    return hasTop;
   else
-    return trit;
+    return static_cast<unsigned char>(trit);
 }
 
 
 void set4to32()
 {
-  // See comment of HOLDING4_ROTATE above.
-  // Actually this part would also work if they were swapped,
-  // but they have to share the same bit.
+  // We exploit in many places that North and South are coded as 0 and 1.
+  // This is either a clever optimization or an ugly hack.
   assert(SIDE_NORTH == 0 && SIDE_SOUTH == 1);
 
   // Lookup of 8 cards into trit format.  There are 4^8 = 65536 entries
   // of holding4, 3^8 = 6561 possible values of 8-trit sequences,
   // and 2^8 = 256 possible values of 8-bit sequences.
 
-  // First make temporary tables with the square root of the numbers.
+  // First make temporary tables with the square root of the numbers,
+  // so 4 cards each.
+
   vector<unsigned> h3_to_h4_partial(TRINARY4);
+
   vector<unsigned> h3_to_h4_partial_shadow(TRINARY4);
   vector<unsigned> h3_to_h2_partial(TRINARY4);
   vector<unsigned char> h3_top_partial(TRINARY4);
@@ -214,22 +237,18 @@ void set4to32()
           const unsigned c3s = (c3 == 2 ? 3 : c3);
           const unsigned h4s = (c0s << 6) | (c1s << 4) | (c2s << 2) | c3s;
 
-assert(h3 < h3_to_h4_partial.size());
-assert(h3 < h3_to_h2_partial.size());
-assert(h4s < 256);
-
           h3_to_h4_partial[h3] = h4;
           h3_to_h2_partial[h3] = h2;
 
           h3_to_h4_partial_shadow[h3] = h4s;
 
-          unsigned char has_top = SIDE_OPPS;
-          has_top = update_has_top(has_top, static_cast<unsigned char>(c0));
-          has_top = update_has_top(has_top, static_cast<unsigned char>(c1));
-          has_top = update_has_top(has_top, static_cast<unsigned char>(c2));
-          has_top = update_has_top(has_top, static_cast<unsigned char>(c3));
+          unsigned char hasTop = SIDE_OPPS;
+          hasTop = updateHasTop(hasTop, c0);
+          hasTop = updateHasTop(hasTop, c1);
+          hasTop = updateHasTop(hasTop, c2);
+          hasTop = updateHasTop(hasTop, c3);
 
-          h3_top_partial[h3] = has_top; 
+          h3_top_partial[h3] = hasTop; 
         }
       }
     }
@@ -238,18 +257,12 @@ assert(h4s < 256);
   // Then make the big tables.
   HOLDING4_TO_HOLDING3.resize(QUARTENARY8);
   HOLDING4_TO_HOLDING2.resize(QUARTENARY8);
-  HOLDING3_TO_HOLDING4.resize(TRINARY8);
   HOLDING4_TOP.resize(QUARTENARY8);
 
   for (unsigned p0 = 0; p0 < TRINARY4; p0++)
   {
     for (unsigned p1 = 0; p1 < TRINARY4; p1++)
     {
-assert(p0 < h3_to_h2_partial.size());
-assert(p1 < h3_to_h2_partial.size());
-assert(p0 < h3_to_h4_partial.size());
-assert(p1 < h3_to_h4_partial.size());
-
       const unsigned h3 = TRINARY4*p0 + p1;
       const unsigned h2 =
         (h3_to_h2_partial[p0] << 4) | h3_to_h2_partial[p1];
@@ -258,18 +271,11 @@ assert(p1 < h3_to_h4_partial.size());
       const unsigned h4s = 
         (h3_to_h4_partial_shadow[p0] << 8) | h3_to_h4_partial_shadow[p1];
 
-assert(h4 < HOLDING4_TO_HOLDING2.size());
-assert(h4 < HOLDING4_TO_HOLDING3.size());
-assert(h4s < HOLDING4_TO_HOLDING2.size());
-assert(h4s < HOLDING4_TO_HOLDING3.size());
-
       HOLDING4_TO_HOLDING2[h4] = h2;
       HOLDING4_TO_HOLDING2[h4s] = h2;
 
       HOLDING4_TO_HOLDING3[h4] = h3;
       HOLDING4_TO_HOLDING3[h4s] = h3;
-
-      HOLDING3_TO_HOLDING4[h3] = h4;
 
       const unsigned char top = h3_top_partial[p0];
       if (top == SIDE_NORTH || top == SIDE_SOUTH)
@@ -325,35 +331,6 @@ void set4sort()
             static_cast<unsigned char>(p2adj),
             static_cast<unsigned char>(p3adj)
           };
-
-  assert(((p0 << 12) | (p1 << 8) | (p2 << 4) | p3) < 65536);
-  assert(((p0 << 12) | (p1 << 8) | (p3 << 4) | p2) < 65536);
-  assert(((p0 << 12) | (p2 << 8) | (p1 << 4) | p3) < 65536);
-  assert(((p0 << 12) | (p2 << 8) | (p3 << 4) | p1) < 65536);
-  assert(((p0 << 12) | (p3 << 8) | (p1 << 4) | p2) < 65536);
-  assert(((p0 << 12) | (p3 << 8) | (p2 << 4) | p1) < 65536);
-
-  assert(((p1 << 12) | (p0 << 8) | (p2 << 4) | p3) < 65536);
-  assert(((p1 << 12) | (p0 << 8) | (p3 << 4) | p2) < 65536);
-  assert(((p1 << 12) | (p2 << 8) | (p0 << 4) | p3) < 65536);
-  assert(((p1 << 12) | (p2 << 8) | (p3 << 4) | p0) < 65536);
-  assert(((p1 << 12) | (p3 << 8) | (p0 << 4) | p2) < 65536);
-  assert(((p1 << 12) | (p3 << 8) | (p2 << 4) | p0) < 65536);
-
-  assert(((p2 << 12) | (p1 << 8) | (p0 << 4) | p3) < 65536);
-  assert(((p2 << 12) | (p1 << 8) | (p3 << 4) | p0) < 65536);
-  assert(((p2 << 12) | (p0 << 8) | (p1 << 4) | p3) < 65536);
-  assert(((p2 << 12) | (p0 << 8) | (p3 << 4) | p1) < 65536);
-  assert(((p2 << 12) | (p3 << 8) | (p1 << 4) | p0) < 65536);
-  assert(((p2 << 12) | (p3 << 8) | (p0 << 4) | p1) < 65536);
-
-  assert(((p3 << 12) | (p1 << 8) | (p2 << 4) | p0) < 65536);
-  assert(((p3 << 12) | (p1 << 8) | (p0 << 4) | p2) < 65536);
-  assert(((p3 << 12) | (p2 << 8) | (p1 << 4) | p0) < 65536);
-  assert(((p3 << 12) | (p2 << 8) | (p0 << 4) | p1) < 65536);
-  assert(((p3 << 12) | (p0 << 8) | (p1 << 4) | p2) < 65536);
-  assert(((p3 << 12) | (p0 << 8) | (p2 << 4) | p1) < 65536);
-
 
           SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p2 << 4) | p3] = res;
           SORT4_PLAYS[(p0 << 12) | (p1 << 8) | (p3 << 4) | p2] = res;
@@ -426,11 +403,14 @@ void setRankedConstants()
 }
 
 
+/************************************************************
+ *                                                          *
+ * Helper functions for run-time calculations               *
+ *                                                          *
+ ************************************************************/
+
 unsigned holding4to3(const unsigned holding4)
 {
-assert((holding4 >> 16) < HOLDING4_TO_HOLDING3.size());
-assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
-
   return 6561 * HOLDING4_TO_HOLDING3[holding4 >> 16] +
     HOLDING4_TO_HOLDING3[holding4 & 0xffff];
 }
@@ -438,9 +418,6 @@ assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING3.size());
 
 unsigned holding4to2(const unsigned holding4)
 {
-assert((holding4 >> 16) < HOLDING4_TO_HOLDING2.size());
-assert((holding4 & 0xffff) < HOLDING4_TO_HOLDING2.size());
-
   return 256 * HOLDING4_TO_HOLDING2[holding4 >> 16] +
     HOLDING4_TO_HOLDING2[holding4 & 0xffff];
 }
@@ -510,6 +487,12 @@ bool holding4isRotated(
     return (HOLDING4_TOP[holding4padded & 0xffff] == SIDE_SOUTH);
 }
 
+
+/************************************************************
+ *                                                          *
+ * Interface functions                                      *
+ *                                                          *
+ ************************************************************/
 
 void rankedTrinary(
   const unsigned cards,
