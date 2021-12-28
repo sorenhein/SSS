@@ -51,8 +51,6 @@ class Ranks
 
     void setReference(CombReference& combRef) const;
 
-    // void setRanks(CombReference& combRef) const;
-
     void trivialRanked(
       const unsigned char tricks,
       Result& trivial) const;
@@ -93,33 +91,6 @@ class Ranks
       Play& play,
       Plays& plays);
 
-    void losingMinimal(
-      unsigned char& relIndex,
-      unsigned char& absIndex,
-      Ranks& ranksNew) const;
-
-    void lowMinimal(
-      const unsigned char criticalRank,
-      const Winner& winner,
-      unsigned char& relIndex,
-      unsigned char& absIndex,
-      Ranks& ranksNew) const;
-      
-    void criticalMinimal(
-      const Winner& winner,
-      unsigned char& relIndex,
-      unsigned char& absIndex,
-      Ranks& ranksNew) const;
-
-    void remainingMinimal(
-      const unsigned char criticalRank,
-      unsigned char& relIndex,
-      unsigned char& absIndex,
-      Ranks& ranksNew) const;
-
-    void finishMinimal(
-      const unsigned holdingRef,
-      list<CombReference>& minimals);
 
   public:
 
@@ -138,10 +109,6 @@ class Ranks
       Result& trivial);
 
     bool partnerVoid() const;
-
-    bool minimal(
-      const unsigned char absNumber,
-      CombReference& combRef) const;
 
     bool getMinimals(
       const list<Result>& resultList,

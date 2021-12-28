@@ -181,7 +181,8 @@ unsigned Ranks::canonicalTrinary(
   // Therefore Combinations::getPtr looks up the canonical index.
   unsigned h3 = 0;
 
-  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  // Exclude void
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) 
   {
     const unsigned index = 
       (static_cast<unsigned>(opps.count(rank)) << 8) | 
@@ -208,7 +209,8 @@ void Ranks::canonicalBoth(
   holding3In = 0;
   holding2In = 0;
 
-  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  // Exclude void
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) 
   {
     const unsigned index = 
       (static_cast<unsigned>(opponents.count(rank)) << 8) | 
@@ -230,7 +232,6 @@ void Ranks::setOwnRanks(CombReference& combRef) const
   // For an uncanonical holding we indicate a rotation if South
   // holds a higher top card than North.
 
-  // combRef.rotateFlag = ! (north.greater(south, opps));
   combRef.rotateFlag = ! (north.tops(south));
 
   combRef.holding3 = holding3;
@@ -276,8 +277,6 @@ void Ranks::setRanks(
   holding3 = holding3In;
 
   Ranks::setPlayers();
-
-  // Ranks::setRanks(combEntry.canonical);
 
   Ranks::setOwnRanks(combEntry.own);
   Ranks::setReference(combEntry.reference);
@@ -328,7 +327,8 @@ bool Ranks::makeTrivial(Result& trivial) const
   {
     // North-South win it all, or almost, if opponents have one card left.
     Ranks::trivialRanked(
-      static_cast<unsigned char>(max(north.length(), south.length())), trivial);
+      static_cast<unsigned char>(max(north.length(), south.length())), 
+        trivial);
     return true;
   }
 
@@ -396,15 +396,12 @@ void Ranks::updateHoldings(Play& play) const
   if (control.runRankComparisons())
   {
     // Don't do any canonical reduction -- just play the cards.
-    // play.rotateFlag = ! (north.greater(south, opps));
     // We can't use Declarer::tops() here as only rankInfo has
     // been updated with the plays, so isVoid() and top() don't work.
+    // Instead we do some bit magic to find the highest remaining card.
+
     orientedTrinary(play.cardsLeft, holding4, play,
       play.holding3, play.rotateFlag);
-
-// cout << "updateHoldings:\n";
-// cout << play.strLine() << endl;
-// cout << Ranks::strTable() << endl;
   }
   else
   {
@@ -591,7 +588,8 @@ void Ranks::setPlaysSide(
   if (partner.isSingleRanked() &&
       (! leader.isSingleRanked() || 
           leader.maxFullRank() < partner.maxFullRank() ||
-        (leader.maxFullRank() == partner.maxFullRank() && play.side == SIDE_SOUTH)))
+        (leader.maxFullRank() == partner.maxFullRank() && 
+          play.side == SIDE_SOUTH)))
     return;
 
   // Don't lead a card by choice that's higher than partner's best one.
@@ -651,408 +649,60 @@ bool Ranks::partnerVoid() const
 }
 
 
-void Ranks::finishMinimal(
-  const unsigned holdingRef,
-  list<CombReference>& minimals)
+bool Ranks::getMinimals(
+  const list<Result>& resultList,
+  list<CombReference>& minimals) const
 {
-  Ranks::north.setNames();
-  Ranks::south.setNames();
-  Ranks::opps.setNames();
-
-  Ranks::north.finish();
-  Ranks::south.finish();
-
-  // Check whether the new minimal holding is different.
-  CombReference combRef;
-  Ranks::setReference(combRef);
-
-// cout << "finishMinimal different: reference " << holdingRef << 
-  // ", constructed " << combRef.holding3 << endl;
-
-  if (combRef.holding3 != holdingRef)
-    minimals.emplace_back(combRef);
-}
-
-
-void Ranks::losingMinimal(
-  unsigned char& relIndex,
-  unsigned char& absIndex,
-  Ranks& ranksNew) const
-{
-  const unsigned char nx = static_cast<unsigned char>(north.length());
-  const unsigned char sx = static_cast<unsigned char>(south.length());
-  if (nx > 0 || sx > 0)
-  {
-    ranksNew.maxGlobalRank++;
-    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, 
-      relIndex, absIndex);
-    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, 
-      relIndex, absIndex);
-  }
-
-  const unsigned char oppr = static_cast<unsigned char>(opps.length());
-  if (oppr > 0)
-  {
-    ranksNew.maxGlobalRank++;
-    ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, 
-      relIndex, absIndex);
-  }
-}
-
-
-void Ranks::lowMinimal(
-  const unsigned char criticalRank, 
-  const Winner& winner, 
-  unsigned char& relIndex, 
-  unsigned char& absIndex, 
-  Ranks& ranksNew) const
-{
-  // Do the x's, i.e. all N-S cards below the critical rank.
-  // It is possible that N-S have no x's.
-  const unsigned char nx = north.countBelowRank(criticalRank, winner.north);
-  const unsigned char sx = south.countBelowRank(criticalRank, winner.south);
-  if (nx > 0 || sx > 0)
-  {
-    ranksNew.maxGlobalRank++;
-    ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nx, 
-      relIndex, absIndex);
-    ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sx, 
-      relIndex, absIndex);
-  }
-
-  // Do the opponents' x's.  These must exist as a winner has
-  // to beat something by definition.
-  const unsigned char ox = opps.countBelowRank(criticalRank);
-  assert(ox > 0);
-  ranksNew.maxGlobalRank++;
-  ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, ox, 
-    relIndex, absIndex);
-}
-
-
-void Ranks::criticalMinimal(
-  const Winner& winner,
-  unsigned char& relIndex,
-  unsigned char& absIndex,
-  Ranks& ranksNew) const
-{
-  // Do declarer's counts at the critical rank.
-  ranksNew.maxGlobalRank++;
-  unsigned char nr = 
-    (winner.north.getRank() == 0 ? 0 : winner.north.getDepth()+1);
-  unsigned char sr = 
-    (winner.south.getRank() == 0 ? 0 : winner.south.getDepth()+1);
-
-  ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, 
-    relIndex, absIndex);
-  ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, 
-    relIndex, absIndex);
-}
-
-
-void Ranks::remainingMinimal(
-  const unsigned char criticalRank,
-  unsigned char& relIndex,
-  unsigned char& absIndex,
-  Ranks& ranksNew) const
-{
-  unsigned char nr, sr, oppr;
-  for (unsigned char rank = criticalRank+1; rank <= cards; rank++)
-  {
-    nr = north.count(rank);
-    sr = south.count(rank);
-    oppr = opps.count(rank);
-    if (nr == 0 && sr == 0 && oppr == 0)
-      break;
-
-    ranksNew.maxGlobalRank++;
-    if (oppr == 0)
-    {
-      ranksNew.north.updateSeveral(ranksNew.maxGlobalRank, nr, 
-        relIndex, absIndex);
-      ranksNew.south.updateSeveral(ranksNew.maxGlobalRank, sr, 
-        relIndex, absIndex);
-    }
-    else if (nr == 0 && sr == 0)
-      ranksNew.opps.updateSeveral(ranksNew.maxGlobalRank, oppr, 
-        relIndex, absIndex);
-    else
-      assert(false);
-  }
-}
-
-
-bool Ranks::minimal(
-  const unsigned char absNumber,
-  CombReference& combRef) const
-{
-  // Returns true if the minimal differs from Ranks.
-
-  // TODO This version just cuts off at absNumber on both sides.
-  // With AQ/K declarer can play K and then if needed the A.
-  // Or declarer can cash the A and then if needed the Q.
-  // With A-Q declarer doesn't actually need the K.
-  // Probably we should have a Winner instead with separate cutoffs
-  // for North and South.  But this means that one Winner may not
-  // be commensurate with another anymore.  Does this matter?
-
+  // In the context of rank comparisons, fills out the minimals.
   assert(control.runRankComparisons());
 
   if (cards <= 2)
   {
     // Always minimal.
-    Ranks::setReference(combRef);
-    return false;
+    return true;
   }
-  else if (absNumber == 0)
+  else if (resultList.empty())
   {
-    // Reorder the x's in the order opponents, South, North.
+    // Keep the orientation.
     const unsigned h4minimal = minimalizeRanked(false, cards,
       opps.length(), north.length(), south.length(), holding4);
 
-    if (h4minimal == holding4)
+    if (h4minimal != holding4)
     {
-      // If the reordering changed the holding, it's a new minimal.
-      Ranks::setReference(combRef);
-      return false;
-    }
-    else
-    {
-      // In setReference, rotateFlag is ! north.greater(south).
-      // In this case this turns into a comparison of lengths,
-      // without a need to create the hands.
+      // Arrange North and South by length, which is all it takes
+      // in this case.
+      CombReference combRef;
       combRef.rotateFlag = (south.length() > north.length());
       orientedBoth(combRef.rotateFlag, cards, h4minimal,
         combRef.holding3, combRef.holding2);
-      return true;
+
+      minimals.emplace_back(combRef);
     }
   }
   else
   {
-    // Count the x's.
-    const unsigned oppsCount = opps.countBelowAbsNumber(absNumber);
-    const unsigned northCount = north.countBelowAbsNumber(absNumber);
-    const unsigned southCount = south.countBelowAbsNumber(absNumber);
-
-    // Reorder the x's.
-    const unsigned h4minimal = minimalizeRanked(false, cards,
-      oppsCount, northCount, southCount, holding4);
-
-    if (h4minimal == holding4)
+    for (auto& res: resultList)
     {
-      // If the reordering changed the holding, it's a new minimal.
-      Ranks::setReference(combRef);
-      return false;
-    }
-    else
-    {
-      // This is clunky.
+      const unsigned char absNumber = res.winAbsNumber();
 
-      // TODO We could orient the ranked holdings simply by whether
-      // North holds the top card over South.  Then minimalizing the
-      // x's should not change the direction.  This probably causes
-      // several changes.
-      combRef.rotateFlag = false;
-      uncanonicalBoth(h4minimal, combRef.holding3, combRef.holding2);
-
-      Ranks ranksTmp;
-      ranksTmp.resize(cards);
-      ranksTmp.holding3 = combRef.holding3;
-      ranksTmp.setPlayers();
-      ranksTmp.setReference(combRef);
-
-      if (combRef.rotateFlag)
-      {
-        // When minimalizing we stacked low cards in the order
-        // opps - South - North, but now that we're rotating,
-        // it should have been opps - North - South.
-
-        const unsigned h4rot = minimalizeRanked(true, cards,
-          oppsCount, northCount, southCount, holding4);
-
-        orientedBoth(false, cards, h4rot,
-          combRef.holding3, combRef.holding2);
-      }
-      return true;
-    }
-  }
-}
-
-
-bool Ranks::getMinimals(
-  const list<Result>& resultList,
-  list<CombReference>& minimals) const
-{
-  // Returns true and does not fill minimals if the combination is 
-  // already minimal.  The implementation is slow and methodical...
-  // It follows Ranks::setPlayers() in structure.
-
-  const unsigned char cardsChar = static_cast<unsigned char>(cards);
-
-  if (control.runRankComparisons())
-  {
-    if (cards <= 2)
-    {
-      // Always minimal.
-      return true;
-    }
-    else if (resultList.empty())
-    {
-// cout << "Calling no-winner minimalizeRanked with:\n" <<
-  // cards << ", " << opps.length() << ", " <<
-  // north.length() << ", " << south.length() << ", holding4 " <<
-  // holding4 << endl;
+      const unsigned oppsCount = opps.countBelowAbsNumber(absNumber);
+      const unsigned northCount = north.countBelowAbsNumber(absNumber);
+      const unsigned southCount = south.countBelowAbsNumber(absNumber);
 
       // Keep the orientation.
+      // As there is a winner, North will still have the 
+      // highest card and there will never be a rotation.
       const unsigned h4minimal = minimalizeRanked(false, cards,
-        opps.length(), north.length(), south.length(), holding4);
+        oppsCount, northCount, southCount, holding4);
 
-      if (h4minimal != holding4)
+      if (holding4 != h4minimal)
       {
-        // Arrange North and South by length, which is all it takes
-        // in this case.
         CombReference combRef;
-        combRef.rotateFlag = (south.length() > north.length());
-        orientedBoth(combRef.rotateFlag, cards, h4minimal,
+        combRef.rotateFlag = false;
+        uncanonicalBoth(h4minimal, 
           combRef.holding3, combRef.holding2);
 
         minimals.emplace_back(combRef);
-      }
-    }
-    else
-    {
-      for (auto& res: resultList)
-      {
-        const unsigned char criticalNumber = res.winAbsNumber();
-
-/*
-cout << "winner-based, result " << res.str(true) << endl;
-cout << "critNo " << +criticalNumber << endl;
-*/
-
-        const unsigned oppsCount = opps.countBelowAbsNumber(
-          criticalNumber);
-        const unsigned northCount = north.countBelowAbsNumber(
-          criticalNumber);
-        const unsigned southCount = south.countBelowAbsNumber(
-          criticalNumber);
-
-        // Keep the orientation.
-        // As there is a winner, North will still have the 
-        // highest card and there will never be a rotation.
-        const unsigned h4minimal = minimalizeRanked(false, cards,
-          oppsCount, northCount, southCount, holding4);
-
-        if (holding4 != h4minimal)
-        {
-          CombReference combRef;
-          combRef.rotateFlag = false;
-          uncanonicalBoth(h4minimal, 
-            combRef.holding3, combRef.holding2);
-
-          minimals.emplace_back(combRef);
-
-/*
-cout << "counts opp " << oppsCount << ", N " << northCount << ", S " <<
-  southCount << endl;
-cout << "holding4 was " << holding4 << endl;
-cout << "h4min " << h4minimal << ", h3min " << holdingMin3 <<
-  ", h2min " << holdingMin2 <<endl;
-*/
-
-          /*
-          Ranks ranksTmp;
-          ranksTmp.resize(cards);
-          ranksTmp.holding3 = holdingMin3;
-          ranksTmp.setPlayers();
-
-// cout << ranksTmp.strTable();
-
-          CombReference combRef;
-          ranksTmp.setReference(combRef);
-
-// cout << combRef.str() << endl;
-
-          // All the ranksTmp stuff just determines rotation.
-          // Otherwise we'd be fine with orientedBoth().
-          // Maybe there's a way to simplify.
-          if (combRef.rotateFlag)
-          {
-            // holdingMin3 stacked low cards in the order
-            // opps - South - North, but now that we're rotating,
-            // it should have been opps - North - South.
-
-            const unsigned h4real = minimalizeRanked(true, cards,
-              oppsCount, northCount, southCount, holding4);
-
-            orientedBoth(false, cards, h4real,
-              combRef.holding3, combRef.holding2);
-
-// cout << "Fixed h4real " << h4real << "\n" << combRef.str() << endl;
-
-          }
-
-          minimals.emplace_back(combRef);
-          */
-
-        }
-      }
-    }
-  }
-  else
-  {
-    if (resultList.empty())
-    {
-// cout << "getMinimals: no winners, holding4 " << holding4 << "\n";
-      Ranks ranksTmp;
-      ranksTmp.resize(cards);
-      ranksTmp.zero();
-      ranksTmp.opps.setVoid();
-
-      unsigned char absIndex = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
-      unsigned char relIndex = 1;
-
-      // Declarer wins no tricks on rank.
-      Ranks::losingMinimal(relIndex, absIndex, ranksTmp);
-
-// cout << "after losingMinimal:\n" << Ranks::strTable();
-// cout << "ranksTmp.holding4 " << ranksTmp.holding4 << endl;
-
-      ranksTmp.finishMinimal(holding3, minimals);
-// cout << "after finishMinimal:\n" << Ranks::strTable();
-    }
-    else
-    {
-      for (auto& res: resultList)
-      {
-        auto& winners = res.winnersInt.winners;
-        assert(winners.size() == 1);
-        auto& winner = winners.front();
-
-        Ranks ranksTmp;
-        ranksTmp.resize(cards);
-        ranksTmp.zero();
-        ranksTmp.opps.setVoid();
-
-        // An unset winner has rank 0.
-        const unsigned char criticalRank = 
-          max(winner.north.getRank(), winner.south.getRank());
-        assert(criticalRank > 0);
-
-        // Do both sides' low cards below the critical points.
-        unsigned char absIndex = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
-        unsigned char relIndex = 1;
-
-        Ranks::lowMinimal(criticalRank, winner, 
-          relIndex, absIndex, ranksTmp);
-
-        // Do declarer's counts at the critical rank.
-        Ranks::criticalMinimal(winner, relIndex, absIndex, ranksTmp);
-
-        // Copy the remaining ranks.
-        Ranks::remainingMinimal(criticalRank, relIndex, absIndex, ranksTmp);
-
-        ranksTmp.finishMinimal(holding3, minimals);
       }
     }
   }
