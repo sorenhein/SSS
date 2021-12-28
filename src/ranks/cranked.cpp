@@ -79,14 +79,11 @@ const vector<unsigned> HOLDING4_MASK_HIGH =
   0x00000000  // 15
 };
 
-vector<unsigned> NORTH_REPEATS;
-vector<unsigned> SOUTH_REPEATS;
-vector<unsigned> OPPS_REPEATS;
-vector<unsigned> OPPS_REPEATS_ROTATE;
-
 // This is used to rotate a holding4.  We exploit that North and South
 // are coded as 0 and 1.  The vector is indexed by the number of cards
-// to get the right xor vector.
+// to get the right XOR vector.  This does alias 10 (SIDE_OPPS) into
+// 11 (which is not a holding in its own right and therefore becomes
+// a shadow holding).
 
 const vector<unsigned> HOLDING4_ROTATE =
 {
@@ -108,9 +105,9 @@ const vector<unsigned> HOLDING4_ROTATE =
   0x15555555  // 15
 };
 
-// This is used to set SIDE_NONE's to unused high bits in a holding4.
-// Otherwise 00 will look like SIDE_NORTH which caused holding4isRotated
-// not to detect the highest card correctly.
+// This is used to set SIDE_NONE's in unused high bits in a holding4.
+// Otherwise 00 will look like SIDE_NORTH which will cuause 
+// holding4isRotated not to detect the highest card correctly.
 
 const vector<unsigned> HOLDING4_NONE_HIGH =
 {
@@ -132,6 +129,85 @@ const vector<unsigned> HOLDING4_NONE_HIGH =
   0x80000000  // 15
 };
 
+vector<unsigned> NORTH_REPEATS =
+{
+  0x00000000, //  0
+  0x00000000, //  1
+  0x00000000, //  2
+  0x00000000, //  3
+  0x00000000, //  4
+  0x00000000, //  5
+  0x00000000, //  6
+  0x00000000, //  7
+  0x00000000, //  8
+  0x00000000, //  9
+  0x00000000, // 10
+  0x00000000, // 11
+  0x00000000, // 12
+  0x00000000, // 13
+  0x00000000, // 14
+  0x00000000  // 15
+};
+
+vector<unsigned> SOUTH_REPEATS =
+{
+  0x00000000, //  0
+  0x00000001, //  1
+  0x00000005, //  2
+  0x00000015, //  3
+  0x00000055, //  4
+  0x00000155, //  5
+  0x00000555, //  6
+  0x00001555, //  7
+  0x00005555, //  8
+  0x00015555, //  9
+  0x00055555, // 10
+  0x00155555, // 11
+  0x00555555, // 12
+  0x01555555, // 13
+  0x05555555, // 14
+  0x15555555  // 15
+};
+
+vector<unsigned> OPPS_REPEATS =
+{
+  0x00000000, //  0
+  0x00000002, //  1
+  0x0000000a, //  2
+  0x0000002a, //  3
+  0x000000aa, //  4
+  0x000002aa, //  5
+  0x00000aaa, //  6
+  0x00002aaa, //  7
+  0x0000aaaa, //  8
+  0x0002aaaa, //  9
+  0x000aaaaa, // 10
+  0x002aaaaa, // 11
+  0x00aaaaaa, // 12
+  0x02aaaaaa, // 13
+  0x0aaaaaaa, // 14
+  0x2aaaaaaa  // 15
+};
+
+vector<unsigned> NONE_REPEATS =
+{
+  0x00000000, //  0
+  0x00000003, //  1
+  0x0000000f, //  2
+  0x0000003f, //  3
+  0x000000ff, //  4
+  0x000003ff, //  5
+  0x00000fff, //  6
+  0x00003fff, //  7
+  0x0000ffff, //  8
+  0x0003ffff, //  9
+  0x000fffff, // 10
+  0x003fffff, // 11
+  0x00ffffff, // 12
+  0x03ffffff, // 13
+  0x0fffffff, // 14
+  0x3fffffff  // 15
+};
 
 /************************************************************
  *                                                          *
@@ -189,10 +265,6 @@ void enterSorted(
   const array<unsigned char, 4>& result);
 
 void set4sorts();
-
-void setRepeatsTable();
-
-void setRepeats();
 
 
 /* -------------------------------------------------------- *
@@ -456,41 +528,10 @@ void set4sorts()
 }
 
 
-void setRepeatsTable(
-  const unsigned value,
-  vector<unsigned>& repeats)
-{
-  unsigned r = 0;
-  for (unsigned n = 0; n < repeats.size(); n++)
-  {
-    repeats[n] = r;
-    r = (r << 2) | value;
-  }
-}
-
-
-void set4repeats()
-{
-  // One entry for each number of cards.
-  NORTH_REPEATS.resize(16);
-  SOUTH_REPEATS.resize(16);
-  OPPS_REPEATS.resize(16);
-
-  setRepeatsTable(SIDE_NORTH, NORTH_REPEATS);
-  setRepeatsTable(SIDE_SOUTH, SOUTH_REPEATS);
-  setRepeatsTable(SIDE_OPPS, OPPS_REPEATS);
-
-  OPPS_REPEATS_ROTATE.resize(16);
-
-  setRepeatsTable(SIDE_NONE, OPPS_REPEATS_ROTATE);
-}
-
-
 void setRankedConstants()
 {
   set4holdings();
   set4sorts();
-  set4repeats();
 }
 
 
@@ -643,11 +684,11 @@ unsigned rankedMinimalize(
     // The returned value will have SIDE_NONE (3) and not SIDE_OPPS
     // for the opponents, but that's OK for the table lookups.
     // The key is that they should all be 3's (or all 2's), hence
-    // OPPS_REPEAT_ROTATE.
+    // NONE_REPEATS.
     const unsigned holding4rot = holding4 ^ HOLDING4_ROTATE[cards];
 
     return (holding4rot & HOLDING4_MASK_HIGH[lows]) |
-      ((OPPS_REPEATS_ROTATE[oppsCount] << 2*(northCount + southCount)) |
+      ((NONE_REPEATS[oppsCount] << 2*(northCount + southCount)) |
        (NORTH_REPEATS[southCount] << 2*northCount) |
        SOUTH_REPEATS[northCount]);
   }
