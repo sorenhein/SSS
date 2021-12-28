@@ -17,13 +17,13 @@ class Opponents;
 
 void setCanonicalConstants();
 
-unsigned canonicalTrinaryX(
+unsigned canonicalTrinary(
   const Declarer& dominant,
   const Declarer& recessive,
   const Opponents& opponents,
   const unsigned char maxGlobalRank);
 
-void canonicalBothX(
+void canonicalBoth(
   const Declarer& dominant,
   const Declarer& recessive,
   const Opponents& opponents,

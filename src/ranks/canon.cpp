@@ -11,7 +11,6 @@
 
 #include "Declarer.h"
 #include "Opponents.h"
-
 #include "canon.h"
 
 #include "../utils/table.h"
@@ -118,7 +117,7 @@ void setCanonicalConstants()
 }
 
 
-unsigned canonicalTrinaryX(
+unsigned canonicalTrinary(
   const Declarer& dominant,
   const Declarer& recessive,
   const Opponents& opponents,
@@ -150,7 +149,7 @@ unsigned canonicalTrinaryX(
 }
 
 
-void canonicalBothX(
+void canonicalBoth(
   const Declarer& dominant,
   const Declarer& recessive,
   const Opponents& opponents,

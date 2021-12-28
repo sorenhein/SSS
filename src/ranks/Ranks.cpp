@@ -162,75 +162,6 @@ void Ranks::setPlayers()
 }
 
 
-unsigned Ranks::canonicalTrinary(
-  const Declarer& dominant,
-  const Declarer& recessive) const
-{
-  return canonicalTrinaryX(dominant, recessive, opps, maxGlobalRank);
-
-/*
-  // This is similar to canonicalBoth, but only does holding3.
-  // Actually it is only guaranteed to generate a canonical holding3 
-  // if there is no rank reduction among the opponents' cards.  
-  // For example, with AJ / KT missing Q9, if the trick goes
-  // T, Q, A, - then we're left with J /K missing the 9, where
-  // either side is >= the other.  Therefore the rotateFlag and the
-  // order will depend on the order of comparison.
-  // Therefore Combinations::getPtr looks up the canonical index.
-  unsigned h3 = 0;
-
-  // Exclude void
-  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) 
-  {
-    const unsigned index = 
-      (static_cast<unsigned>(opps.count(rank)) << 8) | 
-      (static_cast<unsigned>(dominant.count(rank)) << 4) | 
-       static_cast<unsigned>(recessive.count(rank));
-
-    h3 = 
-      HOLDING3_RANK_FACTOR[index] * h3 +
-      HOLDING3_RANK_ADDER[index];
-  }
-  return h3;
-*/
-}
-
-
-void Ranks::canonicalBoth(
-  const Declarer& dominant,
-  const Declarer& recessive,
-  const Opponents& opponents,
-  unsigned& holding3In,
-  unsigned& holding2In) const
-{
-  return canonicalBothX(dominant, recessive, opponents, maxGlobalRank,
-    holding3In, holding2In);
-
-/*
-  // This is similar to canonicalTrinary, but generates both the binary 
-  // and trinary holdings.
-  holding3In = 0;
-  holding2In = 0;
-
-  // Exclude void
-  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) 
-  {
-    const unsigned index = 
-      (static_cast<unsigned>(opponents.count(rank)) << 8) | 
-      (static_cast<unsigned>(dominant.count(rank)) << 4) | 
-       static_cast<unsigned>(recessive.count(rank));
-
-    holding3In = 
-      HOLDING3_RANK_FACTOR[index] * holding3In +
-      HOLDING3_RANK_ADDER[index];
-    holding2In = 
-      (holding2In << HOLDING2_RANK_SHIFT[index]) |
-      HOLDING2_RANK_ADDER[index];
-  }
-  */
-}
-
-
 void Ranks::setOwnRanks(CombReference& combRef) const
 {
   // For an uncanonical holding we indicate a rotation if South
@@ -264,11 +195,19 @@ void Ranks::setReference(CombReference& combRef) const
     combRef.rotateFlag = ! (north.greater(south, opps));
 
     if (combRef.rotateFlag)
-      Ranks::canonicalBoth(south, north, opps,
+    {
+      // Ranks::canonicalBoth(south, north, opps,
+        // combRef.holding3, combRef.holding2);
+      canonicalBoth(south, north, opps, maxGlobalRank,
         combRef.holding3, combRef.holding2);
+    }
     else
-      Ranks::canonicalBoth(north, south, opps,
+    {
+      // Ranks::canonicalBoth(north, south, opps,
+        // combRef.holding3, combRef.holding2);
+      canonicalBoth(north, south, opps, maxGlobalRank,
         combRef.holding3, combRef.holding2);
+    }
   }
 
 }
@@ -413,7 +352,8 @@ void Ranks::updateHoldings(Play& play) const
     // See Declarer.cpp, greater()
     if (north.greater(south, opps))
     {
-      play.holding3 = Ranks::canonicalTrinary(north, south);
+      // play.holding3 = Ranks::canonicalTrinary(north, south);
+      play.holding3 = canonicalTrinary(north, south, opps, maxGlobalRank);
 
       // North (without the played card) is still >= South (without
       // the played card).  So we can justify not rotating, but see
@@ -421,10 +361,10 @@ void Ranks::updateHoldings(Play& play) const
       play.rotateFlag = false;
     }
     else
-  {
+    {
       // South is strictly greater than North, so there is no
       // ambiguity here.
-      play.holding3 = Ranks::canonicalTrinary(south, north);
+      play.holding3 = canonicalTrinary(south, north, opps, maxGlobalRank);
       play.rotateFlag = true;
     }
   }

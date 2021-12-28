@@ -36,17 +36,6 @@ class Ranks
 
     void setPlayers();
 
-    unsigned canonicalTrinary(
-      const Declarer& dominant,
-      const Declarer& recessive) const;
-
-    void canonicalBoth(
-      const Declarer& dominant,
-      const Declarer& recessive,
-      const Opponents& opponents,
-      unsigned& holding3,
-      unsigned& holding2) const;
-
     void setOwnRanks(CombReference& combRef) const;
 
     void setReference(CombReference& combRef) const;
