@@ -22,10 +22,6 @@ using namespace std;
 
 class Winners
 {
-  // TODO Can we revoke this later?
-
-  friend class Ranks;
-
   private:
 
     list<Winner> winners;

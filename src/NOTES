@@ -1,7 +1,6 @@
 2021-12-28
 ----------
 Major next blocks:
-0. Clean up cranks and the bit magic in Ranks
 1. Winners both-sided, hopefully they stay at length 1
 2. Winners -> Winner, should save quite a lot of space
 3. Ranks skips interesting plays

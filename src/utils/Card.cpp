@@ -60,17 +60,6 @@ void Card::updateName(const unsigned char nameIn)
 
 bool Card::operator > (const Card& card2) const
 {
-/*
-if ((number > card2.number && absNumber <= card2.absNumber) ||
-    (number < card2.number && absNumber >= card2.absNumber))
-{
-  cout << "n " << +number << ", n2 << " << +card2.number << endl;
-  cout << "a " << +absNumber << ", abs2 " << +card2.absNumber << endl;
-  cout << Card::strDebug("warnfirst");
-  cout << card2.strDebug("warnsecond");
-}
-*/
-
   return (absNumber > card2.absNumber);
 }
 

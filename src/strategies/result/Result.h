@@ -40,11 +40,6 @@ CompareType compressCompareSecondaryDetail(const unsigned detail);
 
 class Result
 {
-  // TODO We probably mostly need the absolute number of winners,
-  // so probably we can revoke the friendship later.
-
-  friend class Ranks;
-
   private:
 
     unsigned char distInt;
