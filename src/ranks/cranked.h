@@ -6,15 +6,13 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_CRANKS_H
-#define SSS_CRANKS_H
+#ifndef SSS_CRANKED_H
+#define SSS_CRANKED_H
 
 struct Play;
 
 
-// Functions to set constants for Ranks.
-
-void setRankConstants23();
+// Functions for ranked calculations in Ranks.
 
 void setRankConstants4();
 

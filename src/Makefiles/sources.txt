@@ -26,7 +26,8 @@ SOURCE_FILES    =                               \
                 ranks/Player.cpp                \
                 ranks/Declarer.cpp              \
                 ranks/Opponents.cpp             \
-                ranks/cranks.cpp                \
+                ranks/canon.cpp                 \
+                ranks/cranked.cpp               \
                                                 \
                 strategies/Slist.cpp            \
                 strategies/Strategies.cpp       \

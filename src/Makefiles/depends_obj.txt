@@ -187,13 +187,15 @@ ranks/Ranks.obj: strategies/result/Range.h strategies/result/Result.h
 ranks/Ranks.obj: distributions/Reductions.h distributions/Reduction.h
 ranks/Ranks.obj: plays/DebugPlay.h combinations/CombEntry.h
 ranks/Ranks.obj: combinations/Combination.h inputs/Control.h inputs/Entity.h
-ranks/Ranks.obj: ranks/cranks.h
+ranks/Ranks.obj: ranks/cranked.h ranks/canon.h
 ranks/Player.obj: ranks/Player.h utils/Card.h utils/table.h const.h
 ranks/Declarer.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
 ranks/Declarer.obj: utils/table.h ranks/Opponents.h
 ranks/Opponents.obj: ranks/Opponents.h ranks/Player.h utils/Card.h
 ranks/Opponents.obj: utils/table.h const.h
-ranks/cranks.obj: ranks/cranks.h plays/Play.h utils/table.h const.h
+ranks/canon.obj: ranks/Declarer.h ranks/Player.h utils/Card.h utils/table.h
+ranks/canon.obj: ranks/Opponents.h ranks/canon.h const.h
+ranks/cranked.obj: ranks/cranked.h plays/Play.h utils/table.h const.h
 strategies/Slist.obj: strategies/Slist.h strategies/Strategy.h
 strategies/Slist.obj: strategies/result/Result.h strategies/result/Winners.h
 strategies/Slist.obj: strategies/result/Winner.h utils/table.h utils/Card.h

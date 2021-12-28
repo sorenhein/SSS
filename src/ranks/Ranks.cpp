@@ -6,11 +6,12 @@
 
 #include "Ranks.h"
 
+#include "cranked.h"
+#include "canon.h"
+
 #include "../plays/Plays.h"
 #include "../combinations/CombEntry.h"
 #include "../inputs/Control.h"
-
-#include "cranks.h"
 
 extern Control control;
 
@@ -45,12 +46,6 @@ extern Control control;
 mutex mtxRanks;
 static bool init_flag = false;
 
-vector<unsigned> HOLDING3_RANK_FACTOR;
-vector<unsigned> HOLDING3_RANK_ADDER;
-
-vector<unsigned> HOLDING2_RANK_SHIFT;
-vector<unsigned> HOLDING2_RANK_ADDER;
-
 
 Ranks::Ranks()
 {
@@ -58,7 +53,7 @@ Ranks::Ranks()
   if (! init_flag)
   {
     setRankConstants4();
-    setRankConstants23();
+    setCanonicalConstants();
     init_flag = true;
   }
   mtxRanks.unlock();
@@ -171,6 +166,9 @@ unsigned Ranks::canonicalTrinary(
   const Declarer& dominant,
   const Declarer& recessive) const
 {
+  return canonicalTrinaryX(dominant, recessive, opps, maxGlobalRank);
+
+/*
   // This is similar to canonicalBoth, but only does holding3.
   // Actually it is only guaranteed to generate a canonical holding3 
   // if there is no rank reduction among the opponents' cards.  
@@ -194,6 +192,7 @@ unsigned Ranks::canonicalTrinary(
       HOLDING3_RANK_ADDER[index];
   }
   return h3;
+*/
 }
 
 
@@ -204,6 +203,10 @@ void Ranks::canonicalBoth(
   unsigned& holding3In,
   unsigned& holding2In) const
 {
+  return canonicalBothX(dominant, recessive, opponents, maxGlobalRank,
+    holding3In, holding2In);
+
+/*
   // This is similar to canonicalTrinary, but generates both the binary 
   // and trinary holdings.
   holding3In = 0;
@@ -224,6 +227,7 @@ void Ranks::canonicalBoth(
       (holding2In << HOLDING2_RANK_SHIFT[index]) |
       HOLDING2_RANK_ADDER[index];
   }
+  */
 }
 
 
