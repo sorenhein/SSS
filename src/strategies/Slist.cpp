@@ -120,8 +120,10 @@ void Slist::adapt(
   for (auto& strat: strategies)
     strat.adapt(play, survivors);
 
-  if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
-    Slist::collapseOnVoid();
+  // TODO Commenting this out to avoid additive winners.
+  // The goal is to have none such in any operative strategy.
+  //if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
+    //Slist::collapseOnVoid();
 
   if (strategies.size() > 1 && ! Slist::ordered())
   {

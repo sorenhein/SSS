@@ -6,7 +6,6 @@ Major next blocks:
 3. Ranks skips interesting plays
 4. Rewrite CombTest
    - 
-
 5. Continue partitioning of ace-high
    - Non-canonical (not "greater") -> the canonical version
    - Canonical may be completely non-minimal, so probably only
@@ -14,6 +13,17 @@ Major next blocks:
    - Canonical may be mixed, but then no reason to look at
      minimals?  Might as well solve it since we have to anyway
    - Canonical may be completely minimal
+
+Both-sided winners: Where do these actually arise?
+Strategy-level *= NO
++= NO
+There is Slist::collapseOnVoid using Strategy::addComponentwise.
+This occurs when the next trick has multiple strategies that 
+actually differ in the surviving result.  I suppose we should
+leave these apart.  Can we be sure that they're just different?
+I guess we either do, or it doesn't matter...
+If we skip this, could we then go back to the old compare in
+Winner::compare?
 
 
 2021-12-27

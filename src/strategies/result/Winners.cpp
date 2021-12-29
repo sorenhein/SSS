@@ -47,6 +47,8 @@ void Winners::setEmpty()
   winners.emplace_back(Winner());
   Winner& win = winners.back();
   win.setEmpty();
+
+assert(winners.size() == 1);
 }
 
 
@@ -58,6 +60,8 @@ void Winners::set(
   winners.emplace_back(Winner());
   Winner& win = winners.back();
   win.set(sideIn, card);
+
+assert(winners.size() == 1);
 }
 
 
@@ -146,6 +150,9 @@ void Winners::operator += (const Winner& winner2)
   }
 
   winners.push_back(winner2);
+
+// It seems we do need to permit this for ranges
+// assert(winners.size() == 1);
 }
 
 
