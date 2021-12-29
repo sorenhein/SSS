@@ -136,7 +136,7 @@ bool Result::operator == (const Result& res2) const
   else
   {
     const bool b1 = (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
-    const bool b2 = (winner.compare(res2.winner) == WIN_EQUAL);
+    const bool b2 = (winner.compareGeneral(res2.winner) == WIN_EQUAL);
     assert(b1 == b2);
 
     return b1;
@@ -173,7 +173,7 @@ Compare Result::compareComplete(const Result& res2) const
   else
   {
     const Compare b1 = winnersInt.compare(res2.winnersInt);
-    const Compare b2 = winner.compare(res2.winner);
+    const Compare b2 = winner.compareGeneral(res2.winner);
     assert(b1 == b2);
 
     return b1;
@@ -190,7 +190,7 @@ CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
     return WIN_EQUAL_OVERALL;
 
   const Compare c = winnersInt.compare(res2.winnersInt);
-  const Compare c2 = winner.compare(res2.winner);
+  const Compare c2 = winner.compareGeneral(res2.winner);
   assert(c == c2);
 
   if (c == WIN_FIRST)
@@ -233,7 +233,8 @@ unsigned char Result::rank() const
 {
   if (control.runRankComparisons())
   {
-    assert(winner.getRank() == winnersInt.rank());
+    const unsigned char w = (winner.empty() ? 0 : winner.getRank());
+    assert(w == winnersInt.rank());
 
     return winnersInt.rank();
   }
@@ -246,7 +247,16 @@ unsigned char Result::winAbsNumber() const
 {
   if (control.runRankComparisons())
   {
-    assert(winner.getAbsNumber() == winnersInt.absNumber());
+    const unsigned char a = (winner.empty() ? 0 : winner.getAbsNumber());
+    if (a != winnersInt.absNumber())
+    {
+      cout << "winner " << winner.str() << endl;
+      cout << "winners " << winnersInt.strDebug() <<endl;
+      cout << "winners number " << winnersInt.absNumber() << endl;
+      cout << "a " << a << endl;
+
+      assert(a == winnersInt.absNumber());
+    }
 
     return winnersInt.absNumber();
   }

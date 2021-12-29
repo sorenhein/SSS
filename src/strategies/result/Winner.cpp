@@ -249,6 +249,17 @@ unsigned char Winner::getAbsNumber() const
 }
 
 
+Compare Winner::compareGeneral(const Winner& winner2) const
+{
+  if (Winner::empty())
+    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (winner2.empty())
+    return WIN_SECOND;
+  else
+    return Winner::compare(winner2);
+}
+
+
 Compare Winner::compare(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
