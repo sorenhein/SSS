@@ -33,10 +33,19 @@ enum CompareDetail
 #define WIN_PRIMARY (WIN_FIRST_PRIMARY | WIN_SECOND_PRIMARY | \
   WIN_DIFFERENT_PRIMARY)
 
-CompareType compressCore(const unsigned detail);
-CompareType compressCompareDetail(const unsigned detail);
-CompareType compressCompareSecondaryDetail(const unsigned detail);
+Compare compressCore(const unsigned detail);
 
+Compare compressCompareDetail(const unsigned detail);
+
+void processCore(
+  const unsigned detail,
+  Compare& compressed,
+  CompareDetail& cleaned);
+
+void processCompareDetail(
+  const unsigned detail,
+  Compare& compressed,
+  CompareDetail& cleaned);
 
 class Result
 {

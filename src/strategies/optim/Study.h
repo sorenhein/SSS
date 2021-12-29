@@ -55,7 +55,7 @@ class Study
 
     bool maybeLessEqualStudied(const Study& study2) const;
 
-    CompareType comparePartialPrimaryStudied(const Study& study2) const;
+    Compare comparePartialPrimaryStudied(const Study& study2) const;
 
     bool lessEqualScrutinized(const Study& study2) const;
 

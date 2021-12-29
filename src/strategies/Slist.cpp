@@ -634,7 +634,7 @@ void Slist::plusOneByOne(const Slist& slist2)
   const auto& str1 = strategies.front();
   const auto& str2 = slist2.strategies.front();
 
-  const CompareType c = str1.compareCompleteStudied(str2);
+  const Compare c = str1.compareCompleteStudied(str2);
   
   if (c == WIN_FIRST || c == WIN_EQUAL)
     return;

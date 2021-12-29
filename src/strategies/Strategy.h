@@ -138,9 +138,14 @@ class Strategy
 
     bool lessEqualCompleteBasic(const Strategy& strat2) const;
 
-    CompareType compareCompleteBasic(const Strategy& strat2) const;
+    Compare compareCompleteBasic(const Strategy& strat2) const;
 
     Compare compareSecondary(const Strategy& strat2) const;
+
+    bool lessEqualSecondaryOverallResult(const Strategy& strat2) const;
+
+    Compare compareSecondaryOverallResult(
+      const Strategy& strat2) const;
 
     // Study-level comparators
 
@@ -150,7 +155,7 @@ class Strategy
 
     bool lessEqualCompleteStudied(const Strategy& strat2) const;
 
-    CompareType compareCompleteStudied(const Strategy& strat2) const;
+    Compare compareCompleteStudied(const Strategy& strat2) const;
 
     bool lessEqualPrimaryStudied(const Strategy& strat2) const;
 

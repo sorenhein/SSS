@@ -21,8 +21,9 @@ extern Control control;
 
 // First three non-class methods. 
 
-CompareType compressCore(const unsigned detail)
+Compare compressCore(const unsigned detail)
 {
+  // Only deals with secondary comparisons.
   if (detail & WIN_DIFFERENT_SECONDARY)
     return WIN_DIFFERENT;
 
@@ -40,12 +41,12 @@ CompareType compressCore(const unsigned detail)
 }
 
 
-CompareType compressCompareDetail(const unsigned detail)
+Compare compressCompareDetail(const unsigned detail)
 {
+  // First deals with primary comparisons, then uses compressCore.
   if (detail & WIN_DIFFERENT_PRIMARY)
     return WIN_DIFFERENT;
-
-  if (detail & WIN_FIRST_PRIMARY)
+  else if (detail & WIN_FIRST_PRIMARY)
   {
     if (detail & WIN_SECOND_PRIMARY)
       return WIN_DIFFERENT;
@@ -54,15 +55,82 @@ CompareType compressCompareDetail(const unsigned detail)
   }
   else if (detail & WIN_SECOND_PRIMARY)
     return WIN_SECOND;
-
-  return compressCore(detail);
+  else
+    return compressCore(detail);
 }
 
 
-CompareType compressCompareSecondaryDetail(const unsigned detail)
+void processCore(
+  const unsigned detail,
+  Compare& compressed,
+  CompareDetail& cleaned)
 {
-  assert((detail & WIN_PRIMARY) == 0);
-  return compressCore(detail);
+  // Only deals with secondary comparisons.
+  if (detail & WIN_DIFFERENT_SECONDARY)
+  {
+    compressed = WIN_DIFFERENT;
+    cleaned = WIN_DIFFERENT_SECONDARY;
+  }
+  else if (detail & WIN_FIRST_SECONDARY)
+  {
+    if (detail & WIN_SECOND_SECONDARY)
+    {
+      compressed = WIN_DIFFERENT;
+      cleaned = WIN_DIFFERENT_SECONDARY;
+    }
+    else
+    {
+      compressed = WIN_FIRST;
+      cleaned = WIN_FIRST_SECONDARY;
+    }
+  }
+  else if (detail & WIN_SECOND_SECONDARY)
+  {
+    compressed = WIN_SECOND;
+    cleaned = WIN_SECOND_SECONDARY;
+  }
+  else
+  {
+    compressed = WIN_EQUAL;
+    cleaned = WIN_EQUAL_OVERALL;
+  }
+}
+
+
+void processCompareDetail(
+  const unsigned detail,
+  Compare& compressed,
+  CompareDetail& cleaned)
+{
+  // This turns detail into both a compressed (Compare) and a 
+  // more informative (CompareDetail) description.
+  // First deals with primary comparisons, then uses processCore.
+
+  if (detail & WIN_DIFFERENT_PRIMARY)
+  {
+    compressed = WIN_DIFFERENT;
+    cleaned = WIN_DIFFERENT_PRIMARY;
+  }
+  else if (detail & WIN_FIRST_PRIMARY)
+  {
+    if (detail & WIN_SECOND_PRIMARY)
+    {
+      compressed = WIN_DIFFERENT;
+      cleaned = WIN_DIFFERENT_PRIMARY;
+    }
+    else
+    {
+      compressed = WIN_FIRST;
+      cleaned = WIN_FIRST_PRIMARY;
+    }
+  }
+  else if (detail & WIN_SECOND_PRIMARY)
+  {
+    compressed = WIN_SECOND;
+    cleaned = WIN_SECOND_PRIMARY;
+  }
+  else
+    processCore(detail, compressed, cleaned);
 }
 
 

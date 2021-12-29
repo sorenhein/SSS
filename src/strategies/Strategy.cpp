@@ -411,16 +411,18 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
   
   if (cumul & WIN_SECOND_PRIMARY)
     return true;
-  else if (cumul & WIN_FIRST_SECONDARY)
-    return false;
-  else if (cumul & WIN_DIFFERENT_SECONDARY)
-    return false;
+  else if ((cumul & WIN_FIRST_SECONDARY) ||
+      (cumul & WIN_DIFFERENT_SECONDARY))
+  {
+    // We still eliminate a strategy whose overall result is not better.
+    return Strategy::lessEqualSecondaryOverallResult(strat2);
+  }
   else
     return true;
 }
 
 
-CompareType Strategy::compareCompleteBasic(const Strategy& strat2) const
+Compare Strategy::compareCompleteBasic(const Strategy& strat2) const
 {
   // This is mainly for diagnostics.
   assert(strat2.results.size() == results.size());
@@ -428,7 +430,18 @@ CompareType Strategy::compareCompleteBasic(const Strategy& strat2) const
   unsigned cumul;
   Strategy::cumulate(strat2, false, cumul);
 
-  return compressCompareDetail(cumul);
+  // return compressCompareDetail(cumul);
+  
+  Compare compressed;
+  CompareDetail cleaned;
+  processCompareDetail(cumul, compressed, cleaned);
+  if (cleaned == WIN_DIFFERENT_SECONDARY)
+  {
+    // We still derive a comparison based on the overall result.
+    return Strategy::compareSecondaryOverallResult(strat2);
+  }
+  else
+    return compressed;
 }
 
 
@@ -444,7 +457,41 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
   unsigned cumul;
   Strategy::cumulateSecondary(strat2, cumul);
 
-  return compressCompareSecondaryDetail(cumul);
+  // return compressCompareSecondaryDetail(cumul);
+
+  Compare compressed;
+  CompareDetail cleaned;
+  processCore(cumul, compressed, cleaned);
+  if (cleaned == WIN_DIFFERENT_SECONDARY)
+  {
+    // We still derive a comparison based on the overall result.
+    return Strategy::compareSecondaryOverallResult(strat2);
+  }
+  else
+    return compressed;
+}
+
+
+bool Strategy::lessEqualSecondaryOverallResult(
+  const Strategy& strat2) const
+{
+  const Result res1 = Strategy::resultLowest();
+  const Result res2 = strat2.resultLowest();
+  const CompareDetail c = res1.compareSecondaryInDetail(res2);
+
+  if (c == WIN_SECOND_SECONDARY || c == WIN_EQUAL_OVERALL)
+    return true;
+  else
+    return false;
+}
+
+
+Compare Strategy::compareSecondaryOverallResult(
+  const Strategy& strat2) const
+{
+  const Result res1 = Strategy::resultLowest();
+  const Result res2 = strat2.resultLowest();
+  return res1.compareComplete(res2);
 }
 
 
@@ -492,7 +539,7 @@ bool Strategy::lessEqualPrimaryStudied(const Strategy& strat2) const
 }
 
 
-CompareType Strategy::compareCompleteStudied(
+Compare Strategy::compareCompleteStudied(
   const Strategy& strat2) const
 {
   // The first method only goes as far as the studied results allows.
@@ -503,8 +550,7 @@ CompareType Strategy::compareCompleteStudied(
   // WIN_SECOND                 poss poss
   // WIN_DIFFERENT                   poss
 
-  const CompareType c = studied.comparePartialPrimaryStudied(
-    strat2.studied);
+  const Compare c = studied.comparePartialPrimaryStudied(strat2.studied);
 
   if (c == WIN_FIRST)
   {

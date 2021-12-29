@@ -193,7 +193,7 @@ bool Study::maybeLessEqualStudied(const Study& study2) const
 }
 
 
-CompareType Study::comparePartialPrimaryStudied(const Study& study2) const
+Compare Study::comparePartialPrimaryStudied(const Study& study2) const
 {
   // This only goes as far as the studied results allows.
   // Unlike in the other methods: 
