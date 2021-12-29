@@ -44,10 +44,6 @@ class MultiResult
 
     MultiResult& operator = (const Result& res);
 
-    /*
-    void multiplyWinnersOnto(Result& result) const;
-    */
-
     void operator *= (const MultiResult& multiResult);
 
     void operator *= (const Result& result);
@@ -60,17 +56,7 @@ class MultiResult
 
     bool operator != (const MultiResult& multiResult) const;
 
-    /*
-    CompareDetail comparePrimaryInDetail(const Result& res2) const;
-    */
-
     Compare compareComplete(const MultiResult& res2) const;
-
-    /*
-    CompareDetail compareSecondaryInDetail(const Result& res2) const;
-
-    CompareDetail compareInDetail(const Result& res2) const;
-    */
 
     Result result() const;
 
@@ -78,25 +64,11 @@ class MultiResult
 
     unsigned char tricks() const;
 
-    /*
-    unsigned char rank() const;
-
-    unsigned char winAbsNumber() const;
-    */
-
     string strHeaderEntry(
       const bool rankFlag,
       const string& title = "") const;
 
     string strEntry(const bool rankFlag) const;
-
-    /*
-    string strWinners() const;
-
-    string strHeader(const string& title) const;
-
-    string str(const bool rankFlag) const;
-    */
 };
 
 #endif

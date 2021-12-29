@@ -39,18 +39,6 @@ MultiResult& MultiResult::operator = (const Result& res)
 }
 
 
-/*
-void MultiResult::multiplyWinnersOnto(Result& result) const
-{
-  if (control.runRankComparisons())
-  {
-    result.winnersInt *= winnersInt;
-  }
-  
-}
-*/
-
-
 void MultiResult::operator *= (const MultiResult& multiResult)
 {
   // Keep the "lower" one.
@@ -120,20 +108,6 @@ bool MultiResult::operator != (const MultiResult& multiResult) const
 }
 
 
-/*
-CompareDetail MultiResult::comparePrimaryInDetail(
-  const Result& res2) const
-{
-  if (tricksInt > res2.tricksInt)
-    return WIN_FIRST_PRIMARY;
-  else if (tricksInt < res2.tricksInt)
-    return WIN_SECOND_PRIMARY;
-  else
-    return WIN_EQUAL_OVERALL;
-}
-*/
-
-
 Compare MultiResult::compareComplete(const MultiResult& res2) const
 {
   if (tricksInt > res2.tricksInt)
@@ -145,41 +119,6 @@ Compare MultiResult::compareComplete(const MultiResult& res2) const
   else
     return winnersInt.compare(res2.winnersInt);
 }
-
-
-/*
-CompareDetail MultiResult::compareSecondaryInDetail(
-  const Result& res2) const
-{
-  assert(tricksInt == res2.tricksInt);
-
-  if (! control.runRankComparisons())
-    return WIN_EQUAL_OVERALL;
-
-  const Compare c = winnersInt.compare(res2.winnersInt);
-  if (c == WIN_FIRST)
-    return WIN_FIRST_SECONDARY;
-  else if (c == WIN_SECOND)
-    return WIN_SECOND_SECONDARY;
-  else if (c == WIN_EQUAL)
-    return WIN_EQUAL_OVERALL;
-  else
-    return WIN_DIFFERENT_SECONDARY;
-}
-
-
-CompareDetail MultiResult::compareInDetail(const Result& res2) const
-{
-  if (tricksInt > res2.tricksInt)
-    return WIN_FIRST_PRIMARY;
-  else if (tricksInt < res2.tricksInt)
-    return WIN_SECOND_PRIMARY;
-  else if (! control.runRankComparisons())
-    return WIN_EQUAL_OVERALL;
-  else
-    return MultiResult::compareSecondaryInDetail(res2);
-}
-*/
 
 
 Result MultiResult::result() const
@@ -230,37 +169,4 @@ string MultiResult::strEntry(const bool rankFlag) const
 
   return ss.str();
 }
-
-
-/*
-string MultiResult::strWinners() const
-{
-  return winnersInt.strEntry();
-}
-
-
-string MultiResult::strHeader(const string& title) const
-{
-  stringstream ss;
-  if (title != "")
-    ss << title << "\n";
-
-  ss <<
-    setw(4) << left << "Dist" <<
-    setw(6) << "Tricks" << "\n";
-
-  return ss.str();
-}
-
-
-string MultiResult::str(const bool rankFlag) const
-{
-  stringstream ss;
-  ss << 
-    setw(4) << +distInt << 
-    setw(6) << MultiResult::strEntry(rankFlag) << "\n";
-
-  return ss.str();
-}
-*/
 
