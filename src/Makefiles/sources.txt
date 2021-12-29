@@ -48,4 +48,5 @@ SOURCE_FILES    =                               \
                 utils/Card.cpp                  \
                 utils/Comparer.cpp              \
                 utils/Timer.cpp                 \
-                utils/Timers.cpp
+                utils/Timers.cpp                \
+                utils/compsec.cpp

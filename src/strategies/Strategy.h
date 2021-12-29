@@ -8,6 +8,8 @@
 #include "result/Result.h"
 #include "optim/Study.h"
 
+#include "../utils/compsec.h"
+
 class Ranges;
 struct Play;
 class SurvivorList;
