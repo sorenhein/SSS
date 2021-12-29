@@ -9,9 +9,11 @@
 #ifndef SSS_RANGE_H
 #define SSS_RANGE_H
 
-#include "Result.h"
+#include "MultiResult.h"
 
 #include <string>
+
+class Result;
 
 using namespace std;
 
@@ -20,9 +22,9 @@ class Range
 {
   private:
 
-    Result minimum;
-    Result resultHigh;
-    Result resultLow;
+    MultiResult minimum;
+    MultiResult resultHigh;
+    MultiResult resultLow;
 
   public:
 
@@ -35,7 +37,7 @@ class Range
     bool operator < (const Range& range2) const;
 
     bool constant() const;
-    const Result& constantResult() const;
+    Result constantResult() const;
 
     string strHeader(const bool rankFlag) const;
 

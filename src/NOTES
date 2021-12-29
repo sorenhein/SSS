@@ -1,40 +1,5 @@
 2021-12-29
 ----------
-I think there are exactly three places where this occurs, all in Strategy:
-- lessEqualCompleteBasic
-- compareCompleteBasic
-- compareSecondary
-
-In all three, if getting to false on secondary grounds, check product.
-
-compareCompleteBasic, if false:
-Instead of CompareType compressCompareDetail, we probably need
-in Result.cpp:
-
-void processCompareDetail(
-  const unsigned detail,
-  CompareType& compressed,
-  CompareDetail& cleaned)
-
-void processCore that only does secondary
-Then no compressCompareSecondaryDetail
-
-Then 
-
-if (cleaned == WIN_DIFFERENT_SECONDARY)
-  return Strategy::lessEqualSecondaryOverall(strat2);
-else
-  return compressed;
-
-In comparySecondary: Then assert((detail & WIN_PRIMARY) == 0);
-processCore
-if (diff secondary)
-else
-as above
-
-
-Should Strategy::resultLowest() take a res argument instead?
-It seems we'll always be copying otherwise.
 
 
 2021-12-28

@@ -41,6 +41,7 @@ SOURCE_FILES    =                               \
                 strategies/result/Range.cpp     \
                 strategies/result/Ranges.cpp    \
                 strategies/result/Result.cpp    \
+                strategies/result/MultiResult.cpp \
                 strategies/result/Winners.cpp   \
                 strategies/result/Winner.cpp    \
                                                 \

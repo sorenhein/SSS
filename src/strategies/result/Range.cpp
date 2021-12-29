@@ -129,9 +129,11 @@ bool Range::constant() const
 }
 
 
-const Result& Range::constantResult() const
+Result Range::constantResult() const
 {
-  return resultLow;  // Either one, as range assumed constant
+  // Either one, as range assumed constant.
+  // A lot of copying happening here.  Hopefully the compiler is smart.
+  return resultLow.result();
 }
 
 

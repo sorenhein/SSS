@@ -12,6 +12,7 @@
 
 #include "Study.h"
 
+#include "../result/Result.h"
 #include "../result/Ranges.h"
 
 // A major time drain is the component-wise comparison of results.  

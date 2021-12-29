@@ -49,6 +49,8 @@ void processCompareDetail(
 
 class Result
 {
+  friend class MultiResult;
+
   private:
 
     unsigned char distInt;
