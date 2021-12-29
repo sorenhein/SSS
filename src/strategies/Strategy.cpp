@@ -395,7 +395,7 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
 {
   // This is complete in the sense that it includes both the primary
   // and secondary aspects of the Result's.  It is basic in the sense
-  // that it does not rely on studied or scrutinizes Result's.
+  // that it does not rely on studied or scrutinized Result's.
 
   unsigned cumul;
 
@@ -807,30 +807,6 @@ void Strategy::adapt(
   Strategy::adaptResults(play, survivors);
 
   studied.study(results);
-}
-
-
-void Strategy::addComponentwise(const Strategy& strat2)
-{
-  // This method does not have any usual interpretation in terms
-  // of defense (*=) or declarer play (+=).  It is used in order
-  // to pick the component-wise maximum (+=) in the case where at
-  // least one defender is void, so declarer can pick the best result
-  // (and there is only one result, actually).
-
-  assert(results.size() == strat2.results.size()); 
-
-  auto iter1 = results.begin();
-  auto iter2 = strat2.results.begin();
-
-  weightInt = 0;
-  while (iter1 != results.end())
-  {
-    * iter1 += * iter2;
-    weightInt += iter1->tricks();
-    iter1++;
-    iter2++;
-  }
 }
 
 

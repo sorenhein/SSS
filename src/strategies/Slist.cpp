@@ -89,27 +89,6 @@ void Slist::setTrivial(
 }
 
 
-void Slist::collapseOnVoid()
-{
-  assert(strategies.size() > 0);
-  assert(strategies.front().size() == 1);
-
-  if (strategies.size() == 1)
-    return;
-
-  // Find the best one for declarer, as everything is revealed.
-  auto& first = strategies.front();
-  for (auto iter = next(strategies.begin()); 
-      iter != strategies.end(); iter++)
-  {
-    first.addComponentwise(* iter);
-  }
-
-  // Only keep the first, best one.
-  strategies.erase(next(strategies.begin()), strategies.end());
-}
-
-
 void Slist::adapt(
   const Play& play,
   const SurvivorList& survivors)
@@ -120,18 +99,8 @@ void Slist::adapt(
   for (auto& strat: strategies)
     strat.adapt(play, survivors);
 
-  // TODO Commenting this out to avoid additive winners.
-  // The goal is to have none such in any operative strategy.
-  //if (play.lhoPtr->isVoid() || play.rhoPtr->isVoid())
-    //Slist::collapseOnVoid();
-
-  if (strategies.size() > 1 && ! Slist::ordered())
-  {
-    strategies.sort([](const Strategy& strat1, const Strategy& strat2)
-    {
-      return (strat1.weight() > strat2.weight());
-    });
-  }
+  if (strategies.size() > 1)
+    Slist::consolidate(&Strategy::lessEqualCompleteBasic);
 }
 
 

@@ -56,6 +56,8 @@ class Slist
     // Uses compareSecondary if needed.
     void consolidateGeneral(ComparatorType lessEqualMethod);
 
+    void consolidate(ComparatorType lessEqualMethod);
+
     bool sameOrdered(
       const Slist& slist2,
       ComparatorType equalMethod) const;
@@ -145,9 +147,7 @@ class Slist
       const SurvivorList& survivors);
 
 
-    // Consolidate.
-
-    void consolidate(ComparatorType lessEqualMethod);
+    // Consolidate and symmetrize.
 
     void symmetrize();
 

@@ -1,3 +1,65 @@
+2021-12-29
+----------
+Why are we keeping so many strategies separate that will get merged
+when we ignore ranks anyway?  When are strategies actually
+"separate"?
+
+I guess we could say that strategy A dominates B when
+- They have an identical trick profile
+- The overall product across A is better than across B
+
+I think there are exactly three places where this occurs, all in Strategy:
+- lessEqualCompleteBasic
+- compareCompleteBasic
+- compareSecondary
+
+In all three, if getting to false on secondary grounds, check product.
+
+lessEqualCompleteBasic, when getting to false:
+return Strategy::lessEqualSecondaryOverall(strat2);
+
+compareCompleteBasic, if false:
+Instead of CompareType compressCompareDetail, we probably need
+in Result.cpp:
+
+void processCompareDetail(
+  const unsigned detail,
+  CompareType& compressed,
+  CompareDetail& cleaned)
+
+void processCore that only does secondary
+Then no compressCompareSecondaryDetail
+
+Then 
+
+if (cleaned == WIN_DIFFERENT_SECONDARY)
+  return Strategy::lessEqualSecondaryOverall(strat2);
+else
+  return compressed;
+
+In comparySecondary: Then assert((detail & WIN_PRIMARY) == 0);
+processCore
+if (diff secondary)
+else
+as above
+
+
+bool Strategy::lessEqualSecondaryOverall(const Strategy& strat2) const
+{
+  Result res1 = Strategy::resultLowest();
+  Result res2 = strat2.resultLowest();
+  const CompareDetail c = res1.compareSecondaryInDetail(res2);
+  if (c == WIN_SECOND_SECONDARY || c == WIN_EQUAL_OVERALL)
+    return true;
+  else
+    return false;
+}
+
+
+Should Strategy::resultLowest() take a res argument instead?
+It seems we'll always be copying otherwise.
+
+
 2021-12-28
 ----------
 Major next blocks:
