@@ -889,15 +889,6 @@ void Slist::getResultLowest(Result& result) const
 }
 
 
-void Slist::getResultHighest(Result& result) const
-{
-  // TODO Not that efficient.
-  result = strategies.front().resultLowest();
-  for (const auto& strat: strategies)
-    result += strat.resultLowest();
-}
-
-
 void Slist::getResultList(list<Result>& resultList) const
 {
   resultList.clear();

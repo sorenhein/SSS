@@ -138,8 +138,8 @@ assert(reduction.full2reducedDist.size() == distribution.size());
 }
 
   list<Strategies> strategiesExpanded;
-  Result resultCheck;
-  bool firstFlag = true;
+  // Result resultCheck;
+  // bool firstFlag = true;
 
   for (auto& min: centry.minimals)
   {
@@ -196,6 +196,7 @@ if (min.holding3 == 1432)
     strategiesMin.getResultLowest(resultMinNew);
 
 // cout << "adding resultMinNew " << resultMinNew.str(true);
+    /*
     if (firstFlag)
     {
       // An empty result is better than anything, so we have to
@@ -205,6 +206,7 @@ if (min.holding3 == 1432)
     }
     else
       resultCheck += resultMinNew;
+      */
 // cout << "resultCheck now " << resultCheck.str(true) << endl;
 
 
@@ -229,6 +231,7 @@ if (min.holding3 == 1432)
 
   }
 
+  /*
   if (resultLowest != resultCheck)
   {
     cout << "WINNER MISMATCH, size " << centry.minimals.size() << endl;
@@ -237,6 +240,7 @@ if (min.holding3 == 1432)
   }
   else
     cout << "WINNER MATCH, size " << centry.minimals.size() << endl;
+    */
 
 // cout << "Loop fertig" << endl;
 

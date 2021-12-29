@@ -234,7 +234,6 @@ class Slist
     // Winners.
 
     void getResultLowest(Result& result) const;
-    void getResultHighest(Result& result) const;
     void getResultList(list<Result>& resultList) const;
 
 

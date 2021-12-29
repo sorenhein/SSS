@@ -59,8 +59,6 @@ class Result
 
     void operator *= (const Result& result2);
 
-    void operator += (const Result& result2);
-  
     bool operator == (const Result& res2) const;
 
     bool operator != (const Result& res2) const;

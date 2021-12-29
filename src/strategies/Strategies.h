@@ -98,10 +98,6 @@ class Strategies
 
     // TODO Do we need these long-term, all of them?
     void getResultLowest(Result& result) const;
-    void getResultHighest(Result& result) const;
-    void getResultRange(
-      unsigned char& rankLow,
-      unsigned char& rankHigh) const;
     void getResultList(list<Result>& resultList) const;
 
     bool ordered() const;

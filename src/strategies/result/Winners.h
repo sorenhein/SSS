@@ -82,6 +82,10 @@ class Winners
 
     void expand(const char rankAdder);
 
+    // TODO Should not be needed once Result uses a single Winner
+    const Winner& front() const;
+    unsigned size() const;
+
     string str() const;
 
     string strEntry() const;

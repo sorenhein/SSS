@@ -384,6 +384,19 @@ void Winners::expand(const char rankAdder)
 }
 
 
+const Winner& Winners::front() const
+{
+  assert(! winners.empty());
+  return winners.front();
+}
+
+
+unsigned Winners::size() const
+{
+  return winners.size();
+}
+
+
 bool Winners::rankExceeds(const Winners& winners2) const
 {
   // This requires both winners to have winner's.
