@@ -85,6 +85,12 @@ bool Winners::empty() const
 }
 
 
+void Winners::push_back(const Winner& winner)
+{
+  winners.push_back(winner);
+}
+
+
 unsigned char Winners::rank() const
 {
   if (winners.empty())
@@ -228,6 +234,48 @@ void Winners::operator *= (const Winners& winners2)
       wprod *= win2;
       * this += wprod;
     }
+  }
+}
+
+
+void Winners::operator *= (const Winner& winner)
+{
+  // The opponents have the choice.
+
+  if (winner.empty())
+  {
+    // OK as is.
+    return;
+  }
+  else if (Winners::empty())
+  {
+    winners.clear();
+    winners.push_back(winner);
+    return;
+  }
+
+  // All winner's of a winner are of the same rank.
+  if (winner.rankExceeds(winners.front()))
+  {
+    // OK as is: Stick with the lower rank.
+    return;
+  }
+  else if (winners.front().rankExceeds(winner))
+  {
+    winners.clear();
+    winners.push_back(winner);
+    return;
+  }
+
+  // This could be faster, but it's not that slow.
+  Winners winners1 = move(* this);
+  Winners::reset();
+
+  for (auto& win1: winners1.winners)
+  {
+    Winner wprod = win1;
+    wprod *= winner;
+    * this += wprod;
   }
 }
 

@@ -64,6 +64,8 @@ class Winners
 
     bool empty() const;
 
+    void push_back(const Winner& winner);
+
     unsigned char rank() const;
 
     unsigned char absNumber() const;
@@ -71,6 +73,7 @@ class Winners
     void operator += (const Winners& winners2);
 
     void operator *= (const Winners& winners2);
+    void operator *= (const Winner& winner);
 
     bool operator == (const Winners& winners2) const;
 
