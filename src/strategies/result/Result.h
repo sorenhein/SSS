@@ -47,8 +47,12 @@ void processCompareDetail(
   Compare& compressed,
   CompareDetail& cleaned);
 
+
 class Result
 {
+  // TODO We use result.winnersInt in three places.
+  // Once we move to a single winner, maybe make an interface method
+  // and unfriend.
   friend class MultiResult;
 
   private:
@@ -107,10 +111,6 @@ class Result
     unsigned char rank() const;
 
     unsigned char winAbsNumber() const;
-
-    string strHeaderEntry(
-      const bool rankFlag,
-      const string& title = "") const;
 
     string strEntry(const bool rankFlag) const;
 

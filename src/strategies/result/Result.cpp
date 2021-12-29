@@ -202,7 +202,6 @@ void Result::multiplyWinnersOnto(Result& result) const
   {
     result.winnersInt *= winnersInt;
   }
-  
 }
 
 
@@ -332,22 +331,6 @@ unsigned char Result::winAbsNumber() const
     return winnersInt.absNumber();
   else
     return 0;
-}
-
-
-string Result::strHeaderEntry(
-  const bool rankFlag,
-  const string& title) const
-{
-  stringstream ss;
-  if (rankFlag)
-    ss << 
-      setw(4) << "Tr" <<
-      setw(8) << (title == "" ? "Win" : title);
-  else
-    ss << setw(4) << (title == "" ? "Tr" : title);
-
-  return ss.str();
 }
 
 

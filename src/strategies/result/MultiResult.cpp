@@ -14,7 +14,6 @@
 #include "MultiResult.h"
 #include "Result.h"
 
-#include "../../plays/Play.h"
 #include "../../inputs/Control.h"
 
 extern Control control;
@@ -29,8 +28,8 @@ MultiResult::MultiResult()
 
 MultiResult& MultiResult::operator = (const Result& res)
 {
-  distInt = res.distInt;
-  tricksInt = res.tricksInt;
+  distInt = res.dist();
+  tricksInt = res.tricks();
   winnersInt = res.winnersInt;
   return * this;
 
@@ -55,9 +54,9 @@ void MultiResult::operator *= (const MultiResult& multiResult)
 void MultiResult::operator *= (const Result& result)
 {
   // Keep the "lower" one.
-  if (tricksInt > result.tricksInt)
+  if (tricksInt > result.tricks())
     * this = result;
-  else if (tricksInt == result.tricksInt)
+  else if (tricksInt == result.tricks())
   {
     if (control.runRankComparisons())
       winnersInt *= result.winnersInt;
@@ -81,9 +80,9 @@ void MultiResult::operator += (const MultiResult& multiResult)
 void MultiResult::operator += (const Result& result)
 {
   // Keep the "upper" one.
-  if (tricksInt < result.tricksInt)
+  if (tricksInt < result.tricks())
     * this = result;
-  else if (tricksInt == result.tricksInt)
+  else if (tricksInt == result.tricks())
   {
     if (control.runRankComparisons())
       winnersInt += result.winnersInt;
