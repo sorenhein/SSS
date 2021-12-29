@@ -31,8 +31,6 @@ class Winners
       Comparer& comparer,
       const Winners& winners2) const;
 
-    void operator += (const Winner& winner2);
-
     bool operator != (const Winners& winners2) const;
 
     bool rankExceeds(const Winners& winners2) const;
@@ -52,7 +50,9 @@ class Winners
 
     void reset();
 
-    void setEmpty();
+    void addEmpty();
+
+    void reset(const Winner& winner);
 
     void set(
       const Side sideIn,
@@ -71,6 +71,7 @@ class Winners
     unsigned char absNumber() const;
 
     void operator += (const Winners& winners2);
+    void operator += (const Winner& winner2);
 
     void operator *= (const Winners& winners2);
     void operator *= (const Winner& winner);

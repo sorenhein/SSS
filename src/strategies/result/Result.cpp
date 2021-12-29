@@ -53,7 +53,7 @@ void Result::setDist(const unsigned char dist)
 void Result::setTricks(const unsigned char tricks)
 {
   tricksInt = tricks;
-  winnersInt.setEmpty();
+  winnersInt.addEmpty();
   winner.setEmpty();
 }
 

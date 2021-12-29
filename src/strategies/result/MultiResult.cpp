@@ -30,11 +30,8 @@ MultiResult& MultiResult::operator = (const Result& res)
 {
   distInt = res.dist();
   tricksInt = res.tricks();
-  winnersInt = res.winnersInt;
+  winnersInt.reset(res.winner);
   return * this;
-
-  // TODO When Result moves to a single winner, this should be
-  // something like winnersInt.push_back(res.winner)
 }
 
 

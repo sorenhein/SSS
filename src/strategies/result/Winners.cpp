@@ -41,7 +41,8 @@ void Winners::reset()
 }
 
 
-void Winners::setEmpty()
+// TODO May not be needed long-term
+void Winners::addEmpty()
 {
   // Makes a new winner every time.
   winners.emplace_back(Winner());
@@ -49,6 +50,13 @@ void Winners::setEmpty()
   win.setEmpty();
 
 assert(winners.size() == 1);
+}
+
+
+void Winners::reset(const Winner& winner)
+{
+  winners.clear();
+  winners.push_back(winner);
 }
 
 
@@ -137,6 +145,23 @@ void Winners::operator += (const Winner& winner2)
   // It may also be dominated by at least one existing winner.
   // If neither is true, then it is a new winner.
 
+
+// TODO Why does this lead to a fail?
+/*
+  if (Winners::empty())
+  {
+    // OK as is: Declarer wants no constraints.
+    return;
+  }
+  else 
+*/
+
+  if (winner2.empty())
+  {
+    Winners::reset();
+    return;
+  }
+
   auto witer = winners.begin();
   while (witer != winners.end())
   {
@@ -173,7 +198,7 @@ void Winners::operator += (const Winners& winners2)
   }
   else if (winners2.empty())
   {
-    * this = winners2;
+    Winners::reset();
     return;
   }
 
@@ -408,6 +433,8 @@ void Winners::consolidate()
 }
 
 
+// TODO This might also eliminate limitByRank and consolidate
+/* */
 void Winners::update(const Play& play)
 {
   for (auto& winner: winners)
@@ -423,6 +450,7 @@ void Winners::update(const Play& play)
   if (play.trickNS)
     * this *= play.currBest;
 }
+/* */
 
 
 void Winners::expand(const char rankAdder)
