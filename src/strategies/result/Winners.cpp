@@ -148,29 +148,20 @@ bool Winners::rankExceeds(const Winners& winners2) const
 
 void Winners::operator += (const Winners& winners2)
 {
-  // Declarer has the choice.  This is complementary to *=.
+  // Declarer has the choice and prefers no constraints.  
+  // This is complementary to *=.
 
-  if (Winners::empty())
+  const unsigned r1 = Winners::rank();
+  const unsigned r2 = winners2.rank();
+
+  if (r1 > r2 || Winners::empty())
   {
-    // OK as is: Declarer wants no constraints.
+    // OK as is: Stick with the only/lower rank.
     return;
   }
-  else if (winners2.empty())
+  else if (r2 > r1)
   {
-    Winners::reset();
-    return;
-  }
-
-  // All winner's of a winner are of the same rank.
-  if (winners2.rankExceeds(* this))
-  {
-    // Go with the higher rank.
     * this = winners2;
-    return;
-  }
-  else if (Winners::rankExceeds(winners2))
-  {
-    // OK as is: Stick with the lower rank.
     return;
   }
 
