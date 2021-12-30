@@ -36,7 +36,7 @@ void Result::set(
 
   if (control.runRankComparisons())
   {
-    winnersInt = winners;
+    // winnersInt = winners;
 
     assert(winners.size() == 1);
     winner = winners.front();
@@ -53,7 +53,7 @@ void Result::setDist(const unsigned char dist)
 void Result::setTricks(const unsigned char tricks)
 {
   tricksInt = tricks;
-  winnersInt.addEmpty();
+  // winnersInt.addEmpty();
   winner.setEmpty();
 }
 
@@ -67,7 +67,7 @@ void Result::update(
 
   if (control.runRankComparisons())
   {
-    winnersInt.update(play);
+    // winnersInt.update(play);
     
     winner.update(play);
 
@@ -86,7 +86,7 @@ void Result::expand(
 {
   // This is used to expand a minimal strategy to a general one.
   distInt = dist;
-  winnersInt.expand(rankAdder);
+  // winnersInt.expand(rankAdder);
   winner.expand(rankAdder);
 }
 
@@ -95,7 +95,7 @@ void Result::flip()
 {
   if (control.runRankComparisons())
   {
-    winnersInt.flip();
+    // winnersInt.flip();
     winner.flip();
   }
 }
@@ -105,7 +105,7 @@ void Result::multiplyWinnersOnto(Result& result) const
 {
   if (control.runRankComparisons())
   {
-    result.winnersInt *= winnersInt;
+    // result.winnersInt *= winnersInt;
     result.winner *= winner;
   }
 }
@@ -120,7 +120,7 @@ void Result::operator *= (const Result& result2)
   {
     if (control.runRankComparisons())
     {
-      winnersInt *= result2.winnersInt;
+      // winnersInt *= result2.winnersInt;
       winner *= result2.winner;
     }
   }
@@ -135,11 +135,12 @@ bool Result::operator == (const Result& res2) const
     return true;
   else
   {
-    const bool b1 = (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
-    const bool b2 = (winner.compareGeneral(res2.winner) == WIN_EQUAL);
-    assert(b1 == b2);
+    // const bool b1 = (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
+    // const bool b2 = (winner.compareGeneral(res2.winner) == WIN_EQUAL);
+    // assert(b1 == b2);
 
-    return b1;
+    return (winner.compareGeneral(res2.winner) == WIN_EQUAL);
+    // return b1;
     // return (winnersInt.compare(res2.winnersInt) == WIN_EQUAL);
   }
 }
@@ -172,11 +173,12 @@ Compare Result::compareComplete(const Result& res2) const
     return WIN_EQUAL;
   else
   {
-    const Compare b1 = winnersInt.compare(res2.winnersInt);
-    const Compare b2 = winner.compareGeneral(res2.winner);
-    assert(b1 == b2);
+    // const Compare b1 = winnersInt.compare(res2.winnersInt);
+    // const Compare b2 = winner.compareGeneral(res2.winner);
+    // assert(b1 == b2);
 
-    return b1;
+    // return b1;
+    return winner.compareGeneral(res2.winner);
     // return winnersInt.compare(res2.winnersInt);
   }
 }
@@ -189,9 +191,9 @@ CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
   if (! control.runRankComparisons())
     return WIN_EQUAL_OVERALL;
 
-  const Compare c = winnersInt.compare(res2.winnersInt);
-  const Compare c2 = winner.compareGeneral(res2.winner);
-  assert(c == c2);
+  // const Compare c = winnersInt.compare(res2.winnersInt);
+  const Compare c = winner.compareGeneral(res2.winner);
+  // assert(c == c2);
 
   if (c == WIN_FIRST)
     return WIN_FIRST_SECONDARY;
@@ -234,9 +236,10 @@ unsigned char Result::rank() const
   if (control.runRankComparisons())
   {
     const unsigned char w = (winner.empty() ? 0 : winner.getRank());
-    assert(w == winnersInt.rank());
+    // assert(w == winnersInt.rank());
 
-    return winnersInt.rank();
+    return w;
+    // return winnersInt.rank();
   }
   else
     return 0;
@@ -248,6 +251,7 @@ unsigned char Result::winAbsNumber() const
   if (control.runRankComparisons())
   {
     const unsigned char a = (winner.empty() ? 0 : winner.getAbsNumber());
+    /*
     if (a != winnersInt.absNumber())
     {
       cout << "winner " << winner.str() << endl;
@@ -257,8 +261,10 @@ unsigned char Result::winAbsNumber() const
 
       assert(a == winnersInt.absNumber());
     }
+    */
 
-    return winnersInt.absNumber();
+    // return winnersInt.absNumber();
+    return a;
   }
   else
     return 0;
@@ -271,7 +277,8 @@ string Result::strEntry(const bool rankFlag) const
   ss << setw(4) << +tricksInt;
 
   if (rankFlag)
-    ss << setw(8) << winnersInt.strEntry();
+    ss << setw(8) << winner.str();
+    // ss << setw(8) << winnersInt.strEntry();
 
   return ss.str();
 }
@@ -279,7 +286,8 @@ string Result::strEntry(const bool rankFlag) const
 
 string Result::strWinners() const
 {
-  return winnersInt.strEntry();
+  return winner.str();
+  // return winnersInt.strEntry();
 }
 
 

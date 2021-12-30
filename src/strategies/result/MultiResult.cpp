@@ -30,7 +30,7 @@ MultiResult& MultiResult::operator = (const Result& res)
 {
   distInt = res.dist();
   tricksInt = res.tricks();
-  winnersInt.reset(res.winner);
+  winnersInt.set(res.winner);
   return * this;
 }
 
@@ -56,7 +56,8 @@ void MultiResult::operator *= (const Result& result)
   else if (tricksInt == result.tricks())
   {
     if (control.runRankComparisons())
-      winnersInt *= result.winnersInt;
+      winnersInt *= result.winner;
+      // winnersInt *= result.winnersInt;
   }
 }
 
@@ -82,7 +83,8 @@ void MultiResult::operator += (const Result& result)
   else if (tricksInt == result.tricks())
   {
     if (control.runRankComparisons())
-      winnersInt += result.winnersInt;
+      winnersInt += result.winner;
+      // winnersInt += result.winnersInt;
   }
 }
 

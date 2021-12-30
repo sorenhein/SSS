@@ -53,7 +53,7 @@ assert(winners.size() == 1);
 }
 
 
-void Winners::reset(const Winner& winner)
+void Winners::set(const Winner& winner)
 {
   winners.clear();
   winners.push_back(winner);

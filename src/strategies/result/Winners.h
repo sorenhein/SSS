@@ -52,7 +52,7 @@ class Winners
 
     void addEmpty();
 
-    void reset(const Winner& winner);
+    void set(const Winner& winner);
 
     void set(
       const Side sideIn,

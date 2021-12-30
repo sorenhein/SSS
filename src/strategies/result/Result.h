@@ -29,7 +29,7 @@ class Result
 
     unsigned char tricksInt;
 
-    Winners winnersInt;
+    // Winners winnersInt;
     Winner winner;
 
   public:
