@@ -29,7 +29,7 @@ class Winners
       Comparer& comparer,
       const Winners& winners2) const;
 
-    bool rankExceeds(const Winners& winners2) const;
+    void addCore(const Winner& winner);
 
 
   public:

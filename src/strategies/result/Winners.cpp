@@ -89,12 +89,55 @@ void Winners::fillComparer(
 }
 
 
+void Winners::addCore(const Winner& winner)
+{
+  // Both Winners and winner2 are non-empty and have the same rank.
+  // Actually the rank condition is not required.
+
+  auto witer = winners.begin();
+  while (witer != winners.end())
+  {
+    const Compare cmp = witer->compareNonEmpties(winner);
+    if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
+    {
+      // The new subwinner is inferior.
+      return;
+    }
+    else if (cmp == WIN_SECOND)
+    {
+      // The existing subwinner is inferior.
+      witer = winners.erase(witer);
+    }
+    else
+      witer++;
+  }
+
+  winners.push_back(winner);
+}
+
+
 void Winners::operator += (const Winner& winner2)
 {
   // winners are a minimal set.
   // The new winner may dominate existing winners.
   // It may also be dominated by at least one existing winner.
   // If neither is true, then it is a new winner.
+
+  /*
+  const unsigned r1 = Winners::rank();
+  const unsigned r2 = winner2.getRank();
+
+  if (r1 > r2 || Winners::empty())
+  {
+    // OK as is: Stick with the only/higher rank.
+    return;
+  }
+  else if (r2 > r1)
+  {
+    Winners::set(winner2);
+    return;
+  }
+  */
 
 
 // TODO Why does this lead to a fail?
@@ -113,36 +156,7 @@ void Winners::operator += (const Winner& winner2)
     return;
   }
 
-  auto witer = winners.begin();
-  while (witer != winners.end())
-  {
-    const Compare cmp = witer->compareNonEmpties(winner2);
-    if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
-    {
-      // The new subwinner is inferior.
-      return;
-    }
-    else if (cmp == WIN_SECOND)
-    {
-      // The existing subwinner is inferior.
-      witer = winners.erase(witer);
-    }
-    else
-      witer++;
-  }
-
-  winners.push_back(winner2);
-}
-
-
-bool Winners::rankExceeds(const Winners& winners2) const
-{
-  // This requires both winners to have winner's.
-  // Each winner has consistent ranks.
-  assert(! Winners::empty());
-  assert(! winners2.empty());
-
-  return (winners.front().getRank() > winners2.winners.front().getRank());
+  Winners::addCore(winner2);
 }
 
 
@@ -166,7 +180,7 @@ void Winners::operator += (const Winners& winners2)
   }
 
   for (auto& win2: winners2.winners)
-    * this += win2;
+    Winners::addCore(win2);
 }
 
 
@@ -281,9 +295,9 @@ Compare Winners::compare(const Winners& winners2) const
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
     return winners.front().compareNonEmpties(winners2.winners.front());
-  else if (Winners::rankExceeds(winners2))
+  else if (Winners::rank() > winners2.rank())
     return WIN_FIRST;
-  else if (winners2.rankExceeds(* this))
+  else if (winners2.rank() > Winners::rank())
     return WIN_SECOND;
   else
   {
