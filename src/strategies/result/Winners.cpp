@@ -123,38 +123,35 @@ void Winners::addCore(const Winner& winner)
 
 void Winners::operator += (const Winner& winner)
 {
+  // This method is not completely analogous to += Winners,
+  // as it is used to accumulate Winner's in a loop.  If Winners
+  // starts out empty, that does not mean that declarer gets to
+  // enjoy no constraints; it means that we haven't added any
+  // constraints yet.  In contrast, if we are adding Winners,
+  // an empty addend means no constraint.
 
-  /*
   const unsigned r1 = Winners::rank();
-  const unsigned r2 = winner2.getRank();
-
-  if (r1 > r2 || Winners::empty())
-  {
-    // OK as is: Stick with the only/higher rank.
-    return;
-  }
-  else if (r2 > r1)
-  {
-    Winners::set(winner2);
-    return;
-  }
-  */
-
+  const unsigned r2 = winner.getRank();
 
   if (winner.empty())
   {
+    // This part is normal: An empty input removes declarer's constraints.
     Winners::reset();
     return;
   }
-
-// TODO Why does this lead to a fail?
-  if (Winners::empty())
+  else if (r1 > r2 && ! Winners::empty())
   {
-    // OK as is: Declarer wants no constraints.
+    // This too is normal: A too-low input does nothing.
+    return;
+  }
+  else if (r2 > r1 || Winners::empty())
+  {
+    // The unusual condition is Winners::empty(), which we
+    // treat the same as if the new winner is preferable to declarer.
+    Winners::reset();
     winners.push_back(winner);
     return;
   }
-
 
   Winners::addCore(winner);
 }
@@ -170,7 +167,7 @@ void Winners::operator += (const Winners& winners2)
 
   if (r1 > r2 || Winners::empty())
   {
-    // OK as is: Stick with the only/lower rank.
+    // OK as is: Stick with the only/higher rank.
     return;
   }
   else if (r2 > r1)
