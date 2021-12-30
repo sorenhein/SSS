@@ -96,73 +96,68 @@ void Result::multiplyWinnersOnto(Result& result) const
 }
 
 
-void Result::operator *= (const Result& result2)
+void Result::operator *= (const Result& result)
 {
   // Keep the "lower" one.
-  if (tricks > result2.tricks)
-    * this = result2;
-  else if (tricks == result2.tricks)
+  if (tricks > result.tricks)
+    * this = result;
+  else if (tricks == result.tricks)
   {
     if (control.runRankComparisons())
-      winner *= result2.winner;
+      winner *= result.winner;
   }
 }
 
 
-bool Result::operator == (const Result& res2) const
+bool Result::operator == (const Result& result) const
 {
-  if (tricks != res2.tricks)
+  if (tricks != result.tricks)
     return false;
   else if (! control.runRankComparisons())
     return true;
   else
-    // TODO Do we need a separate General method as here?
-    return (winner.compareGeneral(res2.winner) == WIN_EQUAL);
+    return (winner.compare(result.winner) == WIN_EQUAL);
 }
 
 
-bool Result::operator != (const Result& res2) const
+bool Result::operator != (const Result& result) const
 {
-  return ! (* this == res2);
+  return ! (* this == result);
 }
 
 
-CompareDetail Result::comparePrimaryInDetail(const Result& res2) const
+CompareDetail Result::comparePrimaryInDetail(const Result& result) const
 {
-  if (tricks > res2.tricks)
+  if (tricks > result.tricks)
     return WIN_FIRST_PRIMARY;
-  else if (tricks < res2.tricks)
+  else if (tricks < result.tricks)
     return WIN_SECOND_PRIMARY;
   else
     return WIN_EQUAL_OVERALL;
 }
 
 
-Compare Result::compareComplete(const Result& res2) const
+Compare Result::compareComplete(const Result& result) const
 {
-  if (tricks > res2.tricks)
+  if (tricks > result.tricks)
     return WIN_FIRST;
-  else if (tricks < res2.tricks)
+  else if (tricks < result.tricks)
     return WIN_SECOND;
   else if (! control.runRankComparisons())
     return WIN_EQUAL;
   else
-  {
-    // TODO Similar to above
-    return winner.compareGeneral(res2.winner);
-  }
+    return winner.compare(result.winner);
 }
 
 
-CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
+CompareDetail Result::compareSecondaryInDetail(const Result& result) const
 {
-  assert(tricks == res2.tricks);
+  assert(tricks == result.tricks);
 
   if (! control.runRankComparisons())
     return WIN_EQUAL_OVERALL;
 
-  const Compare c = winner.compareGeneral(res2.winner);
-  // assert(c == c2);
+  const Compare c = winner.compare(result.winner);
 
   if (c == WIN_FIRST)
     return WIN_FIRST_SECONDARY;
@@ -175,16 +170,16 @@ CompareDetail Result::compareSecondaryInDetail(const Result& res2) const
 }
 
 
-CompareDetail Result::compareInDetail(const Result& res2) const
+CompareDetail Result::compareInDetail(const Result& result) const
 {
-  if (tricks > res2.tricks)
+  if (tricks > result.tricks)
     return WIN_FIRST_PRIMARY;
-  else if (tricks < res2.tricks)
+  else if (tricks < result.tricks)
     return WIN_SECOND_PRIMARY;
   else if (! control.runRankComparisons())
     return WIN_EQUAL_OVERALL;
   else
-    return Result::compareSecondaryInDetail(res2);
+    return Result::compareSecondaryInDetail(result);
 }
 
 
@@ -203,11 +198,7 @@ unsigned char Result::getTricks() const
 unsigned char Result::getRank() const
 {
   if (control.runRankComparisons())
-  {
-    const unsigned char w = (winner.empty() ? 0 : winner.getRank());
-
-    return w;
-  }
+    return winner.getRank();
   else
     return 0;
 }
@@ -216,10 +207,7 @@ unsigned char Result::getRank() const
 unsigned char Result::winAbsNumber() const
 {
   if (control.runRankComparisons())
-  {
-    const unsigned char a = (winner.empty() ? 0 : winner.getAbsNumber());
-    return a;
-  }
+    return winner.getAbsNumber();
   else
     return 0;
 }

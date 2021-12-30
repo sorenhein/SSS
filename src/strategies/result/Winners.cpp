@@ -130,7 +130,7 @@ void Winners::fillComparer(
     unsigned n2 = 0;
     for (auto& win2: winners2.winners)
     {
-      comparer.log(n1, n2, win1.compare(win2));
+      comparer.log(n1, n2, win1.compareNonEmpties(win2));
       n2++;
     }
     n1++;
@@ -165,7 +165,7 @@ void Winners::operator += (const Winner& winner2)
   auto witer = winners.begin();
   while (witer != winners.end())
   {
-    const Compare cmp = witer->compare(winner2);
+    const Compare cmp = witer->compareNonEmpties(winner2);
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
       // The new subwinner is inferior.
@@ -349,7 +349,7 @@ Compare Winners::compare(const Winners& winners2) const
   else if (winners2.empty())
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
-    return winners.front().compare(winners2.winners.front());
+    return winners.front().compareNonEmpties(winners2.winners.front());
   else if (Winners::rankExceeds(winners2))
     return WIN_FIRST;
   else if (winners2.rankExceeds(* this))
@@ -369,88 +369,6 @@ void Winners::flip()
   for (auto& winner: winners)
     winner.flip();
 }
-
-
-void Winners::limitByRank()
-{
-  // It can happen that the North and South ranks from the next trick
-  // are of the same rank, but they are mapped to different ranks in
-  // the current trick, and they are combined by declarer's choice.
-  // So we check that all Winner's have the same rank and remove any
-  // that are lower than the maximum rank.
-  unsigned char min = numeric_limits<unsigned char>::max();
-  unsigned char max = 0;
-
-  // Find the range of ranks.
-  for (auto& winner: winners)
-  {
-    const unsigned char rank = winner.getRank();
-    if (rank == UCHAR_NOT_SET)
-      continue;
-
-    if (rank < min)
-      min = rank;
-    if (rank > max)
-      max = rank;
-  }
-
-  if (min == max)
-    return;
-
-  // Remove Winner's of too-low rank.
-  auto iter = winners.begin();
-  while (iter != winners.end())
-  {
-    if (iter->getRank() < max)
-      iter = winners.erase(iter);
-    else
-      iter++;
-  }
-}
-
-
-void Winners::consolidate()
-{
-  // It can also happen that Winner::update throws out one side,
-  // e.g. the South rank, because the mapped rank is lower than
-  // the mapped North rank.  That can mean that the reduced winner
-  // dominates other Winner's.
-  
-  if (winners.size() == 2)
-  {
-    const Compare c = winners.front().compare(winners.back());
-    if (c == WIN_FIRST || c == WIN_EQUAL)
-      winners.pop_back();
-    else if (c == WIN_SECOND)
-      winners.pop_front();
-  }
-  else
-  {
-    // If this ever happens, we can probably make a Comparer and
-    // get back the numbers of Winner's to erase.
-    assert(false);
-  }
-}
-
-
-// TODO This might also eliminate limitByRank and consolidate
-/* */
-void Winners::update(const Play& play)
-{
-  for (auto& winner: winners)
-    winner.update(play);
-
-  if (winners.size() >= 2)
-  {
-    Winners::limitByRank();
-    if (winners.size() >= 2) // May have shrunk in limitByRank
-      Winners::consolidate();
-  }
-
-  if (play.trickNS)
-    * this *= play.currBest;
-}
-/* */
 
 
 void Winners::expand(const char rankAdder)

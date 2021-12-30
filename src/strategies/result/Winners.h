@@ -35,10 +35,6 @@ class Winners
 
     bool rankExceeds(const Winners& winners2) const;
 
-    void limitByRank();
-
-    void consolidate();
-
     string strSingleSided(
       const string& name,
       const Card& winner) const;
@@ -81,8 +77,6 @@ class Winners
     Compare compare(const Winners& w2) const;
 
     void flip();
-
-    void update(const Play& play);
 
     void expand(const char rankAdder);
 

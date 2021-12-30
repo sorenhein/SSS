@@ -80,8 +80,9 @@ class Winner
 
     unsigned char getAbsNumber() const;
 
-    Compare compareGeneral(const Winner& winner2) const;
     Compare compare(const Winner& winner2) const;
+
+    Compare compareNonEmpties(const Winner& winner2) const;
 
     void flip();
 

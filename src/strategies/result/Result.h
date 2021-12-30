@@ -46,29 +46,29 @@ class Result
 
     void update(
       const Play& play,
-      const unsigned char dist);
+      const unsigned char distIn);
 
     void expand(
-      const unsigned char dist,
+      const unsigned char distIn,
       const char rankAdder);
 
     void flip();
 
     void multiplyWinnersOnto(Result& result) const;
 
-    void operator *= (const Result& result2);
+    void operator *= (const Result& result);
 
-    bool operator == (const Result& res2) const;
+    bool operator == (const Result& result) const;
 
-    bool operator != (const Result& res2) const;
+    bool operator != (const Result& result) const;
 
-    CompareDetail comparePrimaryInDetail(const Result& res2) const;
+    CompareDetail comparePrimaryInDetail(const Result& result) const;
 
-    Compare compareComplete(const Result& res2) const;
+    Compare compareComplete(const Result& result) const;
 
-    CompareDetail compareSecondaryInDetail(const Result& res2) const;
+    CompareDetail compareSecondaryInDetail(const Result& result) const;
 
-    CompareDetail compareInDetail(const Result& res2) const;
+    CompareDetail compareInDetail(const Result& result) const;
 
     unsigned char getDist() const;
 
