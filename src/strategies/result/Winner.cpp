@@ -30,7 +30,7 @@ void Winner::reset()
 {
   north.reset();
   south.reset();
-  mode = WIN_NOT_SET;
+  mode = UCHAR_NOT_SET;
   rank = UCHAR_NOT_SET;
 }
 
@@ -75,7 +75,7 @@ bool Winner::operator == (const Winner& winner2) const
   if (mode != winner2.mode)
     return false;
 
-  if (mode == WIN_NOT_SET)
+  if (mode == UCHAR_NOT_SET)
     return true;
 
   if ((mode & WIN_NORTH_SET) && north != winner2.north)
@@ -97,8 +97,8 @@ bool Winner::operator != (const Winner& winner2) const
 void Winner::multiplySide(
   Card& own,
   const Card& other,
-  const WinnerMode otherMode,
-  const unsigned bitmask)
+  const unsigned char otherMode,
+  const unsigned char bitmask)
 {
   if (otherMode & bitmask)
   {
@@ -118,26 +118,28 @@ void Winner::operator *= (const Winner& winner2)
 {
   // The opponents have the choice.
 
-  if (winner2.mode == WIN_NOT_SET || rank < winner2.rank)
+  if (winner2.mode == UCHAR_NOT_SET || rank < winner2.rank)
   {
     // OK as is.
     return;
   }
-  else if (mode == WIN_NOT_SET || winner2.rank < rank)
+  else if (mode == UCHAR_NOT_SET || winner2.rank < rank)
   {
     * this = winner2;
     return;
   }
 
-  Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
-  Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
+  Winner::multiplySide(north, winner2.north,
+    winner2.mode, WIN_NORTH_SET);
+  Winner::multiplySide(south, winner2.south,
+    winner2.mode, WIN_SOUTH_SET);
 }
 
 
 Compare Winner::compareNonEmpties(const Winner& winner2) const
 {
-  assert(mode != WIN_NOT_SET);
-  assert(winner2.mode != WIN_NOT_SET);
+  assert(mode != UCHAR_NOT_SET);
+  assert(winner2.mode != UCHAR_NOT_SET);
 
   // We have to test for rank first, as we might have this Winner as
   // South rank 4 number 0, and winner2 as 
@@ -234,7 +236,7 @@ void Winner::update(const Play& play)
     else
      rank = north.getRank(); // Pick one
   }
-  else if (mode == WIN_NOT_SET)
+  else if (mode == UCHAR_NOT_SET)
   {
     // Stick with the empty winner.
   }
@@ -262,7 +264,7 @@ void Winner::expand(const char rankAdder)
 
 bool Winner::empty() const
 {
-  return (mode == WIN_NOT_SET);
+  return (mode == UCHAR_NOT_SET);
 }
 
 
@@ -275,7 +277,7 @@ unsigned char Winner::getRank() const
 
 unsigned char Winner::getAbsNumber() const
 {
-  if (mode == WIN_NOT_SET)
+  if (mode == UCHAR_NOT_SET)
     return 0;
   else if (mode == WIN_NORTH_SET)
     return north.getAbsNumber();
@@ -288,7 +290,7 @@ unsigned char Winner::getAbsNumber() const
 
 string Winner::str() const
 {
-  if (mode == WIN_NOT_SET)
+  if (mode == UCHAR_NOT_SET)
     return "-";
   else if (mode == WIN_NORTH_ONLY)
     return north.str("N");

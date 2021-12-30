@@ -38,7 +38,8 @@ class Winner
 
     Card north;
     Card south;
-    WinnerMode mode;
+    unsigned DUMMY;
+    unsigned char mode;
     unsigned char rank;
 
 
@@ -49,8 +50,8 @@ class Winner
     void multiplySide(
       Card& own,
       const Card& other,
-      const WinnerMode otherMode,
-      const unsigned bitmask);
+      const unsigned char otherMode,
+      const unsigned char bitmask);
 
 
   public:
