@@ -32,17 +32,17 @@ class MultiResult
 {
   private:
 
-    unsigned char distInt;
+    unsigned char dist;
 
-    unsigned char tricksInt;
+    unsigned char tricks;
 
-    Winners winnersInt;
+    Winners winners;
 
   public:
 
     MultiResult();
 
-    MultiResult& operator = (const Result& res);
+    MultiResult& operator = (const Result& result);
 
     void operator *= (const MultiResult& multiResult);
 
@@ -56,13 +56,13 @@ class MultiResult
 
     bool operator != (const MultiResult& multiResult) const;
 
-    Compare compareComplete(const MultiResult& res2) const;
+    Compare compareComplete(const MultiResult& multiResult) const;
 
     void constantResult(Result& result) const;
 
-    unsigned char dist() const;
+    unsigned char getDist() const;
 
-    unsigned char tricks() const;
+    unsigned char getTricks() const;
 
     string strHeaderEntry(
       const bool rankFlag,

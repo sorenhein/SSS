@@ -29,7 +29,7 @@ void Range::extend(const Result& result)
   // which is as tight as we can make it, but still rounded
   // "outward" when we need to.  Any Result is within its range.
 
-  assert(minimum.dist() == result.getDist());
+  assert(minimum.getDist() == result.getDist());
 
   minimum *= result;
   resultLow *= result;
@@ -153,13 +153,13 @@ string Range::strHeader(const bool rankFlag) const
 
 unsigned char Range::dist() const
 {
-  return minimum.dist();
+  return minimum.getDist();
 }
 
 
 unsigned char Range::min() const
 {
-  return minimum.tricks();
+  return minimum.getTricks();
 }
 
 
@@ -167,7 +167,7 @@ string Range::str(const bool rankFlag) const
 {
   stringstream ss;
   ss << 
-    setw(4) << +minimum.dist() <<
+    setw(4) << +minimum.getDist() <<
     minimum.strEntry(rankFlag) <<
     resultLow.strEntry(rankFlag) <<
     resultHigh.strEntry(rankFlag) <<

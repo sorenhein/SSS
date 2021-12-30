@@ -21,16 +21,16 @@ extern Control control;
 
 MultiResult::MultiResult()
 {
-  distInt = 0;
-  tricksInt = 0;
+  dist = 0;
+  tricks = 0;
 }
 
 
-MultiResult& MultiResult::operator = (const Result& res)
+MultiResult& MultiResult::operator = (const Result& result)
 {
-  distInt = res.getDist();
-  tricksInt = res.getTricks();
-  winnersInt.set(res.getWinner());
+  dist = result.getDist();
+  tricks = result.getTricks();
+  winners.set(result.getWinner());
   return * this;
 }
 
@@ -38,12 +38,12 @@ MultiResult& MultiResult::operator = (const Result& res)
 void MultiResult::operator *= (const MultiResult& multiResult)
 {
   // Keep the "lower" one.
-  if (tricksInt > multiResult.tricksInt)
+  if (tricks > multiResult.tricks)
     * this = multiResult;
-  else if (tricksInt == multiResult.tricksInt)
+  else if (tricks == multiResult.tricks)
   {
     if (control.runRankComparisons())
-      winnersInt *= multiResult.winnersInt;
+      winners *= multiResult.winners;
   }
 }
 
@@ -51,12 +51,12 @@ void MultiResult::operator *= (const MultiResult& multiResult)
 void MultiResult::operator *= (const Result& result)
 {
   // Keep the "lower" one.
-  if (tricksInt > result.getTricks())
+  if (tricks > result.getTricks())
     * this = result;
-  else if (tricksInt == result.getTricks())
+  else if (tricks == result.getTricks())
   {
     if (control.runRankComparisons())
-      winnersInt *= result.getWinner();
+      winners *= result.getWinner();
   }
 }
 
@@ -64,12 +64,12 @@ void MultiResult::operator *= (const Result& result)
 void MultiResult::operator += (const MultiResult& multiResult)
 {
   // Keep the "upper" one.
-  if (tricksInt < multiResult.tricksInt)
+  if (tricks < multiResult.tricks)
     * this = multiResult;
-  else if (tricksInt == multiResult.tricksInt)
+  else if (tricks == multiResult.tricks)
   {
     if (control.runRankComparisons())
-      winnersInt += multiResult.winnersInt;
+      winners += multiResult.winners;
   }
 }
 
@@ -77,24 +77,24 @@ void MultiResult::operator += (const MultiResult& multiResult)
 void MultiResult::operator += (const Result& result)
 {
   // Keep the "upper" one.
-  if (tricksInt < result.getTricks())
+  if (tricks < result.getTricks())
     * this = result;
-  else if (tricksInt == result.getTricks())
+  else if (tricks == result.getTricks())
   {
     if (control.runRankComparisons())
-      winnersInt += result.getWinner();
+      winners += result.getWinner();
   }
 }
 
   
 bool MultiResult::operator == (const MultiResult& multiResult) const
 {
-  if (tricksInt != multiResult.tricksInt)
+  if (tricks != multiResult.tricks)
     return false;
   else if (! control.runRankComparisons())
     return true;
   else
-    return (winnersInt.compare(multiResult.winnersInt) == WIN_EQUAL);
+    return (winners.compare(multiResult.winners) == WIN_EQUAL);
 }
 
 
@@ -104,43 +104,34 @@ bool MultiResult::operator != (const MultiResult& multiResult) const
 }
 
 
-Compare MultiResult::compareComplete(const MultiResult& res2) const
+Compare MultiResult::compareComplete(const MultiResult& multiResult) const
 {
-  if (tricksInt > res2.tricksInt)
+  if (tricks > multiResult.tricks)
     return WIN_FIRST;
-  else if (tricksInt < res2.tricksInt)
+  else if (tricks < multiResult.tricks)
     return WIN_SECOND;
   else if (! control.runRankComparisons())
     return WIN_EQUAL;
   else
-    return winnersInt.compare(res2.winnersInt);
+    return winners.compare(multiResult.winners);
 }
 
 
 void MultiResult::constantResult(Result& result) const
 {
-  result.set(distInt, tricksInt, winnersInt.constantWinner());
-/*
-  Result res;
-  
-  // TODO When Result moves to a single winner, winnersInt.front()
-  // and assert size == 1.
-  // res.set(distInt, tricksInt, winnersInt);
-  assert(winnersInt.size() == 1);
-  res.set(distInt, tricksInt, winnersInt.front());
-  return res;
-*/
-}
-
-unsigned char MultiResult::dist() const
-{
-  return distInt;
+  result.set(dist, tricks, winners.constantWinner());
 }
 
 
-unsigned char MultiResult::tricks() const
+unsigned char MultiResult::getDist() const
 {
-  return tricksInt;
+  return dist;
+}
+
+
+unsigned char MultiResult::getTricks() const
+{
+  return tricks;
 }
 
 
@@ -163,10 +154,10 @@ string MultiResult::strHeaderEntry(
 string MultiResult::strEntry(const bool rankFlag) const
 {
   stringstream ss;
-  ss << setw(4) << +tricksInt;
+  ss << setw(4) << +tricks;
 
   if (rankFlag)
-    ss << setw(8) << winnersInt.strEntry();
+    ss << setw(8) << winners.strEntry();
 
   return ss.str();
 }
