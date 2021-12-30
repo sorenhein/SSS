@@ -51,10 +51,6 @@ class Winners
     void set(const Winner& winner);
 
     void set(
-      const Side sideIn,
-      const Card& card);
-
-    void set(
       const Card& north,
       const Card& south);
 

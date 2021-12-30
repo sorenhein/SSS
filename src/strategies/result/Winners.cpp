@@ -61,19 +61,6 @@ void Winners::set(const Winner& winner)
 
 
 void Winners::set(
-  const Side sideIn,
-  const Card& card)
-{
-  // Makes a new subwinner every time.
-  winners.emplace_back(Winner());
-  Winner& win = winners.back();
-  win.set(sideIn, card);
-
-assert(winners.size() == 1);
-}
-
-
-void Winners::set(
   const Card& north,
   const Card& south)
 {

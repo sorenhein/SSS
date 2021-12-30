@@ -240,10 +240,11 @@ void Ranks::trivialRanked(
     // winners.set(north.top(), south.top());
     // trivial.set(0, tricks, winners);
     Winner winner;
-    if (north.top() > south.top())
-      winner.set(SIDE_NORTH, north.top());
-    else
-      winner.set(SIDE_SOUTH, south.top());
+    winner.setHigherOf(north.top(), south.top());
+    // if (north.top() > south.top())
+      // winner.set(SIDE_NORTH, north.top());
+    // else
+      // winner.set(SIDE_SOUTH, south.top());
 
     // trivial.set(0, tricks, north.top(), south.top());
     trivial.set(0, tricks, winner);

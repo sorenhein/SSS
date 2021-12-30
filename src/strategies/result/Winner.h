@@ -42,6 +42,10 @@ class Winner
     unsigned char rank;
 
 
+    void set(
+      const Side sideIn,
+      const Card& card);
+
     void multiplySide(
       Card& own,
       const Card& other,
@@ -62,10 +66,6 @@ class Winner
       const unsigned char numberIn,
       const unsigned char absNumberIn,
       const unsigned char nameIn);
-
-    void set(
-      const Side sideIn,
-      const Card& card);
 
     void setHigherOf(
       const Card& northIn,
