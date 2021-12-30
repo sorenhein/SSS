@@ -37,45 +37,8 @@ void Winner::reset()
 
 void Winner::set(
   const Side sideIn,
-  const unsigned char rankIn,
-  const unsigned char depthIn,
-  const unsigned char numberIn,
-  const unsigned char absNumberIn,
-  const unsigned char nameIn)
-{
-  // This doesn't reset the winner, so the method can be used to build
-  // up a winner with more than one component if called twice.
-  // In that case, NS decide among the options.
-
-  assert(mode == WIN_NOT_SET);
-  rank = rankIn;
-
-  if (sideIn == SIDE_NORTH)
-  {
-    north.set(rankIn, depthIn, numberIn, absNumberIn, nameIn);
-    mode = WIN_NORTH_ONLY;
-  }
-  else if (sideIn == SIDE_SOUTH)
-  {
-    south.set(rankIn, depthIn, numberIn, absNumberIn, nameIn);
-    mode = WIN_SOUTH_ONLY;
-  }
-  else if (sideIn == SIDE_NONE)
-    mode = WIN_NOT_SET;
-  else
-    assert(false);
-}
-
-
-void Winner::set(
-  const Side sideIn,
   const Card& card)
 {
-  // This doesn't reset the winner, so the method can be used to build
-  // up a winner with more than one component if called twice.
-  // In that case, NS decide among the options.
-
-  assert(mode == WIN_NOT_SET);
   if (sideIn != SIDE_NONE)
     rank = card.getRank();
 
@@ -90,7 +53,10 @@ void Winner::set(
     mode = WIN_SOUTH_ONLY;
   }
   else if (sideIn == SIDE_NONE)
+  {
+assert(false);
     mode = WIN_NOT_SET;
+  }
   else
     assert(false);
 }
@@ -106,19 +72,6 @@ void Winner::setHigherOf(
     Winner::set(SIDE_NORTH, northIn);
   else
     Winner::set(SIDE_SOUTH, southIn);
-}
-
-
-bool Winner::empty() const
-{
-  return (mode == WIN_NOT_SET);
-}
-
-
-void Winner::setEmpty()
-{
-  // Do nothing.
-  assert(mode == WIN_NOT_SET);
 }
 
 
@@ -243,36 +196,6 @@ void Winner::operator *= (const Winner& winner2)
 }
 
 
-unsigned char Winner::getRank() const
-{
-  return (Winner::empty() ? 0 : rank);
-}
-
-
-unsigned char Winner::getAbsNumber() const
-{
-  const unsigned char n = north.getAbsNumber();
-  const unsigned char s = south.getAbsNumber();
-  if (n == 0)
-    return s;
-  else if (s == 0)
-    return n;
-  else
-    return min(n, s);
-}
-
-
-Compare Winner::compare(const Winner& winner2) const
-{
-  if (Winner::empty())
-    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
-  else if (winner2.empty())
-    return WIN_SECOND;
-  else
-    return Winner::compareNonEmpties(winner2);
-}
-
-
 Compare Winner::compareNonEmpties(const Winner& winner2) const
 {
   assert(mode != WIN_NOT_SET);
@@ -309,9 +232,20 @@ Compare Winner::compareNonEmpties(const Winner& winner2) const
 }
 
 
+Compare Winner::compare(const Winner& winner2) const
+{
+  if (Winner::empty())
+    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
+  else if (winner2.empty())
+    return WIN_SECOND;
+  else
+    return Winner::compareNonEmpties(winner2);
+}
+
+
 void Winner::flip()
 {
-  if (mode == WIN_NOT_SET)
+  if (Winner::empty())
     return;
 
   // Flips North and South.
@@ -388,6 +322,12 @@ void Winner::expand(const char rankAdder)
 }
 
 
+bool Winner::empty() const
+{
+  return (mode == WIN_NOT_SET);
+}
+
+
 bool Winner::rankExceeds(const Winner& winner2) const
 {
   if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
@@ -406,14 +346,33 @@ bool Winner::rankExceeds(const Winner& winner2) const
 }
 
 
+unsigned char Winner::getRank() const
+{
+  return (Winner::empty() ? 0 : rank);
+}
+
+
+unsigned char Winner::getAbsNumber() const
+{
+  if (mode == WIN_NOT_SET)
+    return 0;
+  else if (mode == WIN_NORTH_SET)
+    return north.getAbsNumber();
+  else if (mode == WIN_SOUTH_SET)
+    return south.getAbsNumber();
+  else
+    return min(north.getAbsNumber(), south.getAbsNumber());
+}
+
+
 string Winner::str() const
 {
-  if (mode == WIN_NORTH_ONLY)
+  if (mode == WIN_NOT_SET)
+    return "-";
+  else if (mode == WIN_NORTH_ONLY)
     return north.str("N");
   else if (mode == WIN_SOUTH_ONLY)
     return south.str("S");
-  else if (mode == WIN_NOT_SET)
-    return "-";
   else
     return north.str("N") + south.str("S", false);
 }

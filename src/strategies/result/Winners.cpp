@@ -46,8 +46,6 @@ void Winners::addEmpty()
 {
   // Makes a new winner every time.
   winners.emplace_back(Winner());
-  Winner& win = winners.back();
-  win.setEmpty();
 
 assert(winners.size() == 1);
 }

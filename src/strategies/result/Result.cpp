@@ -48,7 +48,6 @@ void Result::setDist(const unsigned char distIn)
 void Result::setTricks(const unsigned char tricksIn)
 {
   tricks = tricksIn;
-  winner.setEmpty();
 }
 
 

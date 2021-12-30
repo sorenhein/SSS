@@ -59,30 +59,15 @@ class Winner
 
     void reset();
 
-    void set(
-      const Side sideIn,
-      const unsigned char rankIn,
-      const unsigned char depthIn,
-      const unsigned char numberIn,
-      const unsigned char absNumberIn,
-      const unsigned char nameIn);
-
     void setHigherOf(
       const Card& northIn,
       const Card& southIn);
 
-    bool empty() const;
-
-    void setEmpty();
-
     bool operator == (const Winner& winner2) const;
+
     bool operator != (const Winner& winner2) const;
 
     void operator *= (const Winner& winner2);
-
-    unsigned char getRank() const;
-
-    unsigned char getAbsNumber() const;
 
     Compare compare(const Winner& winner2) const;
 
@@ -94,7 +79,13 @@ class Winner
 
     void expand(const char rankAdder);
 
+    bool empty() const;
+
     bool rankExceeds(const Winner& winner2) const;
+
+    unsigned char getRank() const;
+
+    unsigned char getAbsNumber() const;
 
     string str() const;
 
