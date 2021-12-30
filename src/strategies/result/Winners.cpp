@@ -45,8 +45,12 @@ void Winners::reset()
 
 void Winners::set(const Winner& winner)
 {
-  winners.clear();
-  winners.push_back(winner);
+  Winners::reset();
+
+  if (winner.empty())
+    return;
+  else
+    winners.push_back(winner);
 }
 
 
@@ -63,48 +67,7 @@ void Winners::set(
 
 bool Winners::empty() const
 {
-/*
-if (winners.size() > 0)
-{
-  if (winners.front().empty())
-  {
-cout << Winners::strDebug();
-  assert(! winners.front().empty());
-  }
-}
-*/
-
-  const unsigned s = winners.size();
-  return (s == 0 || (s == 1 && winners.front().empty()));
-}
-
-
-/*
-void Winners::push_back(const Winner& winner)
-{
-  winners.push_back(winner);
-}
-*/
-
-
-unsigned char Winners::rank() const
-{
-  if (winners.empty())
-    return 0;
-  else
-    return winners.front().getRank();
-}
-
-
-unsigned char Winners::absNumber() const
-{
-  if (winners.empty())
-    return 0;
-  else
-  {
-    assert(winners.size() == 1);
-    return winners.front().getAbsNumber();
-  }
+  return winners.empty();
 }
 
 
@@ -169,9 +132,14 @@ void Winners::operator += (const Winner& winner2)
   }
 
   winners.push_back(winner2);
+}
 
-// It seems we do need to permit this for ranges
-// assert(winners.size() == 1);
+
+bool Winners::rankExceeds(const Winners& winners2) const
+{
+  // This requires both winners to have winner's.
+  // Each winner has consistent ranks.
+  return (winners.front().rankExceeds(winners2.winners.front()));
 }
 
 
@@ -293,36 +261,45 @@ void Winners::operator *= (const Winner& winner)
 }
 
 
-bool Winners::operator != (const Winners& winners2) const
-{
-  return ! (* this == winners2);
-}
-
-
 bool Winners::operator == (const Winners& winners2) const
 {
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();
 
   if (Winners::empty())
+  {
+assert(s1 == 0);
     return winners2.empty();
+  }
   else if (winners2.empty())
+  {
+assert(s2 == 0);
     return false;
+  }
   else if (winners.size() == 1 && winners2.winners.size() == 1)
   {
+assert(s1 == 1 && s2 == 1);
     return winners.front() == winners2.winners.front();
   }
   else if (winners.size() != winners2.winners.size())
   {
+assert(s1 != s2);
     return false;
   }
   else
   {
+assert(s1 == s2);
     Comparer comparer;
     comparer.resize(s1, s2);
     Winners::fillComparer(comparer, winners2);
     return (comparer.compare() == WIN_EQUAL);
   }
+}
+
+
+bool Winners::operator != (const Winners& winners2) const
+{
+  return ! (* this == winners2);
 }
 
 
@@ -332,10 +309,16 @@ Compare Winners::compare(const Winners& winners2) const
   const unsigned s2 = winners2.winners.size();
 
   if (Winners::empty())
+  {
+assert(s1 == 0);
     // Declarer prefers no restrictions.
     return (winners2.empty() ? WIN_EQUAL : WIN_FIRST);
+  }
   else if (winners2.empty())
+  {
+assert(s2 == 0);
     return WIN_SECOND;
+  }
   else if (s1 == 1 && s2 == 1)
     return winners.front().compareNonEmpties(winners2.winners.front());
   else if (Winners::rankExceeds(winners2))
@@ -366,18 +349,31 @@ void Winners::expand(const char rankAdder)
 }
 
 
+unsigned char Winners::rank() const
+{
+  if (Winners::empty())
+    return 0;
+  else
+    return winners.front().getRank();
+}
+
+
+unsigned char Winners::absNumber() const
+{
+  if (Winners::empty())
+    return 0;
+  else
+  {
+    assert(winners.size() == 1);
+    return winners.front().getAbsNumber();
+  }
+}
+
+
 const Winner& Winners::constantWinner() const
 {
   assert(winners.size() == 1);
   return winners.front();
-}
-
-
-bool Winners::rankExceeds(const Winners& winners2) const
-{
-  // This requires both winners to have winner's.
-  // Each winner has consistent ranks.
-  return (winners.front().rankExceeds(winners2.winners.front()));
 }
 
 

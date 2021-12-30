@@ -119,7 +119,13 @@ Compare MultiResult::compareComplete(const MultiResult& multiResult) const
 
 void MultiResult::constantResult(Result& result) const
 {
-  result.set(dist, tricks, winners.constantWinner());
+  if (winners.empty())
+  {
+    result.setDist(dist);
+    result.setTricks(tricks);
+  }
+  else
+    result.set(dist, tricks, winners.constantWinner());
 }
 
 

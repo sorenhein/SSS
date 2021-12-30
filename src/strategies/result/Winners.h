@@ -29,13 +29,7 @@ class Winners
       Comparer& comparer,
       const Winners& winners2) const;
 
-    bool operator != (const Winners& winners2) const;
-
     bool rankExceeds(const Winners& winners2) const;
-
-    string strSingleSided(
-      const string& name,
-      const Card& winner) const;
 
 
   public:
@@ -52,12 +46,6 @@ class Winners
 
     bool empty() const;
 
-    // void push_back(const Winner& winner);
-
-    unsigned char rank() const;
-
-    unsigned char absNumber() const;
-
     void operator += (const Winners& winners2);
     void operator += (const Winner& winner2);
 
@@ -65,6 +53,7 @@ class Winners
     void operator *= (const Winner& winner);
 
     bool operator == (const Winners& winners2) const;
+    bool operator != (const Winners& winners2) const;
 
     Compare compare(const Winners& w2) const;
 
@@ -72,9 +61,11 @@ class Winners
 
     void expand(const char rankAdder);
 
-    const Winner& constantWinner() const;
+    unsigned char rank() const;
 
-    string str() const;
+    unsigned char absNumber() const;
+
+    const Winner& constantWinner() const;
 
     string strEntry() const;
 
