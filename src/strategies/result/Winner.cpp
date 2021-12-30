@@ -268,13 +268,14 @@ bool Winner::empty() const
 
 unsigned char Winner::getRank() const
 {
-// assert(! Winner::empty());
+assert(! Winner::empty());
   return (Winner::empty() ? 0 : rank);
 }
 
 
 unsigned char Winner::getRank255() const
 {
+  // This includes UCHAR_NOT_SET if Winner::empty().
   return rank;
 }
 

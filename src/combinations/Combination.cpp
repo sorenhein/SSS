@@ -197,11 +197,12 @@ void Combination::reduce(const Distribution& distribution)
   // TODO Could store in the CombEntr in Combinations?
   Result resultLowest;
   strats.getResultLowest(resultLowest);
-  const unsigned char rankCritical = resultLowest.getRank();
+  const unsigned char rankCritical = resultLowest.getRank255();
 
   // If N-S don't take any rank tricks at all, there should be
   // no Strategy's to eliminate.
-  if (rankCritical == 0)
+  // TODO TMP Moving to the new encoding.
+  if (rankCritical == 0 || rankCritical == UCHAR_NOT_SET)
   {
     assert(strats.size() == 1);
     return;
