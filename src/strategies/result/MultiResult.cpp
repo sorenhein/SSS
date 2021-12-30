@@ -117,8 +117,10 @@ Compare MultiResult::compareComplete(const MultiResult& res2) const
 }
 
 
-Result MultiResult::result() const
+void MultiResult::constantResult(Result& result) const
 {
+  result.set(distInt, tricksInt, winnersInt.constantWinner());
+/*
   Result res;
   
   // TODO When Result moves to a single winner, winnersInt.front()
@@ -127,6 +129,7 @@ Result MultiResult::result() const
   assert(winnersInt.size() == 1);
   res.set(distInt, tricksInt, winnersInt.front());
   return res;
+*/
 }
 
 unsigned char MultiResult::dist() const

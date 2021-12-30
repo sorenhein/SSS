@@ -26,6 +26,8 @@
    no domination.
 
    Multiplying Winners means multiplying together the individual sums.
+
+   Winners are only used by MultiResult, not by Result.
 */
 
 
@@ -38,16 +40,6 @@ Winners::Winners()
 void Winners::reset()
 {
   winners.clear();
-}
-
-
-// TODO May not be needed long-term
-void Winners::addEmpty()
-{
-  // Makes a new winner every time.
-  winners.emplace_back(Winner());
-
-assert(winners.size() == 1);
 }
 
 
@@ -65,22 +57,34 @@ void Winners::set(
   Winners::reset();
 
   winners.emplace_back(Winner());
-  Winner& win = winners.back();
-  win.setHigherOf(north, south);
+  winners.back().setHigherOf(north, south);
 }
 
 
 bool Winners::empty() const
 {
+/*
+if (winners.size() > 0)
+{
+  if (winners.front().empty())
+  {
+cout << Winners::strDebug();
+  assert(! winners.front().empty());
+  }
+}
+*/
+
   const unsigned s = winners.size();
   return (s == 0 || (s == 1 && winners.front().empty()));
 }
 
 
+/*
 void Winners::push_back(const Winner& winner)
 {
   winners.push_back(winner);
 }
+*/
 
 
 unsigned char Winners::rank() const
@@ -362,16 +366,10 @@ void Winners::expand(const char rankAdder)
 }
 
 
-const Winner& Winners::front() const
+const Winner& Winners::constantWinner() const
 {
-  assert(! winners.empty());
+  assert(winners.size() == 1);
   return winners.front();
-}
-
-
-unsigned Winners::size() const
-{
-  return winners.size();
 }
 
 

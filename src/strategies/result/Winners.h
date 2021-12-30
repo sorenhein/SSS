@@ -10,11 +10,9 @@
 #define SSS_WINNERS_H
 
 #include <list>
-#include <cassert>
 
 #include "Winner.h"
 
-struct Play;
 class Comparer;
 
 using namespace std;
@@ -46,8 +44,6 @@ class Winners
 
     void reset();
 
-    void addEmpty();
-
     void set(const Winner& winner);
 
     void set(
@@ -56,7 +52,7 @@ class Winners
 
     bool empty() const;
 
-    void push_back(const Winner& winner);
+    // void push_back(const Winner& winner);
 
     unsigned char rank() const;
 
@@ -76,9 +72,7 @@ class Winners
 
     void expand(const char rankAdder);
 
-    // TODO Should not be needed once Result uses a single Winner
-    const Winner& front() const;
-    unsigned size() const;
+    const Winner& constantWinner() const;
 
     string str() const;
 

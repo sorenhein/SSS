@@ -330,15 +330,15 @@ bool Winner::empty() const
 
 bool Winner::rankExceeds(const Winner& winner2) const
 {
-  if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
+  // if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
+  if (Winner::empty() && ! winner2.empty())
   {
     // Being unset is like having an "infinite" winning rank.
-    assert(rank > winner2.rank);
     return true;
   }
-  else if (winner2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
+  // else if (winner2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
+  else if (winner2.empty() && ! Winner::empty())
   {
-    assert(rank < winner2.rank);
     return false;
   }
 

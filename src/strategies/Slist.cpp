@@ -840,7 +840,7 @@ bool Slist::purgeRanges(
 
     if (parentRange.constant())
     {
-      * citer = parentRange.constantResult();
+      parentRange.constantResult(* citer);
       stratData.eraseDominatedDist();
       eraseFlag = true;
       citer++;

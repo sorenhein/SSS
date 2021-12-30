@@ -58,7 +58,7 @@ class MultiResult
 
     Compare compareComplete(const MultiResult& res2) const;
 
-    Result result() const;
+    void constantResult(Result& result) const;
 
     unsigned char dist() const;
 

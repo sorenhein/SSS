@@ -9,6 +9,8 @@
 #ifndef SSS_STRATDATA_H
 #define SSS_STRATDATA_H
 
+#include <cassert>
+
 #include "result/Result.h"
 #include "result/Range.h"
 
