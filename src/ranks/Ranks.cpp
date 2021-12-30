@@ -236,9 +236,17 @@ void Ranks::trivialRanked(
   else
   {
     // Play the highest card.
-    Winners winners;
-    winners.set(north.top(), south.top());
-    trivial.set(0, tricks, winners);
+    // Winners winners;
+    // winners.set(north.top(), south.top());
+    // trivial.set(0, tricks, winners);
+    Winner winner;
+    if (north.top() > south.top())
+      winner.set(SIDE_NORTH, north.top());
+    else
+      winner.set(SIDE_SOUTH, south.top());
+
+    // trivial.set(0, tricks, north.top(), south.top());
+    trivial.set(0, tricks, winner);
   }
 }
 

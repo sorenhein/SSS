@@ -29,17 +29,22 @@ class Result
 
     unsigned char tricksInt;
 
-    // Winners winnersInt;
     Winner winner;
 
   public:
 
     Result();
 
+    /*
     void set(
       const unsigned char distIn,
       const unsigned char tricksIn,
       const Winners& winnersIn);
+      */
+    void set(
+      const unsigned char distIn,
+      const unsigned char tricksIn,
+      const Winner& winner);
 
     void setDist(const unsigned char distIn);
 

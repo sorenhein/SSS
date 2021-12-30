@@ -26,6 +26,7 @@ Result::Result()
 }
 
 
+/*
 void Result::set(
   const unsigned char dist,
   const unsigned char tricks,
@@ -36,11 +37,23 @@ void Result::set(
 
   if (control.runRankComparisons())
   {
-    // winnersInt = winners;
-
     assert(winners.size() == 1);
     winner = winners.front();
   }
+}
+*/
+
+
+void Result::set(
+  const unsigned char dist,
+  const unsigned char tricks,
+  const Winner& winnerIn)
+{
+  distInt = dist;
+  tricksInt = tricks;
+
+  if (control.runRankComparisons())
+    winner = winnerIn;
 }
 
 
@@ -53,7 +66,6 @@ void Result::setDist(const unsigned char dist)
 void Result::setTricks(const unsigned char tricks)
 {
   tricksInt = tricks;
-  // winnersInt.addEmpty();
   winner.setEmpty();
 }
 

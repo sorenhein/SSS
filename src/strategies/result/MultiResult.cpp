@@ -125,7 +125,9 @@ Result MultiResult::result() const
   
   // TODO When Result moves to a single winner, winnersInt.front()
   // and assert size == 1.
-  res.set(distInt, tricksInt, winnersInt);
+  // res.set(distInt, tricksInt, winnersInt);
+  assert(winnersInt.size() == 1);
+  res.set(distInt, tricksInt, winnersInt.front());
   return res;
 }
 
