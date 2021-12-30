@@ -53,11 +53,6 @@ void Winner::set(
     mode = WIN_SOUTH_ONLY;
   }
   else if (sideIn == SIDE_NONE)
-  {
-assert(false);
-    mode = WIN_NOT_SET;
-  }
-  else
     assert(false);
 }
 
@@ -134,65 +129,8 @@ void Winner::operator *= (const Winner& winner2)
     return;
   }
 
-  /* 
-   Long-hand.  Can be written more compactly as:
-   Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
-   Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
-   But the below seems at least as fast.
-   */
-
-  if (mode == WIN_NORTH_ONLY)
-  {
-    if (winner2.mode == WIN_NORTH_ONLY)
-    {
-      north *= winner2.north;
-    }
-    else if (winner2.mode == WIN_SOUTH_ONLY)
-    {
-      mode = WIN_BOTH;
-      south = winner2.south;
-    }
-    else // winner2.mode == WIN_BOTH
-    {
-      mode = WIN_BOTH;
-      north *= winner2.north;
-      south = winner2.south;
-    }
-  }
-  else if (mode == WIN_SOUTH_ONLY)
-  {
-    if (winner2.mode == WIN_NORTH_ONLY)
-    {
-      mode = WIN_BOTH;
-      north = winner2.north;
-    }
-    else if (winner2.mode == WIN_SOUTH_ONLY)
-    {
-      south *= winner2.south;
-    }
-    else // winner2.mode == WIN_BOTH
-    {
-      mode = WIN_BOTH;
-      north = winner2.north;
-      south *= winner2.south;
-    }
-  }
-  else // wtmp.mode == WIN_BOTH
-  {
-    if (winner2.mode == WIN_NORTH_ONLY)
-    {
-      north *= winner2.north;
-    }
-    else if (winner2.mode == WIN_SOUTH_ONLY)
-    {
-      south *= winner2.south;
-    }
-    else // winner2.mode == WIN_BOTH
-    {
-      north *= winner2.north;
-      south *= winner2.south;
-    }
-  }
+  Winner::multiplySide(north, winner2.north, winner2.mode, WIN_NORTH_SET);
+  Winner::multiplySide(south, winner2.south, winner2.mode, WIN_SOUTH_SET);
 }
 
 
