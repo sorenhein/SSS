@@ -183,24 +183,15 @@ void Winners::operator *= (const Winners& winners2)
 {
   // The opponents have the choice.
 
-  if (winners2.empty())
-  {
-    // OK as is.
-    return;
-  }
-  else if (Winners::empty())
-  {
-    * this = winners2;
-    return;
-  }
+  const unsigned r1 = Winners::rank();
+  const unsigned r2 = winners2.rank();
 
-  // All winner's of a winner are of the same rank.
-  if (winners2.rankExceeds(* this))
+  if (r1 < r2 || winners2.empty())
   {
-    // OK as is: Stick with the lower rank.
+    // OK as is: Stick with the only/lower rank.
     return;
   }
-  else if (Winners::rankExceeds(winners2))
+  else if (r2 < r1)
   {
     * this = winners2;
     return;
@@ -226,25 +217,16 @@ void Winners::operator *= (const Winner& winner)
 {
   // The opponents have the choice.
 
-  if (winner.empty())
-  {
-    // OK as is.
-    return;
-  }
-  else if (Winners::empty())
-  {
-    // winners.clear();
-    winners.push_back(winner);
-    return;
-  }
+  const unsigned r1 = Winners::rank();
+  // TODO Should the Winner method change?
+  const unsigned r2 = (winner.empty() ? UCHAR_NOT_SET : winner.getRank());
 
-  // All winner's of a winner are of the same rank.
-  if (winner.getRank() > winners.front().getRank())
+  if (r1 < r2 || winner.empty())
   {
-    // OK as is: Stick with the lower rank.
+    // OK as is: Stick with the only/lower rank.
     return;
   }
-  else if (winner.getRank() < winners.front().getRank())
+  else if (r2 < r1)
   {
     winners.clear();
     winners.push_back(winner);
@@ -338,7 +320,9 @@ void Winners::expand(const char rankAdder)
 unsigned char Winners::rank() const
 {
   if (Winners::empty())
-    return 0;
+  {
+    return UCHAR_NOT_SET;
+  }
   else
     return winners.front().getRank();
 }

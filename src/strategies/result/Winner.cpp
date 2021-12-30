@@ -268,6 +268,7 @@ bool Winner::empty() const
 
 unsigned char Winner::getRank() const
 {
+// assert(! Winner::empty());
   return (Winner::empty() ? 0 : rank);
 }
 
