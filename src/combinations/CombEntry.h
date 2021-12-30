@@ -19,6 +19,8 @@
 
 #include "../utils/CombinationType.h"
 
+#include "../const.h"
+
 using namespace std;
 
 
@@ -166,20 +168,41 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
 
       rankHigh = comb.getMaxRank();
       winRanksLow.push_back(ceMin.winRankLow);
-  
-      if (firstFlag)
+
+      if (ceMin.winRankLow == UCHAR_NOT_SET)
       {
-        span = rankHigh - ceMin.winRankLow;
-        length = comb.strategies().size();
-        firstFlag = false;
+        // TODO TMP An ugly hack to permit the new encoding.
+        if (firstFlag)
+        {
+          span = rankHigh;
+          length = comb.strategies().size();
+          firstFlag = false;
+        }
+        else
+        {
+          if (rankHigh != span)
+            return false;
+  
+          if (comb.strategies().size() != length)
+            return false;
+        }
       }
       else
       {
-        if (rankHigh - ceMin.winRankLow != span)
-          return false;
-
-        if (comb.strategies().size() != length)
-          return false;
+        if (firstFlag)
+        {
+          span = rankHigh - ceMin.winRankLow;
+          length = comb.strategies().size();
+          firstFlag = false;
+        }
+        else
+        {
+          if (rankHigh - ceMin.winRankLow != span)
+            return false;
+  
+          if (comb.strategies().size() != length)
+            return false;
+        }
       }
     }
     return true;

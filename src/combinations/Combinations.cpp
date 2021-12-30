@@ -298,7 +298,7 @@ void Combinations::runUniques(
 
       Result res;
       comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.getRank();
+      centry.winRankLow = res.getRank255();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
@@ -416,7 +416,7 @@ void Combinations::runUniquesOld(
 
       Result res;
       comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.getRank();
+      centry.winRankLow = res.getRank255();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
@@ -655,7 +655,9 @@ void Combinations::fixLowestWinningRanks(
     }
 
     // Void stays void.
+    // TODO On the way to a different empty rank.
     if (centry.winRankLow == 0 || 
+        centry.winRankLow == UCHAR_NOT_SET ||
         comb.getMaxRank() - centry.winRankLow == span)
       continue;
 

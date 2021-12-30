@@ -10,6 +10,8 @@
 
 #include "CombTest.h"
 
+#include "../const.h"
+
 
 void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
@@ -65,7 +67,9 @@ void CombTest::checkReductions(
 
 
   unsigned char rankCritical;
-  if (maxRank - centry.winRankLow != span && centry.winRankLow != 0)
+  // TODO On the way to a different no-winner encoding.
+  if (maxRank - centry.winRankLow != span && 
+      (centry.winRankLow != 0 && centry.winRankLow != UCHAR_NOT_SET))
   {
     rankCritical = maxRank - span;
 

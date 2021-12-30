@@ -273,6 +273,12 @@ unsigned char Winner::getRank() const
 }
 
 
+unsigned char Winner::getRank255() const
+{
+  return rank;
+}
+
+
 unsigned char Winner::getAbsNumber() const
 {
   if (mode == WIN_NOT_SET)

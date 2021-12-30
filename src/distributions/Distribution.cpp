@@ -517,13 +517,15 @@ const SurvivorList& Distribution::getSurvivors(const Play& play) const
 const Reduction& Distribution::getReduction(
   const unsigned char rankNS) const
 {
-  assert(rankNS != 1 && rankNS <= full2reduced.size());
+  assert(rankNS != 1 && 
+    (rankNS <= full2reduced.size() || rankNS == UCHAR_NOT_SET));
 
   // All EW ranks < the NS rank are grouped together.
   // A reducer of 0 ("NS take no rank tricks") is actually like
   // a maximal reducer.
   const unsigned rankReducedEW = 
-    (rankNS == 0 ? rankSize-1 : full2reduced[rankNS-1]);
+    ((rankNS == 0 || rankNS == UCHAR_NOT_SET) ? 
+      rankSize-1 : full2reduced[rankNS-1]);
 // cout << "rank NS " << +rankNS << ", EW " << rankReducedEW << endl;
 // for (unsigned i = 0; i < full2reduced.size(); i++)
   // cout << i << ": " << full2reduced[i]<< endl;

@@ -82,6 +82,7 @@ class Winner
     bool empty() const;
 
     unsigned char getRank() const;
+    unsigned char getRank255() const;
 
     unsigned char getAbsNumber() const;
 
