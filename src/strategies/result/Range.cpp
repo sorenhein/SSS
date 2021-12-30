@@ -29,7 +29,7 @@ void Range::extend(const Result& result)
   // which is as tight as we can make it, but still rounded
   // "outward" when we need to.  Any Result is within its range.
 
-  assert(minimum.dist() == result.dist());
+  assert(minimum.dist() == result.getDist());
 
   minimum *= result;
   resultLow *= result;

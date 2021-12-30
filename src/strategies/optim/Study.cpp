@@ -107,7 +107,7 @@ void Study::study(const list<Result>& results)
   unsigned i = 0;
   for (auto& result: results)
   {
-    summary[i % groups] += result.tricks();
+    summary[i % groups] += result.getTricks();
     i++;
   }
   studiedFlag = true;
@@ -145,15 +145,15 @@ void Study::scrutinize(
   while (riter != results.end())
   {
     assert(miter != ranges.end());
-    if (miter->dist() < riter->dist())
+    if (miter->dist() < riter->getDist())
     {
       miter++;
       continue;
     }
 
-    assert(riter->dist() == miter->dist());
+    assert(riter->getDist() == miter->dist());
 
-    const unsigned diff = riter->tricks() - miter->min();
+    const unsigned diff = riter->getTricks() - miter->min();
     assert(diff < 4); // Must fit in 2 bits for this to work
 
     profile = (profile << 2) | diff;

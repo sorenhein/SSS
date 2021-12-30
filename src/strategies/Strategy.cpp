@@ -66,10 +66,10 @@ bool Strategy::constantTricks() const
   {
     if (firstFlag)
     {
-      t = res.tricks();
+      t = res.getTricks();
       firstFlag = false;
     }
-    else if (t != res.tricks())
+    else if (t != res.getTricks())
       return false;
   }
   return true;
@@ -80,7 +80,7 @@ bool Strategy::symmetric() const
 {
   auto iter1 = results.begin();
   auto iter2 = results.rbegin();
-  while (iter1->dist() < iter2->dist())
+  while (iter1->getDist() < iter2->getDist())
   {
     if (* iter1 != * iter2)
       return false;
@@ -100,7 +100,7 @@ unsigned Strategy::weight() const
 void Strategy::push_back(const Result& result)
 {
   results.push_back(result);
-  weightInt += result.tricks();
+  weightInt += result.getTricks();
   studied.unstudy();
 }
 
@@ -108,7 +108,7 @@ void Strategy::push_back(const Result& result)
 list<Result>::iterator Strategy::erase(list<Result>::iterator& iter)
 {
   // No error checking.
-  weightInt -= iter->tricks();
+  weightInt -= iter->getTricks();
   studied.unstudy();
   return results.erase(iter);
 }
@@ -118,7 +118,7 @@ list<Result>::const_iterator Strategy::erase(
     list<Result>::const_iterator& iter)
 {
   // No error checking.
-  weightInt -= iter->tricks();
+  weightInt -= iter->getTricks();
   studied.unstudy();
   return results.erase(iter);
 }
@@ -143,7 +143,7 @@ void Strategy::logTrivial(
     results.emplace_back(trivial);
     results.back().setDist(i);
   }
-  weightInt = trivial.tricks() * len;
+  weightInt = trivial.getTricks() * len;
 
   Strategy::study();
 }
@@ -180,14 +180,14 @@ bool Strategy::constantTricksByReduction(
 
   for (auto& result: results)
   {
-    const unsigned reduced = dist[result.dist()];
+    const unsigned reduced = dist[result.getDist()];
 
     if (reducedTricks[reduced] == UCHAR_NOT_SET)
     {
       // Store the group's trick count.
-      reducedTricks[reduced] = result.tricks();
+      reducedTricks[reduced] = result.getTricks();
     }
-    else if (reducedTricks[reduced] != result.tricks())
+    else if (reducedTricks[reduced] != result.getTricks())
       return false;
   }
 
@@ -229,7 +229,7 @@ void Strategy::expand(
       // Rank adder was already added once.
       iter = results.insert(iter, * prev(iter));
       iter->expand(dfull, 0);
-      weightInt += iter->tricks();
+      weightInt += iter->getTricks();
     }
     else
     {
@@ -244,7 +244,7 @@ void Strategy::expand(
 
       iter = results.insert(iter, * iterPrev);
       iter->expand(dfull, 0);
-      weightInt += iter->tricks();
+      weightInt += iter->getTricks();
       dredPrev = dist[dprev];
     }
 
@@ -256,7 +256,7 @@ void Strategy::expand(
     results.reverse();
     for (auto& result: results)
     {
-      result.setDist(dsize - result.dist() - 1);
+      result.setDist(dsize - result.getDist() - 1);
       result.flip();
     }
   }
@@ -601,21 +601,21 @@ void Strategy::operator *= (const Strategy& strat2)
 
   while (iter2 != strat2.results.end())
   {
-    if (iter1 == results.end() || iter1->dist() > iter2->dist())
+    if (iter1 == results.end() || iter1->getDist() > iter2->getDist())
     {
       results.insert(iter1, * iter2);
-      weightInt += iter2->tricks();
+      weightInt += iter2->getTricks();
       iter2++;
     }
-    else if (iter1->dist() < iter2->dist())
+    else if (iter1->getDist() < iter2->getDist())
     {
       iter1++;
     }
     else 
     {
-      if (iter1->tricks() > iter2->tricks())
+      if (iter1->getTricks() > iter2->getTricks())
         weightInt += static_cast<unsigned>
-          (iter2->tricks() - iter1->tricks());
+          (iter2->getTricks() - iter1->getTricks());
       * iter1 *= * iter2;
 
       iter1++;
@@ -644,7 +644,7 @@ void Strategy::multiply(
       {
         results.insert(results.end(), iter2, strat2.results.end());
         for (auto it = iter2; it != strat2.results.end(); it++)
-          weightInt += it->tricks();
+          weightInt += it->getTricks();
       }
       break;
     }
@@ -652,34 +652,34 @@ void Strategy::multiply(
     {
       results.insert(results.end(), iter1, strat1.results.end());
       for (auto it = iter1; it != strat1.results.end(); it++)
-        weightInt += it->tricks();
+        weightInt += it->getTricks();
       break;
     }
 
-    if (iter1->dist() < iter2->dist())
+    if (iter1->getDist() < iter2->getDist())
     {
       results.push_back(* iter1);
-      weightInt += iter1->tricks();
+      weightInt += iter1->getTricks();
       iter1++;
     }
-    else if (iter1->dist() > iter2->dist())
+    else if (iter1->getDist() > iter2->getDist())
     {
       results.push_back(* iter2);
-      weightInt += iter2->tricks();
+      weightInt += iter2->getTricks();
       iter2++;
     }
-    else if (iter1->tricks() < iter2->tricks())
+    else if (iter1->getTricks() < iter2->getTricks())
     {
       // Take the one with the lower number of tricks.
       results.push_back(* iter1);
-      weightInt += iter1->tricks();
+      weightInt += iter1->getTricks();
       iter1++;
       iter2++;
     }
-    else if (iter1->tricks() > iter2->tricks())
+    else if (iter1->getTricks() > iter2->getTricks())
     {
       results.push_back(* iter2);
-      weightInt += iter2->tricks();
+      weightInt += iter2->getTricks();
       iter1++;
       iter2++;
     }
@@ -688,7 +688,7 @@ void Strategy::multiply(
       // Opponents can choose among the two winners.
       results.push_back(* iter1);
       results.back() *= * iter2;
-      weightInt += iter1->tricks();
+      weightInt += iter1->getTricks();
       iter1++;
       iter2++;
     }
@@ -728,7 +728,7 @@ void Strategy::updateSingle(
 {
   auto& result = results.front();
   result.update(play, fullNo);
-  weightInt = result.tricks();
+  weightInt = result.getTricks();
 }
 
 
@@ -777,7 +777,7 @@ void Strategy::updateAndGrow(
     res = resultsOld[iterSurvivors->reducedNo];
     res.setDist(iterSurvivors->fullNo);
 
-    weightInt += res.tricks();
+    weightInt += res.getTricks();
     iterSurvivors++;
   }
 }

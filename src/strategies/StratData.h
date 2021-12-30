@@ -86,7 +86,7 @@ struct StratData
   unsigned char dist()
   {
     assert(! data.empty());
-    return data.front().iter->dist();
+    return data.front().iter->getDist();
   };
 
   bool done() const
@@ -111,7 +111,7 @@ struct StratData
   {
     // Advance to dist.
     while (data.front().iter != data.front().end &&
-        data.front().iter->dist() < dist)
+        data.front().iter->getDist() < dist)
     {
       riter++;
       for (auto& sd: data)
@@ -120,7 +120,7 @@ struct StratData
 
     if (data.front().iter == data.front().end)
       return STRATSTATUS_END;
-    else if (data.front().iter->dist() > dist)
+    else if (data.front().iter->getDist() > dist)
       return STRATSTATUS_FURTHER_DIST;
     else
       return STRATSTATUS_SAME_DIST;
@@ -142,10 +142,10 @@ struct StratData
     {
       if (firstFlag)
       {
-        t = sd.iter->tricks();
+        t = sd.iter->getTricks();
         firstFlag = false;
       }
-      else if (t != sd.iter->tricks())
+      else if (t != sd.iter->getTricks())
         return false;
     }
     return true;

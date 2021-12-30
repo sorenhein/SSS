@@ -298,7 +298,7 @@ void Combinations::runUniques(
 
       Result res;
       comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.rank();
+      centry.winRankLow = res.getRank();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
@@ -416,7 +416,7 @@ void Combinations::runUniquesOld(
 
       Result res;
       comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.rank();
+      centry.winRankLow = res.getRank();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());

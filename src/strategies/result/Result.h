@@ -25,9 +25,9 @@ class Result
 
   private:
 
-    unsigned char distInt;
+    unsigned char dist;
 
-    unsigned char tricksInt;
+    unsigned char tricks;
 
     Winner winner;
 
@@ -35,16 +35,10 @@ class Result
 
     Result();
 
-    /*
     void set(
       const unsigned char distIn,
       const unsigned char tricksIn,
-      const Winners& winnersIn);
-      */
-    void set(
-      const unsigned char distIn,
-      const unsigned char tricksIn,
-      const Winner& winner);
+      const Winner& winnerIn);
 
     void setDist(const unsigned char distIn);
 
@@ -76,11 +70,11 @@ class Result
 
     CompareDetail compareInDetail(const Result& res2) const;
 
-    unsigned char dist() const;
+    unsigned char getDist() const;
 
-    unsigned char tricks() const;
+    unsigned char getTricks() const;
 
-    unsigned char rank() const;
+    unsigned char getRank() const;
 
     unsigned char winAbsNumber() const;
 

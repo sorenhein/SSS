@@ -245,7 +245,7 @@ void Slist::reduceByWinner(const unsigned char rankCritical)
   auto iter = strategies.begin();
   while (iter != strategies.end())
   {
-    if (iter->resultLowest().rank() >= rankCritical)
+    if (iter->resultLowest().getRank() >= rankCritical)
     {
       // TODO Do we need to study()?
       // iter->study();
@@ -752,7 +752,7 @@ void Slist::splitDistributions(
         continue;
     }
 
-    if (riter->dist() < stratData.dist())
+    if (riter->getDist() < stratData.dist())
     {
       // Distribution that is only in strat2.
       riter++;
@@ -760,7 +760,7 @@ void Slist::splitDistributions(
     }
 
     bool endFlag = false;
-    while (stratData.dist() < riter->dist())
+    while (stratData.dist() < riter->getDist())
     {
       // A unique distribution.
       stratData.pushDistributionOnto(own.strategies);
@@ -775,7 +775,7 @@ void Slist::splitDistributions(
     if (endFlag)
       break;
 
-    if (riter->dist() == stratData.dist())
+    if (riter->getDist() == stratData.dist())
     {
       // A shared distribution.
       stratData.pushDistributionOnto(shared.strategies);
