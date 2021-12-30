@@ -91,6 +91,11 @@ void Winners::fillComparer(
 
 void Winners::addCore(const Winner& winner)
 {
+  // winners are a minimal set.
+  // The new winner may dominate existing winners.
+  // It may also be dominated by at least one existing winner.
+  // If neither is true, then it is a new winner.
+
   // Both Winners and winner2 are non-empty and have the same rank.
   // Actually the rank condition is not required.
 
@@ -116,12 +121,8 @@ void Winners::addCore(const Winner& winner)
 }
 
 
-void Winners::operator += (const Winner& winner2)
+void Winners::operator += (const Winner& winner)
 {
-  // winners are a minimal set.
-  // The new winner may dominate existing winners.
-  // It may also be dominated by at least one existing winner.
-  // If neither is true, then it is a new winner.
 
   /*
   const unsigned r1 = Winners::rank();
@@ -140,23 +141,22 @@ void Winners::operator += (const Winner& winner2)
   */
 
 
-// TODO Why does this lead to a fail?
-/*
-  if (Winners::empty())
-  {
-    // OK as is: Declarer wants no constraints.
-    return;
-  }
-  else 
-*/
-
-  if (winner2.empty())
+  if (winner.empty())
   {
     Winners::reset();
     return;
   }
 
-  Winners::addCore(winner2);
+// TODO Why does this lead to a fail?
+  if (Winners::empty())
+  {
+    // OK as is: Declarer wants no constraints.
+    winners.push_back(winner);
+    return;
+  }
+
+
+  Winners::addCore(winner);
 }
 
 
