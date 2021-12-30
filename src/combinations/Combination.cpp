@@ -197,7 +197,7 @@ void Combination::reduce(const Distribution& distribution)
   // TODO Could store in the CombEntr in Combinations?
   Result resultLowest;
   strats.getResultLowest(resultLowest);
-  const unsigned char rankCritical = resultLowest.getRank255();
+  const unsigned char rankCritical = resultLowest.getRank();
 
   // If N-S don't take any rank tricks at all, there should be
   // no Strategy's to eliminate.

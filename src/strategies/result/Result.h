@@ -70,7 +70,6 @@ class Result
     unsigned char getTricks() const;
 
     unsigned char getRank() const;
-    unsigned char getRank255() const;
 
     unsigned char winAbsNumber() const;
 

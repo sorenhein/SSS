@@ -200,15 +200,6 @@ unsigned char Result::getRank() const
 }
 
 
-unsigned char Result::getRank255() const
-{
-  if (control.runRankComparisons())
-    return winner.getRank255();
-  else
-    return 0;
-}
-
-
 unsigned char Result::winAbsNumber() const
 {
   if (control.runRankComparisons())

@@ -219,7 +219,8 @@ void Winners::operator *= (const Winner& winner)
 
   const unsigned r1 = Winners::rank();
   // TODO Should the Winner method change?
-  const unsigned r2 = (winner.empty() ? UCHAR_NOT_SET : winner.getRank());
+  // const unsigned r2 = (winner.empty() ? UCHAR_NOT_SET : winner.getRank());
+  const unsigned r2 = winner.getRank();
 
   if (r1 < r2 || winner.empty())
   {
