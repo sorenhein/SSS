@@ -67,6 +67,10 @@ class Winner
       const Side sideIn,
       const Card& card);
 
+    void setHigherOf(
+      const Card& northIn,
+      const Card& southIn);
+
     bool empty() const;
 
     void setEmpty();

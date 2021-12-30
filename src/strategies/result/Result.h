@@ -18,11 +18,6 @@ using namespace std;
 
 class Result
 {
-  // TODO We use result.winnersInt in three places.
-  // Once we move to a single winner, maybe make an interface method
-  // and unfriend.
-  friend class MultiResult;
-
   private:
 
     unsigned char dist;
@@ -77,6 +72,8 @@ class Result
     unsigned char getRank() const;
 
     unsigned char winAbsNumber() const;
+
+    const Winner& getWinner() const;
 
     string strEntry(const bool rankFlag) const;
 

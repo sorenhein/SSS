@@ -64,10 +64,7 @@ void Result::update(
     winner.update(play);
 
     if (play.trickNS)
-    {
-      assert(play.currBest.size() == 1);
-      winner *= play.currBest.front();
-    }
+      winner *= play.currBest;
   }
 }
 
@@ -210,6 +207,12 @@ unsigned char Result::winAbsNumber() const
     return winner.getAbsNumber();
   else
     return 0;
+}
+
+
+const Winner& Result::getWinner() const
+{
+ return winner;
 }
 
 

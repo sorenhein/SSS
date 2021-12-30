@@ -79,10 +79,9 @@ void Winners::set(
 {
   Winners::reset();
 
-  if (north > south)
-    Winners::set(SIDE_NORTH, north);
-  else
-    Winners::set(SIDE_SOUTH, south);
+  winners.emplace_back(Winner());
+  Winner& win = winners.back();
+  win.setHigherOf(north, south);
 }
 
 

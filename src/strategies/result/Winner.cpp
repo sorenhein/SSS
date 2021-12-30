@@ -96,6 +96,19 @@ void Winner::set(
 }
 
 
+void Winner::setHigherOf(
+  const Card& northIn,
+  const Card& southIn)
+{
+  Winner::reset();
+
+  if (northIn > southIn)
+    Winner::set(SIDE_NORTH, northIn);
+  else
+    Winner::set(SIDE_SOUTH, southIn);
+}
+
+
 bool Winner::empty() const
 {
   return (mode == WIN_NOT_SET);

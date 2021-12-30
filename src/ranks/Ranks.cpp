@@ -408,9 +408,9 @@ void Ranks::finish(Play& play) const
   if (play.trickNS)
   {
     if (play.side == SIDE_NORTH)
-      play.currBest.set(* play.leadPtr, * play.pardPtr);
+      play.currBest.setHigherOf(* play.leadPtr, * play.pardPtr);
     else
-      play.currBest.set(* play.pardPtr, * play.leadPtr);
+      play.currBest.setHigherOf(* play.pardPtr, * play.leadPtr);
   }
 }
 
