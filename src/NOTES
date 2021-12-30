@@ -569,3 +569,5 @@ Not all features of Control.cpp are implemented yet
 
 No / limited endl
 
+In Card, can we think of a way to avoid depth?  Probably not, 
+as it is useful for the output.  Maybe avoid number then? Or name?
