@@ -81,8 +81,6 @@ class Winner
 
     bool empty() const;
 
-    bool rankExceeds(const Winner& winner2) const;
-
     unsigned char getRank() const;
 
     unsigned char getAbsNumber() const;

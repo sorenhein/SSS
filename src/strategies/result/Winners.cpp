@@ -139,7 +139,10 @@ bool Winners::rankExceeds(const Winners& winners2) const
 {
   // This requires both winners to have winner's.
   // Each winner has consistent ranks.
-  return (winners.front().rankExceeds(winners2.winners.front()));
+  assert(! Winners::empty());
+  assert(! winners2.empty());
+
+  return (winners.front().getRank() > winners2.winners.front().getRank());
 }
 
 
@@ -230,18 +233,18 @@ void Winners::operator *= (const Winner& winner)
   }
   else if (Winners::empty())
   {
-    winners.clear();
+    // winners.clear();
     winners.push_back(winner);
     return;
   }
 
   // All winner's of a winner are of the same rank.
-  if (winner.rankExceeds(winners.front()))
+  if (winner.getRank() > winners.front().getRank())
   {
     // OK as is: Stick with the lower rank.
     return;
   }
-  else if (winners.front().rankExceeds(winner))
+  else if (winner.getRank() < winners.front().getRank())
   {
     winners.clear();
     winners.push_back(winner);
@@ -266,29 +269,16 @@ bool Winners::operator == (const Winners& winners2) const
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();
 
-  if (Winners::empty())
-  {
-assert(s1 == 0);
+  if (s1 == 0)
     return winners2.empty();
-  }
-  else if (winners2.empty())
-  {
-assert(s2 == 0);
+  else if (s2 == 0)
     return false;
-  }
-  else if (winners.size() == 1 && winners2.winners.size() == 1)
-  {
-assert(s1 == 1 && s2 == 1);
+  else if (s1 == 1 && s2 == 1)
     return winners.front() == winners2.winners.front();
-  }
-  else if (winners.size() != winners2.winners.size())
-  {
-assert(s1 != s2);
+  else if (s1 != s2)
     return false;
-  }
   else
   {
-assert(s1 == s2);
     Comparer comparer;
     comparer.resize(s1, s2);
     Winners::fillComparer(comparer, winners2);
@@ -308,17 +298,13 @@ Compare Winners::compare(const Winners& winners2) const
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();
 
-  if (Winners::empty())
+  if (s1 == 0)
   {
-assert(s1 == 0);
     // Declarer prefers no restrictions.
     return (winners2.empty() ? WIN_EQUAL : WIN_FIRST);
   }
-  else if (winners2.empty())
-  {
-assert(s2 == 0);
+  else if (s2 == 0)
     return WIN_SECOND;
-  }
   else if (s1 == 1 && s2 == 1)
     return winners.front().compareNonEmpties(winners2.winners.front());
   else if (Winners::rankExceeds(winners2))

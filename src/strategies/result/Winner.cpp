@@ -328,24 +328,6 @@ bool Winner::empty() const
 }
 
 
-bool Winner::rankExceeds(const Winner& winner2) const
-{
-  // if (mode == WIN_NOT_SET && winner2.mode != WIN_NOT_SET)
-  if (Winner::empty() && ! winner2.empty())
-  {
-    // Being unset is like having an "infinite" winning rank.
-    return true;
-  }
-  // else if (winner2.mode == WIN_NOT_SET && mode != WIN_NOT_SET)
-  else if (winner2.empty() && ! Winner::empty())
-  {
-    return false;
-  }
-
-  return (rank > winner2.rank);
-}
-
-
 unsigned char Winner::getRank() const
 {
   return (Winner::empty() ? 0 : rank);
