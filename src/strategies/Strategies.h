@@ -108,7 +108,9 @@ class Strategies
 
     bool sameTricks() const;
 
-    string strRanges(const string& title = "") const;
+    string strRanges(
+      const string& title = "",
+      const bool rankFlag = false) const;
 
     string str(
       const string& title = "",

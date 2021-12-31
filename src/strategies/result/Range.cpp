@@ -132,9 +132,19 @@ bool Range::constant() const
 void Range::constantResult(Result& result) const
 {
   // Either one, as range assumed constant.
-  // A lot of copying happening here.  Hopefully the compiler is smart.
   resultLow.constantResult(result);
-  // return resultLow.result();
+}
+
+
+unsigned char Range::dist() const
+{
+  return minimum.getDist();
+}
+
+
+unsigned char Range::min() const
+{
+  return minimum.getTricks();
 }
 
 
@@ -148,18 +158,6 @@ string Range::strHeader(const bool rankFlag) const
     resultHigh.strHeaderEntry(rankFlag, "High") <<
     "\n";
   return ss.str();
-}
-
-
-unsigned char Range::dist() const
-{
-  return minimum.getDist();
-}
-
-
-unsigned char Range::min() const
-{
-  return minimum.getTricks();
 }
 
 

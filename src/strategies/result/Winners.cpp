@@ -40,6 +40,7 @@ Winners::Winners()
 void Winners::reset()
 {
   winners.clear();
+  setFlag = false;
 }
 
 
@@ -48,9 +49,16 @@ void Winners::set(const Winner& winner)
   Winners::reset();
 
   if (winner.empty())
+  {
+    // Winners is still empty, but is now considered set.
+    setFlag = true;
     return;
+  }
   else
+  {
     winners.push_back(winner);
+    setFlag = true;
+  }
 }
 
 
@@ -62,11 +70,15 @@ void Winners::set(
 
   winners.emplace_back(Winner());
   winners.back().setHigherOf(north, south);
+
+  // We don't check whether north and/or south is non-empty.
+  setFlag = true;
 }
 
 
 bool Winners::empty() const
 {
+  // Returns true whether winners is unset or set to be empty.
   return winners.empty();
 }
 
@@ -137,6 +149,7 @@ void Winners::operator += (const Winner& winner)
   {
     // This part is normal: An empty input removes declarer's constraints.
     Winners::reset();
+    setFlag = true;
     return;
   }
   else if (r1 > r2 && ! Winners::empty())
@@ -144,14 +157,17 @@ void Winners::operator += (const Winner& winner)
     // This too is normal: A too-low input does nothing.
     return;
   }
-  else if (r2 > r1 || Winners::empty())
+  else if (r2 > r1 || ! setFlag)
   {
-    // The unusual condition is Winners::empty(), which we
-    // treat the same as if the new winner is preferable to declarer.
+    // The unusual condition is ! setFlag, which we treat the same 
+    // as if the new winner is preferable to declarer.
     Winners::reset();
     winners.push_back(winner);
+    setFlag = true;
     return;
   }
+
+  setFlag = true;
 
   Winners::addCore(winner);
 }
@@ -165,16 +181,24 @@ void Winners::operator += (const Winners& winners2)
   const unsigned r1 = Winners::rank();
   const unsigned r2 = winners2.rank();
 
-  if (r1 > r2 || Winners::empty())
+  if (! winners2.setFlag)
   {
-    // OK as is: Stick with the only/higher rank.
+    // Ignore.
     return;
   }
-  else if (r2 > r1)
+  else if (! setFlag || r2 > r1)
   {
+    // Switch to the only/higher rank.
     * this = winners2;
     return;
   }
+  else if (Winners::empty() || r1 > r2)
+  {
+    // Declarer prefers no constraints.
+    return;
+  }
+
+  setFlag = true;
 
   for (auto& win2: winners2.winners)
     Winners::addCore(win2);
@@ -188,13 +212,15 @@ void Winners::operator *= (const Winners& winners2)
   const unsigned r1 = Winners::rank();
   const unsigned r2 = winners2.rank();
 
-  if (r1 < r2 || winners2.empty())
+  if (winners2.empty() || r1 < r2)
   {
-    // OK as is: Stick with the only/lower rank.
+    // Stick with the only/lower rank.
+    setFlag = winners2.setFlag;
     return;
   }
   else if (r2 < r1)
   {
+    // Switch to the lower rank.
     * this = winners2;
     return;
   }
@@ -202,6 +228,7 @@ void Winners::operator *= (const Winners& winners2)
   // This could be faster, but it's not that slow.
   Winners winners1 = move(* this);
   Winners::reset();
+  setFlag = true;
 
   for (auto& win1: winners1.winners)
   {
@@ -220,25 +247,27 @@ void Winners::operator *= (const Winner& winner)
   // The opponents have the choice.
 
   const unsigned r1 = Winners::rank();
-  // TODO Should the Winner method change?
-  // const unsigned r2 = (winner.empty() ? UCHAR_NOT_SET : winner.getRank());
   const unsigned r2 = winner.getRank();
 
-  if (r1 < r2 || winner.empty())
+  if (winner.empty() || r1 < r2)
   {
     // OK as is: Stick with the only/lower rank.
+    // We consider that an empty winner is set.
+    setFlag = true;
     return;
   }
   else if (r2 < r1)
   {
     winners.clear();
     winners.push_back(winner);
+    setFlag = true;
     return;
   }
 
   // This could be faster, but it's not that slow.
   Winners winners1 = move(* this);
   Winners::reset();
+  setFlag = true;
 
   for (auto& win1: winners1.winners)
   {
@@ -251,6 +280,8 @@ void Winners::operator *= (const Winner& winner)
 
 bool Winners::operator == (const Winners& winners2) const
 {
+  assert(setFlag && winners2.setFlag);
+
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();
 
@@ -280,6 +311,8 @@ bool Winners::operator != (const Winners& winners2) const
 
 Compare Winners::compare(const Winners& winners2) const
 {
+  assert(setFlag && winners2.setFlag);
+
   const unsigned s1 = winners.size();
   const unsigned s2 = winners2.winners.size();
 
@@ -323,9 +356,7 @@ void Winners::expand(const char rankAdder)
 unsigned char Winners::rank() const
 {
   if (Winners::empty())
-  {
     return UCHAR_NOT_SET;
-  }
   else
     return winners.front().getRank();
 }
@@ -353,7 +384,7 @@ const Winner& Winners::constantWinner() const
 string Winners::strEntry() const
 {
   if (Winners::empty())
-    return "-";
+    return (setFlag ? "o" : "-");
 
   string s = "";
   bool firstFlag = true;

@@ -37,13 +37,14 @@ class Range
     bool operator < (const Range& range2) const;
 
     bool constant() const;
-    void constantResult(Result& result) const;
 
-    string strHeader(const bool rankFlag) const;
+    void constantResult(Result& result) const;
 
     unsigned char dist() const;
 
     unsigned char min() const;
+
+    string strHeader(const bool rankFlag) const;
 
     string str(const bool rankFlag) const;
 };

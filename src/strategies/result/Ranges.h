@@ -51,9 +51,11 @@ class Ranges
 
     void operator *= (const Ranges& r2);
 
-    string strHeader() const;
+    string strHeader(const bool rankFlag = false) const;
 
-    string str(const string& title = "") const;
+    string str(
+      const string& title = "",
+      const bool rankFlag = false) const;
 };
 
 #endif

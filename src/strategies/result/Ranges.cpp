@@ -116,24 +116,26 @@ void Ranges::operator *= (const Ranges& r2)
 }
 
 
-string Ranges::strHeader() const
+string Ranges::strHeader(const bool rankFlag) const
 {
   if (ranges.empty())
     return "";
   else
-    return ranges.front().strHeader(false);
+    return ranges.front().strHeader(rankFlag);
 }
 
 
-string Ranges::str(const string& title) const
+string Ranges::str(
+  const string& title,
+  const bool rankFlag) const
 {
   string s = "";
   if (title != "")
     s += title + "\n";
 
-  s += Ranges::strHeader();
+  s += Ranges::strHeader(rankFlag);
   for (auto& range: ranges)
-    s += range.str(false);
+    s += range.str(rankFlag);
 
   return s;
 }

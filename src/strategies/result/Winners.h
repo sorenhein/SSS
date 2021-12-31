@@ -24,6 +24,12 @@ class Winners
 
     list<Winner> winners;
 
+    // There is a subtle difference between an empty winners list
+    // (a) that is unset (setFlag == false) and (b) that is set to
+    // be empty, i.e. to have no declarer constraints (setFlag == true).
+
+    bool setFlag;
+
 
     void fillComparer(
       Comparer& comparer,

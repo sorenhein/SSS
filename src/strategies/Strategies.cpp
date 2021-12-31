@@ -441,9 +441,11 @@ bool Strategies::sameTricks() const
  *                                                          *
  ************************************************************/
 
-string Strategies::strRanges(const string& title) const
+string Strategies::strRanges(
+  const string& title,
+  const bool rankFlag) const
 {
-  return ranges.str(title);
+  return ranges.str(title, rankFlag);
 }
 
 
