@@ -260,7 +260,8 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     else
       s = "non-reference, ";
 
-    s += own.str() + "\n";
+    s += own.strSimple() + "\n";
+    s += reference.strSimple() + "\n";
 
     if (minimalFlag)
       s += "minimal\n";

@@ -236,17 +236,8 @@ void Ranks::trivialRanked(
   else
   {
     // Play the highest card.
-    // Winners winners;
-    // winners.set(north.top(), south.top());
-    // trivial.set(0, tricks, winners);
     Winner winner;
     winner.setHigherOf(north.top(), south.top());
-    // if (north.top() > south.top())
-      // winner.set(SIDE_NORTH, north.top());
-    // else
-      // winner.set(SIDE_SOUTH, south.top());
-
-    // trivial.set(0, tricks, north.top(), south.top());
     trivial.set(0, tricks, winner);
   }
 }
@@ -699,7 +690,8 @@ string Ranks::strTable() const
     opps.strRankHeader() <<
     "\n";
 
-  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) // Exclude void
+  // Excludes void.
+  for (unsigned char rank = maxGlobalRank; rank > 0; rank--) 
     ss <<
       setw(4) << right << +rank <<
       north.strRank(rank) <<

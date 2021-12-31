@@ -38,7 +38,6 @@ class Winner
 
     Card north;
     Card south;
-    unsigned DUMMY;
     unsigned char mode;
     unsigned char rank;
 
