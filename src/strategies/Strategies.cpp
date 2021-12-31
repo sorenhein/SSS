@@ -345,7 +345,7 @@ timersStrat[9].start();
   // This propagates the child's ranges to the current parent ranges.
   // The distribution number has to match.
 
-  ranges*= child.ranges;
+  ranges *= child.ranges;
 
 timersStrat[9].stop();
 }

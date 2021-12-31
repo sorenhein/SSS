@@ -138,9 +138,6 @@ void Winners::operator += (const Winner& winner)
   const unsigned r1 = Winners::rank();
   const unsigned r2 = winner.getRank();
 
-Winners wtmp;
-bool wflag = false;
-
   if (winner.empty())
   {
     // An empty input (assumed set) removes declarer's constraints.
@@ -161,26 +158,10 @@ bool wflag = false;
     // Declarer prefers no constraints.
     return;
   }
-  else if (Winners::empty() && r1 > r2)
-  {
-    wtmp = * this;
-    wflag = true;
-  }
 
   setFlag = true;
 
   Winners::addCore(winner);
-
-  /*
-  if (wflag && wtmp != * this)
-  {
-    cout << "orig " << wtmp.strDebug();
-    cout << "w2   " << winner.strDebug();
-    cout << "ret  " << Winners::strDebug();
-    cout << endl;
-    assert(false);
-  }
-  */
 }
 
 
@@ -203,7 +184,7 @@ void Winners::operator += (const Winners& winners2)
     * this = winners2;
     return;
   }
-  else if (r1 > r2)
+  else if (! Winners::empty() && r1 > r2)
   {
     // Declarer prefers no constraints.
     return;

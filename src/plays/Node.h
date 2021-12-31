@@ -83,7 +83,9 @@ class Node
     Strategies& strategies();
     const Strategies& strategies() const;
 
-    string strRanges(const string& title = "") const;
+    string strRanges(
+      const string& title = "",
+      const bool rankFlag = false) const;
 
     string strPlay(const Level level) const;
 

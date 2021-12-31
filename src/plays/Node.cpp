@@ -216,9 +216,11 @@ const Strategies& Node::strategies() const
 }
 
 
-string Node::strRanges(const string& title) const
+string Node::strRanges(
+  const string& title,
+  const bool rankFlag) const
 {
-  return strats.strRanges(title);
+  return strats.strRanges(title, rankFlag);
 }
 
 
