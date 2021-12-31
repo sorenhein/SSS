@@ -153,15 +153,15 @@ void Winners::operator += (const Winner& winner)
     setFlag = true;
     return;
   }
-  else if (! Winners::empty() && r1 > r2)
+  else if (r1 > r2)
   {
     // Declarer prefers no constraints.
     return;
   }
 
-  setFlag = true;
-
   Winners::addCore(winner);
+
+  setFlag = true;
 }
 
 
@@ -184,16 +184,16 @@ void Winners::operator += (const Winners& winners2)
     * this = winners2;
     return;
   }
-  else if (! Winners::empty() && r1 > r2)
+  else if (r1 > r2)
   {
     // Declarer prefers no constraints.
     return;
   }
 
-  setFlag = true;
-
   for (auto& win2: winners2.winners)
     Winners::addCore(win2);
+
+  setFlag = true;
 }
 
 
@@ -220,7 +220,6 @@ void Winners::operator *= (const Winners& winners2)
   // This could be faster, but it's not that slow.
   Winners winners1 = move(* this);
   Winners::reset();
-  setFlag = true;
 
   for (auto& win1: winners1.winners)
   {
@@ -231,6 +230,8 @@ void Winners::operator *= (const Winners& winners2)
       * this += wprod;
     }
   }
+
+  setFlag = true;
 }
 
 
@@ -259,7 +260,6 @@ void Winners::operator *= (const Winner& winner)
   // This could be faster, but it's not that slow.
   Winners winners1 = move(* this);
   Winners::reset();
-  setFlag = true;
 
   for (auto& win1: winners1.winners)
   {
@@ -267,6 +267,8 @@ void Winners::operator *= (const Winner& winner)
     wprod *= winner;
     * this += wprod;
   }
+
+  setFlag = true;
 }
 
 
