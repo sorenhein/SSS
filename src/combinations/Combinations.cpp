@@ -268,28 +268,22 @@ void Combinations::runUniques(
 
       comb.setMaxRank(ranks.maxRank());
 
-// cout << "After setMaxRank:\n" << centry.str();
-
     // Plays is cleared and rewritten, so it is only an optimization
     // not to let Combination make its own plays.
 
       comb.strategize(centry, * this, distributions, ranks, plays);
 
-// cout << "calling getMinimals " << endl;
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, 
+          centry.minimals);
 
-// cout << "After getMinimals, min " << centry.minimalFlag << 
-  // ":\n" << centry.str();
 
       if (! centry.minimalFlag)
       {
-// cout << "Calling reduce with h2 " << centry.canonical.holding2 << endl;
       // TODO Control by some flag
         comb.reduce(
           * distributions.ptrNoncanonical(cards, centry.reference.holding2));
       }
-// cout << "Got out alive" << endl;
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
@@ -614,8 +608,8 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
     const CombEntry& centry = centries[holding];
     if (! centry.referenceFlag || centry.minimalFlag)
       continue;
-    
-    if (! centries[holding].fixMinimals(centries))
+
+    if (! centries[holding].fixMinimals(holding, centries))
     {
       cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
     }

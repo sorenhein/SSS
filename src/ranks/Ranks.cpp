@@ -593,18 +593,19 @@ bool Ranks::partnerVoid() const
 
 void Ranks::addMinimal(
   const unsigned char absNumber,
-  list<CombReference>& minimals) const
+  list<CombReference>& minimals,
+  bool& ownFlag) const
 {
   unsigned oppsCount, northCount, southCount;
   bool rotateFlag;
 
-  if (absNumber == 0)
+  if (absNumber == 0 || absNumber == UCHAR_NOT_SET)
   {
     // Arrange North and South by length, which is all it takes here.
     oppsCount = opps.length();
     northCount = north.length();
     southCount = south.length();
-    rotateFlag = (southCount > northCount);
+    rotateFlag = false;
   }
   else
   {
@@ -629,6 +630,8 @@ void Ranks::addMinimal(
 
     minimals.emplace_back(combRef);
   }
+  else
+    ownFlag = true;
 }
 
 
@@ -636,9 +639,12 @@ bool Ranks::getMinimals(
   const list<Result>& resultList,
   list<CombReference>& minimals) const
 {
+  // TODO If ownFlag stays, combine with bool return value somehow.
+
   // In the context of rank comparisons, fills out the minimals.
   assert(control.runRankComparisons());
 
+  bool ownFlag = false;
   if (cards <= 2)
   {
     // Always minimal.
@@ -646,12 +652,12 @@ bool Ranks::getMinimals(
   }
   else if (resultList.empty())
   {
-    Ranks::addMinimal(0, minimals);
+    Ranks::addMinimal(0, minimals, ownFlag);
   }
   else
   {
     for (auto& res: resultList)
-      Ranks::addMinimal(res.winAbsNumber(), minimals);
+      Ranks::addMinimal(res.winAbsNumber(), minimals, ownFlag);
   }
 
   // It can happen that we map to the same minimal holding in more ways.
@@ -661,6 +667,14 @@ bool Ranks::getMinimals(
 
   minimals.sort();
   minimals.unique();
+
+  if (ownFlag && ! minimals.empty())
+  {
+    CombReference combRef;
+    combRef.rotateFlag = false;
+    rankedBoth(false, cards, holding4, combRef.holding3, combRef.holding2);
+    minimals.push_front(combRef);
+  }
 
   if (control.outputHolding())
   {

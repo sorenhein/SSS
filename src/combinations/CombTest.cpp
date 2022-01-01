@@ -92,6 +92,15 @@ void CombTest::checkReductions(
 
   for (auto& min: centry.minimals)
   {
+    if (min.holding3 == centry.own.holding3)
+    {
+      // Special case.  This should be at the front of the list.
+      // TODO This and the below are a lot of copying of Strategies.
+      Strategies stratsMin = uniqs[min.holding3].strategies();
+      stratsCumul += stratsMin;
+      continue;
+    }
+
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
@@ -139,6 +148,7 @@ void CombTest::checkReductions(
     cout << "MINIMUM MISMATCH" << endl;
     CombTest::dumpInputs("r > 16", centries, centry, strategies, maxRank);
     CombTest::dumpSpans(winRanksLow, ranksHigh);
+    cout << stratsCumul.str("Cumulative", true);
   }
 
 

@@ -82,7 +82,8 @@ class Ranks
 
     void addMinimal(
       const unsigned char absNumber,
-      list<CombReference>& minimals) const;
+      list<CombReference>& minimals,
+      bool& ownFlag) const;
 
 
   public:

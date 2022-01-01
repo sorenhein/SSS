@@ -7,12 +7,14 @@ New outline of CombTest -- get to work, find sources of errors.
    Mixed should include itself in the comparison
 3. Ranks: If NS" and N"S, also N'S' and nothing else, etc.
    Check method in Ranks based on the list of lowest strategies winners.
+4. Think about down-shifting, e.g. AQ/K missing HH.  If A then Q,
+   is the K relevant or is it, too, down-shifted to an x?
 
-WARN-NONMIN   43981
+WARN-NONMIN   41620
 ERROR             0
 
-MINIMUM MATCH 72156
-MISMATCH      53311
+MINIMUM MATCH 77981
+MISMATCH      47391
 
 
 
@@ -71,40 +73,11 @@ AK/x and not stay at AQ/K.
 
 It should be OK to have 5/25 + 5/51.
 
-Summary
--------
-* Each Strategy get a minimal.
-* Possibilities
-  - All Strategy's are minimal to itself
-    Nothing to check
-  - All Strategy's are non-minimal
-    Must add up to itself
-  - Some are, some aren't
-    The non-minimals must each be worse or equal to itself
-* 
-
-
-
 This makes Ranks::minimal different.  Even though K is > Q, it is
 shifted down because it is below the "maximum" South winner of \infty.
 
-
-Maybe Ranks gets a 
-
-bool Ranks::minimal(
-  const unsigned char absNumber, 
-  CombReference& combRef) const
-{
-  // Returns true if combRef is set with a minimal != the Ranks.
-}
-
-Then each Strategy gets a minimal CombReference, h3 == 0 if not set.
+Maybe each Strategy gets a minimal CombReference, h3 == 0 if not set.
 When outputting Strategies, no Prod, but instead h3.
-
-Strategies is non-minimal if *all* Strategy's are non-minimal, 
-otherwise not.  Then each CombReference must be minimal, i.e. have
-at least one minimal Strategy.
-
 
 
 2021-12-26
@@ -129,12 +102,6 @@ Strategy and pass these to Ranks::getMinimals.
 Then for #0 we'd get Axx/K missing QJ,
 and  for #1 we'd get AQx/K missing JT.
 
-So:
-Combinations::getMinimals
-Don't make one overall result for all strategies.
-Make a list of result's for each strategy, pass to Ranks::getMinimals.
-
-
 
 
 2021-12-24
@@ -144,13 +111,6 @@ We get 3NS for d=0, 3N for d=3 which corresponds to leading to the Q.
 We could also lead to the K and get 3N / 3NS.  Is the play left out
 of Ranks?
 
-Seems we crash out of 2 GB RAM during cards = 11?
-- Some compiler flag?
-- Cut Winners to Winner?
-
-Maybe move all the tables from Ranks to cranks, then also the
-methods canonicalTrinary and canonicalBoth.
-
 Cleanup:
 Comb counts from Combinations to class/struct?
 Declarer: greater?
@@ -159,240 +119,27 @@ Card: When use number, when absNumber?
 
 5/17, 9/1340, 9/13649: Good test cases.
 
-2021-12-05
-----------
-Ideas for ranks and no ranks.
-
-Ranks
------
-
-No ranks
---------
-- Non-canonicals are mapped the usual way
-- Non-minimal canonicals are solved by minimals
-- Minimals are solved normally (without winners)
-
-
 
 2021-12-05
 ----------
 Some additional optimizations with numbers, not ranks (xls)
 See how many total plays are made now
-See whether it would help to add some of the more marginal ideas
-
-5/17, AK/Q miss xx.
-
-        Start K         Start A
-0       2N' + 2NS       2N'
-1       2N' + 2S        2N + 2S
-2       2N' + 2NS       2N'
-MIN     2N' + 2NS       2N'
-
-This is reduced to a minimal product of 2N' and then there is a
-single minimal, 5/25 (AK/x missing xx).
-
-        5/25            5/51
-        AK/x            Ax/K
-0       3N' -> 2N'      3NS -> 2NS
-1       3N  -> 2N       3S  -> 2S
-2       3N' -> 2N'      3NS -> 2NS
-MIN     3N' -> 2N'      3NS -> 2NS
-
-We need to find both minimals and to clean this up.  Maybe:
-
-At the time when we start K-Q or KxQ, we have to declare whether the
-double winner is going to be 2N' or 2S.  Up to now we've kept the
-optionality in the Strategies, but that's probably wrong.  Instead
-
-d  K-Q(Q) K-Q(K) KHQ(Q) KHQ(K) A-Q(Q) A-Q(A) AHQ(Q) AHQ(A)
-0                2NS    2N'                  2N'S   2N'
-1                2S     2N'                  2S     2N
-2  2NS    2N'                  2N'S   2N'
-                               (bad)
-
-There are two strategies for each set of three first cards.
-E-W cause multiplications.
-
-d  start with K            start with A
-0  2NS  2NS  2N'  2N'      2N'S  2N'
-1  2S   2S   2N'  2N'      2S    2N
-2  2NS  2N'  2NS  2N'      2N'   2N'
-st #0   #1   #2   #3       #4    #5
-                  (bad)    (bad)
-mi 2NS  2N'S 2N'S                2N'
-
-#3 loses to #5
-#4 loses to #1
-
-#0 is definitely valid: "Cash" the Q
-#5 is also valid      : Cash the A
-The question is whether #1 and #2 are valid.
-I think we can't draw conclusions just from the worse products.
-They're also not dominated by anything else.
-The question is whether declarer can lead the K and then decide
-whether or not the Q is higher depending on East's play.  I guess not.
-
-If so, we have to find a way to restrict that.
-
-
-
-
-Once we have the two strategies, don't combine their winners.
-For each plus term, multiply out against its own strategy and simplify.
-Effectively, when starting with the ace, why want to win the Q?
-
-        Start K         Start A
-0       2NS             2N'
-1       2S              2N
-2       2NS             2N'
-MIN     2NS             2N'
-
-Then each of these leads to a minimal.  
-
-Another problem: 9/377 just fails, AKQ/JT9, quite early on.  Why?
-
-
-
-
-
-2021-12-04
-
-9/1340 has 1 strategy using 2S' which should be sth higher.
-We can determine from the minimals that there should not be a strategy
-with a winner < 4.
-
-I suppose we could pretend (centry.winRankLow) that we really only
-use a higher rank, but leave Strategies intact.  Then we'd get a
-Strategies and Winners mismatch, which seems reasonable.
-
-Sometimes there are indeed strategies to be eliminated, I think.
-Here we'd need to go by the size of the Strategies and its minimals.
-The minimals should all have the same number.  If we already have
-that number, do as above.  If we have fewer, wTF?  If we have more,
-try to reduce and check that we get the right number, otherwise WTF?
-
-2021-12-03
-
-Output now cleanish again.
-
-29417   MINIMUM MATCH
-    0   MINIMUM MISMATCH
-
-25428   WINNER MATCH 1
- 1314   WINNER MATCH 2
-
-  801   WINNER MISMATCH 1
-  217                   2
-   39                   3
-    1                   1
-    1                   1
-
-   26   WARNRANGE
-
-- Look at winner mismatches
-- Minimum matches: Also all ranks, not just tricks
-- Find a way to see whether we're missing minimals (AK and Q but not QJ)
-
-- strategies: fix in Combinations
-- Then CombTest is purely passive
-
-
-
-2021-12-02
-
-9/13649, KQT / 987 missing AJ6
-Shows 2N,2S" (T or 7)
-max rank 4, low winner 2
-
-minimals
-9/13675, KQT / 876 missing AJ9
-shows 3N (T)
-max rank 5, low winner 3
-
-9/13735, KQ7 / T96 missing AJ8
-shows 5N' (Q)
-max rank 5, low winner 5
-
-Fails because the two minima don't have the same difference
-between max rank and low winner.
-
-I think the concrete problem is that with KT missing AJ in front,
-if West plays the ace, North will play the K and win with the T.
-But at the moment the plays are always from the top within a rank.
-
-We don't even have a way to do this differently.
 
 
 2021-10-25
+----------
 
 CombTest,checkReductions: Should now not need reduceByTricks.
 Just use strategies.
 
-
-Was 22,797 OK, 5,324 bad
-Is  25,210 OK, 2,911 bad
-Is  28,099 OK,    22 bad
-
-11/133100, KJ7 / 98 miss AQT8xx and 133106, KJ7 / 95    2
--> 133108, KJ7 / 94
-
-11/133142, KJ6 / 95 miss AQT874                         1
--> 133144, KJ6 / 94
-
-11/133208, KJ8 / 76, 133214, KJ8 / 75                   5       plays??
-   133216, KJ8 / 74, 133232, KJ8 / 65
-   133234, KJ8 / 64
--> 133240, KJ8 / 54
-
-11/133292, KJ5 / 87, 133296, KJ4 / 87                   4
-   133304, KJ6 / 85, 133314, KJ4 / 86
--> 133318, KJ5 / 84
-
-11/136124, KT8 / 76, 133130, KT8 / 75                   5       plays??
-   136132, KT8 / 74, 136148, KT8 / 65
-   136150, KT8 / 64
--> 136156, KT8 / 54
-
-11/162368, QT8 / 65, 162374, QT8 / 75                   5       plays??
-   162376, QT8 / 74, 162392, QT8 / 65
-   162394, QT8 / 64
--> 162400, QT8 / 54
-
-
- 
 2. equalByMethod
    Divide completely by size
    assert size(v1) >= size(v2)?
-
-3. Does group-trick check even work?
-
-4. Sum of min ranks == parent rank?
-
-5. merge...
 
 
 Open issues 2021-09-26
 ----------------------
 Look at speeding up Slist::equalByMethod.
-
-3. Winners of each minimal should be the winner it was made from.
-   Maybe once it has been expanded, it is easier to compare.
-
-4. Reduce each non-minimal strategy.
-   Scale up each of the minimals, including rank maps.
-   Each should agree on the tricks.
-
-5. bool Strategy::mergeComplete(const Strategy&)
-   Should have same tricks throughout
-   Ranks should all be the same, except that one strategy can
-   consistently have one constant rank (say 4N) and the other can
-   consistently have another constant rank (say 4S), and this would
-   merge and return true into 4N,4S
-   If #1 is true, then this can be done directly without expansion.
-
-   If there are several minimals, 
-   a. They should scale up in a way that lets them merge one by one(?)
-   b. That merge should be the original strategy(?)
 
 6. For void starting with 10-13 cards (assuming we solve up to 13
    cards), it's always OK to symmetrize, as we can never get there
@@ -411,10 +158,6 @@ Look at speeding up Slist::equalByMethod.
       turned on or not, debugging/checks on/off
    d. Could switch to the minimal one (or one of them) and only
       solve this
-
-
-1091 combinations generate a "check all minimals" error.
-This should hopefully be fixed once the ranks are correct.
 
 A histogram of #strategies shows that we also get large numbers
 when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
@@ -490,13 +233,6 @@ and shorter than all North cards, so their ranks can't matter.
   so always win trick)
 - Maybe in 4th hand when NS are down to <= 1 card after this trick,
   KJ with AQxx outstanding for example (6/548).
-
-
-Rank issues due to limited Plays considered
--------------------------------------------
-*  8 /  1585, AQ8 / JT7 missing K9.  See spreadsheet.
-*  9 /  4757, AQ8 / JT7.  See spreadsheet.
-* 11 / 18752, AK8 / T765.  The result is 2S" (the 5) -- not needed.
 
 
 Winning NS plays in semantic form

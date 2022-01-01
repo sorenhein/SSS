@@ -169,13 +169,24 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
   }
 
 
-  bool fixMinimals(const vector<CombEntry>& centries)
+  bool fixMinimals(
+    const unsigned ownHolding3,
+    const vector<CombEntry>& centries)
   {
     // Check that each non-minimal holding refers to minimal ones.
     // We actually follow through and change the minimals.
     // Once ranks are good, this method should no longer be needed.
     // Returns true if nothing is modified.
  
+    bool ownFlag = false;
+    CombReference ownRef;
+    if (minimals.front().holding3 == ownHolding3)
+    {
+      ownFlag = true;
+      ownRef = minimals.front();
+      minimals.pop_front();
+    }
+
     bool changeFlag = false;
     auto iter = minimals.begin();
  
@@ -192,6 +203,10 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
         // of all rotations to be the really minimal holding.
         for (auto& min: centry.minimals)
         {
+          if (min.holding3 == iter->holding3)
+            // We already have a copy of ourselves.
+            continue;
+
           minimals.push_back(min);
           CombReference& cr = minimals.back();
           cr.rotateFlag ^= iter->rotateFlag;
@@ -201,11 +216,16 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
         changeFlag = true;
       }
     }
- 
+
     if (changeFlag)
     {
       minimals.sort();
       minimals.unique();
+    }
+
+    if (ownFlag)
+    {
+      minimals.push_front(ownRef);
     }
  
     return ! changeFlag;
@@ -229,7 +249,7 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     {
       s += "non-minimal, size " + to_string(minimals.size()) + "\n";
       for (auto& m: minimals)
-        s += m.str();
+        s += m.str() + "\n";
     }
     
     return s;
