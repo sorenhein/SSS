@@ -29,6 +29,49 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 }
 
 
+void CombTest::dumpInputs(
+  const string& title,
+  const vector<CombEntry>& centries,
+  const CombEntry& centry,
+  const Strategies& strategies,
+  const unsigned char maxRank) const
+{
+  cout << title << "\n";
+
+  cout << "centry:\n";
+  cout << centry.str();
+  cout << "centry.winRankLow " << centry.winRankLow << "\n";
+
+  cout << "Minimals:\n";
+  for (auto& min: centry.minimals)
+  {
+    const auto& ceMin = centries[min.holding3];
+    cout << ceMin.str();
+  }
+
+  cout << strategies.str("strategies", true);
+
+  cout << "maxRank " << maxRank << "\n\n";
+}
+
+
+void CombTest::dumpSpans(
+  list<unsigned char> ranksHigh,
+  list<unsigned char> winRanksLow) const
+{
+  cout << "ranksHigh:\n";
+  for (auto& r: ranksHigh)
+    cout << +r << "\n";
+  cout << "\n";
+
+  cout << "winRanksLow:\n";
+  for (auto& r: winRanksLow)
+    cout << +r << "\n";
+  cout << "\n";
+}
+
+
+
 void CombTest::checkReductions(
   const vector<CombEntry>& centries,
   const vector<Combination>& uniqs,
@@ -37,223 +80,71 @@ void CombTest::checkReductions(
   const unsigned char maxRank,
   const Distribution& distribution) const
 {
-  // Get the reduction that underlies the whole method.
 
+  list<unsigned char> ranksHigh;
   list<unsigned char> winRanksLow;
-  unsigned char span;
-  unsigned len;
+  centry.getMinimalSpans(centries, uniqs, ranksHigh, winRanksLow);
 
-  if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span, len))
-  {
-    cout << "WARNRANGE2: The range across minimals is not unique." << endl;
-
-    /*
-    for (auto& r: winRanksLow)
-      cout << "winRanksLow entry: " << +r << endl;
-
-    cout << strategies.str("strategies");
-
-    for (auto& min: centry.minimals)
-    {
-      const auto& ceMin = centries[min.holding3];
-      cout << ceMin.str();
-    }
-
-    cout << endl;
-    */
-
-    return;
-  }
-
-
-  unsigned char rankCritical;
-  // TODO On the way to a different no-winner encoding.
-  if (maxRank - centry.winRankLow != span && 
-      (centry.winRankLow != 0 && centry.winRankLow != UCHAR_NOT_SET))
-  {
-    rankCritical = maxRank - span;
-
-    cout << "WARNCRITICAL2: Moving rank from " << 
-      +centry.winRankLow << " to " << +rankCritical << endl;
-
-if (rankCritical > 16)
-{
-cout << "Entered CR with centry:\n";
-cout << centry.str();
-
-for (auto& r: winRanksLow)
-  cout << "winRanksLow entry: " << +r << endl;
-
-cout << strategies.str("strategies", true);
-
-cout << "Minimals:\n";
-for (auto& min: centry.minimals)
-{
-  const auto& ceMin = centries[min.holding3];
-  cout << ceMin.str();
-}
-
-cout << "\nspan " << +span << endl;
-cout << "len  " << len << endl;
-cout << "maxRank " << +maxRank << endl;
-
-
-    cout << "Original strategy has different range than minima:\n";
-    cout << 
-      "Original range " << +maxRank << 
-      " - " << +centry.winRankLow <<
-      " = " << maxRank - centry.winRankLow << "\n";
-    cout << "Minimal span " << +span << endl;
-    for (auto& r: winRanksLow)
-      cout << "winRanksLow entry: " << +r << endl;
-
-    cout << strategies.str("strategies");
-
-    for (auto& min: centry.minimals)
-    {
-      const auto& ceMin = centries[min.holding3];
-      cout << ceMin.str();
-    }
-  assert(false);
-
-}
-  }
-  else
-  {
-    // Void stays void.
-    rankCritical = centry.winRankLow;
-  }
-
-  // TODO If specialFlag, should strategies.size() exceed the
-  // minimal size?  If not, not?
-
-
-  Result resultLowest;
-  strategies.getResultLowest(resultLowest);
-
-  const auto& reduction = distribution.getReduction(rankCritical);
-
-if (reduction.full2reducedDist.size() != distribution.size())
-{
-cout << "About to fail on reduction size" << endl;
-cout << "reduction size " << reduction.full2reducedDist.size() << endl;
-cout << "distribution size " << distribution.size() << endl;
-assert(reduction.full2reducedDist.size() == distribution.size());
-}
-
-  list<Strategies> strategiesExpanded;
-  // Result resultCheck;
-  // bool firstFlag = true;
+  // Each minimal may have a different reduction.
+  auto iterHigh = ranksHigh.begin();
+  auto iterLow = winRanksLow.begin();
+  Strategies stratsCumul;
 
   for (auto& min: centry.minimals)
   {
-cout << "Starting min loop " << min.str() << endl;
     const auto& ceMin = centries[min.holding3];
     if (! ceMin.minimalFlag)
     {
       // This should not happen long-term, and short-term it is
       // addressed in checkMinimals().
-// cout << "Skipping non-minimal entry\n";
+      cout << "Skipping non-minimal entry\n";
       continue;
     }
 
-cout << "Making space for min " << min.str() << endl;
-    strategiesExpanded.emplace_back(Strategies());
-    Strategies& strategiesMin = strategiesExpanded.back();
+    // Get the reduction that underlies the method.
+    unsigned char rankCritical;
+    if (* iterLow == UCHAR_NOT_SET)
+      rankCritical = UCHAR_NOT_SET;
+    else
+    {
+      rankCritical = maxRank + * iterLow - * iterHigh;
+      assert(rankCritical > 0 && rankCritical < 16);
+    }
 
-    // Get the strategies for the minimal reference.
-    // TODO Assert can be erased later
+    const auto& reduction = distribution.getReduction(rankCritical);
+
+    const char rankAdder = static_cast<char>(maxRank) -
+      static_cast<char>(* iterHigh);
+
     assert(ceMin.reference.index < uniqs.size());
-    strategiesMin = uniqs[ceMin.reference.index].strategies();
-Strategies scopy = strategiesMin;
+    Strategies stratsMin = uniqs[ceMin.reference.index].strategies();
+    stratsMin.expand(reduction, rankAdder, min.rotateFlag);
 
-// cout << "Getting result for min " << min.str() << endl;
-    // Expand the strategies up using the reduction.
-    const char rankAdder = static_cast<char>(rankCritical) -
-      static_cast<char>(ceMin.winRankLow);
-
-// cout << "About to expand min " << min.strSimple() << endl;
-/*
-if (min.holding3 == 1432)
-{
-      cout << "MINIMUM BEFORE" << endl;
-      cout << "resultLowest " << resultLowest.str(true) << endl;
-      cout << "rankCritical " << +rankCritical << endl;
-      cout << "rankAdder " << +rankAdder << endl;
-      cout << "Reduction" << endl;
-      cout << reduction.str() << endl;
-      cout << strategies.str("full strategy", true);
-      cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
-      cout << "  " << scopy.str("before expansion", true) << endl;
-      cout << "  " << strategiesMin.str("expansion", true) << endl;
-}
-*/
-
-
-    strategiesMin.expand(reduction, rankAdder, min.rotateFlag);
-// cout << "Expanded min " << min.str() << endl;
-// cout << "  " << strategiesMin.str("expansion", true) << endl;
-// cout << "  " << strategies.str("original", true) << endl;
-
-    // The minimums have changed in general.
-    Result resultMinNew;
-    strategiesMin.getResultLowest(resultMinNew);
-
-// cout << "adding resultMinNew " << resultMinNew.str(true);
-    /*
-    if (firstFlag)
-    {
-      // An empty result is better than anything, so we have to
-      // start this way.
-      resultCheck = resultMinNew;
-      firstFlag = false;
-    }
-    else
-      resultCheck += resultMinNew;
-      */
-// cout << "resultCheck now " << resultCheck.str(true) << endl;
-
-
-    if (strategiesMin.equalPrimary(strategies, false))
-    {
-      cout << "MINIMUM MATCH" << endl;
-    }
-    else
-    {
-      cout << "MINIMUM MISMATCH" << endl;
-      cout << "resultLowest " << resultLowest.str(true);
-      cout << "rankCritical " << +rankCritical << endl;
-      cout << "Reduction" << endl;
-      cout << reduction.str() << endl;
-      cout << strategies.str("full strategy", true);
-      // cout << strategiesReduced.str("reduced strategy", true);
-      cout << "  minimum: " << min.str() << ", adder " << +rankAdder << endl;
-      cout << "  " << scopy.str("before expansion", true) << endl;
-      cout << "  " << strategiesMin.str("expansion", true) << endl;
-    }
-
-
+    stratsCumul += stratsMin;
+    
+    iterHigh++;
+    iterLow++;
   }
 
-  /*
-  if (resultLowest != resultCheck)
+  // TODO The sum check must take into account whether the combination
+  // refers to itself among others.  In this case we need to add itself
+  // and not just the minimals.
+
+  if (stratsCumul == strategies)
   {
-    cout << "WINNER MISMATCH, size " << centry.minimals.size() << endl;
-    cout << "resultLowest " << resultLowest.str(true) << endl;
-    cout << "resultCheck  " << resultCheck.str(true) << endl;
+    cout << "MINIMUM MATCH" << endl;
   }
   else
-    cout << "WINNER MATCH, size " << centry.minimals.size() << endl;
-    */
+  {
+    cout << "MINIMUM MISMATCH" << endl;
+    CombTest::dumpInputs("r > 16", centries, centry, strategies, maxRank);
+    CombTest::dumpSpans(winRanksLow, ranksHigh);
+  }
 
-// cout << "Loop fertig" << endl;
 
   // TODO Checks:
-  // * The sum of the minimal winners should be the overall winner.
-  //   In other words, the minimal winner should be what the top says.
-  // * Each minimal strategy should agree in tricks with the top one.
-  // * The minimal ones should merge (strategy by strategy) into
-  //   the top one, including ranks in some sense.
+  // If our strategies has N"S and NS", we also expect N'S' to exist,
+  // and we don't expect N"S".
 }
 
 

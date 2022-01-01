@@ -130,12 +130,11 @@ struct CombEntry
   }
 
 
-  bool getMinimalSpans(
+  void getMinimalSpans(
     const vector<CombEntry>& centries,
     const vector<Combination>& uniqs,
-    list<unsigned char>& winRanksLow,
-    unsigned char& span,
-    unsigned& length) const
+    list<unsigned char>& ranksHigh,
+    list<unsigned char>& winRanksLow) const
   {
     // In general, the strategies in checkReductions may have more
     // strategy's than it should because a play was not considered.
@@ -150,8 +149,6 @@ struct CombEntry
     // strategy's (so 5-5 or 3-3).  They should be the same for 
     // all minimals.
 
-    unsigned char rankHigh;
-    bool firstFlag = true;
     for (auto& min: minimals)
     {
       const auto& ceMin = centries[min.holding3];
@@ -166,46 +163,9 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
       assert(ceMin.reference.index < uniqs.size());
       const Combination& comb = uniqs[ceMin.reference.index];
 
-      rankHigh = comb.getMaxRank();
+      ranksHigh.push_back(comb.getMaxRank());
       winRanksLow.push_back(ceMin.winRankLow);
-
-      if (ceMin.winRankLow == UCHAR_NOT_SET)
-      {
-        // TODO TMP An ugly hack to permit the new encoding.
-        if (firstFlag)
-        {
-          span = rankHigh;
-          length = comb.strategies().size();
-          firstFlag = false;
-        }
-        else
-        {
-          if (rankHigh != span)
-            return false;
-  
-          if (comb.strategies().size() != length)
-            return false;
-        }
-      }
-      else
-      {
-        if (firstFlag)
-        {
-          span = rankHigh - ceMin.winRankLow;
-          length = comb.strategies().size();
-          firstFlag = false;
-        }
-        else
-        {
-          if (rankHigh - ceMin.winRankLow != span)
-            return false;
-  
-          if (comb.strategies().size() != length)
-            return false;
-        }
-      }
     }
-    return true;
   }
 
 

@@ -1,15 +1,24 @@
-2021-12-30
+2022-01-01
 ----------
+New outline of CombTest -- get to work, find sources of errors.
+
+1. Ranks skips interesting plays
+2. There is minimal, mixed and non-minimal.
+   Mixed should include itself in the comparison
+3. Ranks: If NS" and N"S, also N'S' and nothing else, etc.
+   Check method in Ranks based on the list of lowest strategies winners.
+
+WARN-NONMIN   43981
+ERROR             0
+
+MINIMUM MATCH 72156
+MISMATCH      53311
+
 
 
 2021-12-28
 ----------
 Major next blocks:
-1. Winners both-sided, hopefully they stay at length 1
-2. Winners -> Winner, should save quite a lot of space
-3. Ranks skips interesting plays
-4. Rewrite CombTest
-   - 
 5. Continue partitioning of ace-high
    - Non-canonical (not "greater") -> the canonical version
    - Canonical may be completely non-minimal, so probably only
@@ -18,43 +27,9 @@ Major next blocks:
      minimals?  Might as well solve it since we have to anyway
    - Canonical may be completely minimal
 
-Both-sided winners: Where do these actually arise?
-Strategy-level *= NO
-+= NO
-There is Slist::collapseOnVoid using Strategy::addComponentwise.
-This occurs when the next trick has multiple strategies that 
-actually differ in the surviving result.  I suppose we should
-leave these apart.  Can we be sure that they're just different?
-I guess we either do, or it doesn't matter...
-If we skip this, could we then go back to the old compare in
-Winner::compare?
-
 
 2021-12-27
 ----------
-It runs again now -- well, down to 11/159146 before it conks out.
-
-WARNCRITICAL1     0
-WARNCRITICAL2  5198
-WARNRANGE1        0
-WARNRANGE2       68     In getMinimalSpans may not need length equality
-NONMIN         7579
-KLUDGE            0
-ODDLEN            0
-SHIFT             0
-ERROR             0
-
-MINIMUM MATCH 37478
-MIN MISMATCH   2491
-WINNER MATCH1 32709
-WIN MISMATCH1  8248
-WIN MISMATCH2    15
-
-Why are we interested in minimals in the first place? Because we just
-want to solve these and then create the others as needed from these,
-rather than solve these others.
-
-
 Case A
 ------
 5/59, AQ/J miss KT

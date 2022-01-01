@@ -249,8 +249,6 @@ void Combinations::runUniques(
   Plays plays;
   plays.resize(cards);
 
-  CombTest ctest;
-
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
     CombEntry& centry = centries[holding];
@@ -313,6 +311,8 @@ void Combinations::runUniques(
   timersStrat[33].start();
   Combinations::fixMinimals(centries);
   timersStrat[33].stop();
+
+  CombTest ctest;
 
   timersStrat[31].start();
   ctest.checkAllMinimals(centries);
@@ -644,10 +644,12 @@ void Combinations::fixLowestWinningRanks(
     Combination& comb = uniqs[centry.reference.index];
 
     list<unsigned char> winRanksLow;
-    unsigned char span;
-    unsigned len;
 
-    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span, len))
+    // TODO This method currently won't work as written.
+    // getMinimalSpans evolved from what it was.
+    // The logic if this method may be wrong anyway.
+    /*
+    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
     {
       cout << "Fixing " << cards << ", " << holding << endl;
       cout << "WARNRANGE1: The range across minimals is not unique.\n";
@@ -662,6 +664,8 @@ void Combinations::fixLowestWinningRanks(
       continue;
 
     const unsigned char rankCritical = comb.getMaxRank() - span;
+    */
+    const unsigned char rankCritical = UCHAR_NOT_SET;
 
     cout << "Fixing " << cards << ", " << holding << endl;
     cout << "WARNCRITICAL1: Moving rank from " <<
@@ -673,16 +677,6 @@ void Combinations::fixLowestWinningRanks(
     // number, give up and accept the mismatch in CombTest.
 
     const unsigned s0 = comb.strategies().size();
-    if (s0 == len)
-    {
-      cout << "WARNKLUDGE: Changing rank, leaving strategies intact.\n";
-      continue;
-    }
-
-    if (s0 <= len)
-    {
-      cout << "WARNODDLENGTH PRE\n";
-    }
 
     // TODO Should this always lead to a reduction?
     comb.reduceByWinner(rankCritical);
@@ -690,11 +684,6 @@ void Combinations::fixLowestWinningRanks(
     cout << "WARNSHIFT: " << s0 << 
       " to " << comb.strategies().size() << endl;
 
-    if (comb.strategies().size() != len)
-    {
-      cout << "WARNODDLENGTH POST\n";
-    }
-    
     if (control.outputBasicResults())
     {
       cout << comb.strategies().str("Cleaner result",
