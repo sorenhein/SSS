@@ -531,12 +531,31 @@ void Ranks::setPlaysSide(
 
   // Always lead the singleton rank.  If both have this, lead the
   // higher one, or if they're the same, the first one.
+  /*
   if (partner.isSingleRanked() &&
       (! leader.isSingleRanked() || 
           leader.maxFullRank() < partner.maxFullRank() ||
         (leader.maxFullRank() == partner.maxFullRank() && 
           play.side == SIDE_SOUTH)))
     return;
+    */
+
+  if (partner.isSingleRanked())
+  {
+    if (! leader.isSingleRanked())
+      return;
+    else if (leader.maxFullRank() < partner.maxFullRank())
+      return;
+    else if (! control.runRankComparisons())
+    {
+      if (leader.maxFullRank() == partner.maxFullRank() && 
+          play.side == SIDE_SOUTH)
+      {
+        // Pick North in case of apparent symmetry.
+        return;
+      }
+    }
+  }
 
   // Don't lead a card by choice that's higher than partner's best one.
   if (! leader.isSingleRanked() && 

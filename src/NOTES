@@ -13,8 +13,20 @@ New outline of CombTest -- get to work, find sources of errors.
 WARN-NONMIN     3773
 ERROR          46050
 
-MINIMUM MATCH 105622
-MISMATCH       19750
+MINIMUM MATCH 109682
+MISMATCH       16051
+
+-H 5 -h 167 causes segfault?
+
+1. Would be nice to know why.
+2. Declarer might get a minAbsNumber() and maxAbsNumber(), then
+   setPlaysSide:
+   ...
+   if // (control.runRankComparisons())
+   {
+     if (leader.maxAbsNumber() < partner.minAbsNumber())
+       return;
+   }
 
 
 

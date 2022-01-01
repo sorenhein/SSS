@@ -491,7 +491,13 @@ Compare Strategy::compareSecondaryOverallResult(
 {
   const Result res1 = Strategy::resultLowest();
   const Result res2 = strat2.resultLowest();
-  return res1.compareComplete(res2);
+
+  const Compare c = res1.compareComplete(res2);
+
+  // Only use the truly different results.
+  return (c == WIN_EQUAL ? WIN_DIFFERENT : c);
+
+  // return res1.compareComplete(res2);
 }
 
 
