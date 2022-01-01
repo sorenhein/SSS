@@ -40,7 +40,7 @@ void CombTest::dumpInputs(
 
   cout << "centry:\n";
   cout << centry.str();
-  cout << "centry.winRankLow " << centry.winRankLow << "\n";
+  cout << "centry.winRankLow " << +centry.winRankLow << "\n";
 
   cout << "Minimals:\n";
   for (auto& min: centry.minimals)
@@ -51,7 +51,7 @@ void CombTest::dumpInputs(
 
   cout << strategies.str("strategies", true);
 
-  cout << "maxRank " << maxRank << "\n\n";
+  cout << "maxRank " << +maxRank << "\n\n";
 }
 
 

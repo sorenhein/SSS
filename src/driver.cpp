@@ -12,7 +12,6 @@
 
 Timers timers;
 
-
 // Can also keep them local and pass them to runThread, but in
 // Visual Studio, for some reason the compiler does not like it
 // if the list of thread arguments becomes too long.
