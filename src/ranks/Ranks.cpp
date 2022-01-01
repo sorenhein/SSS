@@ -322,6 +322,10 @@ bool Ranks::pardOK(
   if (pard > toBeat)
     return true;
 
+  // Permit same-rank plays only if ranks matter.
+  if (pard == toBeat && control.runRankComparisons())
+    return true;
+
   // If LHO plays a "king" and partner has the "ace", there is no
   // point in not playing the ace.
   if (toBeat == opps.maxFullRank() &&
