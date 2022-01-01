@@ -19,6 +19,7 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
   {
     for (auto& min: centries[holding].minimals)
     {
+      // TODO Should be only if completely non-minimal
       if (! centries[min.holding3].minimalFlag)
       {
         cout << "ERROR: holding " << holding << " uses non-minimals\n";
@@ -80,59 +81,54 @@ void CombTest::checkReductions(
   const unsigned char maxRank,
   const Distribution& distribution) const
 {
-
-  list<unsigned char> ranksHigh;
-  list<unsigned char> winRanksLow;
-  centry.getMinimalSpans(centries, uniqs, ranksHigh, winRanksLow);
-
-  // Each minimal may have a different reduction.
-  auto iterHigh = ranksHigh.begin();
-  auto iterLow = winRanksLow.begin();
   Strategies stratsCumul;
 
   for (auto& min: centry.minimals)
   {
+    const auto& ceMin = centries[min.holding3];
+    assert(ceMin.reference.index < uniqs.size());
+    const Combination& comb = uniqs[ceMin.reference.index];
+    Strategies stratsMin = comb.strategies();
+
     if (min.holding3 == centry.own.holding3)
     {
       // Special case.  This should be at the front of the list.
       // TODO This and the below are a lot of copying of Strategies.
-      Strategies stratsMin = uniqs[min.holding3].strategies();
+// cout << "Adding ourselves\n";
       stratsCumul += stratsMin;
+// cout << stratsCumul.str("Cumul after ourselves", true);
       continue;
     }
 
-    const auto& ceMin = centries[min.holding3];
-    if (! ceMin.minimalFlag)
-    {
-      // This should not happen long-term, and short-term it is
-      // addressed in checkMinimals().
-      cout << "Skipping non-minimal entry\n";
-      continue;
-    }
+    // This may or may not be a completely minimal entry, but it
+    // should not be completely non-minimal.
+
+    const unsigned char maxRankUnadjusted = comb.getMaxRank();
+// cout << "Adding holding3 " << min.holding3 << ", " << +maxRank << endl;
+// cout << stratsMin.str("Unadjusted lookup", true);
+
+    const char rankAdder = static_cast<char>(maxRank) -
+      static_cast<char>(maxRankUnadjusted);
 
     // Get the reduction that underlies the method.
-    unsigned char rankCritical;
-    if (* iterLow == UCHAR_NOT_SET)
-      rankCritical = UCHAR_NOT_SET;
-    else
-    {
-      rankCritical = maxRank + * iterLow - * iterHigh;
-      assert(rankCritical > 0 && rankCritical < 16);
-    }
+    const unsigned char rankCritical = 
+      (ceMin.winRankLow == UCHAR_NOT_SET ? 0 : ceMin.winRankLow + rankAdder);
+
+// cout << "Its max rank " << +maxRankUnadjusted << "\n";
+// cout << "Rank adder " << +rankAdder << endl;
+// cout << "Our critical Rank " << +rankCritical << endl;
 
     const auto& reduction = distribution.getReduction(rankCritical);
 
-    const char rankAdder = static_cast<char>(maxRank) -
-      static_cast<char>(* iterHigh);
 
-    assert(ceMin.reference.index < uniqs.size());
-    Strategies stratsMin = uniqs[ceMin.reference.index].strategies();
     stratsMin.expand(reduction, rankAdder, min.rotateFlag);
 
+// cout << "Reduction:\n";
+// cout << reduction.str() << endl;
+// cout << stratsMin.str("Expansion", true);
     stratsCumul += stratsMin;
+// cout << stratsCumul.str("Cumul", true);
     
-    iterHigh++;
-    iterLow++;
   }
 
   // TODO The sum check must take into account whether the combination
@@ -147,7 +143,7 @@ void CombTest::checkReductions(
   {
     cout << "MINIMUM MISMATCH" << endl;
     CombTest::dumpInputs("r > 16", centries, centry, strategies, maxRank);
-    CombTest::dumpSpans(winRanksLow, ranksHigh);
+    // CombTest::dumpSpans(winRanksLow, ranksHigh);
     cout << stratsCumul.str("Cumulative", true);
   }
 

@@ -10,11 +10,11 @@ New outline of CombTest -- get to work, find sources of errors.
 4. Think about down-shifting, e.g. AQ/K missing HH.  If A then Q,
    is the K relevant or is it, too, down-shifted to an x?
 
-WARN-NONMIN   41620
-ERROR             0
+WARN-NONMIN     3773
+ERROR          46050
 
-MINIMUM MATCH 77981
-MISMATCH      47391
+MINIMUM MATCH 105622
+MISMATCH       19750
 
 
 

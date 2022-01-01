@@ -152,6 +152,9 @@ struct CombEntry
     for (auto& min: minimals)
     {
       const auto& ceMin = centries[min.holding3];
+      // TODO May not be minimal, but should not be completely
+      // non-minimal.
+      /*
       if (! ceMin.minimalFlag)
       {
         // This should not happen long-term, and short-term it is
@@ -159,6 +162,7 @@ struct CombEntry
 cout << "WARNSKIP: Skipping non-minimal entry\n";
         continue;
       }
+      */
   
       assert(ceMin.reference.index < uniqs.size());
       const Combination& comb = uniqs[ceMin.reference.index];
@@ -173,20 +177,12 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
     const unsigned ownHolding3,
     const vector<CombEntry>& centries)
   {
+  UNUSED(ownHolding3);
     // Check that each non-minimal holding refers to minimal ones.
     // We actually follow through and change the minimals.
     // Once ranks are good, this method should no longer be needed.
     // Returns true if nothing is modified.
  
-    bool ownFlag = false;
-    CombReference ownRef;
-    if (minimals.front().holding3 == ownHolding3)
-    {
-      ownFlag = true;
-      ownRef = minimals.front();
-      minimals.pop_front();
-    }
-
     bool changeFlag = false;
     auto iter = minimals.begin();
  
@@ -195,7 +191,15 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
       const CombEntry& centry = centries[iter->holding3];
  
       if (centry.minimalFlag)
+      {
+        cout << "Is minimal: " << iter->str() << endl;
         iter++;
+      }
+      else if (iter->holding3 == centry.minimals.front().holding3)
+      {
+        // Is a partial self-reference, so we already have its minimals.
+        iter++;
+      }
       else
       {
         // Erase the non-minimal one and add the ones it points to.
@@ -203,17 +207,13 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
         // of all rotations to be the really minimal holding.
         for (auto& min: centry.minimals)
         {
-          if (min.holding3 == iter->holding3)
-            // We already have a copy of ourselves.
-            continue;
-
-          minimals.push_back(min);
-          CombReference& cr = minimals.back();
-          cr.rotateFlag ^= iter->rotateFlag;
+            minimals.push_back(min);
+            CombReference& cr = minimals.back();
+            cr.rotateFlag ^= iter->rotateFlag;
         }
  
-        iter = minimals.erase(iter);
-        changeFlag = true;
+          iter = minimals.erase(iter);
+          changeFlag = true;
       }
     }
 
@@ -223,11 +223,6 @@ cout << "WARNSKIP: Skipping non-minimal entry\n";
       minimals.unique();
     }
 
-    if (ownFlag)
-    {
-      minimals.push_front(ownRef);
-    }
- 
     return ! changeFlag;
   }
 
