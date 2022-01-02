@@ -292,17 +292,20 @@ bool Ranks::leadOK(
   }
   else if (! leader.isSingleRanked())
   {
-    // Both sides have 2+ ranks.  
-    if (lead >= partner.maxFullRank())
+    if (! control.runRankComparisons())
     {
-      // Again, don't lead a too-high card.
-      return false;
-    }
-    else if (lead <= partner.minFullRank() && 
-      lead > leader.minFullRank())
-    {
-      // If partner's lowest card is at least as high, lead lowest.
-      return false;
+      // Both sides have 2+ ranks.  
+      if (lead <= partner.minFullRank() && 
+        lead > leader.minFullRank())
+      {
+        // If partner's lowest card is at least as high, lead lowest.
+        return false;
+      }
+      else if (lead >= partner.maxFullRank())
+      {
+        // Again, don't lead a too-high card.
+        return false;
+      }
     }
   }
   return true;
@@ -529,25 +532,17 @@ void Ranks::setPlaysSide(
   if (leader.isVoid())
     return;
 
-  // Always lead the singleton rank.  If both have this, lead the
-  // higher one, or if they're the same, the first one.
-  /*
-  if (partner.isSingleRanked() &&
-      (! leader.isSingleRanked() || 
-          leader.maxFullRank() < partner.maxFullRank() ||
-        (leader.maxFullRank() == partner.maxFullRank() && 
-          play.side == SIDE_SOUTH)))
-    return;
-    */
-
   if (partner.isSingleRanked())
   {
     if (! control.runRankComparisons())
     {
+      // Always lead the single rank.
       if (! leader.isSingleRanked())
         return;
+      // If both have single ranks, lead the higher one.
       else if (leader.maxFullRank() < partner.maxFullRank())
         return;
+      // If they're the same, lead from North.
       if (leader.maxFullRank() == partner.maxFullRank() && 
           play.side == SIDE_SOUTH)
       {
@@ -563,7 +558,6 @@ void Ranks::setPlaysSide(
       leader.minFullRank() >= partner.maxFullRank())
     return;
 
-  // for (auto& leadPtr: leader.getCards(false))
   for (auto& leadPtr: leader.getCards(control.runRankComparisons()))
   {
     // I wish I could write for (play.leadPtr: ...), but a declaration

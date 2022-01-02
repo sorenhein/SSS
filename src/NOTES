@@ -10,11 +10,11 @@ New outline of CombTest -- get to work, find sources of errors.
 4. Think about down-shifting, e.g. AQ/K missing HH.  If A then Q,
    is the K relevant or is it, too, down-shifted to an x?
 
-WARN-NONMIN     3773
-ERROR          46050
+WARN-NONMIN      357
+ERROR          51399
 
-MINIMUM MATCH 112591
-MISMATCH       13291
+MINIMUM MATCH 114929
+MISMATCH       10988
 
 2. Declarer might get a minAbsNumber() and maxAbsNumber(), then
    setPlaysSide:
