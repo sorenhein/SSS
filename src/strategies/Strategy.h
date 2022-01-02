@@ -122,7 +122,7 @@ class Strategy
 
     // ************* Rank-check methods  ************
 
-    bool constantTricksByReduction(const Reduction& reduction) const;
+    bool constantResultsByReduction(const Reduction& reduction) const;
 
     void expand(
       const Reduction& reduction,
