@@ -243,7 +243,7 @@ string Node::strSimple() const
 
 string Node::strSimpleParent() const
 {
-  if (parentPtr->simpleStrat.empty())
+  if (parentPtr == nullptr || parentPtr->simpleStrat.empty())
     return "";
   else
     return parentPtr->simpleStrat.str("simple " + to_string(index), 

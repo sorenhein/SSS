@@ -13,12 +13,9 @@ New outline of CombTest -- get to work, find sources of errors.
 WARN-NONMIN     3773
 ERROR          46050
 
-MINIMUM MATCH 109682
-MISMATCH       16051
+MINIMUM MATCH 112591
+MISMATCH       13291
 
--H 5 -h 167 causes segfault?
-
-1. Would be nice to know why.
 2. Declarer might get a minAbsNumber() and maxAbsNumber(), then
    setPlaysSide:
    ...
@@ -27,6 +24,10 @@ MISMATCH       16051
      if (leader.maxAbsNumber() < partner.minAbsNumber())
        return;
    }
+
+   Similarly for 6/502 perhaps, leading the 9 and never the J
+   from KQ/J9.  So actually in the above, only the lowest of
+   such cards.
 
 
 

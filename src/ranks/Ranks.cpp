@@ -542,12 +542,12 @@ void Ranks::setPlaysSide(
 
   if (partner.isSingleRanked())
   {
-    if (! leader.isSingleRanked())
-      return;
-    else if (leader.maxFullRank() < partner.maxFullRank())
-      return;
-    else if (! control.runRankComparisons())
+    if (! control.runRankComparisons())
     {
+      if (! leader.isSingleRanked())
+        return;
+      else if (leader.maxFullRank() < partner.maxFullRank())
+        return;
       if (leader.maxFullRank() == partner.maxFullRank() && 
           play.side == SIDE_SOUTH)
       {
