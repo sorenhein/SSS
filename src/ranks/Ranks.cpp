@@ -406,10 +406,54 @@ void Ranks::finish(Play& play) const
 
   if (play.trickNS)
   {
+    // TODO Is this only needed if runRankComparisons?
+
+
+    /*
     if (play.side == SIDE_NORTH)
       play.currBest.setHigherOf(* play.leadPtr, * play.pardPtr);
     else
       play.currBest.setHigherOf(* play.pardPtr, * play.leadPtr);
+      */
+
+
+    Card const * northCardPtr, * southCardPtr;
+    if (play.side == SIDE_NORTH)
+    {
+      northCardPtr = play.leadPtr;
+      southCardPtr = play.pardPtr;
+    }
+    else
+    {
+      northCardPtr = play.pardPtr;
+      southCardPtr = play.leadPtr;
+    }
+
+    if (* northCardPtr > * southCardPtr)
+      southCardPtr = south.higherMatch(* northCardPtr);
+    else
+      northCardPtr = north.higherMatch(* southCardPtr);
+
+    if (northCardPtr == nullptr)
+    {
+      play.currBest.set(SIDE_SOUTH, * southCardPtr);
+    }
+    else if (southCardPtr == nullptr)
+    {
+      play.currBest.set(SIDE_NORTH, * northCardPtr);
+    }
+    else
+    {
+      /*
+      cout << "Play " << play.strLine() << "\n";
+      cout << "Would have set both:\n";
+      cout << "lead " << play.leadPtr->str("L", true) << "\n";
+      cout << "pard " << play.pardPtr->str("P", true) << "\n";
+      cout << northCardPtr->str("N", true) << "\n";
+      cout << southCardPtr->str("S", true) << "\n";
+      */
+      play.currBest.setBoth(* northCardPtr, * southCardPtr);
+    }
   }
 }
 

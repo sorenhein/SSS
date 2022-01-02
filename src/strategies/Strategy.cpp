@@ -167,7 +167,7 @@ void Strategy::scrutinize(const Ranges& ranges)
  *                                                          *
  ************************************************************/
 
-bool Strategy::constantTricksByReduction(
+bool Strategy::constantResultsByReduction(
   const Reduction& reduction) const
 {
   // Returns true if the number of tricks is constant within each 
@@ -176,19 +176,29 @@ bool Strategy::constantTricksByReduction(
   const auto& dist = reduction.full2reducedDist;
   assert(dist.size() == results.size());
 
-  vector<unsigned char> reducedTricks(dist.size(), UCHAR_NOT_SET);
+  vector<Result const *> reducedResultList(dist.size());
+  vector<bool> firstList(dist.size(), true);
 
   for (auto& result: results)
   {
     const unsigned reduced = dist[result.getDist()];
 
-    if (reducedTricks[reduced] == UCHAR_NOT_SET)
+    if (firstList[reduced] == true)
     {
-      // Store the group's trick count.
-      reducedTricks[reduced] = result.getTricks();
+      // Store the group's Result.
+      reducedResultList[reduced] = &result;
+      firstList[reduced] = false;
     }
-    else if (reducedTricks[reduced] != result.getTricks())
+    else if (result != * reducedResultList[reduced])
+    {
+/*
+cout << "About to delete a strategy\n";
+cout << "dist " << +result.getDist() << ", reduced " << reduced << "\n";
+cout << "result\n" << result.str(true);
+cout << "reduced result\n" << reducedResultList[reduced]->str(true) << endl;
+*/
       return false;
+    }
   }
 
   return true;

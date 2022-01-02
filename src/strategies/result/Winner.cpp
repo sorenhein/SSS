@@ -45,10 +45,12 @@ void Winner::set(
   if (sideIn == SIDE_NORTH)
   {
     north = card;
+    south.reset();
     mode = WIN_NORTH_ONLY;
   }
   else if (sideIn == SIDE_SOUTH)
   {
+    north.reset();
     south = card;
     mode = WIN_SOUTH_ONLY;
   }
@@ -67,6 +69,19 @@ void Winner::setHigherOf(
     Winner::set(SIDE_NORTH, northIn);
   else
     Winner::set(SIDE_SOUTH, southIn);
+}
+
+
+void Winner::setBoth(
+  const Card& northIn,
+  const Card& southIn)
+{
+  Winner::reset();
+
+  north = northIn;
+  south = southIn;
+  mode = WIN_BOTH;
+  rank = northIn.getRank(); // Should be same for both sides
 }
 
 

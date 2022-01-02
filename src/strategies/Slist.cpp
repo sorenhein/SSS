@@ -219,6 +219,8 @@ void Slist::symmetrize()
  *                                                          *
  ************************************************************/
 
+// TODO Rename to reduceByResults
+
 void Slist::reduceByTricks(const Reduction& reduction)
 {
   // Delete Strategy's where the number of tricks is not constant
@@ -227,13 +229,20 @@ void Slist::reduceByTricks(const Reduction& reduction)
   auto iter = strategies.begin();
   while (iter != strategies.end())
   {
-    if (iter->constantTricksByReduction(reduction))
+    if (iter->constantResultsByReduction(reduction))
     {
       iter->study();
       iter++;
     }
     else
       iter = strategies.erase(iter);
+  }
+
+  if (strategies.empty())
+  {
+    cout << "Slist::reduceByTricks led to an empty strategy list\n";
+    cout << reduction.str() << endl;
+    assert(! strategies.empty());
   }
 }
 

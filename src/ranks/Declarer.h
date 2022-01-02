@@ -44,6 +44,8 @@ class Declarer: public Player
     
     const Card& top() const;
 
+    Card const * higherMatch(const Card& card) const;
+
     // Unlike in Opponents, this can get either ranks or cards.
     const deque<Card const *>& getCards(const bool fullFlag) const;
 

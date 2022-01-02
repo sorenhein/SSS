@@ -42,10 +42,6 @@ class Winner
     unsigned char rank;
 
 
-    void set(
-      const Side sideIn,
-      const Card& card);
-
     void multiplySide(
       Card& own,
       const Card& other,
@@ -59,7 +55,15 @@ class Winner
 
     void reset();
 
+    void set(
+      const Side sideIn,
+      const Card& card);
+
     void setHigherOf(
+      const Card& northIn,
+      const Card& southIn);
+
+    void setBoth(
       const Card& northIn,
       const Card& southIn);
 
