@@ -154,9 +154,9 @@ class Slist
     
     // Rank-check help methods.
 
-    void reduceByTricks(const Reduction& reduction);
+    void reduceByResults(const Reduction& reduction);
 
-    void reduceByWinner(const unsigned char rankCritical);
+    // void reduceByWinner(const unsigned char rankCritical);
 
     void expand(
       const Reduction& reduction,

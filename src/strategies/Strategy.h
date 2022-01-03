@@ -34,6 +34,11 @@ class Strategy
 
     void setConstants();
 
+    bool detectChangedResults(
+      const Reduction& reduction,
+      vector<Result>& reducedResultList,
+      vector<bool>& changeList) const;
+
     // Returns true if <= is still possible at the trick level.
     // Terminates as soon as this becomes impossible if flag is set.
 
@@ -122,7 +127,7 @@ class Strategy
 
     // ************* Rank-check methods  ************
 
-    bool constantResultsByReduction(const Reduction& reduction) const;
+    bool reduceByResults(const Reduction& reduction);
 
     void expand(
       const Reduction& reduction,

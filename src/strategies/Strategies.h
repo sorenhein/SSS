@@ -66,9 +66,7 @@ class Strategies
 
     void symmetrize();
 
-    void reduceByTricks(const Reduction& reduction);
-
-    void reduceByWinner(const unsigned char rankCritical);
+    void reduceByResults(const Reduction& reduction);
 
     void expand(
       const Reduction& reduction,

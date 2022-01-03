@@ -167,41 +167,73 @@ void Strategy::scrutinize(const Ranges& ranges)
  *                                                          *
  ************************************************************/
 
-bool Strategy::constantResultsByReduction(
-  const Reduction& reduction) const
+bool Strategy::detectChangedResults(
+  const Reduction& reduction,
+  vector<Result>& reducedResultList,
+  vector<bool>& changeList) const
 {
-  // Returns true if the number of tricks is constant within each 
-  // reduction group.
+  // Detects the lowest result within each group.
+  // Returns true if anything should change.
 
   const auto& dist = reduction.full2reducedDist;
-  assert(dist.size() == results.size());
-
-  vector<Result const *> reducedResultList(dist.size());
   vector<bool> firstList(dist.size(), true);
+  bool anyChangeFlag = false;
 
   for (auto& result: results)
   {
-    const unsigned reduced = dist[result.getDist()];
+    const unsigned reducedDist = dist[result.getDist()];
 
-    if (firstList[reduced] == true)
+    if (firstList[reducedDist] == true)
     {
       // Store the group's Result.
-      reducedResultList[reduced] = &result;
-      firstList[reduced] = false;
+      reducedResultList[reducedDist] = result;
+      firstList[reducedDist] = false;
     }
-    else if (result != * reducedResultList[reduced])
+    else if (result != reducedResultList[reducedDist])
     {
-/*
-cout << "About to delete a strategy\n";
-cout << "dist " << +result.getDist() << ", reduced " << reduced << "\n";
-cout << "result\n" << result.str(true);
-cout << "reduced result\n" << reducedResultList[reduced]->str(true) << endl;
-*/
-      return false;
+      reducedResultList[reducedDist] *= result;
+      changeList[reducedDist] = true;
+      anyChangeFlag = true;
     }
   }
 
-  return true;
+  return anyChangeFlag;
+}
+
+bool Strategy::reduceByResults(
+  const Reduction& reduction)
+{
+  // Forces constant results (tricks or whole results depending on
+  // Result, i.e. control.runRankComparisons()) within each
+  // reduction group.  Returns true if no change was made.
+
+  const auto& dist = reduction.full2reducedDist;
+  const unsigned dlen = dist.size();
+  assert(dlen == results.size());
+
+  vector<Result> reducedResultList(dlen);
+  vector<bool> changeList(dlen, false);
+
+  if (! Strategy::detectChangedResults(reduction,
+      reducedResultList, changeList))
+    return true;
+
+  // Change results in affected groups to the lowest one.
+  for (auto& result: results)
+  {
+    const unsigned char d = result.getDist();
+    const unsigned reducedDist = dist[d];
+    if (changeList[reducedDist])
+    {
+      // As the copy also copies the distribution number, set it back.
+      const Result& reducedResult = reducedResultList[reducedDist];
+      weightInt += reducedResult.getTricks() - result.getTricks();
+      result = reducedResult;
+      result.setDist(d);
+    }
+  }
+
+  return false;
 }
 
 

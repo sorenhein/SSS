@@ -436,10 +436,6 @@ void Combinations::runUniquesOld(
   Combinations::fixMinimals(centries);
   timersStrat[33].stop();
 
-  timersStrat[32].start();
-  Combinations::fixLowestWinningRanks(cards, centries, uniqs);
-  timersStrat[32].stop();
-
   timersStrat[31].start();
   ctest.checkAllMinimals(centries);
   timersStrat[31].stop();
@@ -612,76 +608,6 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
     if (! centries[holding].fixMinimals(holding, centries))
     {
       cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
-    }
-  }
-}
-
-
-void Combinations::fixLowestWinningRanks(
-  const unsigned cards,
-  vector<CombEntry>& centries,
-  vector<Combination>& uniqs)
-{
-  // When Plays are limited, a Combination may have some Strategy's
-  // that have too-low lowest winners.  We can notice this by looking
-  // at the (real) minimal combinations, as the difference between
-  // the highest occurring rank and the lowest winning rank should be
-  // the same.  When it isn't, we throw out such spurious Strategy's.
-
-  for (unsigned holding = 0; holding < centries.size(); holding++)
-  {
-    // Only look at non-minimal combinations.
-    CombEntry& centry = centries[holding];
-    if (! centry.referenceFlag || centry.minimalFlag)
-      continue;
-
-    Combination& comb = uniqs[centry.reference.index];
-
-    list<unsigned char> winRanksLow;
-
-    // TODO This method currently won't work as written.
-    // getMinimalSpans evolved from what it was.
-    // The logic if this method may be wrong anyway.
-    /*
-    if (! centry.getMinimalSpans(centries, uniqs, winRanksLow, span))
-    {
-      cout << "Fixing " << cards << ", " << holding << endl;
-      cout << "WARNRANGE1: The range across minimals is not unique.\n";
-      continue;
-    }
-
-    // Void stays void.
-    // TODO On the way to a different empty rank.
-    if (centry.winRankLow == 0 || 
-        centry.winRankLow == UCHAR_NOT_SET ||
-        comb.getMaxRank() - centry.winRankLow == span)
-      continue;
-
-    const unsigned char rankCritical = comb.getMaxRank() - span;
-    */
-    const unsigned char rankCritical = UCHAR_NOT_SET;
-
-    cout << "Fixing " << cards << ", " << holding << endl;
-    cout << "WARNCRITICAL1: Moving rank from " <<
-      +centry.winRankLow << " to " << +rankCritical << endl;
-
-    centry.winRankLow = rankCritical;
-
-    // Try to fix the actual Strategies.  If we already have the right
-    // number, give up and accept the mismatch in CombTest.
-
-    const unsigned s0 = comb.strategies().size();
-
-    // TODO Should this always lead to a reduction?
-    comb.reduceByWinner(rankCritical);
-
-    cout << "WARNSHIFT: " << s0 << 
-      " to " << comb.strategies().size() << endl;
-
-    if (control.outputBasicResults())
-    {
-      cout << comb.strategies().str("Cleaner result",
-        control.runRankComparisons()) << "\n";
     }
   }
 }

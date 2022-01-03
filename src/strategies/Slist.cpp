@@ -219,49 +219,28 @@ void Slist::symmetrize()
  *                                                          *
  ************************************************************/
 
-// TODO Rename to reduceByResults
-
-void Slist::reduceByTricks(const Reduction& reduction)
+void Slist::reduceByResults(const Reduction& reduction)
 {
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
   // unchanged.
-  auto iter = strategies.begin();
-  while (iter != strategies.end())
+
+  bool changeFlag = false;
+  for (auto& strat: strategies)
   {
-    if (iter->constantResultsByReduction(reduction))
-    {
-      iter->study();
-      iter++;
-    }
-    else
-      iter = strategies.erase(iter);
+    if (! strat.reduceByResults(reduction))
+      changeFlag = true;
+
+    strat.study();
   }
 
-  if (strategies.empty())
+  if (changeFlag)
   {
-    cout << "Slist::reduceByTricks led to an empty strategy list\n";
-    cout << reduction.str() << endl;
-    assert(! strategies.empty());
-  }
-}
+    ComparatorType lessEqualMethod = (control.runRankComparisons() ?
+      &Strategy::lessEqualCompleteStudied :
+      &Strategy::lessEqualPrimaryStudied);
 
-
-void Slist::reduceByWinner(const unsigned char rankCritical)
-{
-  // Delete Strategy's where the lowest winner is below
-  // rankCritical.
-  auto iter = strategies.begin();
-  while (iter != strategies.end())
-  {
-    if (iter->resultLowest().getRank() >= rankCritical)
-    {
-      // TODO Do we need to study()?
-      // iter->study();
-      iter++;
-    }
-    else
-      iter = strategies.erase(iter);
+    Slist::consolidate(lessEqualMethod);
   }
 }
 

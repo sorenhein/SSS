@@ -54,8 +54,6 @@ class Combination
 
     void reduce(const Distribution& distribution);
 
-    void reduceByWinner(const unsigned char rankCritical);
-
     const Strategies& strategies() const;
 
     string str() const;

@@ -2,24 +2,6 @@
 ----------
 Working on CombTest errors.
 
-8/1763, AJ9 / Q missing KTxx
-d =  9, Kxx / T
-d = 10, KTx / x
-With d = 9, West cannot cover as it would give up 3 tricks.
-So it looks like the queen holds, but somehow it needs the jack, too.
-With d = 10, West can indeed cover or not, so we get 4NS.
-At the moment, d = 9 yields only 4S.
-Then the whole strategy gets eliminated.
-Are we really back to somehow detecting intelligently when a North
-rank also counts??
-Maybe a softer (but questionable?) way is to go uniformly for the worst
-result within a group, and then to consolidate the strategies.
-At least that way strategies don't disappear unless there are others
-to beat it.
-It deals correctly with 8/800 and 8/1763 (where it becomes 4NS in
-the group of d = 9 and 10).
-
-
 Think about not eliminating strategies that are only dominated by
 overall winner (and not result by result) after all.
 
@@ -32,11 +14,11 @@ overall winner (and not result by result) after all.
 4. Think about down-shifting, e.g. AQ/K missing HH.  If A then Q,
    is the K relevant or is it, too, down-shifted to an x?
 
-WARN-NONMIN      357
-ERROR          51399
+WARN-NONMIN      342
+ERROR          40490
 
-MINIMUM MATCH 114929
-MISMATCH       10988
+MINIMUM MATCH 122758
+MISMATCH        3161
 
 2. Declarer might get a minAbsNumber() and maxAbsNumber(), then
    setPlaysSide:

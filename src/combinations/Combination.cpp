@@ -213,7 +213,7 @@ void Combination::reduce(const Distribution& distribution)
 
   unsigned noBefore = strats.size();
 
-  strats.reduceByTricks(reduction);
+  strats.reduceByResults(reduction);
 
   if (strats.size() != noBefore &&
       control.outputBasicResults())
@@ -221,12 +221,6 @@ void Combination::reduce(const Distribution& distribution)
     cout << strats.str("Reduced result", 
       control.runRankComparisons()) << "\n";
   }
-}
-
-
-void Combination::reduceByWinner(const unsigned char rankCritical)
-{
-  strats.reduceByWinner(rankCritical);
 }
 
 

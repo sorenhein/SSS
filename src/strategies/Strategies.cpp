@@ -151,20 +151,12 @@ timersStrat[2].stop();
  *                                                          *
  ************************************************************/
 
-void Strategies::reduceByTricks(const Reduction& reduction)
+void Strategies::reduceByResults(const Reduction& reduction)
 {
-  // Delete Strategy's where the number of tricks is not constant
+  // Delete Strategy's where the results are not constant
   // within each reduction group.  The number of distributions is
   // unchanged.
-  slist.reduceByTricks(reduction);
-}
-
-
-void Strategies::reduceByWinner(const unsigned char rankCritical)
-{
-  // Delete Strategy's where the lowest winner is below
-  // rankCritical.
-  slist.reduceByWinner(rankCritical);
+  slist.reduceByResults(reduction);
 }
 
 

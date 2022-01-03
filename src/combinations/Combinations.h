@@ -71,11 +71,6 @@ class Combinations
 
     void fixMinimals(vector<CombEntry>& centries);
 
-    void fixLowestWinningRanks(
-      const unsigned cards,
-      vector<CombEntry>& centries,
-      vector<Combination>& uniqs);
-
 
   public:
 
