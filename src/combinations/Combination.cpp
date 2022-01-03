@@ -211,12 +211,9 @@ void Combination::reduce(const Distribution& distribution)
   const auto& reduction = distribution.getReduction(rankCritical);
   assert(reduction.full2reducedDist.size() == distribution.size());
 
-  unsigned noBefore = strats.size();
+  const bool changeFlag = strats.reduceByResults(reduction);
 
-  strats.reduceByResults(reduction);
-
-  if (strats.size() != noBefore &&
-      control.outputBasicResults())
+  if (changeFlag && control.outputBasicResults())
   {
     cout << strats.str("Reduced result", 
       control.runRankComparisons()) << "\n";

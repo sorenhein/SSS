@@ -219,7 +219,7 @@ void Slist::symmetrize()
  *                                                          *
  ************************************************************/
 
-void Slist::reduceByResults(const Reduction& reduction)
+bool Slist::reduceByResults(const Reduction& reduction)
 {
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
@@ -242,6 +242,8 @@ void Slist::reduceByResults(const Reduction& reduction)
 
     Slist::consolidate(lessEqualMethod);
   }
+
+  return changeFlag;
 }
 
 

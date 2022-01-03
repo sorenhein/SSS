@@ -66,7 +66,7 @@ class Strategies
 
     void symmetrize();
 
-    void reduceByResults(const Reduction& reduction);
+    bool reduceByResults(const Reduction& reduction);
 
     void expand(
       const Reduction& reduction,

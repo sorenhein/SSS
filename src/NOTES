@@ -49,76 +49,9 @@ Major next blocks:
 
 2021-12-27
 ----------
-Case A
-------
-5/59, AQ/J miss KT
-#0 fin, 2N, Q is like 5/61, AQ/T miss KJ (too has #0, #1: 3N, 5N)
-  Its #1 is like 5/75
-#1 top, 4N, A is like 5/75, AT/J miss KQ (#0 top, 3N)
-
-It's not right to say that 5/75 is THE minimal for 5/59.
-5/59 #0 has a minimal in the form of 5/61 #0 and 5/61 #1,
-which in turn becomes 5/61 #0 and 5/75 #0.
-And directly 5/75 #0.
-So effectively there are Strategy-level minimals 5/61 #0 and 5/75 #0.
-
-It would be OK to have 5/61 + 5/75 which must match 5/59.
-
-Case B
-------
-7/521, AQT/J missing Kxx:
-#0 finesse, needs QJ so 7/537 AQ8/J missing KHH is a minimal.
-#1 top, needs JT so it is effectively its own minimal.
-In checking, we could take 7/521 #0 = 7/537 #0 plus 7/521 #1.
-Then 7/521 #1 would be preferable to 7/537#1 to declarer.
-
-This needs itself as a minimal in at least some regard.
-It should work to have 7/521 + 7/537 which becames 7/521 again,
-as 7/537 #1 is not as good for declarer.
-
-Case C
-------
-AQ/K, can play as A maybe Q, or as K for sure.
-In the former case the K is not needed.
-So maybe we do need to keep track of each N *and* S winning card.
-And we make a minimal from AQ/K using AQ, it should then be
-AK/x and not stay at AQ/K.
-
-5/35 AQ/K miss HH.
-#0 K, K and maybe A.  Should become Ax/K. 5/51, K maybe A.
-#1 top, A and maybe Q.  Should become(!) AK/x, 5/25, A maybe "K".
-
-It should be OK to have 5/25 + 5/51.
-
-This makes Ranks::minimal different.  Even though K is > Q, it is
-shifted down because it is below the "maximum" South winner of \infty.
-
 Maybe each Strategy gets a minimal CombReference, h3 == 0 if not set.
 When outputting Strategies, no Prod, but instead h3.
-
-
-2021-12-26
-----------
-6/35, AKJ/Q missing HH: One strategy is to cash the ace and then
-maybe the king.  Another is to cash the queen.  But this doesn't just
-need 2S = Q, as the Q is lower than AK.  So I guess the Winner should
-really be strictly the card with the lowest absolute number.
-
-Is this actually a problem with play generation?
-6/51: AK9/Q missing JT also has 3S = Q for d=1, whereas the ace
-is enough.
-
-6/89 AQJ/K miss HH: 
-#0  #1
-K   Q
-K   A
-K   Q
-It is reasonable to keep both.
-But in Combinations::getMinimals we should have one result per
-Strategy and pass these to Ranks::getMinimals.
-Then for #0 we'd get Axx/K missing QJ,
-and  for #1 we'd get AQx/K missing JT.
-
+So show the minimal on a per-strategy basis in the table itself.
 
 
 2021-12-24
@@ -133,8 +66,6 @@ Comb counts from Combinations to class/struct?
 Declarer: greater?
 No Winners at all, once there's only ever 1?
 Card: When use number, when absNumber?
-
-5/17, 9/1340, 9/13649: Good test cases.
 
 
 2021-12-05
@@ -251,6 +182,8 @@ and shorter than all North cards, so their ranks can't matter.
 - Maybe in 4th hand when NS are down to <= 1 card after this trick,
   KJ with AQxx outstanding for example (6/548).
 
+8/1773: Leading the 7 is conceivable(?), but the 8?
+Actually with the stiff queen, shouldn't we just lead it?
 
 Winning NS plays in semantic form
 ---------------------------------
