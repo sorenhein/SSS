@@ -163,26 +163,6 @@ const Card& Declarer::top() const
 }
 
 
-Card const * Declarer::higherMatch(const Card& card) const
-{
-  // Return a pointer to the lowest higher Card held by this player,
-  // or nullptr if none.
-  const unsigned char absNumber = card.getAbsNumber();
-  for (auto& cardPtr: cardsPtr)
-  {
-    if (cardPtr->getAbsNumber() > absNumber)
-    {
-      if (cardPtr->getRank() == card.getRank())
-        return cardPtr;
-      else
-        return nullptr;
-    }
-  }
-
-  return nullptr;
-}
-
-
 const deque<Card const *>& Declarer::getCards(const bool fullFlag) const
 {
   if (fullFlag)

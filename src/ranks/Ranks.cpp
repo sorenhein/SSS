@@ -159,6 +159,12 @@ void Ranks::setPlayers()
 
   north.finish();
   south.finish();
+
+  if (control.runRankComparisons())
+  {
+    completion.resize(cards);
+    completion.set(north.getCards(true), south.getCards(true));
+  }
 }
 
 
@@ -411,15 +417,6 @@ void Ranks::finish(Play& play) const
   {
     // TODO Is this only needed if runRankComparisons?
 
-
-    /*
-    if (play.side == SIDE_NORTH)
-      play.currBest.setHigherOf(* play.leadPtr, * play.pardPtr);
-    else
-      play.currBest.setHigherOf(* play.pardPtr, * play.leadPtr);
-      */
-
-
     Card const * northCardPtr, * southCardPtr;
     if (play.side == SIDE_NORTH)
     {
@@ -433,40 +430,27 @@ void Ranks::finish(Play& play) const
     }
 
     if (* northCardPtr > * southCardPtr)
-      southCardPtr = south.higherMatch(* northCardPtr);
+    {
+      // Consider the next-higher South card of that rank played as well.
+      southCardPtr = completion.get(northCardPtr->getAbsNumber());
+      if (! southCardPtr)
+      {
+        play.currBest.set(SIDE_NORTH, * northCardPtr);
+        return;
+      }
+    }
     else
-      northCardPtr = north.higherMatch(* southCardPtr);
+    {
+      northCardPtr = completion.get(southCardPtr->getAbsNumber());
+      if (! northCardPtr)
+      {
+        play.currBest.set(SIDE_SOUTH, * southCardPtr);
+        return;
+      }
+    }
 
-    if (northCardPtr == nullptr)
-    {
-      cout << "Play " << play.strLine() << "\n";
-      cout << "Setting South:\n";
-      cout << "lead " << play.leadPtr->str("L", true) << "\n";
-      cout << "pard " << play.pardPtr->str("P", true) << "\n";
-      cout << southCardPtr->str("S", true) << "\n";
-      play.currBest.set(SIDE_SOUTH, * southCardPtr);
-    }
-    else if (southCardPtr == nullptr)
-    {
-      cout << "Play " << play.strLine() << "\n";
-      cout << "Setting North:\n";
-      cout << "lead " << play.leadPtr->str("L", true) << "\n";
-      cout << "pard " << play.pardPtr->str("P", true) << "\n";
-      cout << northCardPtr->str("N", true) << "\n";
-      play.currBest.set(SIDE_NORTH, * northCardPtr);
-    }
-    else
-    {
-      /* */
-      cout << "Play " << play.strLine() << "\n";
-      cout << "Setting both:\n";
-      cout << "lead " << play.leadPtr->str("L", true) << "\n";
-      cout << "pard " << play.pardPtr->str("P", true) << "\n";
-      cout << northCardPtr->str("N", true) << "\n";
-      cout << southCardPtr->str("S", true) << "\n";
-      /* */
-      play.currBest.setBoth(* northCardPtr, * southCardPtr);
-    }
+    // The general case.
+    play.currBest.setBoth(* northCardPtr, * southCardPtr);
   }
 }
 

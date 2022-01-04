@@ -5,6 +5,7 @@
 
 #include "Declarer.h"
 #include "Opponents.h"
+#include "Completion.h"
 
 #include "../plays/Play.h"
 #include "../utils/CombinationType.h"
@@ -25,6 +26,8 @@ class Ranks
     Declarer north;
     Declarer south;
     Opponents opps;
+
+    Completion completion;
 
     unsigned holding3;
     unsigned holding4;

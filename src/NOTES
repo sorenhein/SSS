@@ -3,10 +3,19 @@
 Working on CombTest errors.
 
 1. Finding the completion card (higher card with partner) in Ranks
+   - I think it works in Ranks now.
+   - But when we adapt, i.e. 8/1718 A void K x, the next trick is
+     JT / - missing Kx which becomes T, and at this point the T
+     must be translated not just from KQ / - missing Ax to T,
+     but the T must be completed.
 2. Each Strategy or even each Result may have an explicit winner
    for which it is valid.
    - Step 1 would be to introduce and keep this Strategy-level
      winner updated
+3. The number of Strategy's has exploded, e.g. 11/8663, AKJ / Q85.
+   It does reduce down to something sensible.
+   So maybe we should reduce each strategy, maybe discarding it,
+   directly when it has been made?
 
 --------
 
