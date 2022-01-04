@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2022 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
