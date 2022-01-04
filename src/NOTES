@@ -1,25 +1,38 @@
 2022-01-04
-----------
-Working on CombTest errors.
+==========
 
-1. Each Strategy or even each Result may have an explicit winner
-   for which it is valid.
-   - Step 1 would be to introduce and keep this Strategy-level
-     winner updated
+CombTest errors
+---------------
 
-2. Now we probably don't need to reduce in Combinations anymore?
+WARN-NONMIN       72
+ERROR           2139
 
---------
+MINIMUM MATCH 122981
+MISMATCH        2968
 
-If there is a Result per Strategy, equality can be tested first
-in this way.  And then one Result per group (Reduction).
+Other checks not implemented yet
+--------------------------------
+* Ranks: If NS" and N"S, also N'S' and nothing else, etc.
 
-Similarly when only < or > is possible.  Take the lowest one and
-its groups.
+* Unranked strategies should all be among ranked ones, and no
+  ranked one should go away in terms of its number of tricks
 
-Maybe instead of the NS business, we just go by absNumber in Card?
-Then that is a simple comparison.
 
+Ideas against errors
+--------------------
+
+Some Strategy's implicitly do need a lower card than actually wins
+a trick.  They probably arose when multiplying together Strategy's,
+one of which needed the lower card.  The card itself disappeared,
+but declarer had to be willing to accept that lower rank to get some
+of the other results as well.  Somehow we have to keep track of this.
+
+Each Strategy (or even each Result!) may have an explicit winner
+for which it is valid.
+1. Introduce and keep this Strategy-level winner updated
+2. Rely on it
+
+Examples
 --------
 
 7/1595, KT9 / Q missing AJ8
@@ -48,162 +61,40 @@ There are many other cases where this would go too far.
 Or rather, shouldn't 1595 need the 9 in some variations?  Against
 d = 7 (AJ8) we can only afford Q J K because we have the T 9.
 
+--------
 
+7/1799, AT / QJ9 missing Kxx.
+#0 top
+#1 run the J
+#2 run the Q
 
+7/1855, A8 / QJ7 missing KT9.
+#0 top
+#1 run the J
+The problem with running the Q here is that they cover in d=5, leading
+to 3S' (J) and not 2S (Q) as in 7/1799.  In 7/1799 it would cost 
+a trick to cover, but here it doesn't, so they can force the use
+of the lower rank.  Then #2 loses to #1, which it doesn't in 7/1799.
 
-1. Ranks skips interesting plays
-2. There is minimal, mixed and non-minimal.
-   Mixed should include itself in the comparison
-3. Ranks: If NS" and N"S, also N'S' and nothing else, etc.
-   Check method in Ranks based on the list of lowest strategies winners.
+So again #2 in 7/1799 arose because there was a strategy on the
+way where declarer needed 2NS' and not just 2S' for d = 5.
+That makes 7/1799 a partial self-minimum.
 
-WARN-NONMIN      342
-ERROR          40490
-
-MINIMUM MATCH 122758
-MISMATCH        3161
-
-2. Declarer might get a minAbsNumber() and maxAbsNumber(), then
-   setPlaysSide:
-   ...
-   if // (control.runRankComparisons())
-   {
-     if (leader.maxAbsNumber() < partner.minAbsNumber())
-       return;
-   }
-
-   Similarly for 6/502 perhaps, leading the 9 and never the J
-   from KQ/J9.  So actually in the above, only the lowest of
-   such cards.
-
-
-
-2021-12-28
-----------
-Major next blocks:
-5. Continue partitioning of ace-high
-   - Non-canonical (not "greater") -> the canonical version
-   - Canonical may be completely non-minimal, so probably only
-     has 1 minimal?
-   - Canonical may be mixed, but then no reason to look at
-     minimals?  Might as well solve it since we have to anyway
-   - Canonical may be completely minimal
-
-
-2021-12-27
-----------
-Maybe each Strategy gets a minimal CombReference, h3 == 0 if not set.
-When outputting Strategies, no Prod, but instead h3.
-So show the minimal on a per-strategy basis in the table itself.
-
-
-2021-12-24
-----------
-10/43051, QT6 / K9875 (for example), missing AJ
-We get 3NS for d=0, 3N for d=3 which corresponds to leading to the Q.
-We could also lead to the K and get 3N / 3NS.  Is the play left out
-of Ranks?
-
-Cleanup:
-Comb counts from Combinations to class/struct?
-Declarer: greater?
-No Winners at all, once there's only ever 1?
-Card: When use number, when absNumber?
-
-
-2021-12-05
-----------
-Some additional optimizations with numbers, not ranks (xls)
-See how many total plays are made now
-
-
-2021-10-25
-----------
-
-CombTest,checkReductions: Should now not need reduceByTricks.
-Just use strategies.
-
-2. equalByMethod
-   Divide completely by size
-   assert size(v1) >= size(v2)?
-
-
-Open issues 2021-09-26
-----------------------
-Look at speeding up Slist::equalByMethod.
-
-6. For void starting with 10-13 cards (assuming we solve up to 13
-   cards), it's always OK to symmetrize, as we can never get there
-   from non-void combinations.  We do this:
-   a. If we get above [100] strategies, we start over and only
-      look up symmetrized strategies (so 6-8 and 8-6 are done together
-      and symmetrized against each other).  Multiply strategy by
-      strategy, I think, and don't do a complete cross
-   b. In the end, if we are above [16] strategies, we symmetrize
-   c. If we know from lookup that something must be symmetric
-
-7. Go from only batch to solving a single distribution from scratch
-   a. Basic idea is to make a list of the nodes you'll need
-   b. Then make these recursively before you solve this node
-   c. A lot of flags are the same, i.e. ranks or not, optimizations
-      turned on or not, debugging/checks on/off
-   d. Could switch to the minimal one (or one of them) and only
-      solve this
-
-A histogram of #strategies shows that we also get large numbers
-when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
-Maybe it's OK to limit next strategies to symmetric ones, too,
-when South becomes void and there are a lot of next strategies.
-
-Symmetrize 11 / 132902, KJ96 / void: From 132,902 to 166 strategies.
-Less than half the square root.
-
-
-Reduction
----------
-* 9: 14762 (KJ97 missing 5 cards) needs 68 distributions
-
--d
-  - Optimize the code for minimal()
-  - Also optimize for Strategies == even though it doesn't matter
-    - Start at ==, only do upper triangle of matrix
-
-
-Checks
-------
-* Node optimization (on/off)
-* Strategies *= optimization (on/off)
-
-Check speed and identity of results
-
-
-Ranks stored in tables
-----------------------
-* Write and read binary files with holdings to run vs. not
-* Is it true that a minimal combination does not need non-minimal
-  ones to solve?  If not, we would either solve the non-minimal
-  ones, or look up the non-minimal one (probably better) and
-  map the smaller number of distributions to the current case somehow
-
-
-Limited Plays considered
+Plays generated in Ranks
 ------------------------
-* Shift something in Plays or Ranks such that the card number
-  starts from 1, not 0, so is distinguishable in Nodes from void
-  - I think this involves switching to fullFlag in Play.h, and then
-  - samePartial will make different comparisons, but
-  - then void == 0 and lowest == 1, otherwise we get aliasing
 
-* Divide Ranks optimizations into those that always make sense, and
-  those that only make sense when we don't care about winners.
-* Can maybe parametrize Player by full/rank-only loop.  Only needed
-  for North and South.
-* Can maybe parametrize the Ranks optimizations in the same way.
+When ranked
+...........
+The equivalent of one rank is a singleton card.  Probably always lead
+this.
 
-Make a version of Ranks::setPlays with fewer optimizations:
-- Don't have to save partner's cards of equal rank
-- When equal rank, all depth combinations
+Look for other cases where we were too harsh in permitting plays.
 
+8/1773: Leading the 7 is conceivable(?), but the 8?
+Actually with the stiff queen, shouldn't we just lead it?
+
+When unranked
+.............
 Play eliminations, based on KJ975 missing AQT8xx, so
 whenever partner is void:
 
@@ -225,27 +116,96 @@ and shorter than all North cards, so their ranks can't matter.
 - Maybe in 4th hand when NS are down to <= 1 card after this trick,
   KJ with AQxx outstanding for example (6/548).
 
-8/1773: Leading the 7 is conceivable(?), but the 8?
-Actually with the stiff queen, shouldn't we just lead it?
 
-Winning NS plays in semantic form
----------------------------------
-* Winning plays/strategies such as "cash ace"
-  - Sometimes NS have several ways to reach its optimum; keep them all
-* Noting the inequalities on EW plays that are needed to stabilize
-  an NS strategy
+Overall partitioning
+--------------------
+* Has at least one reference to self -> minimal
+
+* Can characterize solved, ranked combinations as canonical or not,
+  and minimal or not (bit vector of bools?)
+
+Symmetrization
+--------------
+
+* For void starting with 10-13 cards (assuming we solve up to 13
+  cards), it's always OK to symmetrize, as we can never get there
+  from non-void combinations.  We do this:
+  a. If we get above [100] strategies, we start over and only
+     look up symmetrized strategies (so 6-8 and 8-6 are done together
+     and symmetrized against each other).  Multiply strategy by
+     strategy, I think, and don't do a complete cross
+  b. In the end, if we are above [16] strategies, we symmetrize
+  c. If we know from lookup that something must be symmetric
+
+* A histogram of #strategies shows that we also get large numbers
+  when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
+  Maybe it's OK to limit next strategies to symmetric ones, too,
+  when South becomes void and there are a lot of next strategies.
+
+* Symmetrize 11 / 132902, KJ96 / void: From 132,902 to 166 strategies.
+  Less than half the square root.
 
 
-Applying constraints to defensive holdings
-------------------------------------------
-* Distribution::limit, using a struct that Control returns
-  - We will fail for now on some HCP values
+Optimizations
+-------------
+* If there is a Result per Strategy, equality can be tested first
+  in this way.  And then one Result per group (Reduction).
+  - One classical lowest result, one that takes history into account
+  - In print output, show the result(s)
+
+* Similarly when only < or > is possible.  Take the lowest one and
+  its groups.
+
+* Would it be worthwhile to store the minimal numbers in the Strategy
+  as well?
+  -- Then it would also be in the print output, in the table itself
+
+* CombTest streamlining, esp. CombEntry (become a clasS?) and its
+  storage requirement
+
+* Maybe instead of the NS business, we just go by absNumber in Card?
+  Then that is a simple comparison.  Are there cases where winners are
+  not of this form?
+
+* CombTest,checkReductions: Should now not need reduceByTricks.
+  Just use strategies.
+
+* In Card, can we think of a way to avoid depth?  Probably not, 
+  as it is useful for the output.  Maybe avoid number then? Or name?
+
+* Optimize the code for minimal().  Is it even used?
+
+* Look at speeding up Slist::equalByMethod.
+  Divide completely by size
+  assert size(v1) >= size(v2)?
+
+* Also optimize for Strategies == even though it doesn't matter
+  - Start at ==, only do upper triangle of matrix
+
+* Is Declarer::greater used?  Is it completely right?
+
+* No / limited endl
 
 
-Bug / behavior?
----------------
-Why doesn't it work in Combination to make complete copies of
-everything?  It must be some stray pointers, but where?
+Non-batch one-shots
+-------------------
+
+* Go from only batch to solving a single distribution from scratch
+  a. Basic idea is to make a list of the nodes you'll need
+  b. Then make these recursively before you solve this node
+  c. A lot of flags are the same, i.e. ranks or not, optimizations
+     turned on or not, debugging/checks on/off
+  d. Could switch to the minimal one (or one of them) and only
+     solve this
+
+Ranks stored in tables
+----------------------
+* Write and read binary files with holdings to run vs. not
+* Is it true that a minimal combination does not need non-minimal
+  ones to solve?  If not, we would either solve the non-minimal
+  ones, or look up the non-minimal one (probably better) and
+  map the smaller number of distributions to the current case somehow
+
 
 Mixed strategies
 ----------------
@@ -267,11 +227,31 @@ So we can actually tell in the abstract which combinations have the
 potential for mixed strategies, even without knowing the constraints?!
 
 
-TODO
+Features
+--------
+* Distribution::limit, using a struct that Control returns
+  - We will fail for now on some HCP values
+
+* Not all features of Control.cpp are implemented yet
+
+* Check sometime that these still work
+  - Node optimization (on/off)
+  - Strategies *= optimization (on/off)
+
+
+Semantics, verbal descriptions
+------------------------------
+* Winning plays/strategies such as "cash ace"
+  - Sometimes NS have several ways to reach its optimum; keep them all
+* Noting the inequalities on EW plays that are needed to stabilize
+  an NS strategy
+
+* Verbal description of NS strategy
+  - Minterms?
+
+
+Bugs
 ----
-Not all features of Control.cpp are implemented yet
+Why doesn't it work in Combination to make complete copies of
+everything?  It must be some stray pointers, but where?
 
-No / limited endl
-
-In Card, can we think of a way to avoid depth?  Probably not, 
-as it is useful for the output.  Maybe avoid number then? Or name?
