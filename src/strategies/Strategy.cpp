@@ -16,6 +16,7 @@
 
 #include "../plays/Play.h"
 
+#include "../distributions/Distribution.h"
 #include "../distributions/SurvivorList.h"
 #include "../distributions/Reduction.h"
 
@@ -203,9 +204,21 @@ bool Strategy::detectChangedResults(
 
 bool Strategy::reduceByResults(const Distribution& distribution)
 {
-  // TODO Write.
-  UNUSED(distribution);
-  return false;
+  // Forces constant results (tricks or whole results depending on
+  // Result, i.e. control.runRankComparisons()) within each
+  // reduction group.  Returns true if no change was made.
+
+  const Result resLowest = Strategy::resultLowest();
+  const unsigned char rankCritical = resLowest.getRank();
+
+  // TODO The 0 test should no longer be needed?
+  if (rankCritical == 0 || rankCritical == UCHAR_NOT_SET)
+    return true;
+
+  const auto& reduction = distribution.getReduction(rankCritical);
+  assert(reduction.full2reducedDist.size() == results.size());
+
+  return Strategy::reduceByResults(reduction);
 }
 
 

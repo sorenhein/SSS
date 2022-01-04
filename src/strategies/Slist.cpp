@@ -223,7 +223,7 @@ bool Slist::reduceByResults(const Distribution& distribution)
 {
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
-  // unchanged.
+  // unchanged.  Returns true if a change was made.
 
   bool changeFlag = false;
   for (auto& strat: strategies)
@@ -251,7 +251,7 @@ bool Slist::reduceByResults(const Reduction& reduction)
 {
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
-  // unchanged.
+  // unchanged.  Returns true if a change was made.
 
   bool changeFlag = false;
   for (auto& strat: strategies)

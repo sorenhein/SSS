@@ -131,9 +131,15 @@ void Node::reactivate()
 }
 
 
-void Node::reduceByResults(const Distribution& distribution)
+void Node::reduceByResults(
+  const Distribution& distribution,
+  const bool debugFlag)
 {
-  strats.reduceByResults(distribution);
+  if (strats.reduceByResults(distribution))
+  {
+    if (debugFlag)
+      cout << strats.str("Reduced strategy", control.runRankComparisons());
+  }
 }
 
 

@@ -188,6 +188,7 @@ if (debugFlag)
 }
 
 
+
 void Combination::reduce(const Distribution& distribution)
 {
   // Eliminate Strategy's that distinguish between ranks below the

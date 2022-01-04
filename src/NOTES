@@ -39,6 +39,8 @@ Working on CombTest errors.
    Using the distribution, get the reduction for that critical rank.
    Call strats.reduceByResults(reduction)
 
+Now we probably don't need to reduce in Combinations anymore?
+
 --------
 
 8/1718, AJT / Q9 missing K87
@@ -105,8 +107,6 @@ d = 7 (AJ8) we can only afford Q J K because we have the T 9.
    Mixed should include itself in the comparison
 3. Ranks: If NS" and N"S, also N'S' and nothing else, etc.
    Check method in Ranks based on the list of lowest strategies winners.
-4. Think about down-shifting, e.g. AQ/K missing HH.  If A then Q,
-   is the K relevant or is it, too, down-shifted to an x?
 
 WARN-NONMIN      342
 ERROR          40490

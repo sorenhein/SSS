@@ -148,7 +148,7 @@ void Nodes::strategizeDeclarer(
   if (level == LEVEL_LEAD)
   {
     for (auto iter = nodes.begin(); iter != nextIter; iter++)
-      iter->reduceByResults(distribution);
+      iter->reduceByResults(distribution, debugFlag);
   }
 
   // Add to the corresponding parent node.
