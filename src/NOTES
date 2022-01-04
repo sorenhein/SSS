@@ -1,9 +1,72 @@
-2022-01-02
+2022-01-03
 ----------
 Working on CombTest errors.
 
-Think about not eliminating strategies that are only dominated by
-overall winner (and not result by result) after all.
+1. Finding the completion card (higher card with partner) in Ranks
+2. Each Strategy or even each Result may have an explicit winner
+   for which it is valid.
+   - Step 1 would be to introduce and keep this Strategy-level
+     winner updated
+
+--------
+
+8/1718, AJT / Q9 missing K87
+8/1726, AJT / Q7 missing K98
+8/1774, AJ8 / Q7 missing KT9
+
+1718 has 6 strategies and refers to 1726 and 1774, not to itself.
+1726 refers to itself and to 1774.
+
+1726 actually has the identical (except for a shift) 6 strategies.
+
+1774 has four strategies. Two of them are similar as in 1718,
+but with fewer tricks (#1, #2).  They get discarded when expanded
+and added.
+
+One of them (#3) is the same as #4 in 1718.
+
+The problem is #2 which is similar to 1718 #3, but for d = 5 (Kxx/void)
+the original (1718) yields 2, 3NS and this one yields 2, 3N.
+The reason is that it's possible to start with the ace and if East is
+void, to drop the queen and to lead to the jack.  In a way this is
+cheating, as the queen was there.  Maybe if there is no directly higher
+card, but there was one, at least take that?
+
+Also, in 1718 why can't we play the ace dropping the queen?  Or the
+queen always playing the ace?  Because we can't lead the ace!
+The rule in setPlaysSide prevents it: We would lead a card that's higher
+than partner's best one.  Now we can, but that makes even more options.
+Some of them should go away, reducing to four strategies in this case.
+
+--------
+
+7/1595, KT9 / Q missing AJ8
+There is a second strategy starting Q J K, otherwise Q ? 9.
+This leads to the same #tricks and a different rank profile,
+losing against d = 2 (J / A8) and d = 4 (J8 / A) needing the T, and
+winning against d = 6 (AJ / 8) needing only the K no matter what.
+
+This has two minimals, 7/1611 K98 / Q, and 7/1599 KT8 / Q.
+7/1611 only has one strategy which is the same as in 7/1595
+when ducking the queen.
+7/1599 also only has one strategy.  We get to the point of Q J K:
+d = 2: 2, 3N
+    4: 2, 3N
+    6: 2, 5N
+    7: 1, 5N
+
+The problem is that for d = 7 it now costs a trick to overtake the
+queen, leaving K8 missing A9.  West should never play the jack from
+AJ8 as it costs a trick.  
+
+Probably the only real solution is to compare strategies not
+primary-secondary but holistically.  Do I want to make that change?
+There are many other cases where this would go too far.
+
+Or rather, shouldn't 1595 need the 9 in some variations?  Against
+d = 7 (AJ8) we can only afford Q J K because we have the T 9.
+
+
 
 
 1. Ranks skips interesting plays

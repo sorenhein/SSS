@@ -453,12 +453,20 @@ bool Strategy::lessEqualCompleteBasic(const Strategy& strat2) const
   
   if (cumul & WIN_SECOND_PRIMARY)
     return true;
+  /*
   else if ((cumul & WIN_FIRST_SECONDARY) ||
       (cumul & WIN_DIFFERENT_SECONDARY))
   {
     // We still eliminate a strategy whose overall result is not better.
     return Strategy::lessEqualSecondaryOverallResult(strat2);
   }
+  */
+  /* */
+  else if (cumul & WIN_FIRST_SECONDARY)
+    return false;
+  else if (cumul & WIN_DIFFERENT_SECONDARY)
+    return false;
+    /* */
   else
     return true;
 }
@@ -472,8 +480,9 @@ Compare Strategy::compareCompleteBasic(const Strategy& strat2) const
   unsigned cumul;
   Strategy::cumulate(strat2, false, cumul);
 
-  // return compressCompareDetail(cumul);
+  return compressCompareDetail(cumul);
   
+  /*
   Compare compressed;
   CompareDetail cleaned;
   processCompareDetail(cumul, compressed, cleaned);
@@ -484,6 +493,7 @@ Compare Strategy::compareCompleteBasic(const Strategy& strat2) const
   }
   else
     return compressed;
+    */
 }
 
 
@@ -499,8 +509,9 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
   unsigned cumul;
   Strategy::cumulateSecondary(strat2, cumul);
 
-  // return compressCompareSecondaryDetail(cumul);
+  return compressCore(cumul);
 
+  /*
   Compare compressed;
   CompareDetail cleaned;
   processCore(cumul, compressed, cleaned);
@@ -511,6 +522,7 @@ Compare Strategy::compareSecondary(const Strategy& strat2) const
   }
   else
     return compressed;
+    */
 }
 
 

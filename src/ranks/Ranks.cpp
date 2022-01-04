@@ -335,8 +335,11 @@ bool Ranks::pardOK(
       partner.maxFullRank() > toBeat)
     return false;
 
-  // Play the lowest of irrelevant cards.
-  return (pard == partner.minFullRank());
+  if (control.runRankComparisons())
+    return true;
+  else
+    // Play the lowest of irrelevant cards.
+    return (pard == partner.minFullRank());
 }
 
 
@@ -436,22 +439,32 @@ void Ranks::finish(Play& play) const
 
     if (northCardPtr == nullptr)
     {
+      cout << "Play " << play.strLine() << "\n";
+      cout << "Setting South:\n";
+      cout << "lead " << play.leadPtr->str("L", true) << "\n";
+      cout << "pard " << play.pardPtr->str("P", true) << "\n";
+      cout << southCardPtr->str("S", true) << "\n";
       play.currBest.set(SIDE_SOUTH, * southCardPtr);
     }
     else if (southCardPtr == nullptr)
     {
+      cout << "Play " << play.strLine() << "\n";
+      cout << "Setting North:\n";
+      cout << "lead " << play.leadPtr->str("L", true) << "\n";
+      cout << "pard " << play.pardPtr->str("P", true) << "\n";
+      cout << northCardPtr->str("N", true) << "\n";
       play.currBest.set(SIDE_NORTH, * northCardPtr);
     }
     else
     {
-      /*
+      /* */
       cout << "Play " << play.strLine() << "\n";
-      cout << "Would have set both:\n";
+      cout << "Setting both:\n";
       cout << "lead " << play.leadPtr->str("L", true) << "\n";
       cout << "pard " << play.pardPtr->str("P", true) << "\n";
       cout << northCardPtr->str("N", true) << "\n";
       cout << southCardPtr->str("S", true) << "\n";
-      */
+      /* */
       play.currBest.setBoth(* northCardPtr, * southCardPtr);
     }
   }
@@ -597,10 +610,15 @@ void Ranks::setPlaysSide(
   }
 
   // Don't lead a card by choice that's higher than partner's best one.
-  if (! leader.isSingleRanked() && 
-      ! partner.isVoid() && 
-      leader.minFullRank() >= partner.maxFullRank())
-    return;
+  if (! leader.isSingleRanked())
+  {
+    if (! control.runRankComparisons())
+    {
+      if (! partner.isVoid() && 
+          leader.minFullRank() >= partner.maxFullRank())
+        return;
+    }
+  }
 
   for (auto& leadPtr: leader.getCards(control.runRankComparisons()))
   {

@@ -255,6 +255,16 @@ void Slist::expand(
   // Expand the strategies up using the reduction.
   for (auto& strategy: strategies)
     strategy.expand(reduction, rankAdder, rotateFlag);
+
+  if (! Slist::ordered())
+  {
+    // This is a bit overkill, as they just need to be sorted by weight.
+    ComparatorType lessEqualMethod = (control.runRankComparisons() ?
+      &Strategy::lessEqualCompleteStudied :
+      &Strategy::lessEqualPrimaryStudied);
+
+    Slist::consolidate(lessEqualMethod);
+  }
 }
 
 
