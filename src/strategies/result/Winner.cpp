@@ -14,6 +14,7 @@
 #include "Winner.h"
 
 #include "../../plays/Play.h"
+#include "../../ranks/Completion.h"
 #include "../../const.h"
 
 #define WIN_NORTH_SET 0x1
@@ -215,17 +216,32 @@ void Winner::flip()
 
 void Winner::update(const Play& play)
 {
+assert(play.completionPtr);
   if (mode == WIN_NORTH_ONLY)
   {
     // This may also change the winning side.
     north = * play.northTranslate(north.getNumber());
     rank = north.getRank();
+
+    Card const * southPtr = play.completionPtr->get(north.getAbsNumber());
+    if (southPtr)
+    {
+      mode = WIN_BOTH;
+      south = * southPtr;
+    }
   }
   else if (mode == WIN_SOUTH_ONLY)
   {
     // This may also change the winning side.
     south = * play.southTranslate(south.getNumber());
     rank = south.getRank();
+
+    Card const * northPtr = play.completionPtr->get(south.getAbsNumber());
+    if (northPtr)
+    {
+      mode = WIN_BOTH;
+      north = * northPtr;
+    }
   }
   else if (mode == WIN_BOTH)
   {
@@ -250,6 +266,15 @@ void Winner::update(const Play& play)
     }
     else
      rank = north.getRank(); // Pick one
+
+    Card const * northPtr = play.completionPtr->get(south.getAbsNumber());
+    Card const * southPtr = play.completionPtr->get(north.getAbsNumber());
+
+    if (northPtr && north > * northPtr)
+      north = * northPtr;
+
+    if (southPtr && south > * southPtr)
+      south = * southPtr;
   }
   else if (mode == UCHAR_NOT_SET)
   {

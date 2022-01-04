@@ -19,6 +19,7 @@ using namespace std;
 
 class Combinations;
 class Combination;
+class Completion;
 class Card;
 
 
@@ -61,6 +62,12 @@ struct Play
   // The combination following the current trick.  This does not get
   // set directly in Ranks.
   Combination const * combPtr;
+
+  // The possible completion of a winner from the following trick.
+  // It's actually the same for all plays, so it could go in Plays.
+  // But we're already passing around Play, and space is not at such
+  // a premium here in Play.
+  Completion const * completionPtr;
 
   
   unsigned lead(const bool fullFlag = false) const;

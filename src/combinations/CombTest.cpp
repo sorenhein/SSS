@@ -137,10 +137,12 @@ void CombTest::checkReductions(
 
   if (stratsCumul == strategies)
   {
-    cout << "MINIMUM MATCH" << endl;
+    // cout << "MINIMUM MATCH" << endl;
   }
   else
   {
+    cout << "Checking: " << centry.reference.str() << endl;
+
     cout << "MINIMUM MISMATCH" << endl;
     CombTest::dumpInputs("r > 16", centries, centry, strategies, maxRank);
     // CombTest::dumpSpans(winRanksLow, ranksHigh);
@@ -166,14 +168,6 @@ void CombTest::checkAllReductions(
     const CombEntry& centry = centries[holding];
     if (! centry.referenceFlag || centry.minimalFlag)
       continue;
-
-cout << "Checking:  cards " << cards << ", " <<
-  centry.reference.str() << endl;
-
-if (cards == 9 && holding == 13649)
-{
-  cout << "HERE\n";
-}
 
     const Combination& comb = uniqs[centry.reference.index];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 

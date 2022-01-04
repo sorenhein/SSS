@@ -1,75 +1,24 @@
-2022-01-03
+2022-01-04
 ----------
 Working on CombTest errors.
 
-1. Finding the completion card (higher card with partner) in Ranks
-   - I think it works in Ranks now.
-   - But when we adapt, i.e. 8/1718 A void K x, the next trick is
-     JT / - missing Kx which becomes T, and at this point the T
-     must be translated not just from KQ / - missing Ax to T,
-     but the T must be completed.
-   - Store a pointer to Completion in Play? Or even Plays, as it
-     should be the same for all plays
-
-2. Each Strategy or even each Result may have an explicit winner
+1. Each Strategy or even each Result may have an explicit winner
    for which it is valid.
    - Step 1 would be to introduce and keep this Strategy-level
      winner updated
 
-3. The number of Strategy's has exploded, e.g. 11/2663, AKJ / Q85.
-   It goes from 77 to 19 strategies.
-   It does reduce down to something sensible.
-   So maybe we should reduce each strategy, maybe discarding it,
-   directly when it has been made?
-
-   A good place is Nodes::strategizeDeclarer when level == LEVEL_LEAD,
-   before the add loop.
-   Node would get a reduceByResults(distribution).
-   Strategies and Slist would get one too (not by reduction).
-   Then Slist would figure out the critical rank of each strategy,
-   get the reduction, and call Strategy::reduceByResult(reduction).
-   If yes, study() it again in Slist.
-   In the end, consolidate if anything changed.
-
-   Currently done in Combinations after strategize.  Needs 
-   * distributions.ptrNoncanonical(cards, centry.reference.holding2)
-   
-   Combination::reduce
-   Get the critical rank of the whole Strategies.
-   Using the distribution, get the reduction for that critical rank.
-   Call strats.reduceByResults(reduction)
-
-Now we probably don't need to reduce in Combinations anymore?
+2. Now we probably don't need to reduce in Combinations anymore?
 
 --------
 
-8/1718, AJT / Q9 missing K87
-8/1726, AJT / Q7 missing K98
-8/1774, AJ8 / Q7 missing KT9
+If there is a Result per Strategy, equality can be tested first
+in this way.  And then one Result per group (Reduction).
 
-1718 has 6 strategies and refers to 1726 and 1774, not to itself.
-1726 refers to itself and to 1774.
+Similarly when only < or > is possible.  Take the lowest one and
+its groups.
 
-1726 actually has the identical (except for a shift) 6 strategies.
-
-1774 has four strategies. Two of them are similar as in 1718,
-but with fewer tricks (#1, #2).  They get discarded when expanded
-and added.
-
-One of them (#3) is the same as #4 in 1718.
-
-The problem is #2 which is similar to 1718 #3, but for d = 5 (Kxx/void)
-the original (1718) yields 2, 3NS and this one yields 2, 3N.
-The reason is that it's possible to start with the ace and if East is
-void, to drop the queen and to lead to the jack.  In a way this is
-cheating, as the queen was there.  Maybe if there is no directly higher
-card, but there was one, at least take that?
-
-Also, in 1718 why can't we play the ace dropping the queen?  Or the
-queen always playing the ace?  Because we can't lead the ace!
-The rule in setPlaysSide prevents it: We would lead a card that's higher
-than partner's best one.  Now we can, but that makes even more options.
-Some of them should go away, reducing to four strategies in this case.
+Maybe instead of the NS business, we just go by absNumber in Card?
+Then that is a simple comparison.
 
 --------
 

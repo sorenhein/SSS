@@ -413,6 +413,8 @@ void Ranks::finish(Play& play) const
   else
     play.southCardsPtr = &south.getCards(true);
 
+  play.completionPtr = &completion;
+
   if (play.trickNS)
   {
     // TODO Is this only needed if runRankComparisons?
