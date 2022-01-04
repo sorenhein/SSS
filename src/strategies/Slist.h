@@ -21,6 +21,7 @@ struct StratData;
 class Ranges;
 struct Play;
 class SurvivorList;
+class Distribution;
 
 using namespace std;
 
@@ -153,6 +154,8 @@ class Slist
 
     
     // Rank-check help methods.
+
+    bool reduceByResults(const Distribution& distribution);
 
     bool reduceByResults(const Reduction& reduction);
 

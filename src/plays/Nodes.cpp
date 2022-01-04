@@ -15,6 +15,8 @@
 #include "Play.h"
 #include "Chunks.h"
 
+#include "../distributions/Distribution.h"
+
 
 Nodes::Nodes()
 {
@@ -137,9 +139,17 @@ void Nodes::removeNodes()
 }
 
 
-void Nodes::strategizeDeclarer(const bool debugFlag)
+void Nodes::strategizeDeclarer(
+  const Distribution& distribution,
+  const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
+
+  if (level == LEVEL_LEAD)
+  {
+    for (auto iter = nodes.begin(); iter != nextIter; iter++)
+      iter->reduceByResults(distribution);
+  }
 
   // Add to the corresponding parent node.
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
@@ -147,7 +157,9 @@ void Nodes::strategizeDeclarer(const bool debugFlag)
 }
 
 
-void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
+void Nodes::strategizeDeclarerAdvanced(
+  const Distribution& distribution,
+  const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
 
@@ -155,7 +167,7 @@ void Nodes::strategizeDeclarerAdvanced(const bool debugFlag)
   for (auto iter = nodes.begin(); iter != nextIter; iter++)
     iter->reactivate();
 
-  Nodes::strategizeDeclarer(debugFlag);
+  Nodes::strategizeDeclarer(distribution, debugFlag);
 }
 
 

@@ -200,8 +200,16 @@ bool Strategy::detectChangedResults(
   return anyChangeFlag;
 }
 
-bool Strategy::reduceByResults(
-  const Reduction& reduction)
+
+bool Strategy::reduceByResults(const Distribution& distribution)
+{
+  // TODO Write.
+  UNUSED(distribution);
+  return false;
+}
+
+
+bool Strategy::reduceByResults(const Reduction& reduction)
 {
   // Forces constant results (tricks or whole results depending on
   // Result, i.e. control.runRankComparisons()) within each

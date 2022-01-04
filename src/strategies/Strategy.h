@@ -14,6 +14,7 @@ class Ranges;
 struct Play;
 class SurvivorList;
 struct Reduction;
+class Distribution;
 
 using namespace std;
 
@@ -126,6 +127,8 @@ class Strategy
     void scrutinize(const Ranges& ranges);
 
     // ************* Rank-check methods  ************
+
+    bool reduceByResults(const Distribution& distribution);
 
     bool reduceByResults(const Reduction& reduction);
 

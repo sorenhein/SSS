@@ -68,6 +68,8 @@ class Node
 
     void reactivate();
 
+    void reduceByResults(const Distribution& distribution);
+
     void cross(
       const Level level,
       const bool debugFlag);

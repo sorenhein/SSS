@@ -131,6 +131,12 @@ void Node::reactivate()
 }
 
 
+void Node::reduceByResults(const Distribution& distribution)
+{
+  strats.reduceByResults(distribution);
+}
+
+
 void Node::cross(
   const Level level,
   const bool debugFlag)

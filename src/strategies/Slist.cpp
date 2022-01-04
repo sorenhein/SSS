@@ -219,6 +219,34 @@ void Slist::symmetrize()
  *                                                          *
  ************************************************************/
 
+bool Slist::reduceByResults(const Distribution& distribution)
+{
+  // Delete Strategy's where the number of tricks is not constant
+  // within each reduction group.  The number of distributions is
+  // unchanged.
+
+  bool changeFlag = false;
+  for (auto& strat: strategies)
+  {
+    if (! strat.reduceByResults(distribution))
+      changeFlag = true;
+
+    strat.study();
+  }
+
+  if (changeFlag)
+  {
+    ComparatorType lessEqualMethod = (control.runRankComparisons() ?
+      &Strategy::lessEqualCompleteStudied :
+      &Strategy::lessEqualPrimaryStudied);
+
+    Slist::consolidate(lessEqualMethod);
+  }
+
+  return changeFlag;
+}
+
+
 bool Slist::reduceByResults(const Reduction& reduction)
 {
   // Delete Strategy's where the number of tricks is not constant

@@ -47,8 +47,13 @@ class Plays
       Distribution const * distPtr,
       const DebugPlay debugFlag);
 
-    void strategizeSimpleFront(const DebugPlay debugFlag);
-    void strategizeSimpleBack(const DebugPlay debugFlag);
+    void strategizeSimpleFront(
+      const Distribution& distribution,
+      const DebugPlay debugFlag);
+
+    void strategizeSimpleBack(
+      const Distribution& distribution,
+      const DebugPlay debugFlag);
 
     string strNodeCounts(const string& title = "") const;
 

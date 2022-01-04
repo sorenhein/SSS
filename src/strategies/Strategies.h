@@ -22,6 +22,7 @@
 
 struct Play;
 class SurvivorList;
+class Distribution;
 
 using namespace std;
 
@@ -66,6 +67,11 @@ class Strategies
 
     void symmetrize();
 
+    // Does each Strategy separately using its own critical rank.
+    bool reduceByResults(const Distribution& distribution);
+
+    // Does all Strategy's with the Strategies' critical rank.
+    // TODO Should this method survive?
     bool reduceByResults(const Reduction& reduction);
 
     void expand(

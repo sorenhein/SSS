@@ -116,17 +116,23 @@ void Plays::getNextStrategies(
 }
 
 
-void Plays::strategizeSimpleBack(const DebugPlay debugFlag)
+void Plays::strategizeSimpleBack(
+  const Distribution& distribution,
+  const DebugPlay debugFlag)
 {
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
-  nodesPard.strategizeDeclarer((debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
+  nodesPard.strategizeDeclarer(
+    distribution, (debugFlag & DEBUGPLAY_PARD_DETAILS) != 0);
 }
 
 
-void Plays::strategizeSimpleFront(const DebugPlay debugFlag)
+void Plays::strategizeSimpleFront(
+  const Distribution& distribution,
+  const DebugPlay debugFlag)
 {
   nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
-  nodesLead.strategizeDeclarer((debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
+  nodesLead.strategizeDeclarer(
+    distribution, (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
 }
 
 
@@ -168,8 +174,8 @@ timersStrat[20].stop();
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))
   {
     // Optimization is not used when the number of plays is low enough.
-    Plays::strategizeSimpleBack(debugFlag);
-    Plays::strategizeSimpleFront(debugFlag);
+    Plays::strategizeSimpleBack(* distPtr, debugFlag);
+    Plays::strategizeSimpleFront(* distPtr, debugFlag);
   }
   else if (nodesRho.used() == nodesLho.used())
   {
@@ -186,17 +192,19 @@ timersStrat[20].stop();
       (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
     nodesLead.strategizeDeclarerAdvanced(
+      * distPtr,
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
   else
   {
-    Plays::strategizeSimpleBack(debugFlag);
+    Plays::strategizeSimpleBack(* distPtr, debugFlag);
 
     // Here we deal separately with constants and dominated plays.
     nodesLho.strategizeDefendersAdvanced(
       (debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
 
     nodesLead.strategizeDeclarerAdvanced(
+      * distPtr,
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
 
