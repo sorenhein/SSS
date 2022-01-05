@@ -15,12 +15,10 @@
 #include "result/Ranges.h"
 
 #include "../plays/Play.h"
-
 #include "../distributions/Distribution.h"
-#include "../distributions/SurvivorList.h"
-#include "../distributions/Reduction.h"
-
 #include "../inputs/Control.h"
+
+#include "../utils/compsec.h"
 #include "../const.h"
 
 extern Control control;

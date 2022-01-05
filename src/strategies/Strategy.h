@@ -16,13 +16,11 @@
 #include "result/Result.h"
 #include "optim/Study.h"
 
-#include "../utils/compsec.h"
-
 class Ranges;
 struct Play;
+class Distribution;
 class SurvivorList;
 struct Reduction;
-class Distribution;
 
 using namespace std;
 
@@ -39,6 +37,19 @@ class Strategy
 
     // Used for faster comparisons on average.
     Study studied;
+
+/*
+    // The first one is the product of all Result's currently in results.
+    // The second one covers all Result's used to arrive at the 
+    // current results, including perhaps some that were since
+    // eliminated.  It's a subtle difference, and perhaps there really
+    // should be a result history for each Result in results, but we
+    // try it this way.
+    // It is impractical to update them with every operation, so they
+    // are updated at the same time as studied is.
+    Result resultUsed;
+    Result resultSeen;
+*/
 
 
     void setConstants();

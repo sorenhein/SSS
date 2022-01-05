@@ -27,6 +27,59 @@ one of which needed the lower card.  The card itself disappeared,
 but declarer had to be willing to accept that lower rank to get some
 of the other results as well.  Somehow we have to keep track of this.
 
+After much thinking: In 7/1595 (KT9/Q) for the start Q - J there are
+two strategies, each with pluses and minuses for declarer.
+#1 (overtaking) needs 2N' in order not to lose on tricks anywhere to #0.
+We'd have to unconstrain #1 (after the start Q J K any) successively
+until it would lose on tricks to #0.  Here they have the same tricks,
+so it's clear that 2N would not be enough (would lose 1+ tricks on d=7).
+Therefore the whole strategy #1 needs 2N', also after it gets
+multiplied with strategies starting Q: -, 8 or A.  This has to 
+remain recorded in that strategy, even though it only seems to need
+4NS later on.
+
+In 8/1799 (AT/QJ9 missing Kxx) for the start Q and for d = 7 (Kxx/-),
+West can duck and then declarer finesses (#0): 2, 2S as superficially,
+only the queen is needed.  Later we multiply with Q K (cover) which
+has 3/2NS' (QJT).  West will not cover, so it looks as if 2, 2S is 
+enough.  But they are a trick and 2+ absolute numbers apart (1 more
+trick but also 2+ more absolutes), and they share the rank (2).  
+So probably if we unconstrain the cover strategy within that rank, 
+it becomes more attractive to cover and the absolute number is still 
+better for the defense.  Therefore in a sense the product 
+3, 2NS' * 2, 2S should be 2, 2S' here!
+a) More tricks with more constraints
+b) Same rank
+c) Absolute number difference >= 2
+Need to tell whether we still get >= the #tricks if we weaken by 1 number.
+If yes, constrain the winner of the other strategy to this weakening.
+Heuristically, we could start by just guessing that it will work...
+
+Result *=
+
+if (tricks > result.tricks)
+{
+  if (! winner.empty() &&
+      winner.getRank() == result.winner.getRank() &&
+      winner.getAbsNumber() + 1 < result.winner.getAbsNumber())
+  {
+  }
+}
+else if (tricks < result.tricks)
+{
+  if (! winner.empty() &&
+      winner.getRank == result.winner.getRank() &&
+      result.winner.getAbsNumber() + 1 < winner.getAbsNumber())
+  {
+  }
+}
+
+So in both cases we need to be able to tell what becomes of a strategy
+if we unconstrain it, probably only within a single rank, and after 
+a certain start of 3 cards.
+
+
+
 Each Strategy (or even each Result!) may have an explicit winner
 for which it is valid.
 1. Introduce and keep this Strategy-level winner updated
