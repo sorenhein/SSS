@@ -21,46 +21,59 @@ Other checks not implemented yet
 Ideas against errors
 --------------------
 
-Some Strategy's implicitly do need a lower card than actually wins
-a trick.  They probably arose when multiplying together Strategy's,
-one of which needed the lower card.  The card itself disappeared,
-but declarer had to be willing to accept that lower rank to get some
-of the other results as well.  Somehow we have to keep track of this.
+Premature pruning
+.................
 
-After much thinking: In 7/1595 (KT9/Q) for the start Q - J there are
-two strategies, each with pluses and minuses for declarer.
-#1 (overtaking) needs 2N' in order not to lose on tricks anywhere to #0.
-We'd have to unconstrain #1 (after the start Q J K any) successively
-until it would lose on tricks to #0.  Here they have the same tricks,
-so it's clear that 2N would not be enough (would lose 1+ tricks on d=7).
-Therefore the whole strategy #1 needs 2N', also after it gets
-multiplied with strategies starting Q: -, 8 or A.  This has to 
-remain recorded in that strategy, even though it only seems to need
-4NS later on.
+In 7/1595 (KT9/Q) for the start Q J there are two strategies, each 
+with pluses and minuses for declarer.  #1 (overtaking) needs 2N' 
+in order not to lose on tricks anywhere to #0.  Then d = 7 (Kxx / x)
+from Q x and Q A comes into play (1, KQ) and beats d = 7 in both
+these strategies, so 2N' is no longer needed.  #0 and #1 survive.
+
+In 7/1599 (KT8/Q), #1 loses on tricks to #0 as the 9 is missing,
+even though #1 would win d = 6 on ranks. Again d = 7 is eliminated,
+so now #1 would be competitive against #0, but it is too late.
+
+The solution seems to be not to consolidate in the partner += step
+already, and to wait for the lead += step (and the LHO *= step).
+This probably costs memory and time.  I think I will wait with this
+until I've done some other optimizations.
+
+Rare products
+.............
 
 In 8/1799 (AT/QJ9 missing Kxx) for the start Q and for d = 7 (Kxx/-),
 West can duck and then declarer finesses (#0): 2, 2S as superficially,
 only the queen is needed.  Later we multiply with Q K (cover) which
-has 3/2NS' (QJT).  West will not cover, so it looks as if 2, 2S is 
-enough.  But they are a trick and 2+ absolute numbers apart (1 more
-trick but also 2+ more absolutes), and they share the rank (2).  
-So probably if we unconstrain the cover strategy within that rank, 
-it becomes more attractive to cover and the absolute number is still 
-better for the defense.  Therefore in a sense the product 
-3, 2NS' * 2, 2S should be 2, 2S' here!
-a) More tricks with more constraints
-b) Same rank
-c) Absolute number difference >= 2
-Need to tell whether we still get >= the #tricks if we weaken by 1 number.
-If yes, constrain the winner of the other strategy to this weakening.
-Heuristically, we could start by just guessing that it will work...
+has 3/2NS' (QJT).  West will not cover, so it looks as if 2/2S is 
+enough.  But 3/2NS' needs a lot more cards than 2/2S.  Concretely
+it is in some sense possible to play Q K A for only 2 tricks by
+somehow conceding after winning the jack.
 
-Result *=
+3/2NS' in a sense has a profile of trick-taking capability:
+3/2NS', 2/2S', 1/4N.  If we multiply this by 2/2S it should yield
+2/2S' and not 2/2S.  The condition is more tricks with 2+ more
+constraints in between them.  Then it may be possible to weaken
+and still improve on the bound.
+
+A trivial strategy stays trivial.
+
+When adapting, we have a new winner (say 1/C) and a subsequent winner
+(say 1/D).  We can make 2/(C*D).  We can also make 1/C or 1/D.
+If C is more constrained, then we get 2/C and 1/D (as declarer gets
+to choose the less constrained one if he gives up a trick).
+1/D is only interesting if it is 2+ more relaxed than C.
+
+In general, we can multiply one profile with another to preserve the
+sums of tricks.  Then we can pick the most constrained way to get
+a number of tricks (defense chooses).  Then we can prune some
+declarer's choices of giving up tricks if it doesn't gain 2+ cards.
+
+Again this takes memory and time.
 
 if (tricks > result.tricks)
 {
   if (! winner.empty() &&
-      winner.getRank() == result.winner.getRank() &&
       winner.getAbsNumber() + 1 < result.winner.getAbsNumber())
   {
   }
@@ -68,70 +81,10 @@ if (tricks > result.tricks)
 else if (tricks < result.tricks)
 {
   if (! winner.empty() &&
-      winner.getRank == result.winner.getRank() &&
       result.winner.getAbsNumber() + 1 < winner.getAbsNumber())
   {
   }
 }
-
-So in both cases we need to be able to tell what becomes of a strategy
-if we unconstrain it, probably only within a single rank, and after 
-a certain start of 3 cards.
-
-
-
-Each Strategy (or even each Result!) may have an explicit winner
-for which it is valid.
-1. Introduce and keep this Strategy-level winner updated
-2. Rely on it
-
-Examples
---------
-
-7/1595, KT9 / Q missing AJ8
-There is a second strategy starting Q J K, otherwise Q ? 9.
-This leads to the same #tricks and a different rank profile,
-losing against d = 2 (J / A8) and d = 4 (J8 / A) needing the T, and
-winning against d = 6 (AJ / 8) needing only the K no matter what.
-
-This has two minimals, 7/1611 K98 / Q, and 7/1599 KT8 / Q.
-7/1611 only has one strategy which is the same as in 7/1595
-when ducking the queen.
-7/1599 also only has one strategy.  We get to the point of Q J K:
-d = 2: 2, 3N
-    4: 2, 3N
-    6: 2, 5N
-    7: 1, 5N
-
-The problem is that for d = 7 it now costs a trick to overtake the
-queen, leaving K8 missing A9.  West should never play the jack from
-AJ8 as it costs a trick.  
-
-Probably the only real solution is to compare strategies not
-primary-secondary but holistically.  Do I want to make that change?
-There are many other cases where this would go too far.
-
-Or rather, shouldn't 1595 need the 9 in some variations?  Against
-d = 7 (AJ8) we can only afford Q J K because we have the T 9.
-
---------
-
-7/1799, AT / QJ9 missing Kxx.
-#0 top
-#1 run the J
-#2 run the Q
-
-7/1855, A8 / QJ7 missing KT9.
-#0 top
-#1 run the J
-The problem with running the Q here is that they cover in d=5, leading
-to 3S' (J) and not 2S (Q) as in 7/1799.  In 7/1799 it would cost 
-a trick to cover, but here it doesn't, so they can force the use
-of the lower rank.  Then #2 loses to #1, which it doesn't in 7/1799.
-
-So again #2 in 7/1799 arose because there was a strategy on the
-way where declarer needed 2NS' and not just 2S' for d = 5.
-That makes 7/1799 a partial self-minimum.
 
 Plays generated in Ranks
 ------------------------
@@ -215,6 +168,9 @@ Optimizations
 
 * CombTest streamlining, esp. CombEntry (become a clasS?) and its
   storage requirement
+
+* Ranked plays in Ranks.cpp, see above (count #plays and see that
+  something improves without changing the outcome)
 
 * Maybe instead of the NS business, we just go by absNumber in Card?
   Then that is a simple comparison.  Are there cases where winners are

@@ -109,9 +109,11 @@ void Combinations::resize(const unsigned maxCardsIn)
 
     if (control.runRankComparisons())
     {
-      // TODO With symmetry we can ~ halve this later
-      // (1, 3-2, 9-1, 27-1, ...).
-      uniques[cards].resize(numCombinations);
+      // One void plus half of the rest, as North always has the
+      // highest card among the North-South.
+
+      const unsigned numRanked = 1 + ((numCombinations-1) >> 1);
+      uniques[cards].resize(numRanked);
     }
     else
     {
