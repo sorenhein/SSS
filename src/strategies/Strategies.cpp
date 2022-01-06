@@ -394,6 +394,18 @@ void Strategies::getResultList(list<Result>& resultList) const
 }
 
 
+unsigned char Strategies::winRankLow() const
+{
+  // TODO
+  // Potentially this can be encapsulated more in Strategies,
+  // and the result can perhaps be pre-calculated.  Or at least
+  // for each strategy.
+  Result result;
+  slist.getResultLowest(result);
+  return result.getRank();
+}
+
+
 /************************************************************
  *                                                          *
  * Utilities                                                *

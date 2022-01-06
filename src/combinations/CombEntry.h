@@ -75,8 +75,6 @@ struct CombEntry
   bool minimalFlag;
   list<CombReference> minimals;
 
-  unsigned char winRankLow;
-
 
   bool operator == (const CombEntry& ce2)
   {
@@ -109,6 +107,13 @@ struct CombEntry
     }
 
     return true;
+  }
+
+
+  void consolidateMinimals()
+  {
+    minimals.sort();
+    minimals.unique();
   }
 
 
@@ -154,12 +159,18 @@ struct CombEntry
     }
 
     if (changeFlag)
-    {
-      minimals.sort();
-      minimals.unique();
-    }
+      consolidateMinimals();
 
     return ! changeFlag;
+  }
+
+
+  string strMinimals() const
+  {
+    string s;
+    for (auto& m: minimals)
+      s += "Minimal holding: " + m.strSimple() + "\n";
+    return s + "\n";
   }
 
 

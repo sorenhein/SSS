@@ -695,6 +695,7 @@ void Ranks::addMinimal(
 
 bool Ranks::getMinimals(
   const list<Result>& resultList,
+  CombEntry& centry,
   list<CombReference>& minimals) const
 {
   // TODO If ownFlag stays, combine with bool return value somehow.
@@ -723,22 +724,24 @@ bool Ranks::getMinimals(
   // CombReference == comparator which only compares holding3 and
   // ignores holding2 and especially rotationFlag.
 
-  minimals.sort();
-  minimals.unique();
+  centry.consolidateMinimals();
 
   if (ownFlag && ! minimals.empty())
   {
     CombReference combRef;
     combRef.rotateFlag = false;
+    // TODO Is this different from holding3?
     rankedTrinary(false, cards, holding4, combRef.holding3);
+assert(combRef.holding3 == holding3);
     minimals.push_front(combRef);
   }
 
   if (control.outputHolding())
   {
-    for (auto& m: minimals)
-      cout << "Minimal holding: " << m.strSimple() << endl;
-    cout << "\n";
+    cout << centry.strMinimals();
+    // for (auto& m: minimals)
+      // cout << "Minimal holding: " << m.strSimple() << endl;
+    // cout << "\n";
   }
 
   return minimals.empty();

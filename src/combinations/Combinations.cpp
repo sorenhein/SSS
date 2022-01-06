@@ -201,6 +201,7 @@ void Combinations::runSpecificVoid(
 bool Combinations::getMinimals(
   const Strategies& strategies,
   const Ranks& ranks,
+  CombEntry& centry,
   list<CombReference>& minimals) const
 {
   // Returns true when the combination is already minimal,
@@ -210,7 +211,7 @@ bool Combinations::getMinimals(
   // strategies.getResultLowest(resultLowest);
   list<Result> resultList;
   strategies.getResultList(resultList);
-  return ranks.getMinimals(resultList, minimals);
+  return ranks.getMinimals(resultList, centry, minimals);
 }
 
 
@@ -285,14 +286,10 @@ void Combinations::runUniques(
 
       centry.minimalFlag =
         Combinations::getMinimals(comb.strategies(), ranks, 
-          centry.minimals);
+          centry, centry.minimals);
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
-
-      Result res;
-      comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.getRank();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
@@ -399,13 +396,10 @@ void Combinations::runUniquesOld(
       comb.strategize(centry, * this, distributions, ranks, plays);
 
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, 
+          centry, centry.minimals);
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
-
-      Result res;
-      comb.strategies().getResultLowest(res);
-      centry.winRankLow = res.getRank();
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
@@ -506,7 +500,8 @@ void Combinations::runUniqueThread(
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, 
+          centry, centry.minimals);
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);

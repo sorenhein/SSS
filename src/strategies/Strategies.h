@@ -99,6 +99,7 @@ class Strategies
     // TODO Do we need these long-term, all of them?
     void getResultLowest(Result& result) const;
     void getResultList(list<Result>& resultList) const;
+    unsigned char winRankLow() const;
 
     bool ordered() const;
 

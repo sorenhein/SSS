@@ -117,6 +117,7 @@ class Ranks
 
     bool getMinimals(
       const list<Result>& resultList,
+      CombEntry& centry,
       list<CombReference>& minimals) const;
 
     unsigned char maxRank() const;

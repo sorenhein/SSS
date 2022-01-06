@@ -18,7 +18,6 @@ class Distribution;
 class Strategies;
 class Combination;
 struct CombEntry;
-struct CombReference;
 
 
 class CombTest
@@ -39,10 +38,6 @@ class CombTest
       const CombEntry& centry,
       const Strategies& strategies,
       const unsigned char maxRank) const;
-
-    void dumpSpans(
-      list<unsigned char> ranksHigh,
-      list<unsigned char> winRanksLow) const;
 
   public:
 
