@@ -130,6 +130,8 @@ Overall partitioning
 * Can characterize solved, ranked combinations as canonical or not,
   and minimal or not (bit vector of bools?)
 
+* CombEntry:cpp, e.g. setMinimal: review
+
 Symmetrization
 --------------
 
@@ -186,6 +188,13 @@ Optimizations
   - Start at ==, only do upper triangle of matrix
 
 * Is Declarer::greater used?  Is it completely right?
+
+* If space became really tight, the minimals in CombEntry could be
+  indices in a central list (careful with multi-threading).  That would
+  save the 24-byte overhead in each CombEntry at the cost of two
+  4-byte counters and potentially an internal "iterator".  So it
+  should save 12-16 bytes per CombEntry, and there are ~ 2m of them,
+  so ~ 25 MB.
 
 * No / limited endl
 

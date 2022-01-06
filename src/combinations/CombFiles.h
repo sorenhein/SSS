@@ -35,25 +35,6 @@ class CombFiles
       const string& name,
       vector<T>& v) const;
 
-    /*
-    void unpack(
-      const unsigned char data,
-      CombEntry& ce) const;
-
-    void pack(
-      const CombEntry& ce,
-      unsigned char& data) const;
-      */
-
-    void getHolding(
-      const vector<unsigned>& vHoldings,
-      unsigned& pos,
-      CombReference& cr) const;
-
-    void putHolding(
-      const CombReference& cr,
-      vector<unsigned>& vHoldings,
-      unsigned& pos) const;
 
   public:
 

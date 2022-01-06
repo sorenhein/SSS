@@ -24,7 +24,8 @@ CombEntry::CombEntry()
 
 void CombEntry::reset()
 {
-  bitvector = COMB_SIZE;  // Higher bits are zero
+  // Higher bits (flags) are zero.
+  bitvector = COMB_SIZE;  
 
   refIndex = 0;
   refHolding2 = 0;
@@ -63,14 +64,6 @@ bool CombEntry::operator == (const CombEntry& ce2)
 {
   if (bitvector != ce2.bitvector)
     return false;
-  //if (type != ce2.type)
-    //return false;
-
-  //if (referenceFlag != ce2.referenceFlag)
-    //return false;
-
-  //if (minimalFlag != ce2.minimalFlag)
-    //return false;
     
   if (! CombEntry::isReference() && reference != ce2.reference)
     return false;
@@ -153,14 +146,12 @@ void CombEntry::setType(const CombinationType typeIn)
 {
   bitvector &= 0xf0;
   bitvector |= typeIn;
-  // type = typeIn;
 }
 
 
 CombinationType CombEntry::getType() const
 {
   return static_cast<CombinationType>(bitvector & 0xf);
-  // return type;
 }
 
 
@@ -190,8 +181,6 @@ unsigned CombEntry::getIndex() const
 
 void CombEntry::setReference(const bool referenceFlagIn)
 {
-  // TODO Can we just set this with no further consequences?
-  // referenceFlag = referenceFlagIn;
   if (referenceFlagIn)
     bitvector |= 0x10;
   else
@@ -201,29 +190,30 @@ void CombEntry::setReference(const bool referenceFlagIn)
 bool CombEntry::isReference() const
 {
   return ((bitvector & 0x10) != 0);
-  // return referenceFlag;
 }
 
 
-void CombEntry::setCanonical()
+void CombEntry::setCanonical(const bool canonicalFlagIn)
 {
-  // TODO
-  // canonicalFlag = true;
-  bitvector |= 0x20;
+  if (canonicalFlagIn)
+    bitvector |= 0x20;
+  else
+    bitvector &= 0xdf;
 }
 
 
 bool CombEntry::isCanonical() const
 {
   return ((bitvector & 0x20) != 0);
-  // return referenceFlag; // TODO canonicalFlag
 }
 
 
-void CombEntry::setMinimal()
+void CombEntry::setMinimal(const bool minimalFlagIn)
 {
-  bitvector |= 0x40;
-  // minimalFlag = true;
+  if (minimalFlagIn)
+    bitvector |= 0x40;
+  else
+    bitvector &= 0xbf;
 
   // TODO minimals.clear()?
 }
@@ -232,7 +222,6 @@ void CombEntry::setMinimal()
 bool CombEntry::isMinimal() const
 {
   return ((bitvector & 0x40) != 0);
-  // return minimalFlag;
 }
 
 
@@ -245,30 +234,12 @@ bool CombEntry::minimalsEmpty() const
 unsigned char CombEntry::packFlags() const
 {
   return bitvector;
-
-  /*
-  return
-    (minimalFlag << 6) |
-    // TODO
-    // (canonicalFlag << 5) |
-    (referenceFlag << 4) |
-    (static_cast<unsigned char>(type));
-*/
 }
 
 
 void CombEntry::unpackFlags(const unsigned char data)
 {
   bitvector = data;
-
-  /*
-  return ((bitvector & 0x20) != 0);
-  minimalFlag = ((data & 0x40) ? true : false);
-  // TODO
-  // canonicalFlag = ((data & 0x20) ? true : false);
-  referenceFlag = ((data & 0x10) ? true : false);
-  type = static_cast<CombinationType>(data & 0xf);
-  */
 }
 
 
@@ -333,9 +304,6 @@ string CombEntry::str() const
   s += ", ";
   s += (CombEntry::isMinimal() ? "minimal" : "non-minimal");
   s += " (" + to_string(minimals.size()) + ")\n";
-
-  // s += "Holding: " + reference.strSimple() + " / " + 
-    // to_string(refHolding2) + "\n";
 
   if (! CombEntry::isMinimal())
     s += strMinimals();

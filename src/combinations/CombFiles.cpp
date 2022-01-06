@@ -61,50 +61,14 @@ void CombFiles::writeFile(
 }
 
 
-/*
-void CombFiles::unpack(
-  const unsigned char data,
-  CombEntry& ce) const
-{
-  ce.unpackFlags(data);
-}
-
-
-void CombFiles::pack(
-  const CombEntry& ce,
-  unsigned char& data) const
-{
-  data = ce.packFlags();
-}
-*/
-
-
-void CombFiles::getHolding(
-  const vector<unsigned>& vHoldings,
-  unsigned& pos,
-  CombReference& cr) const
-{
-  cr.unpack(vHoldings, pos);
-
-  // TODO At the moment we neither write nor read holding2.
-  // This now lives directly in CombEntry and not in CombReference.
-  // Perhaps we should read and write the reference one.
-}
-
-
-void CombFiles::putHolding(
-  const CombReference& cr,
-  vector<unsigned>& vHoldings,
-  unsigned& pos) const
-{
-  cr.pack(vHoldings, pos);
-}
-
-
 void CombFiles::readFiles(
   const unsigned cards,
   vector<CombEntry>& combinations) const
 {
+  // TODO At the moment we neither write nor read holding2.
+  // This now lives directly in CombEntry and not in CombReference.
+  // Perhaps we should read and write the reference one.
+
   string nameControl, nameHoldings;
   const string prefix = 
     (control.binaryInputDir() == "" ? "" : control.binaryInputDir() + "/");
@@ -123,20 +87,12 @@ void CombFiles::readFiles(
   for (unsigned h = 0; h < size; h++)
   {
     CombEntry& ce = combinations[h];
-    // CombFiles::unpack(vControl[h], ce);
     ce.unpackFlags(vControl[h]);
 
     if (ce.isReference())
-    {
-      // No canonical reference, as this is already canonical.
       ce.unpackMinimals(vHoldings, pos);
-      // for (auto& min: ce.minimals)
-        // min.unpack(vHoldings, pos);
-        // CombFiles::getHolding(vHoldings, pos, min);
-    }
     else
       ce.unpackSelf(vHoldings, pos);
-      // CombFiles::getHolding(vHoldings, pos, ce.reference);
   }
 }
 
@@ -165,15 +121,9 @@ void CombFiles::writeFiles(
     vControl[h] = ce.packFlags();
 
     if (ce.isReference())
-    {
       ce.packMinimals(vHoldings, pos);
-      // for (auto& min: ce.minimals)
-        // min.pack(vHoldings, pos);
-        // CombFiles::putHolding(min, vHoldings, pos);
-    }
     else
       ce.packSelf(vHoldings, pos);
-      // CombFiles::putHolding(ce.reference, vHoldings, pos);
   }
 
   vHoldings.resize(pos);

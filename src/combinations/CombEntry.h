@@ -85,10 +85,10 @@ class CombEntry
     void setReference(const bool referenceFlagIn = true);
     bool isReference() const;
 
-    void setCanonical();
+    void setCanonical(const bool canonicalFlagIn = true);
     bool isCanonical() const;
 
-    void setMinimal();
+    void setMinimal(const bool minimalFlagIn = true);
     bool isMinimal() const;
     bool minimalsEmpty() const;
 
