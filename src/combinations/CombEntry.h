@@ -28,8 +28,10 @@ using namespace std;
 // where only the ranks within a suit matter.
 
 
-struct CombEntry
+class CombEntry
 {
+  private:
+
   CombinationType type;
 
   bool referenceFlag;
@@ -37,8 +39,47 @@ struct CombEntry
   unsigned refIndex;
   unsigned refHolding2;
   
+  // A combination is minimal if it references itself (and maybe others)
   bool minimalFlag;
   list<CombReference> minimals;
+
+
+  public:
+
+  list<CombReference>::iterator begin() 
+    { return minimals.begin(); };
+  list<CombReference>::iterator end() 
+    { return minimals.end(); };
+  list<CombReference>::const_iterator begin() const
+    { return minimals.begin(); };
+  list<CombReference>::const_iterator end() const
+    { return minimals.end(); };
+
+  void setReference(
+    const unsigned holding3In,
+    const unsigned holding2In,
+    const bool rotateFlagIn)
+  {
+    reference.set(holding3In, rotateFlagIn);
+    refHolding2 = holding2In;
+  }
+
+
+  void addMinimal(
+    const unsigned holding3In,
+    const bool rotateFlagIn)
+  {
+    minimals.emplace_back(CombReference());
+    CombReference& combRef = minimals.back();
+    combRef.set(holding3In, rotateFlagIn);
+  }
+
+
+  void addMinimalSelf()
+  {
+    // We rely in this being the front one.
+    minimals.push_front(reference);
+  }
 
 
   bool operator == (const CombEntry& ce2)
@@ -130,14 +171,17 @@ struct CombEntry
   }
 
 
-  void setReference(
-    const unsigned holding3In,
-    const unsigned holding2In,
-    const bool rotateFlagIn)
+  void setType(const CombinationType typeIn)
   {
-    reference.set(holding3In, rotateFlagIn);
-    refHolding2 = holding2In;
+    type = typeIn;
   }
+
+
+  CombinationType getType() const
+  {
+    return type;
+  }
+
 
   unsigned getHolding3() const
   {
@@ -145,20 +189,60 @@ struct CombEntry
   }
 
 
-  void addMinimal(
-    const unsigned holding3In,
-    const bool rotateFlagIn)
+  unsigned getHolding2() const
   {
-    minimals.emplace_back(CombReference());
-    CombReference& combRef = minimals.back();
-    combRef.set(holding3In, rotateFlagIn);
+    return refHolding2;
   }
 
 
-  void addMinimalSelf()
+  void setIndex(const unsigned indexIn)
   {
-    // We rely in this being the front one.
-    minimals.push_front(reference);
+    refIndex = indexIn;
+  }
+
+
+  unsigned getIndex() const
+  {
+    return refIndex;
+  }
+
+
+  void setReference(const bool referenceFlagIn = true)
+  {
+    // TODO Can we just set this with no further consequences?
+    referenceFlag = referenceFlagIn;
+  }
+
+
+  bool isReference() const
+  {
+    return referenceFlag;
+  }
+
+
+  void setCanonical()
+  {
+    // canonicalFlag = true;
+  }
+
+
+  bool isCanonical() const
+  {
+    return referenceFlag; // TODO canonicalFlag
+  }
+
+
+  void setMinimal()
+  {
+    minimalFlag = true;
+
+    // TODO minimals.clear()?
+  }
+
+
+  bool isMinimal() const
+  {
+    return minimalFlag;
   }
 
 
@@ -168,9 +252,69 @@ struct CombEntry
   }
 
 
+  unsigned char packFlags() const
+  {
+    // Bit layout:
+    // 7  : Unused
+    // 6  : minimalFlag
+    // 5  : canonicalFlag
+    // 4  : referenceFlag
+    // 0-3: combination type
+    
+    return
+      (minimalFlag << 6) |
+      // (canonicalFlag << 5) |
+      (referenceFlag << 4) |
+      (static_cast<unsigned char>(type));
+  }
+
+
+  void unpackFlags(const unsigned data)
+  {
+    minimalFlag = ((data & 0x40) ? true : false);
+    // canonicalFlag = ((data & 0x20) ? true : false);
+    referenceFlag = ((data & 0x10) ? true : false);
+    type = static_cast<CombinationType>(data & 0xf);
+  }
+
+
+  void packSelf(
+    vector<unsigned>& vstream,
+    unsigned& pos) const
+  {
+    reference.pack(vstream, pos);
+  }
+
+
+  void unpackSelf(
+    const vector<unsigned>& vstream,
+    unsigned& pos)
+  {
+    reference.unpack(vstream, pos);
+  }
+
+
+  void packMinimals(
+    vector<unsigned>& vstream,
+    unsigned& pos) const
+  {
+    for (auto& min: minimals)
+      min.pack(vstream, pos);
+  }
+
+
+  void unpackMinimals(
+    const vector<unsigned>& vstream,
+    unsigned& pos)
+  {
+    for (auto& min: minimals)
+      min.unpack(vstream, pos);
+  }
+
+
   string strHolding() const
   {
-    return reference.strHolding();
+    return reference.strHolding() + " / " + to_string(refHolding2);
   }
 
 

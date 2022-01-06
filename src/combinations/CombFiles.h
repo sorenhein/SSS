@@ -11,7 +11,7 @@
 
 using namespace std;
 
-struct CombEntry;
+class CombEntry;
 class CombReference;
 
 
@@ -35,6 +35,7 @@ class CombFiles
       const string& name,
       vector<T>& v) const;
 
+    /*
     void unpack(
       const unsigned char data,
       CombEntry& ce) const;
@@ -42,6 +43,7 @@ class CombFiles
     void pack(
       const CombEntry& ce,
       unsigned char& data) const;
+      */
 
     void getHolding(
       const vector<unsigned>& vHoldings,

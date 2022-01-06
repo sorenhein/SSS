@@ -15,7 +15,7 @@
 
 using namespace std;
 
-struct CombEntry;
+class CombEntry;
 class Combinations;
 class Distributions;
 class Distribution;

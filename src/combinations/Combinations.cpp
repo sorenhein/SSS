@@ -270,7 +270,7 @@ void Combinations::runUniques(
     if (holding == referenceHolding3)
     {
       assert(uniqueIndex < uniqs.size());
-      centry.refIndex = uniqueIndex;
+      centry.setIndex(uniqueIndex);
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -281,18 +281,19 @@ void Combinations::runUniques(
 
       comb.strategize(centry, * this, distributions, ranks, plays);
 
-      centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry);
+      // centry.minimalFlag =
+      if (Combinations::getMinimals(comb.strategies(), ranks, centry))
+        centry.setMinimal();
 
-      centry.type = Combinations::classify(
-        centry.minimalFlag, comb.strategies(), ranks);
+      centry.setType(Combinations::classify(
+        centry.isMinimal(), comb.strategies(), ranks));
 
-      countStats[cards].data[centry.type].incr(
+      countStats[cards].data[centry.getType()].incr(
         plays.size(), comb.strategies().size());
     }
     else
     {
-      centry.refIndex = centries[referenceHolding3].refIndex;
+      centry.setIndex(centries[referenceHolding3].getIndex());
       countNonreference[cards]++;
     }
   }
@@ -380,7 +381,7 @@ void Combinations::runUniquesOld(
     {
       // TODO just centry.referenceFlag?
       assert(uniqueIndex < uniqs.size());
-      centry.refIndex = uniqueIndex;
+      centry.setIndex(uniqueIndex);
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -391,17 +392,19 @@ void Combinations::runUniquesOld(
 
       comb.strategize(centry, * this, distributions, ranks, plays);
 
-      centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry);
-      centry.type = Combinations::classify(
-        centry.minimalFlag, comb.strategies(), ranks);
+      // centry.minimalFlag =
+      if (Combinations::getMinimals(comb.strategies(), ranks, centry))
+        centry.setMinimal();
 
-      countStats[cards].data[centry.type].incr(
+      centry.setType(Combinations::classify(
+        centry.isMinimal(), comb.strategies(), ranks));
+
+      countStats[cards].data[centry.getType()].incr(
         plays.size(), comb.strategies().size());
     }
     else
     {
-      centry.refIndex = centries[referenceHolding3].refIndex;
+      centry.setIndex(centries[referenceHolding3].getIndex());
       countNonreference[cards]++;
     }
   }
@@ -487,25 +490,26 @@ void Combinations::runUniqueThread(
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());
-      centry.refIndex = uniqueIndex;
+      centry.setIndex(uniqueIndex);
       Combination& comb = uniqs[uniqueIndex];
 
       comb.setMaxRank(ranks.maxRank());
 
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
-      centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, centry);
+      // centry.minimalFlag =
+      if (Combinations::getMinimals(comb.strategies(), ranks, centry))
+        centry.setMinimal();
 
-      centry.type = Combinations::classify(
-        centry.minimalFlag, comb.strategies(), ranks);
+      centry.setType(Combinations::classify(
+        centry.isMinimal(), comb.strategies(), ranks));
 
-      threadCountStats[thid].data[centry.type].incr(
+      threadCountStats[thid].data[centry.getType()].incr(
         plays.size(), comb.strategies().size());
     }
     else
     {
-      centry.refIndex = centries[referenceHolding3].refIndex;
+      centry.setIndex(centries[referenceHolding3].getIndex());
       threadCountNonreference[thid]++;
     }
   }
@@ -559,14 +563,14 @@ Combination const * Combinations::getPtr(
 {
   const auto& centry = combEntries[cards][holding3];
 
-  const auto& cref = (centry.referenceFlag ? centry :
+  const auto& cref = (centry.isReference() ? centry :
     combEntries[cards][centry.getHolding3()]);
 
   // TODO Delete parameters rotateFlag and mode
   UNUSED(mode);
   rotateFlag = false;
 
-  const unsigned ui = cref.refIndex;
+  const unsigned ui = cref.getIndex();
   return &uniques[cards][ui];
 }
 
@@ -577,7 +581,7 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
   {
     // Only look at non-minimal combinations.
     const CombEntry& centry = centries[holding];
-    if (! centry.referenceFlag || centry.minimalFlag)
+    if (! centry.isReference() || centry.isMinimal())
       continue;
 
     if (! centries[holding].fixMinimals(centries))

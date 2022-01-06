@@ -17,7 +17,7 @@ class Distributions;
 class Distribution;
 class Strategies;
 class Combination;
-struct CombEntry;
+class CombEntry;
 
 
 class CombTest

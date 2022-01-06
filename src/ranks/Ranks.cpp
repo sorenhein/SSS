@@ -218,7 +218,7 @@ void Ranks::setRanks(
 
   Ranks::setReference(combEntry);
 
-  combEntry.referenceFlag = (holding3 == combEntry.getHolding3());
+  combEntry.setReference(holding3 == combEntry.getHolding3());
 }
 
 

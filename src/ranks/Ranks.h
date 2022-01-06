@@ -22,7 +22,7 @@
 using namespace std;
 
 class Result;
-struct CombEntry;
+class CombEntry;
 class Plays;
 
 

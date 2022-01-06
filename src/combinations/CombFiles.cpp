@@ -61,20 +61,12 @@ void CombFiles::writeFile(
 }
 
 
+/*
 void CombFiles::unpack(
   const unsigned char data,
   CombEntry& ce) const
 {
-  // Bit layout:
-  // 7   canonicalFlag
-  // 6   minimalFlag
-  // 3-5 combination type (should stay < 8 I think)
-  // 0-2 Size of minimals (should be < 8 I think)
-  
-  ce.referenceFlag = ((data & 0x80) ? true : false);
-  ce.minimalFlag = ((data & 0x40) ? true : false);
-  ce.type = static_cast<CombinationType>((data >> 3) & 0x7);
-  ce.minimals.resize(data & 0x7);
+  ce.unpackFlags(data);
 }
 
 
@@ -82,11 +74,9 @@ void CombFiles::pack(
   const CombEntry& ce,
   unsigned char& data) const
 {
-  data = (ce.minimals.size() & 0x7) |
-    (static_cast<unsigned char>(ce.type << 3)) |
-    ((ce.minimalFlag ? 1 : 0) << 6) |
-    ((ce.referenceFlag ? 1 : 0) << 7);
+  data = ce.packFlags();
 }
+*/
 
 
 void CombFiles::getHolding(
@@ -94,22 +84,11 @@ void CombFiles::getHolding(
   unsigned& pos,
   CombReference& cr) const
 {
-  // The first unsigned has holding2 on the bottom 31 bits and
-  // rotateFlg in the topmost bit.
-  // The second unsigned is holding3.
-  
-  // const unsigned u1 = vHoldings[pos++];
   cr.unpack(vHoldings, pos);
-
-  // cr.rotateFlag = ((u1 >> 31) ? true : false);
 
   // TODO At the moment we neither write nor read holding2.
   // This now lives directly in CombEntry and not in CombReference.
   // Perhaps we should read and write the reference one.
-
-  // cr.holding2 = (u1 & 0x7fff);
-
-  // cr.holding3 = vHoldings[pos++];
 }
 
 
@@ -118,13 +97,6 @@ void CombFiles::putHolding(
   vector<unsigned>& vHoldings,
   unsigned& pos) const
 {
-  // TODO See comment above.
-  // Untested in the new CombReference pack/unpack form
-  // vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31) | cr.holding2;
-  
-  // vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31);
-  // vHoldings[pos++] = cr.holding3;
-
   cr.pack(vHoldings, pos);
 }
 
@@ -151,16 +123,20 @@ void CombFiles::readFiles(
   for (unsigned h = 0; h < size; h++)
   {
     CombEntry& ce = combinations[h];
-    CombFiles::unpack(vControl[h], ce);
+    // CombFiles::unpack(vControl[h], ce);
+    ce.unpackFlags(vControl[h]);
 
-    if (ce.referenceFlag)
+    if (ce.isReference())
     {
       // No canonical reference, as this is already canonical.
-      for (auto& min: ce.minimals)
-        CombFiles::getHolding(vHoldings, pos, min);
+      ce.unpackMinimals(vHoldings, pos);
+      // for (auto& min: ce.minimals)
+        // min.unpack(vHoldings, pos);
+        // CombFiles::getHolding(vHoldings, pos, min);
     }
     else
-      CombFiles::getHolding(vHoldings, pos, ce.reference);
+      ce.unpackSelf(vHoldings, pos);
+      // CombFiles::getHolding(vHoldings, pos, ce.reference);
   }
 }
 
@@ -186,15 +162,18 @@ void CombFiles::writeFiles(
   for (unsigned h = 0; h < size; h++)
   {
     const CombEntry& ce = combinations[h];
-    CombFiles::pack(ce, vControl[h]);
+    vControl[h] = ce.packFlags();
 
-    if (ce.referenceFlag)
+    if (ce.isReference())
     {
-      for (auto& min: ce.minimals)
-        CombFiles::putHolding(min, vHoldings, pos);
+      ce.packMinimals(vHoldings, pos);
+      // for (auto& min: ce.minimals)
+        // min.pack(vHoldings, pos);
+        // CombFiles::putHolding(min, vHoldings, pos);
     }
     else
-      CombFiles::putHolding(ce.reference, vHoldings, pos);
+      ce.packSelf(vHoldings, pos);
+      // CombFiles::putHolding(ce.reference, vHoldings, pos);
   }
 
   vHoldings.resize(pos);

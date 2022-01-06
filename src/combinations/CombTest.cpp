@@ -25,10 +25,11 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-    for (auto& min: centries[holding].minimals)
+    // for (auto& min: centries[holding].minimals)
+    for (auto& min: centries[holding])
     {
       // TODO Should be only if completely non-minimal
-      if (! centries[min.getHolding3()].minimalFlag)
+      if (! centries[min.getHolding3()].isMinimal())
       {
         cout << "ERROR: holding " << holding << " uses non-minimals\n";
         break;
@@ -48,11 +49,12 @@ void CombTest::checkReductions(
 {
   Strategies stratsCumul;
 
-  for (auto& min: centry.minimals)
+  // for (auto& min: centry.minimals)
+  for (auto& min: centry)
   {
     const auto& ceMin = centries[min.getHolding3()];
-    assert(ceMin.refIndex < uniqs.size());
-    const Combination& comb = uniqs[ceMin.refIndex];
+    assert(ceMin.getIndex() < uniqs.size());
+    const Combination& comb = uniqs[ceMin.getIndex()];
     Strategies stratsMin = comb.strategies();
 
     if (min.getHolding3() == centry.getHolding3())
@@ -114,14 +116,14 @@ void CombTest::checkAllReductions(
   {
     // Only look at non-minimal combinations.
     const CombEntry& centry = centries[holding];
-    if (! centry.referenceFlag || centry.minimalFlag)
+    if (! centry.isReference() || centry.isMinimal())
       continue;
 
-    const Combination& comb = uniqs[centry.refIndex];
+    const Combination& comb = uniqs[centry.getIndex()];
     CombTest::checkReductions(centries, uniqs, centry, 
       comb.strategies(), 
       comb.getMaxRank(),
-      * distributions.ptrNoncanonical(cards, centry.refHolding2));
+      * distributions.ptrNoncanonical(cards, centry.getHolding2()));
   }
 }
 
