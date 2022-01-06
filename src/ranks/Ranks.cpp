@@ -186,12 +186,17 @@ void Ranks::setOwnRanks(CombReference& combRef) const
   // Actually this recalculates combRef.holding3 == holding3.
   // TODO Does rotateflag matter here?  If so, pass to method?
 
+  // TODO If holding2 stays out, clean up
+  unsigned holding2Dummy;
   rankedBoth(false, cards, holding4, 
-    combRef.holding3, combRef.holding2);
+    combRef.holding3, holding2Dummy);
+    // combRef.holding3, combRef.holding2);
 }
 
 
-void Ranks::setReference(CombReference& combRef) const
+void Ranks::setReference(
+ CombReference& combRef,
+ unsigned& refHolding2) const
 {
   // This method is called from setRanks directly, so the players,
   // holding3 and holding4 are given.  If we're using ranked plays, 
@@ -205,7 +210,8 @@ void Ranks::setReference(CombReference& combRef) const
     combRef.rotateFlag = ! (north.tops(south));
 
     rankedBoth(combRef.rotateFlag, cards, holding4,
-      combRef.holding3, combRef.holding2);
+      combRef.holding3, refHolding2);
+      // combRef.holding3, combRef.holding2);
   }
   else
   {
@@ -214,12 +220,14 @@ void Ranks::setReference(CombReference& combRef) const
     if (combRef.rotateFlag)
     {
       canonicalBoth(south, north, opps, maxGlobalRank,
-        combRef.holding3, combRef.holding2);
+        combRef.holding3, refHolding2);
+        // combRef.holding3, combRef.holding2);
     }
     else
     {
       canonicalBoth(north, south, opps, maxGlobalRank,
-        combRef.holding3, combRef.holding2);
+        combRef.holding3, refHolding2);
+        // combRef.holding3, combRef.holding2);
     }
   }
 
@@ -235,7 +243,7 @@ void Ranks::setRanks(
   Ranks::setPlayers();
 
   Ranks::setOwnRanks(combEntry.own);
-  Ranks::setReference(combEntry.reference);
+  Ranks::setReference(combEntry.reference, combEntry.refHolding2);
 
   combEntry.referenceFlag = (holding3 == combEntry.reference.holding3);
 }
@@ -698,8 +706,11 @@ void Ranks::addMinimal(
   {
     CombReference combRef;
     combRef.rotateFlag = rotateFlag;
+    // TODO
+    unsigned holding2Tmp;
     rankedBoth(rotateFlag, cards, h4minimal,
-      combRef.holding3, combRef.holding2);
+      combRef.holding3, holding2Tmp);
+      // combRef.holding3, combRef.holding2);
 
     minimals.emplace_back(combRef);
   }
@@ -745,7 +756,10 @@ bool Ranks::getMinimals(
   {
     CombReference combRef;
     combRef.rotateFlag = false;
-    rankedBoth(false, cards, holding4, combRef.holding3, combRef.holding2);
+    // TODO
+    unsigned holding2Tmp;
+    rankedBoth(false, cards, holding4, combRef.holding3, holding2Tmp);
+    // rankedBoth(false, cards, holding4, combRef.holding3, combRef.holding2);
     minimals.push_front(combRef);
   }
 

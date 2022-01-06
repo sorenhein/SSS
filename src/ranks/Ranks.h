@@ -49,7 +49,9 @@ class Ranks
 
     void setOwnRanks(CombReference& combRef) const;
 
-    void setReference(CombReference& combRef) const;
+    void setReference(
+      CombReference& combRef,
+      unsigned& refHolding2) const;
 
     void trivialRanked(
       const unsigned char tricks,

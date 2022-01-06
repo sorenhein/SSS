@@ -100,7 +100,12 @@ void CombFiles::getHolding(
   
   const unsigned u1 = vHoldings[pos++];
   cr.rotateFlag = ((u1 >> 31) ? true : false);
-  cr.holding2 = (u1 & 0x7fff);
+
+  // TODO At the moment we neither write nor read holding2.
+  // This now lives directly in CombEntry and not in CombReference.
+  // Perhaps we should read and write the reference one.
+
+  // cr.holding2 = (u1 & 0x7fff);
 
   cr.holding3 = vHoldings[pos++];
 }
@@ -111,7 +116,10 @@ void CombFiles::putHolding(
   vector<unsigned>& vHoldings,
   unsigned& pos) const
 {
-  vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31) | cr.holding2;
+  // TODO See comment above.
+  // vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31) | cr.holding2;
+  
+  vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31);
   vHoldings[pos++] = cr.holding3;
 }
 

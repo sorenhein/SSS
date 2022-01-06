@@ -66,13 +66,14 @@ const Strategies& Combination::strategize(
   if (control.outputHolding())
   {
     cout << "Cards" << setw(3) << ranks.size() << ": " <<
-      centry.own.str() << endl;
+      centry.reference.str() << " / " << centry.refHolding2 << endl;
   }
 
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.reference.holding2);
+    ranks.size(), centry.refHolding2);
+    // ranks.size(), centry.reference.holding2);
 
   // Make the plays.
   Result trivialEntry;
@@ -143,11 +144,13 @@ const Strategies& Combination::strategizeVoid(
   Plays& plays,
   bool debugFlag)
 {
-cout << "cholding2 is " << centry.reference.holding2 << ", size " << ranks.size() << endl;
+cout << "cholding2 is " << centry.refHolding2 << ", size " << ranks.size() << endl;
+// cout << "cholding2 is " << centry.reference.holding2 << ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
   distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.reference.holding2);
+    ranks.size(), centry.refHolding2);
+    // ranks.size(), centry.reference.holding2);
 
   // Make the plays.
   Result trivialEntry;

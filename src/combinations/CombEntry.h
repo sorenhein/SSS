@@ -31,7 +31,6 @@ using namespace std;
 struct CombReference
 {
   unsigned holding3; // Trinary
-  unsigned holding2; // Binary
   unsigned index;
   bool rotateFlag;
   // Once we have a Combination, probably
@@ -44,31 +43,18 @@ struct CombReference
 
   bool operator == (const CombReference& cr2) const
   {
-    // Used narrowly to sort minimal holdings.
-    // Must be called == (or define custom comparator).
-
-    return this->equal(cr2);
-    // return (holding3 == cr2.holding3);
+    return (holding3 == cr2.holding3 && rotateFlag == cr2.rotateFlag);
   }
 
-  bool equal(const CombReference& cr2) const
+  bool operator != (const CombReference& cr2) const
   {
-    // This is are more complete comparison suitable for checking
-    // file read/write.
-    return (holding3 == cr2.holding3 &&
-        holding2 == cr2.holding2 &&
-        rotateFlag == cr2.rotateFlag);
+    return ! (* this == cr2);
   }
 
   string str() const
   {
     stringstream ss;
-
-    ss <<
-      holding3 << " | " <<
-      "0x" << hex << holding3 << " / " <<
-      dec << holding2;
-
+    ss << holding3 << " | " << "0x" << hex << holding3;
     return ss.str();
   }
 
@@ -89,6 +75,7 @@ struct CombEntry
 
   bool referenceFlag;
   CombReference reference;
+  unsigned refHolding2;
   
   bool minimalFlag;
   list<CombReference> minimals;
@@ -107,7 +94,9 @@ struct CombEntry
     if (minimalFlag != ce2.minimalFlag)
       return false;
     
-    if (! referenceFlag && ! (reference.equal(ce2.reference)))
+    // if (! referenceFlag && ! (reference.equal(ce2.reference)))
+    // TODO Huh?
+    if (! referenceFlag && reference != ce2.reference)
       return false;
 
     if (! minimalFlag)
@@ -119,7 +108,7 @@ struct CombEntry
       auto iter2 = ce2.minimals.begin();
       while (iter1 != minimals.end())
       {
-        if (! iter1->equal(* iter2))
+        if (* iter1 != * iter2)
           return false;
         iter1++;
         iter2++;
@@ -127,49 +116,6 @@ struct CombEntry
     }
 
     return true;
-  }
-
-
-  void getMinimalSpans(
-    const vector<CombEntry>& centries,
-    const vector<Combination>& uniqs,
-    list<unsigned char>& ranksHigh,
-    list<unsigned char>& winRanksLow) const
-  {
-    // In general, the strategies in checkReductions may have more
-    // strategy's than it should because a play was not considered.
-    // For example, 9/1232 (AKT9/Q8) has two strategies with the same
-    // tricks, one with 4N'S (KQ) and one with 2N (K).  This has
-    // a pseudo-minimal version 9/1288 (AKT7/Q6) with only one
-    // strategy, but still 6 distributions too, 5N'S (KQ).  This has
-    // a real minimal version 9/1432 (AK87/Q6) with 3N'S (KQ).
-    // This method would then return (5, 3) and 0, where 0 is the
-    // difference between the highest rank (whether or not it's ever 
-    // a minimal winner) and lowest winner among the minimal 
-    // strategy's (so 5-5 or 3-3).  They should be the same for 
-    // all minimals.
-
-    for (auto& min: minimals)
-    {
-      const auto& ceMin = centries[min.holding3];
-      // TODO May not be minimal, but should not be completely
-      // non-minimal.
-      /*
-      if (! ceMin.minimalFlag)
-      {
-        // This should not happen long-term, and short-term it is
-        // addressed in checkMinimals().
-cout << "WARNSKIP: Skipping non-minimal entry\n";
-        continue;
-      }
-      */
-  
-      assert(ceMin.reference.index < uniqs.size());
-      const Combination& comb = uniqs[ceMin.reference.index];
-
-      ranksHigh.push_back(comb.getMaxRank());
-      winRanksLow.push_back(ceMin.winRankLow);
-    }
   }
 
 
