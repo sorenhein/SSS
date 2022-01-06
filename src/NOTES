@@ -166,9 +166,6 @@ Optimizations
   as well?
   -- Then it would also be in the print output, in the table itself
 
-* CombTest streamlining, esp. CombEntry (become a clasS?) and its
-  storage requirement
-
 * Ranked plays in Ranks.cpp, see above (count #plays and see that
   something improves without changing the outcome)
 
@@ -176,13 +173,10 @@ Optimizations
   Then that is a simple comparison.  Are there cases where winners are
   not of this form?
 
-* CombTest,checkReductions: Should now not need reduceByTricks.
-  Just use strategies.
-
 * In Card, can we think of a way to avoid depth?  Probably not, 
   as it is useful for the output.  Maybe avoid number then? Or name?
 
-* Optimize the code for minimal().  Is it even used?
+* Optimize the code for Slist::minimal().  Is it even used?
 
 * Look at speeding up Slist::equalByMethod.
   Divide completely by size

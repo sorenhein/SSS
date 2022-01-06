@@ -34,7 +34,8 @@ const vector<string> CombinationNames =
   "Single",
   "AsymmV",
   "SymmV",
-  "Non-vd"
+  "Non-vd",
+  "Unset"
 };
 
 #endif
