@@ -176,40 +176,35 @@ void Ranks::setPlayers()
 }
 
 
-void Ranks::setReference(
- CombReference& combRef,
- unsigned& refHolding2) const
+void Ranks::setReference(CombEntry& centry) const
 {
-  // This method is called from setRanks directly, so the players,
-  // holding3 and holding4 are given.  If we're using ranked plays, 
-  // we can rely on holding3.
-  // It is also called from finishMinimal() which is only called when 
-  // the players have been set up correctly, but holding3 has not.
-  // In this case we're not using ranked plays.
-
   if (control.runRankComparisons())
   {
-    combRef.rotateFlag = ! (north.tops(south));
+    unsigned holding3Ref, holding2Ref;
+    const bool rotateFlag = ! (north.tops(south));
 
-    rankedBoth(combRef.rotateFlag, cards, holding4,
-      combRef.holding3, refHolding2);
+    rankedBoth(rotateFlag, cards, holding4, holding3Ref, holding2Ref);
+    
+    centry.setReference(holding3Ref, holding2Ref, rotateFlag);
   }
   else
   {
-    combRef.rotateFlag = ! (north.greater(south, opps));
+    // combRef.rotateFlag = ! (north.greater(south, opps));
+    unsigned holding3Ref, holding2Ref;
+    const bool rotateFlag = ! (north.greater(south, opps));
 
-    if (combRef.rotateFlag)
+    if (rotateFlag)
     {
       canonicalBoth(south, north, opps, maxGlobalRank,
-        combRef.holding3, refHolding2);
+        holding3Ref, holding2Ref);
     }
     else
     {
       canonicalBoth(north, south, opps, maxGlobalRank,
-        combRef.holding3, refHolding2);
+        holding3Ref, holding2Ref);
     }
+    centry.setReference(holding3Ref, holding2Ref, rotateFlag);
   }
-
 }
 
 
@@ -221,7 +216,7 @@ void Ranks::setRanks(
 
   Ranks::setPlayers();
 
-  Ranks::setReference(combEntry.reference, combEntry.refHolding2);
+  Ranks::setReference(combEntry);
 
   combEntry.referenceFlag = (holding3 == combEntry.reference.holding3);
 }

@@ -165,6 +165,17 @@ struct CombEntry
   }
 
 
+  void setReference(
+    const unsigned holding3In,
+    const unsigned holding2In,
+    const bool rotateFlagIn)
+  {
+    reference.holding3 = holding3In;
+    reference.rotateFlag = rotateFlagIn;
+    refHolding2 = holding2In;
+  }
+
+
   void addMinimal(
     const unsigned holding3In,
     const bool rotateFlagIn)

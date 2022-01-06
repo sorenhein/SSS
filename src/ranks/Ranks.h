@@ -23,7 +23,6 @@ using namespace std;
 
 class Result;
 struct CombEntry;
-struct CombReference;
 class Plays;
 
 
@@ -47,9 +46,7 @@ class Ranks
 
     void setPlayers();
 
-    void setReference(
-      CombReference& combRef,
-      unsigned& refHolding2) const;
+    void setReference(CombEntry& centry) const;
 
     void trivialRanked(
       const unsigned char tricks,
