@@ -31,7 +31,6 @@ using namespace std;
 struct CombReference
 {
   unsigned holding3; // Trinary
-  unsigned index;
   bool rotateFlag;
   // Once we have a Combination, probably
   // Combination * combinationPtr;
@@ -68,13 +67,11 @@ struct CombReference
 
 struct CombEntry
 {
-  // TODO Currently not yet used
   CombinationType type;
-
-  CombReference own;
 
   bool referenceFlag;
   CombReference reference;
+  unsigned refIndex;
   unsigned refHolding2;
   
   bool minimalFlag;
@@ -179,7 +176,6 @@ struct CombEntry
     else
       s = "non-reference, ";
 
-    s += own.strSimple() + "\n";
     s += reference.strSimple() + "\n";
 
     if (minimalFlag)

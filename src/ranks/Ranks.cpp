@@ -176,23 +176,6 @@ void Ranks::setPlayers()
 }
 
 
-void Ranks::setOwnRanks(CombReference& combRef) const
-{
-  // For an uncanonical holding we indicate a rotation if South
-  // holds a higher top card than North.
-
-  combRef.rotateFlag = ! (north.tops(south));
-
-  // Actually this recalculates combRef.holding3 == holding3.
-  // TODO Does rotateflag matter here?  If so, pass to method?
-
-  // TODO If holding2 stays out, clean up
-  // unsigned holding2Dummy;
-  rankedTrinary(false, cards, holding4, combRef.holding3);
-    // combRef.holding3, combRef.holding2);
-}
-
-
 void Ranks::setReference(
  CombReference& combRef,
  unsigned& refHolding2) const
@@ -238,7 +221,6 @@ void Ranks::setRanks(
 
   Ranks::setPlayers();
 
-  Ranks::setOwnRanks(combEntry.own);
   Ranks::setReference(combEntry.reference, combEntry.refHolding2);
 
   combEntry.referenceFlag = (holding3 == combEntry.reference.holding3);
@@ -702,11 +684,7 @@ void Ranks::addMinimal(
   {
     CombReference combRef;
     combRef.rotateFlag = rotateFlag;
-    // TODO
-    // unsigned holding2Tmp;
-    rankedTrinary(rotateFlag, cards, h4minimal,
-      combRef.holding3);
-      // combRef.holding3, holding2Tmp);
+    rankedTrinary(rotateFlag, cards, h4minimal, combRef.holding3);
 
     minimals.emplace_back(combRef);
   }
@@ -752,11 +730,7 @@ bool Ranks::getMinimals(
   {
     CombReference combRef;
     combRef.rotateFlag = false;
-    // TODO
-    // unsigned holding2Tmp;
     rankedTrinary(false, cards, holding4, combRef.holding3);
-    // rankedBoth(false, cards, holding4, combRef.holding3, holding2Tmp);
-    // rankedBoth(false, cards, holding4, combRef.holding3, combRef.holding2);
     minimals.push_front(combRef);
   }
 

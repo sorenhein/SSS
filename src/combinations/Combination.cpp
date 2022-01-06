@@ -81,7 +81,7 @@ const Strategies& Combination::strategize(
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
 
   if (control.holding() != 0 &&
-      centry.own.holding3 == control.holding() &&
+      centry.reference.holding3 == control.holding() &&
       ranks.size () == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);

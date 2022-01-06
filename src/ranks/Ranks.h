@@ -47,8 +47,6 @@ class Ranks
 
     void setPlayers();
 
-    void setOwnRanks(CombReference& combRef) const;
-
     void setReference(
       CombReference& combRef,
       unsigned& refHolding2) const;

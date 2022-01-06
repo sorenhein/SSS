@@ -272,7 +272,7 @@ void Combinations::runUniques(
     if (holding == referenceHolding3)
     {
       assert(uniqueIndex < uniqs.size());
-      centry.reference.index = uniqueIndex;
+      centry.refIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -307,7 +307,7 @@ void Combinations::runUniques(
     }
     else
     {
-      centry.reference.index = centries[referenceHolding3].reference.index;
+      centry.refIndex = centries[referenceHolding3].refIndex;
       countNonreference[cards]++;
     }
   }
@@ -395,7 +395,7 @@ void Combinations::runUniquesOld(
     {
       // TODO just centry.referenceFlag?
       assert(uniqueIndex < uniqs.size());
-      centry.reference.index = uniqueIndex;
+      centry.refIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
       uniqueIndex++;
 
@@ -436,7 +436,7 @@ void Combinations::runUniquesOld(
     }
     else
     {
-      centry.reference.index = centries[referenceHolding3].reference.index;
+      centry.refIndex = centries[referenceHolding3].refIndex;
       countNonreference[cards]++;
     }
   }
@@ -522,7 +522,7 @@ void Combinations::runUniqueThread(
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
       assert(uniqueIndex < uniqs.size());
-      centry.reference.index = uniqueIndex;
+      centry.refIndex = uniqueIndex;
       Combination& comb = uniqs[uniqueIndex];
 
       comb.setMaxRank(ranks.maxRank());
@@ -540,7 +540,7 @@ void Combinations::runUniqueThread(
     }
     else
     {
-      centry.reference.index = centries[referenceHolding3].reference.index;
+      centry.refIndex = centries[referenceHolding3].refIndex;
       threadCountNonreference[thid]++;
     }
   }
@@ -601,7 +601,7 @@ Combination const * Combinations::getPtr(
   UNUSED(mode);
   rotateFlag = false;
 
-  const unsigned ui = cref.reference.index;
+  const unsigned ui = cref.refIndex;
   return &uniques[cards][ui];
 }
 

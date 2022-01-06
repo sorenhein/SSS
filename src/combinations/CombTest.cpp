@@ -94,11 +94,11 @@ void CombTest::checkReductions(
   for (auto& min: centry.minimals)
   {
     const auto& ceMin = centries[min.holding3];
-    assert(ceMin.reference.index < uniqs.size());
-    const Combination& comb = uniqs[ceMin.reference.index];
+    assert(ceMin.refIndex < uniqs.size());
+    const Combination& comb = uniqs[ceMin.refIndex];
     Strategies stratsMin = comb.strategies();
 
-    if (min.holding3 == centry.own.holding3)
+    if (min.holding3 == centry.reference.holding3)
     {
       // Special case.  This should be at the front of the list.
       // TODO This and the below are a lot of copying of Strategies.
@@ -177,7 +177,7 @@ void CombTest::checkAllReductions(
     if (! centry.referenceFlag || centry.minimalFlag)
       continue;
 
-    const Combination& comb = uniqs[centry.reference.index];
+    const Combination& comb = uniqs[centry.refIndex];
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 
       comb.getMaxRank(),
       * distributions.ptrNoncanonical(cards, centry.refHolding2));
