@@ -21,6 +21,8 @@
 #include "../combinations/CombEntry.h"
 #include "../inputs/Control.h"
 
+#include ".././const.h"
+
 extern Control control;
 
 

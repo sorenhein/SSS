@@ -10,33 +10,28 @@
 #define SSS_COMBENTRY_H
 
 #include <list>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <cassert>
 
 #include "CombReference.h"
 
 #include "../utils/CombinationType.h"
 
-#include "../const.h"
-
 using namespace std;
 
 
-// CombEntry is used to map a given holding to a canonical combination,
-// where only the ranks within a suit matter.
+// CombEntry keeps track of a solved combination.
 
 
 class CombEntry
 {
   private:
 
-    bool referenceFlag;
-    // TODO
-    // bool canonicalFlag;
-    bool minimalFlag;
-    CombinationType type;
+    // Bit layout:
+    // 7  : Unused
+    // 6  : minimalFlag
+    // 5  : canonicalFlag
+    // 4  : referenceFlag
+    // 0-3: combination type
+    unsigned char bitvector;
 
     CombReference reference;
     unsigned refHolding2;
@@ -98,7 +93,7 @@ class CombEntry
     bool minimalsEmpty() const;
 
     unsigned char packFlags() const;
-    void unpackFlags(const unsigned data);
+    void unpackFlags(const unsigned char data);
 
     void packSelf(
       vector<unsigned>& vstream,

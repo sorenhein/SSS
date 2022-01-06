@@ -24,9 +24,7 @@ CombEntry::CombEntry()
 
 void CombEntry::reset()
 {
-  type = COMB_SIZE;
-  referenceFlag = false;
-  minimalFlag = false;
+  bitvector = COMB_SIZE;  // Higher bits are zero
 
   refIndex = 0;
   refHolding2 = 0;
@@ -63,19 +61,21 @@ void CombEntry::addMinimalSelf()
 
 bool CombEntry::operator == (const CombEntry& ce2)
 {
-  if (type != ce2.type)
+  if (bitvector != ce2.bitvector)
     return false;
+  //if (type != ce2.type)
+    //return false;
 
-  if (referenceFlag != ce2.referenceFlag)
-    return false;
+  //if (referenceFlag != ce2.referenceFlag)
+    //return false;
 
-  if (minimalFlag != ce2.minimalFlag)
-    return false;
+  //if (minimalFlag != ce2.minimalFlag)
+    //return false;
     
-  if (! referenceFlag && reference != ce2.reference)
+  if (! CombEntry::isReference() && reference != ce2.reference)
     return false;
 
-  if (! minimalFlag)
+  if (! CombEntry::isMinimal())
   {
     if (minimals.size() != ce2.minimals.size())
       return false;
@@ -117,12 +117,10 @@ bool CombEntry::fixMinimals(const vector<CombEntry>& centries)
   {
     const CombEntry& centry = centries[iter->getHolding3()];
 
-    if (centry.minimalFlag)
-    {
-      // Is minimal
+    if (centry.isMinimal())
       iter++;
-    }
-    else if (iter->getHolding3() == centry.minimals.front().getHolding3())
+    else if (iter->getHolding3() == 
+        centry.minimals.front().getHolding3())
     {
       // Is a partial self-reference, so we already have its minimals.
       iter++;
@@ -153,13 +151,16 @@ bool CombEntry::fixMinimals(const vector<CombEntry>& centries)
 
 void CombEntry::setType(const CombinationType typeIn)
 {
-  type = typeIn;
+  bitvector &= 0xf0;
+  bitvector |= typeIn;
+  // type = typeIn;
 }
 
 
 CombinationType CombEntry::getType() const
 {
-  return type;
+  return static_cast<CombinationType>(bitvector & 0xf);
+  // return type;
 }
 
 
@@ -190,12 +191,17 @@ unsigned CombEntry::getIndex() const
 void CombEntry::setReference(const bool referenceFlagIn)
 {
   // TODO Can we just set this with no further consequences?
-  referenceFlag = referenceFlagIn;
+  // referenceFlag = referenceFlagIn;
+  if (referenceFlagIn)
+    bitvector |= 0x10;
+  else
+    bitvector &= 0xef;
 }
 
 bool CombEntry::isReference() const
 {
-  return referenceFlag;
+  return ((bitvector & 0x10) != 0);
+  // return referenceFlag;
 }
 
 
@@ -203,18 +209,21 @@ void CombEntry::setCanonical()
 {
   // TODO
   // canonicalFlag = true;
+  bitvector |= 0x20;
 }
 
 
 bool CombEntry::isCanonical() const
 {
-  return referenceFlag; // TODO canonicalFlag
+  return ((bitvector & 0x20) != 0);
+  // return referenceFlag; // TODO canonicalFlag
 }
 
 
 void CombEntry::setMinimal()
 {
-  minimalFlag = true;
+  bitvector |= 0x40;
+  // minimalFlag = true;
 
   // TODO minimals.clear()?
 }
@@ -222,7 +231,8 @@ void CombEntry::setMinimal()
 
 bool CombEntry::isMinimal() const
 {
-  return minimalFlag;
+  return ((bitvector & 0x40) != 0);
+  // return minimalFlag;
 }
 
 
@@ -234,29 +244,31 @@ bool CombEntry::minimalsEmpty() const
 
 unsigned char CombEntry::packFlags() const
 {
-  // Bit layout:
-  // 7  : Unused
-  // 6  : minimalFlag
-  // 5  : canonicalFlag
-  // 4  : referenceFlag
-  // 0-3: combination type
-    
+  return bitvector;
+
+  /*
   return
     (minimalFlag << 6) |
     // TODO
     // (canonicalFlag << 5) |
     (referenceFlag << 4) |
     (static_cast<unsigned char>(type));
+*/
 }
 
 
-void CombEntry::unpackFlags(const unsigned data)
+void CombEntry::unpackFlags(const unsigned char data)
 {
+  bitvector = data;
+
+  /*
+  return ((bitvector & 0x20) != 0);
   minimalFlag = ((data & 0x40) ? true : false);
   // TODO
   // canonicalFlag = ((data & 0x20) ? true : false);
   referenceFlag = ((data & 0x10) ? true : false);
   type = static_cast<CombinationType>(data & 0xf);
+  */
 }
 
 
@@ -313,17 +325,19 @@ string CombEntry::str() const
 {
   string s;
 
-  s = "Type : " + CombinationNames[type] + "\n";
+  s = "Type : " + CombinationNames[CombEntry::getType()] + "\n";
   s += "Flags: ";
-  s += (referenceFlag ? "reference" : "non-reference");
-  s += + ", ";
-  s += (minimalFlag ? "minimal" : 
-    "non-minimal (" + to_string(minimals.size()) + ")\n");
+  s += (CombEntry::isReference() ? "reference" : "non-reference");
+  s += ", ";
+  s += (CombEntry::isCanonical() ? "canonical" : "non-canonical");
+  s += ", ";
+  s += (CombEntry::isMinimal() ? "minimal" : "non-minimal");
+  s += " (" + to_string(minimals.size()) + ")\n";
 
   // s += "Holding: " + reference.strSimple() + " / " + 
     // to_string(refHolding2) + "\n";
 
-  if (! minimalFlag)
+  if (! CombEntry::isMinimal())
     s += strMinimals();
     
   return s;
