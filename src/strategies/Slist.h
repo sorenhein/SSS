@@ -157,8 +157,6 @@ class Slist
 
     bool reduceByResults(const Distribution& distribution);
 
-    bool reduceByResults(const Reduction& reduction);
-
     void expand(
       const Reduction& reduction,
       const char adder,

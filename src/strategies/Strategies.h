@@ -70,10 +70,6 @@ class Strategies
     // Does each Strategy separately using its own critical rank.
     bool reduceByResults(const Distribution& distribution);
 
-    // Does all Strategy's with the Strategies' critical rank.
-    // TODO Should this method survive?
-    bool reduceByResults(const Reduction& reduction);
-
     void expand(
       const Reduction& reduction,
       const char rankAdder,

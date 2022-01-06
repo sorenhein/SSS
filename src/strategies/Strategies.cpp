@@ -160,15 +160,6 @@ bool Strategies::reduceByResults(const Distribution& distribution)
 }
 
 
-bool Strategies::reduceByResults(const Reduction& reduction)
-{
-  // Delete Strategy's where the results are not constant
-  // within each reduction group.  The number of distributions is
-  // unchanged.
-  return slist.reduceByResults(reduction);
-}
-
-
 void Strategies::expand(
   const Reduction& reduction,
   const char rankAdder,

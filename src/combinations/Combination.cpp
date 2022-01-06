@@ -196,40 +196,6 @@ if (debugFlag)
 }
 
 
-
-void Combination::reduce(const Distribution& distribution)
-{
-  // Eliminate Strategy's that distinguish between ranks below the
-  // last N-S rank to take a trick.  These Strategy's are not
-  // necessarily bad ones, but we do this for simplicity.
-
-  // TODO Could store in the CombEntr in Combinations?
-  Result resultLowest;
-  strats.getResultLowest(resultLowest);
-  const unsigned char rankCritical = resultLowest.getRank();
-
-  // If N-S don't take any rank tricks at all, there should be
-  // no Strategy's to eliminate.
-  // TODO TMP Moving to the new encoding.
-  if (rankCritical == 0 || rankCritical == UCHAR_NOT_SET)
-  {
-    assert(strats.size() == 1);
-    return;
-  }
-
-  const auto& reduction = distribution.getReduction(rankCritical);
-  assert(reduction.full2reducedDist.size() == distribution.size());
-
-  const bool changeFlag = strats.reduceByResults(reduction);
-
-  if (changeFlag && control.outputBasicResults())
-  {
-    cout << strats.str("Reduced result", 
-      control.runRankComparisons()) << "\n";
-  }
-}
-
-
 const Strategies& Combination::strategies() const
 {
   return strats;

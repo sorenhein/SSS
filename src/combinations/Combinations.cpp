@@ -287,14 +287,6 @@ void Combinations::runUniques(
         Combinations::getMinimals(comb.strategies(), ranks, 
           centry.minimals);
 
-
-      if (! centry.minimalFlag)
-      {
-      // TODO Control by some flag.  Isn't needed anyway
-        comb.reduce(
-          * distributions.ptrNoncanonical(cards, centry.refHolding2));
-      }
-
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
 
@@ -408,13 +400,6 @@ void Combinations::runUniquesOld(
 
       centry.minimalFlag =
         Combinations::getMinimals(comb.strategies(), ranks, centry.minimals);
-      if (! centry.minimalFlag)
-      {
-        // TODO Control by some flag
-        comb.reduce(
-          * distributions.ptrNoncanonical(cards, centry.refHolding2));
-      }
-
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
 
@@ -424,15 +409,6 @@ void Combinations::runUniquesOld(
 
       countStats[cards].data[centry.type].incr(
         plays.size(), comb.strategies().size());
-      
-      /*
-      if (! centry.minimalFlag)
-      {
-        // TODO Control by some flag
-        ctest.checkReductions(cards, centry, comb.strategies(), 
-          * distributions.ptrNoncanonical(cards, centry.canonical.holding2));
-      }
-      */
     }
     else
     {
@@ -615,7 +591,7 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
     if (! centry.referenceFlag || centry.minimalFlag)
       continue;
 
-    if (! centries[holding].fixMinimals(holding, centries))
+    if (! centries[holding].fixMinimals(centries))
     {
       cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
     }

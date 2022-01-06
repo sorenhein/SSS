@@ -32,8 +32,6 @@ struct CombReference
 {
   unsigned holding3; // Trinary
   bool rotateFlag;
-  // Once we have a Combination, probably
-  // Combination * combinationPtr;
   
   bool operator < (const CombReference& cr2) const
   {
@@ -114,11 +112,8 @@ struct CombEntry
   }
 
 
-  bool fixMinimals(
-    const unsigned ownHolding3,
-    const vector<CombEntry>& centries)
+  bool fixMinimals(const vector<CombEntry>& centries)
   {
-  UNUSED(ownHolding3);
     // Check that each non-minimal holding refers to minimal ones.
     // We actually follow through and change the minimals.
     // Once ranks are good, this method should no longer be needed.

@@ -247,34 +247,6 @@ bool Slist::reduceByResults(const Distribution& distribution)
 }
 
 
-bool Slist::reduceByResults(const Reduction& reduction)
-{
-  // Delete Strategy's where the number of tricks is not constant
-  // within each reduction group.  The number of distributions is
-  // unchanged.  Returns true if a change was made.
-
-  bool changeFlag = false;
-  for (auto& strat: strategies)
-  {
-    if (! strat.reduceByResults(reduction))
-      changeFlag = true;
-
-    strat.study();
-  }
-
-  if (changeFlag)
-  {
-    ComparatorType lessEqualMethod = (control.runRankComparisons() ?
-      &Strategy::lessEqualCompleteStudied :
-      &Strategy::lessEqualPrimaryStudied);
-
-    Slist::consolidate(lessEqualMethod);
-  }
-
-  return changeFlag;
-}
-
-
 void Slist::expand(
   const Reduction& reduction,
   const char rankAdder,

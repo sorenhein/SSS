@@ -59,6 +59,8 @@ class Strategy
       vector<Result>& reducedResultList,
       vector<bool>& changeList) const;
 
+    bool reduceByResults(const Reduction& reduction);
+
     // Returns true if <= is still possible at the trick level.
     // Terminates as soon as this becomes impossible if flag is set.
 
@@ -148,8 +150,6 @@ class Strategy
     // ************* Rank-check methods  ************
 
     bool reduceByResults(const Distribution& distribution);
-
-    bool reduceByResults(const Reduction& reduction);
 
     void expand(
       const Reduction& reduction,
