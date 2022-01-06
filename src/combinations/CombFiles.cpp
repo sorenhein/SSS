@@ -98,8 +98,10 @@ void CombFiles::getHolding(
   // rotateFlg in the topmost bit.
   // The second unsigned is holding3.
   
-  const unsigned u1 = vHoldings[pos++];
-  cr.rotateFlag = ((u1 >> 31) ? true : false);
+  // const unsigned u1 = vHoldings[pos++];
+  cr.unpack(vHoldings, pos);
+
+  // cr.rotateFlag = ((u1 >> 31) ? true : false);
 
   // TODO At the moment we neither write nor read holding2.
   // This now lives directly in CombEntry and not in CombReference.
@@ -107,7 +109,7 @@ void CombFiles::getHolding(
 
   // cr.holding2 = (u1 & 0x7fff);
 
-  cr.holding3 = vHoldings[pos++];
+  // cr.holding3 = vHoldings[pos++];
 }
 
 
@@ -117,10 +119,13 @@ void CombFiles::putHolding(
   unsigned& pos) const
 {
   // TODO See comment above.
+  // Untested in the new CombReference pack/unpack form
   // vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31) | cr.holding2;
   
-  vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31);
-  vHoldings[pos++] = cr.holding3;
+  // vHoldings[pos++] = ((cr.rotateFlag ? 1 : 0) << 31);
+  // vHoldings[pos++] = cr.holding3;
+
+  cr.pack(vHoldings, pos);
 }
 
 

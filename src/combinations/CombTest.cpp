@@ -28,38 +28,13 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
     for (auto& min: centries[holding].minimals)
     {
       // TODO Should be only if completely non-minimal
-      if (! centries[min.holding3].minimalFlag)
+      if (! centries[min.getHolding3()].minimalFlag)
       {
         cout << "ERROR: holding " << holding << " uses non-minimals\n";
         break;
       }
     }
   }
-}
-
-
-void CombTest::dumpInputs(
-  const string& title,
-  const vector<CombEntry>& centries,
-  const CombEntry& centry,
-  const Strategies& strategies,
-  const unsigned char maxRank) const
-{
-  cout << title << "\n";
-
-  cout << "centry:\n";
-  cout << centry.str();
-
-  cout << "Minimals:\n";
-  for (auto& min: centry.minimals)
-  {
-    const auto& ceMin = centries[min.holding3];
-    cout << ceMin.str();
-  }
-
-  cout << strategies.str("strategies", true);
-
-  cout << "maxRank " << +maxRank << "\n\n";
 }
 
 
@@ -75,12 +50,12 @@ void CombTest::checkReductions(
 
   for (auto& min: centry.minimals)
   {
-    const auto& ceMin = centries[min.holding3];
+    const auto& ceMin = centries[min.getHolding3()];
     assert(ceMin.refIndex < uniqs.size());
     const Combination& comb = uniqs[ceMin.refIndex];
     Strategies stratsMin = comb.strategies();
 
-    if (min.holding3 == centry.reference.holding3)
+    if (min.getHolding3() == centry.getHolding3())
     {
       // Special case.  This should be at the front of the list.
       // TODO This and the below are a lot of copying of Strategies.
@@ -104,7 +79,7 @@ void CombTest::checkReductions(
 
     const auto& reduction = distribution.getReduction(rankCritical);
 
-    stratsMin.expand(reduction, rankAdder, min.rotateFlag);
+    stratsMin.expand(reduction, rankAdder, min.getRotateFlag());
     stratsCumul += stratsMin;
     
   }
@@ -115,9 +90,10 @@ void CombTest::checkReductions(
 
   if (! (stratsCumul == strategies))
   {
-    cout << "Checking: " << centry.reference.str() << endl;
-    CombTest::dumpInputs("MINIMUM MISMATCH", 
-      centries, centry, strategies, maxRank);
+    cout << "Checking: " << centry.strHolding() << endl;
+    cout << centry.str();
+    cout << strategies.str("strategies", true);
+    cout << "maxRank " << +maxRank << "\n\n";
     cout << stratsCumul.str("Cumulative", true);
   }
 

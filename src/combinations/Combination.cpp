@@ -66,7 +66,8 @@ const Strategies& Combination::strategize(
   if (control.outputHolding())
   {
     cout << "Cards" << setw(3) << ranks.size() << ": " <<
-      centry.reference.str() << " / " << centry.refHolding2 << endl;
+      centry.reference.strHolding() << " / " << 
+      centry.refHolding2 << endl;
   }
 
   // Look up a pointer to the EW distribution of this combination.
@@ -81,7 +82,7 @@ const Strategies& Combination::strategize(
   DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
 
   if (control.holding() != 0 &&
-      centry.reference.holding3 == control.holding() &&
+      centry.getHolding3() == control.holding() &&
       ranks.size () == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
@@ -152,7 +153,7 @@ cout << "cholding2 is " << centry.refHolding2 << ", size " << ranks.size() << en
   // Make the plays.
   Result trivialEntry;
   plays.clear();
-if (centry.reference.holding3 == 208)
+if (centry.getHolding3() == 208)
 {
   cout << "HERE0\n";
 }
@@ -169,7 +170,7 @@ if (centry.reference.holding3 == 208)
 
 // return strats;
 
-cout << "A " << centry.reference.holding3 << endl;
+cout << "A " << centry.getHolding3() << endl;
   // Complete the plays such that their ends point to combinations.
 // if (ranks.size() == 8 && centry.canonicalHolding3 == 530)
 // {

@@ -151,7 +151,7 @@ void Combinations::runSpecific(
   CombEntry& centry = combEntries[cards][holding];
   ranks.setRanks(holding, centry);
 
-  const unsigned referenceHolding3 = centry.reference.holding3;
+  const unsigned referenceHolding3 = centry.getHolding3();
   if (holding != referenceHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
@@ -182,7 +182,7 @@ void Combinations::runSpecificVoid(
   CombEntry& centry = combEntries[cards][holding];
   ranks.setRanks(holding, centry);
 
-  const unsigned referenceHolding3 = centry.reference.holding3;
+  const unsigned referenceHolding3 = centry.getHolding3();
   if (holding != referenceHolding3)
   {
     cout << "Specific (cards, holding) = (" << cards << ", " <<
@@ -266,7 +266,7 @@ void Combinations::runUniques(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    const unsigned referenceHolding3 = centry.reference.holding3;
+    const unsigned referenceHolding3 = centry.getHolding3();
     if (holding == referenceHolding3)
     {
       assert(uniqueIndex < uniqs.size());
@@ -375,7 +375,7 @@ void Combinations::runUniquesOld(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
-    const unsigned referenceHolding3 = centry.reference.holding3;
+    const unsigned referenceHolding3 = centry.getHolding3();
     if (holding == referenceHolding3)
     {
       // TODO just centry.referenceFlag?
@@ -482,7 +482,7 @@ void Combinations::runUniqueThread(
     CombEntry& centry = centries[holding];
     ranks.setRanks(holding, centry);
 
-    const unsigned referenceHolding3 = centry.reference.holding3;
+    const unsigned referenceHolding3 = centry.getHolding3();
     if (holding == referenceHolding3)
     {
       const unsigned uniqueIndex = counterUnique++; // Atomic
@@ -560,7 +560,7 @@ Combination const * Combinations::getPtr(
   const auto& centry = combEntries[cards][holding3];
 
   const auto& cref = (centry.referenceFlag ? centry :
-    combEntries[cards][centry.reference.holding3]);
+    combEntries[cards][centry.getHolding3()]);
 
   // TODO Delete parameters rotateFlag and mode
   UNUSED(mode);

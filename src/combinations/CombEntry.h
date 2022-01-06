@@ -15,7 +15,7 @@
 #include <sstream>
 #include <cassert>
 
-#include "Combination.h"
+#include "CombReference.h"
 
 #include "../utils/CombinationType.h"
 
@@ -26,41 +26,6 @@ using namespace std;
 
 // CombEntry is used to map a given holding to a canonical combination,
 // where only the ranks within a suit matter.
-
-
-struct CombReference
-{
-  unsigned holding3; // Trinary
-  bool rotateFlag;
-  
-  bool operator < (const CombReference& cr2) const
-  {
-    return (holding3 < cr2.holding3);
-  }
-
-  bool operator == (const CombReference& cr2) const
-  {
-    return (holding3 == cr2.holding3 && rotateFlag == cr2.rotateFlag);
-  }
-
-  bool operator != (const CombReference& cr2) const
-  {
-    return ! (* this == cr2);
-  }
-
-  string str() const
-  {
-    stringstream ss;
-    ss << holding3 << " | " << "0x" << hex << holding3;
-    return ss.str();
-  }
-
-  string strSimple() const
-  {
-    return to_string(holding3) + " " +
-      (rotateFlag ? "(rot)" : "(nonrot)");
-  }
-};
 
 
 struct CombEntry
@@ -129,14 +94,14 @@ struct CombEntry
  
     while (iter != minimals.end())
     {
-      const CombEntry& centry = centries[iter->holding3];
+      const CombEntry& centry = centries[iter->getHolding3()];
  
       if (centry.minimalFlag)
       {
-        cout << "Is minimal: " << iter->str() << endl;
+        cout << "Is minimal: " << iter->strHolding() << endl;
         iter++;
       }
-      else if (iter->holding3 == centry.minimals.front().holding3)
+      else if (iter->getHolding3() == centry.minimals.front().getHolding3())
       {
         // Is a partial self-reference, so we already have its minimals.
         iter++;
@@ -148,13 +113,13 @@ struct CombEntry
         // of all rotations to be the really minimal holding.
         for (auto& min: centry.minimals)
         {
-            minimals.push_back(min);
-            CombReference& cr = minimals.back();
-            cr.rotateFlag ^= iter->rotateFlag;
+          minimals.push_back(min);
+          CombReference& cr = minimals.back();
+          cr.rotateBy(* iter);
         }
  
-          iter = minimals.erase(iter);
-          changeFlag = true;
+        iter = minimals.erase(iter);
+        changeFlag = true;
       }
     }
 
@@ -170,9 +135,13 @@ struct CombEntry
     const unsigned holding2In,
     const bool rotateFlagIn)
   {
-    reference.holding3 = holding3In;
-    reference.rotateFlag = rotateFlagIn;
+    reference.set(holding3In, rotateFlagIn);
     refHolding2 = holding2In;
+  }
+
+  unsigned getHolding3() const
+  {
+    return reference.getHolding3();
   }
 
 
@@ -182,8 +151,7 @@ struct CombEntry
   {
     minimals.emplace_back(CombReference());
     CombReference& combRef = minimals.back();
-    combRef.holding3 = holding3In;
-    combRef.rotateFlag = rotateFlagIn;
+    combRef.set(holding3In, rotateFlagIn);
   }
 
 
@@ -200,6 +168,12 @@ struct CombEntry
   }
 
 
+  string strHolding() const
+  {
+    return reference.strHolding();
+  }
+
+
   string strMinimals() const
   {
     string s;
@@ -212,21 +186,18 @@ struct CombEntry
   string str() const
   {
     string s;
-    if (referenceFlag)
-      s = "reference, ";
-    else
-      s = "non-reference, ";
 
-    s += reference.strSimple() + "\n";
+    s = "Flags: ";
+    s += (referenceFlag ? "reference" : "non-reference");
+    s += + ", ";
+    s += (minimalFlag ? "minimal" : 
+      "non-minimal(" + to_string(minimals.size()) + ")\n");
 
-    if (minimalFlag)
-      s += "minimal\n";
-    else
-    {
-      s += "non-minimal, size " + to_string(minimals.size()) + "\n";
-      for (auto& m: minimals)
-        s += m.str() + "\n";
-    }
+    s += "Holding: " + reference.strSimple() + " / " + 
+      to_string(refHolding2) + "\n";
+
+    if (! minimalFlag)
+      s += strMinimals();
     
     return s;
   }

@@ -12,7 +12,7 @@
 using namespace std;
 
 struct CombEntry;
-struct CombReference;
+class CombReference;
 
 
 class CombFiles

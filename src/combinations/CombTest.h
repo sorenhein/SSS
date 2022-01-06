@@ -32,12 +32,6 @@ class CombTest
       const unsigned char maxRank,
       const Distribution& distribution) const;
 
-    void dumpInputs(
-      const string& title,
-      const vector<CombEntry>& centries,
-      const CombEntry& centry,
-      const Strategies& strategies,
-      const unsigned char maxRank) const;
 
   public:
 
