@@ -652,7 +652,7 @@ bool Ranks::partnerVoid() const
 
 void Ranks::addMinimal(
   const unsigned char absNumber,
-  list<CombReference>& minimals,
+  CombEntry& centry,
   bool& ownFlag) const
 {
   unsigned oppsCount, northCount, southCount;
@@ -682,11 +682,10 @@ void Ranks::addMinimal(
 
   if (h4minimal != holding4)
   {
-    CombReference combRef;
-    combRef.rotateFlag = rotateFlag;
-    rankedTrinary(rotateFlag, cards, h4minimal, combRef.holding3);
+    unsigned holding3Min;
+    rankedTrinary(rotateFlag, cards, h4minimal, holding3Min);
 
-    minimals.emplace_back(combRef);
+    centry.addMinimal(holding3Min, rotateFlag);
   }
   else
     ownFlag = true;
@@ -695,8 +694,7 @@ void Ranks::addMinimal(
 
 bool Ranks::getMinimals(
   const list<Result>& resultList,
-  CombEntry& centry,
-  list<CombReference>& minimals) const
+  CombEntry& centry) const
 {
   // TODO If ownFlag stays, combine with bool return value somehow.
 
@@ -711,40 +709,23 @@ bool Ranks::getMinimals(
   }
   else if (resultList.empty())
   {
-    Ranks::addMinimal(0, minimals, ownFlag);
+    Ranks::addMinimal(0, centry, ownFlag);
   }
   else
   {
     for (auto& res: resultList)
-      Ranks::addMinimal(res.winAbsNumber(), minimals, ownFlag);
+      Ranks::addMinimal(res.winAbsNumber(), centry, ownFlag);
   }
-
-  // It can happen that we map to the same minimal holding in more ways.
-  // Actually this can also include a rotation.  Here we use the
-  // CombReference == comparator which only compares holding3 and
-  // ignores holding2 and especially rotationFlag.
 
   centry.consolidateMinimals();
 
-  if (ownFlag && ! minimals.empty())
-  {
-    CombReference combRef;
-    combRef.rotateFlag = false;
-    // TODO Is this different from holding3?
-    rankedTrinary(false, cards, holding4, combRef.holding3);
-assert(combRef.holding3 == holding3);
-    minimals.push_front(combRef);
-  }
+  if (ownFlag && ! centry.minimalsEmpty())
+    centry.addMinimalSelf();
 
   if (control.outputHolding())
-  {
     cout << centry.strMinimals();
-    // for (auto& m: minimals)
-      // cout << "Minimal holding: " << m.strSimple() << endl;
-    // cout << "\n";
-  }
 
-  return minimals.empty();
+  return centry.minimalsEmpty();
 }
 
 

@@ -165,6 +165,30 @@ struct CombEntry
   }
 
 
+  void addMinimal(
+    const unsigned holding3In,
+    const bool rotateFlagIn)
+  {
+    minimals.emplace_back(CombReference());
+    CombReference& combRef = minimals.back();
+    combRef.holding3 = holding3In;
+    combRef.rotateFlag = rotateFlagIn;
+  }
+
+
+  void addMinimalSelf()
+  {
+    // We rely in this being the front one.
+    minimals.push_front(reference);
+  }
+
+
+  bool minimalsEmpty() const
+  {
+    return minimals.empty();
+  }
+
+
   string strMinimals() const
   {
     string s;

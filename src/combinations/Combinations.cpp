@@ -201,17 +201,14 @@ void Combinations::runSpecificVoid(
 bool Combinations::getMinimals(
   const Strategies& strategies,
   const Ranks& ranks,
-  CombEntry& centry,
-  list<CombReference>& minimals) const
+  CombEntry& centry) const
 {
   // Returns true when the combination is already minimal,
   // in which case the set remains empty.
 
-  // Result resultLowest;
-  // strategies.getResultLowest(resultLowest);
   list<Result> resultList;
   strategies.getResultList(resultList);
-  return ranks.getMinimals(resultList, centry, minimals);
+  return ranks.getMinimals(resultList, centry);
 }
 
 
@@ -285,8 +282,7 @@ void Combinations::runUniques(
       comb.strategize(centry, * this, distributions, ranks, plays);
 
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, 
-          centry, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, centry);
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
@@ -396,8 +392,7 @@ void Combinations::runUniquesOld(
       comb.strategize(centry, * this, distributions, ranks, plays);
 
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, 
-          centry, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, centry);
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);
 
@@ -500,8 +495,7 @@ void Combinations::runUniqueThread(
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
       centry.minimalFlag =
-        Combinations::getMinimals(comb.strategies(), ranks, 
-          centry, centry.minimals);
+        Combinations::getMinimals(comb.strategies(), ranks, centry);
 
       centry.type = Combinations::classify(
         centry.minimalFlag, comb.strategies(), ranks);

@@ -93,7 +93,7 @@ class Ranks
 
     void addMinimal(
       const unsigned char absNumber,
-      list<CombReference>& minimals,
+      CombEntry& centry,
       bool& ownFlag) const;
 
 
@@ -117,8 +117,7 @@ class Ranks
 
     bool getMinimals(
       const list<Result>& resultList,
-      CombEntry& centry,
-      list<CombReference>& minimals) const;
+      CombEntry& centry) const;
 
     unsigned char maxRank() const;
 

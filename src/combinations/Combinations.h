@@ -65,8 +65,7 @@ class Combinations
     bool getMinimals(
       const Strategies& strategies,
       const Ranks& ranks,
-      CombEntry& centry,
-      list<CombReference>& minimals) const;
+      CombEntry& centry) const;
 
     CombinationType classify(
       const bool minimalFlag,
