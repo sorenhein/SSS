@@ -23,6 +23,12 @@ void rankedTrinary(
   unsigned& holding3,
   bool& rotateFlag);
 
+void rankedTrinary(
+  const bool rotateFlag,
+  const unsigned cards,
+  const unsigned holding4,
+  unsigned& holding3);
+
 void rankedBoth(
   const bool rotateFlag,
   const unsigned cards,

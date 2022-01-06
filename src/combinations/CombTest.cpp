@@ -181,7 +181,6 @@ void CombTest::checkAllReductions(
     CombTest::checkReductions(centries, uniqs, centry, comb.strategies(), 
       comb.getMaxRank(),
       * distributions.ptrNoncanonical(cards, centry.refHolding2));
-      // * distributions.ptrNoncanonical(cards, centry.reference.holding2));
   }
 }
 

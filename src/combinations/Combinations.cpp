@@ -293,7 +293,6 @@ void Combinations::runUniques(
       // TODO Control by some flag.  Isn't needed anyway
         comb.reduce(
           * distributions.ptrNoncanonical(cards, centry.refHolding2));
-          // * distributions.ptrNoncanonical(cards, centry.reference.holding2));
       }
 
       centry.type = Combinations::classify(
@@ -414,7 +413,6 @@ void Combinations::runUniquesOld(
         // TODO Control by some flag
         comb.reduce(
           * distributions.ptrNoncanonical(cards, centry.refHolding2));
-          // * distributions.ptrNoncanonical(cards, centry.reference.holding2));
       }
 
       centry.type = Combinations::classify(

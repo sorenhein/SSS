@@ -94,8 +94,6 @@ struct CombEntry
     if (minimalFlag != ce2.minimalFlag)
       return false;
     
-    // if (! referenceFlag && ! (reference.equal(ce2.reference)))
-    // TODO Huh?
     if (! referenceFlag && reference != ce2.reference)
       return false;
 

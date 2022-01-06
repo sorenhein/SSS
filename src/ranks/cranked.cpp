@@ -565,7 +565,6 @@ void holding4toBoth(
 }
 
 
-#include <iostream>
 unsigned holding4punch(
   const unsigned holding4,
   const Play& play)
@@ -647,6 +646,21 @@ void rankedTrinary(
     holding4punched ^= HOLDING4_ROTATE[cards];
 
   holding3 = holding4to3(holding4punched);
+}
+
+
+void rankedTrinary(
+  const bool rotateFlag,
+  const unsigned cards,
+  const unsigned holding4,
+  unsigned& holding3)
+{
+  // Turns holding4 into holding3.  Can rotate.
+
+  const unsigned holding4rot = (rotateFlag ?
+    (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
+
+  holding3 = holding4to3(holding4);
 }
 
 

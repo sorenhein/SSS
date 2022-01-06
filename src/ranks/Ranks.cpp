@@ -187,9 +187,8 @@ void Ranks::setOwnRanks(CombReference& combRef) const
   // TODO Does rotateflag matter here?  If so, pass to method?
 
   // TODO If holding2 stays out, clean up
-  unsigned holding2Dummy;
-  rankedBoth(false, cards, holding4, 
-    combRef.holding3, holding2Dummy);
+  // unsigned holding2Dummy;
+  rankedTrinary(false, cards, holding4, combRef.holding3);
     // combRef.holding3, combRef.holding2);
 }
 
@@ -211,7 +210,6 @@ void Ranks::setReference(
 
     rankedBoth(combRef.rotateFlag, cards, holding4,
       combRef.holding3, refHolding2);
-      // combRef.holding3, combRef.holding2);
   }
   else
   {
@@ -221,13 +219,11 @@ void Ranks::setReference(
     {
       canonicalBoth(south, north, opps, maxGlobalRank,
         combRef.holding3, refHolding2);
-        // combRef.holding3, combRef.holding2);
     }
     else
     {
       canonicalBoth(north, south, opps, maxGlobalRank,
         combRef.holding3, refHolding2);
-        // combRef.holding3, combRef.holding2);
     }
   }
 
@@ -707,10 +703,10 @@ void Ranks::addMinimal(
     CombReference combRef;
     combRef.rotateFlag = rotateFlag;
     // TODO
-    unsigned holding2Tmp;
-    rankedBoth(rotateFlag, cards, h4minimal,
-      combRef.holding3, holding2Tmp);
-      // combRef.holding3, combRef.holding2);
+    // unsigned holding2Tmp;
+    rankedTrinary(rotateFlag, cards, h4minimal,
+      combRef.holding3);
+      // combRef.holding3, holding2Tmp);
 
     minimals.emplace_back(combRef);
   }
@@ -757,8 +753,9 @@ bool Ranks::getMinimals(
     CombReference combRef;
     combRef.rotateFlag = false;
     // TODO
-    unsigned holding2Tmp;
-    rankedBoth(false, cards, holding4, combRef.holding3, holding2Tmp);
+    // unsigned holding2Tmp;
+    rankedTrinary(false, cards, holding4, combRef.holding3);
+    // rankedBoth(false, cards, holding4, combRef.holding3, holding2Tmp);
     // rankedBoth(false, cards, holding4, combRef.holding3, combRef.holding2);
     minimals.push_front(combRef);
   }
