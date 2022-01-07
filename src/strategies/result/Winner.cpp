@@ -190,12 +190,44 @@ Compare Winner::compareNonEmpties(const Winner& winner2) const
 
 Compare Winner::compare(const Winner& winner2) const
 {
-  if (Winner::empty())
-    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
-  else if (winner2.empty())
-    return WIN_SECOND;
+  const unsigned char abs1 = Winner::getAbsNumber();
+  const unsigned char abs2 = winner2.getAbsNumber();
+  Compare c;
+  if (abs1 > abs2)
+    c = WIN_FIRST;
+  else if (abs1 < abs2)
+    c = WIN_SECOND;
   else
-    return Winner::compareNonEmpties(winner2);
+    c = WIN_EQUAL;
+
+
+  if (Winner::empty())
+  {
+if (winner2.empty())
+  assert(c == WIN_EQUAL);
+else
+  assert(c == WIN_FIRST);
+    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
+  }
+  else if (winner2.empty())
+  {
+assert(c == WIN_SECOND);
+    return WIN_SECOND;
+  }
+  else
+  {
+    Compare b = Winner::compareNonEmpties(winner2);
+    if (! (b == c))
+    {
+      cout << "ABSDIFF " << b.str() << " vs " << c.str() << "\n";
+      cout << Winner::strDebug() << "\n";
+      cout << winner2.strDebug() << "\n";
+
+  assert(b == c);
+    }
+    return b;
+    // return Winner::compareNonEmpties(winner2);
+  }
 }
 
 
@@ -214,6 +246,20 @@ void Winner::flip()
 }
 
 
+void Winner::completeOther(
+  const Play& play,
+  const Card& own,
+  Card& other)
+{
+  Card const * otherPtr = play.completionPtr->get(own.getAbsNumber());
+  if (otherPtr)
+  {
+    mode = WIN_BOTH;
+    other = * otherPtr;
+  }
+}
+
+
 void Winner::update(const Play& play)
 {
 assert(play.completionPtr);
@@ -223,12 +269,7 @@ assert(play.completionPtr);
     north = * play.northTranslate(north.getNumber());
     rank = north.getRank();
 
-    Card const * southPtr = play.completionPtr->get(north.getAbsNumber());
-    if (southPtr)
-    {
-      mode = WIN_BOTH;
-      south = * southPtr;
-    }
+    Winner::completeOther(play, north, south);
   }
   else if (mode == WIN_SOUTH_ONLY)
   {
@@ -236,12 +277,7 @@ assert(play.completionPtr);
     south = * play.southTranslate(south.getNumber());
     rank = south.getRank();
 
-    Card const * northPtr = play.completionPtr->get(south.getAbsNumber());
-    if (northPtr)
-    {
-      mode = WIN_BOTH;
-      north = * northPtr;
-    }
+    Winner::completeOther(play, south, north);
   }
   else if (mode == WIN_BOTH)
   {
@@ -257,24 +293,30 @@ assert(play.completionPtr);
       north.reset();
       mode = WIN_SOUTH_ONLY;
       rank = south.getRank();
+
+      Winner::completeOther(play, south, north);
     }
     else if (south.rankExceeds(north))
     {
       south.reset();
       mode = WIN_NORTH_ONLY;
       rank = north.getRank();
+
+      Winner::completeOther(play, north, south);
     }
     else
+    {
      rank = north.getRank(); // Pick one
 
-    Card const * northPtr = play.completionPtr->get(south.getAbsNumber());
-    Card const * southPtr = play.completionPtr->get(north.getAbsNumber());
+      Card const * northPtr = play.completionPtr->get(south.getAbsNumber());
+      Card const * southPtr = play.completionPtr->get(north.getAbsNumber());
 
-    if (northPtr && north > * northPtr)
-      north = * northPtr;
+      if (northPtr && north > * northPtr)
+        north = * northPtr;
 
-    if (southPtr && south > * southPtr)
-      south = * southPtr;
+      if (southPtr && south > * southPtr)
+        south = * southPtr;
+    }
   }
   else if (mode == UCHAR_NOT_SET)
   {

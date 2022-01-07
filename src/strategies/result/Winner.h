@@ -48,6 +48,11 @@ class Winner
       const unsigned char otherMode,
       const unsigned char bitmask);
 
+    void completeOther(
+      const Play& play,
+      const Card& own,
+      Card& other);
+
 
   public:
 

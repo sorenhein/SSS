@@ -10,6 +10,11 @@
 #ifndef SSS_COMPARE_H
 #define SSS_COMPARE_H
 
+#include <string>
+
+using namespace std;
+
+
 enum CompareType
 {
   WIN_FIRST = 0,
@@ -71,6 +76,20 @@ class Compare
         val = cmp.val;
       else
         val = WIN_DIFFERENT;
+    };
+
+    string str() const
+    {
+      if (val == WIN_FIRST)
+        return "WIN_FIRST";
+      else if (val == WIN_SECOND)
+        return "WIN_SECOND";
+      else if (val == WIN_EQUAL)
+        return "WIN_EQUAL";
+      else if (val == WIN_DIFFERENT)
+        return "WIN_DIFFERENT";
+      else
+        return "WIN_UNSET";
     };
 };
 
