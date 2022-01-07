@@ -171,10 +171,6 @@ Optimizations
 * Ranked plays in Ranks.cpp, see above (count #plays and see that
   something improves without changing the outcome)
 
-* Maybe instead of the NS business, we just go by absNumber in Card?
-  Then that is a simple comparison.  Are there cases where winners are
-  not of this form?
-
 * Optimize the code for Slist::minimal().  Is it even used?
 
 * Look at speeding up Slist::equalByMethod.

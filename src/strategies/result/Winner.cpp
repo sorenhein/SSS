@@ -152,82 +152,16 @@ void Winner::operator *= (const Winner& winner2)
 }
 
 
-Compare Winner::compareNonEmpties(const Winner& winner2) const
-{
-  assert(mode != UCHAR_NOT_SET);
-  assert(winner2.mode != UCHAR_NOT_SET);
-
-  // We have to test for rank first, as we might have this Winner as
-  // South rank 4 number 0, and winner2 as 
-  // North rank 2 number 0.
-
-  if (rank > winner2.rank)
-    return WIN_FIRST;
-  else if (rank < winner2.rank)
-    return WIN_SECOND;
-
-  // The compare method also deals with unset cards.  Declarer prefers
-  // no constraints, i.e. an unset card ("void").
-  const Compare northPrefer = north.compare(winner2.north);
-  const Compare southPrefer = south.compare(winner2.south);
-
-  // Probably a matrix lookup isn't faster.
-  //
-  // N|S 1  2  =
-  // 1   1  != 1
-  // 2   != 2  2
-  // =   1  2  =
-  if (northPrefer == southPrefer)
-    return northPrefer;
-  else if (northPrefer == WIN_EQUAL)
-    return southPrefer;
-  else if (southPrefer == WIN_EQUAL)
-    return northPrefer;
-  else
-    return WIN_DIFFERENT;
-}
-
-
 Compare Winner::compare(const Winner& winner2) const
 {
   const unsigned char abs1 = Winner::getAbsNumber();
   const unsigned char abs2 = winner2.getAbsNumber();
-  Compare c;
   if (abs1 > abs2)
-    c = WIN_FIRST;
+    return WIN_FIRST;
   else if (abs1 < abs2)
-    c = WIN_SECOND;
-  else
-    c = WIN_EQUAL;
-
-
-  if (Winner::empty())
-  {
-if (winner2.empty())
-  assert(c == WIN_EQUAL);
-else
-  assert(c == WIN_FIRST);
-    return (winner2.empty() ? WIN_EQUAL : WIN_FIRST);
-  }
-  else if (winner2.empty())
-  {
-assert(c == WIN_SECOND);
     return WIN_SECOND;
-  }
   else
-  {
-    Compare b = Winner::compareNonEmpties(winner2);
-    if (! (b == c))
-    {
-      cout << "ABSDIFF " << b.str() << " vs " << c.str() << "\n";
-      cout << Winner::strDebug() << "\n";
-      cout << winner2.strDebug() << "\n";
-
-  assert(b == c);
-    }
-    return b;
-    // return Winner::compareNonEmpties(winner2);
-  }
+    return WIN_EQUAL;
 }
 
 
@@ -262,7 +196,6 @@ void Winner::completeOther(
 
 void Winner::update(const Play& play)
 {
-assert(play.completionPtr);
   if (mode == WIN_NORTH_ONLY)
   {
     // This may also change the winning side.

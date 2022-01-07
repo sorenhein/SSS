@@ -93,7 +93,7 @@ void Winners::fillComparer(
     unsigned n2 = 0;
     for (auto& win2: winners2.winners)
     {
-      comparer.log(n1, n2, win1.compareNonEmpties(win2));
+      comparer.log(n1, n2, win1.compare(win2));
       n2++;
     }
     n1++;
@@ -114,7 +114,7 @@ void Winners::addCore(const Winner& winner)
   auto witer = winners.begin();
   while (witer != winners.end())
   {
-    const Compare cmp = witer->compareNonEmpties(winner);
+    const Compare cmp = witer->compare(winner);
     if (cmp == WIN_FIRST || cmp == WIN_EQUAL)
     {
       // The new subwinner is inferior.
@@ -318,7 +318,7 @@ Compare Winners::compare(const Winners& winners2) const
   else if (s2 == 0)
     return WIN_SECOND;
   else if (s1 == 1 && s2 == 1)
-    return winners.front().compareNonEmpties(winners2.winners.front());
+    return winners.front().compare(winners2.winners.front());
   else if (Winners::rank() > winners2.rank())
     return WIN_FIRST;
   else if (winners2.rank() > Winners::rank())
