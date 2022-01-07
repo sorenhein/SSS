@@ -166,8 +166,8 @@ Compare Winner::compareNonEmpties(const Winner& winner2) const
   else if (rank < winner2.rank)
     return WIN_SECOND;
 
-  // We don't have to check whether something is set, as an unset
-  // card has a maximum card number which declarer prefers.
+  // The compare method also deals with unset cards.  Declarer prefers
+  // no constraints, i.e. an unset card ("void").
   const Compare northPrefer = north.compare(winner2.north);
   const Compare southPrefer = south.compare(winner2.south);
 

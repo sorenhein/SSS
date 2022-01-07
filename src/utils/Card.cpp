@@ -65,19 +65,15 @@ bool Card::operator != (const Card& card2) const
 }
 
 
-bool Card::identical(const Card& card2) const
-{
-  return (rank == card2.rank &&
-      number == card2.number &&
-      name == card2.name);
-}
-
-
 Compare Card::compare(const Card& card2) const
 {
-  if (number > card2.number)
+  if (Card::isVoid())
+    return (card2.isVoid() ? WIN_EQUAL : WIN_FIRST);
+  else if (card2.isVoid())
+    return WIN_SECOND;
+  else if (absNumber > card2.absNumber)
     return WIN_FIRST;
-  else if (number < card2.number)
+  else if (absNumber < card2.absNumber)
     return WIN_SECOND;
   else
     return WIN_EQUAL;
@@ -105,7 +101,7 @@ bool Card::rankExceeds(const Card& card2) const
 void Card::operator *= (const Card& card2)
 {
   // Choose the lowest card.
-  if (number > card2.number)
+  if (absNumber > card2.absNumber)
     * this = card2;
 }
 
@@ -113,7 +109,7 @@ void Card::operator *= (const Card& card2)
 void Card::operator += (const Card &card2)
 {
   // Choose the highest card.
-  if (number < card2.number)
+  if (absNumber < card2.absNumber)
     * this = card2;
 }
 
