@@ -333,11 +333,11 @@ string Winner::str() const
   if (mode == UCHAR_NOT_SET)
     return "-";
   else if (mode == WIN_NORTH_ONLY)
-    return north.str("N");
+    return north.str();
   else if (mode == WIN_SOUTH_ONLY)
-    return south.str("S");
+    return south.str();
   else
-    return north.str("N") + south.str("S", false);
+    return north.str() + south.str();
 }
 
 

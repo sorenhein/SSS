@@ -22,7 +22,6 @@ class Card
   private:
 
     unsigned char rank;
-    unsigned char depth; // 0 for highest card with that rank
     unsigned char number; // 1 for lowest card with that player
     unsigned char absNumber; // 1 for lowest card in that combination
     unsigned char name;
@@ -35,7 +34,6 @@ class Card
 
     void set(
       const unsigned char rankIn,
-      const unsigned char depthIn,
       const unsigned char numberIn,
       const unsigned char absNumberIn,
       const unsigned char nameIn);
@@ -57,18 +55,13 @@ class Card
     void operator += (const Card& card2);
 
     unsigned char getRank() const;
-    unsigned char getDepth() const;
     unsigned char getNumber() const;
     unsigned char getAbsNumber() const;
     unsigned char getName() const;
 
     void expand(const char rankAdder);
 
-    void flipDepth(const unsigned char maxDepth);
-
-    string str(
-      const string& side,
-      const bool rankFlag = true) const;
+    string str() const;
 
     string strDebug(const string& side) const;
 };

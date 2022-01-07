@@ -56,39 +56,6 @@ void Declarer::setNames()
 }
 
 
-void Declarer::fixDepths()
-{
-  // In Ranks we loop through the cards from the bottom up, so they
-  // are numbered from 0 up.  Also, the depths within a rank are
-  // numbered from 0 up.  The depths are not used that much, but
-  // when we print the card in Card, it is useful for depth == 0 to
-  // be the highest and not the lowest card within a rank.  In this
-  // way we can easily decorate the names in a useful way.
-  // We cannot avoid the problem by looping the other way in Ranks --
-  // then we'd have the problem with the ranks.
-  // So we fix (flip) the ranks from from e.g. 0, 1, 2 to 2, 1, 0
-  // in this inelegant piece of post-processing.
-
-  const unsigned char csize = static_cast<unsigned char>(cards.size());
-  for (unsigned char cno = 0; cno < csize; cno++)
-  {
-    if (cards[cno].getDepth() == 1)
-    {
-      // Find the index past the current rank (may be beyond the end).
-      unsigned char dno = cno+1;
-      while (dno < csize && cards[dno].getDepth() > 0)
-        dno++;
-
-      unsigned char maxDepth = dno - cno;
-
-      // Flip the ranks, starting from the zero depth.
-      for (cno--; cno < dno; cno++)
-        cards[cno].flipDepth(maxDepth);
-    }
-  }
-}
-
-
 bool Declarer::playRank(
   const unsigned char rank,
   const Declarer& partner,
@@ -108,7 +75,6 @@ bool Declarer::playRank(
 void Declarer::finish()
 {
   Declarer::setSingleRank();
-  Declarer::fixDepths();
 }
 
 

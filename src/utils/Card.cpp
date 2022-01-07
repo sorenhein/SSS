@@ -26,24 +26,19 @@ Card::Card()
 void Card::reset()
 {
   rank = 0;
-  depth = 0;
   number = UCHAR_NOT_SET;
-  // TODO Try it with void as 0.
   absNumber = 0;
-  // absNumber = UCHAR_NOT_SET;
   name = '-';
 }
 
 
 void Card::set(
   const unsigned char rankIn,
-  const unsigned char depthIn,
   const unsigned char numberIn,
   const unsigned char absNumberIn,
   const unsigned char nameIn)
 {
   rank = rankIn;
-  depth = depthIn;
   number = numberIn;
   absNumber = absNumberIn;
   name = nameIn;
@@ -73,7 +68,6 @@ bool Card::operator != (const Card& card2) const
 bool Card::identical(const Card& card2) const
 {
   return (rank == card2.rank &&
-      depth == card2.depth &&
       number == card2.number &&
       name == card2.name);
 }
@@ -130,12 +124,6 @@ unsigned char Card::getRank() const
 }
 
 
-unsigned char Card::getDepth() const
-{
-  return depth;
-}
-
-
 unsigned char Card::getNumber() const
 {
   return number;
@@ -160,30 +148,9 @@ void Card::expand(const char rankAdder)
 }
 
 
-void Card::flipDepth(const unsigned char maxDepth)
+string Card::str() const
 {
-  // Depths arise in Ranks in opposite order (see comment in
-  // Declarer::fixDepths), so we have to flip them afterwards.
-  depth = maxDepth - depth;
-}
-
-
-string Card::str(
-  const string& side,
-  const bool rankFlag) const
-{
-  stringstream ss;
-  if (rankFlag)
-    ss << hex << uppercase << +rank << dec;
-
-  ss << side;
-  if (depth == 1)
-    ss << "'";
-  else if (depth == 2)
-    ss << "\"";
-  else if (depth > 2)
-    ss << "+";
-  return ss.str();
+  return string(1, static_cast<char>(name));
 }
 
 
@@ -192,7 +159,6 @@ string Card::strDebug(const string& side) const
   stringstream ss;
   ss << side << ": " <<
     "rank " << +rank <<
-    " depth " << +depth <<
     " number " << +number << 
     " absNumber " << +absNumber << 
     " name " << name <<

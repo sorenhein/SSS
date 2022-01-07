@@ -28,17 +28,17 @@ class Player
      *           (missing Q976)
      *      JT
      *                      card
-     *             ----------------------
-     * player card rank depth number name  card#
-     *   opp  6    1    1      opp:0  '6'      0
-     *   opp  7    1    0      opp:1  '7'      1
-     * North  8    2    0    North:0  '8'      2
-     *   opp  9    3    0      opp:2  '9'      3
-     * South  T    4    1    South:0  'T'      4
-     * South  J    4    0    South:1  'J'      5
-     *   opp  Q    5    0      opp:3  'Q'      6
-     * North  K    6    1    North:1  'K'      7
-     * North  A    6    0    North:2  'A'      8
+     *             ------------------
+     * player card rank   number name  card#
+     *   opp  6    1       opp:0  '6'      0
+     *   opp  7    1       opp:1  '7'      1
+     * North  8    2     North:0  '8'      2
+     *   opp  9    3       opp:2  '9'      3
+     * South  T    4     South:0  'T'      4
+     * South  J    4     South:1  'J'      5
+     *   opp  Q    5       opp:3  'Q'      6
+     * North  K    6     North:1  'K'      7
+     * North  A    6     North:2  'A'      8
      *
      * cards (these are actual cards, not references/pointers)
      *        North South   Opps
@@ -117,7 +117,6 @@ class Player
 
     // These are only used during updates, but are global for ease.
     unsigned char numberNextCard;
-    unsigned char depthNext;
     unsigned char posNext;
     bool firstUpdateFlag;
     bool firstOfRankFlag;
