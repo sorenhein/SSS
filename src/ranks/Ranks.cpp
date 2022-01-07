@@ -278,6 +278,7 @@ bool Ranks::makeTrivial(Result& trivial) const
 bool Ranks::leadOK(
   const Declarer& leader,
   const Declarer& partner,
+  Card const * leadPtr,
   const unsigned char lead) const
 {
   // By construction, count is always > 0.
@@ -289,13 +290,27 @@ bool Ranks::leadOK(
   }
   else if (! leader.isSingleRanked())
   {
-    if (! control.runRankComparisons())
+    if (control.runRankComparisons())
+    {
+      // Both sides have 2+ ranks.  
+      const unsigned char leadAbsNumber = leadPtr->getAbsNumber();
+      if (leadAbsNumber < partner.minAbsNumber() &&
+          leadAbsNumber > leader.minAbsNumber())
+      {
+        // If leader's lowest number is enough, lead lowest.
+        // return false;
+        // TODO In principle the reduction (return false) is right.
+        // But it's not turned on for now.
+        return true;
+      }
+    }
+    else
     {
       // Both sides have 2+ ranks.  
       if (lead <= partner.minFullRank() && 
         lead > leader.minFullRank())
       {
-        // If partner's lowest card is at least as high, lead lowest.
+        // If partner's lowest rank is at least as high, lead lowest.
         return false;
       }
       else if (lead >= partner.maxFullRank())
@@ -603,7 +618,7 @@ void Ranks::setPlaysSide(
     // is required.
     play.leadPtr = leadPtr;
     const unsigned char lead = play.leadPtr->getRank();
-    if (! Ranks::leadOK(leader, partner, lead))
+    if (! Ranks::leadOK(leader, partner, leadPtr, lead))
       continue;
 
     play.leadCollapse = leader.playRank(lead, partner, maxGlobalRank);

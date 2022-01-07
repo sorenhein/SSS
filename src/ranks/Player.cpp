@@ -152,6 +152,20 @@ unsigned char Player::maxFullRank() const
 }
 
 
+unsigned char Player::minAbsNumber() const
+{
+  assert(! cardsPtr.empty());
+  return cardsPtr.front()->getAbsNumber();
+}
+
+
+unsigned char Player::maxAbsNumber() const
+{
+  assert(! cardsPtr.empty());
+  return cardsPtr.back()->getAbsNumber();
+}
+
+
 bool Player::isVoid() const
 {
   return (len == 0);

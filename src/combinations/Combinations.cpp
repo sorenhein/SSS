@@ -257,6 +257,9 @@ void Combinations::runUniques(
   Plays plays;
   plays.resize(cards);
 
+  vector<unsigned> histoPlay;
+  histoPlay.resize(1000);
+
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
     CombEntry& centry = centries[holding];
@@ -276,10 +279,12 @@ void Combinations::runUniques(
 
       comb.setMaxRank(ranks.maxRank());
 
-    // Plays is cleared and rewritten, so it is only an optimization
-    // not to let Combination make its own plays.
+      // Plays is cleared and rewritten, so it is only an optimization
+      // not to let Combination make its own plays.
 
       comb.strategize(centry, * this, distributions, ranks, plays);
+
+histoPlay[plays.size()]++;
 
       // centry.minimalFlag =
       if (Combinations::getMinimals(comb.strategies(), ranks, centry))
@@ -298,6 +303,25 @@ void Combinations::runUniques(
     }
   }
 
+cout << "Play histogram\n";
+unsigned sump = 0, count = 0;
+for (unsigned i = 0; i < histoPlay.size(); i++)
+{
+  if (histoPlay[i])
+  {
+    cout << setw(4) << i << setw(8) << histoPlay[i] << "\n";
+    count += histoPlay[i];
+    sump += i * histoPlay[i];
+  }
+}
+cout << "\n";
+if (count > 0)
+{
+  double d =
+ (static_cast<float>(sump) / static_cast<float>(count));
+cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
+
+}
   timersStrat[33].start();
   Combinations::fixMinimals(centries);
   timersStrat[33].stop();

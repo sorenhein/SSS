@@ -169,6 +169,9 @@ class Player
     unsigned char minFullRank() const;
     unsigned char maxFullRank() const;
 
+    unsigned char minAbsNumber() const;
+    unsigned char maxAbsNumber() const;
+
     bool isVoid() const;
 
     unsigned char count(const unsigned char rank) const;

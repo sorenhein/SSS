@@ -57,6 +57,7 @@ class Ranks
     bool leadOK(
       const Declarer& leader,
       const Declarer& partner,
+      Card const * leadPtr,
       const unsigned char lead) const;
 
     bool pardOK(

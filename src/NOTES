@@ -1,5 +1,16 @@
-2022-01-04
+2022-01-07
 ==========
+
+Starting point for play histogram (seven last ones)
+
+Play average 6.01
+Play average 15.02
+Play average 29.57
+Play average 51.43
+Play average 82.54
+Play average 125.03
+Play average 181.27
+
 
 CombTest errors
 ---------------
@@ -21,8 +32,28 @@ Other checks not implemented yet
 Ideas against errors
 --------------------
 
-Premature pruning
-.................
+Premature reduction
+...................
+
+In 9/2645 (AQ/KJ9 missing Txxx), if we start with the 9, we get
+#0 the trivial strategy (always needing AKQ), 
+#1 9 to A, then overtake Q if the T shows up, wins a rank (AK) for d=3,
+loses a rank (QJ) for d=1,
+#2 9 to A, then always overtake Q, wins ranks (AK) for d=3,4,
+loses ranks (QJ) for d=1,2.
+
+If we start with J (which doesn't make sense), we get the same
+trivial strategy #0; we don't get #2 as we can't afford always to
+overtake; instead we get #1 which is similar to #1 above but
+needing the 9 and not the QJ for d=1.
+The #1 from J should lose to the #1 from 9.  But the #1 from 9
+has already been eliminated (reduced), so #1 from 9 seems to survive.
+
+The only solution seems to be not to reduce before the += step.
+How much time and memory does this cost?
+
+Premature consolidation
+.......................
 
 In 7/1595 (KT9/Q) for the start Q J there are two strategies, each 
 with pluses and minuses for declarer.  #1 (overtaking) needs 2N' 
@@ -37,7 +68,9 @@ so now #1 would be competitive against #0, but it is too late.
 The solution seems to be not to consolidate in the partner += step
 already, and to wait for the lead += step (and the LHO *= step).
 This probably costs memory and time.  I think I will wait with this
-until I've done some other optimizations.
+until I've done some other optimizations.  Or actually, only
+consolidate away strategy's that are completely dominated, i.e.
+every result is <=.
 
 Rare products
 .............
@@ -172,6 +205,9 @@ Optimizations
   something improves without changing the outcome)
 
 * Optimize the code for Slist::minimal().  Is it even used?
+
+* Probably Winners can really go away now -- always single-valued?
+  MultiResult then too?
 
 * Look at speeding up Slist::equalByMethod.
   Divide completely by size
