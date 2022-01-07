@@ -105,9 +105,7 @@ class Slist
       const string& title,
       const bool rankFlag) const;
 
-    string strWeights(const bool rankFlag) const;
-
-    string strWinners() const;
+    string strSumLine(const bool rankFlag) const;
 
 
   public:

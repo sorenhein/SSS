@@ -53,7 +53,6 @@ void Player::zero()
 
   maxRank = numeric_limits<unsigned char>::max();
 
-  depthNext = 0;
   posNext = 1;
 
   firstOfRankFlag = true;
@@ -62,9 +61,6 @@ void Player::zero()
 
 void Player::updateStep(const unsigned char rankNew)
 {
-  // Back down to the first card of the next rank.
-  depthNext = 0;
-
   if (rankNew == maxRank+2)
   {
     // Player has this reduced rank already, so we advance.
@@ -110,7 +106,6 @@ void Player::update(
   rankInfo[rank].count++;
 
   numberNextCard++;
-  depthNext++;
 }
 
 

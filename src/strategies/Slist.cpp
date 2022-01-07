@@ -1010,39 +1010,35 @@ string Slist::strHeader(
 }
 
 
-string Slist::strWeights(const bool rankFlag) const
+string Slist::strSumLine(const bool rankFlag) const
 {
   stringstream ss;
 
-  const unsigned incr = (rankFlag ? 12 : 4);
-  ss << string(4 + incr * strategies.size(), '-') << "\n";
-  ss << setw(4) << "Wgt";
-  for (const auto& res: strategies)
-    ss << setw(static_cast<int>(incr)) << res.weight();
-  return ss.str() + "\n";
-}
+  const unsigned dashes = 4 + (rankFlag ? 12 : 4) * strategies.size();
+  ss << string(dashes, '-') << "\n";
+  ss << setw(4) << left << "Sum" << right;
 
-
-string Slist::strWinners() const
-{
-  stringstream ss;
-  ss << setw(4) << "Win";
-
-  Result resLowest;
-  for (const auto& strat: strategies)
+  if (rankFlag)
   {
-    const Result res = strat.resultLowest();
-    ss << setw(12) << res.strWinners();
-    resLowest *= res;
+    Result resLowest;
+    for (const auto& strat: strategies)
+    {
+      const Result res = strat.resultLowest();
+      ss << setw(4) << strat.weight() << setw(8) << res.strWinners();
+      resLowest *= res;
+    }
+
+    if (strategies.size() > 1)
+      ss << "\n" <<
+        setw(4) << "Prod" <<
+        setw(12) << resLowest.strWinners() << "\n";
+    }
+  else
+  {
+    for (const auto& strat: strategies)
+      ss << setw(4) << strat.weight();
   }
-  ss << "\n";
-
-  if (strategies.size() > 1)
-    ss <<
-      setw(4) << "Prod" <<
-      setw(12) << resLowest.strWinners() << "\n\n";
-
-  return ss.str();
+  return ss.str() + "\n";
 }
 
 
@@ -1071,10 +1067,7 @@ string Slist::str(
     stratData.advance();
   }
 
-  ss << Slist::strWeights(rankFlag);
-
-  if (rankFlag)
-    ss << Slist::strWinners();
+  ss << Slist::strSumLine(rankFlag);
 
   return ss.str();
 }
