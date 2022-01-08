@@ -54,6 +54,11 @@ class Ranks
 
     bool makeTrivial(Result& trivial) const;
 
+    bool sideOK(
+      const Declarer& leader,
+      const Declarer& partner,
+      const Play& play) const;
+
     bool leadOK(
       const Declarer& leader,
       const Declarer& partner,
@@ -62,6 +67,7 @@ class Ranks
 
     bool pardOK(
       const Declarer& partner,
+      Card const * pardPtr,
       const unsigned char toBeat,
       const unsigned char pard) const;
 

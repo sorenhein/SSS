@@ -11,6 +11,35 @@ Play average 82.54
 Play average 125.03
 Play average 181.27
 
+Two tests in leadOK turned on:
+
+Play average 5.26
+Play average 11.92
+Play average 21.86
+Play average 36.44
+Play average 57.35
+Play average 86.55
+Play average 126.25
+
+One test in pardOK turned on:
+
+Play average 4.93
+Play average 10.64
+Play average 18.78
+Play average 30.34
+Play average 46.42
+Play average 68.17
+Play average 96.78
+
+All old tests I can think of:
+
+Play average 3.44
+Play average 7.93
+Play average 15.51
+Play average 27.03
+Play average 43.36
+Play average 65.51
+Play average 94.54
 
 CombTest errors
 ---------------
@@ -48,6 +77,10 @@ overtake; instead we get #1 which is similar to #1 above but
 needing the 9 and not the QJ for d=1.
 The #1 from J should lose to the #1 from 9.  But the #1 from 9
 has already been eliminated (reduced), so #1 from 9 seems to survive.
+
+This wouldn't show up in a minimals check, as the 9 would seem to
+be needed (so 9/2645 would be minimal, needing the 9). The one needing
+the jack would presumably be minimal as well.
 
 The only solution seems to be not to reduce before the += step.
 How much time and memory does this cost?

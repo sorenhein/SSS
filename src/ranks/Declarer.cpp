@@ -151,3 +151,22 @@ bool Declarer::isSingleRanked() const
   return singleRank;
 }
 
+
+bool Declarer::isSingleRun() const
+{
+  // Returns true if all the player's cards are consecutive.
+  if (! singleRank)
+    return false;
+  if (len == 1)
+    return true;
+
+  const unsigned char absNumber = cards.front().getAbsNumber();
+  for (auto citer = next(cards.begin()); citer != cards.end(); citer++)
+  {
+    if (citer->getAbsNumber() != absNumber)
+      return false;
+  }
+
+  return true;
+}
+

@@ -54,6 +54,8 @@ class Declarer: public Player
     const deque<Card const *>& getCards(const bool fullFlag) const;
 
     bool isSingleRanked() const;
+
+    bool isSingleRun() const;
 };
 
 #endif
