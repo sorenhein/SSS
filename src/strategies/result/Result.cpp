@@ -218,10 +218,13 @@ const Winner& Result::getWinner() const
 string Result::strEntry(const bool rankFlag) const
 {
   stringstream ss;
-  ss << setw(4) << +tricks;
-
   if (rankFlag)
-    ss << setw(8) << winner.str();
+  {
+    ss << setw(6) << +tricks;
+    ss << setw(4) << winner.str();
+  }
+  else
+    ss << setw(4) << +tricks;
 
   return ss.str();
 }
@@ -252,7 +255,7 @@ string Result::str(const bool rankFlag) const
   stringstream ss;
   ss << 
     setw(4) << +dist << 
-    setw(6) << Result::strEntry(rankFlag) << "\n";
+    Result::strEntry(rankFlag) << "\n";
 
   return ss.str();
 }

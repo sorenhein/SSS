@@ -996,7 +996,7 @@ string Slist::strHeader(
   if (title != "")
     ss << title << "\n";
 
-  const unsigned incr = (rankFlag ? 12 : 4);
+  const unsigned incr = (rankFlag ? 10 : 4);
 
   ss << setw(4) << left << "Dist" << right;
 
@@ -1014,7 +1014,7 @@ string Slist::strSumLine(const bool rankFlag) const
 {
   stringstream ss;
 
-  const unsigned dashes = 4 + (rankFlag ? 12 : 4) * strategies.size();
+  const unsigned dashes = 4 + (rankFlag ? 10 : 4) * strategies.size();
   ss << string(dashes, '-') << "\n";
   ss << setw(4) << left << "Sum" << right;
 
@@ -1024,15 +1024,15 @@ string Slist::strSumLine(const bool rankFlag) const
     for (const auto& strat: strategies)
     {
       const Result res = strat.resultLowest();
-      ss << setw(4) << strat.weight() << setw(8) << res.strWinners();
+      ss << setw(6) << strat.weight() << setw(4) << res.strWinners();
       resLowest *= res;
     }
 
     if (strategies.size() > 1)
       ss << "\n" <<
         setw(4) << "Prod" <<
-        setw(12) << resLowest.strWinners() << "\n";
-    }
+        setw(10) << resLowest.strWinners() << "\n";
+  }
   else
   {
     for (const auto& strat: strategies)

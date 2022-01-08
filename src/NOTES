@@ -167,9 +167,6 @@ Optimizations
   as well?
   -- Then it would also be in the print output, in the table itself
 
-* Ranked plays in Ranks.cpp, see above (count #plays and see that
-  something improves without changing the outcome)
-
 * Optimize the code for Slist::minimal().  Is it even used?
 
 * Probably Winners can really go away now -- always single-valued?
