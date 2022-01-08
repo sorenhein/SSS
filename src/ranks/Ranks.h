@@ -105,14 +105,7 @@ class Ranks
       Play& play,
       Plays& plays);
 
-    void setPlaysLeadPartnerVoidLHONotVoid(
-      Declarer& leader,
-      Declarer& partner,
-      const unsigned char lead,
-      Play& play,
-      Plays& plays);
-
-    void setPlaysLeadPartnerNotVoidLHONotVoid(
+    void setPlaysLeadLHONotVoid(
       Declarer& leader,
       Declarer& partner,
       const unsigned char lead,
