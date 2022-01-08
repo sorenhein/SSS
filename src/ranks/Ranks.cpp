@@ -457,6 +457,28 @@ bool Ranks::pardOK(
 }
 
 
+bool Ranks::rhoOK(
+  const unsigned toBeat,
+  const unsigned rho) const
+{
+  // This only applies when "partner" (mostly LHO) is known to be void.
+  if (rho > toBeat)
+    return true;
+  else if (rho != opps.minFullRank())
+  {
+    // If ducking, duck low.
+    return false;
+  }
+  else if (! control.runRankComparisons() && opps.maxFullRank() > toBeat)
+  {
+    // Don't duck if you can win.
+    return false;
+  }
+  else
+    return true;
+}
+
+
 void Ranks::updateHoldings(Play& play) const
 {
   if (control.runRankComparisons())
@@ -590,8 +612,7 @@ void Ranks::setPlaysLeadWithVoid(
     {
       play.rhoPtr = rhoPtr;
       const unsigned char rho = rhoPtr->getRank();
-      // If LHO is known to be void, RHO can duck completely.
-      if (rho < toBeat && rho != opps.minFullRank())
+      if (! Ranks::rhoOK(toBeat, rho))
         continue;
 
       opps.playRank(rho);

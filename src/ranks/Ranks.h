@@ -90,6 +90,10 @@ class Ranks
       const unsigned char toBeat,
       const unsigned char pard) const;
 
+    bool rhoOK(
+      const unsigned toBeat,
+      const unsigned rho) const;
+
     void updateHoldings(Play& play) const;
 
     void finish(Play& play) const;

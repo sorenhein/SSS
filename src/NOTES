@@ -128,33 +128,13 @@ Plays generated in Ranks
 When ranked
 ...........
 
+
+
 When unranked
 .............
-Play eliminations, based on KJ975 missing AQT8xx, so
-whenever partner is void:
 
-* In fourth hand where LHO is void, always win cheaply or play lowest
-  if you can't win [already in setPlaysLeadWithVoid]
-* In second hand when RHO will show up as void, ditto
-  [Would go in setPlaysLeadWithoutVoid]
-  Before registering the void play, check that either
-  lho is the lowest lho rank below toBeat (which we'd need to track), or
-  lho is the first lho rank above toBeat
-
-* In WithVoid, should RHO ever duck?
-
-Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
-and shorter than all North cards, so their ranks can't matter.
-- Can simplify manually: AQT8 / 64 missing KJ9753.  We can never
-  take a rank trick < 8. |S| <= |N|.  Max S <= Max N.  But this only
-  gets some of the tough ones.
-  - Is this already implemented?
 
 * Actual optimizations that are probably missing today
-- With AQ / - missing KJ, on Ace never drop King (partner will show
-  out and the lead was the top card)
-- With KJ / - missing AQ, on K never play Q (partner HAS shown out,
-  so always win trick)
 - Maybe in 4th hand when NS are down to <= 1 card after this trick,
   KJ with AQxx outstanding for example (6/548).
 
