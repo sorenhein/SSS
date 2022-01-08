@@ -1,36 +1,6 @@
 2022-01-07
 ==========
 
-Starting point for play histogram (seven last ones)
-
-Play average 6.01
-Play average 15.02
-Play average 29.57
-Play average 51.43
-Play average 82.54
-Play average 125.03
-Play average 181.27
-
-Two tests in leadOK turned on:
-
-Play average 5.26
-Play average 11.92
-Play average 21.86
-Play average 36.44
-Play average 57.35
-Play average 86.55
-Play average 126.25
-
-One test in pardOK turned on:
-
-Play average 4.93
-Play average 10.64
-Play average 18.78
-Play average 30.34
-Play average 46.42
-Play average 68.17
-Play average 96.78
-
 All old tests I can think of:
 
 Play average 3.44
@@ -157,13 +127,6 @@ Plays generated in Ranks
 
 When ranked
 ...........
-The equivalent of one rank is a singleton card.  Probably always lead
-this.
-
-Look for other cases where we were too harsh in permitting plays.
-
-8/1773: Leading the 7 is conceivable(?), but the 8?
-Actually with the stiff queen, shouldn't we just lead it?
 
 When unranked
 .............
@@ -171,14 +134,21 @@ Play eliminations, based on KJ975 missing AQT8xx, so
 whenever partner is void:
 
 * In fourth hand where LHO is void, always win cheaply or play lowest
-  if you can't win
+  if you can't win [already in setPlaysLeadWithVoid]
 * In second hand when RHO will show up as void, ditto
+  [Would go in setPlaysLeadWithoutVoid]
+  Before registering the void play, check that either
+  lho is the lowest lho rank below toBeat (which we'd need to track), or
+  lho is the first lho rank above toBeat
+
+* In WithVoid, should RHO ever duck?
 
 Also when we have AQT8 / 64 missing KJ9753, we know that 64 are lower
 and shorter than all North cards, so their ranks can't matter.
 - Can simplify manually: AQT8 / 64 missing KJ9753.  We can never
   take a rank trick < 8. |S| <= |N|.  Max S <= Max N.  But this only
   gets some of the tough ones.
+  - Is this already implemented?
 
 * Actual optimizations that are probably missing today
 - With AQ / - missing KJ, on Ace never drop King (partner will show

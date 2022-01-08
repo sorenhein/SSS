@@ -54,10 +54,29 @@ class Ranks
 
     bool makeTrivial(Result& trivial) const;
 
+    bool sideOKRanked(
+      const Declarer& leader,
+      const Declarer& partner) const;
+
+    bool sideOKUnranked(
+      const Declarer& leader,
+      const Declarer& partner,
+      const Play& play) const;
+
     bool sideOK(
       const Declarer& leader,
       const Declarer& partner,
       const Play& play) const;
+
+    bool leadOKRanked(
+      const Declarer& leader,
+      const Declarer& partner,
+      Card const * leadPtr) const;
+
+    bool leadOKUnranked(
+      const Declarer& leader,
+      const Declarer& partner,
+      const unsigned char lead) const;
 
     bool leadOK(
       const Declarer& leader,

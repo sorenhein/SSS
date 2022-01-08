@@ -275,6 +275,68 @@ bool Ranks::makeTrivial(Result& trivial) const
 }
 
 
+bool Ranks::sideOKRanked(
+  const Declarer& leader,
+  const Declarer& partner) const
+{
+  if (partner.isSingleRun())
+  {
+    if (! leader.isSingleRun())
+    {
+      // Always lead the only "singleton" (maybe not highest card).
+      return false;
+    }
+    else if (partner.minAbsNumber() > leader.minAbsNumber())
+    {
+      // Lead the higher "singleton" (maybe not highest card).
+     return false;
+    }
+  }
+
+  // Don't lead a card that's higher than partner's best one.
+  if (! leader.isSingleRun())
+  {
+    if (leader.minAbsNumber() > partner.maxAbsNumber())
+      return false;
+  }
+
+  return true;
+}
+
+
+bool Ranks::sideOKUnranked(
+  const Declarer& leader,
+  const Declarer& partner,
+  const Play& play) const
+{
+  if (partner.isSingleRanked())
+  {
+    // Always lead the single rank.
+    if (! leader.isSingleRanked())
+      return false;
+    // If both have single ranks, lead the higher one.
+    else if (leader.maxFullRank() < partner.maxFullRank())
+      return false;
+    // If they're the same, lead from North.
+    if (leader.maxFullRank() == partner.maxFullRank() && 
+        play.side == SIDE_SOUTH)
+    {
+      // Pick North in case of apparent symmetry.
+      return false;
+    }
+  }
+
+  // Don't lead a card that's higher than partner's best one.
+  if (! leader.isSingleRanked())
+  {
+    if (leader.minFullRank() >= partner.maxFullRank())
+      return false;
+  }
+
+  return true;
+}
+
+
 bool Ranks::sideOK(
   const Declarer& leader,
   const Declarer& partner,
@@ -282,63 +344,57 @@ bool Ranks::sideOK(
 {
   if (leader.isVoid())
     return false;
-
-  if (partner.isVoid())
+  else if (partner.isVoid())
     return true;
+  else if (control.runRankComparisons())
+    return Ranks::sideOKRanked(leader, partner);
+  else
+    return Ranks::sideOKUnranked(leader, partner, play);
+}
 
-  if (control.runRankComparisons())
+
+bool Ranks::leadOKRanked(
+  const Declarer& leader,
+  const Declarer& partner,
+  Card const * leadPtr) const
+{
+  // Both sides have 2+ ranks.  
+  const unsigned char leadAbsNumber = leadPtr->getAbsNumber();
+  if (leadAbsNumber < partner.minAbsNumber() &&
+      leadAbsNumber > leader.minAbsNumber())
   {
-    if (partner.isSingleRun())
-    {
-      if (! leader.isSingleRun())
-      {
-        // Always lead the only "singleton" (maybe not highest card).
-        return false;
-      }
-      else if (partner.minAbsNumber() > leader.minAbsNumber())
-      {
-        // Lead the higher "singleton" (maybe not highest card).
-       return false;
-      }
-    }
-
-    // Don't lead a card that's higher than partner's best one.
-    if (! leader.isSingleRun())
-    {
-      if (leader.minAbsNumber() > partner.maxAbsNumber())
-        return false;
-    }
-
-    return true;
+    // If leader's lowest number is enough, lead lowest.
+    return false;
+  }
+  else if (leadAbsNumber > partner.maxAbsNumber())
+  {
+    // Again, don't lead a too-high card.
+    return false;
   }
   else
+    return true;
+}
+
+
+bool Ranks::leadOKUnranked(
+  const Declarer& leader,
+  const Declarer& partner,
+  const unsigned char lead) const
+{
+  // Both sides have 2+ ranks.  
+  if (lead <= partner.minFullRank() && 
+    lead > leader.minFullRank())
   {
-    if (partner.isSingleRanked())
-    {
-      // Always lead the single rank.
-      if (! leader.isSingleRanked())
-        return false;
-      // If both have single ranks, lead the higher one.
-      else if (leader.maxFullRank() < partner.maxFullRank())
-        return false;
-      // If they're the same, lead from North.
-      if (leader.maxFullRank() == partner.maxFullRank() && 
-          play.side == SIDE_SOUTH)
-      {
-        // Pick North in case of apparent symmetry.
-        return false;
-      }
-    }
-
-    // Don't lead a card that's higher than partner's best one.
-    if (! leader.isSingleRanked())
-    {
-      if (leader.minFullRank() >= partner.maxFullRank())
-        return false;
-    }
+    // If partner's lowest rank is at least as high, lead lowest.
+    return false;
   }
-
-  return true;
+  else if (lead >= partner.maxFullRank())
+  {
+    // Again, don't lead a too-high card.
+    return false;
+  }
+  else
+    return true;
 }
 
 
@@ -354,43 +410,18 @@ bool Ranks::leadOK(
     // If we have the top rank opposite a void, always play it.
     if (leader.maxFullRank() == maxGlobalRank && lead < maxGlobalRank)
       return false;
-  }
-  else if (! leader.isSingleRanked())
-  {
-    if (control.runRankComparisons())
-    {
-      // Both sides have 2+ ranks.  
-      const unsigned char leadAbsNumber = leadPtr->getAbsNumber();
-      if (leadAbsNumber < partner.minAbsNumber() &&
-          leadAbsNumber > leader.minAbsNumber())
-      {
-        // If leader's lowest number is enough, lead lowest.
-        // TODO Try turning back on.  Must not change anything"
-        return false;
-      }
-      else if (leadAbsNumber > partner.maxAbsNumber())
-      {
-        // Again, don't lead a too-high card.
-        return false;
-      }
-    }
     else
-    {
-      // Both sides have 2+ ranks.  
-      if (lead <= partner.minFullRank() && 
-        lead > leader.minFullRank())
-      {
-        // If partner's lowest rank is at least as high, lead lowest.
-        return false;
-      }
-      else if (lead >= partner.maxFullRank())
-      {
-        // Again, don't lead a too-high card.
-        return false;
-      }
-    }
+      return true;
   }
-  return true;
+  else if (leader.isSingleRanked())
+  {
+    // We already did all we could in sideOK.
+    return true;
+  }
+  else if (control.runRankComparisons())
+    return Ranks::leadOKRanked(leader, partner, leadPtr);
+  else
+    return Ranks::leadOKUnranked(leader, partner, lead);
 }
 
 
@@ -418,13 +449,10 @@ bool Ranks::pardOK(
       partner.maxFullRank() > toBeat)
     return false;
 
+  // Play the lowest of irrelevant cards.
   if (control.runRankComparisons())
-  {
     return (pardPtr->getAbsNumber() == partner.minAbsNumber());
-    // return true;
-  }
   else
-    // Play the lowest of irrelevant cards.
     return (pard == partner.minFullRank());
 }
 
