@@ -587,7 +587,7 @@ void Ranks::finish(Play& play) const
 }
 
 
-void Ranks::setPlaysLeadWithVoid(
+void Ranks::setPlaysLeadLHOVoid(
   Declarer& leader,
   Declarer& partner,
   const unsigned char lead,
@@ -635,7 +635,65 @@ void Ranks::setPlaysLeadWithVoid(
 }
 
 
-void Ranks::setPlaysLeadWithoutVoid(
+void Ranks::setPlaysLeadPartnerVoidLHONotVoid(
+  Declarer& leader,
+  Declarer& partner,
+  const unsigned char lead,
+  Play& play,
+  Plays& plays)
+{
+  for (auto& lhoPtr: opps.getCards())
+  {
+    play.lhoPtr = lhoPtr;
+    const unsigned char lho = lhoPtr->getRank();
+    opps.playRank(lho);
+
+    for (auto& pardPtr: partner.getCards(control.runRankComparisons()))
+    {
+      play.pardPtr = pardPtr;
+      const unsigned char pard = pardPtr->getRank();
+      if (! Ranks::pardOK(partner, pardPtr, max(lead, lho), pard))
+        continue;
+
+      play.pardCollapse = partner.playRank(pard, leader, maxGlobalRank);
+
+      // As LHO is not void, RHO may show out.  We do this separately,
+      // as it is more convenient to store the plays in Player this way.
+      // We don't need to "play" the void, as it does not affect
+      // the holdings.
+
+      // Register the void play.
+      play.rhoPtr = opps.voidPtr();
+      Ranks::finish(play);
+      plays.log(play);
+      
+      // This loop excludes the RHO void.
+      for (auto& rhoPtr: opps.getCards())
+      {
+        play.rhoPtr = rhoPtr;
+        const unsigned char rho = rhoPtr->getRank();
+
+        // Maybe the same single card has been played already.
+        if (! opps.hasRank(rho))
+          continue;
+          
+        opps.playRank(rho);
+
+        // Register the new play.
+        Ranks::finish(play);
+        plays.log(play);
+      
+        opps.restoreRank(rho);
+      }
+
+      partner.restoreRank(pard);
+    }
+    opps.restoreRank(lho);
+  }
+}
+
+
+void Ranks::setPlaysLeadPartnerNotVoidLHONotVoid(
   Declarer& leader,
   Declarer& partner,
   const unsigned char lead,
@@ -714,9 +772,14 @@ void Ranks::setPlaysSide(
     play.leadCollapse = leader.playRank(lead, partner, maxGlobalRank);
 
     // For optimization we treat the case separately where LHO is void.
-    Ranks::setPlaysLeadWithVoid(leader, partner, lead, play, plays);
+    Ranks::setPlaysLeadLHOVoid(leader, partner, lead, play, plays);
 
-    Ranks::setPlaysLeadWithoutVoid(leader, partner, lead, play, plays);
+    if (partner.isVoid())
+      Ranks::setPlaysLeadPartnerVoidLHONotVoid(
+        leader, partner, lead, play, plays);
+    else
+      Ranks::setPlaysLeadPartnerNotVoidLHONotVoid(
+        leader, partner, lead, play, plays);
 
     leader.restoreRank(lead);
   }

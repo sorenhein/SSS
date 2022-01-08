@@ -98,14 +98,21 @@ class Ranks
 
     void finish(Play& play) const;
 
-    void setPlaysLeadWithVoid(
+    void setPlaysLeadLHOVoid(
       Declarer& leader,
       Declarer& partner,
       const unsigned char lead,
       Play& play,
       Plays& plays);
 
-    void setPlaysLeadWithoutVoid(
+    void setPlaysLeadPartnerVoidLHONotVoid(
+      Declarer& leader,
+      Declarer& partner,
+      const unsigned char lead,
+      Play& play,
+      Plays& plays);
+
+    void setPlaysLeadPartnerNotVoidLHONotVoid(
       Declarer& leader,
       Declarer& partner,
       const unsigned char lead,
