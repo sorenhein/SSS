@@ -15,7 +15,7 @@ CombTest errors
 ---------------
 
 WARN-NONMIN      225    happens in fixMinimals
-MISMATCH        2315
+MISMATCH        3063
 
 Other checks not implemented yet
 --------------------------------
@@ -27,6 +27,51 @@ Other checks not implemented yet
 
 Ideas against errors
 --------------------
+
+I'm beginning to think that the only way to fix the rank stuff is to
+do all calculations up to the last step of a trick using only complete
+dominances, i.e. tricks do not count more than ranks.
+
+Then in the end we can think of:
+- Making small cards irrelevant
+- Consolidating also on tricks alone
+
+Indirect influence
+..................
+
+It would be nice if all WARN cases lead to the same kind of MISMATCH.
+But four of them (up to 11 cards) don't lead to a mismatch at all.
+They're all in a way the same.
+
+11/53816, AJ6 / T875
+7 strategies, of which 4 use T, 2 use 6 and 1 uses 7.
+When we drop the 5 (11/53818, AJ6 / T874), it's the same.
+
+When we drop the 6 (11/53830, AJ5 / T874), we'd expect the same.
+But we only get 5 strategies now.
+
+In 11/53816, it is possible to derive a strategy from the start T9J,
+leaving A6 / 875.  If it loses to an honor (d=8, H94/H), we can still
+finesse with the 87 without the 6.
+
+Against d=11 (KQ94/void) after this start, we have A6 / 875 missing KQ4.
+Here we can take 3 tricks using the six.  So the strategy survives,
+as it takes the same number of tricks as others.
+
+Later on we find that West can cover, THA leaving J6 / 874 missing
+H95.  Here we only take 2 tricks leading to the jack; West hops up
+and later scores the 9.
+
+So the strategy "forgets" that it needed the 6 for something.
+
+In 11/53830, if we start T9J leaving A5 / 874, we also get 3 tricks
+using the 7 against d=8.  But against d=11 we are left with
+A5 / 874 missing KQ6, and now we can only take 2 tricks.  So the
+strategy is eliminated completely, as it takes fewer tricks even
+though it might have a USP in terms of ranks somewhere.
+
+So it's similar to the premature eliminations below.
+
 
 Grosvenor gambit
 ................

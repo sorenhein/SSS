@@ -809,7 +809,7 @@ bool Ranks::getMinimals(
   if (cards <= 2)
   {
     // Always minimal.
-    return true;
+    ownFlag = true;
   }
   else if (resultList.empty())
   {
@@ -823,7 +823,8 @@ bool Ranks::getMinimals(
 
   centry.consolidateMinimals();
 
-  if (ownFlag && ! centry.minimalsEmpty())
+  // if (ownFlag && ! centry.minimalsEmpty())
+  if (ownFlag)
     centry.addMinimalSelf();
 
   if (control.outputHolding())

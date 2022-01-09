@@ -106,20 +106,36 @@ bool CombEntry::fixMinimals(const vector<CombEntry>& centries)
   bool changeFlag = false;
   auto iter = minimals.begin();
  
+/*
+if (reference.getHolding3() == 53816)
+{
+  cout << "Doing 53816\n";
+  cout << CombEntry::str();
+}
+*/
   while (iter != minimals.end())
   {
     const CombEntry& centry = centries[iter->getHolding3()];
 
     if (centry.isMinimal())
+{
+// if (reference.getHolding3() == 53816)
+  // cout << "minimal is indeed minimal\n";
       iter++;
+}
     else if (iter->getHolding3() == 
         centry.minimals.front().getHolding3())
     {
+// if (reference.getHolding3() == 53816)
+  // cout << "minimal is a partial self-reference\n";
+
       // Is a partial self-reference, so we already have its minimals.
       iter++;
     }
     else
     {
+// if (reference.getHolding3() == 53816)
+  // cout << "supposed minimal is not minimal\n";
       // Erase the non-minimal one and add the ones it points to.
       // Take into account the rotation flag -- we want the product
       // of all rotations to be the really minimal holding.

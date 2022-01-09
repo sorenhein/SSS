@@ -27,9 +27,7 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
   {
     for (auto& min: centries[holding])
     {
-      const unsigned h3 = min.getHolding3();
-
-      if (! centries[h3].isMinimal())
+      if (! centries[min.getHolding3()].isMinimal())
       {
         cout << "ERROR: holding " << holding << " uses non-minimals\n";
         break;
@@ -99,6 +97,17 @@ void CombTest::checkReductions(
     cout << stratsCumul.str("Cumulative", true);
   }
 
+/*
+if (centry.getHolding3() == 2072)
+{
+    cout << "DEBUG: " << centry.strHolding() << endl;
+    cout << centry.str();
+    cout << strategies.str("strategies", true);
+    cout << "maxRank " << +maxRank << "\n\n";
+    cout << stratsCumul.str("Cumulative", true);
+}
+*/
+
 
   // TODO Checks:
   // If our strategies has N"S and NS", we also expect N'S' to exist,
@@ -116,7 +125,8 @@ void CombTest::checkAllReductions(
   {
     // Only look at non-minimal combinations.
     const CombEntry& centry = centries[holding];
-    if (! centry.isReference() || centry.isMinimal())
+    // if (! centry.isReference() || centry.isMinimal())
+    if (! centry.isReference())
       continue;
 
     const Combination& comb = uniqs[centry.getIndex()];

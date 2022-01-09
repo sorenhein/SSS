@@ -299,6 +299,7 @@ histoPlay[plays.size()]++;
     else
     {
       centry.setIndex(centries[referenceHolding3].getIndex());
+      centry.setReference(false);
       countNonreference[cards]++;
     }
   }
@@ -603,11 +604,6 @@ void Combinations::fixMinimals(vector<CombEntry>& centries)
 {
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-    // Only look at non-minimal combinations.
-    // const CombEntry& centry = centries[holding];
-    // if (centry.isMinimal())
-      // continue;
-
     if (! centries[holding].fixMinimals(centries))
     {
       cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
