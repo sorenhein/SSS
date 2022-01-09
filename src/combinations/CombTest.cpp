@@ -25,11 +25,11 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
   for (unsigned holding = 0; holding < centries.size(); holding++)
   {
-    // for (auto& min: centries[holding].minimals)
     for (auto& min: centries[holding])
     {
-      // TODO Should be only if completely non-minimal
-      if (! centries[min.getHolding3()].isMinimal())
+      const unsigned h3 = min.getHolding3();
+
+      if (! centries[h3].isMinimal())
       {
         cout << "ERROR: holding " << holding << " uses non-minimals\n";
         break;
@@ -92,7 +92,7 @@ void CombTest::checkReductions(
 
   if (! (stratsCumul == strategies))
   {
-    cout << "Checking: " << centry.strHolding() << endl;
+    cout << "MISMATCH: " << centry.strHolding() << endl;
     cout << centry.str();
     cout << strategies.str("strategies", true);
     cout << "maxRank " << +maxRank << "\n\n";

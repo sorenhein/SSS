@@ -21,7 +21,7 @@ while (my $line = <$fh>)
 
     while (1)
     {
-      last unless $line = <$fh>;
+      last unless defined($line = <$fh>);
       last if $line =~ /^Result/;
     }
 

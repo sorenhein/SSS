@@ -14,11 +14,10 @@ Play average 94.54
 CombTest errors
 ---------------
 
-WARN-NONMIN       72
-ERROR           2139
+WARN-NONMIN      193    happens in fixMinimals
+ERROR             32    happens in checkMinimals
 
-MINIMUM MATCH 122981
-MISMATCH        2968
+MISMATCH        2315
 
 Other checks not implemented yet
 --------------------------------
@@ -30,6 +29,42 @@ Other checks not implemented yet
 
 Ideas against errors
 --------------------
+
+Grosvenor gambit
+................
+9/2076, AK6 / T9
+From d = 4 (Hx / Hx), defenders may drop HH on the 9.  Then it looks
+like 5/51, AT / K missing QJ, where there is only one solution for
+all distributions, 2/AK which translates into the ten.
+
+The defense would never do this from d = 2 (H / Hxx), as it would show
+up when we lead the T, so then it would just cost a trick.
+
+From d = 6 (Hxx / H) it would cost a trick if declarer plays for it.
+But that possibility is not easily eliminated early on.  When the
+defense multiplies 9x and 9H, it will always go for 9x with d = 6.
+
+But even if declarer figured this out, he would still end up in
+5/51, this time "knowing" that the central distribution (x/x) is the
+only one.  Unfortunately the strategies has 2/AK because cashing the
+ace has the result profile 1/A, 2/A, 1/A which lost out to
+2/AK, 2/AK, 2/AK due to fewer tricks.
+
+9/2076 refers to 9/2098, AK7 / T6 which only ever uses the king.
+The same thing could and does happen here if declarer leads the 6:
+The defense may crash the honors.  But declarer can also lead the ten,
+sacricifing the card!  Now there is nothing to crash.  Declarer can
+get the ten out of the way here and not in 9/2076.
+
+So 9/2098 refers to 9/2164, AK8 / 76 which also uses only the king.
+
+We can in principle keep strategies such as 1A 2A 1A vs 2AK 2AK 2AK
+alive within a trick, but it is very unappealing to do this across
+tricks.
+
+So maybe we recognize when the parent has a worse profile than a
+minimal, and we count (and fix?) these.
+
 
 Premature reduction
 ...................
@@ -55,6 +90,9 @@ the jack would presumably be minimal as well.
 The only solution seems to be not to reduce before the += step.
 How much time and memory does this cost?
 
+Update: Now that we don't lead the jack, it can't happen anymore.
+
+
 Premature consolidation
 .......................
 
@@ -74,6 +112,9 @@ This probably costs memory and time.  I think I will wait with this
 until I've done some other optimizations.  Or actually, only
 consolidate away strategy's that are completely dominated, i.e.
 every result is <=.
+
+How it shows up: In 7/1595 there are 2 strategies, in the combination
+of the two "minimals" only 1 (the same).  There should be 2.
 
 Rare products
 .............
@@ -122,9 +163,11 @@ else if (tricks < result.tricks)
   }
 }
 
+How it shows up: 3 strategies in 1799, 2 in the only minimal (1799).
+In this case the third one shouldn't actually exist.
+
 Overall partitioning
 --------------------
-* Has at least one reference to self -> minimal
 
 * Can characterize solved, ranked combinations as canonical or not,
   and minimal or not (bit vector of bools?)
@@ -148,9 +191,21 @@ Symmetrization
   when South has a single card, e.g. 11/132887, KJ95 / 7 missing AQT864.
   Maybe it's OK to limit next strategies to symmetric ones, too,
   when South becomes void and there are a lot of next strategies.
+  1606 strategies here.
 
-* Symmetrize 11 / 132902, KJ96 / void: From 132,902 to 166 strategies.
-  Less than half the square root.
+* Symmetrize 11 / 132902, KJ96 / void: From ~ 9619 to 166 strategies.
+  Similar to the square root.
+
+* Actually, maybe the way to cut down is to gradually bump up
+  the critical rank and eliminate strategies from below, until we
+  arrive at a reasonable range?  And check that the eliminated ones
+  are covered by trick vectors when we later forget about ranks?
+
+  Like a rolling pruning?  Once cards == 10 are done, go over and
+  turn some holdings into references to other because there are
+  too many strategies.  So this is a new type, not minimal/
+  canonical/oriented, but simplified from one rank to another.
+  Just note its own rank, because the referred one also has a rank.
 
 
 Optimizations
@@ -253,6 +308,25 @@ Semantics, verbal descriptions
 * Verbal description of NS strategy
   - Minterms?
 
+8/1110, A97 / KQJ8
+Take all 4 tricks
+
+9/5084, AQ8 / -
+Always take at least 1 trick
+Take 2 tricks when the kind is at most doubleton
+
+10/15195, AQ5 / 986
+Take 2+ tricks if the suit splits 2-2 or the king is onside.
+Take 3 tricks if both conditions apply.
+
+Take 2 tricks if West has 2+ cards of the singleton kig.
+
+Take 2 tricks if West has the king of jack-ten.
+Take 3 tricks if West has KH.
+
+11/40890, AQJ984 / 65
+Take all 6 tricks if the king is onside.
+Singleton.
 
 Bugs
 ----

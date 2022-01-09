@@ -829,7 +829,9 @@ bool Ranks::getMinimals(
   if (control.outputHolding())
     cout << centry.strMinimals();
 
-  return centry.minimalsEmpty();
+  // The combination is only non-minimal if its minimals (1+)
+  // are all different from itself.
+  return (ownFlag || centry.minimalsEmpty());
 }
 
 
