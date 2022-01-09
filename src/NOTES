@@ -14,9 +14,7 @@ Play average 94.54
 CombTest errors
 ---------------
 
-WARN-NONMIN      193    happens in fixMinimals
-ERROR             32    happens in checkMinimals
-
+WARN-NONMIN      225    happens in fixMinimals
 MISMATCH        2315
 
 Other checks not implemented yet

@@ -47,7 +47,7 @@ class CombEntry
 
     void reset();
 
-    void setReference(
+    void setReferenceHolding(
       const unsigned holding3In,
       const unsigned holding2In,
       const bool rotateFlagIn);

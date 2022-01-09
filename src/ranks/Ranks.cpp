@@ -187,7 +187,7 @@ void Ranks::setReference(CombEntry& centry) const
 
     rankedBoth(rotateFlag, cards, holding4, holding3Ref, holding2Ref);
     
-    centry.setReference(holding3Ref, holding2Ref, rotateFlag);
+    centry.setReferenceHolding(holding3Ref, holding2Ref, rotateFlag);
   }
   else
   {
@@ -205,7 +205,7 @@ void Ranks::setReference(CombEntry& centry) const
       canonicalBoth(north, south, opps, maxGlobalRank,
         holding3Ref, holding2Ref);
     }
-    centry.setReference(holding3Ref, holding2Ref, rotateFlag);
+    centry.setReferenceHolding(holding3Ref, holding2Ref, rotateFlag);
   }
 }
 

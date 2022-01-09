@@ -33,7 +33,7 @@ void CombEntry::reset()
 }
 
 
-void CombEntry::setReference(
+void CombEntry::setReferenceHolding(
   const unsigned holding3In,
   const unsigned holding2In,
   const bool rotateFlagIn)
