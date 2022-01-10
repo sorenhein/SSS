@@ -1,3 +1,55 @@
+2022-01-09
+==========
+
+THOUGHTS ON PARTITIONING
+
+If we solve the holdings backward (2^n-1 .. 0) for a given number of cards,
+presumably we will always solve the minimals before the non-minimals.
+
+Four criteria to consider:
+
+1. Ordered: North has the highest of the NS cards (or both NS are void).
+
+2. Canonical: North has the >= highest count of each rank among NS down 
+   to the first one where it makes a difference.  So always ordered.
+   If there are any irrelevant low cards, then these are ordered
+   within ranks, but there may be irrelevant ranks.
+
+3. Minimal: Canonically ordered.  Needs itself for at least one strategy.  
+   Everything below the corresponding rank is ordered.
+
+Later on we will only solve canonicals for the user, so there is little
+point (other than pride) in solving non-canonicals for ranks.
+
+I think we cannot reach a non-canonical from a canonical one.  We might
+get a rotation, but that doesn't alter the fact.
+
+We wouldn't solve a non-minimal canonical for the user.  But a minimal
+canonical might need a non-minimal canonical, I think.  Or not?
+
+We can solve everything up to <= 9 cards and keep it, even if there are
+quite a few strategies.
+
+For 10+ cards, once we've solved a combination we can store the salient
+parameters that we need for later, and then forget the whole
+combination.
+
+For 10 cards, we can only reach a combination if South is void (from
+13 cards if South was already void).  So we can keep this.
+
+For a 13-card combination that needs a very large number of strategies,
+as long as we can calculate it:  We can look at the number of 
+strategies if we cut off ranks ever higher, and stop when the number
+of trick-distinct strategies is small enough that we're willing to
+solve for it.  Then it's a reference to that strategy.
+
+For exactly 10 cards with a South void, we might hamper 13-carders
+by limiting the number of strategies that way.  Or not?
+
+If we only rank-solve canonicals, presumably we have fewer rank
+problems and fewer ranked strategies as well.  So testing might be
+more benign?
+
 2022-01-07
 ==========
 
@@ -299,6 +351,37 @@ Non-batch one-shots
      turned on or not, debugging/checks on/off
   d. Could switch to the minimal one (or one of them) and only
      solve this
+
+Current flow:
+* Precalculate all distributions
+* Loop over holdings
+  - If should be solved, call comb.strategize with
+    Combinations, Distributions, Ranks, Plays
+    - Look up our own distribution
+    - Set Plays using Ranks
+    - Set combination pointers using plays
+    - Strategize
+  - Store in Combinations
+
+Ideas:
+* In a first stage, still precalculate all distributions
+* Make a list of combinations to calculate: The one we want
+* And another list of ones we're sure we'll do: Empty
+* Do
+  - Go through the first list
+    - Make h3 and h2 using a Ranks
+    - Make plays using Ranks
+    - Move the holding to the finished list
+    - Add the new combinations to the first list
+      - Don't create duplicates
+      - Can also keep track of h2 even though not useful yet
+      - Later on, maybe also precalculate only the right h2's in Dists
+      - Keep them sorted
+      - For each #cards separately
+  - Until the first list is empty
+* Then solve from the smallest ones up to the one we want
+  - Maybe say how many and which ones
+  - When solving the target combination, output debugging data
 
 Ranks stored in tables
 ----------------------
