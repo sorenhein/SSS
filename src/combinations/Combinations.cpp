@@ -181,6 +181,7 @@ void Combinations::runSingle(
 
   while (true)
   {
+    bool doneFlag = true;
     for (unsigned c = 0; c <= cards; c++)
     {
       for (auto& solve: (* scratchptr1)[c])
@@ -223,19 +224,10 @@ void Combinations::runSingle(
         {
           plays.addHoldings(* scratchptr2);
           finished[c].insert(solve);
+          doneFlag = false;
         }
       }
 
-    }
-
-    bool doneFlag = true;
-    for (unsigned c = 0; c <= cards; c++)
-    {
-      if (! (* scratchptr2)[c].empty())
-      {
-        doneFlag = false;
-        break;
-      }
     }
 
     if (doneFlag)
