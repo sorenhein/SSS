@@ -159,6 +159,10 @@ void Combinations::runSingle(
   const unsigned holding,
   const Distributions& distributions)
 {
+  // This is like a method getDependencies3().
+  // Then there is one to run the dependencies.
+  // In principle, the same for distributions?
+
   assert(cards < combEntries.size());
 
   Ranks ranks;
@@ -170,12 +174,8 @@ void Combinations::runSingle(
   scratch1.resize(cards+1);
   scratch2.resize(cards+1);
 
-  // We add later plays from scratchptr1 entries to scratchptr2,
-  // and vice versa.  The actual data lives in scratch1 and scratch2.
-
+  // We add later plays from scratch1 entries to scratch2.
   scratch1[cards].insert(holding);
-  auto scratchptr1 = &scratch1;
-  auto scratchptr2 = &scratch2;
 
   unsigned uniqueIndex = 0;
 
@@ -184,7 +184,7 @@ void Combinations::runSingle(
     bool doneFlag = true;
     for (unsigned c = 0; c <= cards; c++)
     {
-      for (auto& solve: (* scratchptr1)[c])
+      for (auto& solve: scratch1[c])
       {
         CombEntry& centry = combEntries[c][solve];
         if (centry.isReference() || finished[c].count(solve))
@@ -222,7 +222,7 @@ void Combinations::runSingle(
         }
         else
         {
-          plays.addHoldings(* scratchptr2);
+          plays.addHoldings(scratch2);
           finished[c].insert(solve);
           doneFlag = false;
         }
@@ -234,14 +234,12 @@ void Combinations::runSingle(
       break;
 
     for (unsigned c = 0; c <= cards; c++)
-      (* scratchptr1)[c].clear();
+      scratch1[c].clear();
 
-    auto tmp = scratchptr1;
-    scratchptr1 = scratchptr2;
-    scratchptr2 = tmp;
+    swap(scratch1, scratch2);
   }
 
-  Combinations::dumpVS("sw finished", cards, finished);
+  Combinations::dumpVS("finished", cards, finished);
 }
 
 
