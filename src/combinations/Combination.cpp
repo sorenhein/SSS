@@ -57,11 +57,12 @@ unsigned char Combination::getMaxRank() const
 
 void Combination::setTrivial(
   const Result& entry,
-  const unsigned char count)
+  const unsigned char count,
+  const bool debugFlag)
 {
   strats.setTrivial(entry, count);
 
-  if (control.outputBasicResults())
+  if (debugFlag && control.outputBasicResults())
     cout << strats.str("Trivial result", 
       control.runRankComparisons()) << "\n";
 }
@@ -115,7 +116,7 @@ const Strategies& Combination::strategize(
   {
     // Fill out a single constant strategy with the right value and size.
     Combination::setTrivial(trivialEntry, 
-      static_cast<unsigned char>(distPtr->size()));
+      static_cast<unsigned char>(distPtr->size()), true);
 
     /*
     strats.setTrivial(trivialEntry, 

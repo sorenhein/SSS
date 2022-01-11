@@ -46,7 +46,8 @@ class Combination
 
     void setTrivial(
       const Result& entry,
-      const unsigned char count);
+      const unsigned char count,
+      const bool debugFlag = false);
 
     const Strategies& strategize(
       const CombEntry& centry,

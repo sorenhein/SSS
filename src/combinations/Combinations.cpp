@@ -159,8 +159,7 @@ void Combinations::runSingle(
   const unsigned holding,
   const Distributions& distributions)
 {
-  // This is like a method getDependencies3().
-  // Then there is one to run the dependencies.
+  // Split into getDependencies8) and runDependencies3().
   // In principle, the same for distributions?
 
   assert(cards < combEntries.size());
@@ -239,10 +238,37 @@ void Combinations::runSingle(
     swap(scratch1, scratch2);
   }
 
-  Combinations::dumpVS("finished", cards, finished);
+  for (unsigned c = 0; c <= cards; c++)
+  {
+    for (auto& solve: finished[c])
+    {
+      CombEntry& centry = combEntries[c][solve];
+
+      vector<Combination>& uniqs = uniques[c];
+
+      assert(uniqueIndex < uniqs.size());
+      centry.setIndex(uniqueIndex);
+      Combination& comb = uniqs[uniqueIndex];
+      uniqueIndex++;
+
+      comb.setMaxRank(ranks.maxRank());
+
+      ranks.resize(c);
+      ranks.setRanks(solve, centry);
+
+      plays.clear();
+      Result trivialEntry;
+      const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+
+      bool debugFlag = (c == cards && holding == solve);
+      comb.strategize(centry, * this, distributions, ranks, plays,
+        debugFlag);
+    }
+  }
 }
 
 
+/*
 void Combinations::runSpecific(
   const unsigned cards,
   const unsigned holding,
@@ -305,6 +331,7 @@ void Combinations::runSpecificVoid(
   Combination comb;
   comb.strategizeVoid(centry, * this, distributions, ranks, plays, true);
 }
+*/
 
 
 bool Combinations::getMinimals(

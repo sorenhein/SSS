@@ -101,6 +101,7 @@ class Combinations
       const unsigned holding,
       const Distributions& distributions);
 
+    /*
     void runSpecific(
       const unsigned cards,
       const unsigned holding,
@@ -110,6 +111,7 @@ class Combinations
       const unsigned cards,
       const unsigned holding,
       const Distributions& distributions);
+      */
 
     void runUniques(
       const unsigned cards,

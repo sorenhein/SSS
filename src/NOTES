@@ -344,44 +344,8 @@ Optimizations
 Non-batch one-shots
 -------------------
 
-* Go from only batch to solving a single distribution from scratch
-  a. Basic idea is to make a list of the nodes you'll need
-  b. Then make these recursively before you solve this node
-  c. A lot of flags are the same, i.e. ranks or not, optimizations
-     turned on or not, debugging/checks on/off
-  d. Could switch to the minimal one (or one of them) and only
-     solve this
-
-Current flow:
-* Precalculate all distributions
-* Loop over holdings
-  - If should be solved, call comb.strategize with
-    Combinations, Distributions, Ranks, Plays
-    - Look up our own distribution
-    - Set Plays using Ranks
-    - Set combination pointers using plays
-    - Strategize
-  - Store in Combinations
-
-Ideas:
-* In a first stage, still precalculate all distributions
-* Make a list of combinations to calculate: The one we want
-* And another list of ones we're sure we'll do: Empty
-* Do
-  - Go through the first list
-    - Make h3 and h2 using a Ranks
-    - Make plays using Ranks
-    - Move the holding to the finished list
-    - Add the new combinations to the first list
-      - Don't create duplicates
-      - Can also keep track of h2 even though not useful yet
-      - Later on, maybe also precalculate only the right h2's in Dists
-      - Keep them sorted
-      - For each #cards separately
-  - Until the first list is empty
-* Then solve from the smallest ones up to the one we want
-  - Maybe say how many and which ones
-  - When solving the target combination, output debugging data
+Can maybe be optimized in time a bit.
+Can cut down on calculating all distributions.
 
 Ranks stored in tables
 ----------------------
