@@ -105,6 +105,13 @@ void Plays::setCombPtrs(const Combinations& combinations)
 }
 
 
+void Plays::addHoldings(vector<set<unsigned>>& holdings) const
+{
+  for (auto piter = plays.begin(); piter != nextPlaysIter; piter++)
+    holdings[piter->cardsLeft].insert(piter->holding3);
+}
+
+
 void Plays::getNextStrategies(
   Distribution const * distPtr,
   const DebugPlay debugFlag)

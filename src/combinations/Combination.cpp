@@ -55,6 +55,18 @@ unsigned char Combination::getMaxRank() const
 }
 
 
+void Combination::setTrivial(
+  const Result& entry,
+  const unsigned char count)
+{
+  strats.setTrivial(entry, count);
+
+  if (control.outputBasicResults())
+    cout << strats.str("Trivial result", 
+      control.runRankComparisons()) << "\n";
+}
+
+
 const Strategies& Combination::strategize(
   const CombEntry& centry,
   const Combinations& combinations,
@@ -84,7 +96,7 @@ const Strategies& Combination::strategize(
 
   if (control.holding() != 0 &&
       centry.getHolding3() == control.holding() &&
-      ranks.size () == control.holdingLength())
+      ranks.size() == control.holdingLength())
   {
     debugFlagTmp = static_cast<DebugPlay>(0x3f);
   }
@@ -102,12 +114,17 @@ const Strategies& Combination::strategize(
   if (ctype == COMB_CONSTANT)
   {
     // Fill out a single constant strategy with the right value and size.
+    Combination::setTrivial(trivialEntry, 
+      static_cast<unsigned char>(distPtr->size()));
+
+    /*
     strats.setTrivial(trivialEntry, 
       static_cast<unsigned char>(distPtr->size()));
 
     if (control.outputBasicResults())
       cout << strats.str("Trivial result", 
         control.runRankComparisons()) << "\n";
+        */
     return strats;
   }
 

@@ -62,17 +62,26 @@ int main(int argc, char * argv[])
 
   combinations.resize(control.cards());
 
-  // for (unsigned cards = 0; cards <= control.cards(); cards++)
-  for (unsigned cards = 0; cards <= 11; cards++)
+  if (control.holding() != 0)
   {
-    cout << "Cards " << setw(2) << right << cards << endl;
-
-    // combinations.runUniquesMT(cards, control.numThreads());
-    combinations.runUniques(cards, distributions);
+    combinations.runSingle(control.holdingLength(),
+      control.holding(),
+      distributions);
   }
+  else
+  {
+    // for (unsigned cards = 0; cards <= control.cards(); cards++)
+    for (unsigned cards = 0; cards <= 11; cards++)
+    {
+      cout << "Cards " << setw(2) << right << cards << endl;
 
-  cout << "\n";
-  cout << combinations.strUniques();
+      // combinations.runUniquesMT(cards, control.numThreads());
+      combinations.runUniques(cards, distributions);
+    }
+
+    cout << "\n";
+    cout << combinations.strUniques();
+  }
 
 
   // combinations.tmp(control.cards(), control.holding());

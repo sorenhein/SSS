@@ -10,6 +10,7 @@
 #define SSS_PLAYS_H
 
 #include <list>
+#include <set>
 #include <string>
 
 #include "Play.h"
@@ -72,6 +73,8 @@ class Plays
     void log(const Play& play);
 
     void setCombPtrs(const Combinations& combinations);
+
+    void addHoldings(vector<set<unsigned>>& holdings) const;
 
     const Strategies& strategize(
       Distribution const * distPtr,

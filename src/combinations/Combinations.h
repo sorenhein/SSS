@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <list>
+#include <set>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -62,6 +63,11 @@ class Combinations
     atomic<unsigned> counterHolding; // Holding
     atomic<unsigned> counterUnique; // Unique index
 
+    void dumpVS(
+      const string& title,
+      const unsigned cards,
+      const vector<set<unsigned>>& vs) const;
+
     bool getMinimals(
       const Strategies& strategies,
       const Ranks& ranks,
@@ -89,6 +95,11 @@ class Combinations
     void reset();
 
     void resize(const unsigned maxCardsIn);
+
+    void runSingle(
+      const unsigned cards,
+      const unsigned holding,
+      const Distributions& distributions);
 
     void runSpecific(
       const unsigned cards,

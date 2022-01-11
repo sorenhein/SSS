@@ -135,11 +135,130 @@ void Combinations::resize(const unsigned maxCardsIn)
 }
 
 
+#include <set>
+
+void Combinations::dumpVS(
+  const string& title,
+  const unsigned cards,
+  const vector<set<unsigned>>& vs) const
+{
+  cout << title << "\n";
+  for (unsigned c = 0; c <= cards; c++)
+  {
+    for (auto& solve: vs[c])
+    {
+      cout << setw(2) << c << setw(8) << solve << "\n";
+    }
+  }
+  cout << "\n";
+}
+
+
+void Combinations::runSingle(
+  const unsigned cards,
+  const unsigned holding,
+  const Distributions& distributions)
+{
+  assert(cards < combEntries.size());
+
+  Ranks ranks;
+  Plays plays;
+  plays.resize(cards);
+
+  vector<set<unsigned>> finished, scratch1, scratch2;
+  finished.resize(cards+1);
+  scratch1.resize(cards+1);
+  scratch2.resize(cards+1);
+
+  // We add later plays from scratchptr1 entries to scratchptr2,
+  // and vice versa.  The actual data lives in scratch1 and scratch2.
+
+  scratch1[cards].insert(holding);
+  auto scratchptr1 = &scratch1;
+  auto scratchptr2 = &scratch2;
+
+  unsigned uniqueIndex = 0;
+
+  while (true)
+  {
+    for (unsigned c = 0; c <= cards; c++)
+    {
+      for (auto& solve: (* scratchptr1)[c])
+      {
+        CombEntry& centry = combEntries[c][solve];
+        if (centry.isReference() || finished[c].count(solve))
+        {
+          // Already solved
+          continue;
+        }
+
+        ranks.resize(c);
+        ranks.setRanks(solve, centry);
+
+        plays.clear();
+        Result trivialEntry;
+        const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+
+        if (ctype == COMB_CONSTANT)
+        {
+          // If it's a trivial solution, solve it straight away.
+          vector<Combination>& uniqs = uniques[c];
+
+          assert(uniqueIndex < uniqs.size());
+          centry.setIndex(uniqueIndex);
+          Combination& comb = uniqs[uniqueIndex];
+          uniqueIndex++;
+
+          comb.setMaxRank(ranks.maxRank());
+
+          Distribution const * distPtr = distributions.ptrNoncanonical(
+            ranks.size(), centry.getHolding2());
+
+          comb.setTrivial(trivialEntry, 
+            static_cast<unsigned char>(distPtr->size()));
+          
+          centry.setReference();
+        }
+        else
+        {
+          plays.addHoldings(* scratchptr2);
+          finished[c].insert(solve);
+        }
+      }
+
+    }
+
+    bool doneFlag = true;
+    for (unsigned c = 0; c <= cards; c++)
+    {
+      if (! (* scratchptr2)[c].empty())
+      {
+        doneFlag = false;
+        break;
+      }
+    }
+
+    if (doneFlag)
+      break;
+
+    for (unsigned c = 0; c <= cards; c++)
+      (* scratchptr1)[c].clear();
+
+    auto tmp = scratchptr1;
+    scratchptr1 = scratchptr2;
+    scratchptr2 = tmp;
+  }
+
+  Combinations::dumpVS("sw finished", cards, finished);
+}
+
+
 void Combinations::runSpecific(
   const unsigned cards,
   const unsigned holding,
   const Distributions& distributions)
 {
+  // This and the next one are not used.
   assert(cards < combEntries.size());
 
   Ranks ranks;

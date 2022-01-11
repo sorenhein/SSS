@@ -44,6 +44,10 @@ class Combination
 
     unsigned char getMaxRank() const;
 
+    void setTrivial(
+      const Result& entry,
+      const unsigned char count);
+
     const Strategies& strategize(
       const CombEntry& centry,
       const Combinations& combinations,
