@@ -16,28 +16,9 @@
 
 #include "Combination.h"
 #include "CombMemory.h"
-#include "CombEntry.h"
 #include "CombTest.h"
 
 #include "../const.h"
-
-
-/*
-void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
-{
-  for (unsigned holding = 0; holding < centries.size(); holding++)
-  {
-    for (auto& min: centries[holding])
-    {
-      if (! centries[min.getHolding3()].isMinimal())
-      {
-        cout << "ERROR: holding " << holding << " uses non-minimals\n";
-        break;
-      }
-    }
-  }
-}
-*/
 
 
 void CombTest::checkAllMinimals(
@@ -60,8 +41,6 @@ void CombTest::checkAllMinimals(
 
 
 void CombTest::checkReductions(
-  // const vector<CombEntry>& centries,
-  // const vector<Combination>& uniqs,
   const unsigned cards,
   const CombMemory& combMemory,
   const CombEntry& centry,
@@ -71,14 +50,8 @@ void CombTest::checkReductions(
 {
   Strategies stratsCumul;
 
-  // for (auto& min: centry.minimals)
   for (auto& min: centry)
   {
-    // const auto& ceMin = centries[min.getHolding3()];
-    // const CombEntry& ceMin = combMemory.getEntry(cards, min.getHolding3());
-    // assert(ceMin.getIndex() < uniqs.size());
-    // const Combination& comb = uniqs[ceMin.getIndex()];
-    // const Combination& comb = combMemory.getComb(cards, ceMin.getIndex());
     const Combination& comb = combMemory.getComb(cards, min.getHolding3());
     Strategies stratsMin = comb.strategies();
 
@@ -145,33 +118,17 @@ if (centry.getHolding3() == 2072)
 void CombTest::checkAllReductions(
   const unsigned cards,
   const CombMemory& combMemory,
-  // const vector<CombEntry>& centries,
-  // const vector<Combination>& uniqs,
   const Distributions& distributions) const
 {
-  // for (unsigned holding = 0; holding < centries.size(); holding++)
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
-    // Only look at non-minimal combinations.
-    // const CombEntry& centry = centries[holding];
     const CombEntry& centry = combMemory.getEntry(cards, holding);
-    // if (! centry.isReference() || centry.isMinimal())
     if (! centry.isReference())
       continue;
 
-    // const Combination& comb = uniqs[centry.getIndex()];
     const Combination& comb = combMemory.getComb(cards, holding);
-/*
-cout << "Checking cards " << cards << ", " << holding << "\n";
-cout << "centry\n";
-cout << centry.str();
-cout << "comb\n";
-cout << comb.strategies().str("comb", true);
-*/
 
     CombTest::checkReductions(
-      // centries, 
-      // uniqs, 
       cards,
       combMemory,
       centry, 

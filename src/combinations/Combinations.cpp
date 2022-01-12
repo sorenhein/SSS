@@ -33,49 +33,6 @@ extern Timers timers;
 vector<Timer> timersStrat;
 
 
-// http://oeis.org/A051450
-const vector<unsigned> UNIQUE_COUNT = 
-{
-  1,       //  0
-  2,       //  1
-  5,       //  2
-  12,      //  3
-  30,      //  4
-  76,      //  5
-  195,     //  6
-  504,     //  7
-  1309,    //  8
-  3410,    //  9
-  8900,    // 10
-  23256,   // 11
-  60813,   // 12
-  159094,  // 13
-  416325,  // 14
-  1089648  // 15
-};
-
-// Just 3^n
-const vector<unsigned> NUM_HOLDINGS =
-{
-  1,       //  0
-  3,       //  1
-  9,       //  2
-  27,      //  3
-  81,      //  4
-  243,     //  5
-  729,     //  6
-  2187,    //  7
-  6561,    //  8
-  19683,   //  9
-  59049,   // 10
-  177147,  // 11
-  531441,  // 12
-  1594323, // 13
-  4782969, // 14
-  14348907 // 15
-};
-
-
 Combinations::Combinations()
 {
   Combinations::reset();
@@ -101,10 +58,6 @@ void Combinations::setTimerNames()
 
 void Combinations::reset()
 {
-  maxCards = 0;
-  // combEntries.clear();
-  // uniques.clear();
-
   combMemory.reset();
 
   countStats.clear();
@@ -119,39 +72,6 @@ void Combinations::resize(const unsigned maxCardsIn)
 {
   combMemory.resize(maxCardsIn, true);
 
-  maxCards = maxCardsIn;
-
-  /*
-  combEntries.resize(maxCardsIn+1);
-  uniques.resize(maxCardsIn+1);
-
-  // There are three combinations with 1 card: It may be with
-  // North, South or the opponents.
-  unsigned numCombinations = 1;
-
-  // for (unsigned cards = 1; cards <= maxCards; cards++)
-  for (unsigned cards = 0; cards < combEntries.size(); cards++)
-  {
-    combEntries[cards].resize(numCombinations);
-
-    if (control.runRankComparisons())
-    {
-      // One void plus half of the rest, as North always has the
-      // highest card among the North-South.
-
-      const unsigned numRanked = 1 + ((numCombinations-1) >> 1);
-      uniques[cards].resize(numRanked);
-    }
-    else
-    {
-      assert(cards < UNIQUE_COUNT.size());
-      uniques[cards].resize(UNIQUE_COUNT[cards]);
-    }
-
-    numCombinations *= 3;
-  }
-  */
-
   countStats.resize(maxCardsIn+1);
   for (unsigned cards = 0; cards < maxCardsIn+1; cards++)
   {
@@ -162,8 +82,6 @@ void Combinations::resize(const unsigned maxCardsIn)
   countNonreference.resize(maxCardsIn+1);
 }
 
-
-#include <set>
 
 void Combinations::dumpVS(
   const string& title,
@@ -190,8 +108,6 @@ void Combinations::runSingle(
   // Split into getDependencies3() and runDependencies3().
   // In principle, the same for distributions?
 
-  // assert(cards < combEntries.size());
-
   Ranks ranks;
   Plays plays;
   plays.resize(cards);
@@ -203,8 +119,6 @@ void Combinations::runSingle(
 
   // We add later plays from scratch1 entries to scratch2.
   scratch1[cards].insert(holding);
-
-  // unsigned uniqueIndex = 0;
 
   while (true)
   {
@@ -232,14 +146,6 @@ void Combinations::runSingle(
         {
           // If it's a trivial solution, solve it straight away.
           Combination& comb = combMemory.add(c, solve);
-          /*
-          vector<Combination>& uniqs = uniques[c];
-
-          assert(uniqueIndex < uniqs.size());
-          centry.setIndex(uniqueIndex);
-          Combination& comb = uniqs[uniqueIndex];
-          uniqueIndex++;
-          */
 
           comb.setMaxRank(ranks.maxRank());
 
@@ -278,17 +184,6 @@ void Combinations::runSingle(
 
       Combination& comb = combMemory.add(c, solve);
 
-      // CombEntry& centry = combEntries[c][solve];
-
-      /*
-      vector<Combination>& uniqs = uniques[c];
-
-      assert(uniqueIndex < uniqs.size());
-      centry.setIndex(uniqueIndex);
-      Combination& comb = uniqs[uniqueIndex];
-      uniqueIndex++;
-      */
-
       comb.setMaxRank(ranks.maxRank());
 
       ranks.resize(c);
@@ -304,72 +199,6 @@ void Combinations::runSingle(
     }
   }
 }
-
-
-/*
-void Combinations::runSpecific(
-  const unsigned cards,
-  const unsigned holding,
-  const Distributions& distributions)
-{
-  // This and the next one are not used.
-  assert(cards < combEntries.size());
-
-  Ranks ranks;
-  ranks.resize(cards);
-  
-  Plays plays;
-  plays.resize(cards);
-
-  CombEntry& centry = combEntries[cards][holding];
-  ranks.setRanks(holding, centry);
-
-  const unsigned referenceHolding3 = centry.getHolding3();
-  if (holding != referenceHolding3)
-  {
-    cout << "Specific (cards, holding) = (" << cards << ", " <<
-      holding << ") is not reference." << endl;
-    return;
-  }
-
-  cout << ranks.strTable();
-
-  Combination comb;
-  comb.strategize(centry, * this, distributions, ranks, plays, true);
-}
-
-
-void Combinations::runSpecificVoid(
-  const unsigned cards,
-  const unsigned holding,
-  const Distributions& distributions)
-{
-  assert(cards < combEntries.size());
-
-  Ranks ranks;
-  ranks.resize(cards);
-  
-  Plays plays;
-  plays.resize(cards);
-
-  CombEntry& centry = combEntries[cards][holding];
-  ranks.setRanks(holding, centry);
-
-  const unsigned referenceHolding3 = centry.getHolding3();
-  if (holding != referenceHolding3)
-  {
-    cout << "Specific (cards, holding) = (" << cards << ", " <<
-      holding << ") is not reference." << endl;
-    return;
-  }
-
-  cout << ranks.strTable();
-  wcout << ranks.wstrDiagram();
-
-  Combination comb;
-  comb.strategizeVoid(centry, * this, distributions, ranks, plays, true);
-}
-*/
 
 
 bool Combinations::getMinimals(
@@ -417,16 +246,10 @@ void Combinations::runUniques(
   const unsigned cards,
   const Distributions& distributions)
 {
-  // assert(cards < combEntries.size());
-  // assert(cards < uniques.size());
   assert(cards < countStats.size());
-
-  // vector<CombEntry>& centries = combEntries[cards];
-  // vector<Combination>& uniqs = uniques[cards];
 
   Ranks ranks;
   ranks.resize(cards);
-  // unsigned uniqueIndex = 0;
 
   Plays plays;
   plays.resize(cards);
@@ -434,10 +257,8 @@ void Combinations::runUniques(
   vector<unsigned> histoPlay;
   histoPlay.resize(1000);
 
-  // for (unsigned holding = 0; holding < centries.size(); holding++)
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
-    // CombEntry& centry = centries[holding];
     CombEntry& centry = combMemory.getEntry(cards, holding);
 
     timers.start(TIMER_RANKS);
@@ -449,13 +270,6 @@ void Combinations::runUniques(
     {
       Combination& comb = combMemory.add(cards, holding);
 
-      /*
-      assert(uniqueIndex < uniqs.size());
-      centry.setIndex(uniqueIndex);
-      Combination& comb = uniqs[uniqueIndex];
-      uniqueIndex++;
-      */
-
       comb.setMaxRank(ranks.maxRank());
 
       // Plays is cleared and rewritten, so it is only an optimization
@@ -465,7 +279,6 @@ void Combinations::runUniques(
 
 histoPlay[plays.size()]++;
 
-      // centry.minimalFlag =
       if (Combinations::getMinimals(comb.strategies(), ranks, centry))
         centry.setMinimal();
 
@@ -477,8 +290,9 @@ histoPlay[plays.size()]++;
     }
     else
     {
-      // centry.setIndex(centries[referenceHolding3].getIndex());
-      centry.setIndex(combMemory.getEntry(cards, referenceHolding3).getIndex());
+      centry.setIndex(
+        combMemory.getEntry(cards, referenceHolding3).getIndex());
+
       centry.setReference(false);
       countNonreference[cards]++;
     }
@@ -504,7 +318,6 @@ cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
 }
   timersStrat[33].start();
-  // Combinations::fixMinimals(centries);
   Combinations::fixMinimals(cards);
   timersStrat[33].stop();
 
@@ -512,7 +325,6 @@ cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
   timersStrat[31].start();
   ctest.checkAllMinimals(combMemory, cards);
-  // ctest.checkAllMinimals(centries);
   timersStrat[31].stop();
 
   // TODO Control by flags.
@@ -668,12 +480,8 @@ void Combinations::runUniqueThread(
   Distributions const * distributions,
   const unsigned thid)
 {
-  // assert(cards < combEntries.size());
-  // assert(cards < uniques.size());
+  // TODO Haven't tested this since introducing CombMemory.
   assert(thid < threadCountStats.size());
-
-  // vector<CombEntry>& centries = combEntries[cards];
-  // vector<Combination>& uniqs = uniques[cards];
 
   Ranks ranks;
   ranks.resize(cards);
@@ -682,7 +490,6 @@ void Combinations::runUniqueThread(
   Plays plays;
   plays.resize(cards);
 
-  // const unsigned counterMax = centries.size();
   const unsigned counterMax = combMemory.size(cards);
 
   while (true)
@@ -691,7 +498,6 @@ void Combinations::runUniqueThread(
     if (holding >= counterMax)
       break;
 
-    // CombEntry& centry = centries[holding];
     CombEntry& centry = combMemory.getEntry(cards, holding);
     ranks.setRanks(holding, centry);
 
@@ -699,18 +505,11 @@ void Combinations::runUniqueThread(
     if (holding == referenceHolding3)
     {
       Combination& comb = combMemory.add(cards, holding);
-      /*
-      const unsigned uniqueIndex = counterUnique++; // Atomic
-      assert(uniqueIndex < uniqs.size());
-      centry.setIndex(uniqueIndex);
-      Combination& comb = uniqs[uniqueIndex];
-      */
 
       comb.setMaxRank(ranks.maxRank());
 
       comb.strategize(centry, * this, * distributions, ranks, plays);
 
-      // centry.minimalFlag =
       if (Combinations::getMinimals(comb.strategies(), ranks, centry))
         centry.setMinimal();
 
@@ -722,8 +521,9 @@ void Combinations::runUniqueThread(
     }
     else
     {
-      // centry.setIndex(centries[referenceHolding3].getIndex());
-      centry.setIndex(combMemory.getEntry(cards, referenceHolding3).getIndex());
+      centry.setIndex(
+        combMemory.getEntry(cards, referenceHolding3).getIndex());
+
       threadCountNonreference[thid]++;
     }
   }
@@ -738,7 +538,6 @@ void Combinations::runUniquesMT(
   // TODO Untested since changes to statistics gathering.
 
   counterHolding = 0;
-  counterUnique = 0;
 
   vector<thread *> threads;
   threads.resize(numThreads);
@@ -767,30 +566,11 @@ void Combinations::runUniquesMT(
 }
 
 
-#include "../const.h"
-
 Combination const * Combinations::getPtr(
   const unsigned cards,
-  const unsigned holding3,
-  const CombMinimumMode mode,
-  bool& rotateFlag) const
+  const unsigned holding3) const
 {
-  // TODO Delete parameters rotateFlag and mode
-  UNUSED(mode);
-  rotateFlag = false;
-
   return &combMemory.getComb(cards, holding3);
-
-  /*
-  const auto& centry = combEntries[cards][holding3];
-
-  const auto& cref = (centry.isReference() ? centry :
-    combEntries[cards][centry.getHolding3()]);
-
-
-  const unsigned ui = cref.getIndex();
-  return &uniques[cards][ui];
-  */
 }
 
 
@@ -804,20 +584,6 @@ void Combinations::fixMinimals(const unsigned cards)
     }
   }
 }
-
-/*
-void Combinations::fixMinimals(vector<CombEntry>& centries)
-{
-  for (unsigned holding = 0; holding < centries.size(); holding++)
-  {
-    if (! centries[holding].fixMinimals(centries))
-    {
-      cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
-    }
-  }
-}
-*/
-
 
 string Combinations::strUniques(const unsigned cards) const
 {
@@ -849,8 +615,6 @@ string Combinations::strUniques(const unsigned cards) const
   
   for (unsigned c = cmin; c <= cmax; c++)
   {
-    assert(c < maxCards+1);
-    // if (combEntries[c].size() == 0)
     if (combMemory.size(c) == 0)
       continue;
 
@@ -858,8 +622,6 @@ string Combinations::strUniques(const unsigned cards) const
       setw(5) << c <<
       setw(9) << combMemory.size(c) <<
       setw(9) << combMemory.size(c) - countNonreference[c];
-      // setw(9) << combEntries[c].size() <<
-      // setw(9) << combEntries[c].size() - countNonreference[c];
 
     for (unsigned n = 0; n < COMB_SIZE; n++)
       ss <<

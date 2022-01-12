@@ -12,9 +12,7 @@
 #include <vector>
 #include <set>
 #include <string>
-
 #include <atomic>
-#include <mutex>
 
 #include "CombMemory.h"
 #include "Combination.h"
@@ -25,24 +23,10 @@ using namespace std;
 
 class Distributions;
 
-enum CombMinimumMode
-{
-  COMB_MIN_IGNORE = 0,
-  COMB_MIN_SINGLE = 1,
-  COMB_MIN_FULL = 2
-};
-
 
 class Combinations
 {
   private:
-
-
-    // TODO Needed?
-    unsigned maxCards;
-
-    // vector<vector<CombEntry>> combEntries;
-    // vector<vector<Combination>> uniques;
 
     CombMemory combMemory;
 
@@ -59,9 +43,7 @@ class Combinations
     // Indexed by thread ID and collapsed into countNoncanonical.
     vector<unsigned> threadCountNonreference;
 
-    mutex log; // Locked when a result is being logged
     atomic<unsigned> counterHolding; // Holding
-    atomic<unsigned> counterUnique; // Unique index
 
     void dumpVS(
       const string& title,
@@ -84,7 +66,6 @@ class Combinations
       const unsigned thid);
 
     void fixMinimals(const unsigned cards);
-    // void fixMinimals(vector<CombEntry>& centries);
 
 
   public:
@@ -102,18 +83,6 @@ class Combinations
       const unsigned holding,
       const Distributions& distributions);
 
-    /*
-    void runSpecific(
-      const unsigned cards,
-      const unsigned holding,
-      const Distributions& distributions);
-
-    void runSpecificVoid(
-      const unsigned cards,
-      const unsigned holding,
-      const Distributions& distributions);
-      */
-
     void runUniques(
       const unsigned cards,
       const Distributions& distributions);
@@ -129,9 +98,7 @@ class Combinations
 
     Combination const * getPtr(
       const unsigned cards,
-      const unsigned holding3,
-      const CombMinimumMode mode,
-      bool& rotateFlag) const;
+      const unsigned holding3) const;
 
     string strUniques(const int unsigned = 0) const;
 

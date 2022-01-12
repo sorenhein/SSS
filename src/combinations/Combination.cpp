@@ -118,14 +118,6 @@ const Strategies& Combination::strategize(
     Combination::setTrivial(trivialEntry, 
       static_cast<unsigned char>(distPtr->size()), true);
 
-    /*
-    strats.setTrivial(trivialEntry, 
-      static_cast<unsigned char>(distPtr->size()));
-
-    if (control.outputBasicResults())
-      cout << strats.str("Trivial result", 
-        control.runRankComparisons()) << "\n";
-        */
     return strats;
   }
 
