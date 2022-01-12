@@ -138,7 +138,7 @@ void Combinations::getDependencies(
 
         plays.clear();
         Result trivialEntry;
-        const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+        ranks.setPlays(plays, trivialEntry);
 
         plays.addHoldings(scratch2);
         dependencies[c].insert(dep);

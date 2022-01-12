@@ -16,6 +16,7 @@
 #include <mutex>
 
 #include "Distribution.h"
+#include "DistMemory.h"
 
 using namespace std;
 

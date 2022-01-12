@@ -11,8 +11,8 @@ driver.obj: distributions/Reduction.h combinations/CombHelp.h
 driver.obj: distributions/Distributions.h distributions/Distribution.h
 driver.obj: distributions/SurvivorList.h distributions/Survivors.h
 driver.obj: distributions/DistHelp.h distributions/Reductions.h
-driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h utils/Timers.h
-driver.obj: utils/Timer.h
+driver.obj: distributions/DistMemory.h inputs/Control.h inputs/Entity.h
+driver.obj: inputs/Convert.h utils/Timers.h utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
@@ -38,6 +38,7 @@ combinations/Combination.obj: distributions/SurvivorList.h
 combinations/Combination.obj: distributions/Survivors.h
 combinations/Combination.obj: distributions/DistHelp.h
 combinations/Combination.obj: distributions/Reductions.h
+combinations/Combination.obj: distributions/DistMemory.h
 combinations/Combination.obj: distributions/Distribution.h inputs/Control.h
 combinations/Combination.obj: inputs/Entity.h plays/Plays.h plays/Play.h
 combinations/Combination.obj: strategies/result/Winners.h plays/Nodes.h
@@ -72,14 +73,15 @@ combinations/Combinations.obj: distributions/Distribution.h
 combinations/Combinations.obj: distributions/SurvivorList.h
 combinations/Combinations.obj: distributions/Survivors.h
 combinations/Combinations.obj: distributions/DistHelp.h
-combinations/Combinations.obj: distributions/Reductions.h plays/Plays.h
+combinations/Combinations.obj: distributions/Reductions.h
+combinations/Combinations.obj: distributions/DistMemory.h plays/Plays.h
 combinations/Combinations.obj: plays/Play.h strategies/result/Winners.h
 combinations/Combinations.obj: plays/Nodes.h plays/Node.h plays/DebugPlay.h
 combinations/Combinations.obj: ranks/Ranks.h ranks/Declarer.h ranks/Player.h
 combinations/Combinations.obj: utils/Card.h utils/table.h ranks/Opponents.h
 combinations/Combinations.obj: ranks/Completion.h plays/Play.h
 combinations/Combinations.obj: inputs/Control.h inputs/Entity.h
-combinations/Combinations.obj: utils/Timers.h utils/Timer.h const.h
+combinations/Combinations.obj: utils/Timers.h utils/Timer.h
 combinations/CombMemory.obj: combinations/CombMemory.h
 combinations/CombMemory.obj: combinations/CombEntry.h
 combinations/CombMemory.obj: combinations/CombReference.h
@@ -121,7 +123,8 @@ combinations/CombTest.obj: distributions/Distributions.h
 combinations/CombTest.obj: distributions/Distribution.h
 combinations/CombTest.obj: distributions/SurvivorList.h
 combinations/CombTest.obj: distributions/Survivors.h distributions/DistHelp.h
-combinations/CombTest.obj: distributions/Reductions.h strategies/Strategies.h
+combinations/CombTest.obj: distributions/Reductions.h
+combinations/CombTest.obj: distributions/DistMemory.h strategies/Strategies.h
 combinations/CombTest.obj: strategies/Slist.h strategies/Strategy.h
 combinations/CombTest.obj: strategies/result/Result.h
 combinations/CombTest.obj: strategies/result/Winners.h
@@ -150,6 +153,13 @@ distributions/Distributions.obj: distributions/SurvivorList.h
 distributions/Distributions.obj: distributions/Survivors.h
 distributions/Distributions.obj: distributions/DistHelp.h
 distributions/Distributions.obj: distributions/Reductions.h
+distributions/Distributions.obj: distributions/DistMemory.h
+distributions/DistMemory.obj: distributions/DistMemory.h
+distributions/DistMemory.obj: distributions/Distribution.h
+distributions/DistMemory.obj: distributions/SurvivorList.h
+distributions/DistMemory.obj: distributions/Survivors.h
+distributions/DistMemory.obj: distributions/DistHelp.h
+distributions/DistMemory.obj: distributions/Reductions.h
 distributions/Reductions.obj: distributions/Reductions.h
 distributions/Reductions.obj: distributions/DistHelp.h
 distributions/Reductions.obj: distributions/SurvivorList.h

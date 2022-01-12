@@ -20,7 +20,7 @@ extern Control control;
 
 
 // http://oeis.org/A051450
-const vector<unsigned> UNIQUE_COUNT =
+const vector<unsigned> COMB_UNIQUE_COUNT =
 {
   1,      //  0
   2,      //  1
@@ -81,7 +81,6 @@ void CombMemory::resize(
   // North, South or the opponents.
   unsigned numCombinations = 1;
 
-  // for (unsigned cards = 1; cards <= maxCards; cards++)
   for (unsigned cards = 0; cards < combEntries.size(); cards++)
   {
     combEntries[cards].resize(numCombinations);
@@ -98,8 +97,8 @@ void CombMemory::resize(
       }
       else
       {
-        assert(cards < UNIQUE_COUNT.size());
-        uniques[cards].resize(UNIQUE_COUNT[cards]);
+        assert(cards < COMB_UNIQUE_COUNT.size());
+        uniques[cards].resize(COMB_UNIQUE_COUNT[cards]);
       }
     }
     else
