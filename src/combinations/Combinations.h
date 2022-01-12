@@ -10,16 +10,13 @@
 #define SSS_COMBINATIONS_H
 
 #include <vector>
-#include <list>
 #include <set>
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 
 #include <atomic>
 #include <mutex>
 
+#include "CombMemory.h"
 #include "Combination.h"
 #include "CombEntry.h"
 #include "CombHelp.h"
@@ -45,6 +42,8 @@ class Combinations
 
     vector<vector<CombEntry>> combEntries;
     vector<vector<Combination>> uniques;
+
+    CombMemory combMemory;
 
     // Indexed by cards and then by CombinationType
     vector<CombCountEntry> countStats;

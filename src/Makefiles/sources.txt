@@ -3,6 +3,7 @@ SOURCE_FILES    =                               \
                                                 \
                 combinations/Combination.cpp    \
                 combinations/Combinations.cpp   \
+                combinations/CombMemory.cpp     \
                 combinations/CombEntry.cpp      \
                 combinations/CombFiles.cpp      \
                 combinations/CombTest.cpp       \
