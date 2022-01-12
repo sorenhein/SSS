@@ -100,20 +100,17 @@ void Combinations::dumpVS(
 }
 
 
-void Combinations::runSingle(
+void Combinations::getDependencies(
   const unsigned cards,
   const unsigned holding,
-  const Distributions& distributions)
+  vector<set<unsigned>>& dependencies)
 {
-  // Split into getDependencies3() and runDependencies3().
-  // In principle, the same for distributions?
-
   Ranks ranks;
   Plays plays;
   plays.resize(cards);
 
-  vector<set<unsigned>> finished, scratch1, scratch2;
-  finished.resize(cards+1);
+  vector<set<unsigned>> scratch1, scratch2;
+  dependencies.resize(cards+1);
   scratch1.resize(cards+1);
   scratch2.resize(cards+1);
 
@@ -125,46 +122,26 @@ void Combinations::runSingle(
     bool doneFlag = true;
     for (unsigned c = 0; c <= cards; c++)
     {
-      for (auto& solve: scratch1[c])
+      for (auto& dep: scratch1[c])
       {
-        CombEntry& centry = combMemory.getEntry(c, solve);
-        // CombEntry& centry = combEntries[c][solve];
-        if (centry.isReference() || finished[c].count(solve))
+        CombEntry& centry = combMemory.getEntry(c, dep);
+        if (centry.isReference() || dependencies[c].count(dep))
         {
           // Already solved
           continue;
         }
 
         ranks.resize(c);
-        ranks.setRanks(solve, centry);
+        ranks.setRanks(dep, centry);
 
         plays.clear();
         Result trivialEntry;
         const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
-        if (ctype == COMB_CONSTANT)
-        {
-          // If it's a trivial solution, solve it straight away.
-          Combination& comb = combMemory.add(c, solve);
-
-          comb.setMaxRank(ranks.maxRank());
-
-          Distribution const * distPtr = distributions.ptrNoncanonical(
-            ranks.size(), centry.getHolding2());
-
-          comb.setTrivial(trivialEntry, 
-            static_cast<unsigned char>(distPtr->size()));
-          
-          centry.setReference();
-        }
-        else
-        {
-          plays.addHoldings(scratch2);
-          finished[c].insert(solve);
-          doneFlag = false;
-        }
+        plays.addHoldings(scratch2);
+        dependencies[c].insert(dep);
+        doneFlag = false;
       }
-
     }
 
     if (doneFlag)
@@ -175,27 +152,59 @@ void Combinations::runSingle(
 
     swap(scratch1, scratch2);
   }
+}
+
+
+void Combinations::runSingle(
+  const unsigned cards,
+  const unsigned holding,
+  const Distributions& distributions)
+{
+  // Split into getDependencies3() and runDependencies3().
+  // In principle, the same for distributions?
+
+  vector<set<unsigned>> dependencies;
+  Combinations::getDependencies(cards, holding, dependencies);
+
+  Ranks ranks;
+  Plays plays;
+  plays.resize(cards);
 
   for (unsigned c = 0; c <= cards; c++)
   {
-    for (auto& solve: finished[c])
+    for (auto& dep: dependencies[c])
     {
-      CombEntry& centry = combMemory.getEntry(c, solve);
+      // TODO Should merge with Combination::strategize()
 
-      Combination& comb = combMemory.add(c, solve);
+      CombEntry& centry = combMemory.getEntry(c, dep);
+
+      Combination& comb = combMemory.add(c, dep);
 
       comb.setMaxRank(ranks.maxRank());
 
       ranks.resize(c);
-      ranks.setRanks(solve, centry);
+      ranks.setRanks(dep, centry);
 
       plays.clear();
       Result trivialEntry;
       const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
 
-      bool debugFlag = (c == cards && holding == solve);
-      comb.strategize(centry, * this, distributions, ranks, plays,
-        debugFlag);
+      if (ctype == COMB_CONSTANT)
+      {
+        Distribution const * distPtr = distributions.ptrNoncanonical(
+          ranks.size(), centry.getHolding2());
+
+        comb.setTrivial(trivialEntry, 
+          static_cast<unsigned char>(distPtr->size()));
+          
+        centry.setReference();
+      }
+      else
+      {
+        bool debugFlag = (c == cards && holding == dep);
+        comb.strategize(centry, * this, distributions, ranks, plays,
+          debugFlag);
+      }
     }
   }
 }

@@ -50,6 +50,11 @@ class Combinations
       const unsigned cards,
       const vector<set<unsigned>>& vs) const;
 
+    void getDependencies(
+      const unsigned cards,
+      const unsigned holding,
+      vector<set<unsigned>>& dependencies);
+
     bool getMinimals(
       const Strategies& strategies,
       const Ranks& ranks,
