@@ -58,7 +58,8 @@ int main(int argc, char * argv[])
 
   if (control.loop())
   {
-    // for (unsigned cards = 0; cards <= control.cards(); cards++)
+    combinations.resize(control.cards());
+
     for (unsigned cards = 0; cards <= 11; cards++)
     {
       cout << "Cards " << setw(2) << right << cards << endl;
@@ -72,6 +73,8 @@ int main(int argc, char * argv[])
   }
   else
   {
+    combinations.resize(control.cards(), false);
+
     combinations.runSingle(control.holdingLength(),
       control.holding(),
       distributions);

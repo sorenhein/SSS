@@ -81,7 +81,9 @@ class Combinations
 
     void reset();
 
-    void resize(const unsigned maxCardsIn);
+    void resize(
+      const unsigned maxCardsIn,
+      const bool fullFlag = false);
 
     void runSingle(
       const unsigned cards,

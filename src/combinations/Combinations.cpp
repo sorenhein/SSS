@@ -68,9 +68,11 @@ void Combinations::reset()
 }
 
 
-void Combinations::resize(const unsigned maxCardsIn)
+void Combinations::resize(
+  const unsigned maxCardsIn,
+  const bool fullFlag)
 {
-  combMemory.resize(maxCardsIn, true);
+  combMemory.resize(maxCardsIn, fullFlag);
 
   countStats.resize(maxCardsIn+1);
   for (unsigned cards = 0; cards < maxCardsIn+1; cards++)
@@ -186,6 +188,8 @@ void Combinations::runSingle(
         ranks, plays, (c == cards && holding == dep));
     }
   }
+
+  cout << combMemory.str();
 }
 
 

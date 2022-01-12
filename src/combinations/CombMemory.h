@@ -25,6 +25,8 @@ class CombMemory
 
     unsigned maxCards;
 
+    bool fullFlag;
+
     vector<vector<CombEntry>> combEntries;
 
     vector<vector<Combination>> uniques;
@@ -61,6 +63,7 @@ class CombMemory
       const unsigned cards,
       const unsigned holding) const;
 
+    string str() const;
 };
 
 #endif
