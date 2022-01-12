@@ -174,37 +174,16 @@ void Combinations::runSingle(
   {
     for (auto& dep: dependencies[c])
     {
-      // TODO Should merge with Combination::strategize()
+      Combination& comb = combMemory.add(c, dep);
+      comb.setMaxRank(ranks.maxRank());
 
       CombEntry& centry = combMemory.getEntry(c, dep);
-
-      Combination& comb = combMemory.add(c, dep);
-
-      comb.setMaxRank(ranks.maxRank());
 
       ranks.resize(c);
       ranks.setRanks(dep, centry);
 
-      plays.clear();
-      Result trivialEntry;
-      const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
-
-      if (ctype == COMB_CONSTANT)
-      {
-        Distribution const * distPtr = distributions.ptrNoncanonical(
-          ranks.size(), centry.getHolding2());
-
-        comb.setTrivial(trivialEntry, 
-          static_cast<unsigned char>(distPtr->size()));
-          
-        centry.setReference();
-      }
-      else
-      {
-        bool debugFlag = (c == cards && holding == dep);
-        comb.strategize(centry, * this, distributions, ranks, plays,
-          debugFlag);
-      }
+      comb.strategize(centry, * this, distributions,
+        ranks, plays, (c == cards && holding == dep));
     }
   }
 }

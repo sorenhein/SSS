@@ -80,29 +80,19 @@ const Strategies& Combination::strategize(
   {
     cout << "Cards" << setw(3) << ranks.size() << ": " <<
       centry.strHolding() << endl;
-      // centry.reference.strHolding() << " / " << 
-      // centry.refHolding2 << endl;
   }
 
   // Look up a pointer to the EW distribution of this combination.
   timers.start(TIMER_PLAYS);
-  distPtr = distributions.ptrNoncanonical(
-    ranks.size(), centry.getHolding2());
 
   // Make the plays.
   Result trivialEntry;
   plays.clear();
 
-  DebugPlay debugFlagTmp = DEBUGPLAY_NONE;
+  distPtr = distributions.ptrNoncanonical(
+    ranks.size(), centry.getHolding2());
 
-  if (control.holding() != 0 &&
-      centry.getHolding3() == control.holding() &&
-      ranks.size() == control.holdingLength())
-  {
-    debugFlagTmp = static_cast<DebugPlay>(0x3f);
-  }
-
-  if (debugFlagTmp || control.outputBasicResults())
+  if (control.outputBasicResults() || debugFlag)
   {
     wcout << "\n" << ranks.wstrDiagram() << "\n";
     cout << ranks.strTable();
@@ -125,16 +115,14 @@ const Strategies& Combination::strategize(
   plays.setCombPtrs(combinations);
   timers.stop(TIMER_PLAYS);
 
-  if (debugFlag || debugFlagTmp)
-  {
+  if (debugFlag)
     cout << "Plays\n" << plays.str() << endl;
-    cout << "Distribution\n" << distPtr->str() << endl;
-  }
 
   plays.clearStrategies();
 
   timers.start(TIMER_STRATEGIZE);
-  strats = plays.strategize(distPtr, debugFlagTmp);
+  strats = plays.strategize(distPtr, 
+    (debugFlag ? static_cast<DebugPlay>(0x3f) : DEBUGPLAY_NONE));
   timers.stop(TIMER_STRATEGIZE);
 
   // Make a note of the type of strategy? (COMB_CONSTANT etc.)
