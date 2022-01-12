@@ -128,6 +128,8 @@ void CombTest::checkAllReductions(
 
     const Combination& comb = combMemory.getComb(cards, holding);
 
+cout << "CAR: Calling CR with " << holding << ", " << 
+  centry.getHolding2() << "\n";
     CombTest::checkReductions(
       cards,
       combMemory,

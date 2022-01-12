@@ -1,3 +1,12 @@
+2022-01-12
+==========
+Distributions:
+- Split into DistMap and DistCore
+- DistMap is set for each (cards, holding) directly
+- Then there is an index into DistCore
+- Memory size: Switch to unsigned char
+- Count the number of uniques, see what happens
+
 2022-01-09
 ==========
 

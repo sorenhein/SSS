@@ -26,7 +26,7 @@ class DistMemory
 
     bool fullFlag;
 
-    vector<vector<unsigned>> distEntries;
+    vector<vector<Distribution const *>> distEntries;
 
     vector<vector<Distribution>> uniques;
 
@@ -46,7 +46,7 @@ class DistMemory
       const bool fullFlag = true);
 
     // Thread-safe
-    Distribution& add(
+    const Distribution& add(
       const unsigned cards,
       const unsigned holding);
 

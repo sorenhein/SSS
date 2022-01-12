@@ -48,6 +48,7 @@ void Distributions::reset()
 {
   maxCards = 0;
   distributions.clear();
+  distMemory.reset();
   counts.clear();
   uniques.clear();
 }
@@ -58,6 +59,8 @@ void Distributions::resize(const unsigned maxCardsIn)
   maxCards = maxCardsIn;
 
   distributions.resize(maxCardsIn+1);
+
+  distMemory.resize(maxCardsIn+1);
 
   // A distribution is a set of card splits for a given rank
   // vector covering both East and West.
@@ -82,6 +85,14 @@ void Distributions::resize(const unsigned maxCardsIn)
 }
 
 
+void Distributions::add(
+  const unsigned cards,
+  const unsigned holding)
+{
+  distMemory.add(cards, holding);
+}
+
+
 void Distributions::runUniques(const unsigned cards)
 {
   assert(cards < distributions.size());
@@ -92,6 +103,8 @@ void Distributions::runUniques(const unsigned cards)
 
   for (unsigned holding = 0; holding < dists.size(); holding++)
   {
+    // distMemory.add(cards, holding);
+
     dists[holding].setRanks(cards, holding);
 
     DistID distID = dists[holding].getID();
@@ -102,9 +115,14 @@ void Distributions::runUniques(const unsigned cards)
       dists[holding].setLookups();
     }
     else
+    {
       dists[holding].setPtr(&distributions[distID.cards][distID.holding]);
+    }
 
     counts[cards] += dists[holding].size();
+
+// cout << "old " << dists[holding].str() << "\n";
+// cout << "new " << distMemory.get(cards, holding).str() << "\n";
   }
 }
 
@@ -209,6 +227,7 @@ Distribution const * Distributions::ptrNoncanonical(
   const unsigned holding2) const
 {
   return &distributions[cards][holding2];
+  // return &distMemory.get(cards, holding2);
 }
 
 

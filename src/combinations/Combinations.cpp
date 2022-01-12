@@ -105,14 +105,16 @@ void Combinations::dumpVS(
 void Combinations::getDependencies(
   const unsigned cards,
   const unsigned holding,
-  vector<set<unsigned>>& dependencies)
+  vector<set<unsigned>>& dependenciesTrinary,
+  vector<set<unsigned>>& dependenciesBinary)
 {
   Ranks ranks;
   Plays plays;
   plays.resize(cards);
 
   vector<set<unsigned>> scratch1, scratch2;
-  dependencies.resize(cards+1);
+  dependenciesTrinary.resize(cards+1);
+  dependenciesBinary.resize(cards+1);
   scratch1.resize(cards+1);
   scratch2.resize(cards+1);
 
@@ -127,7 +129,7 @@ void Combinations::getDependencies(
       for (auto& dep: scratch1[c])
       {
         CombEntry& centry = combMemory.getEntry(c, dep);
-        if (centry.isReference() || dependencies[c].count(dep))
+        if (centry.isReference() || dependenciesTrinary[c].count(dep))
         {
           // Already solved
           continue;
@@ -141,7 +143,8 @@ void Combinations::getDependencies(
         ranks.setPlays(plays, trivialEntry);
 
         plays.addHoldings(scratch2);
-        dependencies[c].insert(dep);
+        dependenciesTrinary[c].insert(dep);
+        dependenciesBinary[c].insert(centry.getHolding2());
         doneFlag = false;
       }
     }
@@ -160,13 +163,19 @@ void Combinations::getDependencies(
 void Combinations::runSingle(
   const unsigned cards,
   const unsigned holding,
-  const Distributions& distributions)
+  Distributions& distributions)
 {
   // Split into getDependencies3() and runDependencies3().
   // In principle, the same for distributions?
 
-  vector<set<unsigned>> dependencies;
-  Combinations::getDependencies(cards, holding, dependencies);
+  vector<set<unsigned>> dependenciesTrinary;
+  vector<set<unsigned>> dependenciesBinary;
+  Combinations::getDependencies(cards, holding, 
+    dependenciesTrinary, dependenciesBinary);
+
+  for (unsigned c = 0; c <= cards; c++)
+    for (auto& dep: dependenciesBinary[c])
+      distributions.add(c, dep);
 
   Ranks ranks;
   Plays plays;
@@ -174,7 +183,7 @@ void Combinations::runSingle(
 
   for (unsigned c = 0; c <= cards; c++)
   {
-    for (auto& dep: dependencies[c])
+    for (auto& dep: dependenciesTrinary[c])
     {
       Combination& comb = combMemory.add(c, dep);
       comb.setMaxRank(ranks.maxRank());

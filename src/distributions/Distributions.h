@@ -29,6 +29,8 @@ class Distributions
 
     vector<vector<Distribution>> distributions;
 
+    DistMemory distMemory;
+
     vector<unsigned> counts;
     vector<unsigned> threadCounts;
 
@@ -50,6 +52,10 @@ class Distributions
     void reset();
 
     void resize(const unsigned maxCardsIn);
+
+    void add(
+      const unsigned cards,
+      const unsigned holding);
 
     void runUniques(const unsigned cards);
 

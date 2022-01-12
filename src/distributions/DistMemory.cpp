@@ -107,7 +107,7 @@ void DistMemory::resize(
 }
 
 
-Distribution& DistMemory::add(
+const Distribution& DistMemory::add(
   const unsigned cards,
   const unsigned holding)
 {
@@ -115,7 +115,6 @@ Distribution& DistMemory::add(
   dist.setRanks(cards, holding);
   const DistID distID = dist.getID();
 
-  unsigned uniqueIndex;
   vector<Distribution>& uniqs = uniques[cards];
 
   if (distID.cards == cards && distID.holding == holding)
@@ -125,7 +124,7 @@ Distribution& DistMemory::add(
 
     mtxDistMemory.lock();
 
-    uniqueIndex = counters[cards]++;
+    const unsigned uniqueIndex = counters[cards]++;
 
     // Grow if dynamic size is used up.
     if (! fullFlag && uniqueIndex >= uniques[cards].size())
@@ -136,7 +135,10 @@ Distribution& DistMemory::add(
     assert(uniqueIndex < uniqs.size());
     uniqs[uniqueIndex] = move(dist);
 
-    distEntries[cards][holding] = uniqueIndex;
+// cout << "Added (" << cards << ", " << holding << ")\n";
+// cout << uniqs[uniqueIndex].str() << "\n---\n";
+
+    distEntries[cards][holding] = &uniqs[uniqueIndex];
 
     mtxDistMemory.unlock();
   }
@@ -144,15 +146,18 @@ Distribution& DistMemory::add(
   {
     mtxDistMemory.lock();
 
-    uniqueIndex = distEntries[distID.cards][distID.holding];
-    distEntries[cards][holding] = uniqueIndex;
+    distEntries[cards][holding] = 
+        distEntries[distID.cards][distID.holding];
 
-    cumulSplits[cards] += uniqs[uniqueIndex].size();
+    cumulSplits[cards] += distEntries[cards][holding]->size();
+
+// cout << "Repeated (" << cards << ", " << holding << ") as (" <<
+  // distID.cards << ", " << distID.holding << "\n---\n";
 
     mtxDistMemory.unlock();
   }
   
-  return uniqs[uniqueIndex];
+  return * distEntries[cards][holding];
 }
 
 
@@ -161,8 +166,10 @@ const Distribution& DistMemory::get(
   const unsigned holding) const
 {
   assert(holding < distEntries[cards].size());
-  const unsigned uniqueIndex = distEntries[cards][holding];
-  return uniques[cards][uniqueIndex];
+// cout << "DM get(" << cards << ", " << holding << "): " <<
+  // uniqueIndex << "\n";
+// cout << uniques[cards][uniqueIndex].str();
+  return * distEntries[cards][holding];
 }
 
 

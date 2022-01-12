@@ -53,7 +53,8 @@ class Combinations
     void getDependencies(
       const unsigned cards,
       const unsigned holding,
-      vector<set<unsigned>>& dependencies);
+      vector<set<unsigned>>& dependenciesTrinary,
+      vector<set<unsigned>>& dependendiesBinary);
 
     bool getMinimals(
       const Strategies& strategies,
@@ -88,7 +89,7 @@ class Combinations
     void runSingle(
       const unsigned cards,
       const unsigned holding,
-      const Distributions& distributions);
+      Distributions& distributions);
 
     void runUniques(
       const unsigned cards,
