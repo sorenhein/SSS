@@ -11,7 +11,6 @@
 
 #include <vector>
 #include <string>
-#include <atomic>
 
 #include "CombEntry.h"
 #include "Combination.h"
@@ -30,7 +29,7 @@ class CombMemory
 
     vector<vector<Combination>> uniques;
 
-    atomic<unsigned> counter;
+    vector<unsigned> counters;
 
 
   public:
@@ -39,15 +38,28 @@ class CombMemory
 
     void reset();
 
-    void resize(const unsigned maxCardsIn);
+    void resize(
+      const unsigned maxCardsIn,
+      const bool fullFlag = true);
 
+    unsigned size(const unsigned cards) const;
+
+    // Thread-safe
     Combination& add(
       const unsigned cards,
       const unsigned holding);
 
-    Combination& get(
+    const Combination& getComb(
+      const unsigned cards,
+      const unsigned holding) const;
+
+    CombEntry& getEntry(
       const unsigned cards,
       const unsigned holding);
+
+    const CombEntry& getEntry(
+      const unsigned cards,
+      const unsigned holding) const;
 
 };
 

@@ -67,7 +67,7 @@ class Combination
 
     const Strategies& strategies() const;
 
-    string str() const;
+    // string str() const;
 
 };
 

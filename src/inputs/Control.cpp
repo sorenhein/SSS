@@ -245,7 +245,10 @@ bool Control::completeHoldings()
       return false;
     }
     else
+    {
       entry.setInt(CTRL_HOLDING, static_cast<int>(hU));
+      entry.setBool(CTRL_LOOP_FLAG, false);
+    }
   }
   else if (h != -1)
   {
@@ -259,6 +262,7 @@ bool Control::completeHoldings()
     {
       entry.setString(CTRL_NORTH, n);
       entry.setString(CTRL_SOUTH, s);
+      entry.setBool(CTRL_LOOP_FLAG, false);
     }
   }
   return true;

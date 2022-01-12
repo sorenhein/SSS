@@ -33,12 +33,6 @@ int main(int argc, char * argv[])
   if (control.debugArgs())
     cout << control.str();
 
-  if (! control.loop())
-  {
-    cout << "Don't know yet how to run single holdings.\n";
-    exit(0);
-  }
-
   setlocale(LC_ALL, "en_US.UTF-8");
 
   // Set up distributions.
@@ -62,13 +56,7 @@ int main(int argc, char * argv[])
 
   combinations.resize(control.cards());
 
-  if (control.holding() != 0)
-  {
-    combinations.runSingle(control.holdingLength(),
-      control.holding(),
-      distributions);
-  }
-  else
+  if (control.loop())
   {
     // for (unsigned cards = 0; cards <= control.cards(); cards++)
     for (unsigned cards = 0; cards <= 11; cards++)
@@ -82,7 +70,12 @@ int main(int argc, char * argv[])
     cout << "\n";
     cout << combinations.strUniques();
   }
-
+  else
+  {
+    combinations.runSingle(control.holdingLength(),
+      control.holding(),
+      distributions);
+  }
 
   // combinations.tmp(control.cards(), control.holding());
   cout << "\n" << timers.str();

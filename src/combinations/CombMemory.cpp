@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <mutex>
 #include <cassert>
 
 #include "CombMemory.h"
@@ -40,6 +41,9 @@ const vector<unsigned> UNIQUE_COUNT =
 };
 
 
+mutex mtxCombMemory;
+
+
 CombMemory::CombMemory()
 {
   CombMemory::reset();
@@ -51,16 +55,23 @@ void CombMemory::reset()
   maxCards = 0;
   combEntries.clear();
   uniques.clear();
-  counter = 0;
+  counters.clear();
 }
 
 
-void CombMemory::resize(const unsigned maxCardsIn)
+void CombMemory::resize(
+  const unsigned maxCardsIn,
+  const bool fullFlag)
 {
+  // If fullFlag is set, all the space for unique combinations is
+  // allocated at once.  If not, the space grows as needed.
+  // The latter is useful when we are only solving a single combination.
+
   maxCards = maxCardsIn;
 
   combEntries.resize(maxCardsIn+1);
   uniques.resize(maxCardsIn+1);
+  counters.resize(maxCardsIn+1, 0);
 
   // There are three combinations with 1 card: It may be with
   // North, South or the opponents.
@@ -71,18 +82,26 @@ void CombMemory::resize(const unsigned maxCardsIn)
   {
     combEntries[cards].resize(numCombinations);
 
-    if (control.runRankComparisons())
+    if (fullFlag)
     {
-      // One void plus half of the rest, as North always has the
-      // highest card among the North-South.
+      if (control.runRankComparisons())
+      {
+        // One void plus half of the rest, as North always has the
+        // highest card among the North-South.
 
-      const unsigned numRanked = 1 + ((numCombinations-1) >> 1);
-      uniques[cards].resize(numRanked);
+        const unsigned numRanked = 1 + ((numCombinations-1) >> 1);
+        uniques[cards].resize(numRanked);
+      }
+      else
+      {
+        assert(cards < UNIQUE_COUNT.size());
+        uniques[cards].resize(UNIQUE_COUNT[cards]);
+      }
     }
     else
     {
-      assert(cards < UNIQUE_COUNT.size());
-      uniques[cards].resize(UNIQUE_COUNT[cards]);
+      // TODO Have some block size, grow later when needed.
+      assert(false);
     }
 
     numCombinations *= 3;
@@ -90,12 +109,31 @@ void CombMemory::resize(const unsigned maxCardsIn)
 }
 
 
+unsigned CombMemory::size(const unsigned cards) const
+{
+  return combEntries[cards].size();
+}
+
+
 Combination& CombMemory::add(
   const unsigned cards,
   const unsigned holding)
 {
-  const unsigned uniqueIndex = counter++; // Atomic
+// cout << "ADDING " << cards << ", " << holding << endl;
+
+  mtxCombMemory.lock();
+  const unsigned uniqueIndex = counters[cards]++;
+  mtxCombMemory.unlock();
+
   vector<Combination>& uniqs = uniques[cards];
+/*
+if (uniqueIndex >= uniqs.size())
+{
+  cout << "cards " << cards << endl;
+  cout << "uniqueIndex " << uniqueIndex << endl;
+  cout << "uniqs.size " << uniqs.size() << endl;
+}
+*/
   assert(uniqueIndex < uniqs.size());
 
   assert(cards < combEntries.size());
@@ -106,9 +144,9 @@ Combination& CombMemory::add(
 }
 
 
-Combination& CombMemory::get(
+const Combination& CombMemory::getComb(
   const unsigned cards,
-  const unsigned holding)
+  const unsigned holding) const
 {
   assert(cards < combEntries.size());
   assert(holding < combEntries[cards].size());
@@ -117,5 +155,27 @@ Combination& CombMemory::get(
   assert(index < uniques[cards].size());
 
   return uniques[cards][index];
+}
+
+
+CombEntry& CombMemory::getEntry(
+  const unsigned cards,
+  const unsigned holding)
+{
+  assert(cards < combEntries.size());
+  assert(holding < combEntries[cards].size());
+
+  return combEntries[cards][holding];
+}
+
+
+const CombEntry& CombMemory::getEntry( 
+  const unsigned cards,
+  const unsigned holding) const
+{
+  assert(cards < combEntries.size());
+  assert(holding < combEntries[cards].size());
+
+  return combEntries[cards][holding];
 }
 

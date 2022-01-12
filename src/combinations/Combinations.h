@@ -38,10 +38,11 @@ class Combinations
   private:
 
 
+    // TODO Needed?
     unsigned maxCards;
 
-    vector<vector<CombEntry>> combEntries;
-    vector<vector<Combination>> uniques;
+    // vector<vector<CombEntry>> combEntries;
+    // vector<vector<Combination>> uniques;
 
     CombMemory combMemory;
 
@@ -82,7 +83,8 @@ class Combinations
       Distributions const * distributions,
       const unsigned thid);
 
-    void fixMinimals(vector<CombEntry>& centries);
+    void fixMinimals(const unsigned cards);
+    // void fixMinimals(vector<CombEntry>& centries);
 
 
   public:

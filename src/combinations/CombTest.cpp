@@ -13,14 +13,16 @@
 
 #include "../distributions/Distributions.h"
 #include "../strategies/Strategies.h"
-#include "Combination.h"
-#include "CombEntry.h"
 
+#include "Combination.h"
+#include "CombMemory.h"
+#include "CombEntry.h"
 #include "CombTest.h"
 
 #include "../const.h"
 
 
+/*
 void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
 {
   for (unsigned holding = 0; holding < centries.size(); holding++)
@@ -35,11 +37,33 @@ void CombTest::checkAllMinimals(vector<CombEntry>& centries) const
     }
   }
 }
+*/
+
+
+void CombTest::checkAllMinimals(
+  const CombMemory& combMemory,
+  const unsigned cards) const
+{
+  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
+  {
+    const CombEntry& centry = combMemory.getEntry(cards, holding);
+    for (auto& min: centry)
+    {
+      if (! combMemory.getEntry(cards, min.getHolding3()).isMinimal())
+      {
+        cout << "ERROR: holding " << holding << " uses non-minimals\n";
+        break;
+      }
+    }
+  }
+}
 
 
 void CombTest::checkReductions(
-  const vector<CombEntry>& centries,
-  const vector<Combination>& uniqs,
+  // const vector<CombEntry>& centries,
+  // const vector<Combination>& uniqs,
+  const unsigned cards,
+  const CombMemory& combMemory,
   const CombEntry& centry,
   const Strategies& strategies,
   const unsigned char maxRank,
@@ -50,9 +74,12 @@ void CombTest::checkReductions(
   // for (auto& min: centry.minimals)
   for (auto& min: centry)
   {
-    const auto& ceMin = centries[min.getHolding3()];
-    assert(ceMin.getIndex() < uniqs.size());
-    const Combination& comb = uniqs[ceMin.getIndex()];
+    // const auto& ceMin = centries[min.getHolding3()];
+    // const CombEntry& ceMin = combMemory.getEntry(cards, min.getHolding3());
+    // assert(ceMin.getIndex() < uniqs.size());
+    // const Combination& comb = uniqs[ceMin.getIndex()];
+    // const Combination& comb = combMemory.getComb(cards, ceMin.getIndex());
+    const Combination& comb = combMemory.getComb(cards, min.getHolding3());
     Strategies stratsMin = comb.strategies();
 
     if (min.getHolding3() == centry.getHolding3())
@@ -117,20 +144,37 @@ if (centry.getHolding3() == 2072)
 
 void CombTest::checkAllReductions(
   const unsigned cards,
-  const vector<CombEntry>& centries,
-  const vector<Combination>& uniqs,
+  const CombMemory& combMemory,
+  // const vector<CombEntry>& centries,
+  // const vector<Combination>& uniqs,
   const Distributions& distributions) const
 {
-  for (unsigned holding = 0; holding < centries.size(); holding++)
+  // for (unsigned holding = 0; holding < centries.size(); holding++)
+  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
     // Only look at non-minimal combinations.
-    const CombEntry& centry = centries[holding];
+    // const CombEntry& centry = centries[holding];
+    const CombEntry& centry = combMemory.getEntry(cards, holding);
     // if (! centry.isReference() || centry.isMinimal())
     if (! centry.isReference())
       continue;
 
-    const Combination& comb = uniqs[centry.getIndex()];
-    CombTest::checkReductions(centries, uniqs, centry, 
+    // const Combination& comb = uniqs[centry.getIndex()];
+    const Combination& comb = combMemory.getComb(cards, holding);
+/*
+cout << "Checking cards " << cards << ", " << holding << "\n";
+cout << "centry\n";
+cout << centry.str();
+cout << "comb\n";
+cout << comb.strategies().str("comb", true);
+*/
+
+    CombTest::checkReductions(
+      // centries, 
+      // uniqs, 
+      cards,
+      combMemory,
+      centry, 
       comb.strategies(), 
       comb.getMaxRank(),
       * distributions.ptrNoncanonical(cards, centry.getHolding2()));

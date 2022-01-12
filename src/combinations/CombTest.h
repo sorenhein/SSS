@@ -16,6 +16,7 @@ using namespace std;
 class Distributions;
 class Distribution;
 class Strategies;
+class CombMemory;
 class Combination;
 class CombEntry;
 
@@ -25,8 +26,10 @@ class CombTest
   private:
 
     void checkReductions(
-      const vector<CombEntry>& centries,
-      const vector<Combination>& uniqs,
+      // const vector<CombEntry>& centries,
+      // const vector<Combination>& uniqs,
+      const unsigned cards,
+      const CombMemory& combMemory,
       const CombEntry& centry,
       const Strategies& strategies,
       const unsigned char maxRank,
@@ -35,12 +38,16 @@ class CombTest
 
   public:
 
-    void checkAllMinimals(vector<CombEntry>& centries) const;
+    // void checkAllMinimals(vector<CombEntry>& centries) const;
+    void checkAllMinimals(
+      const CombMemory& combMemory,
+      const unsigned cards) const;
 
     void checkAllReductions(
       const unsigned cards,
-      const vector<CombEntry>& centries,
-      const vector<Combination>& uniqs,
+      // const vector<CombEntry>& centries,
+      const CombMemory& combMemory,
+      // const vector<Combination>& uniqs,
       const Distributions& distributions) const;
 };
 

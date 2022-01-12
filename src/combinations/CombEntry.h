@@ -17,6 +17,8 @@
 
 using namespace std;
 
+class CombMemory;
+
 
 // CombEntry keeps track of a solved combination.
 
@@ -71,7 +73,10 @@ class CombEntry
 
     void consolidateMinimals();
 
-    bool fixMinimals(const vector<CombEntry>& centries);
+    // bool fixMinimals(const vector<CombEntry>& centries);
+    bool fixMinimals(
+      const CombMemory& combMemory,
+      const unsigned cards);
 
     void setType(const CombinationType typeIn);
     CombinationType getType() const;

@@ -97,9 +97,22 @@ combinations/CombMemory.obj: strategies/result/MultiResult.h
 combinations/CombMemory.obj: distributions/Reductions.h
 combinations/CombMemory.obj: distributions/Reduction.h inputs/Control.h
 combinations/CombMemory.obj: inputs/Entity.h
+combinations/CombEntry.obj: combinations/CombMemory.h
 combinations/CombEntry.obj: combinations/CombEntry.h
 combinations/CombEntry.obj: combinations/CombReference.h
 combinations/CombEntry.obj: utils/CombinationType.h
+combinations/CombEntry.obj: combinations/Combination.h
+combinations/CombEntry.obj: strategies/Strategies.h strategies/Slist.h
+combinations/CombEntry.obj: strategies/Strategy.h strategies/result/Result.h
+combinations/CombEntry.obj: strategies/result/Winners.h
+combinations/CombEntry.obj: strategies/result/Winner.h utils/table.h
+combinations/CombEntry.obj: utils/Card.h utils/Compare.h utils/Compare.h
+combinations/CombEntry.obj: strategies/optim/Study.h
+combinations/CombEntry.obj: strategies/result/Ranges.h
+combinations/CombEntry.obj: strategies/result/Range.h
+combinations/CombEntry.obj: strategies/result/MultiResult.h
+combinations/CombEntry.obj: distributions/Reductions.h
+combinations/CombEntry.obj: distributions/Reduction.h
 combinations/CombFiles.obj: combinations/CombFiles.h combinations/CombEntry.h
 combinations/CombFiles.obj: combinations/CombReference.h
 combinations/CombFiles.obj: utils/CombinationType.h inputs/Control.h
@@ -121,7 +134,7 @@ combinations/CombTest.obj: strategies/result/MultiResult.h
 combinations/CombTest.obj: distributions/Reductions.h
 combinations/CombTest.obj: distributions/Reduction.h
 combinations/CombTest.obj: combinations/Combination.h
-combinations/CombTest.obj: combinations/CombEntry.h
+combinations/CombTest.obj: combinations/CombMemory.h combinations/CombEntry.h
 combinations/CombTest.obj: combinations/CombReference.h
 combinations/CombTest.obj: utils/CombinationType.h combinations/CombTest.h
 combinations/CombTest.obj: const.h
