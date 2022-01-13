@@ -1,12 +1,17 @@
-2022-01-12
+2022-01-13
 ==========
-Distributions:
-- Split into DistMap and DistCore
-- DistMap is set for each (cards, holding) directly
-- Then there is an index into DistCore
-- Memory size: Switch to unsigned char
-- Count the number of uniques, see what happens
-- More unsigned char in DistMap and DistCore
+If single combination, also move distributions to same system
+as combinations.
+
+Check that minimals always have values > the originals.
+
+Make the holding loop backward.
+
+Only store minimals long-term.
+
+Do checks in loop, not as a batch afterwards.
+
+If single shot, output #used distributions and combinations.
 
 2022-01-09
 ==========

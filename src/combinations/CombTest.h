@@ -24,7 +24,7 @@ class CombTest
   private:
 
     void checkReductions(
-      const unsigned cards,
+      const unsigned char cards,
       const CombMemory& combMemory,
       const CombEntry& centry,
       const Strategies& strategies,
@@ -36,10 +36,10 @@ class CombTest
 
     void checkAllMinimals(
       const CombMemory& combMemory,
-      const unsigned cards) const;
+      const unsigned char cards) const;
 
     void checkAllReductions(
-      const unsigned cards,
+      const unsigned char cards,
       const CombMemory& combMemory,
       const Distributions& distributions) const;
 };

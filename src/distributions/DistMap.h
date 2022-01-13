@@ -28,19 +28,19 @@ class DistMap
 
     friend class DistCore;
 
-    unsigned cards;
+    unsigned char cards;
 
     vector<unsigned> full2reduced;
     vector<unsigned> reduced2full;
 
-    unsigned rankSize; // Reduced ranks
+    unsigned char rankSize; // Reduced ranks
 
     SideInfo opponents;
 
 
     void shrink(
-      const unsigned maxFullRank,
-      const unsigned maxReducedRank);
+      const unsigned char maxFullRank,
+      const unsigned char maxReducedRank);
 
 
   public:
@@ -50,7 +50,7 @@ class DistMap
     void reset();
 
     void setRanks(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding2); // Binary, not trinary format
 
     DistID getID() const;

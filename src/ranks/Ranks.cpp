@@ -70,7 +70,7 @@ Ranks::Ranks()
 }
 
 
-void Ranks::resize(const unsigned cardsIn)
+void Ranks::resize(const unsigned char cardsIn)
 {
   cards = cardsIn;
 
@@ -80,7 +80,7 @@ void Ranks::resize(const unsigned cardsIn)
 }
 
 
-unsigned Ranks::size() const
+unsigned char Ranks::size() const
 {
   return cards;
 }

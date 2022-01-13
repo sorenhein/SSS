@@ -331,57 +331,57 @@ const string& Control::south() const
 unsigned Control::holding() const
 {
   const int h = entry.getInt(CTRL_HOLDING);
-  return (h == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(h));
+  return (h == -1 ? UCHAR_NOT_SET : static_cast<unsigned>(h));
 }
 
 
-unsigned Control::holdingLength() const
+unsigned char Control::holdingLength() const
 {
   const int h = entry.getInt(CTRL_HOLDING_LENGTH);
-  return (h == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(h));
+  return (h == -1 ? UCHAR_NOT_SET : static_cast<unsigned char>(h));
 }
 
 
-unsigned Control::cards() const
+unsigned char Control::cards() const
 {
   const int c = entry.getInt(CTRL_CARDS);
-  return (c == -1 ? UNSIGNED_NOT_SET : static_cast<unsigned>(c));
+  return (c == -1 ? UCHAR_NOT_SET : static_cast<unsigned char>(c));
 }
 
 
-unsigned Control::westMin() const
+unsigned char Control::westMin() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_WEST_MIN));
+  return static_cast<unsigned char>(entry.getInt(CTRL_WEST_MIN));
 }
 
 
-unsigned Control::westMax() const
+unsigned char Control::westMax() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_WEST_MAX));
+  return static_cast<unsigned char>(entry.getInt(CTRL_WEST_MAX));
 }
 
 
-unsigned Control::westVacant() const
+unsigned char Control::westVacant() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_WEST_VACANT));
+  return static_cast<unsigned char>(entry.getInt(CTRL_WEST_VACANT));
 }
 
 
-unsigned Control::eastMin() const
+unsigned char Control::eastMin() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_EAST_MIN));
+  return static_cast<unsigned char>(entry.getInt(CTRL_EAST_MIN));
 }
 
 
-unsigned Control::eastMax() const
+unsigned char Control::eastMax() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_EAST_MAX));
+  return static_cast<unsigned char>(entry.getInt(CTRL_EAST_MAX));
 }
 
 
-unsigned Control::eastVacant() const
+unsigned char Control::eastVacant() const
 {
-  return static_cast<unsigned>(entry.getInt(CTRL_EAST_VACANT));
+  return static_cast<unsigned char>(entry.getInt(CTRL_EAST_VACANT));
 }
 
 

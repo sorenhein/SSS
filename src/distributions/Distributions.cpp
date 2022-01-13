@@ -30,7 +30,7 @@ void Distributions::reset()
 }
 
 
-void Distributions::resize(const unsigned maxCardsIn)
+void Distributions::resize(const unsigned char maxCardsIn)
 {
   maxCards = maxCardsIn;
   distMemory.resize(maxCardsIn+1);
@@ -52,14 +52,14 @@ void Distributions::resize(const unsigned maxCardsIn)
 
 
 void Distributions::add(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding)
 {
   distMemory.add(cards, holding);
 }
 
 
-void Distributions::runUniques(const unsigned cards)
+void Distributions::runUniques(const unsigned char cards)
 {
   for (unsigned holding = 0; holding < distMemory.size(cards); holding++)
     distMemory.add(cards, holding);
@@ -67,7 +67,7 @@ void Distributions::runUniques(const unsigned cards)
 
 
 void Distributions::runUniqueThread(
-  const unsigned cards,
+  const unsigned char cards,
   [[maybe_unused]] const unsigned thid)
 {
   unsigned holding;
@@ -86,7 +86,7 @@ void Distributions::runUniqueThread(
 
 
 void Distributions::runUniquesMT(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned numThreads)
 {
   counter = 0;
@@ -119,14 +119,14 @@ void Distributions::runUniquesMT(
 
 
 const Distribution& Distributions::get(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding2) const
 {
   return distMemory.get(cards, holding2);
 }
 
 
-string Distributions::str(const unsigned cards) const
+string Distributions::str(const unsigned char cards) const
 {
   return distMemory.str(cards);
 }

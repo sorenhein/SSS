@@ -14,13 +14,12 @@
 
 #include "DistMemory.h"
 
-// The numbers of distributions are Fibonacci numbers.  
+// The numbers of splits are Fibonacci numbers.  
 // If f(0) = 1, f(1) = 1, f(2) = 2, ...,  then dist(n) = f(2*n+1).
 // There are a lot of possible interpretations on
 // http://oeis.org/A001906 and http://oeis.org/A088305.
 
-const vector<unsigned> DIST_UNIQUE_COUNT =
-{
+/*
   1,      //  0
   3,      //  1
   8,      //  2
@@ -37,7 +36,30 @@ const vector<unsigned> DIST_UNIQUE_COUNT =
   317811, // 13
   832040, // 14
   2178409 // 15
+*/
+
+// The numbers of unique distributions are also Fibonacci numbers.
+
+const vector<unsigned> DIST_UNIQUE_COUNT =
+{
+  1,      //  0
+  1,      //  1
+  1,      //  2
+  2,      //  3
+  3,      //  4
+  5,      //  5
+  8,      //  6
+  13,     //  7
+  21,     //  8
+  34,     //  9
+  55,     // 10
+  89,     // 11
+  144,    // 12
+  233,    // 13
+  377,    // 14
+  610     // 15
 };
+
 
 const unsigned DIST_CHUNK_SIZE = 16;
 
@@ -63,7 +85,7 @@ void DistMemory::reset()
 
 
 void DistMemory::resize(
-  const unsigned maxCardsIn,
+  const unsigned char maxCardsIn,
   const bool fullFlagIn)
 {
   // If fullFlag is set, all the space for distributions is
@@ -108,7 +130,7 @@ void DistMemory::resize(
 
 
 void DistMemory::add(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding)
 {
   assert(cards < distributions.size());
@@ -159,7 +181,7 @@ void DistMemory::add(
 
 
 const Distribution& DistMemory::get(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding) const
 {
   assert(holding < distributions[cards].size());
@@ -167,20 +189,20 @@ const Distribution& DistMemory::get(
 }
 
 
-unsigned DistMemory::size(const unsigned cards) const
+unsigned DistMemory::size(const unsigned char cards) const
 {
   assert(cards < distributions.size());
   return distributions[cards].size();
 }
 
 
-unsigned DistMemory::numUniques(const unsigned cards) const
+unsigned DistMemory::numUniques(const unsigned char cards) const
 {
   return counters[cards];
 }
 
 
-unsigned DistMemory::numSplits(const unsigned cards) const
+unsigned DistMemory::numSplits(const unsigned char cards) const
 {
   return cumulSplits[cards];
 }
@@ -205,9 +227,9 @@ string DistMemory::strDynamic() const
 }
 
 
-string DistMemory::str(const unsigned cards) const
+string DistMemory::str(const unsigned char cards) const
 {
-  unsigned cmin, cmax;
+  unsigned char cmin, cmax;
   if (cards == 0)
   {
     cmin = 1;
@@ -228,14 +250,14 @@ string DistMemory::str(const unsigned cards) const
     setw(9) << "Uniques" <<
     "\n";
 
-  for (unsigned c = cmin; c <= cmax; c++)
+  for (unsigned char c = cmin; c <= cmax; c++)
   {
     assert(c < cumulSplits.size() && c < distributions.size());
     if (cumulSplits[c] == 0)
       continue;
 
     ss <<
-      setw(5) << c <<
+      setw(5) << +c <<
       setw(9) << distributions[c].size() <<
       setw(9) << cumulSplits[c] <<
       setw(9) << fixed << setprecision(2) <<

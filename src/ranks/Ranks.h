@@ -38,7 +38,7 @@ class Ranks
 
     unsigned holding3;
     unsigned holding4;
-    unsigned cards;
+    unsigned char cards;
     unsigned char maxGlobalRank;
 
 
@@ -128,9 +128,9 @@ class Ranks
 
     Ranks();
 
-    void resize(const unsigned cardsIn);
+    void resize(const unsigned char cardsIn);
 
-    unsigned size() const;
+    unsigned char size() const;
 
     void setRanks(
       const unsigned holding3In,

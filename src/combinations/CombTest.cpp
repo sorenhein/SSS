@@ -23,7 +23,7 @@
 
 void CombTest::checkAllMinimals(
   const CombMemory& combMemory,
-  const unsigned cards) const
+  const unsigned char cards) const
 {
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
@@ -41,7 +41,7 @@ void CombTest::checkAllMinimals(
 
 
 void CombTest::checkReductions(
-  const unsigned cards,
+  const unsigned char cards,
   const CombMemory& combMemory,
   const CombEntry& centry,
   const Strategies& strategies,
@@ -117,7 +117,7 @@ if (centry.getHolding3() == 2072)
 
 
 void CombTest::checkAllReductions(
-  const unsigned cards,
+  const unsigned char cards,
   const CombMemory& combMemory,
   const Distributions& distributions) const
 {

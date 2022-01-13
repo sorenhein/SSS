@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
 
   timers.start(TIMER_DISTRIBUTIONS);
 
-  for (unsigned cards = 0; cards <= control.cards(); cards++)
+  for (unsigned char cards = 0; cards <= control.cards(); cards++)
   {
     // distributions.runUniquesMT(cards, control.numThreads());
     distributions.runUniques(cards);
@@ -60,9 +60,9 @@ int main(int argc, char * argv[])
   {
     combinations.resize(control.cards());
 
-    for (unsigned cards = 0; cards <= 11; cards++)
+    for (unsigned char cards = 0; cards <= 11; cards++)
     {
-      cout << "Cards " << setw(2) << right << cards << endl;
+      cout << "Cards " << setw(2) << right << +cards << endl;
 
       // combinations.runUniquesMT(cards, control.numThreads());
       combinations.runUniques(cards, distributions);

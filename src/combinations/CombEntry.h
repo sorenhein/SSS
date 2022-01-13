@@ -73,10 +73,9 @@ class CombEntry
 
     void consolidateMinimals();
 
-    // bool fixMinimals(const vector<CombEntry>& centries);
     bool fixMinimals(
       const CombMemory& combMemory,
-      const unsigned cards);
+      const unsigned char cards);
 
     void setType(const CombinationType typeIn);
     CombinationType getType() const;

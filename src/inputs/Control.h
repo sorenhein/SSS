@@ -137,14 +137,14 @@ class Control
     const string& north() const;
     const string& south() const;
     unsigned holding() const;
-    unsigned holdingLength() const;
-    unsigned cards() const;
-    unsigned westMin() const;
-    unsigned westMax() const;
-    unsigned westVacant() const;
-    unsigned eastMin() const;
-    unsigned eastMax() const;
-    unsigned eastVacant() const;
+    unsigned char holdingLength() const;
+    unsigned char cards() const;
+    unsigned char westMin() const;
+    unsigned char westMax() const;
+    unsigned char westVacant() const;
+    unsigned char eastMin() const;
+    unsigned char eastMax() const;
+    unsigned char eastVacant() const;
 
     unsigned goal() const;
     double expect() const;

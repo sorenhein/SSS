@@ -98,7 +98,7 @@ void CombEntry::consolidateMinimals()
 
 bool CombEntry::fixMinimals(
   const CombMemory& combMemory,
-  const unsigned cards)
+  const unsigned char cards)
 {
   // Check that each non-minimal holding refers to minimal ones.
   // We actually follow through and change the minimals.

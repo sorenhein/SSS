@@ -22,7 +22,7 @@ class DistMemory
 {
   private:
 
-    unsigned maxCards;
+    unsigned char maxCards;
 
     bool fullFlag;
 
@@ -42,26 +42,26 @@ class DistMemory
     void reset();
 
     void resize(
-      const unsigned maxCardsIn,
+      const unsigned char maxCardsIn,
       const bool fullFlag = true);
 
     // Thread-safe
     void add(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding);
 
     const Distribution& get(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding) const;
 
-    unsigned size(const unsigned cards) const;
+    unsigned size(const unsigned char cards) const;
 
-    unsigned numUniques(const unsigned cards) const;
+    unsigned numUniques(const unsigned char cards) const;
 
-    unsigned numSplits(const unsigned cards) const;
+    unsigned numSplits(const unsigned char cards) const;
 
     string strDynamic() const;
-    string str(const unsigned cards) const;
+    string str(const unsigned char cards) const;
 };
 
 #endif

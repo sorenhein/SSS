@@ -43,7 +43,7 @@ class Distributions
     atomic<unsigned> counter;
 
     void runUniqueThread(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned thid);
 
   public:
@@ -52,23 +52,23 @@ class Distributions
 
     void reset();
 
-    void resize(const unsigned maxCardsIn);
+    void resize(const unsigned char maxCardsIn);
 
     void add(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding);
 
-    void runUniques(const unsigned cards);
+    void runUniques(const unsigned char cards);
 
     void runUniquesMT(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned numThreads);
 
     const Distribution& get(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding2) const;
 
-    string str(const int unsigned = 0) const;
+    string str(const unsigned char cards = 0) const;
 
 };
 

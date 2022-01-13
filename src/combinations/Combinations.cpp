@@ -69,13 +69,13 @@ void Combinations::reset()
 
 
 void Combinations::resize(
-  const unsigned maxCardsIn,
+  const unsigned char maxCardsIn,
   const bool fullFlag)
 {
   combMemory.resize(maxCardsIn, fullFlag);
 
   countStats.resize(maxCardsIn+1);
-  for (unsigned cards = 0; cards < maxCardsIn+1; cards++)
+  for (unsigned char cards = 0; cards < maxCardsIn+1; cards++)
   {
     countStats[cards].data.resize(COMB_SIZE);
     countStats[cards].data.resize(COMB_SIZE);
@@ -87,7 +87,7 @@ void Combinations::resize(
 
 void Combinations::dumpVS(
   const string& title,
-  const unsigned cards,
+  const unsigned char cards,
   const vector<set<unsigned>>& vs) const
 {
   cout << title << "\n";
@@ -103,7 +103,7 @@ void Combinations::dumpVS(
 
 
 void Combinations::getDependencies(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding,
   vector<set<unsigned>>& dependenciesTrinary,
   vector<set<unsigned>>& dependenciesBinary)
@@ -124,7 +124,7 @@ void Combinations::getDependencies(
   while (true)
   {
     bool doneFlag = true;
-    for (unsigned c = 0; c <= cards; c++)
+    for (unsigned char c = 0; c <= cards; c++)
     {
       for (auto& dep: scratch1[c])
       {
@@ -161,7 +161,7 @@ void Combinations::getDependencies(
 
 
 void Combinations::runSingle(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding,
   Distributions& distributions)
 {
@@ -173,7 +173,7 @@ void Combinations::runSingle(
   Combinations::getDependencies(cards, holding, 
     dependenciesTrinary, dependenciesBinary);
 
-  for (unsigned c = 0; c <= cards; c++)
+  for (unsigned char c = 0; c <= cards; c++)
     for (auto& dep: dependenciesBinary[c])
       distributions.add(c, dep);
 
@@ -181,7 +181,7 @@ void Combinations::runSingle(
   Plays plays;
   plays.resize(cards);
 
-  for (unsigned c = 0; c <= cards; c++)
+  for (unsigned char c = 0; c <= cards; c++)
   {
     for (auto& dep: dependenciesTrinary[c])
     {
@@ -244,7 +244,7 @@ CombinationType Combinations::classify(
 
 
 void Combinations::runUniques(
-  const unsigned cards,
+  const unsigned char cards,
   const Distributions& distributions)
 {
   assert(cards < countStats.size());
@@ -474,7 +474,7 @@ void Combinations::runUniquesOld(
 
 
 void Combinations::runUniqueThread(
-  const unsigned cards,
+  const unsigned char cards,
   Distributions const * distributions,
   const unsigned thid)
 {
@@ -529,7 +529,7 @@ void Combinations::runUniqueThread(
 
 
 void Combinations::runUniquesMT(
-  const unsigned cards,
+  const unsigned char cards,
   const Distributions& distributions,
   const unsigned numThreads)
 {
@@ -565,14 +565,14 @@ void Combinations::runUniquesMT(
 
 
 Combination const * Combinations::getPtr(
-  const unsigned cards,
+  const unsigned char cards,
   const unsigned holding3) const
 {
   return &combMemory.getComb(cards, holding3);
 }
 
 
-void Combinations::fixMinimals(const unsigned cards)
+void Combinations::fixMinimals(const unsigned char cards)
 {
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
@@ -583,7 +583,7 @@ void Combinations::fixMinimals(const unsigned cards)
   }
 }
 
-string Combinations::strUniques(const unsigned cards) const
+string Combinations::strUniques(const unsigned char cards) const
 {
   unsigned cmin, cmax;
   if (cards == 0)

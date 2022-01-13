@@ -185,7 +185,7 @@ string CombMemory::str() const
   for (unsigned c = 0; c < counters.size(); c++)
   {
    if (counters[c])
-     ss << setw(6) << c  << setw(8) << counters[c] << "\n";
+     ss << setw(6) << c << setw(8) << counters[c] << "\n";
   }
 
   return ss.str();

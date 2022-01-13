@@ -29,7 +29,7 @@ class Distribution
   public:
 
     void setRanks(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding2) // Binary, not trinary format
     {
       distMap.setRanks(cards, holding2);

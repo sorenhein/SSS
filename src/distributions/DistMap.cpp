@@ -28,8 +28,8 @@ void DistMap::reset()
 
 
 void DistMap::shrink(
-  const unsigned maxFullRank,
-  const unsigned maxReducedRank)
+  const unsigned char maxFullRank,
+  const unsigned char maxReducedRank)
 {
   rankSize = maxReducedRank + 1;
   full2reduced.resize(maxFullRank+1);
@@ -39,7 +39,7 @@ void DistMap::shrink(
 
 
 void DistMap::setRanks(
-  const unsigned cardsIn,
+  const unsigned char cardsIn,
   const unsigned holding2)
 {
   cards = cardsIn;
@@ -54,13 +54,13 @@ void DistMap::setRanks(
 
   // The full rank is the rank used in Combinations.
   // East-West might have ranks 1, 3 and 5, for example.
-  unsigned nextFullRank = 1;
-  unsigned maxFullRank = 1;
+  unsigned char nextFullRank = 1;
+  unsigned char maxFullRank = 1;
 
   // The reduced rank is used internally in Distribution and only
   // considers the East-West ranks which might be 0, 1 and 2.
-  unsigned nextReducedRank = 0;
-  unsigned maxReducedRank = 0;
+  unsigned char nextReducedRank = 0;
+  unsigned char maxReducedRank = 0;
 
   unsigned h = holding2;
   opponents.len = 0;

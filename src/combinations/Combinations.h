@@ -47,11 +47,11 @@ class Combinations
 
     void dumpVS(
       const string& title,
-      const unsigned cards,
+      const unsigned char cards,
       const vector<set<unsigned>>& vs) const;
 
     void getDependencies(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding,
       vector<set<unsigned>>& dependenciesTrinary,
       vector<set<unsigned>>& dependendiesBinary);
@@ -67,11 +67,11 @@ class Combinations
       const Ranks& ranks) const;
 
     void runUniqueThread(
-      const unsigned cards,
+      const unsigned char cards,
       Distributions const * distributions,
       const unsigned thid);
 
-    void fixMinimals(const unsigned cards);
+    void fixMinimals(const unsigned char cards);
 
 
   public:
@@ -83,32 +83,32 @@ class Combinations
     void reset();
 
     void resize(
-      const unsigned maxCardsIn,
+      const unsigned char maxCardsIn,
       const bool fullFlag = false);
 
     void runSingle(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding,
       Distributions& distributions);
 
     void runUniques(
-      const unsigned cards,
+      const unsigned char cards,
       const Distributions& distributions);
 
     void runUniquesOld(
-      const unsigned cards,
+      const unsigned char cards,
       const Distributions& distributions);
 
     void runUniquesMT(
-      const unsigned cards,
+      const unsigned char cards,
       const Distributions& distributions,
       const unsigned numThreads);
 
     Combination const * getPtr(
-      const unsigned cards,
+      const unsigned char cards,
       const unsigned holding3) const;
 
-    string strUniques(const int unsigned = 0) const;
+    string strUniques(const unsigned char cards = 0) const;
 
 };
 

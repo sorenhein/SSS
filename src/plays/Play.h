@@ -54,7 +54,7 @@ struct Play
   Winner currBest;
 
   // Information about the place the play came from.
-  unsigned cardsLeft;
+  unsigned char cardsLeft;
 
   unsigned holding3;
   bool rotateFlag;
