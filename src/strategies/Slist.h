@@ -22,7 +22,6 @@ class Ranges;
 struct Play;
 class SurvivorList;
 class Distribution;
-class DistributionX;
 
 using namespace std;
 
@@ -154,7 +153,7 @@ class Slist
     
     // Rank-check help methods.
 
-    bool reduceByResults(const DistributionX& dist);
+    bool reduceByResults(const Distribution& dist);
 
     void expand(
       const Reduction& reduction,

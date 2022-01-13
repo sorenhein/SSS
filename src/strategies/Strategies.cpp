@@ -151,7 +151,7 @@ timersStrat[2].stop();
  *                                                          *
  ************************************************************/
 
-bool Strategies::reduceByResults(const DistributionX& dist)
+bool Strategies::reduceByResults(const Distribution& dist)
 {
   // Delete Strategy's where the results are not constant
   // within each reduction group.  The number of distributions is

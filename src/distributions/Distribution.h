@@ -6,20 +6,13 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_DISTRIBUTION_H
-#define SSS_DISTRIBUTION_H
+#ifndef SSS_DISTRIBUTIONX_H
+#define SSS_DISTRIBUTIONX_H
 
-#include <vector>
 #include <string>
 
-#include "SurvivorList.h"
-#include "Survivors.h"
-#include "Reductions.h"
-#include "DistHelp.h"
-
-
-struct Play;
-
+#include "DistMap.h"
+#include "DistCore.h"
 
 using namespace std;
 
@@ -28,65 +21,72 @@ class Distribution
 {
   private:
 
-    unsigned cards;
+    DistMap distMap;
 
-    vector<unsigned> full2reduced;
-    vector<unsigned> reduced2full;
-    unsigned rankSize; // Reduced ranks
-
-    SideInfo opponents;
-
-    vector<DistInfo> distributions;
-
-    Distribution const * distCanonical;
-
-    Survivors survivors;
-
-    Reductions reductions;
-
-
-    void setBinomial();
-
-    void setNames();
-
-    void shrink(
-      const unsigned maxFullRank,
-      const unsigned maxReducedRank);
-
-    void mirror(unsigned& distIndex);
-
-    string strHeader() const;
+    DistCore * distCorePtr;
 
 
   public:
 
-    Distribution();
-
-    void reset();
-
     void setRanks(
       const unsigned cards,
-      const unsigned holding2); // Binary, not trinary format
+      const unsigned holding2) // Binary, not trinary format
+    {
+      distMap.setRanks(cards, holding2);
+    };
 
-    void split();
-    void splitAlternative(); // Does the identical thing, maybe faster
+    void setPtr(DistCore * distCorePtrIn)
+    {
+      assert(distCorePtrIn != nullptr);
+      distCorePtr = distCorePtrIn;
+    };
 
-    void setPtr(Distribution const * distCanonicalIn);
+    void setPtr(const Distribution& dist)
+    {
+      assert(dist.distCorePtr != nullptr);
+      setPtr(dist.distCorePtr);
+    };
 
-    Distribution const * getPtr() const;
+    DistID getID() const
+    {
+      return distMap.getID();
+    }
 
-    unsigned size() const;
+    void split()
+    {
+      assert(distCorePtr != nullptr);
+      distCorePtr->splitAlternative(distMap);
+    };
 
-    DistID getID() const;
+    void setLookups()
+    {
+      assert(distCorePtr != nullptr);
+      distCorePtr->setLookups();
+    };
 
-    void setLookups();
+    unsigned size() const
+    {
+      assert(distCorePtr != nullptr);
+      return distCorePtr->size();
+    };
 
-    const SurvivorList& getSurvivors(const Play& play) const;
+    const SurvivorList& getSurvivors(const Play& play) const
+    {
+      assert(distCorePtr != nullptr);
+      return distCorePtr->getSurvivors(distMap, play);
+    };
 
-    const Reduction& getReduction(const unsigned char rankNS) const;
+    const Reduction& getReduction(const unsigned char rankNS) const
+    {
+      assert(distCorePtr != nullptr);
+      return distCorePtr->getReduction(distMap, rankNS);
+    };
 
-    string str() const;
-
+    string str() const
+    {
+      assert(distCorePtr != nullptr);
+      return distCorePtr->str();
+    };
 };
 
 #endif

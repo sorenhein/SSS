@@ -19,7 +19,6 @@
 class Ranges;
 struct Play;
 class Distribution;
-class DistributionX;
 class SurvivorList;
 struct Reduction;
 
@@ -150,7 +149,7 @@ class Strategy
 
     // ************* Rank-check methods  ************
 
-    bool reduceByResults(const DistributionX& dist);
+    bool reduceByResults(const Distribution& dist);
 
     void expand(
       const Reduction& reduction,

@@ -114,7 +114,7 @@ void DistMemory::add(
   assert(cards < distributions.size());
   assert(holding < distributions[cards].size());
 
-  DistributionX& dist = distributions[cards][holding];
+  Distribution& dist = distributions[cards][holding];
   dist.setRanks(cards, holding);
   const DistID distID = dist.getID();
 
@@ -177,7 +177,7 @@ void DistMemory::add(
 }
 
 
-const DistributionX& DistMemory::get(
+const Distribution& DistMemory::get(
   const unsigned cards,
   const unsigned holding) const
 {
@@ -187,6 +187,13 @@ const DistributionX& DistMemory::get(
 // cout << uniques[cards][uniqueIndex].str();
   // return * distEntries[cards][holding].distCorePtr;
   return distributions[cards][holding];
+}
+
+
+unsigned DistMemory::size(const unsigned cards) const
+{
+  assert(cards < distributions.size());
+  return distributions[cards].size();
 }
 
 

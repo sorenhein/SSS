@@ -16,7 +16,6 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
-#include "../distributions/DistributionX.h"
 #include "../inputs/Control.h"
 
 #include "../utils/compsec.h"
@@ -201,7 +200,7 @@ bool Strategy::detectChangedResults(
 }
 
 
-bool Strategy::reduceByResults(const DistributionX& dist)
+bool Strategy::reduceByResults(const Distribution& dist)
 {
   // Forces constant results (tricks or whole results depending on
   // Result, i.e. control.runRankComparisons()) within each

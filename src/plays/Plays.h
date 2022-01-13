@@ -22,7 +22,6 @@ using namespace std;
 
 class Combinations;
 class Distribution;
-class DistributionX;
 class DistCore;
 class Strategies;
 
@@ -47,16 +46,15 @@ class Plays
 
 
     void getNextStrategies(
-      // Distribution const * distPtr,
-      const DistributionX& dist,
+      const Distribution& dist,
       const DebugPlay debugFlag);
 
     void strategizeSimpleFront(
-      const DistributionX& distribution,
+      const Distribution& distribution,
       const DebugPlay debugFlag);
 
     void strategizeSimpleBack(
-      const DistributionX& distribution,
+      const Distribution& distribution,
       const DebugPlay debugFlag);
 
     string strNodeCounts(const string& title = "") const;
@@ -80,8 +78,7 @@ class Plays
     void addHoldings(vector<set<unsigned>>& holdings) const;
 
     const Strategies& strategize(
-      // Distribution const * distPtr,
-      const DistributionX& distribution,
+      const Distribution& distribution,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     string str() const;

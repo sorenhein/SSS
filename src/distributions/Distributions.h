@@ -15,10 +15,9 @@
 #include <atomic>
 #include <mutex>
 
-#include "Distribution.h"
 #include "DistMemory.h"
 
-class DistributionX;
+class Distribution;
 
 using namespace std;
 
@@ -29,7 +28,7 @@ class Distributions
 
     unsigned maxCards;
 
-    vector<vector<Distribution>> distributions;
+    // vector<vector<Distribution>> distributions;
 
     DistMemory distMemory;
 
@@ -65,15 +64,7 @@ class Distributions
       const unsigned cards,
       const unsigned numThreads);
 
-    Distribution const * ptrCanonical(
-      const unsigned cards,
-      const unsigned holding2) const;
-
-    Distribution const * ptrNoncanonical(
-      const unsigned cards,
-      const unsigned holding2) const;
-
-    const DistributionX& get(
+    const Distribution& get(
       const unsigned cards,
       const unsigned holding2) const;
 

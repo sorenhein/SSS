@@ -17,7 +17,6 @@
 #include "CombEntry.h"
 
 #include "../distributions/Distributions.h"
-#include "../distributions/Distribution.h"
 
 #include "../inputs/Control.h"
 
@@ -91,7 +90,7 @@ const Strategies& Combination::strategize(
 
   // distPtr = distributions.ptrNoncanonical(
     // ranks.size(), centry.getHolding2());
-  const DistributionX& dist = distributions.get(
+  const Distribution& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 
   if (control.outputBasicResults() || debugFlag)
@@ -151,7 +150,7 @@ cout << "cholding2 is " << centry.getHolding2() <<
   // Look up a pointer to the EW distribution of this combination.
   // distPtr = distributions.ptrNoncanonical(
     // ranks.size(), centry.getHolding2());
-  const DistributionX& dist = distributions.get(
+  const Distribution& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 
   // Make the plays.

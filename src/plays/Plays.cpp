@@ -15,8 +15,6 @@
 
 #include "../combinations/Combinations.h"
 
-#include "../distributions/Distribution.h"
-
 #include "../inputs/Control.h"
 
 extern Control control;
@@ -113,8 +111,7 @@ void Plays::addHoldings(vector<set<unsigned>>& holdings) const
 
 
 void Plays::getNextStrategies(
-  // Distribution const * distPtr,
-  const DistributionX& dist,
+  const Distribution& dist,
   const DebugPlay debugFlag)
 {
   // For RHO nodes we have to populate the strategies first.
@@ -126,7 +123,7 @@ void Plays::getNextStrategies(
 
 
 void Plays::strategizeSimpleBack(
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const DebugPlay debugFlag)
 {
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
@@ -136,7 +133,7 @@ void Plays::strategizeSimpleBack(
 
 
 void Plays::strategizeSimpleFront(
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const DebugPlay debugFlag)
 {
   nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
@@ -146,8 +143,7 @@ void Plays::strategizeSimpleFront(
 
 
 const Strategies& Plays::strategize(
-  // Distribution const * distPtr,
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const DebugPlay debugFlag)
 {
   // The plays are propagated backwards up to a strategy for the

@@ -18,7 +18,6 @@ using namespace std;
 class CombEntry;
 class Combinations;
 class Distributions;
-class Distribution;
 class Ranks;
 class Plays;
 
@@ -26,8 +25,6 @@ class Plays;
 class Combination
 {
   private:
-
-    // Distribution const * distPtr;
 
     Strategies strats;
 
@@ -66,8 +63,6 @@ class Combination
       bool debugFlag = false);
 
     const Strategies& strategies() const;
-
-    // string str() const;
 
 };
 

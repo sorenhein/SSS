@@ -46,8 +46,7 @@ void CombTest::checkReductions(
   const CombEntry& centry,
   const Strategies& strategies,
   const unsigned char maxRank,
-  const DistributionX& distribution) const
-  // const Distribution& distribution) const
+  const Distribution& distribution) const
 {
   Strategies stratsCumul;
 

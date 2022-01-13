@@ -23,7 +23,6 @@
 struct Play;
 class SurvivorList;
 class Distribution;
-class DistributionX;
 
 using namespace std;
 
@@ -69,7 +68,7 @@ class Strategies
     void symmetrize();
 
     // Does each Strategy separately using its own critical rank.
-    bool reduceByResults(const DistributionX& dist);
+    bool reduceByResults(const Distribution& dist);
 
     void expand(
       const Reduction& reduction,

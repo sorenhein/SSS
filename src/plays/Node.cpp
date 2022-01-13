@@ -17,7 +17,6 @@
 #include "../combinations/Combination.h"
 
 #include "../distributions/Distribution.h"
-#include "../distributions/DistributionX.h"
 
 #include "../inputs/Control.h"
 
@@ -76,7 +75,7 @@ void Node::linkRhoToLead()
 
 
 void Node::getNextStrategies(
-  const DistributionX& dist,
+  const Distribution& dist,
   const bool debugFlag)
 {
   // This method should only be used for an RHO node.
@@ -133,7 +132,7 @@ void Node::reactivate()
 
 
 void Node::reduceByResults(
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const bool debugFlag)
 {
   if (strats.reduceByResults(distribution))

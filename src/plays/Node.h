@@ -17,7 +17,6 @@
 using namespace std;
 
 class Distribution;
-class DistributionX;
 class Combinations;
 struct Play;
 
@@ -60,7 +59,7 @@ class Node
     void linkRhoToLead();
 
     void getNextStrategies(
-      const DistributionX& dist,
+      const Distribution& dist,
       const bool debugFlag);
 
     void propagateRanges();
@@ -70,7 +69,7 @@ class Node
     void reactivate();
 
     void reduceByResults(
-      const DistributionX& distribution,
+      const Distribution& distribution,
       const bool debugFlag);
 
     void cross(

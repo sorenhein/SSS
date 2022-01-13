@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "DistributionX.h"
+#include "Distribution.h"
 #include "DistCore.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ class DistMemory
 
     bool fullFlag;
 
-    vector<vector<DistributionX>> distributions;
+    vector<vector<Distribution>> distributions;
 
     vector<vector<DistCore>> uniques;
 
@@ -50,9 +50,11 @@ class DistMemory
       const unsigned cards,
       const unsigned holding);
 
-    const DistributionX& get(
+    const Distribution& get(
       const unsigned cards,
       const unsigned holding) const;
+
+    unsigned size(const unsigned cards) const;
 
     unsigned numUniques(const unsigned cards) const;
 

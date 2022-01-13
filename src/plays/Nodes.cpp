@@ -15,8 +15,6 @@
 #include "Play.h"
 #include "Chunks.h"
 
-#include "../distributions/Distribution.h"
-
 
 Nodes::Nodes()
 {
@@ -140,7 +138,7 @@ void Nodes::removeNodes()
 
 
 void Nodes::strategizeDeclarer(
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
@@ -158,7 +156,7 @@ void Nodes::strategizeDeclarer(
 
 
 void Nodes::strategizeDeclarerAdvanced(
-  const DistributionX& distribution,
+  const Distribution& distribution,
   const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
