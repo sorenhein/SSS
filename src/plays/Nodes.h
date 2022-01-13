@@ -15,6 +15,7 @@
 #include "Node.h"
 
 class Distribution;
+class DistributionX;
 
 using namespace std;
 
@@ -74,11 +75,11 @@ class Nodes
     list<Node>::const_iterator end() const;
 
     void strategizeDeclarer(
-      const Distribution& distribution,
+      const DistributionX& distribution,
       const bool debugFlag);
 
     void strategizeDeclarerAdvanced(
-      const Distribution& distribution,
+      const DistributionX& distribution,
       const bool debugFlag);
 
     void strategizeDefenders(const bool debugFlag);

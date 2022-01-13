@@ -27,7 +27,7 @@ class Combination
 {
   private:
 
-    Distribution const * distPtr;
+    // Distribution const * distPtr;
 
     Strategies strats;
 

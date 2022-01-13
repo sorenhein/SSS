@@ -16,6 +16,7 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
+#include "../distributions/DistributionX.h"
 #include "../inputs/Control.h"
 
 #include "../utils/compsec.h"
@@ -200,7 +201,7 @@ bool Strategy::detectChangedResults(
 }
 
 
-bool Strategy::reduceByResults(const Distribution& distribution)
+bool Strategy::reduceByResults(const DistributionX& dist)
 {
   // Forces constant results (tricks or whole results depending on
   // Result, i.e. control.runRankComparisons()) within each
@@ -213,7 +214,7 @@ bool Strategy::reduceByResults(const Distribution& distribution)
   if (rankCritical == 0 || rankCritical == UCHAR_NOT_SET)
     return true;
 
-  const auto& reduction = distribution.getReduction(rankCritical);
+  const auto& reduction = dist.getReduction(rankCritical);
   assert(reduction.full2reducedDist.size() == results.size());
 
   return Strategy::reduceByResults(reduction);

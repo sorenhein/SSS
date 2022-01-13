@@ -46,7 +46,8 @@ void CombTest::checkReductions(
   const CombEntry& centry,
   const Strategies& strategies,
   const unsigned char maxRank,
-  const Distribution& distribution) const
+  const DistributionX& distribution) const
+  // const Distribution& distribution) const
 {
   Strategies stratsCumul;
 
@@ -77,6 +78,7 @@ void CombTest::checkReductions(
     const unsigned char rankCritical = 
       (winRankLow == UCHAR_NOT_SET ? 0 : winRankLow + rankAdder);
 
+    // const auto& reduction = distribution.getReduction(rankCritical);
     const auto& reduction = distribution.getReduction(rankCritical);
 
     stratsMin.expand(reduction, rankAdder, min.getRotateFlag());
@@ -128,15 +130,16 @@ void CombTest::checkAllReductions(
 
     const Combination& comb = combMemory.getComb(cards, holding);
 
-cout << "CAR: Calling CR with " << holding << ", " << 
-  centry.getHolding2() << "\n";
+// cout << "CAR: Calling CR with " << holding << ", " << 
+  // centry.getHolding2() << "\n";
     CombTest::checkReductions(
       cards,
       combMemory,
       centry, 
       comb.strategies(), 
       comb.getMaxRank(),
-      * distributions.ptrNoncanonical(cards, centry.getHolding2()));
+      distributions.get(cards, centry.getHolding2()));
+      // * distributions.ptrNoncanonical(cards, centry.getHolding2()));
   }
 }
 

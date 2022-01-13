@@ -55,7 +55,7 @@ void DistMemory::reset()
 {
   maxCards = 0;
   fullFlag = false;
-  distEntries.clear();
+  distributions.clear();
   uniques.clear();
   counters.clear();
   cumulSplits.clear();
@@ -73,7 +73,7 @@ void DistMemory::resize(
   maxCards = maxCardsIn;
   fullFlag = fullFlagIn;
 
-  distEntries.resize(maxCardsIn+1);
+  distributions.resize(maxCardsIn+1);
   uniques.resize(maxCardsIn+1);
 
   // We count the total number of card splits for East and West.
@@ -94,9 +94,9 @@ void DistMemory::resize(
   // or they don't.
   unsigned numDistributions = 1;
 
-  for (unsigned cards = 0; cards < distEntries.size(); cards++)
+  for (unsigned cards = 0; cards < distributions.size(); cards++)
   {
-    distEntries[cards].resize(numDistributions);
+    distributions[cards].resize(numDistributions);
     numDistributions <<= 1;
 
     if (fullFlag)
@@ -111,10 +111,14 @@ void DistMemory::add(
   const unsigned cards,
   const unsigned holding)
 {
-  DistEntry& distEntry = distEntries[cards][holding];
-  distEntry.distMap.setRanks(cards, holding);
-  const DistID distID = distEntry.distMap.getID();
+  assert(cards < distributions.size());
+  assert(holding < distributions[cards].size());
 
+  DistributionX& dist = distributions[cards][holding];
+  dist.setRanks(cards, holding);
+  const DistID distID = dist.getID();
+
+  assert(cards < uniques.size());
   vector<DistCore>& uniqs = uniques[cards];
 
   if (distID.cards == cards && distID.holding == holding)
@@ -129,47 +133,60 @@ void DistMemory::add(
 
     assert(uniqueIndex < uniqs.size());
 
+// cout << "uniqueIndex " << uniqueIndex << ", size[" <<
+  // cards << "] = " << uniqs.size() << endl;
     DistCore& distCore = uniqs[uniqueIndex];
-    distEntry.distCorePtr = &distCore;
+// cout << "address " << &uniqs[uniqueIndex] << ", " << &distCore << endl;
+    dist.setPtr(&distCore);
 
 // cout << "Added (" << cards << ", " << holding << ")\n";
-// cout << uniqs[uniqueIndex].str() << "\n---\n";
 
     mtxDistMemory.unlock();
 
-    distCore.splitAlternative(distEntry.distMap);
-    distCore.setLookups();
+// cout << "About to split" << endl;
+    dist.split();
+// cout << "About to lookup" << endl;
+    dist.setLookups();
+// cout << "After split and lookup" << endl;
+// cout << uniqs[uniqueIndex].str() << endl;
+// cout << "dist size " << dist.size() << endl;
+    // distCore.splitAlternative(distEntry.distMap);
+    // distCore.setLookups();
 
     mtxDistMemory.lock();
-    cumulSplits[cards] += distCore.size();
+    cumulSplits[cards] += dist.size();
     mtxDistMemory.unlock();
   }
   else
   {
     mtxDistMemory.lock();
 
-    distEntry.distCorePtr = 
-      distEntries[distID.cards][distID.holding].distCorePtr;
+    dist.setPtr(distributions[distID.cards][distID.holding]);
+    // distEntry.distCorePtr = 
+      // distEntries[distID.cards][distID.holding].distCorePtr;
 
-    cumulSplits[cards] += distEntry.distCorePtr->size();
+    cumulSplits[cards] += dist.size();
 
 // cout << "Repeated (" << cards << ", " << holding << ") as (" <<
-  // distID.cards << ", " << distID.holding << "\n---\n";
+  // distID.cards << ", " << distID.holding << ")" << endl;
 
     mtxDistMemory.unlock();
   }
+
+// cout << "Done adding\n" << endl;
 }
 
 
-const DistCore& DistMemory::getCore(
+const DistributionX& DistMemory::get(
   const unsigned cards,
   const unsigned holding) const
 {
-  assert(holding < distEntries[cards].size());
+  assert(holding < distributions[cards].size());
 // cout << "DM get(" << cards << ", " << holding << "): " <<
   // uniqueIndex << "\n";
 // cout << uniques[cards][uniqueIndex].str();
-  return * distEntries[cards][holding].distCorePtr;
+  // return * distEntries[cards][holding].distCorePtr;
+  return distributions[cards][holding];
 }
 
 
@@ -185,7 +202,7 @@ unsigned DistMemory::numSplits(const unsigned cards) const
 }
 
 
-string DistMemory::str() const
+string DistMemory::strDynamic() const
 {
   if (fullFlag)
     return "";
@@ -201,5 +218,48 @@ string DistMemory::str() const
   }
 
   return ss.str();
+}
+
+
+string DistMemory::str(const unsigned cards) const
+{
+  unsigned cmin, cmax;
+  if (cards == 0)
+  {
+    cmin = 1;
+    cmax = maxCards;
+  }
+  else
+  {
+    cmin = cards;
+    cmax = cards;
+  }
+
+  stringstream ss;
+  ss <<
+    setw(5) << "Cards" <<
+    setw(9) << "Count" <<
+    setw(9) << "Dists" <<
+    setw(9) << "Avg." <<
+    setw(9) << "Uniques" <<
+    "\n";
+
+  for (unsigned c = cmin; c <= cmax; c++)
+  {
+    assert(c < cumulSplits.size() && c < distributions.size());
+    if (cumulSplits[c] == 0)
+      continue;
+
+    ss <<
+      setw(5) << c <<
+      setw(9) << distributions[c].size() <<
+      setw(9) << cumulSplits[c] <<
+      setw(9) << fixed << setprecision(2) <<
+        static_cast<double>(cumulSplits[c]) / distributions[c].size() <<
+      setw(9) << counters[c] <<
+      "\n";
+  }
+
+  return ss.str() + "\n";
 }
 

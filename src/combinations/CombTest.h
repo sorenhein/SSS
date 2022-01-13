@@ -13,6 +13,8 @@ using namespace std;
 
 class Distributions;
 class Distribution;
+class DistributionX;
+class DistCore;
 class Strategies;
 class CombMemory;
 class CombEntry;
@@ -28,7 +30,8 @@ class CombTest
       const CombEntry& centry,
       const Strategies& strategies,
       const unsigned char maxRank,
-      const Distribution& distribution) const;
+      const DistributionX& dist) const;
+      // const Distribution& distribution) const;
 
 
   public:

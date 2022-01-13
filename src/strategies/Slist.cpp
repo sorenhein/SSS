@@ -219,7 +219,7 @@ void Slist::symmetrize()
  *                                                          *
  ************************************************************/
 
-bool Slist::reduceByResults(const Distribution& distribution)
+bool Slist::reduceByResults(const DistributionX& dist)
 {
   // Delete Strategy's where the number of tricks is not constant
   // within each reduction group.  The number of distributions is
@@ -228,7 +228,7 @@ bool Slist::reduceByResults(const Distribution& distribution)
   bool changeFlag = false;
   for (auto& strat: strategies)
   {
-    if (! strat.reduceByResults(distribution))
+    if (! strat.reduceByResults(dist))
       changeFlag = true;
 
     strat.study();

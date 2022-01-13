@@ -113,18 +113,20 @@ void Plays::addHoldings(vector<set<unsigned>>& holdings) const
 
 
 void Plays::getNextStrategies(
-  Distribution const * distPtr,
+  // Distribution const * distPtr,
+  const DistributionX& dist,
   const DebugPlay debugFlag)
 {
   // For RHO nodes we have to populate the strategies first.
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& nodeRho: nodesRho)
-    nodeRho.getNextStrategies(* distPtr, debug);
+    nodeRho.getNextStrategies(dist, debug);
+    // nodeRho.getNextStrategies(* distPtr, debug);
 }
 
 
 void Plays::strategizeSimpleBack(
-  const Distribution& distribution,
+  const DistributionX& distribution,
   const DebugPlay debugFlag)
 {
   nodesRho.strategizeDefenders((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
@@ -134,7 +136,7 @@ void Plays::strategizeSimpleBack(
 
 
 void Plays::strategizeSimpleFront(
-  const Distribution& distribution,
+  const DistributionX& distribution,
   const DebugPlay debugFlag)
 {
   nodesLho.strategizeDefenders((debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
@@ -144,7 +146,8 @@ void Plays::strategizeSimpleFront(
 
 
 const Strategies& Plays::strategize(
-  Distribution const * distPtr,
+  // Distribution const * distPtr,
+  const DistributionX& distribution,
   const DebugPlay debugFlag)
 {
   // The plays are propagated backwards up to a strategy for the
@@ -173,7 +176,7 @@ const Strategies& Plays::strategize(
   // This is a quite expensive method, as it also adapts plays
   // to the current trick.
 timersStrat[20].start();
-  Plays::getNextStrategies(distPtr, debugFlag);
+  Plays::getNextStrategies(distribution, debugFlag);
 timersStrat[20].stop();
 
   if (! control.runAdvancedNodes() ||
@@ -181,8 +184,8 @@ timersStrat[20].stop();
      (nodesRho.used() == nodesLho.used() && nodesRho.used() <= 30))
   {
     // Optimization is not used when the number of plays is low enough.
-    Plays::strategizeSimpleBack(* distPtr, debugFlag);
-    Plays::strategizeSimpleFront(* distPtr, debugFlag);
+    Plays::strategizeSimpleBack(distribution, debugFlag);
+    Plays::strategizeSimpleFront(distribution, debugFlag);
   }
   else if (nodesRho.used() == nodesLho.used())
   {
@@ -199,19 +202,19 @@ timersStrat[20].stop();
       (debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
 
     nodesLead.strategizeDeclarerAdvanced(
-      * distPtr,
+      distribution,
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
   else
   {
-    Plays::strategizeSimpleBack(* distPtr, debugFlag);
+    Plays::strategizeSimpleBack(distribution, debugFlag);
 
     // Here we deal separately with constants and dominated plays.
     nodesLho.strategizeDefendersAdvanced(
       (debugFlag & DEBUGPLAY_LHO_DETAILS) != 0);
 
     nodesLead.strategizeDeclarerAdvanced(
-      * distPtr,
+      distribution,
       (debugFlag & DEBUGPLAY_LEAD_DETAILS) != 0);
   }
 

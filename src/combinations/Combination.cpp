@@ -89,14 +89,16 @@ const Strategies& Combination::strategize(
   Result trivialEntry;
   plays.clear();
 
-  distPtr = distributions.ptrNoncanonical(
+  // distPtr = distributions.ptrNoncanonical(
+    // ranks.size(), centry.getHolding2());
+  const DistributionX& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 
   if (control.outputBasicResults() || debugFlag)
   {
     wcout << "\n" << ranks.wstrDiagram() << "\n";
     cout << ranks.strTable();
-    cout << "Distributions\n" << distPtr->str() << "\n";
+    cout << "Distributions\n" << dist.str() << "\n";
   }
 
   const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
@@ -106,7 +108,7 @@ const Strategies& Combination::strategize(
   {
     // Fill out a single constant strategy with the right value and size.
     Combination::setTrivial(trivialEntry, 
-      static_cast<unsigned char>(distPtr->size()), true);
+      static_cast<unsigned char>(dist.size()), true);
 
     return strats;
   }
@@ -121,7 +123,7 @@ const Strategies& Combination::strategize(
   plays.clearStrategies();
 
   timers.start(TIMER_STRATEGIZE);
-  strats = plays.strategize(distPtr, 
+  strats = plays.strategize(dist, 
     (debugFlag ? static_cast<DebugPlay>(0x3f) : DEBUGPLAY_NONE));
   timers.stop(TIMER_STRATEGIZE);
 
@@ -147,7 +149,9 @@ cout << "cholding2 is " << centry.getHolding2() <<
   ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
-  distPtr = distributions.ptrNoncanonical(
+  // distPtr = distributions.ptrNoncanonical(
+    // ranks.size(), centry.getHolding2());
+  const DistributionX& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 
   // Make the plays.
@@ -164,7 +168,7 @@ if (centry.getHolding3() == 208)
   {
     // Fill out a single constant strategy with the right value and size.
     strats.setTrivial(trivialEntry, 
-      static_cast<unsigned char>(distPtr->size()));
+      static_cast<unsigned char>(dist.size()));
     return strats;
   }
 
@@ -181,13 +185,13 @@ cout << "A " << centry.getHolding3() << endl;
 if (debugFlag)
 {
   cout << "Plays\n" << plays.str() << endl;
-  cout << "Distribution\n" << distPtr->str() << endl;
+  cout << "Distribution\n" << dist.str() << endl;
 }
 
   // plays.strategizeVoid(distPtr, strats, debugFlag);
 
   // strats = plays.strategizeVoid(distPtr, static_cast<DebugPlay>(0x3f));
-  strats = plays.strategize(distPtr, static_cast<DebugPlay>(0x3f));
+  strats = plays.strategize(dist, static_cast<DebugPlay>(0x3f));
 
 // cout << "C " << centry.canonicalHolding3 << endl;
 

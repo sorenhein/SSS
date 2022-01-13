@@ -163,6 +163,7 @@ void DistCore::mirror(
 
 void DistCore::split(const DistMap& distMap)
 {
+  cards = distMap.cards;
   rankSize = distMap.rankSize;
 
   if (distMap.opponents.len == 0)
@@ -228,6 +229,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
   // don't change (much), rather than a list.  But it turns out to
   // be about the same.  I've left the code in.
 
+  cards = distMap.cards;
   rankSize = distMap.rankSize;
   if (distMap.opponents.len == 0)
     return;
@@ -339,7 +341,10 @@ void DistCore::splitAlternative(const DistMap& distMap)
 
 unsigned DistCore::size() const
 {
-  return distributions.size();
+  if (distributions.empty())
+    return 1;
+  else
+    return distributions.size();
 }
 
 

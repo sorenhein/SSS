@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "DistMap.h"
+#include "DistributionX.h"
 #include "DistCore.h"
 
 using namespace std;
@@ -22,18 +22,11 @@ class DistMemory
 {
   private:
 
-    struct DistEntry
-    {
-      DistMap distMap;
-      DistCore const * distCorePtr;
-    };
-
-
     unsigned maxCards;
 
     bool fullFlag;
 
-    vector<vector<DistEntry>> distEntries;
+    vector<vector<DistributionX>> distributions;
 
     vector<vector<DistCore>> uniques;
 
@@ -57,7 +50,7 @@ class DistMemory
       const unsigned cards,
       const unsigned holding);
 
-    const DistCore& getCore(
+    const DistributionX& get(
       const unsigned cards,
       const unsigned holding) const;
 
@@ -65,7 +58,8 @@ class DistMemory
 
     unsigned numSplits(const unsigned cards) const;
 
-    string str() const;
+    string strDynamic() const;
+    string str(const unsigned cards) const;
 };
 
 #endif

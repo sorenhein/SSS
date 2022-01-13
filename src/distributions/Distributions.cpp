@@ -103,8 +103,10 @@ void Distributions::runUniques(const unsigned cards)
 
   for (unsigned holding = 0; holding < dists.size(); holding++)
   {
-    // distMemory.add(cards, holding);
+// cout << "cards " << cards << ", holding " << holding << endl;
+distMemory.add(cards, holding);
 
+    /*
     dists[holding].setRanks(cards, holding);
 
     DistID distID = dists[holding].getID();
@@ -120,6 +122,7 @@ void Distributions::runUniques(const unsigned cards)
     }
 
     counts[cards] += dists[holding].size();
+    */
 
 // cout << "old " << dists[holding].str() << "\n";
 // cout << "new " << distMemory.get(cards, holding).str() << "\n";
@@ -227,12 +230,23 @@ Distribution const * Distributions::ptrNoncanonical(
   const unsigned holding2) const
 {
   return &distributions[cards][holding2];
-  // return &distMemory.get(cards, holding2);
+ // return &distMemory.get(cards, holding2);
+}
+
+
+const DistributionX& Distributions::get(
+  const unsigned cards,
+  const unsigned holding2) const
+{
+  return distMemory.get(cards, holding2);
 }
 
 
 string Distributions::str(const unsigned cards) const
 {
+  return distMemory.str(cards);
+
+  /*
   unsigned cmin, cmax;
   if (cards == 0)
   {
@@ -271,5 +285,6 @@ string Distributions::str(const unsigned cards) const
   }
 
   return ss.str() + "\n";
+  */
 }
 

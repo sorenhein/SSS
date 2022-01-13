@@ -140,7 +140,7 @@ void Nodes::removeNodes()
 
 
 void Nodes::strategizeDeclarer(
-  const Distribution& distribution,
+  const DistributionX& distribution,
   const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);
@@ -158,7 +158,7 @@ void Nodes::strategizeDeclarer(
 
 
 void Nodes::strategizeDeclarerAdvanced(
-  const Distribution& distribution,
+  const DistributionX& distribution,
   const bool debugFlag)
 {
   assert(level == LEVEL_PARD || level == LEVEL_LEAD);

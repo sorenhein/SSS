@@ -18,6 +18,8 @@
 #include "Distribution.h"
 #include "DistMemory.h"
 
+class DistributionX;
+
 using namespace std;
 
 
@@ -68,6 +70,10 @@ class Distributions
       const unsigned holding2) const;
 
     Distribution const * ptrNoncanonical(
+      const unsigned cards,
+      const unsigned holding2) const;
+
+    const DistributionX& get(
       const unsigned cards,
       const unsigned holding2) const;
 
