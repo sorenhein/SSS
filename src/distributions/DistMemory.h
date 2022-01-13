@@ -12,7 +12,8 @@
 #include <vector>
 #include <string>
 
-#include "Distribution.h"
+#include "DistMap.h"
+#include "DistCore.h"
 
 using namespace std;
 
@@ -21,14 +22,20 @@ class DistMemory
 {
   private:
 
+    struct DistEntry
+    {
+      DistMap distMap;
+      DistCore const * distCorePtr;
+    };
+
 
     unsigned maxCards;
 
     bool fullFlag;
 
-    vector<vector<Distribution const *>> distEntries;
+    vector<vector<DistEntry>> distEntries;
 
-    vector<vector<Distribution>> uniques;
+    vector<vector<DistCore>> uniques;
 
     vector<unsigned> counters;
 
@@ -46,11 +53,11 @@ class DistMemory
       const bool fullFlag = true);
 
     // Thread-safe
-    const Distribution& add(
+    void add(
       const unsigned cards,
       const unsigned holding);
 
-    const Distribution& get(
+    const DistCore& getCore(
       const unsigned cards,
       const unsigned holding) const;
 

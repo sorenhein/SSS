@@ -107,21 +107,18 @@ void DistMemory::resize(
 }
 
 
-const Distribution& DistMemory::add(
+void DistMemory::add(
   const unsigned cards,
   const unsigned holding)
 {
-  Distribution dist;
-  dist.setRanks(cards, holding);
-  const DistID distID = dist.getID();
+  DistEntry& distEntry = distEntries[cards][holding];
+  distEntry.distMap.setRanks(cards, holding);
+  const DistID distID = distEntry.distMap.getID();
 
-  vector<Distribution>& uniqs = uniques[cards];
+  vector<DistCore>& uniqs = uniques[cards];
 
   if (distID.cards == cards && distID.holding == holding)
   {
-    dist.splitAlternative();
-    dist.setLookups();
-
     mtxDistMemory.lock();
 
     const unsigned uniqueIndex = counters[cards]++;
@@ -130,38 +127,41 @@ const Distribution& DistMemory::add(
     if (! fullFlag && uniqueIndex >= uniques[cards].size())
       uniques[cards].resize(uniques[cards].size() + DIST_CHUNK_SIZE);
 
-    cumulSplits[cards] += dist.size();
-
     assert(uniqueIndex < uniqs.size());
-    uniqs[uniqueIndex] = move(dist);
+
+    DistCore& distCore = uniqs[uniqueIndex];
+    distEntry.distCorePtr = &distCore;
 
 // cout << "Added (" << cards << ", " << holding << ")\n";
 // cout << uniqs[uniqueIndex].str() << "\n---\n";
 
-    distEntries[cards][holding] = &uniqs[uniqueIndex];
+    mtxDistMemory.unlock();
 
+    distCore.splitAlternative(distEntry.distMap);
+    distCore.setLookups();
+
+    mtxDistMemory.lock();
+    cumulSplits[cards] += distCore.size();
     mtxDistMemory.unlock();
   }
   else
   {
     mtxDistMemory.lock();
 
-    distEntries[cards][holding] = 
-        distEntries[distID.cards][distID.holding];
+    distEntry.distCorePtr = 
+      distEntries[distID.cards][distID.holding].distCorePtr;
 
-    cumulSplits[cards] += distEntries[cards][holding]->size();
+    cumulSplits[cards] += distEntry.distCorePtr->size();
 
 // cout << "Repeated (" << cards << ", " << holding << ") as (" <<
   // distID.cards << ", " << distID.holding << "\n---\n";
 
     mtxDistMemory.unlock();
   }
-  
-  return * distEntries[cards][holding];
 }
 
 
-const Distribution& DistMemory::get(
+const DistCore& DistMemory::getCore(
   const unsigned cards,
   const unsigned holding) const
 {
@@ -169,7 +169,7 @@ const Distribution& DistMemory::get(
 // cout << "DM get(" << cards << ", " << holding << "): " <<
   // uniqueIndex << "\n";
 // cout << uniques[cards][uniqueIndex].str();
-  return * distEntries[cards][holding];
+  return * distEntries[cards][holding].distCorePtr;
 }
 
 

@@ -24,13 +24,6 @@ struct Play;
 using namespace std;
 
 
-struct DistID
-{
-  unsigned cards; // Smallest number of NS+EW cards needed
-  unsigned holding; // Canonical EW holding
-};
-
-
 class Distribution
 {
   private:

@@ -21,6 +21,13 @@ using namespace std;
 // files that are needed (they are already included in Distribution.h).
 
 
+struct DistID
+{
+  unsigned cards; // Smallest number of NS+EW cards needed
+  unsigned holding; // Canonical EW holding
+};
+
+
 enum SideCompare
 {
   SC_SAME = 0,
