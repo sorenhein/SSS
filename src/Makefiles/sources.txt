@@ -10,6 +10,7 @@ SOURCE_FILES    =                               \
                                                 \
                 distributions/Distribution.cpp  \
                 distributions/Distributions.cpp \
+                distributions/DistMap.cpp       \
                 distributions/DistMemory.cpp    \
                 distributions/Reductions.cpp    \
                 distributions/SurvivorList.cpp  \
