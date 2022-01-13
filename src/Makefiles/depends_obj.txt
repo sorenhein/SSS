@@ -154,6 +154,14 @@ distributions/Distributions.obj: distributions/Survivors.h
 distributions/Distributions.obj: distributions/DistHelp.h
 distributions/Distributions.obj: distributions/Reductions.h
 distributions/Distributions.obj: distributions/DistMemory.h
+distributions/DistMap.obj: distributions/DistMap.h distributions/DistHelp.h
+distributions/DistMap.obj: distributions/SurvivorList.h utils/table.h
+distributions/DistCore.obj: distributions/DistCore.h
+distributions/DistCore.obj: distributions/SurvivorList.h
+distributions/DistCore.obj: distributions/Survivors.h
+distributions/DistCore.obj: distributions/DistHelp.h
+distributions/DistCore.obj: distributions/Reductions.h
+distributions/DistCore.obj: distributions/DistMap.h plays/Play.h const.h
 distributions/DistMemory.obj: distributions/DistMemory.h
 distributions/DistMemory.obj: distributions/Distribution.h
 distributions/DistMemory.obj: distributions/SurvivorList.h

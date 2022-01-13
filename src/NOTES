@@ -6,6 +6,7 @@ Distributions:
 - Then there is an index into DistCore
 - Memory size: Switch to unsigned char
 - Count the number of uniques, see what happens
+- More unsigned char in DistMap and DistCore
 
 2022-01-09
 ==========
