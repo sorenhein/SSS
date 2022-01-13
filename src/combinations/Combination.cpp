@@ -88,8 +88,6 @@ const Strategies& Combination::strategize(
   Result trivialEntry;
   plays.clear();
 
-  // distPtr = distributions.ptrNoncanonical(
-    // ranks.size(), centry.getHolding2());
   const Distribution& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 
@@ -148,8 +146,6 @@ cout << "cholding2 is " << centry.getHolding2() <<
   ", size " << ranks.size() << endl;
 
   // Look up a pointer to the EW distribution of this combination.
-  // distPtr = distributions.ptrNoncanonical(
-    // ranks.size(), centry.getHolding2());
   const Distribution& dist = distributions.get(
     ranks.size(), centry.getHolding2());
 

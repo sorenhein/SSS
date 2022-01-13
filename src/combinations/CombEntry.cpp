@@ -96,7 +96,6 @@ void CombEntry::consolidateMinimals()
 }
 
 
-// bool CombEntry::fixMinimals(const vector<CombEntry>& centries)
 bool CombEntry::fixMinimals(
   const CombMemory& combMemory,
   const unsigned cards)

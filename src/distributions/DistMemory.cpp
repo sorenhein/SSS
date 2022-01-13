@@ -133,25 +133,13 @@ void DistMemory::add(
 
     assert(uniqueIndex < uniqs.size());
 
-// cout << "uniqueIndex " << uniqueIndex << ", size[" <<
-  // cards << "] = " << uniqs.size() << endl;
     DistCore& distCore = uniqs[uniqueIndex];
-// cout << "address " << &uniqs[uniqueIndex] << ", " << &distCore << endl;
     dist.setPtr(&distCore);
-
-// cout << "Added (" << cards << ", " << holding << ")\n";
 
     mtxDistMemory.unlock();
 
-// cout << "About to split" << endl;
     dist.split();
-// cout << "About to lookup" << endl;
     dist.setLookups();
-// cout << "After split and lookup" << endl;
-// cout << uniqs[uniqueIndex].str() << endl;
-// cout << "dist size " << dist.size() << endl;
-    // distCore.splitAlternative(distEntry.distMap);
-    // distCore.setLookups();
 
     mtxDistMemory.lock();
     cumulSplits[cards] += dist.size();
@@ -162,18 +150,11 @@ void DistMemory::add(
     mtxDistMemory.lock();
 
     dist.setPtr(distributions[distID.cards][distID.holding]);
-    // distEntry.distCorePtr = 
-      // distEntries[distID.cards][distID.holding].distCorePtr;
 
     cumulSplits[cards] += dist.size();
 
-// cout << "Repeated (" << cards << ", " << holding << ") as (" <<
-  // distID.cards << ", " << distID.holding << ")" << endl;
-
     mtxDistMemory.unlock();
   }
-
-// cout << "Done adding\n" << endl;
 }
 
 
@@ -182,10 +163,6 @@ const Distribution& DistMemory::get(
   const unsigned holding) const
 {
   assert(holding < distributions[cards].size());
-// cout << "DM get(" << cards << ", " << holding << "): " <<
-  // uniqueIndex << "\n";
-// cout << uniques[cards][uniqueIndex].str();
-  // return * distEntries[cards][holding].distCorePtr;
   return distributions[cards][holding];
 }
 

@@ -299,18 +299,15 @@ histoPlay[plays.size()]++;
     }
   }
 
-// cout << "Play histogram\n";
 unsigned sump = 0, count = 0;
 for (unsigned i = 0; i < histoPlay.size(); i++)
 {
   if (histoPlay[i])
   {
-    // cout << setw(4) << i << setw(8) << histoPlay[i] << "\n";
     count += histoPlay[i];
     sump += i * histoPlay[i];
   }
 }
-// cout << "\n";
 if (count > 0)
 {
   double d =

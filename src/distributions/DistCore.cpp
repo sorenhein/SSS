@@ -67,9 +67,8 @@ const vector<unsigned> CHUNK_SIZE =
 mutex mtxDistCore;
 static bool init_flag = false;
 
-// TODO Rename back once Distribution is gone
-vector<vector<unsigned>> binomialX;
-vector<vector<char>> namesX;
+vector<vector<unsigned>> binomial;
+vector<vector<char>> names;
 
 
 DistCore::DistCore()
@@ -95,17 +94,17 @@ void DistCore::reset()
 
 void DistCore::setBinomial()
 {
-  binomialX.resize(MAX_CARDS+1);
+  binomial.resize(MAX_CARDS+1);
   for (unsigned n = 0; n <= MAX_CARDS; n++)
-    binomialX[n].resize(MAX_CARDS+1);
+    binomial[n].resize(MAX_CARDS+1);
 
-  binomialX[0][0] = 1;
-  for (unsigned n = 1; n < binomialX.size(); n++)
+  binomial[0][0] = 1;
+  for (unsigned n = 1; n < binomial.size(); n++)
   {
-    binomialX[n][0] = 1;
-    binomialX[n][n] = 1;
+    binomial[n][0] = 1;
+    binomial[n][n] = 1;
     for (unsigned k = 1; k < n; k++)
-      binomialX[n][k] = binomialX[n-1][k] + binomialX[n-1][k-1];
+      binomial[n][k] = binomial[n-1][k] + binomial[n-1][k-1];
   }
 }
 
@@ -113,11 +112,11 @@ void DistCore::setBinomial()
 void DistCore::setNames()
 {
   const unsigned maxNumRanks = (MAX_CARDS+1) / 2;
-  namesX.resize(maxNumRanks+1);
+  names.resize(maxNumRanks+1);
 
-  for (unsigned numRanks = 1; numRanks < namesX.size(); numRanks++)
+  for (unsigned numRanks = 1; numRanks < names.size(); numRanks++)
   {
-    vector<char>& vec = namesX[numRanks];
+    vector<char>& vec = names[numRanks];
     vec.resize(numRanks);
     vec[0] = 'x';
     for (unsigned rank = 1; rank < numRanks; rank++)
@@ -200,7 +199,7 @@ void DistCore::split(const DistMap& distMap)
 
           dist.west = stackIter->west;
           dist.add(rank, count, 
-            stackIter->cases * binomialX[available][count]);
+            stackIter->cases * binomial[available][count]);
           dist.east.diff(distMap.opponents, dist.west);
 
           distIndex++;
@@ -212,7 +211,7 @@ void DistCore::split(const DistMap& distMap)
           // We have opponents.len - stackIter->seen cards still to come.
           // We have gap - count holes still to fill.
           stackIter = stack.insert(stackIter, * stackIter);
-          next(stackIter)->add(rank, count, binomialX[available][count]);
+          next(stackIter)->add(rank, count, binomial[available][count]);
         }
       }
       stack.pop_front();
@@ -278,7 +277,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
 
           dist.west = stackElem.west;
           dist.add(rank, gap, 
-            stackElem.cases * binomialX[available][gap]);
+            stackElem.cases * binomial[available][gap]);
           dist.east.diff(distMap.opponents, dist.west);
 
           distIndex++;
@@ -292,7 +291,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
           (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
           if (gap > 0)
             (*stackWrite)[indexWrite].add(rank, gap, 
-              binomialX[available][gap]);
+              binomial[available][gap]);
 
           indexWrite++;
         }
@@ -315,7 +314,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
           
         (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
         (*stackWrite)[indexWrite].add(rank, count, 
-          binomialX[available][count]);
+          binomial[available][count]);
         indexWrite++;
       }
 
@@ -450,8 +449,8 @@ string DistCore::str() const
   {
     ss << 
       setw(4) << d <<
-      setw(14) << distributions[d].west.str(namesX[rankSize]) <<
-      setw(14) << distributions[d].east.str(namesX[rankSize]) <<
+      setw(14) << distributions[d].west.str(names[rankSize]) <<
+      setw(14) << distributions[d].east.str(names[rankSize]) <<
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();
