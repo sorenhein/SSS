@@ -39,25 +39,24 @@ int main(int argc, char * argv[])
 
   distributions.resize(control.cards());
 
-  timers.start(TIMER_DISTRIBUTIONS);
 
-  for (unsigned char cards = 0; cards <= control.cards(); cards++)
-  {
-    // distributions.runUniquesMT(cards, control.numThreads());
-    distributions.runUniques(cards);
-  }
-
-  timers.stop(TIMER_DISTRIBUTIONS);
-
-  cout << distributions.str();
-
-
-  // Set up combinations.
-
-  combinations.resize(control.cards());
 
   if (control.loop())
   {
+    timers.start(TIMER_DISTRIBUTIONS);
+
+    for (unsigned char cards = 0; cards <= control.cards(); cards++)
+    {
+      // distributions.runUniquesMT(cards, control.numThreads());
+      distributions.runUniques(cards);
+    }
+
+    timers.stop(TIMER_DISTRIBUTIONS);
+
+    cout << distributions.str();
+
+    // Set up combinations.
+
     combinations.resize(control.cards());
 
     for (unsigned char cards = 0; cards <= 11; cards++)
@@ -75,9 +74,31 @@ int main(int argc, char * argv[])
   {
     combinations.resize(control.cards(), false);
 
-    combinations.runSingle(control.holdingLength(),
+cout << "Getting dependencies" << endl;
+    vector<set<unsigned>> dependenciesTrinary;
+    vector<set<unsigned>> dependenciesBinary;
+    combinations.getDependencies(
+      control.holdingLength(),
       control.holding(),
-      distributions);
+      dependenciesTrinary, 
+      dependenciesBinary);
+
+    timers.start(TIMER_DISTRIBUTIONS);
+
+cout << "Running single distributions" << endl;
+    distributions.runSingle(dependenciesBinary);
+
+    cout << distributions.str();
+
+    timers.stop(TIMER_DISTRIBUTIONS);
+
+cout << "Running single combinations" << endl;
+    combinations.runSingle(
+      control.holdingLength(),
+      control.holding(),
+      distributions,
+      dependenciesTrinary);
+cout << "Done" << endl;
   }
 
   // combinations.tmp(control.cards(), control.holding());

@@ -23,6 +23,7 @@ void DistMap::reset()
 {
   full2reduced.clear();
   reduced2full.clear();
+  opponents.reset(0);
   rankSize = 0;
 }
 

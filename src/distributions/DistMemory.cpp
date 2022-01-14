@@ -166,13 +166,13 @@ Distribution& DistMemory::addFullMT(
 }
 
 
-Distribution& DistMemory::addIncrMT(
+Distribution& DistMemory::addIncr(
   const unsigned char cards,
   const unsigned holding)
 {
-  // When the memory layout may change, we first store indices into
-  // uniques, and then afterward we turn the indices into pointers
-  // when the layout no longer changes.
+  // It is too much trouble to make this multi-threaded, as the 
+  // memory locations in uniques may shift around until we are done
+  // filling out the entries.  
 
   assert(cards < distributions.size());
   assert(holding < distributions[cards].size());
@@ -186,21 +186,16 @@ Distribution& DistMemory::addIncrMT(
 
   if (distID.cards == cards && distID.holding == holding)
   {
-    mtxDistMemory.lock();
-
     const unsigned uniqueIndex = usedCounts[cards]++;
 
     // Grow if dynamic size is used up.
     if (! fullFlag && uniqueIndex >= uniques[cards].size())
       uniques[cards].resize(uniques[cards].size() + DIST_CHUNK_SIZE);
 
-    mtxDistMemory.unlock();
-
     assert(uniqueIndex < uniqs.size());
 
+    // We can't yet be sure of the final memory locaiton in uniques.
     dist.setIndex(uniqueIndex);
-    dist.split();
-    dist.setLookups();
   }
   else
     dist.setIndex(distributions[distID.cards][distID.holding]);
@@ -209,14 +204,21 @@ Distribution& DistMemory::addIncrMT(
 }
 
 
-void DistMemory::setPointers(const unsigned char cards)
+void DistMemory::finishIncrMT(
+  const unsigned char cards,
+  const unsigned holding)
 {
-  for (unsigned holding = 0; holding < distributions[cards].size();
-      holding++)
+  Distribution& dist = distributions[cards][holding];
+  const unsigned index = dist.getIndex();
+  dist.setPtr(&uniques[cards][index]);
+
+  // Only now can we run these methods.
+  dist.setRanks(cards, holding);
+  const DistID distID = dist.getID();
+  if (distID.cards == cards && distID.holding == holding)
   {
-    Distribution& dist = distributions[cards][holding];
-    const unsigned index = dist.getIndex();
-    dist.setPtr(&uniques[cards][index]);
+    dist.split();
+    dist.setLookups();
   }
 }
 

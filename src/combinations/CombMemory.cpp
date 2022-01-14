@@ -119,18 +119,26 @@ Combination& CombMemory::add(
   const unsigned cards,
   const unsigned holding)
 {
+  // When we do all combinations, we know the number in advance and
+  // we do not change the memory locations.  But unlike in 
+  // DistMemory we don't store pointers, so we only need to protect
+  // the index generation here as well.
+
+  assert(cards < combEntries.size()); 
+  assert(holding < combEntries[cards].size());
+
   mtxCombMemory.lock();
   const unsigned uniqueIndex = counters[cards]++;
+
   // Grow if dynamic size is used up.
   if (! fullFlag && uniqueIndex >= uniques[cards].size())
     uniques[cards].resize(uniques[cards].size() + COMB_CHUNK_SIZE);
+
   mtxCombMemory.unlock();
 
   vector<Combination>& uniqs = uniques[cards];
   assert(uniqueIndex < uniqs.size());
 
-  assert(cards < combEntries.size());
-  assert(holding < combEntries[cards].size());
   combEntries[cards][holding].setIndex(uniqueIndex);
 
   return uniqs[uniqueIndex];

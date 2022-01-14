@@ -50,12 +50,6 @@ class Combinations
       const unsigned char cards,
       const vector<set<unsigned>>& vs) const;
 
-    void getDependencies(
-      const unsigned char cards,
-      const unsigned holding,
-      vector<set<unsigned>>& dependenciesTrinary,
-      vector<set<unsigned>>& dependendiesBinary);
-
     bool getMinimals(
       const Strategies& strategies,
       const Ranks& ranks,
@@ -86,10 +80,17 @@ class Combinations
       const unsigned char maxCardsIn,
       const bool fullFlag = false);
 
+    void getDependencies(
+      const unsigned char cards,
+      const unsigned holding,
+      vector<set<unsigned>>& dependenciesTrinary,
+      vector<set<unsigned>>& dependendiesBinary);
+
     void runSingle(
       const unsigned char cards,
       const unsigned holding,
-      Distributions& distributions);
+      const Distributions& distributions,
+      const vector<set<unsigned>>& dependenciesTrinary);
 
     void runUniques(
       const unsigned char cards,

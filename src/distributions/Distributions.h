@@ -10,8 +10,8 @@
 #define SSS_DISTRIBUTIONS_H
 
 #include <vector>
+#include <set>
 #include <string>
-
 #include <atomic>
 #include <mutex>
 
@@ -53,6 +53,8 @@ class Distributions
     void add(
       const unsigned char cards,
       const unsigned holding);
+
+    void runSingle(const vector<set<unsigned>>& dependencies);
 
     void runUniques(const unsigned char cards);
 

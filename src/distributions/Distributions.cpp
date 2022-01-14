@@ -49,7 +49,25 @@ void Distributions::add(
   const unsigned holding)
 {
   // TODO Is this hooked up to anything?  (Is this method called?)
-  distMemory.addIncrMT(cards, holding);
+  distMemory.addIncr(cards, holding);
+}
+
+
+void Distributions::runSingle(const vector<set<unsigned>>& dependencies)
+{
+  for (unsigned char c = 0; c < dependencies.size(); c++)
+    for (auto& dep: dependencies[c])
+    {
+cout << "Adding (" << +c << ", " << dep << ")" << endl;
+      distMemory.addIncr(c, dep);
+    }
+
+  for (unsigned char c = 0; c < dependencies.size(); c++)
+    for (auto& dep: dependencies[c])
+    {
+cout << "Finishing (" << +c << ", " << dep << ")" << endl;
+      distMemory.finishIncrMT(c, dep);
+    }
 }
 
 

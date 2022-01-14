@@ -48,13 +48,15 @@ class DistMemory
       const unsigned char cards,
       const unsigned holding);
 
-    // Thread-safe.  Used for adding only certain distributions
-    Distribution& addIncrMT(
+    // Not thread-safe.  Used for adding only certain distributions
+    Distribution& addIncr(
       const unsigned char cards,
       const unsigned holding);
 
-    // Uses after we are finished with addIncrMT.  Not thread-safe
-    void setPointers(const unsigned char cards);
+    // Uses after we are finished with addIncr.  Thread-safe
+    void finishIncrMT(
+      const unsigned char cards,
+      const unsigned holding);
 
     const Distribution& get(
       const unsigned char cards,

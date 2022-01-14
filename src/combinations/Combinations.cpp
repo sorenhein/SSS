@@ -111,6 +111,7 @@ void Combinations::getDependencies(
   Ranks ranks;
   Plays plays;
   plays.resize(cards);
+  DistMap distMap;
 
   vector<set<unsigned>> scratch1, scratch2;
   dependenciesTrinary.resize(cards+1);
@@ -145,6 +146,17 @@ void Combinations::getDependencies(
         plays.addHoldings(scratch2);
         dependenciesTrinary[c].insert(dep);
         dependenciesBinary[c].insert(centry.getHolding2());
+
+        // The binary holding may not be canonical, in which case we
+        // also need to generate the canonical one.  This will always
+        // have fewer cards, so it will be generated in time later on.
+
+        distMap.reset();
+        distMap.setRanks(c, centry.getHolding2());
+        const DistID distID = distMap.getID();
+        if (distID.cards != c)
+          dependenciesBinary[distID.cards].insert(distID.holding);
+          
         doneFlag = false;
       }
     }
@@ -163,19 +175,24 @@ void Combinations::getDependencies(
 void Combinations::runSingle(
   const unsigned char cards,
   const unsigned holding,
-  Distributions& distributions)
+  const Distributions& distributions,
+  const vector<set<unsigned>>& dependenciesTrinary)
 {
   // Split into getDependencies3() and runDependencies3().
   // In principle, the same for distributions?
 
+  /*
   vector<set<unsigned>> dependenciesTrinary;
   vector<set<unsigned>> dependenciesBinary;
   Combinations::getDependencies(cards, holding, 
     dependenciesTrinary, dependenciesBinary);
+    */
 
+  /*
   for (unsigned char c = 0; c <= cards; c++)
     for (auto& dep: dependenciesBinary[c])
       distributions.add(c, dep);
+      */
 
   Ranks ranks;
   Plays plays;
