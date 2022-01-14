@@ -10,7 +10,6 @@
 #define SSS_DISTMAP_H
 
 #include <vector>
-#include <string>
 
 #include "DistHelp.h"
 

@@ -12,11 +12,11 @@
 #include <vector>
 #include <string>
 
-#include "SurvivorList.h"
+#include "DistHelp.h"
 #include "Survivors.h"
 #include "Reductions.h"
-#include "DistHelp.h"
 
+class SurvivorList;
 class DistMap;
 struct Play;
 

@@ -25,8 +25,7 @@ void Distributions::reset()
 {
   maxCards = 0;
   distMemory.reset();
-  counts.clear();
-  uniques.clear();
+  splitCounts.clear();
 }
 
 
@@ -41,13 +40,7 @@ void Distributions::resize(const unsigned char maxCardsIn)
   // or they don't.
 
   // We count the total number of card splits for East and West.
-  counts.resize(maxCardsIn+1);
-  uniques.resize(maxCardsIn+1);
-  for (unsigned cards = 0; cards < counts.size(); cards++)
-  {
-    counts[cards] = 0;
-    uniques[cards] = 0;
-  }
+  splitCounts.resize(maxCardsIn+1, 0);
 }
 
 
@@ -55,20 +48,24 @@ void Distributions::add(
   const unsigned char cards,
   const unsigned holding)
 {
-  distMemory.add(cards, holding);
+  // TODO Is this hooked up to anything?  (Is this method called?)
+  distMemory.addIncrMT(cards, holding);
 }
 
 
 void Distributions::runUniques(const unsigned char cards)
 {
   for (unsigned holding = 0; holding < distMemory.size(cards); holding++)
-    distMemory.add(cards, holding);
+  {
+    const Distribution& dist = distMemory.addFullMT(cards, holding);
+    splitCounts[cards] += dist.size();
+  }
 }
 
 
 void Distributions::runUniqueThread(
   const unsigned char cards,
-  [[maybe_unused]] const unsigned thid)
+  const unsigned thid)
 {
   unsigned holding;
   const unsigned counterMax = distMemory.size(cards);
@@ -80,7 +77,8 @@ void Distributions::runUniqueThread(
       break;
 
     // Pass in thid?  Then less blocking.
-    distMemory.add(cards, holding);
+    const Distribution& dist = distMemory.addFullMT(cards, holding);
+    threadSplitCounts[thid] += dist.size();
   }
 }
 
@@ -94,11 +92,8 @@ void Distributions::runUniquesMT(
   vector<thread *> threads;
   threads.resize(numThreads);
 
-  threadCounts.clear();
-  threadCounts.resize(numThreads);
-
-  threadUniques.clear();
-  threadUniques.resize(numThreads);
+  threadSplitCounts.clear();
+  threadSplitCounts.resize(numThreads);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Distributions::runUniqueThread, 
@@ -111,10 +106,7 @@ void Distributions::runUniquesMT(
   }
 
   for (unsigned thid = 0; thid < numThreads; thid++)
-  {
-    counts[cards] += threadCounts[thid];
-    uniques[cards] += threadUniques[thid];
-  }
+    splitCounts[cards] += threadSplitCounts[thid];
 }
 
 
@@ -128,6 +120,43 @@ const Distribution& Distributions::get(
 
 string Distributions::str(const unsigned char cards) const
 {
-  return distMemory.str(cards);
+  unsigned char cmin, cmax;
+  if (cards == 0)
+  {
+    cmin = 1;
+    cmax = maxCards;
+  }
+  else
+  {
+    cmin = cards;
+    cmax = cards;
+  }
+
+  stringstream ss;
+  ss <<
+    setw(5) << "Cards" <<
+    setw(9) << "Count" <<
+    setw(9) << "Dists" <<
+    setw(9) << "Avg." <<
+    setw(9) << "Uniques" <<
+    "\n";
+
+  for (unsigned char c = cmin; c <= cmax; c++)
+  {
+    assert(c < splitCounts.size() && c < distMemory.size(c));
+    if (splitCounts[c] == 0)
+      continue;
+
+    ss <<
+      setw(5) << +c <<
+      setw(9) << distMemory.size(c) <<
+      setw(9) << splitCounts[c] <<
+      setw(9) << fixed << setprecision(2) <<
+        static_cast<double>(splitCounts[c]) / distMemory.size(c) <<
+      setw(9) << distMemory.used(c) <<
+      "\n";
+  }
+
+  return ss.str() + "\n";
 }
 

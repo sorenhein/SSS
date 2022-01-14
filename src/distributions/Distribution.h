@@ -25,6 +25,8 @@ class Distribution
 
     DistCore * distCorePtr;
 
+    unsigned index;
+
 
   public:
 
@@ -45,6 +47,21 @@ class Distribution
     {
       assert(dist.distCorePtr != nullptr);
       setPtr(dist.distCorePtr);
+    };
+
+    void setIndex(const unsigned indexIn)
+    {
+      index = indexIn;
+    };
+
+    void setIndex(const Distribution& dist)
+    {
+      index = dist.index;
+    };
+
+    unsigned getIndex() const
+    {
+      return index;
     };
 
     DistID getID() const

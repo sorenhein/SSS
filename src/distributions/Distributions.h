@@ -26,18 +26,14 @@ class Distributions
 {
   private:
 
-    unsigned maxCards;
+    unsigned char maxCards;
 
     // vector<vector<Distribution>> distributions;
 
     DistMemory distMemory;
 
-    vector<unsigned> counts;
-    vector<unsigned> threadCounts;
-
-    // Only canonical distributions are processed in detail.
-    vector<unsigned> uniques;
-    vector<unsigned> threadUniques;
+    vector<unsigned> splitCounts;
+    vector<unsigned> threadSplitCounts;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counter;

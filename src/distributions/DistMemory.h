@@ -30,9 +30,7 @@ class DistMemory
 
     vector<vector<DistCore>> uniques;
 
-    vector<unsigned> counters;
-
-    vector<unsigned> cumulSplits;
+    vector<unsigned> usedCounts;
 
 
   public:
@@ -45,10 +43,18 @@ class DistMemory
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
 
-    // Thread-safe
-    void add(
+    // Thread-safe.  Used for generating all distributions in a loop
+    Distribution& addFullMT(
       const unsigned char cards,
       const unsigned holding);
+
+    // Thread-safe.  Used for adding only certain distributions
+    Distribution& addIncrMT(
+      const unsigned char cards,
+      const unsigned holding);
+
+    // Uses after we are finished with addIncrMT.  Not thread-safe
+    void setPointers(const unsigned char cards);
 
     const Distribution& get(
       const unsigned char cards,
@@ -56,12 +62,9 @@ class DistMemory
 
     unsigned size(const unsigned char cards) const;
 
-    unsigned numUniques(const unsigned char cards) const;
-
-    unsigned numSplits(const unsigned char cards) const;
+    unsigned used(const unsigned char cards) const;
 
     string strDynamic() const;
-    string str(const unsigned char cards) const;
 };
 
 #endif

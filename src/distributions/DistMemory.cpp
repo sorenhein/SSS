@@ -61,7 +61,7 @@ const vector<unsigned> DIST_UNIQUE_COUNT =
 };
 
 
-const unsigned DIST_CHUNK_SIZE = 16;
+const unsigned DIST_CHUNK_SIZE = 10;
 
 
 mutex mtxDistMemory;
@@ -79,8 +79,7 @@ void DistMemory::reset()
   fullFlag = false;
   distributions.clear();
   uniques.clear();
-  counters.clear();
-  cumulSplits.clear();
+  usedCounts.clear();
 }
 
 
@@ -107,8 +106,7 @@ void DistMemory::resize(
   // distribution includes 8 card splits for East and West, then
   // that counts as 8.
 
-  counters.resize(maxCardsIn+1, 0);
-  cumulSplits.resize(maxCardsIn+1, 0);
+  usedCounts.resize(maxCardsIn+1, 0);
 
   // A distribution is a set of card splits for a given rank
   // vector covering both East and West.
@@ -129,10 +127,53 @@ void DistMemory::resize(
 }
 
 
-void DistMemory::add(
+Distribution& DistMemory::addFullMT(
   const unsigned char cards,
   const unsigned holding)
 {
+  // When we do all distributions, we know the number in advance and
+  // we do not change the memory locations.  Therefore we can set
+  // pointers directly.
+
+  assert(cards < distributions.size());
+  assert(holding < distributions[cards].size());
+
+  Distribution& dist = distributions[cards][holding];
+  dist.setRanks(cards, holding);
+  const DistID distID = dist.getID();
+
+  assert(cards < uniques.size());
+  vector<DistCore>& uniqs = uniques[cards];
+
+  if (distID.cards == cards && distID.holding == holding)
+  {
+    mtxDistMemory.lock();
+    const unsigned uniqueIndex = usedCounts[cards]++;
+    mtxDistMemory.unlock();
+
+    assert(uniqueIndex < uniqs.size());
+    DistCore& distCore = uniqs[uniqueIndex];
+
+    dist.setPtr(&distCore);
+    dist.split();
+    dist.setLookups();
+  }
+  else
+    dist.setPtr(distributions[distID.cards][distID.holding]);
+
+  return dist;
+
+}
+
+
+Distribution& DistMemory::addIncrMT(
+  const unsigned char cards,
+  const unsigned holding)
+{
+  // When the memory layout may change, we first store indices into
+  // uniques, and then afterward we turn the indices into pointers
+  // when the layout no longer changes.
+
   assert(cards < distributions.size());
   assert(holding < distributions[cards].size());
 
@@ -147,35 +188,35 @@ void DistMemory::add(
   {
     mtxDistMemory.lock();
 
-    const unsigned uniqueIndex = counters[cards]++;
+    const unsigned uniqueIndex = usedCounts[cards]++;
 
     // Grow if dynamic size is used up.
     if (! fullFlag && uniqueIndex >= uniques[cards].size())
       uniques[cards].resize(uniques[cards].size() + DIST_CHUNK_SIZE);
 
+    mtxDistMemory.unlock();
+
     assert(uniqueIndex < uniqs.size());
 
-    DistCore& distCore = uniqs[uniqueIndex];
-    dist.setPtr(&distCore);
-
-    mtxDistMemory.unlock();
-
+    dist.setIndex(uniqueIndex);
     dist.split();
     dist.setLookups();
-
-    mtxDistMemory.lock();
-    cumulSplits[cards] += dist.size();
-    mtxDistMemory.unlock();
   }
   else
+    dist.setIndex(distributions[distID.cards][distID.holding]);
+
+  return dist;
+}
+
+
+void DistMemory::setPointers(const unsigned char cards)
+{
+  for (unsigned holding = 0; holding < distributions[cards].size();
+      holding++)
   {
-    mtxDistMemory.lock();
-
-    dist.setPtr(distributions[distID.cards][distID.holding]);
-
-    cumulSplits[cards] += dist.size();
-
-    mtxDistMemory.unlock();
+    Distribution& dist = distributions[cards][holding];
+    const unsigned index = dist.getIndex();
+    dist.setPtr(&uniques[cards][index]);
   }
 }
 
@@ -196,15 +237,10 @@ unsigned DistMemory::size(const unsigned char cards) const
 }
 
 
-unsigned DistMemory::numUniques(const unsigned char cards) const
+unsigned DistMemory::used(const unsigned char cards) const
 {
-  return counters[cards];
-}
-
-
-unsigned DistMemory::numSplits(const unsigned char cards) const
-{
-  return cumulSplits[cards];
+  assert(cards < usedCounts.size());
+  return usedCounts[cards];
 }
 
 
@@ -217,55 +253,12 @@ string DistMemory::strDynamic() const
   ss << "Number of distributions used\n";
   ss << right << setw(6) << "Cards" << setw(8) << "Used" << "\n";
 
-  for (unsigned c = 0; c < counters.size(); c++)
+  for (unsigned c = 0; c < usedCounts.size(); c++)
   {
-   if (counters[c])
-     ss << setw(6) << c  << setw(8) << counters[c] << "\n";
+   if (usedCounts[c])
+     ss << setw(6) << c  << setw(8) << usedCounts[c] << "\n";
   }
 
   return ss.str();
-}
-
-
-string DistMemory::str(const unsigned char cards) const
-{
-  unsigned char cmin, cmax;
-  if (cards == 0)
-  {
-    cmin = 1;
-    cmax = maxCards;
-  }
-  else
-  {
-    cmin = cards;
-    cmax = cards;
-  }
-
-  stringstream ss;
-  ss <<
-    setw(5) << "Cards" <<
-    setw(9) << "Count" <<
-    setw(9) << "Dists" <<
-    setw(9) << "Avg." <<
-    setw(9) << "Uniques" <<
-    "\n";
-
-  for (unsigned char c = cmin; c <= cmax; c++)
-  {
-    assert(c < cumulSplits.size() && c < distributions.size());
-    if (cumulSplits[c] == 0)
-      continue;
-
-    ss <<
-      setw(5) << +c <<
-      setw(9) << distributions[c].size() <<
-      setw(9) << cumulSplits[c] <<
-      setw(9) << fixed << setprecision(2) <<
-        static_cast<double>(cumulSplits[c]) / distributions[c].size() <<
-      setw(9) << counters[c] <<
-      "\n";
-  }
-
-  return ss.str() + "\n";
 }
 

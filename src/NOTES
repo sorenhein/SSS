@@ -1,3 +1,8 @@
+2022-01-14
+==========
+Turn CombMemory multi-threaded in same way as DistMemory.
+
+
 2022-01-13
 ==========
 If single combination, also move distributions to same system
