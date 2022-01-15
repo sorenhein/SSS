@@ -790,6 +790,14 @@ void Ranks::addMinimal(
     rankedTrinary(rotateFlag, cards, h4minimal, holding3Min);
 
     centry.addMinimal(holding3Min, rotateFlag);
+
+/*
+if (h4minimal < holding4)
+{
+  cout << "holding4 " << holding4 << ", h4minimal " << h4minimal << endl;
+assert(h4minimal > holding4);
+}
+*/
   }
   else
     ownFlag = true;

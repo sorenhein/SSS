@@ -61,8 +61,6 @@ const vector<unsigned> DIST_UNIQUE_COUNT =
 };
 
 
-const unsigned DIST_CHUNK_SIZE = 10;
-
 
 mutex mtxDistMemory;
 
@@ -119,10 +117,24 @@ void DistMemory::resize(
     distributions[cards].resize(numDistributions);
     numDistributions <<= 1;
 
+    // If we are running a single combination, resizeSingle must
+    // be called first.
     if (fullFlag)
       uniques[cards].resize(DIST_UNIQUE_COUNT[cards]);
-    else
-      uniques[cards].resize(DIST_CHUNK_SIZE);
+  }
+}
+
+
+void DistMemory::resizeSingle(const vector<set<unsigned>>& dependenciesCan)
+{
+  // Make just enough room for the canonical distributions we need.
+  fullFlag = false;
+
+  for (unsigned cards = 0; cards < dependenciesCan.size(); cards++)
+  {
+    const unsigned num = dependenciesCan[cards].size();
+    if (num > 0)
+      uniques[cards].resize(num);
   }
 }
 
@@ -166,13 +178,40 @@ Distribution& DistMemory::addFullMT(
 }
 
 
-Distribution& DistMemory::addIncr(
+void DistMemory::addCanonicalMT(
   const unsigned char cards,
   const unsigned holding)
 {
-  // It is too much trouble to make this multi-threaded, as the 
-  // memory locations in uniques may shift around until we are done
-  // filling out the entries.  
+  // As resizeSingle has been called, there is space for the uniques.
+  // There is not much point in multi-threading this, but it should work.
+
+  assert(cards < distributions.size());
+  assert(holding < distributions[cards].size());
+
+  Distribution& dist = distributions[cards][holding];
+  dist.setRanks(cards, holding);
+
+  assert(cards < uniques.size());
+  vector<DistCore>& uniqs = uniques[cards];
+
+  mtxDistMemory.lock();
+  const unsigned uniqueIndex = usedCounts[cards]++;
+  mtxDistMemory.unlock();
+
+  assert(uniqueIndex < uniqs.size());
+  DistCore& distCore = uniqs[uniqueIndex];
+
+  dist.setPtr(&distCore);
+  dist.split();
+  dist.setLookups();
+}
+
+
+void DistMemory::addNoncanonicalMT(
+  const unsigned char cards,
+  const unsigned holding)
+{
+  // Just have to refer to the right unique ones.
 
   assert(cards < distributions.size());
   assert(holding < distributions[cards].size());
@@ -181,45 +220,7 @@ Distribution& DistMemory::addIncr(
   dist.setRanks(cards, holding);
   const DistID distID = dist.getID();
 
-  assert(cards < uniques.size());
-  vector<DistCore>& uniqs = uniques[cards];
-
-  if (distID.cards == cards && distID.holding == holding)
-  {
-    const unsigned uniqueIndex = usedCounts[cards]++;
-
-    // Grow if dynamic size is used up.
-    if (! fullFlag && uniqueIndex >= uniques[cards].size())
-      uniques[cards].resize(uniques[cards].size() + DIST_CHUNK_SIZE);
-
-    assert(uniqueIndex < uniqs.size());
-
-    // We can't yet be sure of the final memory locaiton in uniques.
-    dist.setIndex(uniqueIndex);
-  }
-  else
-    dist.setIndex(distributions[distID.cards][distID.holding]);
-
-  return dist;
-}
-
-
-void DistMemory::finishIncrMT(
-  const unsigned char cards,
-  const unsigned holding)
-{
-  Distribution& dist = distributions[cards][holding];
-  const unsigned index = dist.getIndex();
-  dist.setPtr(&uniques[cards][index]);
-
-  // Only now can we run these methods.
-  dist.setRanks(cards, holding);
-  const DistID distID = dist.getID();
-  if (distID.cards == cards && distID.holding == holding)
-  {
-    dist.split();
-    dist.setLookups();
-  }
+  dist.setPtr(distributions[distID.cards][distID.holding]);
 }
 
 
@@ -252,14 +253,22 @@ string DistMemory::strDynamic() const
     return "";
 
   stringstream ss;
-  ss << "Number of distributions used\n";
+  ss << "Distributions used\n";
   ss << right << setw(6) << "Cards" << setw(8) << "Used" << "\n";
+
+  unsigned sum = 0;
 
   for (unsigned c = 0; c < usedCounts.size(); c++)
   {
-   if (usedCounts[c])
-     ss << setw(6) << c  << setw(8) << usedCounts[c] << "\n";
+    if (usedCounts[c])
+    {
+      ss << setw(6) << c  << setw(8) << usedCounts[c] << "\n";
+      sum += usedCounts[c];
+    }
   }
+
+  ss << string(14, '-') << "\n";
+  ss << setw(14) << sum << "\n\n";
 
   return ss.str();
 }

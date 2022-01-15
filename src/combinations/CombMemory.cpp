@@ -181,20 +181,28 @@ const CombEntry& CombMemory::getEntry(
 }
 
 
-string CombMemory::str() const
+string CombMemory::strDynamic() const
 {
   if (fullFlag)
     return "";
 
   stringstream ss;
-  ss << "Number of combinations used\n";
+  ss << "Combinations used\n";
   ss << right << setw(6) << "Cards" << setw(8) << "Used" << "\n";
+
+  unsigned sum = 0;
 
   for (unsigned c = 0; c < counters.size(); c++)
   {
-   if (counters[c])
-     ss << setw(6) << c << setw(8) << counters[c] << "\n";
+    if (counters[c])
+    {
+      ss << setw(6) << c << setw(8) << counters[c] << "\n";
+      sum += counters[c];
+    }
   }
+
+  ss << string(14, '-') << "\n";
+  ss << setw(14) << sum << "\n\n";
 
   return ss.str();
 }

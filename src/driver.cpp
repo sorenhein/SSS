@@ -74,31 +74,32 @@ int main(int argc, char * argv[])
   {
     combinations.resize(control.cards(), false);
 
-cout << "Getting dependencies" << endl;
     vector<set<unsigned>> dependenciesTrinary;
-    vector<set<unsigned>> dependenciesBinary;
+    vector<set<unsigned>> dependenciesBinaryCan,
+      dependenciesBinaryNoncan;
+
     combinations.getDependencies(
       control.holdingLength(),
       control.holding(),
       dependenciesTrinary, 
-      dependenciesBinary);
+      dependenciesBinaryCan,
+      dependenciesBinaryNoncan);
 
     timers.start(TIMER_DISTRIBUTIONS);
 
-cout << "Running single distributions" << endl;
-    distributions.runSingle(dependenciesBinary);
+    distributions.runSingle(
+      dependenciesBinaryCan, 
+      dependenciesBinaryNoncan);
 
     cout << distributions.str();
 
     timers.stop(TIMER_DISTRIBUTIONS);
 
-cout << "Running single combinations" << endl;
     combinations.runSingle(
       control.holdingLength(),
       control.holding(),
       distributions,
       dependenciesTrinary);
-cout << "Done" << endl;
   }
 
   // combinations.tmp(control.cards(), control.holding());

@@ -63,7 +63,7 @@ class CombMemory
       const unsigned cards,
       const unsigned holding) const;
 
-    string str() const;
+    string strDynamic() const;
 };
 
 #endif

@@ -106,7 +106,8 @@ void Combinations::getDependencies(
   const unsigned char cards,
   const unsigned holding,
   vector<set<unsigned>>& dependenciesTrinary,
-  vector<set<unsigned>>& dependenciesBinary)
+  vector<set<unsigned>>& dependenciesBinaryCan,
+  vector<set<unsigned>>& dependenciesBinaryNoncan)
 {
   Ranks ranks;
   Plays plays;
@@ -115,7 +116,8 @@ void Combinations::getDependencies(
 
   vector<set<unsigned>> scratch1, scratch2;
   dependenciesTrinary.resize(cards+1);
-  dependenciesBinary.resize(cards+1);
+  dependenciesBinaryCan.resize(cards+1);
+  dependenciesBinaryNoncan.resize(cards+1);
   scratch1.resize(cards+1);
   scratch2.resize(cards+1);
 
@@ -145,17 +147,24 @@ void Combinations::getDependencies(
 
         plays.addHoldings(scratch2);
         dependenciesTrinary[c].insert(dep);
-        dependenciesBinary[c].insert(centry.getHolding2());
 
         // The binary holding may not be canonical, in which case we
-        // also need to generate the canonical one.  This will always
-        // have fewer cards, so it will be generated in time later on.
+        // also need to generate the canonical one.  It is convenient 
+        // to keep these separate.
 
+        const unsigned h2 = centry.getHolding2();
         distMap.reset();
-        distMap.setRanks(c, centry.getHolding2());
+        distMap.setRanks(c, h2);
         const DistID distID = distMap.getID();
-        if (distID.cards != c)
-          dependenciesBinary[distID.cards].insert(distID.holding);
+        if (distID.cards == c && distID.holding == h2)
+        {
+          dependenciesBinaryCan[distID.cards].insert(distID.holding);
+        }
+        else
+        {
+          dependenciesBinaryCan[distID.cards].insert(distID.holding);
+          dependenciesBinaryNoncan[c].insert(h2);
+        }
           
         doneFlag = false;
       }
@@ -178,22 +187,6 @@ void Combinations::runSingle(
   const Distributions& distributions,
   const vector<set<unsigned>>& dependenciesTrinary)
 {
-  // Split into getDependencies3() and runDependencies3().
-  // In principle, the same for distributions?
-
-  /*
-  vector<set<unsigned>> dependenciesTrinary;
-  vector<set<unsigned>> dependenciesBinary;
-  Combinations::getDependencies(cards, holding, 
-    dependenciesTrinary, dependenciesBinary);
-    */
-
-  /*
-  for (unsigned char c = 0; c <= cards; c++)
-    for (auto& dep: dependenciesBinary[c])
-      distributions.add(c, dep);
-      */
-
   Ranks ranks;
   Plays plays;
   plays.resize(cards);
@@ -215,7 +208,8 @@ void Combinations::runSingle(
     }
   }
 
-  cout << combMemory.str();
+  cout << distributions.strDynamic();
+  cout << combMemory.strDynamic();
 }
 
 

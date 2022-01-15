@@ -28,8 +28,6 @@ class Distributions
 
     unsigned char maxCards;
 
-    // vector<vector<Distribution>> distributions;
-
     DistMemory distMemory;
 
     vector<unsigned> splitCounts;
@@ -50,11 +48,9 @@ class Distributions
 
     void resize(const unsigned char maxCardsIn);
 
-    void add(
-      const unsigned char cards,
-      const unsigned holding);
-
-    void runSingle(const vector<set<unsigned>>& dependencies);
+    void runSingle(
+      const vector<set<unsigned>>& dependenciesCan,
+      const vector<set<unsigned>>& dependenciesNoncan);
 
     void runUniques(const unsigned char cards);
 
@@ -65,6 +61,8 @@ class Distributions
     const Distribution& get(
       const unsigned char cards,
       const unsigned holding2) const;
+
+    string strDynamic() const;
 
     string str(const unsigned char cards = 0) const;
 

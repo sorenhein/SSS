@@ -84,7 +84,8 @@ class Combinations
       const unsigned char cards,
       const unsigned holding,
       vector<set<unsigned>>& dependenciesTrinary,
-      vector<set<unsigned>>& dependendiesBinary);
+      vector<set<unsigned>>& dependendiesBinaryCan,
+      vector<set<unsigned>>& dependendiesBinaryNoncan);
 
     void runSingle(
       const unsigned char cards,

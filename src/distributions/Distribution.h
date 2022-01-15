@@ -49,21 +49,6 @@ class Distribution
       setPtr(dist.distCorePtr);
     };
 
-    void setIndex(const unsigned indexIn)
-    {
-      index = indexIn;
-    };
-
-    void setIndex(const Distribution& dist)
-    {
-      index = dist.index;
-    };
-
-    unsigned getIndex() const
-    {
-      return index;
-    };
-
     DistID getID() const
     {
       return distMap.getID();

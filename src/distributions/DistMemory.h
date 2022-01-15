@@ -10,6 +10,7 @@
 #define SSS_DISTMEMORY_H
 
 #include <vector>
+#include <set>
 #include <string>
 
 #include "Distribution.h"
@@ -43,18 +44,20 @@ class DistMemory
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
 
+    void resizeSingle(const vector<set<unsigned>>& dependenciesCan);
+
     // Thread-safe.  Used for generating all distributions in a loop
     Distribution& addFullMT(
       const unsigned char cards,
       const unsigned holding);
 
-    // Not thread-safe.  Used for adding only certain distributions
-    Distribution& addIncr(
+    // Thread-safe.  Used for adding only certain distributions
+    void addCanonicalMT(
       const unsigned char cards,
       const unsigned holding);
 
-    // Uses after we are finished with addIncr.  Thread-safe
-    void finishIncrMT(
+    // Thread-safe.  Used for adding only certain distributions
+    void addNoncanonicalMT(
       const unsigned char cards,
       const unsigned holding);
 

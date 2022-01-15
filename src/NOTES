@@ -1,18 +1,13 @@
 2022-01-14
 ==========
-Turn CombMemory multi-threaded in same way as DistMemory.
-
-
-2022-01-13
-==========
-If single combination, also move distributions to same system
-as combinations.
+Why more than 2x Ranks to Plays and Strategize at the end of output?
 
 Check that minimals always have values > the originals.
 
 Make the holding loop backward.
 
-Only store minimals long-term.
+Only store minimals long-term.  And void winners if either West or
+East is void.  The rest of the Strategies can be forget()'ted.
 
 Do checks in loop, not as a batch afterwards.
 
@@ -360,12 +355,6 @@ Optimizations
 
 * No / limited endl
 
-
-Non-batch one-shots
--------------------
-
-Can maybe be optimized in time a bit.
-Can cut down on calculating all distributions.
 
 Ranks stored in tables
 ----------------------

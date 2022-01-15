@@ -44,30 +44,19 @@ void Distributions::resize(const unsigned char maxCardsIn)
 }
 
 
-void Distributions::add(
-  const unsigned char cards,
-  const unsigned holding)
+void Distributions::runSingle(
+  const vector<set<unsigned>>& dependenciesCan,
+  const vector<set<unsigned>>& dependenciesNoncan)
 {
-  // TODO Is this hooked up to anything?  (Is this method called?)
-  distMemory.addIncr(cards, holding);
-}
+  distMemory.resizeSingle(dependenciesCan);
 
+  for (unsigned char c = 0; c < dependenciesCan.size(); c++)
+    for (auto& dep: dependenciesCan[c])
+      distMemory.addCanonicalMT(c, dep);
 
-void Distributions::runSingle(const vector<set<unsigned>>& dependencies)
-{
-  for (unsigned char c = 0; c < dependencies.size(); c++)
-    for (auto& dep: dependencies[c])
-    {
-cout << "Adding (" << +c << ", " << dep << ")" << endl;
-      distMemory.addIncr(c, dep);
-    }
-
-  for (unsigned char c = 0; c < dependencies.size(); c++)
-    for (auto& dep: dependencies[c])
-    {
-cout << "Finishing (" << +c << ", " << dep << ")" << endl;
-      distMemory.finishIncrMT(c, dep);
-    }
+  for (unsigned char c = 0; c < dependenciesCan.size(); c++)
+    for (auto& dep: dependenciesNoncan[c])
+      distMemory.addNoncanonicalMT(c, dep);
 }
 
 
@@ -133,6 +122,12 @@ const Distribution& Distributions::get(
   const unsigned holding2) const
 {
   return distMemory.get(cards, holding2);
+}
+
+
+string Distributions::strDynamic() const
+{
+  return distMemory.strDynamic();
 }
 
 
