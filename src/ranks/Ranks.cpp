@@ -729,11 +729,11 @@ CombinationType Ranks::setPlays(
   Plays& plays,
   Result& trivial)
 {
-  // If COMB_CONSTANT, only terminalValue is set.
+  // If COMB_TRIVIAL, only terminalValue is set.
   // Otherwise, plays are set.
 
   if (Ranks::makeTrivial(trivial))
-    return COMB_CONSTANT;
+    return COMB_TRIVIAL;
 
   Play play;
 

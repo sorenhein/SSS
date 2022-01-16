@@ -13,6 +13,8 @@
 
 #include "../strategies/Strategies.h"
 
+#include "../utils/CombinationType.h"
+
 using namespace std;
 
 class CombEntry;
@@ -31,6 +33,12 @@ class Combination
     unsigned char maxRank;
 
 
+    void setTrivial(
+      const Result& entry,
+      const unsigned char count,
+      const bool debugFlag = false);
+
+
   public:
 
     Combination();
@@ -41,12 +49,7 @@ class Combination
 
     unsigned char getMaxRank() const;
 
-    void setTrivial(
-      const Result& entry,
-      const unsigned char count,
-      const bool debugFlag = false);
-
-    const Strategies& strategize(
+    CombinationType strategize(
       const CombEntry& centry,
       const Combinations& combinations,
       const Distributions& distributions,

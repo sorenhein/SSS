@@ -124,6 +124,9 @@ void CombTest::checkAllReductions(
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
     const CombEntry& centry = combMemory.getEntry(cards, holding);
+    if (centry.getType() == COMB_TRIVIAL)
+      continue;
+
     if (! centry.isReference())
       continue;
 

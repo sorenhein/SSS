@@ -287,15 +287,24 @@ void Combinations::runUniques(
       // Plays is cleared and rewritten, so it is only an optimization
       // not to let Combination make its own plays.
 
-      comb.strategize(centry, * this, distributions, ranks, plays);
+      CombinationType ctype =
+        comb.strategize(centry, * this, distributions, ranks, plays);
 
+      if (ctype == COMB_TRIVIAL)
+      {
+        // Don't look for minimals.
+        centry.setType(COMB_TRIVIAL);
+      }
+      else
+      {
 histoPlay[plays.size()]++;
 
-      if (Combinations::getMinimals(comb.strategies(), ranks, centry))
-        centry.setMinimal();
+        if (Combinations::getMinimals(comb.strategies(), ranks, centry))
+          centry.setMinimal();
 
-      centry.setType(Combinations::classify(
-        centry.isMinimal(), comb.strategies(), ranks));
+        centry.setType(Combinations::classify(
+          centry.isMinimal(), comb.strategies(), ranks));
+      }
 
       countStats[cards].data[centry.getType()].incr(
         plays.size(), comb.strategies().size());
@@ -587,7 +596,12 @@ void Combinations::fixMinimals(const unsigned char cards)
 {
   for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
   {
-    if (! combMemory.getEntry(cards, holding).fixMinimals(combMemory, cards))
+    CombEntry& centry = combMemory.getEntry(cards, holding);
+
+    if (centry.getType() == COMB_TRIVIAL)
+      continue;
+
+    if (! centry.fixMinimals(combMemory, cards))
     {
       cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
     }

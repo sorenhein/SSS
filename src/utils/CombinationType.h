@@ -18,24 +18,25 @@ using namespace std;
 // If this ever exceeds 3 bits, we have a problem in CombFiles
 enum CombinationType
 {
-  COMB_NON_MINIMAL = 0,
-  COMB_CONSTANT = 1,
-  COMB_SINGLE_STRAT = 2,
-  COMB_MULT_VOID_ASYMM = 3,
-  COMB_MULT_VOID_SYMM = 4,
-  COMB_MULT_NON_VOID = 5,
-  COMB_SIZE = 6
+  COMB_TRIVIAL = 0,
+  COMB_NON_MINIMAL = 1,
+  COMB_CONSTANT = 2,
+  COMB_SINGLE_STRAT = 3,
+  COMB_MULT_VOID_ASYMM = 4,
+  COMB_MULT_VOID_SYMM = 5,
+  COMB_MULT_NON_VOID = 6,
+  COMB_SIZE = 7
 };
 
 const vector<string> CombinationNames =
 {
+  "Trivial",
   "Non-min",
   "Const",
   "Single",
   "AsymmV",
   "SymmV",
-  "Non-vd",
-  "Unset"
+  "Non-vd"
 };
 
 #endif

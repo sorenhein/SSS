@@ -1,5 +1,8 @@
-2022-01-14
+2022-01-15
 ==========
+Maybe we don't have the problem that minimal < actual?
+
+
 Why more than 2x Ranks to Plays and Strategize at the end of output?
 
 Check that minimals always have values > the originals.
