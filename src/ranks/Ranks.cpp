@@ -760,15 +760,23 @@ void Ranks::addMinimal(
   bool& ownFlag) const
 {
   unsigned oppsCount, northCount, southCount;
-  bool rotateFlag;
+  bool specialFlag = false;
 
   if (absNumber == 0 || absNumber == UCHAR_NOT_SET)
   {
-    // Arrange North and South by length, which is all it takes here.
+    // Normally we would just go by lengths and order the cards
+    // (opponents, South, North).  But we want to stay with minimals
+    // where North has the highest card.  We could order differently
+    // (opponents, North, South), but we also want minimals to be
+    // always numerically larger than their users, and the numerical
+    // code for North is smaller than for South.
+
     oppsCount = opps.length();
     northCount = north.length();
     southCount = south.length();
-    rotateFlag = false;
+
+    if (northCount > 0 && southCount > 0)
+      specialFlag = true;
   }
   else
   {
@@ -777,27 +785,22 @@ void Ranks::addMinimal(
     oppsCount = opps.countBelowAbsNumber(absNumber);
     northCount = north.countBelowAbsNumber(absNumber);
     southCount = south.countBelowAbsNumber(absNumber);
-    rotateFlag = false;
   }
 
   // Keep the orientation.
-  const unsigned h4minimal = rankedMinimalize(rotateFlag, cards,
+  const unsigned h4minimal = rankedMinimalize(specialFlag,
     oppsCount, northCount, southCount, holding4);
 
   if (h4minimal != holding4)
   {
     unsigned holding3Min;
-    rankedTrinary(rotateFlag, cards, h4minimal, holding3Min);
+    rankedTrinary(false, cards, h4minimal, holding3Min);
 
-    centry.addMinimal(holding3Min, rotateFlag);
+    // No matter how we got to the holdings, North remains the highest.
+    centry.addMinimal(holding3Min, false);
 
-/*
-if (h4minimal < holding4)
-{
-  cout << "holding4 " << holding4 << ", h4minimal " << h4minimal << endl;
-assert(h4minimal > holding4);
-}
-*/
+    // This follows from the choice made at the bottom of cranked.
+    assert(h4minimal > holding4);
   }
   else
     ownFlag = true;

@@ -681,38 +681,45 @@ void rankedBoth(
 
 
 unsigned rankedMinimalize(
-  const bool rotateFlag,
-  const unsigned cards,
+  const bool specialFlag,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,
   const unsigned& holding4)
 {
-  // Redistributes the low cards in the holding4 order 
-  // opps, North, South (top to bottom).
+  // Normally redistributes the low cards in the holding4 order 
+  // opps, South, North (top to bottom).
+  // As this is also the reverse numerical order of the players'
+  // bit values, the minimal holding will always be >= the holding
+  // under investigation.
+  // If North-South do not win any trick by rank, and if they both
+  // have cards, this would cause South to have his side's highest
+  // card, which is not desirable.  So if specialFlag is set,
+  // North keeps the top card and the rest is distributed in the
+  // above order.  This preserves North as the top holder and also
+  // moves the holding toward higher numbers.
 
   const unsigned lows = oppsCount + southCount + northCount;
   assert(lows >= 1);
 
-  if (rotateFlag)
+  if (specialFlag)
   {
     // The returned value will have SIDE_NONE (3) and not SIDE_OPPS
     // for the opponents, but that's OK for the table lookups.
     // The key is that they should all be 3's (or all 2's), hence
     // NONE_REPEATS.
-    const unsigned holding4rot = holding4 ^ HOLDING4_ROTATE[cards];
-
-    return (holding4rot & HOLDING4_MASK_HIGH[lows]) |
-      ((NONE_REPEATS[oppsCount] << 2*(northCount + southCount)) |
-       (NORTH_REPEATS[southCount] << 2*northCount) |
-       SOUTH_REPEATS[northCount]);
+    return (holding4 & HOLDING4_MASK_HIGH[lows]) |
+      ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
+       (NORTH_REPEATS[1] << 2*(lows-1)) |
+       (SOUTH_REPEATS[southCount] << 2*(northCount-1)) |
+       NORTH_REPEATS[northCount-1]);
   }
   else
   {
     return (holding4 & HOLDING4_MASK_HIGH[lows]) |
       ((OPPS_REPEATS[oppsCount] << 2*(northCount + southCount)) |
-       (NORTH_REPEATS[northCount] << 2*southCount) |
-       SOUTH_REPEATS[southCount]);
+       (SOUTH_REPEATS[southCount] << 2*northCount) |
+       NORTH_REPEATS[northCount]);
   }
 }
   

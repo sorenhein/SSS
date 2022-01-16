@@ -37,8 +37,7 @@ void rankedBoth(
   unsigned& holding2);
 
 unsigned rankedMinimalize(
-  const bool rotateFlag,
-  const unsigned cards,
+  const bool specialFlag,
   const unsigned oppsCount,
   const unsigned northCount,
   const unsigned southCount,
