@@ -941,6 +941,18 @@ void Strategy::adapt(
  *                                                          *
  ************************************************************/
 
+void Strategy::studyOppsVoid(
+  Result& resultWestVoid,
+  Result& resultEastVoid) const
+{
+  // When West or East is void, only the first resp. last result matters.
+  assert(! results.empty());
+  
+  resultWestVoid += results.front();
+  resultEastVoid += results.back();
+}
+
+  
 const Result Strategy::resultLowest() const
 {
   Result resLowest;

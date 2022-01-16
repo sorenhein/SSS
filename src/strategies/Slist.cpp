@@ -878,9 +878,26 @@ bool Slist::purgeRanges(
 
 /************************************************************
  *                                                          *
- * Winners methods                                          *
+ * Results and winners methods                              *
  *                                                          *
  ************************************************************/
+
+void Slist::studyOppsVoid()
+{
+  // It is somewhat helpful to know the results across all strategies
+  // when either opponent is known to be void.  First, it helps a
+  // little bit when adapting strategies from later plays.  Second,
+  // it lets us forget almost entire Strategies in more cases.
+  // For example, we can reach 11-card combinations if both North
+  // and West are void, but not without an opposing void.
+  
+  resultWestVoid.clear();
+  resultEastVoid.clear();
+
+  for (const auto& strat: strategies)
+    strat.studyOppsVoid(resultWestVoid, resultEastVoid);
+}
+
 
 void Slist::getResultLowest(Result& result) const
 {

@@ -21,8 +21,15 @@ extern Control control;
 
 Result::Result()
 {
+  Result::clear();
+}
+
+
+void Result::clear()
+{
   dist = 0;
   tricks = 0;
+  winner.reset();
 }
 
 
@@ -101,6 +108,19 @@ void Result::operator *= (const Result& result)
   {
     if (control.runRankComparisons())
       winner *= result.winner;
+  }
+}
+
+
+void Result::operator += (const Result& result)
+{
+  // Keep the "higher" one.
+  if (result.tricks > tricks)
+    * this = result;
+  else if (tricks == result.tricks)
+  {
+    if (control.runRankComparisons())
+      winner += result.winner;
   }
 }
 

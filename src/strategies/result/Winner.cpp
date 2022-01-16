@@ -152,6 +152,14 @@ void Winner::operator *= (const Winner& winner2)
 }
 
 
+void Winner::operator += (const Winner& winner2)
+{
+  // Declarer has the choice.
+  if (Winner::compare(winner2) == WIN_SECOND)
+    * this = winner2;
+}
+
+
 Compare Winner::compare(const Winner& winner2) const
 {
   const unsigned char abs1 = Winner::getAbsNumber();

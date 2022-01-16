@@ -220,6 +220,10 @@ class Strategy
 
     // ******************* Winners ******************
 
+    void studyOppsVoid(
+      Result& resultWestVoid,
+      Result& resultEastVoid) const;
+
     const Result resultLowest() const;
 
 

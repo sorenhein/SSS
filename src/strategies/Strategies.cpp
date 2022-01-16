@@ -382,6 +382,12 @@ const Ranges& Strategies::getRanges() const
  *                                                          *
  ************************************************************/
 
+void Strategies::studyOppsVoid()
+{
+  slist.studyOppsVoid();
+}
+
+
 void Strategies::getResultLowest(Result& result) const
 {
   slist.getResultLowest(result);

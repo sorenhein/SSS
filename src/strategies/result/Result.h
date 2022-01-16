@@ -30,6 +30,8 @@ class Result
 
     Result();
 
+    void clear();
+
     void set(
       const unsigned char distIn,
       const unsigned char tricksIn,
@@ -52,6 +54,8 @@ class Result
     void multiplyWinnersOnto(Result& result) const;
 
     void operator *= (const Result& result);
+
+    void operator += (const Result& result);
 
     bool operator == (const Result& result) const;
 

@@ -230,6 +230,8 @@ const Strategies& Plays::strategize(
     }
   }
 
+  nodeMaster.strategies().studyOppsVoid();
+
   return nodeMaster.strategies();
 }
 

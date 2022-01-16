@@ -5,6 +5,8 @@ Why more than 2x Ranks to Plays and Strategize at the end of output?
 Only store minimals long-term.  And void winners if either West or
 East is void.  The rest of the Strategies can be forget()'ted.
 
+forgetting: I think both Combination and Node have a copy!
+
 2022-01-09
 ==========
 

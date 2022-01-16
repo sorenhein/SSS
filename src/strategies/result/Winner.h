@@ -78,6 +78,8 @@ class Winner
 
     void operator *= (const Winner& winner2);
 
+    void operator += (const Winner& winner2);
+
     Compare compare(const Winner& winner2) const;
 
     void flip();

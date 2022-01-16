@@ -42,6 +42,9 @@ class Slist
 
     list<Strategy> strategies;
 
+    Result resultWestVoid;
+    Result resultEastVoid;
+
 
     void collapseOnVoid();
 
@@ -228,7 +231,9 @@ class Slist
       const bool debugFlag);
 
 
-    // Winners.
+    // Results and winners.
+
+    void studyOppsVoid();    
 
     void getResultLowest(Result& result) const;
     void getResultList(list<Result>& resultList) const;
