@@ -171,9 +171,7 @@ const Strategies& Plays::strategize(
 
   // This is a quite expensive method, as it also adapts plays
   // to the current trick.
-timersStrat[20].start();
   Plays::getNextStrategies(distribution, debugFlag);
-timersStrat[20].stop();
 
   if (! control.runAdvancedNodes() ||
       nodesRho.used() <= 20 ||

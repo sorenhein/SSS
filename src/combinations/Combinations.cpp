@@ -53,6 +53,9 @@ void Combinations::setTimerNames()
   timersStrat[ 8].name("Strats::makeRanges");
   timersStrat[ 9].name("Strats::propagateRanges");
   timersStrat[10].name("Strats::purgeRanges");
+  timersStrat[30].name("Ranks::getMinimals");
+  timersStrat[31].name("CombEntry::fixMinimals");
+  timersStrat[32].name("CombTest::checkReductions");
 }
 
 
@@ -273,6 +276,9 @@ void Combinations::runUniques(
   // so when when looping backwards we already have the minimals done
   // when we need them.
 
+  // TODO Back into Combinations?
+  CombTest ctest;
+
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
     CombEntry& centry = combMemory.getEntry(cards, holding);
@@ -303,16 +309,28 @@ void Combinations::runUniques(
       {
 histoPlay[plays.size()]++;
 
+        timersStrat[30].start();
         if (Combinations::getMinimals(comb.strategies(), ranks, centry))
           centry.setMinimal();
+        timersStrat[30].stop();
 
         centry.setType(Combinations::classify(
           centry.isMinimal(), comb.strategies(), ranks));
 
+        timersStrat[31].start();
         if (! centry.fixMinimals(combMemory, cards))
         {
-          cout << "WARN-NONMIN2: holding " << holding << 
-            " uses non-minimals\n";
+          cout << "WARNING: Uses non-minimals\n\n";
+        }
+        timersStrat[31].stop();
+
+        if (centry.isReference())
+        {
+          timersStrat[32].start();
+          ctest.checkReductions(cards, combMemory, centry,
+            comb.strategies(), comb.getMaxRank(),
+            distributions.get(cards, centry.getHolding2()));
+          timersStrat[32].stop();
         }
       }
 
@@ -345,21 +363,6 @@ if (count > 0)
 cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
 }
-  CombTest ctest;
-
-  timersStrat[31].start();
-  ctest.checkAllMinimals(combMemory, cards);
-  timersStrat[31].stop();
-
-  // TODO Control by flags.
-  timersStrat[30].start();
-  ctest.checkAllReductions(cards, combMemory, distributions);
-  // ctest.checkAllReductions(cards, centries, uniqs, distributions);
-  timersStrat[30].stop();
-
-  // This is how to write files:
-  // CombFiles combFiles;
-  // combFiles.writeFiles(cards, centries);
 
   // This is how to read files:
   // vector<CombEntry> copy;

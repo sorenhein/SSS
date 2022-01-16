@@ -11,9 +11,7 @@
 
 using namespace std;
 
-class Distributions;
 class Distribution;
-class DistCore;
 class Strategies;
 class CombMemory;
 class CombEntry;
@@ -21,7 +19,7 @@ class CombEntry;
 
 class CombTest
 {
-  private:
+  public:
 
     void checkReductions(
       const unsigned char cards,
@@ -30,18 +28,6 @@ class CombTest
       const Strategies& strategies,
       const unsigned char maxRank,
       const Distribution& dist) const;
-
-
-  public:
-
-    void checkAllMinimals(
-      const CombMemory& combMemory,
-      const unsigned char cards) const;
-
-    void checkAllReductions(
-      const unsigned char cards,
-      const CombMemory& combMemory,
-      const Distributions& distributions) const;
 };
 
 #endif

@@ -2,14 +2,8 @@
 ==========
 Why more than 2x Ranks to Plays and Strategize at the end of output?
 
-Make the holding loop backward.
-
 Only store minimals long-term.  And void winners if either West or
 East is void.  The rest of the Strategies can be forget()'ted.
-
-Do checks in loop, not as a batch afterwards.
-
-If single shot, output #used distributions and combinations.
 
 2022-01-09
 ==========
@@ -79,8 +73,8 @@ Play average 94.54
 CombTest errors
 ---------------
 
-WARN-NONMIN      225    happens in fixMinimals
-MISMATCH        3063
+WARNING      229 uses non-minimals
+MISMATCH    3063 minimals don't add up
 
 Other checks not implemented yet
 --------------------------------

@@ -21,25 +21,6 @@
 #include "../const.h"
 
 
-void CombTest::checkAllMinimals(
-  const CombMemory& combMemory,
-  const unsigned char cards) const
-{
-  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
-  {
-    const CombEntry& centry = combMemory.getEntry(cards, holding);
-    for (auto& min: centry)
-    {
-      if (! combMemory.getEntry(cards, min.getHolding3()).isMinimal())
-      {
-        cout << "ERROR: holding " << holding << " uses non-minimals\n";
-        break;
-      }
-    }
-  }
-}
-
-
 void CombTest::checkReductions(
   const unsigned char cards,
   const CombMemory& combMemory,
@@ -91,57 +72,13 @@ void CombTest::checkReductions(
 
   if (! (stratsCumul == strategies))
   {
-    cout << "MISMATCH: " << centry.strHolding() << endl;
+    cout << "ERROR: MISMATCH\n";
     cout << centry.str();
-    cout << strategies.str("strategies", true);
-    cout << "maxRank " << +maxRank << "\n\n";
-    cout << stratsCumul.str("Cumulative", true);
+    cout << stratsCumul.str("Cumulative", true) << "\n";
   }
-
-/*
-if (centry.getHolding3() == 2072)
-{
-    cout << "DEBUG: " << centry.strHolding() << endl;
-    cout << centry.str();
-    cout << strategies.str("strategies", true);
-    cout << "maxRank " << +maxRank << "\n\n";
-    cout << stratsCumul.str("Cumulative", true);
-}
-*/
-
 
   // TODO Checks:
   // If our strategies has N"S and NS", we also expect N'S' to exist,
   // and we don't expect N"S".
-}
-
-
-void CombTest::checkAllReductions(
-  const unsigned char cards,
-  const CombMemory& combMemory,
-  const Distributions& distributions) const
-{
-  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
-  {
-    const CombEntry& centry = combMemory.getEntry(cards, holding);
-    if (centry.getType() == COMB_TRIVIAL)
-      continue;
-
-    if (! centry.isReference())
-      continue;
-
-    const Combination& comb = combMemory.getComb(cards, holding);
-
-// cout << "CAR: Calling CR with " << holding << ", " << 
-  // centry.getHolding2() << "\n";
-    CombTest::checkReductions(
-      cards,
-      combMemory,
-      centry, 
-      comb.strategies(), 
-      comb.getMaxRank(),
-      distributions.get(cards, centry.getHolding2()));
-      // * distributions.ptrNoncanonical(cards, centry.getHolding2()));
-  }
 }
 
