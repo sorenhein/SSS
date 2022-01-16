@@ -1,11 +1,17 @@
 2022-01-15
 ==========
+The void results seem to work now.  So now we can forgetDetails()
+of Strategies, which clears Slist strategies.  The void results stay.
+We forget when (a) cards >= 11 or (b) cards == 10 and partner isn't void.
+The case of 10 cards and partner void can be reached from 13 cards
+when partner started out void, and then we need all strategies and
+not just the void results.
+
+So in these cases we can keep the minimals but forget strategies as
+soon as we've checked them.
+
 Why more than 2x Ranks to Plays and Strategize at the end of output?
 
-Only store minimals long-term.  And void winners if either West or
-East is void.  The rest of the Strategies can be forget()'ted.
-
-forgetting: I think both Combination and Node have a copy!
 
 2022-01-09
 ==========

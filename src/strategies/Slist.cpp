@@ -105,55 +105,30 @@ void Slist::adapt(
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
   assert(! westVoidFlag || ! eastVoidFlag);
 
-  Strategy strat0;
-  Slist scopy;
-  unsigned char dmax;
   if (westVoidFlag || eastVoidFlag)
   {
-    scopy = * this;
-    Slist stmp = * this;
-    stmp.strategies.clear();
-    stmp.strategies.emplace_back(Strategy());
-    // Strategy& strat = stmp.front();
+    // Make use of the pre-stored results when one opponent is void.
 
-    strat0 = stmp.front();
-    dmax = survivors.front().fullNo;
+    strategies.clear();
+    strategies.emplace_back(Strategy());
+    Strategy& strat = strategies.front();
 
-    strat0.setAndAdaptVoid(play,
-      resultWestVoid, resultEastVoid,
-      westVoidFlag, eastVoidFlag, dmax);
+    strat.setAndAdaptVoid(
+      play,
+      resultWestVoid, 
+      resultEastVoid,
+      westVoidFlag, 
+      eastVoidFlag,
+      survivors.front().fullNo);
   }
-
-  for (auto& strat: strategies)
-    strat.adapt(play, survivors);
-
-  Slist scopy2 = * this;
-
-  if (strategies.size() > 1)
-    Slist::consolidate(&Strategy::lessEqualCompleteBasic);
-  
-  if (westVoidFlag || eastVoidFlag)
+  else
   {
-    if (! (strat0 == strategies.front()))
-    {
-      cout << "Play " << play.strLine() << "\n";
-      cout << "West " << resultWestVoid.str(true);
-      cout << "East " << resultEastVoid.str(true);
-      cout << "West void? " << westVoidFlag << "\n";
-      cout << "dmax " << +(survivors.sizeFull()-1) << "\n";
-      cout << survivors.str();
-      cout << scopy.str("Orig", true);
-      cout << scopy2.str("Old adapt before consolidate", true);
-      cout << Slist::str("Old adapt after consolidate", true);
-      cout << strat0.str("New adapt", true) << endl;
+    for (auto& strat: strategies)
+      strat.adapt(play, survivors);
 
-      // In order to break on this line
+    if (strategies.size() > 1)
       Slist::consolidate(&Strategy::lessEqualCompleteBasic);
-      cout << Slist::str("Old adapt after second consolidate", true);
-
-      assert(strat0 == strategies.front());
-    }
-  }
+  } 
 }
 
 
