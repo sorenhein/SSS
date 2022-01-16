@@ -309,13 +309,11 @@ histoPlay[plays.size()]++;
         centry.setType(Combinations::classify(
           centry.isMinimal(), comb.strategies(), ranks));
 
-        /*
         if (! centry.fixMinimals(combMemory, cards))
         {
           cout << "WARN-NONMIN2: holding " << holding << 
             " uses non-minimals\n";
         }
-        */
       }
 
       countStats[cards].data[centry.getType()].incr(
@@ -347,10 +345,6 @@ if (count > 0)
 cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
 }
-  timersStrat[33].start();
-  Combinations::fixMinimals(cards);
-  timersStrat[33].stop();
-
   CombTest ctest;
 
   timersStrat[31].start();
@@ -604,36 +598,8 @@ Combination const * Combinations::getPtr(
 }
 
 
-void Combinations::fixMinimals(const unsigned char cards)
+string Combinations::strHeader() const
 {
-  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
-  {
-    CombEntry& centry = combMemory.getEntry(cards, holding);
-
-    if (centry.getType() == COMB_TRIVIAL)
-      continue;
-
-    if (! centry.fixMinimals(combMemory, cards))
-    {
-      cout << "WARN-NONMIN: holding " << holding << " uses non-minimals\n";
-    }
-  }
-}
-
-string Combinations::strUniques(const unsigned char cards) const
-{
-  unsigned cmin, cmax;
-  if (cards == 0)
-  {
-    cmin = 1;
-    cmax = control.cards();
-  }
-  else
-  {
-    cmin = cards;
-    cmax = cards;
-  }
-
   stringstream ss;
   ss <<
     setw(5) << "Cards" <<
@@ -646,27 +612,51 @@ string Combinations::strUniques(const unsigned char cards) const
       setw(8) << "Plays" <<
       setw(8) << "Strats";
 
-  ss << "\n";
-  
-  for (unsigned c = cmin; c <= cmax; c++)
-  {
-    if (combMemory.size(c) == 0)
-      continue;
+  return ss.str() + "\n";
+}
 
+
+string Combinations::strLine(const unsigned char cards) const
+{
+  if (combMemory.size(cards) == 0)
+    return "";
+
+  stringstream ss;
+
+  ss <<
+    setw(5) << cards <<
+    setw(9) << combMemory.size(cards) <<
+    setw(9) << combMemory.size(cards) - countNonreference[cards];
+
+  for (unsigned n = 0; n < COMB_SIZE; n++)
     ss <<
-      setw(5) << c <<
-      setw(9) << combMemory.size(c) <<
-      setw(9) << combMemory.size(c) - countNonreference[c];
-
-    for (unsigned n = 0; n < COMB_SIZE; n++)
-      ss <<
-        setw(8) << countStats[c].data[n].count <<
-        setw(8) << countStats[c].data[n].strAveragePlays() <<
-        setw(8) << countStats[c].data[n].strAverageStrats();
-
-    ss << "\n";
-  }
+      setw(8) << countStats[cards].data[n].count <<
+      setw(8) << countStats[cards].data[n].strAveragePlays() <<
+      setw(8) << countStats[cards].data[n].strAverageStrats();
 
   return ss.str() + "\n";
+}
+
+
+string Combinations::str(const unsigned char cards) const
+{
+  unsigned char cmin, cmax;
+  if (cards == 0)
+  {
+    cmin = 1;
+    cmax = control.cards();
+  }
+  else
+  {
+    cmin = cards;
+    cmax = cards;
+  }
+
+  string s = Combinations::strHeader();
+  
+  for (unsigned char c = cmin; c <= cmax; c++)
+    s += Combinations::strLine(c);
+
+  return s + "\n";
 }
 

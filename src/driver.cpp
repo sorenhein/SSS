@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
     }
 
     cout << "\n";
-    cout << combinations.strUniques();
+    cout << combinations.str();
   }
   else
   {

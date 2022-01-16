@@ -65,7 +65,9 @@ class Combinations
       Distributions const * distributions,
       const unsigned thid);
 
-    void fixMinimals(const unsigned char cards);
+    string strHeader() const;
+
+    string strLine(const unsigned char cards) const;
 
 
   public:
@@ -110,7 +112,7 @@ class Combinations
       const unsigned char cards,
       const unsigned holding3) const;
 
-    string strUniques(const unsigned char cards = 0) const;
+    string str(const unsigned char cards = 0) const;
 
 };
 
