@@ -61,6 +61,8 @@ class Strategies
       const Play& play,
       const SurvivorList& survivors);
 
+    void forgetDetails();
+
     void reactivate(
       const Strategy& simpleStrat,
       const Strategy& constants);

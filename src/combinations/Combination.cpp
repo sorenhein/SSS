@@ -42,6 +42,12 @@ void Combination::reset()
 }
 
 
+void Combination::forgetDetails()
+{
+  strats.forgetDetails();
+}
+
+
 void Combination::setMaxRank(const unsigned char maxRankIn)
 {
   maxRank = maxRankIn;

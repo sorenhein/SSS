@@ -148,6 +148,8 @@ class Slist
       const Play& play,
       const SurvivorList& survivors);
 
+    void forgetDetails();
+
 
     // Consolidate and symmetrize.
 

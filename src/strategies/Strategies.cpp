@@ -92,6 +92,12 @@ timersStrat[0].stop();
 }
 
 
+void Strategies::forgetDetails()
+{
+  slist.forgetDetails();
+}
+
+
 /************************************************************
  *                                                          *
  * Reactivating and scrutinizing (internal)                 *

@@ -132,6 +132,14 @@ void Slist::adapt(
 }
 
 
+void Slist::forgetDetails()
+{
+  // Forget the strategies, but keep the void results.
+
+  strategies.clear();
+}
+
+
 /************************************************************
  *                                                          *
  * Consolidating an Slist                                   *

@@ -332,6 +332,12 @@ histoPlay[plays.size()]++;
             distributions.get(cards, centry.getHolding2()));
           timersStrat[32].stop();
         }
+
+        if (! centry.isMinimal())
+        {
+          if (cards >= 11 || (cards == 10 && ! ranks.partnerVoid()))
+            comb.forgetDetails();
+        }
       }
 
       countStats[cards].data[centry.getType()].incr(

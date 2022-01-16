@@ -45,6 +45,8 @@ class Combination
 
     void reset();
 
+    void forgetDetails();
+
     void setMaxRank(const unsigned char maxRankIn);
 
     unsigned char getMaxRank() const;
