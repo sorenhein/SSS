@@ -269,7 +269,11 @@ void Combinations::runUniques(
   vector<unsigned> histoPlay;
   histoPlay.resize(1000);
 
-  for (unsigned holding = 0; holding < combMemory.size(cards); holding++)
+  // Minimals are guaranteed to have higher values than their referents,
+  // so when when looping backwards we already have the minimals done
+  // when we need them.
+
+  for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
     CombEntry& centry = combMemory.getEntry(cards, holding);
 
@@ -304,6 +308,14 @@ histoPlay[plays.size()]++;
 
         centry.setType(Combinations::classify(
           centry.isMinimal(), comb.strategies(), ranks));
+
+        /*
+        if (! centry.fixMinimals(combMemory, cards))
+        {
+          cout << "WARN-NONMIN2: holding " << holding << 
+            " uses non-minimals\n";
+        }
+        */
       }
 
       countStats[cards].data[centry.getType()].incr(
