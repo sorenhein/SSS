@@ -935,6 +935,40 @@ void Strategy::adapt(
 }
 
 
+void Strategy::setAndAdaptVoid(
+  const Play& play,
+  const Result& resultWestVoid,
+  const Result& resultEastVoid,
+  const bool westVoidFlag,
+  const bool eastVoidFlag,
+  const unsigned char fullDistNo)
+{
+  // The void flags are from the perspective of the current trick.
+  assert(westVoidFlag != eastVoidFlag);
+
+  Strategy::reset();
+
+  // The result we will modify.
+  const Result& resultBase = (westVoidFlag == play.rotateFlag ?
+    resultEastVoid : resultWestVoid);
+
+  // The distribution number we will use.
+  // const unsigned char dno = (westVoidFlag ? 0 : dmax);
+
+  results.emplace_back(resultBase);
+
+  Result& result = results.front();
+
+  if (play.rotateFlag)
+    result.flip();
+
+  result.update(play, fullDistNo);
+  weightInt = result.getTricks();
+
+  Strategy::study();
+}
+
+
 /************************************************************
  *                                                          *
  * Winners                                                  *

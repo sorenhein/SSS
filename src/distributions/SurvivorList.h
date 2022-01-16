@@ -76,7 +76,7 @@ class SurvivorList
       const vector<SideInfo>& distCollapses,
       const SurvivorList& survivorsUnreduced);
 
-    unsigned sizeFull() const;
+    unsigned char sizeFull() const;
 
     unsigned char sizeReduced() const;
 

@@ -38,6 +38,8 @@ Slist::Slist()
 void Slist::clear()
 {
   strategies.clear();
+  resultWestVoid.clear();
+  resultEastVoid.clear();
 }
 
 
@@ -85,7 +87,10 @@ void Slist::setTrivial(
 
   Slist::clear();
   strategies.emplace_back(Strategy());
-  strategies.back().logTrivial(trivial, len);
+  Strategy& strat = strategies.back();
+
+  strat.logTrivial(trivial, len);
+  strat.studyOppsVoid(resultWestVoid, resultEastVoid);
 }
 
 
@@ -96,11 +101,59 @@ void Slist::adapt(
   // Adapt the Slist of a following play to this trick by
   // rotating, mapping etc.  This is a somewhat expensive method.
 
+  bool westVoidFlag, eastVoidFlag;
+  play.setVoidFlags(westVoidFlag, eastVoidFlag);
+  assert(! westVoidFlag || ! eastVoidFlag);
+
+  Strategy strat0;
+  Slist scopy;
+  unsigned char dmax;
+  if (westVoidFlag || eastVoidFlag)
+  {
+    scopy = * this;
+    Slist stmp = * this;
+    stmp.strategies.clear();
+    stmp.strategies.emplace_back(Strategy());
+    // Strategy& strat = stmp.front();
+
+    strat0 = stmp.front();
+    dmax = survivors.front().fullNo;
+
+    strat0.setAndAdaptVoid(play,
+      resultWestVoid, resultEastVoid,
+      westVoidFlag, eastVoidFlag, dmax);
+  }
+
   for (auto& strat: strategies)
     strat.adapt(play, survivors);
 
+  Slist scopy2 = * this;
+
   if (strategies.size() > 1)
     Slist::consolidate(&Strategy::lessEqualCompleteBasic);
+  
+  if (westVoidFlag || eastVoidFlag)
+  {
+    if (! (strat0 == strategies.front()))
+    {
+      cout << "Play " << play.strLine() << "\n";
+      cout << "West " << resultWestVoid.str(true);
+      cout << "East " << resultEastVoid.str(true);
+      cout << "West void? " << westVoidFlag << "\n";
+      cout << "dmax " << +(survivors.sizeFull()-1) << "\n";
+      cout << survivors.str();
+      cout << scopy.str("Orig", true);
+      cout << scopy2.str("Old adapt before consolidate", true);
+      cout << Slist::str("Old adapt after consolidate", true);
+      cout << strat0.str("New adapt", true) << endl;
+
+      // In order to break on this line
+      Slist::consolidate(&Strategy::lessEqualCompleteBasic);
+      cout << Slist::str("Old adapt after second consolidate", true);
+
+      assert(strat0 == strategies.front());
+    }
+  }
 }
 
 
@@ -376,6 +429,10 @@ bool Slist::processSameWeights(
   ComparatorType lessEqualMethod,
   const Strategy& addend)
 {
+  // TODO I'm not entirely convinced that the code was not intended
+  // for primary comparisons.  But it lessEqualMethod already considers
+  // secondaries, do we need compareSecondary?
+
   while (iter != iterEnd && iter->weight() == addend.weight())
   {
     // Here it could go either way, and we have to look in detail.
@@ -383,6 +440,19 @@ bool Slist::processSameWeights(
     {
       // They are the same weight and the tricks are identical.
       // The dominance could go either way, or they may be different.
+      const Compare c = iter->compareSecondary(addend);
+      if (c == WIN_FIRST || c == WIN_EQUAL)
+        return true;
+      else if (c == WIN_SECOND)
+        iter = strategies.erase(iter);
+      else
+        iter++;
+    }
+    else if (((* iter).*lessEqualMethod)(addend))
+    {
+      // TODO So effectively we always do this as long as the trick
+      // profiles are different?
+
       const Compare c = iter->compareSecondary(addend);
       if (c == WIN_FIRST || c == WIN_EQUAL)
         return true;

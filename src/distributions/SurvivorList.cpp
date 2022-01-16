@@ -82,10 +82,7 @@ bool SurvivorList::operator == (const SurvivorList& sl2) const
 void SurvivorList::setVoid(const unsigned char fullDistNo)
 {
   SurvivorList::clear();
-  // distNumbers.clear();
-  // reducedSize = 0;
   SurvivorList::push_back({fullDistNo, 0});
-  // reducedSize = 1;
 }
 
 
@@ -145,9 +142,9 @@ void SurvivorList::collapse(
 }
 
 
-unsigned SurvivorList::sizeFull() const
+unsigned char SurvivorList::sizeFull() const
 {
-  return distNumbers.size();
+  return static_cast<unsigned char>(distNumbers.size());
 }
 
 

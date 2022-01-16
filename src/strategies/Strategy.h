@@ -217,6 +217,14 @@ class Strategy
       const Play& play,
       const SurvivorList& survivors);
 
+    void setAndAdaptVoid(
+      const Play& play,
+      const Result& resultWestVoid,
+      const Result& resultEastVoid,
+      const bool westVoidFlag,
+      const bool eastVoidFlag,
+      const unsigned char fullDistNo);
+
 
     // ******************* Winners ******************
 

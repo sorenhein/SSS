@@ -627,7 +627,7 @@ string Combinations::strLine(const unsigned char cards) const
   stringstream ss;
 
   ss <<
-    setw(5) << cards <<
+    setw(5) << +cards <<
     setw(9) << combMemory.size(cards) <<
     setw(9) << combMemory.size(cards) - countNonreference[cards];
 
