@@ -1,5 +1,31 @@
 2022-01-15
 ==========
+Optimizations to give up or postpone:
+
+1. Early consolidation
+   * consolidate() is only called internally in Slist and in 5 places
+     - End of adapt: lessEqualCompleteBasic, if 2+ strategies
+     - End of reduceByResults if something changed:
+       lessEqualCompleteStudied or lessEqualPrimaryStudied
+     - End of expand, if list has become unordered:
+       lessEqualCompleteStudied or lessEqualPrimaryStudied
+     - multiply by a Strategy, if consolidateFlag, lessEqualMethod
+       - Called from Strategies::reactivate, once without and once with c.
+         After multiplying simple strategy on.
+         lessEqualPrimaryStudied.
+       - Looks like only place that consolidates.
+     - End of purgeRanges, if something erased:
+       lessEqualPrimaryStudied
+
+I think we need a gentler compare for intermediate consolidations.
+Something is only dominated if both tricks and winner are dominated.
+
+In Result, things to look at:
+*= not sure what to do here.  Flag ambiguity and study it?
++= should perhaps assert that there is no ambiguity.
+compareComplete: soft version
+compareInDetail: soft version
+
 
 THOUGHTS ON PARTITIONING
 
@@ -26,13 +52,6 @@ canonical might need a non-minimal canonical, I think.  Or not?
 
 We can solve everything up to <= 9 cards and keep it, even if there are
 quite a few strategies.
-
-For 10+ cards, once we've solved a combination we can store the salient
-parameters that we need for later, and then forget the whole
-combination.
-
-For 10 cards, we can only reach a combination if South is void (from
-13 cards if South was already void).  So we can keep this.
 
 For a 13-card combination that needs a very large number of strategies,
 as long as we can calculate it:  We can look at the number of 
@@ -64,7 +83,7 @@ CombTest errors
 ---------------
 
 WARNING      229 uses non-minimals
-MISMATCH    3063 minimals don't add up
+MISMATCH    2980 minimals don't add up
 
 Other checks not implemented yet
 --------------------------------
