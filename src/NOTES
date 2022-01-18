@@ -1,3 +1,38 @@
+Distribution and DistCore gets a method
+getExplainData(
+  vector<unsigned char>& lengths,
+  vector<unsigned char>& tops,
+  unsigned char& maxLength,
+  unsigned char& maxTops)
+
+for (i 0 .. size of distributions-1)
+  lengths[i] = distributions[i].west.len
+  tops[i] = distributions[i].west.counts.back()
+
+maxLength = distCore.cards
+maxTops = distributions[0].west.counts.back() + east
+
+From Combinations -> Combination -> Strategies -> Slist -> Strategy
+If is constant, don't consider
+
+Pass in Distribution
+distribution.getExplainData(lengths, tops, maxLength, maxTops)
+
+Explanations explanations
+explanations.prepare(lengths, tops, maxLength, maxTops)
+ExplanationState state = explanations.explain(results)
+
+In Slist, count the number of EXPL_DONE
+In Combinations, also count, at least overall
+
+Maybe a strDebug in Explanations similar to Strategies of Strategy's.
+Loop over all in parallel, output a condensed table.
+Header 2+1= (>=2 cards exactly 1 top), so 5 characters wide per expl.
+Output groups of e.g. 16 with an underline and sum each.
+Must first figure out the number of such groups, and then output for
+each group.
+
+
 2022-01-15
 ==========
 Optimizations to give up or postpone:

@@ -95,8 +95,16 @@ ExplanationState Explanations::explain(const vector<Result>& results)
   auto iter = explanations.begin();
 
   vector<unsigned char> tricks(results.size());
+  unsigned char tmin = UCHAR_NOT_SET;
   for (unsigned i = 0; i < results.size(); i++)
+  {
     tricks[i] = results[i].getTricks();
+    if (tricks[i] < tmin)
+      tmin = tricks[i];
+  }
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+    tricks[i] -= tmin;
 
   while (true)
   {
