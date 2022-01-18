@@ -141,11 +141,10 @@ combinations/CombTest.obj: strategies/result/Range.h
 combinations/CombTest.obj: strategies/result/MultiResult.h
 combinations/CombTest.obj: distributions/Reductions.h
 combinations/CombTest.obj: distributions/Reduction.h
-combinations/CombTest.obj: combinations/Combination.h
+combinations/CombTest.obj: combinations/Combination.h utils/CombinationType.h
 combinations/CombTest.obj: combinations/CombMemory.h combinations/CombEntry.h
 combinations/CombTest.obj: combinations/CombReference.h
-combinations/CombTest.obj: utils/CombinationType.h combinations/CombTest.h
-combinations/CombTest.obj: const.h
+combinations/CombTest.obj: combinations/CombTest.h const.h
 distributions/Distributions.obj: distributions/Distributions.h
 distributions/Distributions.obj: distributions/DistMemory.h
 distributions/Distributions.obj: distributions/Distribution.h
@@ -178,6 +177,15 @@ distributions/SurvivorList.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/Survivors.h
 distributions/Survivors.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/SurvivorList.h plays/Play.h
+distributions/Explanation.obj: distributions/Explanation.h
+distributions/Explanation.obj: distributions/ExplHelp.h
+distributions/Explanations.obj: distributions/Explanations.h
+distributions/Explanations.obj: distributions/ExplHelp.h
+distributions/Explanations.obj: distributions/Explanation.h
+distributions/Explanations.obj: strategies/result/Result.h
+distributions/Explanations.obj: strategies/result/Winners.h
+distributions/Explanations.obj: strategies/result/Winner.h utils/table.h
+distributions/Explanations.obj: utils/Card.h utils/Compare.h utils/Compare.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
@@ -227,11 +235,11 @@ plays/Node.obj: strategies/optim/Study.h strategies/result/Ranges.h
 plays/Node.obj: strategies/result/Range.h strategies/result/MultiResult.h
 plays/Node.obj: distributions/Reductions.h distributions/Reduction.h
 plays/Node.obj: plays/Play.h strategies/result/Winners.h
-plays/Node.obj: combinations/Combination.h distributions/Distribution.h
-plays/Node.obj: distributions/DistMap.h distributions/DistHelp.h
-plays/Node.obj: distributions/SurvivorList.h distributions/DistCore.h
-plays/Node.obj: distributions/Survivors.h distributions/Reductions.h
-plays/Node.obj: inputs/Control.h inputs/Entity.h
+plays/Node.obj: combinations/Combination.h utils/CombinationType.h
+plays/Node.obj: distributions/Distribution.h distributions/DistMap.h
+plays/Node.obj: distributions/DistHelp.h distributions/SurvivorList.h
+plays/Node.obj: distributions/DistCore.h distributions/Survivors.h
+plays/Node.obj: distributions/Reductions.h inputs/Control.h inputs/Entity.h
 ranks/Ranks.obj: ranks/Ranks.h ranks/Declarer.h ranks/Player.h utils/Card.h
 ranks/Ranks.obj: utils/table.h ranks/Opponents.h ranks/Completion.h
 ranks/Ranks.obj: plays/Play.h utils/CombinationType.h ranks/cranked.h
