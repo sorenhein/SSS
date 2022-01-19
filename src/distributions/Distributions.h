@@ -58,6 +58,10 @@ class Distributions
       const unsigned char cards,
       const unsigned numThreads);
 
+    Distribution& get(
+      const unsigned char cards,
+      const unsigned holding2);
+
     const Distribution& get(
       const unsigned char cards,
       const unsigned holding2) const;

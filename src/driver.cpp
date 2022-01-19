@@ -100,6 +100,11 @@ int main(int argc, char * argv[])
       control.holding(),
       distributions,
       dependenciesTrinary);
+    
+    combinations.covers(
+      control.holdingLength(),
+      control.holding(),
+      distributions);
   }
 
   // combinations.tmp(control.cards(), control.holding());

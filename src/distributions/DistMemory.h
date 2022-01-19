@@ -61,6 +61,10 @@ class DistMemory
       const unsigned char cards,
       const unsigned holding);
 
+    Distribution& get(
+      const unsigned char cards,
+      const unsigned holding);
+
     const Distribution& get(
       const unsigned char cards,
       const unsigned holding) const;

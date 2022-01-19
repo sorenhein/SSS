@@ -33,6 +33,7 @@ void Covers::reset()
 void Covers::prepareSpecific(
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
+  const vector<unsigned char>& cases,
   const unsigned char maxLength,
   const unsigned char maxTops,
   list<Cover>::iterator& iter)
@@ -68,7 +69,7 @@ void Covers::prepareSpecific(
             assert(iter != covers.end());
             Cover& cover = * iter;
 
-            cover.prepare(lengths, tops, spec);
+            cover.prepare(lengths, tops, cases, spec);
           }
         }
       }
@@ -80,6 +81,7 @@ void Covers::prepareSpecific(
 void Covers::prepareMiddles(
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
+  const vector<unsigned char>& cases,
   const unsigned char maxLength,
   const unsigned char maxTops,
   list<Cover>::iterator& iter)
@@ -113,7 +115,7 @@ void Covers::prepareMiddles(
           assert(iter != covers.end());
           Cover& cover = * iter;
 
-          cover.prepare(lengths, tops, spec);
+          cover.prepare(lengths, tops, cases, spec);
         }
       }
     }
@@ -124,6 +126,7 @@ void Covers::prepareMiddles(
 void Covers::prepare(
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
+  const vector<unsigned char>& cases,
   const unsigned char maxLength,
   const unsigned char maxTops)
 {
@@ -161,8 +164,8 @@ void Covers::prepare(
   covers.resize(coverCount);
 
   list<Cover>::iterator iter;
-  Covers::prepareSpecific(lengths, tops, maxLength, maxTops, iter);
-  Covers::prepareMiddles(lengths, tops, maxLength, maxTops, iter);
+  Covers::prepareSpecific(lengths, tops, cases, maxLength, maxTops, iter);
+  Covers::prepareMiddles(lengths, tops, cases, maxLength, maxTops, iter);
 
   covers.sort([](const Cover& cover1, const Cover& cover2)
   {
@@ -171,21 +174,25 @@ void Covers::prepare(
 }
 
 
-CoverState Covers::explain(const vector<Result>& results)
+CoverState Covers::explain(const list<Result>& results)
 {
   CoverState state = COVER_OPEN;
   auto iter = covers.begin();
 
   vector<unsigned char> tricks(results.size());
   unsigned char tmin = UCHAR_NOT_SET;
-  for (unsigned i = 0; i < results.size(); i++)
+  unsigned i = 0;
+
+  for (auto& res: results)
   {
-    tricks[i] = results[i].getTricks();
+    tricks[i] = res.getTricks();
     if (tricks[i] < tmin)
       tmin = tricks[i];
+
+    i++;
   }
 
-  for (unsigned i = 0; i < tricks.size(); i++)
+  for (i = 0; i < tricks.size(); i++)
     tricks[i] -= tmin;
 
   while (true)

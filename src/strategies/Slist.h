@@ -243,6 +243,8 @@ class Slist
 
     // Debug utilities.
 
+    unsigned covers(Distribution& distribution) const;
+
     bool ordered() const;
 
     // Uses compareCompleteBasic.

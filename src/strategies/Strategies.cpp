@@ -424,6 +424,12 @@ unsigned char Strategies::winRankLow() const
  *                                                          *
  ************************************************************/
 
+unsigned Strategies::covers(Distribution& distribution) const
+{
+  return slist.covers(distribution);
+}
+
+
 bool Strategies::ordered() const
 {
   return slist.ordered();

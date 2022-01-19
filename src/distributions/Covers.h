@@ -10,6 +10,7 @@
 #define SSS_COVERS_H
 
 #include <list>
+#include <vector>
 #include <string>
 
 #include "CoverHelp.h"
@@ -32,6 +33,7 @@ class Covers
     void prepareSpecific(
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
+      const vector<unsigned char>& cases,
       const unsigned char maxLength,
       const unsigned char maxTops,
       list<Cover>::iterator& iter);
@@ -39,6 +41,7 @@ class Covers
     void prepareMiddles(
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
+      const vector<unsigned char>& cases,
       const unsigned char maxLength,
       const unsigned char maxTops,
       list<Cover>::iterator& iter);
@@ -53,10 +56,11 @@ class Covers
     void prepare(
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
+      const vector<unsigned char>& cases,
       const unsigned char maxLength,
       const unsigned char maxTops);
 
-    CoverState explain(const vector<Result>& results);
+    CoverState explain(const list<Result>& results);
 
     string str() const;
 };

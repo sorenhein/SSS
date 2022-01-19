@@ -16,7 +16,8 @@
 #include "result/Ranges.h"
 #include "../plays/Play.h"
 
-#include "../distributions/SurvivorList.h"
+#include "../distributions/Distribution.h"
+#include "../distributions/Covers.h"
 
 #include "../inputs/Control.h"
 
@@ -989,6 +990,27 @@ void Slist::getResultList(list<Result>& resultList) const
  * Utilities                                                *
  *                                                          *
  ************************************************************/
+
+
+unsigned Slist::covers(Distribution& distribution) const
+{
+  vector<unsigned char> lengths, tops, cases;
+  unsigned char maxLength, maxTops;
+  distribution.getCoverData(lengths, tops, cases, maxLength, maxTops);
+
+  // TODO Could do in Distribution?
+  Covers covers;
+  covers.prepare(lengths, tops, cases, maxLength, maxTops);
+  unsigned numCovers = 0;
+
+  for (auto& strat: strategies)
+  {
+    if (strat.covers(covers))
+      numCovers++;
+  }
+
+  return numCovers;
+}
 
 
 bool Slist::ordered() const

@@ -105,6 +105,8 @@ class Strategies
     void getResultList(list<Result>& resultList) const;
     unsigned char winRankLow() const;
 
+    unsigned covers(Distribution& distribution) const;
+
     bool ordered() const;
 
     bool minimal() const;

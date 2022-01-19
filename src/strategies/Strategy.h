@@ -20,6 +20,7 @@ class Ranges;
 struct Play;
 class Distribution;
 class SurvivorList;
+class Covers;
 struct Reduction;
 
 using namespace std;
@@ -227,6 +228,8 @@ class Strategy
 
 
     // ******************* Winners ******************
+
+    unsigned covers(Covers& coversIn) const;
 
     void studyOppsVoid(
       Result& resultWestVoid,

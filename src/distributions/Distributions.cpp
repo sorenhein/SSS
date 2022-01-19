@@ -117,6 +117,14 @@ void Distributions::runUniquesMT(
 }
 
 
+Distribution& Distributions::get(
+  const unsigned char cards,
+  const unsigned holding2)
+{
+  return distMemory.get(cards, holding2);
+}
+
+
 const Distribution& Distributions::get(
   const unsigned char cards,
   const unsigned holding2) const

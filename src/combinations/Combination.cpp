@@ -73,6 +73,12 @@ void Combination::setTrivial(
 }
 
 
+unsigned Combination::covers(Distribution& distribution) const
+{
+  return strats.covers(distribution);
+}
+
+
 CombinationType Combination::strategize(
   const CombEntry& centry,
   const Combinations& combinations,

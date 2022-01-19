@@ -425,6 +425,37 @@ const Reduction& DistCore::getReduction(
 }
 
 
+void DistCore::getCoverData(
+  vector<unsigned char>& lengths,
+  vector<unsigned char>& tops,
+  vector<unsigned char>& cases,
+  unsigned char& maxLength,
+  unsigned char& maxTops) const
+{
+  const unsigned len = distributions.size();
+  assert(len > 0);
+
+  lengths.resize(len);
+  tops.resize(len);
+  cases.resize(len);
+
+  // TODO Move DistInfo more to unsigned char
+
+  maxLength = static_cast<unsigned char>(cards);
+  maxTops = static_cast<unsigned char>(
+    distributions[0].west.counts.front() +
+    distributions[0].east.counts.front());
+
+  for (unsigned i = 0; i < len; i++)
+  {
+    const DistInfo& dist = distributions[i];
+    lengths[i] = static_cast<unsigned char>(dist.west.len);
+    tops[i] = static_cast<unsigned char>(dist.west.counts[i]);
+    cases[i] = static_cast<unsigned char>(dist.cases);
+  }
+}
+
+
 string DistCore::strHeader() const
 {
   stringstream ss;

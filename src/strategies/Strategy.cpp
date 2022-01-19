@@ -16,6 +16,7 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
+#include "../distributions/Covers.h"
 #include "../inputs/Control.h"
 
 #include "../utils/compsec.h"
@@ -974,6 +975,17 @@ void Strategy::setAndAdaptVoid(
  * Winners                                                  *
  *                                                          *
  ************************************************************/
+
+unsigned Strategy::covers(Covers& coversIn) const
+{
+  CoverState state = coversIn.explain(results);
+
+  if (state == COVER_DONE)
+    return 1;
+  else
+    return 0;
+}
+
 
 void Strategy::studyOppsVoid(
   Result& resultWestVoid,

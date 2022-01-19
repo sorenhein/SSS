@@ -70,6 +70,13 @@ class DistCore
       const DistMap& distMap,
       const unsigned char rankNS) const;
 
+    void getCoverData(
+      vector<unsigned char>& lengths,
+      vector<unsigned char>& tops,
+      vector<unsigned char>& cases,
+      unsigned char& maxLength,
+      unsigned char& maxTops) const;
+
     string str() const;
 
 };

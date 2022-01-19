@@ -71,6 +71,7 @@ unsigned char Cover::withinRange(
 void Cover::prepare(
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
+  const vector<unsigned char>& cases,
   const CoverSpec& specIn)
 {
   assert(lengths.size() == tops.size());
@@ -124,6 +125,9 @@ void Cover::prepare(
           lengths[i], spec.length, spec.length) &
           (this->*topFncPtr)(tops[i], spec.top, spec.length);
     }
+
+    if (profile[i])
+      weight += cases[i];
   }
 }
 

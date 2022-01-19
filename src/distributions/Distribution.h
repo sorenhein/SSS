@@ -84,6 +84,17 @@ class Distribution
       return distCorePtr->getReduction(distMap, rankNS);
     };
 
+    void getCoverData(
+      vector<unsigned char>& lengths,
+      vector<unsigned char>& tops,
+      vector<unsigned char>& cases,
+      unsigned char& maxLength,
+      unsigned char& maxTops) const
+    {
+      assert(distCorePtr != nullptr);
+      distCorePtr->getCoverData(lengths, tops, cases, maxLength, maxTops);
+    };
+
     string str() const
     {
       assert(distCorePtr != nullptr);

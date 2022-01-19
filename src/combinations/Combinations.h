@@ -108,6 +108,11 @@ class Combinations
       const Distributions& distributions,
       const unsigned numThreads);
 
+    void covers(
+      const unsigned char cards,
+      const unsigned holding,
+      Distributions& distributions);
+
     Combination const * getPtr(
       const unsigned char cards,
       const unsigned holding3) const;

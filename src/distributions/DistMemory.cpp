@@ -233,6 +233,15 @@ const Distribution& DistMemory::get(
 }
 
 
+Distribution& DistMemory::get(
+  const unsigned char cards,
+  const unsigned holding)
+{
+  assert(holding < distributions[cards].size());
+  return distributions[cards][holding];
+}
+
+
 unsigned DistMemory::size(const unsigned char cards) const
 {
   assert(cards < distributions.size());

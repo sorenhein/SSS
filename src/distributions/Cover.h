@@ -69,6 +69,7 @@ class Cover
     void prepare(
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
+      const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 
     CoverState explain(vector<unsigned char>& tricks) const;

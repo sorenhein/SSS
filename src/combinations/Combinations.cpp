@@ -599,6 +599,19 @@ void Combinations::runUniquesMT(
 }
 
 
+void Combinations::covers(
+  const unsigned char cards,
+  const unsigned holding,
+  Distributions& distributions)
+{
+  CombEntry& centry = combMemory.getEntry(cards, holding);
+  Distribution& dist = distributions.get(cards, centry.getHolding2());
+  const Combination& comb = combMemory.getComb(cards, holding);
+
+  const unsigned numCovers = comb.covers(dist);
+}
+
+
 Combination const * Combinations::getPtr(
   const unsigned char cards,
   const unsigned holding3) const
