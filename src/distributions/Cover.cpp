@@ -102,32 +102,33 @@ void Cover::prepare(
   else
     assert(false);
 
-  for (unsigned i = 0; i < len; i++)
+  for (unsigned dno = 0; dno < len; dno++)
   {
     if (spec.mode == COVER_LENGTHS_ONLY)
     {
-      profile[i] = (this->*lengthFncPtr)(
-        lengths[i], spec.length, spec.length);
+      profile[dno] = (this->*lengthFncPtr)(
+        lengths[dno], spec.length, spec.lengthMirror);
     }
     else if (spec.mode == COVER_TOPS_ONLY)
     {
-      profile[i] = (this->*topFncPtr)(tops[i], spec.top, spec.length);
+      profile[dno] = (this->*topFncPtr)(tops[dno], spec.top, 
+        spec.lengthMirror);
     }
     else if (spec.mode == COVER_LENGTHS_OR_TOPS)
     {
-      profile[i] = (this->*lengthFncPtr)(
-          lengths[i], spec.length, spec.length) |
-          (this->*topFncPtr)(tops[i], spec.top, spec.length);
+      profile[dno] = (this->*lengthFncPtr)(
+          lengths[dno], spec.length, spec.lengthMirror) |
+          (this->*topFncPtr)(tops[dno], spec.top, spec.length);
     }
     else if (spec.mode == COVER_LENGTHS_AND_TOPS)
     {
-      profile[i] = (this->*lengthFncPtr)(
-          lengths[i], spec.length, spec.length) &
-          (this->*topFncPtr)(tops[i], spec.top, spec.length);
+      profile[dno] = (this->*lengthFncPtr)(
+          lengths[dno], spec.length, spec.lengthMirror) &
+          (this->*topFncPtr)(tops[dno], spec.top, spec.length);
     }
 
-    if (profile[i])
-      weight += cases[i];
+    if (profile[dno])
+      weight += cases[dno];
   }
 }
 
@@ -164,11 +165,14 @@ string Cover::strLength() const
   stringstream ss;
 
   if (spec.lengthOper == COVER_LESS_EQUAL)
-    ss << "West has at most " << spec.length << " cards";
+    ss << "West has at most " << +spec.length << " cards";
   else if (spec.lengthOper == COVER_EQUAL)
-    ss << "West has exactly " << spec.length << " cards";
+    ss << "West has exactly " << +spec.length << " cards";
   else if (spec.lengthOper == COVER_GREATER_EQUAL)
-    ss << "West has at least " << spec.length << " cards";
+    ss << "West has at least " << +spec.length << " cards";
+  else if (spec.lengthOper == COVER_GREATER_EQUAL)
+    ss << "West has cards in range " << +spec.length << "  to " <<
+      +spec.lengthMirror;
   
   return ss.str();
 }
@@ -179,11 +183,11 @@ string Cover::strTop() const
   stringstream ss;
 
   if (spec.topOper == COVER_LESS_EQUAL)
-    ss << "West has at most " << spec.top << " tops";
+    ss << "West has at most " << +spec.top << " tops";
   else if (spec.topOper == COVER_EQUAL)
-    ss << "West has exactly " << spec.top << " tops";
+    ss << "West has exactly " << +spec.top << " tops";
   else if (spec.topOper == COVER_GREATER_EQUAL)
-    ss << "West has at least " << spec.top << " tops";
+    ss << "West has at least " << +spec.top << " tops";
   
   return ss.str();
 }

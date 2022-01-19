@@ -441,16 +441,18 @@ void DistCore::getCoverData(
 
   // TODO Move DistInfo more to unsigned char
 
-  maxLength = static_cast<unsigned char>(cards);
+  maxLength = static_cast<unsigned char>(
+    distributions[0].west.len + distributions[0].east.len);
+
   maxTops = static_cast<unsigned char>(
-    distributions[0].west.counts.front() +
-    distributions[0].east.counts.front());
+    distributions[0].west.counts[rankSize-1] +
+    distributions[0].east.counts[rankSize-1]);
 
   for (unsigned i = 0; i < len; i++)
   {
     const DistInfo& dist = distributions[i];
     lengths[i] = static_cast<unsigned char>(dist.west.len);
-    tops[i] = static_cast<unsigned char>(dist.west.counts[i]);
+    tops[i] = static_cast<unsigned char>(dist.west.counts[rankSize-1]);
     cases[i] = static_cast<unsigned char>(dist.cases);
   }
 }

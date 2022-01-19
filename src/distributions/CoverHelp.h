@@ -39,6 +39,7 @@ struct CoverSpec
 {
   CoverMode mode;
   unsigned char length;
+  unsigned char lengthMirror;
   unsigned char top;
   CoverOperator lengthOper;
   CoverOperator topOper;

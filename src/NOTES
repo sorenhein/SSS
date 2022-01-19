@@ -1,10 +1,14 @@
-Maybe a strDebug in Explanations similar to Strategies of Strategy's.
-Loop over all in parallel, output a condensed table.
-Header 2+1= (>=2 cards exactly 1 top), so 5 characters wide per expl.
-Output groups of e.g. 16 with an underline and sum each.
-Must first figure out the number of such groups, and then output for
-each group.
-
+-n AKJx -s xx
+Ideas for better wording
+* Exactly 7 cards (== spec.length + lengthMirror):
+  [Other player] is void
+* Exactly 7 cards (again) and exactly 1 tops
+  Notice that there is only 1 top in play
+  Again [Other player] is void
+* 4+ and 0 -> 3- and 1 with other player
+* If an explanation occurs symmetrically, e.g. either 3- and 1
+  If either player has the top at most third.
+* 6+ or 1 top = 1 top + [other player] stiff top, as 2 fits
 
 2022-01-15
 ==========

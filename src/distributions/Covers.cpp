@@ -52,14 +52,14 @@ void Covers::prepareSpecific(
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
-        for (unsigned lOper = 0; lOper < COVER_OPERATOR_SIZE; lOper++)
+        for (unsigned lOper = 0; lOper < COVER_OPERATOR_SIZE-1; lOper++)
         {
           if ((length == 0 || length == maxLength) && lOper != COVER_EQUAL)
             continue;
 
           spec.lengthOper = static_cast<CoverOperator>(lOper);
 
-          for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE; tOper++)
+          for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
           {
             if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
               continue;
@@ -67,9 +67,8 @@ void Covers::prepareSpecific(
             spec.topOper = static_cast<CoverOperator>(tOper);
 
             assert(iter != covers.end());
-            Cover& cover = * iter;
-
-            cover.prepare(lengths, tops, cases, spec);
+            iter->prepare(lengths, tops, cases, spec);
+            iter++;
           }
         }
       }
@@ -97,15 +96,15 @@ void Covers::prepareMiddles(
 
   for (unsigned char length = 1; length <= middleCount; length++)
   {
-    const unsigned char mirrorValue = maxLength - length;
     spec.length = length;
+    spec.lengthMirror = maxLength - length;
     for (unsigned char top = 0; top <= maxTops; top++)
     {
       spec.top = top;
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
-        for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE; tOper++)
+        for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
         {
           if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
             continue;
@@ -113,9 +112,8 @@ void Covers::prepareMiddles(
           spec.topOper = static_cast<CoverOperator>(tOper);
 
           assert(iter != covers.end());
-          Cover& cover = * iter;
-
-          cover.prepare(lengths, tops, cases, spec);
+          iter->prepare(lengths, tops, cases, spec);
+          iter++;
         }
       }
     }
@@ -131,7 +129,7 @@ void Covers::prepare(
   const unsigned char maxTops)
 {
   assert(lengths.size() == tops.size());
-  assert(maxLength >= 1);
+  assert(maxLength >= 2);
   assert(maxTops >= 1);
 
   // We consider two kinds of distribution information:
@@ -148,24 +146,39 @@ void Covers::prepare(
   // and (7-1) >> 1 is 3.  For 8 cards there are also 3, as 4-4 is
   // already covered by the "exactly 4 West cards" split above.
 
-  const unsigned middleCount = (maxLength-1) >> 2;
+  const unsigned middleCount = (maxLength-1) >> 1;
 
-  const unsigned coverCount = COVER_MODE_SIZE *
-    ((maxLength-1) * (maxTops-1) * 
-      (COVER_OPERATOR_SIZE-1) * (COVER_OPERATOR_SIZE-1) +
-    2 * (maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
-    (maxLength-1) * 2 * (COVER_OPERATOR_SIZE-1) * 1 +
-    2 * 2 * 1 * 1) +
+  unsigned count1, count2;
+  if (maxTops == 1)
+  {
+    count1 = COVER_MODE_SIZE *
+      ((maxLength-1) * 2 * (COVER_OPERATOR_SIZE-1) * 1 + 
+      2 * 2 * 1 * 1);
+    
+    count2 = COVER_MODE_SIZE * middleCount * 2 * 1 * 1;
+  }
+  else
+  {
+    count1 = COVER_MODE_SIZE *
+      ((maxLength-1) * (maxTops-1) * 
+        (COVER_OPERATOR_SIZE-1) * (COVER_OPERATOR_SIZE-1) +
+      2 * (maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
+      (maxLength-1) * 2 * (COVER_OPERATOR_SIZE-1) * 1 +
+      2 * 2 * 1 * 1);
 
-    COVER_MODE_SIZE * middleCount *
-    ((maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
-    2 * 1 * 1);
+    count2 = COVER_MODE_SIZE * middleCount *
+      ((maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
+      2 * 1 * 1 );
+  }
+
+  const unsigned coverCount = count1 + count2;
 
   covers.resize(coverCount);
 
   list<Cover>::iterator iter;
   Covers::prepareSpecific(lengths, tops, cases, maxLength, maxTops, iter);
   Covers::prepareMiddles(lengths, tops, cases, maxLength, maxTops, iter);
+  assert(iter == covers.end());
 
   covers.sort([](const Cover& cover1, const Cover& cover2)
   {
@@ -178,6 +191,7 @@ CoverState Covers::explain(const list<Result>& results)
 {
   CoverState state = COVER_OPEN;
   auto iter = covers.begin();
+  fits.clear();
 
   vector<unsigned char> tricks(results.size());
   unsigned char tmin = UCHAR_NOT_SET;
@@ -205,6 +219,8 @@ CoverState Covers::explain(const list<Result>& results)
     if (state == COVER_DONE)
     {
       fits.push_back(&* iter);
+cout << "Fits\n";
+cout << Covers::str();
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
