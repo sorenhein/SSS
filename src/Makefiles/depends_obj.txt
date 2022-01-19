@@ -177,15 +177,13 @@ distributions/SurvivorList.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/Survivors.h
 distributions/Survivors.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/SurvivorList.h plays/Play.h
-distributions/Explanation.obj: distributions/Explanation.h
-distributions/Explanation.obj: distributions/ExplHelp.h
-distributions/Explanations.obj: distributions/Explanations.h
-distributions/Explanations.obj: distributions/ExplHelp.h
-distributions/Explanations.obj: distributions/Explanation.h
-distributions/Explanations.obj: strategies/result/Result.h
-distributions/Explanations.obj: strategies/result/Winners.h
-distributions/Explanations.obj: strategies/result/Winner.h utils/table.h
-distributions/Explanations.obj: utils/Card.h utils/Compare.h utils/Compare.h
+distributions/Cover.obj: distributions/Cover.h distributions/CoverHelp.h
+distributions/Covers.obj: distributions/Covers.h distributions/CoverHelp.h
+distributions/Covers.obj: distributions/Cover.h strategies/result/Result.h
+distributions/Covers.obj: strategies/result/Winners.h
+distributions/Covers.obj: strategies/result/Winner.h utils/table.h
+distributions/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
+distributions/Covers.obj: const.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h

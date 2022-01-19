@@ -15,8 +15,8 @@ SOURCE_FILES    =                               \
                 distributions/Reductions.cpp    \
                 distributions/SurvivorList.cpp  \
                 distributions/Survivors.cpp     \
-                distributions/Explanation.cpp   \
-                distributions/Explanations.cpp  \
+                distributions/Cover.cpp         \
+                distributions/Covers.cpp        \
                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \

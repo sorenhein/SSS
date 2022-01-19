@@ -6,44 +6,53 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_EXPLANATION_H
-#define SSS_EXPLANATION_H
+#ifndef SSS_COVER_H
+#define SSS_COVER_H
 
 #include <vector>
 #include <string>
 
-#include "ExplHelp.h"
+#include "CoverHelp.h"
 
 
 using namespace std;
 
 
-class Explanation
+class Cover
 {
   private:
 
     vector<unsigned char> profile;
 
-    ExplanationSpec spec;
+    CoverSpec spec;
 
     unsigned char weight;
 
 
-    typedef unsigned char (Explanation::*ExplComparePtr)(
+    typedef unsigned char (Cover::*CoverComparePtr)(
       const unsigned char value,
-      const unsigned char ref) const;
+      const unsigned char ref1,
+      const unsigned char ref2) const;
 
     unsigned char lessEqual(
       const unsigned char value,
-      const unsigned char ref) const;
+      const unsigned char ref,
+      const unsigned char dummy) const;
 
     unsigned char equal(
       const unsigned char value,
-      const unsigned char ref) const;
+      const unsigned char ref,
+      const unsigned char dummy) const;
 
     unsigned char greaterEqual(
       const unsigned char value,
-      const unsigned char ref) const;
+      const unsigned char ref,
+      const unsigned char dummy) const;
+
+    unsigned char withinRange(
+      const unsigned char value,
+      const unsigned char ref1,
+      const unsigned char ref2) const;
 
 
     string strLength() const;
@@ -53,16 +62,16 @@ class Explanation
 
   public:
 
-    Explanation();
+    Cover();
 
     void reset();
 
     void prepare(
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
-      const ExplanationSpec& specIn);
+      const CoverSpec& specIn);
 
-    ExplanationState explain(vector<unsigned char>& tricks) const;
+    CoverState explain(vector<unsigned char>& tricks) const;
 
     unsigned char getWeight() const;
 
