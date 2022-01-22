@@ -37,11 +37,39 @@ CoverSpec& CoverMemory::add(
 }
 
 
+void CoverMemory::prepare_2_1()
+{
+  CoverSpec& spec1 = CoverMemory::add(2, 1);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, COVER_EQUAL);
+
+  // East void.  Can we say that more idiomatically?
+  CoverSpec& spec2 = CoverMemory::add(2, 1);
+  spec2.mode = COVER_LENGTHS_ONLY;
+  spec2.westLength.set(1, COVER_GREATER_EQUAL);
+}
+
+
 void CoverMemory::prepare_2_2()
 {
   CoverSpec& spec1 = CoverMemory::add(2, 2);
   spec1.mode = COVER_LENGTHS_ONLY;
   spec1.westLength.set(1, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_3_1()
+{
+  // These two together mean "stiff top".  Can we combine?
+  CoverSpec& spec1 = CoverMemory::add(3, 1);
+  spec1.mode = COVER_LENGTHS_AND_TOPS;
+  spec1.westLength.set(1, COVER_EQUAL);
+  spec1.westTop1.set(1, COVER_EQUAL);
+
+  CoverSpec& spec2 = CoverMemory::add(3, 1);
+  spec2.mode = COVER_LENGTHS_AND_TOPS;
+  spec2.westLength.set(2, COVER_EQUAL);
+  spec2.westTop1.set(0, COVER_EQUAL);
 }
 
 
@@ -80,7 +108,10 @@ void CoverMemory::prepare(const unsigned char maxCards)
     // Just to have enough for now
     specs[c].resize(14);
 
+  CoverMemory::prepare_2_1();
   CoverMemory::prepare_2_2();
+
+  CoverMemory::prepare_3_1();
 
   CoverMemory::prepare_7_1();
 }
