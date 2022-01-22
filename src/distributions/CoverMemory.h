@@ -41,6 +41,8 @@ class CoverMemory
     void prepare_4_3();
     void prepare_4_4();
 
+    void prepare_5_1();
+
     void prepare_7_1();
 
 

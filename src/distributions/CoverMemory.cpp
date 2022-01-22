@@ -94,6 +94,11 @@ void CoverMemory::prepare_3_2()
   CoverSpec& spec1 = CoverMemory::add(3, 2);
   spec1.mode = COVER_LENGTHS_ONLY;
   spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
+
+  // East void.  Can we say that more idiomatically?
+  CoverSpec& spec2 = CoverMemory::add(3, 2);
+  spec2.mode = COVER_LENGTHS_ONLY;
+  spec2.westLength.set(1, COVER_GREATER_EQUAL);
 }
 
 
@@ -118,6 +123,11 @@ void CoverMemory::prepare_4_1()
   spec2.mode = COVER_LENGTHS_AND_TOPS;
   spec2.westLength.set(3, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
+
+  // Top onside.
+  CoverSpec& spec4 = CoverMemory::add(4, 1);
+  spec4.mode = COVER_TOPS_ONLY;
+  spec4.westTop1.set(1, COVER_EQUAL);
 }
 
 
@@ -132,6 +142,18 @@ void CoverMemory::prepare_4_2()
   CoverSpec& spec2 = CoverMemory::add(4, 2);
   spec2.mode = COVER_LENGTHS_ONLY;
   spec2.westLength.set(2, COVER_EQUAL);
+
+  // These two together mean "stiff top".  Can we combine?
+  CoverSpec& spec3 = CoverMemory::add(4, 2);
+  spec3.mode = COVER_LENGTHS_AND_TOPS;
+  spec3.westLength.set(1, COVER_EQUAL);
+  spec3.westTop1.set(1, COVER_EQUAL);
+
+  // Stiff top offside.
+  CoverSpec& spec4 = CoverMemory::add(4, 2);
+  spec4.mode = COVER_LENGTHS_AND_TOPS;
+  spec4.westLength.set(3, COVER_EQUAL);
+  spec4.westTop1.set(1, COVER_EQUAL);
 }
 
 
@@ -160,6 +182,21 @@ void CoverMemory::prepare_4_4()
   CoverSpec& spec2 = CoverMemory::add(4, 4);
   spec2.mode = COVER_LENGTHS_ONLY;
   spec2.westLength.set(2, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_5_1()
+{
+  // These two together mean "stiff top".  Can we combine?
+  CoverSpec& spec1 = CoverMemory::add(5, 1);
+  spec1.mode = COVER_LENGTHS_AND_TOPS;
+  spec1.westLength.set(1, COVER_EQUAL);
+  spec1.westTop1.set(1, COVER_EQUAL);
+
+  CoverSpec& spec2 = CoverMemory::add(5, 1);
+  spec2.mode = COVER_LENGTHS_AND_TOPS;
+  spec2.westLength.set(4, COVER_EQUAL);
+  spec2.westTop1.set(0, COVER_EQUAL);
 }
 
 
@@ -209,6 +246,8 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_4_2();
   CoverMemory::prepare_4_3();
   CoverMemory::prepare_4_4();
+
+  CoverMemory::prepare_5_1();
 
   CoverMemory::prepare_7_1();
 }
