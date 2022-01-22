@@ -43,7 +43,7 @@ void Covers::prepare(
   assert(maxLength >= 2);
   assert(maxTops >= 1);
 
-  covers.resize(10);
+  covers.resize(20);
   auto citer = covers.begin();
 
   for (auto miter = coverMemory.begin(maxLength, maxTops);
