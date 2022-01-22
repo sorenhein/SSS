@@ -38,6 +38,9 @@ enum CoverState
 
 struct CoverSpec
 {
+  unsigned char oppsLength;
+  unsigned char oppsTops1;
+
   CoverMode mode;
   CoverElement westLength;
   CoverElement westTop1;

@@ -17,6 +17,7 @@ SOURCE_FILES    =                               \
                 distributions/Survivors.cpp     \
                 distributions/Cover.cpp         \
                 distributions/Covers.cpp        \
+                distributions/CoverMemory.cpp   \
                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \

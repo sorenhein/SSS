@@ -42,21 +42,6 @@ class CoverElement
 
     ComparePtr ptr;
 
-  public:
-
-    void setValue(const unsigned char valueIn)
-    {
-      value1 = valueIn;
-      value2 = UCHAR_NOT_SET;
-    };
-
-    void setValues(
-      const unsigned char value1In,
-      const unsigned char value2In)
-    {
-      value1 = value1In;
-      value2 = value2In;
-    };
 
     unsigned char lessEqual(const unsigned char valueIn) const
     {
@@ -81,6 +66,41 @@ class CoverElement
     unsigned char outsideRange(const unsigned char valueIn) const
     {
       return (valueIn <= value1 && valueIn >= value2 ? 1 : 0);
+    };
+
+
+  public:
+
+    void setValue(const unsigned char valueIn)
+    {
+      value1 = valueIn;
+      value2 = UCHAR_NOT_SET;
+    };
+
+    void setValues(
+      const unsigned char value1In,
+      const unsigned char value2In)
+    {
+      value1 = value1In;
+      value2 = value2In;
+    };
+
+    void set(
+      const unsigned char valueIn,
+      const CoverOperator operIn)
+    {
+      value1 = valueIn;
+      oper = operIn;
+    };
+
+    void set(
+      const unsigned char value1In,
+      const unsigned char value2In,
+      const CoverOperator operIn)
+    {
+      value1 = value1In;
+      value2 = value2In;
+      oper = operIn;
     };
 
     void setOperator(const CoverOperator operIn)
