@@ -31,22 +31,6 @@ class Covers
 
     list<Cover const *> fits;
 
-    void prepareSpecific(
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
-      const vector<unsigned char>& cases,
-      const unsigned char maxLength,
-      const unsigned char maxTops,
-      list<Cover>::iterator& iter);
-
-    void prepareMiddles(
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
-      const vector<unsigned char>& cases,
-      const unsigned char maxLength,
-      const unsigned char maxTops,
-      list<Cover>::iterator& iter);
-
 
   public:
 
@@ -61,13 +45,6 @@ class Covers
       const vector<unsigned char>& lengths,
       const vector<unsigned char>& tops,
       const vector<unsigned char>& cases);
-
-    void prepare(
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
-      const vector<unsigned char>& cases,
-      const unsigned char maxLength,
-      const unsigned char maxTops);
 
     CoverState explain(const list<Result>& results);
 
