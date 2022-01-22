@@ -25,7 +25,7 @@ void Cover::reset()
   profile.clear();
 
   spec.mode = COVER_MODE_SIZE;
-  spec.lengthOper = COVER_OPERATOR_SIZE;
+  spec.westLength.oper = COVER_OPERATOR_SIZE;
   spec.topOper = COVER_OPERATOR_SIZE;
 
   weight = 0;
@@ -81,13 +81,13 @@ void Cover::prepare(
   spec = specIn;
 
   CoverComparePtr lengthFncPtr = nullptr;
-  if (spec.lengthOper == COVER_LESS_EQUAL)
+  if (spec.westLength.oper == COVER_LESS_EQUAL)
     lengthFncPtr = &Cover::lessEqual;
-  else if (spec.lengthOper == COVER_EQUAL)
+  else if (spec.westLength.oper == COVER_EQUAL)
     lengthFncPtr = &Cover::equal;
-  else if (spec.lengthOper == COVER_GREATER_EQUAL)
+  else if (spec.westLength.oper == COVER_GREATER_EQUAL)
     lengthFncPtr = &Cover::greaterEqual;
-  else if (spec.lengthOper == COVER_WITHIN_RANGE)
+  else if (spec.westLength.oper == COVER_WITHIN_RANGE)
     lengthFncPtr = &Cover::withinRange;
   else
     assert(false);
@@ -107,24 +107,24 @@ void Cover::prepare(
     if (spec.mode == COVER_LENGTHS_ONLY)
     {
       profile[dno] = (this->*lengthFncPtr)(
-        lengths[dno], spec.length, spec.lengthMirror);
+        lengths[dno], spec.westLength.value1, spec.westLength.value2);
     }
     else if (spec.mode == COVER_TOPS_ONLY)
     {
       profile[dno] = (this->*topFncPtr)(tops[dno], spec.top, 
-        spec.lengthMirror);
+        spec.westLength.value2);
     }
     else if (spec.mode == COVER_LENGTHS_OR_TOPS)
     {
       profile[dno] = (this->*lengthFncPtr)(
-          lengths[dno], spec.length, spec.lengthMirror) |
-          (this->*topFncPtr)(tops[dno], spec.top, spec.length);
+          lengths[dno], spec.westLength.value1, spec.westLength.value2) |
+          (this->*topFncPtr)(tops[dno], spec.top, spec.westLength.value1);
     }
     else if (spec.mode == COVER_LENGTHS_AND_TOPS)
     {
       profile[dno] = (this->*lengthFncPtr)(
-          lengths[dno], spec.length, spec.lengthMirror) &
-          (this->*topFncPtr)(tops[dno], spec.top, spec.length);
+          lengths[dno], spec.westLength.value1, spec.westLength.value2) &
+          (this->*topFncPtr)(tops[dno], spec.top, spec.westLength.value1);
     }
 
     if (profile[dno])
@@ -164,15 +164,15 @@ string Cover::strLength() const
 {
   stringstream ss;
 
-  if (spec.lengthOper == COVER_LESS_EQUAL)
-    ss << "West has at most " << +spec.length << " cards";
-  else if (spec.lengthOper == COVER_EQUAL)
-    ss << "West has exactly " << +spec.length << " cards";
-  else if (spec.lengthOper == COVER_GREATER_EQUAL)
-    ss << "West has at least " << +spec.length << " cards";
-  else if (spec.lengthOper == COVER_GREATER_EQUAL)
-    ss << "West has cards in range " << +spec.length << "  to " <<
-      +spec.lengthMirror;
+  if (spec.westLength.oper == COVER_LESS_EQUAL)
+    ss << "West has at most " << +spec.westLength.value1 << " cards";
+  else if (spec.westLength.oper == COVER_EQUAL)
+    ss << "West has exactly " << +spec.westLength.value1 << " cards";
+  else if (spec.westLength.oper == COVER_GREATER_EQUAL)
+    ss << "West has at least " << +spec.westLength.value1 << " cards";
+  else if (spec.westLength.oper == COVER_GREATER_EQUAL)
+    ss << "West has cards in range " << +spec.westLength.value1 << 
+      "  to " << +spec.westLength.value2;
   
   return ss.str();
 }

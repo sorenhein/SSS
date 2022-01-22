@@ -35,13 +35,19 @@ enum CoverState
   COVER_STATE_SIZE = 3
 };
 
+struct CoverElement
+{
+  unsigned char value1;
+  unsigned char value2;
+  CoverOperator oper;
+};
+
 struct CoverSpec
 {
   CoverMode mode;
-  unsigned char length;
-  unsigned char lengthMirror;
+  CoverElement westLength;
+
   unsigned char top;
-  CoverOperator lengthOper;
   CoverOperator topOper;
 };
 

@@ -45,7 +45,7 @@ void Covers::prepareSpecific(
 
   for (unsigned char length = 0; length <= maxLength; length++)
   {
-    spec.length = length;
+    spec.westLength.value1 = length;
     for (unsigned char top = 0; top <= maxTops; top++)
     {
       spec.top = top;
@@ -57,7 +57,7 @@ void Covers::prepareSpecific(
           if ((length == 0 || length == maxLength) && lOper != COVER_EQUAL)
             continue;
 
-          spec.lengthOper = static_cast<CoverOperator>(lOper);
+          spec.westLength.oper = static_cast<CoverOperator>(lOper);
 
           for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
           {
@@ -89,15 +89,15 @@ void Covers::prepareMiddles(
   // "4-2 or better".
 
   CoverSpec spec;
-  spec.lengthOper = static_cast<CoverOperator>(COVER_WITHIN_RANGE);
+  spec.westLength.oper = static_cast<CoverOperator>(COVER_WITHIN_RANGE);
 
   // With 5 or 6 cards, we run from 1 to 2 as the lower end.
   const unsigned char middleCount = (maxLength-1) >> 1;
 
   for (unsigned char length = 1; length <= middleCount; length++)
   {
-    spec.length = length;
-    spec.lengthMirror = maxLength - length;
+    spec.westLength.value1 = length;
+    spec.westLength.value2 = maxLength - length;
     for (unsigned char top = 0; top <= maxTops; top++)
     {
       spec.top = top;

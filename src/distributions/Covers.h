@@ -13,7 +13,6 @@
 #include <vector>
 #include <string>
 
-#include "CoverHelp.h"
 #include "Cover.h"
 
 class Distribution;
