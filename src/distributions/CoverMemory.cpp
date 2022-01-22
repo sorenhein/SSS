@@ -43,7 +43,7 @@ void CoverMemory::prepare(const unsigned char maxCards)
   specs.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
     // Just to have enough for now
-    specs[c].resize(8);
+    specs[c].resize(14);
 
   CoverSpec& spec1 = CoverMemory::add(7, 1);
   spec1.mode = COVER_LENGTHS_AND_TOPS;

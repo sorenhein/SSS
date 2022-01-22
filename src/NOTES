@@ -1,6 +1,8 @@
 Verbals of strategy wins
 ========================
-* Spec becomes in a class, CoverData
+* Look at all Strategy's with only one meaningful rank.  Can we explain
+  them all?  Does it look pretty?
+
 * Directory explain
   - ResExplain becomes a class, contains Spec's and the trick offset
   - Can output in various ways
@@ -8,6 +10,7 @@ Verbals of strategy wins
 * ResExplain can output text when it knows the names of the actual cards,
   which come from the non-canonical distribution
 * When sorting in Covers, prefer simple Cover's (among equivalents)
+  - Maybe each cover gets a complexity
 * First transform Covers before outputting
   - If same constraints on either player, cancel out player
   - N-1+ or top -> top or other stiff top (2 Cover's)
@@ -24,10 +27,6 @@ Verbals of strategy wins
   - Even more Cover's?
 * Pass in maxTricks and maxTops when outputting string and when
   transforming covers
-* Maybe fewer Cover's to begin with, more semantic/what's needed?
-* Pass in Distribution to Covers -- cleaner
-* Look at Strategy's with only one meaningful rank.  Can we explain
-  them all?  Does it look pretty?
 * Store and calculate in the compressed format of Study?  Can we
   even subtract stuff directly in that domain?
 
