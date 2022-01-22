@@ -73,7 +73,7 @@ void Combination::setTrivial(
 }
 
 
-unsigned Combination::covers(Covers& coversIn) const
+unsigned Combination::covers(const Covers& coversIn) const
 {
   return strats.covers(coversIn);
 }

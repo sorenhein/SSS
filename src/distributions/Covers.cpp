@@ -27,7 +27,6 @@ Covers::Covers()
 void Covers::reset()
 {
   covers.clear();
-  fits.clear();
 }
 
 
@@ -65,7 +64,9 @@ void Covers::prepare(
 }
 
 
-CoverState Covers::explain(const list<Result>& results)
+CoverState Covers::explain(
+  const list<Result>& results,
+  list<Cover const *>& fits) const
 {
   CoverState state = COVER_OPEN;
   auto iter = covers.begin();
@@ -98,7 +99,7 @@ CoverState Covers::explain(const list<Result>& results)
     {
       fits.push_back(&* iter);
 cout << "Fits\n";
-cout << Covers::str();
+cout << Covers::str(fits);
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
@@ -115,7 +116,7 @@ cout << Covers::str();
 }
 
 
-string Covers::str() const
+string Covers::str(list<Cover const *>& fits) const
 {
   string s;
   for (auto& eptr: fits)

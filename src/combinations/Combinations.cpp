@@ -55,7 +55,8 @@ void Combinations::setTimerNames()
   timersStrat[10].name("Strats::purgeRanges");
   timersStrat[30].name("Ranks::getMinimals");
   timersStrat[31].name("CombEntry::fixMinimals");
-  timersStrat[32].name("CombTest::checkReductions");
+  timersStrat[32].name("CombTest::checkCovers");
+  timersStrat[33].name("CombTest::checkReductions");
 }
 
 
@@ -327,10 +328,15 @@ histoPlay[plays.size()]++;
         if (centry.isReference())
         {
           timersStrat[32].start();
+          const unsigned numCovers = comb.covers(
+            distributions.get(cards, centry.getHolding2()).covers());
+          timersStrat[32].stop();
+
+          timersStrat[33].start();
           ctest.checkReductions(cards, combMemory, centry,
             comb.strategies(), comb.getMaxRank(),
             distributions.get(cards, centry.getHolding2()));
-          timersStrat[32].stop();
+          timersStrat[33].stop();
         }
 
         if (! centry.isMinimal())

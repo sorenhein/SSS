@@ -243,7 +243,9 @@ class Slist
 
     // Debug utilities.
 
-    unsigned covers(Covers& coversIn) const;
+    unsigned covers(
+      const Covers& coversIn,
+      const unsigned char lowestWinRank) const;
 
     bool ordered() const;
 

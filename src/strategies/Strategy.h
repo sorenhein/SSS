@@ -229,7 +229,7 @@ class Strategy
 
     // ******************* Winners ******************
 
-    unsigned covers(Covers& coversIn) const;
+    unsigned covers(const Covers& coversIn) const;
 
     void studyOppsVoid(
       Result& resultWestVoid,

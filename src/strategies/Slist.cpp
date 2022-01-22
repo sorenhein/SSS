@@ -992,14 +992,26 @@ void Slist::getResultList(list<Result>& resultList) const
  ************************************************************/
 
 
-unsigned Slist::covers(Covers& coversIn) const
+unsigned Slist::covers(
+  const Covers& coversIn,
+  const unsigned char lowestWinRank) const
 {
   unsigned numCovers = 0;
 
   for (auto& strat: strategies)
   {
+    const Result result = strat.resultLowest();
+    const unsigned rankLow = result.getRank();
+    if (rankLow < lowestWinRank)
+    {
+      // We don't know yet how to cover such Strategy's.
+      continue;
+    }
+
     if (strat.covers(coversIn))
       numCovers++;
+    else
+      cout << strat.str("Unexplained", true);
   }
 
   return numCovers;

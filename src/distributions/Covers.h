@@ -29,8 +29,6 @@ class Covers
 
     list<Cover> covers;
 
-    list<Cover const *> fits;
-
 
   public:
 
@@ -46,9 +44,11 @@ class Covers
       const vector<unsigned char>& tops,
       const vector<unsigned char>& cases);
 
-    CoverState explain(const list<Result>& results);
+    CoverState explain(
+      const list<Result>& results,
+      list<Cover const *>& fits) const;
 
-    string str() const;
+    string str(list<Cover const *>& fits) const;
 };
 
 #endif
