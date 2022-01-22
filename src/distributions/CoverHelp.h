@@ -46,9 +46,10 @@ struct CoverSpec
 {
   CoverMode mode;
   CoverElement westLength;
+  CoverElement westTop1;
 
-  unsigned char top;
-  CoverOperator topOper;
+  // unsigned char top;
+  // CoverOperator topOper;
 };
 
 #endif

@@ -48,7 +48,7 @@ void Covers::prepareSpecific(
     spec.westLength.value1 = length;
     for (unsigned char top = 0; top <= maxTops; top++)
     {
-      spec.top = top;
+      spec.westTop1.value1 = top;
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
@@ -64,7 +64,7 @@ void Covers::prepareSpecific(
             if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
               continue;
 
-            spec.topOper = static_cast<CoverOperator>(tOper);
+            spec.westTop1.oper = static_cast<CoverOperator>(tOper);
 
             assert(iter != covers.end());
             iter->prepare(lengths, tops, cases, spec);
@@ -100,7 +100,7 @@ void Covers::prepareMiddles(
     spec.westLength.value2 = maxLength - length;
     for (unsigned char top = 0; top <= maxTops; top++)
     {
-      spec.top = top;
+      spec.westTop1.value1 = top;
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
@@ -109,7 +109,7 @@ void Covers::prepareMiddles(
           if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
             continue;
 
-          spec.topOper = static_cast<CoverOperator>(tOper);
+          spec.westTop1.oper = static_cast<CoverOperator>(tOper);
 
           assert(iter != covers.end());
           iter->prepare(lengths, tops, cases, spec);

@@ -26,7 +26,7 @@ void Cover::reset()
 
   spec.mode = COVER_MODE_SIZE;
   spec.westLength.oper = COVER_OPERATOR_SIZE;
-  spec.topOper = COVER_OPERATOR_SIZE;
+  spec.westTop1.oper = COVER_OPERATOR_SIZE;
 
   weight = 0;
 }
@@ -93,11 +93,11 @@ void Cover::prepare(
     assert(false);
 
   CoverComparePtr topFncPtr = nullptr;
-  if (spec.topOper == COVER_LESS_EQUAL)
+  if (spec.westTop1.oper == COVER_LESS_EQUAL)
     topFncPtr = &Cover::lessEqual;
-  else if (spec.topOper == COVER_EQUAL)
+  else if (spec.westTop1.oper == COVER_EQUAL)
     topFncPtr = &Cover::equal;
-  else if (spec.topOper == COVER_GREATER_EQUAL)
+  else if (spec.westTop1.oper == COVER_GREATER_EQUAL)
     topFncPtr = &Cover::greaterEqual;
   else
     assert(false);
@@ -111,20 +111,20 @@ void Cover::prepare(
     }
     else if (spec.mode == COVER_TOPS_ONLY)
     {
-      profile[dno] = (this->*topFncPtr)(tops[dno], spec.top, 
+      profile[dno] = (this->*topFncPtr)(tops[dno], spec.westTop1.value1, 
         spec.westLength.value2);
     }
     else if (spec.mode == COVER_LENGTHS_OR_TOPS)
     {
       profile[dno] = (this->*lengthFncPtr)(
           lengths[dno], spec.westLength.value1, spec.westLength.value2) |
-          (this->*topFncPtr)(tops[dno], spec.top, spec.westLength.value1);
+          (this->*topFncPtr)(tops[dno], spec.westTop1.value1, spec.westLength.value1);
     }
     else if (spec.mode == COVER_LENGTHS_AND_TOPS)
     {
       profile[dno] = (this->*lengthFncPtr)(
           lengths[dno], spec.westLength.value1, spec.westLength.value2) &
-          (this->*topFncPtr)(tops[dno], spec.top, spec.westLength.value1);
+          (this->*topFncPtr)(tops[dno], spec.westTop1.value1, spec.westLength.value1);
     }
 
     if (profile[dno])
@@ -182,12 +182,12 @@ string Cover::strTop() const
 {
   stringstream ss;
 
-  if (spec.topOper == COVER_LESS_EQUAL)
-    ss << "West has at most " << +spec.top << " tops";
-  else if (spec.topOper == COVER_EQUAL)
-    ss << "West has exactly " << +spec.top << " tops";
-  else if (spec.topOper == COVER_GREATER_EQUAL)
-    ss << "West has at least " << +spec.top << " tops";
+  if (spec.westTop1.oper == COVER_LESS_EQUAL)
+    ss << "West has at most " << +spec.westTop1.value1 << " tops";
+  else if (spec.westTop1.oper == COVER_EQUAL)
+    ss << "West has exactly " << +spec.westTop1.value1 << " tops";
+  else if (spec.westTop1.oper == COVER_GREATER_EQUAL)
+    ss << "West has at least " << +spec.westTop1.value1 << " tops";
   
   return ss.str();
 }
