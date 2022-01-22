@@ -45,6 +45,7 @@ class CoverMemory
       const unsigned char cards,
       const unsigned char tops1);
 
+    /*
     void WestHasExactlyOneTop(
       const unsigned char cards,
       const unsigned char tops1);
@@ -52,6 +53,17 @@ class CoverMemory
     void EastHasExactlyOneTop(
       const unsigned char cards,
       const unsigned char tops1);
+      */
+
+    void WestHasExactTopNumber(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char len);
+
+    void EastHasExactTopNumber(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char len);
 
     void WestHasDoubleton(
       const unsigned char cards,
@@ -96,9 +108,13 @@ class CoverMemory
 
     void prepare_5_1();
     void prepare_5_2();
+    void prepare_5_3();
+    void prepare_5_5();
 
     void prepare_6_1();
+    void prepare_6_2();
     void prepare_6_3();
+    void prepare_6_6();
 
     void prepare_7_1();
     void prepare_7_2();
