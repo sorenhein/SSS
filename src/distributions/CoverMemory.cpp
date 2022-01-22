@@ -85,6 +85,11 @@ void CoverMemory::prepare_3_1()
   CoverSpec& spec4 = CoverMemory::add(3, 1);
   spec4.mode = COVER_LENGTHS_ONLY;
   spec4.westLength.set(1, 2, COVER_INSIDE_RANGE);
+
+  // East void.  Can we say that more idiomatically?
+  CoverSpec& spec5 = CoverMemory::add(3, 1);
+  spec5.mode = COVER_LENGTHS_ONLY;
+  spec5.westLength.set(1, COVER_GREATER_EQUAL);
 }
 
 
@@ -123,6 +128,11 @@ void CoverMemory::prepare_4_1()
   spec2.mode = COVER_LENGTHS_AND_TOPS;
   spec2.westLength.set(3, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
+
+  // Exactly 2-2.
+  CoverSpec& spec3 = CoverMemory::add(4, 1);
+  spec3.mode = COVER_LENGTHS_ONLY;
+  spec3.westLength.set(2, COVER_EQUAL);
 
   // Top onside.
   CoverSpec& spec4 = CoverMemory::add(4, 1);
@@ -197,11 +207,22 @@ void CoverMemory::prepare_5_1()
   spec2.mode = COVER_LENGTHS_AND_TOPS;
   spec2.westLength.set(4, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
+
+  // 1-4 cards each.
+  CoverSpec& spec3 = CoverMemory::add(5, 1);
+  spec3.mode = COVER_LENGTHS_ONLY;
+  spec3.westLength.set(1, 4, COVER_INSIDE_RANGE);
+
+  // Top onside.
+  CoverSpec& spec4 = CoverMemory::add(5, 1);
+  spec4.mode = COVER_TOPS_ONLY;
+  spec4.westTop1.set(1, COVER_EQUAL);
 }
 
 
 void CoverMemory::prepare_7_1()
 {
+  // Together these two mean that the honor is at most third.
   CoverSpec& spec1 = CoverMemory::add(7, 1);
   spec1.mode = COVER_LENGTHS_AND_TOPS;
   spec1.westLength.set(4, COVER_GREATER_EQUAL);
@@ -212,18 +233,39 @@ void CoverMemory::prepare_7_1()
   spec2.westLength.set(3, COVER_LESS_EQUAL);
   spec2.westTop1.set(1, COVER_EQUAL);
 
+  // East void.
   CoverSpec& spec3 = CoverMemory::add(7, 1);
   spec3.mode = COVER_LENGTHS_ONLY;
   spec3.westLength.set(7, COVER_EQUAL);
 
+  // West has top.
   CoverSpec& spec4 = CoverMemory::add(7, 1);
   spec4.mode = COVER_TOPS_ONLY;
   spec4.westTop1.set(1, COVER_EQUAL);
 
+  // East has stiff top.
   CoverSpec& spec5 = CoverMemory::add(7, 1);
   spec5.mode = COVER_LENGTHS_AND_TOPS;
   spec5.westLength.set(6, COVER_EQUAL);
   spec5.westTop1.set(0, COVER_EQUAL);
+
+  // West has stiff top.
+  CoverSpec& spec6 = CoverMemory::add(7, 1);
+  spec6.mode = COVER_LENGTHS_AND_TOPS;
+  spec6.westLength.set(1, COVER_EQUAL);
+  spec6.westTop1.set(1, COVER_EQUAL);
+
+  // Together these two mean that the honor is at most third.
+  CoverSpec& spec7 = CoverMemory::add(7, 1);
+  spec7.mode = COVER_LENGTHS_AND_TOPS;
+  spec7.westLength.set(5, COVER_GREATER_EQUAL);
+  spec7.westTop1.set(0, COVER_EQUAL);
+
+  CoverSpec& spec8 = CoverMemory::add(7, 1);
+  spec8.mode = COVER_LENGTHS_AND_TOPS;
+  spec8.westLength.set(2, COVER_LESS_EQUAL);
+  spec8.westTop1.set(1, COVER_EQUAL);
+
 }
 
 

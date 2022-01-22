@@ -5,6 +5,8 @@ Verbals of strategy wins
 * Look at all Strategy's with only one meaningful rank.  Can we explain
   them all?  Does it look pretty?
 
+* Count how many times each cover is actually used from CoverMemory?
+
 * Directory explain
   - ResExplain becomes a class, contains Spec's and the trick offset
   - Can output in various ways
