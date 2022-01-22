@@ -29,6 +29,45 @@ class CoverMemory
       const unsigned char cards,
       const unsigned char tops1);
 
+    void WestIsNotVoid(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void EastIsVoid(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasSingleton(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasExactlyOneTop(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasSingletonTop(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void EastHasSingletonTop(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasDoubleton(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasCardRange(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
+    void HonorsAreShort(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char len);
+
     void prepare_2_1();
     void prepare_2_2();
 
@@ -42,6 +81,8 @@ class CoverMemory
     void prepare_4_4();
 
     void prepare_5_1();
+
+    void prepare_6_1();
 
     void prepare_7_1();
 

@@ -37,235 +37,221 @@ CoverSpec& CoverMemory::add(
 }
 
 
+void CoverMemory::WestIsNotVoid(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_ONLY;
+  spec.westLength.set(1, COVER_GREATER_EQUAL);
+}
+
+
+void CoverMemory::EastIsVoid(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_ONLY;
+  spec.westLength.set(cards, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasSingleton(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_ONLY;
+  spec.westLength.set(1, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasExactlyOneTop(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_TOPS_ONLY;
+  spec.westTop1.set(1, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasSingletonTop(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_AND_TOPS;
+  spec.westLength.set(1, COVER_EQUAL);
+  spec.westTop1.set(1, COVER_EQUAL);
+}
+
+
+void CoverMemory::EastHasSingletonTop(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_AND_TOPS;
+  spec.westLength.set(cards-1, COVER_EQUAL);
+  spec.westTop1.set(tops1-1, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasDoubleton(
+  const unsigned char cards,
+  const unsigned char tops1)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_ONLY;
+  spec.westLength.set(2, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasCardRange(
+  const unsigned char cards,
+  const unsigned char tops1,
+  const unsigned char lowerIncl,
+  const unsigned char upperIncl)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_ONLY;
+  spec.westLength.set(lowerIncl, upperIncl, COVER_INSIDE_RANGE);
+}
+
+
+void CoverMemory::HonorsAreShort(
+  const unsigned char cards,
+  const unsigned char tops1,
+  const unsigned char len)
+{
+  // Together these two mean that the honor (or all honors) is with a
+  // player with at most "len" cards.
+
+  // West has it/them.
+  CoverSpec& spec2 = CoverMemory::add(cards, tops1);
+  spec2.mode = COVER_LENGTHS_AND_TOPS;
+  spec2.westLength.set(len, COVER_LESS_EQUAL);
+  spec2.westTop1.set(tops1, COVER_EQUAL);
+
+  // East has it/them.
+  CoverSpec& spec1 = CoverMemory::add(cards, tops1);
+  spec1.mode = COVER_LENGTHS_AND_TOPS;
+  spec1.westLength.set(cards-len, COVER_GREATER_EQUAL);
+  spec1.westTop1.set(0, COVER_EQUAL);
+}
+
+
 void CoverMemory::prepare_2_1()
 {
-  CoverSpec& spec1 = CoverMemory::add(2, 1);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, COVER_EQUAL);
-
-  // East void.  Can we say that more idiomatically?
-  CoverSpec& spec2 = CoverMemory::add(2, 1);
-  spec2.mode = COVER_LENGTHS_ONLY;
-  spec2.westLength.set(1, COVER_GREATER_EQUAL);
-
-  CoverSpec& spec3 = CoverMemory::add(2, 1);
-  spec3.mode = COVER_TOPS_ONLY;
-  spec3.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestHasSingleton(2, 1);       // 1-1
+  CoverMemory::WestIsNotVoid(2, 1);          // 1-1 or 2=0
+  CoverMemory::WestHasExactlyOneTop(2, 1);
 }
 
 
 void CoverMemory::prepare_2_2()
 {
-  // Exactly 1-1.
-  CoverSpec& spec1 = CoverMemory::add(2, 2);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, COVER_EQUAL);
+  CoverMemory::WestHasSingleton(2, 2);       // 1-1
 }
 
 
 void CoverMemory::prepare_3_1()
 {
-  // These two together mean "stiff top".  Can we combine?
-  CoverSpec& spec1 = CoverMemory::add(3, 1);
-  spec1.mode = COVER_LENGTHS_AND_TOPS;
-  spec1.westLength.set(1, COVER_EQUAL);
-  spec1.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestIsNotVoid(3, 1);          // 1=2, 2=1 or 3=0
+  CoverMemory::WestHasCardRange(3, 1, 1, 2); // 1=2 or 2=1
 
-  CoverSpec& spec2 = CoverMemory::add(3, 1);
-  spec2.mode = COVER_LENGTHS_AND_TOPS;
-  spec2.westLength.set(2, COVER_EQUAL);
-  spec2.westTop1.set(0, COVER_EQUAL);
+  CoverMemory::WestHasExactlyOneTop(3, 1);   // Top with West
 
-  // Top with West.
-  CoverSpec& spec3 = CoverMemory::add(3, 1);
-  spec3.mode = COVER_TOPS_ONLY;
-  spec3.westTop1.set(1, COVER_EQUAL);
-
-  // 1-2 cards each.
-  CoverSpec& spec4 = CoverMemory::add(3, 1);
-  spec4.mode = COVER_LENGTHS_ONLY;
-  spec4.westLength.set(1, 2, COVER_INSIDE_RANGE);
-
-  // East void.  Can we say that more idiomatically?
-  CoverSpec& spec5 = CoverMemory::add(3, 1);
-  spec5.mode = COVER_LENGTHS_ONLY;
-  spec5.westLength.set(1, COVER_GREATER_EQUAL);
+  CoverMemory::WestHasSingletonTop(3, 1);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(3, 1);    // Stiff H offside
 }
 
 
 void CoverMemory::prepare_3_2()
 {
-  // 1-2 cards each.
-  CoverSpec& spec1 = CoverMemory::add(3, 2);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
-
-  // East void.  Can we say that more idiomatically?
-  CoverSpec& spec2 = CoverMemory::add(3, 2);
-  spec2.mode = COVER_LENGTHS_ONLY;
-  spec2.westLength.set(1, COVER_GREATER_EQUAL);
+  CoverMemory::WestIsNotVoid(3, 2);          // 1=2, 2=1 or 3=0
+  CoverMemory::WestHasCardRange(3, 2, 1, 2); // 1=2 or 2=1
 }
 
 
 void CoverMemory::prepare_3_3()
 {
-  // 1-2 cards each.
-  CoverSpec& spec1 = CoverMemory::add(3, 3);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
+  CoverMemory::WestHasCardRange(3, 3, 1, 2); // 1=2 or 2=1
 }
 
 
 void CoverMemory::prepare_4_1()
 {
-  // These two together mean "stiff top".  Can we combine?
-  CoverSpec& spec1 = CoverMemory::add(4, 1);
-  spec1.mode = COVER_LENGTHS_AND_TOPS;
-  spec1.westLength.set(1, COVER_EQUAL);
-  spec1.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestIsNotVoid(4, 1);          // 1=3, 2=2, 3=1 or 4=0
+  CoverMemory::WestHasDoubleton(4, 1);       // 2=2
+  CoverMemory::WestHasCardRange(4, 1, 1, 3); // 1=3, 2=2 or 3=1.
 
-  CoverSpec& spec2 = CoverMemory::add(4, 1);
-  spec2.mode = COVER_LENGTHS_AND_TOPS;
-  spec2.westLength.set(3, COVER_EQUAL);
-  spec2.westTop1.set(0, COVER_EQUAL);
+  CoverMemory::WestHasExactlyOneTop(4, 1);   // Top with West
 
-  // Exactly 2-2.
-  CoverSpec& spec3 = CoverMemory::add(4, 1);
-  spec3.mode = COVER_LENGTHS_ONLY;
-  spec3.westLength.set(2, COVER_EQUAL);
-
-  // Top onside.
-  CoverSpec& spec4 = CoverMemory::add(4, 1);
-  spec4.mode = COVER_TOPS_ONLY;
-  spec4.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestHasSingletonTop(4, 1);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(4, 1);    // Stiff H offside
 }
 
 
 void CoverMemory::prepare_4_2()
 {
-  // 1-3 cards each.
-  CoverSpec& spec1 = CoverMemory::add(4, 2);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
+  CoverMemory::WestHasDoubleton(4, 2);       // 2=2
+  CoverMemory::WestHasCardRange(4, 2, 1, 3); // 1=3, 2=2 or 3=1.
 
-  // Exactly 2-2.
-  CoverSpec& spec2 = CoverMemory::add(4, 2);
-  spec2.mode = COVER_LENGTHS_ONLY;
-  spec2.westLength.set(2, COVER_EQUAL);
-
-  // These two together mean "stiff top".  Can we combine?
-  CoverSpec& spec3 = CoverMemory::add(4, 2);
-  spec3.mode = COVER_LENGTHS_AND_TOPS;
-  spec3.westLength.set(1, COVER_EQUAL);
-  spec3.westTop1.set(1, COVER_EQUAL);
-
-  // Stiff top offside.
-  CoverSpec& spec4 = CoverMemory::add(4, 2);
-  spec4.mode = COVER_LENGTHS_AND_TOPS;
-  spec4.westLength.set(3, COVER_EQUAL);
-  spec4.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestHasSingletonTop(4, 2);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(4, 2);    // Stiff H offside
 }
 
 
 void CoverMemory::prepare_4_3()
 {
-  // 1-3 cards each.
-  CoverSpec& spec1 = CoverMemory::add(4, 3);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
-
-  // Exactly 2-2.
-  CoverSpec& spec2 = CoverMemory::add(4, 3);
-  spec2.mode = COVER_LENGTHS_ONLY;
-  spec2.westLength.set(2, COVER_EQUAL);
+  CoverMemory::WestHasDoubleton(4, 3);       // 2=2
+  CoverMemory::WestHasCardRange(4, 3, 1, 3); // 1=3, 2=2 or 3=1.
 }
 
 
 void CoverMemory::prepare_4_4()
 {
-  // 1-3 cards each.
-  CoverSpec& spec1 = CoverMemory::add(4, 4);
-  spec1.mode = COVER_LENGTHS_ONLY;
-  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
-
-  // Exactly 2-2.
-  CoverSpec& spec2 = CoverMemory::add(4, 4);
-  spec2.mode = COVER_LENGTHS_ONLY;
-  spec2.westLength.set(2, COVER_EQUAL);
+  CoverMemory::WestHasDoubleton(4, 4);       // 2=2
+  CoverMemory::WestHasCardRange(4, 4, 1, 3); // 1=3, 2=2 or 3=1.
 }
 
 
 void CoverMemory::prepare_5_1()
 {
-  // These two together mean "stiff top".  Can we combine?
-  CoverSpec& spec1 = CoverMemory::add(5, 1);
-  spec1.mode = COVER_LENGTHS_AND_TOPS;
-  spec1.westLength.set(1, COVER_EQUAL);
-  spec1.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestHasCardRange(5, 1, 1, 4); // 1-4 cards each
 
-  CoverSpec& spec2 = CoverMemory::add(5, 1);
-  spec2.mode = COVER_LENGTHS_AND_TOPS;
-  spec2.westLength.set(4, COVER_EQUAL);
-  spec2.westTop1.set(0, COVER_EQUAL);
+  CoverMemory::WestHasExactlyOneTop(5, 1);   // Top with West
 
-  // 1-4 cards each.
-  CoverSpec& spec3 = CoverMemory::add(5, 1);
-  spec3.mode = COVER_LENGTHS_ONLY;
-  spec3.westLength.set(1, 4, COVER_INSIDE_RANGE);
+  CoverMemory::WestHasSingletonTop(5, 1);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(5, 1);    // Stiff H offside
+}
 
-  // Top onside.
-  CoverSpec& spec4 = CoverMemory::add(5, 1);
-  spec4.mode = COVER_TOPS_ONLY;
-  spec4.westTop1.set(1, COVER_EQUAL);
+
+void CoverMemory::prepare_6_1()
+{
+  CoverMemory::WestHasCardRange(6, 1, 2, 4); // 2-4 cards each
+  CoverMemory::WestHasCardRange(6, 1, 1, 5); // 1-5 cards each
+
+  // TODO Could use HonorsAreShort(1)
+  CoverMemory::WestHasSingletonTop(6, 1);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(6, 1);    // Stiff H offside
 }
 
 
 void CoverMemory::prepare_7_1()
 {
-  // Together these two mean that the honor is at most third.
-  CoverSpec& spec1 = CoverMemory::add(7, 1);
-  spec1.mode = COVER_LENGTHS_AND_TOPS;
-  spec1.westLength.set(4, COVER_GREATER_EQUAL);
-  spec1.westTop1.set(0, COVER_EQUAL);
+  CoverMemory::EastIsVoid(7, 1);             // East is void
 
-  CoverSpec& spec2 = CoverMemory::add(7, 1);
-  spec2.mode = COVER_LENGTHS_AND_TOPS;
-  spec2.westLength.set(3, COVER_LESS_EQUAL);
-  spec2.westTop1.set(1, COVER_EQUAL);
+  CoverMemory::WestHasExactlyOneTop(7, 1);   // Top with West
 
-  // East void.
-  CoverSpec& spec3 = CoverMemory::add(7, 1);
-  spec3.mode = COVER_LENGTHS_ONLY;
-  spec3.westLength.set(7, COVER_EQUAL);
+  CoverMemory::WestHasSingletonTop(7, 1);    // Stiff H onside
+  CoverMemory::EastHasSingletonTop(7, 1);    // Stiff H offside
 
-  // West has top.
-  CoverSpec& spec4 = CoverMemory::add(7, 1);
-  spec4.mode = COVER_TOPS_ONLY;
-  spec4.westTop1.set(1, COVER_EQUAL);
-
-  // East has stiff top.
-  CoverSpec& spec5 = CoverMemory::add(7, 1);
-  spec5.mode = COVER_LENGTHS_AND_TOPS;
-  spec5.westLength.set(6, COVER_EQUAL);
-  spec5.westTop1.set(0, COVER_EQUAL);
-
-  // West has stiff top.
-  CoverSpec& spec6 = CoverMemory::add(7, 1);
-  spec6.mode = COVER_LENGTHS_AND_TOPS;
-  spec6.westLength.set(1, COVER_EQUAL);
-  spec6.westTop1.set(1, COVER_EQUAL);
-
-  // Together these two mean that the honor is at most third.
-  CoverSpec& spec7 = CoverMemory::add(7, 1);
-  spec7.mode = COVER_LENGTHS_AND_TOPS;
-  spec7.westLength.set(5, COVER_GREATER_EQUAL);
-  spec7.westTop1.set(0, COVER_EQUAL);
-
-  CoverSpec& spec8 = CoverMemory::add(7, 1);
-  spec8.mode = COVER_LENGTHS_AND_TOPS;
-  spec8.westLength.set(2, COVER_LESS_EQUAL);
-  spec8.westTop1.set(1, COVER_EQUAL);
-
+  CoverMemory::HonorsAreShort(7, 1, 2);      // H at most doubleton
+  CoverMemory::HonorsAreShort(7, 1, 3);      // H at most tripleton
 }
 
 
@@ -290,6 +276,8 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_4_4();
 
   CoverMemory::prepare_5_1();
+
+  CoverMemory::prepare_6_1();
 
   CoverMemory::prepare_7_1();
 }
