@@ -56,6 +56,7 @@ void CoverMemory::prepare_2_1()
 
 void CoverMemory::prepare_2_2()
 {
+  // Exactly 1-1.
   CoverSpec& spec1 = CoverMemory::add(2, 2);
   spec1.mode = COVER_LENGTHS_ONLY;
   spec1.westLength.set(1, COVER_EQUAL);
@@ -75,14 +76,21 @@ void CoverMemory::prepare_3_1()
   spec2.westLength.set(2, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
 
+  // Top with West.
   CoverSpec& spec3 = CoverMemory::add(3, 1);
   spec3.mode = COVER_TOPS_ONLY;
   spec3.westTop1.set(1, COVER_EQUAL);
+
+  // 1-2 cards each.
+  CoverSpec& spec4 = CoverMemory::add(3, 1);
+  spec4.mode = COVER_LENGTHS_ONLY;
+  spec4.westLength.set(1, 2, COVER_INSIDE_RANGE);
 }
 
 
 void CoverMemory::prepare_3_2()
 {
+  // 1-2 cards each.
   CoverSpec& spec1 = CoverMemory::add(3, 2);
   spec1.mode = COVER_LENGTHS_ONLY;
   spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
@@ -91,6 +99,7 @@ void CoverMemory::prepare_3_2()
 
 void CoverMemory::prepare_3_3()
 {
+  // 1-2 cards each.
   CoverSpec& spec1 = CoverMemory::add(3, 3);
   spec1.mode = COVER_LENGTHS_ONLY;
   spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
@@ -109,6 +118,48 @@ void CoverMemory::prepare_4_1()
   spec2.mode = COVER_LENGTHS_AND_TOPS;
   spec2.westLength.set(3, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_4_2()
+{
+  // 1-3 cards each.
+  CoverSpec& spec1 = CoverMemory::add(4, 2);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
+
+  // Exactly 2-2.
+  CoverSpec& spec2 = CoverMemory::add(4, 2);
+  spec2.mode = COVER_LENGTHS_ONLY;
+  spec2.westLength.set(2, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_4_3()
+{
+  // 1-3 cards each.
+  CoverSpec& spec1 = CoverMemory::add(4, 3);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
+
+  // Exactly 2-2.
+  CoverSpec& spec2 = CoverMemory::add(4, 3);
+  spec2.mode = COVER_LENGTHS_ONLY;
+  spec2.westLength.set(2, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_4_4()
+{
+  // 1-3 cards each.
+  CoverSpec& spec1 = CoverMemory::add(4, 4);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, 3, COVER_INSIDE_RANGE);
+
+  // Exactly 2-2.
+  CoverSpec& spec2 = CoverMemory::add(4, 4);
+  spec2.mode = COVER_LENGTHS_ONLY;
+  spec2.westLength.set(2, COVER_EQUAL);
 }
 
 
@@ -155,6 +206,9 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_3_3();
 
   CoverMemory::prepare_4_1();
+  CoverMemory::prepare_4_2();
+  CoverMemory::prepare_4_3();
+  CoverMemory::prepare_4_4();
 
   CoverMemory::prepare_7_1();
 }

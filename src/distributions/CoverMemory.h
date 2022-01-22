@@ -37,6 +37,9 @@ class CoverMemory
     void prepare_3_3();
 
     void prepare_4_1();
+    void prepare_4_2();
+    void prepare_4_3();
+    void prepare_4_4();
 
     void prepare_7_1();
 
