@@ -47,6 +47,10 @@ void CoverMemory::prepare_2_1()
   CoverSpec& spec2 = CoverMemory::add(2, 1);
   spec2.mode = COVER_LENGTHS_ONLY;
   spec2.westLength.set(1, COVER_GREATER_EQUAL);
+
+  CoverSpec& spec3 = CoverMemory::add(2, 1);
+  spec3.mode = COVER_TOPS_ONLY;
+  spec3.westTop1.set(1, COVER_EQUAL);
 }
 
 
@@ -69,6 +73,41 @@ void CoverMemory::prepare_3_1()
   CoverSpec& spec2 = CoverMemory::add(3, 1);
   spec2.mode = COVER_LENGTHS_AND_TOPS;
   spec2.westLength.set(2, COVER_EQUAL);
+  spec2.westTop1.set(0, COVER_EQUAL);
+
+  CoverSpec& spec3 = CoverMemory::add(3, 1);
+  spec3.mode = COVER_TOPS_ONLY;
+  spec3.westTop1.set(1, COVER_EQUAL);
+}
+
+
+void CoverMemory::prepare_3_2()
+{
+  CoverSpec& spec1 = CoverMemory::add(3, 2);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
+}
+
+
+void CoverMemory::prepare_3_3()
+{
+  CoverSpec& spec1 = CoverMemory::add(3, 3);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, 2, COVER_INSIDE_RANGE);
+}
+
+
+void CoverMemory::prepare_4_1()
+{
+  // These two together mean "stiff top".  Can we combine?
+  CoverSpec& spec1 = CoverMemory::add(4, 1);
+  spec1.mode = COVER_LENGTHS_AND_TOPS;
+  spec1.westLength.set(1, COVER_EQUAL);
+  spec1.westTop1.set(1, COVER_EQUAL);
+
+  CoverSpec& spec2 = CoverMemory::add(4, 1);
+  spec2.mode = COVER_LENGTHS_AND_TOPS;
+  spec2.westLength.set(3, COVER_EQUAL);
   spec2.westTop1.set(0, COVER_EQUAL);
 }
 
@@ -112,6 +151,10 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_2_2();
 
   CoverMemory::prepare_3_1();
+  CoverMemory::prepare_3_2();
+  CoverMemory::prepare_3_3();
+
+  CoverMemory::prepare_4_1();
 
   CoverMemory::prepare_7_1();
 }

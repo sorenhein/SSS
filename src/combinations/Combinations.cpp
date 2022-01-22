@@ -200,6 +200,7 @@ void Combinations::runSingle(
     for (auto& dep: dependenciesTrinary[c])
     {
       Combination& comb = combMemory.add(c, dep);
+cout << "Setting maxRank to " << +ranks.maxRank() << endl;
       comb.setMaxRank(ranks.maxRank());
 
       CombEntry& centry = combMemory.getEntry(c, dep);
@@ -254,7 +255,12 @@ CombinationType Combinations::classify(
       return COMB_MULT_NON_VOID;
   }
   else
-    return COMB_NON_MINIMAL;
+  {
+    if (strategies.constantTricks())
+      return COMB_CONSTANT;
+    else
+      return COMB_NON_MINIMAL;
+  }
 }
 
 

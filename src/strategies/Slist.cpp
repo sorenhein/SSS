@@ -994,7 +994,7 @@ void Slist::getResultList(list<Result>& resultList) const
 
 unsigned Slist::covers(
   const Covers& coversIn,
-  const unsigned char lowestWinRank) const
+  const unsigned char maxRank) const
 {
   unsigned numCovers = 0;
 
@@ -1002,7 +1002,7 @@ unsigned Slist::covers(
   {
     const Result result = strat.resultLowest();
     const unsigned rankLow = result.getRank();
-    if (rankLow < lowestWinRank)
+    if (rankLow+2 < maxRank)
     {
       // We don't know yet how to cover such Strategy's.
       continue;

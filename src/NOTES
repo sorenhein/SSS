@@ -1,5 +1,7 @@
 Verbals of strategy wins
 ========================
+* Ranks::maxRank is not really what we need in Combinations::runSingle()
+
 * Look at all Strategy's with only one meaningful rank.  Can we explain
   them all?  Does it look pretty?
 

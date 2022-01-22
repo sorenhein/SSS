@@ -426,9 +426,9 @@ unsigned char Strategies::winRankLow() const
 
 unsigned Strategies::covers(
   const Covers& coversIn,
-  const unsigned char lowestWinRank) const
+  const unsigned char maxRank) const
 {
-  return slist.covers(coversIn, lowestWinRank);
+  return slist.covers(coversIn, maxRank);
 }
 
 

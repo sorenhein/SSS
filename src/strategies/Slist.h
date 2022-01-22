@@ -245,7 +245,7 @@ class Slist
 
     unsigned covers(
       const Covers& coversIn,
-      const unsigned char lowestWinRank) const;
+      const unsigned char maxRank) const;
 
     bool ordered() const;
 

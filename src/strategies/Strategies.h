@@ -107,7 +107,7 @@ class Strategies
 
     unsigned covers(
       const Covers& coversIn,
-      const unsigned char lowestWinRank = 0) const;
+      const unsigned char maxRank = 0) const;
 
     bool ordered() const;
 
