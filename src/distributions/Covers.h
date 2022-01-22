@@ -16,6 +16,7 @@
 #include "Cover.h"
 
 class Distribution;
+class CoverMemory;
 class Result;
 
 
@@ -52,6 +53,14 @@ class Covers
     Covers();
 
     void reset();
+
+    void prepare(
+      const CoverMemory& coverMemory,
+      const unsigned char maxLength,
+      const unsigned char maxTops,
+      const vector<unsigned char>& lengths,
+      const vector<unsigned char>& tops,
+      const vector<unsigned char>& cases);
 
     void prepare(
       const vector<unsigned char>& lengths,

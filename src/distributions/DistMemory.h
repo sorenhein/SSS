@@ -15,6 +15,7 @@
 
 #include "Distribution.h"
 #include "DistCore.h"
+#include "CoverMemory.h"
 
 using namespace std;
 
@@ -32,6 +33,8 @@ class DistMemory
     vector<vector<DistCore>> uniques;
 
     vector<unsigned> usedCounts;
+
+    CoverMemory coverMemory;
 
 
   public:

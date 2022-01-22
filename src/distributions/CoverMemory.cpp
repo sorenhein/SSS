@@ -30,7 +30,10 @@ CoverSpec& CoverMemory::add(
   assert(cards < specs.size());
   assert(tops1 < specs[cards].size());
   specs[cards][tops1].emplace_back(CoverSpec());
-  return specs[cards][tops1].back();
+  CoverSpec& spec = specs[cards][tops1].back();
+  spec.oppsLength = cards;
+  spec.oppsTops1 = tops1;
+  return spec;
 }
 
 
@@ -39,21 +42,22 @@ void CoverMemory::prepare(const unsigned char maxCards)
 {
   specs.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
-    specs[c].resize(2);
+    // Just to have enough for now
+    specs[c].resize(8);
 
   CoverSpec& spec1 = CoverMemory::add(7, 1);
   spec1.mode = COVER_LENGTHS_AND_TOPS;
-  spec1.westLength.setValues(4, COVER_GREATER_EQUAL);
+  spec1.westLength.set(4, COVER_GREATER_EQUAL);
   spec1.westTop1.set(0, COVER_EQUAL);
 
   CoverSpec& spec2 = CoverMemory::add(7, 1);
   spec2.mode = COVER_LENGTHS_AND_TOPS;
-  spec2.westLength.setValues(3, COVER_LESS_EQUAL);
+  spec2.westLength.set(3, COVER_LESS_EQUAL);
   spec2.westTop1.set(1, COVER_EQUAL);
 
   CoverSpec& spec3 = CoverMemory::add(7, 1);
   spec3.mode = COVER_LENGTHS_ONLY;
-  spec3.westLength.setValues(3, COVER_LESS_EQUAL);
+  spec3.westLength.set(7, COVER_EQUAL);
 
   CoverSpec& spec4 = CoverMemory::add(7, 1);
   spec4.mode = COVER_TOPS_ONLY;
@@ -61,8 +65,9 @@ void CoverMemory::prepare(const unsigned char maxCards)
 
   CoverSpec& spec5 = CoverMemory::add(7, 1);
   spec5.mode = COVER_LENGTHS_AND_TOPS;
-  spec5.westLength.setValues(6, COVER_EQUAL);
+  spec5.westLength.set(6, COVER_EQUAL);
   spec5.westTop1.set(0, COVER_EQUAL);
+
 }
 
 
@@ -71,7 +76,12 @@ list<CoverSpec>::const_iterator CoverMemory::begin(
   const unsigned tops1) const
 {
   assert(cards < specs.size());
+if (tops1 >= specs[cards].size())
+{
+cout << "cards " << cards << endl;
+cout << "tops1 " << tops1 << ", size " << specs[cards].size() << endl;
   assert(tops1 < specs[cards].size());
+}
 
   return specs[cards][tops1].begin();
 }

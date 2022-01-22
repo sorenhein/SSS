@@ -458,14 +458,16 @@ void DistCore::getCoverData(
 }
 
 
-void DistCore::prepareCovers()
+void DistCore::prepareCovers(const CoverMemory& coverMemory)
 {
   vector<unsigned char> lengths, tops, cases;
   unsigned char maxLength, maxTops;
   DistCore::getCoverData(lengths, tops, cases, maxLength, maxTops);
 
   if (maxLength >= 2)
-    covers.prepare(lengths, tops, cases, maxLength, maxTops);
+    covers.prepare(coverMemory, maxLength, maxTops, lengths, tops, cases);
+   
+    // covers.prepare(lengths, tops, cases, maxLength, maxTops);
 }
 
 

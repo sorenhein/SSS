@@ -57,6 +57,8 @@ class Cover
     unsigned char getWeight() const;
 
     string str() const;
+
+    string strProfile() const;
 };
 
 #endif

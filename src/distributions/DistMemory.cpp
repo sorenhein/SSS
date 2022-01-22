@@ -78,6 +78,7 @@ void DistMemory::reset()
   distributions.clear();
   uniques.clear();
   usedCounts.clear();
+  coverMemory.reset();
 }
 
 
@@ -122,6 +123,8 @@ void DistMemory::resize(
     if (fullFlag)
       uniques[cards].resize(DIST_UNIQUE_COUNT[cards]);
   }
+
+  coverMemory.prepare(maxCardsIn);
 }
 
 
@@ -169,7 +172,7 @@ Distribution& DistMemory::addFullMT(
     dist.setPtr(&distCore);
     dist.split();
     dist.setLookups();
-    dist.prepareCovers();
+    dist.prepareCovers(coverMemory);
   }
   else
     dist.setPtr(distributions[distID.cards][distID.holding]);
@@ -205,7 +208,7 @@ void DistMemory::addCanonicalMT(
   dist.setPtr(&distCore);
   dist.split();
   dist.setLookups();
-  dist.prepareCovers();
+  dist.prepareCovers(coverMemory);
 }
 
 

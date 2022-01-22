@@ -71,6 +71,24 @@ class CoverElement
 
   public:
 
+    // TODO Should be private once Covers is cleaner
+    void setOperator(const CoverOperator operIn)
+    {
+      oper = operIn;
+      if (oper == COVER_LESS_EQUAL)
+        ptr = &CoverElement::lessEqual;
+      else if (oper == COVER_EQUAL)
+        ptr = &CoverElement::equal;
+      else if (oper == COVER_GREATER_EQUAL)
+        ptr = &CoverElement::greaterEqual;
+      else if (oper == COVER_INSIDE_RANGE)
+        ptr = &CoverElement::insideRange;
+      else if (oper == COVER_OUTSIDE_RANGE)
+        ptr = &CoverElement::outsideRange;
+      else
+        ptr = nullptr;
+    };
+
     void setValue(const unsigned char valueIn)
     {
       value1 = valueIn;
@@ -90,7 +108,7 @@ class CoverElement
       const CoverOperator operIn)
     {
       value1 = valueIn;
-      oper = operIn;
+      setOperator(operIn);
     };
 
     void set(
@@ -100,24 +118,7 @@ class CoverElement
     {
       value1 = value1In;
       value2 = value2In;
-      oper = operIn;
-    };
-
-    void setOperator(const CoverOperator operIn)
-    {
-      oper = operIn;
-      if (oper == COVER_LESS_EQUAL)
-        ptr = &CoverElement::lessEqual;
-      else if (oper == COVER_EQUAL)
-        ptr = &CoverElement::equal;
-      else if (oper == COVER_GREATER_EQUAL)
-        ptr = &CoverElement::greaterEqual;
-      else if (oper == COVER_INSIDE_RANGE)
-        ptr = &CoverElement::insideRange;
-      else if (oper == COVER_OUTSIDE_RANGE)
-        ptr = &CoverElement::outsideRange;
-      else
-        ptr = nullptr;
+      setOperator(operIn);
     };
 
     unsigned char includes(const unsigned char valueIn) const

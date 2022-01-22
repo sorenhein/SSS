@@ -19,6 +19,7 @@
 
 class SurvivorList;
 class DistMap;
+class CoverMemory;
 struct Play;
 
 using namespace std;
@@ -79,7 +80,7 @@ class DistCore
       const DistMap& distMap,
       const unsigned char rankNS) const;
     
-    void prepareCovers();
+    void prepareCovers(const CoverMemory& coverMemory);
 
     // TODO const once specs are separate
     Covers& getCovers();

@@ -126,3 +126,13 @@ string Cover::str() const
     return "";
 }
 
+
+string Cover::strProfile() const
+{
+  stringstream ss;
+
+  for (unsigned i = 0; i < profile.size(); i++)
+    ss << i << ": " << +profile[i] << "\n";
+  
+  return ss.str();
+}

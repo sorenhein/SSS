@@ -14,6 +14,8 @@
 #include "DistMap.h"
 #include "DistCore.h"
 
+class CoverMemory;
+
 using namespace std;
 
 
@@ -84,10 +86,10 @@ class Distribution
       return distCorePtr->getReduction(distMap, rankNS);
     };
 
-    void prepareCovers()
+    void prepareCovers(const CoverMemory& coverMemory)
     {
       assert(distCorePtr != nullptr);
-      distCorePtr->prepareCovers();
+      distCorePtr->prepareCovers(coverMemory);
     };
 
     // TODO const once we have the specs separately

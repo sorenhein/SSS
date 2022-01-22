@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Covers.h"
+#include "CoverMemory.h"
 
 #include "../strategies/result/Result.h"
 #include "../const.h"
@@ -117,6 +118,40 @@ void Covers::prepareMiddles(
       }
     }
   }
+}
+
+
+void Covers::prepare(
+  const CoverMemory& coverMemory,
+  const unsigned char maxLength,
+  const unsigned char maxTops,
+  const vector<unsigned char>& lengths,
+  const vector<unsigned char>& tops,
+  const vector<unsigned char>& cases)
+{
+  assert(lengths.size() == tops.size());
+  assert(lengths.size() == cases.size());
+  assert(maxLength >= 2);
+  assert(maxTops >= 1);
+
+  covers.resize(10);
+  auto citer = covers.begin();
+
+  for (auto miter = coverMemory.begin(maxLength, maxTops);
+      miter != coverMemory.end(maxLength, maxTops); miter++)
+  {
+    assert(citer != covers.end());
+    citer->prepare(lengths, tops, cases, * miter);
+    citer++;
+  }
+
+  if (citer != covers.end())
+    covers.erase(citer, covers.end());
+
+  covers.sort([](const Cover& cover1, const Cover& cover2)
+  {
+    return (cover1.getWeight() >= cover2.getWeight());
+  });
 }
 
 
