@@ -1011,7 +1011,7 @@ unsigned Slist::covers(
     if (strat.covers(coversIn))
       numCovers++;
     else
-      cout << strat.str("Unexplained", true);
+      cout << strat.str("Unexplained", true) << "\n";
   }
 
   return numCovers;

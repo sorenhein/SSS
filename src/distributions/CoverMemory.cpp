@@ -37,14 +37,16 @@ CoverSpec& CoverMemory::add(
 }
 
 
-
-void CoverMemory::prepare(const unsigned char maxCards)
+void CoverMemory::prepare_2_2()
 {
-  specs.resize(maxCards+1);
-  for (unsigned char c = 0; c <= maxCards; c++)
-    // Just to have enough for now
-    specs[c].resize(14);
+  CoverSpec& spec1 = CoverMemory::add(2, 2);
+  spec1.mode = COVER_LENGTHS_ONLY;
+  spec1.westLength.set(1, COVER_EQUAL);
+}
 
+
+void CoverMemory::prepare_7_1()
+{
   CoverSpec& spec1 = CoverMemory::add(7, 1);
   spec1.mode = COVER_LENGTHS_AND_TOPS;
   spec1.westLength.set(4, COVER_GREATER_EQUAL);
@@ -67,7 +69,20 @@ void CoverMemory::prepare(const unsigned char maxCards)
   spec5.mode = COVER_LENGTHS_AND_TOPS;
   spec5.westLength.set(6, COVER_EQUAL);
   spec5.westTop1.set(0, COVER_EQUAL);
+}
 
+
+
+void CoverMemory::prepare(const unsigned char maxCards)
+{
+  specs.resize(maxCards+1);
+  for (unsigned char c = 0; c <= maxCards; c++)
+    // Just to have enough for now
+    specs[c].resize(14);
+
+  CoverMemory::prepare_2_2();
+
+  CoverMemory::prepare_7_1();
 }
 
 

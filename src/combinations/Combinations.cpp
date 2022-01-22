@@ -327,10 +327,13 @@ histoPlay[plays.size()]++;
 
         if (centry.isReference())
         {
-          timersStrat[32].start();
-          const unsigned numCovers = comb.covers(
-            distributions.get(cards, centry.getHolding2()).covers());
-          timersStrat[32].stop();
+          if (centry.getType() != COMB_CONSTANT)
+          {
+            timersStrat[32].start();
+            const unsigned numCovers = comb.covers(
+              distributions.get(cards, centry.getHolding2()).covers());
+            timersStrat[32].stop();
+          }
 
           timersStrat[33].start();
           ctest.checkReductions(cards, combMemory, centry,

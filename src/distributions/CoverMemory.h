@@ -29,6 +29,10 @@ class CoverMemory
       const unsigned char cards,
       const unsigned char tops1);
 
+    void prepare_2_2();
+
+    void prepare_7_1();
+
 
   public:
 
