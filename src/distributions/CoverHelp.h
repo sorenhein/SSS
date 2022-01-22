@@ -9,6 +9,14 @@
 #ifndef SSS_COVERHELP_H
 #define SSS_COVERHELP_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+#include "../const.h"
+
+
 enum CoverMode
 {
   COVER_LENGTHS_ONLY = 0,
@@ -37,63 +45,108 @@ enum CoverState
   COVER_STATE_SIZE = 3
 };
 
-struct CoverElement
+class CoverElement
 {
   typedef unsigned char 
     (CoverElement::*ComparePtr)(const unsigned char valueIn) const;
 
-  unsigned char value1;
-  unsigned char value2;
-  CoverOperator oper;
-  ComparePtr ptr;
+  private: 
 
-  unsigned char lessEqual(const unsigned char valueIn) const
-  {
-    return (valueIn <= value1 ? 1 : 0);
-  };
+    unsigned char value1;
+    unsigned char value2;
 
-  unsigned char equal(const unsigned char valueIn) const
-  {
-    return (valueIn == value1 ? 1 : 0);
-  };
+    CoverOperator oper;
 
-  unsigned char greaterEqual(const unsigned char valueIn) const
-  {
-    return (valueIn >= value1 ? 1 : 0);
-  };
+    ComparePtr ptr;
 
-  unsigned char insideRange(const unsigned char valueIn) const
-  {
-    return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
-  };
+  public:
 
-  unsigned char outsideRange(const unsigned char valueIn) const
-  {
-    return (valueIn <= value1 && valueIn >= value2 ? 1 : 0);
-  };
+    void setValue(const unsigned char valueIn)
+    {
+      value1 = valueIn;
+      value2 = UCHAR_NOT_SET;
+    };
 
-  void setOperator(const CoverOperator operIn)
-  {
-    oper = operIn;
-    if (oper == COVER_LESS_EQUAL)
-      ptr = &CoverElement::lessEqual;
-    else if (oper == COVER_EQUAL)
-      ptr = &CoverElement::equal;
-    else if (oper == COVER_GREATER_EQUAL)
-      ptr = &CoverElement::greaterEqual;
-    else if (oper == COVER_INSIDE_RANGE)
-      ptr = &CoverElement::insideRange;
-    else if (oper == COVER_OUTSIDE_RANGE)
-      ptr = &CoverElement::outsideRange;
-    else
-      assert(false);
-  };
+    void setValues(
+      const unsigned char value1In,
+      const unsigned char value2In)
+    {
+      value1 = value1In;
+      value2 = value2In;
+    };
 
-  unsigned char includes(const unsigned char valueIn) const
-  {
-    assert(ptr != nullptr);
-    return (this->*ptr)(valueIn);
-  }
+    unsigned char lessEqual(const unsigned char valueIn) const
+    {
+      return (valueIn <= value1 ? 1 : 0);
+    };
+
+    unsigned char equal(const unsigned char valueIn) const
+    {
+      return (valueIn == value1 ? 1 : 0);
+    };
+
+    unsigned char greaterEqual(const unsigned char valueIn) const
+    {
+      return (valueIn >= value1 ? 1 : 0);
+    };
+
+    unsigned char insideRange(const unsigned char valueIn) const
+    {
+      return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
+    };
+
+    unsigned char outsideRange(const unsigned char valueIn) const
+    {
+      return (valueIn <= value1 && valueIn >= value2 ? 1 : 0);
+    };
+
+    void setOperator(const CoverOperator operIn)
+    {
+      oper = operIn;
+      if (oper == COVER_LESS_EQUAL)
+        ptr = &CoverElement::lessEqual;
+      else if (oper == COVER_EQUAL)
+        ptr = &CoverElement::equal;
+      else if (oper == COVER_GREATER_EQUAL)
+        ptr = &CoverElement::greaterEqual;
+      else if (oper == COVER_INSIDE_RANGE)
+        ptr = &CoverElement::insideRange;
+      else if (oper == COVER_OUTSIDE_RANGE)
+        ptr = &CoverElement::outsideRange;
+      else
+        ptr = nullptr;
+    };
+
+    unsigned char includes(const unsigned char valueIn) const
+    {
+      assert(ptr != nullptr);
+      return (this->*ptr)(valueIn);
+    };
+
+    string str(const string& word) const
+    {
+      stringstream ss;
+
+      if (oper == COVER_LESS_EQUAL)
+        ss << "West has at most " << +value1 << " " << word;
+      else if (oper == COVER_EQUAL)
+        ss << "West has exactly " << +value1 << " " << word;
+      else if (oper == COVER_GREATER_EQUAL)
+        ss << "West has at least " << +value1 << " " << word;
+      else if (oper == COVER_INSIDE_RANGE)
+        ss << "West has " << word <<  " in range " << 
+          +value1 << " to " << +value2 << " " << word << " inclusive";
+      else if (oper == COVER_OUTSIDE_RANGE)
+      {
+        assert(value1 < value2);
+        ss << "West has up to " << +value1 << " " <<
+        " or at least " << +value2 << word << " inclusive";
+      }
+      else
+        assert(false);
+
+      return ss.str();
+    };
 };
 
 struct CoverSpec
@@ -101,6 +154,16 @@ struct CoverSpec
   CoverMode mode;
   CoverElement westLength;
   CoverElement westTop1;
+
+  string strLength() const
+  {
+    return westLength.str("cards");
+  };
+
+  string strTop1() const
+  {
+    return westTop1.str("tops");
+  };
 };
 
 #endif

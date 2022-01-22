@@ -45,10 +45,10 @@ void Covers::prepareSpecific(
 
   for (unsigned char length = 0; length <= maxLength; length++)
   {
-    spec.westLength.value1 = length;
+    spec.westLength.setValue(length);
     for (unsigned char top = 0; top <= maxTops; top++)
     {
-      spec.westTop1.value1 = top;
+      spec.westTop1.setValue(top);
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
@@ -57,14 +57,14 @@ void Covers::prepareSpecific(
           if ((length == 0 || length == maxLength) && lOper != COVER_EQUAL)
             continue;
 
-          spec.westLength.oper = static_cast<CoverOperator>(lOper);
+          spec.westLength.setOperator(static_cast<CoverOperator>(lOper));
 
           for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
           {
             if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
               continue;
 
-            spec.westTop1.oper = static_cast<CoverOperator>(tOper);
+            spec.westTop1.setOperator(static_cast<CoverOperator>(tOper));
 
             assert(iter != covers.end());
             iter->prepare(lengths, tops, cases, spec);
@@ -89,18 +89,17 @@ void Covers::prepareMiddles(
   // "4-2 or better".
 
   CoverSpec spec;
-  spec.westLength.oper = static_cast<CoverOperator>(COVER_INSIDE_RANGE);
+  spec.westLength.setOperator(static_cast<CoverOperator>(COVER_INSIDE_RANGE));
 
   // With 5 or 6 cards, we run from 1 to 2 as the lower end.
   const unsigned char middleCount = (maxLength-1) >> 1;
 
   for (unsigned char length = 1; length <= middleCount; length++)
   {
-    spec.westLength.value1 = length;
-    spec.westLength.value2 = maxLength - length;
+    spec.westLength.setValues(length, maxLength-length);
     for (unsigned char top = 0; top <= maxTops; top++)
     {
-      spec.westTop1.value1 = top;
+      spec.westTop1.setValue(top);
       for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
       {
         spec.mode = static_cast<CoverMode>(mode);
@@ -109,7 +108,7 @@ void Covers::prepareMiddles(
           if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
             continue;
 
-          spec.westTop1.oper = static_cast<CoverOperator>(tOper);
+          spec.westTop1.setOperator(static_cast<CoverOperator>(tOper));
 
           assert(iter != covers.end());
           iter->prepare(lengths, tops, cases, spec);

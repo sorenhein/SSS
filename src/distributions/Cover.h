@@ -34,26 +34,6 @@ class Cover
       const unsigned char ref1,
       const unsigned char ref2) const;
 
-    unsigned char lessEqual(
-      const unsigned char value,
-      const unsigned char ref,
-      const unsigned char dummy) const;
-
-    unsigned char equal(
-      const unsigned char value,
-      const unsigned char ref,
-      const unsigned char dummy) const;
-
-    unsigned char greaterEqual(
-      const unsigned char value,
-      const unsigned char ref,
-      const unsigned char dummy) const;
-
-    unsigned char withinRange(
-      const unsigned char value,
-      const unsigned char ref1,
-      const unsigned char ref2) const;
-
 
     string strLength() const;
 
