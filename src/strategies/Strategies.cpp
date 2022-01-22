@@ -424,9 +424,9 @@ unsigned char Strategies::winRankLow() const
  *                                                          *
  ************************************************************/
 
-unsigned Strategies::covers(Distribution& distribution) const
+unsigned Strategies::covers(Covers& coversIn) const
 {
-  return slist.covers(distribution);
+  return slist.covers(coversIn);
 }
 
 

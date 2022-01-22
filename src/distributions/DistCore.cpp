@@ -458,6 +458,23 @@ void DistCore::getCoverData(
 }
 
 
+void DistCore::prepareCovers()
+{
+  vector<unsigned char> lengths, tops, cases;
+  unsigned char maxLength, maxTops;
+  DistCore::getCoverData(lengths, tops, cases, maxLength, maxTops);
+
+  if (maxLength >= 2)
+    covers.prepare(lengths, tops, cases, maxLength, maxTops);
+}
+
+
+Covers& DistCore::getCovers()
+{
+  return covers;
+}
+
+
 string DistCore::strHeader() const
 {
   stringstream ss;

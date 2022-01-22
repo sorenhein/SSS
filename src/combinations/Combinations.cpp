@@ -608,7 +608,10 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   const Combination& comb = combMemory.getComb(cards, holding);
 
-  const unsigned numCovers = comb.covers(dist);
+  const unsigned numCovers = comb.covers(dist.covers());
+
+cout << "Number of covers: " << numCovers << "\n";
+
 }
 
 

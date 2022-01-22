@@ -73,9 +73,9 @@ void Combination::setTrivial(
 }
 
 
-unsigned Combination::covers(Distribution& distribution) const
+unsigned Combination::covers(Covers& coversIn) const
 {
-  return strats.covers(distribution);
+  return strats.covers(coversIn);
 }
 
 

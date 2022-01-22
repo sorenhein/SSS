@@ -243,7 +243,7 @@ class Slist
 
     // Debug utilities.
 
-    unsigned covers(Distribution& distribution) const;
+    unsigned covers(Covers& coversIn) const;
 
     bool ordered() const;
 

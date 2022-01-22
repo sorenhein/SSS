@@ -992,20 +992,13 @@ void Slist::getResultList(list<Result>& resultList) const
  ************************************************************/
 
 
-unsigned Slist::covers(Distribution& distribution) const
+unsigned Slist::covers(Covers& coversIn) const
 {
-  vector<unsigned char> lengths, tops, cases;
-  unsigned char maxLength, maxTops;
-  distribution.getCoverData(lengths, tops, cases, maxLength, maxTops);
-
-  // TODO Could do in Distribution?
-  Covers covers;
-  covers.prepare(lengths, tops, cases, maxLength, maxTops);
   unsigned numCovers = 0;
 
   for (auto& strat: strategies)
   {
-    if (strat.covers(covers))
+    if (strat.covers(coversIn))
       numCovers++;
   }
 

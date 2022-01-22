@@ -15,6 +15,7 @@
 #include "DistHelp.h"
 #include "Survivors.h"
 #include "Reductions.h"
+#include "Covers.h"
 
 class SurvivorList;
 class DistMap;
@@ -36,6 +37,8 @@ class DistCore
 
     Reductions reductions;
 
+    Covers covers;
+
 
     void setBinomial();
 
@@ -45,6 +48,12 @@ class DistCore
       const DistMap& distMap,
       unsigned& distIndex);
 
+    void getCoverData(
+      vector<unsigned char>& lengths,
+      vector<unsigned char>& tops,
+      vector<unsigned char>& cases,
+      unsigned char& maxLength,
+      unsigned char& maxTops) const;
     string strHeader() const;
 
 
@@ -69,13 +78,11 @@ class DistCore
     const Reduction& getReduction(
       const DistMap& distMap,
       const unsigned char rankNS) const;
+    
+    void prepareCovers();
 
-    void getCoverData(
-      vector<unsigned char>& lengths,
-      vector<unsigned char>& tops,
-      vector<unsigned char>& cases,
-      unsigned char& maxLength,
-      unsigned char& maxTops) const;
+    // TODO const once specs are separate
+    Covers& getCovers();
 
     string str() const;
 

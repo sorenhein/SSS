@@ -16,6 +16,7 @@
 #include "CoverHelp.h"
 #include "Cover.h"
 
+class Distribution;
 class Result;
 
 

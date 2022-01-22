@@ -169,6 +169,7 @@ Distribution& DistMemory::addFullMT(
     dist.setPtr(&distCore);
     dist.split();
     dist.setLookups();
+    dist.prepareCovers();
   }
   else
     dist.setPtr(distributions[distID.cards][distID.holding]);
@@ -204,6 +205,7 @@ void DistMemory::addCanonicalMT(
   dist.setPtr(&distCore);
   dist.split();
   dist.setLookups();
+  dist.prepareCovers();
 }
 
 

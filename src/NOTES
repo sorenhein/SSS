@@ -1,3 +1,36 @@
+Verbals of strategy wins
+========================
+* Spec becomes in a class, CoverData
+* Directory explain
+  - ResExplain becomes a class, contains Spec's and the trick offset
+  - Can output in various ways
+  - DiffExplain becomes a class with different outputs
+* ResExplain can output text when it knows the names of the actual cards,
+  which come from the non-canonical distribution
+* When sorting in Covers, prefer simple Cover's (among equivalents)
+* First transform Covers before outputting
+  - If same constraints on either player, cancel out player
+  - N-1+ or top -> top or other stiff top (2 Cover's)
+  - In output, show (# distributions / # cases)
+  - Store both weight in weightDist and weightCases
+* In output, perhaps some fits are nested within others, and some
+  are disjoint from one another.  Are there some that are neither?
+* Show the minimal #tricks
+* Ability to compare two strategy's and show gains and losses in
+  the same way
+  - As text
+  - In a table (as Unicode text, HTML, ...)
+* Have to get down at least to the second rank
+  - Even more Cover's?
+* Pass in maxTricks and maxTops when outputting string and when
+  transforming covers
+* Maybe fewer Cover's to begin with, more semantic/what's needed?
+* Pass in Distribution to Covers -- cleaner
+* Look at Strategy's with only one meaningful rank.  Can we explain
+  them all?  Does it look pretty?
+* Store and calculate in the compressed format of Study?  Can we
+  even subtract stuff directly in that domain?
+
 -n AKJx -s xx
 Ideas for better wording
 * Exactly 7 cards (== spec.length + lengthMirror):
@@ -9,6 +42,26 @@ Ideas for better wording
 * If an explanation occurs symmetrically, e.g. either 3- and 1
   If either player has the top at most third.
 * 6+ or 1 top = 1 top + [other player] stiff top, as 2 fits
+
+8/1110, A97 / KQJ8
+Take all 4 tricks
+
+9/5084, AQ8 / -
+Always take at least 1 trick
+Take 2 tricks when the kind is at most doubleton
+
+10/15195, AQ5 / 986
+Take 2+ tricks if the suit splits 2-2 or the king is onside.
+Take 3 tricks if both conditions apply.
+
+Take 2 tricks if West has 2+ cards of the singleton king.
+
+Take 2 tricks if West has the king or jack-ten.
+Take 3 tricks if West has KH.
+
+11/40890, AQJ984 / 65
+Take all 6 tricks if the king is onside.
+Singleton.
 
 2022-01-15
 ==========
@@ -418,29 +471,6 @@ Semantics, verbal descriptions
   - Sometimes NS have several ways to reach its optimum; keep them all
 * Noting the inequalities on EW plays that are needed to stabilize
   an NS strategy
-
-* Verbal description of NS strategy
-  - Minterms?
-
-8/1110, A97 / KQJ8
-Take all 4 tricks
-
-9/5084, AQ8 / -
-Always take at least 1 trick
-Take 2 tricks when the kind is at most doubleton
-
-10/15195, AQ5 / 986
-Take 2+ tricks if the suit splits 2-2 or the king is onside.
-Take 3 tricks if both conditions apply.
-
-Take 2 tricks if West has 2+ cards of the singleton kig.
-
-Take 2 tricks if West has the king of jack-ten.
-Take 3 tricks if West has KH.
-
-11/40890, AQJ984 / 65
-Take all 6 tricks if the king is onside.
-Singleton.
 
 Bugs
 ----
