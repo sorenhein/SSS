@@ -89,7 +89,7 @@ void Covers::prepareMiddles(
   // "4-2 or better".
 
   CoverSpec spec;
-  spec.westLength.oper = static_cast<CoverOperator>(COVER_WITHIN_RANGE);
+  spec.westLength.oper = static_cast<CoverOperator>(COVER_INSIDE_RANGE);
 
   // With 5 or 6 cards, we run from 1 to 2 as the lower end.
   const unsigned char middleCount = (maxLength-1) >> 1;

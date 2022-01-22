@@ -87,7 +87,7 @@ void Cover::prepare(
     lengthFncPtr = &Cover::equal;
   else if (spec.westLength.oper == COVER_GREATER_EQUAL)
     lengthFncPtr = &Cover::greaterEqual;
-  else if (spec.westLength.oper == COVER_WITHIN_RANGE)
+  else if (spec.westLength.oper == COVER_INSIDE_RANGE)
     lengthFncPtr = &Cover::withinRange;
   else
     assert(false);
