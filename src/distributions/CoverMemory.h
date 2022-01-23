@@ -108,12 +108,14 @@ class CoverMemory
     void prepare_5_1();
     void prepare_5_2();
     void prepare_5_3();
+    void prepare_5_4();
     void prepare_5_5();
 
     void prepare_6_1();
     void prepare_6_2();
     void prepare_6_3();
     void prepare_6_4();
+    void prepare_6_5();
     void prepare_6_6();
 
     void prepare_7_1();

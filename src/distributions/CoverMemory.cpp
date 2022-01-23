@@ -308,6 +308,7 @@ void CoverMemory::prepare_4_4()
 
 void CoverMemory::prepare_5_1()
 {
+  CoverMemory::EastIsVoid(5, 1);             // East is void
   CoverMemory::EastIsNotVoid(5, 1);          // East has 1+ cards
 
   CoverMemory::WestHasExactTops(5, 1, 1);    // West has the top
@@ -343,6 +344,13 @@ void CoverMemory::prepare_5_3()
 {
   CoverMemory::WestHasCardRange(5, 3, 1, 4); // 1-4 cards each
   CoverMemory::WestHasCardRange(5, 3, 2, 3); // 2-3 cards each
+}
+
+
+void CoverMemory::prepare_5_4()
+{
+  CoverMemory::WestHasCardRange(5, 4, 1, 4); // 1-4 cards each
+  CoverMemory::WestHasCardRange(5, 4, 2, 3); // 2-3 cards each
 }
 
 
@@ -393,14 +401,24 @@ void CoverMemory::prepare_6_3()
 void CoverMemory::prepare_6_4()
 {
   CoverMemory::WestHasTripleton(6, 4);       // 3-3
+  CoverMemory::WestHasCardRange(6, 4, 2, 4); // 2-4 cards each
+  CoverMemory::WestHasCardRange(6, 4, 1, 5); // 1-5 cards each
+}
+
+
+void CoverMemory::prepare_6_5()
+{
+  CoverMemory::WestHasTripleton(6, 5);       // 3-3
+  CoverMemory::WestHasCardRange(6, 5, 2, 4); // 2-4 cards each
+  CoverMemory::WestHasCardRange(6, 5, 1, 5); // 1-5 cards each
 }
 
 
 void CoverMemory::prepare_6_6()
 {
-  CoverMemory::WestHasTripleton(6, 3);       // 3-3
-  CoverMemory::WestHasCardRange(6, 3, 2, 4); // 2-4 cards each
-  CoverMemory::WestHasCardRange(6, 3, 1, 5); // 1-5 cards each
+  CoverMemory::WestHasTripleton(6, 6);       // 3-3
+  CoverMemory::WestHasCardRange(6, 6, 2, 4); // 2-4 cards each
+  CoverMemory::WestHasCardRange(6, 6, 1, 5); // 1-5 cards each
 }
 
 
@@ -467,11 +485,14 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_5_1();
   CoverMemory::prepare_5_2();
   CoverMemory::prepare_5_3();
+  CoverMemory::prepare_5_4();
+  CoverMemory::prepare_5_5();
 
   CoverMemory::prepare_6_1();
   CoverMemory::prepare_6_2();
   CoverMemory::prepare_6_3();
   CoverMemory::prepare_6_4();
+  CoverMemory::prepare_6_5();
   CoverMemory::prepare_6_6();
 
   CoverMemory::prepare_7_1();
