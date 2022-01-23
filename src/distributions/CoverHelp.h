@@ -38,6 +38,9 @@ enum CoverState
 
 struct CoverSpec
 {
+  // For easier identification.  Could perhaps be unsigned char
+  unsigned index;
+
   unsigned char oppsLength;
   unsigned char oppsTops1;
 

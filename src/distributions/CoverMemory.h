@@ -25,134 +25,82 @@ class CoverMemory
     vector<vector<list<CoverSpec>>> specs;
 
 
-    CoverSpec& add(
-      const unsigned char cards,
-      const unsigned char tops1);
+    // Uses global counters for more succinct notation
+    CoverSpec& add();
 
-    void WestIsNotVoid(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestLength(const unsigned char len);
+    void EastLength(const unsigned char len);
 
-    void EastIsNotVoid(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestLengthRange(
+      const unsigned char len1, 
+      const unsigned char len2);
+    void EastLengthRange(
+      const unsigned char len1, 
+      const unsigned char len2);
 
-    void WestIsVoid(
-      const unsigned char cards,
-      const unsigned char tops1);
+    // ------------
+    void WestIsNotVoid();
+    void EastIsNotVoid();
+    void WestIsVoid();
+    void EastIsVoid();
 
-    void EastIsVoid(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestHasSingleton();
+    void WestHasDoubleton();
+    void WestHasTripleton();
 
-    void WestHasSingleton(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestHasExactTops(const unsigned char len);
+    void EastHasExactTops(const unsigned char len);
 
-    void WestHasExactTops(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
-
-    void EastHasExactTops(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
-
-    void WestHasAtLeastTops(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
-
-    void WestHasDoubleton(
-      const unsigned char cards,
-      const unsigned char tops1);
-
-    void WestHasTripleton(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestHasAtLeastTops(const unsigned char len);
 
     void WestHasCardRange(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
-    void WestHasShortHonors(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
+    void WestHasShortHonors(const unsigned char len);
+    void EastHasShortHonors(const unsigned char len);
 
-    void EastHasShortHonors(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
-
-    void WestHasAnHonor(
-      const unsigned char cards,
-      const unsigned char tops1);
+    void WestHasAnHonor();
 
     void WestHasARangeHonor(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
     void EastHasARangeHonor(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
     void WestHasRangeHonors(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
     void EastHasRangeHonors(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
-    void AnHonorIsShort(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
+    void AnHonorIsShort(const unsigned char len);
 
-    void HonorsAreShort(
-      const unsigned char cards,
-      const unsigned char tops1,
-      const unsigned char len);
+    void HonorsAreShort(const unsigned char len);
 
     void WestHasGeneralAnd(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
     void EastHasGeneralAnd(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
     void WestHasGeneralOr(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
     void EastHasGeneralOr(
-      const unsigned char cards,
-      const unsigned char tops1,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
