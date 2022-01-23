@@ -2,9 +2,16 @@ Verbals of strategy wins
 ========================
 * 9 / 17967, Qx / Jxx: Win 1 trick EXCEPT against Hxx/H, for example.
   - Could look for such except's (solve subtractively down from max).
+  - Actually the note the ones to consider actively 
 
 * Combine e.g. H stiff left and H stiff right, so symmetrical ones.
-  
+
+* Reduce the number of methods in CoverMemory
+  - West has length, lengths
+  - West has top, tops
+
+* Put a language-independent explanation in each cover (which will
+  be different if it comes from 4/2 or 5/3, for example).
 
 * Probably get some deadlocks that have less greedy solutions.
 
