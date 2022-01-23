@@ -126,6 +126,22 @@ class CoverMemory
       const unsigned char tops1,
       const unsigned char len);
 
+    void WestHasGeneral(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
+    void EastHasGeneral(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
     void prepare_2_1();
     void prepare_2_2();
 

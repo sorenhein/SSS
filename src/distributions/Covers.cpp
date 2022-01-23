@@ -43,7 +43,7 @@ void Covers::prepare(
   assert(maxLength >= 2);
   assert(maxTops >= 1);
 
-  covers.resize(20);
+  covers.resize(30);
   auto citer = covers.begin();
 
 // cout << "Preparing with " << +maxLength << ", " << +maxTops << "\n";
