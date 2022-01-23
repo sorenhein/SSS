@@ -83,6 +83,23 @@ class CoverMemory
       const unsigned char tops1,
       const unsigned char len);
 
+    void EastHasShortHonors(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char len);
+
+    void WestHasRangeHonors(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
+    void EastHasRangeHonors(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
     void AnHonorIsShort(
       const unsigned char cards,
       const unsigned char tops1,
@@ -122,6 +139,7 @@ class CoverMemory
     void prepare_7_2();
 
     void prepare_8_1();
+    void prepare_8_2();
 
     void prepare_9_1();
 

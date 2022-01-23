@@ -164,6 +164,44 @@ void CoverMemory::WestHasShortHonors(
 }
 
 
+void CoverMemory::EastHasShortHonors(
+  const unsigned char cards,
+  const unsigned char tops1,
+  const unsigned char len)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_AND_TOPS;
+  spec.westLength.set(cards-len, COVER_GREATER_EQUAL);
+  spec.westTop1.set(0, COVER_EQUAL);
+}
+
+
+void CoverMemory::WestHasRangeHonors(
+  const unsigned char cards,
+  const unsigned char tops1,
+  const unsigned char lowerIncl,
+  const unsigned char upperIncl)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_AND_TOPS;
+  spec.westLength.set(lowerIncl, upperIncl, COVER_INSIDE_RANGE);
+  spec.westTop1.set(tops1, COVER_EQUAL);
+}
+
+
+void CoverMemory::EastHasRangeHonors(
+  const unsigned char cards,
+  const unsigned char tops1,
+  const unsigned char lowerIncl,
+  const unsigned char upperIncl)
+{
+  CoverSpec& spec = CoverMemory::add(cards, tops1);
+  spec.mode = COVER_LENGTHS_AND_TOPS;
+  spec.westLength.set(cards-upperIncl, cards-lowerIncl, COVER_INSIDE_RANGE);
+  spec.westTop1.set(0, COVER_EQUAL);
+}
+
+
 void CoverMemory::AnHonorIsShort(
   const unsigned char cards,
   const unsigned char tops1,
@@ -259,6 +297,7 @@ void CoverMemory::prepare_4_1()
   CoverMemory::WestIsNotVoid(4, 1);          // 1=3, 2=2, 3=1 or 4=0
   CoverMemory::EastIsNotVoid(4, 1);          // 0=4, 1=3, 2=2 or 3=1
 
+  CoverMemory::WestIsVoid(4, 1);             // 0=4
   CoverMemory::EastIsVoid(4, 1);             // 4=0
 
   CoverMemory::WestHasDoubleton(4, 1);       // 2=2
@@ -272,12 +311,16 @@ void CoverMemory::prepare_4_1()
   CoverMemory::WestHasShortHonors(4, 1, 2);  // H, Hx onside
   CoverMemory::WestHasShortHonors(4, 1, 3);  // Just not East void
 
+  CoverMemory::EastHasRangeHonors(4, 1, 2, 2); // Hx with East
+  CoverMemory::EastHasRangeHonors(4, 1, 1, 3); // H, Hx, Hxx with East
+
   CoverMemory::HonorsAreShort(4, 1, 1);      // Stiff H onside + offside
 }
 
 
 void CoverMemory::prepare_4_2()
 {
+  CoverMemory::WestIsVoid(4, 2);             // 0=4
   CoverMemory::WestIsNotVoid(4, 2);          // West has 1+ cards
 
   CoverMemory::WestHasDoubleton(4, 2);       // 2=2
@@ -286,7 +329,10 @@ void CoverMemory::prepare_4_2()
   CoverMemory::WestHasExactTops(4, 2, 0);    // HH offside, any length
   CoverMemory::WestHasExactTops(4, 2, 2);    // HH onside, any length
 
-  CoverMemory::WestHasShortHonors(4, 1, 2);  // HH stiff onside
+  CoverMemory::WestHasRangeHonors(4, 2, 3, 3); // HHx with West
+
+  CoverMemory::WestHasShortHonors(4, 2, 2);  // HH stiff onside
+  CoverMemory::EastHasShortHonors(4, 2, 2);  // HH stiff offside
 
   CoverMemory::AnHonorIsShort(4, 2, 1);      // Stiff H onside + offside
 }
@@ -294,6 +340,8 @@ void CoverMemory::prepare_4_2()
 
 void CoverMemory::prepare_4_3()
 {
+  CoverMemory::EastIsVoid(4, 3);             // 4=0
+
   CoverMemory::WestHasDoubleton(4, 3);       // 2=2
   CoverMemory::WestHasCardRange(4, 3, 1, 3); // 1=3, 2=2 or 3=1.
 }
@@ -312,12 +360,19 @@ void CoverMemory::prepare_5_1()
   CoverMemory::EastIsNotVoid(5, 1);          // East has 1+ cards
 
   CoverMemory::WestHasExactTops(5, 1, 1);    // West has the top
+  CoverMemory::EastHasExactTops(5, 1, 1);    // East has the top
 
   CoverMemory::WestHasCardRange(5, 1, 1, 4); // 1-4 cards each
   CoverMemory::WestHasCardRange(5, 1, 2, 3); // 2-3 cards each
 
   CoverMemory::WestHasShortHonors(5, 1, 2);  // H, Hx onside
   CoverMemory::WestHasShortHonors(5, 1, 3);  // H, Hx, Hxx onside
+
+  CoverMemory::WestHasRangeHonors(5, 1, 2, 3); // Hx, Hxx onside
+
+  CoverMemory::WestHasRangeHonors(5, 1, 2, 2); // Specifically Hx onside
+  CoverMemory::WestHasRangeHonors(5, 1, 2, 3); // Hx, Hxx onside
+  CoverMemory::EastHasRangeHonors(5, 1, 1, 3); // H, Hx, Hxx with West
 
   CoverMemory::HonorsAreShort(5, 1, 1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(5, 1, 2);      // H, Hx onside + offside
@@ -344,6 +399,8 @@ void CoverMemory::prepare_5_3()
 {
   CoverMemory::WestHasCardRange(5, 3, 1, 4); // 1-4 cards each
   CoverMemory::WestHasCardRange(5, 3, 2, 3); // 2-3 cards each
+
+  CoverMemory::AnHonorIsShort(5, 3, 1);      // Stiff H onside + offside
 }
 
 
@@ -363,6 +420,8 @@ void CoverMemory::prepare_5_5()
 
 void CoverMemory::prepare_6_1()
 {
+  CoverMemory::EastIsVoid(6, 1);             // East is void
+
   CoverMemory::WestHasExactTops(6, 1, 1);    // West has the top
 
   CoverMemory::WestHasTripleton(6, 1);       // 3-3
@@ -457,6 +516,13 @@ void CoverMemory::prepare_8_1()
 }
 
 
+void CoverMemory::prepare_8_2()
+{
+  CoverMemory::AnHonorIsShort(8, 2, 1);      // Stiff H onside + offside
+  CoverMemory::HonorsAreShort(8, 2, 2);      // Stiff HH onside + offside
+}
+
+
 void CoverMemory::prepare_9_1()
 {
   CoverMemory::HonorsAreShort(9, 1, 1);      // Stiff H onside + offside
@@ -499,6 +565,7 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_7_2();
 
   CoverMemory::prepare_8_1();
+  CoverMemory::prepare_8_2();
 
   CoverMemory::prepare_9_1();
 }
