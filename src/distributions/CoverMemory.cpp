@@ -511,6 +511,8 @@ void CoverMemory::prepare_5_1()
   CoverMemory::EastHasRangeHonors(5, 1, 4, 5); // Hxxx(x) with West
   CoverMemory::EastHasRangeHonors(5, 1, 2, 3); // Hx, Hxx offside
 
+  CoverMemory::EastHasGeneralAnd(5, 1, 1, 1, 0, 0); // x offside
+
   CoverMemory::HonorsAreShort(5, 1, 1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(5, 1, 2);      // H, Hx onside + offside
 }
@@ -541,6 +543,7 @@ void CoverMemory::prepare_5_2()
   CoverMemory::WestHasGeneralAnd(5, 2, 2, 2, 1, 1); // Hx onside
   CoverMemory::WestHasGeneralAnd(5, 2, 2, 3, 2, 2); // HH(x) onside
   CoverMemory::EastHasGeneralAnd(5, 2, 2, 2, 1, 1); // Hx offside
+  CoverMemory::EastHasGeneralAnd(5, 2, 1, 1, 0, 0); // x offside
 
   CoverMemory::WestHasRangeHonors(5, 2, 4, 5); // HHHx(x) onside
 
@@ -626,6 +629,7 @@ void CoverMemory::prepare_6_2()
   CoverMemory::HonorsAreShort(6, 2, 2);      // Stiff HH onside + offside
 
   CoverMemory::WestHasGeneralAnd(6, 2, 2, 5, 1, 1); // Hx(xxx) with West
+  CoverMemory::WestHasGeneralAnd(6, 2, 4, 6, 2, 2); // HHxx(xx) with West
 
   CoverMemory::WestHasGeneralAnd(6, 2, 2, 2, 1, 1); // Hx with West
   CoverMemory::WestHasGeneralAnd(6, 2, 2, 3, 2, 2); // HH(x) with West
