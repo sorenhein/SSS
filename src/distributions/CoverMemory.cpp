@@ -434,6 +434,7 @@ void CoverMemory::prepare_4_2()
   CoverMemory::WestIsNotVoid(4, 2);          // West has 1+ cards
 
   CoverMemory::WestHasDoubleton(4, 2);       // 2=2
+  CoverMemory::WestHasCardRange(4, 2, 2, 3); // 2=2 or 3=1.
   CoverMemory::WestHasCardRange(4, 2, 1, 3); // 1=3, 2=2 or 3=1.
 
   CoverMemory::WestHasExactTops(4, 2, 0);    // HH offside, any length
@@ -449,8 +450,9 @@ void CoverMemory::prepare_4_2()
 
   CoverMemory::WestHasGeneralAnd(4, 2, 2, 2, 1, 2); // Hx, HH onside
   CoverMemory::EastHasGeneralAnd(4, 2, 2, 2, 1, 2); // Hx, HH offside
+  CoverMemory::EastHasGeneralAnd(4, 2, 3, 3, 2, 2); // HHx with West
 
-  CoverMemory::EastHasGeneralOr(4, 1, 2, 2, 2, 2); // Both H's East or 2=2
+  CoverMemory::EastHasGeneralOr(4, 2, 2, 2, 2, 2); // Both H's East or 2=2
 
   CoverMemory::WestHasShortHonors(4, 2, 2);  // HH stiff onside
   CoverMemory::EastHasShortHonors(4, 2, 2);  // HH stiff offside
@@ -536,7 +538,9 @@ void CoverMemory::prepare_5_2()
   CoverMemory::EastHasARangeHonor(5, 2, 2, 3); // East has H 2nd/3rd
 
   CoverMemory::WestHasGeneralAnd(5, 2, 1, 2, 1, 1); // H(x) onside
+  CoverMemory::WestHasGeneralAnd(5, 2, 2, 2, 1, 1); // Hx onside
   CoverMemory::WestHasGeneralAnd(5, 2, 2, 3, 2, 2); // HH(x) onside
+  CoverMemory::EastHasGeneralAnd(5, 2, 2, 2, 1, 1); // Hx offside
 
   CoverMemory::WestHasRangeHonors(5, 2, 4, 5); // HHHx(x) onside
 
@@ -560,6 +564,7 @@ void CoverMemory::prepare_5_3()
   CoverMemory::WestHasRangeHonors(5, 3, 4, 4); // HHHx / x
   CoverMemory::WestHasRangeHonors(5, 3, 4, 5); // HHHx(x)
 
+  CoverMemory::WestHasGeneralOr(5, 3, 0, 3, 3, 3); // West all H's or 0-3c
   CoverMemory::EastHasGeneralOr(5, 3, 0, 3, 3, 3); // East all H's or 0-3c
 }
 
@@ -638,10 +643,14 @@ void CoverMemory::prepare_6_3()
 
   CoverMemory::AnHonorIsShort(6, 3, 1);      // Stiff H onside + offside
 
+  CoverMemory::WestHasGeneralAnd(6, 3, 1, 2, 1, 2); // H, Hx, HH onside
+  CoverMemory::WestHasGeneralAnd(6, 3, 4, 6, 2, 2); // HHxx(xx) onside
+
   CoverMemory::WestHasGeneralAnd(6, 3, 2, 2, 2, 2); // Stiff HH with West
   CoverMemory::EastHasGeneralAnd(6, 3, 2, 2, 2, 2); // Stiff HH with East
 
   CoverMemory::WestHasGeneralOr(6, 3, 3, 3, 3, 3); // 3-3 or HHH onside
+  CoverMemory::WestHasGeneralAnd(6, 3, 2, 2, 1, 1); // Hx with West
 }
 
 
