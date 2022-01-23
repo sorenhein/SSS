@@ -88,6 +88,22 @@ class CoverMemory
       const unsigned char tops1,
       const unsigned char len);
 
+    void WestHasAnHonor(
+      const unsigned char cards,
+      const unsigned char tops1);
+
+    void WestHasARangeHonor(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
+    void EastHasARangeHonor(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
     void WestHasRangeHonors(
       const unsigned char cards,
       const unsigned char tops1,
