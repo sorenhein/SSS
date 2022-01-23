@@ -46,11 +46,20 @@ void Covers::prepare(
   covers.resize(20);
   auto citer = covers.begin();
 
+// cout << "Preparing with " << +maxLength << ", " << +maxTops << "\n";
+
   for (auto miter = coverMemory.begin(maxLength, maxTops);
       miter != coverMemory.end(maxLength, maxTops); miter++)
   {
     assert(citer != covers.end());
     citer->prepare(lengths, tops, cases, * miter);
+if (citer->getWeight() == 0)
+{
+cout << "Was preparing with " << +maxLength << ", " << +maxTops << "\n";
+cout << "Adding " << citer->str() << "\n";
+    assert(citer->getWeight() != 0);
+}
+// cout << "Added " << citer->str() << "\n";
     citer++;
   }
 
@@ -91,7 +100,17 @@ CoverState Covers::explain(
   while (true)
   {
     if (iter == covers.end())
+    {
+/* */
+cout << "Left with\n";
+for (i = 0; i < tricks.size(); i++)
+  if (tricks[i])
+    cout << i << ": " << +tricks[i] << "\n";
+cout << "\n";
+/* */
+
       return COVER_IMPOSSIBLE;
+    }
 
     state = iter->explain(tricks);
 
@@ -108,7 +127,16 @@ cout << Covers::str(fits);
       continue;
     }
     else
+    {
+/*
+cout << "Could not use\n";
+for (i = 0; i < tricks.size(); i++)
+  if (tricks[i])
+    cout << i << ": " << +tricks[i] << "\n";
+cout << "\n";
+*/
       iter++;
+    }
   }
 
   // Can't happen

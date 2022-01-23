@@ -37,6 +37,10 @@ class CoverMemory
       const unsigned char cards,
       const unsigned char tops1);
 
+    void WestIsVoid(
+      const unsigned char cards,
+      const unsigned char tops1);
+
     void EastIsVoid(
       const unsigned char cards,
       const unsigned char tops1);
@@ -45,22 +49,17 @@ class CoverMemory
       const unsigned char cards,
       const unsigned char tops1);
 
-    /*
-    void WestHasExactlyOneTop(
-      const unsigned char cards,
-      const unsigned char tops1);
-
-    void EastHasExactlyOneTop(
-      const unsigned char cards,
-      const unsigned char tops1);
-      */
-
-    void WestHasExactTopNumber(
+    void WestHasExactTops(
       const unsigned char cards,
       const unsigned char tops1,
       const unsigned char len);
 
-    void EastHasExactTopNumber(
+    void EastHasExactTops(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char len);
+
+    void WestHasAtLeastTops(
       const unsigned char cards,
       const unsigned char tops1,
       const unsigned char len);
@@ -114,12 +113,15 @@ class CoverMemory
     void prepare_6_1();
     void prepare_6_2();
     void prepare_6_3();
+    void prepare_6_4();
     void prepare_6_6();
 
     void prepare_7_1();
     void prepare_7_2();
 
     void prepare_8_1();
+
+    void prepare_9_1();
 
 
   public:
