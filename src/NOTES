@@ -1,21 +1,30 @@
 Verbals of strategy wins
 ========================
+* Check that a is now similar to cref again
+  - 7/1965 QJ8/9 is explained old way, not new way anymore
+  - Probably weight: mirror of same type, line 72 of Cover.cpp
+    else
+      mirror += cases[dno]
+    Then weight = mirror if inverted
+  - Explanations also must be inverted
+
+
+* Continue simplifying CoverMemory to fewer methods, good comments
+* Add some kind of non-verbal but semantic description of each cover
+  - Different potentially in 4,2 and 5,3 for example
+  - Can be verbalized in different languages
+
+* Combining some covers semantically, e.g. stiff H either side
+  - Can we combine two Cover's this way somehow into an actual Cover?
+  - Two Cover's in one method means one or the other -- somehow
+    misleading. Split out if different, combine if aspects of same
+
 * 9 / 17967, Qx / Jxx: Win 1 trick EXCEPT against Hxx/H, for example.
   - Could look for such except's (solve subtractively down from max).
   - Actually the note the ones to consider actively 
 
-* Combine e.g. H stiff left and H stiff right, so symmetrical ones.
-
-* Reduce the number of methods in CoverMemory
-  - West has length, lengths
-  - West has top, tops
-
-* Put a language-independent explanation in each cover (which will
-  be different if it comes from 4/2 or 5/3, for example).
-
 * Probably get some deadlocks that have less greedy solutions.
 
-* Make x, y global in CoverMemory and set once per method?  Shorter.
 
 * Look at all Strategy's with only one meaningful rank.  Can we explain
   them all?  Does it look pretty?

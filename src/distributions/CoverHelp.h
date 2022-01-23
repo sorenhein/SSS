@@ -41,6 +41,8 @@ struct CoverSpec
   // For easier identification.  Could perhaps be unsigned char
   unsigned index;
 
+  bool invertFlag;
+
   unsigned char oppsLength;
   unsigned char oppsTops1;
 

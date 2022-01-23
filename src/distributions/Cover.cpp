@@ -44,6 +44,7 @@ void Cover::prepare(
 
   spec = specIn;
 
+
   for (unsigned dno = 0; dno < len; dno++)
   {
     if (spec.mode == COVER_LENGTHS_ONLY)
@@ -69,6 +70,12 @@ void Cover::prepare(
 
     if (profile[dno])
       weight += cases[dno];
+  }
+
+  if (spec.invertFlag)
+  {
+    for (unsigned dno = 0; dno < len; dno++)
+      profile[dno] = 1 - profile[dno];
   }
 }
 

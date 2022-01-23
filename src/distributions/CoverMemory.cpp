@@ -54,19 +54,26 @@ CoverSpec& CoverMemory::add()
 
 // ----- Length only -----
 
-void CoverMemory::WestLength(const unsigned char len)
+void CoverMemory::WestLength(
+  const unsigned char len,
+  const bool invertFlag)
 {
   // Exactly len
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = invertFlag;
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(len, COVER_EQUAL);
 }
 
 
-void CoverMemory::EastLength(const unsigned char len)
+void CoverMemory::EastLength(
+  const unsigned char len,
+  const bool invertFlag)
 {
   // Exactly len
+  // TODO CoverMemory::WestLength(coverGlobal.cards - len, invertFlag);
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = invertFlag;
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(coverGlobal.cards - len, COVER_EQUAL);
 }
@@ -74,10 +81,12 @@ void CoverMemory::EastLength(const unsigned char len)
 
 void CoverMemory::WestLengthRange(
   const unsigned char len1,
-  const unsigned char len2)
+  const unsigned char len2,
+  const bool invertFlag)
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = invertFlag;
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(len1, len2, COVER_INSIDE_RANGE);
 }
@@ -85,10 +94,12 @@ void CoverMemory::WestLengthRange(
 
 void CoverMemory::EastLengthRange(
   const unsigned char len1,
-  const unsigned char len2)
+  const unsigned char len2,
+  const bool invertFlag)
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = invertFlag;
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(
     coverGlobal.cards - len2, 
@@ -101,33 +112,45 @@ void CoverMemory::EastLengthRange(
 
 void CoverMemory::WestIsNotVoid()
 {
+  CoverMemory::WestLength(0, true);
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(1, COVER_GREATER_EQUAL);
+  */
 }
 
 
 void CoverMemory::EastIsNotVoid()
 {
+  CoverMemory::EastLength(0, true);
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(coverGlobal.cards-1, COVER_LESS_EQUAL);
+  */
 }
 
 
 void CoverMemory::WestIsVoid()
 {
+  CoverMemory::WestLength(0);
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(0, COVER_EQUAL);
+  */
 }
 
 
 void CoverMemory::EastIsVoid()
 {
+  CoverMemory::EastLength(0);
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(coverGlobal.cards, COVER_EQUAL);
+  */
 }
 
 
@@ -877,7 +900,10 @@ string CoverMemory::str(
   for (auto iter = CoverMemory::begin(cards, tops1); 
       iter != CoverMemory::end(cards, tops1); iter++)
   {
-    s += iter->strLength() + + " (oper) " + iter->strTop1() + "\n";
+    s += iter->strLength() + + " (oper) " + iter->strTop1();
+    if (iter->invertFlag)
+      s += " [invert]";
+    s += "\n";
   }
     
   return s; 

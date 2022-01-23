@@ -28,15 +28,23 @@ class CoverMemory
     // Uses global counters for more succinct notation
     CoverSpec& add();
 
-    void WestLength(const unsigned char len);
-    void EastLength(const unsigned char len);
+    void WestLength(
+      const unsigned char len,
+      const bool invertFlag = false);
+
+    void EastLength(
+      const unsigned char len,
+      const bool invertFlag = false);
 
     void WestLengthRange(
       const unsigned char len1, 
-      const unsigned char len2);
+      const unsigned char len2,
+      const bool invertFlag = false);
+
     void EastLengthRange(
       const unsigned char len1, 
-      const unsigned char len2);
+      const unsigned char len2,
+      const bool invertFlag = false);
 
     // ------------
     void WestIsNotVoid();
