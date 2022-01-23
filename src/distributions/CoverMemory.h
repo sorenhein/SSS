@@ -126,7 +126,7 @@ class CoverMemory
       const unsigned char tops1,
       const unsigned char len);
 
-    void WestHasGeneral(
+    void WestHasGeneralAnd(
       const unsigned char cards,
       const unsigned char tops1,
       const unsigned char lowerCardsIncl,
@@ -134,7 +134,23 @@ class CoverMemory
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
-    void EastHasGeneral(
+    void EastHasGeneralAnd(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
+    void WestHasGeneralOr(
+      const unsigned char cards,
+      const unsigned char tops1,
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
+    void EastHasGeneralOr(
       const unsigned char cards,
       const unsigned char tops1,
       const unsigned char lowerCardsIncl,
@@ -169,6 +185,7 @@ class CoverMemory
 
     void prepare_7_1();
     void prepare_7_2();
+    void prepare_7_3();
 
     void prepare_8_1();
     void prepare_8_2();

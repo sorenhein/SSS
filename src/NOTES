@@ -1,11 +1,22 @@
 Verbals of strategy wins
 ========================
-* Ranks::maxRank is not really what we need in Combinations::runSingle()
+* 9 / 17967, Qx / Jxx: Win 1 trick EXCEPT against Hxx/H, for example.
+  - Could look for such except's (solve subtractively down from max).
+
+* Combine e.g. H stiff left and H stiff right, so symmetrical ones.
+  
+
+* Probably get some deadlocks that have less greedy solutions.
+
+* Make x, y global in CoverMemory and set once per method?  Shorter.
 
 * Look at all Strategy's with only one meaningful rank.  Can we explain
   them all?  Does it look pretty?
 
 * Count how many times each cover is actually used from CoverMemory?
+  - Each one gets an index number in its vector
+  - Helps to tell afterwards
+  - Also helps to skip if we want to try a less-greedy one
 
 * Directory explain
   - ResExplain becomes a class, contains Spec's and the trick offset
