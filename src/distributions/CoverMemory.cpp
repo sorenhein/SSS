@@ -655,6 +655,7 @@ void CoverMemory::prepare_6_1()
 {
   coverGlobal = {6, 1};
   CoverMemory::WestLength(0);           // West is void
+  CoverMemory::EastLength(0);           // East is void
 
   // ----
 
