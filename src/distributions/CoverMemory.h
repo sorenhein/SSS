@@ -47,10 +47,6 @@ class CoverMemory
       const bool invertFlag = false);
 
     // ------------
-    void WestIsNotVoid();
-    void EastIsNotVoid();
-    void WestIsVoid();
-    void EastIsVoid();
 
     void WestHasSingleton();
     void WestHasDoubleton();
@@ -62,6 +58,10 @@ class CoverMemory
     void WestHasAtLeastTops(const unsigned char len);
 
     void WestHasCardRange(
+      const unsigned char lowerIncl,
+      const unsigned char upperIncl);
+
+    void EastHasCardRange(
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 

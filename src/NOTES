@@ -1,13 +1,6 @@
 Verbals of strategy wins
 ========================
-* Check that a is now similar to cref again
-  - 7/1965 QJ8/9 is explained old way, not new way anymore
-  - Probably weight: mirror of same type, line 72 of Cover.cpp
-    else
-      mirror += cases[dno]
-    Then weight = mirror if inverted
-  - Explanations also must be inverted
-
+* Explanations also must be inverted
 
 * Continue simplifying CoverMemory to fewer methods, good comments
 * Add some kind of non-verbal but semantic description of each cover

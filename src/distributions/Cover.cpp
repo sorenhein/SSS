@@ -43,7 +43,8 @@ void Cover::prepare(
   profile.resize(len);
 
   spec = specIn;
-
+  // TODO is an unsigned char always enough?
+  unsigned char weightAll = 0;
 
   for (unsigned dno = 0; dno < len; dno++)
   {
@@ -70,12 +71,16 @@ void Cover::prepare(
 
     if (profile[dno])
       weight += cases[dno];
+
+    weightAll += cases[dno];
   }
 
   if (spec.invertFlag)
   {
     for (unsigned dno = 0; dno < len; dno++)
       profile[dno] = 1 - profile[dno];
+    
+    weight = weightAll - weight;
   }
 }
 
