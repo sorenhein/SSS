@@ -28,6 +28,8 @@ class CoverMemory
     // Uses global counters for more succinct notation
     CoverSpec& add();
 
+    // ----- Pure length methods -----
+
     void WestLength(
       const unsigned char len,
       const bool invertFlag = false);
@@ -45,6 +47,12 @@ class CoverMemory
       const unsigned char len1, 
       const unsigned char len2,
       const bool invertFlag = false);
+
+    // ----- Pure rank-1 methods -----
+
+
+
+
 
     // ------------
 

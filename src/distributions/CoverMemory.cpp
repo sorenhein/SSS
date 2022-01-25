@@ -112,37 +112,37 @@ void CoverMemory::EastLengthRange(
 
 void CoverMemory::WestHasSingleton()
 {
-  // CoverMemory::WestLength(1);
+  CoverMemory::WestLength(1);
 
-  /* */
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(1, COVER_EQUAL);
-  /* */
+  */
 }
 
 
 void CoverMemory::WestHasDoubleton()
 {
-  // CoverMemory::WestLength(2);
+  CoverMemory::WestLength(2);
 
-  /* */
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(2, COVER_EQUAL);
-  /* */
+  */
 }
 
 
 void CoverMemory::WestHasTripleton()
 {
-  // CoverMemory::WestLength(3);
+  CoverMemory::WestLength(3);
 
-  /* */
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(3, COVER_EQUAL);
-  /* */
+  */
 }
 
 
@@ -174,13 +174,13 @@ void CoverMemory::WestHasCardRange(
   const unsigned char lowerIncl,
   const unsigned char upperIncl)
 {
-  // CoverMemory::WestLengthRange(lowerIncl, upperIncl);
+  CoverMemory::WestLengthRange(lowerIncl, upperIncl);
 
-  /* */
+  /*
   CoverSpec& spec = CoverMemory::add();
   spec.mode = COVER_LENGTHS_ONLY;
   spec.westLength.set(lowerIncl, upperIncl, COVER_INSIDE_RANGE);
-  /* */
+  */
 }
 
 
