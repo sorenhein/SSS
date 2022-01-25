@@ -70,9 +70,6 @@ class CoverMemory
 
     // ------------
 
-    void WestHasExactTops(const unsigned char len);
-    void EastHasExactTops(const unsigned char len);
-
     void WestHasAtLeastTops(const unsigned char len);
 
     void WestHasShortHonors(const unsigned char len);
