@@ -249,32 +249,6 @@ void CoverMemory::EastHasARangeHonor(
 }
 
 
-void CoverMemory::WestHasRangeHonors(
-  const unsigned char lowerIncl,
-  const unsigned char upperIncl)
-{
-  // West has all the honors.
-  CoverSpec& spec = CoverMemory::add();
-  spec.mode = COVER_LENGTHS_AND_TOPS;
-  spec.westLength.set(lowerIncl, upperIncl, COVER_INSIDE_RANGE);
-  spec.westTop1.set(coverGlobal.tops1, COVER_EQUAL);
-}
-
-
-void CoverMemory::EastHasRangeHonors(
-  const unsigned char lowerIncl,
-  const unsigned char upperIncl)
-{
-  CoverSpec& spec = CoverMemory::add();
-  spec.mode = COVER_LENGTHS_AND_TOPS;
-  spec.westLength.set(
-    coverGlobal.cards - upperIncl, 
-    coverGlobal.cards - lowerIncl, 
-    COVER_INSIDE_RANGE);
-  spec.westTop1.set(0, COVER_EQUAL);
-}
-
-
 void CoverMemory::AnHonorIsShort(const unsigned char len)
 {
   // Together these two mean that an honor (there may be more) is with a
@@ -390,11 +364,11 @@ void CoverMemory::prepare_3_2()
   CoverMemory::WestLength(0, true);     // West is not void
   CoverMemory::WestLengthRange(1, 2);   // 1=2 or 2=1
 
+  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+
   // ---
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
-
-  CoverMemory::WestHasRangeHonors(2, 3); // HH(x) with West
 }
 
 
@@ -420,14 +394,14 @@ void CoverMemory::prepare_4_1()
   CoverMemory::WestTop1(1);             // West has the top
   CoverMemory::EastTop1(1);             // East has the top
 
+  CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
+  CoverMemory::EastGeneralAnd(2, 2, 1, 1); // Hx with West
+  CoverMemory::EastGeneralAnd(1, 3, 1, 1); // Hx with West
+
   /// ---
 
   CoverMemory::WestHasShortHonors(2);  // H, Hx onside
   CoverMemory::WestHasShortHonors(3);  // Just not East void
-
-  CoverMemory::WestHasRangeHonors(2, 2); // Hx with West
-  CoverMemory::EastHasRangeHonors(2, 2); // Hx with East
-  CoverMemory::EastHasRangeHonors(1, 3); // H, Hx, Hxx with East
 
   CoverMemory::HonorsAreShort(1);      // Stiff H onside + offside
 }
@@ -447,6 +421,9 @@ void CoverMemory::prepare_4_2()
   CoverMemory::EastTop1(2);             // HH offside
 
   CoverMemory::WestGeneralAnd(2, 2, 1, 2); // Hx, HH onside
+  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+  CoverMemory::WestGeneralAnd(3, 3, 2, 2); // HHx with West
+  CoverMemory::WestGeneralAnd(3, 4, 2, 2); // HHx(x) with West
 
   CoverMemory::EastGeneralAnd(2, 2, 1, 2); // Hx, HH offside
   CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with West
@@ -456,11 +433,6 @@ void CoverMemory::prepare_4_2()
   CoverMemory::WestHasARangeHonor(1, 3); // H(xx) with West
   CoverMemory::WestHasARangeHonor(2, 3); // Hx(x) with West
   CoverMemory::EastHasARangeHonor(2, 3); // Hx(x) with East
-
-  CoverMemory::WestHasRangeHonors(2, 3); // HH(x) with West
-  CoverMemory::WestHasRangeHonors(3, 3); // HHx with West
-  CoverMemory::WestHasRangeHonors(3, 4); // HHx(x) with West
-
 
   CoverMemory::EastHasGeneralOr(2, 2, 2, 2); // Both H's East or 2=2
 
@@ -510,23 +482,19 @@ void CoverMemory::prepare_5_1()
   CoverMemory::WestTop1(1);             // West has the top
   CoverMemory::EastTop1(1);             // East has the top
 
-  CoverMemory::EastGeneralAnd(1, 1, 0, 0); // x offside
+  CoverMemory::WestGeneralAnd(1, 4, 1, 1); // H(xxx) with West
+  CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
+  CoverMemory::WestGeneralAnd(2, 3, 1, 1); // Hx(x) with West
+  CoverMemory::EastGeneralAnd(1, 1, 0, 0); // x with East
+  CoverMemory::EastGeneralAnd(1, 3, 1, 1); // H(xx) with East
+  CoverMemory::EastGeneralAnd(2, 3, 1, 1); // Hx(x) with East
+  CoverMemory::EastGeneralAnd(4, 5, 1, 1); // Hxxx(x) with East
 
   // ---
 
 
   CoverMemory::WestHasShortHonors(2);  // H, Hx onside
   CoverMemory::WestHasShortHonors(3);  // H, Hx, Hxx onside
-
-  CoverMemory::WestHasRangeHonors(1, 4); // H, Hx, Hxx, Hxxx onside
-  CoverMemory::WestHasRangeHonors(2, 3); // Hx, Hxx onside
-
-  CoverMemory::WestHasRangeHonors(2, 2); // Specifically Hx onside
-  CoverMemory::WestHasRangeHonors(2, 3); // Hx, Hxx onside
-  CoverMemory::EastHasRangeHonors(1, 3); // H, Hx, Hxx with West
-  CoverMemory::EastHasRangeHonors(4, 5); // Hxxx(x) with West
-  CoverMemory::EastHasRangeHonors(2, 3); // Hx, Hxx offside
-
 
   CoverMemory::HonorsAreShort(1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(2);      // H, Hx onside + offside
@@ -546,9 +514,10 @@ void CoverMemory::prepare_5_2()
   CoverMemory::WestTop1(2);             // West has the tops
   CoverMemory::EastTop1(2);             // East has the tops
 
-  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) onside
-  CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx onside
-  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) onside
+  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
+  CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
+  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+  CoverMemory::WestGeneralAnd(4, 5, 2, 2); // HHxx(x) with West
 
   CoverMemory::EastGeneralAnd(1, 1, 0, 0); // x offside
   CoverMemory::EastGeneralAnd(2, 2, 1, 1); // Hx offside
@@ -562,9 +531,6 @@ void CoverMemory::prepare_5_2()
   CoverMemory::WestHasARangeHonor(2, 3); // West has H 2nd/3rd
   CoverMemory::EastHasARangeHonor(1, 2); // East has H stiff/2nd
   CoverMemory::EastHasARangeHonor(2, 3); // East has H 2nd/3rd
-
-
-  CoverMemory::WestHasRangeHonors(4, 5); // HHHx(x) onside
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(2);      // Stiff HH onside + offside
@@ -581,12 +547,12 @@ void CoverMemory::prepare_5_3()
   CoverMemory::WestLengthRange(1, 4);   // 1=4, 2=3, 3=2 or 4=1
   CoverMemory::WestLengthRange(2, 5);   // 2=3, 3=2, 4=1 or 5=0
 
+  CoverMemory::WestGeneralAnd(4, 4, 3, 3); // HHHx with West
+  CoverMemory::WestGeneralAnd(4, 5, 3, 3); // HHHx(x) with West
+
   // ---
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
-
-  CoverMemory::WestHasRangeHonors(4, 4); // HHHx / x
-  CoverMemory::WestHasRangeHonors(4, 5); // HHHx(x)
 
   CoverMemory::WestHasGeneralOr(0, 3, 3, 3); // West all H's or 0-3c
   CoverMemory::EastHasGeneralOr(0, 3, 3, 3); // East all H's or 0-3c
@@ -628,14 +594,14 @@ void CoverMemory::prepare_6_1()
   CoverMemory::WestTop1(1);             // West has the top
   CoverMemory::EastTop1(1);             // East has the top
 
+  CoverMemory::WestGeneralAnd(3, 3, 1, 1); // Hxx with West
+  CoverMemory::EastGeneralAnd(1, 5, 1, 1); // H(xxxx) with East
+
   // ----
 
 
   CoverMemory::WestHasShortHonors(2);  // H or Hx onside
   CoverMemory::WestHasShortHonors(3);  // H, Hx or Hxx onside
-
-  CoverMemory::WestHasRangeHonors(3, 3); // Hxx with West
-  CoverMemory::EastHasRangeHonors(1, 5); // H(xxxx) with East
 
   CoverMemory::HonorsAreShort(1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(2);      // H or Hx onside + offside
@@ -652,13 +618,12 @@ void CoverMemory::prepare_6_2()
 
   CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
   CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+  CoverMemory::WestGeneralAnd(3, 3, 2, 2); // HHx with West
   CoverMemory::WestGeneralAnd(2, 5, 1, 1); // Hx(xxx) with West
   CoverMemory::WestGeneralAnd(4, 6, 2, 2); // HHxx(xx) with West
+  CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
 
   // ----
-
-  CoverMemory::WestHasRangeHonors(3, 3); // HHx with West
-  CoverMemory::EastHasRangeHonors(3, 3); // HHx with East
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(2);      // Stiff HH onside + offside
@@ -674,14 +639,13 @@ void CoverMemory::prepare_6_3()
   CoverMemory::WestGeneralAnd(1, 2, 1, 2); // H, Hx, HH onside
   CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
   CoverMemory::WestGeneralAnd(2, 2, 2, 2); // HH with West
+  CoverMemory::WestGeneralAnd(3, 3, 3, 3); // HHH with West
   CoverMemory::WestGeneralAnd(4, 6, 2, 2); // HHxx(xx) onside
 
   CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH with East
+  CoverMemory::WestGeneralAnd(3, 3, 3, 3); // HHH with East
 
   // ----
-
-  CoverMemory::WestHasRangeHonors(3, 3); // HHx with West
-  CoverMemory::EastHasRangeHonors(3, 3); // HHx with East
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
 
@@ -739,11 +703,10 @@ void CoverMemory::prepare_7_2()
   CoverMemory::WestTop1(2);             // West has the tops
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
+  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+  CoverMemory::EastGeneralAnd(2, 3, 2, 2); // HH(x) with East
 
   // ---
-
-  CoverMemory::WestHasRangeHonors(2, 3); // HH(x) with West
-  CoverMemory::EastHasRangeHonors(2, 3); // HH(x) with East
 
   CoverMemory::AnHonorIsShort(1);      // Stiff H onside + offside
   CoverMemory::HonorsAreShort(2);      // H or Hx onside + offside

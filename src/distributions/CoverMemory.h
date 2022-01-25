@@ -95,14 +95,6 @@ class CoverMemory
       const unsigned char lowerIncl,
       const unsigned char upperIncl);
 
-    void WestHasRangeHonors(
-      const unsigned char lowerIncl,
-      const unsigned char upperIncl);
-
-    void EastHasRangeHonors(
-      const unsigned char lowerIncl,
-      const unsigned char upperIncl);
-
     void AnHonorIsShort(const unsigned char len);
 
     void HonorsAreShort(const unsigned char len);
