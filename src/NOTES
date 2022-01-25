@@ -25,6 +25,11 @@ Verbals of strategy wins
 
 * Probably get some deadlocks that have less greedy solutions.
 
+* Also forget covers?
+
+* Cover: Two set of length-top1 (later top2...)
+  - Mode, say, 10-01 (length from first pair or tops from 2nd pair)
+  - invertFlag inverts the whole combination of the two
 
 * Look at all Strategy's with only one meaningful rank.  Can we explain
   them all?  Does it look pretty?
