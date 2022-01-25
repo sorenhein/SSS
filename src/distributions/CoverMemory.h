@@ -50,28 +50,30 @@ class CoverMemory
 
     // ----- Pure rank-1 methods -----
 
+    void WestTop1(
+      const unsigned char len,
+      const bool invertFlag = false);
 
+    void EastTop1(
+      const unsigned char len,
+      const bool invertFlag = false);
 
+    void WestTop1Range(
+      const unsigned char len1, 
+      const unsigned char len2,
+      const bool invertFlag = false);
 
+    void EastTop1Range(
+      const unsigned char len1, 
+      const unsigned char len2,
+      const bool invertFlag = false);
 
     // ------------
-
-    void WestHasSingleton();
-    void WestHasDoubleton();
-    void WestHasTripleton();
 
     void WestHasExactTops(const unsigned char len);
     void EastHasExactTops(const unsigned char len);
 
     void WestHasAtLeastTops(const unsigned char len);
-
-    void WestHasCardRange(
-      const unsigned char lowerIncl,
-      const unsigned char upperIncl);
-
-    void EastHasCardRange(
-      const unsigned char lowerIncl,
-      const unsigned char upperIncl);
 
     void WestHasShortHonors(const unsigned char len);
     void EastHasShortHonors(const unsigned char len);
@@ -140,6 +142,7 @@ class CoverMemory
     void prepare_5_4();
     void prepare_5_5();
 
+    void prepare_6_splitsNonVoid();
     void prepare_6_1();
     void prepare_6_2();
     void prepare_6_3();
