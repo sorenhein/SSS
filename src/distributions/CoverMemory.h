@@ -68,14 +68,24 @@ class CoverMemory
       const unsigned char len2,
       const bool invertFlag = false);
 
-    // ------------
+    // ----- Length and top-1 methods -----
 
-    void WestHasAtLeastTops(const unsigned char len);
+    void WestGeneralAnd(
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
+    void EastGeneralAnd(
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
+    // ------------
 
     void WestHasShortHonors(const unsigned char len);
     void EastHasShortHonors(const unsigned char len);
-
-    void WestHasAnHonor();
 
     void WestHasARangeHonor(
       const unsigned char lowerIncl,
@@ -96,18 +106,6 @@ class CoverMemory
     void AnHonorIsShort(const unsigned char len);
 
     void HonorsAreShort(const unsigned char len);
-
-    void WestHasGeneralAnd(
-      const unsigned char lowerCardsIncl,
-      const unsigned char upperCardsIncl,
-      const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
-
-    void EastHasGeneralAnd(
-      const unsigned char lowerCardsIncl,
-      const unsigned char upperCardsIncl,
-      const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
 
     void WestHasGeneralOr(
       const unsigned char lowerCardsIncl,
