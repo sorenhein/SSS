@@ -200,7 +200,7 @@ void CoverMemory::EastGeneralAnd(
 // ----- Length OR top-1 -----
 
 
-void CoverMemory::WestHasGeneralOr(
+void CoverMemory::WestGeneralOr(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
@@ -213,7 +213,7 @@ void CoverMemory::WestHasGeneralOr(
 }
 
 
-void CoverMemory::EastHasGeneralOr(
+void CoverMemory::EastGeneralOr(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
@@ -537,7 +537,7 @@ void CoverMemory::prepare_6_3()
   CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH with East
   CoverMemory::WestGeneralAnd(3, 3, 3, 3); // HHH with East
 
-  CoverMemory::WestHasGeneralOr(3, 3, 3, 3); // West all H's or any 3-3
+  CoverMemory::WestGeneralOr(3, 3, 3, 3);  // West all H's or any 3-3
 }
 
 

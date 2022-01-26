@@ -16,7 +16,7 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
-#include "../distributions/Covers.h"
+#include "../distributions/covers/Covers.h"
 #include "../inputs/Control.h"
 
 #include "../utils/compsec.h"

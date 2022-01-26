@@ -14,8 +14,8 @@
 #include "Covers.h"
 #include "CoverMemory.h"
 
-#include "../strategies/result/Result.h"
-#include "../const.h"
+#include "../../strategies/result/Result.h"
+#include "../../const.h"
 
 
 Covers::Covers()

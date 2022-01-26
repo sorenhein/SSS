@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "CoverHelp.h"
+#include "CoverSpec.h"
 
 
 using namespace std;

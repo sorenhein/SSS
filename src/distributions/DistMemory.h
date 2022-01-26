@@ -15,7 +15,7 @@
 
 #include "Distribution.h"
 #include "DistCore.h"
-#include "CoverMemory.h"
+#include "covers/CoverMemory.h"
 
 using namespace std;
 

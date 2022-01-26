@@ -6,17 +6,12 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVERHELP_H
-#define SSS_COVERHELP_H
+#ifndef SSS_COVERSPEC_H
+#define SSS_COVERSPEC_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <string>
 
 #include "CoverElement.h"
-
-#include "../const.h"
 
 
 enum CoverMode
@@ -50,15 +45,13 @@ struct CoverSpec
   CoverElement westLength;
   CoverElement westTop1;
 
-  string strLength() const
-  {
-    return westLength.str("cards");
-  };
+  CoverSpec();
 
-  string strTop1() const
-  {
-    return westTop1.str("tops");
-  };
+  string strLength() const;
+
+  string strTop1() const;
+
+  string str() const;
 };
 
 #endif

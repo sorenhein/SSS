@@ -15,7 +15,7 @@
 #include "DistHelp.h"
 #include "Survivors.h"
 #include "Reductions.h"
-#include "Covers.h"
+#include "covers/Covers.h"
 
 class SurvivorList;
 class DistMap;
