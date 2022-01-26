@@ -2,10 +2,10 @@ Verbals of strategy wins
 ========================
 * Explanations also must be inverted
 
-* Continue simplifying CoverMemory to fewer methods, good comments
 * Add some kind of non-verbal but semantic description of each cover
   - Different potentially in 4,2 and 5,3 for example
   - Can be verbalized in different languages
+  - Store both #dist and weight sum of dist's
 
 * Combining some covers semantically, e.g. stiff H either side
   - SymmGeneralAnd?

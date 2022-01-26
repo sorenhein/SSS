@@ -197,9 +197,7 @@ void CoverMemory::EastGeneralAnd(
 }
 
 
-
-
-// ----------------------------------
+// ----- Length OR top-1 -----
 
 
 void CoverMemory::WestHasGeneralOr(
@@ -344,10 +342,7 @@ void CoverMemory::prepare_4_2()
   CoverMemory::EastGeneralAnd(2, 3, 1, 1); // Hx(x) with East
   CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
 
-  // ---
-
-
-  CoverMemory::EastHasGeneralOr(2, 2, 2, 2); // Both H's East or 2=2
+  CoverMemory::EastGeneralOr(2, 2, 2, 2);  // Both H's East or any 2=2
 }
 
 
@@ -451,10 +446,9 @@ void CoverMemory::prepare_5_3()
 
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
 
-  // ---
+  CoverMemory::WestGeneralOr(0, 3, 3, 3); // West all H's or 0-3c
 
-  CoverMemory::WestHasGeneralOr(0, 3, 3, 3); // West all H's or 0-3c
-  CoverMemory::EastHasGeneralOr(0, 3, 3, 3); // East all H's or 0-3c
+  CoverMemory::EastGeneralOr(0, 3, 3, 3); // East all H's or 0-3c
 }
 
 
@@ -543,9 +537,7 @@ void CoverMemory::prepare_6_3()
   CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH with East
   CoverMemory::WestGeneralAnd(3, 3, 3, 3); // HHH with East
 
-  // ----
-
-  CoverMemory::WestHasGeneralOr(3, 3, 3, 3); // 3-3 or HHH onside
+  CoverMemory::WestHasGeneralOr(3, 3, 3, 3); // West all H's or any 3-3
 }
 
 

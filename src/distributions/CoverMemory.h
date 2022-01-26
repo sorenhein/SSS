@@ -82,15 +82,15 @@ class CoverMemory
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
-    // ------------
+    // ----- Length OR top-1 methods -----
 
-    void WestHasGeneralOr(
+    void WestGeneralOr(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl);
 
-    void EastHasGeneralOr(
+    void EastGeneralOr(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
