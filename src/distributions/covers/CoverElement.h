@@ -35,10 +35,6 @@ class CoverElement
 
   private: 
 
-    unsigned char value1;
-    unsigned char value2;
-
-    CoverOperator oper;
 
     ComparePtr ptr;
 
@@ -70,6 +66,12 @@ class CoverElement
 
 
   public:
+
+    // TODO private again later?
+    unsigned char value1;
+    unsigned char value2;
+
+    CoverOperator oper;
 
     // TODO Should be private once Covers is cleaner
     void setOperator(const CoverOperator operIn)

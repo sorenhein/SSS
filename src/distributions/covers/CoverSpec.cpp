@@ -22,7 +22,24 @@ CoverSpec::CoverSpec()
 // TODO Goes away longer-term
 string CoverSpec::strLength() const
 {
-  return westLength.str("cards");
+  if (westLength.oper == COVER_EQUAL &&
+      westLength.value1 == 0)
+  {
+    if (invertFlag)
+      return "West is not void";
+    else
+      return "West is void";
+  }
+  else if (westLength.oper == COVER_EQUAL &&
+      westLength.value1 == oppsLength)
+  {
+    if (invertFlag)
+      return "East is not void";
+    else
+      return "East is void";
+  }
+  else
+    return westLength.str("cards");
 }
 
 
@@ -35,6 +52,15 @@ string CoverSpec::strTop1() const
 
 string CoverSpec::str() const
 {
-  return "";
+  if (mode == COVER_LENGTHS_ONLY)
+    return CoverSpec::strLength();
+  else if (mode == COVER_TOPS_ONLY)
+    return CoverSpec::strTop1();
+  else if (mode == COVER_LENGTHS_OR_TOPS)
+    return CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
+  else if (mode == COVER_LENGTHS_AND_TOPS)
+    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+  else
+    return "";
 }
 

@@ -112,30 +112,9 @@ unsigned char Cover::getWeight() const
 }
 
 
-string Cover::strLength() const
-{
-  return spec.strLength();
-}
-
-
-string Cover::strTop() const
-{
-  return spec.strTop1();
-}
-
-
 string Cover::str() const
 {
-  if (spec.mode == COVER_LENGTHS_ONLY)
-    return Cover::strLength();
-  else if (spec.mode == COVER_TOPS_ONLY)
-    return Cover::strTop();
-  else if (spec.mode == COVER_LENGTHS_OR_TOPS)
-    return Cover::strLength() + ", or " + Cover::strTop();
-  else if (spec.mode == COVER_LENGTHS_AND_TOPS)
-    return Cover::strLength() + ", and " + Cover::strTop();
-  else
-    return "";
+  return spec.str();
 }
 
 

@@ -35,11 +35,6 @@ class Cover
       const unsigned char ref2) const;
 
 
-    string strLength() const;
-
-    string strTop() const;
-
-
   public:
 
     Cover();
