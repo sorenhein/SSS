@@ -174,8 +174,16 @@ void CoverMemory::WestGeneralAnd(
   CoverSpec& spec = CoverMemory::add();
   spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_AND_TOPS;
-  spec.westLength.set(lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
-  spec.westTop1.set(lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
+
+  if (lowerCardsIncl == upperCardsIncl)
+    spec.westLength.set(lowerCardsIncl, COVER_EQUAL);
+  else
+    spec.westLength.set(lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
+
+  if (lowerTopsIncl == upperTopsIncl)
+    spec.westTop1.set(lowerTopsIncl, COVER_EQUAL);
+  else
+    spec.westTop1.set(lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
 }
 
 
@@ -188,14 +196,22 @@ void CoverMemory::EastGeneralAnd(
   CoverSpec& spec = CoverMemory::add();
   spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_AND_TOPS;
-  spec.westLength.set(
-    coverGlobal.cards - upperCardsIncl, 
-    coverGlobal.cards - lowerCardsIncl, 
-    COVER_INSIDE_RANGE);
-  spec.westTop1.set(
-    coverGlobal.tops1 - upperTopsIncl, 
-    coverGlobal.tops1 - lowerTopsIncl, 
-    COVER_INSIDE_RANGE);
+
+  if (lowerCardsIncl == upperCardsIncl)
+    spec.westLength.set(coverGlobal.cards - lowerCardsIncl, COVER_EQUAL);
+  else
+    spec.westLength.set(
+      coverGlobal.cards - upperCardsIncl, 
+      coverGlobal.cards - lowerCardsIncl, 
+      COVER_INSIDE_RANGE);
+
+  if (lowerTopsIncl == upperTopsIncl)
+    spec.westTop1.set(coverGlobal.tops1 - lowerTopsIncl, COVER_EQUAL);
+  else
+    spec.westTop1.set(
+      coverGlobal.tops1 - upperTopsIncl, 
+      coverGlobal.tops1 - lowerTopsIncl, 
+      COVER_INSIDE_RANGE);
 }
 
 
