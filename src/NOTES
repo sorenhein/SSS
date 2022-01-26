@@ -8,6 +8,7 @@ Verbals of strategy wins
   - Can be verbalized in different languages
 
 * Combining some covers semantically, e.g. stiff H either side
+  - SymmGeneralAnd?
   - Can we combine two Cover's this way somehow into an actual Cover?
   - Two Cover's in one method means one or the other -- somehow
     misleading. Split out if different, combine if aspects of same
