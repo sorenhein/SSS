@@ -54,6 +54,8 @@ struct CoverSpec
   string strTop1Equal() const;
   string strTop1() const;
 
+  string strBothEqual() const;
+
   string str() const;
 };
 

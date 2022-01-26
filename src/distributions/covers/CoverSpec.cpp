@@ -208,16 +208,65 @@ string CoverSpec::strTop1() const
 }
 
 
+string CoverSpec::strBothEqual() const
+{
+  stringstream ss;
+  if (westLength.value1 == 1)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == 0)
+      ss << "West has a small singleton";
+    else
+      ss << "West has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
+        "singleton honor";
+  }
+  else if (westLength.value1+1 == oppsLength)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == oppsTops1)
+      ss << "East has a small singleton";
+    else
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
+        "singleton honor";
+  }
+  else
+    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+
+  return ss.str();
+}
+
+
 string CoverSpec::str() const
 {
   if (mode == COVER_LENGTHS_ONLY)
     return CoverSpec::strLength();
   else if (mode == COVER_TOPS_ONLY)
     return CoverSpec::strTop1();
+  else if (mode == COVER_LENGTHS_AND_TOPS)
+  {
+    if (westLength.oper == COVER_EQUAL)
+    {
+      if (westTop1.oper == COVER_EQUAL)
+        return CoverSpec::strBothEqual();
+      else
+      {
+      }
+    }
+    else
+    {
+      if (westTop1.oper == COVER_EQUAL)
+      {
+      }
+      else
+      {
+      }
+    }
+    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+  }
   else if (mode == COVER_LENGTHS_OR_TOPS)
     return CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
-  else if (mode == COVER_LENGTHS_AND_TOPS)
-    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
   else
     return "";
 }
