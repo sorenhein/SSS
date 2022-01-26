@@ -1,92 +1,52 @@
 Verbals of strategy wins
 ========================
-* Explanations also must be inverted
+* Complete the cover entry with OR, e.g. 9/1970,
+  There is a singleton honor / The honor is singleton
+  There are two honors doubleton / The honors are doubleton
+  Could be a method SymmGeneralAnd
+  - AKJx/xx has 4=3 5=2 6=1 with short top either way
+  - The honor is at most third with either player
 
-* Add some kind of non-verbal but semantic description of each cover
-  - Different potentially in 4,2 and 5,3 for example
-  - Can be verbalized in different languages
-  - Store both #dist and weight sum of dist's
+* Mode must consider all the four combinations in some binary way
 
-West has a singleton H
-Either opponent has a singleton H
-West has the H (any length)
-West has both honors (any length)
-West has exactly HH
-West has HH(x)
-West has exactly HHH
-West has at least one H
+* More verbal outputs such as
+  West has both honors (any length)
+  West has exactly HH
+  West has HH(x)
+  West has exactly HHH
+  West has at least one H
 
-So the "subject" is West, East, Either opponent, No opponent, The suit
-The "verb" is is, is not, has
-The subject is void, 2-2, 3-1 or better, exactly HH, ...
+* Store #dist #weight in a result (not just pointer to entry); output them
 
-What about or?  A bit special, do later?
+* Store and output the minimum #tricks
 
+* Order cover's hierarchically when they are nested
+  - Output them correspondingly
 
-
-
-* Combining some covers semantically, e.g. stiff H either side
-  - SymmGeneralAnd?
-  - Can we combine two Cover's this way somehow into an actual Cover?
-
-* 9 / 17967, Qx / Jxx: Win 1 trick EXCEPT against Hxx/H, for example.
-  - Could look for such except's (solve subtractively down from max).
-  - Actually the note the ones to consider actively 
+* Count #times that each cover is used
 
 * Probably get some deadlocks that have less greedy solutions.
 
-* Also forget covers?
-
-* Cover: Two set of length-top1 (later top2...)
-  - Mode, say, 10-01 (length from first pair or tops from 2nd pair)
-  - invertFlag inverts the whole combination of the two
-
-* Look at all Strategy's with only one meaningful rank.  Can we explain
-  them all?  Does it look pretty?
-
-* Count how many times each cover is actually used from CoverMemory?
-  - Each one gets an index number in its vector
-  - Helps to tell afterwards
-  - Also helps to skip if we want to try a less-greedy one
-
-* Directory explain
-  - ResExplain becomes a class, contains Spec's and the trick offset
-  - Can output in various ways
-  - DiffExplain becomes a class with different outputs
-* ResExplain can output text when it knows the names of the actual cards,
-  which come from the non-canonical distribution
-* When sorting in Covers, prefer simple Cover's (among equivalents)
-  - Maybe each cover gets a complexity
-* First transform Covers before outputting
-  - If same constraints on either player, cancel out player
-  - N-1+ or top -> top or other stiff top (2 Cover's)
-  - In output, show (# distributions / # cases)
-  - Store both weight in weightDist and weightCases
-* In output, perhaps some fits are nested within others, and some
-  are disjoint from one another.  Are there some that are neither?
-* Show the minimal #tricks
-* Ability to compare two strategy's and show gains and losses in
-  the same way
+* Also output differences between two strategies
   - As text
   - In a table (as Unicode text, HTML, ...)
-* Have to get down at least to the second rank
-  - Even more Cover's?
-* Pass in maxTricks and maxTops when outputting string and when
-  transforming covers
+
+* Find a way to store actual names of cards, and print them
+  (not just "honor"), from the non-canonical distribution
+
+* Give each cover a complexity that matters when sorting
+
+* Look for covers that can be combined, manually at first
+  - N-1+ or top -> top or other stiff top (2 Cover's)
+  
 * Store and calculate in the compressed format of Study?  Can we
   even subtract stuff directly in that domain?
 
--n AKJx -s xx
-Ideas for better wording
-* Exactly 7 cards (== spec.length + lengthMirror):
-  [Other player] is void
-* Exactly 7 cards (again) and exactly 1 tops
-  Notice that there is only 1 top in play
-  Again [Other player] is void
-* 4+ and 0 -> 3- and 1 with other player
-* If an explanation occurs symmetrically, e.g. either 3- and 1
-  If either player has the top at most third.
-* 6+ or 1 top = 1 top + [other player] stiff top, as 2 fits
+* Have to get down at least to the second rank
+  - Even more Cover's?
+
+* Also forget covers?
+
 
 8/1110, A97 / KQJ8
 Take all 4 tricks
