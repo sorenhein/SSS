@@ -84,10 +84,6 @@ class CoverMemory
 
     // ------------
 
-    void AnHonorIsShort(const unsigned char len);
-
-    void HonorsAreShort(const unsigned char len);
-
     void WestHasGeneralOr(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
