@@ -172,6 +172,7 @@ void CoverMemory::WestGeneralAnd(
   const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_AND_TOPS;
   spec.westLength.set(lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
   spec.westTop1.set(lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
@@ -185,6 +186,7 @@ void CoverMemory::EastGeneralAnd(
   const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_AND_TOPS;
   spec.westLength.set(
     coverGlobal.cards - upperCardsIncl, 
@@ -207,6 +209,7 @@ void CoverMemory::WestGeneralOr(
   const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_OR_TOPS;
   spec.westLength.set(lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
   spec.westTop1.set(lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
@@ -220,6 +223,7 @@ void CoverMemory::EastGeneralOr(
   const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
+  spec.invertFlag = false;
   spec.mode = COVER_LENGTHS_OR_TOPS;
   spec.westLength.set(
     coverGlobal.cards - upperCardsIncl, 
@@ -255,8 +259,9 @@ void CoverMemory::prepare_3_1()
   CoverMemory::WestLength(0);           // West is void
   CoverMemory::EastLength(0);           // East is void
   CoverMemory::WestLength(0, true);     // West is not void
-  CoverMemory::EastLength(0, true);     // East is not void
   CoverMemory::WestLengthRange(1, 2);   // 1=2 or 2=1
+
+  CoverMemory::EastLength(0, true);     // East is not void
 
   CoverMemory::WestTop1(1);             // West has the top
   CoverMemory::EastTop1(1);             // East has the top
