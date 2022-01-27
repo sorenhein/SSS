@@ -97,6 +97,8 @@ CoverState Covers::explain(
   for (i = 0; i < tricks.size(); i++)
     tricks[i] -= tmin;
 
+// cout << "tmin " << +tmin << "\n";
+
   while (true)
   {
     if (iter == covers.end())
@@ -134,6 +136,7 @@ for (i = 0; i < tricks.size(); i++)
   if (tricks[i])
     cout << i << ": " << +tricks[i] << "\n";
 cout << "\n";
+cout << iter->strProfile() << "\n";
 */
       iter++;
     }

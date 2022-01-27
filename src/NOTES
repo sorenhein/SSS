@@ -10,8 +10,6 @@ Verbals of strategy wins
   - AKJx/xx has 4=3 5=2 6=1 with short top either way
   - The honor is at most third with either player
 
-* Mode must consider all the four combinations in some binary way
-
 * Store #dist #weight in a result (not just pointer to entry); output them
 
 * Store and output the minimum #tricks

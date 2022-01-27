@@ -30,7 +30,7 @@ enum CoverOperator
 
 class CoverElement
 {
-  typedef unsigned char 
+  typedef bool 
     (CoverElement::*ComparePtr)(const unsigned char valueIn) const;
 
   private: 
@@ -39,27 +39,30 @@ class CoverElement
     ComparePtr ptr;
 
 
-    unsigned char lessEqual(const unsigned char valueIn) const
+    // TODO Not used?
+    bool lessEqual(const unsigned char valueIn) const
     {
       return (valueIn <= value1 ? 1 : 0);
     };
 
-    unsigned char equal(const unsigned char valueIn) const
+    bool equal(const unsigned char valueIn) const
     {
       return (valueIn == value1 ? 1 : 0);
     };
 
-    unsigned char greaterEqual(const unsigned char valueIn) const
+    // TODO Not used?
+    bool greaterEqual(const unsigned char valueIn) const
     {
       return (valueIn >= value1 ? 1 : 0);
     };
 
-    unsigned char insideRange(const unsigned char valueIn) const
+    bool insideRange(const unsigned char valueIn) const
     {
       return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
     };
 
-    unsigned char outsideRange(const unsigned char valueIn) const
+    // TODO Not used?
+    bool outsideRange(const unsigned char valueIn) const
     {
       return (valueIn <= value1 && valueIn >= value2 ? 1 : 0);
     };
@@ -123,7 +126,7 @@ class CoverElement
       setOperator(operIn);
     };
 
-    unsigned char includes(const unsigned char valueIn) const
+    bool includes(const unsigned char valueIn) const
     {
       assert(ptr != nullptr);
       return (this->*ptr)(valueIn);

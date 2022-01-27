@@ -16,218 +16,233 @@
 
 CoverSpec::CoverSpec()
 {
+  mode = {COVER_MODE_NONE, COVER_MODE_NONE};
+  invertFlag = {false, false};
 }
 
 
-string CoverSpec::strLengthEqual() const
+string CoverSpec::strLengthEqual(const unsigned specNumber) const
 {
   stringstream ss;
-  if (westLength.value1 == 0)
+  if (westLength[specNumber].value1 == 0)
   {
     ss << "West " <<
-      (invertFlag ? "is not" : "is") << 
+      (invertFlag[specNumber] ? "is not" : "is") << 
       " void";
   }
-  else if (westLength.value1 == oppsLength)
+  else if (westLength[specNumber].value1 == oppsLength)
   {
     ss << "East " <<
-      (invertFlag ? "is not" : "is") << 
+      (invertFlag[specNumber] ? "is not" : "is") << 
       " void";
   }
-  else if (westLength.value1 == 1)
+  else if (westLength[specNumber].value1 == 1)
   {
     ss << "West " <<
-      (invertFlag ? "does not have" : "has") << 
+      (invertFlag[specNumber] ? "does not have" : "has") << 
       " a singleton";
   }
-  else if (westLength.value1 == oppsLength-1)
+  else if (westLength[specNumber].value1 == oppsLength-1)
   {
     ss << "East " <<
-      (invertFlag ? "does not have" : "has") << 
+      (invertFlag[specNumber] ? "does not have" : "has") << 
       " a singleton";
   }
-  else if (westLength.value1 == 2)
+  else if (westLength[specNumber].value1 == 2)
   {
     if (oppsLength > 4)
     {
       ss << "West " <<
-        (invertFlag ? "does not have" : "has") << " a doubleton";
+        (invertFlag[specNumber] ? "does not have" : "has") << 
+        " a doubleton";
     }
     else
     {
-      ss << "The suit " << (invertFlag ? "does not split" : "splits") <<
-        " 2-2";
+      ss << "The suit " << 
+        (invertFlag[specNumber] ? "does not split" : "splits") << " 2=2";
     }
   }
   else
   {
     ss << "The suit " <<
-      (invertFlag ? "does not split" : "splits") << " " <<
-      +westLength.value1 << "=" <<
-      +(oppsLength - westLength.value1);
+      (invertFlag[specNumber] ? "does not split" : "splits") << " " <<
+      +westLength[specNumber].value1 << "=" <<
+      +(oppsLength - westLength[specNumber].value1);
   }
   return ss.str();
 }
 
 
-string CoverSpec::strLengthInside() const
+string CoverSpec::strLengthInside(const unsigned specNumber) const
 {
   stringstream ss;
-  if (westLength.value1 == 0)
+  if (westLength[specNumber].value1 == 0)
   {
-    if (invertFlag)
+    if (invertFlag[specNumber])
     {
-      if (westLength.value2 == westLength.value1)
+      if (westLength[specNumber].value2 == westLength[specNumber].value1)
         ss << "West is not void";
       else
-        ss << "West has at least " << +(westLength.value2+1) << " cards";
+        ss << "West has at least " << 
+          +(westLength[specNumber].value2+1) << " cards";
     }
-    else if (westLength.value2 == 1)
+    else if (westLength[specNumber].value2 == 1)
       ss << "West has at most a singleton";
-    else if (westLength.value2 == 2)
+    else if (westLength[specNumber].value2 == 2)
       ss << "West has at most a doubleton";
     else
-      ss << "West has at most " << +westLength.value2 << " cards";
+      ss << "West has at most " << 
+        +westLength[specNumber].value2 << " cards";
   }
-  else if (westLength.value2 == oppsLength)
+  else if (westLength[specNumber].value2 == oppsLength)
   {
-    if (invertFlag)
-      ss << "West has at most " << +(westLength.value1-1) << " cards";
+    if (invertFlag[specNumber])
+      ss << "West has at most " << 
+        +(westLength[specNumber].value1-1) << " cards";
     else
-      ss << "West has at least " << +westLength.value1 << " cards";
+      ss << "West has at least " << 
+        +westLength[specNumber].value1 << " cards";
   }
-  else if (westLength.value1 == 1 && westLength.value2 == oppsLength-1)
+  else if (westLength[specNumber].value1 == 1 && 
+      westLength[specNumber].value2 == oppsLength-1)
   {
-    ss << (invertFlag ? "Either" : "Neither") << " opponent is void";
+    ss << (invertFlag[specNumber] ? "Either" : "Neither") << 
+      " opponent is void";
   }
-  else if (westLength.value1 + westLength.value2 == oppsLength)
+  else if (westLength[specNumber].value1 + 
+      westLength[specNumber].value2 == oppsLength)
   {
-    if (westLength.value1 + 1 == westLength.value2)
+    if (westLength[specNumber].value1 + 1 == 
+        westLength[specNumber].value2)
     {
       ss << "The suit " <<
-        (invertFlag ? "does not split" : "splits") << " " <<
-        to_string(westLength.value1) + "-" + 
-        to_string(westLength.value2) + " either way";
+        (invertFlag[specNumber] ? "does not split" : "splits") << " " <<
+        to_string(westLength[specNumber].value1) + "-" + 
+        to_string(westLength[specNumber].value2) + " either way";
     }
     else
     {
-      if (invertFlag)
+      if (invertFlag[specNumber])
         return "The suit splits less evenly than " +
-          to_string(westLength.value1) + "-" +
-          to_string(westLength.value2) + " either way";
+          to_string(westLength[specNumber].value1) + "-" +
+          to_string(westLength[specNumber].value2) + " either way";
       else
         return "The suit splits " +
-          to_string(westLength.value1) + "-" +
-          to_string(westLength.value2) + " or better either way";
+          to_string(westLength[specNumber].value1) + "-" +
+          to_string(westLength[specNumber].value2) + 
+            " or better either way";
     }
   }
   else
   {
-    if (invertFlag)
-      ss << "West has fewer than " << +westLength.value1 <<
-        " or more than " << +westLength.value2 << " cards";
+    if (invertFlag[specNumber])
+      ss << "West has fewer than " << 
+        +westLength[specNumber].value1 <<
+        " or more than " << 
+        +westLength[specNumber].value2 << " cards";
     else
       ss << "The suit splits between " <<
-        +westLength.value1 << "=" << 
-        +(oppsLength-westLength.value1) << " and " << 
-        +westLength.value2 << "=" << 
-        +(oppsLength-westLength.value2);
+        +westLength[specNumber].value1 << "=" << 
+        +(oppsLength - westLength[specNumber].value1) << " and " << 
+        +westLength[specNumber].value2 << "=" << 
+        +(oppsLength - westLength[specNumber].value2);
   }
   return ss.str();
 }
 
 
-string CoverSpec::strTop1Equal() const
+string CoverSpec::strTop1Equal(const unsigned specNumber) const
 {
   stringstream ss;
-  if (westTop1.value1 == 0)
+  if (westTop1[specNumber].value1 == 0)
   {
     if (oppsTops1 == 1)
-      ss << (invertFlag ? "West" : "East") << " has the top";
+      ss << (invertFlag[specNumber] ? "West" : "East") << " has the top";
     else
     {
-      if (invertFlag)
+      if (invertFlag[specNumber])
         ss << "West has at least one top";
       else
         ss << "East has the tops";
     }
   }
-  else if (westTop1.value1 == oppsTops1)
+  else if (westTop1[specNumber].value1 == oppsTops1)
   {
     if (oppsTops1 == 1)
-      ss << (invertFlag ? "East" : "West") << " has the top";
+      ss << (invertFlag[specNumber] ? "East" : "West") << " has the top";
     else
     {
-      if (invertFlag)
+      if (invertFlag[specNumber])
         ss << "East has at least one top";
       else
         ss << "West has the tops";
     }
   }
-  else if (westTop1.value1 == 1)
+  else if (westTop1[specNumber].value1 == 1)
   {
     if (oppsTops1 == 1)
-      ss << (invertFlag ? "East" : "West") << " has the top";
+      ss << (invertFlag[specNumber] ? "East" : "West") << " has the top";
     else
     {
-      ss << "West " << (invertFlag ? "does not have" : "has") << " " <<
+      ss << "West " << 
+        (invertFlag[specNumber] ? "does not have" : "has") << " " <<
         "exactly one top";
     }
   }
-  else if (westTop1.value1 == oppsTops1-1)
+  else if (westTop1[specNumber].value1 == oppsTops1-1)
   {
-    ss << "East " << (invertFlag ? "does not have" : "has") << " " <<
-      "exactly one top";
+    ss << "East " << (invertFlag[specNumber] ? "does not have" : "has") <<
+      " " << "exactly one top";
   }
-  else if (westTop1.value1 == 2)
+  else if (westTop1[specNumber].value1 == 2)
   {
-    ss << "West " << (invertFlag ? "does not have" : "has") << " " <<
-      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
+    ss << "West " << (invertFlag[specNumber] ? "does not have" : "has") <<
+      " " << (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
   }
   else
   {
-    ss << "West " << (invertFlag ? "does not have" : "has") << " " <<
-      "exactly " << +westTop1.value1 << " tops";
+    ss << "West " << (invertFlag[specNumber] ? "does not have" : "has") <<
+      " " << "exactly " << +westTop1[specNumber].value1 << " tops";
   }
   return ss.str();
 }
 
 
-string CoverSpec::strTop1Inside() const
+string CoverSpec::strTop1Inside(const unsigned specNumber) const
 {
   stringstream ss;
-  if (westTop1.value1 == 0)
+  if (westTop1[specNumber].value1 == 0)
   {
     ss << "West has " << 
-      (invertFlag ? "more than" : "at most") << " " << 
-      +westLength.value2 << " tops";
+      (invertFlag[specNumber] ? "more than" : "at most") << " " << 
+      +westLength[specNumber].value2 << " tops";
   }
-  else if (westTop1.value2 == oppsTops1)
+  else if (westTop1[specNumber].value2 == oppsTops1)
   {
     ss << "West has " << 
-      (invertFlag ? "at most" : "more than") << " " <<
-      +westLength.value2 << " tops";
+      (invertFlag[specNumber] ? "at most" : "more than") << " " <<
+      +westLength[specNumber].value2 << " tops";
   }
   else
   {
-    if (invertFlag)
-      ss << "West has fewer than " << +westTop1.value1 <<
-        " or more than " << +westTop1.value2 << " tops";
+    if (invertFlag[specNumber])
+      ss << "West has fewer than " << +westTop1[specNumber].value1 <<
+        " or more than " << +westTop1[specNumber].value2 << " tops";
     else
       ss << "West has between " <<
-        +westTop1.value1 << " and " <<
-        +westTop1.value2 << " tops";
+        +westTop1[specNumber].value1 << " and " <<
+        +westTop1[specNumber].value2 << " tops";
   }
   return ss.str();
 }
 
 
-string CoverSpec::strLength() const
+string CoverSpec::strLength(const unsigned specNumber) const
 {
-  if (westLength.oper == COVER_EQUAL)
-    return CoverSpec::strLengthEqual();
-  else if (westLength.oper == COVER_INSIDE_RANGE)
-    return CoverSpec::strLengthInside();
+  if (westLength[specNumber].oper == COVER_EQUAL)
+    return CoverSpec::strLengthEqual(specNumber);
+  else if (westLength[specNumber].oper == COVER_INSIDE_RANGE)
+    return CoverSpec::strLengthInside(specNumber);
   else
   {
     assert(false);
@@ -236,12 +251,12 @@ string CoverSpec::strLength() const
 }
 
 
-string CoverSpec::strTop1() const
+string CoverSpec::strTop1(const unsigned specNumber) const
 {
-  if (westTop1.oper == COVER_EQUAL)
-    return CoverSpec::strTop1Equal();
-  else if (westTop1.oper == COVER_INSIDE_RANGE)
-    return CoverSpec::strTop1Inside();
+  if (westTop1[specNumber].oper == COVER_EQUAL)
+    return CoverSpec::strTop1Equal(specNumber);
+  else if (westTop1[specNumber].oper == COVER_INSIDE_RANGE)
+    return CoverSpec::strTop1Inside(specNumber);
   else
   {
     assert(false);
@@ -250,83 +265,83 @@ string CoverSpec::strTop1() const
 }
 
 
-string CoverSpec::strBothEqual() const
+string CoverSpec::strBothEqual(const unsigned specNumber) const
 {
   stringstream ss;
-  if (westLength.value1 == 1)
+  if (westLength[specNumber].value1 == 1)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == 0)
+    if (westTop1[specNumber].value1 == 0)
       ss << "West has a small singleton";
     else
       ss << "West has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
         "singleton honor";
   }
-  else if (westLength.value1+1 == oppsLength)
+  else if (westLength[specNumber].value1+1 == oppsLength)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == oppsTops1)
+    if (westTop1[specNumber].value1 == oppsTops1)
       ss << "East has a small singleton";
     else
       ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
         "singleton honor";
   }
-  else if (westLength.value1 == 2)
+  else if (westLength[specNumber].value1 == 2)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == 0)
+    if (westTop1[specNumber].value1 == 0)
     {
       if (oppsLength == 4 && oppsTops1 == 2)
         ss << "East has doubleton honors (HH)";
       else
         ss << "West has a small doubleton";
     }
-    else if (westTop1.value1 == 1)
+    else if (westTop1[specNumber].value1 == 1)
       ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
       ss << "West has doubleton honors (HH)";
   }
-  else if (westLength.value1+2 == oppsLength)
+  else if (westLength[specNumber].value1+2 == oppsLength)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == oppsTops1)
+    if (westTop1[specNumber].value1 == oppsTops1)
       ss << "East has a small doubleton";
-    else if (westTop1.value1+1 == oppsTops1)
+    else if (westTop1[specNumber].value1+1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
       ss << "East has doubleton honors (HH)";
   }
-  else if (westLength.value1 == 3)
+  else if (westLength[specNumber].value1 == 3)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == 0)
+    if (westTop1[specNumber].value1 == 0)
       ss << "West has a small tripleton";
-    else if (westTop1.value1 == 1)
+    else if (westTop1[specNumber].value1 == 1)
       ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (westTop1.value1 == 2)
+    else if (westTop1[specNumber].value1 == 2)
       ss << "West has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
       ss << "West has tripleton honors (HHH)";
   }
-  else if (westLength.value1+3 == oppsLength)
+  else if (westLength[specNumber].value1+3 == oppsLength)
   {
-    assert(! invertFlag);
+    assert(! invertFlag[specNumber]);
 
-    if (westTop1.value1 == oppsTops1)
+    if (westTop1[specNumber].value1 == oppsTops1)
       ss << "East has a small tripleton";
-    else if (westTop1.value1+1 == oppsTops1)
+    else if (westTop1[specNumber].value1+1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (westTop1.value1+2 == oppsTops1)
+    else if (westTop1[specNumber].value1+2 == oppsTops1)
       ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -339,26 +354,30 @@ string CoverSpec::strBothEqual() const
 }
 
 
-string CoverSpec::strTop1Fixed() const
+string CoverSpec::strTop1Fixed(const unsigned specNumber) const
 {
   stringstream ss;
 
-  const unsigned char xesWestMax = westLength.value2 - westTop1.value1;
-  const unsigned char xesWestMin = westLength.value1 - westTop1.value1;
+  const unsigned char xesWestMax = westLength[specNumber].value2 - 
+    westTop1[specNumber].value1;
+  const unsigned char xesWestMin = westLength[specNumber].value1 - 
+    westTop1[specNumber].value1;
 
-  const unsigned char xesEastMax = (oppsLength - westLength.value1) -
-    (oppsTops1 - westTop1.value1);
-  const unsigned char xesEastMin = (oppsLength - westLength.value2) -
-    (oppsTops1 - westTop1.value1);
+  const unsigned char xesEastMax = 
+    (oppsLength - westLength[specNumber].value1) -
+    (oppsTops1 - westTop1[specNumber].value1);
+  const unsigned char xesEastMin = 
+    (oppsLength - westLength[specNumber].value2) -
+    (oppsTops1 - westTop1[specNumber].value1);
 
   const string strWest = string(xesWestMin, 'x') + 
     "(" + string(xesWestMax - xesWestMin, 'x') + ")";
   const string strEast = string(xesEastMin, 'x') + 
     "(" + string(xesEastMax - xesEastMin, 'x') + ")";
 
-  assert(! invertFlag);
+  assert(! invertFlag[specNumber]);
 
-  if (westTop1.value1 == 0)
+  if (westTop1[specNumber].value1 == 0)
   {
     if (oppsTops1 == 1)
     {
@@ -377,7 +396,7 @@ string CoverSpec::strTop1Fixed() const
     else
       assert(false);
   }
-  else if (westTop1.value1 == oppsTops1)
+  else if (westTop1[specNumber].value1 == oppsTops1)
   {
     if (oppsTops1 == 1)
     {
@@ -401,12 +420,12 @@ string CoverSpec::strTop1Fixed() const
     {
       cout << "xesWestMax " << +xesWestMax << 
         ", xesEastMax " << +xesEastMax << "\n";
-      cout << "WW" << CoverSpec::strLength() << 
-        ", and " <<CoverSpec::strTop1() << endl;
+      cout << "WW" << CoverSpec::strLength(specNumber) << 
+        ", and " <<CoverSpec::strTop1(specNumber) << endl;
       assert(false);
     }
   }
-  else if (westTop1.value1 == 1)
+  else if (westTop1[specNumber].value1 == 1)
   {
     if (oppsTops1 == 2)
     {
@@ -434,7 +453,7 @@ string CoverSpec::strTop1Fixed() const
         ss << "West has H" << strWest;
     }
   }
-  else if (westTop1.value1+1 == oppsTops1)
+  else if (westTop1[specNumber].value1+1 == oppsTops1)
   {
     if (xesEastMax == 1)
       ss << "East has one top at most doubleton";
@@ -448,43 +467,53 @@ string CoverSpec::strTop1Fixed() const
 }
 
 
-string CoverSpec::str() const
+string CoverSpec::strSet(const unsigned specNumber) const
 {
-  if (mode == COVER_LENGTHS_ONLY)
-    return CoverSpec::strLength();
-  else if (mode == COVER_TOPS_ONLY)
-    return CoverSpec::strTop1();
-  else if (mode == COVER_LENGTHS_AND_TOPS)
+  if (mode[specNumber] == COVER_LENGTHS_ONLY)
+    return CoverSpec::strLength(specNumber);
+  else if (mode[specNumber] == COVER_TOPS_ONLY)
+    return CoverSpec::strTop1(specNumber);
+  else if (mode[specNumber] == COVER_LENGTHS_AND_TOPS)
   {
-    if (westLength.oper == COVER_EQUAL)
+    if (westLength[specNumber].oper == COVER_EQUAL)
     {
-      if (westTop1.oper == COVER_EQUAL)
-        return CoverSpec::strBothEqual();
+      if (westTop1[specNumber].oper == COVER_EQUAL)
+        return CoverSpec::strBothEqual(specNumber);
       else
-        assert(false);
+      {
+        return "ZZ " + CoverSpec::strLength(specNumber) + ", and " + 
+          CoverSpec::strTop1(specNumber);
+      }
     }
     else
     {
-      if (westTop1.oper == COVER_EQUAL)
-        return CoverSpec::strTop1Fixed();
+      if (westTop1[specNumber].oper == COVER_EQUAL)
+        return CoverSpec::strTop1Fixed(specNumber);
       else
       {
       }
     }
     // At the moment only 1=5/2=4 with 1-2 West tops
-    return "XX " + CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+    return "XX " + CoverSpec::strLength(specNumber) + ", and " + 
+      CoverSpec::strTop1(specNumber);
   }
-  else if (mode == COVER_LENGTHS_OR_TOPS)
+  else
+    return "";
+}
+
+
+string CoverSpec::str() const
+{
+  if (mode[1] == COVER_MODE_NONE)
+    return CoverSpec::strSet(0);
+  else
   {
     // At the moment
     // 57 YYThe suit splits 2-2, or East has the tops
     // 15 YYThe suit splits 3=3, or West has the tops
     // 24 YYWest has at least 2 cards, or East has the tops
     // 12 YYWest has at most 3 cards, or West has the tops
-
-    return "YY " + CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
+    return "YY " + CoverSpec::strSet(0) + "; or " + CoverSpec::strSet(1);
   }
-  else
-    return "";
 }
 
