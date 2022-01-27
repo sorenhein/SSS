@@ -1,35 +1,35 @@
 Verbals of strategy wins
 ========================
-* Could make a cross table e.g. for 5-2 to see which terms often
-  occur together
+* What do we need to know about a set of covers of a Strategy?
+  - Overall
+    - tmin
+  - For each cover
+    - ptr to entry
+    - #weight, #dist
+    - Maybe a hierarchical level, so they are ordered that way
+* str method, for each strategy
+  - Overall tmin
+  - The nested set of covers with #weight / #dist
+  - Would be nice to parametrize by the actual names of cards
 
-* Complete the cover entry with OR, e.g. 9/1970,
-  There is a singleton honor / The honor is singleton
-  There are two honors doubleton / The honors are doubleton
-  Could be a method SymmGeneralAnd
-  - AKJx/xx has 4=3 5=2 6=1 with short top either way
-  - The honor is at most third with either player
+* Statistics
+  - histogram of covers used for a given (length, tops1)
+  - Cross histogram showing candidates for more concise covers
+  - #covers per strategy (look for ones with too many)
 
-* Store #dist #weight in a result (not just pointer to entry); output them
+* For e.g. 8/5901 (HH either way), have a SymmGeneralAnd method?
+  - Set a symmFlag
+  - Notice this when outputting text
 
-* Store and output the minimum #tricks
-
-* Order cover's hierarchically when they are nested
-  - Output them correspondingly
-
-* Count #times that each cover is used
-
-* Count #covers per strategy, look for poorly explained ones with
-  many small covers
+* Look at text for all the couple hundred entries directly
 
 * Probably get some deadlocks that have less greedy solutions.
+
+* If the same profile arises in two ways, pick the less complex one?
 
 * Also output differences between two strategies
   - As text
   - In a table (as Unicode text, HTML, ...)
-
-* Find a way to store actual names of cards, and print them
-  (not just "honor"), from the non-canonical distribution
 
 * Give each cover a complexity that matters when sorting
 

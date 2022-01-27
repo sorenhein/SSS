@@ -239,67 +239,6 @@ void CoverMemory::EastGeneralAnd(
 }
 
 
-// ----- Length OR top-1 -----
-
-
-/*
-void CoverMemory::WestGeneralOr(
-  const unsigned char lowerCardsIncl,
-  const unsigned char upperCardsIncl,
-  const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl,
-  const unsigned specNumber)
-{
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.invertFlag[specNumber] = false;
-  spec.mode[specNumber] = COVER_LENGTHS_OR_TOPS;
-
-  if (lowerCardsIncl == upperCardsIncl)
-    spec.westLength[specNumber].set(lowerCardsIncl, COVER_EQUAL);
-  else
-    spec.westLength[specNumber].set(
-      lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
-
-  if (lowerTopsIncl == upperTopsIncl)
-    spec.westTop1[specNumber].set(lowerTopsIncl, COVER_EQUAL);
-  else
-    spec.westTop1.set[specNumber](
-      lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
-}
-
-
-void CoverMemory::EastGeneralOr(
-  const unsigned char lowerCardsIncl,
-  const unsigned char upperCardsIncl,
-  const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl,
-  const unsigned specNumber)
-{
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.invertFlag[specNumber] = false;
-  spec.mode[specNumber] = COVER_LENGTHS_OR_TOPS;
-
-  if (lowerCardsIncl == upperCardsIncl)
-    spec.westLength[specNumber].set(
-      coverGlobal.cards - lowerCardsIncl, COVER_EQUAL);
-  else
-    spec.westLength[specNumber].set(
-      coverGlobal.cards - upperCardsIncl, 
-      coverGlobal.cards - lowerCardsIncl, 
-      COVER_INSIDE_RANGE);
-
-  if (lowerTopsIncl == upperTopsIncl)
-    spec.westTop1[specNumber].set(
-      coverGlobal.tops1 - lowerTopsIncl, COVER_EQUAL);
-  else
-    spec.westTop1[specNumber].set(
-      coverGlobal.tops1 - upperTopsIncl, 
-      coverGlobal.tops1 - lowerTopsIncl, 
-      COVER_INSIDE_RANGE);
-}
-*/
-
-
 void CoverMemory::prepare_2_1()
 {
   coverGlobal = {2, 1};
@@ -334,6 +273,10 @@ void CoverMemory::prepare_3_1()
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
 
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
+
+  // OR these two together:  Singleton honor either side.
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // H with West
+  CoverMemory::EastGeneralAnd(1, 1, 1, 1, 1); // H with East
 }
 
 
@@ -411,10 +354,13 @@ void CoverMemory::prepare_4_2()
   CoverMemory::EastGeneralAnd(2, 3, 1, 1); // Hx(x) with East
   CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
 
-  // CoverMemory::EastGeneralOr(2, 2, 2, 2);
-  // OR these two together:  East has HH, or any 2=2
-  CoverMemory::EastLength(2);
-  CoverMemory::EastTop1(2, 1);
+  // OR these two together:  Singleton honor either side.
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // H with West
+  CoverMemory::EastGeneralAnd(1, 1, 1, 1, 1); // H with East
+
+  // OR these two together:  East or West has HH
+  CoverMemory::WestGeneralAnd(2, 2, 2, 2);
+  CoverMemory::EastGeneralAnd(2, 2, 2, 2, 1);
 }
 
 
@@ -518,12 +464,9 @@ void CoverMemory::prepare_5_3()
 
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
 
-  // CoverMemory::WestGeneralOr(0, 3, 3, 3);
   // OR these two together:  West has 0-3c or all honors
   CoverMemory::WestLengthRange(0, 3);
   CoverMemory::WestTop1(3, 1);
-
-  // CoverMemory::EastGeneralOr(0, 3, 3, 3);
 
   // OR these two together:  East has 0-3c or all honors
   CoverMemory::EastLengthRange(0, 3);
@@ -615,8 +558,6 @@ void CoverMemory::prepare_6_3()
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
   CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH with East
   CoverMemory::WestGeneralAnd(3, 3, 3, 3); // HHH with East
-
-  // CoverMemory::WestGeneralOr(3, 3, 3, 3);
 
   // OR these two together:  West has all H's or any 3-3
   CoverMemory::WestLength(3);
@@ -815,164 +756,4 @@ string CoverMemory::str(
     
   return s; 
 }
-
-
-/*
-
-void Covers::prepareSpecific(
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
-  const vector<unsigned char>& cases,
-  const unsigned char maxLength,
-  const unsigned char maxTops,
-  list<Cover>::iterator& iter)
-{
-  iter = covers.begin();
-  CoverSpec spec;
-
-  // This loop does combinations of the form <=, ==, >=.
-
-  for (unsigned char length = 0; length <= maxLength; length++)
-  {
-    spec.westLength.setValue(length);
-    for (unsigned char top = 0; top <= maxTops; top++)
-    {
-      spec.westTop1.setValue(top);
-      for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
-      {
-        spec.mode = static_cast<CoverMode>(mode);
-        for (unsigned lOper = 0; lOper < COVER_OPERATOR_SIZE-1; lOper++)
-        {
-          if ((length == 0 || length == maxLength) && lOper != COVER_EQUAL)
-            continue;
-
-          spec.westLength.setOperator(static_cast<CoverOperator>(lOper));
-
-          for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
-          {
-            if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
-              continue;
-
-            spec.westTop1.setOperator(static_cast<CoverOperator>(tOper));
-
-            assert(iter != covers.end());
-            iter->prepare(lengths, tops, cases, spec);
-            iter++;
-          }
-        }
-      }
-    }
-  }
-}
-
-
-void Covers::prepareMiddles(
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
-  const vector<unsigned char>& cases,
-  const unsigned char maxLength,
-  const unsigned char maxTops,
-  list<Cover>::iterator& iter)
-{
-  // This loop does more global distributions of the form
-  // "4-2 or better".
-
-  CoverSpec spec;
-  spec.westLength.setOperator(static_cast<CoverOperator>(COVER_INSIDE_RANGE));
-
-  // With 5 or 6 cards, we run from 1 to 2 as the lower end.
-  const unsigned char middleCount = (maxLength-1) >> 1;
-
-  for (unsigned char length = 1; length <= middleCount; length++)
-  {
-    spec.westLength.setValues(length, maxLength-length);
-    for (unsigned char top = 0; top <= maxTops; top++)
-    {
-      spec.westTop1.setValue(top);
-      for (unsigned mode = 0; mode < COVER_MODE_SIZE; mode++)
-      {
-        spec.mode = static_cast<CoverMode>(mode);
-        for (unsigned tOper = 0; tOper < COVER_OPERATOR_SIZE-1; tOper++)
-        {
-          if ((top == 0 || top == maxTops) && tOper != COVER_EQUAL)
-            continue;
-
-          spec.westTop1.setOperator(static_cast<CoverOperator>(tOper));
-
-          assert(iter != covers.end());
-          iter->prepare(lengths, tops, cases, spec);
-          iter++;
-        }
-      }
-    }
-  }
-}
-
-
-void Covers::prepare(
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
-  const vector<unsigned char>& cases,
-  const unsigned char maxLength,
-  const unsigned char maxTops)
-{
-  assert(lengths.size() == tops.size());
-  assert(maxLength >= 2);
-  assert(maxTops >= 1);
-
-  // We consider two kinds of distribution information:
-  // (1) <=, ==, >= a specific number of West cards.
-  // (2) Both West and East in a certain middle range.
-  // 
-  // For (1) there are generally 3 operators for each of lengths and tops;
-  // 4 ways to combine them; and a number of possible lengths and tops.
-  // For the maximum and minimum value of lengths and tops there is
-  // only one operator, ==.
-  //
-  // For (2) there are (maxLength-1) >> 1 interesting splits.
-  // For example, for 7 cards there are any 4-3; up to 5-2; up to 6-1,
-  // and (7-1) >> 1 is 3.  For 8 cards there are also 3, as 4-4 is
-  // already covered by the "exactly 4 West cards" split above.
-
-  const unsigned middleCount = (maxLength-1) >> 1;
-
-  unsigned count1, count2;
-  if (maxTops == 1)
-  {
-    count1 = COVER_MODE_SIZE *
-      ((maxLength-1) * 2 * (COVER_OPERATOR_SIZE-1) * 1 + 
-      2 * 2 * 1 * 1);
-    
-    count2 = COVER_MODE_SIZE * middleCount * 2 * 1 * 1;
-  }
-  else
-  {
-    count1 = COVER_MODE_SIZE *
-      ((maxLength-1) * (maxTops-1) * 
-        (COVER_OPERATOR_SIZE-1) * (COVER_OPERATOR_SIZE-1) +
-      2 * (maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
-      (maxLength-1) * 2 * (COVER_OPERATOR_SIZE-1) * 1 +
-      2 * 2 * 1 * 1);
-
-    count2 = COVER_MODE_SIZE * middleCount *
-      ((maxTops-1) * 1 * (COVER_OPERATOR_SIZE-1) +
-      2 * 1 * 1 );
-  }
-
-  const unsigned coverCount = count1 + count2;
-
-  covers.resize(coverCount);
-
-  list<Cover>::iterator iter;
-  Covers::prepareSpecific(lengths, tops, cases, maxLength, maxTops, iter);
-  Covers::prepareMiddles(lengths, tops, cases, maxLength, maxTops, iter);
-  assert(iter == covers.end());
-
-  covers.sort([](const Cover& cover1, const Cover& cover2)
-  {
-    return (cover1.getWeight() >= cover2.getWeight());
-  });
-}
-
-*/
 
