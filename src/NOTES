@@ -1,5 +1,9 @@
 Verbals of strategy wins
 ========================
+* Look at the XX and YY marked lines in a to finish wording
+  West has HH(x)
+  West has at least one H
+
 * Complete the cover entry with OR, e.g. 9/1970,
   There is a singleton honor / The honor is singleton
   There are two honors doubleton / The honors are doubleton
@@ -9,13 +13,6 @@ Verbals of strategy wins
 
 * Mode must consider all the four combinations in some binary way
 
-* More verbal outputs such as
-  West has both honors (any length)
-  West has exactly HH
-  West has HH(x)
-  West has exactly HHH
-  West has at least one H
-
 * Store #dist #weight in a result (not just pointer to entry); output them
 
 * Store and output the minimum #tricks
@@ -24,6 +21,9 @@ Verbals of strategy wins
   - Output them correspondingly
 
 * Count #times that each cover is used
+
+* Count #covers per strategy, look for poorly explained ones with
+  many small covers
 
 * Probably get some deadlocks that have less greedy solutions.
 

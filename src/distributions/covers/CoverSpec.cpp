@@ -73,7 +73,6 @@ string CoverSpec::strLengthEqual() const
 string CoverSpec::strLengthInside() const
 {
   stringstream ss;
-
   if (westLength.value1 == 0)
   {
     ss << "West has " << 
@@ -172,7 +171,7 @@ string CoverSpec::strTop1Equal() const
   else if (westTop1.value1 == 2)
   {
     ss << "West " << (invertFlag ? "does not have" : "has") << " " <<
-      "exactly two tops";
+      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
   }
   else
   {
@@ -183,28 +182,60 @@ string CoverSpec::strTop1Equal() const
 }
 
 
-string CoverSpec::strLength() const
+string CoverSpec::strTop1Inside() const
 {
-  if (westLength.oper == COVER_EQUAL)
+  stringstream ss;
+  if (westTop1.value1 == 0)
   {
-    return CoverSpec::strLengthEqual();
+    ss << "West has " << 
+      (invertFlag ? "more than" : "at most") << " " << 
+      +westLength.value2 << " tops";
   }
-  else if (westLength.oper == COVER_INSIDE_RANGE)
+  else if (westTop1.value2 == oppsTops1)
   {
-    return CoverSpec::strLengthInside();
+    ss << "West has " << 
+      (invertFlag ? "at most" : "more than") << " " <<
+      +westLength.value2 << " tops";
   }
   else
-    return westLength.str("cards");
+  {
+    if (invertFlag)
+      ss << "West has fewer than " << +westTop1.value1 <<
+        " or more than " << +westTop1.value2 << " tops";
+    else
+      ss << "West has between " <<
+        +westTop1.value1 << " and " <<
+        +westTop1.value2 << " tops";
+  }
+  return ss.str();
 }
 
 
-// TODO Goes away longer-term
+string CoverSpec::strLength() const
+{
+  if (westLength.oper == COVER_EQUAL)
+    return CoverSpec::strLengthEqual();
+  else if (westLength.oper == COVER_INSIDE_RANGE)
+    return CoverSpec::strLengthInside();
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
+
 string CoverSpec::strTop1() const
 {
   if (westTop1.oper == COVER_EQUAL)
     return CoverSpec::strTop1Equal();
+  else if (westTop1.oper == COVER_INSIDE_RANGE)
+    return CoverSpec::strTop1Inside();
   else
-    return westTop1.str("tops");
+  {
+    assert(false);
+    return "";
+  }
 }
 
 
@@ -231,8 +262,67 @@ string CoverSpec::strBothEqual() const
       ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
         "singleton honor";
   }
+  else if (westLength.value1 == 2)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == 0)
+    {
+      if (oppsLength == 4 && oppsTops1 == 2)
+        ss << "East has doubleton honors (HH)";
+      else
+        ss << "West has a small doubleton";
+    }
+    else if (westTop1.value1 == 1)
+      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor doubleton (Hx)";
+    else
+      ss << "West has doubleton honors (HH)";
+  }
+  else if (westLength.value1+2 == oppsLength)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == oppsTops1)
+      ss << "East has a small doubleton";
+    else if (westTop1.value1+1 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor doubleton (Hx)";
+    else
+      ss << "East has doubleton honors (HH)";
+  }
+  else if (westLength.value1 == 3)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == 0)
+      ss << "West has a small tripleton";
+    else if (westTop1.value1 == 1)
+      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor tripleton (Hxx)";
+    else if (westTop1.value1 == 2)
+      ss << "West has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
+        "honors tripleton (HHx)";
+    else
+      ss << "West has tripleton honors (HHH)";
+  }
+  else if (westLength.value1+3 == oppsLength)
+  {
+    assert(! invertFlag);
+
+    if (westTop1.value1 == oppsTops1)
+      ss << "East has a small tripleton";
+    else if (westTop1.value1+1 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor tripleton (Hxx)";
+    else if (westTop1.value1+2 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
+        "honors tripleton (HHx)";
+    else
+      ss << "East has tripleton honors (HHH)";
+  }
   else
-    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+    assert(false);
 
   return ss.str();
 }
@@ -263,10 +353,10 @@ string CoverSpec::str() const
       {
       }
     }
-    return CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+    return "XX" + CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
   }
   else if (mode == COVER_LENGTHS_OR_TOPS)
-    return CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
+    return "YY" + CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
   else
     return "";
 }
