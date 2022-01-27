@@ -75,15 +75,26 @@ string CoverSpec::strLengthInside() const
   stringstream ss;
   if (westLength.value1 == 0)
   {
-    ss << "West has " << 
-      (invertFlag ? "more than" : "at most") << " " << 
-      +westLength.value2 << " cards";
+    if (invertFlag)
+    {
+      if (westLength.value2 == westLength.value1)
+        ss << "West is not void";
+      else
+        ss << "West has at least " << +(westLength.value2+1) << " cards";
+    }
+    else if (westLength.value2 == 1)
+      ss << "West has at most a singleton";
+    else if (westLength.value2 == 2)
+      ss << "West has at most a doubleton";
+    else
+      ss << "West has at most " << +westLength.value2 << " cards";
   }
   else if (westLength.value2 == oppsLength)
   {
-    ss << "West has " << 
-      (invertFlag ? "at most" : "more than") << " " <<
-      +westLength.value2 << " cards";
+    if (invertFlag)
+      ss << "West has at most " << +(westLength.value1-1) << " cards";
+    else
+      ss << "West has at least " << +westLength.value1 << " cards";
   }
   else if (westLength.value1 == 1 && westLength.value2 == oppsLength-1)
   {
@@ -328,6 +339,115 @@ string CoverSpec::strBothEqual() const
 }
 
 
+string CoverSpec::strTop1Fixed() const
+{
+  stringstream ss;
+
+  const unsigned char xesWestMax = westLength.value2 - westTop1.value1;
+  const unsigned char xesWestMin = westLength.value1 - westTop1.value1;
+
+  const unsigned char xesEastMax = (oppsLength - westLength.value1) -
+    (oppsTops1 - westTop1.value1);
+  const unsigned char xesEastMin = (oppsLength - westLength.value2) -
+    (oppsTops1 - westTop1.value1);
+
+  const string strWest = string(xesWestMin, 'x') + 
+    "(" + string(xesWestMax - xesWestMin, 'x') + ")";
+  const string strEast = string(xesEastMin, 'x') + 
+    "(" + string(xesEastMax - xesEastMin, 'x') + ")";
+
+  assert(! invertFlag);
+
+  if (westTop1.value1 == 0)
+  {
+    if (oppsTops1 == 1)
+    {
+      if (xesEastMax == 1)
+        ss << "East has the top at most doubleton";
+      else
+        ss << "East has H" << strEast;
+    }
+    else if (oppsTops1 == 2)
+    {
+      if (xesEastMax == 1)
+        ss << "East has both tops at most tripleton";
+      else
+        ss << "East has HH" << strEast;
+    }
+    else
+      assert(false);
+  }
+  else if (westTop1.value1 == oppsTops1)
+  {
+    if (oppsTops1 == 1)
+    {
+      if (xesWestMax == 1)
+        ss << "West has the top at most doubleton";
+      else
+        ss << "West has H" << strWest;
+    }
+    else if (oppsTops1 == 2)
+    {
+      if (xesWestMax == 1)
+        ss << "West has both tops at most tripleton";
+      else
+        ss << "West has HH" << strWest;
+    }
+    else if (oppsTops1 == 3)
+    {
+      ss << "West has HHH" << strWest;
+    }
+    else
+    {
+      cout << "xesWestMax " << +xesWestMax << 
+        ", xesEastMax " << +xesEastMax << "\n";
+      cout << "WW" << CoverSpec::strLength() << 
+        ", and " <<CoverSpec::strTop1() << endl;
+      assert(false);
+    }
+  }
+  else if (westTop1.value1 == 1)
+  {
+    if (oppsTops1 == 2)
+    {
+      // Look at it from the shorter side
+      if (xesWestMax <= xesEastMax)
+      {
+        if (xesWestMax == 1)
+          ss << "West has one top at most doubleton";
+        else
+          ss << "West has H" << strWest;
+      }
+      else
+      {
+        if (xesEastMax == 1)
+          ss << "East has one top at most doubleton";
+        else
+          ss << "East has H" << strEast;
+      }
+    }
+    else
+    {
+      if (xesWestMax == 1)
+        ss << "West has one top at most doubleton";
+      else
+        ss << "West has H" << strWest;
+    }
+  }
+  else if (westTop1.value1+1 == oppsTops1)
+  {
+    if (xesEastMax == 1)
+      ss << "East has one top at most doubleton";
+    else
+      ss << "East has H" << strEast;
+  }
+  else
+    assert(false);
+
+  return ss.str();
+}
+
+
 string CoverSpec::str() const
 {
   if (mode == COVER_LENGTHS_ONLY)
@@ -341,22 +461,29 @@ string CoverSpec::str() const
       if (westTop1.oper == COVER_EQUAL)
         return CoverSpec::strBothEqual();
       else
-      {
-      }
+        assert(false);
     }
     else
     {
       if (westTop1.oper == COVER_EQUAL)
-      {
-      }
+        return CoverSpec::strTop1Fixed();
       else
       {
       }
     }
-    return "XX" + CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
+    // At the moment only 1=5/2=4 with 1-2 West tops
+    return "XX " + CoverSpec::strLength() + ", and " + CoverSpec::strTop1();
   }
   else if (mode == COVER_LENGTHS_OR_TOPS)
-    return "YY" + CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
+  {
+    // At the moment
+    // 57 YYThe suit splits 2-2, or East has the tops
+    // 15 YYThe suit splits 3=3, or West has the tops
+    // 24 YYWest has at least 2 cards, or East has the tops
+    // 12 YYWest has at most 3 cards, or West has the tops
+
+    return "YY " + CoverSpec::strLength() + ", or " + CoverSpec::strTop1();
+  }
   else
     return "";
 }

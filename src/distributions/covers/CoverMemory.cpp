@@ -259,7 +259,7 @@ void CoverMemory::EastGeneralOr(
       COVER_INSIDE_RANGE);
 
   if (lowerTopsIncl == upperTopsIncl)
-    spec.westTop1.set(coverGlobal.top1 - lowerTopsIncl, COVER_EQUAL);
+    spec.westTop1.set(coverGlobal.tops1 - lowerTopsIncl, COVER_EQUAL);
   else
     spec.westTop1.set(
       coverGlobal.tops1 - upperTopsIncl, 
