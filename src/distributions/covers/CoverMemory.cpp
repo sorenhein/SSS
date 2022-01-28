@@ -9,6 +9,7 @@
 #include <cassert>
 
 #include "CoverMemory.h"
+#include "ExplStats.h"
 
 // Global to make the many cases more streamlined.
 
@@ -30,6 +31,39 @@ CoverMemory::CoverMemory()
 void CoverMemory::reset()
 {
   specs.clear();
+}
+
+
+void CoverMemory::resizeStats(ExplStats& explStats) const
+{
+  const unsigned ssize = specs.size();
+
+  explStats.singles.resize(ssize);
+  explStats.pairs.resize(ssize);
+  explStats.lengths.resize(ssize);
+
+  for (unsigned s = 0; s < ssize; s++)
+  {
+    const unsigned s2size = specs[s].size();
+
+    explStats.singles[s].resize(s2size);
+    explStats.pairs[s].resize(s2size);
+    explStats.lengths[s].resize(s2size);
+
+    for (unsigned t = 0; t < s2size; t++)
+    {
+      const unsigned csize = specs[s][t].size();
+
+      explStats.singles[s][t].resize(csize);
+      explStats.pairs[s][t].resize(csize);
+
+      // 10 explanations of a single strategy
+      explStats.lengths[s][t].resize(10);
+
+      for (unsigned c = 0; c < csize; c++)
+        explStats.pairs[s][t][c].resize(csize);
+    }
+  }
 }
 
 

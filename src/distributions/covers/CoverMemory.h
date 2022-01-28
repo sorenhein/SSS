@@ -17,6 +17,8 @@
 
 using namespace std;
 
+struct ExplStats;
+
 
 class CoverMemory
 {
@@ -141,6 +143,8 @@ class CoverMemory
     CoverMemory();
 
     void reset();
+
+    void resizeStats(ExplStats& explStats) const;
 
     void prepare(const unsigned char maxCards);
 

@@ -54,6 +54,10 @@ struct CoverSpec
 
   CoverSpec();
 
+  void getIndices(
+    unsigned char& length,
+    unsigned char& tops1) const;
+
   string strLengthEqual(const unsigned specNumber) const;
   string strLengthInside(const unsigned specNumber) const;
   string strLength(const unsigned specNumber) const;

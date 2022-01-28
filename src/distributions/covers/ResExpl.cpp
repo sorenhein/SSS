@@ -13,6 +13,7 @@
 
 #include "ResExpl.h"
 #include "Cover.h"
+#include "ExplStats.h"
 
 
 ResExpl::ResExpl()
@@ -107,6 +108,37 @@ void ResExpl::insert(Cover const& cover)
 bool ResExpl::empty() const
 {
   return data.empty();
+}
+
+
+void ResExpl::updateStats(ExplStats& explStats) const
+{
+  // Look up the indices.
+  if (data.empty())
+    return;
+
+  unsigned char lengthIndex, tops1Index;
+  data.front().coverPtr->getIndices(lengthIndex, tops1Index);
+
+  auto& singles = explStats.singles[lengthIndex][tops1Index];
+  auto& pairs = explStats.pairs[lengthIndex][tops1Index];
+  auto& lengths = explStats.lengths[lengthIndex][tops1Index];
+
+  lengths[data.size()]++;
+
+  for (auto iter = data.begin(); iter != data.end(); iter++)
+  {
+    const unsigned index = iter->coverPtr->index();
+    assert(index < singles.size());
+    singles[index]++;
+
+    for (auto iter2 = next(iter); iter2 != data.end(); iter2++)
+    {
+      const unsigned index2 = iter2->coverPtr->index();
+      pairs[index][index2]++;
+      pairs[index2][index]++;
+    }
+  }
 }
 
 

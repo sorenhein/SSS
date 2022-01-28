@@ -142,6 +142,12 @@ void DistMemory::resizeSingle(const vector<set<unsigned>>& dependenciesCan)
 }
 
 
+void DistMemory::resizeStats(ExplStats& explStats) const
+{
+  coverMemory.resizeStats(explStats);
+}
+
+
 Distribution& DistMemory::addFullMT(
   const unsigned char cards,
   const unsigned holding)

@@ -135,6 +135,14 @@ bool Cover::operator <= (const Cover& cover2) const
 }
 
 
+void Cover::getIndices(
+  unsigned char& length,
+  unsigned char& tops1) const
+{
+  spec.getIndices(length, tops1);
+}
+
+
 unsigned Cover::index() const
 {
   return spec.index;

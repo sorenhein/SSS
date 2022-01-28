@@ -58,6 +58,10 @@ class Cover
 
     bool operator <= (const Cover& cover2) const;
 
+    void getIndices(
+      unsigned char& length,
+      unsigned char& tops1) const;
+
     unsigned index() const;
 
     unsigned char getWeight() const;

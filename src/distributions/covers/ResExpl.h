@@ -14,6 +14,8 @@
 
 #include "Cover.h"
 
+struct ExplStats;
+
 
 using namespace std;
 
@@ -50,6 +52,8 @@ class ResExpl
     void insert(const Cover& cover);
 
     bool empty() const;
+
+    void updateStats(ExplStats& explStats) const;
 
     string str() const;
 };

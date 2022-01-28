@@ -16,6 +16,7 @@
 #include "Distribution.h"
 #include "DistCore.h"
 #include "covers/CoverMemory.h"
+#include "covers/ExplStats.h"
 
 using namespace std;
 
@@ -46,6 +47,8 @@ class DistMemory
     void resize(
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
+
+    void resizeStats(ExplStats& explStats) const;
 
     void resizeSingle(const vector<set<unsigned>>& dependenciesCan);
 

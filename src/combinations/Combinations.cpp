@@ -287,6 +287,11 @@ void Combinations::runUniques(
   CombTest ctest;
   list<ResExpl> resExplanations;
 
+  // Statistics of explanations
+  ExplStats explStats;
+  if (cards >= 2)
+    distributions.resizeStats(explStats);
+
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
     CombEntry& centry = combMemory.getEntry(cards, holding);

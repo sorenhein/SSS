@@ -22,6 +22,15 @@ CoverSpec::CoverSpec()
 }
 
 
+void CoverSpec::getIndices(
+  unsigned char& length,
+  unsigned char& tops1) const
+{
+  length = oppsLength;
+  tops1 = oppsTops1;
+}
+
+
 string CoverSpec::strLengthEqual(const unsigned specNumber) const
 {
   stringstream ss;
