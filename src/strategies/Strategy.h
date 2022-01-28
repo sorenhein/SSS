@@ -22,6 +22,7 @@ class Distribution;
 class SurvivorList;
 class Covers;
 struct Reduction;
+class ResExpl;
 
 using namespace std;
 
@@ -229,7 +230,9 @@ class Strategy
 
     // ******************* Winners ******************
 
-    unsigned covers(const Covers& coversIn) const;
+    unsigned covers(
+      const Covers& coversIn,
+      ResExpl& resExpl) const;
 
     void studyOppsVoid(
       Result& resultWestVoid,

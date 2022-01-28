@@ -107,6 +107,7 @@ class Strategies
 
     unsigned covers(
       const Covers& coversIn,
+      list<ResExpl>& resExplanations,
       const unsigned char maxRank = 0) const;
 
     bool ordered() const;

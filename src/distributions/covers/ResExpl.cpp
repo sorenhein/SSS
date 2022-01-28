@@ -107,6 +107,9 @@ void ResExpl::insert(Cover const& cover)
 string ResExpl::str() const
 {
   stringstream ss;
+  ss << "Always take at least " << +tricksMin << 
+    " tricks, and more when\n";
+
   string prefix;
   for (auto& ed: data)
   {

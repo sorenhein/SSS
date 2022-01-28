@@ -1,15 +1,9 @@
 Verbals of strategy wins
 ========================
 * ResExpl::str method, for each strategy
-  - Overall tmin
   - Would be nice to parametrize by the actual names of cards
 
-* Let ResExpl percolate up toward Combination(s)
-
-* CoverMemory: symmFlag when going through SymmGeneralAnd;
-  use this when printing results later
-
-* Statistics
+* Statistics in Combinations
   - histogram of covers used for a given (length, tops1)
   - Cross histogram showing candidates for more concise covers
   - #covers per strategy (look for ones with too many)
@@ -23,12 +17,11 @@ Verbals of strategy wins
 * Probably get some deadlocks that have less greedy solutions.
 
 * If the same profile arises in two ways, pick the less complex one?
+  - Give each cover a complexity that matters when sorting
 
 * Also output differences between two strategies
   - As text
   - In a table (as Unicode text, HTML, ...)
-
-* Give each cover a complexity that matters when sorting
 
 * Look for covers that can be combined, manually at first
   - N-1+ or top -> top or other stiff top (2 Cover's)

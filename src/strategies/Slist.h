@@ -245,7 +245,8 @@ class Slist
 
     unsigned covers(
       const Covers& coversIn,
-      const unsigned char maxRank) const;
+      const unsigned char maxRank,
+      list<ResExpl>& resExplanations) const;
 
     bool ordered() const;
 

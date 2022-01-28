@@ -285,6 +285,7 @@ void Combinations::runUniques(
 
   // TODO Back into Combinations?
   CombTest ctest;
+  list<ResExpl> resExplanations;
 
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
@@ -337,7 +338,9 @@ histoPlay[plays.size()]++;
           {
             timersStrat[32].start();
             const unsigned numCovers = comb.covers(
-              distributions.get(cards, centry.getHolding2()).covers());
+              distributions.get(cards, 
+              centry.getHolding2()).covers(),
+              resExplanations);
             timersStrat[32].stop();
           }
 
@@ -623,7 +626,9 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   const Combination& comb = combMemory.getComb(cards, holding);
 
-  const unsigned numCovers = comb.covers(dist.covers());
+  list<ResExpl> resExplanations;
+
+  const unsigned numCovers = comb.covers(dist.covers(), resExplanations);
 
 cout << "Number of covers: " << numCovers << "\n";
 
