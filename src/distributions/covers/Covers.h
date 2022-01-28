@@ -36,6 +36,10 @@ class Covers
       vector<unsigned char>& tricks,
       unsigned char& tricksMin) const;
 
+    string strDebug(
+      const string& title,
+      const vector<unsigned char>& tricks) const;
+
 
   public:
 

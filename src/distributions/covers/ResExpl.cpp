@@ -28,7 +28,7 @@ void ResExpl::reset()
 }
 
 
-void ResExpl::setMinimum(const unsigned char& tmin)
+void ResExpl::setMinimum(const unsigned char tmin)
 {
   tricksMin = tmin;
 }

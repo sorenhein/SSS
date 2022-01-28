@@ -103,22 +103,13 @@ CoverState Covers::explain(
   vector<unsigned char> tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
-  resExpl.setTricks(tmin);
-
-// cout << "tmin " << +tmin << "\n";
+  resExpl.setMinimum(tmin);
 
   while (true)
   {
     if (iter == covers.end())
     {
-/* */
-cout << "Left with\n";
-for (unsigned i = 0; i < tricks.size(); i++)
-  if (tricks[i])
-    cout << i << ": " << +tricks[i] << "\n";
-cout << "\n";
-/* */
-
+      cout << Covers::strDebug("Left with", tricks);
       return COVER_IMPOSSIBLE;
     }
 
@@ -126,31 +117,37 @@ cout << "\n";
 
     if (state == COVER_DONE)
     {
-      // Covers::insert(fits, * iter);
       resExpl.insert(* iter);
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
     {
-      // Covers::insert(fits, * iter);
       resExpl.insert(* iter);
       continue;
     }
     else
     {
-/*
-cout << "Could not use\n";
-for (i = 0; i < tricks.size(); i++)
-  if (tricks[i])
-    cout << i << ": " << +tricks[i] << "\n";
-cout << "\n";
-cout << iter->strProfile() << "\n";
-*/
+      // cout << Covers::strDebug("Could not use", tricks);
       iter++;
     }
   }
 
   // Can't happen
   return COVER_STATE_SIZE;
+}
+
+
+string Covers::strDebug(
+  const string& title,
+  const vector<unsigned char>& tricks) const
+{
+  stringstream ss;
+  ss << title << "\n";
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+    if (tricks[i])
+      ss << i << ": " << +tricks[i] << "\n";
+  ss << "\n";
+  return ss.str();
 }
 
