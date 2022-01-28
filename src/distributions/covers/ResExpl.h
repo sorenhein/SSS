@@ -36,11 +36,7 @@ class ResExpl
     list<ExplData> data;
 
 
-    void append(
-      Cover const * cover,
-      const unsigned char weight,
-      const unsigned char numDist,
-      const unsigned char level);
+    list<ExplData>::iterator dominator(const Cover& cover);
 
 
   public:
@@ -49,11 +45,7 @@ class ResExpl
 
     void reset();
 
-    void add(
-      const Cover& cover,
-      const unsigned char weight,
-      const unsigned char numDist,
-      const unsigned char level);
+    void insert(const Cover& cover);
 
     string str() const;
 };

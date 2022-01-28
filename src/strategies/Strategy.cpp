@@ -978,14 +978,15 @@ void Strategy::setAndAdaptVoid(
 
 unsigned Strategy::covers(const Covers& coversIn) const
 {
-  list<ExplData> fits;
-  CoverState state = coversIn.explain(results, fits);
+  // list<ExplData> fits;
+  ResExpl resExpl;
+  CoverState state = coversIn.explain(results, resExpl);
 
   if (state == COVER_DONE)
   {
     // TODO Control by flag; pass up; etc etc.
     cout << "Fits\n";
-    cout << coversIn.str(fits);
+    cout << resExpl.str();
     return 1;
   }
   else

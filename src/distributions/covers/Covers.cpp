@@ -93,6 +93,7 @@ void Covers::setup(
 }
 
 
+/*
 list<ExplData>::iterator Covers::dominator(
   list <ExplData>& fits,
   const Cover& cover) const
@@ -157,7 +158,7 @@ void Covers::insert(
   }
   else
   {
-    ExplData& ed = * fits.emplace(domIter, ExplData());
+    ExplData& ed = * fits.emplace(next(domIter), ExplData());
 
     ed.coverPtr = &cover;
     ed.weight = cover.getWeight();
@@ -165,20 +166,19 @@ void Covers::insert(
     ed.level = domIter->level + 1;
   }
 }
+*/
 
 
 CoverState Covers::explain(
   const list<Result>& results,
-  list<ExplData>& fits) const
+  ResExpl& resExpl) const
 {
   CoverState state = COVER_OPEN;
   auto iter = covers.begin();
-  fits.clear();
 
   vector<unsigned char> tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
-
 
 // cout << "tmin " << +tmin << "\n";
 
@@ -201,12 +201,14 @@ cout << "\n";
 
     if (state == COVER_DONE)
     {
-      Covers::insert(fits, * iter);
+      // Covers::insert(fits, * iter);
+      resExpl.insert(* iter);
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
     {
-      Covers::insert(fits, * iter);
+      // Covers::insert(fits, * iter);
+      resExpl.insert(* iter);
       continue;
     }
     else
@@ -225,19 +227,5 @@ cout << iter->strProfile() << "\n";
 
   // Can't happen
   return COVER_STATE_SIZE;
-}
-
-
-string Covers::str(list<ExplData>& fits) const
-{
-  string s;
-  for (auto& fit: fits)
-  {
-    s += fit.coverPtr->str() + " [" + 
-      to_string(fit.coverPtr->index()) + ": " +
-      to_string(fit.numDist) + ", " +
-      to_string(fit.weight) + "]\n";
-  }
-  return s;
 }
 
