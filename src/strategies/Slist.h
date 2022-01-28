@@ -243,7 +243,7 @@ class Slist
 
     // Debug utilities.
 
-    unsigned covers(
+    void covers(
       const Covers& coversIn,
       const unsigned char maxRank,
       list<ResExpl>& resExplanations) const;

@@ -992,12 +992,11 @@ void Slist::getResultList(list<Result>& resultList) const
  ************************************************************/
 
 
-unsigned Slist::covers(
+void Slist::covers(
   const Covers& coversIn,
   const unsigned char maxRank,
   list<ResExpl>& resExplanations) const
 {
-  unsigned numCovers = 0;
   unsigned stratNo = 0;
 
   resExplanations.resize(strategies.size());
@@ -1018,17 +1017,12 @@ unsigned Slist::covers(
     cout << "Strategy #" << stratNo << ": ";
     riter->reset();
     if (strat.covers(coversIn, * riter))
-    {
       cout << riter->str();
-      numCovers++;
-    }
     else
       cout << strat.str("Unexplained", true) << "\n";
     
     stratNo++;
   }
-
-  return numCovers;
 }
 
 

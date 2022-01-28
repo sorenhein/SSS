@@ -230,7 +230,7 @@ class Strategy
 
     // ******************* Winners ******************
 
-    unsigned covers(
+    bool covers(
       const Covers& coversIn,
       ResExpl& resExpl) const;
 

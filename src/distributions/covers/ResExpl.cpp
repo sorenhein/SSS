@@ -104,6 +104,12 @@ void ResExpl::insert(Cover const& cover)
 }
 
 
+bool ResExpl::empty() const
+{
+  return data.empty();
+}
+
+
 string ResExpl::str() const
 {
   stringstream ss;

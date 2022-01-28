@@ -337,7 +337,7 @@ histoPlay[plays.size()]++;
           if (centry.getType() != COMB_CONSTANT)
           {
             timersStrat[32].start();
-            const unsigned numCovers = comb.covers(
+            comb.covers(
               distributions.get(cards, 
               centry.getHolding2()).covers(),
               resExplanations);
@@ -628,10 +628,7 @@ void Combinations::covers(
 
   list<ResExpl> resExplanations;
 
-  const unsigned numCovers = comb.covers(dist.covers(), resExplanations);
-
-cout << "Number of covers: " << numCovers << "\n";
-
+  comb.covers(dist.covers(), resExplanations);
 }
 
 

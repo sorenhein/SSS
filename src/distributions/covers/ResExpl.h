@@ -49,6 +49,8 @@ class ResExpl
 
     void insert(const Cover& cover);
 
+    bool empty() const;
+
     string str() const;
 };
 

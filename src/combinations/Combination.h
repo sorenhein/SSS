@@ -67,7 +67,7 @@ class Combination
       Plays& plays,
       bool debugFlag = false);
 
-    unsigned covers(
+    void covers(
       const Covers& coversIn,
       list<ResExpl>& resExplanations) const;
 

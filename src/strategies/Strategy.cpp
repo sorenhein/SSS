@@ -976,13 +976,13 @@ void Strategy::setAndAdaptVoid(
  *                                                          *
  ************************************************************/
 
-unsigned Strategy::covers(
+bool Strategy::covers(
   const Covers& coversIn,
   ResExpl& resExpl) const
 {
   resExpl.reset();
   CoverState state = coversIn.explain(results, resExpl);
-  return (state == COVER_DONE ? 1 : 0);
+  return (state == COVER_DONE);
 }
 
 
