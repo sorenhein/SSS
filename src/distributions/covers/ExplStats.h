@@ -35,12 +35,14 @@ struct ExplStats
     {
       for (unsigned tops1 = 1; tops1 < vec[length].size(); tops1++)
       {
-        const unsigned vsize = vec[length][tops1].size();
-        if (vsize == 0)
+        // Best way to tell that something is there.
+        if (pairs[length][tops1].size() == 0)
           continue;
 
         ss << "Length " << length << ", tops1 " << tops1 << 
           " (" << name << ")\n";
+
+        const unsigned vsize = vec[length][tops1].size();
         for (unsigned cno = 0; cno < vsize; cno++)
         {
           const unsigned v = vec[length][tops1][cno];

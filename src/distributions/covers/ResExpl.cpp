@@ -160,8 +160,12 @@ string ResExpl::str() const
     else
       prefix = "      - ";
 
+    unsigned char length, tops1;
+    ed.coverPtr->getIndices(length, tops1);
+
     ss << prefix <<
       ed.coverPtr->str() << " [" <<
+      +length << "-" << +tops1 << "-" << data.size() << "; " <<
       ed.coverPtr->index() << ": " <<
       +ed.numDist << ", " <<
       +ed.weight << "]\n";
