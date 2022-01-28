@@ -1,12 +1,11 @@
 Verbals of strategy wins
 ========================
-* ResExpl::str method, for each strategy
-  - Would be nice to parametrize by the actual names of cards
-
-* Statistics in Combinations
-  - histogram of covers used for a given (length, tops1)
-  - Cross histogram showing candidates for more concise covers
-  - #covers per strategy (look for ones with too many)
+* Study the resExpl statistics
+  - Let cumulate over all cards, and only then output
+  - Frequent combinations -> combine
+  - Unused or avoidable covers -> delete
+  - Look for covers that can be combined, manually at first
+    - N-1+ or top -> top or other stiff top (2 Cover's)
 
 * For e.g. 8/5901 (HH either way), have a SymmGeneralAnd method?
   - Set a symmFlag
@@ -14,17 +13,17 @@ Verbals of strategy wins
 
 * Look at text for all the couple hundred entries directly
 
+* ResExpl::str method, for each strategy
+  - Would be nice to parametrize by the actual names of cards
+
 * Probably get some deadlocks that have less greedy solutions.
 
 * If the same profile arises in two ways, pick the less complex one?
   - Give each cover a complexity that matters when sorting
 
 * Also output differences between two strategies
-  - As text
+  - As text, maybe mainly actual combinations (Hx, HHx, ...)
   - In a table (as Unicode text, HTML, ...)
-
-* Look for covers that can be combined, manually at first
-  - N-1+ or top -> top or other stiff top (2 Cover's)
   
 * Store and calculate in the compressed format of Study?  Can we
   even subtract stuff directly in that domain?

@@ -347,6 +347,9 @@ histoPlay[plays.size()]++;
               centry.getHolding2()).covers(),
               resExplanations);
             timersStrat[32].stop();
+
+            for (auto& resExpl: resExplanations)
+              resExpl.updateStats(explStats);
           }
 
           timersStrat[33].start();
@@ -392,6 +395,10 @@ if (count > 0)
 cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
 }
+
+cout << explStats.strSingles();
+cout << explStats.strPairs();
+cout << explStats.strLengths();
 
   // This is how to read files:
   // vector<CombEntry> copy;

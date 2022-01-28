@@ -31,12 +31,16 @@ struct ExplStats
     stringstream ss;
     ss << "Covers: " << name << " stats\n\n";
 
-    for (unsigned length = 0; length < vec.size(); length++)
+    for (unsigned length = 2; length < vec.size(); length++)
     {
-      for (unsigned tops1 = 0; tops1 < vec[length].size(); tops1++)
+      for (unsigned tops1 = 1; tops1 < vec[length].size(); tops1++)
       {
+        const unsigned vsize = vec[length][tops1].size();
+        if (vsize == 0)
+          continue;
+
         ss << "Length " << length << ", tops1 " << tops1 << "\n";
-        for (unsigned cno = 0; cno < vec[length][tops1].size(); cno++)
+        for (unsigned cno = 0; cno < vsize; cno++)
         {
           const unsigned v = vec[length][tops1][cno];
 
@@ -62,13 +66,15 @@ struct ExplStats
     stringstream ss;
     ss << "Covers: Pair stats\n\n";
 
-    for (unsigned length = 0; length < pairs.size(); length++)
+    for (unsigned length = 2; length < pairs.size(); length++)
     {
-      for (unsigned tops1 = 0; tops1 < pairs[length].size(); tops1++)
+      for (unsigned tops1 = 1; tops1 < pairs[length].size(); tops1++)
       {
-        ss << "Length " << length << ", tops1 " << tops1 << "\n\n";
-
         const auto& vec = pairs[length][tops1];
+        if (vec.size() == 0)
+          continue;
+
+        ss << "Length " << length << ", tops1 " << tops1 << "\n\n";
 
         ss << setw(3) << "#" << " | ";
         for (unsigned cno = 0; cno < vec.size(); cno++)
