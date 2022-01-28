@@ -14,6 +14,7 @@
 #include <string>
 
 #include "Cover.h"
+#include "ResExpl.h"
 
 class Distribution;
 class CoverMemory;
@@ -28,6 +29,16 @@ class Covers
   private:
 
     list<Cover> covers;
+
+
+    void setup(
+      const list<Result>& results,
+      vector<unsigned char>& tricks,
+      unsigned char& tricksMin) const;
+
+    void insert(
+      list<ExplData>& fits,
+      const Cover& cover) const;
 
 
   public:
@@ -46,9 +57,9 @@ class Covers
 
     CoverState explain(
       const list<Result>& results,
-      list<Cover const *>& fits) const;
+      list<ExplData>& fits) const;
 
-    string str(list<Cover const *>& fits) const;
+    string str(list<ExplData>& fits) const;
 };
 
 #endif

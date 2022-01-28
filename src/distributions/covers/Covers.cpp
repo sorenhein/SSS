@@ -43,28 +43,25 @@ void Covers::prepare(
   assert(maxLength >= 2);
   assert(maxTops >= 1);
 
-  covers.resize(30);
+  covers.resize(coverMemory.size(maxLength, maxTops));
   auto citer = covers.begin();
-
-// cout << "Preparing with " << +maxLength << ", " << +maxTops << "\n";
 
   for (auto miter = coverMemory.begin(maxLength, maxTops);
       miter != coverMemory.end(maxLength, maxTops); miter++)
   {
     assert(citer != covers.end());
     citer->prepare(lengths, tops, cases, * miter);
-if (citer->getWeight() == 0)
-{
-cout << "Was preparing with " << +maxLength << ", " << +maxTops << "\n";
-cout << "Adding " << citer->str() << "\n";
-    assert(citer->getWeight() != 0);
-}
-// cout << "Added " << citer->str() << "\n";
+
+    if (citer->getWeight() == 0)
+    {
+      cout << "Covers::prepare: " << 
+        +maxLength << ", " << +maxTops << "\n";
+      cout << "Adding " << citer->str() << "\n";
+      assert(citer->getWeight() != 0);
+    }
+
     citer++;
   }
-
-  if (citer != covers.end())
-    covers.erase(citer, covers.end());
 
   covers.sort([](const Cover& cover1, const Cover& cover2)
   {
@@ -73,29 +70,51 @@ cout << "Adding " << citer->str() << "\n";
 }
 
 
-CoverState Covers::explain(
+void Covers::setup(
   const list<Result>& results,
-  list<Cover const *>& fits) const
+  vector<unsigned char>& tricks,
+  unsigned char& tricksMin) const
 {
-  CoverState state = COVER_OPEN;
-  auto iter = covers.begin();
-  fits.clear();
-
-  vector<unsigned char> tricks(results.size());
-  unsigned char tmin = UCHAR_NOT_SET;
+  tricks.resize(results.size());
+  tricksMin = UCHAR_NOT_SET;
   unsigned i = 0;
 
   for (auto& res: results)
   {
     tricks[i] = res.getTricks();
-    if (tricks[i] < tmin)
-      tmin = tricks[i];
+    if (tricks[i] < tricksMin)
+      tricksMin = tricks[i];
 
     i++;
   }
 
   for (i = 0; i < tricks.size(); i++)
-    tricks[i] -= tmin;
+    tricks[i] -= tricksMin;
+}
+
+
+void Covers::insert(
+  list<ExplData>& fits,
+  const Cover& cover) const
+{
+  fits.emplace_back(ExplData());
+  ExplData& ed = fits.back();
+  ed.coverPtr = &cover;
+}
+
+
+CoverState Covers::explain(
+  const list<Result>& results,
+  list<ExplData>& fits) const
+{
+  CoverState state = COVER_OPEN;
+  auto iter = covers.begin();
+  fits.clear();
+
+  vector<unsigned char> tricks;
+  unsigned char tmin;
+  Covers::setup(results, tricks, tmin);
+
 
 // cout << "tmin " << +tmin << "\n";
 
@@ -105,7 +124,7 @@ CoverState Covers::explain(
     {
 /* */
 cout << "Left with\n";
-for (i = 0; i < tricks.size(); i++)
+for (unsigned i = 0; i < tricks.size(); i++)
   if (tricks[i])
     cout << i << ": " << +tricks[i] << "\n";
 cout << "\n";
@@ -118,14 +137,12 @@ cout << "\n";
 
     if (state == COVER_DONE)
     {
-      fits.push_back(&* iter);
-cout << "Fits\n";
-cout << Covers::str(fits);
+      Covers::insert(fits, * iter);
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
     {
-      fits.push_back(&* iter);
+      Covers::insert(fits, * iter);
       continue;
     }
     else
@@ -147,12 +164,12 @@ cout << iter->strProfile() << "\n";
 }
 
 
-string Covers::str(list<Cover const *>& fits) const
+string Covers::str(list<ExplData>& fits) const
 {
   string s;
-  for (auto& eptr: fits)
+  for (auto& fit: fits)
   {
-    s += eptr->str() + "\n";
+    s += fit.coverPtr->str() + "\n";
   }
   return s;
 }

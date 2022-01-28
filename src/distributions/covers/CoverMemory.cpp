@@ -742,6 +742,17 @@ list<CoverSpec>::const_iterator CoverMemory::end(
 }
 
 
+unsigned CoverMemory::size(
+  const unsigned cards,
+  const unsigned tops1) const
+{
+  assert(cards < specs.size());
+  assert(tops1 < specs[cards].size());
+
+  return specs[cards][tops1].size();
+}
+
+
 string CoverMemory::str(
   const unsigned cards,
   const unsigned tops1) const
