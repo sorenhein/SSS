@@ -22,6 +22,7 @@
 using namespace std;
 
 class Distributions;
+struct ExplStats;
 
 
 class Combinations
@@ -97,7 +98,8 @@ class Combinations
 
     void runUniques(
       const unsigned char cards,
-      const Distributions& distributions);
+      const Distributions& distributions,
+      ExplStats& explStats);
 
     void runUniquesOld(
       const unsigned char cards,

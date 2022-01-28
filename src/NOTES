@@ -1,7 +1,6 @@
 Verbals of strategy wins
 ========================
 * Study the resExpl statistics
-  - Let cumulate over all cards, and only then output
   - Frequent combinations -> combine
   - Unused or avoidable covers -> delete
   - Look for covers that can be combined, manually at first

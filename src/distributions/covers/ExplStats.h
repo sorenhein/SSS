@@ -39,7 +39,8 @@ struct ExplStats
         if (vsize == 0)
           continue;
 
-        ss << "Length " << length << ", tops1 " << tops1 << "\n";
+        ss << "Length " << length << ", tops1 " << tops1 << 
+          " (" << name << ")\n";
         for (unsigned cno = 0; cno < vsize; cno++)
         {
           const unsigned v = vec[length][tops1][cno];
@@ -74,7 +75,7 @@ struct ExplStats
         if (vec.size() == 0)
           continue;
 
-        ss << "Length " << length << ", tops1 " << tops1 << "\n\n";
+        ss << "Length " << length << ", tops1 " << tops1 << " (pair)\n";
 
         ss << setw(3) << "#" << " | ";
         for (unsigned cno = 0; cno < vec.size(); cno++)
@@ -101,7 +102,7 @@ struct ExplStats
 
   string strLengths() const
   {
-    return ExplStats::strVector3(singles, "Length");
+    return ExplStats::strVector3(lengths, "Length");
   }
 };
 

@@ -266,7 +266,8 @@ CombinationType Combinations::classify(
 
 void Combinations::runUniques(
   const unsigned char cards,
-  const Distributions& distributions)
+  const Distributions& distributions,
+  ExplStats& explStats)
 {
   assert(cards < countStats.size());
 
@@ -286,11 +287,6 @@ void Combinations::runUniques(
   // TODO Back into Combinations?
   CombTest ctest;
   list<ResExpl> resExplanations;
-
-  // Statistics of explanations
-  ExplStats explStats;
-  if (cards >= 2)
-    distributions.resizeStats(explStats);
 
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
@@ -395,10 +391,6 @@ if (count > 0)
 cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
 
 }
-
-cout << explStats.strSingles();
-cout << explStats.strPairs();
-cout << explStats.strLengths();
 
   // This is how to read files:
   // vector<CombEntry> copy;

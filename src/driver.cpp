@@ -4,6 +4,7 @@
 #include "combinations/Combinations.h"
 
 #include "distributions/Distributions.h"
+#include "distributions/covers/ExplStats.h"
 
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
@@ -59,16 +60,26 @@ int main(int argc, char * argv[])
 
     combinations.resize(control.cards());
 
+    ExplStats explStats;
+    distributions.resizeStats(explStats);
+
     for (unsigned char cards = 0; cards <= 11; cards++)
     {
       cout << "Cards " << setw(2) << right << +cards << endl;
 
       // combinations.runUniquesMT(cards, control.numThreads());
-      combinations.runUniques(cards, distributions);
+      combinations.runUniques(cards, distributions, explStats);
     }
 
     cout << "\n";
+    cout << explStats.strSingles();
+    cout << explStats.strPairs();
+    cout << explStats.strLengths();
+
+    cout << "\n";
     cout << combinations.str();
+
+
   }
   else
   {
