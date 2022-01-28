@@ -45,6 +45,8 @@ class ResExpl
 
     void reset();
 
+    void setMinimum(const unsigned char tmin);
+
     void insert(const Cover& cover);
 
     string str() const;

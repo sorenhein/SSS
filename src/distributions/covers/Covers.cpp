@@ -93,82 +93,6 @@ void Covers::setup(
 }
 
 
-/*
-list<ExplData>::iterator Covers::dominator(
-  list <ExplData>& fits,
-  const Cover& cover) const
-{
-  // Returns fits.end() if there is no dominator.
-  // Returns the dominator with the highest level number,
-  // and among these, the one with the lowest weight.
-  
-  list<ExplData>::iterator resIter = fits.end();
-  unsigned char levelBest = 0;
-  unsigned char weightBest = UCHAR_NOT_SET;
-
-  for (auto iter = fits.begin(); iter != fits.end(); iter++)
-  {
-    if (! (cover <= * (iter->coverPtr)))
-      continue;
-
-    if (cover.getWeight() == iter->weight)
-    {
-      // TODO
-      cout << "Don't know yet how to deal with repeats" << endl;
-      cout << "Already have:\n";
-      cout << Covers::str(fits);
-      cout << "Cover:\n";
-      cout << cover.str() << "\n";
-      cout << cover.strProfile() << "\n";
-      cout << "iter:\n";
-      cout << iter->coverPtr->str() << "\n";
-      cout << iter->coverPtr->strProfile() << endl;
-      assert(false);
-    }
-
-    if (resIter == fits.end() || 
-        iter->level > levelBest ||
-        (iter->level == levelBest && iter->weight < weightBest))
-    {
-      resIter = iter;
-      levelBest = iter->level;
-      weightBest = iter->weight;
-    }
-  }
-
-  return resIter;
-}
-
-
-void Covers::insert(
-  list<ExplData>& fits,
-  const Cover& cover) const
-{
-  auto domIter = Covers::dominator(fits, cover);
-
-  if (domIter == fits.end())
-  {
-    fits.emplace_back(ExplData());
-    ExplData& ed = fits.back();
-
-    ed.coverPtr = &cover;
-    ed.weight = cover.getWeight();
-    ed.numDist = cover.getNumDist();
-    ed.level = 0;
-  }
-  else
-  {
-    ExplData& ed = * fits.emplace(next(domIter), ExplData());
-
-    ed.coverPtr = &cover;
-    ed.weight = cover.getWeight();
-    ed.numDist = cover.getNumDist();
-    ed.level = domIter->level + 1;
-  }
-}
-*/
-
-
 CoverState Covers::explain(
   const list<Result>& results,
   ResExpl& resExpl) const
@@ -179,6 +103,7 @@ CoverState Covers::explain(
   vector<unsigned char> tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
+  resExpl.setTricks(tmin);
 
 // cout << "tmin " << +tmin << "\n";
 

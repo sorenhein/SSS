@@ -28,6 +28,12 @@ void ResExpl::reset()
 }
 
 
+void ResExpl::setMinimum(const unsigned char& tmin)
+{
+  tricksMin = tmin;
+}
+
+
 list<ExplData>::iterator ResExpl::dominator(const Cover& cover)
 {
   // Returns data.end() if there is no dominator.

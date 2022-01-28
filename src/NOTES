@@ -1,16 +1,10 @@
 Verbals of strategy wins
 ========================
-* What do we need to know about a set of covers of a Strategy?
-  - Overall
-    - tmin
-  - For each cover
-    - ptr to entry
-    - #weight, #dist
-    - Maybe a hierarchical level, so they are ordered that way
-* str method, for each strategy
+* ResExpl::str method, for each strategy
   - Overall tmin
-  - The nested set of covers with #weight / #dist
   - Would be nice to parametrize by the actual names of cards
+
+* Let ResExpl percolate up toward Combination(s)
 
 * CoverMemory: symmFlag when going through SymmGeneralAnd;
   use this when printing results later
