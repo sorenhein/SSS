@@ -23,74 +23,56 @@ struct ExplStats
   vector<vector<vector<vector<unsigned>>>> pairs;
   vector<vector<vector<unsigned>>> lengths;
 
-
-  string strVector3(
-    const vector<vector<vector<unsigned>>>& vec,
-    const string& name) const
+  string str() const
   {
     stringstream ss;
-    ss << "Covers: " << name << " stats\n\n";
-
-    for (unsigned length = 2; length < vec.size(); length++)
-    {
-      for (unsigned tops1 = 1; tops1 < vec[length].size(); tops1++)
-      {
-        // Best way to tell that something is there.
-        if (pairs[length][tops1].size() == 0)
-          continue;
-
-        ss << "Length " << length << ", tops1 " << tops1 << 
-          " (" << name << ")\n";
-
-        const unsigned vsize = vec[length][tops1].size();
-        for (unsigned cno = 0; cno < vsize; cno++)
-        {
-          const unsigned v = vec[length][tops1][cno];
-
-          ss << 
-            setw(3) << cno <<
-            setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
-        }
-        ss << "\n";
-      }
-    }
-    return ss.str();
-  };
-
-
-  string strSingles() const
-  {
-    return ExplStats::strVector3(singles, "Single");
-  };
-
-
-  string strPairs() const
-  {
-    stringstream ss;
-    ss << "Covers: Pair stats\n\n";
 
     for (unsigned length = 2; length < pairs.size(); length++)
     {
       for (unsigned tops1 = 1; tops1 < pairs[length].size(); tops1++)
       {
-        const auto& vec = pairs[length][tops1];
-        if (vec.size() == 0)
+        const auto& vecSingles = singles[length][tops1];
+        const auto& vecPairs = pairs[length][tops1];
+        const auto& vecLengths = lengths[length][tops1];
+        const unsigned vsize = vecSingles.size();
+        if (vsize == 0)
           continue;
 
-        ss << "Length " << length << ", tops1 " << tops1 << " (pair)\n";
+        ss << "Length " << length << ", tops1 " << tops1 << " (singles)\n";
+        for (unsigned cno = 0; cno < vsize; cno++)
+        {
+          const unsigned v = vecSingles[cno];
+          ss << 
+            setw(3) << cno <<
+            setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
+        }
+        ss << "\n";
+
+        ss << "Length " << length << ", tops1 " << tops1 << " (lengths)\n";
+        for (unsigned cno = 0; cno < vsize; cno++)
+        {
+          const unsigned v = vecLengths[cno];
+          if (v > 0)
+            ss << 
+              setw(3) << cno <<
+              setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
+        }
+        ss << "\n";
+
+        ss << "Length " << length << ", tops1 " << tops1 << " (pairs)\n";
 
         ss << setw(3) << "#" << " | ";
-        for (unsigned cno = 0; cno < vec.size(); cno++)
+        for (unsigned cno = 0; cno < vecPairs.size(); cno++)
           ss << setw(5) << cno;
         ss << "\n";
-        ss << string(3 + 3 + 5*vec.size(), '-') << "\n";
+        ss << string(3 + 3 + 5 * vecPairs.size(), '-') << "\n";
 
-        for (unsigned cno = 0; cno < vec.size(); cno++)
+        for (unsigned cno = 0; cno < vecPairs.size(); cno++)
         {
           ss << setw(3) << cno << " | ";
-          for (unsigned cno2 = 0; cno2 < vec.size(); cno2++)
+          for (unsigned cno2 = 0; cno2 < vecPairs.size(); cno2++)
           {
-            const unsigned v = vec[cno][cno2];
+            const unsigned v = vecPairs[cno][cno2];
             ss << setw(5) << (v == 0 ? "-" : to_string(v));
           }
           ss << "\n";
@@ -98,13 +80,8 @@ struct ExplStats
         ss << "\n";
       }
     }
+
     return ss.str();
-  };
-
-
-  string strLengths() const
-  {
-    return ExplStats::strVector3(lengths, "Length");
   }
 };
 

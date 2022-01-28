@@ -72,9 +72,7 @@ int main(int argc, char * argv[])
     }
 
     cout << "\n";
-    cout << explStats.strSingles();
-    cout << explStats.strPairs();
-    cout << explStats.strLengths();
+    cout << explStats.str();
 
     cout << "\n";
     cout << combinations.str();
