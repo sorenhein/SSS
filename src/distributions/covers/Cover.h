@@ -27,6 +27,7 @@ class Cover
     CoverSpec spec;
 
     unsigned char weight;
+    unsigned char numDist;
 
 
     typedef unsigned char (Cover::*CoverComparePtr)(
@@ -55,7 +56,13 @@ class Cover
 
     CoverState explain(vector<unsigned char>& tricks) const;
 
+    bool operator <= (const Cover& cover2) const;
+
+    unsigned index() const;
+
     unsigned char getWeight() const;
+
+    unsigned char getNumDist() const;
 
     string str() const;
 

@@ -49,6 +49,9 @@ struct CoverSpec
   array<CoverElement, 2> westLength;
   array<CoverElement, 2> westTop1;
 
+  // true if the two sets arose via a symmetric method
+  bool symmFlag;
+
   CoverSpec();
 
   string strLengthEqual(const unsigned specNumber) const;

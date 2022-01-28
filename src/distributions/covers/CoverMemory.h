@@ -92,6 +92,12 @@ class CoverMemory
       const unsigned char upperTopsIncl,
       const unsigned specNumber = 0);
 
+    void SymmGeneralAnd(
+      const unsigned char lowerCardsIncl,
+      const unsigned char upperCardsIncl,
+      const unsigned char lowerTopsIncl,
+      const unsigned char upperTopsIncl);
+
     // ----- Length OR top-1 methods -----
 
     void prepare_2_1();

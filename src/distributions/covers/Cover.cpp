@@ -34,6 +34,7 @@ void Cover::reset()
   spec.westTop1[1].setOperator(COVER_OPERATOR_SIZE);
 
   weight = 0;
+  numDist = 0;
 }
 
 
@@ -94,6 +95,7 @@ void Cover::prepare(
     {
       profile[dno] = 1;
       weight += cases[dno];
+      numDist++;
     }
   }
 }
@@ -120,9 +122,34 @@ CoverState Cover::explain(vector<unsigned char>& tricks) const
 }
 
 
+bool Cover::operator <= (const Cover& cover2) const
+{
+  assert(profile.size() == cover2.profile.size());
+  for (unsigned i = 0; i < profile.size(); i++)
+  {
+    if (profile[i] > cover2.profile[i])
+      return false;
+  }
+
+  return true;
+}
+
+
+unsigned Cover::index() const
+{
+  return spec.index;
+}
+
+
 unsigned char Cover::getWeight() const
 {
   return weight;
+}
+
+
+unsigned char Cover::getNumDist() const
+{
+  return numDist;
 }
 
 

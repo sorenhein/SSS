@@ -239,6 +239,23 @@ void CoverMemory::EastGeneralAnd(
 }
 
 
+void CoverMemory::SymmGeneralAnd(
+  const unsigned char lowerCardsIncl,
+  const unsigned char upperCardsIncl,
+  const unsigned char lowerTopsIncl,
+  const unsigned char upperTopsIncl)
+{
+  CoverMemory::WestGeneralAnd(lowerCardsIncl, upperCardsIncl,
+    lowerTopsIncl, upperTopsIncl);
+
+  CoverMemory::EastGeneralAnd(lowerCardsIncl, upperCardsIncl,
+    lowerTopsIncl, upperTopsIncl, 1);
+  
+  // TODO Solve more elegantly?
+  specs[coverGlobal.cards][coverGlobal.tops1].back().symmFlag = true;
+}
+
+
 void CoverMemory::prepare_2_1()
 {
   coverGlobal = {2, 1};
@@ -358,9 +375,10 @@ void CoverMemory::prepare_4_2()
   CoverMemory::WestGeneralAnd(1, 1, 1, 1); // H with West
   CoverMemory::EastGeneralAnd(1, 1, 1, 1, 1); // H with East
 
-  // OR these two together:  East or West has HH
-  CoverMemory::WestGeneralAnd(2, 2, 2, 2);
-  CoverMemory::EastGeneralAnd(2, 2, 2, 2, 1);
+  // TODO Simplify comment OR these two together:  East or West has HH
+  // CoverMemory::WestGeneralAnd(2, 2, 2, 2);
+  // CoverMemory::EastGeneralAnd(2, 2, 2, 2, 1);
+  CoverMemory::SymmGeneralAnd(2, 2, 2, 2);
 }
 
 
@@ -540,6 +558,17 @@ void CoverMemory::prepare_6_2()
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
   CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH with East
   CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
+
+  CoverMemory::SymmGeneralAnd(1, 3, 1, 2); // 3-3 or single/double honor(s)
+
+  // TODO Delete comment: OR these two together:  East or West has HH
+  CoverMemory::SymmGeneralAnd(2, 2, 2, 2);
+  // CoverMemory::WestGeneralAnd(2, 2, 2, 2);
+  // CoverMemory::EastGeneralAnd(2, 2, 2, 2, 1);
+
+  // OR these two together:  West has both H's or any 3-3
+  CoverMemory::WestLength(3);
+  CoverMemory::WestTop1(2, 1);
 }
 
 

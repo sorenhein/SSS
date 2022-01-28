@@ -18,6 +18,7 @@ CoverSpec::CoverSpec()
 {
   mode = {COVER_MODE_NONE, COVER_MODE_NONE};
   invertFlag = {false, false};
+  symmFlag = false;
 }
 
 
@@ -213,15 +214,32 @@ string CoverSpec::strTop1Inside(const unsigned specNumber) const
   stringstream ss;
   if (westTop1[specNumber].value1 == 0)
   {
-    ss << "West has " << 
-      (invertFlag[specNumber] ? "more than" : "at most") << " " << 
-      +westLength[specNumber].value2 << " tops";
+    if (westTop1[specNumber].value2 == oppsTops1-1)
+    {
+      ss << "East has " <<
+        (invertFlag[specNumber] ? "less than " : "at least") << 
+          " one top";
+    }
+    else
+    {
+      ss << "West has " << 
+        (invertFlag[specNumber] ? "less than" : "at least") << " " << 
+        +westTop1[specNumber].value2 << " tops";
+    }
   }
   else if (westTop1[specNumber].value2 == oppsTops1)
   {
-    ss << "West has " << 
-      (invertFlag[specNumber] ? "at most" : "more than") << " " <<
-      +westLength[specNumber].value2 << " tops";
+    if (westTop1[specNumber].value1 == 1)
+    {
+      ss << "West has " << 
+        (invertFlag[specNumber] ? " no tops" : "at least one top");
+    }
+    else
+    {
+      ss << "West has " << 
+        (invertFlag[specNumber] ? "less than" : "at least") << " " <<
+        +westTop1[specNumber].value1 << " tops";
+    }
   }
   else
   {

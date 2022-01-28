@@ -12,6 +12,9 @@ Verbals of strategy wins
   - The nested set of covers with #weight / #dist
   - Would be nice to parametrize by the actual names of cards
 
+* CoverMemory: symmFlag when going through SymmGeneralAnd;
+  use this when printing results later
+
 * Statistics
   - histogram of covers used for a given (length, tops1)
   - Cross histogram showing candidates for more concise covers

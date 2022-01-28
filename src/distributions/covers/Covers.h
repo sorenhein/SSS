@@ -36,6 +36,10 @@ class Covers
       vector<unsigned char>& tricks,
       unsigned char& tricksMin) const;
 
+    list<ExplData>::iterator dominator(
+      list<ExplData>& fits,
+      const Cover& cover) const;
+
     void insert(
       list<ExplData>& fits,
       const Cover& cover) const;
