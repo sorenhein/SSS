@@ -356,6 +356,7 @@ void CoverMemory::prepare_4_1()
   CoverMemory::WestLengthRange(1, 2);   // 1=3 or 2=2
   CoverMemory::WestLengthRange(1, 3);   // 1=3, 2=2 or 3=1
   CoverMemory::WestLengthRange(2, 3);   // 2=2 or 3=1
+  CoverMemory::WestLengthRange(2, 4);   // 2=2, 3=1 or 4=0
 
   CoverMemory::WestTop1(1);             // West has the top
   CoverMemory::EastTop1(1);             // East has the top

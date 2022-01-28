@@ -6,6 +6,13 @@ Verbals of strategy wins
   - Look for covers that can be combined, manually at first
     - N-1+ or top -> top or other stiff top (2 Cover's)
 
+* Ordering hierarchically in 10/5088?
+  - Think about showing as 
+  Take 2 tricks (except one less when West is void), and more when
+  -
+  -
+  Count that perhaps as 2, not 3 explanations?
+
 * For e.g. 8/5901 (HH either way), have a SymmGeneralAnd method?
   - Set a symmFlag
   - Notice this when outputting text
