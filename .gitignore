@@ -49,6 +49,7 @@ src/CodeGraphData/*
 
 src/[abcd]
 src/ref*
+src/a1???
 
 src/SSS/*
 src/*.csv
