@@ -298,10 +298,11 @@ void CoverMemory::prepare_3_1()            // ***** DONE-1 *****
   CoverMemory::WestLengthRange(1, 2);      // 3. 1=2 or 2=1
   CoverMemory::WestLengthRange(1, 3);      // 4. West is not void
 
-  CoverMemory::EastTop1(1);                // 5. East has the top
+  CoverMemory::WestTop1(1);                // 5. West has the top
+  CoverMemory::EastTop1(1);                // 6. East has the top
 
-  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 6. H(x) with West
-  CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 7. H(xx) with West
+  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 7. H(x) with West
+  // CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 7. H(xx) with West
 
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 8. Singleton H on either side
 }

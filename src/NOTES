@@ -1,28 +1,24 @@
 Verbals of strategy wins
 ========================
+* Get rid of greater, less than
+
+* Symmetric flag could be for each of 0, 1
+  - Then there could be two entries
+  - 2-3 either way or stiff honor either way
+  - Then both would need to be output with OR in between
+  - Should give rise to many more that can be combined per the tables
+
 * Study the resExpl statistics
-  - Frequent combinations -> combine
-  - Unused or avoidable covers -> delete
-  - Look for covers that can be combined, manually at first
-    - N-1+ or top -> top or other stiff top (2 Cover's)
+  - Get 4-2, 5-1, 5-2, 5-3 down a bit more
 
-* Ordering hierarchically in 10/5088?
-  - Think about showing as 
-  Take 2 tricks (except one less when West is void), and more when
-  -
-  -
-  Count that perhaps as 2, not 3 explanations?
-
-* For e.g. 8/5901 (HH either way), have a SymmGeneralAnd method?
-  - Set a symmFlag
-  - Notice this when outputting text
+* When of the form (1 top) - hierarchical children, perhaps
+  - Take 2 tricks (but one less when West is void), and more when...
+  - Count that as 1 less explanation?
 
 * Look at text for all the couple hundred entries directly
 
 * ResExpl::str method, for each strategy
   - Would be nice to parametrize by the actual names of cards
-
-* Probably get some deadlocks that have less greedy solutions.
 
 * If the same profile arises in two ways, pick the less complex one?
   - Give each cover a complexity that matters when sorting
@@ -39,26 +35,6 @@ Verbals of strategy wins
 
 * Also forget covers?
 
-
-8/1110, A97 / KQJ8
-Take all 4 tricks
-
-9/5084, AQ8 / -
-Always take at least 1 trick
-Take 2 tricks when the kind is at most doubleton
-
-10/15195, AQ5 / 986
-Take 2+ tricks if the suit splits 2-2 or the king is onside.
-Take 3 tricks if both conditions apply.
-
-Take 2 tricks if West has 2+ cards of the singleton king.
-
-Take 2 tricks if West has the king or jack-ten.
-Take 3 tricks if West has KH.
-
-11/40890, AQJ984 / 65
-Take all 6 tricks if the king is onside.
-Singleton.
 
 2022-01-15
 ==========
