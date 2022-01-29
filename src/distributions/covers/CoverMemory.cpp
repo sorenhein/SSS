@@ -508,32 +508,32 @@ void CoverMemory::prepare_5_2()
 void CoverMemory::prepare_5_3()
 {
   coverGlobal = {5, 3};
-  CoverMemory::WestLength(0);           // West is void
-  CoverMemory::EastLength(0);           // East is void
-  CoverMemory::WestLengthRange(1, 4);   // 1=4, 2=3, 3=2 or 4=1
-  CoverMemory::WestLengthRange(1, 5);   // West is not void
-  CoverMemory::WestLengthRange(2, 3);   // 2=3 or 3=2
-  CoverMemory::WestLengthRange(2, 5);   // 2=3, 3=2, 4=1 or 5=0
+  CoverMemory::WestLength(0);              // 0. West is void
+  CoverMemory::EastLength(0);              // 1. East is void
+  CoverMemory::WestLengthRange(1, 4);      // 2. 1=4, 2=3, 3=2 or 4=1
+  CoverMemory::WestLengthRange(1, 5);      // 3. West is not void
+  CoverMemory::WestLengthRange(2, 3);      // 4. 2=3 or 3=2
+  CoverMemory::WestLengthRange(2, 5);      // 5. 2=3, 3=2, 4=1 or 5=0
 
-  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // H with West
-  CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H with East
-  CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // H singleton either way
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 6. H with West
+  CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 7. H with East
+  CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 8. H singleton either way
 
-  CoverMemory::EastGeneralAnd(1, 1, 0, 0); // x singleton with East
+  CoverMemory::EastGeneralAnd(1, 1, 0, 0); // 9. x singleton with East
 
-  // West has 0-3c or all honors
+  // 10. West has 0-3c or all honors
   CoverMemory::WestLengthRange(0, 3);
   CoverMemory::WestTop1(3, 1);
 
-  // West has 2-3c or all honors
+  // 11. West has 2-3c or all honors
   CoverMemory::WestLengthRange(2, 3);
   CoverMemory::WestTop1(3, 1);
 
-  // East has 0-3c or all honors
+  // 12. East has 0-3c or all honors
   CoverMemory::EastLengthRange(0, 3);
   CoverMemory::EastTop1(3, 1);
 
-  // East has 2-3c or all honors
+  // 13. East has 2-3c or all honors
   CoverMemory::EastLengthRange(2, 3);
   CoverMemory::EastTop1(3, 1);
 
@@ -565,7 +565,7 @@ void CoverMemory::prepare_6_splitsNonVoid()
 }
 
 
-void CoverMemory::prepare_6_1()
+void CoverMemory::prepare_6_1()            // ***** DONE-1 *****
 {
   coverGlobal = {6, 1};
   CoverMemory::prepare_6_splitsNonVoid();  // 0-2.
@@ -583,7 +583,7 @@ void CoverMemory::prepare_6_1()
   CoverMemory::EastGeneralAnd(1, 2, 1, 1); // 11. H(x) with East
   CoverMemory::SymmGeneralAnd(1, 2, 1, 1); // 12. H(x) on either side
 
-  CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 13. H(xx) with West
+  // CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 13. H(xx) with West
   CoverMemory::WestGeneralAnd(3, 3, 1, 1); // 14. Hxx with West
 }
 
@@ -591,41 +591,41 @@ void CoverMemory::prepare_6_1()
 void CoverMemory::prepare_6_2()
 {
   coverGlobal = {6, 2};
-  CoverMemory::prepare_6_splitsNonVoid();
-  CoverMemory::WestLength(0);              // West is void
-  CoverMemory::EastLength(0);              // West is void
-  CoverMemory::WestTop1(2);                // West has both tops
-  CoverMemory::EastTop1(2);                // East has both tops
-  CoverMemory::WestTop1Range(1, 2);        // West has 1-2 tops
+  CoverMemory::prepare_6_splitsNonVoid();  // 0-2.
+  CoverMemory::WestLength(0);              // 3. West is void
+  CoverMemory::EastLength(0);              // 4. West is void
+  CoverMemory::WestTop1(2);                // 5. West has both tops
+  CoverMemory::EastTop1(2);                // 6. East has both tops
+  CoverMemory::WestTop1Range(1, 2);        // 7. West has 1-2 tops
 
-  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // H singleton with West
-  CoverMemory::EastGeneralAnd(1, 1, 1, 1); // H singleton with East
-  CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // H singleton either way
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 8. H singleton with West
+  CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 9. H singleton with East
+  CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 10. H singleton either way
 
-  CoverMemory::WestGeneralAnd(2, 2, 2, 2); // HH doubleton with West
-  CoverMemory::EastGeneralAnd(2, 2, 2, 2); // HH doubleton with East
-  CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // HH doubleton either side
+  CoverMemory::WestGeneralAnd(2, 2, 2, 2); // 11. HH doubleton with West
+  CoverMemory::EastGeneralAnd(2, 2, 2, 2); // 12. HH doubleton with East
+  CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // 13. HH doubleton either side
 
-  CoverMemory::WestGeneralAnd(3, 3, 2, 2); // HHx with West
-  CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
+  CoverMemory::WestGeneralAnd(3, 3, 2, 2); // 14. HHx with West
+  CoverMemory::EastGeneralAnd(3, 3, 2, 2); // 15. HHx with East
 
-  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
+  CoverMemory::WestGeneralAnd(2, 3, 2, 2); // 16. HH(x) with West
 
-  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
-  CoverMemory::EastGeneralAnd(1, 2, 1, 1); // H(x) with East
+  CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 17. H(x) with West
+  CoverMemory::EastGeneralAnd(1, 2, 1, 1); // 18. H(x) with East
 
-  CoverMemory::SymmGeneralAnd(1, 3, 1, 2); // 3-3 or single/double honor(s)
+  CoverMemory::SymmGeneralAnd(1, 3, 1, 2); // 19. 3-3 or H, HH stiff
 
-  CoverMemory::EastGeneralAnd(2, 6, 2, 2); // HH-any with East
-  CoverMemory::SymmGeneralAnd(2, 6, 2, 2); // HH-any on the same side
+  CoverMemory::EastGeneralAnd(2, 6, 2, 2); // 20. HH-any with East
+  CoverMemory::SymmGeneralAnd(2, 6, 2, 2); // 21. HH-any on the same side
 
-  // OR these two together:  West has both H's or any 3-3
+  // 22. 3=3 or West has both H's.
   CoverMemory::WestLength(3);
   CoverMemory::WestTop1(2, 1);
 }
 
 
-void CoverMemory::prepare_6_3()
+void CoverMemory::prepare_6_3()            // ***** DONE-1 *****
 {
   coverGlobal = {6, 3};
   CoverMemory::prepare_6_splitsNonVoid();  // 0-2.
