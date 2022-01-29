@@ -1022,6 +1022,7 @@ void Slist::covers(
       cout << strat.str("Unexplained", true) << "\n";
     
     stratNo++;
+    riter++;
   }
 }
 

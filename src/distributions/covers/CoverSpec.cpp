@@ -224,7 +224,11 @@ string CoverSpec::strBothEqual(
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
 
-  if (wlen == 1)
+  if (wlen == 0)
+  {
+    ss << side << " is void";
+  }
+  else if (wlen == 1)
   {
     if (wtop == 0)
       ss << side << " has a small singleton";
@@ -298,7 +302,10 @@ string CoverSpec::strBothEqual(
       ss << "East has tripleton honors (HHH)";
   }
   else
+  {
+cout << "WLEN " << +wlen << " WTOP " << +wtop << endl;
     assert(false);
+  }
 
   return ss.str();
 }
