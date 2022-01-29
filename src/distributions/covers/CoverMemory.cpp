@@ -595,7 +595,7 @@ void CoverMemory::prepare_6_2()
   CoverMemory::WestLength(0);              // 3. West is void
   CoverMemory::EastLength(0);              // 4. West is void
   CoverMemory::WestTop1(2);                // 5. West has both tops
-  CoverMemory::EastTop1(2);                // 6. East has both tops
+  // CoverMemory::EastTop1(2);                // 6. East has both tops
   CoverMemory::WestTop1Range(1, 2);        // 7. West has 1-2 tops
 
   CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 8. H singleton with West
@@ -622,6 +622,8 @@ void CoverMemory::prepare_6_2()
   // 22. 3=3 or West has both H's.
   CoverMemory::WestLength(3);
   CoverMemory::WestTop1(2, 1);
+
+  CoverMemory::WestGeneralAnd(1, 3, 1, 2); // 23. H, Hx, HH, Hxx, HHx
 }
 
 
