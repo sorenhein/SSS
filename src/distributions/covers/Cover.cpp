@@ -46,24 +46,21 @@ bool Cover::includes(
 {
   if (spec.mode[specNumber] == COVER_MODE_NONE)
   {
-    return (spec.invertFlag[specNumber] ? true : false);
+    return false;
   }
   else if (spec.mode[specNumber] == COVER_LENGTHS_ONLY)
   {
-    return spec.westLength[specNumber].includes(lengths[dno]) ^
-      spec.invertFlag[specNumber];
+    return spec.westLength[specNumber].includes(lengths[dno]);
   }
   else if (spec.mode[specNumber] == COVER_TOPS_ONLY)
   {
-    return spec.westTop1[specNumber].includes(tops[dno]) ^
-      spec.invertFlag[specNumber];
+    return spec.westTop1[specNumber].includes(tops[dno]);
   }
   else if (spec.mode[specNumber] == COVER_LENGTHS_AND_TOPS)
   {
     return 
       (spec.westLength[specNumber].includes(lengths[dno]) &&
-      spec.westTop1[specNumber].includes(tops[dno])) ^
-      spec.invertFlag[specNumber];
+      spec.westTop1[specNumber].includes(tops[dno]));
   }
   else
   {

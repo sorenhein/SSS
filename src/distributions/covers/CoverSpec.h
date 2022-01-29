@@ -45,7 +45,6 @@ struct CoverSpec
   // AND'ed together if both are present.
 
   array<CoverMode, 2> mode;
-  array<bool,2> invertFlag;
   array<CoverElement, 2> westLength;
   array<CoverElement, 2> westTop1;
 
@@ -58,15 +57,26 @@ struct CoverSpec
     unsigned char& length,
     unsigned char& tops1) const;
 
-  string strLengthEqual(const unsigned specNumber) const;
-  string strLengthInside(const unsigned specNumber) const;
+  string strLengthEqual(const unsigned char wlen) const;
+
+  string strLengthInside(
+    const unsigned char wlen1,
+    const unsigned char wlen2) const;
+
   string strLength(const unsigned specNumber) const;
 
-  string strTop1Equal(const unsigned specNumber) const;
-  string strTop1Inside(const unsigned specNumber) const;
+  string strTop1Equal(const unsigned char wtop) const;
+
+  string strTop1Inside(
+    const unsigned char wtop1,
+    const unsigned char wtop2) const;
+
   string strTop1(const unsigned specNumber) const;
 
-  string strBothEqual(const unsigned specNumber) const;
+  string strBothEqual(
+    const unsigned char wlen,
+    const unsigned char wtop) const;
+
   string strTop1Fixed(const unsigned specNumber) const;
 
   string strSet(const unsigned specNumber) const;
