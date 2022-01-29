@@ -593,6 +593,7 @@ void CoverMemory::prepare_6_2()
   coverGlobal = {6, 2};
   CoverMemory::prepare_6_splitsNonVoid();
   CoverMemory::WestLength(0);              // West is void
+  CoverMemory::EastLength(0);              // West is void
   CoverMemory::WestTop1(2);                // West has both tops
   CoverMemory::EastTop1(2);                // East has both tops
   CoverMemory::WestTop1Range(1, 2);        // West has 1-2 tops
@@ -608,12 +609,12 @@ void CoverMemory::prepare_6_2()
   CoverMemory::WestGeneralAnd(3, 3, 2, 2); // HHx with West
   CoverMemory::EastGeneralAnd(3, 3, 2, 2); // HHx with East
 
-  // CoverMemory::WestGeneralAnd(2, 2, 1, 1); // Hx with West
   CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
   CoverMemory::SymmGeneralAnd(1, 3, 1, 2); // 3-3 or single/double honor(s)
 
+  CoverMemory::EastGeneralAnd(2, 6, 2, 2); // HH-any with East
   CoverMemory::SymmGeneralAnd(2, 6, 2, 2); // HH-any on the same side
 
   // OR these two together:  West has both H's or any 3-3
