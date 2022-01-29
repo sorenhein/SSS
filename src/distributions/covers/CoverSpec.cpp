@@ -531,8 +531,12 @@ string CoverSpec::strSet(const unsigned specNumber) const
 
 string CoverSpec::str() const
 {
+  assert(! invertFlag[0] && ! invertFlag[1]);
+
   if (mode[1] == COVER_MODE_NONE)
     return CoverSpec::strSet(0);
+  // else if (symmFlag)
+    // return CoverSpec::strSymm(0);
   else
   {
     // At the moment
