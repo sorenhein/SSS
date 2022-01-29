@@ -612,6 +612,8 @@ void CoverMemory::prepare_6_2()
   CoverMemory::WestGeneralAnd(2, 3, 2, 2); // HH(x) with West
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // H(x) with West
+  CoverMemory::EastGeneralAnd(1, 2, 1, 1); // H(x) with East
+
   CoverMemory::SymmGeneralAnd(1, 3, 1, 2); // 3-3 or single/double honor(s)
 
   CoverMemory::EastGeneralAnd(2, 6, 2, 2); // HH-any with East
