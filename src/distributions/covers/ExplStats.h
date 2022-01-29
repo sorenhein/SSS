@@ -38,6 +38,7 @@ struct ExplStats
         if (vsize == 0)
           continue;
 
+        /*
         ss << "Length " << length << ", tops1 " << tops1 << " (singles)\n";
         for (unsigned cno = 0; cno < vsize; cno++)
         {
@@ -47,25 +48,24 @@ struct ExplStats
             setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
         }
         ss << "\n";
+        */
 
-        ss << "Length " << length << ", tops1 " << tops1 << " (lengths)\n";
-        for (unsigned cno = 0; cno < vsize; cno++)
+        ss << "Cover counts " << length << "-" << tops1 << "\n";
+        for (unsigned cno = 0; cno < vecLengths.size(); cno++)
         {
           const unsigned v = vecLengths[cno];
           if (v > 0)
-            ss << 
-              setw(3) << cno <<
-              setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
+            ss << setw(3) << cno << setw(6) << v << "\n";
         }
         ss << "\n";
 
-        ss << "Length " << length << ", tops1 " << tops1 << " (pairs)\n";
+        ss << "Pairs " << length << "-" << tops1 << "\n";
 
         ss << setw(3) << "#" << " | ";
         for (unsigned cno = 0; cno < vecPairs.size(); cno++)
           ss << setw(5) << cno;
-        ss << "\n";
-        ss << string(3 + 3 + 5 * vecPairs.size(), '-') << "\n";
+        ss << " | " << setw(5) << "Sing" << "\n";
+        ss << string(3 + 3 + 5 * vecPairs.size() + 3 + 5, '-') << "\n";
 
         for (unsigned cno = 0; cno < vecPairs.size(); cno++)
         {
@@ -75,7 +75,7 @@ struct ExplStats
             const unsigned v = vecPairs[cno][cno2];
             ss << setw(5) << (v == 0 ? "-" : to_string(v));
           }
-          ss << "\n";
+          ss << " | " << setw(5) << vecSingles[cno] << "\n";
         }
         ss << "\n";
       }

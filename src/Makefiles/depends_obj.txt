@@ -16,8 +16,9 @@ driver.obj: distributions/Reductions.h distributions/covers/Covers.h
 driver.obj: distributions/covers/Cover.h distributions/covers/CoverSpec.h
 driver.obj: distributions/covers/CoverElement.h const.h
 driver.obj: distributions/covers/ResExpl.h distributions/covers/CoverMemory.h
-driver.obj: distributions/covers/ExplStats.h inputs/Control.h inputs/Entity.h
-driver.obj: inputs/Convert.h utils/Timers.h utils/Timer.h
+driver.obj: distributions/covers/ExplStats.h distributions/covers/ExplStats.h
+driver.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h utils/Timers.h
+driver.obj: utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
