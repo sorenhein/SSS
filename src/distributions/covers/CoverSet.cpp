@@ -274,3 +274,82 @@ string CoverSet::strTop1(const unsigned char oppsTops1) const
   }
 }
 
+
+string CoverSet::strBothEqual0(
+  const string& side) const
+{
+  if (length.value1 == 0)
+    return side + " is void";
+  else
+    return "East is void";
+}
+
+
+string CoverSet::strBothEqual1(
+  const unsigned char oppsTops1,
+  const string& side) const
+{
+  stringstream ss;
+
+  if (length.value1 == 1)
+  {
+    if (top1.value1 == 0)
+      ss << side << " has a small singleton";
+    else
+      ss <<  side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
+        "singleton honor";
+  }
+  else
+  {
+    assert(! symmFlag);
+    if (top1.value1 == oppsTops1)
+      ss << "East has a small singleton";
+    else
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
+        "singleton honor";
+  }
+
+  return ss.str();
+}
+
+
+string CoverSet::strBothEqual2(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1,
+  const string& side) const
+{
+  stringstream ss;
+
+  if (length.value1 == 2)
+  {
+    if (top1.value1 == 0)
+    {
+      if (oppsLength == 4 && oppsTops1 == 2)
+      {
+        assert(! symmFlag);
+        ss << "East has doubleton honors (HH)";
+      }
+      else
+        ss << side << " has a small doubleton";
+    }
+    else if (top1.value1 == 1)
+      ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor doubleton (Hx)";
+    else
+      ss << side << " has doubleton honors (HH)";
+  }
+  else
+  {
+    assert(! symmFlag);
+    if (top1.value1 == oppsTops1)
+      ss << "East has a small doubleton";
+    else if (top1.value1 + 1 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor doubleton (Hx)";
+    else
+      ss << "East has doubleton honors (HH)";
+  }
+
+  return ss.str();
+}
+

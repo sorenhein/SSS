@@ -74,6 +74,18 @@ struct CoverSet
 
   // public
   string strTop1(const unsigned char oppsTops1) const;
+
+  string strBothEqual0(
+    const string& side) const;
+
+  string strBothEqual1(
+    const unsigned char oppsTops1,
+    const string& side) const;
+
+  string strBothEqual2(
+    const unsigned char oppsLength,
+    const unsigned char oppsTops1,
+    const string& side) const;
 };
 
 #endif

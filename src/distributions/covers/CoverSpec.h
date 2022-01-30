@@ -59,13 +59,6 @@ struct CoverSpec
     unsigned char& length,
     unsigned char& tops1) const;
 
-  /*
-  string strLengthInside(
-    const unsigned char wlen1,
-    const unsigned char wlen2,
-    const bool symmFlag) const;
-    */
-
   string strLength(const unsigned specNumber) const;
 
   string strTop1Equal(
@@ -80,6 +73,7 @@ struct CoverSpec
   string strTop1(const unsigned specNumber) const;
 
   string strBothEqual(
+    const unsigned specnumber,
     const unsigned char wlen,
     const unsigned char wtop,
     const bool symmFlag) const;

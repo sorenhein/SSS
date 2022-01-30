@@ -57,6 +57,7 @@ void CoverSpec::getIndices(
 
 
 string CoverSpec::strBothEqual(
+  const unsigned specNumber,
   const unsigned char wlen,
   const unsigned char wtop,
   const bool symmFlag) const
@@ -66,53 +67,23 @@ string CoverSpec::strBothEqual(
 
   if (wlen == 0)
   {
-    ss << side << " is void";
+    return setsWest[specNumber].strBothEqual0(side);
   }
   else if (wlen == 1)
   {
-    if (wtop == 0)
-      ss << side << " has a small singleton";
-    else
-      ss << side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
-        "singleton honor";
+    return setsWest[specNumber].strBothEqual1(oppsTops1, side);
   }
   else if (wlen+1 == oppsLength)
   {
-    assert(! symmFlag);
-    if (wtop == oppsTops1)
-      ss << "East has a small singleton";
-    else
-      ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
-        "singleton honor";
+    return setsWest[specNumber].strBothEqual1(oppsTops1, side);
   }
   else if (wlen == 2)
   {
-    if (wtop == 0)
-    {
-      if (oppsLength == 4 && oppsTops1 == 2)
-      {
-        assert(! symmFlag);
-        ss << "East has doubleton honors (HH)";
-      }
-      else
-        ss << side << " has a small doubleton";
-    }
-    else if (wtop == 1)
-      ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
-    else
-      ss << side << " has doubleton honors (HH)";
+    return setsWest[specNumber].strBothEqual2(oppsLength, oppsTops1, side);
   }
   else if (wlen+2 == oppsLength)
   {
-    assert(! symmFlag);
-    if (wtop == oppsTops1)
-      ss << "East has a small doubleton";
-    else if (wtop+1 == oppsTops1)
-      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
-    else
-      ss << "East has doubleton honors (HH)";
+    return setsWest[specNumber].strBothEqual2(oppsLength, oppsTops1, side);
   }
   else if (wlen == 3)
   {
@@ -280,6 +251,7 @@ string CoverSpec::strSet(const unsigned specNumber) const
     {
       if (setsWest[specNumber].top1.oper == COVER_EQUAL)
         return CoverSpec::strBothEqual(
+          specNumber,
           setsWest[specNumber].length.value1,
           setsWest[specNumber].top1.value1,
           setsWest[specNumber].symmFlag);
