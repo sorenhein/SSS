@@ -23,6 +23,37 @@ struct ExplStats
   vector<vector<vector<vector<unsigned>>>> pairs;
   vector<vector<vector<unsigned>>> lengths;
 
+  void resize(const vector<vector<list<CoverSpec>>>& specs)
+  {
+    const unsigned ssize = specs.size();
+
+    singles.resize(ssize);
+    lengths.resize(ssize);
+    pairs.resize(ssize);
+
+    for (unsigned s = 0; s < ssize; s++)
+    {
+      const unsigned s2size = specs[s].size();
+
+      singles[s].resize(s2size);
+      lengths[s].resize(s2size);
+      pairs[s].resize(s2size);
+
+      for (unsigned t = 0; t < s2size; t++)
+      {
+        const unsigned csize = specs[s][t].size();
+
+        singles[s][t].resize(csize, 0);
+        lengths[s][t].resize(20, 0); // 20 explanations per strat
+  
+        pairs[s][t].resize(csize);
+
+        for (unsigned c = 0; c < csize; c++)
+          pairs[s][t][c].resize(csize, 0);
+      }
+    }
+  };
+
   string str() const
   {
     stringstream ss;
@@ -38,26 +69,21 @@ struct ExplStats
         if (vsize == 0)
           continue;
 
-        /*
-        ss << "Length " << length << ", tops1 " << tops1 << " (singles)\n";
-        for (unsigned cno = 0; cno < vsize; cno++)
-        {
-          const unsigned v = vecSingles[cno];
-          ss << 
-            setw(3) << cno <<
-            setw(6) << (v == 0 ? "-" : to_string(v)) << "\n";
-        }
-        ss << "\n";
-        */
-
         ss << "Cover counts " << length << "-" << tops1 << "\n";
+        unsigned cumSum = 0, sum = 0;
         for (unsigned cno = 0; cno < vecLengths.size(); cno++)
         {
           const unsigned v = vecLengths[cno];
           if (v > 0)
+          {
             ss << setw(3) << cno << setw(6) << v << "\n";
+            sum += v;
+            cumSum += v * cno;
+          }
         }
-        ss << "\n";
+        ss << string(9, '-') << "\n";
+        ss << setw(9) << fixed << setprecision(2) <<
+          cumSum / static_cast<double>(sum) << "\n\n";
 
         ss << "Pairs " << length << "-" << tops1 << "\n";
 

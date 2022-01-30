@@ -63,9 +63,6 @@ void CoverSpec::westLength(
 {
   setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
   setsWest[specNumber].setLength(len);
-
-  // setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
-  // setsWest[specNumber].length.set(len, COVER_EQUAL);
 }
 
 
@@ -82,9 +79,6 @@ void CoverSpec::westLengthRange(
   const unsigned char len2,
   const unsigned specNumber)
 {
-  // setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
-  // setsWest[specNumber].length.set(len1, len2, COVER_INSIDE_RANGE);
-
   setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
   setsWest[specNumber].setLength(len1, len2);
 }
@@ -106,9 +100,6 @@ void CoverSpec::westTop1(
   const unsigned char tops,
   const unsigned specNumber)
 {
-  // setsWest[specNumber].mode = COVER_TOPS_ONLY;
-  // setsWest[specNumber].top1.set(tops, COVER_EQUAL);
-
   setsWest[specNumber].setMode(COVER_TOPS_ONLY);
   setsWest[specNumber].setTop1(tops);
 }
@@ -127,9 +118,6 @@ void CoverSpec::westTop1Range(
   const unsigned char tops2,
   const unsigned specNumber)
 {
-  // setsWest[specNumber].mode = COVER_TOPS_ONLY;
-  // setsWest[specNumber].top1.set(tops1, tops2, COVER_INSIDE_RANGE);
-
   setsWest[specNumber].setMode(COVER_TOPS_ONLY);
   setsWest[specNumber].setTop1(tops1, tops2);
 }
@@ -164,20 +152,6 @@ void CoverSpec::westGeneral(
     CoverSpec::westTop1(tops1, specNumber);
   else
     CoverSpec::westTop1Range(tops1, tops2, specNumber);
-
-  /*
-  setsWest[specNumber].mode = COVER_LENGTHS_AND_TOPS;
-
-  if (len1 == len2)
-    setsWest[specNumber].length.set(len1, COVER_EQUAL);
-  else
-    setsWest[specNumber].length.set(len1, len2, COVER_INSIDE_RANGE);
-
-  if (tops1 == tops2)
-    setsWest[specNumber].top1.set(tops1, COVER_EQUAL);
-  else
-    setsWest[specNumber].top1.set(tops1, tops2, COVER_INSIDE_RANGE);
-    */
 
   setsWest[specNumber].setMode(COVER_LENGTHS_AND_TOPS);
   setsWest[specNumber].setSymm(symmFlag);
@@ -235,12 +209,6 @@ string CoverSpec::str() const
     return setsWest[0].str(oppsLength, oppsTops1);
   else
   {
-    // At the moment
-    // 57 YYThe suit splits 2-2, or East has the tops
-    // 15 YYThe suit splits 3=3, or West has the tops
-    // 24 YYWest has at least 2 cards, or East has the tops
-    // 12 YYWest has at most 3 cards, or West has the tops
-
     return "YY " + setsWest[0].str(oppsLength, oppsTops1) + "; or " +
       setsWest[1].str(oppsLength, oppsTops1);
   }

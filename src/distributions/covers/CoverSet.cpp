@@ -23,46 +23,6 @@ void CoverSet::reset()
 }
 
 
-bool CoverSet::includesLength(
-  const unsigned char wlen,
-  const unsigned char oppsLength) const
-{
-  if (symmFlag)
-    return length.includes(wlen) || length.includes(oppsLength - wlen);
-  else
-    return length.includes(wlen);
-}
-
-
-bool CoverSet::includesTop1(
-  const unsigned char wtop,
-  const unsigned char oppsTops1) const
-{
-  if (symmFlag)
-    return top1.includes(wtop) || length.includes(oppsTops1 - wtop);
-  else
-    return top1.includes(wtop);
-}
-
-
-bool CoverSet::includesLengthAndTop1(
-  const unsigned char wlen,
-  const unsigned char wtop,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  if (symmFlag)
-  {
-    return 
-      (length.includes(wlen) && top1.includes(wtop)) ||
-      (length.includes(oppsLength - wlen) && 
-        top1.includes(oppsTops1 - wtop));
-  }
-  else
-    return length.includes(wlen) && top1.includes(wtop);
-}
-
-
 void CoverSet::setSymm(const bool symmFlagIn)
 {
   symmFlag = symmFlagIn;
@@ -106,6 +66,46 @@ void CoverSet::setTop1(
   const unsigned char tops2)
 {
   top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+}
+
+
+bool CoverSet::includesLength(
+  const unsigned char wlen,
+  const unsigned char oppsLength) const
+{
+  if (symmFlag)
+    return length.includes(wlen) || length.includes(oppsLength - wlen);
+  else
+    return length.includes(wlen);
+}
+
+
+bool CoverSet::includesTop1(
+  const unsigned char wtop,
+  const unsigned char oppsTops1) const
+{
+  if (symmFlag)
+    return top1.includes(wtop) || length.includes(oppsTops1 - wtop);
+  else
+    return top1.includes(wtop);
+}
+
+
+bool CoverSet::includesLengthAndTop1(
+  const unsigned char wlen,
+  const unsigned char wtop,
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1) const
+{
+  if (symmFlag)
+  {
+    return 
+      (length.includes(wlen) && top1.includes(wtop)) ||
+      (length.includes(oppsLength - wlen) && 
+        top1.includes(oppsTops1 - wtop));
+  }
+  else
+    return length.includes(wlen) && top1.includes(wtop);
 }
 
 

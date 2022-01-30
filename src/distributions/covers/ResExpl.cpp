@@ -126,9 +126,6 @@ void ResExpl::updateStats(ExplStats& explStats) const
 
   lengths[data.size()]++;
 
-// if (lengthIndex == 5 && tops1Index == 3 && data.size() == 4)
-  // cout << "HERE 5-3-4\n";
-
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {
     const unsigned index = iter->coverPtr->index();
