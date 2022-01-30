@@ -56,55 +56,6 @@ void CoverSpec::getIndices(
 }
 
 
-/*
-string CoverSpec::strLengthInside(
-  const unsigned char wlen1,
-  const unsigned char wlen2,
-  const bool symmFlag) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (wlen1 == 0)
-  {
-    if (wlen2 == 1)
-      ss << side << " has at most a singleton";
-    else if (wlen2 == 2)
-      ss << side << " has at most a doubleton";
-    else
-      ss << side << " has at most " << +wlen2 << " cards";
-  }
-  else if (wlen2 == oppsLength)
-  {
-    ss << side << " has at least " << +wlen1 << " cards";
-  }
-  else if (wlen1 == 1 && wlen2 == oppsLength-1)
-  {
-    ss << "Neither opponent is void";
-  }
-  else if (wlen1 + wlen2 == oppsLength)
-  {
-    if (wlen1 + 1 == wlen2)
-    {
-      ss << "The suit splits " << +wlen1 << "-" << +wlen2 << " either way";
-    }
-    else
-    {
-      ss << "The suit splits " << +wlen1 << "-" << +wlen2 <<
-        " or better either way";
-    }
-  }
-  else
-  {
-    ss << "The suit splits between " <<
-      +wlen1 << "=" << +(oppsLength - wlen1) << " and " << 
-      +wlen2 << "=" << +(oppsLength - wlen2);
-  }
-  return ss.str();
-}
-*/
-
-
 string CoverSpec::strTop1Equal(
   const unsigned char wtop,
   const bool symmFlag) const
@@ -183,30 +134,6 @@ string CoverSpec::strTop1Inside(
   }
 
   return ss.str();
-}
-
-
-string CoverSpec::strLength(const unsigned specNumber) const
-{
-  if (setsWest[specNumber].length.oper == COVER_EQUAL)
-  {
-    return setsWest[specNumber].strLengthEqual(oppsLength);
-  }
-  else if (setsWest[specNumber].length.oper == COVER_INSIDE_RANGE)
-  {
-    return setsWest[specNumber].strLengthInside(oppsLength);
-    /*
-    return CoverSpec::strLengthInside(
-      setsWest[specNumber].length.value1, 
-      setsWest[specNumber].length.value2,
-      setsWest[specNumber].symmFlag);
-      */
-  }
-  else
-  {
-    assert(false);
-    return "";
-  }
 }
 
 
@@ -397,7 +324,8 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
     {
       cout << "xesWestMax " << +xesWestMax << 
         ", xesEastMax " << +xesEastMax << "\n";
-      cout << "WW" << CoverSpec::strLength(specNumber) << 
+      // cout << "WW" << CoverSpec::strLength(specNumber) << 
+      cout << "WW" << setsWest[specNumber].strLength(oppsLength) << 
         ", and " <<CoverSpec::strTop1(specNumber) << endl;
       assert(false);
     }
@@ -449,7 +377,8 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
 string CoverSpec::strSet(const unsigned specNumber) const
 {
   if (setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
-    return CoverSpec::strLength(specNumber);
+    return setsWest[specNumber].strLength(oppsLength);
+    // return CoverSpec::strLength(specNumber);
   else if (setsWest[specNumber].mode == COVER_TOPS_ONLY)
     return CoverSpec::strTop1(specNumber);
   else if (setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
@@ -463,7 +392,8 @@ string CoverSpec::strSet(const unsigned specNumber) const
           setsWest[specNumber].symmFlag);
       else
       {
-        return "ZZ " + CoverSpec::strLength(specNumber) + ", and " + 
+        // return "ZZ " + CoverSpec::strLength(specNumber) + ", and " + 
+        return "ZZ " + setsWest[specNumber].strLength(oppsLength) + ", and " + 
           CoverSpec::strTop1(specNumber);
       }
     }
@@ -476,7 +406,8 @@ string CoverSpec::strSet(const unsigned specNumber) const
       }
     }
     // At the moment only 1=5/2=4 with 1-2 West tops
-    return "XX " + CoverSpec::strLength(specNumber) + ", and " + 
+    // return "XX " + CoverSpec::strLength(specNumber) + ", and " + 
+    return "XX " + setsWest[specNumber].strLength(oppsLength) + ", and " + 
       CoverSpec::strTop1(specNumber);
   }
   else
