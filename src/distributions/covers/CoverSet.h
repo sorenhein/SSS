@@ -31,6 +31,8 @@ struct CoverSet
   CoverElement length;
   CoverElement top1;
 
+  void reset();
+
   bool includesLength(
     const unsigned char wlen,
     const unsigned char oppsLength) const;

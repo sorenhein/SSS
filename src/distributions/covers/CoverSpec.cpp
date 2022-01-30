@@ -16,27 +16,14 @@
 
 CoverSpec::CoverSpec()
 {
-  setsWest[0].mode = COVER_MODE_NONE;
-  setsWest[1].mode = COVER_MODE_NONE;
-
-  setsWest[0].symmFlag = false;
-  setsWest[1].symmFlag = false;
+  CoverSpec::reset();
 }
 
 
-CoverSpec::reset()
+void CoverSpec::reset()
 {
-  setsWest[0].mode = COVER_MODE_NONE;
-  setsWest[1].mode = COVER_MODE_NONE;
-
-  setsWest[0].symmFlag = false;
-  setsWest[1].symmFlag = false;
-
-  setsWest[0].length.setOperator(COVER_OPERATOR_SIZE);
-  setsWest[1].length.setOperator(COVER_OPERATOR_SIZE);
-
-  setsWest[0].top1.setOperator(COVER_OPERATOR_SIZE);
-  setsWest[1].top1.setOperator(COVER_OPERATOR_SIZE);
+  setsWest[0].reset();
+  setsWest[1].reset();
 }
 
 

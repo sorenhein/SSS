@@ -23,16 +23,7 @@ Cover::Cover()
 void Cover::reset()
 {
   profile.clear();
-
-  spec.setsWest[0].mode = COVER_MODE_NONE;
-  spec.setsWest[1].mode = COVER_MODE_NONE;
-
-  spec.setsWest[0].length.setOperator(COVER_OPERATOR_SIZE);
-  spec.setsWest[1].length.setOperator(COVER_OPERATOR_SIZE);
-
-  spec.setsWest[0].top1.setOperator(COVER_OPERATOR_SIZE);
-  spec.setsWest[1].top1.setOperator(COVER_OPERATOR_SIZE);
-
+  spec.reset();
   weight = 0;
   numDist = 0;
 }
@@ -49,10 +40,9 @@ void Cover::prepare(
   profile.resize(len);
 
   spec = specIn;
-
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (spec.includes(lengths[dno], tops[dno]);
+    if (spec.includes(lengths[dno], tops[dno]))
     {
       profile[dno] = 1;
       weight += cases[dno];

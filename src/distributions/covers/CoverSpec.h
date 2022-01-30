@@ -42,6 +42,8 @@ struct CoverSpec
 
   CoverSpec();
 
+  void reset();
+
   // private
   bool includes(
     const unsigned specNumber,

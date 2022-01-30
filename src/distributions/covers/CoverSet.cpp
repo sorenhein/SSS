@@ -10,6 +10,15 @@
 #include "CoverSet.h"
 
 
+void CoverSet::reset()
+{
+  mode = COVER_MODE_NONE;
+  symmFlag = false;
+  length.setOperator(COVER_OPERATOR_SIZE);
+  top1.setOperator(COVER_OPERATOR_SIZE);
+}
+
+
 bool CoverSet::includesLength(
   const unsigned char wlen,
   const unsigned char oppsLength) const
