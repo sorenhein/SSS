@@ -353,3 +353,64 @@ string CoverSet::strBothEqual2(
   return ss.str();
 }
 
+
+string CoverSet::strBothEqual3(
+  [[maybe_unused]] const unsigned char oppsLength,
+  const unsigned char oppsTops1,
+  const string& side) const
+{
+  stringstream ss;
+
+  if (length.value1 == 3)
+  {
+    if (top1.value1 == 0)
+      ss << side << " has a small tripleton";
+    else if (top1.value1 == 1)
+      ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor tripleton (Hxx)";
+    else if (top1.value1 == 2)
+      ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
+        "honors tripleton (HHx)";
+    else
+      ss << side << " has tripleton honors (HHH)";
+  }
+  else
+  {
+    assert(! symmFlag);
+    if (top1.value1 == oppsTops1)
+      ss << "East has a small tripleton";
+    else if (top1.value1 + 1 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+        "honor tripleton (Hxx)";
+    else if (top1.value1 + 2 == oppsTops1)
+      ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
+        "honors tripleton (HHx)";
+    else
+      ss << "East has tripleton honors (HHH)";
+  }
+
+  return ss.str();
+}
+
+
+string CoverSet::strBothEqual(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1) const
+{
+  const string side = (symmFlag ? "Either opponent" : "West");
+
+  if (length.value1 == 0 || length.value1 == oppsLength)
+    return CoverSet::strBothEqual0(side);
+  else if (length.value1 == 1 || length.value1 + 1 == oppsLength)
+    return CoverSet::strBothEqual1(oppsTops1, side);
+  else if (length.value1 == 2 || length.value1 + 2 == oppsLength)
+    return CoverSet::strBothEqual2(oppsLength, oppsTops1, side);
+  else if (length.value1 == 3 || length.value1 + 3 == oppsLength)
+    return CoverSet::strBothEqual3(oppsLength, oppsTops1, side);
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
