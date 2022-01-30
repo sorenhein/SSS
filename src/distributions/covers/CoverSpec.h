@@ -37,6 +37,17 @@ struct CoverSet
   bool symmFlag;
   CoverElement length;
   CoverElement top1;
+
+  bool includesLength(
+    const unsigned char wlen,
+    const unsigned char oppsLength) const
+  {
+    if (symmFlag)
+      return length.includes(wlen) || length.includes(oppsLength - wlen);
+    else
+      return length.includes(wlen);
+  };
+
 };
 
 
@@ -57,6 +68,10 @@ struct CoverSpec
 
 
   CoverSpec();
+
+  bool includesLength(
+    const unsigned specNumber,
+    const unsigned char wlen) const;
 
   void getIndices(
     unsigned char& length,

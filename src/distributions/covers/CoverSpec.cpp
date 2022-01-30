@@ -24,6 +24,14 @@ CoverSpec::CoverSpec()
 }
 
 
+bool CoverSpec::includesLength(
+  const unsigned specNumber,
+  const unsigned char wlen) const
+{
+  return setsWest[specNumber].includesLength(wlen, oppsLength);
+}
+
+
 void CoverSpec::getIndices(
   unsigned char& length,
   unsigned char& tops1) const

@@ -52,11 +52,15 @@ bool Cover::includes(
   {
     // TODO Write more cleanly.  Perhaps just pass in oppsLength
     // and let westLength figure it out using its own symmFlag
+    /*
     if (spec.setsWest[specNumber].symmFlag)
       return spec.setsWest[specNumber].length.includes(lengths[dno]) ||
         spec.setsWest[specNumber].length.includes(spec.oppsLength-lengths[dno]);
     else
       return spec.setsWest[specNumber].length.includes(lengths[dno]);
+      */
+    
+    return spec.includesLength(specNumber, lengths[dno]);
   }
   else if (spec.setsWest[specNumber].mode == COVER_TOPS_ONLY)
   {
