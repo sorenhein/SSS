@@ -24,36 +24,98 @@ enum CoverState
 };
 
 
-struct CoverSpec
+class CoverSpec
 {
-  // For easier identification.  Could perhaps be unsigned char
-  unsigned index;
+  private:
 
-  unsigned char oppsLength;
-  unsigned char oppsTops1;
+    // For easier identification.  Could perhaps be unsigned char
+    unsigned index;
 
-  // There are two sets of elements.  Each set has a mode.  
-  // The two sets are OR'ed together if both are present.  
-  // Within a set, the elements are AND'ed together if both are present.
+    unsigned char oppsLength;
+    unsigned char oppsTops1;
 
-  array<CoverSet, 2> setsWest;
+    // There are two sets of elements.  Each set has a mode.  
+    // The two sets are OR'ed together if both are present.  
+    // Within a set, the elements are AND'ed together if both are present.
+
+    array<CoverSet, 2> setsWest;
 
 
-  CoverSpec();
+  public:
 
-  void reset();
+    CoverSpec();
 
-  bool includes(
-    const unsigned char wlen,
-    const unsigned char wtop) const;
+    void reset();
+
+    void setID(
+      const unsigned char length,
+      const unsigned char tops1);
+
+    void setIndex(const unsigned indexIn);
+
+    void getID(
+      unsigned char& length,
+      unsigned char& tops1) const;
+
+    unsigned getIndex() const;
+
+    void westLength(
+      const unsigned char len,
+      const unsigned specNumber = 0);
+
+    void eastLength(
+      const unsigned char len,
+      const unsigned specNumber = 0);
+
+    void westLengthRange(
+      const unsigned char len1,
+      const unsigned char len2,
+      const unsigned specNumber = 0);
+
+    void eastLengthRange(
+      const unsigned char len1,
+      const unsigned char len2,
+      const unsigned specNumber = 0);
+
+    void westTop1(
+      const unsigned char tops,
+      const unsigned specNumber = 0);
+
+    void eastTop1(
+      const unsigned char tops,
+      const unsigned specNumber = 0);
+
+    void westTop1Range(
+      const unsigned char tops1,
+      const unsigned char tops2,
+      const unsigned specNumber = 0);
+
+    void eastTop1Range(
+      const unsigned char tops1,
+      const unsigned char tops2,
+      const unsigned specNumber = 0);
+
+    void westGeneral(
+      const unsigned char len1,
+      const unsigned char len2,
+      const unsigned char tops1,
+      const unsigned char tops2,
+      const bool symmFlag = false,
+      const unsigned specNumber = 0);
+
+    void eastGeneral(
+      const unsigned char len1,
+      const unsigned char len2,
+      const unsigned char tops1,
+      const unsigned char tops2,
+      const bool symmFlag = false,
+      const unsigned specNumber = 0);
+
+    bool includes(
+      const unsigned char wlen,
+      const unsigned char wtop) const;
     
-  void getIndices(
-    unsigned char& length,
-    unsigned char& tops1) const;
-
-  // string strSet(const unsigned specNumber) const;
-
-  string str() const;
+    string str() const;
 };
 
 #endif

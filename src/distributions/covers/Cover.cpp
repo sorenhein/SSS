@@ -90,13 +90,13 @@ void Cover::getIndices(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  spec.getIndices(length, tops1);
+  spec.getID(length, tops1);
 }
 
 
 unsigned Cover::index() const
 {
-  return spec.index;
+  return spec.getIndex();
 }
 
 
@@ -122,7 +122,9 @@ string Cover::strProfile() const
 {
   stringstream ss;
 
-  cout << "cover index " << spec.index << ", weight " << +weight << "\n";
+  cout << 
+    "cover index " << spec.getIndex() << 
+    ", weight " << +weight << "\n";
 
   for (unsigned i = 0; i < profile.size(); i++)
     ss << i << ": " << +profile[i] << "\n";

@@ -138,6 +138,8 @@ struct CoverSet
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
 
+  void setSymm(const bool symmFlagIn);
+
   string str(
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;

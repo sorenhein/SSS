@@ -86,6 +86,12 @@ bool CoverSet::includes(
 }
 
 
+void CoverSet::setSymm(const bool symmFlagIn)
+{
+  symmFlag = symmFlagIn;
+}
+
+
 string CoverSet::strLengthEqual(const unsigned char oppsLength) const
 {
   stringstream ss;
