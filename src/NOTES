@@ -4,6 +4,14 @@ Verbals of strategy wins
 
 * Cover getIndices rename to getID
 
+* ExplStats: Move implementation into .cpp file
+* ExplStat: Make into a mini class in ExplStats.h
+* Include files on top of ExplStats.h reduce
+* Move the bulk of ExplStats str into ExplStat?
+
+* When ExplStats clean, that leaves CoverMemory to work on
+* And CoverElement (.cpp file?)
+
 * Get rid of greater, less than
 
 * Symmetric flag could be for each of 0, 1

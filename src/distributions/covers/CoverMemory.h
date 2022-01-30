@@ -17,7 +17,7 @@
 
 using namespace std;
 
-struct ExplStats;
+class ExplStats;
 
 
 class CoverMemory

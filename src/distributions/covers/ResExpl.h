@@ -14,7 +14,7 @@
 
 #include "Cover.h"
 
-struct ExplStats;
+class ExplStats;
 
 
 using namespace std;

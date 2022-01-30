@@ -23,12 +23,39 @@ struct ExplStat
   vector<unsigned> lengths;
   vector<unsigned> singles;
   vector<vector<unsigned>> pairs;
+
+  void incrLengths(const unsigned count)
+  {
+    assert(count < lengths.size());
+    lengths[count]++;
+  };
+
+  void incrSingles(const unsigned index)
+  {
+    assert(index < singles.size());
+    singles[index]++;
+  };
+
+  void incrPairs(
+    const unsigned index1,
+    const unsigned index2)
+  {
+    assert(index1 < pairs.size());
+    assert(index2 < pairs.size());
+
+    pairs[index1][index2]++;
+    pairs[index2][index1]++;
+  };
 };
 
 
-struct ExplStats
+class ExplStats
 {
-  vector<vector<ExplStat>> explStats;
+  private:
+
+    vector<vector<ExplStat>> explStats;
+
+  public:
 
   void resize(const vector<vector<list<CoverSpec>>>& specs)
   {
@@ -56,6 +83,15 @@ struct ExplStats
           explStat.pairs[c].resize(csize, 0);
       }
     }
+  };
+
+  ExplStat& getEntry(
+    const unsigned char lengthIndex,
+    const unsigned char tops1Index)
+  {
+    assert(lengthIndex < explStats.size());
+    assert(tops1Index < explStats[lengthIndex].size());
+    return explStats[lengthIndex][tops1Index];
   };
 
   string str() const

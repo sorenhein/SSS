@@ -120,23 +120,18 @@ void ResExpl::updateStats(ExplStats& explStats) const
   unsigned char lengthIndex, tops1Index;
   data.front().coverPtr->getIndices(lengthIndex, tops1Index);
 
-  auto& singles = explStats.explStats[lengthIndex][tops1Index].singles;
-  auto& pairs = explStats.explStats[lengthIndex][tops1Index].pairs;
-  auto& lengths = explStats.explStats[lengthIndex][tops1Index].lengths;
-
-  lengths[data.size()]++;
+  ExplStat& explStat = explStats.getEntry(lengthIndex, tops1Index);
+  explStat.incrLengths(data.size());
 
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {
     const unsigned index = iter->coverPtr->index();
-    assert(index < singles.size());
-    singles[index]++;
+    explStat.incrSingles(index);
 
     for (auto iter2 = next(iter); iter2 != data.end(); iter2++)
     {
       const unsigned index2 = iter2->coverPtr->index();
-      pairs[index][index2]++;
-      pairs[index2][index]++;
+      explStat.incrPairs(index, index2);
     }
   }
 }

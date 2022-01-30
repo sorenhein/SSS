@@ -22,7 +22,7 @@
 using namespace std;
 
 class Distributions;
-struct ExplStats;
+class ExplStats;
 
 
 class Combinations
