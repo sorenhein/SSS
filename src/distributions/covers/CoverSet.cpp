@@ -414,3 +414,186 @@ string CoverSet::strBothEqual(
   }
 }
 
+
+void CoverSet::strXes(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1,
+  CoverXes& coverXes) const
+{
+  coverXes.westMax = length.value2 - top1.value1;
+  coverXes.westMin = length.value1 - top1.value1;
+
+  coverXes.eastMax =
+    (oppsLength - length.value1) - (oppsTops1 - top1.value1);
+  coverXes.eastMin =
+    (oppsLength - length.value2) - (oppsTops1 - top1.value1);
+
+  coverXes.strWest = string(coverXes.westMin, 'x') +
+    "(" + string(coverXes.westMax - coverXes.westMin, 'x') + ")";
+  coverXes.strEast = string(coverXes.eastMin, 'x') +
+    "(" + string(coverXes.eastMax - coverXes.eastMin, 'x') + ")";
+}
+
+
+string CoverSet::strTop1Fixed0(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1,
+  const string& side,
+  const CoverXes& coverXes) const
+{
+  stringstream ss;
+
+  if (top1.value1 == 0)
+  {
+    assert(! symmFlag);
+    if (oppsTops1 == 1)
+    {
+      if (coverXes.eastMax == 1)
+        ss << "East has the top at most doubleton";
+      else
+        ss << "East has H" << coverXes.strEast;
+    }
+    else if (oppsTops1 == 2)
+    {
+      if (coverXes.eastMax == 1)
+        ss << "East has both tops at most tripleton";
+      else
+        ss << "East has HH" << coverXes.strEast;
+    }
+    else
+      assert(false);
+  }
+  else
+  {
+    if (oppsTops1 == 1)
+    {
+      if (coverXes.westMax == 1)
+        ss << side << " has the top at most doubleton";
+      else
+        ss << side << " has H" << coverXes.strWest;
+    }
+    else if (oppsTops1 == 2)
+    {
+      if (coverXes.westMax == 1)
+        ss << side << " has both tops at most tripleton";
+      else
+        ss << side << " has HH" << coverXes.strWest;
+    }
+    else if (oppsTops1 == 3)
+      ss << side << " has HHH" << coverXes.strWest;
+    else
+    {
+      cout << coverXes.str();
+      cout << CoverSet::strLength(oppsLength) << ", and " <<
+        CoverSet::strTop1(oppsTops1) << endl;
+      assert(false);
+    }
+  }
+  
+  return ss.str();
+}
+
+
+string CoverSet::strTop1Fixed1(
+  const unsigned char oppsTops1,
+  const string& side,
+  const CoverXes& coverXes) const
+{
+  stringstream ss;
+
+  if (top1.value1 == 1)
+  {
+    if (oppsTops1 == 2)
+    {
+      // Look at it from the shorter side
+      if (coverXes.westMax <= coverXes.eastMax)
+      {
+        if (coverXes.westMax == 1)
+          ss << side << " has one top at most doubleton";
+        else
+          ss << side << " has H" << coverXes.strWest;
+      }
+      else
+      {
+        assert(! symmFlag);
+        if (coverXes.eastMax == 1)
+          ss << "East has one top at most doubleton";
+        else
+          ss << "East has H" << coverXes.strEast;
+      }
+    }
+    else
+    {
+      if (coverXes.westMax == 1)
+        ss << side << " has one top at most doubleton";
+      else
+        ss << side << " has H" << coverXes.strWest;
+    }
+  }
+  else
+  {
+    assert(! symmFlag);
+    if (coverXes.eastMax == 1)
+      ss << "East has one top at most doubleton";
+    else
+      ss << "East has H" << coverXes.strEast;
+  }
+
+  return ss.str();
+}
+
+
+string CoverSet::strTop1Fixed(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+
+  CoverXes coverXes;
+  CoverSet::strXes(oppsLength, oppsTops1, coverXes);
+
+  if (top1.value1 == 0 ||top1.value1 == oppsTops1)
+    return CoverSet::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes);
+  else if (top1.value1 == 1 ||top1.value1 + 1 == oppsTops1)
+    return CoverSet::strTop1Fixed1(oppsTops1, side, coverXes);
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
+
+string CoverSet::str(
+  const unsigned char oppsLength,
+  const unsigned char oppsTops1) const
+{
+  if (mode == COVER_LENGTHS_ONLY)
+    return CoverSet::strLength(oppsLength);
+  else if (mode == COVER_TOPS_ONLY)
+    return CoverSet::strTop1(oppsTops1);
+  else if (mode == COVER_LENGTHS_AND_TOPS)
+  {
+    if (length.oper == COVER_EQUAL)
+    {
+      if (top1.oper == COVER_EQUAL)
+        return CoverSet::strBothEqual(oppsLength, oppsTops1);
+      else
+        return "ZZ " + CoverSet::strLength(oppsLength) + ", and " +
+          CoverSet::strTop1(oppsTops1);
+    }
+    else
+    {
+      if (top1.oper == COVER_EQUAL)
+        return CoverSet::strTop1Fixed(oppsLength, oppsTops1);
+      else
+        return "XX " + CoverSet::strLength(oppsLength) + ", and " +
+          CoverSet::strTop1(oppsTops1);
+    }
+  }
+
+  assert(false);
+  return "";
+}
+
