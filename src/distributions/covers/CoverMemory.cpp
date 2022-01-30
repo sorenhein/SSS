@@ -258,16 +258,21 @@ void CoverMemory::SymmGeneralAnd(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl)
+  const unsigned char upperTopsIncl,
+  const unsigned specNumber)
 {
   CoverMemory::WestGeneralAnd(lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl);
+    lowerTopsIncl, upperTopsIncl, specNumber);
 
+  specs[coverGlobal.cards][coverGlobal.tops1].back().symmFlags[specNumber] = true;
+
+  /*
   CoverMemory::EastGeneralAnd(lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, 1);
   
   // TODO Solve more elegantly?
   specs[coverGlobal.cards][coverGlobal.tops1].back().symmFlag = true;
+  */
 }
 
 

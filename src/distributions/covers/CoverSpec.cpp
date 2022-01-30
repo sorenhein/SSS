@@ -17,7 +17,7 @@
 CoverSpec::CoverSpec()
 {
   mode = {COVER_MODE_NONE, COVER_MODE_NONE};
-  symmFlag = false;
+  symmFlags = {false, false};
 }
 
 
@@ -30,7 +30,9 @@ void CoverSpec::getIndices(
 }
 
 
-string CoverSpec::strLengthEqual(const unsigned char wlen) const
+string CoverSpec::strLengthEqual(
+  const unsigned char wlen,
+  const bool symmFlag) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -65,7 +67,8 @@ string CoverSpec::strLengthEqual(const unsigned char wlen) const
 
 string CoverSpec::strLengthInside(
   const unsigned char wlen1,
-  const unsigned char wlen2) const
+  const unsigned char wlen2,
+  const bool symmFlag) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -109,7 +112,9 @@ string CoverSpec::strLengthInside(
 }
 
 
-string CoverSpec::strTop1Equal(const unsigned char wtop) const
+string CoverSpec::strTop1Equal(
+  const unsigned char wtop,
+  const bool symmFlag) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -155,7 +160,8 @@ string CoverSpec::strTop1Equal(const unsigned char wtop) const
 
 string CoverSpec::strTop1Inside(
   const unsigned char wtop1,
-  const unsigned char wtop2) const
+  const unsigned char wtop2,
+  const bool symmFlag) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -190,10 +196,14 @@ string CoverSpec::strTop1Inside(
 string CoverSpec::strLength(const unsigned specNumber) const
 {
   if (westLength[specNumber].oper == COVER_EQUAL)
-    return CoverSpec::strLengthEqual(westLength[specNumber].value1);
+    return CoverSpec::strLengthEqual(
+      westLength[specNumber].value1,
+      symmFlags[specNumber]);
   else if (westLength[specNumber].oper == COVER_INSIDE_RANGE)
     return CoverSpec::strLengthInside(
-      westLength[specNumber].value1, westLength[specNumber].value2);
+      westLength[specNumber].value1, 
+      westLength[specNumber].value2,
+      symmFlags[specNumber]);
   else
   {
     assert(false);
@@ -205,10 +215,14 @@ string CoverSpec::strLength(const unsigned specNumber) const
 string CoverSpec::strTop1(const unsigned specNumber) const
 {
   if (westTop1[specNumber].oper == COVER_EQUAL)
-    return CoverSpec::strTop1Equal(westTop1[specNumber].value1);
+    return CoverSpec::strTop1Equal(
+      westTop1[specNumber].value1,
+      symmFlags[specNumber]);
   else if (westTop1[specNumber].oper == COVER_INSIDE_RANGE)
     return CoverSpec::strTop1Inside(
-      westTop1[specNumber].value1, westTop1[specNumber].value2);
+      westTop1[specNumber].value1, 
+      westTop1[specNumber].value2,
+      symmFlags[specNumber]);
   else
   {
     assert(false);
@@ -219,7 +233,8 @@ string CoverSpec::strTop1(const unsigned specNumber) const
 
 string CoverSpec::strBothEqual(
   const unsigned char wlen,
-  const unsigned char wtop) const
+  const unsigned char wtop,
+  const bool symmFlag) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -314,7 +329,7 @@ cout << "WLEN " << +wlen << " WTOP " << +wtop << endl;
 string CoverSpec::strTop1Fixed(const unsigned specNumber) const
 {
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = (symmFlags[specNumber] ? "Either opponent" : "West");
 
   const unsigned char xesWestMax = westLength[specNumber].value2 - 
     westTop1[specNumber].value1;
@@ -335,7 +350,7 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
 
   if (westTop1[specNumber].value1 == 0)
   {
-    assert(! symmFlag);
+    assert(! symmFlags[specNumber]);
     if (oppsTops1 == 1)
     {
       if (xesEastMax == 1)
@@ -396,7 +411,7 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
       }
       else
       {
-        assert(! symmFlag);
+        assert(! symmFlags[specNumber]);
         if (xesEastMax == 1)
           ss << "East has one top at most doubleton";
         else
@@ -413,7 +428,7 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
   }
   else if (westTop1[specNumber].value1+1 == oppsTops1)
   {
-    assert(! symmFlag);
+    assert(! symmFlags[specNumber]);
     if (xesEastMax == 1)
       ss << "East has one top at most doubleton";
     else
@@ -439,7 +454,8 @@ string CoverSpec::strSet(const unsigned specNumber) const
       if (westTop1[specNumber].oper == COVER_EQUAL)
         return CoverSpec::strBothEqual(
           westLength[specNumber].value1,
-          westTop1[specNumber].value1);
+          westTop1[specNumber].value1,
+          symmFlags[specNumber]);
       else
       {
         return "ZZ " + CoverSpec::strLength(specNumber) + ", and " + 
@@ -467,11 +483,6 @@ string CoverSpec::str() const
 {
   if (mode[1] == COVER_MODE_NONE)
     return CoverSpec::strSet(0);
-  else if (symmFlag)
-  {
-    // Recognizes symmFlag itself.
-    return CoverSpec::strSet(0);
-  }
   else
   {
     // At the moment

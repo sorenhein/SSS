@@ -90,7 +90,8 @@ class CoverMemory
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
+      const unsigned char upperTopsIncl,
+      const unsigned specNumber = 0);
 
     // ----- Length OR top-1 methods -----
 

@@ -50,17 +50,36 @@ bool Cover::includes(
   }
   else if (spec.mode[specNumber] == COVER_LENGTHS_ONLY)
   {
-    return spec.westLength[specNumber].includes(lengths[dno]);
+    // TODO Write more cleanly.  Perhaps just pass in oppsLength
+    // and let westLength figure it out using its own symmFlag
+    if (spec.symmFlags[specNumber])
+      return spec.westLength[specNumber].includes(lengths[dno]) ||
+        spec.westLength[specNumber].includes(spec.oppsLength-lengths[dno]);
+    else
+      return spec.westLength[specNumber].includes(lengths[dno]);
   }
   else if (spec.mode[specNumber] == COVER_TOPS_ONLY)
   {
-    return spec.westTop1[specNumber].includes(tops[dno]);
+    if (spec.symmFlags[specNumber])
+      return spec.westTop1[specNumber].includes(tops[dno]) ||
+        spec.westTop1[specNumber].includes(spec.oppsTops1-tops[dno]);
+    else
+      return spec.westTop1[specNumber].includes(tops[dno]);
   }
   else if (spec.mode[specNumber] == COVER_LENGTHS_AND_TOPS)
   {
-    return 
-      (spec.westLength[specNumber].includes(lengths[dno]) &&
-      spec.westTop1[specNumber].includes(tops[dno]));
+    const bool caseWest =
+      spec.westLength[specNumber].includes(lengths[dno]) &&
+      spec.westTop1[specNumber].includes(tops[dno]);
+
+    if (caseWest)
+      return true;
+    else if (spec.symmFlags[specNumber])
+      return
+        spec.westLength[specNumber].includes(spec.oppsLength-lengths[dno]) &&
+        spec.westTop1[specNumber].includes(spec.oppsTops1-tops[dno]);
+    else
+      return false;
   }
   else
   {
