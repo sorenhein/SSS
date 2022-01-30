@@ -56,113 +56,6 @@ void CoverSpec::getIndices(
 }
 
 
-string CoverSpec::strTop1Equal(
-  const unsigned char wtop,
-  const bool symmFlag) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (wtop == 0)
-  {
-    assert(! symmFlag);
-    if (oppsTops1 == 1)
-      ss << "East has the top";
-    else
-      ss << "East has the tops";
-  }
-  else if (wtop == oppsTops1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has the tops";
-  }
-  else if (wtop == 1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has exactly one top";
-  }
-  else if (wtop == oppsTops1-1)
-  {
-    assert(! symmFlag);
-    ss << "East has exactly one top";
-  }
-  else if (wtop == 2)
-  {
-    ss << side << " has " <<
-      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
-  }
-  else
-    ss << side << " has exactly " << wtop << " tops";
-
-  return ss.str();
-}
-
-
-string CoverSpec::strTop1Inside(
-  const unsigned char wtop1,
-  const unsigned char wtop2,
-  const bool symmFlag) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (wtop1 == 0)
-  {
-    if (wtop2 == oppsTops1-1)
-    {
-      assert(! symmFlag);
-      ss << "East has at least one top";
-    }
-    else
-      ss << side << " has at most " << +wtop2 << " tops";
-  }
-  else if (wtop2 == oppsTops1)
-  {
-    if (wtop1 == 1)
-      ss << side << " has at least one top";
-    else
-      ss << side << " has at least " << +wtop1 << " tops";
-  }
-  else
-  {
-      ss << side << 
-        " has between " << +wtop1 << " and " << +wtop2 << " tops";
-  }
-
-  return ss.str();
-}
-
-
-string CoverSpec::strTop1(const unsigned specNumber) const
-{
-  if (setsWest[specNumber].top1.oper == COVER_EQUAL)
-  {
-    return setsWest[specNumber].strTop1Equal(oppsTops1);
-    /*
-    return CoverSpec::strTop1Equal(
-      setsWest[specNumber].top1.value1,
-      setsWest[specNumber].symmFlag);
-      */
-  }
-  else if (setsWest[specNumber].top1.oper == COVER_INSIDE_RANGE)
-  {
-    return CoverSpec::strTop1Inside(
-      setsWest[specNumber].top1.value1, 
-      setsWest[specNumber].top1.value2,
-      setsWest[specNumber].symmFlag);
-  }
-  else
-  {
-    assert(false);
-    return "";
-  }
-}
-
-
 string CoverSpec::strBothEqual(
   const unsigned char wlen,
   const unsigned char wtop,
@@ -324,9 +217,8 @@ string CoverSpec::strTop1Fixed(const unsigned specNumber) const
     {
       cout << "xesWestMax " << +xesWestMax << 
         ", xesEastMax " << +xesEastMax << "\n";
-      // cout << "WW" << CoverSpec::strLength(specNumber) << 
       cout << "WW" << setsWest[specNumber].strLength(oppsLength) << 
-        ", and " <<CoverSpec::strTop1(specNumber) << endl;
+        ", and " << setsWest[specNumber].strTop1(oppsTops1) << endl;
       assert(false);
     }
   }
@@ -378,9 +270,10 @@ string CoverSpec::strSet(const unsigned specNumber) const
 {
   if (setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
     return setsWest[specNumber].strLength(oppsLength);
-    // return CoverSpec::strLength(specNumber);
   else if (setsWest[specNumber].mode == COVER_TOPS_ONLY)
-    return CoverSpec::strTop1(specNumber);
+  {
+    return setsWest[specNumber].strTop1(oppsTops1);
+  }
   else if (setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
   {
     if (setsWest[specNumber].length.oper == COVER_EQUAL)
@@ -392,9 +285,8 @@ string CoverSpec::strSet(const unsigned specNumber) const
           setsWest[specNumber].symmFlag);
       else
       {
-        // return "ZZ " + CoverSpec::strLength(specNumber) + ", and " + 
         return "ZZ " + setsWest[specNumber].strLength(oppsLength) + ", and " + 
-          CoverSpec::strTop1(specNumber);
+          setsWest[specNumber].strTop1(oppsTops1);
       }
     }
     else
@@ -406,9 +298,8 @@ string CoverSpec::strSet(const unsigned specNumber) const
       }
     }
     // At the moment only 1=5/2=4 with 1-2 West tops
-    // return "XX " + CoverSpec::strLength(specNumber) + ", and " + 
     return "XX " + setsWest[specNumber].strLength(oppsLength) + ", and " + 
-      CoverSpec::strTop1(specNumber);
+      setsWest[specNumber].strTop1(oppsTops1);
   }
   else
     return "";

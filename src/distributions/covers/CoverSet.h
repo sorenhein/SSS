@@ -68,6 +68,12 @@ struct CoverSet
 
   // private
   string strTop1Equal(const unsigned char oppsTops1) const;
+
+  // private
+  string strTop1Inside(const unsigned char oppsTops1) const;
+
+  // public
+  string strTop1(const unsigned char oppsTops1) const;
 };
 
 #endif

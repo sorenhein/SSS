@@ -226,3 +226,51 @@ string CoverSet::strTop1Equal(const unsigned char oppsTops1) const
   return ss.str();
 }
 
+
+string CoverSet::strTop1Inside(const unsigned char oppsTops1) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+  const unsigned char wtop1 = top1.value1;
+  const unsigned char wtop2 = top1.value2;
+
+  if (wtop1 == 0)
+  {
+    if (wtop2 == oppsTops1-1)
+    {
+      assert(! symmFlag);
+      ss << "East has at least one top";
+    }
+    else
+      ss << side << " has at most " << +wtop2 << " tops";
+  }
+  else if (wtop2 == oppsTops1)
+  {
+    if (wtop1 == 1)
+      ss << side << " has at least one top";
+    else
+      ss << side << " has at least " << +wtop1 << " tops";
+  }
+  else
+  {
+      ss << side <<
+        " has between " << +wtop1 << " and " << +wtop2 << " tops";
+  }
+
+  return ss.str();
+}
+
+
+string CoverSet::strTop1(const unsigned char oppsTops1) const
+{
+  if (top1.oper == COVER_EQUAL)
+    return CoverSet::strTop1Equal(oppsTops1);
+  else if (top1.oper == COVER_INSIDE_RANGE)
+    return CoverSet::strTop1Inside(oppsTops1);
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
