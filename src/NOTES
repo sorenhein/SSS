@@ -2,6 +2,8 @@ Verbals of strategy wins
 ========================
 * CoverSet could have a variable #sets in a list
 
+* Cover getIndices rename to getID
+
 * Get rid of greater, less than
 
 * Symmetric flag could be for each of 0, 1

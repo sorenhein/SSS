@@ -120,9 +120,9 @@ void ResExpl::updateStats(ExplStats& explStats) const
   unsigned char lengthIndex, tops1Index;
   data.front().coverPtr->getIndices(lengthIndex, tops1Index);
 
-  auto& singles = explStats.singles[lengthIndex][tops1Index];
-  auto& pairs = explStats.pairs[lengthIndex][tops1Index];
-  auto& lengths = explStats.lengths[lengthIndex][tops1Index];
+  auto& singles = explStats.explStats[lengthIndex][tops1Index].singles;
+  auto& pairs = explStats.explStats[lengthIndex][tops1Index].pairs;
+  auto& lengths = explStats.explStats[lengthIndex][tops1Index].lengths;
 
   lengths[data.size()]++;
 
