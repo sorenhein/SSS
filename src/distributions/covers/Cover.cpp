@@ -54,26 +54,11 @@ bool Cover::includes(
   }
   else if (spec.setsWest[specNumber].mode == COVER_TOPS_ONLY)
   {
-    if (spec.setsWest[specNumber].symmFlag)
-      return spec.setsWest[specNumber].top1.includes(tops[dno]) ||
-        spec.setsWest[specNumber].top1.includes(spec.oppsTops1-tops[dno]);
-    else
-      return spec.setsWest[specNumber].top1.includes(tops[dno]);
+    return spec.includesTop1(specNumber, tops[dno]);
   }
   else if (spec.setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
   {
-    const bool caseWest =
-      spec.setsWest[specNumber].length.includes(lengths[dno]) &&
-      spec.setsWest[specNumber].top1.includes(tops[dno]);
-
-    if (caseWest)
-      return true;
-    else if (spec.setsWest[specNumber].symmFlag)
-      return
-        spec.setsWest[specNumber].length.includes(spec.oppsLength-lengths[dno]) &&
-        spec.setsWest[specNumber].top1.includes(spec.oppsTops1-tops[dno]);
-    else
-      return false;
+    return spec.includesLengthAndTop1(specNumber, lengths[dno], tops[dno]);
   }
   else
   {

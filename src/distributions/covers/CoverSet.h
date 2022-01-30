@@ -35,6 +35,16 @@ struct CoverSet
     const unsigned char wlen,
     const unsigned char oppsLength) const;
 
+  bool includesTop1(
+    const unsigned char wtop,
+    const unsigned char oppsTops1) const;
+
+  bool includesLengthAndTop1(
+    const unsigned char wtop,
+    const unsigned char wlen,
+    const unsigned char oppsLength,
+    const unsigned char oppsTops1) const;
+
 };
 
 #endif

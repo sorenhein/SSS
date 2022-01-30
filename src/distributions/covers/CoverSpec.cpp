@@ -32,6 +32,24 @@ bool CoverSpec::includesLength(
 }
 
 
+bool CoverSpec::includesTop1(
+  const unsigned specNumber,
+  const unsigned char wtop) const
+{
+  return setsWest[specNumber].includesTop1(wtop, oppsTops1);
+}
+
+
+bool CoverSpec::includesLengthAndTop1(
+  const unsigned specNumber,
+  const unsigned char wlen,
+  const unsigned char wtop) const
+{
+  return setsWest[specNumber].includesLengthAndTop1(
+    wlen, wtop, oppsLength, oppsTops1);
+}
+
+
 void CoverSpec::getIndices(
   unsigned char& length,
   unsigned char& tops1) const

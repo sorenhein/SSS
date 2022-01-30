@@ -46,6 +46,15 @@ struct CoverSpec
     const unsigned specNumber,
     const unsigned char wlen) const;
 
+  bool includesTop1(
+    const unsigned specNumber,
+    const unsigned char wtop) const;
+
+  bool includesLengthAndTop1(
+    const unsigned specNumber,
+    const unsigned char wlen,
+    const unsigned char wtop) const;
+
   void getIndices(
     unsigned char& length,
     unsigned char& tops1) const;
