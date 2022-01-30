@@ -33,20 +33,31 @@ struct CoverSet
 
   void reset();
 
+  // private
   bool includesLength(
     const unsigned char wlen,
     const unsigned char oppsLength) const;
 
+  // private
   bool includesTop1(
     const unsigned char wtop,
     const unsigned char oppsTops1) const;
 
+  // private
   bool includesLengthAndTop1(
     const unsigned char wtop,
     const unsigned char wlen,
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
 
+  // public
+  bool includes(
+    const unsigned char wtop,
+    const unsigned char wlen,
+    const unsigned char oppsLength,
+    const unsigned char oppsTops1) const;
+
+  string strLengthEqual(const unsigned char oppsLength) const;
 };
 
 #endif

@@ -32,20 +32,8 @@ bool CoverSpec::includes(
   const unsigned char wlen,
   const unsigned char wtop) const
 {
-  if (setsWest[specNumber].mode == COVER_MODE_NONE)
-    return false;
-  else if (setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
-    return setsWest[specNumber].includesLength(wlen, oppsLength);
-  else if (setsWest[specNumber].mode == COVER_TOPS_ONLY)
-    return setsWest[specNumber].includesTop1(wtop, oppsTops1);
-  else if (setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
-    return setsWest[specNumber].includesLengthAndTop1(
-      wlen, wtop, oppsLength, oppsTops1);
-  else
-  {
-    assert(false);
-    return false;
-  }
+  // Could inline this in next method
+  return setsWest[specNumber].includes(wlen, wtop, oppsLength, oppsTops1);
 }
 
 
@@ -65,41 +53,6 @@ void CoverSpec::getIndices(
 {
   length = oppsLength;
   tops1 = oppsTops1;
-}
-
-
-string CoverSpec::strLengthEqual(
-  const unsigned char wlen,
-  const bool symmFlag) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (wlen == 0)
-    ss << side << " is void";
-  else if (wlen == oppsLength)
-  {
-    assert(! symmFlag);
-    ss << "East is void";
-  }
-  else if (wlen == 1)
-    ss << side << " has a singleton";
-  else if (wlen == oppsLength-1)
-  {
-    assert(! symmFlag);
-    ss << "East has a singleton";
-  }
-  else if (wlen == 2)
-  {
-    if (oppsLength > 4)
-      ss << side << " has a doubleton";
-    else
-      ss << "The suit splits 2=2";
-  }
-  else
-    ss << "The suit splits " << +wlen << "=" << +(oppsLength - wlen);
-
-  return ss.str();
 }
 
 
@@ -234,9 +187,14 @@ string CoverSpec::strTop1Inside(
 string CoverSpec::strLength(const unsigned specNumber) const
 {
   if (setsWest[specNumber].length.oper == COVER_EQUAL)
+  {
+    return setsWest[specNumber].strLengthEqual(oppsLength);
+    /*
     return CoverSpec::strLengthEqual(
       setsWest[specNumber].length.value1,
       setsWest[specNumber].symmFlag);
+      */
+  }
   else if (setsWest[specNumber].length.oper == COVER_INSIDE_RANGE)
     return CoverSpec::strLengthInside(
       setsWest[specNumber].length.value1, 
