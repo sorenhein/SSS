@@ -46,99 +46,114 @@ struct CoverXes
 };
 
 
-struct CoverSet
+class CoverSet
 {
-  CoverMode mode;
-  bool symmFlag;
-  CoverElement length;
-  CoverElement top1;
+  private:
+
+    CoverMode mode;
+
+    bool symmFlag;
+
+    CoverElement length;
+
+    CoverElement top1;
+
+
+    bool includesLength(
+      const unsigned char wlen,
+      const unsigned char oppsLength) const;
+
+    bool includesTop1(
+      const unsigned char wtop,
+      const unsigned char oppsTops1) const;
+
+    bool includesLengthAndTop1(
+      const unsigned char wtop,
+      const unsigned char wlen,
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1) const;
+
+    string strLengthEqual(const unsigned char oppsLength) const;
+
+    string strLengthInside(const unsigned char oppsLength) const;
+
+    string strLength(const unsigned char oppsLength) const;
+
+    string strTop1Equal(const unsigned char oppsTops1) const;
+
+    string strTop1Inside(const unsigned char oppsTops1) const;
+
+    string strTop1(const unsigned char oppsTops1) const;
+
+    string strBothEqual0(
+      const string& side) const;
+
+    string strBothEqual1(
+      const unsigned char oppsTops1,
+      const string& side) const;
+
+    string strBothEqual2(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1,
+      const string& side) const;
+
+    string strBothEqual3(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1,
+      const string& side) const;
+
+    string strBothEqual(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1) const;
+
+    void strXes(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1,
+      CoverXes& coverXes) const;
+
+    string strTop1Fixed0(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1,
+      const string& side,
+      const CoverXes& coverXes) const;
+
+    string strTop1Fixed1(
+      const unsigned char oppsTops1,
+      const string& side,
+      const CoverXes& coverXes) const;
+
+    string strTop1Fixed(
+      const unsigned char oppsLength,
+      const unsigned char oppsTops1) const;
+
+
+  public:
 
   void reset();
 
-  // private
-  bool includesLength(
-    const unsigned char wlen,
-    const unsigned char oppsLength) const;
+  void setSymm(const bool symmFlagIn);
 
-  // private
-  bool includesTop1(
-    const unsigned char wtop,
-    const unsigned char oppsTops1) const;
+  void setMode(const CoverMode modeIn);
 
-  // private
-  bool includesLengthAndTop1(
-    const unsigned char wtop,
-    const unsigned char wlen,
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1) const;
+  CoverMode getMode() const;
 
-  // public
+  void setLength(const unsigned char len);
+  void setLength(
+    const unsigned char len1,
+    const unsigned char len2);
+
+  void setTop1(const unsigned char tops);
+  void setTop1(
+    const unsigned char tops1,
+    const unsigned char tops2);
+
   bool includes(
     const unsigned char wtop,
     const unsigned char wlen,
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
 
-  // private
-  string strLengthEqual(const unsigned char oppsLength) const;
-
-  // private
-  string strLengthInside(const unsigned char oppsLength) const;
-
-  // public
-  string strLength(const unsigned char oppsLength) const;
-
-  // private
-  string strTop1Equal(const unsigned char oppsTops1) const;
-
-  // private
-  string strTop1Inside(const unsigned char oppsTops1) const;
-
-  // public
-  string strTop1(const unsigned char oppsTops1) const;
-
-  string strBothEqual0(
-    const string& side) const;
-
-  string strBothEqual1(
-    const unsigned char oppsTops1,
-    const string& side) const;
-
-  string strBothEqual2(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1,
-    const string& side) const;
-
-  string strBothEqual3(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1,
-    const string& side) const;
-
-  string strBothEqual(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1) const;
-
-  void strXes(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1,
-    CoverXes& coverXes) const;
-
-  string strTop1Fixed0(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1,
-    const string& side,
-    const CoverXes& coverXes) const;
-
-  string strTop1Fixed1(
-    const unsigned char oppsTops1,
-    const string& side,
-    const CoverXes& coverXes) const;
-
-  string strTop1Fixed(
-    const unsigned char oppsLength,
-    const unsigned char oppsTops1) const;
-
-  void setSymm(const bool symmFlagIn);
+  string strRaw() const;
 
   string str(
     const unsigned char oppsLength,

@@ -61,8 +61,11 @@ void CoverSpec::westLength(
   const unsigned char len,
   const unsigned specNumber)
 {
-  setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
-  setsWest[specNumber].length.set(len, COVER_EQUAL);
+  setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
+  setsWest[specNumber].setLength(len);
+
+  // setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  // setsWest[specNumber].length.set(len, COVER_EQUAL);
 }
 
 
@@ -79,8 +82,11 @@ void CoverSpec::westLengthRange(
   const unsigned char len2,
   const unsigned specNumber)
 {
-  setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
-  setsWest[specNumber].length.set(len1, len2, COVER_INSIDE_RANGE);
+  // setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  // setsWest[specNumber].length.set(len1, len2, COVER_INSIDE_RANGE);
+
+  setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
+  setsWest[specNumber].setLength(len1, len2);
 }
 
 
@@ -100,8 +106,11 @@ void CoverSpec::westTop1(
   const unsigned char tops,
   const unsigned specNumber)
 {
-  setsWest[specNumber].mode = COVER_TOPS_ONLY;
-  setsWest[specNumber].top1.set(tops, COVER_EQUAL);
+  // setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  // setsWest[specNumber].top1.set(tops, COVER_EQUAL);
+
+  setsWest[specNumber].setMode(COVER_TOPS_ONLY);
+  setsWest[specNumber].setTop1(tops);
 }
 
 
@@ -118,8 +127,11 @@ void CoverSpec::westTop1Range(
   const unsigned char tops2,
   const unsigned specNumber)
 {
-  setsWest[specNumber].mode = COVER_TOPS_ONLY;
-  setsWest[specNumber].top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+  // setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  // setsWest[specNumber].top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+
+  setsWest[specNumber].setMode(COVER_TOPS_ONLY);
+  setsWest[specNumber].setTop1(tops1, tops2);
 }
 
 
@@ -143,6 +155,17 @@ void CoverSpec::westGeneral(
   const bool symmFlag,
   const unsigned specNumber)
 {
+  if (len1 == len2)
+    CoverSpec::westLength(len1, specNumber);
+  else
+    CoverSpec::westLengthRange(len1, len2, specNumber);
+
+  if (tops1 == tops2)
+    CoverSpec::westTop1(tops1, specNumber);
+  else
+    CoverSpec::westTop1Range(tops1, tops2, specNumber);
+
+  /*
   setsWest[specNumber].mode = COVER_LENGTHS_AND_TOPS;
 
   if (len1 == len2)
@@ -154,7 +177,9 @@ void CoverSpec::westGeneral(
     setsWest[specNumber].top1.set(tops1, COVER_EQUAL);
   else
     setsWest[specNumber].top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+    */
 
+  setsWest[specNumber].setMode(COVER_LENGTHS_AND_TOPS);
   setsWest[specNumber].setSymm(symmFlag);
 }
 
@@ -182,16 +207,31 @@ bool CoverSpec::includes(
   const unsigned char wtop) const
 {
   for (auto& set: setsWest)
+  {
     if (set.includes(wlen, wtop, oppsLength, oppsTops1))
       return true;
+  }
 
   return false;
 }
 
 
+string CoverSpec::strRaw() const
+{
+  stringstream ss;
+
+  ss << "index " << index << ", " <<
+    "ID " << +oppsLength << "-" << +oppsTops1 << "\n";
+  ss << setsWest[0].strRaw();
+  ss << setsWest[1].strRaw();
+
+  return ss.str();
+}
+
+
 string CoverSpec::str() const
 {
-  if (setsWest[1].mode == COVER_MODE_NONE)
+  if (setsWest[1].getMode() == COVER_MODE_NONE)
     return setsWest[0].str(oppsLength, oppsTops1);
   else
   {

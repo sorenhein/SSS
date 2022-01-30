@@ -77,6 +77,13 @@ class CoverElement
 
     CoverOperator oper;
 
+    CoverElement()
+    {
+      value1 = UCHAR_NOT_SET;
+      value2 = UCHAR_NOT_SET;
+      oper = COVER_OUTSIDE_RANGE;
+    };
+
     // TODO Should be private once Covers is cleaner
     void setOperator(const CoverOperator operIn)
     {
@@ -131,6 +138,22 @@ class CoverElement
     {
       assert(ptr != nullptr);
       return (this->*ptr)(valueIn);
+    };
+
+    string strRaw() const
+    {
+      stringstream ss;
+
+      ss << +value1 << " to " << +value2 << ", oper ";
+      if (oper == COVER_EQUAL)
+        ss << "EQUAL";
+      else if (oper == COVER_INSIDE_RANGE)
+        ss << "INSIDE";
+      else
+        ss << "UNKNOWN";
+      ss << "\n";
+
+      return ss.str();
     };
 
     string str(const string& word) const

@@ -26,7 +26,7 @@ class Cover
 
     CoverSpec spec;
 
-    unsigned char weight;
+    unsigned weight;
     unsigned char numDist;
 
 
@@ -64,7 +64,7 @@ class Cover
 
     unsigned index() const;
 
-    unsigned char getWeight() const;
+    unsigned getWeight() const;
 
     unsigned char getNumDist() const;
 

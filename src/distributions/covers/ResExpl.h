@@ -23,7 +23,7 @@ using namespace std;
 struct ExplData
 {
   Cover const * coverPtr;
-  unsigned char weight;
+  unsigned weight;
   unsigned char numDist;
   unsigned char level; // Explanations may be nested
 };

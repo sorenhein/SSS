@@ -115,6 +115,8 @@ class CoverSpec
       const unsigned char wlen,
       const unsigned char wtop) const;
     
+    string strRaw() const;
+
     string str() const;
 };
 

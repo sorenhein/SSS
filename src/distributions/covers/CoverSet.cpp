@@ -63,6 +63,52 @@ bool CoverSet::includesLengthAndTop1(
 }
 
 
+void CoverSet::setSymm(const bool symmFlagIn)
+{
+  symmFlag = symmFlagIn;
+}
+
+
+void CoverSet::setMode(const CoverMode modeIn)
+{
+  mode = modeIn;
+}
+
+
+CoverMode CoverSet::getMode() const
+{
+  return mode;
+}
+
+
+void CoverSet::setLength(const unsigned char len)
+{
+  length.set(len, COVER_EQUAL);
+}
+
+
+void CoverSet::setLength(
+  const unsigned char len1,
+  const unsigned char len2)
+{
+  length.set(len1, len2, COVER_INSIDE_RANGE);
+}
+
+
+void CoverSet::setTop1(const unsigned char tops)
+{
+  top1.set(tops, COVER_EQUAL);
+}
+
+
+void CoverSet::setTop1(
+  const unsigned char tops1,
+  const unsigned char tops2)
+{
+  top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+}
+
+
 bool CoverSet::includes(
   const unsigned char wlen,
   const unsigned char wtop,
@@ -83,12 +129,6 @@ bool CoverSet::includes(
     assert(false);
     return false;
   }
-}
-
-
-void CoverSet::setSymm(const bool symmFlagIn)
-{
-  symmFlag = symmFlagIn;
 }
 
 
@@ -568,6 +608,29 @@ string CoverSet::strTop1Fixed(
     assert(false);
     return "";
   }
+}
+
+
+string CoverSet::strRaw() const
+{
+  stringstream ss;
+
+  ss << "mode ";
+  if (mode == COVER_MODE_NONE)
+    ss << "NONE";
+  else if (mode == COVER_LENGTHS_ONLY)
+    ss << "LENGTHS";
+  else if (mode == COVER_TOPS_ONLY)
+    ss << "TOPS";
+  else
+    ss << "UNKNOWN";
+  ss << "\n";
+
+  ss << "symm " << (symmFlag ? "yes" : "no") << "\n";
+  ss << "length " << length.strRaw();
+  ss << "top1   " << top1.strRaw();
+  
+  return ss.str();
 }
 
 

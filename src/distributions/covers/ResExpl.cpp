@@ -43,7 +43,7 @@ list<ExplData>::iterator ResExpl::dominator(const Cover& cover)
 
   list<ExplData>::iterator resIter = data.end();
   unsigned char levelBest = 0;
-  unsigned char weightBest = UCHAR_NOT_SET;
+  unsigned weightBest = numeric_limits<unsigned>::max();
 
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {

@@ -57,6 +57,12 @@ void Covers::prepare(
       cout << "Covers::prepare: " << 
         +maxLength << ", " << +maxTops << "\n";
       cout << "Adding " << citer->str() << "\n";
+      cout << "Adding " << miter->strRaw() << "\n";
+
+for (unsigned i = 0; i< lengths.size(); i++)
+  cout << i << " " << +lengths[i]<< " " << +tops[i]<< " " << +cases[i] << "\n";
+cout <<endl;
+
       assert(citer->getWeight() != 0);
     }
 
@@ -127,6 +133,8 @@ CoverState Covers::explain(
     }
     else
     {
+      // cout << iter->str() << "\n";
+      // cout << iter->strProfile() << "\n";
       // cout << Covers::strDebug("Could not use", tricks);
       iter++;
     }

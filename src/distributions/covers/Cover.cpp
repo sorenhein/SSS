@@ -45,7 +45,7 @@ void Cover::prepare(
     if (spec.includes(lengths[dno], tops[dno]))
     {
       profile[dno] = 1;
-      weight += cases[dno];
+      weight += static_cast<unsigned>(cases[dno]);
       numDist++;
     }
   }
@@ -100,7 +100,7 @@ unsigned Cover::index() const
 }
 
 
-unsigned char Cover::getWeight() const
+unsigned Cover::getWeight() const
 {
   return weight;
 }
@@ -124,7 +124,7 @@ string Cover::strProfile() const
 
   cout << 
     "cover index " << spec.getIndex() << 
-    ", weight " << +weight << "\n";
+    ", weight " << weight << "\n";
 
   for (unsigned i = 0; i < profile.size(); i++)
     ss << i << ": " << +profile[i] << "\n";
