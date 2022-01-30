@@ -24,14 +24,14 @@ void Cover::reset()
 {
   profile.clear();
 
-  spec.mode[0] = COVER_MODE_NONE;
-  spec.mode[1] = COVER_MODE_NONE;
+  spec.setsWest[0].mode = COVER_MODE_NONE;
+  spec.setsWest[1].mode = COVER_MODE_NONE;
 
-  spec.westLength[0].setOperator(COVER_OPERATOR_SIZE);
-  spec.westLength[1].setOperator(COVER_OPERATOR_SIZE);
+  spec.setsWest[0].length.setOperator(COVER_OPERATOR_SIZE);
+  spec.setsWest[1].length.setOperator(COVER_OPERATOR_SIZE);
 
-  spec.westTop1[0].setOperator(COVER_OPERATOR_SIZE);
-  spec.westTop1[1].setOperator(COVER_OPERATOR_SIZE);
+  spec.setsWest[0].top1.setOperator(COVER_OPERATOR_SIZE);
+  spec.setsWest[1].top1.setOperator(COVER_OPERATOR_SIZE);
 
   weight = 0;
   numDist = 0;
@@ -44,40 +44,40 @@ bool Cover::includes(
   const unsigned dno,
   const unsigned specNumber)
 {
-  if (spec.mode[specNumber] == COVER_MODE_NONE)
+  if (spec.setsWest[specNumber].mode == COVER_MODE_NONE)
   {
     return false;
   }
-  else if (spec.mode[specNumber] == COVER_LENGTHS_ONLY)
+  else if (spec.setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
   {
     // TODO Write more cleanly.  Perhaps just pass in oppsLength
     // and let westLength figure it out using its own symmFlag
-    if (spec.symmFlags[specNumber])
-      return spec.westLength[specNumber].includes(lengths[dno]) ||
-        spec.westLength[specNumber].includes(spec.oppsLength-lengths[dno]);
+    if (spec.setsWest[specNumber].symmFlag)
+      return spec.setsWest[specNumber].length.includes(lengths[dno]) ||
+        spec.setsWest[specNumber].length.includes(spec.oppsLength-lengths[dno]);
     else
-      return spec.westLength[specNumber].includes(lengths[dno]);
+      return spec.setsWest[specNumber].length.includes(lengths[dno]);
   }
-  else if (spec.mode[specNumber] == COVER_TOPS_ONLY)
+  else if (spec.setsWest[specNumber].mode == COVER_TOPS_ONLY)
   {
-    if (spec.symmFlags[specNumber])
-      return spec.westTop1[specNumber].includes(tops[dno]) ||
-        spec.westTop1[specNumber].includes(spec.oppsTops1-tops[dno]);
+    if (spec.setsWest[specNumber].symmFlag)
+      return spec.setsWest[specNumber].top1.includes(tops[dno]) ||
+        spec.setsWest[specNumber].top1.includes(spec.oppsTops1-tops[dno]);
     else
-      return spec.westTop1[specNumber].includes(tops[dno]);
+      return spec.setsWest[specNumber].top1.includes(tops[dno]);
   }
-  else if (spec.mode[specNumber] == COVER_LENGTHS_AND_TOPS)
+  else if (spec.setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
   {
     const bool caseWest =
-      spec.westLength[specNumber].includes(lengths[dno]) &&
-      spec.westTop1[specNumber].includes(tops[dno]);
+      spec.setsWest[specNumber].length.includes(lengths[dno]) &&
+      spec.setsWest[specNumber].top1.includes(tops[dno]);
 
     if (caseWest)
       return true;
-    else if (spec.symmFlags[specNumber])
+    else if (spec.setsWest[specNumber].symmFlag)
       return
-        spec.westLength[specNumber].includes(spec.oppsLength-lengths[dno]) &&
-        spec.westTop1[specNumber].includes(spec.oppsTops1-tops[dno]);
+        spec.setsWest[specNumber].length.includes(spec.oppsLength-lengths[dno]) &&
+        spec.setsWest[specNumber].top1.includes(spec.oppsTops1-tops[dno]);
     else
       return false;
   }

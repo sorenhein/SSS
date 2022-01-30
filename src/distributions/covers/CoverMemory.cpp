@@ -103,8 +103,8 @@ void CoverMemory::WestLength(
   // Exactly len
 
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_ONLY;
-  spec.westLength[specNumber].set(len, COVER_EQUAL);
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  spec.setsWest[specNumber].length.set(len, COVER_EQUAL);
 }
 
 
@@ -115,8 +115,8 @@ void CoverMemory::EastLength(
   // Exactly len
   // TODO CoverMemory::WestLength(coverGlobal.cards - len);
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_ONLY;
-  spec.westLength[specNumber].set(coverGlobal.cards - len, COVER_EQUAL);
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  spec.setsWest[specNumber].length.set(coverGlobal.cards - len, COVER_EQUAL);
 }
 
 
@@ -127,8 +127,8 @@ void CoverMemory::WestLengthRange(
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_ONLY;
-  spec.westLength[specNumber].set(len1, len2, COVER_INSIDE_RANGE);
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  spec.setsWest[specNumber].length.set(len1, len2, COVER_INSIDE_RANGE);
 }
 
 
@@ -139,8 +139,8 @@ void CoverMemory::EastLengthRange(
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_ONLY;
-  spec.westLength[specNumber].set(
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_ONLY;
+  spec.setsWest[specNumber].length.set(
     coverGlobal.cards - len2, 
     coverGlobal.cards - len1, 
     COVER_INSIDE_RANGE);
@@ -155,8 +155,8 @@ void CoverMemory::WestTop1(
 {
   // Exactly len
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_TOPS_ONLY;
-  spec.westTop1[specNumber].set(len, COVER_EQUAL);
+  spec.setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  spec.setsWest[specNumber].top1.set(len, COVER_EQUAL);
 }
 
 
@@ -167,8 +167,8 @@ void CoverMemory::EastTop1(
   // Exactly len
   // TODO CoverMemory::WestLength(coverGlobal.cards - len);
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_TOPS_ONLY;
-  spec.westTop1[specNumber].set(coverGlobal.tops1 - len, COVER_EQUAL);
+  spec.setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  spec.setsWest[specNumber].top1.set(coverGlobal.tops1 - len, COVER_EQUAL);
 }
 
 
@@ -179,8 +179,8 @@ void CoverMemory::WestTop1Range(
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_TOPS_ONLY;
-  spec.westTop1[specNumber].set(len1, len2, COVER_INSIDE_RANGE);
+  spec.setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  spec.setsWest[specNumber].top1.set(len1, len2, COVER_INSIDE_RANGE);
 }
 
 
@@ -191,8 +191,8 @@ void CoverMemory::EastTop1Range(
 {
   // [len1, len2] inclusive
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_TOPS_ONLY;
-  spec.westTop1[specNumber].set(
+  spec.setsWest[specNumber].mode = COVER_TOPS_ONLY;
+  spec.setsWest[specNumber].top1.set(
     coverGlobal.tops1 - len2, 
     coverGlobal.tops1 - len1, 
     COVER_INSIDE_RANGE);
@@ -208,18 +208,18 @@ void CoverMemory::WestGeneralAnd(
   const unsigned specNumber)
 {
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_AND_TOPS;
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_AND_TOPS;
 
   if (lowerCardsIncl == upperCardsIncl)
-    spec.westLength[specNumber].set(lowerCardsIncl, COVER_EQUAL);
+    spec.setsWest[specNumber].length.set(lowerCardsIncl, COVER_EQUAL);
   else
-    spec.westLength[specNumber].set(
+    spec.setsWest[specNumber].length.set(
       lowerCardsIncl, upperCardsIncl, COVER_INSIDE_RANGE);
 
   if (lowerTopsIncl == upperTopsIncl)
-    spec.westTop1[specNumber].set(lowerTopsIncl, COVER_EQUAL);
+    spec.setsWest[specNumber].top1.set(lowerTopsIncl, COVER_EQUAL);
   else
-    spec.westTop1[specNumber].set(
+    spec.setsWest[specNumber].top1.set(
       lowerTopsIncl, upperTopsIncl, COVER_INSIDE_RANGE);
 }
 
@@ -232,22 +232,22 @@ void CoverMemory::EastGeneralAnd(
   const unsigned specNumber)
 {
   CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.mode[specNumber] = COVER_LENGTHS_AND_TOPS;
+  spec.setsWest[specNumber].mode = COVER_LENGTHS_AND_TOPS;
 
   if (lowerCardsIncl == upperCardsIncl)
-    spec.westLength[specNumber].set(
+    spec.setsWest[specNumber].length.set(
       coverGlobal.cards - lowerCardsIncl, COVER_EQUAL);
   else
-    spec.westLength[specNumber].set(
+    spec.setsWest[specNumber].length.set(
       coverGlobal.cards - upperCardsIncl, 
       coverGlobal.cards - lowerCardsIncl, 
       COVER_INSIDE_RANGE);
 
   if (lowerTopsIncl == upperTopsIncl)
-    spec.westTop1[specNumber].set(
+    spec.setsWest[specNumber].top1.set(
       coverGlobal.tops1 - lowerTopsIncl, COVER_EQUAL);
   else
-    spec.westTop1[specNumber].set(
+    spec.setsWest[specNumber].top1.set(
       coverGlobal.tops1 - upperTopsIncl, 
       coverGlobal.tops1 - lowerTopsIncl, 
       COVER_INSIDE_RANGE);
@@ -264,15 +264,7 @@ void CoverMemory::SymmGeneralAnd(
   CoverMemory::WestGeneralAnd(lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, specNumber);
 
-  specs[coverGlobal.cards][coverGlobal.tops1].back().symmFlags[specNumber] = true;
-
-  /*
-  CoverMemory::EastGeneralAnd(lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, 1);
-  
-  // TODO Solve more elegantly?
-  specs[coverGlobal.cards][coverGlobal.tops1].back().symmFlag = true;
-  */
+  specs[coverGlobal.cards][coverGlobal.tops1].back().setsWest[specNumber].symmFlag = true;
 }
 
 

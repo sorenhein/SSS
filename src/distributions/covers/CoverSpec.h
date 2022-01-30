@@ -31,6 +31,15 @@ enum CoverState
   COVER_STATE_SIZE = 3
 };
 
+struct CoverSet
+{
+  CoverMode mode;
+  bool symmFlag;
+  CoverElement length;
+  CoverElement top1;
+};
+
+
 struct CoverSpec
 {
   // For easier identification.  Could perhaps be unsigned char
@@ -44,10 +53,7 @@ struct CoverSpec
   // together if both are present.  Within a set, the elements are
   // AND'ed together if both are present.
 
-  array<CoverMode, 2> mode;
-  array<bool, 2> symmFlags;
-  array<CoverElement, 2> westLength;
-  array<CoverElement, 2> westTop1;
+  array<CoverSet, 2> setsWest;
 
 
   CoverSpec();
