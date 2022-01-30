@@ -59,10 +59,12 @@ struct CoverSpec
     unsigned char& length,
     unsigned char& tops1) const;
 
+  /*
   string strLengthInside(
     const unsigned char wlen1,
     const unsigned char wlen2,
     const bool symmFlag) const;
+    */
 
   string strLength(const unsigned specNumber) const;
 

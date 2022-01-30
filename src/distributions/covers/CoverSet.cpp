@@ -119,3 +119,110 @@ string CoverSet::strLengthEqual(const unsigned char oppsLength) const
   return ss.str();
 }
 
+
+
+string CoverSet::strLengthInside(const unsigned char oppsLength) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+  const unsigned char wlen1 = length.value1;
+  const unsigned char wlen2 = length.value2;
+
+  if (wlen1 == 0)
+  {
+    if (wlen2 == 1)
+      ss << side << " has at most a singleton";
+    else if (wlen2 == 2)
+      ss << side << " has at most a doubleton";
+    else
+      ss << side << " has at most " << +wlen2 << " cards";
+  }
+  else if (wlen2 == oppsLength)
+  {
+    ss << side << " has at least " << +wlen1 << " cards";
+  }
+  else if (wlen1 == 1 && wlen2 == oppsLength-1)
+  {
+    ss << "Neither opponent is void";
+  }
+  else if (wlen1 + wlen2 == oppsLength)
+  {
+    if (wlen1 + 1 == wlen2)
+    {
+      ss << "The suit splits " << +wlen1 << "-" << +wlen2 << " either way";
+    }
+    else
+    {
+      ss << "The suit splits " << +wlen1 << "-" << +wlen2 <<
+        " or better either way";
+    }
+  }
+  else
+  {
+    ss << "The suit splits between " <<
+      +wlen1 << "=" << +(oppsLength - wlen1) << " and " <<
+      +wlen2 << "=" << +(oppsLength - wlen2);
+  }
+
+  return ss.str();
+}
+
+
+string CoverSet::strLength(const unsigned char oppsLength) const
+{
+  if (length.oper == COVER_EQUAL)
+    return CoverSet::strLengthEqual(oppsLength);
+  else if (length.oper == COVER_INSIDE_RANGE)
+    return CoverSet::strLengthInside(oppsLength);
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
+
+string CoverSet::strTop1Equal(const unsigned char oppsTops1) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+  const unsigned char wtop = top1.value1;
+
+  if (wtop == 0)
+  {
+    assert(! symmFlag);
+    if (oppsTops1 == 1)
+      ss << "East has the top";
+    else
+      ss << "East has the tops";
+  }
+  else if (wtop == oppsTops1)
+  {
+    if (oppsTops1 == 1)
+      ss << side << " has the top";
+    else
+      ss << side << " has the tops";
+  }
+  else if (wtop == 1)
+  {
+    if (oppsTops1 == 1)
+      ss << side << " has the top";
+    else
+      ss << side << " has exactly one top";
+  }
+  else if (wtop == oppsTops1-1)
+  {
+    assert(! symmFlag);
+    ss << "East has exactly one top";
+  }
+  else if (wtop == 2)
+  {
+    ss << side << " has " <<
+      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
+  }
+  else
+    ss << side << " has exactly " << wtop << " tops";
+
+  return ss.str();
+}
+

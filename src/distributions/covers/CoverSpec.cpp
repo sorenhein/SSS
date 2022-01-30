@@ -56,6 +56,7 @@ void CoverSpec::getIndices(
 }
 
 
+/*
 string CoverSpec::strLengthInside(
   const unsigned char wlen1,
   const unsigned char wlen2,
@@ -101,6 +102,7 @@ string CoverSpec::strLengthInside(
   }
   return ss.str();
 }
+*/
 
 
 string CoverSpec::strTop1Equal(
@@ -189,17 +191,17 @@ string CoverSpec::strLength(const unsigned specNumber) const
   if (setsWest[specNumber].length.oper == COVER_EQUAL)
   {
     return setsWest[specNumber].strLengthEqual(oppsLength);
-    /*
-    return CoverSpec::strLengthEqual(
-      setsWest[specNumber].length.value1,
-      setsWest[specNumber].symmFlag);
-      */
   }
   else if (setsWest[specNumber].length.oper == COVER_INSIDE_RANGE)
+  {
+    return setsWest[specNumber].strLengthInside(oppsLength);
+    /*
     return CoverSpec::strLengthInside(
       setsWest[specNumber].length.value1, 
       setsWest[specNumber].length.value2,
       setsWest[specNumber].symmFlag);
+      */
+  }
   else
   {
     assert(false);
@@ -211,14 +213,21 @@ string CoverSpec::strLength(const unsigned specNumber) const
 string CoverSpec::strTop1(const unsigned specNumber) const
 {
   if (setsWest[specNumber].top1.oper == COVER_EQUAL)
+  {
+    return setsWest[specNumber].strTop1Equal(oppsTops1);
+    /*
     return CoverSpec::strTop1Equal(
       setsWest[specNumber].top1.value1,
       setsWest[specNumber].symmFlag);
+      */
+  }
   else if (setsWest[specNumber].top1.oper == COVER_INSIDE_RANGE)
+  {
     return CoverSpec::strTop1Inside(
       setsWest[specNumber].top1.value1, 
       setsWest[specNumber].top1.value2,
       setsWest[specNumber].symmFlag);
+  }
   else
   {
     assert(false);

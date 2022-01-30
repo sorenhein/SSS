@@ -57,7 +57,17 @@ struct CoverSet
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
 
+  // private
   string strLengthEqual(const unsigned char oppsLength) const;
+
+  // private
+  string strLengthInside(const unsigned char oppsLength) const;
+
+  // public
+  string strLength(const unsigned char oppsLength) const;
+
+  // private
+  string strTop1Equal(const unsigned char oppsTops1) const;
 };
 
 #endif
