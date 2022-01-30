@@ -12,16 +12,8 @@
 #include <array>
 #include <string>
 
-#include "CoverElement.h"
+#include "CoverSet.h"
 
-
-enum CoverMode
-{
-  COVER_MODE_NONE = 0,
-  COVER_LENGTHS_ONLY = 1,
-  COVER_TOPS_ONLY = 2,
-  COVER_LENGTHS_AND_TOPS = 3
-};
 
 enum CoverState
 {
@@ -29,25 +21,6 @@ enum CoverState
   COVER_OPEN = 1,
   COVER_IMPOSSIBLE = 2,
   COVER_STATE_SIZE = 3
-};
-
-struct CoverSet
-{
-  CoverMode mode;
-  bool symmFlag;
-  CoverElement length;
-  CoverElement top1;
-
-  bool includesLength(
-    const unsigned char wlen,
-    const unsigned char oppsLength) const
-  {
-    if (symmFlag)
-      return length.includes(wlen) || length.includes(oppsLength - wlen);
-    else
-      return length.includes(wlen);
-  };
-
 };
 
 

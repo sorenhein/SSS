@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <cassert>
 
 #include "../../const.h"
 

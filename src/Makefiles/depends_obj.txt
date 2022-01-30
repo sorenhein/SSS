@@ -14,6 +14,7 @@ driver.obj: distributions/DistHelp.h distributions/SurvivorList.h
 driver.obj: distributions/DistCore.h distributions/Survivors.h
 driver.obj: distributions/Reductions.h distributions/covers/Covers.h
 driver.obj: distributions/covers/Cover.h distributions/covers/CoverSpec.h
+driver.obj: distributions/covers/CoverSet.h
 driver.obj: distributions/covers/CoverElement.h const.h
 driver.obj: distributions/covers/ResExpl.h distributions/covers/CoverMemory.h
 driver.obj: distributions/covers/ExplStats.h distributions/covers/ExplStats.h
@@ -50,6 +51,7 @@ combinations/Combination.obj: distributions/Reductions.h
 combinations/Combination.obj: distributions/covers/Covers.h
 combinations/Combination.obj: distributions/covers/Cover.h
 combinations/Combination.obj: distributions/covers/CoverSpec.h
+combinations/Combination.obj: distributions/covers/CoverSet.h
 combinations/Combination.obj: distributions/covers/CoverElement.h const.h
 combinations/Combination.obj: distributions/covers/ResExpl.h
 combinations/Combination.obj: distributions/covers/CoverMemory.h
@@ -94,6 +96,7 @@ combinations/Combinations.obj: distributions/Reductions.h
 combinations/Combinations.obj: distributions/covers/Covers.h
 combinations/Combinations.obj: distributions/covers/Cover.h
 combinations/Combinations.obj: distributions/covers/CoverSpec.h
+combinations/Combinations.obj: distributions/covers/CoverSet.h
 combinations/Combinations.obj: distributions/covers/CoverElement.h const.h
 combinations/Combinations.obj: distributions/covers/ResExpl.h
 combinations/Combinations.obj: distributions/covers/CoverMemory.h
@@ -152,6 +155,7 @@ combinations/CombTest.obj: distributions/Reductions.h
 combinations/CombTest.obj: distributions/covers/Covers.h
 combinations/CombTest.obj: distributions/covers/Cover.h
 combinations/CombTest.obj: distributions/covers/CoverSpec.h
+combinations/CombTest.obj: distributions/covers/CoverSet.h
 combinations/CombTest.obj: distributions/covers/CoverElement.h const.h
 combinations/CombTest.obj: distributions/covers/ResExpl.h
 combinations/CombTest.obj: distributions/covers/CoverMemory.h
@@ -183,6 +187,7 @@ distributions/Distributions.obj: distributions/Reductions.h
 distributions/Distributions.obj: distributions/covers/Covers.h
 distributions/Distributions.obj: distributions/covers/Cover.h
 distributions/Distributions.obj: distributions/covers/CoverSpec.h
+distributions/Distributions.obj: distributions/covers/CoverSet.h
 distributions/Distributions.obj: distributions/covers/CoverElement.h const.h
 distributions/Distributions.obj: distributions/covers/ResExpl.h
 distributions/Distributions.obj: distributions/covers/CoverMemory.h
@@ -196,6 +201,7 @@ distributions/DistCore.obj: distributions/Reductions.h
 distributions/DistCore.obj: distributions/covers/Covers.h
 distributions/DistCore.obj: distributions/covers/Cover.h
 distributions/DistCore.obj: distributions/covers/CoverSpec.h
+distributions/DistCore.obj: distributions/covers/CoverSet.h
 distributions/DistCore.obj: distributions/covers/CoverElement.h const.h
 distributions/DistCore.obj: distributions/covers/ResExpl.h
 distributions/DistCore.obj: distributions/DistMap.h plays/Play.h const.h
@@ -210,6 +216,7 @@ distributions/DistMemory.obj: distributions/Reductions.h
 distributions/DistMemory.obj: distributions/covers/Covers.h
 distributions/DistMemory.obj: distributions/covers/Cover.h
 distributions/DistMemory.obj: distributions/covers/CoverSpec.h
+distributions/DistMemory.obj: distributions/covers/CoverSet.h
 distributions/DistMemory.obj: distributions/covers/CoverElement.h const.h
 distributions/DistMemory.obj: distributions/covers/ResExpl.h
 distributions/DistMemory.obj: distributions/covers/CoverMemory.h
@@ -224,10 +231,12 @@ distributions/Survivors.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/SurvivorList.h plays/Play.h
 distributions/covers/Cover.obj: distributions/covers/Cover.h
 distributions/covers/Cover.obj: distributions/covers/CoverSpec.h
+distributions/covers/Cover.obj: distributions/covers/CoverSet.h
 distributions/covers/Cover.obj: distributions/covers/CoverElement.h const.h
 distributions/covers/Covers.obj: distributions/covers/Covers.h
 distributions/covers/Covers.obj: distributions/covers/Cover.h
 distributions/covers/Covers.obj: distributions/covers/CoverSpec.h
+distributions/covers/Covers.obj: distributions/covers/CoverSet.h
 distributions/covers/Covers.obj: distributions/covers/CoverElement.h const.h
 distributions/covers/Covers.obj: distributions/covers/ResExpl.h
 distributions/covers/Covers.obj: distributions/covers/CoverMemory.h
@@ -235,17 +244,23 @@ distributions/covers/Covers.obj: strategies/result/Result.h
 distributions/covers/Covers.obj: strategies/result/Winners.h
 distributions/covers/Covers.obj: strategies/result/Winner.h utils/table.h
 distributions/covers/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
+distributions/covers/CoverSet.obj: distributions/covers/CoverSet.h
+distributions/covers/CoverSet.obj: distributions/covers/CoverElement.h
+distributions/covers/CoverSet.obj: const.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverSpec.h
+distributions/covers/CoverSpec.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverSpec.obj: const.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverMemory.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverSpec.h
+distributions/covers/CoverMemory.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverMemory.obj: const.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStats.h
 distributions/covers/ResExpl.obj: distributions/covers/ResExpl.h
 distributions/covers/ResExpl.obj: distributions/covers/Cover.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverSpec.h
+distributions/covers/ResExpl.obj: distributions/covers/CoverSet.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverElement.h const.h
 distributions/covers/ResExpl.obj: distributions/covers/ExplStats.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
@@ -303,6 +318,7 @@ plays/Node.obj: distributions/DistHelp.h distributions/SurvivorList.h
 plays/Node.obj: distributions/DistCore.h distributions/Survivors.h
 plays/Node.obj: distributions/Reductions.h distributions/covers/Covers.h
 plays/Node.obj: distributions/covers/Cover.h distributions/covers/CoverSpec.h
+plays/Node.obj: distributions/covers/CoverSet.h
 plays/Node.obj: distributions/covers/CoverElement.h const.h
 plays/Node.obj: distributions/covers/ResExpl.h inputs/Control.h
 plays/Node.obj: inputs/Entity.h
@@ -345,6 +361,7 @@ strategies/Slist.obj: distributions/Survivors.h distributions/Reductions.h
 strategies/Slist.obj: distributions/covers/Covers.h
 strategies/Slist.obj: distributions/covers/Cover.h
 strategies/Slist.obj: distributions/covers/CoverSpec.h
+strategies/Slist.obj: distributions/covers/CoverSet.h
 strategies/Slist.obj: distributions/covers/CoverElement.h const.h
 strategies/Slist.obj: distributions/covers/ResExpl.h
 strategies/Slist.obj: distributions/covers/Covers.h inputs/Control.h
@@ -381,6 +398,7 @@ strategies/Strategy.obj: distributions/Reductions.h
 strategies/Strategy.obj: distributions/covers/Covers.h
 strategies/Strategy.obj: distributions/covers/Cover.h
 strategies/Strategy.obj: distributions/covers/CoverSpec.h
+strategies/Strategy.obj: distributions/covers/CoverSet.h
 strategies/Strategy.obj: distributions/covers/CoverElement.h const.h
 strategies/Strategy.obj: distributions/covers/ResExpl.h
 strategies/Strategy.obj: distributions/covers/Covers.h inputs/Control.h
