@@ -24,29 +24,51 @@ CoverSpec::CoverSpec()
 }
 
 
-bool CoverSpec::includesLength(
-  const unsigned specNumber,
-  const unsigned char wlen) const
+CoverSpec::reset()
 {
-  return setsWest[specNumber].includesLength(wlen, oppsLength);
+  setsWest[0].mode = COVER_MODE_NONE;
+  setsWest[1].mode = COVER_MODE_NONE;
+
+  setsWest[0].symmFlag = false;
+  setsWest[1].symmFlag = false;
+
+  setsWest[0].length.setOperator(COVER_OPERATOR_SIZE);
+  setsWest[1].length.setOperator(COVER_OPERATOR_SIZE);
+
+  setsWest[0].top1.setOperator(COVER_OPERATOR_SIZE);
+  setsWest[1].top1.setOperator(COVER_OPERATOR_SIZE);
 }
 
 
-bool CoverSpec::includesTop1(
-  const unsigned specNumber,
-  const unsigned char wtop) const
-{
-  return setsWest[specNumber].includesTop1(wtop, oppsTops1);
-}
-
-
-bool CoverSpec::includesLengthAndTop1(
+bool CoverSpec::includes(
   const unsigned specNumber,
   const unsigned char wlen,
   const unsigned char wtop) const
 {
-  return setsWest[specNumber].includesLengthAndTop1(
-    wlen, wtop, oppsLength, oppsTops1);
+  if (setsWest[specNumber].mode == COVER_MODE_NONE)
+    return false;
+  else if (setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
+    return setsWest[specNumber].includesLength(wlen, oppsLength);
+  else if (setsWest[specNumber].mode == COVER_TOPS_ONLY)
+    return setsWest[specNumber].includesTop1(wtop, oppsTops1);
+  else if (setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
+    return setsWest[specNumber].includesLengthAndTop1(
+      wlen, wtop, oppsLength, oppsTops1);
+  else
+  {
+    assert(false);
+    return false;
+  }
+}
+
+
+bool CoverSpec::includes(
+  const unsigned char wlen,
+  const unsigned char wtop) const
+{
+  return 
+    CoverSpec::includes(0, wlen, wtop) ||
+    CoverSpec::includes(1, wlen, wtop);
 }
 
 

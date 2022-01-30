@@ -38,36 +38,6 @@ void Cover::reset()
 }
 
 
-bool Cover::includes(
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
-  const unsigned dno,
-  const unsigned specNumber)
-{
-  if (spec.setsWest[specNumber].mode == COVER_MODE_NONE)
-  {
-    return false;
-  }
-  else if (spec.setsWest[specNumber].mode == COVER_LENGTHS_ONLY)
-  {
-    return spec.includesLength(specNumber, lengths[dno]);
-  }
-  else if (spec.setsWest[specNumber].mode == COVER_TOPS_ONLY)
-  {
-    return spec.includesTop1(specNumber, tops[dno]);
-  }
-  else if (spec.setsWest[specNumber].mode == COVER_LENGTHS_AND_TOPS)
-  {
-    return spec.includesLengthAndTop1(specNumber, lengths[dno], tops[dno]);
-  }
-  else
-  {
-    assert(false);
-    return false;
-  }
-}
-
-
 void Cover::prepare(
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
@@ -82,11 +52,7 @@ void Cover::prepare(
 
   for (unsigned dno = 0; dno < len; dno++)
   {
-    const bool p =
-      Cover::includes(lengths, tops, dno, 0) ||
-      Cover::includes(lengths, tops, dno, 1);
-
-    if (p)
+    if (spec.includes(lengths[dno], tops[dno]);
     {
       profile[dno] = 1;
       weight += cases[dno];
