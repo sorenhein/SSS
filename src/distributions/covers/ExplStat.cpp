@@ -42,7 +42,7 @@ void ExplStat::resize(const unsigned pairSize)
 
 bool ExplStat::empty() const
 {
-  return lengths.empty();
+  return singles.empty();
 }
 
 

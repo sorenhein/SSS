@@ -118,7 +118,7 @@ void ResExpl::updateStats(ExplStats& explStats) const
     return;
 
   unsigned char lengthIndex, tops1Index;
-  data.front().coverPtr->getIndices(lengthIndex, tops1Index);
+  data.front().coverPtr->getID(lengthIndex, tops1Index);
 
   ExplStat& explStat = explStats.getEntry(lengthIndex, tops1Index);
   explStat.incrLengths(data.size());
@@ -156,7 +156,7 @@ string ResExpl::str() const
       prefix = "      - ";
 
     unsigned char length, tops1;
-    ed.coverPtr->getIndices(length, tops1);
+    ed.coverPtr->getID(length, tops1);
 
     ss << prefix <<
       ed.coverPtr->str() << " [" <<

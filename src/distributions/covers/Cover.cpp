@@ -86,7 +86,7 @@ bool Cover::operator <= (const Cover& cover2) const
 }
 
 
-void Cover::getIndices(
+void Cover::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {

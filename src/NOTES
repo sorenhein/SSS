@@ -1,25 +1,17 @@
 Verbals of strategy wins
 ========================
-* Some empties -- why was it different in ExplStats before?
-* ExplStat -> class
-
 * CoverSet could have a variable #sets in a list
+  - Can we avoid the in-between methods in CoverMemory in this way,
+    using the CoverSpecs methods more directly, and they create new
+    list entries as needed?
 
-* Cover getIndices rename to getID
+* CoverMemory
+  - Use the new freedom to make either entry symmetric
+  - Cut down on the Avg in ExplStats
 
-* When ExplStats clean, that leaves CoverMemory to work on
 * And CoverElement (.cpp file?)
 
 * Get rid of greater, less than
-
-* Symmetric flag could be for each of 0, 1
-  - Then there could be two entries
-  - 2-3 either way or stiff honor either way
-  - Then both would need to be output with OR in between
-  - Should give rise to many more that can be combined per the tables
-
-* Study the resExpl statistics
-  - Get 4-2, 5-1, 5-2, 5-3 down a bit more
 
 * When of the form (1 top) - hierarchical children, perhaps
   - Take 2 tricks (but one less when West is void), and more when...

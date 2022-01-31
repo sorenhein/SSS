@@ -17,34 +17,41 @@
 using namespace std;
 
 
-struct ExplStat
+class ExplStat
 {
+  private:
 
-  vector<unsigned> lengths;
-  vector<unsigned> singles;
-  vector<vector<unsigned>> pairs;
+    vector<unsigned> lengths;
 
-  ExplStat();
+    vector<unsigned> singles;
 
-  void reset();
+    vector<vector<unsigned>> pairs;
 
-  void resize(const unsigned pairSize);
 
-  bool empty() const;
+    string strLengths() const;
 
-  void incrLengths(const unsigned count);
+    string strPairs() const;
 
-  void incrSingles(const unsigned index);
 
-  void incrPairs(
-    const unsigned index1,
-    const unsigned index2);
+  public:
 
-  string strLengths() const;
+    ExplStat();
 
-  string strPairs() const;
+    void reset();
 
-  string str() const;
+    void resize(const unsigned pairSize);
+
+    bool empty() const;
+
+    void incrLengths(const unsigned count);
+
+    void incrSingles(const unsigned index);
+
+    void incrPairs(
+      const unsigned index1,
+      const unsigned index2);
+
+    string str() const;
 };
 
 #endif
