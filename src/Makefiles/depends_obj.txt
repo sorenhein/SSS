@@ -263,6 +263,11 @@ distributions/covers/ResExpl.obj: distributions/covers/CoverSpec.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverSet.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverElement.h const.h
 distributions/covers/ResExpl.obj: distributions/covers/ExplStats.h
+distributions/covers/ExplStats.obj: distributions/covers/ExplStats.h
+distributions/covers/ExplStats.obj: distributions/covers/CoverSpec.h
+distributions/covers/ExplStats.obj: distributions/covers/CoverSet.h
+distributions/covers/ExplStats.obj: distributions/covers/CoverElement.h
+distributions/covers/ExplStats.obj: const.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
