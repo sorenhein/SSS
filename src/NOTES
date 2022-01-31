@@ -1,9 +1,6 @@
 Verbals of strategy wins
 ========================
 * CoverSpec could have a variable #sets in a list
-  - Can we avoid the in-between methods in CoverMemory in this way,
-    using the CoverSpecs methods more directly, and they create new
-    list entries as needed?
 
 * CoverMemory
   - Use the new freedom to make either entry symmetric

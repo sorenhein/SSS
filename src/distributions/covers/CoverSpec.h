@@ -47,6 +47,9 @@ class CoverSpec
     array<CoverSet, 2> setsWest;
 
 
+    CoverSet& addOrExtend(const CoverControl ctrl);
+
+
   public:
 
     CoverSpec();

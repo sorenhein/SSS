@@ -57,13 +57,25 @@ unsigned CoverSpec::getIndex() const
 }
 
 
+CoverSet& CoverSpec::addOrExtend(const CoverControl ctrl)
+{
+  if (ctrl == COVER_ADD)
+    return setsWest[0];
+  else
+    return setsWest[1];
+}
+
+
 void CoverSpec::westLength(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
-  setsWest[specNumber].setLength(len);
+  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  cset.setMode(COVER_LENGTHS_ONLY);
+  cset.setLength(len);
+  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
+  // setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
+  // setsWest[specNumber].setLength(len);
 }
 
 
@@ -80,9 +92,12 @@ void CoverSpec::westLengthRange(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
-  setsWest[specNumber].setLength(len1, len2);
+  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  cset.setMode(COVER_LENGTHS_ONLY);
+  cset.setLength(len1, len2);
+  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
+  // setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
+  // setsWest[specNumber].setLength(len1, len2);
 }
 
 
@@ -102,9 +117,12 @@ void CoverSpec::westTop1(
   const unsigned char tops,
   const CoverControl ctrl)
 {
-  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  setsWest[specNumber].setMode(COVER_TOPS_ONLY);
-  setsWest[specNumber].setTop1(tops);
+  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  cset.setMode(COVER_TOPS_ONLY);
+  cset.setTop1(tops);
+  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
+  // setsWest[specNumber].setMode(COVER_TOPS_ONLY);
+  // setsWest[specNumber].setTop1(tops);
 }
 
 
@@ -121,9 +139,12 @@ void CoverSpec::westTop1Range(
   const unsigned char tops2,
   const CoverControl ctrl)
 {
-  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  setsWest[specNumber].setMode(COVER_TOPS_ONLY);
-  setsWest[specNumber].setTop1(tops1, tops2);
+  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  cset.setMode(COVER_TOPS_ONLY);
+  cset.setTop1(tops1, tops2);
+  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
+  // setsWest[specNumber].setMode(COVER_TOPS_ONLY);
+  // setsWest[specNumber].setTop1(tops1, tops2);
 }
 
 
@@ -147,6 +168,21 @@ void CoverSpec::westGeneral(
   const bool symmFlag,
   const CoverControl ctrl)
 {
+  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  cset.setMode(COVER_LENGTHS_AND_TOPS);
+  cset.setSymm(symmFlag);
+
+  if (len1 == len2)
+    cset.setLength(len1);
+  else
+    cset.setLength(len1, len2);
+
+  if (tops1 == tops2)
+    cset.setTop1(tops1);
+  else
+    cset.setTop1(tops1, tops2);
+
+  /*
   if (len1 == len2)
     CoverSpec::westLength(len1, ctrl);
   else
@@ -160,6 +196,7 @@ void CoverSpec::westGeneral(
   const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_LENGTHS_AND_TOPS);
   setsWest[specNumber].setSymm(symmFlag);
+  */
 }
 
 
@@ -201,8 +238,9 @@ string CoverSpec::strRaw() const
 
   ss << "index " << index << ", " <<
     "ID " << +oppsLength << "-" << +oppsTops1 << "\n";
-  ss << setsWest[0].strRaw();
-  ss << setsWest[1].strRaw();
+
+  for (auto& set: setsWest)
+    ss << set.strRaw();
 
   return ss.str();
 }
