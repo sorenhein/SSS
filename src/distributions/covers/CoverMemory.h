@@ -113,7 +113,6 @@ class CoverMemory
     void prepare_5_4();
     void prepare_5_5();
 
-    void prepare_6_splitsNonVoid();
     void prepare_6_1();
     void prepare_6_2();
     void prepare_6_3();
