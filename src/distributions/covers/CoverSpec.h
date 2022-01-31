@@ -9,7 +9,7 @@
 #ifndef SSS_COVERSPEC_H
 #define SSS_COVERSPEC_H
 
-#include <array>
+#include <list>
 #include <string>
 
 #include "CoverSet.h"
@@ -40,11 +40,13 @@ class CoverSpec
     unsigned char oppsLength;
     unsigned char oppsTops1;
 
-    // There are two sets of elements.  Each set has a mode.  
-    // The two sets are OR'ed together if both are present.  
+    // There are several sets of elements (two for now).  
+    // Each set has a mode.  
+    // The sets are OR'ed together if both are present.  
     // Within a set, the elements are AND'ed together if both are present.
 
-    array<CoverSet, 2> setsWest;
+    // Every time ctrl == COVER_EXTEND, we add one.
+    list<CoverSet> setsWest;
 
 
     CoverSet& addOrExtend(const CoverControl ctrl);

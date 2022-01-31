@@ -22,8 +22,10 @@ CoverSpec::CoverSpec()
 
 void CoverSpec::reset()
 {
-  for (auto& set: setsWest)
-    set.reset();
+  setsWest.clear();
+  setsWest.emplace_back(CoverSet());
+  // for (auto& set: setsWest)
+    // set.reset();
 }
 
 
@@ -59,10 +61,10 @@ unsigned CoverSpec::getIndex() const
 
 CoverSet& CoverSpec::addOrExtend(const CoverControl ctrl)
 {
-  if (ctrl == COVER_ADD)
-    return setsWest[0];
-  else
-    return setsWest[1];
+  if (ctrl == COVER_EXTEND)
+    setsWest.emplace_back(CoverSet());
+
+  return setsWest.back();
 }
 
 
@@ -220,12 +222,15 @@ string CoverSpec::strRaw() const
 
 string CoverSpec::str() const
 {
-  if (setsWest[1].getMode() == COVER_MODE_NONE)
-    return setsWest[0].str(oppsLength, oppsTops1);
-  else
-  {
-    return "YY " + setsWest[0].str(oppsLength, oppsTops1) + "; or " +
-      setsWest[1].str(oppsLength, oppsTops1);
-  }
+  string s;
+  if (setsWest.size() > 1)
+    s = "YY ";
+
+  s += setsWest.front().str(oppsLength, oppsTops1);
+  
+  for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
+    s += "; or " + iter->str(oppsLength, oppsTops1);
+
+  return s;
 }
 
