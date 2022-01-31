@@ -9,11 +9,7 @@
 #ifndef SSS_COVERELEMENT_H
 #define SSS_COVERELEMENT_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <string>
-#include <cassert>
 
 #include "../../const.h"
 
@@ -40,33 +36,9 @@ class CoverElement
     ComparePtr ptr;
 
 
-    // TODO Not used?
-    bool lessEqual(const unsigned char valueIn) const
-    {
-      return (valueIn <= value1 ? 1 : 0);
-    };
-
-    bool equal(const unsigned char valueIn) const
-    {
-      return (valueIn == value1 ? 1 : 0);
-    };
-
-    // TODO Not used?
-    bool greaterEqual(const unsigned char valueIn) const
-    {
-      return (valueIn >= value1 ? 1 : 0);
-    };
-
-    bool insideRange(const unsigned char valueIn) const
-    {
-      return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
-    };
-
-    // TODO Not used?
-    bool outsideRange(const unsigned char valueIn) const
-    {
-      return (valueIn <= value1 && valueIn >= value2 ? 1 : 0);
-    };
+    bool equal(const unsigned char valueIn) const;
+    
+    bool insideRange(const unsigned char valueIn) const;
 
 
   public:
@@ -77,109 +49,32 @@ class CoverElement
 
     CoverOperator oper;
 
-    CoverElement()
-    {
-      value1 = UCHAR_NOT_SET;
-      value2 = UCHAR_NOT_SET;
-      oper = COVER_OUTSIDE_RANGE;
-    };
+    CoverElement();
 
-    // TODO Should be private once Covers is cleaner
-    void setOperator(const CoverOperator operIn)
-    {
-      oper = operIn;
-      if (oper == COVER_LESS_EQUAL)
-        ptr = &CoverElement::lessEqual;
-      else if (oper == COVER_EQUAL)
-        ptr = &CoverElement::equal;
-      else if (oper == COVER_GREATER_EQUAL)
-        ptr = &CoverElement::greaterEqual;
-      else if (oper == COVER_INSIDE_RANGE)
-        ptr = &CoverElement::insideRange;
-      else if (oper == COVER_OUTSIDE_RANGE)
-        ptr = &CoverElement::outsideRange;
-      else
-        ptr = nullptr;
-    };
+    void reset();
 
-    void setValue(const unsigned char valueIn)
-    {
-      value1 = valueIn;
-      value2 = UCHAR_NOT_SET;
-    };
+    void setOperator(const CoverOperator operIn);
+
+    void setValue(const unsigned char valueIn);
 
     void setValues(
       const unsigned char value1In,
-      const unsigned char value2In)
-    {
-      value1 = value1In;
-      value2 = value2In;
-    };
+      const unsigned char value2In);
 
     void set(
       const unsigned char valueIn,
-      const CoverOperator operIn)
-    {
-      value1 = valueIn;
-      setOperator(operIn);
-    };
+      const CoverOperator operIn);
 
     void set(
       const unsigned char value1In,
       const unsigned char value2In,
-      const CoverOperator operIn)
-    {
-      value1 = value1In;
-      value2 = value2In;
-      setOperator(operIn);
-    };
+      const CoverOperator operIn);
 
-    bool includes(const unsigned char valueIn) const
-    {
-      assert(ptr != nullptr);
-      return (this->*ptr)(valueIn);
-    };
+    bool includes(const unsigned char valueIn) const;
 
-    string strRaw() const
-    {
-      stringstream ss;
+    string strRaw() const;
 
-      ss << +value1 << " to " << +value2 << ", oper ";
-      if (oper == COVER_EQUAL)
-        ss << "EQUAL";
-      else if (oper == COVER_INSIDE_RANGE)
-        ss << "INSIDE";
-      else
-        ss << "UNKNOWN";
-      ss << "\n";
-
-      return ss.str();
-    };
-
-    string str(const string& word) const
-    {
-      stringstream ss;
-
-      if (oper == COVER_LESS_EQUAL)
-        ss << "West has at most " << +value1 << " " << word;
-      else if (oper == COVER_EQUAL)
-        ss << "West has exactly " << +value1 << " " << word;
-      else if (oper == COVER_GREATER_EQUAL)
-        ss << "West has at least " << +value1 << " " << word;
-      else if (oper == COVER_INSIDE_RANGE)
-        ss << "West has " << word <<  " in range " << 
-          +value1 << " to " << +value2 << " " << word << " inclusive";
-      else if (oper == COVER_OUTSIDE_RANGE)
-      {
-        assert(value1 < value2);
-        ss << "West has up to " << +value1 << " " <<
-        " or at least " << +value2 << word << " inclusive";
-      }
-      else
-        assert(false);
-
-      return ss.str();
-    };
+    string str(const string& word) const;
 };
 
 #endif

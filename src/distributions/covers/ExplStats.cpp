@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <cassert>
 
 #include "ExplStats.h"
 #include "CoverSpec.h"

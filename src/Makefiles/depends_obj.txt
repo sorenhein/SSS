@@ -249,6 +249,8 @@ distributions/covers/Covers.obj: strategies/result/Result.h
 distributions/covers/Covers.obj: strategies/result/Winners.h
 distributions/covers/Covers.obj: strategies/result/Winner.h utils/table.h
 distributions/covers/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
+distributions/covers/CoverElement.obj: distributions/covers/CoverElement.h
+distributions/covers/CoverElement.obj: const.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverSet.obj: const.h
