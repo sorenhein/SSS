@@ -21,6 +21,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverSpec.cpp \
                 distributions/covers/CoverMemory.cpp \
                 distributions/covers/ResExpl.cpp \
+                distributions/covers/ExplStat.cpp \
                 distributions/covers/ExplStats.cpp \
                                                 \
                 inputs/Convert.cpp              \

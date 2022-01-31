@@ -1,13 +1,11 @@
 Verbals of strategy wins
 ========================
+* Some empties -- why was it different in ExplStats before?
+* ExplStat -> class
+
 * CoverSet could have a variable #sets in a list
 
 * Cover getIndices rename to getID
-
-* ExplStats: Move implementation into .cpp file
-* ExplStat: Make into a mini class in ExplStats.h
-* Include files on top of ExplStats.h reduce
-* Move the bulk of ExplStats str into ExplStat?
 
 * When ExplStats clean, that leaves CoverMemory to work on
 * And CoverElement (.cpp file?)

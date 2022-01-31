@@ -63,7 +63,7 @@ string ExplStats::str() const
 
   for (unsigned length = 2; length < explStats.size(); length++)
   {
-    for (unsigned tops1 = 1; tops1 < explStats[length].size(); tops1++)
+    for (unsigned tops1 = 1; tops1 <= length; tops1++)
     {
       const ExplStat& explStat = explStats[length][tops1];
       if (explStat.empty())
