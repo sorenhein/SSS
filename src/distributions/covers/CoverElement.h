@@ -16,25 +16,29 @@
 
 enum CoverOperator
 {
-  COVER_LESS_EQUAL = 0,
-  COVER_EQUAL = 1,
-  COVER_GREATER_EQUAL = 2,
-  COVER_INSIDE_RANGE = 3,
-  COVER_OPERATOR_SIZE = 4,
-  COVER_OUTSIDE_RANGE = 5
-  // TODO Reorder later
+  COVER_EQUAL = 0,
+  COVER_INSIDE_RANGE = 1,
+  COVER_OPERATOR_SIZE = 2
 };
 
 class CoverElement
 {
+  friend class CoverSet;
+
   typedef bool 
     (CoverElement::*ComparePtr)(const unsigned char valueIn) const;
 
   private: 
 
+    unsigned char value1;
+    unsigned char value2;
+
+    CoverOperator oper;
 
     ComparePtr ptr;
 
+
+    void setOperator(const CoverOperator operIn);
 
     bool equal(const unsigned char valueIn) const;
     
@@ -43,23 +47,9 @@ class CoverElement
 
   public:
 
-    // TODO private again later?
-    unsigned char value1;
-    unsigned char value2;
-
-    CoverOperator oper;
-
     CoverElement();
 
     void reset();
-
-    void setOperator(const CoverOperator operIn);
-
-    void setValue(const unsigned char valueIn);
-
-    void setValues(
-      const unsigned char value1In,
-      const unsigned char value2In);
 
     void set(
       const unsigned char valueIn,

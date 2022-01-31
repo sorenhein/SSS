@@ -26,24 +26,11 @@ void CoverElement::reset()
 {
   value1 = UCHAR_NOT_SET;
   value2 = UCHAR_NOT_SET;
-  oper = COVER_OUTSIDE_RANGE;
+  oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
 }
 
 
-bool CoverElement::equal(const unsigned char valueIn) const
-{
-  return (valueIn == value1 ? 1 : 0);
-}
-
-
-bool CoverElement::insideRange(const unsigned char valueIn) const
-{
-  return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
-}
-
-
-// TODO Should be private once Covers is cleaner
 void CoverElement::setOperator(const CoverOperator operIn)
 {
   oper = operIn;
@@ -53,22 +40,6 @@ void CoverElement::setOperator(const CoverOperator operIn)
     ptr = &CoverElement::insideRange;
   else
     ptr = nullptr;
-}
-
-
-void CoverElement::setValue(const unsigned char valueIn)
-{
-  value1 = valueIn;
-  value2 = UCHAR_NOT_SET;
-}
-
-
-void CoverElement::setValues(
-  const unsigned char value1In,
-  const unsigned char value2In)
-{
-  value1 = value1In;
-  value2 = value2In;
 }
 
 
@@ -88,6 +59,18 @@ void CoverElement::set(
   value1 = value1In;
   value2 = value2In;
   setOperator(operIn);
+}
+
+
+bool CoverElement::equal(const unsigned char valueIn) const
+{
+  return (valueIn == value1 ? 1 : 0);
+}
+
+
+bool CoverElement::insideRange(const unsigned char valueIn) const
+{
+  return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
 }
 
 
@@ -119,21 +102,11 @@ string CoverElement::str(const string& word) const
 {
   stringstream ss;
 
-  if (oper == COVER_LESS_EQUAL)
-    ss << "West has at most " << +value1 << " " << word;
-  else if (oper == COVER_EQUAL)
+  if (oper == COVER_EQUAL)
     ss << "West has exactly " << +value1 << " " << word;
-  else if (oper == COVER_GREATER_EQUAL)
-    ss << "West has at least " << +value1 << " " << word;
   else if (oper == COVER_INSIDE_RANGE)
     ss << "West has " << word <<  " in range " << 
       +value1 << " to " << +value2 << " " << word << " inclusive";
-  else if (oper == COVER_OUTSIDE_RANGE)
-  {
-    assert(value1 < value2);
-    ss << "West has up to " << +value1 << " " <<
-    " or at least " << +value2 << word << " inclusive";
-  }
   else
     assert(false);
 

@@ -18,8 +18,8 @@ void CoverSet::reset()
 {
   mode = COVER_MODE_NONE;
   symmFlag = false;
-  length.setOperator(COVER_OPERATOR_SIZE);
-  top1.setOperator(COVER_OPERATOR_SIZE);
+  length.reset();
+  top1.reset();
 }
 
 
