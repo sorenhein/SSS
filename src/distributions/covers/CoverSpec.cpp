@@ -73,9 +73,6 @@ void CoverSpec::westLength(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
   cset.setLength(len);
-  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  // setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
-  // setsWest[specNumber].setLength(len);
 }
 
 
@@ -95,9 +92,6 @@ void CoverSpec::westLengthRange(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
   cset.setLength(len1, len2);
-  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  // setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
-  // setsWest[specNumber].setLength(len1, len2);
 }
 
 
@@ -120,9 +114,6 @@ void CoverSpec::westTop1(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
   cset.setTop1(tops);
-  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  // setsWest[specNumber].setMode(COVER_TOPS_ONLY);
-  // setsWest[specNumber].setTop1(tops);
 }
 
 
@@ -142,9 +133,6 @@ void CoverSpec::westTop1Range(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
   cset.setTop1(tops1, tops2);
-  // const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  // setsWest[specNumber].setMode(COVER_TOPS_ONLY);
-  // setsWest[specNumber].setTop1(tops1, tops2);
 }
 
 
@@ -181,22 +169,6 @@ void CoverSpec::westGeneral(
     cset.setTop1(tops1);
   else
     cset.setTop1(tops1, tops2);
-
-  /*
-  if (len1 == len2)
-    CoverSpec::westLength(len1, ctrl);
-  else
-    CoverSpec::westLengthRange(len1, len2, ctrl);
-
-  if (tops1 == tops2)
-    CoverSpec::westTop1(tops1, ctrl);
-  else
-    CoverSpec::westTop1Range(tops1, tops2, ctrl);
-
-  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
-  setsWest[specNumber].setMode(COVER_LENGTHS_AND_TOPS);
-  setsWest[specNumber].setSymm(symmFlag);
-  */
 }
 
 

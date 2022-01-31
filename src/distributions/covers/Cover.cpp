@@ -23,7 +23,7 @@ Cover::Cover()
 void Cover::reset()
 {
   profile.clear();
-  spec.reset();
+  specPtr = nullptr;
   weight = 0;
   numDist = 0;
 }
@@ -39,10 +39,10 @@ void Cover::prepare(
   const unsigned len = lengths.size();
   profile.resize(len);
 
-  spec = specIn;
+  specPtr = &specIn;
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (spec.includes(lengths[dno], tops[dno]))
+    if (specIn.includes(lengths[dno], tops[dno]))
     {
       profile[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);
@@ -90,13 +90,15 @@ void Cover::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  spec.getID(length, tops1);
+  assert(specPtr != nullptr);
+  specPtr->getID(length, tops1);
 }
 
 
 unsigned Cover::index() const
 {
-  return spec.getIndex();
+  assert(specPtr != nullptr);
+  return specPtr->getIndex();
 }
 
 
@@ -114,16 +116,18 @@ unsigned char Cover::getNumDist() const
 
 string Cover::str() const
 {
-  return spec.str();
+  assert(specPtr != nullptr);
+  return specPtr->str();
 }
 
 
 string Cover::strProfile() const
 {
+  assert(specPtr != nullptr);
   stringstream ss;
 
   cout << 
-    "cover index " << spec.getIndex() << 
+    "cover index " << specPtr->getIndex() << 
     ", weight " << weight << "\n";
 
   for (unsigned i = 0; i < profile.size(); i++)

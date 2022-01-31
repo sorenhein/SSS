@@ -24,7 +24,7 @@ class Cover
 
     vector<unsigned char> profile;
 
-    CoverSpec spec;
+    CoverSpec const * specPtr;
 
     unsigned weight;
     unsigned char numDist;
