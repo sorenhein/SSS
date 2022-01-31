@@ -40,13 +40,13 @@ void CoverMemory::resizeStats(ExplStats& explStats) const
 }
 
 
-CoverSpec& CoverMemory::addOrExtend(const unsigned specNumber)
+CoverSpec& CoverMemory::addOrExtend(const CoverControl ctrl)
 {
   assert(coverGlobal.cards < specs.size());
   assert(coverGlobal.tops1 < specs[coverGlobal.cards].size());
   auto& covers = specs[coverGlobal.cards][coverGlobal.tops1];
 
-  if (specNumber == 0)
+  if (ctrl == COVER_ADD)
   {
     // Add
     covers.emplace_back(CoverSpec());
@@ -69,39 +69,39 @@ CoverSpec& CoverMemory::addOrExtend(const unsigned specNumber)
 
 void CoverMemory::WestLength(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.westLength(len, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.westLength(len, ctrl);
 }
 
 
 void CoverMemory::EastLength(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.eastLength(len, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.eastLength(len, ctrl);
 }
 
 
 void CoverMemory::WestLengthRange(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.westLengthRange(len1, len2, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.westLengthRange(len1, len2, ctrl);
 }
 
 
 void CoverMemory::EastLengthRange(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.eastLengthRange(len1, len2, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.eastLengthRange(len1, len2, ctrl);
 }
 
 
@@ -109,39 +109,39 @@ void CoverMemory::EastLengthRange(
 
 void CoverMemory::WestTop1(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.westTop1(len, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.westTop1(len, ctrl);
 }
 
 
 void CoverMemory::EastTop1(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.eastTop1(len, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.eastTop1(len, ctrl);
 }
 
 
 void CoverMemory::WestTop1Range(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.westTop1Range(len1, len2, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.westTop1Range(len1, len2, ctrl);
 }
 
 
 void CoverMemory::EastTop1Range(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
-  spec.eastTop1Range(len1, len2, specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  spec.eastTop1Range(len1, len2, ctrl);
 }
 
 // ----- Length AND top-1 -----
@@ -151,11 +151,11 @@ void CoverMemory::WestGeneralAnd(
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
   const unsigned char upperTopsIncl,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
   spec.westGeneral(lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, false, specNumber);
+    lowerTopsIncl, upperTopsIncl, false, ctrl);
 }
 
 
@@ -164,11 +164,11 @@ void CoverMemory::EastGeneralAnd(
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
   const unsigned char upperTopsIncl,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
   spec.eastGeneral(lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, false, specNumber);
+    lowerTopsIncl, upperTopsIncl, false, ctrl);
 }
 
 
@@ -177,11 +177,11 @@ void CoverMemory::SymmGeneralAnd(
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
   const unsigned char upperTopsIncl,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(specNumber);
+  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
   spec.westGeneral(lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, true, specNumber);
+    lowerTopsIncl, upperTopsIncl, true, ctrl);
 }
 
 
@@ -216,7 +216,6 @@ void CoverMemory::prepare_3_1()            // ***** DONE-1 *****
   CoverMemory::EastTop1(1);                // 6. East has the top
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 7. H(x) with West
-  // CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 7. H(xx) with West
 
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 8. Singleton H on either side
 }
@@ -437,19 +436,19 @@ void CoverMemory::prepare_5_3()            // ***** DONE-1 *****
 
   // 11. West has 0-3c or all honors
   CoverMemory::WestLengthRange(0, 3);
-  CoverMemory::WestTop1(3, 1);
+  CoverMemory::WestTop1(3, COVER_EXTEND);
 
   // 12. West has 2-3c or all honors
   CoverMemory::WestLengthRange(2, 3);
-  CoverMemory::WestTop1(3, 1);
+  CoverMemory::WestTop1(3, COVER_EXTEND);
 
   // 13. East has 0-3c or all honors
   CoverMemory::EastLengthRange(0, 3);
-  CoverMemory::EastTop1(3, 1);
+  CoverMemory::EastTop1(3, COVER_EXTEND);
 
   // 14. East has 2-3c or all honors
   CoverMemory::EastLengthRange(2, 3);
-  CoverMemory::EastTop1(3, 1);
+  CoverMemory::EastTop1(3, COVER_EXTEND);
 }
 
 
@@ -533,7 +532,7 @@ void CoverMemory::prepare_6_2()            // ***** DONE-1 *****
 
   // 21. 3=3 or West has both H's.
   CoverMemory::WestLength(3);
-  CoverMemory::WestTop1(2, 1);
+  CoverMemory::WestTop1(2, COVER_EXTEND);
 }
 
 
@@ -550,7 +549,7 @@ void CoverMemory::prepare_6_3()            // ***** DONE-1 *****
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 6. H, Hx with West
 
   CoverMemory::WestLength(3);              // 7. West has HHH+ or any 3=3
-  CoverMemory::WestTop1(3, 1);
+  CoverMemory::WestTop1(3, COVER_EXTEND);
 }
 
 

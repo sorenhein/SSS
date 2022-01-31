@@ -23,6 +23,12 @@ enum CoverState
   COVER_STATE_SIZE = 3
 };
 
+enum CoverControl
+{
+  COVER_ADD = 0,
+  COVER_EXTEND = 1
+};
+
 
 class CoverSpec
 {
@@ -61,39 +67,39 @@ class CoverSpec
 
     void westLength(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void eastLength(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void westLengthRange(
       const unsigned char len1,
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void eastLengthRange(
       const unsigned char len1,
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void westTop1(
       const unsigned char tops,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void eastTop1(
       const unsigned char tops,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void westTop1Range(
       const unsigned char tops1,
       const unsigned char tops2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void eastTop1Range(
       const unsigned char tops1,
       const unsigned char tops2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void westGeneral(
       const unsigned char len1,
@@ -101,7 +107,7 @@ class CoverSpec
       const unsigned char tops1,
       const unsigned char tops2,
       const bool symmFlag = false,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void eastGeneral(
       const unsigned char len1,
@@ -109,7 +115,7 @@ class CoverSpec
       const unsigned char tops1,
       const unsigned char tops2,
       const bool symmFlag = false,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     bool includes(
       const unsigned char wlen,

@@ -9,6 +9,8 @@ Verbals of strategy wins
   - Use the new freedom to make either entry symmetric
   - Cut down on the Avg in ExplStats
 
+Does Cover.h need a copy of spec, or is a pointer enough?
+
 * When of the form (1 top) - hierarchical children, perhaps
   - Take 2 tricks (but one less when West is void), and more when...
   - Count that as 1 less explanation?

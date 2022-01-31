@@ -28,47 +28,47 @@ class CoverMemory
 
 
     // Uses global counters for more succinct notation
-    CoverSpec& addOrExtend(const unsigned specNumber);
+    CoverSpec& addOrExtend(const CoverControl ctrl);
 
     // ----- Pure length methods -----
 
     void WestLength(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void EastLength(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void WestLengthRange(
       const unsigned char len1, 
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void EastLengthRange(
       const unsigned char len1, 
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     // ----- Pure rank-1 methods -----
 
     void WestTop1(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void EastTop1(
       const unsigned char len,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void WestTop1Range(
       const unsigned char len1, 
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void EastTop1Range(
       const unsigned char len1, 
       const unsigned char len2,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     // ----- Length and top-1 methods -----
 
@@ -77,21 +77,21 @@ class CoverMemory
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void EastGeneralAnd(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     void SymmGeneralAnd(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl,
-      const unsigned specNumber = 0);
+      const CoverControl ctrl = COVER_ADD);
 
     // ----- Length OR top-1 methods -----
 

@@ -59,8 +59,9 @@ unsigned CoverSpec::getIndex() const
 
 void CoverSpec::westLength(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
+  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
   setsWest[specNumber].setLength(len);
 }
@@ -68,17 +69,18 @@ void CoverSpec::westLength(
 
 void CoverSpec::eastLength(
   const unsigned char len,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec::westLength(oppsLength - len, specNumber);
+  CoverSpec::westLength(oppsLength - len, ctrl);
 }
 
 
 void CoverSpec::westLengthRange(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
+  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_LENGTHS_ONLY);
   setsWest[specNumber].setLength(len1, len2);
 }
@@ -87,19 +89,20 @@ void CoverSpec::westLengthRange(
 void CoverSpec::eastLengthRange(
   const unsigned char len1,
   const unsigned char len2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
   CoverSpec::westLengthRange(
     oppsLength - len2, 
     oppsLength - len1, 
-    specNumber);
+    ctrl);
 }
 
 
 void CoverSpec::westTop1(
   const unsigned char tops,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
+  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_TOPS_ONLY);
   setsWest[specNumber].setTop1(tops);
 }
@@ -107,17 +110,18 @@ void CoverSpec::westTop1(
 
 void CoverSpec::eastTop1(
   const unsigned char tops,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
-  CoverSpec::westTop1(oppsTops1 - tops, specNumber);
+  CoverSpec::westTop1(oppsTops1 - tops, ctrl);
 }
 
 
 void CoverSpec::westTop1Range(
   const unsigned char tops1,
   const unsigned char tops2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
+  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_TOPS_ONLY);
   setsWest[specNumber].setTop1(tops1, tops2);
 }
@@ -126,12 +130,12 @@ void CoverSpec::westTop1Range(
 void CoverSpec::eastTop1Range(
   const unsigned char tops1,
   const unsigned char tops2,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
   CoverSpec::westTop1Range(
     oppsTops1 - tops2, 
     oppsTops1 - tops1, 
-    specNumber);
+    ctrl);
 }
 
 
@@ -141,18 +145,19 @@ void CoverSpec::westGeneral(
   const unsigned char tops1,
   const unsigned char tops2,
   const bool symmFlag,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
   if (len1 == len2)
-    CoverSpec::westLength(len1, specNumber);
+    CoverSpec::westLength(len1, ctrl);
   else
-    CoverSpec::westLengthRange(len1, len2, specNumber);
+    CoverSpec::westLengthRange(len1, len2, ctrl);
 
   if (tops1 == tops2)
-    CoverSpec::westTop1(tops1, specNumber);
+    CoverSpec::westTop1(tops1, ctrl);
   else
-    CoverSpec::westTop1Range(tops1, tops2, specNumber);
+    CoverSpec::westTop1Range(tops1, tops2, ctrl);
 
+  const unsigned specNumber = (ctrl == COVER_ADD ? 0 : 1);
   setsWest[specNumber].setMode(COVER_LENGTHS_AND_TOPS);
   setsWest[specNumber].setSymm(symmFlag);
 }
@@ -164,7 +169,7 @@ void CoverSpec::eastGeneral(
   const unsigned char tops1,
   const unsigned char tops2,
   const bool symmFlag,
-  const unsigned specNumber)
+  const CoverControl ctrl)
 {
   CoverSpec::westGeneral(
     oppsLength - len2,
@@ -172,7 +177,7 @@ void CoverSpec::eastGeneral(
     oppsTops1 - tops2,
     oppsTops1 - tops1,
     symmFlag,
-    specNumber);
+    ctrl);
 }
 
 
