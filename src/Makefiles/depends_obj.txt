@@ -231,6 +231,9 @@ distributions/Reductions.obj: distributions/DistHelp.h
 distributions/Reductions.obj: distributions/SurvivorList.h
 distributions/SurvivorList.obj: distributions/SurvivorList.h
 distributions/SurvivorList.obj: distributions/DistHelp.h
+distributions/covers/Composition.obj: distributions/covers/Composition.h
+distributions/covers/Compositions.obj: distributions/covers/Compositions.h
+distributions/covers/Compositions.obj: distributions/covers/Composition.h
 distributions/Survivors.obj: distributions/Survivors.h
 distributions/Survivors.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/SurvivorList.h plays/Play.h
@@ -263,6 +266,8 @@ distributions/covers/CoverMemory.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverMemory.obj: const.h
+distributions/covers/CoverMemory.obj: distributions/covers/Compositions.h
+distributions/covers/CoverMemory.obj: distributions/covers/Composition.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStats.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStat.h
 distributions/covers/ResExpl.obj: distributions/covers/ResExpl.h

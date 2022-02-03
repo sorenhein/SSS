@@ -9,6 +9,7 @@
 #include <cassert>
 
 #include "CoverMemory.h"
+#include "Compositions.h"
 #include "ExplStats.h"
 
 // Global to make the many cases more streamlined.
@@ -855,8 +856,24 @@ void CoverMemory::prepare_9_1()            // ***** DONE-1 *****
 }
 
 
-void CoverMemory::prepare(const unsigned char maxCards)
+void CoverMemory::prepare([[maybe_unused]] const unsigned char maxCards)
 {
+  // TODO TMP
+
+  /* */
+  Compositions compositions;
+cout << "Making" << endl;
+  compositions.make(5);
+cout << "Writing strings" << endl;
+  cout << compositions.str();
+cout << "Done" << endl;
+  if (maxCards > 0)
+    exit(0);
+  /* */
+
+  // TODO TMP
+
+  /* */
   specs.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
     // Just to have enough for now
@@ -895,6 +912,7 @@ void CoverMemory::prepare(const unsigned char maxCards)
   CoverMemory::prepare_8_2();
 
   CoverMemory::prepare_9_1();
+  /* */
 }
 
 
