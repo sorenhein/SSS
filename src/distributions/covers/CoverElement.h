@@ -37,6 +37,8 @@ class CoverElement
 
     ComparePtr ptr;
 
+    bool usedFlag;
+
 
     void setOperator(const CoverOperator operIn);
 
@@ -60,9 +62,18 @@ class CoverElement
       const unsigned char value2In,
       const CoverOperator operIn);
 
+    void setNew(
+      const unsigned char lenActual,
+      const unsigned char value1In,
+      const unsigned char value2In);
+
     bool includes(const unsigned char valueIn) const;
 
+    bool used() const;
+
     string strRaw() const;
+
+    string strShort(const unsigned char lenActual) const;
 
     string str(const string& word) const;
 };

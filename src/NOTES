@@ -1,70 +1,9 @@
 Verbals automatically
 =====================
 Inspired by DistCore::split
-Given len (but not top1)
 
-First figure out the exact profiles that are possible.
-So if len == 6 we might have
-6
-5-1
-4-2
-4-1-1
-3-3
-3-2-1
-3-1-2
-3-1-1-1
-2-4
-2-3-1
-2-2-2
-2-2-1-1
-2-1-3
-2-1-2-1
-2-1-1-2
-2-1-1-1-1
-1-5
-1-4-1
-1-3-2
-1-3-1-1
-1-2-3
-1-2-2-1
-1-2-1-2
-1-2-1-1-1
-1-1-4
-1-1-3-1
-1-1-2-2
-1-2-2-1-1
-1-2-1-2
-1-2-1-1-1
-1-1-4
-1-1-3-1
-1-1-2-2
-1-1-2-1-1
-1-1-1-3
-1-1-1-2-1
-1-1-1-1-2
-1-1-1-1-1-1
-
-Each profile has levels and and counts per level.
-So now we have something like "available".
-
-How to make these?  Something along the lines of
-
-remaining = 6
-level = 1
-stack(emplace_back())
-while (! stack.empty())
-{
-  auto stackIter = stack.begin()
-  setNumber = stackIter->setNext; // Next to write
-
-  for (this top-level 0 .. remaining)
-    if (top1 == remaining)
-      make a dash-list
-    else
-      make a new stack entry
-}
-
-
+First figure out the exact profiles that are possible -> Compositions.
+Then:
 
 
 struct CoverStackInfo
@@ -117,6 +56,11 @@ for (lenLow = 0 .. len, lenHigh = lenLow .. len)
     stack.pop_front();
   }
 }
+
+See whether there are Sets that never make it for actual strategies
+with that profile.  See whether we can recognize some of them in this
+loop already.  There should never be a full weight or a weight 0
+at any rate.
 
 
 Verbals of strategy wins

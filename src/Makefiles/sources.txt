@@ -22,6 +22,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Covers.cpp \
                 distributions/covers/CoverElement.cpp \
                 distributions/covers/CoverSet.cpp \
+                distributions/covers/CoverSetNew.cpp \
                 distributions/covers/CoverSpec.cpp \
                 distributions/covers/CoverMemory.cpp \
                 distributions/covers/ResExpl.cpp \

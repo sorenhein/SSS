@@ -257,6 +257,9 @@ distributions/covers/CoverElement.obj: const.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverSet.obj: const.h
+distributions/covers/CoverSetNew.obj: distributions/covers/CoverSetNew.h
+distributions/covers/CoverSetNew.obj: distributions/covers/CoverElement.h
+distributions/covers/CoverSetNew.obj: const.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverElement.h

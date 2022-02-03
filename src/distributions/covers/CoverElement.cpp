@@ -28,6 +28,7 @@ void CoverElement::reset()
   value2 = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
+  usedFlag = false;
 }
 
 
@@ -48,7 +49,8 @@ void CoverElement::set(
   const CoverOperator operIn)
 {
   value1 = valueIn;
-  setOperator(operIn);
+  CoverElement::setOperator(operIn);
+  usedFlag = true;
 }
 
 void CoverElement::set(
@@ -58,7 +60,29 @@ void CoverElement::set(
 {
   value1 = value1In;
   value2 = value2In;
-  setOperator(operIn);
+  CoverElement::setOperator(operIn);
+  usedFlag = true;
+}
+
+
+void CoverElement::setNew(
+  const unsigned char lenActual,
+  const unsigned char value1In,
+  const unsigned char value2In)
+{
+  // Returns true if actually in non-trivial use
+  if (value1In == 0 && value2In == lenActual)
+  {
+    usedFlag = false;
+    return;
+  }
+
+  CoverElement::setOperator(value1In == value2In ?
+    COVER_EQUAL : COVER_INSIDE_RANGE);
+
+  value1 = value1In;
+  value2 = value2In;
+  usedFlag = true;
 }
 
 
@@ -81,6 +105,12 @@ bool CoverElement::includes(const unsigned char valueIn) const
 }
 
 
+bool CoverElement::used() const
+{
+  return usedFlag;
+}
+
+
 string CoverElement::strRaw() const
 {
   stringstream ss;
@@ -93,6 +123,33 @@ string CoverElement::strRaw() const
   else
     ss << "UNKNOWN";
   ss << "\n";
+
+  return ss.str();
+}
+
+
+string CoverElement::strShort(const unsigned char lenActual) const
+{
+  stringstream ss;
+
+  if (usedFlag)
+  {
+    string s;
+    if (value1 == value2)
+      s = to_string(+value1);
+    else if (value1 == 0)
+      s = "<= " + to_string(+value2);
+    else if (value2 == lenActual)
+      s = ">= " + to_string(+value1);
+    else
+      s = to_string(+value1) + "-" + to_string(+value2);
+    
+    ss << setw(8) << s;
+  }
+  else
+  {
+    ss << setw(8) << "unused";
+  }
 
   return ss.str();
 }
