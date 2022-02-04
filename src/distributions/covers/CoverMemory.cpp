@@ -12,6 +12,8 @@
 #include "Compositions.h"
 #include "ExplStats.h"
 
+#include "CoverSetNew.h"
+
 // Global to make the many cases more streamlined.
 
 struct CoverParams
@@ -856,6 +858,141 @@ void CoverMemory::prepare_9_1()            // ***** DONE-1 *****
 }
 
 
+void CoverMemory::makeSets(
+  const unsigned char length,
+  const Composition& comp)
+{
+  struct StackInfo
+  {
+    vector<unsigned char> topsLow;
+    vector<unsigned char> topsHigh;
+
+    unsigned char minWest;
+    unsigned char minEast;
+    unsigned char maxDiff;
+    unsigned char topNext;
+
+    StackInfo(const unsigned len)
+    {
+      topsLow.resize(len+1);
+      topsHigh.resize(len+1);
+      minWest = 0;
+      minEast = 0;
+      maxDiff = 0;
+      topNext = 0;
+    };
+  };
+
+  list<StackInfo> stack; // Unfinished expansions
+  stack.emplace_back(StackInfo(comp.size()));
+
+  list<CoverSetNew> sets;
+  sets.resize(100);
+  for (auto& s: sets)
+    s.resize(comp.size());
+
+  auto iter = sets.begin(); // Next one to write
+
+  while (! stack.empty())
+  {
+    auto stackIter = stack.begin();
+
+    unsigned char topNumber = stackIter->topNext; // Next to write
+cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
+    if (topNumber >= comp.size())
+      break;
+
+    const unsigned char topCountActual = comp.count(topNumber);
+
+cout << "top number " << +topNumber << ", count " <<
+  +topCountActual << endl;
+
+    for (unsigned char topCountLow = 0; 
+        topCountLow <= topCountActual; topCountLow++)
+    {
+      for (unsigned char topCountHigh = topCountLow; 
+        topCountHigh <= topCountActual; topCountHigh++)
+      {
+        const unsigned char minWest = stackIter->minWest + topCountLow;
+        const unsigned char minEast = stackIter->minEast + 
+          topCountActual - topCountHigh;
+
+        unsigned char diff = topCountHigh - topCountLow;
+        if (diff < stackIter->maxDiff)
+          diff = stackIter->maxDiff;
+
+        if (minWest + diff > length)
+        {
+          // There is no room for this worst-case single maximum,
+          // so we skip the entire set, as there will be a more 
+          // accurate other set.
+          continue;
+        }
+
+        if (minEast + diff > length)
+          continue;
+
+        if (minWest + minEast > length)
+          continue;
+
+        stackIter->topsLow[topNumber] = topCountLow;
+        stackIter->topsHigh[topNumber] = topCountHigh;
+
+cout << "(" << +topCountLow << ", " << +topCountHigh << ")" << endl;
+
+        // Add the "don't care" with respect to length.
+        if (iter == sets.end())
+        {
+          cout << "End reached" << endl;
+          assert(false);
+        }
+cout << "Adding top without length constraint" << endl;
+        iter->set(length, 0, length, 
+          stackIter->topsLow, stackIter->topsHigh);
+// cout << "Added" << endl;
+        iter++;
+
+        // Add the possible length constraints.
+        const unsigned char lenMax = length - minEast;
+
+        for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
+        {
+          for (unsigned char lenHigh = lenLow; 
+            lenHigh <= lenMax; lenHigh++)
+          { 
+            if (lenLow == minWest && lenHigh == lenMax)
+              continue;
+
+            if (iter == sets.end())
+            {
+              cout << "End reached" << endl;
+              assert(false);
+            }
+cout << "L  (" << +lenLow << ", " << +lenHigh << ")" << endl;
+            iter->set(length, lenLow, lenHigh, 
+              stackIter->topsLow, stackIter->topsHigh);
+            iter++;
+          }
+        }
+
+        stackIter = stack.insert(stackIter, * stackIter);
+        auto nextIter = next(stackIter);
+        nextIter->minWest = minWest;
+        nextIter->minEast = minEast;
+        nextIter->maxDiff = diff;
+        nextIter->topNext++;
+      }
+    }
+    stack.pop_front();
+  }
+
+  cout << sets.front().strHeader();
+  for (auto it = sets.begin(); it != iter; it++)
+    cout << it->strLine(length);
+  cout << "\n";
+}
+
+
 void CoverMemory::prepare([[maybe_unused]] const unsigned char maxCards)
 {
   // TODO TMP
@@ -867,6 +1004,16 @@ cout << "Making" << endl;
 cout << "Writing strings" << endl;
   cout << compositions.str();
 cout << "Done" << endl;
+
+  for (auto iter = compositions.begin(4); 
+      iter != compositions.end(4); iter++)
+  {
+cout << "Starting composition " << iter->strLine() << endl;
+    CoverMemory::makeSets(4, * iter);
+  }
+
+
+
   if (maxCards > 0)
     exit(0);
   /* */

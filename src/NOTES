@@ -5,7 +5,6 @@ Inspired by DistCore::split
 First figure out the exact profiles that are possible -> Compositions.
 Then:
 
-
 struct CoverStackInfo
 {
   CoverSet
@@ -31,18 +30,16 @@ for (lenLow = 0 .. len, lenHigh = lenLow .. len)
     available = profile[topNumber];
     seen += available; // Of the profile, not the actual set
 
+    1. All minimums must be <= lenLow except if lenLow == 0
+    2. East's minimums (tops - topLow) must be must be
+       <= length - lenHigh except if lenHigh == length
+    3. All mins + 1 max must be <= lenHigh even if lenHigh == length
+       Could do this running by keeping sum(mins) and the largest
+       (high-low) we've seen running as well
+    4. Also from the other side
+
     for (topLow = 0 .. available, topHigh = topLow .. available)
     {
-      if (minimums up to here + topLow > lenLow) skip rest of topLow
-      if (minimums up to here + topHigh > lenHigh) skip rest of topHigh
-      if (maximums up to here + topLow > lenHigh) skip rest of topLow
-      if (maximums up to here + topHigh > lenLow) skip rest of topHigh
-
-      if (maximums + topLow + (len-seen) < lenLow) skip this topLow
-      if (maximums + topHigh + (len-seen) < len High) skip this topHigh
-
-      new minimums, maximums up to here
-
       Could be that lenLow <= new minimum, lenLow >= new maximum
       Then the length range doesn't do anything.  Then unless it's
       0-len, it's a don't care, so we can drop the set.

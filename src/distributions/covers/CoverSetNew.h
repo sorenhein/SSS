@@ -23,6 +23,8 @@ class CoverSetNew
 
     bool symmFlag;
 
+    unsigned char complexity;
+
     CoverElement length;
 
     vector<CoverElement> tops;
@@ -33,6 +35,8 @@ class CoverSetNew
   CoverSetNew();
 
   void reset();
+
+  void resize(const unsigned compSize);
 
   void set(
     const unsigned char lenActual,

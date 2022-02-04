@@ -17,6 +17,7 @@
 
 using namespace std;
 
+class Composition;
 class ExplStats;
 
 
@@ -128,6 +129,10 @@ class CoverMemory
     void prepare_8_2();
 
     void prepare_9_1();
+
+    void makeSets(
+      const unsigned char length,
+      const Composition& comp);
 
 
   public:

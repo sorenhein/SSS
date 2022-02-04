@@ -39,6 +39,8 @@ class CoverElement
 
     bool usedFlag;
 
+    unsigned char complexity;
+
 
     void setOperator(const CoverOperator operIn);
 
@@ -70,6 +72,8 @@ class CoverElement
     bool includes(const unsigned char valueIn) const;
 
     bool used() const;
+
+    unsigned char getComplexity() const;
 
     string strRaw() const;
 

@@ -29,6 +29,7 @@ void CoverElement::reset()
   oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
   usedFlag = false;
+  complexity = 0;
 }
 
 
@@ -74,6 +75,7 @@ void CoverElement::setNew(
   if (value1In == 0 && value2In == lenActual)
   {
     usedFlag = false;
+    complexity = 0;
     return;
   }
 
@@ -83,6 +85,11 @@ void CoverElement::setNew(
   value1 = value1In;
   value2 = value2In;
   usedFlag = true;
+
+  if (value1In == 0 || value2 == lenActual ||value1In == value2In)
+    complexity = 1;
+  else
+    complexity = 2;
 }
 
 
@@ -111,6 +118,12 @@ bool CoverElement::used() const
 }
 
 
+unsigned char CoverElement::getComplexity() const
+{
+  return complexity;
+}
+
+
 string CoverElement::strRaw() const
 {
   stringstream ss;
@@ -136,7 +149,7 @@ string CoverElement::strShort(const unsigned char lenActual) const
   {
     string s;
     if (value1 == value2)
-      s = to_string(+value1);
+      s = "== " + to_string(+value1);
     else if (value1 == 0)
       s = "<= " + to_string(+value2);
     else if (value2 == lenActual)
