@@ -898,13 +898,13 @@ void CoverMemory::makeSets(
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->topNext; // Next to write
-cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
+// cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
     if (topNumber >= comp.size())
       break;
 
     const unsigned char topCountActual = comp.count(topNumber);
 
-cout << "top number " << +topNumber << ", count " <<
+// cout << "top number " << +topNumber << ", count " <<
   +topCountActual << endl;
 
     for (unsigned char topCountLow = 0; 
@@ -938,7 +938,7 @@ cout << "top number " << +topNumber << ", count " <<
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
 
-cout << "(" << +topCountLow << ", " << +topCountHigh << ")" << endl;
+// cout << "(" << +topCountLow << ", " << +topCountHigh << ")" << endl;
 
         // Add the "don't care" with respect to length.
         if (iter == sets.end())
@@ -946,7 +946,7 @@ cout << "(" << +topCountLow << ", " << +topCountHigh << ")" << endl;
           cout << "End reached" << endl;
           assert(false);
         }
-cout << "Adding top without length constraint" << endl;
+// cout << "Adding top without length constraint" << endl;
         iter->set(length, 0, length, 
           stackIter->topsLow, stackIter->topsHigh);
 // cout << "Added" << endl;
@@ -968,7 +968,7 @@ cout << "Adding top without length constraint" << endl;
               cout << "End reached" << endl;
               assert(false);
             }
-cout << "L  (" << +lenLow << ", " << +lenHigh << ")" << endl;
+// cout << "L  (" << +lenLow << ", " << +lenHigh << ")" << endl;
             iter->set(length, lenLow, lenHigh, 
               stackIter->topsLow, stackIter->topsHigh);
             iter++;

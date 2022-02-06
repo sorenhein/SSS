@@ -1,58 +1,10 @@
 Verbals automatically
 =====================
-Inspired by DistCore::split
-
-First figure out the exact profiles that are possible -> Compositions.
-Then:
-
-struct CoverStackInfo
-{
-  CoverSet
-  Whatever else
-};
-
-if (len == 0)
-  return;
-
-list<CoverStackInfo> stack; // Unfinished sets
-sets (of CoverSet for given len): resize(CHUNK_SIZE);
-unsigned setIndex = 0; // Position of next index to write
-
-
-for (lenLow = 0 .. len, lenHigh = lenLow .. len)
-{
-  stack(emplace_back(CoverStackInfo));
-
-  while (! stack.empty())
-  {
-    auto stackIter = stack.begin();
-    topNumber = stackIter->topNext; // Next to write
-    available = profile[topNumber];
-    seen += available; // Of the profile, not the actual set
-
-    1. All minimums must be <= lenLow except if lenLow == 0
-    2. East's minimums (tops - topLow) must be must be
-       <= length - lenHigh except if lenHigh == length
-    3. All mins + 1 max must be <= lenHigh even if lenHigh == length
-       Could do this running by keeping sum(mins) and the largest
-       (high-low) we've seen running as well
-    4. Also from the other side
-
-    for (topLow = 0 .. available, topHigh = topLow .. available)
-    {
-      Could be that lenLow <= new minimum, lenLow >= new maximum
-      Then the length range doesn't do anything.  Then unless it's
-      0-len, it's a don't care, so we can drop the set.
-      (0-len gets marked as don't care.)
-
-      Then this is a possible set, but could still be refined
-      The following ones are then "don't care"
-      So add it to sets for this top1, setIndex++
-      And add it to stack
-    }
-    stack.pop_front();
-  }
-}
+Don't loop over last top level (could be only top level).
+No entry that is completely empty.
+tmax > lmax: skip
+tmin > lmin: skip
+So then we do need a length loop on the outside?
 
 See whether there are Sets that never make it for actual strategies
 with that profile.  See whether we can recognize some of them in this
