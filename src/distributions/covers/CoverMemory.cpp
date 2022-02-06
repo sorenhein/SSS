@@ -858,6 +858,7 @@ void CoverMemory::prepare_9_1()            // ***** DONE-1 *****
 }
 
 
+#define COVER_CHUNK_SIZE 1000
 void CoverMemory::makeSets(
   const unsigned char length,
   const Composition& comp)
@@ -867,27 +868,34 @@ void CoverMemory::makeSets(
     vector<unsigned char> topsLow;
     vector<unsigned char> topsHigh;
 
-    unsigned char minWest;
-    unsigned char minEast;
-    unsigned char maxDiff;
-    unsigned char topNext;
+    unsigned char minWest; // Sum of West's top minima
+    unsigned char minEast; // Sum of East's top minima
+    unsigned char maxDiff; // Large difference max-min for a top
+    unsigned char maxWest; // Largest West maximum
+    unsigned char maxEast; // Largest East maximum
+    unsigned char topNext; // Running top number
 
-    StackInfo(const unsigned len)
+    StackInfo(
+      const unsigned compSize,
+      const unsigned char len)
     {
-      topsLow.resize(len+1);
-      topsHigh.resize(len+1);
+      topsLow.resize(compSize, 0);
+      topsHigh.resize(compSize, len);
+
       minWest = 0;
       minEast = 0;
       maxDiff = 0;
+      maxWest = 0;
+      maxEast = 0;
       topNext = 0;
     };
   };
 
   list<StackInfo> stack; // Unfinished expansions
-  stack.emplace_back(StackInfo(comp.size()));
+  stack.emplace_back(StackInfo(comp.size(), length));
 
   list<CoverSetNew> sets;
-  sets.resize(100);
+  sets.resize(COVER_CHUNK_SIZE);
   for (auto& s: sets)
     s.resize(comp.size());
 
@@ -905,7 +913,7 @@ void CoverMemory::makeSets(
     const unsigned char topCountActual = comp.count(topNumber);
 
 // cout << "top number " << +topNumber << ", count " <<
-  +topCountActual << endl;
+  // +topCountActual << endl;
 
     for (unsigned char topCountLow = 0; 
         topCountLow <= topCountActual; topCountLow++)
@@ -935,10 +943,19 @@ void CoverMemory::makeSets(
         if (minWest + minEast > length)
           continue;
 
+        // If there is a top that in itself exceeds the length range,
+        // there is a more economical version of this entry.
+        if (topCountHigh > stackIter->maxWest)
+          stackIter->maxWest = topCountHigh;
+
+        const unsigned char maxEast = topCountActual - topCountLow;
+        if (maxEast > stackIter->maxEast)
+          stackIter->maxEast = maxEast;
+
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
 
-// cout << "(" << +topCountLow << ", " << +topCountHigh << ")" << endl;
+// cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
 
         // Add the "don't care" with respect to length.
         if (iter == sets.end())
@@ -955,6 +972,8 @@ void CoverMemory::makeSets(
         // Add the possible length constraints.
         const unsigned char lenMax = length - minEast;
 
+// cout << "L  (" << +minWest << ", " << +lenMax << ")" << endl;
+
         for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
         {
           for (unsigned char lenHigh = lenLow; 
@@ -963,12 +982,23 @@ void CoverMemory::makeSets(
             if (lenLow == minWest && lenHigh == lenMax)
               continue;
 
+ // cout << "  C  (" << +lenLow << ", " << +lenHigh << ")" << 
+   // ", maxes " << +stackIter->maxWest << ", " << +stackIter->maxEast << "\n";
+ // cout << "comp1: " << +stackIter->maxWest << " vs. " << +lenHigh << endl;
+ // cout << "comp2: " << +stackIter->maxEast << " vs. " << +(length-lenLow) <<
+   "\n";
+            if (stackIter->maxWest > lenHigh)
+              continue;
+            if (stackIter->maxEast > length - lenLow)
+              continue;
+
+// cout << "    storing\n";
+
             if (iter == sets.end())
             {
               cout << "End reached" << endl;
               assert(false);
             }
-// cout << "L  (" << +lenLow << ", " << +lenHigh << ")" << endl;
             iter->set(length, lenLow, lenHigh, 
               stackIter->topsLow, stackIter->topsHigh);
             iter++;
@@ -983,13 +1013,16 @@ void CoverMemory::makeSets(
         nextIter->topNext++;
       }
     }
+    assert(! stack.empty());
     stack.pop_front();
   }
 
+  assert(! sets.empty());
   cout << sets.front().strHeader();
   for (auto it = sets.begin(); it != iter; it++)
     cout << it->strLine(length);
   cout << "\n";
+// cout << "DONE " << endl;
 }
 
 
@@ -1000,16 +1033,22 @@ void CoverMemory::prepare([[maybe_unused]] const unsigned char maxCards)
   /* */
   Compositions compositions;
 cout << "Making" << endl;
-  compositions.make(5);
+  compositions.make(11);
 cout << "Writing strings" << endl;
   cout << compositions.str();
 cout << "Done" << endl;
 
-  for (auto iter = compositions.begin(4); 
-      iter != compositions.end(4); iter++)
+  for (unsigned char len = 2; len <= 11; len++)
   {
-cout << "Starting composition " << iter->strLine() << endl;
-    CoverMemory::makeSets(4, * iter);
+cout << "length " << +len << endl;
+    for (auto iter = compositions.begin(len); 
+        iter != compositions.end(len); iter++)
+    {
+      if (iter->size() > 2)
+        continue;
+  cout << "Starting composition " << iter->strLine() << endl;
+      CoverMemory::makeSets(len, * iter);
+    }
   }
 
 
