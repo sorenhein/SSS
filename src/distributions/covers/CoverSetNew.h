@@ -45,7 +45,12 @@ class CoverSetNew
     vector<unsigned char>& topsLow,
     vector<unsigned char>& topsHigh);
 
+  bool includes(
+    const unsigned char lengthIn,
+    const vector<unsigned char>& topsIn);
+
   string strHeader() const;
+
   string strLine(const unsigned char lenActual) const;
 
 };

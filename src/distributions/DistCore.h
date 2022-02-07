@@ -55,6 +55,13 @@ class DistCore
       vector<unsigned char>& cases,
       unsigned char& maxLength,
       unsigned char& maxTops) const;
+
+    void getCoverDataNew(
+      vector<unsigned char>& lengths,
+      vector<vector<unsigned> const *>& topPtrs,
+      vector<unsigned char>& cases,
+      unsigned char& maxLength) const;
+
     string strHeader() const;
 
 

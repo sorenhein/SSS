@@ -458,6 +458,34 @@ void DistCore::getCoverData(
 }
 
 
+void DistCore::getCoverDataNew(
+  vector<unsigned char>& lengths,
+  vector<vector<unsigned> const *>& topPtrs,
+  vector<unsigned char>& cases,
+  unsigned char& maxLength) const
+{
+  const unsigned len = distributions.size();
+  assert(len > 0);
+
+  lengths.resize(len);
+  topPtrs.resize(len);
+  cases.resize(len);
+
+  // TODO Move DistInfo more to unsigned char
+
+  maxLength = static_cast<unsigned char>(
+    distributions[0].west.len + distributions[0].east.len);
+
+  for (unsigned i = 0; i < len; i++)
+  {
+    const DistInfo& dist = distributions[i];
+    lengths[i] = static_cast<unsigned char>(dist.west.len);
+    topPtrs[i] = &dist.west.counts;
+    cases[i] = static_cast<unsigned char>(dist.cases);
+  }
+}
+
+
 void DistCore::prepareCovers(const CoverMemory& coverMemory)
 {
   if (distributions.size() == 0)

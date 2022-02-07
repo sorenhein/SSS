@@ -19,6 +19,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Compositions.cpp \
                 distributions/Survivors.cpp     \
                 distributions/covers/Cover.cpp  \
+                distributions/covers/CoverNew.cpp  \
                 distributions/covers/Covers.cpp \
                 distributions/covers/CoverElement.cpp \
                 distributions/covers/CoverSet.cpp \

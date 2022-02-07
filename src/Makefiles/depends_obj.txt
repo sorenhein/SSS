@@ -241,6 +241,11 @@ distributions/covers/Cover.obj: distributions/covers/Cover.h
 distributions/covers/Cover.obj: distributions/covers/CoverSpec.h
 distributions/covers/Cover.obj: distributions/covers/CoverSet.h
 distributions/covers/Cover.obj: distributions/covers/CoverElement.h const.h
+distributions/covers/CoverNew.obj: distributions/covers/CoverNew.h
+distributions/covers/CoverNew.obj: distributions/covers/CoverSetNew.h
+distributions/covers/CoverNew.obj: distributions/covers/CoverElement.h
+distributions/covers/CoverNew.obj: const.h distributions/covers/CoverSpec.h
+distributions/covers/CoverNew.obj: distributions/covers/CoverSet.h
 distributions/covers/Covers.obj: distributions/covers/Covers.h
 distributions/covers/Covers.obj: distributions/covers/Cover.h
 distributions/covers/Covers.obj: distributions/covers/CoverSpec.h
@@ -273,6 +278,7 @@ distributions/covers/CoverMemory.obj: distributions/covers/Compositions.h
 distributions/covers/CoverMemory.obj: distributions/covers/Composition.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStats.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStat.h
+distributions/covers/CoverMemory.obj: distributions/covers/CoverSetNew.h
 distributions/covers/ResExpl.obj: distributions/covers/ResExpl.h
 distributions/covers/ResExpl.obj: distributions/covers/Cover.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverSpec.h

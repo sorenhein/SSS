@@ -1,5 +1,22 @@
 Verbals automatically
 =====================
+Current flow:
+* DistCore::prepareCovers get the lengths and tops
+  - Could get a top vector and not just a top number for each distribution
+* Covers::prepare does set the weights for that distribution already
+  - coverMemory would not be indexed by maxLength, maxTops
+  - There is no longer any cover memory
+  - The CoverSet's would be stored directly in DistCore
+  - So would the profile vectors
+  - CoverNew would consist of a CoverSet and a profile
+  - A trick profile could be rolled up into 16-bit chunks (8 distributions
+    times 4 trick options), so maybe up to 16 2-byte numbers = 32 bytes.
+    Then look up 8-bit binary trick profiles to see whether they are
+    below the full trick profile, before subtracting out normally.
+    Both speed and space.  But this is an optimization.
+
+
+
 Don't loop over last top level (could be only top level).
 No entry that is completely empty.
 tmax > lmax: skip

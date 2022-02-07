@@ -62,6 +62,23 @@ void CoverSetNew::set(
 }
 
 
+bool CoverSetNew::includes(
+  const unsigned char lengthIn,
+  const vector<unsigned char>& topsIn)
+{
+  if (length.used() && ! length.includes(lengthIn))
+    return false;
+
+  assert(tops.size() == topsIn.size());
+  for (unsigned i = 0; i < tops.size(); i++)
+  {
+    if (tops[i].used() && ! tops[i].includes(topsIn[i]))
+      return false;
+  }
+  return true;
+}
+
+
 string CoverSetNew::strHeader() const
 {
   stringstream ss;
