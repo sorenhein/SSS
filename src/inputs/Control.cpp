@@ -106,14 +106,15 @@ void Control::configure()
       "Input batch file with command-line strings." },
     { "-f", "--file", CORRESPONDENCE_STRING, CTRL_CONTROL_FILE, "",
       "Control file with further settings." },
-    { "-t", "--text", CORRESPONDENCE_STRING, CTRL_TEXT, "",
+    { "-p", "--print", CORRESPONDENCE_STRING, CTRL_PRINT_TEXT, "",
       "Text to print (e.g. Roudinesco page and number)." },
     { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0xf",
-      "Output verbosity (default: 0xf).  Bits:\n"
+      "Run control (default: 0xf).  Bits:\n"
       "0x001: All N-S plays, including within ranks\n"
       "0x002: Advanced strategizing including ranges and voids\n"
       "0x004: Optimizations when calculating strategies\n"
-      "0x008: Consider ranks when comparing strategies"
+      "0x008: Consider ranks when comparing strategies\n"
+      "0x010: Describe winning tricks vectors verbally\n"
       },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
@@ -435,7 +436,7 @@ const string& Control::controlFile() const
 
 const string& Control::text() const
 {
-  return entry.getString(CTRL_TEXT);
+  return entry.getString(CTRL_PRINT_TEXT);
 }
 
 
@@ -458,6 +459,11 @@ bool Control::runStrategyOptimizations() const
 bool Control::runRankComparisons() const
 {
   return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_RANK_COMPARE] != 0);
+}
+
+bool Control::runVerbalTricks() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_VERBAL_TRICKS] != 0);
 }
 
 bool Control::outputHolding() const

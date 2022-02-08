@@ -60,7 +60,8 @@ class DistCore
       vector<unsigned char>& lengths,
       vector<vector<unsigned> const *>& topPtrs,
       vector<unsigned char>& cases,
-      unsigned char& maxLength) const;
+      unsigned char& maxLength,
+      vector<unsigned char>& topTotals) const;
 
     string strHeader() const;
 

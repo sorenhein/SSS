@@ -17,6 +17,9 @@
 #include "../../strategies/result/Result.h"
 #include "../../const.h"
 
+// TODO Find a more elegant way
+#define COVER_CHUNK_SIZE 1000
+
 
 Covers::Covers()
 {
@@ -73,6 +76,154 @@ cout <<endl;
   {
     return (cover1.getWeight() >= cover2.getWeight());
   });
+}
+
+
+void Covers::prepareNew(
+  const vector<unsigned char>& lengths,
+  vector<vector<unsigned> const *>& topPtrs,
+  const vector<unsigned char>& cases,
+  const unsigned char maxLength,
+  const vector<unsigned char>& topTotals)
+{
+  list<CoverStackInfo> stack; // Unfinished expansions
+  stack.emplace_back(CoverStackInfo(lengths.size(), maxLength));
+
+  coversNew.resize(COVER_CHUNK_SIZE);
+  for (auto& c: coversNew)
+    c.resize(lengths.size());
+
+  auto citer = coversNew.begin(); // Next one to write
+
+  while (! stack.empty())
+  {
+    auto stackIter = stack.begin();
+
+    unsigned char topNumber = stackIter->topNext; // Next to write
+// cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
+    if (topNumber >= lengths.size())
+      break;
+
+    const unsigned char topCountActual = topTotals[topNumber];
+
+// cout << "top number " << +topNumber << ", count " <<
+  // +topCountActual << endl;
+
+    for (unsigned char topCountLow = 0; 
+        topCountLow <= topCountActual; topCountLow++)
+    {
+      for (unsigned char topCountHigh = topCountLow; 
+        topCountHigh <= topCountActual; topCountHigh++)
+      {
+        const unsigned char minWest = stackIter->minWest + topCountLow;
+        const unsigned char minEast = stackIter->minEast + 
+          topCountActual - topCountHigh;
+
+        unsigned char diff = topCountHigh - topCountLow;
+        if (diff < stackIter->maxDiff)
+          diff = stackIter->maxDiff;
+
+        if (minWest + diff > maxLength)
+        {
+          // There is no room for this worst-case single maximum,
+          // so we skip the entire set, as there will be a more 
+          // accurate other set.
+          continue;
+        }
+
+        if (minEast + diff > maxLength)
+          continue;
+
+        if (minWest + minEast > maxLength)
+          continue;
+
+        // If there is a top that in itself exceeds the length range,
+        // there is a more economical version of this entry.
+        if (topCountHigh > stackIter->maxWest)
+          stackIter->maxWest = topCountHigh;
+
+        const unsigned char maxEast = topCountActual - topCountLow;
+        if (maxEast > stackIter->maxEast)
+          stackIter->maxEast = maxEast;
+
+        stackIter->topsLow[topNumber] = topCountLow;
+        stackIter->topsHigh[topNumber] = topCountHigh;
+
+// cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
+
+        // Add the "don't care" with respect to length.
+        if (citer == coversNew.end())
+        {
+          cout << "End reached" << endl;
+          assert(false);
+        }
+// cout << "Adding top without length constraint" << endl;
+        citer->set(maxLength, 0, maxLength, 
+          stackIter->topsLow, stackIter->topsHigh);
+// cout << "Added" << endl;
+        citer++;
+
+        // Add the possible length constraints.
+        const unsigned char lenMax = maxLength - minEast;
+
+// cout << "L  (" << +minWest << ", " << +lenMax << ")" << endl;
+
+        for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
+        {
+          for (unsigned char lenHigh = lenLow; 
+            lenHigh <= lenMax; lenHigh++)
+          { 
+            if (lenLow == minWest && lenHigh == lenMax)
+              continue;
+
+ // cout << "  C  (" << +lenLow << ", " << +lenHigh << ")" << 
+   // ", maxes " << +stackIter->maxWest << ", " << +stackIter->maxEast << "\n";
+ // cout << "comp1: " << +stackIter->maxWest << " vs. " << +lenHigh << endl;
+ // cout << "comp2: " << +stackIter->maxEast << " vs. " << +(length-lenLow) <<
+   "\n";
+            if (stackIter->maxWest > lenHigh)
+              continue;
+            if (stackIter->maxEast > maxLength - lenLow)
+              continue;
+
+// cout << "    storing\n";
+
+            if (citer == coversNew.end())
+            {
+              cout << "End reached" << endl;
+              assert(false);
+            }
+            citer->set(maxLength, lenLow, lenHigh, 
+              stackIter->topsLow, stackIter->topsHigh);
+            citer++;
+          }
+        }
+
+        stackIter = stack.insert(stackIter, * stackIter);
+        auto nextIter = next(stackIter);
+        nextIter->minWest = minWest;
+        nextIter->minEast = minEast;
+        nextIter->maxDiff = diff;
+        nextIter->topNext++;
+      }
+    }
+    assert(! stack.empty());
+    stack.pop_front();
+  }
+
+  assert(! coversNew.empty());
+  cout << coversNew.front().strHeader();
+  for (auto cit = coversNew.begin(); cit != citer; cit++)
+    cout << cit->strLine(maxLength);
+  cout << "\n";
+// cout << "DONE " << endl;
+  
+  for (auto cit = coversNew.begin(); cit != citer; cit++)
+  {
+    cit->prepare(lengths, topPtrs, cases);
+    cout << cit->strLine(maxLength);
+    cout << cit->strProfile();
+  }
 }
 
 

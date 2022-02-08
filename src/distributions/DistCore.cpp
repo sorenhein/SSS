@@ -462,7 +462,8 @@ void DistCore::getCoverDataNew(
   vector<unsigned char>& lengths,
   vector<vector<unsigned> const *>& topPtrs,
   vector<unsigned char>& cases,
-  unsigned char& maxLength) const
+  unsigned char& maxLength,
+  vector<unsigned char>& topTotals) const
 {
   const unsigned len = distributions.size();
   assert(len > 0);
@@ -470,11 +471,17 @@ void DistCore::getCoverDataNew(
   lengths.resize(len);
   topPtrs.resize(len);
   cases.resize(len);
+  topTotals.resize(rankSize);
 
   // TODO Move DistInfo more to unsigned char
 
   maxLength = static_cast<unsigned char>(
     distributions[0].west.len + distributions[0].east.len);
+
+  for (unsigned i = 0; i < rankSize; i++)
+    topTotals[i] = static_cast<unsigned char>(
+      distributions[0].west.counts[i] +
+      distributions[0].east.counts[i]);
 
   for (unsigned i = 0; i < len; i++)
   {
@@ -499,6 +506,18 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
     return;
 
   covers.prepare(coverMemory, maxLength, maxTops, lengths, tops, cases);
+
+  vector<unsigned char> lengthsNew;
+  vector<vector<unsigned> const *> topPtrs;
+  vector<unsigned char> casesNew;
+  unsigned char maxLengthNew;
+  vector<unsigned char> topTotals;
+
+  DistCore::getCoverDataNew(lengthsNew, topPtrs, casesNew, 
+    maxLengthNew, topTotals);
+
+  covers.prepareNew(lengthsNew, topPtrs, casesNew, 
+    maxLengthNew, topTotals);
 }
 
 

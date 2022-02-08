@@ -1,14 +1,16 @@
 Verbals automatically
 =====================
-Current flow:
-* DistCore::prepareCovers get the lengths and tops
-  - Could get a top vector and not just a top number for each distribution
-* Covers::prepare does set the weights for that distribution already
-  - coverMemory would not be indexed by maxLength, maxTops
-  - There is no longer any cover memory
-  - The CoverSet's would be stored directly in DistCore
-  - So would the profile vectors
-  - CoverNew would consist of a CoverSet and a profile
+There is a separate flow for new cover sets now, but not hooked up
+to anything.
+
+* Test that is calculates sensible stuff
+* Control its general by the input flag
+* The depth (#explicit tops) should be a control parameter somewhere
+* Implement the matching into a flexible tableau
+* Check that it works all the time for one explicit top
+* Delete the old way
+* Optimize space if needed
+  - Weed out the repeats (by complexity), the 0 and full weights
   - A trick profile could be rolled up into 16-bit chunks (8 distributions
     times 4 trick options), so maybe up to 16 2-byte numbers = 32 bytes.
     Then look up 8-bit binary trick profiles to see whether they are
@@ -16,25 +18,12 @@ Current flow:
     Both speed and space.  But this is an optimization.
 
 
-
 Don't loop over last top level (could be only top level).
-No entry that is completely empty.
-tmax > lmax: skip
-tmin > lmin: skip
-So then we do need a length loop on the outside?
-
-See whether there are Sets that never make it for actual strategies
-with that profile.  See whether we can recognize some of them in this
-loop already.  There should never be a full weight or a weight 0
-at any rate.
+No entry that is completely empty or completely full.
 
 
 Verbals of strategy wins
 ========================
-* CoverMemory
-  - Use the new freedom to make either entry symmetric
-  - Cut down on the Avg in ExplStats
-
 * When of the form (1 top) - hierarchical children, perhaps
   - Take 2 tricks (but one less when West is void), and more when...
   - Count that as 1 less explanation?

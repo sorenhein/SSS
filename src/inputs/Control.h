@@ -17,7 +17,7 @@ enum ControlFieldStrings
   CTRL_SOUTH = 1,
   CTRL_INPUT_FILE = 2,
   CTRL_CONTROL_FILE = 3,
-  CTRL_TEXT = 4,
+  CTRL_PRINT_TEXT = 4,
 
   CTRL_READ_BINARY_DIRECTORY = 5,
   CTRL_WRITE_BINARY_DIRECTORY = 6,
@@ -77,7 +77,8 @@ enum ControlRun
   CTRL_RUN_FULL_PLAYS = 0,
   CTRL_RUN_ADVANCED_NODES = 1,
   CTRL_RUN_STRATEGY_OPT = 2,
-  CTRL_RUN_RANK_COMPARE = 3
+  CTRL_RUN_RANK_COMPARE = 3,
+  CTRL_RUN_VERBAL_TRICKS = 4
 };
 
 enum ControlOutput
@@ -163,6 +164,7 @@ class Control
     bool runAdvancedNodes() const;
     bool runStrategyOptimizations() const;
     bool runRankComparisons() const;
+    bool runVerbalTricks() const;
 
     bool outputHolding() const; 
     bool outputBasicResults() const; 

@@ -38,9 +38,18 @@ class CoverNew
 
     void reset();
 
+    void resize(const unsigned topNumber);
+
+    void set(
+      const unsigned char lenActual,
+      const unsigned char lenLow,
+      const unsigned char lenHigh,
+      vector<unsigned char>& topsLow,
+      vector<unsigned char>& topsHigh);
+
     void prepare(
       const vector<unsigned char>& lengths,
-      const vector<vector<unsigned char> const *>& topPtrs,
+      vector<vector<unsigned > const *>& topPtrs,
       const vector<unsigned char>& cases);
 
     CoverState explain(vector<unsigned char>& tricks) const;
@@ -51,7 +60,9 @@ class CoverNew
 
     unsigned char getNumDist() const;
 
-    string str(const unsigned char lengthActual) const;
+    string strHeader() const;
+
+    string strLine(const unsigned char lengthActual) const;
 
     string strProfile() const;
 };

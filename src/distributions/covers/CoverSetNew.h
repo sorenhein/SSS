@@ -47,7 +47,7 @@ class CoverSetNew
 
   bool includes(
     const unsigned char lengthIn,
-    const vector<unsigned char>& topsIn);
+    const vector<unsigned>& topsIn);
 
   string strHeader() const;
 

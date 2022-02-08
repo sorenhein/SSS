@@ -28,9 +28,26 @@ void CoverNew::reset()
 }
 
 
+void CoverNew::resize(const unsigned topNumber)
+{
+  coverSet.resize(topNumber);
+}
+
+
+void CoverNew::set(
+  const unsigned char lenActual,
+  const unsigned char lenLow,
+  const unsigned char lenHigh,
+  vector<unsigned char>& topsLow,
+  vector<unsigned char>& topsHigh)
+{
+  coverSet.set(lenActual, lenLow, lenHigh, topsLow, topsHigh);
+}
+
+
 void CoverNew::prepare(
   const vector<unsigned char>& lengths,
-  const vector<vector<unsigned char> const *>& topPtrs,
+  vector<vector<unsigned > const *>& topPtrs,
   const vector<unsigned char>& cases)
 {
   const unsigned len = lengths.size();
@@ -96,7 +113,13 @@ unsigned char CoverNew::getNumDist() const
 }
 
 
-string CoverNew::str(const unsigned char lengthActual) const
+string CoverNew::strHeader() const
+{
+  return coverSet.strHeader();
+}
+
+
+string CoverNew::strLine(const unsigned char lengthActual) const
 {
   return coverSet.strLine(lengthActual);
 }

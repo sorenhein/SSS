@@ -64,7 +64,7 @@ void CoverSetNew::set(
 
 bool CoverSetNew::includes(
   const unsigned char lengthIn,
-  const vector<unsigned char>& topsIn)
+  const vector<unsigned>& topsIn)
 {
   if (length.used() && ! length.includes(lengthIn))
     return false;
@@ -72,7 +72,8 @@ bool CoverSetNew::includes(
   assert(tops.size() == topsIn.size());
   for (unsigned i = 0; i < tops.size(); i++)
   {
-    if (tops[i].used() && ! tops[i].includes(topsIn[i]))
+    if (tops[i].used() && 
+        ! tops[i].includes(static_cast<unsigned char>(topsIn[i])))
       return false;
   }
   return true;
