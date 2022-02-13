@@ -87,11 +87,12 @@ void Covers::prepareNew(
   const vector<unsigned char>& topTotals)
 {
   list<CoverStackInfo> stack; // Unfinished expansions
-  stack.emplace_back(CoverStackInfo(lengths.size(), maxLength));
+  // stack.emplace_back(CoverStackInfo(lengths.size(), maxLength));
+  stack.emplace_back(CoverStackInfo(topTotals.size(), maxLength));
 
   coversNew.resize(COVER_CHUNK_SIZE);
   for (auto& c: coversNew)
-    c.resize(lengths.size());
+    c.resize(topTotals.size());
 
   auto citer = coversNew.begin(); // Next one to write
 
@@ -101,7 +102,7 @@ void Covers::prepareNew(
 
     unsigned char topNumber = stackIter->topNext; // Next to write
 // cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
-    if (topNumber >= lengths.size())
+    if (topNumber >= topTotals.size())
       break;
 
     const unsigned char topCountActual = topTotals[topNumber];
@@ -146,6 +147,9 @@ void Covers::prepareNew(
         if (maxEast > stackIter->maxEast)
           stackIter->maxEast = maxEast;
 
+assert(topNumber < stackIter->topsLow.size());
+assert(topNumber < stackIter->topsHigh.size());
+
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
 
@@ -154,7 +158,30 @@ void Covers::prepareNew(
         // Add the "don't care" with respect to length.
         if (citer == coversNew.end())
         {
-          cout << "End reached" << endl;
+          cout << "C End reached1" << endl;
+          cout << "maxLength " << +maxLength << endl;
+          cout << "lengths\n";
+          for (unsigned j = 0; j < lengths.size(); j++)
+            cout << j << ": " << +lengths[j] << endl;
+          cout << "cases\n";
+          for (unsigned j = 0; j < cases.size(); j++)
+            cout << j << ": " << +cases[j] << endl;
+          cout << "top totals\n";
+          for (unsigned j = 0; j < topTotals.size(); j++)
+            cout << j << ": " << +topTotals[j] << endl;
+          cout << "top pointers\n";
+          for (unsigned j = 0; j < topPtrs.size(); j++)
+          {
+            const auto& t = * topPtrs[j];
+            for (unsigned k = 0; k < t.size(); k++)
+              cout << k << ": " << +t[k] << endl;
+          }
+
+          cout << coversNew.begin()->strHeader();
+          for (auto& c: coversNew)
+            cout << c.strLine(maxLength);
+          cout << endl;
+
           assert(false);
         }
 // cout << "Adding top without length constraint" << endl;
@@ -190,7 +217,7 @@ void Covers::prepareNew(
 
             if (citer == coversNew.end())
             {
-              cout << "End reached" << endl;
+              cout << "C End reached2" << endl;
               assert(false);
             }
             citer->set(maxLength, lenLow, lenHigh, 
@@ -212,18 +239,25 @@ void Covers::prepareNew(
   }
 
   assert(! coversNew.empty());
+  cout << "Length " << +maxLength << ", ";
+  for (auto t: topTotals)
+    cout << +t << " ";
+  cout << "\n";
+
   cout << coversNew.front().strHeader();
   for (auto cit = coversNew.begin(); cit != citer; cit++)
     cout << cit->strLine(maxLength);
   cout << "\n";
 // cout << "DONE " << endl;
   
+  /*
   for (auto cit = coversNew.begin(); cit != citer; cit++)
   {
     cit->prepare(lengths, topPtrs, cases);
     cout << cit->strLine(maxLength);
     cout << cit->strProfile();
   }
+  */
 }
 
 

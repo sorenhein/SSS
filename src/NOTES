@@ -1,16 +1,24 @@
 Verbals automatically
 =====================
 There is a separate flow for new cover sets now, but not hooked up
-to anything.
+to cover recognition yet.
 
-* Test that is calculates sensible stuff
+Pruning the covers before continuing:
+- No 0 weight, no maxlength weight
+- If there's only one top, switch from top #0 to length somehow
+- Anything with length == 0 should have either unused or == 0 in
+  all the tops, and they should be set to unused
+- When outputting strLine of a coverSetNew, do it after calculating
+  weight and #dist, and output these as well
+- No repeats
+
+
 * Control its general by the input flag
 * The depth (#explicit tops) should be a control parameter somewhere
 * Implement the matching into a flexible tableau
 * Check that it works all the time for one explicit top
 * Delete the old way
 * Optimize space if needed
-  - Weed out the repeats (by complexity), the 0 and full weights
   - A trick profile could be rolled up into 16-bit chunks (8 distributions
     times 4 trick options), so maybe up to 16 2-byte numbers = 32 bytes.
     Then look up 8-bit binary trick profiles to see whether they are

@@ -51,6 +51,12 @@ void CoverSetNew::set(
 
   const unsigned topSize = topsLow.size();
   assert(topsHigh.size() == topSize);
+if (tops.size() < topSize)
+{
+  cout << "CoverSetNew: tops only " << tops.size() <<
+    ", topsLow and topsHigh " << topSize << endl;
+}
+  assert(tops.size() >= topSize);
 
   for (unsigned i = 0; i < topSize; i++)
   {
@@ -69,8 +75,21 @@ bool CoverSetNew::includes(
   if (length.used() && ! length.includes(lengthIn))
     return false;
 
-  assert(tops.size() == topsIn.size());
-  for (unsigned i = 0; i < tops.size(); i++)
+if (topsIn.size() > tops.size())
+{
+cout << "tops.size " << tops.size() << ", in " << topsIn.size() << endl;
+if (topsIn.size() > 20)
+  assert(false);
+
+cout << "lengthIn " << +lengthIn << endl;
+for (unsigned i = 0; i < tops.size(); i++)
+  cout << i << ": " << tops[i].strRaw() << endl;
+for (unsigned i = 0; i < topsIn.size(); i++)
+  cout << i << ": " << topsIn[i] << endl;
+
+  assert(topsIn.size() <= tops.size());
+}
+  for (unsigned i = 0; i < topsIn.size(); i++)
   {
     if (tops[i].used() && 
         ! tops[i].includes(static_cast<unsigned char>(topsIn[i])))

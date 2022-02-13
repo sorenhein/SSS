@@ -13,6 +13,10 @@
 
 #include "SurvivorList.h"
 
+// TODO TMP
+#include <iostream>
+#include <iomanip>
+
 using namespace std;
 
 
@@ -81,6 +85,8 @@ struct SideInfo
     const unsigned rank,
     const unsigned count)
   {
+// TODO Unnecessary at some point?
+assert(rank < counts.size());
     counts[rank] = count;
     len += count;
   }

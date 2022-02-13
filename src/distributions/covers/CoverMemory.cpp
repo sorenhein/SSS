@@ -960,7 +960,7 @@ void CoverMemory::makeSets(
         // Add the "don't care" with respect to length.
         if (iter == sets.end())
         {
-          cout << "End reached" << endl;
+          cout << "CM End reached" << endl;
           assert(false);
         }
 // cout << "Adding top without length constraint" << endl;
@@ -996,7 +996,7 @@ void CoverMemory::makeSets(
 
             if (iter == sets.end())
             {
-              cout << "End reached" << endl;
+              cout << "CM End reached" << endl;
               assert(false);
             }
             iter->set(length, lenLow, lenHigh, 
@@ -1018,10 +1018,13 @@ void CoverMemory::makeSets(
   }
 
   assert(! sets.empty());
+  /*
   cout << sets.front().strHeader();
   for (auto it = sets.begin(); it != iter; it++)
     cout << it->strLine(length);
   cout << "\n";
+  */
+
 // cout << "DONE " << endl;
 }
 
@@ -1032,29 +1035,29 @@ void CoverMemory::prepare([[maybe_unused]] const unsigned char maxCards)
 
   /* */
   Compositions compositions;
-cout << "Making" << endl;
+cout << "Making compositions" << endl;
   compositions.make(11);
-cout << "Writing strings" << endl;
-  cout << compositions.str();
-cout << "Done" << endl;
+// cout << "Writing strings" << endl;
+  // cout << compositions.str();
+// cout << "Done" << endl;
 
   for (unsigned char len = 2; len <= 11; len++)
   {
-cout << "length " << +len << endl;
+// cout << "length " << +len << endl;
     for (auto iter = compositions.begin(len); 
         iter != compositions.end(len); iter++)
     {
       if (iter->size() > 2)
         continue;
-  cout << "Starting composition " << iter->strLine() << endl;
+  // cout << "Starting composition " << iter->strLine() << endl;
       CoverMemory::makeSets(len, * iter);
     }
   }
 
 
 
-  if (maxCards > 0)
-    exit(0);
+  // if (maxCards > 0)
+    // exit(0);
   /* */
 
   // TODO TMP

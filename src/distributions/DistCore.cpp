@@ -198,8 +198,11 @@ void DistCore::split(const DistMap& distMap)
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackIter->west;
-          dist.add(rank, count, 
-            stackIter->cases * binomial[available][count]);
+
+          if (rank < rankSize)
+            dist.add(rank, count, 
+              stackIter->cases * binomial[available][count]);
+
           dist.east.diff(distMap.opponents, dist.west);
 
           distIndex++;
@@ -211,7 +214,9 @@ void DistCore::split(const DistMap& distMap)
           // We have opponents.len - stackIter->seen cards still to come.
           // We have gap - count holes still to fill.
           stackIter = stack.insert(stackIter, * stackIter);
-          next(stackIter)->add(rank, count, binomial[available][count]);
+
+          if (rank < rankSize)
+            next(stackIter)->add(rank, count, binomial[available][count]);
         }
       }
       stack.pop_front();
@@ -250,7 +255,9 @@ void DistCore::splitAlternative(const DistMap& distMap)
   for (unsigned lenWest = 0; lenWest <= distMap.opponents.len / 2; 
       lenWest++)
   {
-    (*stackRead)[0] = StackInfo(rankSize+1);
+// TODO Why is +1 still necessary to oversize?  Some other issue?
+    // (*stackRead)[0] = StackInfo(rankSize+1);
+    (*stackRead)[0] = StackInfo(rankSize);
     indexRead = 0;
     countRead = 1;
 
@@ -276,8 +283,11 @@ void DistCore::splitAlternative(const DistMap& distMap)
           DistInfo& dist = distributions[distIndex];
 
           dist.west = stackElem.west;
-          dist.add(rank, gap, 
-            stackElem.cases * binomial[available][gap]);
+
+          if (rank < rankSize)
+            dist.add(rank, gap, 
+              stackElem.cases * binomial[available][gap]);
+
           dist.east.diff(distMap.opponents, dist.west);
 
           distIndex++;
@@ -289,7 +299,8 @@ void DistCore::splitAlternative(const DistMap& distMap)
             stackWrite->resize(stackWrite->size() + CHUNK_SIZE[cards]);
 
           (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
-          if (gap > 0)
+
+          if (rank < rankSize)
             (*stackWrite)[indexWrite].add(rank, gap, 
               binomial[available][gap]);
 
@@ -313,8 +324,10 @@ void DistCore::splitAlternative(const DistMap& distMap)
           stackWrite->resize(stackWrite->size() + CHUNK_SIZE[cards]);
           
         (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
-        (*stackWrite)[indexWrite].add(rank, count, 
-          binomial[available][count]);
+
+        if (rank < rankSize)
+          (*stackWrite)[indexWrite].add(rank, count, 
+            binomial[available][count]);
         indexWrite++;
       }
 
@@ -515,6 +528,9 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
 
   DistCore::getCoverDataNew(lengthsNew, topPtrs, casesNew, 
     maxLengthNew, topTotals);
+
+// if (true)
+  // return;
 
   covers.prepareNew(lengthsNew, topPtrs, casesNew, 
     maxLengthNew, topTotals);
