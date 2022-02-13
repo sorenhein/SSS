@@ -54,7 +54,8 @@ class CoverNew
 
     CoverState explain(vector<unsigned char>& tricks) const;
 
-    bool operator <= (const CoverNew& cover2) const;
+    // bool operator <= (const CoverNew& cover2) const;
+    bool earlier(const CoverNew& cover2) const;
 
     unsigned getWeight() const;
 

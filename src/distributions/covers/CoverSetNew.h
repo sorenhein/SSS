@@ -49,6 +49,8 @@ class CoverSetNew
     const unsigned char lengthIn,
     const vector<unsigned>& topsIn);
 
+  unsigned char getComplexity() const;
+
   string strHeader() const;
 
   string strLine(const unsigned char lenActual) const;

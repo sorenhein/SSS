@@ -88,6 +88,24 @@ CoverState CoverNew::explain(vector<unsigned char>& tricks) const
 }
 
 
+bool CoverNew::earlier(const CoverNew& cover2) const
+{
+  if (weight > cover2.weight)
+    return true;
+  else if (weight < cover2.weight)
+    return false;
+  else if (coverSet.getComplexity() < cover2.coverSet.getComplexity())
+    return true;
+  else if (coverSet.getComplexity() > cover2.coverSet.getComplexity())
+    return false;
+  else if (numDist >= cover2.numDist)
+    return true;
+  else
+    return false;
+}
+
+
+/*
 bool CoverNew::operator <= (const CoverNew& cover2) const
 {
   assert(profile.size() == cover2.profile.size());
@@ -99,6 +117,7 @@ bool CoverNew::operator <= (const CoverNew& cover2) const
 
   return true;
 }
+*/
 
 
 unsigned CoverNew::getWeight() const
@@ -115,13 +134,27 @@ unsigned char CoverNew::getNumDist() const
 
 string CoverNew::strHeader() const
 {
-  return coverSet.strHeader();
+  stringstream ss;
+
+  ss << coverSet.strHeader() <<
+    setw(8) << "Weight" <<
+    setw(8) << "Cmplx" <<
+    setw(8) << "Dists" << "\n";
+
+  return ss.str();
 }
 
 
 string CoverNew::strLine(const unsigned char lengthActual) const
 {
-  return coverSet.strLine(lengthActual);
+  stringstream ss;
+
+  ss << coverSet.strLine(lengthActual) <<
+    setw(8) << weight <<
+    setw(8) << +coverSet.getComplexity() <<
+    setw(8) << +numDist << "\n";
+  
+  return ss.str();
 }
 
 

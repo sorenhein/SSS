@@ -87,7 +87,6 @@ void Covers::prepareNew(
   const vector<unsigned char>& topTotals)
 {
   list<CoverStackInfo> stack; // Unfinished expansions
-  // stack.emplace_back(CoverStackInfo(lengths.size(), maxLength));
   stack.emplace_back(CoverStackInfo(topTotals.size(), maxLength));
 
   coversNew.resize(COVER_CHUNK_SIZE);
@@ -101,14 +100,10 @@ void Covers::prepareNew(
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->topNext; // Next to write
-// cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
     if (topNumber >= topTotals.size())
       break;
 
     const unsigned char topCountActual = topTotals[topNumber];
-
-// cout << "top number " << +topNumber << ", count " <<
-  // +topCountActual << endl;
 
     for (unsigned char topCountLow = 0; 
         topCountLow <= topCountActual; topCountLow++)
@@ -147,13 +142,8 @@ void Covers::prepareNew(
         if (maxEast > stackIter->maxEast)
           stackIter->maxEast = maxEast;
 
-assert(topNumber < stackIter->topsLow.size());
-assert(topNumber < stackIter->topsHigh.size());
-
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
-
-// cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
 
         // Add the "don't care" with respect to length.
         if (citer == coversNew.end())
@@ -184,16 +174,12 @@ assert(topNumber < stackIter->topsHigh.size());
 
           assert(false);
         }
-// cout << "Adding top without length constraint" << endl;
         citer->set(maxLength, 0, maxLength, 
           stackIter->topsLow, stackIter->topsHigh);
-// cout << "Added" << endl;
         citer++;
 
         // Add the possible length constraints.
         const unsigned char lenMax = maxLength - minEast;
-
-// cout << "L  (" << +minWest << ", " << +lenMax << ")" << endl;
 
         for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
         {
@@ -203,17 +189,10 @@ assert(topNumber < stackIter->topsHigh.size());
             if (lenLow == minWest && lenHigh == lenMax)
               continue;
 
- // cout << "  C  (" << +lenLow << ", " << +lenHigh << ")" << 
-   // ", maxes " << +stackIter->maxWest << ", " << +stackIter->maxEast << "\n";
- // cout << "comp1: " << +stackIter->maxWest << " vs. " << +lenHigh << endl;
- // cout << "comp2: " << +stackIter->maxEast << " vs. " << +(length-lenLow) <<
-   "\n";
             if (stackIter->maxWest > lenHigh)
               continue;
             if (stackIter->maxEast > maxLength - lenLow)
               continue;
-
-// cout << "    storing\n";
 
             if (citer == coversNew.end())
             {
@@ -238,26 +217,41 @@ assert(topNumber < stackIter->topsHigh.size());
     stack.pop_front();
   }
 
+  coversNew.erase(citer, coversNew.end());
   assert(! coversNew.empty());
+
   cout << "Length " << +maxLength << ", ";
   for (auto t: topTotals)
     cout << +t << " ";
   cout << "\n";
 
+
   cout << coversNew.front().strHeader();
-  for (auto cit = coversNew.begin(); cit != citer; cit++)
-    cout << cit->strLine(maxLength);
+  // for (auto cit = coversNew.begin(); cit != citer; cit++)
+  for (auto& c: coversNew)
+  {
+    c.prepare(lengths, topPtrs, cases);
+  }
+    // cout << cit->strLine(maxLength);
+
+  coversNew.sort([](const CoverNew& cover1, const CoverNew& cover2)
+  {
+    return cover1.earlier(cover2);
+  });
+
+  for (auto& c: coversNew)
+    cout << c.strLine(maxLength);
   cout << "\n";
+
+
 // cout << "DONE " << endl;
   
-  /*
-  for (auto cit = coversNew.begin(); cit != citer; cit++)
-  {
-    cit->prepare(lengths, topPtrs, cases);
-    cout << cit->strLine(maxLength);
-    cout << cit->strProfile();
-  }
-  */
+  // for (auto cit = coversNew.begin(); cit != citer; cit++)
+  // {
+    // cit->prepare(lengths, topPtrs, cases);
+    // cout << cit->strLine(maxLength);
+    // cout << cit->strProfile();
+  // }
 }
 
 

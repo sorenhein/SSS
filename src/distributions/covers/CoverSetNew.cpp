@@ -75,7 +75,7 @@ bool CoverSetNew::includes(
   if (length.used() && ! length.includes(lengthIn))
     return false;
 
-if (topsIn.size() > tops.size())
+if (topsIn.size() != tops.size())
 {
 cout << "tops.size " << tops.size() << ", in " << topsIn.size() << endl;
 if (topsIn.size() > 20)
@@ -87,7 +87,7 @@ for (unsigned i = 0; i < tops.size(); i++)
 for (unsigned i = 0; i < topsIn.size(); i++)
   cout << i << ": " << topsIn[i] << endl;
 
-  assert(topsIn.size() <= tops.size());
+  assert(topsIn.size() == tops.size());
 }
   for (unsigned i = 0; i < topsIn.size(); i++)
   {
@@ -99,15 +99,22 @@ for (unsigned i = 0; i < topsIn.size(); i++)
 }
 
 
+unsigned char CoverSetNew::getComplexity() const
+{
+  return complexity;
+}
+
+
 string CoverSetNew::strHeader() const
 {
+  // Does not end on a linebreak, as it may be concatenated with
+  // more in CoverNew.
   stringstream ss;
 
   ss << setw(8) << "Length";
   for (unsigned i = 0; i < tops.size(); i++)
     ss << setw(8) << ("Top #" + to_string(i));
-  ss << setw(8) << "Cmplx" <<
-    setw(8) << "symm" << "\n";
+  ss << setw(8) << "symm";
 
   return ss.str();
 }
@@ -115,13 +122,14 @@ string CoverSetNew::strHeader() const
 
 string CoverSetNew::strLine(const unsigned char lenActual) const
 {
+  // Does not end on a linebreak, as it may be concatenated with
+  // more in CoverNew.
   stringstream ss;
 
   ss << setw(8) << length.strShort(lenActual);
   for (auto& top: tops)
     ss << setw(8) << top.strShort(lenActual);
-  ss << setw(8) << +complexity;
-  ss << setw(8) << (symmFlag ? "yes" : "-") << "\n";
+  ss << setw(8) << (symmFlag ? "yes" : "-");
 
   return ss.str();
 }

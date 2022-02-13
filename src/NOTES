@@ -11,6 +11,8 @@ Pruning the covers before continuing:
 - When outputting strLine of a coverSetNew, do it after calculating
   weight and #dist, and output these as well
 - No repeats
+- Place for all this is the end of Covers::prepareNew()
+- In e.g. 4, 2-2, why is <= 2 top0 not the same as unused?
 
 
 * Control its general by the input flag

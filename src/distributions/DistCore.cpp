@@ -529,9 +529,6 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
   DistCore::getCoverDataNew(lengthsNew, topPtrs, casesNew, 
     maxLengthNew, topTotals);
 
-// if (true)
-  // return;
-
   covers.prepareNew(lengthsNew, topPtrs, casesNew, 
     maxLengthNew, topTotals);
 }
