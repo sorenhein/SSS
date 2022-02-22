@@ -965,7 +965,7 @@ void CoverMemory::makeSets(
         }
 // cout << "Adding top without length constraint" << endl;
         iter->set(length, 0, length, 
-          stackIter->topsLow, stackIter->topsHigh);
+          comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
 // cout << "Added" << endl;
         iter++;
 
@@ -1000,7 +1000,7 @@ void CoverMemory::makeSets(
               assert(false);
             }
             iter->set(length, lenLow, lenHigh, 
-              stackIter->topsLow, stackIter->topsHigh);
+              comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
             iter++;
           }
         }

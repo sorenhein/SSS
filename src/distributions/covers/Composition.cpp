@@ -55,6 +55,12 @@ unsigned Composition::size() const
 }
 
 
+const vector<unsigned char>& Composition::getTops() const
+{
+  return tops;
+}
+
+
 string Composition::strHeader(const unsigned char width) const
 {
   stringstream ss;

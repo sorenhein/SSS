@@ -44,8 +44,9 @@ class CoverNew
       const unsigned char lenActual,
       const unsigned char lenLow,
       const unsigned char lenHigh,
-      vector<unsigned char>& topsLow,
-      vector<unsigned char>& topsHigh);
+      const vector<unsigned char>& topsActual,
+      const vector<unsigned char>& topsLow,
+      const vector<unsigned char>& topsHigh);
 
     void prepare(
       const vector<unsigned char>& lengths,
@@ -71,7 +72,9 @@ class CoverNew
 
     string strHeader() const;
 
-    string strLine(const unsigned char lengthActual) const;
+    string strLine(
+      const unsigned char lengthActual,
+      const vector<unsigned char>& topsActual) const;
 
     string strProfile() const;
 };

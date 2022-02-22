@@ -47,6 +47,8 @@ class Composition
 
     unsigned size() const;
 
+    const vector<unsigned char>& getTops() const;
+
     string strHeader(const unsigned char width) const;
 
     string strLine() const;

@@ -39,8 +39,9 @@ void CoverSetNew::set(
   const unsigned char lenActual,
   const unsigned char lenLow,
   const unsigned char lenHigh,
-  vector<unsigned char>& topsLow,
-  vector<unsigned char>& topsHigh)
+  const vector<unsigned char>& topsActual,
+  const vector<unsigned char>& topsLow,
+  const vector<unsigned char>& topsHigh)
 {
   symmFlag = true;
 
@@ -60,9 +61,9 @@ if (tops.size() < topSize)
 
   for (unsigned i = 0; i < topSize; i++)
   {
-    tops[i].setNew(lenActual, topsLow[i], topsHigh[i]);
+    tops[i].setNew(topsActual[i], topsLow[i], topsHigh[i]);
     complexity += tops[i].getComplexity();
-    if (topsLow[i] + topsHigh[i] != lenActual)
+    if (topsLow[i] + topsHigh[i] != topsActual[i])
       symmFlag = false;
   }
 }
@@ -120,15 +121,20 @@ string CoverSetNew::strHeader() const
 }
 
 
-string CoverSetNew::strLine(const unsigned char lenActual) const
+string CoverSetNew::strLine(
+  const unsigned char lenActual,
+  const vector<unsigned char>& topsActual) const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
   stringstream ss;
 
   ss << setw(8) << length.strShort(lenActual);
-  for (auto& top: tops)
-    ss << setw(8) << top.strShort(lenActual);
+
+  assert(tops.size() == topsActual.size());
+  for (unsigned i = 0; i < tops.size(); i++)
+    ss << setw(8) << tops[i].strShort(topsActual[i]);
+
   ss << setw(8) << (symmFlag ? "yes" : "-");
 
   return ss.str();

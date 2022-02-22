@@ -5,10 +5,9 @@ to cover recognition yet.
 
 Pruning:
 - Maximal weight: Can we recognize as we make it?
-- Zero weight: Actually that doesn't happen
 - 2: 1 1
+  Why does it still say "<= 2" when there is only top1?
   ?, 0 1 == 1, ? 1
-  Why is the second one considered symmetric?
 - 3: 1 1 1:
   1, 1 <= 1 ? is the same as 1, 1 0 ? or even 1, 1 ? ?
 - Can we detect the ones to prune as we create them, and not later?

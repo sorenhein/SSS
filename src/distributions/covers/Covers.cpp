@@ -79,7 +79,9 @@ cout <<endl;
 }
 
 
-bool Covers::prune(const unsigned char maxLength)
+bool Covers::prune(
+  const unsigned char maxLength,
+  const vector<unsigned char>& topsActual)
 {
   bool flag = false;
 
@@ -109,8 +111,8 @@ cout << "there is a full one\n";
       {
         flag = true;
 cout << "erasing same tricks\n";
-cout << "The earlier is " << citer->strLine(maxLength);
-cout << "The later   is " << citer2->strLine(maxLength);
+cout << "The earlier is " << citer->strLine(maxLength, topsActual);
+cout << "The later   is " << citer2->strLine(maxLength, topsActual);
         citer2 = coversNew.erase(citer2);
       }
      
@@ -214,13 +216,13 @@ void Covers::prepareNew(
 
           cout << coversNew.begin()->strHeader();
           for (auto& c: coversNew)
-            cout << c.strLine(maxLength);
+            cout << c.strLine(maxLength, topTotals);
           cout << endl;
 
           assert(false);
         }
         citer->set(maxLength, 0, maxLength, 
-          stackIter->topsLow, stackIter->topsHigh);
+          topTotals, stackIter->topsLow, stackIter->topsHigh);
         citer++;
 
         // Add the possible length constraints.
@@ -245,7 +247,7 @@ void Covers::prepareNew(
               assert(false);
             }
             citer->set(maxLength, lenLow, lenHigh, 
-              stackIter->topsLow, stackIter->topsHigh);
+              topTotals, stackIter->topsLow, stackIter->topsHigh);
             citer++;
           }
         }
@@ -285,14 +287,14 @@ void Covers::prepareNew(
   });
 
   for (auto& c: coversNew)
-    cout << c.strLine(maxLength);
+    cout << c.strLine(maxLength, topTotals);
   cout << "\n";
 
-  if (Covers::prune(maxLength))
+  if (Covers::prune(maxLength, topTotals))
   {
     cout << "Pruned\n";
     for (auto& c: coversNew)
-      cout << c.strLine(maxLength);
+      cout << c.strLine(maxLength, topTotals);
     cout << "\n";
   }
 

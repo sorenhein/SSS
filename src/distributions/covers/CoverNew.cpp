@@ -38,10 +38,11 @@ void CoverNew::set(
   const unsigned char lenActual,
   const unsigned char lenLow,
   const unsigned char lenHigh,
-  vector<unsigned char>& topsLow,
-  vector<unsigned char>& topsHigh)
+  const vector<unsigned char>& topsActual,
+  const vector<unsigned char>& topsLow,
+  const vector<unsigned char>& topsHigh)
 {
-  coverSet.set(lenActual, lenLow, lenHigh, topsLow, topsHigh);
+  coverSet.set(lenActual, lenLow, lenHigh, topsActual, topsLow, topsHigh);
 }
 
 
@@ -180,11 +181,13 @@ string CoverNew::strHeader() const
 }
 
 
-string CoverNew::strLine(const unsigned char lengthActual) const
+string CoverNew::strLine(
+  const unsigned char lengthActual,
+  const vector<unsigned char>& topsActual) const
 {
   stringstream ss;
 
-  ss << coverSet.strLine(lengthActual) <<
+  ss << coverSet.strLine(lengthActual, topsActual) <<
     setw(8) << weight <<
     setw(8) << +coverSet.getComplexity() <<
     setw(8) << +numDist << "\n";
