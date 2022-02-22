@@ -79,6 +79,51 @@ cout <<endl;
 }
 
 
+bool Covers::prune(const unsigned char maxLength)
+{
+  bool flag = false;
+
+  for (auto citer = coversNew.begin(); citer != coversNew.end(); )
+  {
+    if (citer->empty())
+    {
+      flag = true;
+      citer = coversNew.erase(citer);
+cout << "there is an empty one\n";
+      continue;
+    }
+    if (citer->full())
+    {
+      flag = true;
+      citer = coversNew.erase(citer);
+cout << "there is a full one\n";
+      continue;
+    }
+
+    for (auto citer2 = next(citer); citer2 != coversNew.end(); )
+    {
+      if (! citer2->sameParameters(* citer))
+        break;
+
+      if (citer2->sameTricks(* citer))
+      {
+        flag = true;
+cout << "erasing same tricks\n";
+cout << "The earlier is " << citer->strLine(maxLength);
+cout << "The later   is " << citer2->strLine(maxLength);
+        citer2 = coversNew.erase(citer2);
+      }
+     
+      else
+        citer2++;
+    }
+    citer++;
+  }
+
+  return flag;
+}
+
+
 void Covers::prepareNew(
   const vector<unsigned char>& lengths,
   vector<vector<unsigned> const *>& topPtrs,
@@ -242,6 +287,14 @@ void Covers::prepareNew(
   for (auto& c: coversNew)
     cout << c.strLine(maxLength);
   cout << "\n";
+
+  if (Covers::prune(maxLength))
+  {
+    cout << "Pruned\n";
+    for (auto& c: coversNew)
+      cout << c.strLine(maxLength);
+    cout << "\n";
+  }
 
 
 // cout << "DONE " << endl;

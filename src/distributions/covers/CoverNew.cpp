@@ -105,6 +105,41 @@ bool CoverNew::earlier(const CoverNew& cover2) const
 }
 
 
+bool CoverNew::sameParameters(const CoverNew& cover2) const
+{
+  if (weight != cover2.weight)
+    return false;
+  else if (coverSet.getComplexity() != cover2.coverSet.getComplexity())
+    return false;
+  else
+    return (numDist == cover2.numDist);
+}
+
+
+bool CoverNew::sameTricks(const CoverNew& cover2) const
+{
+  assert(profile.size() == cover2.profile.size());
+
+  for (unsigned i = 0; i < profile.size(); i++)
+    if (profile[i] != cover2.profile[i])
+      return false;
+
+  return true;
+}
+
+
+bool CoverNew::empty() const
+{
+  return (weight == 0);
+}
+
+
+bool CoverNew::full() const
+{
+  return (weight > 0 && numDist == profile.size());
+}
+
+
 /*
 bool CoverNew::operator <= (const CoverNew& cover2) const
 {

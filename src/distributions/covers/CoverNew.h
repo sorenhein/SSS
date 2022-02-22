@@ -57,6 +57,14 @@ class CoverNew
     // bool operator <= (const CoverNew& cover2) const;
     bool earlier(const CoverNew& cover2) const;
 
+    bool sameParameters(const CoverNew& covers2) const;
+
+    bool sameTricks(const CoverNew& covers2) const;
+
+    bool empty() const;
+
+    bool full() const;
+
     unsigned getWeight() const;
 
     unsigned char getNumDist() const;

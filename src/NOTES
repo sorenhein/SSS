@@ -3,14 +3,21 @@ Verbals automatically
 There is a separate flow for new cover sets now, but not hooked up
 to cover recognition yet.
 
+Pruning:
+- Maximal weight: Can we recognize as we make it?
+- Zero weight: Actually that doesn't happen
+- 2: 1 1
+  ?, 0 1 == 1, ? 1
+  Why is the second one considered symmetric?
+- 3: 1 1 1:
+  1, 1 <= 1 ? is the same as 1, 1 0 ? or even 1, 1 ? ?
+- Can we detect the ones to prune as we create them, and not later?
+
 Pruning the covers before continuing:
-- No 0 weight, no maxlength weight
+
 - If there's only one top, switch from top #0 to length somehow
 - Anything with length == 0 should have either unused or == 0 in
   all the tops, and they should be set to unused
-- When outputting strLine of a coverSetNew, do it after calculating
-  weight and #dist, and output these as well
-- No repeats
 - Place for all this is the end of Covers::prepareNew()
 - In e.g. 4, 2-2, why is <= 2 top0 not the same as unused?
 

@@ -68,6 +68,8 @@ class Covers
       vector<unsigned char>& tricks,
       unsigned char& tricksMin) const;
 
+    bool prune(const unsigned char maxLength);
+
     string strDebug(
       const string& title,
       const vector<unsigned char>& tricks) const;
