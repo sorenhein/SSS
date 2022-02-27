@@ -26,6 +26,7 @@ void CoverSetNew::reset()
   complexity = 0;
   length.reset();
   tops.clear();
+  topSize = 0;
 }
 
 
@@ -50,18 +51,22 @@ void CoverSetNew::set(
   if (lenLow + lenHigh != lenActual)
     symmFlag = false;
 
-  const unsigned topSize = topsLow.size();
-  assert(topsHigh.size() == topSize);
-if (tops.size() < topSize)
+  const unsigned topCount = topsLow.size();
+  assert(topsHigh.size() == topCount);
+if (tops.size() < topCount)
 {
   cout << "CoverSetNew: tops only " << tops.size() <<
-    ", topsLow and topsHigh " << topSize << endl;
+    ", topsLow and topsHigh " << topCount << endl;
 }
-  assert(tops.size() >= topSize);
+  assert(tops.size() >= topCount);
 
-  for (unsigned i = 0; i < topSize; i++)
+  for (unsigned char i = 0; i < topCount; i++)
   {
     tops[i].setNew(topsActual[i], topsLow[i], topsHigh[i]);
+
+    if (tops[i].used())
+      topSize = i+1;
+
     complexity += tops[i].getComplexity();
     if (topsLow[i] + topsHigh[i] != topsActual[i])
       symmFlag = false;
@@ -103,6 +108,12 @@ for (unsigned i = 0; i < topsIn.size(); i++)
 unsigned char CoverSetNew::getComplexity() const
 {
   return complexity;
+}
+
+
+unsigned char CoverSetNew::getTopSize() const
+{
+  return topSize;
 }
 
 

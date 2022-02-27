@@ -41,12 +41,13 @@ class Covers
       unsigned char maxEast; // Largest East maximum
       unsigned char topNext; // Running top number
  
-      CoverStackInfo(
-        const unsigned compSize,
-        const unsigned char len)
+      CoverStackInfo(const vector<unsigned char>& topTotals)
+        // const unsigned compSize,
+        // const unsigned char len)
       {
-        topsLow.resize(compSize, 0);
-        topsHigh.resize(compSize, len);
+        topsLow.resize(topTotals.size(), 0);
+        topsHigh = topTotals;
+        // topsHigh.resize(compSize, len);
  
         minWest = 0;
         minEast = 0;

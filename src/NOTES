@@ -1,25 +1,9 @@
 Verbals automatically
 =====================
+Time Covers::prepareNew, see if efficient enough (if not cout'ing).
+
 There is a separate flow for new cover sets now, but not hooked up
 to cover recognition yet.
-
-Pruning:
-- Maximal weight: Can we recognize as we make it?
-- 2: 1 1
-  Why does it still say "<= 2" when there is only top1?
-  ?, 0 1 == 1, ? 1
-- 3: 1 1 1:
-  1, 1 <= 1 ? is the same as 1, 1 0 ? or even 1, 1 ? ?
-- Can we detect the ones to prune as we create them, and not later?
-
-Pruning the covers before continuing:
-
-- If there's only one top, switch from top #0 to length somehow
-- Anything with length == 0 should have either unused or == 0 in
-  all the tops, and they should be set to unused
-- Place for all this is the end of Covers::prepareNew()
-- In e.g. 4, 2-2, why is <= 2 top0 not the same as unused?
-
 
 * Control its general by the input flag
 * The depth (#explicit tops) should be a control parameter somewhere

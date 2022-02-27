@@ -27,6 +27,7 @@ class CoverNew
 
     vector<unsigned char> profile;
 
+    // Could we get weight and numDist into CoverSetNew?
     unsigned weight;
 
     unsigned char numDist;
@@ -58,7 +59,7 @@ class CoverNew
     // bool operator <= (const CoverNew& cover2) const;
     bool earlier(const CoverNew& cover2) const;
 
-    bool sameParameters(const CoverNew& covers2) const;
+    bool sameWeight(const CoverNew& covers2) const;
 
     bool sameTricks(const CoverNew& covers2) const;
 

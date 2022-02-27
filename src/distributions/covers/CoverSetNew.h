@@ -24,6 +24,8 @@ class CoverSetNew
     bool symmFlag;
 
     unsigned char complexity;
+    
+    unsigned char topSize; // Last used top number + 1; may be 0
 
     CoverElement length;
 
@@ -51,6 +53,8 @@ class CoverSetNew
     const vector<unsigned>& topsIn);
 
   unsigned char getComplexity() const;
+
+  unsigned char getTopSize() const;
 
   string strHeader() const;
 
