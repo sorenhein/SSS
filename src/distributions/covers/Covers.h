@@ -42,12 +42,9 @@ class Covers
       unsigned char topNext; // Running top number
  
       CoverStackInfo(const vector<unsigned char>& topTotals)
-        // const unsigned compSize,
-        // const unsigned char len)
       {
         topsLow.resize(topTotals.size(), 0);
         topsHigh = topTotals;
-        // topsHigh.resize(compSize, len);
  
         minWest = 0;
         minEast = 0;
@@ -69,9 +66,7 @@ class Covers
       vector<unsigned char>& tricks,
       unsigned char& tricksMin) const;
 
-    bool prune(
-      const unsigned char maxLength,
-      const vector<unsigned char>& topsActual);
+    void prune();
 
     string strDebug(
       const string& title,

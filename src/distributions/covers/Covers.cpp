@@ -79,27 +79,15 @@ cout <<endl;
 }
 
 
-bool Covers::prune(
-  [[maybe_unused]] const unsigned char maxLength,
-  [[maybe_unused]] const vector<unsigned char>& topsActual)
+void Covers::prune()
 {
-  bool flag = false;
-
   for (auto citer = coversNew.begin(); citer != coversNew.end(); )
   {
-    if (citer->empty())
-    {
-      flag = true;
-      citer = coversNew.erase(citer);
-// Doesn't really happen
-cout << "there is an empty one\n";
-      continue;
-    }
+    assert(! citer->empty()); // Would have to remove. Doesn't happen
+
     if (citer->full())
     {
-      flag = true;
       citer = coversNew.erase(citer);
-// cout << "there is a full one\n";
       continue;
     }
 
@@ -107,23 +95,13 @@ cout << "there is an empty one\n";
     {
       if (! citer2->sameWeight(* citer))
         break;
-
-      if (citer2->sameTricks(* citer))
-      {
-        flag = true;
-// cout << "erasing same tricks\n";
-// cout << "The earlier is " << citer->strLine(maxLength, topsActual);
-// cout << "The later   is " << citer2->strLine(maxLength, topsActual);
+      else if (citer2->sameTricks(* citer))
         citer2 = coversNew.erase(citer2);
-      }
-     
       else
         citer2++;
     }
     citer++;
   }
-
-  return flag;
 }
 
 
@@ -135,10 +113,7 @@ void Covers::prepareNew(
   const vector<unsigned char>& topTotals)
 {
   list<CoverStackInfo> stack; // Unfinished expansions
-  stack.emplace_back(CoverStackInfo(
-    topTotals));
-    // topTotals.size(), 
-    // maxLength));
+  stack.emplace_back(CoverStackInfo(topTotals));
 
   coversNew.resize(COVER_CHUNK_SIZE);
   for (auto& c: coversNew)
@@ -190,9 +165,6 @@ void Covers::prepareNew(
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
 
-// cout << "LOOP topNumber " << +topNumber << " countLow " <<
-  // +topCountLow << " countHigh " << +topCountHigh << "\n";
-
         // If there is a top that in itself exceeds the length range,
         // there is a more economical version of this entry.
         if (topCountHigh > stackIter->maxWest)
@@ -205,42 +177,12 @@ void Covers::prepareNew(
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
 
-        // Add the "don't care" with respect to length.
         if (citer == coversNew.end())
-        {
-          cout << "C End reached1" << endl;
-          cout << "maxLength " << +maxLength << endl;
-          cout << "lengths\n";
-          for (unsigned j = 0; j < lengths.size(); j++)
-            cout << j << ": " << +lengths[j] << endl;
-          cout << "cases\n";
-          for (unsigned j = 0; j < cases.size(); j++)
-            cout << j << ": " << +cases[j] << endl;
-          cout << "top totals\n";
-          for (unsigned j = 0; j < topTotals.size(); j++)
-            cout << j << ": " << +topTotals[j] << endl;
-          cout << "top pointers\n";
-          for (unsigned j = 0; j < topPtrs.size(); j++)
-          {
-            const auto& t = * topPtrs[j];
-            for (unsigned k = 0; k < t.size(); k++)
-              cout << k << ": " << +t[k] << endl;
-          }
-
-          cout << coversNew.begin()->strHeader();
-          for (auto& c: coversNew)
-            cout << c.strLine(maxLength, topTotals);
-          cout << endl;
-
           assert(false);
-        }
+
+        // Add the "don't care" with respect to length.
         citer->set(maxLength, 0, maxLength, 
           topTotals, stackIter->topsLow, stackIter->topsHigh);
-// cout << "Set " << citer->strLine(maxLength, topTotals);
-// cout << "minWest " << +minWest << " minEast " << +minEast <<
-// " lenMax " << +(maxLength - minEast) << "\n";
-// cout << "stack maxWest " << +stackIter->maxWest << " maxEast" <<
-// +stackIter->maxEast << "\n";
         citer++;
 
         // Add the possible length constraints.
@@ -254,16 +196,6 @@ void Covers::prepareNew(
             if (lenLow == minWest && lenHigh == lenMax)
               continue;
 
-            // if (lenLow == 0 && lenHigh == maxLength)
-              // continue;
-
-            /*
-            if (stackIter->maxWest > lenHigh)
-              continue;
-            if (stackIter->maxEast > maxLength - lenLow)
-              continue;
-              */
-
             if (citer == coversNew.end())
             {
               cout << "C End reached2" << endl;
@@ -271,7 +203,6 @@ void Covers::prepareNew(
             }
             citer->set(maxLength, lenLow, lenHigh, 
               topTotals, stackIter->topsLow, stackIter->topsHigh);
- cout << "  Set " << citer->strLine(maxLength, topTotals);
             citer++;
           }
         }
@@ -305,39 +236,18 @@ void Covers::prepareNew(
     return cover1.earlier(cover2);
   });
 
-  /*
-  for (auto& c: coversNew)
-    cout << c.strLine(maxLength, topTotals);
-  cout << "\n";
-  */
-
   // It is not practical to generate the covers without duplicated
   // trick vectors in one pass.  So we eliminate the more complex
   // ways of saying the same thing.  In total across all covers,
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
-// const unsigned before = coversNew.size();
-
-  Covers::prune(maxLength, topTotals);
+  Covers::prune();
 
   cout << "Covers\n";
   cout << coversNew.front().strHeader();
   for (auto& c: coversNew)
     cout << c.strLine(maxLength, topTotals);
   cout << "\n";
-
-// const unsigned after = coversNew.size();
-
-// cout << "SIZE " << before << ", " << after << "\n";
-
-// cout << "DONE " << endl;
-  
-  // for (auto cit = coversNew.begin(); cit != citer; cit++)
-  // {
-    // cit->prepare(lengths, topPtrs, cases);
-    // cout << cit->strLine(maxLength);
-    // cout << cit->strProfile();
-  // }
 }
 
 

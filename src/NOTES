@@ -1,5 +1,11 @@
 Verbals automatically
 =====================
+It was perhaps nice to have symmetric covers as well, so
+Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
+The symmetric one is reflected w.r.t. length and tops.
+CoverSetNew's include doesn't know the values to reflect around.
+Maybe check first whether they are "discovered".
+
 Time Covers::prepareNew, see if efficient enough (if not cout'ing).
 
 There is a separate flow for new cover sets now, but not hooked up
