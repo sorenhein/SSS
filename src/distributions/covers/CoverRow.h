@@ -39,7 +39,9 @@ class CoverRow
 
     void reset();
 
-    bool tryGreedy(
+    void resize(const unsigned len);
+
+    bool attempt(
       const CoverNew& cover,
       const vector<unsigned char>& residuals,
       vector<unsigned char>& additions,

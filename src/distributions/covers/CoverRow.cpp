@@ -28,18 +28,19 @@ void CoverRow::reset()
 }
 
 
-bool CoverRow::tryGreedy(
+void CoverRow::resize(const unsigned len)
+{
+  tricks.resize(len);
+}
+
+
+bool CoverRow::attempt(
   const CoverNew& cover,
   const vector<unsigned char>& residuals,
   vector<unsigned char>& additions,
   unsigned char& tricksAdded) const
 {
-  if (tricks.empty())
-    tricks.resize(residuals.size());
-  else
-    assert(tricks.size() == residuals.size());
-
-  // TODO Delete check
+  assert(tricks.size() == residuals.size());
   assert(additions.size() == residuals.size());
 
   // This is just an optimization.  If a cover has already been
@@ -90,8 +91,8 @@ unsigned char CoverRow::getComplexity() const
 string CoverRow::strHeader() const
 {
   return 
-    coverPtrs.front().strHeaderTrickShort() +
-    coverPtrs.front().strHeader();
+    coverPtrs.front()->strHeaderTricksShort() +
+    coverPtrs.front()->strHeader();
 }
 
 
@@ -105,7 +106,7 @@ string CoverRow::strLines(
 
   for (auto& cptr: coverPtrs)
     ss << 
-      cptr->strTrickShort() << 
+      cptr->strTricksShort() << 
       cptr->strLine(lengthActual, topsActual);
 
   return ss.str();

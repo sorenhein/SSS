@@ -54,6 +54,12 @@ class CoverNew
       vector<vector<unsigned > const *>& topPtrs,
       const vector<unsigned char>& cases);
 
+    bool possible(
+      const vector<unsigned char>& explained,
+      const vector<unsigned char>& residuals,
+      vector<unsigned char>& additions,
+      unsigned char& tricksAdded) const;
+
     CoverState explain(vector<unsigned char>& tricks) const;
 
     // bool operator <= (const CoverNew& cover2) const;
@@ -71,6 +77,8 @@ class CoverNew
 
     unsigned char getNumDist() const;
 
+    unsigned char getComplexity() const;
+
     string strHeader() const;
 
     string strLine(
@@ -78,6 +86,10 @@ class CoverNew
       const vector<unsigned char>& topsActual) const;
 
     string strProfile() const;
+
+    string strHeaderTricksShort() const;
+
+    string strTricksShort() const;
 };
 
 #endif

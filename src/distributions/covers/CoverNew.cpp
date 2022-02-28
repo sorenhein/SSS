@@ -68,6 +68,45 @@ void CoverNew::prepare(
 }
 
 
+bool CoverNew::possible(
+  const vector<unsigned char>& explained,
+  const vector<unsigned char>& residuals,
+  vector<unsigned char>& additions,
+  unsigned char& tricksAdded) const
+{
+  // explained: The OR'ed vector in CoverRow that is already explained.
+  // residuals: The overall tricks in cover tableau that remains.
+  // additions: If the cover can be added, the additions to the
+  //   explained vector that would arise
+  // tricksAdded: The number of tricks in additions
+
+  assert(profile.size() == explained.size());
+
+  tricksAdded = 0;
+  for (unsigned i = 0; i < profile.size(); i++)
+  {
+    // If the cover has an entry that has not already been set:
+    if (profile[i] && ! explained[i])
+    {
+      if (residuals[i])
+      {
+        // We need that entry.
+        additions[i] = 1;
+        tricksAdded++;
+      }
+      else
+      {
+        // We cannot have that entry.
+        return false;
+      }
+    }
+    else
+      additions[i] = 0;
+  }
+  return true;
+}
+
+
 CoverState CoverNew::explain(vector<unsigned char>& tricks) const
 {
   assert(tricks.size() == profile.size());
@@ -171,6 +210,12 @@ unsigned char CoverNew::getNumDist() const
 }
 
 
+unsigned char CoverNew::getComplexity() const
+{
+  return coverSet.getComplexity();
+}
+
+
 string CoverNew::strHeader() const
 {
   stringstream ss;
@@ -203,10 +248,28 @@ string CoverNew::strProfile() const
 {
   stringstream ss;
 
-  cout << "weight " << weight << "\n";
+  ss << "weight " << weight << "\n";
 
   for (unsigned i = 0; i < profile.size(); i++)
     ss << i << ": " << +profile[i] << "\n";
   
   return ss.str();
 }
+
+
+string CoverNew::strHeaderTricksShort() const
+{
+  stringstream ss;
+  ss << setw(profile.size()+2) << left << "Tricks";
+  return ss.str();
+}
+
+
+string CoverNew::strTricksShort() const
+{
+  string s;
+  for (unsigned i = 0; i < profile.size(); i++)
+    s += (profile[i] ? "1" : "-");
+  return s + "  ";
+}
+
