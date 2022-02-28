@@ -104,6 +104,7 @@ while (siter != stack.end())
 Then we should be able to sort solutions (tableaux) by complexity.
 
 
+Maybe later on MECE and hierarchy again (recognizing it at least).
 
 
 It was perhaps nice to have symmetric covers as well, so

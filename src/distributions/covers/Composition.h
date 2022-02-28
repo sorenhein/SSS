@@ -1,4 +1,3 @@
-
 /*
    SSS, a bridge single-suit single-dummy solver.
 
