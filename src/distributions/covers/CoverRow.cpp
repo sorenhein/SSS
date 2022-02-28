@@ -55,7 +55,8 @@ bool CoverRow::attempt(
 void CoverRow::add(
   const CoverNew& cover,
   const vector<unsigned char>& additions,
-  vector<unsigned char>& residuals)
+  vector<unsigned char>& residuals,
+  unsigned char& residualsSum)
 {
   coverPtrs.push_back(&cover);
 
@@ -64,7 +65,11 @@ void CoverRow::add(
   {
     tricks[i] += additions[i];
     residuals[i] -= additions[i];
+    residualsSum -= additions[i];
   }
+
+  // TODO Check range
+  assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
 }

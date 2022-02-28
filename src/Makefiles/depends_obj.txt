@@ -301,6 +301,14 @@ distributions/covers/CoverRow.obj: distributions/covers/CoverSetNew.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverElement.h
 distributions/covers/CoverRow.obj: const.h distributions/covers/CoverSpec.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverSet.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverTableau.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverRow.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverNew.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverSetNew.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverElement.h
+distributions/covers/CoverTableau.obj: const.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverSpec.h
+distributions/covers/CoverTableau.obj: distributions/covers/CoverSet.h
 distributions/covers/ResExpl.obj: distributions/covers/ResExpl.h
 distributions/covers/ResExpl.obj: distributions/covers/Cover.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverSpec.h

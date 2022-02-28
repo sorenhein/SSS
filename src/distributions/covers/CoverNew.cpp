@@ -81,6 +81,8 @@ bool CoverNew::possible(
   // tricksAdded: The number of tricks in additions
 
   assert(profile.size() == explained.size());
+  assert(profile.size() == residuals.size());
+  assert(profile.size() == additions.size());
 
   tricksAdded = 0;
   for (unsigned i = 0; i < profile.size(); i++)
@@ -103,7 +105,9 @@ bool CoverNew::possible(
     else
       additions[i] = 0;
   }
-  return true;
+
+  // Could still have been fully contained.
+  return (tricksAdded > 0);
 }
 
 

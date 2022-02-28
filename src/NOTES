@@ -1,50 +1,10 @@
 Verbals automatically
 =====================
-CoverTableau:
-tricks (the original vector of tricks)
-residual (remaining tricks to be explained)
+Covers::explainGreedy(
+  const list<Result>& results, 
+  CoverTableau& tableau)
 
-Row information:
-list<pointer to CoverNew> covers (OR'ed together)
-vector<unsigned char> tricks (for that row)
-
-list<row information> rows
-tricksTableau (sum of all rows)
-
-complexity = 0
-
-setTricks(vector), put into residual
-
-bool grab(const CoverNew& cover)
-This is the greedy version.
-First consider adding a new row: cover.explain(residual).
-If this works:
-- add the row
-- add &cover to the list
-- set up tricks for the row to be the cover profile
-- add to tricksTableau
-- subtracted from residual already
-- update complexity
-- return true
-
-If it doesn't work, look for rows to add cover:
-- Start with row ptr == nullptr, trickCount == 0
-- If already the last entry in that row, give up that row
-- If profile wholly contained in that row's tricks, give up that row
-- See how many new tricks are explained
-- Make sure new tricksTableau have not busted tricks
-- If better than trickCount, update the ptr and trickCount
-
-If nullptr: return false
-Else:
-- append to the row
-- add &cover to the row list
-- update the row tricks and the tricksTableau
-- Subtract the new tricks from residual
-return true
-
-Usage:
-setTricks()
+tableau.setTricks(results);  // List, not vector
 citer = covers.begin()
 while (citer != covers.end())
 {
@@ -52,59 +12,47 @@ while (citer != covers.end())
   explain, so if the results vector only uses lengths and top0, then
   we should skip *citer if it uses finer details.
 
-  if ! grab(* citer)
+  if (! tableau.attemptGreedy(* citer))
     citer++;
 
-  if tableau is done (no residuals)
-   worked out; break
+  if (tableau.complete())
+    return true;
 }
+return false;
 
-bool cogitate(const CoverNew& cover,
-  list<CoverTableau>& options)
-First consider adding a new row.
-As above, but copy *this to the list and update it there.
 
-Then look for rows, but every time it works:
-Copy *this to the list and update it there.
-Return true if ! options.empty().
+Covers::explainExhaustive(
+  const list<Result>& results, 
+  CoverTableau& tableau)
 
-USage:
-setTricks()
-stack = push {initial tableau, citer = covers.begin}
-siter = stack.begin()
-solutions are empty
+list<StackTableau> stack;
+stack.emplace_back(StackTableau());
+StackTableau& stableau = stack.back();
+
+stableau.tableau.setTricks(results);
+stableau.coverIter = covers.begin();
+
+list<CoverTableau> solutions;
+
+auto siter = stack.begin();
 
 while (siter != stack.end())
 {
-  while (siter.citer != covers.end())
+  while (siter->coverIter != covers.end())
   {
-    Also here, skip *citer if too granular compared to results vector
+    // Also here, skip *citer if too granular compared to results vector
 
-    if (! cogitate(* citer, options))
-    {
-      siter.citer++;
-      continue;
-    }
-
-    for (options)
-    {
-      update tableau complexity
-      if (options tableau is done
-        Push it to solutions
-      else
-        stack.push_back {options tableau, citer}
-    }
-
-    citer++;
+    siter->tableau.attemptExhaustive(siter->coverIter, stack, solutions);
+    siter->coverIter++;
   }
 
-  siter = stack.erase the first element
+  siter.stack.erase(siter);
 }
 
-Then we should be able to sort solutions (tableaux) by complexity.
+assert(! solutions.empty());
 
-
-Maybe later on MECE and hierarchy again (recognizing it at least).
+// Sort the solutions by complexity
+// Maybe MECE and hierarchy again
 
 
 It was perhaps nice to have symmetric covers as well, so

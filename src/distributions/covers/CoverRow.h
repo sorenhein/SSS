@@ -50,7 +50,8 @@ class CoverRow
     void add(
       const CoverNew& cover,
       const vector<unsigned char>& additions,
-      vector<unsigned char>& residuals);
+      vector<unsigned char>& residuals,
+      unsigned char& residualsSum);
 
     unsigned size() const;
 
