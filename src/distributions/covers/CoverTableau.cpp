@@ -210,16 +210,14 @@ unsigned char CoverTableau::numCovers() const
 }
 
 
-string CoverTableau::str(
-  const unsigned char lengthActual,
-  const vector<unsigned char>& topsActual) const
+string CoverTableau::str() const
 {
   stringstream ss;
 
   for (auto& row: rows)
   {
     ss << row.strHeader();
-    ss << row.strLines(lengthActual, topsActual) << "\n";
+    ss << row.strLines() << "\n";
   }
 
   return ss.str();

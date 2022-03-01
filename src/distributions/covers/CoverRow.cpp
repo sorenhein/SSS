@@ -101,18 +101,12 @@ string CoverRow::strHeader() const
 }
 
 
-// TODO What if these are not available?  How much less clear
-// do the outputs become?
-string CoverRow::strLines(
-  const unsigned char lengthActual,
-  const vector<unsigned char>& topsActual) const
+string CoverRow::strLines() const
 {
   stringstream ss;
 
   for (auto& cptr: coverPtrs)
-    ss << 
-      cptr->strTricksShort() << 
-      cptr->strLine(lengthActual, topsActual);
+    ss << cptr->strTricksShort() << cptr->strLine();
 
   return ss.str();
 }

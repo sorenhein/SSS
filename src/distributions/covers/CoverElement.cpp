@@ -168,6 +168,31 @@ string CoverElement::strShort(const unsigned char lenActual) const
 }
 
 
+string CoverElement::strShort() const
+{
+  stringstream ss;
+
+  if (usedFlag)
+  {
+    string s;
+    if (value1 == value2)
+      s = "== " + to_string(+value1);
+    else if (value1 == 0)
+      s = "<= " + to_string(+value2);
+    else
+      s = to_string(+value1) + "-" + to_string(+value2);
+    
+    ss << setw(8) << s;
+  }
+  else
+  {
+    ss << setw(8) << "unused";
+  }
+
+  return ss.str();
+}
+
+
 string CoverElement::str(const string& word) const
 {
   stringstream ss;

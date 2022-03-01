@@ -254,6 +254,19 @@ string CoverNew::strLine(
 }
 
 
+string CoverNew::strLine() const
+{
+  stringstream ss;
+
+  ss << coverSet.strLine() <<
+    setw(8) << weight <<
+    setw(8) << +coverSet.getComplexity() <<
+    setw(8) << +numDist << "\n";
+  
+  return ss.str();
+}
+
+
 string CoverNew::strProfile() const
 {
   stringstream ss;

@@ -62,6 +62,7 @@ class CoverSetNew
     const unsigned char lenActual,
     const vector<unsigned char>& topsActual) const;
 
+  string strLine() const;
 };
 
 #endif

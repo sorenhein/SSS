@@ -151,3 +151,20 @@ string CoverSetNew::strLine(
   return ss.str();
 }
 
+
+string CoverSetNew::strLine() const
+{
+  // Does not end on a linebreak, as it may be concatenated with
+  // more in CoverNew.
+  stringstream ss;
+
+  ss << setw(8) << length.strShort();
+
+  for (unsigned i = 0; i < tops.size(); i++)
+    ss << setw(8) << tops[i].strShort();
+
+  ss << setw(8) << (symmFlag ? "yes" : "-");
+
+  return ss.str();
+}
+

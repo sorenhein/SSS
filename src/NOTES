@@ -1,15 +1,5 @@
 Verbals automatically
 =====================
-Slist::covers
-For now, make a CoverTableau tableau, pass it to Strategy::covers
-if (strat.covers(coversIn, tableau))
-
-Strategy::covers
-coversIn.explainGreedy(results, tableau);
-tableau.complete() says whether it worked out.
-
-
-
 It was perhaps nice to have symmetric covers as well, so
 Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
 The symmetric one is reflected w.r.t. length and tops.

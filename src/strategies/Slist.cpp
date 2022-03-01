@@ -19,6 +19,7 @@
 #include "../distributions/Distribution.h"
 #include "../distributions/covers/ResExpl.h"
 #include "../distributions/covers/Covers.h"
+#include "../distributions/covers/CoverTableau.h"
 
 #include "../inputs/Control.h"
 
@@ -1024,6 +1025,35 @@ void Slist::covers(
     
     stratNo++;
     riter++;
+  }
+
+  // TODO Uncomment to turn the rest on.
+  return;
+
+  // TODO For now.  Should come from above later.
+  stratNo = 0;
+  CoverTableau tableau;
+
+  for (auto& strat: strategies)
+  {
+    const Result result = strat.resultLowest();
+    const unsigned rankLow = result.getRank();
+    if (rankLow+2 < maxRank)
+    {
+      // We don't know yet how to cover such Strategy's.
+      stratNo++;
+      riter++;
+      continue;
+    }
+
+    cout << "VStrategy #" << stratNo << ": ";
+    strat.coversNew(coversIn, 1, tableau);
+    if (tableau.complete())
+      cout << tableau.str();
+    else
+      cout << strat.str("Vnexplained", true) << "\n";
+    
+    stratNo++;
   }
 }
 

@@ -79,6 +79,8 @@ class CoverElement
 
     string strShort(const unsigned char lenActual) const;
 
+    string strShort() const;
+
     string str(const string& word) const;
 };
 

@@ -87,6 +87,8 @@ class CoverNew
       const unsigned char lengthActual,
       const vector<unsigned char>& topsActual) const;
 
+    string strLine() const;
+
     string strProfile() const;
 
     string strHeaderTricksShort() const;

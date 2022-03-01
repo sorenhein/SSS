@@ -21,6 +21,7 @@ struct Play;
 class Distribution;
 class SurvivorList;
 class Covers;
+class CoverTableau;
 struct Reduction;
 class ResExpl;
 
@@ -233,6 +234,11 @@ class Strategy
     bool covers(
       const Covers& coversIn,
       ResExpl& resExpl) const;
+
+    void coversNew(
+      const Covers& coversIn,
+      const unsigned char numStrategyTops,
+      CoverTableau& tableau) const;
 
     void studyOppsVoid(
       Result& resultWestVoid,

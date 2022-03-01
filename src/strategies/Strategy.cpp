@@ -18,6 +18,7 @@
 #include "../distributions/Distribution.h"
 #include "../distributions/covers/ResExpl.h"
 #include "../distributions/covers/Covers.h"
+#include "../distributions/covers/CoverTableau.h"
 #include "../inputs/Control.h"
 
 #include "../utils/compsec.h"
@@ -984,6 +985,17 @@ bool Strategy::covers(
   resExpl.reset();
   CoverState state = coversIn.explain(results, resExpl);
   return (state == COVER_DONE);
+}
+
+
+void Strategy::coversNew(
+  const Covers& coversIn,
+  const unsigned char numStrategyTops,
+  CoverTableau& tableau) const
+{
+  tableau.reset();
+  // TODO Can be greedy or exhaustive.
+  coversIn.explainGreedy(results, numStrategyTops, tableau);
 }
 
 

@@ -60,9 +60,7 @@ class CoverTableau
 
     unsigned char numCovers() const;
 
-    string str(
-      const unsigned char lengthActual,
-      const vector<unsigned char>& topsActual) const;
+    string str() const;
 };
 
 

@@ -63,9 +63,7 @@ class CoverRow
     // but without semantic explanations.
     string strHeader() const;
 
-    string strLines(
-      const unsigned char lengthActual,
-      const vector<unsigned char>& topsActual) const;
+    string strLines() const;
 };
 
 #endif
