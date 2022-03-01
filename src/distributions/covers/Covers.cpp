@@ -11,8 +11,10 @@
 #include <sstream>
 #include <cassert>
 
+#include "ResExpl.h"
 #include "Covers.h"
 #include "CoverMemory.h"
+#include "CoverTableau.h"
 
 #include "../../strategies/result/Result.h"
 #include "../../const.h"
@@ -317,6 +319,77 @@ CoverState Covers::explain(
 
   // Can't happen
   return COVER_STATE_SIZE;
+}
+
+
+void Covers::explainGreedy(
+  const list<Result>& results,
+  const unsigned numStrategyTops,
+  CoverTableau& tableau) const
+{
+  tableau.setTricks(results);
+
+  auto citer = coversNew.begin();
+  while (citer != coversNew.end())
+  {
+    if (citer->getTopSize() > numStrategyTops)
+    {
+      // A cover should not use distributions more granularly than
+      // the strategy itself does.
+      citer++;
+      continue;
+    }
+      
+    if (! tableau.attemptGreedy(* citer))
+      citer++;
+
+    if (tableau.complete())
+      return;
+  }
+}
+
+
+void Covers::explainExhaustive(
+  const list<Result>& results,
+  const unsigned numStrategyTops,
+  CoverTableau& tableau) const
+{
+  list<StackTableau> stack;
+  stack.emplace_back(StackTableau());
+  StackTableau& stableau = stack.back();
+
+  stableau.tableau.setTricks(results);
+  stableau.coverIter = coversNew.begin();
+
+  list<CoverTableau> solutions;
+
+  auto siter = stack.begin();
+  while (siter != stack.end())
+  {
+    auto& citer = siter->coverIter;
+
+    while (citer != coversNew.end())
+    {
+      if (citer->getTopSize() > numStrategyTops)
+      {
+        citer++;
+        continue;
+      }
+
+      siter->tableau.attemptExhaustive(citer, stack, solutions);
+      citer++;
+    }
+
+    siter = stack.erase(siter);
+  }
+
+  assert(! solutions.empty());
+  solutions.sort();
+
+  // TODO Could perhaps swap
+  tableau = solutions.front();
+
+  // TODO Maybe MECE and hierarchy again within the tableau.
 }
 
 

@@ -16,6 +16,7 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
+#include "../distributions/covers/ResExpl.h"
 #include "../distributions/covers/Covers.h"
 #include "../inputs/Control.h"
 

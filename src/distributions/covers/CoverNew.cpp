@@ -214,6 +214,12 @@ unsigned char CoverNew::getNumDist() const
 }
 
 
+unsigned char CoverNew::getTopSize() const
+{
+  return coverSet.getTopSize();
+}
+
+
 unsigned char CoverNew::getComplexity() const
 {
   return coverSet.getComplexity();

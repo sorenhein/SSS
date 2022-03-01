@@ -18,6 +18,7 @@
 #include "CombTest.h"
 
 #include "../distributions/Distributions.h"
+#include "../distributions/covers/ResExpl.h"
 
 #include "../plays/Plays.h"
 

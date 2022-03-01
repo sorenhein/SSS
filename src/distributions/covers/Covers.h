@@ -15,11 +15,12 @@
 
 #include "Cover.h"
 #include "CoverNew.h"
-#include "ResExpl.h"
 
 class Distribution;
 class CoverMemory;
+class CoverTableau;
 class Result;
+class ResExpl;
 
 
 using namespace std;
@@ -97,6 +98,16 @@ class Covers
     CoverState explain(
       const list<Result>& results,
       ResExpl& resExpl) const;
+
+    void explainGreedy(
+      const list<Result>& results,
+      const unsigned numStrategyTops,
+      CoverTableau& tableau) const;
+
+    void explainExhaustive(
+      const list<Result>& results,
+      const unsigned numStrategyTops,
+      CoverTableau& tableau) const;
 };
 
 #endif

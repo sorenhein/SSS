@@ -13,6 +13,8 @@
 
 #include "CoverTableau.h"
 
+#include "../../strategies/result/Result.h"
+
 
 CoverTableau::CoverTableau()
 {
@@ -28,13 +30,23 @@ void CoverTableau::reset()
 }
 
 
-void CoverTableau::setTricks(const vector<unsigned char>& tricks)
+void CoverTableau::setTricks(const list<Result>& tricks)
 {
-  residuals = tricks;
-
+  residuals.resize(tricks.size());
   residualsSum = 0;
-  for (auto r: residuals)
-    residualsSum += r;
+
+  // TODO Here we turn a list into a vector.  Perhaps we could use
+  // lists all the way down?
+ 
+  auto titer = tricks.begin();
+  unsigned i;
+
+  for (i = 0; i < tricks.size(); i++, titer++)
+  {
+    const unsigned char t = titer->getTricks();
+    residuals[i] = t;
+    residualsSum += t;
+  }
 }
 
 
@@ -84,7 +96,7 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
 
 
 void CoverTableau::attemptExhaustive(
-  list<CoverNew const *>::iterator& coverIter,
+  list<CoverNew>::const_iterator& coverIter,
   list<StackTableau>& stack,
   list<CoverTableau>& solutions) const
 {
@@ -92,7 +104,7 @@ void CoverTableau::attemptExhaustive(
   // the first match, and we don't yet implement any match.
 
   // explained is a dummy vector here.
-  const CoverNew& cover = ** coverIter;
+  const CoverNew& cover = * coverIter;
   vector<unsigned char> explained(cover.getNumDist(), 0);
   vector<unsigned char> additions(cover.getNumDist());
   unsigned char tricksAdded;
@@ -149,6 +161,12 @@ void CoverTableau::attemptExhaustive(
       }
     }
   }
+}
+
+
+bool CoverTableau::operator < (const CoverTableau& tableau2) const
+{
+  return (CoverTableau::getComplexity() < tableau2.getComplexity());
 }
 
 

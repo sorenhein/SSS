@@ -77,6 +77,8 @@ class CoverNew
 
     unsigned char getNumDist() const;
 
+    unsigned char getTopSize() const;
+
     unsigned char getComplexity() const;
 
     string strHeader() const;

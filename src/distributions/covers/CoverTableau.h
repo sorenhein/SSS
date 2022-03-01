@@ -20,6 +20,7 @@ using namespace std;
 /* A tableau is a set of additive rows.
  */
 
+class Result;
 struct StackTableau;
 
 
@@ -40,14 +41,16 @@ class CoverTableau
 
     void reset();
 
-    void setTricks(const vector<unsigned char>& tricks);
+    void setTricks(const list<Result>& tricks);
 
     bool attemptGreedy(const CoverNew& cover);
 
     void attemptExhaustive(
-      list<CoverNew const *>::iterator& coverIter,
+      list<CoverNew>::const_iterator& coverIter,
       list<StackTableau>& stack,
       list<CoverTableau>& solutions) const;
+
+    bool operator < (const CoverTableau& tableau2) const;
 
     bool complete() const;
 
@@ -66,7 +69,8 @@ class CoverTableau
 struct StackTableau
 {
   CoverTableau tableau;
-  list<CoverNew const *>::iterator coverIter;
+
+  list<CoverNew>::const_iterator coverIter;
 };
 
 

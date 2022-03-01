@@ -1,58 +1,13 @@
 Verbals automatically
 =====================
-Covers::explainGreedy(
-  const list<Result>& results, 
-  CoverTableau& tableau)
+Slist::covers
+For now, make a CoverTableau tableau, pass it to Strategy::covers
+if (strat.covers(coversIn, tableau))
 
-tableau.setTricks(results);  // List, not vector
-citer = covers.begin()
-while (citer != covers.end())
-{
-  A *citer should not be more granular than the tricks we're trying to
-  explain, so if the results vector only uses lengths and top0, then
-  we should skip *citer if it uses finer details.
+Strategy::covers
+coversIn.explainGreedy(results, tableau);
+tableau.complete() says whether it worked out.
 
-  if (! tableau.attemptGreedy(* citer))
-    citer++;
-
-  if (tableau.complete())
-    return true;
-}
-return false;
-
-
-Covers::explainExhaustive(
-  const list<Result>& results, 
-  CoverTableau& tableau)
-
-list<StackTableau> stack;
-stack.emplace_back(StackTableau());
-StackTableau& stableau = stack.back();
-
-stableau.tableau.setTricks(results);
-stableau.coverIter = covers.begin();
-
-list<CoverTableau> solutions;
-
-auto siter = stack.begin();
-
-while (siter != stack.end())
-{
-  while (siter->coverIter != covers.end())
-  {
-    // Also here, skip *citer if too granular compared to results vector
-
-    siter->tableau.attemptExhaustive(siter->coverIter, stack, solutions);
-    siter->coverIter++;
-  }
-
-  siter.stack.erase(siter);
-}
-
-assert(! solutions.empty());
-
-// Sort the solutions by complexity
-// Maybe MECE and hierarchy again
 
 
 It was perhaps nice to have symmetric covers as well, so
