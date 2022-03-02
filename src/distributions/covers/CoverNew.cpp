@@ -208,6 +208,12 @@ unsigned CoverNew::getWeight() const
 }
 
 
+unsigned CoverNew::size() const
+{
+  return profile.size();
+}
+
+
 unsigned char CoverNew::getNumDist() const
 {
   return numDist;

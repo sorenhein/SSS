@@ -75,6 +75,8 @@ class CoverNew
 
     unsigned getWeight() const;
 
+    unsigned size() const;
+
     unsigned char getNumDist() const;
 
     unsigned char getTopSize() const;

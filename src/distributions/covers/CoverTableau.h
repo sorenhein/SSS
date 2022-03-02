@@ -34,6 +34,8 @@ class CoverTableau
 
     unsigned char residualsSum;
 
+    unsigned char tricksMin;
+
 
   public:
 
@@ -41,7 +43,9 @@ class CoverTableau
 
     void reset();
 
-    void setTricks(const list<Result>& tricks);
+    void setTricks(
+      const vector<unsigned char>& tricks,
+      const unsigned char tmin);
 
     bool attemptGreedy(const CoverNew& cover);
 

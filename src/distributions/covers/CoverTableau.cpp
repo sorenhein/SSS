@@ -27,34 +27,29 @@ void CoverTableau::reset()
   rows.clear();
   residuals.clear();
   residualsSum = 0;
+  tricksMin = 0;
 }
 
 
-void CoverTableau::setTricks(const list<Result>& tricks)
+void CoverTableau::setTricks(
+  const vector<unsigned char>& tricks,
+  const unsigned char tmin)
 {
-  residuals.resize(tricks.size());
+  residuals = tricks;
   residualsSum = 0;
 
-  // TODO Here we turn a list into a vector.  Perhaps we could use
-  // lists all the way down?
- 
-  auto titer = tricks.begin();
-  unsigned i;
-
-  for (i = 0; i < tricks.size(); i++, titer++)
-  {
-    const unsigned char t = titer->getTricks();
-    residuals[i] = t;
+  for (auto t: tricks)
     residualsSum += t;
-  }
+
+  tricksMin = tmin;
 }
 
 
 bool CoverTableau::attemptGreedy(const CoverNew& cover)
 {
   // explained is a dummy vector here.
-  vector<unsigned char> explained(cover.getNumDist(), 0);
-  vector<unsigned char> additions(cover.getNumDist());
+  vector<unsigned char> explained(cover.size(), 0);
+  vector<unsigned char> additions(cover.size());
   unsigned char tricksAdded;
 
   // First try to add a new row.
@@ -62,6 +57,7 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
   {
     rows.emplace_back(CoverRow());
     CoverRow& row = rows.back();
+    row.resize(cover.size());
     row.add(cover, additions, residuals, residualsSum);
     return true;
   }
@@ -71,7 +67,7 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
     return false;
 
   CoverRow * rowBestPtr = nullptr;
-  vector<unsigned char> additionsBest(cover.getNumDist());
+  vector<unsigned char> additionsBest(cover.size());
   unsigned char weightBest = 0;
 
   for (auto& row: rows)
@@ -213,6 +209,8 @@ unsigned char CoverTableau::numCovers() const
 string CoverTableau::str() const
 {
   stringstream ss;
+
+  ss << "Minimum tricks: " << +tricksMin << "\n";
 
   for (auto& row: rows)
   {

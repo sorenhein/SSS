@@ -327,11 +327,21 @@ void Covers::explainGreedy(
   const unsigned numStrategyTops,
   CoverTableau& tableau) const
 {
-  tableau.setTricks(results);
+  vector<unsigned char> tricks;
+  unsigned char tmin;
+  Covers::setup(results, tricks, tmin);
+
+  tableau.setTricks(tricks, tmin);
 
   auto citer = coversNew.begin();
   while (citer != coversNew.end())
   {
+// cout << citer->strHeader();
+// cout << citer->strLine();
+// cout << citer->strProfile();
+// cout << citer->strTricksShort();
+// cout << endl;
+
     if (citer->getTopSize() > numStrategyTops)
     {
       // A cover should not use distributions more granularly than
@@ -341,7 +351,10 @@ void Covers::explainGreedy(
     }
       
     if (! tableau.attemptGreedy(* citer))
+    {
       citer++;
+      continue;
+    }
 
     if (tableau.complete())
       return;
@@ -358,7 +371,12 @@ void Covers::explainExhaustive(
   stack.emplace_back(StackTableau());
   StackTableau& stableau = stack.back();
 
-  stableau.tableau.setTricks(results);
+  vector<unsigned char> tricks;
+  unsigned char tmin;
+  Covers::setup(results, tricks, tmin);
+
+  stableau.tableau.setTricks(tricks, tmin);
+
   stableau.coverIter = coversNew.begin();
 
   list<CoverTableau> solutions;

@@ -1,5 +1,15 @@
 Verbals automatically
 =====================
+The greedy algorithm actually does something that is not entirely wrong...
+^Strategy       94146
+^VStrategy      same
+^Vnex           45865
+
+First example of a miss: 5/182, KJ missing AQT.
+Desired solution: Either side has the stiff A.
+There is actually no Strategy #1 (stiff Q) -- why?
+And why does the greedy algorithm not find the stiff ace?
+
 It was perhaps nice to have symmetric covers as well, so
 Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
 The symmetric one is reflected w.r.t. length and tops.

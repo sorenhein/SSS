@@ -1028,7 +1028,7 @@ void Slist::covers(
   }
 
   // TODO Uncomment to turn the rest on.
-  return;
+  // return;
 
   // TODO For now.  Should come from above later.
   stratNo = 0;
@@ -1046,10 +1046,13 @@ void Slist::covers(
       continue;
     }
 
-    cout << "VStrategy #" << stratNo << ": ";
+    cout << "VStrategy #" << stratNo << ": " << endl;
     strat.coversNew(coversIn, 1, tableau);
     if (tableau.complete())
+    {
+cout << "Completed tableau" << endl;
       cout << tableau.str();
+    }
     else
       cout << strat.str("Vnexplained", true) << "\n";
     
