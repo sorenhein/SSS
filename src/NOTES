@@ -16,6 +16,21 @@ And why does the greedy algorithm not find the stiff ace?
      starting from #0
    - When setting the number of used tops, something similar
 
+Covers.h
+CoverStackInfo: Start topNext at 1 (comment this).
+
+Covers.cpp
+prepareNew: Around line 188, delete the skip of the last top.
+
+CoverSetNew.cpp
+set: topSize only set higher if it is zero (so the first one).
+getTopSize: Is used in 
+- CoverNew, earlier
+- CoverNew, getTopSize (passing it on)
+Covers:
+- explainGreedy
+- explainExhaustive
+- Is compared against numStrategyTops
 
 It was perhaps nice to have symmetric covers as well, so
 Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
