@@ -123,13 +123,26 @@ void Covers::prepareNew(
 
   auto citer = coversNew.begin(); // Next one to write
 
+/*
+cout << setw(4) << "t#" <<
+  setw(4) << "tlo" <<
+  setw(4) << "thi" <<
+  setw(4) << "mW" <<
+  setw(4) << "mE" <<
+  setw(4) << "dif" << "\n";
+  */
+
   while (! stack.empty())
   {
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->topNext; // Next to write
     if (topNumber >= topTotals.size())
-      break;
+    {
+// cout << "popped front, stack size now " << stack.size() << endl;
+      stack.pop_front();
+      continue;
+    }
 
     const unsigned char topCountActual = topTotals[topNumber];
 
@@ -146,6 +159,15 @@ void Covers::prepareNew(
         unsigned char diff = topCountHigh - topCountLow;
         if (diff < stackIter->maxDiff)
           diff = stackIter->maxDiff;
+
+/*
+ cout << setw(4) << +topNumber <<
+  setw(4) << +topCountLow <<
+  setw(4) << +topCountHigh <<
+  setw(4) << +minWest <<
+  setw(4) << +minEast <<
+  setw(4) << +diff << "\n";
+  */
 
         if (minWest + diff > maxLength)
         {
@@ -185,6 +207,7 @@ void Covers::prepareNew(
         // Add the "don't care" with respect to length.
         citer->set(maxLength, 0, maxLength, 
           topTotals, stackIter->topsLow, stackIter->topsHigh);
+// cout << citer->strLine();
         citer++;
 
         // Add the possible length constraints.
@@ -205,6 +228,7 @@ void Covers::prepareNew(
             }
             citer->set(maxLength, lenLow, lenHigh, 
               topTotals, stackIter->topsLow, stackIter->topsHigh);
+// cout << citer->strLine();
             citer++;
           }
         }
@@ -215,10 +239,12 @@ void Covers::prepareNew(
         nextIter->minEast = minEast;
         nextIter->maxDiff = diff;
         nextIter->topNext++;
+// cout << "pushed, stack size now " << stack.size() << endl;
       }
     }
     assert(! stack.empty());
     stack.pop_front();
+// cout << "popped, stack size now " << stack.size() << endl;
   }
 
   coversNew.erase(citer, coversNew.end());
@@ -336,11 +362,11 @@ void Covers::explainGreedy(
   auto citer = coversNew.begin();
   while (citer != coversNew.end())
   {
-// cout << citer->strHeader();
-// cout << citer->strLine();
-// cout << citer->strProfile();
-// cout << citer->strTricksShort();
-// cout << endl;
+cout << citer->strHeader();
+cout << citer->strLine();
+cout << citer->strProfile();
+cout << citer->strTricksShort();
+cout << "Top size " << +citer->getTopSize() << endl << endl;
 
     if (citer->getTopSize() > numStrategyTops)
     {

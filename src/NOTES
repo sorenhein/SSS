@@ -10,6 +10,13 @@ Desired solution: Either side has the stiff A.
 There is actually no Strategy #1 (stiff Q) -- why?
 And why does the greedy algorithm not find the stiff ace?
 
+1. topTotals, topPtrs are ordered from low to high ranks.
+   - Don't skip the last top, but top #0
+   - When setting the last used top, just pick the first used one
+     starting from #0
+   - When setting the number of used tops, something similar
+
+
 It was perhaps nice to have symmetric covers as well, so
 Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
 The symmetric one is reflected w.r.t. length and tops.
