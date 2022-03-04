@@ -86,7 +86,18 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
   if (rowBestPtr == nullptr)
     return false;
 
-  rowBestPtr->add(cover, additions, residuals, residualsSum);
+/*
+cout << "Row before adding:\n";
+cout << rowBestPtr->strLines() << "\n";
+*/
+
+  rowBestPtr->add(cover, additionsBest, residuals, residualsSum);
+
+/*
+cout << "Row before adding:\n";
+cout << rowBestPtr->strLines() << "\n";
+*/
+
   return true;
 }
 
@@ -217,6 +228,17 @@ string CoverTableau::str() const
     ss << row.strHeader();
     ss << row.strLines() << "\n";
   }
+
+  return ss.str();
+}
+
+
+string CoverTableau::strResiduals() const
+{
+  stringstream ss;
+
+  for (unsigned i = 0; i < residuals.size(); i++)
+    ss << setw(2) << i << setw(4) << +residuals[i] << "\n";
 
   return ss.str();
 }

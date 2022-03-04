@@ -65,6 +65,8 @@ class CoverTableau
     unsigned char numCovers() const;
 
     string str() const;
+
+    string strResiduals() const;
 };
 
 

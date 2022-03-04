@@ -1,25 +1,33 @@
 Verbals automatically
 =====================
-The greedy algorithm actually does something that is not entirely wrong...
-^Strategy       94146
-^VStrategy      same
-^Vnex           22
+The greedy algorithm actually doesn't miss anything now.
 
-Now first Vnexplained:
-11 / 159615: QJ54 / 7 missing AKT986
-#0: 
+Further work:
+- Covers::prepareNew
+  - Time it
+  - See if efficient enough (if not cout'ing)
+- Covers::explainGreedy
+  - Time it
+  - Check efficiency
+- Rework greedy results, e.g. 11/159327, QJ7654 / 9 missing AKT8
+  - Ideally we'd first recognize the length-based one, == 2,
+    lowest complexity perhaps
+  - Then the first one only contributes d = 3: len 1 top 1
+  - And the last one contributes d = 9 and 10: len 3 top 2
+  - So they become more MECE, and in fact the row can be split into 3
+- Verbal output
+  - Start with pure lengths
+- Once we've replaced the original way well
+  - Delete the original code
+- Try higher depths, both greedily and verbally
 
-
-Time Covers::prepareNew, see if efficient enough (if not cout'ing).
-
-There is a separate flow for new cover sets now, but not hooked up
-to cover recognition yet.
+10/1994, AKQ9 / 86, we get len 1 top 1-2, which is the same as
+len 1 top 1. Why prefer the former?  Should probably not accept a
+length that is shorter than any of the top ranges.  Can it be
+shorter than westMin?
 
 * Control its general by the input flag
 * The depth (#explicit tops) should be a control parameter somewhere
-* Implement the matching into a flexible tableau
-* Check that it works all the time for one explicit top
-* Delete the old way
 * Optimize space if needed
   - A trick profile could be rolled up into 16-bit chunks (8 distributions
     times 4 trick options), so maybe up to 16 2-byte numbers = 32 bytes.

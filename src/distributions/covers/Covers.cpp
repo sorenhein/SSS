@@ -409,6 +409,13 @@ cout << "Top size " << +citer->getTopSize() << endl << endl;
       continue;
     }
 
+/*
+cout << "Tableau now:\n";
+cout << tableau.str();
+cout << "Residuals now:\n";
+cout << tableau.strResiduals();
+*/
+
     if (tableau.complete())
       return;
   }
