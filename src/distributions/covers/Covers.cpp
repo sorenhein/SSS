@@ -289,16 +289,18 @@ const unsigned sizeOld = coversNew.size();
   // ways of saying the same thing.  In total across all covers,
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
-// const unsigned sizeMid = coversNew.size();
+const unsigned sizeMid = coversNew.size();
   Covers::prune();
-  // cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
-    // coversNew.size() << "\n";
+  cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
+    coversNew.size() << "\n";
 
+  /*
   cout << "Covers\n";
   cout << coversNew.front().strHeader();
   for (auto& c: coversNew)
     cout << c.strLine(maxLength, topTotals);
   cout << "\n";
+  */
 }
 
 
