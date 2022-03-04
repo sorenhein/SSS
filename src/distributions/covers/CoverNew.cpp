@@ -139,10 +139,10 @@ bool CoverNew::earlier(const CoverNew& cover2) const
     return true;
   else if (weight < cover2.weight)
     return false;
-  else if (coverSet.getTopSize() < cover2.coverSet.getTopSize())
+  else if (coverSet.getTopSize() > cover2.coverSet.getTopSize())
     // Simpler ones first
     return true;
-  else if (coverSet.getTopSize() > cover2.coverSet.getTopSize())
+  else if (coverSet.getTopSize() < cover2.coverSet.getTopSize())
     return false;
   else if (coverSet.getComplexity() < cover2.coverSet.getComplexity())
     // Simpler ones first

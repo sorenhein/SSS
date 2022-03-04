@@ -123,14 +123,14 @@ void Covers::prepareNew(
 
   auto citer = coversNew.begin(); // Next one to write
 
-/*
+/* */
 cout << setw(4) << "t#" <<
   setw(4) << "tlo" <<
   setw(4) << "thi" <<
   setw(4) << "mW" <<
   setw(4) << "mE" <<
   setw(4) << "dif" << "\n";
-  */
+  /* */
 
   while (! stack.empty())
   {
@@ -139,7 +139,7 @@ cout << setw(4) << "t#" <<
     unsigned char topNumber = stackIter->topNext; // Next to write
     if (topNumber >= topTotals.size())
     {
-// cout << "popped front, stack size now " << stack.size() << endl;
+cout << "popped front, stack size now " << stack.size() << endl;
       stack.pop_front();
       continue;
     }
@@ -160,14 +160,14 @@ cout << setw(4) << "t#" <<
         if (diff < stackIter->maxDiff)
           diff = stackIter->maxDiff;
 
-/*
+/* */
  cout << setw(4) << +topNumber <<
   setw(4) << +topCountLow <<
   setw(4) << +topCountHigh <<
   setw(4) << +minWest <<
   setw(4) << +minEast <<
   setw(4) << +diff << "\n";
-  */
+  /* */
 
         if (minWest + diff > maxLength)
         {
@@ -185,9 +185,12 @@ cout << setw(4) << "t#" <<
 
         // Never use the last top explicitly.  Maybe it shouldn't
         // be there at all, but it is.
+        // No longer skip here, as we start at 1.
+        /*
         if (topNumber == topTotals.size() - 1 &&
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
+          */
 
         // If there is a top that in itself exceeds the length range,
         // there is a more economical version of this entry.
@@ -207,7 +210,7 @@ cout << setw(4) << "t#" <<
         // Add the "don't care" with respect to length.
         citer->set(maxLength, 0, maxLength, 
           topTotals, stackIter->topsLow, stackIter->topsHigh);
-// cout << citer->strLine();
+cout << citer->strLine();
         citer++;
 
         // Add the possible length constraints.
@@ -228,7 +231,7 @@ cout << setw(4) << "t#" <<
             }
             citer->set(maxLength, lenLow, lenHigh, 
               topTotals, stackIter->topsLow, stackIter->topsHigh);
-// cout << citer->strLine();
+cout << citer->strLine();
             citer++;
           }
         }
@@ -239,12 +242,12 @@ cout << setw(4) << "t#" <<
         nextIter->minEast = minEast;
         nextIter->maxDiff = diff;
         nextIter->topNext++;
-// cout << "pushed, stack size now " << stack.size() << endl;
+cout << "pushed, stack size now " << stack.size() << endl;
       }
     }
     assert(! stack.empty());
     stack.pop_front();
-// cout << "popped, stack size now " << stack.size() << endl;
+cout << "popped, stack size now " << stack.size() << endl;
   }
 
   coversNew.erase(citer, coversNew.end());

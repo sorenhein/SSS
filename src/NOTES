@@ -5,6 +5,11 @@ The greedy algorithm actually does something that is not entirely wrong...
 ^VStrategy      same
 ^Vnex           45865
 
+2022-03-04
+When we always skip top #0, how do we make sure to get the lengths
+for the unused first top?
+
+
 First example of a miss: 5/182, KJ missing AQT.
 Desired solution: Either side has the stiff A.
 There is actually no Strategy #1 (stiff Q) -- why?

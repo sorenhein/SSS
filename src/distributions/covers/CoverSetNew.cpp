@@ -60,11 +60,13 @@ if (tops.size() < topCount)
 }
   assert(tops.size() >= topCount);
 
-  for (unsigned char i = 0; i < topCount; i++)
+  // Always skip the first one.
+  for (unsigned char i = 1; i < topCount; i++)
   {
     tops[i].setNew(topsActual[i], topsLow[i], topsHigh[i]);
 
-    if (tops[i].used())
+    // Note the first, i.e. lowest one.
+    if (tops[i].used() && topSize == 0)
       topSize = i+1;
 
     complexity += tops[i].getComplexity();
@@ -113,7 +115,10 @@ unsigned char CoverSetNew::getComplexity() const
 
 unsigned char CoverSetNew::getTopSize() const
 {
-  return topSize;
+  if (topSize == 0 || tops.empty())
+    return 0;
+  else
+    return static_cast<unsigned char>(tops.size()) - topSize;
 }
 
 
