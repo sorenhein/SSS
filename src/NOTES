@@ -3,45 +3,10 @@ Verbals automatically
 The greedy algorithm actually does something that is not entirely wrong...
 ^Strategy       94146
 ^VStrategy      same
-^Vnex           45865
+^Vnex           5187
 
-2022-03-04
-When we always skip top #0, how do we make sure to get the lengths
-for the unused first top?
-
-
-First example of a miss: 5/182, KJ missing AQT.
-Desired solution: Either side has the stiff A.
-There is actually no Strategy #1 (stiff Q) -- why?
-And why does the greedy algorithm not find the stiff ace?
-
-1. topTotals, topPtrs are ordered from low to high ranks.
-   - Don't skip the last top, but top #0
-   - When setting the last used top, just pick the first used one
-     starting from #0
-   - When setting the number of used tops, something similar
-
-Covers.h
-CoverStackInfo: Start topNext at 1 (comment this).
-
-Covers.cpp
-prepareNew: Around line 188, delete the skip of the last top.
-
-CoverSetNew.cpp
-set: topSize only set higher if it is zero (so the first one).
-getTopSize: Is used in 
-- CoverNew, earlier
-- CoverNew, getTopSize (passing it on)
-Covers:
-- explainGreedy
-- explainExhaustive
-- Is compared against numStrategyTops
-
-It was perhaps nice to have symmetric covers as well, so
-Hxx: Stiff honor.  This is only interesting if there are 2+ entries set.
-The symmetric one is reflected w.r.t. length and tops.
-CoverSetNew's include doesn't know the values to reflect around.
-Maybe check first whether they are "discovered".
+Now first Vnexplained:
+7/1667, K9 / J, #1 (stiff ace anywhere)
 
 Time Covers::prepareNew, see if efficient enough (if not cout'ing).
 

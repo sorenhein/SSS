@@ -52,9 +52,7 @@ class Covers
         maxDiff = 0;
         maxWest = 0;
         maxEast = 0;
-
-        // Never need to set the lowest rank explicitly.
-        topNext = 1;
+        topNext = 0;
       };
     };
 

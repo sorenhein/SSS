@@ -20,7 +20,7 @@
 #include "../../const.h"
 
 // TODO Find a more elegant way
-#define COVER_CHUNK_SIZE 5000
+#define COVER_CHUNK_SIZE 40000
 
 
 Covers::Covers()
@@ -123,14 +123,14 @@ void Covers::prepareNew(
 
   auto citer = coversNew.begin(); // Next one to write
 
-/* */
+/*
 cout << setw(4) << "t#" <<
   setw(4) << "tlo" <<
   setw(4) << "thi" <<
   setw(4) << "mW" <<
   setw(4) << "mE" <<
   setw(4) << "dif" << "\n";
-  /* */
+  */
 
   while (! stack.empty())
   {
@@ -139,7 +139,7 @@ cout << setw(4) << "t#" <<
     unsigned char topNumber = stackIter->topNext; // Next to write
     if (topNumber >= topTotals.size())
     {
-cout << "popped front, stack size now " << stack.size() << endl;
+// cout << "popped front, stack size now " << stack.size() << endl;
       stack.pop_front();
       continue;
     }
@@ -160,14 +160,14 @@ cout << "popped front, stack size now " << stack.size() << endl;
         if (diff < stackIter->maxDiff)
           diff = stackIter->maxDiff;
 
-/* */
+/*
  cout << setw(4) << +topNumber <<
   setw(4) << +topCountLow <<
   setw(4) << +topCountHigh <<
   setw(4) << +minWest <<
   setw(4) << +minEast <<
   setw(4) << +diff << "\n";
-  /* */
+  */
 
         if (minWest + diff > maxLength)
         {
@@ -185,12 +185,9 @@ cout << "popped front, stack size now " << stack.size() << endl;
 
         // Never use the last top explicitly.  Maybe it shouldn't
         // be there at all, but it is.
-        // No longer skip here, as we start at 1.
-        /*
-        if (topNumber == topTotals.size() - 1 &&
+        if (topNumber == 0 &&
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
-          */
 
         // If there is a top that in itself exceeds the length range,
         // there is a more economical version of this entry.
@@ -210,7 +207,7 @@ cout << "popped front, stack size now " << stack.size() << endl;
         // Add the "don't care" with respect to length.
         citer->set(maxLength, 0, maxLength, 
           topTotals, stackIter->topsLow, stackIter->topsHigh);
-cout << citer->strLine();
+// cout << citer->strLine();
         citer++;
 
         // Add the possible length constraints.
@@ -226,12 +223,22 @@ cout << citer->strLine();
 
             if (citer == coversNew.end())
             {
+
+  cout << "OVERFLOW\n";
+  cout << "Length " << +maxLength << ", ";
+  for (auto t: topTotals)
+    cout << +t << " ";
+  cout << "\n";
+
+  for (auto c: coversNew)
+    cout << c.strLine();
+
               cout << "C End reached2" << endl;
               assert(false);
             }
             citer->set(maxLength, lenLow, lenHigh, 
               topTotals, stackIter->topsLow, stackIter->topsHigh);
-cout << citer->strLine();
+// cout << citer->strLine();
             citer++;
           }
         }
@@ -242,13 +249,15 @@ cout << citer->strLine();
         nextIter->minEast = minEast;
         nextIter->maxDiff = diff;
         nextIter->topNext++;
-cout << "pushed, stack size now " << stack.size() << endl;
+// cout << "pushed, stack size now " << stack.size() << endl;
       }
     }
     assert(! stack.empty());
     stack.pop_front();
-cout << "popped, stack size now " << stack.size() << endl;
+// cout << "popped, stack size now " << stack.size() << endl;
   }
+
+const unsigned sizeOld = coversNew.size();
 
   coversNew.erase(citer, coversNew.end());
   assert(! coversNew.empty());
@@ -272,7 +281,10 @@ cout << "popped, stack size now " << stack.size() << endl;
   // ways of saying the same thing.  In total across all covers,
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
+const unsigned sizeMid = coversNew.size();
   Covers::prune();
+  cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
+    coversNew.size() << "\n";
 
   cout << "Covers\n";
   cout << coversNew.front().strHeader();
@@ -365,11 +377,13 @@ void Covers::explainGreedy(
   auto citer = coversNew.begin();
   while (citer != coversNew.end())
   {
+/*
 cout << citer->strHeader();
 cout << citer->strLine();
 cout << citer->strProfile();
 cout << citer->strTricksShort();
 cout << "Top size " << +citer->getTopSize() << endl << endl;
+*/
 
     if (citer->getTopSize() > numStrategyTops)
     {
