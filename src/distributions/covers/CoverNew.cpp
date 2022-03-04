@@ -139,10 +139,10 @@ bool CoverNew::earlier(const CoverNew& cover2) const
     return true;
   else if (weight < cover2.weight)
     return false;
-  else if (coverSet.getTopSize() > cover2.coverSet.getTopSize())
+  else if (coverSet.getTopSize() < cover2.coverSet.getTopSize())
     // Simpler ones first
     return true;
-  else if (coverSet.getTopSize() < cover2.coverSet.getTopSize())
+  else if (coverSet.getTopSize() > cover2.coverSet.getTopSize())
     return false;
   else if (coverSet.getComplexity() < cover2.coverSet.getComplexity())
     // Simpler ones first
@@ -239,7 +239,8 @@ string CoverNew::strHeader() const
   ss << coverSet.strHeader() <<
     setw(8) << "Weight" <<
     setw(8) << "Cmplx" <<
-    setw(8) << "Dists" << "\n";
+    setw(8) << "Dists" <<
+    setw(8) << "Tops" << "\n";
 
   return ss.str();
 }
@@ -254,7 +255,8 @@ string CoverNew::strLine(
   ss << coverSet.strLine(lengthActual, topsActual) <<
     setw(8) << weight <<
     setw(8) << +coverSet.getComplexity() <<
-    setw(8) << +numDist << "\n";
+    setw(8) << +numDist <<
+    setw(8) << +CoverNew::getTopSize() << "\n";
   
   return ss.str();
 }

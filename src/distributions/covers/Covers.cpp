@@ -276,15 +276,23 @@ const unsigned sizeOld = coversNew.size();
     return cover1.earlier(cover2);
   });
 
+  /*
+  cout << "Covers before pruning\n";
+  cout << coversNew.front().strHeader();
+  for (auto& c: coversNew)
+    cout << c.strLine(maxLength, topTotals);
+  cout << "\n";
+  */
+
   // It is not practical to generate the covers without duplicated
   // trick vectors in one pass.  So we eliminate the more complex
   // ways of saying the same thing.  In total across all covers,
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
-const unsigned sizeMid = coversNew.size();
+// const unsigned sizeMid = coversNew.size();
   Covers::prune();
-  cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
-    coversNew.size() << "\n";
+  // cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
+    // coversNew.size() << "\n";
 
   cout << "Covers\n";
   cout << coversNew.front().strHeader();
@@ -387,6 +395,7 @@ cout << "Top size " << +citer->getTopSize() << endl << endl;
 
     if (citer->getTopSize() > numStrategyTops)
     {
+// cout << "Too detailed\n";
       // A cover should not use distributions more granularly than
       // the strategy itself does.
       citer++;
@@ -395,6 +404,7 @@ cout << "Top size " << +citer->getTopSize() << endl << endl;
       
     if (! tableau.attemptGreedy(* citer))
     {
+// cout << "No match\n";
       citer++;
       continue;
     }
@@ -402,6 +412,7 @@ cout << "Top size " << +citer->getTopSize() << endl << endl;
     if (tableau.complete())
       return;
   }
+// cout << "Ran out\n";
 }
 
 

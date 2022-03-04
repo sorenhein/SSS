@@ -67,7 +67,7 @@ if (tops.size() < topCount)
 
     // Note the first, i.e. lowest one.
     if (tops[i].used() && topSize == 0)
-      topSize = i+1;
+      topSize = i;
 
     complexity += tops[i].getComplexity();
     if (topsLow[i] + topsHigh[i] != topsActual[i])

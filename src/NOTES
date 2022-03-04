@@ -3,10 +3,12 @@ Verbals automatically
 The greedy algorithm actually does something that is not entirely wrong...
 ^Strategy       94146
 ^VStrategy      same
-^Vnex           5187
+^Vnex           22
 
 Now first Vnexplained:
-7/1667, K9 / J, #1 (stiff ace anywhere)
+11 / 159615: QJ54 / 7 missing AKT986
+#0: 
+
 
 Time Covers::prepareNew, see if efficient enough (if not cout'ing).
 
