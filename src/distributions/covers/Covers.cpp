@@ -189,14 +189,32 @@ cout << setw(4) << "t#" <<
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
 
-        // If there is a top that in itself exceeds the length range,
-        // there is a more economical version of this entry.
-        if (topCountHigh > stackIter->maxWest)
-          stackIter->maxWest = topCountHigh;
+        // If there is an active top that in itself exceeds the 
+        // length range,
 
-        const unsigned char maxEast = topCountActual - topCountLow;
-        if (maxEast > stackIter->maxEast)
-          stackIter->maxEast = maxEast;
+        const bool usedFlag = 
+          (topCountLow != 0 || topCountHigh != topCountActual);
+
+        unsigned char maxWest, maxEast;
+        if (usedFlag)
+        {
+          const unsigned char dtop = topCountActual - topCountLow;
+          maxWest = max(topCountHigh, stackIter->maxWest);
+          maxEast = max(dtop, stackIter->maxEast);
+        }
+        else
+        {
+          maxWest = stackIter->maxWest;
+          maxEast = stackIter->maxEast;
+        }
+
+
+        // if (topCountHigh > stackIter->maxWest)
+          // stackIter->maxWest = topCountHigh;
+
+        // const unsigned char maxEast = topCountActual - topCountLow;
+        // if (maxEast > stackIter->maxEast)
+          // stackIter->maxEast = maxEast;
 
         stackIter->topsLow[topNumber] = topCountLow;
         stackIter->topsHigh[topNumber] = topCountHigh;
@@ -213,12 +231,18 @@ cout << setw(4) << "t#" <<
         // Add the possible length constraints.
         const unsigned char lenMax = maxLength - minEast;
 
-        for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
+        for (unsigned char lLow = minWest; lLow <= lenMax; lLow++)
         {
-          for (unsigned char lenHigh = lenLow; 
-            lenHigh <= lenMax; lenHigh++)
+          for (unsigned char lHigh = lLow; 
+            lHigh <= lenMax; lHigh++)
           { 
-            if (lenLow == minWest && lenHigh == lenMax)
+            if (lLow == minWest && lHigh == lenMax)
+              continue;
+
+// cout << "len " << +lLow << " to " << +lHigh << 
+  // ": maxWest " << +maxWest << "\n";
+            // There is a tighter way to specify this cover.
+            if (topNumber > 0 && lHigh < maxWest)
               continue;
 
             if (citer == coversNew.end())
@@ -236,7 +260,7 @@ cout << setw(4) << "t#" <<
               cout << "C End reached2" << endl;
               assert(false);
             }
-            citer->set(maxLength, lenLow, lenHigh, 
+            citer->set(maxLength, lLow, lHigh, 
               topTotals, stackIter->topsLow, stackIter->topsHigh);
 // cout << citer->strLine();
             citer++;
@@ -248,6 +272,8 @@ cout << setw(4) << "t#" <<
         nextIter->minWest = minWest;
         nextIter->minEast = minEast;
         nextIter->maxDiff = diff;
+        nextIter->maxWest = maxWest;
+        nextIter->maxEast = maxEast;
         nextIter->topNext++;
 // cout << "pushed, stack size now " << stack.size() << endl;
       }

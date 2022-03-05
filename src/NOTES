@@ -21,11 +21,6 @@ Further work:
   - Delete the original code
 - Try higher depths, both greedily and verbally
 
-10/1994, AKQ9 / 86, we get len 1 top 1-2, which is the same as
-len 1 top 1. Why prefer the former?  Should probably not accept a
-length that is shorter than any of the top ranges.  Can it be
-shorter than westMin?
-
 * Control its general by the input flag
 * The depth (#explicit tops) should be a control parameter somewhere
 * Optimize space if needed
