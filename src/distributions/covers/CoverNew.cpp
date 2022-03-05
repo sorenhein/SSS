@@ -305,3 +305,12 @@ string CoverNew::strTricksShort() const
   return s + "  ";
 }
 
+
+string CoverNew::str() const
+{
+  if (coverSet.explainable())
+    return coverSet.strVerbal();
+  else
+    return CoverNew::strTricksShort() + CoverNew::strLine();
+}
+

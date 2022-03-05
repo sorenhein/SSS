@@ -31,6 +31,15 @@ void CoverTableau::reset()
 }
 
 
+void CoverTableau::setBoundaries(
+  const unsigned char maxLengthIn,
+  const vector<unsigned char>& topTotalsIn)
+{
+  maxLength = maxLengthIn;
+  topTotalsPtr = &topTotalsIn;
+}
+
+
 void CoverTableau::setTricks(
   const vector<unsigned char>& tricks,
   const unsigned char tmin)

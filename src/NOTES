@@ -3,10 +3,8 @@ Verbals automatically
 The greedy algorithm actually doesn't miss anything now.
 
 - Verbals
-  CoverTableau str: Rephrase line with minimum tricks to match old one.
-  row.str() decides between strHeader, strLines and a more fluid output.
-  Make it look like the old one, e.g. lengths only first.
-  Mark the unexplained ones, eg QQ
+  CoverSetNew: explainable and strVerbal
+
 - Where does the actual name of the card come from?  Ranks?
 
 Further work:

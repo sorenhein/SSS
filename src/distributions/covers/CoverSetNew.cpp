@@ -27,6 +27,7 @@ void CoverSetNew::reset()
   length.reset();
   tops.clear();
   topSize = 0;
+  topCount = 0;
 }
 
 
@@ -51,23 +52,23 @@ void CoverSetNew::set(
   if (lenLow + lenHigh != lenActual)
     symmFlag = false;
 
-  const unsigned topCount = topsLow.size();
-  assert(topsHigh.size() == topCount);
-if (tops.size() < topCount)
-{
-  cout << "CoverSetNew: tops only " << tops.size() <<
-    ", topsLow and topsHigh " << topCount << endl;
-}
-  assert(tops.size() >= topCount);
+  const unsigned topLowSize = topsLow.size();
+  assert(topsHigh.size() == topLowSize);
+  assert(tops.size() >= topLowSize);
 
   // Always skip the first one.
-  for (unsigned char i = 1; i < topCount; i++)
+  for (unsigned char i = 1; i < topLowSize; i++)
   {
     tops[i].setNew(topsActual[i], topsLow[i], topsHigh[i]);
 
     // Note the first, i.e. lowest one.
-    if (tops[i].used() && topSize == 0)
-      topSize = i;
+    if (tops[i].used())
+    {
+      if (topSize == 0)
+        topSize = i;
+
+      topCount++;
+    }
 
     complexity += tops[i].getComplexity();
     if (topsLow[i] + topsHigh[i] != topsActual[i])
@@ -122,6 +123,12 @@ unsigned char CoverSetNew::getTopSize() const
 }
 
 
+bool CoverSetNew::explainable() const
+{
+  return false;
+}
+
+
 string CoverSetNew::strHeader() const
 {
   // Does not end on a linebreak, as it may be concatenated with
@@ -171,5 +178,12 @@ string CoverSetNew::strLine() const
   ss << setw(8) << (symmFlag ? "yes" : "-");
 
   return ss.str();
+}
+
+
+string CoverSetNew::strVerbal() const
+{
+  // TODO
+  return "";
 }
 

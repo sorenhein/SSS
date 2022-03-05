@@ -106,7 +106,8 @@ string CoverRow::strLines() const
   stringstream ss;
 
   for (auto& cptr: coverPtrs)
-    ss << cptr->strTricksShort() << cptr->strLine();
+    ss << cptr->str();
+    // ss << cptr->strTricksShort() << cptr->strLine();
 
   return ss.str();
 }

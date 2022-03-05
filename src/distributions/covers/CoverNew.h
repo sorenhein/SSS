@@ -96,6 +96,8 @@ class CoverNew
     string strHeaderTricksShort() const;
 
     string strTricksShort() const;
+
+    string str() const;
 };
 
 #endif

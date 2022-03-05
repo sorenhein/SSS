@@ -26,6 +26,7 @@ class CoverSetNew
     unsigned char complexity;
     
     unsigned char topSize; // Last used top number + 1; may be 0
+    unsigned char topCount; // Number of tops that are not unused
 
     CoverElement length;
 
@@ -56,6 +57,8 @@ class CoverSetNew
 
   unsigned char getTopSize() const;
 
+  bool explainable() const;
+
   string strHeader() const;
 
   string strLine(
@@ -63,6 +66,8 @@ class CoverSetNew
     const vector<unsigned char>& topsActual) const;
 
   string strLine() const;
+
+  string strVerbal() const;
 };
 
 #endif

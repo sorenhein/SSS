@@ -40,7 +40,7 @@ void Covers::reset()
 
 void Covers::prepare(
   const CoverMemory& coverMemory,
-  const unsigned char maxLength,
+  const unsigned char maxLengthIn,
   const unsigned char maxTops,
   const vector<unsigned char>& lengths,
   const vector<unsigned char>& tops,
@@ -48,14 +48,14 @@ void Covers::prepare(
 {
   assert(lengths.size() == tops.size());
   assert(lengths.size() == cases.size());
-  assert(maxLength >= 2);
+  assert(maxLengthIn >= 2);
   assert(maxTops >= 1);
 
-  covers.resize(coverMemory.size(maxLength, maxTops));
+  covers.resize(coverMemory.size(maxLengthIn, maxTops));
   auto citer = covers.begin();
 
-  for (auto miter = coverMemory.begin(maxLength, maxTops);
-      miter != coverMemory.end(maxLength, maxTops); miter++)
+  for (auto miter = coverMemory.begin(maxLengthIn, maxTops);
+      miter != coverMemory.end(maxLengthIn, maxTops); miter++)
   {
     assert(citer != covers.end());
     citer->prepare(lengths, tops, cases, * miter);
@@ -63,7 +63,7 @@ void Covers::prepare(
     if (citer->getWeight() == 0)
     {
       cout << "Covers::prepare: " << 
-        +maxLength << ", " << +maxTops << "\n";
+        +maxLengthIn << ", " << +maxTops << "\n";
       cout << "Adding " << citer->str() << "\n";
       cout << "Adding " << miter->strRaw() << "\n";
 
@@ -114,9 +114,12 @@ void Covers::prepareNew(
   const vector<unsigned char>& lengths,
   vector<vector<unsigned> const *>& topPtrs,
   const vector<unsigned char>& cases,
-  const unsigned char maxLength,
-  const vector<unsigned char>& topTotals)
+  const unsigned char maxLengthIn,
+  const vector<unsigned char>& topTotalsIn)
 {
+  maxLength = maxLengthIn;
+  topTotals = topTotalsIn;
+
   timersStrat[20].start();
   list<CoverStackInfo> stack; // Unfinished expansions
   stack.emplace_back(CoverStackInfo(topTotals));
@@ -423,6 +426,7 @@ void Covers::explainGreedy(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
+  tableau.setBoundaries(maxLength, topTotals);
   tableau.setTricks(tricks, tmin);
 
   auto citer = coversNew.begin();
@@ -479,6 +483,7 @@ void Covers::explainExhaustive(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
+  tableau.setBoundaries(maxLength, topTotals);
   stableau.tableau.setTricks(tricks, tmin);
 
   stableau.coverIter = coversNew.begin();

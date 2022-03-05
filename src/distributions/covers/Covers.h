@@ -57,6 +57,10 @@ class Covers
     };
 
 
+    unsigned char maxLength;
+
+    vector<unsigned char> topTotals;
+
     list<Cover> covers;
 
     list<CoverNew> coversNew;
@@ -92,8 +96,8 @@ class Covers
       const vector<unsigned char>& lengths,
       vector<vector<unsigned> const *>& topPtrs,
       const vector<unsigned char>& cases,
-      const unsigned char maxLength,
-      const vector<unsigned char>& topTotals);
+      const unsigned char maxLengthIn,
+      const vector<unsigned char>& topTotalsIn);
 
     CoverState explain(
       const list<Result>& results,
