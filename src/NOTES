@@ -2,10 +2,28 @@ Verbals automatically
 =====================
 The greedy algorithm actually doesn't miss anything now.
 
+- Verbals
+  CoverTableau str: Rephrase line with minimum tricks to match old one.
+  row.str() decides between strHeader, strLines and a more fluid output.
+  Make it look like the old one, e.g. lengths only first.
+  Mark the unexplained ones, eg QQ
+- Where does the actual name of the card come from?  Ranks?
+
 Further work:
 - Covers::prepareNew
   - Time it
   - See if efficient enough (if not cout'ing)
+  - Could do something like strategies/optim/Study.cpp
+    So groups of 5, or binary 10x10 = 1m byte entries
+    Would speed up prune, but slow down prepare
+    Later on, could speed up matching, but then we might prefer
+    5-distribution groups as result vectors go up to 2 bits each.
+  - Does it help not to make 50k entries in Covers, but say to double
+    the size every time we run out of space?
+  - Maybe later on we know which covers end up getting used,
+    so we store those in a file and we know the count ahead of time.
+    Could generate the prepare's ourselves.
+    Would avoid prune and sort
 - Covers::explainGreedy
   - Time it
   - Check efficiency

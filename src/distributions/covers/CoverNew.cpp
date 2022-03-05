@@ -269,7 +269,8 @@ string CoverNew::strLine() const
   ss << coverSet.strLine() <<
     setw(8) << weight <<
     setw(8) << +coverSet.getComplexity() <<
-    setw(8) << +numDist << "\n";
+    setw(8) << +numDist <<
+    setw(8) << +CoverNew::getTopSize() << "\n";
   
   return ss.str();
 }

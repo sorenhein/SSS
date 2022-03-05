@@ -221,13 +221,16 @@ string CoverTableau::str() const
 {
   stringstream ss;
 
-  ss << "Minimum tricks: " << +tricksMin << "\n";
+  ss << "Always take at least " << +tricksMin << " tricks, and more when\n";
 
   for (auto& row: rows)
+    ss << row.str();
+  /*
   {
     ss << row.strHeader();
     ss << row.strLines() << "\n";
   }
+  */
 
   return ss.str();
 }

@@ -54,6 +54,12 @@ void Combinations::setTimerNames()
   timersStrat[ 8].name("Strats::makeRanges");
   timersStrat[ 9].name("Strats::propagateRanges");
   timersStrat[10].name("Strats::purgeRanges");
+  timersStrat[20].name("Covers::early");
+  timersStrat[21].name("Covers::loop");
+  timersStrat[22].name("Covers::erase");
+  timersStrat[23].name("Covers::prepare");
+  timersStrat[24].name("Covers::sort");
+  timersStrat[25].name("Covers::prune");
   timersStrat[30].name("Ranks::getMinimals");
   timersStrat[31].name("CombEntry::fixMinimals");
   timersStrat[32].name("CombTest::checkCovers");

@@ -64,6 +64,8 @@ class CoverRow
     string strHeader() const;
 
     string strLines() const;
+
+    string str() const;
 };
 
 #endif

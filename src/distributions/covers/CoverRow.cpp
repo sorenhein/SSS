@@ -110,3 +110,10 @@ string CoverRow::strLines() const
 
   return ss.str();
 }
+
+
+string CoverRow::str() const
+{
+  return CoverRow::strHeader() + CoverRow::strLines() + "\n";
+}
+

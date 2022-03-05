@@ -19,6 +19,9 @@
 #include "../../strategies/result/Result.h"
 #include "../../const.h"
 
+#include "../../utils/Timer.h"
+extern vector<Timer> timersStrat;
+
 // TODO Find a more elegant way
 #define COVER_CHUNK_SIZE 40000
 
@@ -114,6 +117,7 @@ void Covers::prepareNew(
   const unsigned char maxLength,
   const vector<unsigned char>& topTotals)
 {
+  timersStrat[20].start();
   list<CoverStackInfo> stack; // Unfinished expansions
   stack.emplace_back(CoverStackInfo(topTotals));
 
@@ -122,6 +126,7 @@ void Covers::prepareNew(
     c.resize(topTotals.size());
 
   auto citer = coversNew.begin(); // Next one to write
+  timersStrat[20].stop();
 
 /*
 cout << setw(4) << "t#" <<
@@ -132,6 +137,7 @@ cout << setw(4) << "t#" <<
   setw(4) << "dif" << "\n";
   */
 
+  timersStrat[21].start();
   while (! stack.empty())
   {
     auto stackIter = stack.begin();
@@ -282,11 +288,14 @@ cout << setw(4) << "t#" <<
     stack.pop_front();
 // cout << "popped, stack size now " << stack.size() << endl;
   }
+  timersStrat[21].stop();
 
+  timersStrat[22].start();
 const unsigned sizeOld = coversNew.size();
 
   coversNew.erase(citer, coversNew.end());
   assert(! coversNew.empty());
+  timersStrat[22].stop();
 
   cout << "Length " << +maxLength << ", ";
   for (auto t: topTotals)
@@ -294,13 +303,17 @@ const unsigned sizeOld = coversNew.size();
   cout << "\n";
 
 
+  timersStrat[23].start();
   for (auto& c: coversNew)
     c.prepare(lengths, topPtrs, cases);
+  timersStrat[23].stop();
 
+  timersStrat[24].start();
   coversNew.sort([](const CoverNew& cover1, const CoverNew& cover2)
   {
     return cover1.earlier(cover2);
   });
+  timersStrat[24].stop();
 
   /*
   cout << "Covers before pruning\n";
@@ -316,7 +329,9 @@ const unsigned sizeOld = coversNew.size();
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
 const unsigned sizeMid = coversNew.size();
+  timersStrat[25].start();
   Covers::prune();
+  timersStrat[25].stop();
   cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
     coversNew.size() << "\n";
 
