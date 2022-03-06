@@ -117,6 +117,23 @@ while (my $line = <$fh>)
       {
         $doubleHonor++;
       }
+      elsif ($#{$strats[$vno]} == 0 &&
+        $#vstrats == 1 &&
+        $strats[$vno][0] =~ /^Either opponent has doubleton honors/ &&
+        $vstrats[0] =~ /^West has doubleton honors/ &&
+        $vstrats[1] =~ /^East has doubleton honors/)
+      {
+        $doubleHonor++;
+      }
+      elsif ($#{$strats[$vno]} == 1 &&
+        $#vstrats == 2 &&
+        $strats[$vno][0] eq $vstrats[0] &&
+        $strats[$vno][1] =~ /^Either opponent has doubleton honors/ &&
+        $vstrats[1] =~ /^West has doubleton honors/ &&
+        $vstrats[2] =~ /^East has doubleton honors/)
+      {
+        $doubleHonor++;
+      }
       else
       {
 print "$lno C\n";
