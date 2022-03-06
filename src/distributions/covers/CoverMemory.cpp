@@ -309,6 +309,8 @@ void CoverMemory::prepare_4_1()            // ***** DONE-1 *****
   CoverMemory::WestTop1(1, COVER_EXTEND);
 
   CoverMemory::WestLengthRange(1, 4);      // 23. West is not void
+
+  CoverMemory::WestLengthRange(2, 3);      // 24. 2=2, 3=1
 }
 
 

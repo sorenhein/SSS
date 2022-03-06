@@ -13,14 +13,10 @@ my ($cards, $holding);
 my (@strats, @vstrats);
 my (@shead, @vhead);
 
-my $countHead = 0;
 my $countHeadText = 0;
 my $countNum = 0;
 my $countText = 0;
 my $countSame = 0;
-
-my $stiffHonor = 0;
-my $doubleHonor = 0;
 
 while (my $line = <$fh>)
 {
@@ -52,6 +48,7 @@ while (my $line = <$fh>)
       last if ($line2 =~ /^\s*$/);
       $line2 =~ s/^\*\s+//;
       $line2 =~ s/^\s*-\s+//;
+      $line2 =~ s/\[.*\]//;
       push @{$strats[$sno]}, $line2;
     }
   }
@@ -63,10 +60,6 @@ while (my $line = <$fh>)
     $vhead[$vno] = $rest;
     @vstrats = ();
 
-    # Skip the header
-    # my $line2 = <$fh>;
-    # $lno++;
-
     while (my $line2 = <$fh>)
     {
       chomp $line2;
@@ -74,89 +67,62 @@ while (my $line = <$fh>)
       $lno++;
       last if ($line2 =~ /^\s*$/);
       $line2 =~ s/^\*\s+//;
+      $line2 =~ s/\[.*\]//;
       push @vstrats, $line2;
     }
+
+    my @vsorted = sort @vstrats;
 
     if ($shead[$vno] ne $vhead[$vno])
     {
       $countHeadText++;
+      next;
     }
-    elsif ($#{$strats[$vno]} != $#vstrats)
+
+    for my $i (0 .. $#{$strats[$vno]})
     {
-      if ($#{$strats[$vno]} == 0 &&
-        $#vstrats == 1 &&
-        $strats[$vno][0] =~ /^Either opponent has the singleton honor/ &&
-        $vstrats[0] =~ /^West has the singleton honor/ &&
-        $vstrats[1] =~ /^East has the singleton honor/)
+      my $t = $strats[$vno][$i];
+      if ($t =~ /^Either opponent/)
       {
-        $stiffHonor++;
+        my $t1 = $t;
+        $t1 =~ s/^Either opponent/West/;
+        push @{$strats[$vno]}, $t1;
+
+        $t1 = $t;
+        $t1 =~ s/^Either opponent/East/;
+        push @{$strats[$vno]}, $t1;
+
+        splice(@{$strats[$vno]}, $i, 1);
       }
-      elsif ($#{$strats[$vno]} == 1 &&
-        $#vstrats == 2 &&
-        $strats[$vno][0] eq $vstrats[0] &&
-        $strats[$vno][1] =~ /^Either opponent has the singleton honor/ &&
-        $vstrats[1] =~ /^West has the singleton honor/ &&
-        $vstrats[2] =~ /^East has the singleton honor/)
-      {
-        $stiffHonor++;
-      }
-      elsif ($#{$strats[$vno]} == 0 &&
-        $#vstrats == 1 &&
-        $strats[$vno][0] =~ /^Either opponent has the top at most doubleton/ &&
-        $vstrats[0] =~ /^West has the top at most doubleton/ &&
-        $vstrats[1] =~ /^East has the top at most doubleton/)
-      {
-        $doubleHonor++;
-      }
-      elsif ($#{$strats[$vno]} == 1 &&
-        $#vstrats == 2 &&
-        $strats[$vno][0] eq $vstrats[0] &&
-        $strats[$vno][1] =~ /^Either opponent has the top at most doubleton/ &&
-        $vstrats[1] =~ /^West has the top at most doubleton/ &&
-        $vstrats[2] =~ /^East has the top at most doubleton/)
-      {
-        $doubleHonor++;
-      }
-      elsif ($#{$strats[$vno]} == 0 &&
-        $#vstrats == 1 &&
-        $strats[$vno][0] =~ /^Either opponent has doubleton honors/ &&
-        $vstrats[0] =~ /^West has doubleton honors/ &&
-        $vstrats[1] =~ /^East has doubleton honors/)
-      {
-        $doubleHonor++;
-      }
-      elsif ($#{$strats[$vno]} == 1 &&
-        $#vstrats == 2 &&
-        $strats[$vno][0] eq $vstrats[0] &&
-        $strats[$vno][1] =~ /^Either opponent has doubleton honors/ &&
-        $vstrats[1] =~ /^West has doubleton honors/ &&
-        $vstrats[2] =~ /^East has doubleton honors/)
-      {
-        $doubleHonor++;
-      }
-      else
-      {
+    }
+
+    my @ssorted = sort @{$strats[$vno]};
+
+    if ($#ssorted != $#vsorted)
+    {
 print "$lno C\n";
-        $countNum++;
-      }
+      $countNum++;
     }
     else
     {
-      my $flagDiff = 0;
-      for my $i (0 .. $#vstrats)
+      my $sameFlag = 1;
+      for my $i (0 .. $#ssorted)
       {
-        if ($strats[$vno][$i] ne $vstrats[$i])
+        if ($ssorted[$i] ne $vsorted[$i])
         {
-print "$lno T\n";
-          $countText++;
-          $flagDiff = 1;
+          $sameFlag = 0;
           last;
         }
       }
 
-      if (! $flagDiff)
+      if ($sameFlag)
       {
         $countSame++;
+      }
+      else
+      {
+print "$lno T\n";
+        $countText++;
       }
     }
   }
@@ -164,10 +130,7 @@ print "$lno T\n";
 
 close $fh;
 
-print "Head count      ", $countHead, "\n";
 print "Head text       ", $countHeadText, "\n";
 print "Number of lines ", $countNum, "\n";
-print "  Stiff honor   ", $stiffHonor, "\n";
-print "  Double honor  ", $doubleHonor, "\n";
 print "Text content    ", $countText, "\n";
 print "Same            ", $countSame, "\n";

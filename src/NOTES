@@ -4,19 +4,12 @@ The greedy algorithm actually doesn't miss anything now.
 
 Probably get rid of a lot of the handmade combos in CoverMemory.
 
-In smatch, sort and deal better with e.g. 11 / 31562 which is a match,
-just more difficult to see.  Not a lot of if-then, but a list of things
-that are considered the same.  Maybe replace /^Either opponent/
-with two entries before doing anything else.  Then sort.  Then compare.
-Note when a replacement was made.
-
 perl smatch.pl a
 
-#lines  16277
-  stiff H       12924
-  double H      2480
-text    10377
-same    51822
+Head text       15
+Number of lines 15759
+Text content    5143
+Same            73229
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow
