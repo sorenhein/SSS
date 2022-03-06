@@ -241,7 +241,7 @@ string CoverTableau::str() const
   }
   */
 
-  return ss.str();
+  return ss.str() + "\n";
 }
 
 

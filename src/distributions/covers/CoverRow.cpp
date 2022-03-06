@@ -108,7 +108,7 @@ string CoverRow::strLines(
   stringstream ss;
 
   for (auto& cptr: coverPtrs)
-    ss << "* " << cptr->str(maxTricks, topTotals) << "\n";
+    ss << "* " << cptr->str(maxTricks, topTotals);
     // ss << cptr->strTricksShort() << cptr->strLine();
 
   return ss.str();
@@ -119,7 +119,8 @@ string CoverRow::str(
   const unsigned char maxTricks,
   const vector<unsigned char>& topTotals) const
 {
-  return CoverRow::strHeader() + 
-    CoverRow::strLines(maxTricks, topTotals) + "\n";
+  return 
+    // CoverRow::strHeader() + 
+    CoverRow::strLines(maxTricks, topTotals);
 }
 

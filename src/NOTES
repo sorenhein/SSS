@@ -2,17 +2,22 @@ Verbals automatically
 =====================
 The greedy algorithm actually doesn't miss anything now.
 
-Verbals
-- Now CoverElement also outputs verbal explanations in the same
-  types of situations.
+perl smatch.pl a
 
-- 10/5426: Why is the explanation of #0 correct?
-- Find a script way to compare outputs
+#lines  25041
+  stiff H       11336
+text    13776
+same    43993
+
+7/1964: 
+- Why do the 3 VStrategies add up to the right thing?
+- Why is Strategy #0 "West has H(xX)" and not "West has exactly one top"?
+
+10/5426: Why is the explanation of #0 correct?
+
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow
 - Delete the original code
-
-
 
   Maybe covers have an index or a number
   Maybe we register which ones are symmetries of one another
