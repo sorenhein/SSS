@@ -649,7 +649,7 @@ string CoverSet::str(
       if (top1.oper == COVER_EQUAL)
         return CoverSet::strBothEqual(oppsLength, oppsTops1);
       else
-        return "ZZ " + CoverSet::strLength(oppsLength) + ", and " +
+        return CoverSet::strLength(oppsLength) + ", and " +
           CoverSet::strTop1(oppsTops1);
     }
     else
@@ -657,7 +657,7 @@ string CoverSet::str(
       if (top1.oper == COVER_EQUAL)
         return CoverSet::strTop1Fixed(oppsLength, oppsTops1);
       else
-        return "XX " + CoverSet::strLength(oppsLength) + ", and " +
+        return CoverSet::strLength(oppsLength) + ", and " +
           CoverSet::strTop1(oppsTops1);
     }
   }
