@@ -67,7 +67,7 @@ class CoverSetNew
 
   string strLine() const;
 
-  string strVerbal() const;
+  string strVerbal(const unsigned char maxLength) const;
 };
 
 #endif

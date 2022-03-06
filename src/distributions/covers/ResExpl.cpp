@@ -160,8 +160,6 @@ string ResExpl::str() const
 
     ss << prefix <<
       ed.coverPtr->str() << " [" <<
-      +length << "-" << +tops1 << "-" << data.size() << "; " <<
-      ed.coverPtr->index() << ": " <<
       +ed.numDist << ", " <<
       +ed.weight << "]\n";
   }

@@ -306,10 +306,18 @@ string CoverNew::strTricksShort() const
 }
 
 
-string CoverNew::str() const
+string CoverNew::str(const unsigned char maxLength) const
 {
   if (coverSet.explainable())
-    return coverSet.strVerbal();
+  {
+    stringstream ss;
+
+    ss << coverSet.strVerbal(maxLength) <<
+      " [" << +numDist << ", " << 
+      weight << "]";
+
+    return ss.str();
+  }
   else
     return CoverNew::strTricksShort() + CoverNew::strLine();
 }

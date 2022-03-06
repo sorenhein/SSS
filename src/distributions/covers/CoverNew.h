@@ -97,7 +97,7 @@ class CoverNew
 
     string strTricksShort() const;
 
-    string str() const;
+    string str(const unsigned char maxLength) const;
 };
 
 #endif

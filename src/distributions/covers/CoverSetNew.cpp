@@ -125,7 +125,10 @@ unsigned char CoverSetNew::getTopSize() const
 
 bool CoverSetNew::explainable() const
 {
-  return false;
+  if (topCount == 0)
+    return true;
+  else
+    return false;
 }
 
 
@@ -181,9 +184,8 @@ string CoverSetNew::strLine() const
 }
 
 
-string CoverSetNew::strVerbal() const
+string CoverSetNew::strVerbal(const unsigned char maxLength) const
 {
-  // TODO
-  return "";
+  return length.strLength(maxLength);
 }
 

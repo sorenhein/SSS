@@ -101,20 +101,20 @@ string CoverRow::strHeader() const
 }
 
 
-string CoverRow::strLines() const
+string CoverRow::strLines(const unsigned char maxTricks) const
 {
   stringstream ss;
 
   for (auto& cptr: coverPtrs)
-    ss << cptr->str();
+    ss << "* " << cptr->str(maxTricks) << "\n";
     // ss << cptr->strTricksShort() << cptr->strLine();
 
   return ss.str();
 }
 
 
-string CoverRow::str() const
+string CoverRow::str(const unsigned char maxTricks) const
 {
-  return CoverRow::strHeader() + CoverRow::strLines() + "\n";
+  return CoverRow::strHeader() + CoverRow::strLines(maxTricks) + "\n";
 }
 

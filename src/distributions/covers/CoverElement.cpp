@@ -28,6 +28,7 @@ void CoverElement::reset()
   value2 = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
+  symmFlag = false; // Not used (yet?)
   usedFlag = false;
   complexity = 0;
 }
@@ -124,6 +125,86 @@ unsigned char CoverElement::getComplexity() const
 }
 
 
+string CoverElement::strLengthEqual(const unsigned char lenActual) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+
+  if (value1 == 0)
+    ss << side << " is void";
+  else if (value1 == lenActual)
+  {
+    assert(! symmFlag);
+    ss << "East is void";
+  }
+  else if (value1 == 1)
+    ss << side << " has a singleton";
+  else if (value1 == lenActual-1)
+  {
+    assert(! symmFlag);
+    ss << "East has a singleton";
+  }
+  else if (value1 == 2)
+  {
+    if (lenActual > 4)
+      ss << side << " has a doubleton";
+    else
+      ss << "The suit splits 2=2";
+  }
+  else
+    ss << "The suit splits " << +value1 << "=" << +(lenActual - value1);
+
+  return ss.str();
+}
+
+
+
+string CoverElement::strLengthInside(const unsigned char lenActual) const
+{
+  stringstream ss;
+  const string side = (symmFlag ? "Either opponent" : "West");
+
+  if (value1 == 0)
+  {
+    if (value2 == 1)
+      ss << side << " has at most a singleton";
+    else if (value2 == 2)
+      ss << side << " has at most a doubleton";
+    else
+      ss << side << " has at most " << +value2 << " cards";
+  }
+  else if (value2 == lenActual)
+  {
+    ss << side << " has at least " << +value1 << " cards";
+  }
+  else if (value1 == 1 && value2 == lenActual-1)
+  {
+    ss << "Neither opponent is void";
+  }
+  else if (value1 + value2 == lenActual)
+  {
+    if (value1 + 1 == value2)
+    {
+      ss << "The suit splits " << +value1 << "-" << +value2 << 
+        " either way";
+    }
+    else
+    {
+      ss << "The suit splits " << +value1 << "-" << +value2 <<
+        " or better either way";
+    }
+  }
+  else
+  {
+    ss << "The suit splits between " <<
+      +value1 << "=" << +(lenActual - value1) << " and " <<
+      +value2 << "=" << +(lenActual - value2);
+  }
+
+  return ss.str();
+}
+
+
 string CoverElement::strRaw() const
 {
   stringstream ss;
@@ -206,5 +287,19 @@ string CoverElement::str(const string& word) const
     assert(false);
 
   return ss.str();
+}
+
+
+string CoverElement::strLength(const unsigned char lenActual) const
+{
+  if (oper == COVER_EQUAL)
+    return CoverElement::strLengthEqual(lenActual);
+  else if (oper == COVER_INSIDE_RANGE)
+    return CoverElement::strLengthInside(lenActual);
+  else
+  {
+    assert(false);
+    return "";
+  }
 }
 

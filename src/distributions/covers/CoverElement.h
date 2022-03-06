@@ -37,6 +37,7 @@ class CoverElement
 
     ComparePtr ptr;
 
+    bool symmFlag;
     bool usedFlag;
 
     unsigned char complexity;
@@ -47,6 +48,10 @@ class CoverElement
     bool equal(const unsigned char valueIn) const;
     
     bool insideRange(const unsigned char valueIn) const;
+
+    string strLengthEqual(const unsigned char lenActual) const;
+
+    string strLengthInside(const unsigned char lenActual) const;
 
 
   public:
@@ -82,6 +87,8 @@ class CoverElement
     string strShort() const;
 
     string str(const string& word) const;
+
+    string strLength(const unsigned char lenActual) const;
 };
 
 #endif
