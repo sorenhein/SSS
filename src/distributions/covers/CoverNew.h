@@ -97,7 +97,9 @@ class CoverNew
 
     string strTricksShort() const;
 
-    string str(const unsigned char maxLength) const;
+    string str(
+      const unsigned char maxLength,
+      const vector<unsigned char>& topTotals) const;
 };
 
 #endif

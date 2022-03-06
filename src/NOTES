@@ -2,19 +2,21 @@ Verbals automatically
 =====================
 The greedy algorithm actually doesn't miss anything now.
 
-- Verbals
-  CoverSetNew: explainable and strVerbal
-  Do rest of CoverElement from CoverSet
+Verbals
+- Now CoverElement also outputs verbal explanations in the same
+  types of situations.
+
+- 10/5426: Why is the explanation of #0 correct?
+- Find a script way to compare outputs
+- Explain differences, e.g. from greedy
+- Introduce back symmetry somehow
+- Delete the original code
+
+
 
   Maybe covers have an index or a number
   Maybe we register which ones are symmetries of one another
   Somehow note which covers ever get used for a given top configuration.
-
-- Once we've replaced the original way well
-  - Find a script way to compare outputs
-  - Explain differences, e.g. from greedy
-  - Introduce back symmetry somehow
-  - Delete the original code
 
 - Where does the actual name of the card come from?  Ranks?
 

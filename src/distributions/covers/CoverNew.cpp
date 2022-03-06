@@ -306,13 +306,15 @@ string CoverNew::strTricksShort() const
 }
 
 
-string CoverNew::str(const unsigned char maxLength) const
+string CoverNew::str(
+  const unsigned char maxLength,
+  const vector<unsigned char>& topTotals) const
 {
   if (coverSet.explainable())
   {
     stringstream ss;
 
-    ss << coverSet.strVerbal(maxLength) <<
+    ss << coverSet.strVerbal(maxLength, topTotals) <<
       " [" << +numDist << ", " << 
       weight << "]";
 

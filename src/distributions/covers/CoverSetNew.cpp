@@ -127,6 +127,8 @@ bool CoverSetNew::explainable() const
 {
   if (topCount == 0)
     return true;
+  else if (CoverSetNew::getTopSize() == 1 && topCount == 1)
+    return true;
   else
     return false;
 }
@@ -184,8 +186,15 @@ string CoverSetNew::strLine() const
 }
 
 
-string CoverSetNew::strVerbal(const unsigned char maxLength) const
+string CoverSetNew::strVerbal(
+  const unsigned char maxLength,
+  const vector<unsigned char>& topTotals) const
 {
-  return length.strLength(maxLength);
+  if (topCount == 0)
+    return length.strLength(maxLength);
+  else if (! length.used())
+    return tops.back().strTop1(topTotals.back());
+  else
+    return length.strLengthTop1(tops.back(), maxLength, topTotals.back());
 }
 

@@ -233,7 +233,7 @@ string CoverTableau::str() const
   ss << "Always take at least " << +tricksMin << " tricks, and more when\n";
 
   for (auto& row: rows)
-    ss << row.str(maxLength);
+    ss << row.str(maxLength, * topTotalsPtr);
   /*
   {
     ss << row.strHeader();
