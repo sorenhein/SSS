@@ -6,10 +6,10 @@ Probably get rid of a lot of the handmade combos in CoverMemory.
 
 perl smatch.pl a
 
-Head text       15
-Number of lines 15759
-Text content    5143
-Same            73229
+Head text       174
+Number of lines 12009
+Text content    4623
+Same            77340
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow
