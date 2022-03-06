@@ -108,6 +108,7 @@ class CoverElement
       CoverXes& coverXes) const;
 
     string strTop1Fixed0(
+      const CoverElement& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side,

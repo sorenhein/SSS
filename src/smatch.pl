@@ -20,6 +20,7 @@ my $countText = 0;
 my $countSame = 0;
 
 my $stiffHonor = 0;
+my $doubleHonor = 0;
 
 while (my $line = <$fh>)
 {
@@ -99,8 +100,26 @@ while (my $line = <$fh>)
       {
         $stiffHonor++;
       }
+      elsif ($#{$strats[$vno]} == 0 &&
+        $#vstrats == 1 &&
+        $strats[$vno][0] =~ /^Either opponent has the top at most doubleton/ &&
+        $vstrats[0] =~ /^West has the top at most doubleton/ &&
+        $vstrats[1] =~ /^East has the top at most doubleton/)
+      {
+        $doubleHonor++;
+      }
+      elsif ($#{$strats[$vno]} == 1 &&
+        $#vstrats == 2 &&
+        $strats[$vno][0] eq $vstrats[0] &&
+        $strats[$vno][1] =~ /^Either opponent has the top at most doubleton/ &&
+        $vstrats[1] =~ /^West has the top at most doubleton/ &&
+        $vstrats[2] =~ /^East has the top at most doubleton/)
+      {
+        $doubleHonor++;
+      }
       else
       {
+print "$lno C\n";
         $countNum++;
       }
     }
@@ -111,6 +130,7 @@ while (my $line = <$fh>)
       {
         if ($strats[$vno][$i] ne $vstrats[$i])
         {
+print "$lno T\n";
           $countText++;
           $flagDiff = 1;
           last;
@@ -131,5 +151,6 @@ print "Head count      ", $countHead, "\n";
 print "Head text       ", $countHeadText, "\n";
 print "Number of lines ", $countNum, "\n";
 print "  Stiff honor   ", $stiffHonor, "\n";
+print "  Double honor  ", $doubleHonor, "\n";
 print "Text content    ", $countText, "\n";
 print "Same            ", $countSame, "\n";

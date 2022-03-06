@@ -4,16 +4,11 @@ The greedy algorithm actually doesn't miss anything now.
 
 perl smatch.pl a
 
-#lines  25041
-  stiff H       11336
-text    13776
-same    43993
-
-7/1964: 
-- Why do the 3 VStrategies add up to the right thing?
-- Why is Strategy #0 "West has H(xX)" and not "West has exactly one top"?
-
-10/5426: Why is the explanation of #0 correct?
+#lines  20513
+  stiff H       12216
+  double H      890
+text    10655
+same    49872
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow

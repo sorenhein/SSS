@@ -316,7 +316,7 @@ string CoverNew::str(
 
     ss << coverSet.strVerbal(maxLength, topTotals) <<
       " [" << +numDist << ", " << 
-      weight << "]\n";
+      weight << "]";
 
     return ss.str();
   }

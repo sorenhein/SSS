@@ -95,6 +95,12 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
   if (rowBestPtr == nullptr)
     return false;
 
+  // A 1-trick cover always exists separately as well.
+  // TODO Actually we should only add deltas that are not stand-alone
+  // covers.
+  if  (weightBest == 1)
+    return false;
+
 /*
 cout << "Row before adding:\n";
 cout << rowBestPtr->strLines() << "\n";

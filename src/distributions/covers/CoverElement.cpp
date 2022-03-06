@@ -28,8 +28,8 @@ struct CoverXes
     stringstream ss;
 
     ss << "coverXes: " <<
-      westMin << "-" << westMax << ", " <<
-      eastMin << "-" << eastMax << ", " <<
+      +westMin << "-" << +westMax << ", " <<
+      +eastMin << "-" << +eastMax << ", " <<
       strWest << ", " << strEast << "\n";
 
     return ss.str();
@@ -587,6 +587,7 @@ void CoverElement::strXes(
 
 
 string CoverElement::strTop1Fixed0(
+  const CoverElement& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
@@ -594,7 +595,7 @@ string CoverElement::strTop1Fixed0(
 {
   stringstream ss;
 
-  if (value1 == 0)
+  if (top1.value1 == 0)
   {
     assert(! symmFlag);
     if (oppsTops1 == 1)
@@ -636,7 +637,8 @@ string CoverElement::strTop1Fixed0(
     {
       cout << coverXes.str();
       cout << CoverElement::strLength(oppsLength) << ", and " <<
-        CoverElement::strTop1(oppsTops1) << endl;
+        top1.strTop1(oppsTops1) << endl;
+        // CoverElement::strTop1(oppsTops1) << endl;
       assert(false);
     }
   }
@@ -707,9 +709,11 @@ string CoverElement::strTop1Fixed(
   CoverXes coverXes;
   CoverElement::strXes(top1, oppsLength, oppsTops1, coverXes);
 
-  if (top1.value1 == 0 ||top1.value1 == oppsTops1)
-    return CoverElement::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes);
-  else if (top1.value1 == 1 ||top1.value1 + 1 == oppsTops1)
+  if (top1.value1 == 0 || top1.value1 == oppsTops1)
+  {
+    return CoverElement::strTop1Fixed0(top1, oppsLength, oppsTops1, side, coverXes);
+  }
+  else if (top1.value1 == 1 || top1.value1 + 1 == oppsTops1)
     return CoverElement::strTop1Fixed1(top1, oppsTops1, side, coverXes);
   else
   {
@@ -729,7 +733,7 @@ string CoverElement::strLengthTop1(
     if (top1.oper == COVER_EQUAL)
       return CoverElement::strBothEqual(top1, oppsLength, oppsTops1);
     else
-      return "ZZ " + CoverElement::strLength(oppsLength) + ", and " +
+      return CoverElement::strLength(oppsLength) + ", and " +
         top1.strTop1(oppsTops1);
   }
   else
@@ -737,7 +741,7 @@ string CoverElement::strLengthTop1(
     if (top1.oper == COVER_EQUAL)
       return CoverElement::strTop1Fixed(top1, oppsLength, oppsTops1);
     else
-      return "XX " + CoverElement::strLength(oppsLength) + ", and " +
+      return CoverElement::strLength(oppsLength) + ", and " +
         top1.strTop1(oppsTops1);
   }
 }
