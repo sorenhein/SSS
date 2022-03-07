@@ -7,11 +7,11 @@ Probably get rid of a lot of the handmade combos in CoverMemory.
 perl smatch.pl a
 
 Head text       163     probably old ones I've broken
-Number of lines 11494
-Text content    4263
-Same            78226
+Number of lines 9471
+Text content    4120
+Same            80392
 
-YY              3969    probably ones I have a chance of fixing
+YY              4377    probably ones I have a chance of fixing
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow

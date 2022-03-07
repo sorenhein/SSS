@@ -293,8 +293,8 @@ void CoverMemory::prepare_4_1()            // ***** DONE-1 *****
   // CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 19. West has the top or West is void.
-  CoverMemory::WestTop1(1);
-  CoverMemory::WestLength(0, COVER_EXTEND);
+  // CoverMemory::WestTop1(1);
+  CoverMemory::WestLength(0);
 
   // 20. East has the top or East is void.
   // CoverMemory::EastLength(0, COVER_EXTEND);
@@ -354,9 +354,15 @@ void CoverMemory::prepare_4_2()
 
   CoverMemory::WestGeneralAnd(3, 4, 2, 2); // 23. HHx(x) with West
 
+  CoverMemory::WestTop1Range(1, 2);
+
+  // West has exactly one top, or the suit splits 2=2.
+  CoverMemory::WestTop1(1);
+  CoverMemory::WestLength(2, COVER_EXTEND);
+
   // 24. 4=0, 3=1, 2=2; HHx=x or 0=4 (so no singleton H with East)
-  CoverMemory::WestLengthRange(2, 4);
-  CoverMemory::WestGeneralAnd(0, 1, 0, 0, COVER_EXTEND);
+  // CoverMemory::WestLengthRange(2, 4);
+  // CoverMemory::WestGeneralAnd(0, 1, 0, 0, COVER_EXTEND);
 }
 
 
@@ -481,6 +487,9 @@ void CoverMemory::prepare_5_2()
   // 17. West has the tops
   CoverMemory::WestTop1(2);
 
+  // West has at least one top.
+  CoverMemory::WestTop1Range(1, 2);
+
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 18. H(x) with West
   CoverMemory::EastGeneralAnd(1, 2, 1, 1); // 19. H(x) with East
 
@@ -603,8 +612,8 @@ void CoverMemory::prepare_6_1()            // ***** DONE-1 *****
   CoverMemory::WestGeneralAnd(3, 3, 1, 1); // 10. Hxx with West
 
   // 11. 3=3 or West has the honor
-  CoverMemory::WestLength(3);
-  CoverMemory::WestTop1(1, COVER_EXTEND);
+  // CoverMemory::WestLength(3);
+  // CoverMemory::WestTop1(1, COVER_EXTEND);
 
   // 12. 3=3 or Hx doubleton on either side
   CoverMemory::WestLength(3);
