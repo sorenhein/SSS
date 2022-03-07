@@ -48,7 +48,9 @@ while (my $line = <$fh>)
       last if ($line2 =~ /^\s*$/);
       $line2 =~ s/^\*\s+//;
       $line2 =~ s/^\s*-\s+//;
-      $line2 =~ s/\[.*\]//;
+      $line2 =~ s/\s*\[.*\]//;
+      $line2 =~ s/^YY //;
+      $line2 =~ s/^\s+//;
       push @{$strats[$sno]}, $line2;
     }
   }
@@ -66,8 +68,10 @@ while (my $line = <$fh>)
       $line2 =~ s///;
       $lno++;
       last if ($line2 =~ /^\s*$/);
+      $line2 =~ s/^\s+//;
       $line2 =~ s/^\*\s+//;
-      $line2 =~ s/\[.*\]//;
+      $line2 =~ s/\s*\[.*\]//;
+      $line2 =~ s/\s+$//;
       push @vstrats, $line2;
     }
 
@@ -79,7 +83,7 @@ while (my $line = <$fh>)
       next;
     }
 
-    for my $i (0 .. $#{$strats[$vno]})
+    for my $i (reverse 0 .. $#{$strats[$vno]})
     {
       my $t = $strats[$vno][$i];
       if ($t =~ /^Either opponent/)

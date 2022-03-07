@@ -222,14 +222,10 @@ string CoverSpec::strRaw() const
 
 string CoverSpec::str() const
 {
-  string s;
-  if (setsWest.size() > 1)
-    s = "YY ";
-
-  s += setsWest.front().str(oppsLength, oppsTops1);
+  string s = setsWest.front().str(oppsLength, oppsTops1);
   
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-    s += "; or " + iter->str(oppsLength, oppsTops1);
+    s += "; or\n  " + iter->str(oppsLength, oppsTops1);
 
   return s;
 }

@@ -110,7 +110,7 @@ string CoverRow::strLines(
   ss << "* " << coverPtrs.front()->str(maxTricks, topTotals);
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-    ss << "; or \n  " << (* iter)->str(maxTricks, topTotals);
+    ss << "; or\n  " << (* iter)->str(maxTricks, topTotals);
 
   // for (auto& cptr: coverPtrs)
     // ss << "* " << cptr->str(maxTricks, topTotals);

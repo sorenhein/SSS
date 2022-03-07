@@ -6,20 +6,24 @@ Probably get rid of a lot of the handmade combos in CoverMemory.
 
 perl smatch.pl a
 
-Head text       163     probably old ones I've broken
-Number of lines 9471
-Text content    4120
-Same            80392
-
-YY              4377    probably ones I have a chance of fixing
+Head text       0     probably old ones I've broken
+Number of lines 8463
+Text content    4550
+Same            81133
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow
+  11/57967, "Either opponent has a singleton honor" comes out to the
+  same as "West has between 1 and 2 tops", and even with a symmetric
+  play, when we sort and compare, the other one may win.  So I guess
+  we prefer either symmetrized ones, or one with no overlap with the OR
+  (MECE)
 - Delete the original code
 
   Maybe covers have an index or a number
   Maybe we register which ones are symmetries of one another
   Somehow note which covers ever get used for a given top configuration.
+  And which strategies ever show up.  Cache them in Covers?
 
 - Where does the actual name of the card come from?  Ranks?
 
