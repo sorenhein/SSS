@@ -428,6 +428,9 @@ void CoverMemory::prepare_5_2()
 
   CoverMemory::WestTop1(2);                // 7. West has the tops
   CoverMemory::WestTop1Range(1, 2);        // 8. West has 1+ tops
+  CoverMemory::EastTop1(2);                // 7. West has the tops
+
+  CoverMemory::EastGeneralAnd(0, 2, 0, 0); // X. -, x, xx with East
 
   CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 9. H singleton with West
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 10. H singleton with East
@@ -458,16 +461,16 @@ void CoverMemory::prepare_5_2()
   CoverMemory::WestGeneralAnd(3, 3, 2, 2); // 25. HHx with West
 
   // 26. East has HH+ or a singleton honor
-  CoverMemory::EastTop1(2);
-  CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+  // CoverMemory::EastTop1(2);
+  // CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 27. West has 2+ cards or singleton honor
-  CoverMemory::WestLengthRange(2, 5);
-  CoverMemory::WestGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+  // CoverMemory::WestLengthRange(2, 5);
+  // CoverMemory::WestGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 28. West has the honors, or East has the singleton honor
-  CoverMemory::WestTop1(2);
-  CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+  // CoverMemory::WestTop1(2);
+  // CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 29. 3-2 either way, or West has both H's.
   CoverMemory::WestLengthRange(2, 3);
