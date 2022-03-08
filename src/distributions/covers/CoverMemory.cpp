@@ -228,11 +228,9 @@ void CoverMemory::prepare_3_2()            // ***** DONE-2 *****
   CoverMemory::WestLengthRange(1, 3);      // 0. West is not void
   CoverMemory::WestLengthRange(1, 2);      // 1. 1=2 or 2=1
 
-  // 2. West has both tops or there is a singleton honor.
-  CoverMemory::WestTop1(2);
+  CoverMemory::WestTop1(2);                // 2. West has both tops
 
-  // 3. West has a singleton honor.
-  CoverMemory::WestGeneralAnd(1, 1, 1, 1);
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 3. H singleton with West
 }
 
 
@@ -268,12 +266,20 @@ void CoverMemory::prepare_4_1()            // ***** DONE-1 *****
   CoverMemory::EastGeneralAnd(2, 2, 1, 1); // 16. Hx with East
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 17. H(x) with West
-  CoverMemory::SymmGeneralAnd(1, 2, 1, 1); // 18. H(x) on either side
+  // CoverMemory::SymmGeneralAnd(1, 2, 1, 1); // 18. H(x) on either side
 
   CoverMemory::WestGeneralAnd(1, 3, 1, 1); // 19. H(xx) with West
   CoverMemory::EastGeneralAnd(1, 3, 1, 1); // 20. H(xx) with East
 
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 21. Hxx=H
+
+  // East has the top, or 2=2.
+  CoverMemory::EastTop1(1);
+  CoverMemory::WestLength(2, COVER_EXTEND);
+
+  // West has the top, or 2=2.
+  CoverMemory::WestTop1(1);
+  CoverMemory::WestLength(2, COVER_EXTEND);
 }
 
 
@@ -400,7 +406,7 @@ void CoverMemory::prepare_5_1()
 
   CoverMemory::WestGeneralAnd(2, 3, 1, 1); // 16. Hx(x) with West
   CoverMemory::EastGeneralAnd(2, 3, 1, 1); // 17. Hx(x) with East
-  CoverMemory::SymmGeneralAnd(2, 3, 1, 1); // 18. Hx(x) either side
+  // CoverMemory::SymmGeneralAnd(2, 3, 1, 1); // 18. Hx(x) either side
 
   CoverMemory::WestGeneralAnd(4, 4, 1, 1); // 19. Hxxx with West
 
@@ -501,18 +507,18 @@ void CoverMemory::prepare_5_3()            // ***** DONE-1 *****
   CoverMemory::WestGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 10. West has 0-3c or all honors
-  CoverMemory::WestLengthRange(0, 3);
-  CoverMemory::WestTop1(3, COVER_EXTEND);
+  // CoverMemory::WestLengthRange(0, 3);
+  // CoverMemory::WestTop1(3, COVER_EXTEND);
 
   // 11. East has 2-3c, all honors or a singleton honor
-  CoverMemory::EastLengthRange(2, 3);
-  CoverMemory::EastTop1(3, COVER_EXTEND);
-  CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+  // CoverMemory::EastLengthRange(2, 3);
+  // CoverMemory::EastTop1(3, COVER_EXTEND);
+  // CoverMemory::EastGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 
   // 12. Effectively, no small singleton on either side
-  CoverMemory::WestLength(0);
-  CoverMemory::WestLengthRange(2, 3, COVER_EXTEND);
-  CoverMemory::SymmGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+  // CoverMemory::WestLength(0);
+  // CoverMemory::WestLengthRange(2, 3, COVER_EXTEND);
+  // CoverMemory::SymmGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
 }
 
 

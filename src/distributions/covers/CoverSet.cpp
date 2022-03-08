@@ -507,7 +507,10 @@ string CoverSet::strTop1Fixed0(
         ss << "East has HH" << coverXes.strEast;
     }
     else
+    {
+      cout << CoverSet::strRaw() << endl;
       assert(false);
+    }
   }
   else
   {
