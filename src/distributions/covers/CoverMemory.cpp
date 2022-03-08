@@ -502,6 +502,8 @@ void CoverMemory::prepare_5_3()            // ***** DONE-1 *****
 
   CoverMemory::WestLengthRange(0, 4);      // 6. East is not void
 
+  CoverMemory::WestGeneralAnd(1, 1, 0, 0); // 8. x with West
+
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 7. H with East
 
   CoverMemory::WestGeneralAnd(4, 4, 3, 3); // 8. HHHx / x
@@ -513,6 +515,10 @@ void CoverMemory::prepare_5_3()            // ***** DONE-1 *****
   // 10. 2=3, 3=2 or singleton H with West
   CoverMemory::WestLengthRange(2, 3);
   CoverMemory::WestGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
+
+  // 11. 2=3, 3=2 or West has both tops.
+  CoverMemory::WestLengthRange(2, 3);
+  CoverMemory::WestTop1(2, COVER_EXTEND);
 
   // 11. West has 0-3c or all honors
   // CoverMemory::WestLengthRange(0, 3);
