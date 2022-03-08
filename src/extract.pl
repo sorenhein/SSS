@@ -27,7 +27,6 @@ while (my $line = <$fh>)
     $holding = $2;
     @strats = ();
     @sostrats = ();
-    @vostrats = ();
     @diagram = ();
 
     # Get the diagram.
@@ -83,6 +82,7 @@ while (my $line = <$fh>)
     $rest =~ s///;
     $vhead[$vno] = $rest;
     @vstrats = ();
+    @vostrats = ();
 
     while (my $line2 = <$fh>)
     {
