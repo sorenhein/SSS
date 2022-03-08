@@ -3,12 +3,6 @@
 use strict;
 use warnings;
 
-# TODO
-# Store the actual text, not only the sorted and processed one.
-# Output in comments the actual text.
-# Output the sorted one in perl code.
-# Prettify with empty lines as needed.
-
 # Check two generations of verbal strategies against each other.
 # Extract agreements and differences.
 
@@ -17,9 +11,11 @@ open my $fh, '<', $file or die $!;
 
 my $lno = 0;
 my ($cards, $holding, $tag);
-my (@strats, @vstrats, @shead, @vhead, @diagram);
+my (@strats, @vstrats, @sostrats, @vostrats, @shead, @vhead, @diagram);
 my (%stextSame, %vtextSame, %countSame, %headerSame);
+my (%stextSameOrig, %vtextSameOrig, %countSameOrig, %headerSameOrig);
 my (%stextDiff, %vtextDiff, %countDiff, %headerDiff);
+my (%stextDiffOrig, %vtextDiffOrig, %countDiffOrig, %headerDiffOrig);
 
 while (my $line = <$fh>)
 {
@@ -30,6 +26,8 @@ while (my $line = <$fh>)
     $cards = $1;
     $holding = $2;
     @strats = ();
+    @sostrats = ();
+    @vostrats = ();
     @diagram = ();
 
     # Get the diagram.
@@ -67,6 +65,8 @@ while (my $line = <$fh>)
       $line2 =~ s///;
       $lno++;
       last if ($line2 =~ /^\s*$/);
+      push @{$sostrats[$sno]}, $line2;
+
       $line2 =~ s/^\*\s+//;
       $line2 =~ s/^\s*-\s+//;
       $line2 =~ s/\s*\[.*\]//;
@@ -90,35 +90,13 @@ while (my $line = <$fh>)
       $line2 =~ s///;
       $lno++;
       last if ($line2 =~ /^\s*$/);
+      push @vostrats, $line2;
+
       $line2 =~ s/^\s+//;
       $line2 =~ s/^\*\s+//;
       $line2 =~ s/\s*\[.*\]//;
       $line2 =~ s/\s+$//;
       push @vstrats, $line2;
-    }
-
-    my @ssorted = sort @{$strats[$vno]};
-    my @vsorted = sort @vstrats;
-
-    if ($shead[$vno] ne $vhead[$vno])
-    {
-      if (same(\@ssorted, \@vsorted))
-      {
-# print "New header: same\n";
-        store(\@ssorted, \@vsorted,
-          \@{$stextSame{$tag}}, \@{$vtextSame{$tag}}, 
-          \@{$countSame{$tag}}, \@{$headerSame{$tag}},
-          $cards, $holding, \@diagram);
-      }
-      else
-      {
-# print "New header: diff\n";
-        store(\@ssorted, \@vsorted,
-          \@{$stextDiff{$tag}}, \@{$vtextDiff{$tag}}, 
-          \@{$countDiff{$tag}}, \@{$headerDiff{$tag}},
-          $cards, $holding, \@diagram);
-      }
-      next;
     }
 
     for my $i (reverse 0 .. $#{$strats[$vno]})
@@ -136,6 +114,40 @@ while (my $line = <$fh>)
 
         splice(@{$strats[$vno]}, $i, 1);
       }
+    }
+
+    my @ssorted = sort @{$strats[$vno]};
+    my @vsorted = sort @vstrats;
+
+    if ($shead[$vno] ne $vhead[$vno])
+    {
+      if (same(\@ssorted, \@vsorted))
+      {
+# print "New header: same\n";
+        store(\@ssorted, \@vsorted,
+          \@{$stextSame{$tag}}, \@{$vtextSame{$tag}}, 
+          \@{$countSame{$tag}}, \@{$headerSame{$tag}},
+          $cards, $holding, \@diagram);
+
+        store(\@{$sostrats[$vno]}, \@vostrats,
+          \@{$stextSameOrig{$tag}}, \@{$vtextSameOrig{$tag}}, 
+          \@{$countSameOrig{$tag}}, \@{$headerSameOrig{$tag}},
+          $cards, $holding, \@diagram);
+      }
+      else
+      {
+# print "New header: diff\n";
+        store(\@ssorted, \@vsorted,
+          \@{$stextDiff{$tag}}, \@{$vtextDiff{$tag}}, 
+          \@{$countDiff{$tag}}, \@{$headerDiff{$tag}},
+          $cards, $holding, \@diagram);
+
+        store(\@{$sostrats[$vno]}, \@vostrats,
+          \@{$stextDiffOrig{$tag}}, \@{$vtextDiffOrig{$tag}}, 
+          \@{$countDiffOrig{$tag}}, \@{$headerDiffOrig{$tag}},
+          $cards, $holding, \@diagram);
+      }
+      next;
     }
 
 
@@ -166,6 +178,11 @@ while (my $line = <$fh>)
         \@{$stextSame{$tag}}, \@{$vtextSame{$tag}}, 
         \@{$countSame{$tag}}, \@{$headerSame{$tag}},
         $cards, $holding, \@diagram);
+
+      store(\@{$sostrats[$vno]}, \@vostrats,
+        \@{$stextSameOrig{$tag}}, \@{$vtextSameOrig{$tag}}, 
+        \@{$countSameOrig{$tag}}, \@{$headerSameOrig{$tag}},
+        $cards, $holding, \@diagram);
     }
     else
     {
@@ -174,15 +191,27 @@ while (my $line = <$fh>)
         \@{$stextDiff{$tag}}, \@{$vtextDiff{$tag}}, 
         \@{$countDiff{$tag}}, \@{$headerDiff{$tag}},
         $cards, $holding, \@diagram);
+
+      store(\@{$sostrats[$vno]}, \@vostrats,
+        \@{$stextDiffOrig{$tag}}, \@{$vtextDiffOrig{$tag}}, 
+        \@{$countDiffOrig{$tag}}, \@{$headerDiffOrig{$tag}},
+        $cards, $holding, \@diagram);
     }
+    next;
   }
 }
 
 close $fh;
 
-dump_file('same.pl', \%stextSame, \%vtextSame, 
+print_stats(\%stextSame, \%countSame, \%vtextDiff, \%countDiff);
+
+dump_file('same.pl', 
+  \%stextSame, \%vtextSame, 
+  \%stextSameOrig, \%vtextSameOrig, 
   \%countSame, \%headerSame, 1);
-dump_file('diff.pl', \%stextDiff, \%vtextDiff, 
+dump_file('diff.pl', 
+  \%stextDiff, \%vtextDiff, 
+  \%stextDiffOrig, \%vtextDiffOrig, 
   \%countDiff, \%headerDiff, 0);
 
 
@@ -273,15 +302,64 @@ sub store
 }
 
 
+sub print_stats
+{
+  my ($stext_ref, $countSame_ref, $vtext_ref, $countDiff_ref) = @_;
+
+  my ($sum_sc, $sum_dc, $sum_sn, $sum_dn);
+
+  printf("%-6s%6s%6s%10s%6s\n", "Case", "Same", "Diff", "Same", "Diff");
+  for my $key (sort keys %$stext_ref)
+  {
+    my $sc = 1 + $#{$stext_ref->{$key}};
+    my $dc = 1 + $#{$vtext_ref->{$key}};
+
+    my $sn = 0;
+    for my $i (0 .. $#{$countSame_ref->{$key}})
+    {
+      $sn += $countSame_ref->{$key}[$i];
+    }
+
+    my $dn = 0;
+    for my $i (0 .. $#{$countDiff_ref->{$key}})
+    {
+      $dn += $countDiff_ref->{$key}[$i];
+    }
+
+    if ($dc == 0)
+    {
+      printf("%-6s%6d%6s%10d%6s\n", $key, $sc, "-", $sn, "-");
+    }
+    else
+    {
+      printf("%-6s%6d%6d%10d%6d\n", $key, $sc, $dc, $sn, $dn);
+    }
+
+    $sum_sc += $sc;
+    $sum_dc += $dc;
+    $sum_sn += $sn;
+    $sum_dn += $dn;
+  }
+
+  print "-" x 34, "\n";
+
+  printf("%-6s%6d%6d%10d%6d\n", "Sum", $sum_sc, $sum_dc, $sum_sn, $sum_dn);
+}
+
+
 sub dump_file
 {
-  my ($fname, $stext_ref, $vtext_ref, 
+  my ($fname, 
+    $stext_ref, $vtext_ref, 
+    $stextOrig_ref, $vtextOrig_ref, 
     $count_ref, $header_ref, $same_flag) = @_;
 
   open my $fh, '>', $fname or die $!;
 
   for my $key (sort keys %$stext_ref)
   {
+    next if ($#{$stext_ref->{$key}} == -1);
+
     print $fh "#################### $key ####################\n\n";
 
     for my $i (0 .. $#{$stext_ref->{$key}})
@@ -299,20 +377,33 @@ sub dump_file
           print $fh $h, "\n";
         }
       }
+      print $fh "\n";
 
-      print $fh "Entry S $i\n";
+      for my $l (@{$stextOrig_ref->{$key}[$i]})
+      {
+        print $fh "# $l\n";
+      }
+      print $fh "\n";
+
       for my $l (@{$stext_ref->{$key}[$i]})
       {
-        print $fh $l, "\n";
+        printf $fh "push \@\{\$stext\{'$tag'\}\[$i\]\}, '%s';\n", $l;
       }
+      print $fh "\n";
 
       next if $same_flag;
 
-      print $fh "Entry V $i\n";
+      for my $l (@{$vtextOrig_ref->{$key}[$i]})
+      {
+        print $fh "# $l\n";
+      }
+      print $fh "\n";
+
       for my $l (@{$vtext_ref->{$key}[$i]})
       {
-        print $fh $l, "\n";
+        printf $fh "push \@\{\$vtext\{'$tag'\}\[$i\]\}, '%s';\n", $l;
       }
+      print $fh "\n\n";
     }
     print $fh "\n";
   }

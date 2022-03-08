@@ -2,14 +2,41 @@ Verbals automatically
 =====================
 The greedy algorithm actually doesn't miss anything now.
 
+% perl extract.pl a
+Case    Same  Diff      Same  Diff
+2-1        3     -      7361     -
+2-2        1     -      1018     -
+3-1       13     -     21198     -
+3-2        3     -      3608     -
+3-3        1     -       738     -
+4-1       37    14     16736  3762
+4-2       35    33      7460  4293
+4-3        5     1      2384    10
+4-4        3     -       447     -
+5-1       48    21      8472   557
+5-2       32   181      4146  2518
+5-3        4    39       641   431
+5-4        4     -       505     -
+5-5        3     -       124     -
+6-1       20     8      2784   411
+6-2       21    20      1751   604
+6-3        6     3       291    21
+6-4        3     1       219     3
+6-5        3     -        95     -
+6-6        3     -        29     -
+7-1        5     -       957     -
+7-2        2     3       210    97
+7-3        1     2        35    20
+8-1        3     -       166     -
+8-2        1     1        28     7
+9-1        1     -         9     -
+----------------------------------
+Sum      261   327     81412 12734
+
+
+
+
 Probably get rid of a lot of the handmade combos in CoverMemory.
-
-perl smatch.pl a
-
-Head text       0     probably old ones I've broken
-Number of lines 8463
-Text content    4550
-Same            81133
 
 - Explain differences, e.g. from greedy
 - Introduce back symmetry somehow
