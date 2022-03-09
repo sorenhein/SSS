@@ -1,4 +1,23 @@
+explainExhaustive now works in principle.
+- Avoid "OR" with no overlap at all
+- Each cover gets a range value
+  - So 1-2 1-2 has ranges of 2+2 = 4, whereas 1-2 1 has 2+1 = 3.
+- When sorting, prefer smallest sum for same trick profile
+- A row gets an adder of overlaps among pairs, so if there are 3
+  OR's, each pairwise OR generates an overlap.  += on complexity.
+  Count #dist where it is the case.
+  Complexity of just length now == 1, but something larger.
+
+
 Distributions: 11 / 161823, d = 8 has 1 case, not 4?!
+
+Maybe a diagonal cover (1,2;1) meaning 1-2 tricks and 1 more length,
+i.e. one x?
+
+explainExhaustive doesn't really need to keep all solutions and
+sort them -- just the best one.  And can stop searching once the
+complexity of the best one is exceeded.  But for now it can be
+interesting to see.
 
 Reconcile CoverMemory.cpp with xx.cpp, somehow there was an error.
 

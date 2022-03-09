@@ -483,7 +483,7 @@ void Covers::explainExhaustive(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
-  tableau.setBoundaries(maxLength, topTotals);
+  stableau.tableau.setBoundaries(maxLength, topTotals);
   stableau.tableau.setTricks(tricks, tmin);
 
   stableau.coverIter = coversNew.begin();
@@ -493,7 +493,14 @@ void Covers::explainExhaustive(
   auto siter = stack.begin();
   while (siter != stack.end())
   {
-    auto& citer = siter->coverIter;
+    auto citer = siter->coverIter;
+
+/*
+cout << "Starting to augment tableau:\n";
+cout << siter->tableau.str();
+cout << siter->tableau.strResiduals();
+cout << "The starting point is citer: " << citer->strLine();
+*/
 
     while (citer != coversNew.end())
     {
@@ -503,15 +510,54 @@ void Covers::explainExhaustive(
         continue;
       }
 
+/*
+cout << "Attempting:\n";
+cout << citer->strHeader();
+cout << citer->strLine();
+// cout << citer->strProfile();
+// cout << citer->strTricksShort() << "\n";
+// cout << "Top size " << +citer->getTopSize() << endl << endl;
+*/
+// unsigned s0 = solutions.size();
+// unsigned st0 = stack.size();
+
       siter->tableau.attemptExhaustive(citer, stack, solutions);
+// unsigned s1 = solutions.size();
+// unsigned st1 = stack.size();
+// cout << "solutions: " << s0 << " -> " << s1 << endl;
+// cout << "stack    : " << st0 << " -> " << st1 << endl;
       citer++;
     }
 
     siter = stack.erase(siter);
+// cout << "erasing first stack element\n";
+/*
+unsigned i = 0;
+for (auto& t: stack)
+{
+  cout << "Stack element " << i << endl;
+  cout << t.tableau.str();
+  cout << t.tableau.strResiduals();
+  i++;
+}
+*/
   }
+
+// cout << "DONE WITH SOLUTIONS\n";
 
   assert(! solutions.empty());
   solutions.sort();
+
+unsigned i = 0;
+for (auto s: solutions)
+{
+  cout << "Solution " << i << ", complexity " <<
+    + s.getComplexity() << "\n";
+  cout << s.str();
+  i++;
+  if (i >= 20)
+    break;
+}
 
   // TODO Could perhaps swap
   tableau = solutions.front();

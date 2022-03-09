@@ -127,33 +127,45 @@ void CoverTableau::attemptExhaustive(
 
   // explained is a dummy vector here.
   const CoverNew& cover = * coverIter;
-  vector<unsigned char> explained(cover.getNumDist(), 0);
-  vector<unsigned char> additions(cover.getNumDist());
+  vector<unsigned char> explained(cover.size(), 0);
+  vector<unsigned char> additions(cover.size());
   unsigned char tricksAdded;
+  const bool emptyStartFlag = rows.empty();
 
   // First try to add a new row.
   if (cover.possible(explained, residuals, additions, tricksAdded))
   {
+// cout << "Can add to a new row" << endl;
     stack.emplace_back(StackTableau());
     StackTableau& stableau = stack.back();
 
     CoverTableau& tableau = stableau.tableau;
     tableau = * this;
+// cout << "Set up and copied the tableau" <<endl;
     tableau.rows.emplace_back(CoverRow());
     CoverRow& row = tableau.rows.back();
+    row.resize(cover.size());
+// cout << "Got the row" <<endl;
     row.add(cover, additions, tableau.residuals, tableau.residualsSum);
+// cout << "Added" << endl;
 
     stableau.coverIter = coverIter;
 
+// cout << "Tableau now\n";
+// cout << tableau.str();
+// cout << tableau.strResiduals();
+
     if (tableau.complete())
     {
+// cout << "Got a solution" << endl;
       solutions.push_back(tableau);
+      // Done, so eliminate.
       stack.pop_back();
     }
   }
 
   // Then look for a row, or the best one, to add to.
-  if (rows.empty())
+  if (emptyStartFlag)
     return;
 
   unsigned rno = 0, r;
@@ -163,6 +175,7 @@ void CoverTableau::attemptExhaustive(
   {
     if (row.attempt(cover, residuals, additions, tricksAdded))
     {
+// cout <<"Can add to an existing row" << endl;
       stack.emplace_back(StackTableau());
       StackTableau& stableau = stack.back();
 
@@ -174,14 +187,21 @@ void CoverTableau::attemptExhaustive(
 
       riter->add(cover, additions, tableau.residuals, tableau.residualsSum);
 
+// cout << "Tableau now\n";
+// cout << tableau.str();
+// cout << tableau.strResiduals();
+
       stableau.coverIter = coverIter;
 
       if (tableau.complete())
       {
+// cout << "Got a solution by augmenting a row" << endl;
         solutions.push_back(tableau);
+        // Done, so eliminate.
         stack.pop_back();
       }
     }
+    rno++;
   }
 }
 

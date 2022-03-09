@@ -995,7 +995,8 @@ void Strategy::coversNew(
 {
   tableau.reset();
   // TODO Can be greedy or exhaustive.
-  coversIn.explainGreedy(results, numStrategyTops, tableau);
+  // coversIn.explainGreedy(results, numStrategyTops, tableau);
+  coversIn.explainExhaustive(results, numStrategyTops, tableau);
 }
 
 
