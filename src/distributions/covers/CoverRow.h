@@ -30,6 +30,8 @@ class CoverRow
     // The OR'ed tricks of the covers.
     vector<unsigned char> tricks;
 
+    unsigned char numDist;
+
     unsigned char complexity;
 
 
@@ -56,6 +58,8 @@ class CoverRow
     unsigned size() const;
 
     const vector<unsigned char>& getTricks() const;
+
+    unsigned char getWeight() const;
 
     unsigned char getComplexity() const;
 

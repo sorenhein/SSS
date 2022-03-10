@@ -173,8 +173,11 @@ void CoverTableau::attemptExhaustive(
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, residuals, additions, tricksAdded))
+    if (row.attempt(cover, residuals, additions, tricksAdded) &&
+        tricksAdded < cover.getNumDist())
     {
+      // Don't want cover to be completely complementery (use new row).
+
 // cout <<"Can add to an existing row" << endl;
       stack.emplace_back(StackTableau());
       StackTableau& stableau = stack.back();

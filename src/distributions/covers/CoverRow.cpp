@@ -24,6 +24,7 @@ void CoverRow::reset()
 {
   coverPtrs.clear();
   tricks.clear();
+  numDist = 0;
   complexity = 0;
 }
 
@@ -63,9 +64,11 @@ void CoverRow::add(
   // additions are disjoint from tricks.
   for (unsigned i = 0; i < additions.size(); i++)
   {
-    tricks[i] += additions[i];
-    residuals[i] -= additions[i];
-    residualsSum -= additions[i];
+    const unsigned char t = additions[i];
+    tricks[i] += t;
+    residuals[i] -= t;
+    residualsSum -= t;
+    numDist += t;
   }
 
   // TODO Check range
@@ -84,6 +87,12 @@ unsigned CoverRow::size() const
 const vector<unsigned char>& CoverRow::getTricks() const
 {
   return tricks;
+}
+
+
+unsigned char CoverRow::getWeight() const
+{
+  return numDist;
 }
 
 

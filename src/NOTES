@@ -1,3 +1,8 @@
+CoverRow gets a trickCount
+means no overlap, hence skip the OR.
+The row can later add up the numDist of each CoverNew,
+and the overlap is this sum minus trickCount (CoverRow::overlap()).
+
 explainExhaustive now works in principle.
 - Avoid "OR" with no overlap at all
 - Each cover gets a range value
