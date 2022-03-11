@@ -63,6 +63,8 @@ class CoverRow
 
     unsigned char getComplexity() const;
 
+    unsigned char getOverlap() const;
+
     // These together yield something like a table,
     // but without semantic explanations.
     string strHeader() const;

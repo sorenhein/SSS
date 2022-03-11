@@ -102,6 +102,18 @@ unsigned char CoverRow::getComplexity() const
 }
 
 
+unsigned char CoverRow::getOverlap() const
+{
+  // The overlap is the sum of the individual cover weights,
+  // minus the weight of the row.
+  unsigned char overlap = 0;
+  for (auto coverPtr: coverPtrs)
+    overlap += coverPtr->getNumDist();
+
+  return overlap - numDist;
+}
+
+
 string CoverRow::strHeader() const
 {
   return 

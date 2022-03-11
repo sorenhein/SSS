@@ -120,7 +120,8 @@ cout << rowBestPtr->strLines() << "\n";
 void CoverTableau::attemptExhaustive(
   list<CoverNew>::const_iterator& coverIter,
   list<StackTableau>& stack,
-  list<CoverTableau>& solutions) const
+  list<CoverTableau>& solutions,
+  unsigned char& lowestComplexity) const
 {
   // This is similar to attemptGreedy, but we don't stop once we have
   // the first match, and we don't yet implement any match.
@@ -131,6 +132,19 @@ void CoverTableau::attemptExhaustive(
   vector<unsigned char> additions(cover.size());
   unsigned char tricksAdded;
   const bool emptyStartFlag = rows.empty();
+
+  const unsigned char complexity = CoverTableau::getComplexity();
+  // Keep some extras to inspect for now.
+  // TODO This doesn't actually limit the final list to this range,
+  // as the complexity may shrink over time.
+
+  /* */
+  if (complexity + cover.getComplexity() > lowestComplexity + 2)
+  {
+    // Too complex.
+    return;
+  }
+  /* */
 
   // First try to add a new row.
   if (cover.possible(explained, residuals, additions, tricksAdded))
@@ -161,6 +175,9 @@ void CoverTableau::attemptExhaustive(
       solutions.push_back(tableau);
       // Done, so eliminate.
       stack.pop_back();
+
+      if (complexity + cover.getComplexity() < lowestComplexity)
+        lowestComplexity = complexity + cover.getComplexity();
     }
   }
 
@@ -190,7 +207,7 @@ void CoverTableau::attemptExhaustive(
 
       riter->add(cover, additions, tableau.residuals, tableau.residualsSum);
 
-// cout << "Tableau now\n";
+// cout << "Tableau now" << endl;
 // cout << tableau.str();
 // cout << tableau.strResiduals();
 
@@ -198,10 +215,20 @@ void CoverTableau::attemptExhaustive(
 
       if (tableau.complete())
       {
-// cout << "Got a solution by augmenting a row" << endl;
+// cout << CoverTableau::str() << endl;
+ // cout << "Before calling" << endl;
+// cout << tableau.str() << endl;
+// cout << "Calling getComplexity" << endl;
+        const unsigned char c = tableau.getComplexity();
+// cout << "got " << +c << endl;
+
+        if (c < lowestComplexity)
+          lowestComplexity = c;
+ // cout << "Got a solution by augmenting a row" << endl;
         solutions.push_back(tableau);
         // Done, so eliminate.
         stack.pop_back();
+
       }
     }
     rno++;
@@ -211,7 +238,12 @@ void CoverTableau::attemptExhaustive(
 
 bool CoverTableau::operator < (const CoverTableau& tableau2) const
 {
-  return (CoverTableau::getComplexity() < tableau2.getComplexity());
+  const unsigned char compl1 = CoverTableau::getComplexity();
+  const unsigned char compl2 = tableau2.getComplexity();
+
+  return (compl1 < compl2 ||
+    (compl1 == compl2 &&
+      CoverTableau::getOverlap() < tableau2.getOverlap()));
 }
 
 
@@ -223,6 +255,9 @@ bool CoverTableau::complete() const
 
 unsigned char CoverTableau::getComplexity() const
 {
+// assert(topTotalsPtr != nullptr);
+// cout << "entering getC" << endl;
+// cout << CoverTableau::str() << endl;
   unsigned char complexity = 0;
   for (auto& row: rows)
   {
@@ -231,7 +266,24 @@ unsigned char CoverTableau::getComplexity() const
 
     complexity += row.getComplexity();
   }
+// cout << "got complexity " << +complexity << endl;
   return complexity;
+}
+
+
+unsigned char CoverTableau::getOverlap() const
+{
+  unsigned char overlap = 0;
+  for (auto& row: rows)
+  {
+    const unsigned char rowOverlap = row.getOverlap();
+// cout << "rOverlap " << +rowOverlap << endl;
+    // TODO TEMP
+    assert(overlap + rowOverlap >= overlap);
+
+    overlap += rowOverlap;
+  }
+  return overlap;
 }
 
 
@@ -260,7 +312,6 @@ string CoverTableau::str() const
   stringstream ss;
 
   ss << "Always take at least " << +tricksMin << " tricks, and more when\n";
-
   for (auto& row: rows)
     ss << row.str(maxLength, * topTotalsPtr);
   /*

@@ -60,13 +60,16 @@ class CoverTableau
     void attemptExhaustive(
       list<CoverNew>::const_iterator& coverIter,
       list<StackTableau>& stack,
-      list<CoverTableau>& solutions) const;
+      list<CoverTableau>& solutions,
+      unsigned char& lowestComplexity) const;
 
     bool operator < (const CoverTableau& tableau2) const;
 
     bool complete() const;
 
     unsigned char getComplexity() const;
+
+    unsigned char getOverlap() const;
 
     unsigned char numRows() const;
 

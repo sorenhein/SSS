@@ -489,6 +489,7 @@ void Covers::explainExhaustive(
   stableau.coverIter = coversNew.begin();
 
   list<CoverTableau> solutions;
+  unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
 
   auto siter = stack.begin();
   while (siter != stack.end())
@@ -521,7 +522,9 @@ cout << citer->strLine();
 // unsigned s0 = solutions.size();
 // unsigned st0 = stack.size();
 
-      siter->tableau.attemptExhaustive(citer, stack, solutions);
+      siter->tableau.attemptExhaustive(citer, stack, 
+        solutions, lowestComplexity);
+
 // unsigned s1 = solutions.size();
 // unsigned st1 = stack.size();
 // cout << "solutions: " << s0 << " -> " << s1 << endl;
@@ -548,16 +551,20 @@ for (auto& t: stack)
   assert(! solutions.empty());
   solutions.sort();
 
+/*
 unsigned i = 0;
 for (auto s: solutions)
 {
-  cout << "Solution " << i << ", complexity " <<
-    + s.getComplexity() << "\n";
+  cout << "Solution " << i << 
+    ", complexity " << + s.getComplexity() << 
+    ", overlap " << + s.getOverlap() << 
+    "\n";
   cout << s.str();
   i++;
   if (i >= 20)
     break;
 }
+*/
 
   // TODO Could perhaps swap
   tableau = solutions.front();
