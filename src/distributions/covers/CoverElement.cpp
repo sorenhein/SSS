@@ -149,7 +149,7 @@ unsigned char CoverElement::getComplexity() const
 
 unsigned char CoverElement::getRange() const
 {
-  if (CoverElement::used())
+  if (! CoverElement::used())
     return 0;
   else
     return (value2 - value1);

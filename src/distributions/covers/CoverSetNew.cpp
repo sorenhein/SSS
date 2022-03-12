@@ -49,6 +49,8 @@ void CoverSetNew::set(
 
   length.setNew(lenActual, lenLow, lenHigh);
   complexity = length.getComplexity();
+  range = length.getRange();
+
   if (lenLow + lenHigh != lenActual)
     symmFlag = false;
 
@@ -71,15 +73,26 @@ void CoverSetNew::set(
     }
 
     complexity += tops[i].getComplexity();
+    range += tops[i].getRange();
+
     if (topsLow[i] + topsHigh[i] != topsActual[i])
       symmFlag = false;
+  }
+
+  // If there is only a single distribution possible, this counts
+  // as a complexity of 1.
+  if (range == 0 && length.used() && 
+    topCount+1 == static_cast<unsigned char>(topLowSize))
+  {
+// cout << "XX " << CoverSetNew::strLine(lenActual, topsActual) << "\n";
+    complexity = 1;
   }
 }
 
 
 bool CoverSetNew::includes(
   const unsigned char lengthIn,
-  const vector<unsigned>& topsIn)
+  const vector<unsigned>& topsIn) const
 {
   if (length.used() && ! length.includes(lengthIn))
     return false;
@@ -125,10 +138,11 @@ unsigned char CoverSetNew::getTopSize() const
 
 unsigned char CoverSetNew::getRangeSum() const
 {
-  unsigned char sum = 0;
+  unsigned char sum = length.getRange();
   for (auto& top: tops)
     sum += top.getRange();
 
+  assert(sum == range);
   return sum;
 }
 
