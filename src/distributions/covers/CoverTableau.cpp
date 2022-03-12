@@ -119,6 +119,7 @@ cout << rowBestPtr->strLines() << "\n";
 
 void CoverTableau::attemptExhaustive(
   list<CoverNew>::const_iterator& coverIter,
+  const unsigned coverNo,
   list<StackTableau>& stack,
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
@@ -164,6 +165,7 @@ void CoverTableau::attemptExhaustive(
 // cout << "Added" << endl;
 
     stableau.coverIter = coverIter;
+    stableau.coverNumber = coverNo;
 
 // cout << "Tableau now\n";
 // cout << tableau.str();
@@ -212,6 +214,7 @@ void CoverTableau::attemptExhaustive(
 // cout << tableau.strResiduals();
 
       stableau.coverIter = coverIter;
+      stableau.coverNumber = coverNo;
 
       if (tableau.complete())
       {
@@ -304,6 +307,12 @@ unsigned char CoverTableau::numCovers() const
     num += static_cast<unsigned char>(row.size());
   }
   return num;
+}
+
+
+unsigned char CoverTableau::getResidual() const
+{
+  return residualsSum;
 }
 
 

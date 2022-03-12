@@ -487,27 +487,64 @@ void Covers::explainExhaustive(
   stableau.tableau.setTricks(tricks, tmin);
 
   stableau.coverIter = coversNew.begin();
+  stableau.coverNumber = 0;
+
+const unsigned coverSize = coversNew.size();
+unsigned coverNo;
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
+
+  /*
+  cout << 
+    setw(6) << "Stack" <<
+    setw(6) << "RunCx" <<
+    setw(6) << "Resid" <<
+    setw(6) << "BestC" <<
+    setw(6) << "Cno" <<
+    setw(6) << "CCplx" <<
+    setw(6) << "Cwgt" <<
+    setw(6) << "Proj" <<
+    "\n";
+    */
 
   auto siter = stack.begin();
   while (siter != stack.end())
   {
     auto citer = siter->coverIter;
+    coverNo = siter->coverNumber;
+const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
+
+    // The lowest complexity that is still achievable is
+    // Tableau complexity + round up(residual / cover weight).
+    unsigned char minCovers = 
+      1 + (siter->tableau.getResidual() / citer->getNumDist());
+
+    const unsigned char tcomp = siter->tableau.getComplexity();
+    const unsigned char projected = tcomp + minCovers;
 
 /*
-cout << "Starting to augment tableau:\n";
-cout << siter->tableau.str();
-cout << siter->tableau.strResiduals();
-cout << "The starting point is citer: " << citer->strLine();
-*/
+cout << 
+  setw(6) << stack.size() <<
+  setw(6) << +siter->tableau.getComplexity() <<
+  setw(6) << +siter->tableau.getResidual() <<
+  setw(6) << +comp <<
+  setw(6) << coverNo <<
+  setw(6) << +citer->getComplexity() <<
+  setw(6) << +citer->getNumDist() <<
+  setw(6) << +projected <<
+  endl;
+  */
 
+
+    if (solutions.empty() || projected <= lowestComplexity + 1)
+    {
     while (citer != coversNew.end())
     {
       if (citer->getTopSize() > numStrategyTops)
       {
         citer++;
+coverNo++;
         continue;
       }
 
@@ -522,7 +559,9 @@ cout << citer->strLine();
 // unsigned s0 = solutions.size();
 // unsigned st0 = stack.size();
 
-      siter->tableau.attemptExhaustive(citer, stack, 
+      // TODO Could test projected again here
+
+      siter->tableau.attemptExhaustive(citer, coverNo, stack, 
         solutions, lowestComplexity);
 
 // unsigned s1 = solutions.size();
@@ -530,7 +569,11 @@ cout << citer->strLine();
 // cout << "solutions: " << s0 << " -> " << s1 << endl;
 // cout << "stack    : " << st0 << " -> " << st1 << endl;
       citer++;
+coverNo++;
     }
+    }
+    // else
+      // cout << "SKIP\n";
 
     siter = stack.erase(siter);
 // cout << "erasing first stack element\n";

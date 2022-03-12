@@ -59,6 +59,7 @@ class CoverTableau
 
     void attemptExhaustive(
       list<CoverNew>::const_iterator& coverIter,
+      const unsigned coverNo,
       list<StackTableau>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
@@ -75,6 +76,8 @@ class CoverTableau
 
     unsigned char numCovers() const;
 
+    unsigned char getResidual() const;
+
     string str() const;
 
     string strResiduals() const;
@@ -86,6 +89,9 @@ struct StackTableau
   CoverTableau tableau;
 
   list<CoverNew>::const_iterator coverIter;
+
+  // May not need this long-term.  May in fact go inside CoverNew.
+  unsigned coverNumber;
 };
 
 

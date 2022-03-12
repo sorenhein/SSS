@@ -1,15 +1,7 @@
 Exhaustive 
-- Does not run to completion, fails (out of memory?) on 11 / 159624,
-  QJ654 / - missing HHxxxx
-  We might be missing a symmetric cover that is needed?
+- We might be missing a symmetric cover that is needed?
 - Also incredibly slow
 - Look at differences with Greedy once they both work well
-
-- Can project the lowest complexity that is still achievable:
-  current complexity + round up [1 * (missing weight) / (cover weight)],
-  as they are sorted.  If this is already too high, can stop this
-  branch.  In fact, can refrain from putting it on the stack to
-  be popped again.
 
 In CoverMemory
 - Each cover gets a range value
@@ -30,6 +22,7 @@ i.e. one x?
 Verbals automatically
 =====================
 The greedy algorithm actually doesn't miss anything now.
+Neither does the exhaustive one.
 
 % perl extract.pl a
 Case    Same  Diff      Same  Diff
