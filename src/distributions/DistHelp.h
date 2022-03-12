@@ -149,11 +149,16 @@ struct StackInfo
 
   void add(
     const unsigned rank,
+    const unsigned rankSize,
     const unsigned count,
     const unsigned factor)
   {
-    west.add(rank, count);
-    rankNext++;
+    if (rank < rankSize)
+    {
+      west.add(rank, count);
+      rankNext++;
+    }
+
     cases *= factor;
   }
 };
@@ -173,10 +178,12 @@ struct DistInfo
 
   void add(
     const unsigned rank,
+    const unsigned rankSize,
     const unsigned count,
     const unsigned factor)
   {
-    west.add(rank, count);
+    if (rank < rankSize)
+      west.add(rank, count);
     cases *= factor;
   }
 

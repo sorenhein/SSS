@@ -199,8 +199,8 @@ void DistCore::split(const DistMap& distMap)
 
           dist.west = stackIter->west;
 
-          if (rank < rankSize)
-            dist.add(rank, count, 
+          // if (rank < rankSize)
+            dist.add(rank, rankSize, count, 
               stackIter->cases * binomial[available][count]);
 
           dist.east.diff(distMap.opponents, dist.west);
@@ -215,8 +215,9 @@ void DistCore::split(const DistMap& distMap)
           // We have gap - count holes still to fill.
           stackIter = stack.insert(stackIter, * stackIter);
 
-          if (rank < rankSize)
-            next(stackIter)->add(rank, count, binomial[available][count]);
+          // if (rank < rankSize)
+            next(stackIter)->add(rank, rankSize, 
+              count, binomial[available][count]);
         }
       }
       stack.pop_front();
@@ -284,8 +285,8 @@ void DistCore::splitAlternative(const DistMap& distMap)
 
           dist.west = stackElem.west;
 
-          if (rank < rankSize)
-            dist.add(rank, gap, 
+          // if (rank < rankSize)
+            dist.add(rank, rankSize, gap, 
               stackElem.cases * binomial[available][gap]);
 
           dist.east.diff(distMap.opponents, dist.west);
@@ -300,9 +301,10 @@ void DistCore::splitAlternative(const DistMap& distMap)
 
           (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
 
-          if (rank < rankSize)
-            (*stackWrite)[indexWrite].add(rank, gap, 
-              binomial[available][gap]);
+          // TODO Could pass in rankSize to add() and deal with it there.
+          // if (rank < rankSize)
+            (*stackWrite)[indexWrite].add(rank, rankSize,
+             gap, binomial[available][gap]);
 
           indexWrite++;
         }
@@ -325,9 +327,10 @@ void DistCore::splitAlternative(const DistMap& distMap)
           
         (*stackWrite)[indexWrite] = (*stackRead)[indexRead];
 
-        if (rank < rankSize)
-          (*stackWrite)[indexWrite].add(rank, count, 
+        // if (rank < rankSize)
+          (*stackWrite)[indexWrite].add(rank, rankSize, count, 
             binomial[available][count]);
+
         indexWrite++;
       }
 
@@ -336,6 +339,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
         continue;
       if (indexWrite > 0)
       {
+        // TODO Use swap?
         vector<StackInfo> * tmp = stackRead;
         stackRead = stackWrite;
         stackWrite = tmp;

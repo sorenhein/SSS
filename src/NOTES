@@ -3,12 +3,13 @@ Exhaustive
 - Also incredibly slow
 - Look at differences with Greedy once they both work well
 
+Maybe consider "singleton honor" a 1 complexity rather than 2 --
+it seems so natural.  Maybe everything with weight 1?
+
 In CoverMemory
 - Each cover gets a range value
   - So 1-2 1-2 has ranges of 2+2 = 4, whereas 1-2 1 has 2+1 = 3.
 - When sorting, prefer smallest sum for same trick profile
-
-Distributions: 11 / 161823, d = 8 has 1 case, not 4?!
 
 Reintroduce symmetry when generating covers
 - Perhaps just say that each element is either don't care or
