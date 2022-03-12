@@ -57,6 +57,8 @@ class CoverSetNew
 
   unsigned char getTopSize() const;
 
+  unsigned char getRangeSum() const;
+
   bool explainable() const;
 
   string strHeader() const;

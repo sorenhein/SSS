@@ -5,11 +5,7 @@ Exhaustive
 
 Maybe consider "singleton honor" a 1 complexity rather than 2 --
 it seems so natural.  Maybe everything with weight 1?
-
-In CoverMemory
-- Each cover gets a range value
-  - So 1-2 1-2 has ranges of 2+2 = 4, whereas 1-2 1 has 2+1 = 3.
-- When sorting, prefer smallest sum for same trick profile
+And/or range 0?
 
 Reintroduce symmetry when generating covers
 - Perhaps just say that each element is either don't care or

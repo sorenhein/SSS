@@ -158,6 +158,8 @@ class CoverElement
 
     unsigned char getComplexity() const;
 
+    unsigned char getRange() const;
+
     string strRaw() const;
 
     string strShort(const unsigned char lenActual) const;

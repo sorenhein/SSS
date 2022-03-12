@@ -134,6 +134,9 @@ CoverState CoverNew::explain(vector<unsigned char>& tricks) const
 
 bool CoverNew::earlier(const CoverNew& cover2) const
 {
+  // TODO Some of the methods called do real work, so we could cache
+  // their results.
+
   if (weight > cover2.weight)
     // Heavier ones first
     return true;
@@ -149,8 +152,13 @@ bool CoverNew::earlier(const CoverNew& cover2) const
     return true;
   else if (coverSet.getComplexity() > cover2.coverSet.getComplexity())
     return false;
-  else if (numDist >= cover2.numDist)
+  else if (numDist > cover2.numDist)
     // Ones that touch more distributions first
+    return true;
+  else if (numDist < cover2.numDist)
+    return false;
+  else if (coverSet.getRangeSum() <= cover2.coverSet.getRangeSum())
+    /// Narrower covers
     return true;
   else
     return false;

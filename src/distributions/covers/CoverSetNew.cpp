@@ -123,6 +123,16 @@ unsigned char CoverSetNew::getTopSize() const
 }
 
 
+unsigned char CoverSetNew::getRangeSum() const
+{
+  unsigned char sum = 0;
+  for (auto& top: tops)
+    sum += top.getRange();
+
+  return sum;
+}
+
+
 bool CoverSetNew::explainable() const
 {
   if (topCount == 0)

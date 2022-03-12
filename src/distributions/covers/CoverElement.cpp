@@ -147,6 +147,16 @@ unsigned char CoverElement::getComplexity() const
 }
 
 
+unsigned char CoverElement::getRange() const
+{
+  if (CoverElement::used())
+    return 0;
+  else
+    return (value2 - value1);
+
+}
+
+
 string CoverElement::strLengthEqual(const unsigned char lenActual) const
 {
   stringstream ss;
