@@ -244,9 +244,20 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
   const unsigned char compl1 = CoverTableau::getComplexity();
   const unsigned char compl2 = tableau2.getComplexity();
 
-  return (compl1 < compl2 ||
-    (compl1 == compl2 &&
-      CoverTableau::getOverlap() < tableau2.getOverlap()));
+  if (compl1 < compl2)
+    return true;
+  else if (compl1 > compl2)
+    return false;
+
+  const unsigned char over1 = CoverTableau::getOverlap();
+  const unsigned char over2 = tableau2.getOverlap();
+
+  if (over1 < over2)
+    return true;
+  else if (over1 > over2)
+    return false;
+  else
+    return (rows.size() <= tableau2.rows.size());
 }
 
 

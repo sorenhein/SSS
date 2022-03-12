@@ -1,12 +1,16 @@
-7/591, AJ8 / Q missing KHH
-Now we prefer
-* East has a small singleton
-* West has the singleton honor
-to
-* West has the top at most doubleton
-Why?  The former has complexity 1+1 vs 2, but the latter covers
-more weight.
-On the other hand, I like what it does in 11/4697.
+Timing
+- Probably makes sense to implement caching of tableaux and 
+  counting etc. now, as it saves so much runtime
+
+  Maybe covers have an index or a number
+  Maybe we register which ones are symmetries of one another
+  Somehow note which covers ever get used for a given top configuration.
+  And which strategies ever show up.  Cache them in Covers?
+
+  Maybe one last effort to use only the exhaustive covers in
+  CoverMemory and see whether the agreement is better.
+
+
 
 Exhaustive 
 - We might be missing a symmetric cover that is needed?
@@ -70,14 +74,6 @@ Sum      261   177     81133 13013
   we prefer either symmetrized ones, or one with no overlap with the OR
   (MECE)
 - Delete the original code in CoverMemory and many other places
-
-  Maybe covers have an index or a number
-  Maybe we register which ones are symmetries of one another
-  Somehow note which covers ever get used for a given top configuration.
-  And which strategies ever show up.  Cache them in Covers?
-
-  Maybe one last effort to use only the exhaustive covers in
-  CoverMemory and see whether the agreement is better.
 
 - Where does the actual name of the card come from?  Ranks?
 

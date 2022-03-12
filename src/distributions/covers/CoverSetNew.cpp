@@ -80,12 +80,12 @@ void CoverSetNew::set(
   }
 
   // If there is only a single distribution possible, this counts
-  // as a complexity of 1.
+  // as a complexity of 2 (don't make it absurdly attractive).
   if (range == 0 && length.used() && 
     topCount+1 == static_cast<unsigned char>(topLowSize))
   {
 // cout << "XX " << CoverSetNew::strLine(lenActual, topsActual) << "\n";
-    complexity = 1;
+    complexity = 2;
   }
 }
 
