@@ -106,7 +106,7 @@ class Strategies
     unsigned char winRankLow() const;
 
     void covers(
-      const Covers& coversIn,
+      Covers& coversIn,
       list<ResExpl>& resExplanations,
       const unsigned char maxRank = 0) const;
 

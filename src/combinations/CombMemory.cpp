@@ -145,6 +145,20 @@ Combination& CombMemory::add(
 }
 
 
+Combination& CombMemory::getComb(
+  const unsigned cards,
+  const unsigned holding)
+{
+  assert(cards < combEntries.size());
+  assert(holding < combEntries[cards].size());
+
+  const unsigned index = combEntries[cards][holding].getIndex();
+  assert(index < uniques[cards].size());
+
+  return uniques[cards][index];
+}
+
+
 const Combination& CombMemory::getComb(
   const unsigned cards,
   const unsigned holding) const

@@ -473,15 +473,31 @@ cout << tableau.strResiduals();
 void Covers::explainExhaustive(
   const list<Result>& results,
   const unsigned numStrategyTops,
-  CoverTableau& tableau) const
+  CoverTableau& tableau)
 {
-  list<StackTableau> stack;
-  stack.emplace_back(StackTableau());
-  StackTableau& stableau = stack.back();
-
   vector<unsigned char> tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
+
+  CoverTableau const * tableauPtr = nullptr;
+  // cout << "CACHE when looking up: " << tableauCache.size() << endl;
+  // if (tableauCache.size() > 0)
+  // {
+    // cout << "HERE\n";
+  // }
+  if (tableauCache.lookup(tricks, tableauPtr))
+  {
+    // cout << "CACHEHIT" << endl;
+    // assert(tableauPtr != nullptr);
+    tableau = * tableauPtr;
+    tableau.setMinTricks(tmin);
+    // cout << "DEREFFED" << endl;
+    return;
+  }
+
+  list<StackTableau> stack;
+  stack.emplace_back(StackTableau());
+  StackTableau& stableau = stack.back();
 
   stableau.tableau.setBoundaries(maxLength, topTotals);
   stableau.tableau.setTricks(tricks, tmin);
@@ -612,7 +628,27 @@ for (auto s: solutions)
   // TODO Could perhaps swap
   tableau = solutions.front();
 
+  tableauCache.store(tricks, tableau);
+  // cout << "CACHE NOW\n";
+  // cout << tableauCache.str();
+
   // TODO Maybe MECE and hierarchy again within the tableau.
+}
+
+
+void Covers::storeTableau(
+  const vector<unsigned char>& excessTricks,
+  const CoverTableau& tableau)
+{
+  tableauCache.store(excessTricks, tableau);
+}
+
+
+bool Covers::lookupTableau(
+  const vector<unsigned char>& excessTricks,
+  CoverTableau const * tableauPtr) const
+{
+  return tableauCache.lookup(excessTricks, tableauPtr);
 }
 
 

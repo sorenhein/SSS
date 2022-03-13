@@ -54,6 +54,12 @@ void CoverTableau::setTricks(
 }
 
 
+void CoverTableau::setMinTricks(const unsigned char tmin)
+{
+  tricksMin = tmin;
+}
+
+
 bool CoverTableau::attemptGreedy(const CoverNew& cover)
 {
   // explained is a dummy vector here.

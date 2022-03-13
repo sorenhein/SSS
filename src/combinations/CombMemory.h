@@ -51,6 +51,10 @@ class CombMemory
       const unsigned cards,
       const unsigned holding);
 
+    Combination& getComb(
+      const unsigned cards,
+      const unsigned holding);
+
     const Combination& getComb(
       const unsigned cards,
       const unsigned holding) const;

@@ -995,7 +995,7 @@ void Slist::getResultList(list<Result>& resultList) const
 
 
 void Slist::covers(
-  const Covers& coversIn,
+  Covers& coversIn,
   const unsigned char maxRank,
   list<ResExpl>& resExplanations) const
 {

@@ -236,7 +236,7 @@ class Strategy
       ResExpl& resExpl) const;
 
     void coversNew(
-      const Covers& coversIn,
+      Covers& coversIn,
       const unsigned char numStrategyTops,
       CoverTableau& tableau) const;
 

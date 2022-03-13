@@ -244,7 +244,7 @@ class Slist
     // Debug utilities.
 
     void covers(
-      const Covers& coversIn,
+      Covers& coversIn,
       const unsigned char maxRank,
       list<ResExpl>& resExplanations) const;
 

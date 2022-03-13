@@ -74,8 +74,8 @@ void Combination::setTrivial(
 
 
 void Combination::covers(
-  const Covers& coversIn,
-  list<ResExpl>& resExplanations) const
+  Covers& coversIn,
+  list<ResExpl>& resExplanations)
 {
   strats.covers(coversIn, resExplanations, maxRank);
 }

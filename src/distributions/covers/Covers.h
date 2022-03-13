@@ -15,6 +15,7 @@
 
 #include "Cover.h"
 #include "CoverNew.h"
+#include "TableauCache.h"
 
 class Distribution;
 class CoverMemory;
@@ -65,6 +66,8 @@ class Covers
 
     list<CoverNew> coversNew;
 
+    TableauCache tableauCache;
+
 
     void setup(
       const list<Result>& results,
@@ -111,7 +114,15 @@ class Covers
     void explainExhaustive(
       const list<Result>& results,
       const unsigned numStrategyTops,
-      CoverTableau& tableau) const;
+      CoverTableau& tableau);
+
+    void storeTableau(
+      const vector<unsigned char>& excessTricks,
+      const CoverTableau& tableau);
+
+    bool lookupTableau(
+      const vector<unsigned char>& excessTricks,
+      CoverTableau const * tableauPtr) const;
 };
 
 #endif

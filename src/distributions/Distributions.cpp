@@ -187,3 +187,10 @@ string Distributions::str(const unsigned char cards) const
   return ss.str() + "\n";
 }
 
+
+string Distributions::strCovers(
+  [[maybe_unused]] const unsigned char cards) const
+{
+  return "";
+}
+

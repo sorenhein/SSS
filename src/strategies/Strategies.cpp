@@ -425,7 +425,7 @@ unsigned char Strategies::winRankLow() const
  ************************************************************/
 
 void Strategies::covers(
-  const Covers& coversIn,
+  Covers& coversIn,
   list<ResExpl>& resExplanations,
   const unsigned char maxRank) const
 {

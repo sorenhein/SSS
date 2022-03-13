@@ -1,5 +1,16 @@
 TableauCache
 ------------
+Move to an unordered_map
+Move to 2-bit groups
+Move to index by #tops (0, 1, ...)
+
+Print out the (counted) tableaux in the end
+Print out a table
+
+top number (0, 1)
+#tableaux
+#hits per tableau
+
 CoverProfile
 list<unsigned char> excessTricks
 list<unsigned> profiles
@@ -16,47 +27,8 @@ Covers::setup moves into Result::flatten
 Slist::covers: Call Result::flatten(maxTricks, tricks)
 Should we flatten into 5-bit groups as well? Into a class?
 
-In Study::scrutinize
-IN
-list<Result>
-ranges (with the minima)
-OUT
-profile, list of unsigned, stored in Study
-
-What we want now:
-IN
-list<Result>
-minTricks (same for all)
-OUT
-Store in a CoverProfile:
-list or vector of trick numbers, store tricks
-list or vector like profile, store profile
-
 also store a binary vector
 
-bool lookup(numTops, const tricks, Tableau& tableau) const
-
-void store(numTops, const Tableau&)
-
-strTable
-
-0  14 217
-1  45 345
-
-strTops(1)
-
-(dist table)
-
-Length 6, Using 1 top (0 tops...)
-Result 0 1 2 1 3 2 1 2 ...
-
-Strategy #0, used 17 times
-...
-
-Strategy #1
-...
-
-strAllTops()
 
 Internal data:
 Need to look up efficiently by trick vector
@@ -65,12 +37,8 @@ for example based on the 5-bit groups, maybe the first non-zero one.
 Also an equality operator.
 One for each top number 0, 1, ...
 
-vector<unordered_map<
-
 
 Timing
-- Probably makes sense to implement caching of tableaux and 
-  counting etc. now, as it saves so much runtime
 
   Maybe covers have an index or a number
   Maybe we register which ones are symmetries of one another

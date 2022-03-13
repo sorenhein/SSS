@@ -273,7 +273,7 @@ CombinationType Combinations::classify(
 
 void Combinations::runUniques(
   const unsigned char cards,
-  const Distributions& distributions,
+  Distributions& distributions,
   ExplStats& explStats)
 {
   assert(cards < countStats.size());
@@ -635,7 +635,7 @@ void Combinations::covers(
 {
   CombEntry& centry = combMemory.getEntry(cards, holding);
   Distribution& dist = distributions.get(cards, centry.getHolding2());
-  const Combination& comb = combMemory.getComb(cards, holding);
+  Combination& comb = combMemory.getComb(cards, holding);
 
   list<ResExpl> resExplanations;
 

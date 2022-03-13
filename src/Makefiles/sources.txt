@@ -28,6 +28,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverMemory.cpp \
                 distributions/covers/CoverRow.cpp \
                 distributions/covers/CoverTableau.cpp \
+                distributions/covers/TableauCache.cpp \
                 distributions/covers/ResExpl.cpp \
                 distributions/covers/ExplStat.cpp \
                 distributions/covers/ExplStats.cpp \

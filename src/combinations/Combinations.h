@@ -98,7 +98,7 @@ class Combinations
 
     void runUniques(
       const unsigned char cards,
-      const Distributions& distributions,
+      Distributions& distributions,
       ExplStats& explStats);
 
     void runUniquesOld(

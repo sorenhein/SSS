@@ -68,8 +68,8 @@ class Combination
       bool debugFlag = false);
 
     void covers(
-      const Covers& coversIn,
-      list<ResExpl>& resExplanations) const;
+      Covers& coversIn,
+      list<ResExpl>& resExplanations);
 
     const Strategies& strategies() const;
 

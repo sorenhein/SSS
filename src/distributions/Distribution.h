@@ -92,6 +92,12 @@ class Distribution
       distCorePtr->prepareCovers(coverMemory);
     };
 
+    Covers& covers()
+    {
+      assert(distCorePtr != nullptr);
+      return distCorePtr->getCovers();
+    }
+
     const Covers& covers() const
     {
       assert(distCorePtr != nullptr);

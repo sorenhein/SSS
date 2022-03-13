@@ -989,7 +989,7 @@ bool Strategy::covers(
 
 
 void Strategy::coversNew(
-  const Covers& coversIn,
+  Covers& coversIn,
   const unsigned char numStrategyTops,
   CoverTableau& tableau) const
 {

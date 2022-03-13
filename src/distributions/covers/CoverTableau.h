@@ -55,6 +55,8 @@ class CoverTableau
       const vector<unsigned char>& tricks,
       const unsigned char tmin);
 
+    void setMinTricks(const unsigned char tmin);
+
     bool attemptGreedy(const CoverNew& cover);
 
     void attemptExhaustive(
