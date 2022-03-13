@@ -183,3 +183,11 @@ void ResConvert::scrutinizeBinary(
     profiles.push_back(profile);
 }
 
+
+bool ResConvert::greaterEqual(
+  const unsigned arg1,
+  const unsigned arg2) const
+{
+  return (lookupGE[(arg1 << 10) | arg2] ? 1 : 0);
+}
+

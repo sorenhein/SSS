@@ -50,6 +50,10 @@ class ResConvert
     void scrutinizeBinary(
       const list<unsigned char>& binaryTricks,
       list<unsigned>& profiles) const;
+
+    bool greaterEqual(
+      const unsigned arg1,
+      const unsigned arg2) const;
 };
 
 #endif

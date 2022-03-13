@@ -14,6 +14,9 @@
 
 #include "../result/Result.h"
 #include "../result/Ranges.h"
+#include "../result/ResConvert.h"
+
+extern ResConvert resConvert;
 
 // A major time drain is the component-wise comparison of results.  
 // In the most optimized implementation, 5 result entries are
@@ -35,7 +38,7 @@ Study::Study()
   mtxStudy.lock();
   if (! init_flag)
   {
-    Study::setConstants();
+    // Study::setConstants();
     init_flag = true;
   }
   mtxStudy.unlock();
@@ -130,6 +133,9 @@ void Study::scrutinize(
   const list<Result>& results,
   const Ranges& ranges)
 {
+  resConvert.scrutinizeRange(results, ranges, profiles);
+
+/*
   assert(ranges.size() >= results.size());
   profiles.clear();
 
@@ -172,6 +178,7 @@ void Study::scrutinize(
 
   if (counter > 0)
     profiles.push_back(profile);
+*/
 }
 
 
@@ -236,7 +243,8 @@ bool Study::lessEqualScrutinized(const Study& study2) const
   auto piter2 = study2.profiles.begin();
   while (piter1 != profiles.end())
   {
-    if (! lookupGE[((* piter2) << 10) | (* piter1)])
+    if (! resConvert.greaterEqual(* piter2, * piter1))
+    // if (! lookupGE[((* piter2) << 10) | (* piter1)])
       return false;
 
     piter1++;
@@ -260,8 +268,10 @@ Compare Study::comparePrimaryScrutinized(const Study& study2) const
   bool lowerFlag = false;
   while (piter1 != profiles.end())
   {
-    const unsigned char b1 = lookupGE[((* piter1) << 10) | (* piter2)];
-    const unsigned char b2 = lookupGE[((* piter2) << 10) | (* piter1)];
+    const unsigned char b1 = resConvert.greaterEqual(* piter1, * piter2);
+    const unsigned char b2 = resConvert.greaterEqual(* piter2, * piter1);
+    // const unsigned char b1 = lookupGE[((* piter1) << 10) | (* piter2)];
+    // const unsigned char b2 = lookupGE[((* piter2) << 10) | (* piter1)];
 
     if (b1)
     {
