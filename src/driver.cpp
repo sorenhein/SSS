@@ -76,6 +76,7 @@ int main(int argc, char * argv[])
 
     cout << "\n";
     cout << distributions.strCovers();
+    cout << distributions.strCoverCounts();
 
     cout << "\n";
     cout << explStats.str();

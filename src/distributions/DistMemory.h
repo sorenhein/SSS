@@ -80,6 +80,14 @@ class DistMemory
     unsigned used(const unsigned char cards) const;
 
     string strDynamic() const;
+
+    string strCovers(const unsigned char cards) const;
+
+    string strCoverCountsHeader() const;
+
+    string strCoverCounts(
+      const unsigned char cmin,
+      const unsigned char cmax) const;
 };
 
 #endif

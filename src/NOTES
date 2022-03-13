@@ -1,68 +1,30 @@
 TableauCache
 ------------
-Move to an unordered_map
-Move to 2-bit groups
+getCoverHistogram(map<unsigned, unsigned>& histogram) const
+Each cover gets an index
+They are numbered after they are sorted
+Then traverse the map and output the covers that are used.
+Last attempt to homologize coverMemory manually.
+
+Move to an unordered_map with custom hash (e.g first nonzero one) and ==.
 Move to index by #tops (0, 1, ...)
+Move to 2-bit groups
 
-Print out the (counted) tableaux in the end
-Print out a table
+Add symmetry wherever there is no self overlap, complexity unchanged
 
-top number (0, 1)
-#tableaux
-#hits per tableau
+Look at timing
+Look at differences with Greedy
+Delete old manual code
 
-CoverProfile
-list<unsigned char> excessTricks
-list<unsigned> profiles
+- Introduce back symmetry somehow
+  11/57967, "Either opponent has a singleton honor" comes out to the
+  same as "West has between 1 and 2 tops", and even with a symmetric
+  play, when we sort and compare, the other one may win.  So I guess
+  we prefer either symmetrized ones, or one with no overlap with the OR
+  (MECE)
+- Delete the original code in CoverMemory and many other places
 
-setResults(list<Result> results, minTricks)
-setBinary(vector<unsigned char>)
-
-<=
-
-str methods
-
-
-Covers::setup moves into Result::flatten
-Slist::covers: Call Result::flatten(maxTricks, tricks)
-Should we flatten into 5-bit groups as well? Into a class?
-
-also store a binary vector
-
-
-Internal data:
-Need to look up efficiently by trick vector
-Looks like an unordered map with a custom hash function,
-for example based on the 5-bit groups, maybe the first non-zero one.
-Also an equality operator.
-One for each top number 0, 1, ...
-
-
-Timing
-
-  Maybe covers have an index or a number
-  Maybe we register which ones are symmetries of one another
-  Somehow note which covers ever get used for a given top configuration.
-  And which strategies ever show up.  Cache them in Covers?
-
-  Maybe one last effort to use only the exhaustive covers in
-  CoverMemory and see whether the agreement is better.
-
-
-
-Exhaustive 
-- We might be missing a symmetric cover that is needed?
-- Also incredibly slow
-- Look at differences with Greedy once they both work well
-
-Maybe consider "singleton honor" a 1 complexity rather than 2 --
-it seems so natural.  Maybe everything with weight 1?
-And/or range 0?
-
-Reintroduce symmetry when generating covers
-- Perhaps just say that each element is either don't care or
-  is of the form 0-1 out of 4 (i.e. completely on one half).
-  This avoids overlaps for sure.
+- Where does the actual name of the card come from?  Ranks?
 
 
 Maybe a diagonal cover (1,2;1) meaning 1-2 tricks and 1 more length,
@@ -104,16 +66,6 @@ Case    Same  Diff      Same  Diff
 ----------------------------------
 Sum      261   177     81133 13013
 
-
-- Introduce back symmetry somehow
-  11/57967, "Either opponent has a singleton honor" comes out to the
-  same as "West has between 1 and 2 tops", and even with a symmetric
-  play, when we sort and compare, the other one may win.  So I guess
-  we prefer either symmetrized ones, or one with no overlap with the OR
-  (MECE)
-- Delete the original code in CoverMemory and many other places
-
-- Where does the actual name of the card come from?  Ranks?
 
 Further work:
 - Covers::prepareNew

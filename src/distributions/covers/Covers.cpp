@@ -646,9 +646,17 @@ void Covers::storeTableau(
 
 bool Covers::lookupTableau(
   const vector<unsigned char>& excessTricks,
-  CoverTableau const * tableauPtr) const
+  CoverTableau const * tableauPtr)
 {
   return tableauCache.lookup(excessTricks, tableauPtr);
+}
+
+
+void Covers::getCoverCounts(
+  unsigned& numTableaux,
+  unsigned& numUses) const
+{
+  tableauCache.getCounts(numTableaux, numUses);
 }
 
 
@@ -664,5 +672,11 @@ string Covers::strDebug(
       ss << i << ": " << +tricks[i] << "\n";
   ss << "\n";
   return ss.str();
+}
+
+
+string Covers::strCached() const
+{
+  return tableauCache.str();
 }
 

@@ -544,6 +544,14 @@ Covers& DistCore::getCovers()
 }
 
 
+void DistCore::getCoverCounts(
+  unsigned& numTableaux,
+  unsigned& numUses) const
+{
+  covers.getCoverCounts(numTableaux, numUses);
+}
+
+
 string DistCore::strHeader() const
 {
   stringstream ss;
@@ -573,5 +581,11 @@ string DistCore::str() const
       setw(8) << distributions[d].cases << "\n";
   }
   return ss.str();
+}
+
+
+string DistCore::strCovers() const
+{
+  return covers.strCached();
 }
 

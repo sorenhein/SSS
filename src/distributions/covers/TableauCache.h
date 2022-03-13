@@ -31,11 +31,13 @@ class TableauCache
     {
       vector<unsigned char> excessTricks;
       CoverTableau tableau;
+      unsigned count;
 
       string str() const
       {
         stringstream ss;
 
+        ss << "Count " << count << ", vector ";
         for (auto t: excessTricks)
           ss << +t << " ";
         ss << "\n\n";
@@ -61,9 +63,13 @@ class TableauCache
 
     bool lookup(
       const vector<unsigned char>& excessTricksIn,
-      CoverTableau const *& tableauPtr) const;
+      CoverTableau const *& tableauPtr);
 
     unsigned size() const;
+
+    void getCounts(
+      unsigned& numTableaux,
+      unsigned& numUses) const;
       
     string str() const;
 };

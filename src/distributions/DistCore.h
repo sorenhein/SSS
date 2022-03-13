@@ -93,8 +93,13 @@ class DistCore
     // TODO const once specs are separate
     Covers& getCovers();
 
+    void getCoverCounts(
+      unsigned& numTableaux,
+      unsigned& numUses) const;
+
     string str() const;
 
+    string strCovers() const;
 };
 
 #endif

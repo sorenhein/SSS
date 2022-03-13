@@ -122,7 +122,13 @@ class Covers
 
     bool lookupTableau(
       const vector<unsigned char>& excessTricks,
-      CoverTableau const * tableauPtr) const;
+      CoverTableau const * tableauPtr);
+
+    void getCoverCounts(
+      unsigned& numTableaux,
+      unsigned& numUses) const;
+
+    string strCached() const;
 };
 
 #endif

@@ -145,9 +145,11 @@ string Distributions::strDynamic() const
 }
 
 
-string Distributions::str(const unsigned char cards) const
+void Distributions::strLimits(
+  const unsigned char cards,
+  unsigned char& cmin,
+  unsigned char& cmax) const
 {
-  unsigned char cmin, cmax;
   if (cards == 0)
   {
     cmin = 1;
@@ -158,6 +160,13 @@ string Distributions::str(const unsigned char cards) const
     cmin = cards;
     cmax = cards;
   }
+}
+
+
+string Distributions::str(const unsigned char cards) const
+{
+  unsigned char cmin, cmax;
+  Distributions::strLimits(cards, cmin, cmax);
 
   stringstream ss;
   ss <<
@@ -188,9 +197,27 @@ string Distributions::str(const unsigned char cards) const
 }
 
 
-string Distributions::strCovers(
-  [[maybe_unused]] const unsigned char cards) const
+string Distributions::strCovers(const unsigned char cards) const
 {
-  return "";
+  unsigned char cmin, cmax;
+  Distributions::strLimits(cards, cmin, cmax);
+
+  stringstream ss;
+  for (unsigned char c = cmin; c <= cmax; c++)
+    ss << distMemory.strCovers(c);
+
+  return ss.str();
+}
+
+
+string Distributions::strCoverCounts(const unsigned char cards) const
+{
+  unsigned char cmin, cmax;
+  Distributions::strLimits(cards, cmin, cmax);
+
+  stringstream ss;
+  ss << distMemory.strCoverCountsHeader();
+  ss << distMemory.strCoverCounts(cmin, cmax);
+  return ss.str() + "\n";
 }
 

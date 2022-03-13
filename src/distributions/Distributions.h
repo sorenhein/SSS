@@ -40,6 +40,11 @@ class Distributions
       const unsigned char cards,
       const unsigned thid);
 
+    void strLimits(
+      const unsigned char cards,
+      unsigned char& cmin,
+      unsigned char& cmax) const;
+
   public:
 
     Distributions();
@@ -73,6 +78,8 @@ class Distributions
     string str(const unsigned char cards = 0) const;
 
     string strCovers(const unsigned char cards = 0) const;
+
+    string strCoverCounts(const unsigned char cards = 0) const;
 };
 
 #endif

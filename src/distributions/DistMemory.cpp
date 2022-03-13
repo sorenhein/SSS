@@ -293,3 +293,91 @@ string DistMemory::strDynamic() const
   return ss.str();
 }
 
+
+string DistMemory::strCovers(const unsigned char cards) const
+{
+  if (usedCounts[cards] == 0)
+    return "";
+
+  stringstream ss;
+  unsigned numTableaux, numUses;
+
+  for (auto& distCore: uniques[cards])
+  {
+    distCore.getCoverCounts(numTableaux, numUses);
+    if (numTableaux == 0)
+      continue;
+
+    ss << distCore.str() << "\n";
+    ss << distCore.strCovers() << "\n";
+  }
+
+  return ss.str();
+}
+
+
+string DistMemory::strCoverCountsHeader() const
+{
+  stringstream ss;
+  ss <<
+    setw(6) << "Cards" <<
+    setw(10) << "Tableaux" <<
+    setw(10) << "Uses" << 
+    setw(10) << "Avg" << 
+    "\n";
+  return ss.str();
+}
+
+
+string DistMemory::strCoverCounts(
+  const unsigned char cmin,
+  const unsigned char cmax) const
+{
+  stringstream ss;
+  unsigned sumTableaux = 0;
+  unsigned sumUses = 0;
+
+  for (unsigned char cards = cmin; cards <= cmax; cards++)
+  {
+   if (usedCounts[cards] == 0)
+     continue;
+
+    unsigned cumTableaux = 0;
+    unsigned cumUses = 0;
+    unsigned numTableaux, numUses;
+
+    for (auto& distCore: uniques[cards])
+    {
+      distCore.getCoverCounts(numTableaux, numUses);
+      cumTableaux += numTableaux;
+      cumUses += numUses;
+    }
+
+    if (cumTableaux == 0)
+      continue;
+
+    ss <<
+      setw(6) << +cards <<
+      setw(10) << cumTableaux <<
+      setw(10) << cumUses << 
+      setw(10) << fixed << setprecision(1) <<
+        static_cast<float>(cumUses) / 
+        static_cast<float>(cumTableaux) << "\n";
+    
+    sumTableaux += cumTableaux;
+    sumUses += cumUses;
+  }
+
+  ss << string(36, '-') << "\n";
+
+  ss <<
+    setw(6) << "Sum" <<
+    setw(10) << sumTableaux <<
+    setw(10) << sumUses << 
+    setw(10) << fixed << setprecision(1) <<
+      static_cast<float>(sumUses) / 
+      static_cast<float>(sumTableaux) << "\n\n";
+
+  return ss.str();
+}
+

@@ -35,12 +35,13 @@ void TableauCache::store(
 
   entry.excessTricks = excessTricksIn;
   entry.tableau = tableau;
+  entry.count = 1;
 }
 
 
 bool TableauCache::lookup(
   const vector<unsigned char>& excessTricksIn,
-  CoverTableau const *& tableauPtr) const
+  CoverTableau const *& tableauPtr)
 {
   for (auto& entry: entries)
   {
@@ -63,6 +64,7 @@ bool TableauCache::lookup(
     if (! diffFlag)
     {
       tableauPtr = &entry.tableau;
+      entry.count++;
       return true;
     }
   }
@@ -73,6 +75,18 @@ bool TableauCache::lookup(
 unsigned TableauCache::size() const
 {
   return entries.size();
+}
+
+
+void TableauCache::getCounts(
+  unsigned& numTableaux,
+  unsigned& numUses) const
+{
+  numTableaux = entries.size();
+
+  numUses = 0;
+  for (auto& entry: entries)
+    numUses += entry.count;
 }
 
 
