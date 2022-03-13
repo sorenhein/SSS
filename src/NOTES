@@ -1,5 +1,32 @@
 TableauCache
 ------------
+Output of covers
+
+count | depth   0         1         2           3
+5               full real full real
+
+
+4567
+...
+
+Sums horizontal and vertical
+Also percentages
+
+Should show the amount of duplication.
+
+Could reduce a strategy with more complication than actual depth
+to the actual depth, similarly to what we already know how to do.
+The #cases should add up the right way.  Maybe each distCore has
+a list of pointers to its reduced-depth versions?
+
+Find a way to store the covers for 6-0 (0 depth), 6-1 (1 depth), ...
+separately, and link them together with covers.  Would reduce storage
+at least.
+
+Would still have to sort them by pointer, though not the actual content.
+
+
+
 getCoverHistogram(map<unsigned, unsigned>& histogram) const
 Each cover gets an index
 They are numbered after they are sorted
