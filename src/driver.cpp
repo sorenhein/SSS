@@ -9,6 +9,8 @@
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
 
+#include "strategies/result/ResConvert.h"
+
 #include "utils/Timers.h"
 
 Timers timers;
@@ -19,6 +21,7 @@ Timers timers;
 
 Control control;
 Convert convert;
+ResConvert resConvert;
 Combinations combinations;
 Distributions distributions;
 

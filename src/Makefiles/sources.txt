@@ -64,6 +64,7 @@ SOURCE_FILES    =                               \
                 strategies/result/MultiResult.cpp \
                 strategies/result/Winners.cpp   \
                 strategies/result/Winner.cpp    \
+                strategies/result/ResConvert.cpp \
                                                 \
                 utils/Card.cpp                  \
                 utils/Comparer.cpp              \

@@ -21,7 +21,8 @@ driver.obj: distributions/covers/CoverSetNew.h
 driver.obj: distributions/covers/CoverMemory.h
 driver.obj: distributions/covers/ExplStats.h distributions/covers/ExplStat.h
 driver.obj: distributions/covers/ExplStats.h inputs/Control.h inputs/Entity.h
-driver.obj: inputs/Convert.h utils/Timers.h utils/Timer.h
+driver.obj: inputs/Convert.h strategies/result/ResConvert.h utils/Timers.h
+driver.obj: utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
@@ -528,6 +529,14 @@ strategies/result/Winner.obj: strategies/result/Winner.h utils/table.h
 strategies/result/Winner.obj: utils/Card.h utils/Compare.h utils/Compare.h
 strategies/result/Winner.obj: plays/Play.h strategies/result/Winners.h
 strategies/result/Winner.obj: ranks/Completion.h utils/Card.h const.h
+strategies/result/ResConvert.obj: strategies/result/ResConvert.h
+strategies/result/ResConvert.obj: strategies/result/Result.h
+strategies/result/ResConvert.obj: strategies/result/Winners.h
+strategies/result/ResConvert.obj: strategies/result/Winner.h utils/table.h
+strategies/result/ResConvert.obj: utils/Card.h utils/Compare.h
+strategies/result/ResConvert.obj: utils/Compare.h strategies/result/RAnges.h
+strategies/result/ResConvert.obj: strategies/result/Range.h
+strategies/result/ResConvert.obj: strategies/result/MultiResult.h
 utils/Card.obj: utils/Card.h utils/Compare.h const.h
 utils/Comparer.obj: utils/Comparer.h utils/Compare.h
 utils/Timer.obj: utils/Timer.h
