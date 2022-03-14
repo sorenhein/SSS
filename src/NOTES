@@ -1,3 +1,32 @@
+Thoughts on runtime and memory of covers
+----------------------------------------
+It's actually probably a good idea to have the separation between
+CoverNew (with a profile etc.) and CoverSetNew (which just has the
+cover elements, independent of length and top distribution).
+
+The CoverSetNew's could come from a cover hotel (CoverMemory,
+essentially).  There we could keep track of the times they are used.
+They would have to be organized in some order.  Perhaps lexically
+first by length, then by highest top in its list, ...
+
+CoverMemory would have a pointer or index, probably a pointer, into
+the list.
+
+How do we generate the new CoverMemory?  Perhaps in Covers we do
+as we do now, including creating the profile, sorting, pruning.
+When we are done, we go through the list, and we make another list
+with the same number of entries, but with pointers to the cover
+memory.  If it exists, the memory is unchanged.  If not, it is
+created.  Actually we just keep the CoverSetNew separate in the first
+list, and we flesh out the pointer and forget about the CoverSetNew
+we created afterwards.
+
+So CoverMemory might have to be an unordered map.
+
+Could reduce a strategy with more complication than actual depth
+to the actual depth, similarly to what we already know how to do.
+The #cases should add up the right way.
+
 TableauCache
 ------------
 Output of covers
@@ -13,19 +42,6 @@ Sums horizontal and vertical
 Also percentages
 
 Should show the amount of duplication.
-
-Could reduce a strategy with more complication than actual depth
-to the actual depth, similarly to what we already know how to do.
-The #cases should add up the right way.  Maybe each distCore has
-a list of pointers to its reduced-depth versions?
-
-Find a way to store the covers for 6-0 (0 depth), 6-1 (1 depth), ...
-separately, and link them together with covers.  Would reduce storage
-at least.
-
-Would still have to sort them by pointer, though not the actual content.
-
-
 
 getCoverHistogram(map<unsigned, unsigned>& histogram) const
 Each cover gets an index
