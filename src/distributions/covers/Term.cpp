@@ -46,8 +46,8 @@ Term::Term()
 
 void Term::reset()
 {
-  value1 = UCHAR_NOT_SET;
-  value2 = UCHAR_NOT_SET;
+  lower = UCHAR_NOT_SET;
+  upper = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
   symmFlag = false; // Not used (yet?)
@@ -72,18 +72,18 @@ void Term::set(
   const unsigned char valueIn,
   const CoverOperator operIn)
 {
-  value1 = valueIn;
+  lower = valueIn;
   Term::setOperator(operIn);
   usedFlag = true;
 }
 
 void Term::set(
-  const unsigned char value1In,
-  const unsigned char value2In,
+  const unsigned char lower1In,
+  const unsigned char upperIn,
   const CoverOperator operIn)
 {
-  value1 = value1In;
-  value2 = value2In;
+  lower = lower1In;
+  upper = upperIn;
   Term::setOperator(operIn);
   usedFlag = true;
 }
@@ -91,25 +91,25 @@ void Term::set(
 
 void Term::setNew(
   const unsigned char lenActual,
-  const unsigned char value1In,
-  const unsigned char value2In)
+  const unsigned char lowerIn,
+  const unsigned char upperIn)
 {
   // Returns true if actually in non-trivial use
-  if (value1In == 0 && value2In == lenActual)
+  if (lowerIn == 0 && upperIn == lenActual)
   {
     usedFlag = false;
     complexity = 0;
     return;
   }
 
-  Term::setOperator(value1In == value2In ?
+  Term::setOperator(lowerIn == upperIn ?
     COVER_EQUAL : COVER_INSIDE_RANGE);
 
-  value1 = value1In;
-  value2 = value2In;
+  lower = lowerIn;
+  upper = upperIn;
   usedFlag = true;
 
-  if (value1In == 0 || value2 == lenActual ||value1In == value2In)
+  if (lowerIn == 0 || upper == lenActual ||lowerIn == upperIn)
     complexity = 1;
   else
     complexity = 2;
@@ -118,13 +118,13 @@ void Term::setNew(
 
 bool Term::equal(const unsigned char valueIn) const
 {
-  return (valueIn == value1 ? 1 : 0);
+  return (valueIn == lower ? 1 : 0);
 }
 
 
 bool Term::insideRange(const unsigned char valueIn) const
 {
-  return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
+  return (valueIn >= lower && valueIn <= upper ? 1 : 0);
 }
 
 
@@ -152,98 +152,16 @@ unsigned char Term::getRange() const
   if (! Term::used())
     return 0;
   else
-    return (value2 - value1);
+    return (upper - lower);
 
 }
-
-
-/*
-string Term::strLengthEqual(const unsigned char lenActual) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (value1 == 0)
-    ss << side << " is void";
-  else if (value1 == lenActual)
-  {
-    assert(! symmFlag);
-    ss << "East is void";
-  }
-  else if (value1 == 1)
-    ss << side << " has a singleton";
-  else if (value1 == lenActual-1)
-  {
-    assert(! symmFlag);
-    ss << "East has a singleton";
-  }
-  else if (value1 == 2)
-  {
-    if (lenActual > 4)
-      ss << side << " has a doubleton";
-    else
-      ss << "The suit splits 2=2";
-  }
-  else
-    ss << "The suit splits " << +value1 << "=" << +(lenActual - value1);
-
-  return ss.str();
-}
-
-
-
-string Term::strLengthInside(const unsigned char lenActual) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  if (value1 == 0)
-  {
-    if (value2 == 1)
-      ss << side << " has at most a singleton";
-    else if (value2 == 2)
-      ss << side << " has at most a doubleton";
-    else
-      ss << side << " has at most " << +value2 << " cards";
-  }
-  else if (value2 == lenActual)
-  {
-    ss << side << " has at least " << +value1 << " cards";
-  }
-  else if (value1 == 1 && value2 == lenActual-1)
-  {
-    ss << "Neither opponent is void";
-  }
-  else if (value1 + value2 == lenActual)
-  {
-    if (value1 + 1 == value2)
-    {
-      ss << "The suit splits " << +value1 << "-" << +value2 << 
-        " either way";
-    }
-    else
-    {
-      ss << "The suit splits " << +value1 << "-" << +value2 <<
-        " or better either way";
-    }
-  }
-  else
-  {
-    ss << "The suit splits between " <<
-      +value1 << "=" << +(lenActual - value1) << " and " <<
-      +value2 << "=" << +(lenActual - value2);
-  }
-
-  return ss.str();
-}
-*/
 
 
 string Term::strTop1Equal(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop = value1;
+  const unsigned char wtop = lower;
 
   if (wtop == 0)
   {
@@ -288,8 +206,8 @@ string Term::strTop1Inside(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop1 = value1;
-  const unsigned char wtop2 = value2;
+  const unsigned char wtop1 = lower;
+  const unsigned char wtop2 = upper;
 
   if (wtop1 == 0)
   {
@@ -321,7 +239,7 @@ string Term::strTop1Inside(const unsigned char oppsTops1) const
 string Term::strBothEqual0(
   const string& side) const
 {
-  if (value1 == 0)
+  if (lower == 0)
     return side + " is void";
   else
     return "East is void";
@@ -336,10 +254,10 @@ string Term::strBothEqual1(
   stringstream ss;
 
   // TODO Could maybe switch around and call the top1 one here,
-  // with length.value1 as an argument.  That is all that is needed.
-  if (length.value1 == 1)
+  // with length.lower as an argument.  That is all that is needed.
+  if (length.lower == 1)
   {
-    if (value1 == 0)
+    if (lower == 0)
       ss << side << " has a small singleton";
     else
       ss <<  side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -348,7 +266,7 @@ string Term::strBothEqual1(
   else
   {
     assert(! length.symmFlag);
-    if (value1 == oppsTops1)
+    if (lower == oppsTops1)
       ss << "East has a small singleton";
     else
       ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -367,9 +285,9 @@ string Term::strBothEqual2(
 {
   stringstream ss;
 
-  if (length.value1 == 2)
+  if (length.lower == 2)
   {
-    if (value1 == 0)
+    if (lower == 0)
     {
       if (oppsLength == 4 && oppsTops1 == 2)
       {
@@ -379,7 +297,7 @@ string Term::strBothEqual2(
       else
         ss << side << " has a small doubleton";
     }
-    else if (value1 == 1)
+    else if (lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -388,9 +306,9 @@ string Term::strBothEqual2(
   else
   {
     assert(! length.symmFlag);
-    if (value1 == oppsTops1)
+    if (lower == oppsTops1)
       ss << "East has a small doubleton";
-    else if (value1 + 1 == oppsTops1)
+    else if (lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -409,14 +327,14 @@ string Term::strBothEqual3(
 {
   stringstream ss;
 
-  if (length.value1 == 3)
+  if (length.lower == 3)
   {
-    if (value1 == 0)
+    if (lower == 0)
       ss << side << " has a small tripleton";
-    else if (value1 == 1)
+    else if (lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (value1 == 2)
+    else if (lower == 2)
       ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -425,12 +343,12 @@ string Term::strBothEqual3(
   else
   {
     assert(! length.symmFlag);
-    if (value1 == oppsTops1)
+    if (lower == oppsTops1)
       ss << "East has a small tripleton";
-    else if (value1 + 1 == oppsTops1)
+    else if (lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (value1 + 2 == oppsTops1)
+    else if (lower + 2 == oppsTops1)
       ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -445,7 +363,7 @@ string Term::strRaw() const
 {
   stringstream ss;
 
-  ss << +value1 << " to " << +value2 << ", oper ";
+  ss << +lower << " to " << +upper << ", oper ";
   if (oper == COVER_EQUAL)
     ss << "EQUAL";
   else if (oper == COVER_INSIDE_RANGE)
@@ -465,14 +383,14 @@ string Term::strShort(const unsigned char lenActual) const
   if (usedFlag)
   {
     string s;
-    if (value1 == value2)
-      s = "== " + to_string(+value1);
-    else if (value1 == 0)
-      s = "<= " + to_string(+value2);
-    else if (value2 == lenActual)
-      s = ">= " + to_string(+value1);
+    if (lower == upper)
+      s = "== " + to_string(+lower);
+    else if (lower == 0)
+      s = "<= " + to_string(+upper);
+    else if (upper == lenActual)
+      s = ">= " + to_string(+lower);
     else
-      s = to_string(+value1) + "-" + to_string(+value2);
+      s = to_string(+lower) + "-" + to_string(+upper);
     
     ss << setw(8) << s;
   }
@@ -492,12 +410,12 @@ string Term::strShort() const
   if (usedFlag)
   {
     string s;
-    if (value1 == value2)
-      s = "== " + to_string(+value1);
-    else if (value1 == 0)
-      s = "<= " + to_string(+value2);
+    if (lower == upper)
+      s = "== " + to_string(+lower);
+    else if (lower == 0)
+      s = "<= " + to_string(+upper);
     else
-      s = to_string(+value1) + "-" + to_string(+value2);
+      s = to_string(+lower) + "-" + to_string(+upper);
     
     ss << setw(8) << s;
   }
@@ -515,10 +433,10 @@ string Term::str(const string& word) const
   stringstream ss;
 
   if (oper == COVER_EQUAL)
-    ss << "West has exactly " << +value1 << " " << word;
+    ss << "West has exactly " << +lower << " " << word;
   else if (oper == COVER_INSIDE_RANGE)
     ss << "West has " << word <<  " in range " << 
-      +value1 << " to " << +value2 << " " << word << " inclusive";
+      +lower << " to " << +upper << " " << word << " inclusive";
   else
     assert(false);
 
@@ -563,13 +481,13 @@ string Term::strBothEqual(
 {
   const string side = (length.symmFlag ? "Either opponent" : "West");
 
-  if (length.value1 == 0 || length.value1 == oppsLength)
+  if (length.lower == 0 || length.lower == oppsLength)
     return length.strBothEqual0(side);
-  else if (length.value1 == 1 || length.value1 + 1 == oppsLength)
+  else if (length.lower == 1 || length.lower + 1 == oppsLength)
     return Term::strBothEqual1(length, oppsTops1, side);
-  else if (length.value1 == 2 || length.value1 + 2 == oppsLength)
+  else if (length.lower == 2 || length.lower + 2 == oppsLength)
     return Term::strBothEqual2(length, oppsLength, oppsTops1, side);
-  else if (length.value1 == 3 || length.value1 + 3 == oppsLength)
+  else if (length.lower == 3 || length.lower + 3 == oppsLength)
     return Term::strBothEqual3(length, oppsLength, oppsTops1, side);
   else
   {
@@ -585,13 +503,13 @@ void Term::strXes(
   const unsigned char oppsTops1,
   CoverXes& coverXes) const
 {
-  coverXes.westMax = value2 - top1.value1;
-  coverXes.westMin = value1 - top1.value1;
+  coverXes.westMax = upper - top1.lower;
+  coverXes.westMin = lower - top1.lower;
 
   coverXes.eastMax =
-    (oppsLength - value1) - (oppsTops1 - top1.value1);
+    (oppsLength - lower) - (oppsTops1 - top1.lower);
   coverXes.eastMin =
-    (oppsLength - value2) - (oppsTops1 - top1.value1);
+    (oppsLength - upper) - (oppsTops1 - top1.lower);
 
   coverXes.strWest = string(coverXes.westMin, 'x') +
     "(" + string(coverXes.westMax - coverXes.westMin, 'x') + ")";
@@ -609,7 +527,7 @@ string Term::strTop1Fixed0(
 {
   stringstream ss;
 
-  if (value1 == 0)
+  if (lower == 0)
   {
     assert(! length.symmFlag);
     if (oppsTops1 == 1)
@@ -670,7 +588,7 @@ string Term::strTop1Fixed1(
   // TODO Call top1?
   stringstream ss;
 
-  if (value1 == 1)
+  if (lower == 1)
   {
     if (oppsTops1 == 2)
     {
@@ -723,11 +641,11 @@ string Term::strTop1Fixed(
   CoverXes coverXes;
   length.strXes(* this, oppsLength, oppsTops1, coverXes);
 
-  if (value1 == 0 || value1 == oppsTops1)
+  if (lower == 0 || lower == oppsTops1)
   {
     return Term::strTop1Fixed0(length, oppsLength, oppsTops1, side, coverXes);
   }
-  else if (value1 == 1 || value1 + 1 == oppsTops1)
+  else if (lower == 1 || lower + 1 == oppsTops1)
     return Term::strTop1Fixed1(length, oppsTops1, side, coverXes);
   else
   {

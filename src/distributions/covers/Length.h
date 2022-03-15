@@ -20,14 +20,18 @@ class Length: public Term
 {
   private: 
 
-    string strEqual(const unsigned char lenActual) const;
+    // "actual" is the opponents' actual length.
+    // If this equals "upper", for example, the overall length
+    // is of the form ">= lower" rather than [lower, upper].
 
-    string strInside(const unsigned char lenActual) const;
+    string strEqual(const unsigned char actual) const;
+
+    string strInside(const unsigned char actual) const;
  
 
   public:
 
-    string str(const unsigned char lenActual) const;
+    string str(const unsigned char actual) const;
 
 };
 

@@ -136,7 +136,7 @@ string CoverSet::strLengthEqual(const unsigned char oppsLength) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wlen = length.value1;
+  const unsigned char wlen = length.lower;
 
   if (wlen == 0)
     ss << side << " is void";
@@ -171,8 +171,8 @@ string CoverSet::strLengthInside(const unsigned char oppsLength) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wlen1 = length.value1;
-  const unsigned char wlen2 = length.value2;
+  const unsigned char wlen1 = length.lower;
+  const unsigned char wlen2 = length.upper;
 
   if (wlen1 == 0)
   {
@@ -232,7 +232,7 @@ string CoverSet::strTop1Equal(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop = top1.value1;
+  const unsigned char wtop = top1.lower;
 
   if (wtop == 0)
   {
@@ -277,8 +277,8 @@ string CoverSet::strTop1Inside(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop1 = top1.value1;
-  const unsigned char wtop2 = top1.value2;
+  const unsigned char wtop1 = top1.lower;
+  const unsigned char wtop2 = top1.upper;
 
   if (wtop1 == 0)
   {
@@ -324,7 +324,7 @@ string CoverSet::strTop1(const unsigned char oppsTops1) const
 string CoverSet::strBothEqual0(
   const string& side) const
 {
-  if (length.value1 == 0)
+  if (length.lower == 0)
     return side + " is void";
   else
     return "East is void";
@@ -337,9 +337,9 @@ string CoverSet::strBothEqual1(
 {
   stringstream ss;
 
-  if (length.value1 == 1)
+  if (length.lower == 1)
   {
-    if (top1.value1 == 0)
+    if (top1.lower == 0)
       ss << side << " has a small singleton";
     else
       ss <<  side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -348,7 +348,7 @@ string CoverSet::strBothEqual1(
   else
   {
     assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    if (top1.lower == oppsTops1)
       ss << "East has a small singleton";
     else
       ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -366,9 +366,9 @@ string CoverSet::strBothEqual2(
 {
   stringstream ss;
 
-  if (length.value1 == 2)
+  if (length.lower == 2)
   {
-    if (top1.value1 == 0)
+    if (top1.lower == 0)
     {
       if (oppsLength == 4 && oppsTops1 == 2)
       {
@@ -378,7 +378,7 @@ string CoverSet::strBothEqual2(
       else
         ss << side << " has a small doubleton";
     }
-    else if (top1.value1 == 1)
+    else if (top1.lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -387,9 +387,9 @@ string CoverSet::strBothEqual2(
   else
   {
     assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    if (top1.lower == oppsTops1)
       ss << "East has a small doubleton";
-    else if (top1.value1 + 1 == oppsTops1)
+    else if (top1.lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -407,14 +407,14 @@ string CoverSet::strBothEqual3(
 {
   stringstream ss;
 
-  if (length.value1 == 3)
+  if (length.lower == 3)
   {
-    if (top1.value1 == 0)
+    if (top1.lower == 0)
       ss << side << " has a small tripleton";
-    else if (top1.value1 == 1)
+    else if (top1.lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (top1.value1 == 2)
+    else if (top1.lower == 2)
       ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -423,12 +423,12 @@ string CoverSet::strBothEqual3(
   else
   {
     assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    if (top1.lower == oppsTops1)
       ss << "East has a small tripleton";
-    else if (top1.value1 + 1 == oppsTops1)
+    else if (top1.lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (top1.value1 + 2 == oppsTops1)
+    else if (top1.lower + 2 == oppsTops1)
       ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -445,13 +445,13 @@ string CoverSet::strBothEqual(
 {
   const string side = (symmFlag ? "Either opponent" : "West");
 
-  if (length.value1 == 0 || length.value1 == oppsLength)
+  if (length.lower == 0 || length.lower == oppsLength)
     return CoverSet::strBothEqual0(side);
-  else if (length.value1 == 1 || length.value1 + 1 == oppsLength)
+  else if (length.lower == 1 || length.lower + 1 == oppsLength)
     return CoverSet::strBothEqual1(oppsTops1, side);
-  else if (length.value1 == 2 || length.value1 + 2 == oppsLength)
+  else if (length.lower == 2 || length.lower + 2 == oppsLength)
     return CoverSet::strBothEqual2(oppsLength, oppsTops1, side);
-  else if (length.value1 == 3 || length.value1 + 3 == oppsLength)
+  else if (length.lower == 3 || length.lower + 3 == oppsLength)
     return CoverSet::strBothEqual3(oppsLength, oppsTops1, side);
   else
   {
@@ -466,13 +466,13 @@ void CoverSet::strXes(
   const unsigned char oppsTops1,
   CoverXes& coverXes) const
 {
-  coverXes.westMax = length.value2 - top1.value1;
-  coverXes.westMin = length.value1 - top1.value1;
+  coverXes.westMax = length.upper - top1.lower;
+  coverXes.westMin = length.lower - top1.lower;
 
   coverXes.eastMax =
-    (oppsLength - length.value1) - (oppsTops1 - top1.value1);
+    (oppsLength - length.lower) - (oppsTops1 - top1.lower);
   coverXes.eastMin =
-    (oppsLength - length.value2) - (oppsTops1 - top1.value1);
+    (oppsLength - length.upper) - (oppsTops1 - top1.lower);
 
   coverXes.strWest = string(coverXes.westMin, 'x') +
     "(" + string(coverXes.westMax - coverXes.westMin, 'x') + ")";
@@ -489,7 +489,7 @@ string CoverSet::strTop1Fixed0(
 {
   stringstream ss;
 
-  if (top1.value1 == 0)
+  if (top1.lower == 0)
   {
     assert(! symmFlag);
     if (oppsTops1 == 1)
@@ -550,7 +550,7 @@ string CoverSet::strTop1Fixed1(
 {
   stringstream ss;
 
-  if (top1.value1 == 1)
+  if (top1.lower == 1)
   {
     if (oppsTops1 == 2)
     {
@@ -602,9 +602,9 @@ string CoverSet::strTop1Fixed(
   CoverXes coverXes;
   CoverSet::strXes(oppsLength, oppsTops1, coverXes);
 
-  if (top1.value1 == 0 ||top1.value1 == oppsTops1)
+  if (top1.lower == 0 ||top1.lower == oppsTops1)
     return CoverSet::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes);
-  else if (top1.value1 == 1 ||top1.value1 + 1 == oppsTops1)
+  else if (top1.lower == 1 ||top1.lower + 1 == oppsTops1)
     return CoverSet::strTop1Fixed1(oppsTops1, side, coverXes);
   else
   {

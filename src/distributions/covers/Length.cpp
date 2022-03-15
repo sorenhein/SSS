@@ -14,92 +14,104 @@
 #include "Length.h"
 
 
-string Length::strEqual(const unsigned char lenActual) const
+string Length::strEqual(const unsigned char actual) const
 {
+  // Here lower and upper are one and the same.
+
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
 
-  if (value1 == 0)
+  if (lower == 0)
+  {
     ss << side << " is void";
-  else if (value1 == lenActual)
+  }
+  else if (lower == actual)
   {
     assert(! symmFlag);
     ss << "East is void";
   }
-  else if (value1 == 1)
+  else if (lower == 1)
+  {
     ss << side << " has a singleton";
-  else if (value1 == lenActual-1)
+  }
+  else if (lower+1 == actual)
   {
     assert(! symmFlag);
     ss << "East has a singleton";
   }
-  else if (value1 == 2)
+  else if (lower == 2)
   {
-    if (lenActual > 4)
+    if (actual > 4)
       ss << side << " has a doubleton";
     else
       ss << "The suit splits 2=2";
   }
   else
-    ss << "The suit splits " << +value1 << "=" << +(lenActual - value1);
+  {
+    ss << "The suit splits " << +lower << "=" << +(actual - lower);
+  }
 
   return ss.str();
 }
 
 
 
-string Length::strInside(const unsigned char lenActual) const
+string Length::strInside(const unsigned char actual) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
 
-  if (value1 == 0)
+  if (lower == 0)
   {
-    if (value2 == 1)
+    if (upper == 1)
       ss << side << " has at most a singleton";
-    else if (value2 == 2)
+    else if (upper == 2)
       ss << side << " has at most a doubleton";
     else
-      ss << side << " has at most " << +value2 << " cards";
+      ss << side << " has at most " << +upper << " cards";
   }
-  else if (value2 == lenActual)
+  else if (upper == actual)
   {
-    ss << side << " has at least " << +value1 << " cards";
+    ss << side << " has at least " << +lower << " cards";
   }
-  else if (value1 == 1 && value2 == lenActual-1)
+  else if (lower == 1 && upper == actual-1)
   {
     ss << "Neither opponent is void";
   }
-  else if (value1 + value2 == lenActual)
+  else if (lower + upper == actual)
   {
-    if (value1 + 1 == value2)
+    if (lower + 1 == upper)
     {
-      ss << "The suit splits " << +value1 << "-" << +value2 << 
+      ss << "The suit splits " << +lower << "-" << +upper << 
         " either way";
     }
     else
     {
-      ss << "The suit splits " << +value1 << "-" << +value2 <<
+      ss << "The suit splits " << +lower << "-" << +upper <<
         " or better either way";
     }
   }
   else
   {
     ss << "The suit splits between " <<
-      +value1 << "=" << +(lenActual - value1) << " and " <<
-      +value2 << "=" << +(lenActual - value2);
+      +lower << "=" << +(actual - lower) << " and " <<
+      +upper << "=" << +(actual - upper);
   }
 
   return ss.str();
 }
 
 
-string Length::str(const unsigned char lenActual) const
+string Length::str(const unsigned char actual) const
 {
   if (oper == COVER_EQUAL)
-    return Length::strEqual(lenActual);
+  {
+    return Length::strEqual(actual);
+  }
   else if (oper == COVER_INSIDE_RANGE)
-    return Length::strInside(lenActual);
+  {
+    return Length::strInside(actual);
+  }
   else
   {
     assert(false);

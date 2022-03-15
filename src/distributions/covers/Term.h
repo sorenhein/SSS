@@ -35,8 +35,8 @@ class Term
 
   protected: 
 
-    unsigned char value1;
-    unsigned char value2;
+    unsigned char lower;
+    unsigned char upper;
 
     CoverOperator oper;
 
@@ -58,10 +58,6 @@ class Term
     
     bool insideRange(const unsigned char valueIn) const;
 
-    // string strLengthEqual(const unsigned char lenActual) const;
-
-    // string strLengthInside(const unsigned char lenActual) const;
- 
     string strTop1Equal(const unsigned char oppsTops1) const;
 
     string strTop1Inside(const unsigned char oppsTops1) const;
@@ -153,8 +149,6 @@ class Term
     string strShort() const;
 
     string str(const string& word) const;
-
-    // string strLength(const unsigned char lenActual) const;
 
     string strTop1(const unsigned char oppsTops1) const;
 
