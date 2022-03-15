@@ -22,6 +22,7 @@ enum CoverOperator
 };
 
 struct CoverXes;
+class Length;
 
 
 class Term
@@ -31,16 +32,21 @@ class Term
   typedef bool 
     (Term::*ComparePtr)(const unsigned char valueIn) const;
 
-  private: 
+
+  protected: 
 
     unsigned char value1;
     unsigned char value2;
 
     CoverOperator oper;
 
+    bool symmFlag;
+
+
+  private:
+
     ComparePtr ptr;
 
-    bool symmFlag;
     bool usedFlag;
 
     unsigned char complexity;
@@ -52,9 +58,9 @@ class Term
     
     bool insideRange(const unsigned char valueIn) const;
 
-    string strLengthEqual(const unsigned char lenActual) const;
+    // string strLengthEqual(const unsigned char lenActual) const;
 
-    string strLengthInside(const unsigned char lenActual) const;
+    // string strLengthInside(const unsigned char lenActual) const;
  
     string strTop1Equal(const unsigned char oppsTops1) const;
 
@@ -64,18 +70,18 @@ class Term
       const string& side) const;
 
     string strBothEqual1(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsTops1,
       const string& side) const;
 
     string strBothEqual2(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side) const;
 
     string strBothEqual3(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side) const;
@@ -87,26 +93,27 @@ class Term
       CoverXes& coverXes) const;
 
     string strTop1Fixed0(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
 
     string strTop1Fixed1(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
 
+    // The Term being called is the top1 one.
     string strTop1Fixed(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
-    // The Term being called is the length one.
+    // The Term being called is the top1 one.
     string strBothEqual(
-      const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
@@ -147,12 +154,13 @@ class Term
 
     string str(const string& word) const;
 
-    string strLength(const unsigned char lenActual) const;
+    // string strLength(const unsigned char lenActual) const;
 
     string strTop1(const unsigned char oppsTops1) const;
 
     string strLengthTop1(
-      const Term& top1,
+      // const Term& top1,
+      const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 };

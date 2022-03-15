@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Term.h"
+#include "Length.h"
 
 #include "../../const.h"
 
@@ -156,6 +157,7 @@ unsigned char Term::getRange() const
 }
 
 
+/*
 string Term::strLengthEqual(const unsigned char lenActual) const
 {
   stringstream ss;
@@ -234,6 +236,7 @@ string Term::strLengthInside(const unsigned char lenActual) const
 
   return ss.str();
 }
+*/
 
 
 string Term::strTop1Equal(const unsigned char oppsTops1) const
@@ -326,7 +329,7 @@ string Term::strBothEqual0(
 
 
 string Term::strBothEqual1(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsTops1,
   const string& side) const
 {
@@ -334,9 +337,9 @@ string Term::strBothEqual1(
 
   // TODO Could maybe switch around and call the top1 one here,
   // with length.value1 as an argument.  That is all that is needed.
-  if (value1 == 1)
+  if (length.value1 == 1)
   {
-    if (top1.value1 == 0)
+    if (value1 == 0)
       ss << side << " has a small singleton";
     else
       ss <<  side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -344,8 +347,8 @@ string Term::strBothEqual1(
   }
   else
   {
-    assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    assert(! length.symmFlag);
+    if (value1 == oppsTops1)
       ss << "East has a small singleton";
     else
       ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
@@ -357,26 +360,26 @@ string Term::strBothEqual1(
 
 
 string Term::strBothEqual2(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side) const
 {
   stringstream ss;
 
-  if (value1 == 2)
+  if (length.value1 == 2)
   {
-    if (top1.value1 == 0)
+    if (value1 == 0)
     {
       if (oppsLength == 4 && oppsTops1 == 2)
       {
-        assert(! symmFlag);
+        assert(! length.symmFlag);
         ss << "East has doubleton honors (HH)";
       }
       else
         ss << side << " has a small doubleton";
     }
-    else if (top1.value1 == 1)
+    else if (value1 == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -384,10 +387,10 @@ string Term::strBothEqual2(
   }
   else
   {
-    assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    assert(! length.symmFlag);
+    if (value1 == oppsTops1)
       ss << "East has a small doubleton";
-    else if (top1.value1 + 1 == oppsTops1)
+    else if (value1 + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
@@ -399,21 +402,21 @@ string Term::strBothEqual2(
 
 
 string Term::strBothEqual3(
-  const Term& top1,
+  const Length& length,
   [[maybe_unused]] const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side) const
 {
   stringstream ss;
 
-  if (value1 == 3)
+  if (length.value1 == 3)
   {
-    if (top1.value1 == 0)
+    if (value1 == 0)
       ss << side << " has a small tripleton";
-    else if (top1.value1 == 1)
+    else if (value1 == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (top1.value1 == 2)
+    else if (value1 == 2)
       ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -421,13 +424,13 @@ string Term::strBothEqual3(
   }
   else
   {
-    assert(! symmFlag);
-    if (top1.value1 == oppsTops1)
+    assert(! length.symmFlag);
+    if (value1 == oppsTops1)
       ss << "East has a small tripleton";
-    else if (top1.value1 + 1 == oppsTops1)
+    else if (value1 + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
-    else if (top1.value1 + 2 == oppsTops1)
+    else if (value1 + 2 == oppsTops1)
       ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
@@ -523,6 +526,7 @@ string Term::str(const string& word) const
 }
 
 
+/*
 string Term::strLength(const unsigned char lenActual) const
 {
   if (oper == COVER_EQUAL)
@@ -535,6 +539,7 @@ string Term::strLength(const unsigned char lenActual) const
     return "";
   }
 }
+*/
 
 
 string Term::strTop1(const unsigned char oppsTops1) const
@@ -552,20 +557,20 @@ string Term::strTop1(const unsigned char oppsTops1) const
 
 
 string Term::strBothEqual(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
-  const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = (length.symmFlag ? "Either opponent" : "West");
 
-  if (value1 == 0 || value1 == oppsLength)
-    return Term::strBothEqual0(side);
-  else if (value1 == 1 || value1 + 1 == oppsLength)
-    return Term::strBothEqual1(top1, oppsTops1, side);
-  else if (value1 == 2 || value1 + 2 == oppsLength)
-    return Term::strBothEqual2(top1, oppsLength, oppsTops1, side);
-  else if (value1 == 3 || value1 + 3 == oppsLength)
-    return Term::strBothEqual3(top1, oppsLength, oppsTops1, side);
+  if (length.value1 == 0 || length.value1 == oppsLength)
+    return length.strBothEqual0(side);
+  else if (length.value1 == 1 || length.value1 + 1 == oppsLength)
+    return Term::strBothEqual1(length, oppsTops1, side);
+  else if (length.value1 == 2 || length.value1 + 2 == oppsLength)
+    return Term::strBothEqual2(length, oppsLength, oppsTops1, side);
+  else if (length.value1 == 3 || length.value1 + 3 == oppsLength)
+    return Term::strBothEqual3(length, oppsLength, oppsTops1, side);
   else
   {
     assert(false);
@@ -596,7 +601,7 @@ void Term::strXes(
 
 
 string Term::strTop1Fixed0(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
@@ -604,9 +609,9 @@ string Term::strTop1Fixed0(
 {
   stringstream ss;
 
-  if (top1.value1 == 0)
+  if (value1 == 0)
   {
-    assert(! symmFlag);
+    assert(! length.symmFlag);
     if (oppsTops1 == 1)
     {
       if (coverXes.eastMax == 1)
@@ -645,8 +650,8 @@ string Term::strTop1Fixed0(
     else
     {
       cout << coverXes.str();
-      cout << Term::strLength(oppsLength) << ", and " <<
-        top1.strTop1(oppsTops1) << endl;
+      cout << length.str(oppsLength) << ", and " <<
+        Term::strTop1(oppsTops1) << endl;
         // Term::strTop1(oppsTops1) << endl;
       assert(false);
     }
@@ -657,7 +662,7 @@ string Term::strTop1Fixed0(
 
 
 string Term::strTop1Fixed1(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -665,7 +670,7 @@ string Term::strTop1Fixed1(
   // TODO Call top1?
   stringstream ss;
 
-  if (top1.value1 == 1)
+  if (value1 == 1)
   {
     if (oppsTops1 == 2)
     {
@@ -679,7 +684,7 @@ string Term::strTop1Fixed1(
       }
       else
       {
-        assert(! symmFlag);
+        assert(! length.symmFlag);
         if (coverXes.eastMax == 1)
           ss << "East has one top at most doubleton";
         else
@@ -696,7 +701,7 @@ string Term::strTop1Fixed1(
   }
   else
   {
-    assert(! symmFlag);
+    assert(! length.symmFlag);
     if (coverXes.eastMax == 1)
       ss << "East has one top at most doubleton";
     else
@@ -708,22 +713,22 @@ string Term::strTop1Fixed1(
 
 
 string Term::strTop1Fixed(
-  const Term& top1,
+  const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = (length.symmFlag ? "Either opponent" : "West");
 
   CoverXes coverXes;
-  Term::strXes(top1, oppsLength, oppsTops1, coverXes);
+  length.strXes(* this, oppsLength, oppsTops1, coverXes);
 
-  if (top1.value1 == 0 || top1.value1 == oppsTops1)
+  if (value1 == 0 || value1 == oppsTops1)
   {
-    return Term::strTop1Fixed0(top1, oppsLength, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed0(length, oppsLength, oppsTops1, side, coverXes);
   }
-  else if (top1.value1 == 1 || top1.value1 + 1 == oppsTops1)
-    return Term::strTop1Fixed1(top1, oppsTops1, side, coverXes);
+  else if (value1 == 1 || value1 + 1 == oppsTops1)
+    return Term::strTop1Fixed1(length, oppsTops1, side, coverXes);
   else
   {
     assert(false);
@@ -733,25 +738,27 @@ string Term::strTop1Fixed(
 
 
 string Term::strLengthTop1(
-  const Term& top1,
+  // const Term& top1,
+  const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
-  if (oper == COVER_EQUAL)
+  // We are a top1.
+  if (length.oper == COVER_EQUAL)
   {
-    if (top1.oper == COVER_EQUAL)
-      return Term::strBothEqual(top1, oppsLength, oppsTops1);
+    if (oper == COVER_EQUAL)
+      return Term::strBothEqual(length, oppsLength, oppsTops1);
     else
-      return Term::strLength(oppsLength) + ", and " +
-        top1.strTop1(oppsTops1);
+      return length.str(oppsLength) + ", and " +
+        Term::strTop1(oppsTops1);
   }
   else
   {
-    if (top1.oper == COVER_EQUAL)
-      return Term::strTop1Fixed(top1, oppsLength, oppsTops1);
+    if (oper == COVER_EQUAL)
+      return Term::strTop1Fixed(length, oppsLength, oppsTops1);
     else
-      return Term::strLength(oppsLength) + ", and " +
-        top1.strTop1(oppsTops1);
+      return length.str(oppsLength) + ", and " +
+        Term::strTop1(oppsTops1);
   }
 }
 

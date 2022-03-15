@@ -14,6 +14,7 @@
 #include <string>
 
 #include "Term.h"
+#include "Length.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ class CoverSet
 
     bool symmFlag;
 
-    Term length;
+    Length length;
 
     Term top1;
 

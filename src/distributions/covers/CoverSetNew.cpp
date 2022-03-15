@@ -215,10 +215,10 @@ string CoverSetNew::strVerbal(
   const vector<unsigned char>& topTotals) const
 {
   if (topCount == 0)
-    return length.strLength(maxLength);
+    return length.str(maxLength);
   else if (! length.used())
     return tops.back().strTop1(topTotals.back());
   else
-    return length.strLengthTop1(tops.back(), maxLength, topTotals.back());
+    return tops.back().strLengthTop1(length, maxLength, topTotals.back());
 }
 

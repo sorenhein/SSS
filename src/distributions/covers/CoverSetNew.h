@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Term.h"
+#include "Length.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ class CoverSetNew
     unsigned char topSize; // Last used top number + 1; may be 0
     unsigned char topCount; // Number of tops that are not unused
 
-    Term length;
+    Length length;
 
     vector<Term> tops;
 
