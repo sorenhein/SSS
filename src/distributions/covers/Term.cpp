@@ -11,12 +11,11 @@
 #include <sstream>
 #include <cassert>
 
-#include "CoverElement.h"
+#include "Term.h"
 
 #include "../../const.h"
 
 
-// TODO Should go back into CoverElement.h later on
 struct CoverXes
 {
   unsigned char westMax, westMin;
@@ -38,13 +37,13 @@ struct CoverXes
 
 
 
-CoverElement::CoverElement()
+Term::Term()
 {
-  CoverElement::reset();
+  Term::reset();
 }
 
 
-void CoverElement::reset()
+void Term::reset()
 {
   value1 = UCHAR_NOT_SET;
   value2 = UCHAR_NOT_SET;
@@ -56,40 +55,40 @@ void CoverElement::reset()
 }
 
 
-void CoverElement::setOperator(const CoverOperator operIn)
+void Term::setOperator(const CoverOperator operIn)
 {
   oper = operIn;
   if (oper == COVER_EQUAL)
-    ptr = &CoverElement::equal;
+    ptr = &Term::equal;
   else if (oper == COVER_INSIDE_RANGE)
-    ptr = &CoverElement::insideRange;
+    ptr = &Term::insideRange;
   else
     ptr = nullptr;
 }
 
 
-void CoverElement::set(
+void Term::set(
   const unsigned char valueIn,
   const CoverOperator operIn)
 {
   value1 = valueIn;
-  CoverElement::setOperator(operIn);
+  Term::setOperator(operIn);
   usedFlag = true;
 }
 
-void CoverElement::set(
+void Term::set(
   const unsigned char value1In,
   const unsigned char value2In,
   const CoverOperator operIn)
 {
   value1 = value1In;
   value2 = value2In;
-  CoverElement::setOperator(operIn);
+  Term::setOperator(operIn);
   usedFlag = true;
 }
 
 
-void CoverElement::setNew(
+void Term::setNew(
   const unsigned char lenActual,
   const unsigned char value1In,
   const unsigned char value2In)
@@ -102,7 +101,7 @@ void CoverElement::setNew(
     return;
   }
 
-  CoverElement::setOperator(value1In == value2In ?
+  Term::setOperator(value1In == value2In ?
     COVER_EQUAL : COVER_INSIDE_RANGE);
 
   value1 = value1In;
@@ -116,40 +115,40 @@ void CoverElement::setNew(
 }
 
 
-bool CoverElement::equal(const unsigned char valueIn) const
+bool Term::equal(const unsigned char valueIn) const
 {
   return (valueIn == value1 ? 1 : 0);
 }
 
 
-bool CoverElement::insideRange(const unsigned char valueIn) const
+bool Term::insideRange(const unsigned char valueIn) const
 {
   return (valueIn >= value1 && valueIn <= value2 ? 1 : 0);
 }
 
 
-bool CoverElement::includes(const unsigned char valueIn) const
+bool Term::includes(const unsigned char valueIn) const
 {
   assert(ptr != nullptr);
   return (this->*ptr)(valueIn);
 }
 
 
-bool CoverElement::used() const
+bool Term::used() const
 {
   return usedFlag;
 }
 
 
-unsigned char CoverElement::getComplexity() const
+unsigned char Term::getComplexity() const
 {
   return complexity;
 }
 
 
-unsigned char CoverElement::getRange() const
+unsigned char Term::getRange() const
 {
-  if (! CoverElement::used())
+  if (! Term::used())
     return 0;
   else
     return (value2 - value1);
@@ -157,7 +156,7 @@ unsigned char CoverElement::getRange() const
 }
 
 
-string CoverElement::strLengthEqual(const unsigned char lenActual) const
+string Term::strLengthEqual(const unsigned char lenActual) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -191,7 +190,7 @@ string CoverElement::strLengthEqual(const unsigned char lenActual) const
 
 
 
-string CoverElement::strLengthInside(const unsigned char lenActual) const
+string Term::strLengthInside(const unsigned char lenActual) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -237,7 +236,7 @@ string CoverElement::strLengthInside(const unsigned char lenActual) const
 }
 
 
-string CoverElement::strTop1Equal(const unsigned char oppsTops1) const
+string Term::strTop1Equal(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -282,7 +281,7 @@ string CoverElement::strTop1Equal(const unsigned char oppsTops1) const
 }
 
 
-string CoverElement::strTop1Inside(const unsigned char oppsTops1) const
+string Term::strTop1Inside(const unsigned char oppsTops1) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -316,7 +315,7 @@ string CoverElement::strTop1Inside(const unsigned char oppsTops1) const
 }
 
 
-string CoverElement::strBothEqual0(
+string Term::strBothEqual0(
   const string& side) const
 {
   if (value1 == 0)
@@ -326,8 +325,8 @@ string CoverElement::strBothEqual0(
 }
 
 
-string CoverElement::strBothEqual1(
-  const CoverElement& top1,
+string Term::strBothEqual1(
+  const Term& top1,
   const unsigned char oppsTops1,
   const string& side) const
 {
@@ -357,8 +356,8 @@ string CoverElement::strBothEqual1(
 }
 
 
-string CoverElement::strBothEqual2(
-  const CoverElement& top1,
+string Term::strBothEqual2(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side) const
@@ -399,8 +398,8 @@ string CoverElement::strBothEqual2(
 }
 
 
-string CoverElement::strBothEqual3(
-  const CoverElement& top1,
+string Term::strBothEqual3(
+  const Term& top1,
   [[maybe_unused]] const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side) const
@@ -439,7 +438,7 @@ string CoverElement::strBothEqual3(
 }
 
 
-string CoverElement::strRaw() const
+string Term::strRaw() const
 {
   stringstream ss;
 
@@ -456,7 +455,7 @@ string CoverElement::strRaw() const
 }
 
 
-string CoverElement::strShort(const unsigned char lenActual) const
+string Term::strShort(const unsigned char lenActual) const
 {
   stringstream ss;
 
@@ -483,7 +482,7 @@ string CoverElement::strShort(const unsigned char lenActual) const
 }
 
 
-string CoverElement::strShort() const
+string Term::strShort() const
 {
   stringstream ss;
 
@@ -508,7 +507,7 @@ string CoverElement::strShort() const
 }
 
 
-string CoverElement::str(const string& word) const
+string Term::str(const string& word) const
 {
   stringstream ss;
 
@@ -524,12 +523,12 @@ string CoverElement::str(const string& word) const
 }
 
 
-string CoverElement::strLength(const unsigned char lenActual) const
+string Term::strLength(const unsigned char lenActual) const
 {
   if (oper == COVER_EQUAL)
-    return CoverElement::strLengthEqual(lenActual);
+    return Term::strLengthEqual(lenActual);
   else if (oper == COVER_INSIDE_RANGE)
-    return CoverElement::strLengthInside(lenActual);
+    return Term::strLengthInside(lenActual);
   else
   {
     assert(false);
@@ -538,12 +537,12 @@ string CoverElement::strLength(const unsigned char lenActual) const
 }
 
 
-string CoverElement::strTop1(const unsigned char oppsTops1) const
+string Term::strTop1(const unsigned char oppsTops1) const
 {
   if (oper == COVER_EQUAL)
-    return CoverElement::strTop1Equal(oppsTops1);
+    return Term::strTop1Equal(oppsTops1);
   else if (oper == COVER_INSIDE_RANGE)
-    return CoverElement::strTop1Inside(oppsTops1);
+    return Term::strTop1Inside(oppsTops1);
   else
   {
     assert(false);
@@ -552,21 +551,21 @@ string CoverElement::strTop1(const unsigned char oppsTops1) const
 }
 
 
-string CoverElement::strBothEqual(
-  const CoverElement& top1,
+string Term::strBothEqual(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
   const string side = (symmFlag ? "Either opponent" : "West");
 
   if (value1 == 0 || value1 == oppsLength)
-    return CoverElement::strBothEqual0(side);
+    return Term::strBothEqual0(side);
   else if (value1 == 1 || value1 + 1 == oppsLength)
-    return CoverElement::strBothEqual1(top1, oppsTops1, side);
+    return Term::strBothEqual1(top1, oppsTops1, side);
   else if (value1 == 2 || value1 + 2 == oppsLength)
-    return CoverElement::strBothEqual2(top1, oppsLength, oppsTops1, side);
+    return Term::strBothEqual2(top1, oppsLength, oppsTops1, side);
   else if (value1 == 3 || value1 + 3 == oppsLength)
-    return CoverElement::strBothEqual3(top1, oppsLength, oppsTops1, side);
+    return Term::strBothEqual3(top1, oppsLength, oppsTops1, side);
   else
   {
     assert(false);
@@ -575,8 +574,8 @@ string CoverElement::strBothEqual(
 }
 
 
-void CoverElement::strXes(
-  const CoverElement& top1,
+void Term::strXes(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   CoverXes& coverXes) const
@@ -596,8 +595,8 @@ void CoverElement::strXes(
 }
 
 
-string CoverElement::strTop1Fixed0(
-  const CoverElement& top1,
+string Term::strTop1Fixed0(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
@@ -646,9 +645,9 @@ string CoverElement::strTop1Fixed0(
     else
     {
       cout << coverXes.str();
-      cout << CoverElement::strLength(oppsLength) << ", and " <<
+      cout << Term::strLength(oppsLength) << ", and " <<
         top1.strTop1(oppsTops1) << endl;
-        // CoverElement::strTop1(oppsTops1) << endl;
+        // Term::strTop1(oppsTops1) << endl;
       assert(false);
     }
   }
@@ -657,8 +656,8 @@ string CoverElement::strTop1Fixed0(
 }
 
 
-string CoverElement::strTop1Fixed1(
-  const CoverElement& top1,
+string Term::strTop1Fixed1(
+  const Term& top1,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -708,8 +707,8 @@ string CoverElement::strTop1Fixed1(
 }
 
 
-string CoverElement::strTop1Fixed(
-  const CoverElement& top1,
+string Term::strTop1Fixed(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
@@ -717,14 +716,14 @@ string CoverElement::strTop1Fixed(
   const string side = (symmFlag ? "Either opponent" : "West");
 
   CoverXes coverXes;
-  CoverElement::strXes(top1, oppsLength, oppsTops1, coverXes);
+  Term::strXes(top1, oppsLength, oppsTops1, coverXes);
 
   if (top1.value1 == 0 || top1.value1 == oppsTops1)
   {
-    return CoverElement::strTop1Fixed0(top1, oppsLength, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed0(top1, oppsLength, oppsTops1, side, coverXes);
   }
   else if (top1.value1 == 1 || top1.value1 + 1 == oppsTops1)
-    return CoverElement::strTop1Fixed1(top1, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed1(top1, oppsTops1, side, coverXes);
   else
   {
     assert(false);
@@ -733,25 +732,25 @@ string CoverElement::strTop1Fixed(
 }
 
 
-string CoverElement::strLengthTop1(
-  const CoverElement& top1,
+string Term::strLengthTop1(
+  const Term& top1,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
   if (oper == COVER_EQUAL)
   {
     if (top1.oper == COVER_EQUAL)
-      return CoverElement::strBothEqual(top1, oppsLength, oppsTops1);
+      return Term::strBothEqual(top1, oppsLength, oppsTops1);
     else
-      return CoverElement::strLength(oppsLength) + ", and " +
+      return Term::strLength(oppsLength) + ", and " +
         top1.strTop1(oppsTops1);
   }
   else
   {
     if (top1.oper == COVER_EQUAL)
-      return CoverElement::strTop1Fixed(top1, oppsLength, oppsTops1);
+      return Term::strTop1Fixed(top1, oppsLength, oppsTops1);
     else
-      return CoverElement::strLength(oppsLength) + ", and " +
+      return Term::strLength(oppsLength) + ", and " +
         top1.strTop1(oppsTops1);
   }
 }

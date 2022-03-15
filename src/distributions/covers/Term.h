@@ -6,12 +6,12 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVERELEMENT_H
-#define SSS_COVERELEMENT_H
+#ifndef SSS_TERM_H
+#define SSS_TERM_H
 
 #include <string>
 
-#include "../../const.h"
+using namespace std;
 
 
 enum CoverOperator
@@ -23,34 +23,13 @@ enum CoverOperator
 
 struct CoverXes;
 
-/*
-struct CoverXes
-{
-  unsigned char westMax, westMin;
-  unsigned char eastMax, eastMin;
-  string strWest, strEast;
 
-  string str() const
-  {
-    stringstream ss;
-
-    ss << "coverXes: " <<
-      westMin << "-" << westMax << ", " <<
-      eastMin << "-" << eastMax << ", " <<
-      strWest << ", " << strEast << "\n";
-
-    return ss.str();
-  };
-};
-*/
-
-
-class CoverElement
+class Term
 {
   friend class CoverSet;
 
   typedef bool 
-    (CoverElement::*ComparePtr)(const unsigned char valueIn) const;
+    (Term::*ComparePtr)(const unsigned char valueIn) const;
 
   private: 
 
@@ -85,56 +64,56 @@ class CoverElement
       const string& side) const;
 
     string strBothEqual1(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsTops1,
       const string& side) const;
 
     string strBothEqual2(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side) const;
 
     string strBothEqual3(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side) const;
 
     void strXes(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       CoverXes& coverXes) const;
 
     string strTop1Fixed0(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
 
     string strTop1Fixed1(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
 
     string strTop1Fixed(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
-    // The CoverElement being called is the length one.
+    // The Term being called is the length one.
     string strBothEqual(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
 
   public:
 
-    CoverElement();
+    Term();
 
     void reset();
 
@@ -173,7 +152,7 @@ class CoverElement
     string strTop1(const unsigned char oppsTops1) const;
 
     string strLengthTop1(
-      const CoverElement& top1,
+      const Term& top1,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 };

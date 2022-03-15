@@ -21,7 +21,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Cover.cpp  \
                 distributions/covers/CoverNew.cpp  \
                 distributions/covers/Covers.cpp \
-                distributions/covers/CoverElement.cpp \
+                distributions/covers/Term.cpp   \
                 distributions/covers/CoverSet.cpp \
                 distributions/covers/CoverSetNew.cpp \
                 distributions/covers/CoverSpec.cpp \

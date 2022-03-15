@@ -1,3 +1,18 @@
+Names of cards
+--------------
+Opponents' cards seem to live in ranks/Opponents.
+Maybe we shouldn't use HH as in 4/24, but actualy KQ.
+Maybe all we really need is to interrogate Opponents?
+It seems to use external ranks in rankInfo[r].
+
+Verbals of CoverElement (call it Term):
+Maybe inherit into a Length and a Top that has 1-D verbals.
+
+If all terms are singles, it's a single holding.
+
+What else?
+
+
 Thoughts on runtime and memory of covers
 ----------------------------------------
 It's actually probably a good idea to have the separation between

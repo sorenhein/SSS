@@ -13,7 +13,7 @@
 #include <sstream>
 #include <string>
 
-#include "CoverElement.h"
+#include "Term.h"
 
 using namespace std;
 
@@ -54,9 +54,9 @@ class CoverSet
 
     bool symmFlag;
 
-    CoverElement length;
+    Term length;
 
-    CoverElement top1;
+    Term top1;
 
 
     bool includesLength(

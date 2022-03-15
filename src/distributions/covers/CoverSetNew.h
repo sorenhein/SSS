@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "CoverElement.h"
+#include "Term.h"
 
 using namespace std;
 
@@ -30,9 +30,9 @@ class CoverSetNew
     unsigned char topSize; // Last used top number + 1; may be 0
     unsigned char topCount; // Number of tops that are not unused
 
-    CoverElement length;
+    Term length;
 
-    vector<CoverElement> tops;
+    vector<Term> tops;
 
 
   public:
