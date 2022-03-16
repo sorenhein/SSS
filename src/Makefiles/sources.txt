@@ -23,6 +23,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Covers.cpp \
                 distributions/covers/Term.cpp   \
                 distributions/covers/Length.cpp \
+                distributions/covers/Top.cpp    \
                 distributions/covers/CoverSet.cpp \
                 distributions/covers/CoverSetNew.cpp \
                 distributions/covers/CoverSpec.cpp \

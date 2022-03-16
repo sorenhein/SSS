@@ -157,85 +157,6 @@ unsigned char Term::getRange() const
 }
 
 
-string Term::strTop1Equal(const unsigned char oppsTops1) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop = lower;
-
-  if (wtop == 0)
-  {
-    assert(! symmFlag);
-    if (oppsTops1 == 1)
-      ss << "East has the top";
-    else
-      ss << "East has the tops";
-  }
-  else if (wtop == oppsTops1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has the tops";
-  }
-  else if (wtop == 1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has exactly one top";
-  }
-  else if (wtop == oppsTops1-1)
-  {
-    assert(! symmFlag);
-    ss << "East has exactly one top";
-  }
-  else if (wtop == 2)
-  {
-    ss << side << " has " <<
-      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
-  }
-  else
-    ss << side << " has exactly " << wtop << " tops";
-
-  return ss.str();
-}
-
-
-string Term::strTop1Inside(const unsigned char oppsTops1) const
-{
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop1 = lower;
-  const unsigned char wtop2 = upper;
-
-  if (wtop1 == 0)
-  {
-    if (wtop2 == oppsTops1-1)
-    {
-      assert(! symmFlag);
-      ss << "East has at least one top";
-    }
-    else
-      ss << side << " has at most " << +wtop2 << " tops";
-  }
-  else if (wtop2 == oppsTops1)
-  {
-    if (wtop1 == 1)
-      ss << side << " has at least one top";
-    else
-      ss << side << " has at least " << +wtop1 << " tops";
-  }
-  else
-  {
-      ss << side <<
-        " has between " << +wtop1 << " and " << +wtop2 << " tops";
-  }
-
-  return ss.str();
-}
-
-
 string Term::strBothEqual0(
   const string& side) const
 {
@@ -444,36 +365,6 @@ string Term::str(const string& word) const
 }
 
 
-/*
-string Term::strLength(const unsigned char lenActual) const
-{
-  if (oper == COVER_EQUAL)
-    return Term::strLengthEqual(lenActual);
-  else if (oper == COVER_INSIDE_RANGE)
-    return Term::strLengthInside(lenActual);
-  else
-  {
-    assert(false);
-    return "";
-  }
-}
-*/
-
-
-string Term::strTop1(const unsigned char oppsTops1) const
-{
-  if (oper == COVER_EQUAL)
-    return Term::strTop1Equal(oppsTops1);
-  else if (oper == COVER_INSIDE_RANGE)
-    return Term::strTop1Inside(oppsTops1);
-  else
-  {
-    assert(false);
-    return "";
-  }
-}
-
-
 string Term::strBothEqual(
   const Length& length,
   const unsigned char oppsLength,
@@ -520,7 +411,7 @@ void Term::strXes(
 
 string Term::strTop1Fixed0(
   const Length& length,
-  const unsigned char oppsLength,
+  // const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -567,9 +458,8 @@ string Term::strTop1Fixed0(
       ss << side << " has HHH" << coverXes.strWest;
     else
     {
-      cout << coverXes.str();
-      cout << length.str(oppsLength) << ", and " <<
-        Term::strTop1(oppsTops1) << endl;
+      // cout << coverXes.str();
+      // cout << length.str(oppsLength) << ", and " <<
         // Term::strTop1(oppsTops1) << endl;
       assert(false);
     }
@@ -643,7 +533,7 @@ string Term::strTop1Fixed(
 
   if (lower == 0 || lower == oppsTops1)
   {
-    return Term::strTop1Fixed0(length, oppsLength, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed0(length, oppsTops1, side, coverXes);
   }
   else if (lower == 1 || lower + 1 == oppsTops1)
     return Term::strTop1Fixed1(length, oppsTops1, side, coverXes);
@@ -651,32 +541,6 @@ string Term::strTop1Fixed(
   {
     assert(false);
     return "";
-  }
-}
-
-
-string Term::strLengthTop1(
-  // const Term& top1,
-  const Length& length,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  // We are a top1.
-  if (length.oper == COVER_EQUAL)
-  {
-    if (oper == COVER_EQUAL)
-      return Term::strBothEqual(length, oppsLength, oppsTops1);
-    else
-      return length.str(oppsLength) + ", and " +
-        Term::strTop1(oppsTops1);
-  }
-  else
-  {
-    if (oper == COVER_EQUAL)
-      return Term::strTop1Fixed(length, oppsLength, oppsTops1);
-    else
-      return length.str(oppsLength) + ", and " +
-        Term::strTop1(oppsTops1);
   }
 }
 

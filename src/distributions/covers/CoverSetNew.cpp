@@ -217,8 +217,24 @@ string CoverSetNew::strVerbal(
   if (topCount == 0)
     return length.str(maxLength);
   else if (! length.used())
-    return tops.back().strTop1(topTotals.back());
+    return tops.back().str(topTotals.back());
+  else if (length.oper == COVER_EQUAL)
+  {
+    auto& top = tops.back();
+    if (top.oper == COVER_EQUAL)
+      return top.strBothEqual(length, maxLength, topTotals.back());
+    else
+      return length.str(maxLength) + ", and " +
+        top.str(topTotals.back());
+  }
   else
-    return tops.back().strLengthTop1(length, maxLength, topTotals.back());
+  {
+    auto& top = tops.back();
+    if (top.oper == COVER_EQUAL)
+      return top.strTop1Fixed(length, maxLength, topTotals.back());
+    else
+      return length.str(maxLength) + ", and " +
+        top.str(topTotals.back());
+  }
 }
 

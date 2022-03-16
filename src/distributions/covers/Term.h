@@ -28,6 +28,7 @@ class Length;
 class Term
 {
   friend class CoverSet;
+  friend class CoverSetNew;
 
   typedef bool 
     (Term::*ComparePtr)(const unsigned char valueIn) const;
@@ -58,10 +59,6 @@ class Term
     
     bool insideRange(const unsigned char valueIn) const;
 
-    string strTop1Equal(const unsigned char oppsTops1) const;
-
-    string strTop1Inside(const unsigned char oppsTops1) const;
-
     string strBothEqual0(
       const string& side) const;
 
@@ -90,7 +87,6 @@ class Term
 
     string strTop1Fixed0(
       const Length& length,
-      const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
@@ -149,14 +145,6 @@ class Term
     string strShort() const;
 
     string str(const string& word) const;
-
-    string strTop1(const unsigned char oppsTops1) const;
-
-    string strLengthTop1(
-      // const Term& top1,
-      const Length& length,
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
 };
 
 #endif

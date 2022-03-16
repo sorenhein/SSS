@@ -12,8 +12,8 @@
 #include <vector>
 #include <string>
 
-#include "Term.h"
 #include "Length.h"
+#include "Top.h"
 
 using namespace std;
 
@@ -33,7 +33,7 @@ class CoverSetNew
 
     Length length;
 
-    vector<Term> tops;
+    vector<Top> tops;
 
 
   public:
