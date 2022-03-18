@@ -1,6 +1,9 @@
+ProductMemory
+TableauMemory
+Need a way to order Term's and Product's
+
 Term
 ----
-Several Term's are a Product?
 What is the least data to keep in Term?
 - lower, upper (2 bytes)
 - operator (4 values + don't care)

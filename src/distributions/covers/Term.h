@@ -6,6 +6,13 @@
    See LICENSE and README.
 */
 
+/*
+   A Term contains a single set of constraints on either length or
+   a specific top.  The Term applies either to West or East.
+   The Term does not store information about the available number of
+   cards or tops.
+ */
+
 #ifndef SSS_TERM_H
 #define SSS_TERM_H
 
@@ -28,7 +35,7 @@ class Length;
 class Term
 {
   friend class CoverSet;
-  friend class CoverSetNew;
+  friend class Product;
 
   typedef bool 
     (Term::*ComparePtr)(const unsigned char valueIn) const;

@@ -6,8 +6,15 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVERSETNEW_H
-#define SSS_COVERSETNEW_H
+/*
+   A Product contains a set of Term's that all have to apply (they are
+   multiplied together) in order for a holding to be contained.
+   Like a Term, a Product does not contain information about the number
+   of cards or tops that are available in a particular holding.
+ */
+
+#ifndef SSS_PRODUCT_H
+#define SSS_PRODUCT_H
 
 #include <vector>
 #include <string>
@@ -18,9 +25,13 @@
 using namespace std;
 
 
-class CoverSetNew
+class Product
 {
   private:
+
+    Length length;
+
+    vector<Top> tops;
 
     bool symmFlag;
 
@@ -31,14 +42,10 @@ class CoverSetNew
     unsigned char topSize; // Last used top number + 1; may be 0
     unsigned char topCount; // Number of tops that are not unused
 
-    Length length;
-
-    vector<Top> tops;
-
 
   public:
 
-  CoverSetNew();
+  Product();
 
   void reset();
 

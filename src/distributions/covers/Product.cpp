@@ -11,16 +11,16 @@
 #include <sstream>
 #include <cassert>
 
-#include "CoverSetNew.h"
+#include "Product.h"
 
 
-CoverSetNew::CoverSetNew()
+Product::Product()
 {
-  CoverSetNew::reset();
+  Product::reset();
 }
 
 
-void CoverSetNew::reset()
+void Product::reset()
 {
   symmFlag = false;
   complexity = 0;
@@ -28,16 +28,19 @@ void CoverSetNew::reset()
   tops.clear();
   topSize = 0;
   topCount = 0;
+
+  // cout << "LENGTH SIZE " << sizeof(length) << endl;
+  // assert(false);
 }
 
 
-void CoverSetNew::resize(const unsigned compSize)
+void Product::resize(const unsigned compSize)
 {
   tops.resize(compSize);
 }
 
 
-void CoverSetNew::set(
+void Product::set(
   const unsigned char lenActual,
   const unsigned char lenLow,
   const unsigned char lenHigh,
@@ -84,13 +87,13 @@ void CoverSetNew::set(
   if (range == 0 && length.used() && 
     topCount+1 == static_cast<unsigned char>(topLowSize))
   {
-// cout << "XX " << CoverSetNew::strLine(lenActual, topsActual) << "\n";
+// cout << "XX " << Product::strLine(lenActual, topsActual) << "\n";
     complexity = 2;
   }
 }
 
 
-bool CoverSetNew::includes(
+bool Product::includes(
   const unsigned char lengthIn,
   const vector<unsigned>& topsIn) const
 {
@@ -121,13 +124,13 @@ for (unsigned i = 0; i < topsIn.size(); i++)
 }
 
 
-unsigned char CoverSetNew::getComplexity() const
+unsigned char Product::getComplexity() const
 {
   return complexity;
 }
 
 
-unsigned char CoverSetNew::getTopSize() const
+unsigned char Product::getTopSize() const
 {
   if (topSize == 0 || tops.empty())
     return 0;
@@ -136,7 +139,7 @@ unsigned char CoverSetNew::getTopSize() const
 }
 
 
-unsigned char CoverSetNew::getRangeSum() const
+unsigned char Product::getRangeSum() const
 {
   unsigned char sum = length.getRange();
   for (auto& top: tops)
@@ -147,18 +150,18 @@ unsigned char CoverSetNew::getRangeSum() const
 }
 
 
-bool CoverSetNew::explainable() const
+bool Product::explainable() const
 {
   if (topCount == 0)
     return true;
-  else if (CoverSetNew::getTopSize() == 1 && topCount == 1)
+  else if (Product::getTopSize() == 1 && topCount == 1)
     return true;
   else
     return false;
 }
 
 
-string CoverSetNew::strHeader() const
+string Product::strHeader() const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
@@ -173,7 +176,7 @@ string CoverSetNew::strHeader() const
 }
 
 
-string CoverSetNew::strLine(
+string Product::strLine(
   const unsigned char lenActual,
   const vector<unsigned char>& topsActual) const
 {
@@ -193,7 +196,7 @@ string CoverSetNew::strLine(
 }
 
 
-string CoverSetNew::strLine() const
+string Product::strLine() const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
@@ -210,7 +213,7 @@ string CoverSetNew::strLine() const
 }
 
 
-string CoverSetNew::strVerbal(
+string Product::strVerbal(
   const unsigned char maxLength,
   const vector<unsigned char>& topTotals) const
 {

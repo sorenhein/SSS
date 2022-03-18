@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "CoverSetNew.h"
+#include "Product.h"
 #include "CoverSpec.h"
 
 
@@ -23,11 +23,11 @@ class CoverNew
 {
   private:
 
-    CoverSetNew coverSet;
+    Product coverSet;
 
     vector<unsigned char> profile;
 
-    // Could we get weight and numDist into CoverSetNew?
+    // Could we get weight and numDist into Product?
     unsigned weight;
 
     unsigned char numDist;

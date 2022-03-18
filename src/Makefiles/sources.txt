@@ -24,8 +24,8 @@ SOURCE_FILES    =                               \
                 distributions/covers/Term.cpp   \
                 distributions/covers/Length.cpp \
                 distributions/covers/Top.cpp    \
+                distributions/covers/Product.cpp \
                 distributions/covers/CoverSet.cpp \
-                distributions/covers/CoverSetNew.cpp \
                 distributions/covers/CoverSpec.cpp \
                 distributions/covers/CoverMemory.cpp \
                 distributions/covers/CoverRow.cpp \

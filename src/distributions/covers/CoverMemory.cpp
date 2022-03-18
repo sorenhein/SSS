@@ -12,7 +12,7 @@
 #include "Compositions.h"
 #include "ExplStats.h"
 
-#include "CoverSetNew.h"
+#include "Product.h"
 
 // Global to make the many cases more streamlined.
 
@@ -814,7 +814,7 @@ void CoverMemory::makeSets(
   list<StackInfo> stack; // Unfinished expansions
   stack.emplace_back(StackInfo(comp.size(), length));
 
-  list<CoverSetNew> sets;
+  list<Product> sets;
   sets.resize(COVER_CHUNK_SIZE);
   for (auto& s: sets)
     s.resize(comp.size());
