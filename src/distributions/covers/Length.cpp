@@ -19,7 +19,8 @@ string Length::strEqual(const unsigned char oppsLength) const
   // Here lower and upper are one and the same.
 
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  // const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   if (lower == 0)
   {
@@ -27,7 +28,7 @@ string Length::strEqual(const unsigned char oppsLength) const
   }
   else if (lower == oppsLength)
   {
-    assert(! symmFlag);
+    // assert(! symmFlag);
     ss << "East is void";
   }
   else if (lower == 1)
@@ -36,7 +37,7 @@ string Length::strEqual(const unsigned char oppsLength) const
   }
   else if (lower+1 == oppsLength)
   {
-    assert(! symmFlag);
+    // assert(! symmFlag);
     ss << "East has a singleton";
   }
   else if (lower == 2)
@@ -59,7 +60,8 @@ string Length::strEqual(const unsigned char oppsLength) const
 string Length::strInside(const unsigned char oppsLength) const
 {
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  // const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   if (lower == 0)
   {

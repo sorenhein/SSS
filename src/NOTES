@@ -1,3 +1,41 @@
+Term
+----
+Several Term's are a Product?
+What is the least data to keep in Term?
+- lower, upper (2 bytes)
+- operator (4 values + don't care)
+- usedFlag (1 bit in principle)
+- complexity (0-2)
+- ptr? Not really.  Can index by oper dynamically
+- symmFlag? No
+- Perhaps a new flag to say whether the Term is seen from West or East
+So dead minimum
+- 2 bytes: upper lower
+- 3 bits: operator
+- 1 bit: usedFlag
+- 2 bits: complexity
+- 1 bit: side (can be 3 bits, 4 options, use enum Level? New enum
+  Opponent with OPP_WEST, OPP_EAST?)
+- Maybe fit operator and side in one byte
+- And usedFlag and complexity in another
+- So total of 4 bytes
+- includes() should get a values from both West and East, and then
+  decide which one to look up based on side
+- So the data structure where we look up length, top1, ... should make
+  it easy to get data for both opps
+  - For each distribution there is a length with content (West, East),
+    a top1 with (West, East) etc., maybe a CountPair
+- Actually Term::str() should also get the side which could be
+  symmetrical, too.
+
+- Term and Product don't know actual lengths
+- ProductMemory
+- Cover knows symmFlag and actual lengths (or depends on them)
+- CoverMemory (new)
+  
+
+
+
 Names of cards
 --------------
 Opponents' cards seem to live in ranks/Opponents.

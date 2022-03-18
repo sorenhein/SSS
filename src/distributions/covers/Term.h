@@ -41,8 +41,6 @@ class Term
 
     CoverOperator oper;
 
-    bool symmFlag;
-
 
   private:
 
@@ -86,13 +84,11 @@ class Term
       CoverXes& coverXes) const;
 
     string strTop1Fixed0(
-      const Length& length,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
 
     string strTop1Fixed1(
-      const Length& length,
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;

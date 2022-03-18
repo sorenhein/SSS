@@ -50,7 +50,6 @@ void Term::reset()
   upper = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
   ptr = nullptr;
-  symmFlag = false; // Not used (yet?)
   usedFlag = false;
   complexity = 0;
 }
@@ -186,7 +185,6 @@ string Term::strBothEqual1(
   }
   else
   {
-    assert(! length.symmFlag);
     if (lower == oppsTops1)
       ss << "East has a small singleton";
     else
@@ -212,7 +210,6 @@ string Term::strBothEqual2(
     {
       if (oppsLength == 4 && oppsTops1 == 2)
       {
-        assert(! length.symmFlag);
         ss << "East has doubleton honors (HH)";
       }
       else
@@ -226,7 +223,6 @@ string Term::strBothEqual2(
   }
   else
   {
-    assert(! length.symmFlag);
     if (lower == oppsTops1)
       ss << "East has a small doubleton";
     else if (lower + 1 == oppsTops1)
@@ -263,7 +259,6 @@ string Term::strBothEqual3(
   }
   else
   {
-    assert(! length.symmFlag);
     if (lower == oppsTops1)
       ss << "East has a small tripleton";
     else if (lower + 1 == oppsTops1)
@@ -370,7 +365,8 @@ string Term::strBothEqual(
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
-  const string side = (length.symmFlag ? "Either opponent" : "West");
+  // const string side = (length.symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   if (length.lower == 0 || length.lower == oppsLength)
     return length.strBothEqual0(side);
@@ -410,8 +406,6 @@ void Term::strXes(
 
 
 string Term::strTop1Fixed0(
-  const Length& length,
-  // const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -420,7 +414,6 @@ string Term::strTop1Fixed0(
 
   if (lower == 0)
   {
-    assert(! length.symmFlag);
     if (oppsTops1 == 1)
     {
       if (coverXes.eastMax == 1)
@@ -470,7 +463,7 @@ string Term::strTop1Fixed0(
 
 
 string Term::strTop1Fixed1(
-  const Length& length,
+  // const Length& length,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -492,7 +485,6 @@ string Term::strTop1Fixed1(
       }
       else
       {
-        assert(! length.symmFlag);
         if (coverXes.eastMax == 1)
           ss << "East has one top at most doubleton";
         else
@@ -509,7 +501,6 @@ string Term::strTop1Fixed1(
   }
   else
   {
-    assert(! length.symmFlag);
     if (coverXes.eastMax == 1)
       ss << "East has one top at most doubleton";
     else
@@ -526,17 +517,18 @@ string Term::strTop1Fixed(
   const unsigned char oppsTops1) const
 {
   stringstream ss;
-  const string side = (length.symmFlag ? "Either opponent" : "West");
+  // const string side = (length.symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   CoverXes coverXes;
   length.strXes(* this, oppsLength, oppsTops1, coverXes);
 
   if (lower == 0 || lower == oppsTops1)
   {
-    return Term::strTop1Fixed0(length, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed0(oppsTops1, side, coverXes);
   }
   else if (lower == 1 || lower + 1 == oppsTops1)
-    return Term::strTop1Fixed1(length, oppsTops1, side, coverXes);
+    return Term::strTop1Fixed1(oppsTops1, side, coverXes);
   else
   {
     assert(false);

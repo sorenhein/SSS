@@ -17,11 +17,12 @@
 string Top::strEqual(const unsigned char oppsTops) const
 {
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  // const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   if (lower == 0)
   {
-    assert(! symmFlag);
+    // assert(! symmFlag);
     if (oppsTops == 1)
       ss << "East has the top";
     else
@@ -43,7 +44,7 @@ string Top::strEqual(const unsigned char oppsTops) const
   }
   else if (lower == oppsTops-1)
   {
-    assert(! symmFlag);
+    // assert(! symmFlag);
     ss << "East has exactly one top";
   }
   else if (lower == 2)
@@ -61,13 +62,14 @@ string Top::strEqual(const unsigned char oppsTops) const
 string Top::strInside(const unsigned char oppsTops) const
 {
   stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
+  // const string side = (symmFlag ? "Either opponent" : "West");
+  const string side = "West";
 
   if (lower == 0)
   {
     if (upper == oppsTops-1)
     {
-      assert(! symmFlag);
+      // assert(! symmFlag);
       ss << "East has at least one top";
     }
     else
