@@ -31,14 +31,9 @@ void CoverTableau::reset()
 }
 
 
-void CoverTableau::setBoundaries(
-  const ProductProfile& sumProfileIn)
-  // const unsigned char maxLengthIn,
-  // const vector<unsigned char>& topTotalsIn)
+void CoverTableau::setBoundaries(const ProductProfile& sumProfileIn)
 {
   sumProfile = sumProfileIn;
-  // maxLength = maxLengthIn;
-  // topTotalsPtr = &topTotalsIn;
 }
 
 
@@ -342,13 +337,6 @@ string CoverTableau::str() const
   ss << "Always take at least " << +tricksMin << " tricks, and more when\n";
   for (auto& row: rows)
     ss << row.str(sumProfile);
-    // ss << row.str(maxLength, * topTotalsPtr);
-  /*
-  {
-    ss << row.strHeader();
-    ss << row.strLines() << "\n";
-  }
-  */
 
   return ss.str() + "\n";
 }

@@ -43,11 +43,8 @@ void Covers::prepare(
   const unsigned char maxLengthIn,
   const unsigned char maxTops,
   const vector<ProductProfile>& distProfiles,
-  // const vector<unsigned char>& lengths,
-  // const vector<unsigned char>& tops,
   const vector<unsigned char>& cases)
 {
-  // assert(lengths.size() == tops.size());
   assert(distProfiles.size() == cases.size());
   assert(maxLengthIn >= 2);
   assert(maxTops >= 1);
@@ -59,7 +56,6 @@ void Covers::prepare(
       miter != coverMemory.end(maxLengthIn, maxTops); miter++)
   {
     assert(citer != covers.end());
-    // citer->prepare(lengths, tops, cases, * miter);
     citer->prepare(distProfiles, cases, * miter);
 
     if (citer->getWeight() == 0)
@@ -116,15 +112,9 @@ void Covers::prune()
 
 void Covers::prepareNew(
   const vector<ProductProfile>& distProfiles,
-  // const vector<unsigned char>& lengths,
-  // vector<vector<unsigned> const *>& topPtrs,
   const vector<unsigned char>& cases,
   const ProductProfile& sumProfileIn)
-  // const unsigned char maxLengthIn,
-  // const vector<unsigned char>& topTotalsIn)
 {
-  // maxLength = maxLengthIn;
-  // topTotals = topTotalsIn;
   sumProfile = sumProfileIn;
 
   timersStrat[20].start();
@@ -244,8 +234,6 @@ cout << setw(4) << "t#" <<
 
         citer->set(sumProfile, 
           stackIter->lowerProfile, stackIter->upperProfile);
-        // citer->set(sumProfile.length, 0, sumProfile.length, 
-          // sumProfile.tops, stackIter->topsLow, stackIter->topsHigh);
 // cout << citer->strLine();
         citer++;
 
@@ -287,8 +275,6 @@ cout << setw(4) << "t#" <<
 
             citer->set(sumProfile, stackIter->lowerProfile,
               stackIter->upperProfile);
-            // citer->set(sumProfile.length, lLow, lHigh, 
-              // sumProfile.tops, stackIter->topsLow, stackIter->topsHigh);
 // cout << citer->strLine();
             citer++;
           }
@@ -519,7 +505,6 @@ void Covers::explainExhaustive(
   stack.emplace_back(StackTableau());
   StackTableau& stableau = stack.back();
 
-  // stableau.tableau.setBoundaries(maxLength, topTotals);
   stableau.tableau.setBoundaries(sumProfile);
   stableau.tableau.setTricks(tricks, tmin);
 

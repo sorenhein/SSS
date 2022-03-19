@@ -25,8 +25,6 @@ void CoverSpec::reset()
 {
   setsWest.clear();
   setsWest.emplace_back(CoverSet());
-  // for (auto& set: setsWest)
-    // set.reset();
 }
 
 
@@ -193,15 +191,11 @@ void CoverSpec::eastGeneral(
 }
 
 
-bool CoverSpec::includes(
-  const ProductProfile& distProfile) const
-  // const unsigned char wlen,
-  // const unsigned char wtop) const
+bool CoverSpec::includes(const ProductProfile& distProfile) const
 {
   for (auto& set: setsWest)
   {
     if (set.includes(distProfile, oppsLength, oppsTops1))
-    // if (set.includes(wlen, wtop, oppsLength, oppsTops1))
       return true;
   }
 

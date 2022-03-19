@@ -33,9 +33,6 @@ class Covers
 
     struct CoverStackInfo
     {
-      // vector<unsigned char> topsLow;
-      // vector<unsigned char> topsHigh;
-
       ProductProfile lowerProfile;
       ProductProfile upperProfile;
 
@@ -49,8 +46,6 @@ class Covers
       CoverStackInfo(const vector<unsigned char>& topTotals)
       {
         lowerProfile.tops.resize(topTotals.size(), 0);
-        // topsLow.resize(topTotals.size(), 0);
-        // topsHigh = topTotals;
         upperProfile.tops = topTotals;
  
         minWest = 0;
@@ -62,10 +57,6 @@ class Covers
       };
     };
 
-
-    // unsigned char maxLength;
-
-    // vector<unsigned char> topTotals;
 
     ProductProfile sumProfile;
 
@@ -99,18 +90,12 @@ class Covers
       const unsigned char maxLength,
       const unsigned char maxTops,
       const vector<ProductProfile>& distProfiles,
-      // const vector<unsigned char>& lengths,
-      // const vector<unsigned char>& tops,
       const vector<unsigned char>& cases);
 
     void prepareNew(
       const vector<ProductProfile>& distProfiles,
-      // const vector<unsigned char>& lengths,
-      // vector<vector<unsigned> const *>& topPtrs,
       const vector<unsigned char>& cases,
       const ProductProfile& sumProfileIn);
-      // const unsigned char maxLengthIn,
-      // const vector<unsigned char>& topTotalsIn);
 
     CoverState explain(
       const list<Result>& results,

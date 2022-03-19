@@ -151,8 +151,6 @@ class CoverSet
     const unsigned char tops2);
 
   bool includes(
-    // const unsigned char wtop,
-    // const unsigned char wlen,
     const ProductProfile& distProfile,
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;

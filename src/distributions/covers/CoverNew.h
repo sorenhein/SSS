@@ -45,19 +45,9 @@ class CoverNew
       const ProductProfile& sumProfile,
       const ProductProfile& lowerProfile,
       const ProductProfile& upperProfile);
-      /*
-      const unsigned char lenActual,
-      const unsigned char lenLow,
-      const unsigned char lenHigh,
-      const vector<unsigned char>& topsActual,
-      const vector<unsigned char>& topsLow,
-      const vector<unsigned char>& topsHigh);
-      */
 
     void prepare(
       const vector<ProductProfile>& distProfiles,
-      // const vector<unsigned char>& lengths,
-      // vector<vector<unsigned > const *>& topPtrs,
       const vector<unsigned char>& cases);
 
     bool possible(
@@ -68,7 +58,6 @@ class CoverNew
 
     CoverState explain(vector<unsigned char>& tricks) const;
 
-    // bool operator <= (const CoverNew& cover2) const;
     bool earlier(const CoverNew& cover2) const;
 
     bool sameWeight(const CoverNew& covers2) const;
@@ -91,10 +80,7 @@ class CoverNew
 
     string strHeader() const;
 
-    string strLine(
-      const ProductProfile& sumProfile) const;
-      // const unsigned char lengthActual,
-      // const vector<unsigned char>& topsActual) const;
+    string strLine(const ProductProfile& sumProfile) const;
 
     string strLine() const;
 
@@ -104,10 +90,7 @@ class CoverNew
 
     string strTricksShort() const;
 
-    string str(
-      const ProductProfile& sumProfile) const;
-      // const unsigned char maxLength,
-      // const vector<unsigned char>& topTotals) const;
+    string str(const ProductProfile& sumProfile) const;
 };
 
 #endif

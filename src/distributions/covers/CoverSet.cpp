@@ -111,8 +111,6 @@ bool CoverSet::includesLengthAndTop1(
 
 
 bool CoverSet::includes(
-  // const unsigned char wlen,
-  // const unsigned char wtop,
   const ProductProfile& distProfile,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const

@@ -38,34 +38,21 @@ void CoverNew::set(
   const ProductProfile& sumProfile,
   const ProductProfile& lowerProfile,
   const ProductProfile& upperProfile)
-  /*
-  const unsigned char lenActual,
-  const unsigned char lenLow,
-  const unsigned char lenHigh,
-  const vector<unsigned char>& topsActual,
-  const vector<unsigned char>& topsLow,
-  const vector<unsigned char>& topsHigh)
-  */
 {
-  // coverSet.set(lenActual, lenLow, lenHigh, topsActual, topsLow, topsHigh);
   product.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
 void CoverNew::prepare(
   const vector<ProductProfile>& distProfiles,
-  // const vector<unsigned char>& lengths,
-  // vector<vector<unsigned > const *>& topPtrs,
   const vector<unsigned char>& cases)
 {
   const unsigned len = distProfiles.size();
-  // assert(len == topPtrs.size());
   assert(len == cases.size());
   profile.resize(len);
 
   for (unsigned dno = 0; dno < len; dno++)
   {
-    // if (product.includes(lengths[dno], * (topPtrs[dno])))
     if (product.includes(distProfiles[dno]))
     {
       profile[dno] = 1;
@@ -203,21 +190,6 @@ bool CoverNew::full() const
 }
 
 
-/*
-bool CoverNew::operator <= (const CoverNew& cover2) const
-{
-  assert(profile.size() == cover2.profile.size());
-  for (unsigned i = 0; i < profile.size(); i++)
-  {
-    if (profile[i] > cover2.profile[i])
-      return false;
-  }
-
-  return true;
-}
-*/
-
-
 unsigned CoverNew::getWeight() const
 {
   return weight;
@@ -262,14 +234,10 @@ string CoverNew::strHeader() const
 }
 
 
-string CoverNew::strLine(
-  const ProductProfile& sumProfile) const
-  // const unsigned char lengthActual,
-  // const vector<unsigned char>& topsActual) const
+string CoverNew::strLine(const ProductProfile& sumProfile) const
 {
   stringstream ss;
 
-  // ss << coverSet.strLine(lengthActual, topsActual) <<
   ss << product.strLine(sumProfile) <<
     setw(8) << weight <<
     setw(8) << +product.getComplexity() <<
@@ -324,16 +292,12 @@ string CoverNew::strTricksShort() const
 }
 
 
-string CoverNew::str(
-  const ProductProfile& sumProfile) const
-  // const unsigned char maxLength,
-  // const vector<unsigned char>& topTotals) const
+string CoverNew::str(const ProductProfile& sumProfile) const
 {
   if (product.explainable())
   {
     stringstream ss;
 
-    // ss << coverSet.strVerbal(maxLength, topTotals) <<
     ss << product.strVerbal(sumProfile) <<
       " [" << +numDist << ", " << 
       weight << "]";

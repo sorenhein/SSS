@@ -32,10 +32,12 @@ class Cover
     unsigned char numDist;
 
 
+    /*
     typedef unsigned char (Cover::*CoverComparePtr)(
       const unsigned char value,
       const unsigned char ref1,
       const unsigned char ref2) const;
+      */
 
     bool includes(
       const vector<unsigned char>& lengths,
@@ -52,8 +54,6 @@ class Cover
 
     void prepare(
       const vector<ProductProfile>& distProfiles,
-      // const vector<unsigned char>& lengths,
-      // const vector<unsigned char>& tops,
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 

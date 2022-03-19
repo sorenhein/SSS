@@ -122,36 +122,22 @@ string CoverRow::strHeader() const
 }
 
 
-string CoverRow::strLines(
-  const ProductProfile& sumProfile) const
-  // const unsigned char maxTricks,
-  // const vector<unsigned char>& topTotals) const
+string CoverRow::strLines(const ProductProfile& sumProfile) const
 {
   stringstream ss;
 
-  // ss << "* " << coverPtrs.front()->str(maxTricks, topTotals);
   ss << "* " << coverPtrs.front()->str(sumProfile);
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
     ss << "; or\n  " << (* iter)->str(sumProfile);
-    // ss << "; or\n  " << (* iter)->str(maxTricks, topTotals);
-
-  // for (auto& cptr: coverPtrs)
-    // ss << "* " << cptr->str(maxTricks, topTotals);
-    // ss << cptr->strTricksShort() << cptr->strLine();
 
   return ss.str() + "\n";
 }
 
 
-string CoverRow::str(
-  const ProductProfile& sumProfile) const
-  // const unsigned char maxTricks,
-  // const vector<unsigned char>& topTotals) const
+string CoverRow::str(const ProductProfile& sumProfile) const
 {
   return 
-    // CoverRow::strHeader() + 
-    // CoverRow::strLines(maxTricks, topTotals);
     CoverRow::strLines(sumProfile);
 }
 

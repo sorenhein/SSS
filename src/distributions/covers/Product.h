@@ -64,17 +64,7 @@ class Product
     const ProductProfile& lowerProfile,
     const ProductProfile& upperProfile);
 
-    // const unsigned char lenActual,
-    // const unsigned char lenLow,
-    // const unsigned char lenHigh,
-    // const vector<unsigned char>& topsActual,
-    // const vector<unsigned char>& topsLow,
-    // const vector<unsigned char>& topsHigh);
-
-  bool includes(
-    const ProductProfile& distProfile) const;
-    // const unsigned char lengthIn,
-    // const vector<unsigned>& topsIn) const;
+  bool includes(const ProductProfile& distProfile) const;
 
   unsigned char getComplexity() const;
 
@@ -86,17 +76,11 @@ class Product
 
   string strHeader() const;
 
-  string strLine(
-    const ProductProfile& sumProfile) const;
-    // const unsigned char lenActual,
-    // const vector<unsigned char>& topsActual) const;
+  string strLine(const ProductProfile& sumProfile) const;
 
   string strLine() const;
 
-  string strVerbal(
-    const ProductProfile& sumProfile) const;
-    // const unsigned char maxLength,
-    // const vector<unsigned char>& topTotals) const;
+  string strVerbal(const ProductProfile& sumProfile) const;
 };
 
 #endif

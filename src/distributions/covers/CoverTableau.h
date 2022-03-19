@@ -30,10 +30,6 @@ class CoverTableau
 
     ProductProfile sumProfile;
 
-    // unsigned char maxLength;
-
-    // vector<unsigned char> const * topTotalsPtr;
-
     list<CoverRow> rows;
 
     vector<unsigned char> residuals;
@@ -49,10 +45,7 @@ class CoverTableau
 
     void reset();
 
-    void setBoundaries(
-      const ProductProfile& sumProfile);
-      // const unsigned char maxLengthIn,
-      // const vector<unsigned char>& topTotalsIn);
+    void setBoundaries(const ProductProfile& sumProfile);
 
     void setTricks(
       const vector<unsigned char>& tricks,

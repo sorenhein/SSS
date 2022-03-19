@@ -124,10 +124,7 @@ class CoverSpec
       const bool symmFlag = false,
       const CoverControl ctrl = COVER_ADD);
 
-    bool includes(
-      const ProductProfile& distProfile) const;
-      // const unsigned char wlen,
-      // const unsigned char wtop) const;
+    bool includes(const ProductProfile& distProfile) const;
     
     string strRaw() const;
 

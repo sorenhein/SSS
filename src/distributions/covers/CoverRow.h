@@ -69,15 +69,9 @@ class CoverRow
     // but without semantic explanations.
     string strHeader() const;
 
-    string strLines(
-      const ProductProfile& sumProfile) const;
-      // const unsigned char maxTricks,
-      // const vector<unsigned char>& topTotals) const;
+    string strLines(const ProductProfile& sumProfile) const;
 
-    string str(
-      const ProductProfile& sumProfile) const;
-      // const unsigned char maxTricks,
-      // const vector<unsigned char>& topTotals) const;
+    string str(const ProductProfile& sumProfile) const;
 };
 
 #endif

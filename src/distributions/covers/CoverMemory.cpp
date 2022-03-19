@@ -892,12 +892,7 @@ void CoverMemory::makeSets(
         ProductProfile pp;
         pp.length = length;
         pp.tops = comp.getTops();
-        iter->set(pp,
-          // length, 0, length, 
-          // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
-          stackIter->lowerProfile, stackIter->upperProfile);
-        // iter->set(length, 0, length, 
-          // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
+        iter->set(pp, stackIter->lowerProfile, stackIter->upperProfile);
 // cout << "Added" << endl;
         iter++;
 

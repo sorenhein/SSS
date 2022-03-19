@@ -444,8 +444,6 @@ const Reduction& DistCore::getReduction(
 
 void DistCore::getCoverData(
   vector<ProductProfile>& distProfiles,
-  // vector<unsigned char>& lengths,
-  // vector<unsigned char>& tops,
   vector<unsigned char>& cases,
   unsigned char& maxLength,
   unsigned char& maxTops) const
@@ -453,8 +451,6 @@ void DistCore::getCoverData(
   const unsigned len = distributions.size();
   assert(len > 0);
 
-  // lengths.resize(len);
-  // tops.resize(len);
   distProfiles.resize(len);
   cases.resize(len);
 
@@ -470,14 +466,10 @@ void DistCore::getCoverData(
   for (unsigned i = 0; i < len; i++)
   {
     const DistInfo& dist = distributions[i];
-    // lengths[i] = static_cast<unsigned char>(dist.west.len);
-    // tops[i] = static_cast<unsigned char>(dist.west.counts[rankSize-1]);
-
     distProfiles[i].length = static_cast<unsigned char>(dist.west.len);
     distProfiles[i].tops.resize(1);
     distProfiles[i].tops[0] =
       static_cast<unsigned char>(dist.west.counts[rankSize-1]);
-
 
     cases[i] = static_cast<unsigned char>(dist.cases);
   }
@@ -486,21 +478,14 @@ void DistCore::getCoverData(
 
 void DistCore::getCoverDataNew(
   vector<ProductProfile>& distProfiles,
-  // vector<unsigned char>& lengths,
-  // vector<vector<unsigned> const *>& topPtrs,
   vector<unsigned char>& cases,
   ProductProfile& sumProfile) const
-  // unsigned char& maxLength,
-  // vector<unsigned char>& topTotals) const
 {
   const unsigned len = distributions.size();
   assert(len > 0);
 
-  // lengths.resize(len);
-  // topPtrs.resize(len);
   distProfiles.resize(len);
   cases.resize(len);
-  // topTotals.resize(rankSize);
   sumProfile.tops.resize(rankSize);
 
   // TODO Move DistInfo more to unsigned char
@@ -516,13 +501,11 @@ void DistCore::getCoverDataNew(
   for (unsigned i = 0; i < len; i++)
   {
     const DistInfo& dist = distributions[i];
-    // lengths[i] = static_cast<unsigned char>(dist.west.len);
     distProfiles[i].length = static_cast<unsigned char>(dist.west.len);
 
     // TODO Can we make dist such that we just have a reference
     // to a ProductProfile, and no copying?
 
-    // topPtrs[i] = &dist.west.counts;
     distProfiles[i].tops.resize(dist.west.counts.size());
     for (unsigned j = 0; j < dist.west.counts.size(); j++)
       distProfiles[i].tops[j] = 
@@ -538,17 +521,14 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
   if (distributions.size() == 0)
     return;
 
-  // vector<unsigned char> lengths, tops;
   vector<ProductProfile> distProfilesOld;
   vector<unsigned char> cases;
   unsigned char maxLength, maxTops;
-  // DistCore::getCoverData(lengths, tops, cases, maxLength, maxTops);
   DistCore::getCoverData(distProfilesOld, cases, maxLength, maxTops);
 
   if (maxLength < 2)
     return;
 
-  // covers.prepare(coverMemory, maxLength, maxTops, lengths, tops, cases);
   covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
 
   vector<ProductProfile> distProfiles;
@@ -557,23 +537,11 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
   vector<vector<unsigned> const *> topPtrs;
 
   vector<unsigned char> casesNew;
-  // unsigned char maxLengthNew;
-  // vector<unsigned char> topTotals;
   ProductProfile sumProfile;
 
-  DistCore::getCoverDataNew(
-    // lengthsNew, topPtrs, 
-    distProfiles,
-    casesNew, 
-    sumProfile);
-    // maxLengthNew, topTotals);
+  DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
 
-  // covers.prepareNew(lengthsNew, topPtrs, casesNew, 
-  // covers.prepareNew(lengthsNew, topPtrs, 
-  covers.prepareNew(distProfiles,
-    casesNew, 
-    sumProfile);
-    // maxLengthNew, topTotals);
+  covers.prepareNew(distProfiles, casesNew, sumProfile);
 }
 
 

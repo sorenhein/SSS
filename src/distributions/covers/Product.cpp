@@ -44,14 +44,6 @@ void Product::set(
   const ProductProfile& sumProfile,
   const ProductProfile& lowerProfile,
   const ProductProfile& upperProfile)
-  /*
-  const unsigned char lenActual,
-  const unsigned char lenLow,
-  const unsigned char lenHigh,
-  const vector<unsigned char>& topsActual,
-  const vector<unsigned char>& topsLow,
-  const vector<unsigned char>& topsHigh)
-  */
 {
   symmFlag = true;
 
@@ -101,10 +93,7 @@ void Product::set(
 }
 
 
-bool Product::includes(
-  const ProductProfile& distProfile) const
-  // const unsigned char lengthIn,
-  // const vector<unsigned>& topsIn) const
+bool Product::includes(const ProductProfile& distProfile) const
 {
   if (length.used() && ! length.includes(distProfile.length))
     return false;
@@ -187,10 +176,7 @@ string Product::strHeader() const
 }
 
 
-string Product::strLine(
-  const ProductProfile& sumProfile) const
-  // const unsigned char lenActual,
-  // const vector<unsigned char>& topsActual) const
+string Product::strLine(const ProductProfile& sumProfile) const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
@@ -225,10 +211,7 @@ string Product::strLine() const
 }
 
 
-string Product::strVerbal(
-  const ProductProfile& sumProfile) const
-  // const unsigned char maxLength,
-  // const vector<unsigned char>& topTotals) const
+string Product::strVerbal(const ProductProfile& sumProfile) const
 {
   if (topCount == 0)
     return length.str(sumProfile.length);
