@@ -12,9 +12,12 @@
 #include <cassert>
 
 #include "Term.h"
+#include "TermCompare.h"
 #include "Length.h"
 
 #include "../../const.h"
+
+extern TermCompare termCompare;
 
 
 struct CoverXes
@@ -65,19 +68,24 @@ void Term::set(
   const CoverOperator operIn)
 {
   lower = valueIn;
+  upper = valueIn; // Just to have something
   Term::setOperator(operIn);
   usedFlag = true;
+
+  index = termCompare.getIndex(lower, upper, oper);
 }
 
 void Term::set(
-  const unsigned char lower1In,
+  const unsigned char lowerIn,
   const unsigned char upperIn,
   const CoverOperator operIn)
 {
-  lower = lower1In;
+  lower = lowerIn;
   upper = upperIn;
   Term::setOperator(operIn);
   usedFlag = true;
+
+  index = termCompare.getIndex(lower, upper, oper);
 }
 
 
@@ -86,7 +94,6 @@ void Term::setNew(
   const unsigned char lowerIn,
   const unsigned char upperIn)
 {
-  // Returns true if actually in non-trivial use
   if (lowerIn == 0 && upperIn == lenActual)
   {
     usedFlag = false;
@@ -101,6 +108,8 @@ void Term::setNew(
   upper = upperIn;
   usedFlag = true;
 
+  index = termCompare.getIndex(lower, upper, oper);
+
   if (lowerIn == 0 || upper == lenActual ||lowerIn == upperIn)
     complexity = 1;
   else
@@ -108,6 +117,7 @@ void Term::setNew(
 }
 
 
+/*
 bool Term::equal(const unsigned char value) const
 {
   return (value == lower);
@@ -130,11 +140,26 @@ bool Term::lessEqual(const unsigned char value) const
 {
   return (value <= lower);
 }
+*/
 
 
 bool Term::includes(const unsigned char valueIn) const
 {
-  return (this->*comparePtr[oper])(valueIn);
+  return termCompare.includes(index, valueIn);
+  /*
+  const bool b1 = termCompare.includes(index, valueIn);
+  const bool b2 = (this->*comparePtr[oper])(valueIn);
+if (b1 != b2)
+{
+  cout << Term::strShort() << endl;
+  cout << "index " << +index << endl;
+  cout << "value in " << +valueIn << endl;
+  assert(b1 == b2);
+}
+  return b1;
+  //return (this->*comparePtr[oper])(valueIn);
+  */
+
 }
 
 

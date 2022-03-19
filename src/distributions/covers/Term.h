@@ -18,17 +18,10 @@
 
 #include <string>
 
+#include "TermHelp.h"
+
 using namespace std;
 
-
-enum CoverOperator
-{
-  COVER_EQUAL = 0,
-  COVER_INSIDE_RANGE = 1,
-  COVER_GREATER_EQUAL = 2,
-  COVER_LESS_EQUAL = 3,
-  COVER_OPERATOR_SIZE = 4
-};
 
 struct CoverXes;
 class Length;
@@ -44,6 +37,10 @@ class Term
     unsigned char lower;
     unsigned char upper;
 
+    // The bit layout is given in TermCompare.
+    unsigned short index;
+
+
     CoverOperator oper;
 
 
@@ -56,6 +53,7 @@ class Term
 
     void setOperator(const CoverOperator operIn);
 
+    /*
     bool equal(const unsigned char value) const;
     bool insideRange(const unsigned char value) const;
     bool greaterEqual(const unsigned char value) const;
@@ -72,7 +70,7 @@ class Term
       &Term::greaterEqual,
       &Term::lessEqual
     };
-
+    */
 
     string strBothEqual0(
       const string& side) const;

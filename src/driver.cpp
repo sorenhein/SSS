@@ -5,6 +5,7 @@
 
 #include "distributions/Distributions.h"
 #include "distributions/covers/ExplStats.h"
+#include "distributions/covers/TermCompare.h"
 
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
@@ -24,6 +25,7 @@ Convert convert;
 ResConvert resConvert;
 Combinations combinations;
 Distributions distributions;
+TermCompare termCompare;
 
 
 int main(int argc, char * argv[])

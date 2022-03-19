@@ -22,6 +22,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverNew.cpp  \
                 distributions/covers/Covers.cpp \
                 distributions/covers/Term.cpp   \
+                distributions/covers/TermCompare.cpp \
                 distributions/covers/Length.cpp \
                 distributions/covers/Top.cpp    \
                 distributions/covers/Product.cpp \

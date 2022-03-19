@@ -33,4 +33,10 @@ enum Level
   LEVEL_SIZE = 4
 };
 
+enum Opponent
+{
+  OPP_WEST = 0,
+  OPP_EAST = 1
+};
+
 #endif

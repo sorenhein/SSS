@@ -114,7 +114,7 @@ void Control::configure()
       "0x002: Advanced strategizing including ranges and voids\n"
       "0x004: Optimizations when calculating strategies\n"
       "0x008: Consider ranks when comparing strategies\n"
-      "0x010: Describe winning tricks vectors verbally\n"
+      "0x010: Describe winning tricks vectors verbally"
       },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
