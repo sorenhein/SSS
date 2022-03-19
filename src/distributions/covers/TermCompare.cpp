@@ -40,7 +40,7 @@ void TermCompare::setConstants()
         lookup[index1 | (COVER_GREATER_EQUAL << 12)] = 
           (value >= lower);
         lookup[index1 | (COVER_LESS_EQUAL << 12)] = 
-          (value <= lower);
+          (value <= upper);
       }
     }
   }

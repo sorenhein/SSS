@@ -92,22 +92,37 @@ void Term::setNew(
 {
   if (lowerIn == 0 && upperIn == lenActual)
   {
+    // Not set
     data = termCompare.getData(OPP_WEST, false, 0, 0);
     return;
   }
 
   lower = lowerIn;
   upper = upperIn;
-  oper = (lower == upper ? COVER_EQUAL : COVER_INSIDE_RANGE);
+  unsigned char complexity;
+
+  if (lower == upper)
+  {
+    oper = COVER_EQUAL;
+    complexity = 1;
+  }
+  else if (lowerIn == 0)
+  {
+    oper = COVER_LESS_EQUAL;
+    complexity = 1;
+  }
+  else if (upperIn == lenActual)
+  {
+    oper = COVER_GREATER_EQUAL;
+    complexity = 1;
+  }
+  else
+  {
+    oper = COVER_INSIDE_RANGE;
+    complexity = 2;
+  }
 
   index = termCompare.getIndex(lower, upper, oper);
-
-  unsigned char complexity;
-  if (lowerIn == 0 || upper == lenActual ||lowerIn == upperIn)
-    complexity = 1;
-  else
-    complexity = 2;
-
   data = termCompare.getData(OPP_WEST, true, upper-lower, complexity);
 }
 

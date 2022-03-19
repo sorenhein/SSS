@@ -114,6 +114,16 @@ string Length::str(const unsigned char oppsLength) const
   {
     return Length::strInside(oppsLength);
   }
+  else if (oper == COVER_LESS_EQUAL)
+  {
+    // TODO For now
+    return Length::strInside(oppsLength);
+  }
+  else if (oper == COVER_GREATER_EQUAL)
+  {
+    // TODO For now
+    return Length::strInside(oppsLength);
+  }
   else
   {
     assert(false);

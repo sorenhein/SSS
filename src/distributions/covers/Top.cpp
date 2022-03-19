@@ -102,6 +102,16 @@ string Top::str(const unsigned char oppsTops) const
   {
     return Top::strInside(oppsTops);
   }
+  else if (oper == COVER_LESS_EQUAL)
+  {
+    // TODO For now
+    return Top::strInside(oppsTops);
+  }
+  else if (oper == COVER_GREATER_EQUAL)
+  {
+    // TODO For now
+    return Top::strInside(oppsTops);
+  }
   else
   {
     assert(false);
