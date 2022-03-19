@@ -52,14 +52,10 @@ void Term::reset()
   lower = UCHAR_NOT_SET;
   upper = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
-  usedFlag = false;
-  complexity = 0;
-}
 
-
-void Term::setOperator(const CoverOperator operIn)
-{
-  oper = operIn;
+  // Hope to break the index if we try to use it unset.
+  index = numeric_limits<unsigned short>::max();
+  data = termCompare.getData(OPP_WEST, false, 0, 0);
 }
 
 
@@ -69,10 +65,10 @@ void Term::set(
 {
   lower = valueIn;
   upper = valueIn; // Just to have something
-  Term::setOperator(operIn);
-  usedFlag = true;
+  oper = operIn;
 
   index = termCompare.getIndex(lower, upper, oper);
+  data = termCompare.getData(OPP_WEST, true, upper-lower, 0);
 }
 
 void Term::set(
@@ -82,10 +78,10 @@ void Term::set(
 {
   lower = lowerIn;
   upper = upperIn;
-  Term::setOperator(operIn);
-  usedFlag = true;
+  oper = operIn;
 
   index = termCompare.getIndex(lower, upper, oper);
+  data = termCompare.getData(OPP_WEST, true, upper-lower, 0);
 }
 
 
@@ -96,92 +92,47 @@ void Term::setNew(
 {
   if (lowerIn == 0 && upperIn == lenActual)
   {
-    usedFlag = false;
-    complexity = 0;
+    data = termCompare.getData(OPP_WEST, false, 0, 0);
     return;
   }
 
-  Term::setOperator(lowerIn == upperIn ?
-    COVER_EQUAL : COVER_INSIDE_RANGE);
-
   lower = lowerIn;
   upper = upperIn;
-  usedFlag = true;
+  oper = (lower == upper ? COVER_EQUAL : COVER_INSIDE_RANGE);
 
   index = termCompare.getIndex(lower, upper, oper);
 
+  unsigned char complexity;
   if (lowerIn == 0 || upper == lenActual ||lowerIn == upperIn)
     complexity = 1;
   else
     complexity = 2;
+
+  data = termCompare.getData(OPP_WEST, true, upper-lower, complexity);
 }
-
-
-/*
-bool Term::equal(const unsigned char value) const
-{
-  return (value == lower);
-}
-
-
-bool Term::insideRange(const unsigned char value) const
-{
-  return (value >= lower && value <= upper);
-}
-
-
-bool Term::greaterEqual(const unsigned char value) const
-{
-  return (value >= lower);
-}
-
-
-bool Term::lessEqual(const unsigned char value) const
-{
-  return (value <= lower);
-}
-*/
 
 
 bool Term::includes(const unsigned char valueIn) const
 {
   return termCompare.includes(index, valueIn);
-  /*
-  const bool b1 = termCompare.includes(index, valueIn);
-  const bool b2 = (this->*comparePtr[oper])(valueIn);
-if (b1 != b2)
-{
-  cout << Term::strShort() << endl;
-  cout << "index " << +index << endl;
-  cout << "value in " << +valueIn << endl;
-  assert(b1 == b2);
-}
-  return b1;
-  //return (this->*comparePtr[oper])(valueIn);
-  */
-
 }
 
 
 bool Term::used() const
 {
-  return usedFlag;
+  return termCompare.used(data);
 }
 
 
 unsigned char Term::getComplexity() const
 {
-  return complexity;
+  return termCompare.complexity(data);
 }
 
 
 unsigned char Term::getRange() const
 {
-  if (! Term::used())
-    return 0;
-  else
-    return (upper - lower);
-
+  return termCompare.range(data);
 }
 
 
@@ -325,7 +276,8 @@ string Term::strShort(const unsigned char lenActual) const
 {
   stringstream ss;
 
-  if (usedFlag)
+  // if (usedFlag)
+  if (Term::used())
   {
     string s;
     if (lower == upper)
@@ -352,7 +304,7 @@ string Term::strShort() const
 {
   stringstream ss;
 
-  if (usedFlag)
+  if (Term::used())
   {
     string s;
     if (lower == upper)

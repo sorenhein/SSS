@@ -13,6 +13,8 @@
 
 #include "TermHelp.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 
@@ -36,6 +38,21 @@ class TermCompare
     bool includes(
       const unsigned short index,
       const unsigned char value) const;
+
+    unsigned char getData(
+      const Opponent opponent,
+      const bool usedFlag,
+      const unsigned char range,
+      const unsigned char complexity) const;
+
+    Opponent opponent(const unsigned char data) const;
+
+    bool used(const unsigned char data) const;
+
+    unsigned char range(const unsigned char data) const;
+
+    unsigned char complexity(const unsigned char data) const;
+
 };
 
 #endif

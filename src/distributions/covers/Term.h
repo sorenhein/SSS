@@ -36,41 +36,16 @@ class Term
 
     unsigned char lower;
     unsigned char upper;
+    CoverOperator oper;
 
     // The bit layout is given in TermCompare.
     unsigned short index;
 
-
-    CoverOperator oper;
-
-
   private:
 
-    bool usedFlag;
+    // The bit layout is given in TermCompare.
+    unsigned char data;
 
-    unsigned char complexity;
-
-
-    void setOperator(const CoverOperator operIn);
-
-    /*
-    bool equal(const unsigned char value) const;
-    bool insideRange(const unsigned char value) const;
-    bool greaterEqual(const unsigned char value) const;
-    bool lessEqual(const unsigned char value) const;
-
-
-    typedef bool 
-      (Term::*ComparePtr)(const unsigned char valueIn) const;
-
-    inline static ComparePtr comparePtr[COVER_OPERATOR_SIZE] =
-    {
-      &Term::equal,
-      &Term::insideRange,
-      &Term::greaterEqual,
-      &Term::lessEqual
-    };
-    */
 
     string strBothEqual0(
       const string& side) const;
