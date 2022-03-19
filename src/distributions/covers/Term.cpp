@@ -49,7 +49,6 @@ void Term::reset()
   lower = UCHAR_NOT_SET;
   upper = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
-  ptr = nullptr;
   usedFlag = false;
   complexity = 0;
 }
@@ -58,12 +57,6 @@ void Term::reset()
 void Term::setOperator(const CoverOperator operIn)
 {
   oper = operIn;
-  if (oper == COVER_EQUAL)
-    ptr = &Term::equal;
-  else if (oper == COVER_INSIDE_RANGE)
-    ptr = &Term::insideRange;
-  else
-    ptr = nullptr;
 }
 
 
@@ -115,22 +108,33 @@ void Term::setNew(
 }
 
 
-bool Term::equal(const unsigned char valueIn) const
+bool Term::equal(const unsigned char value) const
 {
-  return (valueIn == lower ? 1 : 0);
+  return (value == lower);
 }
 
 
-bool Term::insideRange(const unsigned char valueIn) const
+bool Term::insideRange(const unsigned char value) const
 {
-  return (valueIn >= lower && valueIn <= upper ? 1 : 0);
+  return (value >= lower && value <= upper);
+}
+
+
+bool Term::greaterEqual(const unsigned char value) const
+{
+  return (value >= lower);
+}
+
+
+bool Term::lessEqual(const unsigned char value) const
+{
+  return (value <= lower);
 }
 
 
 bool Term::includes(const unsigned char valueIn) const
 {
-  assert(ptr != nullptr);
-  return (this->*ptr)(valueIn);
+  return (this->*comparePtr[oper])(valueIn);
 }
 
 

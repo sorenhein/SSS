@@ -25,7 +25,9 @@ enum CoverOperator
 {
   COVER_EQUAL = 0,
   COVER_INSIDE_RANGE = 1,
-  COVER_OPERATOR_SIZE = 2
+  COVER_GREATER_EQUAL = 2,
+  COVER_LESS_EQUAL = 3,
+  COVER_OPERATOR_SIZE = 4
 };
 
 struct CoverXes;
@@ -37,10 +39,6 @@ class Term
   friend class CoverSet;
   friend class Product;
 
-  typedef bool 
-    (Term::*ComparePtr)(const unsigned char valueIn) const;
-
-
   protected: 
 
     unsigned char lower;
@@ -51,8 +49,6 @@ class Term
 
   private:
 
-    ComparePtr ptr;
-
     bool usedFlag;
 
     unsigned char complexity;
@@ -60,9 +56,23 @@ class Term
 
     void setOperator(const CoverOperator operIn);
 
-    bool equal(const unsigned char valueIn) const;
-    
-    bool insideRange(const unsigned char valueIn) const;
+    bool equal(const unsigned char value) const;
+    bool insideRange(const unsigned char value) const;
+    bool greaterEqual(const unsigned char value) const;
+    bool lessEqual(const unsigned char value) const;
+
+
+    typedef bool 
+      (Term::*ComparePtr)(const unsigned char valueIn) const;
+
+    inline static ComparePtr comparePtr[COVER_OPERATOR_SIZE] =
+    {
+      &Term::equal,
+      &Term::insideRange,
+      &Term::greaterEqual,
+      &Term::lessEqual
+    };
+
 
     string strBothEqual0(
       const string& side) const;
