@@ -22,7 +22,6 @@ Product::Product()
 
 void Product::reset()
 {
-  symmFlag = false;
   complexity = 0;
   length.reset();
   tops.clear();
@@ -45,14 +44,9 @@ void Product::set(
   const ProductProfile& lowerProfile,
   const ProductProfile& upperProfile)
 {
-  symmFlag = true;
-
   length.setNew(sumProfile.length, lowerProfile.length, upperProfile.length);
   complexity = length.getComplexity();
   range = length.getRange();
-
-  if (lowerProfile.length + upperProfile.length != sumProfile.length)
-    symmFlag = false;
 
   const unsigned topLowSize = lowerProfile.tops.size();
   assert(upperProfile.tops.size() == topLowSize);
@@ -77,9 +71,6 @@ void Product::set(
 
     complexity += tops[i].getComplexity();
     range += tops[i].getRange();
-
-    if (lowerProfile.tops[i] + upperProfile.tops[i] != sumProfile.tops[i])
-      symmFlag = false;
   }
 
   // If there is only a single distribution possible, this counts
@@ -188,8 +179,6 @@ string Product::strLine(const ProductProfile& sumProfile) const
   for (unsigned i = 0; i < tops.size(); i++)
     ss << setw(8) << tops[i].strShort(sumProfile.tops[i]);
 
-  ss << setw(8) << (symmFlag ? "yes" : "-");
-
   return ss.str();
 }
 
@@ -204,8 +193,6 @@ string Product::strLine() const
 
   for (unsigned i = 0; i < tops.size(); i++)
     ss << setw(8) << tops[i].strShort();
-
-  ss << setw(8) << (symmFlag ? "yes" : "-");
 
   return ss.str();
 }

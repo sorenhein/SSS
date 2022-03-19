@@ -4,32 +4,29 @@ Need a way to order Term's and Product's
 
 Term
 ----
-What is the least data to keep in Term?
-- lower, upper (2 bytes)
-- operator (4 values + don't care)
-- usedFlag (1 bit in principle)
-- complexity (0-2)
-- ptr? Not really.  Can index by oper dynamically
-- symmFlag? No
-- Perhaps a new flag to say whether the Term is seen from West or East
-So dead minimum
-- 2 bytes: upper lower
-- 3 bits: operator
-- 1 bit: usedFlag
-- 2 bits: complexity
-- 1 bit: side (can be 3 bits, 4 options, use enum Level? New enum
-  Opponent with OPP_WEST, OPP_EAST?)
-- Maybe fit operator and side in one byte
-- And usedFlag and complexity in another
-- So total of 4 bytes
-- includes() should get a values from both West and East, and then
-  decide which one to look up based on side
-- So the data structure where we look up length, top1, ... should make
-  it easy to get data for both opps
-  - For each distribution there is a length with content (West, East),
-    a top1 with (West, East) etc., maybe a CountPair
-- Actually Term::str() should also get the side which could be
-  symmetrical, too.
+Can perhaps move Term to only index & data and nothing else?
+Less memory.
+
+Side
+----
+Product should figure out the "better" side to explain from when
+set() is called:
+- The length with the smaller numbers
+- Failing that (unset or identical), keep going down from the
+  largest top
+- When calling Product::includes, pass in both distProfileWest
+  and distProfileEast?
+- When using setNew in Term, might as well store side in Term as
+  well (no extra space)?  Make data an unsigned short as well.
+
+- We can set up a symmFlag which means that in includes()
+  we check length and tops but with (W, E) and (E, W), fooling
+  Term in the process.  Actually in Cover/CoverNew we can just mirror
+  the results.  But probably the Term's should know that it's 
+  now a symmetric one, and not West or East.
+
+- Does Product::strVerbal and strLine still need sumProfile?
+  Does Term?
 
 - Term and Product don't know actual lengths
 - ProductMemory

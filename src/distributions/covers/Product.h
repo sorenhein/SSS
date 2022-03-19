@@ -41,8 +41,6 @@ class Product
 
     vector<Top> tops;
 
-    bool symmFlag;
-
     unsigned char complexity;
 
     unsigned char range;
