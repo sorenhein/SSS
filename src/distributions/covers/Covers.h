@@ -33,8 +33,11 @@ class Covers
 
     struct CoverStackInfo
     {
-      vector<unsigned char> topsLow;
-      vector<unsigned char> topsHigh;
+      // vector<unsigned char> topsLow;
+      // vector<unsigned char> topsHigh;
+
+      ProductProfile lowerProfile;
+      ProductProfile upperProfile;
 
       unsigned char minWest; // Sum of West's top minima
       unsigned char minEast; // Sum of East's top minima
@@ -45,8 +48,10 @@ class Covers
  
       CoverStackInfo(const vector<unsigned char>& topTotals)
       {
-        topsLow.resize(topTotals.size(), 0);
-        topsHigh = topTotals;
+        lowerProfile.tops.resize(topTotals.size(), 0);
+        // topsLow.resize(topTotals.size(), 0);
+        // topsHigh = topTotals;
+        upperProfile.tops = topTotals;
  
         minWest = 0;
         minEast = 0;
@@ -58,9 +63,11 @@ class Covers
     };
 
 
-    unsigned char maxLength;
+    // unsigned char maxLength;
 
-    vector<unsigned char> topTotals;
+    // vector<unsigned char> topTotals;
+
+    ProductProfile sumProfile;
 
     list<Cover> covers;
 
@@ -91,16 +98,19 @@ class Covers
       const CoverMemory& coverMemory,
       const unsigned char maxLength,
       const unsigned char maxTops,
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
+      const vector<ProductProfile>& distProfiles,
+      // const vector<unsigned char>& lengths,
+      // const vector<unsigned char>& tops,
       const vector<unsigned char>& cases);
 
     void prepareNew(
-      const vector<unsigned char>& lengths,
-      vector<vector<unsigned> const *>& topPtrs,
+      const vector<ProductProfile>& distProfiles,
+      // const vector<unsigned char>& lengths,
+      // vector<vector<unsigned> const *>& topPtrs,
       const vector<unsigned char>& cases,
-      const unsigned char maxLengthIn,
-      const vector<unsigned char>& topTotalsIn);
+      const ProductProfile& sumProfileIn);
+      // const unsigned char maxLengthIn,
+      // const vector<unsigned char>& topTotalsIn);
 
     CoverState explain(
       const list<Result>& results,

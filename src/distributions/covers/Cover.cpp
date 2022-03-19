@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Cover.h"
+#include "Product.h"
 
 
 Cover::Cover()
@@ -30,19 +31,21 @@ void Cover::reset()
 
 
 void Cover::prepare(
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
+  const vector<ProductProfile>& distProfiles,
+  // const vector<unsigned char>& lengths,
+  // const vector<unsigned char>& tops,
   const vector<unsigned char>& cases,
   const CoverSpec& specIn)
 {
-  assert(lengths.size() == tops.size());
-  const unsigned len = lengths.size();
+  // assert(lengths.size() == tops.size());
+  const unsigned len = distProfiles.size();
   profile.resize(len);
 
   specPtr = &specIn;
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (specIn.includes(lengths[dno], tops[dno]))
+    // if (specIn.includes(lengths[dno], tops[dno]))
+    if (specIn.includes(distProfiles[dno]))
     {
       profile[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);

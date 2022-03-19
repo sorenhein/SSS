@@ -17,6 +17,8 @@
 
 using namespace std;
 
+struct ProductProfile;
+
 
 class Cover
 {
@@ -49,8 +51,9 @@ class Cover
     void reset();
 
     void prepare(
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
+      const vector<ProductProfile>& distProfiles,
+      // const vector<unsigned char>& lengths,
+      // const vector<unsigned char>& tops,
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 

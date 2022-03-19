@@ -42,12 +42,13 @@ void Covers::prepare(
   const CoverMemory& coverMemory,
   const unsigned char maxLengthIn,
   const unsigned char maxTops,
-  const vector<unsigned char>& lengths,
-  const vector<unsigned char>& tops,
+  const vector<ProductProfile>& distProfiles,
+  // const vector<unsigned char>& lengths,
+  // const vector<unsigned char>& tops,
   const vector<unsigned char>& cases)
 {
-  assert(lengths.size() == tops.size());
-  assert(lengths.size() == cases.size());
+  // assert(lengths.size() == tops.size());
+  assert(distProfiles.size() == cases.size());
   assert(maxLengthIn >= 2);
   assert(maxTops >= 1);
 
@@ -58,7 +59,8 @@ void Covers::prepare(
       miter != coverMemory.end(maxLengthIn, maxTops); miter++)
   {
     assert(citer != covers.end());
-    citer->prepare(lengths, tops, cases, * miter);
+    // citer->prepare(lengths, tops, cases, * miter);
+    citer->prepare(distProfiles, cases, * miter);
 
     if (citer->getWeight() == 0)
     {
@@ -67,8 +69,10 @@ void Covers::prepare(
       cout << "Adding " << citer->str() << "\n";
       cout << "Adding " << miter->strRaw() << "\n";
 
-for (unsigned i = 0; i< lengths.size(); i++)
-  cout << i << " " << +lengths[i]<< " " << +tops[i]<< " " << +cases[i] << "\n";
+for (unsigned i = 0; i< distProfiles.size(); i++)
+  cout << i << " " << +distProfiles[i].length << 
+    " " << +distProfiles[i].tops[0] << 
+    " " << +cases[i] << "\n";
 cout <<endl;
 
       assert(citer->getWeight() != 0);
@@ -111,22 +115,25 @@ void Covers::prune()
 
 
 void Covers::prepareNew(
-  const vector<unsigned char>& lengths,
-  vector<vector<unsigned> const *>& topPtrs,
+  const vector<ProductProfile>& distProfiles,
+  // const vector<unsigned char>& lengths,
+  // vector<vector<unsigned> const *>& topPtrs,
   const vector<unsigned char>& cases,
-  const unsigned char maxLengthIn,
-  const vector<unsigned char>& topTotalsIn)
+  const ProductProfile& sumProfileIn)
+  // const unsigned char maxLengthIn,
+  // const vector<unsigned char>& topTotalsIn)
 {
-  maxLength = maxLengthIn;
-  topTotals = topTotalsIn;
+  // maxLength = maxLengthIn;
+  // topTotals = topTotalsIn;
+  sumProfile = sumProfileIn;
 
   timersStrat[20].start();
   list<CoverStackInfo> stack; // Unfinished expansions
-  stack.emplace_back(CoverStackInfo(topTotals));
+  stack.emplace_back(CoverStackInfo(sumProfile.tops));
 
   coversNew.resize(COVER_CHUNK_SIZE);
   for (auto& c: coversNew)
-    c.resize(topTotals.size());
+    c.resize(sumProfile.tops.size());
 
   auto citer = coversNew.begin(); // Next one to write
   timersStrat[20].stop();
@@ -146,14 +153,14 @@ cout << setw(4) << "t#" <<
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->topNext; // Next to write
-    if (topNumber >= topTotals.size())
+    if (topNumber >= sumProfile.tops.size())
     {
 // cout << "popped front, stack size now " << stack.size() << endl;
       stack.pop_front();
       continue;
     }
 
-    const unsigned char topCountActual = topTotals[topNumber];
+    const unsigned char topCountActual = sumProfile.tops[topNumber];
 
     for (unsigned char topCountLow = 0; 
         topCountLow <= topCountActual; topCountLow++)
@@ -178,7 +185,7 @@ cout << setw(4) << "t#" <<
   setw(4) << +diff << "\n";
   */
 
-        if (minWest + diff > maxLength)
+        if (minWest + diff > sumProfile.length)
         {
           // There is no room for this worst-case single maximum,
           // so we skip the entire set, as there will be a more 
@@ -186,10 +193,10 @@ cout << setw(4) << "t#" <<
           continue;
         }
 
-        if (minEast + diff > maxLength)
+        if (minEast + diff > sumProfile.length)
           continue;
 
-        if (minWest + minEast > maxLength)
+        if (minWest + minEast > sumProfile.length)
           continue;
 
         // Never use the last top explicitly.  Maybe it shouldn't
@@ -225,20 +232,25 @@ cout << setw(4) << "t#" <<
         // if (maxEast > stackIter->maxEast)
           // stackIter->maxEast = maxEast;
 
-        stackIter->topsLow[topNumber] = topCountLow;
-        stackIter->topsHigh[topNumber] = topCountHigh;
+        stackIter->lowerProfile.tops[topNumber] = topCountLow;
+        stackIter->upperProfile.tops[topNumber] = topCountHigh;
 
         if (citer == coversNew.end())
           assert(false);
 
         // Add the "don't care" with respect to length.
-        citer->set(maxLength, 0, maxLength, 
-          topTotals, stackIter->topsLow, stackIter->topsHigh);
+        stackIter->lowerProfile.length = 0;
+        stackIter->upperProfile.length = sumProfile.length; // ?
+
+        citer->set(sumProfile, 
+          stackIter->lowerProfile, stackIter->upperProfile);
+        // citer->set(sumProfile.length, 0, sumProfile.length, 
+          // sumProfile.tops, stackIter->topsLow, stackIter->topsHigh);
 // cout << citer->strLine();
         citer++;
 
         // Add the possible length constraints.
-        const unsigned char lenMax = maxLength - minEast;
+        const unsigned char lenMax = sumProfile.length - minEast;
 
         for (unsigned char lLow = minWest; lLow <= lenMax; lLow++)
         {
@@ -258,8 +270,8 @@ cout << setw(4) << "t#" <<
             {
 
   cout << "OVERFLOW\n";
-  cout << "Length " << +maxLength << ", ";
-  for (auto t: topTotals)
+  cout << "Length " << +sumProfile.length << ", ";
+  for (auto t: sumProfile.tops)
     cout << +t << " ";
   cout << "\n";
 
@@ -269,8 +281,14 @@ cout << setw(4) << "t#" <<
               cout << "C End reached2" << endl;
               assert(false);
             }
-            citer->set(maxLength, lLow, lHigh, 
-              topTotals, stackIter->topsLow, stackIter->topsHigh);
+
+            stackIter->lowerProfile.length = lLow;
+            stackIter->upperProfile.length = lHigh;
+
+            citer->set(sumProfile, stackIter->lowerProfile,
+              stackIter->upperProfile);
+            // citer->set(sumProfile.length, lLow, lHigh, 
+              // sumProfile.tops, stackIter->topsLow, stackIter->topsHigh);
 // cout << citer->strLine();
             citer++;
           }
@@ -300,15 +318,16 @@ const unsigned sizeOld = coversNew.size();
   assert(! coversNew.empty());
   timersStrat[22].stop();
 
-  cout << "Length " << +maxLength << ", ";
-  for (auto t: topTotals)
+  cout << "Length " << +sumProfile.length << ", ";
+  for (auto t: sumProfile.tops)
     cout << +t << " ";
   cout << "\n";
 
 
   timersStrat[23].start();
   for (auto& c: coversNew)
-    c.prepare(lengths, topPtrs, cases);
+    c.prepare(distProfiles, cases);
+    // c.prepare(lengths, topPtrs, cases);
   timersStrat[23].stop();
 
   timersStrat[24].start();
@@ -426,7 +445,8 @@ void Covers::explainGreedy(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
-  tableau.setBoundaries(maxLength, topTotals);
+  // tableau.setBoundaries(maxLength, topTotals);
+  tableau.setBoundaries(sumProfile);
   tableau.setTricks(tricks, tmin);
 
   auto citer = coversNew.begin();
@@ -499,7 +519,8 @@ void Covers::explainExhaustive(
   stack.emplace_back(StackTableau());
   StackTableau& stableau = stack.back();
 
-  stableau.tableau.setBoundaries(maxLength, topTotals);
+  // stableau.tableau.setBoundaries(maxLength, topTotals);
+  stableau.tableau.setBoundaries(sumProfile);
   stableau.tableau.setTricks(tricks, tmin);
 
   stableau.coverIter = coversNew.begin();

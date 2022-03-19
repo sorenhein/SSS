@@ -30,35 +30,43 @@ void CoverNew::reset()
 
 void CoverNew::resize(const unsigned topNumber)
 {
-  coverSet.resize(topNumber);
+  product.resize(topNumber);
 }
 
 
 void CoverNew::set(
+  const ProductProfile& sumProfile,
+  const ProductProfile& lowerProfile,
+  const ProductProfile& upperProfile)
+  /*
   const unsigned char lenActual,
   const unsigned char lenLow,
   const unsigned char lenHigh,
   const vector<unsigned char>& topsActual,
   const vector<unsigned char>& topsLow,
   const vector<unsigned char>& topsHigh)
+  */
 {
-  coverSet.set(lenActual, lenLow, lenHigh, topsActual, topsLow, topsHigh);
+  // coverSet.set(lenActual, lenLow, lenHigh, topsActual, topsLow, topsHigh);
+  product.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
 void CoverNew::prepare(
-  const vector<unsigned char>& lengths,
-  vector<vector<unsigned > const *>& topPtrs,
+  const vector<ProductProfile>& distProfiles,
+  // const vector<unsigned char>& lengths,
+  // vector<vector<unsigned > const *>& topPtrs,
   const vector<unsigned char>& cases)
 {
-  const unsigned len = lengths.size();
-  assert(len == topPtrs.size());
+  const unsigned len = distProfiles.size();
+  // assert(len == topPtrs.size());
   assert(len == cases.size());
   profile.resize(len);
 
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (coverSet.includes(lengths[dno], * (topPtrs[dno])))
+    // if (product.includes(lengths[dno], * (topPtrs[dno])))
+    if (product.includes(distProfiles[dno]))
     {
       profile[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);
@@ -142,22 +150,22 @@ bool CoverNew::earlier(const CoverNew& cover2) const
     return true;
   else if (weight < cover2.weight)
     return false;
-  else if (coverSet.getTopSize() < cover2.coverSet.getTopSize())
+  else if (product.getTopSize() < cover2.product.getTopSize())
     // Simpler ones first
     return true;
-  else if (coverSet.getTopSize() > cover2.coverSet.getTopSize())
+  else if (product.getTopSize() > cover2.product.getTopSize())
     return false;
-  else if (coverSet.getComplexity() < cover2.coverSet.getComplexity())
+  else if (product.getComplexity() < cover2.product.getComplexity())
     // Simpler ones first
     return true;
-  else if (coverSet.getComplexity() > cover2.coverSet.getComplexity())
+  else if (product.getComplexity() > cover2.product.getComplexity())
     return false;
   else if (numDist > cover2.numDist)
     // Ones that touch more distributions first
     return true;
   else if (numDist < cover2.numDist)
     return false;
-  else if (coverSet.getRangeSum() <= cover2.coverSet.getRangeSum())
+  else if (product.getRangeSum() <= cover2.product.getRangeSum())
     /// Narrower covers
     return true;
   else
@@ -230,13 +238,13 @@ unsigned char CoverNew::getNumDist() const
 
 unsigned char CoverNew::getTopSize() const
 {
-  return coverSet.getTopSize();
+  return product.getTopSize();
 }
 
 
 unsigned char CoverNew::getComplexity() const
 {
-  return coverSet.getComplexity();
+  return product.getComplexity();
 }
 
 
@@ -244,7 +252,7 @@ string CoverNew::strHeader() const
 {
   stringstream ss;
 
-  ss << coverSet.strHeader() <<
+  ss << product.strHeader() <<
     setw(8) << "Weight" <<
     setw(8) << "Cmplx" <<
     setw(8) << "Dists" <<
@@ -255,14 +263,16 @@ string CoverNew::strHeader() const
 
 
 string CoverNew::strLine(
-  const unsigned char lengthActual,
-  const vector<unsigned char>& topsActual) const
+  const ProductProfile& sumProfile) const
+  // const unsigned char lengthActual,
+  // const vector<unsigned char>& topsActual) const
 {
   stringstream ss;
 
-  ss << coverSet.strLine(lengthActual, topsActual) <<
+  // ss << coverSet.strLine(lengthActual, topsActual) <<
+  ss << product.strLine(sumProfile) <<
     setw(8) << weight <<
-    setw(8) << +coverSet.getComplexity() <<
+    setw(8) << +product.getComplexity() <<
     setw(8) << +numDist <<
     setw(8) << +CoverNew::getTopSize() << "\n";
   
@@ -274,9 +284,9 @@ string CoverNew::strLine() const
 {
   stringstream ss;
 
-  ss << coverSet.strLine() <<
+  ss << product.strLine() <<
     setw(8) << weight <<
-    setw(8) << +coverSet.getComplexity() <<
+    setw(8) << +product.getComplexity() <<
     setw(8) << +numDist <<
     setw(8) << +CoverNew::getTopSize() << "\n";
   
@@ -315,14 +325,16 @@ string CoverNew::strTricksShort() const
 
 
 string CoverNew::str(
-  const unsigned char maxLength,
-  const vector<unsigned char>& topTotals) const
+  const ProductProfile& sumProfile) const
+  // const unsigned char maxLength,
+  // const vector<unsigned char>& topTotals) const
 {
-  if (coverSet.explainable())
+  if (product.explainable())
   {
     stringstream ss;
 
-    ss << coverSet.strVerbal(maxLength, topTotals) <<
+    // ss << coverSet.strVerbal(maxLength, topTotals) <<
+    ss << product.strVerbal(sumProfile) <<
       " [" << +numDist << ", " << 
       weight << "]";
 

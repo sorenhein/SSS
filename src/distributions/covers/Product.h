@@ -16,6 +16,7 @@
 #ifndef SSS_PRODUCT_H
 #define SSS_PRODUCT_H
 
+// TODO list instead?
 #include <vector>
 #include <string>
 
@@ -23,6 +24,13 @@
 #include "Top.h"
 
 using namespace std;
+
+
+struct ProductProfile
+{
+  unsigned char length;
+  vector<unsigned char> tops;
+};
 
 
 class Product
@@ -52,16 +60,21 @@ class Product
   void resize(const unsigned compSize);
 
   void set(
-    const unsigned char lenActual,
-    const unsigned char lenLow,
-    const unsigned char lenHigh,
-    const vector<unsigned char>& topsActual,
-    const vector<unsigned char>& topsLow,
-    const vector<unsigned char>& topsHigh);
+    const ProductProfile& sumProfile,
+    const ProductProfile& lowerProfile,
+    const ProductProfile& upperProfile);
+
+    // const unsigned char lenActual,
+    // const unsigned char lenLow,
+    // const unsigned char lenHigh,
+    // const vector<unsigned char>& topsActual,
+    // const vector<unsigned char>& topsLow,
+    // const vector<unsigned char>& topsHigh);
 
   bool includes(
-    const unsigned char lengthIn,
-    const vector<unsigned>& topsIn) const;
+    const ProductProfile& distProfile) const;
+    // const unsigned char lengthIn,
+    // const vector<unsigned>& topsIn) const;
 
   unsigned char getComplexity() const;
 
@@ -74,14 +87,16 @@ class Product
   string strHeader() const;
 
   string strLine(
-    const unsigned char lenActual,
-    const vector<unsigned char>& topsActual) const;
+    const ProductProfile& sumProfile) const;
+    // const unsigned char lenActual,
+    // const vector<unsigned char>& topsActual) const;
 
   string strLine() const;
 
   string strVerbal(
-    const unsigned char maxLength,
-    const vector<unsigned char>& topTotals) const;
+    const ProductProfile& sumProfile) const;
+    // const unsigned char maxLength,
+    // const vector<unsigned char>& topTotals) const;
 };
 
 #endif

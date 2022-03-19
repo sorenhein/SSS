@@ -50,18 +50,21 @@ class DistCore
       unsigned& distIndex);
 
     void getCoverData(
-      vector<unsigned char>& lengths,
-      vector<unsigned char>& tops,
+      vector<ProductProfile>& distProfiles,
+      // vector<unsigned char>& lengths,
+      // vector<unsigned char>& tops,
       vector<unsigned char>& cases,
       unsigned char& maxLength,
       unsigned char& maxTops) const;
 
     void getCoverDataNew(
-      vector<unsigned char>& lengths,
-      vector<vector<unsigned> const *>& topPtrs,
+      vector<ProductProfile>& distProfiles,
+      // vector<unsigned char>& lengths,
+      // vector<vector<unsigned> const *>& topPtrs,
       vector<unsigned char>& cases,
-      unsigned char& maxLength,
-      vector<unsigned char>& topTotals) const;
+      ProductProfile& sumProfile) const;
+      // unsigned char& maxLength,
+      // vector<unsigned char>& topTotals) const;
 
     string strHeader() const;
 

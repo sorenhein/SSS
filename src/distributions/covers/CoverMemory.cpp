@@ -785,8 +785,10 @@ void CoverMemory::makeSets(
 {
   struct StackInfo
   {
-    vector<unsigned char> topsLow;
-    vector<unsigned char> topsHigh;
+    // vector<unsigned char> topsLow;
+    // vector<unsigned char> topsHigh;
+    ProductProfile lowerProfile;
+    ProductProfile upperProfile;
 
     unsigned char minWest; // Sum of West's top minima
     unsigned char minEast; // Sum of East's top minima
@@ -799,8 +801,8 @@ void CoverMemory::makeSets(
       const unsigned compSize,
       const unsigned char len)
     {
-      topsLow.resize(compSize, 0);
-      topsHigh.resize(compSize, len);
+      lowerProfile.tops.resize(compSize, 0);
+      upperProfile.tops.resize(compSize, len);
 
       minWest = 0;
       minEast = 0;
@@ -872,8 +874,8 @@ void CoverMemory::makeSets(
         if (maxEast > stackIter->maxEast)
           stackIter->maxEast = maxEast;
 
-        stackIter->topsLow[topNumber] = topCountLow;
-        stackIter->topsHigh[topNumber] = topCountHigh;
+        stackIter->lowerProfile.tops[topNumber] = topCountLow;
+        stackIter->upperProfile.tops[topNumber] = topCountHigh;
 
 // cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
 
@@ -884,8 +886,18 @@ void CoverMemory::makeSets(
           assert(false);
         }
 // cout << "Adding top without length constraint" << endl;
-        iter->set(length, 0, length, 
-          comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
+        stackIter->lowerProfile.length = 0;
+        stackIter->upperProfile.length = length; // ?
+
+        ProductProfile pp;
+        pp.length = length;
+        pp.tops = comp.getTops();
+        iter->set(pp,
+          // length, 0, length, 
+          // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
+          stackIter->lowerProfile, stackIter->upperProfile);
+        // iter->set(length, 0, length, 
+          // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
 // cout << "Added" << endl;
         iter++;
 
@@ -919,8 +931,14 @@ void CoverMemory::makeSets(
               cout << "CM End reached" << endl;
               assert(false);
             }
-            iter->set(length, lenLow, lenHigh, 
-              comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
+            stackIter->lowerProfile.length = lenLow;
+            stackIter->upperProfile.length = lenHigh;
+            ProductProfile pp2;
+            pp2.length = length;
+            pp2.tops = comp.getTops();
+            iter->set(pp2, stackIter->lowerProfile, stackIter->upperProfile);
+            // iter->set(length, lenLow, lenHigh, 
+              // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
             iter++;
           }
         }

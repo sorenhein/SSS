@@ -70,12 +70,14 @@ class CoverRow
     string strHeader() const;
 
     string strLines(
-      const unsigned char maxTricks,
-      const vector<unsigned char>& topTotals) const;
+      const ProductProfile& sumProfile) const;
+      // const unsigned char maxTricks,
+      // const vector<unsigned char>& topTotals) const;
 
     string str(
-      const unsigned char maxTricks,
-      const vector<unsigned char>& topTotals) const;
+      const ProductProfile& sumProfile) const;
+      // const unsigned char maxTricks,
+      // const vector<unsigned char>& topTotals) const;
 };
 
 #endif

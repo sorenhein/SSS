@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverSpec.h"
+#include "Product.h"
 
 
 CoverSpec::CoverSpec()
@@ -193,12 +194,14 @@ void CoverSpec::eastGeneral(
 
 
 bool CoverSpec::includes(
-  const unsigned char wlen,
-  const unsigned char wtop) const
+  const ProductProfile& distProfile) const
+  // const unsigned char wlen,
+  // const unsigned char wtop) const
 {
   for (auto& set: setsWest)
   {
-    if (set.includes(wlen, wtop, oppsLength, oppsTops1))
+    if (set.includes(distProfile, oppsLength, oppsTops1))
+    // if (set.includes(wlen, wtop, oppsLength, oppsTops1))
       return true;
   }
 

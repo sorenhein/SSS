@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverSet.h"
+#include "Product.h"
 
 
 void CoverSet::reset()
@@ -110,20 +111,21 @@ bool CoverSet::includesLengthAndTop1(
 
 
 bool CoverSet::includes(
-  const unsigned char wlen,
-  const unsigned char wtop,
+  // const unsigned char wlen,
+  // const unsigned char wtop,
+  const ProductProfile& distProfile,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
   if (mode == COVER_MODE_NONE)
     return false;
   else if (mode == COVER_LENGTHS_ONLY)
-    return CoverSet::includesLength(wlen, oppsLength);
+    return CoverSet::includesLength(distProfile.length, oppsLength);
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::includesTop1(wtop, oppsTops1);
+    return CoverSet::includesTop1(distProfile.tops[0], oppsTops1);
   else if (mode == COVER_LENGTHS_AND_TOPS)
     return CoverSet::includesLengthAndTop1(
-      wlen, wtop, oppsLength, oppsTops1);
+      distProfile.length, distProfile.tops[0], oppsLength, oppsTops1);
   else
   {
     assert(false);

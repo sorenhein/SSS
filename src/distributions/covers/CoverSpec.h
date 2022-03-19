@@ -14,6 +14,8 @@
 
 #include "CoverSet.h"
 
+struct ProductProfile;
+
 
 enum CoverState
 {
@@ -123,8 +125,9 @@ class CoverSpec
       const CoverControl ctrl = COVER_ADD);
 
     bool includes(
-      const unsigned char wlen,
-      const unsigned char wtop) const;
+      const ProductProfile& distProfile) const;
+      // const unsigned char wlen,
+      // const unsigned char wtop) const;
     
     string strRaw() const;
 

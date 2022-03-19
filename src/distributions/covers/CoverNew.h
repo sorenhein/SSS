@@ -23,7 +23,7 @@ class CoverNew
 {
   private:
 
-    Product coverSet;
+    Product product;
 
     vector<unsigned char> profile;
 
@@ -42,16 +42,22 @@ class CoverNew
     void resize(const unsigned topNumber);
 
     void set(
+      const ProductProfile& sumProfile,
+      const ProductProfile& lowerProfile,
+      const ProductProfile& upperProfile);
+      /*
       const unsigned char lenActual,
       const unsigned char lenLow,
       const unsigned char lenHigh,
       const vector<unsigned char>& topsActual,
       const vector<unsigned char>& topsLow,
       const vector<unsigned char>& topsHigh);
+      */
 
     void prepare(
-      const vector<unsigned char>& lengths,
-      vector<vector<unsigned > const *>& topPtrs,
+      const vector<ProductProfile>& distProfiles,
+      // const vector<unsigned char>& lengths,
+      // vector<vector<unsigned > const *>& topPtrs,
       const vector<unsigned char>& cases);
 
     bool possible(
@@ -86,8 +92,9 @@ class CoverNew
     string strHeader() const;
 
     string strLine(
-      const unsigned char lengthActual,
-      const vector<unsigned char>& topsActual) const;
+      const ProductProfile& sumProfile) const;
+      // const unsigned char lengthActual,
+      // const vector<unsigned char>& topsActual) const;
 
     string strLine() const;
 
@@ -98,8 +105,9 @@ class CoverNew
     string strTricksShort() const;
 
     string str(
-      const unsigned char maxLength,
-      const vector<unsigned char>& topTotals) const;
+      const ProductProfile& sumProfile) const;
+      // const unsigned char maxLength,
+      // const vector<unsigned char>& topTotals) const;
 };
 
 #endif

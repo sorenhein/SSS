@@ -41,30 +41,38 @@ void Product::resize(const unsigned compSize)
 
 
 void Product::set(
+  const ProductProfile& sumProfile,
+  const ProductProfile& lowerProfile,
+  const ProductProfile& upperProfile)
+  /*
   const unsigned char lenActual,
   const unsigned char lenLow,
   const unsigned char lenHigh,
   const vector<unsigned char>& topsActual,
   const vector<unsigned char>& topsLow,
   const vector<unsigned char>& topsHigh)
+  */
 {
   symmFlag = true;
 
-  length.setNew(lenActual, lenLow, lenHigh);
+  length.setNew(sumProfile.length, lowerProfile.length, upperProfile.length);
   complexity = length.getComplexity();
   range = length.getRange();
 
-  if (lenLow + lenHigh != lenActual)
+  if (lowerProfile.length + upperProfile.length != sumProfile.length)
     symmFlag = false;
 
-  const unsigned topLowSize = topsLow.size();
-  assert(topsHigh.size() == topLowSize);
+  const unsigned topLowSize = lowerProfile.tops.size();
+  assert(upperProfile.tops.size() == topLowSize);
   assert(tops.size() >= topLowSize);
 
   // Always skip the first one.
   for (unsigned char i = 1; i < topLowSize; i++)
   {
-    tops[i].setNew(topsActual[i], topsLow[i], topsHigh[i]);
+    tops[i].setNew(
+      sumProfile.tops[i], 
+      lowerProfile.tops[i], 
+      upperProfile.tops[i]);
 
     // Note the first, i.e. lowest one.
     if (tops[i].used())
@@ -78,7 +86,7 @@ void Product::set(
     complexity += tops[i].getComplexity();
     range += tops[i].getRange();
 
-    if (topsLow[i] + topsHigh[i] != topsActual[i])
+    if (lowerProfile.tops[i] + upperProfile.tops[i] != sumProfile.tops[i])
       symmFlag = false;
   }
 
@@ -94,30 +102,33 @@ void Product::set(
 
 
 bool Product::includes(
-  const unsigned char lengthIn,
-  const vector<unsigned>& topsIn) const
+  const ProductProfile& distProfile) const
+  // const unsigned char lengthIn,
+  // const vector<unsigned>& topsIn) const
 {
-  if (length.used() && ! length.includes(lengthIn))
+  if (length.used() && ! length.includes(distProfile.length))
     return false;
 
-if (topsIn.size() != tops.size())
+if (distProfile.tops.size() != tops.size())
 {
-cout << "tops.size " << tops.size() << ", in " << topsIn.size() << endl;
-if (topsIn.size() > 20)
+cout << 
+  "tops.size " << tops.size() << 
+  ", in " << distProfile.tops.size() << endl;
+if (distProfile.tops.size() > 20)
   assert(false);
 
-cout << "lengthIn " << +lengthIn << endl;
+cout << "lengthIn " << +distProfile.length << endl;
 for (unsigned i = 0; i < tops.size(); i++)
   cout << i << ": " << tops[i].strRaw() << endl;
-for (unsigned i = 0; i < topsIn.size(); i++)
-  cout << i << ": " << topsIn[i] << endl;
+for (unsigned i = 0; i < distProfile.tops.size(); i++)
+  cout << i << ": " << distProfile.tops[i] << endl;
 
-  assert(topsIn.size() == tops.size());
+  assert(distProfile.tops.size() == tops.size());
 }
-  for (unsigned i = 0; i < topsIn.size(); i++)
+  for (unsigned i = 0; i < distProfile.tops.size(); i++)
   {
     if (tops[i].used() && 
-        ! tops[i].includes(static_cast<unsigned char>(topsIn[i])))
+        ! tops[i].includes(static_cast<unsigned char>(distProfile.tops[i])))
       return false;
   }
   return true;
@@ -177,18 +188,19 @@ string Product::strHeader() const
 
 
 string Product::strLine(
-  const unsigned char lenActual,
-  const vector<unsigned char>& topsActual) const
+  const ProductProfile& sumProfile) const
+  // const unsigned char lenActual,
+  // const vector<unsigned char>& topsActual) const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
   stringstream ss;
 
-  ss << setw(8) << length.strShort(lenActual);
+  ss << setw(8) << length.strShort(sumProfile.length);
 
-  assert(tops.size() == topsActual.size());
+  assert(tops.size() == sumProfile.tops.size());
   for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(8) << tops[i].strShort(topsActual[i]);
+    ss << setw(8) << tops[i].strShort(sumProfile.tops[i]);
 
   ss << setw(8) << (symmFlag ? "yes" : "-");
 
@@ -214,30 +226,35 @@ string Product::strLine() const
 
 
 string Product::strVerbal(
-  const unsigned char maxLength,
-  const vector<unsigned char>& topTotals) const
+  const ProductProfile& sumProfile) const
+  // const unsigned char maxLength,
+  // const vector<unsigned char>& topTotals) const
 {
   if (topCount == 0)
-    return length.str(maxLength);
+    return length.str(sumProfile.length);
   else if (! length.used())
-    return tops.back().str(topTotals.back());
+    return tops.back().str(sumProfile.tops.back());
   else if (length.oper == COVER_EQUAL)
   {
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
-      return top.strBothEqual(length, maxLength, topTotals.back());
+      return top.strBothEqual(
+        length, 
+        sumProfile.length, 
+        sumProfile.tops.back());
     else
-      return length.str(maxLength) + ", and " +
-        top.str(topTotals.back());
+      return length.str(sumProfile.length) + ", and " +
+        top.str(sumProfile.tops.back());
   }
   else
   {
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
-      return top.strTop1Fixed(length, maxLength, topTotals.back());
+      return top.strTop1Fixed(length, 
+        sumProfile.length, sumProfile.tops.back());
     else
-      return length.str(maxLength) + ", and " +
-        top.str(topTotals.back());
+      return length.str(sumProfile.length) + ", and " +
+        top.str(sumProfile.tops.back());
   }
 }
 
