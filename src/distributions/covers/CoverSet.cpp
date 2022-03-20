@@ -410,6 +410,7 @@ string CoverSet::strTop1(
 string CoverSet::strBothEqual0(
   const string& side) const
 {
+assert(false);
   if (length.lower == 0)
     return side + " is void";
   else
@@ -466,7 +467,7 @@ string CoverSet::strBothEqual2(
     }
     else if (top1.lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
+        "doubleton honor (Hx)";
     else
       ss << side << " has doubleton honors (HH)";
   }
@@ -477,7 +478,7 @@ string CoverSet::strBothEqual2(
       ss << "East has a small doubleton";
     else if (top1.lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
+        "doubleton honor (Hx)";
     else
       ss << "East has doubleton honors (HH)";
   }
@@ -499,10 +500,10 @@ string CoverSet::strBothEqual3(
       ss << side << " has a small tripleton";
     else if (top1.lower == 1)
       ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor tripleton (Hxx)";
+        "tripleton honor (Hxx)";
     else if (top1.lower == 2)
       ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
-        "honors tripleton (HHx)";
+        "tripleton honors (HHx)";
     else
       ss << side << " has tripleton honors (HHH)";
   }
@@ -513,10 +514,10 @@ string CoverSet::strBothEqual3(
       ss << "East has a small tripleton";
     else if (top1.lower + 1 == oppsTops1)
       ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor tripleton (Hxx)";
+        "tripleton honor (Hxx)";
     else if (top1.lower + 2 == oppsTops1)
       ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
-        "honors tripleton (HHx)";
+        "tripleton honors (HHx)";
     else
       ss << "East has tripleton honors (HHH)";
   }

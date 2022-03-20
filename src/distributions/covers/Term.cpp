@@ -151,110 +151,6 @@ unsigned char Term::getRange() const
 }
 
 
-string Term::strBothEqual1(
-  const unsigned char distLength,
-  const unsigned char oppsTops1) const
-{
-  stringstream ss;
-
-  if (distLength == 1)
-  {
-    if (lower == 0)
-      ss << "West has a small singleton";
-    else
-      ss <<  "West has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
-        "singleton honor";
-  }
-  else
-  {
-    if (lower == oppsTops1)
-      ss << "East has a small singleton";
-    else
-      ss << "East has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
-        "singleton honor";
-  }
-
-  return ss.str();
-}
-
-
-string Term::strBothEqual2(
-  const unsigned char distLength,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  stringstream ss;
-
-  if (distLength == 2)
-  {
-    if (lower == 0)
-    {
-      if (oppsLength == 4 && oppsTops1 == 2)
-      {
-        ss << "East has doubleton honors (HH)";
-      }
-      else
-        ss << "West has a small doubleton";
-    }
-    else if (lower == 1)
-      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
-    else
-      ss << "West has doubleton honors (HH)";
-  }
-  else
-  {
-    if (lower == oppsTops1)
-      ss << "East has a small doubleton";
-    else if (lower + 1 == oppsTops1)
-      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor doubleton (Hx)";
-    else
-      ss << "East has doubleton honors (HH)";
-  }
-
-  return ss.str();
-}
-
-
-string Term::strBothEqual3(
-  const unsigned char distLength,
-  [[maybe_unused]] const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  stringstream ss;
-
-  if (distLength == 3)
-  {
-    if (lower == 0)
-      ss << "West has a small tripleton";
-    else if (lower == 1)
-      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor tripleton (Hxx)";
-    else if (lower == 2)
-      ss << "West has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
-        "honors tripleton (HHx)";
-    else
-      ss << "West has tripleton honors (HHH)";
-  }
-  else
-  {
-    if (lower == oppsTops1)
-      ss << "East has a small tripleton";
-    else if (lower + 1 == oppsTops1)
-      ss << "East has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
-        "honor tripleton (Hxx)";
-    else if (lower + 2 == oppsTops1)
-      ss << "East has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
-        "honors tripleton (HHx)";
-    else
-      ss << "East has tripleton honors (HHH)";
-  }
-
-  return ss.str();
-}
-
-
 string Term::strRaw() const
 {
   stringstream ss;
@@ -341,30 +237,6 @@ string Term::str(const string& word) const
 }
 
 
-string Term::strBothEqual(
-  const unsigned char distLength,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  if (distLength == 0 || distLength == oppsLength)
-  {
-    assert(false);
-    return "";
-  }
-  else if (distLength == 1 || distLength + 1 == oppsLength)
-    return Term::strBothEqual1(distLength, oppsTops1);
-  else if (distLength == 2 || distLength + 2 == oppsLength)
-    return Term::strBothEqual2(distLength, oppsLength, oppsTops1);
-  else if (distLength == 3 || distLength + 3 == oppsLength)
-    return Term::strBothEqual3(distLength, oppsLength, oppsTops1);
-  else
-  {
-    assert(false);
-    return "";
-  }
-}
-
-
 void Term::strXes(
   const Term& top1,
   const unsigned char oppsLength,
@@ -444,7 +316,6 @@ string Term::strTop1Fixed0(
 
 
 string Term::strTop1Fixed1(
-  // const Length& length,
   const unsigned char oppsTops1,
   const string& side,
   const CoverXes& coverXes) const
@@ -498,7 +369,6 @@ string Term::strTop1Fixed(
   const unsigned char oppsTops1) const
 {
   stringstream ss;
-  // const string side = (length.symmFlag ? "Either opponent" : "West");
   const string side = "West";
 
   CoverXes coverXes;
