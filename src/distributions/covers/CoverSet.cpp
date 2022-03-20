@@ -138,50 +138,6 @@ bool CoverSet::includes(
 }
 
 
-string CoverSet::strLength(
-  const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
-{
-  return length.strLength(oppsLength, simplestOpponent, false);
-}
-
-
-string CoverSet::strTop1(
-  const unsigned char oppsTops1,
-  const Opponent simplestOpponent) const
-{
-  return top1.strTop(oppsTops1, simplestOpponent, false);
-}
-
-
-string CoverSet::strBothEqual(
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  const Opponent simplestOpponent) const
-{
-  return top1.strWithLength(
-    length,
-    oppsLength,
-    oppsTops1,
-    simplestOpponent,
-    symmFlag);
-}
-
-
-string CoverSet::strTop1Fixed(
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  const Opponent simplestOpponent) const
-{
-  return top1.strWithLength(
-    length,
-    oppsLength,
-    oppsTops1,
-    simplestOpponent,
-    symmFlag);
-}
-
-
 string CoverSet::str(
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
@@ -218,45 +174,63 @@ string CoverSet::str(
     upperProfile.tops[0] = oppsTops1;
   }
 
-// cout << "Sum   " << sumProfile.str() << "\n";
-// cout << "Lower " << lowerProfile.str() << "\n";
-// cout << "Upper " << upperProfile.str() << endl;
-
   Opponent simplestOpponent;
   if (sumProfile.flip(lowerProfile, upperProfile))
   {
-// cout << "FLIP\n";
     simplestOpponent = OPP_EAST;
   }
   else
   {
-// cout << "DON'T\n";
     simplestOpponent = OPP_WEST;
   }
 
   if (mode == COVER_LENGTHS_ONLY)
   {
-    return CoverSet::strLength(oppsLength, simplestOpponent);
+    return length.strLength(oppsLength, simplestOpponent, symmFlag);
   }
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::strTop1(oppsTops1, simplestOpponent);
+  {
+    return top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+  }
   else if (mode == COVER_LENGTHS_AND_TOPS)
   {
     if (length.oper == COVER_EQUAL)
     {
       if (top1.oper == COVER_EQUAL)
-        return CoverSet::strBothEqual(oppsLength, oppsTops1, simplestOpponent);
+      {
+        return top1.strWithLength(
+          length,
+          oppsLength,
+          oppsTops1,
+          simplestOpponent,
+          symmFlag);
+      }
       else
-        return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
-          CoverSet::strTop1(oppsTops1, simplestOpponent);
+      {
+        return 
+          length.strLength(oppsLength, simplestOpponent, symmFlag) +
+          ", and " +
+          top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+      }
     }
     else
     {
       if (top1.oper == COVER_EQUAL)
-        return CoverSet::strTop1Fixed(oppsLength, oppsTops1, simplestOpponent);
+      {
+        return top1.strWithLength(
+          length,
+          oppsLength,
+          oppsTops1,
+          simplestOpponent,
+          symmFlag);
+      }
       else
-        return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
-          CoverSet::strTop1(oppsTops1, simplestOpponent);
+      {
+        return 
+          length.strLength(oppsLength, simplestOpponent, symmFlag) +
+          ", and " +
+          top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+      }
     }
   }
 
