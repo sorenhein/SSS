@@ -149,3 +149,106 @@ string Top::str(
   }
 }
 
+
+
+string Top::strExactLengthEqual(
+  const unsigned char distLength,
+  const unsigned char oppsLength,
+  const unsigned char oppsTops,
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
+{
+  // Here lower and upper are identical.
+  string side, otherSide;
+  unsigned char length, value;
+
+  // TODO When combined with Length, I suppose this might look like:
+  // Either opponent has a singleton, and either opponent has the honor.
+  // But it's the same opponent.  See whether this becomes a problem.
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = (symmFlag ? "Either opponent" : "West");
+    otherSide = (symmFlag ? "Either opponent" : "East");
+    value = lower;
+    length = distLength;
+  }
+  else
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    otherSide = (symmFlag ? "Either opponent" : "West");
+    value = oppsTops - lower;
+    length = oppsLength - distLength;
+  }
+
+  stringstream ss;
+
+  if (length == 1)
+  {
+    if (value == 0)
+      ss << side << " has a small singleton";
+    else
+    {
+      ss << side << " has " << (oppsTops == 1 ? "the" : "a") << " " <<
+        "singleton honor";
+    }
+  }
+  else if (length == 2)
+  {
+    if (value == 0)
+    {
+      if (oppsLength == 4 && oppsTops == 2)
+        ss << otherSide << " has doubleton honors (HH)";
+      else
+        ss << side << " has a small doubleton";
+    }
+    else if (value == 1)
+    {
+      ss << side << " has " << (oppsTops == 1 ? "the" : "a") << " " <<
+        "doubleton honor (Hx)";
+    }
+    else
+      ss << side << " has doubleton honors (HH)";
+  }
+  else if (length == 3)
+  {
+    if (value == 0)
+      ss << side << " has a small tripleton";
+    else if (value == 1)
+    {
+      ss << side << " has " << (oppsTops == 1 ? "the" : "a") << " " <<
+        "tripleton honor (Hxx)";
+    }
+    else if (value == 2)
+    {
+      ss << side << " has " << (oppsTops == 1 ? "the" : "two") << " " <<
+        "tripleton honors (HHx)";
+    }
+    else
+    {
+      ss << side << " has " << "tripleton honors (HHH)";
+    }
+  }
+  else
+  {
+    assert(false);
+  }
+
+  return ss.str();
+}
+
+
+string Top::strExactLength(
+  const unsigned char distLength,
+  const unsigned char oppsLength,
+  const unsigned char oppsTops,
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
+{
+  // TODO For now.  Later combine with Fixed.
+  assert(oper == COVER_EQUAL);
+
+  return Top::strExactLengthEqual(
+    distLength, oppsLength, oppsTops, simplestOpponent, symmFlag);
+}
+

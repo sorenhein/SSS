@@ -151,33 +151,18 @@ unsigned char Term::getRange() const
 }
 
 
-string Term::strBothEqual0(
-  const string& side) const
-{
-assert(false);
-
-  if (lower == 0)
-    return side + " is void";
-  else
-    return "East is void";
-}
-
-
 string Term::strBothEqual1(
-  const Length& length,
-  const unsigned char oppsTops1,
-  const string& side) const
+  const unsigned char distLength,
+  const unsigned char oppsTops1) const
 {
   stringstream ss;
 
-  // TODO Could maybe switch around and call the top1 one here,
-  // with length.lower as an argument.  That is all that is needed.
-  if (length.lower == 1)
+  if (distLength == 1)
   {
     if (lower == 0)
-      ss << side << " has a small singleton";
+      ss << "West has a small singleton";
     else
-      ss <<  side << " has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
+      ss <<  "West has " << (oppsTops1 == 1 ? "the" : "a") << " " <<
         "singleton honor";
   }
   else
@@ -194,14 +179,13 @@ string Term::strBothEqual1(
 
 
 string Term::strBothEqual2(
-  const Length& length,
+  const unsigned char distLength,
   const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  const string& side) const
+  const unsigned char oppsTops1) const
 {
   stringstream ss;
 
-  if (length.lower == 2)
+  if (distLength == 2)
   {
     if (lower == 0)
     {
@@ -210,13 +194,13 @@ string Term::strBothEqual2(
         ss << "East has doubleton honors (HH)";
       }
       else
-        ss << side << " has a small doubleton";
+        ss << "West has a small doubleton";
     }
     else if (lower == 1)
-      ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor doubleton (Hx)";
     else
-      ss << side << " has doubleton honors (HH)";
+      ss << "West has doubleton honors (HH)";
   }
   else
   {
@@ -234,25 +218,24 @@ string Term::strBothEqual2(
 
 
 string Term::strBothEqual3(
-  const Length& length,
+  const unsigned char distLength,
   [[maybe_unused]] const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  const string& side) const
+  const unsigned char oppsTops1) const
 {
   stringstream ss;
 
-  if (length.lower == 3)
+  if (distLength == 3)
   {
     if (lower == 0)
-      ss << side << " has a small tripleton";
+      ss << "West has a small tripleton";
     else if (lower == 1)
-      ss << side << " has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
+      ss << "West has " << (oppsTops1 == 1 ? "the" : "an") << " " <<
         "honor tripleton (Hxx)";
     else if (lower == 2)
-      ss << side << " has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
+      ss << "West has " << (oppsTops1 == 2 ? "the" : "two") << " " <<
         "honors tripleton (HHx)";
     else
-      ss << side << " has tripleton honors (HHH)";
+      ss << "West has tripleton honors (HHH)";
   }
   else
   {
@@ -359,21 +342,21 @@ string Term::str(const string& word) const
 
 
 string Term::strBothEqual(
-  const Length& length,
+  const unsigned char distLength,
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
-  // const string side = (length.symmFlag ? "Either opponent" : "West");
-  const string side = "West";
-
-  if (length.lower == 0 || length.lower == oppsLength)
-    return length.strBothEqual0(side);
-  else if (length.lower == 1 || length.lower + 1 == oppsLength)
-    return Term::strBothEqual1(length, oppsTops1, side);
-  else if (length.lower == 2 || length.lower + 2 == oppsLength)
-    return Term::strBothEqual2(length, oppsLength, oppsTops1, side);
-  else if (length.lower == 3 || length.lower + 3 == oppsLength)
-    return Term::strBothEqual3(length, oppsLength, oppsTops1, side);
+  if (distLength == 0 || distLength == oppsLength)
+  {
+    assert(false);
+    return "";
+  }
+  else if (distLength == 1 || distLength + 1 == oppsLength)
+    return Term::strBothEqual1(distLength, oppsTops1);
+  else if (distLength == 2 || distLength + 2 == oppsLength)
+    return Term::strBothEqual2(distLength, oppsLength, oppsTops1);
+  else if (distLength == 3 || distLength + 3 == oppsLength)
+    return Term::strBothEqual3(distLength, oppsLength, oppsTops1);
   else
   {
     assert(false);

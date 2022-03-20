@@ -47,25 +47,19 @@ class Term
     unsigned char data;
 
 
-    string strBothEqual0(
-      const string& side) const;
-
     string strBothEqual1(
-      const Length& length,
-      const unsigned char oppsTops1,
-      const string& side) const;
+      const unsigned char distLength,
+      const unsigned char oppsTops1) const;
 
     string strBothEqual2(
-      const Length& length,
+      const unsigned char distLength,
       const unsigned char oppsLength,
-      const unsigned char oppsTops1,
-      const string& side) const;
+      const unsigned char oppsTops1) const;
 
     string strBothEqual3(
-      const Length& length,
+      const unsigned char distLength,
       const unsigned char oppsLength,
-      const unsigned char oppsTops1,
-      const string& side) const;
+      const unsigned char oppsTops1) const;
 
     void strXes(
       const Term& top1,
@@ -91,7 +85,7 @@ class Term
 
     // The Term being called is the top1 one.
     string strBothEqual(
-      const Length& length,
+      const unsigned char distLength,
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 

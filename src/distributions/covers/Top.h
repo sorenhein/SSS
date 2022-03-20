@@ -32,6 +32,13 @@ class Top: public Term
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 
+    string strExactLengthEqual(
+      const unsigned char distLength,
+      const unsigned char oppsLength,
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
+
 
   public:
 
@@ -40,6 +47,12 @@ class Top: public Term
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 
+    string strExactLength(
+      const unsigned char distLength,
+      const unsigned char oppsLength,
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 };
 
 #endif
