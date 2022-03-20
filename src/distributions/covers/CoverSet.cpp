@@ -168,158 +168,17 @@ string CoverSet::strBothEqual(
 }
 
 
-void CoverSet::strXes(
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  CoverXes& coverXes) const
-{
-  coverXes.westMax = length.upper - top1.lower;
-  coverXes.westMin = length.lower - top1.lower;
-
-  coverXes.eastMax =
-    (oppsLength - length.lower) - (oppsTops1 - top1.lower);
-  coverXes.eastMin =
-    (oppsLength - length.upper) - (oppsTops1 - top1.lower);
-
-  coverXes.strWest = string(coverXes.westMin, 'x') +
-    "(" + string(coverXes.westMax - coverXes.westMin, 'x') + ")";
-  coverXes.strEast = string(coverXes.eastMin, 'x') +
-    "(" + string(coverXes.eastMax - coverXes.eastMin, 'x') + ")";
-}
-
-
-string CoverSet::strTop1Fixed0(
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  const string& side,
-  const CoverXes& coverXes,
-  const Opponent simplestOpponent) const
-{
-  stringstream ss;
-
-  if (top1.lower == 0)
-  {
-    assert(! symmFlag);
-    if (oppsTops1 == 1)
-    {
-      if (coverXes.eastMax == 1)
-        ss << "East has the top at most doubleton";
-      else
-        ss << "East has H" << coverXes.strEast;
-    }
-    else if (oppsTops1 == 2)
-    {
-      if (coverXes.eastMax == 1)
-        ss << "East has both tops at most tripleton";
-      else
-        ss << "East has HH" << coverXes.strEast;
-    }
-    else
-    {
-      cout << CoverSet::str(oppsLength, oppsTops1) << endl;
-      assert(false);
-    }
-  }
-  else
-  {
-    if (oppsTops1 == 1)
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has the top at most doubleton";
-      else
-        ss << side << " has H" << coverXes.strWest;
-    }
-    else if (oppsTops1 == 2)
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has both tops at most tripleton";
-      else
-        ss << side << " has HH" << coverXes.strWest;
-    }
-    else if (oppsTops1 == 3)
-      ss << side << " has HHH" << coverXes.strWest;
-    else
-    {
-      cout << coverXes.str();
-      cout << CoverSet::strLength(oppsLength, simplestOpponent) << ", and " <<
-        CoverSet::strTop1(oppsTops1, simplestOpponent) << endl;
-      assert(false);
-    }
-  }
-  
-  return ss.str();
-}
-
-
-string CoverSet::strTop1Fixed1(
-  const unsigned char oppsTops1,
-  const string& side,
-  const CoverXes& coverXes) const
-{
-  stringstream ss;
-
-  if (top1.lower == 1)
-  {
-    if (oppsTops1 == 2)
-    {
-      // Look at it from the shorter side
-      if (coverXes.westMax <= coverXes.eastMax)
-      {
-        if (coverXes.westMax == 1)
-          ss << side << " has one top at most doubleton";
-        else
-          ss << side << " has H" << coverXes.strWest;
-      }
-      else
-      {
-        assert(! symmFlag);
-        if (coverXes.eastMax == 1)
-          ss << "East has one top at most doubleton";
-        else
-          ss << "East has H" << coverXes.strEast;
-      }
-    }
-    else
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has one top at most doubleton";
-      else
-        ss << side << " has H" << coverXes.strWest;
-    }
-  }
-  else
-  {
-    assert(! symmFlag);
-    if (coverXes.eastMax == 1)
-      ss << "East has one top at most doubleton";
-    else
-      ss << "East has H" << coverXes.strEast;
-  }
-
-  return ss.str();
-}
-
-
 string CoverSet::strTop1Fixed(
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const Opponent simplestOpponent) const
 {
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-
-  CoverXes coverXes;
-  CoverSet::strXes(oppsLength, oppsTops1, coverXes);
-
-  if (top1.lower == 0 ||top1.lower == oppsTops1)
-    return CoverSet::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes, simplestOpponent);
-  else if (top1.lower == 1 ||top1.lower + 1 == oppsTops1)
-    return CoverSet::strTop1Fixed1(oppsTops1, side, coverXes);
-  else
-  {
-    assert(false);
-    return "";
-  }
+  return top1.strWithLength(
+    length,
+    oppsLength,
+    oppsTops1,
+    simplestOpponent,
+    symmFlag);
 }
 
 

@@ -241,7 +241,7 @@ string Top::strExactLengthEqual(
 
 string Top::strLengthRangeEqual(
   const unsigned char oppsTops,
-  [[maybe_unused]]const Xes& xes,
+  const Xes& xes,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
@@ -268,7 +268,9 @@ string Top::strLengthRangeEqual(
   stringstream ss;
 
   string slen;
-  if (maxLen == 2)
+  if (maxLen == 1)
+    slen = "singleton";
+  else if (maxLen == 2)
     slen = "doubleton";
   else if (maxLen == 3)
     slen = "tripleton";

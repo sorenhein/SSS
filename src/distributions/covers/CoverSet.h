@@ -92,11 +92,14 @@ class CoverSet
       const unsigned char oppsTops1,
       const Opponent simplestOpponent) const;
 
+    /*
     void strXes(
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       CoverXes& coverXes) const;
+      */
 
+    /*
     string strTop1Fixed0(
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
@@ -108,6 +111,7 @@ class CoverSet
       const unsigned char oppsTops1,
       const string& side,
       const CoverXes& coverXes) const;
+      */
 
     string strTop1Fixed(
       const unsigned char oppsLength,
