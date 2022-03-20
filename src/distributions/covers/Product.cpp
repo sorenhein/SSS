@@ -223,15 +223,9 @@ string Product::strVerbal(
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
     {
-      /*
-      return top.strBothEqual(
-        length.lower, 
-        sumProfile.length, 
-        sumProfile.tops.back());
-        */
-      
-      return top.strExactLength(
+      return top.strWithLength(
         length.lower,
+        length.upper,
         sumProfile.length, 
         sumProfile.tops.back(),
         simplestOpponent,
@@ -256,11 +250,20 @@ string Product::strVerbal(
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
     {
+      /*
       return 
         top.strTop1Fixed(
           length, 
           sumProfile.length, 
           sumProfile.tops.back());
+          */
+      return top.strWithLength(
+        length.lower,
+        length.upper,
+        sumProfile.length, 
+        sumProfile.tops.back(),
+        simplestOpponent,
+        symmFlag);
     }
     else
     {

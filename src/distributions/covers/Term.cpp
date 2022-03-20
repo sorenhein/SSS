@@ -304,9 +304,6 @@ string Term::strTop1Fixed0(
       ss << side << " has HHH" << coverXes.strWest;
     else
     {
-      // cout << coverXes.str();
-      // cout << length.str(oppsLength) << ", and " <<
-        // Term::strTop1(oppsTops1) << endl;
       assert(false);
     }
   }

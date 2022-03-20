@@ -238,17 +238,104 @@ string Top::strExactLengthEqual(
 }
 
 
-string Top::strExactLength(
-  const unsigned char distLength,
+string Top::strLengthRangeEqual(
+  const unsigned char oppsTops,
+  [[maybe_unused]]const Xes& xes,
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
+{
+  string side, xstr;
+  unsigned char value, maxLen;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = (symmFlag ? "Either opponent" : "West");
+    xstr = xes.strWest;
+    value = lower;
+    maxLen = value + xes.westMax;
+  }
+  else
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    xstr = xes.strEast;
+    value = oppsTops - upper;
+    maxLen = value + xes.eastMax;
+  }
+
+  const string hstr = (value == 0 ? "" : string(value, 'H'));
+
+  stringstream ss;
+
+  string slen;
+  if (maxLen == 2)
+    slen = "doubleton";
+  else if (maxLen == 3)
+    slen = "tripleton";
+  else if (maxLen == 4)
+    slen = "fourth";
+  else if (maxLen == 5)
+    slen = "fifth";
+  else
+  {
+cout << "maxLen " << +maxLen << endl;
+    assert(false);
+  }
+
+  if (value == oppsTops)
+  {
+    string strT;
+    if (value == 1)
+      strT = "the top";
+    else if (value == 2)
+      strT = "both tops";
+    else
+      strT = "all tops";
+
+    ss << side << " has " << strT << " at most " << slen;
+  }
+  else if (value > 0)
+  {
+    string strT;
+    if (value == 1)
+      strT = "one top";
+    else if (value == 2)
+      strT = "two tops";
+    else if (value == 3)
+      strT = "three tops";
+    else
+      assert(false);
+
+    ss << side << " has " << strT << " at most " << slen;
+  }
+  else
+    ss << side << " has " << hstr << xstr;
+
+  return ss.str();
+}
+
+
+string Top::strWithLength(
+  const unsigned char distLengthLower,
+  const unsigned char distLengthUpper,
   const unsigned char oppsLength,
   const unsigned char oppsTops,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  // TODO For now.  Later combine with Fixed.
   assert(oper == COVER_EQUAL);
 
-  return Top::strExactLengthEqual(
-    distLength, oppsLength, oppsTops, simplestOpponent, symmFlag);
+  if (distLengthLower == distLengthUpper)
+  {
+    return Top::strExactLengthEqual(
+      distLengthLower, oppsLength, oppsTops, simplestOpponent, symmFlag);
+  }
+  else
+  {
+    Xes xes;
+    xes.set(distLengthLower, distLengthUpper, lower, oppsLength, oppsTops);
+
+    return Top::strLengthRangeEqual(
+      oppsTops, xes, simplestOpponent, symmFlag);
+  }
 }
 
