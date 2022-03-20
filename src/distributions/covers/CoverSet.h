@@ -179,7 +179,7 @@ class CoverSet
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
 
-  string strRaw() const;
+  // string strRaw() const;
 
   string str(
     const unsigned char oppsLength,

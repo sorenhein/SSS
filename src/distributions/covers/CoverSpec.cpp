@@ -202,6 +202,7 @@ bool CoverSpec::includes(const ProductProfile& distProfile) const
 }
 
 
+/*
 string CoverSpec::strRaw() const
 {
   stringstream ss;
@@ -214,6 +215,7 @@ string CoverSpec::strRaw() const
 
   return ss.str();
 }
+*/
 
 
 string CoverSpec::str() const

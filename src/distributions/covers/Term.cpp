@@ -38,7 +38,7 @@ void Term::reset()
 }
 
 
-void Term::setNew(
+void Term::set(
   const unsigned char oppSize,
   const unsigned char lowerIn,
   const unsigned char upperIn)
@@ -83,9 +83,15 @@ void Term::setNew(
 }
 
 
-bool Term::includes(const unsigned char valueIn) const
+bool Term::includes(const unsigned char value) const
 {
-  return termCompare.includes(index, valueIn);
+  return termCompare.includes(index, value);
+}
+
+
+CoverOperator Term::getOperator() const
+{
+  return oper;
 }
 
 
@@ -95,13 +101,13 @@ bool Term::used() const
 }
 
 
-unsigned char Term::getComplexity() const
+unsigned char Term::complexity() const
 {
   return termCompare.complexity(data);
 }
 
 
-unsigned char Term::getRange() const
+unsigned char Term::range() const
 {
   return termCompare.range(data);
 }

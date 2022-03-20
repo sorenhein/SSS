@@ -63,7 +63,7 @@ void Covers::prepare(
       cout << "Covers::prepare: " << 
         +maxLengthIn << ", " << +maxTops << "\n";
       cout << "Adding " << citer->str() << "\n";
-      cout << "Adding " << miter->strRaw() << "\n";
+      cout << "Adding " << miter->str() << "\n";
 
 for (unsigned i = 0; i< distProfiles.size(); i++)
   cout << i << " " << +distProfiles[i].length << 

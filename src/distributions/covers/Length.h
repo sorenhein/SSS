@@ -20,6 +20,8 @@ using namespace std;
 
 class Length: public Term
 {
+  friend class Top;
+
   private: 
 
     // "oppsLength" is the opponents' actual length.

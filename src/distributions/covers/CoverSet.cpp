@@ -46,8 +46,7 @@ void CoverSet::setLength(
  const unsigned char len,
  const unsigned char oppsLength)
 {
-  // length.set(len, COVER_EQUAL);
-  length.setNew(oppsLength, len, len);
+  length.set(oppsLength, len, len);
 }
 
 
@@ -56,8 +55,7 @@ void CoverSet::setLength(
   const unsigned char len2,
   const unsigned char oppsLength)
 {
-  // length.set(len1, len2, COVER_INSIDE_RANGE);
-  length.setNew(oppsLength, len1, len2);
+  length.set(oppsLength, len1, len2);
 }
 
 
@@ -65,8 +63,7 @@ void CoverSet::setTop1(
  const unsigned char tops,
  const unsigned char oppsSize)
 {
-  // top1.set(tops, COVER_EQUAL);
-  top1.setNew(oppsSize, tops, tops);
+  top1.set(oppsSize, tops, tops);
 }
 
 
@@ -75,8 +72,7 @@ void CoverSet::setTop1(
   const unsigned char tops2,
   const unsigned char oppsSize)
 {
-  // top1.set(tops1, tops2, COVER_INSIDE_RANGE);
-  top1.setNew(oppsSize, tops1, tops2);
+  top1.set(oppsSize, tops1, tops2);
 }
 
 
@@ -610,7 +606,7 @@ string CoverSet::strTop1Fixed0(
     }
     else
     {
-      cout << CoverSet::strRaw() << endl;
+      cout << CoverSet::str(oppsLength, oppsTops1) << endl;
       assert(false);
     }
   }
@@ -717,6 +713,7 @@ string CoverSet::strTop1Fixed(
 }
 
 
+/*
 string CoverSet::strRaw() const
 {
   stringstream ss;
@@ -738,6 +735,7 @@ string CoverSet::strRaw() const
   
   return ss.str();
 }
+*/
 
 
 string CoverSet::str(

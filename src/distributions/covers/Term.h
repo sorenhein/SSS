@@ -27,7 +27,6 @@ class Term
 {
   // TODO Delete at some point
   friend class CoverSet;
-  friend class Product;
 
   protected: 
 
@@ -53,18 +52,20 @@ class Term
 
     void reset();
 
-    void setNew(
+    void set(
       const unsigned char oppSize,
-      const unsigned char value1In,
-      const unsigned char value2In);
+      const unsigned char lowerIn,
+      const unsigned char upperIn);
 
-    bool includes(const unsigned char valueIn) const;
+    bool includes(const unsigned char value) const;
+
+    CoverOperator getOperator() const;
 
     bool used() const;
 
-    unsigned char getComplexity() const;
+    unsigned char complexity() const;
 
-    unsigned char getRange() const;
+    unsigned char range() const;
 
     string strGeneral() const;
 };

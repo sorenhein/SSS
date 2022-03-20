@@ -126,7 +126,7 @@ class CoverSpec
 
     bool includes(const ProductProfile& distProfile) const;
     
-    string strRaw() const;
+    // string strRaw() const;
 
     string str() const;
 };

@@ -45,9 +45,9 @@ void Product::set(
   const ProductProfile& lowerProfile,
   const ProductProfile& upperProfile)
 {
-  length.setNew(sumProfile.length, lowerProfile.length, upperProfile.length);
-  complexity = length.getComplexity();
-  range = length.getRange();
+  length.set(sumProfile.length, lowerProfile.length, upperProfile.length);
+  complexity = length.complexity();
+  range = length.range();
 
   const unsigned topLowSize = lowerProfile.tops.size();
   assert(upperProfile.tops.size() == topLowSize);
@@ -56,7 +56,7 @@ void Product::set(
   // Always skip the first one.
   for (unsigned char i = 1; i < topLowSize; i++)
   {
-    tops[i].setNew(
+    tops[i].set(
       sumProfile.tops[i], 
       lowerProfile.tops[i], 
       upperProfile.tops[i]);
@@ -70,8 +70,8 @@ void Product::set(
       topCount++;
     }
 
-    complexity += tops[i].getComplexity();
-    range += tops[i].getRange();
+    complexity += tops[i].complexity();
+    range += tops[i].range();
   }
 
   // If there is only a single distribution possible, this counts
@@ -133,9 +133,9 @@ unsigned char Product::getTopSize() const
 
 unsigned char Product::getRangeSum() const
 {
-  unsigned char sum = length.getRange();
+  unsigned char sum = length.range();
   for (auto& top: tops)
-    sum += top.getRange();
+    sum += top.range();
 
   assert(sum == range);
   return sum;
@@ -211,66 +211,38 @@ string Product::strVerbal(
       simplestOpponent, 
       symmFlag);
   }
-  else if (! length.used())
+
+  if (! length.used())
   {
     return tops.back().strTop(
       sumProfile.tops.back(),
       simplestOpponent, 
       symmFlag);
   }
-  else if (length.oper == COVER_EQUAL)
+
+  auto& top = tops.back();
+
+  if (top.getOperator() == COVER_EQUAL)
   {
-    auto& top = tops.back();
-    if (top.oper == COVER_EQUAL)
-    {
-      return top.strWithLength(
-        length.lower,
-        length.upper,
-        sumProfile.length, 
-        sumProfile.tops.back(),
-        simplestOpponent,
-        symmFlag);
-    }
-    else
-    {
-      return 
-        length.strLength(
-          sumProfile.length, 
-          simplestOpponent, 
-          symmFlag) + 
-        ", and " + 
-        top.strTop(
-          sumProfile.tops.back(),
-          simplestOpponent, 
-          symmFlag);
-    }
+    return top.strWithLength(
+      length,
+      sumProfile.length, 
+      sumProfile.tops.back(),
+      simplestOpponent,
+      symmFlag);
   }
   else
   {
-    auto& top = tops.back();
-    if (top.oper == COVER_EQUAL)
-    {
-      return top.strWithLength(
-        length.lower,
-        length.upper,
+    return 
+      length.strLength(
         sumProfile.length, 
+        simplestOpponent, 
+        symmFlag) + 
+      ", and " + 
+      top.strTop(
         sumProfile.tops.back(),
-        simplestOpponent,
+        simplestOpponent, 
         symmFlag);
-    }
-    else
-    {
-      return 
-        length.strLength(
-          sumProfile.length, 
-          simplestOpponent, 
-          symmFlag) + 
-        ", and " + 
-        top.strTop(
-          sumProfile.tops.back(),
-          simplestOpponent, 
-          symmFlag);
-    }
   }
 }
 
