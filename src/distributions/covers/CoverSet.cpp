@@ -136,40 +136,7 @@ string CoverSet::strLengthEqual(
   const unsigned char oppsLength,
   const Opponent simplestOpponent) const
 {
-  /*
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wlen = length.lower;
-
-  if (wlen == 0)
-    ss << side << " is void";
-  else if (wlen == oppsLength)
-  {
-    assert(! symmFlag);
-    ss << "East is void";
-  }
-  else if (wlen == 1)
-    ss << side << " has a singleton";
-  else if (wlen == oppsLength-1)
-  {
-    assert(! symmFlag);
-    ss << "East has a singleton";
-  }
-  else if (wlen == 2)
-  {
-    if (oppsLength > 4)
-      ss << side << " has a doubleton";
-    else
-      ss << "The suit splits 2=2";
-  }
-  else
-    ss << "The suit splits " << +wlen << "=" << +(oppsLength - wlen);
-
-  return ss.str();
-  */
-
   // Here lower and upper are one and the same.
-
 
   string side;
   unsigned char value;
@@ -210,8 +177,55 @@ string CoverSet::strLengthEqual(
 
 string CoverSet::strLengthInside(
   const unsigned char oppsLength,
-  [[maybe_unused]] const Opponent simplestOpponent) const
+  const Opponent simplestOpponent) const
 {
+  string side;
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = "West";
+    vLower = length.lower;
+    vUpper = length.upper;
+  }
+  else
+  {
+    side = "East";
+    vLower = oppsLength - length.upper;
+    vUpper = oppsLength - length.lower;
+  }
+
+  stringstream ss;
+
+  if (vLower == 0)
+  {
+    if (vUpper == 1)
+      ss << side << " has at most a singleton";
+    else if (vUpper == 2)
+      ss << side << " has at most a doubleton";
+    else
+      ss << side << " has at most " << +vUpper << " cards";
+  }
+  else if (vLower == 1 && vUpper+1 == oppsLength)
+  {
+    ss << "Neither opponent is void";
+  }
+  else if (length.lower + length.upper == oppsLength && 
+      length.lower + 1 == length.upper)
+  {
+    ss << "The suit splits " << +length.lower << "-" << +length.upper <<
+      " either way";
+  }
+  else
+  {
+    ss << "The suit splits between " <<
+      +length.lower << "=" << +(oppsLength - length.lower) << " and " <<
+      +length.upper << "=" << +(oppsLength - length.upper);
+  }
+
+  return ss.str();
+
+  /*
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
   const unsigned char wlen1 = length.lower;
@@ -257,6 +271,7 @@ string CoverSet::strLengthInside(
   }
 
   return ss.str();
+  */
 }
 
 

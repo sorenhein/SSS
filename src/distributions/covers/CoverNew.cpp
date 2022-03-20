@@ -306,7 +306,8 @@ string CoverNew::str(const ProductProfile& sumProfile) const
   {
     stringstream ss;
 
-    ss << product.strVerbal(sumProfile, simplestOpponent) <<
+    // TODO This is where symmFlag would enter
+    ss << product.strVerbal(sumProfile, simplestOpponent, false) <<
       " [" << +numDist << ", " << 
       weight << "]";
 

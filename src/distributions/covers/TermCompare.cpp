@@ -68,27 +68,18 @@ bool TermCompare::includes(
 
 
 unsigned char TermCompare::getData(
-  const Opponent opponent,
   const bool usedFlag,
   const unsigned char range,
   const unsigned char complexity) const
 {
   // Coding:
-  // 7   opponent
   // 6   usedFlag
   // 2-5 range
   // 0-1 complexity
   return
-    (static_cast<unsigned char>(opponent) << 7) |
     (static_cast<unsigned char>(usedFlag) << 6) |
     (range << 2) |
     complexity;
-}
-
-
-Opponent TermCompare::opponent(const unsigned char data) const
-{
-  return ((data & 0x80) ? OPP_EAST : OPP_WEST);
 }
 
 

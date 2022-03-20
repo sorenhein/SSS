@@ -6,7 +6,6 @@ Term
 ----
 Can perhaps move Term to only index & data and nothing else?
 Less memory.
-Don't store side in Term after all.
 
 Side
 ----

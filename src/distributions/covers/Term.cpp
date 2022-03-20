@@ -55,7 +55,7 @@ void Term::reset()
 
   // Hope to break the index if we try to use it unset.
   index = numeric_limits<unsigned short>::max();
-  data = termCompare.getData(OPP_WEST, false, 0, 0);
+  data = termCompare.getData(false, 0, 0);
 }
 
 
@@ -68,7 +68,7 @@ void Term::set(
   oper = operIn;
 
   index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(OPP_WEST, true, upper-lower, 0);
+  data = termCompare.getData(true, upper-lower, 0);
 }
 
 void Term::set(
@@ -81,7 +81,7 @@ void Term::set(
   oper = operIn;
 
   index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(OPP_WEST, true, upper-lower, 0);
+  data = termCompare.getData(true, upper-lower, 0);
 }
 
 
@@ -93,7 +93,7 @@ void Term::setNew(
   if (lowerIn == 0 && upperIn == lenActual)
   {
     // Not set
-    data = termCompare.getData(OPP_WEST, false, 0, 0);
+    data = termCompare.getData(false, 0, 0);
     return;
   }
 
@@ -123,7 +123,7 @@ void Term::setNew(
   }
 
   index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(OPP_WEST, true, upper-lower, complexity);
+  data = termCompare.getData(true, upper-lower, complexity);
 }
 
 

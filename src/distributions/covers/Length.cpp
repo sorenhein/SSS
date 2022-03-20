@@ -16,7 +16,8 @@
 
 string Length::strEqual(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
 {
   // Here lower and upper are identical.
   string side;
@@ -24,12 +25,12 @@ string Length::strEqual(
 
   if (simplestOpponent == OPP_WEST)
   {
-    side = "West";
+    side = (symmFlag ? "Either opponent" : "West");
     value = lower;
   }
   else
   {
-    side = "East";
+    side = (symmFlag ? "Either opponent" : "East");
     value = oppsLength - lower;
   }
 
@@ -56,56 +57,44 @@ string Length::strEqual(
 
 string Length::strInside(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
 {
+  string side;
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = (symmFlag ? "Either opponent" : "West");
+    vLower = lower;
+    vUpper = upper;
+  }
+  else
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    vLower = oppsLength - upper;
+    vUpper = oppsLength - lower;
+  }
+
   stringstream ss;
-  // const string side = (symmFlag ? "Either opponent" : "West");
-  const string side = "West";
 
-  if (lower == 0)
+  if (vLower == 0)
   {
-    if (upper == 1)
-    {
-assert(simplestOpponent == OPP_WEST);
+    if (vUpper == 1)
       ss << side << " has at most a singleton";
-    }
     else if (upper == 2)
-    {
-assert(simplestOpponent == OPP_WEST);
       ss << side << " has at most a doubleton";
-    }
     else
-    {
-assert(simplestOpponent == OPP_WEST);
-      ss << side << " has at most " << +upper << " cards";
-    }
+      ss << side << " has at most " << +vUpper << " cards";
   }
-  else if (upper == oppsLength)
-  {
-// assert(simplestOpponent == OPP_WEST);
-    // ss << side << " has at least " << +lower << " cards";
-
-    if (simplestOpponent == OPP_WEST)
-      ss << "West has at least " << +lower << " cards";
-    else
-      ss << "East has at most " << +(oppsLength - lower) << " cards";
-  }
-  else if (lower == 1 && upper == oppsLength-1)
+  else if (vLower == 1 && vUpper+1 == oppsLength)
   {
     ss << "Neither opponent is void";
   }
-  else if (lower + upper == oppsLength)
+  else if (lower + upper == oppsLength && lower + 1 == upper)
   {
-    if (lower + 1 == upper)
-    {
-      ss << "The suit splits " << +lower << "-" << +upper << 
-        " either way";
-    }
-    else
-    {
-      ss << "The suit splits " << +lower << "-" << +upper <<
-        " or better either way";
-    }
+    ss << "The suit splits " << +lower << "-" << +upper << 
+      " either way";
   }
   else
   {
@@ -120,25 +109,18 @@ assert(simplestOpponent == OPP_WEST);
 
 string Length::str(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
 {
   if (oper == COVER_EQUAL)
   {
-    return Length::strEqual(oppsLength, simplestOpponent);
+    return Length::strEqual(oppsLength, simplestOpponent, symmFlag);
   }
-  else if (oper == COVER_INSIDE_RANGE)
+  else if (oper == COVER_INSIDE_RANGE ||
+           oper == COVER_LESS_EQUAL ||
+           oper == COVER_GREATER_EQUAL)
   {
-    return Length::strInside(oppsLength, simplestOpponent);
-  }
-  else if (oper == COVER_LESS_EQUAL)
-  {
-    // TODO For now
-    return Length::strInside(oppsLength, simplestOpponent);
-  }
-  else if (oper == COVER_GREATER_EQUAL)
-  {
-    // TODO For now
-    return Length::strInside(oppsLength, simplestOpponent);
+    return Length::strInside(oppsLength, simplestOpponent, symmFlag);
   }
   else
   {

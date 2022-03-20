@@ -13,6 +13,8 @@
 
 #include "Term.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 
@@ -20,14 +22,23 @@ class Top: public Term
 {
   private:
 
-    string strEqual(const unsigned char oppsTops) const;
+    string strEqual(
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
-    string strInside(const unsigned char oppsTops) const;
+    string strInside(
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
 
   public:
 
-    string str(const unsigned char oppsTops) const;
+    string str(
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
 };
 

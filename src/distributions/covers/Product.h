@@ -77,7 +77,8 @@ class Product
 
   string strVerbal(
     const ProductProfile& sumProfile,
-    const Opponent simplestOpponent) const;
+    const Opponent simplestOpponent,
+    const bool symmFlag) const;
 };
 
 #endif

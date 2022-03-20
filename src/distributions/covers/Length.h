@@ -28,18 +28,21 @@ class Length: public Term
 
     string strEqual(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent) const;
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
     string strInside(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent) const;
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
  
 
   public:
 
     string str(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent) const;
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
 };
 

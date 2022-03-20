@@ -201,12 +201,14 @@ string Product::strLine() const
 
 string Product::strVerbal(
   const ProductProfile& sumProfile,
-  const Opponent simplestOpponent) const
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
 {
   if (topCount == 0)
-    return length.str(sumProfile.length, simplestOpponent);
+    return length.str(sumProfile.length, simplestOpponent, symmFlag);
   else if (! length.used())
-    return tops.back().str(sumProfile.tops.back());
+    return tops.back().str(sumProfile.tops.back(),
+      simplestOpponent, symmFlag);
   else if (length.oper == COVER_EQUAL)
   {
     auto& top = tops.back();
@@ -216,8 +218,9 @@ string Product::strVerbal(
         sumProfile.length, 
         sumProfile.tops.back());
     else
-      return length.str(sumProfile.length, simplestOpponent) + ", and " +
-        top.str(sumProfile.tops.back());
+      return length.str(sumProfile.length, simplestOpponent, symmFlag) + 
+        ", and " + top.str(sumProfile.tops.back(),
+          simplestOpponent, symmFlag);
   }
   else
   {
@@ -226,8 +229,9 @@ string Product::strVerbal(
       return top.strTop1Fixed(length, 
         sumProfile.length, sumProfile.tops.back());
     else
-      return length.str(sumProfile.length, simplestOpponent) + ", and " +
-        top.str(sumProfile.tops.back());
+      return length.str(sumProfile.length, simplestOpponent, symmFlag) + 
+        ", and " + top.str(sumProfile.tops.back(),
+          simplestOpponent, symmFlag);
   }
 }
 
