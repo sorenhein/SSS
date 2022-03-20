@@ -82,7 +82,7 @@ string Length::strInside(
   {
     if (vUpper == 1)
       ss << side << " has at most a singleton";
-    else if (upper == 2)
+    else if (vUpper == 2)
       ss << side << " has at most a doubleton";
     else
       ss << side << " has at most " << +vUpper << " cards";

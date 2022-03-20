@@ -224,54 +224,6 @@ string CoverSet::strLengthInside(
   }
 
   return ss.str();
-
-  /*
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wlen1 = length.lower;
-  const unsigned char wlen2 = length.upper;
-
-  if (wlen1 == 0)
-  {
-    if (wlen2 == 1)
-      ss << side << " has at most a singleton";
-    else if (wlen2 == 2)
-      ss << side << " has at most a doubleton";
-    else
-      ss << side << " has at most " << +wlen2 << " cards";
-  }
-  else if (wlen2 == oppsLength)
-  {
-    if (simplestOpponent == OPP_WEST)
-      ss << "West has at least " << +wlen1 << " cards";
-    else
-      ss << "East has at most " << +(oppsLength-wlen1) << " cards";
-  }
-  else if (wlen1 == 1 && wlen2 == oppsLength-1)
-  {
-    ss << "Neither opponent is void";
-  }
-  else if (wlen1 + wlen2 == oppsLength)
-  {
-    if (wlen1 + 1 == wlen2)
-    {
-      ss << "The suit splits " << +wlen1 << "-" << +wlen2 << " either way";
-    }
-    else
-    {
-      ss << "The suit splits " << +wlen1 << "-" << +wlen2 <<
-        " or better either way";
-    }
-  }
-  else
-  {
-    ss << "The suit splits between " <<
-      +wlen1 << "=" << +(oppsLength - wlen1) << " and " <<
-      +wlen2 << "=" << +(oppsLength - wlen2);
-  }
-
-  return ss.str();
-  */
 }
 
 
@@ -291,53 +243,121 @@ string CoverSet::strLength(
 }
 
 
-string CoverSet::strTop1Equal(const unsigned char oppsTops1) const
+string CoverSet::strTop1Equal(
+  const unsigned char oppsTops1,
+  const Opponent simplestOpponent) const
 {
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop = top1.lower;
+assert(! symmFlag);
 
-  if (wtop == 0)
+  // Here lower and upper are identical.
+  string side, otherSide;
+  unsigned char value;
+
+  // TODO When combined with Length, I suppose this might look like:
+  // Either opponent has a singleton, and either opponent has the honor.
+  // But it's the same opponent.  See whether this becomes a problem.
+
+  if (simplestOpponent == OPP_WEST)
   {
-    assert(! symmFlag);
-    if (oppsTops1 == 1)
-      ss << "East has the top";
-    else
-      ss << "East has the tops";
-  }
-  else if (wtop == oppsTops1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has the tops";
-  }
-  else if (wtop == 1)
-  {
-    if (oppsTops1 == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has exactly one top";
-  }
-  else if (wtop == oppsTops1-1)
-  {
-    assert(! symmFlag);
-    ss << "East has exactly one top";
-  }
-  else if (wtop == 2)
-  {
-    ss << side << " has " <<
-      (oppsTops1 == 2 ? "both" : "exactly two") << " tops";
+    side = (symmFlag ? "Either opponent" : "West");
+    otherSide = (symmFlag ? "Either opponent" : "East");
+    value = top1.lower;
   }
   else
-    ss << side << " has exactly " << wtop << " tops";
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    otherSide = (symmFlag ? "Either opponent" : "West");
+    value = oppsTops1 - top1.lower;
+  }
+
+  stringstream ss;
+
+  if (value == 0 || value == oppsTops1)
+  {
+    const string longSide = (value == 0 ? otherSide : side);
+
+    if (oppsTops1 == 1)
+      ss << longSide << " has the top";
+    else if (oppsTops1 == 2)
+      ss << longSide << " has both tops";
+    else
+      ss << longSide << " has all tops";
+  }
+  else if (value == 1)
+  {
+    ss << side << " has exactly one top";
+  }
+  else if (value+1 == oppsTops1)
+  {
+    ss << otherSide << " has exactly one top";
+  }
+  else if (value == 2)
+  {
+    ss << side << " has exactly two tops";
+  }
+  else if (value+2 == oppsTops1)
+  {
+    ss << otherSide << " has exactly two tops";
+  }
+  else
+    ss << side << " has exactly " +value << " tops";
 
   return ss.str();
 }
 
 
-string CoverSet::strTop1Inside(const unsigned char oppsTops1) const
+string CoverSet::strTop1Inside(
+  const unsigned char oppsTops1,
+  const Opponent simplestOpponent) const
 {
+// assert(! symmFlag);
+
+  string side;
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = (symmFlag ? "Either opponent" : "West");
+    vLower = top1.lower;
+    vUpper = top1.upper;
+  }
+  else
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    vLower = oppsTops1 - top1.upper;
+    vUpper = oppsTops1 - top1.lower;
+  }
+
+  stringstream ss;
+
+  if (vLower == 0)
+  {
+    if (vUpper == 1)
+      ss << side << " has at most one top";
+    else if (vUpper == 2)
+      ss << side << " has at most two tops";
+    else
+      ss << side << " has at most " << +vUpper << " tops";
+  }
+  else if (vUpper == oppsTops1)
+  {
+    if (vLower+1 == oppsTops1)
+      ss << side << " lacks at most one top";
+    else if (vLower+2 == oppsTops1)
+      ss << side << " lacks at most two tops";
+    else
+      ss << side << " lacks at most " << +(oppsTops1 - vLower) << " tops";
+  }
+  else
+  {
+    ss << side << " has between " << +vLower << " and " <<
+      +vUpper << " tops";
+  }
+
+  return ss.str();
+
+
+  /*
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
   const unsigned char wtop1 = top1.lower;
@@ -367,15 +387,18 @@ string CoverSet::strTop1Inside(const unsigned char oppsTops1) const
   }
 
   return ss.str();
+  */
 }
 
 
-string CoverSet::strTop1(const unsigned char oppsTops1) const
+string CoverSet::strTop1(
+  const unsigned char oppsTops1,
+  const Opponent simplestOpponent) const
 {
   if (top1.oper == COVER_EQUAL)
-    return CoverSet::strTop1Equal(oppsTops1);
+    return CoverSet::strTop1Equal(oppsTops1, simplestOpponent);
   else if (top1.oper == COVER_INSIDE_RANGE)
-    return CoverSet::strTop1Inside(oppsTops1);
+    return CoverSet::strTop1Inside(oppsTops1, simplestOpponent);
   else
   {
     assert(false);
@@ -598,7 +621,7 @@ string CoverSet::strTop1Fixed0(
     {
       cout << coverXes.str();
       cout << CoverSet::strLength(oppsLength, simplestOpponent) << ", and " <<
-        CoverSet::strTop1(oppsTops1) << endl;
+        CoverSet::strTop1(oppsTops1, simplestOpponent) << endl;
       assert(false);
     }
   }
@@ -759,7 +782,7 @@ string CoverSet::str(
     return CoverSet::strLength(oppsLength, simplestOpponent);
   }
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::strTop1(oppsTops1);
+    return CoverSet::strTop1(oppsTops1, simplestOpponent);
   else if (mode == COVER_LENGTHS_AND_TOPS)
   {
     if (length.oper == COVER_EQUAL)
@@ -768,7 +791,7 @@ string CoverSet::str(
         return CoverSet::strBothEqual(oppsLength, oppsTops1);
       else
         return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
-          CoverSet::strTop1(oppsTops1);
+          CoverSet::strTop1(oppsTops1, simplestOpponent);
     }
     else
     {
@@ -776,7 +799,7 @@ string CoverSet::str(
         return CoverSet::strTop1Fixed(oppsLength, oppsTops1, simplestOpponent);
       else
         return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
-          CoverSet::strTop1(oppsTops1);
+          CoverSet::strTop1(oppsTops1, simplestOpponent);
     }
   }
 

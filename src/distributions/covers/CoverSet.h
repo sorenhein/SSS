@@ -90,11 +90,17 @@ class CoverSet
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;
 
-    string strTop1Equal(const unsigned char oppsTops1) const;
+    string strTop1Equal(
+      const unsigned char oppsTops1,
+      const Opponent simplestOpponent) const;
 
-    string strTop1Inside(const unsigned char oppsTops1) const;
+    string strTop1Inside(
+      const unsigned char oppsTops1,
+      const Opponent simplestOpponent) const;
 
-    string strTop1(const unsigned char oppsTops1) const;
+    string strTop1(
+      const unsigned char oppsTops1,
+      const Opponent simplestOpponent) const;
 
     string strBothEqual0(
       const string& side) const;

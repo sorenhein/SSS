@@ -73,48 +73,6 @@ string Top::strEqual(
     ss << side << " has exactly " +value << " tops";
 
   return ss.str();
-
-
-  /*
-  stringstream ss;
-  // const string side = (symmFlag ? "Either opponent" : "West");
-  const string side = "West";
-
-  if (lower == 0)
-  {
-    if (oppsTops == 1)
-      ss << "East has the top";
-    else
-      ss << "East has the tops";
-  }
-  else if (lower == oppsTops)
-  {
-    if (oppsTops == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has the tops";
-  }
-  else if (lower == 1)
-  {
-    if (oppsTops == 1)
-      ss << side << " has the top";
-    else
-      ss << side << " has exactly one top";
-  }
-  else if (lower == oppsTops-1)
-  {
-    ss << "East has exactly one top";
-  }
-  else if (lower == 2)
-  {
-    ss << side << " has " <<
-      (oppsTops == 2 ? "both" : "exactly two") << " tops";
-  }
-  else
-    ss << side << " has exactly " << lower << " tops";
-
-  return ss.str();
-  */
 }
 
 
@@ -164,29 +122,6 @@ string Top::strInside(
     ss << side << " has between " << +vLower << " and " <<
       +vUpper << " tops";
   }
-
-
-    /*
-    if (upper == oppsTops-1)
-    {
-      ss << "East has at least one top";
-    }
-    else
-      ss << "West has at most " << +upper << " tops";
-  }
-  else if (upper == oppsTops)
-  {
-    if (lower == 1)
-      ss << "West has at least one top";
-    else
-      ss << "West has at least " << +lower << " tops";
-  }
-  else
-  {
-      ss <<
-        "West has between " << +lower << " and " << +upper << " tops";
-  }
-  */
 
   return ss.str();
 }

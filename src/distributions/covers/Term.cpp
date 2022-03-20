@@ -154,6 +154,8 @@ unsigned char Term::getRange() const
 string Term::strBothEqual0(
   const string& side) const
 {
+assert(false);
+
   if (lower == 0)
     return side + " is void";
   else

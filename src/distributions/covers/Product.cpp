@@ -205,33 +205,64 @@ string Product::strVerbal(
   const bool symmFlag) const
 {
   if (topCount == 0)
-    return length.str(sumProfile.length, simplestOpponent, symmFlag);
+  {
+    return length.str(
+      sumProfile.length, 
+      simplestOpponent, 
+      symmFlag);
+  }
   else if (! length.used())
-    return tops.back().str(sumProfile.tops.back(),
-      simplestOpponent, symmFlag);
+  {
+    return tops.back().str(
+      sumProfile.tops.back(),
+      simplestOpponent, 
+      symmFlag);
+  }
   else if (length.oper == COVER_EQUAL)
   {
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
+    {
       return top.strBothEqual(
         length, 
         sumProfile.length, 
         sumProfile.tops.back());
+    }
     else
-      return length.str(sumProfile.length, simplestOpponent, symmFlag) + 
-        ", and " + top.str(sumProfile.tops.back(),
-          simplestOpponent, symmFlag);
+    {
+      return 
+        length.str(
+          sumProfile.length, 
+          simplestOpponent, symmFlag) + ", and " + 
+        top.str(
+          sumProfile.tops.back(),
+          simplestOpponent, 
+          symmFlag);
+    }
   }
   else
   {
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
-      return top.strTop1Fixed(length, 
-        sumProfile.length, sumProfile.tops.back());
+    {
+      return 
+        top.strTop1Fixed(
+          length, 
+          sumProfile.length, 
+          sumProfile.tops.back());
+    }
     else
-      return length.str(sumProfile.length, simplestOpponent, symmFlag) + 
-        ", and " + top.str(sumProfile.tops.back(),
-          simplestOpponent, symmFlag);
+    {
+      return 
+        length.str(
+          sumProfile.length, 
+          simplestOpponent, 
+          symmFlag) + ", and " + 
+        top.str(
+          sumProfile.tops.back(),
+          simplestOpponent, 
+          symmFlag);
+    }
   }
 }
 
