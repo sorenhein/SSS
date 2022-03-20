@@ -156,15 +156,23 @@ class CoverSet
 
   CoverMode getMode() const;
 
-  void setLength(const unsigned char len);
+  void setLength(
+    const unsigned char len,
+    const unsigned char oppsLength);
+
   void setLength(
     const unsigned char len1,
-    const unsigned char len2);
+    const unsigned char len2,
+    const unsigned char oppsLength);
 
-  void setTop1(const unsigned char tops);
+  void setTop1(
+    const unsigned char tops,
+    const unsigned char oppsSize);
+
   void setTop1(
     const unsigned char tops1,
-    const unsigned char tops2);
+    const unsigned char tops2,
+    const unsigned char oppsSize);
 
   bool includes(
     const ProductProfile& distProfile,

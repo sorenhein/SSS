@@ -53,15 +53,6 @@ class Term
 
     void reset();
 
-    void set(
-      const unsigned char valueIn,
-      const CoverOperator operIn);
-
-    void set(
-      const unsigned char value1In,
-      const unsigned char value2In,
-      const CoverOperator operIn);
-
     void setNew(
       const unsigned char oppSize,
       const unsigned char value1In,

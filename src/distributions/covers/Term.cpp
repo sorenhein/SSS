@@ -13,34 +13,10 @@
 
 #include "Term.h"
 #include "TermCompare.h"
-// #include "Length.h"
 
 #include "../../const.h"
 
 extern TermCompare termCompare;
-
-
-/*
-struct CoverXes
-{
-  unsigned char westMax, westMin;
-  unsigned char eastMax, eastMin;
-  string strWest, strEast;
-
-  string str() const
-  {
-    stringstream ss;
-
-    ss << "coverXes: " <<
-      +westMin << "-" << +westMax << ", " <<
-      +eastMin << "-" << +eastMax << ", " <<
-      strWest << ", " << strEast << "\n";
-
-    return ss.str();
-  };
-};
-*/
-
 
 
 Term::Term()
@@ -62,39 +38,13 @@ void Term::reset()
 }
 
 
-void Term::set(
-  const unsigned char valueIn,
-  const CoverOperator operIn)
-{
-  lower = valueIn;
-  upper = valueIn; // Just to have something
-  oper = operIn;
-
-  index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(true, upper-lower, 0);
-}
-
-void Term::set(
-  const unsigned char lowerIn,
-  const unsigned char upperIn,
-  const CoverOperator operIn)
-{
-  lower = lowerIn;
-  upper = upperIn;
-  oper = operIn;
-
-  index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(true, upper-lower, 0);
-}
-
-
 void Term::setNew(
   const unsigned char oppSize,
   const unsigned char lowerIn,
   const unsigned char upperIn)
 {
   // oppSize is the maximum value, so the total length in case of
-  // a length, or the number of tops in case of a top.
+  // a length, or the total number of tops in case of a top.
 
   if (lowerIn == 0 && upperIn == oppSize)
   {

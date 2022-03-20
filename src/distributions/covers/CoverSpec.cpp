@@ -72,7 +72,7 @@ void CoverSpec::westLength(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len);
+  cset.setLength(len, oppsLength);
 }
 
 
@@ -91,7 +91,7 @@ void CoverSpec::westLengthRange(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len1, len2);
+  cset.setLength(len1, len2, oppsLength);
 }
 
 
@@ -113,7 +113,7 @@ void CoverSpec::westTop1(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops);
+  cset.setTop1(tops, oppsTops1);
 }
 
 
@@ -132,7 +132,7 @@ void CoverSpec::westTop1Range(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops1, tops2);
+  cset.setTop1(tops1, tops2, oppsTops1);
 }
 
 
@@ -161,14 +161,14 @@ void CoverSpec::westGeneral(
   cset.setSymm(symmFlag);
 
   if (len1 == len2)
-    cset.setLength(len1);
+    cset.setLength(len1, oppsLength);
   else
-    cset.setLength(len1, len2);
+    cset.setLength(len1, len2, oppsLength);
 
   if (tops1 == tops2)
-    cset.setTop1(tops1);
+    cset.setTop1(tops1, oppsTops1);
   else
-    cset.setTop1(tops1, tops2);
+    cset.setTop1(tops1, tops2, oppsTops1);
 }
 
 

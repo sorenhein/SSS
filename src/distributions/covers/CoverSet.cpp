@@ -42,31 +42,41 @@ CoverMode CoverSet::getMode() const
 }
 
 
-void CoverSet::setLength(const unsigned char len)
+void CoverSet::setLength(
+ const unsigned char len,
+ const unsigned char oppsLength)
 {
-  length.set(len, COVER_EQUAL);
+  // length.set(len, COVER_EQUAL);
+  length.setNew(oppsLength, len, len);
 }
 
 
 void CoverSet::setLength(
   const unsigned char len1,
-  const unsigned char len2)
+  const unsigned char len2,
+  const unsigned char oppsLength)
 {
-  length.set(len1, len2, COVER_INSIDE_RANGE);
+  // length.set(len1, len2, COVER_INSIDE_RANGE);
+  length.setNew(oppsLength, len1, len2);
 }
 
 
-void CoverSet::setTop1(const unsigned char tops)
+void CoverSet::setTop1(
+ const unsigned char tops,
+ const unsigned char oppsSize)
 {
-  top1.set(tops, COVER_EQUAL);
+  // top1.set(tops, COVER_EQUAL);
+  top1.setNew(oppsSize, tops, tops);
 }
 
 
 void CoverSet::setTop1(
   const unsigned char tops1,
-  const unsigned char tops2)
+  const unsigned char tops2,
+  const unsigned char oppsSize)
 {
-  top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+  // top1.set(tops1, tops2, COVER_INSIDE_RANGE);
+  top1.setNew(oppsSize, tops1, tops2);
 }
 
 
@@ -233,7 +243,9 @@ string CoverSet::strLength(
 {
   if (length.oper == COVER_EQUAL)
     return CoverSet::strLengthEqual(oppsLength, simplestOpponent);
-  else if (length.oper == COVER_INSIDE_RANGE)
+  else if (length.oper == COVER_INSIDE_RANGE ||
+      length.oper == COVER_GREATER_EQUAL ||
+      length.oper == COVER_LESS_EQUAL)
     return CoverSet::strLengthInside(oppsLength, simplestOpponent);
   else
   {
@@ -397,7 +409,9 @@ string CoverSet::strTop1(
 {
   if (top1.oper == COVER_EQUAL)
     return CoverSet::strTop1Equal(oppsTops1, simplestOpponent);
-  else if (top1.oper == COVER_INSIDE_RANGE)
+  else if (top1.oper == COVER_INSIDE_RANGE ||
+      top1.oper == COVER_GREATER_EQUAL ||
+      top1.oper == COVER_LESS_EQUAL)
     return CoverSet::strTop1Inside(oppsTops1, simplestOpponent);
   else
   {
