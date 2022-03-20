@@ -184,7 +184,7 @@ combinations/CombTest.obj: distributions/covers/CoverSpec.h
 combinations/CombTest.obj: distributions/covers/CoverSet.h
 combinations/CombTest.obj: distributions/covers/Term.h
 combinations/CombTest.obj: distributions/covers/TermHelp.h
-combinations/CombTest.obj: distributions/covers/Length.h
+combinations/CombTest.obj: distributions/covers/Length.h utils/table.h
 combinations/CombTest.obj: distributions/covers/CoverNew.h
 combinations/CombTest.obj: distributions/covers/Product.h
 combinations/CombTest.obj: distributions/covers/Top.h
@@ -198,8 +198,8 @@ combinations/CombTest.obj: distributions/covers/ExplStat.h
 combinations/CombTest.obj: strategies/Strategies.h strategies/Slist.h
 combinations/CombTest.obj: strategies/Strategy.h strategies/result/Result.h
 combinations/CombTest.obj: strategies/result/Winners.h
-combinations/CombTest.obj: strategies/result/Winner.h utils/table.h
-combinations/CombTest.obj: utils/Card.h utils/Compare.h utils/Compare.h
+combinations/CombTest.obj: strategies/result/Winner.h utils/Card.h
+combinations/CombTest.obj: utils/Compare.h utils/Compare.h
 combinations/CombTest.obj: strategies/optim/Study.h
 combinations/CombTest.obj: strategies/result/Ranges.h
 combinations/CombTest.obj: strategies/result/Range.h
@@ -225,7 +225,7 @@ distributions/Distributions.obj: distributions/covers/CoverSpec.h
 distributions/Distributions.obj: distributions/covers/CoverSet.h
 distributions/Distributions.obj: distributions/covers/Term.h
 distributions/Distributions.obj: distributions/covers/TermHelp.h
-distributions/Distributions.obj: distributions/covers/Length.h
+distributions/Distributions.obj: distributions/covers/Length.h utils/table.h
 distributions/Distributions.obj: distributions/covers/CoverNew.h
 distributions/Distributions.obj: distributions/covers/Product.h
 distributions/Distributions.obj: distributions/covers/Top.h
@@ -248,7 +248,7 @@ distributions/DistCore.obj: distributions/covers/CoverSpec.h
 distributions/DistCore.obj: distributions/covers/CoverSet.h
 distributions/DistCore.obj: distributions/covers/Term.h
 distributions/DistCore.obj: distributions/covers/TermHelp.h
-distributions/DistCore.obj: distributions/covers/Length.h
+distributions/DistCore.obj: distributions/covers/Length.h utils/table.h
 distributions/DistCore.obj: distributions/covers/CoverNew.h
 distributions/DistCore.obj: distributions/covers/Product.h
 distributions/DistCore.obj: distributions/covers/Top.h
@@ -271,7 +271,7 @@ distributions/DistMemory.obj: distributions/covers/CoverSpec.h
 distributions/DistMemory.obj: distributions/covers/CoverSet.h
 distributions/DistMemory.obj: distributions/covers/Term.h
 distributions/DistMemory.obj: distributions/covers/TermHelp.h
-distributions/DistMemory.obj: distributions/covers/Length.h
+distributions/DistMemory.obj: distributions/covers/Length.h utils/table.h
 distributions/DistMemory.obj: distributions/covers/CoverNew.h
 distributions/DistMemory.obj: distributions/covers/Product.h
 distributions/DistMemory.obj: distributions/covers/Top.h
@@ -298,16 +298,14 @@ distributions/covers/Cover.obj: distributions/covers/CoverSpec.h
 distributions/covers/Cover.obj: distributions/covers/CoverSet.h
 distributions/covers/Cover.obj: distributions/covers/Term.h
 distributions/covers/Cover.obj: distributions/covers/TermHelp.h
-distributions/covers/Cover.obj: distributions/covers/Length.h
-distributions/covers/Cover.obj: distributions/covers/Product.h
-distributions/covers/Cover.obj: distributions/covers/Top.h
+distributions/covers/Cover.obj: distributions/covers/Length.h utils/table.h
 distributions/covers/Cover.obj: distributions/covers/ProductProfile.h
 distributions/covers/CoverNew.obj: distributions/covers/CoverNew.h
 distributions/covers/CoverNew.obj: distributions/covers/Product.h
 distributions/covers/CoverNew.obj: distributions/covers/Length.h
 distributions/covers/CoverNew.obj: distributions/covers/Term.h
 distributions/covers/CoverNew.obj: distributions/covers/TermHelp.h
-distributions/covers/CoverNew.obj: distributions/covers/Top.h
+distributions/covers/CoverNew.obj: utils/table.h distributions/covers/Top.h
 distributions/covers/CoverNew.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverNew.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverNew.obj: distributions/covers/ProductProfile.h
@@ -317,7 +315,7 @@ distributions/covers/Covers.obj: distributions/covers/CoverSpec.h
 distributions/covers/Covers.obj: distributions/covers/CoverSet.h
 distributions/covers/Covers.obj: distributions/covers/Term.h
 distributions/covers/Covers.obj: distributions/covers/TermHelp.h
-distributions/covers/Covers.obj: distributions/covers/Length.h
+distributions/covers/Covers.obj: distributions/covers/Length.h utils/table.h
 distributions/covers/Covers.obj: distributions/covers/Covers.h
 distributions/covers/Covers.obj: distributions/covers/CoverNew.h
 distributions/covers/Covers.obj: distributions/covers/Product.h
@@ -329,49 +327,47 @@ distributions/covers/Covers.obj: distributions/covers/ProductProfile.h
 distributions/covers/Covers.obj: distributions/covers/CoverMemory.h
 distributions/covers/Covers.obj: strategies/result/Result.h
 distributions/covers/Covers.obj: strategies/result/Winners.h
-distributions/covers/Covers.obj: strategies/result/Winner.h utils/table.h
-distributions/covers/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
-distributions/covers/Covers.obj: const.h utils/Timer.h
+distributions/covers/Covers.obj: strategies/result/Winner.h utils/Card.h
+distributions/covers/Covers.obj: utils/Compare.h utils/Compare.h const.h
+distributions/covers/Covers.obj: utils/Timer.h
 distributions/covers/Term.obj: distributions/covers/Term.h
 distributions/covers/Term.obj: distributions/covers/TermHelp.h
-distributions/covers/Term.obj: distributions/covers/TermCompare.h
-distributions/covers/Term.obj: utils/table.h distributions/covers/Length.h
-distributions/covers/Term.obj: const.h
+distributions/covers/Term.obj: distributions/covers/TermCompare.h const.h
 distributions/covers/TermCompare.obj: distributions/covers/TermCompare.h
 distributions/covers/TermCompare.obj: distributions/covers/TermHelp.h
-distributions/covers/TermCompare.obj: utils/table.h
 distributions/covers/Length.obj: distributions/covers/Length.h
 distributions/covers/Length.obj: distributions/covers/Term.h
 distributions/covers/Length.obj: distributions/covers/TermHelp.h
+distributions/covers/Length.obj: utils/table.h
 distributions/covers/Top.obj: distributions/covers/Top.h
 distributions/covers/Top.obj: distributions/covers/Term.h
-distributions/covers/Top.obj: distributions/covers/TermHelp.h
+distributions/covers/Top.obj: distributions/covers/TermHelp.h utils/table.h
+distributions/covers/Top.obj: distributions/covers/Length.h
 distributions/covers/Product.obj: distributions/covers/Product.h
 distributions/covers/Product.obj: distributions/covers/Length.h
 distributions/covers/Product.obj: distributions/covers/Term.h
 distributions/covers/Product.obj: distributions/covers/TermHelp.h
-distributions/covers/Product.obj: distributions/covers/Top.h
+distributions/covers/Product.obj: utils/table.h distributions/covers/Top.h
 distributions/covers/Product.obj: distributions/covers/ProductProfile.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSet.obj: distributions/covers/Term.h
 distributions/covers/CoverSet.obj: distributions/covers/TermHelp.h
 distributions/covers/CoverSet.obj: distributions/covers/Length.h
-distributions/covers/CoverSet.obj: distributions/covers/Product.h
-distributions/covers/CoverSet.obj: distributions/covers/Top.h
+distributions/covers/CoverSet.obj: utils/table.h
 distributions/covers/CoverSet.obj: distributions/covers/ProductProfile.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverSpec.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSpec.obj: distributions/covers/Term.h
 distributions/covers/CoverSpec.obj: distributions/covers/TermHelp.h
 distributions/covers/CoverSpec.obj: distributions/covers/Length.h
-distributions/covers/CoverSpec.obj: distributions/covers/Product.h
-distributions/covers/CoverSpec.obj: distributions/covers/Top.h
+distributions/covers/CoverSpec.obj: utils/table.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverMemory.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverMemory.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverMemory.obj: distributions/covers/Term.h
 distributions/covers/CoverMemory.obj: distributions/covers/TermHelp.h
 distributions/covers/CoverMemory.obj: distributions/covers/Length.h
+distributions/covers/CoverMemory.obj: utils/table.h
 distributions/covers/CoverMemory.obj: distributions/covers/Compositions.h
 distributions/covers/CoverMemory.obj: distributions/covers/Composition.h
 distributions/covers/CoverMemory.obj: distributions/covers/ExplStats.h
@@ -385,7 +381,7 @@ distributions/covers/CoverRow.obj: distributions/covers/Product.h
 distributions/covers/CoverRow.obj: distributions/covers/Length.h
 distributions/covers/CoverRow.obj: distributions/covers/Term.h
 distributions/covers/CoverRow.obj: distributions/covers/TermHelp.h
-distributions/covers/CoverRow.obj: distributions/covers/Top.h
+distributions/covers/CoverRow.obj: utils/table.h distributions/covers/Top.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverTableau.obj: distributions/covers/CoverTableau.h
@@ -395,6 +391,7 @@ distributions/covers/CoverTableau.obj: distributions/covers/Product.h
 distributions/covers/CoverTableau.obj: distributions/covers/Length.h
 distributions/covers/CoverTableau.obj: distributions/covers/Term.h
 distributions/covers/CoverTableau.obj: distributions/covers/TermHelp.h
+distributions/covers/CoverTableau.obj: utils/table.h
 distributions/covers/CoverTableau.obj: distributions/covers/Top.h
 distributions/covers/CoverTableau.obj: distributions/covers/CoverSpec.h
 distributions/covers/CoverTableau.obj: distributions/covers/CoverSet.h
@@ -402,8 +399,8 @@ distributions/covers/CoverTableau.obj: distributions/covers/ProductProfile.h
 distributions/covers/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/CoverTableau.obj: strategies/result/Winners.h
 distributions/covers/CoverTableau.obj: strategies/result/Winner.h
-distributions/covers/CoverTableau.obj: utils/table.h utils/Card.h
-distributions/covers/CoverTableau.obj: utils/Compare.h utils/Compare.h
+distributions/covers/CoverTableau.obj: utils/Card.h utils/Compare.h
+distributions/covers/CoverTableau.obj: utils/Compare.h
 distributions/covers/TableauCache.obj: distributions/covers/TableauCache.h
 distributions/covers/TableauCache.obj: distributions/covers/CoverTableau.h
 distributions/covers/TableauCache.obj: distributions/covers/CoverRow.h
@@ -412,6 +409,7 @@ distributions/covers/TableauCache.obj: distributions/covers/Product.h
 distributions/covers/TableauCache.obj: distributions/covers/Length.h
 distributions/covers/TableauCache.obj: distributions/covers/Term.h
 distributions/covers/TableauCache.obj: distributions/covers/TermHelp.h
+distributions/covers/TableauCache.obj: utils/table.h
 distributions/covers/TableauCache.obj: distributions/covers/Top.h
 distributions/covers/TableauCache.obj: distributions/covers/CoverSpec.h
 distributions/covers/TableauCache.obj: distributions/covers/CoverSet.h
@@ -422,7 +420,7 @@ distributions/covers/ResExpl.obj: distributions/covers/CoverSpec.h
 distributions/covers/ResExpl.obj: distributions/covers/CoverSet.h
 distributions/covers/ResExpl.obj: distributions/covers/Term.h
 distributions/covers/ResExpl.obj: distributions/covers/TermHelp.h
-distributions/covers/ResExpl.obj: distributions/covers/Length.h
+distributions/covers/ResExpl.obj: distributions/covers/Length.h utils/table.h
 distributions/covers/ResExpl.obj: distributions/covers/ExplStats.h
 distributions/covers/ResExpl.obj: distributions/covers/ExplStat.h
 distributions/covers/ExplStat.obj: distributions/covers/ExplStat.h
@@ -433,6 +431,7 @@ distributions/covers/ExplStats.obj: distributions/covers/CoverSet.h
 distributions/covers/ExplStats.obj: distributions/covers/Term.h
 distributions/covers/ExplStats.obj: distributions/covers/TermHelp.h
 distributions/covers/ExplStats.obj: distributions/covers/Length.h
+distributions/covers/ExplStats.obj: utils/table.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h

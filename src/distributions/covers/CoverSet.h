@@ -78,14 +78,6 @@ class CoverSet
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
-    string strLengthEqual(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent) const;
-
-    string strLengthInside(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent) const;
-
     string strLength(
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;
@@ -178,8 +170,6 @@ class CoverSet
     const ProductProfile& distProfile,
     const unsigned char oppsLength,
     const unsigned char oppsTops1) const;
-
-  // string strRaw() const;
 
   string str(
     const unsigned char oppsLength,

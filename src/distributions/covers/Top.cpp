@@ -316,8 +316,6 @@ cout << "maxLen " << +maxLen << endl;
 
 
 string Top::strWithLength(
-  // const unsigned char distLengthLower,
-  // const unsigned char distLengthUpper,
   const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops,
@@ -326,17 +324,14 @@ string Top::strWithLength(
 {
   assert(oper == COVER_EQUAL);
 
-  // if (distLengthLower == distLengthUpper)
   if (length.getOperator() == COVER_EQUAL)
   {
     return Top::strExactLengthEqual(
       length.lower, oppsLength, oppsTops, simplestOpponent, symmFlag);
-      // distLengthLower, oppsLength, oppsTops, simplestOpponent, symmFlag);
   }
   else
   {
     Xes xes;
-    // xes.set(distLengthLower, distLengthUpper, lower, oppsLength, oppsTops);
     xes.set(length.lower, length.upper, lower, oppsLength, oppsTops);
 
     return Top::strLengthRangeEqual(

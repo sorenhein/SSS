@@ -138,116 +138,11 @@ bool CoverSet::includes(
 }
 
 
-string CoverSet::strLengthEqual(
-  const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
-{
-  // Here lower and upper are one and the same.
-
-  string side;
-  unsigned char value;
-
-  if (simplestOpponent == OPP_WEST)
-  {
-    side = "West";
-    value = length.lower;
-  }
-  else
-  {
-    side = "East";
-    value = oppsLength - length.lower;
-  }
-
-  stringstream ss;
-
-  if (value == 0)
-    ss << side << " is void";
-  else if (value == 1)
-    ss << side << " has a singleton";
-  else if (value == 2)
-  {
-    if (oppsLength == 4)
-      ss << "The suit splits 2=2";
-    else
-      ss << side << " has a doubleton";
-  }
-  else
-    ss << "The suit splits " << +length.lower << "=" << 
-      +(oppsLength - length.lower);
-
-  return ss.str();
-
-}
-
-
-
-string CoverSet::strLengthInside(
-  const unsigned char oppsLength,
-  const Opponent simplestOpponent) const
-{
-  string side;
-  unsigned char vLower, vUpper;
-
-  if (simplestOpponent == OPP_WEST)
-  {
-    side = "West";
-    vLower = length.lower;
-    vUpper = length.upper;
-  }
-  else
-  {
-    side = "East";
-    vLower = oppsLength - length.upper;
-    vUpper = oppsLength - length.lower;
-  }
-
-  stringstream ss;
-
-  if (vLower == 0)
-  {
-    if (vUpper == 1)
-      ss << side << " has at most a singleton";
-    else if (vUpper == 2)
-      ss << side << " has at most a doubleton";
-    else
-      ss << side << " has at most " << +vUpper << " cards";
-  }
-  else if (vLower == 1 && vUpper+1 == oppsLength)
-  {
-    ss << "Neither opponent is void";
-  }
-  else if (length.lower + length.upper == oppsLength && 
-      length.lower + 1 == length.upper)
-  {
-    ss << "The suit splits " << +length.lower << "-" << +length.upper <<
-      " either way";
-  }
-  else
-  {
-    ss << "The suit splits between " <<
-      +length.lower << "=" << +(oppsLength - length.lower) << " and " <<
-      +length.upper << "=" << +(oppsLength - length.upper);
-  }
-
-  return ss.str();
-}
-
-
 string CoverSet::strLength(
   const unsigned char oppsLength,
   const Opponent simplestOpponent) const
 {
-  if (length.oper == COVER_EQUAL)
-    return CoverSet::strLengthEqual(oppsLength, simplestOpponent);
-  else if (length.oper == COVER_INSIDE_RANGE ||
-      length.oper == COVER_GREATER_EQUAL ||
-      length.oper == COVER_LESS_EQUAL)
-    return CoverSet::strLengthInside(oppsLength, simplestOpponent);
-  else
-  {
-    assert(false);
-    return "";
-  }
+  return length.strLength(oppsLength, simplestOpponent, false);
 }
 
 
@@ -318,8 +213,6 @@ string CoverSet::strTop1Inside(
   const unsigned char oppsTops1,
   const Opponent simplestOpponent) const
 {
-// assert(! symmFlag);
-
   string side;
   unsigned char vLower, vUpper;
 
@@ -363,39 +256,6 @@ string CoverSet::strTop1Inside(
   }
 
   return ss.str();
-
-
-  /*
-  stringstream ss;
-  const string side = (symmFlag ? "Either opponent" : "West");
-  const unsigned char wtop1 = top1.lower;
-  const unsigned char wtop2 = top1.upper;
-
-  if (wtop1 == 0)
-  {
-    if (wtop2 == oppsTops1-1)
-    {
-      assert(! symmFlag);
-      ss << "East has at least one top";
-    }
-    else
-      ss << side << " has at most " << +wtop2 << " tops";
-  }
-  else if (wtop2 == oppsTops1)
-  {
-    if (wtop1 == 1)
-      ss << side << " has at least one top";
-    else
-      ss << side << " has at least " << +wtop1 << " tops";
-  }
-  else
-  {
-      ss << side <<
-        " has between " << +wtop1 << " and " << +wtop2 << " tops";
-  }
-
-  return ss.str();
-  */
 }
 
 
@@ -711,31 +571,6 @@ string CoverSet::strTop1Fixed(
     return "";
   }
 }
-
-
-/*
-string CoverSet::strRaw() const
-{
-  stringstream ss;
-
-  ss << "mode ";
-  if (mode == COVER_MODE_NONE)
-    ss << "NONE";
-  else if (mode == COVER_LENGTHS_ONLY)
-    ss << "LENGTHS";
-  else if (mode == COVER_TOPS_ONLY)
-    ss << "TOPS";
-  else
-    ss << "UNKNOWN";
-  ss << "\n";
-
-  ss << "symm " << (symmFlag ? "yes" : "no") << "\n";
-  ss << "length " << length.strGeneral();
-  ss << "top1   " << top1.strGeneral();
-  
-  return ss.str();
-}
-*/
 
 
 string CoverSet::str(
