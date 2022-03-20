@@ -786,8 +786,6 @@ void CoverMemory::makeSets(
 {
   struct StackInfo
   {
-    // vector<unsigned char> topsLow;
-    // vector<unsigned char> topsHigh;
     ProductProfile lowerProfile;
     ProductProfile upperProfile;
 
@@ -799,11 +797,14 @@ void CoverMemory::makeSets(
     unsigned char topNext; // Running top number
 
     StackInfo(
-      const unsigned compSize,
-      const unsigned char len)
+      const Composition& comp)
+      // const unsigned compSize,
+      // const unsigned char len)
     {
-      lowerProfile.tops.resize(compSize, 0);
-      upperProfile.tops.resize(compSize, len);
+      // lowerProfile.tops.resize(compSize, 0);
+      // upperProfile.tops.resize(compSize, len);
+      lowerProfile.tops.resize(comp.size(), 0);
+      upperProfile.tops = comp.getTops();
 
       minWest = 0;
       minEast = 0;
@@ -815,7 +816,8 @@ void CoverMemory::makeSets(
   };
 
   list<StackInfo> stack; // Unfinished expansions
-  stack.emplace_back(StackInfo(comp.size(), length));
+  // stack.emplace_back(StackInfo(comp.size(), length));
+  stack.emplace_back(StackInfo(comp));
 
   list<Product> sets;
   sets.resize(COVER_CHUNK_SIZE);

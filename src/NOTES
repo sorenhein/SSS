@@ -1,9 +1,3 @@
-We get some strange Product's?
-sum 2: 1-1, so a total of two cards, Hx
-lower 2: 0-2, upper the same
-so must have 2 cards consisting of 2 tops (which is not possible)?
-
-
 ProductMemory
 TableauMemory
 Need a way to order Term's and Product's
@@ -12,19 +6,10 @@ Term
 ----
 Can perhaps move Term to only index & data and nothing else?
 Less memory.
+Don't store side in Term after all.
 
 Side
 ----
-Product should figure out the "better" side to explain from when
-set() is called:
-- The length with the smaller numbers
-- Failing that (unset or identical), keep going down from the
-  largest top
-- When calling Product::includes, pass in both distProfileWest
-  and distProfileEast?
-- When using setNew in Term, might as well store side in Term as
-  well (no extra space)?  Make data an unsigned short as well.
-
 - We can set up a symmFlag which means that in includes()
   we check length and tops but with (W, E) and (E, W), fooling
   Term in the process.  Actually in Cover/CoverNew we can just mirror

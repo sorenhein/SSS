@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "CoverSpec.h"
-#include "Product.h"
 
 
 CoverSpec::CoverSpec()

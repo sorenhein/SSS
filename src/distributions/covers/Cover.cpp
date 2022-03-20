@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "Cover.h"
-#include "Product.h"
 #include "ProductProfile.h"
 
 

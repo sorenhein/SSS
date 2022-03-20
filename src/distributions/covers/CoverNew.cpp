@@ -41,6 +41,13 @@ void CoverNew::set(
   const ProductProfile& upperProfile)
 {
   product.set(sumProfile, lowerProfile, upperProfile);
+
+  // We throw away a lot of covers, so it is a bit of a waste
+  // to calculate this now.  But it is convenient.
+  if (sumProfile.flip(lowerProfile, upperProfile))
+    simplestOpponent = OPP_EAST;
+  else
+    simplestOpponent = OPP_WEST;
 }
 
 
@@ -299,7 +306,7 @@ string CoverNew::str(const ProductProfile& sumProfile) const
   {
     stringstream ss;
 
-    ss << product.strVerbal(sumProfile) <<
+    ss << product.strVerbal(sumProfile, simplestOpponent) <<
       " [" << +numDist << ", " << 
       weight << "]";
 

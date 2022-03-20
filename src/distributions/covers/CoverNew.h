@@ -15,6 +15,8 @@
 #include "Product.h"
 #include "CoverSpec.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 struct ProductProfile;
@@ -32,6 +34,8 @@ class CoverNew
     unsigned weight;
 
     unsigned char numDist;
+
+    Opponent simplestOpponent;
     
 
   public:

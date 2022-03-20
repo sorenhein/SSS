@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "CoverSet.h"
-#include "Product.h"
 #include "ProductProfile.h"
 
 
@@ -133,8 +132,11 @@ bool CoverSet::includes(
 }
 
 
-string CoverSet::strLengthEqual(const unsigned char oppsLength) const
+string CoverSet::strLengthEqual(
+  const unsigned char oppsLength,
+  const Opponent simplestOpponent) const
 {
+  /*
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
   const unsigned char wlen = length.lower;
@@ -164,11 +166,51 @@ string CoverSet::strLengthEqual(const unsigned char oppsLength) const
     ss << "The suit splits " << +wlen << "=" << +(oppsLength - wlen);
 
   return ss.str();
+  */
+
+  // Here lower and upper are one and the same.
+
+
+  string side;
+  unsigned char value;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    side = "West";
+    value = length.lower;
+  }
+  else
+  {
+    side = "East";
+    value = oppsLength - length.lower;
+  }
+
+  stringstream ss;
+
+  if (value == 0)
+    ss << side << " is void";
+  else if (value == 1)
+    ss << side << " has a singleton";
+  else if (value == 2)
+  {
+    if (oppsLength == 4)
+      ss << "The suit splits 2=2";
+    else
+      ss << side << " has a doubleton";
+  }
+  else
+    ss << "The suit splits " << +length.lower << "=" << 
+      +(oppsLength - length.lower);
+
+  return ss.str();
+
 }
 
 
 
-string CoverSet::strLengthInside(const unsigned char oppsLength) const
+string CoverSet::strLengthInside(
+  const unsigned char oppsLength,
+  [[maybe_unused]] const Opponent simplestOpponent) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -186,7 +228,10 @@ string CoverSet::strLengthInside(const unsigned char oppsLength) const
   }
   else if (wlen2 == oppsLength)
   {
-    ss << side << " has at least " << +wlen1 << " cards";
+    if (simplestOpponent == OPP_WEST)
+      ss << "West has at least " << +wlen1 << " cards";
+    else
+      ss << "East has at most " << +(oppsLength-wlen1) << " cards";
   }
   else if (wlen1 == 1 && wlen2 == oppsLength-1)
   {
@@ -215,12 +260,14 @@ string CoverSet::strLengthInside(const unsigned char oppsLength) const
 }
 
 
-string CoverSet::strLength(const unsigned char oppsLength) const
+string CoverSet::strLength(
+  const unsigned char oppsLength,
+  const Opponent simplestOpponent) const
 {
   if (length.oper == COVER_EQUAL)
-    return CoverSet::strLengthEqual(oppsLength);
+    return CoverSet::strLengthEqual(oppsLength, simplestOpponent);
   else if (length.oper == COVER_INSIDE_RANGE)
-    return CoverSet::strLengthInside(oppsLength);
+    return CoverSet::strLengthInside(oppsLength, simplestOpponent);
   else
   {
     assert(false);
@@ -486,7 +533,8 @@ string CoverSet::strTop1Fixed0(
   const unsigned char oppsLength,
   const unsigned char oppsTops1,
   const string& side,
-  const CoverXes& coverXes) const
+  const CoverXes& coverXes,
+  const Opponent simplestOpponent) const
 {
   stringstream ss;
 
@@ -534,7 +582,7 @@ string CoverSet::strTop1Fixed0(
     else
     {
       cout << coverXes.str();
-      cout << CoverSet::strLength(oppsLength) << ", and " <<
+      cout << CoverSet::strLength(oppsLength, simplestOpponent) << ", and " <<
         CoverSet::strTop1(oppsTops1) << endl;
       assert(false);
     }
@@ -595,7 +643,8 @@ string CoverSet::strTop1Fixed1(
 
 string CoverSet::strTop1Fixed(
   const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
+  const unsigned char oppsTops1,
+  const Opponent simplestOpponent) const
 {
   stringstream ss;
   const string side = (symmFlag ? "Either opponent" : "West");
@@ -604,7 +653,7 @@ string CoverSet::strTop1Fixed(
   CoverSet::strXes(oppsLength, oppsTops1, coverXes);
 
   if (top1.lower == 0 ||top1.lower == oppsTops1)
-    return CoverSet::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes);
+    return CoverSet::strTop1Fixed0(oppsLength, oppsTops1, side, coverXes, simplestOpponent);
   else if (top1.lower == 1 ||top1.lower + 1 == oppsTops1)
     return CoverSet::strTop1Fixed1(oppsTops1, side, coverXes);
   else
@@ -642,8 +691,58 @@ string CoverSet::str(
   const unsigned char oppsLength,
   const unsigned char oppsTops1) const
 {
+  // Figure out simplestOpponent analogously to ProductProfile.
+
+  ProductProfile sumProfile, lowerProfile, upperProfile;
+  sumProfile.tops.resize(1);
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+
+  sumProfile.length = oppsLength;
+  sumProfile.tops[0] = oppsTops1;
+
+  if (length.used())
+  {
+    lowerProfile.length = length.lower;
+    upperProfile.length = length.upper;
+  }
+  else
+  {
+    lowerProfile.length = 0;
+    upperProfile.length = oppsLength;
+  }
+
+  if (top1.used())
+  {
+    lowerProfile.tops[0] = top1.lower;
+    upperProfile.tops[0] = top1.upper;
+  }
+  else
+  {
+    lowerProfile.tops[0] = 0;
+    upperProfile.tops[0] = oppsTops1;
+  }
+
+// cout << "Sum   " << sumProfile.str() << "\n";
+// cout << "Lower " << lowerProfile.str() << "\n";
+// cout << "Upper " << upperProfile.str() << endl;
+
+  Opponent simplestOpponent;
+  if (sumProfile.flip(lowerProfile, upperProfile))
+  {
+// cout << "FLIP\n";
+    simplestOpponent = OPP_EAST;
+  }
+  else
+  {
+// cout << "DON'T\n";
+    simplestOpponent = OPP_WEST;
+  }
+
   if (mode == COVER_LENGTHS_ONLY)
-    return CoverSet::strLength(oppsLength);
+  {
+    return CoverSet::strLength(oppsLength, simplestOpponent);
+  }
   else if (mode == COVER_TOPS_ONLY)
     return CoverSet::strTop1(oppsTops1);
   else if (mode == COVER_LENGTHS_AND_TOPS)
@@ -653,15 +752,15 @@ string CoverSet::str(
       if (top1.oper == COVER_EQUAL)
         return CoverSet::strBothEqual(oppsLength, oppsTops1);
       else
-        return CoverSet::strLength(oppsLength) + ", and " +
+        return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
           CoverSet::strTop1(oppsTops1);
     }
     else
     {
       if (top1.oper == COVER_EQUAL)
-        return CoverSet::strTop1Fixed(oppsLength, oppsTops1);
+        return CoverSet::strTop1Fixed(oppsLength, oppsTops1, simplestOpponent);
       else
-        return CoverSet::strLength(oppsLength) + ", and " +
+        return CoverSet::strLength(oppsLength, simplestOpponent) + ", and " +
           CoverSet::strTop1(oppsTops1);
     }
   }

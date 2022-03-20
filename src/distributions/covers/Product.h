@@ -23,6 +23,8 @@
 #include "Length.h"
 #include "Top.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 struct ProductProfile;
@@ -73,7 +75,9 @@ class Product
 
   string strLine() const;
 
-  string strVerbal(const ProductProfile& sumProfile) const;
+  string strVerbal(
+    const ProductProfile& sumProfile,
+    const Opponent simplestOpponent) const;
 };
 
 #endif

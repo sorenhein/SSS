@@ -82,16 +82,6 @@ void Product::set(
 // cout << "XX " << Product::strLine(lenActual, topsActual) << "\n";
     complexity = 2;
   }
-
-  bool westFlag = sumProfile.flip(lowerProfile, upperProfile);
-
-  if (! westFlag)
-  {
-    cout << "FLIP\n";
-    cout << "sum   " << sumProfile.str();
-    cout << "lower " << upperProfile.str();
-    cout << "upper " << upperProfile.str();
-  }
 }
 
 
@@ -209,10 +199,12 @@ string Product::strLine() const
 }
 
 
-string Product::strVerbal(const ProductProfile& sumProfile) const
+string Product::strVerbal(
+  const ProductProfile& sumProfile,
+  const Opponent simplestOpponent) const
 {
   if (topCount == 0)
-    return length.str(sumProfile.length);
+    return length.str(sumProfile.length, simplestOpponent);
   else if (! length.used())
     return tops.back().str(sumProfile.tops.back());
   else if (length.oper == COVER_EQUAL)
@@ -224,7 +216,7 @@ string Product::strVerbal(const ProductProfile& sumProfile) const
         sumProfile.length, 
         sumProfile.tops.back());
     else
-      return length.str(sumProfile.length) + ", and " +
+      return length.str(sumProfile.length, simplestOpponent) + ", and " +
         top.str(sumProfile.tops.back());
   }
   else
@@ -234,7 +226,7 @@ string Product::strVerbal(const ProductProfile& sumProfile) const
       return top.strTop1Fixed(length, 
         sumProfile.length, sumProfile.tops.back());
     else
-      return length.str(sumProfile.length) + ", and " +
+      return length.str(sumProfile.length, simplestOpponent) + ", and " +
         top.str(sumProfile.tops.back());
   }
 }

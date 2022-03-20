@@ -9,6 +9,7 @@
 #ifndef SSS_PRODUCTPROFILE_H
 #define SSS_PRODUCTPROFILE_H
 
+#include <vector>
 #include <string>
 
 using namespace std;
@@ -30,10 +31,22 @@ struct ProductProfile
     // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
     // considered as 1-4 from the other side.
     const unsigned char lsum = lowerProfile.length + upperProfile.length;
+
+    // The usual return (no flip) if nothing shows up.
+    bool backstopFlag = false;
+
     if (lsum > length)
-       return false;
+    {
+      if (lowerProfile.length == 1 && upperProfile.length == length)
+      {
+        // Special case: This is easier to say as "not void".
+        backstopFlag = true;
+      }
+      else
+        return true;
+    }
     else if (lsum < length)
-      return true;
+      return false;
 
     const unsigned s = tops.size();
     assert(s == lowerProfile.tops.size());
@@ -44,13 +57,13 @@ struct ProductProfile
     {
       const unsigned tsum = lowerProfile.tops[i] + upperProfile.tops[i];
       if (tsum > tops[i])
-        return false;
+        return true;
       else if (tsum < tops[i])
         return false;
     }
 
     // As they are the same, we might as well not flip.
-    return false;
+    return backstopFlag;
   };
 
 

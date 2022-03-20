@@ -16,6 +16,8 @@
 #include "Term.h"
 #include "Length.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 struct ProductProfile;
@@ -76,11 +78,17 @@ class CoverSet
       const unsigned char oppsLength,
       const unsigned char oppsTops1) const;
 
-    string strLengthEqual(const unsigned char oppsLength) const;
+    string strLengthEqual(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
 
-    string strLengthInside(const unsigned char oppsLength) const;
+    string strLengthInside(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
 
-    string strLength(const unsigned char oppsLength) const;
+    string strLength(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
 
     string strTop1Equal(const unsigned char oppsTops1) const;
 
@@ -118,7 +126,8 @@ class CoverSet
       const unsigned char oppsLength,
       const unsigned char oppsTops1,
       const string& side,
-      const CoverXes& coverXes) const;
+      const CoverXes& coverXes,
+      const Opponent simplestOpponent) const;
 
     string strTop1Fixed1(
       const unsigned char oppsTops1,
@@ -127,7 +136,8 @@ class CoverSet
 
     string strTop1Fixed(
       const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
+      const unsigned char oppsTops1,
+      const Opponent simplestOpponent) const;
 
 
   public:

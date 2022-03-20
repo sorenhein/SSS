@@ -13,6 +13,8 @@
 
 #include "Term.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 
@@ -24,14 +26,20 @@ class Length: public Term
     // If this equals "upper", for example, the overall length
     // is of the form ">= lower" rather than [lower, upper].
 
-    string strEqual(const unsigned char oppsLength) const;
+    string strEqual(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
 
-    string strInside(const unsigned char oppsLength) const;
+    string strInside(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
  
 
   public:
 
-    string str(const unsigned char oppsLength) const;
+    string str(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
 
 };
 
