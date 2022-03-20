@@ -14,6 +14,7 @@
 #include <string>
 
 #include "CoverRow.h"
+#include "ProductProfile.h"
 
 using namespace std;
 

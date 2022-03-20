@@ -13,6 +13,7 @@
 #include "ExplStats.h"
 
 #include "Product.h"
+#include "ProductProfile.h"
 
 // Global to make the many cases more streamlined.
 

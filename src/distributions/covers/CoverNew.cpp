@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverNew.h"
+#include "ProductProfile.h"
 
 
 CoverNew::CoverNew()

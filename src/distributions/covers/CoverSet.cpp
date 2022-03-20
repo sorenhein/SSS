@@ -13,6 +13,7 @@
 
 #include "CoverSet.h"
 #include "Product.h"
+#include "ProductProfile.h"
 
 
 void CoverSet::reset()

@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Product.h"
+#include "ProductProfile.h"
 
 
 Product::Product()
@@ -80,6 +81,16 @@ void Product::set(
   {
 // cout << "XX " << Product::strLine(lenActual, topsActual) << "\n";
     complexity = 2;
+  }
+
+  bool westFlag = sumProfile.flip(lowerProfile, upperProfile);
+
+  if (! westFlag)
+  {
+    cout << "FLIP\n";
+    cout << "sum   " << sumProfile.str();
+    cout << "lower " << upperProfile.str();
+    cout << "upper " << upperProfile.str();
   }
 }
 

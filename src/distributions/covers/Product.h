@@ -25,12 +25,7 @@
 
 using namespace std;
 
-
-struct ProductProfile
-{
-  unsigned char length;
-  vector<unsigned char> tops;
-};
+struct ProductProfile;
 
 
 class Product

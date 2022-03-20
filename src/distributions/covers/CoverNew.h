@@ -15,8 +15,9 @@
 #include "Product.h"
 #include "CoverSpec.h"
 
-
 using namespace std;
+
+struct ProductProfile;
 
 
 class CoverNew

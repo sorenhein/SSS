@@ -1,3 +1,9 @@
+We get some strange Product's?
+sum 2: 1-1, so a total of two cards, Hx
+lower 2: 0-2, upper the same
+so must have 2 cards consisting of 2 tops (which is not possible)?
+
+
 ProductMemory
 TableauMemory
 Need a way to order Term's and Product's
