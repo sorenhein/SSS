@@ -13,8 +13,9 @@
 #include <sstream>
 #include <string>
 
-#include "Term.h"
+// #include "Term.h"
 #include "Length.h"
+#include "Top.h"
 
 #include "../../utils/table.h"
 
@@ -61,7 +62,7 @@ class CoverSet
 
     Length length;
 
-    Term top1;
+    Top top1;
 
 
     bool includesLength(
@@ -82,38 +83,14 @@ class CoverSet
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;
 
-    string strTop1Equal(
-      const unsigned char oppsTops1,
-      const Opponent simplestOpponent) const;
-
-    string strTop1Inside(
-      const unsigned char oppsTops1,
-      const Opponent simplestOpponent) const;
-
     string strTop1(
       const unsigned char oppsTops1,
       const Opponent simplestOpponent) const;
 
-    string strBothEqual0(
-      const string& side) const;
-
-    string strBothEqual1(
-      const unsigned char oppsTops1,
-      const string& side) const;
-
-    string strBothEqual2(
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1,
-      const string& side) const;
-
-    string strBothEqual3(
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1,
-      const string& side) const;
-
     string strBothEqual(
       const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
+      const unsigned char oppsTops1,
+      const Opponent simplestOpponent) const;
 
     void strXes(
       const unsigned char oppsLength,

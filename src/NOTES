@@ -1,3 +1,9 @@
+10 / 53208, QJ65 / - missing HHxxxx
+Not entirely convinced by the Strategy #0 output, either old or new.
+The "Either" part in the old one presumably applies when the length
+part is also symmetrized.
+
+
 ProductMemory
 TableauMemory
 Need a way to order Term's and Product's
