@@ -39,7 +39,7 @@ class Length: public Term
 
   public:
 
-    string str(
+    string strLength(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag) const;

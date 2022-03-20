@@ -8,7 +8,7 @@
 
 /*
    A Term contains a single set of constraints on either length or
-   a specific top.  The Term applies either to West or East.
+   a specific top.  The Term applies to West.
    The Term does not store information about the available number of
    cards or tops.
  */
@@ -23,51 +23,28 @@
 using namespace std;
 
 
-struct CoverXes;
-class Length;
-
-
 class Term
 {
+  // TODO Delete at some point
   friend class CoverSet;
   friend class Product;
 
   protected: 
 
+    // TODO Avoid at some point (use index)?
     unsigned char lower;
     unsigned char upper;
     CoverOperator oper;
 
     // The bit layout is given in TermCompare.
+    // It combines lower, upper and oper.
     unsigned short index;
 
   private:
 
     // The bit layout is given in TermCompare.
+    // It combines usedFlag, complexity and range.
     unsigned char data;
-
-
-    void strXes(
-      const Term& top1,
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1,
-      CoverXes& coverXes) const;
-
-    string strTop1Fixed0(
-      const unsigned char oppsTops1,
-      const string& side,
-      const CoverXes& coverXes) const;
-
-    string strTop1Fixed1(
-      const unsigned char oppsTops1,
-      const string& side,
-      const CoverXes& coverXes) const;
-
-    // The Term being called is the top1 one.
-    string strTop1Fixed(
-      const Length& length,
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
 
 
   public:
@@ -86,7 +63,7 @@ class Term
       const CoverOperator operIn);
 
     void setNew(
-      const unsigned char lenActual,
+      const unsigned char oppSize,
       const unsigned char value1In,
       const unsigned char value2In);
 
@@ -98,13 +75,7 @@ class Term
 
     unsigned char getRange() const;
 
-    string strRaw() const;
-
-    string strShort(const unsigned char lenActual) const;
-
-    string strShort() const;
-
-    string str(const string& word) const;
+    string strGeneral() const;
 };
 
 #endif

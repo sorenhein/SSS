@@ -87,7 +87,7 @@ class Top: public Term
 
   public:
 
-    string str(
+    string strTop(
       const unsigned char oppsTops,
       const Opponent simplestOpponent,
       const bool symmFlag) const;

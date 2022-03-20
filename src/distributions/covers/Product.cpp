@@ -100,7 +100,7 @@ if (distProfile.tops.size() > 20)
 
 cout << "lengthIn " << +distProfile.length << endl;
 for (unsigned i = 0; i < tops.size(); i++)
-  cout << i << ": " << tops[i].strRaw() << endl;
+  cout << i << ": " << tops[i].strGeneral() << endl;
 for (unsigned i = 0; i < distProfile.tops.size(); i++)
   cout << i << ": " << distProfile.tops[i] << endl;
 
@@ -174,11 +174,11 @@ string Product::strLine(const ProductProfile& sumProfile) const
   // more in CoverNew.
   stringstream ss;
 
-  ss << setw(8) << length.strShort(sumProfile.length);
+  ss << setw(8) << length.strGeneral();
 
   assert(tops.size() == sumProfile.tops.size());
   for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(8) << tops[i].strShort(sumProfile.tops[i]);
+    ss << setw(8) << tops[i].strGeneral();
 
   return ss.str();
 }
@@ -190,10 +190,10 @@ string Product::strLine() const
   // more in CoverNew.
   stringstream ss;
 
-  ss << setw(8) << length.strShort();
+  ss << setw(8) << length.strGeneral();
 
   for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(8) << tops[i].strShort();
+    ss << setw(8) << tops[i].strGeneral();
 
   return ss.str();
 }
@@ -206,14 +206,14 @@ string Product::strVerbal(
 {
   if (topCount == 0)
   {
-    return length.str(
+    return length.strLength(
       sumProfile.length, 
       simplestOpponent, 
       symmFlag);
   }
   else if (! length.used())
   {
-    return tops.back().str(
+    return tops.back().strTop(
       sumProfile.tops.back(),
       simplestOpponent, 
       symmFlag);
@@ -234,12 +234,12 @@ string Product::strVerbal(
     else
     {
       return 
-        length.str(
+        length.strLength(
           sumProfile.length, 
           simplestOpponent, 
           symmFlag) + 
         ", and " + 
-        top.str(
+        top.strTop(
           sumProfile.tops.back(),
           simplestOpponent, 
           symmFlag);
@@ -250,13 +250,6 @@ string Product::strVerbal(
     auto& top = tops.back();
     if (top.oper == COVER_EQUAL)
     {
-      /*
-      return 
-        top.strTop1Fixed(
-          length, 
-          sumProfile.length, 
-          sumProfile.tops.back());
-          */
       return top.strWithLength(
         length.lower,
         length.upper,
@@ -268,12 +261,12 @@ string Product::strVerbal(
     else
     {
       return 
-        length.str(
+        length.strLength(
           sumProfile.length, 
           simplestOpponent, 
           symmFlag) + 
         ", and " + 
-        top.str(
+        top.strTop(
           sumProfile.tops.back(),
           simplestOpponent, 
           symmFlag);

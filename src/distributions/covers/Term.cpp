@@ -13,13 +13,14 @@
 
 #include "Term.h"
 #include "TermCompare.h"
-#include "Length.h"
+// #include "Length.h"
 
 #include "../../const.h"
 
 extern TermCompare termCompare;
 
 
+/*
 struct CoverXes
 {
   unsigned char westMax, westMin;
@@ -38,6 +39,7 @@ struct CoverXes
     return ss.str();
   };
 };
+*/
 
 
 
@@ -53,7 +55,8 @@ void Term::reset()
   upper = UCHAR_NOT_SET;
   oper = COVER_OPERATOR_SIZE;
 
-  // Hope to break the index if we try to use it unset.
+  // Choose a large index value and hope to break the index 
+  // if we try to use it unset...
   index = numeric_limits<unsigned short>::max();
   data = termCompare.getData(false, 0, 0);
 }
@@ -86,11 +89,14 @@ void Term::set(
 
 
 void Term::setNew(
-  const unsigned char lenActual,
+  const unsigned char oppSize,
   const unsigned char lowerIn,
   const unsigned char upperIn)
 {
-  if (lowerIn == 0 && upperIn == lenActual)
+  // oppSize is the maximum value, so the total length in case of
+  // a length, or the number of tops in case of a top.
+
+  if (lowerIn == 0 && upperIn == oppSize)
   {
     // Not set
     data = termCompare.getData(false, 0, 0);
@@ -111,7 +117,7 @@ void Term::setNew(
     oper = COVER_LESS_EQUAL;
     complexity = 1;
   }
-  else if (upperIn == lenActual)
+  else if (upperIn == oppSize)
   {
     oper = COVER_GREATER_EQUAL;
     complexity = 1;
@@ -151,64 +157,33 @@ unsigned char Term::getRange() const
 }
 
 
-string Term::strRaw() const
+string Term::strGeneral() const
 {
   stringstream ss;
 
-  ss << +lower << " to " << +upper << ", oper ";
-  if (oper == COVER_EQUAL)
-    ss << "EQUAL";
-  else if (oper == COVER_INSIDE_RANGE)
-    ss << "INSIDE";
-  else
-    ss << "UNKNOWN";
-  ss << "\n";
-
-  return ss.str();
-}
-
-
-string Term::strShort(const unsigned char lenActual) const
-{
-  stringstream ss;
-
-  // if (usedFlag)
   if (Term::used())
   {
     string s;
-    if (lower == upper)
+    if (oper == COVER_EQUAL)
+    {
       s = "== " + to_string(+lower);
-    else if (lower == 0)
-      s = "<= " + to_string(+upper);
-    else if (upper == lenActual)
+    }
+    else if (oper == COVER_INSIDE_RANGE)
+    {
+      s = to_string(+lower) + "-" + to_string(+upper);
+    }
+    else if (oper == COVER_GREATER_EQUAL)
+    {
       s = ">= " + to_string(+lower);
-    else
-      s = to_string(+lower) + "-" + to_string(+upper);
-    
-    ss << setw(8) << s;
-  }
-  else
-  {
-    ss << setw(8) << "unused";
-  }
-
-  return ss.str();
-}
-
-
-string Term::strShort() const
-{
-  stringstream ss;
-
-  if (Term::used())
-  {
-    string s;
-    if (lower == upper)
-      s = "== " + to_string(+lower);
-    else if (lower == 0)
+    }
+    else if (oper == COVER_LESS_EQUAL)
+    {
       s = "<= " + to_string(+upper);
+    }
     else
-      s = to_string(+lower) + "-" + to_string(+upper);
+    {
+      assert(false);
+    }
     
     ss << setw(8) << s;
   }
@@ -218,169 +193,5 @@ string Term::strShort() const
   }
 
   return ss.str();
-}
-
-
-string Term::str(const string& word) const
-{
-  stringstream ss;
-
-  if (oper == COVER_EQUAL)
-    ss << "West has exactly " << +lower << " " << word;
-  else if (oper == COVER_INSIDE_RANGE)
-    ss << "West has " << word <<  " in range " << 
-      +lower << " to " << +upper << " " << word << " inclusive";
-  else
-    assert(false);
-
-  return ss.str();
-}
-
-
-void Term::strXes(
-  const Term& top1,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1,
-  CoverXes& coverXes) const
-{
-  coverXes.westMax = upper - top1.lower;
-  coverXes.westMin = lower - top1.lower;
-
-  coverXes.eastMax =
-    (oppsLength - lower) - (oppsTops1 - top1.lower);
-  coverXes.eastMin =
-    (oppsLength - upper) - (oppsTops1 - top1.lower);
-
-  coverXes.strWest = string(coverXes.westMin, 'x') +
-    "(" + string(coverXes.westMax - coverXes.westMin, 'x') + ")";
-  coverXes.strEast = string(coverXes.eastMin, 'x') +
-    "(" + string(coverXes.eastMax - coverXes.eastMin, 'x') + ")";
-}
-
-
-string Term::strTop1Fixed0(
-  const unsigned char oppsTops1,
-  const string& side,
-  const CoverXes& coverXes) const
-{
-  stringstream ss;
-
-  if (lower == 0)
-  {
-    if (oppsTops1 == 1)
-    {
-      if (coverXes.eastMax == 1)
-        ss << "East has the top at most doubleton";
-      else
-        ss << "East has H" << coverXes.strEast;
-    }
-    else if (oppsTops1 == 2)
-    {
-      if (coverXes.eastMax == 1)
-        ss << "East has both tops at most tripleton";
-      else
-        ss << "East has HH" << coverXes.strEast;
-    }
-    else
-      assert(false);
-  }
-  else
-  {
-    if (oppsTops1 == 1)
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has the top at most doubleton";
-      else
-        ss << side << " has H" << coverXes.strWest;
-    }
-    else if (oppsTops1 == 2)
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has both tops at most tripleton";
-      else
-        ss << side << " has HH" << coverXes.strWest;
-    }
-    else if (oppsTops1 == 3)
-      ss << side << " has HHH" << coverXes.strWest;
-    else
-    {
-      assert(false);
-    }
-  }
-  
-  return ss.str();
-}
-
-
-string Term::strTop1Fixed1(
-  const unsigned char oppsTops1,
-  const string& side,
-  const CoverXes& coverXes) const
-{
-  // TODO Call top1?
-  stringstream ss;
-
-  if (lower == 1)
-  {
-    if (oppsTops1 == 2)
-    {
-      // Look at it from the shorter side
-      if (coverXes.westMax <= coverXes.eastMax)
-      {
-        if (coverXes.westMax == 1)
-          ss << side << " has one top at most doubleton";
-        else
-          ss << side << " has H" << coverXes.strWest;
-      }
-      else
-      {
-        if (coverXes.eastMax == 1)
-          ss << "East has one top at most doubleton";
-        else
-          ss << "East has H" << coverXes.strEast;
-      }
-    }
-    else
-    {
-      if (coverXes.westMax == 1)
-        ss << side << " has one top at most doubleton";
-      else
-        ss << side << " has H" << coverXes.strWest;
-    }
-  }
-  else
-  {
-    if (coverXes.eastMax == 1)
-      ss << "East has one top at most doubleton";
-    else
-      ss << "East has H" << coverXes.strEast;
-  }
-
-  return ss.str();
-}
-
-
-string Term::strTop1Fixed(
-  const Length& length,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
-{
-  stringstream ss;
-  const string side = "West";
-
-  CoverXes coverXes;
-  length.strXes(* this, oppsLength, oppsTops1, coverXes);
-
-  if (lower == 0 || lower == oppsTops1)
-  {
-    return Term::strTop1Fixed0(oppsTops1, side, coverXes);
-  }
-  else if (lower == 1 || lower + 1 == oppsTops1)
-    return Term::strTop1Fixed1(oppsTops1, side, coverXes);
-  else
-  {
-    assert(false);
-    return "";
-  }
 }
 

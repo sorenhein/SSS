@@ -127,7 +127,7 @@ string Top::strInside(
 }
 
 
-string Top::str(
+string Top::strTop(
   const unsigned char oppsTops,
   const Opponent simplestOpponent,
   const bool symmFlag) const

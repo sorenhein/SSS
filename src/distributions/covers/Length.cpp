@@ -107,7 +107,7 @@ string Length::strInside(
 }
 
 
-string Length::str(
+string Length::strLength(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag) const

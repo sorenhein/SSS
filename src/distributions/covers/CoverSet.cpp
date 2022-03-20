@@ -719,8 +719,8 @@ string CoverSet::strRaw() const
   ss << "\n";
 
   ss << "symm " << (symmFlag ? "yes" : "no") << "\n";
-  ss << "length " << length.strRaw();
-  ss << "top1   " << top1.strRaw();
+  ss << "length " << length.strGeneral();
+  ss << "top1   " << top1.strGeneral();
   
   return ss.str();
 }
