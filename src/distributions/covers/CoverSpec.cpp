@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverSpec.h"
+#include "ProductProfile.h"
 
 
 CoverSpec::CoverSpec()
@@ -192,30 +193,20 @@ void CoverSpec::eastGeneral(
 
 bool CoverSpec::includes(const ProductProfile& distProfile) const
 {
+  ProductProfile pp;
+  pp.length = oppsLength;
+  pp.tops.resize(1);
+  pp.tops[0] = oppsTops1;
+
   for (auto& set: setsWest)
   {
-    if (set.includes(distProfile, oppsLength, oppsTops1))
+    // if (set.includes(distProfile, oppsLength, oppsTops1))
+    if (set.includes(distProfile, pp))
       return true;
   }
 
   return false;
 }
-
-
-/*
-string CoverSpec::strRaw() const
-{
-  stringstream ss;
-
-  ss << "index " << index << ", " <<
-    "ID " << +oppsLength << "-" << +oppsTops1 << "\n";
-
-  for (auto& set: setsWest)
-    ss << set.strRaw();
-
-  return ss.str();
-}
-*/
 
 
 string CoverSpec::str() const

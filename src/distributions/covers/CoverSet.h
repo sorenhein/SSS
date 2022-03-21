@@ -46,18 +46,24 @@ class CoverSet
 
 
     bool includesLength(
-      const unsigned char wlen,
-      const unsigned char oppsLength) const;
+      const ProductProfile& distProfile,
+      const ProductProfile& sumProfile) const;
+      // const unsigned char wlen,
+      // const unsigned char oppsLength) const;
 
     bool includesTop1(
-      const unsigned char wtop,
-      const unsigned char oppsTops1) const;
+      const ProductProfile& distProfile,
+      const ProductProfile& sumProfile) const;
+      // const unsigned char wtop,
+      // const unsigned char oppsTops1) const;
 
     bool includesLengthAndTop1(
-      const unsigned char wtop,
-      const unsigned char wlen,
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
+      const ProductProfile& distProfile,
+      const ProductProfile& sumProfile) const;
+      // const unsigned char wtop,
+      // const unsigned char wlen,
+      // const unsigned char oppsLength,
+      // const unsigned char oppsTops1) const;
 
 
   public:
@@ -90,8 +96,7 @@ class CoverSet
 
     bool includes(
       const ProductProfile& distProfile,
-      const unsigned char oppsLength,
-      const unsigned char oppsTops1) const;
+      const ProductProfile& sumProfile) const;
 
     string str(
       const unsigned char oppsLength,

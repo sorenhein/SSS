@@ -77,59 +77,70 @@ void CoverSet::setTop1(
 
 
 bool CoverSet::includesLength(
-  const unsigned char wlen,
-  const unsigned char oppsLength) const
+  const ProductProfile& distProfile,
+  const ProductProfile& sumProfile) const
+  // const unsigned char wlen,
+  // const unsigned char oppsLength) const
 {
   if (symmFlag)
-    return length.includes(wlen) || length.includes(oppsLength - wlen);
+    return length.includes(distProfile.length) || length.includes(sumProfile.length - distProfile.length);
   else
-    return length.includes(wlen);
+    return length.includes(distProfile.length);
 }
 
 
 bool CoverSet::includesTop1(
-  const unsigned char wtop,
-  const unsigned char oppsTops1) const
+  const ProductProfile& distProfile,
+  const ProductProfile& sumProfile) const
+  // const unsigned char wtop,
+  // const unsigned char oppsTops1) const
 {
   if (symmFlag)
-    return top1.includes(wtop) || length.includes(oppsTops1 - wtop);
+    return top1.includes(distProfile.tops[0]) || length.includes(sumProfile.tops[0] - distProfile.tops[0]);
   else
-    return top1.includes(wtop);
+    return top1.includes(distProfile.tops[0]);
 }
 
 
 bool CoverSet::includesLengthAndTop1(
-  const unsigned char wlen,
-  const unsigned char wtop,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
+  const ProductProfile& distProfile,
+  const ProductProfile& sumProfile) const
+  // const unsigned char wlen,
+  // const unsigned char wtop,
+  // const unsigned char oppsLength,
+  // const unsigned char oppsTops1) const
 {
   if (symmFlag)
   {
     return 
-      (length.includes(wlen) && top1.includes(wtop)) ||
-      (length.includes(oppsLength - wlen) && 
-        top1.includes(oppsTops1 - wtop));
+      (length.includes(distProfile.length) && top1.includes(distProfile.tops[0])) ||
+      (length.includes(sumProfile.length - distProfile.length) && 
+        top1.includes(sumProfile.tops[0] - distProfile.tops[0]));
   }
   else
-    return length.includes(wlen) && top1.includes(wtop);
+    return length.includes(distProfile.length) && top1.includes(distProfile.tops[0]);
 }
 
 
 bool CoverSet::includes(
   const ProductProfile& distProfile,
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
+  const ProductProfile& sumProfile) const
 {
   if (mode == COVER_MODE_NONE)
     return false;
   else if (mode == COVER_LENGTHS_ONLY)
-    return CoverSet::includesLength(distProfile.length, oppsLength);
+    return CoverSet::includesLength(
+      distProfile, sumProfile);
+      // distProfile.length, sumProfile.length);
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::includesTop1(distProfile.tops[0], oppsTops1);
+    return CoverSet::includesTop1(
+      distProfile, sumProfile);
+      // distProfile.tops[0], sumProfile.tops[0]);
   else if (mode == COVER_LENGTHS_AND_TOPS)
     return CoverSet::includesLengthAndTop1(
-      distProfile.length, distProfile.tops[0], oppsLength, oppsTops1);
+      distProfile, sumProfile);
+      // distProfile.length, distProfile.tops[0], 
+      // sumProfile.length, sumProfile.tops[0]);
   else
   {
     assert(false);
