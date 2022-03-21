@@ -27,9 +27,6 @@ using namespace std;
 
 class Term
 {
-  // TODO Delete at some point
-  friend class CoverSet;
-
   protected: 
 
     // TODO Avoid at some point (use index)?

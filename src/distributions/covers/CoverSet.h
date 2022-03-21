@@ -32,9 +32,9 @@ class CoverSet
 
     bool symmFlag;
 
-    Length length;
+    // Length length;
 
-    Top top1;
+    // Top top1;
 
     Product product;
 

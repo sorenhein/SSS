@@ -17,10 +17,8 @@
 
 void CoverSet::reset()
 {
-  // mode = COVER_MODE_NONE;
   symmFlag = false;
-  length.reset();
-  top1.reset();
+  product.reset();
 }
 
 
@@ -32,12 +30,8 @@ void CoverSet::set(
 {
   symmFlag = symmFlagIn;
 
-  length.set(sumProfile.length, lowerProfile.length, upperProfile.length);
-
   assert(lowerProfile.tops.size() == 1);
   assert(upperProfile.tops.size() == 1);
-
-  top1.set(sumProfile.tops[0], lowerProfile.tops[0], upperProfile.tops[0]);
 
   ProductProfile sum2, lower2, upper2;
   sum2.tops.resize(2);

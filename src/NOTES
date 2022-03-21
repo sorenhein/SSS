@@ -1,3 +1,9 @@
+CoverSet:
+Every call uses the shift-up.
+Can we put this into CoverSpec instead?
+Once it's there, we can maybe eliminate CoverSet.
+Have to get the symmetric include into something, perhaps Product.
+
 10 / 53208, QJ65 / - missing HHxxxx
 Not entirely convinced by the Strategy #0 output, either old or new.
 The "Either" part in the old one presumably applies when the length
@@ -5,12 +11,6 @@ part is also symmetrized.
 
 9 / 6101
 East has (xx) -- express differently
-
-5/183
-I don't really like either description:
-The suit splits between 1=1 and 2=0 [3, 3]
-East has at most a singleton [3, 3]
-
 
 ProductMemory
 TableauMemory
