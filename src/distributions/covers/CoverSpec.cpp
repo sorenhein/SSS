@@ -73,7 +73,7 @@ void CoverSpec::westLength(
   const CoverControl ctrl)
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
-  cset.setMode(COVER_LENGTHS_ONLY);
+  // cset.setMode(COVER_LENGTHS_ONLY);
 
   ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
@@ -101,7 +101,7 @@ void CoverSpec::westLengthRange(
   const CoverControl ctrl)
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
-  cset.setMode(COVER_LENGTHS_ONLY);
+  // cset.setMode(COVER_LENGTHS_ONLY);
 
   ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
@@ -132,7 +132,7 @@ void CoverSpec::westTop1(
   const CoverControl ctrl)
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
-  cset.setMode(COVER_TOPS_ONLY);
+  // cset.setMode(COVER_TOPS_ONLY);
 
   ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
@@ -160,7 +160,7 @@ void CoverSpec::westTop1Range(
   const CoverControl ctrl)
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
-  cset.setMode(COVER_TOPS_ONLY);
+  // cset.setMode(COVER_TOPS_ONLY);
 
   ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
@@ -195,8 +195,8 @@ void CoverSpec::westGeneral(
   const CoverControl ctrl)
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
-  cset.setMode(COVER_LENGTHS_AND_TOPS);
-  cset.setSymm(symmFlag);
+  // cset.setMode(COVER_LENGTHS_AND_TOPS);
+  // cset.setSymm(symmFlag);
 
   ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
@@ -206,7 +206,7 @@ void CoverSpec::westGeneral(
   lowerProfile.tops[0] = tops1;
   upperProfile.tops[0] = tops2;
 
-  cset.set(sumProfile, lowerProfile, upperProfile);
+  cset.set(sumProfile, lowerProfile, upperProfile, symmFlag);
 }
 
 

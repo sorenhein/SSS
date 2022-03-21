@@ -41,6 +41,8 @@ class Length: public Term
 
   public:
 
+    bool notVoid() const;
+
     string strLength(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,

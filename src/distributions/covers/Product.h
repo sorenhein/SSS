@@ -69,6 +69,8 @@ class Product
 
   bool explainable() const;
 
+  Opponent simplestOpponent(const ProductProfile& sumProfile) const;
+
   string strHeader() const;
 
   string strLine(const ProductProfile& sumProfile) const;

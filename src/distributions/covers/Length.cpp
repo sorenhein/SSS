@@ -14,6 +14,13 @@
 #include "Length.h"
 
 
+bool Length::notVoid() const
+{
+  // This is a special case in Product.
+  return (lower == 1 && oper == COVER_GREATER_EQUAL);
+}
+
+
 string Length::strEqual(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,

@@ -102,7 +102,7 @@ cout << "lengthIn " << +distProfile.length << endl;
 for (unsigned i = 0; i < tops.size(); i++)
   cout << i << ": " << tops[i].strGeneral() << endl;
 for (unsigned i = 0; i < distProfile.tops.size(); i++)
-  cout << i << ": " << distProfile.tops[i] << endl;
+  cout << i << ": " << +distProfile.tops[i] << endl;
 
   assert(distProfile.tops.size() == tops.size());
 }
@@ -150,6 +150,46 @@ bool Product::explainable() const
     return true;
   else
     return false;
+}
+
+
+Opponent Product::simplestOpponent(const ProductProfile& sumProfile) const
+{
+  // We want to express a Product in terms that make as much
+  // intuitive sense as possible.  I think this tends to be in
+  // terms of shortness.
+
+  // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
+  // considered as 1-4 from the other side.
+  Opponent backstop = OPP_WEST;
+  const Opponent lOpp = length.simplestOpponent(sumProfile.length);
+
+  if (lOpp == OPP_WEST)
+    return OPP_WEST;
+  else if (lOpp == OPP_EAST)
+  {
+    // Special case: This is easier to say as "not void".
+    if (length.notVoid())
+    {
+      backstop = OPP_EAST;
+    }
+    else
+      return OPP_EAST;
+  }
+  
+  const unsigned s = tops.size();
+
+  // Start from the highest top.
+  for (unsigned i = s; --i > 0; )
+  {
+    const Opponent lTop = tops[i].simplestOpponent(sumProfile.tops[i]);
+    if (lTop == OPP_WEST)
+      return OPP_WEST;
+    else if (lTop == OPP_EAST)
+      return OPP_EAST;
+  }
+
+  return backstop;
 }
 
 

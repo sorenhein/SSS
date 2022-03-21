@@ -20,6 +20,8 @@
 
 #include "TermHelp.h"
 
+#include "../../utils/table.h"
+
 using namespace std;
 
 
@@ -58,6 +60,8 @@ class Term
       const unsigned char upperIn);
 
     bool includes(const unsigned char value) const;
+
+    Opponent simplestOpponent(const unsigned char maximum) const;
 
     CoverOperator getOperator() const;
 

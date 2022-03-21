@@ -36,7 +36,8 @@ enum Level
 enum Opponent
 {
   OPP_WEST = 0,
-  OPP_EAST = 1
+  OPP_EAST = 1,
+  OPP_EITHER = 2
 };
 
 #endif

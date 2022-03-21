@@ -232,6 +232,7 @@ string Top::strExactLengthEqual(
   }
   else
   {
+    cout << "length " << +length << endl;
     assert(false);
   }
 

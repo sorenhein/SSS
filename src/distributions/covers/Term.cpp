@@ -89,6 +89,21 @@ bool Term::includes(const unsigned char value) const
 }
 
 
+Opponent Term::simplestOpponent(const unsigned char maximum) const
+{
+  if (! Term::used())
+    return OPP_EITHER;
+
+  const unsigned char lsum = lower + upper;
+  if (lsum > maximum)
+    return OPP_EAST;
+  else if (lsum < maximum)
+    return OPP_WEST;
+  else
+    return OPP_EITHER;
+}
+
+
 CoverOperator Term::getOperator() const
 {
   return oper;
