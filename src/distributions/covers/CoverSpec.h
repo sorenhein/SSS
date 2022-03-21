@@ -38,8 +38,6 @@ class CoverSpec
     // For easier identification.  Could perhaps be unsigned char
     unsigned index;
 
-    // unsigned char oppsLength;
-    // unsigned char oppsTops1;
     ProductProfile sumProfile;
 
     // There are several sets of elements (two for now).  
@@ -126,8 +124,6 @@ class CoverSpec
 
     bool includes(const ProductProfile& distProfile) const;
     
-    // string strRaw() const;
-
     string str() const;
 };
 

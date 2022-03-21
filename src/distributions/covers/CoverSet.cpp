@@ -42,41 +42,17 @@ CoverMode CoverSet::getMode() const
 }
 
 
-/*
-void CoverSet::setLength(
- const unsigned char len,
- const unsigned char oppsLength)
+void CoverSet::set(
+  const ProductProfile& sumProfile,
+  const ProductProfile& lowerProfile,
+  const ProductProfile& upperProfile)
 {
-  length.set(oppsLength, len, len);
-}
-*/
+  length.set(sumProfile.length, lowerProfile.length, upperProfile.length);
 
+  assert(lowerProfile.tops.size() == 1);
+  assert(upperProfile.tops.size() == 1);
 
-void CoverSet::setLength(
-  const unsigned char len1,
-  const unsigned char len2,
-  const unsigned char oppsLength)
-{
-  length.set(oppsLength, len1, len2);
-}
-
-
-/*
-void CoverSet::setTop1(
- const unsigned char tops,
- const unsigned char oppsSize)
-{
-  top1.set(oppsSize, tops, tops);
-}
-*/
-
-
-void CoverSet::setTop1(
-  const unsigned char tops1,
-  const unsigned char tops2,
-  const unsigned char oppsSize)
-{
-  top1.set(oppsSize, tops1, tops2);
+  top1.set(sumProfile.tops[0], lowerProfile.tops[0], upperProfile.tops[0]);
 }
 
 
@@ -125,14 +101,11 @@ bool CoverSet::includes(
   if (mode == COVER_MODE_NONE)
     return false;
   else if (mode == COVER_LENGTHS_ONLY)
-    return CoverSet::includesLength(
-      distProfile, sumProfile);
+    return CoverSet::includesLength(distProfile, sumProfile);
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::includesTop1(
-      distProfile, sumProfile);
+    return CoverSet::includesTop1(distProfile, sumProfile);
   else if (mode == COVER_LENGTHS_AND_TOPS)
-    return CoverSet::includesLengthAndTop1(
-      distProfile, sumProfile);
+    return CoverSet::includesLengthAndTop1(distProfile, sumProfile);
   else
   {
     assert(false);
@@ -141,19 +114,13 @@ bool CoverSet::includes(
 }
 
 
-string CoverSet::str(
-  const unsigned char oppsLength,
-  const unsigned char oppsTops1) const
+string CoverSet::str(const ProductProfile& sumProfile) const
 {
   // Figure out simplestOpponent analogously to ProductProfile.
 
-  ProductProfile sumProfile, lowerProfile, upperProfile;
-  sumProfile.tops.resize(1);
+  ProductProfile lowerProfile, upperProfile;
   lowerProfile.tops.resize(1);
   upperProfile.tops.resize(1);
-
-  sumProfile.length = oppsLength;
-  sumProfile.tops[0] = oppsTops1;
 
   if (length.used())
   {
@@ -163,7 +130,7 @@ string CoverSet::str(
   else
   {
     lowerProfile.length = 0;
-    upperProfile.length = oppsLength;
+    upperProfile.length = sumProfile.length;
   }
 
   if (top1.used())
@@ -174,7 +141,7 @@ string CoverSet::str(
   else
   {
     lowerProfile.tops[0] = 0;
-    upperProfile.tops[0] = oppsTops1;
+    upperProfile.tops[0] = sumProfile.tops[0];
   }
 
   Opponent simplestOpponent;
@@ -189,11 +156,11 @@ string CoverSet::str(
 
   if (mode == COVER_LENGTHS_ONLY)
   {
-    return length.strLength(oppsLength, simplestOpponent, symmFlag);
+    return length.strLength(sumProfile.length, simplestOpponent, symmFlag);
   }
   else if (mode == COVER_TOPS_ONLY)
   {
-    return top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+    return top1.strTop(sumProfile.tops[0], simplestOpponent, symmFlag);
   }
   else if (mode == COVER_LENGTHS_AND_TOPS)
   {
@@ -203,17 +170,17 @@ string CoverSet::str(
       {
         return top1.strWithLength(
           length,
-          oppsLength,
-          oppsTops1,
+          sumProfile.length,
+          sumProfile.tops[0],
           simplestOpponent,
           symmFlag);
       }
       else
       {
         return 
-          length.strLength(oppsLength, simplestOpponent, symmFlag) +
+          length.strLength(sumProfile.length, simplestOpponent, symmFlag) +
           ", and " +
-          top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+          top1.strTop(sumProfile.tops[0], simplestOpponent, symmFlag);
       }
     }
     else
@@ -222,17 +189,17 @@ string CoverSet::str(
       {
         return top1.strWithLength(
           length,
-          oppsLength,
-          oppsTops1,
+          sumProfile.length,
+          sumProfile.tops[0],
           simplestOpponent,
           symmFlag);
       }
       else
       {
         return 
-          length.strLength(oppsLength, simplestOpponent, symmFlag) +
+          length.strLength(sumProfile.length, simplestOpponent, symmFlag) +
           ", and " +
-          top1.strTop(oppsTops1, simplestOpponent, symmFlag);
+          top1.strTop(sumProfile.tops[0], simplestOpponent, symmFlag);
       }
     }
   }

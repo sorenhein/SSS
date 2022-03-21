@@ -32,8 +32,6 @@ void CoverSpec::setID(
   const unsigned char length,
   const unsigned char tops1)
 {
-  // oppsLength = length;
-  // oppsTops1 = tops1;
   sumProfile.length = length;
   sumProfile.tops.resize(1);
   sumProfile.tops[0] = tops1;
@@ -50,8 +48,6 @@ void CoverSpec::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  // length = oppsLength;
-  // tops1 = oppsTops1;
   length = sumProfile.length;
   tops1 = sumProfile.tops[0];
 }
@@ -78,7 +74,16 @@ void CoverSpec::westLength(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len, len, sumProfile.length);
+
+  ProductProfile lowerProfile, upperProfile;
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+  lowerProfile.length = len;
+  upperProfile.length = len;
+  lowerProfile.tops[0] = 0;
+  upperProfile.tops[0] = sumProfile.tops[0];
+
+  cset.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -97,7 +102,16 @@ void CoverSpec::westLengthRange(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len1, len2, sumProfile.length);
+
+  ProductProfile lowerProfile, upperProfile;
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+  lowerProfile.length = len1;
+  upperProfile.length = len2;
+  lowerProfile.tops[0] = 0;
+  upperProfile.tops[0] = sumProfile.tops[0];
+
+  cset.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -119,7 +133,16 @@ void CoverSpec::westTop1(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops, tops, sumProfile.tops[0]);
+
+  ProductProfile lowerProfile, upperProfile;
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+  lowerProfile.length = 0;
+  upperProfile.length = sumProfile.length;
+  lowerProfile.tops[0] = tops;
+  upperProfile.tops[0] = tops;
+
+  cset.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -138,7 +161,16 @@ void CoverSpec::westTop1Range(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops1, tops2, sumProfile.tops[0]);
+
+  ProductProfile lowerProfile, upperProfile;
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+  lowerProfile.length = 0;
+  upperProfile.length = sumProfile.length;
+  lowerProfile.tops[0] = tops1;
+  upperProfile.tops[0] = tops2;
+
+  cset.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -166,15 +198,15 @@ void CoverSpec::westGeneral(
   cset.setMode(COVER_LENGTHS_AND_TOPS);
   cset.setSymm(symmFlag);
 
-  // if (len1 == len2)
-    // cset.setLength(len1, len1, oppsLength);
-  // else
-    cset.setLength(len1, len2, sumProfile.length);
+  ProductProfile lowerProfile, upperProfile;
+  lowerProfile.tops.resize(1);
+  upperProfile.tops.resize(1);
+  lowerProfile.length = len1;
+  upperProfile.length = len2;
+  lowerProfile.tops[0] = tops1;
+  upperProfile.tops[0] = tops2;
 
-  // if (tops1 == tops2)
-    // cset.setTop1(tops1, tops1, oppsTops1);
-  // else
-    cset.setTop1(tops1, tops2, sumProfile.tops[0]);
+  cset.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -198,15 +230,9 @@ void CoverSpec::eastGeneral(
 
 bool CoverSpec::includes(const ProductProfile& distProfile) const
 {
-  ProductProfile pp;
-  pp.length = sumProfile.length;
-  pp.tops.resize(1);
-  pp.tops[0] = sumProfile.tops[0];
-
   for (auto& set: setsWest)
   {
-    // if (set.includes(distProfile, oppsLength, oppsTops1))
-    if (set.includes(distProfile, pp))
+    if (set.includes(distProfile, sumProfile))
       return true;
   }
 
@@ -216,10 +242,10 @@ bool CoverSpec::includes(const ProductProfile& distProfile) const
 
 string CoverSpec::str() const
 {
-  string s = setsWest.front().str(sumProfile.length, sumProfile.tops[0]);
+  string s = setsWest.front().str(sumProfile);
   
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-    s += "; or\n  " + iter->str(sumProfile.length, sumProfile.tops[0]);
+    s += "; or\n  " + iter->str(sumProfile);
 
   return s;
 }
