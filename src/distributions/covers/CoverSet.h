@@ -48,22 +48,14 @@ class CoverSet
     bool includesLength(
       const ProductProfile& distProfile,
       const ProductProfile& sumProfile) const;
-      // const unsigned char wlen,
-      // const unsigned char oppsLength) const;
 
     bool includesTop1(
       const ProductProfile& distProfile,
       const ProductProfile& sumProfile) const;
-      // const unsigned char wtop,
-      // const unsigned char oppsTops1) const;
 
     bool includesLengthAndTop1(
       const ProductProfile& distProfile,
       const ProductProfile& sumProfile) const;
-      // const unsigned char wtop,
-      // const unsigned char wlen,
-      // const unsigned char oppsLength,
-      // const unsigned char oppsTops1) const;
 
 
   public:
@@ -76,18 +68,22 @@ class CoverSet
 
     CoverMode getMode() const;
 
+    /*
     void setLength(
       const unsigned char len,
       const unsigned char oppsLength);
+      */
 
     void setLength(
       const unsigned char len1,
       const unsigned char len2,
       const unsigned char oppsLength);
 
+    /*
     void setTop1(
       const unsigned char tops,
       const unsigned char oppsSize);
+      */
 
     void setTop1(
       const unsigned char tops1,

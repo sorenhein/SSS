@@ -32,8 +32,11 @@ void CoverSpec::setID(
   const unsigned char length,
   const unsigned char tops1)
 {
-  oppsLength = length;
-  oppsTops1 = tops1;
+  // oppsLength = length;
+  // oppsTops1 = tops1;
+  sumProfile.length = length;
+  sumProfile.tops.resize(1);
+  sumProfile.tops[0] = tops1;
 }
 
 
@@ -47,8 +50,10 @@ void CoverSpec::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  length = oppsLength;
-  tops1 = oppsTops1;
+  // length = oppsLength;
+  // tops1 = oppsTops1;
+  length = sumProfile.length;
+  tops1 = sumProfile.tops[0];
 }
 
 
@@ -73,7 +78,7 @@ void CoverSpec::westLength(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len, oppsLength);
+  cset.setLength(len, len, sumProfile.length);
 }
 
 
@@ -81,7 +86,7 @@ void CoverSpec::eastLength(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec::westLength(oppsLength - len, ctrl);
+  CoverSpec::westLength(sumProfile.length - len, ctrl);
 }
 
 
@@ -92,7 +97,7 @@ void CoverSpec::westLengthRange(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_LENGTHS_ONLY);
-  cset.setLength(len1, len2, oppsLength);
+  cset.setLength(len1, len2, sumProfile.length);
 }
 
 
@@ -102,8 +107,8 @@ void CoverSpec::eastLengthRange(
   const CoverControl ctrl)
 {
   CoverSpec::westLengthRange(
-    oppsLength - len2, 
-    oppsLength - len1, 
+    sumProfile.length - len2, 
+    sumProfile.length - len1, 
     ctrl);
 }
 
@@ -114,7 +119,7 @@ void CoverSpec::westTop1(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops, oppsTops1);
+  cset.setTop1(tops, tops, sumProfile.tops[0]);
 }
 
 
@@ -122,7 +127,7 @@ void CoverSpec::eastTop1(
   const unsigned char tops,
   const CoverControl ctrl)
 {
-  CoverSpec::westTop1(oppsTops1 - tops, ctrl);
+  CoverSpec::westTop1(sumProfile.tops[0] - tops, ctrl);
 }
 
 
@@ -133,7 +138,7 @@ void CoverSpec::westTop1Range(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
   cset.setMode(COVER_TOPS_ONLY);
-  cset.setTop1(tops1, tops2, oppsTops1);
+  cset.setTop1(tops1, tops2, sumProfile.tops[0]);
 }
 
 
@@ -143,8 +148,8 @@ void CoverSpec::eastTop1Range(
   const CoverControl ctrl)
 {
   CoverSpec::westTop1Range(
-    oppsTops1 - tops2, 
-    oppsTops1 - tops1, 
+    sumProfile.tops[0] - tops2, 
+    sumProfile.tops[0] - tops1, 
     ctrl);
 }
 
@@ -161,15 +166,15 @@ void CoverSpec::westGeneral(
   cset.setMode(COVER_LENGTHS_AND_TOPS);
   cset.setSymm(symmFlag);
 
-  if (len1 == len2)
-    cset.setLength(len1, oppsLength);
-  else
-    cset.setLength(len1, len2, oppsLength);
+  // if (len1 == len2)
+    // cset.setLength(len1, len1, oppsLength);
+  // else
+    cset.setLength(len1, len2, sumProfile.length);
 
-  if (tops1 == tops2)
-    cset.setTop1(tops1, oppsTops1);
-  else
-    cset.setTop1(tops1, tops2, oppsTops1);
+  // if (tops1 == tops2)
+    // cset.setTop1(tops1, tops1, oppsTops1);
+  // else
+    cset.setTop1(tops1, tops2, sumProfile.tops[0]);
 }
 
 
@@ -182,10 +187,10 @@ void CoverSpec::eastGeneral(
   const CoverControl ctrl)
 {
   CoverSpec::westGeneral(
-    oppsLength - len2,
-    oppsLength - len1,
-    oppsTops1 - tops2,
-    oppsTops1 - tops1,
+    sumProfile.length - len2,
+    sumProfile.length - len1,
+    sumProfile.tops[0] - tops2,
+    sumProfile.tops[0] - tops1,
     symmFlag,
     ctrl);
 }
@@ -194,9 +199,9 @@ void CoverSpec::eastGeneral(
 bool CoverSpec::includes(const ProductProfile& distProfile) const
 {
   ProductProfile pp;
-  pp.length = oppsLength;
+  pp.length = sumProfile.length;
   pp.tops.resize(1);
-  pp.tops[0] = oppsTops1;
+  pp.tops[0] = sumProfile.tops[0];
 
   for (auto& set: setsWest)
   {
@@ -211,10 +216,10 @@ bool CoverSpec::includes(const ProductProfile& distProfile) const
 
 string CoverSpec::str() const
 {
-  string s = setsWest.front().str(oppsLength, oppsTops1);
+  string s = setsWest.front().str(sumProfile.length, sumProfile.tops[0]);
   
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-    s += "; or\n  " + iter->str(oppsLength, oppsTops1);
+    s += "; or\n  " + iter->str(sumProfile.length, sumProfile.tops[0]);
 
   return s;
 }

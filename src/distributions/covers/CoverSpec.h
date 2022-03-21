@@ -13,8 +13,7 @@
 #include <string>
 
 #include "CoverSet.h"
-
-struct ProductProfile;
+#include "ProductProfile.h"
 
 
 enum CoverState
@@ -39,8 +38,9 @@ class CoverSpec
     // For easier identification.  Could perhaps be unsigned char
     unsigned index;
 
-    unsigned char oppsLength;
-    unsigned char oppsTops1;
+    // unsigned char oppsLength;
+    // unsigned char oppsTops1;
+    ProductProfile sumProfile;
 
     // There are several sets of elements (two for now).  
     // Each set has a mode.  

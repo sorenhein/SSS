@@ -42,12 +42,14 @@ CoverMode CoverSet::getMode() const
 }
 
 
+/*
 void CoverSet::setLength(
  const unsigned char len,
  const unsigned char oppsLength)
 {
   length.set(oppsLength, len, len);
 }
+*/
 
 
 void CoverSet::setLength(
@@ -59,12 +61,14 @@ void CoverSet::setLength(
 }
 
 
+/*
 void CoverSet::setTop1(
  const unsigned char tops,
  const unsigned char oppsSize)
 {
   top1.set(oppsSize, tops, tops);
 }
+*/
 
 
 void CoverSet::setTop1(
@@ -79,8 +83,6 @@ void CoverSet::setTop1(
 bool CoverSet::includesLength(
   const ProductProfile& distProfile,
   const ProductProfile& sumProfile) const
-  // const unsigned char wlen,
-  // const unsigned char oppsLength) const
 {
   if (symmFlag)
     return length.includes(distProfile.length) || length.includes(sumProfile.length - distProfile.length);
@@ -92,8 +94,6 @@ bool CoverSet::includesLength(
 bool CoverSet::includesTop1(
   const ProductProfile& distProfile,
   const ProductProfile& sumProfile) const
-  // const unsigned char wtop,
-  // const unsigned char oppsTops1) const
 {
   if (symmFlag)
     return top1.includes(distProfile.tops[0]) || length.includes(sumProfile.tops[0] - distProfile.tops[0]);
@@ -105,10 +105,6 @@ bool CoverSet::includesTop1(
 bool CoverSet::includesLengthAndTop1(
   const ProductProfile& distProfile,
   const ProductProfile& sumProfile) const
-  // const unsigned char wlen,
-  // const unsigned char wtop,
-  // const unsigned char oppsLength,
-  // const unsigned char oppsTops1) const
 {
   if (symmFlag)
   {
@@ -131,16 +127,12 @@ bool CoverSet::includes(
   else if (mode == COVER_LENGTHS_ONLY)
     return CoverSet::includesLength(
       distProfile, sumProfile);
-      // distProfile.length, sumProfile.length);
   else if (mode == COVER_TOPS_ONLY)
     return CoverSet::includesTop1(
       distProfile, sumProfile);
-      // distProfile.tops[0], sumProfile.tops[0]);
   else if (mode == COVER_LENGTHS_AND_TOPS)
     return CoverSet::includesLengthAndTop1(
       distProfile, sumProfile);
-      // distProfile.length, distProfile.tops[0], 
-      // sumProfile.length, sumProfile.tops[0]);
   else
   {
     assert(false);
