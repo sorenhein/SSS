@@ -53,6 +53,9 @@ void CoverSet::set(
   assert(upperProfile.tops.size() == 1);
 
   top1.set(sumProfile.tops[0], lowerProfile.tops[0], upperProfile.tops[0]);
+
+  product.resize(1);
+  product.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -98,14 +101,62 @@ bool CoverSet::includes(
   const ProductProfile& distProfile,
   const ProductProfile& sumProfile) const
 {
+  bool b;
+  if (product.includes(distProfile))
+  {
+    b = true;
+    // return true;
+  }
+  else if (symmFlag)
+  {
+    ProductProfile mirror = distProfile;
+    mirror.mirror(sumProfile);
+    b = product.includes(mirror);
+  }
+  else
+    b = false;
+
   if (mode == COVER_MODE_NONE)
+  {
+    assert(! b);
     return false;
+  }
   else if (mode == COVER_LENGTHS_ONLY)
-    return CoverSet::includesLength(distProfile, sumProfile);
+  {
+    bool b2 = CoverSet::includesLength(distProfile, sumProfile);
+    assert(b == b2);
+    return b2;
+    
+    // return CoverSet::includesLength(distProfile, sumProfile);
+  }
   else if (mode == COVER_TOPS_ONLY)
-    return CoverSet::includesTop1(distProfile, sumProfile);
+  {
+    bool b2 = CoverSet::includesTop1(distProfile, sumProfile);
+    if (b != b2)
+    {
+      cout << "product : " << (b ? "yes" : "no") << "\n";
+      cout << "coverset: " << (b2 ? "yes" : "no") << "\n";
+      cout << "length " << length.strGeneral() << "\n";
+      cout << "top " << top1.strGeneral() << "\n";
+      cout << "distProfile " << distProfile.str();
+      cout << "symmFlag  " << (symmFlag ? "yes" : "no") << "\n";
+      cout << "sumProfile  " << sumProfile.str();
+      cout << "product line " << product.strLine() << endl;
+      cout << "product\n" << product.strVerbal(sumProfile, OPP_WEST, symmFlag) << endl;
+      assert(b == b2);
+    }
+    return b2;
+
+    // return CoverSet::includesTop1(distProfile, sumProfile);
+  }
   else if (mode == COVER_LENGTHS_AND_TOPS)
-    return CoverSet::includesLengthAndTop1(distProfile, sumProfile);
+  {
+    bool b2 = CoverSet::includesLengthAndTop1(distProfile, sumProfile);
+    assert(b == b2);
+    return b2;
+
+    // return CoverSet::includesLengthAndTop1(distProfile, sumProfile);
+  }
   else
   {
     assert(false);

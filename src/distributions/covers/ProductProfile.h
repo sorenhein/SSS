@@ -67,6 +67,19 @@ struct ProductProfile
   };
 
 
+  void mirror(const ProductProfile& pp2)
+  {
+    // Turn this profile into pp2 (a sum profile) minus this one.
+
+    length = pp2.length - length;
+
+    const unsigned s = tops.size();
+    assert(pp2.tops.size() == s);
+    for (unsigned i = 0; i < s; i++)
+      tops[i] = pp2.tops[i] - tops[i];
+  };
+
+
   string str() const
   {
     stringstream ss;

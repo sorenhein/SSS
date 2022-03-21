@@ -16,6 +16,8 @@
 #include "Length.h"
 #include "Top.h"
 
+#include "Product.h"
+
 #include "../../utils/table.h"
 
 using namespace std;
@@ -43,6 +45,8 @@ class CoverSet
     Length length;
 
     Top top1;
+
+    Product product;
 
 
     bool includesLength(
