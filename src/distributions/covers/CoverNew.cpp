@@ -44,10 +44,20 @@ void CoverNew::set(
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.
+  simplestOpponent = product.simplestOpponent(sumProfile);
+
+  /*
   if (sumProfile.flip(lowerProfile, upperProfile))
+  {
+    assert(product.simplestOpponent(sumProfile) == OPP_EAST);
     simplestOpponent = OPP_EAST;
+  }
   else
+  {
+    assert(product.simplestOpponent(sumProfile) == OPP_WEST);
     simplestOpponent = OPP_WEST;
+  }
+  */
 }
 
 

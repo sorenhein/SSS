@@ -20,6 +20,7 @@ struct ProductProfile
   unsigned char length;
   vector<unsigned char> tops;
 
+  /*
   bool flip(
     const ProductProfile& lowerProfile,
     const ProductProfile& upperProfile) const
@@ -65,6 +66,7 @@ struct ProductProfile
     // As they are the same, we might as well not flip.
     return backstopFlag;
   };
+  */
 
 
   void mirror(const ProductProfile& pp2)

@@ -1,7 +1,5 @@
 CoverSet:
-Every call uses the shift-up.
-Can we put this into CoverSpec instead?
-Once it's there, we can maybe eliminate CoverSet.
+Eliminate CoverSet.
 Have to get the symmetric include into something, perhaps Product.
 
 10 / 53208, QJ65 / - missing HHxxxx
