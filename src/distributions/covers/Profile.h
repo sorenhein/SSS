@@ -36,6 +36,10 @@ class Profile
       const vector<unsigned char>& topsIn,
       const unsigned char lastUsed);
 
+    void setSingle(
+      const unsigned char lengthIn,
+      const unsigned char topIn);
+
     void mirror(const Profile& pp2);
 
     unsigned char count(const unsigned char topNo) const;

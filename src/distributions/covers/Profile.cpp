@@ -35,6 +35,18 @@ void Profile::set(
 }
 
 
+void Profile::setSingle(
+  const unsigned char lengthIn,
+  const unsigned char topIn)
+{
+  length = lengthIn;
+
+  // TODO Shift up to 2
+  tops.resize(1);
+  tops[0] = topIn;
+}
+
+
 void Profile::mirror(const Profile& profile2)
 {
   // Turn this profile into pp2 (a sum profile) minus this one.
