@@ -17,18 +17,21 @@ using namespace std;
 
 class Profile
 {
+  // TODO Reduce and then eliminate
+  friend class DistCore;
+  friend class Covers;
+  friend class Product;
+  friend class CoverSpec;
+  friend class CoverMemory;
+
   private:
-
-    // unsigned char length;
-
-    // vector<unsigned char> tops;
-
-
-  public:
 
     unsigned char length;
 
     vector<unsigned char> tops;
+
+
+  public:
 
     void resize(const unsigned numTops);
 
@@ -45,6 +48,8 @@ class Profile
     unsigned char count(const unsigned char topNo) const;
 
     unsigned size() const;
+
+    unsigned char getLength() const;
 
     const vector<unsigned char>& getTops() const;
 

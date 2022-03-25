@@ -73,6 +73,12 @@ unsigned Profile::size() const
 }
 
 
+unsigned char Profile::getLength() const
+{
+  return length;
+}
+
+
 const vector<unsigned char>& Profile::getTops() const
 {
   return tops;

@@ -471,13 +471,6 @@ void DistCore::getCoverData(
       static_cast<unsigned char >(dist.west.len),
       static_cast<unsigned char>(dist.west.counts[rankSize-1]));
 
-    /*
-    distProfiles[i].length = static_cast<unsigned char>(dist.west.len);
-    distProfiles[i].tops.resize(1);
-    distProfiles[i].tops[0] =
-      static_cast<unsigned char>(dist.west.counts[rankSize-1]);
-      */
-
     cases[i] = static_cast<unsigned char>(dist.cases);
   }
 }

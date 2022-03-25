@@ -30,8 +30,8 @@ void CoverSet::set(
 {
   symmFlag = symmFlagIn;
 
-  assert(lowerProfile.tops.size() == 2);
-  assert(upperProfile.tops.size() == 2);
+  assert(lowerProfile.size() == 2);
+  assert(upperProfile.size() == 2);
 
   product.resize(2);
   product.set(sumProfile, lowerProfile, upperProfile);
@@ -53,7 +53,7 @@ bool CoverSet::includes(
   else
   {
     Profile mirror = distProfile;
-    mirror.tops.resize(sumProfile.tops.size()); // 2
+    mirror.resize(sumProfile.size()); // 2
     mirror.mirror(sumProfile);
 
     return product.includes(mirror);
