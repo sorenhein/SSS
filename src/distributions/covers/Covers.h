@@ -45,8 +45,11 @@ class Covers
  
       CoverStackInfo(const vector<unsigned char>& topTotals)
       {
-        lowerProfile.tops.resize(topTotals.size(), 0);
-        upperProfile.tops = topTotals;
+        // lowerProfile.tops.resize(topTotals.size(), 0);
+        lowerProfile.resize(topTotals.size());
+        // upperProfile.tops = topTotals;
+        upperProfile.set(topTotals, 
+          static_cast<unsigned char>(topTotals.size()-1));
  
         minWest = 0;
         minEast = 0;

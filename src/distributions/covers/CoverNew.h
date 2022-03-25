@@ -19,7 +19,7 @@
 
 using namespace std;
 
-struct Profile;
+class Profile;
 
 
 class CoverNew

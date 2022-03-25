@@ -15,26 +15,38 @@
 using namespace std;
 
 
-struct Profile
+class Profile
 {
-  unsigned char length;
-  vector<unsigned char> tops;
+  private:
 
-  void set(
-    const vector<unsigned char>& topsIn,
-    const unsigned char lastUsed);
+    // unsigned char length;
 
-  void mirror(const Profile& pp2);
+    // vector<unsigned char> tops;
 
-  unsigned char count(const unsigned char topNo) const;
 
-  unsigned size() const;
+  public:
 
-  const vector<unsigned char>& getTops() const;
+    unsigned char length;
 
-  string strHeader() const;
+    vector<unsigned char> tops;
 
-  string strLine() const;
+    void resize(const unsigned numTops);
+
+    void set(
+      const vector<unsigned char>& topsIn,
+      const unsigned char lastUsed);
+
+    void mirror(const Profile& pp2);
+
+    unsigned char count(const unsigned char topNo) const;
+
+    unsigned size() const;
+
+    const vector<unsigned char>& getTops() const;
+
+    string strHeader() const;
+
+    string strLine() const;
 };
 
 #endif

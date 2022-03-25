@@ -14,6 +14,12 @@
 #include "Profile.h"
 
 
+void Profile::resize(const unsigned numTops)
+{
+  tops.resize(numTops);
+}
+
+
 void Profile::set(
   const vector<unsigned char>& topsIn,
   const unsigned char lastUsed)
