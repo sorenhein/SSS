@@ -42,7 +42,7 @@ void Covers::prepare(
   const CoverMemory& coverMemory,
   const unsigned char maxLengthIn,
   const unsigned char maxTops,
-  const vector<ProductProfile>& distProfiles,
+  const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
   assert(distProfiles.size() == cases.size());
@@ -111,9 +111,9 @@ void Covers::prune()
 
 
 void Covers::prepareNew(
-  const vector<ProductProfile>& distProfiles,
+  const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
-  const ProductProfile& sumProfileIn)
+  const Profile& sumProfileIn)
 {
   sumProfile = sumProfileIn;
 

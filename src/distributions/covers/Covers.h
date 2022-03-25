@@ -33,8 +33,8 @@ class Covers
 
     struct CoverStackInfo
     {
-      ProductProfile lowerProfile;
-      ProductProfile upperProfile;
+      Profile lowerProfile;
+      Profile upperProfile;
 
       unsigned char minWest; // Sum of West's top minima
       unsigned char minEast; // Sum of East's top minima
@@ -58,7 +58,7 @@ class Covers
     };
 
 
-    ProductProfile sumProfile;
+    Profile sumProfile;
 
     list<Cover> covers;
 
@@ -89,13 +89,13 @@ class Covers
       const CoverMemory& coverMemory,
       const unsigned char maxLength,
       const unsigned char maxTops,
-      const vector<ProductProfile>& distProfiles,
+      const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
     void prepareNew(
-      const vector<ProductProfile>& distProfiles,
+      const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
-      const ProductProfile& sumProfileIn);
+      const Profile& sumProfileIn);
 
     CoverState explain(
       const list<Result>& results,

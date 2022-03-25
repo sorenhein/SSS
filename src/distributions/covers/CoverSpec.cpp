@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "CoverSpec.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 CoverSpec::CoverSpec()
@@ -91,7 +91,7 @@ void CoverSpec::westLengthRange(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
-  ProductProfile lowerProfile, upperProfile;
+  Profile lowerProfile, upperProfile;
   lowerProfile.tops.resize(2);
   upperProfile.tops.resize(2);
   lowerProfile.length = len1;
@@ -138,7 +138,7 @@ void CoverSpec::westTop1Range(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
-  ProductProfile lowerProfile, upperProfile;
+  Profile lowerProfile, upperProfile;
   lowerProfile.tops.resize(2);
   upperProfile.tops.resize(2);
   lowerProfile.length = 0;
@@ -172,7 +172,7 @@ void CoverSpec::westGeneral(
 {
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
-  ProductProfile lowerProfile, upperProfile;
+  Profile lowerProfile, upperProfile;
   lowerProfile.tops.resize(2);
   upperProfile.tops.resize(2);
   lowerProfile.length = len1;
@@ -202,12 +202,12 @@ void CoverSpec::eastGeneral(
 }
 
 
-bool CoverSpec::includes(const ProductProfile& distProfile) const
+bool CoverSpec::includes(const Profile& distProfile) const
 {
   assert(distProfile.tops.size() == 1);
   assert(sumProfile.tops.size() == 2);
 
-  ProductProfile dist2;
+  Profile dist2;
   dist2.tops.resize(2);
   dist2.length = distProfile.length;
   dist2.tops[1] = distProfile.tops[0];

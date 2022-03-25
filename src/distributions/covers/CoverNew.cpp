@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "CoverNew.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 CoverNew::CoverNew()
@@ -36,33 +36,20 @@ void CoverNew::resize(const unsigned topNumber)
 
 
 void CoverNew::set(
-  const ProductProfile& sumProfile,
-  const ProductProfile& lowerProfile,
-  const ProductProfile& upperProfile)
+  const Profile& sumProfile,
+  const Profile& lowerProfile,
+  const Profile& upperProfile)
 {
   product.set(sumProfile, lowerProfile, upperProfile);
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.
   simplestOpponent = product.simplestOpponent(sumProfile);
-
-  /*
-  if (sumProfile.flip(lowerProfile, upperProfile))
-  {
-    assert(product.simplestOpponent(sumProfile) == OPP_EAST);
-    simplestOpponent = OPP_EAST;
-  }
-  else
-  {
-    assert(product.simplestOpponent(sumProfile) == OPP_WEST);
-    simplestOpponent = OPP_WEST;
-  }
-  */
 }
 
 
 void CoverNew::prepare(
-  const vector<ProductProfile>& distProfiles,
+  const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
   const unsigned len = distProfiles.size();
@@ -252,7 +239,7 @@ string CoverNew::strHeader() const
 }
 
 
-string CoverNew::strLine(const ProductProfile& sumProfile) const
+string CoverNew::strLine(const Profile& sumProfile) const
 {
   stringstream ss;
 
@@ -310,7 +297,7 @@ string CoverNew::strTricksShort() const
 }
 
 
-string CoverNew::str(const ProductProfile& sumProfile) const
+string CoverNew::str(const Profile& sumProfile) const
 {
   if (product.explainable())
   {

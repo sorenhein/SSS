@@ -31,7 +31,7 @@ void CoverTableau::reset()
 }
 
 
-void CoverTableau::setBoundaries(const ProductProfile& sumProfileIn)
+void CoverTableau::setBoundaries(const Profile& sumProfileIn)
 {
   sumProfile = sumProfileIn;
 }

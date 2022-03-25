@@ -69,9 +69,9 @@ class CoverRow
     // but without semantic explanations.
     string strHeader() const;
 
-    string strLines(const ProductProfile& sumProfile) const;
+    string strLines(const Profile& sumProfile) const;
 
-    string str(const ProductProfile& sumProfile) const;
+    string str(const Profile& sumProfile) const;
 };
 
 #endif

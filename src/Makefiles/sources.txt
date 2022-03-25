@@ -15,7 +15,6 @@ SOURCE_FILES    =                               \
                 distributions/Reductions.cpp    \
                 distributions/SurvivorList.cpp  \
                                                 \
-                distributions/covers/Composition.cpp \
                 distributions/covers/Compositions.cpp \
                 distributions/Survivors.cpp     \
                 distributions/covers/Cover.cpp  \
@@ -26,6 +25,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Length.cpp \
                 distributions/covers/Top.cpp    \
                 distributions/covers/Product.cpp \
+                distributions/covers/Profile.cpp \
                 distributions/covers/CoverSet.cpp \
                 distributions/covers/CoverSpec.cpp \
                 distributions/covers/CoverMemory.cpp \

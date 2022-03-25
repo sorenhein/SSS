@@ -443,7 +443,7 @@ const Reduction& DistCore::getReduction(
 
 
 void DistCore::getCoverData(
-  vector<ProductProfile>& distProfiles,
+  vector<Profile>& distProfiles,
   vector<unsigned char>& cases,
   unsigned char& maxLength,
   unsigned char& maxTops) const
@@ -477,9 +477,9 @@ void DistCore::getCoverData(
 
 
 void DistCore::getCoverDataNew(
-  vector<ProductProfile>& distProfiles,
+  vector<Profile>& distProfiles,
   vector<unsigned char>& cases,
-  ProductProfile& sumProfile) const
+  Profile& sumProfile) const
 {
   const unsigned len = distributions.size();
   assert(len > 0);
@@ -504,7 +504,7 @@ void DistCore::getCoverDataNew(
     distProfiles[i].length = static_cast<unsigned char>(dist.west.len);
 
     // TODO Can we make dist such that we just have a reference
-    // to a ProductProfile, and no copying?
+    // to a Profile, and no copying?
 
     distProfiles[i].tops.resize(dist.west.counts.size());
     for (unsigned j = 0; j < dist.west.counts.size(); j++)
@@ -521,7 +521,7 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
   if (distributions.size() == 0)
     return;
 
-  vector<ProductProfile> distProfilesOld;
+  vector<Profile> distProfilesOld;
   vector<unsigned char> cases;
   unsigned char maxLength, maxTops;
   DistCore::getCoverData(distProfilesOld, cases, maxLength, maxTops);
@@ -531,13 +531,13 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
 
   covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
 
-  vector<ProductProfile> distProfiles;
+  vector<Profile> distProfiles;
 
   vector<unsigned char> lengthsNew;
   vector<vector<unsigned> const *> topPtrs;
 
   vector<unsigned char> casesNew;
-  ProductProfile sumProfile;
+  Profile sumProfile;
 
   DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
 

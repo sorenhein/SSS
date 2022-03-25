@@ -85,7 +85,7 @@ void Compositions::make(const unsigned char maxLength)
 }
 
 
-list<Composition>::const_iterator Compositions::begin(
+list<Profile>::const_iterator Compositions::begin(
   const unsigned char len) const
 {
   assert(len >= 2 && len < compositions.size());
@@ -93,7 +93,7 @@ list<Composition>::const_iterator Compositions::begin(
 }
 
 
-list<Composition>::const_iterator Compositions::end(
+list<Profile>::const_iterator Compositions::end(
   const unsigned char len) const
 {
   assert(len >= 2 && len < compositions.size());
@@ -119,7 +119,8 @@ string Compositions::str(const unsigned char lenSpecific) const
     lenHigh = lenSpecific;
   }
 
-  ss << compositions[lenLow].front().strHeader(lenHigh);
+  // ss << compositions[lenLow].front().strHeader(lenHigh);
+  ss << compositions[lenLow].front().strHeader();
   for (unsigned char len = lenLow; len <= lenHigh; len++)
     for (auto& c: compositions[len])
       ss << c.strLine();

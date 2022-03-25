@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "CoverSet.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 void CoverSet::reset()
@@ -23,9 +23,9 @@ void CoverSet::reset()
 
 
 void CoverSet::set(
-  const ProductProfile& sumProfile,
-  const ProductProfile& lowerProfile,
-  const ProductProfile& upperProfile,
+  const Profile& sumProfile,
+  const Profile& lowerProfile,
+  const Profile& upperProfile,
   const bool symmFlagIn)
 {
   symmFlag = symmFlagIn;
@@ -39,8 +39,8 @@ void CoverSet::set(
 
 
 bool CoverSet::includes(
-  const ProductProfile& distProfile,
-  const ProductProfile& sumProfile) const
+  const Profile& distProfile,
+  const Profile& sumProfile) const
 {
   if (product.includes(distProfile))
   {
@@ -52,7 +52,7 @@ bool CoverSet::includes(
   }
   else
   {
-    ProductProfile mirror = distProfile;
+    Profile mirror = distProfile;
     mirror.tops.resize(sumProfile.tops.size()); // 2
     mirror.mirror(sumProfile);
 
@@ -61,7 +61,7 @@ bool CoverSet::includes(
 }
 
 
-string CoverSet::str(const ProductProfile& sumProfile) const
+string CoverSet::str(const Profile& sumProfile) const
 {
   const Opponent simplestOpponent = product.simplestOpponent(sumProfile);
 

@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "Product.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 Product::Product()
@@ -41,9 +41,9 @@ void Product::resize(const unsigned compSize)
 
 
 void Product::set(
-  const ProductProfile& sumProfile,
-  const ProductProfile& lowerProfile,
-  const ProductProfile& upperProfile)
+  const Profile& sumProfile,
+  const Profile& lowerProfile,
+  const Profile& upperProfile)
 {
   length.set(sumProfile.length, lowerProfile.length, upperProfile.length);
   complexity = length.complexity();
@@ -85,7 +85,7 @@ void Product::set(
 }
 
 
-bool Product::includes(const ProductProfile& distProfile) const
+bool Product::includes(const Profile& distProfile) const
 {
   if (length.used() && ! length.includes(distProfile.length))
     return false;
@@ -153,7 +153,7 @@ bool Product::explainable() const
 }
 
 
-Opponent Product::simplestOpponent(const ProductProfile& sumProfile) const
+Opponent Product::simplestOpponent(const Profile& sumProfile) const
 {
   // We want to express a Product in terms that make as much
   // intuitive sense as possible.  I think this tends to be in
@@ -208,7 +208,7 @@ string Product::strHeader() const
 }
 
 
-string Product::strLine(const ProductProfile& sumProfile) const
+string Product::strLine(const Profile& sumProfile) const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in CoverNew.
@@ -240,7 +240,7 @@ string Product::strLine() const
 
 
 string Product::strVerbal(
-  const ProductProfile& sumProfile,
+  const Profile& sumProfile,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {

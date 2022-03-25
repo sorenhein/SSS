@@ -13,16 +13,11 @@
 #include <sstream>
 #include <string>
 
-// #include "Length.h"
-// #include "Top.h"
-
 #include "Product.h"
-
-// #include "../../utils/table.h"
 
 using namespace std;
 
-struct ProductProfile;
+struct Profile;
 
 
 class CoverSet
@@ -40,16 +35,16 @@ class CoverSet
     void reset();
 
     void set(
-      const ProductProfile& sumProfile,
-      const ProductProfile& lowerProfile,
-      const ProductProfile& upperProfile,
+      const Profile& sumProfile,
+      const Profile& lowerProfile,
+      const Profile& upperProfile,
       const bool symmFlagIn = false);
 
     bool includes(
-      const ProductProfile& distProfile,
-      const ProductProfile& sumProfile) const;
+      const Profile& distProfile,
+      const Profile& sumProfile) const;
 
-    string str(const ProductProfile& sumProfile) const;
+    string str(const Profile& sumProfile) const;
 };
 
 #endif

@@ -14,7 +14,7 @@
 #include <string>
 
 #include "CoverRow.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ class CoverTableau
 {
   private:
 
-    ProductProfile sumProfile;
+    Profile sumProfile;
 
     list<CoverRow> rows;
 
@@ -46,7 +46,7 @@ class CoverTableau
 
     void reset();
 
-    void setBoundaries(const ProductProfile& sumProfile);
+    void setBoundaries(const Profile& sumProfile);
 
     void setTricks(
       const vector<unsigned char>& tricks,

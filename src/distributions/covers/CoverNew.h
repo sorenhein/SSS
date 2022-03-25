@@ -19,7 +19,7 @@
 
 using namespace std;
 
-struct ProductProfile;
+struct Profile;
 
 
 class CoverNew
@@ -47,12 +47,12 @@ class CoverNew
     void resize(const unsigned topNumber);
 
     void set(
-      const ProductProfile& sumProfile,
-      const ProductProfile& lowerProfile,
-      const ProductProfile& upperProfile);
+      const Profile& sumProfile,
+      const Profile& lowerProfile,
+      const Profile& upperProfile);
 
     void prepare(
-      const vector<ProductProfile>& distProfiles,
+      const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
     bool possible(
@@ -85,7 +85,7 @@ class CoverNew
 
     string strHeader() const;
 
-    string strLine(const ProductProfile& sumProfile) const;
+    string strLine(const Profile& sumProfile) const;
 
     string strLine() const;
 
@@ -95,7 +95,7 @@ class CoverNew
 
     string strTricksShort() const;
 
-    string str(const ProductProfile& sumProfile) const;
+    string str(const Profile& sumProfile) const;
 };
 
 #endif

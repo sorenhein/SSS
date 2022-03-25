@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "Cover.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 Cover::Cover()
@@ -31,7 +31,7 @@ void Cover::reset()
 
 
 void Cover::prepare(
-  const vector<ProductProfile>& distProfiles,
+  const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
   const CoverSpec& specIn)
 {

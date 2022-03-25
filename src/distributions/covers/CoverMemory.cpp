@@ -13,7 +13,7 @@
 #include "ExplStats.h"
 
 #include "Product.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 // Global to make the many cases more streamlined.
 
@@ -782,12 +782,12 @@ void CoverMemory::prepare_9_1()            // ***** DONE-2 *****
 #define COVER_CHUNK_SIZE 1000
 void CoverMemory::makeSets(
   const unsigned char length,
-  const Composition& comp)
+  const Profile& comp)
 {
   struct StackInfo
   {
-    ProductProfile lowerProfile;
-    ProductProfile upperProfile;
+    Profile lowerProfile;
+    Profile upperProfile;
 
     unsigned char minWest; // Sum of West's top minima
     unsigned char minEast; // Sum of East's top minima
@@ -797,7 +797,7 @@ void CoverMemory::makeSets(
     unsigned char topNext; // Running top number
 
     StackInfo(
-      const Composition& comp)
+      const Profile& comp)
       // const unsigned compSize,
       // const unsigned char len)
     {
@@ -892,7 +892,7 @@ void CoverMemory::makeSets(
         stackIter->lowerProfile.length = 0;
         stackIter->upperProfile.length = length; // ?
 
-        ProductProfile pp;
+        Profile pp;
         pp.length = length;
         pp.tops = comp.getTops();
         iter->set(pp, stackIter->lowerProfile, stackIter->upperProfile);
@@ -931,7 +931,7 @@ void CoverMemory::makeSets(
             }
             stackIter->lowerProfile.length = lenLow;
             stackIter->upperProfile.length = lenHigh;
-            ProductProfile pp2;
+            Profile pp2;
             pp2.length = length;
             pp2.tops = comp.getTops();
             iter->set(pp2, stackIter->lowerProfile, stackIter->upperProfile);

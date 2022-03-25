@@ -13,7 +13,7 @@
 #include <string>
 
 #include "CoverSet.h"
-#include "ProductProfile.h"
+#include "Profile.h"
 
 
 enum CoverState
@@ -38,7 +38,7 @@ class CoverSpec
     // For easier identification.  Could perhaps be unsigned char
     unsigned index;
 
-    ProductProfile sumProfile;
+    Profile sumProfile;
 
     // There are several sets of elements (two for now).  
     // Each set has a mode.  
@@ -122,7 +122,7 @@ class CoverSpec
       const bool symmFlag = false,
       const CoverControl ctrl = COVER_ADD);
 
-    bool includes(const ProductProfile& distProfile) const;
+    bool includes(const Profile& distProfile) const;
     
     string str() const;
 };

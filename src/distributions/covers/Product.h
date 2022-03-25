@@ -27,7 +27,7 @@
 
 using namespace std;
 
-struct ProductProfile;
+struct Profile;
 
 
 class Product
@@ -55,11 +55,11 @@ class Product
   void resize(const unsigned compSize);
 
   void set(
-    const ProductProfile& sumProfile,
-    const ProductProfile& lowerProfile,
-    const ProductProfile& upperProfile);
+    const Profile& sumProfile,
+    const Profile& lowerProfile,
+    const Profile& upperProfile);
 
-  bool includes(const ProductProfile& distProfile) const;
+  bool includes(const Profile& distProfile) const;
 
   unsigned char getComplexity() const;
 
@@ -69,16 +69,16 @@ class Product
 
   bool explainable() const;
 
-  Opponent simplestOpponent(const ProductProfile& sumProfile) const;
+  Opponent simplestOpponent(const Profile& sumProfile) const;
 
   string strHeader() const;
 
-  string strLine(const ProductProfile& sumProfile) const;
+  string strLine(const Profile& sumProfile) const;
 
   string strLine() const;
 
   string strVerbal(
-    const ProductProfile& sumProfile,
+    const Profile& sumProfile,
     const Opponent simplestOpponent,
     const bool symmFlag) const;
 };

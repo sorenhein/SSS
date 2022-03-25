@@ -14,7 +14,7 @@
 #include <list>
 #include <string>
 
-#include "Composition.h"
+#include "Profile.h"
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class Compositions
 {
   private:
 
-    vector<list<Composition>> compositions;
+    vector<list<Profile>> compositions;
 
 
     void makeLength(const unsigned char length);
@@ -37,8 +37,8 @@ class Compositions
 
     void make(const unsigned char maxLength = 13);
 
-    list<Composition>::const_iterator begin(const unsigned char len) const;
-    list<Composition>::const_iterator end(const unsigned char len) const;
+    list<Profile>::const_iterator begin(const unsigned char len) const;
+    list<Profile>::const_iterator end(const unsigned char len) const;
 
     string str(const unsigned char lenSpecific = 0) const;
 };

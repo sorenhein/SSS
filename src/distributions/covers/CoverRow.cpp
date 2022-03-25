@@ -122,7 +122,7 @@ string CoverRow::strHeader() const
 }
 
 
-string CoverRow::strLines(const ProductProfile& sumProfile) const
+string CoverRow::strLines(const Profile& sumProfile) const
 {
   stringstream ss;
 
@@ -135,7 +135,7 @@ string CoverRow::strLines(const ProductProfile& sumProfile) const
 }
 
 
-string CoverRow::str(const ProductProfile& sumProfile) const
+string CoverRow::str(const Profile& sumProfile) const
 {
   return 
     CoverRow::strLines(sumProfile);

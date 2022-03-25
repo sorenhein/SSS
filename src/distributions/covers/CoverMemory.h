@@ -17,7 +17,7 @@
 
 using namespace std;
 
-class Composition;
+struct Profile;
 class ExplStats;
 
 
@@ -132,7 +132,7 @@ class CoverMemory
 
     void makeSets(
       const unsigned char length,
-      const Composition& comp);
+      const Profile& comp);
 
 
   public:

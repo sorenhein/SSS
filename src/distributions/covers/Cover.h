@@ -17,7 +17,7 @@
 
 using namespace std;
 
-struct ProductProfile;
+struct Profile;
 
 
 class Cover
@@ -46,7 +46,7 @@ class Cover
     void reset();
 
     void prepare(
-      const vector<ProductProfile>& distProfiles,
+      const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 
