@@ -13,12 +13,12 @@
 #include <sstream>
 #include <string>
 
-#include "Length.h"
-#include "Top.h"
+// #include "Length.h"
+// #include "Top.h"
 
 #include "Product.h"
 
-#include "../../utils/table.h"
+// #include "../../utils/table.h"
 
 using namespace std;
 
@@ -31,10 +31,6 @@ class CoverSet
 
 
     bool symmFlag;
-
-    // Length length;
-
-    // Top top1;
 
     Product product;
 
