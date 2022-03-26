@@ -67,9 +67,6 @@ void Covers::prepare(
 
 for (unsigned i = 0; i< distProfiles.size(); i++)
   cout << distProfiles[i].strLine();
-  // cout << i << " " << +distProfiles[i].length << 
-    // " " << +distProfiles[i].tops[0] << 
-    // " " << +cases[i] << "\n";
 cout <<endl;
 
       assert(citer->getWeight() != 0);
@@ -120,7 +117,7 @@ void Covers::prepareNew(
 
   timersStrat[20].start();
   list<CoverStackInfo> stack; // Unfinished expansions
-  stack.emplace_back(CoverStackInfo(sumProfile.getTops()));
+  stack.emplace_back(CoverStackInfo(sumProfile));
 
   coversNew.resize(COVER_CHUNK_SIZE);
   for (auto& c: coversNew)
@@ -146,7 +143,6 @@ cout << setw(4) << "t#" <<
     unsigned char topNumber = stackIter->topNext; // Next to write
     if (topNumber >= sumProfile.size())
     {
-// cout << "popped front, stack size now " << stack.size() << endl;
       stack.pop_front();
       continue;
     }
@@ -216,23 +212,13 @@ cout << setw(4) << "t#" <<
           maxEast = stackIter->maxEast;
         }
 
-
-        // if (topCountHigh > stackIter->maxWest)
-          // stackIter->maxWest = topCountHigh;
-
-        // const unsigned char maxEast = topCountActual - topCountLow;
-        // if (maxEast > stackIter->maxEast)
-          // stackIter->maxEast = maxEast;
-
-        stackIter->lowerProfile.tops[topNumber] = topCountLow;
-        stackIter->upperProfile.tops[topNumber] = topCountHigh;
+        stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
         if (citer == coversNew.end())
           assert(false);
 
         // Add the "don't care" with respect to length.
-        stackIter->lowerProfile.length = 0;
-        stackIter->upperProfile.length = sumProfile.length; // ?
+        stackIter->setLength(0, sumProfile.getLength()); // ?
 
         citer->set(sumProfile, 
           stackIter->lowerProfile, stackIter->upperProfile);
@@ -272,8 +258,9 @@ cout << setw(4) << "t#" <<
               assert(false);
             }
 
-            stackIter->lowerProfile.length = lLow;
-            stackIter->upperProfile.length = lHigh;
+            // stackIter->lowerProfile.length = lLow;
+            // stackIter->upperProfile.length = lHigh;
+            stackIter->setLength(lLow, lHigh);
 
             citer->set(sumProfile, stackIter->lowerProfile,
               stackIter->upperProfile);

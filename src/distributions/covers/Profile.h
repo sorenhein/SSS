@@ -19,10 +19,9 @@ class Profile
 {
   // TODO Reduce and then eliminate
   friend class DistCore;
-  friend class Covers;
   friend class Product;
   friend class CoverSpec;
-  friend class CoverMemory;
+  friend struct CoverStackInfo;
 
   private:
 

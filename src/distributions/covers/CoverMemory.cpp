@@ -9,6 +9,7 @@
 #include <cassert>
 
 #include "CoverMemory.h"
+#include "CoverHelp.h"
 #include "Compositions.h"
 #include "ExplStats.h"
 
@@ -784,6 +785,7 @@ void CoverMemory::makeSets(
   const unsigned char length,
   const Profile& comp)
 {
+  /*
   struct StackInfo
   {
     Profile lowerProfile;
@@ -829,10 +831,11 @@ void CoverMemory::makeSets(
       upperProfile.tops[topNumber] = topCountHigh;
     };
   };
+  */
 
-  list<StackInfo> stack; // Unfinished expansions
+  list<CoverStackInfo> stack; // Unfinished expansions
   // stack.emplace_back(StackInfo(comp.size(), length));
-  stack.emplace_back(StackInfo(comp));
+  stack.emplace_back(CoverStackInfo(comp));
 
   list<Product> sets;
   sets.resize(COVER_CHUNK_SIZE);
@@ -892,8 +895,6 @@ void CoverMemory::makeSets(
         if (maxEast > stackIter->maxEast)
           stackIter->maxEast = maxEast;
 
-        // stackIter->lowerProfile.tops[topNumber] = topCountLow;
-        // stackIter->upperProfile.tops[topNumber] = topCountHigh;
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
 // cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
@@ -905,13 +906,8 @@ void CoverMemory::makeSets(
           assert(false);
         }
 // cout << "Adding top without length constraint" << endl;
-        // stackIter->lowerProfile.length = 0;
-        // stackIter->upperProfile.length = length; // ?
         stackIter->setLength(0, length); // ?
 
-        // Profile pp;
-        // pp.length = length;
-        // pp.tops = comp.getTops();
         iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
 // cout << "Added" << endl;
         iter++;
@@ -946,15 +942,8 @@ void CoverMemory::makeSets(
               cout << "CM End reached" << endl;
               assert(false);
             }
-            // stackIter->lowerProfile.length = lenLow;
-            // stackIter->upperProfile.length = lenHigh;
             stackIter->setLength(lenLow, lenHigh);
-            // Profile pp2;
-            // pp2.length = length;
-            // pp2.tops = comp.getTops();
             iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
-            // iter->set(length, lenLow, lenHigh, 
-              // comp.getTops(), stackIter->topsLow, stackIter->topsHigh);
             iter++;
           }
         }

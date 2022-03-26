@@ -15,6 +15,7 @@
 
 #include "Cover.h"
 #include "CoverNew.h"
+#include "CoverHelp.h"
 #include "TableauCache.h"
 
 class Distribution;
@@ -31,6 +32,7 @@ class Covers
 {
   private:
 
+    /*
     struct CoverStackInfo
     {
       Profile lowerProfile;
@@ -59,6 +61,7 @@ class Covers
         topNext = 0;
       };
     };
+    */
 
 
     Profile sumProfile;
