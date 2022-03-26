@@ -16,13 +16,17 @@ struct RunningBounds
   unsigned char maxWest; // Largest West maximum
   unsigned char maxEast; // Largest East maximum
 
-  void reset()
+  unsigned char length;
+
+  void reset(const unsigned char lengthIn)
   {
     minWest = 0;
     minEast = 0;
     maxDiff = 0;
     maxWest = 0;
     maxEast = 0;
+
+    length = lengthIn;
   };
 
   void step(
@@ -53,6 +57,46 @@ struct RunningBounds
       maxEast = max(stackBounds.maxEast, maxEastIncrement);
     }
   };
+
+  bool busted()
+  {
+    if (minWest + maxDiff > length)
+    {
+      // There is no room for this worst-case single maximum,
+      // so we skip the entire set, as there will be a more
+      // accurate other set.
+      return true;
+    }
+
+    if (minEast + maxDiff > length)
+      return true;
+
+    if (minWest + minEast > length)
+      return true;
+    
+    return false;
+  };
+
+  unsigned char lengthWestLow() const
+  {
+    return minWest;
+  };
+
+  unsigned char lengthWestHigh() const
+  {
+    return length - minEast;
+  };
+
+  string str() const
+  {
+    stringstream ss;
+
+    ss << "West: " << +minWest << " to " << +maxWest << "\n";
+    ss << "East: " << +minEast << " to " << +maxEast << "\n";
+    ss << "Diff: " << +maxDiff << "\n";
+    
+    return ss.str();
+  };
 };
 
 
@@ -76,7 +120,7 @@ class ProfilePair
       lowerProfile.tops.resize(sumProfile.size(), 0);
       upperProfile = sumProfile;
 
-      bounds.reset();
+      bounds.reset(sumProfile.getLength());
       topNext = 0;
     };
 

@@ -127,6 +127,7 @@ void Covers::prepareNew(
   timersStrat[20].stop();
 
   RunningBounds bounds;
+  bounds.reset(sumProfile.getLength());
 
   timersStrat[21].start();
   while (! stack.empty())
@@ -148,69 +149,54 @@ void Covers::prepareNew(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
+        // Never use the lowest top explicitly.  Maybe it shouldn't
+        // be there at all, but it is.
+        if (topNumber == 0 &&
+            (topCountLow != 0 || topCountHigh != topCountActual))
+          continue;
+
         bounds.step(
           stackIter->bounds,
           topCountActual,
           topCountLow,
           topCountHigh);
 
-        if (bounds.minWest + bounds.maxDiff > sumProfile.getLength())
-        {
-          // There is no room for this worst-case single maximum,
-          // so we skip the entire set, as there will be a more 
-          // accurate other set.
-          continue;
-        }
-
-        if (bounds.minEast + bounds.maxDiff > sumProfile.getLength())
+        // if (bounds.busted(sumProfile.getLength()))
+        if (bounds.busted())
           continue;
 
-        if (bounds.minWest + bounds.minEast > sumProfile.getLength())
-          continue;
-
-        // Never use the last top explicitly.  Maybe it shouldn't
-        // be there at all, but it is.
-        if (topNumber == 0 &&
-            (topCountLow != 0 || topCountHigh != topCountActual))
-          continue;
-
-        stackIter->addTop(topNumber, topCountLow, topCountHigh);
-
-        if (citer == coversNew.end())
-          assert(false);
+        assert(citer != coversNew.end());
 
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
+
+        stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
         citer->set(sumProfile, * stackIter);
         citer++;
 
         // Add the possible length constraints.
         const unsigned char lenMax = sumProfile.getLength() - bounds.minEast;
+        const unsigned char westLow = bounds.lengthWestLow();
+        const unsigned char westHigh = bounds.lengthWestHigh();
 
+        // for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
         for (unsigned char lLow = bounds.minWest; lLow <= lenMax; lLow++)
         {
           for (unsigned char lHigh = lLow; 
             lHigh <= lenMax; lHigh++)
+          // for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
+            // if (lLow == westLow && lHigh == westHigh)
             if (lLow == bounds.minWest && lHigh == lenMax)
               continue;
 
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && lHigh < bounds.maxWest)
+            // if (topNumber > 0 && lHigh < westHigh)
               continue;
 
-            if (citer == coversNew.end())
-            {
-              cout << "OVERFLOW\n";
-              cout << sumProfile.strLine();
-
-              for (auto c: coversNew)
-                cout << c.strLine();
-
-              cout << "C End reached2" << endl;
-              assert(false);
-            }
+            assert(citer != coversNew.end());
 
             stackIter->setLength(lLow, lHigh);
 
