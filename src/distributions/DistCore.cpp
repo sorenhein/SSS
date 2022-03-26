@@ -484,7 +484,6 @@ void DistCore::getCoverDataNew(
 
   distProfiles.resize(len);
   cases.resize(len);
-  sumProfile.resize(rankSize);
 
   // TODO Slightly duplicative.  Could pass both into set, I guess?
   vector<unsigned char> tops(rankSize);
@@ -492,7 +491,7 @@ void DistCore::getCoverDataNew(
     tops[i] = static_cast<unsigned char>(
       distributions[0].west.counts[i] +
       distributions[0].east.counts[i]);
-  sumProfile.set(tops, static_cast<unsigned char>(rankSize-1));
+  sumProfile.set(tops);
 
   for (unsigned i = 0; i < len; i++)
   {
@@ -501,8 +500,7 @@ void DistCore::getCoverDataNew(
     // TODO Can we make dist such that we just have a reference
     // to a Profile, and no copying?
 
-    distProfiles[i].set(dist.west.counts,
-      static_cast<unsigned char>(dist.west.counts.size()-1));
+    distProfiles[i].set(dist.west.counts);
 
     cases[i] = static_cast<unsigned char>(dist.cases);
   }

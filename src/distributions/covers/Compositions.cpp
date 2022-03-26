@@ -60,7 +60,7 @@ void Compositions::makeLength(const unsigned char length)
       stackIter->tops[topNumber] = topCount;
       if (topCount == remaining)
       {
-        iter->set(stackIter->tops, topNumber);
+        iter->set(stackIter->tops, topNumber+1);
         iter++;
 
       }

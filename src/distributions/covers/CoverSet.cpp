@@ -53,8 +53,7 @@ bool CoverSet::includes(
   else
   {
     Profile mirror = distProfile;
-    mirror.resize(sumProfile.size()); // 2
-    mirror.mirror(sumProfile);
+    mirror.mirrorAround(sumProfile);
 
     return product.includes(mirror);
   }

@@ -28,18 +28,16 @@ class Profile
 
   public:
 
-    void resize(const unsigned numTops);
-
-    // TODO Can we make it "size" instead, defaulting to topsIn.size()?
+    // Default: Use topsIn.size()
     void set(
       const vector<unsigned char>& topsIn,
-      const unsigned char lastUsed);
+      const unsigned char numTops = 0);
 
     void setSingle(
       const unsigned char lengthIn,
       const unsigned char topIn);
 
-    void mirror(const Profile& profile2);
+    void mirrorAround(const Profile& sumProfile);
 
     unsigned char count(const unsigned char topNo) const;
 

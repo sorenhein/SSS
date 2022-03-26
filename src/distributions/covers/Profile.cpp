@@ -14,29 +14,15 @@
 #include "Profile.h"
 
 
-void Profile::resize(const unsigned numTops)
-{
-  tops.resize(numTops);
-}
-
-
 void Profile::set(
   const vector<unsigned char>& topsIn,
-  const unsigned char lastUsed)
+  const unsigned char numTops)
 {
-  /*
-  if (lastUsed+1 != static_cast<unsigned char>(topsIn.size()))
-  {
-cout << "lastUsed " << +lastUsed << endl;
-cout << "size " << +topsIn.size() << endl;
-  assert(lastUsed+1 == static_cast<unsigned char>(topsIn.size()));
-  }
-  */
-  // TODO Check that perhaps lastUsed == topsIn.size()-1 always?
-  tops.resize(lastUsed+1);
+  const unsigned num = (numTops == 0 ? topsIn.size() : numTops);
+  tops.resize(num);
 
   length = 0;
-  for (unsigned i = 0; i <= lastUsed; i++)
+  for (unsigned i = 0; i < num; i++)
   {
     tops[i] = topsIn[i];
     length += topsIn[i];
@@ -56,16 +42,15 @@ void Profile::setSingle(
 }
 
 
-void Profile::mirror(const Profile& profile2)
+void Profile::mirrorAround(const Profile& sumProfile)
 {
-  // Turn this profile into pp2 (a sum profile) minus this one.
-
-  length = profile2.length - length;
+  // Turn this profile into sumProfile minus this one.
+  length = sumProfile.length - length;
 
   const unsigned s = tops.size();
-  assert(profile2.tops.size() == s);
+  assert(sumProfile.tops.size() == s);
   for (unsigned i = 0; i < s; i++)
-    tops[i] = profile2.tops[i] - tops[i];
+    tops[i] = sumProfile.tops[i] - tops[i];
 }
 
 
