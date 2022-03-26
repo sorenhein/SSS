@@ -800,14 +800,10 @@ void CoverMemory::makeSets(
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->topNext; // Next to write
-// cout << "Looking up " << +topNumber << " vs. " << comp.size() << endl;
     if (topNumber >= comp.size())
       break;
 
     const unsigned char topCountActual = comp.count(topNumber);
-
-// cout << "top number " << +topNumber << ", count " <<
-  // +topCountActual << endl;
 
     for (unsigned char topCountLow = 0; 
         topCountLow <= topCountActual; topCountLow++)
@@ -848,25 +844,20 @@ void CoverMemory::makeSets(
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
-// cout << "top number " << +topNumber << ": (" << +topCountLow << ", " << +topCountHigh << ")" << endl;
-
         // Add the "don't care" with respect to length.
         if (iter == sets.end())
         {
           cout << "CM End reached" << endl;
           assert(false);
         }
-// cout << "Adding top without length constraint" << endl;
         stackIter->setLength(0, length); // ?
 
-        iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
-// cout << "Added" << endl;
+        // iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
+        iter->set(comp, * stackIter);
         iter++;
 
         // Add the possible length constraints.
         const unsigned char lenMax = length - minEast;
-
-// cout << "L  (" << +minWest << ", " << +lenMax << ")" << endl;
 
         for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
         {
@@ -876,17 +867,10 @@ void CoverMemory::makeSets(
             if (lenLow == minWest && lenHigh == lenMax)
               continue;
 
- // cout << "  C  (" << +lenLow << ", " << +lenHigh << ")" << 
-   // ", maxes " << +stackIter->maxWest << ", " << +stackIter->maxEast << "\n";
- // cout << "comp1: " << +stackIter->maxWest << " vs. " << +lenHigh << endl;
- // cout << "comp2: " << +stackIter->maxEast << " vs. " << +(length-lenLow) <<
-   "\n";
             if (stackIter->bounds.maxWest > lenHigh)
               continue;
             if (stackIter->bounds.maxEast > length - lenLow)
               continue;
-
-// cout << "    storing\n";
 
             if (iter == sets.end())
             {
@@ -894,7 +878,8 @@ void CoverMemory::makeSets(
               assert(false);
             }
             stackIter->setLength(lenLow, lenHigh);
-            iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
+            // iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
+            iter->set(comp, * stackIter);
             iter++;
           }
         }
@@ -912,14 +897,6 @@ void CoverMemory::makeSets(
   }
 
   assert(! sets.empty());
-  /*
-  cout << sets.front().strHeader();
-  for (auto it = sets.begin(); it != iter; it++)
-    cout << it->strLine(length);
-  cout << "\n";
-  */
-
-// cout << "DONE " << endl;
 }
 
 

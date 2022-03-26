@@ -13,6 +13,7 @@
 
 #include "Product.h"
 #include "Profile.h"
+#include "ProfilePair.h"
 
 
 Product::Product()
@@ -28,9 +29,6 @@ void Product::reset()
   tops.clear();
   topSize = 0;
   topCount = 0;
-
-  // cout << "LENGTH SIZE " << sizeof(length) << endl;
-  // assert(false);
 }
 
 
@@ -45,21 +43,25 @@ void Product::set(
   const Profile& lowerProfile,
   const Profile& upperProfile)
 {
-  length.set(sumProfile.length, lowerProfile.length, upperProfile.length);
+  length.set(
+    sumProfile.getLength(), 
+    lowerProfile.getLength(), 
+    upperProfile.getLength());
+
   complexity = length.complexity();
   range = length.range();
 
-  const unsigned topLowSize = lowerProfile.tops.size();
-  assert(upperProfile.tops.size() == topLowSize);
+  const unsigned topLowSize = lowerProfile.size();
+  assert(upperProfile.size() == topLowSize);
   assert(tops.size() >= topLowSize);
 
   // Always skip the first one.
   for (unsigned char i = 1; i < topLowSize; i++)
   {
     tops[i].set(
-      sumProfile.tops[i], 
-      lowerProfile.tops[i], 
-      upperProfile.tops[i]);
+      sumProfile.count(i), 
+      lowerProfile.count(i), 
+      upperProfile.count(i));
 
     // Note the first, i.e. lowest one.
     if (tops[i].used())
@@ -85,31 +87,42 @@ void Product::set(
 }
 
 
+void Product::set(
+  const Profile& sumProfile,
+  const ProfilePair& profilePair)
+{
+  Product::set(
+    sumProfile, 
+    profilePair.lowerProfile, 
+    profilePair.upperProfile);
+}
+
+
 bool Product::includes(const Profile& distProfile) const
 {
-  if (length.used() && ! length.includes(distProfile.length))
+  if (length.used() && ! length.includes(distProfile.getLength()))
     return false;
 
-if (distProfile.tops.size() != tops.size())
+if (distProfile.size() != tops.size())
 {
 cout << 
   "tops.size " << tops.size() << 
-  ", in " << distProfile.tops.size() << endl;
-if (distProfile.tops.size() > 20)
+  ", in " << distProfile.size() << endl;
+if (distProfile.size() > 20)
   assert(false);
 
-cout << "lengthIn " << +distProfile.length << endl;
+cout << "lengthIn " << +distProfile.getLength() << endl;
 for (unsigned i = 0; i < tops.size(); i++)
   cout << i << ": " << tops[i].strGeneral() << endl;
-for (unsigned i = 0; i < distProfile.tops.size(); i++)
-  cout << i << ": " << +distProfile.tops[i] << endl;
+for (unsigned char i = 0; i < distProfile.size(); i++)
+  cout << i << ": " << +distProfile.count(i) << endl;
 
-  assert(distProfile.tops.size() == tops.size());
+  assert(distProfile.size() == tops.size());
 }
-  for (unsigned i = 0; i < distProfile.tops.size(); i++)
+  for (unsigned char i = 0; i < distProfile.size(); i++)
   {
     if (tops[i].used() && 
-        ! tops[i].includes(static_cast<unsigned char>(distProfile.tops[i])))
+        ! tops[i].includes(distProfile.count(i)))
       return false;
   }
   return true;
@@ -162,7 +175,7 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
   // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
   // considered as 1-4 from the other side.
   Opponent backstop = OPP_WEST;
-  const Opponent lOpp = length.simplestOpponent(sumProfile.length);
+  const Opponent lOpp = length.simplestOpponent(sumProfile.getLength());
 
   if (lOpp == OPP_WEST)
     return OPP_WEST;
@@ -177,12 +190,12 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
       return OPP_EAST;
   }
   
-  const unsigned s = tops.size();
+  const unsigned char s = static_cast<unsigned char>(tops.size());
 
   // Start from the highest top.
-  for (unsigned i = s; --i > 0; )
+  for (unsigned char i = s; --i > 0; )
   {
-    const Opponent lTop = tops[i].simplestOpponent(sumProfile.tops[i]);
+    const Opponent lTop = tops[i].simplestOpponent(sumProfile.count(i));
     if (lTop == OPP_WEST)
       return OPP_WEST;
     else if (lTop == OPP_EAST)
@@ -216,7 +229,7 @@ string Product::strLine(const Profile& sumProfile) const
 
   ss << setw(8) << length.strGeneral();
 
-  assert(tops.size() == sumProfile.tops.size());
+  assert(tops.size() == sumProfile.size());
   for (unsigned i = 0; i < tops.size(); i++)
     ss << setw(8) << tops[i].strGeneral();
 
@@ -247,7 +260,7 @@ string Product::strVerbal(
   if (topCount == 0)
   {
     return length.strLength(
-      sumProfile.length, 
+      sumProfile.getLength(),
       simplestOpponent, 
       symmFlag);
   }
@@ -255,7 +268,7 @@ string Product::strVerbal(
   if (! length.used())
   {
     return tops.back().strTop(
-      sumProfile.tops.back(),
+      sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
       simplestOpponent, 
       symmFlag);
   }
@@ -264,23 +277,25 @@ string Product::strVerbal(
 
   if (top.getOperator() == COVER_EQUAL)
   {
+    // assert(sumProfile.size() == 2);
     return top.strWithLength(
       length,
-      sumProfile.length, 
-      sumProfile.tops.back(),
+      sumProfile.getLength(), 
+      sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
       simplestOpponent,
       symmFlag);
   }
   else
   {
+    // assert(sumProfile.size() == 2);
     return 
       length.strLength(
-        sumProfile.length, 
+        sumProfile.getLength(), 
         simplestOpponent, 
         symmFlag) + 
       ", and " + 
       top.strTop(
-        sumProfile.tops.back(),
+        sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
         simplestOpponent, 
         symmFlag);
   }

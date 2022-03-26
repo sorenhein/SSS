@@ -28,6 +28,7 @@
 using namespace std;
 
 class Profile;
+struct ProfilePair;
 
 
 class Product
@@ -58,6 +59,10 @@ class Product
     const Profile& sumProfile,
     const Profile& lowerProfile,
     const Profile& upperProfile);
+
+  void set(
+    const Profile& sumProfile,
+    const ProfilePair& profilePair);
 
   bool includes(const Profile& distProfile) const;
 

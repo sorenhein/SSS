@@ -24,6 +24,14 @@ void Profile::set(
   const vector<unsigned char>& topsIn,
   const unsigned char lastUsed)
 {
+  /*
+  if (lastUsed+1 != static_cast<unsigned char>(topsIn.size()))
+  {
+cout << "lastUsed " << +lastUsed << endl;
+cout << "size " << +topsIn.size() << endl;
+  assert(lastUsed+1 == static_cast<unsigned char>(topsIn.size()));
+  }
+  */
   // TODO Check that perhaps lastUsed == topsIn.size()-1 always?
   tops.resize(lastUsed+1);
 
@@ -45,18 +53,6 @@ void Profile::setSingle(
   // The bottom top is not used, so this is what a single top means.
   tops.resize(2);
   tops[1] = topIn;
-}
-
-
-void Profile::setSingleDeprecated(
-  const unsigned char lengthIn,
-  const unsigned char topIn)
-{
-  length = lengthIn;
-
-  // TODO Shift up to 2
-  tops.resize(1);
-  tops[0] = topIn;
 }
 
 

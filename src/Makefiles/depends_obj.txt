@@ -357,6 +357,7 @@ distributions/covers/Product.obj: distributions/covers/Term.h
 distributions/covers/Product.obj: distributions/covers/TermHelp.h
 distributions/covers/Product.obj: utils/table.h distributions/covers/Top.h
 distributions/covers/Product.obj: distributions/covers/Profile.h
+distributions/covers/Product.obj: distributions/covers/ProfilePair.h
 distributions/covers/Profile.obj: distributions/covers/Profile.h
 distributions/covers/CoverSet.obj: distributions/covers/CoverSet.h
 distributions/covers/CoverSet.obj: distributions/covers/Product.h

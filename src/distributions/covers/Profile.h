@@ -17,10 +17,7 @@ using namespace std;
 
 class Profile
 {
-  // TODO Reduce and then eliminate
-
   friend struct ProfilePair;
-  friend class Product;
 
   private:
 
@@ -39,10 +36,6 @@ class Profile
       const unsigned char lastUsed);
 
     void setSingle(
-      const unsigned char lengthIn,
-      const unsigned char topIn);
-
-    void setSingleDeprecated(
       const unsigned char lengthIn,
       const unsigned char topIn);
 
