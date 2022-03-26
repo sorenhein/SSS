@@ -815,13 +815,13 @@ void CoverMemory::makeSets(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        const unsigned char minWest = stackIter->minWest + topCountLow;
-        const unsigned char minEast = stackIter->minEast + 
+        const unsigned char minWest = stackIter->bounds.minWest + topCountLow;
+        const unsigned char minEast = stackIter->bounds.minEast + 
           topCountActual - topCountHigh;
 
         unsigned char diff = topCountHigh - topCountLow;
-        if (diff < stackIter->maxDiff)
-          diff = stackIter->maxDiff;
+        if (diff < stackIter->bounds.maxDiff)
+          diff = stackIter->bounds.maxDiff;
 
         if (minWest + diff > length)
         {
@@ -839,12 +839,12 @@ void CoverMemory::makeSets(
 
         // If there is a top that in itself exceeds the length range,
         // there is a more economical version of this entry.
-        if (topCountHigh > stackIter->maxWest)
-          stackIter->maxWest = topCountHigh;
+        if (topCountHigh > stackIter->bounds.maxWest)
+          stackIter->bounds.maxWest = topCountHigh;
 
         const unsigned char maxEast = topCountActual - topCountLow;
-        if (maxEast > stackIter->maxEast)
-          stackIter->maxEast = maxEast;
+        if (maxEast > stackIter->bounds.maxEast)
+          stackIter->bounds.maxEast = maxEast;
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
@@ -881,9 +881,9 @@ void CoverMemory::makeSets(
  // cout << "comp1: " << +stackIter->maxWest << " vs. " << +lenHigh << endl;
  // cout << "comp2: " << +stackIter->maxEast << " vs. " << +(length-lenLow) <<
    "\n";
-            if (stackIter->maxWest > lenHigh)
+            if (stackIter->bounds.maxWest > lenHigh)
               continue;
-            if (stackIter->maxEast > length - lenLow)
+            if (stackIter->bounds.maxEast > length - lenLow)
               continue;
 
 // cout << "    storing\n";
@@ -901,9 +901,9 @@ void CoverMemory::makeSets(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->minWest = minWest;
-        nextIter->minEast = minEast;
-        nextIter->maxDiff = diff;
+        nextIter->bounds.minWest = minWest;
+        nextIter->bounds.minEast = minEast;
+        nextIter->bounds.maxDiff = diff;
         nextIter->topNext++;
       }
     }

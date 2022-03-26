@@ -156,13 +156,13 @@ cout << setw(4) << "t#" <<
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        const unsigned char minWest = stackIter->minWest + topCountLow;
-        const unsigned char minEast = stackIter->minEast + 
+        const unsigned char minWest = stackIter->bounds.minWest + topCountLow;
+        const unsigned char minEast = stackIter->bounds.minEast + 
           topCountActual - topCountHigh;
 
         unsigned char diff = topCountHigh - topCountLow;
-        if (diff < stackIter->maxDiff)
-          diff = stackIter->maxDiff;
+        if (diff < stackIter->bounds.maxDiff)
+          diff = stackIter->bounds.maxDiff;
 
 /*
  cout << setw(4) << +topNumber <<
@@ -203,13 +203,13 @@ cout << setw(4) << "t#" <<
         if (usedFlag)
         {
           const unsigned char dtop = topCountActual - topCountLow;
-          maxWest = max(topCountHigh, stackIter->maxWest);
-          maxEast = max(dtop, stackIter->maxEast);
+          maxWest = max(topCountHigh, stackIter->bounds.maxWest);
+          maxEast = max(dtop, stackIter->bounds.maxEast);
         }
         else
         {
-          maxWest = stackIter->maxWest;
-          maxEast = stackIter->maxEast;
+          maxWest = stackIter->bounds.maxWest;
+          maxEast = stackIter->bounds.maxEast;
         }
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
@@ -271,11 +271,11 @@ cout << setw(4) << "t#" <<
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->minWest = minWest;
-        nextIter->minEast = minEast;
-        nextIter->maxDiff = diff;
-        nextIter->maxWest = maxWest;
-        nextIter->maxEast = maxEast;
+        nextIter->bounds.minWest = minWest;
+        nextIter->bounds.minEast = minEast;
+        nextIter->bounds.maxDiff = diff;
+        nextIter->bounds.maxWest = maxWest;
+        nextIter->bounds.maxEast = maxEast;
         nextIter->topNext++;
 // cout << "pushed, stack size now " << stack.size() << endl;
       }

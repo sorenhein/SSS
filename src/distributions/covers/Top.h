@@ -95,8 +95,6 @@ class Top: public Term
       const bool symmFlag) const;
 
     string strWithLength(
-      // const unsigned char distLengthLower,
-      // const unsigned char distLengthUpper,
       const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops,

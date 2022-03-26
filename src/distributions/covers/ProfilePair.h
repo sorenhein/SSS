@@ -5,16 +5,31 @@
 
 using namespace std;
 
-struct ProfilePair
+struct RunningBounds
 {
-  Profile lowerProfile;
-  Profile upperProfile;
-
   unsigned char minWest; // Sum of West's top minima
   unsigned char minEast; // Sum of East's top minima
   unsigned char maxDiff; // Large difference max-min for a top
   unsigned char maxWest; // Largest West maximum
   unsigned char maxEast; // Largest East maximum
+
+  void reset()
+  {
+    minWest = 0;
+    minEast = 0;
+    maxDiff = 0;
+    maxWest = 0;
+    maxEast = 0;
+  };
+};
+
+struct ProfilePair
+{
+  Profile lowerProfile;
+  Profile upperProfile;
+
+  RunningBounds bounds;
+
   unsigned char topNext; // Running top number
 
   ProfilePair(const Profile& comp)
@@ -22,11 +37,7 @@ struct ProfilePair
     lowerProfile.tops.resize(comp.size(), 0);
     upperProfile = comp;
 
-    minWest = 0;
-    minEast = 0;
-    maxDiff = 0;
-    maxWest = 0;
-    maxEast = 0;
+    bounds.reset();
     topNext = 0;
   };
 
