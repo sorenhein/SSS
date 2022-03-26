@@ -58,7 +58,7 @@ struct RunningBounds
     }
   };
 
-  bool busted()
+  bool busted() const
   {
     if (minWest + maxDiff > length)
     {
@@ -74,6 +74,24 @@ struct RunningBounds
     if (minWest + minEast > length)
       return true;
     
+    return false;
+  };
+
+  bool bustedLength(
+    const unsigned char lengthWestLow,
+    const unsigned char lengthWestHigh) const
+  {
+    if (lengthWestHigh < maxWest)
+    {
+      // There is a tighter way to specify this cover, as the upper
+      // West length doesn't even reach the maximum of the single
+      // highest top count.
+      return true;
+    }
+
+    if (length - lengthWestLow < maxEast)
+      return true;
+
     return false;
   };
 

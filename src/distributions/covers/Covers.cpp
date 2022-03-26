@@ -161,7 +161,6 @@ void Covers::prepareNew(
           topCountLow,
           topCountHigh);
 
-        // if (bounds.busted(sumProfile.getLength()))
         if (bounds.busted())
           continue;
 
@@ -175,21 +174,18 @@ void Covers::prepareNew(
         citer->set(sumProfile, * stackIter);
         citer++;
 
-        // Add the possible length constraints.
-        const unsigned char lenMax = sumProfile.getLength() - bounds.minEast;
         const unsigned char westLow = bounds.lengthWestLow();
         const unsigned char westHigh = bounds.lengthWestHigh();
 
-        // for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
-        for (unsigned char lLow = bounds.minWest; lLow <= lenMax; lLow++)
+        for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
         {
-          for (unsigned char lHigh = lLow; 
-            lHigh <= lenMax; lHigh++)
-          // for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
+          for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
-            // if (lLow == westLow && lHigh == westHigh)
-            if (lLow == bounds.minWest && lHigh == lenMax)
+            if (lLow == westLow && lHigh == westHigh)
+            {
+              // No point in specifying length explicitly.
               continue;
+            }
 
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && lHigh < bounds.maxWest)
