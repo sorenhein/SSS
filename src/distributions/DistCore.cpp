@@ -467,7 +467,7 @@ void DistCore::getCoverData(
   {
     const DistInfo& dist = distributions[i];
 
-    distProfiles[i].setSingle(
+    distProfiles[i].setSingleDeprecated(
       static_cast<unsigned char >(dist.west.len),
       static_cast<unsigned char>(dist.west.counts[rankSize-1]));
 

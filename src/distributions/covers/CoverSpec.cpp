@@ -32,9 +32,7 @@ void CoverSpec::setID(
   const unsigned char length,
   const unsigned char tops1)
 {
-  sumProfile.length = length;
-  sumProfile.tops.resize(2);
-  sumProfile.tops[1] = tops1;
+  sumProfile.setSingle(length, tops1);
 }
 
 
@@ -92,12 +90,8 @@ void CoverSpec::westLengthRange(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
-  lowerProfile.tops.resize(2);
-  upperProfile.tops.resize(2);
-  lowerProfile.length = len1;
-  upperProfile.length = len2;
-  lowerProfile.tops[1] = 0;
-  upperProfile.tops[1] = sumProfile.tops[1];
+  lowerProfile.setSingle(len1, 0);
+  upperProfile.setSingle(len2, sumProfile.tops[1]);
 
   cset.set(sumProfile, lowerProfile, upperProfile);
 }
@@ -139,12 +133,8 @@ void CoverSpec::westTop1Range(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
-  lowerProfile.tops.resize(2);
-  upperProfile.tops.resize(2);
-  lowerProfile.length = 0;
-  upperProfile.length = sumProfile.length;
-  lowerProfile.tops[1] = tops1;
-  upperProfile.tops[1] = tops2;
+  lowerProfile.setSingle(0, tops1);
+  upperProfile.setSingle(sumProfile.length, tops2);
 
   cset.set(sumProfile, lowerProfile, upperProfile);
 }
@@ -173,12 +163,8 @@ void CoverSpec::westGeneral(
   CoverSet& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
-  lowerProfile.tops.resize(2);
-  upperProfile.tops.resize(2);
-  lowerProfile.length = len1;
-  upperProfile.length = len2;
-  lowerProfile.tops[1] = tops1;
-  upperProfile.tops[1] = tops2;
+  lowerProfile.setSingle(len1, tops1);
+  upperProfile.setSingle(len2, tops2);
 
   cset.set(sumProfile, lowerProfile, upperProfile, symmFlag);
 }
@@ -204,8 +190,8 @@ void CoverSpec::eastGeneral(
 
 bool CoverSpec::includes(const Profile& distProfile) const
 {
-  assert(distProfile.tops.size() == 1);
-  assert(sumProfile.tops.size() == 2);
+  assert(distProfile.size() == 1);
+  assert(sumProfile.size() == 2);
 
   Profile dist2;
   dist2.tops.resize(2);

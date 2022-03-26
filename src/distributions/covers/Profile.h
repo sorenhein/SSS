@@ -43,6 +43,10 @@ class Profile
       const unsigned char lengthIn,
       const unsigned char topIn);
 
+    void setSingleDeprecated(
+      const unsigned char lengthIn,
+      const unsigned char topIn);
+
     void mirror(const Profile& pp2);
 
     unsigned char count(const unsigned char topNo) const;
