@@ -148,12 +148,11 @@ void Covers::prepareNew(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        bounds.minWest = stackIter->bounds.minWest + topCountLow;
-        bounds.minEast = stackIter->bounds.minEast + topCountActual - topCountHigh;
-
-        bounds.maxDiff = topCountHigh - topCountLow;
-        if (bounds.maxDiff < stackIter->bounds.maxDiff)
-          bounds.maxDiff = stackIter->bounds.maxDiff;
+        bounds.step(
+          stackIter->bounds,
+          topCountActual,
+          topCountLow,
+          topCountHigh);
 
         if (bounds.minWest + bounds.maxDiff > sumProfile.getLength())
         {
@@ -174,24 +173,6 @@ void Covers::prepareNew(
         if (topNumber == 0 &&
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
-
-        // If there is an active top that in itself exceeds the 
-        // length range,
-
-        const bool usedFlag = 
-          (topCountLow != 0 || topCountHigh != topCountActual);
-
-        if (usedFlag)
-        {
-          const unsigned char dtop = topCountActual - topCountLow;
-          bounds.maxWest = max(topCountHigh, stackIter->bounds.maxWest);
-          bounds.maxEast = max(dtop, stackIter->bounds.maxEast);
-        }
-        else
-        {
-          bounds.maxWest = stackIter->bounds.maxWest;
-          bounds.maxEast = stackIter->bounds.maxEast;
-        }
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 

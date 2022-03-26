@@ -1,6 +1,8 @@
 #ifndef SSS_PROFILEPAIR_H
 #define SSS_PROFILEPAIR_H
 
+#include <algorithm>
+
 #include "Profile.h"
 
 using namespace std;
@@ -21,6 +23,35 @@ struct RunningBounds
     maxDiff = 0;
     maxWest = 0;
     maxEast = 0;
+  };
+
+  void step(
+    const RunningBounds& stackBounds,
+    const unsigned char topCountActual,
+    const unsigned char topCountLow,
+    const unsigned char topCountHigh)
+  {
+    // Step stackBounds forward using the top data.
+
+    const unsigned char minEastIncrement = topCountActual - topCountHigh;
+    const unsigned char maxEastIncrement = topCountActual - topCountLow;
+    const unsigned char diff = topCountHigh - topCountLow;
+
+    minWest = stackBounds.minWest + topCountLow;
+    minEast = stackBounds.minEast + minEastIncrement;
+    maxDiff = max(stackBounds.maxDiff, diff);
+    
+    if (topCountLow == 0 && topCountHigh == topCountActual)
+    {
+      // The top is not actually used.
+      maxWest = stackBounds.maxWest;
+      maxEast = stackBounds.maxEast;
+    }
+    else
+    {
+      maxWest = max(stackBounds.maxWest, topCountHigh);
+      maxEast = max(stackBounds.maxEast, maxEastIncrement);
+    }
   };
 };
 
