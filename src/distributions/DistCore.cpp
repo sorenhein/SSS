@@ -283,9 +283,8 @@ void DistCore::splitAlternative(const DistMap& distMap)
 
           dist.west = stackElem.west;
 
-          // if (rank < rankSize)
-            dist.add(rank, rankSize, gap, 
-              stackElem.cases * binomial[available][gap]);
+          dist.add(rank, rankSize, gap, 
+            stackElem.cases * binomial[available][gap]);
 
           dist.east.diff(distMap.opponents, dist.west);
 
@@ -484,30 +483,25 @@ void DistCore::getCoverDataNew(
 
   distProfiles.resize(len);
   cases.resize(len);
-  sumProfile.tops.resize(rankSize);
+  sumProfile.resize(rankSize);
 
-  // TODO Move DistInfo more to unsigned char
-
-  sumProfile.length = static_cast<unsigned char>(
-    distributions[0].west.len + distributions[0].east.len);
-
+  // TODO Slightly duplicative.  Could pass both into set, I guess?
+  vector<unsigned char> tops(rankSize);
   for (unsigned i = 0; i < rankSize; i++)
-    sumProfile.tops[i] = static_cast<unsigned char>(
+    tops[i] = static_cast<unsigned char>(
       distributions[0].west.counts[i] +
       distributions[0].east.counts[i]);
+  sumProfile.set(tops, static_cast<unsigned char>(rankSize-1));
 
   for (unsigned i = 0; i < len; i++)
   {
     const DistInfo& dist = distributions[i];
-    distProfiles[i].length = static_cast<unsigned char>(dist.west.len);
 
     // TODO Can we make dist such that we just have a reference
     // to a Profile, and no copying?
 
-    distProfiles[i].tops.resize(dist.west.counts.size());
-    for (unsigned j = 0; j < dist.west.counts.size(); j++)
-      distProfiles[i].tops[j] = 
-        static_cast<unsigned char>(dist.west.counts[j]);
+    distProfiles[i].set(dist.west.counts,
+      static_cast<unsigned char>(dist.west.counts.size()-1));
 
     cases[i] = static_cast<unsigned char>(dist.cases);
   }

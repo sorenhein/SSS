@@ -18,7 +18,7 @@ using namespace std;
 class Profile
 {
   // TODO Reduce and then eliminate
-  friend class DistCore;
+  // friend class DistCore;
   friend class CoverSpec;
 
   friend struct ProfilePair;
@@ -35,6 +35,7 @@ class Profile
 
     void resize(const unsigned numTops);
 
+    // TODO Can we make it "size" instead, defaulting to topsIn.size()?
     void set(
       const vector<unsigned char>& topsIn,
       const unsigned char lastUsed);

@@ -24,6 +24,7 @@ void Profile::set(
   const vector<unsigned char>& topsIn,
   const unsigned char lastUsed)
 {
+  // TODO Check that perhaps lastUsed == topsIn.size()-1 always?
   tops.resize(lastUsed+1);
 
   length = 0;
