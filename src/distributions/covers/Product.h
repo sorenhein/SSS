@@ -28,7 +28,7 @@
 using namespace std;
 
 class Profile;
-struct ProfilePair;
+class ProfilePair;
 
 
 class Product

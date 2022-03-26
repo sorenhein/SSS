@@ -23,40 +23,46 @@ struct RunningBounds
   };
 };
 
-struct ProfilePair
+class ProfilePair
 {
-  Profile lowerProfile;
-  Profile upperProfile;
+  friend class Product;
 
-  RunningBounds bounds;
+  private:
 
-  unsigned char topNext; // Running top number
+    Profile lowerProfile;
+    Profile upperProfile;
 
-  ProfilePair(const Profile& sumProfile)
-  {
-    lowerProfile.tops.resize(sumProfile.size(), 0);
-    upperProfile = sumProfile;
+  public:
 
-    bounds.reset();
-    topNext = 0;
-  };
+    RunningBounds bounds;
 
-  void setLength(
-    const unsigned char lenLow,
-    const unsigned char lenHigh)
-  {
-    lowerProfile.length = lenLow;
-    upperProfile.length = lenHigh;
-  };
+    unsigned char topNext; // Running top number
 
-  void addTop(
-    const unsigned char topNumber,
-    const unsigned char topCountLow,
-    const unsigned char topCountHigh)
-  {
-    lowerProfile.tops[topNumber] = topCountLow;
-    upperProfile.tops[topNumber] = topCountHigh;
-  };
+    ProfilePair(const Profile& sumProfile)
+    {
+      lowerProfile.tops.resize(sumProfile.size(), 0);
+      upperProfile = sumProfile;
+
+      bounds.reset();
+      topNext = 0;
+    };
+
+    void setLength(
+      const unsigned char lenLow,
+      const unsigned char lenHigh)
+    {
+      lowerProfile.length = lenLow;
+      upperProfile.length = lenHigh;
+    };
+
+    void addTop(
+      const unsigned char topNumber,
+      const unsigned char topCountLow,
+      const unsigned char topCountHigh)
+    {
+      lowerProfile.tops[topNumber] = topCountLow;
+      upperProfile.tops[topNumber] = topCountHigh;
+    };
 };
 
 #endif

@@ -46,10 +46,16 @@ class CoverNew
 
     void resize(const unsigned topNumber);
 
+    /*
     void set(
       const Profile& sumProfile,
       const Profile& lowerProfile,
       const Profile& upperProfile);
+      */
+
+    void set(
+      const Profile& sumProfile,
+      const ProfilePair& profilePair);
 
     void prepare(
       const vector<Profile>& distProfiles,

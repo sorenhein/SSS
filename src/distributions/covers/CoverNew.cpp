@@ -35,12 +35,26 @@ void CoverNew::resize(const unsigned topNumber)
 }
 
 
+/*
 void CoverNew::set(
   const Profile& sumProfile,
   const Profile& lowerProfile,
   const Profile& upperProfile)
 {
   product.set(sumProfile, lowerProfile, upperProfile);
+
+  // We throw away a lot of covers, so it is a bit of a waste
+  // to calculate this now.  But it is convenient.
+  simplestOpponent = product.simplestOpponent(sumProfile);
+}
+*/
+
+
+void CoverNew::set(
+  const Profile& sumProfile,
+  const ProfilePair& profilePair)
+{
+  product.set(sumProfile, profilePair);
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.

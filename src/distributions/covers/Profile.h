@@ -17,7 +17,7 @@ using namespace std;
 
 class Profile
 {
-  friend struct ProfilePair;
+  friend class ProfilePair;
 
   private:
 

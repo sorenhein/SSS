@@ -138,7 +138,6 @@ void Covers::prepareNew(
       continue;
     }
 
-    // const unsigned char topCountActual = sumProfile.tops[topNumber];
     const unsigned char topCountActual = sumProfile.count(topNumber);
 
     for (unsigned char topCountLow = 0; 
@@ -202,8 +201,7 @@ void Covers::prepareNew(
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
 
-        citer->set(sumProfile, 
-          stackIter->lowerProfile, stackIter->upperProfile);
+        citer->set(sumProfile, * stackIter);
         citer++;
 
         // Add the possible length constraints.
@@ -225,10 +223,13 @@ void Covers::prepareNew(
             {
 
   cout << "OVERFLOW\n";
+  cout << sumProfile.strLine();
+  /*
   cout << "Length " << +sumProfile.getLength() << ", ";
   for (auto t: sumProfile.getTops())
     cout << +t << " ";
   cout << "\n";
+  */
 
   for (auto c: coversNew)
     cout << c.strLine();
@@ -239,8 +240,9 @@ void Covers::prepareNew(
 
             stackIter->setLength(lLow, lHigh);
 
-            citer->set(sumProfile, stackIter->lowerProfile,
-              stackIter->upperProfile);
+            citer->set(sumProfile, 
+              * stackIter);
+              // stackIter->lowerProfile, stackIter->upperProfile);
             citer++;
           }
         }
