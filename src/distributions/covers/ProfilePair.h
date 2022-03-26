@@ -32,10 +32,10 @@ struct ProfilePair
 
   unsigned char topNext; // Running top number
 
-  ProfilePair(const Profile& comp)
+  ProfilePair(const Profile& sumProfile)
   {
-    lowerProfile.tops.resize(comp.size(), 0);
-    upperProfile = comp;
+    lowerProfile.tops.resize(sumProfile.size(), 0);
+    upperProfile = sumProfile;
 
     bounds.reset();
     topNext = 0;

@@ -485,20 +485,15 @@ void DistCore::getCoverDataNew(
   distProfiles.resize(len);
   cases.resize(len);
 
-  // TODO Slightly duplicative.  Could pass both into set, I guess?
-  vector<unsigned char> tops(rankSize);
-  for (unsigned i = 0; i < rankSize; i++)
-    tops[i] = static_cast<unsigned char>(
-      distributions[0].west.counts[i] +
-      distributions[0].east.counts[i]);
-  sumProfile.set(tops);
+  sumProfile.setSum(
+    distributions[0].west.counts, 
+    distributions[0].east.counts);
 
   for (unsigned i = 0; i < len; i++)
   {
+    // A SideInfo actually has the same data elements as a Profile,
+    // but they are used differently, so we don't merge them here.
     const DistInfo& dist = distributions[i];
-
-    // TODO Can we make dist such that we just have a reference
-    // to a Profile, and no copying?
 
     distProfiles[i].set(dist.west.counts);
 

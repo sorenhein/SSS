@@ -126,15 +126,6 @@ void Covers::prepareNew(
   auto citer = coversNew.begin(); // Next one to write
   timersStrat[20].stop();
 
-/*
-cout << setw(4) << "t#" <<
-  setw(4) << "tlo" <<
-  setw(4) << "thi" <<
-  setw(4) << "mW" <<
-  setw(4) << "mE" <<
-  setw(4) << "dif" << "\n";
-  */
-
   timersStrat[21].start();
   while (! stack.empty())
   {
@@ -163,15 +154,6 @@ cout << setw(4) << "t#" <<
         unsigned char diff = topCountHigh - topCountLow;
         if (diff < stackIter->bounds.maxDiff)
           diff = stackIter->bounds.maxDiff;
-
-/*
- cout << setw(4) << +topNumber <<
-  setw(4) << +topCountLow <<
-  setw(4) << +topCountHigh <<
-  setw(4) << +minWest <<
-  setw(4) << +minEast <<
-  setw(4) << +diff << "\n";
-  */
 
         if (minWest + diff > sumProfile.getLength())
         {
@@ -222,7 +204,6 @@ cout << setw(4) << "t#" <<
 
         citer->set(sumProfile, 
           stackIter->lowerProfile, stackIter->upperProfile);
-// cout << citer->strLine();
         citer++;
 
         // Add the possible length constraints.
@@ -236,8 +217,6 @@ cout << setw(4) << "t#" <<
             if (lLow == minWest && lHigh == lenMax)
               continue;
 
-// cout << "len " << +lLow << " to " << +lHigh << 
-  // ": maxWest " << +maxWest << "\n";
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && lHigh < maxWest)
               continue;
@@ -258,13 +237,10 @@ cout << setw(4) << "t#" <<
               assert(false);
             }
 
-            // stackIter->lowerProfile.length = lLow;
-            // stackIter->upperProfile.length = lHigh;
             stackIter->setLength(lLow, lHigh);
 
             citer->set(sumProfile, stackIter->lowerProfile,
               stackIter->upperProfile);
-// cout << citer->strLine();
             citer++;
           }
         }
@@ -277,12 +253,10 @@ cout << setw(4) << "t#" <<
         nextIter->bounds.maxWest = maxWest;
         nextIter->bounds.maxEast = maxEast;
         nextIter->topNext++;
-// cout << "pushed, stack size now " << stack.size() << endl;
       }
     }
     assert(! stack.empty());
     stack.pop_front();
-// cout << "popped, stack size now " << stack.size() << endl;
   }
   timersStrat[21].stop();
 
@@ -294,13 +268,6 @@ const unsigned sizeOld = coversNew.size();
   timersStrat[22].stop();
 
   cout << "Length " << sumProfile.strLine() << "\n";
-  /*
-  cout << "Length " << +sumProfile.length << ", ";
-  for (auto t: sumProfile.tops)
-    cout << +t << " ";
-  cout << "\n";
-  */
-
 
   timersStrat[23].start();
   for (auto& c: coversNew)

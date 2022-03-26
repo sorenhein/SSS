@@ -37,6 +37,10 @@ class Profile
       const unsigned char lengthIn,
       const unsigned char topIn);
 
+    void setSum(
+      const vector<unsigned char>& topsWest,
+      const vector<unsigned char>& topsEast);
+
     void mirrorAround(const Profile& sumProfile);
 
     unsigned char count(const unsigned char topNo) const;

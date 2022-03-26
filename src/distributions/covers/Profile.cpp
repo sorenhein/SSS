@@ -42,6 +42,24 @@ void Profile::setSingle(
 }
 
 
+void Profile::setSum(
+  const vector<unsigned char>& topsWest,
+  const vector<unsigned char>& topsEast)
+{
+  const unsigned s = topsWest.size();
+  assert(topsEast.size() == s);
+
+  tops.resize(s);
+
+  length = 0;
+  for (unsigned i = 0; i < s; i++)
+  {
+    tops[i] = topsWest[i] + topsEast[i];
+    length += tops[i];
+  }
+}
+
+
 void Profile::mirrorAround(const Profile& sumProfile)
 {
   // Turn this profile into sumProfile minus this one.
