@@ -8,8 +8,10 @@
 using namespace std;
 
 
-struct RunningBounds
+class RunningBounds
 {
+  private:
+
   unsigned char minWest; // Sum of West's top minima
   unsigned char minEast; // Sum of East's top minima
   unsigned char maxDiff; // Largest difference max-min for a top
@@ -17,6 +19,8 @@ struct RunningBounds
   unsigned char maxEast; // Largest East maximum
 
   unsigned char length;
+
+  public:
 
   void reset(const unsigned char lengthIn)
   {

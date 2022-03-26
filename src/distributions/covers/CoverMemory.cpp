@@ -824,19 +824,34 @@ void CoverMemory::makeSets(
 
         // If there is a top that in itself exceeds the length range,
         // there is a more economical version of this entry.
+        /*
         if (topCountHigh > stackIter->bounds.maxWest)
+        {
+          assert(false);
           stackIter->bounds.maxWest = topCountHigh;
+        }
 
         const unsigned char maxEast = topCountActual - topCountLow;
         if (maxEast > stackIter->bounds.maxEast)
+        {
+cout << "actual " << +topCountActual << " low " <<
+  +topCountLow << " high " << +topCountHigh << "\n";
+cout << "comp " << comp.strLine() << "\n";
+cout << "bounds\n";
+cout << bounds.str() << endl;
+cout << "stackIter bounds\n";
+cout << stackIter->bounds.str() << endl;
+          assert(false);
           stackIter->bounds.maxEast = maxEast;
-
-        stackIter->addTop(topNumber, topCountLow, topCountHigh);
+        }
+        */
 
         // Add the "don't care" with respect to length.
         assert(iter != sets.end());
 
         stackIter->setLength(0, length);
+
+        stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
         iter->set(comp, * stackIter);
         iter++;
