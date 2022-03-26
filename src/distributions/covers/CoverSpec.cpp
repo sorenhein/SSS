@@ -46,8 +46,8 @@ void CoverSpec::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  length = sumProfile.length;
-  tops1 = sumProfile.tops[1];
+  length = sumProfile.getLength();
+  tops1 = sumProfile.count(1);
 }
 
 
@@ -78,7 +78,7 @@ void CoverSpec::eastLength(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec::westLength(sumProfile.length - len, ctrl);
+  CoverSpec::westLength(sumProfile.getLength() - len, ctrl);
 }
 
 
@@ -91,7 +91,7 @@ void CoverSpec::westLengthRange(
 
   Profile lowerProfile, upperProfile;
   lowerProfile.setSingle(len1, 0);
-  upperProfile.setSingle(len2, sumProfile.tops[1]);
+  upperProfile.setSingle(len2, sumProfile.count(1));
 
   cset.set(sumProfile, lowerProfile, upperProfile);
 }
@@ -103,8 +103,8 @@ void CoverSpec::eastLengthRange(
   const CoverControl ctrl)
 {
   CoverSpec::westLengthRange(
-    sumProfile.length - len2, 
-    sumProfile.length - len1, 
+    sumProfile.getLength() - len2, 
+    sumProfile.getLength() - len1, 
     ctrl);
 }
 
@@ -121,7 +121,7 @@ void CoverSpec::eastTop1(
   const unsigned char tops,
   const CoverControl ctrl)
 {
-  CoverSpec::westTop1(sumProfile.tops[1] - tops, ctrl);
+  CoverSpec::westTop1(sumProfile.count(1) - tops, ctrl);
 }
 
 
@@ -134,7 +134,7 @@ void CoverSpec::westTop1Range(
 
   Profile lowerProfile, upperProfile;
   lowerProfile.setSingle(0, tops1);
-  upperProfile.setSingle(sumProfile.length, tops2);
+  upperProfile.setSingle(sumProfile.getLength(), tops2);
 
   cset.set(sumProfile, lowerProfile, upperProfile);
 }
@@ -146,8 +146,8 @@ void CoverSpec::eastTop1Range(
   const CoverControl ctrl)
 {
   CoverSpec::westTop1Range(
-    sumProfile.tops[1] - tops2, 
-    sumProfile.tops[1] - tops1, 
+    sumProfile.count(1) - tops2, 
+    sumProfile.count(1) - tops1, 
     ctrl);
 }
 
@@ -179,24 +179,23 @@ void CoverSpec::eastGeneral(
   const CoverControl ctrl)
 {
   CoverSpec::westGeneral(
-    sumProfile.length - len2,
-    sumProfile.length - len1,
-    sumProfile.tops[1] - tops2,
-    sumProfile.tops[1] - tops1,
+    sumProfile.getLength() - len2,
+    sumProfile.getLength() - len1,
+    sumProfile.count(1) - tops2,
+    sumProfile.count(1) - tops1,
     symmFlag,
     ctrl);
 }
 
 
-bool CoverSpec::includes(const Profile& distProfile) const
+bool CoverSpec::includesOld(const Profile& distProfile) const
 {
   assert(distProfile.size() == 1);
   assert(sumProfile.size() == 2);
 
+  // TODO Eliminate
   Profile dist2;
-  dist2.tops.resize(2);
-  dist2.length = distProfile.length;
-  dist2.tops[1] = distProfile.tops[0];
+  dist2.setSingle(distProfile.getLength(), distProfile.count(0));
 
   for (auto& set: setsWest)
   {

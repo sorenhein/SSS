@@ -41,7 +41,7 @@ void Cover::prepare(
   specPtr = &specIn;
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (specIn.includes(distProfiles[dno]))
+    if (specIn.includesOld(distProfiles[dno]))
     {
       profile[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);

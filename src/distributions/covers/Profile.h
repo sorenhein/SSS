@@ -18,8 +18,6 @@ using namespace std;
 class Profile
 {
   // TODO Reduce and then eliminate
-  // friend class DistCore;
-  friend class CoverSpec;
 
   friend struct ProfilePair;
   friend class Product;
