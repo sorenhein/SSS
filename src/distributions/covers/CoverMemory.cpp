@@ -795,6 +795,9 @@ void CoverMemory::makeSets(
 
   auto iter = sets.begin(); // Next one to write
 
+  RunningBounds bounds;
+  bounds.reset(length);
+
   while (! stack.empty())
   {
     auto stackIter = stack.begin();
@@ -811,26 +814,12 @@ void CoverMemory::makeSets(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        const unsigned char minWest = stackIter->bounds.minWest + topCountLow;
-        const unsigned char minEast = stackIter->bounds.minEast + 
-          topCountActual - topCountHigh;
+        bounds.step(stackIter->bounds,
+          topCountActual,
+          topCountLow,
+          topCountHigh);
 
-        unsigned char diff = topCountHigh - topCountLow;
-        if (diff < stackIter->bounds.maxDiff)
-          diff = stackIter->bounds.maxDiff;
-
-        if (minWest + diff > length)
-        {
-          // There is no room for this worst-case single maximum,
-          // so we skip the entire set, as there will be a more 
-          // accurate other set.
-          continue;
-        }
-
-        if (minEast + diff > length)
-          continue;
-
-        if (minWest + minEast > length)
+        if (bounds.busted())
           continue;
 
         // If there is a top that in itself exceeds the length range,
@@ -852,19 +841,18 @@ void CoverMemory::makeSets(
         }
         stackIter->setLength(0, length); // ?
 
-        // iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
         iter->set(comp, * stackIter);
         iter++;
 
         // Add the possible length constraints.
-        const unsigned char lenMax = length - minEast;
+        const unsigned char lenMax = length - bounds.minEast;
 
-        for (unsigned char lenLow = minWest; lenLow <= lenMax; lenLow++)
+        for (unsigned char lenLow = bounds.minWest; lenLow <= lenMax; lenLow++)
         {
           for (unsigned char lenHigh = lenLow; 
             lenHigh <= lenMax; lenHigh++)
           { 
-            if (lenLow == minWest && lenHigh == lenMax)
+            if (lenLow == bounds.minWest && lenHigh == lenMax)
               continue;
 
             if (stackIter->bounds.maxWest > lenHigh)
@@ -878,7 +866,6 @@ void CoverMemory::makeSets(
               assert(false);
             }
             stackIter->setLength(lenLow, lenHigh);
-            // iter->set(comp, stackIter->lowerProfile, stackIter->upperProfile);
             iter->set(comp, * stackIter);
             iter++;
           }
@@ -886,9 +873,7 @@ void CoverMemory::makeSets(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->bounds.minWest = minWest;
-        nextIter->bounds.minEast = minEast;
-        nextIter->bounds.maxDiff = diff;
+        nextIter->bounds = bounds;
         nextIter->topNext++;
       }
     }
