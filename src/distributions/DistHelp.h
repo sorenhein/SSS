@@ -41,8 +41,8 @@ enum SideCompare
 
 struct SideInfo
 {
-  vector<unsigned> counts; // For each (reduced) rank
-  unsigned len; // Sum of rank counts
+  vector<unsigned char> counts; // For each (reduced) rank
+  unsigned char len; // Sum of rank counts
 
   void reset(const unsigned ranks)
   {
@@ -54,7 +54,7 @@ struct SideInfo
 
   void makeSentinel()
   {
-    len = numeric_limits<unsigned>::max();
+    len = numeric_limits<unsigned char>::max();
   }
 
   bool operator != (const SideInfo& side2) const
@@ -83,7 +83,7 @@ struct SideInfo
 
   void add(
     const unsigned rank,
-    const unsigned count)
+    const unsigned char count)
   {
 // TODO Unnecessary at some point?
 assert(rank < counts.size());
@@ -135,7 +135,7 @@ struct StackInfo
   SideInfo west;
   unsigned cases; // Combinatorial count
 
-  unsigned seen; // Number of EW cards already seen
+  unsigned char seen; // Number of EW cards already seen
   unsigned rankNext;
 
   StackInfo(const unsigned ranks = 0)
@@ -150,7 +150,7 @@ struct StackInfo
   void add(
     const unsigned rank,
     const unsigned rankSize,
-    const unsigned count,
+    const unsigned char count,
     const unsigned factor)
   {
     if (rank < rankSize)
@@ -179,7 +179,7 @@ struct DistInfo
   void add(
     const unsigned rank,
     const unsigned rankSize,
-    const unsigned count,
+    const unsigned char count,
     const unsigned factor)
   {
     if (rank < rankSize)

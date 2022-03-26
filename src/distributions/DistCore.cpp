@@ -135,7 +135,7 @@ void DistCore::mirror(
     dtop = distIndex;
   else
   {
-    const unsigned lenMid = distMap.opponents.len / 2;
+    const unsigned char lenMid = distMap.opponents.len / 2;
     dtop = distIndex;
     while (dtop >= 1 && distributions[dtop-1].west.len == lenMid)
       dtop--;
@@ -174,7 +174,7 @@ void DistCore::split(const DistMap& distMap)
   unsigned distIndex = 0; // Position of next result to write
 
   // Only do the first half and then mirror the other lengths.
-  for (unsigned lenWest = 0; lenWest <= distMap.opponents.len / 2; 
+  for (unsigned char lenWest = 0; lenWest <= distMap.opponents.len / 2; 
       lenWest++)
   {
     stack.emplace_back(StackInfo(rankSize));
@@ -183,11 +183,11 @@ void DistCore::split(const DistMap& distMap)
     {
       auto stackIter = stack.begin();
       const unsigned rank = stackIter->rankNext; // Next to write
-      const unsigned gap = lenWest - stackIter->west.len;
-      const unsigned available = distMap.opponents.counts[rank];
+      const unsigned char gap = lenWest - stackIter->west.len;
+      const unsigned char available = distMap.opponents.counts[rank];
       stackIter->seen += available;
 
-      for (unsigned count = 0; count <= min(gap, available); count++)
+      for (unsigned char count = 0; count <= min(gap, available); count++)
       {
         if (count == gap)
         {
@@ -253,11 +253,9 @@ void DistCore::splitAlternative(const DistMap& distMap)
   unsigned distIndex = 0; // Position of next result to write
 
   // Only do the first half and then mirror the other lengths.
-  for (unsigned lenWest = 0; lenWest <= distMap.opponents.len / 2; 
+  for (unsigned char lenWest = 0; lenWest <= distMap.opponents.len / 2; 
       lenWest++)
   {
-// TODO Why is +1 still necessary to oversize?  Some other issue?
-    // (*stackRead)[0] = StackInfo(rankSize+1);
     (*stackRead)[0] = StackInfo(rankSize);
     indexRead = 0;
     countRead = 1;
@@ -266,12 +264,12 @@ void DistCore::splitAlternative(const DistMap& distMap)
     {
       StackInfo& stackElem = (*stackRead)[indexRead];
       const unsigned rank = stackElem.rankNext; // Next to write
-      const unsigned gap = lenWest - stackElem.west.len;
-      const unsigned available = 
+      const unsigned char gap = lenWest - stackElem.west.len;
+      const unsigned char available = 
         (gap == 0 ? 0 : distMap.opponents.counts[rank]);
       stackElem.seen += available;
 
-      unsigned upperPlus1;
+      unsigned char upperPlus1;
       if (gap <= available)
       {
         // Can complete a distribution.
@@ -313,13 +311,13 @@ void DistCore::splitAlternative(const DistMap& distMap)
       else
        upperPlus1 = available + 1;
 
-      unsigned clow;
+      unsigned char clow;
       if (gap + stackElem.seen >= distMap.opponents.len)
         clow = gap + stackElem.seen - distMap.opponents.len;
       else
         clow = 0;
 
-      for (unsigned count = upperPlus1; count-- > clow; )
+      for (unsigned char count = upperPlus1; count-- > clow; )
       {
         // Put to stackWrite
         if (indexWrite == stackWrite->size())
