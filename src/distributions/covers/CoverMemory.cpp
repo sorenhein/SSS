@@ -9,12 +9,12 @@
 #include <cassert>
 
 #include "CoverMemory.h"
-#include "CoverHelp.h"
 #include "Compositions.h"
 #include "ExplStats.h"
 
-#include "Product.h"
 #include "Profile.h"
+#include "ProfilePair.h"
+#include "Product.h"
 
 // Global to make the many cases more streamlined.
 
@@ -785,57 +785,8 @@ void CoverMemory::makeSets(
   const unsigned char length,
   const Profile& comp)
 {
-  /*
-  struct StackInfo
-  {
-    Profile lowerProfile;
-    Profile upperProfile;
-
-    unsigned char minWest; // Sum of West's top minima
-    unsigned char minEast; // Sum of East's top minima
-    unsigned char maxDiff; // Large difference max-min for a top
-    unsigned char maxWest; // Largest West maximum
-    unsigned char maxEast; // Largest East maximum
-    unsigned char topNext; // Running top number
-
-    StackInfo(const Profile& comp)
-    {
-      // lowerProfile.tops.resize(compSize, 0);
-      // upperProfile.tops.resize(compSize, len);
-      lowerProfile.tops.resize(comp.size(), 0);
-      // upperProfile.tops = comp.getTops();
-      upperProfile = comp;
-
-      minWest = 0;
-      minEast = 0;
-      maxDiff = 0;
-      maxWest = 0;
-      maxEast = 0;
-      topNext = 0;
-    };
-
-    void setLength(
-      const unsigned char lenLow,
-      const unsigned char lenHigh)
-    {
-      lowerProfile.length = lenLow;
-      upperProfile.length = lenHigh;
-    };
-
-    void addTop(
-      const unsigned char topNumber,
-      const unsigned char topCountLow,
-      const unsigned char topCountHigh)
-    {
-      lowerProfile.tops[topNumber] = topCountLow;
-      upperProfile.tops[topNumber] = topCountHigh;
-    };
-  };
-  */
-
-  list<CoverStackInfo> stack; // Unfinished expansions
-  // stack.emplace_back(StackInfo(comp.size(), length));
-  stack.emplace_back(CoverStackInfo(comp));
+  list<ProfilePair> stack; // Unfinished expansions
+  stack.emplace_back(ProfilePair(comp));
 
   list<Product> sets;
   sets.resize(COVER_CHUNK_SIZE);

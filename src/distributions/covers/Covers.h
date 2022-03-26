@@ -14,8 +14,7 @@
 #include <string>
 
 #include "Cover.h"
-#include "CoverNew.h"
-#include "CoverHelp.h"
+#include "ProfilePair.h"
 #include "TableauCache.h"
 
 class Distribution;
@@ -31,38 +30,6 @@ using namespace std;
 class Covers
 {
   private:
-
-    /*
-    struct CoverStackInfo
-    {
-      Profile lowerProfile;
-      Profile upperProfile;
-
-      unsigned char minWest; // Sum of West's top minima
-      unsigned char minEast; // Sum of East's top minima
-      unsigned char maxDiff; // Large difference max-min for a top
-      unsigned char maxWest; // Largest West maximum
-      unsigned char maxEast; // Largest East maximum
-      unsigned char topNext; // Running top number
- 
-      CoverStackInfo(const vector<unsigned char>& topTotals)
-      {
-        // lowerProfile.tops.resize(topTotals.size(), 0);
-        lowerProfile.resize(topTotals.size());
-        // upperProfile.tops = topTotals;
-        upperProfile.set(topTotals, 
-          static_cast<unsigned char>(topTotals.size()-1));
- 
-        minWest = 0;
-        minEast = 0;
-        maxDiff = 0;
-        maxWest = 0;
-        maxEast = 0;
-        topNext = 0;
-      };
-    };
-    */
-
 
     Profile sumProfile;
 

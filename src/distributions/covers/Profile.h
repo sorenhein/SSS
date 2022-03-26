@@ -19,9 +19,10 @@ class Profile
 {
   // TODO Reduce and then eliminate
   friend class DistCore;
-  friend class Product;
   friend class CoverSpec;
-  friend struct CoverStackInfo;
+
+  friend struct ProfilePair;
+  friend class Product;
 
   private:
 
@@ -46,7 +47,7 @@ class Profile
       const unsigned char lengthIn,
       const unsigned char topIn);
 
-    void mirror(const Profile& pp2);
+    void mirror(const Profile& profile2);
 
     unsigned char count(const unsigned char topNo) const;
 

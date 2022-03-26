@@ -116,8 +116,8 @@ void Covers::prepareNew(
   sumProfile = sumProfileIn;
 
   timersStrat[20].start();
-  list<CoverStackInfo> stack; // Unfinished expansions
-  stack.emplace_back(CoverStackInfo(sumProfile));
+  list<ProfilePair> stack; // Unfinished expansions
+  stack.emplace_back(ProfilePair(sumProfile));
 
   coversNew.resize(COVER_CHUNK_SIZE);
   for (auto& c: coversNew)

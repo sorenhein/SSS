@@ -1,11 +1,11 @@
-#ifndef SSS_COVERHELP_H
-#define SSS_COVERHELP_H
+#ifndef SSS_PROFILEPAIR_H
+#define SSS_PROFILEPAIR_H
 
 #include "Profile.h"
 
 using namespace std;
 
-struct CoverStackInfo
+struct ProfilePair
 {
   Profile lowerProfile;
   Profile upperProfile;
@@ -17,7 +17,7 @@ struct CoverStackInfo
   unsigned char maxEast; // Largest East maximum
   unsigned char topNext; // Running top number
 
-  CoverStackInfo(const Profile& comp)
+  ProfilePair(const Profile& comp)
   {
     lowerProfile.tops.resize(comp.size(), 0);
     upperProfile = comp;
