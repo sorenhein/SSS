@@ -305,7 +305,6 @@ const unsigned sizeOld = coversNew.size();
   timersStrat[23].start();
   for (auto& c: coversNew)
     c.prepare(distProfiles, cases);
-    // c.prepare(lengths, topPtrs, cases);
   timersStrat[23].stop();
 
   timersStrat[24].start();

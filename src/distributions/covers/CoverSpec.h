@@ -122,7 +122,7 @@ class CoverSpec
       const bool symmFlag = false,
       const CoverControl ctrl = COVER_ADD);
 
-    bool includesOld(const Profile& distProfile) const;
+    bool includes(const Profile& distProfile) const;
     
     string str() const;
 };

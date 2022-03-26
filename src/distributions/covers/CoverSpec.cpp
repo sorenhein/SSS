@@ -188,18 +188,14 @@ void CoverSpec::eastGeneral(
 }
 
 
-bool CoverSpec::includesOld(const Profile& distProfile) const
+bool CoverSpec::includes(const Profile& distProfile) const
 {
-  assert(distProfile.size() == 1);
+  assert(distProfile.size() == 2);
   assert(sumProfile.size() == 2);
-
-  // TODO Eliminate
-  Profile dist2;
-  dist2.setSingle(distProfile.getLength(), distProfile.count(0));
 
   for (auto& set: setsWest)
   {
-    if (set.includes(dist2, sumProfile))
+    if (set.includes(distProfile, sumProfile))
       return true;
   }
 
