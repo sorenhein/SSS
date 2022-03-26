@@ -23,7 +23,8 @@ CoverNew::CoverNew()
 
 void CoverNew::reset()
 {
-  profile.clear();
+  // profile.clear();
+  tricks.clear();
   weight = 0;
   numDist = 0;
 }
@@ -66,6 +67,9 @@ void CoverNew::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
+  tricks.prepare(product, distProfiles, cases, weight, numDist);
+
+  /*
   const unsigned len = distProfiles.size();
   assert(len == cases.size());
   profile.resize(len);
@@ -79,13 +83,17 @@ void CoverNew::prepare(
       numDist++;
     }
   }
+  */
 }
 
 
 bool CoverNew::possible(
-  const vector<unsigned char>& explained,
-  const vector<unsigned char>& residuals,
-  vector<unsigned char>& additions,
+  // const vector<unsigned char>& explained,
+  const Tricks& explained,
+  // const vector<unsigned char>& residuals,
+  const Tricks& residuals,
+  // vector<unsigned char>& additions,
+  Tricks& additions,
   unsigned char& tricksAdded) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
@@ -94,12 +102,15 @@ bool CoverNew::possible(
   //   explained vector that would arise
   // tricksAdded: The number of tricks in additions
 
-  assert(profile.size() == explained.size());
-  assert(profile.size() == residuals.size());
-  assert(profile.size() == additions.size());
+  return tricks.possible(explained, residuals, additions, tricksAdded);
+
+  /*
+  assert(tricks.size() == explained.size());
+  assert(tricks.size() == residuals.size());
+  assert(tricks.size() == additions.size());
 
   tricksAdded = 0;
-  for (unsigned i = 0; i < profile.size(); i++)
+  for (unsigned i = 0; i < tricks.size(); i++)
   {
     // If the cover has an entry that has not already been set:
     if (profile[i] && ! explained[i])
@@ -122,27 +133,33 @@ bool CoverNew::possible(
 
   // Could still have been fully contained.
   return (tricksAdded > 0);
+  */
 }
 
 
-CoverState CoverNew::explain(vector<unsigned char>& tricks) const
+// CoverState CoverNew::explain(vector<unsigned char>& tricksSeen) const
+CoverState CoverNew::explain(Tricks& tricksSeen) const
 {
-  assert(tricks.size() == profile.size());
+  return tricks.explain(tricksSeen);
+
+  /*
+  assert(tricksSeen.size() == profile.size());
 
   CoverState state = COVER_DONE;
 
-  for (unsigned i = 0; i < tricks.size(); i++)
+  for (unsigned i = 0; i < tricksSeen.size(); i++)
   {
-    if (profile[i] > tricks[i])
+    if (profile[i] > tricksSeen[i])
       return COVER_IMPOSSIBLE;
-    else if (profile[i] < tricks[i])
+    else if (profile[i] < tricksSeen[i])
       state = COVER_OPEN;
   }
 
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] -= profile[i];
+  for (unsigned i = 0; i < tricksSeen.size(); i++)
+    tricksSeen[i] -= profile[i];
 
   return state;
+  */
 }
 
 
@@ -187,6 +204,9 @@ bool CoverNew::sameWeight(const CoverNew& cover2) const
 
 bool CoverNew::sameTricks(const CoverNew& cover2) const
 {
+  return (tricks == cover2.tricks);
+
+  /*
   assert(profile.size() == cover2.profile.size());
 
   for (unsigned i = 0; i < profile.size(); i++)
@@ -194,6 +214,7 @@ bool CoverNew::sameTricks(const CoverNew& cover2) const
       return false;
 
   return true;
+  */
 }
 
 
@@ -205,7 +226,7 @@ bool CoverNew::empty() const
 
 bool CoverNew::full() const
 {
-  return (weight > 0 && numDist == profile.size());
+  return (weight > 0 && numDist == tricks.size());
 }
 
 
@@ -217,7 +238,7 @@ unsigned CoverNew::getWeight() const
 
 unsigned CoverNew::size() const
 {
-  return profile.size();
+  return tricks.size();
 }
 
 
@@ -286,9 +307,10 @@ string CoverNew::strProfile() const
   stringstream ss;
 
   ss << "weight " << weight << "\n";
+  ss << tricks.strList();
 
-  for (unsigned i = 0; i < profile.size(); i++)
-    ss << i << ": " << +profile[i] << "\n";
+  // for (unsigned i = 0; i < profile.size(); i++)
+    // ss << i << ": " << +profile[i] << "\n";
   
   return ss.str();
 }
@@ -297,17 +319,20 @@ string CoverNew::strProfile() const
 string CoverNew::strHeaderTricksShort() const
 {
   stringstream ss;
-  ss << setw(profile.size()+2) << left << "Tricks";
+  ss << setw(tricks.size()+2) << left << "Tricks";
   return ss.str();
 }
 
 
 string CoverNew::strTricksShort() const
 {
+  return tricks.strShort();
+  /*
   string s;
-  for (unsigned i = 0; i < profile.size(); i++)
+  for (unsigned i = 0; i < tricks.size(); i++)
     s += (profile[i] ? "1" : "-");
   return s + "  ";
+  */
 }
 
 

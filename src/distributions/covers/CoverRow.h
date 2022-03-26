@@ -14,6 +14,7 @@
 #include <string>
 
 #include "CoverNew.h"
+#include "Tricks.h"
 
 using namespace std;
 
@@ -28,7 +29,8 @@ class CoverRow
     list<CoverNew const *> coverPtrs;
 
     // The OR'ed tricks of the covers.
-    vector<unsigned char> tricks;
+    // vector<unsigned char> tricks;
+    Tricks tricks;
 
     unsigned char numDist;
 
@@ -45,19 +47,23 @@ class CoverRow
 
     bool attempt(
       const CoverNew& cover,
-      const vector<unsigned char>& residuals,
-      vector<unsigned char>& additions,
+      Tricks& additions,
+      const Tricks& residuals,
+      // const vector<unsigned char>& residuals,
+      // vector<unsigned char>& additions,
       unsigned char& tricksAdded) const;
 
     void add(
       const CoverNew& cover,
-      const vector<unsigned char>& additions,
-      vector<unsigned char>& residuals,
+      // const vector<unsigned char>& additions,
+      const Tricks& additions,
+      // vector<unsigned char>& residuals,
+      Tricks& residuals,
       unsigned char& residualsSum);
 
     unsigned size() const;
 
-    const vector<unsigned char>& getTricks() const;
+    const Tricks& getTricks() const;
 
     unsigned char getWeight() const;
 

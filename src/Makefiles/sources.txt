@@ -24,6 +24,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/TermCompare.cpp \
                 distributions/covers/Length.cpp \
                 distributions/covers/Top.cpp    \
+                distributions/covers/Tricks.cpp    \
                 distributions/covers/Product.cpp \
                 distributions/covers/Profile.cpp \
                 distributions/covers/CoverSet.cpp \

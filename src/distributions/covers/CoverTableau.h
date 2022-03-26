@@ -15,6 +15,7 @@
 
 #include "CoverRow.h"
 #include "Profile.h"
+#include "Tricks.h"
 
 using namespace std;
 
@@ -33,7 +34,8 @@ class CoverTableau
 
     list<CoverRow> rows;
 
-    vector<unsigned char> residuals;
+    // vector<unsigned char> residuals;
+    Tricks residuals;
 
     unsigned char residualsSum;
 

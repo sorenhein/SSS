@@ -41,11 +41,15 @@ void CoverTableau::setTricks(
   const vector<unsigned char>& tricks,
   const unsigned char tmin)
 {
+  residuals.set(tricks, residualsSum);
+
+  /*
   residuals = tricks;
   residualsSum = 0;
 
   for (auto t: tricks)
     residualsSum += t;
+    */
 
   tricksMin = tmin;
 }
@@ -60,8 +64,14 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 bool CoverTableau::attemptGreedy(const CoverNew& cover)
 {
   // explained is a dummy vector here.
-  vector<unsigned char> explained(cover.size(), 0);
-  vector<unsigned char> additions(cover.size());
+  // vector<unsigned char> explained(cover.size(), 0);
+  Tricks explained;
+  explained.resize(cover.size());
+
+  // vector<unsigned char> additions(cover.size());
+  Tricks additions;
+  additions.resize(cover.size());
+
   unsigned char tricksAdded;
 
   // First try to add a new row.
@@ -79,12 +89,16 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
     return false;
 
   CoverRow * rowBestPtr = nullptr;
-  vector<unsigned char> additionsBest(cover.size());
+
+  // vector<unsigned char> additionsBest(cover.size());
+  Tricks additionsBest;
+  additionsBest.resize(cover.size());
+
   unsigned char weightBest = 0;
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, residuals, additions, tricksAdded))
+    if (row.attempt(cover, additions, residuals, tricksAdded))
     {
       if (tricksAdded > weightBest)
       {
@@ -132,8 +146,15 @@ void CoverTableau::attemptExhaustive(
 
   // explained is a dummy vector here.
   const CoverNew& cover = * coverIter;
-  vector<unsigned char> explained(cover.size(), 0);
-  vector<unsigned char> additions(cover.size());
+
+  // vector<unsigned char> explained(cover.size(), 0);
+  Tricks explained;
+  explained.resize(cover.size());
+
+  // vector<unsigned char> additions(cover.size());
+  Tricks additions;
+  additions.resize(cover.size());
+
   unsigned char tricksAdded;
   const bool emptyStartFlag = rows.empty();
 
@@ -195,7 +216,7 @@ void CoverTableau::attemptExhaustive(
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, residuals, additions, tricksAdded) &&
+    if (row.attempt(cover, additions, residuals, tricksAdded) &&
         tricksAdded < cover.getNumDist())
     {
       // Don't want cover to be completely complementery (use new row).
@@ -344,11 +365,14 @@ string CoverTableau::str() const
 
 string CoverTableau::strResiduals() const
 {
+  return residuals.strSpaced();
+  /*
   stringstream ss;
 
   for (unsigned i = 0; i < residuals.size(); i++)
     ss << setw(2) << i << setw(4) << +residuals[i] << "\n";
 
   return ss.str();
+  */
 }
 
