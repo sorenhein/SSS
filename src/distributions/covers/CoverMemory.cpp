@@ -834,38 +834,34 @@ void CoverMemory::makeSets(
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
         // Add the "don't care" with respect to length.
-        if (iter == sets.end())
-        {
-          cout << "CM End reached" << endl;
-          assert(false);
-        }
-        stackIter->setLength(0, length); // ?
+        assert(iter != sets.end());
+
+        stackIter->setLength(0, length);
 
         iter->set(comp, * stackIter);
         iter++;
 
         // Add the possible length constraints.
-        const unsigned char lenMax = length - bounds.minEast;
+        const unsigned char westLow = bounds.lengthWestLow();
+        const unsigned char westHigh = bounds.lengthWestHigh();
 
-        for (unsigned char lenLow = bounds.minWest; lenLow <= lenMax; lenLow++)
+        for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
         {
-          for (unsigned char lenHigh = lenLow; 
-            lenHigh <= lenMax; lenHigh++)
+          for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
-            if (lenLow == bounds.minWest && lenHigh == lenMax)
-              continue;
-
-            if (stackIter->bounds.maxWest > lenHigh)
-              continue;
-            if (stackIter->bounds.maxEast > length - lenLow)
-              continue;
-
-            if (iter == sets.end())
+            if (lLow == westLow && lHigh == westHigh)
             {
-              cout << "CM End reached" << endl;
-              assert(false);
+              // No point in specifying length explicitly.
+              continue;
             }
-            stackIter->setLength(lenLow, lenHigh);
+
+            // There is a tighter way to specify this cover.
+            if (bounds.unnecessaryLength(lLow, lHigh))
+              continue;
+
+            assert(iter != sets.end());
+
+            stackIter->setLength(lLow, lHigh);
             iter->set(comp, * stackIter);
             iter++;
           }
