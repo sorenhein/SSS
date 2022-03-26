@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-#include "CoverSpec.h" // TODO For CoverState -- specialize?
+#include "CoverHelp.h"
 
 using namespace std;
 
@@ -45,9 +45,7 @@ class Tricks
       unsigned char& numDist);
 
     bool possible(
-      // const vector<unsigned char>& explained,
       const Tricks& explained,
-      // const vector<unsigned char>& residuals,
       const Tricks& residuals,
       Tricks& additions,
       unsigned char& tricksAdded) const;
@@ -56,7 +54,6 @@ class Tricks
 
     void add(
       const Tricks& additions,
-      // vector<unsigned char>& residuals,
       Tricks& residuals,
       unsigned char& residualsSum,
       unsigned char& numDist);

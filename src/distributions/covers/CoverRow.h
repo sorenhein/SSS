@@ -45,19 +45,16 @@ class CoverRow
 
     void resize(const unsigned len);
 
+    // TODO swap
     bool attempt(
       const CoverNew& cover,
       Tricks& additions,
       const Tricks& residuals,
-      // const vector<unsigned char>& residuals,
-      // vector<unsigned char>& additions,
       unsigned char& tricksAdded) const;
 
     void add(
       const CoverNew& cover,
-      // const vector<unsigned char>& additions,
       const Tricks& additions,
-      // vector<unsigned char>& residuals,
       Tricks& residuals,
       unsigned char& residualsSum);
 

@@ -23,7 +23,6 @@ CoverNew::CoverNew()
 
 void CoverNew::reset()
 {
-  // profile.clear();
   tricks.clear();
   weight = 0;
   numDist = 0;
@@ -34,21 +33,6 @@ void CoverNew::resize(const unsigned topNumber)
 {
   product.resize(topNumber);
 }
-
-
-/*
-void CoverNew::set(
-  const Profile& sumProfile,
-  const Profile& lowerProfile,
-  const Profile& upperProfile)
-{
-  product.set(sumProfile, lowerProfile, upperProfile);
-
-  // We throw away a lot of covers, so it is a bit of a waste
-  // to calculate this now.  But it is convenient.
-  simplestOpponent = product.simplestOpponent(sumProfile);
-}
-*/
 
 
 void CoverNew::set(
@@ -68,31 +52,12 @@ void CoverNew::prepare(
   const vector<unsigned char>& cases)
 {
   tricks.prepare(product, distProfiles, cases, weight, numDist);
-
-  /*
-  const unsigned len = distProfiles.size();
-  assert(len == cases.size());
-  profile.resize(len);
-
-  for (unsigned dno = 0; dno < len; dno++)
-  {
-    if (product.includes(distProfiles[dno]))
-    {
-      profile[dno] = 1;
-      weight += static_cast<unsigned>(cases[dno]);
-      numDist++;
-    }
-  }
-  */
 }
 
 
 bool CoverNew::possible(
-  // const vector<unsigned char>& explained,
   const Tricks& explained,
-  // const vector<unsigned char>& residuals,
   const Tricks& residuals,
-  // vector<unsigned char>& additions,
   Tricks& additions,
   unsigned char& tricksAdded) const
 {
@@ -103,63 +68,12 @@ bool CoverNew::possible(
   // tricksAdded: The number of tricks in additions
 
   return tricks.possible(explained, residuals, additions, tricksAdded);
-
-  /*
-  assert(tricks.size() == explained.size());
-  assert(tricks.size() == residuals.size());
-  assert(tricks.size() == additions.size());
-
-  tricksAdded = 0;
-  for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    // If the cover has an entry that has not already been set:
-    if (profile[i] && ! explained[i])
-    {
-      if (residuals[i])
-      {
-        // We need that entry.
-        additions[i] = 1;
-        tricksAdded++;
-      }
-      else
-      {
-        // We cannot have that entry.
-        return false;
-      }
-    }
-    else
-      additions[i] = 0;
-  }
-
-  // Could still have been fully contained.
-  return (tricksAdded > 0);
-  */
 }
 
 
-// CoverState CoverNew::explain(vector<unsigned char>& tricksSeen) const
 CoverState CoverNew::explain(Tricks& tricksSeen) const
 {
   return tricks.explain(tricksSeen);
-
-  /*
-  assert(tricksSeen.size() == profile.size());
-
-  CoverState state = COVER_DONE;
-
-  for (unsigned i = 0; i < tricksSeen.size(); i++)
-  {
-    if (profile[i] > tricksSeen[i])
-      return COVER_IMPOSSIBLE;
-    else if (profile[i] < tricksSeen[i])
-      state = COVER_OPEN;
-  }
-
-  for (unsigned i = 0; i < tricksSeen.size(); i++)
-    tricksSeen[i] -= profile[i];
-
-  return state;
-  */
 }
 
 
@@ -205,16 +119,6 @@ bool CoverNew::sameWeight(const CoverNew& cover2) const
 bool CoverNew::sameTricks(const CoverNew& cover2) const
 {
   return (tricks == cover2.tricks);
-
-  /*
-  assert(profile.size() == cover2.profile.size());
-
-  for (unsigned i = 0; i < profile.size(); i++)
-    if (profile[i] != cover2.profile[i])
-      return false;
-
-  return true;
-  */
 }
 
 
@@ -309,9 +213,6 @@ string CoverNew::strProfile() const
   ss << "weight " << weight << "\n";
   ss << tricks.strList();
 
-  // for (unsigned i = 0; i < profile.size(); i++)
-    // ss << i << ": " << +profile[i] << "\n";
-  
   return ss.str();
 }
 
@@ -327,12 +228,6 @@ string CoverNew::strHeaderTricksShort() const
 string CoverNew::strTricksShort() const
 {
   return tricks.strShort();
-  /*
-  string s;
-  for (unsigned i = 0; i < tricks.size(); i++)
-    s += (profile[i] ? "1" : "-");
-  return s + "  ";
-  */
 }
 
 

@@ -43,14 +43,6 @@ void CoverTableau::setTricks(
 {
   residuals.set(tricks, residualsSum);
 
-  /*
-  residuals = tricks;
-  residualsSum = 0;
-
-  for (auto t: tricks)
-    residualsSum += t;
-    */
-
   tricksMin = tmin;
 }
 
@@ -64,11 +56,9 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 bool CoverTableau::attemptGreedy(const CoverNew& cover)
 {
   // explained is a dummy vector here.
-  // vector<unsigned char> explained(cover.size(), 0);
   Tricks explained;
   explained.resize(cover.size());
 
-  // vector<unsigned char> additions(cover.size());
   Tricks additions;
   additions.resize(cover.size());
 
@@ -90,7 +80,6 @@ bool CoverTableau::attemptGreedy(const CoverNew& cover)
 
   CoverRow * rowBestPtr = nullptr;
 
-  // vector<unsigned char> additionsBest(cover.size());
   Tricks additionsBest;
   additionsBest.resize(cover.size());
 
@@ -147,11 +136,9 @@ void CoverTableau::attemptExhaustive(
   // explained is a dummy vector here.
   const CoverNew& cover = * coverIter;
 
-  // vector<unsigned char> explained(cover.size(), 0);
   Tricks explained;
   explained.resize(cover.size());
 
-  // vector<unsigned char> additions(cover.size());
   Tricks additions;
   additions.resize(cover.size());
 
@@ -366,13 +353,5 @@ string CoverTableau::str() const
 string CoverTableau::strResiduals() const
 {
   return residuals.strSpaced();
-  /*
-  stringstream ss;
-
-  for (unsigned i = 0; i < residuals.size(); i++)
-    ss << setw(2) << i << setw(4) << +residuals[i] << "\n";
-
-  return ss.str();
-  */
 }
 

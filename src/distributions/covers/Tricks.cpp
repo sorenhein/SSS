@@ -71,9 +71,7 @@ void Tricks::prepare(
 
 
 bool Tricks::possible(
-  // const vector<unsigned char>& explained,
   const Tricks& explained,
-  // const vector<unsigned char>& residuals,
   const Tricks& residuals,
   Tricks& additions,
   unsigned char& tricksAdded) const
@@ -132,7 +130,6 @@ CoverState Tricks::explain(Tricks& tricks2) const
 
 void Tricks::add(
   const Tricks& additions,
-  // vector<unsigned char>& residuals,
   Tricks& residuals,
   unsigned char& residualsSum,
   unsigned char& numDist)

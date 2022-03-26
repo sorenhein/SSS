@@ -34,7 +34,6 @@ class CoverTableau
 
     list<CoverRow> rows;
 
-    // vector<unsigned char> residuals;
     Tricks residuals;
 
     unsigned char residualsSum;

@@ -12,12 +12,13 @@
 #include <vector>
 #include <string>
 
-#include "CoverSpec.h"
+#include "CoverHelp.h"
 
 
 using namespace std;
 
 class Profile;
+class CoverSpec;
 
 
 class Cover

@@ -29,7 +29,6 @@ class CoverNew
 
     Product product;
 
-    // vector<unsigned char> profile;
     Tricks tricks;
 
     // Could we get weight and numDist into Product?
@@ -57,15 +56,11 @@ class CoverNew
       const vector<unsigned char>& cases);
 
     bool possible(
-      // const vector<unsigned char>& explained,
       const Tricks& explained,
       const Tricks& residuals,
-      // const vector<unsigned char>& residuals,
-      // vector<unsigned char>& additions,
       Tricks& additions,
       unsigned char& tricksAdded) const;
 
-    // CoverState explain(vector<unsigned char>& tricks) const;
     CoverState explain(Tricks& tricksSeen) const;
 
     bool earlier(const CoverNew& cover2) const;

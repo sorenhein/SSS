@@ -13,16 +13,10 @@
 #include <string>
 
 #include "CoverSet.h"
+#include "CoverHelp.h"
+
 #include "Profile.h"
 
-
-enum CoverState
-{
-  COVER_DONE = 0,
-  COVER_OPEN = 1,
-  COVER_IMPOSSIBLE = 2,
-  COVER_STATE_SIZE = 3
-};
 
 enum CoverControl
 {

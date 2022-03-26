@@ -38,9 +38,7 @@ void CoverRow::resize(const unsigned len)
 bool CoverRow::attempt(
   const CoverNew& cover,
   Tricks& additions,
-  // const vector<unsigned char>& residuals,
   const Tricks& residuals,
-  // vector<unsigned char>& additions,
   unsigned char& tricksAdded) const
 {
   assert(tricks.size() == residuals.size());
@@ -57,27 +55,13 @@ bool CoverRow::attempt(
 
 void CoverRow::add(
   const CoverNew& cover,
-  // const vector<unsigned char>& additions,
   const Tricks& additions,
-  // vector<unsigned char>& residuals,
   Tricks& residuals,
   unsigned char& residualsSum)
 {
   coverPtrs.push_back(&cover);
 
   tricks.add(additions, residuals, residualsSum, numDist);
-
-/*
-  // additions are disjoint from tricks.
-  for (unsigned i = 0; i < additions.size(); i++)
-  {
-    const unsigned char t = additions[i];
-    tricks[i] += t;
-    residuals[i] -= t;
-    residualsSum -= t;
-    numDist += t;
-  }
-  */
 
   // TODO Check range
   assert(complexity + cover.getComplexity() > complexity);
@@ -92,7 +76,6 @@ unsigned CoverRow::size() const
 }
 
 
-// const vector<unsigned char>& CoverRow::getTricks() const
 const Tricks& CoverRow::getTricks() const
 {
   return tricks;

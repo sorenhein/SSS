@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "TermHelp.h"
+#include "CoverHelp.h"
 
 #include "../../utils/table.h"
 

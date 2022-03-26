@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Cover.h"
+#include "CoverSpec.h"
 #include "Profile.h"
 
 
