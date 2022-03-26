@@ -188,8 +188,7 @@ void Covers::prepareNew(
             }
 
             // There is a tighter way to specify this cover.
-            if (topNumber > 0 && lHigh < bounds.maxWest)
-            // if (topNumber > 0 && lHigh < westHigh)
+            if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
 
             assert(citer != coversNew.end());

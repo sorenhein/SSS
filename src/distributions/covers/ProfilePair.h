@@ -77,7 +77,7 @@ struct RunningBounds
     return false;
   };
 
-  bool bustedLength(
+  bool unnecessaryLength(
     const unsigned char lengthWestLow,
     const unsigned char lengthWestHigh) const
   {
