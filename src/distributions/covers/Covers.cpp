@@ -126,6 +126,8 @@ void Covers::prepareNew(
   auto citer = coversNew.begin(); // Next one to write
   timersStrat[20].stop();
 
+  RunningBounds bounds;
+
   timersStrat[21].start();
   while (! stack.empty())
   {
@@ -146,15 +148,14 @@ void Covers::prepareNew(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        const unsigned char minWest = stackIter->bounds.minWest + topCountLow;
-        const unsigned char minEast = stackIter->bounds.minEast + 
-          topCountActual - topCountHigh;
+        bounds.minWest = stackIter->bounds.minWest + topCountLow;
+        bounds.minEast = stackIter->bounds.minEast + topCountActual - topCountHigh;
 
-        unsigned char diff = topCountHigh - topCountLow;
-        if (diff < stackIter->bounds.maxDiff)
-          diff = stackIter->bounds.maxDiff;
+        bounds.maxDiff = topCountHigh - topCountLow;
+        if (bounds.maxDiff < stackIter->bounds.maxDiff)
+          bounds.maxDiff = stackIter->bounds.maxDiff;
 
-        if (minWest + diff > sumProfile.getLength())
+        if (bounds.minWest + bounds.maxDiff > sumProfile.getLength())
         {
           // There is no room for this worst-case single maximum,
           // so we skip the entire set, as there will be a more 
@@ -162,10 +163,10 @@ void Covers::prepareNew(
           continue;
         }
 
-        if (minEast + diff > sumProfile.getLength())
+        if (bounds.minEast + bounds.maxDiff > sumProfile.getLength())
           continue;
 
-        if (minWest + minEast > sumProfile.getLength())
+        if (bounds.minWest + bounds.minEast > sumProfile.getLength())
           continue;
 
         // Never use the last top explicitly.  Maybe it shouldn't
@@ -180,17 +181,16 @@ void Covers::prepareNew(
         const bool usedFlag = 
           (topCountLow != 0 || topCountHigh != topCountActual);
 
-        unsigned char maxWest, maxEast;
         if (usedFlag)
         {
           const unsigned char dtop = topCountActual - topCountLow;
-          maxWest = max(topCountHigh, stackIter->bounds.maxWest);
-          maxEast = max(dtop, stackIter->bounds.maxEast);
+          bounds.maxWest = max(topCountHigh, stackIter->bounds.maxWest);
+          bounds.maxEast = max(dtop, stackIter->bounds.maxEast);
         }
         else
         {
-          maxWest = stackIter->bounds.maxWest;
-          maxEast = stackIter->bounds.maxEast;
+          bounds.maxWest = stackIter->bounds.maxWest;
+          bounds.maxEast = stackIter->bounds.maxEast;
         }
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
@@ -205,34 +205,27 @@ void Covers::prepareNew(
         citer++;
 
         // Add the possible length constraints.
-        const unsigned char lenMax = sumProfile.getLength() - minEast;
+        const unsigned char lenMax = sumProfile.getLength() - bounds.minEast;
 
-        for (unsigned char lLow = minWest; lLow <= lenMax; lLow++)
+        for (unsigned char lLow = bounds.minWest; lLow <= lenMax; lLow++)
         {
           for (unsigned char lHigh = lLow; 
             lHigh <= lenMax; lHigh++)
           { 
-            if (lLow == minWest && lHigh == lenMax)
+            if (lLow == bounds.minWest && lHigh == lenMax)
               continue;
 
             // There is a tighter way to specify this cover.
-            if (topNumber > 0 && lHigh < maxWest)
+            if (topNumber > 0 && lHigh < bounds.maxWest)
               continue;
 
             if (citer == coversNew.end())
             {
+              cout << "OVERFLOW\n";
+              cout << sumProfile.strLine();
 
-  cout << "OVERFLOW\n";
-  cout << sumProfile.strLine();
-  /*
-  cout << "Length " << +sumProfile.getLength() << ", ";
-  for (auto t: sumProfile.getTops())
-    cout << +t << " ";
-  cout << "\n";
-  */
-
-  for (auto c: coversNew)
-    cout << c.strLine();
+              for (auto c: coversNew)
+                cout << c.strLine();
 
               cout << "C End reached2" << endl;
               assert(false);
@@ -240,20 +233,14 @@ void Covers::prepareNew(
 
             stackIter->setLength(lLow, lHigh);
 
-            citer->set(sumProfile, 
-              * stackIter);
-              // stackIter->lowerProfile, stackIter->upperProfile);
+            citer->set(sumProfile, * stackIter);
             citer++;
           }
         }
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->bounds.minWest = minWest;
-        nextIter->bounds.minEast = minEast;
-        nextIter->bounds.maxDiff = diff;
-        nextIter->bounds.maxWest = maxWest;
-        nextIter->bounds.maxEast = maxEast;
+        nextIter->bounds = bounds;
         nextIter->topNext++;
       }
     }

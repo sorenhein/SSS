@@ -5,11 +5,12 @@
 
 using namespace std;
 
+
 struct RunningBounds
 {
   unsigned char minWest; // Sum of West's top minima
   unsigned char minEast; // Sum of East's top minima
-  unsigned char maxDiff; // Large difference max-min for a top
+  unsigned char maxDiff; // Largest difference max-min for a top
   unsigned char maxWest; // Largest West maximum
   unsigned char maxEast; // Largest East maximum
 
@@ -22,6 +23,7 @@ struct RunningBounds
     maxEast = 0;
   };
 };
+
 
 class ProfilePair
 {
