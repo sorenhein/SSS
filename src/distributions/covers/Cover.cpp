@@ -24,7 +24,7 @@ Cover::Cover()
 
 void Cover::reset()
 {
-  profile.clear();
+  tricks.clear();
   specPtr = nullptr;
   weight = 0;
   numDist = 0;
@@ -36,53 +36,21 @@ void Cover::prepare(
   const vector<unsigned char>& cases,
   const CoverSpec& specIn)
 {
-  const unsigned len = distProfiles.size();
-  profile.resize(len);
+  tricks.prepare(specIn, distProfiles, cases, weight, numDist);
 
   specPtr = &specIn;
-  for (unsigned dno = 0; dno < len; dno++)
-  {
-    if (specIn.includes(distProfiles[dno]))
-    {
-      profile[dno] = 1;
-      weight += static_cast<unsigned>(cases[dno]);
-      numDist++;
-    }
-  }
 }
 
 
-CoverState Cover::explain(vector<unsigned char>& tricks) const
+CoverState Cover::explain(Tricks& tricksSeen) const
 {
-  assert(tricks.size() == profile.size());
-
-  CoverState state = COVER_DONE;
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    if (profile[i] > tricks[i])
-      return COVER_IMPOSSIBLE;
-    else if (profile[i] < tricks[i])
-      state = COVER_OPEN;
-  }
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] -= profile[i];
-
-  return state;
+  return tricks.explain(tricksSeen);
 }
 
 
 bool Cover::operator <= (const Cover& cover2) const
 {
-  assert(profile.size() == cover2.profile.size());
-  for (unsigned i = 0; i < profile.size(); i++)
-  {
-    if (profile[i] > cover2.profile[i])
-      return false;
-  }
-
-  return true;
+  return (tricks <= cover2.tricks);
 }
 
 
@@ -130,8 +98,7 @@ string Cover::strProfile() const
     "cover index " << specPtr->getIndex() << 
     ", weight " << weight << "\n";
 
-  for (unsigned i = 0; i < profile.size(); i++)
-    ss << i << ": " << +profile[i] << "\n";
+  ss << tricks.strList();
   
   return ss.str();
 }

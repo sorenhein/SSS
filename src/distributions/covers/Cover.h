@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 
+#include "Tricks.h"
 #include "CoverHelp.h"
 
 
@@ -25,7 +26,7 @@ class Cover
 {
   private:
 
-    vector<unsigned char> profile;
+    Tricks tricks;
 
     CoverSpec const * specPtr;
 
@@ -51,7 +52,7 @@ class Cover
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 
-    CoverState explain(vector<unsigned char>& tricks) const;
+    CoverState explain(Tricks& tricksSeen) const;
 
     bool operator <= (const Cover& cover2) const;
 

@@ -38,7 +38,7 @@ void CoverTableau::setBoundaries(const Profile& sumProfileIn)
 
 
 void CoverTableau::setTricks(
-  const vector<unsigned char>& tricks,
+  const Tricks& tricks,
   const unsigned char tmin)
 {
   residuals.set(tricks, residualsSum);

@@ -18,6 +18,7 @@
 #include <string>
 
 #include "CoverTableau.h"
+#include "Tricks.h"
 
 
 using namespace std;
@@ -29,7 +30,7 @@ class TableauCache
 
     struct CacheEntry
     {
-      vector<unsigned char> excessTricks;
+      Tricks excessTricks;
       CoverTableau tableau;
       unsigned count;
 
@@ -38,10 +39,7 @@ class TableauCache
         stringstream ss;
 
         ss << "Count " << count << ", vector ";
-        for (auto t: excessTricks)
-          ss << +t << " ";
-        ss << "\n\n";
-
+        ss << excessTricks.strSpaced() << "\n";
         ss << tableau.str();
 
         return ss.str() + "\n";
@@ -58,11 +56,11 @@ class TableauCache
     void reset();
 
     void store(
-      const vector<unsigned char>& excessTricksIn,
+      const Tricks& excessTricks,
       const CoverTableau& tableau);
 
     bool lookup(
-      const vector<unsigned char>& excessTricksIn,
+      const Tricks& excessTricks,
       CoverTableau const *& tableauPtr);
 
     unsigned size() const;

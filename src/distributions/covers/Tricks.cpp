@@ -6,6 +6,7 @@
    See LICENSE and README.
 */
 
+#include <limits>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -15,6 +16,9 @@
 
 #include "Product.h"
 #include "Profile.h"
+#include "CoverSpec.h"
+
+#include "../../strategies/result/Result.h"
 
 
 void Tricks::clear()
@@ -44,6 +48,43 @@ void Tricks::set(
 }
 
 
+void Tricks::set(
+  const Tricks& tricks2,
+  unsigned char& sum)
+{
+  // TODO Do we need this long-term, or just use = ?
+
+  tricks = tricks2.tricks;
+
+  sum = 0;
+  for (unsigned i = 0; i < tricks2.size(); i++)
+    sum += tricks2.tricks[i];
+}
+
+
+void Tricks::set(
+  const list<Result>& results,
+  unsigned char& tricksMin)
+{
+  // Unlike the other set, this method subtracts out the minimum.
+  tricks.resize(results.size());
+  tricksMin = numeric_limits<unsigned char>::max();
+  unsigned i = 0;
+
+  for (auto& res:results)
+  {
+    tricks[i] = res.getTricks();
+    if (tricks[i] < tricksMin)
+      tricksMin = tricks[i];
+
+    i++;
+  }
+
+  for (i = 0; i < tricks.size(); i++)
+    tricks[i] -= tricksMin;
+}
+
+
 void Tricks::prepare(
   const Product& product,
   const vector<Profile>& distProfiles,
@@ -61,6 +102,32 @@ void Tricks::prepare(
   for (unsigned dno = 0; dno < len; dno++)
   {
     if (product.includes(distProfiles[dno]))
+    {
+      tricks[dno] = 1;
+      weight += static_cast<unsigned>(cases[dno]);
+      numDist++;
+    }
+  }
+}
+
+
+void Tricks::prepare(
+  const CoverSpec& spec,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases,
+  unsigned& weight,
+  unsigned char& numDist)
+{
+  const unsigned len = distProfiles.size();
+  assert(len == cases.size());
+  tricks.resize(len);
+
+  weight = 0;
+  numDist = 0;
+
+  for (unsigned dno = 0; dno < len; dno++)
+  {
+    if (spec.includes(distProfiles[dno]))
     {
       tricks[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);
@@ -160,6 +227,18 @@ bool Tricks::operator == (const Tricks& tricks2) const
 }
 
 
+bool Tricks::operator <= (const Tricks& tricks2) const
+{
+  assert(tricks.size() == tricks2.tricks.size());
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+    if (tricks[i] > tricks2.tricks[i])
+      return false;
+  
+  return true;
+}
+
+
 unsigned Tricks::size() const
 {
   return tricks.size();
@@ -171,7 +250,7 @@ string Tricks::strList() const
   stringstream ss;
 
   for (unsigned i = 0; i < tricks.size(); i++)
-    ss << i << ": " << +tricks[i] << "\n";
+    ss << setw(2) << i << setw(4) << +tricks[i] << "\n";
 
   return ss.str();
 }
@@ -191,8 +270,8 @@ string Tricks::strSpaced() const
   stringstream ss;
 
   for (unsigned i = 0; i < tricks.size(); i++)
-    ss << setw(2) << i << setw(4) << +tricks[i] << "\n";
+    ss << setw(2) << +tricks[i];
 
-  return ss.str();
+  return ss.str() + "\n";
 }
 

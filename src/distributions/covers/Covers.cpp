@@ -264,24 +264,10 @@ const unsigned sizeMid = coversNew.size();
 
 void Covers::setup(
   const list<Result>& results,
-  vector<unsigned char>& tricks,
+  Tricks& tricks,
   unsigned char& tricksMin) const
 {
-  tricks.resize(results.size());
-  tricksMin = UCHAR_NOT_SET;
-  unsigned i = 0;
-
-  for (auto& res: results)
-  {
-    tricks[i] = res.getTricks();
-    if (tricks[i] < tricksMin)
-      tricksMin = tricks[i];
-
-    i++;
-  }
-
-  for (i = 0; i < tricks.size(); i++)
-    tricks[i] -= tricksMin;
+  tricks.set(results, tricksMin);
 }
 
 
@@ -292,7 +278,8 @@ CoverState Covers::explain(
   CoverState state = COVER_OPEN;
   auto iter = covers.begin();
 
-  vector<unsigned char> tricks;
+  Tricks tricks;
+
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
   resExpl.setMinimum(tmin);
@@ -336,7 +323,7 @@ void Covers::explainGreedy(
   const unsigned numStrategyTops,
   CoverTableau& tableau) const
 {
-  vector<unsigned char> tricks;
+  Tricks tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
@@ -390,7 +377,7 @@ void Covers::explainExhaustive(
   const unsigned numStrategyTops,
   CoverTableau& tableau)
 {
-  vector<unsigned char> tricks;
+  Tricks tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
@@ -552,7 +539,7 @@ for (auto s: solutions)
 
 
 void Covers::storeTableau(
-  const vector<unsigned char>& excessTricks,
+  const Tricks& excessTricks,
   const CoverTableau& tableau)
 {
   tableauCache.store(excessTricks, tableau);
@@ -560,7 +547,7 @@ void Covers::storeTableau(
 
 
 bool Covers::lookupTableau(
-  const vector<unsigned char>& excessTricks,
+  const Tricks& excessTricks,
   CoverTableau const * tableauPtr)
 {
   return tableauCache.lookup(excessTricks, tableauPtr);
@@ -577,15 +564,11 @@ void Covers::getCoverCounts(
 
 string Covers::strDebug(
   const string& title,
-  const vector<unsigned char>& tricks) const
+  const Tricks& tricks) const
 {
   stringstream ss;
   ss << title << "\n";
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-    if (tricks[i])
-      ss << i << ": " << +tricks[i] << "\n";
-  ss << "\n";
+  ss << tricks.strList();
   return ss.str();
 }
 

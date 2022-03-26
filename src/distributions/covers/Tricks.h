@@ -10,6 +10,7 @@
 #define SSS_TRICKS_H
 
 #include <vector>
+#include <list>
 #include <string>
 
 #include "CoverHelp.h"
@@ -18,6 +19,8 @@ using namespace std;
 
 class Product;
 class Profile;
+class CoverSpec;
+class Result;
 
 
 class Tricks
@@ -37,8 +40,24 @@ class Tricks
       const vector<unsigned char>& values,
       unsigned char& sum);
 
+    void set(
+      const Tricks& tricks2,
+      unsigned char& sum);
+
+    void set(
+      const list<Result>& results,
+      unsigned char& tricksMin);
+
     void prepare(
       const Product& product,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases,
+      unsigned& weight,
+      unsigned char& numDist);
+
+    // TODO Shouldn't need CoverSpec longer-term
+    void prepare(
+      const CoverSpec& spec,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       unsigned& weight,
@@ -59,6 +78,8 @@ class Tricks
       unsigned char& numDist);
 
     bool operator == (const Tricks& tricks2) const;
+
+    bool operator <= (const Tricks& tricks2) const;
 
     unsigned size() const;
 

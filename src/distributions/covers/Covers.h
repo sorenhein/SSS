@@ -22,6 +22,7 @@ class CoverMemory;
 class CoverTableau;
 class Result;
 class ResExpl;
+class Tricks;
 
 
 using namespace std;
@@ -42,14 +43,14 @@ class Covers
 
     void setup(
       const list<Result>& results,
-      vector<unsigned char>& tricks,
+      Tricks& tricks,
       unsigned char& tricksMin) const;
 
     void prune();
 
     string strDebug(
       const string& title,
-      const vector<unsigned char>& tricks) const;
+      const Tricks& tricks) const;
 
 
   public:
@@ -85,11 +86,11 @@ class Covers
       CoverTableau& tableau);
 
     void storeTableau(
-      const vector<unsigned char>& excessTricks,
+      const Tricks& excessTricks,
       const CoverTableau& tableau);
 
     bool lookupTableau(
-      const vector<unsigned char>& excessTricks,
+      const Tricks& excessTricks,
       CoverTableau const * tableauPtr);
 
     void getCoverCounts(
