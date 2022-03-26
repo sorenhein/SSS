@@ -16,7 +16,6 @@
 #ifndef SSS_PRODUCT_H
 #define SSS_PRODUCT_H
 
-// TODO list instead?
 #include <vector>
 #include <string>
 
@@ -49,43 +48,43 @@ class Product
 
   public:
 
-  Product();
+    Product();
 
-  void reset();
+    void reset();
 
-  void resize(const unsigned compSize);
+    void resize(const unsigned compSize);
 
-  void set(
-    const Profile& sumProfile,
-    const Profile& lowerProfile,
-    const Profile& upperProfile);
+    void set(
+      const Profile& sumProfile,
+      const Profile& lowerProfile,
+      const Profile& upperProfile);
 
-  void set(
-    const Profile& sumProfile,
-    const ProfilePair& profilePair);
+    void set(
+      const Profile& sumProfile,
+      const ProfilePair& profilePair);
 
-  bool includes(const Profile& distProfile) const;
+    bool includes(const Profile& distProfile) const;
 
-  unsigned char getComplexity() const;
+    unsigned char getComplexity() const;
 
-  unsigned char getTopSize() const;
+    unsigned char getTopSize() const;
 
-  unsigned char getRangeSum() const;
+    unsigned char getRangeSum() const;
 
-  bool explainable() const;
+    bool explainable() const;
 
-  Opponent simplestOpponent(const Profile& sumProfile) const;
+    Opponent simplestOpponent(const Profile& sumProfile) const;
 
-  string strHeader() const;
+    string strHeader() const;
 
-  string strLine(const Profile& sumProfile) const;
+    string strLine(const Profile& sumProfile) const;
 
-  string strLine() const;
+    string strLine() const;
 
-  string strVerbal(
-    const Profile& sumProfile,
-    const Opponent simplestOpponent,
-    const bool symmFlag) const;
+    string strVerbal(
+      const Profile& sumProfile,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 };
 
 #endif

@@ -81,7 +81,6 @@ void Product::set(
   if (range == 0 && length.used() && 
     topCount+1 == static_cast<unsigned char>(topLowSize))
   {
-// cout << "XX " << Product::strLine(lenActual, topsActual) << "\n";
     complexity = 2;
   }
 }
@@ -103,28 +102,15 @@ bool Product::includes(const Profile& distProfile) const
   if (length.used() && ! length.includes(distProfile.getLength()))
     return false;
 
-if (distProfile.size() != tops.size())
-{
-cout << 
-  "tops.size " << tops.size() << 
-  ", in " << distProfile.size() << endl;
-if (distProfile.size() > 20)
-  assert(false);
-
-cout << "lengthIn " << +distProfile.getLength() << endl;
-for (unsigned i = 0; i < tops.size(); i++)
-  cout << i << ": " << tops[i].strGeneral() << endl;
-for (unsigned char i = 0; i < distProfile.size(); i++)
-  cout << i << ": " << +distProfile.count(i) << endl;
-
   assert(distProfile.size() == tops.size());
-}
+
   for (unsigned char i = 0; i < distProfile.size(); i++)
   {
     if (tops[i].used() && 
         ! tops[i].includes(distProfile.count(i)))
       return false;
   }
+
   return true;
 }
 
@@ -277,7 +263,6 @@ string Product::strVerbal(
 
   if (top.getOperator() == COVER_EQUAL)
   {
-    // assert(sumProfile.size() == 2);
     return top.strWithLength(
       length,
       sumProfile.getLength(), 
@@ -287,7 +272,6 @@ string Product::strVerbal(
   }
   else
   {
-    // assert(sumProfile.size() == 2);
     return 
       length.strLength(
         sumProfile.getLength(), 
