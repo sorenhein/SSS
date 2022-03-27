@@ -36,10 +36,10 @@ void CoverRowOld::prepare(
 {
   indexInternal = specIn.index;
   sumProfile = specIn.sumProfile;
-  setsWest = specIn.setsWest;
+  covers = specIn.setsWest;
 
   // Individual covers
-  for (auto& cover: setsWest)
+  for (auto& cover: covers)
     cover.prepare(distProfiles, cases);
 
   // The whole row
@@ -53,7 +53,7 @@ bool CoverRowOld::includes(const Profile& distProfile) const
   assert(distProfile.size() == 2);
   assert(sumProfile.size() == 2);
 
-  for (auto& cover: setsWest)
+  for (auto& cover: covers)
   {
     if (cover.includes(distProfile))
       return true;
@@ -114,9 +114,9 @@ unsigned char CoverRowOld::getNumDist() const
 
 string CoverRowOld::str() const
 {
-  string s = setsWest.front().str(sumProfile);
+  string s = covers.front().str(sumProfile);
 
-  for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
+  for (auto iter = next(covers.begin()); iter != covers.end(); iter++)
     s += "; or\n  " + iter->str(sumProfile);
 
   return s;

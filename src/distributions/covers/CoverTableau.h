@@ -55,10 +55,10 @@ class CoverTableau
 
     void setMinTricks(const unsigned char tmin);
 
-    bool attemptGreedy(const CoverNew& cover);
+    bool attemptGreedy(const Cover& cover);
 
     void attemptExhaustive(
-      list<CoverNew>::const_iterator& coverIter,
+      list<Cover>::const_iterator& coverIter,
       const unsigned coverNo,
       list<StackTableau>& stack,
       list<CoverTableau>& solutions,
@@ -88,9 +88,9 @@ struct StackTableau
 {
   CoverTableau tableau;
 
-  list<CoverNew>::const_iterator coverIter;
+  list<Cover>::const_iterator coverIter;
 
-  // May not need this long-term.  May in fact go inside CoverNew.
+  // May not need this long-term.  May in fact go inside Cover.
   unsigned coverNumber;
 };
 

@@ -36,7 +36,7 @@ void CoverRow::resize(const unsigned len)
 
 
 bool CoverRow::attempt(
-  const CoverNew& cover,
+  const Cover& cover,
   Tricks& additions,
   const Tricks& residuals,
   unsigned char& tricksAdded) const
@@ -54,7 +54,7 @@ bool CoverRow::attempt(
 
 
 void CoverRow::add(
-  const CoverNew& cover,
+  const Cover& cover,
   const Tricks& additions,
   Tricks& residuals,
   unsigned char& residualsSum)

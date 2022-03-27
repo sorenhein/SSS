@@ -1,3 +1,11 @@
+/*
+   SSS, a bridge single-suit single-dummy solver.
+
+   Copyright (C) 2020-2022 by Soren Hein.
+
+   See LICENSE and README.
+*/
+
 #ifndef SSS_PROFILEPAIR_H
 #define SSS_PROFILEPAIR_H
 
@@ -16,12 +24,12 @@ class ProfilePair
     Profile lowerProfile;
     Profile upperProfile;
 
-  public:
-
-    // Turn these private too?
     RunningBounds bounds;
 
     unsigned char topNext; // Running top number
+
+
+  public:
 
     ProfilePair(const Profile& sumProfile)
     {
@@ -32,6 +40,7 @@ class ProfilePair
       topNext = 0;
     };
 
+
     void setLength(
       const unsigned char lenLow,
       const unsigned char lenHigh)
@@ -39,6 +48,7 @@ class ProfilePair
       lowerProfile.length = lenLow;
       upperProfile.length = lenHigh;
     };
+
 
     void addTop(
       const unsigned char topNumber,
@@ -49,11 +59,37 @@ class ProfilePair
       upperProfile.tops[topNumber] = topCountHigh;
     };
 
+
+    void setBounds(const RunningBounds& boundsIn)
+    {
+      bounds = boundsIn;
+    };
+
+
+    const RunningBounds& getBounds() const
+    {
+      return bounds;
+    };
+
+
+    void incrNextTopNo()
+    {
+      topNext++;
+    };
+
+
+    unsigned char getNextTopNo() const
+    {
+      return topNext;
+    };
+
+
     unsigned long long getCode(const Profile& sumProfile) const
     {
       return (lowerProfile.getCode() << 32) | 
         upperProfile.getCode(sumProfile, lowerProfile);
     };
+
 
     string strLines() const
     {

@@ -140,7 +140,8 @@ void Covers::prepareNew(
   {
     auto stackIter = stack.begin();
 
-    unsigned char topNumber = stackIter->topNext; // Next to write
+    // unsigned char topNumber = stackIter->topNext; // Next to write
+    unsigned char topNumber = stackIter->getNextTopNo(); // Next to write
     if (topNumber >= sumProfile.size())
     {
       stack.pop_front();
@@ -162,7 +163,7 @@ void Covers::prepareNew(
           continue;
 
         bounds.step(
-          stackIter->bounds,
+          stackIter->getBounds(),
           topCountActual,
           topCountLow,
           topCountHigh);
@@ -207,8 +208,8 @@ void Covers::prepareNew(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->bounds = bounds;
-        nextIter->topNext++;
+        nextIter->setBounds(bounds);
+        nextIter->incrNextTopNo();
       }
     }
     assert(! stack.empty());
@@ -231,7 +232,7 @@ const unsigned sizeOld = coversNew.size();
   timersStrat[23].stop();
 
   timersStrat[24].start();
-  coversNew.sort([](const CoverNew& cover1, const CoverNew& cover2)
+  coversNew.sort([](const Cover& cover1, const Cover& cover2)
   {
     return cover1.earlier(cover2);
   });

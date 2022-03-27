@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVERNEW_H
-#define SSS_COVERNEW_H
+#ifndef SSS_COVER_H
+#define SSS_COVER_H
 
 #include <vector>
 #include <string>
@@ -23,7 +23,7 @@ using namespace std;
 class Profile;
 
 
-class CoverNew
+class Cover
 {
   private:
 
@@ -37,13 +37,10 @@ class CoverNew
 
     bool symmFlag;
 
-    // TODO Do we need to store this, or recalculate when needed?
-    // Opponent simplestOpponent;
-    
 
   public:
 
-    CoverNew();
+    Cover();
 
     void reset();
 
@@ -67,11 +64,11 @@ class CoverNew
 
     CoverState explain(Tricks& tricksSeen) const;
 
-    bool earlier(const CoverNew& cover2) const;
+    bool earlier(const Cover& cover2) const;
 
-    bool sameWeight(const CoverNew& covers2) const;
+    bool sameWeight(const Cover& covers2) const;
 
-    bool sameTricks(const CoverNew& covers2) const;
+    bool sameTricks(const Cover& covers2) const;
 
     bool empty() const;
 

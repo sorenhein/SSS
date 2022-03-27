@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "CoverSpec.h"
-#include "CoverNew.h"
+#include "Cover.h"
 #include "Profile.h"
 #include "ProfilePair.h"
 
@@ -26,7 +26,7 @@ CoverSpec::CoverSpec()
 void CoverSpec::reset()
 {
   setsWest.clear();
-  setsWest.emplace_back(CoverNew());
+  setsWest.emplace_back(Cover());
 }
 
 
@@ -59,10 +59,10 @@ unsigned CoverSpec::getIndex() const
 }
 
 
-CoverNew& CoverSpec::addOrExtend(const CoverControl ctrl)
+Cover& CoverSpec::addOrExtend(const CoverControl ctrl)
 {
   if (ctrl == COVER_EXTEND)
-    setsWest.emplace_back(CoverNew());
+    setsWest.emplace_back(Cover());
 
   return setsWest.back();
 }
@@ -92,7 +92,7 @@ void CoverSpec::westLengthRange(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverNew& cset = CoverSpec::addOrExtend(ctrl);
+  Cover& cset = CoverSpec::addOrExtend(ctrl);
 
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(len1, len2);
@@ -140,7 +140,7 @@ void CoverSpec::westTop1Range(
   const unsigned char tops2,
   const CoverControl ctrl)
 {
-  CoverNew& cset = CoverSpec::addOrExtend(ctrl);
+  Cover& cset = CoverSpec::addOrExtend(ctrl);
 
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(0, sumProfile.getLength());
@@ -173,7 +173,7 @@ void CoverSpec::westGeneral(
   const bool symmFlag,
   const CoverControl ctrl)
 {
-  CoverNew& cset = CoverSpec::addOrExtend(ctrl);
+  Cover& cset = CoverSpec::addOrExtend(ctrl);
 
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(len1, len2);

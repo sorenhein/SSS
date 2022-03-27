@@ -14,7 +14,7 @@
 
 #include "Tricks.h"
 #include "CoverSpec.h"
-#include "CoverNew.h"
+#include "Cover.h"
 #include "CoverHelp.h"
 
 
@@ -27,12 +27,14 @@ class CoverRowOld
 {
   private:
 
+    list<Cover> covers;
+
     Tricks tricks;
 
     unsigned indexInternal;
+
     Profile sumProfile;
-    // list<ProductPlus> setsWest;
-    list<CoverNew> setsWest;
+
 
     unsigned weight;
     unsigned char numDist;

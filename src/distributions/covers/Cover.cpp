@@ -11,18 +11,18 @@
 #include <sstream>
 #include <cassert>
 
-#include "CoverNew.h"
+#include "Cover.h"
 #include "Profile.h"
 #include "ProfilePair.h"
 
 
-CoverNew::CoverNew()
+Cover::Cover()
 {
-  CoverNew::reset();
+  Cover::reset();
 }
 
 
-void CoverNew::reset()
+void Cover::reset()
 {
   productUnitPtr = nullptr;
   tricks.clear();
@@ -32,7 +32,7 @@ void CoverNew::reset()
 }
 
 
-void CoverNew::set(
+void Cover::set(
   ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair,
@@ -40,21 +40,11 @@ void CoverNew::set(
 {
   symmFlag = symmFlagIn;
 
-// cout << "CoverNew::set\n";
-// cout << "sumProfile " << sumProfile.strLine();
-// cout << "profilePair\n" << profilePair.strLines();
-
   productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
-
-// cout << "got " << productUnitPtr->product.strLine() << "\n";
-
-  // We throw away a lot of covers, so it is a bit of a waste
-  // to calculate this now.  But it is convenient.
-  // simplestOpponent = productUnitPtr->product.simplestOpponent(sumProfile);
 }
 
 
-void CoverNew::prepare(
+void Cover::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
@@ -67,14 +57,14 @@ void CoverNew::prepare(
 
 
 // TODO Move to possible?
-bool CoverNew::includes(const Profile& distProfile) const
+bool Cover::includes(const Profile& distProfile) const
 {
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.includes(distProfile);
 }
 
 
-bool CoverNew::possible(
+bool Cover::possible(
   const Tricks& explained,
   const Tricks& residuals,
   Tricks& additions,
@@ -90,13 +80,13 @@ bool CoverNew::possible(
 }
 
 
-CoverState CoverNew::explain(Tricks& tricksSeen) const
+CoverState Cover::explain(Tricks& tricksSeen) const
 {
   return tricks.explain(tricksSeen);
 }
 
 
-bool CoverNew::earlier(const CoverNew& cover2) const
+bool Cover::earlier(const Cover& cover2) const
 {
   // TODO Some of the methods called do real work, so we could cache
   // their results.
@@ -134,69 +124,69 @@ bool CoverNew::earlier(const CoverNew& cover2) const
 }
 
 
-bool CoverNew::sameWeight(const CoverNew& cover2) const
+bool Cover::sameWeight(const Cover& cover2) const
 {
   return (weight == cover2.weight);
 }
 
 
-bool CoverNew::sameTricks(const CoverNew& cover2) const
+bool Cover::sameTricks(const Cover& cover2) const
 {
   return (tricks == cover2.tricks);
 }
 
 
-bool CoverNew::empty() const
+bool Cover::empty() const
 {
   return (weight == 0);
 }
 
 
-bool CoverNew::full() const
+bool Cover::full() const
 {
   return (weight > 0 && numDist == tricks.size());
 }
 
 
-bool CoverNew::symmetric() const
+bool Cover::symmetric() const
 {
   return symmFlag;
 }
 
 
-unsigned CoverNew::getWeight() const
+unsigned Cover::getWeight() const
 {
   return weight;
 }
 
 
-unsigned CoverNew::size() const
+unsigned Cover::size() const
 {
   return tricks.size();
 }
 
 
-unsigned char CoverNew::getNumDist() const
+unsigned char Cover::getNumDist() const
 {
   return numDist;
 }
 
 
-unsigned char CoverNew::getTopSize() const
+unsigned char Cover::getTopSize() const
 {
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.getTopSize();
 }
 
 
-unsigned char CoverNew::getComplexity() const
+unsigned char Cover::getComplexity() const
 {
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.getComplexity();
 }
 
 
-string CoverNew::strHeader() const
+string Cover::strHeader() const
 {
   assert(productUnitPtr != nullptr);
   stringstream ss;
@@ -211,7 +201,7 @@ string CoverNew::strHeader() const
 }
 
 
-string CoverNew::strLine(const Profile& sumProfile) const
+string Cover::strLine(const Profile& sumProfile) const
 {
   assert(productUnitPtr != nullptr);
   stringstream ss;
@@ -220,13 +210,13 @@ string CoverNew::strLine(const Profile& sumProfile) const
     setw(8) << weight <<
     setw(8) << +productUnitPtr->product.getComplexity() <<
     setw(8) << +numDist <<
-    setw(8) << +CoverNew::getTopSize() << "\n";
+    setw(8) << +Cover::getTopSize() << "\n";
   
   return ss.str();
 }
 
 
-string CoverNew::strLine() const
+string Cover::strLine() const
 {
   assert(productUnitPtr != nullptr);
   stringstream ss;
@@ -235,13 +225,13 @@ string CoverNew::strLine() const
     setw(8) << weight <<
     setw(8) << +productUnitPtr->product.getComplexity() <<
     setw(8) << +numDist <<
-    setw(8) << +CoverNew::getTopSize() << "\n";
+    setw(8) << +Cover::getTopSize() << "\n";
   
   return ss.str();
 }
 
 
-string CoverNew::strProfile() const
+string Cover::strProfile() const
 {
   stringstream ss;
 
@@ -252,7 +242,7 @@ string CoverNew::strProfile() const
 }
 
 
-string CoverNew::strHeaderTricksShort() const
+string Cover::strHeaderTricksShort() const
 {
   stringstream ss;
   ss << setw(tricks.size()+2) << left << "Tricks";
@@ -260,13 +250,13 @@ string CoverNew::strHeaderTricksShort() const
 }
 
 
-string CoverNew::strTricksShort() const
+string Cover::strTricksShort() const
 {
   return tricks.strShort();
 }
 
 
-string CoverNew::str(const Profile& sumProfile) const
+string Cover::str(const Profile& sumProfile) const
 {
   assert(productUnitPtr != nullptr);
   const Product& product = productUnitPtr->product;
@@ -287,6 +277,6 @@ string CoverNew::str(const Profile& sumProfile) const
     return ss.str();
   }
   else
-    return CoverNew::strTricksShort() + CoverNew::strLine();
+    return Cover::strTricksShort() + Cover::strLine();
 }
 

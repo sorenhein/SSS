@@ -1,8 +1,9 @@
 Tricks: Optimize into 5-groups
 
-1. Add symmFlag to CoverNew
 2. Rename CoverNew as Cover
-3. Try to use Cover instead of ProductPlus
+
+Check that the old CoverMemory stuff with 1 top goes in the right place,
+so if there's only 1 top at all, shouldn't it go in position 0?
 
 3. Make ProductMemory
    - Usage: Not just flat count, but vector of oppsLength,

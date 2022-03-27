@@ -37,7 +37,7 @@ class Covers
 
     list<CoverRowOld> covers;
 
-    list<CoverNew> coversNew;
+    list<Cover> coversNew;
 
     TableauCache tableauCache;
 

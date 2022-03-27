@@ -57,7 +57,6 @@ class Tricks
 
     // TODO Shouldn't need CoverSpec longer-term
     void prepare(
-      // const CoverSpec& spec,
       const CoverRowOld& cover,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,

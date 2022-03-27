@@ -53,7 +53,7 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 }
 
 
-bool CoverTableau::attemptGreedy(const CoverNew& cover)
+bool CoverTableau::attemptGreedy(const Cover& cover)
 {
   // explained is a dummy vector here.
   Tricks explained;
@@ -124,7 +124,7 @@ cout << rowBestPtr->strLines() << "\n";
 
 
 void CoverTableau::attemptExhaustive(
-  list<CoverNew>::const_iterator& coverIter,
+  list<Cover>::const_iterator& coverIter,
   const unsigned coverNo,
   list<StackTableau>& stack,
   list<CoverTableau>& solutions,
@@ -134,7 +134,7 @@ void CoverTableau::attemptExhaustive(
   // the first match, and we don't yet implement any match.
 
   // explained is a dummy vector here.
-  const CoverNew& cover = * coverIter;
+  const Cover& cover = * coverIter;
 
   Tricks explained;
   explained.resize(cover.size());

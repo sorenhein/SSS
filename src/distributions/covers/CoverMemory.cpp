@@ -729,7 +729,8 @@ void CoverMemory::makeSets(
   {
     auto stackIter = stack.begin();
 
-    unsigned char topNumber = stackIter->topNext; // Next to write
+    // unsigned char topNumber = stackIter->topNext; // Next to write
+    unsigned char topNumber = stackIter->getNextTopNo(); // Next to write
     if (topNumber >= comp.size())
       break;
 
@@ -741,7 +742,8 @@ void CoverMemory::makeSets(
       for (unsigned char topCountHigh = topCountLow; 
         topCountHigh <= topCountActual; topCountHigh++)
       {
-        bounds.step(stackIter->bounds,
+        bounds.step(
+          stackIter->getBounds(),
           topCountActual,
           topCountLow,
           topCountHigh);
@@ -787,8 +789,8 @@ void CoverMemory::makeSets(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->bounds = bounds;
-        nextIter->topNext++;
+        nextIter->setBounds(bounds);
+        nextIter->incrNextTopNo();
       }
     }
     assert(! stack.empty());

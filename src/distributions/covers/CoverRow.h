@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-#include "CoverNew.h"
+#include "Cover.h"
 #include "Tricks.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ class CoverRow
 {
   private:
 
-    list<CoverNew const *> coverPtrs;
+    list<Cover const *> coverPtrs;
 
     // The OR'ed tricks of the covers.
     // vector<unsigned char> tricks;
@@ -47,13 +47,13 @@ class CoverRow
 
     // TODO swap
     bool attempt(
-      const CoverNew& cover,
+      const Cover& cover,
       Tricks& additions,
       const Tricks& residuals,
       unsigned char& tricksAdded) const;
 
     void add(
-      const CoverNew& cover,
+      const Cover& cover,
       const Tricks& additions,
       Tricks& residuals,
       unsigned char& residualsSum);

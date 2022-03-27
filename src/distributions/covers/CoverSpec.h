@@ -14,7 +14,7 @@
 
 #include "CoverHelp.h"
 #include "Product.h"
-#include "CoverNew.h"
+#include "Cover.h"
 
 #include "Profile.h"
 #include "Tricks.h"
@@ -90,10 +90,10 @@ class CoverSpec
 
     // Every time ctrl == COVER_EXTEND, we add one.
     // list<ProductPlus> setsWest;
-    list<CoverNew> setsWest;
+    list<Cover> setsWest;
 
 
-    CoverNew& addOrExtend(const CoverControl ctrl);
+    Cover& addOrExtend(const CoverControl ctrl);
 
 
   public:

@@ -201,7 +201,7 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
 string Product::strHeader() const
 {
   // Does not end on a linebreak, as it may be concatenated with
-  // more in CoverNew.
+  // more in Cover.
   stringstream ss;
 
   ss << setw(8) << "Length";
@@ -215,7 +215,7 @@ string Product::strHeader() const
 string Product::strLine(const Profile& sumProfile) const
 {
   // Does not end on a linebreak, as it may be concatenated with
-  // more in CoverNew.
+  // more in Cover.
   stringstream ss;
 
   ss << setw(8) << length.strGeneral();
@@ -231,7 +231,7 @@ string Product::strLine(const Profile& sumProfile) const
 string Product::strLine() const
 {
   // Does not end on a linebreak, as it may be concatenated with
-  // more in CoverNew.
+  // more in Cover.
   stringstream ss;
 
   ss << setw(8) << length.strGeneral();
