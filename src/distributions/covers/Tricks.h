@@ -19,7 +19,7 @@ using namespace std;
 
 class Product;
 class Profile;
-class CoverSpec;
+class Cover;
 class Result;
 
 
@@ -57,7 +57,8 @@ class Tricks
 
     // TODO Shouldn't need CoverSpec longer-term
     void prepare(
-      const CoverSpec& spec,
+      // const CoverSpec& spec,
+      const Cover& cover,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       unsigned& weight,

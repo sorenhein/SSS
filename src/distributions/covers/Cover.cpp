@@ -34,9 +34,36 @@ void Cover::prepare(
   const vector<unsigned char>& cases,
   const CoverSpec& specIn)
 {
-  tricks.prepare(specIn, distProfiles, cases, weight, numDist);
+  indexInternal = specIn.index;
+  sumProfile = specIn.sumProfile;
+  setsWest = specIn.setsWest;
 
-  spec = specIn;
+  tricks.prepare(* this, distProfiles, cases, weight, numDist);
+}
+
+
+bool Cover::includes(const Profile& distProfile) const
+{
+  assert(distProfile.size() == 2);
+  assert(sumProfile.size() == 2);
+
+  for (auto& set: setsWest)
+  {
+    if (set.product.includes(distProfile))
+      return true;
+    else if (! set.symmFlag)
+      continue;
+    else
+    {
+      Profile mirror = distProfile;
+      mirror.mirrorAround(sumProfile);
+
+      if (set.product.includes(mirror))
+        return true;
+    }
+  }
+
+  return false;
 }
 
 
@@ -56,13 +83,14 @@ void Cover::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  spec.getID(length, tops1);
+  length = sumProfile.getLength();
+  tops1 = sumProfile.count(1);
 }
 
 
 unsigned Cover::index() const
 {
-  return spec.getIndex();
+  return indexInternal;
 }
 
 
@@ -80,7 +108,12 @@ unsigned char Cover::getNumDist() const
 
 string Cover::str() const
 {
-  return spec.str();
+  string s = setsWest.front().strVerbal(sumProfile);
+
+  for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
+    s += "; or\n  " + iter->strVerbal(sumProfile);
+
+  return s;
 }
 
 
@@ -89,8 +122,7 @@ string Cover::strProfile() const
   stringstream ss;
 
   cout << 
-    "cover index " << spec.getIndex() << 
-    ", weight " << weight << "\n";
+    "cover index " << indexInternal << ", weight " << weight << "\n";
 
   ss << tricks.strList();
   

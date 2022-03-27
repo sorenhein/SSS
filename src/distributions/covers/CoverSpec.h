@@ -72,6 +72,8 @@ enum CoverControl
 
 class CoverSpec
 {
+  friend class Cover;
+
   private:
 
     // For easier identification.  Could perhaps be unsigned char

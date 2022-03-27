@@ -28,17 +28,12 @@ class Cover
 
     Tricks tricks;
 
-    CoverSpec spec;
+    unsigned indexInternal;
+    Profile sumProfile;
+    list<ProductPlus> setsWest;
 
     unsigned weight;
     unsigned char numDist;
-
-
-    bool includes(
-      const vector<unsigned char>& lengths,
-      const vector<unsigned char>& tops,
-      const unsigned dno,
-      const unsigned specNumber);
 
 
   public:
@@ -51,6 +46,8 @@ class Cover
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
+
+    bool includes(const Profile& distProfile) const;
 
     CoverState explain(Tricks& tricksSeen) const;
 
