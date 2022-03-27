@@ -11,13 +11,16 @@
 #include <sstream>
 #include <cassert>
 
-#include "ResExpl.h"
 #include "Covers.h"
+
 #include "CoverMemory.h"
-#include "CoverTableau.h"
 #include "ProductMemory.h"
+#include "CoverTableau.h"
+#include "ResExpl.h"
+#include "Tricks.h"
 
 #include "../../strategies/result/Result.h"
+
 #include "../../const.h"
 
 #include "../../utils/Timer.h"
@@ -35,7 +38,9 @@ Covers::Covers()
 
 void Covers::reset()
 {
+  rowsOld.clear();
   covers.clear();
+  tableauCache.reset();
 }
 
 
@@ -50,33 +55,21 @@ void Covers::prepare(
   assert(maxLengthIn >= 2);
   assert(maxTops >= 1);
 
-  covers.resize(coverMemory.size(maxLengthIn, maxTops));
-  auto citer = covers.begin();
+  rowsOld.resize(coverMemory.size(maxLengthIn, maxTops));
+  auto riter = rowsOld.begin();
 
   for (auto miter = coverMemory.begin(maxLengthIn, maxTops);
       miter != coverMemory.end(maxLengthIn, maxTops); miter++)
   {
-    assert(citer != covers.end());
-    citer->prepare(distProfiles, cases, * miter);
+    assert(riter != rowsOld.end());
+    riter->prepare(distProfiles, cases, * miter);
 
-    if (citer->getWeight() == 0)
-    {
-      cout << "Covers::prepare: " << 
-        +maxLengthIn << ", " << +maxTops << "\n";
-      cout << "Adding " << citer->str() << "\n";
-      // cout << "Adding " << miter->str() << "\n";
-
-for (unsigned i = 0; i< distProfiles.size(); i++)
-  cout << distProfiles[i].strLine();
-cout <<endl;
-
-      assert(citer->getWeight() != 0);
-    }
-
-    citer++;
+    assert(riter->getWeight() != 0);
+    riter++;
   }
 
-  covers.sort([](const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
+  rowsOld.sort([](
+    const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
   {
     return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
@@ -85,26 +78,20 @@ cout <<endl;
 
 void Covers::prune()
 {
-  for (auto citer = coversNew.begin(); citer != coversNew.end(); )
+  for (auto citer = covers.begin(); citer != covers.end(); )
   {
-    if (citer->empty())
+    if (citer->empty() || citer->full())
     {
-      citer = coversNew.erase(citer);
+      citer = covers.erase(citer);
       continue;
     }
 
-    if (citer->full())
-    {
-      citer = coversNew.erase(citer);
-      continue;
-    }
-
-    for (auto citer2 = next(citer); citer2 != coversNew.end(); )
+    for (auto citer2 = next(citer); citer2 != covers.end(); )
     {
       if (! citer2->sameWeight(* citer))
         break;
       else if (citer2->sameTricks(* citer))
-        citer2 = coversNew.erase(citer2);
+        citer2 = covers.erase(citer2);
       else
         citer2++;
     }
@@ -125,11 +112,9 @@ void Covers::prepareNew(
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back(ProfilePair(sumProfile));
 
-  coversNew.resize(COVER_CHUNK_SIZE);
-  // for (auto& c: coversNew)
-    // c.resize(sumProfile.size());
+  covers.resize(COVER_CHUNK_SIZE);
 
-  auto citer = coversNew.begin(); // Next one to write
+  auto citer = covers.begin(); // Next one to write
   timersStrat[20].stop();
 
   RunningBounds bounds;
@@ -140,7 +125,6 @@ void Covers::prepareNew(
   {
     auto stackIter = stack.begin();
 
-    // unsigned char topNumber = stackIter->topNext; // Next to write
     unsigned char topNumber = stackIter->getNextTopNo(); // Next to write
     if (topNumber >= sumProfile.size())
     {
@@ -171,7 +155,7 @@ void Covers::prepareNew(
         if (bounds.busted())
           continue;
 
-        assert(citer != coversNew.end());
+        assert(citer != covers.end());
 
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
@@ -197,7 +181,7 @@ void Covers::prepareNew(
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
 
-            assert(citer != coversNew.end());
+            assert(citer != covers.end());
 
             stackIter->setLength(lLow, lHigh);
 
@@ -218,21 +202,21 @@ void Covers::prepareNew(
   timersStrat[21].stop();
 
   timersStrat[22].start();
-const unsigned sizeOld = coversNew.size();
+const unsigned sizeOld = covers.size();
 
-  coversNew.erase(citer, coversNew.end());
-  assert(! coversNew.empty());
+  covers.erase(citer, covers.end());
+  assert(! covers.empty());
   timersStrat[22].stop();
 
   cout << "Length " << sumProfile.strLine() << "\n";
 
   timersStrat[23].start();
-  for (auto& c: coversNew)
+  for (auto& c: covers)
     c.prepare(distProfiles, cases);
   timersStrat[23].stop();
 
   timersStrat[24].start();
-  coversNew.sort([](const Cover& cover1, const Cover& cover2)
+  covers.sort([](const Cover& cover1, const Cover& cover2)
   {
     return cover1.earlier(cover2);
   });
@@ -240,8 +224,8 @@ const unsigned sizeOld = coversNew.size();
 
   /*
   cout << "Covers before pruning\n";
-  cout << coversNew.front().strHeader();
-  for (auto& c: coversNew)
+  cout << covers.front().strHeader();
+  for (auto& c: covers)
     cout << c.strLine(sumProfile);
   cout << "\n";
   */
@@ -251,18 +235,18 @@ const unsigned sizeOld = coversNew.size();
   // ways of saying the same thing.  In total across all covers,
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
-const unsigned sizeMid = coversNew.size();
+const unsigned sizeMid = covers.size();
 // cout << "sizeMid " << +sizeMid << endl;
   timersStrat[25].start();
   Covers::prune();
   timersStrat[25].stop();
   cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
-    coversNew.size() << "\n";
+    covers.size() << "\n";
 
   /*
   cout << "Covers\n";
-  cout << coversNew.front().strHeader();
-  for (auto& c: coversNew)
+  cout << covers.front().strHeader();
+  for (auto& c: covers)
     cout << c.strLine(sumProfile);
   cout << "\n";
   */
@@ -283,7 +267,7 @@ CoverState Covers::explain(
   ResExpl& resExpl) const
 {
   CoverState state = COVER_OPEN;
-  auto iter = covers.begin();
+  auto iter = rowsOld.begin();
 
   Tricks tricks;
 
@@ -293,7 +277,7 @@ CoverState Covers::explain(
 
   while (true)
   {
-    if (iter == covers.end())
+    if (iter == rowsOld.end())
     {
       cout << Covers::strDebug("Left with", tricks);
       return COVER_IMPOSSIBLE;
@@ -338,8 +322,8 @@ void Covers::explainGreedy(
   tableau.setBoundaries(sumProfile);
   tableau.setTricks(tricks, tmin);
 
-  auto citer = coversNew.begin();
-  while (citer != coversNew.end())
+  auto citer = covers.begin();
+  while (citer != covers.end())
   {
 /*
 cout << citer->strHeader();
@@ -411,10 +395,10 @@ void Covers::explainExhaustive(
   stableau.tableau.setBoundaries(sumProfile);
   stableau.tableau.setTricks(tricks, tmin);
 
-  stableau.coverIter = coversNew.begin();
+  stableau.coverIter = covers.begin();
   stableau.coverNumber = 0;
 
-const unsigned coverSize = coversNew.size();
+const unsigned coverSize = covers.size();
 unsigned coverNo;
 
   list<CoverTableau> solutions;
@@ -464,7 +448,7 @@ cout <<
 
     if (solutions.empty() || projected <= lowestComplexity + 1)
     {
-    while (citer != coversNew.end())
+    while (citer != covers.end())
     {
       if (citer->getTopSize() > numStrategyTops)
       {

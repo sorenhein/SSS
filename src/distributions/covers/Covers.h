@@ -17,13 +17,12 @@
 #include "ProfilePair.h"
 #include "TableauCache.h"
 
-class Distribution;
 class CoverMemory;
 class ProductMemory;
 class CoverTableau;
-class Result;
 class ResExpl;
 class Tricks;
+class Result;
 
 
 using namespace std;
@@ -35,9 +34,9 @@ class Covers
 
     Profile sumProfile;
 
-    list<CoverRowOld> covers;
+    list<CoverRowOld> rowsOld;
 
-    list<Cover> coversNew;
+    list<Cover> covers;
 
     TableauCache tableauCache;
 
