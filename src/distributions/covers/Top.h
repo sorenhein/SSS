@@ -54,9 +54,6 @@ class Top: public Term
         eastMax = totalXes - westMin;
         eastMin = totalXes - westMax;
 
-        // eastMax = (oppsLength - distLengthLower) - (oppsTops - topsExact);
-        // eastMin = (oppsLength - distLengthUpper) - (oppsTops - topsExact);
-
         strWest = string(westMin, 'x') +
           "(" + string(westMax - westMin, 'x') + ")";
         strEast = string(eastMin, 'x') +

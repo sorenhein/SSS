@@ -176,7 +176,7 @@ void Covers::prepareNew(
         stackIter->setLength(0, sumProfile.getLength()); // ?
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
-        citer->set(productMemory, sumProfile, * stackIter);
+        citer->set(productMemory, sumProfile, * stackIter, false);
         citer++;
 
         const unsigned char westLow = bounds.lengthWestLow();
@@ -200,7 +200,7 @@ void Covers::prepareNew(
 
             stackIter->setLength(lLow, lHigh);
 
-            citer->set(productMemory, sumProfile, * stackIter);
+            citer->set(productMemory, sumProfile, * stackIter, false);
             citer++;
           }
         }

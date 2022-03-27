@@ -14,11 +14,13 @@
 
 #include "CoverHelp.h"
 #include "Product.h"
+#include "CoverNew.h"
 
 #include "Profile.h"
 #include "Tricks.h"
 
 class ProfilePair;
+class ProductMemory;
 
 
 enum CoverControl
@@ -87,10 +89,11 @@ class CoverSpec
     // Within a set, the elements are AND'ed together if both are present.
 
     // Every time ctrl == COVER_EXTEND, we add one.
-    list<ProductPlus> setsWest;
+    // list<ProductPlus> setsWest;
+    list<CoverNew> setsWest;
 
 
-    ProductPlus& addOrExtend(const CoverControl ctrl);
+    CoverNew& addOrExtend(const CoverControl ctrl);
 
 
   public:
@@ -112,42 +115,51 @@ class CoverSpec
     unsigned getIndex() const;
 
     void westLength(
+      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void eastLength(
+      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void westLengthRange(
+      ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
 
     void eastLengthRange(
+      ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
 
     void westTop1(
+      ProductMemory& productMemory,
       const unsigned char tops,
       const CoverControl ctrl = COVER_ADD);
 
     void eastTop1(
+      ProductMemory& productMemory,
       const unsigned char tops,
       const CoverControl ctrl = COVER_ADD);
 
     void westTop1Range(
+      ProductMemory& productMemory,
       const unsigned char tops1,
       const unsigned char tops2,
       const CoverControl ctrl = COVER_ADD);
 
     void eastTop1Range(
+      ProductMemory& productMemory,
       const unsigned char tops1,
       const unsigned char tops2,
       const CoverControl ctrl = COVER_ADD);
 
     void westGeneral(
+      ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,
       const unsigned char tops1,
@@ -156,6 +168,7 @@ class CoverSpec
       const CoverControl ctrl = COVER_ADD);
 
     void eastGeneral(
+      ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,
       const unsigned char tops1,

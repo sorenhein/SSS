@@ -38,6 +38,12 @@ void CoverRowOld::prepare(
   sumProfile = specIn.sumProfile;
   setsWest = specIn.setsWest;
 
+  // Individual covers
+  for (auto& cover: setsWest)
+    cover.prepare(distProfiles, cases);
+
+  // The whole row
+  // TODO Can't we just OR together the cover's?
   tricks.prepare(* this, distProfiles, cases, weight, numDist);
 }
 
@@ -47,18 +53,18 @@ bool CoverRowOld::includes(const Profile& distProfile) const
   assert(distProfile.size() == 2);
   assert(sumProfile.size() == 2);
 
-  for (auto& set: setsWest)
+  for (auto& cover: setsWest)
   {
-    if (set.product.includes(distProfile))
+    if (cover.includes(distProfile))
       return true;
-    else if (! set.symmFlag)
+    else if (! cover.symmetric())
       continue;
     else
     {
       Profile mirror = distProfile;
       mirror.mirrorAround(sumProfile);
 
-      if (set.product.includes(mirror))
+      if (cover.includes(mirror))
         return true;
     }
   }
@@ -108,10 +114,10 @@ unsigned char CoverRowOld::getNumDist() const
 
 string CoverRowOld::str() const
 {
-  string s = setsWest.front().strVerbal(sumProfile);
+  string s = setsWest.front().str(sumProfile);
 
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-    s += "; or\n  " + iter->strVerbal(sumProfile);
+    s += "; or\n  " + iter->str(sumProfile);
 
   return s;
 }

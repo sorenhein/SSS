@@ -35,8 +35,10 @@ class CoverNew
 
     unsigned char numDist;
 
+    bool symmFlag;
+
     // TODO Do we need to store this, or recalculate when needed?
-    Opponent simplestOpponent;
+    // Opponent simplestOpponent;
     
 
   public:
@@ -48,11 +50,14 @@ class CoverNew
     void set(
       ProductMemory& productMemory,
       const Profile& sumProfile,
-      const ProfilePair& profilePair);
+      const ProfilePair& profilePair,
+      const bool symmFlagIn);
 
     void prepare(
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
+
+    bool includes(const Profile& distProfile) const;
 
     bool possible(
       const Tricks& explained,
@@ -71,6 +76,8 @@ class CoverNew
     bool empty() const;
 
     bool full() const;
+
+    bool symmetric() const;
 
     unsigned getWeight() const;
 

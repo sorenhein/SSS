@@ -280,10 +280,7 @@ string Top::strLengthRangeEqual(
   else if (maxLen == 5)
     slen = "fifth";
   else
-  {
-cout << "maxLen " << +maxLen << endl;
     assert(false);
-  }
 
   if (value == oppsTops)
   {

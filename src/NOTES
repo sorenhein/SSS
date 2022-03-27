@@ -1,6 +1,8 @@
 Tricks: Optimize into 5-groups
 
 1. Add symmFlag to CoverNew
+2. Rename CoverNew as Cover
+3. Try to use Cover instead of ProductPlus
 
 3. Make ProductMemory
    - Usage: Not just flat count, but vector of oppsLength,
@@ -28,14 +30,6 @@ CoverRow: list<CoverNew *>, tricks[], numDist, complexity
 So a CoverNew is a bit similar to a ProductPlus.
 It could get a symmFlag.
 Then CoverSpec could use CoverNew instead.
-CoverNew gets a Product *, not a Product.
-We introduce ProductMemory.
-profile[] turns into a class, CoverProfile:
-  Figure out its methods
-  Internal storage may be in 5-groups
-  Add, subtract, ...
-  Turn back into printable string
-  reverse
 
 CoverRowOld: use list<CoverNew *>
 

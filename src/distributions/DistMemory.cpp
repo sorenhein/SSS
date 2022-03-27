@@ -83,6 +83,7 @@ void DistMemory::reset()
 
 
 void DistMemory::resize(
+  ProductMemory& productMemory,
   const unsigned char maxCardsIn,
   const bool fullFlagIn)
 {
@@ -124,7 +125,7 @@ void DistMemory::resize(
       uniques[cards].resize(DIST_UNIQUE_COUNT[cards]);
   }
 
-  coverMemory.prepare(maxCardsIn);
+  coverMemory.prepare(productMemory, maxCardsIn);
 }
 
 

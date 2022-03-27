@@ -32,11 +32,12 @@ void Distributions::reset()
 void Distributions::resize(const unsigned char maxCardsIn)
 {
   maxCards = maxCardsIn;
-  distMemory.resize(maxCardsIn+1);
 
   // If there are 13 (or 14) cards, then there are at most 
   // (maxCards+1) / 2 = 7 opposing ranks.
   productMemory.resize((maxCards+1)/2 + 1);
+
+  distMemory.resize(productMemory, maxCardsIn+1);
 
   // A distribution is a set of card splits for a given rank
   // vector covering both East and West.

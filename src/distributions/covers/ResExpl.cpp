@@ -159,9 +159,10 @@ string ResExpl::str() const
     ed.coverRowPtr->getID(length, tops1);
 
     ss << prefix <<
-      ed.coverRowPtr->str() << " [" <<
-      +ed.numDist << ", " <<
-      +ed.weight << "]\n";
+      ed.coverRowPtr->str() << "\n";
+      // " [" <<
+      // +ed.numDist << ", " <<
+      // +ed.weight << "]\n";
   }
 
   return ss.str() + "\n";

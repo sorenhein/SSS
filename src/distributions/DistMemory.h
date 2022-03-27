@@ -47,6 +47,7 @@ class DistMemory
     void reset();
 
     void resize(
+      ProductMemory& productMemory,
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
 

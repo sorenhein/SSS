@@ -13,6 +13,7 @@
 
 #include "CoverNew.h"
 #include "Profile.h"
+#include "ProfilePair.h"
 
 
 CoverNew::CoverNew()
@@ -27,19 +28,29 @@ void CoverNew::reset()
   tricks.clear();
   weight = 0;
   numDist = 0;
+  symmFlag = false;
 }
 
 
 void CoverNew::set(
   ProductMemory& productMemory,
   const Profile& sumProfile,
-  const ProfilePair& profilePair)
+  const ProfilePair& profilePair,
+  const bool symmFlagIn)
 {
+  symmFlag = symmFlagIn;
+
+// cout << "CoverNew::set\n";
+// cout << "sumProfile " << sumProfile.strLine();
+// cout << "profilePair\n" << profilePair.strLines();
+
   productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+
+// cout << "got " << productUnitPtr->product.strLine() << "\n";
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.
-  simplestOpponent = productUnitPtr->product.simplestOpponent(sumProfile);
+  // simplestOpponent = productUnitPtr->product.simplestOpponent(sumProfile);
 }
 
 
@@ -49,6 +60,17 @@ void CoverNew::prepare(
 {
   assert(productUnitPtr != nullptr);
   tricks.prepare(productUnitPtr->product, distProfiles, cases, weight, numDist);
+  
+  // cout << "product: " << productUnitPtr->product.strLine() << "\n";
+  // cout << "prepared: " << +numDist << ", " << +weight << "\n";
+}
+
+
+// TODO Move to possible?
+bool CoverNew::includes(const Profile& distProfile) const
+{
+  assert(productUnitPtr != nullptr);
+  return productUnitPtr->product.includes(distProfile);
 }
 
 
@@ -133,6 +155,12 @@ bool CoverNew::empty() const
 bool CoverNew::full() const
 {
   return (weight > 0 && numDist == tricks.size());
+}
+
+
+bool CoverNew::symmetric() const
+{
+  return symmFlag;
 }
 
 
@@ -241,14 +269,20 @@ string CoverNew::strTricksShort() const
 string CoverNew::str(const Profile& sumProfile) const
 {
   assert(productUnitPtr != nullptr);
-  if (productUnitPtr->product.explainable())
+  const Product& product = productUnitPtr->product;
+
+  if (product.explainable())
   {
     stringstream ss;
 
-    // TODO This is where symmFlag would enter
-    ss << productUnitPtr->product.strVerbal(sumProfile, simplestOpponent, false) <<
-      " [" << +numDist << ", " << 
-      weight << "]";
+// cout << "product in str: " << productUnitPtr->product.strLine() << "\n";
+
+    Opponent simplestOpponent = product.simplestOpponent(sumProfile);
+    ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
+    if (symmFlag)
+      ss << " [" << +2*numDist << ", " << 2*weight << "]";
+    else
+      ss << " [" << +numDist << ", " << weight << "]";
 
     return ss.str();
   }
