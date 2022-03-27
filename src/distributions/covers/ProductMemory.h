@@ -21,11 +21,29 @@ class Profile;
 class ProfilePair;
 
 
+struct ProductUnit
+{
+  Product product;
+
+  unsigned numCovers;
+  unsigned numTableaux;
+  unsigned numUses;
+};
+
+
 class ProductMemory
 {
   private: 
+    
+    struct EnterStat
+    {
+      unsigned numUnique;
+      unsigned numTotal;
+    };
 
-    vector<map<unsigned long long, Product>> memory;
+    vector<map<unsigned long long, ProductUnit>> memory;
+
+    vector<EnterStat> enterStats;
 
 
   public:
@@ -36,9 +54,11 @@ class ProductMemory
 
     void resize(const unsigned char oppsLength);
 
-    Product const * enterOrLookup(
+    ProductUnit * enterOrLookup(
       const Profile& sumProfile,
       const ProfilePair& profilePair);
+
+    string strEnterStats() const;
 };
 
 #endif

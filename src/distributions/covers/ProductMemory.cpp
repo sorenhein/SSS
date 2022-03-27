@@ -26,16 +26,18 @@ ProductMemory::ProductMemory()
 void ProductMemory::reset()
 {
   memory.clear();
+  enterStats.clear();
 }
 
 
 void ProductMemory::resize(const unsigned char memSize)
 {
   memory.resize(memSize);
+  enterStats.resize(memSize);
 }
 
 
-Product const * ProductMemory::enterOrLookup(
+ProductUnit * ProductMemory::enterOrLookup(
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
@@ -47,24 +49,60 @@ Product const * ProductMemory::enterOrLookup(
 
   if (it == memory[numTops].end())
   {
-// cout << "ADDPM\n";
-// cout << "ADD " << +numTops << "\n" << profilePair.strLines();
-    Product& product = memory[numTops][code] = Product();
+    ProductUnit& productUnit = memory[numTops][code] = ProductUnit();
 
-    product.resize(numTops);
-    product.set(sumProfile, profilePair);
-    return &product;
+    productUnit.product.resize(numTops);
+    productUnit.product.set(sumProfile, profilePair);
+    
+    productUnit.numCovers = 1;
+    productUnit.numTableaux = 0;
+    productUnit.numUses = 0;
+
+    enterStats[numTops].numUnique++;
+    enterStats[numTops].numTotal++;
+
+    return &productUnit;
   }
   else
   {
-// cout << "GOTPM\n";
-// cout << "GOT " << +numTops << "\n" << profilePair.strLines();
-// cout << "LOOKUP " << (it->second).strLine() << endl;
-if ((it->second).size() != numTops)
-{
-  assert(false);
-}
-    return &(it->second);
+    ProductUnit& productUnit = it->second;
+    productUnit.numCovers++;
+
+    enterStats[numTops].numTotal++;
+
+    return &productUnit;
   }
+}
+
+
+string ProductMemory::strEnterStats() const
+{
+  stringstream ss;
+
+  ss << "ProductMemory entry statistics\n\n";
+
+  ss <<
+    setw(8) << "Numtops" <<
+    setw(12) << "Unique" <<
+    setw(12) << "Total" << 
+    setw(12) << "Ratio" << 
+    "\n";
+
+  for (unsigned i = 0; i < enterStats.size(); i++)
+  {
+    if (enterStats[i].numTotal == 0)
+      continue;
+
+    ss <<
+      setw(8) << i <<
+      setw(12) << enterStats[i].numUnique <<
+      setw(12) << enterStats[i].numTotal << 
+      setw(12) << fixed << setprecision(1) <<
+        100. * static_cast<float>(enterStats[i].numUnique) /
+        static_cast<float>(enterStats[i].numTotal) << 
+        "\n";
+  }
+
+  return ss.str() + "\n";
 }
 

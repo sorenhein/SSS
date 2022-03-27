@@ -84,6 +84,8 @@ class Distributions
     string strCovers(const unsigned char cards = 0) const;
 
     string strCoverCounts(const unsigned char cards = 0) const;
+
+    string strProductEnterStats() const;
 };
 
 #endif

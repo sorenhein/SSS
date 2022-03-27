@@ -28,7 +28,7 @@ class CoverNew
 {
   private:
 
-    Product const * productPtr;
+    ProductUnit * productUnitPtr;
 
     Tricks tricks;
 

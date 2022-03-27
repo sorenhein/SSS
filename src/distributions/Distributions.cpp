@@ -227,3 +227,9 @@ string Distributions::strCoverCounts(const unsigned char cards) const
   return ss.str() + "\n";
 }
 
+
+string Distributions::strProductEnterStats() const
+{
+  return productMemory.strEnterStats();
+}
+
