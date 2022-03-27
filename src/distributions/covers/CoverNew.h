@@ -46,8 +46,6 @@ class CoverNew
 
     void reset();
 
-    // void resize(const unsigned topNumber);
-
     void set(
       ProductMemory& productMemory,
       const Profile& sumProfile,

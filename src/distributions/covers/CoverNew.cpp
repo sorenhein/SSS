@@ -30,30 +30,12 @@ void CoverNew::reset()
 }
 
 
-/*
-void CoverNew::resize(const unsigned topNumber)
-{
-  product.resize(topNumber);
-}
-*/
-
-
 void CoverNew::set(
   ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
   productPtr = productMemory.enterOrLookup(sumProfile, profilePair);
-
-assert(productPtr != nullptr);
-if (productPtr->size() != sumProfile.size())
-{
-  cout << "pptr " << +productPtr->size() << endl;
-  cout << "sumP " << +sumProfile.size()  << endl;
-assert(productPtr->size() == sumProfile.size());
-}
-
-  // product.set(sumProfile, profilePair);
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.

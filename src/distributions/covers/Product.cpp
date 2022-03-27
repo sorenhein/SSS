@@ -102,15 +102,7 @@ bool Product::includes(const Profile& distProfile) const
   if (length.used() && ! length.includes(distProfile.getLength()))
     return false;
 
-  if (distProfile.size() != tops.size())
-  {
-cout << "distProfile " << +distProfile.size() << endl;
-cout << "tops " << +tops.size() << endl;
-cout << "distProfile " << distProfile.strLine() << endl;
-cout << "tops " << Product::strLine() << endl;
-
   assert(distProfile.size() == tops.size());
-  }
 
   for (unsigned char i = 0; i < distProfile.size(); i++)
   {

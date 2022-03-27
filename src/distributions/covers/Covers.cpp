@@ -174,11 +174,7 @@ void Covers::prepareNew(
 
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
-
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
-
-// cout << "top range " << +topNumber << ": " <<
-  // +topCountLow << " to " << +topCountHigh << "\n";
 
         citer->set(productMemory, sumProfile, * stackIter);
         citer++;
@@ -190,25 +186,15 @@ void Covers::prepareNew(
         {
           for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
-// cout << "Trying len " << +lLow << " to " << +lHigh << "\n";
-
             if (lLow == westLow && lHigh == westHigh)
             {
               // No point in specifying length explicitly.
               continue;
             }
-// cout << "Past one\n";
 
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
-/*
-cout << "Past two\n";
-if (lLow == 2 && lHigh == 4)
-{
-  cout << "HERE\n";
-}
-*/
 
             assert(citer != coversNew.end());
 
