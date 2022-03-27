@@ -12,8 +12,8 @@
 #include <list>
 #include <string>
 
-#include "CoverSet.h"
 #include "CoverHelp.h"
+#include "Product.h"
 
 #include "Profile.h"
 
@@ -24,6 +24,27 @@ enum CoverControl
   COVER_EXTEND = 1
 };
 
+
+    struct ProductPlus
+    {
+      Product product;
+      bool symmFlag;
+
+      void set(
+        const Profile& sumProfile,
+        const Profile& lowerProfile,
+        const Profile& upperProfile,
+        const bool symmFlagIn)
+      {
+        symmFlag = symmFlagIn;
+
+        assert(lowerProfile.size() == 2);
+        assert(upperProfile.size() == 2);
+
+        product.resize(2);
+        product.set(sumProfile, lowerProfile, upperProfile);
+      };
+    };
 
 class CoverSpec
 {
@@ -40,10 +61,10 @@ class CoverSpec
     // Within a set, the elements are AND'ed together if both are present.
 
     // Every time ctrl == COVER_EXTEND, we add one.
-    list<CoverSet> setsWest;
+    list<ProductPlus> setsWest;
 
 
-    CoverSet& addOrExtend(const CoverControl ctrl);
+    ProductPlus& addOrExtend(const CoverControl ctrl);
 
 
   public:

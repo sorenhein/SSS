@@ -27,7 +27,6 @@ SOURCE_FILES    =                               \
                 distributions/covers/Product.cpp \
                 distributions/covers/ProductMemory.cpp \
                 distributions/covers/Profile.cpp \
-                distributions/covers/CoverSet.cpp \
                 distributions/covers/CoverSpec.cpp \
                 distributions/covers/CoverMemory.cpp \
                 distributions/covers/CoverRow.cpp \

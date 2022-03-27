@@ -9,6 +9,10 @@
 #ifndef SSS_TOP_H
 #define SSS_TOP_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+
 #include <string>
 
 #include "Term.h"

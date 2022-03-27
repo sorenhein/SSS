@@ -24,7 +24,7 @@ CoverSpec::CoverSpec()
 void CoverSpec::reset()
 {
   setsWest.clear();
-  setsWest.emplace_back(CoverSet());
+  setsWest.emplace_back(ProductPlus());
 }
 
 
@@ -57,10 +57,10 @@ unsigned CoverSpec::getIndex() const
 }
 
 
-CoverSet& CoverSpec::addOrExtend(const CoverControl ctrl)
+ProductPlus& CoverSpec::addOrExtend(const CoverControl ctrl)
 {
   if (ctrl == COVER_EXTEND)
-    setsWest.emplace_back(CoverSet());
+    setsWest.emplace_back(ProductPlus());
 
   return setsWest.back();
 }
@@ -87,13 +87,13 @@ void CoverSpec::westLengthRange(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
   lowerProfile.setSingle(len1, 0);
   upperProfile.setSingle(len2, sumProfile.count(1));
 
-  cset.set(sumProfile, lowerProfile, upperProfile);
+  cset.set(sumProfile, lowerProfile, upperProfile, false);
 }
 
 
@@ -130,13 +130,13 @@ void CoverSpec::westTop1Range(
   const unsigned char tops2,
   const CoverControl ctrl)
 {
-  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
   lowerProfile.setSingle(0, tops1);
   upperProfile.setSingle(sumProfile.getLength(), tops2);
 
-  cset.set(sumProfile, lowerProfile, upperProfile);
+  cset.set(sumProfile, lowerProfile, upperProfile, false);
 }
 
 
@@ -160,7 +160,7 @@ void CoverSpec::westGeneral(
   const bool symmFlag,
   const CoverControl ctrl)
 {
-  CoverSet& cset = CoverSpec::addOrExtend(ctrl);
+  ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
   Profile lowerProfile, upperProfile;
   lowerProfile.setSingle(len1, tops1);
@@ -195,8 +195,18 @@ bool CoverSpec::includes(const Profile& distProfile) const
 
   for (auto& set: setsWest)
   {
-    if (set.includes(distProfile, sumProfile))
+    if (set.product.includes(distProfile))
       return true;
+    else if (! set.symmFlag)
+      continue;
+    else
+    {
+      Profile mirror = distProfile;
+      mirror.mirrorAround(sumProfile);
+      
+      if (set.product.includes(mirror))
+        return true;
+    }
   }
 
   return false;
@@ -205,10 +215,22 @@ bool CoverSpec::includes(const Profile& distProfile) const
 
 string CoverSpec::str() const
 {
-  string s = setsWest.front().str(sumProfile);
+  const ProductPlus& cset = setsWest.front();
+  const Product& product = cset.product;
+  Opponent simplestOpponent = product.simplestOpponent(sumProfile);
+
+  string s = product.strVerbal(sumProfile, simplestOpponent, cset.symmFlag);
   
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-    s += "; or\n  " + iter->str(sumProfile);
+  {
+    const ProductPlus& cset2 = * iter;
+    const Product product2 = cset2.product;
+    Opponent simplestOpponent2 = product2.simplestOpponent(sumProfile);
+
+    s += "; or\n  " + 
+      product2.strVerbal(sumProfile, simplestOpponent2, cset2.symmFlag);
+    // iter->product.str(sumProfile);
+  }
 
   return s;
 }
