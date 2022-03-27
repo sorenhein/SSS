@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverTableau.h"
+#include "Cover.h"
 
 #include "../../strategies/result/Result.h"
 
@@ -203,7 +204,7 @@ void CoverTableau::attemptExhaustive(
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, additions, residuals, tricksAdded) &&
+    if (row.attempt(cover, residuals, additions, tricksAdded) &&
         tricksAdded < cover.getNumDist())
     {
       // Don't want cover to be completely complementery (use new row).

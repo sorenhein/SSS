@@ -10,13 +10,13 @@
 #define SSS_COVERROW_H
 
 #include <list>
-#include <vector>
 #include <string>
 
-#include "Cover.h"
 #include "Tricks.h"
 
 using namespace std;
+
+class Cover;
 
 /* A row is a list of covers that are OR'ed together.
  */
@@ -29,7 +29,6 @@ class CoverRow
     list<Cover const *> coverPtrs;
 
     // The OR'ed tricks of the covers.
-    // vector<unsigned char> tricks;
     Tricks tricks;
 
     unsigned char numDist;
@@ -45,11 +44,10 @@ class CoverRow
 
     void resize(const unsigned len);
 
-    // TODO swap
     bool attempt(
       const Cover& cover,
-      Tricks& additions,
       const Tricks& residuals,
+      Tricks& additions,
       unsigned char& tricksAdded) const;
 
     void add(
@@ -68,11 +66,7 @@ class CoverRow
 
     unsigned char getOverlap() const;
 
-    // These together yield something like a table,
-    // but without semantic explanations.
     string strHeader() const;
-
-    string strLines(const Profile& sumProfile) const;
 
     string str(const Profile& sumProfile) const;
 };

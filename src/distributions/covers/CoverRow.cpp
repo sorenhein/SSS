@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverRow.h"
+#include "Cover.h"
 
 
 CoverRow::CoverRow()
@@ -37,8 +38,8 @@ void CoverRow::resize(const unsigned len)
 
 bool CoverRow::attempt(
   const Cover& cover,
-  Tricks& additions,
   const Tricks& residuals,
+  Tricks& additions,
   unsigned char& tricksAdded) const
 {
   assert(tricks.size() == residuals.size());
@@ -63,7 +64,7 @@ void CoverRow::add(
 
   tricks.add(additions, residuals, residualsSum, numDist);
 
-  // TODO Check range
+  // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
@@ -96,8 +97,8 @@ unsigned char CoverRow::getComplexity() const
 
 unsigned char CoverRow::getOverlap() const
 {
-  // The overlap is the sum of the individual cover weights,
-  // minus the weight of the row.
+  // The overlap is the sum of the individual cover counts,
+  // minus the count of the row.
   unsigned char overlap = 0;
   for (auto coverPtr: coverPtrs)
     overlap += coverPtr->getNumDist();
@@ -114,7 +115,7 @@ string CoverRow::strHeader() const
 }
 
 
-string CoverRow::strLines(const Profile& sumProfile) const
+string CoverRow::str(const Profile& sumProfile) const
 {
   stringstream ss;
 
@@ -124,12 +125,5 @@ string CoverRow::strLines(const Profile& sumProfile) const
     ss << "; or\n  " << (* iter)->str(sumProfile);
 
   return ss.str() + "\n";
-}
-
-
-string CoverRow::str(const Profile& sumProfile) const
-{
-  return 
-    CoverRow::strLines(sumProfile);
 }
 
