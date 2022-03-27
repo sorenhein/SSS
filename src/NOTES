@@ -20,8 +20,6 @@ Tricks: Optimize into 5-groups
 
 CoverSpec: index, sumProfile, list<ProductPlus>
   OR'ed together, so a premade row without much distribution information
-Cover: * CoverSpec, profile[], weight, numDist
-  CoverSpec is OR'ed, so more information about a row
 
 CoverNew: product, profile[], weight, numDist, simplestOpponent
   Things we can do to a CoverNew: resize, set, prepare (fill profile etc)
@@ -39,7 +37,7 @@ profile[] turns into a class, CoverProfile:
   Turn back into printable string
   reverse
 
-Merge CoverSpec and Cover into CoverRowOld, uses list<CoverNew *>
+CoverRowOld: use list<CoverNew *>
 
 Covers:
 sumProfile

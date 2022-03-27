@@ -16,7 +16,7 @@ SOURCE_FILES    =                               \
                 distributions/SurvivorList.cpp  \
                                                 \
                 distributions/Survivors.cpp     \
-                distributions/covers/Cover.cpp  \
+                distributions/covers/CoverRowOld.cpp  \
                 distributions/covers/CoverNew.cpp  \
                 distributions/covers/Covers.cpp \
                 distributions/covers/Term.cpp   \

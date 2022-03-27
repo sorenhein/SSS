@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "ResExpl.h"
-#include "Cover.h"
+#include "CoverRowOld.h"
 #include "ExplStats.h"
 
 
@@ -35,7 +35,7 @@ void ResExpl::setMinimum(const unsigned char tmin)
 }
 
 
-list<ExplData>::iterator ResExpl::dominator(const Cover& cover)
+list<ExplData>::iterator ResExpl::dominator(const CoverRowOld& coverRow)
 {
   // Returns data.end() if there is no dominator.
   // Returns the dominator with the highest level number,
@@ -47,21 +47,21 @@ list<ExplData>::iterator ResExpl::dominator(const Cover& cover)
 
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {
-    if (! (cover <= * (iter->coverPtr)))
+    if (! (coverRow <= * (iter->coverRowPtr)))
       continue;
 
-    if (cover.getWeight() == iter->weight)
+    if (coverRow.getWeight() == iter->weight)
     {
       // TODO
       cout << "Don't know yet how to deal with repeats" << endl;
       cout << "Already have:\n";
       cout << ResExpl::str();
       cout << "Cover:\n";
-      cout << cover.str() << "\n";
-      cout << cover.strProfile() << "\n";
+      cout << coverRow.str() << "\n";
+      cout << coverRow.strProfile() << "\n";
       cout << "iter:\n";
-      cout << iter->coverPtr->str() << "\n";
-      cout << iter->coverPtr->strProfile() << endl;
+      cout << iter->coverRowPtr->str() << "\n";
+      cout << iter->coverRowPtr->strProfile() << endl;
       assert(false);
     }
 
@@ -79,27 +79,27 @@ list<ExplData>::iterator ResExpl::dominator(const Cover& cover)
 }
 
 
-void ResExpl::insert(Cover const& cover)
+void ResExpl::insert(CoverRowOld const& coverRow)
 {
-  auto domIter = ResExpl::dominator(cover);
+  auto domIter = ResExpl::dominator(coverRow);
 
   if (domIter == data.end())
   {
     data.emplace_back(ExplData());
     ExplData& ed = data.back();
 
-    ed.coverPtr = &cover;
-    ed.weight = cover.getWeight();
-    ed.numDist = cover.getNumDist();
+    ed.coverRowPtr = &coverRow;
+    ed.weight = coverRow.getWeight();
+    ed.numDist = coverRow.getNumDist();
     ed.level = 0;
   }
   else
   {
     ExplData& ed = * data.emplace(next(domIter), ExplData());
 
-    ed.coverPtr = &cover;
-    ed.weight = cover.getWeight();
-    ed.numDist = cover.getNumDist();
+    ed.coverRowPtr = &coverRow;
+    ed.weight = coverRow.getWeight();
+    ed.numDist = coverRow.getNumDist();
     ed.level = domIter->level + 1;
   }
 }
@@ -118,19 +118,19 @@ void ResExpl::updateStats(ExplStats& explStats) const
     return;
 
   unsigned char lengthIndex, tops1Index;
-  data.front().coverPtr->getID(lengthIndex, tops1Index);
+  data.front().coverRowPtr->getID(lengthIndex, tops1Index);
 
   ExplStat& explStat = explStats.getEntry(lengthIndex, tops1Index);
   explStat.incrLengths(data.size());
 
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {
-    const unsigned index = iter->coverPtr->index();
+    const unsigned index = iter->coverRowPtr->index();
     explStat.incrSingles(index);
 
     for (auto iter2 = next(iter); iter2 != data.end(); iter2++)
     {
-      const unsigned index2 = iter2->coverPtr->index();
+      const unsigned index2 = iter2->coverRowPtr->index();
       explStat.incrPairs(index, index2);
     }
   }
@@ -156,10 +156,10 @@ string ResExpl::str() const
       prefix = "      - ";
 
     unsigned char length, tops1;
-    ed.coverPtr->getID(length, tops1);
+    ed.coverRowPtr->getID(length, tops1);
 
     ss << prefix <<
-      ed.coverPtr->str() << " [" <<
+      ed.coverRowPtr->str() << " [" <<
       +ed.numDist << ", " <<
       +ed.weight << "]\n";
   }

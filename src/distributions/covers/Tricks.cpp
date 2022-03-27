@@ -16,8 +16,7 @@
 
 #include "Product.h"
 #include "Profile.h"
-// #include "CoverSpec.h"
-#include "Cover.h"
+#include "CoverRowOld.h"
 
 #include "../../strategies/result/Result.h"
 
@@ -114,7 +113,7 @@ void Tricks::prepare(
 
 void Tricks::prepare(
   // const CoverSpec& spec,
-  const Cover& cover,
+  const CoverRowOld& coverRow,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
   unsigned& weight,
@@ -129,7 +128,7 @@ void Tricks::prepare(
 
   for (unsigned dno = 0; dno < len; dno++)
   {
-    if (cover.includes(distProfiles[dno]))
+    if (coverRow.includes(distProfiles[dno]))
     {
       tricks[dno] = 1;
       weight += static_cast<unsigned>(cases[dno]);

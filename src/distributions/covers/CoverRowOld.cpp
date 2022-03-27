@@ -11,17 +11,17 @@
 #include <sstream>
 #include <cassert>
 
-#include "Cover.h"
+#include "CoverRowOld.h"
 #include "Profile.h"
 
 
-Cover::Cover()
+CoverRowOld::CoverRowOld()
 {
-  Cover::reset();
+  CoverRowOld::reset();
 }
 
 
-void Cover::reset()
+void CoverRowOld::reset()
 {
   tricks.clear();
   weight = 0;
@@ -29,7 +29,7 @@ void Cover::reset()
 }
 
 
-void Cover::prepare(
+void CoverRowOld::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
   const CoverSpec& specIn)
@@ -42,7 +42,7 @@ void Cover::prepare(
 }
 
 
-bool Cover::includes(const Profile& distProfile) const
+bool CoverRowOld::includes(const Profile& distProfile) const
 {
   assert(distProfile.size() == 2);
   assert(sumProfile.size() == 2);
@@ -67,19 +67,19 @@ bool Cover::includes(const Profile& distProfile) const
 }
 
 
-CoverState Cover::explain(Tricks& tricksSeen) const
+CoverState CoverRowOld::explain(Tricks& tricksSeen) const
 {
   return tricks.explain(tricksSeen);
 }
 
 
-bool Cover::operator <= (const Cover& cover2) const
+bool CoverRowOld::operator <= (const CoverRowOld& cover2) const
 {
   return (tricks <= cover2.tricks);
 }
 
 
-void Cover::getID(
+void CoverRowOld::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
@@ -88,25 +88,25 @@ void Cover::getID(
 }
 
 
-unsigned Cover::index() const
+unsigned CoverRowOld::index() const
 {
   return indexInternal;
 }
 
 
-unsigned Cover::getWeight() const
+unsigned CoverRowOld::getWeight() const
 {
   return weight;
 }
 
 
-unsigned char Cover::getNumDist() const
+unsigned char CoverRowOld::getNumDist() const
 {
   return numDist;
 }
 
 
-string Cover::str() const
+string CoverRowOld::str() const
 {
   string s = setsWest.front().strVerbal(sumProfile);
 
@@ -117,7 +117,7 @@ string Cover::str() const
 }
 
 
-string Cover::strProfile() const
+string CoverRowOld::strProfile() const
 {
   stringstream ss;
 

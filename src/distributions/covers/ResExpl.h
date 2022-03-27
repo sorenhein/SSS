@@ -12,7 +12,7 @@
 #include <list>
 #include <string>
 
-#include "Cover.h"
+#include "CoverRowOld.h"
 
 class ExplStats;
 
@@ -22,7 +22,7 @@ using namespace std;
 
 struct ExplData
 {
-  Cover const * coverPtr;
+  CoverRowOld const * coverRowPtr;
   unsigned weight;
   unsigned char numDist;
   unsigned char level; // Explanations may be nested
@@ -38,7 +38,7 @@ class ResExpl
     list<ExplData> data;
 
 
-    list<ExplData>::iterator dominator(const Cover& cover);
+    list<ExplData>::iterator dominator(const CoverRowOld& coverRow);
 
 
   public:
@@ -49,7 +49,7 @@ class ResExpl
 
     void setMinimum(const unsigned char tmin);
 
-    void insert(const Cover& cover);
+    void insert(const CoverRowOld& coverRow);
 
     bool empty() const;
 

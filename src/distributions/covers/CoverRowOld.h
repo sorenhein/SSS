@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVER_H
-#define SSS_COVER_H
+#ifndef SSS_COVERROWOLD_H
+#define SSS_COVERROWOLD_H
 
 #include <vector>
 #include <string>
@@ -22,7 +22,7 @@ using namespace std;
 class Profile;
 
 
-class Cover
+class CoverRowOld
 {
   private:
 
@@ -38,7 +38,7 @@ class Cover
 
   public:
 
-    Cover();
+    CoverRowOld();
 
     void reset();
 
@@ -51,7 +51,7 @@ class Cover
 
     CoverState explain(Tricks& tricksSeen) const;
 
-    bool operator <= (const Cover& cover2) const;
+    bool operator <= (const CoverRowOld& cover2) const;
 
     void getID(
       unsigned char& length,

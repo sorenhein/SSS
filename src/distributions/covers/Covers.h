@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 
-#include "Cover.h"
+#include "CoverRowOld.h"
 #include "ProfilePair.h"
 #include "TableauCache.h"
 
@@ -35,7 +35,7 @@ class Covers
 
     Profile sumProfile;
 
-    list<Cover> covers;
+    list<CoverRowOld> covers;
 
     list<CoverNew> coversNew;
 

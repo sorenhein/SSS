@@ -72,7 +72,7 @@ enum CoverControl
 
 class CoverSpec
 {
-  friend class Cover;
+  friend class CoverRowOld;
 
   private:
 
@@ -162,16 +162,6 @@ class CoverSpec
       const unsigned char tops2,
       const bool symmFlag = false,
       const CoverControl ctrl = COVER_ADD);
-
-    /*
-    void prepare(
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
-    bool includes(const Profile& distProfile) const;
-    
-    string str() const;
-    */
 };
 
 #endif

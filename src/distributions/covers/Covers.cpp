@@ -76,9 +76,9 @@ cout <<endl;
     citer++;
   }
 
-  covers.sort([](const Cover& cover1, const Cover& cover2)
+  covers.sort([](const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
   {
-    return (cover1.getWeight() >= cover2.getWeight());
+    return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
 }
 
