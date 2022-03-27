@@ -959,19 +959,3 @@ unsigned CoverMemory::size(
   return specs[cards][tops1].size();
 }
 
-
-string CoverMemory::str(
-  const unsigned cards,
-  const unsigned tops1) const
-{
-  string s = "";
-
-  for (auto iter = CoverMemory::begin(cards, tops1); 
-      iter != CoverMemory::end(cards, tops1); iter++)
-  {
-    s += iter->str() + "\n";
-  }
-    
-  return s; 
-}
-

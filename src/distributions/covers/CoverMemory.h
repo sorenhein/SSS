@@ -156,10 +156,6 @@ class CoverMemory
     unsigned size(
       const unsigned cards,
       const unsigned tops1) const;
-
-    string str(
-      const unsigned cards,
-      const unsigned tops1) const;
 };
 
 #endif
