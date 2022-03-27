@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "Cover.h"
-#include "CoverSpec.h"
 #include "Profile.h"
 
 
@@ -25,7 +24,6 @@ Cover::Cover()
 void Cover::reset()
 {
   tricks.clear();
-  specPtr = nullptr;
   weight = 0;
   numDist = 0;
 }
@@ -38,7 +36,7 @@ void Cover::prepare(
 {
   tricks.prepare(specIn, distProfiles, cases, weight, numDist);
 
-  specPtr = &specIn;
+  spec = specIn;
 }
 
 
@@ -58,15 +56,13 @@ void Cover::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
-  assert(specPtr != nullptr);
-  specPtr->getID(length, tops1);
+  spec.getID(length, tops1);
 }
 
 
 unsigned Cover::index() const
 {
-  assert(specPtr != nullptr);
-  return specPtr->getIndex();
+  return spec.getIndex();
 }
 
 
@@ -84,18 +80,16 @@ unsigned char Cover::getNumDist() const
 
 string Cover::str() const
 {
-  assert(specPtr != nullptr);
-  return specPtr->str();
+  return spec.str();
 }
 
 
 string Cover::strProfile() const
 {
-  assert(specPtr != nullptr);
   stringstream ss;
 
   cout << 
-    "cover index " << specPtr->getIndex() << 
+    "cover index " << spec.getIndex() << 
     ", weight " << weight << "\n";
 
   ss << tricks.strList();

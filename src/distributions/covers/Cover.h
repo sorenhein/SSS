@@ -13,13 +13,13 @@
 #include <string>
 
 #include "Tricks.h"
+#include "CoverSpec.h"
 #include "CoverHelp.h"
 
 
 using namespace std;
 
 class Profile;
-class CoverSpec;
 
 
 class Cover
@@ -28,7 +28,7 @@ class Cover
 
     Tricks tricks;
 
-    CoverSpec const * specPtr;
+    CoverSpec spec;
 
     unsigned weight;
     unsigned char numDist;
