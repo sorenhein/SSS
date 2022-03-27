@@ -86,10 +86,12 @@ class Distribution
       return distCorePtr->getReduction(distMap, rankNS);
     };
 
-    void prepareCovers(const CoverMemory& coverMemory)
+    void prepareCovers(
+      const CoverMemory& coverMemory,
+      ProductMemory& productMemory)
     {
       assert(distCorePtr != nullptr);
-      distCorePtr->prepareCovers(coverMemory);
+      distCorePtr->prepareCovers(coverMemory, productMemory);
     };
 
     Covers& covers()

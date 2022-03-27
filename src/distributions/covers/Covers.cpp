@@ -15,6 +15,7 @@
 #include "Covers.h"
 #include "CoverMemory.h"
 #include "CoverTableau.h"
+#include "ProductMemory.h"
 
 #include "../../strategies/result/Result.h"
 #include "../../const.h"
@@ -86,7 +87,11 @@ void Covers::prune()
 {
   for (auto citer = coversNew.begin(); citer != coversNew.end(); )
   {
-    assert(! citer->empty()); // Would have to remove. Doesn't happen
+    if (citer->empty())
+    {
+      citer = coversNew.erase(citer);
+      continue;
+    }
 
     if (citer->full())
     {
@@ -109,6 +114,7 @@ void Covers::prune()
 
 
 void Covers::prepareNew(
+  ProductMemory& productMemory,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
   const Profile& sumProfileIn)
@@ -120,8 +126,8 @@ void Covers::prepareNew(
   stack.emplace_back(ProfilePair(sumProfile));
 
   coversNew.resize(COVER_CHUNK_SIZE);
-  for (auto& c: coversNew)
-    c.resize(sumProfile.size());
+  // for (auto& c: coversNew)
+    // c.resize(sumProfile.size());
 
   auto citer = coversNew.begin(); // Next one to write
   timersStrat[20].stop();
@@ -171,7 +177,10 @@ void Covers::prepareNew(
 
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
-        citer->set(sumProfile, * stackIter);
+// cout << "top range " << +topNumber << ": " <<
+  // +topCountLow << " to " << +topCountHigh << "\n";
+
+        citer->set(productMemory, sumProfile, * stackIter);
         citer++;
 
         const unsigned char westLow = bounds.lengthWestLow();
@@ -181,21 +190,31 @@ void Covers::prepareNew(
         {
           for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
+// cout << "Trying len " << +lLow << " to " << +lHigh << "\n";
+
             if (lLow == westLow && lHigh == westHigh)
             {
               // No point in specifying length explicitly.
               continue;
             }
+// cout << "Past one\n";
 
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
+/*
+cout << "Past two\n";
+if (lLow == 2 && lHigh == 4)
+{
+  cout << "HERE\n";
+}
+*/
 
             assert(citer != coversNew.end());
 
             stackIter->setLength(lLow, lHigh);
 
-            citer->set(sumProfile, * stackIter);
+            citer->set(productMemory, sumProfile, * stackIter);
             citer++;
           }
         }
@@ -236,7 +255,7 @@ const unsigned sizeOld = coversNew.size();
   cout << "Covers before pruning\n";
   cout << coversNew.front().strHeader();
   for (auto& c: coversNew)
-    cout << c.strLine(maxLength, topTotals);
+    cout << c.strLine(sumProfile);
   cout << "\n";
   */
 
@@ -246,6 +265,7 @@ const unsigned sizeOld = coversNew.size();
   // go from 354,822 to 225,028, so we need to eliminate about a third.
 
 const unsigned sizeMid = coversNew.size();
+// cout << "sizeMid " << +sizeMid << endl;
   timersStrat[25].start();
   Covers::prune();
   timersStrat[25].stop();
@@ -256,7 +276,7 @@ const unsigned sizeMid = coversNew.size();
   cout << "Covers\n";
   cout << coversNew.front().strHeader();
   for (auto& c: coversNew)
-    cout << c.strLine(maxLength, topTotals);
+    cout << c.strLine(sumProfile);
   cout << "\n";
   */
 }

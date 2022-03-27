@@ -48,6 +48,17 @@ class ProfilePair
       lowerProfile.tops[topNumber] = topCountLow;
       upperProfile.tops[topNumber] = topCountHigh;
     };
+
+    unsigned long long getCode(const Profile& sumProfile) const
+    {
+      return (lowerProfile.getCode() << 32) | 
+        upperProfile.getCode(sumProfile, lowerProfile);
+    };
+
+    string strLines() const
+    {
+      return lowerProfile.strLine() + upperProfile.strLine();
+    }
 };
 
 #endif

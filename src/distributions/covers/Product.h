@@ -67,7 +67,10 @@ class Product
 
     unsigned char getComplexity() const;
 
+    // An effective size
     unsigned char getTopSize() const;
+
+    unsigned char size() const;
 
     unsigned char getRangeSum() const;
 

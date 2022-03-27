@@ -20,6 +20,8 @@
 
 using namespace std;
 
+class ProductMemory;
+
 
 class DistMemory
 {
@@ -54,11 +56,13 @@ class DistMemory
 
     // Thread-safe.  Used for generating all distributions in a loop
     Distribution& addFullMT(
+      ProductMemory& productMemory,
       const unsigned char cards,
       const unsigned holding);
 
     // Thread-safe.  Used for adding only certain distributions
     void addCanonicalMT(
+      ProductMemory& productMemory,
       const unsigned char cards,
       const unsigned holding);
 

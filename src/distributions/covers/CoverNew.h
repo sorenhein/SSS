@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Product.h"
+#include "ProductMemory.h"
 #include "CoverSpec.h"
 #include "Tricks.h"
 
@@ -27,7 +28,7 @@ class CoverNew
 {
   private:
 
-    Product product;
+    Product const * productPtr;
 
     Tricks tricks;
 
@@ -45,9 +46,10 @@ class CoverNew
 
     void reset();
 
-    void resize(const unsigned topNumber);
+    // void resize(const unsigned topNumber);
 
     void set(
+      ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& profilePair);
 

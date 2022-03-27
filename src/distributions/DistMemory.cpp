@@ -149,6 +149,7 @@ void DistMemory::resizeStats(ExplStats& explStats) const
 
 
 Distribution& DistMemory::addFullMT(
+  ProductMemory& productMemory,
   const unsigned char cards,
   const unsigned holding)
 {
@@ -178,7 +179,7 @@ Distribution& DistMemory::addFullMT(
     dist.setPtr(&distCore);
     dist.split();
     dist.setLookups();
-    dist.prepareCovers(coverMemory);
+    dist.prepareCovers(coverMemory, productMemory);
   }
   else
     dist.setPtr(distributions[distID.cards][distID.holding]);
@@ -189,6 +190,7 @@ Distribution& DistMemory::addFullMT(
 
 
 void DistMemory::addCanonicalMT(
+  ProductMemory& productMemory,
   const unsigned char cards,
   const unsigned holding)
 {
@@ -214,7 +216,7 @@ void DistMemory::addCanonicalMT(
   dist.setPtr(&distCore);
   dist.split();
   dist.setLookups();
-  dist.prepareCovers(coverMemory);
+  dist.prepareCovers(coverMemory, productMemory);
 }
 
 

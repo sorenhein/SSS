@@ -74,12 +74,12 @@ string Length::strInside(
   {
     side = (symmFlag ? "Either opponent" : "West");
     vLower = lower;
-    vUpper = upper;
+    vUpper = (oper == COVER_GREATER_EQUAL ? oppsLength : upper);
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    vLower = oppsLength - upper;
+    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsLength - upper);
     vUpper = oppsLength - lower;
   }
 

@@ -97,6 +97,55 @@ const vector<unsigned char>& Profile::getTops() const
 }
 
 
+unsigned long long Profile::getCode() const
+{
+  // There should be at most 7 different tops in a 13-card distribution.
+  assert(tops.size() < 8);
+
+  // As the length is also <= 13, we can code everything in 32 bits.
+  // Later on we will combine two profiles (upper and lower), so we
+  // use 64 bits here as well -- it is not stored in Profile anyway.
+
+  // The layout is: length, then the tops from most significant one down.
+
+  unsigned long long code = 0;
+  for (unsigned i = tops.size(); i-- > 0; )
+    code = (code << 4) | tops[i];
+
+  code |= (length << (4*tops.size()));
+
+  return code;
+}
+
+
+unsigned long long Profile::getCode(
+  const Profile& sumProfile,
+  const Profile& lowerProfile) const
+{
+  // This is similar, but is used for an upper profile.  Actual
+  // greater-equal counts are rounded up to 15 (0xf),
+  // so that the unused terms later on compare correctly.
+  assert(tops.size() < 8);
+
+  unsigned long long code = 0;
+  for (unsigned i = tops.size(); i-- > 0; )
+  {
+    const unsigned value = (
+      tops[i] == sumProfile.tops[i] &&
+      tops[i] > lowerProfile.tops[i] ? 0xf : tops[i]);
+    code = (code << 4) | value;
+  }
+
+  const unsigned vlen = (
+    length == sumProfile.length &&
+    length > lowerProfile.length ? 0xf : length);
+
+  code |= (vlen << (4*tops.size()));
+
+  return code;
+}
+
+
 string Profile::strHeader() const
 {
   stringstream ss;

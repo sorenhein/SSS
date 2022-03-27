@@ -102,7 +102,15 @@ bool Product::includes(const Profile& distProfile) const
   if (length.used() && ! length.includes(distProfile.getLength()))
     return false;
 
+  if (distProfile.size() != tops.size())
+  {
+cout << "distProfile " << +distProfile.size() << endl;
+cout << "tops " << +tops.size() << endl;
+cout << "distProfile " << distProfile.strLine() << endl;
+cout << "tops " << Product::strLine() << endl;
+
   assert(distProfile.size() == tops.size());
+  }
 
   for (unsigned char i = 0; i < distProfile.size(); i++)
   {
@@ -127,6 +135,12 @@ unsigned char Product::getTopSize() const
     return 0;
   else
     return static_cast<unsigned char>(tops.size()) - topSize;
+}
+
+
+unsigned char Product::size() const
+{
+  return static_cast<unsigned char>(tops.size());
 }
 
 
@@ -201,7 +215,6 @@ string Product::strHeader() const
   ss << setw(8) << "Length";
   for (unsigned i = 0; i < tops.size(); i++)
     ss << setw(8) << ("Top #" + to_string(i));
-  ss << setw(8) << "symm";
 
   return ss.str();
 }

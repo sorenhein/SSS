@@ -19,6 +19,7 @@
 
 class Distribution;
 class CoverMemory;
+class ProductMemory;
 class CoverTableau;
 class Result;
 class ResExpl;
@@ -67,6 +68,7 @@ class Covers
       const vector<unsigned char>& cases);
 
     void prepareNew(
+      ProductMemory& productMemory,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       const Profile& sumProfileIn);

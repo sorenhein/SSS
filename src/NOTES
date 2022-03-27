@@ -1,5 +1,10 @@
 Each DistCore could get a composition (Profile).
 All DistCore's get consecutive numbers that enable a unique ordering.
+Product is not stored that way, but it is created from lowerProfile
+and upperProfile (or profilePair), and these are Profile's that should
+then know their ordering index.
+
+Tricks: Optimize into 5-groups
 
 1. Add symmFlag to CoverNew
 2. Figure out the partitions, their numbering and their storage

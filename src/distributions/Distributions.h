@@ -17,6 +17,8 @@
 
 #include "DistMemory.h"
 
+#include "covers/ProductMemory.h"
+
 class Distribution;
 
 using namespace std;
@@ -29,6 +31,8 @@ class Distributions
     unsigned char maxCards;
 
     DistMemory distMemory;
+
+    ProductMemory productMemory;
 
     vector<unsigned> splitCounts;
     vector<unsigned> threadSplitCounts;

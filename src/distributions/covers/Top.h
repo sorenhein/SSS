@@ -37,11 +37,21 @@ class Top: public Term
         const unsigned char oppsLength,
         const unsigned char oppsTops)
       {
+        const unsigned char totalXes = oppsLength - oppsTops;
+
         westMax = distLengthUpper - topsExact;
         westMin = distLengthLower - topsExact;
 
-        eastMax = (oppsLength - distLengthLower) - (oppsTops - topsExact);
-        eastMin = (oppsLength - distLengthUpper) - (oppsTops - topsExact);
+        if (westMax > totalXes)
+          westMax = totalXes;
+        if (westMin > totalXes)
+          westMin = totalXes;
+
+        eastMax = totalXes - westMin;
+        eastMin = totalXes - westMax;
+
+        // eastMax = (oppsLength - distLengthLower) - (oppsTops - topsExact);
+        // eastMin = (oppsLength - distLengthUpper) - (oppsTops - topsExact);
 
         strWest = string(westMin, 'x') +
           "(" + string(westMax - westMin, 'x') + ")";

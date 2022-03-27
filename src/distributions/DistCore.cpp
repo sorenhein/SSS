@@ -17,6 +17,8 @@
 #include "DistCore.h"
 #include "DistMap.h"
 
+#include "covers/ProductMemory.h"
+
 #include "../plays/Play.h"
 
 #include "../const.h"
@@ -502,7 +504,9 @@ void DistCore::getCoverDataNew(
 }
 
 
-void DistCore::prepareCovers(const CoverMemory& coverMemory)
+void DistCore::prepareCovers(
+  const CoverMemory& coverMemory,
+  ProductMemory& productMemory)
 {
   if (distributions.size() == 0)
     return;
@@ -527,7 +531,7 @@ void DistCore::prepareCovers(const CoverMemory& coverMemory)
 
   DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
 
-  covers.prepareNew(distProfiles, casesNew, sumProfile);
+  covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
 }
 
 

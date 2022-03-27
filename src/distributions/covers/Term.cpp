@@ -70,6 +70,7 @@ void Term::set(
   else if (upperIn == oppSize)
   {
     oper = COVER_GREATER_EQUAL;
+    upper = 0xf; // For consistency
     complexity = 1;
   }
   else
@@ -85,7 +86,10 @@ void Term::set(
 
 bool Term::includes(const unsigned char value) const
 {
-  return termCompare.includes(index, value);
+  if (Term::used())
+    return termCompare.includes(index, value);
+  else
+    return true;
 }
 
 

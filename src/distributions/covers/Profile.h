@@ -51,6 +51,12 @@ class Profile
 
     const vector<unsigned char>& getTops() const;
 
+    unsigned long long getCode() const;
+
+    unsigned long long getCode(
+      const Profile& sumProfile,
+      const Profile& lowerProfile) const;
+
     string strHeader() const;
 
     string strLine() const;

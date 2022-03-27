@@ -34,6 +34,10 @@ void Distributions::resize(const unsigned char maxCardsIn)
   maxCards = maxCardsIn;
   distMemory.resize(maxCardsIn+1);
 
+  // If there are 13 (or 14) cards, then there are at most 
+  // (maxCards+1) / 2 = 7 opposing ranks.
+  productMemory.resize((maxCards+1)/2 + 1);
+
   // A distribution is a set of card splits for a given rank
   // vector covering both East and West.
   // There are 2 E-W distributions with 1 card: Either they have it
@@ -58,7 +62,7 @@ void Distributions::runSingle(
 
   for (unsigned char c = 0; c < dependenciesCan.size(); c++)
     for (auto& dep: dependenciesCan[c])
-      distMemory.addCanonicalMT(c, dep);
+      distMemory.addCanonicalMT(productMemory, c, dep);
 
   for (unsigned char c = 0; c < dependenciesCan.size(); c++)
     for (auto& dep: dependenciesNoncan[c])
@@ -70,7 +74,8 @@ void Distributions::runUniques(const unsigned char cards)
 {
   for (unsigned holding = 0; holding < distMemory.size(cards); holding++)
   {
-    const Distribution& dist = distMemory.addFullMT(cards, holding);
+    const Distribution& dist = distMemory.addFullMT(
+      productMemory, cards, holding);
     splitCounts[cards] += dist.size();
   }
 }
@@ -90,7 +95,8 @@ void Distributions::runUniqueThread(
       break;
 
     // Pass in thid?  Then less blocking.
-    const Distribution& dist = distMemory.addFullMT(cards, holding);
+    const Distribution& dist = distMemory.addFullMT(
+      productMemory, cards, holding);
     threadSplitCounts[thid] += dist.size();
   }
 }

@@ -23,27 +23,41 @@ CoverNew::CoverNew()
 
 void CoverNew::reset()
 {
+  productPtr = nullptr;
   tricks.clear();
   weight = 0;
   numDist = 0;
 }
 
 
+/*
 void CoverNew::resize(const unsigned topNumber)
 {
   product.resize(topNumber);
 }
+*/
 
 
 void CoverNew::set(
+  ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
-  product.set(sumProfile, profilePair);
+  productPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+
+assert(productPtr != nullptr);
+if (productPtr->size() != sumProfile.size())
+{
+  cout << "pptr " << +productPtr->size() << endl;
+  cout << "sumP " << +sumProfile.size()  << endl;
+assert(productPtr->size() == sumProfile.size());
+}
+
+  // product.set(sumProfile, profilePair);
 
   // We throw away a lot of covers, so it is a bit of a waste
   // to calculate this now.  But it is convenient.
-  simplestOpponent = product.simplestOpponent(sumProfile);
+  simplestOpponent = productPtr->simplestOpponent(sumProfile);
 }
 
 
@@ -51,7 +65,8 @@ void CoverNew::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
-  tricks.prepare(product, distProfiles, cases, weight, numDist);
+  assert(productPtr != nullptr);
+  tricks.prepare(* productPtr, distProfiles, cases, weight, numDist);
 }
 
 
@@ -82,27 +97,32 @@ bool CoverNew::earlier(const CoverNew& cover2) const
   // TODO Some of the methods called do real work, so we could cache
   // their results.
 
+  assert(productPtr != nullptr);
+  assert(cover2.productPtr != nullptr);
+  const Product& p1 = * productPtr;
+  const Product& p2 = * cover2.productPtr;
+
   if (weight > cover2.weight)
     // Heavier ones first
     return true;
   else if (weight < cover2.weight)
     return false;
-  else if (product.getTopSize() < cover2.product.getTopSize())
+  else if (p1.getTopSize() < p2.getTopSize())
     // Simpler ones first
     return true;
-  else if (product.getTopSize() > cover2.product.getTopSize())
+  else if (p1.getTopSize() > p2.getTopSize())
     return false;
-  else if (product.getComplexity() < cover2.product.getComplexity())
+  else if (p1.getComplexity() < p2.getComplexity())
     // Simpler ones first
     return true;
-  else if (product.getComplexity() > cover2.product.getComplexity())
+  else if (p1.getComplexity() > p2.getComplexity())
     return false;
   else if (numDist > cover2.numDist)
     // Ones that touch more distributions first
     return true;
   else if (numDist < cover2.numDist)
     return false;
-  else if (product.getRangeSum() <= cover2.product.getRangeSum())
+  else if (p1.getRangeSum() <= p2.getRangeSum())
     /// Narrower covers
     return true;
   else
@@ -154,21 +174,24 @@ unsigned char CoverNew::getNumDist() const
 
 unsigned char CoverNew::getTopSize() const
 {
-  return product.getTopSize();
+  assert(productPtr != nullptr);
+  return productPtr->getTopSize();
 }
 
 
 unsigned char CoverNew::getComplexity() const
 {
-  return product.getComplexity();
+  assert(productPtr != nullptr);
+  return productPtr->getComplexity();
 }
 
 
 string CoverNew::strHeader() const
 {
+  assert(productPtr != nullptr);
   stringstream ss;
 
-  ss << product.strHeader() <<
+  ss << productPtr->strHeader() <<
     setw(8) << "Weight" <<
     setw(8) << "Cmplx" <<
     setw(8) << "Dists" <<
@@ -180,11 +203,12 @@ string CoverNew::strHeader() const
 
 string CoverNew::strLine(const Profile& sumProfile) const
 {
+  assert(productPtr != nullptr);
   stringstream ss;
 
-  ss << product.strLine(sumProfile) <<
+  ss << productPtr->strLine(sumProfile) <<
     setw(8) << weight <<
-    setw(8) << +product.getComplexity() <<
+    setw(8) << +productPtr->getComplexity() <<
     setw(8) << +numDist <<
     setw(8) << +CoverNew::getTopSize() << "\n";
   
@@ -194,11 +218,12 @@ string CoverNew::strLine(const Profile& sumProfile) const
 
 string CoverNew::strLine() const
 {
+  assert(productPtr != nullptr);
   stringstream ss;
 
-  ss << product.strLine() <<
+  ss << productPtr->strLine() <<
     setw(8) << weight <<
-    setw(8) << +product.getComplexity() <<
+    setw(8) << +productPtr->getComplexity() <<
     setw(8) << +numDist <<
     setw(8) << +CoverNew::getTopSize() << "\n";
   
@@ -233,12 +258,13 @@ string CoverNew::strTricksShort() const
 
 string CoverNew::str(const Profile& sumProfile) const
 {
-  if (product.explainable())
+  assert(productPtr != nullptr);
+  if (productPtr->explainable())
   {
     stringstream ss;
 
     // TODO This is where symmFlag would enter
-    ss << product.strVerbal(sumProfile, simplestOpponent, false) <<
+    ss << productPtr->strVerbal(sumProfile, simplestOpponent, false) <<
       " [" << +numDist << ", " << 
       weight << "]";
 

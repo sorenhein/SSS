@@ -89,12 +89,12 @@ string Top::strInside(
   {
     side = (symmFlag ? "Either opponent" : "West");
     vLower = lower;
-    vUpper = upper;
+    vUpper = (oper == COVER_GREATER_EQUAL ? oppsTops : upper);
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    vLower = oppsTops - upper;
+    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsTops - upper);
     vUpper = oppsTops - lower;
   }
 
@@ -335,7 +335,11 @@ string Top::strWithLength(
   else
   {
     Xes xes;
-    xes.set(length.lower, length.upper, lower, oppsLength, oppsTops);
+    const unsigned char 
+      effUpper = 
+        (length.oper == COVER_GREATER_EQUAL ?  oppsLength : length.upper);
+
+    xes.set(length.lower, effUpper, lower, oppsLength, oppsTops);
 
     return Top::strLengthRangeEqual(
       oppsTops, xes, simplestOpponent, symmFlag);
