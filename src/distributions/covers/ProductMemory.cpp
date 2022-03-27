@@ -83,25 +83,23 @@ string ProductMemory::strEnterStats() const
 
   ss <<
     setw(8) << "Numtops" <<
-    setw(12) << "Unique" <<
-    setw(12) << "Total" << 
-    setw(12) << "Ratio" << 
+    enterStats[0].strHeader() <<
     "\n";
+
+  EnterStat sum;
 
   for (unsigned i = 0; i < enterStats.size(); i++)
   {
     if (enterStats[i].numTotal == 0)
       continue;
 
-    ss <<
-      setw(8) << i <<
-      setw(12) << enterStats[i].numUnique <<
-      setw(12) << enterStats[i].numTotal << 
-      setw(12) << fixed << setprecision(1) <<
-        100. * static_cast<float>(enterStats[i].numUnique) /
-        static_cast<float>(enterStats[i].numTotal) << 
-        "\n";
+    ss << setw(8) << i << enterStats[i].str() << "\n";
+    
+    sum += enterStats[i];
   }
+
+  ss << string(44, '-') << "\n";
+  ss << setw(8) << " " << sum.str() << "\n";
 
   return ss.str() + "\n";
 }

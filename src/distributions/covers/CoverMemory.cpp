@@ -9,7 +9,6 @@
 #include <cassert>
 
 #include "CoverMemory.h"
-#include "Compositions.h"
 #include "ExplStats.h"
 
 #include "Profile.h"
@@ -877,35 +876,11 @@ void CoverMemory::prepare([[maybe_unused]] const unsigned char maxCards)
   // TODO TMP
 
   /* */
-  Compositions compositions;
-cout << "Making compositions" << endl;
-  compositions.make(11);
-// cout << "Writing strings" << endl;
+  // Compositions compositions;
+// cout << "Making compositions" << endl;
+  // compositions.make(11);
   // cout << compositions.str();
-// cout << "Done" << endl;
 
-  for (unsigned char len = 2; len <= 11; len++)
-  {
-// cout << "length " << +len << endl;
-    for (auto iter = compositions.begin(len); 
-        iter != compositions.end(len); iter++)
-    {
-      if (iter->size() > 2)
-        continue;
-  // cout << "Starting composition " << iter->strLine() << endl;
-      CoverMemory::makeSets(len, * iter);
-    }
-  }
-
-
-
-  // if (maxCards > 0)
-    // exit(0);
-  /* */
-
-  // TODO TMP
-
-  /* */
   specs.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
     // Just to have enough for now
@@ -944,7 +919,6 @@ cout << "Making compositions" << endl;
   CoverMemory::prepare_8_2();
 
   CoverMemory::prepare_9_1();
-  /* */
 }
 
 

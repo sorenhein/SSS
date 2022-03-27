@@ -1,13 +1,14 @@
 Tricks: Optimize into 5-groups
 
 1. Add symmFlag to CoverNew
-2. Figure out the partitions, their numbering and their storage
 
 3. Make ProductMemory
-   - First cut: Store flat
-   - Second: Store by sumProfile/partition (correct name?)
-     Do these have nice consecutive numbers?
-     Can we make a Memory of them as well?
+   - Usage: Not just flat count, but vector of oppsLength,
+     for each Product
+   - Sums of these per oppsLength
+   - Actual Product's for a given oppsLength, or (oppsLength, topMax)
+   - Record #times in tableau, in solution
+
    - Potentially if we want to store a length-6 1:1?????, it is
      kind of the same as a lengh-6 1:1? with an offset of 4.
      Printing out can be spoofed.
@@ -16,19 +17,6 @@ Tricks: Optimize into 5-groups
      Several inputs are just skipped as being irrelevant in that case.
      Probably would have to store each offset and each partition that
      gave rise to that product 
-   - Statistics
-     - Just #stored overall
-     - #stored by sum length
-     - #stored by entire partition # (showing its string)
-     - #times used in a tableau, per partition # and by length
-     - #times used in an actual solution (tableau used many times)
-     - Each actual product
-       - Some kind of simplified verbal, dist-independent
-       - #in length repositories, in tableaux (by length), in solns
-       - #in each partition, similar columns
-     - For a given partition
-       - Which verbals, with #in tableau, in solution
-       - This can be useful to compare with CoverMemory manual values
 
 CoverSet: product, symmFlag
   Methods: reset, set, includes
