@@ -18,19 +18,16 @@ Tricks: Optimize into 5-groups
      Probably would have to store each offset and each partition that
      gave rise to that product 
 
-CoverSet: product, symmFlag
-  Methods: reset, set, includes
-CoverSpec: index, sumProfile, list<CoverSet>
+CoverSpec: index, sumProfile, list<ProductPlus>
   OR'ed together, so a premade row without much distribution information
 Cover: * CoverSpec, profile[], weight, numDist
   CoverSpec is OR'ed, so more information about a row
 
 CoverNew: product, profile[], weight, numDist, simplestOpponent
-  need to store simplestOpponent?
   Things we can do to a CoverNew: resize, set, prepare (fill profile etc)
 CoverRow: list<CoverNew *>, tricks[], numDist, complexity
 
-So a CoverNew is a bit similar to a CoverSet.
+So a CoverNew is a bit similar to a ProductPlus.
 It could get a symmFlag.
 Then CoverSpec could use CoverNew instead.
 CoverNew gets a Product *, not a Product.
@@ -49,10 +46,6 @@ sumProfile
 list<Cover>
 list<CoverNew>
 
-
-CoverSet:
-Eliminate CoverSet.
-Have to get the symmetric include into something, perhaps Product.
 
 10 / 53208, QJ65 / - missing HHxxxx
 Not entirely convinced by the Strategy #0 output, either old or new.

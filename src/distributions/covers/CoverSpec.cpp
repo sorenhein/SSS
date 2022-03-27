@@ -13,6 +13,7 @@
 
 #include "CoverSpec.h"
 #include "Profile.h"
+#include "ProfilePair.h"
 
 
 CoverSpec::CoverSpec()
@@ -89,11 +90,11 @@ void CoverSpec::westLengthRange(
 {
   ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
-  Profile lowerProfile, upperProfile;
-  lowerProfile.setSingle(len1, 0);
-  upperProfile.setSingle(len2, sumProfile.count(1));
+  ProfilePair profilePair(sumProfile);
+  profilePair.setLength(len1, len2);
+  profilePair.addTop(1, 0, sumProfile.count(1));
 
-  cset.set(sumProfile, lowerProfile, upperProfile, false);
+  cset.set(sumProfile, profilePair, false);
 }
 
 
@@ -132,11 +133,11 @@ void CoverSpec::westTop1Range(
 {
   ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
-  Profile lowerProfile, upperProfile;
-  lowerProfile.setSingle(0, tops1);
-  upperProfile.setSingle(sumProfile.getLength(), tops2);
+  ProfilePair profilePair(sumProfile);
+  profilePair.setLength(0, sumProfile.getLength());
+  profilePair.addTop(1, tops1, tops2);
 
-  cset.set(sumProfile, lowerProfile, upperProfile, false);
+  cset.set(sumProfile, profilePair, false);
 }
 
 
@@ -162,11 +163,11 @@ void CoverSpec::westGeneral(
 {
   ProductPlus& cset = CoverSpec::addOrExtend(ctrl);
 
-  Profile lowerProfile, upperProfile;
-  lowerProfile.setSingle(len1, tops1);
-  upperProfile.setSingle(len2, tops2);
+  ProfilePair profilePair(sumProfile);
+  profilePair.setLength(len1, len2);
+  profilePair.addTop(1, tops1, tops2);
 
-  cset.set(sumProfile, lowerProfile, upperProfile, symmFlag);
+  cset.set(sumProfile, profilePair, symmFlag);
 }
 
 
@@ -215,22 +216,10 @@ bool CoverSpec::includes(const Profile& distProfile) const
 
 string CoverSpec::str() const
 {
-  const ProductPlus& cset = setsWest.front();
-  const Product& product = cset.product;
-  Opponent simplestOpponent = product.simplestOpponent(sumProfile);
-
-  string s = product.strVerbal(sumProfile, simplestOpponent, cset.symmFlag);
+  string s = setsWest.front().strVerbal(sumProfile);
   
   for (auto iter = next(setsWest.begin()); iter != setsWest.end(); iter++)
-  {
-    const ProductPlus& cset2 = * iter;
-    const Product product2 = cset2.product;
-    Opponent simplestOpponent2 = product2.simplestOpponent(sumProfile);
-
-    s += "; or\n  " + 
-      product2.strVerbal(sumProfile, simplestOpponent2, cset2.symmFlag);
-    // iter->product.str(sumProfile);
-  }
+    s += "; or\n  " + iter->strVerbal(sumProfile);
 
   return s;
 }

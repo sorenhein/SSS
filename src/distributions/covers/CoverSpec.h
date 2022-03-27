@@ -17,6 +17,8 @@
 
 #include "Profile.h"
 
+class ProfilePair;
+
 
 enum CoverControl
 {
@@ -32,17 +34,21 @@ enum CoverControl
 
       void set(
         const Profile& sumProfile,
-        const Profile& lowerProfile,
-        const Profile& upperProfile,
+        const ProfilePair& profilePair,
         const bool symmFlagIn)
       {
         symmFlag = symmFlagIn;
 
-        assert(lowerProfile.size() == 2);
-        assert(upperProfile.size() == 2);
+        assert(sumProfile.size() == 2);
 
         product.resize(2);
-        product.set(sumProfile, lowerProfile, upperProfile);
+        product.set(sumProfile, profilePair);
+      };
+
+      string strVerbal(const Profile& sumProfile) const
+      {
+        Opponent simplestOpponent = product.simplestOpponent(sumProfile);
+        return product.strVerbal(sumProfile, simplestOpponent, symmFlag);
       };
     };
 

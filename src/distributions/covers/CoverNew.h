@@ -37,6 +37,7 @@ class CoverNew
 
     unsigned char numDist;
 
+    // TODO Do we need to store this, or recalculate when needed?
     Opponent simplestOpponent;
     
 
