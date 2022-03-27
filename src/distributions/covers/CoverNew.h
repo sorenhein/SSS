@@ -14,7 +14,6 @@
 
 #include "Product.h"
 #include "ProductMemory.h"
-#include "CoverSpec.h"
 #include "Tricks.h"
 
 #include "../../utils/table.h"
@@ -32,7 +31,6 @@ class CoverNew
 
     Tricks tricks;
 
-    // Could we get weight and numDist into Product?
     unsigned weight;
 
     unsigned char numDist;

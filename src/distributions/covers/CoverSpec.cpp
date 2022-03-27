@@ -189,6 +189,20 @@ void CoverSpec::eastGeneral(
 }
 
 
+void CoverSpec::prepare(
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  for (auto& set: setsWest)
+    set.prepare(distProfiles, cases);
+
+  // TODO Not done here.  Tricks::prepare gets called with CoverSpec
+  // in one place: Cover::prepare.  Here it feels like we should OR
+  // together the Tricks in setsWest.  Then CoverSpec::includes should
+  // accept a Tricks argument and not a Profile.
+}
+
+
 bool CoverSpec::includes(const Profile& distProfile) const
 {
   assert(distProfile.size() == 2);

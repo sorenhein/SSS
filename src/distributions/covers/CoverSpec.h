@@ -16,6 +16,7 @@
 #include "Product.h"
 
 #include "Profile.h"
+#include "Tricks.h"
 
 class ProfilePair;
 
@@ -30,7 +31,15 @@ enum CoverControl
     struct ProductPlus
     {
       Product product;
+
+      Tricks tricks;
+
+      unsigned weight;
+
+      unsigned char numDist;
+
       bool symmFlag;
+
 
       void set(
         const Profile& sumProfile,
@@ -44,6 +53,15 @@ enum CoverControl
         product.resize(2);
         product.set(sumProfile, profilePair);
       };
+
+
+      void prepare(
+        const vector<Profile>& distProfiles,
+        const vector<unsigned char>& cases)
+      {
+        tricks.prepare(product, distProfiles, cases, weight, numDist);
+      };
+
 
       string strVerbal(const Profile& sumProfile) const
       {
@@ -142,6 +160,10 @@ class CoverSpec
       const unsigned char tops2,
       const bool symmFlag = false,
       const CoverControl ctrl = COVER_ADD);
+
+    void prepare(
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
 
     bool includes(const Profile& distProfile) const;
     
