@@ -44,6 +44,32 @@ void Covers::reset()
 }
 
 
+void Covers::prepareRow(
+  const CoverSpec& coverSpec,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  assert(distProfiles.size() == cases.size());
+
+  rowsOld.emplace_back(CoverRowOld());
+  CoverRowOld& coverRowOld = rowsOld.back();
+  coverRowOld.prepare(distProfiles, cases, coverSpec);
+
+  assert(coverRowOld.getWeight() != 0);
+}
+
+
+void Covers::sortRows()
+{
+  rowsOld.sort([](
+    const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
+  {
+    return (coverRow1.getWeight() >= coverRow2.getWeight());
+  });
+}
+
+
+/*
 void Covers::prepare(
   const CoverMemory& coverMemory,
   const unsigned char maxLengthIn,
@@ -74,6 +100,7 @@ void Covers::prepare(
     return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
 }
+*/
 
 
 void Covers::prune()

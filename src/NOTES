@@ -1,6 +1,11 @@
-Tricks: Optimize into 5-groups
+CoverSpec is similar to CoverRow or CoverRowOld.
+CoverRow and CoverRowOld can probably be combined somehow.
+CoverMemory should not be needed -- call CoverRow with each result.
+Covers can be split into Covers and CoverSolve.
 
-2. Rename CoverNew as Cover
+
+
+Tricks: Optimize into 5-groups
 
 Check that the old CoverMemory stuff with 1 top goes in the right place,
 so if there's only 1 top at all, shouldn't it go in position 0?

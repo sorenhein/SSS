@@ -30,48 +30,6 @@ enum CoverControl
 };
 
 
-    struct ProductPlus
-    {
-      Product product;
-
-      Tricks tricks;
-
-      unsigned weight;
-
-      unsigned char numDist;
-
-      bool symmFlag;
-
-
-      void set(
-        const Profile& sumProfile,
-        const ProfilePair& profilePair,
-        const bool symmFlagIn)
-      {
-        symmFlag = symmFlagIn;
-
-        assert(sumProfile.size() == 2);
-
-        product.resize(2);
-        product.set(sumProfile, profilePair);
-      };
-
-
-      void prepare(
-        const vector<Profile>& distProfiles,
-        const vector<unsigned char>& cases)
-      {
-        tricks.prepare(product, distProfiles, cases, weight, numDist);
-      };
-
-
-      string strVerbal(const Profile& sumProfile) const
-      {
-        Opponent simplestOpponent = product.simplestOpponent(sumProfile);
-        return product.strVerbal(sumProfile, simplestOpponent, symmFlag);
-      };
-    };
-
 class CoverSpec
 {
   friend class CoverRowOld;
@@ -89,7 +47,6 @@ class CoverSpec
     // Within a set, the elements are AND'ed together if both are present.
 
     // Every time ctrl == COVER_EXTEND, we add one.
-    // list<ProductPlus> setsWest;
     list<Cover> setsWest;
 
 

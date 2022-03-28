@@ -59,10 +59,17 @@ class Covers
 
     void reset();
 
+    /*
     void prepare(
       const CoverMemory& coverMemory,
       const unsigned char maxLength,
       const unsigned char maxTops,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+      */
+
+    void prepareRow(
+      const CoverSpec& coverSpec,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
@@ -71,6 +78,8 @@ class Covers
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       const Profile& sumProfileIn);
+
+    void sortRows();
 
     CoverState explain(
       const list<Result>& results,
