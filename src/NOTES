@@ -1,7 +1,9 @@
-CoverSpec is similar to CoverRow or CoverRowOld.
+CoverMemory gets a list<CoverRowOld> and fills it directly.
+Maybe coversOld?  (lower-case)
+No more CoverSpec then.
 CoverRow and CoverRowOld can probably be combined somehow.
-CoverMemory should not be needed -- call CoverRow with each result.
-Covers can be split into Covers and CoverSolve.
+Covers can be split into Covers and CoverSolve; but Solve is not
+really a class with its own memory.  Maybe coverSolve?
 
 
 
