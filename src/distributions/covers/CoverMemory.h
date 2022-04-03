@@ -35,23 +35,19 @@ class CoverMemory
     // ----- Pure length methods -----
 
     void WestLength(
-      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void EastLength(
-      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void WestLengthRange(
-      ProductMemory& productMemory,
       const unsigned char len1, 
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
 
     void EastLengthRange(
-      ProductMemory& productMemory,
       const unsigned char len1, 
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
@@ -59,23 +55,19 @@ class CoverMemory
     // ----- Pure rank-1 methods -----
 
     void WestTop1(
-      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void EastTop1(
-      ProductMemory& productMemory,
       const unsigned char len,
       const CoverControl ctrl = COVER_ADD);
 
     void WestTop1Range(
-      ProductMemory& productMemory,
       const unsigned char len1, 
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
 
     void EastTop1Range(
-      ProductMemory& productMemory,
       const unsigned char len1, 
       const unsigned char len2,
       const CoverControl ctrl = COVER_ADD);
@@ -83,7 +75,6 @@ class CoverMemory
     // ----- Length and top-1 methods -----
 
     void WestGeneralAnd(
-      ProductMemory& productMemory,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
@@ -91,7 +82,6 @@ class CoverMemory
       const CoverControl ctrl = COVER_ADD);
 
     void EastGeneralAnd(
-      ProductMemory& productMemory,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
@@ -99,7 +89,6 @@ class CoverMemory
       const CoverControl ctrl = COVER_ADD);
 
     void SymmGeneralAnd(
-      ProductMemory& productMemory,
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
