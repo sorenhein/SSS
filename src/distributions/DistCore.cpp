@@ -17,6 +17,7 @@
 #include "DistCore.h"
 #include "DistMap.h"
 
+#include "covers/CoverMemory.h"
 #include "covers/ProductMemory.h"
 
 #include "../plays/Play.h"
@@ -519,7 +520,18 @@ void DistCore::prepareCovers(
   if (maxLength < 2)
     return;
 
-  covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
+  // covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
+
+  assert(maxTops >= 1);
+  for (auto siter = coverMemory.begin(maxLength, maxTops);
+    siter != coverMemory.end(maxLength, maxTops); siter++)
+  {
+    covers.prepareRow(* siter, distProfilesOld, cases);
+  }
+
+  covers.sortRows();
+
+  // ---
 
   vector<Profile> distProfiles;
 

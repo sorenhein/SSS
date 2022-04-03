@@ -1,6 +1,13 @@
-Tricks: Optimize into 5-groups
+CoverMemory gets a list<CoverRowOld> and fills it directly.
+Maybe coversOld?  (lower-case)
+No more CoverSpec then.
+CoverRow and CoverRowOld can probably be combined somehow.
+Covers can be split into Covers and CoverSolve; but Solve is not
+really a class with its own memory.  Maybe coverSolve?
 
-2. Rename CoverNew as Cover
+
+
+Tricks: Optimize into 5-groups
 
 Check that the old CoverMemory stuff with 1 top goes in the right place,
 so if there's only 1 top at all, shouldn't it go in position 0?
