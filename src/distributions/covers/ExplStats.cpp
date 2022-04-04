@@ -27,22 +27,22 @@ void ExplStats::reset()
 }
 
 
-void ExplStats::resize(const vector<vector<list<CoverSpec>>>& specs)
+void ExplStats::resize(const vector<vector<unsigned>>& counts)
 {
   // specs is just used for its two dimensions
 
-  const unsigned ssize = specs.size();
+  const unsigned ssize = counts.size();
   explStats.resize(ssize);
 
   for (unsigned s = 0; s < ssize; s++)
   {
-    const unsigned s2size = specs[s].size();
+    const unsigned s2size = counts[s].size();
     explStats[s].resize(s2size);
 
     for (unsigned t = 0; t < s2size; t++)
     {
       ExplStat& explStat = explStats[s][t];
-      explStat.resize(specs[s][t].size());
+      explStat.resize(counts[s][t]);
     }
   }
 }

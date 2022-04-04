@@ -33,7 +33,8 @@ class ExplStats
 
   void reset();
 
-  void resize(const vector<vector<list<CoverSpec>>>& specs);
+  // void resize(const vector<vector<list<CoverSpec>>>& specs);
+  void resize(const vector<vector<unsigned>>& counts);
 
   ExplStat& getEntry(
     const unsigned char lengthIndex,

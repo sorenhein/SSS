@@ -26,7 +26,10 @@ class CoverMemory
 {
   private:
 
-    vector<vector<list<CoverSpec>>> specs;
+    list<CoverSpec> specs;
+
+    vector<vector<unsigned>> counts;
+
 
 
     // Uses global counters for more succinct notation

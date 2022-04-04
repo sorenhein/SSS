@@ -44,24 +44,21 @@ void CoverMemory::reset()
 
 void CoverMemory::resize(const unsigned char maxCards)
 {
-  specs.resize(maxCards+1);
+  counts.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
-    // Just to have enough for now
-    specs[c].resize(14);
+    counts[c].resize(14);
 }
 
 
 void CoverMemory::resizeStats(ExplStats& explStats) const
 {
-  explStats.resize(specs);
+  explStats.resize(counts);
 }
 
 
 CoverSpec& CoverMemory::addOrExtend(const CoverControl ctrl)
 {
-  assert(coverGlobal.cards < specs.size());
-  assert(coverGlobal.tops1 < specs[coverGlobal.cards].size());
-  auto& covers = specs[coverGlobal.cards][coverGlobal.tops1];
+  auto& covers = specs;
 
   if (ctrl == COVER_ADD)
   {
@@ -912,14 +909,16 @@ void CoverMemory::prepareRows(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases) // Should be const again some day?
 {
-  assert(maxLength < specs.size());
-  assert(maxTops < specs[maxLength].size());
+  assert(maxLength < counts.size());
+  assert(maxTops < counts[maxLength].size());
 
-  specs[maxLength][maxTops].clear();
+  specs.clear();
 
   CoverMemory::prepare(productMemory, maxLength, maxTops);
 
-  for (auto& spec: specs[maxLength][maxTops])
+  counts[maxLength][maxTops] = specs.size();
+
+  for (auto& spec: specs)
     covers.prepareRow(spec, distProfiles, cases);
 }
 
