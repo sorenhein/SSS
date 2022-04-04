@@ -804,57 +804,6 @@ void CoverMemory::makeSets(
 
 void CoverMemory::prepare(
   ProductMemory& productMemory,
-  const unsigned char maxCards)
-{
-  CoverMemory::resize(maxCards);
-
-  /*
-  specs.resize(maxCards+1);
-  for (unsigned char c = 0; c <= maxCards; c++)
-    // Just to have enough for now
-    specs[c].resize(14);
-    */
-
-  return;
-
-  CoverMemory::prepare_2_1(productMemory);
-  CoverMemory::prepare_2_2(productMemory);
-
-  CoverMemory::prepare_3_1(productMemory);
-  CoverMemory::prepare_3_2(productMemory);
-  CoverMemory::prepare_3_3(productMemory);
-
-  CoverMemory::prepare_4_1(productMemory);
-  CoverMemory::prepare_4_2(productMemory);
-  CoverMemory::prepare_4_3(productMemory);
-  CoverMemory::prepare_4_4(productMemory);
-
-  CoverMemory::prepare_5_1(productMemory);
-  CoverMemory::prepare_5_2(productMemory);
-  CoverMemory::prepare_5_3(productMemory);
-  CoverMemory::prepare_5_4(productMemory);
-  CoverMemory::prepare_5_5(productMemory);
-
-  CoverMemory::prepare_6_1(productMemory);
-  CoverMemory::prepare_6_2(productMemory);
-  CoverMemory::prepare_6_3(productMemory);
-  CoverMemory::prepare_6_4(productMemory);
-  CoverMemory::prepare_6_5(productMemory);
-  CoverMemory::prepare_6_6(productMemory);
-
-  CoverMemory::prepare_7_1(productMemory);
-  CoverMemory::prepare_7_2(productMemory);
-  CoverMemory::prepare_7_3(productMemory);
-
-  CoverMemory::prepare_8_1(productMemory);
-  CoverMemory::prepare_8_2(productMemory);
-
-  CoverMemory::prepare_9_1(productMemory);
-}
-
-
-void CoverMemory::prepareNew(
-  ProductMemory& productMemory,
   const unsigned char maxLength,
   const unsigned char maxTops)
 {
@@ -955,63 +904,22 @@ void CoverMemory::prepareNew(
 }
 
 
-void CoverMemory::prepareRow(
+void CoverMemory::prepareRows(
   Covers& covers,
-  [[maybe_unused]] ProductMemory& productMemory,
+  ProductMemory& productMemory,
   const unsigned char maxLength,
   const unsigned char maxTops,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases) // Should be const again some day?
 {
-/* */
   assert(maxLength < specs.size());
   assert(maxTops < specs[maxLength].size());
+
   specs[maxLength][maxTops].clear();
 
-  CoverMemory::prepareNew(productMemory, maxLength, maxTops);
-/* */
+  CoverMemory::prepare(productMemory, maxLength, maxTops);
 
   for (auto& spec: specs[maxLength][maxTops])
-  {
     covers.prepareRow(spec, distProfiles, cases);
-  }
-}
-
-
-list<CoverSpec>::const_iterator CoverMemory::begin(
-  const unsigned cards,
-  const unsigned tops1) const
-{
-  assert(cards < specs.size());
-if (tops1 >= specs[cards].size())
-{
-cout << "cards " << cards << endl;
-cout << "tops1 " << tops1 << ", size " << specs[cards].size() << endl;
-  assert(tops1 < specs[cards].size());
-}
-
-  return specs[cards][tops1].begin();
-}
-
-
-list<CoverSpec>::const_iterator CoverMemory::end(
-  const unsigned cards,
-  const unsigned tops1) const
-{
-  assert(cards < specs.size());
-  assert(tops1 < specs[cards].size());
-
-  return specs[cards][tops1].end();
-}
-
-
-unsigned CoverMemory::size(
-  const unsigned cards,
-  const unsigned tops1) const
-{
-  assert(cards < specs.size());
-  assert(tops1 < specs[cards].size());
-
-  return specs[cards][tops1].size();
 }
 

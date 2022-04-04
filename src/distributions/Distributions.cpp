@@ -37,7 +37,7 @@ void Distributions::resize(const unsigned char maxCardsIn)
   // (maxCards+1) / 2 = 7 opposing ranks.
   productMemory.resize((maxCards+1)/2 + 1);
 
-  distMemory.resize(productMemory, maxCardsIn+1);
+  distMemory.resize(maxCardsIn+1);
 
   // A distribution is a set of card splits for a given rank
   // vector covering both East and West.

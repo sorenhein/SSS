@@ -131,6 +131,11 @@ class CoverMemory
 
     void prepare_9_1(ProductMemory& productMemory);
 
+    void prepare(
+      ProductMemory& productMemory,
+      const unsigned char maxLength,
+      const unsigned char maxTops);
+
     void makeSets(
       const unsigned char length,
       const Profile& comp);
@@ -146,34 +151,13 @@ class CoverMemory
 
     void resizeStats(ExplStats& explStats) const;
 
-    void prepare(
-      ProductMemory& productMemory,
-      const unsigned char maxCards);
-
-    void prepareNew(
-      ProductMemory& productMemory,
-      const unsigned char maxLength,
-      const unsigned char maxTops);
-
-    void prepareRow(
+    void prepareRows(
       Covers& covers,
       ProductMemory& productMemory,
       const unsigned char maxLength,
       const unsigned char maxTops,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
-
-    list<CoverSpec>::const_iterator begin(
-      const unsigned cards,
-      const unsigned tops1) const;
-
-    list<CoverSpec>::const_iterator end(
-      const unsigned cards,
-      const unsigned tops1) const;
-
-    unsigned size(
-      const unsigned cards,
-      const unsigned tops1) const;
 };
 
 #endif

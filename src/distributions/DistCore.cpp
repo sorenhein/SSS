@@ -520,19 +520,9 @@ void DistCore::prepareCovers(
   if (maxLength < 2)
     return;
 
-  // covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
-
   assert(maxTops >= 1);
-  coverMemory.prepareRow(covers, productMemory, maxLength, maxTops,
+  coverMemory.prepareRows(covers, productMemory, maxLength, maxTops,
     distProfilesOld, cases);
-
-  /*
-  for (auto siter = coverMemory.begin(maxLength, maxTops);
-    siter != coverMemory.end(maxLength, maxTops); siter++)
-  {
-    covers.prepareRow(* siter, distProfilesOld, cases);
-  }
-  */
 
   covers.sortRows();
 
