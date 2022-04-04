@@ -42,6 +42,15 @@ void CoverMemory::reset()
 }
 
 
+void CoverMemory::resize(const unsigned char maxCards)
+{
+  specs.resize(maxCards+1);
+  for (unsigned char c = 0; c <= maxCards; c++)
+    // Just to have enough for now
+    specs[c].resize(14);
+}
+
+
 void CoverMemory::resizeStats(ExplStats& explStats) const
 {
   explStats.resize(specs);
@@ -797,10 +806,16 @@ void CoverMemory::prepare(
   ProductMemory& productMemory,
   const unsigned char maxCards)
 {
+  CoverMemory::resize(maxCards);
+
+  /*
   specs.resize(maxCards+1);
   for (unsigned char c = 0; c <= maxCards; c++)
     // Just to have enough for now
     specs[c].resize(14);
+    */
+
+  return;
 
   CoverMemory::prepare_2_1(productMemory);
   CoverMemory::prepare_2_2(productMemory);

@@ -142,6 +142,8 @@ class CoverMemory
 
     void reset();
 
+    void resize(const unsigned char maxCards);
+
     void resizeStats(ExplStats& explStats) const;
 
     void prepare(
