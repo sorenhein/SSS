@@ -148,6 +148,19 @@ class CoverMemory
       ProductMemory& productMemory,
       const unsigned char maxCards);
 
+    void prepareNew(
+      ProductMemory& productMemory,
+      const unsigned char maxLength,
+      const unsigned char maxTops);
+
+    void prepareRow(
+      Covers& covers,
+      ProductMemory& productMemory,
+      const unsigned char maxLength,
+      const unsigned char maxTops,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+
     list<CoverSpec>::const_iterator begin(
       const unsigned cards,
       const unsigned tops1) const;

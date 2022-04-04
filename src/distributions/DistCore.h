@@ -87,7 +87,7 @@ class DistCore
       const unsigned char rankNS) const;
     
     void prepareCovers(
-      const CoverMemory& coverMemory,
+      CoverMemory& coverMemory,
       ProductMemory& productMemory);
 
     // TODO const once specs are separate

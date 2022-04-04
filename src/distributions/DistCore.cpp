@@ -506,7 +506,7 @@ void DistCore::getCoverDataNew(
 
 
 void DistCore::prepareCovers(
-  const CoverMemory& coverMemory,
+  CoverMemory& coverMemory, // const again later
   ProductMemory& productMemory)
 {
   if (distributions.size() == 0)
@@ -523,11 +523,16 @@ void DistCore::prepareCovers(
   // covers.prepare(coverMemory, maxLength, maxTops, distProfilesOld, cases);
 
   assert(maxTops >= 1);
+  coverMemory.prepareRow(covers, productMemory, maxLength, maxTops,
+    distProfilesOld, cases);
+
+  /*
   for (auto siter = coverMemory.begin(maxLength, maxTops);
     siter != coverMemory.end(maxLength, maxTops); siter++)
   {
     covers.prepareRow(* siter, distProfilesOld, cases);
   }
+  */
 
   covers.sortRows();
 

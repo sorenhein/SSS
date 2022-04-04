@@ -8,6 +8,8 @@
 
 #include <cassert>
 
+#include "Covers.h"
+
 #include "CoverMemory.h"
 #include "ExplStats.h"
 
@@ -833,6 +835,131 @@ void CoverMemory::prepare(
   CoverMemory::prepare_8_2(productMemory);
 
   CoverMemory::prepare_9_1(productMemory);
+}
+
+
+void CoverMemory::prepareNew(
+  ProductMemory& productMemory,
+  const unsigned char maxLength,
+  const unsigned char maxTops)
+{
+  if (maxLength == 2)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_2_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_2_2(productMemory);
+    else
+      assert(false);
+  }
+  else if (maxLength == 3)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_3_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_3_2(productMemory);
+    else if (maxTops == 3)
+      CoverMemory::prepare_3_3(productMemory);
+    else
+      assert(false);
+  }
+  else if (maxLength == 4)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_4_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_4_2(productMemory);
+    else if (maxTops == 3)
+      CoverMemory::prepare_4_3(productMemory);
+    else if (maxTops == 4)
+      CoverMemory::prepare_4_4(productMemory);
+    else
+      assert(false);
+  }
+  else if (maxLength == 5)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_5_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_5_2(productMemory);
+    else if (maxTops == 3)
+      CoverMemory::prepare_5_3(productMemory);
+    else if (maxTops == 4)
+      CoverMemory::prepare_5_4(productMemory);
+    else if (maxTops == 5)
+      CoverMemory::prepare_5_5(productMemory);
+    else
+      assert(false);
+  }
+  else if (maxLength == 6)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_6_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_6_2(productMemory);
+    else if (maxTops == 3)
+      CoverMemory::prepare_6_3(productMemory);
+    else if (maxTops == 4)
+      CoverMemory::prepare_6_4(productMemory);
+    else if (maxTops == 5)
+      CoverMemory::prepare_6_5(productMemory);
+    else if (maxTops == 6)
+      CoverMemory::prepare_6_6(productMemory);
+    else
+      assert(false);
+  }
+  else if (maxLength == 7)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_7_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_7_2(productMemory);
+    else if (maxTops == 3)
+      CoverMemory::prepare_7_3(productMemory);
+    else
+      cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
+  }
+  else if (maxLength == 8)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_8_1(productMemory);
+    else if (maxTops == 2)
+      CoverMemory::prepare_8_2(productMemory);
+    else
+      cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
+  }
+  else if (maxLength == 9)
+  {
+    if (maxTops == 1)
+      CoverMemory::prepare_9_1(productMemory);
+    else
+      cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
+  }
+  else
+    cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
+}
+
+
+void CoverMemory::prepareRow(
+  Covers& covers,
+  [[maybe_unused]] ProductMemory& productMemory,
+  const unsigned char maxLength,
+  const unsigned char maxTops,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases) // Should be const again some day?
+{
+/* */
+  assert(maxLength < specs.size());
+  assert(maxTops < specs[maxLength].size());
+  specs[maxLength][maxTops].clear();
+
+  CoverMemory::prepareNew(productMemory, maxLength, maxTops);
+/* */
+
+  for (auto& spec: specs[maxLength][maxTops])
+  {
+    covers.prepareRow(spec, distProfiles, cases);
+  }
 }
 
 

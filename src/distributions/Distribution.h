@@ -87,7 +87,7 @@ class Distribution
     };
 
     void prepareCovers(
-      const CoverMemory& coverMemory,
+      CoverMemory& coverMemory,
       ProductMemory& productMemory)
     {
       assert(distCorePtr != nullptr);
