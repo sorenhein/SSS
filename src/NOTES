@@ -2,11 +2,6 @@ Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make
 up "old" rows.
 
-0. Maybe do the padding before we do anything else
-   - CoverSpec::getID, the various set methods (ProfilePair)
-   - CoverRowOld: includes just test == size
- 
-
 1. CoverMemory goes inside Covers
 2. Maybe Cover::set has a version that enters/looks up, and another
    that only looks up (and must be successful)

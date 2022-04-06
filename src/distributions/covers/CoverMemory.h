@@ -138,10 +138,6 @@ class CoverMemory
       const unsigned char maxLength,
       const unsigned char maxTops);
 
-    void makeSets(
-      const unsigned char length,
-      const Profile& comp);
-
 
   public:
 
