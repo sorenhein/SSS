@@ -60,6 +60,7 @@ class CoverSpec
     void reset();
 
     void setID(
+      const unsigned char numTops,
       const unsigned char length,
       const unsigned char tops1);
 

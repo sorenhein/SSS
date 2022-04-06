@@ -31,10 +31,11 @@ void CoverSpec::reset()
 
 
 void CoverSpec::setID(
+  const unsigned char numTops,
   const unsigned char length,
   const unsigned char tops1)
 {
-  sumProfile.setSingle(length, tops1);
+  sumProfile.setSingle(numTops, length, tops1);
 }
 
 
@@ -48,8 +49,11 @@ void CoverSpec::getID(
   unsigned char& length,
   unsigned char& tops1) const
 {
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   length = sumProfile.getLength();
-  tops1 = sumProfile.count(1);
+  tops1 = sumProfile.count(highestTop);
 }
 
 
@@ -94,9 +98,12 @@ void CoverSpec::westLengthRange(
 {
   Cover& cset = CoverSpec::addOrExtend(ctrl);
 
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(len1, len2);
-  profilePair.addTop(1, 0, sumProfile.count(1));
+  profilePair.addTop(highestTop, 0, sumProfile.count(highestTop));
 
   cset.set(productMemory, sumProfile, profilePair, false);
 }
@@ -130,7 +137,13 @@ void CoverSpec::eastTop1(
   const unsigned char tops,
   const CoverControl ctrl)
 {
-  CoverSpec::westTop1(productMemory, sumProfile.count(1) - tops, ctrl);
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
+  CoverSpec::westTop1(
+    productMemory, 
+    sumProfile.count(highestTop) - tops, 
+    ctrl);
 }
 
 
@@ -142,9 +155,12 @@ void CoverSpec::westTop1Range(
 {
   Cover& cset = CoverSpec::addOrExtend(ctrl);
 
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(0, sumProfile.getLength());
-  profilePair.addTop(1, tops1, tops2);
+  profilePair.addTop(highestTop, tops1, tops2);
 
   cset.set(productMemory, sumProfile, profilePair, false);
 }
@@ -156,10 +172,13 @@ void CoverSpec::eastTop1Range(
   const unsigned char tops2,
   const CoverControl ctrl)
 {
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   CoverSpec::westTop1Range(
     productMemory,
-    sumProfile.count(1) - tops2, 
-    sumProfile.count(1) - tops1, 
+    sumProfile.count(highestTop) - tops2, 
+    sumProfile.count(highestTop) - tops1, 
     ctrl);
 }
 
@@ -175,9 +194,12 @@ void CoverSpec::westGeneral(
 {
   Cover& cset = CoverSpec::addOrExtend(ctrl);
 
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   ProfilePair profilePair(sumProfile);
   profilePair.setLength(len1, len2);
-  profilePair.addTop(1, tops1, tops2);
+  profilePair.addTop(highestTop, tops1, tops2);
 
   cset.set(productMemory, sumProfile, profilePair, symmFlag);
 }
@@ -192,12 +214,15 @@ void CoverSpec::eastGeneral(
   const bool symmFlag,
   const CoverControl ctrl)
 {
+  const unsigned char highestTop =
+    static_cast<unsigned char>(sumProfile.size()-1);
+
   CoverSpec::westGeneral(
     productMemory,
     sumProfile.getLength() - len2,
     sumProfile.getLength() - len1,
-    sumProfile.count(1) - tops2,
-    sumProfile.count(1) - tops1,
+    sumProfile.count(highestTop) - tops2,
+    sumProfile.count(highestTop) - tops1,
     symmFlag,
     ctrl);
 }

@@ -25,6 +25,7 @@ struct CoverParams
   ProductMemory * memoryPtr;
   unsigned char cards;
   unsigned char tops1;
+  unsigned char numTops;
 };
 
 CoverParams coverGlobal;
@@ -65,7 +66,10 @@ CoverSpec& CoverMemory::addOrExtend(const CoverControl ctrl)
     // Add
     covers.emplace_back(CoverSpec());
     CoverSpec& spec = covers.back();
-    spec.setID(coverGlobal.cards, coverGlobal.tops1);
+    spec.setID(
+      coverGlobal.numTops,
+      coverGlobal.cards, 
+      coverGlobal.tops1);
     spec.setIndex(covers.size() - 1);
 
     return spec;
@@ -199,25 +203,25 @@ void CoverMemory::SymmGeneralAnd(
 }
 
 
-void CoverMemory::prepare_2_1(ProductMemory& productMemory)
+void CoverMemory::prepare_2_1()
 {
-  coverGlobal = {&productMemory, 2, 1};
+  // coverGlobal = {&productMemory, 2, 1};
   CoverMemory::WestLength(1);              // 0. 1-1
   CoverMemory::WestLengthRange(1, 2);      // 1. West is not void
   CoverMemory::WestTop1(1);                // 2. West has the top
 }
 
 
-void CoverMemory::prepare_2_2(ProductMemory& productMemory)
+void CoverMemory::prepare_2_2()
 {
-  coverGlobal = {&productMemory, 2, 2};
+  // coverGlobal = {&productMemory, 2, 2};
   CoverMemory::WestLength(1);              // 0. 1-1
 }
 
 
-void CoverMemory::prepare_3_1(ProductMemory& productMemory)
+void CoverMemory::prepare_3_1()
 {
-  coverGlobal = {&productMemory, 3, 1};
+  // coverGlobal = {&productMemory, 3, 1};
 
   CoverMemory::WestLengthRange(1, 3);      // 0. West is not void
   CoverMemory::WestLengthRange(0, 2);      // 1. East is not void
@@ -233,9 +237,9 @@ void CoverMemory::prepare_3_1(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_3_2(ProductMemory& productMemory)
+void CoverMemory::prepare_3_2()
 {
-  coverGlobal = {&productMemory, 3, 2};
+  // coverGlobal = {&productMemory, 3, 2};
   CoverMemory::WestLengthRange(1, 3);      // 0. West is not void
   CoverMemory::WestLengthRange(1, 2);      // 1. 1=2 or 2=1
 
@@ -245,16 +249,16 @@ void CoverMemory::prepare_3_2(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_3_3(ProductMemory &productMemory)
+void CoverMemory::prepare_3_3()
 {
-  coverGlobal = {&productMemory, 3, 3};
+  // coverGlobal = {&productMemory, 3, 3};
   CoverMemory::WestLengthRange(1, 2);      // 0. 1=2 or 2=1
 }
 
 
-void CoverMemory::prepare_4_1(ProductMemory& productMemory)
+void CoverMemory::prepare_4_1()
 {
-  coverGlobal = {&productMemory, 4, 1};
+  // coverGlobal = {&productMemory, 4, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLength(2);              // 2. 2=2
@@ -285,9 +289,9 @@ void CoverMemory::prepare_4_1(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_4_2(ProductMemory& productMemory)
+void CoverMemory::prepare_4_2()
 {
-  coverGlobal = {&productMemory, 4, 2};
+  // coverGlobal = {&productMemory, 4, 2};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::EastLength(1);              // 1. East has any singleton
@@ -357,9 +361,9 @@ void CoverMemory::prepare_4_2(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_4_3(ProductMemory& productMemory)
+void CoverMemory::prepare_4_3()
 {
-  coverGlobal = {&productMemory, 4, 3};
+  // coverGlobal = {&productMemory, 4, 3};
   CoverMemory::WestLength(2);              // 0. 2=2
   CoverMemory::WestLengthRange(1, 3);      // 1. 1=3, 2=2 or 3=1
   CoverMemory::WestLengthRange(1, 4);      // 2. West is not void
@@ -371,17 +375,17 @@ void CoverMemory::prepare_4_3(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_4_4(ProductMemory& productMemory)
+void CoverMemory::prepare_4_4()
 {
-  coverGlobal = {&productMemory, 4, 4};
+  // coverGlobal = {&productMemory, 4, 4};
   CoverMemory::WestLength(2);              // 0. 2=2
   CoverMemory::WestLengthRange(1, 3);      // 1. 1=3, 2=2 or 3=1
 }
 
 
-void CoverMemory::prepare_5_1(ProductMemory& productMemory)
+void CoverMemory::prepare_5_1()
 {
-  coverGlobal = {&productMemory, 5, 1};
+  // coverGlobal = {&productMemory, 5, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(0, 4);      // 2. East is not void
@@ -420,9 +424,9 @@ void CoverMemory::prepare_5_1(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_5_2(ProductMemory& productMemory)
+void CoverMemory::prepare_5_2()
 {
-  coverGlobal = {&productMemory, 5, 2};
+  // coverGlobal = {&productMemory, 5, 2};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(0, 3);      // 2. 0=5, 1=4, 2=3 or 3=2
@@ -482,9 +486,9 @@ void CoverMemory::prepare_5_2(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_5_3(ProductMemory& productMemory)
+void CoverMemory::prepare_5_3()
 {
-  coverGlobal = {&productMemory, 5, 3};
+  // coverGlobal = {&productMemory, 5, 3};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(1, 4);      // 2. 1=4, 2=3, 3=2 or 4=1
@@ -518,26 +522,26 @@ void CoverMemory::prepare_5_3(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_5_4(ProductMemory& productMemory)
+void CoverMemory::prepare_5_4()
 {
-  coverGlobal = {&productMemory, 5, 4};
+  // coverGlobal = {&productMemory, 5, 4};
   CoverMemory::WestLengthRange(1, 5);      // 0. East is not void
   CoverMemory::WestLengthRange(2, 3);      // 1. 2=3 or 3=2
   CoverMemory::WestLengthRange(1, 4);      // 2. 1=4, 2=3, 3=2 or 4=1
 }
 
 
-void CoverMemory::prepare_5_5(ProductMemory& productMemory)
+void CoverMemory::prepare_5_5()
 {
-  coverGlobal = {&productMemory, 5, 5};
+  // coverGlobal = {&productMemory, 5, 5};
   CoverMemory::WestLengthRange(2, 3);      // 0. 2=3 or 3=2
   CoverMemory::WestLengthRange(1, 4);      // 1. 1=4, 2=3, 3=2 or 4=1
 }
 
 
-void CoverMemory::prepare_6_1(ProductMemory& productMemory)
+void CoverMemory::prepare_6_1()
 {
-  coverGlobal = {&productMemory, 6, 1};
+  // coverGlobal = {&productMemory, 6, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLength(3);              // 2. 3=3
@@ -560,9 +564,9 @@ void CoverMemory::prepare_6_1(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_6_2(ProductMemory& productMemory)
+void CoverMemory::prepare_6_2()
 {
-  coverGlobal = {&productMemory, 6, 2};
+  // coverGlobal = {&productMemory, 6, 2};
   CoverMemory::EastLength(0);              // 0. West is void
   CoverMemory::WestLength(0);              // 1. West is void
   CoverMemory::WestLength(3);              // 2. 3=3
@@ -593,9 +597,9 @@ void CoverMemory::prepare_6_2(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_6_3(ProductMemory& productMemory)
+void CoverMemory::prepare_6_3()
 {
-  coverGlobal = {&productMemory, 6, 3};
+  // coverGlobal = {&productMemory, 6, 3};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -615,9 +619,9 @@ void CoverMemory::prepare_6_3(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_6_4(ProductMemory& productMemory)
+void CoverMemory::prepare_6_4()
 {
-  coverGlobal = {&productMemory, 6, 4};
+  // coverGlobal = {&productMemory, 6, 4};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -625,25 +629,25 @@ void CoverMemory::prepare_6_4(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_6_5(ProductMemory& productMemory)
+void CoverMemory::prepare_6_5()
 {
-  coverGlobal = {&productMemory, 6, 5};
+  // coverGlobal = {&productMemory, 6, 5};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 }
 
 
-void CoverMemory::prepare_6_6(ProductMemory& productMemory)
+void CoverMemory::prepare_6_6()
 {
-  coverGlobal = {&productMemory, 6, 6};
+  // coverGlobal = {&productMemory, 6, 6};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 }
 
 
-void CoverMemory::prepare_7_1(ProductMemory& productMemory)
+void CoverMemory::prepare_7_1()
 {
-  coverGlobal = {&productMemory, 7, 1};
+  // coverGlobal = {&productMemory, 7, 1};
   CoverMemory::WestTop1(1);                // 0. West has the top
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 1. H(x) with West
@@ -654,9 +658,9 @@ void CoverMemory::prepare_7_1(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_7_2(ProductMemory& productMemory)
+void CoverMemory::prepare_7_2()
 {
-  coverGlobal = {&productMemory, 7, 2};
+  // coverGlobal = {&productMemory, 7, 2};
   CoverMemory::WestTop1(2);                // 0. West has the tops
 
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 1. H singleton
@@ -672,35 +676,35 @@ void CoverMemory::prepare_7_2(ProductMemory& productMemory)
 }
 
 
-void CoverMemory::prepare_7_3(ProductMemory& productMemory)
+void CoverMemory::prepare_7_3()
 {
-  coverGlobal = {&productMemory, 7, 3};
+  // coverGlobal = {&productMemory, 7, 3};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. HH singleton either side
   CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // 1. HH doubleton either side
   CoverMemory::SymmGeneralAnd(3, 3, 3, 3); // 2. HHH tripleton either side
 }
 
 
-void CoverMemory::prepare_8_1(ProductMemory& productMemory)
+void CoverMemory::prepare_8_1()
 {
-  coverGlobal = {&productMemory, 8, 1};
+  // coverGlobal = {&productMemory, 8, 1};
   CoverMemory::WestTop1(1);                // 0. West has the top
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 1. H singleton either side
   CoverMemory::SymmGeneralAnd(1, 2, 1, 1); // 2. H(x) either side
 }
 
 
-void CoverMemory::prepare_8_2(ProductMemory& productMemory)
+void CoverMemory::prepare_8_2()
 {
-  coverGlobal = {&productMemory, 8, 2};
+  // coverGlobal = {&productMemory, 8, 2};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. H singleton either side
   CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // 1. HH doubleton either side
 }
 
 
-void CoverMemory::prepare_9_1(ProductMemory& productMemory)
+void CoverMemory::prepare_9_1()
 {
-  coverGlobal = {&productMemory, 9, 1};
+  // coverGlobal = {&productMemory, 9, 1};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. H singleton either side
 }
 
@@ -800,99 +804,98 @@ void CoverMemory::makeSets(
 
 
 void CoverMemory::prepare(
-  ProductMemory& productMemory,
   const unsigned char maxLength,
   const unsigned char maxTops)
 {
   if (maxLength == 2)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_2_1(productMemory);
+      CoverMemory::prepare_2_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_2_2(productMemory);
+      CoverMemory::prepare_2_2();
     else
       assert(false);
   }
   else if (maxLength == 3)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_3_1(productMemory);
+      CoverMemory::prepare_3_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_3_2(productMemory);
+      CoverMemory::prepare_3_2();
     else if (maxTops == 3)
-      CoverMemory::prepare_3_3(productMemory);
+      CoverMemory::prepare_3_3();
     else
       assert(false);
   }
   else if (maxLength == 4)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_4_1(productMemory);
+      CoverMemory::prepare_4_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_4_2(productMemory);
+      CoverMemory::prepare_4_2();
     else if (maxTops == 3)
-      CoverMemory::prepare_4_3(productMemory);
+      CoverMemory::prepare_4_3();
     else if (maxTops == 4)
-      CoverMemory::prepare_4_4(productMemory);
+      CoverMemory::prepare_4_4();
     else
       assert(false);
   }
   else if (maxLength == 5)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_5_1(productMemory);
+      CoverMemory::prepare_5_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_5_2(productMemory);
+      CoverMemory::prepare_5_2();
     else if (maxTops == 3)
-      CoverMemory::prepare_5_3(productMemory);
+      CoverMemory::prepare_5_3();
     else if (maxTops == 4)
-      CoverMemory::prepare_5_4(productMemory);
+      CoverMemory::prepare_5_4();
     else if (maxTops == 5)
-      CoverMemory::prepare_5_5(productMemory);
+      CoverMemory::prepare_5_5();
     else
       assert(false);
   }
   else if (maxLength == 6)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_6_1(productMemory);
+      CoverMemory::prepare_6_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_6_2(productMemory);
+      CoverMemory::prepare_6_2();
     else if (maxTops == 3)
-      CoverMemory::prepare_6_3(productMemory);
+      CoverMemory::prepare_6_3();
     else if (maxTops == 4)
-      CoverMemory::prepare_6_4(productMemory);
+      CoverMemory::prepare_6_4();
     else if (maxTops == 5)
-      CoverMemory::prepare_6_5(productMemory);
+      CoverMemory::prepare_6_5();
     else if (maxTops == 6)
-      CoverMemory::prepare_6_6(productMemory);
+      CoverMemory::prepare_6_6();
     else
       assert(false);
   }
   else if (maxLength == 7)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_7_1(productMemory);
+      CoverMemory::prepare_7_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_7_2(productMemory);
+      CoverMemory::prepare_7_2();
     else if (maxTops == 3)
-      CoverMemory::prepare_7_3(productMemory);
+      CoverMemory::prepare_7_3();
     else
       cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
   }
   else if (maxLength == 8)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_8_1(productMemory);
+      CoverMemory::prepare_8_1();
     else if (maxTops == 2)
-      CoverMemory::prepare_8_2(productMemory);
+      CoverMemory::prepare_8_2();
     else
       cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
   }
   else if (maxLength == 9)
   {
     if (maxTops == 1)
-      CoverMemory::prepare_9_1(productMemory);
+      CoverMemory::prepare_9_1();
     else
       cout << "WARN maxTops " << +maxLength << " / " << +maxTops << endl;
   }
@@ -906,6 +909,7 @@ void CoverMemory::prepareRows(
   ProductMemory& productMemory,
   const unsigned char maxLength,
   const unsigned char maxTops,
+  const unsigned char numTops,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases) // Should be const again some day?
 {
@@ -914,7 +918,9 @@ void CoverMemory::prepareRows(
 
   specs.clear();
 
-  CoverMemory::prepare(productMemory, maxLength, maxTops);
+  coverGlobal = {&productMemory, maxLength, maxTops, numTops};
+
+  CoverMemory::prepare(maxLength, maxTops);
 
   counts[maxLength][maxTops] = specs.size();
 

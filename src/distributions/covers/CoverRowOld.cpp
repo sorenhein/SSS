@@ -50,8 +50,7 @@ void CoverRowOld::prepare(
 
 bool CoverRowOld::includes(const Profile& distProfile) const
 {
-  assert(distProfile.size() == 2);
-  assert(sumProfile.size() == 2);
+  assert(distProfile.size() == sumProfile.size());
 
   for (auto& cover: covers)
   {
@@ -90,7 +89,8 @@ void CoverRowOld::getID(
   unsigned char& tops1) const
 {
   length = sumProfile.getLength();
-  tops1 = sumProfile.count(1);
+  tops1 = sumProfile.count(
+    static_cast<unsigned char>(sumProfile.size()-1));
 }
 
 

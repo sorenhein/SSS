@@ -34,6 +34,7 @@ class Profile
       const unsigned char numTops = 0);
 
     void setSingle(
+      const unsigned char numTops,
       const unsigned char lengthIn,
       const unsigned char topIn);
 

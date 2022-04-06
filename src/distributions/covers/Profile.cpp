@@ -31,14 +31,16 @@ void Profile::set(
 
 
 void Profile::setSingle(
+  const unsigned char numTops,
   const unsigned char lengthIn,
   const unsigned char topIn)
 {
   length = lengthIn;
 
   // The bottom top is not used, so this is what a single top means.
-  tops.resize(2);
-  tops[1] = topIn;
+  assert(numTops > 0);
+  tops.resize(numTops);
+  tops.back() = topIn;
 }
 
 

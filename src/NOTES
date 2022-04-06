@@ -1,9 +1,66 @@
-CoverMemory gets a list<CoverRowOld> and fills it directly.
-Maybe coversOld?  (lower-case)
-No more CoverSpec then.
+Perhaps Covers first does the "new" covers.  Then when we prepare
+entire rows, we should be able to find all the same covers that make
+up "old" rows.
+
+0. Maybe do the padding before we do anything else
+   - CoverSpec::getID, the various set methods (ProfilePair)
+   - CoverRowOld: includes just test == size
+ 
+
+1. CoverMemory goes inside Covers
+2. Maybe Cover::set has a version that enters/looks up, and another
+   that only looks up (and must be successful)
+3. In order to use CoverRow directly in CoverMemory, we first need
+   to have Cover's with their additions.  Perhaps we have an add()
+   method that does not keep track of additions and tricksAdded.
+   Each Cover must be kitted out with additions, complexity.
+4. Let's pick CoverMemory::westLength(x)
+   - We already have sumProfile (but should be the padded version)
+   - We'd need to make a ProfilePair and to use the symmFlag
+     (padded, too)
+   - Use #2 above
+   - Then Cover::prepare
+   - The cover would have to be in the Covers list, so actually we
+     don't need to prepare it, we just need to find it based on
+     profile pair and symmFlag, I think.  We could prepare one and
+     compare tricks just to be sure
+   - Then some kind of CoverRow::add
+
+CoverSpec: index, sumProfile, list<Cover>
+  OR'ed together, so a premade row without much distribution information
+  Has a sumProfile of the form (length, empty, top1).
+  The profile pair set e.g. in CoverSpec::westLengthRange has the
+  same form.
+  Cover gets set to be the same.
+
+Cover: productUnitPtr, Tricks, weight, numDist, symmFlag
+
+CoverRow: list<Cover *>, Tricks, numDist, complexity.
+Each Cover lives in Covers, "indexed" by its profile.
+
+CoverRowOld: use list<Cover>, Tricks, index, sumProfile
+
+CoverMemory 
+Starts with list<CoverSpec>
+Makes a row of type CoverRowOld in a list in Covers
+
 CoverRow and CoverRowOld can probably be combined somehow.
 Covers can be split into Covers and CoverSolve; but Solve is not
 really a class with its own memory.  Maybe coverSolve?
+
+Covers is for a given sumProfile.
+sumProfile, rowsOld <CoverRowOld>, covers <Cover>, TableauCache.
+
+So maybe CoverMemory becomes coversManual.
+It gets a method "prepareRows" with similar arguments to 
+CoverMemory::prepareNew, plus a list<CoverRow>.
+This doesn't first make a CoverSpec.  It makes a CoverRow directly.
+Each product is adjusted up by padding lower tops to 0.
+These are stored in ProductMemory (if not already there).
+I guess we could first make the new covers.
+Then these covers should actually be findable in the same list as
+it is pretty exhaustive (duplicates are removed).
+
 
 
 
@@ -28,23 +85,6 @@ so if there's only 1 top at all, shouldn't it go in position 0?
      Probably would have to store each offset and each partition that
      gave rise to that product 
 
-CoverSpec: index, sumProfile, list<ProductPlus>
-  OR'ed together, so a premade row without much distribution information
-
-CoverNew: product, profile[], weight, numDist, simplestOpponent
-  Things we can do to a CoverNew: resize, set, prepare (fill profile etc)
-CoverRow: list<CoverNew *>, tricks[], numDist, complexity
-
-So a CoverNew is a bit similar to a ProductPlus.
-It could get a symmFlag.
-Then CoverSpec could use CoverNew instead.
-
-CoverRowOld: use list<CoverNew *>
-
-Covers:
-sumProfile
-list<Cover>
-list<CoverNew>
 
 
 10 / 53208, QJ65 / - missing HHxxxx

@@ -467,8 +467,8 @@ void DistCore::getCoverData(
   {
     const DistInfo& dist = distributions[i];
 
-    // distProfiles[i].setSingleDeprecated(
     distProfiles[i].setSingle(
+      static_cast<unsigned char>(rankSize),
       static_cast<unsigned char >(dist.west.len),
       static_cast<unsigned char>(dist.west.counts[rankSize-1]));
 
@@ -521,7 +521,12 @@ void DistCore::prepareCovers(
     return;
 
   assert(maxTops >= 1);
-  coverMemory.prepareRows(covers, productMemory, maxLength, maxTops,
+  coverMemory.prepareRows(
+    covers, 
+    productMemory, 
+    maxLength, 
+    maxTops,
+    static_cast<unsigned char>(rankSize),
     distProfilesOld, cases);
 
   covers.sortRows();
