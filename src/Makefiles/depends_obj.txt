@@ -365,6 +365,18 @@ distributions/covers/Covers.obj: strategies/result/Winners.h
 distributions/covers/Covers.obj: strategies/result/Winner.h utils/Card.h
 distributions/covers/Covers.obj: utils/Compare.h utils/Compare.h const.h
 distributions/covers/Covers.obj: utils/Timer.h
+distributions/covers/CoverStore.obj: distributions/covers/CoverStore.h
+distributions/covers/CoverStore.obj: distributions/covers/Cover.h
+distributions/covers/CoverStore.obj: distributions/covers/Product.h
+distributions/covers/CoverStore.obj: distributions/covers/Length.h
+distributions/covers/CoverStore.obj: distributions/covers/Term.h
+distributions/covers/CoverStore.obj: distributions/covers/CoverHelp.h
+distributions/covers/CoverStore.obj: utils/table.h distributions/covers/Top.h
+distributions/covers/CoverStore.obj: distributions/covers/ProductMemory.h
+distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
+distributions/covers/CoverStore.obj: distributions/covers/Profile.h
+distributions/covers/CoverStore.obj: distributions/covers/ProfilePair.h
+distributions/covers/CoverStore.obj: distributions/covers/RunningBounds.h
 distributions/covers/Term.obj: distributions/covers/Term.h
 distributions/covers/Term.obj: distributions/covers/CoverHelp.h utils/table.h
 distributions/covers/Term.obj: distributions/covers/TermCompare.h const.h

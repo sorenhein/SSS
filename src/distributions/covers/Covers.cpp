@@ -245,7 +245,8 @@ const unsigned sizeOld = covers.size();
   timersStrat[24].start();
   covers.sort([](const Cover& cover1, const Cover& cover2)
   {
-    return cover1.earlier(cover2);
+    return (cover1 < cover2);
+    // return cover1.earlier(cover2);
   });
   timersStrat[24].stop();
 

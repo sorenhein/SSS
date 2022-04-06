@@ -37,6 +37,8 @@ class Cover
 
     bool symmFlag;
 
+    unsigned long long code;
+
 
   public:
 
@@ -64,7 +66,7 @@ class Cover
 
     CoverState explain(Tricks& tricksSeen) const;
 
-    bool earlier(const Cover& cover2) const;
+    bool operator < (const Cover& cover2) const;
 
     bool sameWeight(const Cover& covers2) const;
 

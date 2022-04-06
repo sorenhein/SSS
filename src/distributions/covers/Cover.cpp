@@ -38,9 +38,11 @@ void Cover::set(
   const ProfilePair& profilePair,
   const bool symmFlagIn)
 {
+  productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+
   symmFlag = symmFlagIn;
 
-  productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+  code = profilePair.getCode(sumProfile);
 }
 
 
@@ -86,7 +88,7 @@ CoverState Cover::explain(Tricks& tricksSeen) const
 }
 
 
-bool Cover::earlier(const Cover& cover2) const
+bool Cover::operator < (const Cover& cover2) const
 {
   // TODO Some of the methods called do real work, so we could cache
   // their results.
@@ -120,7 +122,8 @@ bool Cover::earlier(const Cover& cover2) const
     /// Narrower covers
     return true;
   else
-    return false;
+    return (code < cover2.code);
+    // return false;
 }
 
 
