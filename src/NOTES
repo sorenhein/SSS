@@ -1,3 +1,8 @@
+In CoverStore maybe we can emplace the cover directly?
+We'd need a cover constructor with those arguments.
+https://en.cppreference.com/w/cpp/container/map/emplace
+Also need auto-prune in CoverStore
+
 Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make
 up "old" rows.

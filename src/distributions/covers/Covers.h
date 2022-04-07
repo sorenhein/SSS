@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 
+#include "CoverStore.h"
 #include "CoverRowOld.h"
 #include "ProfilePair.h"
 #include "TableauCache.h"
@@ -37,6 +38,7 @@ class Covers
     list<CoverRowOld> rowsOld;
 
     list<Cover> covers;
+    CoverStore store;
 
     TableauCache tableauCache;
 
@@ -58,15 +60,6 @@ class Covers
     Covers();
 
     void reset();
-
-    /*
-    void prepare(
-      const CoverMemory& coverMemory,
-      const unsigned char maxLength,
-      const unsigned char maxTops,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-      */
 
     void prepareRow(
       const CoverSpec& coverSpec,

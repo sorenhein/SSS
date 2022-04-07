@@ -39,14 +39,47 @@ void CoverStore::add(
   const vector<unsigned char>& cases)
 {
   // Make a Cover.
+  // TODO May be able to use emplace?
   Cover cover;
   cover.set(productMemory, sumProfile, productPair, symmFlag);
 
   // Make its tricks and counts.
   cover.prepare(distProfiles, cases);
+  if (cover.empty() || cover.full())
+    return;
 
   // Store it in "store".
-  store[cover] = 1;
+  auto result = store.insert(cover);
+  assert(result.first != store.end());
+
+  // The tricks should be unique.  First check towards the end.
+  // There can be at most one duplicate.
+  auto itForward = result.first;
+  while (++itForward != store.end())
+  {
+    if (! result.first->sameWeight(* itForward))
+      break;
+
+    if (result.first->sameTricks(* itForward))
+    {
+      store.erase(itForward);
+      return;
+    }
+  }
+
+  auto itBackward = result.first;
+  while (itBackward != store.begin())
+  {
+    itBackward--;
+    if (! result.first->sameWeight(* itBackward))
+      return;
+
+    if (result.first->sameTricks(* itBackward))
+    {
+      store.erase(result.first);
+      return;
+    }
+  }
 }
 
 
@@ -65,18 +98,24 @@ const Cover& CoverStore::lookup(
   if (it == store.end())
     assert(false);
 
-  return it->first;
+  return * it;
 }
 
 
-map<Cover, unsigned>::const_iterator CoverStore::begin() const
+set<Cover>::const_iterator CoverStore::begin() const
 {
   return store.begin();
 }
 
 
-map<Cover, unsigned>::const_iterator CoverStore::end() const
+set<Cover>::const_iterator CoverStore::end() const
 {
   return store.end();
+}
+
+
+unsigned CoverStore::size() const
+{
+  return store.size();
 }
 

@@ -40,6 +40,7 @@ void Covers::reset()
 {
   rowsOld.clear();
   covers.clear();
+  store.reset();
   tableauCache.reset();
 }
 
@@ -67,40 +68,6 @@ void Covers::sortRows()
     return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
 }
-
-
-/*
-void Covers::prepare(
-  const CoverMemory& coverMemory,
-  const unsigned char maxLengthIn,
-  const unsigned char maxTops,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
-{
-  assert(distProfiles.size() == cases.size());
-  assert(maxLengthIn >= 2);
-  assert(maxTops >= 1);
-
-  rowsOld.resize(coverMemory.size(maxLengthIn, maxTops));
-  auto riter = rowsOld.begin();
-
-  for (auto miter = coverMemory.begin(maxLengthIn, maxTops);
-      miter != coverMemory.end(maxLengthIn, maxTops); miter++)
-  {
-    assert(riter != rowsOld.end());
-    riter->prepare(distProfiles, cases, * miter);
-
-    assert(riter->getWeight() != 0);
-    riter++;
-  }
-
-  rowsOld.sort([](
-    const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
-  {
-    return (coverRow1.getWeight() >= coverRow2.getWeight());
-  });
-}
-*/
 
 
 void Covers::prune()
@@ -191,6 +158,9 @@ void Covers::prepareNew(
         citer->set(productMemory, sumProfile, * stackIter, false);
         citer++;
 
+        store.add(productMemory, sumProfile, * stackIter, false,
+          distProfiles, cases);
+
         const unsigned char westLow = bounds.lengthWestLow();
         const unsigned char westHigh = bounds.lengthWestHigh();
 
@@ -214,6 +184,9 @@ void Covers::prepareNew(
 
             citer->set(productMemory, sumProfile, * stackIter, false);
             citer++;
+
+            store.add(productMemory, sumProfile, * stackIter, false,
+              distProfiles, cases);
           }
         }
 
@@ -278,6 +251,25 @@ const unsigned sizeMid = covers.size();
     cout << c.strLine(sumProfile);
   cout << "\n";
   */
+  
+  if (covers.size() != store.size())
+  {
+    cout << "Size conflict: " << covers.size() << " vs. " <<
+      store.size() << "\n";
+    cout << "Current covers\n";
+    cout << covers.front().strHeader();
+    for (auto& c: covers)
+      cout << c.strLine(sumProfile);
+    cout << "\n";
+
+    cout << "New covers\n";
+    cout << covers.front().strHeader();
+    for (auto& c: store)
+      cout << c.strLine(sumProfile);
+    cout << "\n";
+
+    assert(false);
+  }
 }
 
 

@@ -10,7 +10,7 @@
 #define SSS_COVERSTORE_H
 
 #include <string>
-#include <map>
+#include <set>
 
 #include "Cover.h"
 
@@ -28,7 +28,7 @@ class CoverStore
 {
   private:
 
-    map<Cover, unsigned> store; // Value is irrelevant
+    set<Cover> store;
 
 
   public:
@@ -51,10 +51,11 @@ class CoverStore
       const ProfilePair& productPair,
       const bool symmFlag) const;
 
-    map<Cover, unsigned>::const_iterator begin() const;
+    set<Cover>::const_iterator begin() const;
 
-    map<Cover, unsigned>::const_iterator end() const;
+    set<Cover>::const_iterator end() const;
 
+    unsigned size() const;
 };
 
 #endif
