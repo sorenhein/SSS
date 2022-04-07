@@ -125,7 +125,7 @@ cout << rowBestPtr->strLines() << "\n";
 
 
 void CoverTableau::attemptExhaustive(
-  list<Cover>::const_iterator& coverIter,
+  set<Cover>::const_iterator& coverIter,
   const unsigned coverNo,
   list<StackTableau>& stack,
   list<CoverTableau>& solutions,

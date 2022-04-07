@@ -10,6 +10,7 @@
 #define SSS_COVERTABLEAU_H
 
 #include <list>
+#include <set>
 #include <vector>
 #include <string>
 
@@ -58,7 +59,7 @@ class CoverTableau
     bool attemptGreedy(const Cover& cover);
 
     void attemptExhaustive(
-      list<Cover>::const_iterator& coverIter,
+      set<Cover>::const_iterator& coverIter,
       const unsigned coverNo,
       list<StackTableau>& stack,
       list<CoverTableau>& solutions,
@@ -88,7 +89,7 @@ struct StackTableau
 {
   CoverTableau tableau;
 
-  list<Cover>::const_iterator coverIter;
+  set<Cover>::const_iterator coverIter;
 
   // May not need this long-term.  May in fact go inside Cover.
   unsigned coverNumber;

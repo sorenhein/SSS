@@ -26,9 +26,6 @@
 #include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
-// TODO Find a more elegant way
-#define COVER_CHUNK_SIZE 40000
-
 
 Covers::Covers()
 {
@@ -39,7 +36,6 @@ Covers::Covers()
 void Covers::reset()
 {
   rowsOld.clear();
-  covers.clear();
   store.reset();
   tableauCache.reset();
 }
@@ -70,30 +66,6 @@ void Covers::sortRows()
 }
 
 
-void Covers::prune()
-{
-  for (auto citer = covers.begin(); citer != covers.end(); )
-  {
-    if (citer->empty() || citer->full())
-    {
-      citer = covers.erase(citer);
-      continue;
-    }
-
-    for (auto citer2 = next(citer); citer2 != covers.end(); )
-    {
-      if (! citer2->sameWeight(* citer))
-        break;
-      else if (citer2->sameTricks(* citer))
-        citer2 = covers.erase(citer2);
-      else
-        citer2++;
-    }
-    citer++;
-  }
-}
-
-
 void Covers::prepareNew(
   ProductMemory& productMemory,
   const vector<Profile>& distProfiles,
@@ -106,9 +78,6 @@ void Covers::prepareNew(
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back(ProfilePair(sumProfile));
 
-  covers.resize(COVER_CHUNK_SIZE);
-
-  auto citer = covers.begin(); // Next one to write
   timersStrat[20].stop();
 
   RunningBounds bounds;
@@ -149,14 +118,9 @@ void Covers::prepareNew(
         if (bounds.busted())
           continue;
 
-        assert(citer != covers.end());
-
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
-
-        citer->set(productMemory, sumProfile, * stackIter, false);
-        citer++;
 
         store.add(productMemory, sumProfile, * stackIter, false,
           distProfiles, cases);
@@ -178,12 +142,7 @@ void Covers::prepareNew(
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
 
-            assert(citer != covers.end());
-
             stackIter->setLength(lLow, lHigh);
-
-            citer->set(productMemory, sumProfile, * stackIter, false);
-            citer++;
 
             store.add(productMemory, sumProfile, * stackIter, false,
               distProfiles, cases);
@@ -201,48 +160,8 @@ void Covers::prepareNew(
   }
   timersStrat[21].stop();
 
-  timersStrat[22].start();
-const unsigned sizeOld = covers.size();
-
-  covers.erase(citer, covers.end());
-  assert(! covers.empty());
-  timersStrat[22].stop();
-
   cout << "Length " << sumProfile.strLine() << "\n";
-
-  timersStrat[23].start();
-  for (auto& c: covers)
-    c.prepare(distProfiles, cases);
-  timersStrat[23].stop();
-
-  timersStrat[24].start();
-  covers.sort([](const Cover& cover1, const Cover& cover2)
-  {
-    return (cover1 < cover2);
-    // return cover1.earlier(cover2);
-  });
-  timersStrat[24].stop();
-
-  /*
-  cout << "Covers before pruning\n";
-  cout << covers.front().strHeader();
-  for (auto& c: covers)
-    cout << c.strLine(sumProfile);
-  cout << "\n";
-  */
-
-  // It is not practical to generate the covers without duplicated
-  // trick vectors in one pass.  So we eliminate the more complex
-  // ways of saying the same thing.  In total across all covers,
-  // go from 354,822 to 225,028, so we need to eliminate about a third.
-
-const unsigned sizeMid = covers.size();
-// cout << "sizeMid " << +sizeMid << endl;
-  timersStrat[25].start();
-  Covers::prune();
-  timersStrat[25].stop();
-  cout << "Used " << sizeOld << " -> " << sizeMid << " -> " <<
-    covers.size() << "\n";
+  cout << "Used " << store.size() << "\n";
 
   /*
   cout << "Covers\n";
@@ -251,25 +170,6 @@ const unsigned sizeMid = covers.size();
     cout << c.strLine(sumProfile);
   cout << "\n";
   */
-  
-  if (covers.size() != store.size())
-  {
-    cout << "Size conflict: " << covers.size() << " vs. " <<
-      store.size() << "\n";
-    cout << "Current covers\n";
-    cout << covers.front().strHeader();
-    for (auto& c: covers)
-      cout << c.strLine(sumProfile);
-    cout << "\n";
-
-    cout << "New covers\n";
-    cout << covers.front().strHeader();
-    for (auto& c: store)
-      cout << c.strLine(sumProfile);
-    cout << "\n";
-
-    assert(false);
-  }
 }
 
 
@@ -342,8 +242,8 @@ void Covers::explainGreedy(
   tableau.setBoundaries(sumProfile);
   tableau.setTricks(tricks, tmin);
 
-  auto citer = covers.begin();
-  while (citer != covers.end())
+  auto citer = store.begin();
+  while (citer != store.end())
   {
 /*
 cout << citer->strHeader();
@@ -415,10 +315,10 @@ void Covers::explainExhaustive(
   stableau.tableau.setBoundaries(sumProfile);
   stableau.tableau.setTricks(tricks, tmin);
 
-  stableau.coverIter = covers.begin();
+  stableau.coverIter = store.begin();
   stableau.coverNumber = 0;
 
-const unsigned coverSize = covers.size();
+const unsigned coverSize = store.size();
 unsigned coverNo;
 
   list<CoverTableau> solutions;
@@ -468,7 +368,7 @@ cout <<
 
     if (solutions.empty() || projected <= lowestComplexity + 1)
     {
-    while (citer != covers.end())
+    while (citer != store.end())
     {
       if (citer->getTopSize() > numStrategyTops)
       {

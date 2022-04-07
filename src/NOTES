@@ -1,3 +1,5 @@
+Time CoverStore vs rest of prepareNew
+
 In CoverStore maybe we can emplace the cover directly?
 We'd need a cover constructor with those arguments.
 https://en.cppreference.com/w/cpp/container/map/emplace

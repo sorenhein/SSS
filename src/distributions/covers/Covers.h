@@ -37,7 +37,6 @@ class Covers
 
     list<CoverRowOld> rowsOld;
 
-    list<Cover> covers;
     CoverStore store;
 
     TableauCache tableauCache;
