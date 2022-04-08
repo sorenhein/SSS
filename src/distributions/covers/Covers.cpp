@@ -230,12 +230,15 @@ CoverState Covers::explain(
     }
     else if (state == COVER_OPEN)
     {
+      // cout << "Inserting\n" << iter->str() << "\n";
+      // cout << iter->strProfile() << "\n";
+      // cout << Covers::strDebug("Inserted", tricks);
       resExpl.insert(* iter);
       continue;
     }
     else
     {
-      // cout << iter->str() << "\n";
+      // cout << "Not using\n" << iter->str() << "\n";
       // cout << iter->strProfile() << "\n";
       // cout << Covers::strDebug("Could not use", tricks);
       iter++;

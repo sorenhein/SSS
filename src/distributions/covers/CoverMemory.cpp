@@ -80,19 +80,6 @@ CoverSpec& CoverMemory::addOrExtend(const CoverControl ctrl)
   if (ctrl == COVER_ADD)
   {
     return CoverMemory::add();
-
-    /*
-    // Add
-    covers.emplace_back(CoverSpec());
-    CoverSpec& spec = covers.back();
-    spec.setID(
-      coverGlobal.numTops,
-      coverGlobal.cards, 
-      coverGlobal.tops1);
-    spec.setIndex(covers.size() - 1);
-
-    return spec;
-    */
   }
   else
   {
@@ -373,50 +360,36 @@ void CoverMemory::prepare_4_2()
   CoverMemory::WestGeneralAnd(3, 3, 2, 2); // 23. HHx with West
 
   // 24. West has exactly one top, or the suit splits 2=2.
-  // CoverMemory::WestLength(2);
-  // CoverMemory::WestTop1(1, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 1, 1,  // WestTop1(1)
     2, 2, 0, 2); // WestLength(2)
 
   // 25. West has both tops, or the suit splits 2=2.
-  // CoverMemory::WestLength(2);
-  // CoverMemory::WestTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 2, 2,  // WestTop1(2)
     2, 2, 0, 2); // WestLength(2)
 
   // 26. East has exactly one top, or the suit splits 2=2.
-  // CoverMemory::EastTop1(1);
-  // CoverMemory::EastLength(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 1, 1,  // EastTop1(1)
     2, 2, 0, 2); // EastLength(2)
 
   // 27. East has both tops, or the suit splits 2=2.
-  // CoverMemory::EastTop1(2);
-  // CoverMemory::EastLength(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 0, 0,  // EastTop1(2)
     2, 2, 0, 2); // EastLength(2)
 
   // 28. West has both tops, or West has H, Hx, HH.
-  // CoverMemory::WestGeneralAnd(1, 2, 1, 2);
-  // CoverMemory::WestTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 2, 2,  // WestTop1(2)
     1, 2, 1, 2); // WestGeneralAnd(1, 2, 1, 2)
 
   // 29. East has both tops, or East has H, Hx, HH.
-  // CoverMemory::EastGeneralAnd(1, 2, 1, 2);
-  // CoverMemory::EastTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 0, 0,  // EastTop1(2)
     2, 3, 0, 1); // EastGeneralAnd(1, 2, 1, 2)
 
   // 30. East has at most 2 cards, or East has the tops.
-  // CoverMemory::EastLengthRange(0, 2);
-  // CoverMemory::EastTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 4, 0, 0,  // EastTop1(2)
     2, 4, 0, 2); // EastLengthRange(0, 2)
@@ -477,8 +450,6 @@ void CoverMemory::prepare_5_1()
   CoverMemory::EastGeneralAnd(4, 5, 1, 1); // 20. Hxxx(x) with East
 
   // X. 2=3, 3=2 or East has the top.
-  // CoverMemory::WestLengthRange(2, 3);
-  // CoverMemory::EastTop1(1, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 5, 0, 0,  // EastTop1(1)
     2, 3, 0, 1); // WestLengthRange(2, 3)
@@ -537,15 +508,11 @@ void CoverMemory::prepare_5_2()
   CoverMemory::WestGeneralAnd(2, 3, 2, 2); // 25. HH, HHx with West
 
   // 29. 3-2 either way, or West has both H's.
-  // CoverMemory::WestLengthRange(2, 3);
-  // CoverMemory::WestTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 5, 2, 2,  // WestTop1(2)
     2, 3, 0, 2); // WestLengthRange(2, 3)
 
   // 29. 3-2 either way, or East has both H's.
-  // CoverMemory::EastLengthRange(2, 3);
-  // CoverMemory::EastTop1(2, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 5, 0, 0,  // EastTop1(2)
     2, 3, 0, 2); // EastLengthRange(2, 3)
@@ -567,29 +534,15 @@ void CoverMemory::prepare_5_3()
 
   CoverMemory::WestGeneralAnd(1, 1, 0, 0); // 8. x with West
 
+  CoverMemory::WestGeneralAnd(1, 1, 1, 1); // 7. H with West
+
   CoverMemory::EastGeneralAnd(1, 1, 1, 1); // 7. H with East
+
+  CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 7. H with either
 
   CoverMemory::WestGeneralAnd(4, 4, 3, 3); // 8. HHHx / x
 
   CoverMemory::EastGeneralAnd(3, 3, 3, 3); // 7. HHH with East
-
-  // 9. 2=3, 3=2 or singleton H either way
-  CoverMemory::WestLengthRange(2, 3);
-  CoverMemory::SymmGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
-
-  // 10. 2=3, 3=2 or singleton H with West
-  // CoverMemory::WestLengthRange(2, 3);
-  // CoverMemory::WestGeneralAnd(1, 1, 1, 1, COVER_EXTEND);
-  CoverMemory::WestGeneralTwo(
-    1, 1, 1, 1,  // WestGeneralAnd(1, 1, 1, 1)
-    2, 3, 0, 3); // WestLengthRange(2, 3)
-
-  // 11. 2=3, 3=2 or West has both tops.
-  // CoverMemory::WestLengthRange(2, 3);
-  // CoverMemory::WestTop1(2, COVER_EXTEND);
-  CoverMemory::WestGeneralTwo(
-    0, 5, 2, 2,  // WestTop1(2)
-    2, 3, 0, 3); // WestLengthRange(2, 3)
 }
 
 
@@ -680,8 +633,6 @@ void CoverMemory::prepare_6_3()
   CoverMemory::EastGeneralAnd(3, 3, 1, 3); // 7. 3=3, 1+ H with East
 
   // 8. 2=4 or singleton top
-  // CoverMemory::WestLengthRange(2, 4);
-  // CoverMemory::WestTop1(3, COVER_EXTEND);
   CoverMemory::WestGeneralTwo(
     0, 6, 3, 3,  // WestTop1(3)
     2, 4, 0, 3); // WestLengthRange(2, 4)
