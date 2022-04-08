@@ -33,6 +33,8 @@ class CoverMemory
 
 
     // Uses global counters for more succinct notation
+    CoverSpec& add();
+
     CoverSpec& addOrExtend(const CoverControl ctrl);
 
     // ----- Pure length methods -----
@@ -97,6 +99,16 @@ class CoverMemory
       const unsigned char lowerTopsIncl,
       const unsigned char upperTopsIncl,
       const CoverControl ctrl = COVER_ADD);
+
+    void WestGeneralTwo(
+      const unsigned char lowerCardsIncl1,
+      const unsigned char upperCardsIncl1,
+      const unsigned char lowerTopsIncl1,
+      const unsigned char upperTopsIncl1,
+      const unsigned char lowerCardsIncl2,
+      const unsigned char upperCardsIncl2,
+      const unsigned char lowerTopsIncl2,
+      const unsigned char upperTopsIncl2);
 
     // ----- Length OR top-1 methods -----
 
