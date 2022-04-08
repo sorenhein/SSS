@@ -72,36 +72,10 @@ class CoverSpec
 
     unsigned getIndex() const;
 
-    void westLength(
-      ProductMemory& productMemory,
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
-
-    void eastLength(
-      ProductMemory& productMemory,
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
-
     void westLengthRange(
       ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
-
-    void eastLengthRange(
-      ProductMemory& productMemory,
-      const unsigned char len1,
-      const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
-
-    void westTop1(
-      ProductMemory& productMemory,
-      const unsigned char tops,
-      const CoverControl ctrl = COVER_ADD);
-
-    void eastTop1(
-      ProductMemory& productMemory,
-      const unsigned char tops,
       const CoverControl ctrl = COVER_ADD);
 
     void westTop1Range(
@@ -110,22 +84,7 @@ class CoverSpec
       const unsigned char tops2,
       const CoverControl ctrl = COVER_ADD);
 
-    void eastTop1Range(
-      ProductMemory& productMemory,
-      const unsigned char tops1,
-      const unsigned char tops2,
-      const CoverControl ctrl = COVER_ADD);
-
     void westGeneral(
-      ProductMemory& productMemory,
-      const unsigned char len1,
-      const unsigned char len2,
-      const unsigned char tops1,
-      const unsigned char tops2,
-      const bool symmFlag = false,
-      const CoverControl ctrl = COVER_ADD);
-
-    void eastGeneral(
       ProductMemory& productMemory,
       const unsigned char len1,
       const unsigned char len2,

@@ -23,9 +23,11 @@
 struct CoverParams
 {
   ProductMemory * memoryPtr;
+  Profile * sumProfilePtr;
   unsigned char cards;
   unsigned char tops1;
   unsigned char numTops;
+  unsigned char index;
 };
 
 CoverParams coverGlobal;
@@ -89,8 +91,7 @@ void CoverMemory::WestLength(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.westLength(* coverGlobal.memoryPtr, len, ctrl);
+  CoverMemory::WestLengthRange(len, len, ctrl);
 }
 
 
@@ -98,8 +99,7 @@ void CoverMemory::EastLength(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.eastLength(* coverGlobal.memoryPtr, len, ctrl);
+  CoverMemory::WestLength(coverGlobal.cards - len, ctrl);
 }
 
 
@@ -118,8 +118,10 @@ void CoverMemory::EastLengthRange(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.eastLengthRange(* coverGlobal.memoryPtr, len1, len2, ctrl);
+  CoverMemory::WestLengthRange(
+    coverGlobal.cards - len2,
+    coverGlobal.cards - len1,
+    ctrl);
 }
 
 
@@ -129,8 +131,7 @@ void CoverMemory::WestTop1(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.westTop1(* coverGlobal.memoryPtr, len, ctrl);
+  CoverMemory::WestTop1Range(len, len, ctrl);
 }
 
 
@@ -138,8 +139,7 @@ void CoverMemory::EastTop1(
   const unsigned char len,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.eastTop1(* coverGlobal.memoryPtr, len, ctrl);
+  CoverMemory::WestTop1(coverGlobal.tops1 - len, ctrl);
 }
 
 
@@ -158,8 +158,10 @@ void CoverMemory::EastTop1Range(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.eastTop1Range(* coverGlobal.memoryPtr, len1, len2, ctrl);
+  CoverMemory::WestTop1Range(
+    coverGlobal.tops1 - len2,
+    coverGlobal.tops1 - len1,
+    ctrl);
 }
 
 // ----- Length AND top-1 -----
@@ -184,9 +186,12 @@ void CoverMemory::EastGeneralAnd(
   const unsigned char upperTopsIncl,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.eastGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, false, ctrl);
+  CoverMemory::WestGeneralAnd(
+    coverGlobal.cards - upperCardsIncl,
+    coverGlobal.cards - lowerCardsIncl,
+    coverGlobal.tops1 - upperTopsIncl,
+    coverGlobal.tops1 - lowerTopsIncl,
+    ctrl);
 }
 
 
@@ -205,7 +210,6 @@ void CoverMemory::SymmGeneralAnd(
 
 void CoverMemory::prepare_2_1()
 {
-  // coverGlobal = {&productMemory, 2, 1};
   CoverMemory::WestLength(1);              // 0. 1-1
   CoverMemory::WestLengthRange(1, 2);      // 1. West is not void
   CoverMemory::WestTop1(1);                // 2. West has the top
@@ -214,15 +218,12 @@ void CoverMemory::prepare_2_1()
 
 void CoverMemory::prepare_2_2()
 {
-  // coverGlobal = {&productMemory, 2, 2};
   CoverMemory::WestLength(1);              // 0. 1-1
 }
 
 
 void CoverMemory::prepare_3_1()
 {
-  // coverGlobal = {&productMemory, 3, 1};
-
   CoverMemory::WestLengthRange(1, 3);      // 0. West is not void
   CoverMemory::WestLengthRange(0, 2);      // 1. East is not void
   CoverMemory::WestLengthRange(1, 2);      // 2. 1=2 or 2=1
@@ -239,7 +240,6 @@ void CoverMemory::prepare_3_1()
 
 void CoverMemory::prepare_3_2()
 {
-  // coverGlobal = {&productMemory, 3, 2};
   CoverMemory::WestLengthRange(1, 3);      // 0. West is not void
   CoverMemory::WestLengthRange(1, 2);      // 1. 1=2 or 2=1
 
@@ -251,14 +251,12 @@ void CoverMemory::prepare_3_2()
 
 void CoverMemory::prepare_3_3()
 {
-  // coverGlobal = {&productMemory, 3, 3};
   CoverMemory::WestLengthRange(1, 2);      // 0. 1=2 or 2=1
 }
 
 
 void CoverMemory::prepare_4_1()
 {
-  // coverGlobal = {&productMemory, 4, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLength(2);              // 2. 2=2
@@ -291,7 +289,6 @@ void CoverMemory::prepare_4_1()
 
 void CoverMemory::prepare_4_2()
 {
-  // coverGlobal = {&productMemory, 4, 2};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::EastLength(1);              // 1. East has any singleton
@@ -363,7 +360,6 @@ void CoverMemory::prepare_4_2()
 
 void CoverMemory::prepare_4_3()
 {
-  // coverGlobal = {&productMemory, 4, 3};
   CoverMemory::WestLength(2);              // 0. 2=2
   CoverMemory::WestLengthRange(1, 3);      // 1. 1=3, 2=2 or 3=1
   CoverMemory::WestLengthRange(1, 4);      // 2. West is not void
@@ -377,7 +373,6 @@ void CoverMemory::prepare_4_3()
 
 void CoverMemory::prepare_4_4()
 {
-  // coverGlobal = {&productMemory, 4, 4};
   CoverMemory::WestLength(2);              // 0. 2=2
   CoverMemory::WestLengthRange(1, 3);      // 1. 1=3, 2=2 or 3=1
 }
@@ -385,7 +380,6 @@ void CoverMemory::prepare_4_4()
 
 void CoverMemory::prepare_5_1()
 {
-  // coverGlobal = {&productMemory, 5, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(0, 4);      // 2. East is not void
@@ -426,7 +420,6 @@ void CoverMemory::prepare_5_1()
 
 void CoverMemory::prepare_5_2()
 {
-  // coverGlobal = {&productMemory, 5, 2};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(0, 3);      // 2. 0=5, 1=4, 2=3 or 3=2
@@ -488,7 +481,6 @@ void CoverMemory::prepare_5_2()
 
 void CoverMemory::prepare_5_3()
 {
-  // coverGlobal = {&productMemory, 5, 3};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLengthRange(1, 4);      // 2. 1=4, 2=3, 3=2 or 4=1
@@ -524,7 +516,6 @@ void CoverMemory::prepare_5_3()
 
 void CoverMemory::prepare_5_4()
 {
-  // coverGlobal = {&productMemory, 5, 4};
   CoverMemory::WestLengthRange(1, 5);      // 0. East is not void
   CoverMemory::WestLengthRange(2, 3);      // 1. 2=3 or 3=2
   CoverMemory::WestLengthRange(1, 4);      // 2. 1=4, 2=3, 3=2 or 4=1
@@ -533,7 +524,6 @@ void CoverMemory::prepare_5_4()
 
 void CoverMemory::prepare_5_5()
 {
-  // coverGlobal = {&productMemory, 5, 5};
   CoverMemory::WestLengthRange(2, 3);      // 0. 2=3 or 3=2
   CoverMemory::WestLengthRange(1, 4);      // 1. 1=4, 2=3, 3=2 or 4=1
 }
@@ -541,7 +531,6 @@ void CoverMemory::prepare_5_5()
 
 void CoverMemory::prepare_6_1()
 {
-  // coverGlobal = {&productMemory, 6, 1};
   CoverMemory::WestLength(0);              // 0. West is void
   CoverMemory::EastLength(0);              // 1. East is void
   CoverMemory::WestLength(3);              // 2. 3=3
@@ -566,7 +555,6 @@ void CoverMemory::prepare_6_1()
 
 void CoverMemory::prepare_6_2()
 {
-  // coverGlobal = {&productMemory, 6, 2};
   CoverMemory::EastLength(0);              // 0. West is void
   CoverMemory::WestLength(0);              // 1. West is void
   CoverMemory::WestLength(3);              // 2. 3=3
@@ -599,7 +587,6 @@ void CoverMemory::prepare_6_2()
 
 void CoverMemory::prepare_6_3()
 {
-  // coverGlobal = {&productMemory, 6, 3};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -621,7 +608,6 @@ void CoverMemory::prepare_6_3()
 
 void CoverMemory::prepare_6_4()
 {
-  // coverGlobal = {&productMemory, 6, 4};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -631,7 +617,6 @@ void CoverMemory::prepare_6_4()
 
 void CoverMemory::prepare_6_5()
 {
-  // coverGlobal = {&productMemory, 6, 5};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 }
@@ -639,7 +624,6 @@ void CoverMemory::prepare_6_5()
 
 void CoverMemory::prepare_6_6()
 {
-  // coverGlobal = {&productMemory, 6, 6};
   CoverMemory::WestLength(3);              // 0. 3=3
   CoverMemory::WestLengthRange(2, 4);      // 1. 2=4, 3=3 or 4=2
 }
@@ -647,7 +631,6 @@ void CoverMemory::prepare_6_6()
 
 void CoverMemory::prepare_7_1()
 {
-  // coverGlobal = {&productMemory, 7, 1};
   CoverMemory::WestTop1(1);                // 0. West has the top
 
   CoverMemory::WestGeneralAnd(1, 2, 1, 1); // 1. H(x) with West
@@ -660,7 +643,6 @@ void CoverMemory::prepare_7_1()
 
 void CoverMemory::prepare_7_2()
 {
-  // coverGlobal = {&productMemory, 7, 2};
   CoverMemory::WestTop1(2);                // 0. West has the tops
 
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 1. H singleton
@@ -678,7 +660,6 @@ void CoverMemory::prepare_7_2()
 
 void CoverMemory::prepare_7_3()
 {
-  // coverGlobal = {&productMemory, 7, 3};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. HH singleton either side
   CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // 1. HH doubleton either side
   CoverMemory::SymmGeneralAnd(3, 3, 3, 3); // 2. HHH tripleton either side
@@ -687,7 +668,6 @@ void CoverMemory::prepare_7_3()
 
 void CoverMemory::prepare_8_1()
 {
-  // coverGlobal = {&productMemory, 8, 1};
   CoverMemory::WestTop1(1);                // 0. West has the top
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 1. H singleton either side
   CoverMemory::SymmGeneralAnd(1, 2, 1, 1); // 2. H(x) either side
@@ -696,7 +676,6 @@ void CoverMemory::prepare_8_1()
 
 void CoverMemory::prepare_8_2()
 {
-  // coverGlobal = {&productMemory, 8, 2};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. H singleton either side
   CoverMemory::SymmGeneralAnd(2, 2, 2, 2); // 1. HH doubleton either side
 }
@@ -704,7 +683,6 @@ void CoverMemory::prepare_8_2()
 
 void CoverMemory::prepare_9_1()
 {
-  // coverGlobal = {&productMemory, 9, 1};
   CoverMemory::SymmGeneralAnd(1, 1, 1, 1); // 0. H singleton either side
 }
 
@@ -824,7 +802,10 @@ void CoverMemory::prepareRows(
 
   specs.clear();
 
-  coverGlobal = {&productMemory, maxLength, maxTops, numTops};
+  Profile sumProfile;
+  sumProfile.setSingle(numTops, maxLength, maxTops);
+
+  coverGlobal = {&productMemory, &sumProfile, maxLength, maxTops, numTops, 0};
 
   CoverMemory::prepare(maxLength, maxTops);
 
