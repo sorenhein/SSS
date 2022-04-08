@@ -35,8 +35,6 @@ class CoverMemory
     // Uses global counters for more succinct notation
     CoverSpec& add();
 
-    CoverSpec& addOrExtend(const CoverControl ctrl);
-
     // ----- Pure length methods -----
 
     void WestLength(

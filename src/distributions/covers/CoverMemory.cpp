@@ -73,23 +73,6 @@ CoverSpec& CoverMemory::add()
 }
 
 
-CoverSpec& CoverMemory::addOrExtend(const CoverControl ctrl)
-{
-  auto& covers = specs;
-
-  if (ctrl == COVER_ADD)
-  {
-    return CoverMemory::add();
-  }
-  else
-  {
-    // Extend
-    return covers.back();
-  }
-}
-
-
-
 // ----- Length only -----
 
 void CoverMemory::WestLength(
@@ -113,8 +96,39 @@ void CoverMemory::WestLengthRange(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.westLengthRange(* coverGlobal.memoryPtr, len1, len2, ctrl);
+  CoverMemory::WestGeneralAnd(
+    len1, len2, 0, coverGlobal.tops1, ctrl);
+  // CoverSpec& spec = CoverMemory::add();
+  // spec.westLengthRange(* coverGlobal.memoryPtr, len1, len2, ctrl);
+
+  /*
+  const unsigned char highestTop =
+    static_cast<unsigned char>(coverGlobal.sumProfilePtr->size()-1);
+
+  ProfilePair profilePair(* coverGlobal.sumProfilePtr);
+  profilePair.setLength(len1, len2);
+  profilePair.addTop(highestTop, 0,
+    coverGlobal.sumProfilePtr->count(highestTop));
+
+  list<Cover> coverList;
+  coverList.emplace_back(Cover);
+  Cover& cover = coverList.back();
+
+  cover.set(
+    * coverGlobal.productMemoryPtr,
+    * coverGlobal.sumProfilePtr,
+    profilePair,
+    false);
+
+  covers.prepareRowNew(
+    coverList,
+    * coverGlobal.sumProfilePtr,
+    counts[coverGlobal.maxLength][coverGlobal.maxTops],
+    distProfiles, 
+    cases);
+
+  counts[coverGlobal.maxLength][coverGlobal.maxTops]++;
+  */
 }
 
 
@@ -153,8 +167,11 @@ void CoverMemory::WestTop1Range(
   const unsigned char len2,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
-  spec.westTop1Range(* coverGlobal.memoryPtr, len1, len2, ctrl);
+  // CoverSpec& spec = CoverMemory::add();
+  // spec.westTop1Range(* coverGlobal.memoryPtr, len1, len2, ctrl);
+
+  CoverMemory::WestGeneralAnd(
+    0, coverGlobal.cards, len1, len2, ctrl);
 }
 
 
@@ -178,7 +195,7 @@ void CoverMemory::WestGeneralAnd(
   const unsigned char upperTopsIncl,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, false, ctrl);
 }
@@ -207,7 +224,7 @@ void CoverMemory::SymmGeneralAnd(
   const unsigned char upperTopsIncl,
   const CoverControl ctrl)
 {
-  CoverSpec& spec = CoverMemory::addOrExtend(ctrl);
+  CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, true, ctrl);
 }
