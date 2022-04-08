@@ -48,6 +48,27 @@ void CoverRowOld::prepare(
 }
 
 
+void CoverRowOld::prepareNew(
+  const list<Cover>& coverList,
+  const Profile& sumProfileIn,
+  const unsigned indexIn,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  indexInternal = indexIn;
+  sumProfile = sumProfileIn;
+  covers = coverList;
+
+  // Individual covers
+  for (auto& cover: covers)
+    cover.prepare(distProfiles, cases);
+
+  // The whole row
+  // TODO Can't we just OR together the cover's?
+  tricks.prepare(* this, distProfiles, cases, weight, numDist);
+}
+
+
 bool CoverRowOld::includes(const Profile& distProfile) const
 {
   assert(distProfile.size() == sumProfile.size());

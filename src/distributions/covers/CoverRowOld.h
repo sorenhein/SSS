@@ -51,6 +51,13 @@ class CoverRowOld
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 
+    void prepareNew(
+      const list<Cover>& coverLisdt,
+      const Profile& sumProfileIn,
+      const unsigned indexIn,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+
     bool includes(const Profile& distProfile) const;
 
     CoverState explain(Tricks& tricksSeen) const;

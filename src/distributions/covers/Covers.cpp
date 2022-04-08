@@ -56,6 +56,24 @@ void Covers::prepareRow(
 }
 
 
+void Covers::prepareRowNew(
+  const list<Cover>& coverList,
+  const Profile& sumProfileIn,
+  const unsigned indexIn,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  assert(distProfiles.size() == cases.size());
+
+  rowsOld.emplace_back(CoverRowOld());
+  CoverRowOld& coverRowOld = rowsOld.back();
+  coverRowOld.prepareNew(coverList, sumProfileIn, indexIn,
+    distProfiles, cases);
+
+  assert(coverRowOld.getWeight() != 0);
+}
+
+
 void Covers::sortRows()
 {
   rowsOld.sort([](

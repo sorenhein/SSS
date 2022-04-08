@@ -65,6 +65,13 @@ class Covers
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
+    void prepareRowNew(
+      const list<Cover>& coverLits,
+      const Profile& sumProfile,
+      const unsigned indexIn,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+
     void prepareNew(
       ProductMemory& productMemory,
       const vector<Profile>& distProfiles,
