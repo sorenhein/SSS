@@ -35,6 +35,10 @@ class CoverMemory
     // Uses global counters for more succinct notation
     CoverSpec& add();
 
+    void profilePairToRow(
+      const ProfilePair& profilePair,
+      const bool symmFlag);
+
     // ----- Pure length methods -----
 
     void WestLength(const unsigned char len);

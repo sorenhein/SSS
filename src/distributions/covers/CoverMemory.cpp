@@ -22,8 +22,11 @@
 
 struct CoverParams
 {
+  Covers * coversPtr;
   ProductMemory * memoryPtr;
   Profile * sumProfilePtr;
+  vector<Profile> const * distProfilesPtr;
+  vector<unsigned char> const * casesPtr;
   unsigned char cards;
   unsigned char tops1;
   unsigned char numTops;
@@ -87,43 +90,37 @@ void CoverMemory::EastLength(const unsigned char len)
 }
 
 
+void CoverMemory::profilePairToRow(
+  const ProfilePair& profilePair,
+  const bool symmFlag)
+{
+  list<Cover> coverList;
+  coverList.emplace_back(Cover());
+  Cover& cover = coverList.back();
+
+  cover.set(
+    * coverGlobal.memoryPtr,
+    * coverGlobal.sumProfilePtr,
+    profilePair,
+    symmFlag);
+
+  coverGlobal.coversPtr->prepareRowNew(
+    coverList,
+    * coverGlobal.sumProfilePtr,
+    counts[coverGlobal.cards][coverGlobal.tops1],
+    * coverGlobal.distProfilesPtr, 
+    * coverGlobal.casesPtr);
+
+  counts[coverGlobal.cards][coverGlobal.tops1]++;
+}
+
+
+
 void CoverMemory::WestLengthRange(
   const unsigned char len1,
   const unsigned char len2)
 {
-  CoverMemory::WestGeneralAnd(
-    len1, len2, 0, coverGlobal.tops1);
-  // CoverSpec& spec = CoverMemory::add();
-  // spec.westLengthRange(* coverGlobal.memoryPtr, len1, len2, ctrl);
-
-  /*
-  const unsigned char highestTop =
-    static_cast<unsigned char>(coverGlobal.sumProfilePtr->size()-1);
-
-  ProfilePair profilePair(* coverGlobal.sumProfilePtr);
-  profilePair.setLength(len1, len2);
-  profilePair.addTop(highestTop, 0,
-    coverGlobal.sumProfilePtr->count(highestTop));
-
-  list<Cover> coverList;
-  coverList.emplace_back(Cover);
-  Cover& cover = coverList.back();
-
-  cover.set(
-    * coverGlobal.productMemoryPtr,
-    * coverGlobal.sumProfilePtr,
-    profilePair,
-    false);
-
-  covers.prepareRowNew(
-    coverList,
-    * coverGlobal.sumProfilePtr,
-    counts[coverGlobal.maxLength][coverGlobal.maxTops],
-    distProfiles, 
-    cases);
-
-  counts[coverGlobal.maxLength][coverGlobal.maxTops]++;
-  */
+  CoverMemory::WestGeneralAnd(len1, len2, 0, coverGlobal.tops1);
 }
 
 
@@ -179,6 +176,22 @@ void CoverMemory::WestGeneralAnd(
   CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, false, COVER_ADD);
+
+  /*
+     Make it a ProfilePair list?
+     Pass to profilePairTo..., which makes a Cover list.
+   */
+
+  /*
+  const unsigned char highestTop =
+    static_cast<unsigned char>(coverGlobal.sumProfilePtr->size()-1);
+
+  ProfilePair profilePair(* coverGlobal.sumProfilePtr);
+  profilePair.setLength(lowerCardsIncl, upperCardsIncl);
+  profilePair.addTop(highestTop, lowerTopsIncl, upperTopsIncl);
+
+  CoverMemory::profilePairToRow(profilePair, false);
+  */
 }
 
 
@@ -205,6 +218,17 @@ void CoverMemory::SymmGeneralAnd(
   CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
     lowerTopsIncl, upperTopsIncl, true, COVER_ADD);
+
+  /*
+  const unsigned char highestTop =
+    static_cast<unsigned char>(coverGlobal.sumProfilePtr->size()-1);
+
+  ProfilePair profilePair(* coverGlobal.sumProfilePtr);
+  profilePair.setLength(lowerCardsIncl, upperCardsIncl);
+  profilePair.addTop(highestTop, lowerTopsIncl, upperTopsIncl);
+
+  CoverMemory::profilePairToRow(profilePair, true);
+  */
 }
 
 
@@ -231,6 +255,19 @@ void CoverMemory::WestGeneralTwo(
     lowerTopsIncl2, upperTopsIncl2, 
     false, 
     COVER_EXTEND);
+
+
+  /*
+  const unsigned char highestTop =
+    static_cast<unsigned char>(coverGlobal.sumProfilePtr->size()-1);
+
+  ProfilePair profilePair(* coverGlobal.sumProfilePtr);
+  profilePair.setLength(lowerCardsIncl1, upperCardsIncl1);
+  profilePair.addTop(highestTop, lowerTopsIncl1, upperTopsIncl1);
+
+  CoverMemory::profilePairToRow(profilePair, false);
+  */
+
 }
 
 
@@ -833,7 +870,18 @@ void CoverMemory::prepareRows(
   Profile sumProfile;
   sumProfile.setSingle(numTops, maxLength, maxTops);
 
-  coverGlobal = {&productMemory, &sumProfile, maxLength, maxTops, numTops, 0};
+  coverGlobal = 
+  {
+    &covers,
+    &productMemory, 
+    &sumProfile, 
+    &distProfiles,
+    &cases,
+    maxLength, 
+    maxTops, 
+    numTops, 
+    0
+  };
 
   CoverMemory::prepare(maxLength, maxTops);
 
