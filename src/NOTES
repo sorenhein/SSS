@@ -1,12 +1,17 @@
+CoverMemory:
+Add Covers to CoverParams
+Add method that takes ProfilePair and does the rest
+Set ProfilePair in the three Covers methods,
+  call the new method, no specs anymore
+Covers gets a method that takes a single Cover
+Look up the Cover in CoverStore before passing it to Covers
+No CoverSpec
+
 Time CoverStore vs rest of prepareNew
 In particular perhaps CoverStore::add
 Have a scratch cover?
 Look for reasons to delete existing or not to insert
 before actually inserting?
-
-In CoverStore maybe we can emplace the cover directly?
-We'd need a cover constructor with those arguments.
-https://en.cppreference.com/w/cpp/container/map/emplace
 
 Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make

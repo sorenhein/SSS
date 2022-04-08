@@ -37,43 +37,31 @@ class CoverMemory
 
     // ----- Pure length methods -----
 
-    void WestLength(
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
+    void WestLength(const unsigned char len);
 
-    void EastLength(
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
+    void EastLength(const unsigned char len);
 
     void WestLengthRange(
       const unsigned char len1, 
-      const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char len2);
 
     void EastLengthRange(
       const unsigned char len1, 
-      const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char len2);
 
     // ----- Pure rank-1 methods -----
 
-    void WestTop1(
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
+    void WestTop1(const unsigned char len);
 
-    void EastTop1(
-      const unsigned char len,
-      const CoverControl ctrl = COVER_ADD);
+    void EastTop1(const unsigned char len);
 
     void WestTop1Range(
       const unsigned char len1, 
-      const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char len2);
 
     void EastTop1Range(
       const unsigned char len1, 
-      const unsigned char len2,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char len2);
 
     // ----- Length and top-1 methods -----
 
@@ -81,22 +69,19 @@ class CoverMemory
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char upperTopsIncl);
 
     void EastGeneralAnd(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char upperTopsIncl);
 
     void SymmGeneralAnd(
       const unsigned char lowerCardsIncl,
       const unsigned char upperCardsIncl,
       const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl,
-      const CoverControl ctrl = COVER_ADD);
+      const unsigned char upperTopsIncl);
 
     void WestGeneralTwo(
       const unsigned char lowerCardsIncl1,

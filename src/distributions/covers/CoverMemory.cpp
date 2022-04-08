@@ -75,29 +75,24 @@ CoverSpec& CoverMemory::add()
 
 // ----- Length only -----
 
-void CoverMemory::WestLength(
-  const unsigned char len,
-  const CoverControl ctrl)
+void CoverMemory::WestLength(const unsigned char len)
 {
-  CoverMemory::WestLengthRange(len, len, ctrl);
+  CoverMemory::WestLengthRange(len, len);
 }
 
 
-void CoverMemory::EastLength(
-  const unsigned char len,
-  const CoverControl ctrl)
+void CoverMemory::EastLength(const unsigned char len)
 {
-  CoverMemory::WestLength(coverGlobal.cards - len, ctrl);
+  CoverMemory::WestLength(coverGlobal.cards - len);
 }
 
 
 void CoverMemory::WestLengthRange(
   const unsigned char len1,
-  const unsigned char len2,
-  const CoverControl ctrl)
+  const unsigned char len2)
 {
   CoverMemory::WestGeneralAnd(
-    len1, len2, 0, coverGlobal.tops1, ctrl);
+    len1, len2, 0, coverGlobal.tops1);
   // CoverSpec& spec = CoverMemory::add();
   // spec.westLengthRange(* coverGlobal.memoryPtr, len1, len2, ctrl);
 
@@ -134,56 +129,43 @@ void CoverMemory::WestLengthRange(
 
 void CoverMemory::EastLengthRange(
   const unsigned char len1,
-  const unsigned char len2,
-  const CoverControl ctrl)
+  const unsigned char len2)
 {
   CoverMemory::WestLengthRange(
     coverGlobal.cards - len2,
-    coverGlobal.cards - len1,
-    ctrl);
+    coverGlobal.cards - len1);
 }
 
 
 // ----- Top-1 only -----
 
-void CoverMemory::WestTop1(
-  const unsigned char len,
-  const CoverControl ctrl)
+void CoverMemory::WestTop1(const unsigned char len)
 {
-  CoverMemory::WestTop1Range(len, len, ctrl);
+  CoverMemory::WestTop1Range(len, len);
 }
 
 
-void CoverMemory::EastTop1(
-  const unsigned char len,
-  const CoverControl ctrl)
+void CoverMemory::EastTop1(const unsigned char len)
 {
-  CoverMemory::WestTop1(coverGlobal.tops1 - len, ctrl);
+  CoverMemory::WestTop1(coverGlobal.tops1 - len);
 }
 
 
 void CoverMemory::WestTop1Range(
   const unsigned char len1,
-  const unsigned char len2,
-  const CoverControl ctrl)
+  const unsigned char len2)
 {
-  // CoverSpec& spec = CoverMemory::add();
-  // spec.westTop1Range(* coverGlobal.memoryPtr, len1, len2, ctrl);
-
-  CoverMemory::WestGeneralAnd(
-    0, coverGlobal.cards, len1, len2, ctrl);
+  CoverMemory::WestGeneralAnd(0, coverGlobal.cards, len1, len2);
 }
 
 
 void CoverMemory::EastTop1Range(
   const unsigned char len1,
-  const unsigned char len2,
-  const CoverControl ctrl)
+  const unsigned char len2)
 {
   CoverMemory::WestTop1Range(
     coverGlobal.tops1 - len2,
-    coverGlobal.tops1 - len1,
-    ctrl);
+    coverGlobal.tops1 - len1);
 }
 
 // ----- Length AND top-1 -----
@@ -192,12 +174,11 @@ void CoverMemory::WestGeneralAnd(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl,
-  const CoverControl ctrl)
+  const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, false, ctrl);
+    lowerTopsIncl, upperTopsIncl, false, COVER_ADD);
 }
 
 
@@ -205,15 +186,13 @@ void CoverMemory::EastGeneralAnd(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl,
-  const CoverControl ctrl)
+  const unsigned char upperTopsIncl)
 {
   CoverMemory::WestGeneralAnd(
     coverGlobal.cards - upperCardsIncl,
     coverGlobal.cards - lowerCardsIncl,
     coverGlobal.tops1 - upperTopsIncl,
-    coverGlobal.tops1 - lowerTopsIncl,
-    ctrl);
+    coverGlobal.tops1 - lowerTopsIncl);
 }
 
 
@@ -221,12 +200,11 @@ void CoverMemory::SymmGeneralAnd(
   const unsigned char lowerCardsIncl,
   const unsigned char upperCardsIncl,
   const unsigned char lowerTopsIncl,
-  const unsigned char upperTopsIncl,
-  const CoverControl ctrl)
+  const unsigned char upperTopsIncl)
 {
   CoverSpec& spec = CoverMemory::add();
   spec.westGeneral(* coverGlobal.memoryPtr, lowerCardsIncl, upperCardsIncl,
-    lowerTopsIncl, upperTopsIncl, true, ctrl);
+    lowerTopsIncl, upperTopsIncl, true, COVER_ADD);
 }
 
 
