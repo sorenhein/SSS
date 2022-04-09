@@ -19,6 +19,7 @@
 #include "TableauCache.h"
 
 class CoverMemory;
+class Manual;
 class ProductMemory;
 class CoverTableau;
 class ResExpl;
@@ -65,8 +66,16 @@ class Covers
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
+    void prepareRowMedium(
+      const list<Cover>& coverList,
+      const Profile& sumProfile,
+      const unsigned indexIn,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+
     void prepareRowNew(
-      const list<Cover>& coverLits,
+      ProductMemory& productMemory,
+      const list<ManualData>& manualList,
       const Profile& sumProfile,
       const unsigned indexIn,
       const vector<Profile>& distProfiles,

@@ -83,7 +83,8 @@ void CoverSpec::westLengthRange(
   const unsigned char highestTop =
     static_cast<unsigned char>(sumProfile.size()-1);
 
-  ProfilePair profilePair(sumProfile);
+  ProfilePair profilePair;
+  profilePair.init(sumProfile);
   profilePair.setLength(len1, len2);
   profilePair.addTop(highestTop, 0, sumProfile.count(highestTop));
 
@@ -102,7 +103,8 @@ void CoverSpec::westTop1Range(
   const unsigned char highestTop =
     static_cast<unsigned char>(sumProfile.size()-1);
 
-  ProfilePair profilePair(sumProfile);
+  ProfilePair profilePair;
+  profilePair.init(sumProfile);
   profilePair.setLength(0, sumProfile.getLength());
   profilePair.addTop(highestTop, tops1, tops2);
 
@@ -124,7 +126,8 @@ void CoverSpec::westGeneral(
   const unsigned char highestTop =
     static_cast<unsigned char>(sumProfile.size()-1);
 
-  ProfilePair profilePair(sumProfile);
+  ProfilePair profilePair;
+  profilePair.init(sumProfile);
   profilePair.setLength(len1, len2);
   profilePair.addTop(highestTop, tops1, tops2);
 

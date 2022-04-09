@@ -1,11 +1,12 @@
-CoverMemory:
-Add Covers to CoverParams
-Add method that takes ProfilePair and does the rest
-Set ProfilePair in the three Covers methods,
-  call the new method, no specs anymore
-Covers gets a method that takes a single Cover
-Look up the Cover in CoverStore before passing it to Covers
-No CoverSpec
+See whether CoverMemory works with Manual instead of own code.
+Hollow out CoverMemory.
+Eliminate CoverMemory, move the covers completion somewhere else.
+Remove CoverSpec.
+
+Later we can look up each Cover into a pointer.
+First make the new ones, then all old ones should be there too.
+Then we can probably use CoverRow instead of the old old.
+
 
 Time CoverStore vs rest of prepareNew
 In particular perhaps CoverStore::add
@@ -16,25 +17,6 @@ before actually inserting?
 Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make
 up "old" rows.
-
-1. CoverMemory goes inside Covers
-2. Maybe Cover::set has a version that enters/looks up, and another
-   that only looks up (and must be successful)
-3. In order to use CoverRow directly in CoverMemory, we first need
-   to have Cover's with their additions.  Perhaps we have an add()
-   method that does not keep track of additions and tricksAdded.
-   Each Cover must be kitted out with additions, complexity.
-4. Let's pick CoverMemory::westLength(x)
-   - We already have sumProfile (but should be the padded version)
-   - We'd need to make a ProfilePair and to use the symmFlag
-     (padded, too)
-   - Use #2 above
-   - Then Cover::prepare
-   - The cover would have to be in the Covers list, so actually we
-     don't need to prepare it, we just need to find it based on
-     profile pair and symmFlag, I think.  We could prepare one and
-     compare tricks just to be sure
-   - Then some kind of CoverRow::add
 
 CoverSpec: index, sumProfile, list<Cover>
   OR'ed together, so a premade row without much distribution information
@@ -61,23 +43,8 @@ really a class with its own memory.  Maybe coverSolve?
 Covers is for a given sumProfile.
 sumProfile, rowsOld <CoverRowOld>, covers <Cover>, TableauCache.
 
-So maybe CoverMemory becomes coversManual.
-It gets a method "prepareRows" with similar arguments to 
-CoverMemory::prepareNew, plus a list<CoverRow>.
-This doesn't first make a CoverSpec.  It makes a CoverRow directly.
-Each product is adjusted up by padding lower tops to 0.
-These are stored in ProductMemory (if not already there).
-I guess we could first make the new covers.
-Then these covers should actually be findable in the same list as
-it is pretty exhaustive (duplicates are removed).
-
-
-
 
 Tricks: Optimize into 5-groups
-
-Check that the old CoverMemory stuff with 1 top goes in the right place,
-so if there's only 1 top at all, shouldn't it go in position 0?
 
 3. Make ProductMemory
    - Usage: Not just flat count, but vector of oppsLength,

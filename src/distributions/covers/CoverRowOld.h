@@ -21,6 +21,8 @@
 using namespace std;
 
 class Profile;
+class ProductMemory;
+struct ManualData;
 
 
 class CoverRowOld
@@ -51,8 +53,16 @@ class CoverRowOld
       const vector<unsigned char>& cases,
       const CoverSpec& specIn);
 
+    void prepareMedium(
+      const list<Cover>& coverList,
+      const Profile& sumProfileIn,
+      const unsigned indexIn,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases);
+
     void prepareNew(
-      const list<Cover>& coverLisdt,
+      ProductMemory& productMemory,
+      const list<ManualData>& manualList,
       const Profile& sumProfileIn,
       const unsigned indexIn,
       const vector<Profile>& distProfiles,

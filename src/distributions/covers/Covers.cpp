@@ -56,7 +56,7 @@ void Covers::prepareRow(
 }
 
 
-void Covers::prepareRowNew(
+void Covers::prepareRowMedium(
   const list<Cover>& coverList,
   const Profile& sumProfileIn,
   const unsigned indexIn,
@@ -67,8 +67,32 @@ void Covers::prepareRowNew(
 
   rowsOld.emplace_back(CoverRowOld());
   CoverRowOld& coverRowOld = rowsOld.back();
-  coverRowOld.prepareNew(coverList, sumProfileIn, indexIn,
+  coverRowOld.prepareMedium(coverList, sumProfileIn, indexIn,
     distProfiles, cases);
+
+  assert(coverRowOld.getWeight() != 0);
+}
+
+
+void Covers::prepareRowNew(
+  ProductMemory& productMemory,
+  const list<ManualData>& manualList,
+  const Profile& sumProfileIn,
+  const unsigned indexIn,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  assert(distProfiles.size() == cases.size());
+
+  rowsOld.emplace_back(CoverRowOld());
+  CoverRowOld& coverRowOld = rowsOld.back();
+  coverRowOld.prepareNew(
+    productMemory, 
+    manualList, 
+    sumProfileIn, 
+    indexIn,
+    distProfiles, 
+    cases);
 
   assert(coverRowOld.getWeight() != 0);
 }
@@ -94,7 +118,9 @@ void Covers::prepareNew(
 
   timersStrat[20].start();
   list<ProfilePair> stack; // Unfinished expansions
-  stack.emplace_back(ProfilePair(sumProfile));
+  // stack.emplace_back(ProfilePair(sumProfile));
+  stack.emplace_back();
+  stack.back().init(sumProfile);
 
   timersStrat[20].stop();
 

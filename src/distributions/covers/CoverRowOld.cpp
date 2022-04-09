@@ -13,6 +13,7 @@
 
 #include "CoverRowOld.h"
 #include "Profile.h"
+#include "Manual.h"
 
 
 CoverRowOld::CoverRowOld()
@@ -48,7 +49,7 @@ void CoverRowOld::prepare(
 }
 
 
-void CoverRowOld::prepareNew(
+void CoverRowOld::prepareMedium(
   const list<Cover>& coverList,
   const Profile& sumProfileIn,
   const unsigned indexIn,
@@ -57,11 +58,45 @@ void CoverRowOld::prepareNew(
 {
   indexInternal = indexIn;
   sumProfile = sumProfileIn;
+
   covers = coverList;
 
   // Individual covers
   for (auto& cover: covers)
     cover.prepare(distProfiles, cases);
+
+  // The whole row
+  // TODO Can't we just OR together the cover's?
+  tricks.prepare(* this, distProfiles, cases, weight, numDist);
+}
+
+
+void CoverRowOld::prepareNew(
+  ProductMemory& productMemory,
+  const list<ManualData>& manualList,
+  const Profile& sumProfileIn,
+  const unsigned indexIn,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases)
+{
+  indexInternal = indexIn;
+  sumProfile = sumProfileIn;
+
+  covers.resize(manualList.size());
+
+  auto miter = manualList.begin();
+  auto citer = covers.begin();
+
+  while (miter != manualList.end())
+  {
+    citer->set(
+      productMemory, 
+      sumProfile, 
+      miter->profilePair,
+      miter->symmFlag);
+
+    citer->prepare(distProfiles, cases);
+  }
 
   // The whole row
   // TODO Can't we just OR together the cover's?

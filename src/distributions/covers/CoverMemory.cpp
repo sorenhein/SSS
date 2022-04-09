@@ -11,6 +11,7 @@
 #include "Covers.h"
 
 #include "CoverMemory.h"
+#include "Manual.h"
 #include "ExplStats.h"
 
 #include "Profile.h"
@@ -104,7 +105,7 @@ void CoverMemory::profilePairToRow(
     profilePair,
     symmFlag);
 
-  coverGlobal.coversPtr->prepareRowNew(
+  coverGlobal.coversPtr->prepareRowMedium(
     coverList,
     * coverGlobal.sumProfilePtr,
     counts[coverGlobal.cards][coverGlobal.tops1],
@@ -889,5 +890,24 @@ void CoverMemory::prepareRows(
 
   for (auto& spec: specs)
     covers.prepareRow(spec, distProfiles, cases);
+  
+  /*
+  Manual manual;
+  list<list<ManualData>> manualData;
+  manual.make(maxLength, maxTops, numTops, manualData);
+  counts[maxLength][maxTops] = manualData.size();
+
+  unsigned index = 0;
+  for (auto& manualList: manualData)
+  {
+    covers.prepareRowNew(
+      productMemory,
+      manualList,
+      sumProfile,
+      index++,
+      distProfiles,
+      cases);
+  }
+  */
 }
 

@@ -20,6 +20,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Cover.cpp  \
                 distributions/covers/Covers.cpp \
                 distributions/covers/CoverStore.cpp \
+                distributions/covers/Manual.cpp \
                 distributions/covers/Term.cpp   \
                 distributions/covers/TermCompare.cpp \
                 distributions/covers/Length.cpp \

@@ -31,7 +31,7 @@ class ProfilePair
 
   public:
 
-    ProfilePair(const Profile& sumProfile)
+    void init(const Profile& sumProfile)
     {
       lowerProfile.tops.resize(sumProfile.size(), 0);
       upperProfile = sumProfile;
