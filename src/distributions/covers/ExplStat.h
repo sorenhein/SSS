@@ -27,6 +27,8 @@ class ExplStat
 
     vector<vector<unsigned>> pairs;
 
+    unsigned maxPairIndex;
+
 
     string strLengths() const;
 

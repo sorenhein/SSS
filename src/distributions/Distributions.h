@@ -57,7 +57,7 @@ class Distributions
 
     void resize(const unsigned char maxCardsIn);
 
-    void resizeStats(ExplStats& explStats) const;
+    // void resizeStats(ExplStats& explStats) const;
 
     void runSingle(
       const vector<set<unsigned>>& dependenciesCan,

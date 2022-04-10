@@ -50,7 +50,7 @@ class DistMemory
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
 
-    void resizeStats(ExplStats& explStats) const;
+    // void resizeStats(ExplStats& explStats) const;
 
     void resizeSingle(const vector<set<unsigned>>& dependenciesCan);
 

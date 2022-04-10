@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
     combinations.resize(control.cards());
 
     ExplStats explStats;
-    distributions.resizeStats(explStats);
+    // distributions.resizeStats(explStats);
 
     for (unsigned char cards = 0; cards <= 11; cards++)
     {

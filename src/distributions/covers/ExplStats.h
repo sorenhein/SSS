@@ -25,13 +25,15 @@ class ExplStats
 
     vector<vector<ExplStat>> explStats;
 
+    unsigned char lengthMax;
+    vector<unsigned> topsMax;
+
+    void resize();
+
+
   public:
 
   ExplStats();
-
-  void reset();
-
-  void resize(const vector<vector<unsigned>>& counts);
 
   ExplStat& getEntry(
     const unsigned char lengthIndex,

@@ -13,37 +13,36 @@
 
 #include "ExplStats.h"
 
+#include "../../const.h"
+
+
+// Not very scientific, but enough for the largest one in Manual.
+#define EXPL_STATS_MAX 50
+
 
 ExplStats::ExplStats()
 {
-  ExplStats::reset();
+  ExplStats::resize();
 }
 
 
-void ExplStats::reset()
+void ExplStats::resize()
 {
-  explStats.clear();
-}
+  explStats.resize(MAX_CARDS);
 
-
-void ExplStats::resize(const vector<vector<unsigned>>& counts)
-{
-  // specs is just used for its two dimensions
-
-  const unsigned ssize = counts.size();
-  explStats.resize(ssize);
-
-  for (unsigned s = 0; s < ssize; s++)
+  for (unsigned s = 0; s < MAX_CARDS; s++)
   {
-    const unsigned s2size = counts[s].size();
-    explStats[s].resize(s2size);
+    explStats[s].resize(MAX_CARDS);
 
-    for (unsigned t = 0; t < s2size; t++)
+    for (unsigned t = 0; t < MAX_CARDS; t++)
     {
       ExplStat& explStat = explStats[s][t];
-      explStat.resize(counts[s][t]);
+      explStat.resize(EXPL_STATS_MAX);
     }
   }
+
+  lengthMax = 0;
+  topsMax.resize(MAX_CARDS, 0);
 }
 
 
@@ -53,6 +52,13 @@ ExplStat& ExplStats::getEntry(
 {
   assert(lengthIndex < explStats.size());
   assert(tops1Index < explStats[lengthIndex].size());
+
+  if (lengthIndex > lengthMax)
+    lengthMax = lengthIndex;
+
+  if (tops1Index > topsMax[lengthIndex])
+    topsMax[lengthIndex] = tops1Index;
+
   return explStats[lengthIndex][tops1Index];
 }
 
@@ -61,9 +67,9 @@ string ExplStats::str() const
 {
   stringstream ss;
 
-  for (unsigned length = 2; length < explStats.size(); length++)
+  for (unsigned length = 2; length <= lengthMax; length++)
   {
-    for (unsigned tops1 = 1; tops1 < explStats[length].size(); tops1++)
+    for (unsigned tops1 = 1; tops1 <= topsMax[length]; tops1++)
     {
       const ExplStat& explStat = explStats[length][tops1];
       if (explStat.empty())

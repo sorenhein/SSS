@@ -49,10 +49,12 @@ void Distributions::resize(const unsigned char maxCardsIn)
 }
 
 
+/*
 void Distributions::resizeStats(ExplStats& explStats) const
 {
   distMemory.resizeStats(explStats);
 }
+*/
 
 
 void Distributions::runSingle(

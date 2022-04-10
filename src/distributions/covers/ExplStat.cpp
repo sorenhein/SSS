@@ -25,6 +25,7 @@ void ExplStat::reset()
   lengths.clear();
   singles.clear();
   pairs.clear();
+  maxPairIndex = 0;
 }
 
 
@@ -56,6 +57,10 @@ void ExplStat::incrLengths(const unsigned count)
 void ExplStat::incrSingles(const unsigned index)
 {
   assert(index < singles.size());
+
+  if (index > maxPairIndex)
+    maxPairIndex = index;
+
   singles[index]++;
 }
 
@@ -66,6 +71,11 @@ void ExplStat::incrPairs(
 {
   assert(index1 < pairs.size());
   assert(index2 < pairs.size());
+
+  if (index1 > maxPairIndex)
+    maxPairIndex = index1;
+  if (index2 > maxPairIndex)
+    maxPairIndex = index2;
 
   pairs[index1][index2]++;
   pairs[index2][index1]++;
@@ -106,15 +116,15 @@ string ExplStat::strPairs() const
   ss << "Pairs\n";
 
   ss << setw(3) << "#" << " | ";
-  for (unsigned cno = 0; cno < pairs.size(); cno++)
+  for (unsigned cno = 0; cno <= maxPairIndex; cno++)
     ss << setw(5) << cno;
   ss << " | " << setw(5) << "Sing" << "\n";
-  ss << string(3 + 3 + 5 * pairs.size() + 3 + 5, '-') << "\n";
+  ss << string(3 + 3 + 5 * (maxPairIndex+1) + 3 + 5, '-') << "\n";
 
-  for (unsigned cno = 0; cno < pairs.size(); cno++)
+  for (unsigned cno = 0; cno <= maxPairIndex; cno++)
   {
     ss << setw(3) << cno << " | ";
-    for (unsigned cno2 = 0; cno2 < pairs.size(); cno2++)
+    for (unsigned cno2 = 0; cno2 <= maxPairIndex; cno2++)
     {
       const unsigned v = pairs[cno][cno2];
       ss << setw(5) << (v == 0 ? "-" : to_string(v));

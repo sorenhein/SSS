@@ -78,7 +78,6 @@ void DistMemory::reset()
   distributions.clear();
   uniques.clear();
   usedCounts.clear();
-  // coverMemory.reset();
 }
 
 
@@ -124,8 +123,7 @@ void DistMemory::resize(
       uniques[cards].resize(DIST_UNIQUE_COUNT[cards]);
   }
 
-  // coverMemory.prepare(productMemory, maxCardsIn);
-  coverMemory.resize(maxCardsIn);
+  // coverMemory.resize();
 }
 
 
@@ -143,10 +141,12 @@ void DistMemory::resizeSingle(const vector<set<unsigned>>& dependenciesCan)
 }
 
 
+/*
 void DistMemory::resizeStats(ExplStats& explStats) const
 {
   coverMemory.resizeStats(explStats);
 }
+*/
 
 
 Distribution& DistMemory::addFullMT(

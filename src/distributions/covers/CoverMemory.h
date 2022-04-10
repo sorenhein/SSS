@@ -13,21 +13,13 @@
 
 using namespace std;
 
-class ExplStats;
-
 
 class CoverMemory
 {
   private:
 
-    vector<vector<unsigned>> counts;
-
 
   public:
-
-    void resize(const unsigned char maxCards);
-
-    void resizeStats(ExplStats& explStats) const;
 
     void prepareRows(
       const unsigned char maxLength,
