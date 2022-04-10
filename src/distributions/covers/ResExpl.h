@@ -34,6 +34,8 @@ class ResExpl
   private:
 
     unsigned char tricksMin;
+    unsigned char maxLength;
+    unsigned char maxTops;
 
     list<ExplData> data;
 
@@ -47,7 +49,10 @@ class ResExpl
 
     void reset();
 
-    void setMinimum(const unsigned char tmin);
+    void setParameters(
+      const unsigned char tmin,
+      const unsigned char maxLengthIn,
+      const unsigned char maxTopsIn);
 
     void insert(const CoverRowOld& coverRow);
 

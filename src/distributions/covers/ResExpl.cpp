@@ -29,9 +29,14 @@ void ResExpl::reset()
 }
 
 
-void ResExpl::setMinimum(const unsigned char tmin)
+void ResExpl::setParameters(
+  const unsigned char tmin,
+  const unsigned char maxTricksIn,
+  const unsigned char maxTopsIn)
 {
   tricksMin = tmin;
+  maxLength = maxTricksIn;
+  maxTops = maxTopsIn;
 }
 
 
@@ -117,10 +122,7 @@ void ResExpl::updateStats(ExplStats& explStats) const
   if (data.empty())
     return;
 
-  unsigned char lengthIndex, tops1Index;
-  data.front().coverRowPtr->getID(lengthIndex, tops1Index);
-
-  ExplStat& explStat = explStats.getEntry(lengthIndex, tops1Index);
+  ExplStat& explStat = explStats.getEntry(maxLength, maxTops);
   explStat.incrLengths(data.size());
 
   for (auto iter = data.begin(); iter != data.end(); iter++)
@@ -155,14 +157,11 @@ string ResExpl::str() const
     else
       prefix = "      - ";
 
-    unsigned char length, tops1;
-    ed.coverRowPtr->getID(length, tops1);
+    // unsigned char length, tops1;
+    // ed.coverRowPtr->getID(length, tops1);
 
     ss << prefix <<
       ed.coverRowPtr->str() << "\n";
-      // " [" <<
-      // +ed.numDist << ", " <<
-      // +ed.weight << "]\n";
   }
 
   return ss.str() + "\n";

@@ -61,10 +61,6 @@ class CoverRowOld
 
     bool operator <= (const CoverRowOld& cover2) const;
 
-    void getID(
-      unsigned char& length,
-      unsigned char& tops1) const;
-
     unsigned index() const;
 
     unsigned getWeight() const;

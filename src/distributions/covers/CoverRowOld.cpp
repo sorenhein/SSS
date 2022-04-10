@@ -102,16 +102,6 @@ bool CoverRowOld::operator <= (const CoverRowOld& cover2) const
 }
 
 
-void CoverRowOld::getID(
-  unsigned char& length,
-  unsigned char& tops1) const
-{
-  length = sumProfile.getLength();
-  tops1 = sumProfile.count(
-    static_cast<unsigned char>(sumProfile.size()-1));
-}
-
-
 unsigned CoverRowOld::index() const
 {
   return indexInternal;

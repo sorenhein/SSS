@@ -203,7 +203,10 @@ CoverState Covers::explain(
 
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
-  resExpl.setMinimum(tmin);
+  resExpl.setParameters(
+    tmin,
+    sumProfile.getLength(),
+    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)));
 
   while (true)
   {
