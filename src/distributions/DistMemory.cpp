@@ -78,7 +78,7 @@ void DistMemory::reset()
   distributions.clear();
   uniques.clear();
   usedCounts.clear();
-  coverMemory.reset();
+  // coverMemory.reset();
 }
 
 

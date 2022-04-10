@@ -55,7 +55,6 @@ class Tricks
       unsigned& weight,
       unsigned char& numDist);
 
-    // TODO Shouldn't need CoverSpec longer-term
     void prepare(
       const CoverRowOld& cover,
       const vector<Profile>& distProfiles,

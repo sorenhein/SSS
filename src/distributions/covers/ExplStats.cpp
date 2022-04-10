@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "ExplStats.h"
-#include "CoverSpec.h"
 
 
 ExplStats::ExplStats()

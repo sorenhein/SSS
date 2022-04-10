@@ -112,7 +112,6 @@ void Tricks::prepare(
 
 
 void Tricks::prepare(
-  // const CoverSpec& spec,
   const CoverRowOld& coverRow,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,

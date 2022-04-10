@@ -11,9 +11,6 @@
 
 #include <vector>
 #include <list>
-#include <string>
-
-#include "CoverSpec.h"
 
 using namespace std;
 
@@ -26,123 +23,10 @@ class CoverMemory
 {
   private:
 
-    list<CoverSpec> specs;
-
     vector<vector<unsigned>> counts;
 
 
-
-    // Uses global counters for more succinct notation
-    CoverSpec& add();
-
-    void profilePairToRow(
-      const ProfilePair& profilePair,
-      const bool symmFlag);
-
-    // ----- Pure length methods -----
-
-    void WestLength(const unsigned char len);
-
-    void EastLength(const unsigned char len);
-
-    void WestLengthRange(
-      const unsigned char len1, 
-      const unsigned char len2);
-
-    void EastLengthRange(
-      const unsigned char len1, 
-      const unsigned char len2);
-
-    // ----- Pure rank-1 methods -----
-
-    void WestTop1(const unsigned char len);
-
-    void EastTop1(const unsigned char len);
-
-    void WestTop1Range(
-      const unsigned char len1, 
-      const unsigned char len2);
-
-    void EastTop1Range(
-      const unsigned char len1, 
-      const unsigned char len2);
-
-    // ----- Length and top-1 methods -----
-
-    void WestGeneralAnd(
-      const unsigned char lowerCardsIncl,
-      const unsigned char upperCardsIncl,
-      const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
-
-    void EastGeneralAnd(
-      const unsigned char lowerCardsIncl,
-      const unsigned char upperCardsIncl,
-      const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
-
-    void SymmGeneralAnd(
-      const unsigned char lowerCardsIncl,
-      const unsigned char upperCardsIncl,
-      const unsigned char lowerTopsIncl,
-      const unsigned char upperTopsIncl);
-
-    void WestGeneralTwo(
-      const unsigned char lowerCardsIncl1,
-      const unsigned char upperCardsIncl1,
-      const unsigned char lowerTopsIncl1,
-      const unsigned char upperTopsIncl1,
-      const unsigned char lowerCardsIncl2,
-      const unsigned char upperCardsIncl2,
-      const unsigned char lowerTopsIncl2,
-      const unsigned char upperTopsIncl2);
-
-    // ----- Length OR top-1 methods -----
-
-    void prepare_2_1();
-    void prepare_2_2();
-
-    void prepare_3_1();
-    void prepare_3_2();
-    void prepare_3_3();
-
-    void prepare_4_1();
-    void prepare_4_2();
-    void prepare_4_3();
-    void prepare_4_4();
-
-    void prepare_5_1();
-    void prepare_5_2();
-    void prepare_5_3();
-    void prepare_5_4();
-    void prepare_5_5();
-
-    void prepare_6_1();
-    void prepare_6_2();
-    void prepare_6_3();
-    void prepare_6_4();
-    void prepare_6_5();
-    void prepare_6_6();
-
-    void prepare_7_1();
-    void prepare_7_2();
-    void prepare_7_3();
-
-    void prepare_8_1();
-    void prepare_8_2();
-
-    void prepare_9_1();
-
-    void prepare(
-      const unsigned char maxLength,
-      const unsigned char maxTops);
-
-
   public:
-
-    CoverMemory();
-
-    void reset();
 
     void resize(const unsigned char maxCards);
 

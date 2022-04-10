@@ -96,6 +96,9 @@ void CoverRowOld::prepareNew(
       miter->symmFlag);
 
     citer->prepare(distProfiles, cases);
+
+    miter++;
+    citer++;
   }
 
   // The whole row
