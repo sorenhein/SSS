@@ -17,7 +17,6 @@
 #include "DistCore.h"
 #include "DistMap.h"
 
-#include "covers/CoverMemory.h"
 #include "covers/Manual.h"
 #include "covers/ProductMemory.h"
 
@@ -506,9 +505,7 @@ void DistCore::getCoverDataNew(
 }
 
 
-void DistCore::prepareCovers(
-  CoverMemory& coverMemory, // const again later
-  ProductMemory& productMemory)
+void DistCore::prepareCovers(ProductMemory& productMemory)
 {
   if (distributions.size() == 0)
     return;
@@ -529,9 +526,10 @@ void DistCore::prepareCovers(
   sumProfileNew.setSingle(
     static_cast<unsigned char>(rankSize), maxLength, maxTops);
 
-  coverMemory.prepareRows(
+  Manual manual;
+  manual.make(
     maxLength, 
-    maxTops,
+    maxTops, 
     static_cast<unsigned char>(rankSize),
     manualData);
 

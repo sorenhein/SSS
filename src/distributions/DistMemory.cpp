@@ -122,8 +122,6 @@ void DistMemory::resize(
     if (fullFlag)
       uniques[cards].resize(DIST_UNIQUE_COUNT[cards]);
   }
-
-  // coverMemory.resize();
 }
 
 
@@ -139,14 +137,6 @@ void DistMemory::resizeSingle(const vector<set<unsigned>>& dependenciesCan)
       uniques[cards].resize(num);
   }
 }
-
-
-/*
-void DistMemory::resizeStats(ExplStats& explStats) const
-{
-  coverMemory.resizeStats(explStats);
-}
-*/
 
 
 Distribution& DistMemory::addFullMT(
@@ -180,7 +170,7 @@ Distribution& DistMemory::addFullMT(
     dist.setPtr(&distCore);
     dist.split();
     dist.setLookups();
-    dist.prepareCovers(coverMemory, productMemory);
+    dist.prepareCovers(productMemory);
   }
   else
     dist.setPtr(distributions[distID.cards][distID.holding]);
@@ -217,7 +207,7 @@ void DistMemory::addCanonicalMT(
   dist.setPtr(&distCore);
   dist.split();
   dist.setLookups();
-  dist.prepareCovers(coverMemory, productMemory);
+  dist.prepareCovers(productMemory);
 }
 
 

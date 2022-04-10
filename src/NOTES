@@ -1,8 +1,3 @@
-See whether CoverMemory works with Manual instead of own code.
-Hollow out CoverMemory.
-Eliminate CoverMemory, move the covers completion somewhere else.
-Remove CoverSpec.
-
 Later we can look up each Cover into a pointer.
 First make the new ones, then all old ones should be there too.
 Then we can probably use CoverRow instead of the old old.
@@ -18,30 +13,15 @@ Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make
 up "old" rows.
 
-CoverSpec: index, sumProfile, list<Cover>
-  OR'ed together, so a premade row without much distribution information
-  Has a sumProfile of the form (length, empty, top1).
-  The profile pair set e.g. in CoverSpec::westLengthRange has the
-  same form.
-  Cover gets set to be the same.
-
-Cover: productUnitPtr, Tricks, weight, numDist, symmFlag
-
 CoverRow: list<Cover *>, Tricks, numDist, complexity.
 Each Cover lives in Covers, "indexed" by its profile.
 
 CoverRowOld: use list<Cover>, Tricks, index, sumProfile
 
-CoverMemory 
-Starts with list<CoverSpec>
-Makes a row of type CoverRowOld in a list in Covers
-
 CoverRow and CoverRowOld can probably be combined somehow.
 Covers can be split into Covers and CoverSolve; but Solve is not
 really a class with its own memory.  Maybe coverSolve?
 
-Covers is for a given sumProfile.
-sumProfile, rowsOld <CoverRowOld>, covers <Cover>, TableauCache.
 
 
 Tricks: Optimize into 5-groups
