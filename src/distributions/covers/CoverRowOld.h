@@ -13,14 +13,13 @@
 #include <string>
 
 #include "Tricks.h"
-#include "CoverSpec.h"
 #include "Cover.h"
+#include "Profile.h"
 #include "CoverHelp.h"
 
 
 using namespace std;
 
-class Profile;
 class ProductMemory;
 struct ManualData;
 
@@ -47,11 +46,6 @@ class CoverRowOld
     CoverRowOld();
 
     void reset();
-
-    void prepare(
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases,
-      const CoverSpec& specIn);
 
     void prepareMedium(
       const list<Cover>& coverList,

@@ -30,25 +30,6 @@ void CoverRowOld::reset()
 }
 
 
-void CoverRowOld::prepare(
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases,
-  const CoverSpec& specIn)
-{
-  indexInternal = specIn.index;
-  sumProfile = specIn.sumProfile;
-  covers = specIn.setsWest;
-
-  // Individual covers
-  for (auto& cover: covers)
-    cover.prepare(distProfiles, cases);
-
-  // The whole row
-  // TODO Can't we just OR together the cover's?
-  tricks.prepare(* this, distProfiles, cases, weight, numDist);
-}
-
-
 void CoverRowOld::prepareMedium(
   const list<Cover>& coverList,
   const Profile& sumProfileIn,

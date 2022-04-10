@@ -41,21 +41,6 @@ void Covers::reset()
 }
 
 
-void Covers::prepareRow(
-  const CoverSpec& coverSpec,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
-{
-  assert(distProfiles.size() == cases.size());
-
-  rowsOld.emplace_back(CoverRowOld());
-  CoverRowOld& coverRowOld = rowsOld.back();
-  coverRowOld.prepare(distProfiles, cases, coverSpec);
-
-  assert(coverRowOld.getWeight() != 0);
-}
-
-
 void Covers::prepareRowMedium(
   const list<Cover>& coverList,
   const Profile& sumProfileIn,

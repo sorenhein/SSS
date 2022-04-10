@@ -61,11 +61,6 @@ class Covers
 
     void reset();
 
-    void prepareRow(
-      const CoverSpec& coverSpec,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
     void prepareRowMedium(
       const list<Cover>& coverList,
       const Profile& sumProfile,
