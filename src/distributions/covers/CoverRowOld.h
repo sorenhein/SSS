@@ -47,13 +47,6 @@ class CoverRowOld
 
     void reset();
 
-    void prepareMedium(
-      const list<Cover>& coverList,
-      const Profile& sumProfileIn,
-      const unsigned indexIn,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
     void prepareNew(
       ProductMemory& productMemory,
       const list<ManualData>& manualList,

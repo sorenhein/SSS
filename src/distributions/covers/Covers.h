@@ -61,13 +61,6 @@ class Covers
 
     void reset();
 
-    void prepareRowMedium(
-      const list<Cover>& coverList,
-      const Profile& sumProfile,
-      const unsigned indexIn,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
     void prepareRowNew(
       ProductMemory& productMemory,
       const list<ManualData>& manualList,

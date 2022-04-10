@@ -13,7 +13,6 @@
 
 #include "Covers.h"
 
-#include "CoverMemory.h"
 #include "ProductMemory.h"
 #include "CoverTableau.h"
 #include "ResExpl.h"
@@ -38,24 +37,6 @@ void Covers::reset()
   rowsOld.clear();
   store.reset();
   tableauCache.reset();
-}
-
-
-void Covers::prepareRowMedium(
-  const list<Cover>& coverList,
-  const Profile& sumProfileIn,
-  const unsigned indexIn,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
-{
-  assert(distProfiles.size() == cases.size());
-
-  rowsOld.emplace_back(CoverRowOld());
-  CoverRowOld& coverRowOld = rowsOld.back();
-  coverRowOld.prepareMedium(coverList, sumProfileIn, indexIn,
-    distProfiles, cases);
-
-  assert(coverRowOld.getWeight() != 0);
 }
 
 
