@@ -14,11 +14,6 @@
 #include "Manual.h"
 #include "ExplStats.h"
 
-#include "Profile.h"
-#include "ProfilePair.h"
-#include "Product.h"
-#include "ProductMemory.h"
-
 
 void CoverMemory::resize(const unsigned char maxCards)
 {
@@ -35,13 +30,10 @@ void CoverMemory::resizeStats(ExplStats& explStats) const
 
 
 void CoverMemory::prepareRows(
-  Covers& covers,
-  ProductMemory& productMemory,
   const unsigned char maxLength,
   const unsigned char maxTops,
   const unsigned char numTops,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
+  list<list<ManualData>>& manualData)
 {
   assert(maxLength < counts.size());
   assert(maxTops < counts[maxLength].size());
@@ -50,22 +42,8 @@ void CoverMemory::prepareRows(
   sumProfile.setSingle(numTops, maxLength, maxTops);
 
   Manual manual;
-  list<list<ManualData>> manualData;
-
   manual.make(maxLength, maxTops, numTops, manualData);
 
   counts[maxLength][maxTops] = manualData.size();
-
-  unsigned index = 0;
-  for (auto& manualList: manualData)
-  {
-    covers.prepareRowNew(
-      productMemory,
-      manualList,
-      sumProfile,
-      index++,
-      distProfiles,
-      cases);
-  }
 }
 

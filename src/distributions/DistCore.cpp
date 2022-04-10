@@ -18,6 +18,7 @@
 #include "DistMap.h"
 
 #include "covers/CoverMemory.h"
+#include "covers/Manual.h"
 #include "covers/ProductMemory.h"
 
 #include "../plays/Play.h"
@@ -521,18 +522,34 @@ void DistCore::prepareCovers(
     return;
 
   assert(maxTops >= 1);
+
+  list<list<ManualData>> manualData;
+
+  Profile sumProfileNew;
+  sumProfileNew.setSingle(
+    static_cast<unsigned char>(rankSize), maxLength, maxTops);
+
   coverMemory.prepareRows(
-    covers, 
-    productMemory, 
     maxLength, 
     maxTops,
     static_cast<unsigned char>(rankSize),
-    distProfilesOld, cases);
+    manualData);
+
+  unsigned index = 0;
+  for (auto& manualList: manualData)
+  {
+    covers.prepareRowNew(
+      productMemory,
+      manualList,
+      sumProfileNew,
+      index++,
+      distProfilesOld,
+      cases);
+  }
 
   covers.sortRows();
 
   // ---
-
   vector<Profile> distProfiles;
 
   vector<unsigned char> lengthsNew;
@@ -544,6 +561,9 @@ void DistCore::prepareCovers(
   DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
 
   covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
+
+  // ---
+
 }
 
 

@@ -9,14 +9,11 @@
 #ifndef SSS_COVERMEMORY_H
 #define SSS_COVERMEMORY_H
 
-#include <vector>
 #include <list>
 
 using namespace std;
 
-class Profile;
 class ExplStats;
-class ProductMemory;
 
 
 class CoverMemory
@@ -33,13 +30,10 @@ class CoverMemory
     void resizeStats(ExplStats& explStats) const;
 
     void prepareRows(
-      Covers& covers,
-      ProductMemory& productMemory,
       const unsigned char maxLength,
       const unsigned char maxTops,
       const unsigned char numTops,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
+      list<list<ManualData>>& manualData);
 };
 
 #endif
