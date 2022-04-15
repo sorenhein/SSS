@@ -13,6 +13,7 @@
 
 #include "CoverRow.h"
 #include "Cover.h"
+#include "Profile.h"
 
 
 CoverRow::CoverRow()
@@ -43,6 +44,10 @@ bool CoverRow::attempt(
   Tricks& additions,
   unsigned char& tricksAdded) const
 {
+  // Do not update any internal states.  Try to add the cover with
+  // its residuals and see what this would add incrementally to the row.
+  // This is used in the exhaustive search for the least complex covers.
+
   assert(tricks.size() == residuals.size());
   assert(additions.size() == residuals.size());
 
@@ -72,6 +77,61 @@ void CoverRow::add(
 }
 
 
+bool CoverRow::includes(
+ const Profile& distProfile,
+ const Profile& sumProfile) const
+{
+  // This method is used when an entire cover row is defined manually.
+  assert(distProfile.size() == sumProfile.size());
+
+  for (auto& coverPtr: coverPtrs)
+  {
+    if (coverPtr->includes(distProfile))
+      return true;
+    else if (! coverPtr->symmetric())
+      continue;
+    else
+      return coverPtr->includesComplement(distProfile, sumProfile);
+  }
+
+  return false;
+}
+
+
+void CoverRow::score(
+  const vector<Profile>& distProfiles,
+  const Profile& sumProfile,
+  const vector<unsigned char>& cases)
+{
+  // This method is used when an entire cover row is defined manually.
+  const unsigned len = distProfiles.size();
+  assert(len == cases.size());
+  tricks.resize(len);
+
+  weight = 0;
+  numDist = 0;
+  complexity = 0;
+
+  for (unsigned dno = 0; dno < len; dno++)
+  {
+    if (CoverRow::includes(distProfiles[dno], sumProfile))
+    {
+      tricks.set(dno);
+      weight += static_cast<unsigned>(cases[dno]);
+      numDist++;
+      // TODO What about complexity?
+    }
+  }
+}
+
+
+CoverState CoverRow::explain(Tricks& tricksSeen) const
+{
+  // If tricks <= tricksSeen elementwise, tricks is subtracted out.
+  return tricks.explain(tricksSeen);
+}
+
+
 bool CoverRow::operator <= (const CoverRow& coverRow2) const
 {
   return (tricks <= coverRow2.tricks);
@@ -90,7 +150,7 @@ const Tricks& CoverRow::getTricks() const
 }
 
 
-unsigned char CoverRow::getWeight() const
+unsigned CoverRow::getWeight() const
 {
   return weight;
 }

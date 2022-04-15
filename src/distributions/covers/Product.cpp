@@ -115,6 +115,28 @@ bool Product::includes(const Profile& distProfile) const
 }
 
 
+bool Product::includesComplement(
+  const Profile& distProfile,
+  const Profile& sumProfile) const
+{
+  // Mirrored around sumProfile to get from West to East, say.
+
+  if (length.used() && ! length.includes(distProfile.getLength()))
+    return false;
+
+  assert(distProfile.size() == tops.size());
+
+  for (unsigned char i = 0; i < distProfile.size(); i++)
+  {
+    if (tops[i].used() && 
+        ! tops[i].includes(sumProfile.count(i) - distProfile.count(i)))
+      return false;
+  }
+
+  return true;
+}
+
+
 unsigned char Product::getComplexity() const
 {
   return complexity;

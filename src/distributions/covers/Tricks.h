@@ -48,6 +48,8 @@ class Tricks
       const list<Result>& results,
       unsigned char& tricksMin);
 
+    void set(const unsigned no);
+
     void prepare(
       const Product& product,
       const vector<Profile>& distProfiles,

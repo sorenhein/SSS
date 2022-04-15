@@ -65,6 +65,10 @@ class Product
 
     bool includes(const Profile& distProfile) const;
 
+    bool includesComplement(
+      const Profile& distProfile,
+      const Profile& sumProfile) const;
+
     unsigned char getComplexity() const;
 
     // An effective size

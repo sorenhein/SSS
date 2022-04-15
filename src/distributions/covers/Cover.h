@@ -58,6 +58,10 @@ class Cover
 
     bool includes(const Profile& distProfile) const;
 
+    bool includesComplement(
+      const Profile& distProfile,
+      const Profile& sumProfile) const;
+
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,

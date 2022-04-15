@@ -66,6 +66,16 @@ bool Cover::includes(const Profile& distProfile) const
 }
 
 
+bool Cover::includesComplement(
+  const Profile& distProfile,
+  const Profile& sumProfile) const
+{
+  assert(productUnitPtr != nullptr);
+  return productUnitPtr->product.includesComplement(
+    distProfile, sumProfile);
+}
+
+
 bool Cover::possible(
   const Tricks& explained,
   const Tricks& residuals,

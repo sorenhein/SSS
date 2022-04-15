@@ -85,6 +85,15 @@ void Tricks::set(
 }
 
 
+void Tricks::set(const unsigned no)
+{
+  assert(no < tricks.size());
+  assert(tricks[no] == 0);
+
+  tricks[no] = 1;
+}
+
+
 void Tricks::prepare(
   const Product& product,
   const vector<Profile>& distProfiles,
