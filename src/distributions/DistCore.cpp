@@ -510,10 +510,29 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   if (distributions.size() == 0)
     return;
 
+  vector<Profile> distProfiles;
+
+  vector<unsigned char> lengthsNew;
+  vector<vector<unsigned> const *> topPtrs;
+
+  vector<unsigned char> casesNew;
+  Profile sumProfile;
+
+  DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
+
+  // ---
+
   vector<Profile> distProfilesOld;
   vector<unsigned char> cases;
   unsigned char maxLength, maxTops;
   DistCore::getCoverData(distProfilesOld, cases, maxLength, maxTops);
+  // const unsigned char maxLength = sumProfile.getLength();
+  // const unsigned char maxTops = 
+    // sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1));
+
+  assert(maxLength == sumProfile.getLength());
+  assert(maxTops == 
+    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)));
 
   if (maxLength < 2)
     return;
@@ -548,16 +567,6 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   covers.sortRows();
 
   // ---
-  vector<Profile> distProfiles;
-
-  vector<unsigned char> lengthsNew;
-  vector<vector<unsigned> const *> topPtrs;
-
-  vector<unsigned char> casesNew;
-  Profile sumProfile;
-
-  DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
-
   covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
 
   // ---
