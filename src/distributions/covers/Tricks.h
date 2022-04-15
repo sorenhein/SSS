@@ -50,6 +50,11 @@ class Tricks
 
     void set(const unsigned no);
 
+    void weigh(
+      const vector<unsigned char>& cases,
+      unsigned& weight,
+      unsigned char& numDist) const;
+
     void prepare(
       const Product& product,
       const vector<Profile>& distProfiles,
@@ -77,6 +82,10 @@ class Tricks
       Tricks& residuals,
       unsigned char& residualsSum,
       unsigned char& numDist);
+
+    Tricks& operator |= (const Tricks& tricks2);
+
+    void orSymm(const Tricks& tricks2);
 
     bool operator == (const Tricks& tricks2) const;
 

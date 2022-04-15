@@ -64,6 +64,13 @@ void Covers::prepareRowNew(
 }
 
 
+CoverRowOld& Covers::addRow()
+{
+  rowsOld.emplace_back(CoverRowOld());
+  return rowsOld.back();
+}
+
+
 void Covers::sortRows()
 {
   rowsOld.sort([](

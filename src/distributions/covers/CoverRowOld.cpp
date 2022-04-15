@@ -46,6 +46,8 @@ void CoverRowOld::prepareNew(
   auto miter = manualList.begin();
   auto citer = covers.begin();
 
+  tricks.resize(distProfiles.size());
+
   while (miter != manualList.end())
   {
     citer->setExisting(
@@ -56,13 +58,38 @@ void CoverRowOld::prepareNew(
 
     citer->prepare(distProfiles, cases);
 
+    citer->tricksOr(tricks);
+
     miter++;
     citer++;
   }
 
-  // The whole row
-  // TODO Can't we just OR together the cover's?
-  tricks.prepare(* this, distProfiles, cases, weight, numDist);
+  tricks.weigh(cases, weight, numDist);
+}
+
+
+void CoverRowOld::resize(const unsigned len)
+{
+  tricks.resize(len);
+}
+
+
+void CoverRowOld::add(
+  const Cover& cover,
+  const Profile& sumProfileIn,
+  const unsigned indexIn)
+{
+  indexInternal = indexIn;
+  sumProfile = sumProfileIn; // Both are duplicative
+
+  covers.emplace_back(cover);
+  covers.back().tricksOr(tricks);
+}
+
+
+void CoverRowOld::weigh(const vector<unsigned char>& cases)
+{
+  tricks.weigh(cases, weight, numDist);
 }
 
 

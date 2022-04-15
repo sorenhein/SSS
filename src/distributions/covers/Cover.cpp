@@ -71,6 +71,15 @@ void Cover::prepare(
 }
 
 
+void Cover::tricksOr(Tricks& running) const
+{
+  if (symmFlag)
+    running.orSymm(tricks);
+  else
+    running |= tricks;
+}
+
+
 // TODO Move to possible?
 bool Cover::includes(const Profile& distProfile) const
 {

@@ -47,6 +47,8 @@ class CoverRowOld
 
     void reset();
 
+    void resize(const unsigned len);
+
     void prepareNew(
       const ProductMemory& productMemory,
       const list<ManualData>& manualList,
@@ -54,6 +56,13 @@ class CoverRowOld
       const unsigned indexIn,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
+
+    void add(
+      const Cover& cover,
+      const Profile& sumProfileIn,
+      const unsigned indexIn);
+
+    void weigh(const vector<unsigned char>& cases);
 
     bool includes(const Profile& distProfile) const;
 

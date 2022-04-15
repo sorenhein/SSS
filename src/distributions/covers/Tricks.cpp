@@ -94,6 +94,27 @@ void Tricks::set(const unsigned no)
 }
 
 
+void Tricks::weigh(
+  const vector<unsigned char>& cases,
+  unsigned& weight,
+  unsigned char& numDist) const
+{
+  assert(cases.size() == tricks.size());
+
+  weight = 0;
+  numDist = 0;
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+  {
+    if (tricks[i])
+    {
+      weight += cases[i];
+      numDist++;
+    }
+  }
+}
+
+
 void Tricks::prepare(
   const Product& product,
   const vector<Profile>& distProfiles,
@@ -221,6 +242,27 @@ void Tricks::add(
     residualsSum -= t;
     numDist += t;
   }
+}
+
+
+Tricks& Tricks::operator |= (const Tricks& tricks2)
+{
+  assert(tricks.size() == tricks2.tricks.size());
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+    tricks[i] |= tricks2.tricks[i];
+  
+  return * this;
+}
+
+
+void Tricks::orSymm(const Tricks& tricks2)
+{
+  const unsigned len = tricks.size();
+  assert(len == tricks2.tricks.size());
+
+  for (unsigned i = 0; i < len; i++)
+    tricks[i] |= tricks2.tricks[i] | tricks2.tricks[len-1-i];
 }
 
 

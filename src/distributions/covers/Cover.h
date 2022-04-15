@@ -62,6 +62,8 @@ class Cover
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
+    void tricksOr(Tricks& running) const;
+
     bool includes(const Profile& distProfile) const;
 
     bool includesComplement(
