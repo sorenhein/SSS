@@ -36,8 +36,8 @@ class CoverRowOld
 
     Profile sumProfile;
 
-
     unsigned weight;
+
     unsigned char numDist;
 
 
@@ -49,14 +49,6 @@ class CoverRowOld
 
     void resize(const unsigned len);
 
-    void prepareNew(
-      const ProductMemory& productMemory,
-      const list<ManualData>& manualList,
-      const Profile& sumProfileIn,
-      const unsigned indexIn,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
     void add(
       const Cover& cover,
       const bool symmFlagIn,
@@ -64,8 +56,6 @@ class CoverRowOld
       const unsigned indexIn);
 
     void weigh(const vector<unsigned char>& cases);
-
-    bool includes(const Profile& distProfile) const;
 
     CoverState explain(Tricks& tricksSeen) const;
 

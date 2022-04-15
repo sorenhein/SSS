@@ -1,6 +1,11 @@
-Later we can look up each Cover into a pointer.
-First make the new ones, then all old ones should be there too.
-Then we can probably use CoverRow instead of the old old.
+Can't use CoverRow rather than CoverRowOld at the moment:
+symmFlag is not in the looked-up cover, so have to track separately.
+This is because we haven't done symmetric cover's generally yet.
+Other than that the two are more similar now.
+So it's getting to be time...
+
+CoverRow could potentially get a list<Cover const *> already,
+so then there's only one add that takes care of resize and weigh.
 
 
 Time CoverStore vs rest of prepareNew
@@ -12,11 +17,6 @@ before actually inserting?
 Perhaps Covers first does the "new" covers.  Then when we prepare
 entire rows, we should be able to find all the same covers that make
 up "old" rows.
-
-CoverRow: list<Cover *>, Tricks, numDist, complexity.
-Each Cover lives in Covers, "indexed" by its profile.
-
-CoverRowOld: use list<Cover>, Tricks, index, sumProfile
 
 CoverRow and CoverRowOld can probably be combined somehow.
 Covers can be split into Covers and CoverSolve; but Solve is not

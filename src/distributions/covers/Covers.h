@@ -61,14 +61,6 @@ class Covers
 
     void reset();
 
-    void prepareRowNew(
-      ProductMemory& productMemory,
-      const list<ManualData>& manualList,
-      const Profile& sumProfile,
-      const unsigned indexIn,
-      const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases);
-
     CoverRowOld& addRow();
 
     void prepareNew(

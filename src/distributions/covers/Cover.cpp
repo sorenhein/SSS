@@ -65,9 +65,6 @@ void Cover::prepare(
 {
   assert(productUnitPtr != nullptr);
   tricks.prepare(productUnitPtr->product, distProfiles, cases, weight, numDist);
-  
-  // cout << "product: " << productUnitPtr->product.strLine() << "\n";
-  // cout << "prepared: " << +numDist << ", " << +weight << "\n";
 }
 
 

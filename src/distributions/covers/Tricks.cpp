@@ -141,32 +141,6 @@ void Tricks::prepare(
 }
 
 
-void Tricks::prepare(
-  const CoverRowOld& coverRow,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases,
-  unsigned& weight,
-  unsigned char& numDist)
-{
-  const unsigned len = distProfiles.size();
-  assert(len == cases.size());
-  tricks.resize(len);
-
-  weight = 0;
-  numDist = 0;
-
-  for (unsigned dno = 0; dno < len; dno++)
-  {
-    if (coverRow.includes(distProfiles[dno]))
-    {
-      tricks[dno] = 1;
-      weight += static_cast<unsigned>(cases[dno]);
-      numDist++;
-    }
-  }
-}
-
-
 bool Tricks::possible(
   const Tricks& explained,
   const Tricks& residuals,
@@ -206,12 +180,7 @@ bool Tricks::possible(
 
 CoverState Tricks::explain(Tricks& tricks2) const
 {
-  if (tricks.size() != tricks2.tricks.size())
-  {
-cout << "tricks " << tricks.size() << endl;
-cout << "tricks2 " << tricks2.tricks.size() << endl;
   assert(tricks.size() == tricks2.tricks.size());
-  }
 
   CoverState state = COVER_DONE;
 

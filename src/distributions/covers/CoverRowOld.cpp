@@ -30,44 +30,6 @@ void CoverRowOld::reset()
 }
 
 
-void CoverRowOld::prepareNew(
-  const ProductMemory& productMemory,
-  const list<ManualData>& manualList,
-  const Profile& sumProfileIn,
-  const unsigned indexIn,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
-{
-  indexInternal = indexIn;
-  sumProfile = sumProfileIn;
-
-  covers.resize(manualList.size());
-
-  auto miter = manualList.begin();
-  auto citer = covers.begin();
-
-  tricks.resize(distProfiles.size());
-
-  while (miter != manualList.end())
-  {
-    citer->setExisting(
-      productMemory, 
-      sumProfile, 
-      miter->profilePair,
-      miter->symmFlag);
-
-    citer->prepare(distProfiles, cases);
-
-    citer->tricksOr(tricks);
-
-    miter++;
-    citer++;
-  }
-
-  tricks.weigh(cases, weight, numDist);
-}
-
-
 void CoverRowOld::resize(const unsigned len)
 {
   tricks.resize(len);
@@ -93,30 +55,6 @@ void CoverRowOld::weigh(const vector<unsigned char>& cases)
 {
   tricks.weigh(cases, weight, numDist);
   assert(weight != 0);
-}
-
-
-bool CoverRowOld::includes(const Profile& distProfile) const
-{
-  assert(distProfile.size() == sumProfile.size());
-
-  for (auto& cover: covers)
-  {
-    if (cover.includes(distProfile))
-      return true;
-    else if (! cover.symmetric())
-      continue;
-    else
-    {
-      Profile mirror = distProfile;
-      mirror.mirrorAround(sumProfile);
-
-      if (cover.includes(mirror))
-        return true;
-    }
-  }
-
-  return false;
 }
 
 

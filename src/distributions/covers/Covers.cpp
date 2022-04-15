@@ -40,30 +40,6 @@ void Covers::reset()
 }
 
 
-void Covers::prepareRowNew(
-  ProductMemory& productMemory,
-  const list<ManualData>& manualList,
-  const Profile& sumProfileIn,
-  const unsigned indexIn,
-  const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases)
-{
-  assert(distProfiles.size() == cases.size());
-
-  rowsOld.emplace_back(CoverRowOld());
-  CoverRowOld& coverRowOld = rowsOld.back();
-  coverRowOld.prepareNew(
-    productMemory, 
-    manualList, 
-    sumProfileIn, 
-    indexIn,
-    distProfiles, 
-    cases);
-
-  assert(coverRowOld.getWeight() != 0);
-}
-
-
 CoverRowOld& Covers::addRow()
 {
   rowsOld.emplace_back(CoverRowOld());
