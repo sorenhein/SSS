@@ -45,8 +45,10 @@ class CoverStore
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
+    const Cover& lookup(const Cover& cover) const;
+
     const Cover& lookup(
-      ProductMemory& productMemory,
+      const ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& productPair,
       const bool symmFlag) const;

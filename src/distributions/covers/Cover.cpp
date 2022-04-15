@@ -141,9 +141,12 @@ bool Cover::operator < (const Cover& cover2) const
     return true;
   else if (numDist < cover2.numDist)
     return false;
-  else if (p1.getRangeSum() <= p2.getRangeSum())
+  else if (p1.getRangeSum() < p2.getRangeSum())
     /// Narrower covers
     return true;
+  else if (p1.getRangeSum() > p2.getRangeSum())
+    /// Narrower covers
+    return false;
   else
     return (code < cover2.code);
     // return false;
@@ -218,10 +221,10 @@ string Cover::strHeader() const
   stringstream ss;
 
   ss << productUnitPtr->product.strHeader() <<
-    setw(8) << "Weight" <<
-    setw(8) << "Cmplx" <<
-    setw(8) << "Dists" <<
-    setw(8) << "Tops" << "\n";
+    setw(4) << "Weight" <<
+    setw(4) << "Cmplx" <<
+    setw(4) << "Dists" <<
+    setw(4) << "Tops" << "\n";
 
   return ss.str();
 }
@@ -233,10 +236,13 @@ string Cover::strLine(const Profile& sumProfile) const
   stringstream ss;
 
   ss << productUnitPtr->product.strLine(sumProfile) <<
-    setw(8) << weight <<
-    setw(8) << +productUnitPtr->product.getComplexity() <<
-    setw(8) << +numDist <<
-    setw(8) << +Cover::getTopSize() << "\n";
+    setw(4) << weight <<
+    setw(4) << +productUnitPtr->product.getComplexity() <<
+    setw(4) << +numDist <<
+    setw(4) << +Cover::getTopSize() << 
+    setw(4) << +productUnitPtr->product.getRangeSum() <<
+    setw(16) << code << 
+    "\n";
   
   return ss.str();
 }
@@ -248,10 +254,13 @@ string Cover::strLine() const
   stringstream ss;
 
   ss << productUnitPtr->product.strLine() <<
-    setw(8) << weight <<
-    setw(8) << +productUnitPtr->product.getComplexity() <<
-    setw(8) << +numDist <<
-    setw(8) << +Cover::getTopSize() << "\n";
+    setw(4) << weight <<
+    setw(4) << +productUnitPtr->product.getComplexity() <<
+    setw(4) << +numDist <<
+    setw(4) << +Cover::getTopSize() << 
+    setw(4) << +productUnitPtr->product.getRangeSum() <<
+    setw(16) << code << 
+    "\n";
   
   return ss.str();
 }

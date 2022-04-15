@@ -245,6 +245,13 @@ CoverState Covers::explain(
 }
 
 
+const Cover& Covers::lookup(const Cover& cover) const
+{
+  // Turn a cover into the one we already know.  It must exist.
+  return store.lookup(cover);
+}
+
+
 void Covers::explainGreedy(
   const list<Result>& results,
   const unsigned numStrategyTops,

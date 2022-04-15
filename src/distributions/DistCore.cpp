@@ -483,10 +483,6 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   // Prepare each cover.
   covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
 
-  // Limit the sum profile to the highest top.
-  Profile sumProfileOld = sumProfile;
-  sumProfile.limit();
-
   // Get the manual covers.
   list<list<ManualData>> manualData;
   Manual manual(sumProfile, manualData);
@@ -495,10 +491,27 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   unsigned index = 0;
   for (auto& manualList: manualData)
   {
+    // TODO For now just to try it -- doesn't connect to anything.
+    for (auto& man: manualList)
+    {
+      Cover cover;
+      cover.setExisting(
+        productMemory,
+        sumProfile,
+        man.profilePair,
+        man.symmFlag);
+
+      cover.prepare(distProfiles, cases);
+
+      const Cover& clook = covers.lookup(cover);
+      const unsigned x = clook.size();
+    }
+
+
     covers.prepareRowNew(
       productMemory,
       manualList,
-      sumProfileOld, // Try the full one here
+      sumProfile,
       index++,
       distProfiles,
       cases);

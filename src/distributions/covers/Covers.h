@@ -81,6 +81,8 @@ class Covers
       const list<Result>& results,
       ResExpl& resExpl) const;
 
+    const Cover& lookup(const Cover& cover) const;
+
     void explainGreedy(
       const list<Result>& results,
       const unsigned numStrategyTops,

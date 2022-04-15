@@ -83,22 +83,27 @@ void CoverStore::add(
 }
 
 
+const Cover& CoverStore::lookup(const Cover& cover) const
+{
+  // Turn a cover into the one we already know.  It must exist.
+
+  auto it = store.find(cover);
+  assert(it != store.end());
+
+  return * it;
+}
+
+
 const Cover& CoverStore::lookup(
-  ProductMemory& productMemory,
+  const ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& productPair,
   const bool symmFlag) const
 {
+  // TODO Do we need this, or only the cover lookup?
   Cover cover;
-  cover.set(productMemory, sumProfile, productPair, symmFlag);
-
-  auto it = store.find(cover);
-
-  // This method assumes that the entry already exists.
-  if (it == store.end())
-    assert(false);
-
-  return * it;
+  cover.setExisting(productMemory, sumProfile, productPair, symmFlag);
+  return CoverStore::lookup(cover);
 }
 
 
