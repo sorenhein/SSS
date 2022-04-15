@@ -678,9 +678,9 @@ void Manual::prepare_9_1(DistData& distData) const
 }
 
 
-void Manual::make(
+Manual::Manual(
   const Profile& sumProfile,
-  list<list<ManualData>>& data) const
+  list<list<ManualData>>& data)
 {
   // Some parameter distributions leads this methods to return empty data,
   // as the solution is always trivial.

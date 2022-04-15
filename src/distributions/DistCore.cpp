@@ -476,47 +476,31 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
     return;
 
   vector<Profile> distProfiles;
-
-  vector<unsigned char> lengthsNew;
-  vector<vector<unsigned> const *> topPtrs;
-
-  vector<unsigned char> casesNew;
+  vector<unsigned char> cases;
   Profile sumProfile;
+  DistCore::getCoverData(distProfiles, cases, sumProfile);
 
-  DistCore::getCoverData(distProfiles, casesNew, sumProfile);
+  // Prepare each cover.
+  covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
 
-  covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
+  // Limit the sum profile to the highest top.
+  sumProfile.limit();
 
-  // ---
-
-  const unsigned char maxLength = sumProfile.getLength();
-  const unsigned char maxTops = 
-    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1));
-
-  if (maxLength < 2)
-    return;
-
-  assert(maxTops >= 1);
-
+  // Get the manual covers.
   list<list<ManualData>> manualData;
+  Manual manual(sumProfile, manualData);;
 
-  Profile sumProfileNew;
-  sumProfileNew = sumProfile;
-  sumProfileNew.limit();
-
-  Manual manual;
-  manual.make(sumProfileNew, manualData);
-
+  // Set the manual rows in covers.
   unsigned index = 0;
   for (auto& manualList: manualData)
   {
     covers.prepareRowNew(
       productMemory,
       manualList,
-      sumProfileNew,
+      sumProfile,
       index++,
       distProfiles,
-      casesNew);
+      cases);
   }
 
   covers.sortRows();

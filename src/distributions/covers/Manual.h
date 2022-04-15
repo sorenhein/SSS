@@ -148,9 +148,9 @@ class Manual
 
   public:
 
-    void make(
+    Manual(
       const Profile& sumProfile,
-      list<list<ManualData>>& data) const;
+      list<list<ManualData>>& data);
 };
 
 #endif
