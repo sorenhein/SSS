@@ -27,7 +27,7 @@ class Cover
 {
   private:
 
-    ProductUnit * productUnitPtr;
+    ProductUnit const * productUnitPtr;
 
     Tricks tricks;
 
@@ -48,6 +48,12 @@ class Cover
 
     void set(
       ProductMemory& productMemory,
+      const Profile& sumProfile,
+      const ProfilePair& profilePair,
+      const bool symmFlagIn);
+
+    void setExisting(
+      const ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& profilePair,
       const bool symmFlagIn);

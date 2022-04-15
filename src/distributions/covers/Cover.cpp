@@ -46,6 +46,19 @@ void Cover::set(
 }
 
 
+void Cover::setExisting(
+  const ProductMemory& productMemory,
+  const Profile& sumProfile,
+  const ProfilePair& profilePair,
+  const bool symmFlagIn)
+{
+  // The product must already be in memory.
+  productUnitPtr = productMemory.lookup(sumProfile, profilePair);
+  code = profilePair.getCode(sumProfile);
+  symmFlag = symmFlagIn;
+}
+
+
 void Cover::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)

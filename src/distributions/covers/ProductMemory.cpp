@@ -75,6 +75,22 @@ ProductUnit * ProductMemory::enterOrLookup(
 }
 
 
+ProductUnit const * ProductMemory::lookup(
+  const Profile& sumProfile,
+  const ProfilePair& profilePair) const
+{
+  const unsigned numTops = sumProfile.size();
+  assert(numTops < memory.size());
+
+  unsigned long long code = profilePair.getCode(sumProfile);
+  auto it = memory[numTops].find(code);
+  assert(it != memory[numTops].end());
+
+  // Don't count these.
+  return &(it->second);
+}
+
+
 string ProductMemory::strEnterStats() const
 {
   stringstream ss;

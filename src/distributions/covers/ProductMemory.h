@@ -96,6 +96,10 @@ class ProductMemory
       const Profile& sumProfile,
       const ProfilePair& profilePair);
 
+    ProductUnit const * lookup(
+      const Profile& sumProfile,
+      const ProfilePair& profilePair) const;
+
     string strEnterStats() const;
 };
 
