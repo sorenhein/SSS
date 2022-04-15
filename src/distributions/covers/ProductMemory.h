@@ -96,7 +96,7 @@ class ProductMemory
       const Profile& sumProfile,
       const ProfilePair& profilePair);
 
-    ProductUnit const * lookup(
+    ProductUnit const * lookupByTop(
       const Profile& sumProfile,
       const ProfilePair& profilePair) const;
 

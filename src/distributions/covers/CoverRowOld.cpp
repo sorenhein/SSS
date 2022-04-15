@@ -31,7 +31,7 @@ void CoverRowOld::reset()
 
 
 void CoverRowOld::prepareNew(
-  ProductMemory& productMemory,
+  const ProductMemory& productMemory,
   const list<ManualData>& manualList,
   const Profile& sumProfileIn,
   const unsigned indexIn,
@@ -48,7 +48,7 @@ void CoverRowOld::prepareNew(
 
   while (miter != manualList.end())
   {
-    citer->set(
+    citer->setExisting(
       productMemory, 
       sumProfile, 
       miter->profilePair,

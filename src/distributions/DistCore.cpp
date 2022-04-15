@@ -484,11 +484,12 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
 
   // Limit the sum profile to the highest top.
+  Profile sumProfileOld = sumProfile;
   sumProfile.limit();
 
   // Get the manual covers.
   list<list<ManualData>> manualData;
-  Manual manual(sumProfile, manualData);;
+  Manual manual(sumProfile, manualData);
 
   // Set the manual rows in covers.
   unsigned index = 0;
@@ -497,7 +498,7 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
     covers.prepareRowNew(
       productMemory,
       manualList,
-      sumProfile,
+      sumProfileOld, // Try the full one here
       index++,
       distProfiles,
       cases);

@@ -75,14 +75,21 @@ ProductUnit * ProductMemory::enterOrLookup(
 }
 
 
-ProductUnit const * ProductMemory::lookup(
+ProductUnit const * ProductMemory::lookupByTop(
   const Profile& sumProfile,
   const ProfilePair& profilePair) const
 {
   const unsigned numTops = sumProfile.size();
   assert(numTops < memory.size());
 
-  unsigned long long code = profilePair.getCode(sumProfile);
+  // profilePair only has the highest top set (perhaps).
+  // In order to look up the pair, we have to fill out the other tops
+  // as don't-care.
+  ProfilePair pairCopy = profilePair;
+  for (unsigned char i = 0; i+1 < static_cast<unsigned char>(numTops); i++)
+    pairCopy.addTop(i, 0, sumProfile.count(i));
+
+  unsigned long long code = pairCopy.getCode(sumProfile);
   auto it = memory[numTops].find(code);
   assert(it != memory[numTops].end());
 

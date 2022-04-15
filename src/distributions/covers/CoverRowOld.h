@@ -48,7 +48,7 @@ class CoverRowOld
     void reset();
 
     void prepareNew(
-      ProductMemory& productMemory,
+      const ProductMemory& productMemory,
       const list<ManualData>& manualList,
       const Profile& sumProfileIn,
       const unsigned indexIn,

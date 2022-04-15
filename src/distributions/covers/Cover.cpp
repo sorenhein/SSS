@@ -53,7 +53,7 @@ void Cover::setExisting(
   const bool symmFlagIn)
 {
   // The product must already be in memory.
-  productUnitPtr = productMemory.lookup(sumProfile, profilePair);
+  productUnitPtr = productMemory.lookupByTop(sumProfile, profilePair);
   code = profilePair.getCode(sumProfile);
   symmFlag = symmFlagIn;
 }
