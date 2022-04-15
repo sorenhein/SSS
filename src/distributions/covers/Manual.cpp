@@ -679,16 +679,17 @@ void Manual::prepare_9_1(DistData& distData) const
 
 
 void Manual::make(
-  const unsigned char maxLength,
-  const unsigned char maxTops,
-  const unsigned char numTops,
+  const Profile& sumProfile,
   list<list<ManualData>>& data) const
 {
   // Some parameter distributions leads this methods to return empty data,
   // as the solution is always trivial.
 
-  Profile sumProfile;
-  sumProfile.setSingle(numTops, maxLength, maxTops);
+  const unsigned char numTops = 
+    static_cast<unsigned char>(sumProfile.size());
+
+  const unsigned char maxLength = sumProfile.getLength();
+  const unsigned char maxTops = sumProfile.count(numTops-1);
 
   DistData distData = {&data, &sumProfile, maxLength, maxTops, numTops};
   

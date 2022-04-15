@@ -520,6 +520,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
 
   DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
 
+  covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
+
   // ---
 
   vector<Profile> distProfilesOld;
@@ -546,11 +548,7 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
     static_cast<unsigned char>(rankSize), maxLength, maxTops);
 
   Manual manual;
-  manual.make(
-    maxLength, 
-    maxTops, 
-    static_cast<unsigned char>(rankSize),
-    manualData);
+  manual.make(sumProfileNew, manualData);
 
   unsigned index = 0;
   for (auto& manualList: manualData)
@@ -565,12 +563,6 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   }
 
   covers.sortRows();
-
-  // ---
-  covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
-
-  // ---
-
 }
 
 

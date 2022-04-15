@@ -149,9 +149,7 @@ class Manual
   public:
 
     void make(
-      const unsigned char maxLength,
-      const unsigned char maxTops,
-      const unsigned char numTops,
+      const Profile& sumProfile,
       list<list<ManualData>>& data) const;
 };
 

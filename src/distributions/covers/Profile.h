@@ -42,6 +42,7 @@ class Profile
       const vector<unsigned char>& topsWest,
       const vector<unsigned char>& topsEast);
 
+    // TODO May eliminate this?
     void mirrorAround(const Profile& sumProfile);
 
     unsigned char count(const unsigned char topNo) const;
