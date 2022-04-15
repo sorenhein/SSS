@@ -31,6 +31,8 @@ class CoverRow
     // The OR'ed tricks of the covers.
     Tricks tricks;
 
+    unsigned char weight;
+
     unsigned char numDist;
 
     unsigned char complexity;
@@ -56,15 +58,21 @@ class CoverRow
       Tricks& residuals,
       unsigned char& residualsSum);
 
+    bool operator <= (const CoverRow& coverRow2) const;
+
     unsigned size() const;
 
     const Tricks& getTricks() const;
 
     unsigned char getWeight() const;
 
+    unsigned char getNumDist() const;
+
     unsigned char getComplexity() const;
 
     unsigned char getOverlap() const;
+
+    string strInternal() const;
 
     string strHeader() const;
 

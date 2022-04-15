@@ -148,6 +148,8 @@ string ResExpl::str() const
   string prefix;
   for (auto& ed: data)
   {
+    // TODO When switching from CoverRowOld to CoverRow,
+    // probably no prefix anymore
     if (ed.level == 0)
       prefix = "* ";
     else if (ed.level == 1)

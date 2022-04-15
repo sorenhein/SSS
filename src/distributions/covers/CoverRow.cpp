@@ -25,6 +25,7 @@ void CoverRow::reset()
 {
   coverPtrs.clear();
   tricks.clear();
+  weight = 0;
   numDist = 0;
   complexity = 0;
 }
@@ -71,6 +72,12 @@ void CoverRow::add(
 }
 
 
+bool CoverRow::operator <= (const CoverRow& coverRow2) const
+{
+  return (tricks <= coverRow2.tricks);
+}
+
+
 unsigned CoverRow::size() const
 {
   return coverPtrs.size();
@@ -84,6 +91,12 @@ const Tricks& CoverRow::getTricks() const
 
 
 unsigned char CoverRow::getWeight() const
+{
+  return weight;
+}
+
+
+unsigned char CoverRow::getNumDist() const
 {
   return numDist;
 }
@@ -104,6 +117,21 @@ unsigned char CoverRow::getOverlap() const
     overlap += coverPtr->getNumDist();
 
   return overlap - numDist;
+}
+
+
+string CoverRow::strInternal() const
+{
+  stringstream ss;
+
+  ss << 
+    "weight " << +weight <<
+    ", dists " << +numDist <<
+    ", complexity " << +complexity << "\n";
+
+  ss << tricks.strList();
+
+  return ss.str();
 }
 
 
