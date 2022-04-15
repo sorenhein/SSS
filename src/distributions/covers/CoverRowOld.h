@@ -59,6 +59,7 @@ class CoverRowOld
 
     void add(
       const Cover& cover,
+      const bool symmFlagIn,
       const Profile& sumProfileIn,
       const unsigned indexIn);
 

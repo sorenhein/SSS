@@ -71,6 +71,12 @@ void Cover::prepare(
 }
 
 
+void Cover::setSymmetric(const bool symmFlagIn)
+{
+  symmFlag = symmFlagIn;
+}
+
+
 void Cover::tricksOr(Tricks& running) const
 {
   if (symmFlag)
@@ -145,6 +151,13 @@ bool Cover::operator < (const Cover& cover2) const
     return true;
   else if (p1.getComplexity() > p2.getComplexity())
     return false;
+  // TODO Activate these once we have symmetrics in the general list
+  /*
+  else if (symmFlag && ! cover2.symmFlag)
+    return true;
+  else if (! symmFlag && cover2.symmFlag)
+    return false;
+    */
   else if (numDist > cover2.numDist)
     // Ones that touch more distributions first
     return true;

@@ -206,7 +206,12 @@ bool Tricks::possible(
 
 CoverState Tricks::explain(Tricks& tricks2) const
 {
+  if (tricks.size() != tricks2.tricks.size())
+  {
+cout << "tricks " << tricks.size() << endl;
+cout << "tricks2 " << tricks2.tricks.size() << endl;
   assert(tricks.size() == tricks2.tricks.size());
+  }
 
   CoverState state = COVER_DONE;
 

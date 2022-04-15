@@ -62,6 +62,9 @@ class Cover
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
+    // TODO Not necessary long-term
+    void setSymmetric(const bool symmFlagIn);
+
     void tricksOr(Tricks& running) const;
 
     bool includes(const Profile& distProfile) const;

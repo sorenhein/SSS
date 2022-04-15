@@ -76,6 +76,7 @@ void CoverRowOld::resize(const unsigned len)
 
 void CoverRowOld::add(
   const Cover& cover,
+  const bool symmFlag, // Unnecessary later -- already in cover
   const Profile& sumProfileIn,
   const unsigned indexIn)
 {
@@ -83,6 +84,7 @@ void CoverRowOld::add(
   sumProfile = sumProfileIn; // Both are duplicative
 
   covers.emplace_back(cover);
+  covers.back().setSymmetric(symmFlag);
   covers.back().tricksOr(tricks);
 }
 
@@ -90,6 +92,7 @@ void CoverRowOld::add(
 void CoverRowOld::weigh(const vector<unsigned char>& cases)
 {
   tricks.weigh(cases, weight, numDist);
+  assert(weight != 0);
 }
 
 

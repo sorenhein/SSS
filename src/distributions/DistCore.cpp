@@ -491,8 +491,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   unsigned index = 0;
   for (auto& manualList: manualData)
   {
-    // CoverRowOld rowOld = covers.addRow();
-    // rowOld.resize(distProfiles.size());
+    CoverRowOld& rowOld = covers.addRow();
+    rowOld.resize(distProfiles.size());
 
     // TODO For now just to try it -- doesn't connect to anything.
     for (auto& man: manualList)
@@ -507,20 +507,12 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
       cover.prepare(distProfiles, cases);
 
       const Cover& clook = covers.lookup(cover);
-      const unsigned x = clook.size();
 
-      // rowOld.add(clook, sumProfile, index, cases);
+      rowOld.add(clook, man.symmFlag, sumProfile, index);
     }
 
-    // rowOld.weigh(cases);
-
-    covers.prepareRowNew(
-      productMemory,
-      manualList,
-      sumProfile,
-      index++,
-      distProfiles,
-      cases);
+    rowOld.weigh(cases);
+    index++;
   }
 
   covers.sortRows();
