@@ -445,41 +445,6 @@ const Reduction& DistCore::getReduction(
 void DistCore::getCoverData(
   vector<Profile>& distProfiles,
   vector<unsigned char>& cases,
-  unsigned char& maxLength,
-  unsigned char& maxTops) const
-{
-  const unsigned len = distributions.size();
-  assert(len > 0);
-
-  distProfiles.resize(len);
-  cases.resize(len);
-
-  // TODO Move DistInfo more to unsigned char
-
-  maxLength = static_cast<unsigned char>(
-    distributions[0].west.len + distributions[0].east.len);
-
-  maxTops = static_cast<unsigned char>(
-    distributions[0].west.counts[rankSize-1] +
-    distributions[0].east.counts[rankSize-1]);
-
-  for (unsigned i = 0; i < len; i++)
-  {
-    const DistInfo& dist = distributions[i];
-
-    distProfiles[i].setSingle(
-      static_cast<unsigned char>(rankSize),
-      static_cast<unsigned char >(dist.west.len),
-      static_cast<unsigned char>(dist.west.counts[rankSize-1]));
-
-    cases[i] = static_cast<unsigned char>(dist.cases);
-  }
-}
-
-
-void DistCore::getCoverDataNew(
-  vector<Profile>& distProfiles,
-  vector<unsigned char>& cases,
   Profile& sumProfile) const
 {
   const unsigned len = distributions.size();
@@ -518,23 +483,15 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   vector<unsigned char> casesNew;
   Profile sumProfile;
 
-  DistCore::getCoverDataNew(distProfiles, casesNew, sumProfile);
+  DistCore::getCoverData(distProfiles, casesNew, sumProfile);
 
   covers.prepareNew(productMemory, distProfiles, casesNew, sumProfile);
 
   // ---
 
-  vector<Profile> distProfilesOld;
-  vector<unsigned char> cases;
-  unsigned char maxLength, maxTops;
-  DistCore::getCoverData(distProfilesOld, cases, maxLength, maxTops);
-  // const unsigned char maxLength = sumProfile.getLength();
-  // const unsigned char maxTops = 
-    // sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1));
-
-  assert(maxLength == sumProfile.getLength());
-  assert(maxTops == 
-    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)));
+  const unsigned char maxLength = sumProfile.getLength();
+  const unsigned char maxTops = 
+    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1));
 
   if (maxLength < 2)
     return;
@@ -544,8 +501,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   list<list<ManualData>> manualData;
 
   Profile sumProfileNew;
-  sumProfileNew.setSingle(
-    static_cast<unsigned char>(rankSize), maxLength, maxTops);
+  sumProfileNew = sumProfile;
+  sumProfileNew.limit();
 
   Manual manual;
   manual.make(sumProfileNew, manualData);
@@ -558,8 +515,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
       manualList,
       sumProfileNew,
       index++,
-      distProfilesOld,
-      cases);
+      distProfiles,
+      casesNew);
   }
 
   covers.sortRows();

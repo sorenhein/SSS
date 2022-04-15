@@ -33,10 +33,9 @@ class Profile
       const vector<unsigned char>& topsIn,
       const unsigned char numTops = 0);
 
-    void setSingle(
-      const unsigned char numTops,
-      const unsigned char lengthIn,
-      const unsigned char topIn);
+    // Only leave the highest top as non-zero.
+    // This is used for manual cover rows.
+    void limit();
 
     void setSum(
       const vector<unsigned char>& topsWest,

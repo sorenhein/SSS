@@ -52,12 +52,6 @@ class DistCore
     void getCoverData(
       vector<Profile>& distProfiles,
       vector<unsigned char>& cases,
-      unsigned char& maxLength,
-      unsigned char& maxTops) const;
-
-    void getCoverDataNew(
-      vector<Profile>& distProfiles,
-      vector<unsigned char>& cases,
       Profile& sumProfile) const;
 
     string strHeader() const;
