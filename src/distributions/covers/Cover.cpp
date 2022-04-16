@@ -240,12 +240,12 @@ string Cover::strHeader() const
   stringstream ss;
 
   ss << productUnitPtr->product.strHeader() <<
-    setw(4) << "Weight" <<
-    setw(4) << "Cmplx" <<
-    setw(4) << "Dists" <<
-    setw(4) << "Tops" << 
+    setw(4) << "Wgt" <<
+    setw(4) << "Cpx" <<
+    setw(4) << "#d" <<
+    setw(4) << "#t" << 
     setw(4) << "Sym" << 
-    setw(4) << "Rg" << 
+    setw(4) << "Rge" << 
     setw(16) << "Code" << 
     "\n";
 

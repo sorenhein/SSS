@@ -73,8 +73,8 @@ void Covers::prepareNew(
 
   timersStrat[20].stop();
 
-  RunningBounds bounds;
-  bounds.reset(sumProfile.getLength());
+  // RunningBounds bounds;
+  // bounds.reset(sumProfile.getLength());
 
   timersStrat[21].start();
   while (! stack.empty())
@@ -102,11 +102,13 @@ void Covers::prepareNew(
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
 
+        /*
         bounds.step(
           stackIter->getBounds(),
           topCountActual,
           topCountLow,
           topCountHigh);
+          */
 
         // if (bounds.busted())
           // continue;
@@ -118,8 +120,10 @@ void Covers::prepareNew(
         store.add(productMemory, sumProfile, * stackIter, false,
           distProfiles, cases);
 
-        const unsigned char westLow = bounds.lengthWestLow();
-        const unsigned char westHigh = bounds.lengthWestHigh();
+        // const unsigned char westLow = bounds.lengthWestLow();
+        // const unsigned char westHigh = bounds.lengthWestHigh();
+        const unsigned char westLow = stackIter->lengthWestLow();
+        const unsigned char westHigh = stackIter->lengthWestHigh();
 
         for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
         {
@@ -127,15 +131,24 @@ void Covers::prepareNew(
           { 
             stackIter->setLength(lLow, lHigh);
 
+            if (! stackIter->minimal(sumProfile, topNumber))
+             continue;
+
+            /*
             if (lLow == westLow && lHigh == westHigh)
             {
               // No point in specifying length explicitly.
               continue;
             }
+            */
 
             // There is a tighter way to specify this cover.
+            /*
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
+            {
               continue;
+            }
+            */
 
             store.add(productMemory, sumProfile, * stackIter, false,
               distProfiles, cases);
@@ -144,7 +157,7 @@ void Covers::prepareNew(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        nextIter->setBounds(bounds);
+        // nextIter->setBounds(bounds);
         nextIter->incrNextTopNo();
       }
     }
@@ -157,8 +170,8 @@ void Covers::prepareNew(
 
   /*
   cout << "Covers\n";
-  cout << covers.front().strHeader();
-  for (auto& c: covers)
+  cout << store.begin()->strHeader();
+  for (auto& c: store)
     cout << c.strLine(sumProfile);
   cout << "\n";
   */

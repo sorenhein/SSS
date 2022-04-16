@@ -29,15 +29,16 @@ class ProfilePair
     unsigned char topNext; // Running top number
 
 
-    bool lengthActive(
-      const unsigned char maxCards,
-      const unsigned char sumMin,
-      const unsigned char sumMax) const
+    bool active(
+      const unsigned char maxValue,
+      const unsigned char actualLow,
+      const unsigned char actualHigh,
+      const unsigned char impliedLow,
+      const unsigned char impliedHigh) const
     {
-      if (lowerProfile.length > sumMin)
+      if (actualLow > impliedLow)
       {
-        if (upperProfile.length <= sumMax ||
-            upperProfile.length == maxCards)
+        if (actualHigh <= impliedHigh || actualHigh == maxValue)
         {
           // Either strictly inside, or of the form ">=" where the
           // lower limit is strictly inside.
@@ -46,10 +47,9 @@ class ProfilePair
         else
           return false;
       }
-      else if (lowerProfile.length == sumMin ||
-          lowerProfile.length == 0)
+      else if (actualLow == impliedLow || actualLow == 0)
       {
-        if (upperProfile.length < sumMax)
+        if (actualHigh < impliedHigh)
           return true;
         else
           return false;
@@ -57,6 +57,45 @@ class ProfilePair
       else
         return false;
     }
+
+
+    bool punchTop(
+      const Profile& sumProfile,
+      const unsigned char topNumber,
+      const unsigned char sumMin,
+      const unsigned char sumMax) const
+    {
+      const unsigned char maxTops = sumProfile.tops[topNumber];
+
+      if (lowerProfile.tops[topNumber] == 0 &&
+          upperProfile.tops[topNumber] == maxTops)
+      {
+        // As the top is unused, it cannot be punched out.
+        return false;
+      }
+
+      // Find the range of lengths ignoring this top.
+      const unsigned char partialSumMin = 
+        sumMin - lowerProfile.tops[topNumber];
+      const unsigned char partialSumMax = 
+        sumMax - upperProfile.tops[topNumber];
+
+      // Find the bounds on this top assuming the lengths set,
+      // but ignoring our actual knowledge of the bounds on the top.
+      const unsigned char topMin =
+        (lowerProfile.length <= partialSumMax ? 
+        0 : lowerProfile.length - partialSumMax);
+      const unsigned char topMax =
+        (upperProfile.length >= partialSumMin + maxTops ?
+        maxTops : upperProfile.length - partialSumMin);
+
+      return ! active(
+        maxTops,
+        lowerProfile.tops[topNumber],
+        upperProfile.tops[topNumber],
+        topMin,
+        topMax);
+    };
 
 
   public:
@@ -92,7 +131,7 @@ class ProfilePair
 
     bool minimal(
       const Profile& sumProfile,
-      [[maybe_unused]] const unsigned char topNumber) const
+      const unsigned char topNumber) const
     {
       unsigned char sumMin = 0;
       unsigned char sumMax = 0;
@@ -103,10 +142,45 @@ class ProfilePair
       for (unsigned char n: upperProfile.tops)
         sumMax += n;
 
-      if (lengthActive(sumProfile.length, sumMin, sumMax))
-        return true;
-      else
+      // Does the length constraint add anything?
+      if (! active(
+        sumProfile.length, 
+        lowerProfile.length,
+        upperProfile.length,
+        sumMin, 
+        sumMax))
+      {
         return false;
+      }
+
+      /* */
+      for (unsigned t = 1; t <= topNumber; t++)
+      {
+        // Given the length constraint, do we need the top?
+        if (punchTop(sumProfile, topNumber, sumMin, sumMax))
+          return false;
+      }
+      /* */
+
+      return true;
+    };
+
+
+    unsigned char lengthWestLow() const
+    {
+      unsigned char sumMin = 0;
+      for (unsigned char n: lowerProfile.tops)
+        sumMin += n;
+      return sumMin;
+    };
+
+
+    unsigned char lengthWestHigh() const
+    {
+      unsigned char sumMax = 0;
+      for (unsigned char n: upperProfile.tops)
+        sumMax += n;
+      return sumMax;
     };
 
 
