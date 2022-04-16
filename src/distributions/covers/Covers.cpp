@@ -67,14 +67,10 @@ void Covers::prepareNew(
 
   timersStrat[20].start();
   list<ProfilePair> stack; // Unfinished expansions
-  // stack.emplace_back(ProfilePair(sumProfile));
   stack.emplace_back();
   stack.back().init(sumProfile);
 
   timersStrat[20].stop();
-
-  // RunningBounds bounds;
-  // bounds.reset(sumProfile.getLength());
 
   timersStrat[21].start();
   while (! stack.empty())
@@ -102,17 +98,6 @@ void Covers::prepareNew(
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
 
-        /*
-        bounds.step(
-          stackIter->getBounds(),
-          topCountActual,
-          topCountLow,
-          topCountHigh);
-          */
-
-        // if (bounds.busted())
-          // continue;
-
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
@@ -120,8 +105,6 @@ void Covers::prepareNew(
         store.add(productMemory, sumProfile, * stackIter, false,
           distProfiles, cases);
 
-        // const unsigned char westLow = bounds.lengthWestLow();
-        // const unsigned char westHigh = bounds.lengthWestHigh();
         const unsigned char westLow = stackIter->lengthWestLow();
         const unsigned char westHigh = stackIter->lengthWestHigh();
 
@@ -134,22 +117,6 @@ void Covers::prepareNew(
             if (! stackIter->minimal(sumProfile, topNumber))
              continue;
 
-            /*
-            if (lLow == westLow && lHigh == westHigh)
-            {
-              // No point in specifying length explicitly.
-              continue;
-            }
-            */
-
-            // There is a tighter way to specify this cover.
-            /*
-            if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
-            {
-              continue;
-            }
-            */
-
             store.add(productMemory, sumProfile, * stackIter, false,
               distProfiles, cases);
           }
@@ -157,7 +124,6 @@ void Covers::prepareNew(
 
         stackIter = stack.insert(stackIter, * stackIter);
         auto nextIter = next(stackIter);
-        // nextIter->setBounds(bounds);
         nextIter->incrNextTopNo();
       }
     }

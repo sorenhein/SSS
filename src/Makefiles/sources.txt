@@ -29,10 +29,10 @@ SOURCE_FILES    =                               \
                 distributions/covers/Product.cpp \
                 distributions/covers/ProductMemory.cpp \
                 distributions/covers/Profile.cpp \
+                distributions/covers/ProfilePair.cpp \
                 distributions/covers/CoverRow.cpp \
                 distributions/covers/CoverTableau.cpp \
                 distributions/covers/TableauCache.cpp \
-                distributions/covers/RunningBounds.cpp \
                 distributions/covers/ResExpl.cpp \
                 distributions/covers/ExplStat.cpp \
                 distributions/covers/ExplStats.cpp \
