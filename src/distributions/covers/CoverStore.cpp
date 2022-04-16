@@ -62,6 +62,8 @@ void CoverStore::add(
 
     if (result.first->sameTricks(* itForward))
     {
+// cout << "prf " << result.first->strLine(sumProfile);
+// cout << "del " << itForward->strLine(sumProfile) << "\n";
       store.erase(itForward);
       return;
     }
@@ -76,6 +78,8 @@ void CoverStore::add(
 
     if (result.first->sameTricks(* itBackward))
     {
+// cout << "prf " << itBackward->strLine(sumProfile);
+// cout << "del " << result.first->strLine(sumProfile) << "\n";
       store.erase(result.first);
       return;
     }

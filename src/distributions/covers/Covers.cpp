@@ -108,8 +108,8 @@ void Covers::prepareNew(
           topCountLow,
           topCountHigh);
 
-        if (bounds.busted())
-          continue;
+        // if (bounds.busted())
+          // continue;
 
         // Add the "don't care" with respect to length.
         stackIter->setLength(0, sumProfile.getLength()); // ?
@@ -125,6 +125,8 @@ void Covers::prepareNew(
         {
           for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
           { 
+            stackIter->setLength(lLow, lHigh);
+
             if (lLow == westLow && lHigh == westHigh)
             {
               // No point in specifying length explicitly.
@@ -134,8 +136,6 @@ void Covers::prepareNew(
             // There is a tighter way to specify this cover.
             if (topNumber > 0 && bounds.unnecessaryLength(lLow, lHigh))
               continue;
-
-            stackIter->setLength(lLow, lHigh);
 
             store.add(productMemory, sumProfile, * stackIter, false,
               distProfiles, cases);
@@ -153,8 +153,7 @@ void Covers::prepareNew(
   }
   timersStrat[21].stop();
 
-  cout << "Length " << sumProfile.strLine() << "\n";
-  cout << "Used " << store.size() << "\n";
+  cout << setw(6) << store.size() << sumProfile.strLine();
 
   /*
   cout << "Covers\n";

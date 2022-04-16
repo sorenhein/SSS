@@ -243,7 +243,11 @@ string Cover::strHeader() const
     setw(4) << "Weight" <<
     setw(4) << "Cmplx" <<
     setw(4) << "Dists" <<
-    setw(4) << "Tops" << "\n";
+    setw(4) << "Tops" << 
+    setw(4) << "Sym" << 
+    setw(4) << "Rg" << 
+    setw(16) << "Code" << 
+    "\n";
 
   return ss.str();
 }
@@ -259,6 +263,7 @@ string Cover::strLine(const Profile& sumProfile) const
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(4) << +numDist <<
     setw(4) << +Cover::getTopSize() << 
+    setw(4) << (symmFlag ? "sym" : "") << 
     setw(4) << +productUnitPtr->product.getRangeSum() <<
     setw(16) << code << 
     "\n";
@@ -277,6 +282,7 @@ string Cover::strLine() const
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(4) << +numDist <<
     setw(4) << +Cover::getTopSize() << 
+    setw(4) << (symmFlag ? "sym" : "") << 
     setw(4) << +productUnitPtr->product.getRangeSum() <<
     setw(16) << code << 
     "\n";

@@ -146,7 +146,7 @@ string Profile::strHeader() const
 
   ss << setw(6) << "Length";
   for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(6) << ("Top" + to_string(i));
+    ss << setw(3) << ("Top" + to_string(i));
 
   return ss.str() + "\n";
 }
@@ -158,7 +158,7 @@ string Profile::strLine() const
 
   ss << setw(6) << +length << ":";
   for (auto& t: tops)
-    ss << setw(6) << +t;
+    ss << setw(3) << +t;
 
   return ss.str() + "\n";
 }

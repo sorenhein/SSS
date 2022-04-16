@@ -29,6 +29,36 @@ class ProfilePair
     unsigned char topNext; // Running top number
 
 
+    bool lengthActive(
+      const unsigned char maxCards,
+      const unsigned char sumMin,
+      const unsigned char sumMax) const
+    {
+      if (lowerProfile.length > sumMin)
+      {
+        if (upperProfile.length <= sumMax ||
+            upperProfile.length == maxCards)
+        {
+          // Either strictly inside, or of the form ">=" where the
+          // lower limit is strictly inside.
+          return true;
+        }
+        else
+          return false;
+      }
+      else if (lowerProfile.length == sumMin ||
+          lowerProfile.length == 0)
+      {
+        if (upperProfile.length < sumMax)
+          return true;
+        else
+          return false;
+      }
+      else
+        return false;
+    }
+
+
   public:
 
     void init(const Profile& sumProfile)
@@ -57,6 +87,26 @@ class ProfilePair
     {
       lowerProfile.tops[topNumber] = topCountLow;
       upperProfile.tops[topNumber] = topCountHigh;
+    };
+
+
+    bool minimal(
+      const Profile& sumProfile,
+      [[maybe_unused]] const unsigned char topNumber) const
+    {
+      unsigned char sumMin = 0;
+      unsigned char sumMax = 0;
+
+      for (unsigned char n: lowerProfile.tops)
+        sumMin += n;
+
+      for (unsigned char n: upperProfile.tops)
+        sumMax += n;
+
+      if (lengthActive(sumProfile.length, sumMin, sumMax))
+        return true;
+      else
+        return false;
     };
 
 

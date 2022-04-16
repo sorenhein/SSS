@@ -56,6 +56,7 @@ void RunningBounds::step(
 }
 
 
+#include <cassert>
 bool RunningBounds::busted() const
 {
   if (minWest + maxDiff > length)
@@ -63,14 +64,21 @@ bool RunningBounds::busted() const
     // There is no room for this worst-case single maximum,
     // so we skip the entire set, as there will be a more
     // accurate other set.
+assert(false);
     return true;
   }
 
   if (minEast + maxDiff > length)
+  {
+assert(false);
     return true;
+  }
 
   if (minWest + minEast > length)
+  {
+assert(false);
     return true;
+  }
   
   return false;
 }
