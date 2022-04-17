@@ -1,37 +1,19 @@
+We're generating a lot of duplicates in the loop:
+First the higher tops are unused, then that comes up later again
+explicitly.
+
+Reactivate duplication erase output; minimize it.
+
+No stack in loop anymore?
+
+
+
+
 Can't use CoverRow rather than CoverRowOld at the moment:
 symmFlag is not in the looked-up cover, so have to track separately.
 This is because we haven't done symmetric cover's generally yet.
 Other than that the two are more similar now.
 So it's getting to be time...
-
-Cutting down on the overhead in CoverStore:
-When we have a candidate productPair for a sumProfile:
-One after the other, look at tops that are specified explicitly:
-For the rest, look at the min and max we'd need for the punched-out one.
-To get the minimum, take the minimum length and subtract the maximal tops.
-To get the maximum, take the maximum length and subtract the minimal tops.
-Then (minrec, maxrec) and (minact, maxact).
-if minact < minrec: omit (too loose)
-if maxact > maxrec: omit (too loose)
-if minact == minrec && maxact == maxrec: omit (redundant)
-
-So more precisely:
-Add up all min and max from West side and from East side.
-When we're looking at a specific top and its range (and it's used):
-Reconstruct what we already know about this top:
-There is a length range (which may be unused = whole range).
-min length - (cumulative max sum - this max sum), not below 0
-max length - (cumulative min sum - this min sum), not above sum for top
-Same from East side, or is this needed at all?
-
-Then the actual top range must be narrower on at least one end.
-Let's say the reconstructed one is >= 1 and the actual is >= 1: omit
-actual is >= 2: keep (narrower)
-reconstructed is >= 2 and actual is >= 1: omit (already knew)
-recon is 2-3 (out of 4) and actual is >= 2: omit
-
-
-
 
 CoverRow could potentially get a list<Cover const *> already,
 so then there's only one add that takes care of resize and weigh.

@@ -107,6 +107,7 @@ bool ProfilePair::punchTop(
   const unsigned char topMin =
     (lowerProfile.length <= partialSumMax ? 
     0 : lowerProfile.length - partialSumMax);
+
   const unsigned char topMax =
     (upperProfile.length >= partialSumMin + maxTops ?
     maxTops : upperProfile.length - partialSumMin);
@@ -145,10 +146,10 @@ bool ProfilePair::minimal(
   }
 
   /* */
-  for (unsigned t = 1; t <= topNumber; t++)
+  for (unsigned char t = 1; t <= topNumber; t++)
   {
     // Given the length constraint, do we need the top?
-    if (punchTop(sumProfile, topNumber, sumMin, sumMax))
+    if (punchTop(sumProfile, t, sumMin, sumMax))
       return false;
   }
   /* */

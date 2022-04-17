@@ -65,6 +65,10 @@ void Covers::prepareNew(
 {
   sumProfile = sumProfileIn;
 
+// cout << "ENTERING\n";
+// if (sumProfile.getLength() == 3 && sumProfile.size() == 3)
+  // cout << "HERE\n";
+
   timersStrat[20].start();
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back();
@@ -114,9 +118,13 @@ void Covers::prepareNew(
           { 
             stackIter->setLength(lLow, lHigh);
 
+// cout << "top number " << +topNumber << "\n";
+// cout << stackIter->strLines() << "\n";
+
             if (! stackIter->minimal(sumProfile, topNumber))
              continue;
 
+// cout << "In\n\n";
             store.add(productMemory, sumProfile, * stackIter, false,
               distProfiles, cases);
           }
