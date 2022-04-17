@@ -169,6 +169,12 @@ void ProfilePair::incrNextTopNo()
 }
 
 
+bool ProfilePair::last() const
+{
+  return (static_cast<unsigned>(topNext+1) >= lowerProfile.size());
+}
+
+
 unsigned char ProfilePair::getNextTopNo() const
 {
   return topNext;

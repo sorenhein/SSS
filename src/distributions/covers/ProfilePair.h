@@ -64,6 +64,8 @@ class ProfilePair
 
     void incrNextTopNo();
 
+    bool last() const;
+
     unsigned char getNextTopNo() const;
 
     unsigned long long getCode(const Profile& sumProfile) const;

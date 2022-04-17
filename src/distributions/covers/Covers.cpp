@@ -82,11 +82,13 @@ void Covers::prepareNew(
     auto stackIter = stack.begin();
 
     unsigned char topNumber = stackIter->getNextTopNo(); // Next to write
+    /*
     if (topNumber >= sumProfile.size())
     {
       stack.pop_front();
       continue;
     }
+    */
 
     const unsigned char topCountActual = sumProfile.count(topNumber);
 
@@ -110,9 +112,12 @@ void Covers::prepareNew(
         if (topNumber > 0 &&
             topCountLow == 0 && topCountHigh == topCountActual)
         {
-          stackIter = stack.insert(stackIter, * stackIter);
-          auto nextIter = next(stackIter);
-          nextIter->incrNextTopNo();
+          if (! stackIter->last())
+          {
+            stackIter = stack.insert(stackIter, * stackIter);
+            auto nextIter = next(stackIter);
+            nextIter->incrNextTopNo();
+          }
           continue;
         }
 
@@ -140,9 +145,12 @@ void Covers::prepareNew(
           }
         }
 
-        stackIter = stack.insert(stackIter, * stackIter);
-        auto nextIter = next(stackIter);
-        nextIter->incrNextTopNo();
+        if (! stackIter->last())
+        {
+          stackIter = stack.insert(stackIter, * stackIter);
+          auto nextIter = next(stackIter);
+          nextIter->incrNextTopNo();
+        }
       }
     }
     assert(! stack.empty());
