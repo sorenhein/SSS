@@ -57,6 +57,7 @@ class Tricks
 
     void prepare(
       const Product& product,
+      const bool symmFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
       unsigned& weight,

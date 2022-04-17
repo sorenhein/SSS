@@ -68,6 +68,7 @@ void Cover::prepare(
 
   tricks.prepare(
     productUnitPtr->product, 
+    symmFlag,
     distProfiles, 
     cases, 
     weight, 

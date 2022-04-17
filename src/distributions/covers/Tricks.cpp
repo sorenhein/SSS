@@ -117,6 +117,7 @@ void Tricks::weigh(
 
 void Tricks::prepare(
   const Product& product,
+  const bool symmFlag,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
   unsigned& weight,
@@ -129,13 +130,29 @@ void Tricks::prepare(
   weight = 0;
   numDist = 0;
 
-  for (unsigned dno = 0; dno < len; dno++)
+  if (symmFlag)
   {
-    if (product.includes(distProfiles[dno]))
+    for (unsigned dno = 0; dno < len; dno++)
     {
-      tricks[dno] = 1;
-      weight += static_cast<unsigned>(cases[dno]);
-      numDist++;
+      if (product.includes(distProfiles[dno]) ||
+          product.includes(distProfiles[len-1-dno]))
+      {
+        tricks[dno] = 1;
+        weight += static_cast<unsigned>(cases[dno]);
+        numDist++;
+      }
+    }
+  }
+  else
+  {
+    for (unsigned dno = 0; dno < len; dno++)
+    {
+      if (product.includes(distProfiles[dno]))
+      {
+        tricks[dno] = 1;
+        weight += static_cast<unsigned>(cases[dno]);
+        numDist++;
+      }
     }
   }
 }
