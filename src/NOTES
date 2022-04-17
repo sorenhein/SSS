@@ -1,9 +1,5 @@
 Symmetrics:
-
-2. Cover::prepare should use symmFlag somehow.
-   Perhaps call tricks.symmetrize for now.
-   Or Tricks::prepare should test includes(dno) or len-1-dno.
-
+Get out the old script to compare strategies.
 
 Can't use CoverRow rather than CoverRowOld at the moment:
 symmFlag is not in the looked-up cover, so have to track separately.
@@ -13,10 +9,6 @@ So it's getting to be time...
 
 CoverRow could potentially get a list<Cover const *> already,
 so then there's only one add that takes care of resize and weigh.
-
-
-Time CoverStore vs rest of prepareNew
-In particular perhaps CoverStore::add
 
 CoverRow and CoverRowOld can probably be combined somehow.
 Covers can be split into Covers and CoverSolve; but Solve is not
@@ -63,21 +55,8 @@ Less memory.
 
 Side
 ----
-- We can set up a symmFlag which means that in includes()
-  we check length and tops but with (W, E) and (E, W), fooling
-  Term in the process.  Actually in Cover/CoverNew we can just mirror
-  the results.  But probably the Term's should know that it's 
-  now a symmetric one, and not West or East.
-
 - Does Product::strVerbal and strLine still need sumProfile?
   Does Term?
-
-- Term and Product don't know actual lengths
-- ProductMemory
-- Cover knows symmFlag and actual lengths (or depends on them)
-- CoverMemory (new)
-  
-
 
 
 Names of cards
@@ -97,29 +76,6 @@ What else?
 
 Thoughts on runtime and memory of covers
 ----------------------------------------
-It's actually probably a good idea to have the separation between
-CoverNew (with a profile etc.) and CoverSetNew (which just has the
-cover elements, independent of length and top distribution).
-
-The CoverSetNew's could come from a cover hotel (CoverMemory,
-essentially).  There we could keep track of the times they are used.
-They would have to be organized in some order.  Perhaps lexically
-first by length, then by highest top in its list, ...
-
-CoverMemory would have a pointer or index, probably a pointer, into
-the list.
-
-How do we generate the new CoverMemory?  Perhaps in Covers we do
-as we do now, including creating the profile, sorting, pruning.
-When we are done, we go through the list, and we make another list
-with the same number of entries, but with pointers to the cover
-memory.  If it exists, the memory is unchanged.  If not, it is
-created.  Actually we just keep the CoverSetNew separate in the first
-list, and we flesh out the pointer and forget about the CoverSetNew
-we created afterwards.
-
-So CoverMemory might have to be an unordered map.
-
 Could reduce a strategy with more complication than actual depth
 to the actual depth, similarly to what we already know how to do.
 The #cases should add up the right way.
@@ -216,8 +172,6 @@ Further work:
     Would speed up prune, but slow down prepare
     Later on, could speed up matching, but then we might prefer
     5-distribution groups as result vectors go up to 2 bits each.
-  - Does it help not to make 50k entries in Covers, but say to double
-    the size every time we run out of space?
   - Maybe later on we know which covers end up getting used,
     so we store those in a file and we know the count ahead of time.
     Could generate the prepare's ourselves.
@@ -241,10 +195,6 @@ Further work:
     Then look up 8-bit binary trick profiles to see whether they are
     below the full trick profile, before subtracting out normally.
     Both speed and space.  But this is an optimization.
-
-
-Don't loop over last top level (could be only top level).
-No entry that is completely empty or completely full.
 
 
 Verbals of strategy wins

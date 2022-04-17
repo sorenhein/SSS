@@ -56,7 +56,7 @@ void Combinations::setTimerNames()
   timersStrat[10].name("Strats::purgeRanges");
   timersStrat[20].name("Covers::early");
   timersStrat[21].name("Covers::loop");
-  timersStrat[22].name("Covers::erase");
+  timersStrat[22].name("Covers::symmetrics");
   timersStrat[23].name("Covers::prepare");
   timersStrat[24].name("Covers::sort");
   timersStrat[25].name("Covers::prune");

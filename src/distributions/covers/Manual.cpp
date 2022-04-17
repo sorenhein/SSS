@@ -292,7 +292,7 @@ void Manual::prepare_4_2(DistData& distData) const
 
   Manual::WestGeneralAnd(distData, 2, 2, 2, 2); // 16. HH doubleton West
   Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // 17. HH doubleton East
-  Manual::SymmGeneralAnd(distData, 2, 2, 2, 2); // 18. HH doubleton
+  Manual::SymmGeneralAnd(distData, 2, 2, 0, 0); // 18. HH doubleton
 
   Manual::WestGeneralAnd(distData, 2, 4, 1, 1); // 19. Hx(x) with West
   Manual::WestGeneralAnd(distData, 0, 3, 2, 2); // 20. HH(x) with West
@@ -565,7 +565,8 @@ void Manual::prepare_6_2(DistData& distData) const
   Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // 14. H(x) with West
 
   Manual::WestGeneralAnd(distData, 0, 3, 1, 2); // 15. 1-3 or H(x), HH W
-  Manual::SymmGeneralAnd(distData, 0, 3, 1, 2); // 16. 1-3 or H(x) HH stiff
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 2); // 15. 1-3 or H(x), HH E
+  //Manual::SymmGeneralAnd(distData, 0, 3, 1, 2); // 16. 1-3 or H(x) HH stiff
   Manual::EastGeneralAnd(distData, 3, 3, 2, 2); // 17. HHx with East
   Manual::EastGeneralAnd(distData, 2, 2, 1, 1); // 18. Hx with East
   Manual::WestGeneralAnd(distData, 0, 3, 2, 2); // 19. HH(x) with West

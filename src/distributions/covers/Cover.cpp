@@ -357,9 +357,9 @@ string Cover::str(const Profile& sumProfile) const
 
     Opponent simplestOpponent = product.simplestOpponent(sumProfile);
     ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
-    if (symmFlag)
-      ss << " [" << +2*numDist << ", " << 2*weight << "]";
-    else
+    // if (symmFlag)
+      // ss << " [" << +2*numDist << ", " << 2*weight << "]";
+    // else
       ss << " [" << +numDist << ", " << weight << "]";
 
     return ss.str();

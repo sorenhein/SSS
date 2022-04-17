@@ -106,6 +106,16 @@ void CoverStore::add(
 
 void CoverStore::admixSymmetric()
 {
+  /*
+  cout << "Non-symmetrics are:\n";
+  for (auto& c: store)
+    cout << c.strLine();
+
+  cout << "\nSymmetrics are:\n";
+  for (auto& c: symmetricCache)
+    cout << c.strLine();
+    */
+
   for (auto& cover: symmetricCache)
   {
     auto result = store.insert(cover);
@@ -116,6 +126,13 @@ void CoverStore::admixSymmetric()
   }
 
   symmetricCache.clear();
+
+  /*
+  cout << "Non-symmetrics are now:\n";
+  for (auto& c: store)
+    cout << c.strLine();
+    */
+
 }
 
 

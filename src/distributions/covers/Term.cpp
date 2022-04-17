@@ -98,7 +98,20 @@ bool Term::symmetrizable(const unsigned char maximum) const
   // True if the term occupies the lower half of its possible interval,
   // not including any middle value.
   assert(Term::used());
-  return (upper <= (maximum-1)/2);
+
+  if (maximum & 1)
+  {
+    // When the maximum is odd, e.g. 5, there is no midpoint.
+    return (upper <= maximum/2);
+  }
+  else
+  {
+    // When the maximum is even, e.g. 5, it is also OK for
+    // lower and upper both to equal the midpoint.
+    const unsigned char midpoint = maximum/2;
+    return (upper < midpoint ||
+        (lower == upper && upper == midpoint));
+  }
 }
 
 
