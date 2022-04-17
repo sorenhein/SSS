@@ -29,6 +29,7 @@ void Cover::reset()
   weight = 0;
   numDist = 0;
   symmFlag = false;
+  code = 0;
 }
 
 

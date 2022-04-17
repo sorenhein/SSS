@@ -30,6 +30,10 @@ class CoverStore
 
     set<Cover> store;
 
+    // To avoid creating a temporary one every time.
+    Cover coverScratch;
+
+
     void eliminate(set<Cover>::iterator& itMatch);
 
 
@@ -53,7 +57,7 @@ class CoverStore
       const ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& productPair,
-      const bool symmFlag) const;
+      const bool symmFlag); // Effectively const
 
     set<Cover>::const_iterator begin() const;
 

@@ -13,10 +13,6 @@
 
 #include "CoverStore.h"
 
-#include "ProductMemory.h"
-#include "Profile.h"
-#include "ProfilePair.h"
-
 
 CoverStore::CoverStore()
 {
@@ -73,17 +69,16 @@ void CoverStore::add(
   const vector<unsigned char>& cases)
 {
   // Make a Cover.
-  // TODO May be able to use emplace?
-  Cover cover;
-  cover.set(productMemory, sumProfile, productPair, symmFlag);
+  coverScratch.reset();
+  coverScratch.set(productMemory, sumProfile, productPair, symmFlag);
 
   // Make its tricks and counts.
-  cover.prepare(distProfiles, cases);
-  if (cover.empty() || cover.full())
+  coverScratch.prepare(distProfiles, cases);
+  if (coverScratch.empty() || coverScratch.full())
     return;
 
   // Store it in "store".
-  auto result = store.insert(cover);
+  auto result = store.insert(coverScratch);
   assert(result.first != store.end());
 
   // In Covers we generate covers using ProfilePair.
@@ -99,11 +94,7 @@ const Cover& CoverStore::lookup(const Cover& cover) const
   // Turn a cover into the one we already know.  It must exist.
 
   auto it = store.find(cover);
-if (it == store.end())
-{
-cout << cover.strLine();
   assert(it != store.end());
-}
 
   return * it;
 }
@@ -113,12 +104,14 @@ const Cover& CoverStore::lookup(
   const ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& productPair,
-  const bool symmFlag) const
+  const bool symmFlag)
 {
-  // TODO Do we need this, or only the cover lookup?
-  Cover cover;
-  cover.setExisting(productMemory, sumProfile, productPair, symmFlag);
-  return CoverStore::lookup(cover);
+  // This is const except for coverScratch being modified.
+
+  coverScratch.setExisting(
+    productMemory, sumProfile, productPair, symmFlag);
+
+  return CoverStore::lookup(coverScratch);
 }
 
 
