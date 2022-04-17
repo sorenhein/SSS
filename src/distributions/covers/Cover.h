@@ -65,6 +65,8 @@ class Cover
     // TODO Not necessary long-term
     void setSymmetric(const bool symmFlagIn);
 
+    bool symmetrizable(const Profile& sumProfile) const;
+
     // Will invalidate Cover if not symmetrizable!
     bool symmetrize(const vector<unsigned char>& cases);
 

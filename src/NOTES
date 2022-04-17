@@ -1,14 +1,13 @@
-Buglet: range when 0xf should not be 15 minus ...
+Symmetrics:
 
-CoverStore::add
-Don't accept symmFlag as argument.
-First set scratch with false.
-Then call Cover::symmetrize(), and if possible, store it
+1. Ranges
+   - symm's don't have range set at all
+   - Unsymmetric ones with 15 on one end use 15
+   - Actually I think I'll just rip out range -- is it useful?
 
-- Cover::operator < uses symmFlag
-- In CoverRowOld, we should not pass in symmFlag, as it's in cover.
-  
-
+2. Cover::prepare should use symmFlag somehow.
+   Perhaps call tricks.symmetrize for now.
+   Or Tricks::prepare should test includes(dno) or len-1-dno.
 
 
 Can't use CoverRow rather than CoverRowOld at the moment:

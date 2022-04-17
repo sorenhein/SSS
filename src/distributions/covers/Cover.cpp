@@ -81,6 +81,18 @@ void Cover::setSymmetric(const bool symmFlagIn)
 }
 
 
+bool Cover::symmetrizable(const Profile& sumProfile) const
+{
+  // We consider the product terms in the order (length, highest top,
+  // next top, ...).  The first such term that is set must be in the
+  // lower half of its possibilities.  So if length is 5, it can be
+  // at most [0, 2].  If length is 4, [0, 1].
+  
+  assert(productUnitPtr != nullptr);
+  return productUnitPtr->product.symmetrizable(sumProfile);
+}
+
+
 bool Cover::symmetrize(const vector<unsigned char>& cases)
 {
   // Will invalidate Cover if not symmetrizable!
@@ -173,12 +185,12 @@ bool Cover::operator < (const Cover& cover2) const
   else if (p1.getComplexity() > p2.getComplexity())
     return false;
   // TODO Activate these once we have symmetrics in the general list
-  /*
+  /* */
   else if (symmFlag && ! cover2.symmFlag)
     return true;
   else if (! symmFlag && cover2.symmFlag)
     return false;
-    */
+    /* */
   else if (numDist > cover2.numDist)
     // Ones that touch more distributions first
     return true;

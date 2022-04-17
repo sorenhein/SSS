@@ -104,8 +104,7 @@ void Covers::prepareNew(
 
         // This add() and the next one consume about 70% of the
         // overall time of the loop.
-        store.add(productMemory, sumProfile, running, false,
-          distProfiles, cases);
+        store.add(productMemory, sumProfile, running, distProfiles, cases);
 
         unsigned char westLow, westHigh;
         running.getLengthRange(westLow, westHigh);
@@ -128,7 +127,7 @@ void Covers::prepareNew(
             if (! running.minimal(sumProfile, westLow, westHigh))
              continue;
 
-            store.add(productMemory, sumProfile, running, false,
+            store.add(productMemory, sumProfile, running, 
               distProfiles, cases);
           }
         }
@@ -144,6 +143,10 @@ void Covers::prepareNew(
     stack.pop_front();
   }
   timersStrat[21].stop();
+
+  timersStrat[22].start();
+  store.admixSymmetric();
+  timersStrat[22].stop();
 
   cout << setw(6) << store.size() << sumProfile.strLine();
 

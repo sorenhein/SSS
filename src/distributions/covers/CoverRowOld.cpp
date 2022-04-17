@@ -38,7 +38,7 @@ void CoverRowOld::resize(const unsigned len)
 
 void CoverRowOld::add(
   const Cover& cover,
-  const bool symmFlag, // Unnecessary later -- already in cover
+  [[maybe_unused]] const bool symmFlag, // Unnecessary later -- already in cover
   const Profile& sumProfileIn,
   const unsigned indexIn)
 {
@@ -46,7 +46,7 @@ void CoverRowOld::add(
   sumProfile = sumProfileIn; // Both are duplicative
 
   covers.emplace_back(cover);
-  covers.back().setSymmetric(symmFlag);
+  // covers.back().setSymmetric(symmFlag);
   covers.back().tricksOr(tricks);
 }
 

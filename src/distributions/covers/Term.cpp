@@ -93,6 +93,15 @@ bool Term::includes(const unsigned char value) const
 }
 
 
+bool Term::symmetrizable(const unsigned char maximum) const
+{
+  // True if the term occupies the lower half of its possible interval,
+  // not including any middle value.
+  assert(Term::used());
+  return (upper <= (maximum-1)/2);
+}
+
+
 Opponent Term::simplestOpponent(const unsigned char maximum) const
 {
   if (! Term::used())

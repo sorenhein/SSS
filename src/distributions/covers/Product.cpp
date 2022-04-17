@@ -137,6 +137,22 @@ bool Product::includesComplement(
 }
 
 
+bool Product::symmetrizable(const Profile& sumProfile) const
+{
+  if (length.used())
+    return length.symmetrizable(sumProfile.getLength());
+
+  for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
+  {
+    if (tops[i].used())
+      return tops[i].symmetrizable(sumProfile.count(i));
+  }
+
+  // To have something, but this shouldn't happen.
+  return false;
+}
+
+
 unsigned char Product::getComplexity() const
 {
   return complexity;

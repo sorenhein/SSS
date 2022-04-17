@@ -58,6 +58,8 @@ class Term
 
     bool includes(const unsigned char value) const;
 
+    bool symmetrizable(const unsigned char maximum) const;
+
     Opponent simplestOpponent(const unsigned char maximum) const;
 
     CoverOperator getOperator() const;

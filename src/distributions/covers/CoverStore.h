@@ -11,6 +11,7 @@
 
 #include <string>
 #include <set>
+#include <list>
 
 #include "Cover.h"
 
@@ -33,6 +34,10 @@ class CoverStore
     // To avoid creating a temporary one every time.
     Cover coverScratch;
 
+    // Cache the symmetric ones until we have added all the
+    // regular ones.
+    list<Cover> symmetricCache;
+
 
     void eliminate(set<Cover>::iterator& itMatch);
 
@@ -47,9 +52,10 @@ class CoverStore
       ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& productPair,
-      const bool symmFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
+
+    void admixSymmetric();
 
     const Cover& lookup(const Cover& cover) const;
 

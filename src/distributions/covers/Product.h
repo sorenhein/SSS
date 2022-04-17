@@ -69,6 +69,8 @@ class Product
       const Profile& distProfile,
       const Profile& sumProfile) const;
 
+    bool symmetrizable(const Profile& sumProfile) const;
+
     unsigned char getComplexity() const;
 
     // An effective size
