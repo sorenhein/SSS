@@ -39,12 +39,9 @@ class TermCompare
 
     unsigned char getData(
       const bool usedFlag,
-      const unsigned char range,
       const unsigned char complexity) const;
 
     bool used(const unsigned char data) const;
-
-    unsigned char range(const unsigned char data) const;
 
     unsigned char complexity(const unsigned char data) const;
 };

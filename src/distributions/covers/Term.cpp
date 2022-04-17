@@ -34,7 +34,7 @@ void Term::reset()
   // Choose a large index value and hope to break the index 
   // if we try to use it unset...
   index = numeric_limits<unsigned short>::max();
-  data = termCompare.getData(false, 0, 0);
+  data = termCompare.getData(false, 0);
 }
 
 
@@ -49,7 +49,7 @@ void Term::set(
   if (lowerIn == 0 && upperIn == oppSize)
   {
     // Not set
-    data = termCompare.getData(false, 0, 0);
+    data = termCompare.getData(false, 0);
     return;
   }
 
@@ -80,7 +80,7 @@ void Term::set(
   }
 
   index = termCompare.getIndex(lower, upper, oper);
-  data = termCompare.getData(true, upper-lower, complexity);
+  data = termCompare.getData(true, complexity);
 }
 
 
@@ -132,12 +132,6 @@ bool Term::used() const
 unsigned char Term::complexity() const
 {
   return termCompare.complexity(data);
-}
-
-
-unsigned char Term::range() const
-{
-  return termCompare.range(data);
 }
 
 

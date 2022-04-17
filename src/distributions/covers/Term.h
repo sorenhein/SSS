@@ -68,8 +68,6 @@ class Term
 
     unsigned char complexity() const;
 
-    unsigned char range() const;
-
     string strGeneral() const;
 };
 

@@ -49,7 +49,6 @@ void Product::set(
     upperProfile.getLength());
 
   complexity = length.complexity();
-  range = length.range();
 
   const unsigned topLowSize = lowerProfile.size();
   assert(upperProfile.size() == topLowSize);
@@ -73,14 +72,19 @@ void Product::set(
     }
 
     complexity += tops[i].complexity();
-    range += tops[i].range();
   }
 
   // If there is only a single distribution possible, this counts
   // as a complexity of 2 (don't make it absurdly attractive).
-  if (range == 0 && length.used() && 
-    topCount+1 == static_cast<unsigned char>(topLowSize))
+  if (length.used() && topCount+1 == static_cast<unsigned char>(topLowSize))
   {
+    if (lowerProfile.getLength() != upperProfile.getLength())
+      return;
+
+    for (unsigned char i = 1; i < topLowSize; i++)
+      if (lowerProfile.count(i) != upperProfile.count(i))
+        return;
+
     complexity = 2;
   }
 }
@@ -171,17 +175,6 @@ unsigned char Product::getTopSize() const
 unsigned char Product::size() const
 {
   return static_cast<unsigned char>(tops.size());
-}
-
-
-unsigned char Product::getRangeSum() const
-{
-  unsigned char sum = length.range();
-  for (auto& top: tops)
-    sum += top.range();
-
-  assert(sum == range);
-  return sum;
 }
 
 

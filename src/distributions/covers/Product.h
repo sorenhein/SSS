@@ -40,9 +40,8 @@ class Product
 
     unsigned char complexity;
 
-    unsigned char range;
-    
     unsigned char topSize; // Last used top number + 1; may be 0
+
     unsigned char topCount; // Number of tops that are not unused
 
 
@@ -77,8 +76,6 @@ class Product
     unsigned char getTopSize() const;
 
     unsigned char size() const;
-
-    unsigned char getRangeSum() const;
 
     bool explainable() const;
 

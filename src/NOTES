@@ -1,10 +1,5 @@
 Symmetrics:
 
-1. Ranges
-   - symm's don't have range set at all
-   - Unsymmetric ones with 15 on one end use 15
-   - Actually I think I'll just rip out range -- is it useful?
-
 2. Cover::prepare should use symmFlag somehow.
    Perhaps call tricks.symmetrize for now.
    Or Tricks::prepare should test includes(dno) or len-1-dno.

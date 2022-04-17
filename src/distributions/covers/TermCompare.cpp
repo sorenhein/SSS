@@ -69,16 +69,13 @@ bool TermCompare::includes(
 
 unsigned char TermCompare::getData(
   const bool usedFlag,
-  const unsigned char range,
   const unsigned char complexity) const
 {
-  // Coding:
+  // Coding (historical, could be changed):
   // 6   usedFlag
-  // 2-5 range
   // 0-1 complexity
   return
     (static_cast<unsigned char>(usedFlag) << 6) |
-    (range << 2) |
     complexity;
 }
 
@@ -86,12 +83,6 @@ unsigned char TermCompare::getData(
 bool TermCompare::used(const unsigned char data) const
 {
   return (data & 0x40);
-}
-
-
-unsigned char TermCompare::range(const unsigned char data) const
-{
-  return ((data >> 2) & 0xf);
 }
 
 
