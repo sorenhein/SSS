@@ -106,6 +106,16 @@ void Covers::prepareNew(
         stackIter->setLength(0, sumProfile.getLength()); // ?
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
+        // An unused top was already seen.
+        if (topNumber > 0 &&
+            topCountLow == 0 && topCountHigh == topCountActual)
+        {
+          stackIter = stack.insert(stackIter, * stackIter);
+          auto nextIter = next(stackIter);
+          nextIter->incrNextTopNo();
+          continue;
+        }
+
         store.add(productMemory, sumProfile, * stackIter, false,
           distProfiles, cases);
 
