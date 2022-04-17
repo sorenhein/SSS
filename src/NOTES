@@ -1,5 +1,15 @@
 Buglet: range when 0xf should not be 15 minus ...
 
+CoverStore::add
+Don't accept symmFlag as argument.
+First set scratch with false.
+Then call Cover::symmetrize(), and if possible, store it
+
+- Cover::operator < uses symmFlag
+- In CoverRowOld, we should not pass in symmFlag, as it's in cover.
+  
+
+
 
 Can't use CoverRow rather than CoverRowOld at the moment:
 symmFlag is not in the looked-up cover, so have to track separately.

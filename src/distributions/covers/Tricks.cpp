@@ -141,6 +141,44 @@ void Tricks::prepare(
 }
 
 
+bool Tricks::symmetrize(
+  const vector<unsigned char>& cases,
+  unsigned& weight,
+  unsigned char& numDist)
+{
+  // Will invalidate Tricks if not symmetrizable!
+  // We only symmetrize if there is no overlap with the mirror.
+  // We cannot be sure to double weight and numDist, as the middle
+  // element in an odd-length tricks will not be repeated.
+
+  const unsigned len = tricks.size();
+
+  for (unsigned dno = 0; dno < len/2; dno++)
+  {
+    const unsigned mno = len - 1 - dno;
+    if (tricks[dno] == 0)
+    {
+      if (tricks[mno] > 0)
+      {
+        tricks[dno] = tricks[mno];
+        weight += cases[mno];
+        numDist++;
+      }
+    }
+    else if (tricks[mno] == 0)
+    {
+      tricks[mno] = tricks[dno];
+      weight += cases[dno];
+      numDist++;
+    }
+    else
+      return false;
+  }
+
+  return true;
+}
+
+
 bool Tricks::possible(
   const Tricks& explained,
   const Tricks& residuals,

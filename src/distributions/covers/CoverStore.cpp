@@ -68,6 +68,8 @@ void CoverStore::add(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
+assert(! symmFlag);
+
   // Make a Cover.
   coverScratch.reset();
   coverScratch.set(productMemory, sumProfile, productPair, symmFlag);

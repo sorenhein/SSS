@@ -65,6 +65,9 @@ class Cover
     // TODO Not necessary long-term
     void setSymmetric(const bool symmFlagIn);
 
+    // Will invalidate Cover if not symmetrizable!
+    bool symmetrize(const vector<unsigned char>& cases);
+
     void tricksOr(Tricks& running) const;
 
     bool includes(const Profile& distProfile) const;

@@ -62,6 +62,12 @@ class Tricks
       unsigned& weight,
       unsigned char& numDist);
 
+    // Will invalidate Tricks if not symmetrizable!
+    bool symmetrize(
+      const vector<unsigned char>& cases,
+      unsigned& weight,
+      unsigned char& numDist);
+
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,

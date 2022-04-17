@@ -65,13 +65,36 @@ void Cover::prepare(
   const vector<unsigned char>& cases)
 {
   assert(productUnitPtr != nullptr);
-  tricks.prepare(productUnitPtr->product, distProfiles, cases, weight, numDist);
+
+  tricks.prepare(
+    productUnitPtr->product, 
+    distProfiles, 
+    cases, 
+    weight, 
+    numDist);
 }
 
 
 void Cover::setSymmetric(const bool symmFlagIn)
 {
   symmFlag = symmFlagIn;
+}
+
+
+bool Cover::symmetrize(const vector<unsigned char>& cases)
+{
+  // Will invalidate Cover if not symmetrizable!
+  assert(! symmFlag);
+
+  if (! tricks.symmetrize(cases, weight, numDist))
+    return false;
+
+  // Should still have at least one zero.
+  if (numDist == tricks.size())
+    return false;
+
+  symmFlag = true;
+  return true;
 }
 
 
