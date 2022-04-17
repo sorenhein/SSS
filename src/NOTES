@@ -1,3 +1,5 @@
+Buglet: range when 0xf should not be 15 minus ...
+
 We're generating a lot of duplicates in the loop:
 First the higher tops are unused, then that comes up later again
 explicitly.

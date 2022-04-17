@@ -30,6 +30,8 @@ class CoverStore
 
     set<Cover> store;
 
+    void eliminate(set<Cover>::iterator& itMatch);
+
 
   public:
 

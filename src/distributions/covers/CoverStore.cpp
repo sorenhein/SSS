@@ -30,6 +30,40 @@ void CoverStore::reset()
 }
 
 
+void CoverStore::eliminate(set<Cover>::iterator& itMatch)
+{
+  // The tricks should be unique.  First check towards the end.
+  // There can be at most one duplicate.
+  auto itForward = itMatch;
+  while (++itForward != store.end())
+  {
+    if (! itMatch->sameWeight(* itForward))
+      break;
+
+    if (itMatch->sameTricks(* itForward))
+    {
+      store.erase(itForward);
+      return;
+    }
+  }
+
+  // If there is an earlier match, the current one is erased.
+  auto itBackward = itMatch;
+  while (itBackward != store.begin())
+  {
+    itBackward--;
+    if (! itMatch->sameWeight(* itBackward))
+      return;
+
+    if (itMatch->sameTricks(* itBackward))
+    {
+      store.erase(itMatch);
+      return;
+    }
+  }
+}
+
+
 void CoverStore::add(
   ProductMemory& productMemory,
   const Profile& sumProfile,
@@ -52,38 +86,11 @@ void CoverStore::add(
   auto result = store.insert(cover);
   assert(result.first != store.end());
 
-  // The tricks should be unique.  First check towards the end.
-  // There can be at most one duplicate.
-  auto itForward = result.first;
-  while (++itForward != store.end())
-  {
-    if (! result.first->sameWeight(* itForward))
-      break;
+  // In Covers we generate covers using ProfilePair.
+  // Assuming that the eliminations (in particular in active()) are
+  // done comprehensively, there is nothing left to eliminate here.
 
-    if (result.first->sameTricks(* itForward))
-    {
-// cout << "prf " << result.first->strLine(sumProfile);
-// cout << "del " << itForward->strLine(sumProfile) << "\n";
-      store.erase(itForward);
-      return;
-    }
-  }
-
-  auto itBackward = result.first;
-  while (itBackward != store.begin())
-  {
-    itBackward--;
-    if (! result.first->sameWeight(* itBackward))
-      return;
-
-    if (result.first->sameTricks(* itBackward))
-    {
-// cout << "prf " << itBackward->strLine(sumProfile);
-// cout << "del " << result.first->strLine(sumProfile) << "\n";
-      store.erase(result.first);
-      return;
-    }
-  }
+  // CoverStore::eliminate(result.first);
 }
 
 
@@ -92,7 +99,11 @@ const Cover& CoverStore::lookup(const Cover& cover) const
   // Turn a cover into the one we already know.  It must exist.
 
   auto it = store.find(cover);
+if (it == store.end())
+{
+cout << cover.strLine();
   assert(it != store.end());
+}
 
   return * it;
 }

@@ -37,6 +37,7 @@ void ProfilePair::addTop(
 }
 
 
+#include <iostream>
 bool ProfilePair::active(
   const unsigned char maxValue,
   const unsigned char actualLow,
@@ -44,40 +45,108 @@ bool ProfilePair::active(
   const unsigned char impliedLow,
   const unsigned char impliedHigh) const
 {
+/*
+cout << "maxValue    " << +maxValue << "\n";
+cout << "actualLow   " << +actualLow << "\n";
+cout << "actualHigh  " << +actualHigh << "\n";
+cout << "impliedLow  " << +impliedLow << "\n";
+cout << "impliedHigh " << +impliedHigh << "\n";
+*/
+
   if (actualLow > impliedLow)
   {
-    // Either strictly inside, or of the form ">=" where the
-    // lower limit is strictly inside.
-    if (actualHigh <= impliedHigh)
+    if (actualHigh < impliedHigh)
+    {
+      /* Strictly inside on both ends:
+         impliedLow                    impliedHigh
+              I        A            A       I
+                   actualLow  actualHigh
+       */
+
+// cout << "B0\n";
       return true;
+    }
     else if (actualHigh == maxValue)
     {
-      // If high, then == would do as well as >=.
-      return (actualLow < impliedHigh ? true : false);
+      /* Strictly inside on low end: Can be written >= actualLow.
+         But if actualLow == impliedHigh, can also be written ==.
+         impliedLow                    impliedHigh  maxValue
+              I        A                    I          A
+                   actualLow                       actualHigh
+       */
+
+// cout << "B1\n";
+      return (actualLow == actualHigh || actualLow < impliedHigh ? 
+        true : false);
+    }
+    else if (actualHigh == impliedHigh)
+    {
+      /* Strictly inside on low end: Can be written >= actualLow.
+         But if actualLow == impliedHigh, can also be written ==.
+         impliedLow                    impliedHigh
+              I        A                    IA
+                   actualLow           actualHigh
+       */
+
+      // return true;
+// cout << "B2\n";
+      // return (actualLow == actualHigh || actualLow < impliedHigh ? 
+      return (actualLow == actualHigh ?  true : false);
     }
     else
+    {
+// cout << "B3\n";
       return false;
-  }
-  else if (actualLow == impliedLow)
-  {
-    // Strictly inside.
-    if (actualHigh < impliedHigh)
-      return true;
-    else
-      return false;
+    }
   }
   else if (actualLow == 0)
   {
-    if (actualHigh < impliedHigh)
+    if (actualHigh >= impliedLow && actualHigh < impliedHigh)
     {
-      // If low, then == would do as well as <=.
-      return (actualHigh > impliedLow ? true : false);
+      /* Strictly inside on one end: Can be written <= actualHigh.
+         But if actualHigh == impliedLow, can also be written ==.
+             Zero                      impliedHigh
+              0A                    A       I
+         actualLow            actualHigh
+       */
+
+// cout << "B4\n";
+      return (actualHigh == actualLow || actualHigh > impliedLow ? 
+        true : false);
     }
     else
+    {
+// cout << "B5\n";
       return false;
+    }
+  }
+  else if (actualLow == impliedLow)
+  {
+    if (actualHigh < impliedHigh)
+    {
+      /* Strictly inside on high end: Can be written <= actualHigh,
+         but then actualLow should have been 0.
+         impliedLow                    impliedHigh
+              IA                    A       I
+         actualLow            actualHigh
+       */
+
+      // return true;
+      // return (actualLow == 0 ? true : false);
+// cout << "B6\n";
+      return (actualHigh == actualLow ?  true : false);
+    }
+    else
+    {
+// cout << "B7\n";
+      return false;
+    }
   }
   else
+  {
+// cout << "B8\n";
     return false;
+  }
 }
 
 

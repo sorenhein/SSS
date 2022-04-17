@@ -43,8 +43,11 @@ class Top: public Term
       {
         const unsigned char totalXes = oppsLength - oppsTops;
 
-        westMax = distLengthUpper - topsExact;
-        westMin = distLengthLower - topsExact;
+        westMax = (distLengthUpper < topsExact ? 0 : 
+          distLengthUpper - topsExact);
+
+        westMin = (distLengthLower < topsExact ? 0 :
+          distLengthLower - topsExact);
 
         if (westMax > totalXes)
           westMax = totalXes;

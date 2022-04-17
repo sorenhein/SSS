@@ -64,10 +64,7 @@ void Covers::prepareNew(
   const Profile& sumProfileIn)
 {
   sumProfile = sumProfileIn;
-
-// cout << "ENTERING\n";
-// if (sumProfile.getLength() == 3 && sumProfile.size() == 3)
-  // cout << "HERE\n";
+  const unsigned char maxTricks = sumProfile.getLength();
 
   timersStrat[20].start();
   list<ProfilePair> stack; // Unfinished expansions
@@ -79,67 +76,68 @@ void Covers::prepareNew(
   timersStrat[21].start();
   while (! stack.empty())
   {
-    auto stackIter = stack.begin();
+    ProfilePair& running = stack.front();
 
-    unsigned char topNumber = stackIter->getNextTopNo(); // Next to write
+    unsigned char topNumber = running.getNextTopNo(); // Next to write
 
-    const unsigned char topCountActual = sumProfile.count(topNumber);
+    const unsigned char topLength = sumProfile.count(topNumber);
 
-    for (unsigned char topCountLow = 0; 
-        topCountLow <= topCountActual; topCountLow++)
+    for (unsigned char topLow = 0; topLow <= topLength; topLow++)
     {
-      for (unsigned char topCountHigh = topCountLow; 
-        topCountHigh <= topCountActual; topCountHigh++)
+      for (unsigned char topHigh = topLow; topHigh <= topLength; topHigh++)
       {
         // Never use the lowest top explicitly.  Maybe it shouldn't
         // be there at all, but it is.
-        if (topNumber == 0 &&
-            (topCountLow != 0 || topCountHigh != topCountActual))
+        if (topNumber == 0 && (topLow != 0 || topHigh != topLength))
           continue;
 
         // Add or restore the "don't care" with respect to length.
-        stackIter->setLength(0, sumProfile.getLength());
-        stackIter->addTop(topNumber, topCountLow, topCountHigh);
+        running.setLength(0, sumProfile.getLength());
+        running.addTop(topNumber, topLow, topHigh);
 
         // An unused top was already seen.
-        if (topNumber > 0 &&
-            topCountLow == 0 && topCountHigh == topCountActual)
+        if (topNumber > 0 && topLow == 0 && topHigh == topLength)
         {
-          if (! stackIter->last())
+          if (! running.last())
           {
-            stack.push_back(* stackIter);
+            stack.push_back(running);
             stack.back().incrNextTopNo();
           }
           continue;
         }
 
-        store.add(productMemory, sumProfile, * stackIter, false,
+        store.add(productMemory, sumProfile, running, false,
           distProfiles, cases);
 
         unsigned char westLow, westHigh;
-        stackIter->getLengthRange(westLow, westHigh);
+        running.getLengthRange(westLow, westHigh);
 
-        for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
+        for (unsigned char lLow = 0; lLow <= westHigh; lLow++)
         {
-          for (unsigned char lHigh = lLow; lHigh <= westHigh; lHigh++)
+          // Allow 0 as well as [westLow, westHigh].
+          if (lLow > 0 && lLow < westLow)
+            continue;
+
+          for (unsigned char lHigh = max(lLow, westLow); 
+              lHigh <= maxTricks; lHigh++)
           { 
-            stackIter->setLength(lLow, lHigh);
+            // Allow maxTricks as well as [westHigh, westHigh].
+            if (lHigh > westHigh && lHigh < maxTricks)
+              continue;
 
-// cout << "top number " << +topNumber << "\n";
-// cout << stackIter->strLines() << "\n";
+            running.setLength(lLow, lHigh);
 
-            if (! stackIter->minimal(sumProfile, westLow, westHigh))
+            if (! running.minimal(sumProfile, westLow, westHigh))
              continue;
 
-// cout << "In\n\n";
-            store.add(productMemory, sumProfile, * stackIter, false,
+            store.add(productMemory, sumProfile, running, false,
               distProfiles, cases);
           }
         }
 
-        if (! stackIter->last())
+        if (! running.last())
         {
-          stack.push_back(* stackIter);
+          stack.push_back(running);
           stack.back().incrNextTopNo();
         }
       }

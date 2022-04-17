@@ -91,7 +91,12 @@ ProductUnit const * ProductMemory::lookupByTop(
 
   unsigned long long code = pairCopy.getCode(sumProfile);
   auto it = memory[numTops].find(code);
+if (it == memory[numTops].end())
+{
+cout << "lookup pair:\n" << profilePair.strLines();
+cout << "sumProfile " << sumProfile.strLine();
   assert(it != memory[numTops].end());
+}
 
   // Don't count these.
   return &(it->second);
