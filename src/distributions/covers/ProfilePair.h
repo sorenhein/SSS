@@ -16,8 +16,6 @@ using namespace std;
 
 class ProfilePair
 {
-  friend class Product;
-
   private:
 
     Profile lowerProfile;
@@ -42,6 +40,10 @@ class ProfilePair
 
   public:
 
+    ProfilePair();
+
+    ProfilePair(const Profile& sumProfile);
+
     void init(const Profile& sumProfile);
 
     void setLength(
@@ -64,9 +66,13 @@ class ProfilePair
 
     void incrNextTopNo();
 
+    unsigned char getNextTopNo() const;
+
     bool last() const;
 
-    unsigned char getNextTopNo() const;
+    const Profile& getLowerProfile() const;
+
+    const Profile& getUpperProfile() const;
 
     unsigned long long getCode(const Profile& sumProfile) const;
 

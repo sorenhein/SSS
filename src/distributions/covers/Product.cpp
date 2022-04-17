@@ -92,8 +92,8 @@ void Product::set(
 {
   Product::set(
     sumProfile, 
-    profilePair.lowerProfile, 
-    profilePair.upperProfile);
+    profilePair.getLowerProfile(), 
+    profilePair.getUpperProfile());
 }
 
 

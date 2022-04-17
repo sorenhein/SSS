@@ -9,6 +9,17 @@
 #include "ProfilePair.h"
 
 
+ProfilePair::ProfilePair()
+{
+}
+
+
+ProfilePair::ProfilePair(const Profile& sumProfile)
+{
+  ProfilePair::init(sumProfile);
+}
+
+
 void ProfilePair::init(const Profile& sumProfile)
 {
   lowerProfile.tops.resize(sumProfile.size(), 0);
@@ -37,7 +48,6 @@ void ProfilePair::addTop(
 }
 
 
-#include <iostream>
 bool ProfilePair::active(
   const unsigned char maxValue,
   const unsigned char actualLow,
@@ -45,108 +55,97 @@ bool ProfilePair::active(
   const unsigned char impliedLow,
   const unsigned char impliedHigh) const
 {
-/*
-cout << "maxValue    " << +maxValue << "\n";
-cout << "actualLow   " << +actualLow << "\n";
-cout << "actualHigh  " << +actualHigh << "\n";
-cout << "impliedLow  " << +impliedLow << "\n";
-cout << "impliedHigh " << +impliedHigh << "\n";
-*/
-
   if (actualLow > impliedLow)
   {
     if (actualHigh < impliedHigh)
     {
-      /* Strictly inside on both ends:
-         impliedLow                    impliedHigh
-              I        A            A       I
-                   actualLow  actualHigh
+      /*       |        |        |        |        |        |
+       *       |        |        |        |        |        |
+       *  impliedLow                                   impliedHigh
+       *            actualLow                  actualHigh
+       *
+       * Strictly inside on both ends.
        */
 
-// cout << "B0\n";
       return true;
     }
     else if (actualHigh == maxValue)
     {
-      /* Strictly inside on low end: Can be written >= actualLow.
-         But if actualLow == impliedHigh, can also be written ==.
-         impliedLow                    impliedHigh  maxValue
-              I        A                    I          A
-                   actualLow                       actualHigh
+      /*       |        |        |        |        |        |
+       *       |        |        |        |        |        |
+       *  impliedLow                          impliedHigh
+       *            actualLow                           actualHigh
+       *                                                maxValue
+       * 
+       * Strictly inside on low end.
+       * If actualLow == actualHigh, can be written == which is OK.
+       * If actualLow == impliedHigh, would be == impliedHigh, not OK.
+       * If actualLow <  impliedHigh, can be written >= which is OK.
        */
 
-// cout << "B1\n";
       return (actualLow == actualHigh || actualLow < impliedHigh ? 
         true : false);
     }
     else if (actualHigh == impliedHigh)
     {
-      /* Strictly inside on low end: Can be written >= actualLow.
-         But if actualLow == impliedHigh, can also be written ==.
-         impliedLow                    impliedHigh
-              I        A                    IA
-                   actualLow           actualHigh
+      /*       |        |        |        |        |        |
+       *       |        |        |        |        |        |
+       *  impliedLow                                   impliedHigh
+       *            actualLow                           actualHigh
+       *
+       * Strictly inside on low end.
+       * If actualLow == actualHigh, can be written == which is OK.
+       * Otherwise it would be >= which needs actualHigh == maxValue.
        */
 
-      // return true;
-// cout << "B2\n";
-      // return (actualLow == actualHigh || actualLow < impliedHigh ? 
       return (actualLow == actualHigh ?  true : false);
     }
     else
-    {
-// cout << "B3\n";
       return false;
-    }
   }
   else if (actualLow == 0)
   {
     if (actualHigh >= impliedLow && actualHigh < impliedHigh)
     {
-      /* Strictly inside on one end: Can be written <= actualHigh.
-         But if actualHigh == impliedLow, can also be written ==.
-             Zero                      impliedHigh
-              0A                    A       I
-         actualLow            actualHigh
+      /*       |        |        |        |        |        |
+       *       |        |        |        |        |        |
+       *            (impliedLow <= actualHigh)         impliedHigh
+       *   actualLow                           actualHigh
+       *     Zero
+       *
+       * Strictly inside on high end.
+       * If actualLow == actualHigh, can be written == 0 which is OK.
+       * If actualHigh == impliedLow, == impliedLow which is not OK.
        */
 
-// cout << "B4\n";
       return (actualHigh == actualLow || actualHigh > impliedLow ? 
         true : false);
     }
     else
-    {
-// cout << "B5\n";
       return false;
-    }
   }
   else if (actualLow == impliedLow)
   {
     if (actualHigh < impliedHigh)
     {
-      /* Strictly inside on high end: Can be written <= actualHigh,
-         but then actualLow should have been 0.
-         impliedLow                    impliedHigh
-              IA                    A       I
-         actualLow            actualHigh
+      /*       |        |        |        |        |        |
+       *       |        |        |        |        |        |
+       *     Zero  impliedLow                          impliedHigh
+       *            actualLow                  actualHigh
+       *
+       * Strictly inside on high end.
+       * If actualLow == actualHigh, can be written == which is OK.
+       * Otherwise can be written <= actualHigh,
+       * but then actualLow should have been zero.
        */
 
-      // return true;
-      // return (actualLow == 0 ? true : false);
-// cout << "B6\n";
       return (actualHigh == actualLow ?  true : false);
     }
     else
-    {
-// cout << "B7\n";
       return false;
-    }
   }
   else
-  {
-// cout << "B8\n";
     return false;
-  }
 }
 
 
@@ -232,6 +231,12 @@ void ProfilePair::getLengthRange(
 }
 
 
+unsigned char ProfilePair::getNextTopNo() const
+{
+  return topNext;
+}
+
+
 void ProfilePair::incrNextTopNo()
 {
   topNext++;
@@ -244,9 +249,15 @@ bool ProfilePair::last() const
 }
 
 
-unsigned char ProfilePair::getNextTopNo() const
+const Profile& ProfilePair::getLowerProfile() const
 {
-  return topNext;
+  return lowerProfile;
+}
+
+
+const Profile& ProfilePair::getUpperProfile() const
+{
+  return upperProfile;
 }
 
 

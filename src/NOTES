@@ -1,15 +1,5 @@
 Buglet: range when 0xf should not be 15 minus ...
 
-We're generating a lot of duplicates in the loop:
-First the higher tops are unused, then that comes up later again
-explicitly.
-
-Reactivate duplication erase output; minimize it.
-
-No stack in loop anymore?
-
-
-
 
 Can't use CoverRow rather than CoverRowOld at the moment:
 symmFlag is not in the looked-up cover, so have to track separately.
@@ -23,13 +13,6 @@ so then there's only one add that takes care of resize and weigh.
 
 Time CoverStore vs rest of prepareNew
 In particular perhaps CoverStore::add
-Have a scratch cover?
-Look for reasons to delete existing or not to insert
-before actually inserting?
-
-Perhaps Covers first does the "new" covers.  Then when we prepare
-entire rows, we should be able to find all the same covers that make
-up "old" rows.
 
 CoverRow and CoverRowOld can probably be combined somehow.
 Covers can be split into Covers and CoverSolve; but Solve is not

@@ -66,12 +66,8 @@ void Covers::prepareNew(
   sumProfile = sumProfileIn;
   const unsigned char maxTricks = sumProfile.getLength();
 
-  timersStrat[20].start();
   list<ProfilePair> stack; // Unfinished expansions
-  stack.emplace_back();
-  stack.back().init(sumProfile);
-
-  timersStrat[20].stop();
+  stack.emplace_back(ProfilePair(sumProfile));
 
   timersStrat[21].start();
   while (! stack.empty())
@@ -106,6 +102,8 @@ void Covers::prepareNew(
           continue;
         }
 
+        // This add() and the next one consume about 70% of the
+        // overall time of the loop.
         store.add(productMemory, sumProfile, running, false,
           distProfiles, cases);
 
