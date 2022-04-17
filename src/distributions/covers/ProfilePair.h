@@ -36,8 +36,8 @@ class ProfilePair
     bool punchTop(
       const Profile& sumProfile,
       const unsigned char topNumber,
-      const unsigned char sumMin,
-      const unsigned char sumMax) const;
+      const unsigned char sumLower,
+      const unsigned char sumHigher) const;
 
 
   public:
@@ -55,11 +55,12 @@ class ProfilePair
 
     bool minimal(
       const Profile& sumProfile,
-      const unsigned char topNumber) const;
+      const unsigned char lengthLow,
+      const unsigned char lengthHigh) const;
 
-    unsigned char lengthWestLow() const;
-
-    unsigned char lengthWestHigh() const;
+    void getLengthRange(
+      unsigned char& sumLower,
+      unsigned char& sumHigher) const;
 
     void incrNextTopNo();
 

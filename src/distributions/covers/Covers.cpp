@@ -102,8 +102,8 @@ void Covers::prepareNew(
             (topCountLow != 0 || topCountHigh != topCountActual))
           continue;
 
-        // Add the "don't care" with respect to length.
-        stackIter->setLength(0, sumProfile.getLength()); // ?
+        // Add or restore the "don't care" with respect to length.
+        stackIter->setLength(0, sumProfile.getLength());
         stackIter->addTop(topNumber, topCountLow, topCountHigh);
 
         // An unused top was already seen.
@@ -119,8 +119,8 @@ void Covers::prepareNew(
         store.add(productMemory, sumProfile, * stackIter, false,
           distProfiles, cases);
 
-        const unsigned char westLow = stackIter->lengthWestLow();
-        const unsigned char westHigh = stackIter->lengthWestHigh();
+        unsigned char westLow, westHigh;
+        stackIter->getLengthRange(westLow, westHigh);
 
         for (unsigned char lLow = westLow; lLow <= westHigh; lLow++)
         {
@@ -131,7 +131,7 @@ void Covers::prepareNew(
 // cout << "top number " << +topNumber << "\n";
 // cout << stackIter->strLines() << "\n";
 
-            if (! stackIter->minimal(sumProfile, topNumber))
+            if (! stackIter->minimal(sumProfile, westLow, westHigh))
              continue;
 
 // cout << "In\n\n";

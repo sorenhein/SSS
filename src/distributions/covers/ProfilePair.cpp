@@ -84,8 +84,8 @@ bool ProfilePair::active(
 bool ProfilePair::punchTop(
   const Profile& sumProfile,
   const unsigned char topNumber,
-  const unsigned char sumMin,
-  const unsigned char sumMax) const
+  const unsigned char sumLower,
+  const unsigned char sumHigher) const
 {
   const unsigned char maxTops = sumProfile.tops[topNumber];
 
@@ -98,9 +98,9 @@ bool ProfilePair::punchTop(
 
   // Find the range of lengths ignoring this top.
   const unsigned char partialSumMin = 
-    sumMin - lowerProfile.tops[topNumber];
+    sumLower - lowerProfile.tops[topNumber];
   const unsigned char partialSumMax = 
-    sumMax - upperProfile.tops[topNumber];
+    sumHigher - upperProfile.tops[topNumber];
 
   // Find the bounds on this top assuming the lengths set,
   // but ignoring our actual knowledge of the bounds on the top.
@@ -123,56 +123,43 @@ bool ProfilePair::punchTop(
 
 bool ProfilePair::minimal(
   const Profile& sumProfile,
-  const unsigned char topNumber) const
+  const unsigned char sumLower,
+  const unsigned char sumHigher) const
 {
-  unsigned char sumMin = 0;
-  unsigned char sumMax = 0;
-
-  for (unsigned char n: lowerProfile.tops)
-    sumMin += n;
-
-  for (unsigned char n: upperProfile.tops)
-    sumMax += n;
-
   // Does the length constraint add anything?
   if (! active(
     sumProfile.length, 
     lowerProfile.length,
     upperProfile.length,
-    sumMin, 
-    sumMax))
+    sumLower, 
+    sumHigher))
   {
     return false;
   }
 
-  /* */
-  for (unsigned char t = 1; t <= topNumber; t++)
+  for (unsigned char t = 1; t <= topNext; t++)
   {
     // Given the length constraint, do we need the top?
-    if (punchTop(sumProfile, t, sumMin, sumMax))
+    if (punchTop(sumProfile, t, sumLower, sumHigher))
       return false;
   }
-  /* */
 
   return true;
 }
 
 
-unsigned char ProfilePair::lengthWestLow() const
+void ProfilePair::getLengthRange(
+  unsigned char& sumLower,
+  unsigned char& sumHigher) const
 {
-  unsigned char sumMin = 0;
-  for (unsigned char n: lowerProfile.tops)
-    sumMin += n;
-  return sumMin;
-}
+  sumLower = 0;
+  sumHigher = 0;
 
-
-unsigned char ProfilePair::lengthWestHigh() const
-{
-  unsigned char sumMax = 0;
-  for (unsigned char n: upperProfile.tops)
-    sumMax += n;
-  return sumMax;
+  for (unsigned n = 0; n < lowerProfile.tops.size(); n++)
+  {
+    sumLower += lowerProfile.tops[n];
+    sumHigher += upperProfile.tops[n];
+  }
 }
 
 
