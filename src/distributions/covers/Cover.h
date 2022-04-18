@@ -12,9 +12,10 @@
 #include <vector>
 #include <string>
 
-#include "Product.h"
-#include "ProductMemory.h"
 #include "Tricks.h"
+
+#include "product/Product.h"
+#include "product/ProductMemory.h"
 
 #include "../../utils/table.h"
 

@@ -11,13 +11,15 @@
 #include <sstream>
 #include <cassert>
 
+#include "CoverTableau.h"
 #include "Covers.h"
 
-#include "ProductMemory.h"
-#include "ProfilePair.h"
-#include "CoverTableau.h"
-#include "ResExpl.h"
 #include "Tricks.h"
+
+#include "product/ProductMemory.h"
+#include "product/ProfilePair.h"
+
+#include "ResExpl.h"
 
 #include "../../strategies/result/Result.h"
 

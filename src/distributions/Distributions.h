@@ -17,7 +17,7 @@
 
 #include "DistMemory.h"
 
-#include "covers/ProductMemory.h"
+#include "covers/product/ProductMemory.h"
 
 class Distribution;
 

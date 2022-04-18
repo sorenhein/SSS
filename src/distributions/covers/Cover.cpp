@@ -12,8 +12,9 @@
 #include <cassert>
 
 #include "Cover.h"
-#include "Profile.h"
-#include "ProfilePair.h"
+
+#include "product/Profile.h"
+#include "product/ProfilePair.h"
 
 
 Cover::Cover()

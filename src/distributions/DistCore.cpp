@@ -18,7 +18,8 @@
 #include "DistMap.h"
 
 #include "covers/Manual.h"
-#include "covers/ProductMemory.h"
+
+#include "covers/product/ProductMemory.h"
 
 #include "../plays/Play.h"
 

@@ -14,8 +14,8 @@
 
 #include "Tricks.h"
 
-#include "Product.h"
-#include "Profile.h"
+#include "product/Product.h"
+#include "product/Profile.h"
 
 #include "../../strategies/result/Result.h"
 

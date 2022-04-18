@@ -19,10 +19,10 @@
 #include <vector>
 #include <string>
 
-#include "term/Length.h"
-#include "term/Top.h"
+#include "../term/Length.h"
+#include "../term/Top.h"
 
-#include "../../utils/table.h"
+#include "../../../utils/table.h"
 
 using namespace std;
 
