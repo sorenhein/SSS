@@ -17,6 +17,7 @@
 using namespace std;
 
 class Cover;
+class Profile;
 
 /* A row is a list of covers that are OR'ed together.
  */

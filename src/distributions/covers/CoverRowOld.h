@@ -13,28 +13,25 @@
 #include <string>
 
 #include "Tricks.h"
-#include "Cover.h"
-#include "Profile.h"
-#include "CoverHelp.h"
+// #include "Profile.h"
+// #include "CoverHelp.h"
 
 
 using namespace std;
 
-class ProductMemory;
-struct ManualData;
+class Cover;
+class Profile;
 
 
 class CoverRowOld
 {
   private:
 
-    list<Cover> covers;
+    list<Cover const *> coverPtrs;
 
     Tricks tricks;
 
     unsigned indexInternal;
-
-    // Profile sumProfile;
 
     unsigned weight;
 
@@ -53,7 +50,6 @@ class CoverRowOld
 
     void add(
       const Cover& cover,
-      // const Profile& sumProfileIn,
       const unsigned indexIn);
 
     void weigh(const vector<unsigned char>& cases);
@@ -81,8 +77,6 @@ class CoverRowOld
     string strHeader() const;
 
     string str(const Profile& sumProfile) const;
-
-    // string strProfile() const;
 };
 
 #endif

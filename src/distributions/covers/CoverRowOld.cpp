@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "CoverRowOld.h"
+#include "Cover.h"
 
 
 CoverRowOld::CoverRowOld()
@@ -22,7 +23,7 @@ CoverRowOld::CoverRowOld()
 
 void CoverRowOld::reset()
 {
-  covers.clear();
+  coverPtrs.clear();
   tricks.clear();
   weight = 0;
   numDist = 0;
@@ -42,8 +43,8 @@ void CoverRowOld::add(
 {
   indexInternal = indexIn;
 
-  covers.emplace_back(cover);
-  covers.back().tricksOr(tricks);
+  coverPtrs.emplace_back(&cover);
+  coverPtrs.back()->tricksOr(tricks);
 }
 
 
@@ -69,7 +70,7 @@ bool CoverRowOld::operator <= (const CoverRowOld& cover2) const
 
 unsigned CoverRowOld::size() const
 {
-  return covers.size();
+  return coverPtrs.size();
 }
 
 
@@ -108,8 +109,8 @@ unsigned char CoverRowOld::getOverlap() const
   // The overlap is the sum of the individual cover counts,
   // minus the count of the row.
   unsigned char overlap = 0;
-  for (auto cover: covers)
-    overlap += cover.getNumDist();
+  for (auto coverPtr: coverPtrs)
+    overlap += coverPtr->getNumDist();
 
   return overlap - numDist;
 }
@@ -133,17 +134,17 @@ string CoverRowOld::strInternal() const
 string CoverRowOld::strHeader() const
 {
   return
-    covers.front().strHeaderTricksShort() +
-    covers.front().strHeader();
+    coverPtrs.front()->strHeaderTricksShort() +
+    coverPtrs.front()->strHeader();
 }
 
 
 string CoverRowOld::str(const Profile& sumProfile) const
 {
-  string s = covers.front().str(sumProfile);
+  string s = coverPtrs.front()->str(sumProfile);
 
-  for (auto iter = next(covers.begin()); iter != covers.end(); iter++)
-    s += "; or\n  " + iter->str(sumProfile);
+  for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
+    s += "; or\n  " + (* iter)->str(sumProfile);
 
   return s;
 }
