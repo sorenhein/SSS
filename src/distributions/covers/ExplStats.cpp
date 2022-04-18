@@ -37,7 +37,7 @@ void ExplStats::resize()
     for (unsigned t = 0; t < MAX_CARDS; t++)
     {
       ExplStat& explStat = explStats[s][t];
-      explStat.resize(EXPL_STATS_MAX);
+      explStat.resize();
     }
   }
 
@@ -72,8 +72,8 @@ string ExplStats::str() const
     for (unsigned tops1 = 1; tops1 <= topsMax[length]; tops1++)
     {
       const ExplStat& explStat = explStats[length][tops1];
-      if (explStat.empty())
-        continue;
+      // if (explStat.empty())
+        // continue;
 
       ss << "Cover counts " << length << "-" << tops1 << "\n";
       ss << explStat.str();

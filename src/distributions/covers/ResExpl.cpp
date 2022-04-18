@@ -117,6 +117,7 @@ void ResExpl::updateStats(ExplStats& explStats) const
   ExplStat& explStat = explStats.getEntry(maxLength, maxTops);
   explStat.incrLengths(data.size());
 
+  /*
   for (auto iter = data.begin(); iter != data.end(); iter++)
   {
     const unsigned index = iter->coverRowPtr->index();
@@ -128,6 +129,7 @@ void ResExpl::updateStats(ExplStats& explStats) const
       explStat.incrPairs(index, index2);
     }
   }
+  */
 }
 
 

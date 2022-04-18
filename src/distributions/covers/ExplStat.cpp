@@ -23,27 +23,12 @@ ExplStat::ExplStat()
 void ExplStat::reset()
 {
   lengths.clear();
-  singles.clear();
-  pairs.clear();
-  maxPairIndex = 0;
 }
 
 
-void ExplStat::resize(const unsigned pairSize)
+void ExplStat::resize()
 {
   lengths.resize(20, 0); // up to 20 explanations per strat
-  singles.resize(pairSize, 0);
-
-  pairs.resize(pairSize);
-
-  for (unsigned c = 0; c < pairSize; c++)
-    pairs[c].resize(pairSize, 0);
-}
-
-
-bool ExplStat::empty() const
-{
-  return singles.empty();
 }
 
 
@@ -51,34 +36,6 @@ void ExplStat::incrLengths(const unsigned count)
 {
   assert(count < lengths.size());
   lengths[count]++;
-}
-
-
-void ExplStat::incrSingles(const unsigned index)
-{
-  assert(index < singles.size());
-
-  if (index > maxPairIndex)
-    maxPairIndex = index;
-
-  singles[index]++;
-}
-
-
-void ExplStat::incrPairs(
-  const unsigned index1,
-  const unsigned index2)
-{
-  assert(index1 < pairs.size());
-  assert(index2 < pairs.size());
-
-  if (index1 > maxPairIndex)
-    maxPairIndex = index1;
-  if (index2 > maxPairIndex)
-    maxPairIndex = index2;
-
-  pairs[index1][index2]++;
-  pairs[index2][index1]++;
 }
 
 
@@ -110,34 +67,8 @@ string ExplStat::strLengths() const
 }
 
 
-string ExplStat::strPairs() const
-{
-  stringstream ss;
-  ss << "Pairs\n";
-
-  ss << setw(3) << "#" << " | ";
-  for (unsigned cno = 0; cno <= maxPairIndex; cno++)
-    ss << setw(5) << cno;
-  ss << " | " << setw(5) << "Sing" << "\n";
-  ss << string(3 + 3 + 5 * (maxPairIndex+1) + 3 + 5, '-') << "\n";
-
-  for (unsigned cno = 0; cno <= maxPairIndex; cno++)
-  {
-    ss << setw(3) << cno << " | ";
-    for (unsigned cno2 = 0; cno2 <= maxPairIndex; cno2++)
-    {
-      const unsigned v = pairs[cno][cno2];
-      ss << setw(5) << (v == 0 ? "-" : to_string(v));
-    }
-    ss << " | " << setw(5) << singles[cno] << "\n";
-  }
-
-  return ss.str() + "\n";
-}
-
-
 string ExplStat::str() const
 {
-  return ExplStat::strLengths() + ExplStat::strPairs();
+  return ExplStat::strLengths();
 }
 

@@ -74,12 +74,6 @@ unsigned CoverRowOld::size() const
 }
 
 
-unsigned CoverRowOld::index() const
-{
-  return indexInternal;
-}
-
-
 const Tricks& CoverRowOld::getTricks() const
 {
   return tricks;

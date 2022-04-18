@@ -11,7 +11,6 @@
 #define SSS_EXPLSTAT_H
 
 #include <vector>
-#include <list>
 #include <string>
 
 using namespace std;
@@ -22,12 +21,6 @@ class ExplStat
   private:
 
     vector<unsigned> lengths;
-
-    vector<unsigned> singles;
-
-    vector<vector<unsigned>> pairs;
-
-    unsigned maxPairIndex;
 
 
     string strLengths() const;
@@ -41,17 +34,9 @@ class ExplStat
 
     void reset();
 
-    void resize(const unsigned pairSize);
-
-    bool empty() const;
+    void resize();
 
     void incrLengths(const unsigned count);
-
-    void incrSingles(const unsigned index);
-
-    void incrPairs(
-      const unsigned index1,
-      const unsigned index2);
 
     string str() const;
 };

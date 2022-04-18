@@ -59,7 +59,7 @@ class CoverRowOld
 
     unsigned size() const;
 
-    unsigned index() const;
+    // unsigned index() const;
 
     const Tricks& getTricks() const;
 

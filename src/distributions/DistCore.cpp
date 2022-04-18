@@ -508,13 +508,10 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
 
       const Cover& clook = covers.lookup(cover);
       coverPtrs.push_back(&clook);
-
-      // rowOld.add(clook, index);
     }
 
     rowOld.fillDirectly(coverPtrs, cases, index);
 
-    // rowOld.weigh(cases);
     index++;
   }
 
