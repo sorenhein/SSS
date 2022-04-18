@@ -25,6 +25,7 @@ void Product::reset()
 {
   length.reset();
   tops.clear();
+  codeInt = 0;
   complexity = 0;
   topSize = 0;
   activeCount = 0;
@@ -40,8 +41,11 @@ void Product::resize(const unsigned topCount)
 void Product::set(
   const Profile& sumProfile,
   const Profile& lowerProfile,
-  const Profile& upperProfile)
+  const Profile& upperProfile,
+  const unsigned long long code)
 {
+  codeInt = code;
+
   length.set(
     sumProfile.length(), 
     lowerProfile.length(), 
@@ -84,6 +88,7 @@ void Product::set(
 }
 
 
+
 bool Product::includes(const Profile& distProfile) const
 {
   if (length.used() && ! length.includes(distProfile.length()))
@@ -120,6 +125,12 @@ bool Product::symmetrizable(const Profile& sumProfile) const
 unsigned char Product::getComplexity() const
 {
   return complexity;
+}
+
+
+unsigned long long Product::code() const
+{
+  return codeInt;
 }
 
 
@@ -211,8 +222,6 @@ string Product::strLine() const
 
   for (auto& top: tops)
     ss << setw(8) << top.strGeneral();
-  // for (unsigned i = 0; i < tops.size(); i++)
-    // ss << setw(8) << tops[i].strGeneral();
 
   return ss.str();
 }

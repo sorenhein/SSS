@@ -431,16 +431,19 @@ distributions/covers/ResExpl.obj: distributions/covers/ExplStat.h
 distributions/covers/ExplStat.obj: distributions/covers/ExplStat.h
 distributions/covers/ExplStats.obj: distributions/covers/ExplStats.h
 distributions/covers/ExplStats.obj: distributions/covers/ExplStat.h const.h
+distributions/covers/product/Profile.obj: distributions/covers/product/Profile.h
+distributions/covers/product/ProfilePair.obj: distributions/covers/product/ProfilePair.h
+distributions/covers/product/ProfilePair.obj: distributions/covers/product/Profile.h
+distributions/covers/product/ProfilePair.obj: distributions/covers/product/Product.h
 distributions/covers/product/Product.obj: distributions/covers/product/Product.h
 distributions/covers/product/Product.obj: distributions/covers/product/Profile.h
-distributions/covers/product/Product.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/ProductMemory.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/Product.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/Profile.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/ProfilePair.h
-distributions/covers/product/Profile.obj: distributions/covers/product/Profile.h
-distributions/covers/product/ProfilePair.obj: distributions/covers/product/ProfilePair.h
-distributions/covers/product/ProfilePair.obj: distributions/covers/product/Profile.h
+distributions/covers/product/ProductStats.obj: distributions/covers/product/ProductStats.h
+distributions/covers/product/ProductStats.obj: distributions/covers/product/Profile.h
+distributions/covers/product/ProductStats.obj: distributions/covers/product/Product.h
 distributions/covers/term/Term.obj: distributions/covers/term/Term.h
 distributions/covers/term/Term.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/term/Term.obj: utils/table.h

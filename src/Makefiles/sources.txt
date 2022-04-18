@@ -28,10 +28,11 @@ SOURCE_FILES    =                               \
                 distributions/covers/ExplStat.cpp \
                 distributions/covers/ExplStats.cpp \
                                                                \
-                distributions/covers/product/Product.cpp       \
-                distributions/covers/product/ProductMemory.cpp \
                 distributions/covers/product/Profile.cpp       \
                 distributions/covers/product/ProfilePair.cpp   \
+                distributions/covers/product/Product.cpp       \
+                distributions/covers/product/ProductMemory.cpp \
+                distributions/covers/product/ProductStats.cpp  \
                                                                \
                 distributions/covers/term/Term.cpp             \
                 distributions/covers/term/Length.cpp           \

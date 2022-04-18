@@ -37,6 +37,8 @@ class Product
 
     vector<Top> tops;
 
+    unsigned long long codeInt;
+
     unsigned char complexity;
 
     unsigned char topSize; // Last used top number + 1; may be 0
@@ -55,13 +57,16 @@ class Product
     void set(
       const Profile& sumProfile,
       const Profile& lowerProfile,
-      const Profile& upperProfile);
+      const Profile& upperProfile,
+      const unsigned long long code);
 
     bool includes(const Profile& distProfile) const;
 
     bool symmetrizable(const Profile& sumProfile) const;
 
     unsigned char getComplexity() const;
+
+    unsigned long long code() const;
 
     unsigned char size() const;
 

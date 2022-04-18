@@ -54,9 +54,10 @@ void ProfilePair::setTop(
 
 void ProfilePair::setProduct(
   Product& product,
-  const Profile& sumProfile) const
+  const Profile& sumProfile,
+  const unsigned long long code) const
 {
-  product.set(sumProfile, lowerProfile, upperProfile);
+  product.set(sumProfile, lowerProfile, upperProfile, code);
 }
 
 

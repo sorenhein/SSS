@@ -13,29 +13,10 @@ Symmetrics:
 11/170820: The manual one is good too?
 11/174984: Weightings?
 
-Can't use CoverRow rather than CoverRowOld at the moment:
-symmFlag is not in the looked-up cover, so have to track separately.
-This is because we haven't done symmetric cover's generally yet.
-Other than that the two are more similar now.
-So it's getting to be time...
-
-CoverRow could potentially get a list<Cover const *> already,
-so then there's only one add that takes care of resize and weigh.
-
-CoverRow and CoverRowOld can probably be combined somehow.
-Covers can be split into Covers and CoverSolve; but Solve is not
-really a class with its own memory.  Maybe coverSolve?
-
-
 
 Tricks: Optimize into 5-groups
 
 3. Make ProductMemory
-   - Usage: Not just flat count, but vector of oppsLength,
-     for each Product
-   - Sums of these per oppsLength
-   - Actual Product's for a given oppsLength, or (oppsLength, topMax)
-   - Record #times in tableau, in solution
 
    - Potentially if we want to store a length-6 1:1?????, it is
      kind of the same as a lengh-6 1:1? with an offset of 4.
@@ -56,19 +37,13 @@ part is also symmetrized.
 9 / 6101
 East has (xx) -- express differently
 
-ProductMemory
 TableauMemory
-Need a way to order Term's and Product's
+Need a way to order Term's
 
 Term
 ----
 Can perhaps move Term to only index & data and nothing else?
 Less memory.
-
-Side
-----
-- Does Product::strVerbal and strLine still need sumProfile?
-  Does Term?
 
 
 Names of cards
@@ -177,8 +152,6 @@ Sum      261   177     81133 13013
 
 Further work:
 - Covers::prepareNew
-  - Time it
-  - See if efficient enough (if not cout'ing)
   - Could do something like strategies/optim/Study.cpp
     So groups of 5, or binary 10x10 = 1m byte entries
     Would speed up prune, but slow down prepare

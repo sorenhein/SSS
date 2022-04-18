@@ -69,7 +69,8 @@ class ProfilePair
 
     void setProduct(
       Product& product,
-      const Profile& sumProfile) const;
+      const Profile& sumProfile,
+      const unsigned long long code) const;
 
     void getLengthRange(
       unsigned char& sumLower,

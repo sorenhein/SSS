@@ -52,7 +52,7 @@ ProductUnit * ProductMemory::enterOrLookup(
     ProductUnit& productUnit = memory[numTops][code] = ProductUnit();
 
     productUnit.product.resize(numTops);
-    profilePair.setProduct(productUnit.product, sumProfile);
+    profilePair.setProduct(productUnit.product, sumProfile, code);
     
     productUnit.numCovers = 1;
     productUnit.numTableaux = 0;
@@ -111,8 +111,7 @@ string ProductMemory::strEnterStats() const
 
   ss <<
     setw(8) << "Numtops" <<
-    enterStats[0].strHeader() <<
-    "\n";
+    enterStats[0].strHeader();
 
   EnterStat sum;
 
