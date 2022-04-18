@@ -48,11 +48,10 @@ class CoverRowOld
 
     void resize(const unsigned len);
 
-    void add(
-      const Cover& cover,
+    void fillDirectly(
+      list<Cover const *>& coverPtrsIn,
+      const vector<unsigned char>& cases,
       const unsigned indexIn);
-
-    void weigh(const vector<unsigned char>& cases);
 
     CoverState explain(Tricks& tricksSeen) const;
 

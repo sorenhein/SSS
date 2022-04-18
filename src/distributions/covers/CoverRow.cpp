@@ -37,6 +37,22 @@ void CoverRow::resize(const unsigned len)
 }
 
 
+void CoverRow::fillDirectly(
+  list<Cover const *>& coverPtrsIn,
+  const vector<unsigned char>& cases)
+{
+  // This method is used for manually set cover rows only.
+  // There is no need to check against trick vectors.
+  coverPtrs = coverPtrsIn;
+
+  for (auto coverPtr: coverPtrs)
+    coverPtr->tricksOr(tricks);
+
+  tricks.weigh(cases, weight, numDist);
+  assert(weight != 0);
+}
+
+
 bool CoverRow::attempt(
   const Cover& cover,
   const Tricks& residuals,

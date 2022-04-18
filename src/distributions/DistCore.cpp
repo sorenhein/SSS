@@ -494,7 +494,7 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
     CoverRowOld& rowOld = covers.addRow();
     rowOld.resize(distProfiles.size());
 
-    // TODO For now just to try it -- doesn't connect to anything.
+    list<Cover const *> coverPtrs;
     for (auto& man: manualList)
     {
       Cover cover;
@@ -507,12 +507,14 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
       cover.prepare(distProfiles, cases);
 
       const Cover& clook = covers.lookup(cover);
+      coverPtrs.push_back(&clook);
 
-      rowOld.add(clook, index);
-      // rowOld.add(clook, man.symmFlag, sumProfile, index);
+      // rowOld.add(clook, index);
     }
 
-    rowOld.weigh(cases);
+    rowOld.fillDirectly(coverPtrs, cases, index);
+
+    // rowOld.weigh(cases);
     index++;
   }
 

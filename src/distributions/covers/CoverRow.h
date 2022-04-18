@@ -47,6 +47,10 @@ class CoverRow
 
     void resize(const unsigned len);
 
+    void fillDirectly(
+      list<Cover const *>& coverPtrsIn,
+      const vector<unsigned char>& cases);
+
     bool attempt(
       const Cover& cover,
       const Tricks& residuals,
