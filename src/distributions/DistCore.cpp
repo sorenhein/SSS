@@ -488,12 +488,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   Manual manual(sumProfile, manualData);
 
   // Set the manual rows in covers.
-  unsigned index = 0;
   for (auto& manualList: manualData)
   {
-    CoverRowOld& rowOld = covers.addRow();
-    rowOld.resize(distProfiles.size());
-
     list<Cover const *> coverPtrs;
     for (auto& man: manualList)
     {
@@ -510,9 +506,9 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
       coverPtrs.push_back(&clook);
     }
 
-    rowOld.fillDirectly(coverPtrs, cases, index);
-
-    index++;
+    CoverRow& row = covers.addRow();
+    row.resize(distProfiles.size());
+    row.fillDirectly(coverPtrs, cases);
   }
 
   covers.sortRows();

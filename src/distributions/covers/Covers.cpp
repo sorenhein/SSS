@@ -35,23 +35,23 @@ Covers::Covers()
 
 void Covers::reset()
 {
-  rowsOld.clear();
+  rows.clear();
   store.reset();
   tableauCache.reset();
 }
 
 
-CoverRowOld& Covers::addRow()
+CoverRow& Covers::addRow()
 {
-  rowsOld.emplace_back(CoverRowOld());
-  return rowsOld.back();
+  rows.emplace_back(CoverRow());
+  return rows.back();
 }
 
 
 void Covers::sortRows()
 {
-  rowsOld.sort([](
-    const CoverRowOld& coverRow1, const CoverRowOld& coverRow2)
+  rows.sort([](
+    const CoverRow& coverRow1, const CoverRow& coverRow2)
   {
     return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
@@ -175,7 +175,7 @@ CoverState Covers::explain(
   ResExpl& resExpl) const
 {
   CoverState state = COVER_OPEN;
-  auto iter = rowsOld.begin();
+  auto iter = rows.begin();
 
   Tricks tricks;
 
@@ -188,7 +188,7 @@ CoverState Covers::explain(
 
   while (true)
   {
-    if (iter == rowsOld.end())
+    if (iter == rows.end())
     {
       cout << Covers::strDebug("Left with", tricks);
       return COVER_IMPOSSIBLE;

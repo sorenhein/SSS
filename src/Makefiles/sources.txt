@@ -16,7 +16,6 @@ SOURCE_FILES    =                               \
                 distributions/SurvivorList.cpp  \
                                                 \
                 distributions/Survivors.cpp     \
-                distributions/covers/CoverRowOld.cpp  \
                 distributions/covers/Cover.cpp  \
                 distributions/covers/Covers.cpp \
                 distributions/covers/CoverStore.cpp \
@@ -25,6 +24,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/TermCompare.cpp \
                 distributions/covers/Length.cpp \
                 distributions/covers/Top.cpp    \
+                distributions/covers/Xes.cpp    \
                 distributions/covers/Tricks.cpp    \
                 distributions/covers/Product.cpp \
                 distributions/covers/ProductMemory.cpp \

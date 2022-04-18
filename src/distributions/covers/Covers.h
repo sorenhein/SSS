@@ -14,7 +14,7 @@
 #include <string>
 
 #include "Profile.h"
-#include "CoverRowOld.h"
+#include "CoverRow.h"
 #include "CoverStore.h"
 #include "TableauCache.h"
 
@@ -34,7 +34,7 @@ class Covers
 
     Profile sumProfile;
 
-    list<CoverRowOld> rowsOld;
+    list<CoverRow> rows;
 
     CoverStore store;
 
@@ -59,7 +59,7 @@ class Covers
 
     void reset();
 
-    CoverRowOld& addRow();
+    CoverRow& addRow();
 
     void prepareNew(
       ProductMemory& productMemory,

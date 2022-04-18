@@ -12,7 +12,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-
 #include <string>
 
 #include "Term.h"
@@ -20,6 +19,7 @@
 #include "../../utils/table.h"
 
 class Length;
+struct Xes;
 
 using namespace std;
 
@@ -27,55 +27,6 @@ using namespace std;
 class Top: public Term
 {
   private:
-
-    struct Xes
-    {
-      unsigned char westMax, westMin;
-      unsigned char eastMax, eastMin;
-      string strWest, strEast;
-
-      void set(
-        const unsigned char distLengthLower,
-        const unsigned char distLengthUpper,
-        const unsigned char topsExact,
-        const unsigned char oppsLength,
-        const unsigned char oppsTops)
-      {
-        const unsigned char totalXes = oppsLength - oppsTops;
-
-        westMax = (distLengthUpper < topsExact ? 0 : 
-          distLengthUpper - topsExact);
-
-        westMin = (distLengthLower < topsExact ? 0 :
-          distLengthLower - topsExact);
-
-        if (westMax > totalXes)
-          westMax = totalXes;
-        if (westMin > totalXes)
-          westMin = totalXes;
-
-        eastMax = totalXes - westMin;
-        eastMin = totalXes - westMax;
-
-        strWest = string(westMin, 'x') +
-          "(" + string(westMax - westMin, 'x') + ")";
-        strEast = string(eastMin, 'x') +
-          "(" + string(eastMax - eastMin, 'x') + ")";
-      };
- 
-      string str() const
-      {
-        stringstream ss;
- 
-        ss << "coverXes: " <<
-          westMin << "-" << westMax << ", " <<
-          eastMin << "-" << eastMax << ", " <<
-          strWest << ", " << strEast << "\n";
- 
-        return ss.str();
-      };
-    };
-
 
     string strEqual(
       const unsigned char oppsTops,

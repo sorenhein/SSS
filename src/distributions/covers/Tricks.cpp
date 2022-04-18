@@ -16,7 +16,6 @@
 
 #include "Product.h"
 #include "Profile.h"
-#include "CoverRowOld.h"
 
 #include "../../strategies/result/Result.h"
 

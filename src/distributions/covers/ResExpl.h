@@ -12,7 +12,7 @@
 #include <list>
 #include <string>
 
-#include "CoverRowOld.h"
+#include "CoverRow.h"
 
 class ExplStats;
 class Profile;
@@ -23,7 +23,7 @@ using namespace std;
 
 struct ExplData
 {
-  CoverRowOld const * coverRowPtr;
+  CoverRow const * coverRowPtr;
   unsigned weight;
   unsigned char numDist;
   unsigned char level; // Explanations may be nested
@@ -41,7 +41,7 @@ class ResExpl
     list<ExplData> data;
 
 
-    list<ExplData>::iterator dominator(const CoverRowOld& coverRow);
+    list<ExplData>::iterator dominator(const CoverRow& coverRow);
 
 
   public:
@@ -55,7 +55,7 @@ class ResExpl
       const unsigned char maxLengthIn,
       const unsigned char maxTopsIn);
 
-    void insert(const CoverRowOld& coverRow);
+    void insert(const CoverRow& coverRow);
 
     bool empty() const;
 

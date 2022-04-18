@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include "ResExpl.h"
-#include "CoverRowOld.h"
+#include "CoverRow.h"
 #include "ExplStats.h"
 
 
@@ -40,7 +40,7 @@ void ResExpl::setParameters(
 }
 
 
-list<ExplData>::iterator ResExpl::dominator(const CoverRowOld& coverRow)
+list<ExplData>::iterator ResExpl::dominator(const CoverRow& coverRow)
 {
   // Returns data.end() if there is no dominator.
   // Returns the dominator with the highest level number,
@@ -76,7 +76,7 @@ list<ExplData>::iterator ResExpl::dominator(const CoverRowOld& coverRow)
 }
 
 
-void ResExpl::insert(CoverRowOld const& coverRow)
+void ResExpl::insert(CoverRow const& coverRow)
 {
   auto domIter = ResExpl::dominator(coverRow);
 
@@ -116,20 +116,6 @@ void ResExpl::updateStats(ExplStats& explStats) const
 
   ExplStat& explStat = explStats.getEntry(maxLength, maxTops);
   explStat.incrLengths(data.size());
-
-  /*
-  for (auto iter = data.begin(); iter != data.end(); iter++)
-  {
-    const unsigned index = iter->coverRowPtr->index();
-    explStat.incrSingles(index);
-
-    for (auto iter2 = next(iter); iter2 != data.end(); iter2++)
-    {
-      const unsigned index2 = iter2->coverRowPtr->index();
-      explStat.incrPairs(index, index2);
-    }
-  }
-  */
 }
 
 
@@ -139,11 +125,12 @@ string ResExpl::str(const Profile& sumProfile) const
   ss << "Always take at least " << +tricksMin << 
     " tricks, and more when\n";
 
-  string prefix;
+  // string prefix;
   for (auto& ed: data)
   {
     // TODO When switching from CoverRowOld to CoverRow,
     // probably no prefix anymore
+    /*
     if (ed.level == 0)
       prefix = "* ";
     else if (ed.level == 1)
@@ -152,8 +139,10 @@ string ResExpl::str(const Profile& sumProfile) const
       prefix = "    - ";
     else
       prefix = "      - ";
+      */
 
-    ss << prefix << ed.coverRowPtr->str(sumProfile) << "\n";
+    // ss << prefix << ed.coverRowPtr->str(sumProfile) << "\n";
+    ss << ed.coverRowPtr->str(sumProfile);
   }
 
   return ss.str() + "\n";

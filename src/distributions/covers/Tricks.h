@@ -19,7 +19,6 @@ using namespace std;
 
 class Product;
 class Profile;
-class CoverRowOld;
 class Result;
 
 
