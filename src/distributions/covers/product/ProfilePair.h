@@ -6,12 +6,22 @@
    See LICENSE and README.
 */
 
+
+/*
+ * A ProfilePair has the data needed to fill out a Product.
+ * So it is used when Product's are being generated, either 
+ * algorithmically or manually.
+ */
+
+
 #ifndef SSS_PROFILEPAIR_H
 #define SSS_PROFILEPAIR_H
 
 #include "Profile.h"
 
 using namespace std;
+
+class Product;
 
 
 class ProfilePair
@@ -55,6 +65,10 @@ class ProfilePair
       const unsigned char topCountLow,
       const unsigned char topCountHigh);
 
+    void setProduct(
+      Product& product,
+      const Profile& sumProfile) const;
+
     bool minimal(
       const Profile& sumProfile,
       const unsigned char lengthLow,
@@ -70,9 +84,9 @@ class ProfilePair
 
     bool last() const;
 
-    const Profile& getLowerProfile() const;
+    // const Profile& getLowerProfile() const;
 
-    const Profile& getUpperProfile() const;
+    // const Profile& getUpperProfile() const;
 
     unsigned long long getCode(const Profile& sumProfile) const;
 

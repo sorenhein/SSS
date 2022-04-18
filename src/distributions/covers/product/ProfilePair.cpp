@@ -7,6 +7,7 @@
 */
 
 #include "ProfilePair.h"
+#include "Product.h"
 
 
 ProfilePair::ProfilePair()
@@ -33,8 +34,8 @@ void ProfilePair::setLength(
   const unsigned char lenLow,
   const unsigned char lenHigh)
 {
-  lowerProfile.length = lenLow;
-  upperProfile.length = lenHigh;
+  lowerProfile.lengthInt = lenLow;
+  upperProfile.lengthInt = lenHigh;
 }
 
 
@@ -45,6 +46,14 @@ void ProfilePair::addTop(
 {
   lowerProfile.tops[topNumber] = topCountLow;
   upperProfile.tops[topNumber] = topCountHigh;
+}
+
+
+void ProfilePair::setProduct(
+  Product& product,
+  const Profile& sumProfile) const
+{
+  product.set(sumProfile, lowerProfile, upperProfile);
 }
 
 
@@ -173,12 +182,12 @@ bool ProfilePair::punchTop(
   // Find the bounds on this top assuming the lengths set,
   // but ignoring our actual knowledge of the bounds on the top.
   const unsigned char topMin =
-    (lowerProfile.length <= partialSumMax ? 
-    0 : lowerProfile.length - partialSumMax);
+    (lowerProfile.lengthInt <= partialSumMax ? 
+    0 : lowerProfile.lengthInt - partialSumMax);
 
   const unsigned char topMax =
-    (upperProfile.length >= partialSumMin + maxTops ?
-    maxTops : upperProfile.length - partialSumMin);
+    (upperProfile.lengthInt >= partialSumMin + maxTops ?
+    maxTops : upperProfile.lengthInt - partialSumMin);
 
   return ! active(
     maxTops,
@@ -196,9 +205,9 @@ bool ProfilePair::minimal(
 {
   // Does the length constraint add anything?
   if (! active(
-    sumProfile.length, 
-    lowerProfile.length,
-    upperProfile.length,
+    sumProfile.lengthInt, 
+    lowerProfile.lengthInt,
+    upperProfile.lengthInt,
     sumLower, 
     sumHigher))
   {
@@ -249,6 +258,7 @@ bool ProfilePair::last() const
 }
 
 
+/*
 const Profile& ProfilePair::getLowerProfile() const
 {
   return lowerProfile;
@@ -259,12 +269,13 @@ const Profile& ProfilePair::getUpperProfile() const
 {
   return upperProfile;
 }
+*/
 
 
 unsigned long long ProfilePair::getCode(const Profile& sumProfile) const
 {
-  return (lowerProfile.getCode() << 32) | 
-    upperProfile.getCode(sumProfile, lowerProfile);
+  return (lowerProfile.getLowerCode() << 32) | 
+    upperProfile.getUpperCode(sumProfile, lowerProfile);
 }
 
 

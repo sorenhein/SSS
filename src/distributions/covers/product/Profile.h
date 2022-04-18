@@ -21,40 +21,35 @@ class Profile
 
   private:
 
-    unsigned char length;
+    unsigned char lengthInt;
 
     vector<unsigned char> tops;
 
 
   public:
 
-    // Default: Use topsIn.size()
-    void set(
-      const vector<unsigned char>& topsIn,
-      const unsigned char numTops = 0);
-
-    // Only leave the highest top as non-zero.
-    // This is used for manual cover rows.
-    void limit();
+    void set(const vector<unsigned char>& topsIn);
 
     void setSum(
       const vector<unsigned char>& topsWest,
       const vector<unsigned char>& topsEast);
 
-    // TODO May eliminate this?
-    void mirrorAround(const Profile& sumProfile);
+    // Only leave the highest top as non-zero.
+    // This is used for manual cover rows.
+    void limit();
 
-    unsigned char count(const unsigned char topNo) const;
+    unsigned char length() const;
+
+    unsigned char operator [] (const unsigned char topNo) const;
+
+    // This ignores the 0'th top!
+    bool operator == (const Profile& profile2) const;
 
     unsigned size() const;
 
-    unsigned char getLength() const;
+    unsigned long long getLowerCode() const;
 
-    const vector<unsigned char>& getTops() const;
-
-    unsigned long long getCode() const;
-
-    unsigned long long getCode(
+    unsigned long long getUpperCode(
       const Profile& sumProfile,
       const Profile& lowerProfile) const;
 

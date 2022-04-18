@@ -58,15 +58,7 @@ class Product
       const Profile& lowerProfile,
       const Profile& upperProfile);
 
-    void set(
-      const Profile& sumProfile,
-      const ProfilePair& profilePair);
-
     bool includes(const Profile& distProfile) const;
-
-    bool includesComplement(
-      const Profile& distProfile,
-      const Profile& sumProfile) const;
 
     bool symmetrizable(const Profile& sumProfile) const;
 
@@ -87,6 +79,7 @@ class Product
 
     string strLine() const;
 
+    // So far this only does the simplest case: One meaningful top.
     string strVerbal(
       const Profile& sumProfile,
       const Opponent simplestOpponent,

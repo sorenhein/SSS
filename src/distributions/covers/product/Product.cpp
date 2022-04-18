@@ -44,9 +44,9 @@ void Product::set(
   const Profile& upperProfile)
 {
   length.set(
-    sumProfile.getLength(), 
-    lowerProfile.getLength(), 
-    upperProfile.getLength());
+    sumProfile.length(), 
+    lowerProfile.length(), 
+    upperProfile.length());
 
   complexity = length.complexity();
 
@@ -58,9 +58,9 @@ void Product::set(
   for (unsigned char i = 1; i < topLowSize; i++)
   {
     tops[i].set(
-      sumProfile.count(i), 
-      lowerProfile.count(i), 
-      upperProfile.count(i));
+      sumProfile[i], 
+      lowerProfile[i], 
+      upperProfile[i]);
 
     // Note the first, i.e. lowest one.
     if (tops[i].used())
@@ -76,34 +76,18 @@ void Product::set(
 
   // If there is only a single distribution possible, this counts
   // as a complexity of 2 (don't make it absurdly attractive).
-  if (length.used() && topCount+1 == static_cast<unsigned char>(topLowSize))
+  if (length.used() && 
+      topCount+1 == static_cast<unsigned char>(topLowSize) &&
+      lowerProfile == upperProfile)
   {
-    if (lowerProfile.getLength() != upperProfile.getLength())
-      return;
-
-    for (unsigned char i = 1; i < topLowSize; i++)
-      if (lowerProfile.count(i) != upperProfile.count(i))
-        return;
-
     complexity = 2;
   }
 }
 
 
-void Product::set(
-  const Profile& sumProfile,
-  const ProfilePair& profilePair)
-{
-  Product::set(
-    sumProfile, 
-    profilePair.getLowerProfile(), 
-    profilePair.getUpperProfile());
-}
-
-
 bool Product::includes(const Profile& distProfile) const
 {
-  if (length.used() && ! length.includes(distProfile.getLength()))
+  if (length.used() && ! length.includes(distProfile.length()))
     return false;
 
   assert(distProfile.size() == tops.size());
@@ -111,29 +95,7 @@ bool Product::includes(const Profile& distProfile) const
   for (unsigned char i = 0; i < distProfile.size(); i++)
   {
     if (tops[i].used() && 
-        ! tops[i].includes(distProfile.count(i)))
-      return false;
-  }
-
-  return true;
-}
-
-
-bool Product::includesComplement(
-  const Profile& distProfile,
-  const Profile& sumProfile) const
-{
-  // Mirrored around sumProfile to get from West to East, say.
-
-  if (length.used() && ! length.includes(distProfile.getLength()))
-    return false;
-
-  assert(distProfile.size() == tops.size());
-
-  for (unsigned char i = 0; i < distProfile.size(); i++)
-  {
-    if (tops[i].used() && 
-        ! tops[i].includes(sumProfile.count(i) - distProfile.count(i)))
+        ! tops[i].includes(distProfile[i]))
       return false;
   }
 
@@ -144,12 +106,12 @@ bool Product::includesComplement(
 bool Product::symmetrizable(const Profile& sumProfile) const
 {
   if (length.used())
-    return length.symmetrizable(sumProfile.getLength());
+    return length.symmetrizable(sumProfile.length());
 
   for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
   {
     if (tops[i].used())
-      return tops[i].symmetrizable(sumProfile.count(i));
+      return tops[i].symmetrizable(sumProfile[i]);
   }
 
   // To have something, but this shouldn't happen.
@@ -198,7 +160,7 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
   // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
   // considered as 1-4 from the other side.
   Opponent backstop = OPP_WEST;
-  const Opponent lOpp = length.simplestOpponent(sumProfile.getLength());
+  const Opponent lOpp = length.simplestOpponent(sumProfile.length());
 
   if (lOpp == OPP_WEST)
     return OPP_WEST;
@@ -218,7 +180,7 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
   // Start from the highest top.
   for (unsigned char i = s; --i > 0; )
   {
-    const Opponent lTop = tops[i].simplestOpponent(sumProfile.count(i));
+    const Opponent lTop = tops[i].simplestOpponent(sumProfile[i]);
     if (lTop == OPP_WEST)
       return OPP_WEST;
     else if (lTop == OPP_EAST)
@@ -282,7 +244,7 @@ string Product::strVerbal(
   if (topCount == 0)
   {
     return length.strLength(
-      sumProfile.getLength(),
+      sumProfile.length(),
       simplestOpponent, 
       symmFlag);
   }
@@ -290,7 +252,7 @@ string Product::strVerbal(
   if (! length.used())
   {
     return tops.back().strTop(
-      sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
+      sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
       simplestOpponent, 
       symmFlag);
   }
@@ -301,8 +263,8 @@ string Product::strVerbal(
   {
     return top.strWithLength(
       length,
-      sumProfile.getLength(), 
-      sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
+      sumProfile.length(), 
+      sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
       simplestOpponent,
       symmFlag);
   }
@@ -310,12 +272,12 @@ string Product::strVerbal(
   {
     return 
       length.strLength(
-        sumProfile.getLength(), 
+        sumProfile.length(), 
         simplestOpponent, 
         symmFlag) + 
       ", and " + 
       top.strTop(
-        sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)),
+        sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
         simplestOpponent, 
         symmFlag);
   }

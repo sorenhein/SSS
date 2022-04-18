@@ -689,8 +689,8 @@ Manual::Manual(
   const unsigned char numTops = 
     static_cast<unsigned char>(sumProfile.size());
 
-  const unsigned char maxLength = sumProfile.getLength();
-  const unsigned char maxTops = sumProfile.count(numTops-1);
+  const unsigned char maxLength = sumProfile.length();
+  const unsigned char maxTops = sumProfile[numTops-1];
 
   DistData distData = {&data, &sumProfile, maxLength, maxTops, numTops};
   

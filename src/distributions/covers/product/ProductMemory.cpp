@@ -52,7 +52,7 @@ ProductUnit * ProductMemory::enterOrLookup(
     ProductUnit& productUnit = memory[numTops][code] = ProductUnit();
 
     productUnit.product.resize(numTops);
-    productUnit.product.set(sumProfile, profilePair);
+    profilePair.setProduct(productUnit.product, sumProfile);
     
     productUnit.numCovers = 1;
     productUnit.numTableaux = 0;
@@ -87,7 +87,7 @@ ProductUnit const * ProductMemory::lookupByTop(
   // as don't-care.
   ProfilePair pairCopy = profilePair;
   for (unsigned char i = 0; i+1 < static_cast<unsigned char>(numTops); i++)
-    pairCopy.addTop(i, 0, sumProfile.count(i));
+    pairCopy.addTop(i, 0, sumProfile[i]);
 
   unsigned long long code = pairCopy.getCode(sumProfile);
   auto it = memory[numTops].find(code);

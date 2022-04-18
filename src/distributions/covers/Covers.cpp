@@ -67,7 +67,7 @@ void Covers::prepareNew(
   const Profile& sumProfileIn)
 {
   sumProfile = sumProfileIn;
-  const unsigned char maxTricks = sumProfile.getLength();
+  const unsigned char maxTricks = sumProfile.length();
 
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back(ProfilePair(sumProfile));
@@ -79,7 +79,8 @@ void Covers::prepareNew(
 
     unsigned char topNumber = running.getNextTopNo(); // Next to write
 
-    const unsigned char topLength = sumProfile.count(topNumber);
+    // const unsigned char topLength = sumProfile.count(topNumber);
+    const unsigned char topLength = sumProfile[topNumber];
 
     for (unsigned char topLow = 0; topLow <= topLength; topLow++)
     {
@@ -91,7 +92,7 @@ void Covers::prepareNew(
           continue;
 
         // Add or restore the "don't care" with respect to length.
-        running.setLength(0, sumProfile.getLength());
+        running.setLength(0, sumProfile.length());
         running.addTop(topNumber, topLow, topHigh);
 
         // An unused top was already seen.
@@ -185,8 +186,8 @@ CoverState Covers::explain(
   Covers::setup(results, tricks, tmin);
   resExpl.setParameters(
     tmin,
-    sumProfile.getLength(),
-    sumProfile.count(static_cast<unsigned char>(sumProfile.size()-1)));
+    sumProfile.length(),
+    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)]);
 
   while (true)
   {

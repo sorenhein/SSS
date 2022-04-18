@@ -14,27 +14,15 @@
 #include "Profile.h"
 
 
-void Profile::set(
-  const vector<unsigned char>& topsIn,
-  const unsigned char numTops)
+void Profile::set(const vector<unsigned char>& topsIn)
 {
-  const unsigned num = (numTops == 0 ? topsIn.size() : numTops);
-  tops.resize(num);
+  tops = topsIn;
 
-  length = 0;
-  for (unsigned i = 0; i < num; i++)
-  {
-    tops[i] = topsIn[i];
-    length += topsIn[i];
-  }
+  lengthInt = 0;
+  for (auto& t: tops)
+    lengthInt += t;
 }
 
-
-void Profile::limit()
-{
-  for (unsigned i = 0; i+1 < tops.size(); i++)
-    tops[i] = 0;
-}
 
 void Profile::setSum(
   const vector<unsigned char>& topsWest,
@@ -45,31 +33,50 @@ void Profile::setSum(
 
   tops.resize(s);
 
-  length = 0;
+  lengthInt = 0;
   for (unsigned i = 0; i < s; i++)
   {
     tops[i] = topsWest[i] + topsEast[i];
-    length += tops[i];
+    lengthInt += tops[i];
   }
 }
 
 
-void Profile::mirrorAround(const Profile& sumProfile)
+void Profile::limit()
 {
-  // Turn this profile into sumProfile minus this one.
-  length = sumProfile.length - length;
-
-  const unsigned s = tops.size();
-  assert(sumProfile.tops.size() == s);
-  for (unsigned i = 0; i < s; i++)
-    tops[i] = sumProfile.tops[i] - tops[i];
+  for (unsigned i = 0; i+1 < tops.size(); i++)
+    tops[i] = 0;
 }
 
 
-unsigned char Profile::count(const unsigned char topNo) const
+unsigned char Profile::length() const
+{
+  return lengthInt;
+}
+
+
+unsigned char Profile::operator [] (const unsigned char topNo) const
 {
   assert(topNo < tops.size());
   return tops[topNo];
+}
+
+
+bool Profile::operator == (const Profile& profile2) const
+{
+  assert(tops.size() == profile2.tops.size());
+
+  if (lengthInt != profile2.lengthInt)
+    return false;
+
+  // This ignores the 0'th top!  So we can compare lower and upper.
+  for (unsigned i = 1; i < tops.size(); i++)
+  {
+    if (tops[i] != profile2.tops[i])
+      return false;
+  }
+
+  return true;
 }
 
 
@@ -79,19 +86,7 @@ unsigned Profile::size() const
 }
 
 
-unsigned char Profile::getLength() const
-{
-  return length;
-}
-
-
-const vector<unsigned char>& Profile::getTops() const
-{
-  return tops;
-}
-
-
-unsigned long long Profile::getCode() const
+unsigned long long Profile::getLowerCode() const
 {
   // There should be at most 7 different tops in a 13-card distribution.
   assert(tops.size() < 8);
@@ -106,13 +101,13 @@ unsigned long long Profile::getCode() const
   for (unsigned i = tops.size(); i-- > 0; )
     code = (code << 4) | tops[i];
 
-  code |= (length << (4*tops.size()));
+  code |= (lengthInt << (4*tops.size()));
 
   return code;
 }
 
 
-unsigned long long Profile::getCode(
+unsigned long long Profile::getUpperCode(
   const Profile& sumProfile,
   const Profile& lowerProfile) const
 {
@@ -131,8 +126,8 @@ unsigned long long Profile::getCode(
   }
 
   const unsigned vlen = (
-    length == sumProfile.length &&
-    length > lowerProfile.length ? 0xf : length);
+    lengthInt == sumProfile.lengthInt &&
+    lengthInt > lowerProfile.lengthInt ? 0xf : lengthInt);
 
   code |= (vlen << (4*tops.size()));
 
@@ -156,7 +151,7 @@ string Profile::strLine() const
 {
   stringstream ss;
 
-  ss << setw(6) << +length << ":";
+  ss << setw(6) << +lengthInt << ":";
   for (auto& t: tops)
     ss << setw(3) << +t;
 
