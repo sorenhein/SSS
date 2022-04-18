@@ -13,7 +13,7 @@
 
 #include "Term.h"
 
-#include "../../utils/table.h"
+#include "../../../utils/table.h"
 
 using namespace std;
 

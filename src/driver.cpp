@@ -5,7 +5,7 @@
 
 #include "distributions/Distributions.h"
 #include "distributions/covers/ExplStats.h"
-#include "distributions/covers/TermCompare.h"
+#include "distributions/covers/term/TermCompare.h"
 
 #include "inputs/Control.h"
 #include "inputs/Convert.h"

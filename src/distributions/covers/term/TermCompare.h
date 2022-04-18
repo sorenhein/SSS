@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include "CoverHelp.h"
+#include "CoverOperator.h"
 
 using namespace std;
 

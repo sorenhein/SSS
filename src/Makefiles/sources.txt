@@ -20,11 +20,6 @@ SOURCE_FILES    =                               \
                 distributions/covers/Covers.cpp \
                 distributions/covers/CoverStore.cpp \
                 distributions/covers/Manual.cpp \
-                distributions/covers/Term.cpp   \
-                distributions/covers/TermCompare.cpp \
-                distributions/covers/Length.cpp \
-                distributions/covers/Top.cpp    \
-                distributions/covers/Xes.cpp    \
                 distributions/covers/Tricks.cpp    \
                 distributions/covers/Product.cpp \
                 distributions/covers/ProductMemory.cpp \
@@ -36,6 +31,12 @@ SOURCE_FILES    =                               \
                 distributions/covers/ResExpl.cpp \
                 distributions/covers/ExplStat.cpp \
                 distributions/covers/ExplStats.cpp \
+                                                \
+                distributions/covers/term/Term.cpp        \
+                distributions/covers/term/Length.cpp      \
+                distributions/covers/term/Top.cpp         \
+                distributions/covers/term/Xes.cpp         \
+                distributions/covers/term/TermCompare.cpp \
                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \

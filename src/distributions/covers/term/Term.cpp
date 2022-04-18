@@ -14,7 +14,7 @@
 #include "Term.h"
 #include "TermCompare.h"
 
-#include "../../const.h"
+#include "../../../const.h"
 
 extern TermCompare termCompare;
 

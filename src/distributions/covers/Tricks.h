@@ -13,7 +13,7 @@
 #include <list>
 #include <string>
 
-#include "CoverHelp.h"
+#include "CoverState.h"
 
 using namespace std;
 

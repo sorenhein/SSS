@@ -16,7 +16,7 @@
 
 #include "Term.h"
 
-#include "../../utils/table.h"
+#include "../../../utils/table.h"
 
 class Length;
 struct Xes;

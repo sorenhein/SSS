@@ -18,9 +18,9 @@
 
 #include <string>
 
-#include "CoverHelp.h"
+#include "CoverOperator.h"
 
-#include "../../utils/table.h"
+#include "../../../utils/table.h"
 
 using namespace std;
 

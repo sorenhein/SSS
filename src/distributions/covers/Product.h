@@ -19,8 +19,8 @@
 #include <vector>
 #include <string>
 
-#include "Length.h"
-#include "Top.h"
+#include "term/Length.h"
+#include "term/Top.h"
 
 #include "../../utils/table.h"
 
