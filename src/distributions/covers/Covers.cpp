@@ -14,6 +14,7 @@
 #include "Covers.h"
 
 #include "ProductMemory.h"
+#include "ProfilePair.h"
 #include "CoverTableau.h"
 #include "ResExpl.h"
 #include "Tricks.h"
@@ -489,3 +490,8 @@ string Covers::strCached() const
   return tableauCache.str();
 }
 
+
+string Covers::strExpl(const ResExpl& resExpl) const
+{
+  return resExpl.str(sumProfile);
+}

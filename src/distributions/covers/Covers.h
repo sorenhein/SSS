@@ -13,18 +13,16 @@
 #include <vector>
 #include <string>
 
-#include "CoverStore.h"
+#include "Profile.h"
 #include "CoverRowOld.h"
-#include "ProfilePair.h"
+#include "CoverStore.h"
 #include "TableauCache.h"
 
-class CoverMemory;
-class Manual;
 class ProductMemory;
 class CoverTableau;
-class ResExpl;
 class Tricks;
 class Result;
+class ResExpl;
 
 
 using namespace std;
@@ -100,6 +98,8 @@ class Covers
       unsigned& numUses) const;
 
     string strCached() const;
+
+    string strExpl(const ResExpl& resExpl) const;
 };
 
 #endif

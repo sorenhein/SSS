@@ -1,5 +1,18 @@
+Do the CoverRowOld.
+See about some of the symmetrics.
+Delete the old symmetrics and manuals.
+Clean code (obvious comments).
+Look at ProductMemory statistics.
+Optimize Tricks.
+
 Symmetrics:
-Get out the old script to compare strategies.
+11/17478: Why not a symmetric reply?
+11/25026: Could we get "Either side has the top at most tripleton"?
+9/17730 : Either side has a doubleton?
+10/53189: Either side has a doubleton?
+11/171270: "
+11/170820: The manual one is good too?
+11/174984: Weightings?
 
 Can't use CoverRow rather than CoverRowOld at the moment:
 symmFlag is not in the looked-up cover, so have to track separately.
@@ -203,13 +216,8 @@ Verbals of strategy wins
   - Take 2 tricks (but one less when West is void), and more when...
   - Count that as 1 less explanation?
 
-* Look at text for all the couple hundred entries directly
-
 * ResExpl::str method, for each strategy
   - Would be nice to parametrize by the actual names of cards
-
-* If the same profile arises in two ways, pick the less complex one?
-  - Give each cover a complexity that matters when sorting
 
 * Also output differences between two strategies
   - As text, maybe mainly actual combinations (Hx, HHx, ...)

@@ -15,6 +15,7 @@
 #include "CoverRowOld.h"
 
 class ExplStats;
+class Profile;
 
 
 using namespace std;
@@ -60,7 +61,7 @@ class ResExpl
 
     void updateStats(ExplStats& explStats) const;
 
-    string str() const;
+    string str(const Profile& sumProfile) const;
 };
 
 #endif

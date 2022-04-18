@@ -59,14 +59,6 @@ list<ExplData>::iterator ResExpl::dominator(const CoverRowOld& coverRow)
     {
       // TODO
       cout << "Don't know yet how to deal with repeats" << endl;
-      cout << "Already have:\n";
-      cout << ResExpl::str();
-      cout << "Cover:\n";
-      cout << coverRow.str() << "\n";
-      cout << coverRow.strProfile() << "\n";
-      cout << "iter:\n";
-      cout << iter->coverRowPtr->str() << "\n";
-      cout << iter->coverRowPtr->strProfile() << endl;
       assert(false);
     }
 
@@ -139,7 +131,7 @@ void ResExpl::updateStats(ExplStats& explStats) const
 }
 
 
-string ResExpl::str() const
+string ResExpl::str(const Profile& sumProfile) const
 {
   stringstream ss;
   ss << "Always take at least " << +tricksMin << 
@@ -159,11 +151,7 @@ string ResExpl::str() const
     else
       prefix = "      - ";
 
-    // unsigned char length, tops1;
-    // ed.coverRowPtr->getID(length, tops1);
-
-    ss << prefix <<
-      ed.coverRowPtr->str() << "\n";
+    ss << prefix << ed.coverRowPtr->str(sumProfile) << "\n";
   }
 
   return ss.str() + "\n";

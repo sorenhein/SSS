@@ -13,7 +13,6 @@
 
 #include "CoverRow.h"
 #include "Cover.h"
-#include "Profile.h"
 
 
 CoverRow::CoverRow()
@@ -74,54 +73,6 @@ void CoverRow::add(
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
-}
-
-
-bool CoverRow::includes(
- const Profile& distProfile,
- const Profile& sumProfile) const
-{
-  // This method is used when an entire cover row is defined manually.
-  assert(distProfile.size() == sumProfile.size());
-
-  for (auto& coverPtr: coverPtrs)
-  {
-    if (coverPtr->includes(distProfile))
-      return true;
-    else if (! coverPtr->symmetric())
-      continue;
-    else
-      return coverPtr->includesComplement(distProfile, sumProfile);
-  }
-
-  return false;
-}
-
-
-void CoverRow::score(
-  const vector<Profile>& distProfiles,
-  const Profile& sumProfile,
-  const vector<unsigned char>& cases)
-{
-  // This method is used when an entire cover row is defined manually.
-  const unsigned len = distProfiles.size();
-  assert(len == cases.size());
-  tricks.resize(len);
-
-  weight = 0;
-  numDist = 0;
-  complexity = 0;
-
-  for (unsigned dno = 0; dno < len; dno++)
-  {
-    if (CoverRow::includes(distProfiles[dno], sumProfile))
-    {
-      tricks.set(dno);
-      weight += static_cast<unsigned>(cases[dno]);
-      numDist++;
-      // TODO What about complexity?
-    }
-  }
 }
 
 

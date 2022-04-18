@@ -99,6 +99,7 @@ while (my $line = <$fh>)
       push @vstrats, $line2;
     }
 
+=pod
     for my $i (reverse 0 .. $#{$strats[$vno]})
     {
       my $t = $strats[$vno][$i];
@@ -115,6 +116,7 @@ while (my $line = <$fh>)
         splice(@{$strats[$vno]}, $i, 1);
       }
     }
+=cut
 
     my @ssorted = sort @{$strats[$vno]};
     my @vsorted = sort @vstrats;

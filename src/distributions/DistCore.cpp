@@ -508,7 +508,8 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
 
       const Cover& clook = covers.lookup(cover);
 
-      rowOld.add(clook, man.symmFlag, sumProfile, index);
+      rowOld.add(clook, index);
+      // rowOld.add(clook, man.symmFlag, sumProfile, index);
     }
 
     rowOld.weigh(cases);

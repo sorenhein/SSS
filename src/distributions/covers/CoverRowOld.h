@@ -34,11 +34,13 @@ class CoverRowOld
 
     unsigned indexInternal;
 
-    Profile sumProfile;
+    // Profile sumProfile;
 
     unsigned weight;
 
     unsigned char numDist;
+
+    unsigned char complexity;
 
 
   public:
@@ -51,8 +53,7 @@ class CoverRowOld
 
     void add(
       const Cover& cover,
-      const bool symmFlagIn,
-      const Profile& sumProfileIn,
+      // const Profile& sumProfileIn,
       const unsigned indexIn);
 
     void weigh(const vector<unsigned char>& cases);
@@ -61,15 +62,27 @@ class CoverRowOld
 
     bool operator <= (const CoverRowOld& cover2) const;
 
+    unsigned size() const;
+
     unsigned index() const;
+
+    const Tricks& getTricks() const;
 
     unsigned getWeight() const;
 
+    unsigned getComplexity() const;
+
     unsigned char getNumDist() const;
 
-    string str() const;
+    unsigned char getOverlap() const;
 
-    string strProfile() const;
+    string strInternal() const;
+
+    string strHeader() const;
+
+    string str(const Profile& sumProfile) const;
+
+    // string strProfile() const;
 };
 
 #endif

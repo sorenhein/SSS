@@ -1019,7 +1019,8 @@ void Slist::covers(
     cout << "Strategy #" << stratNo << ": ";
     riter->reset();
     if (strat.covers(coversIn, * riter))
-      cout << riter->str();
+      // cout << riter->str();
+      cout << coversIn.strExpl(* riter);
     else
       cout << strat.str("Unexplained", true) << "\n";
     

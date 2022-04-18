@@ -38,23 +38,6 @@ class CoverRow
     unsigned char complexity;
 
 
-    // TODO I actually think we don't need these.  Once we have
-    // the manual data, then for each such we should make a temporar
-    // cover, set(productMemory, sumProfile, profilePair, symmFlag).
-    // Then we prepare(distProfiles, cases).
-    // Then we look it up in the comprehensive list, which yields
-    // a pointer.
-    // Then we CoverRow::add it, which must consider symmetryFlag.
-    bool includes(
-      const Profile& distProfile,
-      const Profile& sumProfile) const;
-
-    void score(
-      const vector<Profile>& distProfiles,
-      const Profile& sumProfile,
-      const vector<unsigned char>& cases);
-
-
   public:
 
     CoverRow();

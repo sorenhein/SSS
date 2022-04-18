@@ -12,8 +12,6 @@
 #include <cassert>
 
 #include "CoverRowOld.h"
-#include "Profile.h"
-#include "Manual.h"
 
 
 CoverRowOld::CoverRowOld()
@@ -24,9 +22,11 @@ CoverRowOld::CoverRowOld()
 
 void CoverRowOld::reset()
 {
+  covers.clear();
   tricks.clear();
   weight = 0;
   numDist = 0;
+  complexity = 0;
 }
 
 
@@ -38,15 +38,11 @@ void CoverRowOld::resize(const unsigned len)
 
 void CoverRowOld::add(
   const Cover& cover,
-  [[maybe_unused]] const bool symmFlag, // Unnecessary later -- already in cover
-  const Profile& sumProfileIn,
   const unsigned indexIn)
 {
   indexInternal = indexIn;
-  sumProfile = sumProfileIn; // Both are duplicative
 
   covers.emplace_back(cover);
-  // covers.back().setSymmetric(symmFlag);
   covers.back().tricksOr(tricks);
 }
 
@@ -60,6 +56,7 @@ void CoverRowOld::weigh(const vector<unsigned char>& cases)
 
 CoverState CoverRowOld::explain(Tricks& tricksSeen) const
 {
+  // If tricks <= tricksSeen elementwise, tricks is subtracted out.
   return tricks.explain(tricksSeen);
 }
 
@@ -70,9 +67,21 @@ bool CoverRowOld::operator <= (const CoverRowOld& cover2) const
 }
 
 
+unsigned CoverRowOld::size() const
+{
+  return covers.size();
+}
+
+
 unsigned CoverRowOld::index() const
 {
   return indexInternal;
+}
+
+
+const Tricks& CoverRowOld::getTricks() const
+{
+  return tricks;
 }
 
 
@@ -88,7 +97,48 @@ unsigned char CoverRowOld::getNumDist() const
 }
 
 
-string CoverRowOld::str() const
+unsigned CoverRowOld::getComplexity() const
+{
+  return complexity;
+}
+
+
+unsigned char CoverRowOld::getOverlap() const
+{
+  // The overlap is the sum of the individual cover counts,
+  // minus the count of the row.
+  unsigned char overlap = 0;
+  for (auto cover: covers)
+    overlap += cover.getNumDist();
+
+  return overlap - numDist;
+}
+
+
+string CoverRowOld::strInternal() const
+{
+  stringstream ss;
+
+  ss <<
+    "weight " << +weight <<
+    ", dists " << +numDist <<
+    ", complexity " << +complexity << "\n";
+
+  ss << tricks.strList();
+
+  return ss.str();
+}
+
+
+string CoverRowOld::strHeader() const
+{
+  return
+    covers.front().strHeaderTricksShort() +
+    covers.front().strHeader();
+}
+
+
+string CoverRowOld::str(const Profile& sumProfile) const
 {
   string s = covers.front().str(sumProfile);
 
@@ -96,17 +146,4 @@ string CoverRowOld::str() const
     s += "; or\n  " + iter->str(sumProfile);
 
   return s;
-}
-
-
-string CoverRowOld::strProfile() const
-{
-  stringstream ss;
-
-  cout << 
-    "cover index " << indexInternal << ", weight " << weight << "\n";
-
-  ss << tricks.strList();
-  
-  return ss.str();
 }
