@@ -348,7 +348,8 @@ histoPlay[plays.size()]++;
             comb.covers(
               distributions.get(cards, 
               centry.getHolding2()).covers(),
-              resExplanations);
+              resExplanations,
+              productStats);
             timersStrat[32].stop();
 
             for (auto& resExpl: resExplanations)
@@ -639,7 +640,7 @@ void Combinations::covers(
 
   list<ResExpl> resExplanations;
 
-  comb.covers(dist.covers(), resExplanations);
+  comb.covers(dist.covers(), resExplanations, productStats);
 }
 
 
@@ -648,6 +649,15 @@ Combination const * Combinations::getPtr(
   const unsigned holding3) const
 {
   return &combMemory.getComb(cards, holding3);
+}
+
+
+string Combinations::strProductStats() const
+{
+  return
+    productStats.strTable() +
+    productStats.strByLength() +
+    productStats.strByLengthTops();
 }
 
 

@@ -99,6 +99,16 @@ CoverState CoverRow::explain(Tricks& tricksSeen) const
 }
 
 
+void CoverRow::updateStats(
+  ProductStats& productStats,
+  const Profile& sumProfile,
+  const bool newTableauFlag) const
+{
+  for (auto coverPtr: coverPtrs)
+    coverPtr->updateStats(productStats, sumProfile, newTableauFlag);
+}
+
+
 bool CoverRow::operator <= (const CoverRow& coverRow2) const
 {
   return (tricks <= coverRow2.tricks);

@@ -15,6 +15,7 @@
 
 #include "product/Profile.h"
 #include "product/ProfilePair.h"
+#include "product/ProductStats.h"
 
 
 Cover::Cover()
@@ -148,6 +149,16 @@ bool Cover::possible(
 CoverState Cover::explain(Tricks& tricksSeen) const
 {
   return tricks.explain(tricksSeen);
+}
+
+
+void Cover::updateStats(
+  ProductStats& productStats,
+  const Profile& sumProfile,
+  const bool newTableauFlag) const
+{
+  assert(productUnitPtr != nullptr);
+  productStats.store(productUnitPtr->product, sumProfile, newTableauFlag);
 }
 
 

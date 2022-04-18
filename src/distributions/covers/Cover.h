@@ -22,6 +22,7 @@
 using namespace std;
 
 class Profile;
+class ProductStats;
 
 
 class Cover
@@ -82,6 +83,11 @@ class Cover
       unsigned char& tricksAdded) const;
 
     CoverState explain(Tricks& tricksSeen) const;
+
+    void updateStats(
+      ProductStats& productStats,
+      const Profile& sumProfile,
+      const bool newTableauFlag) const;
 
     bool operator < (const Cover& cover2) const;
 

@@ -18,6 +18,7 @@ using namespace std;
 
 class Cover;
 class Profile;
+class ProductStats;
 
 /* A row is a list of covers that are OR'ed together.
  */
@@ -64,6 +65,11 @@ class CoverRow
       unsigned char& residualsSum);
 
     CoverState explain(Tricks& tricksSeen) const;
+
+    void updateStats(
+      ProductStats& productStats,
+      const Profile& sumProfile,
+      const bool newTableauFlag) const;
 
     bool operator <= (const CoverRow& coverRow2) const;
 

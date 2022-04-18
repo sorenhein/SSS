@@ -1,7 +1,10 @@
-See about some of the symmetrics.
+Make an exhaustive manual one too?
+
+See about some of the symmetrics, also cf. ProductStats.
 Delete the old symmetrics and manuals.
+
 Clean code (obvious comments).
-Look at ProductMemory statistics.
+
 Optimize Tricks.
 
 Symmetrics:
@@ -16,16 +19,17 @@ Symmetrics:
 
 Tricks: Optimize into 5-groups
 
-3. Make ProductMemory
+ProductMemory:
+Length 6, only highest top (out of 3) set is in some sense the same
+as there were only 2 tops (the lowest is there and empty).
+Then ProductMemory would give back a ProductUnit consisting of the
+pointer to the 2-top one and an offset of 1.
+The one using that product would have to take it into account somehow.
 
-   - Potentially if we want to store a length-6 1:1?????, it is
-     kind of the same as a lengh-6 1:1? with an offset of 4.
-     Printing out can be spoofed.
-     So the pointer to product memory must also include an offset.
-     Matching an include: The reduced #2 is the unreduced #6 etc.
-     Several inputs are just skipped as being irrelevant in that case.
-     Probably would have to store each offset and each partition that
-     gave rise to that product 
+ProductMemory no longer needs the counters as they are in ProductStats.
+
+When examining strategies, shift them down as far as possible,
+as this reduces the number of covers to consider.
 
 
 

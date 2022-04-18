@@ -22,6 +22,7 @@ class Ranges;
 struct Play;
 class SurvivorList;
 class Distribution;
+class ProductStats;
 
 using namespace std;
 
@@ -246,7 +247,8 @@ class Slist
     void covers(
       Covers& coversIn,
       const unsigned char maxRank,
-      list<ResExpl>& resExplanations) const;
+      list<ResExpl>& resExplanations,
+      ProductStats& productStats) const;
 
     bool ordered() const;
 

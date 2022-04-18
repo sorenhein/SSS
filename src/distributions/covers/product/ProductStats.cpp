@@ -33,6 +33,12 @@ void ProductStats::resize()
   lengthTopStats.resize(14);
   for (unsigned i = 0; i < lengthTopStats.size(); i++)
     lengthTopStats[i].resize(i+1);
+
+  seenLength.resize(14, false);
+
+  seenLengthTops.resize(14);
+  for (unsigned i = 0; i < seenLengthTops.size(); i++)
+    seenLengthTops[i].resize(i+1);
 }
 
 
@@ -51,7 +57,7 @@ void ProductStats::storeLengthTops(
   auto lengthTopIter = lengthTopMap.find(code);
   if (lengthTopIter == lengthTopMap.end())
   {
-    newFlag = false;
+    newFlag = true;
     LengthTopEntry& entry = lengthTopMap[code] = LengthTopEntry();
 
     entry.productPtr = &product;
@@ -61,7 +67,7 @@ void ProductStats::storeLengthTops(
   }
   else
   {
-    newFlag = true;
+    newFlag = false;
     LengthTopEntry& entry = lengthTopIter->second;
     if (newTableauFlag)
       entry.numTableaux++;
@@ -74,17 +80,14 @@ void ProductStats::storeLength(
   const Product& product,
   const unsigned long long code,
   const unsigned char length,
-  const unsigned char maxTops,
-  const bool newFlag)
+  const unsigned char maxTops)
 {
   assert(length < lengthStats.size());
-  assert(maxTops < lengthStats[length].size());
   auto& lengthMap = lengthStats[length];
 
   auto lengthIter = lengthMap.find(code);
   if (lengthIter == lengthMap.end())
   {
-    assert(! newFlag);
     LengthEntry& entry = lengthMap[code] = LengthEntry();
 
     entry.productPtr = &product;
@@ -94,7 +97,6 @@ void ProductStats::storeLength(
   }
   else
   {
-    assert(newFlag);
     LengthEntry& entry = lengthIter->second;
     assert(maxTops < entry.histo.size());
     entry.histo[maxTops]++;
@@ -113,6 +115,9 @@ void ProductStats::storeTable(
   assert(maxTops < tableStats[length].size());
   auto& entry = tableStats[length][maxTops];
 
+  seenLength[length]++;
+  seenLengthTops[length][maxTops]++;
+
   if (newFlag)
     entry.numUniques++;
   if (newTableauFlag)
@@ -126,6 +131,8 @@ void ProductStats::store(
   const Profile& sumProfile,
   const bool newTableauFlag)
 {
+  // TODO Not currently multi-threaded!
+
   const unsigned long long code = product.code();
   const unsigned char length = sumProfile.length();
   const unsigned char maxTops =
@@ -144,8 +151,7 @@ void ProductStats::store(
     product, 
     code,
     length,
-    maxTops,
-    newFlag);
+    maxTops);
 
   ProductStats::storeTable(
     length,
@@ -159,18 +165,21 @@ string ProductStats::strTableHeader() const
 {
   stringstream ss;
 
-  ss << "ProductStats summary table\n\n";
+  ss << "ProductStats summary table\n";
+  ss << string(26, '-') << "\n\n";
 
   ss <<
     setw(16) << "" <<
     setw(12) << "Used in" << "\n";
 
   ss <<
-    setw(16) << "" << string(20, '-');
+    setw(16) << "" << string(20, '-') << "\n";
 
   ss <<
     setw(8) << "Len-top" <<
-    tableStats[0][0].strHeader() << "\n";
+    tableStats[0][0].strHeader();
+
+  ss << string(26, '-') << "\n";
 
   return ss.str();
 }
@@ -180,11 +189,19 @@ string ProductStats::strTable() const
 {
   stringstream ss;
 
+  ss << ProductStats::strTableHeader();
+
   for (unsigned length = 1; length < tableStats.size(); length++)
   {
+    if (! seenLength[length])
+      continue;
+
     for (unsigned maxTops = 1; maxTops < tableStats[length].size(); 
         maxTops++)
     {
+      if (! seenLengthTops[length][maxTops])
+        continue;
+
       const TableEntry& entry = tableStats[length][maxTops];
       if (entry.numUniques)
       {
@@ -196,7 +213,7 @@ string ProductStats::strTable() const
     }
   }
 
-  return ss.str();
+  return ss.str() + "\n";
 }
 
 
@@ -221,50 +238,55 @@ string ProductStats::strByLength() const
 {
   stringstream ss;
 
-  LengthEntry ltmp;
   Product ptmp;
-  const string subheader = ltmp.strHeader() + ptmp.strHeader();
 
-  for (unsigned length = 1; length < lengthStats.size(); length++)
+  for (unsigned length = 2; length < lengthStats.size(); length++)
   {
-      const string key = to_string(length);
-      ss << ProductStats::strHeader("length", key);
+    if (! seenLength[length])
+      continue;
 
-      ss << 
-        subheader << "\n" <<
-        string(subheader.size(), '-') << "\n";
+    const string lstr = to_string(length);
+    ss << ProductStats::strHeader("length", lstr);
 
-      vector<unsigned> histo(lengthStats.size()+1);
-      unsigned sumUses = 0;
-      unsigned num = 0;
+    ptmp.resize(length);
+    const string subheader = 
+      lengthStats[length].begin()->second.strHeader() + 
+      ptmp.strHeader();
 
-      for (auto& lpair: lengthStats[length])
+    ss << 
+      subheader << "\n" <<
+      string(subheader.size(), '-') << "\n";
+
+    vector<unsigned> histo(length+1);
+    unsigned sumUses = 0;
+    unsigned num = 0;
+
+    for (auto &[key, entry]: lengthStats[length])
+    {
+      if (entry.numUses)
       {
-        auto& entry = lpair.second;
-        if (entry.numUses)
-        {
-          ss <<
-            entry.str() <<
-            entry.productPtr->strLine() << "\n";
-        
-          for (unsigned i = 0; i < entry.histo.size(); i++)
-            histo[i] += entry.histo[i];
-          sumUses += entry.numUses;
-          num++;
-        }
+        ss <<
+          entry.str() <<
+          entry.productPtr->strLine() << "\n";
+      
+        for (unsigned i = 0; i < entry.histo.size(); i++)
+          histo[i] += entry.histo[i];
+        sumUses += entry.numUses;
+        num++;
       }
+    }
 
-      ss << string(subheader.size(), '-') << "\n" << setw(5) << sumUses;
+    ss << string(subheader.size(), '-') << "\n" << setw(7) << sumUses;
 
-      for (unsigned i = 0; i < histo.size(); i++)
-      {
-        if (histo[i] == 0)
-          ss << setw(5) << "-";
-        else
-          ss << setw(5) << histo[i];
-      }
+    for (unsigned i = 1; i < histo.size(); i++)
+    {
+      if (histo[i] == 0)
+        ss << setw(7) << "-";
+      else
+        ss << setw(7) << histo[i];
+    }
 
-      ss << "  " << num << " entries\n\n";
+    ss << setw(8) << num << " entries\n\n";
   }
 
   return ss.str();
@@ -275,17 +297,27 @@ string ProductStats::strByLengthTops() const
 {
   stringstream ss;
 
-  LengthTopEntry ltmp;
   Product ptmp;
-  const string subheader = ltmp.strHeader() + ptmp.strHeader();
 
-  for (unsigned length = 1; length < lengthTopStats.size(); length++)
+  for (unsigned length = 2; length < lengthTopStats.size(); length++)
   {
+    if (! seenLength[length])
+      continue;
+
+    ptmp.resize(length);
+
     for (unsigned maxTops = 1; maxTops < lengthTopStats[length].size(); 
         maxTops++)
     {
-      const string key = to_string(length) + "-" + to_string(maxTops);
-      ss << ProductStats::strHeader("length and maximum tops", key);
+      if (! seenLengthTops[length][maxTops])
+        continue;
+
+      const string lstr = to_string(length) + "-" + to_string(maxTops);
+      ss << ProductStats::strHeader("length and maximum tops", lstr);
+
+      const string subheader = 
+        lengthTopStats[length][maxTops].begin()->second.strHeader() + 
+        ptmp.strHeader();
 
       ss << 
         subheader << "\n" <<
@@ -295,9 +327,8 @@ string ProductStats::strByLengthTops() const
       unsigned sumUses = 0;
       unsigned num = 0;
 
-      for (auto& lpair: lengthTopStats[length][maxTops])
+      for (auto &[key, entry]: lengthTopStats[length][maxTops])
       {
-        auto& entry = lpair.second;
         if (entry.numUses)
         {
           ss <<
@@ -314,8 +345,7 @@ string ProductStats::strByLengthTops() const
         string(subheader.size(), '-') << "\n" <<
           setw(10) << sumTableaux <<
           setw(10) << sumUses <<
-          "  " <<
-          num << " entries\n\n";
+          setw(8) << num << " entries\n\n";
     }
   }
 

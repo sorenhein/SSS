@@ -997,7 +997,8 @@ void Slist::getResultList(list<Result>& resultList) const
 void Slist::covers(
   Covers& coversIn,
   const unsigned char maxRank,
-  list<ResExpl>& resExplanations) const
+  list<ResExpl>& resExplanations,
+  ProductStats& productStats) const
 {
   unsigned stratNo = 0;
 
@@ -1019,7 +1020,6 @@ void Slist::covers(
     cout << "Strategy #" << stratNo << ": ";
     riter->reset();
     if (strat.covers(coversIn, * riter))
-      // cout << riter->str();
       cout << coversIn.strExpl(* riter);
     else
       cout << strat.str("Unexplained", true) << "\n";
@@ -1047,10 +1047,14 @@ void Slist::covers(
       continue;
     }
 
-    strat.coversNew(coversIn, 1, tableau);
+    bool newTableauFlag;
+    strat.coversNew(coversIn, 1, tableau, newTableauFlag);
     cout << "VStrategy #" << stratNo << ": ";
     if (tableau.complete())
+    {
       cout << tableau.str();
+      tableau.updateStats(productStats, newTableauFlag);
+    }
     else
       cout << strat.str("Vnexplained", true) << "\n";
     

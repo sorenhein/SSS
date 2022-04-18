@@ -238,7 +238,8 @@ class Strategy
     void coversNew(
       Covers& coversIn,
       const unsigned char numStrategyTops,
-      CoverTableau& tableau) const;
+      CoverTableau& tableau,
+      bool& newTableauFlag) const;
 
     void studyOppsVoid(
       Result& resultWestVoid,

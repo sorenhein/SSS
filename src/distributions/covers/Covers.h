@@ -84,7 +84,8 @@ class Covers
     void explainExhaustive(
       const list<Result>& results,
       const unsigned numStrategyTops,
-      CoverTableau& tableau);
+      CoverTableau& tableau,
+      bool& newTableauFlag);
 
     void storeTableau(
       const Tricks& excessTricks,

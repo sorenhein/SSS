@@ -251,6 +251,15 @@ void CoverTableau::attemptExhaustive(
 }
 
 
+void CoverTableau::updateStats(
+  ProductStats& productStats,
+  const bool newTableauFlag) const
+{
+  for (auto& row: rows)
+    row.updateStats(productStats, sumProfile, newTableauFlag);
+}
+
+
 bool CoverTableau::operator < (const CoverTableau& tableau2) const
 {
   const unsigned char compl1 = CoverTableau::getComplexity();

@@ -85,9 +85,10 @@ int main(int argc, char * argv[])
     cout << explStats.str();
 
     cout << "\n";
+    cout << combinations.strProductStats();
+
+    cout << "\n";
     cout << combinations.str();
-
-
   }
   else
   {

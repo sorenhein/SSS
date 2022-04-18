@@ -991,12 +991,17 @@ bool Strategy::covers(
 void Strategy::coversNew(
   Covers& coversIn,
   const unsigned char numStrategyTops,
-  CoverTableau& tableau) const
+  CoverTableau& tableau,
+  bool& newTableauFlag) const
 {
   tableau.reset();
   // TODO Can be greedy or exhaustive.
   // coversIn.explainGreedy(results, numStrategyTops, tableau);
-  coversIn.explainExhaustive(results, numStrategyTops, tableau);
+  coversIn.explainExhaustive(
+    results, 
+    numStrategyTops, 
+    tableau, 
+    newTableauFlag);
 }
 
 

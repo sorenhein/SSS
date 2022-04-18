@@ -64,11 +64,11 @@ class ProductStats
       {
         stringstream ss;
 
-        ss << setw(5) << "Uses";
+        ss << setw(7) << "Uses";
 
         // No newline
         for (unsigned i = 1; i < histo.size(); i++)
-          ss << setw(5) << i;
+          ss << setw(7) << i;
 
         return ss.str();
       };
@@ -77,11 +77,11 @@ class ProductStats
       {
         stringstream ss;
 
-        ss << setw(5) << numUses;
+        ss << setw(7) << numUses;
 
         // No newline
         for (unsigned i = 1; i < histo.size(); i++)
-          ss << setw(5) << histo[i];
+          ss << setw(7) << histo[i];
 
         return ss.str();
       };
@@ -118,12 +118,15 @@ class ProductStats
     };
 
 
-
     vector<vector<TableEntry>> tableStats;
 
     vector<map<unsigned long long, LengthEntry>> lengthStats;
 
     vector<vector<map<unsigned long long, LengthTopEntry>>> lengthTopStats;
+
+    vector<unsigned char> seenLength;
+
+    vector<vector<unsigned char>> seenLengthTops;
 
 
   public:
@@ -144,8 +147,7 @@ class ProductStats
       const Product& product,
       const unsigned long long code,
       const unsigned char length,
-      const unsigned char maxTops,
-      const bool newFlag);
+      const unsigned char maxTops);
 
     void storeTable(
       const unsigned char length,

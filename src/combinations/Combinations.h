@@ -19,6 +19,8 @@
 #include "CombEntry.h"
 #include "CombHelp.h"
 
+#include "../distributions/covers/product/ProductStats.h"
+
 using namespace std;
 
 class Distributions;
@@ -28,6 +30,8 @@ class ExplStats;
 class Combinations
 {
   private:
+
+    ProductStats productStats;
 
     CombMemory combMemory;
 
@@ -118,6 +122,8 @@ class Combinations
     Combination const * getPtr(
       const unsigned char cards,
       const unsigned holding3) const;
+
+    string strProductStats() const;
 
     string str(const unsigned char cards = 0) const;
 

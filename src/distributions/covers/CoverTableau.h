@@ -26,6 +26,7 @@ using namespace std;
 
 class Result;
 struct StackTableau;
+class ProductStats;
 
 
 class CoverTableau
@@ -65,6 +66,10 @@ class CoverTableau
       list<StackTableau>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
+
+    void updateStats(
+      ProductStats& productStats,
+      const bool newTableauFlag) const;
 
     bool operator < (const CoverTableau& tableau2) const;
 

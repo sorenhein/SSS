@@ -288,13 +288,15 @@ cout << tableau.strResiduals();
 void Covers::explainExhaustive(
   const list<Result>& results,
   const unsigned numStrategyTops,
-  CoverTableau& tableau)
+  CoverTableau& tableau,
+  bool& newTableauFlag)
 {
   Tricks tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
   CoverTableau const * tableauPtr = nullptr;
+  newTableauFlag = true;
   // cout << "CACHE when looking up: " << tableauCache.size() << endl;
   // if (tableauCache.size() > 0)
   // {
@@ -306,6 +308,7 @@ void Covers::explainExhaustive(
     // assert(tableauPtr != nullptr);
     tableau = * tableauPtr;
     tableau.setMinTricks(tmin);
+    newTableauFlag = false;
     // cout << "DEREFFED" << endl;
     return;
   }

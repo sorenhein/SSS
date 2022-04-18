@@ -75,9 +75,10 @@ void Combination::setTrivial(
 
 void Combination::covers(
   Covers& coversIn,
-  list<ResExpl>& resExplanations)
+  list<ResExpl>& resExplanations,
+  ProductStats& productStats)
 {
-  strats.covers(coversIn, resExplanations, maxRank);
+  strats.covers(coversIn, resExplanations, productStats, maxRank);
 }
 
 
