@@ -87,7 +87,7 @@ ProductUnit const * ProductMemory::lookupByTop(
   // as don't-care.
   ProfilePair pairCopy = profilePair;
   for (unsigned char i = 0; i+1 < static_cast<unsigned char>(numTops); i++)
-    pairCopy.addTop(i, 0, sumProfile[i]);
+    pairCopy.setTop(i, 0, sumProfile[i]);
 
   unsigned long long code = pairCopy.getCode(sumProfile);
   auto it = memory[numTops].find(code);

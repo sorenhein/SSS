@@ -6,6 +6,8 @@
    See LICENSE and README.
 */
 
+#include <cassert>
+
 #include "ProfilePair.h"
 #include "Product.h"
 
@@ -39,11 +41,12 @@ void ProfilePair::setLength(
 }
 
 
-void ProfilePair::addTop(
+void ProfilePair::setTop(
   const unsigned char topNumber,
   const unsigned char topCountLow,
   const unsigned char topCountHigh)
 {
+  assert(topNumber < lowerProfile.size());
   lowerProfile.tops[topNumber] = topCountLow;
   upperProfile.tops[topNumber] = topCountHigh;
 }
@@ -57,6 +60,45 @@ void ProfilePair::setProduct(
 }
 
 
+void ProfilePair::getLengthRange(
+  unsigned char& sumLower,
+  unsigned char& sumHigher) const
+{
+  sumLower = 0;
+  sumHigher = 0;
+
+  for (unsigned n = 0; n < lowerProfile.tops.size(); n++)
+  {
+    sumLower += lowerProfile.tops[n];
+    sumHigher += upperProfile.tops[n];
+  }
+}
+
+
+unsigned char ProfilePair::getTopLength(const Profile& sumProfile) const
+{
+  return sumProfile[topNext];
+}
+
+
+unsigned char ProfilePair::getNextTopNo() const
+{
+  return topNext;
+}
+
+
+void ProfilePair::incrTop()
+{
+  topNext++;
+}
+
+
+bool ProfilePair::last() const
+{
+  return (static_cast<unsigned>(topNext+1) >= lowerProfile.size());
+}
+
+
 bool ProfilePair::active(
   const unsigned char maxValue,
   const unsigned char actualLow,
@@ -64,6 +106,8 @@ bool ProfilePair::active(
   const unsigned char impliedLow,
   const unsigned char impliedHigh) const
 {
+  // This is the method that eliminates algorithmic duplicates.
+
   if (actualLow > impliedLow)
   {
     if (actualHigh < impliedHigh)
@@ -189,7 +233,7 @@ bool ProfilePair::punchTop(
     (upperProfile.lengthInt >= partialSumMin + maxTops ?
     maxTops : upperProfile.lengthInt - partialSumMin);
 
-  return ! active(
+  return ! ProfilePair::active(
     maxTops,
     lowerProfile.tops[topNumber],
     upperProfile.tops[topNumber],
@@ -223,53 +267,6 @@ bool ProfilePair::minimal(
 
   return true;
 }
-
-
-void ProfilePair::getLengthRange(
-  unsigned char& sumLower,
-  unsigned char& sumHigher) const
-{
-  sumLower = 0;
-  sumHigher = 0;
-
-  for (unsigned n = 0; n < lowerProfile.tops.size(); n++)
-  {
-    sumLower += lowerProfile.tops[n];
-    sumHigher += upperProfile.tops[n];
-  }
-}
-
-
-unsigned char ProfilePair::getNextTopNo() const
-{
-  return topNext;
-}
-
-
-void ProfilePair::incrNextTopNo()
-{
-  topNext++;
-}
-
-
-bool ProfilePair::last() const
-{
-  return (static_cast<unsigned>(topNext+1) >= lowerProfile.size());
-}
-
-
-/*
-const Profile& ProfilePair::getLowerProfile() const
-{
-  return lowerProfile;
-}
-
-
-const Profile& ProfilePair::getUpperProfile() const
-{
-  return upperProfile;
-}
-*/
 
 
 unsigned long long ProfilePair::getCode(const Profile& sumProfile) const

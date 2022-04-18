@@ -166,10 +166,10 @@ bool Cover::operator < (const Cover& cover2) const
     return true;
   else if (weight < cover2.weight)
     return false;
-  else if (p1.getTopSize() < p2.getTopSize())
+  else if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
     return true;
-  else if (p1.getTopSize() > p2.getTopSize())
+  else if (p1.effectiveDepth() > p2.effectiveDepth())
     return false;
   else if (p1.getComplexity() < p2.getComplexity())
     // Simpler ones first
@@ -242,10 +242,10 @@ unsigned char Cover::getNumDist() const
 }
 
 
-unsigned char Cover::getTopSize() const
+unsigned char Cover::effectiveDepth() const
 {
   assert(productUnitPtr != nullptr);
-  return productUnitPtr->product.getTopSize();
+  return productUnitPtr->product.effectiveDepth();
 }
 
 
@@ -274,24 +274,6 @@ string Cover::strHeader() const
 }
 
 
-string Cover::strLine(const Profile& sumProfile) const
-{
-  assert(productUnitPtr != nullptr);
-  stringstream ss;
-
-  ss << productUnitPtr->product.strLine(sumProfile) <<
-    setw(4) << weight <<
-    setw(4) << +productUnitPtr->product.getComplexity() <<
-    setw(4) << +numDist <<
-    setw(4) << +Cover::getTopSize() << 
-    setw(4) << (symmFlag ? "sym" : "") << 
-    setw(16) << code << 
-    "\n";
-  
-  return ss.str();
-}
-
-
 string Cover::strLine() const
 {
   assert(productUnitPtr != nullptr);
@@ -301,7 +283,7 @@ string Cover::strLine() const
     setw(4) << weight <<
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(4) << +numDist <<
-    setw(4) << +Cover::getTopSize() << 
+    setw(4) << productUnitPtr->product.effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";

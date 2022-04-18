@@ -78,9 +78,7 @@ void Covers::prepareNew(
     ProfilePair& running = stack.front();
 
     unsigned char topNumber = running.getNextTopNo(); // Next to write
-
-    // const unsigned char topLength = sumProfile.count(topNumber);
-    const unsigned char topLength = sumProfile[topNumber];
+    const unsigned char topLength = running.getTopLength(sumProfile);
 
     for (unsigned char topLow = 0; topLow <= topLength; topLow++)
     {
@@ -93,7 +91,7 @@ void Covers::prepareNew(
 
         // Add or restore the "don't care" with respect to length.
         running.setLength(0, sumProfile.length());
-        running.addTop(topNumber, topLow, topHigh);
+        running.setTop(topNumber, topLow, topHigh);
 
         // An unused top was already seen.
         if (topNumber > 0 && topLow == 0 && topHigh == topLength)
@@ -101,7 +99,7 @@ void Covers::prepareNew(
           if (! running.last())
           {
             stack.push_back(running);
-            stack.back().incrNextTopNo();
+            stack.back().incrTop();
           }
           continue;
         }
@@ -139,7 +137,7 @@ void Covers::prepareNew(
         if (! running.last())
         {
           stack.push_back(running);
-          stack.back().incrNextTopNo();
+          stack.back().incrTop();
         }
       }
     }
@@ -257,7 +255,7 @@ cout << citer->strTricksShort();
 cout << "Top size " << +citer->getTopSize() << endl << endl;
 */
 
-    if (citer->getTopSize() > numStrategyTops)
+    if (citer->effectiveDepth() > numStrategyTops)
     {
 // cout << "Too detailed\n";
       // A cover should not use distributions more granularly than
@@ -374,7 +372,7 @@ cout <<
     {
     while (citer != store.end())
     {
-      if (citer->getTopSize() > numStrategyTops)
+      if (citer->effectiveDepth() > numStrategyTops)
       {
         citer++;
 coverNo++;

@@ -101,13 +101,11 @@ class Cover
 
     unsigned char getNumDist() const;
 
-    unsigned char getTopSize() const;
+    unsigned char effectiveDepth() const;
 
     unsigned char getComplexity() const;
 
     string strHeader() const;
-
-    string strLine(const Profile& sumProfile) const;
 
     string strLine() const;
 

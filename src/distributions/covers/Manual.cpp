@@ -122,7 +122,7 @@ void Manual::WestGeneralAnd(
     static_cast<unsigned char>(distData.numTops-1);
 
   mdata.profilePair.setLength(lowerCardsIncl, upperCardsIncl);
-  mdata.profilePair.addTop(highestTop, lowerTopsIncl, upperTopsIncl);
+  mdata.profilePair.setTop(highestTop, lowerTopsIncl, upperTopsIncl);
 }
 
 
@@ -177,13 +177,13 @@ void Manual::WestGeneralTwo(
     static_cast<unsigned char>(distData.numTops-1);
 
   mdata1.profilePair.setLength(lowerCardsIncl1, upperCardsIncl1);
-  mdata1.profilePair.addTop(highestTop, lowerTopsIncl1, upperTopsIncl1);
+  mdata1.profilePair.setTop(highestTop, lowerTopsIncl1, upperTopsIncl1);
 
   mlist.emplace_back(ManualData(* distData.sumProfilePtr));
   auto& mdata2 = mlist.back();
 
   mdata2.profilePair.setLength(lowerCardsIncl2, upperCardsIncl2);
-  mdata2.profilePair.addTop(highestTop, lowerTopsIncl2, upperTopsIncl2);
+  mdata2.profilePair.setTop(highestTop, lowerTopsIncl2, upperTopsIncl2);
 }
 
 

@@ -13,7 +13,6 @@
 
 #include "Product.h"
 #include "Profile.h"
-#include "ProfilePair.h"
 
 
 Product::Product()
@@ -24,17 +23,17 @@ Product::Product()
 
 void Product::reset()
 {
-  complexity = 0;
   length.reset();
   tops.clear();
+  complexity = 0;
   topSize = 0;
-  topCount = 0;
+  activeCount = 0;
 }
 
 
-void Product::resize(const unsigned compSize)
+void Product::resize(const unsigned topCount)
 {
-  tops.resize(compSize);
+  tops.resize(topCount);
 }
 
 
@@ -68,7 +67,7 @@ void Product::set(
       if (topSize == 0)
         topSize = i;
 
-      topCount++;
+      activeCount++;
     }
 
     complexity += tops[i].complexity();
@@ -77,7 +76,7 @@ void Product::set(
   // If there is only a single distribution possible, this counts
   // as a complexity of 2 (don't make it absurdly attractive).
   if (length.used() && 
-      topCount+1 == static_cast<unsigned char>(topLowSize) &&
+      activeCount+1 == static_cast<unsigned char>(topLowSize) &&
       lowerProfile == upperProfile)
   {
     complexity = 2;
@@ -94,8 +93,7 @@ bool Product::includes(const Profile& distProfile) const
 
   for (unsigned char i = 0; i < distProfile.size(); i++)
   {
-    if (tops[i].used() && 
-        ! tops[i].includes(distProfile[i]))
+    if (tops[i].used() && ! tops[i].includes(distProfile[i]))
       return false;
   }
 
@@ -125,7 +123,13 @@ unsigned char Product::getComplexity() const
 }
 
 
-unsigned char Product::getTopSize() const
+unsigned char Product::size() const
+{
+  return static_cast<unsigned char>(tops.size());
+}
+
+
+unsigned char Product::effectiveDepth() const
 {
   if (topSize == 0 || tops.empty())
     return 0;
@@ -134,17 +138,11 @@ unsigned char Product::getTopSize() const
 }
 
 
-unsigned char Product::size() const
-{
-  return static_cast<unsigned char>(tops.size());
-}
-
-
 bool Product::explainable() const
 {
-  if (topCount == 0)
+  if (activeCount == 0)
     return true;
-  else if (Product::getTopSize() == 1 && topCount == 1)
+  else if (Product::effectiveDepth() == 1 && activeCount == 1)
     return true;
   else
     return false;
@@ -168,9 +166,7 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
   {
     // Special case: This is easier to say as "not void".
     if (length.notVoid())
-    {
       backstop = OPP_EAST;
-    }
     else
       return OPP_EAST;
   }
@@ -205,22 +201,6 @@ string Product::strHeader() const
 }
 
 
-string Product::strLine(const Profile& sumProfile) const
-{
-  // Does not end on a linebreak, as it may be concatenated with
-  // more in Cover.
-  stringstream ss;
-
-  ss << setw(8) << length.strGeneral();
-
-  assert(tops.size() == sumProfile.size());
-  for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(8) << tops[i].strGeneral();
-
-  return ss.str();
-}
-
-
 string Product::strLine() const
 {
   // Does not end on a linebreak, as it may be concatenated with
@@ -229,8 +209,10 @@ string Product::strLine() const
 
   ss << setw(8) << length.strGeneral();
 
-  for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(8) << tops[i].strGeneral();
+  for (auto& top: tops)
+    ss << setw(8) << top.strGeneral();
+  // for (unsigned i = 0; i < tops.size(); i++)
+    // ss << setw(8) << tops[i].strGeneral();
 
   return ss.str();
 }
@@ -241,7 +223,7 @@ string Product::strVerbal(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  if (topCount == 0)
+  if (activeCount == 0)
   {
     return length.strLength(
       sumProfile.length(),
@@ -249,10 +231,13 @@ string Product::strVerbal(
       symmFlag);
   }
 
+  const unsigned char highestTopCount =
+    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)];
+
   if (! length.used())
   {
     return tops.back().strTop(
-      sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
+      highestTopCount,
       simplestOpponent, 
       symmFlag);
   }
@@ -264,7 +249,7 @@ string Product::strVerbal(
     return top.strWithLength(
       length,
       sumProfile.length(), 
-      sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
+      highestTopCount,
       simplestOpponent,
       symmFlag);
   }
@@ -277,7 +262,7 @@ string Product::strVerbal(
         symmFlag) + 
       ", and " + 
       top.strTop(
-        sumProfile[static_cast<unsigned char>(sumProfile.size()-1)],
+        highestTopCount,
         simplestOpponent, 
         symmFlag);
   }

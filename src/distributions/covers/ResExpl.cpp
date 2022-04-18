@@ -125,25 +125,8 @@ string ResExpl::str(const Profile& sumProfile) const
   ss << "Always take at least " << +tricksMin << 
     " tricks, and more when\n";
 
-  // string prefix;
   for (auto& ed: data)
-  {
-    // TODO When switching from CoverRowOld to CoverRow,
-    // probably no prefix anymore
-    /*
-    if (ed.level == 0)
-      prefix = "* ";
-    else if (ed.level == 1)
-      prefix = "  - ";
-    else if (ed.level == 2)
-      prefix = "    - ";
-    else
-      prefix = "      - ";
-      */
-
-    // ss << prefix << ed.coverRowPtr->str(sumProfile) << "\n";
     ss << ed.coverRowPtr->str(sumProfile);
-  }
 
   return ss.str() + "\n";
 }

@@ -27,7 +27,6 @@
 using namespace std;
 
 class Profile;
-class ProfilePair;
 
 
 class Product
@@ -42,7 +41,7 @@ class Product
 
     unsigned char topSize; // Last used top number + 1; may be 0
 
-    unsigned char topCount; // Number of tops that are not unused
+    unsigned char activeCount; // Number of tops that are used
 
 
   public:
@@ -51,7 +50,7 @@ class Product
 
     void reset();
 
-    void resize(const unsigned compSize);
+    void resize(const unsigned topCount);
 
     void set(
       const Profile& sumProfile,
@@ -64,18 +63,15 @@ class Product
 
     unsigned char getComplexity() const;
 
-    // An effective size
-    unsigned char getTopSize() const;
-
     unsigned char size() const;
+
+    unsigned char effectiveDepth() const;
 
     bool explainable() const;
 
     Opponent simplestOpponent(const Profile& sumProfile) const;
 
     string strHeader() const;
-
-    string strLine(const Profile& sumProfile) const;
 
     string strLine() const;
 

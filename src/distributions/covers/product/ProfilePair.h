@@ -10,7 +10,9 @@
 /*
  * A ProfilePair has the data needed to fill out a Product.
  * So it is used when Product's are being generated, either 
- * algorithmically or manually.
+ * algorithmically or manually.  When algoritmically, one important
+ * job of this class is to eliminate potential results that would
+ * have duplicative results and be more complex.
  */
 
 
@@ -60,7 +62,7 @@ class ProfilePair
       const unsigned char lenLow,
       const unsigned char lenHigh);
 
-    void addTop(
+    void setTop(
       const unsigned char topNumber,
       const unsigned char topCountLow,
       const unsigned char topCountHigh);
@@ -69,24 +71,22 @@ class ProfilePair
       Product& product,
       const Profile& sumProfile) const;
 
-    bool minimal(
-      const Profile& sumProfile,
-      const unsigned char lengthLow,
-      const unsigned char lengthHigh) const;
-
     void getLengthRange(
       unsigned char& sumLower,
       unsigned char& sumHigher) const;
 
-    void incrNextTopNo();
+    unsigned char getTopLength(const Profile& sumProfile) const;
 
     unsigned char getNextTopNo() const;
 
+    void incrTop();
+
     bool last() const;
 
-    // const Profile& getLowerProfile() const;
-
-    // const Profile& getUpperProfile() const;
+    bool minimal(
+      const Profile& sumProfile,
+      const unsigned char lengthLow,
+      const unsigned char lengthHigh) const;
 
     unsigned long long getCode(const Profile& sumProfile) const;
 
