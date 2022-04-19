@@ -70,7 +70,7 @@ class Covers
 
     void sortRows();
 
-    CoverState explain(
+    CoverState explainGreedyRows(
       const list<Result>& results,
       ResExpl& resExpl) const;
 

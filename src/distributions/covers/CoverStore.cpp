@@ -187,3 +187,18 @@ unsigned CoverStore::size() const
   return store.size();
 }
 
+
+string CoverStore::str() const
+{
+  if (store.empty())
+    return "";
+
+  stringstream ss;
+  ss << store.begin()->strHeader();
+
+  for (auto& cover: store)
+    ss << cover.strLine();
+
+  return ss.str() + "\n";
+}
+

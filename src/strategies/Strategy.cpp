@@ -983,7 +983,7 @@ bool Strategy::covers(
   ResExpl& resExpl) const
 {
   resExpl.reset();
-  CoverState state = coversIn.explain(results, resExpl);
+  CoverState state = coversIn.explainGreedyRows(results, resExpl);
   return (state == COVER_DONE);
 }
 

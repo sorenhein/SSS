@@ -152,13 +152,8 @@ void Covers::prepareNew(
 
   cout << setw(6) << store.size() << sumProfile.strLine();
 
-  /*
-  cout << "Covers\n";
-  cout << store.begin()->strHeader();
-  for (auto& c: store)
-    cout << c.strLine(sumProfile);
-  cout << "\n";
-  */
+  // cout << "Cover store\n";
+  // cout << store.str();
 }
 
 
@@ -171,51 +166,45 @@ void Covers::setup(
 }
 
 
-CoverState Covers::explain(
+CoverState Covers::explainGreedyRows(
   const list<Result>& results,
   ResExpl& resExpl) const
 {
   CoverState state = COVER_OPEN;
-  auto iter = rows.begin();
 
   Tricks tricks;
-
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
+
   resExpl.setParameters(
     tmin,
     sumProfile.length(),
     sumProfile[static_cast<unsigned char>(sumProfile.size()-1)]);
 
+  auto rowIter = rows.begin();
   while (true)
   {
-    if (iter == rows.end())
+    if (rowIter == rows.end())
     {
       cout << Covers::strDebug("Left with", tricks);
       return COVER_IMPOSSIBLE;
     }
 
-    state = iter->explain(tricks);
+    state = rowIter->explain(tricks);
 
     if (state == COVER_DONE)
     {
-      resExpl.insert(* iter);
+      resExpl.insert(* rowIter);
       return COVER_DONE;
     }
     else if (state == COVER_OPEN)
     {
-      // cout << "Inserting\n" << iter->str() << "\n";
-      // cout << iter->strProfile() << "\n";
-      // cout << Covers::strDebug("Inserted", tricks);
-      resExpl.insert(* iter);
+      resExpl.insert(* rowIter);
       continue;
     }
     else
     {
-      // cout << "Not using\n" << iter->str() << "\n";
-      // cout << iter->strProfile() << "\n";
-      // cout << Covers::strDebug("Could not use", tricks);
-      iter++;
+      rowIter++;
     }
   }
 
@@ -240,48 +229,29 @@ void Covers::explainGreedy(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
-  // tableau.setBoundaries(maxLength, topTotals);
   tableau.setBoundaries(sumProfile);
   tableau.setTricks(tricks, tmin);
 
-  auto citer = store.begin();
-  while (citer != store.end())
+  auto coverIter = store.begin();
+  while (coverIter != store.end())
   {
-/*
-cout << citer->strHeader();
-cout << citer->strLine();
-cout << citer->strProfile();
-cout << citer->strTricksShort();
-cout << "Top size " << +citer->getTopSize() << endl << endl;
-*/
-
-    if (citer->effectiveDepth() > numStrategyTops)
+    if (coverIter->effectiveDepth() > numStrategyTops)
     {
-// cout << "Too detailed\n";
       // A cover should not use distributions more granularly than
       // the strategy itself does.
-      citer++;
+      coverIter++;
       continue;
     }
       
-    if (! tableau.attemptGreedy(* citer))
+    if (! tableau.attemptGreedy(* coverIter))
     {
-// cout << "No match\n";
-      citer++;
+      coverIter++;
       continue;
     }
-
-/*
-cout << "Tableau now:\n";
-cout << tableau.str();
-cout << "Residuals now:\n";
-cout << tableau.strResiduals();
-*/
 
     if (tableau.complete())
       return;
   }
-// cout << "Ran out\n";
 }
 
 
@@ -297,19 +267,12 @@ void Covers::explainExhaustive(
 
   CoverTableau const * tableauPtr = nullptr;
   newTableauFlag = true;
-  // cout << "CACHE when looking up: " << tableauCache.size() << endl;
-  // if (tableauCache.size() > 0)
-  // {
-    // cout << "HERE\n";
-  // }
   if (tableauCache.lookup(tricks, tableauPtr))
   {
-    // cout << "CACHEHIT" << endl;
-    // assert(tableauPtr != nullptr);
+    // Cache hit.
     tableau = * tableauPtr;
     tableau.setMinTricks(tmin);
     newTableauFlag = false;
-    // cout << "DEREFFED" << endl;
     return;
   }
 
@@ -329,19 +292,6 @@ unsigned coverNo;
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
 
-  /*
-  cout << 
-    setw(6) << "Stack" <<
-    setw(6) << "RunCx" <<
-    setw(6) << "Resid" <<
-    setw(6) << "BestC" <<
-    setw(6) << "Cno" <<
-    setw(6) << "CCplx" <<
-    setw(6) << "Cwgt" <<
-    setw(6) << "Proj" <<
-    "\n";
-    */
-
   auto siter = stack.begin();
   while (siter != stack.end())
   {
@@ -357,77 +307,38 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
     const unsigned char tcomp = siter->tableau.getComplexity();
     const unsigned char projected = tcomp + minCovers;
 
-/*
-cout << 
-  setw(6) << stack.size() <<
-  setw(6) << +siter->tableau.getComplexity() <<
-  setw(6) << +siter->tableau.getResidual() <<
-  setw(6) << +comp <<
-  setw(6) << coverNo <<
-  setw(6) << +citer->getComplexity() <<
-  setw(6) << +citer->getNumDist() <<
-  setw(6) << +projected <<
-  endl;
-  */
-
-
     if (solutions.empty() || projected <= lowestComplexity + 1)
     {
-    while (citer != store.end())
-    {
-      if (citer->effectiveDepth() > numStrategyTops)
+      while (citer != store.end())
       {
+        if (citer->effectiveDepth() > numStrategyTops)
+        {
+          citer++;
+coverNo++;
+          continue;
+        }
+
+        // TODO Could test projected again here
+
+        siter->tableau.attemptExhaustive(citer, coverNo, stack, 
+          solutions, lowestComplexity);
+
         citer++;
 coverNo++;
-        continue;
       }
-
-/*
-cout << "Attempting:\n";
-cout << citer->strHeader();
-cout << citer->strLine();
-// cout << citer->strProfile();
-// cout << citer->strTricksShort() << "\n";
-// cout << "Top size " << +citer->getTopSize() << endl << endl;
-*/
-// unsigned s0 = solutions.size();
-// unsigned st0 = stack.size();
-
-      // TODO Could test projected again here
-
-      siter->tableau.attemptExhaustive(citer, coverNo, stack, 
-        solutions, lowestComplexity);
-
-// unsigned s1 = solutions.size();
-// unsigned st1 = stack.size();
-// cout << "solutions: " << s0 << " -> " << s1 << endl;
-// cout << "stack    : " << st0 << " -> " << st1 << endl;
-      citer++;
-coverNo++;
-    }
     }
     // else
       // cout << "SKIP\n";
 
+    // Erasing first stack element.
     siter = stack.erase(siter);
-// cout << "erasing first stack element\n";
-/*
-unsigned i = 0;
-for (auto& t: stack)
-{
-  cout << "Stack element " << i << endl;
-  cout << t.tableau.str();
-  cout << t.tableau.strResiduals();
-  i++;
-}
-*/
   }
 
-// cout << "DONE WITH SOLUTIONS\n";
 
   assert(! solutions.empty());
   solutions.sort();
 
+// Make partially into a CoverTableau method
 /*
 unsigned i = 0;
 for (auto s: solutions)
@@ -447,8 +358,6 @@ for (auto s: solutions)
   tableau = solutions.front();
 
   tableauCache.store(tricks, tableau);
-  // cout << "CACHE NOW\n";
-  // cout << tableauCache.str();
 
   // TODO Maybe MECE and hierarchy again within the tableau.
 }

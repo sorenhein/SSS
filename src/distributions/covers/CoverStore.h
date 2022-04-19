@@ -70,6 +70,8 @@ class CoverStore
     set<Cover>::const_iterator end() const;
 
     unsigned size() const;
+
+    string str() const;
 };
 
 #endif
