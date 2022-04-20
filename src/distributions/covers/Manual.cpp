@@ -431,6 +431,10 @@ void Manual::prepare_5_1(DistData& distData) const
 
 void Manual::prepare_5_2(DistData& distData) const
 {
+  // 9/17730: Would need 3-or row (but with a symmetrizable one).
+  // 10/53931: Would need 3-or row (with a non-symmetrizable one).
+  // 10/53928: Ditto.
+  //
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLength(distData, 1);              // 2. 1=4
@@ -483,18 +487,38 @@ void Manual::prepare_5_2(DistData& distData) const
   Manual::WestGeneralAnd(distData, 2, 3, 1, 2); // 38. Hx(x) with West
   Manual::EastGeneralAnd(distData, 2, 3, 1, 2); // 39. Hx(x) with East
 
-  Manual::EastGeneralAnd(distData, 0, 3, 1, 2); // 40. 
-  Manual::EastGeneralAnd(distData, 0, 3, 1, 1); // 41. 
-  Manual::EastGeneralAnd(distData, 1, 3, 0, 1); // 42. 
+  Manual::WestGeneralAnd(distData, 0, 3, 1, 2); // 40.
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 2); // 41. 
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 1); // 42. 
+  Manual::EastGeneralAnd(distData, 1, 3, 0, 1); // 43. 
+  Manual::EastGeneralAnd(distData, 0, 3, 0, 1); // 44. 
 
-  // 43. 3-2 either way, or West has both H's.
+  // 45. 3-2 either way, or West has both H's.
   Manual::WestGeneralTwo(distData, 0, 5, 2, 2,     2, 3, 0, 2);
 
-  // 44. 3-2 either way, or East has both H's.
+  // 46. 3-2 either way, or East has both H's.
   Manual::WestGeneralTwo(distData, 0, 5, 0, 0,     2, 3, 0, 2);
 
-  // 45. East has a doubleton, or East has x(xx).
+  // 47. East has a doubleton, or East has x(xx).
   Manual::WestGeneralTwo(distData, 3, 3, 0, 2,     0, 4, 2, 2);
+
+  // 48. 3-2 either way, or West has exactly 1 top.
+  Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 5, 1, 1);
+
+  // 49. West has both tops, or East has a singleton.
+  Manual::WestGeneralTwo(distData, 0, 5, 2, 2,     4, 4, 0, 2);
+
+  // 50. East has a doubleton, or West has both tops.
+  Manual::WestGeneralTwo(distData, 3, 3, 0, 2,     0, 5, 2, 2);
+
+  // 51. West has a doubleton, or East has both tops.
+  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 5, 0, 0);
+
+  // 52. East has at most 3 cards, or West has exactly 1 top.
+  Manual::WestGeneralTwo(distData, 2, 5, 0, 2,     0, 5, 1, 1);
+
+  // 53. East has at most 3 cards, or East has both tops.
+  Manual::WestGeneralTwo(distData, 2, 5, 0, 2,     0, 5, 0, 0);
 }
 
 
