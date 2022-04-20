@@ -70,11 +70,15 @@ class Covers
 
     void sortRows();
 
+    const Cover& lookup(const Cover& cover) const;
+
     CoverState explainGreedyRows(
       const list<Result>& results,
       ResExpl& resExpl) const;
 
-    const Cover& lookup(const Cover& cover) const;
+    CoverState explainExhaustiveRows(
+      const list<Result>& results,
+      ResExpl& resExpl) const;
 
     void explainGreedy(
       const list<Result>& results,

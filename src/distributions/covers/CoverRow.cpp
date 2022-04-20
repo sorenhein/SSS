@@ -92,6 +92,22 @@ void CoverRow::add(
 }
 
 
+bool CoverRow::possible(
+  const Tricks& explained,
+  const Tricks& residuals,
+  Tricks& additions,
+  unsigned char& tricksAdded) const
+{
+  // explained: The OR'ed vector in CoverRow that is already explained.
+  // residuals: The overall tricks in cover tableau that remains.
+  // additions: If the cover can be added, the additions to the
+  //   explained vector that would arise
+  // tricksAdded: The number of tricks in additions
+
+  return tricks.possible(explained, residuals, additions, tricksAdded);
+}
+
+
 CoverState CoverRow::explain(Tricks& tricksSeen) const
 {
   // If tricks <= tricksSeen elementwise, tricks is subtracted out.

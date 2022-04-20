@@ -26,6 +26,8 @@ using namespace std;
 
 class Result;
 struct StackTableau;
+struct ResTableau;
+class ResExpl;
 class ProductStats;
 
 
@@ -60,6 +62,13 @@ class CoverTableau
 
     bool attemptGreedy(const Cover& cover);
 
+    void attemptExhaustiveRow(
+      list<CoverRow>::const_iterator& rowIter,
+      const unsigned coverNo,
+      list<ResTableau>& stack,
+      list<CoverTableau>& solutions,
+      unsigned char& lowestComplexity) const;
+
     void attemptExhaustive(
       set<Cover>::const_iterator& coverIter,
       const unsigned coverNo,
@@ -70,6 +79,8 @@ class CoverTableau
     void updateStats(
       ProductStats& productStats,
       const bool newTableauFlag) const;
+
+    void toResExpl(ResExpl& resExpl) const;
 
     bool operator < (const CoverTableau& tableau2) const;
 
@@ -101,5 +112,13 @@ struct StackTableau
   unsigned coverNumber;
 };
 
+struct ResTableau
+{
+  CoverTableau tableau;
+
+  list<CoverRow>::const_iterator rowIter;
+
+  unsigned rowNumber;
+};
 
 #endif

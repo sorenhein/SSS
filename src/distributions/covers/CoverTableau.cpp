@@ -13,6 +13,7 @@
 
 #include "CoverTableau.h"
 #include "Cover.h"
+#include "ResExpl.h"
 
 #include "../../strategies/result/Result.h"
 
@@ -121,6 +122,62 @@ cout << rowBestPtr->strLines() << "\n";
 */
 
   return true;
+}
+
+
+void CoverTableau::attemptExhaustiveRow(
+  list<CoverRow>::const_iterator& rowIter,
+  const unsigned coverNo,
+  list<ResTableau>& stack,
+  list<CoverTableau>& solutions,
+  unsigned char& lowestComplexity) const
+{
+  // explained is a dummy vector here.
+  const CoverRow& row = * rowIter;
+
+  Tricks explained;
+  explained.resize(row.size());
+
+  Tricks additions;
+  additions.resize(row.size());
+
+  unsigned char tricksAdded;
+
+  const unsigned char complexity = CoverTableau::getComplexity();
+
+  if (complexity + row.getComplexity() > lowestComplexity + 2)
+  {
+    // Too complex.
+    return;
+  }
+
+  // Try to add a new row.
+  if (row.possible(explained, residuals, additions, tricksAdded))
+  {
+// cout << "Can add to a new row" << endl;
+    stack.emplace_back(ResTableau());
+    ResTableau& rtableau = stack.back();
+
+    CoverTableau& tableau = rtableau.tableau;
+    tableau = * this;
+// cout << "Set up and copied the tableau" <<endl;
+    tableau.rows.push_back(row);
+// cout << "Got the row" <<endl;
+
+    rtableau.rowIter = rowIter;
+    rtableau.rowNumber = coverNo;
+
+    if (tableau.complete())
+    {
+// cout << "Got a solution" << endl;
+      solutions.push_back(tableau);
+      // Done, so eliminate.
+      stack.pop_back();
+
+      if (complexity + row.getComplexity() < lowestComplexity)
+        lowestComplexity = complexity + row.getComplexity();
+    }
+  }
 }
 
 
@@ -248,6 +305,13 @@ void CoverTableau::attemptExhaustive(
     }
     rno++;
   }
+}
+
+
+void CoverTableau::toResExpl(ResExpl& resExpl) const
+{
+  for (auto& row: rows)
+    resExpl.insert(row);
 }
 
 

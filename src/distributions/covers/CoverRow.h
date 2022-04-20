@@ -64,6 +64,12 @@ class CoverRow
       Tricks& residuals,
       unsigned char& residualsSum);
 
+    bool possible(
+      const Tricks& explained,
+      const Tricks& residuals,
+      Tricks& additions,
+      unsigned char& tricksAdded) const;
+
     CoverState explain(Tricks& tricksSeen) const;
 
     void updateStats(

@@ -166,6 +166,13 @@ void Covers::setup(
 }
 
 
+const Cover& Covers::lookup(const Cover& cover) const
+{
+  // Turn a cover into the one we already know.  It must exist.
+  return store.lookup(cover);
+}
+
+
 CoverState Covers::explainGreedyRows(
   const list<Result>& results,
   ResExpl& resExpl) const
@@ -213,13 +220,6 @@ CoverState Covers::explainGreedyRows(
 }
 
 
-const Cover& Covers::lookup(const Cover& cover) const
-{
-  // Turn a cover into the one we already know.  It must exist.
-  return store.lookup(cover);
-}
-
-
 void Covers::explainGreedy(
   const list<Result>& results,
   const unsigned numStrategyTops,
@@ -252,6 +252,92 @@ void Covers::explainGreedy(
     if (tableau.complete())
       return;
   }
+}
+
+
+CoverState Covers::explainExhaustiveRows(
+  const list<Result>& results,
+  ResExpl& resExpl) const
+{
+  Tricks tricks;
+  unsigned char tmin;
+  Covers::setup(results, tricks, tmin);
+
+  list<ResTableau> stack;
+  stack.emplace_back(ResTableau());
+  ResTableau& stableau = stack.back();
+
+  stableau.tableau.setBoundaries(sumProfile);
+  stableau.tableau.setTricks(tricks, tmin);
+
+  stableau.rowIter = rows.begin();
+  stableau.rowNumber = 0;
+
+const unsigned coverSize = rows.size();
+unsigned coverNo;
+
+  list<CoverTableau> solutions;
+  unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
+
+  auto siter = stack.begin();
+  while (siter != stack.end())
+  {
+    auto riter = siter->rowIter;
+    coverNo = siter->rowNumber;
+const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
+
+    // The lowest complexity that is still achievable is
+    // Tableau complexity + round up(residual / cover weight).
+    unsigned char minCovers = 
+      1 + (siter->tableau.getResidual() / riter->getNumDist());
+
+    const unsigned char tcomp = siter->tableau.getComplexity();
+    const unsigned char projected = tcomp + minCovers;
+
+    if (solutions.empty() || projected <= lowestComplexity + 1)
+    {
+      while (riter != rows.end())
+      {
+        siter->tableau.attemptExhaustiveRow(riter, coverNo, stack, 
+          solutions, lowestComplexity);
+
+        riter++;
+coverNo++;
+      }
+    }
+
+    // Erasing first stack element.
+    siter = stack.erase(siter);
+  }
+
+
+  assert(! solutions.empty());
+  solutions.sort();
+
+// Make partially into a CoverTableau method
+/*
+unsigned i = 0;
+for (auto s: solutions)
+{
+  cout << "Solution " << i << 
+    ", complexity " << + s.getComplexity() << 
+    ", overlap " << + s.getOverlap() << 
+    "\n";
+  cout << s.str();
+  i++;
+  if (i >= 20)
+    break;
+}
+*/
+
+  resExpl.setParameters(
+    tmin,
+    sumProfile.length(),
+    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)]);
+
+  solutions.front().toResExpl(resExpl);
+
+  return COVER_DONE;
 }
 
 
