@@ -1,9 +1,10 @@
-Make an exhaustive manual one too?
+Now have to look at the few differences in the manual.
+Probably change some complexity weighting in the automatic version.
+
 ProductStats output the table by depth (#tops used) across horizonzally.
 Forget Covers too after generating them (save space)?
 Rows for old solve: Sort not just by weight.  Row gets a comparator.
 
-See about some of the symmetrics, also cf. ProductStats.
 Delete the old symmetrics and manuals.
 
 Clean code (obvious comments).

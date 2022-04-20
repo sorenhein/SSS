@@ -519,6 +519,10 @@ void Manual::prepare_5_2(DistData& distData) const
 
   // 53. East has at most 3 cards, or East has both tops.
   Manual::WestGeneralTwo(distData, 2, 5, 0, 2,     0, 5, 0, 0);
+
+  // 52. West has at most 3 cards, or West has exactly 1 top.
+  Manual::WestGeneralTwo(distData, 0, 3, 0, 2,     0, 5, 1, 1);
+
 }
 
 
