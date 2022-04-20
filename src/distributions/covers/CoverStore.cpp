@@ -148,7 +148,11 @@ if (it == store.end())
   for (auto& c: store)
     cout << c.strLine();
 
+if (it == store.end())
+{
+  cout << "Missed cover " << cover.strLine() << endl;
   assert(it != store.end());
+}
 }
 
   return * it;

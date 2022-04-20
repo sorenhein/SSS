@@ -294,7 +294,7 @@ string Cover::strLine() const
     setw(4) << weight <<
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(4) << +numDist <<
-    setw(4) << productUnitPtr->product.effectiveDepth() <<
+    setw(4) << +productUnitPtr->product.effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";
