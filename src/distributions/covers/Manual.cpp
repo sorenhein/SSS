@@ -438,64 +438,63 @@ void Manual::prepare_5_2(DistData& distData) const
   Manual::WestLength(distData, 3);              // 4. 3=2
   Manual::WestLength(distData, 4);              // 5. 4=1
 
-  Manual::WestLengthRange(distData, 0, 3);      // 2. 0=5, 1=4, 2=3 or 3=2
-  Manual::WestLengthRange(distData, 0, 4);      // 3. East is not void
-  Manual::WestLengthRange(distData, 1, 4);      // 4. 1=4, 2=3, 3=2 or 4=1
-  Manual::WestLengthRange(distData, 1, 5);      // 5. West is not void
-  Manual::WestLengthRange(distData, 2, 3);      // 6. 2=3 or 3=2
-  Manual::WestLengthRange(distData, 2, 5);      // 7. 2=3, 3=2, 4=1 or 5=0
+  Manual::WestLengthRange(distData, 0, 2);      // 6. 0=5, 1=4 or 2=3
+  Manual::WestLengthRange(distData, 0, 3);      // 7. 0=5, 1=4, 2=3 or 3=2
+  Manual::WestLengthRange(distData, 0, 4);      // 8. East is not void
 
-  Manual::WestTop1(distData, 2);                // 8. West has the tops
-  Manual::WestTop1Range(distData, 1, 2);        // 9. West has 1+ tops
-  Manual::EastTop1(distData, 2);                // 10. West has the tops
+  Manual::WestLengthRange(distData, 1, 3);      // 9. 1=4, 2=3 or 3=2
+  Manual::WestLengthRange(distData, 1, 4);      // 10. 1=4, 2=3, 3=2 or 4=1
+  Manual::WestLengthRange(distData, 1, 5);      // 11. West is not void
+  Manual::WestLengthRange(distData, 2, 3);      // 12. 2=3 or 3=2
+  Manual::WestLengthRange(distData, 2, 4);      // 13. 2=3, 3=2 or 4=1
+  Manual::WestLengthRange(distData, 2, 5);      // 14. 2=3, 3=2, 4=1 or 5=0
 
-  Manual::EastGeneralAnd(distData, 0, 2, 0, 0); // 11. -, x, xx with East
+  Manual::WestTop1(distData, 1);                // 15. West has ex. 1 top
+  Manual::WestTop1(distData, 2);                // 16. West has the tops
+  Manual::WestTop1Range(distData, 1, 2);        // 17. West has 1+ tops
+  Manual::EastTop1(distData, 2);                // 18. West has the tops
 
-  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // 12. H singleton with West
-  Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // 13. H singleton with East
-  Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 14. H singleton
-
-  Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // 15. H(x) with West
-  Manual::EastGeneralAnd(distData, 0, 2, 1, 1); // 16. H(x) with East
-
-  Manual::WestGeneralAnd(distData, 0, 2, 1, 2); // 17. H, Hx, HH West
-  Manual::EastGeneralAnd(distData, 0, 2, 1, 2); // 18. H, Hx, HH East
-
-  Manual::WestGeneralAnd(distData, 0, 3, 1, 2); // 19. H(xx), HH(x) West
-
-  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // 20. x with West
-  Manual::EastGeneralAnd(distData, 1, 1, 0, 0); // 21. x with East
+  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // 19. H singleton with West
+  Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // 20. H singleton with East
+  Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 21. H singleton
 
   Manual::WestGeneralAnd(distData, 2, 2, 2, 2); // 22. HH doubleton West
   Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // 23. HH doubleton East
   Manual::SymmGeneralAnd(distData, 2, 2, 2, 2); // 24. HH doubleton 
 
-  Manual::WestGeneralAnd(distData, 2, 2, 0, 0); // 25. West xx
-  Manual::WestGeneralAnd(distData, 2, 2, 1, 1); // 26. West Hx
-  Manual::WestGeneralAnd(distData, 2, 2, 1, 2); // 27. HH with West
+  Manual::WestGeneralAnd(distData, 2, 2, 1, 1); // 25. Hx / Hxx
+  Manual::WestGeneralAnd(distData, 3, 3, 2, 2); // 26. HHx / xx
 
-  Manual::WestGeneralAnd(distData, 2, 3, 1, 2); // 28. Hx(x) with West
-  Manual::EastGeneralAnd(distData, 2, 3, 1, 2); // 29. Hx(x) with East
-  Manual::EastGeneralAnd(distData, 0, 3, 2, 2); // 30. HH(x) with East
+  Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // 27. H(x) with West
+  Manual::EastGeneralAnd(distData, 0, 2, 1, 1); // 28. H(x) with East
 
-  Manual::WestGeneralAnd(distData, 2, 5, 1, 2); // 31. 2+ cards, 1+ top West
+  Manual::WestGeneralAnd(distData, 0, 2, 1, 2); // 29. H, Hx, HH West
+  Manual::EastGeneralAnd(distData, 0, 2, 1, 2); // 30. H, Hx, HH East
+  Manual::WestGeneralAnd(distData, 2, 2, 1, 2); // 31. Hx, HH West
 
-  Manual::WestGeneralAnd(distData, 3, 3, 1, 1); // 32. Hxx with West
-  Manual::WestGeneralAnd(distData, 3, 3, 2, 2); // 33. HHx with West
+  Manual::WestGeneralAnd(distData, 0, 3, 1, 1); // 32. H(xx) with West
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 2); // 33. H(xx), HH(x) West
+  Manual::WestGeneralAnd(distData, 0, 3, 2, 2); // 34. HH(x) West
+  Manual::EastGeneralAnd(distData, 0, 3, 2, 2); // 35. HH(x) East
 
-  Manual::WestGeneralAnd(distData, 0, 3, 2, 2); // 34. HH, HHx with West
+  Manual::WestGeneralAnd(distData, 1, 5, 0, 0); // 36. x(xx) West
+  Manual::EastGeneralAnd(distData, 0, 4, 2, 2); // 37. x(xx) East
 
-  // 35. 3-2 either way, or West has both H's.
-  Manual::WestGeneralTwo(
-    distData,
-    0, 5, 2, 2,  // WestTop1(2)
-    2, 3, 0, 2); // WestLengthRange(2, 3)
+  Manual::WestGeneralAnd(distData, 2, 3, 1, 2); // 38. Hx(x) with West
+  Manual::EastGeneralAnd(distData, 2, 3, 1, 2); // 39. Hx(x) with East
 
-  // 36. 3-2 either way, or East has both H's.
-  Manual::WestGeneralTwo(
-    distData,
-    0, 5, 0, 0,  // EastTop1(2)
-    2, 3, 0, 2); // EastLengthRange(2, 3)
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 2); // 40. 
+  Manual::EastGeneralAnd(distData, 0, 3, 1, 1); // 41. 
+  Manual::EastGeneralAnd(distData, 1, 3, 0, 1); // 42. 
+
+  // 43. 3-2 either way, or West has both H's.
+  Manual::WestGeneralTwo(distData, 0, 5, 2, 2,     2, 3, 0, 2);
+
+  // 44. 3-2 either way, or East has both H's.
+  Manual::WestGeneralTwo(distData, 0, 5, 0, 0,     2, 3, 0, 2);
+
+  // 45. East has a doubleton, or East has x(xx).
+  Manual::WestGeneralTwo(distData, 3, 3, 0, 2,     0, 4, 2, 2);
 }
 
 
@@ -503,6 +502,8 @@ void Manual::prepare_5_3(DistData& distData) const
 {
   // 10/ 56937: Would have needed a 4-or row (although one is symmetric).
   // 11/171786: Ditto.
+  // 11/171270: The automatic one should perhaps find the same!
+  // 170811, 58062, 57615: Ditto.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::SymmGeneralAnd(distData, 0, 0, 0, 3); // 2. Either side is void
@@ -550,7 +551,6 @@ void Manual::prepare_5_3(DistData& distData) const
 
   // 28. The suit splits 2-3 either way, or East has exactly one top.
   Manual::WestGeneralTwo(distData, 2, 3, 0, 3,    0, 5, 2, 2);
-
 }
 
 
