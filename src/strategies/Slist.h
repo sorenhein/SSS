@@ -247,7 +247,7 @@ class Slist
     void covers(
       Covers& coversIn,
       const unsigned char maxRank,
-      list<ResExpl>& resExplanations,
+      list<CoverTableau>& tableaux,
       ProductStats& productStats) const;
 
     bool ordered() const;

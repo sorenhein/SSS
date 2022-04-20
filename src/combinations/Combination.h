@@ -20,6 +20,7 @@ using namespace std;
 class CombEntry;
 class Combinations;
 class Distributions;
+class CoverTableau;
 class ProductStats;
 class Ranks;
 class Plays;
@@ -70,7 +71,7 @@ class Combination
 
     void covers(
       Covers& coversIn,
-      list<ResExpl>& resExplanations,
+      list<CoverTableau>& tableaux,
       ProductStats& productStats);
 
     const Strategies& strategies() const;

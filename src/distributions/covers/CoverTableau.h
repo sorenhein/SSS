@@ -80,7 +80,7 @@ class CoverTableau
       ProductStats& productStats,
       const bool newTableauFlag) const;
 
-    void toResExpl(ResExpl& resExpl) const;
+    // void toResExpl(ResExpl& resExpl) const;
 
     bool operator < (const CoverTableau& tableau2) const;
 

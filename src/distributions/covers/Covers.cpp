@@ -257,7 +257,7 @@ void Covers::explainGreedy(
 
 CoverState Covers::explainExhaustiveRows(
   const list<Result>& results,
-  ResExpl& resExpl) const
+  CoverTableau& tableau) const
 {
   Tricks tricks;
   unsigned char tmin;
@@ -282,6 +282,7 @@ unsigned coverNo;
   auto siter = stack.begin();
   while (siter != stack.end())
   {
+// cout << "while: stack size " << stack.size() << endl;
     auto riter = siter->rowIter;
     coverNo = siter->rowNumber;
 const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
@@ -330,12 +331,7 @@ for (auto s: solutions)
 }
 */
 
-  resExpl.setParameters(
-    tmin,
-    sumProfile.length(),
-    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)]);
-
-  solutions.front().toResExpl(resExpl);
+  tableau = solutions.front();
 
   return COVER_DONE;
 }

@@ -273,6 +273,22 @@ void Tricks::add(
 }
 
 
+void Tricks::subtract(
+  Tricks& residuals,
+  unsigned char& residualsSum) const
+{
+  // additions are disjoint from tricks.
+  assert(tricks.size() == residuals.tricks.size());
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+  {
+    const unsigned char t = tricks[i];
+    residuals.tricks[i] -= t;
+    residualsSum -= t;
+  }
+}
+
+
 Tricks& Tricks::operator |= (const Tricks& tricks2)
 {
   assert(tricks.size() == tricks2.tricks.size());

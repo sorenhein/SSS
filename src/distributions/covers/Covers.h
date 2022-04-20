@@ -78,7 +78,7 @@ class Covers
 
     CoverState explainExhaustiveRows(
       const list<Result>& results,
-      ResExpl& resExpl) const;
+      CoverTableau& tableau) const;
 
     void explainGreedy(
       const list<Result>& results,

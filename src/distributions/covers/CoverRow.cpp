@@ -45,8 +45,13 @@ void CoverRow::fillDirectly(
   // There is no need to check against trick vectors.
   coverPtrs = coverPtrsIn;
 
+  complexity = 0;
   for (auto coverPtr: coverPtrs)
+  {
     coverPtr->tricksOr(tricks);
+    assert(complexity + coverPtr->getComplexity() > complexity);
+    complexity += coverPtr->getComplexity();
+  }
 
   tricks.weigh(cases, weight, numDist);
   assert(weight != 0);
@@ -89,6 +94,18 @@ void CoverRow::add(
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
+}
+
+
+void CoverRow::subtract(
+  const Tricks& additions,
+  Tricks& residuals,
+  unsigned char& residualsSum) const
+{
+  // This version is used when the complete row is set manually already.
+  // We don't want to modify tricks -- we just want to subtract out
+  // tricks from residuals.
+  additions.subtract(residuals, residualsSum);
 }
 
 

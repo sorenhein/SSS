@@ -23,7 +23,6 @@ class SurvivorList;
 class Covers;
 class CoverTableau;
 struct Reduction;
-class ResExpl;
 
 using namespace std;
 
@@ -233,7 +232,7 @@ class Strategy
 
     bool covers(
       const Covers& coversIn,
-      ResExpl& resExpl) const;
+      CoverTableau& tableau) const;
 
     void coversNew(
       Covers& coversIn,

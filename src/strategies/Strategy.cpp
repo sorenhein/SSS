@@ -16,7 +16,6 @@
 
 #include "../plays/Play.h"
 #include "../distributions/Distribution.h"
-#include "../distributions/covers/ResExpl.h"
 #include "../distributions/covers/Covers.h"
 #include "../distributions/covers/CoverTableau.h"
 #include "../inputs/Control.h"
@@ -980,10 +979,12 @@ void Strategy::setAndAdaptVoid(
 
 bool Strategy::covers(
   const Covers& coversIn,
-  ResExpl& resExpl) const
+  CoverTableau& tableau) const
 {
-  resExpl.reset();
-  CoverState state = coversIn.explainGreedyRows(results, resExpl);
+  // resExpl.reset();
+  // CoverState state = coversIn.explainGreedyRows(results, resExpl);
+  tableau.reset();
+  CoverState state = coversIn.explainExhaustiveRows(results, tableau);
   return (state == COVER_DONE);
 }
 

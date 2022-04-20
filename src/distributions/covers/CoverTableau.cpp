@@ -136,10 +136,10 @@ void CoverTableau::attemptExhaustiveRow(
   const CoverRow& row = * rowIter;
 
   Tricks explained;
-  explained.resize(row.size());
+  explained.resize(residuals.size());
 
   Tricks additions;
-  additions.resize(row.size());
+  additions.resize(residuals.size());
 
   unsigned char tricksAdded;
 
@@ -163,6 +163,8 @@ void CoverTableau::attemptExhaustiveRow(
 // cout << "Set up and copied the tableau" <<endl;
     tableau.rows.push_back(row);
 // cout << "Got the row" <<endl;
+
+    row.subtract(additions, tableau.residuals, tableau.residualsSum);
 
     rtableau.rowIter = rowIter;
     rtableau.rowNumber = coverNo;
@@ -308,11 +310,13 @@ void CoverTableau::attemptExhaustive(
 }
 
 
+/*
 void CoverTableau::toResExpl(ResExpl& resExpl) const
 {
   for (auto& row: rows)
     resExpl.insert(row);
 }
+*/
 
 
 void CoverTableau::updateStats(
@@ -343,6 +347,9 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
     return false;
   else
     return (rows.size() <= tableau2.rows.size());
+  
+  // TODO Is there more we can do here in case of equality?
+  // Maybe we like symmetry?
 }
 
 

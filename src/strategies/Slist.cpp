@@ -17,7 +17,6 @@
 #include "../plays/Play.h"
 
 #include "../distributions/Distribution.h"
-#include "../distributions/covers/ResExpl.h"
 #include "../distributions/covers/Covers.h"
 #include "../distributions/covers/CoverTableau.h"
 
@@ -997,13 +996,13 @@ void Slist::getResultList(list<Result>& resultList) const
 void Slist::covers(
   Covers& coversIn,
   const unsigned char maxRank,
-  list<ResExpl>& resExplanations,
+  list<CoverTableau>& tableaux,
   ProductStats& productStats) const
 {
   unsigned stratNo = 0;
 
-  resExplanations.resize(strategies.size());
-  auto riter = resExplanations.begin();
+  tableaux.resize(strategies.size());
+  auto riter = tableaux.begin();
 
   for (auto& strat: strategies)
   {
@@ -1020,7 +1019,10 @@ void Slist::covers(
     cout << "Strategy #" << stratNo << ": ";
     riter->reset();
     if (strat.covers(coversIn, * riter))
-      cout << coversIn.strExpl(* riter);
+    {
+      cout << riter->str();
+      // cout << coversIn.strExpl(* riter);
+    }
     else
       cout << strat.str("Unexplained", true) << "\n";
     

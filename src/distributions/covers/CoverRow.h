@@ -64,6 +64,11 @@ class CoverRow
       Tricks& residuals,
       unsigned char& residualsSum);
 
+    void subtract(
+      const Tricks& additions,
+      Tricks& residuals,
+      unsigned char& residualsSum) const;
+
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,

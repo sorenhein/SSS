@@ -82,6 +82,10 @@ class Tricks
       unsigned char& residualsSum,
       unsigned char& numDist);
 
+    void subtract(
+      Tricks& residuals,
+      unsigned char& residualsSum) const;
+
     Tricks& operator |= (const Tricks& tricks2);
 
     void orSymm(const Tricks& tricks2);

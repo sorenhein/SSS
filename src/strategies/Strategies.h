@@ -108,7 +108,7 @@ class Strategies
 
     void covers(
       Covers& coversIn,
-      list<ResExpl>& resExplanations,
+      list<CoverTableau>& tableaux,
       ProductStats& productStats,
       const unsigned char maxRank = 0) const;
 

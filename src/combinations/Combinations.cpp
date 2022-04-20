@@ -18,7 +18,8 @@
 #include "CombTest.h"
 
 #include "../distributions/Distributions.h"
-#include "../distributions/covers/ResExpl.h"
+// #include "../distributions/covers/ResExpl.h"
+#include "../distributions/covers/CoverTableau.h"
 
 #include "../plays/Plays.h"
 
@@ -274,7 +275,7 @@ CombinationType Combinations::classify(
 void Combinations::runUniques(
   const unsigned char cards,
   Distributions& distributions,
-  ExplStats& explStats)
+  [[maybe_unused]] ExplStats& explStats)
 {
   assert(cards < countStats.size());
 
@@ -293,7 +294,8 @@ void Combinations::runUniques(
 
   // TODO Back into Combinations?
   CombTest ctest;
-  list<ResExpl> resExplanations;
+  // list<ResExpl> resExplanations;
+  list<CoverTableau> tableaux;
 
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
@@ -348,12 +350,12 @@ histoPlay[plays.size()]++;
             comb.covers(
               distributions.get(cards, 
               centry.getHolding2()).covers(),
-              resExplanations,
+              tableaux,
               productStats);
             timersStrat[32].stop();
 
-            for (auto& resExpl: resExplanations)
-              resExpl.updateStats(explStats);
+            // for (auto& resExpl: resExplanations)
+              // resExpl.updateStats(explStats);
           }
 
           timersStrat[33].start();
@@ -638,9 +640,10 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   Combination& comb = combMemory.getComb(cards, holding);
 
-  list<ResExpl> resExplanations;
+  // list<ResExpl> resExplanations;
+  list<CoverTableau> tableaux;
 
-  comb.covers(dist.covers(), resExplanations, productStats);
+  comb.covers(dist.covers(), tableaux, productStats);
 }
 
 
