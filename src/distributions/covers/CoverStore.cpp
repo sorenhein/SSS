@@ -106,33 +106,19 @@ void CoverStore::add(
 
 void CoverStore::admixSymmetric()
 {
-  /*
-  cout << "Non-symmetrics are:\n";
-  for (auto& c: store)
-    cout << c.strLine();
-
-  cout << "\nSymmetrics are:\n";
-  for (auto& c: symmetricCache)
-    cout << c.strLine();
-    */
+  // The symmetrics are mixed into the set in the right places.
+  // This may lead to eliminations that were too hard to recognize
+  // when we made the symmetrics.
 
   for (auto& cover: symmetricCache)
   {
     auto result = store.insert(cover);
     assert(result.first != store.end());
 
-    // These eliminations are too tough to do without search.
     CoverStore::eliminate(result.first);
   }
 
   symmetricCache.clear();
-
-  /*
-  cout << "Non-symmetrics are now:\n";
-  for (auto& c: store)
-    cout << c.strLine();
-    */
-
 }
 
 
@@ -141,20 +127,7 @@ const Cover& CoverStore::lookup(const Cover& cover) const
   // Turn a cover into the one we already know.  It must exist.
 
   auto it = store.find(cover);
-if (it == store.end())
-{
-  cout << cover.strLine();
-  cout << "Covers are:\n";
-  for (auto& c: store)
-    cout << c.strLine();
-
-if (it == store.end())
-{
-  cout << "Missed cover " << cover.strLine() << endl;
   assert(it != store.end());
-}
-}
-
   return * it;
 }
 

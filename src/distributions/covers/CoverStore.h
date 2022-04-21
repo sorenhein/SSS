@@ -9,9 +9,10 @@
 #ifndef SSS_COVERSTORE_H
 #define SSS_COVERSTORE_H
 
-#include <string>
 #include <set>
 #include <list>
+#include <vector>
+#include <string>
 
 #include "Cover.h"
 

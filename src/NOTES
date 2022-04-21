@@ -1,72 +1,52 @@
-Text improvements:
-11/158184, "West has exactly one top" -> "Each player has exactly one top"
+Cover specifics
+---------------
+CoverRow: getOverlap could use weights instead.
+Then we never need getNumDist?
 
-11/54897: Check whether complexity of algo solution really is competitive.
+9 / 6101: Sort manual strategy by numDist after weight.
+Rows for old solve: Sort not just by weight.  Row gets a comparator.
+
+Maybe avoid 3-or rows, e.g. 11/170817.
 
 11/56025: Maybe we penalize rows with 2+ terms with complexity 3?
 It's harder for a human to parse "2=2 or 3=1, or one top".
 But that's not the problem here.  10/12846 too.
 
-11/54897: Maybe I like the manual one better.
+11/55386: Maybe add a SymmTop1(2)? [Not currently visible in solution]
 
-Maybe avoid 3-or rows, e.g. 11/170817.
-
-11/57611: Why are solutions not the same?
-
-Symmetrics:
-11/17478: Why not a symmetric reply?
-11/25026: Could we get "Either side has the top at most tripleton"?
-9/17730 : Either side has a doubleton?
-10/53189: Either side has a doubleton?
-11/171270: "
-11/170820: The manual one is good too?
-11/174984: Weightings?
-
-11/171270: Also find 2-3 either way, not "doubleton W / doubleton E".
-11/170811
-11/58062
-11/57615
-10/52725: Prefer the old one.
-11/161784: Ditto.
-11/56118: Ditto.
-11/55386: Maybe add a SymmTop1(2)?
-11/55368: Prefer the old one.
-11/38130: Ditto.
+Text improvements:
+11/158184, "West has exactly one top" -> "Each player has exactly one top"
 
 10 / 53208, QJ65 / - missing HHxxxx
-Not entirely convinced by the Strategy #0 output, either old or new.
-The "Either" part in the old one presumably applies when the length
-part is also symmetrized.
+"Each has exactly one top"
 
-9 / 6101
-East has (xx) -- express differently
+Differences:
+11/ 57611: Why are solutions not the same?
+11/ 54897: I like the manual one better.
+11/174984: I like the manual one better.
+11/55368: New #1 is perhaps better? Perhaps not?
 
-- Introduce back symmetry somehow
-  11/57967, "Either opponent has a singleton honor" comes out to the
-  same as "West has between 1 and 2 tops", and even with a symmetric
-  play, when we sort and compare, the other one may win.  So I guess
-  we prefer either symmetrized ones, or one with no overlap with the OR
-  (MECE)
+Cover stats
+-----------
+ProductStats output the table by depth (#tops used) across horizontally.
 
+Speed
+-----
 Delete the old symmetrics and manuals.
-
-Rows for old solve: Sort not just by weight.  Row gets a comparator.
-
-- Rework greedy results, e.g. 11/159327, QJ7654 / 9 missing AKT8
-  - Ideally we'd first recognize the length-based one, == 2,
-    lowest complexity perhaps
-  - Then the first one only contributes d = 3: len 1 top 1
-  - And the last one contributes d = 9 and 10: len 3 top 2
-  - So they become more MECE, and in fact the row can be split into 3
-ProductStats output the table by depth (#tops used) across horizonzally.
 Forget Covers too after generating them (save space)?
+Optimize Tricks into 5-groups
+- Could do something like strategies/optim/Study.cpp
+  So groups of 5, or binary 10x10 = 1m byte entries
+  Would speed up prune, but slow down prepare
+  Later on, could speed up matching, but then we might prefer
+  5-distribution groups as result vectors go up to 2 bits each.
+TableauCache speed up (look up more intelligently)
 
-Clean code (obvious comments).
+Eliminate greedy search.
+Can we speed up the exhaustive search more?
 
-Optimize Tricks.
-
-Tricks: Optimize into 5-groups
-
+Canonical products
+------------------
 ProductMemory:
 Length 6, only highest top (out of 3) set is in some sense the same
 as there were only 2 tops (the lowest is there and empty).
@@ -76,12 +56,13 @@ The one using that product would have to take it into account somehow.
 
 ProductMemory no longer needs the counters as they are in ProductStats.
 
+
+Clean code (obvious comments).
+
+
 When examining strategies, shift them down as far as possible,
 as this reduces the number of covers to consider.
 
-
-TableauMemory
-Need a way to order Term's
 
 Term
 ----
@@ -96,97 +77,23 @@ Maybe we shouldn't use HH as in 4/24, but actualy KQ.
 Maybe all we really need is to interrogate Opponents?
 It seems to use external ranks in rankInfo[r].
 
-Verbals of CoverElement (call it Term):
-Maybe inherit into a Length and a Top that has 1-D verbals.
-
-If all terms are singles, it's a single holding.
-
-What else?
-
-
-Thoughts on runtime and memory of covers
-----------------------------------------
-Could reduce a strategy with more complication than actual depth
-to the actual depth, similarly to what we already know how to do.
-The #cases should add up the right way.
-
-TableauCache
-------------
-Output of covers
-
-count | depth   0         1         2           3
-5               full real full real
-
-
-4567
-...
-
-Sums horizontal and vertical
-Also percentages
-
-Should show the amount of duplication.
-
-getCoverHistogram(map<unsigned, unsigned>& histogram) const
-Each cover gets an index
-They are numbered after they are sorted
-Then traverse the map and output the covers that are used.
-Last attempt to homologize coverMemory manually.
-
-Move to an unordered_map with custom hash (e.g first nonzero one) and ==.
-Move to index by #tops (0, 1, ...)
-Move to 2-bit groups
-
 - Where does the actual name of the card come from?  Ranks?
-
-Maybe a diagonal cover (1,2;1) meaning 1-2 tricks and 1 more length,
-i.e. one x?
 
 Verbals automatically
 =====================
 
-Further work:
-- Covers::prepareNew
-  - Could do something like strategies/optim/Study.cpp
-    So groups of 5, or binary 10x10 = 1m byte entries
-    Would speed up prune, but slow down prepare
-    Later on, could speed up matching, but then we might prefer
-    5-distribution groups as result vectors go up to 2 bits each.
-  - Maybe later on we know which covers end up getting used,
-    so we store those in a file and we know the count ahead of time.
-    Could generate the prepare's ourselves.
-    Would avoid prune and sort
-- Try higher depths, both greedily and verbally
-
-* Control its general by the input flag
+* Try higher depths, both greedily and verbally
+* Control in general by the input flag
 * The depth (#explicit tops) should be a control parameter somewhere
-* Optimize space if needed
-  - A trick profile could be rolled up into 16-bit chunks (8 distributions
-    times 4 trick options), so maybe up to 16 2-byte numbers = 32 bytes.
-    Then look up 8-bit binary trick profiles to see whether they are
-    below the full trick profile, before subtracting out normally.
-    Both speed and space.  But this is an optimization.
-
 
 Verbals of strategy wins
 ========================
-* When of the form (1 top) - hierarchical children, perhaps
-  - Take 2 tricks (but one less when West is void), and more when...
-  - Count that as 1 less explanation?
-
-* ResExpl::str method, for each strategy
-  - Would be nice to parametrize by the actual names of cards
-
 * Also output differences between two strategies
   - As text, maybe mainly actual combinations (Hx, HHx, ...)
   - In a table (as Unicode text, HTML, ...)
   
 * Store and calculate in the compressed format of Study?  Can we
   even subtract stuff directly in that domain?
-
-* Have to get down at least to the second rank
-  - Even more Cover's?
-
-* Also forget covers?
 
 
 2022-01-15
