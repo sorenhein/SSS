@@ -172,12 +172,6 @@ unsigned CoverRow::getWeight() const
 }
 
 
-unsigned char CoverRow::getNumDist() const
-{
-  return numDist;
-}
-
-
 unsigned char CoverRow::getComplexity() const
 {
   return complexity;

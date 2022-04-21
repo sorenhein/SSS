@@ -1055,7 +1055,11 @@ void Slist::covers(
 
     bool newTableauFlag;
     strat.coversNew(coversIn, 1, tableau, newTableauFlag);
-    cout << "VStrategy #" << stratNo << ": ";
+    cout << "VStrategy #" << stratNo;
+    cout << 
+      " (c " << +tableau.getComplexity() <<
+      ", w " << tableau.getWeight() << "): ";
+
     if (tableau.complete())
     {
       cout << tableau.str();

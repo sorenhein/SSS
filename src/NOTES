@@ -1,12 +1,10 @@
 Cover specifics
 ---------------
-CoverRow: getOverlap could use weights instead.
-Then we never need getNumDist?
-
 9 / 6101: Sort manual strategy by numDist after weight.
 Rows for old solve: Sort not just by weight.  Row gets a comparator.
 
-Maybe avoid 3-or rows, e.g. 11/170817.
+How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.
+Also add this kind of output ([?]) to Strategy.
 
 11/56025: Maybe we penalize rows with 2+ terms with complexity 3?
 It's harder for a human to parse "2=2 or 3=1, or one top".

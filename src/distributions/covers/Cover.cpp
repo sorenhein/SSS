@@ -189,21 +189,12 @@ bool Cover::operator < (const Cover& cover2) const
     return true;
   else if (p1.getComplexity() > p2.getComplexity())
     return false;
-  // TODO Activate these once we have symmetrics in the general list
-  /* */
   else if (symmFlag && ! cover2.symmFlag)
     return true;
   else if (! symmFlag && cover2.symmFlag)
     return false;
-    /* */
-  else if (numDist > cover2.numDist)
-    // Ones that touch more distributions first
-    return true;
-  else if (numDist < cover2.numDist)
-    return false;
   else
     return (code < cover2.code);
-    // return false;
 }
 
 
@@ -246,12 +237,6 @@ unsigned Cover::getWeight() const
 unsigned Cover::size() const
 {
   return tricks.size();
-}
-
-
-unsigned char Cover::getNumDist() const
-{
-  return numDist;
 }
 
 
@@ -341,7 +326,7 @@ string Cover::str(const Profile& sumProfile) const
 
     Opponent simplestOpponent = product.simplestOpponent(sumProfile);
     ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
-    ss << " [" << +numDist << ", " << weight << "]";
+    ss << " [" << weight << "]";
 
     return ss.str();
   }

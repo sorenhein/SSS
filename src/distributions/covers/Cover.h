@@ -106,8 +106,6 @@ class Cover
 
     unsigned size() const;
 
-    unsigned char getNumDist() const;
-
     unsigned char effectiveDepth() const;
 
     unsigned char getComplexity() const;

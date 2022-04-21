@@ -94,8 +94,6 @@ class CoverRow
 
     unsigned getWeight() const;
 
-    unsigned char getNumDist() const;
-
     unsigned char getComplexity() const;
 
     unsigned char getOverlap() const;

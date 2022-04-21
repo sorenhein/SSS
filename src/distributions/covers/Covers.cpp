@@ -293,9 +293,6 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
         (siter->tableau.getResidualWeight() + riter->getWeight()-1) /
         riter->getWeight());
 
-        // 1 + (siter->tableau.getResidualWeight() / riter->getWeight()));
-      // 1 + (siter->tableau.getResidual() / riter->getNumDist());
-
     const unsigned char tcomp = siter->tableau.getComplexity();
     // The minimum complexity of anything is 2.
     const unsigned char projected = tcomp + 2*minCovers;
@@ -386,8 +383,6 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
       static_cast<unsigned char>(
         (siter->tableau.getResidualWeight() + citer->getWeight()-1) /
         citer->getWeight());
-        // 1 + (siter->tableau.getResidualWeight() / citer->getWeight()));
-      // 1 + (siter->tableau.getResidual() / citer->getNumDist());
 
     const unsigned char tcomp = siter->tableau.getComplexity();
     // The minimum complexity of anything is 2.

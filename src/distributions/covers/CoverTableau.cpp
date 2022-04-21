@@ -216,18 +216,16 @@ void CoverTableau::attemptExhaustive(
   // TODO This doesn't actually limit the final list to this range,
   // as the complexity may shrink over time.
 
-  /* */
   if (complexity + cover.getComplexity() -2 > lowestComplexity)
   {
     // Too complex.
     return;
   }
-  /* */
 
   // First try to add a new row.
   if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
-// cout << "Can add to a new row" << endl;
+// cout << "Can add a new row" << endl;
     stack.emplace_back(StackTableau());
     StackTableau& stableau = stack.back();
 
@@ -270,10 +268,12 @@ cout << cover.strLine();
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, residuals, cases, additions, weightAdded) &&
+    if (row.size() < 2 &&
+        row.attempt(cover, residuals, cases, additions, weightAdded) &&
         weightAdded < cover.getWeight())
     {
       // Don't want cover to be completely complementary (use new row).
+      // Also don't want more than two or's in a row.
 
 // cout <<"Can add to an existing row" << endl;
       stack.emplace_back(StackTableau());
@@ -363,9 +363,6 @@ bool CoverTableau::complete() const
 
 unsigned char CoverTableau::getComplexity() const
 {
-// assert(topTotalsPtr != nullptr);
-// cout << "entering getC" << endl;
-// cout << CoverTableau::str() << endl;
   unsigned char complexity = 0;
   for (auto& row: rows)
   {
@@ -374,8 +371,18 @@ unsigned char CoverTableau::getComplexity() const
 
     complexity += row.getComplexity();
   }
-// cout << "got complexity " << +complexity << endl;
   return complexity;
+}
+
+
+unsigned CoverTableau::getWeight() const
+{
+  unsigned weight = 0;
+
+  for (auto& row: rows)
+    weight += row.getWeight();
+
+  return weight;
 }
 
 
@@ -385,7 +392,7 @@ unsigned char CoverTableau::getOverlap() const
   for (auto& row: rows)
   {
     const unsigned char rowOverlap = row.getOverlap();
-// cout << "rOverlap " << +rowOverlap << endl;
+
     // TODO TEMP
     assert(overlap + rowOverlap >= overlap);
 

@@ -87,6 +87,8 @@ class CoverTableau
 
     unsigned char getComplexity() const;
 
+    unsigned getWeight() const;
+
     unsigned char getOverlap() const;
 
     unsigned char numRows() const;

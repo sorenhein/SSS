@@ -282,10 +282,6 @@ void Tricks::add(
 
     residuals.tricks[i] -= t;
 
-    // This is the weight of the added explanation.
-    // if (t)
-      // residualWeight -= cases[i];
-
     numDist += t;
   }
 }
