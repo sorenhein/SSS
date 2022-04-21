@@ -57,7 +57,10 @@ string Top::strEqual(
   }
   else if (value == 1)
   {
-    ss << side << " has exactly one top";
+    if (oppsTops == 2)
+      ss << "Each opponent has one top";
+    else
+      ss << side << " has exactly one top";
   }
   else if (value+1 == oppsTops)
   {
