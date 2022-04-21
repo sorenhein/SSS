@@ -49,15 +49,20 @@ void Tricks::set(
 
 void Tricks::set(
   const Tricks& tricks2,
-  unsigned char& sum)
+  const vector<unsigned char>& cases,
+  unsigned char& weight)
 {
   // TODO Do we need this long-term, or just use = ?
 
   tricks = tricks2.tricks;
 
-  sum = 0;
+  weight = 0;
   for (unsigned i = 0; i < tricks2.size(); i++)
-    sum += tricks2.tricks[i];
+  {
+    // sum += tricks2.tricks[i];
+    if (tricks2.tricks[i])
+      weight += cases[i];
+  }
 }
 
 
@@ -198,14 +203,16 @@ bool Tricks::symmetrize(
 bool Tricks::possible(
   const Tricks& explained,
   const Tricks& residuals,
+  const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& tricksAdded) const
+  unsigned char& weightAdded) const
 {
   assert(tricks.size() == explained.size());
   assert(tricks.size() == residuals.size());
+  assert(tricks.size() == cases.size());
   assert(tricks.size() == additions.size());
 
-  tricksAdded = 0;
+  weightAdded = 0;
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     // If the cover has an entry that has not already been set:
@@ -215,7 +222,7 @@ bool Tricks::possible(
       {
         // We need that entry.
         additions.tricks[i] = 1;
-        tricksAdded++;
+        weightAdded += cases[i];
       }
       else
       {
@@ -228,7 +235,7 @@ bool Tricks::possible(
   }
 
   // Could still have been fully contained.
-  return (tricksAdded > 0);
+  return (weightAdded > 0);
 }
 
 
@@ -255,8 +262,9 @@ CoverState Tricks::explain(Tricks& tricks2) const
 
 void Tricks::add(
   const Tricks& additions,
+  const vector<unsigned char>& cases,
   Tricks& residuals,
-  unsigned char& residualsSum,
+  unsigned char& residualWeight,
   unsigned char& numDist)
 {
   // additions are disjoint from tricks.
@@ -266,25 +274,42 @@ void Tricks::add(
   {
     const unsigned char t = additions.tricks[i];
     tricks[i] += t;
+
+    // The weight of the tableau decreases when a trick goes to zero.
+    // So the weight subtracted is not necessarily the weight added.
+    if (t > 0 && residuals.tricks[i] == t)
+      residualWeight -= cases[i];
+
     residuals.tricks[i] -= t;
-    residualsSum -= t;
+
+    // This is the weight of the added explanation.
+    // if (t)
+      // residualWeight -= cases[i];
+
     numDist += t;
   }
 }
 
 
 void Tricks::subtract(
+  const vector<unsigned char>& cases,
   Tricks& residuals,
-  unsigned char& residualsSum) const
+  unsigned char& residualWeight) const
 {
   // additions are disjoint from tricks.
   assert(tricks.size() == residuals.tricks.size());
+  assert(tricks.size() == cases.size());
 
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     const unsigned char t = tricks[i];
+
+    // The weight of the tableau decreases when a trick goes to zero.
+    // So the weight subtracted is not necessarily the weight added.
+    if (t > 0 && residuals.tricks[i] == t)
+      residualWeight -= cases[i];
+
     residuals.tricks[i] -= t;
-    residualsSum -= t;
   }
 }
 

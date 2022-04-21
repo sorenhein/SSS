@@ -37,6 +37,8 @@ class Covers
 
     list<CoverRow> rows;
 
+    vector<unsigned char> cases;
+
     CoverStore store;
 
     TableauCache tableauCache;
@@ -65,7 +67,7 @@ class Covers
     void prepareNew(
       ProductMemory& productMemory,
       const vector<Profile>& distProfiles,
-      const vector<unsigned char>& cases,
+      const vector<unsigned char>& casesIn,
       const Profile& sumProfileIn);
 
     void sortRows();

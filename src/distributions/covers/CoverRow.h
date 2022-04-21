@@ -55,25 +55,29 @@ class CoverRow
     bool attempt(
       const Cover& cover,
       const Tricks& residuals,
+      const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& tricksAdded) const;
+      unsigned char& weightAdded) const;
 
     void add(
       const Cover& cover,
       const Tricks& additions,
+      const vector<unsigned char>& cases,
       Tricks& residuals,
-      unsigned char& residualsSum);
+      unsigned char& residualWeight);
 
     void subtract(
       const Tricks& additions,
+      const vector<unsigned char>& cases,
       Tricks& residuals,
       unsigned char& residualsSum) const;
 
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,
+      const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& tricksAdded) const;
+      unsigned char& weightAdded) const;
 
     CoverState explain(Tricks& tricksSeen) const;
 

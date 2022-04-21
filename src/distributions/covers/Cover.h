@@ -79,6 +79,7 @@ class Cover
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,
+      const vector<unsigned char>& cases,
       Tricks& additions,
       unsigned char& tricksAdded) const;
 

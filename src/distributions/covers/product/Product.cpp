@@ -78,12 +78,15 @@ void Product::set(
   }
 
   // If there is only a single distribution possible, this counts
-  // as a complexity of 2 (don't make it absurdly attractive).
+  // as a complexity of 3 (don't make it absurdly attractive).
+  // TODO Relies on the profile being "minimal", as otherwise the
+  // empty terms make the product seem not full.  So maybe this
+  // correction is not a good idea?
   if (length.used() && 
       activeCount+1 == static_cast<unsigned char>(topLowSize) &&
       lowerProfile == upperProfile)
   {
-    complexity = 2;
+    complexity = 3;
   }
 }
 

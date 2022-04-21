@@ -1,5 +1,9 @@
-Now have to look at the few differences in the manual.
-Probably change some complexity weighting in the automatic version.
+With the new complexity and weight stuff:
+9 / 13836
+The row-based one gets complexity 4
+The new one only gets 5
+Probably something is missed?
+
 
 ProductStats output the table by depth (#tops used) across horizonzally.
 Forget Covers too after generating them (save space)?

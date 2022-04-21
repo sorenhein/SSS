@@ -41,7 +41,7 @@ class CoverTableau
 
     Tricks residuals;
 
-    unsigned char residualsSum;
+    unsigned char residualWeight;
 
     unsigned char tricksMin;
 
@@ -56,13 +56,17 @@ class CoverTableau
 
     void setTricks(
       const Tricks& tricks,
-      const unsigned char tmin);
+      const unsigned char tmin,
+      const vector<unsigned char>& cases);
 
     void setMinTricks(const unsigned char tmin);
 
-    bool attemptGreedy(const Cover& cover);
+    bool attemptGreedy(
+      const Cover& cover,
+      const vector<unsigned char>& cases);
 
     void attemptExhaustiveRow(
+      const vector<unsigned char>& cases,
       list<CoverRow>::const_iterator& rowIter,
       const unsigned coverNo,
       list<ResTableau>& stack,
@@ -70,6 +74,7 @@ class CoverTableau
       unsigned char& lowestComplexity) const;
 
     void attemptExhaustive(
+      const vector<unsigned char>& cases,
       set<Cover>::const_iterator& coverIter,
       const unsigned coverNo,
       list<StackTableau>& stack,
@@ -94,7 +99,7 @@ class CoverTableau
 
     unsigned char numCovers() const;
 
-    unsigned char getResidual() const;
+    unsigned char getResidualWeight() const;
 
     string str() const;
 

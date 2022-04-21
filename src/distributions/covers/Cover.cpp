@@ -133,8 +133,9 @@ bool Cover::includes(const Profile& distProfile) const
 bool Cover::possible(
   const Tricks& explained,
   const Tricks& residuals,
+  const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& tricksAdded) const
+  unsigned char& weightAdded) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
@@ -142,7 +143,8 @@ bool Cover::possible(
   //   explained vector that would arise
   // tricksAdded: The number of tricks in additions
 
-  return tricks.possible(explained, residuals, additions, tricksAdded);
+  return tricks.possible(explained, residuals, cases, 
+    additions, weightAdded);
 }
 
 

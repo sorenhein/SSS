@@ -39,9 +39,11 @@ class Tricks
       const vector<unsigned char>& values,
       unsigned char& sum);
 
+    // TODO A bit like weigh()? Neede long-term?
     void set(
       const Tricks& tricks2,
-      unsigned char& sum);
+      const vector<unsigned char>& cases,
+      unsigned char& weight);
 
     void set(
       const list<Result>& results,
@@ -71,20 +73,23 @@ class Tricks
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,
+      const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& tricksAdded) const;
+      unsigned char& weightAdded) const;
 
     CoverState explain(Tricks& tricks2) const;
 
     void add(
       const Tricks& additions,
+      const vector<unsigned char>& cases,
       Tricks& residuals,
       unsigned char& residualsSum,
       unsigned char& numDist);
 
     void subtract(
+      const vector<unsigned char>& cases,
       Tricks& residuals,
-      unsigned char& residualsSum) const;
+      unsigned char& residualWeight) const;
 
     Tricks& operator |= (const Tricks& tricks2);
 

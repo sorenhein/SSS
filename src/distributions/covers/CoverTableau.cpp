@@ -28,7 +28,7 @@ void CoverTableau::reset()
 {
   rows.clear();
   residuals.clear();
-  residualsSum = 0;
+  residualWeight = 0;
   tricksMin = 0;
 }
 
@@ -41,9 +41,10 @@ void CoverTableau::setBoundaries(const Profile& sumProfileIn)
 
 void CoverTableau::setTricks(
   const Tricks& tricks,
-  const unsigned char tmin)
+  const unsigned char tmin,
+  const vector<unsigned char>& cases)
 {
-  residuals.set(tricks, residualsSum);
+  residuals.set(tricks, cases, residualWeight);
 
   tricksMin = tmin;
 }
@@ -55,7 +56,9 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 }
 
 
-bool CoverTableau::attemptGreedy(const Cover& cover)
+bool CoverTableau::attemptGreedy(
+  const Cover& cover,
+  const vector<unsigned char>& cases)
 {
   // explained is a dummy vector here.
   Tricks explained;
@@ -64,15 +67,15 @@ bool CoverTableau::attemptGreedy(const Cover& cover)
   Tricks additions;
   additions.resize(cover.size());
 
-  unsigned char tricksAdded;
+  unsigned char weightAdded;
 
   // First try to add a new row.
-  if (cover.possible(explained, residuals, additions, tricksAdded))
+  if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
     rows.emplace_back(CoverRow());
     CoverRow& row = rows.back();
     row.resize(cover.size());
-    row.add(cover, additions, residuals, residualsSum);
+    row.add(cover, additions, cases, residuals, residualWeight);
     return true;
   }
 
@@ -89,13 +92,13 @@ bool CoverTableau::attemptGreedy(const Cover& cover)
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, additions, residuals, tricksAdded))
+    if (row.attempt(cover, additions, cases, residuals, weightAdded))
     {
-      if (tricksAdded > weightBest)
+      if (weightAdded > weightBest)
       {
         rowBestPtr = &row;
         swap(additions, additionsBest);
-        weightBest = tricksAdded;
+        weightBest = weightAdded;
       }
     }
   }
@@ -114,7 +117,7 @@ cout << "Row before adding:\n";
 cout << rowBestPtr->strLines() << "\n";
 */
 
-  rowBestPtr->add(cover, additionsBest, residuals, residualsSum);
+  rowBestPtr->add(cover, additionsBest, cases, residuals, residualWeight);
 
 /*
 cout << "Row before adding:\n";
@@ -126,6 +129,7 @@ cout << rowBestPtr->strLines() << "\n";
 
 
 void CoverTableau::attemptExhaustiveRow(
+  const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   const unsigned coverNo,
   list<ResTableau>& stack,
@@ -141,18 +145,18 @@ void CoverTableau::attemptExhaustiveRow(
   Tricks additions;
   additions.resize(residuals.size());
 
-  unsigned char tricksAdded;
+  unsigned char weightAdded;
 
   const unsigned char complexity = CoverTableau::getComplexity();
 
-  if (complexity + row.getComplexity() > lowestComplexity + 2)
+  if (complexity + row.getComplexity() - 2 > lowestComplexity)
   {
     // Too complex.
     return;
   }
 
   // Try to add a new row.
-  if (row.possible(explained, residuals, additions, tricksAdded))
+  if (row.possible(explained, residuals, cases, additions, weightAdded))
   {
 // cout << "Can add to a new row" << endl;
     stack.emplace_back(ResTableau());
@@ -164,8 +168,10 @@ void CoverTableau::attemptExhaustiveRow(
     tableau.rows.push_back(row);
 // cout << "Got the row" <<endl;
 
-    row.subtract(additions, tableau.residuals, tableau.residualsSum);
+    row.subtract(additions, cases,
+      tableau.residuals, tableau.residualWeight);
 
+// cout << "residual weight now " << +tableau.residualWeight << endl;
     rtableau.rowIter = rowIter;
     rtableau.rowNumber = coverNo;
 
@@ -184,6 +190,7 @@ void CoverTableau::attemptExhaustiveRow(
 
 
 void CoverTableau::attemptExhaustive(
+  const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
   const unsigned coverNo,
   list<StackTableau>& stack,
@@ -202,7 +209,7 @@ void CoverTableau::attemptExhaustive(
   Tricks additions;
   additions.resize(cover.size());
 
-  unsigned char tricksAdded;
+  unsigned char weightAdded;
   const bool emptyStartFlag = rows.empty();
 
   const unsigned char complexity = CoverTableau::getComplexity();
@@ -211,7 +218,7 @@ void CoverTableau::attemptExhaustive(
   // as the complexity may shrink over time.
 
   /* */
-  if (complexity + cover.getComplexity() > lowestComplexity + 2)
+  if (complexity + cover.getComplexity() -2 > lowestComplexity)
   {
     // Too complex.
     return;
@@ -219,7 +226,7 @@ void CoverTableau::attemptExhaustive(
   /* */
 
   // First try to add a new row.
-  if (cover.possible(explained, residuals, additions, tricksAdded))
+  if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
 // cout << "Can add to a new row" << endl;
     stack.emplace_back(StackTableau());
@@ -232,7 +239,8 @@ void CoverTableau::attemptExhaustive(
     CoverRow& row = tableau.rows.back();
     row.resize(cover.size());
 // cout << "Got the row" <<endl;
-    row.add(cover, additions, tableau.residuals, tableau.residualsSum);
+    row.add(cover, additions, cases, 
+      tableau.residuals, tableau.residualWeight);
 // cout << "Added" << endl;
 
     stableau.coverIter = coverIter;
@@ -263,8 +271,8 @@ void CoverTableau::attemptExhaustive(
 
   for (auto& row: rows)
   {
-    if (row.attempt(cover, residuals, additions, tricksAdded) &&
-        tricksAdded < cover.getNumDist())
+    if (row.attempt(cover, residuals, cases, additions, weightAdded) &&
+        weightAdded < cover.getNumDist())
     {
       // Don't want cover to be completely complementery (use new row).
 
@@ -278,7 +286,8 @@ void CoverTableau::attemptExhaustive(
       // A bit fumbly: Advance to the same place in tableau.
       for (riter = tableau.rows.begin(), r = 0; r < rno; riter++, r++);
 
-      riter->add(cover, additions, tableau.residuals, tableau.residualsSum);
+      riter->add(cover, additions, cases,
+        tableau.residuals, tableau.residualWeight);
 
 // cout << "Tableau now" << endl;
 // cout << tableau.str();
@@ -355,7 +364,7 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
 
 bool CoverTableau::complete() const
 {
-  return (! rows.empty() && residualsSum == 0);
+  return (! rows.empty() && residualWeight == 0);
 }
 
 
@@ -413,9 +422,9 @@ unsigned char CoverTableau::numCovers() const
 }
 
 
-unsigned char CoverTableau::getResidual() const
+unsigned char CoverTableau::getResidualWeight() const
 {
-  return residualsSum;
+  return residualWeight;
 }
 
 

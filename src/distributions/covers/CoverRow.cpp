@@ -61,8 +61,9 @@ void CoverRow::fillDirectly(
 bool CoverRow::attempt(
   const Cover& cover,
   const Tricks& residuals,
+  const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& tricksAdded) const
+  unsigned char& weightAdded) const
 {
   // Do not update any internal states.  Try to add the cover with
   // its residuals and see what this would add incrementally to the row.
@@ -70,25 +71,27 @@ bool CoverRow::attempt(
 
   assert(tricks.size() == residuals.size());
   assert(additions.size() == residuals.size());
+  assert(cases.size() == residuals.size());
 
   // This is just an optimization.  If a cover has already been
   // OR'ed onto the row, it won't help to OR it again.
   if (! coverPtrs.empty() && coverPtrs.back() == &cover)
     return false;
 
-  return cover.possible(tricks, residuals, additions, tricksAdded);
+  return cover.possible(tricks, residuals, cases, additions, weightAdded);
 }
 
 
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
+  const vector<unsigned char>& cases,
   Tricks& residuals,
-  unsigned char& residualsSum)
+  unsigned char& residualWeight)
 {
   coverPtrs.push_back(&cover);
 
-  tricks.add(additions, residuals, residualsSum, numDist);
+  tricks.add(additions, cases, residuals, residualWeight, numDist);
 
   // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);
@@ -99,29 +102,32 @@ void CoverRow::add(
 
 void CoverRow::subtract(
   const Tricks& additions,
+  const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualsSum) const
 {
   // This version is used when the complete row is set manually already.
   // We don't want to modify tricks -- we just want to subtract out
   // tricks from residuals.
-  additions.subtract(residuals, residualsSum);
+  additions.subtract(cases, residuals, residualsSum);
 }
 
 
 bool CoverRow::possible(
   const Tricks& explained,
   const Tricks& residuals,
+  const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& tricksAdded) const
+  unsigned char& weightAdded) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
   //   explained vector that would arise
-  // tricksAdded: The number of tricks in additions
+  // weightAdded: The number of cases in additions
 
-  return tricks.possible(explained, residuals, additions, tricksAdded);
+  return tricks.possible(explained, residuals, cases, 
+    additions, weightAdded);
 }
 
 

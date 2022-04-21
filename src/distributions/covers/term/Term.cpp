@@ -60,23 +60,23 @@ void Term::set(
   if (lower == upper)
   {
     oper = COVER_EQUAL;
-    complexity = 1;
+    complexity = 2;
   }
   else if (lowerIn == 0)
   {
     oper = COVER_LESS_EQUAL;
-    complexity = 1;
+    complexity = 2;
   }
   else if (upperIn == oppSize)
   {
     oper = COVER_GREATER_EQUAL;
     upper = 0xf; // For consistency
-    complexity = 1;
+    complexity = 2;
   }
   else
   {
     oper = COVER_INSIDE_RANGE;
-    complexity = 2;
+    complexity = 3;
   }
 
   index = termCompare.getIndex(lower, upper, oper);
