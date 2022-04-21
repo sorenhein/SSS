@@ -993,11 +993,10 @@ void Slist::getResultList(list<Result>& resultList) const
  ************************************************************/
 
 
-void Slist::covers(
+void Slist::coversManual(
   Covers& coversIn,
   const unsigned char maxRank,
-  list<CoverTableau>& tableaux,
-  ProductStats& productStats) const
+  list<CoverTableau>& tableaux) const
 {
   unsigned stratNo = 0;
 
@@ -1029,9 +1028,18 @@ void Slist::covers(
     stratNo++;
     riter++;
   }
+}
 
-  // TODO For now.  Should come from above later.
-  stratNo = 0;
+
+void Slist::covers(
+  Covers& coversIn,
+  const unsigned char maxRank,
+  list<CoverTableau>& tableaux,
+  ProductStats& productStats) const
+{
+  Slist::coversManual(coversIn, maxRank, tableaux);
+
+  unsigned stratNo = 0;
   CoverTableau tableau;
 
   for (auto& strat: strategies)
@@ -1042,7 +1050,6 @@ void Slist::covers(
     {
       // We don't know yet how to cover such Strategy's.
       stratNo++;
-      riter++;
       continue;
     }
 
