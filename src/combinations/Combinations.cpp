@@ -274,8 +274,7 @@ CombinationType Combinations::classify(
 
 void Combinations::runUniques(
   const unsigned char cards,
-  Distributions& distributions,
-  [[maybe_unused]] ExplStats& explStats)
+  Distributions& distributions)
 {
   assert(cards < countStats.size());
 

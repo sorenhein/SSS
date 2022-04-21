@@ -11,7 +11,7 @@
 
 #include <list>
 
-#include "product/ProfilePair.h"
+#include "../product/ProfilePair.h"
 
 struct DistData;
 

@@ -17,7 +17,7 @@
 #include "DistCore.h"
 #include "DistMap.h"
 
-#include "covers/Manual.h"
+#include "covers/manual/Manual.h"
 
 #include "covers/product/ProductMemory.h"
 

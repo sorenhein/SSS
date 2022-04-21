@@ -4,7 +4,7 @@
 #include "combinations/Combinations.h"
 
 #include "distributions/Distributions.h"
-#include "distributions/covers/ExplStats.h"
+// #include "distributions/covers/ExplStats.h"
 #include "distributions/covers/term/TermCompare.h"
 
 #include "inputs/Control.h"
@@ -65,7 +65,7 @@ int main(int argc, char * argv[])
 
     combinations.resize(control.cards());
 
-    ExplStats explStats;
+    // ExplStats explStats;
     // distributions.resizeStats(explStats);
 
     for (unsigned char cards = 0; cards <= 11; cards++)
@@ -73,7 +73,7 @@ int main(int argc, char * argv[])
       cout << "Cards " << setw(2) << right << +cards << endl;
 
       // combinations.runUniquesMT(cards, control.numThreads());
-      combinations.runUniques(cards, distributions, explStats);
+      combinations.runUniques(cards, distributions);
     }
 
     cout << "\n";
@@ -81,8 +81,8 @@ int main(int argc, char * argv[])
     cout << distributions.strCoverCounts();
     cout << distributions.strProductEnterStats();
 
-    cout << "\n";
-    cout << explStats.str();
+    // cout << "\n";
+    // cout << explStats.str();
 
     cout << "\n";
     cout << combinations.strProductStats();

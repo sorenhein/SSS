@@ -23,7 +23,7 @@ class ProductMemory;
 class CoverTableau;
 class Tricks;
 class Result;
-class ResExpl;
+// class ResExpl;
 
 
 using namespace std;
@@ -75,9 +75,11 @@ class Covers
 
     const Cover& lookup(const Cover& cover) const;
 
+    /*
     CoverState explainGreedyRows(
       const list<Result>& results,
       ResExpl& resExpl) const;
+      */
 
     CoverState explainExhaustiveRows(
       const list<Result>& results,
@@ -108,7 +110,7 @@ class Covers
 
     string strCached() const;
 
-    string strExpl(const ResExpl& resExpl) const;
+    // string strExpl(const ResExpl& resExpl) const;
 };
 
 #endif

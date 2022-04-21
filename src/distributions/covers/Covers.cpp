@@ -19,7 +19,7 @@
 #include "product/ProductMemory.h"
 #include "product/ProfilePair.h"
 
-#include "ResExpl.h"
+// #include "ResExpl.h"
 
 #include "../../strategies/result/Result.h"
 
@@ -174,6 +174,7 @@ const Cover& Covers::lookup(const Cover& cover) const
 }
 
 
+/*
 CoverState Covers::explainGreedyRows(
   const list<Result>& results,
   ResExpl& resExpl) const
@@ -219,6 +220,7 @@ CoverState Covers::explainGreedyRows(
   // Can't happen
   return COVER_STATE_SIZE;
 }
+*/
 
 
 void Covers::explainGreedy(
@@ -519,7 +521,9 @@ string Covers::strCached() const
 }
 
 
+/*
 string Covers::strExpl(const ResExpl& resExpl) const
 {
   return resExpl.str(sumProfile);
 }
+*/
