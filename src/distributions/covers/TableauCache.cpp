@@ -12,7 +12,6 @@
 #include <cassert>
 
 #include "TableauCache.h"
-#include "Tricks.h"
 
 
 TableauCache::TableauCache()
@@ -46,8 +45,10 @@ bool TableauCache::lookup(
 {
   for (auto& entry: entries)
   {
-    if (excessTricks== entry.excessTricks)
+    if (excessTricks == entry.excessTricks)
     {
+      // TODO This could surely be sped up, e.g. storing them in
+      // a set by weight.  I don't know if timing is a problem here.
       tableauPtr = &entry.tableau;
       entry.count++;
       return true;

@@ -274,10 +274,8 @@ CoverState Covers::explainExhaustiveRows(
   stableau.tableau.setTricks(tricks, tmin, cases);
 
   stableau.rowIter = rows.begin();
-  stableau.rowNumber = 0;
 
 const unsigned coverSize = rows.size();
-unsigned coverNo;
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
@@ -286,7 +284,6 @@ unsigned coverNo;
   while (siter != stack.end())
   {
     auto riter = siter->rowIter;
-    coverNo = siter->rowNumber;
 const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
 
     // The lowest complexity that is still achievable is
@@ -307,11 +304,10 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
     {
       while (riter != rows.end())
       {
-        siter->tableau.attemptExhaustiveRow(cases, riter, coverNo, stack, 
+        siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
           solutions, lowestComplexity);
 
         riter++;
-coverNo++;
       }
     }
 
@@ -374,10 +370,6 @@ void Covers::explainExhaustive(
   stableau.tableau.setTricks(tricks, tmin, cases);
 
   stableau.coverIter = store.begin();
-  stableau.coverNumber = 0;
-
-// cout << "Cover size " << store.size() << endl;
-unsigned coverNo;
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
@@ -386,7 +378,6 @@ unsigned coverNo;
   while (siter != stack.end())
   {
     auto citer = siter->coverIter;
-    coverNo = siter->coverNumber;
 const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
 
     // The lowest complexity that is still achievable is
@@ -417,17 +408,15 @@ endl;
         if (citer->effectiveDepth() > numStrategyTops)
         {
           citer++;
-coverNo++;
           continue;
         }
 
         // TODO Could test projected again here
 
-        siter->tableau.attemptExhaustive(cases, citer, coverNo, stack, 
+        siter->tableau.attemptExhaustive(cases, citer, stack, 
           solutions, lowestComplexity);
 
         citer++;
-coverNo++;
       }
     }
     // else

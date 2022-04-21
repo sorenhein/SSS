@@ -13,7 +13,6 @@
 
 #include "CoverTableau.h"
 #include "Cover.h"
-#include "ResExpl.h"
 
 #include "../../strategies/result/Result.h"
 
@@ -131,7 +130,7 @@ cout << rowBestPtr->strLines() << "\n";
 void CoverTableau::attemptExhaustiveRow(
   const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
-  const unsigned coverNo,
+  // const unsigned coverNo,
   list<ResTableau>& stack,
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
@@ -173,7 +172,7 @@ void CoverTableau::attemptExhaustiveRow(
 
 // cout << "residual weight now " << +tableau.residualWeight << endl;
     rtableau.rowIter = rowIter;
-    rtableau.rowNumber = coverNo;
+    // rtableau.rowNumber = coverNo;
 
     if (tableau.complete())
     {
@@ -192,7 +191,7 @@ void CoverTableau::attemptExhaustiveRow(
 void CoverTableau::attemptExhaustive(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
-  const unsigned coverNo,
+  // const unsigned coverNo,
   list<StackTableau>& stack,
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
@@ -241,7 +240,6 @@ void CoverTableau::attemptExhaustive(
       tableau.residuals, tableau.residualWeight);
 
     stableau.coverIter = coverIter;
-    stableau.coverNumber = coverNo;
 
 /*
 cout << "Tableau now\n";
@@ -299,7 +297,6 @@ cout << cover.strLine();
 */
 
       stableau.coverIter = coverIter;
-      stableau.coverNumber = coverNo;
 
       if (tableau.complete())
       {

@@ -24,10 +24,8 @@ using namespace std;
 /* A tableau is a set of additive rows.
  */
 
-class Result;
 struct StackTableau;
 struct ResTableau;
-class ResExpl;
 class ProductStats;
 
 
@@ -68,7 +66,6 @@ class CoverTableau
     void attemptExhaustiveRow(
       const vector<unsigned char>& cases,
       list<CoverRow>::const_iterator& rowIter,
-      const unsigned coverNo,
       list<ResTableau>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
@@ -76,7 +73,6 @@ class CoverTableau
     void attemptExhaustive(
       const vector<unsigned char>& cases,
       set<Cover>::const_iterator& coverIter,
-      const unsigned coverNo,
       list<StackTableau>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
@@ -84,8 +80,6 @@ class CoverTableau
     void updateStats(
       ProductStats& productStats,
       const bool newTableauFlag) const;
-
-    // void toResExpl(ResExpl& resExpl) const;
 
     bool operator < (const CoverTableau& tableau2) const;
 
@@ -112,9 +106,6 @@ struct StackTableau
   CoverTableau tableau;
 
   set<Cover>::const_iterator coverIter;
-
-  // May not need this long-term.  May in fact go inside Cover.
-  unsigned coverNumber;
 };
 
 struct ResTableau
@@ -122,8 +113,6 @@ struct ResTableau
   CoverTableau tableau;
 
   list<CoverRow>::const_iterator rowIter;
-
-  unsigned rowNumber;
 };
 
 #endif
