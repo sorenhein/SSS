@@ -54,6 +54,12 @@ class DistCore
       vector<unsigned char>& cases,
       Profile& sumProfile) const;
 
+    void prepareManualCovers(
+      ProductMemory& productMemory,
+      const vector<Profile>& distProfiles,
+      const vector<unsigned char>& cases,
+      const Profile& sumProfile);
+
     string strHeader() const;
 
 

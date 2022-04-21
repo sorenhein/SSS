@@ -35,6 +35,7 @@ class Covers
 
     Profile sumProfile;
 
+    // These are the manually set rows.  They are currently inactive.
     list<CoverRow> rows;
 
     vector<unsigned char> cases;

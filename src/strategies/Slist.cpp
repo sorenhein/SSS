@@ -1030,9 +1030,6 @@ void Slist::covers(
     riter++;
   }
 
-  // TODO Uncomment to turn the rest on.
-  // return;
-
   // TODO For now.  Should come from above later.
   stratNo = 0;
   CoverTableau tableau;

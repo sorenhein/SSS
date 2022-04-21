@@ -234,21 +234,22 @@ void CoverTableau::attemptExhaustive(
 
     CoverTableau& tableau = stableau.tableau;
     tableau = * this;
-// cout << "Set up and copied the tableau" <<endl;
     tableau.rows.emplace_back(CoverRow());
     CoverRow& row = tableau.rows.back();
     row.resize(cover.size());
-// cout << "Got the row" <<endl;
     row.add(cover, additions, cases, 
       tableau.residuals, tableau.residualWeight);
-// cout << "Added" << endl;
 
     stableau.coverIter = coverIter;
     stableau.coverNumber = coverNo;
 
-// cout << "Tableau now\n";
-// cout << tableau.str();
-// cout << tableau.strResiduals();
+/*
+cout << "Tableau now\n";
+cout << tableau.str();
+cout << tableau.strResiduals();
+cout << "Chosen cover:\n";
+cout << cover.strLine();
+*/
 
     if (tableau.complete())
     {
@@ -272,9 +273,9 @@ void CoverTableau::attemptExhaustive(
   for (auto& row: rows)
   {
     if (row.attempt(cover, residuals, cases, additions, weightAdded) &&
-        weightAdded < cover.getNumDist())
+        weightAdded < cover.getWeight())
     {
-      // Don't want cover to be completely complementery (use new row).
+      // Don't want cover to be completely complementary (use new row).
 
 // cout <<"Can add to an existing row" << endl;
       stack.emplace_back(StackTableau());
@@ -289,9 +290,13 @@ void CoverTableau::attemptExhaustive(
       riter->add(cover, additions, cases,
         tableau.residuals, tableau.residualWeight);
 
-// cout << "Tableau now" << endl;
-// cout << tableau.str();
-// cout << tableau.strResiduals();
+/*
+cout << "Tableau now" << endl;
+cout << tableau.str();
+cout << tableau.strResiduals();
+cout << "Chosen cover:\n";
+cout << cover.strLine();
+*/
 
       stableau.coverIter = coverIter;
       stableau.coverNumber = coverNo;
@@ -307,7 +312,7 @@ void CoverTableau::attemptExhaustive(
 
         if (c < lowestComplexity)
           lowestComplexity = c;
- // cout << "Got a solution by augmenting a row" << endl;
+// cout << "Got a solution by augmenting a row" << endl;
         solutions.push_back(tableau);
         // Done, so eliminate.
         stack.pop_back();
@@ -317,15 +322,6 @@ void CoverTableau::attemptExhaustive(
     rno++;
   }
 }
-
-
-/*
-void CoverTableau::toResExpl(ResExpl& resExpl) const
-{
-  for (auto& row: rows)
-    resExpl.insert(row);
-}
-*/
 
 
 void CoverTableau::updateStats(

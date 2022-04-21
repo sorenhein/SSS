@@ -322,7 +322,7 @@ coverNo++;
   solutions.sort();
 
 // Make partially into a CoverTableau method
-/* */
+/*
 unsigned i = 0;
 for (auto s: solutions)
 {
@@ -335,7 +335,7 @@ for (auto s: solutions)
   if (i >= 20)
     break;
 }
-/* */
+*/
 
   tableau = solutions.front();
 
@@ -440,7 +440,7 @@ coverNo++;
   solutions.sort();
 
 // Make partially into a CoverTableau method
-/* */
+/*
 cout << "SOLUTIONS\n\n";
 unsigned i = 0;
 for (auto s: solutions)
@@ -454,7 +454,7 @@ for (auto s: solutions)
   if (i >= 20)
     break;
 }
-/* */
+*/
 
 /*
 cout << "COVERS\n\n";

@@ -471,18 +471,14 @@ void DistCore::getCoverData(
 }
 
 
-void DistCore::prepareCovers(ProductMemory& productMemory)
+void DistCore::prepareManualCovers(
+  ProductMemory& productMemory,
+  const vector<Profile>& distProfiles,
+  const vector<unsigned char>& cases,
+  const Profile& sumProfile)
 {
-  if (distributions.size() == 0)
-    return;
-
-  vector<Profile> distProfiles;
-  vector<unsigned char> cases;
-  Profile sumProfile;
-  DistCore::getCoverData(distProfiles, cases, sumProfile);
-
-  // Prepare each cover.
-  covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
+  // Currently unused -- left so that it's possible to turn on.
+  // See Manual.cpp
 
   // Get the manual covers.
   list<list<ManualData>> manualData;
@@ -503,8 +499,9 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
 
       cover.prepare(distProfiles, cases);
 
-      const Cover& clook = covers.lookup(cover);
-      coverPtrs.push_back(&clook);
+      // Need to look up the cover that has memory permanence.
+      const Cover& clookup = covers.lookup(cover);
+      coverPtrs.push_back(&clookup);
     }
 
     CoverRow& row = covers.addRow();
@@ -513,6 +510,28 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   }
 
   covers.sortRows();
+}
+
+
+void DistCore::prepareCovers(ProductMemory& productMemory)
+{
+  if (distributions.size() == 0)
+    return;
+
+  vector<Profile> distProfiles;
+  vector<unsigned char> cases;
+  Profile sumProfile;
+  DistCore::getCoverData(distProfiles, cases, sumProfile);
+
+  // Prepare each cover.
+  covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
+
+  // Set the manual covers.
+  DistCore::prepareManualCovers(
+    productMemory,
+    distProfiles,
+    cases,
+    sumProfile);
 }
 
 
