@@ -9,24 +9,26 @@
 #ifndef SSS_COVERTABLEAU_H
 #define SSS_COVERTABLEAU_H
 
+/* A tableau is a set of additive rows with some overlap.
+ */
+
 #include <list>
 #include <set>
 #include <vector>
 #include <string>
 
+#include "product/Profile.h"
+
 #include "CoverRow.h"
 #include "Tricks.h"
 
-#include "product/Profile.h"
 
 using namespace std;
 
-/* A tableau is a set of additive rows.
- */
-
-struct StackTableau;
-struct ResTableau;
 class ProductStats;
+
+struct StackEntry;
+struct RowStackEntry;
 
 
 class CoverTableau
@@ -59,21 +61,17 @@ class CoverTableau
 
     void setMinTricks(const unsigned char tmin);
 
-    bool attemptGreedy(
-      const Cover& cover,
-      const vector<unsigned char>& cases);
-
-    void attemptExhaustiveRow(
+    void attempt(
       const vector<unsigned char>& cases,
-      list<CoverRow>::const_iterator& rowIter,
-      list<ResTableau>& stack,
+      set<Cover>::const_iterator& coverIter,
+      list<StackEntry>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
 
-    void attemptExhaustive(
+    void attemptManually(
       const vector<unsigned char>& cases,
-      set<Cover>::const_iterator& coverIter,
-      list<StackTableau>& stack,
+      list<CoverRow>::const_iterator& rowIter,
+      list<RowStackEntry>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
 
@@ -89,28 +87,22 @@ class CoverTableau
 
     unsigned getWeight() const;
 
-    unsigned char getOverlap() const;
-
-    unsigned char numRows() const;
-
-    unsigned char numCovers() const;
-
     unsigned char getResidualWeight() const;
 
-    string str() const;
-
     string strResiduals() const;
+
+    string str() const;
 };
 
 
-struct StackTableau
+struct StackEntry
 {
   CoverTableau tableau;
 
   set<Cover>::const_iterator coverIter;
 };
 
-struct ResTableau
+struct RowStackEntry
 {
   CoverTableau tableau;
 

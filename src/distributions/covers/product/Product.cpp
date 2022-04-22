@@ -83,6 +83,7 @@ void Product::set(
   // empty terms make the product seem not full.  So maybe this
   // correction is not a good idea?
   if (length.used() && 
+      complexity > 3 &&
       activeCount+1 == static_cast<unsigned char>(topLowSize) &&
       lowerProfile == upperProfile)
   {

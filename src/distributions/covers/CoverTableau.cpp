@@ -55,150 +55,13 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 }
 
 
-bool CoverTableau::attemptGreedy(
-  const Cover& cover,
-  const vector<unsigned char>& cases)
-{
-  // explained is a dummy vector here.
-  Tricks explained;
-  explained.resize(cover.size());
-
-  Tricks additions;
-  additions.resize(cover.size());
-
-  unsigned char weightAdded;
-
-  // First try to add a new row.
-  if (cover.possible(explained, residuals, cases, additions, weightAdded))
-  {
-    rows.emplace_back(CoverRow());
-    CoverRow& row = rows.back();
-    row.resize(cover.size());
-    row.add(cover, additions, cases, residuals, residualWeight);
-    return true;
-  }
-
-  // Then look for a row, or the best one, to add to.
-  if (rows.empty())
-    return false;
-
-  CoverRow * rowBestPtr = nullptr;
-
-  Tricks additionsBest;
-  additionsBest.resize(cover.size());
-
-  unsigned char weightBest = 0;
-
-  for (auto& row: rows)
-  {
-    if (row.attempt(cover, additions, cases, residuals, weightAdded))
-    {
-      if (weightAdded > weightBest)
-      {
-        rowBestPtr = &row;
-        swap(additions, additionsBest);
-        weightBest = weightAdded;
-      }
-    }
-  }
-
-  if (rowBestPtr == nullptr)
-    return false;
-
-  // A 1-trick cover always exists separately as well.
-  // TODO Actually we should only add deltas that are not stand-alone
-  // covers.
-  if  (weightBest == 1)
-    return false;
-
-/*
-cout << "Row before adding:\n";
-cout << rowBestPtr->strLines() << "\n";
-*/
-
-  rowBestPtr->add(cover, additionsBest, cases, residuals, residualWeight);
-
-/*
-cout << "Row before adding:\n";
-cout << rowBestPtr->strLines() << "\n";
-*/
-
-  return true;
-}
-
-
-void CoverTableau::attemptExhaustiveRow(
-  const vector<unsigned char>& cases,
-  list<CoverRow>::const_iterator& rowIter,
-  // const unsigned coverNo,
-  list<ResTableau>& stack,
-  list<CoverTableau>& solutions,
-  unsigned char& lowestComplexity) const
-{
-  // explained is a dummy vector here.
-  const CoverRow& row = * rowIter;
-
-  Tricks explained;
-  explained.resize(residuals.size());
-
-  Tricks additions;
-  additions.resize(residuals.size());
-
-  unsigned char weightAdded;
-
-  const unsigned char complexity = CoverTableau::getComplexity();
-
-  if (complexity + row.getComplexity() - 2 > lowestComplexity)
-  {
-    // Too complex.
-    return;
-  }
-
-  // Try to add a new row.
-  if (row.possible(explained, residuals, cases, additions, weightAdded))
-  {
-// cout << "Can add to a new row" << endl;
-    stack.emplace_back(ResTableau());
-    ResTableau& rtableau = stack.back();
-
-    CoverTableau& tableau = rtableau.tableau;
-    tableau = * this;
-// cout << "Set up and copied the tableau" <<endl;
-    tableau.rows.push_back(row);
-// cout << "Got the row" <<endl;
-
-    row.subtract(additions, cases,
-      tableau.residuals, tableau.residualWeight);
-
-// cout << "residual weight now " << +tableau.residualWeight << endl;
-    rtableau.rowIter = rowIter;
-    // rtableau.rowNumber = coverNo;
-
-    if (tableau.complete())
-    {
-// cout << "Got a solution" << endl;
-      solutions.push_back(tableau);
-      // Done, so eliminate.
-      stack.pop_back();
-
-      if (complexity + row.getComplexity() < lowestComplexity)
-        lowestComplexity = complexity + row.getComplexity();
-    }
-  }
-}
-
-
-void CoverTableau::attemptExhaustive(
+void CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
-  // const unsigned coverNo,
-  list<StackTableau>& stack,
+  list<StackEntry>& stack,
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
 {
-  // This is similar to attemptGreedy, but we don't stop once we have
-  // the first match, and we don't yet implement any match.
-
   // explained is a dummy vector here.
   const Cover& cover = * coverIter;
 
@@ -225,9 +88,8 @@ void CoverTableau::attemptExhaustive(
   // First try to add a new row.
   if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
-// cout << "Can add a new row" << endl;
-    stack.emplace_back(StackTableau());
-    StackTableau& stableau = stack.back();
+    stack.emplace_back(StackEntry());
+    StackEntry& stableau = stack.back();
 
     CoverTableau& tableau = stableau.tableau;
     tableau = * this;
@@ -239,17 +101,8 @@ void CoverTableau::attemptExhaustive(
 
     stableau.coverIter = coverIter;
 
-/*
-cout << "Tableau now\n";
-cout << tableau.str();
-cout << tableau.strResiduals();
-cout << "Chosen cover:\n";
-cout << cover.strLine();
-*/
-
     if (tableau.complete())
     {
-// cout << "Got a solution" << endl;
       solutions.push_back(tableau);
       // Done, so eliminate.
       stack.pop_back();
@@ -275,9 +128,8 @@ cout << cover.strLine();
       // Don't want cover to be completely complementary (use new row).
       // Also don't want more than two or's in a row.
 
-// cout <<"Can add to an existing row" << endl;
-      stack.emplace_back(StackTableau());
-      StackTableau& stableau = stack.back();
+      stack.emplace_back(StackEntry());
+      StackEntry& stableau = stack.back();
 
       CoverTableau& tableau = stableau.tableau;
       tableau = * this;
@@ -288,28 +140,14 @@ cout << cover.strLine();
       riter->add(cover, additions, cases,
         tableau.residuals, tableau.residualWeight);
 
-/*
-cout << "Tableau now" << endl;
-cout << tableau.str();
-cout << tableau.strResiduals();
-cout << "Chosen cover:\n";
-cout << cover.strLine();
-*/
-
       stableau.coverIter = coverIter;
 
       if (tableau.complete())
       {
-// cout << CoverTableau::str() << endl;
- // cout << "Before calling" << endl;
-// cout << tableau.str() << endl;
-// cout << "Calling getComplexity" << endl;
         const unsigned char c = tableau.getComplexity();
-// cout << "got " << +c << endl;
 
         if (c < lowestComplexity)
           lowestComplexity = c;
-// cout << "Got a solution by augmenting a row" << endl;
         solutions.push_back(tableau);
         // Done, so eliminate.
         stack.pop_back();
@@ -317,6 +155,65 @@ cout << cover.strLine();
       }
     }
     rno++;
+  }
+}
+
+
+void CoverTableau::attemptManually(
+  const vector<unsigned char>& cases,
+  list<CoverRow>::const_iterator& rowIter,
+  list<RowStackEntry>& stack,
+  list<CoverTableau>& solutions,
+  unsigned char& lowestComplexity) const
+{
+  const CoverRow& row = * rowIter;
+
+  // explained is a dummy vector here.
+  Tricks explained;
+  explained.resize(residuals.size());
+
+  Tricks additions;
+  additions.resize(residuals.size());
+
+  unsigned char weightAdded;
+
+  const unsigned char complexity = CoverTableau::getComplexity();
+
+  if (complexity + row.getComplexity() - 2 > lowestComplexity)
+  {
+    // Too complex.
+    // TODO Can avoid this test if using micro-complexity per weight?
+    return;
+  }
+
+  // Try to add a new row.
+  if (row.possible(explained, residuals, cases, additions, weightAdded))
+  {
+    stack.emplace_back(RowStackEntry());
+    RowStackEntry& rtableau = stack.back();
+
+    CoverTableau& tableau = rtableau.tableau;
+    tableau = * this;
+    tableau.rows.push_back(row);
+
+    row.subtract(additions, cases,
+      tableau.residuals, tableau.residualWeight);
+
+    rtableau.rowIter = rowIter;
+
+    if (tableau.complete())
+    {
+      solutions.push_back(tableau);
+      // Done, so eliminate.
+      // TODO This is the element we've just created.  Can we tell
+      // from weightAdded and the tableau weight that we're done,
+      // so we can shortcut this?
+      stack.pop_back();
+
+      // TODO Is this already tableau.getComplexity()?
+      if (complexity + row.getComplexity() < lowestComplexity)
+        lowestComplexity = complexity + row.getComplexity();
+    }
   }
 }
 
@@ -340,18 +237,10 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
   else if (compl1 > compl2)
     return false;
 
-  const unsigned char over1 = CoverTableau::getOverlap();
-  const unsigned char over2 = tableau2.getOverlap();
-
-  if (over1 < over2)
-    return true;
-  else if (over1 > over2)
-    return false;
-  else
-    return (rows.size() <= tableau2.rows.size());
-  
   // TODO Is there more we can do here in case of equality?
   // Maybe we like symmetry?
+  // Do we even prefer fewer rows vs cleaner solution? Other way round?
+  return (rows.size() < tableau2.rows.size());
 }
 
 
@@ -386,45 +275,15 @@ unsigned CoverTableau::getWeight() const
 }
 
 
-unsigned char CoverTableau::getOverlap() const
-{
-  unsigned char overlap = 0;
-  for (auto& row: rows)
-  {
-    const unsigned char rowOverlap = row.getOverlap();
-
-    // TODO TEMP
-    assert(overlap + rowOverlap >= overlap);
-
-    overlap += rowOverlap;
-  }
-  return overlap;
-}
-
-
-unsigned char CoverTableau::numRows() const
-{
-  return static_cast<unsigned char>(rows.size());
-}
-
-
-unsigned char CoverTableau::numCovers() const
-{
-  unsigned char num = 0;
-  for (auto& row: rows)
-  {
-    // TODO TEMP
-    assert(num + row.size() > num);
-
-    num += static_cast<unsigned char>(row.size());
-  }
-  return num;
-}
-
-
 unsigned char CoverTableau::getResidualWeight() const
 {
   return residualWeight;
+}
+
+
+string CoverTableau::strResiduals() const
+{
+  return residuals.strSpaced();
 }
 
 
@@ -437,11 +296,5 @@ string CoverTableau::str() const
     ss << row.str(sumProfile);
 
   return ss.str() + "\n";
-}
-
-
-string CoverTableau::strResiduals() const
-{
-  return residuals.strSpaced();
 }
 

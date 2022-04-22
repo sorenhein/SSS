@@ -179,21 +179,21 @@ void Covers::explain(
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, tableauPtr))
   {
-    // Cache hit.
+    // Cache hit, potentially with a different number of minimum tricks.
     tableau = * tableauPtr;
     tableau.setMinTricks(tmin);
     newTableauFlag = false;
     return;
   }
 
-  list<StackTableau> stack;
-  stack.emplace_back(StackTableau());
-  StackTableau& stableau = stack.back();
+  list<StackEntry> stack;
+  stack.emplace_back(StackEntry());
+  StackEntry& centry = stack.back();
 
-  stableau.tableau.setBoundaries(sumProfile);
-  stableau.tableau.setTricks(tricks, tmin, cases);
+  centry.tableau.setBoundaries(sumProfile);
+  centry.tableau.setTricks(tricks, tmin, cases);
 
-  stableau.coverIter = store.begin();
+  centry.coverIter = store.begin();
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
@@ -222,7 +222,7 @@ void Covers::explain(
       if (tcomp + 2 * minCovers > lowestComplexity + 1)
         break;
 
-      siter->tableau.attemptExhaustive(cases, citer, stack, 
+      siter->tableau.attempt(cases, citer, stack, 
         solutions, lowestComplexity);
 
       citer++;
@@ -261,14 +261,14 @@ CoverState Covers::explainManually(
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
-  list<ResTableau> stack;
-  stack.emplace_back(ResTableau());
-  ResTableau& stableau = stack.back();
+  list<RowStackEntry> stack;
+  stack.emplace_back(RowStackEntry());
+  RowStackEntry& entry = stack.back();
 
-  stableau.tableau.setBoundaries(sumProfile);
-  stableau.tableau.setTricks(tricks, tmin, cases);
+  entry.tableau.setBoundaries(sumProfile);
+  entry.tableau.setTricks(tricks, tmin, cases);
 
-  stableau.rowIter = rows.begin();
+  entry.rowIter = rows.begin();
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
@@ -291,7 +291,7 @@ CoverState Covers::explainManually(
       if (tcomp + 2 * minCovers > lowestComplexity + 1)
         break;
 
-      siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
+      siter->tableau.attemptManually(cases, riter, stack, 
         solutions, lowestComplexity);
 
       riter++;
