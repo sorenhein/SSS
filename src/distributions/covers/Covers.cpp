@@ -273,24 +273,6 @@ CoverState Covers::explainManually(
     auto riter = siter->rowIter;
     while (riter != rows.end())
     {
-    /*
-      // The rows are ordered by increasing "complexity per weight"
-      // (micro-cpw).  We round up the minimum number of rows needed
-      // unless we hit an exact divisor.
-      // TODO Maybe put the >> 20 stuff in Cover -- make a method.
-      const unsigned char restWeight = siter->tableau.getResidualWeight();
-      const unsigned char minComplexityAdder = 
-        static_cast<unsigned char>(
-        max(static_cast<unsigned>(riter->getComplexity()),
-        1 + (((restWeight * riter->getMCPW() - 1) >> 20))));
-
-      assert(minComplexityAdder == 
-        riter->minComplexityAdder(siter->tableau.getResidualWeight()));
-
-      if (tcomp + minComplexityAdder > lowestComplexity + 1)
-        break;
-        */
-
       if (tcomp + 
           riter->minComplexityAdder(siter->tableau.getResidualWeight()) > 
           lowestComplexity + 1)

@@ -182,6 +182,7 @@ void CoverTableau::attemptManually(
 
     if (tableau.complete())
     {
+assert(weightAdded == residualWeight);
       solutions.push_back(tableau);
       // Done, so eliminate.
       // TODO This is the element we've just created.  Can we tell
@@ -193,6 +194,21 @@ void CoverTableau::attemptManually(
       if (complexity + row.getComplexity() < lowestComplexity)
         lowestComplexity = complexity + row.getComplexity();
     }
+    // The "else" part doesn't work yet, because the residual weight
+    // really should be sum(tricks * cases).
+    /*
+    else
+    {
+if (weightAdded >= residualWeight)
+{
+  cout << "weightAdded " << +weightAdded << endl;
+  cout << "residualWeight " << +residualWeight << endl;
+  cout << "tableau\n" << CoverTableau::str();
+  cout << "row " << row.str(sumProfile) << endl;
+}
+assert(weightAdded < residualWeight);
+    }
+    */
   }
 }
 
@@ -217,13 +233,6 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
     return false;
   else
     return (CoverTableau::maxRowComplexity() < tableau2.maxRowComplexity());
-
-/*
-  // TODO Is there more we can do here in case of equality?
-  // Maybe we like symmetry?
-  // Do we even prefer fewer rows vs cleaner solution? Other way round?
-  return (rows.size() < tableau2.rows.size());
-  */
 }
 
 
