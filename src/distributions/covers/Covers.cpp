@@ -270,48 +270,42 @@ CoverState Covers::explainManually(
 
   stableau.rowIter = rows.begin();
 
-// const unsigned coverSize = rows.size();
-
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
 
   auto siter = stack.begin();
   while (siter != stack.end())
   {
-    auto riter = siter->rowIter;
-
-    // The lowest complexity that is still achievable is
-    // Tableau complexity + round up(residual / cover weight).
-    unsigned char minCovers = 
-      static_cast<unsigned char>(
-        (siter->tableau.getResidualWeight() + riter->getWeight()-1) /
-        riter->getWeight());
-
     const unsigned char tcomp = siter->tableau.getComplexity();
-    // The minimum complexity of anything is 2.
-    const unsigned char projected = tcomp + 2 * minCovers;
 
-    if (solutions.empty() || projected <= lowestComplexity + 1)
+    auto riter = siter->rowIter;
+    while (riter != rows.end())
     {
-      while (riter != rows.end())
-      {
-        siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
-          solutions, lowestComplexity);
+      // The lowest complexity that is still achievable arises when
+      // the residual can be covered with the same weight number of times.
+      const unsigned rw = riter->getWeight();
+      const unsigned char minCovers = static_cast<unsigned char>(
+        (siter->tableau.getResidualWeight() + rw -1) / rw);
 
-        riter++;
-      }
+      // The minimum complexity of anything is 2.
+      if (tcomp + 2 * minCovers > lowestComplexity + 1)
+        break;
+
+      siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
+        solutions, lowestComplexity);
+
+      riter++;
     }
 
     // Erasing first stack element.
     siter = stack.erase(siter);
   }
 
-
   assert(! solutions.empty());
   solutions.sort();
 
-  // tableau = solutions.front();
   swap(tableau, solutions.front());
+
   return COVER_DONE;
 
 /*
