@@ -29,6 +29,7 @@ void Cover::reset()
   productUnitPtr = nullptr;
   tricks.clear();
   weight = 0;
+  // TODO Think about no numDist at all
   numDist = 0;
   symmFlag = false;
   code = 0;
@@ -56,6 +57,7 @@ void Cover::setExisting(
   const bool symmFlagIn)
 {
   // The product must already be in memory.
+  // This is used when pre-setting a row manually.
   productUnitPtr = productMemory.lookupByTop(sumProfile, profilePair);
   code = profilePair.getCode(sumProfile);
   symmFlag = symmFlagIn;
@@ -173,6 +175,8 @@ bool Cover::operator < (const Cover& cover2) const
   assert(cover2.productUnitPtr != nullptr);
   const Product& p1 = productUnitPtr->product;
   const Product& p2 = cover2.productUnitPtr->product;
+
+  // TODO p1 < p2?
 
   if (weight > cover2.weight)
     // Heavier ones first

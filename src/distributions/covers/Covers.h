@@ -75,20 +75,16 @@ class Covers
 
     const Cover& lookup(const Cover& cover) const;
 
-    /*
-    CoverState explainGreedyRows(
-      const list<Result>& results,
-      ResExpl& resExpl) const;
-      */
-
     CoverState explainExhaustiveRows(
       const list<Result>& results,
       CoverTableau& tableau) const;
 
+    /*
     void explainGreedy(
       const list<Result>& results,
       const unsigned numStrategyTops,
       CoverTableau& tableau) const;
+      */
 
     void explainExhaustive(
       const list<Result>& results,

@@ -1015,15 +1015,20 @@ void Slist::coversManual(
       continue;
     }
 
-    cout << "Strategy #" << stratNo << ": ";
     riter->reset();
     if (strat.covers(coversIn, * riter))
     {
+      cout << "Strategy #" << stratNo;
+      cout << 
+        " [c " << +riter->getComplexity() <<
+        ", w " << riter->getWeight() << "]: ";
       cout << riter->str();
-      // cout << coversIn.strExpl(* riter);
     }
     else
+    {
+      cout << "Strategy #" << stratNo << ": ";
       cout << strat.str("Unexplained", true) << "\n";
+    }
     
     stratNo++;
     riter++;
@@ -1057,8 +1062,8 @@ void Slist::covers(
     strat.coversNew(coversIn, 1, tableau, newTableauFlag);
     cout << "VStrategy #" << stratNo;
     cout << 
-      " (c " << +tableau.getComplexity() <<
-      ", w " << tableau.getWeight() << "): ";
+      " [c " << +tableau.getComplexity() <<
+      ", w " << tableau.getWeight() << "]: ";
 
     if (tableau.complete())
     {

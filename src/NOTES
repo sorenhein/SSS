@@ -1,16 +1,19 @@
 Cover specifics
 ---------------
-9 / 6101: Sort manual strategy by numDist after weight.
-Rows for old solve: Sort not just by weight.  Row gets a comparator.
-
 How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.
-Also add this kind of output ([?]) to Strategy.
+
+Look at the more generic Term output strings.  Can we get more of them?
+The ones we don't want too many of are the complex single strings.
 
 11/56025: Maybe we penalize rows with 2+ terms with complexity 3?
 It's harder for a human to parse "2=2 or 3=1, or one top".
 But that's not the problem here.  10/12846 too.
+Perhaps output "; and".  No semicolon - comma?
+Then a row has one of these complex ones, or only two simple ones.
+So it's either "and" or "or".
 
-11/55386: Maybe add a SymmTop1(2)? [Not currently visible in solution]
+Count #stack operations in Covers/CoverTableau.  See what we can
+do about it.
 
 Differences:
 11/ 57611: Why are solutions not the same?
@@ -26,6 +29,8 @@ Speed
 -----
 Delete the old symmetrics and manuals.
 Forget Covers too after generating them (save space)?
+- But we need them for multiple distributions and we don't know
+  when we're done?
 Optimize Tricks into 5-groups
 - Could do something like strategies/optim/Study.cpp
   So groups of 5, or binary 10x10 = 1m byte entries

@@ -175,54 +175,6 @@ const Cover& Covers::lookup(const Cover& cover) const
 
 
 /*
-CoverState Covers::explainGreedyRows(
-  const list<Result>& results,
-  ResExpl& resExpl) const
-{
-  CoverState state = COVER_OPEN;
-
-  Tricks tricks;
-  unsigned char tmin;
-  Covers::setup(results, tricks, tmin);
-
-  resExpl.setParameters(
-    tmin,
-    sumProfile.length(),
-    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)]);
-
-  auto rowIter = rows.begin();
-  while (true)
-  {
-    if (rowIter == rows.end())
-    {
-      cout << Covers::strDebug("Left with", tricks);
-      return COVER_IMPOSSIBLE;
-    }
-
-    state = rowIter->explain(tricks);
-
-    if (state == COVER_DONE)
-    {
-      resExpl.insert(* rowIter);
-      return COVER_DONE;
-    }
-    else if (state == COVER_OPEN)
-    {
-      resExpl.insert(* rowIter);
-      continue;
-    }
-    else
-    {
-      rowIter++;
-    }
-  }
-
-  // Can't happen
-  return COVER_STATE_SIZE;
-}
-*/
-
-
 void Covers::explainGreedy(
   const list<Result>& results,
   const unsigned numStrategyTops,
@@ -256,6 +208,7 @@ void Covers::explainGreedy(
       return;
   }
 }
+*/
 
 
 CoverState Covers::explainExhaustiveRows(
@@ -459,8 +412,6 @@ for (auto& c: store)
   tableau = solutions.front();
 
   tableauCache.store(tricks, tableau);
-
-  // TODO Maybe MECE and hierarchy again within the tableau.
 }
 
 

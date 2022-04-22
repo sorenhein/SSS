@@ -981,8 +981,6 @@ bool Strategy::covers(
   const Covers& coversIn,
   CoverTableau& tableau) const
 {
-  // resExpl.reset();
-  // CoverState state = coversIn.explainGreedyRows(results, resExpl);
   tableau.reset();
   CoverState state = coversIn.explainExhaustiveRows(results, tableau);
   return (state == COVER_DONE);
@@ -996,8 +994,6 @@ void Strategy::coversNew(
   bool& newTableauFlag) const
 {
   tableau.reset();
-  // TODO Can be greedy or exhaustive.
-  // coversIn.explainGreedy(results, numStrategyTops, tableau);
   coversIn.explainExhaustive(
     results, 
     numStrategyTops, 
