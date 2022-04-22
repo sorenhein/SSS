@@ -67,9 +67,6 @@ class Cover
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
-    // TODO Not necessary long-term
-    // void setSymmetric(const bool symmFlagIn);
-
     bool symmetrizable(const Profile& sumProfile) const;
 
     // Will invalidate Cover if not symmetrizable!
@@ -107,13 +104,13 @@ class Cover
 
     unsigned getWeight() const;
 
-    unsigned getMCPW() const;
-
     unsigned size() const;
 
     unsigned char effectiveDepth() const;
 
     unsigned char getComplexity() const;
+
+    unsigned char minComplexityAdder(const unsigned char resWeight) const;
 
     string strHeader() const;
 

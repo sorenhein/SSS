@@ -2,7 +2,6 @@ Cover specifics
 ---------------
 Potentially only the best solution, not a stack.
 
-Rank by 10^4 * complexity / weight instead?
 Weight could be sum(trick*cases).
 
 How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.

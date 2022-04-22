@@ -84,14 +84,6 @@ void Cover::prepare(
 }
 
 
-/*
-void Cover::setSymmetric(const bool symmFlagIn)
-{
-  symmFlag = symmFlagIn;
-}
-*/
-
-
 bool Cover::symmetrizable(const Profile& sumProfile) const
 {
   // We consider the product terms in the order (length, highest top,
@@ -184,31 +176,15 @@ bool Cover::operator < (const Cover& cover2) const
   const Product& p1 = productUnitPtr->product;
   const Product& p2 = cover2.productUnitPtr->product;
 
-  // TODO p1 < p2?
-
   if (mcpw < cover2.mcpw)
     return true;
   else if (mcpw > cover2.mcpw)
     return false;
-  /*
-  if (weight > cover2.weight)
-    // Heavier ones first
-    return true;
-  else if (weight < cover2.weight)
-    return false;
-    */
   else if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
     return true;
   else if (p1.effectiveDepth() > p2.effectiveDepth())
     return false;
-  /*
-  else if (p1.getComplexity() < p2.getComplexity())
-    // Simpler ones first
-    return true;
-  else if (p1.getComplexity() > p2.getComplexity())
-    return false;
-    */
   else if (symmFlag && ! cover2.symmFlag)
     return true;
   else if (! symmFlag && cover2.symmFlag)
@@ -254,12 +230,6 @@ unsigned Cover::getWeight() const
 }
 
 
-unsigned Cover::getMCPW() const
-{
-  return mcpw;
-}
-
-
 unsigned Cover::size() const
 {
   return tricks.size();
@@ -277,6 +247,19 @@ unsigned char Cover::getComplexity() const
 {
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.getComplexity();
+}
+
+
+unsigned char Cover::minComplexityAdder(const unsigned char resWeight) const
+{
+  // The covers are ordered by increasing "complexity per weight"
+  // (micro-cpw).  We round up the minimum number of covers needed
+  // unless we hit an exact divisor.
+
+  const unsigned char projected =
+    static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
+
+  return max(Cover::getComplexity(), projected);
 }
 
 

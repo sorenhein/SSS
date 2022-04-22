@@ -148,12 +148,6 @@ void CoverRow::updateStats(
 }
 
 
-bool CoverRow::operator <= (const CoverRow& coverRow2) const
-{
-  return (tricks <= coverRow2.tricks);
-}
-
-
 unsigned CoverRow::size() const
 {
   return coverPtrs.size();
@@ -182,34 +176,6 @@ unsigned CoverRow::getMCPW() const
 {
   // TODO Pre-calculate?
   return (complexity << 20) / weight;
-}
-
-
-unsigned char CoverRow::getOverlap() const
-{
-  // The overlap is the sum of the individual cover weights,
-  // minus the weight of the row.
-  unsigned overlap = 0;
-  for (auto coverPtr: coverPtrs)
-    overlap += coverPtr->getWeight();
-
-  return static_cast<unsigned char>(overlap - weight);
-
-}
-
-
-string CoverRow::strInternal() const
-{
-  stringstream ss;
-
-  ss << 
-    "weight " << +weight <<
-    ", dists " << +numDist <<
-    ", complexity " << +complexity << "\n";
-
-  ss << tricks.strList();
-
-  return ss.str();
 }
 
 

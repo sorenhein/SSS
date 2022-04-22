@@ -86,8 +86,6 @@ class CoverRow
       const Profile& sumProfile,
       const bool newTableauFlag) const;
 
-    bool operator <= (const CoverRow& coverRow2) const;
-
     unsigned size() const;
 
     const Tricks& getTricks() const;
@@ -97,10 +95,6 @@ class CoverRow
     unsigned char getComplexity() const;
 
     unsigned getMCPW() const;
-
-    unsigned char getOverlap() const;
-
-    string strInternal() const;
 
     string strHeader() const;
 

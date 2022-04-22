@@ -212,17 +212,9 @@ void Covers::explain(
         continue;
       }
 
-      // The covers are ordered by increasing "complexity per weight"
-      // (micro-cpw).  We round up the minimum number of covers needed
-      // unless we hit an exact divisor.
-      // TODO Maybe put the >> 20 stuff in Cover -- make a method.
-      const unsigned char restWeight = siter->tableau.getResidualWeight();
-      const unsigned char minComplexityAdder = 
-        static_cast<unsigned char>(
-        max(static_cast<unsigned>(citer->getComplexity()),
-        1 + (((restWeight * citer->getMCPW() - 1) >> 20))));
-
-      if (tcomp + minComplexityAdder > lowestComplexity + 1)
+      if (tcomp + 
+          citer->minComplexityAdder(siter->tableau.getResidualWeight()) > 
+          lowestComplexity + 1)
         break;
 
       siter->tableau.attempt(cases, citer, stack, 
