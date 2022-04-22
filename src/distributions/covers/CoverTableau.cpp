@@ -215,11 +215,15 @@ bool CoverTableau::operator < (const CoverTableau& tableau2) const
     return true;
   else if (compl1 > compl2)
     return false;
+  else
+    return (CoverTableau::maxRowComplexity() < tableau2.maxRowComplexity());
 
+/*
   // TODO Is there more we can do here in case of equality?
   // Maybe we like symmetry?
   // Do we even prefer fewer rows vs cleaner solution? Other way round?
   return (rows.size() < tableau2.rows.size());
+  */
 }
 
 
@@ -240,6 +244,21 @@ unsigned char CoverTableau::getComplexity() const
     complexity += row.getComplexity();
   }
   return complexity;
+}
+
+
+unsigned char CoverTableau::maxRowComplexity() const
+{
+  // The single highest row complexity is a measure of complexity too.
+  unsigned char m = 0;
+  for (auto& row: rows)
+  {
+    const unsigned char c = row.getComplexity();
+    if (m < c)
+      m = c;
+  }
+
+  return m;
 }
 
 

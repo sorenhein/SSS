@@ -46,9 +46,12 @@ class CoverTableau
     unsigned char tricksMin;
 
 
+    unsigned char maxRowComplexity() const;
+
+
   public:
 
-    CoverTableau();
+   CoverTableau();
 
     void reset();
 
