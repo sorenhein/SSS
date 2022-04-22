@@ -70,16 +70,6 @@ void CoverTableau::attempt(
   const bool emptyStartFlag = rows.empty();
 
   const unsigned char complexity = CoverTableau::getComplexity();
-  // Keep some extras to inspect for now.
-  // TODO This doesn't actually limit the final list to this range,
-  // as the complexity may shrink over time.
-
-  if (complexity + cover.getComplexity() -2 > lowestComplexity)
-  {
-    // Too complex.
-// cout << "XXX\n";
-    return;
-  }
 
   // First try to add a new row.
   if (cover.possible(explained, residuals, cases, additions, weightAdded))

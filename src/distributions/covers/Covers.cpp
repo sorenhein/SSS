@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 #include <cassert>
 
 #include "Covers.h"
@@ -210,14 +211,17 @@ void Covers::explain(
         continue;
       }
 
-      // The lowest complexity that is still achievable arises when
-      // the residual can be covered with the same weight number of times.
-      const unsigned cw = citer->getWeight();
-      const unsigned char minCovers = static_cast<unsigned char>(
-        (siter->tableau.getResidualWeight() + cw -1) / cw);
+      // The covers are ordered by increasing "complexity per weight"
+      // (micro-cpw).  We round up the minimum number of covers needed
+      // unless we hit an exact divisor.
+      // TODO Maybe put the >> 20 stuff in Cover -- make a method.
+      const unsigned char restWeight = siter->tableau.getResidualWeight();
+      const unsigned char minComplexityAdder = 
+        static_cast<unsigned char>(
+        max(static_cast<unsigned>(citer->getComplexity()),
+        1 + (((restWeight * citer->getMCPW() - 1) >> 20))));
 
-      // The minimum complexity of anything is 2.
-      if (tcomp + 2 * minCovers > lowestComplexity + 1)
+      if (tcomp + minComplexityAdder > lowestComplexity + 1)
         break;
 
       siter->tableau.attempt(cases, citer, stack, 

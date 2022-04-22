@@ -25,6 +25,15 @@
 using namespace std;
 
 
+enum SymmTerm
+{
+  TERM_SYMMETRIZABLE = 0,
+  TERM_NOT_SYMMETRIZABLE = 1,
+  TERM_OPEN_CONSECUTIVE = 2,
+  TERM_OPEN_CENTERED = 3
+};
+
+
 class Term
 {
   protected: 
@@ -58,7 +67,7 @@ class Term
 
     bool includes(const unsigned char value) const;
 
-    bool symmetrizable(const unsigned char maximum) const;
+    SymmTerm symmetrizable(const unsigned char maximum) const;
 
     Opponent simplestOpponent(const unsigned char maximum) const;
 

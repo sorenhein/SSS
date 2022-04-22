@@ -93,7 +93,7 @@ bool Term::includes(const unsigned char value) const
 }
 
 
-bool Term::symmetrizable(const unsigned char maximum) const
+SymmTerm Term::symmetrizable(const unsigned char maximum) const
 {
   // True if the term occupies the lower half of its possible interval,
   // not including any middle value.
@@ -102,15 +102,32 @@ bool Term::symmetrizable(const unsigned char maximum) const
   if (maximum & 1)
   {
     // When the maximum is odd, e.g. 5, there is no midpoint.
-    return (upper <= maximum/2);
+    const unsigned char critical = maximum/2;
+    if (upper < critical)
+      return TERM_SYMMETRIZABLE;
+    else if (lower > critical+1)
+      return TERM_SYMMETRIZABLE;
+    else if (upper == critical)
+      return TERM_OPEN_CONSECUTIVE;
+    else if (lower == critical+1)
+      return TERM_OPEN_CONSECUTIVE;
+    else
+      return TERM_NOT_SYMMETRIZABLE;
   }
   else
   {
-    // When the maximum is even, e.g. 5, it is also OK for
-    // lower and upper both to equal the midpoint.
+    // When the maximum is even, e.g. 4, it is also OK for
+    // lower and upper both to equal the midpoint, but then something
+    // else must break the symmetry.
     const unsigned char midpoint = maximum/2;
-    return (upper < midpoint ||
-        (lower == upper && upper == midpoint));
+    if (upper < midpoint)
+      return TERM_SYMMETRIZABLE;
+    else if (lower > midpoint)
+      return TERM_SYMMETRIZABLE;
+    else if (lower == upper && upper == midpoint)
+      return TERM_OPEN_CENTERED;
+    else
+      return TERM_NOT_SYMMETRIZABLE;
   }
 }
 

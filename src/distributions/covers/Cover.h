@@ -35,6 +35,9 @@ class Cover
 
     unsigned weight;
 
+    // Micro-complexity per weight unit.
+    unsigned mcpw;
+
     unsigned char numDist;
 
     bool symmFlag;
@@ -65,7 +68,7 @@ class Cover
       const vector<unsigned char>& cases);
 
     // TODO Not necessary long-term
-    void setSymmetric(const bool symmFlagIn);
+    // void setSymmetric(const bool symmFlagIn);
 
     bool symmetrizable(const Profile& sumProfile) const;
 
@@ -103,6 +106,8 @@ class Cover
     bool symmetric() const;
 
     unsigned getWeight() const;
+
+    unsigned getMCPW() const;
 
     unsigned size() const;
 

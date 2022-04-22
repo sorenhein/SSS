@@ -127,6 +127,11 @@ const Cover& CoverStore::lookup(const Cover& cover) const
   // Turn a cover into the one we already know.  It must exist.
 
   auto it = store.find(cover);
+if (it == store.end())
+{
+  cout << "Looking up:\n" << cover.strLine();
+  cout << "Store:\n" << CoverStore::str();
+}
   assert(it != store.end());
   return * it;
 }

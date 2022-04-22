@@ -112,17 +112,39 @@ bool Product::includes(const Profile& distProfile) const
 
 bool Product::symmetrizable(const Profile& sumProfile) const
 {
+  unsigned consecutive = 0;
   if (length.used())
-    return length.symmetrizable(sumProfile.length());
+  {
+    SymmTerm symmLength = length.symmetrizable(sumProfile.length());
+    if (symmLength == TERM_SYMMETRIZABLE)
+      return true;
+    else if (symmLength == TERM_NOT_SYMMETRIZABLE)
+      return false;
+    else if (symmLength == TERM_OPEN_CONSECUTIVE)
+      consecutive++;
+  }
+
+  // So now symmLength can be:
+  // OPEN_CONSECUTIVE (1-2 of length 5), or
+  // OPEN_CENTERED (exactly 2 of length 4).
+  // If all set terms are centered, it is not really symmetrizable.
+  // A single consecutive term is also not enough.
 
   for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
   {
     if (tops[i].used())
-      return tops[i].symmetrizable(sumProfile[i]);
+    {
+      const SymmTerm sterm = tops[i].symmetrizable(sumProfile[i]);
+      if (sterm == TERM_SYMMETRIZABLE)
+        return true;
+      else if (sterm == TERM_NOT_SYMMETRIZABLE)
+        return false;
+      else if (sterm == TERM_OPEN_CONSECUTIVE)
+        consecutive++;
+    }
   }
 
-  // To have something, but this shouldn't happen.
-  return false;
+  return (consecutive > 1);
 }
 
 

@@ -29,6 +29,7 @@ void Cover::reset()
   productUnitPtr = nullptr;
   tricks.clear();
   weight = 0;
+  mcpw = 0;
   // TODO Think about no numDist at all
   numDist = 0;
   symmFlag = false;
@@ -77,13 +78,18 @@ void Cover::prepare(
     cases, 
     weight, 
     numDist);
+  
+  assert(weight > 0);
+  mcpw = (productUnitPtr->product.getComplexity() << 20) / weight;
 }
 
 
+/*
 void Cover::setSymmetric(const bool symmFlagIn)
 {
   symmFlag = symmFlagIn;
 }
+*/
 
 
 bool Cover::symmetrizable(const Profile& sumProfile) const
@@ -111,6 +117,8 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
     return false;
 
   symmFlag = true;
+  // More weight for the same complexity.
+  mcpw >>= 1;
   return true;
 }
 
@@ -178,21 +186,29 @@ bool Cover::operator < (const Cover& cover2) const
 
   // TODO p1 < p2?
 
+  if (mcpw < cover2.mcpw)
+    return true;
+  else if (mcpw > cover2.mcpw)
+    return false;
+  /*
   if (weight > cover2.weight)
     // Heavier ones first
     return true;
   else if (weight < cover2.weight)
     return false;
+    */
   else if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
     return true;
   else if (p1.effectiveDepth() > p2.effectiveDepth())
     return false;
+  /*
   else if (p1.getComplexity() < p2.getComplexity())
     // Simpler ones first
     return true;
   else if (p1.getComplexity() > p2.getComplexity())
     return false;
+    */
   else if (symmFlag && ! cover2.symmFlag)
     return true;
   else if (! symmFlag && cover2.symmFlag)
@@ -238,6 +254,12 @@ unsigned Cover::getWeight() const
 }
 
 
+unsigned Cover::getMCPW() const
+{
+  return mcpw;
+}
+
+
 unsigned Cover::size() const
 {
   return tricks.size();
@@ -266,6 +288,7 @@ string Cover::strHeader() const
   ss << productUnitPtr->product.strHeader() <<
     setw(4) << "Wgt" <<
     setw(4) << "Cpx" <<
+    setw(10) << "cpw" <<
     setw(4) << "#d" <<
     setw(4) << "#t" << 
     setw(4) << "Sym" << 
@@ -284,6 +307,7 @@ string Cover::strLine() const
   ss << productUnitPtr->product.strLine() <<
     setw(4) << weight <<
     setw(4) << +productUnitPtr->product.getComplexity() <<
+    setw(10) << mcpw <<
     setw(4) << +numDist <<
     setw(4) << +productUnitPtr->product.effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
