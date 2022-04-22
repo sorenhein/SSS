@@ -165,13 +165,6 @@ void CoverTableau::attemptManually(
 
   const unsigned char complexity = CoverTableau::getComplexity();
 
-  if (complexity + row.getComplexity() - 2 > lowestComplexity)
-  {
-    // Too complex.
-    // TODO Can avoid this test if using micro-complexity per weight?
-    return;
-  }
-
   // Try to add a new row.
   if (row.possible(explained, residuals, cases, additions, weightAdded))
   {
