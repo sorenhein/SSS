@@ -172,6 +172,21 @@ unsigned char CoverRow::getComplexity() const
 }
 
 
+unsigned char CoverRow::minComplexityAdder(
+  const unsigned char resWeight) const
+{
+  // The rows are ordered by increasing "complexity per weight"
+  // (micro-cpw).  We round up the minimum number of covers needed
+  // unless we hit an exact divisor.
+
+  const unsigned mcpw = (complexity << 20) / weight;
+  const unsigned char projected =
+    static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
+
+  return max(CoverRow::getComplexity(), projected);
+}
+
+
 unsigned CoverRow::getMCPW() const
 {
   // TODO Pre-calculate?

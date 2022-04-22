@@ -84,9 +84,9 @@ class CoverTableau
 
     unsigned char getComplexity() const;
 
-    unsigned getWeight() const;
-
     unsigned char getResidualWeight() const;
+
+    string strBracket() const;
 
     string strResiduals() const;
 

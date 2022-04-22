@@ -243,20 +243,22 @@ unsigned char CoverTableau::getComplexity() const
 }
 
 
-unsigned CoverTableau::getWeight() const
+unsigned char CoverTableau::getResidualWeight() const
+{
+  return residualWeight;
+}
+
+
+string CoverTableau::strBracket() const
 {
   unsigned weight = 0;
 
   for (auto& row: rows)
     weight += row.getWeight();
 
-  return weight;
-}
-
-
-unsigned char CoverTableau::getResidualWeight() const
-{
-  return residualWeight;
+  stringstream ss;
+  ss << "[c " << +CoverTableau::getComplexity() << ", w " << weight << "]";
+  return ss.str();
 }
 
 

@@ -95,6 +95,7 @@ class CoverRow
     unsigned char getComplexity() const;
 
     unsigned getMCPW() const;
+    unsigned char minComplexityAdder(const unsigned char resWeight) const;
 
     string strHeader() const;
 

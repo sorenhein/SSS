@@ -1018,10 +1018,8 @@ void Slist::coversManual(
     riter->reset();
     if (strat.covers(coversIn, * riter))
     {
-      cout << "Strategy #" << stratNo;
-      cout << 
-        " [c " << +riter->getComplexity() <<
-        ", w " << riter->getWeight() << "]: ";
+      cout << "Strategy #" << stratNo << " ";
+      cout << riter->strBracket() << ": ";
       cout << riter->str();
     }
     else
@@ -1060,10 +1058,8 @@ void Slist::covers(
 
     bool newTableauFlag;
     strat.coversNew(coversIn, 1, tableau, newTableauFlag);
-    cout << "VStrategy #" << stratNo;
-    cout << 
-      " [c " << +tableau.getComplexity() <<
-      ", w " << tableau.getWeight() << "]: ";
+    cout << "VStrategy #" << stratNo << " ";
+    cout << tableau.strBracket() << ": ";
 
     if (tableau.complete())
     {
