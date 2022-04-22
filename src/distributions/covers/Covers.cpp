@@ -145,7 +145,8 @@ void Covers::sortRows()
   rows.sort([](
     const CoverRow& coverRow1, const CoverRow& coverRow2)
   {
-    return (coverRow1.getWeight() >= coverRow2.getWeight());
+    return (coverRow1.getMCPW() < coverRow2.getMCPW());
+    // return (coverRow1.getWeight() >= coverRow2.getWeight());
   });
 }
 
@@ -281,14 +282,18 @@ CoverState Covers::explainManually(
     auto riter = siter->rowIter;
     while (riter != rows.end())
     {
-      // The lowest complexity that is still achievable arises when
-      // the residual can be covered with the same weight number of times.
-      const unsigned rw = riter->getWeight();
-      const unsigned char minCovers = static_cast<unsigned char>(
-        (siter->tableau.getResidualWeight() + rw -1) / rw);
+      // The rows are ordered by increasing "complexity per weight"
+      // (micro-cpw).  We round up the minimum number of rows needed
+      // unless we hit an exact divisor.
+      // TODO Maybe put the >> 20 stuff in Cover -- make a method.
+      /* */
+      const unsigned char restWeight = siter->tableau.getResidualWeight();
+      const unsigned char minComplexityAdder = 
+        static_cast<unsigned char>(
+        max(static_cast<unsigned>(riter->getComplexity()),
+        1 + (((restWeight * riter->getMCPW() - 1) >> 20))));
 
-      // The minimum complexity of anything is 2.
-      if (tcomp + 2 * minCovers > lowestComplexity + 1)
+      if (tcomp + minComplexityAdder > lowestComplexity + 1)
         break;
 
       siter->tableau.attemptManually(cases, riter, stack, 

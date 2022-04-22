@@ -96,6 +96,8 @@ class CoverRow
 
     unsigned char getComplexity() const;
 
+    unsigned getMCPW() const;
+
     unsigned char getOverlap() const;
 
     string strInternal() const;

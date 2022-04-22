@@ -178,6 +178,13 @@ unsigned char CoverRow::getComplexity() const
 }
 
 
+unsigned CoverRow::getMCPW() const
+{
+  // TODO Pre-calculate?
+  return (complexity << 20) / weight;
+}
+
+
 unsigned char CoverRow::getOverlap() const
 {
   // The overlap is the sum of the individual cover weights,
