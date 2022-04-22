@@ -201,91 +201,55 @@ void Covers::explain(
   auto siter = stack.begin();
   while (siter != stack.end())
   {
-    auto citer = siter->coverIter;
-const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
-
-    // The lowest complexity that is still achievable is
-    // Tableau complexity + round up(residual / cover weight).
-    unsigned char minCovers = 
-      static_cast<unsigned char>(
-        (siter->tableau.getResidualWeight() + citer->getWeight()-1) /
-        citer->getWeight());
-
     const unsigned char tcomp = siter->tableau.getComplexity();
-    // The minimum complexity of anything is 2.
-    const unsigned char projected = tcomp + 2*minCovers;
-/*
-cout << "coverNo " << +coverNo << ", stack " << stack.size() << 
-  ", solns " << solutions.size() <<
-  ", minCovers " << +minCovers <<
-  ", proj " << +projected <<
-  ", low " << +lowestComplexity <<
-endl;
-*/
 
-    if (solutions.empty() || projected <= lowestComplexity + 1)
+    auto citer = siter->coverIter;
+    while (citer != store.end())
     {
-      while (citer != store.end())
+      if (citer->effectiveDepth() > numStrategyTops)
       {
-        if (citer->effectiveDepth() > numStrategyTops)
-        {
-          citer++;
-          continue;
-        }
-
-        // TODO Could test projected again here
-
-        siter->tableau.attemptExhaustive(cases, citer, stack, 
-          solutions, lowestComplexity);
-
         citer++;
+        continue;
       }
+
+      // The lowest complexity that is still achievable arises when
+      // the residual can be covered with the same weight number of times.
+      const unsigned cw = citer->getWeight();
+      const unsigned char minCovers = static_cast<unsigned char>(
+        (siter->tableau.getResidualWeight() + cw -1) / cw);
+
+      // The minimum complexity of anything is 2.
+      if (tcomp + 2 * minCovers > lowestComplexity + 1)
+        break;
+
+      siter->tableau.attemptExhaustive(cases, citer, stack, 
+        solutions, lowestComplexity);
+
+      citer++;
     }
-    // else
-      // cout << "SKIP\n";
 
     // Erasing first stack element.
     siter = stack.erase(siter);
   }
 
-
   assert(! solutions.empty());
   solutions.sort();
 
-// Make partially into a CoverTableau method
+  swap(tableau, solutions.front());
+
+  tableauCache.store(tricks, tableau);
+
 /*
 cout << "SOLUTIONS\n\n";
 unsigned i = 0;
 for (auto s: solutions)
 {
-  cout << "Solution " << i << 
-    ", complexity " << + s.getComplexity() << 
-    ", overlap " << + s.getOverlap() << 
-    "\n";
+  cout << "Solution " << i << ", complex " << + s.getComplexity() << "\n";
   cout << s.str();
-  i++;
-  if (i >= 20)
+  if (++i >= 10)
     break;
 }
 */
-
-/*
-cout << "COVERS\n\n";
-i = 0;
-for (auto& c: store)
-{
-  cout << "Cover " << i << 
-    ", complexity " << + c.getComplexity() << 
-    "\n";
-  cout << c.strLine();
-  i++;
-}
-*/
-
-  // TODO Could perhaps swap
-  tableau = solutions.front();
-
-  tableauCache.store(tricks, tableau);
 }
 
 
@@ -306,7 +270,7 @@ CoverState Covers::explainManually(
 
   stableau.rowIter = rows.begin();
 
-const unsigned coverSize = rows.size();
+// const unsigned coverSize = rows.size();
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
@@ -315,7 +279,6 @@ const unsigned coverSize = rows.size();
   while (siter != stack.end())
   {
     auto riter = siter->rowIter;
-const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
 
     // The lowest complexity that is still achievable is
     // Tableau complexity + round up(residual / cover weight).
@@ -326,7 +289,7 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
 
     const unsigned char tcomp = siter->tableau.getComplexity();
     // The minimum complexity of anything is 2.
-    const unsigned char projected = tcomp + 2*minCovers;
+    const unsigned char projected = tcomp + 2 * minCovers;
 
     if (solutions.empty() || projected <= lowestComplexity + 1)
     {
@@ -347,25 +310,20 @@ const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
   assert(! solutions.empty());
   solutions.sort();
 
-// Make partially into a CoverTableau method
+  // tableau = solutions.front();
+  swap(tableau, solutions.front());
+  return COVER_DONE;
+
 /*
 unsigned i = 0;
 for (auto s: solutions)
 {
-  cout << "Solution " << i << 
-    ", complexity " << + s.getComplexity() << 
-    ", overlap " << + s.getOverlap() << 
-    "\n";
+  cout << "Solution " << i << ", compl " << + s.getComplexity() << "\n";
   cout << s.str();
-  i++;
-  if (i >= 20)
+  if (++i >= 20)
     break;
 }
 */
-
-  tableau = solutions.front();
-
-  return COVER_DONE;
 }
 
 
