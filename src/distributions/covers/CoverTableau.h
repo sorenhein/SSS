@@ -52,9 +52,8 @@ class CoverTableau
 
     void reset();
 
-    void setBoundaries(const Profile& sumProfile);
-
-    void setTricks(
+    void init(
+      const Profile& sumProfile,
       const Tricks& tricks,
       const unsigned char tmin,
       const vector<unsigned char>& cases);

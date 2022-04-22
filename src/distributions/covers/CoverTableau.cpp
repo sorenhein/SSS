@@ -32,19 +32,14 @@ void CoverTableau::reset()
 }
 
 
-void CoverTableau::setBoundaries(const Profile& sumProfileIn)
-{
-  sumProfile = sumProfileIn;
-}
-
-
-void CoverTableau::setTricks(
+void CoverTableau::init(
+  const Profile& sumProfileIn,
   const Tricks& tricks,
   const unsigned char tmin,
   const vector<unsigned char>& cases)
 {
+  sumProfile = sumProfileIn;
   residuals.set(tricks, cases, residualWeight);
-
   tricksMin = tmin;
 }
 
@@ -62,9 +57,9 @@ void CoverTableau::attempt(
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
 {
-  // explained is a dummy vector here.
   const Cover& cover = * coverIter;
 
+  // explained is a dummy vector here.
   Tricks explained;
   explained.resize(cover.size());
 
@@ -82,6 +77,7 @@ void CoverTableau::attempt(
   if (complexity + cover.getComplexity() -2 > lowestComplexity)
   {
     // Too complex.
+// cout << "XXX\n";
     return;
   }
 
@@ -89,9 +85,9 @@ void CoverTableau::attempt(
   if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
     stack.emplace_back(StackEntry());
-    StackEntry& stableau = stack.back();
+    StackEntry& centry = stack.back();
 
-    CoverTableau& tableau = stableau.tableau;
+    CoverTableau& tableau = centry.tableau;
     tableau = * this;
     tableau.rows.emplace_back(CoverRow());
     CoverRow& row = tableau.rows.back();
@@ -99,7 +95,7 @@ void CoverTableau::attempt(
     row.add(cover, additions, cases, 
       tableau.residuals, tableau.residualWeight);
 
-    stableau.coverIter = coverIter;
+   centry.coverIter = coverIter;
 
     if (tableau.complete())
     {
@@ -129,9 +125,9 @@ void CoverTableau::attempt(
       // Also don't want more than two or's in a row.
 
       stack.emplace_back(StackEntry());
-      StackEntry& stableau = stack.back();
+      StackEntry& centry = stack.back();
 
-      CoverTableau& tableau = stableau.tableau;
+      CoverTableau& tableau = centry.tableau;
       tableau = * this;
 
       // A bit fumbly: Advance to the same place in tableau.
@@ -140,7 +136,7 @@ void CoverTableau::attempt(
       riter->add(cover, additions, cases,
         tableau.residuals, tableau.residualWeight);
 
-      stableau.coverIter = coverIter;
+      centry.coverIter = coverIter;
 
       if (tableau.complete())
       {
@@ -190,16 +186,16 @@ void CoverTableau::attemptManually(
   if (row.possible(explained, residuals, cases, additions, weightAdded))
   {
     stack.emplace_back(RowStackEntry());
-    RowStackEntry& rtableau = stack.back();
+    RowStackEntry& rentry = stack.back();
 
-    CoverTableau& tableau = rtableau.tableau;
+    CoverTableau& tableau = rentry.tableau;
     tableau = * this;
     tableau.rows.push_back(row);
 
     row.subtract(additions, cases,
       tableau.residuals, tableau.residualWeight);
 
-    rtableau.rowIter = rowIter;
+    rentry.rowIter = rowIter;
 
     if (tableau.complete())
     {

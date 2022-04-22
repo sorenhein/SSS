@@ -190,9 +190,7 @@ void Covers::explain(
   stack.emplace_back(StackEntry());
   StackEntry& centry = stack.back();
 
-  centry.tableau.setBoundaries(sumProfile);
-  centry.tableau.setTricks(tricks, tmin, cases);
-
+  centry.tableau.init(sumProfile, tricks, tmin, cases);
   centry.coverIter = store.begin();
 
   list<CoverTableau> solutions;
@@ -263,12 +261,10 @@ CoverState Covers::explainManually(
 
   list<RowStackEntry> stack;
   stack.emplace_back(RowStackEntry());
-  RowStackEntry& entry = stack.back();
+  RowStackEntry& rentry = stack.back();
 
-  entry.tableau.setBoundaries(sumProfile);
-  entry.tableau.setTricks(tricks, tmin, cases);
-
-  entry.rowIter = rows.begin();
+  rentry.tableau.init(sumProfile, tricks, tmin, cases);
+  rentry.rowIter = rows.begin();
 
   list<CoverTableau> solutions;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
