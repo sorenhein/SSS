@@ -13,17 +13,17 @@
 #include <vector>
 #include <string>
 
-#include "CoverRow.h"
+#include "product/Profile.h"
+
 #include "CoverStore.h"
 #include "TableauCache.h"
+#include "CoverRow.h"
 
-#include "product/Profile.h"
 
 class ProductMemory;
 class CoverTableau;
 class Tricks;
 class Result;
-// class ResExpl;
 
 
 using namespace std;
@@ -35,26 +35,20 @@ class Covers
 
     Profile sumProfile;
 
-    // These are the manually set rows.  They are currently inactive.
-    list<CoverRow> rows;
-
     vector<unsigned char> cases;
 
     CoverStore store;
 
     TableauCache tableauCache;
 
+    // These are the manually set rows.  They are currently inactive.
+    list<CoverRow> rows;
+
 
     void setup(
       const list<Result>& results,
       Tricks& tricks,
       unsigned char& tricksMin) const;
-
-    void prune();
-
-    string strDebug(
-      const string& title,
-      const Tricks& tricks) const;
 
 
   public:
@@ -63,34 +57,27 @@ class Covers
 
     void reset();
 
-    CoverRow& addRow();
-
-    void prepareNew(
+    void prepare(
       ProductMemory& productMemory,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& casesIn,
       const Profile& sumProfileIn);
 
+    CoverRow& addRow();
+
     void sortRows();
 
     const Cover& lookup(const Cover& cover) const;
 
-    CoverState explainExhaustiveRows(
-      const list<Result>& results,
-      CoverTableau& tableau) const;
-
-    /*
-    void explainGreedy(
-      const list<Result>& results,
-      const unsigned numStrategyTops,
-      CoverTableau& tableau) const;
-      */
-
-    void explainExhaustive(
+    void explain(
       const list<Result>& results,
       const unsigned numStrategyTops,
       CoverTableau& tableau,
       bool& newTableauFlag);
+
+    CoverState explainManually(
+      const list<Result>& results,
+      CoverTableau& tableau) const;
 
     void storeTableau(
       const Tricks& excessTricks,
@@ -105,8 +92,6 @@ class Covers
       unsigned& numUses) const;
 
     string strCached() const;
-
-    // string strExpl(const ResExpl& resExpl) const;
 };
 
 #endif

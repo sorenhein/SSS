@@ -524,7 +524,7 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   DistCore::getCoverData(distProfiles, cases, sumProfile);
 
   // Prepare each cover.
-  covers.prepareNew(productMemory, distProfiles, cases, sumProfile);
+  covers.prepare(productMemory, distProfiles, cases, sumProfile);
 
   // Set the manual covers.
   DistCore::prepareManualCovers(

@@ -11,19 +11,9 @@
 #include <sstream>
 #include <cassert>
 
-#include "CoverTableau.h"
 #include "Covers.h"
 
-#include "Tricks.h"
-
-#include "product/ProductMemory.h"
 #include "product/ProfilePair.h"
-
-// #include "ResExpl.h"
-
-#include "../../strategies/result/Result.h"
-
-#include "../../const.h"
 
 #include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
@@ -37,30 +27,14 @@ Covers::Covers()
 
 void Covers::reset()
 {
-  rows.clear();
+  cases.clear();
   store.reset();
   tableauCache.reset();
+  rows.clear();
 }
 
 
-CoverRow& Covers::addRow()
-{
-  rows.emplace_back(CoverRow());
-  return rows.back();
-}
-
-
-void Covers::sortRows()
-{
-  rows.sort([](
-    const CoverRow& coverRow1, const CoverRow& coverRow2)
-  {
-    return (coverRow1.getWeight() >= coverRow2.getWeight());
-  });
-}
-
-
-void Covers::prepareNew(
+void Covers::prepare(
   ProductMemory& productMemory,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& casesIn,
@@ -158,6 +132,23 @@ void Covers::prepareNew(
 }
 
 
+CoverRow& Covers::addRow()
+{
+  rows.emplace_back(CoverRow());
+  return rows.back();
+}
+
+
+void Covers::sortRows()
+{
+  rows.sort([](
+    const CoverRow& coverRow1, const CoverRow& coverRow2)
+  {
+    return (coverRow1.getWeight() >= coverRow2.getWeight());
+  });
+}
+
+
 void Covers::setup(
   const list<Result>& results,
   Tricks& tricks,
@@ -174,124 +165,7 @@ const Cover& Covers::lookup(const Cover& cover) const
 }
 
 
-/*
-void Covers::explainGreedy(
-  const list<Result>& results,
-  const unsigned numStrategyTops,
-  CoverTableau& tableau) const
-{
-  Tricks tricks;
-  unsigned char tmin;
-  Covers::setup(results, tricks, tmin);
-
-  tableau.setBoundaries(sumProfile);
-  tableau.setTricks(tricks, tmin, cases);
-
-  auto coverIter = store.begin();
-  while (coverIter != store.end())
-  {
-    if (coverIter->effectiveDepth() > numStrategyTops)
-    {
-      // A cover should not use distributions more granularly than
-      // the strategy itself does.
-      coverIter++;
-      continue;
-    }
-      
-    if (! tableau.attemptGreedy(* coverIter, cases))
-    {
-      coverIter++;
-      continue;
-    }
-
-    if (tableau.complete())
-      return;
-  }
-}
-*/
-
-
-CoverState Covers::explainExhaustiveRows(
-  const list<Result>& results,
-  CoverTableau& tableau) const
-{
-  Tricks tricks;
-  unsigned char tmin;
-  Covers::setup(results, tricks, tmin);
-
-  list<ResTableau> stack;
-  stack.emplace_back(ResTableau());
-  ResTableau& stableau = stack.back();
-
-  stableau.tableau.setBoundaries(sumProfile);
-  stableau.tableau.setTricks(tricks, tmin, cases);
-
-  stableau.rowIter = rows.begin();
-
-const unsigned coverSize = rows.size();
-
-  list<CoverTableau> solutions;
-  unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
-
-  auto siter = stack.begin();
-  while (siter != stack.end())
-  {
-    auto riter = siter->rowIter;
-const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
-
-    // The lowest complexity that is still achievable is
-    // Tableau complexity + round up(residual / cover weight).
-    unsigned char minCovers = 
-      static_cast<unsigned char>(
-        (siter->tableau.getResidualWeight() + riter->getWeight()-1) /
-        riter->getWeight());
-
-    const unsigned char tcomp = siter->tableau.getComplexity();
-    // The minimum complexity of anything is 2.
-    const unsigned char projected = tcomp + 2*minCovers;
-
-    if (solutions.empty() || projected <= lowestComplexity + 1)
-    {
-      while (riter != rows.end())
-      {
-        siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
-          solutions, lowestComplexity);
-
-        riter++;
-      }
-    }
-
-    // Erasing first stack element.
-    siter = stack.erase(siter);
-  }
-
-
-  assert(! solutions.empty());
-  solutions.sort();
-
-// Make partially into a CoverTableau method
-/*
-unsigned i = 0;
-for (auto s: solutions)
-{
-  cout << "Solution " << i << 
-    ", complexity " << + s.getComplexity() << 
-    ", overlap " << + s.getOverlap() << 
-    "\n";
-  cout << s.str();
-  i++;
-  if (i >= 20)
-    break;
-}
-*/
-
-  tableau = solutions.front();
-
-  return COVER_DONE;
-}
-
-
-void Covers::explainExhaustive(
+void Covers::explain(
   const list<Result>& results,
   const unsigned numStrategyTops,
   CoverTableau& tableau,
@@ -415,6 +289,86 @@ for (auto& c: store)
 }
 
 
+CoverState Covers::explainManually(
+  const list<Result>& results,
+  CoverTableau& tableau) const
+{
+  Tricks tricks;
+  unsigned char tmin;
+  Covers::setup(results, tricks, tmin);
+
+  list<ResTableau> stack;
+  stack.emplace_back(ResTableau());
+  ResTableau& stableau = stack.back();
+
+  stableau.tableau.setBoundaries(sumProfile);
+  stableau.tableau.setTricks(tricks, tmin, cases);
+
+  stableau.rowIter = rows.begin();
+
+const unsigned coverSize = rows.size();
+
+  list<CoverTableau> solutions;
+  unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
+
+  auto siter = stack.begin();
+  while (siter != stack.end())
+  {
+    auto riter = siter->rowIter;
+const unsigned char comp = (solutions.empty() ? 0 : lowestComplexity);
+
+    // The lowest complexity that is still achievable is
+    // Tableau complexity + round up(residual / cover weight).
+    unsigned char minCovers = 
+      static_cast<unsigned char>(
+        (siter->tableau.getResidualWeight() + riter->getWeight()-1) /
+        riter->getWeight());
+
+    const unsigned char tcomp = siter->tableau.getComplexity();
+    // The minimum complexity of anything is 2.
+    const unsigned char projected = tcomp + 2*minCovers;
+
+    if (solutions.empty() || projected <= lowestComplexity + 1)
+    {
+      while (riter != rows.end())
+      {
+        siter->tableau.attemptExhaustiveRow(cases, riter, stack, 
+          solutions, lowestComplexity);
+
+        riter++;
+      }
+    }
+
+    // Erasing first stack element.
+    siter = stack.erase(siter);
+  }
+
+
+  assert(! solutions.empty());
+  solutions.sort();
+
+// Make partially into a CoverTableau method
+/*
+unsigned i = 0;
+for (auto s: solutions)
+{
+  cout << "Solution " << i << 
+    ", complexity " << + s.getComplexity() << 
+    ", overlap " << + s.getOverlap() << 
+    "\n";
+  cout << s.str();
+  i++;
+  if (i >= 20)
+    break;
+}
+*/
+
+  tableau = solutions.front();
+
+  return COVER_DONE;
+}
+
+
 void Covers::storeTableau(
   const Tricks& excessTricks,
   const CoverTableau& tableau)
@@ -439,26 +393,8 @@ void Covers::getCoverCounts(
 }
 
 
-string Covers::strDebug(
-  const string& title,
-  const Tricks& tricks) const
-{
-  stringstream ss;
-  ss << title << "\n";
-  ss << tricks.strList();
-  return ss.str();
-}
-
-
 string Covers::strCached() const
 {
   return tableauCache.str();
 }
 
-
-/*
-string Covers::strExpl(const ResExpl& resExpl) const
-{
-  return resExpl.str(sumProfile);
-}
-*/

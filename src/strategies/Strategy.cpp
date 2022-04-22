@@ -982,7 +982,7 @@ bool Strategy::covers(
   CoverTableau& tableau) const
 {
   tableau.reset();
-  CoverState state = coversIn.explainExhaustiveRows(results, tableau);
+  CoverState state = coversIn.explainManually(results, tableau);
   return (state == COVER_DONE);
 }
 
@@ -994,7 +994,7 @@ void Strategy::coversNew(
   bool& newTableauFlag) const
 {
   tableau.reset();
-  coversIn.explainExhaustive(
+  coversIn.explain(
     results, 
     numStrategyTops, 
     tableau, 
