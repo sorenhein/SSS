@@ -58,11 +58,7 @@ void Tricks::set(
 
   weight = 0;
   for (unsigned i = 0; i < tricks2.size(); i++)
-  {
-    // sum += tricks2.tricks[i];
-    if (tricks2.tricks[i])
-      weight += cases[i];
-  }
+    weight += cases[i] * tricks2.tricks[i];
 }
 
 
@@ -112,7 +108,7 @@ void Tricks::weigh(
   {
     if (tricks[i])
     {
-      weight += cases[i];
+      weight += cases[i] * tricks[i];
       numDist++;
     }
   }
@@ -182,14 +178,14 @@ bool Tricks::symmetrize(
       if (tricks[mno] > 0)
       {
         tricks[dno] = tricks[mno];
-        weight += cases[mno];
+        weight += cases[mno] * tricks[mno];
         numDist++;
       }
     }
     else if (tricks[mno] == 0)
     {
       tricks[mno] = tricks[dno];
-      weight += cases[dno];
+      weight += cases[dno] * tricks[dno];
       numDist++;
     }
     else
@@ -220,7 +216,7 @@ bool Tricks::possible(
     {
       if (residuals.tricks[i])
       {
-        // We need that entry.
+        // We need that entry.  The residuals is a binary vector.
         additions.tricks[i] = 1;
         weightAdded += cases[i];
       }
@@ -270,18 +266,15 @@ void Tricks::add(
   // additions are disjoint from tricks.
   assert(tricks.size() == additions.tricks.size());
 
+  // TODO With the new, proper weight: Do we just subtract the
+  // added weight?
+
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     const unsigned char t = additions.tricks[i];
     tricks[i] += t;
-
-    // The weight of the tableau decreases when a trick goes to zero.
-    // So the weight subtracted is not necessarily the weight added.
-    if (t > 0 && residuals.tricks[i] == t)
-      residualWeight -= cases[i];
-
+    residualWeight -= cases[i] * t;
     residuals.tricks[i] -= t;
-
     numDist += t;
   }
 }
@@ -299,12 +292,7 @@ void Tricks::subtract(
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     const unsigned char t = tricks[i];
-
-    // The weight of the tableau decreases when a trick goes to zero.
-    // So the weight subtracted is not necessarily the weight added.
-    if (t > 0 && residuals.tricks[i] == t)
-      residualWeight -= cases[i];
-
+    residualWeight -= cases[i] * t;
     residuals.tricks[i] -= t;
   }
 }

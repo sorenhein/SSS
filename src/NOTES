@@ -1,6 +1,7 @@
 Cover specifics
 ---------------
 Potentially only the best solution, not a stack.
+Then no lowestComplexity.
 
 Weight could be sum(trick*cases).
 - Tricks set: tricks2.tricks[i] * cases[i]
@@ -9,6 +10,8 @@ Weight could be sum(trick*cases).
 - possible
 - add
 - subtract (do we need both?)
+
+Then no separate if-check of project || complexity in Covers?
 
 Then CoverTableau::attemptManually:
 Something like
