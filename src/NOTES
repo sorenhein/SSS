@@ -3,40 +3,15 @@ Cover specifics
 Potentially only the best solution, not a stack.
 Then no lowestComplexity.
 
-Weight could be sum(trick*cases).
-- Tricks set: tricks2.tricks[i] * cases[i]
-- weigh: Even used?
-- prepare
-- possible
-- add
-- subtract (do we need both?)
-
 Then no separate if-check of project || complexity in Covers?
+Cover::minComplexityAdder?
+The projected check: break
+The single adder: continue
 
-Then CoverTableau::attemptManually:
-Something like
+CoverTableau::attemptManually:
+Also attempt()
 
-No longer need const unsigned char complexity, I think.
-if (weightAdded == residualWeight)
-{
-  solutions.emplace_back(* this);
-  CoverTableau solution = solutions.back();
-  solution.rows.push_back(row);
-  row.subtract(...); // Just updates residuals, might check == 0
-
-  const unsigned char sc = solution.getComplexity();
-  if (lowestComplexity > sc)
-    lowestComplexity = sc;
-}
-else
-{
-  stack.emplace_back(RowStackEntry());
-  RowStackEntry& rentry = stack.back();
-  rentry.tableau = * this;
-  rentry.tableau.push_back(row);
-  row.subtract(...);
-  rentry.rowIter = rowIteR;
-}
+CoverTableau could get sumProfile passed in, save on the copying.
 
 Tricks::possible might never need the first argument?
 Could just check in Tricks::possible that explained is == 0?

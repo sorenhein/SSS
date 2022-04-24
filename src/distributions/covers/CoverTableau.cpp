@@ -161,54 +161,37 @@ void CoverTableau::attemptManually(
   Tricks additions;
   additions.resize(residuals.size());
 
-  unsigned char weightAdded;
-
-  const unsigned char complexity = CoverTableau::getComplexity();
-
   // Try to add a new row.
+  unsigned char weightAdded;
   if (row.possible(explained, residuals, cases, additions, weightAdded))
   {
-    stack.emplace_back(RowStackEntry());
-    RowStackEntry& rentry = stack.back();
-
-    CoverTableau& tableau = rentry.tableau;
-    tableau = * this;
-    tableau.rows.push_back(row);
-
-    row.subtract(additions, cases,
-      tableau.residuals, tableau.residualWeight);
-
-    rentry.rowIter = rowIter;
-
-    if (tableau.complete())
+    if (weightAdded == residualWeight)
     {
-assert(weightAdded == residualWeight);
-      solutions.push_back(tableau);
-      // Done, so eliminate.
-      // TODO This is the element we've just created.  Can we tell
-      // from weightAdded and the tableau weight that we're done,
-      // so we can shortcut this?
-      stack.pop_back();
+      // Done, so we have a solution.
+      solutions.emplace_back(* this);
+      CoverTableau& solution = solutions.back();
+      solution.rows.push_back(row);
+      solution.rows.back().subtract(
+        additions, cases, solution.residuals, solution.residualWeight);
 
-      // TODO Is this already tableau.getComplexity()?
-      if (complexity + row.getComplexity() < lowestComplexity)
-        lowestComplexity = complexity + row.getComplexity();
+      const unsigned char sc = solution.getComplexity();
+      if (lowestComplexity > sc)
+        lowestComplexity = sc;
     }
-    // The "else" part doesn't work yet, because the residual weight
-    // really should be sum(tricks * cases).
-    /*
     else
     {
-if (weightAdded >= residualWeight)
-{
-  cout << "weightAdded " << +weightAdded << endl;
-  cout << "residualWeight " << +residualWeight << endl;
-  cout << "tableau\n" << CoverTableau::str();
-  cout << "row " << row.str(sumProfile) << endl;
-}
-assert(weightAdded < residualWeight);
+      stack.emplace_back(RowStackEntry());
+      RowStackEntry& rentry = stack.back();
+
+      CoverTableau& tableau = rentry.tableau;
+      tableau = * this;
+      tableau.rows.push_back(row);
+
+      row.subtract(additions, cases,
+        tableau.residuals, tableau.residualWeight);
+
+      rentry.rowIter = rowIter;
     }
-    */
   }
 }
 

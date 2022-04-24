@@ -259,6 +259,8 @@ unsigned char Cover::minComplexityAdder(const unsigned char resWeight) const
   const unsigned char projected =
     static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
 
+  // TODO Should this be true now?
+  // assert(Cover::getComplexity() <= projected);
   return max(Cover::getComplexity(), projected);
 }
 
