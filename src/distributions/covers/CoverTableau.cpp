@@ -145,53 +145,50 @@ void CoverTableau::attempt(
 }
 
 
-void CoverTableau::attemptManually(
+bool CoverTableau::attemptManually(
   const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   list<RowStackEntry>& stack,
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
 {
+  // Try to add a new row.
   const CoverRow& row = * rowIter;
-
-  // explained is a dummy vector here.
-  Tricks explained;
-  explained.resize(residuals.size());
 
   Tricks additions;
   additions.resize(residuals.size());
-
-  // Try to add a new row.
   unsigned char weightAdded;
-  if (row.possible(explained, residuals, cases, additions, weightAdded))
+
+  if (! row.possible(residuals, cases, additions, weightAdded))
+    return false;
+
+  if (weightAdded == residualWeight)
   {
-    if (weightAdded == residualWeight)
-    {
-      // Done, so we have a solution.
-      solutions.emplace_back(* this);
-      CoverTableau& solution = solutions.back();
-      solution.rows.push_back(row);
-      solution.rows.back().subtract(
-        additions, cases, solution.residuals, solution.residualWeight);
+    // Done, so we have a solution.
+    solutions.emplace_back(* this);
+    CoverTableau& solution = solutions.back();
+    solution.rows.push_back(row);
 
-      const unsigned char sc = solution.getComplexity();
-      if (lowestComplexity > sc)
-        lowestComplexity = sc;
-    }
-    else
-    {
-      stack.emplace_back(RowStackEntry());
-      RowStackEntry& rentry = stack.back();
+    const unsigned char sc = solution.getComplexity();
+    if (lowestComplexity > sc)
+      lowestComplexity = sc;
+    
+    return true;
+  }
+  else
+  {
+    stack.emplace_back(RowStackEntry());
+    RowStackEntry& rentry = stack.back();
 
-      CoverTableau& tableau = rentry.tableau;
-      tableau = * this;
-      tableau.rows.push_back(row);
+    CoverTableau& tableau = rentry.tableau;
+    tableau = * this;
+    tableau.rows.push_back(row);
 
-      row.subtract(additions, cases,
-        tableau.residuals, tableau.residualWeight);
+    additions.subtract(cases, tableau.residuals, tableau.residualWeight);
 
-      rentry.rowIter = rowIter;
-    }
+    rentry.rowIter = rowIter;
+
+    return false;
   }
 }
 

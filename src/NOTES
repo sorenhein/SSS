@@ -3,6 +3,14 @@ Cover specifics
 Potentially only the best solution, not a stack.
 Then no lowestComplexity.
 
+May not need subtract methods at all.
+Can delete Tricks::possible for possiblenew?
+
+In CoverTableau additions::subtract we already know residualWeight
+is -= weightAdded, so subtract could be a straight -= vector?
+
+Attempt() to return bool true if solution.  Then Covers loop done?
+
 Then no separate if-check of project || complexity in Covers?
 Cover::minComplexityAdder?
 The projected check: break

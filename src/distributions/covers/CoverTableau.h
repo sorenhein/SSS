@@ -70,7 +70,7 @@ class CoverTableau
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
 
-    void attemptManually(
+    bool attemptManually(
       const vector<unsigned char>& cases,
       list<CoverRow>::const_iterator& rowIter,
       list<RowStackEntry>& stack,

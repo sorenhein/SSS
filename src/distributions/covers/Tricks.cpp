@@ -235,6 +235,39 @@ bool Tricks::possible(
 }
 
 
+bool Tricks::possibleNew(
+  const Tricks& residuals,
+  const vector<unsigned char>& cases,
+  Tricks& additions,
+  unsigned char& weightAdded) const
+{
+  assert(tricks.size() == residuals.size());
+  assert(tricks.size() == cases.size());
+  assert(tricks.size() == additions.size());
+
+  weightAdded = 0;
+  for (unsigned i = 0; i < tricks.size(); i++)
+  {
+    if (tricks[i] == 0)
+      additions.tricks[i] = 0;
+    else if (residuals.tricks[i])
+    {
+      // We need that entry.  The residuals is a binary vector.
+      additions.tricks[i] = 1;
+      weightAdded += cases[i];
+    }
+    else
+    {
+      // We cannot have that entry.
+      return false;
+    }
+  }
+
+  // Could still have been fully contained.
+  return (weightAdded > 0);
+}
+
+
 CoverState Tricks::explain(Tricks& tricks2) const
 {
   assert(tricks.size() == tricks2.tricks.size());

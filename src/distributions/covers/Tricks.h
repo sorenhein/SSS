@@ -77,6 +77,12 @@ class Tricks
       Tricks& additions,
       unsigned char& weightAdded) const;
 
+    bool possibleNew(
+      const Tricks& residuals,
+      const vector<unsigned char>& cases,
+      Tricks& additions,
+      unsigned char& weightAdded) const;
+
     CoverState explain(Tricks& tricks2) const;
 
     void add(

@@ -100,6 +100,7 @@ void CoverRow::add(
 }
 
 
+/*
 void CoverRow::subtract(
   const Tricks& additions,
   const vector<unsigned char>& cases,
@@ -111,23 +112,21 @@ void CoverRow::subtract(
   // tricks from residuals.
   additions.subtract(cases, residuals, residualsSum);
 }
+*/
 
 
 bool CoverRow::possible(
-  const Tricks& explained,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,
   unsigned char& weightAdded) const
 {
-  // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
   //   explained vector that would arise
   // weightAdded: The number of cases in additions
 
-  return tricks.possible(explained, residuals, cases, 
-    additions, weightAdded);
+  return tricks.possibleNew(residuals, cases, additions, weightAdded);
 }
 
 
