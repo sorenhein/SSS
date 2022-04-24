@@ -278,8 +278,9 @@ CoverState Covers::explainManually(
           lowestComplexity + 1)
         break;
 
-      siter->tableau.attemptManually(cases, riter, stack, 
-        solutions, lowestComplexity);
+      if (siter->tableau.attemptManually(cases, riter, stack, 
+          solutions, lowestComplexity))
+        break;
 
       riter++;
     }

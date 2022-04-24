@@ -331,6 +331,18 @@ void Tricks::subtract(
 }
 
 
+Tricks& Tricks::operator -= (const Tricks& tricks2)
+{
+  // No checking of <= first.
+  assert(tricks.size() == tricks2.tricks.size());
+
+  for (unsigned i = 0; i < tricks.size(); i++)
+    tricks[i] -= tricks2.tricks[i];
+  
+  return * this;
+}
+
+
 Tricks& Tricks::operator |= (const Tricks& tricks2)
 {
   assert(tricks.size() == tricks2.tricks.size());

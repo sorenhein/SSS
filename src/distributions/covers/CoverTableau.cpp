@@ -184,7 +184,8 @@ bool CoverTableau::attemptManually(
     tableau = * this;
     tableau.rows.push_back(row);
 
-    additions.subtract(cases, tableau.residuals, tableau.residualWeight);
+    tableau.residuals -= additions;
+    tableau.residualWeight -= weightAdded;
 
     rentry.rowIter = rowIter;
 

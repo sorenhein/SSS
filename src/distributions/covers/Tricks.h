@@ -97,6 +97,8 @@ class Tricks
       Tricks& residuals,
       unsigned char& residualWeight) const;
 
+    Tricks& operator -= (const Tricks& tricks2);
+
     Tricks& operator |= (const Tricks& tricks2);
 
     void orSymm(const Tricks& tricks2);
