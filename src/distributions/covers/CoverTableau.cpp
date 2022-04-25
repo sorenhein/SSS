@@ -62,18 +62,24 @@ void CoverTableau::attempt(
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
 {
-  const Cover& cover = * coverIter;
-
   Tricks additions;
-  additions.resize(cover.size());
+  additions.resize(residuals.size());
   unsigned char weightAdded;
 
+  const Cover& cover = * coverIter;
   const bool emptyStartFlag = rows.empty();
 
 numCompare++;
   // First try to add a new row.
   if (cover.possible(residuals, cases, additions, weightAdded))
   {
+    if (weightAdded < residualWeight)
+    {
+    }
+    else
+    {
+    }
+
     stack.emplace_back(StackEntry());
     StackEntry& centry = stack.back();
 
@@ -83,27 +89,28 @@ numStack++;
     tableau.rows.emplace_back(CoverRow());
     CoverRow& row = tableau.rows.back();
     row.resize(cover.size());
+const unsigned w = tableau.residualWeight;
     row.add(cover, additions, cases, 
       tableau.residuals, tableau.residualWeight);
+    tableau.complexity.addRow(row.getComplexity());
 
     centry.coverIter = coverIter;
 
     if (tableau.complete())
     {
+assert(weightAdded == w);
  numSolutions++;
       solutions.push_back(tableau);
       // Done, so eliminate.
       stack.pop_back();
 
       CoverTableau& solution = solutions.back();
-      solution.complexity.addRow(row.getComplexity());
-
-      if (complexity.sum + row.getComplexity() < lowestComplexity)
-        lowestComplexity = complexity.sum + row.getComplexity();
+      if (solution.complexity.sum < lowestComplexity)
+        lowestComplexity = solution.complexity.sum;
     }
     else
     {
-      tableau.complexity.addRow(row.getComplexity());
+assert(weightAdded < w);
     }
   }
 
