@@ -92,11 +92,6 @@ class Tricks
       unsigned char& residualsSum,
       unsigned char& numDist);
 
-    void subtract(
-      const vector<unsigned char>& cases,
-      Tricks& residuals,
-      unsigned char& residualWeight) const;
-
     Tricks& operator -= (const Tricks& tricks2);
 
     Tricks& operator |= (const Tricks& tricks2);

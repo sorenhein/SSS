@@ -191,7 +191,7 @@ void Covers::explain(
   stack.emplace_back(StackEntry());
   StackEntry& centry = stack.back();
 
-  centry.tableau.init(sumProfile, tricks, tmin, cases);
+  centry.tableau.init(tricks, tmin, cases);
   centry.coverIter = store.begin();
 
   list<CoverTableau> solutions;
@@ -259,7 +259,7 @@ CoverState Covers::explainManually(
   stack.emplace_back(RowStackEntry());
   RowStackEntry& rentry = stack.back();
 
-  rentry.tableau.init(sumProfile, tricks, tmin, cases);
+  rentry.tableau.init(tricks, tmin, cases);
   rentry.rowIter = rows.begin();
 
   list<CoverTableau> solutions;
@@ -277,6 +277,12 @@ CoverState Covers::explainManually(
           riter->minComplexityAdder(siter->tableau.getResidualWeight()) > 
           lowestComplexity + 1)
         break;
+
+      if (tcomp + riter->getComplexity() > lowestComplexity + 1)
+      {
+        riter++;
+        continue;
+      }
 
       if (siter->tableau.attemptManually(cases, riter, stack, 
           solutions, lowestComplexity))
@@ -314,6 +320,12 @@ bool Covers::lookupTableau(
 }
 
 
+const Profile& Covers::getSumProfile() const
+{
+  return sumProfile;
+}
+
+
 void Covers::getCoverCounts(
   unsigned& numTableaux,
   unsigned& numUses) const
@@ -324,6 +336,6 @@ void Covers::getCoverCounts(
 
 string Covers::strCached() const
 {
-  return tableauCache.str();
+  return tableauCache.str(sumProfile);
 }
 

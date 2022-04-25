@@ -20,6 +20,8 @@
 #include "CoverTableau.h"
 #include "Tricks.h"
 
+#include "product/Profile.h"
+
 
 using namespace std;
 
@@ -34,13 +36,13 @@ class TableauCache
       CoverTableau tableau;
       unsigned count;
 
-      string str() const
+      string str(const Profile& sumProfile) const
       {
         stringstream ss;
 
         ss << "Count " << count << ", vector ";
         ss << excessTricks.strSpaced() << "\n";
-        ss << tableau.str();
+        ss << tableau.str(sumProfile);
 
         return ss.str() + "\n";
       };
@@ -69,7 +71,7 @@ class TableauCache
       unsigned& numTableaux,
       unsigned& numUses) const;
       
-    string str() const;
+    string str(const Profile& sumProfile) const;
 };
 
 #endif

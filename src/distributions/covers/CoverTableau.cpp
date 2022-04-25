@@ -37,12 +37,10 @@ void CoverTableau::reset()
 
 
 void CoverTableau::init(
-  const Profile& sumProfileIn,
   const Tricks& tricks,
   const unsigned char tmin,
   const vector<unsigned char>& cases)
 {
-  sumProfile = sumProfileIn;
   residuals.set(tricks, cases, residualWeight);
   tricksMin = tmin;
 }
@@ -206,6 +204,7 @@ numSolutionsManual++;
 
 
 void CoverTableau::updateStats(
+  const Profile& sumProfile,
   ProductStats& productStats,
   const bool newTableauFlag) const
 {
@@ -288,7 +287,7 @@ string CoverTableau::strResiduals() const
 }
 
 
-string CoverTableau::str() const
+string CoverTableau::str(const Profile& sumProfile) const
 {
   stringstream ss;
 

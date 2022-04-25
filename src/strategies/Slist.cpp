@@ -1020,7 +1020,7 @@ void Slist::coversManual(
     {
       cout << "Strategy #" << stratNo << " ";
       cout << riter->strBracket() << ": ";
-      cout << riter->str();
+      cout << riter->str(coversIn.getSumProfile());
     }
     else
     {
@@ -1063,8 +1063,11 @@ void Slist::covers(
 
     if (tableau.complete())
     {
-      cout << tableau.str();
-      tableau.updateStats(productStats, newTableauFlag);
+      cout << tableau.str(coversIn.getSumProfile());
+      tableau.updateStats(
+        coversIn.getSumProfile(), 
+        productStats, 
+        newTableauFlag);
     }
     else
       cout << strat.str("Vnexplained", true) << "\n";

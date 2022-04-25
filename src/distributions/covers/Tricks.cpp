@@ -313,24 +313,6 @@ void Tricks::add(
 }
 
 
-void Tricks::subtract(
-  const vector<unsigned char>& cases,
-  Tricks& residuals,
-  unsigned char& residualWeight) const
-{
-  // additions are disjoint from tricks.
-  assert(tricks.size() == residuals.tricks.size());
-  assert(tricks.size() == cases.size());
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    const unsigned char t = tricks[i];
-    residualWeight -= cases[i] * t;
-    residuals.tricks[i] -= t;
-  }
-}
-
-
 Tricks& Tricks::operator -= (const Tricks& tricks2)
 {
   // No checking of <= first.

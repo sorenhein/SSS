@@ -17,14 +17,13 @@
 #include <vector>
 #include <string>
 
-#include "product/Profile.h"
-
 #include "CoverRow.h"
 #include "Tricks.h"
 
 
 using namespace std;
 
+class Profile;
 class ProductStats;
 
 struct StackEntry;
@@ -34,8 +33,6 @@ struct RowStackEntry;
 class CoverTableau
 {
   private:
-
-    Profile sumProfile;
 
     list<CoverRow> rows;
 
@@ -56,7 +53,6 @@ class CoverTableau
     void reset();
 
     void init(
-      const Profile& sumProfile,
       const Tricks& tricks,
       const unsigned char tmin,
       const vector<unsigned char>& cases);
@@ -78,6 +74,7 @@ class CoverTableau
       unsigned char& lowestComplexity) const;
 
     void updateStats(
+      const Profile& sumProfile,
       ProductStats& productStats,
       const bool newTableauFlag) const;
 
@@ -93,7 +90,7 @@ class CoverTableau
 
     string strResiduals() const;
 
-    string str() const;
+    string str(const Profile& sumProfile) const;
 };
 
 

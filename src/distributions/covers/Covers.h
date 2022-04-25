@@ -87,6 +87,8 @@ class Covers
       const Tricks& excessTricks,
       CoverTableau const * tableauPtr);
 
+    const Profile& getSumProfile() const;
+
     void getCoverCounts(
       unsigned& numTableaux,
       unsigned& numUses) const;

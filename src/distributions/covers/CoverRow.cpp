@@ -100,21 +100,6 @@ void CoverRow::add(
 }
 
 
-/*
-void CoverRow::subtract(
-  const Tricks& additions,
-  const vector<unsigned char>& cases,
-  Tricks& residuals,
-  unsigned char& residualsSum) const
-{
-  // This version is used when the complete row is set manually already.
-  // We don't want to modify tricks -- we just want to subtract out
-  // tricks from residuals.
-  additions.subtract(cases, residuals, residualsSum);
-}
-*/
-
-
 bool CoverRow::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
@@ -182,7 +167,8 @@ unsigned char CoverRow::minComplexityAdder(
   const unsigned char projected =
     static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
 
-  return max(CoverRow::getComplexity(), projected);
+  // return max(CoverRow::getComplexity(), projected);
+  return projected;
 }
 
 

@@ -3,18 +3,10 @@ Cover specifics
 Potentially only the best solution, not a stack.
 Then no lowestComplexity.
 
-May not need subtract methods at all.
 Can delete Tricks::possible for possiblenew?
-
-Then no separate if-check of project || complexity in Covers?
-Cover::minComplexityAdder?
-The projected check: break
-The single adder: continue
 
 CoverTableau::attemptManually:
 Also attempt()
-
-CoverTableau could get sumProfile passed in, save on the copying.
 
 How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.
 
