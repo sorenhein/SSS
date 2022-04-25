@@ -35,12 +35,13 @@ class CoverTableau
   private:
 
     list<CoverRow> rows;
+    unsigned char tricksMin;
 
     Tricks residuals;
-
     unsigned char residualWeight;
 
-    unsigned char tricksMin;
+    unsigned char complexityTMP;
+    unsigned char maxComplexityTMP;
 
 
     unsigned char maxRowComplexity() const;
@@ -72,6 +73,8 @@ class CoverTableau
       list<RowStackEntry>& stack,
       list<CoverTableau>& solutions,
       unsigned char& lowestComplexity) const;
+
+    unsigned char complexityHeadroom(const CoverTableau& solution) const;
 
     void updateStats(
       const Profile& sumProfile,
