@@ -79,8 +79,6 @@ void CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-  // const bool emptyStartFlag = rows.empty();
-
 numCompare++;
   if (coverIter->possible(residuals, cases, additions, weightAdded))
   {
@@ -116,8 +114,6 @@ numStack++;
 
 
   const Cover& cover = * coverIter;
-  // if (emptyStartFlag)
-    // return;
 
   // Then look for a row, or the best one, to add to.
   unsigned rno = 0, r;
@@ -125,12 +121,28 @@ numStack++;
 
   for (auto& row: rows)
   {
-    if (row.size() < 2 &&
-        row.attempt(cover, residuals, cases, additions, weightAdded) &&
-        weightAdded < cover.getWeight())
+    if (row.size() >= 2)
     {
-      // Don't want cover to be completely complementary (use new row).
-      // Also don't want more than two or's in a row.
+      // A row becomes too difficult to read for a human if it
+      // has more than two options.
+      rno++;
+      continue;
+    }
+
+    if (! row.attempt(cover, residuals, cases, additions, weightAdded))
+    {
+      // The row does not fit.
+      rno++;
+      continue;
+    }
+
+    if (weightAdded == cover.getWeight())
+    {
+      // The cover should not be completely complementary (then we
+      // have already used a new row).
+      rno++;
+      continue;
+    }
 
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
@@ -149,6 +161,7 @@ numStack++;
 
       if (tableau.complete())
       {
+assert(weightAdded == residualWeight);
 numSolutions++;
 
         solutions.push_back(tableau);
@@ -166,11 +179,12 @@ numSolutions++;
       }
       else
       {
+assert(weightAdded < residualWeight);
         tableau.complexity.addCover(
           cover.getComplexity(),
           riter->getComplexity());
       }
-    }
+    // }
     rno++;
   }
 }
