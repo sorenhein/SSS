@@ -150,6 +150,17 @@ bool Cover::possible(
 }
 
 
+bool Cover::possible(
+  const Tricks& residuals,
+  const vector<unsigned char>& cases,
+  Tricks& additions,
+  unsigned char& weightAdded) const
+{
+  // Same as the previous method with explained unused.
+  return tricks.possibleNew(residuals, cases, additions, weightAdded);
+}
+
+
 CoverState Cover::explain(Tricks& tricksSeen) const
 {
   return tricks.explain(tricksSeen);

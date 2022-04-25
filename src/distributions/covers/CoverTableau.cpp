@@ -64,19 +64,15 @@ void CoverTableau::attempt(
 {
   const Cover& cover = * coverIter;
 
-  // explained is a dummy vector here.
-  Tricks explained;
-  explained.resize(cover.size());
-
   Tricks additions;
   additions.resize(cover.size());
-
   unsigned char weightAdded;
+
   const bool emptyStartFlag = rows.empty();
 
 numCompare++;
   // First try to add a new row.
-  if (cover.possible(explained, residuals, cases, additions, weightAdded))
+  if (cover.possible(residuals, cases, additions, weightAdded))
   {
     stack.emplace_back(StackEntry());
     StackEntry& centry = stack.back();
@@ -192,6 +188,7 @@ numCompareManual++;
 numStackManual++;
     stack.emplace_back(RowStackEntry());
     RowStackEntry& rentry = stack.back();
+    rentry.rowIter = rowIter;
 
     CoverTableau& tableau = rentry.tableau;
     tableau = * this;
@@ -200,7 +197,6 @@ numStackManual++;
 
     tableau.residuals -= additions;
     tableau.residualWeight -= weightAdded;
-    rentry.rowIter = rowIter;
     return false;
   }
   else if (solution.rows.empty())

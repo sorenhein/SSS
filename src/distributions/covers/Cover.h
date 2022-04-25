@@ -83,6 +83,13 @@ class Cover
       Tricks& additions,
       unsigned char& tricksAdded) const;
 
+    // This one doesn't use explained.
+    bool possible(
+      const Tricks& residuals,
+      const vector<unsigned char>& cases,
+      Tricks& additions,
+      unsigned char& tricksAdded) const;
+
     CoverState explain(Tricks& tricksSeen) const;
 
     void updateStats(
