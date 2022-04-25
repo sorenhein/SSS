@@ -94,9 +94,13 @@ class CoverTableau
     Tricks residuals;
     unsigned char residualWeight;
 
-    // unsigned char complexity;
-    // unsigned char maxComplexity;
     TableauComplexity complexity;
+
+
+    void addRow(
+      const Cover& cover,
+      const Tricks& tricks,
+      const vector<unsigned char>& cases);
 
 
 
