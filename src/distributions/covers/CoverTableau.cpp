@@ -79,15 +79,15 @@ void CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-  const Cover& cover = * coverIter;
-  const bool emptyStartFlag = rows.empty();
+  // const bool emptyStartFlag = rows.empty();
 
 numCompare++;
-  // First try to add a new row.
-  if (cover.possible(residuals, cases, additions, weightAdded))
+  if (coverIter->possible(residuals, cases, additions, weightAdded))
   {
+    // A whole new row is possible.
     if (weightAdded < residualWeight)
     {
+      // The cover does not lead to a solution.
 numStack++;
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
@@ -95,25 +95,31 @@ numStack++;
 
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
-      tableau.addRow(cover, additions, cases);
+      tableau.addRow(* coverIter, additions, cases);
     }
     else
     {
+      // The cover does lead to a solution, so there is no point in
+      // looking for existing row to which to add it.
  numSolutions++;
       solutions.push_back(* this);
 
       CoverTableau& solution = solutions.back();
-      solution.addRow(cover, additions, cases);
+      solution.addRow(* coverIter, additions, cases);
 
       if (solution.complexity.sum < lowestComplexity)
         lowestComplexity = solution.complexity.sum;
+      
+      return;
     }
   }
 
-  // Then look for a row, or the best one, to add to.
-  if (emptyStartFlag)
-    return;
 
+  const Cover& cover = * coverIter;
+  // if (emptyStartFlag)
+    // return;
+
+  // Then look for a row, or the best one, to add to.
   unsigned rno = 0, r;
   list<CoverRow>::iterator riter;
 
