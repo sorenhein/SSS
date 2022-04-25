@@ -44,7 +44,7 @@ class CoverTableau
     unsigned char maxComplexity;
 
 
-    unsigned char maxRowComplexity() const;
+    // unsigned char maxRowComplexity() const;
 
 
   public:
@@ -71,9 +71,7 @@ class CoverTableau
       const vector<unsigned char>& cases,
       list<CoverRow>::const_iterator& rowIter,
       list<RowStackEntry>& stack,
-      // list<CoverTableau>& solutions,
-      CoverTableau& solution,
-      unsigned char& lowestComplexity) const;
+      CoverTableau& solution);
 
     unsigned char complexityHeadroom(const CoverTableau& solution) const;
 

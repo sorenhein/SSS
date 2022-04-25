@@ -1,12 +1,8 @@
 Cover specifics
 ---------------
-Potentially only the best solution, not a stack.
-Then no lowestComplexity.
+Adapt the general one to the manual one.
 
 Can delete Tricks::possible for possiblenew?
-
-CoverTableau::attemptManually:
-Also attempt()
 
 How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.
 
@@ -25,9 +21,6 @@ But that's not the problem here.  10/12846 too.
 Perhaps output "; and".  No semicolon - comma?
 Then a row has one of these complex ones, or only two simple ones.
 So it's either "and" or "or".
-
-Count #stack operations in Covers/CoverTableau.  See what we can
-do about it.
 
 Differences:
 11/ 57611: Why are solutions not the same?

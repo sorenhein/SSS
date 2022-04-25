@@ -249,7 +249,7 @@ for (auto s: solutions)
 
 CoverState Covers::explainManually(
   const list<Result>& results,
-  CoverTableau& tableau) const
+  CoverTableau& solution) const
 {
   Tricks tricks;
   unsigned char tmin;
@@ -257,36 +257,38 @@ CoverState Covers::explainManually(
 
   list<RowStackEntry> stack;
   stack.emplace_back(RowStackEntry());
-  RowStackEntry& rentry = stack.back();
 
+  RowStackEntry& rentry = stack.back();
   rentry.tableau.init(tricks, tmin, cases);
   rentry.rowIter = rows.begin();
-
-  CoverTableau solution;
-  unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
 
   auto siter = stack.begin();
   while (siter != stack.end())
   {
+    auto& stackElem = siter->tableau;
+
     auto riter = siter->rowIter;
     while (riter != rows.end())
     {
-      const unsigned char headroom = 
-        siter->tableau.complexityHeadroom(solution);
+      const unsigned char headroom = stackElem.complexityHeadroom(solution);
 
-      if (riter->minComplexityAdder(siter->tableau.getResidualWeight()) > 
+      if (riter->minComplexityAdder(stackElem.getResidualWeight()) > 
           headroom)
+      {
+        // As the rows are ordered, later rows have no chance either.
         break;
+      }
 
       if (riter->getComplexity() > headroom)
       {
+        // The current row may be too comple, but there may be others.
         riter++;
         continue;
       }
 
-      if (siter->tableau.attemptManually(cases, riter, stack, 
-          solution, lowestComplexity))
+      if (stackElem.attemptManually(cases, riter, stack, solution))
       {
+        // We found a solution.  It may have replaced the previous one.
         break;
       }
 
@@ -296,8 +298,6 @@ CoverState Covers::explainManually(
     // Erasing first stack element.
     siter = stack.erase(siter);
   }
-
-  swap(tableau, solution);
 
   return COVER_DONE;
 }

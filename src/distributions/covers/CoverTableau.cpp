@@ -184,10 +184,10 @@ bool CoverTableau::attemptManually(
   const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   list<RowStackEntry>& stack,
-  CoverTableau& solution,
-  [[maybe_unused]] unsigned char& lowestComplexity) const
+  CoverTableau& solution)
 {
-  // Return true if a solution is found.
+  // Return true if a solution is found, even if it is inferior to
+  // the existing one.
 
   Tricks additions;
   additions.resize(residuals.size());
@@ -200,41 +200,37 @@ numCompareManual++;
   if (weightAdded == residualWeight)
   {
 numSolutionsManual++;
-    // Done, so we have a solution.
-
+    // We have a solution.
     if (solution.rows.empty())
     {
+      // It is the first solution.
       solution = * this;
       solution.rows.push_back(* rowIter);
 
       solution.complexity += rowIter->getComplexity();
-      lowestComplexity = solution.complexity;
       if (rowIter->getComplexity() > solution.maxComplexity)
         solution.maxComplexity = rowIter->getComplexity();
     }
     else
     {
-      CoverTableau tmp = * this;
+      // We can use this CoverTableau, as the stack element is about
+      // to be popped anyway.
+      rows.push_back(* rowIter);
 
-      tmp.rows.push_back(* rowIter);
+      complexity += rowIter->getComplexity();
+      if (rowIter->getComplexity() > maxComplexity)
+        maxComplexity = rowIter->getComplexity();
 
-      tmp.complexity += rowIter->getComplexity();
-      if (rowIter->getComplexity() > tmp.maxComplexity)
-        tmp.maxComplexity = rowIter->getComplexity();
-
-      if (tmp < solution)
-      {
-        solution = tmp;
-        lowestComplexity = solution.complexity;
-      }
+      if (* this < solution)
+        solution = * this;
     }
     
     return true;
   }
-  else
+  else if (solution.rows.empty() ||
+      complexity + rowIter->getComplexity() < solution.complexity)
   {
-  numStackManual++;
-  // TODO Could not push if new complexity is >= solution
+numStackManual++;
     stack.emplace_back(RowStackEntry());
     RowStackEntry& rentry = stack.back();
 
@@ -251,6 +247,12 @@ numSolutionsManual++;
     if (rowIter->getComplexity() > tableau.maxComplexity)
       tableau.maxComplexity = rowIter->getComplexity();
 
+    return false;
+  }
+  else
+  {
+    // The next row will bust us anyway.
+cout << "XXX\n";
     return false;
   }
 }
@@ -301,10 +303,12 @@ unsigned char CoverTableau::getComplexity() const
 }
 
 
+/*
 unsigned char CoverTableau::maxRowComplexity() const
 {
   return maxComplexity;
 }
+*/
 
 
 unsigned char CoverTableau::getResidualWeight() const
