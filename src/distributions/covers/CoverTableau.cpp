@@ -144,9 +144,12 @@ numStack++;
       continue;
     }
 
+    if (weightAdded < residualWeight)
+    {
+numStack++;
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
-numStack++;
+      centry.coverIter = coverIter;
 
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
@@ -157,34 +160,31 @@ numStack++;
       riter->add(cover, additions, cases,
         tableau.residuals, tableau.residualWeight);
 
-      centry.coverIter = coverIter;
-
-      if (tableau.complete())
-      {
-assert(weightAdded == residualWeight);
+      tableau.complexity.addCover(
+        cover.getComplexity(),
+        riter->getComplexity());
+    }
+    else
+    {
 numSolutions++;
+      solutions.push_back(* this);
+      CoverTableau& solution = solutions.back();
 
-        solutions.push_back(tableau);
+      // A bit fumbly: Advance to the same place in tableau.
+      for (riter = solution.rows.begin(), r = 0; r < rno; riter++, r++);
 
-        CoverTableau& solution = solutions.back();
-        solution.complexity.addCover(
-          cover.getComplexity(), riter->getComplexity());
+      riter->add(cover, additions, cases,
+        solution.residuals, solution.residualWeight);
 
-        const unsigned char c = solution.getComplexity();
+      solution.complexity.addCover(
+        cover.getComplexity(), riter->getComplexity());
 
-        if (c < lowestComplexity)
-          lowestComplexity = c;
-        // Done, so eliminate.
-        stack.pop_back();
-      }
-      else
-      {
-assert(weightAdded < residualWeight);
-        tableau.complexity.addCover(
-          cover.getComplexity(),
-          riter->getComplexity());
-      }
-    // }
+      const unsigned char c = solution.getComplexity();
+
+      if (c < lowestComplexity)
+        lowestComplexity = c;
+    }
+
     rno++;
   }
 }
