@@ -295,17 +295,6 @@ CoverState Covers::explainManually(
   swap(tableau, solutions.front());
 
   return COVER_DONE;
-
-/*
-unsigned i = 0;
-for (auto s: solutions)
-{
-  cout << "Solution " << i << ", compl " << + s.getComplexity() << "\n";
-  cout << s.str();
-  if (++i >= 20)
-    break;
-}
-*/
 }
 
 

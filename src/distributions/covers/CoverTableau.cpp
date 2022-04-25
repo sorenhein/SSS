@@ -152,14 +152,13 @@ bool CoverTableau::attemptManually(
   list<CoverTableau>& solutions,
   unsigned char& lowestComplexity) const
 {
-  // Try to add a new row.
-  const CoverRow& row = * rowIter;
+  // Return true if a solution is found.
 
   Tricks additions;
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-  if (! row.possible(residuals, cases, additions, weightAdded))
+  if (! rowIter->possible(residuals, cases, additions, weightAdded))
     return false;
 
   if (weightAdded == residualWeight)
@@ -167,7 +166,7 @@ bool CoverTableau::attemptManually(
     // Done, so we have a solution.
     solutions.emplace_back(* this);
     CoverTableau& solution = solutions.back();
-    solution.rows.push_back(row);
+    solution.rows.push_back(* rowIter);
 
     const unsigned char sc = solution.getComplexity();
     if (lowestComplexity > sc)
@@ -182,7 +181,7 @@ bool CoverTableau::attemptManually(
 
     CoverTableau& tableau = rentry.tableau;
     tableau = * this;
-    tableau.rows.push_back(row);
+    tableau.rows.push_back(* rowIter);
 
     tableau.residuals -= additions;
     tableau.residualWeight -= weightAdded;

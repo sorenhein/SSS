@@ -6,11 +6,6 @@ Then no lowestComplexity.
 May not need subtract methods at all.
 Can delete Tricks::possible for possiblenew?
 
-In CoverTableau additions::subtract we already know residualWeight
-is -= weightAdded, so subtract could be a straight -= vector?
-
-Attempt() to return bool true if solution.  Then Covers loop done?
-
 Then no separate if-check of project || complexity in Covers?
 Cover::minComplexityAdder?
 The projected check: break
@@ -20,9 +15,6 @@ CoverTableau::attemptManually:
 Also attempt()
 
 CoverTableau could get sumProfile passed in, save on the copying.
-
-Tricks::possible might never need the first argument?
-Could just check in Tricks::possible that explained is == 0?
 
 How do we get the weight from Tableau?  Seems to be 0 in Vstrategy Slist.
 
