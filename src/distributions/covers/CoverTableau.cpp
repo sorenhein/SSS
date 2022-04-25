@@ -35,8 +35,7 @@ void CoverTableau::reset()
   residuals.clear();
   residualWeight = 0;
 
-  complexity = 0;
-  maxComplexity = 0;
+  complexity.reset();
 }
 
 
@@ -75,8 +74,6 @@ void CoverTableau::attempt(
   unsigned char weightAdded;
   const bool emptyStartFlag = rows.empty();
 
-  // const unsigned char complexity = CoverTableau::getComplexity();
-
 numCompare++;
   // First try to add a new row.
   if (cover.possible(explained, residuals, cases, additions, weightAdded))
@@ -103,18 +100,14 @@ numStack++;
       stack.pop_back();
 
       CoverTableau& solution = solutions.back();
-      solution.complexity += row.getComplexity();
-      if (row.getComplexity() > solution.maxComplexity)
-        solution.maxComplexity = row.getComplexity();
+      solution.complexity.addRow(row.getComplexity());
 
-      if (complexity + row.getComplexity() < lowestComplexity)
-        lowestComplexity = complexity + row.getComplexity();
+      if (complexity.sum + row.getComplexity() < lowestComplexity)
+        lowestComplexity = complexity.sum + row.getComplexity();
     }
     else
     {
-      tableau.complexity += row.getComplexity();
-      if (row.getComplexity() > tableau.maxComplexity)
-        tableau.maxComplexity = row.getComplexity();
+      tableau.complexity.addRow(row.getComplexity());
     }
   }
 
@@ -156,11 +149,9 @@ numSolutions++;
         solutions.push_back(tableau);
 
         CoverTableau& solution = solutions.back();
-        solution.complexity += cover.getComplexity();
-        if (riter->getComplexity() > solution.maxComplexity)
-          solution.maxComplexity = riter->getComplexity();
+        solution.complexity.addCover(
+          cover.getComplexity(), riter->getComplexity());
 
-        // const unsigned char c = tableau.getComplexity();
         const unsigned char c = solution.getComplexity();
 
         if (c < lowestComplexity)
@@ -170,9 +161,9 @@ numSolutions++;
       }
       else
       {
-        tableau.complexity += cover.getComplexity();
-        if (riter->getComplexity() > tableau.maxComplexity)
-          tableau.maxComplexity = riter->getComplexity();
+        tableau.complexity.addCover(
+          cover.getComplexity(),
+          riter->getComplexity());
       }
     }
     rno++;
@@ -188,7 +179,6 @@ bool CoverTableau::attemptManually(
 {
   // Return true if a solution is found, even if it is inferior to
   // the existing one.
-
   Tricks additions;
   additions.resize(residuals.size());
   unsigned char weightAdded;
@@ -197,38 +187,7 @@ numCompareManual++;
   if (! rowIter->possible(residuals, cases, additions, weightAdded))
     return false;
 
-  if (weightAdded == residualWeight)
-  {
-numSolutionsManual++;
-    // We have a solution.
-    if (solution.rows.empty())
-    {
-      // It is the first solution.
-      solution = * this;
-      solution.rows.push_back(* rowIter);
-
-      solution.complexity += rowIter->getComplexity();
-      if (rowIter->getComplexity() > solution.maxComplexity)
-        solution.maxComplexity = rowIter->getComplexity();
-    }
-    else
-    {
-      // We can use this CoverTableau, as the stack element is about
-      // to be popped anyway.
-      rows.push_back(* rowIter);
-
-      complexity += rowIter->getComplexity();
-      if (rowIter->getComplexity() > maxComplexity)
-        maxComplexity = rowIter->getComplexity();
-
-      if (* this < solution)
-        solution = * this;
-    }
-    
-    return true;
-  }
-  else if (solution.rows.empty() ||
-      complexity + rowIter->getComplexity() < solution.complexity)
+  if (weightAdded < residualWeight)
   {
 numStackManual++;
     stack.emplace_back(RowStackEntry());
@@ -237,23 +196,34 @@ numStackManual++;
     CoverTableau& tableau = rentry.tableau;
     tableau = * this;
     tableau.rows.push_back(* rowIter);
+    tableau.complexity.addRow(rowIter->getComplexity());
 
     tableau.residuals -= additions;
     tableau.residualWeight -= weightAdded;
-
     rentry.rowIter = rowIter;
-
-    tableau.complexity += rowIter->getComplexity();
-    if (rowIter->getComplexity() > tableau.maxComplexity)
-      tableau.maxComplexity = rowIter->getComplexity();
-
     return false;
+  }
+  else if (solution.rows.empty())
+  {
+    // We have a solution for sure, as it is the first one.
+numSolutionsManual++;
+    solution = * this;
+    solution.rows.push_back(* rowIter);
+    solution.complexity.addRow(rowIter->getComplexity());
+    return true;
   }
   else
   {
-    // The next row will bust us anyway.
-cout << "XXX\n";
-    return false;
+numSolutionsManual++;
+    // We can use this CoverTableau, as the stack element is about
+    // to be popped anyway.
+    rows.push_back(* rowIter);
+    complexity.addRow(rowIter->getComplexity());
+
+    if (complexity < solution.complexity)
+    // if (* this < solution)
+      solution = * this;
+    return true;
   }
 }
 
@@ -261,12 +231,7 @@ cout << "XXX\n";
 unsigned char CoverTableau::complexityHeadroom(
   const CoverTableau& solution) const
 {
-  if (solution.complexity == 0)
-    return numeric_limits<unsigned char>::max();
-  else if (complexity >= solution.complexity)
-    return 0;
-  else
-    return solution.complexity - complexity;
+  return complexity.headroom(solution.complexity);
 }
 
 
@@ -282,12 +247,7 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::operator < (const CoverTableau& tableau2) const
 {
-  if (complexity < tableau2.complexity)
-    return true;
-  else if (complexity > tableau2.complexity)
-    return false;
-  else
-    return (maxComplexity < tableau2.maxComplexity);
+  return (complexity < tableau2.complexity);
 }
 
 
@@ -299,16 +259,9 @@ bool CoverTableau::complete() const
 
 unsigned char CoverTableau::getComplexity() const
 {
-  return complexity;
+  // TODO This method can go later.
+  return complexity.sum;
 }
-
-
-/*
-unsigned char CoverTableau::maxRowComplexity() const
-{
-  return maxComplexity;
-}
-*/
 
 
 unsigned char CoverTableau::getResidualWeight() const
@@ -326,8 +279,8 @@ string CoverTableau::strBracket() const
 
   stringstream ss;
   ss << 
-    "[c " << +complexity << 
-    "/" << +maxComplexity <<
+    "[c " << 
+    complexity.str() <<
     ", w " << weight << "]";
   return ss.str();
 }

@@ -30,6 +30,60 @@ struct StackEntry;
 struct RowStackEntry;
 
 
+struct TableauComplexity
+{
+  unsigned char sum;
+  unsigned char max;
+
+  void reset()
+  {
+    sum = 0;
+    max = 0;
+  };
+
+  void addCover(
+    const unsigned char coverComplexity,
+    const unsigned char rowComplexity)
+  {
+    sum += coverComplexity;
+    if (rowComplexity > max)
+      max = rowComplexity;
+  };
+
+  void addRow(const unsigned char rowComplexity)
+  {
+    sum += rowComplexity;
+    if (rowComplexity > max)
+      max = rowComplexity;
+  };
+
+  unsigned char headroom(const TableauComplexity& solution) const
+  {
+    if (solution.sum == 0)
+      return numeric_limits<unsigned char>::max();
+    else if (sum >= solution.sum)
+      return 0;
+    else
+      return solution.sum - sum;
+  };
+
+  bool operator < (const TableauComplexity& tc2) const
+  {
+    if (sum < tc2.sum)
+      return true;
+    else if (sum > tc2.sum)
+      return false;
+    else
+      return (max < tc2.max);
+  };
+
+  string str() const
+  {
+    return to_string(+sum) + "/" + to_string(+max);
+  };
+};
+
+
 class CoverTableau
 {
   private:
@@ -40,11 +94,10 @@ class CoverTableau
     Tricks residuals;
     unsigned char residualWeight;
 
-    unsigned char complexity;
-    unsigned char maxComplexity;
+    // unsigned char complexity;
+    // unsigned char maxComplexity;
+    TableauComplexity complexity;
 
-
-    // unsigned char maxRowComplexity() const;
 
 
   public:
