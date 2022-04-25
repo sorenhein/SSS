@@ -234,6 +234,7 @@ numSolutionsManual++;
   else
   {
   numStackManual++;
+  // TODO Could not push if new complexity is >= solution
     stack.emplace_back(RowStackEntry());
     RowStackEntry& rentry = stack.back();
 
@@ -258,15 +259,12 @@ numSolutionsManual++;
 unsigned char CoverTableau::complexityHeadroom(
   const CoverTableau& solution) const
 {
-  assert(complexity < solution.complexity);
-  unsigned char headroom = solution.complexity - complexity;
-
-  // Only keep this CoverTableau if it beats solution on complexity,
-  // or has the same complexity but better row/maximum complexity.
-  if (maxComplexity + headroom >= solution.maxComplexity)
-    return headroom -1;
+  if (solution.complexity == 0)
+    return numeric_limits<unsigned char>::max();
+  else if (complexity >= solution.complexity)
+    return 0;
   else
-    return headroom;
+    return solution.complexity - complexity;
 }
 
 
@@ -323,7 +321,10 @@ string CoverTableau::strBracket() const
     weight += row.getWeight();
 
   stringstream ss;
-  ss << "[c " << +complexity << ", w " << weight << "]";
+  ss << 
+    "[c " << +complexity << 
+    "/" << +maxComplexity <<
+    ", w " << weight << "]";
   return ss.str();
 }
 
