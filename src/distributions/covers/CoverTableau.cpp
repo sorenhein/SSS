@@ -16,6 +16,10 @@
 
 #include "../../strategies/result/Result.h"
 
+// TMP
+extern unsigned numCompare, numStack, numSolutions;
+extern unsigned numCompareManual, numStackManual, numSolutionsManual;
+
 
 CoverTableau::CoverTableau()
 {
@@ -71,12 +75,14 @@ void CoverTableau::attempt(
 
   const unsigned char complexity = CoverTableau::getComplexity();
 
+numCompare++;
   // First try to add a new row.
   if (cover.possible(explained, residuals, cases, additions, weightAdded))
   {
     stack.emplace_back(StackEntry());
     StackEntry& centry = stack.back();
 
+numStack++;
     CoverTableau& tableau = centry.tableau;
     tableau = * this;
     tableau.rows.emplace_back(CoverRow());
@@ -89,6 +95,7 @@ void CoverTableau::attempt(
 
     if (tableau.complete())
     {
+ numSolutions++;
       solutions.push_back(tableau);
       // Done, so eliminate.
       stack.pop_back();
@@ -116,6 +123,7 @@ void CoverTableau::attempt(
 
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
+numStack++;
 
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
@@ -130,6 +138,7 @@ void CoverTableau::attempt(
 
       if (tableau.complete())
       {
+numSolutions++;
         const unsigned char c = tableau.getComplexity();
 
         if (c < lowestComplexity)
@@ -158,11 +167,13 @@ bool CoverTableau::attemptManually(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
+numCompareManual++;
   if (! rowIter->possible(residuals, cases, additions, weightAdded))
     return false;
 
   if (weightAdded == residualWeight)
   {
+numSolutionsManual++;
     // Done, so we have a solution.
     solutions.emplace_back(* this);
     CoverTableau& solution = solutions.back();
@@ -176,6 +187,7 @@ bool CoverTableau::attemptManually(
   }
   else
   {
+  numStackManual++;
     stack.emplace_back(RowStackEntry());
     RowStackEntry& rentry = stack.back();
 
