@@ -35,8 +35,8 @@ void CoverTableau::reset()
   residuals.clear();
   residualWeight = 0;
 
-  complexityTMP = 0;
-  maxComplexityTMP = 0;
+  complexity = 0;
+  maxComplexity = 0;
 }
 
 
@@ -75,7 +75,7 @@ void CoverTableau::attempt(
   unsigned char weightAdded;
   const bool emptyStartFlag = rows.empty();
 
-  const unsigned char complexity = CoverTableau::getComplexity();
+  // const unsigned char complexity = CoverTableau::getComplexity();
 
 numCompare++;
   // First try to add a new row.
@@ -103,18 +103,18 @@ numStack++;
       stack.pop_back();
 
       CoverTableau& solution = solutions.back();
-      solution.complexityTMP += row.getComplexity();
-      if (row.getComplexity() > solution.maxComplexityTMP)
-        solution.maxComplexityTMP = row.getComplexity();
+      solution.complexity += row.getComplexity();
+      if (row.getComplexity() > solution.maxComplexity)
+        solution.maxComplexity = row.getComplexity();
 
       if (complexity + row.getComplexity() < lowestComplexity)
         lowestComplexity = complexity + row.getComplexity();
     }
     else
     {
-      tableau.complexityTMP += row.getComplexity();
-      if (row.getComplexity() > tableau.maxComplexityTMP)
-        tableau.maxComplexityTMP = row.getComplexity();
+      tableau.complexity += row.getComplexity();
+      if (row.getComplexity() > tableau.maxComplexity)
+        tableau.maxComplexity = row.getComplexity();
     }
   }
 
@@ -156,9 +156,9 @@ numSolutions++;
         solutions.push_back(tableau);
 
         CoverTableau& solution = solutions.back();
-        solution.complexityTMP += cover.getComplexity();
-        if (riter->getComplexity() > solution.maxComplexityTMP)
-          solution.maxComplexityTMP = riter->getComplexity();
+        solution.complexity += cover.getComplexity();
+        if (riter->getComplexity() > solution.maxComplexity)
+          solution.maxComplexity = riter->getComplexity();
 
         // const unsigned char c = tableau.getComplexity();
         const unsigned char c = solution.getComplexity();
@@ -170,9 +170,9 @@ numSolutions++;
       }
       else
       {
-        tableau.complexityTMP += cover.getComplexity();
-        if (riter->getComplexity() > tableau.maxComplexityTMP)
-          tableau.maxComplexityTMP = riter->getComplexity();
+        tableau.complexity += cover.getComplexity();
+        if (riter->getComplexity() > tableau.maxComplexity)
+          tableau.maxComplexity = riter->getComplexity();
       }
     }
     rno++;
@@ -205,9 +205,9 @@ numSolutionsManual++;
     CoverTableau& solution = solutions.back();
     solution.rows.push_back(* rowIter);
 
-    solution.complexityTMP += rowIter->getComplexity();
-    if (rowIter->getComplexity() > solution.maxComplexityTMP)
-      solution.maxComplexityTMP = rowIter->getComplexity();
+    solution.complexity += rowIter->getComplexity();
+    if (rowIter->getComplexity() > solution.maxComplexity)
+      solution.maxComplexity = rowIter->getComplexity();
 
     const unsigned char sc = solution.getComplexity();
     if (lowestComplexity > sc)
@@ -230,9 +230,9 @@ numSolutionsManual++;
 
     rentry.rowIter = rowIter;
 
-    tableau.complexityTMP += rowIter->getComplexity();
-    if (rowIter->getComplexity() > tableau.maxComplexityTMP)
-      tableau.maxComplexityTMP = rowIter->getComplexity();
+    tableau.complexity += rowIter->getComplexity();
+    if (rowIter->getComplexity() > tableau.maxComplexity)
+      tableau.maxComplexity = rowIter->getComplexity();
 
     return false;
   }
@@ -242,12 +242,12 @@ numSolutionsManual++;
 unsigned char CoverTableau::complexityHeadroom(
   const CoverTableau& solution) const
 {
-  assert(complexityTMP < solution.complexityTMP);
-  unsigned char headroom = solution.complexityTMP - complexityTMP;
+  assert(complexity < solution.complexity);
+  unsigned char headroom = solution.complexity - complexity;
 
   // Only keep this CoverTableau if it beats solution on complexity,
   // or has the same complexity but better row/maximum complexity.
-  if (maxComplexityTMP + headroom >= solution.maxComplexityTMP)
+  if (maxComplexity + headroom >= solution.maxComplexity)
     return headroom -1;
   else
     return headroom;
@@ -266,23 +266,12 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::operator < (const CoverTableau& tableau2) const
 {
-  /*
-  const unsigned char compl1 = CoverTableau::getComplexity();
-  const unsigned char compl2 = tableau2.getComplexity();
-
-assert(compl1 == complexityTMP);
-assert(compl2 == tableau2.complexityTMP);
-assert(CoverTableau::maxRowComplexity() == maxComplexityTMP);
-assert(tableau2.maxRowComplexity() == tableau2.maxComplexityTMP);
-*/
-
-  if (complexityTMP < tableau2.complexityTMP)
+  if (complexity < tableau2.complexity)
     return true;
-  else if (complexityTMP > tableau2.complexityTMP)
+  else if (complexity > tableau2.complexity)
     return false;
   else
-    return (maxComplexityTMP < tableau2.maxComplexityTMP);
-    // return (CoverTableau::maxRowComplexity() < tableau2.maxRowComplexity());
+    return (maxComplexity < tableau2.maxComplexity);
 }
 
 
@@ -294,42 +283,13 @@ bool CoverTableau::complete() const
 
 unsigned char CoverTableau::getComplexity() const
 {
-/*
-  unsigned char complexity = 0;
-  for (auto& row: rows)
-  {
-    // TODO TEMP
-    assert(complexity + row.getComplexity() > complexity);
-
-    complexity += row.getComplexity();
-  }
-if (complexity != complexityTMP)
-{
-cout << "complexity " << +complexity << endl;
-cout << "complexityTMP " << +complexityTMP << endl;
-assert(complexity == complexityTMP);
-}
-*/
-  return complexityTMP;
+  return complexity;
 }
 
 
 unsigned char CoverTableau::maxRowComplexity() const
 {
-/*
-  // The single highest row complexity is a measure of complexity too.
-  unsigned char m = 0;
-  for (auto& row: rows)
-  {
-    const unsigned char c = row.getComplexity();
-    if (m < c)
-      m = c;
-  }
-assert(maxComplexityTMP == m);
-
-  return m;
-*/
-  return maxComplexityTMP;
+  return maxComplexity;
 }
 
 
@@ -346,10 +306,8 @@ string CoverTableau::strBracket() const
   for (auto& row: rows)
     weight += row.getWeight();
 
-// assert(complexityTMP == CoverTableau::getComplexity());
   stringstream ss;
-  // ss << "[c " << +CoverTableau::getComplexity() << ", w " << weight << "]";
-  ss << "[c " << +complexityTMP << ", w " << weight << "]";
+  ss << "[c " << +complexity << ", w " << weight << "]";
   return ss.str();
 }
 

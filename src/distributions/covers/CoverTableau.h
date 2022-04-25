@@ -40,8 +40,8 @@ class CoverTableau
     Tricks residuals;
     unsigned char residualWeight;
 
-    unsigned char complexityTMP;
-    unsigned char maxComplexityTMP;
+    unsigned char complexity;
+    unsigned char maxComplexity;
 
 
     unsigned char maxRowComplexity() const;
