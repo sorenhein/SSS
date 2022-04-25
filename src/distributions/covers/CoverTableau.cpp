@@ -184,8 +184,8 @@ bool CoverTableau::attemptManually(
   const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   list<RowStackEntry>& stack,
-  list<CoverTableau>& solutions,
-  unsigned char& lowestComplexity) const
+  CoverTableau& solution,
+  [[maybe_unused]] unsigned char& lowestComplexity) const
 {
   // Return true if a solution is found.
 
@@ -201,17 +201,33 @@ numCompareManual++;
   {
 numSolutionsManual++;
     // Done, so we have a solution.
-    solutions.emplace_back(* this);
-    CoverTableau& solution = solutions.back();
-    solution.rows.push_back(* rowIter);
 
-    solution.complexity += rowIter->getComplexity();
-    if (rowIter->getComplexity() > solution.maxComplexity)
-      solution.maxComplexity = rowIter->getComplexity();
+    if (solution.rows.empty())
+    {
+      solution = * this;
+      solution.rows.push_back(* rowIter);
 
-    const unsigned char sc = solution.getComplexity();
-    if (lowestComplexity > sc)
-      lowestComplexity = sc;
+      solution.complexity += rowIter->getComplexity();
+      lowestComplexity = solution.complexity;
+      if (rowIter->getComplexity() > solution.maxComplexity)
+        solution.maxComplexity = rowIter->getComplexity();
+    }
+    else
+    {
+      CoverTableau tmp = * this;
+
+      tmp.rows.push_back(* rowIter);
+
+      tmp.complexity += rowIter->getComplexity();
+      if (rowIter->getComplexity() > tmp.maxComplexity)
+        tmp.maxComplexity = rowIter->getComplexity();
+
+      if (tmp < solution)
+      {
+        solution = tmp;
+        lowestComplexity = solution.complexity;
+      }
+    }
     
     return true;
   }

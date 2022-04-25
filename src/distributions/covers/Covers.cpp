@@ -262,7 +262,8 @@ CoverState Covers::explainManually(
   rentry.tableau.init(tricks, tmin, cases);
   rentry.rowIter = rows.begin();
 
-  list<CoverTableau> solutions;
+  // list<CoverTableau> solutions;
+  CoverTableau solution;
   unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
 
   auto siter = stack.begin();
@@ -273,6 +274,8 @@ CoverState Covers::explainManually(
     auto riter = siter->rowIter;
     while (riter != rows.end())
     {
+      // const unsigned char headroom = tableau.complexityHeadroom(solution);
+
       if (tcomp + 
           riter->minComplexityAdder(siter->tableau.getResidualWeight()) > 
           lowestComplexity + 1)
@@ -285,7 +288,7 @@ CoverState Covers::explainManually(
       }
 
       if (siter->tableau.attemptManually(cases, riter, stack, 
-          solutions, lowestComplexity))
+          solution, lowestComplexity))
         break;
 
       riter++;
@@ -295,10 +298,11 @@ CoverState Covers::explainManually(
     siter = stack.erase(siter);
   }
 
-  assert(! solutions.empty());
-  solutions.sort();
+  // assert(! solutions.empty());
+  // solutions.sort();
 
-  swap(tableau, solutions.front());
+  swap(tableau, solution);
+  // swap(tableau, solutions.front());
 
   return COVER_DONE;
 }

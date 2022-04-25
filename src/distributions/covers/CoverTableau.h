@@ -71,7 +71,8 @@ class CoverTableau
       const vector<unsigned char>& cases,
       list<CoverRow>::const_iterator& rowIter,
       list<RowStackEntry>& stack,
-      list<CoverTableau>& solutions,
+      // list<CoverTableau>& solutions,
+      CoverTableau& solution,
       unsigned char& lowestComplexity) const;
 
     unsigned char complexityHeadroom(const CoverTableau& solution) const;
