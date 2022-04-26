@@ -978,7 +978,7 @@ void Strategy::setAndAdaptVoid(
  ************************************************************/
 
 bool Strategy::covers(
-  const Covers& coversIn,
+  Covers& coversIn,
   CoverTableau& tableau) const
 {
   tableau.reset();

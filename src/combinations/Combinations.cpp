@@ -58,8 +58,8 @@ void Combinations::setTimerNames()
   timersStrat[20].name("Covers::early");
   timersStrat[21].name("Covers::loop");
   timersStrat[22].name("Covers::symmetrics");
-  timersStrat[23].name("Covers::prepare");
-  timersStrat[24].name("Covers::sort");
+  timersStrat[23].name("Covers::explain");
+  timersStrat[24].name("Covers::explainManual");
   timersStrat[25].name("Covers::prune");
   timersStrat[30].name("Ranks::getMinimals");
   timersStrat[31].name("CombEntry::fixMinimals");
@@ -293,7 +293,6 @@ void Combinations::runUniques(
 
   // TODO Back into Combinations?
   CombTest ctest;
-  // list<ResExpl> resExplanations;
   list<CoverTableau> tableaux;
 
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
@@ -352,9 +351,6 @@ histoPlay[plays.size()]++;
               tableaux,
               productStats);
             timersStrat[32].stop();
-
-            // for (auto& resExpl: resExplanations)
-              // resExpl.updateStats(explStats);
           }
 
           timersStrat[33].start();

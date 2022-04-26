@@ -63,7 +63,7 @@ class TableauCache
 
     bool lookup(
       const Tricks& excessTricks,
-      CoverTableau const *& tableauPtr);
+      CoverTableau& solution);
 
     unsigned size() const;
 

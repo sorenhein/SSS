@@ -231,7 +231,7 @@ class Strategy
     // ******************* Winners ******************
 
     bool covers(
-      const Covers& coversIn,
+      Covers& coversIn,
       CoverTableau& tableau) const;
 
     void coversNew(

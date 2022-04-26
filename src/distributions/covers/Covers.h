@@ -41,19 +41,11 @@ class Covers
 
     TableauCache tableauCache;
 
-    // These are the manually set rows.  They are currently inactive.
+    // These are the manually set rows
     list<CoverRow> rows;
 
-
-    void setup(
-      const list<Result>& results,
-      Tricks& tricks,
-      unsigned char& tricksMin) const;
-
-    bool lookupSolution(
-      const Tricks& tricks,
-      const unsigned char tmin,
-      CoverTableau& solution);
+    // This is the separate cache corresponding to the rows.
+    TableauCache tableauRowCache;
 
 
   public:
@@ -77,20 +69,21 @@ class Covers
     void explain(
       const list<Result>& results,
       const unsigned numStrategyTops,
-      CoverTableau& tableau,
+      CoverTableau& solution,
       bool& newTableauFlag);
 
     CoverState explainManually(
       const list<Result>& results,
-      CoverTableau& tableau) const;
+      CoverTableau& solution);
 
-    void storeTableau(
-      const Tricks& excessTricks,
-      const CoverTableau& tableau);
-
-    bool lookupTableau(
-      const Tricks& excessTricks,
-      CoverTableau const * tableauPtr);
+    template<class T, class C>
+    void explainTemplate(
+      const Tricks& tricks,
+      const unsigned char tmin,
+      const unsigned numStrategyTops,
+      const C& candidates,
+      list<T>& stack,
+      CoverTableau& solution);
 
     const Profile& getSumProfile() const;
 
@@ -98,7 +91,67 @@ class Covers
       unsigned& numTableaux,
       unsigned& numUses) const;
 
-    string strCached() const;
+    string strCache() const;
 };
+
+
+template<class T, class C>
+void Covers::explainTemplate(
+  const Tricks& tricks,
+  const unsigned char tmin,
+  const unsigned numStrategyTops,
+  const C& candidates,
+  list<T>& stack,
+  CoverTableau& solution)
+{
+  stack.emplace_back(T());
+
+  T& entry = stack.back();
+  entry.tableau.init(tricks, tmin, cases);
+  entry.iter = store.begin();
+
+  auto stackIter = stack.begin();
+  while (stackIter != stack.end())
+  {
+    auto& stackElem = stackIter->tableau;
+
+    auto candIter = stackIter->iter;
+    while (candIter != candidates.end())
+    {
+      if (candIter->effectiveDepth() > numStrategyTops)
+      {
+        candIter++;
+        continue;
+      }
+
+      const unsigned char headroom = stackElem.headroom(solution);
+
+      if (candIter->minComplexityAdder(stackElem.getResidualWeight()) > 
+          headroom)
+      {
+        // As the covers are ordered, later covers have no chance either.
+        break;
+      }
+
+      if (candIter->getComplexity() > headroom)
+      {
+        // The current cover may be too complex, but there may be others.
+        candIter++;
+        continue;
+      }
+
+      if (stackIter->tableau.attempt(cases, candIter, stack, solution))
+      {
+        // We found a solution.  It may have replaced the previous one.
+        break;
+      }
+
+      candIter++;
+    }
+
+    // Erasing first stack element.
+    stackIter = stack.erase(stackIter);
+  }
+}
 
 #endif

@@ -583,6 +583,6 @@ string DistCore::str() const
 
 string DistCore::strCovers() const
 {
-  return covers.strCached();
+  return covers.strCache();
 }
 

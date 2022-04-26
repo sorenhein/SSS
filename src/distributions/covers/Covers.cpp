@@ -20,7 +20,6 @@
 #include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
-// TODO Time some more stuff
 
 Covers::Covers()
 {
@@ -31,9 +30,12 @@ Covers::Covers()
 void Covers::reset()
 {
   cases.clear();
+
   store.reset();
   tableauCache.reset();
+
   rows.clear();
+  tableauRowCache.reset();
 }
 
 
@@ -144,7 +146,7 @@ CoverRow& Covers::addRow()
 
 void Covers::sortRows()
 {
-  // TODO Needed?
+  // TODO Make < method in CoverRow
   rows.sort([](
     const CoverRow& coverRow1, const CoverRow& coverRow2)
   {
@@ -153,36 +155,10 @@ void Covers::sortRows()
 }
 
 
-void Covers::setup(
-  const list<Result>& results,
-  Tricks& tricks,
-  unsigned char& tricksMin) const
-{
-  tricks.set(results, tricksMin);
-}
-
-
 const Cover& Covers::lookup(const Cover& cover) const
 {
   // Turn a cover into the one we already know.  It must exist.
   return store.lookup(cover);
-}
-
-
-bool Covers::lookupSolution(
-  const Tricks& tricks,
-  const unsigned char tmin,
-  CoverTableau& solution)
-{
-  CoverTableau const * tableauPtr = nullptr;
-  if (tableauCache.lookup(tricks, tableauPtr))
-  {
-    solution = * tableauPtr;
-    solution.setMinTricks(tmin);
-    return true;
-  }
-  else
-    return false;
 }
 
 
@@ -194,28 +170,36 @@ void Covers::explain(
 {
   Tricks tricks;
   unsigned char tmin;
-  Covers::setup(results, tricks, tmin);
+  tricks.set(results, tmin);
 
   newTableauFlag = true;
-  if (Covers::lookupSolution(tricks, tmin, solution))
+  if (tableauCache.lookup(tricks, solution))
   {
+    solution.setMinTricks(tmin);
     newTableauFlag = false;
     return;
   }
 
+
+timersStrat[23].start();
+  // list<StackEntry> stack;
+  // Covers::explainTemplate(tricks, tmin, numStrategyTops,
+    // store, stack, solution);
+
+  /* */
   list<StackEntry> stack;
   stack.emplace_back(StackEntry());
 
   StackEntry& centry = stack.back();
   centry.tableau.init(tricks, tmin, cases);
-  centry.coverIter = store.begin();
+  centry.iter = store.begin();
 
   auto siter = stack.begin();
   while (siter != stack.end())
   {
     auto& stackElem = siter->tableau;
 
-    auto citer = siter->coverIter;
+    auto citer = siter->iter;
     while (citer != store.end())
     {
       if (citer->effectiveDepth() > numStrategyTops)
@@ -252,33 +236,42 @@ void Covers::explain(
     // Erasing first stack element.
     siter = stack.erase(siter);
   }
+  /* */
+
+timersStrat[23].stop();
 
   tableauCache.store(tricks, solution);
 }
 
 
-// TODO Add separate cache?
 CoverState Covers::explainManually(
   const list<Result>& results,
-  CoverTableau& solution) const
+  CoverTableau& solution)
 {
   Tricks tricks;
   unsigned char tmin;
-  Covers::setup(results, tricks, tmin);
+  tricks.set(results, tmin);
+
+  if (tableauRowCache.lookup(tricks, solution))
+  {
+    solution.setMinTricks(tmin);
+    return COVER_DONE;
+  }
 
   list<RowStackEntry> stack;
   stack.emplace_back(RowStackEntry());
 
   RowStackEntry& rentry = stack.back();
   rentry.tableau.init(tricks, tmin, cases);
-  rentry.rowIter = rows.begin();
+  rentry.iter = rows.begin();
 
   auto siter = stack.begin();
+timersStrat[24].start();
   while (siter != stack.end())
   {
     auto& stackElem = siter->tableau;
 
-    auto riter = siter->rowIter;
+    auto riter = siter->iter;
     while (riter != rows.end())
     {
       const unsigned char headroom = stackElem.headroom(solution);
@@ -309,29 +302,15 @@ CoverState Covers::explainManually(
     // Erasing first stack element.
     siter = stack.erase(siter);
   }
+timersStrat[24].stop();
+
+  tableauRowCache.store(tricks, solution);
 
   // TODO No return value I think
   return COVER_DONE;
 }
 
 
-void Covers::storeTableau(
-  const Tricks& excessTricks,
-  const CoverTableau& tableau)
-{
-  tableauCache.store(excessTricks, tableau);
-}
-
-
-bool Covers::lookupTableau(
-  const Tricks& excessTricks,
-  CoverTableau const * tableauPtr)
-{
-  return tableauCache.lookup(excessTricks, tableauPtr);
-}
-
-
-// TODO Who needs this?
 const Profile& Covers::getSumProfile() const
 {
   return sumProfile;
@@ -346,8 +325,7 @@ void Covers::getCoverCounts(
 }
 
 
-// TODO Name Cache?
-string Covers::strCached() const
+string Covers::strCache() const
 {
   return tableauCache.str(sumProfile);
 }

@@ -23,14 +23,14 @@ struct StackEntry
 {
   CoverTableau tableau;
 
-  set<Cover>::const_iterator coverIter;
+  set<Cover>::const_iterator iter;
 };
 
 struct RowStackEntry
 {
   CoverTableau tableau;
 
-  list<CoverRow>::const_iterator rowIter;
+  list<CoverRow>::const_iterator iter;
 };
 
 #endif
