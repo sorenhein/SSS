@@ -13,6 +13,7 @@
 #include <cassert>
 
 #include "Covers.h"
+#include "CoverStacks.h"
 
 #include "product/ProfilePair.h"
 
@@ -168,6 +169,23 @@ const Cover& Covers::lookup(const Cover& cover) const
 }
 
 
+bool Covers::lookupSolution(
+  const Tricks& tricks,
+  const unsigned char tmin,
+  CoverTableau& solution)
+{
+  CoverTableau const * tableauPtr = nullptr;
+  if (tableauCache.lookup(tricks, tableauPtr))
+  {
+    solution = * tableauPtr;
+    solution.setMinTricks(tmin);
+    return true;
+  }
+  else
+    return false;
+}
+
+
 void Covers::explain(
   const list<Result>& results,
   const unsigned numStrategyTops,
@@ -179,13 +197,8 @@ void Covers::explain(
   Covers::setup(results, tricks, tmin);
 
   newTableauFlag = true;
-  CoverTableau const * tableauPtr = nullptr;
-  if (tableauCache.lookup(tricks, tableauPtr))
+  if (Covers::lookupSolution(tricks, tmin, solution))
   {
-    // TODO Make a method
-    // Cache hit, potentially with a different number of minimum tricks.
-    solution = * tableauPtr;
-    solution.setMinTricks(tmin);
     newTableauFlag = false;
     return;
   }

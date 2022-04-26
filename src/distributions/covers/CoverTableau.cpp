@@ -13,6 +13,7 @@
 
 #include "CoverTableau.h"
 #include "Cover.h"
+#include "CoverStacks.h"
 
 #include "../../strategies/result/Result.h"
 

@@ -95,20 +95,4 @@ class CoverTableau
     string str(const Profile& sumProfile) const;
 };
 
-
-// TODO CoverStacks.h, included from CoverTableau.cpp, Covers.cpp
-struct StackEntry
-{
-  CoverTableau tableau;
-
-  set<Cover>::const_iterator coverIter;
-};
-
-struct RowStackEntry
-{
-  CoverTableau tableau;
-
-  list<CoverRow>::const_iterator rowIter;
-};
-
 #endif

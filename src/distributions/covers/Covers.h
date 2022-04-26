@@ -50,6 +50,11 @@ class Covers
       Tricks& tricks,
       unsigned char& tricksMin) const;
 
+    bool lookupSolution(
+      const Tricks& tricks,
+      const unsigned char tmin,
+      CoverTableau& solution);
+
 
   public:
 
