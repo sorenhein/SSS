@@ -180,65 +180,13 @@ void Covers::explain(
     return;
   }
 
+  timersStrat[23].start();
 
-timersStrat[23].start();
-  // list<StackEntry> stack;
-  // Covers::explainTemplate(tricks, tmin, numStrategyTops,
-    // store, stack, solution);
-
-  /* */
   list<StackEntry> stack;
-  stack.emplace_back(StackEntry());
+  Covers::explainTemplate(tricks, tmin, numStrategyTops,
+    store, stack, solution);
 
-  StackEntry& centry = stack.back();
-  centry.tableau.init(tricks, tmin, cases);
-  centry.iter = store.begin();
-
-  auto siter = stack.begin();
-  while (siter != stack.end())
-  {
-    auto& stackElem = siter->tableau;
-
-    auto citer = siter->iter;
-    while (citer != store.end())
-    {
-      if (citer->effectiveDepth() > numStrategyTops)
-      {
-        citer++;
-        continue;
-      }
-
-      const unsigned char headroom = stackElem.headroom(solution);
-
-      if (citer->minComplexityAdder(stackElem.getResidualWeight()) > 
-          headroom)
-      {
-        // As the covers are ordered, later covers have no chance either.
-        break;
-      }
-
-      if (citer->getComplexity() > headroom)
-      {
-        // The current cover may be too complex, but there may be others.
-        citer++;
-        continue;
-      }
-
-      if (siter->tableau.attempt(cases, citer, stack, solution))
-      {
-        // We found a solution.  It may have replaced the previous one.
-        // break;
-      }
-
-      citer++;
-    }
-
-    // Erasing first stack element.
-    siter = stack.erase(siter);
-  }
-  /* */
-
-timersStrat[23].stop();
+  timersStrat[23].stop();
 
   tableauCache.store(tricks, solution);
 }
