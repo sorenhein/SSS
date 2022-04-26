@@ -117,13 +117,11 @@ class CoverTableau
 
     void setMinTricks(const unsigned char tmin);
 
-    void attempt(
+    bool attempt(
       const vector<unsigned char>& cases,
       set<Cover>::const_iterator& coverIter,
       list<StackEntry>& stack,
       CoverTableau& solution);
-      // list<CoverTableau>& solutions,
-      // unsigned char& lowestComplexity) const;
 
     bool attemptManually(
       const vector<unsigned char>& cases,

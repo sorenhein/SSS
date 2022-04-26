@@ -169,22 +169,27 @@ const Cover& Covers::lookup(const Cover& cover) const
 void Covers::explain(
   const list<Result>& results,
   const unsigned numStrategyTops,
-  CoverTableau& tableau,
+  CoverTableau& solution,
   bool& newTableauFlag)
 {
   Tricks tricks;
   unsigned char tmin;
   Covers::setup(results, tricks, tmin);
 
-  CoverTableau const * tableauPtr = nullptr;
   newTableauFlag = true;
+  CoverTableau const * tableauPtr = nullptr;
   if (tableauCache.lookup(tricks, tableauPtr))
   {
+cout << "XXX hit\n";
     // Cache hit, potentially with a different number of minimum tricks.
-    tableau = * tableauPtr;
-    tableau.setMinTricks(tmin);
+    solution = * tableauPtr;
+    solution.setMinTricks(tmin);
     newTableauFlag = false;
     return;
+  }
+  else
+  {
+cout << "YYY miss\n";
   }
 
   list<StackEntry> stack;
@@ -194,17 +199,10 @@ void Covers::explain(
   centry.tableau.init(tricks, tmin, cases);
   centry.coverIter = store.begin();
 
-  CoverTableau solution;
-  // list<CoverTableau> solutions;
-  // unsigned char lowestComplexity = numeric_limits<unsigned char>::max();
-
   auto siter = stack.begin();
   while (siter != stack.end())
   {
     auto& stackElem = siter->tableau;
-// cout << "\n--- Stack entry now\n" << stackElem.str(sumProfile);
-
-    // const unsigned char tcomp = siter->tableau.getComplexity();
 
     auto citer = siter->coverIter;
     while (citer != store.end())
@@ -217,39 +215,25 @@ void Covers::explain(
 
       const unsigned char headroom = stackElem.complexityHeadroom(solution);
 
-/*
-cout << "  Trying:  " << citer->str(sumProfile) << 
-  "; cpx " << +citer->getComplexity() << "\n";
-cout << "  Soln     " << solution.strBracket() << "\n";
-cout << "  Res wght " << +stackElem.getResidualWeight() << "\n";
-cout << "  headroom " << +headroom << "\n";
-*/
-
       if (citer->minComplexityAdder(stackElem.getResidualWeight()) > 
           headroom)
       {
-// cout << "    fail project\n";
         // As the covers are ordered, later covers have no chance either.
         break;
       }
 
       if (citer->getComplexity() > headroom)
       {
-// cout << "    fail size\n";
         // The current cover may be too complex, but there may be others.
         citer++;
         continue;
       }
 
-      /*
-      if (tcomp + 
-          citer->minComplexityAdder(siter->tableau.getResidualWeight()) > 
-          lowestComplexity + 1)
-        break;
-        */
-
-      siter->tableau.attempt(cases, citer, stack, solution);
-        // solutions, lowestComplexity);
+      if (siter->tableau.attempt(cases, citer, stack, solution))
+      {
+        // We found a solution.  It may have replaced the previous one.
+        // break;
+      }
 
       citer++;
     }
@@ -258,12 +242,7 @@ cout << "  headroom " << +headroom << "\n";
     siter = stack.erase(siter);
   }
 
-  // assert(! solutions.empty());
-  // solutions.sort();
-
-  swap(tableau, solution);
-
-  tableauCache.store(tricks, tableau);
+  tableauCache.store(tricks, solution);
 }
 
 
