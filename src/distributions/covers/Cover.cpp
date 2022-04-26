@@ -272,7 +272,8 @@ unsigned char Cover::minComplexityAdder(const unsigned char resWeight) const
 
   // TODO Should this be true now?
   // assert(Cover::getComplexity() <= projected);
-  return max(Cover::getComplexity(), projected);
+  // return max(Cover::getComplexity(), projected);
+  return projected;
 }
 
 

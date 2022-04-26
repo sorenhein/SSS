@@ -121,8 +121,9 @@ class CoverTableau
       const vector<unsigned char>& cases,
       set<Cover>::const_iterator& coverIter,
       list<StackEntry>& stack,
-      list<CoverTableau>& solutions,
-      unsigned char& lowestComplexity) const;
+      CoverTableau& solution);
+      // list<CoverTableau>& solutions,
+      // unsigned char& lowestComplexity) const;
 
     bool attemptManually(
       const vector<unsigned char>& cases,

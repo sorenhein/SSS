@@ -72,8 +72,9 @@ void CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
   list<StackEntry>& stack,
-  list<CoverTableau>& solutions,
-  unsigned char& lowestComplexity) const
+  CoverTableau& solution)
+  // list<CoverTableau>& solutions,
+  // unsigned char& lowestComplexity) const
 {
   Tricks additions;
   additions.resize(residuals.size());
@@ -94,21 +95,59 @@ numStack++;
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
       tableau.addRow(* coverIter, additions, cases);
+// cout << "    new stack entry\n";
+    }
+    else if (solution.rows.empty())
+    {
+      // We have a solution for sure, as it is the first one.
+      // There is no point in looking for an existing row to which 
+      // to add it as well.
+numSolutions++;
+      solution = * this;
+      solution.addRow(* coverIter, additions, cases);
+// cout << "    solution first row\n";
+      return;
     }
     else
     {
-      // The cover does lead to a solution, so there is no point in
-      // looking for existing row to which to add it.
+      // We can use this CoverTableau, as the stack element is about
+      // to be popped anyway.
+      // NOT TRUE?
  numSolutions++;
+      CoverTableau::addRow(* coverIter, additions, cases);
+      /*
       solutions.push_back(* this);
 
       CoverTableau& solution = solutions.back();
       solution.addRow(* coverIter, additions, cases);
+      */
 
+
+      /*
       if (solution.complexity.sum < lowestComplexity)
         lowestComplexity = solution.complexity.sum;
       
       return;
+
+
+
+    rows.push_back(* rowIter);
+    complexity.addRow(rowIter->getComplexity());
+    */
+
+    if (complexity < solution.complexity)
+    {
+// cout << "    solution new row\n";
+      solution = * this;
+    }
+    else
+    {
+// cout << "    worse solution\n";
+    }
+    return; 
+    // true;
+
+
     }
   }
 
@@ -163,26 +202,38 @@ numStack++;
       tableau.complexity.addCover(
         cover.getComplexity(),
         riter->getComplexity());
+// cout << "    extended stack row\n";
     }
     else
     {
 numSolutions++;
-      solutions.push_back(* this);
-      CoverTableau& solution = solutions.back();
+      // We can't destroy * this, as we want to finish the loop;
+      CoverTableau tmp = * this;
 
       // A bit fumbly: Advance to the same place in tableau.
-      for (riter = solution.rows.begin(), r = 0; r < rno; riter++, r++);
+      for (riter = tmp.rows.begin(), r = 0; r < rno; riter++, r++);
 
       riter->add(cover, additions, cases,
-        solution.residuals, solution.residualWeight);
+        tmp.residuals, tmp.residualWeight);
 
-      solution.complexity.addCover(
+      tmp.complexity.addCover(
         cover.getComplexity(), riter->getComplexity());
 
+      if (solution.rows.empty() || tmp < solution)
+      {
+// cout << "    solution as extension\n";
+        solution = tmp;
+      }
+      else
+      {
+// cout << "    no solution as extension\n";
+      }
+      /*
       const unsigned char c = solution.getComplexity();
 
       if (c < lowestComplexity)
         lowestComplexity = c;
+        */
     }
 
     rno++;
@@ -240,7 +291,6 @@ numSolutionsManual++;
     complexity.addRow(rowIter->getComplexity());
 
     if (complexity < solution.complexity)
-    // if (* this < solution)
       solution = * this;
     return true;
   }
