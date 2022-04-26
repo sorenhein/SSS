@@ -19,6 +19,7 @@
 #include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
+// TODO Time some more stuff
 
 Covers::Covers()
 {
@@ -142,6 +143,7 @@ CoverRow& Covers::addRow()
 
 void Covers::sortRows()
 {
+  // TODO Needed?
   rows.sort([](
     const CoverRow& coverRow1, const CoverRow& coverRow2)
   {
@@ -180,16 +182,12 @@ void Covers::explain(
   CoverTableau const * tableauPtr = nullptr;
   if (tableauCache.lookup(tricks, tableauPtr))
   {
-cout << "XXX hit\n";
+    // TODO Make a method
     // Cache hit, potentially with a different number of minimum tricks.
     solution = * tableauPtr;
     solution.setMinTricks(tmin);
     newTableauFlag = false;
     return;
-  }
-  else
-  {
-cout << "YYY miss\n";
   }
 
   list<StackEntry> stack;
@@ -213,7 +211,7 @@ cout << "YYY miss\n";
         continue;
       }
 
-      const unsigned char headroom = stackElem.complexityHeadroom(solution);
+      const unsigned char headroom = stackElem.headroom(solution);
 
       if (citer->minComplexityAdder(stackElem.getResidualWeight()) > 
           headroom)
@@ -246,6 +244,7 @@ cout << "YYY miss\n";
 }
 
 
+// TODO Add separate cache?
 CoverState Covers::explainManually(
   const list<Result>& results,
   CoverTableau& solution) const
@@ -269,7 +268,7 @@ CoverState Covers::explainManually(
     auto riter = siter->rowIter;
     while (riter != rows.end())
     {
-      const unsigned char headroom = stackElem.complexityHeadroom(solution);
+      const unsigned char headroom = stackElem.headroom(solution);
 
       if (riter->minComplexityAdder(stackElem.getResidualWeight()) > 
           headroom)
@@ -298,6 +297,7 @@ CoverState Covers::explainManually(
     siter = stack.erase(siter);
   }
 
+  // TODO No return value I think
   return COVER_DONE;
 }
 
@@ -318,6 +318,7 @@ bool Covers::lookupTableau(
 }
 
 
+// TODO Who needs this?
 const Profile& Covers::getSumProfile() const
 {
   return sumProfile;
@@ -332,6 +333,7 @@ void Covers::getCoverCounts(
 }
 
 
+// TODO Name Cache?
 string Covers::strCached() const
 {
   return tableauCache.str(sumProfile);

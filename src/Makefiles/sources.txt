@@ -18,6 +18,7 @@ SOURCE_FILES    =                               \
                 distributions/Survivors.cpp     \
                 distributions/covers/Cover.cpp  \
                 distributions/covers/Covers.cpp \
+                distributions/covers/Complexity.cpp \
                 distributions/covers/CoverStore.cpp \
                 distributions/covers/Tricks.cpp    \
                 distributions/covers/CoverRow.cpp \

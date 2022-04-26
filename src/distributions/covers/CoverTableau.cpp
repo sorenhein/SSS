@@ -186,7 +186,7 @@ numSolutions++;
       tmp.complexity.addCover(
         cover.getComplexity(), riter->getComplexity());
 
-      if (solution.rows.empty() || tmp < solution)
+      if (solution.rows.empty() || tmp.complexity < solution.complexity)
         solution = tmp;
     }
 
@@ -253,8 +253,7 @@ numSolutionsManual++;
 }
 
 
-unsigned char CoverTableau::complexityHeadroom(
-  const CoverTableau& solution) const
+unsigned char CoverTableau::headroom(const CoverTableau& solution) const
 {
   return complexity.headroom(solution.complexity);
 }
@@ -270,22 +269,9 @@ void CoverTableau::updateStats(
 }
 
 
-bool CoverTableau::operator < (const CoverTableau& tableau2) const
-{
-  return (complexity < tableau2.complexity);
-}
-
-
 bool CoverTableau::complete() const
 {
   return (! rows.empty() && residualWeight == 0);
-}
-
-
-unsigned char CoverTableau::getComplexity() const
-{
-  // TODO This method can go later.
-  return complexity.sum;
 }
 
 
@@ -298,15 +284,11 @@ unsigned char CoverTableau::getResidualWeight() const
 string CoverTableau::strBracket() const
 {
   unsigned weight = 0;
-
   for (auto& row: rows)
     weight += row.getWeight();
 
   stringstream ss;
-  ss << 
-    "[c " << 
-    complexity.str() <<
-    ", w " << weight << "]";
+  ss << "[c " << complexity.str() << ", w " << weight << "]";
   return ss.str();
 }
 
