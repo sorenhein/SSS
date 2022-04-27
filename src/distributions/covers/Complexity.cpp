@@ -48,14 +48,14 @@ unsigned char Complexity::headroom(const Complexity& solution) const
 }
 
 
-bool Complexity::operator < (const Complexity& tc2) const
+bool Complexity::operator < (const Complexity& comp2) const
 {
-  if (sum < tc2.sum)
+  if (sum < comp2.sum)
     return true;
-  else if (sum > tc2.sum)
+  else if (sum > comp2.sum)
     return false;
   else
-    return (max < tc2.max);
+    return (max < comp2.max);
 }
 
 

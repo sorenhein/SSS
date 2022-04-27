@@ -39,6 +39,45 @@ void Covers::reset()
 }
 
 
+void Covers::fillStore(
+  ProductMemory& productMemory,
+  const vector<Profile>& distProfiles,
+  ProfilePair& running)
+{
+  // This add() and the next one consume about 70% of the
+  // overall time of the loop.
+  store.add(productMemory, sumProfile, running, distProfiles, cases);
+
+  unsigned char westLow, westHigh;
+  running.getLengthRange(westLow, westHigh);
+
+  const unsigned char maxTricks = sumProfile.length();
+
+  for (unsigned char lLow = 0; lLow <= westHigh; lLow++)
+  {
+    // Allow 0 as well as [westLow, westHigh].
+    if (lLow > 0 && lLow < westLow)
+      continue;
+
+    for (unsigned char lHigh = max(lLow, westLow); 
+        lHigh <= maxTricks; lHigh++)
+    { 
+      // Allow maxTricks as well as [westHigh, westHigh].
+      if (lHigh > westHigh && lHigh < maxTricks)
+        continue;
+
+      running.setLength(lLow, lHigh);
+
+      if (! running.minimal(sumProfile, westLow, westHigh))
+       continue;
+
+      store.add(productMemory, sumProfile, running, 
+        distProfiles, cases);
+    }
+  }
+}
+
+
 void Covers::prepare(
   ProductMemory& productMemory,
   const vector<Profile>& distProfiles,
@@ -47,7 +86,6 @@ void Covers::prepare(
 {
   cases = casesIn;
   sumProfile = sumProfileIn;
-  const unsigned char maxTricks = sumProfile.length();
 
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back(ProfilePair(sumProfile));
@@ -84,35 +122,7 @@ void Covers::prepare(
           continue;
         }
 
-        // This add() and the next one consume about 70% of the
-        // overall time of the loop.
-        store.add(productMemory, sumProfile, running, distProfiles, cases);
-
-        unsigned char westLow, westHigh;
-        running.getLengthRange(westLow, westHigh);
-
-        for (unsigned char lLow = 0; lLow <= westHigh; lLow++)
-        {
-          // Allow 0 as well as [westLow, westHigh].
-          if (lLow > 0 && lLow < westLow)
-            continue;
-
-          for (unsigned char lHigh = max(lLow, westLow); 
-              lHigh <= maxTricks; lHigh++)
-          { 
-            // Allow maxTricks as well as [westHigh, westHigh].
-            if (lHigh > westHigh && lHigh < maxTricks)
-              continue;
-
-            running.setLength(lLow, lHigh);
-
-            if (! running.minimal(sumProfile, westLow, westHigh))
-             continue;
-
-            store.add(productMemory, sumProfile, running, 
-              distProfiles, cases);
-          }
-        }
+        Covers::fillStore(productMemory, distProfiles, running);
 
         if (! running.last())
         {
@@ -129,11 +139,6 @@ void Covers::prepare(
   timersStrat[22].start();
   store.admixSymmetric();
   timersStrat[22].stop();
-
-  cout << setw(6) << store.size() << sumProfile.strLine();
-
-  // cout << "Cover store\n";
-  // cout << store.str();
 }
 
 
@@ -232,5 +237,13 @@ void Covers::getCoverCounts(
 string Covers::strCache() const
 {
   return tableauCache.str(sumProfile);
+}
+
+
+string Covers::strSignature() const
+{
+  stringstream ss;
+  ss << setw(6) << store.size() << sumProfile.strLine();
+  return ss.str();
 }
 

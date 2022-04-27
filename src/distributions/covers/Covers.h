@@ -48,6 +48,11 @@ class Covers
     TableauCache tableauRowCache;
 
 
+    void fillStore(
+      ProductMemory& productMemory,
+      const vector<Profile>& distProfiles,
+      ProfilePair& running);
+
     template<class T, class C>
     void explainTemplate(
       const Tricks& tricks,
@@ -93,6 +98,8 @@ class Covers
       unsigned& numUses) const;
 
     string strCache() const;
+
+    string strSignature() const;
 };
 
 

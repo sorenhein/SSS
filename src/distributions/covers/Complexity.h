@@ -35,7 +35,7 @@ class Complexity
 
   unsigned char headroom(const Complexity& solution) const;
 
-  bool operator < (const Complexity& tc2) const;
+  bool operator < (const Complexity& comp2) const;
 
   string str() const;
 };
