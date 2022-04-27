@@ -41,7 +41,7 @@ void CoverRow::fillDirectly(
   list<Cover const *>& coverPtrsIn,
   const vector<unsigned char>& cases)
 {
-  // This method is used for manually set cover rows only.
+  // This method is used to manually set cover rows only.
   // There is no need to check against trick vectors.
   coverPtrs = coverPtrsIn;
 
@@ -58,7 +58,7 @@ void CoverRow::fillDirectly(
 }
 
 
-bool CoverRow::attempt(
+bool CoverRow::possibleCover(
   const Cover& cover,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
@@ -82,6 +82,21 @@ bool CoverRow::attempt(
 }
 
 
+bool CoverRow::possibleRow(
+  const Tricks& residuals,
+  const vector<unsigned char>& cases,
+  Tricks& additions,
+  unsigned char& weightAdded) const
+{
+  // residuals: The overall tricks in cover tableau that remains.
+  // additions: If the cover can be added, the additions to the
+  //   explained vector that would arise
+  // weightAdded: The number of cases in additions
+
+  return tricks.possibleNew(residuals, cases, additions, weightAdded);
+}
+
+
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
@@ -97,28 +112,6 @@ void CoverRow::add(
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
-}
-
-
-bool CoverRow::possible(
-  const Tricks& residuals,
-  const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned char& weightAdded) const
-{
-  // residuals: The overall tricks in cover tableau that remains.
-  // additions: If the cover can be added, the additions to the
-  //   explained vector that would arise
-  // weightAdded: The number of cases in additions
-
-  return tricks.possibleNew(residuals, cases, additions, weightAdded);
-}
-
-
-CoverState CoverRow::explain(Tricks& tricksSeen) const
-{
-  // If tricks <= tricksSeen elementwise, tricks is subtracted out.
-  return tricks.explain(tricksSeen);
 }
 
 
@@ -140,19 +133,15 @@ unsigned CoverRow::size() const
 
 bool CoverRow::operator < (const CoverRow& rows2) const
 {
-  return (CoverRow::getMCPW() < rows2.getMCPW());
+  return (
+      (complexity << 20) / weight < 
+      (rows2.complexity << 20) / rows2.weight);
 }
 
 
 unsigned char CoverRow::effectiveDepth() const
 {
   return 1;
-}
-
-
-const Tricks& CoverRow::getTricks() const
-{
-  return tricks;
 }
 
 
@@ -176,18 +165,8 @@ unsigned char CoverRow::minComplexityAdder(
   // unless we hit an exact divisor.
 
   const unsigned mcpw = (complexity << 20) / weight;
-  const unsigned char projected =
-    static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
 
-  // return max(CoverRow::getComplexity(), projected);
-  return projected;
-}
-
-
-unsigned CoverRow::getMCPW() const
-{
-  // TODO Pre-calculate?
-  return (complexity << 20) / weight;
+  return static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
 }
 
 

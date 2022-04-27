@@ -136,7 +136,7 @@ numSolutions++;
       continue;
     }
 
-    if (! row.attempt(cover, residuals, cases, additions, weightAdded))
+    if (! row.possibleCover(cover, residuals, cases, additions, weightAdded))
     {
       // The row does not fit.
       rno++;
@@ -213,7 +213,7 @@ bool CoverTableau::attempt(
   unsigned char weightAdded;
 
 numCompareManual++;
-  if (! rowIter->possible(residuals, cases, additions, weightAdded))
+  if (! rowIter->possibleRow(residuals, cases, additions, weightAdded))
     return false;
 
   if (weightAdded < residualWeight)

@@ -52,8 +52,14 @@ class CoverRow
       list<Cover const *>& coverPtrsIn,
       const vector<unsigned char>& cases);
 
-    bool attempt(
+    bool possibleCover(
       const Cover& cover,
+      const Tricks& residuals,
+      const vector<unsigned char>& cases,
+      Tricks& additions,
+      unsigned char& weightAdded) const;
+
+    bool possibleRow(
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
@@ -66,14 +72,6 @@ class CoverRow
       Tricks& residuals,
       unsigned char& residualWeight);
 
-    bool possible(
-      const Tricks& residuals,
-      const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned char& weightAdded) const;
-
-    CoverState explain(Tricks& tricksSeen) const;
-
     void updateStats(
       ProductStats& productStats,
       const Profile& sumProfile,
@@ -85,13 +83,10 @@ class CoverRow
 
     unsigned char effectiveDepth() const;
 
-    const Tricks& getTricks() const;
-
     unsigned getWeight() const;
 
     unsigned char getComplexity() const;
 
-    unsigned getMCPW() const;
     unsigned char minComplexityAdder(const unsigned char resWeight) const;
 
     string strHeader() const;
