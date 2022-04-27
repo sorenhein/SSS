@@ -177,34 +177,6 @@ void Cover::updateStats(
 }
 
 
-bool Cover::operator < (const Cover& cover2) const
-{
-  // TODO Some of the methods called do real work, so we could cache
-  // their results.
-
-  assert(productUnitPtr != nullptr);
-  assert(cover2.productUnitPtr != nullptr);
-  const Product& p1 = productUnitPtr->product;
-  const Product& p2 = cover2.productUnitPtr->product;
-
-  if (mcpw < cover2.mcpw)
-    return true;
-  else if (mcpw > cover2.mcpw)
-    return false;
-  else if (p1.effectiveDepth() < p2.effectiveDepth())
-    // Simpler ones first
-    return true;
-  else if (p1.effectiveDepth() > p2.effectiveDepth())
-    return false;
-  else if (symmFlag && ! cover2.symmFlag)
-    return true;
-  else if (! symmFlag && cover2.symmFlag)
-    return false;
-  else
-    return (code < cover2.code);
-}
-
-
 bool Cover::sameWeight(const Cover& cover2) const
 {
   return (weight == cover2.weight);
@@ -235,15 +207,37 @@ bool Cover::symmetric() const
 }
 
 
-unsigned Cover::getWeight() const
-{
-  return weight;
-}
-
-
 unsigned Cover::size() const
 {
   return tricks.size();
+}
+
+
+bool Cover::operator < (const Cover& cover2) const
+{
+  // TODO Some of the methods called do real work, so we could cache
+  // their results.
+
+  assert(productUnitPtr != nullptr);
+  assert(cover2.productUnitPtr != nullptr);
+  const Product& p1 = productUnitPtr->product;
+  const Product& p2 = cover2.productUnitPtr->product;
+
+  if (mcpw < cover2.mcpw)
+    return true;
+  else if (mcpw > cover2.mcpw)
+    return false;
+  else if (p1.effectiveDepth() < p2.effectiveDepth())
+    // Simpler ones first
+    return true;
+  else if (p1.effectiveDepth() > p2.effectiveDepth())
+    return false;
+  else if (symmFlag && ! cover2.symmFlag)
+    return true;
+  else if (! symmFlag && cover2.symmFlag)
+    return false;
+  else
+    return (code < cover2.code);
 }
 
 
@@ -251,6 +245,12 @@ unsigned char Cover::effectiveDepth() const
 {
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.effectiveDepth();
+}
+
+
+unsigned Cover::getWeight() const
+{
+  return weight;
 }
 
 
@@ -267,13 +267,7 @@ unsigned char Cover::minComplexityAdder(const unsigned char resWeight) const
   // (micro-cpw).  We round up the minimum number of covers needed
   // unless we hit an exact divisor.
 
-  const unsigned char projected =
-    static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
-
-  // TODO Should this be true now?
-  // assert(Cover::getComplexity() <= projected);
-  // return max(Cover::getComplexity(), projected);
-  return projected;
+  return static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
 }
 
 

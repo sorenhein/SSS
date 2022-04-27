@@ -53,8 +53,8 @@ class Tricks
 
     void weigh(
       const vector<unsigned char>& cases,
-      unsigned& weight,
-      unsigned char& numDist) const;
+      unsigned& weight) const;
+      // unsigned char& numDist) const;
 
     void prepare(
       const Product& product,
@@ -89,8 +89,8 @@ class Tricks
       const Tricks& additions,
       const vector<unsigned char>& cases,
       Tricks& residuals,
-      unsigned char& residualsSum,
-      unsigned char& numDist);
+      unsigned char& residualsSum);
+      // unsigned char& numDist);
 
     Tricks& operator -= (const Tricks& tricks2);
 

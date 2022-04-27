@@ -26,7 +26,6 @@ void CoverRow::reset()
   coverPtrs.clear();
   tricks.clear();
   weight = 0;
-  numDist = 0;
   complexity = 0;
 }
 
@@ -53,7 +52,7 @@ void CoverRow::fillDirectly(
     complexity += coverPtr->getComplexity();
   }
 
-  tricks.weigh(cases, weight, numDist);
+  tricks.weigh(cases, weight);
   assert(weight != 0);
 }
 
@@ -106,7 +105,7 @@ void CoverRow::add(
 {
   coverPtrs.push_back(&cover);
 
-  tricks.add(additions, cases, residuals, residualWeight, numDist);
+  tricks.add(additions, cases, residuals, residualWeight);
 
   // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);

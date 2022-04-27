@@ -96,20 +96,20 @@ void Tricks::set(const unsigned no)
 
 void Tricks::weigh(
   const vector<unsigned char>& cases,
-  unsigned& weight,
-  unsigned char& numDist) const
+  unsigned& weight) const
+  // unsigned char& numDist) const
 {
   assert(cases.size() == tricks.size());
 
   weight = 0;
-  numDist = 0;
+  // numDist = 0;
 
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     if (tricks[i])
     {
       weight += cases[i] * tricks[i];
-      numDist++;
+      // numDist++;
     }
   }
 }
@@ -293,8 +293,8 @@ void Tricks::add(
   const Tricks& additions,
   const vector<unsigned char>& cases,
   Tricks& residuals,
-  unsigned char& residualWeight,
-  unsigned char& numDist)
+  unsigned char& residualWeight)
+  // unsigned char& numDist)
 {
   // additions are disjoint from tricks.
   assert(tricks.size() == additions.tricks.size());
@@ -308,7 +308,7 @@ void Tricks::add(
     tricks[i] += t;
     residualWeight -= cases[i] * t;
     residuals.tricks[i] -= t;
-    numDist += t;
+    // numDist += t;
   }
 }
 

@@ -97,8 +97,6 @@ class Cover
       const Profile& sumProfile,
       const bool newTableauFlag) const;
 
-    bool operator < (const Cover& cover2) const;
-
     bool sameWeight(const Cover& covers2) const;
 
     bool sameTricks(const Cover& covers2) const;
@@ -109,11 +107,13 @@ class Cover
 
     bool symmetric() const;
 
-    unsigned getWeight() const;
-
     unsigned size() const;
 
+    bool operator < (const Cover& cover2) const;
+
     unsigned char effectiveDepth() const;
+
+    unsigned getWeight() const;
 
     unsigned char getComplexity() const;
 

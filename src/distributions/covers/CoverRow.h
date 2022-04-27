@@ -20,22 +20,19 @@ class Cover;
 class Profile;
 class ProductStats;
 
-/* A row is a list of covers that are OR'ed together.
- */
 
 
 class CoverRow
 {
   private:
 
+    // A row is a list of covers that are OR'ed together.
     list<Cover const *> coverPtrs;
 
     // The OR'ed tricks of the covers.
     Tricks tricks;
 
     unsigned weight;
-
-    unsigned char numDist;
 
     unsigned char complexity;
 
