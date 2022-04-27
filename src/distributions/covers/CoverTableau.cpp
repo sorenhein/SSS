@@ -75,6 +75,7 @@ bool CoverTableau::attempt(
   list<StackEntry>& stack,
   CoverTableau& solution)
 {
+  // Returns true if this must be the last use of this cover.
   Tricks additions;
   additions.resize(residuals.size());
   unsigned char weightAdded;
@@ -89,7 +90,7 @@ numCompare++;
 numStack++;
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
-      centry.coverIter = coverIter;
+      centry.iter = coverIter;
 
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
@@ -155,7 +156,7 @@ numSolutions++;
 numStack++;
       stack.emplace_back(StackEntry());
       StackEntry& centry = stack.back();
-      centry.coverIter = coverIter;
+      centry.iter = coverIter;
 
       CoverTableau& tableau = centry.tableau;
       tableau = * this;
@@ -194,7 +195,8 @@ numSolutions++;
     rno++;
   }
 
-  return solutionFlag;
+  // return solutionFlag;
+  return false;
 }
 
 
@@ -219,7 +221,7 @@ numCompareManual++;
 numStackManual++;
     stack.emplace_back(RowStackEntry());
     RowStackEntry& rentry = stack.back();
-    rentry.rowIter = rowIter;
+    rentry.iter = rowIter;
 
     CoverTableau& tableau = rentry.tableau;
     tableau = * this;

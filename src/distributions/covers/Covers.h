@@ -72,7 +72,7 @@ class Covers
       CoverTableau& solution,
       bool& newTableauFlag);
 
-    CoverState explainManually(
+    void explainManually(
       const list<Result>& results,
       CoverTableau& solution);
 
@@ -143,7 +143,7 @@ void Covers::explainTemplate(
       if (stackIter->tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
-        // break;
+        break;
       }
 
       candIter++;

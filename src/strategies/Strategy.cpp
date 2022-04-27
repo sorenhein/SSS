@@ -982,8 +982,9 @@ bool Strategy::covers(
   CoverTableau& tableau) const
 {
   tableau.reset();
-  CoverState state = coversIn.explainManually(results, tableau);
-  return (state == COVER_DONE);
+  coversIn.explainManually(results, tableau);
+  // TODO No return type
+  return true;
 }
 
 

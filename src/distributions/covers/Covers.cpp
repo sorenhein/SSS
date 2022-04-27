@@ -192,7 +192,7 @@ void Covers::explain(
 }
 
 
-CoverState Covers::explainManually(
+void Covers::explainManually(
   const list<Result>& results,
   CoverTableau& solution)
 {
@@ -203,7 +203,7 @@ CoverState Covers::explainManually(
   if (tableauRowCache.lookup(tricks, solution))
   {
     solution.setMinTricks(tmin);
-    return COVER_DONE;
+    return;
   }
 
   list<RowStackEntry> stack;
@@ -255,7 +255,7 @@ timersStrat[24].stop();
   tableauRowCache.store(tricks, solution);
 
   // TODO No return value I think
-  return COVER_DONE;
+  // return COVER_DONE;
 }
 
 
