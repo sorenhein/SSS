@@ -60,12 +60,6 @@ class CoverStore
 
     const Cover& lookup(const Cover& cover) const;
 
-    const Cover& lookup(
-      const ProductMemory& productMemory,
-      const Profile& sumProfile,
-      const ProfilePair& productPair,
-      const bool symmFlag); // Effectively const
-
     set<Cover>::const_iterator begin() const;
 
     set<Cover>::const_iterator end() const;

@@ -1,10 +1,12 @@
 Cover specifics
 ---------------
-Make lookupCache method in Covers.
+Why such enormous numbers of possible covers in CoverTableau?
+
+In CoverTableau adding a cover, can we make a row and then add it?
+
+Make a tableau directory?
 
 Can delete Tricks::possible for possiblenew?
-
-Use template at least in Covers?
 
 Look at the more generic Term output strings.  Can we get more of them?
 The ones we don't want too many of are the complex single strings.
