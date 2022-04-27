@@ -138,6 +138,18 @@ unsigned CoverRow::size() const
 }
 
 
+bool CoverRow::operator < (const CoverRow& rows2) const
+{
+  return (CoverRow::getMCPW() < rows2.getMCPW());
+}
+
+
+unsigned char CoverRow::effectiveDepth() const
+{
+  return 1;
+}
+
+
 const Tricks& CoverRow::getTricks() const
 {
   return tricks;

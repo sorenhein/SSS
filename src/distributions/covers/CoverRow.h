@@ -81,6 +81,10 @@ class CoverRow
 
     unsigned size() const;
 
+    bool operator < (const CoverRow& rows2) const;
+
+    unsigned char effectiveDepth() const;
+
     const Tricks& getTricks() const;
 
     unsigned getWeight() const;

@@ -48,6 +48,16 @@ class Covers
     TableauCache tableauRowCache;
 
 
+    template<class T, class C>
+    void explainTemplate(
+      const Tricks& tricks,
+      const unsigned char tmin,
+      const unsigned numStrategyTops,
+      const C& candidates,
+      list<T>& stack,
+      CoverTableau& solution);
+
+
   public:
 
     Covers();
@@ -76,15 +86,6 @@ class Covers
       const list<Result>& results,
       CoverTableau& solution);
 
-    template<class T, class C>
-    void explainTemplate(
-      const Tricks& tricks,
-      const unsigned char tmin,
-      const unsigned numStrategyTops,
-      const C& candidates,
-      list<T>& stack,
-      CoverTableau& solution);
-
     const Profile& getSumProfile() const;
 
     void getCoverCounts(
@@ -108,7 +109,7 @@ void Covers::explainTemplate(
 
   T& entry = stack.back();
   entry.tableau.init(tricks, tmin, cases);
-  entry.iter = store.begin();
+  entry.iter = candidates.begin();
 
   auto stackIter = stack.begin();
   while (stackIter != stack.end())

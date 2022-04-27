@@ -146,12 +146,7 @@ CoverRow& Covers::addRow()
 
 void Covers::sortRows()
 {
-  // TODO Make < method in CoverRow
-  rows.sort([](
-    const CoverRow& coverRow1, const CoverRow& coverRow2)
-  {
-    return (coverRow1.getMCPW() < coverRow2.getMCPW());
-  });
+  rows.sort();
 }
 
 
@@ -168,6 +163,8 @@ void Covers::explain(
   CoverTableau& solution,
   bool& newTableauFlag)
 {
+  // This version uses covers and puts them together into rows,
+  // including possibly covers that are OR'ed together in a row.
   Tricks tricks;
   unsigned char tmin;
   tricks.set(results, tmin);
@@ -196,6 +193,7 @@ void Covers::explainManually(
   const list<Result>& results,
   CoverTableau& solution)
 {
+  // This version uses finished rows.
   Tricks tricks;
   unsigned char tmin;
   tricks.set(results, tmin);
@@ -206,56 +204,14 @@ void Covers::explainManually(
     return;
   }
 
+  timersStrat[24].start();
+
   list<RowStackEntry> stack;
-  stack.emplace_back(RowStackEntry());
+  Covers::explainTemplate(tricks, tmin, 1, rows, stack, solution);
 
-  RowStackEntry& rentry = stack.back();
-  rentry.tableau.init(tricks, tmin, cases);
-  rentry.iter = rows.begin();
-
-  auto siter = stack.begin();
-timersStrat[24].start();
-  while (siter != stack.end())
-  {
-    auto& stackElem = siter->tableau;
-
-    auto riter = siter->iter;
-    while (riter != rows.end())
-    {
-      const unsigned char headroom = stackElem.headroom(solution);
-
-      if (riter->minComplexityAdder(stackElem.getResidualWeight()) > 
-          headroom)
-      {
-        // As the rows are ordered, later rows have no chance either.
-        break;
-      }
-
-      if (riter->getComplexity() > headroom)
-      {
-        // The current row may be too complex, but there may be others.
-        riter++;
-        continue;
-      }
-
-      if (stackElem.attemptManually(cases, riter, stack, solution))
-      {
-        // We found a solution.  It may have replaced the previous one.
-        break;
-      }
-
-      riter++;
-    }
-
-    // Erasing first stack element.
-    siter = stack.erase(siter);
-  }
-timersStrat[24].stop();
+  timersStrat[24].stop();
 
   tableauRowCache.store(tricks, solution);
-
-  // TODO No return value I think
-  // return COVER_DONE;
 }
 
 

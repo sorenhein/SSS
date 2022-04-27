@@ -200,7 +200,7 @@ numSolutions++;
 }
 
 
-bool CoverTableau::attemptManually(
+bool CoverTableau::attempt(
   const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   list<RowStackEntry>& stack,
