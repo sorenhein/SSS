@@ -13,11 +13,12 @@
 #include <vector>
 #include <string>
 
-#include "product/Profile.h"
-
 #include "CoverStore.h"
-#include "TableauCache.h"
 #include "CoverRow.h"
+
+#include "tableau/TableauCache.h"
+
+#include "product/Profile.h"
 
 
 class ProductMemory;

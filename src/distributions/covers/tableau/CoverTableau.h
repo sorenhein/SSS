@@ -16,9 +16,9 @@
 #include <vector>
 #include <string>
 
-#include "CoverRow.h"
-#include "Tricks.h"
-#include "Complexity.h"
+#include "../CoverRow.h"
+#include "../Tricks.h"
+#include "../Complexity.h"
 
 
 using namespace std;

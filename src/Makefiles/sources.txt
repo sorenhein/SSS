@@ -22,10 +22,11 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverStore.cpp \
                 distributions/covers/Tricks.cpp    \
                 distributions/covers/CoverRow.cpp \
-                distributions/covers/CoverTableau.cpp \
-                distributions/covers/TableauCache.cpp \
                                                                 \
                 distributions/covers/manual/Manual.cpp          \
+                                                                \
+                distributions/covers/tableau/CoverTableau.cpp   \
+                distributions/covers/tableau/TableauCache.cpp   \
                                                                 \
                 distributions/covers/product/Profile.cpp        \
                 distributions/covers/product/ProfilePair.cpp    \

@@ -18,7 +18,7 @@
 
 #include "../distributions/Distribution.h"
 #include "../distributions/covers/Covers.h"
-#include "../distributions/covers/CoverTableau.h"
+#include "../distributions/covers/tableau/CoverTableau.h"
 
 #include "../inputs/Control.h"
 

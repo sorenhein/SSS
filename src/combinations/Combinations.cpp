@@ -18,8 +18,8 @@
 #include "CombTest.h"
 
 #include "../distributions/Distributions.h"
-// #include "../distributions/covers/ResExpl.h"
-#include "../distributions/covers/CoverTableau.h"
+
+#include "../distributions/covers/tableau/CoverTableau.h"
 
 #include "../plays/Plays.h"
 

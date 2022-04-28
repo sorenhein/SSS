@@ -18,9 +18,10 @@
 #include <string>
 
 #include "CoverTableau.h"
-#include "Tricks.h"
 
-#include "product/Profile.h"
+#include "../Tricks.h"
+
+#include "../product/Profile.h"
 
 
 using namespace std;
