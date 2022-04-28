@@ -81,7 +81,7 @@ bool CoverRow::possibleCover(
 }
 
 
-bool CoverRow::possibleRow(
+bool CoverRow::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,

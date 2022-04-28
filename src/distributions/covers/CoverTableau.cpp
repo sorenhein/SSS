@@ -69,6 +69,16 @@ void CoverTableau::addRow(
 }
 
 
+void CoverTableau::addRow(
+  const CoverRow& row,
+  [[maybe_unused]] const Tricks& additions,
+  [[maybe_unused]] const vector<unsigned char>& cases)
+{
+  rows.push_back(row);
+  complexity.addRow(row.getComplexity());
+}
+
+
 bool CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
@@ -213,7 +223,7 @@ bool CoverTableau::attempt(
   unsigned char weightAdded;
 
 numCompareManual++;
-  if (! rowIter->possibleRow(residuals, cases, additions, weightAdded))
+  if (! rowIter->possible(residuals, cases, additions, weightAdded))
     return false;
 
   if (weightAdded < residualWeight)
