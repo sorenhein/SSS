@@ -19,6 +19,23 @@ void Complexity::reset()
 }
 
 
+bool Complexity::match(
+  const unsigned char coverComplexity,
+  const unsigned char rowComplexity,
+  const Complexity& solution) const
+{
+  if (solution.sum == 0)
+    return true;
+  if (sum + coverComplexity > solution.sum)
+    return false;
+  else if (sum + coverComplexity < solution.sum)
+    return true;
+  else
+    // The cover would be added to this specific row
+    return (rowComplexity + coverComplexity < solution.max);
+}
+
+
 void Complexity::addCover(
   const unsigned char coverComplexity,
   const unsigned char rowComplexity)

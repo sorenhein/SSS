@@ -57,7 +57,7 @@ void CoverRow::fillDirectly(
 }
 
 
-bool CoverRow::possibleCover(
+bool CoverRow::possibleAdd(
   const Cover& cover,
   const Tricks& residuals,
   const vector<unsigned char>& cases,

@@ -49,7 +49,7 @@ class CoverRow
       list<Cover const *>& coverPtrsIn,
       const vector<unsigned char>& cases);
 
-    bool possibleCover(
+    bool possibleAdd(
       const Cover& cover,
       const Tricks& residuals,
       const vector<unsigned char>& cases,

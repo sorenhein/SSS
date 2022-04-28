@@ -46,7 +46,7 @@ class CoverTableau
 
     
     template<class T, typename C>
-    bool attemptRow(
+    CoverState attemptRow(
       const vector<unsigned char>& cases,
       C& candIter,
       list<T>& stack,
@@ -65,6 +65,12 @@ class CoverTableau
       const Tricks& additions,
       const unsigned char weightAdded,
       const vector<unsigned char>& cases);
+
+    void extendRow(
+      const Cover& cover,
+      const Tricks& additions,
+      const vector<unsigned char>& cases,
+      const unsigned rowNo);
 
 
   public:
@@ -112,7 +118,7 @@ class CoverTableau
 
 
 template<class T, typename C>
-bool CoverTableau::attemptRow(
+CoverState CoverTableau::attemptRow(
   const vector<unsigned char>& cases,
   C& candIter,
   list<T>& stack,
@@ -126,7 +132,7 @@ bool CoverTableau::attemptRow(
   // and for the row search (T == RowStackEntry).
 
   if (! candIter->possible(residuals, cases, additions, weightAdded))
-    return false;
+    return COVER_IMPOSSIBLE;
 
   if (weightAdded < residualWeight)
   {
@@ -137,14 +143,14 @@ bool CoverTableau::attemptRow(
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
     tableau.addRow(* candIter, additions, weightAdded, cases);
-    return false;
+    return COVER_OPEN;
   }
   else if (solution.rows.empty())
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
     solution.addRow(* candIter, additions, weightAdded, cases);
-    return true;
+    return COVER_DONE;
   }
   else
   {
@@ -153,7 +159,7 @@ bool CoverTableau::attemptRow(
     CoverTableau::addRow(* candIter, additions, weightAdded, cases);
     if (complexity < solution.complexity)
       solution = * this;
-    return true;
+    return COVER_DONE;
   }
 }
 

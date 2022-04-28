@@ -17,10 +17,6 @@
 
 #include "../../strategies/result/Result.h"
 
-// TMP
-extern unsigned numCompare, numStack, numSolutions;
-extern unsigned numCompareManual, numStackManual, numSolutionsManual;
-
 
 CoverTableau::CoverTableau()
 {
@@ -83,6 +79,23 @@ void CoverTableau::addRow(
 }
 
 
+void CoverTableau::extendRow(
+  const Cover& cover,
+  const Tricks& additions,
+  const vector<unsigned char>& cases,
+  const unsigned rowNo)
+{
+  // A bit fumbly: Advance to the same place as we were at.
+  list<CoverRow>::iterator riter;
+  unsigned r;
+  for (riter = rows.begin(), r = 0; r < rowNo; riter++, r++);
+
+  riter->add(cover, additions, cases, residuals, residualWeight);
+
+  complexity.addCover(cover.getComplexity(), riter->getComplexity());
+}
+
+
 bool CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
@@ -95,82 +108,70 @@ bool CoverTableau::attempt(
   unsigned char weightAdded;
 
   // Check whether we can make a complete solution with the cover.
-  if (CoverTableau::attemptRow(cases, coverIter, stack,
-      additions, weightAdded, solution))
+  const CoverState state = CoverTableau::attemptRow(
+    cases, coverIter, stack, additions, weightAdded, solution);
+  if (state == COVER_OPEN)
+    return false;
+  else if (state == COVER_DONE)
     return true;
 
-
-  const Cover& cover = * coverIter;
-  bool solutionFlag = false;
-
-  // Then look for a row, or the best one, to add to.
-  unsigned rno = 0, r;
-  list<CoverRow>::iterator riter;
-
+  // If not, try to add the cover to existing rows.
+  // const Cover& cover = * coverIter;
+  unsigned rno = 0;
   for (auto& row: rows)
   {
     if (row.size() >= 2)
     {
       // A row becomes too difficult to read for a human if it
       // has more than two options.
-      rno++;
-      continue;
     }
-
-    if (! row.possibleCover(cover, residuals, cases, additions, weightAdded))
+    else if (! row.possibleAdd(
+        * coverIter, residuals, cases, additions, weightAdded))
     {
       // The row does not fit.
-      rno++;
-      continue;
     }
-
-    if (weightAdded == cover.getWeight())
+    else if (weightAdded < residualWeight)
     {
-      // The cover should not be completely complementary (then we
-      // have already used a new row).
-      rno++;
-      continue;
-    }
-
-    if (weightAdded < residualWeight)
-    {
-numStack++;
       stack.emplace_back(StackEntry());
-      StackEntry& centry = stack.back();
-      centry.iter = coverIter;
-
-      CoverTableau& tableau = centry.tableau;
-      tableau = * this;
-
-      // A bit fumbly: Advance to the same place in tableau.
-      for (riter = tableau.rows.begin(), r = 0; r < rno; riter++, r++);
-
-      riter->add(cover, additions, cases,
-        tableau.residuals, tableau.residualWeight);
-
-      tableau.complexity.addCover(
-        cover.getComplexity(),
-        riter->getComplexity());
+      StackEntry& entry = stack.back();
+      entry.iter = coverIter;
+      entry.tableau = * this;
+      entry.tableau.extendRow(* coverIter, additions, cases, rno);
     }
     else
     {
-numSolutions++;
-      solutionFlag = true;
+      bool b = complexity.match(coverIter->getComplexity(),
+        row.getComplexity(), solution.complexity);
 
       // We can't destroy * this, as we want to finish the loop;
       CoverTableau tmp = * this;
-
-      // A bit fumbly: Advance to the same place in tableau.
-      for (riter = tmp.rows.begin(), r = 0; r < rno; riter++, r++);
-
-      riter->add(cover, additions, cases,
-        tmp.residuals, tmp.residualWeight);
-
-      tmp.complexity.addCover(
-        cover.getComplexity(), riter->getComplexity());
+      tmp.extendRow(* coverIter, additions, cases, rno);
 
       if (solution.rows.empty() || tmp.complexity < solution.complexity)
+      {
+        if (! b)
+        {
+          cout << "this " << complexity.str() << endl;
+          cout << "cover " << +coverIter->getComplexity() << endl;
+          cout << "row   " << +row.getComplexity() << endl;
+          cout << "soln  " << solution.complexity.str() << endl;
+          cout << "tmpn  " << tmp.complexity.str() << endl;
+        }
+        assert(b);
         solution = tmp;
+      }
+      else
+      {
+        if (b)
+        {
+          cout << "this " << complexity.str() << endl;
+          cout << "cover " << +coverIter->getComplexity() << endl;
+          cout << "row   " << +row.getComplexity() << endl;
+          cout << "soln  " << solution.complexity.str() << endl;
+          cout << "tmpn  " << tmp.complexity.str() << endl;
+        }
+        assert(! b);
+      }
     }
 
     rno++;
@@ -192,8 +193,8 @@ bool CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-  return CoverTableau::attemptRow(cases, rowIter, stack,
-    additions, weightAdded, solution);
+  return (CoverTableau::attemptRow(cases, rowIter, stack,
+    additions, weightAdded, solution) == COVER_DONE);
 }
 
 

@@ -27,6 +27,11 @@ class Complexity
 
   void reset();
 
+  bool match(
+    const unsigned char coverComplexity,
+    const unsigned char rowComplexity,
+    const Complexity& solution) const;
+
   void addCover(
     const unsigned char coverComplexity,
     const unsigned char rowComplexity);
