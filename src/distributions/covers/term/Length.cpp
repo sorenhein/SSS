@@ -98,15 +98,13 @@ string Length::strInside(
   {
     ss << "Neither opponent is void";
   }
-  else if (lower + upper == oppsLength)
+  else if (vLower + vUpper == oppsLength)
   {
-    ss << "Each opponent has " << +lower << "-" << +upper << " cards";
+    ss << "Each opponent has " << +vLower << "-" << +vUpper << " cards";
   }
   else
   {
-    ss << "The suit splits between " <<
-      +lower << "=" << +(oppsLength - lower) << " and " <<
-      +upper << "=" << +(oppsLength - upper);
+    ss << side << " has " << +vLower << "-" << +vUpper << " cards";
   }
 
   return ss.str();
