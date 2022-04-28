@@ -222,47 +222,8 @@ bool CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-numCompareManual++;
-  if (! rowIter->possible(residuals, cases, additions, weightAdded))
-    return false;
-
-  if (weightAdded < residualWeight)
-  {
-numStackManual++;
-    stack.emplace_back(RowStackEntry());
-    RowStackEntry& rentry = stack.back();
-    rentry.iter = rowIter;
-
-    CoverTableau& tableau = rentry.tableau;
-    tableau = * this;
-    tableau.rows.push_back(* rowIter);
-    tableau.complexity.addRow(rowIter->getComplexity());
-
-    tableau.residuals -= additions;
-    tableau.residualWeight -= weightAdded;
-    return false;
-  }
-  else if (solution.rows.empty())
-  {
-    // We have a solution for sure, as it is the first one.
-numSolutionsManual++;
-    solution = * this;
-    solution.rows.push_back(* rowIter);
-    solution.complexity.addRow(rowIter->getComplexity());
-    return true;
-  }
-  else
-  {
-numSolutionsManual++;
-    // We can use this CoverTableau, as the stack element is about
-    // to be popped anyway.
-    rows.push_back(* rowIter);
-    complexity.addRow(rowIter->getComplexity());
-
-    if (complexity < solution.complexity)
-      solution = * this;
-    return true;
-  }
+  return (CoverTableau::attemptRow(cases, rowIter, stack,
+      additions, weightAdded, solution));
 }
 
 

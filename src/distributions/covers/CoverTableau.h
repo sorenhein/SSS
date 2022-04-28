@@ -51,7 +51,7 @@ class CoverTableau
       C& candIter,
       list<T>& stack,
       Tricks& additions,
-      unsigned char weightAdded,
+      unsigned char& weightAdded,
       CoverTableau& solution);
 
     void addRow(
@@ -116,13 +116,13 @@ bool CoverTableau::attemptRow(
   C& candIter,
   list<T>& stack,
   Tricks& additions,
-  unsigned char weightAdded,
+  unsigned char& weightAdded,
   CoverTableau& solution)
 {
-  // Return true if a solution is found, even if it is inferior to
-  // the existing one.  This method works both for the exhaustive
-  // search (where T is StackEntry) and for the row search
-  // (where T is RowStackEntry).
+  // Returns true if a solution is found by adding candIter as a new row, 
+  // even if the solution is inferior to the existing one.  
+  // This method works both for the exhaustive search (T == StackEntry) 
+  // and for the row search (T == RowStackEntry).
 
   if (! candIter->possible(residuals, cases, additions, weightAdded))
     return false;
