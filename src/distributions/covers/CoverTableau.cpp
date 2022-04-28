@@ -59,6 +59,7 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 void CoverTableau::addRow(
   const Cover& cover,
   const Tricks& additions,
+  [[maybe_unused]]const unsigned char weightAdded,
   const vector<unsigned char>& cases)
 {
   rows.emplace_back(CoverRow());
@@ -71,11 +72,14 @@ void CoverTableau::addRow(
 
 void CoverTableau::addRow(
   const CoverRow& row,
-  [[maybe_unused]] const Tricks& additions,
+  const Tricks& additions,
+  const unsigned char weightAdded,
   [[maybe_unused]] const vector<unsigned char>& cases)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity());
+  residuals -= additions;
+  residualWeight -= weightAdded;
 }
 
 
@@ -90,44 +94,11 @@ bool CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-numCompare++;
-  if (coverIter->possible(residuals, cases, additions, weightAdded))
-  {
-    // A whole new row is possible.
-    if (weightAdded < residualWeight)
-    {
-      // The cover does not lead to a solution.
-numStack++;
-      stack.emplace_back(StackEntry());
-      StackEntry& centry = stack.back();
-      centry.iter = coverIter;
+  // Check whether we can make a complete solution with the cover.
+  if (CoverTableau::attemptRow(cases, coverIter, stack,
+      additions, weightAdded, solution))
+    return true;
 
-      CoverTableau& tableau = centry.tableau;
-      tableau = * this;
-      tableau.addRow(* coverIter, additions, cases);
-    }
-    else if (solution.rows.empty())
-    {
-      // We have a solution for sure, as it is the first one.
-      // There is no point in looking for an existing row to which 
-      // to add it as well.
-numSolutions++;
-      solution = * this;
-      solution.addRow(* coverIter, additions, cases);
-      return true;
-    }
-    else
-    {
-      // We can use this CoverTableau, as the stack element is about
-      // to be popped anyway.
- numSolutions++;
-      CoverTableau::addRow(* coverIter, additions, cases);
-
-      if (complexity < solution.complexity)
-        solution = * this;
-      return true; 
-    }
-  }
 
   const Cover& cover = * coverIter;
   bool solutionFlag = false;
@@ -205,7 +176,6 @@ numSolutions++;
     rno++;
   }
 
-  // return solutionFlag;
   return false;
 }
 
@@ -222,8 +192,8 @@ bool CoverTableau::attempt(
   additions.resize(residuals.size());
   unsigned char weightAdded;
 
-  return (CoverTableau::attemptRow(cases, rowIter, stack,
-      additions, weightAdded, solution));
+  return CoverTableau::attemptRow(cases, rowIter, stack,
+    additions, weightAdded, solution);
 }
 
 
