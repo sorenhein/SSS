@@ -9,42 +9,11 @@
 /*
    These cover rows are defined by hand, although they are by now
    heavily inspired by the algorithmic results.  They do work, and
-   they offer almost the same results, but are unused at the moment:
+   they offer the same or similar results.
 
    % perl extract.pl outputfile
 
-   Case    Same  Diff      Same  Diff
-   2-1        3     -      7361     -
-   2-2        1     -      1018     -
-   3-1       13     -     21198     -
-   3-2        3     -      3608     -
-   3-3        1     -       738     -
-   4-1       47     -     20498     -
-   4-2       71     4     11370   383
-   4-3        6     -      2394     -
-   4-4        3     -       447     -
-   5-1       56     -      9029     -
-   5-2       78     9      6371   293
-   5-3       21     3      1005    67
-   5-4        4     -       505     -
-   5-5        3     -       124     -
-   6-1       26     -      3195     -
-   6-2       35     2      2295    60
-   6-3        7     2       297    15
-   6-4        3     1       219     3
-   6-5        3     -        95     -
-   6-6        3     -        29     -
-   7-1        5     -       957     -
-   7-2        5     -       307     -
-   7-3        3     -        55     -
-   8-1        3     -       166     -
-   8-2        2     -        35     -
-   9-1        1     -         9     -
-   ----------------------------------
-   Sum      406    21     93325   821
-
-   The 21 differences are mostly mentioned below.  Over 99% of the
-   verbal strategies are the same as in the algorithmic results.
+   yields the differences.
 
    The way to turn the manual results on again is:
    - In DistCore::prepareCovers, call prepareManualCovers.
@@ -239,7 +208,6 @@ void Manual::WestGeneralTwo(
 
 void Manual::prepare_2_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 1);              // 0. 1-1
   Manual::WestLengthRange(distData, 1, 2);      // 1. West is not void
   Manual::WestTop1(distData, 1);                // 2. West has the top
@@ -248,14 +216,12 @@ void Manual::prepare_2_1(DistData& distData) const
 
 void Manual::prepare_2_2(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 1);              // 0. 1-1
 }
 
 
 void Manual::prepare_3_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLengthRange(distData, 1, 3);      // 0. West is not void
   Manual::WestLengthRange(distData, 0, 2);      // 1. East is not void
   Manual::WestLengthRange(distData, 1, 2);      // 2. 1=2 or 2=1
@@ -272,7 +238,6 @@ void Manual::prepare_3_1(DistData& distData) const
 
 void Manual::prepare_3_2(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLengthRange(distData, 1, 3);      // 0. West is not void
   Manual::WestLengthRange(distData, 1, 2);      // 1. 1=2 or 2=1
 
@@ -284,14 +249,12 @@ void Manual::prepare_3_2(DistData& distData) const
 
 void Manual::prepare_3_3(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLengthRange(distData, 1, 2);      // 0. 1=2 or 2=1
 }
 
 
 void Manual::prepare_4_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLength(distData, 2);              // 2. 2=2
@@ -341,10 +304,6 @@ void Manual::prepare_4_1(DistData& distData) const
 
 void Manual::prepare_4_2(DistData& distData) const
 {
-  // 10/12836: Probably same complexity.
-  // 10/12876: Probably same complexity.
-  // 10/12696: Probably same complexity.
-  // 10/56025: Probably same complexity.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::EastLength(distData, 1);              // 2. East has singleton
@@ -426,7 +385,6 @@ void Manual::prepare_4_2(DistData& distData) const
 
 void Manual::prepare_4_3(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 2);              // 0. 2=2
   Manual::WestLengthRange(distData, 1, 2);      // 1. 1=3 or 2=2
   Manual::WestLengthRange(distData, 1, 3);      // 1. 1=3, 2=2 or 3=1
@@ -442,7 +400,6 @@ void Manual::prepare_4_3(DistData& distData) const
 
 void Manual::prepare_4_4(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 2);              // 0. 2=2
   Manual::WestLengthRange(distData, 1, 3);      // 1. 1=3, 2=2 or 3=1
   Manual::WestLengthRange(distData, 1, 2);      // 2. 1=3 or 2=2
@@ -452,7 +409,6 @@ void Manual::prepare_4_4(DistData& distData) const
 
 void Manual::prepare_5_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLengthRange(distData, 0, 4);      // 2. East is not void
@@ -508,15 +464,6 @@ void Manual::prepare_5_1(DistData& distData) const
 
 void Manual::prepare_5_2(DistData& distData) const
 {
-  // 10 /53931: "Either opponent..., or..."
-  // 10/ 53928: Ditto.
-  // 11/161796: Ditto.
-  // 11/161784: Ditto.
-  // 11/ 55626: Ditto.
-  // 11/ 55386: Ditto.
-  // 11/ 54912: Ditto.
-  // 11/ 54897: Maybe I like the manual one better.
-  // 11/ 17727: Not clear what is nicer.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLength(distData, 1);              // 2. 1=4
@@ -612,9 +559,6 @@ void Manual::prepare_5_2(DistData& distData) const
 
 void Manual::prepare_5_3(DistData& distData) const
 {
-  // 10/ 56937: Would have needed a 3-or row.
-  // 11/171786: Ditto.
-  // 11/ 57611: Not clear why different.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::SymmGeneralAnd(distData, 0, 0, 0, 3); // 2. Either side void
@@ -679,7 +623,6 @@ void Manual::prepare_5_3(DistData& distData) const
 
 void Manual::prepare_5_4(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLengthRange(distData, 1, 3);      // 0. 1=4, 2=3 or 3=2
   Manual::WestLengthRange(distData, 1, 4);      // 1. 1=4, 2=3, 3=2 or 4=1
   Manual::WestLengthRange(distData, 2, 3);      // 2. 2=3 or 3=2
@@ -690,7 +633,6 @@ void Manual::prepare_5_4(DistData& distData) const
 
 void Manual::prepare_5_5(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLengthRange(distData, 1, 3);      // 0. 1=4, 2=3 or 3=2
   Manual::WestLengthRange(distData, 1, 4);      // 1. 1=4, 2=3, 3=2 or 4=1
   Manual::WestLengthRange(distData, 2, 3);      // 2. 2=3 or 3=2
@@ -700,7 +642,6 @@ void Manual::prepare_5_5(DistData& distData) const
 
 void Manual::prepare_6_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLength(distData, 1);              // 2. West singleton
@@ -736,8 +677,6 @@ void Manual::prepare_6_1(DistData& distData) const
 
 void Manual::prepare_6_2(DistData& distData) const
 {
-  // 11/168123: Would have needed "Either opponent has both tops, ..."
-  // 11/161820: Ditto.
   Manual::WestLength(distData, 0);              // 0. West is void
   Manual::EastLength(distData, 0);              // 1. East is void
   Manual::WestLength(distData, 1);              // 2. West has singleton
@@ -791,8 +730,6 @@ void Manual::prepare_6_2(DistData& distData) const
 
 void Manual::prepare_6_3(DistData& distData) const
 {
-  // 11/170823: Would need a 3-or row.
-  // 11/170817: Would need a 3-or row.
   Manual::WestLength(distData, 3);              // 0. 3=3
   Manual::WestLengthRange(distData, 2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -821,9 +758,6 @@ void Manual::prepare_6_3(DistData& distData) const
 
 void Manual::prepare_6_4(DistData& distData) const
 {
-  // 11/174984: The choice is understandable.
-  // It cannot easily be reproduced here, as it would need
-  // "Either opponent has exactly one top" which is a new modality.
   Manual::WestLength(distData, 3);              // 0. 3=3
   Manual::WestLengthRange(distData, 2, 4);      // 1. 2=4, 3=3 or 4=2
 
@@ -833,7 +767,6 @@ void Manual::prepare_6_4(DistData& distData) const
 
 void Manual::prepare_6_5(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 3);              // 0. 3=3
   Manual::WestLengthRange(distData, 2, 4);      // 1. 2=4, 3=3 or 4=2
 }
@@ -841,7 +774,6 @@ void Manual::prepare_6_5(DistData& distData) const
 
 void Manual::prepare_6_6(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestLength(distData, 3);              // 0. 3=3
   Manual::WestLengthRange(distData, 2, 4);      // 1. 2=4, 3=3 or 4=2
   Manual::WestLengthRange(distData, 2, 3);      // 2. 2=4 or 3=3
@@ -851,7 +783,6 @@ void Manual::prepare_6_6(DistData& distData) const
 
 void Manual::prepare_7_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestTop1(distData, 1);                // 0. West has the top
 
   Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // 1. H(x) with West
@@ -864,7 +795,6 @@ void Manual::prepare_7_1(DistData& distData) const
 
 void Manual::prepare_7_2(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestTop1(distData, 2);                // 0. West has the tops
 
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 1. H singleton
@@ -882,7 +812,6 @@ void Manual::prepare_7_2(DistData& distData) const
 
 void Manual::prepare_7_3(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 0. HH singleton
   Manual::SymmGeneralAnd(distData, 2, 2, 2, 2); // 1. HH doubleton
   Manual::SymmGeneralAnd(distData, 3, 3, 3, 3); // 2. HHH tripleton
@@ -891,7 +820,6 @@ void Manual::prepare_7_3(DistData& distData) const
 
 void Manual::prepare_8_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::WestTop1(distData, 1);                // 0. West has the top
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 1. H singleton
   Manual::SymmGeneralAnd(distData, 0, 2, 1, 1); // 2. H(x) either side
@@ -900,7 +828,6 @@ void Manual::prepare_8_1(DistData& distData) const
 
 void Manual::prepare_8_2(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 0. H singleton
   Manual::SymmGeneralAnd(distData, 2, 2, 2, 2); // 1. HH doubleton
 }
@@ -908,7 +835,6 @@ void Manual::prepare_8_2(DistData& distData) const
 
 void Manual::prepare_9_1(DistData& distData) const
 {
-  // Identical to generated ones.
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 0. H singleton
 }
 
