@@ -122,6 +122,10 @@ string Top::strInside(
     else
       ss << side << " lacks at most " << +(oppsTops - vLower) << " tops";
   }
+  else if (vLower + vUpper == oppsTops)
+  {
+    ss << "Each opponent has " << +vLower << "-" << +vUpper << " tops";
+  }
   else
   {
     ss << side << " has between " << +vLower << " and " <<

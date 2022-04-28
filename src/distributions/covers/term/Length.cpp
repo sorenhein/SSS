@@ -98,10 +98,9 @@ string Length::strInside(
   {
     ss << "Neither opponent is void";
   }
-  else if (lower + upper == oppsLength && lower + 1 == upper)
+  else if (lower + upper == oppsLength)
   {
-    ss << "The suit splits " << +lower << "-" << +upper << 
-      " either way";
+    ss << "Each opponent has " << +lower << "-" << +upper << " cards";
   }
   else
   {
