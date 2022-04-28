@@ -116,7 +116,6 @@ bool CoverTableau::attempt(
     return true;
 
   // If not, try to add the cover to existing rows.
-  // const Cover& cover = * coverIter;
   unsigned rno = 0;
   for (auto& row: rows)
   {
@@ -132,46 +131,19 @@ bool CoverTableau::attempt(
     }
     else if (weightAdded < residualWeight)
     {
+      // The cover can be added, but does not make a solution yet.
       stack.emplace_back(StackEntry());
       StackEntry& entry = stack.back();
       entry.iter = coverIter;
       entry.tableau = * this;
       entry.tableau.extendRow(* coverIter, additions, cases, rno);
     }
-    else
+    else if (complexity.match(coverIter->getComplexity(),
+        row.getComplexity(), solution.complexity))
     {
-      bool b = complexity.match(coverIter->getComplexity(),
-        row.getComplexity(), solution.complexity);
-
-      // We can't destroy * this, as we want to finish the loop;
-      CoverTableau tmp = * this;
-      tmp.extendRow(* coverIter, additions, cases, rno);
-
-      if (solution.rows.empty() || tmp.complexity < solution.complexity)
-      {
-        if (! b)
-        {
-          cout << "this " << complexity.str() << endl;
-          cout << "cover " << +coverIter->getComplexity() << endl;
-          cout << "row   " << +row.getComplexity() << endl;
-          cout << "soln  " << solution.complexity.str() << endl;
-          cout << "tmpn  " << tmp.complexity.str() << endl;
-        }
-        assert(b);
-        solution = tmp;
-      }
-      else
-      {
-        if (b)
-        {
-          cout << "this " << complexity.str() << endl;
-          cout << "cover " << +coverIter->getComplexity() << endl;
-          cout << "row   " << +row.getComplexity() << endl;
-          cout << "soln  " << solution.complexity.str() << endl;
-          cout << "tmpn  " << tmp.complexity.str() << endl;
-        }
-        assert(! b);
-      }
+      // The cover makes a solution which beats the previous one.
+      solution = * this;
+      solution.extendRow(* coverIter, additions, cases, rno);
     }
 
     rno++;

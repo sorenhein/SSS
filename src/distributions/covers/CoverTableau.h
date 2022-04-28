@@ -9,8 +9,7 @@
 #ifndef SSS_COVERTABLEAU_H
 #define SSS_COVERTABLEAU_H
 
-/* A tableau is a set of additive rows with some overlap.
- */
+// A tableau is a set of additive rows with some overlap.
 
 #include <list>
 #include <set>
