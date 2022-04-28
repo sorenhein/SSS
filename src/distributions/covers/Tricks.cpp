@@ -235,7 +235,7 @@ bool Tricks::possible(
 }
 
 
-bool Tricks::possibleNew(
+bool Tricks::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,

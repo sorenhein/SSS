@@ -92,7 +92,7 @@ bool CoverRow::possible(
   //   explained vector that would arise
   // weightAdded: The number of cases in additions
 
-  return tricks.possibleNew(residuals, cases, additions, weightAdded);
+  return tricks.possible(residuals, cases, additions, weightAdded);
 }
 
 

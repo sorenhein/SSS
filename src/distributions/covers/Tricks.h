@@ -77,7 +77,7 @@ class Tricks
       Tricks& additions,
       unsigned char& weightAdded) const;
 
-    bool possibleNew(
+    bool possible(
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,

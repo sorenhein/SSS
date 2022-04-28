@@ -43,6 +43,8 @@ void Cover::set(
   const ProfilePair& profilePair,
   const bool symmFlagIn)
 {
+  // The product may or may not already be in memory.
+  // This is used when setting a row algorithmically.
   productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
 
   symmFlag = symmFlagIn;
@@ -87,10 +89,7 @@ void Cover::prepare(
 bool Cover::symmetrizable(const Profile& sumProfile) const
 {
   // We consider the product terms in the order (length, highest top,
-  // next top, ...).  The first such term that is set must be in the
-  // lower half of its possibilities.  So if length is 5, it can be
-  // at most [0, 2].  If length is 4, [0, 1].
-  
+  // next top, ...).
   assert(productUnitPtr != nullptr);
   return productUnitPtr->product.symmetrizable(sumProfile);
 }
@@ -109,6 +108,7 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
     return false;
 
   symmFlag = true;
+
   // More weight for the same complexity.
   mcpw >>= 1;
   return true;
@@ -121,14 +121,6 @@ void Cover::tricksOr(Tricks& running) const
     running.orSymm(tricks);
   else
     running |= tricks;
-}
-
-
-// TODO Move to possible?
-bool Cover::includes(const Profile& distProfile) const
-{
-  assert(productUnitPtr != nullptr);
-  return productUnitPtr->product.includes(distProfile);
 }
 
 
@@ -157,7 +149,7 @@ bool Cover::possible(
   unsigned char& weightAdded) const
 {
   // Same as the previous method with explained unused.
-  return tricks.possibleNew(residuals, cases, additions, weightAdded);
+  return tricks.possible(residuals, cases, additions, weightAdded);
 }
 
 
@@ -215,19 +207,17 @@ unsigned Cover::size() const
 
 bool Cover::operator < (const Cover& cover2) const
 {
-  // TODO Some of the methods called do real work, so we could cache
-  // their results.
+  if (mcpw < cover2.mcpw)
+    return true;
+  else if (mcpw > cover2.mcpw)
+    return false;
 
   assert(productUnitPtr != nullptr);
   assert(cover2.productUnitPtr != nullptr);
   const Product& p1 = productUnitPtr->product;
   const Product& p2 = cover2.productUnitPtr->product;
 
-  if (mcpw < cover2.mcpw)
-    return true;
-  else if (mcpw > cover2.mcpw)
-    return false;
-  else if (p1.effectiveDepth() < p2.effectiveDepth())
+  if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
     return true;
   else if (p1.effectiveDepth() > p2.effectiveDepth())

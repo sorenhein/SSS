@@ -74,8 +74,6 @@ class Cover
 
     void tricksOr(Tricks& running) const;
 
-    bool includes(const Profile& distProfile) const;
-
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,

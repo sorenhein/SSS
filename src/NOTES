@@ -2,12 +2,6 @@ Cover specifics
 ---------------
 Why such enormous numbers of possible covers in CoverTableau?
 
-In CoverTableau adding a cover, can we make a row and then add it?
-
-Make a tableau directory?
-
-Can delete Tricks::possible for possiblenew?
-
 Look at the more generic Term output strings.  Can we get more of them?
 The ones we don't want too many of are the complex single strings.
 
@@ -61,10 +55,6 @@ pointer to the 2-top one and an offset of 1.
 The one using that product would have to take it into account somehow.
 
 ProductMemory no longer needs the counters as they are in ProductStats.
-
-
-Clean code (obvious comments).
-
 
 When examining strategies, shift them down as far as possible,
 as this reduces the number of covers to consider.
