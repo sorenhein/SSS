@@ -27,13 +27,6 @@ Combinations combinations;
 Distributions distributions;
 TermCompare termCompare;
 
-unsigned numCompare = 0;
-unsigned numStack = 0;
-unsigned numSolutions = 0;
-unsigned numCompareManual = 0;
-unsigned numStackManual = 0;
-unsigned numSolutionsManual = 0;
-
 
 int main(int argc, char * argv[])
 {
@@ -96,13 +89,6 @@ int main(int argc, char * argv[])
 
     cout << "\n";
     cout << combinations.str();
-
-cout << "numCompare         " << numCompare << "\n";
-cout << "numStack           " << numStack << "\n";
-cout << "numSolutions       " << numSolutions << "\n";
-cout << "numCompareManual   " << numCompareManual << "\n";
-cout << "numStackManual     " << numStackManual << "\n";
-cout << "numSolutionsManual " << numSolutions << "\n";
   }
   else
   {
