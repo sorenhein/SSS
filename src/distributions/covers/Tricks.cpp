@@ -55,15 +55,6 @@ void Tricks::set(
 }
 
 
-void Tricks::set(const unsigned no)
-{
-  assert(no < tricks.size());
-  assert(tricks[no] == 0);
-
-  tricks[no] = 1;
-}
-
-
 void Tricks::weigh(
   const vector<unsigned char>& cases,
   unsigned char& weight) const
@@ -248,6 +239,7 @@ CoverState Tricks::explain(Tricks& tricks2) const
       state = COVER_OPEN;
   }
 
+  // tricks2 -= tricks;
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks2.tricks[i] -= tricks[i];
   
