@@ -281,12 +281,25 @@ string Product::strVerbal(
 
   if (top.getOperator() == COVER_EQUAL)
   {
-    return top.strWithLength(
+    return top.strEqualWithLength(
       length,
       sumProfile.length(), 
       highestTopCount,
       simplestOpponent,
       symmFlag);
+  }
+  else if (length.getOperator() == COVER_EQUAL)
+  {
+    // No inversion, but "has a doubleton with one or both tops"
+    return 
+      length.strLength(
+        sumProfile.length(), 
+        simplestOpponent, 
+        symmFlag) + 
+      " with " +
+      top.strTopBare(
+        highestTopCount,
+        simplestOpponent);
   }
   else
   {

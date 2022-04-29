@@ -59,12 +59,16 @@ class Top: public Term
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 
-    string strWithLength(
+    string strEqualWithLength(
       const Length& length,
       const unsigned char oppsLength,
       const unsigned char oppsTops,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
+
+    string strTopBare(
+      const unsigned char oppsTops,
+      const Opponent simplestOpponent) const;
 };
 
 #endif

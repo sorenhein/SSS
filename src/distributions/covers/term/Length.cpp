@@ -88,11 +88,17 @@ string Length::strInside(
   if (vLower == 0)
   {
     if (vUpper == 1)
-      ss << side << " has at most a singleton";
+      ss << side << " has at most a singleton out of " << 
+        +oppsLength << " cards";
     else if (vUpper == 2)
-      ss << side << " has at most a doubleton";
+      ss << side << " has at most a doubleton out of " << 
+        +oppsLength << " cards";
+    else if (vUpper == 3)
+      ss << side << " has at most a tripleton out of " << 
+        +oppsLength << " cards";
     else
-      ss << side << " has at most " << +vUpper << " cards";
+      ss << side << " has at most " << +vUpper << " out of " << 
+        +oppsLength << " cards";
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
@@ -100,11 +106,13 @@ string Length::strInside(
   }
   else if (vLower + vUpper == oppsLength)
   {
-    ss << "Each opponent has " << +vLower << "-" << +vUpper << " cards";
+    ss << "Each opponent has " << +vLower << "-" << +vUpper << 
+      " out of " << +oppsLength << " cards";
   }
   else
   {
-    ss << side << " has " << +vLower << "-" << +vUpper << " cards";
+    ss << side << " has " << +vLower << "-" << +vUpper << " out of " << 
+      +oppsLength << " cards";
   }
 
   return ss.str();

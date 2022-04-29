@@ -1,50 +1,18 @@
 Cover specifics
 ---------------
-9/17703
+a) Have to know whether length is an equal or a range.
+b) Tops are always a range, but have to know >=, <= or "inside".
 
-Old
- 240159 VStrategy #0 [c 10/5, w 0]: Always take at least 0 tricks, and more when
- 240160 * Each opponent has one top [8]; or
- 240161   The suit splits between 2=2 and 3=1 [10]
- 240162 * The suit splits between 1=3 and 2=2 [10]; or
- 240163   West has both tops [4]
-
-New
- 240159 VStrategy #0 [c 10/5, w 0]: Always take at least 0 tricks, and more when
- 240160 * Each opponent has one top [8]; or
- 240161   East has 2-3 cards [10]               West or East??
- 240162 * West has 1-2 cards [10]; or
- 240163   West has both tops [4]
-
-The latter seems to leave d = 3..10
-Each one top: 3,5,6,8
-West 2-3 seems right, i.e. East 1-2
-
-
-"The suit splits between 1=3 and 2=2" ->
-"West has 1-2 cards" (always from the short side)
-
-     11   East has at most 3 cards, and East lacks at most one top [13]
-     10   West has at most a doubleton, and West lacks at most one top [9]
-     52 * East has at most 3 cards, and East has at most one top [22]
-    901 * East has at most a doubleton, and East has at most one top [10]
-    145 * East has at most a doubleton, and East lacks at most one top [9]
-    200 * Either opponent has at most a doubleton, and Either opponent lacks at most one top [22]
-     37 * Either opponent has at most a doubleton, and Either opponent lacks at most one top [26]
-     32 * The suit splits 2-3 either way, and East has at most one top [16]
-    584 * The suit splits 2=2, and East has at most one top [5]
-    419 * The suit splits 2=2, and West has at most one top [5]
-     64 * The suit splits between 1=3 and 2=2, and West has at most one top [9]
-    158 * The suit splits between 2=2 and 3=1, and East has at most one top [9]
-    173 * West has a doubleton, and West lacks at most one top [7]
-     11 * West has at most 3 cards, and West has between 1 and 2 tops [33]; or
-    364 * West has at most 3 cards, and West lacks at most one top [11]
-    100 * West has at most 3 cards, and West lacks at most one top [18]
-     51 * West has at most 3 cards, and West lacks at most one top [27]
-    165 * West has at most a doubleton, and West has at most one top [10]
-    223 * West has at most a doubleton, and West lacks at most one top [11]
-    473 * West has at most a doubleton, and West lacks at most one top [9]
-
+If length is an equal
+  No inversion, but say "has a doubleton with one or both tops"
+  "The suit splits 2=2 with  at most one of the two tops"
+  --> Have to know the side in this case!
+else if tops is >=
+  inversion, "with at most doubleton", "2-3 cards", "1-2 cards"
+else if tops is <=
+  inversion, "and at most a doubleton/tripleton", "and 2-3 cards"
+else
+  inversion, "1-2 tops at most doubleton", "and 2-3 cards"
 
 
 Why such enormous numbers of possible covers in CoverTableau?
@@ -62,6 +30,7 @@ Basically try to eliminate all ", and"
 Differences:
 11/174984: I like the manual one better.
 But perhaps "Nobody has all the tops, or..."
+Or "Neither opponent"
 
 Cover stats
 -----------

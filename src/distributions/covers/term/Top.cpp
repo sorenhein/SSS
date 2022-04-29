@@ -107,18 +107,35 @@ string Top::strInside(
   if (vLower == 0)
   {
     if (vUpper == 1)
-      ss << side << " has at most one top";
+    {
+      if (oppsTops == 2)
+        ss << side << " has at most one of the two tops";
+      else if (oppsTops == 3)
+        ss << side << " has at most one of the three tops";
+      else
+        ss << side << " has at most one out of " << +oppsTops << " tops";
+    }
     else if (vUpper == 2)
-      ss << side << " has at most two tops";
+      ss << side << " has at most two out of " <<
+        +oppsTops << " tops";
     else
-      ss << side << " has at most " << +vUpper << " tops";
+      ss << side << " has at most " << +vUpper << " out of " <<
+        +oppsTops << "tops";
   }
   else if (vUpper == oppsTops)
   {
     if (vLower+1 == oppsTops)
-      ss << side << " lacks at most one top";
+    {
+      if (oppsTops == 2)
+        ss << side << " has one or both tops";
+      else if (oppsTops == 3)
+        ss << side << " has two or all three tops";
+      else
+        ss << side << " lacks at most one out of " << +oppsTops << " tops";
+    }
     else if (vLower+2 == oppsTops)
-      ss << side << " lacks at most two tops";
+      ss << side << " lacks at most two out of " <<
+        +oppsTops << " tops";
     else
       ss << side << " lacks at most " << +(oppsTops - vLower) << " tops";
   }
@@ -128,8 +145,8 @@ string Top::strInside(
   }
   else
   {
-    ss << side << " has between " << +vLower << " and " <<
-      +vUpper << " tops";
+    ss << side << " has " << +vLower << "-" << +vUpper << 
+      " out of " << +oppsTops << " tops";
   }
 
   return ss.str();
@@ -157,7 +174,6 @@ string Top::strTop(
     return "";
   }
 }
-
 
 
 string Top::strExactLengthEqual(
@@ -323,7 +339,7 @@ string Top::strLengthRangeEqual(
 }
 
 
-string Top::strWithLength(
+string Top::strEqualWithLength(
   const Length& length,
   const unsigned char oppsLength,
   const unsigned char oppsTops,
@@ -349,5 +365,63 @@ string Top::strWithLength(
     return Top::strLengthRangeEqual(
       oppsTops, xes, simplestOpponent, symmFlag);
   }
+}
+
+
+string Top::strTopBare(
+  const unsigned char oppsTops,
+  const Opponent simplestOpponent) const
+{
+  assert(oper != COVER_EQUAL);
+
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    vLower = lower;
+    vUpper = (oper == COVER_GREATER_EQUAL ? oppsTops : upper);
+  }
+  else
+  {
+    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsTops - upper);
+    vUpper = oppsTops - lower;
+  }
+
+  stringstream ss;
+
+  if (vLower == 0)
+  {
+    if (vUpper == 1)
+    {
+      if (oppsTops == 2)
+        ss << "at most one of the two tops";
+      else if (oppsTops == 3)
+        ss << "at most one of the three tops";
+      else
+        ss << "at most one top";
+    }
+    else if (vUpper == 2)
+      ss << "at most two tops";
+    else
+      ss << "at most " << +vUpper << " tops";
+  }
+  else if (vUpper == oppsTops)
+  {
+    if (vLower+1 == oppsTops)
+    {
+      if (oppsTops == 2)
+        ss << "one or both tops";
+      else if (oppsTops == 3)
+        ss << "two or all three tops";
+      else
+        ss << +vLower << "-" << +vUpper << " tops";
+    }
+    else
+      ss << +vLower << "-" << +vUpper << " tops";
+  }
+  else if (vLower + vUpper == oppsTops)
+    ss << +vLower << "-" << +vUpper << " tops";
+
+  return ss.str();
 }
 
