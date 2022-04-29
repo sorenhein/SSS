@@ -56,13 +56,13 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 void CoverTableau::addRow(
   const Cover& cover,
   const Tricks& additions,
-  [[maybe_unused]]const unsigned char weightAdded,
+  const unsigned char weightAdded,
   const vector<unsigned char>& cases)
 {
   rows.emplace_back(CoverRow());
   CoverRow& row = rows.back();
   row.resize(residuals.size());
-  row.add(cover, additions, cases, residuals, residualWeight);
+  row.add(cover, additions, weightAdded, cases, residuals, residualWeight);
   complexity.addRow(row.getComplexity());
 }
 
@@ -83,6 +83,7 @@ void CoverTableau::addRow(
 void CoverTableau::extendRow(
   const Cover& cover,
   const Tricks& additions,
+  const unsigned char weightAdded,
   const vector<unsigned char>& cases,
   const unsigned rowNo)
 {
@@ -91,7 +92,7 @@ void CoverTableau::extendRow(
   unsigned r;
   for (riter = rows.begin(), r = 0; r < rowNo; riter++, r++);
 
-  riter->add(cover, additions, cases, residuals, residualWeight);
+  riter->add(cover, additions, weightAdded, cases, residuals, residualWeight);
 
   complexity.addCover(cover.getComplexity(), riter->getComplexity());
 }
@@ -137,14 +138,14 @@ bool CoverTableau::attempt(
       StackEntry& entry = stack.back();
       entry.iter = coverIter;
       entry.tableau = * this;
-      entry.tableau.extendRow(* coverIter, additions, cases, rno);
+      entry.tableau.extendRow(* coverIter, additions, weightAdded, cases, rno);
     }
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), solution.complexity))
     {
       // The cover makes a solution which beats the previous one.
       solution = * this;
-      solution.extendRow(* coverIter, additions, cases, rno);
+      solution.extendRow(* coverIter, additions, weightAdded, cases, rno);
     }
 
     rno++;

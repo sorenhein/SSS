@@ -65,6 +65,7 @@ class CoverRow
     void add(
       const Cover& cover,
       const Tricks& additions,
+      const unsigned char weightAdded,
       const vector<unsigned char>& cases,
       Tricks& residuals,
       unsigned char& residualWeight);

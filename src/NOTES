@@ -5,19 +5,18 @@ b) Tops are always a range, but have to know >=, <= or "inside".
 
 If length is an equal
   No inversion, but say "has a doubleton with one or both tops"
-  "The suit splits 2=2 with  at most one of the two tops"
-  --> Have to know the side in this case!
 else if tops is >=
-  inversion, "with at most doubleton", "2-3 cards", "1-2 cards"
+  inversion, "with at most a doubleton", "2-3 cards", "1-2 cards"
 else if tops is <=
   inversion, "and at most a doubleton/tripleton", "and 2-3 cards"
 else
   inversion, "1-2 tops at most doubleton", "and 2-3 cards"
 
+Can we get all this language back into something unified within
+Top and Length?
+
 
 Why such enormous numbers of possible covers in CoverTableau?
-
-Also output weight of VStrategy
 
 Look at the more generic Term output strings.  Can we get more of them?
 The ones we don't want too many of are the complex single strings.

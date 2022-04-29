@@ -68,6 +68,7 @@ class CoverTableau
     void extendRow(
       const Cover& cover,
       const Tricks& additions,
+      const unsigned char weightAdded,
       const vector<unsigned char>& cases,
       const unsigned rowNo);
 

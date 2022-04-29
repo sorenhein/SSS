@@ -48,12 +48,7 @@ string Length::strEqual(
   else if (value == 1)
     ss << side << " has a singleton";
   else if (value == 2)
-  {
-    if (oppsLength == 4)
-      ss << "The suit splits 2=2";
-    else
-      ss << side << " has a doubleton";
-  }
+    ss << side << " has a doubleton";
   else
     ss << "The suit splits " << +lower << "=" << +(oppsLength - lower);
 

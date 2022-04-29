@@ -99,6 +99,7 @@ bool CoverRow::possible(
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
+  const unsigned char weightAdded,
   const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualWeight)
@@ -111,6 +112,7 @@ void CoverRow::add(
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
+  weight += weightAdded;
 }
 
 
