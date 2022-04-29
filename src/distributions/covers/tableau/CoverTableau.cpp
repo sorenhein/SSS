@@ -42,8 +42,12 @@ void CoverTableau::init(
   const unsigned char tmin,
   const vector<unsigned char>& cases)
 {
-  residuals.set(tricks, cases, residualWeight);
+  // residuals.set(tricks, cases, residualWeight);
+  // tricksMin = tmin;
+
+  residuals = tricks;
   tricksMin = tmin;
+  residuals.weigh(cases, residualWeight);
 }
 
 

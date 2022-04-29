@@ -32,7 +32,7 @@ class CoverRow
     // The OR'ed tricks of the covers.
     Tricks tricks;
 
-    unsigned weight;
+    unsigned char weight;
 
     unsigned char complexity;
 

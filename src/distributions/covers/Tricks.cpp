@@ -33,36 +33,6 @@ void Tricks::resize(const unsigned len)
 
 
 void Tricks::set(
-  const vector<unsigned char>& values,
-  unsigned char& sum)
-{
-  tricks.resize(values.size());
-
-  sum = 0;
-  for (unsigned i = 0; i < values.size(); i++)
-  {
-    tricks[i] = values[i];
-    sum += values[i];
-  }
-}
-
-
-void Tricks::set(
-  const Tricks& tricks2,
-  const vector<unsigned char>& cases,
-  unsigned char& weight)
-{
-  // TODO Do we need this long-term, or just use = ?
-
-  tricks = tricks2.tricks;
-
-  weight = 0;
-  for (unsigned i = 0; i < tricks2.size(); i++)
-    weight += cases[i] * tricks2.tricks[i];
-}
-
-
-void Tricks::set(
   const list<Result>& results,
   unsigned char& tricksMin)
 {
@@ -96,21 +66,17 @@ void Tricks::set(const unsigned no)
 
 void Tricks::weigh(
   const vector<unsigned char>& cases,
-  unsigned& weight) const
-  // unsigned char& numDist) const
+  unsigned char& weight) const
 {
   assert(cases.size() == tricks.size());
 
   weight = 0;
-  // numDist = 0;
 
   for (unsigned i = 0; i < tricks.size(); i++)
   {
+    // TODO Can delete "if"
     if (tricks[i])
-    {
       weight += cases[i] * tricks[i];
-      // numDist++;
-    }
   }
 }
 
@@ -294,7 +260,6 @@ void Tricks::add(
   const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualWeight)
-  // unsigned char& numDist)
 {
   // additions are disjoint from tricks.
   assert(tricks.size() == additions.tricks.size());
@@ -308,7 +273,6 @@ void Tricks::add(
     tricks[i] += t;
     residualWeight -= cases[i] * t;
     residuals.tricks[i] -= t;
-    // numDist += t;
   }
 }
 
@@ -390,6 +354,7 @@ string Tricks::strList() const
 string Tricks::strShort() const
 {
   string s;
+  // TODO for (auto t: tricks)
   for (unsigned i = 0; i < tricks.size(); i++)
     s += (tricks[i] ? "1" : "-");
   return s + "  ";
@@ -400,6 +365,7 @@ string Tricks::strSpaced() const
 {
   stringstream ss;
 
+  // TODO for (auto t: tricks)
   for (unsigned i = 0; i < tricks.size(); i++)
     ss << setw(2) << +tricks[i];
 

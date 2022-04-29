@@ -36,16 +36,6 @@ class Tricks
     void resize(const unsigned len);
 
     void set(
-      const vector<unsigned char>& values,
-      unsigned char& sum);
-
-    // TODO A bit like weigh()? Neede long-term?
-    void set(
-      const Tricks& tricks2,
-      const vector<unsigned char>& cases,
-      unsigned char& weight);
-
-    void set(
       const list<Result>& results,
       unsigned char& tricksMin);
 
@@ -53,8 +43,7 @@ class Tricks
 
     void weigh(
       const vector<unsigned char>& cases,
-      unsigned& weight) const;
-      // unsigned char& numDist) const;
+      unsigned char& weight) const;
 
     void prepare(
       const Product& product,
@@ -90,7 +79,6 @@ class Tricks
       const vector<unsigned char>& cases,
       Tricks& residuals,
       unsigned char& residualsSum);
-      // unsigned char& numDist);
 
     Tricks& operator -= (const Tricks& tricks2);
 
