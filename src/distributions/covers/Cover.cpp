@@ -104,6 +104,7 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
     return false;
 
   // Should still have at least one zero.
+  // TODO Go by weight, and avoid numDist completely in class?!
   if (numDist == tricks.size())
     return false;
 
@@ -149,7 +150,15 @@ bool Cover::possible(
   unsigned char& weightAdded) const
 {
   // Same as the previous method with explained unused.
-  return tricks.possible(residuals, cases, additions, weightAdded);
+  
+  if (tricks <= residuals)
+  {
+    additions = tricks;
+    additions.weigh(cases, weightAdded);
+    return true;
+  }
+  else
+    return false;
 }
 
 

@@ -1,5 +1,18 @@
 Cover specifics
 ---------------
+Tricks
+------
+possible() -> setContribution
+if (! setContribution)
+  return false
+if (addition <= residuals)
+  return true
+else
+  return false
+
+Mark the methods that are binary only
+Maybe mark the vectors with a flag
+
 Cover stats
 -----------
 ProductStats output the table by depth (#tops used) across horizontally.

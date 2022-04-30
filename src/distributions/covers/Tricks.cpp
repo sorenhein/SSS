@@ -192,39 +192,6 @@ bool Tricks::possible(
 }
 
 
-bool Tricks::possible(
-  const Tricks& residuals,
-  const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned char& weightAdded) const
-{
-  assert(tricks.size() == residuals.size());
-  assert(tricks.size() == cases.size());
-  assert(tricks.size() == additions.size());
-
-  weightAdded = 0;
-  for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    if (tricks[i] == 0)
-      additions.tricks[i] = 0;
-    else if (residuals.tricks[i])
-    {
-      // We need that entry.  The residuals is a binary vector.
-      additions.tricks[i] = 1;
-      weightAdded += cases[i];
-    }
-    else
-    {
-      // We cannot have that entry.
-      return false;
-    }
-  }
-
-  // Could still have been fully contained.
-  return (weightAdded > 0);
-}
-
-
 Tricks& Tricks::operator += (const Tricks& tricks2)
 {
   // No checking that we don't go out of the positive range (0..3).

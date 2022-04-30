@@ -62,12 +62,6 @@ class Tricks
       Tricks& additions,
       unsigned char& weightAdded) const;
 
-    bool possible(
-      const Tricks& residuals,
-      const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned char& weightAdded) const;
-
     Tricks& operator += (const Tricks& tricks2);
 
     Tricks& operator -= (const Tricks& tricks2);
