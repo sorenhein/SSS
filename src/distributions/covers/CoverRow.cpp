@@ -106,7 +106,7 @@ void CoverRow::add(
 {
   coverPtrs.push_back(&cover);
 
-  tricks.add(additions, cases, residuals, residualWeight);
+  tricks.add(additions, weightAdded, cases, residuals, residualWeight);
 
   // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);

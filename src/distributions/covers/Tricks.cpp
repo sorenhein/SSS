@@ -249,6 +249,7 @@ CoverState Tricks::explain(Tricks& tricks2) const
 
 void Tricks::add(
   const Tricks& additions,
+  const unsigned char weightAdded,
   const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualWeight)
@@ -259,6 +260,8 @@ void Tricks::add(
   // TODO With the new, proper weight: Do we just subtract the
   // added weight?
 
+auto r = residualWeight - weightAdded;
+
   for (unsigned i = 0; i < tricks.size(); i++)
   {
     const unsigned char t = additions.tricks[i];
@@ -266,6 +269,7 @@ void Tricks::add(
     residualWeight -= cases[i] * t;
     residuals.tricks[i] -= t;
   }
+assert(r == residualWeight);
 }
 
 
@@ -346,9 +350,8 @@ string Tricks::strList() const
 string Tricks::strShort() const
 {
   string s;
-  // TODO for (auto t: tricks)
-  for (unsigned i = 0; i < tricks.size(); i++)
-    s += (tricks[i] ? "1" : "-");
+  for (auto t: tricks)
+    s += (t ? "1" : "-");
   return s + "  ";
 }
 
@@ -357,9 +360,8 @@ string Tricks::strSpaced() const
 {
   stringstream ss;
 
-  // TODO for (auto t: tricks)
-  for (unsigned i = 0; i < tricks.size(); i++)
-    ss << setw(2) << +tricks[i];
+  for (auto t: tricks)
+    ss << setw(2) << +t;
 
   return ss.str() + "\n";
 }
