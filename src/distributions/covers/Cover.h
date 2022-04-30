@@ -88,8 +88,6 @@ class Cover
       Tricks& additions,
       unsigned char& tricksAdded) const;
 
-    CoverState explain(Tricks& tricksSeen) const;
-
     void updateStats(
       ProductStats& productStats,
       const Profile& sumProfile,

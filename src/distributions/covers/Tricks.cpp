@@ -225,51 +225,15 @@ bool Tricks::possible(
 }
 
 
-CoverState Tricks::explain(Tricks& tricks2) const
+Tricks& Tricks::operator += (const Tricks& tricks2)
 {
+  // No checking that we don't go out of the positive range (0..3).
   assert(tricks.size() == tricks2.tricks.size());
 
-  CoverState state = COVER_DONE;
-
   for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    if (tricks[i] > tricks2.tricks[i])
-      return COVER_IMPOSSIBLE;
-    else if (tricks[i] < tricks2.tricks[i])
-      state = COVER_OPEN;
-  }
-
-  // tricks2 -= tricks;
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks2.tricks[i] -= tricks[i];
+    tricks[i] += tricks2.tricks[i];
   
-  return state;
-}
-
-
-void Tricks::add(
-  const Tricks& additions,
-  const unsigned char weightAdded,
-  const vector<unsigned char>& cases,
-  Tricks& residuals,
-  unsigned char& residualWeight)
-{
-  // additions are disjoint from tricks.
-  assert(tricks.size() == additions.tricks.size());
-
-  // TODO With the new, proper weight: Do we just subtract the
-  // added weight?
-
-auto r = residualWeight - weightAdded;
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    const unsigned char t = additions.tricks[i];
-    tricks[i] += t;
-    residualWeight -= cases[i] * t;
-    residuals.tricks[i] -= t;
-  }
-assert(r == residualWeight);
+  return * this;
 }
 
 

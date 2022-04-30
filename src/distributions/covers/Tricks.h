@@ -13,8 +13,6 @@
 #include <list>
 #include <string>
 
-#include "CoverState.h"
-
 using namespace std;
 
 class Product;
@@ -70,14 +68,7 @@ class Tricks
       Tricks& additions,
       unsigned char& weightAdded) const;
 
-    CoverState explain(Tricks& tricks2) const;
-
-    void add(
-      const Tricks& additions,
-      const unsigned char weightAdded,
-      const vector<unsigned char>& cases,
-      Tricks& residuals,
-      unsigned char& residualsSum);
+    Tricks& operator += (const Tricks& tricks2);
 
     Tricks& operator -= (const Tricks& tricks2);
 

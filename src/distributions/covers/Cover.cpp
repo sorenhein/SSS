@@ -153,12 +153,6 @@ bool Cover::possible(
 }
 
 
-CoverState Cover::explain(Tricks& tricksSeen) const
-{
-  return tricks.explain(tricksSeen);
-}
-
-
 void Cover::updateStats(
   ProductStats& productStats,
   const Profile& sumProfile,

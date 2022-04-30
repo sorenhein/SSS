@@ -100,13 +100,16 @@ void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
   const unsigned char weightAdded,
-  const vector<unsigned char>& cases,
+  [[maybe_unused]] const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualWeight)
 {
   coverPtrs.push_back(&cover);
 
-  tricks.add(additions, weightAdded, cases, residuals, residualWeight);
+  // additions are disjoint from tricks here.
+  tricks += additions;
+  residuals -= additions;
+  residualWeight -= weightAdded;
 
   // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);

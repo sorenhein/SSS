@@ -19,6 +19,7 @@
 #include "../CoverRow.h"
 #include "../Tricks.h"
 #include "../Complexity.h"
+#include "../CoverState.h"
 
 
 using namespace std;
