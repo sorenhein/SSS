@@ -92,7 +92,15 @@ bool CoverRow::possible(
   //   explained vector that would arise
   // weightAdded: The number of cases in additions
 
-  return tricks.possible(residuals, cases, additions, weightAdded);
+  if (tricks <= residuals)
+  {
+    // TODO If we put more into CoverTableau, do we need the copy?
+    additions = tricks;
+    additions.weigh(cases, weightAdded);
+    return true;
+  }
+  else
+    return false;
 }
 
 
@@ -139,6 +147,15 @@ bool CoverRow::operator < (const CoverRow& rows2) const
   return (
       (complexity << 20) / weight < 
       (rows2.complexity << 20) / rows2.weight);
+}
+
+
+bool CoverRow::operator <= (const Tricks& residuals) const
+{
+  // TODO Move CoverRow::possible and Cover::possible to something
+  // like this.  Then CoverTableau::attemptRow in .h would have to do
+  // something more.
+  return (tricks <= residuals);
 }
 
 

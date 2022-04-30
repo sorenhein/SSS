@@ -78,6 +78,8 @@ class CoverRow
 
     bool operator < (const CoverRow& rows2) const;
 
+    bool operator <= (const Tricks& residuals) const;
+
     unsigned char effectiveDepth() const;
 
     unsigned getWeight() const;
