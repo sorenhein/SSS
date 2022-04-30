@@ -27,10 +27,6 @@ Term::Term()
 
 void Term::reset()
 {
-  lower = UCHAR_NOT_SET;
-  upper = UCHAR_NOT_SET;
-  oper = COVER_OPERATOR_SIZE;
-
   // Choose a large index value and hope to break the index 
   // if we try to use it unset...
   index = numeric_limits<unsigned short>::max();
@@ -40,37 +36,38 @@ void Term::reset()
 
 void Term::set(
   const unsigned char oppSize,
-  const unsigned char lowerIn,
-  const unsigned char upperIn)
+  const unsigned char lower,
+  const unsigned char upper)
 {
   // oppSize is the maximum value, so the total length in case of
   // a length, or the total number of tops in case of a top.
 
-  if (lowerIn == 0 && upperIn == oppSize)
+  if (lower == 0 && upper == oppSize)
   {
     // Not set
     data = termCompare.getData(false, 0);
     return;
   }
 
-  lower = lowerIn;
-  upper = upperIn;
+  unsigned char lowerInt = lower;
+  unsigned char upperInt = upper;
+  CoverOperator oper;
   unsigned char complexity;
 
-  if (lower == upper)
+  if (lowerInt == upperInt)
   {
     oper = COVER_EQUAL;
     complexity = 2;
   }
-  else if (lowerIn == 0)
+  else if (lower == 0)
   {
     oper = COVER_LESS_EQUAL;
     complexity = 2;
   }
-  else if (upperIn == oppSize)
+  else if (upper == oppSize)
   {
     oper = COVER_GREATER_EQUAL;
-    upper = 0xf; // For consistency
+    upperInt = 0xf; // For consistency
     complexity = 2;
   }
   else
@@ -79,7 +76,7 @@ void Term::set(
     complexity = 3;
   }
 
-  index = termCompare.getIndex(lower, upper, oper);
+  index = termCompare.getIndex(lowerInt, upperInt, oper);
   data = termCompare.getData(true, complexity);
 }
 
@@ -99,17 +96,20 @@ SymmTerm Term::symmetrizable(const unsigned char maximum) const
   // not including any middle value.
   assert(Term::used());
 
+  const unsigned char lowerInt = Term::lower();
+  const unsigned char upperInt = Term::upper();
+
   if (maximum & 1)
   {
     // When the maximum is odd, e.g. 5, there is no midpoint.
     const unsigned char critical = maximum/2;
-    if (upper < critical)
+    if (upperInt < critical)
       return TERM_SYMMETRIZABLE;
-    else if (lower > critical+1)
+    else if (lowerInt > critical+1)
       return TERM_SYMMETRIZABLE;
-    else if (upper == critical)
+    else if (upperInt == critical)
       return TERM_OPEN_CONSECUTIVE;
-    else if (lower == critical+1)
+    else if (lowerInt == critical+1)
       return TERM_OPEN_CONSECUTIVE;
     else
       return TERM_NOT_SYMMETRIZABLE;
@@ -120,11 +120,11 @@ SymmTerm Term::symmetrizable(const unsigned char maximum) const
     // lower and upper both to equal the midpoint, but then something
     // else must break the symmetry.
     const unsigned char midpoint = maximum/2;
-    if (upper < midpoint)
+    if (upperInt < midpoint)
       return TERM_SYMMETRIZABLE;
-    else if (lower > midpoint)
+    else if (lowerInt > midpoint)
       return TERM_SYMMETRIZABLE;
-    else if (lower == upper && upper == midpoint)
+    else if (lowerInt == upperInt && upperInt == midpoint)
       return TERM_OPEN_CENTERED;
     else
       return TERM_NOT_SYMMETRIZABLE;
@@ -137,7 +137,8 @@ Opponent Term::simplestOpponent(const unsigned char maximum) const
   if (! Term::used())
     return OPP_EITHER;
 
-  const unsigned char lsum = lower + upper;
+  const unsigned char lsum = Term::lower() + Term::upper();
+
   if (lsum > maximum)
     return OPP_EAST;
   else if (lsum < maximum)
@@ -149,7 +150,19 @@ Opponent Term::simplestOpponent(const unsigned char maximum) const
 
 CoverOperator Term::getOperator() const
 {
-  return oper;
+  return termCompare.getOperator(index);
+}
+
+
+unsigned char Term::lower() const
+{
+  return termCompare.getLower(index);
+}
+
+
+unsigned char Term::upper() const
+{
+  return termCompare.getUpper(index);
 }
 
 
@@ -171,27 +184,19 @@ string Term::strGeneral() const
 
   if (Term::used())
   {
+    const CoverOperator oper = Term::getOperator();
+
     string s;
     if (oper == COVER_EQUAL)
-    {
-      s = "== " + to_string(+lower);
-    }
+      s = "== " + to_string(+Term::lower());
     else if (oper == COVER_INSIDE_RANGE)
-    {
-      s = to_string(+lower) + "-" + to_string(+upper);
-    }
+      s = to_string(+Term::lower()) + "-" + to_string(+Term::upper());
     else if (oper == COVER_GREATER_EQUAL)
-    {
-      s = ">= " + to_string(+lower);
-    }
+      s = ">= " + to_string(+Term::lower());
     else if (oper == COVER_LESS_EQUAL)
-    {
-      s = "<= " + to_string(+upper);
-    }
+      s = "<= " + to_string(+Term::upper());
     else
-    {
       assert(false);
-    }
     
     ss << setw(8) << s;
   }

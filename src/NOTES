@@ -1,20 +1,5 @@
 Cover specifics
 ---------------
-10/12846
-Maybe a row can only get an "and" or an "or".
-Then we output "and;\n"
-Basically try to eliminate all ", and"
-
-Differences:
-11/174984: I like the manual one better.
-But perhaps "Nobody has all the tops, or..."
-Or "Neither opponent"
-
-Term
-----
-Can perhaps move Term to only index & data and nothing else?
-Less memory.
-
 Cover stats
 -----------
 ProductStats output the table by depth (#tops used) across horizontally.
@@ -37,13 +22,13 @@ Speed
 -----
 Delete the old symmetrics and manuals.
 Optimize Tricks into 5-groups
+- Put weight into Tricks organically
+- When ==, check weight before anything else
 - Could do something like strategies/optim/Study.cpp
   So groups of 5, or binary 10x10 = 1m byte entries
   Would speed up prune, but slow down prepare
   Later on, could speed up matching, but then we might prefer
   5-distribution groups as result vectors go up to 2 bits each.
-TableauCache speed up (look up more intelligently)
-
 
 The various TODO's in the covers and sub-directories.
 

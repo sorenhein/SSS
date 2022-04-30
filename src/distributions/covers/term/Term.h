@@ -36,12 +36,10 @@ enum SymmTerm
 
 class Term
 {
-  protected: 
+  friend class Top;
+  friend class Length;
 
-    // TODO Avoid at some point (use index)?
-    unsigned char lower;
-    unsigned char upper;
-    CoverOperator oper;
+  protected: 
 
     // The bit layout is given in TermCompare.
     // It combines lower, upper and oper.
@@ -50,8 +48,13 @@ class Term
   private:
 
     // The bit layout is given in TermCompare.
-    // It combines usedFlag, complexity and range.
+    // It combines usedFlag and complexity.
     unsigned char data;
+
+
+    unsigned char lower() const;
+
+    unsigned char upper() const;
 
 
   public:
@@ -62,8 +65,8 @@ class Term
 
     void set(
       const unsigned char oppSize,
-      const unsigned char lowerIn,
-      const unsigned char upperIn);
+      const unsigned char lower,
+      const unsigned char upper);
 
     bool includes(const unsigned char value) const;
 

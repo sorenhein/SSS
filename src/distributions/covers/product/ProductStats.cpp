@@ -179,7 +179,7 @@ string ProductStats::strTableHeader() const
     setw(8) << "Len-top" <<
     tableStats[0][0].strHeader();
 
-  ss << string(26, '-') << "\n";
+  ss << string(36, '-') << "\n";
 
   return ss.str();
 }

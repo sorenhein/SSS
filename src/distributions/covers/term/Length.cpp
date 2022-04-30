@@ -17,7 +17,8 @@
 bool Length::notVoid() const
 {
   // This is a special case in Product.
-  return (lower == 1 && oper == COVER_GREATER_EQUAL);
+  return (
+    Length::lower() == 1 && Length::getOperator() == COVER_GREATER_EQUAL);
 }
 
 
@@ -33,12 +34,12 @@ string Length::strEqual(
   if (simplestOpponent == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
-    value = lower;
+    value = Length::lower();
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    value = oppsLength - lower;
+    value = oppsLength - Length::lower();
   }
 
   stringstream ss;
@@ -50,7 +51,8 @@ string Length::strEqual(
   else if (value == 2)
     ss << side << " has a doubleton";
   else
-    ss << "The suit splits " << +lower << "=" << +(oppsLength - lower);
+    ss << "The suit splits " << 
+      +Length::lower() << "=" << +(oppsLength - Length::lower());
 
   return ss.str();
 }
@@ -68,14 +70,16 @@ string Length::strInside(
   if (simplestOpponent == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
-    vLower = lower;
-    vUpper = (oper == COVER_GREATER_EQUAL ? oppsLength : upper);
+    vLower = Length::lower();
+    vUpper = (Length::getOperator() == COVER_GREATER_EQUAL ? 
+      oppsLength : Length::upper());
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsLength - upper);
-    vUpper = oppsLength - lower;
+    vLower = (Length::getOperator() == COVER_GREATER_EQUAL ? 
+      0 : oppsLength - Length::upper());
+    vUpper = oppsLength - Length::lower();
   }
 
   stringstream ss;
@@ -106,19 +110,20 @@ string Length::strLengthBare(
   const unsigned char oppsLength,
   const Opponent simplestOpponent) const
 {
-  assert(oper != COVER_EQUAL);
-
   unsigned char vLower, vUpper;
 
   if (simplestOpponent == OPP_WEST)
   {
-    vLower = lower;
-    vUpper = (oper == COVER_GREATER_EQUAL ? oppsLength : upper);
+    vLower = Length::lower();
+    vUpper = (Length::getOperator() == COVER_GREATER_EQUAL ?  oppsLength : 
+      Length::upper());
   }
   else
   {
-    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsLength - upper);
-    vUpper = oppsLength - lower;
+    vLower = (
+      Length::getOperator() == COVER_GREATER_EQUAL ? 
+      0 : oppsLength - Length::upper());
+    vUpper = oppsLength - Length::lower();
   }
 
   stringstream ss;
@@ -148,6 +153,7 @@ string Length::strLength(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
+  const CoverOperator oper = Length::getOperator();
   if (oper == COVER_EQUAL)
   {
     return Length::strEqual(oppsLength, simplestOpponent, symmFlag);

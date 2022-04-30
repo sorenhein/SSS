@@ -65,9 +65,6 @@ int main(int argc, char * argv[])
 
     combinations.resize(control.cards());
 
-    // ExplStats explStats;
-    // distributions.resizeStats(explStats);
-
     for (unsigned char cards = 0; cards <= 11; cards++)
     {
       cout << "Cards " << setw(2) << right << +cards << endl;
@@ -80,9 +77,6 @@ int main(int argc, char * argv[])
     cout << distributions.strCovers();
     cout << distributions.strCoverCounts();
     cout << distributions.strProductEnterStats();
-
-    // cout << "\n";
-    // cout << explStats.str();
 
     cout << "\n";
     cout << combinations.strProductStats();

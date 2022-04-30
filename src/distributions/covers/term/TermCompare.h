@@ -33,6 +33,12 @@ class TermCompare
       const unsigned char upper,
       const CoverOperator oper) const;
 
+    CoverOperator getOperator(const unsigned short index) const;
+
+    unsigned char getLower(const unsigned short index) const;
+
+    unsigned char getUpper(const unsigned short index) const;
+
     bool includes(
       const unsigned short index,
       const unsigned char value) const;

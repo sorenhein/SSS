@@ -59,6 +59,24 @@ unsigned short TermCompare::getIndex(
 }
 
 
+CoverOperator TermCompare::getOperator(const unsigned short index) const
+{
+  return static_cast<CoverOperator>(index >> 12);
+}
+
+
+unsigned char TermCompare::getLower(const unsigned short index) const
+{
+  return static_cast<unsigned char>((index >> 8) & 0xf);
+}
+
+
+unsigned char TermCompare::getUpper(const unsigned short index) const
+{
+  return static_cast<unsigned char>((index >> 4) & 0xf);
+}
+
+
 bool TermCompare::includes(
   const unsigned short index,
   const unsigned char value) const
@@ -74,9 +92,7 @@ unsigned char TermCompare::getData(
   // Coding (historical, could be changed):
   // 6   usedFlag
   // 0-1 complexity
-  return
-    (static_cast<unsigned char>(usedFlag) << 6) |
-    complexity;
+  return (static_cast<unsigned char>(usedFlag) << 6) | complexity;
 }
 
 

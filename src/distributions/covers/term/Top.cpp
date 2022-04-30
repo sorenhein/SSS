@@ -25,21 +25,17 @@ string Top::strEqual(
   string side, otherSide;
   unsigned char value;
 
-  // TODO When combined with Length, I suppose this might look like:
-  // Either opponent has a singleton, and either opponent has the honor.
-  // But it's the same opponent.  See whether this becomes a problem.
-
   if (simplestOpponent == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
     otherSide = (symmFlag ? "Either opponent" : "East");
-    value = lower;
+    value = Top::lower();
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
     otherSide = (symmFlag ? "Either opponent" : "West");
-    value = oppsTops - lower;
+    value = oppsTops - Top::lower();
   }
 
   stringstream ss;
@@ -63,17 +59,11 @@ string Top::strEqual(
       ss << side << " has exactly one top";
   }
   else if (value+1 == oppsTops)
-  {
     ss << otherSide << " has exactly one top";
-  }
   else if (value == 2)
-  {
     ss << side << " has exactly two tops";
-  }
   else if (value+2 == oppsTops)
-  {
     ss << otherSide << " has exactly two tops";
-  }
   else
     ss << side << " has exactly " +value << " tops";
 
@@ -92,14 +82,18 @@ string Top::strInside(
   if (simplestOpponent == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
-    vLower = lower;
-    vUpper = (oper == COVER_GREATER_EQUAL ? oppsTops : upper);
+    vLower = Top::lower();
+    vUpper = (Top::getOperator() == COVER_GREATER_EQUAL ? 
+      oppsTops : 
+      Top::upper());
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsTops - upper);
-    vUpper = oppsTops - lower;
+    vLower = (Top::getOperator() == COVER_GREATER_EQUAL ? 
+      0 : 
+      oppsTops - Top::upper());
+    vUpper = oppsTops - Top::lower();
   }
 
   stringstream ss;
@@ -147,6 +141,7 @@ string Top::strTop(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
+  const CoverOperator oper = Top::getOperator();
   if (oper == COVER_EQUAL)
   {
     return Top::strEqual(oppsTops, simplestOpponent, symmFlag);
@@ -176,22 +171,18 @@ string Top::strExactLengthEqual(
   string side, otherSide;
   unsigned char length, value;
 
-  // TODO When combined with Length, I suppose this might look like:
-  // Either opponent has a singleton, and either opponent has the honor.
-  // But it's the same opponent.  See whether this becomes a problem.
-
   if (simplestOpponent == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
     otherSide = (symmFlag ? "Either opponent" : "East");
-    value = lower;
+    value = Top::lower();
     length = distLength;
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
     otherSide = (symmFlag ? "Either opponent" : "West");
-    value = oppsTops - lower;
+    value = oppsTops - Top::lower();
     length = oppsLength - distLength;
   }
 
@@ -269,14 +260,14 @@ string Top::strLengthRangeEqual(
   {
     side = (symmFlag ? "Either opponent" : "West");
     xstr = xes.strWest;
-    value = lower;
+    value = Top::lower();
     maxLen = value + xes.westMax;
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
     xstr = xes.strEast;
-    value = oppsTops - upper;
+    value = oppsTops - Top::upper();
     maxLen = value + xes.eastMax;
   }
 
@@ -335,19 +326,21 @@ string Top::strTopBare(
   const unsigned char oppsTops,
   const Opponent simplestOpponent) const
 {
-  assert(oper != COVER_EQUAL);
+  assert(Top::getOperator() != COVER_EQUAL);
 
   unsigned char vLower, vUpper;
 
   if (simplestOpponent == OPP_WEST)
   {
-    vLower = lower;
-    vUpper = (oper == COVER_GREATER_EQUAL ? oppsTops : upper);
+    vLower = Top::lower();
+    vUpper = (Top::getOperator() == COVER_GREATER_EQUAL ? 
+      oppsTops : Top::upper());
   }
   else
   {
-    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsTops - upper);
-    vUpper = oppsTops - lower;
+    vLower = (Top::getOperator() == COVER_GREATER_EQUAL ? 0 : 
+      oppsTops - Top::upper());
+    vUpper = oppsTops - Top::lower();
   }
 
   stringstream ss;
@@ -389,21 +382,22 @@ string Top::strEqualWithLength(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  assert(oper == COVER_EQUAL);
+  assert(Top::getOperator() == COVER_EQUAL);
 
   if (length.getOperator() == COVER_EQUAL)
   {
     return Top::strExactLengthEqual(
-      length.lower, oppsLength, oppsTops, simplestOpponent, symmFlag);
+      length.lower(), oppsLength, oppsTops, simplestOpponent, symmFlag);
   }
   else
   {
     Xes xes;
-    const unsigned char 
-      effUpper = 
-        (length.oper == COVER_GREATER_EQUAL ?  oppsLength : length.upper);
+    const unsigned char effUpper = 
+      (length.getOperator() == COVER_GREATER_EQUAL ?  
+        oppsLength : 
+        length.upper());
 
-    xes.set(length.lower, effUpper, lower, oppsLength, oppsTops);
+    xes.set(length.lower(), effUpper, Top::lower(), oppsLength, oppsTops);
 
     return Top::strLengthRangeEqual(
       oppsTops, xes, simplestOpponent, symmFlag);
