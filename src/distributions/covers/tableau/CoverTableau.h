@@ -57,20 +57,17 @@ class CoverTableau
     void addRow(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned char weightAdded,
-      const vector<unsigned char>& cases);
+      const unsigned char weightAdded);
 
     void addRow(
       const CoverRow& row,
       const Tricks& additions,
-      const unsigned char weightAdded,
-      const vector<unsigned char>& cases);
+      const unsigned char weightAdded);
 
     void extendRow(
       const Cover& cover,
       const Tricks& additions,
       const unsigned char weightAdded,
-      const vector<unsigned char>& cases,
       const unsigned rowNo);
 
 
@@ -143,21 +140,21 @@ CoverState CoverTableau::attemptRow(
 
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
-    tableau.addRow(* candIter, additions, weightAdded, cases);
+    tableau.addRow(* candIter, additions, weightAdded);
     return COVER_OPEN;
   }
   else if (solution.rows.empty())
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
-    solution.addRow(* candIter, additions, weightAdded, cases);
+    solution.addRow(* candIter, additions, weightAdded);
     return COVER_DONE;
   }
   else
   {
     // We can use this CoverTableau, as the stack element is about
     // to be popped anyway.
-    CoverTableau::addRow(* candIter, additions, weightAdded, cases);
+    CoverTableau::addRow(* candIter, additions, weightAdded);
     if (complexity < solution.complexity)
       solution = * this;
     return COVER_DONE;

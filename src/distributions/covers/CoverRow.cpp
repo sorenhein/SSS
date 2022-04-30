@@ -100,7 +100,6 @@ void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
   const unsigned char weightAdded,
-  [[maybe_unused]] const vector<unsigned char>& cases,
   Tricks& residuals,
   unsigned char& residualWeight)
 {
