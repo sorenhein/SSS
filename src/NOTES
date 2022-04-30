@@ -1,26 +1,5 @@
 Cover specifics
 ---------------
-a) Have to know whether length is an equal or a range.
-b) Tops are always a range, but have to know >=, <= or "inside".
-
-If length is an equal
-  No inversion, but say "has a doubleton with one or both tops"
-else if tops is >=
-  inversion, "with at most a doubleton", "2-3 cards", "1-2 cards"
-else if tops is <=
-  inversion, "and at most a doubleton/tripleton", "and 2-3 cards"
-else
-  inversion, "1-2 tops at most doubleton", "and 2-3 cards"
-
-Can we get all this language back into something unified within
-Top and Length?
-
-
-Why such enormous numbers of possible covers in CoverTableau?
-
-Look at the more generic Term output strings.  Can we get more of them?
-The ones we don't want too many of are the complex single strings.
-
 10/12846
 Maybe a row can only get an "and" or an "or".
 Then we output "and;\n"
@@ -31,20 +10,14 @@ Differences:
 But perhaps "Nobody has all the tops, or..."
 Or "Neither opponent"
 
+Term
+----
+Can perhaps move Term to only index & data and nothing else?
+Less memory.
+
 Cover stats
 -----------
 ProductStats output the table by depth (#tops used) across horizontally.
-
-Speed
------
-Delete the old symmetrics and manuals.
-Optimize Tricks into 5-groups
-- Could do something like strategies/optim/Study.cpp
-  So groups of 5, or binary 10x10 = 1m byte entries
-  Would speed up prune, but slow down prepare
-  Later on, could speed up matching, but then we might prefer
-  5-distribution groups as result vectors go up to 2 bits each.
-TableauCache speed up (look up more intelligently)
 
 Canonical products
 ------------------
@@ -60,11 +33,17 @@ ProductMemory no longer needs the counters as they are in ProductStats.
 When examining strategies, shift them down as far as possible,
 as this reduces the number of covers to consider.
 
+Speed
+-----
+Delete the old symmetrics and manuals.
+Optimize Tricks into 5-groups
+- Could do something like strategies/optim/Study.cpp
+  So groups of 5, or binary 10x10 = 1m byte entries
+  Would speed up prune, but slow down prepare
+  Later on, could speed up matching, but then we might prefer
+  5-distribution groups as result vectors go up to 2 bits each.
+TableauCache speed up (look up more intelligently)
 
-Term
-----
-Can perhaps move Term to only index & data and nothing else?
-Less memory.
 
 The various TODO's in the covers and sub-directories.
 

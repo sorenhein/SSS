@@ -43,11 +43,14 @@ class Length: public Term
 
     bool notVoid() const;
 
+    string strLengthBare(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent) const;
+
     string strLength(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
-
 };
 
 #endif

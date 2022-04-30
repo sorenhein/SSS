@@ -83,32 +83,61 @@ string Length::strInside(
   if (vLower == 0)
   {
     if (vUpper == 1)
-      ss << side << " has at most a singleton out of " << 
-        +oppsLength << " cards";
+      ss << side << " has at most a singleton";
     else if (vUpper == 2)
-      ss << side << " has at most a doubleton out of " << 
-        +oppsLength << " cards";
+      ss << side << " has at most a doubleton";
     else if (vUpper == 3)
-      ss << side << " has at most a tripleton out of " << 
-        +oppsLength << " cards";
+      ss << side << " has at most a tripleton";
     else
-      ss << side << " has at most " << +vUpper << " out of " << 
-        +oppsLength << " cards";
+      ss << side << " has at most " << +vUpper << " cards";
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
-  {
     ss << "Neither opponent is void";
-  }
   else if (vLower + vUpper == oppsLength)
+    ss << "Each opponent has " << +vLower << "-" << +vUpper << " cards";
+  else
+    ss << side << " has " << +vLower << "-" << +vUpper << " cards";
+
+  return ss.str();
+}
+
+
+string Length::strLengthBare(
+  const unsigned char oppsLength,
+  const Opponent simplestOpponent) const
+{
+  assert(oper != COVER_EQUAL);
+
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
   {
-    ss << "Each opponent has " << +vLower << "-" << +vUpper << 
-      " out of " << +oppsLength << " cards";
+    vLower = lower;
+    vUpper = (oper == COVER_GREATER_EQUAL ? oppsLength : upper);
   }
   else
   {
-    ss << side << " has " << +vLower << "-" << +vUpper << " out of " << 
-      +oppsLength << " cards";
+    vLower = (oper == COVER_GREATER_EQUAL ? 0 : oppsLength - upper);
+    vUpper = oppsLength - lower;
   }
+
+  stringstream ss;
+
+  if (vLower == 0)
+  {
+    if (vUpper == 1)
+      ss << "at most singleton";
+    else if (vUpper == 2)
+      ss << "at most doubleton";
+    else if (vUpper == 3)
+      ss << "at most tripleton";
+    else
+      ss << "with at most " << +vUpper << " cards";
+  }
+  else if (vLower == 1 && vUpper+1 == oppsLength)
+    ss << "with no void on either side";
+  else
+    ss << "with " << +vLower << "-" << +vUpper << " cards";
 
   return ss.str();
 }

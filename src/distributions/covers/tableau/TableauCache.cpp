@@ -47,8 +47,6 @@ bool TableauCache::lookup(
   {
     if (excessTricks == entry.excessTricks)
     {
-      // TODO This could surely be sped up, e.g. storing them in
-      // a set by weight.  I don't know if timing is a problem here.
       solution = entry.tableau;
       entry.count++;
       return true;

@@ -303,16 +303,16 @@ string Product::strVerbal(
   }
   else
   {
+    // Inversion, e.g. "has one top at most doubleton"
     return 
-      length.strLength(
-        sumProfile.length(), 
-        simplestOpponent, 
-        symmFlag) + 
-      ", and " + 
       top.strTop(
         highestTopCount,
         simplestOpponent, 
-        symmFlag);
+        symmFlag) +
+      " " +
+      length.strLengthBare(
+        sumProfile.length(), 
+        simplestOpponent);
   }
 }
 
