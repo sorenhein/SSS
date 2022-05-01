@@ -33,33 +33,14 @@ void Tricks::resize(const unsigned len)
   // See table below.
   lastForward = (len-1) / 2;
   reverseSum = len + len - (len/2) - 1;
-
-/*
-cout << "LEN " << len << endl;
-cout << "lastF " << lastForward << ", reverseSum " << reverseSum << endl;
-for (unsigned ext = 0; ext < len; ext++)
-  cout << ext << " " << Tricks::trickIndex(ext) << endl;
-cout << "\n";
-*/
 }
-
-
-/*
-unsigned Tricks::trickIndex(const unsigned extIndex) const
-{
-  if (extIndex <= lastForward)
-    return extIndex;
-  else
-    return reverseSum - extIndex;
-}
-*/
 
 
 const unsigned char& Tricks::element(const unsigned extIndex) const
 {
   /*
-     Store the front half (including perhaps the middle) one way
-     Store the back half backward               
+     Store the front half (including perhaps the middle) one way.
+     Store the back half backward.
 
      N   lastF Forward (grouped)  Backward (grouped)  revSum Cost 
       3: 1     0-1                2                   4      1
@@ -103,10 +84,6 @@ void Tricks::set(
   const list<Result>& results,
   unsigned char& tricksMin)
 {
-  // In order to deal with symmetry, we store the first half
-  // (including any middle element) forward and the second half
-  // in reverse.
-
   Tricks::resize(results.size());
   tricksMin = numeric_limits<unsigned char>::max();
   unsigned extIndex = 0;
@@ -114,8 +91,6 @@ void Tricks::set(
   for (auto& res: results)
   {
     const unsigned char rt = res.getTricks();
-    // const unsigned intIndex = Tricks::trickIndex(extIndex);
-
     Tricks::element(extIndex) = rt;
     if (rt < tricksMin)
       tricksMin = rt;
@@ -155,7 +130,6 @@ void Tricks::prepare(
   weight = 0;
   numDist = 0;
 
-// cout << "Enter prepare\n";
   if (symmFlag)
   {
     for (unsigned extIndex = 0; extIndex < len; extIndex++)
@@ -163,8 +137,6 @@ void Tricks::prepare(
       if (product.includes(distProfiles[extIndex]) ||
           product.includes(distProfiles[len-1-extIndex]))
       {
-        // const unsigned intIndex = Tricks::trickIndex(extIndex);
-        // tricks[intIndex] = 1;
         Tricks::element(extIndex) = 1;
         weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
@@ -177,24 +149,12 @@ void Tricks::prepare(
     {
       if (product.includes(distProfiles[extIndex]))
       {
-        // const unsigned intIndex = Tricks::trickIndex(extIndex);
-        // tricks[intIndex] = 1;
         Tricks::element(extIndex) = 1;
         weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
-// cout << "Setting elem " << extIndex << ", weight " << +weight << endl;
       }
     }
   }
-
-if (weight == 0)
-{
-  cout << "symmFlag " << (symmFlag ? "yes" : "no") << endl;
-  for (unsigned extIndex = 0; extIndex < len; extIndex++)
-    cout << extIndex << " " << +tricks[extIndex] << 
-      "  " << +cases[extIndex] << endl;
-  assert(false);
-}
 }
 
 
@@ -229,34 +189,6 @@ bool Tricks::symmetrize(
 
   Tricks::weigh(cases, weight);
   return true;
-
-  /*
-  const unsigned len = tricks.size();
-
-  for (unsigned dno = 0; dno < len/2; dno++)
-  {
-    const unsigned mno = len - 1 - dno;
-    if (tricks[dno] == 0)
-    {
-      if (tricks[mno] > 0)
-      {
-        tricks[dno] = tricks[mno];
-        weight += cases[mno] * tricks[mno];
-        numDist++;
-      }
-    }
-    else if (tricks[mno] == 0)
-    {
-      tricks[mno] = tricks[dno];
-      weight += cases[dno] * tricks[dno];
-      numDist++;
-    }
-    else
-      return false;
-  }
-
-  return true;
-  */
 }
 
 
@@ -329,11 +261,6 @@ void Tricks::orSymm(const Tricks& tricks2)
   const unsigned len = tricks.size();
   assert(len == tricks2.tricks.size());
 
-  /*
-  for (unsigned i = 0; i < len; i++)
-    tricks[i] |= tricks2.tricks[i] | tricks2.tricks[len-1-i];
-    */
-
   unsigned lo, hi;
   for (lo = 0, hi = lastForward+1; hi < tricks.size(); lo++, hi++)
   {
@@ -388,7 +315,6 @@ string Tricks::strList() const
     ss << 
       setw(2) << extIndex << 
       setw(4) << +Tricks::element(extIndex) << "\n";
-      // setw(4) << +tricks[Tricks::trickIndex(extIndex)] << "\n";
 
   return ss.str();
 }
@@ -397,9 +323,10 @@ string Tricks::strList() const
 string Tricks::strShort() const
 {
   string s;
+
   for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
     s += (Tricks::element(extIndex) ? "1" : "-");
-    // s += (tricks[Tricks::trickIndex(extIndex)] ? "1" : "-");
+
   return s + "  ";
 }
 
@@ -410,7 +337,6 @@ string Tricks::strSpaced() const
 
   for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
     ss << setw(2) << +Tricks::element(extIndex);
-    // ss << setw(2) << +tricks[Tricks::trickIndex(extIndex)];
 
   return ss.str() + "\n";
 }

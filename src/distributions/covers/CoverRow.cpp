@@ -53,10 +53,7 @@ void CoverRow::fillDirectly(
   }
 
   tricks.weigh(cases, weight);
-if (weight == 0)
-{
   assert(weight != 0);
-}
 }
 
 
