@@ -153,15 +153,14 @@ bool Tricks::prepare(
   const bool symmFlag,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
-  unsigned& weight,
-  unsigned char& numDist)
+  unsigned& weight)
 {
   const unsigned len = distProfiles.size();
   assert(len == cases.size());
   Tricks::resize(len);
 
   weight = 0;
-  numDist = 0;
+  unsigned char numDist = 0;
 
   if (symmFlag)
   {
@@ -199,8 +198,7 @@ bool Tricks::prepare(
 
 bool Tricks::symmetrize(
   const vector<unsigned char>& cases,
-  unsigned& weight,
-  unsigned char& numDist)
+  unsigned& weight)
 {
   // Will invalidate Tricks if not symmetrizable!
   // We only symmetrize if there is no overlap with the mirror.
@@ -209,6 +207,8 @@ bool Tricks::symmetrize(
 
   // Loop over the high end of the internal trick numbers.
   unsigned lo, hi;
+  unsigned numDist = 0;
+
   for (lo = 0, hi = lastForward+1; hi < tricks.size(); lo++, hi++)
   {
     if (tricks[lo] == tricks[hi])
@@ -222,7 +222,7 @@ bool Tricks::symmetrize(
       // Overwrite one of them, but no need to test which one.
       tricks[lo] = 1;
       tricks[hi] = 1;
-      numDist++;
+      numDist += 2;
     }
   }
 

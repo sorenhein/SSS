@@ -99,7 +99,7 @@ class Cover
 
     bool empty() const;
 
-    bool full() const;
+    // bool full() const;
 
     bool symmetric() const;
 

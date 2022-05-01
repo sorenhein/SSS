@@ -30,8 +30,6 @@ void Cover::reset()
   tricks.clear();
   weight = 0;
   mcpw = 0;
-  // TODO Think about no numDist at all
-  numDist = 0;
   symmFlag = false;
   code = 0;
 }
@@ -78,8 +76,7 @@ bool Cover::prepare(
     symmFlag,
     distProfiles, 
     cases, 
-    weight, 
-    numDist))
+    weight))
   {
     return false;
   }
@@ -105,13 +102,8 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
   // Will invalidate Cover if not symmetrizable!
   assert(! symmFlag);
 
-  if (! tricks.symmetrize(cases, weight, numDist))
+  if (! tricks.symmetrize(cases, weight))
     return false;
-
-  // Should still have at least one zero.
-  // TODO Go by weight, and avoid numDist completely in class?!
-  // if (numDist == tricks.size())
-    // return false;
 
   symmFlag = true;
 
@@ -195,10 +187,12 @@ bool Cover::empty() const
 }
 
 
+/*
 bool Cover::full() const
 {
   return (weight > 0 && numDist == tricks.size());
 }
+*/
 
 
 bool Cover::symmetric() const
@@ -278,7 +272,6 @@ string Cover::strHeader() const
     setw(4) << "Wgt" <<
     setw(4) << "Cpx" <<
     setw(10) << "cpw" <<
-    setw(4) << "#d" <<
     setw(4) << "#t" << 
     setw(4) << "Sym" << 
     setw(16) << "Code" << 
@@ -297,7 +290,6 @@ string Cover::strLine() const
     setw(4) << weight <<
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(10) << mcpw <<
-    setw(4) << +numDist <<
     setw(4) << +productUnitPtr->product.effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 

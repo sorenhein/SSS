@@ -82,8 +82,8 @@ void CoverStore::add(
   if (! coverScratch.prepare(distProfiles, cases))
     return;
 
-  if (coverScratch.empty() || coverScratch.full())
-    assert(false);
+  // if (coverScratch.empty() || coverScratch.full())
+    // assert(false);
 
   // Store it in "store".
   auto result = store.insert(coverScratch);

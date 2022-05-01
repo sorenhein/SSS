@@ -62,14 +62,12 @@ class Tricks
       const bool symmFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
-      unsigned& weight,
-      unsigned char& numDist);
+      unsigned& weight);
 
     // Will invalidate Tricks if not symmetrizable!
     bool symmetrize(
       const vector<unsigned char>& cases,
-      unsigned& weight,
-      unsigned char& numDist);
+      unsigned& weight);
 
     bool possible(
       const Tricks& explained,
