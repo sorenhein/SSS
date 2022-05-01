@@ -3,41 +3,17 @@ Cover specifics
 
 Trick compression
 -----------------
-* Places where tricks are still used:
-  orSymm
-    This one is only used for manuals, so we're not fussed about speed
-  orNormal (vectorized)
-  possible (vectorized)
-  symmetrize (vectorized
-  prepare (OK to scrutinize)
-  weigh (no other way?)
-  set (OK to scrutinize)
+Can we do without some of the values in Tricks?
+weight (need this)
+length (hard to do without)
+lastForward used in orSymm (no problem), symmetrize (probably OK),
+  prepare, set
+reverseSum used in sigElem, element
+Probably the copying costs some time.
 
-* set would make the compressed result vector
-* prepare makes the binary vector, could be symmetrized already
-* symmetrize is a problem (is there ever any overlap by the way?)
-  - called only from Cover::symmetrize
-    - called only from CoverStore::add so does matter some
-* possible() needs cover & not(row), can vectorize, then <= (ditto)
-* orSymm is also a problem (the same), could perhaps first symmetrize
-  and then |=
-  - used once, in Cover:: tricksOr, depends on symmFlag
-  - only used in CoverRow::fillDirectly so not a big deal
-
-
-
-When outputting str, we'd have to output the second half backward too.
-<=, ==, |=, -=, += work roughly the same, I think. Separate halves.
-orSymm should be easier.
-possible is similar, but for the two halves separately.
-symmetrize is kind of an OR of the two, perhaps treat any middle
-separately.
-prepare almost becomes easier, as the second half is the same.
-set has to be a bit more careful.
-
-
-Mark the methods that are binary only
-Maybe mark the vectors with a flag
+Could maybe not reverse in Tricks and do all the magic in ResConvert.
+Could maybe do without tricks at all, and fill up signature group by group.
+But probably a lot of the time comes from product.include?
 
 Cover stats
 -----------
@@ -60,14 +36,6 @@ as this reduces the number of covers to consider.
 Speed
 -----
 Delete the old symmetrics and manuals.
-Optimize Tricks into 5-groups
-- Put weight into Tricks organically
-- When ==, check weight before anything else
-- Could do something like strategies/optim/Study.cpp
-  So groups of 5, or binary 10x10 = 1m byte entries
-  Would speed up prune, but slow down prepare
-  Later on, could speed up matching, but then we might prefer
-  5-distribution groups as result vectors go up to 2 bits each.
 
 The various TODO's in the covers and sub-directories.
 

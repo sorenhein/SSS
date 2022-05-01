@@ -24,8 +24,6 @@ class Tricks
 {
   private:
 
-    // vector<unsigned char> tricks;
-
     unsigned weight;
 
     unsigned length;
@@ -41,8 +39,6 @@ class Tricks
 
 
     const unsigned char sigElem(const unsigned extIndex) const;
-
-    // const unsigned char& element(const unsigned extIndex) const;
 
     unsigned char& element(
       vector<unsigned char>& tricks,

@@ -29,7 +29,6 @@ extern vector<Timer> timersStrat;
 
 void Tricks::clear()
 {
-  // tricks.clear();
   weight = 0;
   length = 0;
 
@@ -105,7 +104,6 @@ void Tricks::set(
   unsigned char& tricksMin)
 {
   // Seems fast.
-timersStrat[39].start();
   
   vector<unsigned char> tricks;
   tricks.resize(results.size());
@@ -130,7 +128,6 @@ timersStrat[39].start();
   resConvert.scrutinizeVector(tricks, lastForward, signature);
 
   Tricks::weigh(cases);
-timersStrat[39].start();
 }
 
 
@@ -275,7 +272,6 @@ Tricks& Tricks::operator += (const Tricks& tricks2)
   // Seems fast.
 
   // No checking that we don't go out of the positive range (0..3).
-  // assert(tricks.size() == tricks2.tricks.size());
   assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
@@ -292,7 +288,6 @@ Tricks& Tricks::operator -= (const Tricks& tricks2)
   // Seems fast.
 
   // No checking of <= first.
-  // assert(tricks.size() == tricks2.tricks.size());
   assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
@@ -310,7 +305,6 @@ Tricks& Tricks::orNormal(
 {
   // Seems unused.
 
-  // assert(tricks.size() == tricks2.tricks.size());
   assert(signature.size() == tricks2.signature.size());
 
   // This only works for binary vectors.
