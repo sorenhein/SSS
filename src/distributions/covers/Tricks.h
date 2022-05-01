@@ -24,7 +24,7 @@ class Tricks
 {
   private:
 
-    vector<unsigned char> tricks;
+    // vector<unsigned char> tricks;
 
     unsigned weight;
 
@@ -42,9 +42,11 @@ class Tricks
 
     const unsigned char sigElem(const unsigned extIndex) const;
 
-    const unsigned char& element(const unsigned extIndex) const;
+    // const unsigned char& element(const unsigned extIndex) const;
 
-    unsigned char& element(const unsigned extIndex);
+    unsigned char& element(
+      vector<unsigned char>& tricks,
+      const unsigned extIndex);
 
     void weigh(const vector<unsigned char>& cases);
 

@@ -22,10 +22,14 @@
 
 extern ResConvert resConvert;
 
+// TMP
+#include "../../utils/Timers.h"
+extern vector<Timer> timersStrat;
+
 
 void Tricks::clear()
 {
-  tricks.clear();
+  // tricks.clear();
   weight = 0;
   length = 0;
 
@@ -37,7 +41,7 @@ void Tricks::resize(const unsigned len)
 {
   length = len;
 
-  tricks.resize(len);
+  // tricks.resize(len);
   signature.resize(resConvert.profileSize(len));
 
   // See table below.
@@ -47,17 +51,6 @@ void Tricks::resize(const unsigned len)
 
 
 const unsigned char Tricks::sigElem(const unsigned extIndex) const
-{
-  // TODO Perhaps store tricks in the regular way and do all the
-  // reversing in ResConvert?
-  if (extIndex <= lastForward)
-    return resConvert.lookup(signature, lastForward, extIndex);
-  else
-    return resConvert.lookup(signature, lastForward, reverseSum - extIndex);
-}
-
-
-const unsigned char& Tricks::element(const unsigned extIndex) const
 {
   /*
      Store the front half (including perhaps the middle) one way.
@@ -86,14 +79,18 @@ const unsigned char& Tricks::element(const unsigned extIndex) const
      So the average cost is 0.4 extra entries.
   */
   
+  // TODO Perhaps store tricks in the regular way and do all the
+  // reversing in ResConvert?
   if (extIndex <= lastForward)
-    return tricks[extIndex];
+    return resConvert.lookup(signature, lastForward, extIndex);
   else
-    return tricks[reverseSum - extIndex];
+    return resConvert.lookup(signature, lastForward, reverseSum - extIndex);
 }
 
 
-unsigned char& Tricks::element(const unsigned extIndex)
+unsigned char& Tricks::element(
+  vector<unsigned char>& tricks,
+  const unsigned extIndex)
 {
   if (extIndex <= lastForward)
     return tricks[extIndex];
@@ -107,6 +104,12 @@ void Tricks::set(
   const vector<unsigned char>& cases,
   unsigned char& tricksMin)
 {
+  // Seems fast.
+timersStrat[39].start();
+  
+  vector<unsigned char> tricks;
+  tricks.resize(results.size());
+
   Tricks::resize(results.size());
   tricksMin = numeric_limits<unsigned char>::max();
   unsigned extIndex = 0;
@@ -114,7 +117,7 @@ void Tricks::set(
   for (auto& res: results)
   {
     const unsigned char rt = res.getTricks();
-    Tricks::element(extIndex) = rt;
+    Tricks::element(tricks, extIndex) = rt;
     if (rt < tricksMin)
       tricksMin = rt;
 
@@ -124,19 +127,22 @@ void Tricks::set(
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] -= tricksMin;
   
-  Tricks::weigh(cases);
-
   resConvert.scrutinizeVector(tricks, lastForward, signature);
+
+  Tricks::weigh(cases);
+timersStrat[39].start();
 }
 
 
 void Tricks::weigh(const vector<unsigned char>& cases)
 {
+  // Seems fast.
+
   assert(cases.size() == length);
 
   weight = 0;
   for (unsigned extIndex = 0; extIndex < length; extIndex++)
-    weight += cases[extIndex] * Tricks::element(extIndex);
+    weight += cases[extIndex] * Tricks::sigElem(extIndex);
 }
 
 
@@ -146,9 +152,13 @@ bool Tricks::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
+timersStrat[34].start();
   const unsigned len = distProfiles.size();
   assert(len == cases.size());
   Tricks::resize(len);
+
+  vector<unsigned char> tricks;
+  tricks.resize(len);
 
   weight = 0;
   unsigned char numDist = 0;
@@ -160,7 +170,7 @@ bool Tricks::prepare(
       if (product.includes(distProfiles[extIndex]) ||
           product.includes(distProfiles[len-1-extIndex]))
       {
-        Tricks::element(extIndex) = 1;
+        Tricks::element(tricks, extIndex) = 1;
         numDist++;
       }
     }
@@ -171,24 +181,30 @@ bool Tricks::prepare(
     {
       if (product.includes(distProfiles[extIndex]))
       {
-        Tricks::element(extIndex) = 1;
+        Tricks::element(tricks, extIndex) = 1;
         numDist++;
       }
     }
   }
 
   if (numDist == 0 || numDist == tricks.size())
+  {
+timersStrat[34].stop();
     return false;
+  }
 
   resConvert.scrutinizeVector(tricks, lastForward, signature);
 
   Tricks::weigh(cases);
+timersStrat[34].stop();
   return true;
 }
 
 
 bool Tricks::symmetrize()
 {
+  // Seems fast.
+
   // Will invalidate Tricks if not symmetrizable!
   // We only symmetrize if there is no overlap with the mirror.
   // In particular, the middle element if any is zero.
@@ -196,32 +212,7 @@ bool Tricks::symmetrize()
   // symmetrizable, we have to add up the weight explicitly here,
   // for which we need cases: Tricks::weigh(cases);
   if (length & 1)
-    assert(tricks[lastForward] == 0);
-
-  // Loop over the high end of the internal trick numbers.
-  unsigned lo, hi;
-  unsigned numDist = 0;
-
-  for (lo = 0, hi = lastForward+1; hi < tricks.size(); lo++, hi++)
-  {
-    if (tricks[lo] == tricks[hi])
-    {
-      // Don't symmetrize if there is overlap.
-      if (tricks[lo])
-        return false;
-    }
-    else
-    {
-      // Overwrite one of them, but no need to test which one.
-      tricks[lo] = 1;
-      tricks[hi] = 1;
-      numDist += 2;
-    }
-  }
-
-  // Don't allow a fully set vector.
-  if (numDist == tricks.size())
-    return false;
+    assert(Tricks::sigElem(lastForward) == 0);
 
   const unsigned offset = signature.size() / 2;
   bool fullHouseFlag = true;
@@ -257,17 +248,12 @@ bool Tricks::possible(
   const vector<unsigned char>& cases,
   Tricks& additions) const
 {
-  assert(tricks.size() == explained.size());
-  assert(tricks.size() == residuals.size());
-  assert(tricks.size() == cases.size());
-  assert(tricks.size() == additions.size());
+  // Seems fast.
 
-  // The cover is an addition if it is not already set.
-  // This can be written a bit more efficiently, but the idea is to
-  // make it vectorizable if we go down that path.
-  for (unsigned intIndex = 0; intIndex < tricks.size(); intIndex++)
-    additions.tricks[intIndex] = 
-      tricks[intIndex] & ~explained.tricks[intIndex];
+  assert(length == explained.size());
+  assert(length == residuals.size());
+  assert(length == cases.size());
+  assert(length == additions.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
     additions.signature[i] = signature[i] & ~ explained.signature[i];
@@ -278,17 +264,19 @@ bool Tricks::possible(
     return (additions.weight > 0);
   }
   else
+  {
     return false;
+  }
 }
 
 
 Tricks& Tricks::operator += (const Tricks& tricks2)
 {
-  // No checking that we don't go out of the positive range (0..3).
-  assert(tricks.size() == tricks2.tricks.size());
+  // Seems fast.
 
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] += tricks2.tricks[i];
+  // No checking that we don't go out of the positive range (0..3).
+  // assert(tricks.size() == tricks2.tricks.size());
+  assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] += tricks2.signature[i];
@@ -301,12 +289,12 @@ Tricks& Tricks::operator += (const Tricks& tricks2)
 
 Tricks& Tricks::operator -= (const Tricks& tricks2)
 {
-  // No checking of <= first.
-  assert(tricks.size() == tricks2.tricks.size());
+  // Seems fast.
 
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] -= tricks2.tricks[i];
-  
+  // No checking of <= first.
+  // assert(tricks.size() == tricks2.tricks.size());
+  assert(signature.size() == tricks2.signature.size());
+
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] -= tricks2.signature[i];
 
@@ -320,10 +308,10 @@ Tricks& Tricks::orNormal(
  const Tricks& tricks2,
  const vector<unsigned char>& cases)
 {
-  assert(tricks.size() == tricks2.tricks.size());
+  // Seems unused.
 
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] |= tricks2.tricks[i];
+  // assert(tricks.size() == tricks2.tricks.size());
+  assert(signature.size() == tricks2.signature.size());
 
   // This only works for binary vectors.
   for (unsigned i = 0; i < signature.size(); i++)
@@ -339,22 +327,9 @@ void Tricks::orSymm(
   const Tricks& tricks2,
   const vector<unsigned char>& cases)
 {
-  const unsigned len = tricks.size();
-  assert(len == tricks2.tricks.size());
+  // Seems fast.
 
-  unsigned lo, hi;
-  for (lo = 0, hi = lastForward+1; hi < tricks.size(); lo++, hi++)
-  {
-    const unsigned char orVal = tricks2.tricks[lo] | tricks2.tricks[hi];
-    tricks[lo] |= orVal;
-    tricks[hi] |= orVal;
-  }
-
-  if (lo == lastForward)
-  {
-    // There is a middle element.
-    tricks[lo] |= tricks2.tricks[lo];
-  }
+  assert(signature.size() == tricks2.signature.size());
 
   const unsigned offset = signature.size() / 2;
   for (unsigned i = 0; i < offset; i++)
@@ -381,12 +356,16 @@ void Tricks::orSymm(
 
 bool Tricks::operator == (const Tricks& tricks2) const
 {
+  // Seems fast.
+
   // TODO Could use weight first once we have it
   assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
     if (tricks2.signature[i] != signature[i])
+    {
       return false;
+    }
   
   return true;
 }
@@ -394,12 +373,16 @@ bool Tricks::operator == (const Tricks& tricks2) const
 
 bool Tricks::operator <= (const Tricks& tricks2) const
 {
+  // Seems fast.
+
   // TODO Could use weight first once we have it
   assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
     if (! resConvert.greaterEqual(tricks2.signature[i], signature[i]))
+    {
       return false;
+    }
   
   return true;
 }
