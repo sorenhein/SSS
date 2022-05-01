@@ -76,6 +76,12 @@ unsigned ResConvert::profileSize(const unsigned len) const
 }
 
 
+unsigned ResConvert::profileSizeNew(const unsigned len) const
+{
+  return 2 * ((len + LOOKUP_GROUP + 4) / (2 * LOOKUP_GROUP));
+}
+
+
 void ResConvert::increment(
   unsigned& counter,
   unsigned& profile,
@@ -187,6 +193,85 @@ void ResConvert::scrutinizeBinary(
 
   if (counter > 0)
     profiles.push_back(profile);
+}
+
+
+void ResConvert::scrutinizeHalfVector(
+  const vector<unsigned char>& quadTricks,
+  const unsigned firstNumber,
+  const unsigned lastNumber,
+  const unsigned offset,
+  vector<unsigned>& profiles) const
+{
+  unsigned profile = 0;
+  unsigned counter = 0;
+  unsigned pno = offset;
+  for (unsigned q = firstNumber; q <= lastNumber; q++)
+  {
+    profile = (profile << 2) | quadTricks[q];
+    counter++;
+
+    if (counter == LOOKUP_GROUP)
+    {
+      profiles[pno] = profile;
+      profile = 0;
+      counter = 0;
+      pno++;
+    }
+  }
+
+  // Pad the last partial element.
+  if (counter > 0)
+    profile <<= 2 * (LOOKUP_GROUP - counter);
+
+  profiles[pno] = profile;
+}
+
+
+void ResConvert::scrutinizeVectorNew(
+  const vector<unsigned char>& quadTricks,
+  const unsigned lastForward,
+  vector<unsigned>& profiles) const
+{
+  // This is used from Tricks where the index layout is optimized for
+  // symmetrization:  The first half (including the middle element if any)
+  // is in one set of groups, and the then the second half is reversed
+  // into another set of groups.
+
+  // The forward half.
+  ResConvert::scrutinizeHalfVector(quadTricks, 0, lastForward, 0, profiles);
+
+  // The backward half.
+  ResConvert::scrutinizeHalfVector(
+    quadTricks, lastForward+1, quadTricks.size()-1, profiles.size() / 2, 
+    profiles);
+}
+
+
+unsigned char ResConvert::lookupNew(
+  const vector<unsigned>& profiles,
+  const unsigned lastForward,
+  const unsigned index) const
+{
+  if (index <= lastForward)
+  {
+    // The forward half.
+    const unsigned group = index / LOOKUP_GROUP;
+    const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
+  
+    assert(group < profiles.size() / 2);
+    return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
+  }
+  else
+  {
+    // The backward half.
+    const unsigned rebased = index - lastForward - 1;
+    const unsigned group = profiles.size() / 2 + rebased / LOOKUP_GROUP;
+    const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (rebased % LOOKUP_GROUP));
+
+    assert(group < profiles.size());
+    return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
+  }
 }
 
 

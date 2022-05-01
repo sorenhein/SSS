@@ -63,47 +63,33 @@ const unsigned char& Tricks::element(const unsigned extIndex) const
      Store the front half (including perhaps the middle) one way.
      Store the back half backward.
 
-     N   lastF Forward (grouped)  Backward (grouped)  revSum Cost 
-      3: 1     0-1                2                   4      1
-      4: 1     0-1                3-2                 5      1
-      5: 2     0-2                4-3                 7      1
-      6: 2     0-2                5-3                 8      0
-      7: 3     0-3                6-4                 10     0
-      8: 3     0-3                7-4                 11     0
-      9: 4     0-4                8-5                 13     0
-     10: 4     0-4                9-5                 14     0
-     11: 5     0-4   5            10-6                16     0
-     12: 5     0-4   5            11-7    6           17     1
-     13: 6     0-4   5-6          12-8    7           19     1
-     14: 6     0-4   5-6          13-9    8-7         20     1
-     15: 7     0-4   5-7          14-10   9-8         22     1
-     16: 7     0-4   5-7          15-11   10-8        23     0
-     17: 8     0-4   5-8          16-12   11-9        25     0
-     18: 8     0-4   5-8          17-13   12-9        26     0
-     19: 9     0-4   5-9          18-14   13-10       28     0
+      N  lastF Forward     Backward       revSum Cost siglen
+      3  1     0-1         2              4      1    2
+      4  1     0-1         3-2            5      1    2
+      5  2     0-2         4-3            7      1    2
+      6  2     0-2         5-3            8      0    2
+      7  3     0-3         6-4            10     0    2
+      8  3     0-3         7-4            11     0    2
+      9  4     0-4         8-5            13     0    2
+     10  4     0-4         9-5            14     0    2
+     11  5     0-4   5     10-6           16     0    4
+     12  5     0-4   5     11-7    6      17     1    4
+     13  6     0-4   5-6   12-8    7      19     1    4
+     14  6     0-4   5-6   13-9    8-7    20     1    4
+     15  7     0-4   5-7   14-10   9-8    22     1    4
+     16  7     0-4   5-7   15-11   10-8   23     0    4
+     17  8     0-4   5-8   16-12   11-9   25     0    4
+     18  8     0-4   5-8   17-13   12-9   26     0    4
+     19  9     0-4   5-9   18-14   13-10  28     0    4
+     20  9     0-4   5-9   19-15   14-10  29     0    4
 
      So the average cost is 0.4 extra entries.
   */
   
   if (extIndex <= lastForward)
-  {
-if (tricks[extIndex] != Tricks::sigElem(extIndex))
-{
-  cout << "tricks\n";
-  for (unsigned i = 0; i < tricks.size(); i++)
-    cout << i << " " << +tricks[i] << endl;
-  cout << "sig\n";
-  for (unsigned i = 0; i < signature.size(); i++)
-    cout << i << " " << signature[i] << endl;
-assert(tricks[extIndex] == Tricks::sigElem(extIndex));
-}
     return tricks[extIndex];
-  }
   else
-  {
-assert(tricks[reverseSum-extIndex] == Tricks::sigElem(extIndex));
     return tricks[reverseSum - extIndex];
-  }
 }
 
 
@@ -146,10 +132,10 @@ void Tricks::set(
 
 void Tricks::weigh(const vector<unsigned char>& cases)
 {
-  assert(cases.size() == tricks.size());
+  assert(cases.size() == length);
 
   weight = 0;
-  for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
     weight += cases[extIndex] * Tricks::element(extIndex);
 }
 
@@ -169,7 +155,7 @@ bool Tricks::prepare(
 
   if (symmFlag)
   {
-    for (unsigned extIndex = 0; extIndex < len; extIndex++)
+    for (unsigned extIndex = 0; extIndex < length; extIndex++)
     {
       if (product.includes(distProfiles[extIndex]) ||
           product.includes(distProfiles[len-1-extIndex]))
@@ -181,7 +167,7 @@ bool Tricks::prepare(
   }
   else
   {
-    for (unsigned extIndex = 0; extIndex < len; extIndex++)
+    for (unsigned extIndex = 0; extIndex < length; extIndex++)
     {
       if (product.includes(distProfiles[extIndex]))
       {
@@ -232,6 +218,11 @@ bool Tricks::symmetrize()
       numDist += 2;
     }
   }
+
+  // Idea:
+  // Loop over the lower and upper end in synchrony
+  //   | the two
+  //   set both of them to this
 
   // Don't allow a fully set vector.
   if (numDist == tricks.size())

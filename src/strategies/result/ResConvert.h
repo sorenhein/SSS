@@ -32,12 +32,21 @@ class ResConvert
       const unsigned incr,
       list<unsigned>& profiles) const;
 
+    void scrutinizeHalfVector(
+      const vector<unsigned char>& quadTricks,
+      const unsigned firstNumber,
+      const unsigned lastNumber,
+      const unsigned offset,
+      vector<unsigned>& profiles) const;
+
 
   public:
 
     ResConvert();
 
     unsigned profileSize(const unsigned len) const;
+
+    unsigned profileSizeNew(const unsigned len) const;
 
     void scrutinizeRange(
       const list<Result>& results,
@@ -59,6 +68,16 @@ class ResConvert
 
     unsigned char lookup(
       const vector<unsigned>& profiles,
+      const unsigned index) const;
+
+    void scrutinizeVectorNew(
+      const vector<unsigned char>& quadTricks,
+      const unsigned lastForward,
+      vector<unsigned>& profiles) const;
+
+    unsigned char lookupNew(
+      const vector<unsigned>& profiles,
+      const unsigned lastForward,
       const unsigned index) const;
 
     bool greaterEqual(
