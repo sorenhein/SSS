@@ -219,16 +219,31 @@ bool Tricks::symmetrize()
     }
   }
 
-  // Idea:
-  // Loop over the lower and upper end in synchrony
-  //   | the two
-  //   set both of them to this
-
   // Don't allow a fully set vector.
   if (numDist == tricks.size())
     return false;
 
-  resConvert.scrutinizeVector(tricks, lastForward, signature);
+  const unsigned offset = signature.size() / 2;
+  bool fullHouseFlag = true;
+
+  for (unsigned i = 0; i < offset; i++)
+  {
+    // Later on this is the condition to return false.
+    // As the middle element is not set, we will not get a stray '1'
+    // in the last group on the high end.
+    if (signature[i] & signature[i + offset])
+      return false;
+
+    const unsigned merge = signature[i] | signature[i + offset];
+    if (! resConvert.fullHouse(merge))
+      fullHouseFlag = false;
+
+    signature[i] = merge;
+    signature[i + offset] = merge;
+  }
+
+  if (fullHouseFlag)
+    return false;
 
   // As there was no overlap, we can just double the weight.
   weight += weight;

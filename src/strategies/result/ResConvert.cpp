@@ -271,6 +271,12 @@ unsigned char ResConvert::lookup(
 }
 
 
+bool ResConvert::fullHouse(const unsigned value) const
+{
+  return (value == 0x3ff);
+}
+
+
 bool ResConvert::greaterEqual(
   const unsigned arg1,
   const unsigned arg2) const
