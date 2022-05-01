@@ -41,6 +41,17 @@ void Tricks::resize(const unsigned len)
 }
 
 
+const unsigned char Tricks::sigElem(const unsigned extIndex) const
+{
+  // TODO So far we don't pad the symmetrics to an unsigned boundary.
+  // When we do, we have to change the indexing here.
+  if (extIndex <= lastForward)
+    return resConvert.lookup(signature, extIndex);
+  else
+    return resConvert.lookup(signature, reverseSum - extIndex);
+}
+
+
 const unsigned char& Tricks::element(const unsigned extIndex) const
 {
   /*
@@ -70,9 +81,24 @@ const unsigned char& Tricks::element(const unsigned extIndex) const
   */
   
   if (extIndex <= lastForward)
+  {
+if (tricks[extIndex] != Tricks::sigElem(extIndex))
+{
+  cout << "tricks\n";
+  for (unsigned i = 0; i < tricks.size(); i++)
+    cout << i << " " << +tricks[i] << endl;
+  cout << "sig\n";
+  for (unsigned i = 0; i < signature.size(); i++)
+    cout << i << " " << signature[i] << endl;
+assert(tricks[extIndex] == Tricks::sigElem(extIndex));
+}
     return tricks[extIndex];
+  }
   else
+  {
+assert(tricks[reverseSum-extIndex] == Tricks::sigElem(extIndex));
     return tricks[reverseSum - extIndex];
+  }
 }
 
 
@@ -122,7 +148,7 @@ void Tricks::weigh(
 }
 
 
-void Tricks::prepare(
+bool Tricks::prepare(
   const Product& product,
   const bool symmFlag,
   const vector<Profile>& distProfiles,
@@ -145,7 +171,6 @@ void Tricks::prepare(
           product.includes(distProfiles[len-1-extIndex]))
       {
         Tricks::element(extIndex) = 1;
-        // weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
       }
     }
@@ -157,15 +182,18 @@ void Tricks::prepare(
       if (product.includes(distProfiles[extIndex]))
       {
         Tricks::element(extIndex) = 1;
-        // weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
       }
     }
   }
 
+  if (numDist == 0 || numDist == tricks.size())
+    return false;
+
   resConvert.scrutinizeVector(tricks, signature);
 
   Tricks::weigh(cases, weight);
+  return true;
 }
 
 
@@ -197,6 +225,10 @@ bool Tricks::symmetrize(
       numDist++;
     }
   }
+
+  // Don't allow a fully set vector.
+  if (numDist == tricks.size())
+    return false;
 
   resConvert.scrutinizeVector(tricks, signature);
 

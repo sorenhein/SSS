@@ -63,7 +63,7 @@ class Cover
       const ProfilePair& profilePair,
       const bool symmFlagIn);
 
-    void prepare(
+    bool prepare(
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 

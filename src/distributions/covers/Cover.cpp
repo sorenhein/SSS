@@ -67,25 +67,27 @@ void Cover::setExisting(
 }
 
 
-void Cover::prepare(
+bool Cover::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
   assert(productUnitPtr != nullptr);
 
-  tricks.prepare(
+  if (! tricks.prepare(
     productUnitPtr->product, 
     symmFlag,
     distProfiles, 
     cases, 
     weight, 
-    numDist);
+    numDist))
+  {
+    return false;
+  }
   
-if (weight == 0)
-{
   assert(weight > 0);
-}
+
   mcpw = (productUnitPtr->product.getComplexity() << 20) / weight;
+  return true;
 }
 
 
@@ -108,8 +110,8 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
 
   // Should still have at least one zero.
   // TODO Go by weight, and avoid numDist completely in class?!
-  if (numDist == tricks.size())
-    return false;
+  // if (numDist == tricks.size())
+    // return false;
 
   symmFlag = true;
 

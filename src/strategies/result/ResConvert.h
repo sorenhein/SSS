@@ -57,6 +57,10 @@ class ResConvert
       const vector<unsigned char>& quadTricks,
       vector<unsigned>& profiles) const;
 
+    unsigned char lookup(
+      const vector<unsigned>& profiles,
+      const unsigned index) const;
+
     bool greaterEqual(
       const unsigned arg1,
       const unsigned arg2) const;

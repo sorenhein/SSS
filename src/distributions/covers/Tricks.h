@@ -36,6 +36,8 @@ class Tricks
     vector<unsigned> signature;
 
 
+    const unsigned char sigElem(const unsigned extIndex) const;
+
     const unsigned char& element(const unsigned extIndex) const;
 
     unsigned char& element(const unsigned extIndex);
@@ -55,7 +57,7 @@ class Tricks
       const vector<unsigned char>& cases,
       unsigned& weight) const;
 
-    void prepare(
+    bool prepare(
       const Product& product,
       const bool symmFlag,
       const vector<Profile>& distProfiles,

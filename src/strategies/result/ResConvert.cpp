@@ -206,11 +206,24 @@ void ResConvert::scrutinizeVector(
     profiles[p] = profile;
   }
 
+  unsigned q, c;
   profile = 0;
-  for (unsigned q = LOOKUP_GROUP * last; q < quadTricks.size(); q++)
+  for (q = LOOKUP_GROUP * last, c = 0; q < quadTricks.size(); q++, c++)
     profile = (profile << 2) | quadTricks[q];
 
-  profiles[last] = profile;
+  profiles[last] = profile << (2*(LOOKUP_GROUP - c));
+}
+
+
+unsigned char ResConvert::lookup(
+  const vector<unsigned>& profiles,
+  const unsigned index) const
+{
+  const unsigned group = index / LOOKUP_GROUP;
+  const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
+  
+  assert(group < profiles.size());
+  return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
 }
 
 
