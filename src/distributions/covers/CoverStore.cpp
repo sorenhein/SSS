@@ -99,7 +99,7 @@ void CoverStore::add(
   if (! coverScratch.symmetrizable(sumProfile))
     return;
 
-  if (! coverScratch.symmetrize(cases))
+  if (! coverScratch.symmetrize())
     return;
 
   symmetricCache.push_back(coverScratch);

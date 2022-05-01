@@ -26,6 +26,10 @@ class Tricks
 
     vector<unsigned char> tricks;
 
+    unsigned weight;
+
+    unsigned length;
+
     // These two are useful pre-calculations.  Might be uchar.
     unsigned lastForward;
 
@@ -34,8 +38,6 @@ class Tricks
     // TODO Parallel implementation for now.
     // The tricks are grouped into 5-element groups of 2 bits each.
     vector<unsigned> signature;
-
-    unsigned weight;
 
 
     const unsigned char sigElem(const unsigned extIndex) const;
@@ -65,7 +67,7 @@ class Tricks
       const vector<unsigned char>& cases);
 
     // Will invalidate Tricks if not symmetrizable!
-    bool symmetrize(const vector<unsigned char>& cases);
+    bool symmetrize();
 
     bool possible(
       const Tricks& explained,

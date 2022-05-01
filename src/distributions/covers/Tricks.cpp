@@ -26,13 +26,17 @@ extern ResConvert resConvert;
 void Tricks::clear()
 {
   tricks.clear();
-  signature.clear();
   weight = 0;
+  length = 0;
+
+  signature.clear();
 }
 
 
 void Tricks::resize(const unsigned len)
 {
+  length = len;
+
   tricks.resize(len);
   signature.resize(resConvert.profileSize(len));
 
@@ -197,12 +201,16 @@ bool Tricks::prepare(
 }
 
 
-bool Tricks::symmetrize(const vector<unsigned char>& cases)
+bool Tricks::symmetrize()
 {
   // Will invalidate Tricks if not symmetrizable!
   // We only symmetrize if there is no overlap with the mirror.
-  // We cannot be sure to double weight and numDist, as the middle
-  // element in an odd-length tricks will not be repeated.
+  // In particular, the middle element if any is zero.
+  // There's no strong reason for this, but if we consider such tricks
+  // symmetrizable, we have to add up the weight explicitly here,
+  // for which we need cases: Tricks::weigh(cases);
+  if (length & 1)
+    assert(tricks[lastForward] == 0);
 
   // Loop over the high end of the internal trick numbers.
   unsigned lo, hi;
@@ -231,7 +239,8 @@ bool Tricks::symmetrize(const vector<unsigned char>& cases)
 
   resConvert.scrutinizeVector(tricks, signature);
 
-  Tricks::weigh(cases);
+  // As there was no overlap, we can just double the weight.
+  weight += weight;
   return true;
 }
 
@@ -269,12 +278,6 @@ bool Tricks::possible(
   }
   else
     return false;
-}
-
-
-unsigned Tricks::getWeight() const
-{
-  return weight;
 }
 
 
@@ -384,9 +387,16 @@ bool Tricks::operator <= (const Tricks& tricks2) const
 }
 
 
+unsigned Tricks::getWeight() const
+{
+  return weight;
+}
+
+
 unsigned Tricks::size() const
 {
-  return tricks.size();
+  return length;
+  // return tricks.size();
 }
 
 
@@ -394,10 +404,11 @@ string Tricks::strList() const
 {
   stringstream ss;
 
-  for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
     ss << 
       setw(2) << extIndex << 
-      setw(4) << +Tricks::element(extIndex) << "\n";
+      setw(4) << +Tricks::sigElem(extIndex) << "\n";
+      // setw(4) << +Tricks::element(extIndex) << "\n";
 
   return ss.str();
 }
@@ -407,8 +418,9 @@ string Tricks::strShort() const
 {
   string s;
 
-  for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
-    s += (Tricks::element(extIndex) ? "1" : "-");
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
+    s += (Tricks::sigElem(extIndex) ? "1" : "-");
+    // s += (Tricks::element(extIndex) ? "1" : "-");
 
   return s + "  ";
 }
@@ -418,8 +430,9 @@ string Tricks::strSpaced() const
 {
   stringstream ss;
 
-  for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
-    ss << setw(2) << +Tricks::element(extIndex);
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
+    ss << setw(2) << +Tricks::sigElem(extIndex);
+    // ss << setw(2) << +Tricks::element(extIndex);
 
   return ss.str() + "\n";
 }

@@ -68,7 +68,7 @@ class Cover
     bool symmetrizable(const Profile& sumProfile) const;
 
     // Will invalidate Cover if not symmetrizable!
-    bool symmetrize(const vector<unsigned char>& cases);
+    bool symmetrize();
 
     void tricksOr(
       Tricks& running,

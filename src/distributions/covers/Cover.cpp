@@ -93,12 +93,12 @@ bool Cover::symmetrizable(const Profile& sumProfile) const
 }
 
 
-bool Cover::symmetrize(const vector<unsigned char>& cases)
+bool Cover::symmetrize()
 {
   // Will invalidate Cover if not symmetrizable!
   assert(! symmFlag);
 
-  if (! tricks.symmetrize(cases))
+  if (! tricks.symmetrize())
     return false;
 
   symmFlag = true;
