@@ -51,25 +51,21 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 }
 
 
-void CoverTableau::addRow(
-  const Cover& cover,
-  const Tricks& additions)
+void CoverTableau::addRow(const Cover& cover)
 {
   rows.emplace_back(CoverRow());
   CoverRow& row = rows.back();
   row.resize(residuals.size());
-  row.add(cover, additions, residuals);
+  row.add(cover, cover.getTricks(), residuals);
   complexity.addRow(row.getComplexity());
 }
 
 
-void CoverTableau::addRow(
-  const CoverRow& row,
-  const Tricks& additions)
+void CoverTableau::addRow( const CoverRow& row)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity());
-  residuals -= additions;
+  residuals -= row.getTricks();
 }
 
 
