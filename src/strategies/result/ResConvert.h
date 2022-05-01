@@ -72,6 +72,10 @@ class ResConvert
 
     bool fullHouse(const unsigned value) const;
 
+    unsigned limit(
+      const unsigned lastForward,
+      const unsigned value) const;
+
     bool greaterEqual(
       const unsigned arg1,
       const unsigned arg2) const;

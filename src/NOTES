@@ -6,10 +6,9 @@ Trick compression
 * Places where tricks are still used:
   orSymm
     This one is only used for manuals, so we're not fussed about speed
-  orNormal
-    This one too, but signatures work easily here
+  orNormal (vectorized)
   possible (vectorized)
-  symmetrize (but probably works with signatures later when shifted)
+  symmetrize (vectorized
   prepare (OK to scrutinize)
   weigh (no other way?)
   set (OK to scrutinize)

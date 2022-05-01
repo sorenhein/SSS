@@ -277,6 +277,29 @@ bool ResConvert::fullHouse(const unsigned value) const
 }
 
 
+unsigned ResConvert::limit(
+  const unsigned lastForward,
+  const unsigned value) const
+{
+  const unsigned mod = lastForward % LOOKUP_GROUP;
+  if (mod == 0)
+    return 0;
+  else if (mod == 1)
+    return (value & 0x300);
+  else if (mod == 2)
+    return (value & 0x3c0);
+  else if (mod == 3)
+    return (value & 0x3f0);
+  else if (mod == 4)
+    return (value & 0x3fc);
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 bool ResConvert::greaterEqual(
   const unsigned arg1,
   const unsigned arg2) const
