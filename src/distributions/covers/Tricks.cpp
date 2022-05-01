@@ -254,14 +254,8 @@ bool Tricks::possible(
     additions.tricks[intIndex] = 
       tricks[intIndex] & ~explained.tricks[intIndex];
 
-  resConvert.scrutinizeVector(additions.tricks, lastForward, 
-    additions.signature);
-  /*
-  vector<unsigned> addSignature;
-  addSignature.resize(signature.size());
   for (unsigned i = 0; i < signature.size(); i++)
-    addSignature[i] = signature[i] & ~ explained.signature[i];
-    */
+    additions.signature[i] = signature[i] & ~ explained.signature[i];
 
   if (additions <= residuals)
   {

@@ -203,13 +203,11 @@ void ResConvert::scrutinizeHalfVector(
   unsigned pno = offset;
   for (unsigned q = firstNumber; q <= lastNumber; q++)
   {
-assert(q < quadTricks.size());
     profile = (profile << 2) | quadTricks[q];
     counter++;
 
     if (counter == LOOKUP_GROUP)
     {
-assert(pno < profiles.size());
       profiles[pno] = profile;
       profile = 0;
       counter = 0;
@@ -221,18 +219,7 @@ assert(pno < profiles.size());
   if (counter > 0)
   {
     profile <<= 2 * (LOOKUP_GROUP - counter);
-
-if (pno >= profiles.size())
-{
-  cout << "first " << firstNumber << ", last " << lastNumber << endl;
-  cout << "offset " << offset << endl;
-  cout << "profiles.size() " << profiles.size() << endl;
-  cout << "quad " << quadTricks.size() << endl;
-  cout << "counter " << counter << endl;
-  cout << "pno " << pno << endl;
-}
-assert(pno < profiles.size());
-  profiles[pno] = profile;
+    profiles[pno] = profile;
   }
 }
 

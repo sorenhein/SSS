@@ -8,7 +8,7 @@ Trick compression
     This one is only used for manuals, so we're not fussed about speed
   orNormal
     This one too, but signatures work easily here
-  possible (but probably works with signatures too)
+  possible (vectorized)
   symmetrize (but probably works with signatures later when shifted)
   prepare (OK to scrutinize)
   weigh (no other way?)
