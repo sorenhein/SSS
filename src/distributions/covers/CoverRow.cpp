@@ -153,6 +153,12 @@ bool CoverRow::operator <= (const Tricks& residuals) const
 }
 
 
+const Tricks& CoverRow::getTricks() const
+{
+  return tricks;
+}
+
+
 unsigned char CoverRow::effectiveDepth() const
 {
   return 1;

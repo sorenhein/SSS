@@ -123,7 +123,8 @@ CoverState CoverTableau::attemptRow(
   if (! candIter->possible(residuals, additions))
     return COVER_IMPOSSIBLE;
 
-  if (additions.getWeight() < residuals.getWeight())
+  // if (additions.getWeight() < residuals.getWeight())
+  if (candIter->getWeight() < residuals.getWeight())
   {
     stack.emplace_back(T());
     T& entry = stack.back();
@@ -131,21 +132,22 @@ CoverState CoverTableau::attemptRow(
 
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
-    tableau.addRow(* candIter, additions);
+    // TODO candIter ought to be enough then?
+    tableau.addRow(* candIter, candIter->getTricks());
     return COVER_OPEN;
   }
   else if (solution.rows.empty())
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
-    solution.addRow(* candIter, additions);
+    solution.addRow(* candIter, candIter->getTricks());
     return COVER_DONE;
   }
   else
   {
     // We can use this CoverTableau, as the stack element is about
     // to be popped anyway.
-    CoverTableau::addRow(* candIter, additions);
+    CoverTableau::addRow(* candIter, candIter->getTricks());
     if (complexity < solution.complexity)
       solution = * this;
     return COVER_DONE;

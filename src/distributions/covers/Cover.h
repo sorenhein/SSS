@@ -100,6 +100,8 @@ class Cover
 
     bool operator < (const Cover& cover2) const;
 
+    const Tricks& getTricks() const;
+
     unsigned char effectiveDepth() const;
 
     unsigned getWeight() const;

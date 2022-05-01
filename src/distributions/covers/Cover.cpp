@@ -212,6 +212,12 @@ bool Cover::operator < (const Cover& cover2) const
 }
 
 
+const Tricks& Cover::getTricks() const
+{
+  return tricks;
+}
+
+
 unsigned char Cover::effectiveDepth() const
 {
   assert(productUnitPtr != nullptr);
