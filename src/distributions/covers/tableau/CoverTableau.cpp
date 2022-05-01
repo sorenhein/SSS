@@ -42,9 +42,6 @@ void CoverTableau::init(
   const unsigned char tmin,
   const vector<unsigned char>& cases)
 {
-  // residuals.set(tricks, cases, residualWeight);
-  // tricksMin = tmin;
-
   residuals = tricks;
   tricksMin = tmin;
   residuals.weigh(cases, residualWeight);
@@ -60,7 +57,7 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 void CoverTableau::addRow(
   const Cover& cover,
   const Tricks& additions,
-  const unsigned char weightAdded)
+  const unsigned weightAdded)
 {
   rows.emplace_back(CoverRow());
   CoverRow& row = rows.back();
@@ -73,7 +70,7 @@ void CoverTableau::addRow(
 void CoverTableau::addRow(
   const CoverRow& row,
   const Tricks& additions,
-  const unsigned char weightAdded)
+  const unsigned weightAdded)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity());
@@ -85,7 +82,7 @@ void CoverTableau::addRow(
 void CoverTableau::extendRow(
   const Cover& cover,
   const Tricks& additions,
-  const unsigned char weightAdded,
+  const unsigned weightAdded,
   const unsigned rowNo)
 {
   // A bit fumbly: Advance to the same place as we were at.
@@ -108,7 +105,7 @@ bool CoverTableau::attempt(
   // Returns true if this must be the last use of this cover.
   Tricks additions;
   additions.resize(residuals.size());
-  unsigned char weightAdded;
+  unsigned weightAdded;
 
   // Check whether we can make a complete solution with the cover.
   const CoverState state = CoverTableau::attemptRow(
@@ -166,7 +163,7 @@ bool CoverTableau::attempt(
   // the existing one.
   Tricks additions;
   additions.resize(residuals.size());
-  unsigned char weightAdded;
+  unsigned weightAdded;
 
   return (CoverTableau::attemptRow(cases, rowIter, stack,
     additions, weightAdded, solution) == COVER_DONE);
@@ -195,7 +192,7 @@ bool CoverTableau::complete() const
 }
 
 
-unsigned char CoverTableau::getResidualWeight() const
+unsigned CoverTableau::getResidualWeight() const
 {
   return residualWeight;
 }

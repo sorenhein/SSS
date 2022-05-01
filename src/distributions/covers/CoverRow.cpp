@@ -53,7 +53,10 @@ void CoverRow::fillDirectly(
   }
 
   tricks.weigh(cases, weight);
+if (weight == 0)
+{
   assert(weight != 0);
+}
 }
 
 
@@ -62,7 +65,7 @@ bool CoverRow::possibleAdd(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& weightAdded) const
+  unsigned& weightAdded) const
 {
   // Do not update any internal states.  Try to add the cover with
   // its residuals and see what this would add incrementally to the row.
@@ -85,7 +88,7 @@ bool CoverRow::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& weightAdded) const
+  unsigned& weightAdded) const
 {
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
@@ -107,9 +110,9 @@ bool CoverRow::possible(
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
-  const unsigned char weightAdded,
+  const unsigned weightAdded,
   Tricks& residuals,
-  unsigned char& residualWeight)
+  unsigned& residualWeight)
 {
   coverPtrs.push_back(&cover);
 
@@ -178,7 +181,7 @@ unsigned char CoverRow::getComplexity() const
 
 
 unsigned char CoverRow::minComplexityAdder(
-  const unsigned char resWeight) const
+  const unsigned resWeight) const
 {
   // The rows are ordered by increasing "complexity per weight"
   // (micro-cpw).  We round up the minimum number of covers needed

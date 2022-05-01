@@ -32,7 +32,7 @@ class CoverRow
     // The OR'ed tricks of the covers.
     Tricks tricks;
 
-    unsigned char weight;
+    unsigned weight;
 
     unsigned char complexity;
 
@@ -54,20 +54,20 @@ class CoverRow
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& weightAdded) const;
+      unsigned& weightAdded) const;
 
     bool possible(
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& weightAdded) const;
+      unsigned& weightAdded) const;
 
     void add(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned char weightAdded,
+      const unsigned weightAdded,
       Tricks& residuals,
-      unsigned char& residualWeight);
+      unsigned& residualWeight);
 
     void updateStats(
       ProductStats& productStats,
@@ -86,7 +86,7 @@ class CoverRow
 
     unsigned char getComplexity() const;
 
-    unsigned char minComplexityAdder(const unsigned char resWeight) const;
+    unsigned char minComplexityAdder(const unsigned resWeight) const;
 
     string strHeader() const;
 

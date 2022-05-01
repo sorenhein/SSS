@@ -79,14 +79,14 @@ class Cover
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& tricksAdded) const;
+      unsigned& weightAdded) const;
 
     // This one doesn't use explained.
     bool possible(
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& tricksAdded) const;
+      unsigned& weightAdded) const;
 
     void updateStats(
       ProductStats& productStats,
@@ -113,7 +113,7 @@ class Cover
 
     unsigned char getComplexity() const;
 
-    unsigned char minComplexityAdder(const unsigned char resWeight) const;
+    unsigned char minComplexityAdder(const unsigned resWeight) const;
 
     string strHeader() const;
 

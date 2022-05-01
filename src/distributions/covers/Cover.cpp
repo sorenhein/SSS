@@ -81,7 +81,10 @@ void Cover::prepare(
     weight, 
     numDist);
   
+if (weight == 0)
+{
   assert(weight > 0);
+}
   mcpw = (productUnitPtr->product.getComplexity() << 20) / weight;
 }
 
@@ -130,7 +133,7 @@ bool Cover::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& weightAdded) const
+  unsigned& weightAdded) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
@@ -147,7 +150,7 @@ bool Cover::possible(
   const Tricks& residuals,
   const vector<unsigned char>& cases,
   Tricks& additions,
-  unsigned char& weightAdded) const
+  unsigned& weightAdded) const
 {
   // Same as the previous method with explained unused.
   
@@ -254,7 +257,7 @@ unsigned char Cover::getComplexity() const
 }
 
 
-unsigned char Cover::minComplexityAdder(const unsigned char resWeight) const
+unsigned char Cover::minComplexityAdder(const unsigned resWeight) const
 {
   // The covers are ordered by increasing "complexity per weight"
   // (micro-cpw).  We round up the minimum number of covers needed

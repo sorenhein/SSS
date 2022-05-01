@@ -26,6 +26,16 @@ class Tricks
 
     vector<unsigned char> tricks;
 
+    // These two are useful pre-calculations.
+    unsigned lastForward;
+
+    unsigned reverseSum;
+
+
+    const unsigned char& element(const unsigned extIndex) const;
+
+    unsigned char& element(const unsigned extIndex);
+
   
   public:
 
@@ -39,7 +49,7 @@ class Tricks
 
     void weigh(
       const vector<unsigned char>& cases,
-      unsigned char& weight) const;
+      unsigned& weight) const;
 
     void prepare(
       const Product& product,
@@ -60,7 +70,7 @@ class Tricks
       const Tricks& residuals,
       const vector<unsigned char>& cases,
       Tricks& additions,
-      unsigned char& weightAdded) const;
+      unsigned& weightAdded) const;
 
     Tricks& operator += (const Tricks& tricks2);
 

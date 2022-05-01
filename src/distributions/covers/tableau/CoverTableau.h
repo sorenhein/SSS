@@ -40,7 +40,7 @@ class CoverTableau
     unsigned char tricksMin;
 
     Tricks residuals;
-    unsigned char residualWeight;
+    unsigned residualWeight;
 
     Complexity complexity;
 
@@ -51,23 +51,23 @@ class CoverTableau
       C& candIter,
       list<T>& stack,
       Tricks& additions,
-      unsigned char& weightAdded,
+      unsigned& weightAdded,
       CoverTableau& solution);
 
     void addRow(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned char weightAdded);
+      const unsigned weightAdded);
 
     void addRow(
       const CoverRow& row,
       const Tricks& additions,
-      const unsigned char weightAdded);
+      const unsigned weightAdded);
 
     void extendRow(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned char weightAdded,
+      const unsigned weightAdded,
       const unsigned rowNo);
 
 
@@ -105,7 +105,7 @@ class CoverTableau
 
     bool complete() const;
 
-    unsigned char getResidualWeight() const;
+    unsigned getResidualWeight() const;
 
     string strBracket() const;
 
@@ -121,7 +121,7 @@ CoverState CoverTableau::attemptRow(
   C& candIter,
   list<T>& stack,
   Tricks& additions,
-  unsigned char& weightAdded,
+  unsigned& weightAdded,
   CoverTableau& solution)
 {
   // Returns true if a solution is found by adding candIter as a new row, 
