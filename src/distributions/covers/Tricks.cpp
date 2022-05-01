@@ -18,17 +18,22 @@
 #include "product/Profile.h"
 
 #include "../../strategies/result/Result.h"
+#include "../../strategies/result/ResConvert.h"
+
+extern ResConvert resConvert;
 
 
 void Tricks::clear()
 {
   tricks.clear();
+  signature.clear();
 }
 
 
 void Tricks::resize(const unsigned len)
 {
   tricks.resize(len);
+  signature.resize(resConvert.profileSize(len));
 
   // See table below.
   lastForward = (len-1) / 2;
@@ -100,6 +105,8 @@ void Tricks::set(
 
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] -= tricksMin;
+  
+  resConvert.scrutinizeVector(tricks, signature);
 }
 
 
@@ -138,7 +145,7 @@ void Tricks::prepare(
           product.includes(distProfiles[len-1-extIndex]))
       {
         Tricks::element(extIndex) = 1;
-        weight += static_cast<unsigned>(cases[extIndex]);
+        // weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
       }
     }
@@ -150,11 +157,15 @@ void Tricks::prepare(
       if (product.includes(distProfiles[extIndex]))
       {
         Tricks::element(extIndex) = 1;
-        weight += static_cast<unsigned>(cases[extIndex]);
+        // weight += static_cast<unsigned>(cases[extIndex]);
         numDist++;
       }
     }
   }
+
+  resConvert.scrutinizeVector(tricks, signature);
+
+  Tricks::weigh(cases, weight);
 }
 
 
@@ -187,6 +198,8 @@ bool Tricks::symmetrize(
     }
   }
 
+  resConvert.scrutinizeVector(tricks, signature);
+
   Tricks::weigh(cases, weight);
   return true;
 }
@@ -211,6 +224,14 @@ bool Tricks::possible(
     additions.tricks[intIndex] = 
       tricks[intIndex] & ~explained.tricks[intIndex];
 
+  resConvert.scrutinizeVector(additions.tricks, additions.signature);
+  /*
+  vector<unsigned> addSignature;
+  addSignature.resize(signature.size());
+  for (unsigned i = 0; i < signature.size(); i++)
+    addSignature[i] = signature[i] & ~ explained.signature[i];
+    */
+
   if (additions <= residuals)
   {
     additions.weigh(cases, weightAdded);
@@ -228,6 +249,9 @@ Tricks& Tricks::operator += (const Tricks& tricks2)
 
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] += tricks2.tricks[i];
+
+  for (unsigned i = 0; i < signature.size(); i++)
+    signature[i] += tricks2.signature[i];
   
   return * this;
 }
@@ -241,6 +265,9 @@ Tricks& Tricks::operator -= (const Tricks& tricks2)
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] -= tricks2.tricks[i];
   
+  for (unsigned i = 0; i < signature.size(); i++)
+    signature[i] -= tricks2.signature[i];
+
   return * this;
 }
 
@@ -251,6 +278,10 @@ Tricks& Tricks::operator |= (const Tricks& tricks2)
 
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] |= tricks2.tricks[i];
+
+  // This only works for binary vectors.
+  for (unsigned i = 0; i < signature.size(); i++)
+    signature[i] |= tricks2.signature[i];
   
   return * this;
 }
@@ -274,6 +305,8 @@ void Tricks::orSymm(const Tricks& tricks2)
     // There is a middle element.
     tricks[lo] |= tricks2.tricks[lo];
   }
+
+  resConvert.scrutinizeVector(tricks, signature);
 }
 
 
@@ -289,14 +322,35 @@ bool Tricks::operator == (const Tricks& tricks2) const
 }
 
 
+bool Tricks::lessEqual(const Tricks& tricks2) const
+{
+  assert(signature.size() == tricks2.signature.size());
+
+  for (unsigned i = 0; i < signature.size(); i++)
+    if (! resConvert.greaterEqual(tricks2.signature[i], signature[i]))
+      return false;
+  
+  return true;
+}
+
+
 bool Tricks::operator <= (const Tricks& tricks2) const
 {
+  bool b = Tricks::lessEqual(tricks2);
+
   assert(tricks.size() == tricks2.tricks.size());
 
   for (unsigned i = 0; i < tricks.size(); i++)
     if (tricks[i] > tricks2.tricks[i])
+    {
+      if (b)
+      {
+      assert(! b);
+      }
       return false;
+    }
   
+  assert(b);
   return true;
 }
 

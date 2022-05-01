@@ -31,6 +31,10 @@ class Tricks
 
     unsigned reverseSum;
 
+    // TODO Parallel implementation for now.
+    // The tricks are grouped into 5-element groups of 2 bits each.
+    vector<unsigned> signature;
+
 
     const unsigned char& element(const unsigned extIndex) const;
 
@@ -81,6 +85,8 @@ class Tricks
     void orSymm(const Tricks& tricks2);
 
     bool operator == (const Tricks& tricks2) const;
+
+    bool lessEqual(const Tricks& tricks2) const;
 
     bool operator <= (const Tricks& tricks2) const;
 

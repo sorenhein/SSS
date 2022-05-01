@@ -70,6 +70,12 @@ void ResConvert::setConstants()
 }
 
 
+unsigned ResConvert::profileSize(const unsigned len) const
+{
+   return (len + LOOKUP_GROUP - 1) / LOOKUP_GROUP;
+}
+
+
 void ResConvert::increment(
   unsigned& counter,
   unsigned& profile,
@@ -181,6 +187,30 @@ void ResConvert::scrutinizeBinary(
 
   if (counter > 0)
     profiles.push_back(profile);
+}
+
+
+void ResConvert::scrutinizeVector(
+  const vector<unsigned char>& quadTricks,
+  vector<unsigned>& profiles) const
+{
+  const unsigned last = profiles.size() - 1;
+
+  unsigned profile;
+  for (unsigned p = 0; p < last; p++)
+  {
+    profile = 0;
+    for (unsigned q = 0; q < LOOKUP_GROUP; q++)
+      profile = (profile << 2) | quadTricks[LOOKUP_GROUP * p + q];
+
+    profiles[p] = profile;
+  }
+
+  profile = 0;
+  for (unsigned q = LOOKUP_GROUP * last; q < quadTricks.size(); q++)
+    profile = (profile << 2) | quadTricks[q];
+
+  profiles[last] = profile;
 }
 
 

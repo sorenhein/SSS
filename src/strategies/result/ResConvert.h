@@ -37,6 +37,8 @@ class ResConvert
 
     ResConvert();
 
+    unsigned profileSize(const unsigned len) const;
+
     void scrutinizeRange(
       const list<Result>& results,
       const Ranges& ranges,
@@ -50,6 +52,10 @@ class ResConvert
     void scrutinizeBinary(
       const list<unsigned char>& binaryTricks,
       list<unsigned>& profiles) const;
+
+    void scrutinizeVector(
+      const vector<unsigned char>& quadTricks,
+      vector<unsigned>& profiles) const;
 
     bool greaterEqual(
       const unsigned arg1,
