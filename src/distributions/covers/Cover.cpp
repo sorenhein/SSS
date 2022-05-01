@@ -130,7 +130,6 @@ bool Cover::possible(
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
   //   explained vector that would arise
-  // tricksAdded: The number of tricks in additions
 
   return tricks.possible(explained, residuals, cases, additions);
 }

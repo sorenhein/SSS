@@ -1,5 +1,13 @@
 Cover specifics
 ---------------
+Depressingly, Tricks has just gotten slower, especially the setup,
+probably prepare.  At least in Tricks::prepare we could take advantage
+of symmetry to fill out the scrutinized vector (a) directly and
+(b) using the bottom half for the top half (careful with middle
+element).
+
+Is Cover::prepare and hence tricks.prepare ever called symmetrically?
+Yes, but probably only manually.  So not a big deal.
 
 Trick compression
 -----------------
