@@ -47,27 +47,22 @@ class CoverTableau
     
     template<class T, typename C>
     CoverState attemptRow(
-      const vector<unsigned char>& cases,
       C& candIter,
       list<T>& stack,
       Tricks& additions,
-      unsigned& weightAdded,
       CoverTableau& solution);
 
     void addRow(
       const Cover& cover,
-      const Tricks& additions,
-      const unsigned weightAdded);
+      const Tricks& additions);
 
     void addRow(
       const CoverRow& row,
-      const Tricks& additions,
-      const unsigned weightAdded);
+      const Tricks& additions);
 
     void extendRow(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned weightAdded,
       const unsigned rowNo);
 
 
@@ -117,11 +112,9 @@ class CoverTableau
 
 template<class T, typename C>
 CoverState CoverTableau::attemptRow(
-  const vector<unsigned char>& cases,
   C& candIter,
   list<T>& stack,
   Tricks& additions,
-  unsigned& weightAdded,
   CoverTableau& solution)
 {
   // Returns true if a solution is found by adding candIter as a new row, 
@@ -129,10 +122,10 @@ CoverState CoverTableau::attemptRow(
   // This method works both for the exhaustive search (T == StackEntry) 
   // and for the row search (T == RowStackEntry).
 
-  if (! candIter->possible(residuals, cases, additions, weightAdded))
+  if (! candIter->possible(residuals, additions))
     return COVER_IMPOSSIBLE;
 
-  if (weightAdded < residualWeight)
+  if (additions.getWeight() < residualWeight)
   {
     stack.emplace_back(T());
     T& entry = stack.back();
@@ -140,21 +133,21 @@ CoverState CoverTableau::attemptRow(
 
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
-    tableau.addRow(* candIter, additions, weightAdded);
+    tableau.addRow(* candIter, additions);
     return COVER_OPEN;
   }
   else if (solution.rows.empty())
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
-    solution.addRow(* candIter, additions, weightAdded);
+    solution.addRow(* candIter, additions);
     return COVER_DONE;
   }
   else
   {
     // We can use this CoverTableau, as the stack element is about
     // to be popped anyway.
-    CoverTableau::addRow(* candIter, additions, weightAdded);
+    CoverTableau::addRow(* candIter, additions);
     if (complexity < solution.complexity)
       solution = * this;
     return COVER_DONE;

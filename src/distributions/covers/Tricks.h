@@ -72,8 +72,7 @@ class Tricks
       const Tricks& explained,
       const Tricks& residuals,
       const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned& weightAdded) const;
+      Tricks& additions) const;
 
     unsigned getWeight() const;
 
@@ -81,9 +80,13 @@ class Tricks
 
     Tricks& operator -= (const Tricks& tricks2);
 
-    Tricks& operator |= (const Tricks& tricks2);
+    Tricks& orNormal(
+      const Tricks& tricks2,
+      const vector<unsigned char>& cases);
 
-    void orSymm(const Tricks& tricks2);
+    void orSymm(
+      const Tricks& tricks2,
+      const vector<unsigned char>& cases);
 
     bool operator == (const Tricks& tricks2) const;
 

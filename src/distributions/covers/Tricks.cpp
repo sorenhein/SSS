@@ -141,6 +141,7 @@ void Tricks::weigh(
   const vector<unsigned char>& cases,
   unsigned& weightIn)
 {
+  // TODO Don't need the argument?
   assert(cases.size() == tricks.size());
 
   weight = 0;
@@ -241,8 +242,7 @@ bool Tricks::possible(
   const Tricks& explained,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned& weightAdded) const
+  Tricks& additions) const
 {
   assert(tricks.size() == explained.size());
   assert(tricks.size() == residuals.size());
@@ -266,8 +266,8 @@ bool Tricks::possible(
 
   if (additions <= residuals)
   {
-    additions.weigh(cases, weightAdded);
-    return (weightAdded > 0);
+    additions.weigh(cases, additions.weight);
+    return (additions.weight > 0);
   }
   else
     return false;
@@ -290,6 +290,8 @@ Tricks& Tricks::operator += (const Tricks& tricks2)
 
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] += tricks2.signature[i];
+
+  weight += tricks2.weight;
   
   return * this;
 }
@@ -306,11 +308,15 @@ Tricks& Tricks::operator -= (const Tricks& tricks2)
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] -= tricks2.signature[i];
 
+  weight -= tricks2.weight;
+
   return * this;
 }
 
 
-Tricks& Tricks::operator |= (const Tricks& tricks2)
+Tricks& Tricks::orNormal(
+ const Tricks& tricks2,
+ const vector<unsigned char>& cases)
 {
   assert(tricks.size() == tricks2.tricks.size());
 
@@ -320,12 +326,16 @@ Tricks& Tricks::operator |= (const Tricks& tricks2)
   // This only works for binary vectors.
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] |= tricks2.signature[i];
+
+  Tricks::weigh(cases, weight);
   
   return * this;
 }
 
 
-void Tricks::orSymm(const Tricks& tricks2)
+void Tricks::orSymm(
+  const Tricks& tricks2,
+  const vector<unsigned char>& cases)
 {
   const unsigned len = tricks.size();
   assert(len == tricks2.tricks.size());
@@ -343,6 +353,8 @@ void Tricks::orSymm(const Tricks& tricks2)
     // There is a middle element.
     tricks[lo] |= tricks2.tricks[lo];
   }
+
+  Tricks::weigh(cases, weight);
 
   resConvert.scrutinizeVector(tricks, signature);
 }

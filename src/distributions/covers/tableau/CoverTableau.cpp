@@ -56,33 +56,32 @@ void CoverTableau::setMinTricks(const unsigned char tmin)
 
 void CoverTableau::addRow(
   const Cover& cover,
-  const Tricks& additions,
-  const unsigned weightAdded)
+  const Tricks& additions)
 {
   rows.emplace_back(CoverRow());
   CoverRow& row = rows.back();
   row.resize(residuals.size());
-  row.add(cover, additions, weightAdded, residuals, residualWeight);
+  row.add(cover, additions, residuals);
+  residualWeight = residuals.getWeight();
   complexity.addRow(row.getComplexity());
 }
 
 
 void CoverTableau::addRow(
   const CoverRow& row,
-  const Tricks& additions,
-  const unsigned weightAdded)
+  const Tricks& additions)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity());
   residuals -= additions;
-  residualWeight -= weightAdded;
+  residualWeight = residuals.getWeight();
+  // residualWeight -= weightAdded;
 }
 
 
 void CoverTableau::extendRow(
   const Cover& cover,
   const Tricks& additions,
-  const unsigned weightAdded,
   const unsigned rowNo)
 {
   // A bit fumbly: Advance to the same place as we were at.
@@ -90,7 +89,8 @@ void CoverTableau::extendRow(
   unsigned r;
   for (riter = rows.begin(), r = 0; r < rowNo; riter++, r++);
 
-  riter->add(cover, additions, weightAdded, residuals, residualWeight);
+  riter->add(cover, additions, residuals);
+  residualWeight = residuals.getWeight();
 
   complexity.addCover(cover.getComplexity(), riter->getComplexity());
 }
@@ -105,11 +105,10 @@ bool CoverTableau::attempt(
   // Returns true if this must be the last use of this cover.
   Tricks additions;
   additions.resize(residuals.size());
-  unsigned weightAdded;
 
   // Check whether we can make a complete solution with the cover.
   const CoverState state = CoverTableau::attemptRow(
-    cases, coverIter, stack, additions, weightAdded, solution);
+    coverIter, stack, additions, solution);
   if (state == COVER_OPEN)
     return false;
   else if (state == COVER_DONE)
@@ -124,26 +123,25 @@ bool CoverTableau::attempt(
       // A row becomes too difficult to read for a human if it
       // has more than two options.
     }
-    else if (! row.possibleAdd(
-        * coverIter, residuals, cases, additions, weightAdded))
+    else if (! row.possibleAdd(* coverIter, residuals, cases, additions))
     {
       // The row does not fit.
     }
-    else if (weightAdded < residualWeight)
+    else if (additions.getWeight() < residualWeight)
     {
       // The cover can be added, but does not make a solution yet.
       stack.emplace_back(StackEntry());
       StackEntry& entry = stack.back();
       entry.iter = coverIter;
       entry.tableau = * this;
-      entry.tableau.extendRow(* coverIter, additions, weightAdded, rno);
+      entry.tableau.extendRow(* coverIter, additions, rno);
     }
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), solution.complexity))
     {
       // The cover makes a solution which beats the previous one.
       solution = * this;
-      solution.extendRow(* coverIter, additions, weightAdded, rno);
+      solution.extendRow(* coverIter, additions, rno);
     }
 
     rno++;
@@ -154,7 +152,7 @@ bool CoverTableau::attempt(
 
 
 bool CoverTableau::attempt(
-  const vector<unsigned char>& cases,
+  [[maybe_unused]] const vector<unsigned char>& cases,
   list<CoverRow>::const_iterator& rowIter,
   list<RowStackEntry>& stack,
   CoverTableau& solution)
@@ -163,10 +161,9 @@ bool CoverTableau::attempt(
   // the existing one.
   Tricks additions;
   additions.resize(residuals.size());
-  unsigned weightAdded;
 
-  return (CoverTableau::attemptRow(cases, rowIter, stack,
-    additions, weightAdded, solution) == COVER_DONE);
+  return (CoverTableau::attemptRow(rowIter, stack,
+    additions, solution) == COVER_DONE);
 }
 
 
@@ -194,6 +191,7 @@ bool CoverTableau::complete() const
 
 unsigned CoverTableau::getResidualWeight() const
 {
+  assert(residualWeight == residuals.getWeight());
   return residualWeight;
 }
 

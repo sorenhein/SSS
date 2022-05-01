@@ -28,7 +28,6 @@ void Cover::reset()
 {
   productUnitPtr = nullptr;
   tricks.clear();
-  // weight = 0;
   mcpw = 0;
   symmFlag = false;
   code = 0;
@@ -110,12 +109,14 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
 }
 
 
-void Cover::tricksOr(Tricks& running) const
+void Cover::tricksOr(
+  Tricks& running,
+  const vector<unsigned char>& cases) const
 {
   if (symmFlag)
-    running.orSymm(tricks);
+    running.orSymm(tricks, cases);
   else
-    running |= tricks;
+    running.orNormal(tricks, cases);
 }
 
 
@@ -123,8 +124,7 @@ bool Cover::possible(
   const Tricks& explained,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned& weightAdded) const
+  Tricks& additions) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
@@ -132,24 +132,19 @@ bool Cover::possible(
   //   explained vector that would arise
   // tricksAdded: The number of tricks in additions
 
-  return tricks.possible(explained, residuals, cases, 
-    additions, weightAdded);
+  return tricks.possible(explained, residuals, cases, additions);
 }
 
 
 bool Cover::possible(
   const Tricks& residuals,
-  [[maybe_unused]] const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned& weightAdded) const
+  Tricks& additions) const
 {
   // Same as the previous method with explained unused.
   
   if (tricks <= residuals)
   {
     additions = tricks;
-    weightAdded = additions.getWeight();
-    // additions.weigh(cases, weightAdded);
     return true;
   }
   else
@@ -169,10 +164,7 @@ void Cover::updateStats(
 
 bool Cover::sameWeight(const Cover& cover2) const
 {
-  return (tricks.getWeight() == cover2.getWeight());
-  // assert(weight == Cover::getWeight());
-  // assert(cover2.weight == cover2.getWeight());
-  // return (weight == cover2.weight);
+  return (tricks.getWeight() == cover2.tricks.getWeight());
 }
 
 
@@ -230,8 +222,6 @@ unsigned char Cover::effectiveDepth() const
 unsigned Cover::getWeight() const
 {
   return tricks.getWeight();
-  // assert(weight == tricks.getWeight());
-  // return weight;
 }
 
 

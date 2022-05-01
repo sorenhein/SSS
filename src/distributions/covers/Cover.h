@@ -33,8 +33,6 @@ class Cover
 
     Tricks tricks;
 
-    // unsigned weight;
-
     // Micro-complexity per weight unit.
     unsigned mcpw;
 
@@ -72,21 +70,20 @@ class Cover
     // Will invalidate Cover if not symmetrizable!
     bool symmetrize(const vector<unsigned char>& cases);
 
-    void tricksOr(Tricks& running) const;
+    void tricksOr(
+      Tricks& running,
+      const vector<unsigned char>& cases) const;
 
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,
       const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned& weightAdded) const;
+      Tricks& additions) const;
 
     // This one doesn't use explained.
     bool possible(
       const Tricks& residuals,
-      const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned& weightAdded) const;
+      Tricks& additions) const;
 
     void updateStats(
       ProductStats& productStats,

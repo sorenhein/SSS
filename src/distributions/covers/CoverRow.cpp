@@ -47,7 +47,7 @@ void CoverRow::fillDirectly(
   complexity = 0;
   for (auto coverPtr: coverPtrs)
   {
-    coverPtr->tricksOr(tricks);
+    coverPtr->tricksOr(tricks, cases);
     assert(complexity + coverPtr->getComplexity() > complexity);
     complexity += coverPtr->getComplexity();
   }
@@ -61,8 +61,7 @@ bool CoverRow::possibleAdd(
   const Cover& cover,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned& weightAdded) const
+  Tricks& additions) const
 {
   // Do not update any internal states.  Try to add the cover with
   // its residuals and see what this would add incrementally to the row.
@@ -77,15 +76,13 @@ bool CoverRow::possibleAdd(
   if (! coverPtrs.empty() && coverPtrs.back() == &cover)
     return false;
 
-  return cover.possible(tricks, residuals, cases, additions, weightAdded);
+  return cover.possible(tricks, residuals, cases, additions);
 }
 
 
 bool CoverRow::possible(
   const Tricks& residuals,
-  const vector<unsigned char>& cases,
-  Tricks& additions,
-  unsigned& weightAdded) const
+  Tricks& additions) const
 {
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
@@ -96,7 +93,7 @@ bool CoverRow::possible(
   {
     // TODO If we put more into CoverTableau, do we need the copy?
     additions = tricks;
-    additions.weigh(cases, weightAdded);
+    // additions.weigh(cases, weightAdded);
     return true;
   }
   else
@@ -107,22 +104,19 @@ bool CoverRow::possible(
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
-  const unsigned weightAdded,
-  Tricks& residuals,
-  unsigned& residualWeight)
+  Tricks& residuals)
 {
   coverPtrs.push_back(&cover);
 
   // additions are disjoint from tricks here.
   tricks += additions;
   residuals -= additions;
-  residualWeight -= weightAdded;
 
   // TODO Keep checking until we're sure we don't get overflow.
   assert(complexity + cover.getComplexity() > complexity);
 
   complexity += cover.getComplexity();
-  weight += weightAdded;
+  weight += additions.getWeight();
 }
 
 

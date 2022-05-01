@@ -53,21 +53,16 @@ class CoverRow
       const Cover& cover,
       const Tricks& residuals,
       const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned& weightAdded) const;
+      Tricks& additions) const;
 
     bool possible(
       const Tricks& residuals,
-      const vector<unsigned char>& cases,
-      Tricks& additions,
-      unsigned& weightAdded) const;
+      Tricks& additions) const;
 
     void add(
       const Cover& cover,
       const Tricks& additions,
-      const unsigned weightAdded,
-      Tricks& residuals,
-      unsigned& residualWeight);
+      Tricks& residuals);
 
     void updateStats(
       ProductStats& productStats,
