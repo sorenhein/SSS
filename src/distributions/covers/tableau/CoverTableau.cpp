@@ -92,18 +92,18 @@ bool CoverTableau::attempt(
   CoverTableau& solution)
 {
   // Returns true if this must be the last use of this cover.
-  Tricks additions;
-  additions.resize(residuals.size());
-
   // Check whether we can make a complete solution with the cover.
   const CoverState state = CoverTableau::attemptRow(
-    coverIter, stack, additions, solution);
+    coverIter, stack, solution);
   if (state == COVER_OPEN)
     return false;
   else if (state == COVER_DONE)
     return true;
 
   // If not, try to add the cover to existing rows.
+  Tricks additions;
+  additions.resize(residuals.size());
+
   unsigned rno = 0;
   for (auto& row: rows)
   {
@@ -148,11 +148,10 @@ bool CoverTableau::attempt(
 {
   // Return true if a solution is found, even if it is inferior to
   // the existing one.
-  Tricks additions;
-  additions.resize(residuals.size());
+  // Tricks additions;
+  // additions.resize(residuals.size());
 
-  return (CoverTableau::attemptRow(rowIter, stack,
-    additions, solution) == COVER_DONE);
+  return (CoverTableau::attemptRow(rowIter, stack, solution) == COVER_DONE);
 }
 
 

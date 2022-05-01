@@ -48,7 +48,6 @@ class CoverTableau
     CoverState attemptRow(
       C& candIter,
       list<T>& stack,
-      Tricks& additions,
       CoverTableau& solution);
 
     void addRow(const Cover& cover);
@@ -108,7 +107,6 @@ template<class T, typename C>
 CoverState CoverTableau::attemptRow(
   C& candIter,
   list<T>& stack,
-  Tricks& additions,
   CoverTableau& solution)
 {
   // Returns true if a solution is found by adding candIter as a new row, 
@@ -116,7 +114,7 @@ CoverState CoverTableau::attemptRow(
   // This method works both for the exhaustive search (T == StackEntry) 
   // and for the row search (T == RowStackEntry).
 
-  if (! candIter->possible(residuals, additions))
+  if (! candIter->possible(residuals))
     return COVER_IMPOSSIBLE;
 
   if (candIter->getWeight() < residuals.getWeight())
@@ -127,8 +125,6 @@ CoverState CoverTableau::attemptRow(
 
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
-    // TODO candIter ought to be enough then?
-    // tableau.addRow(* candIter, candIter->getTricks());
     tableau.addRow(* candIter);
     return COVER_OPEN;
   }
@@ -136,7 +132,6 @@ CoverState CoverTableau::attemptRow(
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
-    // solution.addRow(* candIter, candIter->getTricks());
     solution.addRow(* candIter);
     return COVER_DONE;
   }
@@ -144,7 +139,6 @@ CoverState CoverTableau::attemptRow(
   {
     // We can use this CoverTableau, as the stack element is about
     // to be popped anyway.
-    // CoverTableau::addRow(* candIter, candIter->getTricks());
     CoverTableau::addRow(* candIter);
     if (complexity < solution.complexity)
       solution = * this;

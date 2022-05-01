@@ -80,24 +80,9 @@ bool CoverRow::possibleAdd(
 }
 
 
-bool CoverRow::possible(
-  const Tricks& residuals,
-  Tricks& additions) const
+bool CoverRow::possible(const Tricks& residuals) const
 {
-  // residuals: The overall tricks in cover tableau that remains.
-  // additions: If the cover can be added, the additions to the
-  //   explained vector that would arise
-  // weightAdded: The number of cases in additions
-
-  if (tricks <= residuals)
-  {
-    // TODO If we put more into CoverTableau, do we need the copy?
-    // Or copy in caller?
-    additions = tricks;
-    return true;
-  }
-  else
-    return false;
+  return (tricks <= residuals);
 }
 
 

@@ -80,10 +80,7 @@ class Cover
       const vector<unsigned char>& cases,
       Tricks& additions) const;
 
-    // This one doesn't use explained.
-    bool possible(
-      const Tricks& residuals,
-      Tricks& additions) const;
+    bool possible(const Tricks& residuals) const;
 
     void updateStats(
       ProductStats& productStats,

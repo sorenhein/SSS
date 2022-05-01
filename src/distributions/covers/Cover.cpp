@@ -136,19 +136,9 @@ bool Cover::possible(
 }
 
 
-bool Cover::possible(
-  const Tricks& residuals,
-  Tricks& additions) const
+bool Cover::possible(const Tricks& residuals) const
 {
-  // Same as the previous method with explained unused.
-  
-  if (tricks <= residuals)
-  {
-    additions = tricks;
-    return true;
-  }
-  else
-    return false;
+  return (tricks <= residuals);
 }
 
 

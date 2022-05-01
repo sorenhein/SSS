@@ -55,9 +55,7 @@ class CoverRow
       const vector<unsigned char>& cases,
       Tricks& additions) const;
 
-    bool possible(
-      const Tricks& residuals,
-      Tricks& additions) const;
+    bool possible(const Tricks& residuals) const;
 
     void add(
       const Cover& cover,
