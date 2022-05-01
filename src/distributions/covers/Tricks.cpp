@@ -41,7 +41,7 @@ void Tricks::set(
   tricksMin = numeric_limits<unsigned char>::max();
   unsigned i = 0;
 
-  for (auto& res:results)
+  for (auto& res: results)
   {
     tricks[i] = res.getTricks();
     if (tricks[i] < tricksMin)
@@ -165,30 +165,19 @@ bool Tricks::possible(
   assert(tricks.size() == cases.size());
   assert(tricks.size() == additions.size());
 
-  weightAdded = 0;
+  // The cover is an addition if it is not already set.
+  // This can be written a bit more efficiently, but the idea is to
+  // make it vectorizable if we go down that path.
   for (unsigned i = 0; i < tricks.size(); i++)
-  {
-    // If the cover has an entry that has not already been set:
-    if (tricks[i] && ! explained.tricks[i])
-    {
-      if (residuals.tricks[i])
-      {
-        // We need that entry.  The residuals is a binary vector.
-        additions.tricks[i] = 1;
-        weightAdded += cases[i];
-      }
-      else
-      {
-        // We cannot have that entry.
-        return false;
-      }
-    }
-    else
-      additions.tricks[i] = 0;
-  }
+    additions.tricks[i] = tricks[i] & ~explained.tricks[i];
 
-  // Could still have been fully contained.
-  return (weightAdded > 0);
+  if (additions <= residuals)
+  {
+    additions.weigh(cases, weightAdded);
+    return (weightAdded > 0);
+  }
+  else
+    return false;
 }
 
 
