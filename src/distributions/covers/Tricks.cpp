@@ -356,59 +356,26 @@ void Tricks::orSymm(
     tricks[lo] |= tricks2.tricks[lo];
   }
 
-  Tricks::weigh(cases);
-
-  auto sig2 = signature;
-  auto sig3 = signature;
-
-  resConvert.scrutinizeVector(tricks, lastForward, signature);
-
   const unsigned offset = signature.size() / 2;
   for (unsigned i = 0; i < offset; i++)
   {
     const unsigned orVal = 
       tricks2.signature[i] | tricks2.signature[i + offset];
 
-    sig2[i] |= orVal;
+    signature[i] |= orVal;
 
     if ((length & 1) && i+1 == offset)
     {
       // There is a middle element that should not be reproduced
       // on the high side.
-      sig2[i + offset] |= resConvert.limit(lastForward, orVal);
-// cout << "i " << i << ": orVal " << orVal << ", limit " <<
-      // resConvert.limit(lastForward, orVal) << endl;
+      signature[i + offset] |= resConvert.limit(lastForward, orVal);
 
     }
     else
-      sig2[i + offset] |= orVal;
+      signature[i + offset] |= orVal;
   }
 
-  for (unsigned i = 0; i < signature.size(); i++)
-  {
-    if (signature[i] != sig2[i])
-    {
-      cout << " n t2s sig sg2 sg3\n";
-      for (unsigned j = 0; j < signature.size(); j++)
-      {
-        cout << setw(2) << j <<
-          setw(4) << tricks2.signature[j] <<
-          setw(4) << signature[i] <<
-          setw(4) << sig2[j] <<
-          setw(4) << sig3[j] << endl;
-      }
-
-      cout << " n t2\n";
-      for (unsigned j = 0; j < tricks2.size(); j++)
-        cout << setw(2) << j <<
-          setw(4) << +tricks2.tricks[j] << endl;
-      
-      cout << "lastForward " << lastForward << endl;
-      cout << "i " << i << endl;
-
-    }
-    assert(signature[i] == sig2[i]);
-  }
+  Tricks::weigh(cases);
 }
 
 
@@ -447,7 +414,6 @@ unsigned Tricks::getWeight() const
 unsigned Tricks::size() const
 {
   return length;
-  // return tricks.size();
 }
 
 
