@@ -172,7 +172,7 @@ void Covers::explain(
   // including possibly covers that are OR'ed together in a row.
   Tricks tricks;
   unsigned char tmin;
-  tricks.set(results, tmin);
+  tricks.set(results, cases, tmin);
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
@@ -201,7 +201,7 @@ void Covers::explainManually(
   // This version uses finished rows.
   Tricks tricks;
   unsigned char tmin;
-  tricks.set(results, tmin);
+  tricks.set(results, cases, tmin);
 
   if (tableauRowCache.lookup(tricks, solution))
   {

@@ -40,7 +40,6 @@ class CoverTableau
     unsigned char tricksMin;
 
     Tricks residuals;
-    unsigned residualWeight;
 
     Complexity complexity;
 
@@ -74,8 +73,7 @@ class CoverTableau
 
     void init(
       const Tricks& tricks,
-      const unsigned char tmin,
-      const vector<unsigned char>& cases);
+      const unsigned char tmin);
 
     void setMinTricks(const unsigned char tmin);
 
@@ -125,7 +123,7 @@ CoverState CoverTableau::attemptRow(
   if (! candIter->possible(residuals, additions))
     return COVER_IMPOSSIBLE;
 
-  if (additions.getWeight() < residualWeight)
+  if (additions.getWeight() < residuals.getWeight())
   {
     stack.emplace_back(T());
     T& entry = stack.back();

@@ -53,6 +53,7 @@ class Tricks
 
     void set(
       const list<Result>& results,
+      const vector<unsigned char>& cases,
       unsigned char& tricksMin);
 
     void weigh(

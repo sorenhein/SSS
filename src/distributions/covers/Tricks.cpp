@@ -114,6 +114,7 @@ unsigned char& Tricks::element(const unsigned extIndex)
 
 void Tricks::set(
   const list<Result>& results,
+  const vector<unsigned char>& cases,
   unsigned char& tricksMin)
 {
   Tricks::resize(results.size());
@@ -133,6 +134,8 @@ void Tricks::set(
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] -= tricksMin;
   
+  Tricks::weigh(cases, weight);
+
   resConvert.scrutinizeVector(tricks, signature);
 }
 
@@ -142,6 +145,7 @@ void Tricks::weigh(
   unsigned& weightIn)
 {
   // TODO Don't need the argument?
+  // TODO Make private to Tricks?
   assert(cases.size() == tricks.size());
 
   weight = 0;

@@ -53,6 +53,8 @@ void CoverRow::fillDirectly(
   }
 
   tricks.weigh(cases, weight);
+  // TODO Just weight = tricks.getWeight();
+  assert(weight == tricks.getWeight());
   assert(weight != 0);
 }
 
@@ -92,8 +94,8 @@ bool CoverRow::possible(
   if (tricks <= residuals)
   {
     // TODO If we put more into CoverTableau, do we need the copy?
+    // Or copy in caller?
     additions = tricks;
-    // additions.weigh(cases, weightAdded);
     return true;
   }
   else

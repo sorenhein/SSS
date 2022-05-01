@@ -116,7 +116,7 @@ void Covers::explainTemplate(
   stack.emplace_back(T());
 
   T& entry = stack.back();
-  entry.tableau.init(tricks, tmin, cases);
+  entry.tableau.init(tricks, tmin);
   entry.iter = candidates.begin();
 
   auto stackIter = stack.begin();

@@ -31,7 +31,6 @@ void CoverTableau::reset()
   tricksMin = 0;
 
   residuals.clear();
-  residualWeight = 0;
 
   complexity.reset();
 }
@@ -39,12 +38,10 @@ void CoverTableau::reset()
 
 void CoverTableau::init(
   const Tricks& tricks,
-  const unsigned char tmin,
-  const vector<unsigned char>& cases)
+  const unsigned char tmin)
 {
-  residuals = tricks;
   tricksMin = tmin;
-  residuals.weigh(cases, residualWeight);
+  residuals = tricks;
 }
 
 
@@ -62,7 +59,6 @@ void CoverTableau::addRow(
   CoverRow& row = rows.back();
   row.resize(residuals.size());
   row.add(cover, additions, residuals);
-  residualWeight = residuals.getWeight();
   complexity.addRow(row.getComplexity());
 }
 
@@ -74,8 +70,6 @@ void CoverTableau::addRow(
   rows.push_back(row);
   complexity.addRow(row.getComplexity());
   residuals -= additions;
-  residualWeight = residuals.getWeight();
-  // residualWeight -= weightAdded;
 }
 
 
@@ -90,7 +84,6 @@ void CoverTableau::extendRow(
   for (riter = rows.begin(), r = 0; r < rowNo; riter++, r++);
 
   riter->add(cover, additions, residuals);
-  residualWeight = residuals.getWeight();
 
   complexity.addCover(cover.getComplexity(), riter->getComplexity());
 }
@@ -127,7 +120,7 @@ bool CoverTableau::attempt(
     {
       // The row does not fit.
     }
-    else if (additions.getWeight() < residualWeight)
+    else if (additions.getWeight() < residuals.getWeight())
     {
       // The cover can be added, but does not make a solution yet.
       stack.emplace_back(StackEntry());
@@ -185,14 +178,13 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::complete() const
 {
-  return (! rows.empty() && residualWeight == 0);
+  return (! rows.empty() && residuals.getWeight() == 0);
 }
 
 
 unsigned CoverTableau::getResidualWeight() const
 {
-  assert(residualWeight == residuals.getWeight());
-  return residualWeight;
+  return residuals.getWeight();
 }
 
 
