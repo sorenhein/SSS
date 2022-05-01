@@ -155,8 +155,7 @@ bool Tricks::prepare(
   const Product& product,
   const bool symmFlag,
   const vector<Profile>& distProfiles,
-  const vector<unsigned char>& cases,
-  unsigned& weightIn)
+  const vector<unsigned char>& cases)
 {
   const unsigned len = distProfiles.size();
   assert(len == cases.size());
@@ -195,14 +194,11 @@ bool Tricks::prepare(
   resConvert.scrutinizeVector(tricks, signature);
 
   Tricks::weigh(cases, weight);
-  weightIn = weight;
   return true;
 }
 
 
-bool Tricks::symmetrize(
-  const vector<unsigned char>& cases,
-  unsigned& weightIn)
+bool Tricks::symmetrize(const vector<unsigned char>& cases)
 {
   // Will invalidate Tricks if not symmetrizable!
   // We only symmetrize if there is no overlap with the mirror.
@@ -237,7 +233,6 @@ bool Tricks::symmetrize(
   resConvert.scrutinizeVector(tricks, signature);
 
   Tricks::weigh(cases, weight);
-  weightIn = weight;
   return true;
 }
 

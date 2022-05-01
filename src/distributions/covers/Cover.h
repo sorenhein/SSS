@@ -33,7 +33,7 @@ class Cover
 
     Tricks tricks;
 
-    unsigned weight;
+    // unsigned weight;
 
     // Micro-complexity per weight unit.
     unsigned mcpw;
@@ -96,10 +96,6 @@ class Cover
     bool sameWeight(const Cover& covers2) const;
 
     bool sameTricks(const Cover& covers2) const;
-
-    bool empty() const;
-
-    // bool full() const;
 
     bool symmetric() const;
 

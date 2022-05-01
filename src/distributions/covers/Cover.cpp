@@ -28,7 +28,7 @@ void Cover::reset()
 {
   productUnitPtr = nullptr;
   tricks.clear();
-  weight = 0;
+  // weight = 0;
   mcpw = 0;
   symmFlag = false;
   code = 0;
@@ -75,16 +75,12 @@ bool Cover::prepare(
     productUnitPtr->product, 
     symmFlag,
     distProfiles, 
-    cases, 
-    weight))
+    cases))
   {
     return false;
   }
   
-  assert(weight > 0);
-  assert(weight == tricks.getWeight());
-
-  mcpw = (productUnitPtr->product.getComplexity() << 20) / weight;
+  mcpw = (productUnitPtr->product.getComplexity() << 20) / tricks.getWeight();
   return true;
 }
 
@@ -103,7 +99,7 @@ bool Cover::symmetrize(const vector<unsigned char>& cases)
   // Will invalidate Cover if not symmetrizable!
   assert(! symmFlag);
 
-  if (! tricks.symmetrize(cases, weight))
+  if (! tricks.symmetrize(cases))
     return false;
 
   symmFlag = true;
@@ -143,7 +139,7 @@ bool Cover::possible(
 
 bool Cover::possible(
   const Tricks& residuals,
-  const vector<unsigned char>& cases,
+  [[maybe_unused]] const vector<unsigned char>& cases,
   Tricks& additions,
   unsigned& weightAdded) const
 {
@@ -152,7 +148,8 @@ bool Cover::possible(
   if (tricks <= residuals)
   {
     additions = tricks;
-    additions.weigh(cases, weightAdded);
+    weightAdded = additions.getWeight();
+    // additions.weigh(cases, weightAdded);
     return true;
   }
   else
@@ -172,9 +169,10 @@ void Cover::updateStats(
 
 bool Cover::sameWeight(const Cover& cover2) const
 {
-  assert(weight == Cover::getWeight());
-  assert(cover2.weight == cover2.getWeight());
-  return (weight == cover2.weight);
+  return (tricks.getWeight() == cover2.getWeight());
+  // assert(weight == Cover::getWeight());
+  // assert(cover2.weight == cover2.getWeight());
+  // return (weight == cover2.weight);
 }
 
 
@@ -182,21 +180,6 @@ bool Cover::sameTricks(const Cover& cover2) const
 {
   return (tricks == cover2.tricks);
 }
-
-
-bool Cover::empty() const
-{
-  assert(Cover::getWeight() == 0);
-  return (weight == 0);
-}
-
-
-/*
-bool Cover::full() const
-{
-  return (weight > 0 && numDist == tricks.size());
-}
-*/
 
 
 bool Cover::symmetric() const
@@ -246,8 +229,9 @@ unsigned char Cover::effectiveDepth() const
 
 unsigned Cover::getWeight() const
 {
-  assert(weight == tricks.getWeight());
-  return weight;
+  return tricks.getWeight();
+  // assert(weight == tricks.getWeight());
+  // return weight;
 }
 
 
@@ -292,7 +276,7 @@ string Cover::strLine() const
   stringstream ss;
 
   ss << productUnitPtr->product.strLine() <<
-    setw(4) << weight <<
+    setw(4) << tricks.getWeight() <<
     setw(4) << +productUnitPtr->product.getComplexity() <<
     setw(10) << mcpw <<
     setw(4) << +productUnitPtr->product.effectiveDepth() <<
@@ -308,7 +292,7 @@ string Cover::strProfile() const
 {
   stringstream ss;
 
-  ss << "weight " << weight << "\n";
+  ss << "weight " << tricks.getWeight() << "\n";
   ss << tricks.strList();
 
   return ss.str();
@@ -340,7 +324,7 @@ string Cover::str(const Profile& sumProfile) const
 
     Opponent simplestOpponent = product.simplestOpponent(sumProfile);
     ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
-    ss << " [" << weight << "]";
+    ss << " [" << tricks.getWeight() << "]";
 
     return ss.str();
   }
