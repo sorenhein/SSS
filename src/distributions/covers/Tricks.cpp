@@ -312,22 +312,11 @@ void Tricks::orSymm(const Tricks& tricks2)
 
 bool Tricks::operator == (const Tricks& tricks2) const
 {
-  assert(tricks.size() == tricks2.tricks.size());
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-    if (tricks[i] != tricks2.tricks[i])
-      return false;
-  
-  return true;
-}
-
-
-bool Tricks::lessEqual(const Tricks& tricks2) const
-{
+  // TODO Could use weight first once we have it
   assert(signature.size() == tricks2.signature.size());
 
   for (unsigned i = 0; i < signature.size(); i++)
-    if (! resConvert.greaterEqual(tricks2.signature[i], signature[i]))
+    if (tricks2.signature[i] != signature[i])
       return false;
   
   return true;
@@ -336,21 +325,13 @@ bool Tricks::lessEqual(const Tricks& tricks2) const
 
 bool Tricks::operator <= (const Tricks& tricks2) const
 {
-  bool b = Tricks::lessEqual(tricks2);
+  // TODO Could use weight first once we have it
+  assert(signature.size() == tricks2.signature.size());
 
-  assert(tricks.size() == tricks2.tricks.size());
-
-  for (unsigned i = 0; i < tricks.size(); i++)
-    if (tricks[i] > tricks2.tricks[i])
-    {
-      if (b)
-      {
-      assert(! b);
-      }
+  for (unsigned i = 0; i < signature.size(); i++)
+    if (! resConvert.greaterEqual(tricks2.signature[i], signature[i]))
       return false;
-    }
   
-  assert(b);
   return true;
 }
 

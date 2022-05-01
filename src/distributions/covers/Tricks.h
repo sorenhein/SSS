@@ -86,8 +86,6 @@ class Tricks
 
     bool operator == (const Tricks& tricks2) const;
 
-    bool lessEqual(const Tricks& tricks2) const;
-
     bool operator <= (const Tricks& tricks2) const;
 
     unsigned size() const;
