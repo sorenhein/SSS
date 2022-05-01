@@ -44,6 +44,8 @@ class Tricks
 
     unsigned char& element(const unsigned extIndex);
 
+    void weigh(const vector<unsigned char>& cases);
+
   
   public:
 
@@ -55,10 +57,6 @@ class Tricks
       const list<Result>& results,
       const vector<unsigned char>& cases,
       unsigned char& tricksMin);
-
-    void weigh(
-      const vector<unsigned char>& cases,
-      unsigned& weightIn);
 
     bool prepare(
       const Product& product,

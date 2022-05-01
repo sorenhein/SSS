@@ -134,25 +134,19 @@ void Tricks::set(
   for (unsigned i = 0; i < tricks.size(); i++)
     tricks[i] -= tricksMin;
   
-  Tricks::weigh(cases, weight);
+  Tricks::weigh(cases);
 
   resConvert.scrutinizeVector(tricks, signature);
 }
 
 
-void Tricks::weigh(
-  const vector<unsigned char>& cases,
-  unsigned& weightIn)
+void Tricks::weigh(const vector<unsigned char>& cases)
 {
-  // TODO Don't need the argument?
-  // TODO Make private to Tricks?
   assert(cases.size() == tricks.size());
 
   weight = 0;
   for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
     weight += cases[extIndex] * Tricks::element(extIndex);
-
-  weightIn = weight;
 }
 
 
@@ -198,7 +192,7 @@ bool Tricks::prepare(
 
   resConvert.scrutinizeVector(tricks, signature);
 
-  Tricks::weigh(cases, weight);
+  Tricks::weigh(cases);
   return true;
 }
 
@@ -237,7 +231,7 @@ bool Tricks::symmetrize(const vector<unsigned char>& cases)
 
   resConvert.scrutinizeVector(tricks, signature);
 
-  Tricks::weigh(cases, weight);
+  Tricks::weigh(cases);
   return true;
 }
 
@@ -270,7 +264,7 @@ bool Tricks::possible(
 
   if (additions <= residuals)
   {
-    additions.weigh(cases, additions.weight);
+    additions.weigh(cases);
     return (additions.weight > 0);
   }
   else
@@ -331,7 +325,7 @@ Tricks& Tricks::orNormal(
   for (unsigned i = 0; i < signature.size(); i++)
     signature[i] |= tricks2.signature[i];
 
-  Tricks::weigh(cases, weight);
+  Tricks::weigh(cases);
   
   return * this;
 }
@@ -358,7 +352,7 @@ void Tricks::orSymm(
     tricks[lo] |= tricks2.tricks[lo];
   }
 
-  Tricks::weigh(cases, weight);
+  Tricks::weigh(cases);
 
   resConvert.scrutinizeVector(tricks, signature);
 }

@@ -52,9 +52,7 @@ void CoverRow::fillDirectly(
     complexity += coverPtr->getComplexity();
   }
 
-  tricks.weigh(cases, weight);
-  // TODO Just weight = tricks.getWeight();
-  assert(weight == tricks.getWeight());
+  weight = tricks.getWeight();
   assert(weight != 0);
 }
 
