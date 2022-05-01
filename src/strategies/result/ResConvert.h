@@ -46,8 +46,6 @@ class ResConvert
 
     unsigned profileSize(const unsigned len) const;
 
-    unsigned profileSizeNew(const unsigned len) const;
-
     void scrutinizeRange(
       const list<Result>& results,
       const Ranges& ranges,
@@ -64,18 +62,10 @@ class ResConvert
 
     void scrutinizeVector(
       const vector<unsigned char>& quadTricks,
-      vector<unsigned>& profiles) const;
-
-    unsigned char lookup(
-      const vector<unsigned>& profiles,
-      const unsigned index) const;
-
-    void scrutinizeVectorNew(
-      const vector<unsigned char>& quadTricks,
       const unsigned lastForward,
       vector<unsigned>& profiles) const;
 
-    unsigned char lookupNew(
+    unsigned char lookup(
       const vector<unsigned>& profiles,
       const unsigned lastForward,
       const unsigned index) const;

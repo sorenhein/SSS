@@ -72,12 +72,7 @@ void ResConvert::setConstants()
 
 unsigned ResConvert::profileSize(const unsigned len) const
 {
-   return (len + LOOKUP_GROUP - 1) / LOOKUP_GROUP;
-}
-
-
-unsigned ResConvert::profileSizeNew(const unsigned len) const
-{
+  // 2 for 1-10, 4 for 11-20, 6 for 21-30 etc.
   return 2 * ((len + LOOKUP_GROUP + 4) / (2 * LOOKUP_GROUP));
 }
 
@@ -208,11 +203,13 @@ void ResConvert::scrutinizeHalfVector(
   unsigned pno = offset;
   for (unsigned q = firstNumber; q <= lastNumber; q++)
   {
+assert(q < quadTricks.size());
     profile = (profile << 2) | quadTricks[q];
     counter++;
 
     if (counter == LOOKUP_GROUP)
     {
+assert(pno < profiles.size());
       profiles[pno] = profile;
       profile = 0;
       counter = 0;
@@ -222,13 +219,25 @@ void ResConvert::scrutinizeHalfVector(
 
   // Pad the last partial element.
   if (counter > 0)
+  {
     profile <<= 2 * (LOOKUP_GROUP - counter);
 
+if (pno >= profiles.size())
+{
+  cout << "first " << firstNumber << ", last " << lastNumber << endl;
+  cout << "offset " << offset << endl;
+  cout << "profiles.size() " << profiles.size() << endl;
+  cout << "quad " << quadTricks.size() << endl;
+  cout << "counter " << counter << endl;
+  cout << "pno " << pno << endl;
+}
+assert(pno < profiles.size());
   profiles[pno] = profile;
+  }
 }
 
 
-void ResConvert::scrutinizeVectorNew(
+void ResConvert::scrutinizeVector(
   const vector<unsigned char>& quadTricks,
   const unsigned lastForward,
   vector<unsigned>& profiles) const
@@ -248,7 +257,7 @@ void ResConvert::scrutinizeVectorNew(
 }
 
 
-unsigned char ResConvert::lookupNew(
+unsigned char ResConvert::lookup(
   const vector<unsigned>& profiles,
   const unsigned lastForward,
   const unsigned index) const
@@ -272,43 +281,6 @@ unsigned char ResConvert::lookupNew(
     assert(group < profiles.size());
     return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
   }
-}
-
-
-void ResConvert::scrutinizeVector(
-  const vector<unsigned char>& quadTricks,
-  vector<unsigned>& profiles) const
-{
-  const unsigned last = profiles.size() - 1;
-
-  unsigned profile;
-  for (unsigned p = 0; p < last; p++)
-  {
-    profile = 0;
-    for (unsigned q = 0; q < LOOKUP_GROUP; q++)
-      profile = (profile << 2) | quadTricks[LOOKUP_GROUP * p + q];
-
-    profiles[p] = profile;
-  }
-
-  unsigned q, c;
-  profile = 0;
-  for (q = LOOKUP_GROUP * last, c = 0; q < quadTricks.size(); q++, c++)
-    profile = (profile << 2) | quadTricks[q];
-
-  profiles[last] = profile << (2*(LOOKUP_GROUP - c));
-}
-
-
-unsigned char ResConvert::lookup(
-  const vector<unsigned>& profiles,
-  const unsigned index) const
-{
-  const unsigned group = index / LOOKUP_GROUP;
-  const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
-  
-  assert(group < profiles.size());
-  return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
 }
 
 

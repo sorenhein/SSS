@@ -48,12 +48,12 @@ void Tricks::resize(const unsigned len)
 
 const unsigned char Tricks::sigElem(const unsigned extIndex) const
 {
-  // TODO So far we don't pad the symmetrics to an unsigned boundary.
-  // When we do, we have to change the indexing here.
+  // TODO Perhaps store tricks in the regular way and do all the
+  // reversing in ResConvert?
   if (extIndex <= lastForward)
-    return resConvert.lookup(signature, extIndex);
+    return resConvert.lookup(signature, lastForward, extIndex);
   else
-    return resConvert.lookup(signature, reverseSum - extIndex);
+    return resConvert.lookup(signature, lastForward, reverseSum - extIndex);
 }
 
 
@@ -126,7 +126,7 @@ void Tricks::set(
   
   Tricks::weigh(cases);
 
-  resConvert.scrutinizeVector(tricks, signature);
+  resConvert.scrutinizeVector(tricks, lastForward, signature);
 }
 
 
@@ -180,7 +180,7 @@ bool Tricks::prepare(
   if (numDist == 0 || numDist == tricks.size())
     return false;
 
-  resConvert.scrutinizeVector(tricks, signature);
+  resConvert.scrutinizeVector(tricks, lastForward, signature);
 
   Tricks::weigh(cases);
   return true;
@@ -228,7 +228,7 @@ bool Tricks::symmetrize()
   if (numDist == tricks.size())
     return false;
 
-  resConvert.scrutinizeVector(tricks, signature);
+  resConvert.scrutinizeVector(tricks, lastForward, signature);
 
   // As there was no overlap, we can just double the weight.
   weight += weight;
@@ -254,7 +254,8 @@ bool Tricks::possible(
     additions.tricks[intIndex] = 
       tricks[intIndex] & ~explained.tricks[intIndex];
 
-  resConvert.scrutinizeVector(additions.tricks, additions.signature);
+  resConvert.scrutinizeVector(additions.tricks, lastForward, 
+    additions.signature);
   /*
   vector<unsigned> addSignature;
   addSignature.resize(signature.size());
@@ -348,7 +349,7 @@ void Tricks::orSymm(
 
   Tricks::weigh(cases);
 
-  resConvert.scrutinizeVector(tricks, signature);
+  resConvert.scrutinizeVector(tricks, lastForward, signature);
 }
 
 
@@ -399,7 +400,6 @@ string Tricks::strList() const
     ss << 
       setw(2) << extIndex << 
       setw(4) << +Tricks::sigElem(extIndex) << "\n";
-      // setw(4) << +Tricks::element(extIndex) << "\n";
 
   return ss.str();
 }
@@ -411,7 +411,6 @@ string Tricks::strShort() const
 
   for (unsigned extIndex = 0; extIndex < length; extIndex++)
     s += (Tricks::sigElem(extIndex) ? "1" : "-");
-    // s += (Tricks::element(extIndex) ? "1" : "-");
 
   return s + "  ";
 }
@@ -423,7 +422,6 @@ string Tricks::strSpaced() const
 
   for (unsigned extIndex = 0; extIndex < length; extIndex++)
     ss << setw(2) << +Tricks::sigElem(extIndex);
-    // ss << setw(2) << +Tricks::element(extIndex);
 
   return ss.str() + "\n";
 }
