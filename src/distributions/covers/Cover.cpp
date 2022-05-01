@@ -82,6 +82,7 @@ bool Cover::prepare(
   }
   
   assert(weight > 0);
+  assert(weight == tricks.getWeight());
 
   mcpw = (productUnitPtr->product.getComplexity() << 20) / weight;
   return true;
@@ -171,6 +172,8 @@ void Cover::updateStats(
 
 bool Cover::sameWeight(const Cover& cover2) const
 {
+  assert(weight == Cover::getWeight());
+  assert(cover2.weight == cover2.getWeight());
   return (weight == cover2.weight);
 }
 
@@ -183,6 +186,7 @@ bool Cover::sameTricks(const Cover& cover2) const
 
 bool Cover::empty() const
 {
+  assert(Cover::getWeight() == 0);
   return (weight == 0);
 }
 
@@ -242,6 +246,7 @@ unsigned char Cover::effectiveDepth() const
 
 unsigned Cover::getWeight() const
 {
+  assert(weight == tricks.getWeight());
   return weight;
 }
 

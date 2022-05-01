@@ -26,7 +26,7 @@ class Tricks
 
     vector<unsigned char> tricks;
 
-    // These two are useful pre-calculations.
+    // These two are useful pre-calculations.  Might be uchar.
     unsigned lastForward;
 
     unsigned reverseSum;
@@ -34,6 +34,8 @@ class Tricks
     // TODO Parallel implementation for now.
     // The tricks are grouped into 5-element groups of 2 bits each.
     vector<unsigned> signature;
+
+    unsigned weight;
 
 
     const unsigned char sigElem(const unsigned extIndex) const;
@@ -55,19 +57,19 @@ class Tricks
 
     void weigh(
       const vector<unsigned char>& cases,
-      unsigned& weight) const;
+      unsigned& weightIn);
 
     bool prepare(
       const Product& product,
       const bool symmFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases,
-      unsigned& weight);
+      unsigned& weightIn);
 
     // Will invalidate Tricks if not symmetrizable!
     bool symmetrize(
       const vector<unsigned char>& cases,
-      unsigned& weight);
+      unsigned& weightIn);
 
     bool possible(
       const Tricks& explained,
@@ -75,6 +77,8 @@ class Tricks
       const vector<unsigned char>& cases,
       Tricks& additions,
       unsigned& weightAdded) const;
+
+    unsigned getWeight() const;
 
     Tricks& operator += (const Tricks& tricks2);
 

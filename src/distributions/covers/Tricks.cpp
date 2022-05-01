@@ -27,6 +27,7 @@ void Tricks::clear()
 {
   tricks.clear();
   signature.clear();
+  weight = 0;
 }
 
 
@@ -138,13 +139,15 @@ void Tricks::set(
 
 void Tricks::weigh(
   const vector<unsigned char>& cases,
-  unsigned& weight) const
+  unsigned& weightIn)
 {
   assert(cases.size() == tricks.size());
 
   weight = 0;
   for (unsigned extIndex = 0; extIndex < tricks.size(); extIndex++)
     weight += cases[extIndex] * Tricks::element(extIndex);
+
+  weightIn = weight;
 }
 
 
@@ -153,7 +156,7 @@ bool Tricks::prepare(
   const bool symmFlag,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases,
-  unsigned& weight)
+  unsigned& weightIn)
 {
   const unsigned len = distProfiles.size();
   assert(len == cases.size());
@@ -192,13 +195,14 @@ bool Tricks::prepare(
   resConvert.scrutinizeVector(tricks, signature);
 
   Tricks::weigh(cases, weight);
+  weightIn = weight;
   return true;
 }
 
 
 bool Tricks::symmetrize(
   const vector<unsigned char>& cases,
-  unsigned& weight)
+  unsigned& weightIn)
 {
   // Will invalidate Tricks if not symmetrizable!
   // We only symmetrize if there is no overlap with the mirror.
@@ -233,6 +237,7 @@ bool Tricks::symmetrize(
   resConvert.scrutinizeVector(tricks, signature);
 
   Tricks::weigh(cases, weight);
+  weightIn = weight;
   return true;
 }
 
@@ -271,6 +276,12 @@ bool Tricks::possible(
   }
   else
     return false;
+}
+
+
+unsigned Tricks::getWeight() const
+{
+  return weight;
 }
 
 
