@@ -105,27 +105,34 @@ void Tricks::set(
 {
   // Seems fast.
   
-  vector<unsigned char> tricks;
-  tricks.resize(results.size());
-
   Tricks::resize(results.size());
+
   tricksMin = numeric_limits<unsigned char>::max();
-  unsigned extIndex = 0;
-
   for (auto& res: results)
+    tricksMin = min(tricksMin, res.getTricks());
+
+  unsigned counter = 0;
+  unsigned accum = 0;
+  unsigned position = 0;
+
+  // The forward half including the middle element if any.
+  auto riter = results.begin();
+  for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++, riter++)
   {
-    const unsigned char rt = res.getTricks();
-    Tricks::element(tricks, extIndex) = rt;
-    if (rt < tricksMin)
-      tricksMin = rt;
-
-    extIndex++;
+    resConvert.increment(counter, accum, riter->getTricks() - tricksMin,
+      position, signature[position]);
   }
+  resConvert.finish(counter, accum, position, signature[position]);
 
-  for (unsigned i = 0; i < tricks.size(); i++)
-    tricks[i] -= tricksMin;
-  
-  resConvert.scrutinizeVector(tricks, lastForward, signature);
+  // The backward half including the middle element if any.
+  riter = prev(results.end());
+  for (unsigned extIndex = length-1; extIndex > lastForward; 
+    extIndex--, riter--)
+  {
+    resConvert.increment(counter, accum, riter->getTricks() - tricksMin,
+      position, signature[position]);
+  }
+  resConvert.finish(counter, accum, position, signature[position]);
 
   Tricks::weigh(cases);
 }
@@ -223,37 +230,6 @@ timersStrat[34].start();
 timersStrat[34].stop();
     return false;
   }
-
-
-  /*
-  if (! symmFlag)
-  {
-    for (unsigned i = 0; i < signature.size(); i++)
-    {
-      if (signature[i] != sig2[i])
-      {
-        cout << "Tricks as stored\n";
-        for (unsigned j = 0; j < tricks.size(); j++)
-          cout << setw(2) << j <<
-            setw(4) << +tricks[j] << "\n";
-        cout << "\n";
-
-        cout << Tricks::strShort() << "\n";
-
-        cout << "sigs\n";
-        for (unsigned j = 0; j < signature.size(); j++)
-        {
-          cout << setw(2) << j <<
-            setw(4) << signature[j] <<
-            setw(4) << sig2[j] << "\n";
-        }
-        cout << endl;
-
-        assert(signature[i] == sig2[i]);
-      }
-    }
-  }
-  */
 
   Tricks::weigh(cases);
 timersStrat[34].stop();
