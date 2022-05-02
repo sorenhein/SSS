@@ -43,7 +43,7 @@ Combinations::Combinations()
 
 void Combinations::setTimerNames()
 {
-  timersStrat.resize(40);
+  timersStrat.resize(50);
   timersStrat[ 0].name("Strats::adapt");
   timersStrat[ 1].name("Strats::reactivate");
   timersStrat[ 2].name("Strats::scrutinize");

@@ -24,25 +24,19 @@ class Tricks
 {
   private:
 
-    unsigned weight;
-
     unsigned length;
 
-    // These two are useful pre-calculations.  Might be uchar.
-    unsigned lastForward;
+    unsigned weight;
 
-    unsigned reverseSum;
-
-    // TODO Parallel implementation for now.
-    // The tricks are grouped into 5-element groups of 2 bits each.
+    // The tricks are grouped as shown in ResConvert.  This makes
+    // comparisons etc. faster, but costs some time to set up.
     vector<unsigned> signature;
 
+    // Useful pre-calculation.
+    unsigned lastForward;
 
-    const unsigned char sigElem(const unsigned extIndex) const;
 
-    unsigned char& element(
-      vector<unsigned char>& tricks,
-      const unsigned extIndex);
+    const unsigned char lookup(const unsigned extIndex) const;
 
     void weigh(const vector<unsigned char>& cases);
 
@@ -53,12 +47,12 @@ class Tricks
 
     void resize(const unsigned len);
 
-    void set(
+    void setByResults(
       const list<Result>& results,
       const vector<unsigned char>& cases,
       unsigned char& tricksMin);
 
-    bool prepare(
+    bool setByProduct(
       const Product& product,
       const bool symmFlag,
       const vector<Profile>& distProfiles,
@@ -73,12 +67,6 @@ class Tricks
       const vector<unsigned char>& cases,
       Tricks& additions) const;
 
-    unsigned getWeight() const;
-
-    Tricks& operator += (const Tricks& tricks2);
-
-    Tricks& operator -= (const Tricks& tricks2);
-
     Tricks& orNormal(
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
@@ -87,11 +75,17 @@ class Tricks
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
 
+    Tricks& operator += (const Tricks& tricks2);
+
+    Tricks& operator -= (const Tricks& tricks2);
+
     bool operator == (const Tricks& tricks2) const;
 
     bool operator <= (const Tricks& tricks2) const;
 
     unsigned size() const;
+
+    unsigned getWeight() const;
 
     string strList() const;
 

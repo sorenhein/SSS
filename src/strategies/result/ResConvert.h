@@ -32,13 +32,6 @@ class ResConvert
       const unsigned incr,
       list<unsigned>& profiles) const;
 
-    void scrutinizeHalfVector(
-      const vector<unsigned char>& quadTricks,
-      const unsigned firstNumber,
-      const unsigned lastNumber,
-      const unsigned offset,
-      vector<unsigned>& profiles) const;
-
 
   public:
 
@@ -72,11 +65,6 @@ class ResConvert
     void scrutinizeBinary(
       const list<unsigned char>& binaryTricks,
       list<unsigned>& profiles) const;
-
-    void scrutinizeVector(
-      const vector<unsigned char>& quadTricks,
-      const unsigned lastForward,
-      vector<unsigned>& profiles) const;
 
     unsigned char lookup(
       const vector<unsigned>& profiles,

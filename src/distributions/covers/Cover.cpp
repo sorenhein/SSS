@@ -70,7 +70,7 @@ bool Cover::prepare(
 {
   assert(productUnitPtr != nullptr);
 
-  if (! tricks.prepare(
+  if (! tricks.setByProduct(
     productUnitPtr->product, 
     symmFlag,
     distProfiles, 
