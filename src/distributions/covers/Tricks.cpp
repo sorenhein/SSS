@@ -154,17 +154,17 @@ timersStrat[34].start();
   assert(len == cases.size());
   Tricks::resize(len);
 
-  vector<unsigned char> tricks;
-  tricks.resize(len);
-
-  vector<unsigned> sig2;
-  sig2.resize(resConvert.profileSize(len));
+  // vector<unsigned> sig2;
+  // sig2.resize(resConvert.profileSize(len));
 
   weight = 0;
   unsigned char numDist = 0;
 
   if (symmFlag)
   {
+    vector<unsigned char> tricks;
+    tricks.resize(len);
+
     for (unsigned extIndex = 0; extIndex < length; extIndex++)
     {
       if (product.includes(distProfiles[extIndex]) ||
@@ -174,6 +174,8 @@ timersStrat[34].start();
         numDist++;
       }
     }
+
+    resConvert.scrutinizeVector(tricks, lastForward, signature);
   }
   else
   {
@@ -184,56 +186,35 @@ timersStrat[34].start();
 
     for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
     {
-      if (product.includes(distProfiles[extIndex]))
-      {
-        Tricks::element(tricks, extIndex) = 1;
-        numDist++;
-        value = 1;
-      }
-      else
-        value = 0;
+      value = (product.includes(distProfiles[extIndex]) ? 1 : 0);
+      numDist += value;
 
-      resConvert.increment(counter, accum, value, position, sig2[position]);
+      resConvert.increment(counter, accum, value, position, 
+        signature[position]);
     }
 
-    resConvert.finish(counter, accum, position, sig2[position]);
+    resConvert.finish(counter, accum, position, signature[position]);
 
     for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
     {
-      if (product.includes(distProfiles[extIndex]))
-      {
-        Tricks::element(tricks, extIndex) = 1;
-        numDist++;
-        value = 1;
-      }
-      else
-        value = 0;
+      value = (product.includes(distProfiles[extIndex]) ? 1 : 0);
+      numDist += value;
 
-      resConvert.increment(counter, accum, value, position, sig2[position]);
+      resConvert.increment(counter, accum, value, position, 
+        signature[position]);
     }
 
-    resConvert.finish(counter, accum, position, sig2[position]);
-
-    /*
-    for (unsigned extIndex = 0; extIndex < length; extIndex++)
-    {
-      if (product.includes(distProfiles[extIndex]))
-      {
-        Tricks::element(tricks, extIndex) = 1;
-        numDist++;
-      }
-    }
-    */
+    resConvert.finish(counter, accum, position, signature[position]);
   }
 
-  if (numDist == 0 || numDist == tricks.size())
+  if (numDist == 0 || numDist == length)
   {
 timersStrat[34].stop();
     return false;
   }
 
-  resConvert.scrutinizeVector(tricks, lastForward, signature);
 
+  /*
   if (! symmFlag)
   {
     for (unsigned i = 0; i < signature.size(); i++)
@@ -261,6 +242,7 @@ timersStrat[34].stop();
       }
     }
   }
+  */
 
   Tricks::weigh(cases);
 timersStrat[34].stop();
