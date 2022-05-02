@@ -154,28 +154,39 @@ timersStrat[34].start();
   assert(len == cases.size());
   Tricks::resize(len);
 
-  // vector<unsigned> sig2;
-  // sig2.resize(resConvert.profileSize(len));
-
-  weight = 0;
+  // weight = 0;
   unsigned char numDist = 0;
 
   if (symmFlag)
   {
-    vector<unsigned char> tricks;
-    tricks.resize(len);
+    unsigned counter = 0;
+    unsigned accum = 0;
+    unsigned char value;
+    unsigned position = 0;
 
-    for (unsigned extIndex = 0; extIndex < length; extIndex++)
+    for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
     {
-      if (product.includes(distProfiles[extIndex]) ||
-          product.includes(distProfiles[len-1-extIndex]))
-      {
-        Tricks::element(tricks, extIndex) = 1;
-        numDist++;
-      }
+      value = (product.includes(distProfiles[extIndex]) ||
+               product.includes(distProfiles[len-1-extIndex]) ? 1 : 0);
+      numDist += value;
+
+      resConvert.increment(counter, accum, value, position, 
+        signature[position]);
     }
 
-    resConvert.scrutinizeVector(tricks, lastForward, signature);
+    resConvert.finish(counter, accum, position, signature[position]);
+
+    for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
+    {
+      value = (product.includes(distProfiles[extIndex]) ||
+               product.includes(distProfiles[len-1-extIndex]) ? 1 : 0);
+      numDist += value;
+
+      resConvert.increment(counter, accum, value, position, 
+        signature[position]);
+    }
+
+    resConvert.finish(counter, accum, position, signature[position]);
   }
   else
   {
