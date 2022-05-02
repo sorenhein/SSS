@@ -1,3 +1,6 @@
+Is ResConvert::increment actually correct, or do we get too few
+per group?!
+
 Cover specifics
 ---------------
 Depressingly, Tricks has just gotten slower, especially the setup,

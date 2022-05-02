@@ -157,6 +157,9 @@ timersStrat[34].start();
   vector<unsigned char> tricks;
   tricks.resize(len);
 
+  vector<unsigned> sig2;
+  sig2.resize(resConvert.profileSize(len));
+
   weight = 0;
   unsigned char numDist = 0;
 
@@ -174,6 +177,44 @@ timersStrat[34].start();
   }
   else
   {
+    unsigned counter = 0;
+    unsigned accum = 0;
+    unsigned char value;
+    unsigned position = 0;
+
+    for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
+    {
+      if (product.includes(distProfiles[extIndex]))
+      {
+        Tricks::element(tricks, extIndex) = 1;
+        numDist++;
+        value = 1;
+      }
+      else
+        value = 0;
+
+      resConvert.increment(counter, accum, value, position, sig2[position]);
+    }
+
+    resConvert.finish(counter, accum, position, sig2[position]);
+
+    for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
+    {
+      if (product.includes(distProfiles[extIndex]))
+      {
+        Tricks::element(tricks, extIndex) = 1;
+        numDist++;
+        value = 1;
+      }
+      else
+        value = 0;
+
+      resConvert.increment(counter, accum, value, position, sig2[position]);
+    }
+
+    resConvert.finish(counter, accum, position, sig2[position]);
+
+    /*
     for (unsigned extIndex = 0; extIndex < length; extIndex++)
     {
       if (product.includes(distProfiles[extIndex]))
@@ -182,6 +223,7 @@ timersStrat[34].start();
         numDist++;
       }
     }
+    */
   }
 
   if (numDist == 0 || numDist == tricks.size())
@@ -191,6 +233,34 @@ timersStrat[34].stop();
   }
 
   resConvert.scrutinizeVector(tricks, lastForward, signature);
+
+  if (! symmFlag)
+  {
+    for (unsigned i = 0; i < signature.size(); i++)
+    {
+      if (signature[i] != sig2[i])
+      {
+        cout << "Tricks as stored\n";
+        for (unsigned j = 0; j < tricks.size(); j++)
+          cout << setw(2) << j <<
+            setw(4) << +tricks[j] << "\n";
+        cout << "\n";
+
+        cout << Tricks::strShort() << "\n";
+
+        cout << "sigs\n";
+        for (unsigned j = 0; j < signature.size(); j++)
+        {
+          cout << setw(2) << j <<
+            setw(4) << signature[j] <<
+            setw(4) << sig2[j] << "\n";
+        }
+        cout << endl;
+
+        assert(signature[i] == sig2[i]);
+      }
+    }
+  }
 
   Tricks::weigh(cases);
 timersStrat[34].stop();

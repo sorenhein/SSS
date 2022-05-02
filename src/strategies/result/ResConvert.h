@@ -46,6 +46,19 @@ class ResConvert
 
     unsigned profileSize(const unsigned len) const;
 
+    void increment(
+      unsigned& counter,
+      unsigned& accum,
+      const unsigned char value,
+      unsigned& position,
+      unsigned& result) const;
+
+    void finish(
+      unsigned& counter,
+      unsigned& accum,
+      unsigned& position,
+      unsigned& result) const;
+
     void scrutinizeRange(
       const list<Result>& results,
       const Ranges& ranges,

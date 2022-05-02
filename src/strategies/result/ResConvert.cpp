@@ -95,6 +95,43 @@ void ResConvert::increment(
 }
 
 
+void ResConvert::increment(
+  unsigned& counter,
+  unsigned& accum,
+  const unsigned char value,
+  unsigned& position,
+  unsigned& result) const
+{
+  // result will typically be some vector[position].
+  accum = (accum << 2) | value;
+  counter++;
+
+  if (counter == LOOKUP_GROUP)
+  {
+    result = accum;
+    counter = 0;
+    accum = 0;
+    position++;
+  }
+}
+
+
+void ResConvert::finish(
+  unsigned& counter,
+  unsigned& accum,
+  unsigned& position,
+  unsigned& result) const
+{
+  if (counter == 0)
+    return;
+
+  result = accum << 2 * (LOOKUP_GROUP - counter);
+  counter = 0;
+  accum = 0;
+  position++;
+}
+
+
 void ResConvert::scrutinizeRange(
   const list<Result>& results,
   const Ranges& ranges,
