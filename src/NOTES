@@ -1,11 +1,6 @@
 Is ResConvert::increment actually correct, or do we get too few
 per group?!
 
-Trick compression
------------------
-setByProduct is pretty ugly.
-Find some syntactic sugar, and then Tricks are done.
-
 Cover stats
 -----------
 ProductStats output the table by depth (#tops used) across horizontally.

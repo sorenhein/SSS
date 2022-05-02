@@ -40,6 +40,12 @@ class Tricks
 
     void weigh(const vector<unsigned char>& cases);
 
+    unsigned char productValue(
+      const Product& product,
+      const bool symmFlag,
+      const vector<Profile>& distProfiles,
+      const unsigned extIndex) const;
+
   
   public:
 

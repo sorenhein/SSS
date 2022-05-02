@@ -120,7 +120,7 @@ void Tricks::setByResults(
   }
   resConvert.finish(counter, accum, position, signature[position]);
 
-  // The backward half including the middle element if any.
+  // The backward half excluding the middle element.
   riter = prev(results.end());
   for (unsigned extIndex = length-1; extIndex > lastForward; 
       extIndex--, riter--)
@@ -138,6 +138,26 @@ void Tricks::setByResults(
 }
 
 
+unsigned char Tricks::productValue(
+  const Product& product,
+  const bool symmFlag,
+  const vector<Profile>& distProfiles,
+  const unsigned extIndex) const
+{
+  // It is slightly wasteful to test symmFlag every time, but it
+  // cuts down on the code below.
+  if (symmFlag)
+  {
+    return (product.includes(distProfiles[extIndex]) ||
+      product.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
+  }
+  else
+  {
+    return (product.includes(distProfiles[extIndex]) ? 1 : 0);
+  }
+}
+
+
 bool Tricks::setByProduct(
   const Product& product,
   const bool symmFlag,
@@ -146,7 +166,6 @@ bool Tricks::setByProduct(
 {
   // This is the only Tricks method that takes appreciable time,
   // and this is probably due to product.includes().
-timersStrat[43].start();
   assert(distProfiles.size() == cases.size());
   Tricks::resize(cases.size());
 
@@ -156,65 +175,34 @@ timersStrat[43].start();
   unsigned position = 0;
   unsigned char numDist = 0;
 
-  if (symmFlag)
+  // The forward half including the middle element if any.
+  for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
   {
-    for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
-    {
-      value = (product.includes(distProfiles[extIndex]) ||
-               product.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
-      numDist += value;
+    value = Tricks::productValue(product, symmFlag, 
+      distProfiles, extIndex);
+    numDist += value;
 
-      resConvert.increment(counter, accum, value, position, 
-        signature[position]);
-    }
-
-    resConvert.finish(counter, accum, position, signature[position]);
-
-    for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
-    {
-      value = (product.includes(distProfiles[extIndex]) ||
-               product.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
-      numDist += value;
-
-      resConvert.increment(counter, accum, value, position, 
-        signature[position]);
-    }
-
-    resConvert.finish(counter, accum, position, signature[position]);
+    resConvert.increment(counter, accum, value, position, 
+      signature[position]);
   }
-  else
+  resConvert.finish(counter, accum, position, signature[position]);
+
+  // The backward half excluding the middle element.
+  for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
   {
-    for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
-    {
-      value = (product.includes(distProfiles[extIndex]) ? 1 : 0);
-      numDist += value;
+    value = Tricks::productValue(product, symmFlag, 
+      distProfiles, extIndex);
+    numDist += value;
 
-      resConvert.increment(counter, accum, value, position, 
-        signature[position]);
-    }
-
-    resConvert.finish(counter, accum, position, signature[position]);
-
-    for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
-    {
-      value = (product.includes(distProfiles[extIndex]) ? 1 : 0);
-      numDist += value;
-
-      resConvert.increment(counter, accum, value, position, 
-        signature[position]);
-    }
-
-    resConvert.finish(counter, accum, position, signature[position]);
+    resConvert.increment(counter, accum, value, position, 
+      signature[position]);
   }
+  resConvert.finish(counter, accum, position, signature[position]);
 
   if (numDist == 0 || numDist == length)
-  {
-timersStrat[43].stop();
     return false;
-  }
 
   Tricks::weigh(cases);
-timersStrat[43].stop();
   return true;
 }
 
