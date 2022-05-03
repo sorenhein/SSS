@@ -12,6 +12,15 @@
 using namespace std;
 
 
+void FactoredProduct::set(
+  Product const * ptr,
+  const unsigned char shift)
+{
+  canonicalPtr = ptr;
+  canonicalShift = shift;
+}
+
+
 unsigned long long FactoredProduct::code() const
 {
   return canonicalPtr->code();

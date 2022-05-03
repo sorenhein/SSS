@@ -397,12 +397,7 @@ distributions/covers/CoverStore.obj: distributions/covers/product/Product.h
 distributions/covers/CoverStore.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/CoverStore.obj: utils/table.h
 distributions/covers/Tricks.obj: distributions/covers/Tricks.h
-distributions/covers/Tricks.obj: distributions/covers/product/Product.h
-distributions/covers/Tricks.obj: distributions/covers/term/Length.h
-distributions/covers/Tricks.obj: distributions/covers/term/Term.h
-distributions/covers/Tricks.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/Tricks.obj: utils/table.h
-distributions/covers/Tricks.obj: distributions/covers/term/Top.h
+distributions/covers/Tricks.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/Tricks.obj: distributions/covers/product/Profile.h
 distributions/covers/Tricks.obj: strategies/result/Result.h
 distributions/covers/Tricks.obj: strategies/result/Winners.h
@@ -472,6 +467,7 @@ distributions/covers/product/ProductMemory.obj: distributions/covers/product/Pro
 distributions/covers/product/ProductStats.obj: distributions/covers/product/ProductStats.h
 distributions/covers/product/ProductStats.obj: distributions/covers/product/Profile.h
 distributions/covers/product/ProductStats.obj: distributions/covers/product/Product.h
+distributions/covers/product/ProductStats.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/term/Term.obj: distributions/covers/term/Term.h
 distributions/covers/term/Term.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/term/Term.obj: utils/table.h

@@ -20,11 +20,15 @@ using namespace std;
 
 struct FactoredProduct
 {
-  Product * canonicalPtr;
+  Product const * canonicalPtr;
 
   // Number of unused tops that are elided.
   unsigned char canonicalShift;
 
+
+  void set(
+    Product const * ptr,
+    const unsigned char shift);
 
   unsigned long long code() const;
 
