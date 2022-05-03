@@ -277,6 +277,23 @@ unsigned long long ProfilePair::getCode(const Profile& sumProfile) const
 }
 
 
+unsigned long long ProfilePair::getCanonicalCode(
+  const unsigned long long code,
+  const unsigned canonicalShift) const
+{
+  const unsigned long long upperLength = code & 0xf000'0000'0000'0000;
+  const unsigned long long upperTops   = code & 0x0fff'ffff'0000'0000;
+  const unsigned long long lowerLength = code & 0x0000'0000'f000'0000;
+  const unsigned long long lowerTops   = code & 0x0000'0000'0fff'ffff;
+
+  return
+    upperLength |
+    ((upperTops >> 4*canonicalShift) & 0xffff'ffff'0000'0000) |
+    lowerLength |
+    ((lowerTops >> 4*canonicalShift) & 0x0000'0000'ffff'ffff);
+}
+
+
 string ProfilePair::strLines() const
 {
   return lowerProfile.strLine() + upperProfile.strLine();

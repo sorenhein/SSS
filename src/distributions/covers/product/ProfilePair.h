@@ -91,6 +91,10 @@ class ProfilePair
 
     unsigned long long getCode(const Profile& sumProfile) const;
 
+    unsigned long long getCanonicalCode(
+      const unsigned long long code,
+      const unsigned canonicalShift) const;
+
     string strLines() const;
 };
 

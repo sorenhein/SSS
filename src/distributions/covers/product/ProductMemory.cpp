@@ -49,6 +49,7 @@ ProductUnit * ProductMemory::enterOrLookup(
 
   if (it == memory[numTops].end())
   {
+    // Enter a new element.
     ProductUnit& productUnit = memory[numTops][code] = ProductUnit();
 
     productUnit.product.resize(numTops);
@@ -65,6 +66,7 @@ ProductUnit * ProductMemory::enterOrLookup(
   }
   else
   {
+    // Look up an existing element.
     ProductUnit& productUnit = it->second;
     productUnit.numCovers++;
 

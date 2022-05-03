@@ -148,6 +148,18 @@ bool Product::symmetrizable(const Profile& sumProfile) const
 }
 
 
+bool Product::canonical() const
+{
+  return (static_cast<unsigned>(activeCount + 1) == tops.size());
+}
+
+
+unsigned Product::getCanonicalShift() const
+{
+  return tops.size() - activeCount - 1;
+}
+
+
 unsigned char Product::getComplexity() const
 {
   return complexity;

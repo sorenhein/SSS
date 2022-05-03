@@ -64,6 +64,8 @@ class Product
 
     bool symmetrizable(const Profile& sumProfile) const;
 
+    bool canonical() const;
+
     unsigned char getComplexity() const;
 
     unsigned long long code() const;
@@ -71,6 +73,8 @@ class Product
     unsigned char size() const;
 
     unsigned char effectiveDepth() const;
+
+    unsigned getCanonicalShift() const;
 
     bool explainable() const;
 

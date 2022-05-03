@@ -29,6 +29,11 @@ struct ProductUnit
 {
   Product product;
 
+  Product * canonicalPtr;
+
+  // Number of unused tops that are elided.
+  unsigned canonicalShift;
+
   unsigned numCovers;
   unsigned numTableaux;
   unsigned numUses;

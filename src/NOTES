@@ -1,5 +1,4 @@
-Is ResConvert::increment actually correct, or do we get too few
-per group?!
+The various TODO's in the covers and sub-directories.
 
 Cover stats
 -----------
@@ -21,9 +20,7 @@ as this reduces the number of covers to consider.
 
 Speed
 -----
-Delete the old symmetrics and manuals.
-
-The various TODO's in the covers and sub-directories.
+Disable the old symmetrics and manuals.
 
 Names of cards
 --------------
@@ -47,10 +44,6 @@ Verbals of strategy wins
   - As text, maybe mainly actual combinations (Hx, HHx, ...)
   - In a table (as Unicode text, HTML, ...)
   
-* Store and calculate in the compressed format of Study?  Can we
-  even subtract stuff directly in that domain?
-
-
 2022-01-15
 ==========
 Optimizations to give up or postpone:
@@ -464,4 +457,7 @@ Bugs
 ----
 Why doesn't it work in Combination to make complete copies of
 everything?  It must be some stray pointers, but where?
+
+Is ResConvert::increment actually correct, or do we get too few
+per group?!
 
