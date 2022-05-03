@@ -84,7 +84,7 @@ void Product::set(
   // correction is not a good idea?
   if (length.used() && 
       complexity > 3 &&
-      activeCount+1 == static_cast<unsigned char>(topLowSize) &&
+      // activeCount+1 == static_cast<unsigned char>(topLowSize) &&
       lowerProfile == upperProfile)
   {
     complexity = 3;

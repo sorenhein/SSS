@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include <vector>
+#include <list>
 #include <map>
 #include <string>
 
@@ -70,7 +71,9 @@ class ProductMemory
       };
     };
 
-    vector<map<unsigned long long, FactoredProduct>> memory;
+    vector<map<unsigned long long, FactoredProduct>> factoredMemory;
+
+    list<Product> productMemory;
 
     vector<EnterStat> enterStats;
 

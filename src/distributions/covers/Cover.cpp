@@ -72,7 +72,7 @@ bool Cover::prepare(
   assert(factoredProductPtr != nullptr);
 
   if (! tricks.setByProduct(
-    factoredProductPtr->product, 
+    * factoredProductPtr->noncanonicalPtr, 
     symmFlag,
     distProfiles, 
     cases))
@@ -80,7 +80,9 @@ bool Cover::prepare(
     return false;
   }
   
-  mcpw = (factoredProductPtr->product.getComplexity() << 20) / tricks.getWeight();
+  // mcpw = (factoredProductPtr->noncanonicalPtr->getComplexity() << 20) / 
+  mcpw = (factoredProductPtr->getComplexity() << 20) / 
+      tricks.getWeight();
   return true;
 }
 
@@ -90,7 +92,7 @@ bool Cover::symmetrizable(const Profile& sumProfile) const
   // We consider the product terms in the order (length, highest top,
   // next top, ...).
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->product.symmetrizable(sumProfile);
+  return factoredProductPtr->noncanonicalPtr->symmetrizable(sumProfile);
 }
 
 
@@ -152,7 +154,8 @@ void Cover::updateStats(
   const bool newTableauFlag) const
 {
   assert(factoredProductPtr != nullptr);
-  productStats.store(factoredProductPtr->product, sumProfile, newTableauFlag);
+  productStats.store(* factoredProductPtr->noncanonicalPtr, 
+    sumProfile, newTableauFlag);
 }
 
 
@@ -190,8 +193,8 @@ bool Cover::operator < (const Cover& cover2) const
 
   assert(factoredProductPtr != nullptr);
   assert(cover2.factoredProductPtr != nullptr);
-  const Product& p1 = factoredProductPtr->product;
-  const Product& p2 = cover2.factoredProductPtr->product;
+  const Product& p1 = * factoredProductPtr->noncanonicalPtr;
+  const Product& p2 = * cover2.factoredProductPtr->noncanonicalPtr;
 
   if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
@@ -216,7 +219,7 @@ const Tricks& Cover::getTricks() const
 unsigned char Cover::effectiveDepth() const
 {
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->product.effectiveDepth();
+  return factoredProductPtr->noncanonicalPtr->effectiveDepth();
 }
 
 
@@ -229,7 +232,7 @@ unsigned Cover::getWeight() const
 unsigned char Cover::getComplexity() const
 {
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->product.getComplexity();
+  return factoredProductPtr->noncanonicalPtr->getComplexity();
 }
 
 
@@ -248,7 +251,7 @@ string Cover::strHeader() const
   assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << factoredProductPtr->product.strHeader() <<
+  ss << factoredProductPtr->noncanonicalPtr->strHeader() <<
     setw(4) << "Wgt" <<
     setw(4) << "Cpx" <<
     setw(10) << "cpw" <<
@@ -266,11 +269,11 @@ string Cover::strLine() const
   assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << factoredProductPtr->product.strLine() <<
+  ss << factoredProductPtr->noncanonicalPtr->strLine() <<
     setw(4) << tricks.getWeight() <<
-    setw(4) << +factoredProductPtr->product.getComplexity() <<
+    setw(4) << +factoredProductPtr->noncanonicalPtr->getComplexity() <<
     setw(10) << mcpw <<
-    setw(4) << +factoredProductPtr->product.effectiveDepth() <<
+    setw(4) << +factoredProductPtr->noncanonicalPtr->effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";
@@ -307,13 +310,14 @@ string Cover::strTricksShort() const
 string Cover::str(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
-  const Product& product = factoredProductPtr->product;
+  const Product& product = * factoredProductPtr->noncanonicalPtr;
 
   if (product.explainable())
   {
     stringstream ss;
 
-    Opponent simplestOpponent = product.simplestOpponent(sumProfile);
+    Opponent simplestOpponent = 
+      product.simplestOpponent(sumProfile);
     ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
     ss << " [" << tricks.getWeight() << "]";
 

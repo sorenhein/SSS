@@ -22,24 +22,25 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverStore.cpp \
                 distributions/covers/Tricks.cpp    \
                 distributions/covers/CoverRow.cpp \
-                                                                \
-                distributions/covers/manual/Manual.cpp          \
-                                                                \
-                distributions/covers/tableau/CoverTableau.cpp   \
-                distributions/covers/tableau/TableauCache.cpp   \
-                                                                \
-                distributions/covers/product/Profile.cpp        \
-                distributions/covers/product/ProfilePair.cpp    \
-                distributions/covers/product/Product.cpp        \
-                distributions/covers/product/ProductMemory.cpp  \
-                distributions/covers/product/ProductStats.cpp   \
-                                                                \
-                distributions/covers/term/Term.cpp              \
-                distributions/covers/term/Length.cpp            \
-                distributions/covers/term/Top.cpp               \
-                distributions/covers/term/Xes.cpp               \
-                distributions/covers/term/TermCompare.cpp       \
-                                                                \
+                                                                 \
+                distributions/covers/manual/Manual.cpp           \
+                                                                 \
+                distributions/covers/tableau/CoverTableau.cpp    \
+                distributions/covers/tableau/TableauCache.cpp    \
+                                                                 \
+                distributions/covers/product/Profile.cpp         \
+                distributions/covers/product/ProfilePair.cpp     \
+                distributions/covers/product/Product.cpp         \
+                distributions/covers/product/FactoredProduct.cpp \
+                distributions/covers/product/ProductMemory.cpp   \
+                distributions/covers/product/ProductStats.cpp    \
+                                                                 \
+                distributions/covers/term/Term.cpp               \
+                distributions/covers/term/Length.cpp             \
+                distributions/covers/term/Top.cpp                \
+                distributions/covers/term/Xes.cpp                \
+                distributions/covers/term/TermCompare.cpp        \
+                                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \
                 inputs/Entity.cpp               \

@@ -25,14 +25,15 @@ ProductMemory::ProductMemory()
 
 void ProductMemory::reset()
 {
-  memory.clear();
+  factoredMemory.clear();
+  productMemory.clear();
   enterStats.clear();
 }
 
 
 void ProductMemory::resize(const unsigned char memSize)
 {
-  memory.resize(memSize);
+  factoredMemory.resize(memSize);
   enterStats.resize(memSize);
 }
 
@@ -42,37 +43,46 @@ FactoredProduct * ProductMemory::enterOrLookup(
   const ProfilePair& profilePair)
 {
   const unsigned numTops = sumProfile.size();
-  assert(numTops < memory.size());
+  assert(numTops < factoredMemory.size());
 
   unsigned long long code = profilePair.getCode(sumProfile);
-  auto it = memory[numTops].find(code);
+  auto it = factoredMemory[numTops].find(code);
 
-  if (it == memory[numTops].end())
+  if (it == factoredMemory[numTops].end())
   {
-    // Enter a new element.
-    FactoredProduct& factoredProduct = 
-      memory[numTops][code] = FactoredProduct();
+    // Enter a new product.
+    productMemory.emplace_back(Product());
+    Product& product = productMemory.back();
+    product.resize(numTops);
+    profilePair.setProduct(product, sumProfile, code);
 
-    factoredProduct.product.resize(numTops);
-    profilePair.setProduct(factoredProduct.product, sumProfile, code);
-    
+    // Enter a new factored product.
+    FactoredProduct& factoredProduct = 
+      factoredMemory[numTops][code] = FactoredProduct();
+
+    factoredProduct.noncanonicalPtr = &product;
+
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
     // TODO Make this cleaner -- perhaps an own method or
     // a recursive call.
-    if (! factoredProduct.product.canonical())
+    if (product.canonical())
     {
-      factoredProduct.canonicalShift = 
-        factoredProduct.product.getCanonicalShift();
+      factoredProduct.canonicalPtr = factoredProduct.noncanonicalPtr;
+      factoredProduct.canonicalShift = 0;
+    }
+    else
+    {
+      factoredProduct.canonicalShift = product.getCanonicalShift();
       const unsigned long long canonicalCode =
         profilePair.getCanonicalCode(code, factoredProduct.canonicalShift);
 
       const unsigned canonTops = numTops - factoredProduct.canonicalShift;
-      auto canonIt = memory[canonTops].find(canonicalCode);
-      assert(canonIt != memory[canonTops].end());
+      auto canonIt = factoredMemory[canonTops].find(canonicalCode);
+      assert(canonIt != factoredMemory[canonTops].end());
 
-      factoredProduct.canonicalPtr = &canonIt->second.product;
+      factoredProduct.canonicalPtr = canonIt->second.canonicalPtr;
     }
 
     return &factoredProduct;
@@ -94,7 +104,7 @@ FactoredProduct const * ProductMemory::lookupByTop(
   const ProfilePair& profilePair) const
 {
   const unsigned numTops = sumProfile.size();
-  assert(numTops < memory.size());
+  assert(numTops < factoredMemory.size());
 
   // profilePair only has the highest top set (perhaps).
   // In order to look up the pair, we have to fill out the other tops
@@ -104,12 +114,12 @@ FactoredProduct const * ProductMemory::lookupByTop(
     pairCopy.setTop(i, 0, sumProfile[i]);
 
   unsigned long long code = pairCopy.getCode(sumProfile);
-  auto it = memory[numTops].find(code);
-if (it == memory[numTops].end())
+  auto it = factoredMemory[numTops].find(code);
+if (it == factoredMemory[numTops].end())
 {
 cout << "lookup pair:\n" << profilePair.strLines();
 cout << "sumProfile " << sumProfile.strLine();
-  assert(it != memory[numTops].end());
+  assert(it != factoredMemory[numTops].end());
 }
 
   // Don't count these.

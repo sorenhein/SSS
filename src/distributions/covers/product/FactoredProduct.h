@@ -9,19 +9,24 @@
 #ifndef SSS_FACTOREDPRODUCT_H
 #define SSS_FACTOREDPRODUCT_H
 
-#include "Product.h"
+#include <cassert>
+
+class Product;
 
 using namespace std;
 
 
 struct FactoredProduct
 {
-  Product product;
+  Product * noncanonicalPtr;
 
   Product * canonicalPtr;
 
   // Number of unused tops that are elided.
   unsigned canonicalShift;
+
+
+  unsigned char getComplexity() const;
 };
 
 #endif
