@@ -88,16 +88,19 @@ void Product::set(
 
 
 
-bool Product::includes(const Profile& distProfile) const
+bool Product::includes(
+  const Profile& distProfile,
+  const unsigned char canonicalShift) const
 {
   if (length.used() && ! length.includes(distProfile.length()))
     return false;
 
-  assert(distProfile.size() == tops.size());
+  assert(tops.size() + canonicalShift == distProfile.size());
 
-  for (unsigned char i = 0; i < distProfile.size(); i++)
+  for (unsigned char i = 0; i < tops.size(); i++)
   {
-    if (tops[i].used() && ! tops[i].includes(distProfile[i]))
+    if (tops[i].used() && ! tops[i].includes(
+        distProfile[i + canonicalShift]))
       return false;
   }
 

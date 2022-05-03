@@ -72,7 +72,8 @@ bool Cover::prepare(
   assert(factoredProductPtr != nullptr);
 
   if (! tricks.setByProduct(
-    * factoredProductPtr->noncanonicalPtr, 
+    * factoredProductPtr,
+    // * factoredProductPtr->noncanonicalPtr, 
     symmFlag,
     distProfiles, 
     cases))
@@ -303,17 +304,18 @@ string Cover::strTricksShort() const
 string Cover::str(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
-  const Product& product = * factoredProductPtr->noncanonicalPtr;
+  // const Product& product = * factoredProductPtr->noncanonicalPtr;
 
-  // if (product.explainable())
   if (factoredProductPtr->explainable())
   {
     stringstream ss;
 
     Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
-      // product.simplestOpponent(sumProfile);
-    ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
+
+    ss << factoredProductPtr->strVerbal(
+      sumProfile, simplestOpponent, symmFlag);
+
     ss << " [" << tricks.getWeight() << "]";
 
     return ss.str();

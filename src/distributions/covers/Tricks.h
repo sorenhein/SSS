@@ -15,6 +15,7 @@
 
 using namespace std;
 
+struct FactoredProduct;
 class Product;
 class Profile;
 class Result;
@@ -41,7 +42,7 @@ class Tricks
     void weigh(const vector<unsigned char>& cases);
 
     unsigned char productValue(
-      const Product& product,
+      const FactoredProduct& factoredProduct,
       const bool symmFlag,
       const vector<Profile>& distProfiles,
       const unsigned extIndex) const;
@@ -59,7 +60,7 @@ class Tricks
       unsigned char& tricksMin);
 
     bool setByProduct(
-      const Product& product,
+      const FactoredProduct& factoredProduct,
       const bool symmFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);

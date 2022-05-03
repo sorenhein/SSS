@@ -17,6 +17,14 @@
 using namespace std;
 
 
+bool FactoredProduct::includes(const Profile& distProfile) const
+{
+  const bool b = noncanonicalPtr->includes(distProfile);
+  // assert(b == canonicalPtr->includes(distProfile, canonicalShift));
+  return b;
+}
+
+
 bool FactoredProduct::symmetrizable(const Profile& sumProfile) const
 {
   const bool b = noncanonicalPtr->symmetrizable(sumProfile);
@@ -74,7 +82,11 @@ string FactoredProduct::strVerbal(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  return noncanonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
+  const string s =
+    noncanonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
+  // assert(s == canonicalPtr->strVerbal(sumProfile, simplestOpponent,
+    // symmFlag));
+  return s;
 }
 
 

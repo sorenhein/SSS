@@ -60,7 +60,9 @@ class Product
       const Profile& upperProfile,
       const unsigned long long code);
 
-    bool includes(const Profile& distProfile) const;
+    bool includes(
+      const Profile& distProfile,
+      const unsigned char canonicalShift = 0) const;
 
     bool symmetrizable(
       const Profile& sumProfile,

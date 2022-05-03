@@ -28,6 +28,8 @@ struct FactoredProduct
   unsigned char canonicalShift;
 
 
+  bool includes(const Profile& distProfile) const;
+
   bool symmetrizable(const Profile& sumProfile) const;
 
   unsigned char getComplexity() const;

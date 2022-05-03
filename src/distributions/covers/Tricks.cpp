@@ -14,7 +14,8 @@
 
 #include "Tricks.h"
 
-#include "product/Product.h"
+#include "product/FactoredProduct.h"
+// #include "product/Product.h"
 #include "product/Profile.h"
 
 #include "../../strategies/result/Result.h"
@@ -139,7 +140,7 @@ void Tricks::setByResults(
 
 
 unsigned char Tricks::productValue(
-  const Product& product,
+  const FactoredProduct& factoredProduct,
   const bool symmFlag,
   const vector<Profile>& distProfiles,
   const unsigned extIndex) const
@@ -148,18 +149,18 @@ unsigned char Tricks::productValue(
   // cuts down on the code below.
   if (symmFlag)
   {
-    return (product.includes(distProfiles[extIndex]) ||
-      product.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
+    return (factoredProduct.includes(distProfiles[extIndex]) ||
+      factoredProduct.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
   }
   else
   {
-    return (product.includes(distProfiles[extIndex]) ? 1 : 0);
+    return (factoredProduct.includes(distProfiles[extIndex]) ? 1 : 0);
   }
 }
 
 
 bool Tricks::setByProduct(
-  const Product& product,
+  const FactoredProduct& factoredProduct,
   const bool symmFlag,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
@@ -178,7 +179,7 @@ bool Tricks::setByProduct(
   // The forward half including the middle element if any.
   for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
   {
-    value = Tricks::productValue(product, symmFlag, 
+    value = Tricks::productValue(factoredProduct, symmFlag, 
       distProfiles, extIndex);
     numDist += value;
 
@@ -190,7 +191,7 @@ bool Tricks::setByProduct(
   // The backward half excluding the middle element.
   for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
   {
-    value = Tricks::productValue(product, symmFlag, 
+    value = Tricks::productValue(factoredProduct, symmFlag, 
       distProfiles, extIndex);
     numDist += value;
 
