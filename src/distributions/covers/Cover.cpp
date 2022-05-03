@@ -26,7 +26,7 @@ Cover::Cover()
 
 void Cover::reset()
 {
-  productUnitPtr = nullptr;
+  factoredProductPtr = nullptr;
   tricks.clear();
   mcpw = 0;
   symmFlag = false;
@@ -42,7 +42,7 @@ void Cover::set(
 {
   // The product may or may not already be in memory.
   // This is used when setting a row algorithmically.
-  productUnitPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+  factoredProductPtr = productMemory.enterOrLookup(sumProfile, profilePair);
 
   symmFlag = symmFlagIn;
 
@@ -58,7 +58,7 @@ void Cover::setExisting(
 {
   // The product must already be in memory.
   // This is used when pre-setting a row manually.
-  productUnitPtr = productMemory.lookupByTop(sumProfile, profilePair);
+  factoredProductPtr = productMemory.lookupByTop(sumProfile, profilePair);
   code = profilePair.getCode(sumProfile);
   symmFlag = symmFlagIn;
 }
@@ -69,10 +69,10 @@ bool Cover::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
-  assert(productUnitPtr != nullptr);
+  assert(factoredProductPtr != nullptr);
 
   if (! tricks.setByProduct(
-    productUnitPtr->product, 
+    factoredProductPtr->product, 
     symmFlag,
     distProfiles, 
     cases))
@@ -80,7 +80,7 @@ bool Cover::prepare(
     return false;
   }
   
-  mcpw = (productUnitPtr->product.getComplexity() << 20) / tricks.getWeight();
+  mcpw = (factoredProductPtr->product.getComplexity() << 20) / tricks.getWeight();
   return true;
 }
 
@@ -89,8 +89,8 @@ bool Cover::symmetrizable(const Profile& sumProfile) const
 {
   // We consider the product terms in the order (length, highest top,
   // next top, ...).
-  assert(productUnitPtr != nullptr);
-  return productUnitPtr->product.symmetrizable(sumProfile);
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->product.symmetrizable(sumProfile);
 }
 
 
@@ -151,8 +151,8 @@ void Cover::updateStats(
   const Profile& sumProfile,
   const bool newTableauFlag) const
 {
-  assert(productUnitPtr != nullptr);
-  productStats.store(productUnitPtr->product, sumProfile, newTableauFlag);
+  assert(factoredProductPtr != nullptr);
+  productStats.store(factoredProductPtr->product, sumProfile, newTableauFlag);
 }
 
 
@@ -188,10 +188,10 @@ bool Cover::operator < (const Cover& cover2) const
   else if (mcpw > cover2.mcpw)
     return false;
 
-  assert(productUnitPtr != nullptr);
-  assert(cover2.productUnitPtr != nullptr);
-  const Product& p1 = productUnitPtr->product;
-  const Product& p2 = cover2.productUnitPtr->product;
+  assert(factoredProductPtr != nullptr);
+  assert(cover2.factoredProductPtr != nullptr);
+  const Product& p1 = factoredProductPtr->product;
+  const Product& p2 = cover2.factoredProductPtr->product;
 
   if (p1.effectiveDepth() < p2.effectiveDepth())
     // Simpler ones first
@@ -215,8 +215,8 @@ const Tricks& Cover::getTricks() const
 
 unsigned char Cover::effectiveDepth() const
 {
-  assert(productUnitPtr != nullptr);
-  return productUnitPtr->product.effectiveDepth();
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->product.effectiveDepth();
 }
 
 
@@ -228,8 +228,8 @@ unsigned Cover::getWeight() const
 
 unsigned char Cover::getComplexity() const
 {
-  assert(productUnitPtr != nullptr);
-  return productUnitPtr->product.getComplexity();
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->product.getComplexity();
 }
 
 
@@ -245,10 +245,10 @@ unsigned char Cover::minComplexityAdder(const unsigned resWeight) const
 
 string Cover::strHeader() const
 {
-  assert(productUnitPtr != nullptr);
+  assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << productUnitPtr->product.strHeader() <<
+  ss << factoredProductPtr->product.strHeader() <<
     setw(4) << "Wgt" <<
     setw(4) << "Cpx" <<
     setw(10) << "cpw" <<
@@ -263,14 +263,14 @@ string Cover::strHeader() const
 
 string Cover::strLine() const
 {
-  assert(productUnitPtr != nullptr);
+  assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << productUnitPtr->product.strLine() <<
+  ss << factoredProductPtr->product.strLine() <<
     setw(4) << tricks.getWeight() <<
-    setw(4) << +productUnitPtr->product.getComplexity() <<
+    setw(4) << +factoredProductPtr->product.getComplexity() <<
     setw(10) << mcpw <<
-    setw(4) << +productUnitPtr->product.effectiveDepth() <<
+    setw(4) << +factoredProductPtr->product.effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";
@@ -306,8 +306,8 @@ string Cover::strTricksShort() const
 
 string Cover::str(const Profile& sumProfile) const
 {
-  assert(productUnitPtr != nullptr);
-  const Product& product = productUnitPtr->product;
+  assert(factoredProductPtr != nullptr);
+  const Product& product = factoredProductPtr->product;
 
   if (product.explainable())
   {

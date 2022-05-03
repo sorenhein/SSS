@@ -29,7 +29,7 @@ class Cover
 {
   private:
 
-    ProductUnit const * productUnitPtr;
+    FactoredProduct const * factoredProductPtr;
 
     Tricks tricks;
 

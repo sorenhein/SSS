@@ -18,26 +18,12 @@
 #include <string>
 
 #include "Product.h"
+#include "FactoredProduct.h"
 
 using namespace std;
 
 class Profile;
 class ProfilePair;
-
-
-struct ProductUnit
-{
-  Product product;
-
-  Product * canonicalPtr;
-
-  // Number of unused tops that are elided.
-  unsigned canonicalShift;
-
-  unsigned numCovers;
-  unsigned numTableaux;
-  unsigned numUses;
-};
 
 
 class ProductMemory
@@ -84,7 +70,7 @@ class ProductMemory
       };
     };
 
-    vector<map<unsigned long long, ProductUnit>> memory;
+    vector<map<unsigned long long, FactoredProduct>> memory;
 
     vector<EnterStat> enterStats;
 
@@ -97,11 +83,11 @@ class ProductMemory
 
     void resize(const unsigned char oppsLength);
 
-    ProductUnit * enterOrLookup(
+    FactoredProduct * enterOrLookup(
       const Profile& sumProfile,
       const ProfilePair& profilePair);
 
-    ProductUnit const * lookupByTop(
+    FactoredProduct const * lookupByTop(
       const Profile& sumProfile,
       const ProfilePair& profilePair) const;
 

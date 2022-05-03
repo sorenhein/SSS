@@ -37,7 +37,7 @@ void ProductMemory::resize(const unsigned char memSize)
 }
 
 
-ProductUnit * ProductMemory::enterOrLookup(
+FactoredProduct * ProductMemory::enterOrLookup(
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
@@ -50,50 +50,46 @@ ProductUnit * ProductMemory::enterOrLookup(
   if (it == memory[numTops].end())
   {
     // Enter a new element.
-    ProductUnit& productUnit = memory[numTops][code] = ProductUnit();
+    FactoredProduct& factoredProduct = 
+      memory[numTops][code] = FactoredProduct();
 
-    productUnit.product.resize(numTops);
-    profilePair.setProduct(productUnit.product, sumProfile, code);
+    factoredProduct.product.resize(numTops);
+    profilePair.setProduct(factoredProduct.product, sumProfile, code);
     
-    productUnit.numCovers = 1;
-    productUnit.numTableaux = 0;
-    productUnit.numUses = 0;
-
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
     // TODO Make this cleaner -- perhaps an own method or
     // a recursive call.
-    if (! productUnit.product.canonical())
+    if (! factoredProduct.product.canonical())
     {
-      productUnit.canonicalShift = 
-        productUnit.product.getCanonicalShift();
+      factoredProduct.canonicalShift = 
+        factoredProduct.product.getCanonicalShift();
       const unsigned long long canonicalCode =
-        profilePair.getCanonicalCode(code, productUnit.canonicalShift);
+        profilePair.getCanonicalCode(code, factoredProduct.canonicalShift);
 
-      const unsigned canonTops = numTops - productUnit.canonicalShift;
+      const unsigned canonTops = numTops - factoredProduct.canonicalShift;
       auto canonIt = memory[canonTops].find(canonicalCode);
       assert(canonIt != memory[canonTops].end());
 
-      productUnit.canonicalPtr = &canonIt->second.product;
+      factoredProduct.canonicalPtr = &canonIt->second.product;
     }
 
-    return &productUnit;
+    return &factoredProduct;
   }
   else
   {
     // Look up an existing element.
-    ProductUnit& productUnit = it->second;
-    productUnit.numCovers++;
+    FactoredProduct& factoredProduct = it->second;
 
     enterStats[numTops].numTotal++;
 
-    return &productUnit;
+    return &factoredProduct;
   }
 }
 
 
-ProductUnit const * ProductMemory::lookupByTop(
+FactoredProduct const * ProductMemory::lookupByTop(
   const Profile& sumProfile,
   const ProfilePair& profilePair) const
 {
