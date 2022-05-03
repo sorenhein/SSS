@@ -50,22 +50,21 @@ FactoredProduct * ProductMemory::enterOrLookup(
 
   if (it == factoredMemory[numTops].end())
   {
+    enterStats[numTops].numUnique++;
+    enterStats[numTops].numTotal++;
+
     // Enter a new factored product.
     FactoredProduct& factoredProduct = 
       factoredMemory[numTops][code] = FactoredProduct();
 
-    enterStats[numTops].numUnique++;
-    enterStats[numTops].numTotal++;
-
     factoredProduct.canonicalShift = 
       profilePair.getCanonicalShift(sumProfile);
 
-    // TODO Make this cleaner -- perhaps an own method or
-    // a recursive call.
-    // if (product.canonical())
+    // TODO Make this cleaner -- perhaps an own method or recursive call.
     if (factoredProduct.canonicalShift == 0)
     {
       // Enter a new product.
+      // TODO Could it be in the list already?
       productMemory.emplace_back(Product());
       Product& product = productMemory.back();
       product.resize(numTops);
@@ -75,7 +74,6 @@ FactoredProduct * ProductMemory::enterOrLookup(
     }
     else
     {
-      // factoredProduct.canonicalShift = product.getCanonicalShift();
       const unsigned long long canonicalCode =
         profilePair.getCanonicalCode(code, factoredProduct.canonicalShift);
 
@@ -91,11 +89,12 @@ FactoredProduct * ProductMemory::enterOrLookup(
   else
   {
     // Look up an existing element.
-    FactoredProduct& factoredProduct = it->second;
+    // FactoredProduct& factoredProduct = it->second;
 
     enterStats[numTops].numTotal++;
 
-    return &factoredProduct;
+    // return &factoredProduct;
+    return &(it->second);
   }
 }
 
@@ -134,7 +133,9 @@ string ProductMemory::strEnterStats() const
 
   ss << "ProductMemory entry statistics\n\n";
 
+// TODO Delete
 ss << "NUMPROD " << productMemory.size() << "\n\n";
+
   ss <<
     setw(8) << "Numtops" <<
     enterStats[0].strHeader();

@@ -22,11 +22,10 @@
 #include "../term/Length.h"
 #include "../term/Top.h"
 
-#include "../../../utils/table.h"
-
 using namespace std;
 
 class Profile;
+enum Opponent: unsigned;
 
 
 class Product

@@ -282,6 +282,9 @@ void Manual::prepare_4_1(DistData& distData) const
   Manual::WestLength(distData, 1);              // 18. West has singleton
   Manual::WestLength(distData, 3);              // 19. East has singleton
 
+  Manual::WestLengthRange(distData, 0, 1);      // X. 0=4, 1=3
+  Manual::WestLengthRange(distData, 3, 4);      // X. 3=1, 4=0
+
   // 20. West has the top, or the suit splits 2=2.
   Manual::WestGeneralTwo(distData, 0, 4, 1, 1,    2, 2, 0, 1);
 
