@@ -243,7 +243,7 @@ string Cover::strHeader() const
   assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << factoredProductPtr->noncanonicalPtr->strHeader() <<
+  ss << factoredProductPtr->strHeader() <<
     setw(4) << "Wgt" <<
     setw(4) << "Cpx" <<
     setw(10) << "cpw" <<
@@ -261,7 +261,7 @@ string Cover::strLine() const
   assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  ss << factoredProductPtr->noncanonicalPtr->strLine() <<
+  ss << factoredProductPtr->strLine() <<
     setw(4) << tricks.getWeight() <<
     setw(4) << +Cover::getComplexity() <<
     setw(10) << mcpw <<
