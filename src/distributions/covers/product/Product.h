@@ -68,8 +68,6 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift = 0) const;
 
-    bool canonical() const;
-
     unsigned char getComplexity() const;
 
     unsigned long long code() const;
@@ -77,8 +75,6 @@ class Product
     unsigned char size() const;
 
     unsigned char effectiveDepth() const;
-
-    unsigned char getCanonicalShift() const;
 
     bool explainable() const;
 

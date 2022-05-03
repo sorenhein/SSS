@@ -152,19 +152,6 @@ bool Product::symmetrizable(
 }
 
 
-bool Product::canonical() const
-{
-  return (tops.size() == 1 || topSize == 1);
-}
-
-
-unsigned char Product::getCanonicalShift() const
-{
-  return (topSize == 0 ? 
-    static_cast<unsigned char>(tops.size()-1) : topSize-1);
-}
-
-
 unsigned char Product::getComplexity() const
 {
   return complexity;

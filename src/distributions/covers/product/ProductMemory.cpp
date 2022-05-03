@@ -50,12 +50,6 @@ FactoredProduct * ProductMemory::enterOrLookup(
 
   if (it == factoredMemory[numTops].end())
   {
-    // Enter a new product.
-    productMemory.emplace_back(Product());
-    Product& product = productMemory.back();
-    product.resize(numTops);
-    profilePair.setProduct(product, sumProfile, code);
-
     // Enter a new factored product.
     FactoredProduct& factoredProduct = 
       factoredMemory[numTops][code] = FactoredProduct();
@@ -63,18 +57,25 @@ FactoredProduct * ProductMemory::enterOrLookup(
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
-const unsigned char cs = profilePair.getCanonicalShift(sumProfile);
+    factoredProduct.canonicalShift = 
+      profilePair.getCanonicalShift(sumProfile);
 
     // TODO Make this cleaner -- perhaps an own method or
     // a recursive call.
-    if (product.canonical())
+    // if (product.canonical())
+    if (factoredProduct.canonicalShift == 0)
     {
+      // Enter a new product.
+      productMemory.emplace_back(Product());
+      Product& product = productMemory.back();
+      product.resize(numTops);
+      profilePair.setProduct(product, sumProfile, code);
+
       factoredProduct.canonicalPtr = &product;
-      factoredProduct.canonicalShift = 0;
     }
     else
     {
-      factoredProduct.canonicalShift = product.getCanonicalShift();
+      // factoredProduct.canonicalShift = product.getCanonicalShift();
       const unsigned long long canonicalCode =
         profilePair.getCanonicalCode(code, factoredProduct.canonicalShift);
 
@@ -84,7 +85,6 @@ const unsigned char cs = profilePair.getCanonicalShift(sumProfile);
 
       factoredProduct.canonicalPtr = canonIt->second.canonicalPtr;
     }
-assert(factoredProduct.canonicalShift == cs);
 
     return &factoredProduct;
   }
