@@ -77,15 +77,10 @@ void Product::set(
     complexity += tops[i].complexity();
   }
 
-  // If there is only a single distribution possible, this counts
-  // as a complexity of 3 (don't make it absurdly attractive).
-  // TODO Relies on the profile being "minimal", as otherwise the
-  // empty terms make the product seem not full.  So maybe this
-  // correction is not a good idea?
+  // Aesthetic adjustment when the only active entries are equals.
   if (length.used() && 
       complexity > 3 &&
-      // activeCount+1 == static_cast<unsigned char>(topLowSize) &&
-      lowerProfile == upperProfile)
+      lowerProfile.onlyEquals(upperProfile, sumProfile))
   {
     complexity = 3;
   }

@@ -20,7 +20,7 @@ using namespace std;
 unsigned char FactoredProduct::getComplexity() const
 {
   const unsigned char c = noncanonicalPtr->getComplexity();
-  /*
+  /*  */
   if (c != canonicalPtr->getComplexity())
   {
 cout << "non: " << +c << "\n";
@@ -31,7 +31,7 @@ cout << canonicalPtr->strHeader() << "\n";
 cout << canonicalPtr->strLine() << endl;
     assert(c == canonicalPtr->getComplexity());
     }
-    */
+    /* */
   return c;
 }
 

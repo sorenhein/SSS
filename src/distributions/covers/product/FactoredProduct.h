@@ -9,8 +9,6 @@
 #ifndef SSS_FACTOREDPRODUCT_H
 #define SSS_FACTOREDPRODUCT_H
 
-#include <cassert>
-
 class Product;
 
 using namespace std;

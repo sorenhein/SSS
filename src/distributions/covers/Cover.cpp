@@ -64,7 +64,7 @@ void Cover::setExisting(
 }
 
 
-// TODO Call is setByProduct?
+// TODO Call it setByProduct?
 bool Cover::prepare(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
@@ -80,7 +80,6 @@ bool Cover::prepare(
     return false;
   }
   
-  // mcpw = (factoredProductPtr->noncanonicalPtr->getComplexity() << 20) / 
   mcpw = (factoredProductPtr->getComplexity() << 20) / 
       tricks.getWeight();
   return true;

@@ -45,6 +45,11 @@ class Profile
     // This ignores the 0'th top!
     bool operator == (const Profile& profile2) const;
 
+    // Only unused tops or tops with upper == lower.
+    bool onlyEquals(
+      const Profile& upperProfile,
+      const Profile& sumProfile) const;
+
     unsigned size() const;
 
     unsigned long long getLowerCode() const;
