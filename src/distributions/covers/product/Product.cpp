@@ -150,13 +150,13 @@ bool Product::symmetrizable(const Profile& sumProfile) const
 
 bool Product::canonical() const
 {
-  return (static_cast<unsigned>(activeCount + 1) == tops.size());
+  return (tops.size() == 1 || topSize == 1);
 }
 
 
 unsigned Product::getCanonicalShift() const
 {
-  return tops.size() - activeCount - 1;
+  return (topSize == 0 ? tops.size()-1 : topSize-1);
 }
 
 

@@ -7,11 +7,11 @@ ProductStats output the table by depth (#tops used) across horizontally.
 Canonical products
 ------------------
 ProductMemory:
-Length 6, only highest top (out of 3) set is in some sense the same
-as there were only 2 tops (the lowest is there and empty).
-Then ProductMemory would give back a ProductUnit consisting of the
-pointer to the 2-top one and an offset of 1.
-The one using that product would have to take it into account somehow.
+* Where ProductUnit is used, see about using the canonical one instead.
+* Then the non-canonical one is perhaps not in memory in ProductMemory
+* So then we need a list<Product> canonicalProducts and a pointer
+  into this
+* Then only 1 pointer in ProductUnit
 
 ProductMemory no longer needs the counters as they are in ProductStats.
 

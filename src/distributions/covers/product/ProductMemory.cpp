@@ -62,6 +62,22 @@ ProductUnit * ProductMemory::enterOrLookup(
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
+    // TODO Make this cleaner -- perhaps an own method or
+    // a recursive call.
+    if (! productUnit.product.canonical())
+    {
+      productUnit.canonicalShift = 
+        productUnit.product.getCanonicalShift();
+      const unsigned long long canonicalCode =
+        profilePair.getCanonicalCode(code, productUnit.canonicalShift);
+
+      const unsigned canonTops = numTops - productUnit.canonicalShift;
+      auto canonIt = memory[canonTops].find(canonicalCode);
+      assert(canonIt != memory[canonTops].end());
+
+      productUnit.canonicalPtr = &canonIt->second.product;
+    }
+
     return &productUnit;
   }
   else
