@@ -105,8 +105,12 @@ bool Product::includes(const Profile& distProfile) const
 }
 
 
-bool Product::symmetrizable(const Profile& sumProfile) const
+bool Product::symmetrizable(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
 {
+  assert(tops.size() + canonicalShift == sumProfile.size());
+
   unsigned consecutive = 0;
   if (length.used())
   {
@@ -129,7 +133,9 @@ bool Product::symmetrizable(const Profile& sumProfile) const
   {
     if (tops[i].used())
     {
-      const SymmTerm sterm = tops[i].symmetrizable(sumProfile[i]);
+      const SymmTerm sterm = tops[i].symmetrizable(
+        sumProfile[i + canonicalShift]);
+
       if (sterm == TERM_SYMMETRIZABLE)
         return true;
       else if (sterm == TERM_NOT_SYMMETRIZABLE)
@@ -149,9 +155,10 @@ bool Product::canonical() const
 }
 
 
-unsigned Product::getCanonicalShift() const
+unsigned char Product::getCanonicalShift() const
 {
-  return (topSize == 0 ? tops.size()-1 : topSize-1);
+  return (topSize == 0 ? 
+    static_cast<unsigned char>(tops.size()-1) : topSize-1);
 }
 
 

@@ -80,8 +80,7 @@ bool Cover::prepare(
     return false;
   }
   
-  mcpw = (factoredProductPtr->getComplexity() << 20) / 
-      tricks.getWeight();
+  mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
   return true;
 }
 
@@ -91,7 +90,7 @@ bool Cover::symmetrizable(const Profile& sumProfile) const
   // We consider the product terms in the order (length, highest top,
   // next top, ...).
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->noncanonicalPtr->symmetrizable(sumProfile);
+  return factoredProductPtr->symmetrizable(sumProfile);
 }
 
 

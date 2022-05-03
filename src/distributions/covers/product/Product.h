@@ -62,7 +62,9 @@ class Product
 
     bool includes(const Profile& distProfile) const;
 
-    bool symmetrizable(const Profile& sumProfile) const;
+    bool symmetrizable(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift = 0) const;
 
     bool canonical() const;
 
@@ -74,7 +76,7 @@ class Product
 
     unsigned char effectiveDepth() const;
 
-    unsigned getCanonicalShift() const;
+    unsigned char getCanonicalShift() const;
 
     bool explainable() const;
 

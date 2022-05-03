@@ -10,6 +10,7 @@
 #define SSS_FACTOREDPRODUCT_H
 
 class Product;
+class Profile;
 
 using namespace std;
 
@@ -21,8 +22,10 @@ struct FactoredProduct
   Product * canonicalPtr;
 
   // Number of unused tops that are elided.
-  unsigned canonicalShift;
+  unsigned char canonicalShift;
 
+
+  bool symmetrizable(const Profile& sumProfile) const;
 
   unsigned char getComplexity() const;
 };
