@@ -17,6 +17,13 @@
 using namespace std;
 
 
+unsigned long long FactoredProduct::code() const
+{
+  // TODO What does it do in ProductStats to switch this over?
+  return noncanonicalPtr->code();
+}
+
+
 bool FactoredProduct::includes(const Profile& distProfile) const
 {
   const bool b = noncanonicalPtr->includes(distProfile);
@@ -89,15 +96,3 @@ string FactoredProduct::strVerbal(
   return s;
 }
 
-
-  /*
-  if (c != canonicalPtr->getComplexity())
-  {
-cout << "non: " << +c << "\n";
-cout << noncanonicalPtr->strHeader() << "\n";
-cout << noncanonicalPtr->strLine() << "\n";
-cout << "can: " << +canonicalPtr->getComplexity() << "\n";
-cout << canonicalPtr->strHeader() << "\n";
-cout << canonicalPtr->strLine() << endl;
-    }
-    */

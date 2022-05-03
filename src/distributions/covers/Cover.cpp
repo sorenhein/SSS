@@ -73,7 +73,6 @@ bool Cover::prepare(
 
   if (! tricks.setByProduct(
     * factoredProductPtr,
-    // * factoredProductPtr->noncanonicalPtr, 
     symmFlag,
     distProfiles, 
     cases))
@@ -153,8 +152,8 @@ void Cover::updateStats(
   const bool newTableauFlag) const
 {
   assert(factoredProductPtr != nullptr);
-  productStats.store(* factoredProductPtr->noncanonicalPtr, 
-    sumProfile, newTableauFlag);
+  // productStats.store(* factoredProductPtr->noncanonicalPtr, 
+  productStats.store(* factoredProductPtr, sumProfile, newTableauFlag);
 }
 
 
@@ -304,8 +303,6 @@ string Cover::strTricksShort() const
 string Cover::str(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
-  // const Product& product = * factoredProductPtr->noncanonicalPtr;
-
   if (factoredProductPtr->explainable())
   {
     stringstream ss;

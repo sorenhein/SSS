@@ -16,6 +16,7 @@
 using namespace std;
 
 class Profile;
+struct FactoredProduct;
 class Product;
 
 
@@ -136,7 +137,7 @@ class ProductStats
     void resize();
 
     void storeLengthTops(
-      const Product& product,
+      const FactoredProduct& factoredProduct,
       const unsigned long long code,
       const unsigned char length,
       const unsigned char maxTops,
@@ -144,7 +145,7 @@ class ProductStats
       bool& newFlag);
 
     void storeLength(
-      const Product& product,
+      const FactoredProduct& factoredProduct,
       const unsigned long long code,
       const unsigned char length,
       const unsigned char maxTops);
@@ -165,7 +166,7 @@ class ProductStats
   public:
 
     void store(
-      const Product& product,
+      const FactoredProduct& factoredProduct,
       const Profile& sumProfile,
       const bool newTableauFlag);
 

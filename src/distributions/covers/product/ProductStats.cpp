@@ -14,6 +14,7 @@
 #include "ProductStats.h"
 #include "Profile.h"
 #include "Product.h"
+#include "FactoredProduct.h"
 
 
 ProductStats::ProductStats()
@@ -43,7 +44,7 @@ void ProductStats::resize()
 
 
 void ProductStats::storeLengthTops(
-  const Product& product,
+  const FactoredProduct& factoredProduct,
   const unsigned long long code,
   const unsigned char length,
   const unsigned char maxTops,
@@ -60,7 +61,7 @@ void ProductStats::storeLengthTops(
     newFlag = true;
     LengthTopEntry& entry = lengthTopMap[code] = LengthTopEntry();
 
-    entry.productPtr = &product;
+    entry.productPtr = factoredProduct.noncanonicalPtr;
     if (newTableauFlag)
       entry.numTableaux++;
     entry.numUses++;
@@ -77,7 +78,7 @@ void ProductStats::storeLengthTops(
 
 
 void ProductStats::storeLength(
-  const Product& product,
+  const FactoredProduct& factoredProduct,
   const unsigned long long code,
   const unsigned char length,
   const unsigned char maxTops)
@@ -90,7 +91,8 @@ void ProductStats::storeLength(
   {
     LengthEntry& entry = lengthMap[code] = LengthEntry();
 
-    entry.productPtr = &product;
+    // TODO Switch
+    entry.productPtr = factoredProduct.noncanonicalPtr;
     entry.histo.resize(length+1);
     entry.histo[maxTops] = 1;
     entry.numUses++;
@@ -127,20 +129,20 @@ void ProductStats::storeTable(
 
 
 void ProductStats::store(
-  const Product& product,
+  const FactoredProduct& factoredProduct,
   const Profile& sumProfile,
   const bool newTableauFlag)
 {
   // TODO Not currently multi-threaded!
 
-  const unsigned long long code = product.code();
+  const unsigned long long code = factoredProduct.code();
   const unsigned char length = sumProfile.length();
   const unsigned char maxTops =
     sumProfile[static_cast<unsigned char>(sumProfile.size())-1];
 
   bool newFlag;
   ProductStats::storeLengthTops(
-    product, 
+    factoredProduct, 
     code,
     length,
     maxTops,
@@ -148,7 +150,7 @@ void ProductStats::store(
     newFlag);
 
   ProductStats::storeLength(
-    product, 
+    factoredProduct, 
     code,
     length,
     maxTops);
