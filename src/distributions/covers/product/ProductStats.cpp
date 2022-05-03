@@ -13,7 +13,7 @@
 
 #include "ProductStats.h"
 #include "Profile.h"
-#include "Product.h"
+#include "Product.h" // For the strHeader method
 #include "FactoredProduct.h"
 
 
@@ -61,7 +61,7 @@ void ProductStats::storeLengthTops(
     newFlag = true;
     LengthTopEntry& entry = lengthTopMap[code] = LengthTopEntry();
 
-    entry.productPtr = factoredProduct.noncanonicalPtr;
+    entry.factoredProductPtr = &factoredProduct;
     if (newTableauFlag)
       entry.numTableaux++;
     entry.numUses++;
@@ -92,7 +92,7 @@ void ProductStats::storeLength(
     LengthEntry& entry = lengthMap[code] = LengthEntry();
 
     // TODO Switch
-    entry.productPtr = factoredProduct.noncanonicalPtr;
+    entry.factoredProductPtr = &factoredProduct;
     entry.histo.resize(length+1);
     entry.histo[maxTops] = 1;
     entry.numUses++;
@@ -269,7 +269,7 @@ string ProductStats::strByLength() const
       {
         ss <<
           entry.str() <<
-          entry.productPtr->strLine() << "\n";
+          entry.factoredProductPtr->strLine() << "\n";
       
         for (unsigned i = 0; i < entry.histo.size(); i++)
           histo[i] += entry.histo[i];
@@ -335,7 +335,7 @@ string ProductStats::strByLengthTops() const
         {
           ss <<
             entry.str() <<
-            entry.productPtr->strLine() << "\n";
+            entry.factoredProductPtr->strLine() << "\n";
         
           sumTableaux += entry.numTableaux;
           sumUses += entry.numUses;

@@ -17,7 +17,6 @@ using namespace std;
 
 class Profile;
 struct FactoredProduct;
-class Product;
 
 
 class ProductStats
@@ -57,7 +56,7 @@ class ProductStats
 
     struct LengthEntry
     {
-      Product const * productPtr;
+      FactoredProduct const * factoredProductPtr;
       vector<unsigned> histo;
       unsigned numUses;
 
@@ -90,7 +89,7 @@ class ProductStats
 
     struct LengthTopEntry
     {
-      Product const * productPtr;
+      FactoredProduct const * factoredProductPtr;
       unsigned numTableaux;
       unsigned numUses;
 

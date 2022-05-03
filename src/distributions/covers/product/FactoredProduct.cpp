@@ -20,7 +20,7 @@ using namespace std;
 unsigned long long FactoredProduct::code() const
 {
   // TODO What does it do in ProductStats to switch this over?
-  return noncanonicalPtr->code();
+  return canonicalPtr->code();
 }
 
 
