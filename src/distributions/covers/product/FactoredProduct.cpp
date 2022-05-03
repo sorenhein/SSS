@@ -26,61 +26,49 @@ unsigned long long FactoredProduct::code() const
 
 bool FactoredProduct::includes(const Profile& distProfile) const
 {
-  const bool b = noncanonicalPtr->includes(distProfile);
-  // assert(b == canonicalPtr->includes(distProfile, canonicalShift));
-  return b;
+  return canonicalPtr->includes(distProfile, canonicalShift);
 }
 
 
 bool FactoredProduct::symmetrizable(const Profile& sumProfile) const
 {
-  const bool b = noncanonicalPtr->symmetrizable(sumProfile);
-  // assert(b == canonicalPtr->symmetrizable(sumProfile, canonicalShift));
-  return b;
+  return canonicalPtr->symmetrizable(sumProfile, canonicalShift);
 }
 
 
 unsigned char FactoredProduct::getComplexity() const
 {
-  const unsigned char c = noncanonicalPtr->getComplexity();
-  // assert(c == canonicalPtr->getComplexity());
-  return c;
+  return canonicalPtr->getComplexity();
 }
 
 
 unsigned char FactoredProduct::effectiveDepth() const
 {
-  const unsigned char e = noncanonicalPtr->effectiveDepth();
-  // assert(e == canonicalPtr->effectiveDepth());
-  return e;
+  return canonicalPtr->effectiveDepth();
 }
 
 
 bool FactoredProduct::explainable() const
 {
-  const bool b = noncanonicalPtr->explainable();
-  // assert(b == canonicalPtr->explainable());
-  return b;
+  return canonicalPtr->explainable();
 }
 
 
 Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
 {
-  const Opponent o = noncanonicalPtr->simplestOpponent(sumProfile);
-  // assert(o == canonicalPtr->simplestOpponent(sumProfile, canonicalShift));
-  return o;
+  return canonicalPtr->simplestOpponent(sumProfile, canonicalShift);
 }
 
 
 string FactoredProduct::strHeader() const
 {
-  return noncanonicalPtr->strHeader();
+  return canonicalPtr->strHeader();
 }
 
 
 string FactoredProduct::strLine() const
 {
-  return noncanonicalPtr->strLine();
+  return canonicalPtr->strLine();
 }
 
 
@@ -89,10 +77,6 @@ string FactoredProduct::strVerbal(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  const string s =
-    noncanonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
-  // assert(s == canonicalPtr->strVerbal(sumProfile, simplestOpponent,
-    // symmFlag));
-  return s;
+  return canonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
 }
 

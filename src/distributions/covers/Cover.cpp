@@ -152,7 +152,6 @@ void Cover::updateStats(
   const bool newTableauFlag) const
 {
   assert(factoredProductPtr != nullptr);
-  // productStats.store(* factoredProductPtr->noncanonicalPtr, 
   productStats.store(* factoredProductPtr, sumProfile, newTableauFlag);
 }
 
