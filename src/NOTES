@@ -7,13 +7,9 @@ ProductStats output the table by depth (#tops used) across horizontally.
 Canonical products
 ------------------
 ProductMemory:
-* Where ProductUnit is used, see about using the canonical one instead.
-* Then the non-canonical one is perhaps not in memory in ProductMemory
-* So then we need a list<Product> canonicalProducts and a pointer
-  into this
-* Then only 1 pointer in ProductUnit
-
-ProductMemory no longer needs the counters as they are in ProductStats.
+* Do we make too many entries in productMemory?
+* Compare the new outputs with Manual one last time
+* See about Manual
 
 When examining strategies, shift them down as far as possible,
 as this reduces the number of covers to consider.

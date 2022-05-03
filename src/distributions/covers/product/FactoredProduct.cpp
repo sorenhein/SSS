@@ -6,11 +6,6 @@
    See LICENSE and README.
 */
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <cassert>
-
 #include "FactoredProduct.h"
 #include "Product.h"
 
@@ -19,7 +14,6 @@ using namespace std;
 
 unsigned long long FactoredProduct::code() const
 {
-  // TODO What does it do in ProductStats to switch this over?
   return canonicalPtr->code();
 }
 

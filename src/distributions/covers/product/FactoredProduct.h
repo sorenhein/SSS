@@ -20,8 +20,6 @@ using namespace std;
 
 struct FactoredProduct
 {
-  Product * noncanonicalPtr;
-
   Product * canonicalPtr;
 
   // Number of unused tops that are elided.

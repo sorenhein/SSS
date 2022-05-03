@@ -60,8 +60,6 @@ FactoredProduct * ProductMemory::enterOrLookup(
     FactoredProduct& factoredProduct = 
       factoredMemory[numTops][code] = FactoredProduct();
 
-    factoredProduct.noncanonicalPtr = &product;
-
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
@@ -69,7 +67,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
     // a recursive call.
     if (product.canonical())
     {
-      factoredProduct.canonicalPtr = factoredProduct.noncanonicalPtr;
+      factoredProduct.canonicalPtr = &product;
       factoredProduct.canonicalShift = 0;
     }
     else
@@ -133,6 +131,7 @@ string ProductMemory::strEnterStats() const
 
   ss << "ProductMemory entry statistics\n\n";
 
+ss << "NUMPROD " << productMemory.size() << "\n\n";
   ss <<
     setw(8) << "Numtops" <<
     enterStats[0].strHeader();
