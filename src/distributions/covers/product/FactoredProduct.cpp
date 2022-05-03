@@ -20,21 +20,7 @@ using namespace std;
 bool FactoredProduct::symmetrizable(const Profile& sumProfile) const
 {
   const bool b = noncanonicalPtr->symmetrizable(sumProfile);
-  assert(b == canonicalPtr->symmetrizable(sumProfile, canonicalShift));
-
-  /*
-  if (b != canonicalPtr->symmetrizable(sumProfile, canonicalShift))
-  {
-cout << "non: " << +b << "\n";
-cout << noncanonicalPtr->strHeader() << "\n";
-cout << noncanonicalPtr->strLine() << "\n";
-cout << "can: " << +canonicalPtr->symmetrizable(sumProfile) << "\n";
-cout << canonicalPtr->strHeader() << "\n";
-cout << canonicalPtr->strLine() << endl;
-    assert(b == canonicalPtr->symmetrizable(sumProfile, canonicalShift));
-   }
-   */
-
+  // assert(b == canonicalPtr->symmetrizable(sumProfile, canonicalShift));
   return b;
 }
 
@@ -44,6 +30,14 @@ unsigned char FactoredProduct::getComplexity() const
   const unsigned char c = noncanonicalPtr->getComplexity();
   // assert(c == canonicalPtr->getComplexity());
   return c;
+}
+
+
+unsigned char FactoredProduct::effectiveDepth() const
+{
+  const unsigned char e = noncanonicalPtr->effectiveDepth();
+  // assert(e == canonicalPtr->effectiveDepth());
+  return e;
 }
 
 

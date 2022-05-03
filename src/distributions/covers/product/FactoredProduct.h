@@ -28,6 +28,8 @@ struct FactoredProduct
   bool symmetrizable(const Profile& sumProfile) const;
 
   unsigned char getComplexity() const;
+
+  unsigned char effectiveDepth() const;
 };
 
 #endif

@@ -189,15 +189,16 @@ bool Cover::operator < (const Cover& cover2) const
   else if (mcpw > cover2.mcpw)
     return false;
 
-  assert(factoredProductPtr != nullptr);
-  assert(cover2.factoredProductPtr != nullptr);
-  const Product& p1 = * factoredProductPtr->noncanonicalPtr;
-  const Product& p2 = * cover2.factoredProductPtr->noncanonicalPtr;
+  // assert(factoredProductPtr != nullptr);
+  // assert(cover2.factoredProductPtr != nullptr);
+  // const Product& p1 = * factoredProductPtr->noncanonicalPtr;
+  // const Product& p2 = * cover2.factoredProductPtr->noncanonicalPtr;
 
-  if (p1.effectiveDepth() < p2.effectiveDepth())
+  // if (p1.effectiveDepth() < p2.effectiveDepth())
+  if (Cover::effectiveDepth() < cover2.effectiveDepth())
     // Simpler ones first
     return true;
-  else if (p1.effectiveDepth() > p2.effectiveDepth())
+  else if (Cover::effectiveDepth() > cover2.effectiveDepth())
     return false;
   else if (symmFlag && ! cover2.symmFlag)
     return true;
@@ -217,7 +218,7 @@ const Tricks& Cover::getTricks() const
 unsigned char Cover::effectiveDepth() const
 {
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->noncanonicalPtr->effectiveDepth();
+  return factoredProductPtr->effectiveDepth();
 }
 
 
@@ -230,7 +231,7 @@ unsigned Cover::getWeight() const
 unsigned char Cover::getComplexity() const
 {
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->noncanonicalPtr->getComplexity();
+  return factoredProductPtr->getComplexity();
 }
 
 
@@ -269,9 +270,9 @@ string Cover::strLine() const
 
   ss << factoredProductPtr->noncanonicalPtr->strLine() <<
     setw(4) << tricks.getWeight() <<
-    setw(4) << +factoredProductPtr->noncanonicalPtr->getComplexity() <<
+    setw(4) << +factoredProductPtr->getComplexity() <<
     setw(10) << mcpw <<
-    setw(4) << +factoredProductPtr->noncanonicalPtr->effectiveDepth() <<
+    setw(4) << +factoredProductPtr->effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";
