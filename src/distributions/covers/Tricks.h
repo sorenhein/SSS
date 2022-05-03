@@ -15,8 +15,7 @@
 
 using namespace std;
 
-struct FactoredProduct;
-class Product;
+class FactoredProduct;
 class Profile;
 class Result;
 

@@ -57,31 +57,32 @@ FactoredProduct * ProductMemory::enterOrLookup(
     FactoredProduct& factoredProduct = 
       factoredMemory[numTops][code] = FactoredProduct();
 
-    factoredProduct.canonicalShift = 
+    const unsigned char canonicalShift =
       profilePair.getCanonicalShift(sumProfile);
 
     // TODO Make this cleaner -- perhaps an own method or recursive call.
-    if (factoredProduct.canonicalShift == 0)
+    if (canonicalShift == 0)
     {
-      // Enter a new product.
+      // Enter a new, canonical product.
       // TODO Could it be in the list already?
       productMemory.emplace_back(Product());
       Product& product = productMemory.back();
       product.resize(numTops);
       profilePair.setProduct(product, sumProfile, code);
 
-      factoredProduct.canonicalPtr = &product;
+      factoredProduct.set(&product, canonicalShift);
     }
     else
     {
+      // Look up the corresponding canonical product.
       const unsigned long long canonicalCode =
-        profilePair.getCanonicalCode(code, factoredProduct.canonicalShift);
+        profilePair.getCanonicalCode(code, canonicalShift);
 
-      const unsigned canonTops = numTops - factoredProduct.canonicalShift;
+      const unsigned canonTops = numTops - canonicalShift;
       auto canonIt = factoredMemory[canonTops].find(canonicalCode);
       assert(canonIt != factoredMemory[canonTops].end());
 
-      factoredProduct.canonicalPtr = canonIt->second.canonicalPtr;
+      factoredProduct.set(canonIt->second, canonicalShift);
     }
 
     return &factoredProduct;
@@ -89,11 +90,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
   else
   {
     // Look up an existing element.
-    // FactoredProduct& factoredProduct = it->second;
-
     enterStats[numTops].numTotal++;
-
-    // return &factoredProduct;
     return &(it->second);
   }
 }

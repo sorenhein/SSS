@@ -14,7 +14,6 @@
 
 #include "Tricks.h"
 
-#include "product/Product.h"
 #include "product/ProductMemory.h"
 
 #include "../../utils/table.h"

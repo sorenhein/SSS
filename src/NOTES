@@ -1,10 +1,19 @@
-Maybe FactoredProduct class with a set() method.
-No Product.h except there.  Deal with header?
-
-Look at finding products instead of 165k elements.
+ProductMemory: Look at finding products instead of 165k elements.
+- productMemory becomes a vector<map<unsigned long long Product>>
+- Get up to 14 in 1st dimension
+- productMemory[sumProfile.length()].find(code)
+- if == end(), add it
+- if not, use the pointer
 
 Get the single-distribution run to work again:
 ProductMemory, probably enter products as well that arise.
+- if == end
+    add a canonical product using the canonical code and some kind
+    of reduced sumProfile
+    add a factoredProduct, and set it to point there
+  else
+    take the one we looked up and set it
+- This is not recursive as we're already down to a canonical element
 
 ProductMemory outputs (uniques and such).
 
@@ -24,6 +33,7 @@ The various TODO's in the covers and sub-directories.
 Speed
 -----
 We could see about extract.pl before we abandon Manual?
+Also look in same.pl for the composite rows (which manuals are used?).
 Disable the old symmetrics and manuals.
 
 Names of cards

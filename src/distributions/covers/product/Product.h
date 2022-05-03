@@ -81,7 +81,7 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift = 0) const;
 
-    string strHeader() const;
+    string strHeader(const unsigned lengthIn = 0) const;
 
     string strLine() const;
 

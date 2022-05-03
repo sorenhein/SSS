@@ -233,14 +233,16 @@ Opponent Product::simplestOpponent(
 }
 
 
-string Product::strHeader() const
+string Product::strHeader(const unsigned lengthIn) const
 {
   // Does not end on a linebreak, as it may be concatenated with
   // more in Cover.
   stringstream ss;
 
+  const unsigned tno = (lengthIn == 0 ? tops.size() : lengthIn);
+
   ss << setw(8) << "Length";
-  for (unsigned i = 0; i < tops.size(); i++)
+  for (unsigned i = 0; i < tno; i++)
     ss << setw(8) << ("Top #" + to_string(i));
 
   return ss.str();

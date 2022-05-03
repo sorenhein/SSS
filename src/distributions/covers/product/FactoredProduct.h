@@ -18,41 +18,49 @@ enum Opponent: unsigned;
 using namespace std;
 
 
-struct FactoredProduct
+class FactoredProduct
 {
-  Product const * canonicalPtr;
+  private:
 
-  // Number of unused tops that are elided.
-  unsigned char canonicalShift;
+    Product const * canonicalPtr;
+
+    // Number of unused tops that are elided.
+    unsigned char canonicalShift;
 
 
-  void set(
-    Product const * ptr,
-    const unsigned char shift);
+  public:
 
-  unsigned long long code() const;
+    void set(
+      Product const * ptr,
+      const unsigned char shift);
 
-  bool includes(const Profile& distProfile) const;
+    void set(
+      const FactoredProduct& fp2,
+      const unsigned char shift);
 
-  bool symmetrizable(const Profile& sumProfile) const;
+    unsigned long long code() const;
 
-  unsigned char getComplexity() const;
+    bool includes(const Profile& distProfile) const;
 
-  unsigned char effectiveDepth() const;
+    bool symmetrizable(const Profile& sumProfile) const;
 
-  bool explainable() const;
+    unsigned char getComplexity() const;
 
-  Opponent simplestOpponent(const Profile& sumProfile) const;
+    unsigned char effectiveDepth() const;
 
-  string strHeader() const;
+    bool explainable() const;
 
-  string strLine() const;
+    Opponent simplestOpponent(const Profile& sumProfile) const;
 
-  // So far this only does the simplest case: One meaningful top.
-  string strVerbal(
-    const Profile& sumProfile,
-    const Opponent simplestOpponent,
-    const bool symmFlag) const;
+    string strHeader(const unsigned length = 0) const;
+
+    string strLine() const;
+
+    // So far this only does the simplest case: One meaningful top.
+    string strVerbal(
+      const Profile& sumProfile,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 };
 
 #endif

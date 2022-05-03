@@ -21,6 +21,14 @@ void FactoredProduct::set(
 }
 
 
+void FactoredProduct::set(
+  const FactoredProduct& fp2,
+  const unsigned char shift)
+{
+  FactoredProduct::set(fp2.canonicalPtr, shift);
+}
+
+
 unsigned long long FactoredProduct::code() const
 {
   return canonicalPtr->code();
@@ -63,9 +71,9 @@ Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
 }
 
 
-string FactoredProduct::strHeader() const
+string FactoredProduct::strHeader(const unsigned length) const
 {
-  return canonicalPtr->strHeader();
+  return canonicalPtr->strHeader(length);
 }
 
 

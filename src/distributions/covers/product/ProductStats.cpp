@@ -13,7 +13,6 @@
 
 #include "ProductStats.h"
 #include "Profile.h"
-#include "Product.h" // For the strHeader method
 #include "FactoredProduct.h"
 
 
@@ -240,8 +239,6 @@ string ProductStats::strByLength() const
 {
   stringstream ss;
 
-  Product ptmp;
-
   for (unsigned length = 2; length < lengthStats.size(); length++)
   {
     if (! seenLength[length])
@@ -250,10 +247,9 @@ string ProductStats::strByLength() const
     const string lstr = to_string(length);
     ss << ProductStats::strHeader("length", lstr);
 
-    ptmp.resize(length);
-    const string subheader = 
-      lengthStats[length].begin()->second.strHeader() + 
-      ptmp.strHeader();
+    const auto& lsentry = lengthStats[length].begin();
+    const string subheader = lsentry->second.strHeader() + 
+      lsentry->second.factoredProductPtr->strHeader(length);
 
     ss << 
       subheader << "\n" <<
@@ -299,14 +295,10 @@ string ProductStats::strByLengthTops() const
 {
   stringstream ss;
 
-  Product ptmp;
-
   for (unsigned length = 2; length < lengthTopStats.size(); length++)
   {
     if (! seenLength[length])
       continue;
-
-    ptmp.resize(length);
 
     for (unsigned maxTops = 1; maxTops < lengthTopStats[length].size(); 
         maxTops++)
@@ -317,9 +309,9 @@ string ProductStats::strByLengthTops() const
       const string lstr = to_string(length) + "-" + to_string(maxTops);
       ss << ProductStats::strHeader("length and maximum tops", lstr);
 
-      const string subheader = 
-        lengthTopStats[length][maxTops].begin()->second.strHeader() + 
-        ptmp.strHeader();
+      const auto& ltentry = lengthTopStats[length][maxTops].begin();
+      const string subheader = ltentry->second.strHeader() + 
+        ltentry->second.factoredProductPtr->strHeader(length);
 
       ss << 
         subheader << "\n" <<

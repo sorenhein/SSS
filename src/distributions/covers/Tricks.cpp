@@ -15,7 +15,6 @@
 #include "Tricks.h"
 
 #include "product/FactoredProduct.h"
-// #include "product/Product.h"
 #include "product/Profile.h"
 
 #include "../../strategies/result/Result.h"
