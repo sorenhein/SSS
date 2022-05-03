@@ -189,12 +189,6 @@ bool Cover::operator < (const Cover& cover2) const
   else if (mcpw > cover2.mcpw)
     return false;
 
-  // assert(factoredProductPtr != nullptr);
-  // assert(cover2.factoredProductPtr != nullptr);
-  // const Product& p1 = * factoredProductPtr->noncanonicalPtr;
-  // const Product& p2 = * cover2.factoredProductPtr->noncanonicalPtr;
-
-  // if (p1.effectiveDepth() < p2.effectiveDepth())
   if (Cover::effectiveDepth() < cover2.effectiveDepth())
     // Simpler ones first
     return true;
@@ -270,9 +264,9 @@ string Cover::strLine() const
 
   ss << factoredProductPtr->noncanonicalPtr->strLine() <<
     setw(4) << tricks.getWeight() <<
-    setw(4) << +factoredProductPtr->getComplexity() <<
+    setw(4) << +Cover::getComplexity() <<
     setw(10) << mcpw <<
-    setw(4) << +factoredProductPtr->effectiveDepth() <<
+    setw(4) << +Cover::effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
     setw(16) << code << 
     "\n";
@@ -311,12 +305,14 @@ string Cover::str(const Profile& sumProfile) const
   assert(factoredProductPtr != nullptr);
   const Product& product = * factoredProductPtr->noncanonicalPtr;
 
-  if (product.explainable())
+  // if (product.explainable())
+  if (factoredProductPtr->explainable())
   {
     stringstream ss;
 
     Opponent simplestOpponent = 
-      product.simplestOpponent(sumProfile);
+      factoredProductPtr->simplestOpponent(sumProfile);
+      // product.simplestOpponent(sumProfile);
     ss << product.strVerbal(sumProfile, simplestOpponent, symmFlag);
     ss << " [" << tricks.getWeight() << "]";
 

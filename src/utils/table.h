@@ -33,7 +33,7 @@ enum Level
   LEVEL_SIZE = 4
 };
 
-enum Opponent
+enum Opponent: unsigned
 {
   OPP_WEST = 0,
   OPP_EAST = 1,

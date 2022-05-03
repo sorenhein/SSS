@@ -200,7 +200,9 @@ bool Product::explainable() const
 }
 
 
-Opponent Product::simplestOpponent(const Profile& sumProfile) const
+Opponent Product::simplestOpponent(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
 {
   // We want to express a Product in terms that make as much
   // intuitive sense as possible.  I think this tends to be in
@@ -223,11 +225,14 @@ Opponent Product::simplestOpponent(const Profile& sumProfile) const
   }
   
   const unsigned char s = static_cast<unsigned char>(tops.size());
+  assert(static_cast<unsigned>(s + canonicalShift) == sumProfile.size());
 
   // Start from the highest top.
   for (unsigned char i = s; --i > 0; )
   {
-    const Opponent lTop = tops[i].simplestOpponent(sumProfile[i]);
+    const Opponent lTop = 
+      tops[i].simplestOpponent(sumProfile[i + canonicalShift]);
+
     if (lTop == OPP_WEST)
       return OPP_WEST;
     else if (lTop == OPP_EAST)

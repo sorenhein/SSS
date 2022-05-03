@@ -9,8 +9,11 @@
 #ifndef SSS_FACTOREDPRODUCT_H
 #define SSS_FACTOREDPRODUCT_H
 
+#include <string>
+
 class Product;
 class Profile;
+enum Opponent: unsigned;
 
 using namespace std;
 
@@ -30,6 +33,20 @@ struct FactoredProduct
   unsigned char getComplexity() const;
 
   unsigned char effectiveDepth() const;
+
+  bool explainable() const;
+
+  Opponent simplestOpponent(const Profile& sumProfile) const;
+
+  string strHeader() const;
+
+  string strLine() const;
+
+  // So far this only does the simplest case: One meaningful top.
+  string strVerbal(
+    const Profile& sumProfile,
+    const Opponent simplestOpponent,
+    const bool symmFlag) const;
 };
 
 #endif

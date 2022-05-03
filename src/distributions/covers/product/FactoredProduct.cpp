@@ -41,6 +41,43 @@ unsigned char FactoredProduct::effectiveDepth() const
 }
 
 
+bool FactoredProduct::explainable() const
+{
+  const bool b = noncanonicalPtr->explainable();
+  // assert(b == canonicalPtr->explainable());
+  return b;
+}
+
+
+Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
+{
+  const Opponent o = noncanonicalPtr->simplestOpponent(sumProfile);
+  // assert(o == canonicalPtr->simplestOpponent(sumProfile, canonicalShift));
+  return o;
+}
+
+
+string FactoredProduct::strHeader() const
+{
+  return noncanonicalPtr->strHeader();
+}
+
+
+string FactoredProduct::strLine() const
+{
+  return noncanonicalPtr->strLine();
+}
+
+
+string FactoredProduct::strVerbal(
+  const Profile& sumProfile,
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
+{
+  return noncanonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
+}
+
+
   /*
   if (c != canonicalPtr->getComplexity())
   {

@@ -80,7 +80,9 @@ class Product
 
     bool explainable() const;
 
-    Opponent simplestOpponent(const Profile& sumProfile) const;
+    Opponent simplestOpponent(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift = 0) const;
 
     string strHeader() const;
 
