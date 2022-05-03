@@ -270,6 +270,25 @@ bool ProfilePair::minimal(
 }
 
 
+unsigned char ProfilePair::getCanonicalShift(
+  const Profile& sumProfile) const
+{
+  // Only the basic top is present.
+  if (sumProfile.size() == 1)
+    return 0;
+
+  for (unsigned char i = 1; i < sumProfile.size(); i++)
+  {
+    if (lowerProfile.tops[i] != 0 ||
+        upperProfile.tops[i] != sumProfile[i])
+      return i-1;
+  }
+
+  // No tops are used, so we can reduce to the basic one.
+  return static_cast<unsigned char>(sumProfile.size() - 1);
+}
+
+
 unsigned long long ProfilePair::getCode(const Profile& sumProfile) const
 {
   return (lowerProfile.getLowerCode() << 32) | 

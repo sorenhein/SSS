@@ -89,6 +89,8 @@ class ProfilePair
       const unsigned char lengthLow,
       const unsigned char lengthHigh) const;
 
+    unsigned char getCanonicalShift(const Profile& sumProfile) const;
+
     unsigned long long getCode(const Profile& sumProfile) const;
 
     unsigned long long getCanonicalCode(

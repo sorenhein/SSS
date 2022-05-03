@@ -8,6 +8,8 @@ Canonical products
 ------------------
 ProductMemory:
 * Do we make too many entries in productMemory?
+  - Add a getCanonicalShift to ProfilePair
+  - Then none such and no canonical in product?
 * Compare the new outputs with Manual one last time
 * See about Manual
 

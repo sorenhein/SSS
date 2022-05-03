@@ -63,6 +63,8 @@ FactoredProduct * ProductMemory::enterOrLookup(
     enterStats[numTops].numUnique++;
     enterStats[numTops].numTotal++;
 
+const unsigned char cs = profilePair.getCanonicalShift(sumProfile);
+
     // TODO Make this cleaner -- perhaps an own method or
     // a recursive call.
     if (product.canonical())
@@ -82,6 +84,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
 
       factoredProduct.canonicalPtr = canonIt->second.canonicalPtr;
     }
+assert(factoredProduct.canonicalShift == cs);
 
     return &factoredProduct;
   }
