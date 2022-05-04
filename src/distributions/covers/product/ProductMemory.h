@@ -73,7 +73,7 @@ class ProductMemory
 
     vector<map<unsigned long long, FactoredProduct>> factoredMemory;
 
-    list<Product> productMemory;
+    vector<map<unsigned long long, Product>> productMemory;
 
     vector<EnterStat> enterStats;
 
