@@ -1,3 +1,8 @@
+Ordering still not perfect, e.g. 4-1
+Seem to prefer "no tops" to "len 1".
+Problem might be Product::presentOrder, introduce j from product2.tops(),
+decrement both until one breaks.
+
 9/4125
 Do prefer "West has a singleton" to "West has at most a singleton".
 Once we've sorted tableaux by overall complexity, if they're the same,

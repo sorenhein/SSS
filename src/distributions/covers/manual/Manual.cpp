@@ -208,48 +208,48 @@ void Manual::WestGeneralTwo(
 
 void Manual::prepare_2_1(DistData& distData) const
 {
-  Manual::WestLength(distData, 1);              // 0. 1-1
-  Manual::WestLengthRange(distData, 1, 2);      // 1. West is not void
-  Manual::WestTop1(distData, 1);                // 2. West has the top
+  Manual::WestLength(distData, 1);              // 1-1
+  Manual::WestLengthRange(distData, 1, 2);      // West is not void
+  Manual::WestTop1(distData, 1);                // West has the top
 }
 
 
 void Manual::prepare_2_2(DistData& distData) const
 {
-  Manual::WestLength(distData, 1);              // 0. 1-1
+  Manual::WestLength(distData, 1);              // 1-1
 }
 
 
 void Manual::prepare_3_1(DistData& distData) const
 {
-  Manual::WestLengthRange(distData, 1, 3);      // 0. West is not void
-  Manual::WestLengthRange(distData, 0, 2);      // 1. East is not void
-  Manual::WestLengthRange(distData, 1, 2);      // 2. 1=2 or 2=1
-  Manual::WestLength(distData, 0);              // 3. West is void
-  Manual::EastLength(distData, 0);              // 4. East is void
+  Manual::WestLength(distData, 0);              // West is void
+  Manual::WestLengthRange(distData, 0, 2);      // East is not void
+  Manual::WestLengthRange(distData, 1, 2);      // 1=2 or 2=1
+  Manual::WestLengthRange(distData, 1, 3);      // West is not void
+  Manual::EastLength(distData, 0);              // East is void
 
-  Manual::WestTop1(distData, 1);                // 5. West has the top
-  Manual::EastTop1(distData, 1);                // 6. East has the top
+  Manual::EastTop1(distData, 1);                // East has the top
+  Manual::WestTop1(distData, 1);                // West has the top
 
-  Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // 7. Singleton H 
-  Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // 8. H(x) with West
+  Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // Singleton H 
+  Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // H(x) with West
 }
 
 
 void Manual::prepare_3_2(DistData& distData) const
 {
-  Manual::WestLengthRange(distData, 1, 3);      // 0. West is not void
-  Manual::WestLengthRange(distData, 1, 2);      // 1. 1=2 or 2=1
+  Manual::WestLengthRange(distData, 1, 2);      // 1=2 or 2=1
+  Manual::WestLengthRange(distData, 1, 3);      // West is not void
 
-  Manual::WestTop1(distData, 2);                // 2. West has both tops
+  Manual::WestTop1(distData, 2);                // West has both tops
 
-  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // 3. H singleton West
+  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // H singleton West
 }
 
 
 void Manual::prepare_3_3(DistData& distData) const
 {
-  Manual::WestLengthRange(distData, 1, 2);      // 0. 1=2 or 2=1
+  Manual::WestLengthRange(distData, 1, 2);      // 1=2 or 2=1
 }
 
 
