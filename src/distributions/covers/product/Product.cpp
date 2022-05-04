@@ -15,6 +15,8 @@
 #include "Profile.h"
 #include "../term/CoverOperator.h"
 
+#include "../../../utils/Compare.h"
+
 Product::Product()
 {
   Product::reset();
@@ -235,6 +237,24 @@ Opponent Product::simplestOpponent(
   }
 
   return backstop;
+}
+
+
+CompareType Product::presentOrder(const Product& product2) const
+{
+  CompareType c = length.presentOrder(product2.length);
+  if (c != WIN_EQUAL)
+    return c;
+
+  for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
+  {
+    c = tops[i].presentOrder(product2.tops[i]);
+    if (c != WIN_EQUAL)
+      return c;
+  }
+
+  // To have something.
+  return WIN_FIRST;
 }
 
 

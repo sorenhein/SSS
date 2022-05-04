@@ -81,6 +81,8 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift = 0) const;
 
+    CompareType presentOrder(const Product& product2) const;
+
     string strHeader(const unsigned lengthIn = 0) const;
 
     string strLine() const;
