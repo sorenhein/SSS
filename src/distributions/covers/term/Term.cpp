@@ -183,6 +183,8 @@ unsigned char Term::complexity() const
 CompareType Term::presentOrder(const Term& term2) const
 {
   // Prefer a used term.
+  // We misuse the names here, so WIN_EQUAL means both unset,
+  // and WIN_DIFFERENT means both set and equal.
   if (Term::used())
   {
     if (! term2.used())
@@ -201,7 +203,7 @@ CompareType Term::presentOrder(const Term& term2) const
   else if (Term::upper() < term2.upper())
     return WIN_SECOND;
   else
-    return WIN_EQUAL;
+    return WIN_DIFFERENT;
 }
 
 string Term::strGeneral() const

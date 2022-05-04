@@ -242,15 +242,34 @@ Opponent Product::simplestOpponent(
 
 CompareType Product::presentOrder(const Product& product2) const
 {
-  CompareType c = length.presentOrder(product2.length);
-  if (c != WIN_EQUAL)
-    return c;
+  CompareType ccum = length.presentOrder(product2.length);
+  // See comment in Term::presentOrder.
+  if (ccum == WIN_FIRST || ccum == WIN_SECOND)
+    return ccum;
 
   for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
   {
-    c = tops[i].presentOrder(product2.tops[i]);
-    if (c != WIN_EQUAL)
-      return c;
+    // So up to now everything is identical.  Either nothing at all
+    // is set, or at least one term is set, and these are identical.
+    // set or
+    const CompareType ctop = tops[i].presentOrder(product2.tops[i]);
+    if (ccum == WIN_EQUAL)
+    {
+      // All were unused up to here.
+      if (ctop == WIN_FIRST || ctop == WIN_SECOND)
+        return ccum;
+      else if (ctop == WIN_DIFFERENT)
+        ccum = WIN_DIFFERENT;
+    }
+    else
+    {
+      // There were one or more used terms that were identical.
+      // If we won by default, prepare the empty one.
+      if (ctop == WIN_FIRST)
+        return (product2.tops[i].used() ? WIN_FIRST : WIN_SECOND);
+      else if (ctop == WIN_SECOND)
+        return (tops[i].used() ? WIN_SECOND : WIN_FIRST);
+    }
   }
 
   // To have something.

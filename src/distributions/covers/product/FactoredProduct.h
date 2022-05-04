@@ -14,6 +14,7 @@
 class Product;
 class Profile;
 enum Opponent: unsigned;
+enum CompareType: unsigned;
 
 using namespace std;
 
@@ -51,6 +52,8 @@ class FactoredProduct
     bool explainable() const;
 
     Opponent simplestOpponent(const Profile& sumProfile) const;
+
+    CompareType presentOrder(const FactoredProduct& fp2) const;
 
     string strHeader(const unsigned length = 0) const;
 

@@ -1,3 +1,7 @@
+Some kind of ordering works now, but it's not the right one.
+As soon as something is set, we prefer nothing else set (for now).
+
+
 9/4125
 Do prefer "West has a singleton" to "West has at most a singleton".
 Once we've sorted tableaux by overall complexity, if they're the same,
@@ -8,11 +12,6 @@ The various TODO's in the covers and sub-directories.
 Speed
 -----
 We could see about extract.pl before we abandon Manual?
-Sort the stores ones by presentationOrder somehow:
-- Prefer low complexity
-- Within that, prefer set to unset
-- Within that prefer low lower, then high upper
-Also look in same.pl for the composite rows (which manuals are used?).
 Disable the old symmetrics and manuals.
 
 When examining strategies, shift them down as far as possible,

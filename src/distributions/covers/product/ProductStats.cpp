@@ -6,6 +6,7 @@
    See LICENSE and README.
 */
 
+#include <list>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -14,6 +15,8 @@
 #include "ProductStats.h"
 #include "Profile.h"
 #include "FactoredProduct.h"
+
+#include "../../../utils/Compare.h"
 
 
 ProductStats::ProductStats()
@@ -259,19 +262,34 @@ string ProductStats::strByLength() const
     unsigned sumUses = 0;
     unsigned num = 0;
 
+    list<LengthEntry const *> presentationList;
     for (auto &[key, entry]: lengthStats[length])
     {
       if (entry.numUses)
-      {
-        ss <<
-          entry.str() <<
-          entry.factoredProductPtr->strLine() << "\n";
+        presentationList.push_back(&entry);
+    }
+
+    presentationList.sort([](
+      LengthEntry const *& leptr1, 
+      LengthEntry const *& leptr2)
+    {
+      const CompareType c =
+        leptr1->factoredProductPtr->presentOrder(
+          * leptr2->factoredProductPtr);
+
+      return (c == WIN_FIRST || c == WIN_EQUAL);
+    });
+
+    for (auto& pptr: presentationList)
+    {
+      ss <<
+        pptr->str() <<
+        pptr->factoredProductPtr->strLine() << "\n";
       
-        for (unsigned i = 0; i < entry.histo.size(); i++)
-          histo[i] += entry.histo[i];
-        sumUses += entry.numUses;
-        num++;
-      }
+      for (unsigned i = 0; i < pptr->histo.size(); i++)
+        histo[i] += pptr->histo[i];
+      sumUses += pptr->numUses;
+      num++;
     }
 
     ss << string(subheader.size(), '-') << "\n" << setw(7) << sumUses;

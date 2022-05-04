@@ -9,6 +9,8 @@
 #include "FactoredProduct.h"
 #include "Product.h"
 
+#include "../../../utils/Compare.h"
+
 using namespace std;
 
 
@@ -68,6 +70,12 @@ bool FactoredProduct::explainable() const
 Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
 {
   return canonicalPtr->simplestOpponent(sumProfile, canonicalShift);
+}
+
+
+CompareType FactoredProduct::presentOrder(const FactoredProduct& fp2) const
+{
+  return canonicalPtr->presentOrder(* fp2.canonicalPtr);
 }
 
 
