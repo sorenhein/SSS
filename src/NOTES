@@ -1,13 +1,3 @@
-Get the single-distribution run to work again:
-ProductMemory, probably enter products as well that arise.
-- if == end
-    add a canonical product using the canonical code and some kind
-    of reduced sumProfile
-    add a factoredProduct, and set it to point there
-  else
-    take the one we looked up and set it
-- This is not recursive as we're already down to a canonical element
-
 ProductMemory outputs (uniques and such; can. Product's by numTops).
 
 ProductStats output the table by depth (#tops used) across horizontally.

@@ -55,15 +55,20 @@ void Product::set(
 
   const unsigned topLowSize = lowerProfile.size();
   assert(upperProfile.size() == topLowSize);
-  assert(tops.size() >= topLowSize);
+  assert(sumProfile.size() == topLowSize);
+  assert(tops.size() <= topLowSize);
+
+  const unsigned char canonicalShift = 
+    static_cast<unsigned char>(topLowSize - tops.size());
 
   // Always skip the first one.
-  for (unsigned char i = 1; i < topLowSize; i++)
+  // for (unsigned char i = 1; i < topLowSize; i++)
+  for (unsigned char i = 1; i < tops.size(); i++)
   {
     tops[i].set(
-      sumProfile[i], 
-      lowerProfile[i], 
-      upperProfile[i]);
+      sumProfile[i + canonicalShift], 
+      lowerProfile[i + canonicalShift], 
+      upperProfile[i + canonicalShift]);
 
     // Note the first, i.e. lowest one.
     if (tops[i].used())

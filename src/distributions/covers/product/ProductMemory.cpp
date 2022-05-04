@@ -81,9 +81,27 @@ FactoredProduct * ProductMemory::enterOrLookup(
 
       const unsigned canonTops = numTops - canonicalShift;
       auto canonIt = factoredMemory[canonTops].find(canonicalCode);
-      assert(canonIt != factoredMemory[canonTops].end());
 
-      factoredProduct.set(canonIt->second, canonicalShift);
+      if (canonIt == factoredMemory[canonTops].end())
+      {
+        // This only happens when we solve single distributions.
+        // In this case we have to log the canonical entry first.
+        productMemory.emplace_back(Product());
+        Product& canonProduct = productMemory.back();
+
+        // The product has fewer entries than profilePair.
+        // This flows through to Product::set which derives
+        // the canonical shift and takes it into account.
+        canonProduct.resize(canonTops);
+        profilePair.setProduct(canonProduct, sumProfile, canonicalCode);
+
+        factoredProduct.set(&canonProduct, canonicalShift);
+      }
+      else
+      {
+        // Use the canonical product that we found.
+        factoredProduct.set(canonIt->second, canonicalShift);
+      }
     }
 
     return &factoredProduct;
