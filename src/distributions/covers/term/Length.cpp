@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Length.h"
+#include "CoverOperator.h"
 
 
 bool Length::notVoid() const

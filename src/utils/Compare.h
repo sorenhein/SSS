@@ -15,7 +15,7 @@
 using namespace std;
 
 
-enum CompareType
+enum CompareType: unsigned
 {
   WIN_FIRST = 0,
   WIN_SECOND = 1,

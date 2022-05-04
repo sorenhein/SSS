@@ -13,7 +13,7 @@
 
 #include "Product.h"
 #include "Profile.h"
-
+#include "../term/CoverOperator.h"
 
 Product::Product()
 {

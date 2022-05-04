@@ -4,7 +4,7 @@
 using namespace std;
 
 
-enum CoverOperator
+enum CoverOperator: unsigned
 {
   COVER_EQUAL = 0,
   COVER_INSIDE_RANGE = 1,

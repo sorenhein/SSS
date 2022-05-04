@@ -18,9 +18,9 @@
 
 #include <string>
 
-#include "CoverOperator.h"
-
-#include "../../../utils/table.h"
+enum Opponent: unsigned;
+enum CoverOperator: unsigned;
+enum CompareType: unsigned;
 
 using namespace std;
 
@@ -79,6 +79,8 @@ class Term
     bool used() const;
 
     unsigned char complexity() const;
+
+    CompareType presentOrder(const Term& term2) const;
 
     string strGeneral() const;
 };

@@ -15,6 +15,8 @@
 #include "TermCompare.h"
 
 #include "../../../const.h"
+#include "../../../utils/table.h"
+#include "../../../utils/Compare.h"
 
 extern TermCompare termCompare;
 
@@ -177,6 +179,30 @@ unsigned char Term::complexity() const
   return termCompare.complexity(data);
 }
 
+
+CompareType Term::presentOrder(const Term& term2) const
+{
+  // Prefer a used term.
+  if (Term::used())
+  {
+    if (! term2.used())
+      return WIN_FIRST;
+  }
+  else
+    return (term2.used() ? WIN_SECOND : WIN_EQUAL);
+
+  if (Term::lower() < term2.lower())
+    return WIN_FIRST;
+  else if (Term::lower() > term2.lower())
+    return WIN_SECOND;
+
+  if (Term::upper() > term2.upper())
+    return WIN_FIRST;
+  else if (Term::upper() < term2.upper())
+    return WIN_SECOND;
+  else
+    return WIN_EQUAL;
+}
 
 string Term::strGeneral() const
 {

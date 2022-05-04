@@ -13,6 +13,7 @@
 
 #include "Top.h"
 #include "Length.h"
+#include "CoverOperator.h"
 #include "Xes.h"
 
 
