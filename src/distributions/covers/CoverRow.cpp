@@ -26,6 +26,7 @@ void CoverRow::reset()
   coverPtrs.clear();
   tricks.clear();
   weight = 0;
+  rawWeight = 0;
   complexity = 0;
 }
 
@@ -50,6 +51,7 @@ void CoverRow::fillDirectly(
     coverPtr->tricksOr(tricks, cases);
     assert(complexity + coverPtr->getComplexity() > complexity);
     complexity += coverPtr->getComplexity();
+    rawWeight += coverPtr->getWeight();
   }
 
   weight = tricks.getWeight();
@@ -61,7 +63,8 @@ bool CoverRow::possibleAdd(
   const Cover& cover,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
-  Tricks& additions) const
+  Tricks& additions,
+  unsigned& rawWeightAdder) const
 {
   // Do not update any internal states.  Try to add the cover with
   // its residuals and see what this would add incrementally to the row.
@@ -76,7 +79,8 @@ bool CoverRow::possibleAdd(
   if (! coverPtrs.empty() && coverPtrs.back() == &cover)
     return false;
 
-  return cover.possible(tricks, residuals, cases, additions);
+  return cover.possible(tricks, residuals, cases, 
+    additions, rawWeightAdder);
 }
 
 
@@ -89,6 +93,7 @@ bool CoverRow::possible(const Tricks& residuals) const
 void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
+  const unsigned rawWeightAdder,
   Tricks& residuals)
 {
   coverPtrs.push_back(&cover);
@@ -102,6 +107,7 @@ void CoverRow::add(
 
   complexity += cover.getComplexity();
   weight += additions.getWeight();
+  rawWeight += rawWeightAdder;
 }
 
 
@@ -153,6 +159,12 @@ unsigned char CoverRow::effectiveDepth() const
 unsigned CoverRow::getWeight() const
 {
   return weight;
+}
+
+
+unsigned CoverRow::getRawWeight() const
+{
+  return rawWeight;
 }
 
 

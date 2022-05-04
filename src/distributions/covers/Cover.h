@@ -77,7 +77,8 @@ class Cover
       const Tricks& explained,
       const Tricks& residuals,
       const vector<unsigned char>& cases,
-      Tricks& additions) const;
+      Tricks& additions,
+      unsigned& rawWeightAdder) const;
 
     bool possible(const Tricks& residuals) const;
 

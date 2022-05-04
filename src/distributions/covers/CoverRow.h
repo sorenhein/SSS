@@ -32,7 +32,11 @@ class CoverRow
     // The OR'ed tricks of the covers.
     Tricks tricks;
 
+    // The net weight of the strategy covered.
     unsigned weight;
+
+    // The raw weight of all individual cover's (may overlap).
+    unsigned rawWeight;
 
     unsigned char complexity;
 
@@ -53,13 +57,15 @@ class CoverRow
       const Cover& cover,
       const Tricks& residuals,
       const vector<unsigned char>& cases,
-      Tricks& additions) const;
+      Tricks& additions,
+      unsigned& rawWeightAdder) const;
 
     bool possible(const Tricks& residuals) const;
 
     void add(
       const Cover& cover,
       const Tricks& additions,
+      const unsigned rawWeightAdder,
       Tricks& residuals);
 
     void updateStats(
@@ -78,6 +84,8 @@ class CoverRow
     unsigned char effectiveDepth() const;
 
     unsigned getWeight() const;
+
+    unsigned getRawWeight() const;
 
     unsigned char getComplexity() const;
 

@@ -125,13 +125,15 @@ bool Cover::possible(
   const Tricks& explained,
   const Tricks& residuals,
   const vector<unsigned char>& cases,
-  Tricks& additions) const
+  Tricks& additions,
+  unsigned& rawWeightAdder) const
 {
   // explained: The OR'ed vector in CoverRow that is already explained.
   // residuals: The overall tricks in cover tableau that remains.
   // additions: If the cover can be added, the additions to the
   //   explained vector that would arise
 
+  rawWeightAdder = tricks.getWeight();
   return tricks.possible(explained, residuals, cases, additions);
 }
 
