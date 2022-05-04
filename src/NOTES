@@ -1,10 +1,3 @@
-ProductMemory: Look at finding products instead of 165k elements.
-- productMemory becomes a vector<map<unsigned long long Product>>
-- Get up to 14 in 1st dimension
-- productMemory[sumProfile.length()].find(code)
-- if == end(), add it
-- if not, use the pointer
-
 Get the single-distribution run to work again:
 ProductMemory, probably enter products as well that arise.
 - if == end
@@ -15,7 +8,7 @@ ProductMemory, probably enter products as well that arise.
     take the one we looked up and set it
 - This is not recursive as we're already down to a canonical element
 
-ProductMemory outputs (uniques and such).
+ProductMemory outputs (uniques and such; can. Product's by numTops).
 
 ProductStats output the table by depth (#tops used) across horizontally.
 Look at the statistics in general, their sense and correctness.

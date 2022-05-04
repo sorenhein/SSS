@@ -34,7 +34,6 @@ void ProductMemory::reset()
 void ProductMemory::resize(const unsigned char memSize)
 {
   factoredMemory.resize(memSize);
-  productMemory.resize(memSize);
   enterStats.resize(memSize);
 }
 
@@ -64,23 +63,15 @@ FactoredProduct * ProductMemory::enterOrLookup(
     if (canonicalShift == 0)
     {
       // We will get a canonical product directly from profilePair.
-      auto pit = productMemory[numTops].find(code);
-      if (pit == productMemory[numTops].end())
-      {
-        // We have not seen this product before.
-        Product& product = productMemory[numTops][code] = Product();
+      // It will always be different from others we have seen,
+      // so we just dump it into a list.
+      productMemory.emplace_back(Product());
+      Product& product = productMemory.back();
 
-        product.resize(numTops);
-        profilePair.setProduct(product, sumProfile, code);
+      product.resize(numTops);
+      profilePair.setProduct(product, sumProfile, code);
 
-        factoredProduct.set(&product, canonicalShift);
-      }
-      else
-      {
-assert(false);
-        Product& product = pit->second;
-        factoredProduct.set(&product, canonicalShift);
-      }
+      factoredProduct.set(&product, canonicalShift);
     }
     else
     {
@@ -136,13 +127,7 @@ string ProductMemory::strEnterStats() const
   ss << "ProductMemory entry statistics\n\n";
 
 // TODO Delete
-unsigned numprod = 0;
-for (unsigned i = 0; i < productMemory.size(); i++)
-{
-  ss << setw(2) << i << setw(8) << productMemory[i].size() << "\n";
-  numprod += productMemory[i].size();
-}
-ss << "NUMPROD " << numprod << "\n\n";
+ss << "NUMPROD " << productMemory.size() << "\n\n";
 
   ss <<
     setw(8) << "Numtops" <<
