@@ -33,11 +33,13 @@ class ProductMemory
     
     struct EnterStat
     {
+      unsigned numCanonical;
       unsigned numUnique;
       unsigned numTotal;
 
       void operator += (const EnterStat& estat2)
       {
+        numCanonical += estat2.numCanonical;
         numUnique += estat2.numUnique;
         numTotal += estat2.numTotal;
       };
@@ -47,9 +49,10 @@ class ProductMemory
         stringstream ss;
 
         ss <<
+          setw(12) << "Canonical" <<
           setw(12) << "Unique" <<
           setw(12) << "Total" <<
-          setw(12) << "Ratio" <<
+          setw(12) << "Ratio can." <<
           "\n";
 
         return ss.str();
@@ -60,10 +63,11 @@ class ProductMemory
         stringstream ss;
 
         ss <<
+          setw(12) << numCanonical <<
           setw(12) << numUnique <<
           setw(12) << numTotal <<
           setw(11) << fixed << setprecision(1) <<
-            100. * static_cast<float>(numUnique) /
+            100. * static_cast<float>(numCanonical) /
             static_cast<float>(numTotal) <<
             "%";
 
@@ -76,6 +80,15 @@ class ProductMemory
     list<Product> productMemory;
 
     vector<EnterStat> enterStats;
+
+
+    void enterCanonical(
+      const Profile& sumProfile,
+      const ProfilePair& profilePair,
+      const unsigned canonicalTops,
+      const unsigned char canonicalShift,
+      const unsigned long long canonicalCode,
+      FactoredProduct& factoredProduct);
 
 
   public:

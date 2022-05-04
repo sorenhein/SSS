@@ -38,12 +38,33 @@ void ProductMemory::resize(const unsigned char memSize)
 }
 
 
+void ProductMemory::enterCanonical(
+  const Profile& sumProfile,
+  const ProfilePair& profilePair,
+  const unsigned canonicalTops,
+  const unsigned char canonicalShift,
+  const unsigned long long canonicalCode,
+  FactoredProduct& factoredProduct)
+{
+  enterStats[canonicalTops].numCanonical++;
+
+  productMemory.emplace_back(Product());
+  Product& product = productMemory.back();
+
+  product.resize(canonicalTops);
+  profilePair.setProduct(product, sumProfile, canonicalCode);
+
+  factoredProduct.set(&product, canonicalShift);
+}
+
+
 FactoredProduct * ProductMemory::enterOrLookup(
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
   const unsigned numTops = sumProfile.size();
   assert(numTops < factoredMemory.size());
+  enterStats[numTops].numTotal++;
 
   unsigned long long code = profilePair.getCode(sumProfile);
   auto fit = factoredMemory[numTops].find(code);
@@ -51,7 +72,6 @@ FactoredProduct * ProductMemory::enterOrLookup(
   if (fit == factoredMemory[numTops].end())
   {
     enterStats[numTops].numUnique++;
-    enterStats[numTops].numTotal++;
 
     // Enter a new factored product.
     FactoredProduct& factoredProduct = 
@@ -63,15 +83,9 @@ FactoredProduct * ProductMemory::enterOrLookup(
     if (canonicalShift == 0)
     {
       // We will get a canonical product directly from profilePair.
-      // It will always be different from others we have seen,
-      // so we just dump it into a list.
-      productMemory.emplace_back(Product());
-      Product& product = productMemory.back();
-
-      product.resize(numTops);
-      profilePair.setProduct(product, sumProfile, code);
-
-      factoredProduct.set(&product, canonicalShift);
+      // It will always be different from others we have seen.
+      ProductMemory::enterCanonical(
+        sumProfile, profilePair, numTops, 0, code, factoredProduct);
     }
     else
     {
@@ -79,23 +93,16 @@ FactoredProduct * ProductMemory::enterOrLookup(
       const unsigned long long canonicalCode =
         profilePair.getCanonicalCode(code, canonicalShift);
 
-      const unsigned canonTops = numTops - canonicalShift;
-      auto canonIt = factoredMemory[canonTops].find(canonicalCode);
+      const unsigned canonicalTops = numTops - canonicalShift;
+      auto canonIt = factoredMemory[canonicalTops].find(canonicalCode);
 
-      if (canonIt == factoredMemory[canonTops].end())
+      if (canonIt == factoredMemory[canonicalTops].end())
       {
         // This only happens when we solve single distributions.
         // In this case we have to log the canonical entry first.
-        productMemory.emplace_back(Product());
-        Product& canonProduct = productMemory.back();
-
-        // The product has fewer entries than profilePair.
-        // This flows through to Product::set which derives
-        // the canonical shift and takes it into account.
-        canonProduct.resize(canonTops);
-        profilePair.setProduct(canonProduct, sumProfile, canonicalCode);
-
-        factoredProduct.set(&canonProduct, canonicalShift);
+        ProductMemory::enterCanonical(
+          sumProfile, profilePair, canonicalTops,
+          canonicalShift, canonicalCode, factoredProduct);
       }
       else
       {
@@ -109,7 +116,6 @@ FactoredProduct * ProductMemory::enterOrLookup(
   else
   {
     // Look up an existing element.
-    enterStats[numTops].numTotal++;
     return &(fit->second);
   }
 }
@@ -144,9 +150,6 @@ string ProductMemory::strEnterStats() const
 
   ss << "ProductMemory entry statistics\n\n";
 
-// TODO Delete
-ss << "NUMPROD " << productMemory.size() << "\n\n";
-
   ss <<
     setw(8) << "Numtops" <<
     enterStats[0].strHeader();
@@ -163,7 +166,7 @@ ss << "NUMPROD " << productMemory.size() << "\n\n";
     sum += enterStats[i];
   }
 
-  ss << string(44, '-') << "\n";
+  ss << string(56, '-') << "\n";
   ss << setw(8) << " " << sum.str() << "\n";
 
   return ss.str() + "\n";
