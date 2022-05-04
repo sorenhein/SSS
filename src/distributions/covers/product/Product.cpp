@@ -242,6 +242,15 @@ Opponent Product::simplestOpponent(
 
 CompareType Product::presentOrder(const Product& product2) const
 {
+  if (activeCount < product2.activeCount)
+    return WIN_FIRST;
+  else if (activeCount > product2.activeCount)
+    return WIN_SECOND;
+  else if (complexity < product2.complexity)
+    return WIN_FIRST;
+  else if (complexity > product2.complexity)
+    return WIN_SECOND;
+
   CompareType ccum = length.presentOrder(product2.length);
   // See comment in Term::presentOrder.
   if (ccum == WIN_FIRST || ccum == WIN_SECOND)
@@ -251,7 +260,6 @@ CompareType Product::presentOrder(const Product& product2) const
   {
     // So up to now everything is identical.  Either nothing at all
     // is set, or at least one term is set, and these are identical.
-    // set or
     const CompareType ctop = tops[i].presentOrder(product2.tops[i]);
     if (ccum == WIN_EQUAL)
     {
