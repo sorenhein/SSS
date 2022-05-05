@@ -71,6 +71,7 @@ while (my $line = <$fh>)
       $line2 =~ s/\s*\[.*\]//;
       $line2 =~ s/^YY //;
       $line2 =~ s/^\s+//;
+      $line2 =~ s/; or$//;
       push @{$strats[$sno]}, $line2;
     }
   }
@@ -96,27 +97,9 @@ while (my $line = <$fh>)
       $line2 =~ s/^\*\s+//;
       $line2 =~ s/\s*\[.*\]//;
       $line2 =~ s/\s+$//;
+      $line2 =~ s/; or$//;
       push @vstrats, $line2;
     }
-
-=pod
-    for my $i (reverse 0 .. $#{$strats[$vno]})
-    {
-      my $t = $strats[$vno][$i];
-      if ($t =~ /^Either opponent/)
-      {
-        my $t1 = $t;
-        $t1 =~ s/^Either opponent/West/;
-        push @{$strats[$vno]}, $t1;
-
-        $t1 = $t;
-        $t1 =~ s/^Either opponent/East/;
-        push @{$strats[$vno]}, $t1;
-
-        splice(@{$strats[$vno]}, $i, 1);
-      }
-    }
-=cut
 
     my @ssorted = sort @{$strats[$vno]};
     my @vsorted = sort @vstrats;

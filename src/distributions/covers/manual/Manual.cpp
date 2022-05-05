@@ -300,82 +300,54 @@ void Manual::prepare_4_1(DistData& distData) const
 
 void Manual::prepare_4_2(DistData& distData) const
 {
-  Manual::WestLength(distData, 0);              // 0. West is void
-  Manual::EastLength(distData, 0);              // 1. East is void
-  Manual::EastLength(distData, 1);              // 2. East has singleton
-  Manual::WestLength(distData, 2);              // 3. 2=2
+  Manual::WestLengthRange(distData, 0, 3);      // East is not void
+  Manual::WestLengthRange(distData, 0, 2);      // 0=4, 1=3, 2=2
+  Manual::WestLength(distData, 0);              // West is void
+  Manual::WestLengthRange(distData, 1, 4);      // West is not void
+  Manual::WestLengthRange(distData, 1, 3);      // 1=3, 2=2 or 3=1
+  Manual::WestLengthRange(distData, 1, 2);      // 1=3 or 2=2
+  Manual::WestLengthRange(distData, 2, 4);      // 2=2, 3=1 or 4=0
+  Manual::WestLengthRange(distData, 2, 3);      // 2=2 or 3=1
+  Manual::WestLength(distData, 2);              // 2=2
+  Manual::EastLength(distData, 1);              // East has singleton
+  Manual::EastLength(distData, 0);              // East is void
 
-  Manual::WestLengthRange(distData, 0, 2);      // 4. 0=4, 1=3, 2=2
-  Manual::WestLengthRange(distData, 0, 3);      // 5. East is not void
-  Manual::WestLengthRange(distData, 1, 2);      // 6. 1=3 or 2=2
-  Manual::WestLengthRange(distData, 1, 3);      // 7. 1=3, 2=2 or 3=1
-  Manual::WestLengthRange(distData, 1, 4);      // 8. West is not void
-  Manual::WestLengthRange(distData, 2, 3);      // 9. 2=2 or 3=1
-  Manual::WestLengthRange(distData, 2, 4);      // 10. 2=2, 3=1 or 4=0
+  Manual::EastTop1(distData, 2);                // HH any East
+  Manual::WestTop1Range(distData, 1, 2);        // H or HH any West
+  Manual::WestTop1(distData, 1);                // Exactly 1 H with West
+  Manual::WestTop1(distData, 2);                // HH-any West
 
-  Manual::WestTop1(distData, 2);                // 11. HH-any West
-  Manual::WestTop1Range(distData, 1, 2);        // 12. H or HH any West
-  Manual::EastTop1(distData, 2);                // 13. HH any East
-  Manual::WestTop1(distData, 1);                // 14. Ex. 1 H with West
+  Manual::WestGeneralAnd(distData, 0, 3, 1, 2); // No void; West 1+ H
+  Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // H(x) West
+  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // x singleton West
+  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // H singleton West
+  Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // H singleton East
+  Manual::WestGeneralAnd(distData, 2, 4, 1, 2); // West 2-4c with 1+ H
+  Manual::WestGeneralAnd(distData, 2, 4, 1, 1); // H(x) East
+  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // x singleton West
+  Manual::WestGeneralAnd(distData, 2, 2, 2, 2); // HH doubleton West
+  Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // HH doubleton East
+  Manual::SymmGeneralAnd(distData, 2, 2, 0, 0); // HH doubleton
+  Manual::WestGeneralAnd(distData, 3, 3, 2, 2); // HHx with West
+  Manual::EastGeneralAnd(distData, 3, 3, 2, 2); // HHx with East
 
-  Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // 15. H singleton West
-  Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // 16. H singleton East
-
-  Manual::WestGeneralAnd(distData, 2, 2, 2, 2); // 17. HH doubleton West
-  Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // 18. HH doubleton East
-  Manual::SymmGeneralAnd(distData, 2, 2, 0, 0); // 19. HH doubleton
-
-  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // 20. x singleton West
-  Manual::WestGeneralAnd(distData, 2, 2, 0, 1); // 21. xx, Hx West
-  Manual::WestGeneralAnd(distData, 2, 2, 1, 2); // 22. Hx, HH West
-
-  Manual::WestGeneralAnd(distData, 3, 3, 2, 2); // 23. HHx with West
-  Manual::EastGeneralAnd(distData, 3, 3, 2, 2); // 24. HHx with East
-
-  Manual::WestGeneralAnd(distData, 0, 3, 1, 2); // 25. No void; West 1+ H
-  Manual::WestGeneralAnd(distData, 2, 4, 1, 2); // 26. West 2-4c with 1+ H
-
-  // 27. The suit splits 2=2, or West has both tops.
-  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 4, 2, 2);
-
-  // 28. The suit splits 2=2, or East has both tops.
-  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 4, 0, 0);
-
-  // 29. West has at most a doubleton, or West has both tops.
-  Manual::WestGeneralTwo(distData, 0, 2, 0, 2,     0, 4, 2, 2);
-
-  // 30. East has at most a doubleton, or East has both tops.
-  Manual::WestGeneralTwo(distData, 2, 4, 0, 2,     0, 4, 0, 0);
-
-  // 31. East has at most a doubleton, or West has exactly one top.
-  Manual::WestGeneralTwo(distData, 2, 4, 0, 2,     0, 4, 1, 1);
-
-  // 32. West has exactly one top, or the suit splits 2=2.
+  // West has exactly one top, or the suit splits 2=2.
   Manual::WestGeneralTwo(distData, 0, 4, 1, 1,     2, 2, 0, 2);
 
-  // 33. 1=3 or 2=2, or West has both tops.
-  Manual::WestGeneralTwo(distData, 1, 2, 0, 2,     0, 4, 2, 2);
+  // The suit splits 2=2, or West has both tops.
+  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 4, 2, 2);
 
-  // 34. 1=3 or 2=2, or West has exactly one top.
-  Manual::WestGeneralTwo(distData, 1, 2, 0, 2,     0, 4, 1, 1);
+  // The suit splits 2=2, or East has both tops.
+  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 4, 0, 0);
 
-  // 35. 2=2 or 3=1, or West has exactly one top.
-  Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 4, 1, 1);
+  // West has at most a doubleton, or West has both tops.
+  Manual::WestGeneralTwo(distData, 0, 2, 0, 2,     0, 4, 2, 2);
 
-  // 36. 2=2 or 3=1, or West has both tops.
-  Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 4, 2, 2);
+  // East has at most a doubleton, or East has both tops.
+  Manual::WestGeneralTwo(distData, 2, 4, 0, 2,     0, 4, 0, 0);
 
-  // 37. 0-2 cards, or exactly one top.
-  Manual::WestGeneralTwo(distData, 0, 2, 0, 2,     0, 4, 1, 1);
-
-  // 38. 2-4 cards, or exactly one top.
-  Manual::WestGeneralTwo(distData, 2, 4, 0, 2,     0, 4, 1, 1);
-
-  // 39. 1-2 cards, or exactly one top.
-  Manual::WestGeneralTwo(distData, 1, 2, 0, 2,     0, 4, 1, 1);
-
-  // 40. 2-3 cards, or East has both tops.
-  Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 4, 0, 0);
+  // The suit splits 2=2, or East has at most one top.
+  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 4, 1, 2);
 }
 
 
@@ -454,7 +426,7 @@ void Manual::prepare_5_1(DistData& distData) const
   Manual::WestGeneralTwo(distData, 0, 3, 0, 1,     0, 5, 0, 0);
 
   // 31. The suit splits 2-3 either way, or East has the top.
-  Manual::WestGeneralTwo(distData, 2, 3, 0, 1,     0, 5, 0, 0);
+  Manual::WestGeneralTwo(distData, 0, 5, 0, 0,     2, 3, 0, 1);
 }
 
 
