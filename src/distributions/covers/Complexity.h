@@ -23,6 +23,8 @@ class Complexity
 
     unsigned char max;
 
+    unsigned raw;
+
   public:
 
   void reset();
@@ -30,13 +32,17 @@ class Complexity
   bool match(
     const unsigned char coverComplexity,
     const unsigned char rowComplexity,
+    const unsigned rawWeight,
     const Complexity& solution) const;
 
   void addCover(
     const unsigned char coverComplexity,
-    const unsigned char rowComplexity);
+    const unsigned char rowComplexity,
+    const unsigned rawWeight);
 
-  void addRow(const unsigned char rowComplexity);
+  void addRow(
+    const unsigned char rowComplexity,
+    const unsigned rawWeight);
 
   unsigned char headroom(const Complexity& solution) const;
 

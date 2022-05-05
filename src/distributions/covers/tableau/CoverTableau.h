@@ -37,6 +37,7 @@ class CoverTableau
   private:
 
     list<CoverRow> rows;
+
     unsigned char tricksMin;
 
     Tricks residuals;

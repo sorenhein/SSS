@@ -1,25 +1,11 @@
-Ordering still not perfect, e.g. 4-1
-Seem to prefer "no tops" to "len 1".
-Problem might be Product::presentOrder, introduce j from product2.tops(),
-decrement both until one breaks.
+* See about extract.pl before we abandon Manual.
+  Then disable the old symmetrics and manuals.
 
-9/4125
-Do prefer "West has a singleton" to "West has at most a singleton".
-Once we've sorted tableaux by overall complexity, if they're the same,
-we go by total count of all terms?
-- Complexity: New parameter "raw"
-- Get it into all Complexity methods somehow
+* The various TODO's in the covers and sub-directories.
 
-See about extract.pl before we abandon Manual.
-Then disable the old symmetrics and manuals.
-
-The various TODO's in the covers and sub-directories.
-
-Verbals automatically
-=====================
+* Control in general by an input parameter & bool flag (#explicit tops)
 
 * Try higher depths
-* Control in general by an input parameter & bool flag (#explicit tops)
 
 Speed
 -----

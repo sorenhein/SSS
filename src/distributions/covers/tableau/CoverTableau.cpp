@@ -57,14 +57,14 @@ void CoverTableau::addRow(const Cover& cover)
   CoverRow& row = rows.back();
   row.resize(residuals.size());
   row.add(cover, cover.getTricks(), cover.getWeight(), residuals);
-  complexity.addRow(row.getComplexity());
+  complexity.addRow(row.getComplexity(), row.getRawWeight());
 }
 
 
 void CoverTableau::addRow( const CoverRow& row)
 {
   rows.push_back(row);
-  complexity.addRow(row.getComplexity());
+  complexity.addRow(row.getComplexity(), row.getRawWeight());
   residuals -= row.getTricks();
 }
 
@@ -82,7 +82,8 @@ void CoverTableau::extendRow(
 
   riter->add(cover, additions, rawWeight, residuals);
 
-  complexity.addCover(cover.getComplexity(), riter->getComplexity());
+  complexity.addCover(cover.getComplexity(), riter->getComplexity(),
+    rawWeight);
 }
 
 
@@ -129,7 +130,7 @@ bool CoverTableau::attempt(
       entry.tableau.extendRow(* coverIter, additions, rawWeightAdded, rno);
     }
     else if (complexity.match(coverIter->getComplexity(),
-        row.getComplexity(), solution.complexity))
+        row.getComplexity(), coverIter->getWeight(), solution.complexity))
     {
       // The cover makes a solution which beats the previous one.
       solution = * this;
