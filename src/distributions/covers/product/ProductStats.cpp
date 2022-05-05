@@ -339,10 +339,12 @@ string ProductStats::strByLengthTops() const
       unsigned sumUses = 0;
       unsigned num = 0;
 
+      list<LengthTopEntry const *> presentationList;
       for (auto &[key, entry]: lengthTopStats[length][maxTops])
       {
         if (entry.numUses)
-        {
+          presentationList.push_back(&entry);
+          /*
           ss <<
             entry.str() <<
             entry.factoredProductPtr->strLine() << "\n";
@@ -350,7 +352,29 @@ string ProductStats::strByLengthTops() const
           sumTableaux += entry.numTableaux;
           sumUses += entry.numUses;
           num++;
-        }
+          */
+      }
+
+      presentationList.sort([](
+        LengthTopEntry const *& lteptr1, 
+        LengthTopEntry const *& lteptr2)
+      {
+        const CompareType c =
+          lteptr1->factoredProductPtr->presentOrder(
+            * lteptr2->factoredProductPtr);
+  
+        return (c == WIN_FIRST || c == WIN_EQUAL);
+      });
+
+      for (auto& pptr: presentationList)
+      {
+        ss <<
+          pptr->str() <<
+          pptr->factoredProductPtr->strLine() << "\n";
+      
+        sumTableaux += pptr->numTableaux;
+        sumUses += pptr->numUses;
+        num++;
       }
 
       ss <<
