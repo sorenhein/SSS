@@ -1,4 +1,6 @@
-* See about extract.pl before we abandon Manual.
+* Manual
+  Add a symmetric general two to get down to 0.
+  Find a way to count uses of manual covers (a few probably unused).
   Then disable the old symmetrics and manuals.
 
 * The various TODO's in the covers and sub-directories.
@@ -6,12 +8,16 @@
 * Control in general by an input parameter & bool flag (#explicit tops)
 
 * Try higher depths
+  - Make a general output, may not be pretty
+  - Count #combs by highest depth
+  - Count #strats by depth
 
 Speed
 -----
 
 When examining strategies, shift them down as far as possible,
 as this reduces the number of covers to consider.
+Or at least we can look up the template and not recreate it.
 
 Names of cards
 --------------
