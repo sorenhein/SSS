@@ -51,7 +51,7 @@ while (my $line = <$fh>)
     my $len = length $opps;
     $tag = $len . '-' . $count;
   }
-  elsif ($line =~ /^Strategy #(\d+).*: (.*)/)
+  elsif ($line =~ /^Manual strategy #(\d+).*: (.*)/)
   {
     my $sno = $1;
     my $rest = $2;
@@ -75,7 +75,7 @@ while (my $line = <$fh>)
       push @{$strats[$sno]}, $line2;
     }
   }
-  elsif ($line =~ /^VStrategy #(\d+).*: (.*)/)
+  elsif ($line =~ /^Strategy #(\d+).*: (.*)/)
   {
 # print "lno $ lno\n";
     my $vno = $1;

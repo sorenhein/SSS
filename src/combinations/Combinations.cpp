@@ -293,7 +293,7 @@ void Combinations::runUniques(
 
   // TODO Back into Combinations?
   CombTest ctest;
-  list<CoverTableau> tableaux;
+  // list<CoverTableau> tableaux;
 
   for (unsigned holding = combMemory.size(cards); holding-- > 0; )
   {
@@ -346,9 +346,8 @@ histoPlay[plays.size()]++;
           {
             timersStrat[32].start();
             comb.covers(
-              distributions.get(cards, 
-              centry.getHolding2()).covers(),
-              tableaux,
+              distributions.get(cards, centry.getHolding2()).covers(),
+              // tableaux,
               productStats);
             timersStrat[32].stop();
           }
@@ -635,10 +634,10 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   Combination& comb = combMemory.getComb(cards, holding);
 
-  // list<ResExpl> resExplanations;
-  list<CoverTableau> tableaux;
+  // list<CoverTableau> tableaux;
 
-  comb.covers(dist.covers(), tableaux, productStats);
+  comb.covers(dist.covers(), // tableaux, 
+    productStats);
 }
 
 

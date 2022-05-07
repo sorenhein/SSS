@@ -995,14 +995,14 @@ void Slist::getResultList(list<Result>& resultList) const
 
 void Slist::coversManual(
   Covers& coversIn,
-  const unsigned char maxRank,
-  list<CoverTableau>& tableaux) const
+  const unsigned char maxRank) const
 {
-  unsigned stratNo = 0;
 
+  list<CoverTableau> tableaux;
   tableaux.resize(strategies.size());
   auto riter = tableaux.begin();
 
+  unsigned stratNo = 0;
   for (auto& strat: strategies)
   {
     const Result result = strat.resultLowest();
@@ -1016,16 +1016,16 @@ void Slist::coversManual(
     }
 
     riter->reset();
-    if (strat.covers(coversIn, * riter))
+    if (strat.coversManual(coversIn, * riter))
     {
-      cout << "Strategy #" << stratNo << " ";
+      cout << "Manual strategy #" << stratNo << " ";
       cout << riter->strBracket() << ": ";
       cout << riter->str(coversIn.getSumProfile());
     }
     else
     {
-      cout << "Strategy #" << stratNo << ": ";
-      cout << strat.str("Unexplained", true) << "\n";
+      cout << "Manual strategy #" << stratNo << ": ";
+      cout << strat.str("Unexplained manual", true) << "\n";
     }
     
     stratNo++;
@@ -1037,11 +1037,8 @@ void Slist::coversManual(
 void Slist::covers(
   Covers& coversIn,
   const unsigned char maxRank,
-  list<CoverTableau>& tableaux,
   ProductStats& productStats) const
 {
-  Slist::coversManual(coversIn, maxRank, tableaux);
-
   unsigned stratNo = 0;
   CoverTableau tableau;
 
@@ -1057,8 +1054,8 @@ void Slist::covers(
     }
 
     bool newTableauFlag;
-    strat.coversNew(coversIn, 1, tableau, newTableauFlag);
-    cout << "VStrategy #" << stratNo << " ";
+    strat.covers(coversIn, 1, tableau, newTableauFlag);
+    cout << "Strategy #" << stratNo << " ";
     cout << tableau.strBracket() << ": ";
 
     if (tableau.complete())
@@ -1070,7 +1067,7 @@ void Slist::covers(
         newTableauFlag);
     }
     else
-      cout << strat.str("Vnexplained", true) << "\n";
+      cout << strat.str("Unexplained", true) << "\n";
     
     stratNo++;
   }

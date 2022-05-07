@@ -230,11 +230,11 @@ class Strategy
 
     // ******************* Winners ******************
 
-    bool covers(
+    bool coversManual(
       Covers& coversIn,
       CoverTableau& tableau) const;
 
-    void coversNew(
+    void covers(
       Covers& coversIn,
       const unsigned char numStrategyTops,
       CoverTableau& tableau,

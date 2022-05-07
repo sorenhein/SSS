@@ -105,11 +105,6 @@ class Slist
       list<Addition>& additions,
       list<list<Strategy>::const_iterator>& deletions);
 
-    void coversManual(
-      Covers& coversIn,
-      const unsigned char maxRank,
-      list<CoverTableau>& tableaux) const;
-
     string strHeader(
       const string& title,
       const bool rankFlag) const;
@@ -249,10 +244,13 @@ class Slist
 
     // Debug utilities.
 
+    void coversManual(
+      Covers& coversIn,
+      const unsigned char maxRank) const;
+
     void covers(
       Covers& coversIn,
       const unsigned char maxRank,
-      list<CoverTableau>& tableaux,
       ProductStats& productStats) const;
 
     bool ordered() const;

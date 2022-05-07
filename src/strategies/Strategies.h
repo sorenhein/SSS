@@ -106,9 +106,13 @@ class Strategies
     void getResultList(list<Result>& resultList) const;
     unsigned char winRankLow() const;
 
+    void coversManual(
+      Covers& coversIn,
+      const unsigned char maxRank = 0) const;
+
     void covers(
       Covers& coversIn,
-      list<CoverTableau>& tableaux,
+      // list<CoverTableau>& tableaux,
       ProductStats& productStats,
       const unsigned char maxRank = 0) const;
 

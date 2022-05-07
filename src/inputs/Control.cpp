@@ -115,6 +115,7 @@ void Control::configure()
       "0x004: Optimizations when calculating strategies\n"
       "0x008: Consider ranks when comparing strategies\n"
       "0x010: Describe winning tricks vectors verbally"
+      "0x020: Describe winning tricks vectors verbally (manual)"
       },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
@@ -464,6 +465,11 @@ bool Control::runRankComparisons() const
 bool Control::runVerbalTricks() const
 {
   return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_VERBAL_TRICKS] != 0);
+}
+
+bool Control::runVerbalTricksManually() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_VERBAL_TRICKS_MANUAL] != 0);
 }
 
 bool Control::outputHolding() const

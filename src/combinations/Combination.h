@@ -71,7 +71,7 @@ class Combination
 
     void covers(
       Covers& coversIn,
-      list<CoverTableau>& tableaux,
+      // list<CoverTableau>& tableaux,
       ProductStats& productStats);
 
     const Strategies& strategies() const;

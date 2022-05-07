@@ -977,7 +977,7 @@ void Strategy::setAndAdaptVoid(
  *                                                          *
  ************************************************************/
 
-bool Strategy::covers(
+bool Strategy::coversManual(
   Covers& coversIn,
   CoverTableau& tableau) const
 {
@@ -988,7 +988,7 @@ bool Strategy::covers(
 }
 
 
-void Strategy::coversNew(
+void Strategy::covers(
   Covers& coversIn,
   const unsigned char numStrategyTops,
   CoverTableau& tableau,

@@ -424,13 +424,20 @@ unsigned char Strategies::winRankLow() const
  *                                                          *
  ************************************************************/
 
+void Strategies::coversManual(
+  Covers& coversIn,
+  const unsigned char maxRank) const
+{
+  slist.coversManual(coversIn, maxRank);
+}
+
+
 void Strategies::covers(
   Covers& coversIn,
-  list<CoverTableau>& tableaux,
   ProductStats& productStats,
   const unsigned char maxRank) const
 {
-  slist.covers(coversIn, maxRank, tableaux, productStats);
+  slist.covers(coversIn, maxRank, productStats);
 }
 
 
