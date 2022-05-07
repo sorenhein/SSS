@@ -172,6 +172,7 @@ void Manual::SymmGeneralAnd(
   distData.dataPtr->back().back().symmFlag = true;
 }
 
+// ----- General two-entry cover row -----
 
 void Manual::WestGeneralTwo(
   DistData& distData,
@@ -184,6 +185,27 @@ void Manual::WestGeneralTwo(
   const unsigned char lowerTopsIncl2,
   const unsigned char upperTopsIncl2) const
 {
+  Manual::SymmGeneralTwo(distData,
+    lowerCardsIncl1, upperCardsIncl1,
+    lowerTopsIncl1, upperTopsIncl1, false,
+    lowerCardsIncl2, upperCardsIncl2,
+    lowerTopsIncl2, upperTopsIncl2, false);
+}
+
+
+void Manual::SymmGeneralTwo(
+  DistData& distData,
+  const unsigned char lowerCardsIncl1,
+  const unsigned char upperCardsIncl1,
+  const unsigned char lowerTopsIncl1,
+  const unsigned char upperTopsIncl1,
+  const bool symmFlag1,
+  const unsigned char lowerCardsIncl2,
+  const unsigned char upperCardsIncl2,
+  const unsigned char lowerTopsIncl2,
+  const unsigned char upperTopsIncl2,
+  const bool symmFlag2) const
+{
   distData.dataPtr->emplace_back(list<ManualData>());
   auto& mlist = distData.dataPtr->back();
 
@@ -195,12 +217,14 @@ void Manual::WestGeneralTwo(
 
   mdata1.profilePair.setLength(lowerCardsIncl1, upperCardsIncl1);
   mdata1.profilePair.setTop(highestTop, lowerTopsIncl1, upperTopsIncl1);
+  mdata1.symmFlag = symmFlag1;
 
   mlist.emplace_back(ManualData(* distData.sumProfilePtr));
   auto& mdata2 = mlist.back();
 
   mdata2.profilePair.setLength(lowerCardsIncl2, upperCardsIncl2);
   mdata2.profilePair.setTop(highestTop, lowerTopsIncl2, upperTopsIncl2);
+  mdata2.symmFlag = symmFlag2;
 }
 
 
@@ -495,6 +519,21 @@ void Manual::prepare_5_2(DistData& distData) const
 
   // 3-2 either way, or East has both H's.
   Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 5, 0, 0);
+
+  // Either opponent has both tops, or West has one honor singleton.
+  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 1, 1, 1, 1, false);
+
+  // Either opponent has both tops, or West has singleton.
+  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 1, 1, 0, 2, false);
+
+  // Either opponent has both tops, or West has at most a doubleton
+  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 0, 2, 0, 2, false);
+
+  // Either opponent has both tops, or East has one honor singleton.
+  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 4, 4, 1, 1, false);
+
+  // Either opponent has both tops, or East has singleton.
+  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 4, 4, 0, 2, false);
 }
 
 
@@ -629,6 +668,12 @@ void Manual::prepare_6_2(DistData& distData) const
 
   //  West has both tops, or East has a singleton.
   Manual::WestGeneralTwo(distData, 0, 6, 2, 2,     5, 5, 0, 2);
+
+  // Either opponent has both tops, or West has singleton.
+  Manual::SymmGeneralTwo(distData, 0, 6, 0, 0, true, 1, 1, 0, 2, false);
+
+  // Either opponent has both tops, or East has singleton.
+  Manual::SymmGeneralTwo(distData, 0, 6, 0, 0, true, 5, 5, 0, 2, false);
 }
 
 
@@ -662,6 +707,9 @@ void Manual::prepare_6_4(DistData& distData) const
   Manual::WestLength(distData, 3);              // 3=3
 
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // H singleton
+
+  // Either opponent has one top, or the suit splits 2-4, 3-3 or 4-2.
+  Manual::SymmGeneralTwo(distData, 0, 6, 1, 1, true, 2, 4, 0, 4, false);
 }
 
 

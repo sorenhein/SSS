@@ -109,6 +109,19 @@ class Manual
       const unsigned char lowerTopsIncl2,
       const unsigned char upperTopsIncl2) const;
 
+    void SymmGeneralTwo(
+      DistData& distData,
+      const unsigned char lowerCardsIncl1,
+      const unsigned char upperCardsIncl1,
+      const unsigned char lowerTopsIncl1,
+      const unsigned char upperTopsIncl1,
+      const bool symmFlag1,
+      const unsigned char lowerCardsIncl2,
+      const unsigned char upperCardsIncl2,
+      const unsigned char lowerTopsIncl2,
+      const unsigned char upperTopsIncl2,
+      const bool symmFlag2) const;
+
     // ----- Length OR top-1 methods -----
 
     void prepare_2_1(DistData& distData) const;
