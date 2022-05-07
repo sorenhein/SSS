@@ -58,7 +58,7 @@ class Cover
       const ProfilePair& profilePair,
       const bool symmFlagIn);
 
-    bool prepare(
+    bool setByProduct(
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
@@ -77,8 +77,6 @@ class Cover
       const vector<unsigned char>& cases,
       Tricks& additions,
       unsigned& rawWeightAdder) const;
-
-    bool possible(const Tricks& residuals) const;
 
     void updateStats(
       ProductStats& productStats,

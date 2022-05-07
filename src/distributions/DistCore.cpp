@@ -499,7 +499,7 @@ void DistCore::prepareManualCovers(
         man.profilePair,
         man.symmFlag);
 
-      cover.prepare(distProfiles, cases);
+      cover.setByProduct(distProfiles, cases);
 
       // Need to look up the cover that has memory permanence.
       const Cover& clookup = covers.lookup(cover);

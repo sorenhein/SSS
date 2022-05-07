@@ -116,7 +116,7 @@ CoverState CoverTableau::attemptRow(
   // This method works both for the exhaustive search (T == StackEntry) 
   // and for the row search (T == RowStackEntry).
 
-  if (! candIter->possible(residuals))
+  if (! (candIter->getTricks() <= residuals))
     return COVER_IMPOSSIBLE;
 
   if (candIter->getWeight() < residuals.getWeight())

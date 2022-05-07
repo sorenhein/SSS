@@ -135,15 +135,6 @@ bool CoverRow::operator < (const CoverRow& rows2) const
 }
 
 
-bool CoverRow::operator <= (const Tricks& residuals) const
-{
-  // TODO Move CoverRow::possible and Cover::possible to something
-  // like this.  Then CoverTableau::attemptRow in .h would have to do
-  // something more.
-  return (tricks <= residuals);
-}
-
-
 const Tricks& CoverRow::getTricks() const
 {
   return tricks;

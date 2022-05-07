@@ -79,7 +79,7 @@ void CoverStore::add(
   coverScratch.set(productMemory, sumProfile, productPair, false);
 
   // Make its tricks and counts.
-  if (! coverScratch.prepare(distProfiles, cases))
+  if (! coverScratch.setByProduct(distProfiles, cases))
     return;
 
   // Store it in "store".
