@@ -7,6 +7,7 @@
 */
 
 #include "TermCompare.h"
+#include "CoverOperator.h"
 
 
 TermCompare::TermCompare()

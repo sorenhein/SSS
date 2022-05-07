@@ -1,13 +1,17 @@
-* Control #explicit tops, -D, --depth
+Covers directory has a few well-defined weaknesses:
+- Poor multi-threading
+- ProductStats messy
+- TableauCache should perhaps be more more of set -- does speed matter?
+
 * Write an .md documentation
-* Think about storing the actually used covers and results in files?
 
-* The various TODO's in the covers and sub-directories.
-
+* Count #combs by highest depth
+* Count #strats by depth
+* Control #explicit tops, -D, --depth
 * Try higher depths
   - Make a general output, may not be pretty
-  - Count #combs by highest depth
-  - Count #strats by depth
+
+* Think about storing the actually used covers and results in files?
 
 Speed
 -----

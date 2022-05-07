@@ -13,6 +13,7 @@
 
 #include "Term.h"
 #include "TermCompare.h"
+#include "CoverOperator.h"
 
 #include "../../../const.h"
 #include "../../../utils/table.h"

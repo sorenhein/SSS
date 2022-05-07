@@ -11,9 +11,9 @@
 
 #include <vector>
 
-#include "CoverOperator.h"
-
 using namespace std;
+
+enum CoverOperator: unsigned;
 
 
 class TermCompare
