@@ -108,8 +108,8 @@ void Control::configure()
       "Control file with further settings." },
     { "-p", "--print", CORRESPONDENCE_STRING, CTRL_PRINT_TEXT, "",
       "Text to print (e.g. Roudinesco page and number)." },
-    { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0xf",
-      "Run control (default: 0xf).  Bits:\n"
+    { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0x3f",
+      "Run control (default: 0x3f).  Bits:\n"
       "0x001: All N-S plays, including within ranks\n"
       "0x002: Advanced strategizing including ranges and voids\n"
       "0x004: Optimizations when calculating strategies\n"

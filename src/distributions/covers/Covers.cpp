@@ -14,11 +14,7 @@
 
 #include "Covers.h"
 #include "CoverStacks.h"
-
 #include "product/ProfilePair.h"
-
-#include "../../utils/Timer.h"
-extern vector<Timer> timersStrat;
 
 
 Covers::Covers()
@@ -90,7 +86,6 @@ void Covers::prepare(
   list<ProfilePair> stack; // Unfinished expansions
   stack.emplace_back(ProfilePair(sumProfile));
 
-  timersStrat[21].start();
   while (! stack.empty())
   {
     ProfilePair& running = stack.front();
@@ -134,11 +129,8 @@ void Covers::prepare(
     assert(! stack.empty());
     stack.pop_front();
   }
-  timersStrat[21].stop();
 
-  timersStrat[22].start();
   store.admixSymmetric();
-  timersStrat[22].stop();
 }
 
 
@@ -182,13 +174,9 @@ void Covers::explain(
     return;
   }
 
-  timersStrat[23].start();
-
   list<StackEntry> stack;
   Covers::explainTemplate(tricks, tmin, numStrategyTops,
     store, stack, solution);
-
-  timersStrat[23].stop();
 
   tableauCache.store(tricks, solution);
 }
@@ -209,12 +197,8 @@ void Covers::explainManually(
     return;
   }
 
-  timersStrat[24].start();
-
   list<RowStackEntry> stack;
   Covers::explainTemplate(tricks, tmin, 1, rows, stack, solution);
-
-  timersStrat[24].stop();
 
   tableauRowCache.store(tricks, solution);
 }

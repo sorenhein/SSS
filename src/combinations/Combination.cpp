@@ -24,10 +24,12 @@
 
 #include "../ranks/Ranks.h"
 
+#include "../utils/Timer.h"
 #include "../utils/Timers.h"
 
 extern Control control;
 extern Timers timers;
+extern vector<Timer> timersStrat;
 
 
 Combination::Combination()
@@ -75,13 +77,22 @@ void Combination::setTrivial(
 
 void Combination::covers(
   Covers& coversIn,
-  // list<CoverTableau>& tableaux,
   ProductStats& productStats)
 {
-  strats.coversManual(coversIn, maxRank);
+  if (control.runVerbalTricksManually())
+  {
+    timersStrat[23].start();
+    strats.coversManual(coversIn, maxRank);
+    timersStrat[23].stop();
+  }
 
-  strats.covers(coversIn, // tableaux, 
-    productStats, maxRank);
+
+  if (control.runVerbalTricks())
+  {
+    timersStrat[24].start();
+    strats.covers(coversIn, productStats, maxRank);
+    timersStrat[24].stop();
+  }
 }
 
 

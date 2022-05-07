@@ -13,9 +13,9 @@
 
 #include "Cover.h"
 
-#include "product/Profile.h"
 #include "product/ProfilePair.h"
 #include "product/ProductStats.h"
+#include "product/ProductMemory.h"
 
 
 Cover::Cover()

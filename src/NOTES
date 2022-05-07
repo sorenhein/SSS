@@ -1,10 +1,8 @@
-* Control in general by an input parameter & bool flag (#explicit tops)
-* Manual: disable the old symmetrics and manuals.
+* Control #explicit tops, -D, --depth
 * Write an .md documentation
 * Think about storing the actually used covers and results in files?
 
 * The various TODO's in the covers and sub-directories.
-
 
 * Try higher depths
   - Make a general output, may not be pretty

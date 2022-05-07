@@ -14,14 +14,12 @@
 
 #include "Tricks.h"
 
-#include "product/ProductMemory.h"
-
-#include "../../utils/table.h"
-
 using namespace std;
 
+class ProfilePair;
 class Profile;
 class ProductStats;
+class ProductMemory;
 
 
 class Cover

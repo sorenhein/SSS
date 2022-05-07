@@ -56,10 +56,10 @@ void Combinations::setTimerNames()
   timersStrat[ 9].name("Strats::propagateRanges");
   timersStrat[10].name("Strats::purgeRanges");
   timersStrat[20].name("Covers::early");
-  timersStrat[21].name("Covers::loop");
-  timersStrat[22].name("Covers::symmetrics");
-  timersStrat[23].name("Covers::explain");
-  timersStrat[24].name("Covers::explainManual");
+  timersStrat[21].name("Covers::prepareManually");
+  timersStrat[22].name("Covers::prepare");
+  timersStrat[23].name("Covers::explainManually");
+  timersStrat[24].name("Covers::explain");
   timersStrat[25].name("Covers::prune");
   timersStrat[30].name("Ranks::getMinimals");
   timersStrat[31].name("CombEntry::fixMinimals");

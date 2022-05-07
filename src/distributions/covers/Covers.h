@@ -34,12 +34,11 @@ class Covers
 {
   private:
 
-    Profile sumProfile;
-
     vector<unsigned char> cases;
 
     CoverStore store;
 
+    // This is the cache corresponding to the algorithmic covers.
     TableauCache tableauCache;
 
     // These are the manually set rows
@@ -47,6 +46,8 @@ class Covers
 
     // This is the separate cache corresponding to the rows.
     TableauCache tableauRowCache;
+
+    Profile sumProfile;
 
 
     void fillStore(

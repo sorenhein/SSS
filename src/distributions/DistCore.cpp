@@ -25,6 +25,8 @@
 
 #include "../const.h"
 
+#include "../utils/Timer.h"
+extern vector<Timer> timersStrat;
 
 // The full size sequence is:
 // http://oeis.org/A000792 (has something to do with partitions)
@@ -524,14 +526,18 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   DistCore::getCoverData(distProfiles, cases, sumProfile);
 
   // Prepare each cover.
+  timersStrat[22].start();
   covers.prepare(productMemory, distProfiles, cases, sumProfile);
+  timersStrat[22].stop();
 
   // Set the manual covers.
+  timersStrat[21].start();
   DistCore::prepareManualCovers(
     productMemory,
     distProfiles,
     cases,
     sumProfile);
+  timersStrat[21].stop();
 }
 
 
