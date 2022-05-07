@@ -230,7 +230,7 @@ class Strategy
 
     // ******************* Winners ******************
 
-    bool coversManual(
+    void coversManual(
       Covers& coversIn,
       CoverTableau& tableau) const;
 

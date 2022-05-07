@@ -997,12 +997,9 @@ void Slist::coversManual(
   Covers& coversIn,
   const unsigned char maxRank) const
 {
-
-  list<CoverTableau> tableaux;
-  tableaux.resize(strategies.size());
-  auto riter = tableaux.begin();
-
   unsigned stratNo = 0;
+  CoverTableau tableau;
+
   for (auto& strat: strategies)
   {
     const Result result = strat.resultLowest();
@@ -1011,25 +1008,19 @@ void Slist::coversManual(
     {
       // We don't know yet how to cover such Strategy's.
       stratNo++;
-      riter++;
       continue;
     }
 
-    riter->reset();
-    if (strat.coversManual(coversIn, * riter))
-    {
-      cout << "Manual strategy #" << stratNo << " ";
-      cout << riter->strBracket() << ": ";
-      cout << riter->str(coversIn.getSumProfile());
-    }
+    strat.coversManual(coversIn, tableau);
+    cout << "Manual strategy #" << stratNo << " ";
+    cout << tableau.strBracket() << ": ";
+
+    if (tableau.complete())
+      cout << tableau.str(coversIn.getSumProfile());
     else
-    {
-      cout << "Manual strategy #" << stratNo << ": ";
       cout << strat.str("Unexplained manual", true) << "\n";
-    }
     
     stratNo++;
-    riter++;
   }
 }
 

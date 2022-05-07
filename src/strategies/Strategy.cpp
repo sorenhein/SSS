@@ -977,14 +977,12 @@ void Strategy::setAndAdaptVoid(
  *                                                          *
  ************************************************************/
 
-bool Strategy::coversManual(
+void Strategy::coversManual(
   Covers& coversIn,
   CoverTableau& tableau) const
 {
   tableau.reset();
   coversIn.explainManually(results, tableau);
-  // TODO No return type
-  return true;
 }
 
 
