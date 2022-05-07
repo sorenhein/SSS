@@ -13,7 +13,7 @@
 
 #include "Term.h"
 
-#include "../../../utils/table.h"
+enum Opponent: unsigned;
 
 using namespace std;
 

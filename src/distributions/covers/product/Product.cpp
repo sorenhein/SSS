@@ -13,9 +13,11 @@
 
 #include "Product.h"
 #include "Profile.h"
+
 #include "../term/CoverOperator.h"
 
 #include "../../../utils/Compare.h"
+#include "../../../utils/table.h"
 
 Product::Product()
 {

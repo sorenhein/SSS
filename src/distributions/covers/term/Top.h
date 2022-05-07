@@ -16,10 +16,9 @@
 
 #include "Term.h"
 
-#include "../../../utils/table.h"
-
 class Length;
 struct Xes;
+enum Opponent: unsigned;
 
 using namespace std;
 

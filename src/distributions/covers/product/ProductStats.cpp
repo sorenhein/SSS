@@ -93,7 +93,6 @@ void ProductStats::storeLength(
   {
     LengthEntry& entry = lengthMap[code] = LengthEntry();
 
-    // TODO Switch
     entry.factoredProductPtr = &factoredProduct;
     entry.histo.resize(length+1);
     entry.histo[maxTops] = 1;
@@ -344,15 +343,6 @@ string ProductStats::strByLengthTops() const
       {
         if (entry.numUses)
           presentationList.push_back(&entry);
-          /*
-          ss <<
-            entry.str() <<
-            entry.factoredProductPtr->strLine() << "\n";
-        
-          sumTableaux += entry.numTableaux;
-          sumUses += entry.numUses;
-          num++;
-          */
       }
 
       presentationList.sort([](

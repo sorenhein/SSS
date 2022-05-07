@@ -14,6 +14,8 @@
 #include "Length.h"
 #include "CoverOperator.h"
 
+#include "../../../utils/table.h"
+
 
 bool Length::notVoid() const
 {

@@ -16,6 +16,8 @@
 #include "CoverOperator.h"
 #include "Xes.h"
 
+#include "../../../utils/table.h"
+
 
 string Top::strEqual(
   const unsigned char oppsTops,
