@@ -64,8 +64,7 @@ void Cover::setExisting(
 }
 
 
-// TODO Call it setByProduct?
-bool Cover::prepare(
+bool Cover::setByProduct(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
@@ -138,16 +137,6 @@ bool Cover::possible(
 }
 
 
-bool Cover::possible(const Tricks& residuals) const
-{
-  // TODO Could make it <= ?
-  // Before the other possible
-  // Could use getTricks from caller?
-  // Ditto for possible() above
-  return (tricks <= residuals);
-}
-
-
 void Cover::updateStats(
   ProductStats& productStats,
   const Profile& sumProfile,
@@ -160,7 +149,6 @@ void Cover::updateStats(
 
 bool Cover::sameWeight(const Cover& cover2) const
 {
-  // TODO sameTricks() is probably good enough
   return (tricks.getWeight() == cover2.tricks.getWeight());
 }
 
