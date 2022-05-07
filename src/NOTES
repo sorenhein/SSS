@@ -1,9 +1,7 @@
 Covers directory has a few well-defined weaknesses:
 - Poor multi-threading
 - ProductStats messy
-- TableauCache should perhaps be more more of set -- does speed matter?
-
-* Write an .md documentation
+  
 
 * Count #combs by highest depth
 * Count #strats by depth

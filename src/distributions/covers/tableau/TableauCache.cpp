@@ -47,6 +47,10 @@ bool TableauCache::lookup(
   {
     if (excessTricks == entry.excessTricks)
     {
+      // This is not very time-consuming in practice compared to the
+      // rest of the covers, but it could of course be made faster by
+      // sorting on trick weight and/or hashing on the trick
+      // signatures.
       solution = entry.tableau;
       entry.count++;
       return true;
