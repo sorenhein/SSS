@@ -89,7 +89,7 @@ void CoverStore::add(
   // In Covers we generate covers using ProfilePair.
   // Assuming that the eliminations (in particular in active()) are
   // done comprehensively, there is nothing left to eliminate here.
-
+  // If we needed it:
   // CoverStore::eliminate(result.first);
   
   // Discard some symmmetric versions.

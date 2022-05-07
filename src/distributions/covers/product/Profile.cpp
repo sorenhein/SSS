@@ -62,25 +62,6 @@ unsigned char Profile::operator [] (const unsigned char topNo) const
 }
 
 
-bool Profile::operator == (const Profile& profile2) const
-{
-  // TODO Is this used at all?
-  assert(tops.size() == profile2.tops.size());
-
-  if (lengthInt != profile2.lengthInt)
-    return false;
-
-  // This ignores the 0'th top!  So we can compare lower and upper.
-  for (unsigned i = 1; i < tops.size(); i++)
-  {
-    if (tops[i] != profile2.tops[i])
-      return false;
-  }
-
-  return true;
-}
-
-
 bool Profile::onlyEquals(
   const Profile& upperProfile,
   const Profile& sumProfile) const

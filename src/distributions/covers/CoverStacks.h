@@ -12,6 +12,8 @@
 #include <set>
 #include <list>
 
+#include "tableau/CoverTableau.h"
+
 class Cover;
 class CoverRow;
 

@@ -10,6 +10,7 @@
 #include "Product.h"
 
 #include "../../../utils/Compare.h"
+#include "../../../utils/table.h"
 
 using namespace std;
 

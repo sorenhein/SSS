@@ -22,10 +22,6 @@
 
 extern ResConvert resConvert;
 
-// TMP
-#include "../../utils/Timers.h"
-extern vector<Timer> timersStrat;
-
 
 void Tricks::clear()
 {

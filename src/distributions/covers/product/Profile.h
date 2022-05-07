@@ -42,9 +42,6 @@ class Profile
 
     unsigned char operator [] (const unsigned char topNo) const;
 
-    // This ignores the 0'th top!
-    bool operator == (const Profile& profile2) const;
-
     // Only unused tops or tops with upper == lower.
     bool onlyEquals(
       const Profile& upperProfile,

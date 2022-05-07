@@ -25,6 +25,7 @@ class Complexity
 
     unsigned raw;
 
+
   public:
 
   void reset();

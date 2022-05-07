@@ -25,6 +25,9 @@
 
 #include "../const.h"
 
+#include "../inputs/Control.h"
+extern Control control;
+
 #include "../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
@@ -520,24 +523,33 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   if (distributions.size() == 0)
     return;
 
+  if (! control.runVerbalTricks() &&! control.runVerbalTricksManually())
+    return;
+
   vector<Profile> distProfiles;
   vector<unsigned char> cases;
   Profile sumProfile;
   DistCore::getCoverData(distProfiles, cases, sumProfile);
 
   // Prepare each cover.
-  timersStrat[22].start();
-  covers.prepare(productMemory, distProfiles, cases, sumProfile);
-  timersStrat[22].stop();
+  if (control.runVerbalTricks())
+  {
+    timersStrat[22].start();
+    covers.prepare(productMemory, distProfiles, cases, sumProfile);
+    timersStrat[22].stop();
+  }
 
-  // Set the manual covers.
-  timersStrat[21].start();
-  DistCore::prepareManualCovers(
-    productMemory,
-    distProfiles,
-    cases,
-    sumProfile);
-  timersStrat[21].stop();
+  if (control.runVerbalTricksManually())
+  {
+    // Set the manual covers.
+    timersStrat[21].start();
+    DistCore::prepareManualCovers(
+      productMemory,
+      distProfiles,
+      cases,
+      sumProfile);
+    timersStrat[21].stop();
+  }
 }
 
 

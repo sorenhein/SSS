@@ -14,13 +14,6 @@
    % perl extract.pl outputfile
 
    yields the differences.
-
-   The way to turn the manual results on again is:
-   - In DistCore::prepareCovers, call prepareManualCovers.
-   - This puts the cover rows in rows in Covers.cpp, so these
-     must be turned on in Cover.h.
-   - In Slist, call coversManual.
-      
  */
 
 #include <cassert>
