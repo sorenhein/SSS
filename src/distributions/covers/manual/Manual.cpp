@@ -348,12 +348,10 @@ void Manual::prepare_4_2(DistData& distData) const
   Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // H singleton East
   Manual::WestGeneralAnd(distData, 2, 4, 1, 2); // West 2-4c with 1+ H
   Manual::WestGeneralAnd(distData, 2, 4, 1, 1); // H(x) East
-  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // x singleton West
   Manual::WestGeneralAnd(distData, 2, 2, 2, 2); // HH doubleton West
   Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // HH doubleton East
   Manual::SymmGeneralAnd(distData, 2, 2, 0, 0); // HH doubleton
   Manual::WestGeneralAnd(distData, 3, 3, 2, 2); // HHx with West
-  Manual::EastGeneralAnd(distData, 3, 3, 2, 2); // HHx with East
 
   // West has exactly one top, or the suit splits 2=2.
   Manual::WestGeneralTwo(distData, 0, 4, 1, 1,     2, 2, 0, 2);
@@ -511,26 +509,17 @@ void Manual::prepare_5_2(DistData& distData) const
   // West has a doubleton, or East has both tops.
   Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 5, 0, 0);
 
-  // West has a doubleton, or East has both tops at most fourth.
-  Manual::WestGeneralTwo(distData, 2, 2, 0, 2,     0, 1, 0, 0);
-
   // 3-2 either way, or West has both H's.
   Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 5, 2, 2);
 
   // 3-2 either way, or East has both H's.
   Manual::WestGeneralTwo(distData, 2, 3, 0, 2,     0, 5, 0, 0);
 
-  // Either opponent has both tops, or West has one honor singleton.
-  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 1, 1, 1, 1, false);
-
   // Either opponent has both tops, or West has singleton.
   Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 1, 1, 0, 2, false);
 
   // Either opponent has both tops, or West has at most a doubleton
   Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 0, 2, 0, 2, false);
-
-  // Either opponent has both tops, or East has one honor singleton.
-  Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 4, 4, 1, 1, false);
 
   // Either opponent has both tops, or East has singleton.
   Manual::SymmGeneralTwo(distData, 0, 5, 0, 0, true, 4, 4, 0, 2, false);
@@ -559,12 +548,8 @@ void Manual::prepare_5_3(DistData& distData) const
 
   Manual::WestGeneralAnd(distData, 1, 1, 1, 1); // Stiff H West
   Manual::EastGeneralAnd(distData, 1, 1, 1, 1); // Stiff H East
-  Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // Stiff H
-  Manual::WestGeneralAnd(distData, 2, 2, 0, 0); // xx West, HHH East
   Manual::SymmGeneralAnd(distData, 2, 2, 0, 0); // xx West or xx East
-  Manual::WestGeneralAnd(distData, 1, 1, 0, 0); // x / HHHx
   Manual::EastGeneralAnd(distData, 1, 1, 0, 0); // x / HHHx
-  Manual::SymmGeneralAnd(distData, 1, 1, 0, 0); // Either way
 
   // The suit splits 2-3 either way, or West has all the tops.
   Manual::WestGeneralTwo(distData, 2, 3, 0, 3,    0, 5, 3, 3);
@@ -617,7 +602,6 @@ void Manual::prepare_6_1(DistData& distData) const
   Manual::WestTop1(distData, 1);                // West has the top
 
   Manual::WestGeneralAnd(distData, 0, 3, 1, 1); // H(xx) with West
-  Manual::EastGeneralAnd(distData, 0, 3, 1, 1); // H(xx) with East
   Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // H(x) with West
   Manual::EastGeneralAnd(distData, 0, 2, 1, 1); // H(x) with East
   Manual::SymmGeneralAnd(distData, 0, 2, 1, 1); // H(x) on either side
@@ -743,7 +727,7 @@ void Manual::prepare_7_2(DistData& distData) const
   Manual::SymmGeneralAnd(distData, 0, 3, 2, 2); // HH(x) either side
   Manual::SymmGeneralAnd(distData, 0, 2, 1, 2); // H(x) either side
   Manual::WestGeneralAnd(distData, 0, 2, 1, 1); // H(x) with West
-  Manual::SymmGeneralAnd(distData, 0, 2, 1, 1); // H(x) either side
+  // Manual::SymmGeneralAnd(distData, 0, 2, 1, 1); // H(x) either side
   Manual::SymmGeneralAnd(distData, 1, 1, 1, 1); // H singleton
   Manual::EastGeneralAnd(distData, 2, 2, 2, 2); // HH with East
   Manual::SymmGeneralAnd(distData, 2, 2, 2, 2); // HH doubleton

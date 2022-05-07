@@ -1,11 +1,13 @@
-* Manual
-  Add a symmetric general two to get down to 0.
-  Find a way to count uses of manual covers (a few probably unused).
-  Then disable the old symmetrics and manuals.
+* Control in general by an input parameter & bool flag (#explicit tops)
+* Rename VStrategy to Strategy, Strategy to Manual strategy,
+    also in extract.pl
+* Clean up extract.pl
+* Manual: disable the old symmetrics and manuals.
+* Write an .md documentation
+* Think about storing the actually used covers and results in files?
 
 * The various TODO's in the covers and sub-directories.
 
-* Control in general by an input parameter & bool flag (#explicit tops)
 
 * Try higher depths
   - Make a general output, may not be pretty
