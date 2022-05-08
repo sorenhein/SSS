@@ -6,6 +6,7 @@
    See LICENSE and README.
 */
 
+#include <mutex>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -15,6 +16,8 @@
 
 #include "Profile.h"
 #include "ProfilePair.h"
+
+mutex mtxProductMemory;
 
 
 ProductMemory::ProductMemory()
@@ -62,6 +65,8 @@ FactoredProduct * ProductMemory::enterOrLookup(
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
+  mtxProductMemory.lock();
+
   const unsigned numTops = sumProfile.size();
   assert(numTops < factoredMemory.size());
   enterStats[numTops].numTotal++;
@@ -111,11 +116,13 @@ FactoredProduct * ProductMemory::enterOrLookup(
       }
     }
 
+    mtxProductMemory.unlock();
     return &factoredProduct;
   }
   else
   {
     // Look up an existing element.
+    mtxProductMemory.unlock();
     return &(fit->second);
   }
 }

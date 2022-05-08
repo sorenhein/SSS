@@ -6,12 +6,15 @@
    See LICENSE and README.
 */
 
+#include <mutex>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <cassert>
 
 #include "TableauCache.h"
+
+mutex mxtTableauCache;
 
 
 TableauCache::TableauCache()
@@ -30,8 +33,12 @@ void TableauCache::store(
   const Tricks& excessTricks,
   const CoverTableau& tableau)
 {
+  mxtTableauCache.lock();
+
   entries.emplace_back(CacheEntry());
   CacheEntry& entry = entries.back();
+
+  mxtTableauCache.unlock();
 
   entry.excessTricks = excessTricks;
   entry.tableau = tableau;
@@ -52,7 +59,11 @@ bool TableauCache::lookup(
       // sorting on trick weight and/or hashing on the trick
       // signatures.
       solution = entry.tableau;
+
+      mxtTableauCache.lock();
       entry.count++;
+      mxtTableauCache.unlock();
+
       return true;
     }
   }

@@ -6,12 +6,15 @@
    See LICENSE and README.
 */
 
+#include <mutex>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <cassert>
 
 #include "CoverStore.h"
+
+mutex mtxCoverStore;
 
 
 CoverStore::CoverStore()
@@ -74,13 +77,18 @@ void CoverStore::add(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
+  mtxCoverStore.lock();
+
   // Make a Cover with symmFlag == false.
   coverScratch.reset();
   coverScratch.set(productMemory, sumProfile, productPair, false);
 
   // Make its tricks and counts.
   if (! coverScratch.setByProduct(distProfiles, cases))
+  {
+    mtxCoverStore.unlock();
     return;
+  }
 
   // Store it in "store".
   auto result = store.insert(coverScratch);
@@ -94,12 +102,19 @@ void CoverStore::add(
   
   // Discard some symmmetric versions.
   if (! coverScratch.symmetrizable(sumProfile))
+  {
+    mtxCoverStore.unlock();
     return;
+  }
 
   if (! coverScratch.symmetrize())
+  {
+    mtxCoverStore.unlock();
     return;
+  }
 
   symmetricCache.push_back(coverScratch);
+  mtxCoverStore.unlock();
 }
 
 
@@ -108,6 +123,8 @@ void CoverStore::admixSymmetric()
   // The symmetrics are mixed into the set in the right places.
   // This may lead to eliminations that were too hard to recognize
   // when we made the symmetrics.
+
+  mtxCoverStore.lock();
 
   for (auto& cover: symmetricCache)
   {
@@ -118,6 +135,7 @@ void CoverStore::admixSymmetric()
   }
 
   symmetricCache.clear();
+  mtxCoverStore.unlock();
 }
 
 

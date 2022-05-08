@@ -60,10 +60,15 @@ class ProductStats
       vector<unsigned> histo;
       unsigned numUses;
 
+      LengthEntry()
+      {
+        factoredProductPtr = nullptr;
+        histo.clear();
+        numUses = 0;
+      };
+
       LengthEntry& operator += (const LengthEntry& le2)
       {
-        assert(histo.size() == le2.histo.size());
-
         for (unsigned i = 1; i < histo.size(); i++)
           histo[i] += le2.histo[i];
 
@@ -110,6 +115,19 @@ class ProductStats
       unsigned numTableaux;
       unsigned numUses;
 
+      LengthTopEntry()
+      {
+        numTableaux = 0;
+        numUses = 0;
+      };
+
+      LengthTopEntry& operator += (const LengthTopEntry& lte2)
+      {
+        numTableaux += lte2.numTableaux;
+        numUses += lte2.numUses;
+        return * this;
+      };
+
       string strHeader() const
       {
         stringstream ss;
@@ -122,7 +140,7 @@ class ProductStats
         return ss.str();
       };
 
-      string str() const
+      string strStats() const
       {
         stringstream ss;
 

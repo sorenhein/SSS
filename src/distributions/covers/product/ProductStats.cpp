@@ -315,7 +315,7 @@ string ProductStats::strByLength() const
 
     for (auto& pptr: presentationList)
     {
-      ss <<
+      ss << 
         pptr->strStats() <<
         pptr->factoredProductPtr->strLine() << "\n";
       
@@ -357,9 +357,7 @@ string ProductStats::strByLengthTops() const
         subheader << "\n" <<
         string(subheader.size(), '-') << "\n";
 
-      unsigned sumTableaux = 0;
-      unsigned sumUses = 0;
-      unsigned num = 0;
+      LengthTopEntry sumEntry;
 
       list<LengthTopEntry const *> presentationList;
       ProductStats::makeLengthTopsList(length, maxTops, presentationList);
@@ -367,19 +365,16 @@ string ProductStats::strByLengthTops() const
       for (auto& pptr: presentationList)
       {
         ss <<
-          pptr->str() <<
+          pptr->strStats() <<
           pptr->factoredProductPtr->strLine() << "\n";
       
-        sumTableaux += pptr->numTableaux;
-        sumUses += pptr->numUses;
-        num++;
+        sumEntry += * pptr;
       }
 
       ss <<
         string(subheader.size(), '-') << "\n" <<
-          setw(10) << sumTableaux <<
-          setw(10) << sumUses <<
-          setw(8) << num << " entries\n\n";
+          sumEntry.strStats() <<
+          setw(8) << presentationList.size() << " entries\n\n";
     }
   }
 

@@ -1,8 +1,3 @@
-Covers directory has a few well-defined weaknesses:
-- Poor multi-threading
-- ProductStats messy
-  
-
 * Count #combs by highest depth
 * Count #strats by depth
 * Control #explicit tops, -D, --depth
