@@ -95,7 +95,7 @@ void Combinations::resize(
 
   countNonreference.resize(maxCardsIn+1);
 
-  countStratDepths.resize(maxCardsIn+1);
+  depthStats.resize(maxCardsIn+1);
 }
 
 
@@ -349,8 +349,7 @@ histoPlay[plays.size()]++;
             timersStrat[32].start();
             comb.covers(
               distributions.get(cards, centry.getHolding2()).covers(),
-              productStats,
-              countStratDepths);
+              productStats, depthStats);
             timersStrat[32].stop();
           }
 
@@ -422,7 +421,7 @@ cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
   cout << string(70, '-') << "\n";
   cout << setw(4) << "" << sum.str(2) << endl;
 
-  cout << countStratDepths.str();
+  cout << depthStats.str();
 
 }
 
@@ -611,11 +610,11 @@ void Combinations::runUniquesMT(
   threadCountNonreference.clear();
   threadCountNonreference.resize(numThreads);
 
-  threadCountStratDepths.clear();
-  threadCountStratDepths.resize(numThreads);
+  threadDepthStats.clear();
+  threadDepthStats.resize(numThreads);
 
   for (unsigned thid = 0; thid < numThreads; thid++)
-    threadCountStratDepths[thid].resize(countStratDepths.size());
+    threadDepthStats[thid].resize(depthStats.size());
 
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
@@ -631,7 +630,7 @@ void Combinations::runUniquesMT(
   {
     countStats[cards] += threadCountStats[thid];
     countNonreference[cards] += threadCountNonreference[thid];
-    countStratDepths += threadCountStratDepths[thid];
+    depthStats += threadDepthStats[thid];
   }
 }
 
@@ -645,7 +644,7 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   Combination& comb = combMemory.getComb(cards, holding);
 
-  comb.covers(dist.covers(), productStats, countStratDepths);
+  comb.covers(dist.covers(), productStats, depthStats);
 }
 
 
@@ -663,12 +662,6 @@ string Combinations::strProductStats() const
     productStats.strTable() +
     productStats.strByLength() +
     productStats.strByLengthTops();
-}
-
-
-string Combinations::strStratDepths() const
-{
-  return countStratDepths.str();
 }
 
 

@@ -77,8 +77,10 @@ void DepthStats::makeMarginals(
 
   for (unsigned nominal = 0; nominal < stats.size(); nominal++)
   {
-    for (unsigned actual = 0; actual < stats[actual].size(); actual++)
+    for (unsigned actual = 0; actual < stats[nominal].size(); actual++)
     {
+assert(nominal < sumNominal.size());
+assert(actual < sumActual.size());
       const unsigned v = stats[nominal][actual];
       sumNominal[nominal] += v;
       sumActual[actual] += v;

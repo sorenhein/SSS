@@ -54,9 +54,9 @@ class Combinations
     // Indexed by thread ID and then by nomimal and actual number of
     // tops (depth) in a given strategy that has been solved.
     // Interesting for covers.
-    vector<DepthStats> threadCountStratDepths;
+    vector<DepthStats> threadDepthStats;
 
-    DepthStats countStratDepths;
+    DepthStats depthStats;
 
 
     void dumpVS(
@@ -78,8 +78,6 @@ class Combinations
       const unsigned char cards,
       Distributions const * distributions,
       const unsigned thid);
-
-    string strStratDepthsHeader(const unsigned maxActualDepth) const;
 
     string strHeader() const;
 
@@ -132,8 +130,6 @@ class Combinations
     Combination const * getPtr(
       const unsigned char cards,
       const unsigned holding3) const;
-
-    string strStratDepths() const;
 
     string strProductStats() const;
 
