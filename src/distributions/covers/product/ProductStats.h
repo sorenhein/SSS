@@ -60,6 +60,18 @@ class ProductStats
       vector<unsigned> histo;
       unsigned numUses;
 
+      LengthEntry& operator += (const LengthEntry& le2)
+      {
+        assert(histo.size() == le2.histo.size());
+
+        for (unsigned i = 1; i < histo.size(); i++)
+          histo[i] += le2.histo[i];
+
+        numUses += le2.numUses;
+
+        return * this;
+      };
+
       string strHeader() const
       {
         stringstream ss;
@@ -73,7 +85,7 @@ class ProductStats
         return ss.str();
       };
 
-      string str() const
+      string strStats() const
       {
         stringstream ss;
 
@@ -81,7 +93,12 @@ class ProductStats
 
         // No newline
         for (unsigned i = 1; i < histo.size(); i++)
-          ss << setw(7) << histo[i];
+        {
+          if (histo[i] == 0)
+            ss << setw(7) << "-";
+          else
+            ss << setw(7) << histo[i];
+        }
 
         return ss.str();
       };
@@ -127,6 +144,16 @@ class ProductStats
     vector<unsigned char> seenLength;
 
     vector<vector<unsigned char>> seenLengthTops;
+
+
+    void makeLengthList(
+      const unsigned length,
+      list<LengthEntry const *>& presentationList) const;
+
+    void makeLengthTopsList(
+      const unsigned length,
+      const unsigned maxTops,
+      list<LengthTopEntry const *>& presentationList) const;
 
 
   public:

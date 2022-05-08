@@ -7,6 +7,7 @@
 */
 
 #include <list>
+#include <mutex>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -18,6 +19,8 @@
 
 #include "../../../utils/Compare.h"
 
+mutex mtxProductStats;
+
 
 ProductStats::ProductStats()
 {
@@ -28,20 +31,17 @@ ProductStats::ProductStats()
 void ProductStats::resize()
 {
   tableStats.resize(14);
-  for (unsigned i = 0; i < tableStats.size(); i++)
+  lengthTopStats.resize(14);
+  seenLengthTops.resize(14);
+  for (unsigned i = 0; i < 14; i++)
+  {
     tableStats[i].resize(i+1);
+    lengthTopStats[i].resize(i+1);
+    seenLengthTops[i].resize(i+1);
+  }
 
   lengthStats.resize(14);
-
-  lengthTopStats.resize(14);
-  for (unsigned i = 0; i < lengthTopStats.size(); i++)
-    lengthTopStats[i].resize(i+1);
-
   seenLength.resize(14, false);
-
-  seenLengthTops.resize(14);
-  for (unsigned i = 0; i < seenLengthTops.size(); i++)
-    seenLengthTops[i].resize(i+1);
 }
 
 
@@ -134,14 +134,15 @@ void ProductStats::store(
   const Profile& sumProfile,
   const bool newTableauFlag)
 {
-  // TODO Not currently multi-threaded!
-
   const unsigned long long code = factoredProduct.code();
   const unsigned char length = sumProfile.length();
   const unsigned char maxTops =
     sumProfile[static_cast<unsigned char>(sumProfile.size())-1];
 
   bool newFlag;
+
+  mtxProductStats.lock();
+
   ProductStats::storeLengthTops(
     factoredProduct, 
     code,
@@ -161,6 +162,8 @@ void ProductStats::store(
     maxTops,
     newTableauFlag,
     newFlag);
+
+  mtxProductStats.unlock();
 }
 
 
@@ -237,6 +240,53 @@ string ProductStats::strHeader(
 }
 
 
+void ProductStats::makeLengthList(
+  const unsigned length,
+  list<LengthEntry const *>& presentationList) const
+{
+  for (auto &[key, entry]: lengthStats[length])
+  {
+    if (entry.numUses)
+      presentationList.push_back(&entry);
+  }
+
+  presentationList.sort([](
+    LengthEntry const *& leptr1, 
+    LengthEntry const *& leptr2)
+  {
+    const CompareType c =
+      leptr1->factoredProductPtr->presentOrder(
+        * leptr2->factoredProductPtr);
+
+    return (c == WIN_FIRST || c == WIN_EQUAL);
+  });
+}
+
+
+void ProductStats::makeLengthTopsList(
+  const unsigned length,
+  const unsigned maxTops,
+  list<LengthTopEntry const *>& presentationList) const
+{
+  for (auto &[key, entry]: lengthTopStats[length][maxTops])
+  {
+    if (entry.numUses)
+      presentationList.push_back(&entry);
+  }
+
+  presentationList.sort([](
+    LengthTopEntry const *& lteptr1, 
+    LengthTopEntry const *& lteptr2)
+  {
+    const CompareType c =
+      lteptr1->factoredProductPtr->presentOrder(
+        * lteptr2->factoredProductPtr);
+  
+    return (c == WIN_FIRST || c == WIN_EQUAL);
+  });
+}
+
+
 string ProductStats::strByLength() const
 {
   stringstream ss;
@@ -257,51 +307,24 @@ string ProductStats::strByLength() const
       subheader << "\n" <<
       string(subheader.size(), '-') << "\n";
 
-    vector<unsigned> histo(length+1);
-    unsigned sumUses = 0;
-    unsigned num = 0;
+    LengthEntry sumEntry;
+    sumEntry.histo.resize(length+1);
 
     list<LengthEntry const *> presentationList;
-    for (auto &[key, entry]: lengthStats[length])
-    {
-      if (entry.numUses)
-        presentationList.push_back(&entry);
-    }
-
-    presentationList.sort([](
-      LengthEntry const *& leptr1, 
-      LengthEntry const *& leptr2)
-    {
-      const CompareType c =
-        leptr1->factoredProductPtr->presentOrder(
-          * leptr2->factoredProductPtr);
-
-      return (c == WIN_FIRST || c == WIN_EQUAL);
-    });
+    ProductStats::makeLengthList(length, presentationList);
 
     for (auto& pptr: presentationList)
     {
       ss <<
-        pptr->str() <<
+        pptr->strStats() <<
         pptr->factoredProductPtr->strLine() << "\n";
       
-      for (unsigned i = 0; i < pptr->histo.size(); i++)
-        histo[i] += pptr->histo[i];
-      sumUses += pptr->numUses;
-      num++;
+      sumEntry += * pptr;
     }
 
-    ss << string(subheader.size(), '-') << "\n" << setw(7) << sumUses;
-
-    for (unsigned i = 1; i < histo.size(); i++)
-    {
-      if (histo[i] == 0)
-        ss << setw(7) << "-";
-      else
-        ss << setw(7) << histo[i];
-    }
-
-    ss << setw(8) << num << " entries\n\n";
+    ss << string(subheader.size(), '-') << "\n";
+    ss << sumEntry.strStats();
+    ss << setw(8) << presentationList.size() << " entries\n\n";
   }
 
   return ss.str();
@@ -339,22 +362,7 @@ string ProductStats::strByLengthTops() const
       unsigned num = 0;
 
       list<LengthTopEntry const *> presentationList;
-      for (auto &[key, entry]: lengthTopStats[length][maxTops])
-      {
-        if (entry.numUses)
-          presentationList.push_back(&entry);
-      }
-
-      presentationList.sort([](
-        LengthTopEntry const *& lteptr1, 
-        LengthTopEntry const *& lteptr2)
-      {
-        const CompareType c =
-          lteptr1->factoredProductPtr->presentOrder(
-            * lteptr2->factoredProductPtr);
-  
-        return (c == WIN_FIRST || c == WIN_EQUAL);
-      });
+      ProductStats::makeLengthTopsList(length, maxTops, presentationList);
 
       for (auto& pptr: presentationList)
       {
