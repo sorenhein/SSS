@@ -79,8 +79,6 @@ void DepthStats::makeMarginals(
   {
     for (unsigned actual = 0; actual < stats[nominal].size(); actual++)
     {
-assert(nominal < sumNominal.size());
-assert(actual < sumActual.size());
       const unsigned v = stats[nominal][actual];
       sumNominal[nominal] += v;
       sumActual[actual] += v;
@@ -136,12 +134,11 @@ string DepthStats::str() const
         ss << setw(6) << v;
       else
         ss << setw(6) << "-";
-
-      ss << setw(8) << sumNominal[nominal] << "\n";
     }
-    ss << string(18 + 6 * (maxActual+1), '-') << "\n";
+    ss << setw(8) << sumNominal[nominal] << "\n";
   }
 
+  ss << string(18 + 6 * (maxActual+1), '-') << "\n";
   ss << setw(10) << "Sum";
   for (unsigned actual = 0; actual <= maxActual; actual++)
   {
@@ -150,8 +147,6 @@ string DepthStats::str() const
       ss << setw(6) << v;
     else
       ss << setw(6) << "-";
-
-    ss << "\n";
   }
 
   return ss.str() + "\n\n";
