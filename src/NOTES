@@ -1,26 +1,46 @@
-* Count #combs by highest depth
-* Count #strats by depth
+Strategy depth statistics
+
+ nom | act     0     1     2     3     4     5     Sum
+------------------------------------------------------
+         0  2356     -     -     -     -     -    2356
+         1  8753 26888     -     -     -     -   35641
+         2  2659 45002 52151     -     -     -   99812
+         3   176  8110 39012 47973     -     -   95271
+         4     -   202  2746 12298 32063     -   47309
+         5     -     -     8   106   594  3309    4017
+------------------------------------------------------
+       Sum 13944 80202 93917 60377 32657  3309
+
+Deeper strategies
+-----------------
 * Control #explicit tops, -D, --depth
 * Try higher depths
   - Make a general output, may not be pretty
 
-* Think about storing the actually used covers and results in files?
-
-Speed
------
-
-When examining strategies, shift them down as far as possible,
-as this reduces the number of covers to consider.
-Or at least we can look up the template and not recreate it.
-
 Names of cards
 --------------
+Might be good to work on this before we refer to other distributions
+(see below).
+
 Opponents' cards seem to live in ranks/Opponents.
 Maybe we shouldn't use HH as in 4/24, but actualy KQ.
 Maybe all we really need is to interrogate Opponents?
 It seems to use external ranks in rankInfo[r].
 
 - Where does the actual name of the card come from?  Ranks?
+
+Shifts
+------
+* Find a way to shift strategies down/up
+  - Need access to other distributions and their tableaux
+  - Perhaps a non-canonical distribution has pointers to all its
+    possible simpler versions
+  - Then we simplify to the canonical one and compare the tricks
+  - If the same, we don't solve and instead use that tableau
+  - Above, this should collapse the columns 0 and 1 upward
+
+* Think about storing the actually used covers and results in files?
+
 
 Verbals of strategy wins
 ========================

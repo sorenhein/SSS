@@ -1040,6 +1040,18 @@ void Slist::covers(
   {
     const Result result = strat.resultLowest();
     const unsigned rankLow = result.getRank();
+
+    // If opponents have e.g. two tops, then we consider their
+    // depth to be 1, as we don't have to specify the lowest one
+    // explicitly.
+    const unsigned actualDepth =
+      (rankLow == numeric_limits<unsigned char>::max() ?
+      0 : (maxRank + 1 - rankLow) / 2);
+
+    depthStats.increment(
+      coversIn.getSumProfile().size() - 1,
+      actualDepth);
+
     if (rankLow+2 < maxRank)
     {
       // We don't know yet how to cover such Strategy's.
@@ -1063,17 +1075,6 @@ void Slist::covers(
     else
       cout << strat.str("Unexplained", true) << "\n";
     
-    // If opponents have e.g. two tops, then we consider their
-    // depth to be 1, as we don't have to specify the lowest one
-    // explicitly.
-    const unsigned actualDepth =
-      (rankLow == numeric_limits<unsigned char>::max() ?
-      0 : (maxRank + 1 - rankLow) / 2);
-
-    depthStats.increment(
-      coversIn.getSumProfile().size() - 1,
-      actualDepth);
-
     stratNo++;
   }
 }
