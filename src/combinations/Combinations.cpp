@@ -210,13 +210,14 @@ void Combinations::runSingle(
     for (auto& dep: dependenciesTrinary[c])
     {
       Combination& comb = combMemory.add(c, dep);
-cout << "Setting maxRank to " << +ranks.maxRank() << endl;
-      comb.setMaxRank(ranks.maxRank());
 
       CombEntry& centry = combMemory.getEntry(c, dep);
 
       ranks.resize(c);
       ranks.setRanks(dep, centry);
+
+cout << "Setting maxRank to " << +ranks.maxRank() << endl;
+      comb.setMaxRank(ranks.maxRank());
 
       comb.strategize(centry, * this, distributions,
         ranks, plays, (c == cards && holding == dep));

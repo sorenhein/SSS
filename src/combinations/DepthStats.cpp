@@ -39,7 +39,14 @@ void DepthStats::increment(
   const unsigned actualDepth)
 {
   assert(nominalDepth < stats.size());
+if (actualDepth >= stats[nominalDepth].size())
+{
+cout << "FAIL\n";
+cout << "nominal " << nominalDepth << endl;
+cout << "actual  " << actualDepth << endl;
+cout << "size    " << stats[nominalDepth].size() << endl;
   assert(actualDepth < stats[nominalDepth].size());
+}
 
   mtxDepthStats.lock();
   stats[nominalDepth][actualDepth]++;

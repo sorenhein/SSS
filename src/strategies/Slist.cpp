@@ -1044,15 +1044,23 @@ void Slist::covers(
     // If opponents have e.g. two tops, then we consider their
     // depth to be 1, as we don't have to specify the lowest one
     // explicitly.
+    const unsigned nominalDepth = coversIn.getSumProfile().size() - 1;
+
     const unsigned actualDepth =
       (rankLow == numeric_limits<unsigned char>::max() ?
       0 : (maxRank + 1 - rankLow) / 2);
 
-    depthStats.increment(
-      coversIn.getSumProfile().size() - 1,
-      actualDepth);
+/*
+cout << "maxRank " << +maxRank << endl;
+cout << "rankLow " << +rankLow << endl;
+cout << "nominal " << nominalDepth << endl;
+cout << "actual  " << actualDepth << endl;
+*/
 
-    if (rankLow+2 < maxRank)
+    depthStats.increment(nominalDepth, actualDepth);
+
+    // if (rankLow+2 < maxRank)
+    if (actualDepth > 2)
     {
       // We don't know yet how to cover such Strategy's.
       stratNo++;
@@ -1060,7 +1068,10 @@ void Slist::covers(
     }
 
     bool newTableauFlag;
-    strat.covers(coversIn, 1, tableau, newTableauFlag);
+    strat.covers(coversIn, 
+      static_cast<unsigned char>(actualDepth), 
+      tableau, newTableauFlag);
+
     cout << "Strategy #" << stratNo << " ";
     cout << tableau.strBracket() << ": ";
 
