@@ -7,6 +7,7 @@ SOURCE_FILES    =                               \
                 combinations/CombEntry.cpp      \
                 combinations/CombFiles.cpp      \
                 combinations/CombTest.cpp       \
+                combinations/DepthStats.cpp     \
                                                 \
                 distributions/Distributions.cpp \
                 distributions/DistMap.cpp       \

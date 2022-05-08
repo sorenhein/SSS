@@ -435,9 +435,10 @@ void Strategies::coversManual(
 void Strategies::covers(
   Covers& coversIn,
   ProductStats& productStats,
+  DepthStats& depthStats,
   const unsigned char maxRank) const
 {
-  slist.covers(coversIn, maxRank, productStats);
+  slist.covers(coversIn, maxRank, productStats, depthStats);
 }
 
 

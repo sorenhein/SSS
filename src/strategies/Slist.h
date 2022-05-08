@@ -23,6 +23,7 @@ struct Play;
 class SurvivorList;
 class Distribution;
 class ProductStats;
+class DepthStats;
 
 using namespace std;
 
@@ -251,7 +252,8 @@ class Slist
     void covers(
       Covers& coversIn,
       const unsigned char maxRank,
-      ProductStats& productStats) const;
+      ProductStats& productStats,
+      DepthStats& depthStats) const;
 
     bool ordered() const;
 

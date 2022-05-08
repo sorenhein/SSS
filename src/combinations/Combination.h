@@ -22,6 +22,7 @@ class Combinations;
 class Distributions;
 class CoverTableau;
 class ProductStats;
+class DepthStats;
 class Ranks;
 class Plays;
 
@@ -71,8 +72,8 @@ class Combination
 
     void covers(
       Covers& coversIn,
-      // list<CoverTableau>& tableaux,
-      ProductStats& productStats);
+      ProductStats& productStats,
+      DepthStats& depthStats);
 
     const Strategies& strategies() const;
 

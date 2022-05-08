@@ -8,6 +8,7 @@ driver.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
 driver.obj: strategies/result/Ranges.h strategies/result/Range.h
 driver.obj: strategies/result/MultiResult.h distributions/Reductions.h
 driver.obj: distributions/Reduction.h combinations/CombHelp.h
+driver.obj: combinations/DepthStats.h
 driver.obj: distributions/covers/product/ProductStats.h
 driver.obj: distributions/Distributions.h distributions/DistMemory.h
 driver.obj: distributions/Distribution.h distributions/DistMap.h
@@ -50,6 +51,7 @@ combinations/Combination.obj: strategies/result/MultiResult.h
 combinations/Combination.obj: distributions/Reductions.h
 combinations/Combination.obj: distributions/Reduction.h
 combinations/Combination.obj: combinations/CombHelp.h
+combinations/Combination.obj: combinations/DepthStats.h
 combinations/Combination.obj: distributions/covers/product/ProductStats.h
 combinations/Combination.obj: distributions/Distributions.h
 combinations/Combination.obj: distributions/DistMemory.h
@@ -105,6 +107,7 @@ combinations/Combinations.obj: strategies/result/MultiResult.h
 combinations/Combinations.obj: distributions/Reductions.h
 combinations/Combinations.obj: distributions/Reduction.h
 combinations/Combinations.obj: combinations/CombHelp.h
+combinations/Combinations.obj: combinations/DepthStats.h
 combinations/Combinations.obj: distributions/covers/product/ProductStats.h
 combinations/Combinations.obj: combinations/CombFiles.h
 combinations/Combinations.obj: combinations/CombTest.h
@@ -223,6 +226,7 @@ combinations/CombTest.obj: combinations/Combination.h utils/CombinationType.h
 combinations/CombTest.obj: combinations/CombMemory.h combinations/CombEntry.h
 combinations/CombTest.obj: combinations/CombReference.h
 combinations/CombTest.obj: combinations/CombTest.h const.h
+combinations/DepthStats.obj: combinations/DepthStats.h
 distributions/Distributions.obj: distributions/Distributions.h
 distributions/Distributions.obj: distributions/DistMemory.h
 distributions/Distributions.obj: distributions/Distribution.h
@@ -446,7 +450,7 @@ plays/Plays.obj: distributions/Reduction.h plays/DebugPlay.h plays/Chunks.h
 plays/Plays.obj: combinations/Combinations.h combinations/CombMemory.h
 plays/Plays.obj: combinations/CombEntry.h combinations/CombReference.h
 plays/Plays.obj: utils/CombinationType.h combinations/Combination.h
-plays/Plays.obj: combinations/CombHelp.h
+plays/Plays.obj: combinations/CombHelp.h combinations/DepthStats.h
 plays/Plays.obj: distributions/covers/product/ProductStats.h inputs/Control.h
 plays/Plays.obj: inputs/Entity.h utils/Timer.h
 plays/Play.obj: plays/Play.h strategies/result/Winners.h
@@ -460,7 +464,7 @@ plays/Play.obj: utils/table.h utils/Card.h utils/Compare.h utils/Compare.h
 plays/Play.obj: strategies/optim/Study.h strategies/result/Ranges.h
 plays/Play.obj: strategies/result/Range.h strategies/result/MultiResult.h
 plays/Play.obj: distributions/Reductions.h distributions/Reduction.h
-plays/Play.obj: combinations/CombHelp.h
+plays/Play.obj: combinations/CombHelp.h combinations/DepthStats.h
 plays/Play.obj: distributions/covers/product/ProductStats.h inputs/Control.h
 plays/Play.obj: inputs/Entity.h utils/Card.h
 plays/Nodes.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
@@ -547,7 +551,8 @@ strategies/Slist.obj: distributions/covers/product/Profile.h
 strategies/Slist.obj: distributions/covers/product/Profile.h
 strategies/Slist.obj: distributions/covers/Covers.h
 strategies/Slist.obj: distributions/covers/tableau/CoverTableau.h
-strategies/Slist.obj: inputs/Control.h inputs/Entity.h
+strategies/Slist.obj: combinations/DepthStats.h inputs/Control.h
+strategies/Slist.obj: inputs/Entity.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Slist.h
 strategies/Strategies.obj: strategies/Strategy.h strategies/result/Result.h
 strategies/Strategies.obj: strategies/result/Winners.h

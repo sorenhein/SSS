@@ -94,6 +94,8 @@ void Combinations::resize(
   }
 
   countNonreference.resize(maxCardsIn+1);
+
+  countStratDepths.resize(maxCardsIn+1);
 }
 
 
@@ -347,8 +349,8 @@ histoPlay[plays.size()]++;
             timersStrat[32].start();
             comb.covers(
               distributions.get(cards, centry.getHolding2()).covers(),
-              // tableaux,
-              productStats);
+              productStats,
+              countStratDepths);
             timersStrat[32].stop();
           }
 
@@ -419,6 +421,8 @@ cout << "Play average " << fixed << setprecision(2) << d << "\n\n";
   }
   cout << string(70, '-') << "\n";
   cout << setw(4) << "" << sum.str(2) << endl;
+
+  cout << countStratDepths.str();
 
 }
 
@@ -607,6 +611,12 @@ void Combinations::runUniquesMT(
   threadCountNonreference.clear();
   threadCountNonreference.resize(numThreads);
 
+  threadCountStratDepths.clear();
+  threadCountStratDepths.resize(numThreads);
+
+  for (unsigned thid = 0; thid < numThreads; thid++)
+    threadCountStratDepths[thid].resize(countStratDepths.size());
+
   for (unsigned thid = 0; thid < numThreads; thid++)
     threads[thid] = new thread(&Combinations::runUniqueThread, 
       this, cards, &distributions, thid);
@@ -620,7 +630,8 @@ void Combinations::runUniquesMT(
   for (unsigned thid = 0; thid < numThreads; thid++)
   {
     countStats[cards] += threadCountStats[thid];
-    threadCountNonreference[cards] += threadCountNonreference[thid];
+    countNonreference[cards] += threadCountNonreference[thid];
+    countStratDepths += threadCountStratDepths[thid];
   }
 }
 
@@ -634,10 +645,7 @@ void Combinations::covers(
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   Combination& comb = combMemory.getComb(cards, holding);
 
-  // list<CoverTableau> tableaux;
-
-  comb.covers(dist.covers(), // tableaux, 
-    productStats);
+  comb.covers(dist.covers(), productStats, countStratDepths);
 }
 
 
@@ -655,6 +663,12 @@ string Combinations::strProductStats() const
     productStats.strTable() +
     productStats.strByLength() +
     productStats.strByLengthTops();
+}
+
+
+string Combinations::strStratDepths() const
+{
+  return countStratDepths.str();
 }
 
 

@@ -18,6 +18,7 @@
 #include "Combination.h"
 #include "CombEntry.h"
 #include "CombHelp.h"
+#include "DepthStats.h"
 
 #include "../distributions/covers/product/ProductStats.h"
 
@@ -50,6 +51,14 @@ class Combinations
 
     atomic<unsigned> counterHolding; // Holding
 
+    // Indexed by thread ID and then by nomimal and actual number of
+    // tops (depth) in a given strategy that has been solved.
+    // Interesting for covers.
+    vector<DepthStats> threadCountStratDepths;
+
+    DepthStats countStratDepths;
+
+
     void dumpVS(
       const string& title,
       const unsigned char cards,
@@ -69,6 +78,8 @@ class Combinations
       const unsigned char cards,
       Distributions const * distributions,
       const unsigned thid);
+
+    string strStratDepthsHeader(const unsigned maxActualDepth) const;
 
     string strHeader() const;
 
@@ -121,6 +132,8 @@ class Combinations
     Combination const * getPtr(
       const unsigned char cards,
       const unsigned holding3) const;
+
+    string strStratDepths() const;
 
     string strProductStats() const;
 

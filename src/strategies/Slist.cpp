@@ -20,6 +20,8 @@
 #include "../distributions/covers/Covers.h"
 #include "../distributions/covers/tableau/CoverTableau.h"
 
+#include "../combinations/DepthStats.h"
+
 #include "../inputs/Control.h"
 
 extern Control control;
@@ -1028,7 +1030,8 @@ void Slist::coversManual(
 void Slist::covers(
   Covers& coversIn,
   const unsigned char maxRank,
-  ProductStats& productStats) const
+  ProductStats& productStats,
+  [[maybe_unused]] DepthStats& depthStats) const
 {
   unsigned stratNo = 0;
   CoverTableau tableau;

@@ -77,7 +77,8 @@ void Combination::setTrivial(
 
 void Combination::covers(
   Covers& coversIn,
-  ProductStats& productStats)
+  ProductStats& productStats,
+  DepthStats& depthStats)
 {
   if (control.runVerbalTricksManually())
   {
@@ -90,7 +91,7 @@ void Combination::covers(
   if (control.runVerbalTricks())
   {
     timersStrat[24].start();
-    strats.covers(coversIn, productStats, maxRank);
+    strats.covers(coversIn, productStats, depthStats, maxRank);
     timersStrat[24].stop();
   }
 }
