@@ -26,6 +26,7 @@ class ProductMemory;
 class CoverTableau;
 class Tricks;
 class Result;
+template<typename T> class CoverStack;
 
 
 using namespace std;
@@ -56,13 +57,14 @@ class Covers
       const vector<Profile>& distProfiles,
       ProfilePair& running);
 
-    template<class T, class C>
+    template<class C, class T>
     void explainTemplate(
       const Tricks& tricks,
       const unsigned char tmin,
       const unsigned numStrategyTops,
       const C& candidates,
-      list<T>& stack,
+      CoverStack<T>& stack,
+      // list<T>& stack,
       CoverTableau& solution);
 
 
@@ -78,9 +80,10 @@ class Covers
       const vector<unsigned char>& casesIn,
       const Profile& sumProfileIn);
 
-    CoverRow& addRow();
+    void addDirectly(list<Cover const *>& coverPtrs);
+    // CoverRow& addRow();
 
-    void sortRows();
+    // void sortRows();
 
     const Cover& lookup(const Cover& cover) const;
 
@@ -106,20 +109,23 @@ class Covers
 };
 
 
-template<class T, class C>
+template<class C, class T>
 void Covers::explainTemplate(
   const Tricks& tricks,
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const C& candidates,
-  list<T>& stack,
+  CoverStack<T>& stack,
+  // list<T>& stack,
   CoverTableau& solution)
 {
-  stack.emplace_back(T());
+  stack.emplace(tricks, tmin, candidates.begin());
 
-  T& entry = stack.back();
-  entry.tableau.init(tricks, tmin);
-  entry.iter = candidates.begin();
+  // stack.emplace_back(T());
+
+  // T& entry = stack.back();
+  // entry.tableau.init(tricks, tmin);
+  // entry.iter = candidates.begin();
 
 // unsigned candNo = 0;
 

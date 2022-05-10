@@ -29,18 +29,40 @@ void RowStore::reset()
 }
 
 
-CoverRow& RowStore::add()
+void RowStore::addDirectly(
+  list<Cover const *>& coverPtrs,
+  const vector<unsigned char>& cases)
 {
   lock_guard<mutex> lg(mtxRowStore);
 
-  store.emplace_back(CoverRow());
-  return store.back();
+  // Make a CoverRow.
+  rowScratch.reset();
+  rowScratch.resize(cases.size());
+  rowScratch.fillDirectly(coverPtrs, cases);
 
+  // Store it.
+  auto result = store.insert(rowScratch);
+  assert(result.first != store.end());
 }
 
 
-void RowStore::sort()
+const CoverRow& RowStore::add(
+  const Cover& cover,
+  const Tricks& additions,
+  const unsigned rawWeightAdder,
+  Tricks& residuals)
 {
-  store.sort();
+  lock_guard<mutex> lg(mtxRowStore);
+
+  // Make a CoverRow.
+  rowScratch.reset();
+  rowScratch.resize(residuals.size());
+  rowScratch.add(cover, additions, rawWeightAdder, residuals);
+
+  // Store it.
+  auto result = store.insert(rowScratch);
+  assert(result.first != store.end());
+
+  return * result.first;
 }
 

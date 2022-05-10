@@ -129,9 +129,23 @@ unsigned CoverRow::size() const
 
 bool CoverRow::operator < (const CoverRow& rows2) const
 {
+  const unsigned mcpw1 = (complexity << 20) / weight;
+  const unsigned mcpw2 = (rows2.complexity << 20) / rows2.weight;
+
+  if (mcpw1 < mcpw2)
+    return true;
+  else if (mcpw1 > mcpw2)
+    return false;
+  else if (rows2.tricks <= tricks)
+    return false;
+  else
+    return true;
+
+  /*
   return (
       (complexity << 20) / weight < 
       (rows2.complexity << 20) / rows2.weight);
+      */
 }
 
 

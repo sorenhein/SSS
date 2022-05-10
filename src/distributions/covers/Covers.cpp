@@ -134,16 +134,24 @@ void Covers::prepare(
 }
 
 
+void Covers::addDirectly(list<Cover const *>& coverPtrs)
+{
+  rows.addDirectly(coverPtrs, cases);
+}
+/*
 CoverRow& Covers::addRow()
 {
   return rows.add();
 }
+*/
 
 
+/*
 void Covers::sortRows()
 {
   rows.sort();
 }
+*/
 
 
 const Cover& Covers::lookup(const Cover& cover) const
@@ -173,8 +181,9 @@ void Covers::explain(
     return;
   }
 
-  list<CoverStackEntry> stack;
-  Covers::explainTemplate(tricks, tmin, numStrategyTops,
+  // list<CoverStackEntry> stack;
+  CoverStack<Cover> stack;
+  Covers::explainTemplate<CoverStore, Cover>(tricks, tmin, numStrategyTops,
     store, stack, solution);
 
   tableauCache.store(tricks, solution);
@@ -196,8 +205,10 @@ void Covers::explainManually(
     return;
   }
 
-  list<RowStackEntry> stack;
-  Covers::explainTemplate(tricks, tmin, 1, rows, stack, solution);
+  // list<RowStackEntry> stack;
+  CoverStack<CoverRow> stack;
+  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, 
+    rows, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

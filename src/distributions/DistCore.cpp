@@ -482,9 +482,6 @@ void DistCore::prepareManualCovers(
   const vector<unsigned char>& cases,
   const Profile& sumProfile)
 {
-  // Currently unused -- left so that it's possible to turn on.
-  // See Manual.cpp
-
   // Get the manual covers.
   list<list<ManualData>> manualData;
   Manual manual(sumProfile, manualData);
@@ -509,12 +506,13 @@ void DistCore::prepareManualCovers(
       coverPtrs.push_back(&clookup);
     }
 
-    CoverRow& row = covers.addRow();
-    row.resize(distProfiles.size());
-    row.fillDirectly(coverPtrs, cases);
+    covers.addDirectly(coverPtrs);
+    // CoverRow& row = covers.addRow();
+    // row.resize(distProfiles.size());
+    // row.fillDirectly(coverPtrs, cases);
   }
 
-  covers.sortRows();
+  // covers.sortRows();
 }
 
 

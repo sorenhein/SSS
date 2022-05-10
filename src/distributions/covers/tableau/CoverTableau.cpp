@@ -88,10 +88,23 @@ void CoverTableau::extendRow(
 }
 
 
+void CoverTableau::extendRow(
+  [[maybe_unused]] const CoverRow& row,
+  [[maybe_unused]] const Tricks& additions,
+  [[maybe_unused]] const unsigned rawWeight,
+  [[maybe_unused]] const unsigned rowNo)
+{
+  // Need this method to get out of the StackEntry template,
+  // or at least I don't know how to avoid it.
+  assert(false);
+}
+
+
 bool CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
-  list<CoverStackEntry>& stack,
+  CoverStack<Cover>& stack,
+  // list<CoverStackEntry>& stack,
   CoverTableau& solution)
 {
   // Returns true if this must be the last use of this cover.
@@ -124,11 +137,14 @@ bool CoverTableau::attempt(
     else if (additions.getWeight() < residuals.getWeight())
     {
       // The cover can be added, but does not make a solution yet.
+      stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+      /*
       stack.emplace_back(CoverStackEntry());
       CoverStackEntry& entry = stack.back();
       entry.iter = coverIter;
       entry.tableau = * this;
       entry.tableau.extendRow(* coverIter, additions, rawWeightAdded, rno);
+      */
     }
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), coverIter->getWeight(), solution.complexity))
@@ -147,8 +163,9 @@ bool CoverTableau::attempt(
 
 bool CoverTableau::attempt(
   [[maybe_unused]] const vector<unsigned char>& cases,
-  list<CoverRow>::const_iterator& rowIter,
-  list<RowStackEntry>& stack,
+  set<CoverRow>::const_iterator& rowIter,
+  CoverStack<CoverRow>& stack,
+  // list<RowStackEntry>& stack,
   CoverTableau& solution)
 {
   // Return true if a solution is found, even if it is inferior to

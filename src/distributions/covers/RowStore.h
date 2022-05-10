@@ -9,8 +9,8 @@
 #ifndef SSS_ROWSTORE_H
 #define SSS_ROWSTORE_H
 
-// #include <set>
-#include <list>
+#include <set>
+// #include <list>
 // #include <string>
 
 #include "CoverRow.h"
@@ -22,7 +22,10 @@ class RowStore
 {
   private:
 
-    list<CoverRow> store;
+    set<CoverRow> store;
+
+    // To avoid creating a temporary one every time.
+    CoverRow rowScratch;
 
 
   public:
@@ -31,13 +34,21 @@ class RowStore
 
     void reset();
 
-    CoverRow& add();
+    void addDirectly(
+      list<Cover const *>& coverPtrs,
+      const vector<unsigned char>& cases);
 
-    void sort();
+    const CoverRow& add(
+      const Cover& cover,
+      const Tricks& additions,
+      const unsigned rawWeightAdder,
+      Tricks& residuals);
 
-    list<CoverRow>::const_iterator begin() const { return store.begin(); };
+    // void sort();
 
-    list<CoverRow>::const_iterator end() const { return store.end(); };
+    set<CoverRow>::const_iterator begin() const { return store.begin(); };
+
+    set<CoverRow>::const_iterator end() const { return store.end(); };
 };
 
 #endif

@@ -27,9 +27,10 @@ using namespace std;
 class Cover;
 class Profile;
 class ProductStats;
+template<typename T> class CoverStack;
 
-struct CoverStackEntry;
-struct RowStackEntry;
+// struct CoverStackEntry;
+// struct RowStackEntry;
 
 
 class CoverTableau
@@ -52,18 +53,9 @@ class CoverTableau
     template<class T, typename C>
     CoverState attemptRow(
       C& candIter,
-      list<T>& stack,
+      // list<T>& stack,
+      CoverStack<T>& stack,
       CoverTableau& solution);
-
-    void addRow(const Cover& cover);
-
-    void addRow(const CoverRow& row); 
-
-    void extendRow(
-      const Cover& cover,
-      const Tricks& additions,
-      const unsigned rawWeightAdded,
-      const unsigned rowNo);
 
 
   public:
@@ -81,14 +73,35 @@ class CoverTableau
     bool attempt(
       const vector<unsigned char>& cases,
       set<Cover>::const_iterator& coverIter,
-      list<CoverStackEntry>& stack,
+      CoverStack<Cover>& stack,
+      // list<CoverStackEntry>& stack,
       CoverTableau& solution);
 
     bool attempt(
       const vector<unsigned char>& cases,
-      list<CoverRow>::const_iterator& rowIter,
-      list<RowStackEntry>& stack,
+      set<CoverRow>::const_iterator& rowIter,
+      // list<RowStackEntry>& stack,
+      CoverStack<CoverRow>& stack,
       CoverTableau& solution);
+
+    // TODO Maybe friend CoverStack<T> somehow? Templates...
+    void addRow(const Cover& cover);
+
+    void addRow(const CoverRow& row); 
+
+    // TODO Maybe friend CoverStack<T> somehow? Templates...
+    void extendRow(
+      const Cover& cover,
+      const Tricks& additions,
+      const unsigned rawWeightAdded,
+      const unsigned rowNo);
+
+    // TODO Dummy method
+    void extendRow(
+      const CoverRow& row,
+      const Tricks& additions,
+      const unsigned rawWeightAdded,
+      const unsigned rowNo);
 
     unsigned char headroom(const CoverTableau& solution) const;
 
@@ -117,7 +130,8 @@ class CoverTableau
 template<class T, typename C>
 CoverState CoverTableau::attemptRow(
   C& candIter,
-  list<T>& stack,
+  CoverStack<T>& stack,
+  // list<T>& stack,
   CoverTableau& solution)
 {
   // Returns true if a solution is found by adding candIter as a new row, 
@@ -131,6 +145,8 @@ CoverState CoverTableau::attemptRow(
 
   if (candIter->getWeight() < residuals.getWeight())
   {
+    stack.emplace(candIter, * this);
+    /*
     stack.emplace_back(T());
     T& entry = stack.back();
     entry.iter = candIter;
@@ -138,6 +154,7 @@ CoverState CoverTableau::attemptRow(
     CoverTableau& tableau = entry.tableau;
     tableau = * this;
     tableau.addRow(* candIter);
+    */
     return COVER_OPEN;
   }
   else if (solution.rows.empty())
