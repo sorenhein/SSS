@@ -10,8 +10,6 @@
 #define SSS_ROWSTORE_H
 
 #include <set>
-// #include <list>
-// #include <string>
 
 #include "CoverRow.h"
 
@@ -43,8 +41,6 @@ class RowStore
       const Tricks& additions,
       const unsigned rawWeightAdder,
       Tricks& residuals);
-
-    // void sort();
 
     set<CoverRow>::const_iterator begin() const { return store.begin(); };
 

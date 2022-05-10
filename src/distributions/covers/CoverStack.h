@@ -22,30 +22,6 @@ class Tricks;
 using namespace std;
 
 
-struct CoverStackEntry
-{
-  CoverTableau tableau;
-
-  set<Cover>::const_iterator iter;
-
-  bool operator < (const CoverStackEntry& se2) const
-  {
-    return (tableau < se2.tableau);
-  };
-};
-
-struct RowStackEntry
-{
-  CoverTableau tableau;
-
-  list<CoverRow>::const_iterator iter;
-
-  bool operator < (const RowStackEntry& rse2) const
-  {
-    return (tableau < rse2.tableau);
-  };
-};
-
 template<class T>
 struct StackEntry
 {
@@ -123,20 +99,16 @@ class CoverStack
 
     typedef typename list<StackEntry<T>>::iterator Liter;
 
-    // typename list<StackEntry<T>>::iterator erase(
-      // typename list<StackEntry<T>>::iterator iterIn) 
     Liter erase(Liter iterIn) 
     {
       return stack.erase(iterIn);
     };
 
-    // typename list<StackEntry<T>>::iterator begin() 
     Liter begin()
     { 
       return stack.begin(); 
     };
 
-    // typename list<StackEntry<T>>::iterator end() 
     Liter end()
     { 
       return stack.end(); 

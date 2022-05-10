@@ -64,7 +64,6 @@ class Covers
       const unsigned numStrategyTops,
       const C& candidates,
       CoverStack<T>& stack,
-      // list<T>& stack,
       CoverTableau& solution);
 
 
@@ -81,9 +80,6 @@ class Covers
       const Profile& sumProfileIn);
 
     void addDirectly(list<Cover const *>& coverPtrs);
-    // CoverRow& addRow();
-
-    // void sortRows();
 
     const Cover& lookup(const Cover& cover) const;
 
@@ -116,16 +112,9 @@ void Covers::explainTemplate(
   const unsigned numStrategyTops,
   const C& candidates,
   CoverStack<T>& stack,
-  // list<T>& stack,
   CoverTableau& solution)
 {
   stack.emplace(tricks, tmin, candidates.begin());
-
-  // stack.emplace_back(T());
-
-  // T& entry = stack.back();
-  // entry.tableau.init(tricks, tmin);
-  // entry.iter = candidates.begin();
 
 // unsigned candNo = 0;
 

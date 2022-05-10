@@ -15,7 +15,6 @@
 #include "CoverStack.h"
 #include "Cover.h"
 
-// TODO Turn on
 mutex mtxCoverStack;
 
 
@@ -40,6 +39,7 @@ void CoverStack<T>::emplace(
   typename const set<T>::const_iterator& iterIn)
 {
   // This method is for the row version.
+  lock_guard<mutex> lg(mtxCoverStack);
   stack.emplace_back(StackEntry<T>(tricks, tmin, iterIn));
 }
 
@@ -53,13 +53,9 @@ void CoverStack<T>::emplace(
   const unsigned rowNumber)
 {
   // This method is for the cover version.
+  lock_guard<mutex> lg(mtxCoverStack);
   stack.emplace_back(StackEntry<T>(iterIn, tableauIn, additions,
     rawWeightAdded, rowNumber));
-
-  // StackEntry<Cover>& entry = stack.back();
-  // entry.iter = iterIn;
-  // entry.tableau = tableau;
-  // entry.tableau.extendRow(* iterIn, additions, rawWeightAdded, rowNumber);
 }
 
 
@@ -68,14 +64,10 @@ void CoverStack<T>::emplace(
   typename const set<T>::const_iterator& iterIn,
   const CoverTableau& tableauIn)
 {
+  lock_guard<mutex> lg(mtxCoverStack);
   stack.emplace_back(StackEntry<T>(iterIn, tableauIn));
 }
 
 
-
-// TODO Needed?
-template struct StackEntry<Cover>;
-
 template class CoverStack<Cover>;
 template class CoverStack<CoverRow>;
-

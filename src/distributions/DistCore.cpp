@@ -507,12 +507,7 @@ void DistCore::prepareManualCovers(
     }
 
     covers.addDirectly(coverPtrs);
-    // CoverRow& row = covers.addRow();
-    // row.resize(distProfiles.size());
-    // row.fillDirectly(coverPtrs, cases);
   }
-
-  // covers.sortRows();
 }
 
 
