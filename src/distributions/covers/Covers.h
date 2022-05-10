@@ -15,6 +15,7 @@
 
 #include "CoverStore.h"
 #include "CoverRow.h"
+#include "RowStore.h"
 
 #include "tableau/TableauCache.h"
 
@@ -42,7 +43,7 @@ class Covers
     TableauCache tableauCache;
 
     // These are the manually set rows
-    list<CoverRow> rows;
+    RowStore rows;
 
     // This is the separate cache corresponding to the rows.
     TableauCache tableauRowCache;
@@ -120,6 +121,8 @@ void Covers::explainTemplate(
   entry.tableau.init(tricks, tmin);
   entry.iter = candidates.begin();
 
+// unsigned candNo = 0;
+
   auto stackIter = stack.begin();
   while (stackIter != stack.end())
   {
@@ -131,6 +134,7 @@ void Covers::explainTemplate(
       if (candIter->effectiveDepth() > numStrategyTops)
       {
         candIter++;
+// candNo++;
         continue;
       }
 
@@ -147,6 +151,7 @@ void Covers::explainTemplate(
       {
         // The current cover may be too complex, but there may be others.
         candIter++;
+// candNo++;
         continue;
       }
 
@@ -156,8 +161,13 @@ void Covers::explainTemplate(
         break;
       }
 
+// candNo++;
       candIter++;
     }
+// cout << "cno " << candNo << ", stack " << stack.size() <<
+  // ", soln " << (solution.complete() ? "yes" : "no") <<
+  // ", res " << (solution.complete() ? 0 : stackElem.getResidualWeight()) << 
+  // "\n";
 
     // Erasing first stack element.
     stackIter = stack.erase(stackIter);

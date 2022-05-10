@@ -1,3 +1,22 @@
+Maybe order the stack in explainTemplate so we get the most
+promising elements first, getting to a first solution.  Then perhaps
+we can reject later partial solutions because they won't beat it.
+Then the stack doesn't explode.
+
+So in CoverTableau::attempt (with Cover), we would first make an
+entry (line ~ 130).  Once we have extended the row, we know the
+residual weight.  We can call minComplexityAdded with the
+residual weight of that same cover.  Then we have a total estimated
+complexity in case it solves (it will be worse in practice).
+We can keep the stack sorted by this criterion.
+Also in CoverTableau::attemptRow.
+
+So in Covers.h, both CoverStore and list<CoverRow> become classes
+with something like an insert method.  Each one might carry a 
+value "complexityLowerBound".
+
+
+
 Strategy depth statistics
 
  nom | act     0     1     2     3     4     5     Sum

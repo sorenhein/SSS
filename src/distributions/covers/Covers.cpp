@@ -30,7 +30,7 @@ void Covers::reset()
   store.reset();
   tableauCache.reset();
 
-  rows.clear();
+  rows.reset();
   tableauRowCache.reset();
 }
 
@@ -136,8 +136,7 @@ void Covers::prepare(
 
 CoverRow& Covers::addRow()
 {
-  rows.emplace_back(CoverRow());
-  return rows.back();
+  return rows.add();
 }
 
 
