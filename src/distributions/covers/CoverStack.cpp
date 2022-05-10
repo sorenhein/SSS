@@ -40,7 +40,7 @@ void CoverStack<T>::emplace(
 {
   // This method is for the row version.
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace_back(StackEntry<T>(tricks, tmin, iterIn));
+  stack.emplace(StackEntry<T>(tricks, tmin, iterIn));
 }
 
 
@@ -54,7 +54,7 @@ void CoverStack<T>::emplace(
 {
   // This method is for the cover version.
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace_back(StackEntry<T>(iterIn, tableauIn, additions,
+  stack.emplace(StackEntry<T>(iterIn, tableauIn, additions,
     rawWeightAdded, rowNumber));
 }
 
@@ -65,7 +65,7 @@ void CoverStack<T>::emplace(
   const CoverTableau& tableauIn)
 {
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace_back(StackEntry<T>(iterIn, tableauIn));
+  stack.emplace(StackEntry<T>(iterIn, tableauIn));
 }
 
 

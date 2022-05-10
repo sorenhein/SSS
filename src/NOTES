@@ -6,6 +6,11 @@ Then the stack doesn't explode.
 CoverStack needs CoverTableau to offer a complete ordering <.
 Complexity is a good start, but we then compare residuals perhaps.
 
+Output
+- time to first solution
+- max stack size
+- number of comparisons
+
 
 Strategy depth statistics
 

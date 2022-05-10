@@ -369,11 +369,10 @@ distributions/covers/Tricks.obj: strategies/result/ResConvert.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
 distributions/covers/CoverRow.obj: distributions/covers/Cover.h
-distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
-distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
-distributions/covers/CoverRow.obj: distributions/covers/Cover.h
 distributions/covers/CoverStack.obj: distributions/covers/CoverStack.h
 distributions/covers/CoverStack.obj: distributions/covers/tableau/CoverTableau.h
+distributions/covers/CoverStack.obj: distributions/covers/Cover.h
+distributions/covers/CoverStack.obj: distributions/covers/Tricks.h
 distributions/covers/manual/Manual.obj: distributions/covers/manual/Manual.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/Profile.h

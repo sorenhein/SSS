@@ -114,6 +114,9 @@ class Cover
     string strTricksShort() const;
 
     string str(const Profile& sumProfile) const;
+
+// TODO
+string ID() const {return "CC";};
 };
 
 #endif

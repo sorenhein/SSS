@@ -190,7 +190,6 @@ void Covers::explainManually(
     return;
   }
 
-  // list<RowStackEntry> stack;
   CoverStack<CoverRow> stack;
   Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, 
     rows, stack, solution);

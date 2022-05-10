@@ -92,6 +92,9 @@ class CoverRow
     string strHeader() const;
 
     string str(const Profile& sumProfile) const;
+
+// TODO
+string ID() const {return "RR";};
 };
 
 #endif

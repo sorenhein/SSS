@@ -105,6 +105,9 @@ class Covers
 };
 
 
+// TODO
+extern unsigned countTMP;
+
 template<class C, class T>
 void Covers::explainTemplate(
   const Tricks& tricks,
@@ -118,12 +121,25 @@ void Covers::explainTemplate(
 
 // unsigned candNo = 0;
 
-  auto stackIter = stack.begin();
-  while (stackIter != stack.end())
-  {
-    auto& stackElem = stackIter->tableau;
+unsigned firstFix = 0;
+unsigned stackMax = 0;
+unsigned numTries = 0;
+countTMP = 0;
 
-    auto candIter = stackIter->iter;
+  // auto stackIter = stack.begin();
+  // while (stackIter != stack.end())
+  while (! stack.empty())
+  {
+    // auto& stackElem = stackIter->tableau;
+    // TODO This a an actual copy, but I don't see how to benefit
+    // from extract
+    StackEntry<T> stackElem = * stack.begin();
+    CoverTableau& tableau = stackElem.tableau;
+    stack.erase(stack.begin());
+    // auto stackElem = stack.extract(stack.begin());
+
+    // auto candIter = stackIter->iter;
+    auto candIter = stackElem.iter;
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
@@ -133,9 +149,9 @@ void Covers::explainTemplate(
         continue;
       }
 
-      const unsigned char headroom = stackElem.headroom(solution);
+      const unsigned char headroom = tableau.headroom(solution);
 
-      if (candIter->minComplexityAdder(stackElem.getResidualWeight()) > 
+      if (candIter->minComplexityAdder(tableau.getResidualWeight()) > 
           headroom)
       {
         // As the covers are ordered, later covers have no chance either.
@@ -150,9 +166,12 @@ void Covers::explainTemplate(
         continue;
       }
 
-      if (stackIter->tableau.attempt(cases, candIter, stack, solution))
+      // if (stackIter->tableau.attempt(cases, candIter, stack, solution))
+      if (tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
+if (firstFix == 0)
+  firstFix = numTries;
         break;
       }
 
@@ -164,9 +183,22 @@ void Covers::explainTemplate(
   // ", res " << (solution.complete() ? 0 : stackElem.getResidualWeight()) << 
   // "\n";
 
+if (stack.size() > stackMax)
+  stackMax = stack.size();
+
     // Erasing first stack element.
-    stackIter = stack.erase(stackIter);
+    // stackIter = stack.erase(stackIter);
+numTries++;
   }
+
+T tmp;
+string s = tmp.ID();
+  
+cout << s << " ttff " << firstFix << "\n";
+cout << s << " smax " << stackMax << "\n";
+cout << s << " snum " << numTries << "\n";
+cout << s << " coun " << countTMP << "\n";
+
 }
 
 #endif

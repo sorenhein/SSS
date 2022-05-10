@@ -73,7 +73,7 @@ class CoverStack
 {
   private:
 
-    list<StackEntry<T>> stack;
+    multiset<StackEntry<T>> stack;
 
   public:
 
@@ -97,7 +97,7 @@ class CoverStack
       typename const set<T>::const_iterator& iterIn,
       const CoverTableau& tableau);
 
-    typedef typename list<StackEntry<T>>::iterator Liter;
+    typedef typename multiset<StackEntry<T>>::iterator Liter;
 
     Liter erase(Liter iterIn) 
     {
@@ -112,6 +112,16 @@ class CoverStack
     Liter end()
     { 
       return stack.end(); 
+    };
+
+    unsigned size() const
+    {
+      return stack.size();
+    };
+
+    bool empty() const
+    {
+      return stack.empty();
     };
 };
 
