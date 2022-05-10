@@ -28,10 +28,14 @@ class Cover;
 class Profile;
 class ProductStats;
 template<typename T> class CoverStack;
+template<typename T> struct StackEntry;
 
 
 class CoverTableau
 {
+  friend StackEntry<Cover>;
+  friend StackEntry<CoverRow>;
+
   private:
 
     list<CoverRow> rows;
@@ -52,6 +56,25 @@ class CoverTableau
       C& candIter,
       CoverStack<T>& stack,
       CoverTableau& solution);
+
+  protected:
+
+    void addRow(const Cover& cover);
+
+    void addRow(const CoverRow& row); 
+
+    void extendRow(
+      const Cover& cover,
+      const Tricks& additions,
+      const unsigned rawWeightAdded,
+      const unsigned rowNo);
+
+    // Dummy method (don't know how to avoid).
+    void extendRow(
+      const CoverRow& row,
+      const Tricks& additions,
+      const unsigned rawWeightAdded,
+      const unsigned rowNo);
 
 
   public:
@@ -77,25 +100,6 @@ class CoverTableau
       set<CoverRow>::const_iterator& rowIter,
       CoverStack<CoverRow>& stack,
       CoverTableau& solution);
-
-    // TODO Maybe friend CoverStack<T> somehow? Templates...
-    void addRow(const Cover& cover);
-
-    void addRow(const CoverRow& row); 
-
-    // TODO Maybe friend CoverStack<T> somehow? Templates...
-    void extendRow(
-      const Cover& cover,
-      const Tricks& additions,
-      const unsigned rawWeightAdded,
-      const unsigned rowNo);
-
-    // TODO Dummy method
-    void extendRow(
-      const CoverRow& row,
-      const Tricks& additions,
-      const unsigned rawWeightAdded,
-      const unsigned rowNo);
 
     unsigned char headroom(const CoverTableau& solution) const;
 
