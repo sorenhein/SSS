@@ -65,7 +65,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
   const Profile& sumProfile,
   const ProfilePair& profilePair)
 {
-  mtxProductMemory.lock();
+  lock_guard<mutex> lg(mtxProductMemory);
 
   const unsigned numTops = sumProfile.size();
   assert(numTops < factoredMemory.size());
@@ -116,13 +116,11 @@ FactoredProduct * ProductMemory::enterOrLookup(
       }
     }
 
-    mtxProductMemory.unlock();
     return &factoredProduct;
   }
   else
   {
     // Look up an existing element.
-    mtxProductMemory.unlock();
     return &(fit->second);
   }
 }

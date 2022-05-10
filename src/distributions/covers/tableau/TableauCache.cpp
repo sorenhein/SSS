@@ -14,7 +14,7 @@
 
 #include "TableauCache.h"
 
-mutex mxtTableauCache;
+mutex mtxTableauCache;
 
 
 TableauCache::TableauCache()
@@ -33,12 +33,12 @@ void TableauCache::store(
   const Tricks& excessTricks,
   const CoverTableau& tableau)
 {
-  mxtTableauCache.lock();
+  mtxTableauCache.lock();
 
   entries.emplace_back(CacheEntry());
   CacheEntry& entry = entries.back();
 
-  mxtTableauCache.unlock();
+  mtxTableauCache.unlock();
 
   entry.excessTricks = excessTricks;
   entry.tableau = tableau;

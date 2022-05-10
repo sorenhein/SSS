@@ -77,7 +77,7 @@ void CoverStore::add(
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
-  mtxCoverStore.lock();
+  lock_guard<mutex> lg(mtxCoverStore);
 
   // Make a Cover with symmFlag == false.
   coverScratch.reset();
@@ -85,10 +85,7 @@ void CoverStore::add(
 
   // Make its tricks and counts.
   if (! coverScratch.setByProduct(distProfiles, cases))
-  {
-    mtxCoverStore.unlock();
     return;
-  }
 
   // Store it in "store".
   auto result = store.insert(coverScratch);
@@ -102,19 +99,12 @@ void CoverStore::add(
   
   // Discard some symmmetric versions.
   if (! coverScratch.symmetrizable(sumProfile))
-  {
-    mtxCoverStore.unlock();
     return;
-  }
 
   if (! coverScratch.symmetrize())
-  {
-    mtxCoverStore.unlock();
     return;
-  }
 
   symmetricCache.push_back(coverScratch);
-  mtxCoverStore.unlock();
 }
 
 
@@ -124,7 +114,7 @@ void CoverStore::admixSymmetric()
   // This may lead to eliminations that were too hard to recognize
   // when we made the symmetrics.
 
-  mtxCoverStore.lock();
+  lock_guard<mutex> lg(mtxCoverStore);
 
   for (auto& cover: symmetricCache)
   {
@@ -135,7 +125,6 @@ void CoverStore::admixSymmetric()
   }
 
   symmetricCache.clear();
-  mtxCoverStore.unlock();
 }
 
 
