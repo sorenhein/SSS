@@ -60,9 +60,9 @@ bool TableauCache::lookup(
       // signatures.
       solution = entry.tableau;
 
-      mxtTableauCache.lock();
+      mtxTableauCache.lock();
       entry.count++;
-      mxtTableauCache.unlock();
+      mtxTableauCache.unlock();
 
       return true;
     }

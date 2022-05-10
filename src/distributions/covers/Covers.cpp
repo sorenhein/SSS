@@ -173,7 +173,7 @@ void Covers::explain(
     return;
   }
 
-  list<StackEntry> stack;
+  list<CoverStackEntry> stack;
   Covers::explainTemplate(tricks, tmin, numStrategyTops,
     store, stack, solution);
 

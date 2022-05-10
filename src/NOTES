@@ -3,18 +3,30 @@ promising elements first, getting to a first solution.  Then perhaps
 we can reject later partial solutions because they won't beat it.
 Then the stack doesn't explode.
 
-So in CoverTableau::attempt (with Cover), we would first make an
-entry (line ~ 130).  Once we have extended the row, we know the
-residual weight.  We can call minComplexityAdded with the
-residual weight of that same cover.  Then we have a total estimated
-complexity in case it solves (it will be worse in practice).
-We can keep the stack sorted by this criterion.
-Also in CoverTableau::attemptRow.
+I think CoverStacks turns into a class called CoverStack with a 
+template parameter: Cover or CoverRow.
+It contains a list<T>::const_iterator iter.
+It has an < operator.
+It has whatever access methods it needs.
+It has some kind of emplace with several variants.
+StackEntry and RowStackEntry gets an emplace(
+  coverIter, CoverTableau&, additions, rawWeightAded rno)
 
-So in Covers.h, both CoverStore and list<CoverRow> become classes
-with something like an insert method.  Each one might carry a 
-value "complexityLowerBound".
-
+So in CoverTableau::attempt (with cover):
+if there is a solution
+  coverIter->minComplexityAdded(residuals.getWeight())
+  This is the old residual, but we also haven't added additions yet, so OK
+  CoverTableau::project(minCompAdded, which we actually have internally)
+  if (solution < this new tableau)
+    busted anyway, don't push
+    I guess this can't happen due to test in main loop?
+  otherwise
+    push
+else
+  for sure it goes on the stack
+  we have to make the entry before pushing it
+  Perhaps StackEntry(constructor args, coverIter, * this, additions,
+    rawWeightAdded) and then set::emplace?
 
 
 Strategy depth statistics

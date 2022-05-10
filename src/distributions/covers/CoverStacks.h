@@ -21,11 +21,16 @@ class CoverRow;
 using namespace std;
 
 
-struct StackEntry
+struct CoverStackEntry
 {
   CoverTableau tableau;
 
   set<Cover>::const_iterator iter;
+
+  bool operator < (const CoverStackEntry& se2) const
+  {
+    return (tableau < se2.tableau);
+  };
 };
 
 struct RowStackEntry
@@ -33,6 +38,11 @@ struct RowStackEntry
   CoverTableau tableau;
 
   list<CoverRow>::const_iterator iter;
+
+  bool operator < (const RowStackEntry& rse2) const
+  {
+    return (tableau < rse2.tableau);
+  };
 };
 
 #endif

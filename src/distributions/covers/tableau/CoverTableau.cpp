@@ -33,6 +33,7 @@ void CoverTableau::reset()
   residuals.clear();
 
   complexity.reset();
+  lowerBound.reset();
 }
 
 
@@ -90,7 +91,7 @@ void CoverTableau::extendRow(
 bool CoverTableau::attempt(
   const vector<unsigned char>& cases,
   set<Cover>::const_iterator& coverIter,
-  list<StackEntry>& stack,
+  list<CoverStackEntry>& stack,
   CoverTableau& solution)
 {
   // Returns true if this must be the last use of this cover.
@@ -123,8 +124,8 @@ bool CoverTableau::attempt(
     else if (additions.getWeight() < residuals.getWeight())
     {
       // The cover can be added, but does not make a solution yet.
-      stack.emplace_back(StackEntry());
-      StackEntry& entry = stack.back();
+      stack.emplace_back(CoverStackEntry());
+      CoverStackEntry& entry = stack.back();
       entry.iter = coverIter;
       entry.tableau = * this;
       entry.tableau.extendRow(* coverIter, additions, rawWeightAdded, rno);
@@ -159,6 +160,34 @@ bool CoverTableau::attempt(
 unsigned char CoverTableau::headroom(const CoverTableau& solution) const
 {
   return complexity.headroom(solution.complexity);
+}
+
+
+void CoverTableau::project(const unsigned char minCompAdder)
+{
+  lowerBound = complexity;
+
+  // We cannot reliably adjust up the row complexity nor the raw weight.
+  lowerBound.addCover(minCompAdder, 0, 0);
+}
+
+
+bool CoverTableau::operator < (const CoverTableau& ct2) const
+{
+  if (CoverTableau::complete())
+  {
+    if (ct2.complete())
+      return (complexity < ct2.complexity);
+    else
+      return (complexity < ct2.lowerBound);
+  }
+  else
+  {
+    if (ct2.complete())
+      return (lowerBound < ct2.complexity);
+    else
+      return (lowerBound < ct2.lowerBound);
+  }
 }
 
 
