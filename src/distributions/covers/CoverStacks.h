@@ -45,4 +45,27 @@ struct RowStackEntry
   };
 };
 
+template<class C>
+struct StackEntry
+{
+  CoverTableau tableau;
+
+  typename list<C>::const_iterator iter;
+
+  bool operator < (const StackEntry& se2) const
+  {
+    return (tableau < se2.tableau);
+  };
+};
+
+template<class C>
+class CoverStack
+{
+  private:
+
+    list<StackEntry<C>> stack;
+
+  public:
+};
+
 #endif
