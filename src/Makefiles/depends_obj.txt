@@ -17,6 +17,7 @@ driver.obj: distributions/DistCore.h distributions/Survivors.h
 driver.obj: distributions/Reductions.h distributions/covers/Covers.h
 driver.obj: distributions/covers/CoverStore.h distributions/covers/Cover.h
 driver.obj: distributions/covers/Tricks.h distributions/covers/CoverRow.h
+driver.obj: distributions/covers/RowStore.h
 driver.obj: distributions/covers/tableau/TableauCache.h
 driver.obj: distributions/covers/tableau/CoverTableau.h
 driver.obj: distributions/covers/CoverRow.h distributions/covers/Tricks.h
@@ -67,6 +68,7 @@ combinations/Combination.obj: distributions/covers/CoverStore.h
 combinations/Combination.obj: distributions/covers/Cover.h
 combinations/Combination.obj: distributions/covers/Tricks.h
 combinations/Combination.obj: distributions/covers/CoverRow.h
+combinations/Combination.obj: distributions/covers/RowStore.h
 combinations/Combination.obj: distributions/covers/tableau/TableauCache.h
 combinations/Combination.obj: distributions/covers/tableau/CoverTableau.h
 combinations/Combination.obj: distributions/covers/CoverRow.h
@@ -125,6 +127,7 @@ combinations/Combinations.obj: distributions/covers/CoverStore.h
 combinations/Combinations.obj: distributions/covers/Cover.h
 combinations/Combinations.obj: distributions/covers/Tricks.h
 combinations/Combinations.obj: distributions/covers/CoverRow.h
+combinations/Combinations.obj: distributions/covers/RowStore.h
 combinations/Combinations.obj: distributions/covers/tableau/TableauCache.h
 combinations/Combinations.obj: distributions/covers/tableau/CoverTableau.h
 combinations/Combinations.obj: distributions/covers/CoverRow.h
@@ -197,6 +200,7 @@ combinations/CombTest.obj: distributions/covers/CoverStore.h
 combinations/CombTest.obj: distributions/covers/Cover.h
 combinations/CombTest.obj: distributions/covers/Tricks.h
 combinations/CombTest.obj: distributions/covers/CoverRow.h
+combinations/CombTest.obj: distributions/covers/RowStore.h
 combinations/CombTest.obj: distributions/covers/tableau/TableauCache.h
 combinations/CombTest.obj: distributions/covers/tableau/CoverTableau.h
 combinations/CombTest.obj: distributions/covers/CoverRow.h
@@ -241,6 +245,7 @@ distributions/Distributions.obj: distributions/covers/CoverStore.h
 distributions/Distributions.obj: distributions/covers/Cover.h
 distributions/Distributions.obj: distributions/covers/Tricks.h
 distributions/Distributions.obj: distributions/covers/CoverRow.h
+distributions/Distributions.obj: distributions/covers/RowStore.h
 distributions/Distributions.obj: distributions/covers/tableau/TableauCache.h
 distributions/Distributions.obj: distributions/covers/tableau/CoverTableau.h
 distributions/Distributions.obj: distributions/covers/CoverRow.h
@@ -266,6 +271,7 @@ distributions/DistCore.obj: distributions/covers/CoverStore.h
 distributions/DistCore.obj: distributions/covers/Cover.h
 distributions/DistCore.obj: distributions/covers/Tricks.h
 distributions/DistCore.obj: distributions/covers/CoverRow.h
+distributions/DistCore.obj: distributions/covers/RowStore.h
 distributions/DistCore.obj: distributions/covers/tableau/TableauCache.h
 distributions/DistCore.obj: distributions/covers/tableau/CoverTableau.h
 distributions/DistCore.obj: distributions/covers/CoverRow.h
@@ -299,6 +305,7 @@ distributions/DistMemory.obj: distributions/covers/CoverStore.h
 distributions/DistMemory.obj: distributions/covers/Cover.h
 distributions/DistMemory.obj: distributions/covers/Tricks.h
 distributions/DistMemory.obj: distributions/covers/CoverRow.h
+distributions/DistMemory.obj: distributions/covers/RowStore.h
 distributions/DistMemory.obj: distributions/covers/tableau/TableauCache.h
 distributions/DistMemory.obj: distributions/covers/tableau/CoverTableau.h
 distributions/DistMemory.obj: distributions/covers/CoverRow.h
@@ -331,6 +338,7 @@ distributions/covers/Covers.obj: distributions/covers/CoverStore.h
 distributions/covers/Covers.obj: distributions/covers/Cover.h
 distributions/covers/Covers.obj: distributions/covers/Tricks.h
 distributions/covers/Covers.obj: distributions/covers/CoverRow.h
+distributions/covers/Covers.obj: distributions/covers/RowStore.h
 distributions/covers/Covers.obj: distributions/covers/tableau/TableauCache.h
 distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Covers.obj: distributions/covers/CoverRow.h
@@ -339,7 +347,7 @@ distributions/covers/Covers.obj: distributions/covers/Complexity.h
 distributions/covers/Covers.obj: distributions/covers/CoverState.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
-distributions/covers/Covers.obj: distributions/covers/CoverStacks.h
+distributions/covers/Covers.obj: distributions/covers/CoverStack.h
 distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
@@ -347,6 +355,9 @@ distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/CoverStore.obj: distributions/covers/CoverStore.h
 distributions/covers/CoverStore.obj: distributions/covers/Cover.h
 distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
+distributions/covers/RowStore.obj: distributions/covers/RowStore.h
+distributions/covers/RowStore.obj: distributions/covers/CoverRow.h
+distributions/covers/RowStore.obj: distributions/covers/Tricks.h
 distributions/covers/Tricks.obj: distributions/covers/Tricks.h
 distributions/covers/Tricks.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/Tricks.obj: distributions/covers/product/Profile.h
@@ -358,6 +369,11 @@ distributions/covers/Tricks.obj: strategies/result/ResConvert.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
 distributions/covers/CoverRow.obj: distributions/covers/Cover.h
+distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
+distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
+distributions/covers/CoverRow.obj: distributions/covers/Cover.h
+distributions/covers/CoverStack.obj: distributions/covers/CoverStack.h
+distributions/covers/CoverStack.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/manual/Manual.obj: distributions/covers/manual/Manual.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/Profile.h
@@ -368,7 +384,7 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/Complexity.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverState.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Cover.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Tricks.h
-distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStacks.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStack.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winners.h
@@ -492,6 +508,7 @@ plays/Node.obj: distributions/Reductions.h distributions/covers/Covers.h
 plays/Node.obj: distributions/covers/CoverStore.h
 plays/Node.obj: distributions/covers/Cover.h distributions/covers/Tricks.h
 plays/Node.obj: distributions/covers/CoverRow.h
+plays/Node.obj: distributions/covers/RowStore.h
 plays/Node.obj: distributions/covers/tableau/TableauCache.h
 plays/Node.obj: distributions/covers/tableau/CoverTableau.h
 plays/Node.obj: distributions/covers/CoverRow.h distributions/covers/Tricks.h
@@ -541,6 +558,7 @@ strategies/Slist.obj: distributions/covers/CoverStore.h
 strategies/Slist.obj: distributions/covers/Cover.h
 strategies/Slist.obj: distributions/covers/Tricks.h
 strategies/Slist.obj: distributions/covers/CoverRow.h
+strategies/Slist.obj: distributions/covers/RowStore.h
 strategies/Slist.obj: distributions/covers/tableau/TableauCache.h
 strategies/Slist.obj: distributions/covers/tableau/CoverTableau.h
 strategies/Slist.obj: distributions/covers/CoverRow.h
@@ -587,6 +605,7 @@ strategies/Strategy.obj: distributions/covers/CoverStore.h
 strategies/Strategy.obj: distributions/covers/Cover.h
 strategies/Strategy.obj: distributions/covers/Tricks.h
 strategies/Strategy.obj: distributions/covers/CoverRow.h
+strategies/Strategy.obj: distributions/covers/RowStore.h
 strategies/Strategy.obj: distributions/covers/tableau/TableauCache.h
 strategies/Strategy.obj: distributions/covers/tableau/CoverTableau.h
 strategies/Strategy.obj: distributions/covers/CoverRow.h

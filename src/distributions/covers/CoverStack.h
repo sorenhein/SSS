@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_COVERSTACKS_H
-#define SSS_COVERSTACKS_H
+#ifndef SSS_COVERSTACK_H
+#define SSS_COVERSTACK_H
 
 #include <set>
 #include <list>
@@ -66,6 +66,10 @@ class CoverStack
     list<StackEntry<C>> stack;
 
   public:
+
+    CoverStack();
+
+    void reset();
 };
 
 #endif

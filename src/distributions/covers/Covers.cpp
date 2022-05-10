@@ -13,7 +13,7 @@
 #include <cassert>
 
 #include "Covers.h"
-#include "CoverStacks.h"
+#include "CoverStack.h"
 #include "product/ProfilePair.h"
 
 

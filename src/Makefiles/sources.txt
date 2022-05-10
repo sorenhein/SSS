@@ -24,6 +24,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/RowStore.cpp                \
                 distributions/covers/Tricks.cpp                  \
                 distributions/covers/CoverRow.cpp                \
+                distributions/covers/CoverStack.cpp              \
                                                                  \
                 distributions/covers/manual/Manual.cpp           \
                                                                  \
