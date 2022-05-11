@@ -6,9 +6,6 @@ A new solution could lead to a pruning of the entire stack,
 from the back, until we get to a place that still has a chance
 to beat that solution.
 
-Can the stack just become a derived class of list?  Then we
-can perhaps avoid the copy in Covers::explainTemplate.
-
 
 Strategy depth statistics
 

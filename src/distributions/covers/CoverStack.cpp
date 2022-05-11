@@ -21,14 +21,7 @@ mutex mtxCoverStack;
 template<class T>
 CoverStack<T>::CoverStack()
 {
-  CoverStack::reset();
-}
-
-
-template<class T>
-void CoverStack<T>::reset()
-{
-  stack.clear();
+  CoverStack::clear();
 }
 
 
@@ -40,7 +33,7 @@ void CoverStack<T>::emplace(
 {
   // This method is for the row version.
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace(StackEntry<T>(tricks, tmin, iterIn));
+  multiset<StackEntry<T>>::emplace(StackEntry<T>(tricks, tmin, iterIn));
 }
 
 
@@ -54,8 +47,8 @@ void CoverStack<T>::emplace(
 {
   // This method is for the cover version.
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace(StackEntry<T>(iterIn, tableauIn, additions,
-    rawWeightAdded, rowNumber));
+  multiset<StackEntry<T>>::emplace(StackEntry<T>(iterIn, tableauIn, 
+    additions, rawWeightAdded, rowNumber));
 }
 
 
@@ -65,7 +58,7 @@ void CoverStack<T>::emplace(
   const CoverTableau& tableauIn)
 {
   lock_guard<mutex> lg(mtxCoverStack);
-  stack.emplace(StackEntry<T>(iterIn, tableauIn));
+  multiset<StackEntry<T>>::emplace(StackEntry<T>(iterIn, tableauIn));
 }
 
 

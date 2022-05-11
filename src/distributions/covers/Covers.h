@@ -16,6 +16,7 @@
 #include "CoverStore.h"
 #include "CoverRow.h"
 #include "RowStore.h"
+// #include "StackEntry.h"
 
 #include "tableau/TableauCache.h"
 
@@ -126,13 +127,12 @@ countTMP = 0;
 
   while (! stack.empty())
   {
-    // TODO This a an actual copy, but I don't see how to benefit
-    // from extract
-    StackEntry<T> stackElem = * stack.begin();
-    CoverTableau& tableau = stackElem.tableau;
-    stack.erase(stack.begin());
+    auto handle = stack.extract(stack.begin());
+    StackEntry<T>& stackElem = handle.value();
 
+    CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
+
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
