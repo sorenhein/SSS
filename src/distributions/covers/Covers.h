@@ -119,33 +119,25 @@ void Covers::explainTemplate(
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
-// unsigned candNo = 0;
-
 unsigned firstFix = 0;
 unsigned stackMax = 0;
 unsigned numTries = 0;
 countTMP = 0;
 
-  // auto stackIter = stack.begin();
-  // while (stackIter != stack.end())
   while (! stack.empty())
   {
-    // auto& stackElem = stackIter->tableau;
     // TODO This a an actual copy, but I don't see how to benefit
     // from extract
     StackEntry<T> stackElem = * stack.begin();
     CoverTableau& tableau = stackElem.tableau;
     stack.erase(stack.begin());
-    // auto stackElem = stack.extract(stack.begin());
 
-    // auto candIter = stackIter->iter;
     auto candIter = stackElem.iter;
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
       {
         candIter++;
-// candNo++;
         continue;
       }
 
@@ -162,7 +154,6 @@ countTMP = 0;
       {
         // The current cover may be too complex, but there may be others.
         candIter++;
-// candNo++;
         continue;
       }
 
@@ -175,36 +166,17 @@ if (firstFix == 0)
         break;
       }
 
-// candNo++;
       candIter++;
     }
-// cout << "cno " << candNo << ", stack " << stack.size() <<
-  // ", soln " << (solution.complete() ? "yes" : "no") <<
-  // ", res " << (solution.complete() ? 0 : stackElem.getResidualWeight()) << 
-  // "\n";
 
 if (stack.size() > stackMax)
   stackMax = stack.size();
 
-    // Erasing first stack element.
-    // stackIter = stack.erase(stackIter);
-/*
-cout << "Stack now: soln " <<
-  (solution.complete() ? "yes " + solution.strBracket() : "no") << "\n";
-for (auto& s: stack)
-  cout << s.tableau.strBracket() << ", " <<
-    s.tableau.lowerTMP() << "\n";
-cout << "\n";
-*/
-{
-}
-
-// if (numTries > 20)
-  // assert(false);
 
 numTries++;
   }
 
+/*
 T tmp;
 string s = tmp.ID();
   
@@ -212,6 +184,7 @@ cout << s << " ttff " << firstFix << "\n";
 cout << s << " smax " << stackMax << "\n";
 cout << s << " snum " << numTries << "\n";
 cout << s << " coun " << countTMP << "\n";
+*/
 
 }
 
