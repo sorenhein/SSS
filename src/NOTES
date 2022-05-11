@@ -1,15 +1,10 @@
-Maybe order the stack in explainTemplate so we get the most
-promising elements first, getting to a first solution.  Then perhaps
-we can reject later partial solutions because they won't beat it.
-Then the stack doesn't explode.
+See whether the new ordering helps the 2-depth cases.
 
-CoverStack needs CoverTableau to offer a complete ordering <.
-Complexity is a good start, but we then compare residuals perhaps.
-
-Output
-- time to first solution
-- max stack size
-- number of comparisons
+When a solution is found in CoverTableau::attemptRow in .h,
+or in attempt in .cpp, could set a bool for Covers.h.
+A new solution could lead to a pruning of the entire stack,
+from the back, until we get to a place that still has a chance
+to beat that solution.
 
 
 Strategy depth statistics

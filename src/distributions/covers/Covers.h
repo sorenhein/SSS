@@ -188,6 +188,20 @@ if (stack.size() > stackMax)
 
     // Erasing first stack element.
     // stackIter = stack.erase(stackIter);
+/*
+cout << "Stack now: soln " <<
+  (solution.complete() ? "yes " + solution.strBracket() : "no") << "\n";
+for (auto& s: stack)
+  cout << s.tableau.strBracket() << ", " <<
+    s.tableau.lowerTMP() << "\n";
+cout << "\n";
+*/
+{
+}
+
+// if (numTries > 20)
+  // assert(false);
+
 numTries++;
   }
 

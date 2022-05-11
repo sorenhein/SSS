@@ -62,6 +62,10 @@ void CoverTableau::addRow(const Cover& cover)
   row.resize(residuals.size());
   row.add(cover, cover.getTricks(), cover.getWeight(), residuals);
   complexity.addRow(row.getComplexity(), row.getRawWeight());
+
+  const unsigned char minCompAdder = 
+    cover.minComplexityAdder(residuals.getWeight());
+  CoverTableau::project(minCompAdder);
 }
 
 
@@ -70,6 +74,10 @@ void CoverTableau::addRow( const CoverRow& row)
   rows.push_back(row);
   complexity.addRow(row.getComplexity(), row.getRawWeight());
   residuals -= row.getTricks();
+
+  const unsigned char minCompAdder = 
+    row.minComplexityAdder(residuals.getWeight());
+  CoverTableau::project(minCompAdder);
 }
 
 
@@ -88,6 +96,10 @@ void CoverTableau::extendRow(
 
   complexity.addCover(cover.getComplexity(), riter->getComplexity(),
     rawWeight);
+
+  const unsigned char minCompAdder = 
+    cover.minComplexityAdder(residuals.getWeight());
+  CoverTableau::project(minCompAdder);
 }
 
 
@@ -246,6 +258,12 @@ string CoverTableau::strBracket() const
     "[c " << complexity.str() << 
     ", w " << weight << "/" << rawWeight << "]";
   return ss.str();
+}
+
+
+string CoverTableau::lowerTMP() const
+{
+  return lowerBound.str();
 }
 
 

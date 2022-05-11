@@ -122,6 +122,8 @@ class CoverTableau
     string strResiduals() const;
 
     string str(const Profile& sumProfile) const;
+
+string lowerTMP() const;
 };
 
 
