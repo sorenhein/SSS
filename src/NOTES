@@ -9,8 +9,6 @@ to beat that solution.
 Can the stack just become a derived class of list?  Then we
 can perhaps avoid the copy in Covers::explainTemplate.
 
-StackElem in separate file?
-
 
 Strategy depth statistics
 
