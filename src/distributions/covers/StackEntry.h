@@ -26,6 +26,10 @@ struct StackEntry
 
   typename set<T>::const_iterator iter;
 
+  StackEntry()
+  {
+  };
+
   StackEntry(
     const Tricks& tricks,
     const unsigned char tmin,

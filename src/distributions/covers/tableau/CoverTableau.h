@@ -130,6 +130,7 @@ string lowerTMP() const;
 // TMP TODO
 struct Edata
 {
+  unsigned stackActual;
   unsigned firstFix;
   unsigned numSolutions;
   unsigned stackMax;
@@ -142,8 +143,9 @@ struct Edata
     stringstream ss;
     ss << 
       setw(2) << "" <<
+      setw(12) << "Stack" <<
       setw(8) << "TTFF" <<
-      setw(12) << "Numsol" <<
+      setw(8) << "Numsol" <<
       setw(12) << "Smax" <<
       setw(12) << "Comps" <<
       setw(12) << "Steps" <<
@@ -156,8 +158,9 @@ struct Edata
     stringstream ss;
     ss << 
       setw(2) << ID <<
+      setw(12) << stackActual <<
       setw(8) << firstFix <<
-      setw(12) << numSolutions <<
+      setw(8) << numSolutions <<
       setw(12) << stackMax <<
       setw(12) << numCompares <<
       setw(12) << numSteps <<

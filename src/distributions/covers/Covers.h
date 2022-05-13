@@ -120,6 +120,7 @@ void Covers::explainTemplate(
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
+edata.stackActual = 0;
 edata.firstFix = 0;
 edata.stackMax = 0;
 edata.numSteps = 0;
@@ -137,6 +138,7 @@ cout << edata.strHeader();
     auto candIter = stackElem.iter;
 
 unsigned tmp = stack.size();
+unsigned tmpSolutions = edata.numSolutions;
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
@@ -178,6 +180,16 @@ edata.numBranches += stack.size() - tmp;
 if (stack.size() > edata.stackMax)
   edata.stackMax = stack.size();
 
+if (edata.numSolutions > tmpSolutions)
+{
+unsigned cs = stack.size();
+  stack.prune(solution);
+cout << "Erased " << cs - stack.size() << " << elements\n";
+
+
+}
+
+edata.stackActual = stack.size();
 
 edata.numSteps++;
 if (edata.numSteps % 100 == 0)

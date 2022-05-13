@@ -43,6 +43,8 @@ class CoverStack: public multiset<StackEntry<T>>
       typename const set<T>::const_iterator& iterIn,
       const CoverTableau& tableau);
 
+    unsigned prune(const CoverTableau& solution);
+
 };
 
 #endif
