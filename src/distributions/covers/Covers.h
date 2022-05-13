@@ -127,18 +127,32 @@ edata.numSteps = 0;
 edata.numCompares = 0;
 edata.numSolutions = 0;
 edata.numBranches = 0;
-cout << edata.strHeader();
+// cout << edata.strHeader();
 
   while (! stack.empty())
   {
     auto handle = stack.extract(stack.begin());
     StackEntry<T>& stackElem = handle.value();
+// Can probably avoid overwriting in CoverTableau, but for now
+// we make a copy
+StackEntry<T> stackElemCopy = stackElem;
 
     CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
 
 unsigned tmp = stack.size();
 unsigned tmpSolutions = edata.numSolutions;
+bool branchFlag = false;
+unsigned branchLimit;
+if (tmp < 10000)
+  branchLimit = 5;
+else if (tmp < 30000)
+  branchLimit = 3;
+else if (tmp < 50000)
+  branchLimit = 2;
+else
+  branchLimit = 1;
+
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
@@ -173,6 +187,12 @@ if (edata.firstFix == 0)
       }
 
       candIter++;
+
+      if (candIter != candidates.end() && stack.size() - tmp > branchLimit)
+      {
+        branchFlag = true;
+        break;
+      }
     }
 
 edata.numBranches += stack.size() - tmp;
@@ -182,9 +202,9 @@ if (stack.size() > edata.stackMax)
 
 if (edata.numSolutions > tmpSolutions)
 {
-unsigned cs = stack.size();
+// unsigned cs = stack.size();
   stack.prune(solution);
-cout << "Erased " << cs - stack.size() << " << elements\n";
+// cout << "Erased " << cs - stack.size() << " << elements\n";
 
 
 }
@@ -195,8 +215,25 @@ edata.numSteps++;
 if (edata.numSteps % 100 == 0)
 {
   T t;
-  cout << edata.str(t.ID());
+  // cout << edata.str(t.ID());
 }
+
+    if (branchFlag)
+    {
+      // cout << "Branch\n";
+      stackElemCopy.iter = candIter;
+      const unsigned w = stackElemCopy.tableau.getResidualWeight();
+      if (w == 0)
+      {
+        assert(false);
+      }
+      const unsigned char minCompAdder = 
+        candIter->minComplexityAdder(w);
+      stackElemCopy.tableau.project(minCompAdder);
+      stack.insert(stackElemCopy);
+    }
+
+
   }
 
 /* */

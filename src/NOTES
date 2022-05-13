@@ -1,4 +1,3 @@
-* A change of solution prunes the stack.
 * Until we have a solution, the best guess is the lowest projection.
 * Stop branching and put back onto the stack (with a new projection)
   once the worst added stack element in this cycle is too much higher
