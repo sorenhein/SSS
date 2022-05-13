@@ -19,7 +19,7 @@
 #include "../../../strategies/result/Result.h"
 
 // TODO
-unsigned countTMP;
+Edata edata;
 
 
 CoverTableau::CoverTableau()
@@ -123,7 +123,7 @@ bool CoverTableau::attempt(
 {
   // Returns true if this must be the last use of this cover.
   // Check whether we can make a complete solution with the cover.
-countTMP++;
+edata.numCompares++;
   const CoverState state = CoverTableau::attemptRow(
     coverIter, stack, solution);
   if (state == COVER_OPEN)
@@ -147,25 +147,26 @@ countTMP++;
     else if (! row.possibleAdd(* coverIter, residuals, cases, 
         additions, rawWeightAdded))
     {
-countTMP++;
+edata.numCompares++;
       // The row does not fit.
     }
     else if (additions.getWeight() < residuals.getWeight())
     {
-countTMP++;
+edata.numCompares++;
       // The cover can be added, but does not make a solution yet.
       stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
     }
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), coverIter->getWeight(), solution.complexity))
     {
-countTMP++;
+edata.numCompares++;
+edata.numSolutions++;
       // The cover makes a solution which beats the previous one.
       solution = * this;
       solution.extendRow(* coverIter, additions, rawWeightAdded, rno);
     }
     else
-countTMP++;
+edata.numCompares++;
 
     rno++;
   }
@@ -182,7 +183,7 @@ bool CoverTableau::attempt(
 {
   // Return true if a solution is found, even if it is inferior to
   // the existing one.
-countTMP++;
+edata.numCompares++;
   return (CoverTableau::attemptRow(rowIter, stack, solution) == COVER_DONE);
 }
 

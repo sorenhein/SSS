@@ -107,7 +107,7 @@ class Covers
 
 
 // TODO
-extern unsigned countTMP;
+extern Edata edata;
 
 template<class C, class T>
 void Covers::explainTemplate(
@@ -120,10 +120,13 @@ void Covers::explainTemplate(
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
-unsigned firstFix = 0;
-unsigned stackMax = 0;
-unsigned numTries = 0;
-countTMP = 0;
+edata.firstFix = 0;
+edata.stackMax = 0;
+edata.numSteps = 0;
+edata.numCompares = 0;
+edata.numSolutions = 0;
+edata.numBranches = 0;
+cout << edata.strHeader();
 
   while (! stack.empty())
   {
@@ -133,6 +136,7 @@ countTMP = 0;
     CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
 
+unsigned tmp = stack.size();
     while (candIter != candidates.end())
     {
       if (candIter->effectiveDepth() > numStrategyTops)
@@ -161,30 +165,33 @@ countTMP = 0;
       if (tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
-if (firstFix == 0)
-  firstFix = numTries;
+if (edata.firstFix == 0)
+  edata.firstFix = edata.numSteps;
         break;
       }
 
       candIter++;
     }
 
-if (stack.size() > stackMax)
-  stackMax = stack.size();
+edata.numBranches += stack.size() - tmp;
+
+if (stack.size() > edata.stackMax)
+  edata.stackMax = stack.size();
 
 
-numTries++;
+edata.numSteps++;
+if (edata.numSteps % 100 == 0)
+{
+  T t;
+  cout << edata.str(t.ID());
+}
   }
 
-/*
-T tmp;
-string s = tmp.ID();
-  
-cout << s << " ttff " << firstFix << "\n";
-cout << s << " smax " << stackMax << "\n";
-cout << s << " snum " << numTries << "\n";
-cout << s << " coun " << countTMP << "\n";
-*/
+/* */
+T t;
+cout << edata.strHeader();
+cout << edata.str(t.ID());
+/* */
 
 }
 

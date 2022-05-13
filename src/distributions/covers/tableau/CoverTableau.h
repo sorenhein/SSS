@@ -127,6 +127,47 @@ string lowerTMP() const;
 };
 
 
+// TMP TODO
+struct Edata
+{
+  unsigned firstFix;
+  unsigned numSolutions;
+  unsigned stackMax;
+  unsigned numSteps;
+  unsigned numCompares;
+  unsigned numBranches;
+
+  string strHeader() const
+  {
+    stringstream ss;
+    ss << 
+      setw(2) << "" <<
+      setw(8) << "TTFF" <<
+      setw(12) << "Numsol" <<
+      setw(12) << "Smax" <<
+      setw(12) << "Comps" <<
+      setw(12) << "Steps" <<
+      setw(8) << "Branch" << "\n";
+    return ss.str();
+  };
+
+  string str(const string& ID) const
+  {
+    stringstream ss;
+    ss << 
+      setw(2) << ID <<
+      setw(8) << firstFix <<
+      setw(12) << numSolutions <<
+      setw(12) << stackMax <<
+      setw(12) << numCompares <<
+      setw(12) << numSteps <<
+      setw(8) << setprecision(2) << fixed <<
+        static_cast<float>(numBranches) / static_cast<float>(numSteps) << "\n";
+    return ss.str();
+  };
+};
+
+
 template<class T, typename C>
 CoverState CoverTableau::attemptRow(
   C& candIter,
@@ -152,6 +193,7 @@ CoverState CoverTableau::attemptRow(
     // We have a solution for sure, as it is the first one.
     solution = * this;
     solution.addRow(* candIter);
+edata.numSolutions++;
     return COVER_DONE;
   }
   else
@@ -160,7 +202,10 @@ CoverState CoverTableau::attemptRow(
     // to be popped anyway.
     CoverTableau::addRow(* candIter);
     if (complexity < solution.complexity)
+    {
       solution = * this;
+edata.numSolutions++;
+    }
     return COVER_DONE;
   }
 }

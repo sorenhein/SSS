@@ -1,10 +1,14 @@
-See whether the new ordering helps the 2-depth cases.
+* A change of solution prunes the stack.
+* Until we have a solution, the best guess is the lowest projection.
+* Stop branching and put back onto the stack (with a new projection)
+  once the worst added stack element in this cycle is too much higher
+  than either the lowest projection or the actual solution we have.
+* Could look for the missing single cover actively, once it is "small".
 
-When a solution is found in CoverTableau::attemptRow in .h,
-or in attempt in .cpp, could set a bool for Covers.h.
-A new solution could lead to a pruning of the entire stack,
-from the back, until we get to a place that still has a chance
-to beat that solution.
+Outputs:
+#soln changes
+#branching factor (average)
+Put it in a line, not one number per line
 
 
 Strategy depth statistics
