@@ -14,7 +14,6 @@
 #include <string>
 
 #include "CoverStore.h"
-#include "CoverRow.h"
 #include "RowStore.h"
 
 #include "tableau/TableauCache.h"
@@ -38,13 +37,13 @@ class Covers
 
     vector<unsigned char> cases;
 
-    CoverStore store;
+    CoverStore coverStore;
 
     // This is the cache corresponding to the algorithmic covers.
     TableauCache tableauCache;
 
     // These are the manually set rows
-    RowStore rows;
+    RowStore rowStore;
 
     // This is the separate cache corresponding to the rows.
     TableauCache tableauRowCache;
@@ -63,6 +62,7 @@ class Covers
       const unsigned char tmin,
       const unsigned numStrategyTops,
       const C& candidates,
+      const bool greedyFlag,
       CoverStack<T>& stack,
       CoverTableau& solution);
 

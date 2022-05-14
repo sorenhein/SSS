@@ -257,8 +257,7 @@ string Cover::strLine() const
     setw(10) << mcpw <<
     setw(4) << +Cover::effectiveDepth() <<
     setw(4) << (symmFlag ? "sym" : "") << 
-    setw(16) << code << 
-    "\n";
+    setw(16) << code;
   
   return ss.str();
 }

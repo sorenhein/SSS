@@ -27,10 +27,10 @@ void Covers::reset()
 {
   cases.clear();
 
-  store.reset();
+  coverStore.reset();
   tableauCache.reset();
 
-  rows.reset();
+  rowStore.reset();
   tableauRowCache.reset();
 }
 
@@ -42,7 +42,7 @@ void Covers::fillStore(
 {
   // This add() and the next one consume about 70% of the
   // overall time of the loop.
-  store.add(productMemory, sumProfile, running, distProfiles, cases);
+  coverStore.add(productMemory, sumProfile, running, distProfiles, cases);
 
   unsigned char westLow, westHigh;
   running.getLengthRange(westLow, westHigh);
@@ -67,7 +67,7 @@ void Covers::fillStore(
       if (! running.minimal(sumProfile, westLow, westHigh))
        continue;
 
-      store.add(productMemory, sumProfile, running, 
+      coverStore.add(productMemory, sumProfile, running, 
         distProfiles, cases);
     }
   }
@@ -130,20 +130,20 @@ void Covers::prepare(
     stack.pop_front();
   }
 
-  store.admixSymmetric();
+  coverStore.admixSymmetric();
 }
 
 
 void Covers::addDirectly(list<Cover const *>& coverPtrs)
 {
-  rows.addDirectly(coverPtrs, cases);
+  rowStore.addDirectly(coverPtrs, cases);
 }
 
 
 const Cover& Covers::lookup(const Cover& cover) const
 {
   // Turn a cover into the one we already know.  It must exist.
-  return store.lookup(cover);
+  return coverStore.lookup(cover);
 }
 
 
@@ -159,19 +159,13 @@ void Covers::explainTemplate(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const C& candidates,
+  const bool greedyFlag,
   CoverStack<T>& stack,
   CoverTableau& solution)
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
-edata.stackActual = 0;
-edata.firstFix = 0;
-edata.stackMax = 0;
-edata.numSteps = 0;
-edata.numCompares = 0;
-edata.numSolutions = 0;
-edata.numBranches = 0;
-// cout << edata.strHeader();
+edata.reset();
 
   while (! stack.empty())
   {
@@ -244,7 +238,15 @@ edata.numBranches += stack.size() - tmp;
 if (stack.size() > edata.stackMax)
   edata.stackMax = stack.size();
 
-if (edata.numSolutions > tmpSolutions)
+if (greedyFlag)
+{
+  if (stack.size() > 1)
+  {
+    auto siter = next(stack.begin());
+    stack.erase(siter, stack.end());
+  }
+}
+else if (edata.numSolutions > tmpSolutions)
 {
 // unsigned cs = stack.size();
   stack.prune(solution);
@@ -286,13 +288,30 @@ cout << edata.strHeader();
 cout << edata.str(t.ID());
 /* */
 
+if (greedyFlag)
+{
+  if (solution.complete())
+  {
+    cout << "Got a greedy solution: " << solution.strBracket() << "\n";
+    cout << solution.str(sumProfile);
+  }
+  else
+  {
+    cout << "Failed to get a greedy solution" << endl;
+    assert(false);
+  }
 }
+
+}
+
+// Instantiations
 
 template void Covers::explainTemplate<CoverStore, Cover>(
   const Tricks& tricks,
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const CoverStore& candidates,
+  const bool greedyFlag,
   CoverStack<Cover>& stack,
   CoverTableau& solution);
 
@@ -301,12 +320,9 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const RowStore& candidates,
+  const bool greedyFlag,
   CoverStack<CoverRow>& stack,
   CoverTableau& solution);
-
-/////////////////////////////////////////////
-
-
 
 
 void Covers::explain(
@@ -330,8 +346,13 @@ void Covers::explain(
   }
 
   CoverStack<Cover> stack;
+  // Get a greedy solution.
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, store, stack, solution);
+    tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
+
+  // Use this to seed the exhaustive search.
+  Covers::explainTemplate<CoverStore, Cover>(
+    tricks, tmin, numStrategyTops, coverStore, false, stack, solution);
 
   tableauCache.store(tricks, solution);
 }
@@ -354,7 +375,7 @@ void Covers::explainManually(
 
   CoverStack<CoverRow> stack;
   Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, 
-    rows, stack, solution);
+    rowStore, false, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }
@@ -383,7 +404,7 @@ string Covers::strCache() const
 string Covers::strSignature() const
 {
   stringstream ss;
-  ss << setw(6) << store.size() << sumProfile.strLine();
+  ss << setw(6) << coverStore.size() << sumProfile.strLine();
   return ss.str();
 }
 

@@ -138,6 +138,17 @@ struct Edata
   unsigned numCompares;
   size_t numBranches;
 
+  void reset()
+  {
+    stackActual = 0;
+    firstFix = 0;
+    numSolutions = 0;
+    stackMax = 0;
+    numSteps = 0;
+    numCompares = 0;
+    numBranches = 0;
+  };
+
   string strHeader() const
   {
     stringstream ss;
