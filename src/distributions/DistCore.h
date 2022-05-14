@@ -73,7 +73,7 @@ class DistCore
     void split(const DistMap& distMap);
     void splitAlternative(const DistMap& distMap); 
 
-    unsigned size() const;
+    size_t size() const;
 
     void setLookups();
 
@@ -91,8 +91,8 @@ class DistCore
     Covers& getCovers();
 
     void getCoverCounts(
-      unsigned& numTableaux,
-      unsigned& numUses) const;
+      size_t& numTableaux,
+      size_t& numUses) const;
 
     string str() const;
 

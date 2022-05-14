@@ -122,9 +122,9 @@ class Strategy
 
     void reset();
 
-    void resize(const unsigned len);
+    void resize(const size_t len);
 
-    unsigned size() const;
+    size_t size() const;
 
     bool empty() const;
 

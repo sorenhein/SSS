@@ -68,7 +68,7 @@ void Survivors::precalcSurvivorsCollapse1(
   const vector<DistInfo>& distributions,
   vector<vector<SideInfo>>& distCollapses1)
 {
-  const unsigned dlast = distributions.size() - 1;
+  const size_t dlast = distributions.size() - 1;
   distCollapses1.resize(rankSize);
   for (unsigned c1 = 1; c1 < rankSize; c1++)
     distCollapses1[c1].resize(dlast);
@@ -90,7 +90,7 @@ void Survivors::precalcSurvivorsCollapse2(
   const vector<vector<SideInfo>>& distCollapses1,
   vector<vector<vector<SideInfo>>>& distCollapses2)
 {
-  const unsigned dlast = distributions.size() - 1;
+  const size_t dlast = distributions.size() - 1;
   distCollapses2.resize(rankSize);
   for (unsigned c1 = 1; c1 < rankSize; c1++)
   {

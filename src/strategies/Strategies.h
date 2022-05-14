@@ -51,7 +51,7 @@ class Strategies
 
     const Strategy& front() const;
 
-    unsigned size() const;
+    size_t size() const;
 
     bool empty() const;
 

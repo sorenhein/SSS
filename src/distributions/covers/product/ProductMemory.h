@@ -85,7 +85,7 @@ class ProductMemory
     void enterCanonical(
       const Profile& sumProfile,
       const ProfilePair& profilePair,
-      const unsigned canonicalTops,
+      const size_t canonicalTops,
       const unsigned char canonicalShift,
       const unsigned long long canonicalCode,
       FactoredProduct& factoredProduct);
@@ -97,7 +97,7 @@ class ProductMemory
 
     void reset();
 
-    void resize(const unsigned char oppsLength);
+    void resize(const size_t oppsLength);
 
     FactoredProduct * enterOrLookup(
       const Profile& sumProfile,

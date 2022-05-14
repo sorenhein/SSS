@@ -205,8 +205,8 @@ const Profile& Covers::getSumProfile() const
 
 
 void Covers::getCoverCounts(
-  unsigned& numTableaux,
-  unsigned& numUses) const
+  size_t& numTableaux,
+  size_t& numUses) const
 {
   tableauCache.getCounts(numTableaux, numUses);
 }

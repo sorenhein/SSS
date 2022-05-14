@@ -165,7 +165,7 @@ bool Cover::symmetric() const
 }
 
 
-unsigned Cover::size() const
+size_t Cover::size() const
 {
   return tricks.size();
 }

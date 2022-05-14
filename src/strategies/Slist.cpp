@@ -47,7 +47,7 @@ void Slist::clear()
 }
 
 
-void Slist::resize(const unsigned len)
+void Slist::resize(const size_t len)
 {
   strategies.resize(len);
 }
@@ -65,7 +65,7 @@ void Slist::push_back(const Strategy& strategy)
 }
 
 
-unsigned Slist::size() const
+size_t Slist::size() const
 {
   return strategies.size();
 }
@@ -225,7 +225,7 @@ void Slist::consolidate(ComparatorType lessEqualMethod)
   for (auto& strategy: strategies)
     strategy.study();
 
-  const unsigned s = strategies.size();
+  const size_t s = strategies.size();
 
   if (s <= 1 || Slist::empty())
     return;
@@ -1044,9 +1044,9 @@ void Slist::covers(
     // If opponents have e.g. two tops, then we consider their
     // depth to be 1, as we don't have to specify the lowest one
     // explicitly.
-    const unsigned nominalDepth = coversIn.getSumProfile().size() - 1;
+    const size_t nominalDepth = coversIn.getSumProfile().size() - 1;
 
-    const unsigned actualDepth =
+    const size_t actualDepth =
       (rankLow == numeric_limits<unsigned char>::max() ?
       0 : (maxRank + 1 - rankLow) / 2);
 
@@ -1184,7 +1184,7 @@ string Slist::strSumLine(const bool rankFlag) const
 {
   stringstream ss;
 
-  const unsigned dashes = 4 + (rankFlag ? 10 : 4) * strategies.size();
+  const size_t dashes = 4 + (rankFlag ? 10 : 4) * strategies.size();
   ss << string(dashes, '-') << "\n";
   ss << setw(4) << left << "Sum" << right;
 

@@ -24,7 +24,7 @@ class Tricks
 {
   private:
 
-    unsigned length;
+    size_t length;
 
     unsigned weight;
 
@@ -33,10 +33,10 @@ class Tricks
     vector<unsigned> signature;
 
     // Useful pre-calculation.
-    unsigned lastForward;
+    size_t lastForward;
 
 
-    const unsigned char lookup(const unsigned extIndex) const;
+    const unsigned char lookup(const size_t extIndex) const;
 
     void weigh(const vector<unsigned char>& cases);
 
@@ -44,14 +44,14 @@ class Tricks
       const FactoredProduct& factoredProduct,
       const bool symmFlag,
       const vector<Profile>& distProfiles,
-      const unsigned extIndex) const;
+      const size_t extIndex) const;
 
   
   public:
 
     void clear();
 
-    void resize(const unsigned len);
+    void resize(const size_t len);
 
     void setByResults(
       const list<Result>& results,
@@ -89,7 +89,7 @@ class Tricks
 
     bool operator <= (const Tricks& tricks2) const;
 
-    unsigned size() const;
+    size_t size() const;
 
     unsigned getWeight() const;
 

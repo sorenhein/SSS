@@ -130,13 +130,13 @@ string lowerTMP() const;
 // TMP TODO
 struct Edata
 {
-  unsigned stackActual;
+  size_t stackActual;
   unsigned firstFix;
   unsigned numSolutions;
-  unsigned stackMax;
+  size_t stackMax;
   unsigned numSteps;
   unsigned numCompares;
-  unsigned numBranches;
+  size_t numBranches;
 
   string strHeader() const
   {

@@ -1,3 +1,7 @@
+* Get the methods from Covers.h and CoverTableau.h into .cpp?
+* Greedy version that takes only the front of the stack each time?
+* Histogram of 
+
 * Until we have a solution, the best guess is the lowest projection.
 * Stop branching and put back onto the stack (with a new projection)
   once the worst added stack element in this cycle is too much higher

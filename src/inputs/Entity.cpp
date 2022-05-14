@@ -474,14 +474,14 @@ const double& Entity::getDouble(const unsigned no) const
 }
 
 
-unsigned Entity::sizeString(const unsigned no) const
+size_t Entity::sizeString(const unsigned no) const
 {
   assert(no < stringVectors.size());
   return stringVectors[no].size();
 }
 
 
-unsigned Entity::sizeInt(const unsigned no) const
+size_t Entity::sizeInt(const unsigned no) const
 {
   assert(no < intVectors.size());
   return intVectors[no].size();
@@ -536,13 +536,13 @@ void Entity::setDouble(
 void Entity::reverseIntVector(const unsigned no)
 {
   assert(no < intVectors.size());
-  vector<int> axlesOrig = intVectors[no];
-  vector<int>& axles = intVectors[no];
+  vector<int> vOrig = intVectors[no];
+  vector<int>& v = intVectors[no];
 
-  const int aLast = axles.back();
-  const unsigned la = axles.size();
-  for (unsigned i = 0; i < la; i++)
-    axles[i] = aLast - axlesOrig[la-i-1];
+  const int vLast = v.back();
+  const size_t la = v.size();
+  for (size_t i = 0; i < la; i++)
+    v[i] = vLast - vOrig[la-i-1];
 }
 
 
@@ -553,7 +553,7 @@ void Entity::reverseFloatVector(const unsigned no)
   vector<float>& pos = floatVectors[no];
 
   const float pLast = pos.back();
-  const unsigned la = pos.size();
+  const size_t la = pos.size();
   for (unsigned i = 0; i < la; i++)
     pos[i] = pLast - posOrig[la-i-1];
 }

@@ -63,14 +63,14 @@ void CoverStack<T>::emplace(
 
 
 template<class T>
-unsigned CoverStack<T>::prune(const CoverTableau& solution)
+size_t CoverStack<T>::prune(const CoverTableau& solution)
 {
   // TODO Not efficient
   StackEntry<T> se;
   se.tableau = solution;
   auto iter =  multiset<StackEntry<T>>::lower_bound(se);
 
-  const unsigned num = distance(iter, this->end());
+  const size_t num = distance(iter, this->end());
 
   // TODO Go back, also taking into account min complexity of 2?
   multiset<StackEntry<T>>::erase(iter, this->end());

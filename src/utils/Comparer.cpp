@@ -31,14 +31,14 @@ void Comparer::reset()
 
 
 void Comparer::resize(
-  const unsigned size1,
-  const unsigned size2)
+  const size_t size1,
+  const size_t size2)
 {
   dim1 = size1;
   dim2 = size2;
 
   matrix.resize(size1);
-  for (unsigned i = 0; i < size1; i++)
+  for (size_t i = 0; i < size1; i++)
     matrix[i].resize(size2);
 }
 

@@ -31,7 +31,7 @@ void CoverRow::reset()
 }
 
 
-void CoverRow::resize(const unsigned len)
+void CoverRow::resize(const size_t len)
 {
   tricks.resize(len);
 }
@@ -121,7 +121,7 @@ void CoverRow::updateStats(
 }
 
 
-unsigned CoverRow::size() const
+size_t CoverRow::size() const
 {
   return coverPtrs.size();
 }

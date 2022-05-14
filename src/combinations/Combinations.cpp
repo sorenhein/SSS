@@ -298,7 +298,7 @@ void Combinations::runUniques(
   CombTest ctest;
   // list<CoverTableau> tableaux;
 
-  for (unsigned holding = combMemory.size(cards); holding-- > 0; )
+  for (size_t holding = combMemory.size(cards); holding-- > 0; )
   {
     CombEntry& centry = combMemory.getEntry(cards, holding);
 
@@ -553,7 +553,7 @@ void Combinations::runUniqueThread(
   Plays plays;
   plays.resize(cards);
 
-  const unsigned counterMax = combMemory.size(cards);
+  const size_t counterMax = combMemory.size(cards);
 
   while (true)
   {

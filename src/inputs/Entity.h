@@ -132,9 +132,9 @@ class Entity
     double& getDouble(const unsigned no);
     const double& getDouble(const unsigned no) const;
 
-    unsigned sizeString(const unsigned no) const;
+    size_t sizeString(const unsigned no) const;
 
-    unsigned sizeInt(const unsigned no) const;
+    size_t sizeInt(const unsigned no) const;
 
     void setString(
       const unsigned no,

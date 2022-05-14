@@ -34,7 +34,7 @@ bool Ranges::empty() const
 }
 
 
-unsigned Ranges::size() const
+size_t Ranges::size() const
 {
   return ranges.size();
 }

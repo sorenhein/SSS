@@ -47,7 +47,7 @@ class CoverRow
 
     void reset();
 
-    void resize(const unsigned len);
+    void resize(const size_t len);
 
     void fillDirectly(
       list<Cover const *>& coverPtrsIn,
@@ -73,7 +73,7 @@ class CoverRow
       const Profile& sumProfile,
       const bool newTableauFlag) const;
 
-    unsigned size() const;
+    size_t size() const;
 
     bool operator < (const CoverRow& rows2) const;
 

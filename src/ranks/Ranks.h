@@ -36,7 +36,7 @@ class Ranks
 
     Completion completion;
 
-    unsigned holding3;
+    size_t holding3;
     unsigned holding4;
     unsigned char cards;
     unsigned char maxGlobalRank;
@@ -133,7 +133,7 @@ class Ranks
     unsigned char size() const;
 
     void setRanks(
-      const unsigned holding3In,
+      const size_t holding3In,
       CombEntry& combEntry);
 
     CombinationType setPlays(

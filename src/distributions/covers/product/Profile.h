@@ -47,7 +47,7 @@ class Profile
       const Profile& upperProfile,
       const Profile& sumProfile) const;
 
-    unsigned size() const;
+    size_t size() const;
 
     unsigned long long getLowerCode() const;
 

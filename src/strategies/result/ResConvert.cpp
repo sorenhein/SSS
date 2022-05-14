@@ -70,7 +70,7 @@ void ResConvert::setConstants()
 }
 
 
-unsigned ResConvert::profileSize(const unsigned len) const
+size_t ResConvert::profileSize(const size_t len) const
 {
   // 2 for 1-10, 4 for 11-20, 6 for 21-30 etc.
   return 2 * ((len + LOOKUP_GROUP + 4) / (2 * LOOKUP_GROUP));
@@ -231,14 +231,14 @@ void ResConvert::scrutinizeBinary(
 
 unsigned char ResConvert::lookup(
   const vector<unsigned>& profiles,
-  const unsigned lastForward,
-  const unsigned index) const
+  const size_t lastForward,
+  const size_t index) const
 {
   if (index <= lastForward)
   {
     // The forward half.
-    const unsigned group = index / LOOKUP_GROUP;
-    const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
+    const size_t group = index / LOOKUP_GROUP;
+    const size_t shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
   
     assert(group < profiles.size() / 2);
     return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
@@ -246,9 +246,9 @@ unsigned char ResConvert::lookup(
   else
   {
     // The backward half.
-    const unsigned rebased = index - lastForward - 1;
-    const unsigned group = profiles.size() / 2 + rebased / LOOKUP_GROUP;
-    const unsigned shift = 2 * (LOOKUP_GROUP - 1 - (rebased % LOOKUP_GROUP));
+    const size_t rebased = index - lastForward - 1;
+    const size_t group = profiles.size() / 2 + rebased / LOOKUP_GROUP;
+    const size_t shift = 2 * (LOOKUP_GROUP - 1 - (rebased % LOOKUP_GROUP));
 
     assert(group < profiles.size());
     return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
@@ -263,7 +263,7 @@ bool ResConvert::fullHouse(const unsigned value) const
 
 
 unsigned ResConvert::limit(
-  const unsigned lastForward,
+  const size_t lastForward,
   const unsigned value) const
 {
   const unsigned mod = lastForward % LOOKUP_GROUP;

@@ -71,15 +71,15 @@ bool TableauCache::lookup(
 }
 
 
-unsigned TableauCache::size() const
+size_t TableauCache::size() const
 {
   return entries.size();
 }
 
 
 void TableauCache::getCounts(
-  unsigned& numTableaux,
-  unsigned& numUses) const
+  size_t& numTableaux,
+  size_t& numUses) const
 {
   numTableaux = entries.size();
 

@@ -24,8 +24,8 @@ class Comparer
 {
   private:
 
-    unsigned dim1;
-    unsigned dim2;
+    size_t dim1;
+    size_t dim2;
 
     vector<vector<CompareType>> matrix;
 
@@ -51,8 +51,8 @@ class Comparer
     void reset();
 
     void resize(
-      const unsigned size1,
-      const unsigned size2);
+      const size_t size1,
+      const size_t size2);
 
     void log(
       const unsigned n1,

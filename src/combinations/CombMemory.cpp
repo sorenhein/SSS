@@ -109,7 +109,7 @@ void CombMemory::resize(
 }
 
 
-unsigned CombMemory::size(const unsigned cards) const
+size_t CombMemory::size(const unsigned cards) const
 {
   return combEntries[cards].size();
 }
@@ -117,7 +117,7 @@ unsigned CombMemory::size(const unsigned cards) const
 
 Combination& CombMemory::add(
   const unsigned cards,
-  const unsigned holding)
+  const size_t holding)
 {
   // When we do all combinations, we know the number in advance and
   // we do not change the memory locations.  But unlike in 
@@ -147,7 +147,7 @@ Combination& CombMemory::add(
 
 Combination& CombMemory::getComb(
   const unsigned cards,
-  const unsigned holding)
+  const size_t holding)
 {
   assert(cards < combEntries.size());
   assert(holding < combEntries[cards].size());
@@ -161,7 +161,7 @@ Combination& CombMemory::getComb(
 
 const Combination& CombMemory::getComb(
   const unsigned cards,
-  const unsigned holding) const
+  const size_t holding) const
 {
   assert(cards < combEntries.size());
   assert(holding < combEntries[cards].size());
@@ -175,7 +175,7 @@ const Combination& CombMemory::getComb(
 
 CombEntry& CombMemory::getEntry(
   const unsigned cards,
-  const unsigned holding)
+  const size_t holding)
 {
   assert(cards < combEntries.size());
   assert(holding < combEntries[cards].size());
@@ -186,7 +186,7 @@ CombEntry& CombMemory::getEntry(
 
 const CombEntry& CombMemory::getEntry( 
   const unsigned cards,
-  const unsigned holding) const
+  const size_t holding) const
 {
   assert(cards < combEntries.size());
   assert(holding < combEntries[cards].size());

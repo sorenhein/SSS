@@ -37,7 +37,7 @@ class ResConvert
 
     ResConvert();
 
-    unsigned profileSize(const unsigned len) const;
+    size_t profileSize(const size_t len) const;
 
     void increment(
       unsigned& counter,
@@ -68,13 +68,13 @@ class ResConvert
 
     unsigned char lookup(
       const vector<unsigned>& profiles,
-      const unsigned lastForward,
-      const unsigned index) const;
+      const size_t lastForward,
+      const size_t index) const;
 
     bool fullHouse(const unsigned value) const;
 
     unsigned limit(
-      const unsigned lastForward,
+      const size_t lastForward,
       const unsigned value) const;
 
     bool greaterEqual(

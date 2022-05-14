@@ -41,7 +41,7 @@ class Ranges
 
     bool empty() const;
 
-    unsigned size() const;
+    size_t size() const;
 
     void init(
       const list<Result>& results,

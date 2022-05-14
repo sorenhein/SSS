@@ -32,7 +32,7 @@ void Tricks::clear()
 }
 
 
-void Tricks::resize(const unsigned len)
+void Tricks::resize(const size_t len)
 {
   length = len;
 
@@ -43,7 +43,7 @@ void Tricks::resize(const unsigned len)
 }
 
 
-const unsigned char Tricks::lookup(const unsigned extIndex) const
+const unsigned char Tricks::lookup(const size_t extIndex) const
 {
   /*
      Store the front half (including perhaps the middle) one way.
@@ -70,7 +70,7 @@ const unsigned char Tricks::lookup(const unsigned extIndex) const
      20  9     0-4   5-9   19-15   14-10  0    4
   */
   
-  const unsigned effIndex = (extIndex <= lastForward ?
+  const size_t effIndex = (extIndex <= lastForward ?
     extIndex : length + lastForward - extIndex);
 
   return resConvert.lookup(signature, lastForward, effIndex);
@@ -118,7 +118,7 @@ void Tricks::setByResults(
 
   // The backward half excluding the middle element.
   riter = prev(results.end());
-  for (unsigned extIndex = length-1; extIndex > lastForward; 
+  for (size_t extIndex = length-1; extIndex > lastForward; 
       extIndex--, riter--)
   {
     resConvert.increment(
@@ -138,7 +138,7 @@ unsigned char Tricks::productValue(
   const FactoredProduct& factoredProduct,
   const bool symmFlag,
   const vector<Profile>& distProfiles,
-  const unsigned extIndex) const
+  const size_t extIndex) const
 {
   // It is slightly wasteful to test symmFlag every time, but it
   // cuts down on the code below.
@@ -184,7 +184,7 @@ bool Tricks::setByProduct(
   resConvert.finish(counter, accum, position, signature[position]);
 
   // The backward half excluding the middle element.
-  for (unsigned extIndex = length-1; extIndex > lastForward; extIndex--)
+  for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
   {
     value = Tricks::productValue(factoredProduct, symmFlag, 
       distProfiles, extIndex);
@@ -214,7 +214,7 @@ bool Tricks::symmetrize()
   if (length & 1)
     assert(Tricks::lookup(lastForward) == 0);
 
-  const unsigned offset = signature.size() / 2;
+  const size_t offset = signature.size() / 2;
   bool fullHouseFlag = true;
 
   for (unsigned i = 0; i < offset; i++)
@@ -294,8 +294,8 @@ void Tricks::orSymm(
 {
   assert(signature.size() == tricks2.signature.size());
 
-  const unsigned offset = signature.size() / 2;
-  for (unsigned i = 0; i < offset; i++)
+  const size_t offset = signature.size() / 2;
+  for (size_t i = 0; i < offset; i++)
   {
     const unsigned orVal = 
       tricks2.signature[i] | tricks2.signature[i + offset];
@@ -373,7 +373,7 @@ bool Tricks::operator <= (const Tricks& tricks2) const
 }
 
 
-unsigned Tricks::size() const
+size_t Tricks::size() const
 {
   return length;
 }

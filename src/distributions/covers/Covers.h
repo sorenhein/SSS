@@ -97,8 +97,8 @@ class Covers
     const Profile& getSumProfile() const;
 
     void getCoverCounts(
-      unsigned& numTableaux,
-      unsigned& numUses) const;
+      size_t& numTableaux,
+      size_t& numUses) const;
 
     string strCache() const;
 
@@ -140,7 +140,7 @@ StackEntry<T> stackElemCopy = stackElem;
     CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
 
-unsigned tmp = stack.size();
+size_t tmp = stack.size();
 unsigned tmpSolutions = edata.numSolutions;
 bool branchFlag = false;
 unsigned branchLimit;

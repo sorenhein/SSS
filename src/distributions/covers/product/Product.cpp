@@ -36,7 +36,7 @@ void Product::reset()
 }
 
 
-void Product::resize(const unsigned topCount)
+void Product::resize(const size_t topCount)
 {
   tops.resize(topCount);
 }
@@ -57,7 +57,7 @@ void Product::set(
 
   complexity = length.complexity();
 
-  const unsigned topLowSize = lowerProfile.size();
+  const size_t topLowSize = lowerProfile.size();
   assert(upperProfile.size() == topLowSize);
   assert(sumProfile.size() == topLowSize);
   assert(tops.size() <= topLowSize);
@@ -287,7 +287,7 @@ string Product::strHeader(const unsigned lengthIn) const
   // more in Cover.
   stringstream ss;
 
-  const unsigned tno = (lengthIn == 0 ? tops.size() : lengthIn);
+  const size_t tno = (lengthIn == 0 ? tops.size() : lengthIn);
 
   ss << setw(8) << "Length";
   for (unsigned i = 0; i < tno; i++)

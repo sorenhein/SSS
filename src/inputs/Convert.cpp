@@ -51,8 +51,8 @@ bool Convert::cards2holding(
   const unsigned cards,
   unsigned& holding)
 {
-  const unsigned nlen = north.length();
-  const unsigned slen = south.length();
+  const size_t nlen = north.length();
+  const size_t slen = south.length();
   holding = 0;
 
   unsigned nindex = 0;
@@ -95,7 +95,7 @@ bool Convert::cards2holding(
       break;
   }
 
-  const unsigned num_x = nlen - nindex + slen - sindex;
+  const size_t num_x = nlen - nindex + slen - sindex;
   if (num_x == 0)
     return true;
 

@@ -21,9 +21,9 @@ using namespace std;
 
 struct CountEntry
 {
-  unsigned count;
-  unsigned totalPlays;
-  unsigned totalStrats;
+  size_t count;
+  size_t totalPlays;
+  size_t totalStrats;
 
   void reset()
   {
@@ -40,21 +40,22 @@ struct CountEntry
   }
 
   void incr(
-    const unsigned plays,
-    const unsigned strats)
+    const size_t plays,
+    const size_t strats)
   {
     count++;
     totalPlays += plays;
     totalStrats += strats;
   }
 
-  string strAverage(const unsigned num) const
+  string strAverage(const size_t num) const
   {
     if (count == 0)
       return "-";
 
     stringstream ss;
-    ss << fixed << setprecision(2) << num / static_cast<double>(count);
+    ss << fixed << setprecision(2) << 
+      static_cast<double>(num) / static_cast<double>(count);
     return ss.str();
   }
 

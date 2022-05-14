@@ -84,7 +84,7 @@ class Nodes
     void strategizeDefenders(const bool debugFlag);
     void strategizeDefendersAdvanced(const bool debugFlag);
 
-    unsigned size() const;
+    size_t size() const;
     unsigned used() const;
 
     string strCountHeader() const;

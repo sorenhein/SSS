@@ -51,7 +51,7 @@ class Product
 
     void reset();
 
-    void resize(const unsigned topCount);
+    void resize(const size_t topCount);
 
     void set(
       const Profile& sumProfile,

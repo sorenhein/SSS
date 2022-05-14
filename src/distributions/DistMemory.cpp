@@ -132,7 +132,7 @@ void DistMemory::resizeSingle(const vector<set<unsigned>>& dependenciesCan)
 
   for (unsigned cards = 0; cards < dependenciesCan.size(); cards++)
   {
-    const unsigned num = dependenciesCan[cards].size();
+    const size_t num = dependenciesCan[cards].size();
     if (num > 0)
       uniques[cards].resize(num);
   }
@@ -246,7 +246,7 @@ Distribution& DistMemory::get(
 }
 
 
-unsigned DistMemory::size(const unsigned char cards) const
+size_t DistMemory::size(const unsigned char cards) const
 {
   assert(cards < distributions.size());
   return distributions[cards].size();
@@ -293,7 +293,8 @@ string DistMemory::strCovers(const unsigned char cards) const
     return "";
 
   stringstream ss;
-  unsigned numTableaux, numUses;
+  size_t numTableaux;
+  size_t numUses;
 
   for (auto& distCore: uniques[cards])
   {
@@ -327,17 +328,18 @@ string DistMemory::strCoverCounts(
   const unsigned char cmax) const
 {
   stringstream ss;
-  unsigned sumTableaux = 0;
-  unsigned sumUses = 0;
+  size_t sumTableaux = 0;
+  size_t sumUses = 0;
 
   for (unsigned char cards = cmin; cards <= cmax; cards++)
   {
    if (usedCounts[cards] == 0)
      continue;
 
-    unsigned cumTableaux = 0;
-    unsigned cumUses = 0;
-    unsigned numTableaux, numUses;
+    size_t cumTableaux = 0;
+    size_t cumUses = 0;
+    size_t numTableaux;
+    size_t numUses;
 
     for (auto& distCore: uniques[cards])
     {

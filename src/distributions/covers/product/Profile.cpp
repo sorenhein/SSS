@@ -28,7 +28,7 @@ void Profile::setSum(
   const vector<unsigned char>& topsWest,
   const vector<unsigned char>& topsEast)
 {
-  const unsigned s = topsWest.size();
+  const size_t s = topsWest.size();
   assert(topsEast.size() == s);
 
   tops.resize(s);
@@ -86,7 +86,7 @@ bool Profile::onlyEquals(
 }
 
 
-unsigned Profile::size() const
+size_t Profile::size() const
 {
   return tops.size();
 }
@@ -104,7 +104,7 @@ unsigned long long Profile::getLowerCode() const
   // The layout is: length, then the tops from most significant one down.
 
   unsigned long long code = 0;
-  for (unsigned i = tops.size(); i-- > 0; )
+  for (size_t i = tops.size(); i-- > 0; )
     code = (code << 4) | tops[i];
 
   code |= (lengthInt << (4*tops.size()));
@@ -123,7 +123,7 @@ unsigned long long Profile::getUpperCode(
   assert(tops.size() < 8);
 
   unsigned long long code = 0;
-  for (unsigned i = tops.size(); i-- > 0; )
+  for (size_t i = tops.size(); i-- > 0; )
   {
     const unsigned value = (
       tops[i] == sumProfile.tops[i] &&

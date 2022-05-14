@@ -276,8 +276,8 @@ bool Winners::operator == (const Winners& winners2) const
 {
   assert(setFlag && winners2.setFlag);
 
-  const unsigned s1 = winners.size();
-  const unsigned s2 = winners2.winners.size();
+  const size_t s1 = winners.size();
+  const size_t s2 = winners2.winners.size();
 
   if (s1 == 0)
     return winners2.empty();
@@ -307,8 +307,8 @@ Compare Winners::compare(const Winners& winners2) const
 {
   assert(setFlag && winners2.setFlag);
 
-  const unsigned s1 = winners.size();
-  const unsigned s2 = winners2.winners.size();
+  const size_t s1 = winners.size();
+  const size_t s2 = winners2.winners.size();
 
   if (s1 == 0)
   {

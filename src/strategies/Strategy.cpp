@@ -41,13 +41,13 @@ void Strategy::reset()
 }
 
 
-void Strategy::resize(const unsigned len)
+void Strategy::resize(const size_t len)
 {
   results.resize(len);
 }
 
 
-unsigned Strategy::size() const
+size_t Strategy::size() const
 {
   return results.size();
 }
@@ -229,7 +229,7 @@ bool Strategy::reduceByResults(const Reduction& reduction)
   // reduction group.  Returns true if no change was made.
 
   const auto& dist = reduction.full2reducedDist;
-  const unsigned dlen = dist.size();
+  const size_t dlen = dist.size();
   assert(dlen == results.size());
 
   vector<Result> reducedResultList(dlen);
@@ -403,7 +403,7 @@ bool Strategy::operator == (const Strategy& strat2) const
   // For diagnostics.  It is effectively also a complete and
   // basic method, but it carries the conventional name.
 
-  const unsigned n = results.size();
+  const size_t n = results.size();
   assert(strat2.results.size() == n);
 
   if (weightInt != strat2.weightInt)
@@ -433,7 +433,7 @@ bool Strategy::equalCompleteBasic(const Strategy& strat2) const
 
 bool Strategy::equalPrimaryBasic(const Strategy& strat2) const
 {
-  const unsigned n = results.size();
+  const size_t n = results.size();
   assert(strat2.results.size() == n);
 
   if (weightInt != strat2.weightInt)
@@ -872,7 +872,7 @@ void Strategy::adaptResults(
   play.setVoidFlags(westVoidFlag, eastVoidFlag);
   assert(! westVoidFlag || ! eastVoidFlag);
 
-  const unsigned len1 = results.size();
+  const size_t len1 = results.size();
   if (westVoidFlag || eastVoidFlag)
   {
     assert(survivors.sizeFull() == 1);

@@ -219,7 +219,7 @@ void Nodes::strategizeDefendersAdvanced(const bool debugFlag)
 }
 
 
-unsigned Nodes::size() const
+size_t Nodes::size() const
 {
   return nodes.size();
 }

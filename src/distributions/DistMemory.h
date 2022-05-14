@@ -75,7 +75,7 @@ class DistMemory
       const unsigned char cards,
       const unsigned holding) const;
 
-    unsigned size(const unsigned char cards) const;
+    size_t size(const unsigned char cards) const;
 
     unsigned used(const unsigned char cards) const;
 

@@ -89,7 +89,7 @@ class Cover
 
     bool symmetric() const;
 
-    unsigned size() const;
+    size_t size() const;
 
     bool operator < (const Cover& cover2) const;
 

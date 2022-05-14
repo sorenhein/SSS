@@ -66,11 +66,11 @@ class TableauCache
       const Tricks& excessTricks,
       CoverTableau& solution);
 
-    unsigned size() const;
+    size_t size() const;
 
     void getCounts(
-      unsigned& numTableaux,
-      unsigned& numUses) const;
+      size_t& numTableaux,
+      size_t& numUses) const;
       
     string str(const Profile& sumProfile) const;
 };

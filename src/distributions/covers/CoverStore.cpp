@@ -150,7 +150,7 @@ set<Cover>::const_iterator CoverStore::end() const
 }
 
 
-unsigned CoverStore::size() const
+size_t CoverStore::size() const
 {
   return store.size();
 }

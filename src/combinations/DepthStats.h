@@ -35,19 +35,15 @@ class DepthStats
 
     DepthStats();
      
-    void resize(const unsigned len);
-
-    void store(
-      const unsigned nominalDepth,
-      const unsigned actualDepth);
+    void resize(const size_t len);
 
     void increment(
-      const unsigned nominalDepth,
-      const unsigned actualDepth);
+      const size_t nominalDepth,
+      const size_t actualDepth);
 
     DepthStats& operator += (const DepthStats& ds2);
 
-    unsigned size() const;
+    size_t size() const;
 
     string str() const;
 };

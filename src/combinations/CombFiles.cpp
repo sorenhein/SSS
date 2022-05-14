@@ -77,7 +77,7 @@ void CombFiles::readFiles(
   vector<unsigned char> vControl;
   CombFiles::readFile<unsigned char>(nameControl, vControl);
 
-  const unsigned size = vControl.size();
+  const size_t size = vControl.size();
   assert(size == combinations.size());
 
   vector<unsigned> vHoldings;
@@ -109,7 +109,7 @@ void CombFiles::writeFiles(
   vector<unsigned char> vControl;
   vector<unsigned> vHoldings;
 
-  const unsigned size = combinations.size();
+  const size_t size = combinations.size();
   vControl.resize(size);
   vHoldings.resize(3*size);  // This is too much
 

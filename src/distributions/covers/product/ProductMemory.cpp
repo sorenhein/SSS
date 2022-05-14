@@ -34,7 +34,7 @@ void ProductMemory::reset()
 }
 
 
-void ProductMemory::resize(const unsigned char memSize)
+void ProductMemory::resize(const size_t memSize)
 {
   factoredMemory.resize(memSize);
   enterStats.resize(memSize);
@@ -44,7 +44,7 @@ void ProductMemory::resize(const unsigned char memSize)
 void ProductMemory::enterCanonical(
   const Profile& sumProfile,
   const ProfilePair& profilePair,
-  const unsigned canonicalTops,
+  const size_t canonicalTops,
   const unsigned char canonicalShift,
   const unsigned long long canonicalCode,
   FactoredProduct& factoredProduct)
@@ -67,7 +67,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
 {
   lock_guard<mutex> lg(mtxProductMemory);
 
-  const unsigned numTops = sumProfile.size();
+  const size_t numTops = sumProfile.size();
   assert(numTops < factoredMemory.size());
   enterStats[numTops].numTotal++;
 
@@ -98,7 +98,7 @@ FactoredProduct * ProductMemory::enterOrLookup(
       const unsigned long long canonicalCode =
         profilePair.getCanonicalCode(code, canonicalShift);
 
-      const unsigned canonicalTops = numTops - canonicalShift;
+      const size_t canonicalTops = numTops - canonicalShift;
       auto canonIt = factoredMemory[canonicalTops].find(canonicalCode);
 
       if (canonIt == factoredMemory[canonicalTops].end())
@@ -130,7 +130,7 @@ FactoredProduct const * ProductMemory::lookupByTop(
   const Profile& sumProfile,
   const ProfilePair& profilePair) const
 {
-  const unsigned numTops = sumProfile.size();
+  const size_t numTops = sumProfile.size();
   assert(numTops < factoredMemory.size());
 
   // profilePair only has the highest top set (perhaps).

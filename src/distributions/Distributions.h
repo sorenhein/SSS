@@ -34,8 +34,8 @@ class Distributions
 
     ProductMemory productMemory;
 
-    vector<unsigned> splitCounts;
-    vector<unsigned> threadSplitCounts;
+    vector<size_t> splitCounts;
+    vector<size_t> threadSplitCounts;
 
     mutex log; // Locked when a result is being logged
     atomic<unsigned> counter;

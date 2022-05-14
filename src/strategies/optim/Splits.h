@@ -34,7 +34,7 @@ class Splits
 
     list<Split> splits;
 
-    unsigned count;
+    size_t count;
 
 
     void setPointers();

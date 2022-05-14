@@ -23,20 +23,20 @@ DepthStats::DepthStats()
 }
 
 
-void DepthStats::resize(const unsigned len)
+void DepthStats::resize(const size_t len)
 {
   // This is too large, as we only need the maximum strategy depth,
  // but it's a relatively small array.
  stats.resize(len);
 
- for (unsigned char cards = 0; cards < len; cards++)
+ for (size_t cards = 0; cards < len; cards++)
    stats[cards].resize(len, 0);
 }
 
 
 void DepthStats::increment(
-  const unsigned nominalDepth,
-  const unsigned actualDepth)
+  const size_t nominalDepth,
+  const size_t actualDepth)
 {
   assert(nominalDepth < stats.size());
 if (actualDepth >= stats[nominalDepth].size())
@@ -64,7 +64,7 @@ DepthStats& DepthStats::operator += (const DepthStats& ds2)
 }
 
 
-unsigned DepthStats::size() const
+size_t DepthStats::size() const
 {
   return stats.size();
 }

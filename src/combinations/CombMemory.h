@@ -44,28 +44,28 @@ class CombMemory
       const unsigned maxCardsIn,
       const bool fullFlag = true);
 
-    unsigned size(const unsigned cards) const;
+    size_t size(const unsigned cards) const;
 
     // Thread-safe
     Combination& add(
       const unsigned cards,
-      const unsigned holding);
+      const size_t holding);
 
     Combination& getComb(
       const unsigned cards,
-      const unsigned holding);
+      const size_t holding);
 
     const Combination& getComb(
       const unsigned cards,
-      const unsigned holding) const;
+      const size_t holding) const;
 
     CombEntry& getEntry(
       const unsigned cards,
-      const unsigned holding);
+      const size_t holding);
 
     const CombEntry& getEntry(
       const unsigned cards,
-      const unsigned holding) const;
+      const size_t holding) const;
 
     string strDynamic() const;
 };

@@ -129,13 +129,13 @@ class Slist
 
     void clear();
 
-    void resize(const unsigned len);
+    void resize(const size_t len);
 
     const Strategy& front() const;
 
     void push_back(const Strategy& strat);
 
-    unsigned size() const;
+    size_t size() const;
 
     bool empty() const;
 

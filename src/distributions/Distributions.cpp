@@ -89,7 +89,7 @@ void Distributions::runUniqueThread(
   const unsigned thid)
 {
   unsigned holding;
-  const unsigned counterMax = distMemory.size(cards);
+  const size_t counterMax = distMemory.size(cards);
 
   while (true)
   {
@@ -197,7 +197,8 @@ string Distributions::str(const unsigned char cards) const
       setw(9) << distMemory.size(c) <<
       setw(9) << splitCounts[c] <<
       setw(9) << fixed << setprecision(2) <<
-        static_cast<double>(splitCounts[c]) / distMemory.size(c) <<
+        static_cast<double>(splitCounts[c]) / 
+        static_cast<double>(distMemory.size(c)) <<
       setw(9) << distMemory.used(c) <<
       "\n";
   }

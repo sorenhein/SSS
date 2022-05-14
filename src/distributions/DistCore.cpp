@@ -361,7 +361,7 @@ void DistCore::splitAlternative(const DistMap& distMap)
 }
 
 
-unsigned DistCore::size() const
+size_t DistCore::size() const
 {
   if (distributions.empty())
     return 1;
@@ -453,7 +453,7 @@ void DistCore::getCoverData(
   vector<unsigned char>& cases,
   Profile& sumProfile) const
 {
-  const unsigned len = distributions.size();
+  const size_t len = distributions.size();
   assert(len > 0);
 
   distProfiles.resize(len);
@@ -553,8 +553,8 @@ Covers& DistCore::getCovers()
 
 
 void DistCore::getCoverCounts(
-  unsigned& numTableaux,
-  unsigned& numUses) const
+  size_t& numTableaux,
+  size_t& numUses) const
 {
   covers.getCoverCounts(numTableaux, numUses);
 }

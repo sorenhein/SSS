@@ -116,7 +116,7 @@ void Ranks::setPlayers()
   // Start the numbering from 1 in order to distinguish from void.
   const unsigned char absMin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
   unsigned char rel = 1;
-  unsigned h = holding3;
+  size_t h = holding3;
   holding4 = 0;
 
   for (unsigned char abs = absMin; abs < absMin+cardsChar; rel++, abs++)
@@ -211,7 +211,7 @@ void Ranks::setReference(CombEntry& centry) const
 
 
 void Ranks::setRanks(
-  const unsigned holding3In,
+  const size_t holding3In,
   CombEntry& combEntry)
 {
   holding3 = holding3In;

@@ -51,7 +51,7 @@ const Strategy& Strategies::front() const
 }
 
 
-unsigned Strategies::size() const
+size_t Strategies::size() const
 {
   return slist.size();
 }
@@ -213,8 +213,8 @@ void Strategies::operator += (Strategies& strats2)
   else if (strats2.empty())
     return;
 
-  const unsigned sno1 = slist.size();
-  const unsigned sno2 = strats2.slist.size();
+  const size_t sno1 = slist.size();
+  const size_t sno2 = strats2.slist.size();
 
   if (control.runStrategyOptimizations() &&
       sno1 == 1 && sno2 == 1)
@@ -249,8 +249,8 @@ void Strategies::operator *= (Strategies& strats2)
   // valid range for both this->slist and for strats2->slist.  
   // This method does not change any of these ranges.
 
-  const unsigned len1 = slist.size();
-  const unsigned len2 = strats2.slist.size();
+  const size_t len1 = slist.size();
+  const size_t len2 = strats2.slist.size();
 
   if (len2 == 0)
     return;

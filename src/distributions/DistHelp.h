@@ -121,7 +121,7 @@ assert(rank < counts.size());
   string str(const vector<char>& names) const
   {
     string s = "";
-    for (unsigned r = counts.size(); r-- > 0; )
+    for (size_t r = counts.size(); r-- > 0; )
     {
       if (counts[r] > 0)
         s += string(counts[r], names[r]);

@@ -66,7 +66,7 @@ class Distribution
       distCorePtr->setLookups();
     };
 
-    unsigned size() const
+    size_t size() const
     {
       assert(distCorePtr != nullptr);
       return distCorePtr->size();
