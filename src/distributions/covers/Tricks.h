@@ -28,7 +28,7 @@ class Tricks
 
     unsigned weight;
 
-    // The tricks are grouped as shown in ResConvert.  This makes
+    // The tricks are grouped as shown in TrickConvert.  This makes
     // comparisons etc. faster, but costs some time to set up.
     vector<unsigned> signature;
 

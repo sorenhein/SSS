@@ -4,12 +4,14 @@
 #include "combinations/Combinations.h"
 
 #include "distributions/Distributions.h"
+#include "distributions/covers/TrickConvert.h"
 #include "distributions/covers/term/TermCompare.h"
 
 #include "inputs/Control.h"
 #include "inputs/Convert.h"
 
 #include "strategies/result/ResConvert.h"
+
 
 #include "utils/Timers.h"
 
@@ -22,6 +24,7 @@ Timers timers;
 Control control;
 Convert convert;
 ResConvert resConvert;
+TrickConvert trickConvert;
 Combinations combinations;
 Distributions distributions;
 TermCompare termCompare;

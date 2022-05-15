@@ -13,14 +13,14 @@
 #include <cassert>
 
 #include "Tricks.h"
+#include "TrickConvert.h"
 
 #include "product/FactoredProduct.h"
 #include "product/Profile.h"
 
 #include "../../strategies/result/Result.h"
-#include "../../strategies/result/ResConvert.h"
 
-extern ResConvert resConvert;
+extern TrickConvert trickConvert;
 
 
 void Tricks::clear()
@@ -36,7 +36,7 @@ void Tricks::resize(const size_t len)
 {
   length = len;
 
-  signature.resize(resConvert.profileSize(len));
+  signature.resize(trickConvert.profileSize(len));
 
   // This is the last element in the forward half.  See table below.
   lastForward = (len-1) / 2;
@@ -73,7 +73,7 @@ const unsigned char Tricks::lookup(const size_t extIndex) const
   const size_t effIndex = (extIndex <= lastForward ?
     extIndex : length + lastForward - extIndex);
 
-  return resConvert.lookup(signature, lastForward, effIndex);
+  return trickConvert.lookup(signature, lastForward, effIndex);
 }
 
 
@@ -107,28 +107,28 @@ void Tricks::setByResults(
   for (unsigned extIndex = 0; extIndex <= lastForward; 
       extIndex++, riter++)
   {
-    resConvert.increment(
+    trickConvert.increment(
       counter, 
       accum, 
       riter->getTricks() - tricksMin,
       position, 
       signature[position]);
   }
-  resConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(counter, accum, position, signature[position]);
 
   // The backward half excluding the middle element.
   riter = prev(results.end());
   for (size_t extIndex = length-1; extIndex > lastForward; 
       extIndex--, riter--)
   {
-    resConvert.increment(
+    trickConvert.increment(
       counter, 
       accum, 
       riter->getTricks() - tricksMin,
       position, 
       signature[position]);
   }
-  resConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(counter, accum, position, signature[position]);
 
   Tricks::weigh(cases);
 }
@@ -178,10 +178,10 @@ bool Tricks::setByProduct(
       distProfiles, extIndex);
     numDist += value;
 
-    resConvert.increment(counter, accum, value, position, 
+    trickConvert.increment(counter, accum, value, position, 
       signature[position]);
   }
-  resConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(counter, accum, position, signature[position]);
 
   // The backward half excluding the middle element.
   for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
@@ -190,10 +190,10 @@ bool Tricks::setByProduct(
       distProfiles, extIndex);
     numDist += value;
 
-    resConvert.increment(counter, accum, value, position, 
+    trickConvert.increment(counter, accum, value, position, 
       signature[position]);
   }
-  resConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(counter, accum, position, signature[position]);
 
   if (numDist == 0 || numDist == length)
     return false;
@@ -224,7 +224,7 @@ bool Tricks::symmetrize()
       return false;
 
     const unsigned merge = signature[i] | signature[i + offset];
-    if (! resConvert.fullHouse(merge))
+    if (! trickConvert.fullHouse(merge))
       fullHouseFlag = false;
 
     // As the middle element is not set, we will not get a stray '1'
@@ -259,7 +259,7 @@ bool Tricks::possible(
   {
     additions.signature[i] = signature[i] & ~ explained.signature[i];
 
-    if (! resConvert.greaterEqual(
+    if (! trickConvert.greaterEqual(
         residuals.signature[i], 
         additions.signature[i]))
     {
@@ -306,7 +306,7 @@ void Tricks::orSymm(
     {
       // There is a middle element that should not be reproduced
       // on the high side.
-      signature[i + offset] |= resConvert.limit(lastForward, orVal);
+      signature[i + offset] |= trickConvert.limit(lastForward, orVal);
 
     }
     else
@@ -365,7 +365,7 @@ bool Tricks::operator <= (const Tricks& tricks2) const
 
   for (unsigned i = 0; i < signature.size(); i++)
   {
-    if (! resConvert.greaterEqual(tricks2.signature[i], signature[i]))
+    if (! trickConvert.greaterEqual(tricks2.signature[i], signature[i]))
       return false;
   }
   

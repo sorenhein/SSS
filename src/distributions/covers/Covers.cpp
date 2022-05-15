@@ -347,8 +347,8 @@ void Covers::explain(
 
   CoverStack<Cover> stack;
   // Get a greedy solution.
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
+  // Covers::explainTemplate<CoverStore, Cover>(
+    // tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(

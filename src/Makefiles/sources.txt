@@ -23,6 +23,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/CoverStore.cpp              \
                 distributions/covers/RowStore.cpp                \
                 distributions/covers/Tricks.cpp                  \
+                distributions/covers/TrickConvert.cpp            \
                 distributions/covers/CoverRow.cpp                \
                 distributions/covers/CoverStack.cpp              \
                                                                  \

@@ -1060,7 +1060,7 @@ cout << "actual  " << actualDepth << endl;
     depthStats.increment(nominalDepth, actualDepth);
 
     // if (rankLow+2 < maxRank)
-    if (actualDepth > 2)
+    if (actualDepth > 1)
     {
       // We don't know yet how to cover such Strategy's.
       stratNo++;
