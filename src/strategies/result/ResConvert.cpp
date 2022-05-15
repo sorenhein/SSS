@@ -13,7 +13,7 @@
 
 #include "ResConvert.h"
 #include "Result.h"
-#include "RAnges.h"
+#include "Ranges.h"
 
 // A major time drain is the component-wise comparison of results
 // in Strategy's.  In the most optimized implementation in Study, 
@@ -70,13 +70,6 @@ void ResConvert::setConstants()
 }
 
 
-size_t ResConvert::profileSize(const size_t len) const
-{
-  // 2 for 1-10, 4 for 11-20, 6 for 21-30 etc.
-  return 2 * ((len + LOOKUP_GROUP + 4) / (2 * LOOKUP_GROUP));
-}
-
-
 void ResConvert::increment(
   unsigned& counter,
   unsigned& profile,
@@ -92,27 +85,6 @@ void ResConvert::increment(
     profiles.push_back(profile);
     counter = 0;
     profile = 0;
-  }
-}
-
-
-void ResConvert::increment(
-  unsigned& counter,
-  unsigned& accum,
-  const unsigned char value,
-  unsigned& position,
-  unsigned& result) const
-{
-  // result will typically be some vector[position].
-  accum = (accum << 2) | value;
-  counter++;
-
-  if (counter == LOOKUP_GROUP)
-  {
-    result = accum;
-    counter = 0;
-    accum = 0;
-    position++;
   }
 }
 
@@ -178,110 +150,6 @@ void ResConvert::scrutinizeRange(
 
   if (counter > 0)
     profiles.push_back(profile);
-}
-
-
-void ResConvert::scrutinizeConstant(
-  const list<Result>& results,
-  const unsigned minTricks,
-  list<unsigned>& profiles) const
-{
-  // This is similar, but there is a constant number of tricks that
-  // is subtracted, rather than a distribution-dependent range.
-
-  profiles.clear();
-  unsigned counter = 0;
-  unsigned profile = 0;
-
-  for (auto& result: results)
-  {
-    const unsigned diff = result.getTricks() - minTricks;
-    assert(diff < 4); // Must fit in 2 bits for this to work
-
-    ResConvert::increment(counter, profile, diff, profiles);
-  }
-
-  if (counter > 0)
-    profiles.push_back(profile);
-}
-
-
-
-void ResConvert::scrutinizeBinary(
-  const list<unsigned char>& binaryTricks,
-  list<unsigned>& profiles) const
-{
-  // This too is similar, but we scrutinize a binary vector.
-
-  profiles.clear();
-  unsigned counter = 0;
-  unsigned profile = 0;
-
-  for (auto trick: binaryTricks)
-  {
-    assert(trick < 2);
-
-    ResConvert::increment(counter, profile, trick, profiles);
-  }
-
-  if (counter > 0)
-    profiles.push_back(profile);
-}
-
-
-unsigned char ResConvert::lookup(
-  const vector<unsigned>& profiles,
-  const size_t lastForward,
-  const size_t index) const
-{
-  if (index <= lastForward)
-  {
-    // The forward half.
-    const size_t group = index / LOOKUP_GROUP;
-    const size_t shift = 2 * (LOOKUP_GROUP - 1 - (index % LOOKUP_GROUP));
-  
-    assert(group < profiles.size() / 2);
-    return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
-  }
-  else
-  {
-    // The backward half.
-    const size_t rebased = index - lastForward - 1;
-    const size_t group = profiles.size() / 2 + rebased / LOOKUP_GROUP;
-    const size_t shift = 2 * (LOOKUP_GROUP - 1 - (rebased % LOOKUP_GROUP));
-
-    assert(group < profiles.size());
-    return static_cast<unsigned>((profiles[group] >> shift) & 0x3);
-  }
-}
-
-
-bool ResConvert::fullHouse(const unsigned value) const
-{
-  return (value == 0x3ff);
-}
-
-
-unsigned ResConvert::limit(
-  const size_t lastForward,
-  const unsigned value) const
-{
-  const unsigned mod = lastForward % LOOKUP_GROUP;
-  if (mod == 0)
-    return 0;
-  else if (mod == 1)
-    return (value & 0x300);
-  else if (mod == 2)
-    return (value & 0x3c0);
-  else if (mod == 3)
-    return (value & 0x3f0);
-  else if (mod == 4)
-    return (value & 0x3fc);
-  else
-  {
-    assert(false);
-    return 0;
-  }
 }
 
 
