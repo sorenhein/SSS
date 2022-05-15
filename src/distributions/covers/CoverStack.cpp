@@ -14,6 +14,7 @@
 
 #include "CoverStack.h"
 #include "Cover.h"
+#include "CoverRow.h"
 
 mutex mtxCoverStack;
 

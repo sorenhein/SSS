@@ -14,7 +14,12 @@
 
 #include "Covers.h"
 #include "CoverStack.h"
+
+#include "tableau/TableauStats.h"
+
 #include "product/ProfilePair.h"
+
+extern TableauStats tableauStats;
 
 
 Covers::Covers()
@@ -150,8 +155,6 @@ const Cover& Covers::lookup(const Cover& cover) const
 
 /////////////////////////////////////////////
 
-// TODO
-extern Edata edata;
 
 template<class C, class T>
 void Covers::explainTemplate(
@@ -165,7 +168,7 @@ void Covers::explainTemplate(
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
-edata.reset();
+tableauStats.reset();
 
   while (! stack.empty())
   {
@@ -179,7 +182,7 @@ StackEntry<T> stackElemCopy = stackElem;
     auto candIter = stackElem.iter;
 
 size_t tmp = stack.size();
-unsigned tmpSolutions = edata.numSolutions;
+unsigned tmpSolutions = tableauStats.numSolutions;
 bool branchFlag = false;
 unsigned branchLimit;
 if (tmp < 10000)
@@ -219,8 +222,8 @@ else
       if (tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
-if (edata.firstFix == 0)
-  edata.firstFix = edata.numSteps;
+if (tableauStats.firstFix == 0)
+  tableauStats.firstFix = tableauStats.numSteps;
         break;
       }
 
@@ -233,10 +236,10 @@ if (edata.firstFix == 0)
       }
     }
 
-edata.numBranches += stack.size() - tmp;
+tableauStats.numBranches += stack.size() - tmp;
 
-if (stack.size() > edata.stackMax)
-  edata.stackMax = stack.size();
+if (stack.size() > tableauStats.stackMax)
+  tableauStats.stackMax = stack.size();
 
 if (greedyFlag)
 {
@@ -251,7 +254,7 @@ if (greedyFlag)
 // cout << se.tableau.str(sumProfile);
   }
 }
-else if (edata.numSolutions > tmpSolutions)
+else if (tableauStats.numSolutions > tmpSolutions)
 {
 // unsigned cs = stack.size();
   stack.prune(solution);
@@ -260,15 +263,17 @@ else if (edata.numSolutions > tmpSolutions)
 
 }
 
-edata.stackActual = stack.size();
+tableauStats.stackActual = stack.size();
 
-edata.numSteps++;
-if (edata.numSteps % 1000 == 0)
+tableauStats.numSteps++;
+if (tableauStats.numSteps % 1000 == 0)
 {
+  /*
   T t;
-  cout << "numSteps " << edata.numSteps << ": " << solution.strBracket() << "\n";
-  cout << edata.str(t.ID());
+  cout << "numSteps " << tableauStats.numSteps << ": " << solution.strBracket() << "\n";
+  cout << tableauStats.str(t.ID());
   cout << stack.strHisto();
+  */
 }
 
     if (branchFlag)
@@ -291,8 +296,8 @@ if (edata.numSteps % 1000 == 0)
 
 /* */
 T t;
-cout << edata.strHeader();
-cout << edata.str(t.ID());
+cout << tableauStats.strHeader();
+cout << tableauStats.str(t.ID());
 /* */
 
 if (greedyFlag)
