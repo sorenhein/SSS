@@ -84,5 +84,28 @@ size_t CoverStack<T>::prune(const CoverTableau& solution)
 }
 
 
+template<class T>
+string CoverStack<T>::strHisto() const
+{
+  vector<unsigned> histogram;
+  histogram.resize(100);
+  for (auto& entry: * this)
+  {
+    const unsigned h = entry.tableau.lowerComplexityBound();
+    assert(h < 100);
+    histogram[h]++;
+  }
+
+  stringstream ss;
+  ss << "Histogram lower bounds\n";
+  for (size_t i = 0; i < 100; i++)
+    if (histogram[i])
+      ss << setw(4) << i << setw(12) << histogram[i] << "\n";
+  ss << "\n";
+
+  return ss.str();
+}
+
+
 template class CoverStack<Cover>;
 template class CoverStack<CoverRow>;

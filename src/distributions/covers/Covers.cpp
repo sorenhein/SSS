@@ -263,10 +263,12 @@ else if (edata.numSolutions > tmpSolutions)
 edata.stackActual = stack.size();
 
 edata.numSteps++;
-if (edata.numSteps % 100 == 0)
+if (edata.numSteps % 1000 == 0)
 {
   T t;
-  // cout << edata.str(t.ID());
+  cout << "numSteps " << edata.numSteps << ": " << solution.strBracket() << "\n";
+  cout << edata.str(t.ID());
+  cout << stack.strHisto();
 }
 
     if (branchFlag)

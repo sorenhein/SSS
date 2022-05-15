@@ -4,6 +4,8 @@ Seems a good idea to limit branching, although the best profile
 is unknown.
 
 * Histogram of lower bounds?
+  - Could prune every time
+  - Or not add to stack if it will bust later
 
 * Stop branching and put back onto the stack (with a new projection)
   once the worst added stack element in this cycle is too much higher

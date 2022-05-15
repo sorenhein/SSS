@@ -45,6 +45,7 @@ class CoverStack: public multiset<StackEntry<T>>
 
     size_t prune(const CoverTableau& solution);
 
+    string strHisto() const;
 };
 
 #endif

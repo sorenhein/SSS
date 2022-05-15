@@ -244,6 +244,12 @@ bool CoverTableau::complete() const
 }
 
 
+unsigned CoverTableau::lowerComplexityBound() const
+{
+  return lowerBound.complexitySum();
+}
+
+
 unsigned CoverTableau::getResidualWeight() const
 {
   return residuals.getWeight();

@@ -111,6 +111,12 @@ bool Complexity::compareAgainstPartial(const Complexity& partial) const
 }
 
 
+unsigned Complexity::complexitySum() const
+{
+  return sum;
+}
+
+
 string Complexity::str() const
 {
   return to_string(+sum) + "/" + to_string(+max);

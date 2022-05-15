@@ -51,6 +51,8 @@ class Complexity
 
   bool compareAgainstPartial(const Complexity& partial) const;
 
+  unsigned complexitySum() const;
+
   string str() const;
 };
 

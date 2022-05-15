@@ -117,6 +117,8 @@ class CoverTableau
 
     bool complete() const;
 
+    unsigned lowerComplexityBound() const;
+
     unsigned getResidualWeight() const;
 
     string strBracket() const;
