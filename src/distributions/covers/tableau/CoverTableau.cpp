@@ -133,7 +133,11 @@ CoverState CoverTableau::attemptRow(
 
   if (candIter->getWeight() < residuals.getWeight())
   {
-    stack.emplace(candIter, * this);
+    if (solution.rows.empty() ||
+        ! solution.compareAgainstPartial(* this, candIter->getComplexity()))
+    {
+      stack.emplace(candIter, * this);
+    }
     return COVER_OPEN;
   }
   else if (solution.rows.empty())
@@ -197,8 +201,81 @@ tableauStats.numCompares++;
     else if (additions.getWeight() < residuals.getWeight())
     {
 tableauStats.numCompares++;
-      // The cover can be added, but does not make a solution yet.
-      stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+      if (solution.rows.empty())
+      {
+        // The cover can definitely be added on the way to a solution.
+        stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+      }
+      else 
+      {
+        // Check that a new stack entry still has a chance against
+        // the solution.
+        Complexity ctmp = complexity;
+
+        // The remaining residual still needs covers.
+        unsigned char mca = coverIter->minComplexityAdder(
+          residuals.getWeight() - additions.getWeight());
+
+        // Use the fact that a cover complexity is always at least 2.
+        if (mca < 2)
+          mca = 2;
+
+        // We could in principle also reproduce the new row
+        // complexity, but we stick to the overall complexity.
+        ctmp.addCover(coverIter->getComplexity() + mca, 0, 0);
+
+/*
+if (stack.size() == 258)
+{
+  cout << "ctmp " << ctmp.str() << endl;
+  cout << "this " << complexity.str() << endl;
+  cout << "sol " << solution.complexity.str() << endl;
+  cout << "cover " << +coverIter->getComplexity() << endl;
+  cout << "residuals " << +residuals.getWeight() << endl;
+  cout << "additions " << +additions.getWeight() << endl;
+  cout << "mca       " << +mca << endl;
+  if (! (solution.complexity < ctmp))
+  {
+    cout << "Will use" << endl;
+  }
+  else
+  {
+    cout << "Will not use" << endl;
+  }
+}
+*/
+
+        if (! (solution.complexity < ctmp))
+        {
+        // Only add if it might still beat the solution.
+/*
+if (stack.size() == 258)
+{
+  cout << "About to emplace\n";
+  cout << "Cover\n" << coverIter->strLine() << "\n";
+  cout << "cover complexity " << +coverIter->getComplexity() << endl;
+  cout << "* this\n" << CoverTableau::strBracket() << "\n";
+  cout << "this lb " << complexity.str() << "\n";
+  cout << "this res " <<CoverTableau::getResidualWeight() << endl;
+}
+*/
+        stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+/*
+if (stack.size() == 259)
+{
+  cout << "\nemplaced\n";
+  cout << "Cover\n" << coverIter->strLine() << "\n";
+  cout << "cover complexity " << +coverIter->getComplexity() << endl;
+  cout << "* this\n" << CoverTableau::strBracket() << endl;
+  auto s = * prev(stack.end());
+  cout << "just added\n" << s.tableau.strBracket() << "\n" << endl;
+  cout << "lower " << s.tableau.lowerBound.str() << endl;
+  cout << "res " << s.tableau.getResidualWeight() << endl;
+  assert(false);
+}
+*/
+        }
+      }
     }
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), coverIter->getWeight(), solution.complexity))
@@ -266,9 +343,12 @@ bool CoverTableau::operator < (const CoverTableau& ct2) const
 }
 
 
-bool CoverTableau::compareAgainstPartial(const CoverTableau& partial) const
+bool CoverTableau::compareAgainstPartial(
+  const CoverTableau& partial,
+  const unsigned complexityAdder) const
 {
-  return (complexity.compareAgainstPartial(partial.complexity));
+  return complexity.compareAgainstPartial(
+    partial.complexity, complexityAdder);
 }
 
 

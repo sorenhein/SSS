@@ -49,7 +49,9 @@ class Complexity
 
   bool operator < (const Complexity& comp2) const;
 
-  bool compareAgainstPartial(const Complexity& partial) const;
+  bool compareAgainstPartial(
+    const Complexity& partial,
+    const unsigned complexityAdder = 0) const;
 
   unsigned complexitySum() const;
 

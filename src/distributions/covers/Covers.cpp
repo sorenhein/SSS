@@ -266,14 +266,16 @@ else if (tableauStats.numSolutions > tmpSolutions)
 tableauStats.stackActual = stack.size();
 
 tableauStats.numSteps++;
-if (tableauStats.numSteps % 1000 == 0)
+if (tableauStats.numSteps % 500 == 0)
 {
-  /*
+  // if (tableauStats.numSteps == 42)
+    // cout << "HERE\n";
+  /* */
   T t;
   cout << "numSteps " << tableauStats.numSteps << ": " << solution.strBracket() << "\n";
   cout << tableauStats.str(t.ID());
-  cout << stack.strHisto();
-  */
+  cout << stack.strHisto() << endl;
+  /* */
 }
 
     if (branchFlag)
@@ -285,10 +287,15 @@ if (tableauStats.numSteps % 1000 == 0)
       {
         assert(false);
       }
-      const unsigned char minCompAdder = 
-        candIter->minComplexityAdder(w);
-      stackElemCopy.tableau.project(minCompAdder);
-      stack.insert(stackElemCopy);
+
+      if (! solution.compareAgainstPartial(stackElemCopy.tableau))
+      {
+        const unsigned char minCompAdder = 
+          candIter->minComplexityAdder(w);
+        stackElemCopy.tableau.project(minCompAdder);
+
+        stack.insert(stackElemCopy);
+      }
     }
 
 
@@ -313,6 +320,14 @@ if (greedyFlag)
     // assert(false);
   }
 }
+
+/*
+if (! greedyFlag)
+{
+cout << endl;
+assert(false);
+}
+*/
 
 }
 

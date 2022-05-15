@@ -1,3 +1,11 @@
+11/159432
+Strategy #0
+Say between 126000 and 126500
++134
++231
++2
+Shouldn't the number be shrinking?!
+
 Speed and size of covers
 ------------------------
 Seems a good idea to limit branching, although the best profile
