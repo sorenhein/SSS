@@ -12,9 +12,6 @@
 #include <vector>
 #include <list>
 
-// class Result;
-// class Ranges;
-
 using namespace std;
 
 
@@ -25,14 +22,6 @@ class TrickConvert
     vector<unsigned char> lookupGE;
 
     void setConstants();
-
-    /*
-    void increment(
-      unsigned& counter,
-      unsigned& profile,
-      const unsigned incr,
-      list<unsigned>& profiles) const;
-      */
 
 
   public:
@@ -53,22 +42,6 @@ class TrickConvert
       unsigned& accum,
       unsigned& position,
       unsigned& result) const;
-
-    /*
-    void scrutinizeRange(
-      const list<Result>& results,
-      const Ranges& ranges,
-      list<unsigned>& profiles) const;
-
-    void scrutinizeConstant(
-      const list<Result>& results,
-      const unsigned minTricks,
-      list<unsigned>& profiles) const;
-
-    void scrutinizeBinary(
-      const list<unsigned char>& binaryTricks,
-      list<unsigned>& profiles) const;
-      */
 
     unsigned char lookup(
       const vector<unsigned>& profiles,

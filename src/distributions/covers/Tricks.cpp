@@ -45,30 +45,8 @@ void Tricks::resize(const size_t len)
 
 const unsigned char Tricks::lookup(const size_t extIndex) const
 {
-  /*
-     Store the front half (including perhaps the middle) one way.
-     Store the back half backward. Average cost is 0.4 extra entries.
-
-      N  lastF Forward     Backward       Cost siglen
-      3  1     0-1         2              1    2
-      4  1     0-1         3-2            1    2
-      5  2     0-2         4-3            1    2
-      6  2     0-2         5-3            0    2
-      7  3     0-3         6-4            0    2
-      8  3     0-3         7-4            0    2
-      9  4     0-4         8-5            0    2
-     10  4     0-4         9-5            0    2
-     11  5     0-4   5     10-6           0    4
-     12  5     0-4   5     11-7    6      1    4
-     13  6     0-4   5-6   12-8    7      1    4
-     14  6     0-4   5-6   13-9    8-7    1    4
-     15  7     0-4   5-7   14-10   9-8    1    4
-     16  7     0-4   5-7   15-11   10-8   0    4
-     17  8     0-4   5-8   16-12   11-9   0    4
-     18  8     0-4   5-8   17-13   12-9   0    4
-     19  9     0-4   5-9   18-14   13-10  0    4
-     20  9     0-4   5-9   19-15   14-10  0    4
-  */
+  // Store the front half (including perhaps the middle) one way.
+  // Store the back half backward.
   
   const size_t effIndex = (extIndex <= lastForward ?
     extIndex : length + lastForward - extIndex);
