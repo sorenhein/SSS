@@ -91,6 +91,26 @@ bool Complexity::operator < (const Complexity& comp2) const
 }
 
 
+bool Complexity::compareAgainstPartial(const Complexity& partial) const
+{
+  // Complexity itself is supposed to the a finished solution here,
+  // while partial comes from an unfinished stack entry.
+  // The partial entry will need at least one more cover, and here
+  // we assume (see Term) that any complexity is >= 2.
+  // In this context, a true return means that we can definitely
+  // discard the partial, and false means we can't.
+  
+  if (sum < partial.sum + 2)
+    return true;
+  else if (sum > partial.sum + 2)
+    return false;
+  else if (max < partial.max)
+    return true;
+  else
+    return false;
+}
+
+
 string Complexity::str() const
 {
   return to_string(+sum) + "/" + to_string(+max);

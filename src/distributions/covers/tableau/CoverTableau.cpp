@@ -222,6 +222,12 @@ bool CoverTableau::operator < (const CoverTableau& ct2) const
 }
 
 
+bool CoverTableau::compareAgainstPartial(const CoverTableau& partial) const
+{
+  return (complexity.compareAgainstPartial(partial.complexity));
+}
+
+
 void CoverTableau::updateStats(
   const Profile& sumProfile,
   ProductStats& productStats,
@@ -234,7 +240,6 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::complete() const
 {
-  // return (! rows.empty() && residuals.getWeight() == 0);
   return (residuals.getWeight() == 0);
 }
 

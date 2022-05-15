@@ -1,14 +1,33 @@
-2-covers work now, but abysmally slow (~ 100 sec).
-At least they stay within roughly 2 GB.
+Speed and size of covers
+------------------------
+Seems a good idea to limit branching, although the best profile
+is unknown.
 
-* Get the method from CoverTableau.h into .cpp?
 * Histogram of lower bounds?
 
-* Until we have a solution, the best guess is the lowest projection.
 * Stop branching and put back onto the stack (with a new projection)
   once the worst added stack element in this cycle is too much higher
   than either the lowest projection or the actual solution we have.
 * Could look for the missing single cover actively, once it is "small".
+
+* Can switch on better pruning in CoverStack (but does hardly
+  anything?)
+
+
+Status of covers
+----------------
+2-covers work now, but abysmally slow (~ 80 sec).
+The worst one is 11/159432, QJ874/- missing AKT965, strategy #1,
+261903 maximum stack size, 15.4m comparisons, 662k steps.
+
+3-covers: 11/159428 > 6GB. QJ875 / - missing AKT964.
+11/159108: Would probably fail eventually, 11 GB.
+
+infty-covers: Didn't wait for it to bomb, but > 11 GB on 10/44367,
+KJ75/9 missing AQT86.
+
+
+* Get the method from CoverTableau.h into .cpp?
 
 
 Strategy depth statistics
@@ -26,8 +45,7 @@ Strategy depth statistics
 
 Deeper strategies
 -----------------
-* Try higher depths
-  - Make a general output, may not be pretty
+* Improve the text output of higher depths
 
 Names of cards
 --------------

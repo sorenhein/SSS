@@ -108,6 +108,8 @@ class CoverTableau
     // This takes projections into account -- see code.
     bool operator < (const CoverTableau& ct2) const;
 
+    bool compareAgainstPartial(const CoverTableau& partial) const;
+
     void updateStats(
       const Profile& sumProfile,
       ProductStats& productStats,

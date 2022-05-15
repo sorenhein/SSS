@@ -57,6 +57,11 @@ void Term::set(
   CoverOperator oper;
   unsigned char complexity;
 
+  // In Covers (or more accurately in CoverStack::prune and 
+  // Complexity::compareAgainstPartial), we make use of the fact that 
+  // the lowest complexity is 2.  It would go unnoticed, but would lead 
+  // to errors, to introduce a complexity of 1 here!
+
   if (lowerInt == upperInt)
   {
     oper = COVER_EQUAL;
