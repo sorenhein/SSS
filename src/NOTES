@@ -1,3 +1,26 @@
+No leakage into stack at all
+- concentrate entries somewhere, e.g. CoverStack?
+- cover2 has two thirds waste if we include row complexity
+- row emplace has none
+
+When emplacing cover2, also find a way to predict the row complexity
+and avoid more stack entries that way.
+
+Greedy
+- Histogram of how often we don't find the optimal one greedily
+- All possible starts?
+- How much does that improve?
+
+Depth
+- Can we map a trick vector efficiently to its actual depth?
+- Then whenever depth changes (to lower), stop using deeper covers
+- On the last cover, only use the actual depth
+
+Breadth-to-depth-first
+- Maybe switch over locally when stack becomes too large?
+
+#define MIN_COMPLEXITY 2 to make it explicit.
+
 11/159432
 Strategy #0
 Say between 126000 and 126500

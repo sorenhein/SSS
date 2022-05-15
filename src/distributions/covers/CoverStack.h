@@ -27,19 +27,19 @@ class CoverStack: public multiset<StackEntry<T>>
 
     CoverStack();
 
-    void emplace(
+    typename multiset<StackEntry<T>>::const_iterator emplace(
       const Tricks& tricks,
       const unsigned char tmin,
       typename const set<T>::const_iterator& iterIn);
 
-    void emplace(
+    typename multiset<StackEntry<T>>::const_iterator emplace(
       typename const set<T>::const_iterator& iterIn,
       const CoverTableau& tableau,
       const Tricks& additions,
       const unsigned rawWeightAdded,
       const unsigned rowNumber);
 
-    void emplace(
+    typename multiset<StackEntry<T>>::const_iterator emplace(
       typename const set<T>::const_iterator& iterIn,
       const CoverTableau& tableau);
 

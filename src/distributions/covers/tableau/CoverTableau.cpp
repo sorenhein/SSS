@@ -136,7 +136,18 @@ CoverState CoverTableau::attemptRow(
     if (solution.rows.empty() ||
         ! solution.compareAgainstPartial(* this, candIter->getComplexity()))
     {
-      stack.emplace(candIter, * this);
+        auto sit =
+      * stack.emplace(candIter, * this);
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+{
+  cout << "  EMPLACE row\n";
+  cout << "lower " << sit.tableau.lowerBound.str() << endl;
+  if (solution < sit.tableau)
+    cout << "WASTEDr\n";
+  else
+    cout << "FAIRr\n";
+}
     }
     return COVER_OPEN;
   }
@@ -204,6 +215,9 @@ tableauStats.numCompares++;
       if (solution.rows.empty())
       {
         // The cover can definitely be added on the way to a solution.
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+  cout << "  EMPLACE cover1\n";
         stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
       }
       else 
@@ -259,7 +273,43 @@ if (stack.size() == 258)
   cout << "this res " <<CoverTableau::getResidualWeight() << endl;
 }
 */
-        stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+{
+  cout << "  EMPLACE cover2\n";
+  /*
+  cout << "About to emplace\n";
+  cout << "Cover\n" << coverIter->strLine() << "\n";
+  cout << "cover complexity " << +coverIter->getComplexity() << endl;
+  cout << "* this\n" << CoverTableau::strBracket() << "\n";
+  cout << "this lb " << complexity.str() << "\n";
+  cout << "this res " <<CoverTableau::getResidualWeight() << endl;
+  cout << "solution " << solution.complexity.str() << "\n";
+  cout << "additions " << +additions.getWeight() << "\n";
+  cout << "mca " << +mca << "\n";
+  cout << "ctmp " << ctmp.str() << "\n";
+  */
+}
+        auto sit =
+        * stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
+
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+{
+  /*
+  cout << "\nemplaced\n";
+  cout << "Cover\n" << coverIter->strLine() << "\n";
+  cout << "cover complexity " << +coverIter->getComplexity() << endl;
+  cout << "* this\n" << CoverTableau::strBracket() << endl;
+  cout << "just added\n" << sit.tableau.strBracket() << "\n" << endl;
+  cout << "res " << sit.tableau.getResidualWeight() << endl;
+  */
+  cout << "lower " << sit.tableau.lowerBound.str() << endl;
+  if (solution < sit.tableau)
+    cout << "WASTEDc\n";
+  else
+    cout << "FAIRc\n";
+}
 /*
 if (stack.size() == 259)
 {

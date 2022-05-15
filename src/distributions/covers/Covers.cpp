@@ -295,8 +295,18 @@ if (tableauStats.numSteps % 500 == 0)
         stackElemCopy.tableau.project(minCompAdder);
 
         stack.insert(stackElemCopy);
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+cout << "  INSERT\n";
       }
     }
+
+if (tableauStats.numSteps >= 126000 &&
+    tableauStats.numSteps <= 126500)
+{
+  cout << "numSteps " << +tableauStats.numSteps << ": " <<
+    stack.size() << "\n";
+}
 
 
   }
