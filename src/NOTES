@@ -2,8 +2,7 @@
 At least they stay within roughly 2 GB.
 
 * Get the method from CoverTableau.h into .cpp?
-* Greedy version that takes only the front of the stack each time?
-* Histogram of 
+* Histogram of lower bounds?
 
 * Until we have a solution, the best guess is the lowest projection.
 * Stop branching and put back onto the stack (with a new projection)
@@ -54,6 +53,8 @@ Shifts
 
 * Think about storing the actually used covers and results in files?
 
+11/158948 has four out of five strategies that are the same in terms
+of tricks, but differ in terms of detailed ranks.
 
 Verbals of strategy wins
 ========================

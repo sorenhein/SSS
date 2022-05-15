@@ -244,6 +244,11 @@ if (greedyFlag)
   {
     auto siter = next(stack.begin());
     stack.erase(siter, stack.end());
+    branchFlag = false;
+
+// auto& se = * stack.begin();
+// cout << "Partial:\n";
+// cout << se.tableau.str(sumProfile);
   }
 }
 else if (edata.numSolutions > tmpSolutions)
@@ -292,13 +297,13 @@ if (greedyFlag)
 {
   if (solution.complete())
   {
-    cout << "Got a greedy solution: " << solution.strBracket() << "\n";
-    cout << solution.str(sumProfile);
+    // cout << "Got a greedy solution: " << solution.strBracket() << "\n";
+    // cout << solution.str(sumProfile);
   }
   else
   {
     cout << "Failed to get a greedy solution" << endl;
-    assert(false);
+    // assert(false);
   }
 }
 
@@ -347,8 +352,8 @@ void Covers::explain(
 
   CoverStack<Cover> stack;
   // Get a greedy solution.
-  // Covers::explainTemplate<CoverStore, Cover>(
-    // tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
+  Covers::explainTemplate<CoverStore, Cover>(
+    tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(

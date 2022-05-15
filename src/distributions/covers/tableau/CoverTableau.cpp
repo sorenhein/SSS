@@ -234,7 +234,8 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::complete() const
 {
-  return (! rows.empty() && residuals.getWeight() == 0);
+  // return (! rows.empty() && residuals.getWeight() == 0);
+  return (residuals.getWeight() == 0);
 }
 
 
