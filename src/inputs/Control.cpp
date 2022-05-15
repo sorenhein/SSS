@@ -97,6 +97,9 @@ void Control::configure()
     { "-A", "--ranks", CORRESPONDENCE_BOOL, CTRL_ALL_RANKS_FLAG, "yes",
       "In loop (implies -a), process all ranks (default: true)." },
 
+    { "-D", "--depth", CORRESPONDENCE_INT, CTRL_COVER_DEPTH, "1",
+      "Depth of verbal covers if set (default: 1)." },
+
     { "-R", "--read", CORRESPONDENCE_STRING, CTRL_READ_BINARY_DIRECTORY, 
       "", "Read directory of binary files with rank information." },
     { "-W", "--write", CORRESPONDENCE_STRING, CTRL_WRITE_BINARY_DIRECTORY, 
@@ -114,7 +117,7 @@ void Control::configure()
       "0x002: Advanced strategizing including ranges and voids\n"
       "0x004: Optimizations when calculating strategies\n"
       "0x008: Consider ranks when comparing strategies\n"
-      "0x010: Describe winning tricks vectors verbally"
+      "0x010: Describe winning tricks vectors verbally\n"
       "0x020: Describe winning tricks vectors verbally (manual)"
       },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
@@ -470,6 +473,11 @@ bool Control::runVerbalTricks() const
 bool Control::runVerbalTricksManually() const
 {
   return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_VERBAL_TRICKS_MANUAL] != 0);
+}
+
+unsigned char Control::verbalDepth() const
+{
+  return static_cast<unsigned char>(entry.getInt(CTRL_COVER_DEPTH));
 }
 
 bool Control::outputHolding() const

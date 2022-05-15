@@ -1,10 +1,7 @@
-11/133299
-KJ654 / - missing AQT97
-The problem is that against AQ / T97 we take 4(!) tricks, but against
-- / AQT97 none, which is a span of 4 tricks.
-Probably this busts Strategy as well?  Sigh...
+2-covers work now, but abysmally slow (~ 100 sec).
+At least they stay within roughly 2 GB.
 
-* Get the methods from Covers.h and CoverTableau.h into .cpp?
+* Get the method from CoverTableau.h into .cpp?
 * Greedy version that takes only the front of the stack each time?
 * Histogram of 
 
@@ -13,11 +10,6 @@ Probably this busts Strategy as well?  Sigh...
   once the worst added stack element in this cycle is too much higher
   than either the lowest projection or the actual solution we have.
 * Could look for the missing single cover actively, once it is "small".
-
-Outputs:
-#soln changes
-#branching factor (average)
-Put it in a line, not one number per line
 
 
 Strategy depth statistics
@@ -35,7 +27,6 @@ Strategy depth statistics
 
 Deeper strategies
 -----------------
-* Control #explicit tops, -D, --depth
 * Try higher depths
   - Make a general output, may not be pretty
 

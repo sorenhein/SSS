@@ -60,9 +60,11 @@ enum ControlInts
 
   CTRL_GOAL = 9,
 
+  CTRL_COVER_DEPTH = 10,
+
   CTRL_NUM_THREADS = 10,
 
-  CTRL_INTS_SIZE = 11
+  CTRL_INTS_SIZE = 12
 };
 
 enum ControlDoubles
@@ -167,6 +169,7 @@ class Control
     bool runRankComparisons() const;
     bool runVerbalTricks() const;
     bool runVerbalTricksManually() const;
+    unsigned char verbalDepth() const;
 
     bool outputHolding() const; 
     bool outputBasicResults() const; 
