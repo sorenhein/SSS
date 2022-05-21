@@ -346,7 +346,9 @@ if (tableauStats.firstFix == 0)
 
       candIter++;
 
-      if (candIter != candidates.end() && stack.size() - tmp > branchLimit)
+      if (! greedyFlag &&
+          candIter != candidates.end() && 
+          stack.size() - tmp > branchLimit)
       {
         branchFlag = true;
         break;
@@ -390,6 +392,8 @@ tableauStats.numSteps++;
 
         stack.insert(stackElemCopy);
       }
+      else
+        assert(false);
     }
   }
   /* */

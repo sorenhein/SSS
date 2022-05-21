@@ -84,7 +84,7 @@ bool Complexity::operator < (const Complexity& comp2) const
     return false;
   else if (max < comp2.max)
     return true;
-  else if (max < comp2.max)
+  else if (max > comp2.max)
     return false;
   else
     return (raw < comp2.raw);
@@ -97,14 +97,14 @@ bool Complexity::compareAgainstPartial(
 {
   // Complexity itself is supposed to the a finished solution here,
   // while partial comes from an unfinished stack entry.
-  // The partial entry will need at least one more cover, and here
-  // we assume (see Term) that any complexity is >= 2.
   // In this context, a true return means that we can definitely
   // discard the partial, and false means we can't.
   
-  if (sum < partial.sum + complexityAdder + 2)
+  if (sum == 0)
+    return false;
+  else if (sum < partial.sum + complexityAdder)
     return true;
-  else if (sum > partial.sum + complexityAdder + 2)
+  else if (sum > partial.sum + complexityAdder)
     return false;
   else if (max < partial.max)
     return true;

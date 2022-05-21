@@ -138,16 +138,6 @@ CoverState CoverTableau::attemptRow(
     {
         auto sit =
       * stack.emplace(candIter, * this);
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-{
-  cout << "  EMPLACE row\n";
-  cout << "lower " << sit.tableau.lowerBound.str() << endl;
-  if (solution < sit.tableau)
-    cout << "WASTEDr\n";
-  else
-    cout << "FAIRr\n";
-}
     }
     return COVER_OPEN;
   }
@@ -215,9 +205,6 @@ tableauStats.numCompares++;
       if (solution.rows.empty())
       {
         // The cover can definitely be added on the way to a solution.
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-  cout << "  EMPLACE cover1\n";
         stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
       }
       else 
@@ -231,6 +218,7 @@ if (tableauStats.numSteps >= 126000 &&
           residuals.getWeight() - additions.getWeight());
 
         // Use the fact that a cover complexity is always at least 2.
+        // TODO Put in the method? Does this trigger?
         if (mca < 2)
           mca = 2;
 
@@ -238,92 +226,12 @@ if (tableauStats.numSteps >= 126000 &&
         // complexity, but we stick to the overall complexity.
         ctmp.addCover(coverIter->getComplexity() + mca, 0, 0);
 
-/*
-if (stack.size() == 258)
-{
-  cout << "ctmp " << ctmp.str() << endl;
-  cout << "this " << complexity.str() << endl;
-  cout << "sol " << solution.complexity.str() << endl;
-  cout << "cover " << +coverIter->getComplexity() << endl;
-  cout << "residuals " << +residuals.getWeight() << endl;
-  cout << "additions " << +additions.getWeight() << endl;
-  cout << "mca       " << +mca << endl;
-  if (! (solution.complexity < ctmp))
-  {
-    cout << "Will use" << endl;
-  }
-  else
-  {
-    cout << "Will not use" << endl;
-  }
-}
-*/
-
         if (! (solution.complexity < ctmp))
         {
-        // Only add if it might still beat the solution.
-/*
-if (stack.size() == 258)
-{
-  cout << "About to emplace\n";
-  cout << "Cover\n" << coverIter->strLine() << "\n";
-  cout << "cover complexity " << +coverIter->getComplexity() << endl;
-  cout << "* this\n" << CoverTableau::strBracket() << "\n";
-  cout << "this lb " << complexity.str() << "\n";
-  cout << "this res " <<CoverTableau::getResidualWeight() << endl;
-}
-*/
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-{
-  cout << "  EMPLACE cover2\n";
-  /*
-  cout << "About to emplace\n";
-  cout << "Cover\n" << coverIter->strLine() << "\n";
-  cout << "cover complexity " << +coverIter->getComplexity() << endl;
-  cout << "* this\n" << CoverTableau::strBracket() << "\n";
-  cout << "this lb " << complexity.str() << "\n";
-  cout << "this res " <<CoverTableau::getResidualWeight() << endl;
-  cout << "solution " << solution.complexity.str() << "\n";
-  cout << "additions " << +additions.getWeight() << "\n";
-  cout << "mca " << +mca << "\n";
-  cout << "ctmp " << ctmp.str() << "\n";
-  */
-}
-        auto sit =
-        * stack.emplace(coverIter, * this, additions, rawWeightAdded, rno);
-
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-{
-  /*
-  cout << "\nemplaced\n";
-  cout << "Cover\n" << coverIter->strLine() << "\n";
-  cout << "cover complexity " << +coverIter->getComplexity() << endl;
-  cout << "* this\n" << CoverTableau::strBracket() << endl;
-  cout << "just added\n" << sit.tableau.strBracket() << "\n" << endl;
-  cout << "res " << sit.tableau.getResidualWeight() << endl;
-  */
-  cout << "lower " << sit.tableau.lowerBound.str() << endl;
-  if (solution < sit.tableau)
-    cout << "WASTEDc\n";
-  else
-    cout << "FAIRc\n";
-}
-/*
-if (stack.size() == 259)
-{
-  cout << "\nemplaced\n";
-  cout << "Cover\n" << coverIter->strLine() << "\n";
-  cout << "cover complexity " << +coverIter->getComplexity() << endl;
-  cout << "* this\n" << CoverTableau::strBracket() << endl;
-  auto s = * prev(stack.end());
-  cout << "just added\n" << s.tableau.strBracket() << "\n" << endl;
-  cout << "lower " << s.tableau.lowerBound.str() << endl;
-  cout << "res " << s.tableau.getResidualWeight() << endl;
-  assert(false);
-}
-*/
+          // Only add if it might still beat the solution.
+          auto sit =
+            * stack.emplace(coverIter, * this, 
+            additions, rawWeightAdded, rno);
         }
       }
     }

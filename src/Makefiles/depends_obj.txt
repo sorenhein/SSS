@@ -351,6 +351,7 @@ distributions/covers/Covers.obj: distributions/covers/product/Profile.h
 distributions/covers/Covers.obj: distributions/covers/CoverStack.h
 distributions/covers/Covers.obj: distributions/covers/StackEntry.h
 distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
+distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
 distributions/covers/Complexity.obj: distributions/covers/Complexity.h
@@ -377,6 +378,7 @@ distributions/covers/CoverStack.obj: distributions/covers/StackEntry.h
 distributions/covers/CoverStack.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/CoverStack.obj: distributions/covers/Cover.h
 distributions/covers/CoverStack.obj: distributions/covers/Tricks.h
+distributions/covers/CoverStack.obj: distributions/covers/CoverRow.h
 distributions/covers/manual/Manual.obj: distributions/covers/manual/Manual.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/manual/Manual.obj: distributions/covers/product/Profile.h
@@ -385,8 +387,13 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverRow.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Tricks.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Complexity.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverState.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Cover.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Tricks.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStore.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/Cover.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/RowStore.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverRow.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStack.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/StackEntry.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/CoverTableau.h
@@ -680,7 +687,7 @@ strategies/result/ResConvert.obj: strategies/result/Result.h
 strategies/result/ResConvert.obj: strategies/result/Winners.h
 strategies/result/ResConvert.obj: strategies/result/Winner.h utils/table.h
 strategies/result/ResConvert.obj: utils/Card.h utils/Compare.h
-strategies/result/ResConvert.obj: utils/Compare.h strategies/result/RAnges.h
+strategies/result/ResConvert.obj: utils/Compare.h strategies/result/Ranges.h
 strategies/result/ResConvert.obj: strategies/result/Range.h
 strategies/result/ResConvert.obj: strategies/result/MultiResult.h
 utils/Card.obj: utils/Card.h utils/Compare.h const.h

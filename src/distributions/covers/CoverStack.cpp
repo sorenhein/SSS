@@ -75,6 +75,8 @@ size_t CoverStack<T>::prune(const CoverTableau& solution)
 
   // Go back, also taking into account min complexity of 2.
   // This assumes that Term cannot generate lower complexities.
+  // TODO If we turn this on, check whether the +2 is dealt with
+  // as there was a bug in Complexity.
   // while (iter != this->begin() &&
       // solution.compareAgainstPartial(iter->tableau))
     // iter--;
