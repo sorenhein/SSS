@@ -9,8 +9,12 @@ my $file = shift;
 open my $fh, '<', $file or die $!;
 
 my $lno = 0;
-my (@CC_ttff, @CC_numsol, @CC_smax, @CC_comps, @CC_steps, $CC_branch, $CCn);
-my (@RR_ttff, @RR_numsol, @RR_smax, @RR_comps, @RR_steps, $RR_branch, $RRn);
+my (@CC_ttff, @CC_numsol, $CCn);
+my ($CC_smax, $CC_comps, $CC_steps, $CC_branch);
+my (@RR_ttff, @RR_numsol, $RRn);
+my ($RR_smax, $RR_comps, $RR_steps, $RR_branch);
+
+my $CC_worst_stack = 0;
 
 while (my $line = <$fh>)
 {
@@ -23,11 +27,17 @@ while (my $line = <$fh>)
     
     $CC_ttff[$ttff]++;
     $CC_numsol[$numsol]++;
-    $CC_smax[$smax]++;
-    $CC_comps[$comps]++;
-    $CC_steps[$steps]++;
+    $CC_smax += $smax;
+    $CC_comps += $comps;
+    $CC_steps += $steps;
     $CC_branch += $branch;
     $CCn++;
+
+    if ($smax > $CC_worst_stack)
+    {
+      $CC_worst_stack = $smax;
+      print "New worst stack in line $lno: $smax\n";
+    }
   }
   elsif ($line =~ /^RR\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+\.\d+)/)
   {
@@ -36,9 +46,9 @@ while (my $line = <$fh>)
     
     $RR_ttff[$ttff]++;
     $RR_numsol[$numsol]++;
-    $RR_smax[$smax]++;
-    $RR_comps[$comps]++;
-    $RR_steps[$steps]++;
+    $RR_smax += $smax;
+    $RR_comps += $comps;
+    $RR_steps += $steps;
     $RR_branch += $branch;
     $RRn++;
   }
@@ -48,18 +58,22 @@ close $fh;
 
 mdump(\@CC_ttff, "CC ttff");
 mdump(\@CC_numsol, "CC numsol");
-mdump(\@CC_smax, "CC smax");
-mdump(\@CC_comps, "CC comps");
-mdump(\@CC_steps, "CC steps");
-printf("%-12s%8.2f\n", "branch", $CC_branch / $CCn);
+printf("%-12s%12.2f\n", "CC smax", $CC_branch / $CCn);
+printf("%-12s%12.2f\n", "CC comps", $CC_comps / $CCn);
+printf("%-12s%12.2f\n", "CC steps", $CC_steps / $CCn);
+printf("%-12s%12.2f\n", "branch", $CC_branch / $CCn);
 print "\n";
 
 mdump(\@RR_ttff, "RR ttff");
 mdump(\@RR_numsol, "RR numsol");
-mdump(\@RR_smax, "RR smax");
-mdump(\@RR_comps, "RR comps");
-mdump(\@RR_steps, "RR steps");
-printf("%-12s%8.2f\n", "branch", $RR_branch / $RRn);
+printf("%-12s%12.2f\n", "CC smax", $RR_branch / $CCn);
+printf("%-12s%12.2f\n", "CC comps", $RR_comps / $CCn);
+printf("%-12s%12.2f\n", "CC steps", $RR_steps / $CCn);
+printf("%-12s%12.2f\n", "branch", $RR_branch / $CCn);
+print "\n";
+
+hdump(\@CC_numsol, "CC numsol");
+hdump(\@RR_numsol, "RR numsol");
 
 
 sub mdump
@@ -74,5 +88,20 @@ sub mdump
     $cnt += $href->[$i];
   }
 
-  printf("%-12s%8.2f\n", $name, $sum / $cnt);
+  printf("%-12s%12.2f\n", $name, $sum / $cnt);
+}
+
+
+sub hdump
+{
+  my ($href, $name) = @_;
+  my $sum = 0;
+  my $cnt = 0;
+  print "$name\n";
+  for my $i (0 .. $#$href)
+  {
+    next unless defined $href->[$i];
+    printf("%-12d%12d\n", $i, $href->[$i]);
+  }
+  print "\n";
 }

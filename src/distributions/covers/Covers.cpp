@@ -152,8 +152,121 @@ const Cover& Covers::lookup(const Cover& cover) const
 }
 
 
+template<class C, class T>
+void Covers::explainStack(
+  const unsigned numStrategyTops,
+  const C& candidates,
+  const bool recurseFlag,
+  const bool greedyFlag,
+  CoverStack<T>& stack,
+  CoverTableau& solution)
+{
+  // A solution may already be set, in which case it may be improved.
+  // The stack has one or more starting elements already.
 
-/////////////////////////////////////////////
+  while (! stack.empty())
+  {
+    auto handle = stack.extract(stack.begin());
+    StackEntry<T>& stackElem = handle.value();
+
+    if (recurseFlag && stack.size() > 10000)
+    {
+      // Make a new stack with only this element, and recurse in order
+      // to cut down on the stack size.
+      CoverStack<T> stackNew;
+      stackNew.insert(stackElem);
+      Covers::explainStack<C, T>(numStrategyTops, candidates,
+        false, false, stackNew, solution);
+      continue;
+    }
+
+    // Otherwise continue more globally.
+
+    // TODO Can probably avoid overwriting in CoverTableau, but for now
+    // we make a copy
+    StackEntry<T> stackElemCopy = stackElem;
+
+    CoverTableau& tableau = stackElem.tableau;
+    auto candIter = stackElem.iter;
+
+    size_t stackSize0 = stack.size();
+    unsigned numSolutions0 = tableauStats.numSolutions;
+
+    while (candIter != candidates.end())
+    {
+      if (candIter->effectiveDepth() > numStrategyTops)
+      {
+        candIter++;
+        continue;
+      }
+
+      const unsigned char headroom = tableau.headroom(solution);
+
+      if (candIter->minComplexityAdder(tableau.getResidualWeight()) > 
+          headroom)
+      {
+        // As the covers are ordered, later covers have no chance either.
+        break;
+      }
+
+      if (candIter->getComplexity() > headroom)
+      {
+        // The current cover may be too complex, but there may be others.
+        candIter++;
+        continue;
+      }
+
+      // if (stackIter->tableau.attempt(cases, candIter, stack, solution))
+      if (tableau.attempt(cases, candIter, stack, solution))
+      {
+        // We found a solution.  It may have replaced the previous one.
+        if (tableauStats.firstFix == 0)
+          tableauStats.firstFix = tableauStats.numSteps;
+        break;
+      }
+
+      candIter++;
+    }
+
+    tableauStats.numBranches += stack.size() - stackSize0;
+
+    if (stack.size() > tableauStats.stackMax)
+      tableauStats.stackMax = stack.size();
+
+    if (greedyFlag)
+    {
+      if (stack.size() > 1)
+      {
+        // Just keep the most promising, first element.
+        auto siter = next(stack.begin());
+        stack.erase(siter, stack.end());
+      }
+    }
+    else if (tableauStats.numSolutions > numSolutions0)
+      stack.prune(solution);
+
+    tableauStats.stackActual = stack.size();
+
+    tableauStats.numSteps++;
+  }
+}
+
+
+template void Covers::explainStack<CoverStore, Cover>(
+  const unsigned numStrategyTops,
+  const CoverStore& candidates,
+  const bool recurseFlag,
+  const bool greedyFlag,
+  CoverStack<Cover>& stack,
+  CoverTableau& solution);
+
+template void Covers::explainStack<RowStore, CoverRow>(
+  const unsigned numStrategyTops,
+  const RowStore& candidates,
+  const bool recurseFlag,
+  const bool greedyFlag,
+  CoverStack<CoverRow>& stack,
+  CoverTableau& solution);
 
 
 template<class C, class T>
@@ -168,8 +281,12 @@ void Covers::explainTemplate(
 {
   stack.emplace(tricks, tmin, candidates.begin());
 
-tableauStats.reset();
+  tableauStats.reset();
 
+  // Covers::explainStack<C, T>(numStrategyTops, candidates,
+    // true, false, stack, solution);
+
+/* */
   while (! stack.empty())
   {
     auto handle = stack.extract(stack.begin());
@@ -248,45 +365,22 @@ if (greedyFlag)
     auto siter = next(stack.begin());
     stack.erase(siter, stack.end());
     branchFlag = false;
-
-// auto& se = * stack.begin();
-// cout << "Partial:\n";
-// cout << se.tableau.str(sumProfile);
   }
 }
 else if (tableauStats.numSolutions > tmpSolutions)
 {
-// unsigned cs = stack.size();
   stack.prune(solution);
-// cout << "Erased " << cs - stack.size() << " << elements\n";
-
-
 }
 
 tableauStats.stackActual = stack.size();
 
 tableauStats.numSteps++;
-if (tableauStats.numSteps % 500 == 0)
-{
-  // if (tableauStats.numSteps == 42)
-    // cout << "HERE\n";
-  /* */
-  T t;
-  cout << "numSteps " << tableauStats.numSteps << ": " << solution.strBracket() << "\n";
-  cout << tableauStats.str(t.ID());
-  cout << stack.strHisto() << endl;
-  /* */
-}
 
     if (branchFlag)
     {
-      // cout << "Branch\n";
       stackElemCopy.iter = candIter;
       const unsigned w = stackElemCopy.tableau.getResidualWeight();
-      if (w == 0)
-      {
-        assert(false);
-      }
+      assert(w > 0);
 
       if (! solution.compareAgainstPartial(stackElemCopy.tableau))
       {
@@ -295,50 +389,20 @@ if (tableauStats.numSteps % 500 == 0)
         stackElemCopy.tableau.project(minCompAdder);
 
         stack.insert(stackElemCopy);
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-cout << "  INSERT\n";
       }
     }
+  }
+  /* */
 
-if (tableauStats.numSteps >= 126000 &&
-    tableauStats.numSteps <= 126500)
-{
-  cout << "numSteps " << +tableauStats.numSteps << ": " <<
-    stack.size() << "\n";
-}
-
-
+  if (! greedyFlag)
+  {
+    T t;
+    cout << tableauStats.strHeader();
+    cout << tableauStats.str(t.ID());
   }
 
-/* */
-T t;
-cout << tableauStats.strHeader();
-cout << tableauStats.str(t.ID());
-/* */
-
-if (greedyFlag)
-{
-  if (solution.complete())
-  {
-    // cout << "Got a greedy solution: " << solution.strBracket() << "\n";
-    // cout << solution.str(sumProfile);
-  }
-  else
-  {
+  if (greedyFlag && ! solution.complete())
     cout << "Failed to get a greedy solution" << endl;
-    // assert(false);
-  }
-}
-
-/*
-if (! greedyFlag)
-{
-cout << endl;
-assert(false);
-}
-*/
-
 }
 
 // Instantiations
@@ -384,8 +448,11 @@ void Covers::explain(
 
   CoverStack<Cover> stack;
   // Get a greedy solution.
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
+  stack.emplace(tricks, tmin, coverStore.begin());
+  Covers::explainStack<CoverStore, Cover>(
+    numStrategyTops, coverStore, false, true, stack, solution);
+  // Covers::explainTemplate<CoverStore, Cover>(
+    // tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(

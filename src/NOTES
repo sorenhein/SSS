@@ -1,3 +1,41 @@
+First, this got quite a lot worse in term of comps and steps -- why?
+Maybe depth-first switch ~ 10k stack depth leads to more different
+solutions before we get to the right one.
+Second, it actually produces a different result -- why?
+Some kind of ordering disagreement to do with complexities and
+projections?
+
+In 11/159432 , Strategy #4 we get 44147 stack max. Probably even the 
+recursive call is quite complex?
+QJ874/- missing AKT965.
+
+10/45270
+KT965/- missing AHHxx
+New way Strategy #1
+         Stack    TTFF  Numsol        Smax       Comps       Steps  Branch
+CC           0     345      22       10030      930253       15960    1.50
+Strategy #1 [c 17/4, w 61/67]: Always take at least 0 tricks, and more when
+* Neither opponent is void [30]
+* --1--1--11--1--1--    unused  unused    == 1  unused  16   2    131072           2         68719542047; or
+  East has a doubleton [10]
+* ---1--11--11--1---    unused  unused    == 2    == 0   8   4    524288           2 sym    137439014959
+* --------1---------      == 2  unused    == 1    == 1   2   3   1572864           2      36352603201823
+* ----1-------------      == 2  unused    == 0    == 0   1   3   3145728           2      35184372097039
+
+Old way
+         Stack    TTFF  Numsol        Smax       Comps       Steps  Branch
+CC           0    2644       3       13444      328879        7913    1.84
+Strategy #1 [c 17/6, w 61/64]: Always take at least 0 tricks, and more when
+* Neither opponent is void [30]
+* West has a doubleton [10]; or
+  ---1--11--11--1---    unused  unused    == 2    == 0   8   4    524288           2 sym    137439014959
+* East has a doubleton [10]
+* --1------------1--      == 1  unused    == 1  unused   4   3    786432           2 sym  17660905529119
+* --------1---------      == 2  unused    == 1    == 1   2   3   1572864           2      36352603201823
+
+
+
+
 No leakage into stack at all
 - concentrate entries somewhere, e.g. CoverStack?
 - cover2 has two thirds waste if we include row complexity
