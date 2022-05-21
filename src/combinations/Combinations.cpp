@@ -60,7 +60,7 @@ void Combinations::setTimerNames()
   timersStrat[22].name("Covers::prepare");
   timersStrat[23].name("Covers::explainManually");
   timersStrat[24].name("Covers::explain");
-  timersStrat[25].name("Covers::prune");
+  timersStrat[25].name("Covers::greedy");
   timersStrat[30].name("Ranks::getMinimals");
   timersStrat[31].name("CombEntry::fixMinimals");
   timersStrat[32].name("CombTest::checkCovers");

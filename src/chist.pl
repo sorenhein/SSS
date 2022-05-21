@@ -15,6 +15,7 @@ my (@RR_ttff, @RR_numsol, $RRn);
 my ($RR_smax, $RR_comps, $RR_steps, $RR_branch);
 
 my $CC_worst_stack = 0;
+my $lnoprev = -99;
 
 while (my $line = <$fh>)
 {
@@ -38,6 +39,16 @@ while (my $line = <$fh>)
       $CC_worst_stack = $smax;
       print "New worst stack in line $lno: $smax\n";
     }
+
+    if ($lno == $lnoprev+2)
+    {
+      if ($numsol != 0)
+      {
+        print "Unexpected in line $lno\n";
+      }
+    }
+
+    $lnoprev = $lno;
   }
   elsif ($line =~ /^RR\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+\.\d+)/)
   {
@@ -58,7 +69,7 @@ close $fh;
 
 mdump(\@CC_ttff, "CC ttff");
 mdump(\@CC_numsol, "CC numsol");
-printf("%-12s%12.2f\n", "CC smax", $CC_branch / $CCn);
+printf("%-12s%12.2f\n", "CC smax", $CC_smax / $CCn);
 printf("%-12s%12.2f\n", "CC comps", $CC_comps / $CCn);
 printf("%-12s%12.2f\n", "CC steps", $CC_steps / $CCn);
 printf("%-12s%12.2f\n", "branch", $CC_branch / $CCn);
@@ -66,10 +77,10 @@ print "\n";
 
 mdump(\@RR_ttff, "RR ttff");
 mdump(\@RR_numsol, "RR numsol");
-printf("%-12s%12.2f\n", "CC smax", $RR_branch / $CCn);
-printf("%-12s%12.2f\n", "CC comps", $RR_comps / $CCn);
-printf("%-12s%12.2f\n", "CC steps", $RR_steps / $CCn);
-printf("%-12s%12.2f\n", "branch", $RR_branch / $CCn);
+printf("%-12s%12.2f\n", "RR smax", $RR_smax / $RRn);
+printf("%-12s%12.2f\n", "RR comps", $RR_comps / $RRn);
+printf("%-12s%12.2f\n", "RR steps", $RR_steps / $RRn);
+printf("%-12s%12.2f\n", "branch", $RR_branch / $RRn);
 print "\n";
 
 hdump(\@CC_numsol, "CC numsol");

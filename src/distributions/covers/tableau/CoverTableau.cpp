@@ -192,14 +192,19 @@ tableauStats.numCompares++;
     {
       // A row becomes too difficult to read for a human if it
       // has more than two options.
+      rno++;
+      continue;
     }
     else if (! row.possibleAdd(* coverIter, residuals, cases, 
         additions, rawWeightAdded))
     {
 tableauStats.numCompares++;
       // The row does not fit.
+      rno++;
+      continue;
     }
-    else if (additions.getWeight() < residuals.getWeight())
+
+    if (additions.getWeight() < residuals.getWeight())
     {
 tableauStats.numCompares++;
       if (solution.rows.empty())
@@ -238,14 +243,17 @@ tableauStats.numCompares++;
     else if (complexity.match(coverIter->getComplexity(),
         row.getComplexity(), coverIter->getWeight(), solution.complexity))
     {
+      // The cover makes a solution which beats the previous one.
 tableauStats.numCompares++;
 tableauStats.numSolutions++;
-      // The cover makes a solution which beats the previous one.
       solution = * this;
       solution.extendRow(* coverIter, additions, rawWeightAdded, rno);
     }
     else
+    {
+      // The cover makes a solution which loses to the previous one.
 tableauStats.numCompares++;
+    }
 
     rno++;
   }
@@ -322,7 +330,7 @@ void CoverTableau::updateStats(
 
 bool CoverTableau::complete() const
 {
-  return (residuals.getWeight() == 0);
+  return (rows.size() > 0 && residuals.getWeight() == 0);
 }
 
 

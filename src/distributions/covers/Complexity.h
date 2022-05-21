@@ -56,6 +56,8 @@ class Complexity
   unsigned complexitySum() const;
 
   string str() const;
+
+  string strFull() const;
 };
 
 #endif

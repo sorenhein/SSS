@@ -27,16 +27,23 @@ bool Complexity::match(
   const Complexity& solution) const
 {
   if (solution.sum == 0)
+    // A new solution always beat a previously unset one
     return true;
-  if (sum + coverComplexity > solution.sum)
+  else if (sum + coverComplexity > solution.sum)
     return false;
   else if (sum + coverComplexity < solution.sum)
     return true;
-  else if (rowComplexity + coverComplexity > solution.max)
-    // The cover would be added to this specific row
+  else if (rowComplexity + coverComplexity > solution.max ||
+      max > solution.max)
+  {
+    // The cover would be added to this specific row and would bust
     return false;
-  else if (rowComplexity + coverComplexity < solution.max)
+  }
+  else if (rowComplexity + coverComplexity < solution.max &&
+      max < solution.max)
+  {
     return true;
+  }
   else
     return (raw + rawWeight < solution.raw);
 }
@@ -122,5 +129,11 @@ unsigned Complexity::complexitySum() const
 string Complexity::str() const
 {
   return to_string(+sum) + "/" + to_string(+max);
+}
+
+
+string Complexity::strFull() const
+{
+  return to_string(+sum) + "/" + to_string(+max) + "/" + to_string(+raw);
 }
 

@@ -21,6 +21,10 @@
 
 extern TableauStats tableauStats;
 
+// TODO TMP
+#include "../../utils/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 Covers::Covers()
 {
@@ -163,6 +167,16 @@ void Covers::explainStack(
 {
   // A solution may already be set, in which case it may be improved.
   // The stack has one or more starting elements already.
+  //
+  // If greedyFlag is set, we allow all first-level covers that match
+  // the trick profile.  If that yields a solution, we are done.
+  // If not, then we iteratively replace each stack element with only
+  // the most promising continuation.
+  //
+  // If recurseFlag is set, we stop expanding the stack and study each
+  // stack element to its conclusion until we are below the critical
+  // stack size again.  The stack may keep expanding for a quite a
+  // while even with this approach.
 
   while (! stack.empty())
   {
@@ -216,10 +230,10 @@ void Covers::explainStack(
         continue;
       }
 
-      // if (stackIter->tableau.attempt(cases, candIter, stack, solution))
       if (tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
+        // Or: If we were looking for a single descendent, we found one.
         if (tableauStats.firstFix == 0)
           tableauStats.firstFix = tableauStats.numSteps;
         break;
@@ -235,14 +249,17 @@ void Covers::explainStack(
 
     if (greedyFlag)
     {
-      if (stack.size() > 1)
+      // This is reasonably "optimal" in the current setup.
+      if (stack.size() > 7)
       {
         // Just keep the most promising, first element.
-        auto siter = next(stack.begin());
+        auto siter = stack.begin();
+        for (size_t i = 0; i < 7; i++, siter++);
         stack.erase(siter, stack.end());
       }
     }
-    else if (tableauStats.numSolutions > numSolutions0)
+
+    if (tableauStats.numSolutions > numSolutions0)
       stack.prune(solution);
 
     tableauStats.stackActual = stack.size();
@@ -384,16 +401,16 @@ tableauStats.numSteps++;
       const unsigned w = stackElemCopy.tableau.getResidualWeight();
       assert(w > 0);
 
-      if (! solution.compareAgainstPartial(stackElemCopy.tableau))
-      {
+      // if (! solution.compareAgainstPartial(stackElemCopy.tableau))
+      // {
         const unsigned char minCompAdder = 
           candIter->minComplexityAdder(w);
         stackElemCopy.tableau.project(minCompAdder);
 
         stack.insert(stackElemCopy);
-      }
-      else
-        assert(false);
+      // }
+      // else
+        // assert(false);
     }
   }
   /* */
@@ -451,10 +468,31 @@ void Covers::explain(
   }
 
   CoverStack<Cover> stack;
+
   // Get a greedy solution.
+timersStrat[25].start();
   stack.emplace(tricks, tmin, coverStore.begin());
   Covers::explainStack<CoverStore, Cover>(
     numStrategyTops, coverStore, false, true, stack, solution);
+timersStrat[25].stop();
+
+  /*
+  cout << "Greedy solution\n";
+  cout << solution.strBracket() << "\n";
+  cout << solution.str(sumProfile);
+  */
+
+/*
+if (solution.complete())
+{
+  cout << "GOODGREED\n";
+}
+else
+{
+  cout << "BADGREED\n";
+}
+*/
+
   // Covers::explainTemplate<CoverStore, Cover>(
     // tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
 
@@ -463,6 +501,10 @@ void Covers::explain(
     tricks, tmin, numStrategyTops, coverStore, false, stack, solution);
 
   tableauCache.store(tricks, solution);
+
+  // TODO TMP, Should stay put -- best case for greedy
+  // Covers::explainTemplate<CoverStore, Cover>(
+    // tricks, tmin, numStrategyTops, coverStore, false, stack, solution);
 }
 
 

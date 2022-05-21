@@ -1,84 +1,24 @@
-First, this got quite a lot worse in term of comps and steps -- why?
-Maybe depth-first switch ~ 10k stack depth leads to more different
-solutions before we get to the right one.
-Second, it actually produces a different result -- why?
-Some kind of ordering disagreement to do with complexities and
-projections?
+* Choose right number for greedy (20 is probably a too-hot run?)
 
-In 11/159432 , Strategy #4 we get 44147 stack max. Probably even the 
-recursive call is quite complex?
-QJ874/- missing AKT965.
-
-11/137076, K9874 / - missing AHHHxx
-Strategy #1
-Old
-Strategy #1 [c 18/6, w 86/134]: Always take at least 0 tricks, and more         when
-* Each opponent has 2-4 cards [50]; or
---1--1-111-11-111-1--1--    unused  unused     1-2  unused  48   3             65536   2         68719542063
-* The suit splits 3=3 [20]; or
---------1---1---1-------    unused  unused    == 1    == 1  12   4            349525   2       1168231166239
-* Either opponent has the singleton honor [2]
-* -----------------1------      == 4  unused    == 3    == 0   2   3   1        572864   2      70574902624319
-
-New
-Strategy #1 [c 17/7, w 86/94]: Always take at least 0 tricks, and more w        hen
-* The suit splits 3=3 [20]; or
---------1---1---1-------    unused  unused    == 1    == 1  12   4            349525   2       1168231166239
-* --1--1-1-1-1-1-1-1--1---    unused  unused    >= 1    == 0  28   4            149796   2         68719538431
-* ---1--1-1-1-1-1-1-1--1--    unused  unused    <= 2    == 1  28   4            149796   2       1099511689519; or
-----1-1----------1-1----      == 2  unused    == 0  unused   6   3            524288   2 sym  35184372100879
-
-
-
-
-No leakage into stack at all
-- concentrate entries somewhere, e.g. CoverStack?
-- cover2 has two thirds waste if we include row complexity
-- row emplace has none
-
-When emplacing cover2, also find a way to predict the row complexity
-and avoid more stack entries that way.
-
-Greedy
-- Histogram of how often we don't find the optimal one greedily
-- All possible starts?
-- How much does that improve?
+* Play with branching profile: memory vs speed
+* Compare with recursion
 
 Depth
 - Can we map a trick vector efficiently to its actual depth?
 - Then whenever depth changes (to lower), stop using deeper covers
 - On the last cover, only use the actual depth
 
-Breadth-to-depth-first
-- Maybe switch over locally when stack becomes too large?
-
 #define MIN_COMPLEXITY 2 to make it explicit.
 
-11/159432
-Strategy #0
-Say between 126000 and 126500
-+134
-+231
-+2
-Shouldn't the number be shrinking?!
-
-Speed and size of covers
-------------------------
-Seems a good idea to limit branching, although the best profile
-is unknown.
-
-* Histogram of lower bounds?
-  - Could prune every time
-  - Or not add to stack if it will bust later
-
-* Stop branching and put back onto the stack (with a new projection)
-  once the worst added stack element in this cycle is too much higher
-  than either the lowest projection or the actual solution we have.
 * Could look for the missing single cover actively, once it is "small".
 
 * Can switch on better pruning in CoverStack (but does hardly
   anything?)
 
+* Store something pre-calculated in files, such as
+  - Complexity
+  - Highest-weight one or few products to use
+  - Only covers to consider
 
 Status of covers
 ----------------
@@ -91,9 +31,6 @@ The worst one is 11/159432, QJ874/- missing AKT965, strategy #1,
 
 infty-covers: Didn't wait for it to bomb, but > 11 GB on 10/44367,
 KJ75/9 missing AQT86.
-
-
-* Get the method from CoverTableau.h into .cpp?
 
 
 Strategy depth statistics
