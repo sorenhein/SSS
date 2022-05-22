@@ -77,11 +77,14 @@ print "\n";
 
 mdump(\@RR_ttff, "RR ttff");
 mdump(\@RR_numsol, "RR numsol");
-printf("%-12s%12.2f\n", "RR smax", $RR_smax / $RRn);
-printf("%-12s%12.2f\n", "RR comps", $RR_comps / $RRn);
-printf("%-12s%12.2f\n", "RR steps", $RR_steps / $RRn);
-printf("%-12s%12.2f\n", "branch", $RR_branch / $RRn);
-print "\n";
+if ($RRn)
+{
+  printf("%-12s%12.2f\n", "RR smax", $RR_smax / $RRn);
+  printf("%-12s%12.2f\n", "RR comps", $RR_comps / $RRn);
+  printf("%-12s%12.2f\n", "RR steps", $RR_steps / $RRn);
+  printf("%-12s%12.2f\n", "branch", $RR_branch / $RRn);
+  print "\n";
+}
 
 hdump(\@CC_numsol, "CC numsol");
 hdump(\@RR_numsol, "RR numsol");
@@ -99,7 +102,14 @@ sub mdump
     $cnt += $href->[$i];
   }
 
-  printf("%-12s%12.2f\n", $name, $sum / $cnt);
+  if ($cnt == 0)
+  {
+    print("-\n");
+  }
+  else
+  {
+    printf("%-12s%12.2f\n", $name, $sum / $cnt);
+  }
 }
 
 

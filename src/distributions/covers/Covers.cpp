@@ -308,18 +308,24 @@ void Covers::explainTemplate(
     size_t stackSize0 = stack.size();
     unsigned numSolutions0 = tableauStats.numSolutions;
 
-// size_t tmp = stack.size();
-// unsigned tmpSolutions = tableauStats.numSolutions;
+    /*
     bool branchFlag = false;
     unsigned branchLimit;
-    if (stackSize0 < 10000)
+    if (stackSize0 < 1000)
       branchLimit = 5;
-    else if (stackSize0 < 30000)
+    else if (stackSize0 < 3000)
       branchLimit = 3;
-    else if (stackSize0 < 50000)
-      branchLimit = 2;
     else
       branchLimit = 1;
+      */
+
+      if (stack.size() > 50000)
+      {
+        // Just keep the most promising, first element.
+        auto siter = stack.begin();
+        for (size_t i = 0; i < 25000; i++, siter++);
+        stack.erase(siter, stack.end());
+      }
 
     while (candIter != candidates.end())
     {
@@ -355,12 +361,14 @@ void Covers::explainTemplate(
 
       candIter++;
 
+      /*
       if (candIter != candidates.end() && 
           stack.size() - stackSize0 > branchLimit)
       {
         branchFlag = true;
         break;
       }
+      */
     }
 
     tableauStats.numBranches += stack.size() - stackSize0;
@@ -375,6 +383,7 @@ void Covers::explainTemplate(
 
     tableauStats.numSteps++;
 
+    /*
     if (branchFlag)
     {
       stackElem.iter = candIter;
@@ -387,6 +396,7 @@ void Covers::explainTemplate(
 
         stack.insert(stackElem);
     }
+    */
   }
   /* */
 

@@ -1,12 +1,8 @@
 * Choose right number for greedy (20 is probably a too-hot run?)
 
-* Play with branching profile: memory vs speed
-* Compare with recursion
-
-Depth
-- Can we map a trick vector efficiently to its actual depth?
-- Then whenever depth changes (to lower), stop using deeper covers
-- On the last cover, only use the actual depth
+* Delete recursion, branching
+* Unify the two methods again
+* Document 7 and 50k
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
