@@ -8,6 +8,9 @@ Depth
 - Then whenever depth changes (to lower), stop using deeper covers
 - On the last cover, only use the actual depth
 
+Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
+or "skeleton" that gets stored afterward?
+
 #define MIN_COMPLEXITY 2 to make it explicit.
 
 * Could look for the missing single cover actively, once it is "small".

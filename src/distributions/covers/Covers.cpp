@@ -195,11 +195,6 @@ void Covers::explainStack(
     }
 
     // Otherwise continue more globally.
-
-    // TODO Can probably avoid overwriting in CoverTableau, but for now
-    // we make a copy
-    StackEntry<T> stackElemCopy = stackElem;
-
     CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
 
@@ -292,12 +287,10 @@ void Covers::explainTemplate(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const C& candidates,
-  const bool greedyFlag,
   CoverStack<T>& stack,
   CoverTableau& solution)
 {
   stack.emplace(tricks, tmin, candidates.begin());
-
   tableauStats.reset();
 
   // Covers::explainStack<C, T>(numStrategyTops, candidates,
@@ -308,25 +301,25 @@ void Covers::explainTemplate(
   {
     auto handle = stack.extract(stack.begin());
     StackEntry<T>& stackElem = handle.value();
-// Can probably avoid overwriting in CoverTableau, but for now
-// we make a copy
-StackEntry<T> stackElemCopy = stackElem;
 
     CoverTableau& tableau = stackElem.tableau;
     auto candIter = stackElem.iter;
 
-size_t tmp = stack.size();
-unsigned tmpSolutions = tableauStats.numSolutions;
-bool branchFlag = false;
-unsigned branchLimit;
-if (tmp < 10000)
-  branchLimit = 5;
-else if (tmp < 30000)
-  branchLimit = 3;
-else if (tmp < 50000)
-  branchLimit = 2;
-else
-  branchLimit = 1;
+    size_t stackSize0 = stack.size();
+    unsigned numSolutions0 = tableauStats.numSolutions;
+
+// size_t tmp = stack.size();
+// unsigned tmpSolutions = tableauStats.numSolutions;
+    bool branchFlag = false;
+    unsigned branchLimit;
+    if (stackSize0 < 10000)
+      branchLimit = 5;
+    else if (stackSize0 < 30000)
+      branchLimit = 3;
+    else if (stackSize0 < 50000)
+      branchLimit = 2;
+    else
+      branchLimit = 1;
 
     while (candIter != candidates.end())
     {
@@ -352,78 +345,54 @@ else
         continue;
       }
 
-      // if (stackIter->tableau.attempt(cases, candIter, stack, solution))
       if (tableau.attempt(cases, candIter, stack, solution))
       {
         // We found a solution.  It may have replaced the previous one.
-if (tableauStats.firstFix == 0)
-  tableauStats.firstFix = tableauStats.numSteps;
+        if (tableauStats.firstFix == 0)
+          tableauStats.firstFix = tableauStats.numSteps;
         break;
       }
 
       candIter++;
 
-      if (! greedyFlag &&
-          candIter != candidates.end() && 
-          stack.size() - tmp > branchLimit)
+      if (candIter != candidates.end() && 
+          stack.size() - stackSize0 > branchLimit)
       {
         branchFlag = true;
         break;
       }
     }
 
-tableauStats.numBranches += stack.size() - tmp;
+    tableauStats.numBranches += stack.size() - stackSize0;
 
-if (stack.size() > tableauStats.stackMax)
-  tableauStats.stackMax = stack.size();
+    if (stack.size() > tableauStats.stackMax)
+      tableauStats.stackMax = stack.size();
 
-if (greedyFlag)
-{
-  if (stack.size() > 1)
-  {
-    auto siter = next(stack.begin());
-    stack.erase(siter, stack.end());
-    branchFlag = false;
-  }
-}
-else if (tableauStats.numSolutions > tmpSolutions)
-{
-  stack.prune(solution);
-}
+    if (tableauStats.numSolutions > numSolutions0)
+      stack.prune(solution);
 
-tableauStats.stackActual = stack.size();
+    tableauStats.stackActual = stack.size();
 
-tableauStats.numSteps++;
+    tableauStats.numSteps++;
 
     if (branchFlag)
     {
-      stackElemCopy.iter = candIter;
-      const unsigned w = stackElemCopy.tableau.getResidualWeight();
+      stackElem.iter = candIter;
+      const unsigned w = stackElem.tableau.getResidualWeight();
       assert(w > 0);
 
-      // if (! solution.compareAgainstPartial(stackElemCopy.tableau))
-      // {
         const unsigned char minCompAdder = 
           candIter->minComplexityAdder(w);
-        stackElemCopy.tableau.project(minCompAdder);
+        stackElem.tableau.project(minCompAdder);
 
-        stack.insert(stackElemCopy);
-      // }
-      // else
-        // assert(false);
+        stack.insert(stackElem);
     }
   }
   /* */
 
-  if (! greedyFlag)
-  {
-    T t;
-    cout << tableauStats.strHeader();
-    cout << tableauStats.str(t.ID());
-  }
-
-  if (greedyFlag && ! solution.complete())
-    cout << "Failed to get a greedy solution" << endl;
+  T t;
+  cout << tableauStats.strHeader();
+  cout << tableauStats.str(t.ID());
 }
 
 // Instantiations
@@ -433,7 +402,6 @@ template void Covers::explainTemplate<CoverStore, Cover>(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const CoverStore& candidates,
-  const bool greedyFlag,
   CoverStack<Cover>& stack,
   CoverTableau& solution);
 
@@ -442,7 +410,6 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const RowStore& candidates,
-  const bool greedyFlag,
   CoverStack<CoverRow>& stack,
   CoverTableau& solution);
 
@@ -493,18 +460,11 @@ else
 }
 */
 
-  // Covers::explainTemplate<CoverStore, Cover>(
-    // tricks, tmin, numStrategyTops, coverStore, true, stack, solution);
-
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, false, stack, solution);
+    tricks, tmin, numStrategyTops, coverStore, stack, solution);
 
   tableauCache.store(tricks, solution);
-
-  // TODO TMP, Should stay put -- best case for greedy
-  // Covers::explainTemplate<CoverStore, Cover>(
-    // tricks, tmin, numStrategyTops, coverStore, false, stack, solution);
 }
 
 
@@ -525,7 +485,7 @@ void Covers::explainManually(
 
   CoverStack<CoverRow> stack;
   Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, 
-    rowStore, false, stack, solution);
+    rowStore, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

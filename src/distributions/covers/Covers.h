@@ -71,7 +71,6 @@ class Covers
       const unsigned char tmin,
       const unsigned numStrategyTops,
       const C& candidates,
-      const bool greedyFlag,
       CoverStack<T>& stack,
       CoverTableau& solution);
 
