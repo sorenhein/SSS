@@ -6,6 +6,28 @@
    See LICENSE and README.
 */
 
+/*
+   The search for an "optimal" cover can be very expensive.
+   I have tried a number of approaches and the best ones are 
+   implemented here:
+
+   - Rank candidates by increasing "complexity per weight", where
+     complexity is a subjective measure and weight is the number of
+     cases of the candidate.  This tends to make it possible to
+     cut off stack elements that would bust a known solution.
+
+   - Generate a "greedy" solution first in order to seed the broader
+     search.  This is not a major improvement, but it does help.
+     I truncate the stack to a relatively small size.
+
+   - Truncate the stack so it doesn't get completely out of control.
+     This does cost a bit of accuracy, but complexity is subjective
+     anyway and the cutoff is not so bad, at least for depth 2
+     (12 strategies with complexity 23/7 instead of 23/5).
+ */
+
+
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -308,24 +330,16 @@ void Covers::explainTemplate(
     size_t stackSize0 = stack.size();
     unsigned numSolutions0 = tableauStats.numSolutions;
 
-    /*
-    bool branchFlag = false;
-    unsigned branchLimit;
-    if (stackSize0 < 1000)
-      branchLimit = 5;
-    else if (stackSize0 < 3000)
-      branchLimit = 3;
-    else
-      branchLimit = 1;
-      */
+    if (stack.size() > 50000)
+    {
+      // TODO Comment this and 7.  Make into parameters somewhere.
 
-      if (stack.size() > 50000)
-      {
-        // Just keep the most promising, first element.
-        auto siter = stack.begin();
-        for (size_t i = 0; i < 25000; i++, siter++);
-        stack.erase(siter, stack.end());
-      }
+      // Just keep the most promising ones to save capacity.
+
+      auto siter = stack.begin();
+      for (size_t i = 0; i < 25000; i++, siter++);
+      stack.erase(siter, stack.end());
+    }
 
     while (candIter != candidates.end())
     {
@@ -360,15 +374,6 @@ void Covers::explainTemplate(
       }
 
       candIter++;
-
-      /*
-      if (candIter != candidates.end() && 
-          stack.size() - stackSize0 > branchLimit)
-      {
-        branchFlag = true;
-        break;
-      }
-      */
     }
 
     tableauStats.numBranches += stack.size() - stackSize0;
@@ -382,21 +387,6 @@ void Covers::explainTemplate(
     tableauStats.stackActual = stack.size();
 
     tableauStats.numSteps++;
-
-    /*
-    if (branchFlag)
-    {
-      stackElem.iter = candIter;
-      const unsigned w = stackElem.tableau.getResidualWeight();
-      assert(w > 0);
-
-        const unsigned char minCompAdder = 
-          candIter->minComplexityAdder(w);
-        stackElem.tableau.project(minCompAdder);
-
-        stack.insert(stackElem);
-    }
-    */
   }
   /* */
 

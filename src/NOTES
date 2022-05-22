@@ -2,7 +2,14 @@
 
 * Delete recursion, branching
 * Unify the two methods again
+  - Greedy: trigger 7, limit 7
+  - General: trigger 50k, limit 25k
+  - Otherwise actually the same in principle?
 * Document 7 and 50k
+
+1: 
+2: 1954 meg
+3: 
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
