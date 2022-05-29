@@ -463,7 +463,7 @@ void set4sorts()
   // may play the same rank twice in a trick.
 
   SORT4_PLAYS.resize(QUARTENARY8);
-  SORT4_PLAYS[0] = {0, 0, 0, 0};
+  SORT4_PLAYS[0] = { { 0, 0, 0, 0 } };
 
   // If the cards were all by real absolute number, there would be
   // no repetitions other than 0 (discards).  But E-W will seem to play 
@@ -487,12 +487,12 @@ void set4sorts()
           const unsigned p3adj = (p3 == p2 && p3 != 0 ? p3-1 : p3);
 
           const array<unsigned char, 4> res = 
-          { 
+          { { 
             static_cast<unsigned char>(p0), 
             static_cast<unsigned char>(p1adj),
             static_cast<unsigned char>(p2adj),
             static_cast<unsigned char>(p3adj)
-          };
+          } };
 
           enterSorted(p0, p1, p2, p3, res);
           enterSorted(p0, p1, p3, p2, res);
@@ -650,15 +650,16 @@ void rankedTrinary(
 
 
 void rankedTrinary(
-  const bool rotateFlag,
-  const unsigned cards,
+  [[maybe_unused]] const bool rotateFlag,
+  [[maybe_unused]] const unsigned cards,
   const unsigned holding4,
   unsigned& holding3)
 {
   // Turns holding4 into holding3.  Can rotate.
 
-  const unsigned holding4rot = (rotateFlag ?
-    (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
+  // TODO Should we use holding4rot, or obsolete?
+  // const unsigned holding4rot = (rotateFlag ?
+    // (holding4 ^ HOLDING4_ROTATE[cards]) : holding4);
 
   holding3 = holding4to3(holding4);
 }
