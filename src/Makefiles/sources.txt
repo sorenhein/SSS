@@ -8,6 +8,7 @@ SOURCE_FILES    =                               \
                 combinations/CombFiles.cpp      \
                 combinations/CombTest.cpp       \
                 combinations/DepthStats.cpp     \
+                combinations/SymmetryStore.cpp  \
                                                 \
                 distributions/Distributions.cpp \
                 distributions/DistMap.cpp       \

@@ -1,5 +1,3 @@
-* Choose right number for greedy (20 is probably a too-hot run?)
-
 * Delete recursion, branching
 * Unify the two methods again
   - Greedy: trigger 7, limit 7
@@ -7,9 +5,12 @@
   - Otherwise actually the same in principle?
 * Document 7 and 50k
 
-1: 
-2: 1954 meg
-3: 
+* Make a SymmetryStore in combinations.
+  - Not hooked up to anything, not tested
+  - Contains manuals for all combinations > 20 strategies, 10-11 cards?
+  - Test perl large2.pl a to make sure
+  - When hooking up, output and indicator that it was symmetrized
+
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
