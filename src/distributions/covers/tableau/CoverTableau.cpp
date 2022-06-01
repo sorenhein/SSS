@@ -146,7 +146,7 @@ CoverState CoverTableau::attemptRow(
     // We have a solution for sure, as it is the first one.
     solution = * this;
     solution.addRow(* candIter);
-tableauStats.numSolutions++;
+    tableauStats.numSolutions++;
     return COVER_DONE;
   }
   else
@@ -157,7 +157,7 @@ tableauStats.numSolutions++;
     if (complexity < solution.complexity)
     {
       solution = * this;
-tableauStats.numSolutions++;
+      tableauStats.numSolutions++;
     }
     return COVER_DONE;
   }
@@ -172,7 +172,7 @@ bool CoverTableau::attempt(
 {
   // Returns true if this must be the last use of this cover.
   // Check whether we can make a complete solution with the cover.
-tableauStats.numCompares++;
+  tableauStats.numCompares++;
   const CoverState state = CoverTableau::attemptRow(
     coverIter, stack, solution);
   if (state == COVER_OPEN)
@@ -198,7 +198,7 @@ tableauStats.numCompares++;
     else if (! row.possibleAdd(* coverIter, residuals, cases, 
         additions, rawWeightAdded))
     {
-tableauStats.numCompares++;
+      tableauStats.numCompares++;
       // The row does not fit.
       rno++;
       continue;
@@ -206,7 +206,7 @@ tableauStats.numCompares++;
 
     if (additions.getWeight() < residuals.getWeight())
     {
-tableauStats.numCompares++;
+      tableauStats.numCompares++;
       if (solution.rows.empty())
       {
         // The cover can definitely be added on the way to a solution.
@@ -244,15 +244,15 @@ tableauStats.numCompares++;
         row.getComplexity(), coverIter->getWeight(), solution.complexity))
     {
       // The cover makes a solution which beats the previous one.
-tableauStats.numCompares++;
-tableauStats.numSolutions++;
+      tableauStats.numCompares++;
+      tableauStats.numSolutions++;
       solution = * this;
       solution.extendRow(* coverIter, additions, rawWeightAdded, rno);
     }
     else
     {
       // The cover makes a solution which loses to the previous one.
-tableauStats.numCompares++;
+      tableauStats.numCompares++;
     }
 
     rno++;
@@ -270,7 +270,7 @@ bool CoverTableau::attempt(
 {
   // Return true if a solution is found, even if it is inferior to
   // the existing one.
-tableauStats.numCompares++;
+  tableauStats.numCompares++;
   return (CoverTableau::attemptRow(rowIter, stack, solution) == COVER_DONE);
 }
 

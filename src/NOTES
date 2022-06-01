@@ -29,6 +29,7 @@ Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
 
 #define MIN_COMPLEXITY 2 to make it explicit.
+Term, CoverTableau (has a TODO too)
 
 * Store something pre-calculated in files, such as
   - Complexity
