@@ -309,6 +309,8 @@ void Covers::explainTemplate(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const C& candidates,
+  const size_t pruneTrigger,
+  const size_t pruneSize,
   CoverStack<T>& stack,
   CoverTableau& solution)
 {
@@ -330,14 +332,14 @@ void Covers::explainTemplate(
     size_t stackSize0 = stack.size();
     unsigned numSolutions0 = tableauStats.numSolutions;
 
-    if (stack.size() > 50000)
+    if (stack.size() > pruneTrigger)
     {
       // TODO Comment this and 7.  Make into parameters somewhere.
 
       // Just keep the most promising ones to save capacity.
 
       auto siter = stack.begin();
-      for (size_t i = 0; i < 25000; i++, siter++);
+      for (size_t i = 0; i < pruneSize; i++, siter++);
       stack.erase(siter, stack.end());
     }
 
@@ -402,6 +404,8 @@ template void Covers::explainTemplate<CoverStore, Cover>(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const CoverStore& candidates,
+  const size_t pruneTrigger,
+  const size_t pruneSize,
   CoverStack<Cover>& stack,
   CoverTableau& solution);
 
@@ -410,6 +414,8 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   const unsigned char tmin,
   const unsigned numStrategyTops,
   const RowStore& candidates,
+  const size_t pruneTrigger,
+  const size_t pruneSize,
   CoverStack<CoverRow>& stack,
   CoverTableau& solution);
 
@@ -462,7 +468,8 @@ else
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, stack, solution);
+    tricks, tmin, numStrategyTops, coverStore, 
+    50000, 25000, stack, solution);
 
   tableauCache.store(tricks, solution);
 }
@@ -484,8 +491,8 @@ void Covers::explainManually(
   }
 
   CoverStack<CoverRow> stack;
-  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, 
-    rowStore, stack, solution);
+  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, rowStore, 
+    50000, 25000, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

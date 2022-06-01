@@ -218,7 +218,6 @@ void Combinations::runSingle(
       ranks.resize(c);
       ranks.setRanks(dep, centry);
 
-cout << "Setting maxRank to " << +ranks.maxRank() << endl;
       comb.setMaxRank(ranks.maxRank());
 
       comb.strategize(centry, * this, distributions,

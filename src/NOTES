@@ -1,5 +1,14 @@
 Symmetrizing void plays:
 11/133334 actually grows as a result.
+Plays::log: If symmOnlyFlag is set when calling Ranks::setPlays,
+let plays ignore that play if lho > rho for example.
+== is not a problem.
+Some of the Nodes strategize methods get the symmOnlyFlag.
+In Strategy::adapt, we somehow have to adapt both normally and
+mirrored according to the total number of distributions in the
+combination.  Then we mix these two together (say, by *=).
+Node::getNextStrategies actually does know dist, hence size().
+Pass this down to Strategy::adapt.
 
 The way to do it is not the current one.  Instead, treat a a play of
 e.g. 6 9 the same as 9 6.  Only pass through 6 9 (6 < 9).  If 6 7

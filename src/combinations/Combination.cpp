@@ -158,6 +158,7 @@ CombinationType Combination::strategize(
   timers.stop(TIMER_STRATEGIZE);
 
   // TODO TMP
+  /*
   if (symmOnlyFlag)
   {
     auto s0 = strats.size();
@@ -165,6 +166,7 @@ CombinationType Combination::strategize(
     if (s0 > strats.size())
       cout << "Shrunk from " << s0 << " to " << strats.size() << "\n";
   }
+  */
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
