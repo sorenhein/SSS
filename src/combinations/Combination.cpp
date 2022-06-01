@@ -103,6 +103,7 @@ CombinationType Combination::strategize(
   const Distributions& distributions,
   Ranks& ranks,
   Plays& plays,
+  const bool symmOnlyFlag,
   bool debugFlag)
 {
   if (control.outputHolding())
@@ -150,9 +151,20 @@ CombinationType Combination::strategize(
   plays.clearStrategies();
 
   timers.start(TIMER_STRATEGIZE);
-  strats = plays.strategize(dist, 
+  strats = plays.strategize(
+    dist, 
+    symmOnlyFlag,
     (debugFlag ? static_cast<DebugPlay>(0x3f) : DEBUGPLAY_NONE));
   timers.stop(TIMER_STRATEGIZE);
+
+  // TODO TMP
+  if (symmOnlyFlag)
+  {
+    auto s0 = strats.size();
+    strats.symmetrize();
+    if (s0 > strats.size())
+      cout << "Shrunk from " << s0 << " to " << strats.size() << "\n";
+  }
 
   // Make a note of the type of strategy? (COMB_TRIVIAL etc.)
 
@@ -217,7 +229,7 @@ if (debugFlag)
   // plays.strategizeVoid(distPtr, strats, debugFlag);
 
   // strats = plays.strategizeVoid(distPtr, static_cast<DebugPlay>(0x3f));
-  strats = plays.strategize(dist, static_cast<DebugPlay>(0x3f));
+  strats = plays.strategize(dist, false, static_cast<DebugPlay>(0x3f));
 
 // cout << "C " << centry.canonicalHolding3 << endl;
 

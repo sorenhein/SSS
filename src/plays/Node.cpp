@@ -76,6 +76,7 @@ void Node::linkRhoToLead()
 
 void Node::getNextStrategies(
   const Distribution& dist,
+  const bool symmOnlyFlag,
   const bool debugFlag)
 {
   // This method should only be used for an RHO node.
@@ -95,7 +96,8 @@ void Node::getNextStrategies(
   }
 
   // Renumber and rotate the strategy.
-  strats.adapt(* playPtr, survivors);
+  strats.adapt(* playPtr, survivors, symmOnlyFlag);
+
   if (debugFlag)
     cout << 
       strats.str("Adapted strategy of next trick", 

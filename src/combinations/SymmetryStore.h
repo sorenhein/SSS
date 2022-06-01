@@ -37,8 +37,8 @@ class SymmetryStore
     void writeFile(const string& filename) const;
 
     bool symmetrize(
-      const unsigned cards, 
-      const unsigned holding3) const;
+      const unsigned char cards, 
+      const size_t holding3) const;
 };
 
 #endif

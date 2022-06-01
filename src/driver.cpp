@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "combinations/SymmetryStore.h"
+
 #include "combinations/Combinations.h"
 
 #include "distributions/Distributions.h"
@@ -26,6 +28,7 @@ Convert convert;
 ResConvert resConvert;
 TrickConvert trickConvert;
 Combinations combinations;
+SymmetryStore symmetryStore;
 Distributions distributions;
 TermCompare termCompare;
 
@@ -47,6 +50,8 @@ int main(int argc, char * argv[])
 
   distributions.resize(control.cards());
 
+  symmetryStore.resize(control.cards());
+  symmetryStore.setManual(); // TODO Later perhaps readFile instead
 
 
   if (control.loop())

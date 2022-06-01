@@ -60,6 +60,7 @@ class Node
 
     void getNextStrategies(
       const Distribution& dist,
+      const bool symmOnlyFlag,
       const bool debugFlag);
 
     void propagateRanges();

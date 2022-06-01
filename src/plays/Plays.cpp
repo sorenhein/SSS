@@ -112,12 +112,13 @@ void Plays::addHoldings(vector<set<unsigned>>& holdings) const
 
 void Plays::getNextStrategies(
   const Distribution& dist,
+  const bool symmOnlyFlag,
   const DebugPlay debugFlag)
 {
   // For RHO nodes we have to populate the strategies first.
   const bool debug = ((debugFlag & DEBUGPLAY_RHO_DETAILS) != 0);
   for (auto& nodeRho: nodesRho)
-    nodeRho.getNextStrategies(dist, debug);
+    nodeRho.getNextStrategies(dist, symmOnlyFlag, debug);
     // nodeRho.getNextStrategies(* distPtr, debug);
 }
 
@@ -144,6 +145,7 @@ void Plays::strategizeSimpleFront(
 
 const Strategies& Plays::strategize(
   const Distribution& distribution,
+  const bool symmOnlyFlag,
   const DebugPlay debugFlag)
 {
   // The plays are propagated backwards up to a strategy for the
@@ -171,7 +173,7 @@ const Strategies& Plays::strategize(
 
   // This is a quite expensive method, as it also adapts plays
   // to the current trick.
-  Plays::getNextStrategies(distribution, debugFlag);
+  Plays::getNextStrategies(distribution, symmOnlyFlag, debugFlag);
 
   if (! control.runAdvancedNodes() ||
       nodesRho.used() <= 20 ||

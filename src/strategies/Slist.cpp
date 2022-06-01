@@ -100,7 +100,8 @@ void Slist::setTrivial(
 
 void Slist::adapt(
   const Play& play,
-  const SurvivorList& survivors)
+  const SurvivorList& survivors,
+  const bool symmOnlyFlag)
 {
   // Adapt the Slist of a following play to this trick by
   // rotating, mapping etc.  This is a somewhat expensive method.
@@ -128,7 +129,7 @@ void Slist::adapt(
   else
   {
     for (auto& strat: strategies)
-      strat.adapt(play, survivors);
+      strat.adapt(play, survivors, symmOnlyFlag);
 
     if (strategies.size() > 1)
       Slist::consolidate(&Strategy::lessEqualCompleteBasic);

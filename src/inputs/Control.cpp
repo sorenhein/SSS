@@ -111,14 +111,15 @@ void Control::configure()
       "Control file with further settings." },
     { "-p", "--print", CORRESPONDENCE_STRING, CTRL_PRINT_TEXT, "",
       "Text to print (e.g. Roudinesco page and number)." },
-    { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0x3f",
-      "Run control (default: 0x3f).  Bits:\n"
+    { "-r", "--run", CORRESPONDENCE_BIT_VECTOR, CTRL_RUN, "0x7f",
+      "Run control (default: 0x7f).  Bits:\n"
       "0x001: All N-S plays, including within ranks\n"
       "0x002: Advanced strategizing including ranges and voids\n"
       "0x004: Optimizations when calculating strategies\n"
       "0x008: Consider ranks when comparing strategies\n"
       "0x010: Describe winning tricks vectors verbally\n"
-      "0x020: Describe winning tricks vectors verbally (manual)"
+      "0x020: Describe winning tricks vectors verbally (manual)\n"
+      "0x040: Symmetrize complex strategies with voids"
       },
     { "-o", "--output", CORRESPONDENCE_BIT_VECTOR, CTRL_OUTPUT, "0x1",
       "Output verbosity (default: 0x1).  Bits:\n"
@@ -473,6 +474,11 @@ bool Control::runVerbalTricks() const
 bool Control::runVerbalTricksManually() const
 {
   return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_VERBAL_TRICKS_MANUAL] != 0);
+}
+
+bool Control::symmetrizeVoids() const
+{
+  return (entry.getIntVector(CTRL_RUN)[CTRL_RUN_SYMMETRIZE_VOIDS] != 0);
 }
 
 unsigned char Control::verbalDepth() const

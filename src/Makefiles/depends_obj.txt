@@ -1,7 +1,8 @@
-driver.obj: combinations/Combinations.h combinations/CombMemory.h
-driver.obj: combinations/CombEntry.h combinations/CombReference.h
-driver.obj: utils/CombinationType.h combinations/Combination.h
-driver.obj: strategies/Strategies.h strategies/Slist.h strategies/Strategy.h
+driver.obj: combinations/SymmetryStore.h combinations/Combinations.h
+driver.obj: combinations/CombMemory.h combinations/CombEntry.h
+driver.obj: combinations/CombReference.h utils/CombinationType.h
+driver.obj: combinations/Combination.h strategies/Strategies.h
+driver.obj: strategies/Slist.h strategies/Strategy.h
 driver.obj: strategies/result/Result.h strategies/result/Winners.h
 driver.obj: strategies/result/Winner.h utils/table.h utils/Card.h
 driver.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
@@ -114,6 +115,7 @@ combinations/Combinations.obj: combinations/DepthStats.h
 combinations/Combinations.obj: distributions/covers/product/ProductStats.h
 combinations/Combinations.obj: combinations/CombFiles.h
 combinations/Combinations.obj: combinations/CombTest.h
+combinations/Combinations.obj: combinations/SymmetryStore.h
 combinations/Combinations.obj: distributions/Distributions.h
 combinations/Combinations.obj: distributions/DistMemory.h
 combinations/Combinations.obj: distributions/Distribution.h
@@ -232,6 +234,7 @@ combinations/CombTest.obj: combinations/CombMemory.h combinations/CombEntry.h
 combinations/CombTest.obj: combinations/CombReference.h
 combinations/CombTest.obj: combinations/CombTest.h const.h
 combinations/DepthStats.obj: combinations/DepthStats.h
+combinations/SymmetryStore.obj: combinations/SymmetryStore.h
 distributions/Distributions.obj: distributions/Distributions.h
 distributions/Distributions.obj: distributions/DistMemory.h
 distributions/Distributions.obj: distributions/Distribution.h
@@ -354,6 +357,7 @@ distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
+distributions/covers/Covers.obj: utils/Timer.h
 distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/CoverStore.obj: distributions/covers/CoverStore.h
 distributions/covers/CoverStore.obj: distributions/covers/Cover.h

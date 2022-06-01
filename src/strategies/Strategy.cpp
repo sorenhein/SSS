@@ -910,9 +910,10 @@ void Strategy::adaptResults(
 }
 
 
-void Strategy::adapt(
+bool Strategy::adapt(
   const Play& play,
-  const SurvivorList& survivors)
+  const SurvivorList& survivors,
+  [[maybe_unused]] const bool symmOnlyFlag)
 {
   // Our Strategy results may stem from a rank-reduced child combination.
   // The survivors may have more entries because they come from the
@@ -921,6 +922,10 @@ void Strategy::adapt(
   // parent combination.  So it needs to have the full number of
   // entries, and the results list needs to grow.
   // Overall this is not such an expensive method.
+
+  // TODO This is not the way to do it
+  // if (symmOnlyFlag && ! Strategy::symmetric())
+    // return false;
 
   if (play.rotateFlag)
   {
@@ -934,6 +939,7 @@ void Strategy::adapt(
   Strategy::adaptResults(play, survivors);
 
   studied.study(results);
+  return true;
 }
 
 

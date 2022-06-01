@@ -81,7 +81,8 @@ enum ControlRun
   CTRL_RUN_STRATEGY_OPT = 2,
   CTRL_RUN_RANK_COMPARE = 3,
   CTRL_RUN_VERBAL_TRICKS = 4,
-  CTRL_RUN_VERBAL_TRICKS_MANUAL = 5
+  CTRL_RUN_VERBAL_TRICKS_MANUAL = 5,
+  CTRL_RUN_SYMMETRIZE_VOIDS = 6
 };
 
 enum ControlOutput
@@ -169,6 +170,7 @@ class Control
     bool runRankComparisons() const;
     bool runVerbalTricks() const;
     bool runVerbalTricksManually() const;
+    bool symmetrizeVoids() const;
     unsigned char verbalDepth() const;
 
     bool outputHolding() const; 

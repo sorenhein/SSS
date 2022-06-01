@@ -16,6 +16,7 @@
 #include "CombFiles.h"
 #include "CombEntry.h"
 #include "CombTest.h"
+#include "SymmetryStore.h"
 
 #include "../distributions/Distributions.h"
 
@@ -28,6 +29,7 @@
 #include "../inputs/Control.h"
 #include "../utils/Timers.h"
 
+extern SymmetryStore symmetryStore;
 extern Control control;
 extern Timers timers;
 
@@ -220,7 +222,9 @@ cout << "Setting maxRank to " << +ranks.maxRank() << endl;
       comb.setMaxRank(ranks.maxRank());
 
       comb.strategize(centry, * this, distributions,
-        ranks, plays, (c == cards && holding == dep));
+        ranks, plays, 
+        control.symmetrizeVoids() && symmetryStore.symmetrize(c, dep),
+        (c == cards && holding == dep));
     }
   }
 
@@ -306,6 +310,9 @@ void Combinations::runUniques(
     ranks.setRanks(holding, centry);
     timers.stop(TIMER_RANKS);
 
+    const bool symmOnlyFlag = (control.symmetrizeVoids() &&
+      symmetryStore.symmetrize(cards, holding));
+
     const unsigned referenceHolding3 = centry.getHolding3();
     if (holding == referenceHolding3)
     {
@@ -317,7 +324,8 @@ void Combinations::runUniques(
       // not to let Combination make its own plays.
 
       CombinationType ctype =
-        comb.strategize(centry, * this, distributions, ranks, plays);
+        comb.strategize(centry, * this, distributions, ranks, plays,
+          symmOnlyFlag);
 
       if (ctype == COMB_TRIVIAL)
       {
@@ -571,7 +579,9 @@ void Combinations::runUniqueThread(
 
       comb.setMaxRank(ranks.maxRank());
 
-      comb.strategize(centry, * this, * distributions, ranks, plays);
+      comb.strategize(centry, * this, * distributions, ranks, plays,
+        control.symmetrizeVoids() && 
+          symmetryStore.symmetrize(cards, holding));
 
       if (Combinations::getMinimals(comb.strategies(), ranks, centry))
         centry.setMinimal();

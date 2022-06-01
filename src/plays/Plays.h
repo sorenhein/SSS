@@ -47,6 +47,7 @@ class Plays
 
     void getNextStrategies(
       const Distribution& dist,
+      const bool symmOnlyFlag,
       const DebugPlay debugFlag);
 
     void strategizeSimpleFront(
@@ -79,6 +80,7 @@ class Plays
 
     const Strategies& strategize(
       const Distribution& distribution,
+      const bool symmOnlyFlag,
       const DebugPlay debugFlag = DEBUGPLAY_NONE);
 
     string str() const;

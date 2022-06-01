@@ -1,3 +1,20 @@
+Symmetrizing void plays:
+11/133334 actually grows as a result.
+
+The way to do it is not the current one.  Instead, treat a a play of
+e.g. 6 9 the same as 9 6.  Only pass through 6 9 (6 < 9).  If 6 7
+(same rank), no need to symmetrize,as symmetric already.  Then
+take the result vector, once adapted up, and somehow multiply it
+with its own mirror image.
+An alternative is to wait until the entire combination is done,
+and then symmetrize the result (throwing out asymmetric ones).
+
+When covering symmetric strategies:
+Perhaps mark all covers that are symmetric, including e.g. 1-4 out
+of 5 cards even though it is not so far marked as explicitly
+symmetric (I think only the symmetrized ones are).  That should
+speed up a lot.
+
 * Delete recursion, branching
 * Unify the two methods again
   - Greedy: trigger 7, limit 7
@@ -5,19 +22,10 @@
   - Otherwise actually the same in principle?
 * Document 7 and 50k
 
-* Make a SymmetryStore in combinations.
-  - Not hooked up to anything, not tested
-  - Contains manuals for all combinations > 20 strategies, 10-11 cards?
-  - Test perl large2.pl a to make sure
-  - When hooking up, output and indicator that it was symmetrized
-
-
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
 
 #define MIN_COMPLEXITY 2 to make it explicit.
-
-* Could look for the missing single cover actively, once it is "small".
 
 * Can switch on better pruning in CoverStack (but does hardly
   anything?)

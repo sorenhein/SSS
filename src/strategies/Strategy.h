@@ -215,9 +215,10 @@ class Strategy
 
     // ******************** Adapt *******************
 
-    void adapt(
+    bool adapt(
       const Play& play,
-      const SurvivorList& survivors);
+      const SurvivorList& survivors,
+      const bool symmOnlyFlag);
 
     void setAndAdaptVoid(
       const Play& play,

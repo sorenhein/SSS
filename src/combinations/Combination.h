@@ -60,6 +60,7 @@ class Combination
       const Distributions& distributions,
       Ranks& ranks,
       Plays& plays,
+      bool symmOnlyFlag,
       bool debugFlag = false);
 
     const Strategies& strategizeVoid(

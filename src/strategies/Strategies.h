@@ -61,7 +61,8 @@ class Strategies
 
     void adapt(
       const Play& play,
-      const SurvivorList& survivors);
+      const SurvivorList& survivors,
+      const bool symmOnlyFlag);
 
     void forgetDetails();
 

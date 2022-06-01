@@ -87,41 +87,41 @@ void SymmetryStore::setManual()
       159104, // QJ975  / void:   63
       162020, // QT975  / void:   26
 
-       44414, // AQT7   / void:  186
-       45386, // AQ97   / void:   49
-       44306, // AQT8   / void:   48
+       44414, // AQT7   / void:  186 ->   30
+       45386, // AQ97   / void:   49 ->   13
+       44306, // AQT8   / void:   48 ->   16
 
-       53162, // AJT7   / void:   25
+       53162, // AJT7   / void:   25 ->   13
 
-      123146, // KQT7   / void:   37
+      123146, // KQT7   / void:   37 ->   31
 
-      131894, // KJT7   / void:   26
-      132866, // KJ97   / void: 1832
-      132902, // KJ96   / void: 9619
-      132914, // KJ95   / void:   84
-      132918, // KJ94   / void:   48
-      133190, // KJ87   / void:  289
-      133226, // KJ86   / void: 1957
-      133238, // KJ85   / void:  188
-      133242, // KJ84   / void:  188
-      133334, // KJ76   / void:   24
+      131894, // KJT7   / void:   26 ->   18
+      132866, // KJ97   / void: 1832 ->  160
+      132902, // KJ96   / void: 9619 -> 1064
+      132914, // KJ95   / void:   84 ->   60
+      132918, // KJ94   / void:   48 ->   24
+      133190, // KJ87   / void:  289 ->   48
+      133226, // KJ86   / void: 1957 ->  177
+      133238, // KJ85   / void:  188 ->   34
+      133242, // KJ84   / void:  188 ->   34
+      133334, // KJ76   / void:   24 ->   30 ??
 
-      135782, // KT97   / void:  248
-      135818, // KT96   / void:  700
-      135830, // KT95   / void:   25
-      136106, // KT87   / void:   67
-      136142, // KT86   / void:   89
-      136154, // KT85   / void:   49
-      136158, // KT84   / void:   49
+      135782, // KT97   / void:  248 ->   44
+      135818, // KT96   / void:  700 ->  311
+      135830, // KT95   / void:   25 ->   30 ??
+      136106, // KT87   / void:   67 ->   35
+      136142, // KT86   / void:   89 ->   48
+      136154, // KT85   / void:   49 ->   17
+      136158, // KT84   / void:   49 ->   17
 
-      159110, // QJ97   / void:  187
+      159110, // QJ97   / void:  187 ->   41
       159416, // QJ96   / void:  513
-      159434, // QJ87   / void:   58
-      159470, // QJ86   / void:   72
-      159482, // QJ85   / void:   25
-      159486, // QJ84   / void:   25
-      162026, // QT97   / void:   61
-      162062, // QT96   / void:   99
+      159434, // QJ87   / void:   58 ->   22
+      159470, // QJ86   / void:   72 ->   38
+      159482, // QJ85   / void:   25 ->   15
+      159486, // QJ84   / void:   25 ->   15
+      162026, // QT97   / void:   61 ->  109 ??
+      162062, // QT96   / void:   99 ->   74
     })
   {
     store[11].insert(h);
@@ -175,8 +175,9 @@ void SymmetryStore::writeFile(const string& filename) const
 
 
 bool SymmetryStore::symmetrize(
-  const unsigned card,
-  const unsigned holding3) const
+  const unsigned char cards,
+  const size_t holding3) const
 {
-  return (store[card].find(holding3) != store[card].end());
+  return (store[cards].find(static_cast<unsigned>(holding3)) != 
+    store[cards].end());
 }
