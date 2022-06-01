@@ -24,20 +24,11 @@ of 5 cards even though it is not so far marked as explicitly
 symmetric (I think only the symmetrized ones are).  That should
 speed up a lot.
 
-* Delete recursion, branching
-* Unify the two methods again
-  - Greedy: trigger 7, limit 7
-  - General: trigger 50k, limit 25k
-  - Otherwise actually the same in principle?
-* Document 7 and 50k
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
 
 #define MIN_COMPLEXITY 2 to make it explicit.
-
-* Can switch on better pruning in CoverStack (but does hardly
-  anything?)
 
 * Store something pre-calculated in files, such as
   - Complexity

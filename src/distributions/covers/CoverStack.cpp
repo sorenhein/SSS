@@ -73,16 +73,7 @@ size_t CoverStack<T>::prune(const CoverTableau& solution)
   se.tableau = solution;
   auto iter =  multiset<StackEntry<T>>::lower_bound(se);
 
-  // Go back, also taking into account min complexity of 2.
-  // This assumes that Term cannot generate lower complexities.
-  // TODO If we turn this on, check whether the +2 is dealt with
-  // as there was a bug in Complexity.
-  // while (iter != this->begin() &&
-      // solution.compareAgainstPartial(iter->tableau))
-    // iter--;
-
   const size_t num = distance(iter, this->end());
-
   multiset<StackEntry<T>>::erase(iter, this->end());
 
   return num;

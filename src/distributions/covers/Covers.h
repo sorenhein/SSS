@@ -57,15 +57,6 @@ class Covers
       ProfilePair& running);
 
     template<class C, class T>
-    void explainStack(
-      const unsigned numStrategyTops,
-      const C& candidates,
-      const bool recurseFlag,
-      const bool greedyFlag,
-      CoverStack<T>& stack,
-      CoverTableau& solution);
-
-    template<class C, class T>
     void explainTemplate(
       const Tricks& tricks,
       const unsigned char tmin,
