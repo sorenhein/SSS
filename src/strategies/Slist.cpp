@@ -101,6 +101,7 @@ void Slist::setTrivial(
 void Slist::adapt(
   const Play& play,
   const SurvivorList& survivors,
+  const size_t distSize,
   const bool symmOnlyFlag)
 {
   // Adapt the Slist of a following play to this trick by
@@ -124,12 +125,14 @@ void Slist::adapt(
       resultEastVoid,
       westVoidFlag, 
       eastVoidFlag,
-      survivors.front().fullNo);
+      survivors.front().fullNo,
+      distSize,
+      symmOnlyFlag);
   }
   else
   {
     for (auto& strat: strategies)
-      strat.adapt(play, survivors, symmOnlyFlag);
+      strat.adapt(play, survivors, distSize, symmOnlyFlag);
 
     if (strategies.size() > 1)
       Slist::consolidate(&Strategy::lessEqualCompleteBasic);
@@ -246,7 +249,11 @@ void Slist::symmetrize()
   auto iter = strategies.begin();
   while (iter != strategies.end())
   {
-    if (iter->symmetric())
+    // TODO For now we only compare tricks.  Longer-term the ranks 
+    // should match as well in fully symmetric strategies such as
+    // 10/45260.  Here we would currently only get 6 and not 8
+    // symmetric strategies if we insist on rank equality.
+    if (iter->symmetricPrimary())
       iter++;
     else
       iter = strategies.erase(iter);

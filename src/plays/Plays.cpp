@@ -183,7 +183,8 @@ const Strategies& Plays::strategize(
     Plays::strategizeSimpleBack(distribution, debugFlag);
     Plays::strategizeSimpleFront(distribution, debugFlag);
   }
-  else if (nodesRho.used() == nodesLho.used())
+  // else if (nodesRho.used() == nodesLho.used())
+  else if (nodesPard.used() == nodesLho.used())
   {
     // When partner is void, both defenders can coordinate and play 
     // their cards without intrusion from dummy.  So there is really 

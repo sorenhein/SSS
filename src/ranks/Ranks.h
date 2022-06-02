@@ -103,20 +103,23 @@ class Ranks
       Declarer& partner,
       const unsigned char lead,
       Play& play,
-      Plays& plays);
+      Plays& plays,
+      const bool symmOnlyFlag);
 
     void setPlaysLeadLHONotVoid(
       Declarer& leader,
       Declarer& partner,
       const unsigned char lead,
       Play& play,
-      Plays& plays);
+      Plays& plays,
+      const bool symmOnlyFlag);
 
     void setPlaysSide(
       Declarer& leader,
       Declarer& partner,
       Play& play,
-      Plays& plays);
+      Plays& plays,
+      const bool symmOnlyFlag);
 
     void addMinimal(
       const unsigned char absNumber,
@@ -138,7 +141,8 @@ class Ranks
 
     CombinationType setPlays(
       Plays& plays,
-      Result& trivial);
+      Result& trivial,
+      const bool symmOnlyFlag);
 
     bool partnerVoid() const;
 

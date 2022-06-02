@@ -92,6 +92,49 @@ bool Strategy::symmetric() const
 }
 
 
+bool Strategy::symmetricPrimary() const
+{
+  auto iter1 = results.begin();
+  auto iter2 = results.rbegin();
+  while (iter1->getDist() < iter2->getDist())
+  {
+    if (iter1->comparePrimaryInDetail(* iter2) != WIN_EQUAL_OVERALL)
+      return false;
+    iter1++;
+    iter2++;
+  }
+  return true;
+}
+
+
+void Strategy::symmetrize(const size_t distSize)
+{
+  // This is not super-efficient, but compared to its rarity
+  // and the time it saves, it's probably still OK.
+  // The corresponding play must not be symmetric.
+  
+  // Reverse the strategy.
+  Strategy stmp;
+  auto iter = results.rbegin();
+  while (iter != results.rend())
+  {
+    stmp.results.push_back(* iter);
+    stmp.results.back().setDist(
+      static_cast<unsigned char>(distSize - 1 - iter->getDist()));
+    iter++;
+  }
+
+  // Merge the two.
+  const size_t s0 = results.size();
+  * this *= stmp;
+
+  // Easier to regenerate than to keep track.
+  weightInt = 0;
+  for (auto& result: results)
+    weightInt += result.getTricks();
+}
+
+
 unsigned Strategy::weight() const
 {
   return weightInt;
@@ -913,6 +956,7 @@ void Strategy::adaptResults(
 bool Strategy::adapt(
   const Play& play,
   const SurvivorList& survivors,
+  [[maybe_unused]] const size_t distSize,
   [[maybe_unused]] const bool symmOnlyFlag)
 {
   // Our Strategy results may stem from a rank-reduced child combination.
@@ -938,7 +982,12 @@ bool Strategy::adapt(
 
   Strategy::adaptResults(play, survivors);
 
-  studied.study(results);
+  if (symmOnlyFlag)
+    Strategy::symmetrize(distSize);
+  else
+    Strategy::study();
+    // studied.study(results);
+
   return true;
 }
 
@@ -949,7 +998,9 @@ void Strategy::setAndAdaptVoid(
   const Result& resultEastVoid,
   const bool westVoidFlag,
   const bool eastVoidFlag,
-  const unsigned char fullDistNo)
+  const unsigned char fullDistNo,
+  [[maybe_unused]] const size_t distSize,
+  [[maybe_unused]] const bool symmOnlyFlag)
 {
   // The void flags are from the perspective of the current trick.
   assert(westVoidFlag != eastVoidFlag);
@@ -959,9 +1010,6 @@ void Strategy::setAndAdaptVoid(
   // The result we will modify.
   const Result& resultBase = (westVoidFlag == play.rotateFlag ?
     resultEastVoid : resultWestVoid);
-
-  // The distribution number we will use.
-  // const unsigned char dno = (westVoidFlag ? 0 : dmax);
 
   results.emplace_back(resultBase);
 
@@ -973,7 +1021,12 @@ void Strategy::setAndAdaptVoid(
   result.update(play, fullDistNo);
   weightInt = result.getTricks();
 
-  Strategy::study();
+  // Strategy::study();
+
+  if (symmOnlyFlag)
+    Strategy::symmetrize(distSize);
+  else
+    Strategy::study();
 }
 
 

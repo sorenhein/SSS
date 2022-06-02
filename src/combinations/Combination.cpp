@@ -103,7 +103,7 @@ CombinationType Combination::strategize(
   const Distributions& distributions,
   Ranks& ranks,
   Plays& plays,
-  const bool symmOnlyFlag,
+  [[maybe_unused]] const bool symmOnlyFlag,
   bool debugFlag)
 {
   if (control.outputHolding())
@@ -129,7 +129,8 @@ CombinationType Combination::strategize(
     cout << "Distributions\n" << dist.str() << "\n";
   }
 
-  const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+  const CombinationType ctype = 
+    ranks.setPlays(plays, trivialEntry, symmOnlyFlag);
 
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)
@@ -153,6 +154,7 @@ CombinationType Combination::strategize(
   timers.start(TIMER_STRATEGIZE);
   strats = plays.strategize(
     dist, 
+    // false,
     symmOnlyFlag,
     (debugFlag ? static_cast<DebugPlay>(0x3f) : DEBUGPLAY_NONE));
   timers.stop(TIMER_STRATEGIZE);
@@ -165,6 +167,8 @@ CombinationType Combination::strategize(
     strats.symmetrize();
     if (s0 > strats.size())
       cout << "Shrunk from " << s0 << " to " << strats.size() << "\n";
+    cout << strats.str("Result", 
+      control.runRankComparisons()) << "\n";
   }
   */
 
@@ -201,7 +205,8 @@ if (centry.getHolding3() == 208)
 {
   cout << "HERE0\n";
 }
-  const CombinationType ctype = ranks.setPlays(plays, trivialEntry);
+  const CombinationType ctype = ranks.setPlays(plays, trivialEntry,
+    false);
   
   // If it's a trivial situation, make the strategies.
   if (ctype == COMB_TRIVIAL)

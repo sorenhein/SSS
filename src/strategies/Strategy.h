@@ -132,6 +132,10 @@ class Strategy
 
     bool symmetric() const;
 
+    bool symmetricPrimary() const;
+
+    void symmetrize(const size_t distSize);
+
     unsigned weight() const;
 
     void push_back(const Result& result);
@@ -218,6 +222,7 @@ class Strategy
     bool adapt(
       const Play& play,
       const SurvivorList& survivors,
+      const size_t distSize,
       const bool symmOnlyFlag);
 
     void setAndAdaptVoid(
@@ -226,7 +231,9 @@ class Strategy
       const Result& resultEastVoid,
       const bool westVoidFlag,
       const bool eastVoidFlag,
-      const unsigned char fullDistNo);
+      const unsigned char fullDistNo,
+      const size_t distSize,
+      const bool symmOnlyFlag);
 
 
     // ******************* Winners ******************

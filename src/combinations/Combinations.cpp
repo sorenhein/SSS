@@ -159,7 +159,7 @@ void Combinations::getDependencies(
 
         plays.clear();
         Result trivialEntry;
-        ranks.setPlays(plays, trivialEntry);
+        ranks.setPlays(plays, trivialEntry, false);
 
         plays.addHoldings(scratch2);
         dependenciesTrinary[c].insert(dep);

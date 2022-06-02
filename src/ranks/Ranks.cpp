@@ -592,8 +592,14 @@ void Ranks::setPlaysLeadLHOVoid(
   Declarer& partner,
   const unsigned char lead,
   Play& play,
-  Plays& plays)
+  Plays& plays,
+  const bool symmOnlyFlag)
 {
+  // For the rare but complex void plays, only consider each play
+  // once, namely lho > rho.  The plays get symmetrized separately.
+  if (symmOnlyFlag)
+    return;
+
   opps.playRank(0);
   play.lhoPtr = opps.voidPtr();
 
@@ -640,7 +646,8 @@ void Ranks::setPlaysLeadLHONotVoid(
   Declarer& partner,
   const unsigned char lead,
   Play& play,
-  Plays& plays)
+  Plays& plays,
+  const bool symmOnlyFlag)
 {
   for (auto& lhoPtr: opps.getCards())
   {
@@ -680,6 +687,11 @@ void Ranks::setPlaysLeadLHONotVoid(
         if (! opps.hasRank(rho))
           continue;
           
+        // For the rare but complex void plays, only consider each play
+        // once.  The plays get symmetrized separately.
+        if (symmOnlyFlag && rho > lho)
+          continue;
+
         opps.playRank(rho);
 
         // Register the new play.
@@ -700,7 +712,8 @@ void Ranks::setPlaysSide(
   Declarer& leader,
   Declarer& partner,
   Play& play,
-  Plays& plays)
+  Plays& plays, 
+  const bool symmOnlyFlag)
 {
   if (! Ranks::sideOK(leader, partner, play))
     return;
@@ -717,8 +730,10 @@ void Ranks::setPlaysSide(
     play.leadCollapse = leader.playRank(lead, partner, maxGlobalRank);
 
     // For optimization we treat the case separately where LHO is void.
-    Ranks::setPlaysLeadLHOVoid(leader, partner, lead, play, plays);
-    Ranks::setPlaysLeadLHONotVoid(leader, partner, lead, play, plays);
+    Ranks::setPlaysLeadLHOVoid(leader, partner, lead, play, plays,
+      symmOnlyFlag);
+    Ranks::setPlaysLeadLHONotVoid(leader, partner, lead, play, plays,
+      symmOnlyFlag);
 
     leader.restoreRank(lead);
   }
@@ -727,7 +742,8 @@ void Ranks::setPlaysSide(
 
 CombinationType Ranks::setPlays(
   Plays& plays,
-  Result& trivial)
+  Result& trivial,
+  const bool symmOnlyFlag)
 {
   // If COMB_TRIVIAL, only terminalValue is set.
   // Otherwise, plays are set.
@@ -739,10 +755,10 @@ CombinationType Ranks::setPlays(
 
   // This will remain unchanged for all plays from this side.
   play.side = SIDE_NORTH;
-  Ranks::setPlaysSide(north, south, play, plays);
+  Ranks::setPlaysSide(north, south, play, plays, symmOnlyFlag);
 
   play.side = SIDE_SOUTH;
-  Ranks::setPlaysSide(south, north, play, plays);
+  Ranks::setPlaysSide(south, north, play, plays, symmOnlyFlag);
   return COMB_SIZE;
 }
 

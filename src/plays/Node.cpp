@@ -96,7 +96,7 @@ void Node::getNextStrategies(
   }
 
   // Renumber and rotate the strategy.
-  strats.adapt(* playPtr, survivors, symmOnlyFlag);
+  strats.adapt(* playPtr, survivors, dist.size(), symmOnlyFlag);
 
   if (debugFlag)
     cout << 

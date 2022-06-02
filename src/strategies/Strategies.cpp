@@ -83,11 +83,12 @@ void Strategies::setTrivial(
 void Strategies::adapt(
   const Play& play,
   const SurvivorList& survivors,
+  const size_t distSize,
   const bool symmOnlyFlag)
 {
 timersStrat[0].start();
 
-  slist.adapt(play, survivors, symmOnlyFlag);
+  slist.adapt(play, survivors, distSize, symmOnlyFlag);
 
 timersStrat[0].stop();
 }

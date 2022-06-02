@@ -222,8 +222,8 @@ bool CoverTableau::attempt(
         unsigned char mca = coverIter->minComplexityAdder(
           residuals.getWeight() - additions.getWeight());
 
-        // Use the fact that a cover complexity is always at least 2.
-        // TODO Put in the method? Does this trigger?
+        // Use the fact that a cover complexity is always at least 2
+        // (see Term::set).
         if (mca < 2)
           mca = 2;
 
