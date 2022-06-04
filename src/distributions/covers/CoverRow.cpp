@@ -127,6 +127,12 @@ size_t CoverRow::size() const
 }
 
 
+bool CoverRow::symmetric() const
+{
+  return tricks.symmetric();
+}
+
+
 bool CoverRow::operator < (const CoverRow& rows2) const
 {
   const unsigned mcpw1 = (complexity << 20) / weight;

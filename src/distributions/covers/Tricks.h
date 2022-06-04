@@ -42,7 +42,7 @@ class Tricks
 
     unsigned char productValue(
       const FactoredProduct& factoredProduct,
-      const bool symmFlag,
+      const bool symmetrizeFlag,
       const vector<Profile>& distProfiles,
       const size_t extIndex) const;
 
@@ -56,11 +56,12 @@ class Tricks
     void setByResults(
       const list<Result>& results,
       const vector<unsigned char>& cases,
-      unsigned char& tricksMin);
+      unsigned char& tricksMin,
+      bool& symmetricFlag);
 
     bool setByProduct(
       const FactoredProduct& factoredProduct,
-      const bool symmFlag,
+      const bool symmetrizeFlag,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
@@ -80,6 +81,8 @@ class Tricks
     void orSymm(
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
+
+    bool symmetric() const;
 
     Tricks& operator += (const Tricks& tricks2);
 

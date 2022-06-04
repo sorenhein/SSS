@@ -60,6 +60,7 @@ class Covers
     void explainTemplate(
       const Tricks& tricks,
       const unsigned char tmin,
+      const bool symmetricFlag,
       const unsigned numStrategyTops,
       const C& candidates,
       const size_t pruneTrigger,

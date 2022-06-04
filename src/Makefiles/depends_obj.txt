@@ -362,6 +362,8 @@ distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/CoverStore.obj: distributions/covers/CoverStore.h
 distributions/covers/CoverStore.obj: distributions/covers/Cover.h
 distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
+distributions/covers/CoverStore.obj: distributions/covers/product/ProfilePair.h
+distributions/covers/CoverStore.obj: distributions/covers/product/Profile.h
 distributions/covers/RowStore.obj: distributions/covers/RowStore.h
 distributions/covers/RowStore.obj: distributions/covers/CoverRow.h
 distributions/covers/RowStore.obj: distributions/covers/Tricks.h

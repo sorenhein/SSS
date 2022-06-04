@@ -182,6 +182,7 @@ template<class C, class T>
 void Covers::explainTemplate(
   const Tricks& tricks,
   const unsigned char tmin,
+  [[maybe_unused]] const bool symmetricFlag,
   const unsigned numStrategyTops,
   const C& candidates,
   const size_t pruneTrigger,
@@ -218,6 +219,14 @@ void Covers::explainTemplate(
         candIter++;
         continue;
       }
+
+      /* */
+      if (symmetricFlag && ! candIter->symmetric())
+      {
+        candIter++;
+        continue;
+      }
+      /* */
 
       const unsigned char headroom = tableau.headroom(solution);
 
@@ -273,6 +282,7 @@ void Covers::explainTemplate(
 template void Covers::explainTemplate<CoverStore, Cover>(
   const Tricks& tricks,
   const unsigned char tmin,
+  const bool symmetricFlag,
   const unsigned numStrategyTops,
   const CoverStore& candidates,
   const size_t pruneTrigger,
@@ -283,6 +293,7 @@ template void Covers::explainTemplate<CoverStore, Cover>(
 template void Covers::explainTemplate<RowStore, CoverRow>(
   const Tricks& tricks,
   const unsigned char tmin,
+  const bool symmetricFlag,
   const unsigned numStrategyTops,
   const RowStore& candidates,
   const size_t pruneTrigger,
@@ -301,7 +312,8 @@ void Covers::explain(
   // including possibly covers that are OR'ed together in a row.
   Tricks tricks;
   unsigned char tmin;
-  tricks.setByResults(results, cases, tmin);
+  bool symmetricFlag;
+  tricks.setByResults(results, cases, tmin, symmetricFlag);
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
@@ -317,7 +329,7 @@ void Covers::explain(
   // TODO Test again later whether or not this helps on average.
 timersStrat[25].start();
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, 
+    tricks, tmin, symmetricFlag, numStrategyTops, coverStore, 
     7, 7, stack, solution);
 timersStrat[25].stop();
 
@@ -330,7 +342,7 @@ timersStrat[25].stop();
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, numStrategyTops, coverStore, 
+    tricks, tmin, symmetricFlag, numStrategyTops, coverStore, 
     50000, 25000, stack, solution);
 
   tableauCache.store(tricks, solution);
@@ -344,7 +356,8 @@ void Covers::explainManually(
   // This version uses finished rows.
   Tricks tricks;
   unsigned char tmin;
-  tricks.setByResults(results, cases, tmin);
+  bool symmetricFlag;
+  tricks.setByResults(results, cases, tmin, symmetricFlag);
 
   if (tableauRowCache.lookup(tricks, solution))
   {
@@ -353,8 +366,8 @@ void Covers::explainManually(
   }
 
   CoverStack<CoverRow> stack;
-  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin, 1, rowStore, 
-    50000, 25000, stack, solution);
+  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin,
+    symmetricFlag, 1, rowStore, 50000, 25000, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

@@ -38,7 +38,7 @@ void Tricks::resize(const size_t len)
 
   signature.resize(trickConvert.profileSize(len));
 
-  // This is the last element in the forward half.  See table below.
+  // This is the last element in the forward half.
   lastForward = (len-1) / 2;
 }
 
@@ -68,7 +68,8 @@ void Tricks::weigh(const vector<unsigned char>& cases)
 void Tricks::setByResults(
   const list<Result>& results,
   const vector<unsigned char>& cases,
-  unsigned char& tricksMin)
+  unsigned char& tricksMin,
+  bool& symmetricFlag)
 {
   Tricks::resize(results.size());
 
@@ -108,19 +109,21 @@ void Tricks::setByResults(
   }
   trickConvert.finish(counter, accum, position, signature[position]);
 
+  symmetricFlag = Tricks::symmetric();
+
   Tricks::weigh(cases);
 }
 
 
 unsigned char Tricks::productValue(
   const FactoredProduct& factoredProduct,
-  const bool symmFlag,
+  const bool symmetrizeFlag,
   const vector<Profile>& distProfiles,
   const size_t extIndex) const
 {
   // It is slightly wasteful to test symmFlag every time, but it
   // cuts down on the code below.
-  if (symmFlag)
+  if (symmetrizeFlag)
   {
     return (factoredProduct.includes(distProfiles[extIndex]) ||
       factoredProduct.includes(distProfiles[length-1-extIndex]) ? 1 : 0);
@@ -134,7 +137,7 @@ unsigned char Tricks::productValue(
 
 bool Tricks::setByProduct(
   const FactoredProduct& factoredProduct,
-  const bool symmFlag,
+  const bool symmetrizeFlag,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
@@ -152,7 +155,7 @@ bool Tricks::setByProduct(
   // The forward half including the middle element if any.
   for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
   {
-    value = Tricks::productValue(factoredProduct, symmFlag, 
+    value = Tricks::productValue(factoredProduct, symmetrizeFlag, 
       distProfiles, extIndex);
     numDist += value;
 
@@ -164,7 +167,7 @@ bool Tricks::setByProduct(
   // The backward half excluding the middle element.
   for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
   {
-    value = Tricks::productValue(factoredProduct, symmFlag, 
+    value = Tricks::productValue(factoredProduct, symmetrizeFlag, 
       distProfiles, extIndex);
     numDist += value;
 
@@ -292,6 +295,26 @@ void Tricks::orSymm(
   }
 
   Tricks::weigh(cases);
+}
+
+
+bool Tricks::symmetric() const
+{
+  const size_t offset = signature.size() / 2;
+  for (size_t i = 0; i < offset; i++)
+  {
+    if ((length & 1) && i+1 == offset)
+    {
+      // There is a middle element that should not be reproduced
+      // on the high side.
+      const size_t limited = trickConvert.limit(lastForward, signature[i]);
+      if (limited != signature[i + offset])
+        return false;
+    }
+    else if (signature[i] != signature[i + offset])
+      return false;
+  }
+  return true;
 }
 
 

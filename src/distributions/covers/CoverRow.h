@@ -75,6 +75,8 @@ class CoverRow
 
     size_t size() const;
 
+    bool symmetric() const;
+
     bool operator < (const CoverRow& rows2) const;
 
     const Tricks& getTricks() const;

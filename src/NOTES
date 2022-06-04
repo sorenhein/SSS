@@ -8,6 +8,8 @@ This is another decent test of ranks.
 
 When covering symmetric strategies:
 A Cover::symmetric now knows that it is symmetric.
+Looks like we shot the manual strategies above all?
+
 
 For high-depth strategies, maybe search first for ways to get from
 depth 5 to 4? Then solve more exhaustively?
