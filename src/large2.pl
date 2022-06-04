@@ -28,15 +28,15 @@ while (my $line = <$fh>)
     $line = <$fh>; # Bottom
     $line = <$fh>; # South
     $line =~ s/^\s+(\S+)\s+$//;
-    $void = ($1 eq '-' ? 1 : 0);
+    $void = ($1 eq '-' ? 'void' : $1);
     $lno += 6;
 
   }
   elsif ($line =~ /^Dist\s+.*\s(\d+)\s*$/)
   {
-    next unless $void;
+    # next unless $void;
     my $max = $1;
-    print $max+1, ": ", $cards, "/", $holding, ", $north / void\n";
+    print $max+1, ": ", $cards, "/", $holding, ", $north / $void\n";
   }
 }
 

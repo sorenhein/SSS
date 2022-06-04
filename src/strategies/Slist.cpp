@@ -1063,6 +1063,11 @@ cout << "maxRank " << +maxRank << endl;
 cout << "rankLow " << +rankLow << endl;
 cout << "nominal " << nominalDepth << endl;
 cout << "actual  " << actualDepth << endl;
+
+if (strat.symmetricPrimary())
+  cout << "STRATSYMM " << actualDepth << "\n";
+else
+  cout << "STRATGEN " << actualDepth << "\n";
 */
 
     depthStats.increment(nominalDepth, actualDepth);

@@ -4,13 +4,42 @@ at the end) vs. ongoing (symmOnlyFlag).
 
 Why does 8/4922 change when (probably) we change the bug in
 Plays.cpp line 187?  (Should also change line 180.)
-
+This is another decent test of ranks.
 
 When covering symmetric strategies:
 Perhaps mark all covers that are symmetric, including e.g. 1-4 out
 of 5 cards even though it is not so far marked as explicitly
 symmetric (I think only the symmetrized ones are).  That should
 speed up a lot.
+Check that the specific strategy is symmetric.
+
+- CoverStore::add, once tricks and counts are made
+- Or even in Cover::set, when called with false, figure out whether
+  it is actually symmetric
+- Cover::symmetric create method
+- Don't add a symmetric version if already symmetric
+
+For high-depth strategies, maybe search first for ways to get from
+depth 5 to 4? Then solve more exhaustively?
+Or get to symmetric setup?  Or both?  Compare in terms of time?
+Or get from 5 to each of 4, 3, 2 directly.  Try each and choose
+the best.
+
+Getting to symmetric setup:
+Subtract out min(low, symmetric) element across vector.
+The rest is explained separately.
+The symmetric part is added.
+This may not be optimal, but it's not so bad, probably.
+
+Getting to depth-1 setup:
+We somehow have to subtract out the minimum over each equivalence
+range in the depth-1 setup, and the remainder is as above
+(something to be explained separately).
+We can compare with the symmetric-affine solver.
+And with the normal, optimalish solver.
+SymmetryStore can also be used to recognize the ones that
+benefit from one or the other approach.  Although per-strategy
+information gets a bit difficult.
 
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
@@ -21,31 +50,34 @@ or "skeleton" that gets stored afterward?
   - Highest-weight one or few products to use
   - Only covers to consider
 
-Status of covers
-----------------
-2-covers work now, but abysmally slow (~ 80 sec).
-The worst one is 11/159432, QJ874/- missing AKT965, strategy #1,
-261903 maximum stack size, 15.4m comparisons, 662k steps.
-
-3-covers: 11/159428 > 6GB. QJ875 / - missing AKT964.
-11/159108: Would probably fail eventually, 11 GB.
-
-infty-covers: Didn't wait for it to bomb, but > 11 GB on 10/44367,
-KJ75/9 missing AQT86.
-
-
 Strategy depth statistics
 
  nom | act     0     1     2     3     4     5     Sum
 ------------------------------------------------------
          0  2356     -     -     -     -     -    2356
          1  8753 26888     -     -     -     -   35641
-         2  2659 45002 52151     -     -     -   99812
-         3   176  8110 39012 47973     -     -   95271
-         4     -   202  2746 12298 32063     -   47309
-         5     -     -     8   106   594  3309    4017
+         2  2659 45004 52083     -     -     -   99746
+         3   176  8110 39033 45132     -     -   92451
+         4     -   202  2748 11861 17787     -   32598
+         5     -     -     8   106   516  2577    3207
 ------------------------------------------------------
-       Sum 13944 80202 93917 60377 32657  3309
+       Sum 13944 80204 93872 57099 18303  2577
+
+This is for a run at depth == 2.
+
+    actual symmstrat otherstrat  cachehit cachemiss 
+         0 13944         -       13884      60
+         1 22646     57558       78591    1613
+         2  6224     87648       88213    5659
+         3  1996     55103
+         4   662     17641
+         5    78      2499
+
+We could check how many of the cache misses are symmetricPrimary.
+Also, time in Covers.cpp per depth, get average per strategy.
+Presumably depth == 5 is the worst by far.
+
+
 
 Deeper strategies
 -----------------
