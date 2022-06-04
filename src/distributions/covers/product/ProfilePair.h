@@ -84,6 +84,8 @@ class ProfilePair
 
     bool last() const;
 
+    bool symmetricAgainst(const Profile& sumProfile) const;
+
     bool minimal(
       const Profile& sumProfile,
       const unsigned char lengthLow,

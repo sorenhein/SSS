@@ -52,7 +52,7 @@ class CoverStore
     void add(
       ProductMemory& productMemory,
       const Profile& sumProfile,
-      const ProfilePair& productPair,
+      const ProfilePair& profilePair,
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 

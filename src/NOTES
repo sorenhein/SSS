@@ -7,17 +7,7 @@ Plays.cpp line 187?  (Should also change line 180.)
 This is another decent test of ranks.
 
 When covering symmetric strategies:
-Perhaps mark all covers that are symmetric, including e.g. 1-4 out
-of 5 cards even though it is not so far marked as explicitly
-symmetric (I think only the symmetrized ones are).  That should
-speed up a lot.
-Check that the specific strategy is symmetric.
-
-- CoverStore::add, once tricks and counts are made
-- Or even in Cover::set, when called with false, figure out whether
-  it is actually symmetric
-- Cover::symmetric create method
-- Don't add a symmetric version if already symmetric
+A Cover::symmetric now knows that it is symmetric.
 
 For high-depth strategies, maybe search first for ways to get from
 depth 5 to 4? Then solve more exhaustively?

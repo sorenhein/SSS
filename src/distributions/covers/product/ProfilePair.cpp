@@ -100,6 +100,12 @@ bool ProfilePair::last() const
 }
 
 
+bool ProfilePair::symmetricAgainst(const Profile& sumProfile) const
+{
+  return lowerProfile.symmetricAgainst(upperProfile, sumProfile);
+}
+
+
 bool ProfilePair::active(
   const unsigned char maxValue,
   const unsigned char actualLow,

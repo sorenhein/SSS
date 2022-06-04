@@ -35,7 +35,11 @@ class Cover
 
     unsigned char numDist;
 
-    bool symmFlag;
+    // Set if the cover is symmetric without being symmetrized.
+    bool symmetricFlag;
+
+    // Set if the factored product is effectively to be mirrored.
+    bool symmetrizeFlag;
 
     unsigned long long code;
 
@@ -50,13 +54,14 @@ class Cover
       ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& profilePair,
-      const bool symmFlagIn);
+      const bool symmetricFlagIn,
+      const bool symmetrizeFlagIn);
 
     void setExisting(
       const ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& profilePair,
-      const bool symmFlagIn);
+      const bool symmetrizeFlagIn);
 
     bool setByProduct(
       const vector<Profile>& distProfiles,
@@ -86,6 +91,8 @@ class Cover
     bool sameWeight(const Cover& covers2) const;
 
     bool sameTricks(const Cover& covers2) const;
+
+    bool symmetrized() const;
 
     bool symmetric() const;
 

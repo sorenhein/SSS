@@ -86,6 +86,45 @@ bool Profile::onlyEquals(
 }
 
 
+bool Profile::symmetricEntry(
+  const unsigned char lower,
+  const unsigned char upper,
+  const unsigned char sum) const
+{
+  if (upper == 0xf)
+  {
+    if (lower != 0)
+      return false;
+  }
+  else if (lower + upper != sum)
+    return false;
+
+  return true;
+}
+
+
+bool Profile::symmetricAgainst(
+  const Profile& upperProfile,
+  const Profile& sumProfile) const
+{
+  assert(tops.size() == upperProfile.tops.size());
+
+  if (! Profile::symmetricEntry(lengthInt, upperProfile.lengthInt,
+      sumProfile.lengthInt))
+    return false;
+
+  // This ignores the 0'th top!
+  for (unsigned i = 1; i < tops.size(); i++)
+  {
+    if (! Profile::symmetricEntry(tops[i], upperProfile.tops[i],
+        sumProfile.tops[i]))
+    return false;
+  }
+
+  return true;
+}
+
+
 size_t Profile::size() const
 {
   return tops.size();

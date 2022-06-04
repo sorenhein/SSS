@@ -26,6 +26,12 @@ class Profile
     vector<unsigned char> tops;
 
 
+    bool symmetricEntry(
+      const unsigned char lower,
+      const unsigned char upper,
+      const unsigned char sum) const;
+
+
   public:
 
     void set(const vector<unsigned char>& topsIn);
@@ -44,6 +50,10 @@ class Profile
 
     // Only unused tops or tops with upper == lower.
     bool onlyEquals(
+      const Profile& upperProfile,
+      const Profile& sumProfile) const;
+
+    bool symmetricAgainst(
       const Profile& upperProfile,
       const Profile& sumProfile) const;
 

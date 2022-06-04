@@ -29,7 +29,8 @@ void Cover::reset()
   factoredProductPtr = nullptr;
   tricks.clear();
   mcpw = 0;
-  symmFlag = false;
+  symmetricFlag = false;
+  symmetrizeFlag = false;
   code = 0;
 }
 
@@ -38,13 +39,16 @@ void Cover::set(
   ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair,
-  const bool symmFlagIn)
+  const bool symmetricFlagIn,
+  const bool symmetrizeFlagIn)
 {
   // The product may or may not already be in memory.
   // This is used when setting a row algorithmically.
-  factoredProductPtr = productMemory.enterOrLookup(sumProfile, profilePair);
+  factoredProductPtr = 
+    productMemory.enterOrLookup(sumProfile, profilePair);
 
-  symmFlag = symmFlagIn;
+  symmetricFlag = symmetricFlagIn;
+  symmetrizeFlag = symmetrizeFlagIn;
 
   code = profilePair.getCode(sumProfile);
 }
@@ -54,13 +58,13 @@ void Cover::setExisting(
   const ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair,
-  const bool symmFlagIn)
+  const bool symmetrizeFlagIn)
 {
   // The product must already be in memory.
   // This is used when pre-setting a row manually.
   factoredProductPtr = productMemory.lookupByTop(sumProfile, profilePair);
   code = profilePair.getCode(sumProfile);
-  symmFlag = symmFlagIn;
+  symmetrizeFlag = symmetrizeFlagIn;
 }
 
 
@@ -72,7 +76,7 @@ bool Cover::setByProduct(
 
   if (! tricks.setByProduct(
     * factoredProductPtr,
-    symmFlag,
+    symmetrizeFlag,
     distProfiles, 
     cases))
   {
@@ -96,12 +100,12 @@ bool Cover::symmetrizable(const Profile& sumProfile) const
 bool Cover::symmetrize()
 {
   // Will invalidate Cover if not symmetrizable!
-  assert(! symmFlag);
+  assert(! symmetrizeFlag);
 
   if (! tricks.symmetrize())
     return false;
 
-  symmFlag = true;
+  symmetrizeFlag = true;
 
   // More weight for the same complexity.
   mcpw >>= 1;
@@ -113,7 +117,7 @@ void Cover::tricksOr(
   Tricks& running,
   const vector<unsigned char>& cases) const
 {
-  if (symmFlag)
+  if (symmetrizeFlag)
     running.orSymm(tricks, cases);
   else
     running.orNormal(tricks, cases);
@@ -159,9 +163,15 @@ bool Cover::sameTricks(const Cover& cover2) const
 }
 
 
+bool Cover::symmetrized() const
+{
+  return symmetrizeFlag;
+}
+
+
 bool Cover::symmetric() const
 {
-  return symmFlag;
+  return (symmetricFlag || symmetrizeFlag);
 }
 
 
@@ -183,9 +193,9 @@ bool Cover::operator < (const Cover& cover2) const
     return true;
   else if (Cover::effectiveDepth() > cover2.effectiveDepth())
     return false;
-  else if (symmFlag && ! cover2.symmFlag)
+  else if (symmetrizeFlag && ! cover2.symmetrizeFlag)
     return true;
-  else if (! symmFlag && cover2.symmFlag)
+  else if (! symmetrizeFlag && cover2.symmetrizeFlag)
     return false;
   else
     return (code < cover2.code);
@@ -256,7 +266,7 @@ string Cover::strLine() const
     setw(4) << +Cover::getComplexity() <<
     setw(10) << mcpw <<
     setw(4) << +Cover::effectiveDepth() <<
-    setw(4) << (symmFlag ? "sym" : "") << 
+    setw(4) << (symmetrizeFlag ? "sym" : "") << 
     setw(16) << code;
   
   return ss.str();
@@ -299,7 +309,7 @@ string Cover::str(const Profile& sumProfile) const
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbal(
-      sumProfile, simplestOpponent, symmFlag);
+      sumProfile, simplestOpponent, symmetrizeFlag);
 
     ss << " [" << tricks.getWeight() << "]";
 

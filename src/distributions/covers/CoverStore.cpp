@@ -13,6 +13,7 @@
 #include <cassert>
 
 #include "CoverStore.h"
+#include "product/ProfilePair.h"
 
 mutex mtxCoverStore;
 
@@ -43,8 +44,8 @@ void CoverStore::eliminate(set<Cover>::iterator& itMatch)
     if (itMatch->sameTricks(* itForward))
     {
       // Generally erase the later one.  But if the earlier one is
-      // symmetric and the later one isn't, keep the later one.
-      if (itMatch->symmetric() && ! itForward->symmetric())
+      // symmetrized and the later one isn't, keep the later one.
+      if (itMatch->symmetrized() && ! itForward->symmetrized())
         store.erase(itMatch);
       else
         store.erase(itForward);
@@ -73,15 +74,20 @@ void CoverStore::eliminate(set<Cover>::iterator& itMatch)
 void CoverStore::add(
   ProductMemory& productMemory,
   const Profile& sumProfile,
-  const ProfilePair& productPair,
+  const ProfilePair& profilePair,
   const vector<Profile>& distProfiles,
   const vector<unsigned char>& cases)
 {
   lock_guard<mutex> lg(mtxCoverStore);
 
-  // Make a Cover with symmFlag == false.
+  // The productPair may already be symmetric with respect to
+  // sumProfile.
+  const bool symmetricFlag = profilePair.symmetricAgainst(sumProfile);
+
+  // Make a Cover.  It may be symmetric.  It will not ever be symmetrized.
   coverScratch.reset();
-  coverScratch.set(productMemory, sumProfile, productPair, false);
+  coverScratch.set(productMemory, sumProfile, profilePair, 
+    symmetricFlag, false);
 
   // Make its tricks and counts.
   if (! coverScratch.setByProduct(distProfiles, cases))
@@ -90,6 +96,12 @@ void CoverStore::add(
   // Store it in "store".
   auto result = store.insert(coverScratch);
   assert(result.first != store.end());
+
+  if (symmetricFlag)
+  {
+    // Nothing to symmetrize.
+    return;
+  }
 
   // In Covers we generate covers using ProfilePair.
   // Assuming that the eliminations (in particular in active()) are
