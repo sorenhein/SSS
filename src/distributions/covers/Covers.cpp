@@ -36,6 +36,7 @@
 
 #include "Covers.h"
 #include "CoverStack.h"
+#include "Explain.h"
 
 #include "tableau/TableauStats.h"
 
@@ -183,17 +184,16 @@ const Cover& Covers::lookup(const Cover& cover) const
 template<class C, class T>
 void Covers::explainTemplate(
   const Tricks& tricks,
-  const unsigned char tmin,
-  const ExplainSymmetry explainSymmetry,
-  // [[maybe_unused]] const bool symmetricFlag,
-  const unsigned numStrategyTops,
+  // const unsigned char tmin,
+  const Explain& explain,
+  // const unsigned numStrategyTops,
   const C& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
   CoverStack<T>& stack,
   CoverTableau& solution)
 {
-  stack.emplace(tricks, tmin, candidates.begin());
+  stack.emplace(tricks, explain.tricksMin(), candidates.begin());
   tableauStats.reset();
 
   while (! stack.empty())
@@ -217,20 +217,7 @@ void Covers::explainTemplate(
 
     while (candIter != candidates.end())
     {
-      if (candIter->effectiveDepth() > numStrategyTops)
-      {
-        candIter++;
-        continue;
-      }
-
-      if (explainSymmetry == EXPLAIN_SYMMETRIC && 
-          ! candIter->symmetric())
-      {
-        candIter++;
-        continue;
-      }
-      else if (explainSymmetry == EXPLAIN_ASYMMETRIC &&
-          candIter->symmetric())
+      if (explain.skip(candIter->effectiveDepth(), candIter->symmetric()))
       {
         candIter++;
         continue;
@@ -289,10 +276,10 @@ void Covers::explainTemplate(
 
 template void Covers::explainTemplate<CoverStore, Cover>(
   const Tricks& tricks,
-  const unsigned char tmin,
-  const ExplainSymmetry explainSymmetry,
+  // const unsigned char tmin,
+  const Explain& explain,
   // const bool symmetricFlag,
-  const unsigned numStrategyTops,
+  // const unsigned numStrategyTops,
   const CoverStore& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
@@ -301,10 +288,10 @@ template void Covers::explainTemplate<CoverStore, Cover>(
 
 template void Covers::explainTemplate<RowStore, CoverRow>(
   const Tricks& tricks,
-  const unsigned char tmin,
-  const ExplainSymmetry explainSymmetry,
+  // const unsigned char tmin,
+  const Explain& explain,
   // const bool symmetricFlag,
-  const unsigned numStrategyTops,
+  // const unsigned numStrategyTops,
   const RowStore& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
@@ -316,10 +303,9 @@ void Covers::partitionResults(
   const list<Result>& results,
   list<Result>& resultsSymm,
   list<Result>& resultsAsymm,
-  unsigned char& tmin,
-  ExplainSymmetry& explainSymmetry) const
+  Explain& explain) const
 {
-  tmin = numeric_limits<unsigned char>::max();
+  unsigned char tmin = numeric_limits<unsigned char>::max();
   for (auto& res: results)
     tmin = min(tmin, res.getTricks());
 
@@ -355,17 +341,7 @@ void Covers::partitionResults(
     riterAsymm++;
   }
 
-  if (weightSymm == 0)
-  {
-    if (weightAsymm == 0)
-      explainSymmetry = EXPLAIN_TRIVIAL;
-    else
-      explainSymmetry = EXPLAIN_ASYMMETRIC;
-  }
-  else if (weightAsymm == 0)
-    explainSymmetry = EXPLAIN_SYMMETRIC;
-  else
-    explainSymmetry = EXPLAIN_GENERAL;
+  explain.setTricks(tmin, weightSymm, weightAsymm);
 }
 
 
@@ -380,12 +356,11 @@ void Covers::explain(
 
   // TODO Maybe only when it looks like it's going to get rough?
   list<Result> resultsSymm, resultsAsymm;
-  unsigned char tmin;
-  ExplainSymmetry explainSymmetry;
-  Covers::partitionResults(results, resultsSymm, resultsAsymm,
-    tmin, explainSymmetry);
+  Explain explain;
+  Covers::partitionResults(results, resultsSymm, resultsAsymm, explain);
+  explain.setTops(numStrategyTops);
 
-  if (explainSymmetry == EXPLAIN_TRIVIAL)
+  if (! explain.symmetricComponent() && ! explain.asymmetricComponent())
   {
     // TODO Set up the actual strategy, or tableau.setTrivial(tmin)
     // or something like that.  Then in Slist, if tableau.trivial()
@@ -396,15 +371,23 @@ void Covers::explain(
   Tricks tricks;
   bool symmetricFlag;
   // TODO Make a simpler one with no tmin and no symmetricFlag
+  unsigned char tmin;
   tricks.setByResults(results, cases, tmin, symmetricFlag);
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
   {
-    solution.setMinTricks(tmin);
+    solution.setMinTricks(explain.tricksMin());
     newTableauFlag = false;
     return;
   }
+
+  if (symmetricFlag)
+    explain.behaveSymmetrically();
+  else if (! explain.symmetricComponent())
+    explain.behaveAsymmetrically();
+  else
+    explain.behaveGenerally();
 
   CoverStack<Cover> stack;
 
@@ -412,8 +395,7 @@ void Covers::explain(
   // TODO Test again later whether or not this helps on average.
 timersStrat[25].start();
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, explainSymmetry, numStrategyTops, coverStore, 
-    7, 7, stack, solution);
+    tricks, explain, coverStore, 7, 7, stack, solution);
 timersStrat[25].stop();
 
   /*
@@ -425,8 +407,7 @@ timersStrat[25].stop();
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(
-    tricks, tmin, explainSymmetry, numStrategyTops, coverStore, 
-    50000, 25000, stack, solution);
+    tricks, explain, coverStore, 50000, 25000, stack, solution);
 
   tableauCache.store(tricks, solution);
 }
@@ -448,16 +429,24 @@ void Covers::explainManually(
     return;
   }
 
-  ExplainSymmetry explainSymmetry;
   // TODO For now
+  Explain explain;
   if (symmetricFlag)
-    explainSymmetry = EXPLAIN_SYMMETRIC;
+  {
+    explain.setTricks(tmin, 1, 0);
+    explain.behaveSymmetrically();
+  }
   else
-    explainSymmetry = EXPLAIN_GENERAL;
+  {
+    explain.setTricks(tmin, 1, 1);
+    explain.behaveGenerally();
+  }
+
+  explain.setTops(1);
 
   CoverStack<CoverRow> stack;
-  Covers::explainTemplate<RowStore, CoverRow>(tricks, tmin,
-    explainSymmetry, 1, rowStore, 50000, 25000, stack, solution);
+  Covers::explainTemplate<RowStore, CoverRow>(tricks,
+    explain, rowStore, 50000, 25000, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

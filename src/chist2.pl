@@ -63,6 +63,7 @@ for my $file (@ARGV)
       $CC_stratsum{$file} += $c;
       $CC_rowsum{$file} += $r;
       $CCs{$file}++;
+      $CC_unex{$file}++ if ($line =~ /Unexplained/);
     }
     elsif ($line =~ /^Manual strategy \#(\d+) \[c (\d+)\/(\d+), w (\d+)\/(\d+)\]/)
     {
@@ -71,6 +72,7 @@ for my $file (@ARGV)
       $RR_stratsum{$file} += $c;
       $RR_rowsum{$file} += $r;
       $RRs{$file}++;
+      $RR_unex{$file}++ if ($line =~ /Unexplained/);
     }
   }
 
@@ -103,11 +105,13 @@ print "\n";
 rdump(\%CC_stratsum, \%CCs, "CC compl");
 rdump(\%CC_rowsum, \%CCs, "CC rowc");
 onedump(\%CCs, "CC strats");
+onedump(\%CC_unex, "CC unex");
 print "\n";
 
 rdump(\%RR_stratsum, \%RRs, "RR compl");
 rdump(\%RR_rowsum, \%RRs, "RR rowc");
 onedump(\%RRs, "RR strats");
+onedump(\%RR_unex, "RR unex");
 print "\n";
 
 

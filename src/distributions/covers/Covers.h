@@ -15,6 +15,7 @@
 
 #include "CoverStore.h"
 #include "RowStore.h"
+#include "Explain.h"
 
 #include "tableau/TableauCache.h"
 
@@ -22,6 +23,7 @@
 
 
 class ProductMemory;
+class Explain;
 class CoverTableau;
 class Tricks;
 class Result;
@@ -34,14 +36,6 @@ using namespace std;
 class Covers
 {
   private:
-
-    enum ExplainSymmetry
-    {
-      EXPLAIN_SYMMETRIC = 0,
-      EXPLAIN_ASYMMETRIC = 1,
-      EXPLAIN_GENERAL = 2,
-      EXPLAIN_TRIVIAL = 3
-    };
 
     vector<unsigned char> cases;
 
@@ -67,10 +61,9 @@ class Covers
     template<class C, class T>
     void explainTemplate(
       const Tricks& tricks,
-      const unsigned char tmin,
-      // const bool symmetricFlag,
-      const ExplainSymmetry explainSymmetry,
-      const unsigned numStrategyTops,
+      // const unsigned char tmin,
+      const Explain& explain,
+      // const unsigned numStrategyTops,
       const C& candidates,
       const size_t pruneTrigger,
       const size_t pruneSize,
@@ -81,8 +74,8 @@ class Covers
       const list<Result>& results,
       list<Result>& resultsSymm,
       list<Result>& resultsAsymm,
-      unsigned char& tmin,
-      ExplainSymmetry& explainSymmetry) const;
+      // unsigned char& tmin,
+      Explain& explain) const;
 
 
   public:

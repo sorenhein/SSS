@@ -21,6 +21,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/Cover.cpp                   \
                 distributions/covers/Covers.cpp                  \
                 distributions/covers/Complexity.cpp              \
+                distributions/covers/Explain.cpp                 \
                 distributions/covers/CoverStore.cpp              \
                 distributions/covers/RowStore.cpp                \
                 distributions/covers/Tricks.cpp                  \
