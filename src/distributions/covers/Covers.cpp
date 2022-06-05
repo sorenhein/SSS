@@ -223,13 +223,14 @@ void Covers::explainTemplate(
         continue;
       }
 
-      if (explainSymmetry == EXPLAIN_SYMMETRIC && ! candIter->symmetric())
+      if (explainSymmetry == EXPLAIN_SYMMETRIC && 
+          ! candIter->symmetric())
       {
         candIter++;
         continue;
       }
       else if (explainSymmetry == EXPLAIN_ASYMMETRIC &&
-        candIter->symmetric())
+          candIter->symmetric())
       {
         candIter++;
         continue;
@@ -359,11 +360,7 @@ void Covers::partitionResults(
     if (weightAsymm == 0)
       explainSymmetry = EXPLAIN_TRIVIAL;
     else
-    {
-    // explainSymmetry = EXPLAIN_ASYMMETRIC;
-    // TODO For now
-      explainSymmetry = EXPLAIN_GENERAL;
-    }
+      explainSymmetry = EXPLAIN_ASYMMETRIC;
   }
   else if (weightAsymm == 0)
     explainSymmetry = EXPLAIN_SYMMETRIC;
@@ -381,51 +378,25 @@ void Covers::explain(
   // This version uses covers and puts them together into rows,
   // including possibly covers that are OR'ed together in a row.
 
+  // TODO Maybe only when it looks like it's going to get rough?
   list<Result> resultsSymm, resultsAsymm;
   unsigned char tmin;
   ExplainSymmetry explainSymmetry;
   Covers::partitionResults(results, resultsSymm, resultsAsymm,
     tmin, explainSymmetry);
 
+  if (explainSymmetry == EXPLAIN_TRIVIAL)
+  {
+    // TODO Set up the actual strategy, or tableau.setTrivial(tmin)
+    // or something like that.  Then in Slist, if tableau.trivial()
+    //   cout << tmin
+    return;
+  }
+
   Tricks tricks;
   bool symmetricFlag;
   // TODO Make a simpler one with no tmin and no symmetricFlag
   tricks.setByResults(results, cases, tmin, symmetricFlag);
-
-  if (symmetricFlag)
-  {
-if (explainSymmetry == EXPLAIN_TRIVIAL)
-{
-  // TODO Set up the actual strategy, or tableau.setTrivial(tmin)
-  // or something like that.  Then in Slist, if tableau.trivial()
-  //   cout << tmin
-  return;
-}
-if (explainSymmetry != EXPLAIN_SYMMETRIC)
-{
-cout << "results\n";
-for (auto& res: results)
-  cout << res.str(true);
-cout << "\n";
-
-cout << "resultSymm\n";
-for (auto& res: resultsSymm)
-  cout << res.str(true);
-cout << "\n";
-
-cout << "resultsAsymm\n";
-for (auto& res: resultsAsymm)
-  cout << res.str(true);
-cout << "\n";
-
-    assert(explainSymmetry == EXPLAIN_SYMMETRIC);
-}
-    explainSymmetry = EXPLAIN_SYMMETRIC;
-  }
-  else
-  {
-    assert(explainSymmetry == EXPLAIN_GENERAL);
-  }
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
