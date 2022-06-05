@@ -35,6 +35,14 @@ class Covers
 {
   private:
 
+    enum ExplainSymmetry
+    {
+      EXPLAIN_SYMMETRIC = 0,
+      EXPLAIN_ASYMMETRIC = 1,
+      EXPLAIN_GENERAL = 2,
+      EXPLAIN_TRIVIAL = 3
+    };
+
     vector<unsigned char> cases;
 
     CoverStore coverStore;
@@ -60,13 +68,21 @@ class Covers
     void explainTemplate(
       const Tricks& tricks,
       const unsigned char tmin,
-      const bool symmetricFlag,
+      // const bool symmetricFlag,
+      const ExplainSymmetry explainSymmetry,
       const unsigned numStrategyTops,
       const C& candidates,
       const size_t pruneTrigger,
       const size_t pruneSize,
       CoverStack<T>& stack,
       CoverTableau& solution);
+
+    void partitionResults(
+      const list<Result>& results,
+      list<Result>& resultsSymm,
+      list<Result>& resultsAsymm,
+      unsigned char& tmin,
+      ExplainSymmetry& explainSymmetry) const;
 
 
   public:

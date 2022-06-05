@@ -9,9 +9,11 @@ use warnings;
 
 my (%CC_ttff, %CC_numsol, %CCn);
 my (%CC_smax, %CC_comps, %CC_steps, %CC_branch, %CC_worst_stack);
+my (%CC_stratsum, %CC_rowsum, %CCs, %CC_unex);
 
 my (%RR_ttff, %RR_numsol, %RRn);
 my (%RR_smax, %RR_comps, %RR_steps, %RR_branch);
+my (%RR_stratsum, %RR_rowsum, %RRs, %RR_unex);
 
 for my $file (@ARGV)
 {
@@ -54,6 +56,22 @@ for my $file (@ARGV)
       $RR_branch{$file} += $branch;
       $RRn{$file}++;
     }
+    elsif ($line =~ /^Strategy \#(\d+) \[c (\d+)\/(\d+), w (\d+)\/(\d+)\]/)
+    {
+      my ($c, $r, $w1, $w2) = ($1, $2, $3, $4);
+
+      $CC_stratsum{$file} += $c;
+      $CC_rowsum{$file} += $r;
+      $CCs{$file}++;
+    }
+    elsif ($line =~ /^Manual strategy \#(\d+) \[c (\d+)\/(\d+), w (\d+)\/(\d+)\]/)
+    {
+      my ($c, $r, $w1, $w2) = ($1, $2, $3, $4);
+
+      $RR_stratsum{$file} += $c;
+      $RR_rowsum{$file} += $r;
+      $RRs{$file}++;
+    }
   }
 
   close $fh;
@@ -80,6 +98,18 @@ print "\n";
 
 hdump(\%CC_numsol, "CC numsol");
 hdump(\%RR_numsol, "RR numsol");
+print "\n";
+
+rdump(\%CC_stratsum, \%CCs, "CC compl");
+rdump(\%CC_rowsum, \%CCs, "CC rowc");
+onedump(\%CCs, "CC strats");
+print "\n";
+
+rdump(\%RR_stratsum, \%RRs, "RR compl");
+rdump(\%RR_rowsum, \%RRs, "RR rowc");
+onedump(\%RRs, "RR strats");
+print "\n";
+
 
 
 sub rdump
