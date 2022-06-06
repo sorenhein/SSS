@@ -423,107 +423,25 @@ void Covers::explain(
     }
 
     // Do the symmetric component (keep it in solution).
-    newTableauFlag = true;
-    tricks.setByList(tricksSymm, cases);
-
-    if (tableauCache.lookup(tricks, solution))
-    {
-      solution.setMinTricks(explain.tricksMin());
-      newTableauFlag = false;
-    }
-    else
-    {
-      explain.behaveSymmetrically();
-      CoverStack<Cover> stack;
-
-      // Get a greedy solution.
-      // TODO Test again later whether or not this helps on average.
-timersStrat[25].start();
-      Covers::explainTemplate<CoverStore, Cover>(
-        tricks, explain, coverStore, 7, 7, stack, solution);
-timersStrat[25].stop();
-
-      // Use this to seed the exhaustive search.
-      Covers::explainTemplate<CoverStore, Cover>(
-        tricks, explain, coverStore, 50000, 25000, stack, solution);
-
-      tableauCache.store(tricks, solution);
-    }
+    explain.behaveSymmetrically();
+    Covers::explainByCategory(tricksSymm, explain, 
+      solution, newTableauFlag);
 
     // Do the asymmetric component.
-    CoverTableau solutionAsymm;
-    tricks.setByList(tricksAntisymm, cases);
-
-    if (tableauCache.lookup(tricks, solutionAsymm))
-    {
-      solutionAsymm.setMinTricks(explain.tricksMin());
-      newTableauFlag = false;
-    }
-    else
-    {
-      explain.behaveAntiSymmetrically();
-      CoverStack<Cover> stack;
-
-      // Get a greedy solution.
-      // TODO Test again later whether or not this helps on average.
-timersStrat[25].start();
-      Covers::explainTemplate<CoverStore, Cover>(
-        tricks, explain, coverStore, 7, 7, stack, solutionAsymm);
-timersStrat[25].stop();
-
-      // Use this to seed the exhaustive search.
-      Covers::explainTemplate<CoverStore, Cover>(
-        tricks, explain, coverStore, 50000, 25000, stack, solutionAsymm);
-
-      tableauCache.store(tricks, solutionAsymm);
-    }
+    CoverTableau solutionAntisymm;
+    explain.behaveAntiSymmetrically();
+    Covers::explainByCategory(tricksAntisymm, explain, 
+      solutionAntisymm, newTableauFlag);
 
     // TODO Only use one solution?
-    solution += solutionAsymm;
+    solution += solutionAntisymm;
   }
 
-  /*
-  Tricks tricks;
-  bool symmetricFlag;
-  // TODO Make a simpler one with no tmin and no symmetricFlag
-  unsigned char tmin;
-  tricks.setByResults(results, cases, tmin, symmetricFlag);
-
-  newTableauFlag = true;
-  if (tableauCache.lookup(tricks, solution))
-  {
-    solution.setMinTricks(explain.tricksMin());
-    newTableauFlag = false;
-    return;
-  }
-
-  if (symmetricFlag)
-    explain.behaveSymmetrically();
-  else if (! explain.symmetricComponent())
-    explain.behaveAsymmetrically();
-  else
-    explain.behaveGenerally();
-
-  CoverStack<Cover> stack;
-
-  // Get a greedy solution.
-  // TODO Test again later whether or not this helps on average.
-timersStrat[25].start();
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, explain, coverStore, 7, 7, stack, solution);
-timersStrat[25].stop();
 
   // cout << "Greedy solution\n";
   // cout << solution.strBracket() << "\n";
   // cout << solution.str(sumProfile);
   // cout << (solution.complete() ? "GOODGREED\n" : "BADGREED\n");
-
-  // Use this to seed the exhaustive search.
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, explain, coverStore, 50000, 25000, stack, solution);
-
-  tableauCache.store(tricks, solution);
-  */
 }
 
 
