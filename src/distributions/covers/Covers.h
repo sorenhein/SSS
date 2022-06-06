@@ -83,6 +83,13 @@ class Covers
       unsigned& rawWeightAdder) const;
 
     void explainByCategory(
+      const Tricks& tricks,
+      const Explain& explain,
+      const bool partialTableauFlag,
+      CoverTableau& solution,
+      bool& newTableauFlag);
+
+    void explainByCategory(
       const list<unsigned char>& rawTricks,
       const Explain& explain,
       const bool partialTableauFlag,

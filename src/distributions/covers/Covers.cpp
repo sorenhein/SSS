@@ -408,6 +408,18 @@ void Covers::explainByCategory(
   Tricks tricks;
   tricks.setByList(rawTricks, cases);
 
+  Covers::explainByCategory(tricks, explain, partialTableauFlag,
+    solution, newTableauFlag);
+}
+
+
+void Covers::explainByCategory(
+  const Tricks& tricks,
+  const Explain& explain,
+  const bool partialTableauFlag,
+  CoverTableau& solution,
+  bool& newTableauFlag)
+{
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
   {
@@ -542,8 +554,8 @@ void Covers::explain(
 
   // First test the complete cache.
   Tricks tricks;
-  bool symmetricFlag;
   unsigned char tmin;
+  bool symmetricFlag;
   tricks.setByResults(results, cases, tmin, symmetricFlag);
 
   newTableauFlag = true;
@@ -559,32 +571,29 @@ void Covers::explain(
     // TODO tableau.setTrivial(tmin) or something like that.  
     // Then in Slist, if tableau.trivial()
     //   cout << tableau.whatever();
+    // This should prevent Unexplained strategies
+    return;
+  }
+
+  // Symmetric tricks use a smaller pool of covers, so this should
+  // be sufficient.
+  Explain explain;
+  explain.setTops(numStrategyTops);
+  if (symmetricFlag)
+  {
+    explain.setTricks(tmin, 1, 0); // To have something symmetric
+    explain.behave(EXPLAIN_SYMMETRIC);
+    Covers::explainByCategory(tricks, explain, false,
+      solution, newTableauFlag);
     return;
   }
 
 
   // TODO Maybe only when it looks like it's going to get rough?
+  // Should this be a method in Tricks?  We can still do explain here
   list<unsigned char> tricksSymm, tricksAntisymm;
-  Explain explain;
   Covers::partitionResults(results, tricksSymm, tricksAntisymm, explain);
   explain.setTops(numStrategyTops);
-
-  if (! explain.symmetricComponent() && ! explain.asymmetricComponent())
-  {
-assert(false);
-    // TODO Set up the actual strategy, or tableau.setTrivial(tmin)
-    // or something like that.  Then in Slist, if tableau.trivial()
-    //   cout << tmin
-    return;
-  }
-
-  if (! explain.asymmetricComponent())
-  {
-    explain.behave(EXPLAIN_SYMMETRIC);
-    Covers::explainByCategory(tricksSymm, explain, false,
-      solution, newTableauFlag);
-    return;
-  }
 
   if (! explain.symmetricComponent())
   {
