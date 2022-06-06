@@ -58,7 +58,7 @@ for my $file (@ARGV)
     }
     elsif ($line =~ /^Strategy \#(\d+) \[c (\d+)\/(\d+), w (\d+)\/(\d+)\]/)
     {
-      my ($c, $r, $w1, $w2) = ($1, $2, $3, $4);
+      my ($c, $r, $w1, $w2) = ($2, $3, $4, $5);
 
       $CC_stratsum{$file} += $c;
       $CC_rowsum{$file} += $r;
@@ -67,7 +67,7 @@ for my $file (@ARGV)
     }
     elsif ($line =~ /^Manual strategy \#(\d+) \[c (\d+)\/(\d+), w (\d+)\/(\d+)\]/)
     {
-      my ($c, $r, $w1, $w2) = ($1, $2, $3, $4);
+      my ($c, $r, $w1, $w2) = ($2, $3, $4, $5);
 
       $RR_stratsum{$file} += $c;
       $RR_rowsum{$file} += $r;

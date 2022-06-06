@@ -53,6 +53,10 @@ class Tricks
 
     void resize(const size_t len);
 
+    void setByList(
+      const list<unsigned char>& tricks,
+      const vector<unsigned char>& cases);
+
     void setByResults(
       const list<Result>& results,
       const vector<unsigned char>& cases,

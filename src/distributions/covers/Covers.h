@@ -61,9 +61,7 @@ class Covers
     template<class C, class T>
     void explainTemplate(
       const Tricks& tricks,
-      // const unsigned char tmin,
       const Explain& explain,
-      // const unsigned numStrategyTops,
       const C& candidates,
       const size_t pruneTrigger,
       const size_t pruneSize,
@@ -72,9 +70,8 @@ class Covers
 
     void partitionResults(
       const list<Result>& results,
-      list<Result>& resultsSymm,
-      list<Result>& resultsAsymm,
-      // unsigned char& tmin,
+      list<unsigned char>& tricksSymm,
+      list<unsigned char>& tricksAsymm,
       Explain& explain) const;
 
 

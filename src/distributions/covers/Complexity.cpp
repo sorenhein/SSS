@@ -72,6 +72,17 @@ void Complexity::addRow(
 }
 
 
+Complexity& Complexity::operator += (const Complexity& complexity2)
+{
+  sum += complexity2.sum;
+  if (complexity2.max > max)
+    max = complexity2.max;
+  raw += complexity2.raw;
+
+  return * this;
+}
+
+
 unsigned char Complexity::headroom(const Complexity& solution) const
 {
   if (solution.sum == 0)

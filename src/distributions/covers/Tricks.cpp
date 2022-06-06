@@ -65,6 +65,48 @@ void Tricks::weigh(const vector<unsigned char>& cases)
 }
 
 
+void Tricks::setByList(
+  const list<unsigned char>& tricks,
+  const vector<unsigned char>& cases)
+{
+  Tricks::resize(tricks.size());
+
+  unsigned counter = 0;
+  unsigned accum = 0;
+  unsigned position = 0;
+
+  // The forward half including the middle element if any.
+  auto riter = tricks.begin();
+  for (unsigned extIndex = 0; extIndex <= lastForward; 
+      extIndex++, riter++)
+  {
+    trickConvert.increment(
+      counter, 
+      accum, 
+      * riter,
+      position, 
+      signature[position]);
+  }
+  trickConvert.finish(counter, accum, position, signature[position]);
+
+  // The backward half excluding the middle element.
+  riter = prev(tricks.end());
+  for (size_t extIndex = length-1; extIndex > lastForward; 
+      extIndex--, riter--)
+  {
+    trickConvert.increment(
+      counter, 
+      accum, 
+      * riter,
+      position, 
+      signature[position]);
+  }
+  trickConvert.finish(counter, accum, position, signature[position]);
+
+  Tricks::weigh(cases);
+}
+
+
 void Tricks::setByResults(
   const list<Result>& results,
   const vector<unsigned char>& cases,

@@ -276,10 +276,7 @@ void Covers::explainTemplate(
 
 template void Covers::explainTemplate<CoverStore, Cover>(
   const Tricks& tricks,
-  // const unsigned char tmin,
   const Explain& explain,
-  // const bool symmetricFlag,
-  // const unsigned numStrategyTops,
   const CoverStore& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
@@ -288,10 +285,7 @@ template void Covers::explainTemplate<CoverStore, Cover>(
 
 template void Covers::explainTemplate<RowStore, CoverRow>(
   const Tricks& tricks,
-  // const unsigned char tmin,
   const Explain& explain,
-  // const bool symmetricFlag,
-  // const unsigned numStrategyTops,
   const RowStore& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
@@ -301,8 +295,8 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
 
 void Covers::partitionResults(
   const list<Result>& results,
-  list<Result>& resultsSymm,
-  list<Result>& resultsAsymm,
+  list<unsigned char>& tricksSymm,
+  list<unsigned char>& tricksAsymm,
   Explain& explain) const
 {
   unsigned char tmin = numeric_limits<unsigned char>::max();
@@ -312,13 +306,13 @@ void Covers::partitionResults(
   unsigned weightSymm = 0;
   unsigned weightAsymm = 0;
 
-  resultsSymm.resize(results.size());
-  resultsAsymm.resize(results.size());
+  tricksSymm.resize(results.size());
+  tricksAsymm.resize(results.size());
 
   auto riterf = results.begin();
   auto riterb = prev(results.end());
-  auto riterSymm = resultsSymm.begin();
-  auto riterAsymm = resultsSymm.begin();
+  auto titerSymm = tricksSymm.begin();
+  auto titerAsymm = tricksAsymm.begin();
 
   while (riterf != results.end())
   {
@@ -327,18 +321,16 @@ void Covers::partitionResults(
     const unsigned char mint = min(f, b);
     const unsigned char maxt = max(f, b);
 
-    * riterSymm = * riterf;
-    * riterAsymm = * riterf;
-    riterSymm->setTricks(mint);
-    riterAsymm->setTricks(maxt - mint);
+    * titerSymm = mint;
+    * titerAsymm = f - mint;
 
     weightSymm += mint;
-    weightAsymm += maxt -mint;
+    weightAsymm += f - mint;
     
     riterf++;
     riterb--;
-    riterSymm++;
-    riterAsymm++;
+    titerSymm++;
+    titerAsymm++;
   }
 
   explain.setTricks(tmin, weightSymm, weightAsymm);
@@ -355,9 +347,9 @@ void Covers::explain(
   // including possibly covers that are OR'ed together in a row.
 
   // TODO Maybe only when it looks like it's going to get rough?
-  list<Result> resultsSymm, resultsAsymm;
+  list<unsigned char> tricksSymm, tricksAsymm;
   Explain explain;
-  Covers::partitionResults(results, resultsSymm, resultsAsymm, explain);
+  Covers::partitionResults(results, tricksSymm, tricksAsymm, explain);
   explain.setTops(numStrategyTops);
 
   if (! explain.symmetricComponent() && ! explain.asymmetricComponent())
@@ -368,6 +360,142 @@ void Covers::explain(
     return;
   }
 
+  if (! explain.asymmetricComponent())
+  {
+    Tricks tricks;
+    tricks.setByList(tricksSymm, cases);
+
+    newTableauFlag = true;
+    if (tableauCache.lookup(tricks, solution))
+    {
+      solution.setMinTricks(explain.tricksMin());
+      newTableauFlag = false;
+      return;
+    }
+
+    explain.behaveSymmetrically();
+    CoverStack<Cover> stack;
+
+    // Get a greedy solution.
+    // TODO Test again later whether or not this helps on average.
+timersStrat[25].start();
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, 7, 7, stack, solution);
+timersStrat[25].stop();
+
+    // Use this to seed the exhaustive search.
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, 50000, 25000, stack, solution);
+
+    tableauCache.store(tricks, solution);
+  }
+  else if (! explain.symmetricComponent())
+  {
+    Tricks tricks;
+    tricks.setByList(tricksAsymm, cases);
+
+    newTableauFlag = true;
+    if (tableauCache.lookup(tricks, solution))
+    {
+      solution.setMinTricks(explain.tricksMin());
+      newTableauFlag = false;
+      return;
+    }
+
+    explain.behaveAsymmetrically();
+    CoverStack<Cover> stack;
+
+    // Get a greedy solution.
+    // TODO Test again later whether or not this helps on average.
+timersStrat[25].start();
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, 7, 7, stack, solution);
+timersStrat[25].stop();
+
+    // Use this to seed the exhaustive search.
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, 50000, 25000, stack, solution);
+
+    tableauCache.store(tricks, solution);
+  }
+  else
+  {
+    // TODO ?
+    // First test the complete cache.
+    Tricks tricks;
+    bool symmetricFlag;
+    unsigned char tmin;
+    tricks.setByResults(results, cases, tmin, symmetricFlag);
+
+    newTableauFlag = true;
+    if (tableauCache.lookup(tricks, solution))
+    {
+      solution.setMinTricks(explain.tricksMin());
+      newTableauFlag = false;
+      return;
+    }
+
+    // Do the symmetric component (keep it in solution).
+    newTableauFlag = true;
+    tricks.setByList(tricksSymm, cases);
+
+    if (tableauCache.lookup(tricks, solution))
+    {
+      solution.setMinTricks(explain.tricksMin());
+      newTableauFlag = false;
+    }
+    else
+    {
+      explain.behaveSymmetrically();
+      CoverStack<Cover> stack;
+
+      // Get a greedy solution.
+      // TODO Test again later whether or not this helps on average.
+timersStrat[25].start();
+      Covers::explainTemplate<CoverStore, Cover>(
+        tricks, explain, coverStore, 7, 7, stack, solution);
+timersStrat[25].stop();
+
+      // Use this to seed the exhaustive search.
+      Covers::explainTemplate<CoverStore, Cover>(
+        tricks, explain, coverStore, 50000, 25000, stack, solution);
+
+      tableauCache.store(tricks, solution);
+    }
+
+    // Do the asymmetric component.
+    CoverTableau solutionAsymm;
+    tricks.setByList(tricksAsymm, cases);
+
+    if (tableauCache.lookup(tricks, solutionAsymm))
+    {
+      solutionAsymm.setMinTricks(explain.tricksMin());
+      newTableauFlag = false;
+    }
+    else
+    {
+      explain.behaveAsymmetrically();
+      CoverStack<Cover> stack;
+
+      // Get a greedy solution.
+      // TODO Test again later whether or not this helps on average.
+timersStrat[25].start();
+      Covers::explainTemplate<CoverStore, Cover>(
+        tricks, explain, coverStore, 7, 7, stack, solutionAsymm);
+timersStrat[25].stop();
+
+      // Use this to seed the exhaustive search.
+      Covers::explainTemplate<CoverStore, Cover>(
+        tricks, explain, coverStore, 50000, 25000, stack, solutionAsymm);
+
+      tableauCache.store(tricks, solutionAsymm);
+    }
+
+    // TODO Only use one solution?
+    solution += solutionAsymm;
+  }
+
+  /*
   Tricks tricks;
   bool symmetricFlag;
   // TODO Make a simpler one with no tmin and no symmetricFlag
@@ -398,18 +526,17 @@ timersStrat[25].start();
     tricks, explain, coverStore, 7, 7, stack, solution);
 timersStrat[25].stop();
 
-  /*
-  cout << "Greedy solution\n";
-  cout << solution.strBracket() << "\n";
-  cout << solution.str(sumProfile);
-  cout << (solution.complete() ? "GOODGREED\n" : "BADGREED\n");
-  */
+  // cout << "Greedy solution\n";
+  // cout << solution.strBracket() << "\n";
+  // cout << solution.str(sumProfile);
+  // cout << (solution.complete() ? "GOODGREED\n" : "BADGREED\n");
 
   // Use this to seed the exhaustive search.
   Covers::explainTemplate<CoverStore, Cover>(
     tricks, explain, coverStore, 50000, 25000, stack, solution);
 
   tableauCache.store(tricks, solution);
+  */
 }
 
 

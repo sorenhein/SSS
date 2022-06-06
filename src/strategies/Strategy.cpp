@@ -125,7 +125,6 @@ void Strategy::symmetrize(const size_t distSize)
   }
 
   // Merge the two.
-  const size_t s0 = results.size();
   * this *= stmp;
 
   // Easier to regenerate than to keep track.

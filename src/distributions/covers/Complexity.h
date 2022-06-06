@@ -45,6 +45,8 @@ class Complexity
     const unsigned char rowComplexity,
     const unsigned rawWeight);
 
+  Complexity& operator += (const Complexity& complexity2);
+
   unsigned char headroom(const Complexity& solution) const;
 
   bool operator < (const Complexity& comp2) const;

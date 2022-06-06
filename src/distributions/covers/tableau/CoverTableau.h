@@ -102,6 +102,8 @@ class CoverTableau
       CoverStack<CoverRow>& stack,
       CoverTableau& solution);
 
+    CoverTableau& operator += (const CoverTableau& tableau2);
+
     unsigned char headroom(const CoverTableau& solution) const;
 
     void project(const unsigned char minCompAdder);

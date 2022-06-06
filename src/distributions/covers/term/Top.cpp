@@ -289,6 +289,8 @@ string Top::strLengthRangeEqual(
     slen = "fourth";
   else if (maxLen == 5)
     slen = "fifth";
+  else if (maxLen == 6)
+    slen = "sixth";
   else
     assert(false);
 

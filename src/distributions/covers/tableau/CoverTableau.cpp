@@ -275,6 +275,22 @@ bool CoverTableau::attempt(
 }
 
 
+CoverTableau& CoverTableau::operator += (const CoverTableau& tableau2)
+{
+  // This is only used for finished tableaux, e.g. for the symmetric
+  // and asymmetric parts.
+  for (auto& row2: tableau2.rows)
+    rows.push_back(row2);
+
+  assert(tricksMin == tableau2.tricksMin);
+
+  // Ignore lowerBound.
+  complexity += tableau2.complexity;
+  
+  return * this;
+}
+
+
 unsigned char CoverTableau::headroom(const CoverTableau& solution) const
 {
   return complexity.headroom(solution.complexity);
