@@ -184,9 +184,7 @@ const Cover& Covers::lookup(const Cover& cover) const
 template<class C, class T>
 void Covers::explainTemplate(
   const Tricks& tricks,
-  // const unsigned char tmin,
   const Explain& explain,
-  // const unsigned numStrategyTops,
   const C& candidates,
   const size_t pruneTrigger,
   const size_t pruneSize,
@@ -217,7 +215,7 @@ void Covers::explainTemplate(
 
     while (candIter != candidates.end())
     {
-      if (explain.skip(candIter->effectiveDepth(), candIter->symmetric()))
+      if (explain.skip(candIter->effectiveDepth(), candIter->symmetry()))
       {
         candIter++;
         continue;
@@ -395,7 +393,6 @@ void Covers::explain(
 
   if (! explain.asymmetricComponent())
   {
-    // explain.behaveSymmetrically();
     explain.behave(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricksSymm, explain, 
       solution, newTableauFlag);
@@ -403,7 +400,6 @@ void Covers::explain(
   else if (! explain.symmetricComponent())
   {
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-    // explain.behaveAntiSymmetrically();
     Covers::explainByCategory(tricksAntisymm, explain, 
       solution, newTableauFlag);
   }

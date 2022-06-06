@@ -99,6 +99,8 @@ class Cover
 
     bool antiSymmetric() const;
 
+    ExplainSymmetry symmetry() const;
+
     size_t size() const;
 
     bool operator < (const Cover& cover2) const;

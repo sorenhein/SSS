@@ -193,6 +193,15 @@ bool Cover::antiSymmetric() const
 }
 
 
+ExplainSymmetry Cover::symmetry() const
+{
+  if (symmetrizeFlag)
+    return EXPLAIN_SYMMETRIC;
+  else
+    return explainSymmetry;
+}
+
+
 size_t Cover::size() const
 {
   return tricks.size();

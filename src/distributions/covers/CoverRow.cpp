@@ -133,6 +133,17 @@ bool CoverRow::symmetric() const
 }
 
 
+ExplainSymmetry CoverRow::symmetry() const
+{
+  if (tricks.symmetric())
+    return EXPLAIN_SYMMETRIC;
+  else if (tricks.antiSymmetric())
+    return EXPLAIN_ANTI_SYMMETRIC;
+  else
+    return EXPLAIN_GENERAL;
+}
+
+
 bool CoverRow::operator < (const CoverRow& rows2) const
 {
   const unsigned mcpw1 = (complexity << 20) / weight;

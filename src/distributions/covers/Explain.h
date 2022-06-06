@@ -43,7 +43,7 @@ class Explain
 
     bool skip(
       const unsigned char effectiveDepth,
-      const bool symmetricCoverFlag) const;
+      const ExplainSymmetry coverSymmetry) const;
 
     bool symmetricComponent() const;
     bool asymmetricComponent() const;

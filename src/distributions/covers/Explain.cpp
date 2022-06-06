@@ -62,15 +62,17 @@ void Explain::behave(const ExplainSymmetry behaveIn)
 
 bool Explain::skip(
   const unsigned char effectiveDepth,
-  const bool symmetricCoverFlag) const
+  const ExplainSymmetry coverSymmetry) const
 {
   if (effectiveDepth > numStrategyTops)
     return true;
 
-  if (behaveInt == EXPLAIN_SYMMETRIC && ! symmetricCoverFlag)
+  if (behaveInt == EXPLAIN_SYMMETRIC && 
+      (coverSymmetry != EXPLAIN_SYMMETRIC))
     return true;
 
-  if (behaveInt == EXPLAIN_ANTI_SYMMETRIC && symmetricCoverFlag)
+  if (behaveInt == EXPLAIN_ANTI_SYMMETRIC && 
+      (coverSymmetry != EXPLAIN_ANTI_SYMMETRIC))
     return true;
 
   return false;

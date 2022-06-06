@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Tricks.h"
+#include "CoverCategory.h"
 
 using namespace std;
 
@@ -76,6 +77,8 @@ class CoverRow
     size_t size() const;
 
     bool symmetric() const;
+
+    ExplainSymmetry symmetry() const;
 
     bool operator < (const CoverRow& rows2) const;
 

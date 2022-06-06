@@ -1,3 +1,8 @@
+Can we change explainTemplate to start from a partial solution?
+Put it in the first stack element?
+Do we want to?
+In case of L/T logic, start from this.
+
 Current thought:
 First run a length-only and a tops-only 
 If L and T can be added, do it
