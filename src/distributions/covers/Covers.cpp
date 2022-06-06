@@ -540,6 +540,29 @@ void Covers::explain(
   // This version uses covers and puts them together into rows,
   // including possibly covers that are OR'ed together in a row.
 
+  // First test the complete cache.
+  Tricks tricks;
+  bool symmetricFlag;
+  unsigned char tmin;
+  tricks.setByResults(results, cases, tmin, symmetricFlag);
+
+  newTableauFlag = true;
+  if (tableauCache.lookup(tricks, solution))
+  {
+    solution.setMinTricks(tmin);
+    newTableauFlag = false;
+    return;
+  }
+
+  if (tricks.getWeight() == 0)
+  {
+    // TODO tableau.setTrivial(tmin) or something like that.  
+    // Then in Slist, if tableau.trivial()
+    //   cout << tableau.whatever();
+    return;
+  }
+
+
   // TODO Maybe only when it looks like it's going to get rough?
   list<unsigned char> tricksSymm, tricksAntisymm;
   Explain explain;
@@ -548,6 +571,7 @@ void Covers::explain(
 
   if (! explain.symmetricComponent() && ! explain.asymmetricComponent())
   {
+assert(false);
     // TODO Set up the actual strategy, or tableau.setTrivial(tmin)
     // or something like that.  Then in Slist, if tableau.trivial()
     //   cout << tmin
@@ -567,21 +591,6 @@ void Covers::explain(
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricksAntisymm, explain, false,
       solution, newTableauFlag);
-    return;
-  }
-
-  // TODO ?
-  // First test the complete cache.
-  Tricks tricks;
-  bool symmetricFlag;
-  unsigned char tmin;
-  tricks.setByResults(results, cases, tmin, symmetricFlag);
-
-  newTableauFlag = true;
-  if (tableauCache.lookup(tricks, solution))
-  {
-    solution.setMinTricks(explain.tricksMin());
-    newTableauFlag = false;
     return;
   }
 
