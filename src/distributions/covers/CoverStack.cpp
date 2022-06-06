@@ -41,6 +41,20 @@ typename multiset<StackEntry<T>>::const_iterator CoverStack<T>::emplace(
 
 template<class T>
 typename multiset<StackEntry<T>>::const_iterator CoverStack<T>::emplace(
+  const CoverTableau& tableauIn,
+  const Tricks& tricks,
+  const unsigned char tmin,
+  typename const set<T>::const_iterator& iterIn)
+{
+  // This method is for the row version.
+  lock_guard<mutex> lg(mtxCoverStack);
+  return multiset<StackEntry<T>>::emplace(StackEntry<T>(
+    tableauIn, tricks, tmin, iterIn));
+}
+
+
+template<class T>
+typename multiset<StackEntry<T>>::const_iterator CoverStack<T>::emplace(
   typename const set<T>::const_iterator& iterIn,
   const CoverTableau& tableauIn,
   const Tricks& additions,

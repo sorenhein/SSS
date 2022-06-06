@@ -121,6 +121,8 @@ class CoverTableau
       ProductStats& productStats,
       const bool newTableauFlag) const;
 
+    bool used() const;
+
     bool complete() const;
 
     unsigned lowerComplexityBound() const;

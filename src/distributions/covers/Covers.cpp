@@ -187,12 +187,26 @@ void Covers::explainTemplate(
   const Tricks& tricks,
   const Explain& explain,
   const C& candidates,
+  const bool partialTableauFlag,
   const size_t pruneTrigger,
   const size_t pruneSize,
   CoverStack<T>& stack,
   CoverTableau& solution)
 {
-  stack.emplace(tricks, explain.tricksMin(), candidates.begin());
+  if (partialTableauFlag)
+  {
+    // The solution is a partial one and it is placed onto the stack
+    // as a given start to the optimization.
+    stack.emplace(solution, tricks, explain.tricksMin(), 
+      candidates.begin());
+  }
+  else
+  {
+    // The solution is complete, and it is only used as a frame of
+    // reference.  The optimization proceeds from scratch.
+    stack.emplace(tricks, explain.tricksMin(), candidates.begin());
+  }
+
   tableauStats.reset();
 
   while (! stack.empty())
@@ -277,6 +291,7 @@ template void Covers::explainTemplate<CoverStore, Cover>(
   const Tricks& tricks,
   const Explain& explain,
   const CoverStore& candidates,
+  const bool partialTableauFlag,
   const size_t pruneTrigger,
   const size_t pruneSize,
   CoverStack<Cover>& stack,
@@ -286,6 +301,7 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   const Tricks& tricks,
   const Explain& explain,
   const RowStore& candidates,
+  const bool partialTableauFlag,
   const size_t pruneTrigger,
   const size_t pruneSize,
   CoverStack<CoverRow>& stack,
@@ -385,6 +401,7 @@ void Covers::findHeaviest(
 void Covers::explainByCategory(
   const list<unsigned char>& rawTricks,
   const Explain& explain,
+  const bool partialTableauFlag,
   CoverTableau& solution,
   bool& newTableauFlag)
 {
@@ -401,18 +418,34 @@ void Covers::explainByCategory(
 
   CoverStack<Cover> stack;
 
-  // Get a greedy solution.
-  // TODO Test again later whether or not this helps on average.
-timersStrat[25].start();
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, explain, coverStore, 7, 7, stack, solution);
-timersStrat[25].stop();
+  if (partialTableauFlag)
+  {
+    // Go directly to the full solve, using solution as the start.
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, true, 50000, 25000, stack, solution);
 
-  // Use this to seed the exhaustive search.
-  Covers::explainTemplate<CoverStore, Cover>(
-    tricks, explain, coverStore, 50000, 25000, stack, solution);
+    tableauCache.store(tricks, solution);
+  }
+  else
+  {
+    // Get a greedy solution.
+    // TODO Test again later whether or not this helps on average.
+    timersStrat[25].start();
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, false, 7, 7, stack, solution);
+    timersStrat[25].stop();
 
-  tableauCache.store(tricks, solution);
+    // cout << "Greedy solution\n";
+    // cout << solution.strBracket() << "\n";
+    // cout << solution.str(sumProfile);
+    // cout << (solution.complete() ? "GOODGREED\n" : "BADGREED\n");
+
+    // Use this to seed the exhaustive search.
+    Covers::explainTemplate<CoverStore, Cover>(
+      tricks, explain, coverStore, false, 50000, 25000, stack, solution);
+
+    tableauCache.store(tricks, solution);
+  }
 }
 
 
@@ -439,7 +472,7 @@ void Covers::guessStart(
 
   if (coverLengthPtr == nullptr && coverTopsPtr == nullptr)
   {
-    cout << "Partial guess: none\n";
+    // cout << "Partial guess: none\n";
     return;
   }
  
@@ -493,8 +526,8 @@ void Covers::guessStart(
     }
   }
 
-  cout << "Partial guess\n";
-  cout << soln.str(sumProfile);
+  // cout << "Partial guess\n";
+  // cout << soln.str(sumProfile);
 
 }
 
@@ -524,57 +557,55 @@ void Covers::explain(
   if (! explain.asymmetricComponent())
   {
     explain.behave(EXPLAIN_SYMMETRIC);
-    Covers::explainByCategory(tricksSymm, explain, 
+    Covers::explainByCategory(tricksSymm, explain, false,
       solution, newTableauFlag);
+    return;
   }
-  else if (! explain.symmetricComponent())
+
+  if (! explain.symmetricComponent())
   {
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-    Covers::explainByCategory(tricksAntisymm, explain, 
+    Covers::explainByCategory(tricksAntisymm, explain, false,
       solution, newTableauFlag);
+    return;
   }
-  else
-  {
-    // TODO ?
-    // First test the complete cache.
-    Tricks tricks;
-    bool symmetricFlag;
-    unsigned char tmin;
-    tricks.setByResults(results, cases, tmin, symmetricFlag);
 
-    newTableauFlag = true;
-    if (tableauCache.lookup(tricks, solution))
-    {
-      solution.setMinTricks(explain.tricksMin());
-      newTableauFlag = false;
-      return;
-    }
+  // TODO ?
+  // First test the complete cache.
+  Tricks tricks;
+  bool symmetricFlag;
+  unsigned char tmin;
+  tricks.setByResults(results, cases, tmin, symmetricFlag);
+
+  newTableauFlag = true;
+  if (tableauCache.lookup(tricks, solution))
+  {
+    solution.setMinTricks(explain.tricksMin());
+    newTableauFlag = false;
+    return;
+  }
 
 Covers::guessStart(tricks, tmin, explain);
 
-    // Do the symmetric component (keep it in solution).
-    explain.behave(EXPLAIN_SYMMETRIC);
-    Covers::explainByCategory(tricksSymm, explain, 
-      solution, newTableauFlag);
+// TODO Now we should probably subtract out the additions and resymmetrize
+// and then check again which halves are in use.
 
-    // Do the asymmetric component.
-    CoverTableau solutionAntisymm;
-    explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-    Covers::explainByCategory(tricksAntisymm, explain, 
-      solutionAntisymm, newTableauFlag);
+  // Do the symmetric component (keep it in solution).
+  explain.behave(EXPLAIN_SYMMETRIC);
+  Covers::explainByCategory(tricksSymm, explain, false,
+    solution, newTableauFlag);
 
-    // TODO Only use one solution?
-    // I guess the first stack element would get solution as
-    // its starting point.  But then the symmetric and anti-symmetric
-    // parts could start to merge within rows...
-    solution += solutionAntisymm;
-  }
+  // Do the asymmetric component.
+  CoverTableau solutionAntisymm;
+  explain.behave(EXPLAIN_ANTI_SYMMETRIC);
+  Covers::explainByCategory(tricksAntisymm, explain, false,
+    solutionAntisymm, newTableauFlag);
 
-
-  // cout << "Greedy solution\n";
-  // cout << solution.strBracket() << "\n";
-  // cout << solution.str(sumProfile);
-  // cout << (solution.complete() ? "GOODGREED\n" : "BADGREED\n");
+  // TODO Only use one solution?
+  // I guess the first stack element would get solution as
+  // its starting point.  But then the symmetric and anti-symmetric
+  // parts could start to merge within rows...
+  solution += solutionAntisymm;
 }
 
 
@@ -611,7 +642,7 @@ void Covers::explainManually(
 
   CoverStack<CoverRow> stack;
   Covers::explainTemplate<RowStore, CoverRow>(tricks,
-    explain, rowStore, 50000, 25000, stack, solution);
+    explain, rowStore, false, 50000, 25000, stack, solution);
 
   tableauRowCache.store(tricks, solution);
 }

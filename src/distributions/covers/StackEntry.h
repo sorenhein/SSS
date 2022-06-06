@@ -35,7 +35,19 @@ struct StackEntry
     const unsigned char tmin,
     typename const set<T>::const_iterator& iterIn)
   {
-    // This method is for the row version.
+    tableau.init(tricks, tmin);
+    iter = iterIn;
+  };
+
+  StackEntry(
+    const CoverTableau& tableauIn,
+    const Tricks& tricks,
+    const unsigned char tmin,
+    typename const set<T>::const_iterator& iterIn)
+  {
+    if (tableauIn.used())
+      tableau = tableauIn;
+
     tableau.init(tricks, tmin);
     iter = iterIn;
   };

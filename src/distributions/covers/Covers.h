@@ -63,6 +63,7 @@ class Covers
       const Tricks& tricks,
       const Explain& explain,
       const C& candidates,
+      const bool partialTableauFlag,
       const size_t pruneTrigger,
       const size_t pruneSize,
       CoverStack<T>& stack,
@@ -84,6 +85,7 @@ class Covers
     void explainByCategory(
       const list<unsigned char>& rawTricks,
       const Explain& explain,
+      const bool partialTableauFlag,
       CoverTableau& solution,
       bool& newTableauFlag);
 

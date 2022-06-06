@@ -344,6 +344,12 @@ void CoverTableau::updateStats(
 }
 
 
+bool CoverTableau::used() const
+{
+  return (rows.size() > 0);
+}
+
+
 bool CoverTableau::complete() const
 {
   return (rows.size() > 0 && residuals.getWeight() == 0);
