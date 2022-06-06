@@ -13,7 +13,6 @@
 #include <string>
 
 #include "Tricks.h"
-#include "CoverCategory.h"
 
 using namespace std;
 
@@ -21,6 +20,7 @@ class Cover;
 class Profile;
 class ProductStats;
 
+enum ExplainSymmetry: unsigned;
 
 
 class CoverRow

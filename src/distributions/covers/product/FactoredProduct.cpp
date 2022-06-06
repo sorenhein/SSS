@@ -9,6 +9,8 @@
 #include "FactoredProduct.h"
 #include "Product.h"
 
+#include "../CoverCategory.h"
+
 #include "../../../utils/Compare.h"
 #include "../../../utils/table.h"
 
@@ -59,6 +61,12 @@ unsigned char FactoredProduct::getComplexity() const
 unsigned char FactoredProduct::effectiveDepth() const
 {
   return canonicalPtr->effectiveDepth();
+}
+
+
+ExplainComposition FactoredProduct::composition() const
+{
+  return canonicalPtr->composition();
 }
 
 

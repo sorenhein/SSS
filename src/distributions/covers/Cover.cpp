@@ -202,6 +202,13 @@ ExplainSymmetry Cover::symmetry() const
 }
 
 
+ExplainComposition Cover::composition() const
+{
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->composition();
+}
+
+
 size_t Cover::size() const
 {
   return tricks.size();

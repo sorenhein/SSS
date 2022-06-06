@@ -74,6 +74,13 @@ class Covers
       list<unsigned char>& tricksAntisymm,
       Explain& explain) const;
 
+    void findHeaviest(
+      const Tricks& tricks,
+      const Explain& explain,
+      Cover const * coverPtr,
+      Tricks& additions,
+      unsigned& rawWeightAdder) const;
+
     void explainByCategory(
       const list<unsigned char>& rawTricks,
       const Explain& explain,

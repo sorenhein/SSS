@@ -11,7 +11,8 @@
 
 #include <string>
 
-#include "CoverCategory.h"
+enum ExplainSymmetry: unsigned;
+enum ExplainComposition: unsigned;
 
 
 using namespace std;
@@ -27,6 +28,8 @@ class Explain
 
     ExplainSymmetry explain;
 
+    ExplainComposition composition;
+
     ExplainSymmetry behaveInt;
 
 
@@ -39,11 +42,18 @@ class Explain
 
     void setTops(const unsigned numStrategyTopsIn);
 
+    void setComposition(const ExplainComposition compositionIn);
+
     void behave(const ExplainSymmetry behaveIn);
 
     bool skip(
       const unsigned char effectiveDepth,
       const ExplainSymmetry coverSymmetry) const;
+
+    bool skip(
+      const unsigned char effectiveDepth,
+      const ExplainSymmetry coverSymmetry,
+      const ExplainComposition coverComposition) const;
 
     bool symmetricComponent() const;
     bool asymmetricComponent() const;

@@ -37,6 +37,7 @@
 #include "Covers.h"
 #include "CoverStack.h"
 #include "Explain.h"
+#include "CoverCategory.h"
 
 #include "tableau/TableauStats.h"
 
@@ -331,6 +332,46 @@ void Covers::partitionResults(
   }
 
   explain.setTricks(tmin, weightSymm, weightAntisymm);
+}
+
+
+void Covers::findHeaviest(
+  const Tricks& tricks,
+  const Explain& explain,
+  Cover const * coverPtr,
+  Tricks& additions,
+  unsigned& rawWeightAdder) const
+{
+  // This find the best (highest-weight) cover consistent with explain.
+  // For example, it can find the length-only or tops-only winner.
+
+  rawWeightAdder = 0;
+  unsigned weightAdder = 0;
+  coverPtr = nullptr;
+  CoverRow row;
+
+  for (auto& cover: coverStore)
+  {
+    if (explain.skip(
+        cover.effectiveDepth(),
+        cover.symmetry(),
+        cover.composition()))
+    {
+      // Select consistent candidates.
+      continue;
+    }
+
+    if (row.possibleAdd(cover, tricks, cases, additions, weightAdder))
+    {
+      if (weightAdder > rawWeightAdder)
+      {
+        coverPtr = &cover;
+        rawWeightAdder = weightAdder;
+      }
+    }
+  }
+
+  assert(coverPtr != nullptr);
 }
 
 

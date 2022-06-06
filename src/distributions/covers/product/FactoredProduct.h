@@ -15,6 +15,7 @@ class Product;
 class Profile;
 enum Opponent: unsigned;
 enum CompareType: unsigned;
+enum ExplainComposition: unsigned;
 
 using namespace std;
 
@@ -48,6 +49,8 @@ class FactoredProduct
     unsigned char getComplexity() const;
 
     unsigned char effectiveDepth() const;
+
+    ExplainComposition composition() const;
 
     bool explainable() const;
 

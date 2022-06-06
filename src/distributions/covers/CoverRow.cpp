@@ -13,6 +13,7 @@
 
 #include "CoverRow.h"
 #include "Cover.h"
+#include "CoverCategory.h"
 
 
 CoverRow::CoverRow()

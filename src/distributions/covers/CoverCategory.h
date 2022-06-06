@@ -13,7 +13,7 @@
 using namespace std;
 
 
-enum ExplainSymmetry
+enum ExplainSymmetry: unsigned
 {
   EXPLAIN_SYMMETRIC = 0,
   EXPLAIN_ANTI_SYMMETRIC = 1,
@@ -22,7 +22,7 @@ enum ExplainSymmetry
   EXPLAIN_SYMMETRY_UNSET = 4
 };
 
-enum ExplainComposition
+enum ExplainComposition: unsigned
 {
   EXPLAIN_LENGTH_ONLY = 0,
   EXPLAIN_TOPS_ONLY = 1,

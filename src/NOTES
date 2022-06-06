@@ -1,3 +1,25 @@
+In explain:
+
+// Tricks are reduced by additions.
+explain.setCompositions(EXPLAIN_LENGTH_ONLY);
+guessDominant(tricks, explain, rowLength, additionsLength);
+
+// Restore tricks
+explain.setCompositions(EXPLAIN_TOPS_ONLY);
+guessDominant(tricks, explain, rowTops, additionsTops);
+
+if (additionsLength == additionsTops)
+  go with length
+else if (additionsLength < additionsTops)
+  go with tops
+else if (additionsTops < additionsLength)
+  go with length
+else if (additionsLength + additionsTops <= original tricks)
+  add two rows
+else
+  add one row with "or"
+  
+
 Can we change explainTemplate to start from a partial solution?
 Put it in the first stack element?
 Do we want to?

@@ -13,7 +13,6 @@
 #include <string>
 
 #include "Tricks.h"
-#include "CoverCategory.h"
 
 using namespace std;
 
@@ -22,6 +21,8 @@ class Profile;
 class ProductStats;
 class ProductMemory;
 
+enum ExplainSymmetry: unsigned;
+enum ExplainComposition: unsigned;
 
 class Cover
 {
@@ -100,6 +101,8 @@ class Cover
     bool antiSymmetric() const;
 
     ExplainSymmetry symmetry() const;
+
+    ExplainComposition composition() const;
 
     size_t size() const;
 

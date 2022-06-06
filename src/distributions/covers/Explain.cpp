@@ -8,6 +8,8 @@
 
 #include "Explain.h"
 
+#include "CoverCategory.h"
+
 #include <cassert>
 
 
@@ -38,6 +40,12 @@ void Explain::setTricks(
 void Explain::setTops(const unsigned numStrategyTopsIn)
 {
   numStrategyTops = numStrategyTopsIn;
+}
+
+
+void Explain::setComposition(const ExplainComposition compositionIn)
+{
+  composition = compositionIn;
 }
 
 
@@ -73,6 +81,25 @@ bool Explain::skip(
 
   if (behaveInt == EXPLAIN_ANTI_SYMMETRIC && 
       (coverSymmetry != EXPLAIN_ANTI_SYMMETRIC))
+    return true;
+
+  return false;
+}
+
+
+bool Explain::skip(
+  const unsigned char effectiveDepth,
+  const ExplainSymmetry coverSymmetry,
+  const ExplainComposition coverComposition) const
+{
+  if (Explain::skip(effectiveDepth, coverSymmetry))
+    return true;
+
+  if (composition == EXPLAIN_LENGTH_ONLY &&
+      coverComposition != EXPLAIN_LENGTH_ONLY)
+    return true;
+  else if (composition == EXPLAIN_TOPS_ONLY &&
+      coverComposition != EXPLAIN_TOPS_ONLY)
     return true;
 
   return false;
