@@ -1,3 +1,28 @@
+So splitting results into symmetric and anti-symmetric is very fast
+for D == 2 (248 comparisons, not 35367) but pretty poor:
+Average complexity (8.11, 3.52) instead of (6.21, 3.43).
+
+Examples of sub-optimalities:
+
+- 5/183: 
+  "East has at most a singleton" vs (1, 2, 3)
+
+  "West has a singleton [1-1]" or (1, 2)
+  "East is void" (3)
+  So there is a single mixed explanation 
+
+- 8/4892, KJ9/T8:
+  Effectively "West has the queen" or (2, 4, 6, 7)
+  "West has the stiff ace" vs. (3)
+
+  Either has stiff ace (3, 4)
+  West has AQ (6, 7)
+  West has stiff Q (2)
+  So there is a better mixture of explanations
+
+
+
+
 SurvivorList is not going to be useful to reduce result vectors:
 It maps full to reduced distributions when a NS rank (or two) disappears.
 It does not take into account that some ranks are not needed.
@@ -60,12 +85,6 @@ depth 5 to 4? Then solve more exhaustively?
 Or get to symmetric setup?  Or both?  Compare in terms of time?
 Or get from 5 to each of 4, 3, 2 directly.  Try each and choose
 the best.
-
-Getting to symmetric setup:
-Subtract out min(low, symmetric) element across vector.
-The rest is explained separately.
-The symmetric part is added.
-This may not be optimal, but it's not so bad, probably.
 
 Getting to depth-1 setup:
 We somehow have to subtract out the minimum over each equivalence

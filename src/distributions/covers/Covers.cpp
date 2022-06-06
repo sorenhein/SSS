@@ -319,7 +319,6 @@ void Covers::partitionResults(
     const unsigned char f = riterf->getTricks() - tmin;
     const unsigned char b = riterb->getTricks() - tmin;
     const unsigned char mint = min(f, b);
-    const unsigned char maxt = max(f, b);
 
     * titerSymm = mint;
     * titerAsymm = f - mint;
