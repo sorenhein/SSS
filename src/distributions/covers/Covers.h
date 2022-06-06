@@ -71,8 +71,14 @@ class Covers
     void partitionResults(
       const list<Result>& results,
       list<unsigned char>& tricksSymm,
-      list<unsigned char>& tricksAsymm,
+      list<unsigned char>& tricksAntisymm,
       Explain& explain) const;
+
+    void explainByCategory(
+      const list<unsigned char>& rawTricks,
+      const Explain& explain,
+      CoverTableau& solution,
+      bool& newTableauFlag);
 
 
   public:
