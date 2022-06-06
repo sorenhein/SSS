@@ -390,6 +390,7 @@ distributions/covers/RowStore.obj: distributions/covers/CoverRow.h
 distributions/covers/RowStore.obj: distributions/covers/Tricks.h
 distributions/covers/Tricks.obj: distributions/covers/Tricks.h
 distributions/covers/Tricks.obj: distributions/covers/TrickConvert.h
+distributions/covers/Tricks.obj: distributions/covers/CoverCategory.h
 distributions/covers/Tricks.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/Tricks.obj: distributions/covers/product/Profile.h
 distributions/covers/Tricks.obj: strategies/result/Result.h

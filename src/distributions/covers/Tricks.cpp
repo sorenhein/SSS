@@ -14,6 +14,7 @@
 
 #include "Tricks.h"
 #include "TrickConvert.h"
+#include "CoverCategory.h"
 
 #include "product/FactoredProduct.h"
 #include "product/Profile.h"
@@ -111,7 +112,7 @@ void Tricks::setByResults(
   const list<Result>& results,
   const vector<unsigned char>& cases,
   unsigned char& tricksMin,
-  bool& symmetricFlag)
+  ExplainSymmetry& explain)
 {
   Tricks::resize(results.size());
 
@@ -151,7 +152,12 @@ void Tricks::setByResults(
   }
   trickConvert.finish(counter, accum, position, signature[position]);
 
-  symmetricFlag = Tricks::symmetric();
+  if (Tricks::symmetric())
+    explain = EXPLAIN_SYMMETRIC;
+  else if (Tricks::antiSymmetric())
+    explain = EXPLAIN_ANTI_SYMMETRIC;
+  else
+    explain = EXPLAIN_GENERAL;
 
   Tricks::weigh(cases);
 }

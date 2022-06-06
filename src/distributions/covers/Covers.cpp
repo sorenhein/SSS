@@ -555,8 +555,8 @@ void Covers::explain(
   // First test the complete cache.
   Tricks tricks;
   unsigned char tmin;
-  bool symmetricFlag;
-  tricks.setByResults(results, cases, tmin, symmetricFlag);
+  ExplainSymmetry explainTricks;
+  tricks.setByResults(results, cases, tmin, explainTricks);
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
@@ -579,7 +579,7 @@ void Covers::explain(
   // be sufficient.
   Explain explain;
   explain.setTops(numStrategyTops);
-  if (symmetricFlag)
+  if (explainTricks == EXPLAIN_SYMMETRIC)
   {
     explain.setTricks(tmin, 1, 0); // To have something symmetric
     explain.behave(EXPLAIN_SYMMETRIC);
@@ -588,33 +588,64 @@ void Covers::explain(
     return;
   }
 
-
-  // TODO Maybe only when it looks like it's going to get rough?
-  // Should this be a method in Tricks?  We can still do explain here
-  list<unsigned char> tricksSymm, tricksAntisymm;
-  Covers::partitionResults(results, tricksSymm, tricksAntisymm, explain);
-  explain.setTops(numStrategyTops);
-
-  if (! explain.symmetricComponent())
+  if (explainTricks == EXPLAIN_ANTI_SYMMETRIC)
   {
+    explain.setTricks(tmin, 0, 1); // To have something anti-symmetric
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-    Covers::explainByCategory(tricksAntisymm, explain, false,
+    Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     return;
   }
 
-Covers::guessStart(tricks, tmin, explain);
+
+  // TODO
+  // 7/1683 Strategy #0 has gotten worse?
+  // The tricks somehow come out anti-symmetric?
+  // No wonder: It's nonsense.
+  // In each group of 3 bits, at least one of first and second half
+  // must be zero.
+  // In order to split into symmetric and non-symmetric, 
+  //
+  // findHeaviest operates on a new struct
+  // guessStart returns a bool on success, and also
+  // a partial solution and the corresponding additions.
+  // We subtract out the additions from the tricks, leaving residuals.
+  // We split the residuals into two Tricks (in Tricks?!)
+  // We use the partial solution as the basis for first a symmetric
+  // and then an anti-symmetric solution (for both, if present).
+  //
+  // Time and complexity spreadsheet:
+  // Original 4-day effort
+  // Split symmetry and anti-symmetry, 45 minutes but poor
+  // Using guessStart and then symmetry/anti-symmetry
+  // (Using guessStart and the original effort)
+  // Storing the products, covers and tableaux used and reading in
+  // (so much fewer comparisons).
+  // Should we try a couple of guesses?
+  // Do we know ahead of time it's going to get rough?
+  //
+  // Could split explain into setBasics and setWeights?
+
+
+  list<unsigned char> tricksSymm, tricksAntisymm;
+  Covers::partitionResults(results, tricksSymm, tricksAntisymm, explain);
+  // TODO Don't need to repeat this here
+  explain.setTops(numStrategyTops);
+
+// Covers::guessStart(tricks, tmin, explain);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.
 
   // Do the symmetric component (keep it in solution).
+  explain.setTricks(tmin, 1, 0); // To have something symmetric
   explain.behave(EXPLAIN_SYMMETRIC);
   Covers::explainByCategory(tricksSymm, explain, false,
     solution, newTableauFlag);
 
   // Do the asymmetric component.
   CoverTableau solutionAntisymm;
+  explain.setTricks(tmin, 0, 1); // To have something anti-symmetric
   explain.behave(EXPLAIN_ANTI_SYMMETRIC);
   Covers::explainByCategory(tricksAntisymm, explain, false,
     solutionAntisymm, newTableauFlag);
@@ -634,8 +665,8 @@ void Covers::explainManually(
   // This version uses finished rows.
   Tricks tricks;
   unsigned char tmin;
-  bool symmetricFlag;
-  tricks.setByResults(results, cases, tmin, symmetricFlag);
+  ExplainSymmetry explainTricks;
+  tricks.setByResults(results, cases, tmin, explainTricks);
 
   if (tableauRowCache.lookup(tricks, solution))
   {
@@ -645,7 +676,7 @@ void Covers::explainManually(
 
   // TODO For now
   Explain explain;
-  if (symmetricFlag)
+  if (explainTricks == EXPLAIN_SYMMETRIC)
   {
     explain.setTricks(tmin, 1, 0);
     explain.behave(EXPLAIN_SYMMETRIC);

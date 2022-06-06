@@ -19,6 +19,8 @@ class FactoredProduct;
 class Profile;
 class Result;
 
+enum ExplainSymmetry: unsigned;
+
 
 class Tricks
 {
@@ -61,7 +63,7 @@ class Tricks
       const list<Result>& results,
       const vector<unsigned char>& cases,
       unsigned char& tricksMin,
-      bool& symmetricFlag);
+      ExplainSymmetry& explain);
 
     bool setByProduct(
       const FactoredProduct& factoredProduct,
