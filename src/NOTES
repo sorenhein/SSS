@@ -1,38 +1,5 @@
 In explain:
 
-// Tricks are reduced by additions.
-explain.setCompositions(EXPLAIN_LENGTH_ONLY);
-guessDominant(tricks, explain, rowLength, additionsLength);
-
-// Restore tricks
-explain.setCompositions(EXPLAIN_TOPS_ONLY);
-guessDominant(tricks, explain, rowTops, additionsTops);
-
-if (additionsLength == additionsTops)
-  go with length
-else if (additionsLength < additionsTops)
-  go with tops
-else if (additionsTops < additionsLength)
-  go with length
-else if (additionsLength + additionsTops <= original tricks)
-  add two rows
-else
-  add one row with "or"
-  
-
-Can we change explainTemplate to start from a partial solution?
-Put it in the first stack element?
-Do we want to?
-In case of L/T logic, start from this.
-
-Current thought:
-First run a length-only and a tops-only 
-If L and T can be added, do it
-If L subsumes T, only L
-If T subsumes L, only T
-If L or T can be added, do it
-
-From then on:
 Do the regular search, or
 Do the symm/anti-symm split
 
@@ -100,6 +67,23 @@ CC compl            4.98        8.11       10.82       12.18       12.54
 CC rowc             3.10        3.52        3.79        3.87        3.88
 CC strats       94148.00   188020.00   245119.00   263422.00   265999.00
 CC unex           187.00      187.00      187.00      187.00
+
+
+If the guesser is lucky, we're done already!
+
+5/183 #0: Finishes
+8/4892: 
+11/130538: Comes up with 2-3 or (West 1+H without A),
+  which adds 2+1 cases.  (West HH any) would have been better as it
+  adds 4 cases, but it has fewer overlaps with 2-3 length.
+  So we should somehow take into account that the tops are incremental
+  to the length, and only the additions count.
+11/137056: Starts out OK ("East has at most a tripleton").
+
+So if we have the length result, perhaps make that row already.
+Then findHeaviest attempts to add to it.
+But then we cannot use additions to tell whether or not there was
+overlap...
 
 
 Examples of sub-optimalities:

@@ -77,7 +77,7 @@ class Covers
     void findHeaviest(
       const Tricks& tricks,
       const Explain& explain,
-      Cover const * coverPtr,
+      Cover const *& coverPtr,
       Tricks& additions,
       unsigned& rawWeightAdder) const;
 
@@ -86,6 +86,11 @@ class Covers
       const Explain& explain,
       CoverTableau& solution,
       bool& newTableauFlag);
+
+    void guessStart(
+      const Tricks& tricks,
+      const unsigned char tmin,
+      Explain& explain) const;
 
 
   public:

@@ -36,6 +36,7 @@ class CoverTableau
 {
   friend StackEntry<Cover>;
   friend StackEntry<CoverRow>;
+  friend class Covers;
 
   private:
 

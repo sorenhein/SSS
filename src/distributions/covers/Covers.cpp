@@ -338,17 +338,25 @@ void Covers::partitionResults(
 void Covers::findHeaviest(
   const Tricks& tricks,
   const Explain& explain,
-  Cover const * coverPtr,
+  Cover const *& coverPtr,
   Tricks& additions,
   unsigned& rawWeightAdder) const
 {
   // This find the best (highest-weight) cover consistent with explain.
   // For example, it can find the length-only or tops-only winner.
+  // Note that coverPtr == nullptr if nothing is found, which is
+  // indeed possible (e.g. 8/4894, Strategy #1).
 
   rawWeightAdder = 0;
-  unsigned weightAdder = 0;
   coverPtr = nullptr;
+
+  unsigned weightLocal = 0;
+
+  Tricks additionsLocal;
+  additionsLocal.resize(tricks.size());
+
   CoverRow row;
+  row.resize(tricks.size());
 
   for (auto& cover: coverStore)
   {
@@ -361,17 +369,16 @@ void Covers::findHeaviest(
       continue;
     }
 
-    if (row.possibleAdd(cover, tricks, cases, additions, weightAdder))
+    if (row.possibleAdd(cover, tricks, cases, additionsLocal, weightLocal))
     {
-      if (weightAdder > rawWeightAdder)
+      if (weightLocal > rawWeightAdder)
       {
         coverPtr = &cover;
-        rawWeightAdder = weightAdder;
+        additions = additionsLocal;
+        rawWeightAdder = weightLocal;
       }
     }
   }
-
-  assert(coverPtr != nullptr);
 }
 
 
@@ -408,6 +415,88 @@ timersStrat[25].stop();
   tableauCache.store(tricks, solution);
 }
 
+
+void Covers::guessStart(
+  const Tricks& tricks,
+  const unsigned char tmin,
+  Explain& explain) const
+{
+  explain.setComposition(EXPLAIN_LENGTH_ONLY);
+  Cover const * coverLengthPtr = nullptr;
+  Tricks additionsLength;
+  additionsLength.resize(tricks.size());
+  unsigned rawWeightAdderLength;
+  Covers::findHeaviest(tricks, explain,
+    coverLengthPtr, additionsLength, rawWeightAdderLength);
+ 
+  explain.setComposition(EXPLAIN_TOPS_ONLY);
+  Cover const * coverTopsPtr = nullptr;
+  Tricks additionsTops;
+  additionsTops.resize(tricks.size());
+  unsigned rawWeightAdderTops;
+  Covers::findHeaviest(tricks, explain,
+    coverTopsPtr, additionsTops, rawWeightAdderTops);
+
+  if (coverLengthPtr == nullptr && coverTopsPtr == nullptr)
+  {
+    cout << "Partial guess: none\n";
+    return;
+  }
+ 
+  CoverTableau soln;
+  soln.init(tricks, tmin);
+
+  if (additionsLength == additionsTops || 
+      additionsTops <= additionsLength)
+  {
+    // Go with length
+    // assert(coverLengthPtr != nullptr);
+// cout << "Length only" << endl;
+    soln.addRow(* coverLengthPtr);
+  }
+  else if (additionsLength <= additionsTops)
+  {
+    // Go with tops
+    // assert(coverTopsPtr != nullptr);
+// cout << "Tops only" << endl;
+// cout << "Cover " << coverTopsPtr->str(sumProfile) << endl;
+// cout << "length wgt " << rawWeightAdderLength << endl;
+// cout << "length tricks\n" << additionsLength.strList() << endl;
+// cout << "tops wgt " << rawWeightAdderTops << endl;
+// cout << "tops tricks\n" << additionsTops.strList() << endl;
+    soln.addRow(* coverTopsPtr);
+  }
+  else
+  {
+    // TODO More efficiently?
+    Tricks additionsSum = additionsLength;
+    additionsSum += additionsTops;
+
+    if (additionsSum <= tricks)
+    {
+      // Go with two separate rows
+      // assert(coverLengthPtr != nullptr);
+      // assert(coverTopsPtr != nullptr);
+// cout << "Length and tops in two rows" << endl;
+      soln.addRow(* coverLengthPtr);
+      soln.addRow(* coverTopsPtr);
+    }
+    else
+    {
+      // Go with one row and and "OR"
+      // assert(coverLengthPtr != nullptr);
+      // assert(coverTopsPtr != nullptr);
+// cout << "Length and tops in one row" << endl;
+      soln.addRow(* coverLengthPtr);
+      soln.extendRow(* coverTopsPtr, additionsTops, 
+        rawWeightAdderTops, 0);
+    }
+  }
+
+  cout << "Partial guess\n";
+  cout << soln.str(sumProfile);
+
+}
 
 void Covers::explain(
   const list<Result>& results,
@@ -460,6 +549,8 @@ void Covers::explain(
       newTableauFlag = false;
       return;
     }
+
+Covers::guessStart(tricks, tmin, explain);
 
     // Do the symmetric component (keep it in solution).
     explain.behave(EXPLAIN_SYMMETRIC);
