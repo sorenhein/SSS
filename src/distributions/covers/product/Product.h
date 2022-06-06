@@ -19,6 +19,8 @@
 #include <vector>
 #include <string>
 
+#include "../CoverCategory.h"
+
 #include "../term/Length.h"
 #include "../term/Top.h"
 
@@ -74,6 +76,8 @@ class Product
     unsigned char size() const;
 
     unsigned char effectiveDepth() const;
+
+    ExplainComposition composition() const;
 
     bool explainable() const;
 

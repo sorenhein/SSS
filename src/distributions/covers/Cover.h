@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Tricks.h"
+#include "CoverCategory.h"
 
 using namespace std;
 
@@ -36,7 +37,7 @@ class Cover
     unsigned char numDist;
 
     // Set if the cover is symmetric without being symmetrized.
-    bool symmetricFlag;
+    ExplainSymmetry explainSymmetry;
 
     // Set if the factored product is effectively to be mirrored.
     bool symmetrizeFlag;
@@ -54,7 +55,7 @@ class Cover
       ProductMemory& productMemory,
       const Profile& sumProfile,
       const ProfilePair& profilePair,
-      const bool symmetricFlagIn,
+      const bool symmetricFlag,
       const bool symmetrizeFlagIn);
 
     void setExisting(
@@ -95,6 +96,8 @@ class Cover
     bool symmetrized() const;
 
     bool symmetric() const;
+
+    bool antiSymmetric() const;
 
     size_t size() const;
 

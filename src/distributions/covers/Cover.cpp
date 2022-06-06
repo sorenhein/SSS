@@ -29,7 +29,7 @@ void Cover::reset()
   factoredProductPtr = nullptr;
   tricks.clear();
   mcpw = 0;
-  symmetricFlag = false;
+  explainSymmetry = EXPLAIN_SYMMETRY_UNSET;
   symmetrizeFlag = false;
   code = 0;
 }
@@ -39,7 +39,7 @@ void Cover::set(
   ProductMemory& productMemory,
   const Profile& sumProfile,
   const ProfilePair& profilePair,
-  const bool symmetricFlagIn,
+  const bool symmetricFlag,
   const bool symmetrizeFlagIn)
 {
   // The product may or may not already be in memory.
@@ -47,7 +47,11 @@ void Cover::set(
   factoredProductPtr = 
     productMemory.enterOrLookup(sumProfile, profilePair);
 
-  symmetricFlag = symmetricFlagIn;
+  if (symmetricFlag)
+    explainSymmetry = EXPLAIN_SYMMETRIC;
+  else
+    explainSymmetry = EXPLAIN_GENERAL;
+
   symmetrizeFlag = symmetrizeFlagIn;
 
   code = profilePair.getCode(sumProfile);
@@ -81,6 +85,14 @@ bool Cover::setByProduct(
     cases))
   {
     return false;
+  }
+
+  if (explainSymmetry != EXPLAIN_SYMMETRIC)
+  {
+    if (tricks.antiSymmetric() && ! symmetrizeFlag)
+      explainSymmetry = EXPLAIN_ANTI_SYMMETRIC;
+    else
+      explainSymmetry = EXPLAIN_GENERAL;
   }
   
   mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
@@ -171,7 +183,13 @@ bool Cover::symmetrized() const
 
 bool Cover::symmetric() const
 {
-  return (symmetricFlag || symmetrizeFlag);
+  return ((explainSymmetry == EXPLAIN_SYMMETRIC) || symmetrizeFlag);
+}
+
+
+bool Cover::antiSymmetric() const
+{
+  return ((explainSymmetry == EXPLAIN_ANTI_SYMMETRIC) && ! symmetrizeFlag);
 }
 
 

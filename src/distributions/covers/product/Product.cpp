@@ -188,6 +188,24 @@ unsigned char Product::effectiveDepth() const
 }
 
 
+ExplainComposition Product::composition() const
+{
+  const bool lengthFlag = length.used();
+
+  if (topSize == 0 || tops.empty())
+  {
+    if (lengthFlag)
+      return EXPLAIN_LENGTH_ONLY;
+    else
+      return EXPLAIN_COMPOSITION_UNSET;
+  }
+  else if (lengthFlag)
+    return EXPLAIN_MIXED_TERMS;
+  else
+    return EXPLAIN_TOPS_ONLY;
+}
+
+
 bool Product::explainable() const
 {
   if (activeCount == 0)

@@ -11,6 +11,8 @@
 
 #include <string>
 
+#include "CoverCategory.h"
+
 
 using namespace std;
 
@@ -18,15 +20,6 @@ using namespace std;
 class Explain
 {
   private:
-
-    enum ExplainSymmetry
-    {
-      EXPLAIN_SYMMETRIC = 0,
-      EXPLAIN_ASYMMETRIC = 1,
-      EXPLAIN_GENERAL = 2,
-      EXPLAIN_TRIVIAL = 3
-    };
-
 
     unsigned numStrategyTops;
 
@@ -47,7 +40,7 @@ class Explain
     void setTops(const unsigned numStrategyTopsIn);
 
     void behaveSymmetrically();
-    void behaveAsymmetrically();
+    void behaveAntiSymmetrically();
     void behaveGenerally();
 
     bool skip(

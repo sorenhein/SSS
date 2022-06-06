@@ -26,7 +26,7 @@ void Explain::setTricks(
     if (weightAsymm == 0)
       explain = EXPLAIN_TRIVIAL;
     else
-      explain = EXPLAIN_ASYMMETRIC;
+      explain = EXPLAIN_ANTI_SYMMETRIC;
   }
   else if (weightAsymm == 0)
     explain = EXPLAIN_SYMMETRIC;
@@ -48,10 +48,10 @@ void Explain::behaveSymmetrically()
 }
 
 
-void Explain::behaveAsymmetrically()
+void Explain::behaveAntiSymmetrically()
 {
   assert(Explain::asymmetricComponent());
-  behave = EXPLAIN_ASYMMETRIC;
+  behave = EXPLAIN_ANTI_SYMMETRIC;
 }
 
 
@@ -72,7 +72,7 @@ bool Explain::skip(
   if (behave == EXPLAIN_SYMMETRIC && ! symmetricCoverFlag)
     return true;
 
-  if (behave == EXPLAIN_ASYMMETRIC && symmetricCoverFlag)
+  if (behave == EXPLAIN_ANTI_SYMMETRIC && symmetricCoverFlag)
     return true;
 
   return false;
@@ -87,7 +87,7 @@ bool Explain::symmetricComponent() const
 
 bool Explain::asymmetricComponent() const
 {
-  return (explain == EXPLAIN_ASYMMETRIC || explain == EXPLAIN_GENERAL);
+  return (explain == EXPLAIN_ANTI_SYMMETRIC || explain == EXPLAIN_GENERAL);
 }
 
 

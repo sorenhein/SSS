@@ -401,7 +401,7 @@ timersStrat[25].stop();
       return;
     }
 
-    explain.behaveAsymmetrically();
+    explain.behaveAntiSymmetrically();
     CoverStack<Cover> stack;
 
     // Get a greedy solution.
@@ -473,7 +473,7 @@ timersStrat[25].stop();
     }
     else
     {
-      explain.behaveAsymmetrically();
+      explain.behaveAntiSymmetrically();
       CoverStack<Cover> stack;
 
       // Get a greedy solution.

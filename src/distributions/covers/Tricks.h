@@ -88,6 +88,8 @@ class Tricks
 
     bool symmetric() const;
 
+    bool antiSymmetric() const;
+
     Tricks& operator += (const Tricks& tricks2);
 
     Tricks& operator -= (const Tricks& tricks2);

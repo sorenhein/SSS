@@ -360,6 +360,26 @@ bool Tricks::symmetric() const
 }
 
 
+bool Tricks::antiSymmetric() const
+{
+  const size_t offset = signature.size() / 2;
+  for (size_t i = 0; i < offset; i++)
+  {
+    if ((length & 1) && i+1 == offset)
+    {
+      // There is a middle element that should not be reproduced
+      // on the high side.
+      const size_t limited = trickConvert.limit(lastForward, signature[i]);
+      if (limited & signature[i + offset])
+        return false;
+    }
+    else if (signature[i] & signature[i + offset])
+      return false;
+  }
+  return true;
+}
+
+
 Tricks& Tricks::operator += (const Tricks& tricks2)
 {
   // No checking that we don't go out of the positive range (0..3).
