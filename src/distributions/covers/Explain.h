@@ -27,7 +27,7 @@ class Explain
 
     ExplainSymmetry explain;
 
-    ExplainSymmetry behave;
+    ExplainSymmetry behaveInt;
 
 
   public:
@@ -35,13 +35,11 @@ class Explain
     void setTricks(
       const unsigned char trickMinIn,
       const unsigned weightSymm,
-      const unsigned weightAsymm);
+      const unsigned weightAntisymm);
 
     void setTops(const unsigned numStrategyTopsIn);
 
-    void behaveSymmetrically();
-    void behaveAntiSymmetrically();
-    void behaveGenerally();
+    void behave(const ExplainSymmetry behaveIn);
 
     bool skip(
       const unsigned char effectiveDepth,

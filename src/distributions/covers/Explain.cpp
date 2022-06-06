@@ -17,18 +17,18 @@ using namespace std;
 void Explain::setTricks(
   const unsigned char tricksMinIn,
   const unsigned weightSymm,
-  const unsigned weightAsymm)
+  const unsigned weightAntisymm)
 {
   tricksMinInt = tricksMinIn;
 
   if (weightSymm == 0)
   {
-    if (weightAsymm == 0)
+    if (weightAntisymm == 0)
       explain = EXPLAIN_TRIVIAL;
     else
       explain = EXPLAIN_ANTI_SYMMETRIC;
   }
-  else if (weightAsymm == 0)
+  else if (weightAntisymm == 0)
     explain = EXPLAIN_SYMMETRIC;
   else
     explain = EXPLAIN_GENERAL;
@@ -41,24 +41,22 @@ void Explain::setTops(const unsigned numStrategyTopsIn)
 }
 
 
-void Explain::behaveSymmetrically()
+void Explain::behave(const ExplainSymmetry behaveIn)
 {
-  assert(Explain::symmetricComponent());
-  behave = EXPLAIN_SYMMETRIC;
-}
-
-
-void Explain::behaveAntiSymmetrically()
-{
-  assert(Explain::asymmetricComponent());
-  behave = EXPLAIN_ANTI_SYMMETRIC;
-}
-
-
-void Explain::behaveGenerally()
-{
-  assert(explain != EXPLAIN_TRIVIAL);
-  behave = EXPLAIN_GENERAL;
+  if (behaveIn == EXPLAIN_SYMMETRIC)
+  {
+    assert(Explain::symmetricComponent());
+    behaveInt = EXPLAIN_SYMMETRIC;
+  }
+  else if (behaveIn == EXPLAIN_ANTI_SYMMETRIC)
+  {
+    assert(Explain::asymmetricComponent());
+    behaveInt = EXPLAIN_ANTI_SYMMETRIC;
+  }
+  else if (behaveIn != EXPLAIN_TRIVIAL)
+    behaveInt = EXPLAIN_GENERAL;
+  else
+    assert(false);
 }
 
 
@@ -69,10 +67,10 @@ bool Explain::skip(
   if (effectiveDepth > numStrategyTops)
     return true;
 
-  if (behave == EXPLAIN_SYMMETRIC && ! symmetricCoverFlag)
+  if (behaveInt == EXPLAIN_SYMMETRIC && ! symmetricCoverFlag)
     return true;
 
-  if (behave == EXPLAIN_ANTI_SYMMETRIC && symmetricCoverFlag)
+  if (behaveInt == EXPLAIN_ANTI_SYMMETRIC && symmetricCoverFlag)
     return true;
 
   return false;

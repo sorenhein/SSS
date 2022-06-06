@@ -395,13 +395,15 @@ void Covers::explain(
 
   if (! explain.asymmetricComponent())
   {
-    explain.behaveSymmetrically();
+    // explain.behaveSymmetrically();
+    explain.behave(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricksSymm, explain, 
       solution, newTableauFlag);
   }
   else if (! explain.symmetricComponent())
   {
-    explain.behaveAntiSymmetrically();
+    explain.behave(EXPLAIN_ANTI_SYMMETRIC);
+    // explain.behaveAntiSymmetrically();
     Covers::explainByCategory(tricksAntisymm, explain, 
       solution, newTableauFlag);
   }
@@ -423,17 +425,20 @@ void Covers::explain(
     }
 
     // Do the symmetric component (keep it in solution).
-    explain.behaveSymmetrically();
+    explain.behave(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricksSymm, explain, 
       solution, newTableauFlag);
 
     // Do the asymmetric component.
     CoverTableau solutionAntisymm;
-    explain.behaveAntiSymmetrically();
+    explain.behave(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricksAntisymm, explain, 
       solutionAntisymm, newTableauFlag);
 
     // TODO Only use one solution?
+    // I guess the first stack element would get solution as
+    // its starting point.  But then the symmetric and anti-symmetric
+    // parts could start to merge within rows...
     solution += solutionAntisymm;
   }
 
@@ -466,12 +471,12 @@ void Covers::explainManually(
   if (symmetricFlag)
   {
     explain.setTricks(tmin, 1, 0);
-    explain.behaveSymmetrically();
+    explain.behave(EXPLAIN_SYMMETRIC);
   }
   else
   {
     explain.setTricks(tmin, 1, 1);
-    explain.behaveGenerally();
+    explain.behave(EXPLAIN_GENERAL);
   }
 
   explain.setTops(1);
