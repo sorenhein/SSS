@@ -116,6 +116,10 @@ class CoverTableau
       const CoverTableau& partial,
       const unsigned complexityAdder = 0) const;
 
+    void partitionResiduals(
+      Tricks& tricksSymmetric,
+      Tricks& tricksAntisymmetric) const;
+
     void updateStats(
       const Profile& sumProfile,
       ProductStats& productStats,

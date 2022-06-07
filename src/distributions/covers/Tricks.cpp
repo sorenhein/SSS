@@ -399,6 +399,13 @@ bool Tricks::antiSymmetric() const
 }
 
 
+void Tricks::partition(
+  [[maybe_unused]] Tricks& tricksSymmetric,
+  [[maybe_unused]] Tricks& tricksAntisymmetric) const
+{
+}
+
+
 Tricks& Tricks::operator += (const Tricks& tricks2)
 {
   // No checking that we don't go out of the positive range (0..3).

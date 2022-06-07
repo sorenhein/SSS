@@ -407,6 +407,7 @@ void Covers::findHeaviest(
 }
 
 
+// TODO Will not need this long-term
 void Covers::explainByCategory(
   const list<unsigned char>& rawTricks,
   const Explain& explain,
@@ -415,6 +416,7 @@ void Covers::explainByCategory(
   bool& newTableauFlag)
 {
   Tricks tricks;
+  // TODO Therefore will not need this method long-term
   tricks.setByList(rawTricks, cases);
 
   Covers::explainByCategory(tricks, explain, partialTableauFlag,
@@ -577,11 +579,12 @@ void Covers::explain(
 
 
   // TODO
-  // Use solution all the way (no partialSolution).
-  // Make a CoverTableau::partitionResiduals(
-  //   Tricks&, Tricks&) const;
-  // Calls Tricks::partition(Tricks&, Tricks&);
+  // Call CoverTableau::partitionResiduals( Tricks&, Tricks&) const;
   // This will be inefficient -- too bad.
+  // Write Tricks::partition().
+  // Use this, so ByCategory overload and Tricks method eliminated.
+  //
+  // Use solution all the way (no partialSolution).
   //
   // Call explainByCategory with "true".
   //
@@ -595,7 +598,6 @@ void Covers::explain(
   // Should we try a couple of guesses?
   // Do we know ahead of time it's going to get rough?
   //
-  // Could split explain into setBasics and setWeights?
   // Not sure that Explain needs two ExplainSymmetry
 
   CoverTableau partialSolution;

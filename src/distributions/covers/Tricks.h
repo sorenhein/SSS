@@ -88,9 +88,13 @@ class Tricks
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
 
+    // TODO Needed?
     bool symmetric() const;
-
     bool antiSymmetric() const;
+
+    void partition(
+      Tricks& tricksSymmetric,
+      Tricks& tricksAntisymmetric) const;
 
     Tricks& operator += (const Tricks& tricks2);
 

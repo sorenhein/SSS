@@ -333,6 +333,14 @@ bool CoverTableau::compareAgainstPartial(
 }
 
 
+void CoverTableau::partitionResiduals(
+  Tricks& tricksSymmetric,
+  Tricks& tricksAntisymmetric) const
+{
+  residuals.partition(tricksSymmetric, tricksAntisymmetric);
+}
+
+
 void CoverTableau::updateStats(
   const Profile& sumProfile,
   ProductStats& productStats,
