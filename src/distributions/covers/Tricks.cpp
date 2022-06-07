@@ -122,9 +122,7 @@ void Tricks::setByResults(
   for (auto& res: results)
     tricksMin = min(tricksMin, res.getTricks());
 
-  unsigned counter = 0;
-  unsigned accum = 0;
-  unsigned position = 0;
+  ConvertData convertData;
 
   // The forward half including the middle element if any.
   auto riter = results.begin();
@@ -132,13 +130,11 @@ void Tricks::setByResults(
       extIndex++, riter++)
   {
     trickConvert.increment(
-      counter, 
-      accum, 
+      convertData,
       riter->getTricks() - tricksMin,
-      position, 
-      signature[position]);
+      signature[convertData.position]);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(convertData, signature[convertData.position]);
 
   // The backward half excluding the middle element.
   riter = prev(results.end());
@@ -146,13 +142,11 @@ void Tricks::setByResults(
       extIndex--, riter--)
   {
     trickConvert.increment(
-      counter, 
-      accum, 
+      convertData,
       riter->getTricks() - tricksMin,
-      position, 
-      signature[position]);
+      signature[convertData.position]);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  trickConvert.finish(convertData, signature[convertData.position]);
 
   if (Tricks::symmetric())
     explain = EXPLAIN_SYMMETRIC;
