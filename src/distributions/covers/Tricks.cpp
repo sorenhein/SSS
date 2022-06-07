@@ -114,6 +114,7 @@ void Tricks::setByResults(
   unsigned char& tricksMin,
   ExplainSymmetry& explain)
 {
+  // TODO These two methods are too similar.  Combine somehow?
   Tricks::resize(results.size());
 
   tricksMin = numeric_limits<unsigned char>::max();
@@ -382,6 +383,18 @@ bool Tricks::antiSymmetric() const
     else if (signature[i] & signature[i + offset])
       return false;
   }
+
+  // So now we know that there is no bit-level overlap.
+  // But we could still have 1 and 2 tricks, which AND to 0,
+  // and which would share a symmetric component of 1.
+
+  for (unsigned extIndex = 0; extIndex < length/2; extIndex++)
+  {
+    if (Tricks::lookup(extIndex) > 0 && 
+        Tricks::lookup(length - extIndex - 1) > 0)
+      return false;
+  }
+
   return true;
 }
 

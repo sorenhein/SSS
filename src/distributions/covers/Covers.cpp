@@ -52,6 +52,21 @@ extern TableauStats tableauStats;
 extern vector<Timer> timersStrat;
 
 
+struct HeavyData
+{
+  Cover const * coverPtr;
+  Tricks additions;
+  unsigned rawWeightAdder;
+
+  HeavyData(const size_t size)
+  {
+    coverPtr = nullptr;
+    additions.resize(size);
+    rawWeightAdder = 0;
+  };
+};
+
+
 Covers::Covers()
 {
   Covers::reset();
@@ -354,22 +369,16 @@ void Covers::partitionResults(
 void Covers::findHeaviest(
   const Tricks& tricks,
   const Explain& explain,
-  Cover const *& coverPtr,
-  Tricks& additions,
-  unsigned& rawWeightAdder) const
+  HeavyData& heavyData) const
 {
   // This find the best (highest-weight) cover consistent with explain.
   // For example, it can find the length-only or tops-only winner.
   // Note that coverPtr == nullptr if nothing is found, which is
   // indeed possible (e.g. 8/4894, Strategy #1).
 
-  rawWeightAdder = 0;
-  coverPtr = nullptr;
-
-  unsigned weightLocal = 0;
-
   Tricks additionsLocal;
   additionsLocal.resize(tricks.size());
+  unsigned weightLocal = 0;
 
   CoverRow row;
   row.resize(tricks.size());
@@ -387,11 +396,11 @@ void Covers::findHeaviest(
 
     if (row.possibleAdd(cover, tricks, cases, additionsLocal, weightLocal))
     {
-      if (weightLocal > rawWeightAdder)
+      if (weightLocal > heavyData.rawWeightAdder)
       {
-        coverPtr = &cover;
-        additions = additionsLocal;
-        rawWeightAdder = weightLocal;
+        heavyData.coverPtr = &cover;
+        heavyData.additions = additionsLocal;
+        heavyData.rawWeightAdder = weightLocal;
       }
     }
   }
@@ -461,86 +470,58 @@ void Covers::explainByCategory(
 }
 
 
-void Covers::guessStart(
+bool Covers::guessStart(
   const Tricks& tricks,
-  const unsigned char tmin,
+  CoverTableau& partialSolution,
   Explain& explain) const
 {
   explain.setComposition(EXPLAIN_LENGTH_ONLY);
-  Cover const * coverLengthPtr = nullptr;
-  Tricks additionsLength;
-  additionsLength.resize(tricks.size());
-  unsigned rawWeightAdderLength;
-  Covers::findHeaviest(tricks, explain,
-    coverLengthPtr, additionsLength, rawWeightAdderLength);
+  HeavyData heaviestLength(tricks.size());
+  Covers::findHeaviest(tricks, explain, heaviestLength);
  
   explain.setComposition(EXPLAIN_TOPS_ONLY);
-  Cover const * coverTopsPtr = nullptr;
-  Tricks additionsTops;
-  additionsTops.resize(tricks.size());
-  unsigned rawWeightAdderTops;
-  Covers::findHeaviest(tricks, explain,
-    coverTopsPtr, additionsTops, rawWeightAdderTops);
+  HeavyData heaviestTops(tricks.size());
+  Covers::findHeaviest(tricks, explain, heaviestTops);
 
-  if (coverLengthPtr == nullptr && coverTopsPtr == nullptr)
-  {
-    // cout << "Partial guess: none\n";
-    return;
-  }
+  if (heaviestLength.coverPtr == nullptr && 
+      heaviestTops.coverPtr == nullptr)
+    return false;
  
-  CoverTableau soln;
-  soln.init(tricks, tmin);
-
-  if (additionsLength == additionsTops || 
-      additionsTops <= additionsLength)
+  if (heaviestTops.additions == heaviestLength.additions || 
+      heaviestTops.additions <= heaviestLength.additions)
   {
     // Go with length
-    // assert(coverLengthPtr != nullptr);
-// cout << "Length only" << endl;
-    soln.addRow(* coverLengthPtr);
+    partialSolution.addRow(* heaviestLength.coverPtr);
   }
-  else if (additionsLength <= additionsTops)
+  else if (heaviestLength.additions <= heaviestTops.additions)
   {
     // Go with tops
-    // assert(coverTopsPtr != nullptr);
-// cout << "Tops only" << endl;
-// cout << "Cover " << coverTopsPtr->str(sumProfile) << endl;
-// cout << "length wgt " << rawWeightAdderLength << endl;
-// cout << "length tricks\n" << additionsLength.strList() << endl;
-// cout << "tops wgt " << rawWeightAdderTops << endl;
-// cout << "tops tricks\n" << additionsTops.strList() << endl;
-    soln.addRow(* coverTopsPtr);
+    partialSolution.addRow(* heaviestTops.coverPtr);
   }
   else
   {
-    // TODO More efficiently?
-    Tricks additionsSum = additionsLength;
-    additionsSum += additionsTops;
+    // TODO More efficiently? Just destroy heaviestLength?
+    Tricks additionsSum = heaviestLength.additions;
+    additionsSum += heaviestTops.additions;
 
     if (additionsSum <= tricks)
     {
       // Go with two separate rows
-      // assert(coverLengthPtr != nullptr);
-      // assert(coverTopsPtr != nullptr);
-// cout << "Length and tops in two rows" << endl;
-      soln.addRow(* coverLengthPtr);
-      soln.addRow(* coverTopsPtr);
+      partialSolution.addRow(* heaviestLength.coverPtr);
+      partialSolution.addRow(* heaviestTops.coverPtr);
     }
     else
     {
       // Go with one row and and "OR"
-      // assert(coverLengthPtr != nullptr);
-      // assert(coverTopsPtr != nullptr);
-// cout << "Length and tops in one row" << endl;
-      soln.addRow(* coverLengthPtr);
-      soln.extendRow(* coverTopsPtr, additionsTops, 
-        rawWeightAdderTops, 0);
+      partialSolution.addRow(* heaviestLength.coverPtr);
+      partialSolution.extendRow(
+        * heaviestTops.coverPtr, 
+        heaviestTops.additions, 
+        heaviestTops.rawWeightAdder, 
+        0);
     }
   }
-
-  // cout << "Partial guess\n";
-  // cout << soln.str(sumProfile);
-
+  return true;
 }
 
 void Covers::explain(
@@ -599,14 +580,8 @@ void Covers::explain(
 
 
   // TODO
-  // 7/1683 Strategy #0 has gotten worse?
-  // The tricks somehow come out anti-symmetric?
-  // No wonder: It's nonsense.
-  // In each group of 3 bits, at least one of first and second half
-  // must be zero.
-  // In order to split into symmetric and non-symmetric, 
+  // 7/1683 Strategy #0 has gotten worse? Check that it is fixed now.
   //
-  // findHeaviest operates on a new struct
   // guessStart returns a bool on success, and also
   // a partial solution and the corresponding additions.
   // We subtract out the additions from the tricks, leaving residuals.
@@ -625,14 +600,29 @@ void Covers::explain(
   // Do we know ahead of time it's going to get rough?
   //
   // Could split explain into setBasics and setWeights?
+  // Not sure that Explain needs two ExplainSymmetry
+
+  CoverTableau partialSolution;
+  partialSolution.init(tricks, tmin);
+
+  const bool guessFlag = 
+    Covers::guessStart(tricks, partialSolution, explain);
+
+  if (partialSolution.complete())
+  {
+    // TODO Inefficient
+    solution = partialSolution;
+    return;
+  }
+
+  // cout << "Partial guess\n";
+  // cout << partialSolution.str(sumProfile);
 
 
   list<unsigned char> tricksSymm, tricksAntisymm;
   Covers::partitionResults(results, tricksSymm, tricksAntisymm, explain);
   // TODO Don't need to repeat this here
   explain.setTops(numStrategyTops);
-
-// Covers::guessStart(tricks, tmin, explain);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.

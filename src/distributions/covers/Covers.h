@@ -27,6 +27,7 @@ class Explain;
 class CoverTableau;
 class Tricks;
 class Result;
+struct HeavyData;
 template<typename T> class CoverStack;
 
 
@@ -78,9 +79,7 @@ class Covers
     void findHeaviest(
       const Tricks& tricks,
       const Explain& explain,
-      Cover const *& coverPtr,
-      Tricks& additions,
-      unsigned& rawWeightAdder) const;
+      HeavyData& heavyData) const;
 
     void explainByCategory(
       const Tricks& tricks,
@@ -96,9 +95,9 @@ class Covers
       CoverTableau& solution,
       bool& newTableauFlag);
 
-    void guessStart(
+    bool guessStart(
       const Tricks& tricks,
-      const unsigned char tmin,
+      CoverTableau& partialSolution,
       Explain& explain) const;
 
 
