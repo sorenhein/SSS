@@ -136,8 +136,7 @@ CoverState CoverTableau::attemptRow(
     if (solution.rows.empty() ||
         ! solution.compareAgainstPartial(* this, candIter->getComplexity()))
     {
-        auto sit =
-      * stack.emplace(candIter, * this);
+      auto sit = * stack.emplace(candIter, * this);
     }
     return COVER_OPEN;
   }

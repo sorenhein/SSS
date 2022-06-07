@@ -214,6 +214,9 @@ void Covers::explainTemplate(
     // as a given start to the optimization.
     stack.emplace(solution, tricks, explain.tricksMin(), 
       candidates.begin());
+
+    // Then start with a clean slate.
+    solution.reset();
   }
   else
   {
@@ -326,8 +329,7 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
 void Covers::partitionResults(
   const list<Result>& results,
   list<unsigned char>& tricksSymm,
-  list<unsigned char>& tricksAntisymm,
-  Explain& explain) const
+  list<unsigned char>& tricksAntisymm) const
 {
   unsigned char tmin = numeric_limits<unsigned char>::max();
   for (auto& res: results)
@@ -361,8 +363,6 @@ void Covers::partitionResults(
     titerSymm++;
     titerAntisymm++;
   }
-
-  explain.setTricks(tmin, weightSymm, weightAntisymm);
 }
 
 
@@ -470,7 +470,7 @@ void Covers::explainByCategory(
 }
 
 
-bool Covers::guessStart(
+void Covers::guessStart(
   const Tricks& tricks,
   CoverTableau& partialSolution,
   Explain& explain) const
@@ -485,7 +485,7 @@ bool Covers::guessStart(
 
   if (heaviestLength.coverPtr == nullptr && 
       heaviestTops.coverPtr == nullptr)
-    return false;
+    return;
  
   if (heaviestTops.additions == heaviestLength.additions || 
       heaviestTops.additions <= heaviestLength.additions)
@@ -521,7 +521,6 @@ bool Covers::guessStart(
         0);
     }
   }
-  return true;
 }
 
 void Covers::explain(
@@ -559,10 +558,9 @@ void Covers::explain(
   // Symmetric tricks use a smaller pool of covers, so this should
   // be sufficient.
   Explain explain;
-  explain.setTops(numStrategyTops);
+  explain.setParameters(numStrategyTops, tmin);
   if (explainTricks == EXPLAIN_SYMMETRIC)
   {
-    explain.setTricks(tmin, 1, 0); // To have something symmetric
     explain.behave(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
@@ -571,7 +569,6 @@ void Covers::explain(
 
   if (explainTricks == EXPLAIN_ANTI_SYMMETRIC)
   {
-    explain.setTricks(tmin, 0, 1); // To have something anti-symmetric
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
@@ -580,14 +577,13 @@ void Covers::explain(
 
 
   // TODO
-  // 7/1683 Strategy #0 has gotten worse? Check that it is fixed now.
+  // Use solution all the way (no partialSolution).
+  // Make a CoverTableau::partitionResiduals(
+  //   Tricks&, Tricks&) const;
+  // Calls Tricks::partition(Tricks&, Tricks&);
+  // This will be inefficient -- too bad.
   //
-  // guessStart returns a bool on success, and also
-  // a partial solution and the corresponding additions.
-  // We subtract out the additions from the tricks, leaving residuals.
-  // We split the residuals into two Tricks (in Tricks?!)
-  // We use the partial solution as the basis for first a symmetric
-  // and then an anti-symmetric solution (for both, if present).
+  // Call explainByCategory with "true".
   //
   // Time and complexity spreadsheet:
   // Original 4-day effort
@@ -605,8 +601,7 @@ void Covers::explain(
   CoverTableau partialSolution;
   partialSolution.init(tricks, tmin);
 
-  const bool guessFlag = 
-    Covers::guessStart(tricks, partialSolution, explain);
+  Covers::guessStart(tricks, partialSolution, explain);
 
   if (partialSolution.complete())
   {
@@ -620,22 +615,18 @@ void Covers::explain(
 
 
   list<unsigned char> tricksSymm, tricksAntisymm;
-  Covers::partitionResults(results, tricksSymm, tricksAntisymm, explain);
-  // TODO Don't need to repeat this here
-  explain.setTops(numStrategyTops);
+  Covers::partitionResults(results, tricksSymm, tricksAntisymm);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.
 
   // Do the symmetric component (keep it in solution).
-  explain.setTricks(tmin, 1, 0); // To have something symmetric
   explain.behave(EXPLAIN_SYMMETRIC);
   Covers::explainByCategory(tricksSymm, explain, false,
     solution, newTableauFlag);
 
   // Do the asymmetric component.
   CoverTableau solutionAntisymm;
-  explain.setTricks(tmin, 0, 1); // To have something anti-symmetric
   explain.behave(EXPLAIN_ANTI_SYMMETRIC);
   Covers::explainByCategory(tricksAntisymm, explain, false,
     solutionAntisymm, newTableauFlag);
@@ -667,17 +658,11 @@ void Covers::explainManually(
   // TODO For now
   Explain explain;
   if (explainTricks == EXPLAIN_SYMMETRIC)
-  {
-    explain.setTricks(tmin, 1, 0);
     explain.behave(EXPLAIN_SYMMETRIC);
-  }
   else
-  {
-    explain.setTricks(tmin, 1, 1);
     explain.behave(EXPLAIN_GENERAL);
-  }
 
-  explain.setTops(1);
+  explain.setParameters(1, tmin);
 
   CoverStack<CoverRow> stack;
   Covers::explainTemplate<RowStore, CoverRow>(tricks,

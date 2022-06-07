@@ -73,8 +73,7 @@ class Covers
     void partitionResults(
       const list<Result>& results,
       list<unsigned char>& tricksSymm,
-      list<unsigned char>& tricksAntisymm,
-      Explain& explain) const;
+      list<unsigned char>& tricksAntisymm) const;
 
     void findHeaviest(
       const Tricks& tricks,
@@ -95,7 +94,7 @@ class Covers
       CoverTableau& solution,
       bool& newTableauFlag);
 
-    bool guessStart(
+    void guessStart(
       const Tricks& tricks,
       CoverTableau& partialSolution,
       Explain& explain) const;

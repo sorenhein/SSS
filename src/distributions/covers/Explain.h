@@ -35,12 +35,13 @@ class Explain
 
   public:
 
-    void setTricks(
-      const unsigned char trickMinIn,
+    void setParameters(
+      const unsigned numStrategyTopsIn,
+      const unsigned char trickMinIn);
+
+    void setWeights(
       const unsigned weightSymm,
       const unsigned weightAntisymm);
-
-    void setTops(const unsigned numStrategyTopsIn);
 
     void setComposition(const ExplainComposition compositionIn);
 
@@ -54,9 +55,6 @@ class Explain
       const unsigned char effectiveDepth,
       const ExplainSymmetry coverSymmetry,
       const ExplainComposition coverComposition) const;
-
-    bool symmetricComponent() const;
-    bool asymmetricComponent() const;
 
     unsigned char tricksMin() const;
 };
