@@ -118,7 +118,8 @@ class CoverTableau
 
     void partitionResiduals(
       Tricks& tricksSymmetric,
-      Tricks& tricksAntisymmetric) const;
+      Tricks& tricksAntisymmetric,
+      const vector<unsigned char>& cases) const;
 
     void updateStats(
       const Profile& sumProfile,

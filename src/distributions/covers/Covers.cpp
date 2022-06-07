@@ -583,6 +583,7 @@ void Covers::explain(
   // This will be inefficient -- too bad.
   // Write Tricks::partition().
   // Use this, so ByCategory overload and Tricks method eliminated.
+  // Tricks:: use a struct for tricksConvert.
   //
   // Use solution all the way (no partialSolution).
   //

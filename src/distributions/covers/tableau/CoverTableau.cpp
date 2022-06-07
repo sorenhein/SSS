@@ -335,9 +335,10 @@ bool CoverTableau::compareAgainstPartial(
 
 void CoverTableau::partitionResiduals(
   Tricks& tricksSymmetric,
-  Tricks& tricksAntisymmetric) const
+  Tricks& tricksAntisymmetric,
+  const vector<unsigned char>& cases) const
 {
-  residuals.partition(tricksSymmetric, tricksAntisymmetric);
+  residuals.partition(tricksSymmetric, tricksAntisymmetric, cases);
 }
 
 

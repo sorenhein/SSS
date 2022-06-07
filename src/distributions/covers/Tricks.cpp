@@ -400,9 +400,75 @@ bool Tricks::antiSymmetric() const
 
 
 void Tricks::partition(
-  [[maybe_unused]] Tricks& tricksSymmetric,
-  [[maybe_unused]] Tricks& tricksAntisymmetric) const
+   Tricks& tricksSymmetric,
+   Tricks& tricksAntisymmetric,
+    const vector<unsigned char>& cases) const
 {
+  tricksSymmetric.resize(length);
+  tricksAntisymmetric.resize(length);
+
+  // TODO Make a struct
+  unsigned counter = 0;
+  unsigned accum = 0;
+  unsigned position = 0;
+  unsigned counter2 = 0;
+  unsigned accum2 = 0;
+  unsigned position2 = 0;
+
+  // The forward half including the middle element if any.
+  for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
+  {
+    const unsigned char f = Tricks::lookup(extIndex);
+    const unsigned char b = Tricks::lookup(length - extIndex - 1);
+    const unsigned char mint = min(f, b);
+
+    trickConvert.increment(
+      counter, 
+      accum, 
+      mint,
+      position, 
+      tricksSymmetric.signature[position]);
+
+    trickConvert.increment(
+      counter2, 
+      accum2, 
+      f - mint,
+      position2, 
+      tricksAntisymmetric.signature[position2]);
+  }
+  trickConvert.finish(counter, accum, position, 
+    tricksSymmetric.signature[position]);
+  trickConvert.finish(counter2, accum2, position2, 
+    tricksAntisymmetric.signature[position2]);
+
+  // The backward half excluding the middle element.
+  for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
+  {
+    const unsigned char f = Tricks::lookup(extIndex);
+    const unsigned char b = Tricks::lookup(length - extIndex - 1);
+    const unsigned char mint = min(f, b);
+
+    trickConvert.increment(
+      counter, 
+      accum, 
+      mint,
+      position, 
+      tricksSymmetric.signature[position]);
+
+    trickConvert.increment(
+      counter2, 
+      accum2, 
+      f - mint,
+      position2, 
+      tricksAntisymmetric.signature[position2]);
+  }
+  trickConvert.finish(counter, accum, position, 
+    tricksSymmetric.signature[position]);
+  trickConvert.finish(counter2, accum2, position2, 
+    tricksAntisymmetric.signature[position2]);
+
+  tricksSymmetric.weigh(cases);
+  tricksAntisymmetric.weigh(cases);
 }
 
 

@@ -94,7 +94,8 @@ class Tricks
 
     void partition(
       Tricks& tricksSymmetric,
-      Tricks& tricksAntisymmetric) const;
+      Tricks& tricksAntisymmetric,
+      const vector<unsigned char>& cases) const;
 
     Tricks& operator += (const Tricks& tricks2);
 
