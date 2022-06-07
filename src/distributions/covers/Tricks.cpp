@@ -15,6 +15,7 @@
 #include "Tricks.h"
 #include "TrickConvert.h"
 #include "CoverCategory.h"
+#include "ConvertData.h"
 
 #include "product/FactoredProduct.h"
 #include "product/Profile.h"

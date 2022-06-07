@@ -14,6 +14,8 @@
 
 using namespace std;
 
+struct ConvertData;
+
 
 class TrickConvert
 {
@@ -37,10 +39,19 @@ class TrickConvert
       unsigned& position,
       unsigned& result) const;
 
+    void increment(
+      ConvertData& convertData,
+      const unsigned char value,
+      unsigned& result) const;
+
     void finish(
       unsigned& counter,
       unsigned& accum,
       unsigned& position,
+      unsigned& result) const;
+
+    void finish(
+      ConvertData& convertData,
       unsigned& result) const;
 
     unsigned char lookup(

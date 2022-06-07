@@ -584,6 +584,7 @@ void Covers::explain(
   // Write Tricks::partition().
   // Use this, so ByCategory overload and Tricks method eliminated.
   // Tricks:: use a struct for tricksConvert.
+  // - start using ConvertData in Tricks.cpp and TricksConvert.cpp
   //
   // Use solution all the way (no partialSolution).
   //

@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "TrickConvert.h"
+#include "ConvertData.h"
 
 // This is similar to ResConvert, but with a different grouping.
 // In ResConvert we examine the excess tricks for each distribution
@@ -103,6 +104,25 @@ void TrickConvert::increment(
 }
 
 
+void TrickConvert::increment(
+  ConvertData& convertData,
+  const unsigned char value,
+  unsigned& result) const
+{
+  // result will typically be some vector[position].
+  convertData.accum = (convertData.accum << LOOKUP_WIDTH) | value;
+  convertData.counter++;
+
+  if (convertData.counter == LOOKUP_GROUP)
+  {
+    result = convertData.accum;
+    convertData.counter = 0;
+    convertData.accum = 0;
+    convertData.position++;
+  }
+}
+
+
 void TrickConvert::finish(
   unsigned& counter,
   unsigned& accum,
@@ -116,6 +136,21 @@ void TrickConvert::finish(
   counter = 0;
   accum = 0;
   position++;
+}
+
+
+void TrickConvert::finish(
+  ConvertData& convertData,
+  unsigned& result) const
+{
+  if (convertData.counter == 0)
+    return;
+
+  result = convertData.accum << LOOKUP_WIDTH * 
+    (LOOKUP_GROUP - convertData.counter);
+  convertData.counter = 0;
+  convertData.accum = 0;
+  convertData.position++;
 }
 
 
