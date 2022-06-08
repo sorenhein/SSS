@@ -14,6 +14,8 @@
 #include "Product.h"
 #include "Profile.h"
 
+#include "../CoverCategory.h"
+
 #include "../term/CoverOperator.h"
 
 #include "../../../utils/Compare.h"
@@ -188,7 +190,7 @@ unsigned char Product::effectiveDepth() const
 }
 
 
-ExplainComposition Product::composition() const
+CoverComposition Product::composition() const
 {
   const bool lengthFlag = length.used();
 

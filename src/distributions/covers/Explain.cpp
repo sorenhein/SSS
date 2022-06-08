@@ -25,13 +25,13 @@ void Explain::setParameters(
 }
 
 
-void Explain::setComposition(const ExplainComposition compositionIn)
+void Explain::setComposition(const CoverComposition compositionIn)
 {
   composition = compositionIn;
 }
 
 
-void Explain::behave(const ExplainSymmetry behaveIn)
+void Explain::behave(const CoverSymmetry behaveIn)
 {
   behaveInt = behaveIn;
 }
@@ -39,7 +39,7 @@ void Explain::behave(const ExplainSymmetry behaveIn)
 
 bool Explain::skip(
   const unsigned char effectiveDepth,
-  const ExplainSymmetry coverSymmetry) const
+  const CoverSymmetry coverSymmetry) const
 {
   if (effectiveDepth > numStrategyTops)
     return true;
@@ -58,8 +58,8 @@ bool Explain::skip(
 
 bool Explain::skip(
   const unsigned char effectiveDepth,
-  const ExplainSymmetry coverSymmetry,
-  const ExplainComposition coverComposition) const
+  const CoverSymmetry coverSymmetry,
+  const CoverComposition coverComposition) const
 {
   if (Explain::skip(effectiveDepth, coverSymmetry))
     return true;

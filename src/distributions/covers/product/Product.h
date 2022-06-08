@@ -19,8 +19,6 @@
 #include <vector>
 #include <string>
 
-#include "../CoverCategory.h"
-
 #include "../term/Length.h"
 #include "../term/Top.h"
 
@@ -28,6 +26,7 @@ using namespace std;
 
 class Profile;
 enum Opponent: unsigned;
+enum CoverComposition: unsigned;
 
 
 class Product
@@ -77,7 +76,7 @@ class Product
 
     unsigned char effectiveDepth() const;
 
-    ExplainComposition composition() const;
+    CoverComposition composition() const;
 
     bool explainable() const;
 

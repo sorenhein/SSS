@@ -112,8 +112,7 @@ void Tricks::setByList(
 void Tricks::setByResults(
   const list<Result>& results,
   const vector<unsigned char>& cases,
-  unsigned char& tricksMin,
-  ExplainSymmetry& explain)
+  unsigned char& tricksMin)
 {
   // TODO These two methods are too similar.  Combine somehow?
   Tricks::resize(results.size());
@@ -147,13 +146,6 @@ void Tricks::setByResults(
       signature[convertData.position]);
   }
   trickConvert.finish(convertData, signature[convertData.position]);
-
-  if (Tricks::symmetric())
-    explain = EXPLAIN_SYMMETRIC;
-  else if (Tricks::antiSymmetric())
-    explain = EXPLAIN_ANTI_SYMMETRIC;
-  else
-    explain = EXPLAIN_GENERAL;
 
   Tricks::weigh(cases);
 }
@@ -391,6 +383,17 @@ bool Tricks::antiSymmetric() const
   }
 
   return true;
+}
+
+
+CoverSymmetry Tricks::symmetry() const
+{
+  if (Tricks::symmetric())
+    return EXPLAIN_SYMMETRIC;
+  else if (Tricks::antiSymmetric())
+    return EXPLAIN_ANTI_SYMMETRIC;
+  else
+    return EXPLAIN_GENERAL;
 }
 
 

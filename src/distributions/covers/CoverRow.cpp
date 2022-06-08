@@ -130,18 +130,13 @@ size_t CoverRow::size() const
 
 bool CoverRow::symmetric() const
 {
-  return tricks.symmetric();
+  return (tricks.symmetry() == EXPLAIN_SYMMETRIC);
 }
 
 
-ExplainSymmetry CoverRow::symmetry() const
+CoverSymmetry CoverRow::symmetry() const
 {
-  if (tricks.symmetric())
-    return EXPLAIN_SYMMETRIC;
-  else if (tricks.antiSymmetric())
-    return EXPLAIN_ANTI_SYMMETRIC;
-  else
-    return EXPLAIN_GENERAL;
+  return tricks.symmetry();
 }
 
 

@@ -19,7 +19,7 @@ class FactoredProduct;
 class Profile;
 class Result;
 
-enum ExplainSymmetry: unsigned;
+enum CoverSymmetry: unsigned;
 
 
 class Tricks
@@ -48,6 +48,10 @@ class Tricks
       const vector<Profile>& distProfiles,
       const size_t extIndex) const;
 
+    // TODO Needed?
+    bool symmetric() const;
+    bool antiSymmetric() const;
+
   
   public:
 
@@ -62,8 +66,7 @@ class Tricks
     void setByResults(
       const list<Result>& results,
       const vector<unsigned char>& cases,
-      unsigned char& tricksMin,
-      ExplainSymmetry& explain);
+      unsigned char& tricksMin);
 
     bool setByProduct(
       const FactoredProduct& factoredProduct,
@@ -88,9 +91,7 @@ class Tricks
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
 
-    // TODO Needed?
-    bool symmetric() const;
-    bool antiSymmetric() const;
+    CoverSymmetry symmetry() const;
 
     void partition(
       Tricks& tricksSymmetric,

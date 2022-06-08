@@ -21,8 +21,8 @@ class Profile;
 class ProductStats;
 class ProductMemory;
 
-enum ExplainSymmetry: unsigned;
-enum ExplainComposition: unsigned;
+enum CoverSymmetry: unsigned;
+enum CoverComposition: unsigned;
 
 class Cover
 {
@@ -38,7 +38,7 @@ class Cover
     unsigned char numDist;
 
     // Set if the cover is symmetric without being symmetrized.
-    ExplainSymmetry explainSymmetry;
+    CoverSymmetry coverSymmetry;
 
     // Set if the factored product is effectively to be mirrored.
     bool symmetrizeFlag;
@@ -100,9 +100,9 @@ class Cover
 
     bool antiSymmetric() const;
 
-    ExplainSymmetry symmetry() const;
+    CoverSymmetry symmetry() const;
 
-    ExplainComposition composition() const;
+    CoverComposition composition() const;
 
     size_t size() const;
 

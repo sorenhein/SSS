@@ -11,8 +11,8 @@
 
 #include <string>
 
-enum ExplainSymmetry: unsigned;
-enum ExplainComposition: unsigned;
+enum CoverSymmetry: unsigned;
+enum CoverComposition: unsigned;
 
 
 using namespace std;
@@ -26,11 +26,11 @@ class Explain
 
     unsigned char tricksMinInt;
 
-    ExplainSymmetry explain;
+    CoverSymmetry explain;
 
-    ExplainComposition composition;
+    CoverComposition composition;
 
-    ExplainSymmetry behaveInt;
+    CoverSymmetry behaveInt;
 
 
   public:
@@ -43,18 +43,18 @@ class Explain
       const unsigned weightSymm,
       const unsigned weightAntisymm);
 
-    void setComposition(const ExplainComposition compositionIn);
+    void setComposition(const CoverComposition compositionIn);
 
-    void behave(const ExplainSymmetry behaveIn);
-
-    bool skip(
-      const unsigned char effectiveDepth,
-      const ExplainSymmetry coverSymmetry) const;
+    void behave(const CoverSymmetry behaveIn);
 
     bool skip(
       const unsigned char effectiveDepth,
-      const ExplainSymmetry coverSymmetry,
-      const ExplainComposition coverComposition) const;
+      const CoverSymmetry coverSymmetry) const;
+
+    bool skip(
+      const unsigned char effectiveDepth,
+      const CoverSymmetry coverSymmetry,
+      const CoverComposition coverComposition) const;
 
     unsigned char tricksMin() const;
 };

@@ -537,8 +537,9 @@ void Covers::explain(
   // First test the complete cache.
   Tricks tricks;
   unsigned char tmin;
-  ExplainSymmetry explainTricks;
-  tricks.setByResults(results, cases, tmin, explainTricks);
+  tricks.setByResults(results, cases, tmin);
+
+  CoverSymmetry explainTricks = tricks.symmetry();
 
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
@@ -585,6 +586,8 @@ void Covers::explain(
   // Use this, so ByCategory overload and Tricks method eliminated.
   // Tricks:: use a struct for tricksConvert.
   // - start using ConvertData in Tricks.cpp and TricksConvert.cpp
+  // - Put ConvertData into tricksConvert, not so elegant perhaps
+  // - Clean up Tricks
   //
   // Use solution all the way (no partialSolution).
   //
@@ -600,7 +603,7 @@ void Covers::explain(
   // Should we try a couple of guesses?
   // Do we know ahead of time it's going to get rough?
   //
-  // Not sure that Explain needs two ExplainSymmetry
+  // Not sure that Explain needs two CoverSymmetry
 
   CoverTableau partialSolution;
   partialSolution.init(tricks, tmin);
@@ -650,8 +653,9 @@ void Covers::explainManually(
   // This version uses finished rows.
   Tricks tricks;
   unsigned char tmin;
-  ExplainSymmetry explainTricks;
-  tricks.setByResults(results, cases, tmin, explainTricks);
+  tricks.setByResults(results, cases, tmin);
+
+  CoverSymmetry explainTricks = tricks.symmetry();
 
   if (tableauRowCache.lookup(tricks, solution))
   {

@@ -20,7 +20,7 @@ class Cover;
 class Profile;
 class ProductStats;
 
-enum ExplainSymmetry: unsigned;
+enum CoverSymmetry: unsigned;
 
 
 class CoverRow
@@ -78,7 +78,7 @@ class CoverRow
 
     bool symmetric() const;
 
-    ExplainSymmetry symmetry() const;
+    CoverSymmetry symmetry() const;
 
     bool operator < (const CoverRow& rows2) const;
 

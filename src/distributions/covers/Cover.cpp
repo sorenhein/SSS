@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include "Cover.h"
+#include "CoverCategory.h"
 
 #include "product/ProfilePair.h"
 #include "product/ProductStats.h"
@@ -29,7 +30,7 @@ void Cover::reset()
   factoredProductPtr = nullptr;
   tricks.clear();
   mcpw = 0;
-  explainSymmetry = EXPLAIN_SYMMETRY_UNSET;
+  coverSymmetry = EXPLAIN_SYMMETRY_UNSET;
   symmetrizeFlag = false;
   code = 0;
 }
@@ -48,9 +49,9 @@ void Cover::set(
     productMemory.enterOrLookup(sumProfile, profilePair);
 
   if (symmetricFlag)
-    explainSymmetry = EXPLAIN_SYMMETRIC;
+    coverSymmetry = EXPLAIN_SYMMETRIC;
   else
-    explainSymmetry = EXPLAIN_GENERAL;
+    coverSymmetry = EXPLAIN_GENERAL;
 
   symmetrizeFlag = symmetrizeFlagIn;
 
@@ -87,12 +88,12 @@ bool Cover::setByProduct(
     return false;
   }
 
-  if (explainSymmetry != EXPLAIN_SYMMETRIC)
+  if (coverSymmetry != EXPLAIN_SYMMETRIC)
   {
-    if (tricks.antiSymmetric() && ! symmetrizeFlag)
-      explainSymmetry = EXPLAIN_ANTI_SYMMETRIC;
+    if (tricks.symmetry() == EXPLAIN_ANTI_SYMMETRIC && ! symmetrizeFlag)
+      coverSymmetry = EXPLAIN_ANTI_SYMMETRIC;
     else
-      explainSymmetry = EXPLAIN_GENERAL;
+      coverSymmetry = EXPLAIN_GENERAL;
   }
   
   mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
@@ -183,26 +184,26 @@ bool Cover::symmetrized() const
 
 bool Cover::symmetric() const
 {
-  return ((explainSymmetry == EXPLAIN_SYMMETRIC) || symmetrizeFlag);
+  return ((coverSymmetry == EXPLAIN_SYMMETRIC) || symmetrizeFlag);
 }
 
 
 bool Cover::antiSymmetric() const
 {
-  return ((explainSymmetry == EXPLAIN_ANTI_SYMMETRIC) && ! symmetrizeFlag);
+  return ((coverSymmetry == EXPLAIN_ANTI_SYMMETRIC) && ! symmetrizeFlag);
 }
 
 
-ExplainSymmetry Cover::symmetry() const
+CoverSymmetry Cover::symmetry() const
 {
   if (symmetrizeFlag)
     return EXPLAIN_SYMMETRIC;
   else
-    return explainSymmetry;
+    return coverSymmetry;
 }
 
 
-ExplainComposition Cover::composition() const
+CoverComposition Cover::composition() const
 {
   assert(factoredProductPtr != nullptr);
   return factoredProductPtr->composition();

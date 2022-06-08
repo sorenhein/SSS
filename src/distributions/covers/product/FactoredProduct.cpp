@@ -64,7 +64,7 @@ unsigned char FactoredProduct::effectiveDepth() const
 }
 
 
-ExplainComposition FactoredProduct::composition() const
+CoverComposition FactoredProduct::composition() const
 {
   return canonicalPtr->composition();
 }
