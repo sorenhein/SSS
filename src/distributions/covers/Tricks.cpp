@@ -128,24 +128,18 @@ void Tricks::setByResults(
   for (unsigned extIndex = 0; extIndex <= lastForward; 
       extIndex++, riter++)
   {
-    trickConvert.increment(
-      convertData,
-      riter->getTricks() - tricksMin,
-      signature[convertData.position]);
+    convertData.increment(riter->getTricks() - tricksMin, signature);
   }
-  trickConvert.finish(convertData, signature[convertData.position]);
+  convertData.finish(signature);
 
   // The backward half excluding the middle element.
   riter = prev(results.end());
   for (size_t extIndex = length-1; extIndex > lastForward; 
       extIndex--, riter--)
   {
-    trickConvert.increment(
-      convertData,
-      riter->getTricks() - tricksMin,
-      signature[convertData.position]);
+    convertData.increment(riter->getTricks() - tricksMin, signature);
   }
-  trickConvert.finish(convertData, signature[convertData.position]);
+  convertData.finish(signature);
 
   Tricks::weigh(cases);
 }

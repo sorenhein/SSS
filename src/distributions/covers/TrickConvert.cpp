@@ -35,6 +35,41 @@
 #define FULL_HOUSE 0xfff // All 12 bits
 
 
+// The first two methods belong to ConvertData!
+// They share some defined constants with TrickConvert.
+
+void ConvertData::increment(
+  const unsigned char value,
+  vector<unsigned>& result)
+{
+  accum = (accum << LOOKUP_WIDTH) | value;
+  counter++;
+
+  if (counter == LOOKUP_GROUP)
+  {
+    result[position] = accum;
+    counter = 0;
+    accum = 0;
+    position++;
+  }
+}
+
+
+void ConvertData::finish(vector<unsigned>& result)
+{
+  if (counter == 0)
+    return;
+
+  result[position] = accum << LOOKUP_WIDTH * (LOOKUP_GROUP - counter);
+  counter = 0;
+  accum = 0;
+  position++;
+}
+
+
+// -----------------------------------------------
+
+
 TrickConvert::TrickConvert()
 {
   TrickConvert::setConstants();
@@ -104,25 +139,6 @@ void TrickConvert::increment(
 }
 
 
-void TrickConvert::increment(
-  ConvertData& convertData,
-  const unsigned char value,
-  unsigned& result) const
-{
-  // result will typically be some vector[position].
-  convertData.accum = (convertData.accum << LOOKUP_WIDTH) | value;
-  convertData.counter++;
-
-  if (convertData.counter == LOOKUP_GROUP)
-  {
-    result = convertData.accum;
-    convertData.counter = 0;
-    convertData.accum = 0;
-    convertData.position++;
-  }
-}
-
-
 void TrickConvert::finish(
   unsigned& counter,
   unsigned& accum,
@@ -136,21 +152,6 @@ void TrickConvert::finish(
   counter = 0;
   accum = 0;
   position++;
-}
-
-
-void TrickConvert::finish(
-  ConvertData& convertData,
-  unsigned& result) const
-{
-  if (convertData.counter == 0)
-    return;
-
-  result = convertData.accum << LOOKUP_WIDTH * 
-    (LOOKUP_GROUP - convertData.counter);
-  convertData.counter = 0;
-  convertData.accum = 0;
-  convertData.position++;
 }
 
 

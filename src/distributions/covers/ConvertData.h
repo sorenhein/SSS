@@ -23,6 +23,15 @@ struct ConvertData
     accum = 0;
     position = 0;
   };
+
+  // The implementations of these two methods are in TrickConvert!
+  // They share some defined constants.
+
+  void increment(
+    const unsigned char value,
+    vector<unsigned>& result);
+
+  void finish(vector<unsigned>& result);
 };
 
 #endif
