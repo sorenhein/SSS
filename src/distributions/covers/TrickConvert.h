@@ -32,19 +32,6 @@ class TrickConvert
 
     size_t profileSize(const size_t len) const;
 
-    void increment(
-      unsigned& counter,
-      unsigned& accum,
-      const unsigned char value,
-      unsigned& position,
-      unsigned& result) const;
-
-    void finish(
-      unsigned& counter,
-      unsigned& accum,
-      unsigned& position,
-      unsigned& result) const;
-
     unsigned char lookup(
       const vector<unsigned>& profiles,
       const size_t lastForward,

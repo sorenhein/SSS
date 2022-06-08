@@ -73,37 +73,25 @@ void Tricks::setByList(
 {
   Tricks::resize(tricks.size());
 
-  unsigned counter = 0;
-  unsigned accum = 0;
-  unsigned position = 0;
+  ConvertData convertData;
 
   // The forward half including the middle element if any.
   auto riter = tricks.begin();
   for (unsigned extIndex = 0; extIndex <= lastForward; 
       extIndex++, riter++)
   {
-    trickConvert.increment(
-      counter, 
-      accum, 
-      * riter,
-      position, 
-      signature[position]);
+    convertData.increment(* riter, signature);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  convertData.finish(signature);
 
   // The backward half excluding the middle element.
   riter = prev(tricks.end());
   for (size_t extIndex = length-1; extIndex > lastForward; 
       extIndex--, riter--)
   {
-    trickConvert.increment(
-      counter, 
-      accum, 
-      * riter,
-      position, 
-      signature[position]);
+    convertData.increment(* riter, signature);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  convertData.finish(signature);
 
   Tricks::weigh(cases);
 }
@@ -176,10 +164,9 @@ bool Tricks::setByProduct(
   assert(distProfiles.size() == cases.size());
   Tricks::resize(cases.size());
 
-  unsigned counter = 0;
-  unsigned accum = 0;
+  ConvertData convertData;
+
   unsigned char value;
-  unsigned position = 0;
   unsigned char numDist = 0;
 
   // The forward half including the middle element if any.
@@ -189,10 +176,9 @@ bool Tricks::setByProduct(
       distProfiles, extIndex);
     numDist += value;
 
-    trickConvert.increment(counter, accum, value, position, 
-      signature[position]);
+    convertData.increment(value, signature);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  convertData.finish(signature);
 
   // The backward half excluding the middle element.
   for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
@@ -201,10 +187,9 @@ bool Tricks::setByProduct(
       distProfiles, extIndex);
     numDist += value;
 
-    trickConvert.increment(counter, accum, value, position, 
-      signature[position]);
+    convertData.increment(value, signature);
   }
-  trickConvert.finish(counter, accum, position, signature[position]);
+  convertData.finish(signature);
 
   if (numDist == 0 || numDist == length)
     return false;
@@ -399,13 +384,7 @@ void Tricks::partition(
   tricksSymmetric.resize(length);
   tricksAntisymmetric.resize(length);
 
-  // TODO Make a struct
-  unsigned counter = 0;
-  unsigned accum = 0;
-  unsigned position = 0;
-  unsigned counter2 = 0;
-  unsigned accum2 = 0;
-  unsigned position2 = 0;
+  ConvertData dataSymm, dataAntisymm;
 
   // The forward half including the middle element if any.
   for (unsigned extIndex = 0; extIndex <= lastForward; extIndex++)
@@ -414,24 +393,11 @@ void Tricks::partition(
     const unsigned char b = Tricks::lookup(length - extIndex - 1);
     const unsigned char mint = min(f, b);
 
-    trickConvert.increment(
-      counter, 
-      accum, 
-      mint,
-      position, 
-      tricksSymmetric.signature[position]);
-
-    trickConvert.increment(
-      counter2, 
-      accum2, 
-      f - mint,
-      position2, 
-      tricksAntisymmetric.signature[position2]);
+    dataSymm.increment(mint, tricksSymmetric.signature);
+    dataAntisymm.increment(f - mint, tricksAntisymmetric.signature);
   }
-  trickConvert.finish(counter, accum, position, 
-    tricksSymmetric.signature[position]);
-  trickConvert.finish(counter2, accum2, position2, 
-    tricksAntisymmetric.signature[position2]);
+  dataSymm.finish(tricksSymmetric.signature);
+  dataAntisymm.finish(tricksSymmetric.signature);
 
   // The backward half excluding the middle element.
   for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
@@ -440,24 +406,11 @@ void Tricks::partition(
     const unsigned char b = Tricks::lookup(length - extIndex - 1);
     const unsigned char mint = min(f, b);
 
-    trickConvert.increment(
-      counter, 
-      accum, 
-      mint,
-      position, 
-      tricksSymmetric.signature[position]);
-
-    trickConvert.increment(
-      counter2, 
-      accum2, 
-      f - mint,
-      position2, 
-      tricksAntisymmetric.signature[position2]);
+    dataSymm.increment(mint, tricksSymmetric.signature);
+    dataSymm.increment(f - mint, tricksAntisymmetric.signature);
   }
-  trickConvert.finish(counter, accum, position, 
-    tricksSymmetric.signature[position]);
-  trickConvert.finish(counter2, accum2, position2, 
-    tricksAntisymmetric.signature[position2]);
+  dataSymm.finish(tricksSymmetric.signature);
+  dataAntisymm.finish(tricksSymmetric.signature);
 
   tricksSymmetric.weigh(cases);
   tricksAntisymmetric.weigh(cases);

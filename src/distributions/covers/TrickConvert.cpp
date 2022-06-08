@@ -118,43 +118,6 @@ size_t TrickConvert::profileSize(const size_t len) const
 }
 
 
-void TrickConvert::increment(
-  unsigned& counter,
-  unsigned& accum,
-  const unsigned char value,
-  unsigned& position,
-  unsigned& result) const
-{
-  // result will typically be some vector[position].
-  accum = (accum << LOOKUP_WIDTH) | value;
-  counter++;
-
-  if (counter == LOOKUP_GROUP)
-  {
-    result = accum;
-    counter = 0;
-    accum = 0;
-    position++;
-  }
-}
-
-
-void TrickConvert::finish(
-  unsigned& counter,
-  unsigned& accum,
-  unsigned& position,
-  unsigned& result) const
-{
-  if (counter == 0)
-    return;
-
-  result = accum << LOOKUP_WIDTH * (LOOKUP_GROUP - counter);
-  counter = 0;
-  accum = 0;
-  position++;
-}
-
-
 unsigned char TrickConvert::lookup(
   const vector<unsigned>& profiles,
   const size_t lastForward,

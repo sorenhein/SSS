@@ -584,9 +584,6 @@ void Covers::explain(
   // This will be inefficient -- too bad.
   // Write Tricks::partition().
   // Use this, so ByCategory overload and Tricks method eliminated.
-  // Tricks:: use a struct for tricksConvert.
-  // - start using ConvertData in Tricks.cpp and TricksConvert.cpp
-  // - Put ConvertData into tricksConvert, not so elegant perhaps
   // - Clean up Tricks
   //
   // Use solution all the way (no partialSolution).
@@ -604,6 +601,8 @@ void Covers::explain(
   // Do we know ahead of time it's going to get rough?
   //
   // Not sure that Explain needs two CoverSymmetry
+  //
+  // Don't call Tricks::symmetric when symmetric is enough.
 
   CoverTableau partialSolution;
   partialSolution.init(tricks, tmin);
