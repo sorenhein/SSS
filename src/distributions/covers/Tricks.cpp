@@ -397,7 +397,7 @@ void Tricks::partition(
     dataAntisymm.increment(f - mint, tricksAntisymmetric.signature);
   }
   dataSymm.finish(tricksSymmetric.signature);
-  dataAntisymm.finish(tricksSymmetric.signature);
+  dataAntisymm.finish(tricksAntisymmetric.signature);
 
   // The backward half excluding the middle element.
   for (size_t extIndex = length-1; extIndex > lastForward; extIndex--)
@@ -407,10 +407,10 @@ void Tricks::partition(
     const unsigned char mint = min(f, b);
 
     dataSymm.increment(mint, tricksSymmetric.signature);
-    dataSymm.increment(f - mint, tricksAntisymmetric.signature);
+    dataAntisymm.increment(f - mint, tricksAntisymmetric.signature);
   }
   dataSymm.finish(tricksSymmetric.signature);
-  dataAntisymm.finish(tricksSymmetric.signature);
+  dataAntisymm.finish(tricksAntisymmetric.signature);
 
   tricksSymmetric.weigh(cases);
   tricksAntisymmetric.weigh(cases);

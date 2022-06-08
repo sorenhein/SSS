@@ -539,8 +539,6 @@ void Covers::explain(
   unsigned char tmin;
   tricks.setByResults(results, cases, tmin);
 
-  CoverSymmetry explainTricks = tricks.symmetry();
-
   newTableauFlag = true;
   if (tableauCache.lookup(tricks, solution))
   {
@@ -562,7 +560,9 @@ void Covers::explain(
   // be sufficient.
   Explain explain;
   explain.setParameters(numStrategyTops, tmin);
-  if (explainTricks == EXPLAIN_SYMMETRIC)
+
+  CoverSymmetry tricksSymmetry = tricks.symmetry();
+  if (tricksSymmetry == EXPLAIN_SYMMETRIC)
   {
     explain.behave(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
@@ -570,7 +570,7 @@ void Covers::explain(
     return;
   }
 
-  if (explainTricks == EXPLAIN_ANTI_SYMMETRIC)
+  if (tricksSymmetry == EXPLAIN_ANTI_SYMMETRIC)
   {
     explain.behave(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
@@ -580,11 +580,16 @@ void Covers::explain(
 
 
   // TODO
-  // Call CoverTableau::partitionResiduals( Tricks&, Tricks&) const;
-  // This will be inefficient -- too bad.
-  // Write Tricks::partition().
-  // Use this, so ByCategory overload and Tricks method eliminated.
-  // - Clean up Tricks
+  // Version 1: Regenerate ref2.
+  // Is it abysmally slow now, or was it due to YouTube?
+  // Differences with ref2?
+  //
+  // Version 2: Turn on the new partition().
+  // If it differs, compare component-wise.
+  // Same speed?  Same results?
+  //
+  // ByCategory overload and Tricks method eliminate.
+  // Clean up Tricks
   //
   // Use solution all the way (no partialSolution).
   //
@@ -620,21 +625,24 @@ void Covers::explain(
   // cout << partialSolution.str(sumProfile);
 
 
-  list<unsigned char> tricksSymm, tricksAntisymm;
-  Covers::partitionResults(results, tricksSymm, tricksAntisymm);
+  list<unsigned char> rawTricksSymm, rawTricksAntisymm;
+  Covers::partitionResults(results, rawTricksSymm, rawTricksAntisymm);
+
+  // Tricks tricksSymm, tricksAntisymm;
+  // tricks.partition(tricksSymm, tricksAntisymm, cases);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.
 
   // Do the symmetric component (keep it in solution).
   explain.behave(EXPLAIN_SYMMETRIC);
-  Covers::explainByCategory(tricksSymm, explain, false,
+  Covers::explainByCategory(rawTricksSymm, explain, false,
     solution, newTableauFlag);
 
   // Do the asymmetric component.
   CoverTableau solutionAntisymm;
   explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-  Covers::explainByCategory(tricksAntisymm, explain, false,
+  Covers::explainByCategory(rawTricksAntisymm, explain, false,
     solutionAntisymm, newTableauFlag);
 
   // TODO Only use one solution?
