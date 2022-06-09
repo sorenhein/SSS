@@ -212,8 +212,19 @@ void Covers::explainTemplate(
   {
     // The solution is a partial one and it is placed onto the stack
     // as a given start to the optimization.
+    // TODO Probably only needs solution and begin() here?
     stack.emplace(solution, tricks, explain.tricksMin(), 
       candidates.begin());
+
+/*
+cout << "partial solution\n";
+cout << solution.str(sumProfile);
+cout << "residuals\n";
+cout << solution.strResiduals() << "\n";
+cout << stack.begin()->tableau.str(sumProfile);
+cout << "residuals\n";
+cout << stack.begin()->tableau.strResiduals() << "\n";
+*/
 
     // Then start with a clean slate.
     solution.reset();
@@ -574,16 +585,16 @@ void Covers::explain(
   // Should we try a couple of guesses?
   // Do we know ahead of time it's going to get rough?
 
-  CoverTableau partialSolution;
-  partialSolution.init(tricks, tmin);
+  // CoverTableau partialSolution;
+  solution.init(tricks, tmin);
 
   explain.setSymmetry(EXPLAIN_GENERAL);
-  Covers::guessStart(tricks, partialSolution, explain);
+  Covers::guessStart(tricks, solution, explain);
 
-  if (partialSolution.complete())
+  if (solution.complete())
   {
     // TODO Inefficient
-    solution = partialSolution;
+    // solution = partialSolution;
     return;
   }
 
@@ -592,27 +603,37 @@ void Covers::explain(
 
 
   Tricks tricksSymm, tricksAntisymm;
-  tricks.partition(tricksSymm, tricksAntisymm, cases);
+  solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
+  // tricks.partition(tricksSymm, tricksAntisymm, cases);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.
 
-  // Do the symmetric component (keep it in solution).
-  explain.setSymmetry(EXPLAIN_SYMMETRIC);
-  Covers::explainByCategory(tricksSymm, explain, false,
-    solution, newTableauFlag);
+  if (tricksSymm.getWeight())
+  {
+    // Do the symmetric component (keep it in solution).
+    explain.setSymmetry(EXPLAIN_SYMMETRIC);
+    Covers::explainByCategory(tricksSymm, explain, true,
+      solution, newTableauFlag);
 
-  // Do the asymmetric component.
-  CoverTableau solutionAntisymm;
-  explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-  Covers::explainByCategory(tricksAntisymm, explain, false,
-    solutionAntisymm, newTableauFlag);
+  cout << "solution after first half\n";
+  cout << solution.str(sumProfile);
+  }
+
+  if (tricksAntisymm.getWeight())
+  {
+    // Do the asymmetric component.
+    CoverTableau solutionAntisymm;
+    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    Covers::explainByCategory(tricksAntisymm, explain, true,
+      solution, newTableauFlag);
+  }
 
   // TODO Only use one solution?
   // I guess the first stack element would get solution as
   // its starting point.  But then the symmetric and anti-symmetric
   // parts could start to merge within rows...
-  solution += solutionAntisymm;
+  // solution += solutionAntisymm;
 }
 
 

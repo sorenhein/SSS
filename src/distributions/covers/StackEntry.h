@@ -47,8 +47,8 @@ struct StackEntry
   {
     if (tableauIn.used())
       tableau = tableauIn;
-
-    tableau.init(tricks, tmin);
+    else
+      tableau.init(tricks, tmin);
     iter = iterIn;
   };
 
