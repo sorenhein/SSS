@@ -407,23 +407,6 @@ void Covers::findHeaviest(
 }
 
 
-// TODO Will not need this long-term
-void Covers::explainByCategory(
-  const list<unsigned char>& rawTricks,
-  const Explain& explain,
-  const bool partialTableauFlag,
-  CoverTableau& solution,
-  bool& newTableauFlag)
-{
-  Tricks tricks;
-  // TODO Therefore will not need this method long-term
-  tricks.setByList(rawTricks, cases);
-
-  Covers::explainByCategory(tricks, explain, partialTableauFlag,
-    solution, newTableauFlag);
-}
-
-
 void Covers::explainByCategory(
   const Tricks& tricks,
   const Explain& explain,
@@ -549,10 +532,7 @@ void Covers::explain(
 
   if (tricks.getWeight() == 0)
   {
-    // TODO tableau.setTrivial(tmin) or something like that.  
-    // Then in Slist, if tableau.trivial()
-    //   cout << tableau.whatever();
-    // This should prevent Unexplained strategies
+    solution.setTrivial(tmin);
     return;
   }
 
@@ -564,7 +544,7 @@ void Covers::explain(
   CoverSymmetry tricksSymmetry = tricks.symmetry();
   if (tricksSymmetry == EXPLAIN_SYMMETRIC)
   {
-    explain.behave(EXPLAIN_SYMMETRIC);
+    explain.setSymmetry(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     return;
@@ -572,7 +552,7 @@ void Covers::explain(
 
   if (tricksSymmetry == EXPLAIN_ANTI_SYMMETRIC)
   {
-    explain.behave(EXPLAIN_ANTI_SYMMETRIC);
+    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     return;
@@ -580,17 +560,6 @@ void Covers::explain(
 
 
   // TODO
-  // Version 1: Regenerate ref2.
-  // Is it abysmally slow now, or was it due to YouTube?
-  // Differences with ref2?
-  //
-  // Version 2: Turn on the new partition().
-  // If it differs, compare component-wise.
-  // Same speed?  Same results?
-  //
-  // ByCategory overload and Tricks method eliminate.
-  // Clean up Tricks
-  //
   // Use solution all the way (no partialSolution).
   //
   // Call explainByCategory with "true".
@@ -604,14 +573,11 @@ void Covers::explain(
   // (so much fewer comparisons).
   // Should we try a couple of guesses?
   // Do we know ahead of time it's going to get rough?
-  //
-  // Not sure that Explain needs two CoverSymmetry
-  //
-  // Don't call Tricks::symmetric when symmetric is enough.
 
   CoverTableau partialSolution;
   partialSolution.init(tricks, tmin);
 
+  explain.setSymmetry(EXPLAIN_GENERAL);
   Covers::guessStart(tricks, partialSolution, explain);
 
   if (partialSolution.complete())
@@ -625,9 +591,6 @@ void Covers::explain(
   // cout << partialSolution.str(sumProfile);
 
 
-  // list<unsigned char> rawTricksSymm, rawTricksAntisymm;
-  // Covers::partitionResults(results, rawTricksSymm, rawTricksAntisymm);
-
   Tricks tricksSymm, tricksAntisymm;
   tricks.partition(tricksSymm, tricksAntisymm, cases);
 
@@ -635,13 +598,13 @@ void Covers::explain(
 // and then check again which halves are in use.
 
   // Do the symmetric component (keep it in solution).
-  explain.behave(EXPLAIN_SYMMETRIC);
+  explain.setSymmetry(EXPLAIN_SYMMETRIC);
   Covers::explainByCategory(tricksSymm, explain, false,
     solution, newTableauFlag);
 
   // Do the asymmetric component.
   CoverTableau solutionAntisymm;
-  explain.behave(EXPLAIN_ANTI_SYMMETRIC);
+  explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
   Covers::explainByCategory(tricksAntisymm, explain, false,
     solutionAntisymm, newTableauFlag);
 
@@ -662,8 +625,6 @@ void Covers::explainManually(
   unsigned char tmin;
   tricks.setByResults(results, cases, tmin);
 
-  CoverSymmetry explainTricks = tricks.symmetry();
-
   if (tableauRowCache.lookup(tricks, solution))
   {
     solution.setMinTricks(tmin);
@@ -672,10 +633,10 @@ void Covers::explainManually(
 
   // TODO For now
   Explain explain;
-  if (explainTricks == EXPLAIN_SYMMETRIC)
-    explain.behave(EXPLAIN_SYMMETRIC);
+  if (tricks.symmetric())
+    explain.setSymmetry(EXPLAIN_SYMMETRIC);
   else
-    explain.behave(EXPLAIN_GENERAL);
+    explain.setSymmetry(EXPLAIN_GENERAL);
 
   explain.setParameters(1, tmin);
 

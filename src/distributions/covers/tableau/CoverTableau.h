@@ -52,6 +52,8 @@ class CoverTableau
     // candidates that still remain for that specific tableau.
     Complexity lowerBound;
 
+    bool trivialFlag;
+
     
     template<class T>
     CoverState attemptRow(
@@ -90,6 +92,8 @@ class CoverTableau
       const unsigned char tmin);
 
     void setMinTricks(const unsigned char tmin);
+
+    void setTrivial(const unsigned char tmin);
 
     bool attempt(
       const vector<unsigned char>& cases,

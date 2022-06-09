@@ -67,42 +67,11 @@ void Tricks::weigh(const vector<unsigned char>& cases)
 }
 
 
-void Tricks::setByList(
-  const list<unsigned char>& tricks,
-  const vector<unsigned char>& cases)
-{
-  Tricks::resize(tricks.size());
-
-  ConvertData convertData;
-
-  // The forward half including the middle element if any.
-  auto riter = tricks.begin();
-  for (unsigned extIndex = 0; extIndex <= lastForward; 
-      extIndex++, riter++)
-  {
-    convertData.increment(* riter, signature);
-  }
-  convertData.finish(signature);
-
-  // The backward half excluding the middle element.
-  riter = prev(tricks.end());
-  for (size_t extIndex = length-1; extIndex > lastForward; 
-      extIndex--, riter--)
-  {
-    convertData.increment(* riter, signature);
-  }
-  convertData.finish(signature);
-
-  Tricks::weigh(cases);
-}
-
-
 void Tricks::setByResults(
   const list<Result>& results,
   const vector<unsigned char>& cases,
   unsigned char& tricksMin)
 {
-  // TODO These two methods are too similar.  Combine somehow?
   Tricks::resize(results.size());
 
   tricksMin = numeric_limits<unsigned char>::max();

@@ -26,11 +26,9 @@ class Explain
 
     unsigned char tricksMinInt;
 
-    CoverSymmetry explain;
+    CoverSymmetry symmetry;
 
     CoverComposition composition;
-
-    CoverSymmetry behaveInt;
 
 
   public:
@@ -39,13 +37,9 @@ class Explain
       const unsigned numStrategyTopsIn,
       const unsigned char trickMinIn);
 
-    void setWeights(
-      const unsigned weightSymm,
-      const unsigned weightAntisymm);
+    void setSymmetry(const CoverSymmetry symmetryIn);
 
     void setComposition(const CoverComposition compositionIn);
-
-    void behave(const CoverSymmetry behaveIn);
 
     bool skip(
       const unsigned char effectiveDepth,

@@ -87,13 +87,6 @@ class Covers
       CoverTableau& solution,
       bool& newTableauFlag);
 
-    void explainByCategory(
-      const list<unsigned char>& rawTricks,
-      const Explain& explain,
-      const bool partialTableauFlag,
-      CoverTableau& solution,
-      bool& newTableauFlag);
-
     void guessStart(
       const Tricks& tricks,
       CoverTableau& partialSolution,

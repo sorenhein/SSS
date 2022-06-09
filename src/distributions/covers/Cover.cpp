@@ -90,7 +90,7 @@ bool Cover::setByProduct(
 
   if (coverSymmetry != EXPLAIN_SYMMETRIC)
   {
-    if (tricks.symmetry() == EXPLAIN_ANTI_SYMMETRIC && ! symmetrizeFlag)
+    if (! symmetrizeFlag && tricks.symmetry() == EXPLAIN_ANTI_SYMMETRIC)
       coverSymmetry = EXPLAIN_ANTI_SYMMETRIC;
     else
       coverSymmetry = EXPLAIN_GENERAL;

@@ -39,6 +39,8 @@ void CoverTableau::reset()
 
   complexity.reset();
   lowerBound.reset();
+
+  trivialFlag = false;
 }
 
 
@@ -54,6 +56,13 @@ void CoverTableau::init(
 void CoverTableau::setMinTricks(const unsigned char tmin)
 {
   tricksMin = tmin;
+}
+
+
+void CoverTableau::setTrivial(const unsigned char tmin)
+{
+  tricksMin = tmin;
+  trivialFlag = true;
 }
 
 
@@ -360,7 +369,8 @@ bool CoverTableau::used() const
 
 bool CoverTableau::complete() const
 {
-  return (rows.size() > 0 && residuals.getWeight() == 0);
+  return (trivialFlag ||
+      (rows.size() > 0 && residuals.getWeight() == 0));
 }
 
 
@@ -410,9 +420,17 @@ string CoverTableau::str(const Profile& sumProfile) const
 {
   stringstream ss;
 
-  ss << "Always take at least " << +tricksMin << " tricks, and more when\n";
-  for (auto& row: rows)
-    ss << row.str(sumProfile);
+  if (trivialFlag)
+  {
+    ss << "Take exactly " << +tricksMin << " tricks\n";
+  }
+  else
+  {
+    ss << "Always take at least " << 
+      +tricksMin << " tricks, and more when\n";
+    for (auto& row: rows)
+      ss << row.str(sumProfile);
+  }
 
   return ss.str() + "\n";
 }

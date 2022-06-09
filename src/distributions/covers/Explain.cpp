@@ -25,15 +25,15 @@ void Explain::setParameters(
 }
 
 
-void Explain::setComposition(const CoverComposition compositionIn)
+void Explain::setSymmetry(const CoverSymmetry symmetryIn)
 {
-  composition = compositionIn;
+  symmetry = symmetryIn;
 }
 
 
-void Explain::behave(const CoverSymmetry behaveIn)
+void Explain::setComposition(const CoverComposition compositionIn)
 {
-  behaveInt = behaveIn;
+  composition = compositionIn;
 }
 
 
@@ -44,11 +44,11 @@ bool Explain::skip(
   if (effectiveDepth > numStrategyTops)
     return true;
 
-  if (behaveInt == EXPLAIN_SYMMETRIC && 
+  if (symmetry == EXPLAIN_SYMMETRIC && 
       (coverSymmetry != EXPLAIN_SYMMETRIC))
     return true;
 
-  if (behaveInt == EXPLAIN_ANTI_SYMMETRIC && 
+  if (symmetry == EXPLAIN_ANTI_SYMMETRIC && 
       (coverSymmetry != EXPLAIN_ANTI_SYMMETRIC))
     return true;
 

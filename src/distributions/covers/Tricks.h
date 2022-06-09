@@ -48,8 +48,6 @@ class Tricks
       const vector<Profile>& distProfiles,
       const size_t extIndex) const;
 
-    // TODO Needed?
-    bool symmetric() const;
     bool antiSymmetric() const;
 
   
@@ -58,10 +56,6 @@ class Tricks
     void clear();
 
     void resize(const size_t len);
-
-    void setByList(
-      const list<unsigned char>& tricks,
-      const vector<unsigned char>& cases);
 
     void setByResults(
       const list<Result>& results,
@@ -90,6 +84,8 @@ class Tricks
     void orSymm(
       const Tricks& tricks2,
       const vector<unsigned char>& cases);
+
+    bool symmetric() const;
 
     CoverSymmetry symmetry() const;
 
