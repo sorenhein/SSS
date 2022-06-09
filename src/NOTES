@@ -1,3 +1,11 @@
+Differences in new partition:
+9/3749, Strat 0: Back to "East has at most a doubleton".
+Why was this not the case in the old one?
+
+10/53202, Strat 1:
+Not "East has at most one top" anymore
+
+
 In explain:
 
 Do the regular search, or
