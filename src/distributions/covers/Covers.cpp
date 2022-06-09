@@ -625,24 +625,24 @@ void Covers::explain(
   // cout << partialSolution.str(sumProfile);
 
 
-  list<unsigned char> rawTricksSymm, rawTricksAntisymm;
-  Covers::partitionResults(results, rawTricksSymm, rawTricksAntisymm);
+  // list<unsigned char> rawTricksSymm, rawTricksAntisymm;
+  // Covers::partitionResults(results, rawTricksSymm, rawTricksAntisymm);
 
-  // Tricks tricksSymm, tricksAntisymm;
-  // tricks.partition(tricksSymm, tricksAntisymm, cases);
+  Tricks tricksSymm, tricksAntisymm;
+  tricks.partition(tricksSymm, tricksAntisymm, cases);
 
 // TODO Now we should probably subtract out the additions and resymmetrize
 // and then check again which halves are in use.
 
   // Do the symmetric component (keep it in solution).
   explain.behave(EXPLAIN_SYMMETRIC);
-  Covers::explainByCategory(rawTricksSymm, explain, false,
+  Covers::explainByCategory(tricksSymm, explain, false,
     solution, newTableauFlag);
 
   // Do the asymmetric component.
   CoverTableau solutionAntisymm;
   explain.behave(EXPLAIN_ANTI_SYMMETRIC);
-  Covers::explainByCategory(rawTricksAntisymm, explain, false,
+  Covers::explainByCategory(tricksAntisymm, explain, false,
     solutionAntisymm, newTableauFlag);
 
   // TODO Only use one solution?
