@@ -1,3 +1,17 @@
+Run with only the guesser and the full search.  How much worse
+than no guesser?  (It does limit the search.)
+
+Output also symm and depth and runtime with each strategy.
+
+Improve the script to give info per depth and symm.
+
+Add the "x" lowest top?
+
+Consider allowing somehow the excluded covers that are splittable
+into a symmetric part within the overall symmetry, and an
+anti-symmetric part that is completely outside of it.
+
+
 Differences in new partition:
 9/3749, Strat 0: Back to "East has at most a doubleton".
 Why was this not the case in the old one?
@@ -5,106 +19,6 @@ Why was this not the case in the old one?
 10/53202, Strat 1:
 Not "East has at most one top" anymore
 
-
-In explain:
-
-Do the regular search, or
-Do the symm/anti-symm split
-
-So splitting results into symmetric and anti-symmetric is very fast
-for D == 2 (248 comparisons, not 35367) but pretty poor as it stands:
-Average complexity (8.11, 3.52) instead of (6.21, 3.43).
-
-3.5 days, full
-
-param                 a1          a2          a3          a4          a5
-------------------------------------------------------------------------
-CC ttff             4.79      141.78     2454.80    15744.51    31665.19
-CC numsol           0.09        0.45        0.86        1.03        1.02
-CC smax            17.76      727.12     5741.62    13962.47    17953.43
-CC comps          543.97    36416.61   973868.78 14465096.77 58772547.48
-CC steps           17.09      291.00     4248.92    24555.46    48392.66
-branch              0.65        1.47        2.32        2.42        2.28
-wc stack         1015.00    50141.00    50386.00    50746.00    50746.00
-
-CC numsol
-0                   1582        5160        7373        8044        8835
-1                     98        1377        4336        7065        8368
-2                     25         561        2177        3363        3672
-3                      4         195         816        1358        1480
-4                      -          24         268         476         487
-5                      -           5          90         149         160
-6                      -          10          43          75          79
-7                      -           -          12          22          24
-8                      -           -           -           1           1
-9                      -           -           -           2           2
-10                     -           -           -           3           3
-
-CC compl            4.09        6.21        8.19        9.22        9.45
-CC rowc             2.89        3.43        3.81        3.96        3.98
-CC strats       94148.00   188020.00   245119.00   263422.00   265999.00
-CC unex           189.00      223.00      403.00     1002.00
-
-RR compl            4.09        4.09        4.09        4.09        4.09
-RR rowc             2.89        2.89        2.89        2.89        2.89
-RR strats       94148.00    94148.00    94148.00    94148.00    94148.00
-RR unex     
-
-42 minutes, split (b)
-
-param                 b1          b2          b3          b4          b5
-------------------------------------------------------------------------
-CC ttff             0.81        3.11       17.30      162.17      683.62
-CC numsol           0.01        0.02        0.13        0.25        0.35
-CC smax             1.28        4.66       36.43      353.90     1431.22
-CC comps           41.77      247.53     2384.87    46963.22   441229.34
-CC steps            2.55        7.06       30.35      212.85      807.64
-branch              0.33        0.63        0.89        1.20        1.53
-wc stack           86.00      406.00    25715.00    50029.00    50166.00
-
-CC numsol
-0                   1388        6158       13198       17404       17988
-1                      8          91        1125        3309        6293
-2                      -          10         239         568         690
-3                      -           -          44         176         246
-4                      -           -          19          89         115
-5                      -           -           8          19          19
-6                      -           -           -           5           5
-
-CC compl            4.98        8.11       10.82       12.18       12.54
-CC rowc             3.10        3.52        3.79        3.87        3.88
-CC strats       94148.00   188020.00   245119.00   263422.00   265999.00
-CC unex           187.00      187.00      187.00      187.00
-
-40 minutes, split and with limited partial detection (c)
-
-param                 c1          c2          c3          c4          c5
-------------------------------------------------------------------------
-CC ttff             0.81        3.11       17.40      164.46      692.65
-CC numsol           0.01        0.02        0.13        0.25        0.36
-CC smax             1.29        4.68       36.78      359.03     1450.20
-CC comps           34.44      234.04     2393.57    47661.40   447177.38
-CC steps            2.56        7.07       30.50      215.73      818.16
-branch              0.33        0.63        0.89        1.20        1.54
-wc stack           86.00      406.00    25715.00    50029.00    50166.00
-
-CC numsol
-0                   1376        6063       12937       17093       17678
-1                      8          89        1107        3287        6271
-2                      -          10         237         565         687
-3                      -           -          42         172         242
-4                      -           -          19          88         114
-5                      -           -           8          19          19
-6                      -           -           -           5           5
-
-CC compl            4.66        7.71       10.40       11.78       12.14
-CC rowc             3.01        3.49        3.77        3.85        3.86
-CC strats       94148.00   188020.00   245119.00   263422.00   265999.00
-CC unex           187.00      187.00      187.00      187.00
-
-
-
-If the guesser is lucky, we're done already!
 
 5/183 #0: Finishes
 8/4892: 

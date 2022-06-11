@@ -441,7 +441,7 @@ void Covers::explainByCategory(
     Covers::explainTemplate<CoverStore, Cover>(
       tricks, explain, coverStore, true, 50000, 25000, stack, solution);
 
-    tableauCache.store(tricks, solution);
+    // tableauCache.store(tricks, solution);
   }
   else
   {
@@ -461,7 +461,7 @@ void Covers::explainByCategory(
     Covers::explainTemplate<CoverStore, Cover>(
       tricks, explain, coverStore, false, 50000, 25000, stack, solution);
 
-    tableauCache.store(tricks, solution);
+    // tableauCache.store(tricks, solution);
   }
 }
 
@@ -509,7 +509,7 @@ void Covers::guessStart(
     }
     else
     {
-      // Go with one row and and "OR"
+      // Go with one row and an "OR"
       partialSolution.addRow(* heaviestLength.coverPtr);
 
       heaviestTops.additions.uniqueOver(heaviestLength.additions, cases);
@@ -555,6 +555,7 @@ void Covers::explain(
   // be sufficient.
   Explain explain;
   explain.setParameters(numStrategyTops, tmin);
+  explain.setSymmetry(EXPLAIN_GENERAL);
 
   CoverSymmetry tricksSymmetry = tricks.symmetry();
   if (tricksSymmetry == EXPLAIN_SYMMETRIC)
@@ -575,10 +576,6 @@ void Covers::explain(
 
 
   // TODO
-  // Use solution all the way (no partialSolution).
-  //
-  // Call explainByCategory with "true".
-  //
   // Time and complexity spreadsheet:
   // Original 4-day effort
   // Split symmetry and anti-symmetry, 45 minutes but poor
@@ -589,32 +586,34 @@ void Covers::explain(
   // Should we try a couple of guesses?
   // Do we know ahead of time it's going to get rough?
 
-  // CoverTableau partialSolution;
   solution.init(tricks, tmin);
 
-  explain.setSymmetry(EXPLAIN_GENERAL);
   Covers::guessStart(tricks, solution, explain);
 
   if (solution.complete())
-  {
-    // TODO Inefficient
-    // solution = partialSolution;
     return;
-  }
 
   // cout << "Partial guess\n";
-  // cout << partialSolution.str(sumProfile);
+  // cout << solution.str(sumProfile);
 
 
   Tricks tricksSymm, tricksAntisymm;
   solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
-  // tricks.partition(tricksSymm, tricksAntisymm, cases);
 
-// TODO Now we should probably subtract out the additions and resymmetrize
-// and then check again which halves are in use.
+/*
+cout << "tricks\n";
+cout << tricks.strSpaced() << "\n";
+cout << "tricksSymm\n";
+cout << tricksSymm.strSpaced() << "\n";
+cout << "tricksAsymm\n";
+cout << tricksAntisymm.strSpaced() << "\n";
+*/
 
   if (tricksSymm.getWeight())
   {
+    solution.init(tricksSymm, tmin);
+  // cout << "solution before first half\n";
+  // cout << solution.str(sumProfile);
     // Do the symmetric component (keep it in solution).
     explain.setSymmetry(EXPLAIN_SYMMETRIC);
     Covers::explainByCategory(tricksSymm, explain, true,
@@ -626,18 +625,15 @@ void Covers::explain(
 
   if (tricksAntisymm.getWeight())
   {
+    solution.init(tricksAntisymm, tmin);
     // Do the asymmetric component.
     CoverTableau solutionAntisymm;
     explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricksAntisymm, explain, true,
       solution, newTableauFlag);
+  // cout << "solution after second half\n";
+  // cout << solution.str(sumProfile);
   }
-
-  // TODO Only use one solution?
-  // I guess the first stack element would get solution as
-  // its starting point.  But then the symmetric and anti-symmetric
-  // parts could start to merge within rows...
-  // solution += solutionAntisymm;
 }
 
 
