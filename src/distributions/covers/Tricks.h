@@ -71,6 +71,10 @@ class Tricks
     // Will invalidate Tricks if not symmetrizable!
     bool symmetrize();
 
+    void uniqueOver(
+      const Tricks& compare,
+      const vector<unsigned char>& cases);
+
     bool possible(
       const Tricks& explained,
       const Tricks& residuals,

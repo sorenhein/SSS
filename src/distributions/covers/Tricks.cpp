@@ -207,6 +207,19 @@ bool Tricks::symmetrize()
 }
 
 
+void Tricks::uniqueOver(
+  const Tricks& compare,
+  const vector<unsigned char>& cases)
+{
+  assert(length == compare.size());
+
+  for (unsigned i = 0; i < signature.size(); i++)
+    signature[i] &= ~ compare.signature[i];
+
+  Tricks::weigh(cases);
+}
+
+
 bool Tricks::possible(
   const Tricks& explained,
   const Tricks& residuals,

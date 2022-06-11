@@ -497,6 +497,7 @@ void Covers::guessStart(
   else
   {
     // TODO More efficiently? Just destroy heaviestLength?
+    // Or can we call Tricks::possible after first addRow somehow?
     Tricks additionsSum = heaviestLength.additions;
     additionsSum += heaviestTops.additions;
 
@@ -510,6 +511,9 @@ void Covers::guessStart(
     {
       // Go with one row and and "OR"
       partialSolution.addRow(* heaviestLength.coverPtr);
+
+      heaviestTops.additions.uniqueOver(heaviestLength.additions, cases);
+
       partialSolution.extendRow(
         * heaviestTops.coverPtr, 
         heaviestTops.additions, 
