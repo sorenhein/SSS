@@ -620,8 +620,8 @@ void Covers::explain(
     Covers::explainByCategory(tricksSymm, explain, true,
       solution, newTableauFlag);
 
-  cout << "solution after first half\n";
-  cout << solution.str(sumProfile);
+  // cout << "solution after first half\n";
+  // cout << solution.str(sumProfile);
   }
 
   if (tricksAntisymm.getWeight())
