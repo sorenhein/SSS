@@ -51,6 +51,10 @@ extern TableauStats tableauStats;
 #include "../../utils/Timer.h"
 extern vector<Timer> timersStrat;
 
+// TODO TMP
+#include "../../inputs/Control.h"
+extern Control control;
+
 
 struct HeavyData
 {
@@ -337,46 +341,6 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   CoverTableau& solution);
 
 
-void Covers::partitionResults(
-  const list<Result>& results,
-  list<unsigned char>& tricksSymm,
-  list<unsigned char>& tricksAntisymm) const
-{
-  unsigned char tmin = numeric_limits<unsigned char>::max();
-  for (auto& res: results)
-    tmin = min(tmin, res.getTricks());
-
-  unsigned weightSymm = 0;
-  unsigned weightAntisymm = 0;
-
-  tricksSymm.resize(results.size());
-  tricksAntisymm.resize(results.size());
-
-  auto riterf = results.begin();
-  auto riterb = prev(results.end());
-  auto titerSymm = tricksSymm.begin();
-  auto titerAntisymm = tricksAntisymm.begin();
-
-  while (riterf != results.end())
-  {
-    const unsigned char f = riterf->getTricks() - tmin;
-    const unsigned char b = riterb->getTricks() - tmin;
-    const unsigned char mint = min(f, b);
-
-    * titerSymm = mint;
-    * titerAntisymm = f - mint;
-
-    weightSymm += mint;
-    weightAntisymm += f - mint;
-    
-    riterf++;
-    riterb--;
-    titerSymm++;
-    titerAntisymm++;
-  }
-}
-
-
 void Covers::findHeaviest(
   const Tricks& tricks,
   const Explain& explain,
@@ -440,8 +404,6 @@ void Covers::explainByCategory(
     // Go directly to the full solve, using solution as the start.
     Covers::explainTemplate<CoverStore, Cover>(
       tricks, explain, coverStore, true, 50000, 25000, stack, solution);
-
-    // tableauCache.store(tricks, solution);
   }
   else
   {
@@ -460,8 +422,6 @@ void Covers::explainByCategory(
     // Use this to seed the exhaustive search.
     Covers::explainTemplate<CoverStore, Cover>(
       tricks, explain, coverStore, false, 50000, 25000, stack, solution);
-
-    // tableauCache.store(tricks, solution);
   }
 }
 
@@ -537,7 +497,17 @@ void Covers::explain(
   unsigned char tmin;
   tricks.setByResults(results, cases, tmin);
 
+  const CoverSymmetry tricksSymmetry = tricks.symmetry();
+  solution.initStrData(numStrategyTops, tricksSymmetry);
+
   newTableauFlag = true;
+  if (tricks.getWeight() == 0)
+  {
+    solution.setTrivial(tmin);
+    newTableauFlag = false;
+    return;
+  }
+
   if (tableauCache.lookup(tricks, solution))
   {
     solution.setMinTricks(tmin);
@@ -545,38 +515,121 @@ void Covers::explain(
     return;
   }
 
-  if (tricks.getWeight() == 0)
-  {
-    solution.setTrivial(tmin);
-    return;
-  }
+  solution.init(tricks, tmin);
 
-  // Symmetric tricks use a smaller pool of covers, so this should
-  // be sufficient.
   Explain explain;
   explain.setParameters(numStrategyTops, tmin);
-  explain.setSymmetry(EXPLAIN_GENERAL);
+  explain.setSymmetry(tricksSymmetry);
 
-  CoverSymmetry tricksSymmetry = tricks.symmetry();
   if (tricksSymmetry == EXPLAIN_SYMMETRIC)
   {
-    explain.setSymmetry(EXPLAIN_SYMMETRIC);
+    // No need for anything fancy if tricks itself is constrained.
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
+    solution.initStrData(numStrategyTops, tricksSymmetry);
     return;
   }
 
   if (tricksSymmetry == EXPLAIN_ANTI_SYMMETRIC)
   {
-    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
+    solution.initStrData(numStrategyTops, tricksSymmetry);
     return;
   }
 
+  // TODO This is a misuse of the goal input parameter, but
+  // it's not forever.
+  const unsigned mode = control.goal();
 
-  solution.init(tricks, tmin);
+  if (mode == 0)
+  {
+    // Exhaustive run.  No guessing, no use of symmetry.
+    explain.setSymmetry(EXPLAIN_GENERAL);
 
+    Covers::explainByCategory(tricks, explain, false,
+      solution, newTableauFlag);
+  }
+  else if (mode == 1)
+  {
+    // No guess.  Direct split by symmetry.
+    Tricks tricksSymm, tricksAntisymm;
+    solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
+
+    if (tricksSymm.getWeight())
+    {
+      solution.init(tricksSymm, tmin);
+      explain.setSymmetry(EXPLAIN_SYMMETRIC);
+
+      Covers::explainByCategory(tricksSymm, explain, true,
+        solution, newTableauFlag);
+    }
+
+    if (tricksAntisymm.getWeight())
+    {
+      solution.init(tricksAntisymm, tmin);
+      CoverTableau solutionAntisymm;
+
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+      Covers::explainByCategory(tricksAntisymm, explain, true,
+        solution, newTableauFlag);
+    }
+  }
+  else if (mode == 2)
+  {
+    // Guess followed by exhaustive run.
+    Covers::guessStart(tricks, solution, explain);
+    if (solution.complete())
+    {
+      solution.initStrData(numStrategyTops, tricksSymmetry);
+      return;
+    }
+
+    explain.setSymmetry(EXPLAIN_GENERAL);
+
+    Covers::explainByCategory(tricks, explain, true,
+      solution, newTableauFlag);
+  }
+  else if (mode == 3)
+  {
+    // Guess followed by split of the remainder by symmetry.
+    Covers::guessStart(tricks, solution, explain);
+    if (solution.complete())
+    {
+      solution.initStrData(numStrategyTops, tricksSymmetry);
+      return;
+    }
+
+    Tricks tricksSymm, tricksAntisymm;
+    solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
+
+    if (tricksSymm.getWeight())
+    {
+      solution.init(tricksSymm, tmin);
+      explain.setSymmetry(EXPLAIN_SYMMETRIC);
+
+      Covers::explainByCategory(tricksSymm, explain, true,
+        solution, newTableauFlag);
+    }
+
+    if (tricksAntisymm.getWeight())
+    {
+      solution.init(tricksAntisymm, tmin);
+      CoverTableau solutionAntisymm;
+
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+      Covers::explainByCategory(tricksAntisymm, explain, true,
+        solution, newTableauFlag);
+    }
+  }
+  else
+    assert(false);
+
+  // This tends to get destroyed when solving with partial solutions,
+  // so we just reset it.
+  solution.initStrData(numStrategyTops, tricksSymmetry);
+
+  /*
   Covers::guessStart(tricks, solution, explain);
 
   if (solution.complete())
@@ -589,14 +642,12 @@ void Covers::explain(
   Tricks tricksSymm, tricksAntisymm;
   solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
 
-/*
 cout << "tricks\n";
 cout << tricks.strSpaced() << "\n";
 cout << "tricksSymm\n";
 cout << tricksSymm.strSpaced() << "\n";
 cout << "tricksAsymm\n";
 cout << tricksAntisymm.strSpaced() << "\n";
-*/
 
   if (tricksSymm.getWeight())
   {
@@ -623,6 +674,7 @@ cout << tricksAntisymm.strSpaced() << "\n";
   // cout << "solution after second half\n";
   // cout << solution.str(sumProfile);
   }
+  */
 }
 
 

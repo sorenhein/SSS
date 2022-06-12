@@ -1,12 +1,7 @@
-Types of runs:
-1. simple general run
-2. guess + general if needed
-3. guess + symm + antisymm
-4. no guess, symm + antisymm
-5. no guess, general (takes a long time!)
+8/1896 #2
+Why not recognized as symmetric?
 
 
-Output also symm and depth and runtime with each strategy.
 
 Improve the script to give info per depth and symm.
 

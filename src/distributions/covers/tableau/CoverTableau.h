@@ -54,6 +54,10 @@ class CoverTableau
 
     bool trivialFlag;
 
+    // TODO These are only needed for string outputs.
+    size_t depth;
+    CoverSymmetry tableauSymmetry;
+
     
     template<class T>
     CoverState attemptRow(
@@ -90,6 +94,11 @@ class CoverTableau
     void init(
       const Tricks& tricks,
       const unsigned char tmin);
+
+    // TODO TMP
+    void initStrData(
+      size_t depthIn,
+      CoverSymmetry coverSymmetry);
 
     void setMinTricks(const unsigned char tmin);
 

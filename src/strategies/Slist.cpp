@@ -24,6 +24,9 @@
 
 #include "../inputs/Control.h"
 
+// TODO TMP
+#include "../utils/Timer.h"
+
 extern Control control;
 
 
@@ -1044,6 +1047,8 @@ void Slist::covers(
   unsigned stratNo = 0;
   CoverTableau tableau;
 
+  Timer timer;
+
   for (auto& strat: strategies)
   {
     const Result result = strat.resultLowest();
@@ -1081,9 +1086,11 @@ else
     }
 
     bool newTableauFlag;
+    timer.start();
     strat.covers(coversIn, 
       static_cast<unsigned char>(actualDepth), 
       tableau, newTableauFlag);
+    timer.stop();
 
     cout << "Strategy #" << stratNo << " ";
     cout << tableau.strBracket() << ": ";
@@ -1098,6 +1105,8 @@ else
     }
     else
       cout << strat.str("Unexplained", true) << "\n";
+
+    cout << "Took " << timer.str(2);
     
     stratNo++;
   }

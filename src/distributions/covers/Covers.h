@@ -70,11 +70,6 @@ class Covers
       CoverStack<T>& stack,
       CoverTableau& solution);
 
-    void partitionResults(
-      const list<Result>& results,
-      list<unsigned char>& tricksSymm,
-      list<unsigned char>& tricksAntisymm) const;
-
     void findHeaviest(
       const Tricks& tricks,
       const Explain& explain,

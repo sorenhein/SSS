@@ -18,6 +18,7 @@
 #include "../CoverStore.h"
 #include "../RowStore.h"
 #include "../CoverStack.h"
+#include "../CoverCategory.h"
 
 #include "../../../strategies/result/Result.h"
 
@@ -41,6 +42,10 @@ void CoverTableau::reset()
   lowerBound.reset();
 
   trivialFlag = false;
+
+  // TODO TMP
+  depth = 0;
+  tableauSymmetry = EXPLAIN_GENERAL;
 }
 
 
@@ -50,6 +55,16 @@ void CoverTableau::init(
 {
   tricksMin = tmin;
   residuals = tricks;
+}
+
+
+void CoverTableau::initStrData(
+  size_t depthIn,
+  CoverSymmetry tableauSymmetryIn)
+{
+  depth = depthIn;
+  tableauSymmetry = tableauSymmetryIn;
+
 }
 
 
@@ -397,9 +412,18 @@ string CoverTableau::strBracket() const
   }
 
   stringstream ss;
+  string s;
+  if (tableauSymmetry == EXPLAIN_SYMMETRIC)
+    s = "s";
+  else if (tableauSymmetry == EXPLAIN_ANTI_SYMMETRIC)
+    s = "a";
+  else
+    s = "g";
   ss << 
     "[c " << complexity.str() << 
-    ", w " << weight << "/" << rawWeight << "]";
+    ", w " << weight << "/" << rawWeight << 
+    ", d " << depth << "/" << s <<
+    "]";
   return ss.str();
 }
 
