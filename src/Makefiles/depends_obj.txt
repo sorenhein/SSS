@@ -370,7 +370,8 @@ distributions/covers/Covers.obj: strategies/result/Result.h
 distributions/covers/Covers.obj: strategies/result/Winners.h
 distributions/covers/Covers.obj: strategies/result/Winner.h utils/table.h
 distributions/covers/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
-distributions/covers/Covers.obj: utils/Timer.h
+distributions/covers/Covers.obj: utils/Timer.h inputs/Control.h
+distributions/covers/Covers.obj: inputs/Entity.h
 distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/Explain.obj: distributions/covers/Explain.h
 distributions/covers/Explain.obj: distributions/covers/CoverCategory.h
@@ -422,6 +423,7 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverRow.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStack.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/StackEntry.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/CoverTableau.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverCategory.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winners.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winner.h
@@ -610,7 +612,7 @@ strategies/Slist.obj: distributions/covers/product/Profile.h
 strategies/Slist.obj: distributions/covers/Covers.h
 strategies/Slist.obj: distributions/covers/tableau/CoverTableau.h
 strategies/Slist.obj: combinations/DepthStats.h inputs/Control.h
-strategies/Slist.obj: inputs/Entity.h
+strategies/Slist.obj: inputs/Entity.h utils/Timer.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Slist.h
 strategies/Strategies.obj: strategies/Strategy.h strategies/result/Result.h
 strategies/Strategies.obj: strategies/result/Winners.h

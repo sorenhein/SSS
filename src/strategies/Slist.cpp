@@ -1086,6 +1086,7 @@ else
     }
 
     bool newTableauFlag;
+    timer.reset();
     timer.start();
     strat.covers(coversIn, 
       static_cast<unsigned char>(actualDepth), 
