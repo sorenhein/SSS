@@ -1,5 +1,10 @@
-Run with only the guesser and the full search.  How much worse
-than no guesser?  (It does limit the search.)
+Types of runs:
+1. simple general run
+2. guess + general if needed
+3. guess + symm + antisymm
+4. no guess, symm + antisymm
+5. no guess, general (takes a long time!)
+
 
 Output also symm and depth and runtime with each strategy.
 
@@ -13,15 +18,7 @@ anti-symmetric part that is completely outside of it.
 
 
 Differences in new partition:
-9/3749, Strat 0: Back to "East has at most a doubleton".
-Why was this not the case in the old one?
 
-10/53202, Strat 1:
-Not "East has at most one top" anymore
-
-
-5/183 #0: Finishes
-8/4892: 
 11/130538: Comes up with 2-3 or (West 1+H without A),
   which adds 2+1 cases.  (West HH any) would have been better as it
   adds 4 cases, but it has fewer overlaps with 2-3 length.
@@ -36,22 +33,6 @@ overlap...
 
 
 Examples of sub-optimalities:
-
-- 5/183: 
-  "East has at most a singleton" vs (1, 2, 3)
-
-  "West has a singleton [1-1]" or (1, 2)
-  "East is void" (3)
-  So there is a single mixed explanation 
-
-- 8/4892, KJ9/T8:
-  Effectively "West has the queen" or (2, 4, 6, 7)
-  "West has the stiff ace" vs. (3)
-
-  Either has stiff ace (3, 4)
-  West has AQ (6, 7)
-  West has stiff Q (2)
-  So there is a better mixture of explanations
 
 - 11/130538, K985/Q7 miss AHH64
   Old #9 effectively [12/4]
@@ -80,31 +61,6 @@ Examples of sub-optimalities:
   2-3 or W HH
   W stiff H, stiff HH, stiff A
 
-- 11/137056, K9876/54 miss AHHH
-  Neither opp is void, so length 1-3 (1,2,3,4,5,6)
-  East has at most a doubleton, or West has the top (3-7 + 2)
-
-  best length-only: West >= 1 (West not void), 1-7
-  best tops-only: West has the top, 2-4-6-7 but subsumed
-
-  West length 1-2: 1-6, leaves 2-7
-  In principle: West has 1+ cards and not the stiff x
-  Could also say: West has 2+ cards
-  West has stiff A
-
-  So after best length-only we'd have 2-6: West 2-3 cards or stiff A
-  So
-
-  West has 1+ (2)
-  West has 2-3 (3)
-  West has stiff A (3)
-
-  West has 1-2 (3, symm)
-  West has 2+ (2)
-  West has stiff A (3)
-
-
-
 
 SurvivorList is not going to be useful to reduce result vectors:
 It maps full to reduced distributions when a NS rank (or two) disappears.
@@ -115,46 +71,6 @@ trivial            187
 asymmetric       29770
 symmetric        42627
 general         116436
-
-How do we turn the result vector into sub-vectors?
-- Symmetric is easy, so in 11/124454
-  symm could be explained as
-* 2-3           length-only     4-11
-* stiff H       length + top0   3, 12
-
-asymm could be perhaps
-* 2+ cards with A and not the x [but nicer combined with symm]
-                length + top2   7, 11, 15
-* 4 cards with Ahhh
-                length + top1   14
-
-So I guess we could post-process to 
-
-How to split according to winning ranks?
-Among 0-5, nothing.
-Among 1-4 split (d 1-3), there is a difference, etc.
-
-        #1      -tmin 
-0       1       0    
-
-1       1       0   
-2       1       0  
-3       2       1 
-
-4       2       1     
-5       2       1    
-6       2       1   
-7       3       2  
-8       2       1       
-9       2       1      
-10      2       1     
-11      3       2    
-
-12      2       1   
-13      1       0  
-14      2       1 
-
-15      2       1
 
 Maybe we do need to reintroduce the 0th rank, 11/124454 would benefit
 from "East has x".  Perhaps

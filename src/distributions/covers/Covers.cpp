@@ -575,17 +575,6 @@ void Covers::explain(
   }
 
 
-  // TODO
-  // Time and complexity spreadsheet:
-  // Original 4-day effort
-  // Split symmetry and anti-symmetry, 45 minutes but poor
-  // Using guessStart and then symmetry/anti-symmetry
-  // (Using guessStart and the original effort)
-  // Storing the products, covers and tableaux used and reading in
-  // (so much fewer comparisons).
-  // Should we try a couple of guesses?
-  // Do we know ahead of time it's going to get rough?
-
   solution.init(tricks, tmin);
 
   Covers::guessStart(tricks, solution, explain);
