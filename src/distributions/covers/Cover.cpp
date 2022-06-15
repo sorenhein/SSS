@@ -336,21 +336,24 @@ string Cover::strTricksShort() const
 string Cover::str(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
+  stringstream ss;
+
   if (factoredProductPtr->explainable())
   {
-    stringstream ss;
 
-    Opponent simplestOpponent = 
+    const Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbal(
       sumProfile, simplestOpponent, symmetrizeFlag);
 
-    ss << " [" << tricks.getWeight() << "]";
-
-    return ss.str();
   }
   else
-    return Cover::strTricksShort() + Cover::strLine();
+    ss << Cover::strTricksShort() + Cover::strLine();
+
+  ss << " [" << +Cover::getComplexity() << 
+    "/" << tricks.getWeight() << "]";
+
+  return ss.str();
 }
 

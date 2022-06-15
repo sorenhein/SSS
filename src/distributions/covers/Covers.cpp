@@ -511,6 +511,8 @@ void Covers::explain(
   if (tableauCache.lookup(tricks, solution))
   {
     solution.setMinTricks(tmin);
+    // TODO This may in fact not be the right depth, but it's a start.
+    solution.initStrData(numStrategyTops, tricksSymmetry);
     newTableauFlag = false;
     return;
   }
@@ -527,6 +529,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
+    tableauCache.store(tricks, solution);
     return;
   }
 
@@ -535,6 +538,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
+    tableauCache.store(tricks, solution);
     return;
   }
 
@@ -627,54 +631,8 @@ void Covers::explain(
 
   // This tends to get destroyed when solving with partial solutions,
   // so we just reset it.
-  solution.initStrData(numStrategyTops, tricksSymmetry);
-
-  /*
-  Covers::guessStart(tricks, solution, explain);
-
-  if (solution.complete())
-    return;
-
-  // cout << "Partial guess\n";
-  // cout << solution.str(sumProfile);
-
-
-  Tricks tricksSymm, tricksAntisymm;
-  solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
-
-cout << "tricks\n";
-cout << tricks.strSpaced() << "\n";
-cout << "tricksSymm\n";
-cout << tricksSymm.strSpaced() << "\n";
-cout << "tricksAsymm\n";
-cout << tricksAntisymm.strSpaced() << "\n";
-
-  if (tricksSymm.getWeight())
-  {
-    solution.init(tricksSymm, tmin);
-  // cout << "solution before first half\n";
-  // cout << solution.str(sumProfile);
-    // Do the symmetric component (keep it in solution).
-    explain.setSymmetry(EXPLAIN_SYMMETRIC);
-    Covers::explainByCategory(tricksSymm, explain, true,
-      solution, newTableauFlag);
-
-  // cout << "solution after first half\n";
-  // cout << solution.str(sumProfile);
-  }
-
-  if (tricksAntisymm.getWeight())
-  {
-    solution.init(tricksAntisymm, tmin);
-    // Do the asymmetric component.
-    CoverTableau solutionAntisymm;
-    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-    Covers::explainByCategory(tricksAntisymm, explain, true,
-      solution, newTableauFlag);
-  // cout << "solution after second half\n";
-  // cout << solution.str(sumProfile);
-  }
-  */
+  solution.initStrData(numStrategyTops, EXPLAIN_GENERAL);
+  tableauCache.store(tricks, solution);
 }
 
 

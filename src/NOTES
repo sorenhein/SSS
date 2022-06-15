@@ -1,3 +1,81 @@
+- Potentially AQT-any occurs and should get a lower complexity,
+  similar to when the exact combination is known?
+- Maybe guess by first trying all single-top covers first,
+  then whatever length-only still fits
+
+6/542, KJT/- miss AQ9
+T takes a trick, but in #0 only the K matters in Tricks.
+So actually the trick-taker is not the perfect indicator of ranks.
+
+
+
+There are really only 4 combinations with depth == 5:
+11/132860          78
+KJ975/- missing AQT864
+
+11/132887        1552
+KJ95/7 missing AQT864
+
+11/133103         836
+KJ75/9 missing AQT864
+
+11/135047         111
+K975/J missing AQT864
+
+There are more with depth == 4.  Here are the ones >= 100:
+100   11/135289 K75/J94 miss AQT86
+100   11/135291 K74/J95
+102   11/136181 KT75/7 missing AHH964
+104   11/136127 KT85/7
+105   11/136139 KT86/5 missing AHH974
+105   11/136141
+105   11/136145
+106   11/134034
+108   11/135073
+108   11/135075
+108   11/135275
+108   11/135277
+108   11/135281
+108   11/135285
+111   11/123828
+111   11/134030
+112    10/44285
+112    10/44287
+112    10/44291
+112   11/132845
+112   11/132847
+112   11/132851
+112   11/132855
+112   11/132859
+112   11/132861
+112   11/132869
+112   11/132873
+118   11/133265
+125   11/123746
+125   11/123748
+125   11/123752
+126   11/123749
+128   11/123167
+142   11/132902
+144   11/132983
+146   11/133211
+158   11/123113
+164   11/133223
+164   11/133225
+164   11/133229
+193   11/135803
+197   11/132821
+202   11/131849
+203   11/159131
+228   11/132857
+228   11/132863
+228   11/132865
+228   11/132875
+331   11/123101 KQT6/8 miss AJ97xx
+
+11/123101 -D 4: #0 seems to be cached, but from where?!
+
+
 8/1896 #2
 Why not recognized as symmetric?
 
