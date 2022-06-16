@@ -655,17 +655,14 @@ void Covers::explain(
       if (tricksL.getWeight() == 0)
         continue;
 
-// cout << "tricks for lenEW " << lenEW << endl;
-// cout << tricksL.strList();
-   
+      // A cover of a given length is always anti-symmetric.
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+
       solution.init(tricksL, 0); // Minimum doesn't matter yet
    
       // TODO Limit covers to those with the specific length
       Covers::explainByCategory(tricksL, explain, true,
         solution, newTableauFlag);
-
-// cout << "running solution\n" << solution.str(sumProfile);
-// cout << endl;
 
       // TODO Probably due to a rank being needed that doesn't seem
       // to take any tricks?
