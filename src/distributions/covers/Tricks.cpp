@@ -23,6 +23,7 @@
 #include "../../strategies/result/Result.h"
 
 extern TrickConvert trickConvert;
+extern vector<vector<unsigned>> binomial;
 
 
 void Tricks::clear()
@@ -361,7 +362,7 @@ CoverSymmetry Tricks::symmetry() const
 void Tricks::partition(
    Tricks& tricksSymmetric,
    Tricks& tricksAntisymmetric,
-    const vector<unsigned char>& cases) const
+   const vector<unsigned char>& cases) const
 {
   tricksSymmetric.resize(length);
   tricksAntisymmetric.resize(length);
@@ -396,6 +397,113 @@ void Tricks::partition(
 
   tricksSymmetric.weigh(cases);
   tricksAntisymmetric.weigh(cases);
+}
+
+
+unsigned Tricks::casesToLengthEW(const vector<unsigned char>& cases) const
+{
+  // Figure out the number of East-West cards.
+  // TODO No doubt we could pass this in more efficiently.
+
+  unsigned caseSum = 0;
+  for (auto c: cases)
+    caseSum += static_cast<unsigned>(c);
+
+  unsigned lengthEW = 0;
+  while (caseSum > 1)
+  {
+    lengthEW++;
+    caseSum >>= 1;
+  }
+
+  return lengthEW;
+}
+
+
+void Tricks::lengthBoundary(
+  size_t& cindex,
+  const unsigned target,
+  const vector<unsigned char>& cases) const
+{
+  // Starting from cindex, increase the index until we have seen
+  // cases totaling exactly target.
+  // TODO No doubt this too could be determined more easily from
+  // a distribution.
+
+  unsigned binomRunning = 0;
+
+  while (true)
+  {
+    assert(cindex < cases.size());
+    binomRunning += cases[cindex];
+    cindex++;
+    if (binomRunning >= target)
+    {
+      assert(binomRunning == target);
+      return;
+    }
+  }
+}
+
+
+void Tricks::transfer(
+  const Tricks& tricks,
+  const vector<unsigned char>& cases,
+  const size_t cstart,
+  const size_t cend,
+  unsigned char& tmin)
+{
+  // Transfer tricks[cstart, cend).  If they share a minimum > 0,
+  // subtract this out.
+  // TODO This is an inefficient hack.
+  // At least the intermediate list could be a list<unsigned char>?
+
+  list<Result> results;
+  results.resize(length);
+
+  auto riter = results.begin();
+  for (size_t extIndex = 0; extIndex < cstart; extIndex++, riter++) ;
+
+  tmin = numeric_limits<unsigned char>::max();
+  for (size_t extIndex = cstart; extIndex < cend; extIndex++)
+  {
+    const unsigned char t = tricks.lookup(extIndex);
+    if (t < tmin)
+      tmin = t;
+  }
+
+  for (size_t extIndex = cstart; extIndex < cend; extIndex++, riter++)
+    riter->setTricks(tricks.lookup(extIndex) - tmin);
+
+  unsigned char tmp;
+  Tricks::setByResults(results, cases, tmp);
+}
+
+
+void Tricks::partitionGeneral(
+  vector<Tricks>& tricksByLength,
+  vector<unsigned char>& tminByLength,
+  const vector<unsigned char>& cases) const
+{
+  // Use Pascal numbers and cases to split tricks by length.
+  const unsigned lengthEW = Tricks::casesToLengthEW(cases);
+
+  tricksByLength.resize(lengthEW+1);
+  for (auto& tbl: tricksByLength)
+    tbl.resize(length);
+
+  tminByLength.resize(lengthEW+1);
+
+  size_t cindex = 0;
+
+  for (unsigned lEW = 0; lEW <= lengthEW; lEW++)
+  {
+    const size_t cstart = cindex;
+    Tricks::lengthBoundary(cindex, binomial[lengthEW][lEW], cases);
+
+    tricksByLength[lEW].transfer(* this, cases,
+      cstart, cindex, tminByLength[lEW]);
+  }
 }
 
 

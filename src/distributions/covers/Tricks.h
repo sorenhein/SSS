@@ -48,6 +48,20 @@ class Tricks
       const vector<Profile>& distProfiles,
       const size_t extIndex) const;
 
+    unsigned casesToLengthEW(const vector<unsigned char>& cases) const;
+
+    void lengthBoundary(
+      size_t& cindex,
+      const unsigned target,
+      const vector<unsigned char>& cases) const;
+
+    void transfer(
+      const Tricks& tricks,
+      const vector<unsigned char>& cases,
+      const size_t cstart,
+      const size_t cend,
+      unsigned char& tmin);
+
     bool antiSymmetric() const;
 
   
@@ -96,6 +110,11 @@ class Tricks
     void partition(
       Tricks& tricksSymmetric,
       Tricks& tricksAntisymmetric,
+      const vector<unsigned char>& cases) const;
+
+    void partitionGeneral(
+      vector<Tricks>& tricksByLength,
+      vector<unsigned char>& tminByLength,
       const vector<unsigned char>& cases) const;
 
     Tricks& operator += (const Tricks& tricks2);

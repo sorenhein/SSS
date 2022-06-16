@@ -626,6 +626,24 @@ void Covers::explain(
         solution, newTableauFlag);
     }
   }
+  else if (mode == 4)
+  {
+    // Experimental
+    vector<Tricks> tricksByLength;
+    vector<unsigned char> tricksMinByLength;
+
+    // TODO May want to split even the symmetrics.  Then the
+    // partitioning should also somehow be symmetric.
+    tricks.partitionGeneral(tricksByLength, tricksMinByLength, cases);
+
+    Tricks tmp;
+    
+    for (unsigned i = 0; i < tricksByLength.size(); i++)
+    {
+      cout << setw(2) << i << ": " << +tricksMinByLength[i] << ", " <<
+        tricksByLength[i].strSpaced();
+    }
+  }
   else
     assert(false);
 

@@ -1,3 +1,11 @@
+Ideas for finer partitioning of tricks:
+- Match each of the splits with covers using only ranks, not lengths
+- This gives rise to a segmented solution that must somehow be
+  collapsed and unified again
+
+
+
+
 - Potentially AQT-any occurs and should get a lower complexity,
   similar to when the exact combination is known?
 - Maybe guess by first trying all single-top covers first,
