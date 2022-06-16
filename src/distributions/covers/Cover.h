@@ -74,6 +74,10 @@ class Cover
     // Will invalidate Cover if not symmetrizable!
     bool symmetrize();
 
+    bool isLengthOnly(
+      const unsigned char lenLower,
+      const unsigned char lenUpper) const;
+
     void tricksOr(
       Tricks& running,
       const vector<unsigned char>& cases) const;

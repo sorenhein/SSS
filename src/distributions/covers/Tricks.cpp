@@ -451,7 +451,7 @@ void Tricks::transfer(
   const vector<unsigned char>& cases,
   const size_t cstart,
   const size_t cend,
-  unsigned char& tmin)
+  Tricks& tricksMin)
 {
   // Transfer tricks[cstart, cend).  If they share a minimum > 0,
   // subtract this out.
@@ -461,10 +461,7 @@ void Tricks::transfer(
   list<Result> results;
   results.resize(length);
 
-  auto riter = results.begin();
-  for (size_t extIndex = 0; extIndex < cstart; extIndex++, riter++) ;
-
-  tmin = numeric_limits<unsigned char>::max();
+  unsigned char tmin = numeric_limits<unsigned char>::max();
   for (size_t extIndex = cstart; extIndex < cend; extIndex++)
   {
     const unsigned char t = tricks.lookup(extIndex);
@@ -472,17 +469,33 @@ void Tricks::transfer(
       tmin = t;
   }
 
+  unsigned char tmp;
+
+  if (tmin > 0)
+  {
+    auto riter = results.begin();
+    for (size_t extIndex = 0; extIndex < cstart; extIndex++, riter++) ;
+
+    for (size_t extIndex = cstart; extIndex < cend; extIndex++, riter++)
+      riter->setTricks(tmin);
+
+    tricksMin.setByResults(results, cases, tmp);
+  }
+
+  // We can reuse the results list.
+  auto riter = results.begin();
+  for (size_t extIndex = 0; extIndex < cstart; extIndex++, riter++) ;
+
   for (size_t extIndex = cstart; extIndex < cend; extIndex++, riter++)
     riter->setTricks(tricks.lookup(extIndex) - tmin);
 
-  unsigned char tmp;
   Tricks::setByResults(results, cases, tmp);
 }
 
 
 void Tricks::partitionGeneral(
   vector<Tricks>& tricksByLength,
-  vector<unsigned char>& tminByLength,
+  vector<Tricks>& tricksMinByLength,
   const vector<unsigned char>& cases) const
 {
   // Use Pascal numbers and cases to split tricks by length.
@@ -492,7 +505,9 @@ void Tricks::partitionGeneral(
   for (auto& tbl: tricksByLength)
     tbl.resize(length);
 
-  tminByLength.resize(lengthEW+1);
+  tricksMinByLength.resize(lengthEW+1);
+  for (auto& tbl: tricksMinByLength)
+    tbl.resize(length);
 
   size_t cindex = 0;
 
@@ -502,7 +517,7 @@ void Tricks::partitionGeneral(
     Tricks::lengthBoundary(cindex, binomial[lengthEW][lEW], cases);
 
     tricksByLength[lEW].transfer(* this, cases,
-      cstart, cindex, tminByLength[lEW]);
+      cstart, cindex, tricksMinByLength[lEW]);
   }
 }
 

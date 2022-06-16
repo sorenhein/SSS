@@ -495,6 +495,7 @@ void Covers::explain(
   // First test the complete cache.
   Tricks tricks;
   unsigned char tmin;
+
   tricks.setByResults(results, cases, tmin);
 
   const CoverSymmetry tricksSymmetry = tricks.symmetry();
@@ -619,7 +620,6 @@ void Covers::explain(
     if (tricksAntisymm.getWeight())
     {
       solution.init(tricksAntisymm, tmin);
-      CoverTableau solutionAntisymm;
 
       explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
       Covers::explainByCategory(tricksAntisymm, explain, true,
@@ -628,21 +628,56 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
-    // Experimental
+    // TODO Experimental
     vector<Tricks> tricksByLength;
-    vector<unsigned char> tricksMinByLength;
+    vector<Tricks> tricksMinByLength;
 
     // TODO May want to split even the symmetrics.  Then the
     // partitioning should also somehow be symmetric.
     tricks.partitionGeneral(tricksByLength, tricksMinByLength, cases);
 
-    Tricks tmp;
-    
-    for (unsigned i = 0; i < tricksByLength.size(); i++)
+    // Add the length-only covers arising from a minimum trick number
+    // for a given length.
+    for (unsigned lenEW = 0; lenEW < tricksByLength.size(); lenEW++)
     {
-      cout << setw(2) << i << ": " << +tricksMinByLength[i] << ", " <<
-        tricksByLength[i].strSpaced();
+      if (tricksMinByLength[lenEW].getWeight() == 0)
+        continue;
+
+      HeavyData heavyData(tricksMinByLength.size());
+      Covers::findHeaviest(tricksMinByLength[lenEW], explain, heavyData);
+
+      solution.addRow(* heavyData.coverPtr);
     }
+
+    for (unsigned lenEW = 0; lenEW < tricksByLength.size(); lenEW++)
+    {
+      const Tricks& tricksL = tricksByLength[lenEW];
+      if (tricksL.getWeight() == 0)
+        continue;
+
+// cout << "tricks for lenEW " << lenEW << endl;
+// cout << tricksL.strList();
+   
+      solution.init(tricksL, 0); // Minimum doesn't matter yet
+   
+      // TODO Limit covers to those with the specific length
+      Covers::explainByCategory(tricksL, explain, true,
+        solution, newTableauFlag);
+
+// cout << "running solution\n" << solution.str(sumProfile);
+// cout << endl;
+
+      // TODO Probably due to a rank being needed that doesn't seem
+      // to take any tricks?
+      if (! solution.complete())
+      {
+        cout << "FAILED g = 4" << endl;
+        return;
+      }
+    }
+
+    // Set the actual minimum.
+    solution.setMinTricks(tmin);
   }
   else
     assert(false);

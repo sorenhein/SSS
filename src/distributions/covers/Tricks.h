@@ -60,7 +60,7 @@ class Tricks
       const vector<unsigned char>& cases,
       const size_t cstart,
       const size_t cend,
-      unsigned char& tmin);
+      Tricks& tricksMin);
 
     bool antiSymmetric() const;
 
@@ -114,7 +114,7 @@ class Tricks
 
     void partitionGeneral(
       vector<Tricks>& tricksByLength,
-      vector<unsigned char>& tminByLength,
+      vector<Tricks>& tricksMinByLength,
       const vector<unsigned char>& cases) const;
 
     Tricks& operator += (const Tricks& tricks2);

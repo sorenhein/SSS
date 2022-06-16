@@ -1,10 +1,10 @@
-Ideas for finer partitioning of tricks:
-- Match each of the splits with covers using only ranks, not lengths
-- This gives rise to a segmented solution that must somehow be
-  collapsed and unified again
+mode == 4: Have to collapse or combine cover's now.  How?
 
+10/44451 #0 is now familiar, so may look at this.
 
-
+11/136262 #4: There is a difference between d = 33 (QJ9) and 
+say d = 29 (QJ6).  Yet we apparently never win a trick with the 7.
+For now I just flag these rank issues.
 
 - Potentially AQT-any occurs and should get a lower complexity,
   similar to when the exact combination is known?

@@ -240,6 +240,10 @@ string Top::strExactLengthEqual(
     else
       ss << side << " has three honors tripleton";
   }
+  else if (length == 4)
+  {
+    ss << side << " has " << +value << " honor(s) fourth";
+  }
   else
   {
     cout << "length " << +length << endl;
