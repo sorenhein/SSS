@@ -21,6 +21,8 @@ RanksNames::RanksNames()
   runningIndex = 0;
   oppsRanks = 0;
   sidePrev = SIDE_NONE;
+  names.clear();
+  oppsPtrsByTop.clear();
 }
 
 
@@ -30,6 +32,8 @@ void RanksNames::setCards(const unsigned char cards)
   runningIndex = 13 - cards;
   oppsRanks = 0;
   sidePrev = SIDE_NONE;
+  names.clear();
+  oppsPtrsByTop.clear();
 }
 
 
@@ -37,10 +41,10 @@ void RanksNames::add(const Side side)
 {
   if (side == SIDE_NORTH || side == SIDE_SOUTH)
   {
-    if (sidePrev == SIDE_OPPS)
+    if (sidePrev == SIDE_OPPS || sidePrev == SIDE_NONE)
       names.emplace_back(RankNames());
   }
-  else if (sidePrev == SIDE_NORTH || sidePrev == SIDE_SOUTH)
+  else if (sidePrev != SIDE_OPPS)
   {
     names.emplace_back(RankNames());
     oppsRanks++;

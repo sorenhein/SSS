@@ -18,10 +18,11 @@ enum Side: unsigned
   SIDE_NONE = 3
 };
 
-enum Pair
+enum Pair: unsigned
 {
   PAIR_NS = 0,
-  PAIR_EW = 1
+  PAIR_EW = 1,
+  PAIR_NONE = 2
 };
 
 enum Level

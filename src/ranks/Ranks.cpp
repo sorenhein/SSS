@@ -138,11 +138,11 @@ void Ranks::setPlayers()
       {
         maxGlobalRank++;
         opps.updateStep(maxGlobalRank);
-        if (nameFlag)
-          ranksNames.add(SIDE_OPPS);
       }
 
       opps.update(maxGlobalRank, rel, abs);
+      if (nameFlag)
+        ranksNames.add(SIDE_OPPS);
 
       prev_is_NS = false;
     }

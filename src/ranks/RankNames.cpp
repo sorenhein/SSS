@@ -49,18 +49,22 @@ void RankNames::add(
   const Side side,
   const size_t index)
 {
-  if (sideInt != SIDE_NONE)
-    assert(side == sideInt);
+  // TODO This means that side for N-S will be one or the other,
+  // and their cards are thrown together.  OK for now.
+
+  sideInt = side;
+
+  const char c = static_cast<char>(CARD_NAMES[index]);
 
   if (count == 0)
   {
     strFullInt = CARD_FULL_NAMES[index];
-    strShortInt = CARD_NAMES[index];
+    strShortInt = c;
   }
   else
   {
-    strFullInt += "-" + CARD_FULL_NAMES[index];
-    strShortInt += "-" + to_string(CARD_NAMES[index]);
+    strFullInt = CARD_FULL_NAMES[index] + "-" + strFullInt;
+    strShortInt = string(1, c) + strShortInt;
   }
 
   count++;
@@ -95,8 +99,8 @@ string RankNames::strHeader() const
 {
   stringstream ss;
   ss << 
-    setw(4) << "Top" <<
-    setw(12) << "Short" <<
+    setw(3) << "Top" << "  " <<
+    setw(12) << left << "Short" <<
     "Long" << "\n";
   return ss.str();
 }
@@ -106,8 +110,8 @@ string RankNames::str(const size_t number) const
 {
   stringstream ss;
   ss <<
-    setw(4) << number <<
-    setw(12) << strShortInt <<
+    setw(3) << number << "  " <<
+    setw(12) << left << strShortInt <<
     strFullInt << "\n";
   return ss.str();
 }
