@@ -77,13 +77,14 @@ void Combination::setTrivial(
 
 void Combination::covers(
   Covers& coversIn,
+  const RanksNames& ranksNames,
   ProductStats& productStats,
   DepthStats& depthStats)
 {
   if (control.runVerbalTricksManually())
   {
     timersStrat[23].start();
-    strats.coversManual(coversIn, maxRank);
+    strats.coversManual(coversIn, ranksNames, maxRank);
     timersStrat[23].stop();
   }
 
@@ -91,7 +92,7 @@ void Combination::covers(
   if (control.runVerbalTricks())
   {
     timersStrat[24].start();
-    strats.covers(coversIn, productStats, depthStats, maxRank);
+    strats.covers(coversIn, ranksNames, productStats, depthStats, maxRank);
     timersStrat[24].stop();
   }
 }

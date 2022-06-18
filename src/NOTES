@@ -1,3 +1,8 @@
+Names of cards: Pushed the data down to Product::strVerbal()
+where it stands.  It may be empty, e.g. from driver.cpp after full run.
+Perhaps RanksNames should have a setDefault() with content top1, top2,
+...?
+
 mode == 4: Have to collapse or combine cover's now.  How?
 
 * For tmin matches we should go length-only (I think we do).

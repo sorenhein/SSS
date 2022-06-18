@@ -18,6 +18,7 @@ using namespace std;
 
 class ProfilePair;
 class Profile;
+class RanksNames;
 class ProductStats;
 class ProductMemory;
 
@@ -132,7 +133,9 @@ class Cover
 
     string strTricksShort() const;
 
-    string str(const Profile& sumProfile) const;
+    string str(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames) const;
 
 // TODO
 string ID() const {return "CC";};

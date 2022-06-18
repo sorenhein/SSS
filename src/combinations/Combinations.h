@@ -26,6 +26,8 @@ using namespace std;
 
 class Distributions;
 class ExplStats;
+class Ranks;
+class RanksNames;
 
 
 class Combinations
@@ -107,7 +109,8 @@ class Combinations
       const unsigned char cards,
       const unsigned holding,
       const Distributions& distributions,
-      const vector<set<unsigned>>& dependenciesTrinary);
+      const vector<set<unsigned>>& dependenciesTrinary,
+      Ranks& ranks);
 
     void runUniques(
       const unsigned char cards,
@@ -125,6 +128,7 @@ class Combinations
     void covers(
       const unsigned char cards,
       const unsigned holding,
+      const RanksNames& ranksNames,
       Distributions& distributions);
 
     Combination const * getPtr(

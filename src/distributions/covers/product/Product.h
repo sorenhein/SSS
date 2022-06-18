@@ -25,6 +25,7 @@
 using namespace std;
 
 class Profile;
+class RanksNames;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
 
@@ -93,6 +94,7 @@ class Product
     // So far this only does the simplest case: One meaningful top.
     string strVerbal(
       const Profile& sumProfile,
+      const RanksNames& ranksNames,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 };

@@ -287,7 +287,9 @@ string DistMemory::strDynamic() const
 }
 
 
-string DistMemory::strCovers(const unsigned char cards) const
+string DistMemory::strCovers(
+  const unsigned char cards,
+  const RanksNames& ranksNames) const
 {
   if (usedCounts[cards] == 0)
     return "";
@@ -303,7 +305,7 @@ string DistMemory::strCovers(const unsigned char cards) const
       continue;
 
     ss << distCore.str() << "\n";
-    ss << distCore.strCovers() << "\n";
+    ss << distCore.strCovers(ranksNames) << "\n";
   }
 
   return ss.str();

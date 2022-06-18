@@ -25,6 +25,7 @@ class ProductStats;
 class DepthStats;
 class Ranks;
 class Plays;
+class RanksNames;
 
 
 class Combination
@@ -73,6 +74,7 @@ class Combination
 
     void covers(
       Covers& coversIn,
+      const RanksNames& ranksNames,
       ProductStats& productStats,
       DepthStats& depthStats);
 

@@ -25,6 +25,7 @@
 class ProductMemory;
 class Explain;
 class CoverTableau;
+class RanksNames;
 class Tricks;
 class Result;
 struct HeavyData;
@@ -120,7 +121,7 @@ class Covers
       size_t& numTableaux,
       size_t& numUses) const;
 
-    string strCache() const;
+    string strCache(const RanksNames& ranksNames) const;
 
     string strSignature() const;
 };

@@ -20,6 +20,7 @@
 class SurvivorList;
 class DistMap;
 class ProductMemory;
+class RanksNames;
 struct Play;
 
 using namespace std;
@@ -96,7 +97,7 @@ class DistCore
 
     string str() const;
 
-    string strCovers() const;
+    string strCovers(const RanksNames& ranksNames) const;
 };
 
 #endif

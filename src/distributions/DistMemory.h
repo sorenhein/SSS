@@ -19,6 +19,7 @@
 using namespace std;
 
 class ProductMemory;
+class RanksNames;
 
 
 class DistMemory
@@ -81,7 +82,9 @@ class DistMemory
 
     string strDynamic() const;
 
-    string strCovers(const unsigned char cards) const;
+    string strCovers(
+      const unsigned char cards,
+      const RanksNames& ranksNames) const;
 
     string strCoverCountsHeader() const;
 

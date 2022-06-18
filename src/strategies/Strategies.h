@@ -21,6 +21,7 @@
 #include "../distributions/Reductions.h"
 
 struct Play;
+class RanksNames;
 class SurvivorList;
 class Distribution;
 class ProductStats;
@@ -111,10 +112,12 @@ class Strategies
 
     void coversManual(
       Covers& coversIn,
+      const RanksNames& ranksNames,
       const unsigned char maxRank = 0) const;
 
     void covers(
       Covers& coversIn,
+      const RanksNames& ranksNames,
       ProductStats& productStats,
       DepthStats& depthStats,
       const unsigned char maxRank = 0) const;

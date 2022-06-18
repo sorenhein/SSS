@@ -20,6 +20,7 @@
 struct StratData;
 class Ranges;
 struct Play;
+class RanksNames;
 class SurvivorList;
 class Distribution;
 class ProductStats;
@@ -249,10 +250,12 @@ class Slist
 
     void coversManual(
       Covers& coversIn,
+      const RanksNames& ranksNames,
       const unsigned char maxRank) const;
 
     void covers(
       Covers& coversIn,
+      const RanksNames& ranksNames,
       const unsigned char maxRank,
       ProductStats& productStats,
       DepthStats& depthStats) const;

@@ -208,14 +208,16 @@ string CoverRow::strHeader() const
 }
 
 
-string CoverRow::str(const Profile& sumProfile) const
+string CoverRow::str(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames) const
 {
   stringstream ss;
 
-  ss << "* " << coverPtrs.front()->str(sumProfile);
+  ss << "* " << coverPtrs.front()->str(sumProfile, ranksNames);
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-    ss << "; or\n  " << (* iter)->str(sumProfile);
+    ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames);
 
   return ss.str() + "\n";
 }

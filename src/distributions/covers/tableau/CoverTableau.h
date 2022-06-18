@@ -28,6 +28,7 @@ class Cover;
 class CoverRow;
 class Profile;
 class ProductStats;
+class RanksNames;
 template<typename T> class CoverStack;
 template<typename T> struct StackEntry;
 
@@ -151,7 +152,9 @@ class CoverTableau
 
     string strResiduals() const;
 
-    string str(const Profile& sumProfile) const;
+    string str(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames) const;
 
 string lowerTMP() const;
 };

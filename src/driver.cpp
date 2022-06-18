@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "ranks/Ranks.h"
+
 #include "combinations/SymmetryStore.h"
 
 #include "combinations/Combinations.h"
@@ -80,8 +82,11 @@ int main(int argc, char * argv[])
       combinations.runUniques(cards, distributions);
     }
 
+    // Will be empty, so just to have something.
+    RanksNames ranksNames;
+
     cout << "\n";
-    cout << distributions.strCovers();
+    cout << distributions.strCovers(ranksNames);
     cout << distributions.strCoverCounts();
     cout << distributions.strProductEnterStats();
 
@@ -116,15 +121,19 @@ int main(int argc, char * argv[])
 
     timers.stop(TIMER_DISTRIBUTIONS);
 
+    Ranks ranks;
+
     combinations.runSingle(
       control.holdingLength(),
       control.holding(),
       distributions,
-      dependenciesTrinary);
+      dependenciesTrinary,
+      ranks);
     
     combinations.covers(
       control.holdingLength(),
       control.holding(),
+      ranks.getRanksNames(),
       distributions);
   }
 

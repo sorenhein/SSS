@@ -592,8 +592,8 @@ string DistCore::str() const
 }
 
 
-string DistCore::strCovers() const
+string DistCore::strCovers(const RanksNames& ranksNames) const
 {
-  return covers.strCache();
+  return covers.strCache(ranksNames);
 }
 

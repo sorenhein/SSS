@@ -732,9 +732,9 @@ void Covers::getCoverCounts(
 }
 
 
-string Covers::strCache() const
+string Covers::strCache(const RanksNames& ranksNames) const
 {
-  return tableauCache.str(sumProfile);
+  return tableauCache.str(sumProfile, ranksNames);
 }
 
 

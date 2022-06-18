@@ -89,12 +89,14 @@ void TableauCache::getCounts(
 }
 
 
-string TableauCache::str(const Profile& sumProfile) const
+string TableauCache::str(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames) const
 {
   stringstream ss;
 
   for (auto& entry: entries)
-    ss << entry.str(sumProfile);
+    ss << entry.str(sumProfile, ranksNames);
 
   return ss.str();
 }

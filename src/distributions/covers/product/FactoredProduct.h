@@ -13,6 +13,7 @@
 
 class Product;
 class Profile;
+class RanksNames;
 enum Opponent: unsigned;
 enum CompareType: unsigned;
 enum CoverComposition: unsigned;
@@ -65,6 +66,7 @@ class FactoredProduct
     // So far this only does the simplest case: One meaningful top.
     string strVerbal(
       const Profile& sumProfile,
+      const RanksNames& ranksNames,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 };

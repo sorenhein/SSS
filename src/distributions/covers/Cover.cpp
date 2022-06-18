@@ -333,7 +333,9 @@ string Cover::strTricksShort() const
 }
 
 
-string Cover::str(const Profile& sumProfile) const
+string Cover::str(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames) const
 {
   assert(factoredProductPtr != nullptr);
   stringstream ss;
@@ -345,7 +347,7 @@ string Cover::str(const Profile& sumProfile) const
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbal(
-      sumProfile, simplestOpponent, symmetrizeFlag);
+      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
 
   }
   else

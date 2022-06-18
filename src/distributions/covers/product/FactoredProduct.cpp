@@ -102,9 +102,11 @@ string FactoredProduct::strLine() const
 
 string FactoredProduct::strVerbal(
   const Profile& sumProfile,
+  const RanksNames& ranksNames,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
-  return canonicalPtr->strVerbal(sumProfile, simplestOpponent, symmFlag);
+  return canonicalPtr->strVerbal(
+    sumProfile, ranksNames, simplestOpponent, symmFlag);
 }
 

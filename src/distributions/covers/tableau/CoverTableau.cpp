@@ -440,7 +440,9 @@ string CoverTableau::strResiduals() const
 }
 
 
-string CoverTableau::str(const Profile& sumProfile) const
+string CoverTableau::str(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames) const
 {
   stringstream ss;
 
@@ -453,7 +455,7 @@ string CoverTableau::str(const Profile& sumProfile) const
     ss << "Always take at least " << 
       +tricksMin << " tricks, and more when\n";
     for (auto& row: rows)
-      ss << row.str(sumProfile);
+      ss << row.str(sumProfile, ranksNames);
   }
 
   return ss.str() + "\n";

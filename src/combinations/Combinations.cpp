@@ -201,9 +201,9 @@ void Combinations::runSingle(
   const unsigned char cards,
   const unsigned holding,
   const Distributions& distributions,
-  const vector<set<unsigned>>& dependenciesTrinary)
+  const vector<set<unsigned>>& dependenciesTrinary,
+  Ranks& ranks)
 {
-  Ranks ranks;
   Plays plays;
   plays.resize(cards);
 
@@ -357,7 +357,9 @@ histoPlay[plays.size()]++;
             timersStrat[32].start();
             comb.covers(
               distributions.get(cards, centry.getHolding2()).covers(),
-              productStats, depthStats);
+              ranks.getRanksNames(),
+              productStats, 
+              depthStats);
             timersStrat[32].stop();
           }
 
@@ -648,13 +650,14 @@ void Combinations::runUniquesMT(
 void Combinations::covers(
   const unsigned char cards,
   const unsigned holding,
+  const RanksNames& ranksNames,
   Distributions& distributions)
 {
   CombEntry& centry = combMemory.getEntry(cards, holding);
   Distribution& dist = distributions.get(cards, centry.getHolding2());
   Combination& comb = combMemory.getComb(cards, holding);
 
-  comb.covers(dist.covers(), productStats, depthStats);
+  comb.covers(dist.covers(), ranksNames, productStats, depthStats);
 }
 
 

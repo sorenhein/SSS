@@ -1008,6 +1008,7 @@ void Slist::getResultList(list<Result>& resultList) const
 
 void Slist::coversManual(
   Covers& coversIn,
+  const RanksNames& ranksNames,
   const unsigned char maxRank) const
 {
   unsigned stratNo = 0;
@@ -1029,7 +1030,7 @@ void Slist::coversManual(
     cout << tableau.strBracket() << ": ";
 
     if (tableau.complete())
-      cout << tableau.str(coversIn.getSumProfile());
+      cout << tableau.str(coversIn.getSumProfile(), ranksNames);
     else
       cout << strat.str("Unexplained manual", true) << "\n";
     
@@ -1040,6 +1041,7 @@ void Slist::coversManual(
 
 void Slist::covers(
   Covers& coversIn,
+  const RanksNames& ranksNames,
   const unsigned char maxRank,
   ProductStats& productStats,
   [[maybe_unused]] DepthStats& depthStats) const
@@ -1085,7 +1087,7 @@ void Slist::covers(
 
     if (tableau.complete())
     {
-      cout << tableau.str(coversIn.getSumProfile());
+      cout << tableau.str(coversIn.getSumProfile(), ranksNames);
       tableau.updateStats(
         coversIn.getSumProfile(), 
         productStats, 

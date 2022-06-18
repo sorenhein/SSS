@@ -207,14 +207,16 @@ string Distributions::str(const unsigned char cards) const
 }
 
 
-string Distributions::strCovers(const unsigned char cards) const
+string Distributions::strCovers(
+  const RanksNames& ranksNames,
+  const unsigned char cards) const
 {
   unsigned char cmin, cmax;
   Distributions::strLimits(cards, cmin, cmax);
 
   stringstream ss;
   for (unsigned char c = cmin; c <= cmax; c++)
-    ss << distMemory.strCovers(c);
+    ss << distMemory.strCovers(c, ranksNames);
 
   return ss.str();
 }

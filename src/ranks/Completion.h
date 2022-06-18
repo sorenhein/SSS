@@ -14,6 +14,7 @@
 #include <sstream>
 #include <vector>
 #include <deque>
+#include <cassert>
 
 #include "../utils/Card.h"
 

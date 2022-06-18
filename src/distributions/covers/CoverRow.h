@@ -18,6 +18,7 @@ using namespace std;
 
 class Cover;
 class Profile;
+class RanksNames;
 class ProductStats;
 
 enum CoverSymmetry: unsigned;
@@ -96,7 +97,9 @@ class CoverRow
 
     string strHeader() const;
 
-    string str(const Profile& sumProfile) const;
+    string str(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames) const;
 
 // TODO
 string ID() const {return "RR";};

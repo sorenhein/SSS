@@ -334,6 +334,7 @@ string Product::strLine() const
 
 string Product::strVerbal(
   const Profile& sumProfile,
+  [[maybe_unused]] const RanksNames& ranksNames,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
