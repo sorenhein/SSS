@@ -14,6 +14,7 @@
 #include "Declarer.h"
 #include "Opponents.h"
 #include "Completion.h"
+#include "RanksNames.h"
 
 #include "../plays/Play.h"
 #include "../utils/CombinationType.h"
@@ -40,6 +41,8 @@ class Ranks
     unsigned holding4;
     unsigned char cards;
     unsigned char maxGlobalRank;
+
+    RanksNames ranksNames;
 
 
     void zero();
@@ -143,6 +146,8 @@ class Ranks
       Plays& plays,
       Result& trivial,
       const bool symmOnlyFlag);
+
+    const RanksNames& getRanksNames() const;
 
     bool partnerVoid() const;
 

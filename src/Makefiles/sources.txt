@@ -63,6 +63,8 @@ SOURCE_FILES    =                               \
                 ranks/Opponents.cpp             \
                 ranks/canon.cpp                 \
                 ranks/cranked.cpp               \
+                ranks/RankNames.cpp             \
+                ranks/RanksNames.cpp            \
                                                 \
                 strategies/Slist.cpp            \
                 strategies/Strategies.cpp       \

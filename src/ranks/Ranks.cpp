@@ -113,6 +113,12 @@ void Ranks::setPlayers()
 
   const unsigned char cardsChar = static_cast<unsigned char>(cards);
 
+  const bool nameFlag = 
+    control.runVerbalTricks() ||
+    control.runVerbalTricksManually();
+  if (nameFlag)
+    ranksNames.setCards(cardsChar);
+
   // Start the numbering from 1 in order to distinguish from void.
   const unsigned char absMin = (cardsChar > 13 ? 0 : 13-cardsChar) + 1;
   unsigned char rel = 1;
@@ -132,6 +138,8 @@ void Ranks::setPlayers()
       {
         maxGlobalRank++;
         opps.updateStep(maxGlobalRank);
+        if (nameFlag)
+          ranksNames.add(SIDE_OPPS);
       }
 
       opps.update(maxGlobalRank, rel, abs);
@@ -155,6 +163,9 @@ void Ranks::setPlayers()
       else
         south.update(maxGlobalRank, rel, abs);
 
+      if (nameFlag)
+        ranksNames.add(static_cast<Side>(c));
+
       prev_is_NS = true;
     }
 
@@ -169,6 +180,8 @@ void Ranks::setPlayers()
 
   north.finish();
   south.finish();
+  if (nameFlag)
+    ranksNames.finish();
 
   if (control.runRankComparisons())
   {
@@ -760,6 +773,12 @@ CombinationType Ranks::setPlays(
   play.side = SIDE_SOUTH;
   Ranks::setPlaysSide(south, north, play, plays, symmOnlyFlag);
   return COMB_SIZE;
+}
+
+
+const RanksNames& Ranks::getRanksNames() const
+{
+  return ranksNames;
 }
 
 

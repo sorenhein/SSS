@@ -1063,21 +1063,8 @@ void Slist::covers(
       (rankLow == numeric_limits<unsigned char>::max() ?
       0 : (maxRank + 1 - rankLow) / 2);
 
-/*
-cout << "maxRank " << +maxRank << endl;
-cout << "rankLow " << +rankLow << endl;
-cout << "nominal " << nominalDepth << endl;
-cout << "actual  " << actualDepth << endl;
-
-if (strat.symmetricPrimary())
-  cout << "STRATSYMM " << actualDepth << "\n";
-else
-  cout << "STRATGEN " << actualDepth << "\n";
-*/
-
     depthStats.increment(nominalDepth, actualDepth);
 
-    // if (rankLow+2 < maxRank)
     if (actualDepth > control.verbalDepth())
     {
       // We don't know yet how to cover such Strategy's.

@@ -10,7 +10,7 @@
 #define SSS_TABLE_H
 
 
-enum Side
+enum Side: unsigned
 {
   SIDE_NORTH = 0,
   SIDE_SOUTH = 1,
