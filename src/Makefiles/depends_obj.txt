@@ -1,15 +1,18 @@
+driver.obj: ranks/Ranks.h ranks/Declarer.h ranks/Player.h utils/Card.h
+driver.obj: utils/Compare.h utils/table.h ranks/Opponents.h
+driver.obj: ranks/Completion.h ranks/RanksNames.h ranks/RankNames.h
+driver.obj: plays/Play.h strategies/result/Winners.h
+driver.obj: strategies/result/Winner.h utils/table.h utils/Card.h
+driver.obj: utils/Compare.h utils/CombinationType.h
 driver.obj: combinations/SymmetryStore.h combinations/Combinations.h
 driver.obj: combinations/CombMemory.h combinations/CombEntry.h
-driver.obj: combinations/CombReference.h utils/CombinationType.h
-driver.obj: combinations/Combination.h strategies/Strategies.h
-driver.obj: strategies/Slist.h strategies/Strategy.h
+driver.obj: combinations/CombReference.h combinations/Combination.h
+driver.obj: strategies/Strategies.h strategies/Slist.h strategies/Strategy.h
 driver.obj: strategies/result/Result.h strategies/result/Winners.h
-driver.obj: strategies/result/Winner.h utils/table.h utils/Card.h
-driver.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
-driver.obj: strategies/result/Ranges.h strategies/result/Range.h
-driver.obj: strategies/result/MultiResult.h distributions/Reductions.h
-driver.obj: distributions/Reduction.h combinations/CombHelp.h
-driver.obj: combinations/DepthStats.h
+driver.obj: strategies/optim/Study.h strategies/result/Ranges.h
+driver.obj: strategies/result/Range.h strategies/result/MultiResult.h
+driver.obj: distributions/Reductions.h distributions/Reduction.h
+driver.obj: combinations/CombHelp.h combinations/DepthStats.h
 driver.obj: distributions/covers/product/ProductStats.h
 driver.obj: distributions/Distributions.h distributions/DistMemory.h
 driver.obj: distributions/Distribution.h distributions/DistMap.h
@@ -45,9 +48,7 @@ combinations/Combination.obj: strategies/Strategies.h strategies/Slist.h
 combinations/Combination.obj: strategies/Strategy.h
 combinations/Combination.obj: strategies/result/Result.h
 combinations/Combination.obj: strategies/result/Winners.h
-combinations/Combination.obj: strategies/result/Winner.h utils/table.h
-combinations/Combination.obj: utils/Card.h utils/Compare.h utils/Compare.h
-combinations/Combination.obj: strategies/optim/Study.h
+combinations/Combination.obj: strategies/optim/Study.h utils/Compare.h
 combinations/Combination.obj: strategies/result/Ranges.h
 combinations/Combination.obj: strategies/result/Range.h
 combinations/Combination.obj: strategies/result/MultiResult.h
@@ -88,9 +89,11 @@ combinations/Combination.obj: distributions/covers/term/Top.h
 combinations/Combination.obj: distributions/covers/product/FactoredProduct.h
 combinations/Combination.obj: inputs/Control.h inputs/Entity.h plays/Plays.h
 combinations/Combination.obj: plays/Play.h strategies/result/Winners.h
-combinations/Combination.obj: plays/Nodes.h plays/Node.h plays/DebugPlay.h
-combinations/Combination.obj: ranks/Ranks.h ranks/Declarer.h ranks/Player.h
-combinations/Combination.obj: utils/Card.h utils/table.h ranks/Opponents.h
+combinations/Combination.obj: strategies/result/Winner.h utils/table.h
+combinations/Combination.obj: utils/Card.h plays/Nodes.h plays/Node.h
+combinations/Combination.obj: plays/DebugPlay.h ranks/Ranks.h
+combinations/Combination.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
+combinations/Combination.obj: utils/Compare.h utils/table.h ranks/Opponents.h
 combinations/Combination.obj: ranks/Completion.h ranks/RanksNames.h
 combinations/Combination.obj: ranks/RankNames.h plays/Play.h utils/Timer.h
 combinations/Combination.obj: utils/Timers.h utils/Timer.h
@@ -104,9 +107,7 @@ combinations/Combinations.obj: strategies/Strategies.h strategies/Slist.h
 combinations/Combinations.obj: strategies/Strategy.h
 combinations/Combinations.obj: strategies/result/Result.h
 combinations/Combinations.obj: strategies/result/Winners.h
-combinations/Combinations.obj: strategies/result/Winner.h utils/table.h
-combinations/Combinations.obj: utils/Card.h utils/Compare.h utils/Compare.h
-combinations/Combinations.obj: strategies/optim/Study.h
+combinations/Combinations.obj: strategies/optim/Study.h utils/Compare.h
 combinations/Combinations.obj: strategies/result/Ranges.h
 combinations/Combinations.obj: strategies/result/Range.h
 combinations/Combinations.obj: strategies/result/MultiResult.h
@@ -150,13 +151,15 @@ combinations/Combinations.obj: distributions/covers/term/Top.h
 combinations/Combinations.obj: distributions/covers/product/FactoredProduct.h
 combinations/Combinations.obj: distributions/covers/tableau/CoverTableau.h
 combinations/Combinations.obj: plays/Plays.h plays/Play.h
-combinations/Combinations.obj: strategies/result/Winners.h plays/Nodes.h
-combinations/Combinations.obj: plays/Node.h plays/DebugPlay.h ranks/Ranks.h
+combinations/Combinations.obj: strategies/result/Winners.h
+combinations/Combinations.obj: strategies/result/Winner.h utils/table.h
+combinations/Combinations.obj: utils/Card.h plays/Nodes.h plays/Node.h
+combinations/Combinations.obj: plays/DebugPlay.h ranks/Ranks.h
 combinations/Combinations.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
-combinations/Combinations.obj: utils/table.h ranks/Opponents.h
-combinations/Combinations.obj: ranks/Completion.h ranks/RanksNames.h
-combinations/Combinations.obj: ranks/RankNames.h plays/Play.h
-combinations/Combinations.obj: inputs/Control.h inputs/Entity.h
+combinations/Combinations.obj: utils/Compare.h utils/table.h
+combinations/Combinations.obj: ranks/Opponents.h ranks/Completion.h
+combinations/Combinations.obj: ranks/RanksNames.h ranks/RankNames.h
+combinations/Combinations.obj: plays/Play.h inputs/Control.h inputs/Entity.h
 combinations/Combinations.obj: utils/Timers.h utils/Timer.h
 combinations/CombMemory.obj: combinations/CombMemory.h
 combinations/CombMemory.obj: combinations/CombEntry.h
@@ -166,9 +169,7 @@ combinations/CombMemory.obj: combinations/Combination.h
 combinations/CombMemory.obj: strategies/Strategies.h strategies/Slist.h
 combinations/CombMemory.obj: strategies/Strategy.h strategies/result/Result.h
 combinations/CombMemory.obj: strategies/result/Winners.h
-combinations/CombMemory.obj: strategies/result/Winner.h utils/table.h
-combinations/CombMemory.obj: utils/Card.h utils/Compare.h utils/Compare.h
-combinations/CombMemory.obj: strategies/optim/Study.h
+combinations/CombMemory.obj: strategies/optim/Study.h utils/Compare.h
 combinations/CombMemory.obj: strategies/result/Ranges.h
 combinations/CombMemory.obj: strategies/result/Range.h
 combinations/CombMemory.obj: strategies/result/MultiResult.h
@@ -183,9 +184,7 @@ combinations/CombEntry.obj: combinations/Combination.h
 combinations/CombEntry.obj: strategies/Strategies.h strategies/Slist.h
 combinations/CombEntry.obj: strategies/Strategy.h strategies/result/Result.h
 combinations/CombEntry.obj: strategies/result/Winners.h
-combinations/CombEntry.obj: strategies/result/Winner.h utils/table.h
-combinations/CombEntry.obj: utils/Card.h utils/Compare.h utils/Compare.h
-combinations/CombEntry.obj: strategies/optim/Study.h
+combinations/CombEntry.obj: strategies/optim/Study.h utils/Compare.h
 combinations/CombEntry.obj: strategies/result/Ranges.h
 combinations/CombEntry.obj: strategies/result/Range.h
 combinations/CombEntry.obj: strategies/result/MultiResult.h
@@ -226,9 +225,7 @@ combinations/CombTest.obj: distributions/covers/product/FactoredProduct.h
 combinations/CombTest.obj: strategies/Strategies.h strategies/Slist.h
 combinations/CombTest.obj: strategies/Strategy.h strategies/result/Result.h
 combinations/CombTest.obj: strategies/result/Winners.h
-combinations/CombTest.obj: strategies/result/Winner.h utils/table.h
-combinations/CombTest.obj: utils/Card.h utils/Compare.h utils/Compare.h
-combinations/CombTest.obj: strategies/optim/Study.h
+combinations/CombTest.obj: strategies/optim/Study.h utils/Compare.h
 combinations/CombTest.obj: strategies/result/Ranges.h
 combinations/CombTest.obj: strategies/result/Range.h
 combinations/CombTest.obj: strategies/result/MultiResult.h
@@ -301,8 +298,10 @@ distributions/DistCore.obj: distributions/covers/term/Length.h
 distributions/DistCore.obj: distributions/covers/term/Term.h
 distributions/DistCore.obj: distributions/covers/term/Top.h
 distributions/DistCore.obj: distributions/covers/product/FactoredProduct.h
-distributions/DistCore.obj: plays/Play.h const.h inputs/Control.h
-distributions/DistCore.obj: inputs/Entity.h utils/Timer.h
+distributions/DistCore.obj: plays/Play.h strategies/result/Winners.h
+distributions/DistCore.obj: strategies/result/Winner.h utils/table.h
+distributions/DistCore.obj: utils/Card.h utils/Compare.h const.h
+distributions/DistCore.obj: inputs/Control.h inputs/Entity.h utils/Timer.h
 distributions/DistMemory.obj: distributions/DistMemory.h
 distributions/DistMemory.obj: distributions/Distribution.h
 distributions/DistMemory.obj: distributions/DistMap.h
@@ -334,6 +333,9 @@ distributions/SurvivorList.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/Survivors.h
 distributions/Survivors.obj: distributions/DistHelp.h
 distributions/Survivors.obj: distributions/SurvivorList.h plays/Play.h
+distributions/Survivors.obj: strategies/result/Winners.h
+distributions/Survivors.obj: strategies/result/Winner.h utils/table.h
+distributions/Survivors.obj: utils/Card.h utils/Compare.h
 distributions/covers/Cover.obj: distributions/covers/Cover.h
 distributions/covers/Cover.obj: distributions/covers/Tricks.h
 distributions/covers/Cover.obj: distributions/covers/CoverCategory.h
@@ -346,6 +348,7 @@ distributions/covers/Cover.obj: distributions/covers/term/Length.h
 distributions/covers/Cover.obj: distributions/covers/term/Term.h
 distributions/covers/Cover.obj: distributions/covers/term/Top.h
 distributions/covers/Cover.obj: distributions/covers/product/FactoredProduct.h
+distributions/covers/Cover.obj: ranks/RanksNames.h ranks/RankNames.h
 distributions/covers/Covers.obj: distributions/covers/Covers.h
 distributions/covers/Covers.obj: distributions/covers/CoverStore.h
 distributions/covers/Covers.obj: distributions/covers/Cover.h
@@ -369,11 +372,9 @@ distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
 distributions/covers/Covers.obj: strategies/result/Result.h
-distributions/covers/Covers.obj: strategies/result/Winners.h
-distributions/covers/Covers.obj: strategies/result/Winner.h utils/table.h
-distributions/covers/Covers.obj: utils/Card.h utils/Compare.h utils/Compare.h
-distributions/covers/Covers.obj: utils/Timer.h inputs/Control.h
-distributions/covers/Covers.obj: inputs/Entity.h
+distributions/covers/Covers.obj: strategies/result/Winners.h utils/Timer.h
+distributions/covers/Covers.obj: inputs/Control.h inputs/Entity.h
+distributions/covers/Covers.obj: ranks/RanksNames.h ranks/RankNames.h
 distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/Explain.obj: distributions/covers/Explain.h
 distributions/covers/Explain.obj: distributions/covers/CoverCategory.h
@@ -393,8 +394,6 @@ distributions/covers/Tricks.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/Tricks.obj: distributions/covers/product/Profile.h
 distributions/covers/Tricks.obj: strategies/result/Result.h
 distributions/covers/Tricks.obj: strategies/result/Winners.h
-distributions/covers/Tricks.obj: strategies/result/Winner.h utils/table.h
-distributions/covers/Tricks.obj: utils/Card.h utils/Compare.h utils/Compare.h
 distributions/covers/TrickConvert.obj: distributions/covers/TrickConvert.h
 distributions/covers/TrickConvert.obj: distributions/covers/ConvertData.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
@@ -428,10 +427,6 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/Cove
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverCategory.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winners.h
-distributions/covers/tableau/CoverTableau.obj: strategies/result/Winner.h
-distributions/covers/tableau/CoverTableau.obj: utils/table.h utils/Card.h
-distributions/covers/tableau/CoverTableau.obj: utils/Compare.h
-distributions/covers/tableau/CoverTableau.obj: utils/Compare.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/tableau/TableauCache.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/CoverRow.h
@@ -440,6 +435,9 @@ distributions/covers/tableau/TableauCache.obj: distributions/covers/Complexity.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/CoverState.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Profile.obj: distributions/covers/product/Profile.h
+distributions/covers/product/Profile.obj: distributions/covers/term/TopData.h
+distributions/covers/product/Profile.obj: ranks/RanksNames.h
+distributions/covers/product/Profile.obj: ranks/RankNames.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/Profile.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/Product.h
@@ -453,6 +451,7 @@ distributions/covers/product/Product.obj: distributions/covers/term/Top.h
 distributions/covers/product/Product.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Product.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/Product.obj: distributions/covers/term/CoverOperator.h
+distributions/covers/product/Product.obj: distributions/covers/term/TopData.h
 distributions/covers/product/Product.obj: utils/Compare.h utils/table.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/Product.h
@@ -487,7 +486,8 @@ distributions/covers/term/Top.obj: distributions/covers/term/Term.h
 distributions/covers/term/Top.obj: distributions/covers/term/Length.h
 distributions/covers/term/Top.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/term/Top.obj: distributions/covers/term/Xes.h
-distributions/covers/term/Top.obj: utils/table.h
+distributions/covers/term/Top.obj: distributions/covers/term/TopData.h
+distributions/covers/term/Top.obj: ranks/RankNames.h utils/table.h
 distributions/covers/term/Xes.obj: distributions/covers/term/Xes.h
 distributions/covers/term/TermCompare.obj: distributions/covers/term/TermCompare.h
 distributions/covers/term/TermCompare.obj: distributions/covers/term/CoverOperator.h
@@ -497,11 +497,11 @@ inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
 plays/Plays.obj: plays/Plays.h plays/Play.h strategies/result/Winners.h
-plays/Plays.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
-plays/Plays.obj: strategies/Slist.h strategies/Strategy.h
-plays/Plays.obj: strategies/result/Result.h strategies/result/Winners.h
 plays/Plays.obj: strategies/result/Winner.h utils/table.h utils/Card.h
-plays/Plays.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
+plays/Plays.obj: utils/Compare.h plays/Nodes.h plays/Node.h
+plays/Plays.obj: strategies/Strategies.h strategies/Slist.h
+plays/Plays.obj: strategies/Strategy.h strategies/result/Result.h
+plays/Plays.obj: strategies/result/Winners.h strategies/optim/Study.h
 plays/Plays.obj: strategies/result/Ranges.h strategies/result/Range.h
 plays/Plays.obj: strategies/result/MultiResult.h distributions/Reductions.h
 plays/Plays.obj: distributions/Reduction.h plays/DebugPlay.h plays/Chunks.h
@@ -512,36 +512,36 @@ plays/Plays.obj: combinations/CombHelp.h combinations/DepthStats.h
 plays/Plays.obj: distributions/covers/product/ProductStats.h inputs/Control.h
 plays/Plays.obj: inputs/Entity.h utils/Timer.h
 plays/Play.obj: plays/Play.h strategies/result/Winners.h
-plays/Play.obj: combinations/Combinations.h combinations/CombMemory.h
-plays/Play.obj: combinations/CombEntry.h combinations/CombReference.h
-plays/Play.obj: utils/CombinationType.h combinations/Combination.h
-plays/Play.obj: strategies/Strategies.h strategies/Slist.h
-plays/Play.obj: strategies/Strategy.h strategies/result/Result.h
-plays/Play.obj: strategies/result/Winners.h strategies/result/Winner.h
-plays/Play.obj: utils/table.h utils/Card.h utils/Compare.h utils/Compare.h
+plays/Play.obj: strategies/result/Winner.h utils/table.h utils/Card.h
+plays/Play.obj: utils/Compare.h combinations/Combinations.h
+plays/Play.obj: combinations/CombMemory.h combinations/CombEntry.h
+plays/Play.obj: combinations/CombReference.h utils/CombinationType.h
+plays/Play.obj: combinations/Combination.h strategies/Strategies.h
+plays/Play.obj: strategies/Slist.h strategies/Strategy.h
+plays/Play.obj: strategies/result/Result.h strategies/result/Winners.h
 plays/Play.obj: strategies/optim/Study.h strategies/result/Ranges.h
 plays/Play.obj: strategies/result/Range.h strategies/result/MultiResult.h
 plays/Play.obj: distributions/Reductions.h distributions/Reduction.h
 plays/Play.obj: combinations/CombHelp.h combinations/DepthStats.h
 plays/Play.obj: distributions/covers/product/ProductStats.h inputs/Control.h
-plays/Play.obj: inputs/Entity.h utils/Card.h
+plays/Play.obj: inputs/Entity.h utils/Card.h utils/Compare.h
 plays/Nodes.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
 plays/Nodes.obj: strategies/Slist.h strategies/Strategy.h
 plays/Nodes.obj: strategies/result/Result.h strategies/result/Winners.h
-plays/Nodes.obj: strategies/result/Winner.h utils/table.h utils/Card.h
-plays/Nodes.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
+plays/Nodes.obj: strategies/optim/Study.h utils/Compare.h
 plays/Nodes.obj: strategies/result/Ranges.h strategies/result/Range.h
 plays/Nodes.obj: strategies/result/MultiResult.h distributions/Reductions.h
 plays/Nodes.obj: distributions/Reduction.h plays/Play.h
-plays/Nodes.obj: strategies/result/Winners.h plays/Chunks.h
+plays/Nodes.obj: strategies/result/Winners.h strategies/result/Winner.h
+plays/Nodes.obj: utils/table.h utils/Card.h plays/Chunks.h
 plays/Node.obj: plays/Node.h strategies/Strategies.h strategies/Slist.h
 plays/Node.obj: strategies/Strategy.h strategies/result/Result.h
-plays/Node.obj: strategies/result/Winners.h strategies/result/Winner.h
-plays/Node.obj: utils/table.h utils/Card.h utils/Compare.h utils/Compare.h
-plays/Node.obj: strategies/optim/Study.h strategies/result/Ranges.h
+plays/Node.obj: strategies/result/Winners.h strategies/optim/Study.h
+plays/Node.obj: utils/Compare.h strategies/result/Ranges.h
 plays/Node.obj: strategies/result/Range.h strategies/result/MultiResult.h
 plays/Node.obj: distributions/Reductions.h distributions/Reduction.h
 plays/Node.obj: plays/Play.h strategies/result/Winners.h
+plays/Node.obj: strategies/result/Winner.h utils/table.h utils/Card.h
 plays/Node.obj: combinations/Combination.h utils/CombinationType.h
 plays/Node.obj: distributions/Distribution.h distributions/DistMap.h
 plays/Node.obj: distributions/DistHelp.h distributions/SurvivorList.h
@@ -561,43 +561,46 @@ plays/Node.obj: distributions/covers/product/Profile.h
 plays/Node.obj: distributions/covers/product/Profile.h inputs/Control.h
 plays/Node.obj: inputs/Entity.h
 ranks/Ranks.obj: ranks/Ranks.h ranks/Declarer.h ranks/Player.h utils/Card.h
-ranks/Ranks.obj: utils/table.h ranks/Opponents.h ranks/Completion.h
-ranks/Ranks.obj: ranks/RanksNames.h ranks/RankNames.h plays/Play.h
-ranks/Ranks.obj: utils/CombinationType.h ranks/cranked.h ranks/canon.h
-ranks/Ranks.obj: plays/Plays.h plays/Play.h strategies/result/Winners.h
-ranks/Ranks.obj: plays/Nodes.h plays/Node.h strategies/Strategies.h
-ranks/Ranks.obj: strategies/Slist.h strategies/Strategy.h
-ranks/Ranks.obj: strategies/result/Result.h strategies/result/Winners.h
+ranks/Ranks.obj: utils/Compare.h utils/table.h ranks/Opponents.h
+ranks/Ranks.obj: ranks/Completion.h ranks/RanksNames.h ranks/RankNames.h
+ranks/Ranks.obj: plays/Play.h strategies/result/Winners.h
 ranks/Ranks.obj: strategies/result/Winner.h utils/table.h utils/Card.h
-ranks/Ranks.obj: utils/Compare.h utils/Compare.h strategies/optim/Study.h
+ranks/Ranks.obj: utils/Compare.h utils/CombinationType.h ranks/cranked.h
+ranks/Ranks.obj: ranks/canon.h plays/Plays.h plays/Play.h plays/Nodes.h
+ranks/Ranks.obj: plays/Node.h strategies/Strategies.h strategies/Slist.h
+ranks/Ranks.obj: strategies/Strategy.h strategies/result/Result.h
+ranks/Ranks.obj: strategies/result/Winners.h strategies/optim/Study.h
 ranks/Ranks.obj: strategies/result/Ranges.h strategies/result/Range.h
 ranks/Ranks.obj: strategies/result/MultiResult.h distributions/Reductions.h
 ranks/Ranks.obj: distributions/Reduction.h plays/DebugPlay.h
 ranks/Ranks.obj: combinations/CombEntry.h combinations/CombReference.h
 ranks/Ranks.obj: inputs/Control.h inputs/Entity.h ./const.h
-ranks/Player.obj: ranks/Player.h utils/Card.h utils/table.h const.h
+ranks/Player.obj: ranks/Player.h utils/Card.h utils/Compare.h utils/table.h
+ranks/Player.obj: const.h
 ranks/Declarer.obj: ranks/Declarer.h ranks/Player.h utils/Card.h
-ranks/Declarer.obj: utils/table.h ranks/Opponents.h
+ranks/Declarer.obj: utils/Compare.h utils/table.h ranks/Opponents.h
 ranks/Opponents.obj: ranks/Opponents.h ranks/Player.h utils/Card.h
-ranks/Opponents.obj: utils/table.h const.h
-ranks/canon.obj: ranks/Declarer.h ranks/Player.h utils/Card.h utils/table.h
-ranks/canon.obj: ranks/Opponents.h ranks/canon.h const.h
-ranks/cranked.obj: ranks/cranked.h plays/Play.h utils/table.h const.h
+ranks/Opponents.obj: utils/Compare.h utils/table.h const.h
+ranks/canon.obj: ranks/Declarer.h ranks/Player.h utils/Card.h utils/Compare.h
+ranks/canon.obj: utils/table.h ranks/Opponents.h ranks/canon.h const.h
+ranks/cranked.obj: ranks/cranked.h plays/Play.h strategies/result/Winners.h
+ranks/cranked.obj: strategies/result/Winner.h utils/table.h utils/Card.h
+ranks/cranked.obj: utils/Compare.h utils/table.h const.h
 ranks/RankNames.obj: ranks/RankNames.h utils/table.h const.h
 ranks/RanksNames.obj: ranks/RanksNames.h ranks/RankNames.h utils/table.h
 strategies/Slist.obj: strategies/Slist.h strategies/Strategy.h
 strategies/Slist.obj: strategies/result/Result.h strategies/result/Winners.h
-strategies/Slist.obj: strategies/result/Winner.h utils/table.h utils/Card.h
-strategies/Slist.obj: utils/Compare.h utils/Compare.h
-strategies/Slist.obj: strategies/optim/Study.h strategies/result/Ranges.h
-strategies/Slist.obj: strategies/result/Range.h
+strategies/Slist.obj: strategies/optim/Study.h utils/Compare.h
+strategies/Slist.obj: strategies/result/Ranges.h strategies/result/Range.h
 strategies/Slist.obj: strategies/result/MultiResult.h
 strategies/Slist.obj: distributions/Reductions.h distributions/Reduction.h
 strategies/Slist.obj: strategies/StratData.h strategies/result/Range.h
-strategies/Slist.obj: plays/Play.h distributions/Distribution.h
-strategies/Slist.obj: distributions/DistMap.h distributions/DistHelp.h
-strategies/Slist.obj: distributions/SurvivorList.h distributions/DistCore.h
-strategies/Slist.obj: distributions/Survivors.h distributions/Reductions.h
+strategies/Slist.obj: plays/Play.h strategies/result/Winners.h
+strategies/Slist.obj: strategies/result/Winner.h utils/table.h utils/Card.h
+strategies/Slist.obj: distributions/Distribution.h distributions/DistMap.h
+strategies/Slist.obj: distributions/DistHelp.h distributions/SurvivorList.h
+strategies/Slist.obj: distributions/DistCore.h distributions/Survivors.h
+strategies/Slist.obj: distributions/Reductions.h
 strategies/Slist.obj: distributions/covers/Covers.h
 strategies/Slist.obj: distributions/covers/CoverStore.h
 strategies/Slist.obj: distributions/covers/Cover.h
@@ -620,9 +623,7 @@ strategies/Slist.obj: inputs/Entity.h utils/Timer.h
 strategies/Strategies.obj: strategies/Strategies.h strategies/Slist.h
 strategies/Strategies.obj: strategies/Strategy.h strategies/result/Result.h
 strategies/Strategies.obj: strategies/result/Winners.h
-strategies/Strategies.obj: strategies/result/Winner.h utils/table.h
-strategies/Strategies.obj: utils/Card.h utils/Compare.h utils/Compare.h
-strategies/Strategies.obj: strategies/optim/Study.h
+strategies/Strategies.obj: strategies/optim/Study.h utils/Compare.h
 strategies/Strategies.obj: strategies/result/Ranges.h
 strategies/Strategies.obj: strategies/result/Range.h
 strategies/Strategies.obj: strategies/result/MultiResult.h
@@ -632,17 +633,19 @@ strategies/Strategies.obj: strategies/optim/Extensions.h
 strategies/Strategies.obj: strategies/optim/Extension.h strategies/Strategy.h
 strategies/Strategies.obj: strategies/optim/Splits.h strategies/optim/Split.h
 strategies/Strategies.obj: strategies/Slist.h plays/Play.h
-strategies/Strategies.obj: distributions/SurvivorList.h inputs/Control.h
-strategies/Strategies.obj: inputs/Entity.h utils/Timer.h
+strategies/Strategies.obj: strategies/result/Winners.h
+strategies/Strategies.obj: strategies/result/Winner.h utils/table.h
+strategies/Strategies.obj: utils/Card.h distributions/SurvivorList.h
+strategies/Strategies.obj: inputs/Control.h inputs/Entity.h utils/Timer.h
 strategies/Strategy.obj: strategies/Strategy.h strategies/result/Result.h
-strategies/Strategy.obj: strategies/result/Winners.h
-strategies/Strategy.obj: strategies/result/Winner.h utils/table.h
-strategies/Strategy.obj: utils/Card.h utils/Compare.h utils/Compare.h
-strategies/Strategy.obj: strategies/optim/Study.h strategies/result/Ranges.h
+strategies/Strategy.obj: strategies/result/Winners.h strategies/optim/Study.h
+strategies/Strategy.obj: utils/Compare.h strategies/result/Ranges.h
 strategies/Strategy.obj: strategies/result/Range.h
 strategies/Strategy.obj: strategies/result/MultiResult.h plays/Play.h
-strategies/Strategy.obj: distributions/Distribution.h distributions/DistMap.h
-strategies/Strategy.obj: distributions/DistHelp.h
+strategies/Strategy.obj: strategies/result/Winners.h
+strategies/Strategy.obj: strategies/result/Winner.h utils/table.h
+strategies/Strategy.obj: utils/Card.h distributions/Distribution.h
+strategies/Strategy.obj: distributions/DistMap.h distributions/DistHelp.h
 strategies/Strategy.obj: distributions/SurvivorList.h
 strategies/Strategy.obj: distributions/DistCore.h distributions/Survivors.h
 strategies/Strategy.obj: distributions/Reductions.h
@@ -668,8 +671,6 @@ strategies/Strategy.obj: utils/Compare.h const.h
 strategies/optim/Study.obj: strategies/optim/Study.h utils/Compare.h
 strategies/optim/Study.obj: strategies/result/Result.h
 strategies/optim/Study.obj: strategies/result/Winners.h
-strategies/optim/Study.obj: strategies/result/Winner.h utils/table.h
-strategies/optim/Study.obj: utils/Card.h utils/Compare.h
 strategies/optim/Study.obj: strategies/result/Ranges.h
 strategies/optim/Study.obj: strategies/result/Range.h
 strategies/optim/Study.obj: strategies/result/MultiResult.h
@@ -687,43 +688,35 @@ strategies/optim/Splits.obj: strategies/optim/Split.h strategies/Slist.h
 strategies/result/Range.obj: strategies/result/Range.h
 strategies/result/Range.obj: strategies/result/MultiResult.h
 strategies/result/Range.obj: strategies/result/Winners.h
-strategies/result/Range.obj: strategies/result/Winner.h utils/table.h
-strategies/result/Range.obj: utils/Card.h utils/Compare.h utils/Compare.h
 strategies/result/Range.obj: strategies/result/Result.h
 strategies/result/Ranges.obj: strategies/result/Ranges.h
 strategies/result/Ranges.obj: strategies/result/Range.h
 strategies/result/Ranges.obj: strategies/result/MultiResult.h
 strategies/result/Ranges.obj: strategies/result/Winners.h
-strategies/result/Ranges.obj: strategies/result/Winner.h utils/table.h
-strategies/result/Ranges.obj: utils/Card.h utils/Compare.h utils/Compare.h
 strategies/result/Ranges.obj: strategies/result/Result.h
 strategies/result/Result.obj: strategies/result/Result.h
+strategies/result/Result.obj: strategies/result/Winners.h plays/Play.h
 strategies/result/Result.obj: strategies/result/Winners.h
 strategies/result/Result.obj: strategies/result/Winner.h utils/table.h
-strategies/result/Result.obj: utils/Card.h utils/Compare.h utils/Compare.h
-strategies/result/Result.obj: plays/Play.h strategies/result/Winners.h
-strategies/result/Result.obj: inputs/Control.h inputs/Entity.h
+strategies/result/Result.obj: utils/Card.h utils/Compare.h inputs/Control.h
+strategies/result/Result.obj: inputs/Entity.h
 strategies/result/MultiResult.obj: strategies/result/MultiResult.h
 strategies/result/MultiResult.obj: strategies/result/Winners.h
-strategies/result/MultiResult.obj: strategies/result/Winner.h utils/table.h
-strategies/result/MultiResult.obj: utils/Card.h utils/Compare.h
-strategies/result/MultiResult.obj: utils/Compare.h strategies/result/Result.h
+strategies/result/MultiResult.obj: strategies/result/Result.h
 strategies/result/MultiResult.obj: inputs/Control.h inputs/Entity.h
+strategies/result/Winners.obj: strategies/result/Winners.h plays/Play.h
 strategies/result/Winners.obj: strategies/result/Winners.h
 strategies/result/Winners.obj: strategies/result/Winner.h utils/table.h
-strategies/result/Winners.obj: utils/Card.h utils/Compare.h utils/Compare.h
-strategies/result/Winners.obj: plays/Play.h strategies/result/Winners.h
-strategies/result/Winners.obj: utils/Comparer.h utils/Compare.h const.h
+strategies/result/Winners.obj: utils/Card.h utils/Compare.h utils/Comparer.h
+strategies/result/Winners.obj: utils/Compare.h const.h
 strategies/result/Winner.obj: strategies/result/Winner.h utils/table.h
-strategies/result/Winner.obj: utils/Card.h utils/Compare.h utils/Compare.h
-strategies/result/Winner.obj: plays/Play.h strategies/result/Winners.h
-strategies/result/Winner.obj: ranks/Completion.h utils/Card.h const.h
+strategies/result/Winner.obj: utils/Card.h utils/Compare.h plays/Play.h
+strategies/result/Winner.obj: strategies/result/Winners.h ranks/Completion.h
+strategies/result/Winner.obj: utils/Card.h utils/Compare.h const.h
 strategies/result/ResConvert.obj: strategies/result/ResConvert.h
 strategies/result/ResConvert.obj: strategies/result/Result.h
 strategies/result/ResConvert.obj: strategies/result/Winners.h
-strategies/result/ResConvert.obj: strategies/result/Winner.h utils/table.h
-strategies/result/ResConvert.obj: utils/Card.h utils/Compare.h
-strategies/result/ResConvert.obj: utils/Compare.h strategies/result/Ranges.h
+strategies/result/ResConvert.obj: strategies/result/Ranges.h
 strategies/result/ResConvert.obj: strategies/result/Range.h
 strategies/result/ResConvert.obj: strategies/result/MultiResult.h
 utils/Card.obj: utils/Card.h utils/Compare.h const.h

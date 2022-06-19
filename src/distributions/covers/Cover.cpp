@@ -18,6 +18,8 @@
 #include "product/ProductStats.h"
 #include "product/ProductMemory.h"
 
+#include "../../ranks/RanksNames.h"
+
 
 Cover::Cover()
 {
@@ -340,7 +342,9 @@ string Cover::str(
   assert(factoredProductPtr != nullptr);
   stringstream ss;
 
-  if (factoredProductPtr->explainable())
+  // TODO ranksNames may come from driver.cpp in which case we
+  // just want the non-verbal version.
+  if (ranksNames.used() && factoredProductPtr->explainable())
   {
 
     const Opponent simplestOpponent = 

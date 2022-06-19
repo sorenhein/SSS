@@ -18,6 +18,7 @@
 
 class Length;
 struct Xes;
+struct TopData;
 enum Opponent: unsigned;
 
 using namespace std;
@@ -27,16 +28,7 @@ class Top: public Term
 {
   private:
 
-    string strEqual(
-      const unsigned char oppsTops,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
-    string strInside(
-      const unsigned char oppsTops,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
+    /*
     string strExactLengthEqual(
       const unsigned char distLength,
       const unsigned char oppsLength,
@@ -49,23 +41,47 @@ class Top: public Term
       const Xes& xes,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
+      */
+
+    string strEqual(
+      const TopData& oppsTopData,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
+
+    string strInside(
+      const TopData& oppsTopData,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
+
+    string strExactLengthEqual(
+      const unsigned char distLength,
+      const unsigned char oppsLength,
+      const TopData& oppsTopData,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
+
+    string strLengthRangeEqual(
+      const TopData& oppsTopData,
+      const Xes& xes,
+      const Opponent simplestOpponent,
+      const bool symmFlag) const;
 
 
   public:
 
     string strTop(
-      const unsigned char oppsTops,
+      const TopData& oppsTopData,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 
     string strTopBare(
-      const unsigned char oppsTops,
+      const TopData& oppsTopData,
       const Opponent simplestOpponent) const;
 
     string strEqualWithLength(
       const Length& length,
       const unsigned char oppsLength,
-      const unsigned char oppsTops,
+      const TopData& oppsTopData,
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 };

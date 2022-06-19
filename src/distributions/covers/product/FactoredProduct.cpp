@@ -107,6 +107,6 @@ string FactoredProduct::strVerbal(
   const bool symmFlag) const
 {
   return canonicalPtr->strVerbal(
-    sumProfile, ranksNames, simplestOpponent, symmFlag);
+    sumProfile, ranksNames, simplestOpponent, symmFlag, canonicalShift);
 }
 

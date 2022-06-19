@@ -42,6 +42,8 @@ class RanksNames
 
     void finish();
 
+    bool used() const;
+
     const RankNames& getOpponents(const unsigned topNumber) const;
 
     string str() const;

@@ -17,6 +17,7 @@
 #include "../CoverCategory.h"
 
 #include "../term/CoverOperator.h"
+#include "../term/TopData.h"
 
 #include "../../../utils/Compare.h"
 #include "../../../utils/table.h"
@@ -212,7 +213,7 @@ bool Product::explainable() const
 {
   if (activeCount == 0)
     return true;
-  else if (Product::effectiveDepth() == 1 && activeCount == 1)
+  else if (activeCount == 1)
     return true;
   else
     return false;
@@ -336,7 +337,8 @@ string Product::strVerbal(
   const Profile& sumProfile,
   [[maybe_unused]] const RanksNames& ranksNames,
   const Opponent simplestOpponent,
-  const bool symmFlag) const
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
 {
   if (activeCount == 0)
   {
@@ -346,25 +348,35 @@ string Product::strVerbal(
       symmFlag);
   }
 
-  const unsigned char highestTopCount =
-    sumProfile[static_cast<unsigned char>(sumProfile.size()-1)];
+  TopData topData;
+  unsigned char topNo;
+  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
+  {
+    if (tops[topNo].used())
+    {
+      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+      break;
+    }
+  }
+  assert(topData.used());
 
   if (! length.used())
   {
-    return tops.back().strTop(
-      highestTopCount,
+    return tops[topNo].strTop(
+      topData,
       simplestOpponent, 
       symmFlag);
   }
 
-  auto& top = tops.back();
+  assert(topNo > 0 && topNo < tops.size());
+  auto& top = tops[topNo];
 
   if (top.getOperator() == COVER_EQUAL)
   {
     return top.strEqualWithLength(
       length,
       sumProfile.length(), 
-      highestTopCount,
+      topData,
       simplestOpponent,
       symmFlag);
   }
@@ -378,7 +390,7 @@ string Product::strVerbal(
         symmFlag) + 
       " with " +
       top.strTopBare(
-        highestTopCount,
+        topData,
         simplestOpponent);
   }
   else
@@ -386,7 +398,7 @@ string Product::strVerbal(
     // Inversion, e.g. "has one top at most doubleton"
     return 
       top.strTop(
-        highestTopCount,
+        topData,
         simplestOpponent, 
         symmFlag) +
       " " +

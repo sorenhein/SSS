@@ -1,7 +1,4 @@
-Names of cards: Pushed the data down to Product::strVerbal()
-where it stands.  It may be empty, e.g. from driver.cpp after full run.
-Perhaps RanksNames should have a setDefault() with content top1, top2,
-...?
+Expanded strVerbal to any 1 top, possibly with a length.
 
 mode == 4: Have to collapse or combine cover's now.  How?
 
@@ -136,16 +133,6 @@ Or get to symmetric setup?  Or both?  Compare in terms of time?
 Or get from 5 to each of 4, 3, 2 directly.  Try each and choose
 the best.
 
-Getting to depth-1 setup:
-We somehow have to subtract out the minimum over each equivalence
-range in the depth-1 setup, and the remainder is as above
-(something to be explained separately).
-We can compare with the symmetric-affine solver.
-And with the normal, optimalish solver.
-SymmetryStore can also be used to recognize the ones that
-benefit from one or the other approach.  Although per-strategy
-information gets a bit difficult.
-
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
@@ -186,7 +173,7 @@ Presumably depth == 5 is the worst by far.
 
 Deeper strategies
 -----------------
-* Improve the text output of higher depths
+* Improve the text output when there is > 1 active top
 
 
 For the future it's a decent test of ranks to compare:
@@ -196,18 +183,6 @@ at the end) vs. ongoing (symmOnlyFlag).
 Why does 8/4922 change when (probably) we change the bug in
 Plays.cpp line 187?  (Should also change line 180.)
 This is another decent test of ranks.
-
-Names of cards
---------------
-Might be good to work on this before we refer to other distributions
-(see below).
-
-Opponents' cards seem to live in ranks/Opponents.
-Maybe we shouldn't use HH as in 4/24, but actualy KQ.
-Maybe all we really need is to interrogate Opponents?
-It seems to use external ranks in rankInfo[r].
-
-- Where does the actual name of the card come from?  Ranks?
 
 Shifts
 ------

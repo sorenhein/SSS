@@ -62,11 +62,17 @@ void RanksNames::finish()
   oppsPtrsByTop.resize(oppsRanks);
 
   size_t i = 0;
-  for (auto riter = names.rbegin(); riter != names.rend(); riter++)
+  for (auto iter = names.begin(); iter != names.end(); iter++)
   {
-    if (riter->side() == SIDE_OPPS)
-      oppsPtrsByTop[i++] = &* riter;
+    if (iter->side() == SIDE_OPPS)
+      oppsPtrsByTop[i++] = &* iter;
   }
+}
+
+
+bool RanksNames::used() const
+{
+  return ! names.empty();
 }
 
 

@@ -15,12 +15,15 @@
 #include "Length.h"
 #include "CoverOperator.h"
 #include "Xes.h"
+#include "TopData.h"
+
+#include "../../../ranks/RankNames.h"
 
 #include "../../../utils/table.h"
 
 
 string Top::strEqual(
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
@@ -38,44 +41,49 @@ string Top::strEqual(
   {
     side = (symmFlag ? "Either opponent" : "East");
     otherSide = (symmFlag ? "Either opponent" : "West");
-    value = oppsTops - Top::lower();
+    value = oppsTopData.value - Top::lower();
   }
+
+  assert(oppsTopData.rankNamesPtr);
+  const string strFull = oppsTopData.rankNamesPtr->strFull();
 
   stringstream ss;
 
-  if (value == 0 || value == oppsTops)
+  if (value == 0 || value == oppsTopData.value)
   {
     const string longSide = (value == 0 ? otherSide : side);
 
-    if (oppsTops == 1)
-      ss << longSide << " has the top";
-    else if (oppsTops == 2)
-      ss << longSide << " has both tops";
-    else
-      ss << longSide << " has all tops";
+    ss << longSide << " has ";
+
+    if (oppsTopData.value == 1)
+      ss << "the ";
+    else if (oppsTopData.value > 2)
+      ss << "all of ";
+    
+    ss << strFull;
   }
   else if (value == 1)
   {
-    if (oppsTops == 2)
-      ss << "Each opponent has one top";
+    if (oppsTopData.value == 2)
+      ss << "The " << strFull << " are split";
     else
-      ss << side << " has exactly one top";
+      ss << side << " has exactly one of " << strFull;
   }
-  else if (value+1 == oppsTops)
-    ss << otherSide << " has exactly one top";
+  else if (value+1 == oppsTopData.value)
+    ss << otherSide << " has exactly one of " << strFull;
   else if (value == 2)
-    ss << side << " has exactly two tops";
-  else if (value+2 == oppsTops)
-    ss << otherSide << " has exactly two tops";
+    ss << side << " has exactly two of " << strFull;
+  else if (value+2 == oppsTopData.value)
+    ss << otherSide << " has exactly two of " << strFull;
   else
-    ss << side << " has exactly " +value << " tops";
+    ss << side << " has exactly " +value << " of " << strFull;
 
   return ss.str();
 }
 
 
 string Top::strInside(
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
@@ -87,7 +95,7 @@ string Top::strInside(
     side = (symmFlag ? "Either opponent" : "West");
     vLower = Top::lower();
     vUpper = (Top::getOperator() == COVER_GREATER_EQUAL ? 
-      oppsTops : 
+      oppsTopData.value : 
       Top::upper());
   }
   else
@@ -95,65 +103,72 @@ string Top::strInside(
     side = (symmFlag ? "Either opponent" : "East");
     vLower = (Top::getOperator() == COVER_GREATER_EQUAL ? 
       0 : 
-      oppsTops - Top::upper());
-    vUpper = oppsTops - Top::lower();
+      oppsTopData.value - Top::upper());
+    vUpper = oppsTopData.value - Top::lower();
   }
+
+  assert(oppsTopData.rankNamesPtr);
+  const string strFull = oppsTopData.rankNamesPtr->strFull();
 
   stringstream ss;
 
   if (vLower == 0)
   {
     if (vUpper == 1)
-      ss << side << " has at most one top";
+      ss << side << " has at most one ";
     else if (vUpper == 2)
-      ss << side << " has at most two tops";
+      ss << side << " has at most two ";
     else
-      ss << side << " has at most " << +vUpper << " tops";
+      ss << side << " has at most " << +vUpper;
   }
-  else if (vUpper == oppsTops)
+  else if (vUpper == oppsTopData.value)
   {
-    if (vLower+1 == oppsTops)
+    if (vLower+1 == oppsTopData.value)
     {
-      if (oppsTops == 2)
-        ss << side << " has one or both tops";
-      else if (oppsTops == 3)
-        ss << side << " has two or all three tops";
+      if (oppsTopData.value == 2)
+        ss << side << " has one or both ";
+      else if (oppsTopData.value == 3)
+        ss << side << " has two or all three ";
       else
-        ss << side << " lacks at most one top";
+        ss << side << " lacks at most one " << strFull;
     }
-    else if (vLower+2 == oppsTops)
-      ss << side << " lacks at most two tops";
+    else if (vLower+2 == oppsTopData.value)
+      ss << side << " lacks at most two ";
     else
-      ss << side << " lacks at most " << +(oppsTops - vLower) << " tops";
+      ss << side << " lacks at most " << +(oppsTopData.value - vLower);
   }
-  else if (vLower + vUpper == oppsTops)
+  else if (vLower + vUpper == oppsTopData.value)
   {
-    ss << "Each opponent has " << +vLower << "-" << +vUpper << " tops";
+    ss << "Each opponent has " << +vLower << "-" << +vUpper;
   }
   else
   {
-    ss << side << " has " << +vLower << "-" << +vUpper << " tops";
+    ss << side << " has " << +vLower << "-" << +vUpper;
   }
+
+  ss << " of " << strFull;
 
   return ss.str();
 }
 
 
 string Top::strTop(
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
   const CoverOperator oper = Top::getOperator();
   if (oper == COVER_EQUAL)
   {
-    return Top::strEqual(oppsTops, simplestOpponent, symmFlag);
+    return Top::strEqual(oppsTopData, simplestOpponent, symmFlag);
+    // return Top::strEqual(oppsTops, simplestOpponent, symmFlag);
   }
   else if (oper == COVER_INSIDE_RANGE ||
            oper == COVER_LESS_EQUAL ||
            oper == COVER_GREATER_EQUAL)
   {
-    return Top::strInside(oppsTops, simplestOpponent, symmFlag);
+    return Top::strInside(oppsTopData, simplestOpponent, symmFlag);
+    // return Top::strInside(oppsTops, simplestOpponent, symmFlag);
   }
   else
   {
@@ -166,7 +181,7 @@ string Top::strTop(
 string Top::strExactLengthEqual(
   const unsigned char distLength,
   const unsigned char oppsLength,
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
@@ -185,64 +200,67 @@ string Top::strExactLengthEqual(
   {
     side = (symmFlag ? "Either opponent" : "East");
     otherSide = (symmFlag ? "Either opponent" : "West");
-    value = oppsTops - Top::lower();
+    value = oppsTopData.value - Top::lower();
     length = oppsLength - distLength;
   }
+
+  assert(oppsTopData.rankNamesPtr);
+  const string strFull = oppsTopData.rankNamesPtr->strFull();
 
   stringstream ss;
 
   if (length == 1)
   {
     if (value == 0)
-      ss << side << " has a small singleton";
-    else if (oppsTops == 1)
-      ss << side << " has the singleton honor";
+      ss << side << " has a singleton without the " << strFull;
+    else if (oppsTopData.value == 1)
+      ss << side << " has the singleton " << strFull;
     else
-      ss << side << " has one honor singleton";
+      ss << side << " has one of " << strFull << " singleton";
   }
   else if (length == 2)
   {
     if (value == 0)
     {
-      if (oppsLength == 4 && oppsTops == 2)
-        ss << otherSide << " has two honors doubleton";
+      if (oppsLength == 4 && oppsTopData.value == 2)
+        ss << otherSide << " has two of " << strFull << " doubleton";
       else
-        ss << side << " has a small doubleton";
+        ss << side << " has a doubleton without either of " << strFull;
     }
     else if (value == 1)
     {
-      if (oppsTops == 1)
-        ss << side << " has the doubleton honor";
+      if (oppsTopData.value == 1)
+        ss << side << " has the " << strFull << " doubleton";
       else
-        ss << side << " has one honor doubleton";
+        ss << side << " has one of " << strFull << " doubleton";
     }
     else
-      ss << side << " has two honors doubleton";
+      ss << side << " has " << strFull << " doubleton";
   }
   else if (length == 3)
   {
     if (value == 0)
-      ss << side << " has a small tripleton";
+      ss << side << " has a tripleton without any of " << strFull;
     else if (value == 1)
     {
-      if (oppsTops == 1)
-        ss << side << " has the tripleton honor";
+      if (oppsTopData.value == 1)
+        ss << side << " has the tripleton " << strFull;
       else
-        ss << side << " has one honor tripleton";
+        ss << side << " has one of " << strFull << " tripleton";
     }
     else if (value == 2)
     {
-      if (oppsTops == 2)
-        ss << side << " has the two honors tripleton";
+      if (oppsTopData.value == 2)
+        ss << side << " has " << strFull << " tripleton";
       else
-        ss << side << " has two honors tripleton";
+        ss << side << " has two of " << strFull << " tripleton";
     }
     else
-      ss << side << " has three honors tripleton";
+      ss << side << " has " << strFull;
   }
   else if (length == 4)
   {
-    ss << side << " has " << +value << " honor(s) fourth";
+    ss << side << " has " << +value << " of " << strFull << " fourth";
   }
   else
   {
@@ -255,7 +273,7 @@ string Top::strExactLengthEqual(
 
 
 string Top::strLengthRangeEqual(
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Xes& xes,
   const Opponent simplestOpponent,
   const bool symmFlag) const
@@ -274,11 +292,14 @@ string Top::strLengthRangeEqual(
   {
     side = (symmFlag ? "Either opponent" : "East");
     xstr = xes.strEast;
-    value = oppsTops - Top::upper();
+    value = oppsTopData.value - Top::upper();
     maxLen = value + xes.eastMax;
   }
 
   const string hstr = (value == 0 ? "" : string(value, 'H'));
+
+  assert(oppsTopData.rankNamesPtr);
+  const string strFull = oppsTopData.rankNamesPtr->strFull();
 
   stringstream ss;
 
@@ -298,15 +319,15 @@ string Top::strLengthRangeEqual(
   else
     assert(false);
 
-  if (value == oppsTops)
+  if (value == oppsTopData.value)
   {
     string strT;
     if (value == 1)
-      strT = "the top";
+      strT = "the " + strFull;
     else if (value == 2)
-      strT = "both tops";
+      strT = "both of " + strFull;
     else
-      strT = "all tops";
+      strT = "all of " + strFull;
 
     ss << side << " has " << strT << " at most " << slen;
   }
@@ -314,11 +335,11 @@ string Top::strLengthRangeEqual(
   {
     string strT;
     if (value == 1)
-      strT = "one top";
+      strT = "one of " + strFull;
     else if (value == 2)
-      strT = "two tops";
+      strT = "two of " + strFull;
     else if (value == 3)
-      strT = "three tops";
+      strT = "three of " + strFull;
     else
       assert(false);
 
@@ -332,7 +353,7 @@ string Top::strLengthRangeEqual(
 
 
 string Top::strTopBare(
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent) const
 {
   assert(Top::getOperator() != COVER_EQUAL);
@@ -343,42 +364,45 @@ string Top::strTopBare(
   {
     vLower = Top::lower();
     vUpper = (Top::getOperator() == COVER_GREATER_EQUAL ? 
-      oppsTops : Top::upper());
+      oppsTopData.value : Top::upper());
   }
   else
   {
     vLower = (Top::getOperator() == COVER_GREATER_EQUAL ? 0 : 
-      oppsTops - Top::upper());
-    vUpper = oppsTops - Top::lower();
+      oppsTopData.value - Top::upper());
+    vUpper = oppsTopData.value - Top::lower();
   }
+
+  assert(oppsTopData.rankNamesPtr);
+  const string strFull = oppsTopData.rankNamesPtr->strFull();
 
   stringstream ss;
 
   if (vLower == 0)
   {
     if (vUpper == 1)
-      ss << "at most one top";
+      ss << "at most one of " << strFull;
     else if (vUpper == 2)
-      ss << "at most two tops";
+      ss << "at most two of " << strFull;
     else
-      ss << "at most " << +vUpper << " tops";
+      ss << "at most " << +vUpper << " of " << strFull;
   }
-  else if (vUpper == oppsTops)
+  else if (vUpper == oppsTopData.value)
   {
-    if (vLower+1 == oppsTops)
+    if (vLower+1 == oppsTopData.value)
     {
-      if (oppsTops == 2)
-        ss << "one or both tops";
-      else if (oppsTops == 3)
-        ss << "two or all three tops";
+      if (oppsTopData.value == 2)
+        ss << "one or both of " << strFull;
+      else if (oppsTopData.value == 3)
+        ss << "two or all three of " << strFull;
       else
-        ss << +vLower << "-" << +vUpper << " tops";
+        ss << +vLower << "-" << +vUpper << " of " << strFull;
     }
     else
-      ss << +vLower << "-" << +vUpper << " tops";
+      ss << +vLower << "-" << +vUpper << " of " << strFull;
   }
-  else if (vLower + vUpper == oppsTops)
-    ss << +vLower << "-" << +vUpper << " tops";
+  else if (vLower + vUpper == oppsTopData.value)
+    ss << +vLower << "-" << +vUpper << " of " << strFull;
 
   return ss.str();
 }
@@ -387,7 +411,7 @@ string Top::strTopBare(
 string Top::strEqualWithLength(
   const Length& length,
   const unsigned char oppsLength,
-  const unsigned char oppsTops,
+  const TopData& oppsTopData,
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
@@ -396,7 +420,7 @@ string Top::strEqualWithLength(
   if (length.getOperator() == COVER_EQUAL)
   {
     return Top::strExactLengthEqual(
-      length.lower(), oppsLength, oppsTops, simplestOpponent, symmFlag);
+      length.lower(), oppsLength, oppsTopData, simplestOpponent, symmFlag);
   }
   else
   {
@@ -406,10 +430,11 @@ string Top::strEqualWithLength(
         oppsLength : 
         length.upper());
 
-    xes.set(length.lower(), effUpper, Top::lower(), oppsLength, oppsTops);
+    xes.set(length.lower(), effUpper, Top::lower(), oppsLength, 
+      oppsTopData.value);
 
     return Top::strLengthRangeEqual(
-      oppsTops, xes, simplestOpponent, symmFlag);
+      oppsTopData, xes, simplestOpponent, symmFlag);
   }
 }
 

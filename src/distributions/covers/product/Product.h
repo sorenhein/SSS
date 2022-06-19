@@ -96,7 +96,8 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const Opponent simplestOpponent,
-      const bool symmFlag) const;
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
 };
 
 #endif
