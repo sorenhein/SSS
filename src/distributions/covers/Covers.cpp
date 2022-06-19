@@ -55,6 +55,9 @@ extern vector<Timer> timersStrat;
 #include "../../inputs/Control.h"
 extern Control control;
 
+// TODO TMP
+#include "../../ranks/RanksNames.h"
+
 
 struct HeavyData
 {
@@ -390,12 +393,17 @@ void Covers::explainByCategory(
   bool& newTableauFlag)
 {
   newTableauFlag = true;
+  // TODO In the partial case this may overwrite a partial solution.
+  // I guess in TableauCache::lookup we would += the solutions.
+  // For now I just strike this efficiency.
+  /*
   if (tableauCache.lookup(tricks, solution))
   {
     solution.setMinTricks(explain.tricksMin());
     newTableauFlag = false;
     return;
   }
+  */
 
   CoverStack<Cover> stack;
 
