@@ -161,14 +161,12 @@ string Top::strTop(
   if (oper == COVER_EQUAL)
   {
     return Top::strEqual(oppsTopData, simplestOpponent, symmFlag);
-    // return Top::strEqual(oppsTops, simplestOpponent, symmFlag);
   }
   else if (oper == COVER_INSIDE_RANGE ||
            oper == COVER_LESS_EQUAL ||
            oper == COVER_GREATER_EQUAL)
   {
     return Top::strInside(oppsTopData, simplestOpponent, symmFlag);
-    // return Top::strInside(oppsTops, simplestOpponent, symmFlag);
   }
   else
   {
@@ -224,6 +222,8 @@ string Top::strExactLengthEqual(
     {
       if (oppsLength == 4 && oppsTopData.value == 2)
         ss << otherSide << " has two of " << strFull << " doubleton";
+      else if (oppsTopData.value == 1)
+        ss << side << " has a doubleton without the " << strFull;
       else
         ss << side << " has a doubleton without either of " << strFull;
     }
@@ -240,7 +240,12 @@ string Top::strExactLengthEqual(
   else if (length == 3)
   {
     if (value == 0)
-      ss << side << " has a tripleton without any of " << strFull;
+    {
+      if (oppsTopData.value == 1)
+        ss << side << " has a tripleton without the " << strFull;
+      else
+        ss << side << " has a tripleton without any of " << strFull;
+    }
     else if (value == 1)
     {
       if (oppsTopData.value == 1)

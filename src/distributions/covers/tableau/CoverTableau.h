@@ -96,6 +96,8 @@ class CoverTableau
       const Tricks& tricks,
       const unsigned char tmin);
 
+    void resize(const size_t numDist);
+
     // TODO TMP
     void initStrData(
       size_t depthIn,

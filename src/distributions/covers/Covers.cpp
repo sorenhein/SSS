@@ -646,18 +646,33 @@ void Covers::explain(
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
-    for (unsigned lenEW = 0; lenEW < tricksByLength.size(); lenEW++)
+    const size_t tlen = tricksMinByLength.size();
+    const bool voidWest = (tricksMinByLength[0].getWeight() > 0);
+    const bool voidEast = (tricksMinByLength[tlen].getWeight() > 0);
+
+    vector<CoverTableau> solutionsMinLength;
+    solutionsMinLength.resize(tlen);
+
+    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       if (tricksMinByLength[lenEW].getWeight() == 0)
         continue;
 
-      HeavyData heavyData(tricksMinByLength.size());
+      HeavyData heavyData(tricksMinByLength[lenEW].size());
       Covers::findHeaviest(tricksMinByLength[lenEW], explain, heavyData);
 
-      solution.addRow(* heavyData.coverPtr);
+      // TODO We don't really need either data point, but we need to
+      // resize tricks in solutions.
+      solutionsMinLength[lenEW].resize(tricks.size());
+
+      solutionsMinLength[lenEW].addRow(* heavyData.coverPtr);
     }
 
-    for (unsigned lenEW = 0; lenEW < tricksByLength.size(); lenEW++)
+
+    vector<CoverTableau> solutionsLength;
+    solutionsLength.resize(tlen);
+
+    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       const Tricks& tricksL = tricksByLength[lenEW];
       if (tricksL.getWeight() == 0)
@@ -666,19 +681,34 @@ void Covers::explain(
       // A cover of a given length is always anti-symmetric.
       explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
-      solution.init(tricksL, 0); // Minimum doesn't matter yet
+      solutionsLength[lenEW].init(tricksL, 0); // Minimum doesn't matter yet
    
       // TODO Limit covers to those with the specific length
       Covers::explainByCategory(tricksL, explain, true,
-        solution, newTableauFlag);
+        solutionsLength[lenEW], newTableauFlag);
 
       // TODO Probably due to a rank being needed that doesn't seem
       // to take any tricks?
-      if (! solution.complete())
+      if (! solutionsLength[lenEW].complete())
       {
         cout << "FAILED g = 4" << endl;
         return;
       }
+    }
+
+    // TODO For now.  So we don't need the init in front.
+    solution.resize(tricks.size());
+
+    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
+    {
+      if (solutionsMinLength[lenEW].used())
+        solution += solutionsMinLength[lenEW];
+    }
+
+    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
+    {
+      if (solutionsLength[lenEW].used())
+        solution += solutionsLength[lenEW];
     }
 
     // Set the actual minimum.

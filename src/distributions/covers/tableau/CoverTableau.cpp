@@ -58,6 +58,14 @@ void CoverTableau::init(
 }
 
 
+void CoverTableau::resize(const size_t numDist)
+{
+  tricksMin = 0;
+  residuals.clear();
+  residuals.resize(numDist);
+}
+
+
 void CoverTableau::initStrData(
   size_t depthIn,
   CoverSymmetry tableauSymmetryIn)
