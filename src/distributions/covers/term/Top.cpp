@@ -321,8 +321,13 @@ string Top::strLengthRangeEqual(
     slen = "fifth";
   else if (maxLen == 6)
     slen = "sixth";
+  else if (maxLen == 7)
+    slen = "seventh";
   else
+  {
+    cout << "maxLen assert fail: " << +maxLen << endl;
     assert(false);
+  }
 
   if (value == oppsTopData.value)
   {

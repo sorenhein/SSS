@@ -1,9 +1,9 @@
-Expanded strVerbal to any 1 top, possibly with a length.
 
-mode == 4: Have to collapse or combine cover's now.  How?
+* No segfaults.
+* Look at run w.r.t. quality and time.
+* Cover row matches with > 1 (so 2) covers.
+* Allocate the voids.
 
-* For tmin matches we should go length-only (I think we do).
-  Could limit to the actual known length.
 * Can also split the completely symmetric tricks by lengths,
   and only match with symmetric covers length-by-length and combine
 

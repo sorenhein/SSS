@@ -364,6 +364,10 @@ void Covers::findHeaviest(
 
   for (auto& cover: coverStore)
   {
+// cout << "Trying cover " << cover.strTricksShort() << endl;
+// cout << "  eff " << +cover.effectiveDepth() <<
+  // " symm " << +cover.symmetry() << 
+  // " comp " << +cover.composition() << endl;
     if (explain.skip(
         cover.effectiveDepth(),
         cover.symmetry(),
@@ -373,10 +377,13 @@ void Covers::findHeaviest(
       continue;
     }
 
+// cout << "  Past explain " << cover.strTricksShort() << endl;
     if (row.possibleAdd(cover, tricks, cases, additionsLocal, weightLocal))
     {
+// cout << "    Is possible " << cover.strTricksShort() << endl;
       if (weightLocal > heavyData.rawWeightAdder)
       {
+// cout << "    Is heavier " << cover.strTricksShort() << endl;
         heavyData.coverPtr = &cover;
         heavyData.additions = additionsLocal;
         heavyData.rawWeightAdder = weightLocal;
@@ -711,14 +718,22 @@ void Covers::explain(
     solutionTmp.init(tricks, tmin);
 
     // Score those row matches anew that involves more than one row.
+    explain.setSymmetry(EXPLAIN_GENERAL);
+    explain.setComposition(EXPLAIN_MIXED_TERMS);
     for (auto& rowMatch: rowMatches)
     {
       if (rowMatch.count == 1)
         solutionTmp.addRow(* rowMatch.rowPtr);
       else
       {
+// cout << rowMatch.tricks.strShort() << endl;
+
         HeavyData heavyData(numDist);
         Covers::findHeaviest(rowMatch.tricks, explain, heavyData);
+        if (heavyData.coverPtr == nullptr)
+        {
+          assert(false);
+        }
         solutionTmp.addRow(* heavyData.coverPtr);
       }
     }
