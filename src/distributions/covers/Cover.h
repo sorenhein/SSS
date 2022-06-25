@@ -99,6 +99,8 @@ class Cover
 
     bool sameTricks(const Cover& covers2) const;
 
+    bool sameTops(const Cover& covers2) const;
+
     bool symmetrized() const;
 
     bool symmetric() const;

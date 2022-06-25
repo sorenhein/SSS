@@ -19,6 +19,7 @@ using namespace std;
 class Cover;
 class Profile;
 class RanksNames;
+struct RowMatch;
 class ProductStats;
 
 enum CoverSymmetry: unsigned;
@@ -84,6 +85,8 @@ class CoverRow
     bool operator < (const CoverRow& rows2) const;
 
     const Tricks& getTricks() const;
+
+    bool sameTops(const CoverRow& rows2) const;
 
     unsigned char effectiveDepth() const;
 

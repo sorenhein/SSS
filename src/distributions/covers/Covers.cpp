@@ -38,6 +38,7 @@
 #include "CoverStack.h"
 #include "Explain.h"
 #include "CoverCategory.h"
+#include "RowMatch.h"
 
 #include "tableau/TableauStats.h"
 
@@ -647,18 +648,22 @@ void Covers::explain(
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
     const size_t tlen = tricksMinByLength.size();
+    const size_t numDist = tricksMinByLength[0].size();
+
     const bool voidWest = (tricksMinByLength[0].getWeight() > 0);
     const bool voidEast = (tricksMinByLength[tlen].getWeight() > 0);
 
     vector<CoverTableau> solutionsMinLength;
     solutionsMinLength.resize(tlen);
 
+    list<RowMatch> rowMatches;
+
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       if (tricksMinByLength[lenEW].getWeight() == 0)
         continue;
 
-      HeavyData heavyData(tricksMinByLength[lenEW].size());
+      HeavyData heavyData(numDist);
       Covers::findHeaviest(tricksMinByLength[lenEW], explain, heavyData);
 
       // TODO We don't really need either data point, but we need to
@@ -666,6 +671,10 @@ void Covers::explain(
       solutionsMinLength[lenEW].resize(tricks.size());
 
       solutionsMinLength[lenEW].addRow(* heavyData.coverPtr);
+
+      // TODO Treat the voids separately?
+      // if (lenEW > 0 && lenEW+1 < tlen)
+        solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
     }
 
 
@@ -694,8 +703,29 @@ void Covers::explain(
         cout << "FAILED g = 4" << endl;
         return;
       }
+
+      solutionsLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
     }
 
+    CoverTableau solutionTmp;
+    solutionTmp.init(tricks, tmin);
+
+    // Score those row matches anew that involves more than one row.
+    for (auto& rowMatch: rowMatches)
+    {
+      if (rowMatch.count == 1)
+        solutionTmp.addRow(* rowMatch.rowPtr);
+      else
+      {
+        HeavyData heavyData(numDist);
+        Covers::findHeaviest(rowMatch.tricks, explain, heavyData);
+        solutionTmp.addRow(* heavyData.coverPtr);
+      }
+    }
+
+solution = solutionTmp;
+
+/*
     // TODO For now.  So we don't need the init in front.
     solution.resize(tricks.size());
 
@@ -710,6 +740,7 @@ void Covers::explain(
       if (solutionsLength[lenEW].used())
         solution += solutionsLength[lenEW];
     }
+  */
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);

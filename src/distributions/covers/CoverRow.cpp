@@ -112,6 +112,19 @@ void CoverRow::add(
 }
 
 
+bool CoverRow::sameTops(const CoverRow& rows2) const
+{
+  // TODO Fow now
+  if (CoverRow::size() != 1)
+    return false;
+
+  if (rows2.size() != 1)
+    return false;
+
+  return coverPtrs.front()->sameTops(* rows2.coverPtrs.front());
+}
+
+
 void CoverRow::updateStats(
   ProductStats& productStats,
   const Profile& sumProfile,

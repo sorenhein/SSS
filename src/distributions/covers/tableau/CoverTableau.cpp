@@ -17,6 +17,7 @@
 #include "../Cover.h"
 #include "../CoverStore.h"
 #include "../RowStore.h"
+#include "../RowMatch.h"
 #include "../CoverStack.h"
 #include "../CoverCategory.h"
 
@@ -371,6 +372,46 @@ void CoverTableau::partitionResiduals(
   const vector<unsigned char>& cases) const
 {
   residuals.partition(tricksSymmetric, tricksAntisymmetric, cases);
+}
+
+
+void CoverTableau::partitionIntoMatches(
+  list<RowMatch>& rowMatches,
+  const size_t rowWestLength) const
+{
+  // A row is a match with an entry in the list if each cover has
+  // the same tops in both, and if the new length is contiguous with
+  // the length interval in the match to date.  This is used when
+  // turning a cover tableau into row matches in order to combine them
+  // together more sparsely again.  This tableau is known to cover only 
+  // a single West length, rowWestLength.
+
+  for (auto& ownRow: rows)
+  {
+    bool foundFlag = false;
+
+    for (auto& rowMatch: rowMatches)
+    {
+      const CoverRow& matchingRow = * rowMatch.rowPtr;
+
+      // Lengths must be contiguous in order to augment.
+      if (rowMatch.lengthLast+1 != rowWestLength)
+        continue;
+
+      if (! ownRow.sameTops(matchingRow))
+        continue;
+
+      rowMatch.add(ownRow.getTricks());
+      foundFlag = true;
+      break;
+    }
+
+    if (! foundFlag)
+    {
+      rowMatches.emplace_back(RowMatch());
+      rowMatches.back().set(&ownRow, rowWestLength, ownRow.getTricks());
+    }
+  }
 }
 
 

@@ -64,6 +64,16 @@ unsigned char FactoredProduct::effectiveDepth() const
 }
 
 
+bool FactoredProduct::sameTops(const FactoredProduct& fp2) const
+{
+  // If they have the same tops, they have in particular the same shift.
+  if (canonicalShift != fp2.canonicalShift)
+    return false;
+  else
+    return canonicalPtr->sameTops(* fp2.canonicalPtr);
+}
+
+
 CoverComposition FactoredProduct::composition() const
 {
   return canonicalPtr->composition();

@@ -51,6 +51,8 @@ class FactoredProduct
 
     unsigned char effectiveDepth() const;
 
+    bool sameTops(const FactoredProduct& fp2) const;
+
     CoverComposition composition() const;
 
     bool explainable() const;

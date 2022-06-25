@@ -77,6 +77,8 @@ class Product
 
     unsigned char effectiveDepth() const;
 
+    bool sameTops(const Product& product2) const;
+
     CoverComposition composition() const;
 
     bool explainable() const;

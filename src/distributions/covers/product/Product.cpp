@@ -191,6 +191,30 @@ unsigned char Product::effectiveDepth() const
 }
 
 
+bool Product::sameTops(const Product& product2) const
+{
+  if (tops.size() != product2.tops.size())
+    return false;
+
+  if (topSize != product2.topSize || activeCount != product2.activeCount)
+    return false;
+
+  for (size_t t = 0; t < topSize; t++)
+  {
+    if (tops[t].used() != product2.tops[t].used())
+      return false;
+
+    if (! tops[t].used())
+      continue;
+
+    if (! (tops[t] == product2.tops[t]))
+      return false;
+  }
+
+  return true;
+}
+
+
 CoverComposition Product::composition() const
 {
   const bool lengthFlag = length.used();

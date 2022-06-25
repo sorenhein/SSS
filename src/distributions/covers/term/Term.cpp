@@ -161,6 +161,12 @@ CoverOperator Term::getOperator() const
 }
 
 
+bool Term::operator == (const Term& term2) const
+{
+  return (index == term2.index);
+}
+
+
 unsigned char Term::lower() const
 {
   return termCompare.getLower(index);

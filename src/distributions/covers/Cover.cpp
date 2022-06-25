@@ -178,6 +178,14 @@ bool Cover::sameTricks(const Cover& cover2) const
 }
 
 
+bool Cover::sameTops(const Cover& cover2) const
+{
+  assert(factoredProductPtr != nullptr);
+  assert(cover2.factoredProductPtr != nullptr);
+  return factoredProductPtr->sameTops(* cover2.factoredProductPtr);
+}
+
+
 bool Cover::symmetrized() const
 {
   return symmetrizeFlag;

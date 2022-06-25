@@ -29,6 +29,7 @@ class CoverRow;
 class Profile;
 class ProductStats;
 class RanksNames;
+struct RowMatch;
 template<typename T> class CoverStack;
 template<typename T> struct StackEntry;
 
@@ -136,6 +137,10 @@ class CoverTableau
       Tricks& tricksSymmetric,
       Tricks& tricksAntisymmetric,
       const vector<unsigned char>& cases) const;
+
+    void partitionIntoMatches(
+      list<RowMatch>& rowMatches,
+      const size_t rowWestLength) const;
 
     void updateStats(
       const Profile& sumProfile,

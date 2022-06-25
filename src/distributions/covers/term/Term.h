@@ -76,6 +76,8 @@ class Term
 
     CoverOperator getOperator() const;
 
+    bool operator == (const Term& term2) const;
+
     bool used() const;
 
     unsigned char complexity() const;
