@@ -13,8 +13,25 @@
 
 #include "RowMatch.h"
 
+class Cover;
+class Tricks;
+
 
 using namespace std;
+
+enum Opponent: unsigned;
+
+
+struct VoidInfo
+{
+  Cover const * coverPtr;
+
+  Tricks * tricksPtr;
+
+  unsigned westLength;
+
+  unsigned repeats;
+};
 
 
 class RowMatches
@@ -30,6 +47,10 @@ class RowMatches
       CoverRow& rowIn,
       const size_t westLength,
       const unsigned repeats = 1);
+
+    void setVoid(
+      const Opponent side,
+      VoidInfo& voidInfo);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };

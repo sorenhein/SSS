@@ -708,14 +708,16 @@ void Covers::explain(
     // for a given length.
     RowMatches rowMatches;
 
+    // Treat the voids separately.
+    VoidInfo voidWest, voidEast;
+    voidWest.repeats = 0;
+    voidEast.repeats = 0;
+
     explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     explain.setComposition(EXPLAIN_LENGTH_ONLY);
 
     const size_t tlen = tricksOfLength.size();
     const size_t numDist = tricksOfLength[0].size();
-
-    unsigned numVoidsWest = 0;
-    unsigned numVoidsEast = 0;
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
@@ -737,17 +739,31 @@ void Covers::explain(
         assert(false);
       assert(coverPtr != nullptr);
 
-      CoverRow rowTmp;
-      rowTmp.resize(numDist);
-      rowTmp.add(* coverPtr, tricksL);
-
-      rowMatches.transfer(rowTmp, lenEW, factor);
-
-      // TODO Treat the voids separately?
+      // Keep the voids for later, once all other row matches are known.
       if (lenEW == 0)
-        numVoidsWest = factor;
+      {
+        voidWest.coverPtr = coverPtr;
+        voidWest.tricksPtr = &tricksL;
+        voidWest.westLength = 0;
+        voidWest.repeats = factor;
+      }
       else if (lenEW+1 == tlen)
-        numVoidsEast = factor;
+      {
+        voidEast.coverPtr = coverPtr;
+        voidEast.tricksPtr = &tricksL;
+        voidEast.westLength = lenEW;
+        voidEast.repeats = factor;
+      }
+      else
+      {
+        // TODO Can potentially merge this into RowMatches:setVoid
+        // with another VoidInfo (OPP_EITHER).
+        CoverRow rowTmp;
+        rowTmp.resize(numDist);
+        rowTmp.add(* coverPtr, tricksL);
+
+        rowMatches.transfer(rowTmp, lenEW, factor);
+      }
     }
 
 
@@ -772,7 +788,6 @@ void Covers::explain(
       // TODO Limit covers to those with the specific length
       Covers::explainByCategory(tricksL, explain, true,
         solutionTmp, newTableauFlag);
-        // solutionsLength[lenEW], newTableauFlag);
 
       if (! solutionTmp.complete())
       {
@@ -785,6 +800,11 @@ void Covers::explain(
 
       solutionTmp.destroyIntoMatches(rowMatches, lenEW);
     }
+
+
+    // Add in the voids, completing row matches a bit cleverly.
+    rowMatches.setVoid(OPP_WEST, voidWest);
+    rowMatches.setVoid(OPP_EAST, voidEast);
 
 
     solution.init(tricks, tmin);
