@@ -703,6 +703,7 @@ void Covers::explain(
     // partitioning should also somehow be symmetric.
     tricks.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
 
+
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
     RowMatches rowMatches;
@@ -718,10 +719,13 @@ void Covers::explain(
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
-      if (tricksOfLength[lenEW].getWeight() == 0)
+      Tricks& tricksL = tricksOfLength[lenEW];
+      // if (tricksOfLength[lenEW].getWeight() == 0)
+      if (tricksL.getWeight() == 0)
         continue;
 
-      const unsigned factor = tricksOfLength[lenEW].factor();
+      // const unsigned factor = tricksOfLength[lenEW].factor();
+      const unsigned factor = tricksL.factor();
 
       if (2*lenEW+1 == tlen)
         explain.setSymmetry(EXPLAIN_SYMMETRIC);
@@ -729,18 +733,13 @@ void Covers::explain(
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
       Cover const * coverPtr;
-      if (! Covers::heaviestCover(tricksOfLength[lenEW], explain, coverPtr))
-      {
-        cout << "Tried matching " << lenEW << ":\n" << 
-          tricksOfLength[lenEW].strList() << endl;
-        cout << "factor " << factor << endl;
+      if (! Covers::heaviestCover(tricksL, explain, coverPtr))
         assert(false);
-      }
       assert(coverPtr != nullptr);
 
       CoverRow rowTmp;
       rowTmp.resize(numDist);
-      rowTmp.add(* coverPtr, tricksOfLength[lenEW]);
+      rowTmp.add(* coverPtr, tricksL);
 
       rowMatches.transfer(rowTmp, lenEW, factor);
 
@@ -751,9 +750,8 @@ void Covers::explain(
         numVoidsEast = factor;
     }
 
-    vector<CoverTableau> solutionsLength;
-    solutionsLength.resize(tlen);
 
+    // Add the top covers for a given length.
     explain.setComposition(EXPLAIN_MIXED_TERMS);
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
@@ -768,34 +766,26 @@ void Covers::explain(
       else
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
-      solutionsLength[lenEW].init(tricksL, 0); // Minimum doesn't matter yet
+      CoverTableau solutionTmp;
+      solutionTmp.init(tricksL, 0); // Minimum doesn't matter yet
    
-// cout << "varEW " << lenEW << endl;
       // TODO Limit covers to those with the specific length
       Covers::explainByCategory(tricksL, explain, true,
-        solutionsLength[lenEW], newTableauFlag);
+        solutionTmp, newTableauFlag);
+        // solutionsLength[lenEW], newTableauFlag);
 
-      // TODO Probably due to a rank being needed that doesn't seem
-      // to take any tricks?
-      if (! solutionsLength[lenEW].complete())
+      if (! solutionTmp.complete())
       {
+        // TODO This does happen, but rarely.  Probably due to a rank 
+        // being needed that doesn't seem to take any tricks?
+        // So it's really a rank error.
         cout << "FAILED g = 4" << endl;
         return;
       }
 
-      // cout << "row matches before\n";
-      // for (auto& rowMatch: rowMatches)
-        // cout << rowMatch.str();
-// cout << "About to partition " << lenEW << endl;
-      solutionsLength[lenEW].destroyIntoMatches(rowMatches, lenEW);
+      solutionTmp.destroyIntoMatches(rowMatches, lenEW);
     }
 
-// cout << "Done tricks" << endl;
-      /*
-      cout << "after partitions, row matches now\n";
-      for (auto& rowMatch: rowMatches)
-        cout << rowMatch.str();
-        */
 
     solution.init(tricks, tmin);
 
@@ -809,10 +799,6 @@ void Covers::explain(
       else
       {
         Cover const * coverPtr;
-        // bool fullCoverFlag;
-        // coverPtr = Covers::heaviestCover(rowMatch.getTricks(), explain, 
-          // fullCoverFlag);
-        // if (! fullCoverFlag)
         if (! Covers::heaviestCover(rowMatch.getTricks(), explain, coverPtr))
         {
           cout << "Tried\n" << rowMatch.str() << endl;
@@ -820,7 +806,6 @@ void Covers::explain(
         }
       assert(coverPtr != nullptr);
 
-// cout << "final" << endl;
         solution.addRow(* coverPtr);
       }
     }
