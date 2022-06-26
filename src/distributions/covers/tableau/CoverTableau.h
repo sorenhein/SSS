@@ -138,9 +138,9 @@ class CoverTableau
       Tricks& tricksAntisymmetric,
       const vector<unsigned char>& cases) const;
 
-    void partitionIntoMatches(
+    void destroyIntoMatches(
       list<RowMatch>& rowMatches,
-      const size_t rowWestLength) const;
+      const size_t rowWestLength);
 
     void updateStats(
       const Profile& sumProfile,

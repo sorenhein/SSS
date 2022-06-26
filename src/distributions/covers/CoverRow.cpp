@@ -114,7 +114,7 @@ void CoverRow::add(
 
 bool CoverRow::sameTops(const CoverRow& rows2) const
 {
-  // TODO Fow now
+  // TODO For now
   if (CoverRow::size() != 1)
     return false;
 

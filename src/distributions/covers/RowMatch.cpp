@@ -10,25 +10,24 @@
 #include <cassert>
 
 #include "RowMatch.h"
-#include "CoverRow.h"
 #include "Tricks.h"
 
 
 using namespace std;
 
 
-void RowMatch::set(
-  CoverRow const * rowPtrIn,
-  const size_t westLength,
-  const Tricks& tricksIn)
+void RowMatch::transfer(
+  CoverRow& rowIn,
+  const size_t westLength)
 {
-  rowPtr = rowPtrIn;
+  // rowIn gets invalidated!
+  row = move(rowIn);
 
   count = 1;
   lengthFirst = westLength;
   lengthLast = westLength;
 
-  tricks = tricksIn;
+  tricks = row.getTricks();
 }
 
 
@@ -55,8 +54,7 @@ bool RowMatch::singleCount() const
     
 const CoverRow& RowMatch::getSingleRow() const
 {
-  assert(rowPtr != nullptr);
-  return * rowPtr;
+  return row;
 }
 
 
@@ -78,6 +76,6 @@ string RowMatch::str() const
 
   ss << "Tricks\n";
   ss << tricks.strList() << "\n";
-  ss << rowPtr->strNumerical() << "\n";
+  ss << row.strNumerical() << "\n";
   return ss.str();
 }

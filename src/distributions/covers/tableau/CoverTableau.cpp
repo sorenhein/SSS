@@ -61,8 +61,7 @@ void CoverTableau::init(
 
 void CoverTableau::resize(const size_t numDist)
 {
-  tricksMin = 0;
-  residuals.clear();
+  CoverTableau::reset();
   residuals.resize(numDist);
 }
 
@@ -104,7 +103,7 @@ void CoverTableau::addRow(const Cover& cover)
 }
 
 
-void CoverTableau::addRow( const CoverRow& row)
+void CoverTableau::addRow(const CoverRow& row)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity(), row.getRawWeight());
@@ -375,9 +374,9 @@ void CoverTableau::partitionResiduals(
 }
 
 
-void CoverTableau::partitionIntoMatches(
+void CoverTableau::destroyIntoMatches(
   list<RowMatch>& rowMatches,
-  const size_t rowWestLength) const
+  const size_t rowWestLength)
 {
   // A row is a match with an entry in the list if each cover has
   // the same tops in both, and if the new length is contiguous with
@@ -385,6 +384,7 @@ void CoverTableau::partitionIntoMatches(
   // turning a cover tableau into row matches in order to combine them
   // together more sparsely again.  This tableau is known to cover only 
   // a single West length, rowWestLength.
+  // This CoverTableau gets invalidated!
 
   for (auto& ownRow: rows)
   {
@@ -409,7 +409,7 @@ void CoverTableau::partitionIntoMatches(
     if (! foundFlag)
     {
       rowMatches.emplace_back(RowMatch());
-      rowMatches.back().set(&ownRow, rowWestLength, ownRow.getTricks());
+      rowMatches.back().transfer(ownRow, rowWestLength);
     }
   }
 }

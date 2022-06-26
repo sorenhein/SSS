@@ -701,23 +701,25 @@ void Covers::explain(
   else if (mode == 4)
   {
     // TODO Experimental
-    vector<Tricks> tricksByLength;
-    vector<Tricks> tricksMinByLength;
+    vector<Tricks> tricksOfLength;
+    vector<Tricks> tricksWithinLength;
 
     // TODO May want to split even the symmetrics.  Then the
     // partitioning should also somehow be symmetric.
-    tricks.partitionGeneral(tricksByLength, tricksMinByLength, cases);
+    tricks.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
-    const size_t tlen = tricksMinByLength.size();
-    const size_t numDist = tricksMinByLength[0].size();
+    const size_t tlen = tricksOfLength.size();
+    const size_t numDist = tricksOfLength[0].size();
 
     unsigned numVoidsWest = 0;
     unsigned numVoidsEast = 0;
 
-    vector<CoverTableau> solutionsMinLength;
-    solutionsMinLength.resize(tlen);
+    CoverTableau solutionTmp;
+
+    // vector<CoverTableau> solutionsMinLength;
+    // solutionsMinLength.resize(tlen);
 
     list<RowMatch> rowMatches;
 
@@ -726,10 +728,10 @@ void Covers::explain(
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
-      if (tricksMinByLength[lenEW].getWeight() == 0)
+      if (tricksOfLength[lenEW].getWeight() == 0)
         continue;
 
-      const unsigned factor = tricksMinByLength[lenEW].factor();
+      const unsigned factor = tricksOfLength[lenEW].factor();
 
       if (2*lenEW+1 == tlen)
         explain.setSymmetry(EXPLAIN_SYMMETRIC);
@@ -738,26 +740,35 @@ void Covers::explain(
 
       Cover const * coverPtr;
       bool fullCoverFlag;
-      coverPtr = Covers::heaviestCover(tricksMinByLength[lenEW], explain, 
+      coverPtr = Covers::heaviestCover(tricksOfLength[lenEW], explain, 
         fullCoverFlag);
       if (! fullCoverFlag)
       {
         cout << "Tried matching " << lenEW << ":\n" << 
-          tricksMinByLength[lenEW].strList() << endl;
+          tricksOfLength[lenEW].strList() << endl;
         cout << "factor " << factor << endl;
       assert(fullCoverFlag);
       }
+      assert(coverPtr != nullptr);
 
       // TODO We don't really need either data point, but we need to
       // resize tricks in solutions.
-      solutionsMinLength[lenEW].resize(tricks.size());
+      // solutionsMinLength[lenEW].resize(tricks.size());
+      solutionTmp.resize(tricks.size());
 
+// cout << "lenEW " << lenEW << ", f " << factor << endl;
       for (unsigned f = 0; f < factor; f++)
-        solutionsMinLength[lenEW].addRow(* coverPtr);
+        solutionTmp.addRow(* coverPtr);
+        // solutionsMinLength[lenEW].addRow(* coverPtr);
 
       // TODO Treat the voids separately?
       // if (lenEW > 0 && lenEW+1 < tlen)
-        solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
+        // solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
+        solutionTmp.destroyIntoMatches(rowMatches, lenEW);
+
+      // cout << "row matches after length partition\n";
+      // for (auto& rowMatch: rowMatches)
+        // cout << rowMatch.str();
 
       if (lenEW == 0)
         numVoidsWest = factor;
@@ -773,7 +784,7 @@ void Covers::explain(
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
-      const Tricks& tricksL = tricksByLength[lenEW];
+      const Tricks& tricksL = tricksWithinLength[lenEW];
       if (tricksL.getWeight() == 0)
         continue;
 
@@ -785,6 +796,7 @@ void Covers::explain(
 
       solutionsLength[lenEW].init(tricksL, 0); // Minimum doesn't matter yet
    
+// cout << "varEW " << lenEW << endl;
       // TODO Limit covers to those with the specific length
       Covers::explainByCategory(tricksL, explain, true,
         solutionsLength[lenEW], newTableauFlag);
@@ -797,9 +809,14 @@ void Covers::explain(
         return;
       }
 
-      solutionsLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
+      // cout << "row matches before\n";
+      // for (auto& rowMatch: rowMatches)
+        // cout << rowMatch.str();
+// cout << "About to partition " << lenEW << endl;
+      solutionsLength[lenEW].destroyIntoMatches(rowMatches, lenEW);
     }
 
+// cout << "Done tricks" << endl;
       /*
       cout << "after partitions, row matches now\n";
       for (auto& rowMatch: rowMatches)
@@ -826,7 +843,9 @@ void Covers::explain(
           cout << "Tried\n" << rowMatch.str() << endl;
         assert(fullCoverFlag);
         }
+      assert(coverPtr != nullptr);
 
+// cout << "final" << endl;
         solution.addRow(* coverPtr);
       }
     }

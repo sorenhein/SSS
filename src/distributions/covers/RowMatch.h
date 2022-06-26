@@ -11,12 +11,11 @@
 
 #include <string>
 
+#include "CoverRow.h"
 #include "Tricks.h"
 
 
 using namespace std;
-
-class CoverRow;
 
 
 // RowMatch is used when piecing together rows from different solutions
@@ -26,7 +25,7 @@ class RowMatch
 {
   private:
 
-    CoverRow const * rowPtr;
+    CoverRow row;
 
     unsigned count;
     size_t lengthFirst;
@@ -37,10 +36,9 @@ class RowMatch
 
   public:
 
-    void set(
-      CoverRow const * rowPtrIn,
-      const size_t westLength,
-      const Tricks& tricksIn);
+    void transfer(
+      CoverRow& rowIn,
+      const size_t westLength);
 
     void add(const Tricks& tricksIn);
 
