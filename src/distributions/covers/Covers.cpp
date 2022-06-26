@@ -393,17 +393,17 @@ void Covers::findHeaviest(
 }
 
 
-Cover const * Covers::heaviestCover(
+bool Covers::heaviestCover(
   const Tricks& tricks,
   const Explain& explain,
-  bool& fullCoverFlag) const
+  Cover const *& coverPtr) const
 {
   // This find the best (highest-weight) cover consistent with explain.
   // For example, it can find the length-only or tops-only winner.
   // Note that it may return nullptr if nothing is found, which is
   // indeed possible in some calls (e.g. 8/4894, Strategy #1).
 
-  Cover const * coverPtr = nullptr;
+  coverPtr = nullptr;
 
   Tricks additions;
   additions.resize(tricks.size());
@@ -420,14 +420,11 @@ Cover const * Covers::heaviestCover(
 
   for (auto& cover: coverStore)
   {
-// cout << "Attempting " << cover.strNumerical() << "\n";
     if (explain.skip(
         cover.effectiveDepth(),
         cover.symmetry(),
         cover.composition()))
     {
-// cout << "  rejected, cover depth " << +cover.effectiveDepth() << 
-  // " symm " << +cover.symmetry() << ", comp " << +cover.composition() << "\n";
       // Select consistent candidates.
       continue;
     }
@@ -442,8 +439,7 @@ Cover const * Covers::heaviestCover(
     }
   }
 
-  fullCoverFlag = (largestWeight == tricks.getWeight());
-  return coverPtr;
+  return (largestWeight == tricks.getWeight());
 }
 
 
@@ -700,7 +696,6 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
-    // TODO Experimental
     vector<Tricks> tricksOfLength;
     vector<Tricks> tricksWithinLength;
 
@@ -710,20 +705,16 @@ void Covers::explain(
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
+    RowMatches rowMatches;
+
+    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    explain.setComposition(EXPLAIN_LENGTH_ONLY);
+
     const size_t tlen = tricksOfLength.size();
     const size_t numDist = tricksOfLength[0].size();
 
     unsigned numVoidsWest = 0;
     unsigned numVoidsEast = 0;
-
-    CoverTableau solutionTmp;
-    // CoverRow rowTmp;
-
-    // list<RowMatch> rowMatches;
-    RowMatches rowMatches;
-
-    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-    explain.setComposition(EXPLAIN_LENGTH_ONLY);
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
@@ -738,27 +729,20 @@ void Covers::explain(
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
       Cover const * coverPtr;
-      bool fullCoverFlag;
-      coverPtr = Covers::heaviestCover(tricksOfLength[lenEW], explain, 
-        fullCoverFlag);
-      if (! fullCoverFlag)
+      if (! Covers::heaviestCover(tricksOfLength[lenEW], explain, coverPtr))
       {
         cout << "Tried matching " << lenEW << ":\n" << 
           tricksOfLength[lenEW].strList() << endl;
         cout << "factor " << factor << endl;
-      assert(fullCoverFlag);
+        assert(false);
       }
       assert(coverPtr != nullptr);
 
-      // TODO We don't really need either data point, but we need to
-      // resize tricks in solutions.
-      solutionTmp.resize(tricks.size());
-      // rowTmp.resize(tricks.size());
+      CoverRow rowTmp;
+      rowTmp.resize(numDist);
+      rowTmp.add(* coverPtr, tricksOfLength[lenEW]);
 
-      for (unsigned f = 0; f < factor; f++)
-        solutionTmp.addRow(* coverPtr);
-
-        solutionTmp.destroyIntoMatches(rowMatches, lenEW);
+      rowMatches.transfer(rowTmp, lenEW, factor);
 
       // TODO Treat the voids separately?
       if (lenEW == 0)
@@ -766,7 +750,6 @@ void Covers::explain(
       else if (lenEW+1 == tlen)
         numVoidsEast = factor;
     }
-
 
     vector<CoverTableau> solutionsLength;
     solutionsLength.resize(tlen);
@@ -826,13 +809,14 @@ void Covers::explain(
       else
       {
         Cover const * coverPtr;
-        bool fullCoverFlag;
-        coverPtr = Covers::heaviestCover(rowMatch.getTricks(), explain, 
-          fullCoverFlag);
-        if (! fullCoverFlag)
+        // bool fullCoverFlag;
+        // coverPtr = Covers::heaviestCover(rowMatch.getTricks(), explain, 
+          // fullCoverFlag);
+        // if (! fullCoverFlag)
+        if (! Covers::heaviestCover(rowMatch.getTricks(), explain, coverPtr))
         {
           cout << "Tried\n" << rowMatch.str() << endl;
-        assert(fullCoverFlag);
+          assert(false);
         }
       assert(coverPtr != nullptr);
 

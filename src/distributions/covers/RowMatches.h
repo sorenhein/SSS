@@ -28,7 +28,8 @@ class RowMatches
     
     void transfer(
       CoverRow& rowIn,
-      const size_t westLength);
+      const size_t westLength,
+      const unsigned repeats = 1);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };

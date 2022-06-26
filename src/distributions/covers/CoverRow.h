@@ -70,6 +70,10 @@ class CoverRow
       const unsigned rawWeightAdder,
       Tricks& residuals);
 
+    void add(
+      const Cover& cover,
+      Tricks& residuals);
+
     void updateStats(
       ProductStats& productStats,
       const Profile& sumProfile,

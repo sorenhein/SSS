@@ -112,6 +112,14 @@ void CoverRow::add(
 }
 
 
+void CoverRow::add(
+  const Cover& cover,
+  Tricks& residuals)
+{
+  CoverRow::add(cover, cover.getTricks(), cover.getWeight(), residuals);
+}
+
+
 bool CoverRow::sameTops(const CoverRow& rows2) const
 {
   // TODO For now

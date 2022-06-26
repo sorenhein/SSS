@@ -7,6 +7,7 @@
 */
 
 #include <sstream>
+#include <cassert>
 
 #include "RowMatches.h"
 
@@ -16,9 +17,12 @@ using namespace std;
 
 void RowMatches::transfer(
   CoverRow& rowIn,
-  const size_t westLength)
+  const size_t westLength,
+  const unsigned repeats)
 {
   // rowIn gets invalidated!
+  unsigned running = repeats;
+
   for (auto& match: matches)
   {
     const CoverRow& matchingRow = match.getSingleRow();
@@ -31,12 +35,16 @@ void RowMatches::transfer(
       continue;
 
     match.add(rowIn.getTricks());
-    return;
+    if (--running == 0)
+      return;
   }
 
   // No extension of an existing row, so add a new row.
   matches.emplace_back(RowMatch());
   matches.back().transfer(rowIn, westLength);
+
+  for (unsigned f = 1; f < running; f++)
+    matches.push_back(matches.back());
 }
 
 

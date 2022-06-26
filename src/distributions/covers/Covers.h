@@ -76,10 +76,11 @@ class Covers
       const Explain& explain,
       HeavyData& heavyData) const;
 
-    Cover const * heaviestCover(
+    // Returns true if tricks are completely covered by the result
+    bool heaviestCover(
       const Tricks& tricks,
       const Explain& explain,
-      bool& fullCoverFlag) const;
+      Cover const *& coverPtr) const;
 
     void explainByCategory(
       const Tricks& tricks,
