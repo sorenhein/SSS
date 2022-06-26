@@ -411,16 +411,23 @@ Cover const * Covers::heaviestCover(
   unsigned largestWeight = 0;
   unsigned weight;
 
+  // TODO If we only ever want complete covers (as I think we do
+  // longer-term), we could just check tricks == cover.getTricks()?
+  // Then cover.getWeight().
+
   CoverRow row;
   row.resize(tricks.size());
 
   for (auto& cover: coverStore)
   {
+// cout << "Attempting " << cover.strNumerical() << "\n";
     if (explain.skip(
         cover.effectiveDepth(),
         cover.symmetry(),
         cover.composition()))
     {
+// cout << "  rejected, cover depth " << +cover.effectiveDepth() << 
+  // " symm " << +cover.symmetry() << ", comp " << +cover.composition() << "\n";
       // Select consistent candidates.
       continue;
     }
@@ -714,6 +721,9 @@ void Covers::explain(
 
     list<RowMatch> rowMatches;
 
+    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    explain.setComposition(EXPLAIN_LENGTH_ONLY);
+
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       if (tricksMinByLength[lenEW].getWeight() == 0)
@@ -721,11 +731,22 @@ void Covers::explain(
 
       const unsigned factor = tricksMinByLength[lenEW].factor();
 
+      if (2*lenEW+1 == tlen)
+        explain.setSymmetry(EXPLAIN_SYMMETRIC);
+      else
+        explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+
       Cover const * coverPtr;
       bool fullCoverFlag;
       coverPtr = Covers::heaviestCover(tricksMinByLength[lenEW], explain, 
         fullCoverFlag);
+      if (! fullCoverFlag)
+      {
+        cout << "Tried matching " << lenEW << ":\n" << 
+          tricksMinByLength[lenEW].strList() << endl;
+        cout << "factor " << factor << endl;
       assert(fullCoverFlag);
+      }
 
       // TODO We don't really need either data point, but we need to
       // resize tricks in solutions.
@@ -737,7 +758,7 @@ void Covers::explain(
       // TODO Treat the voids separately?
       // if (lenEW > 0 && lenEW+1 < tlen)
         solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
-      
+
       if (lenEW == 0)
         numVoidsWest = factor;
       else if (lenEW+1 == tlen)
@@ -748,6 +769,8 @@ void Covers::explain(
     vector<CoverTableau> solutionsLength;
     solutionsLength.resize(tlen);
 
+    explain.setComposition(EXPLAIN_MIXED_TERMS);
+
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       const Tricks& tricksL = tricksByLength[lenEW];
@@ -755,7 +778,10 @@ void Covers::explain(
         continue;
 
       // A cover of a given length is always anti-symmetric.
-      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+      if (2*lenEW+1 == tlen)
+        explain.setSymmetry(EXPLAIN_GENERAL);
+      else
+        explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
       solutionsLength[lenEW].init(tricksL, 0); // Minimum doesn't matter yet
    
@@ -774,6 +800,12 @@ void Covers::explain(
       solutionsLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
     }
 
+      /*
+      cout << "after partitions, row matches now\n";
+      for (auto& rowMatch: rowMatches)
+        cout << rowMatch.str();
+        */
+
     solution.init(tricks, tmin);
 
     // Score those row matches anew that involves more than one row.
@@ -785,13 +817,17 @@ void Covers::explain(
         solution.addRow(rowMatch.getSingleRow());
       else
       {
-        HeavyData heavyData(numDist);
-        Covers::findHeaviest(rowMatch.getTricks(), explain, heavyData);
-        if (heavyData.coverPtr == nullptr)
+        Cover const * coverPtr;
+        bool fullCoverFlag;
+        coverPtr = Covers::heaviestCover(rowMatch.getTricks(), explain, 
+          fullCoverFlag);
+        if (! fullCoverFlag)
         {
-          assert(false);
+          cout << "Tried\n" << rowMatch.str() << endl;
+        assert(fullCoverFlag);
         }
-        solution.addRow(* heavyData.coverPtr);
+
+        solution.addRow(* coverPtr);
       }
     }
 

@@ -401,6 +401,9 @@ distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
 distributions/covers/CoverRow.obj: distributions/covers/Cover.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverCategory.h
+distributions/covers/RowMatch.obj: distributions/covers/RowMatch.h
+distributions/covers/RowMatch.obj: distributions/covers/Tricks.h
+distributions/covers/RowMatch.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverStack.obj: distributions/covers/CoverStack.h
 distributions/covers/CoverStack.obj: distributions/covers/StackEntry.h
 distributions/covers/CoverStack.obj: distributions/covers/tableau/CoverTableau.h

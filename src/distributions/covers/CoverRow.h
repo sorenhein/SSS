@@ -103,6 +103,8 @@ class CoverRow
       const Profile& sumProfile,
       const RanksNames& ranksNames) const;
 
+    string strNumerical() const;
+
 // TODO
 string ID() const {return "RR";};
 };

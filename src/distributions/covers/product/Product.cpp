@@ -80,6 +80,8 @@ void Product::set(
     // Note the first, i.e. lowest one.
     if (tops[i].used())
     {
+      // TODO This just seems like a bug.  I'm not so sure about
+      // topSize in this class in general
       if (topSize == 0)
         topSize = i;
 
@@ -199,7 +201,8 @@ bool Product::sameTops(const Product& product2) const
   if (topSize != product2.topSize || activeCount != product2.activeCount)
     return false;
 
-  for (size_t t = 0; t < topSize; t++)
+  // TODO topSize is probably messed up, but should be <= topSize?
+  for (size_t t = 0; t < tops.size(); t++)
   {
     if (tops[t].used() != product2.tops[t].used())
       return false;

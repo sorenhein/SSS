@@ -396,7 +396,6 @@ void CoverTableau::partitionIntoMatches(
 
       // Lengths must be contiguous in order to augment.
       if (! rowMatch.contiguous(rowWestLength))
-      // if (rowMatch.lengthLast+1 != rowWestLength)
         continue;
 
       if (! ownRow.sameTops(matchingRow))

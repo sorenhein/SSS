@@ -182,7 +182,11 @@ bool Cover::sameTops(const Cover& cover2) const
 {
   assert(factoredProductPtr != nullptr);
   assert(cover2.factoredProductPtr != nullptr);
-  return factoredProductPtr->sameTops(* cover2.factoredProductPtr);
+
+  if (symmetrizeFlag != cover2.symmetrizeFlag)
+    return false;
+  else
+    return factoredProductPtr->sameTops(* cover2.factoredProductPtr);
 }
 
 
@@ -365,6 +369,19 @@ string Cover::str(
   else
     ss << Cover::strTricksShort() + Cover::strLine();
 
+  ss << " [" << +Cover::getComplexity() << 
+    "/" << tricks.getWeight() << "]";
+
+  return ss.str();
+}
+
+
+string Cover::strNumerical() const
+{
+  assert(factoredProductPtr != nullptr);
+  stringstream ss;
+
+  ss << Cover::strTricksShort() + Cover::strLine();
   ss << " [" << +Cover::getComplexity() << 
     "/" << tricks.getWeight() << "]";
 

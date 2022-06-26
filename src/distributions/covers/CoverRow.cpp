@@ -235,3 +235,16 @@ string CoverRow::str(
   return ss.str() + "\n";
 }
 
+
+string CoverRow::strNumerical() const
+{
+  stringstream ss;
+
+  ss << "* " << coverPtrs.front()->strNumerical();
+
+  for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
+    ss << "; or\n  " << (* iter)->strNumerical();
+
+  return ss.str() + "\n";
+}
+

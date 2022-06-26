@@ -9,6 +9,8 @@
 #ifndef SSS_ROWMATCH_H
 #define SSS_ROWMATCH_H
 
+#include <string>
+
 #include "Tricks.h"
 
 
@@ -38,47 +40,19 @@ class RowMatch
     void set(
       CoverRow const * rowPtrIn,
       const size_t westLength,
-      const Tricks& tricksIn)
-    {
-      rowPtr = rowPtrIn;
-      count = 1;
-      lengthFirst = westLength;
-      lengthLast = westLength;
-      tricks = tricksIn;
-    };
+      const Tricks& tricksIn);
 
+    void add(const Tricks& tricksIn);
 
-    void add(const Tricks& tricksIn)
-    {
-      assert(count > 0);
-      count++;
-      lengthLast++;
-      tricks += tricksIn;
-    };
+    bool contiguous(const size_t westLength) const;
 
-    bool contiguous(const size_t westLength) const
-    {
-      return (lengthLast + 1 == westLength);
-    };
-
-
-    bool singleCount() const
-    {
-      return (count == 1);
-    };
-
+    bool singleCount() const;
     
-    const CoverRow& getSingleRow() const
-    {
-      assert(rowPtr != nullptr);
-      return * rowPtr;
-    };
+    const CoverRow& getSingleRow() const;
 
+    const Tricks& getTricks() const;
 
-    const Tricks& getTricks() const
-    {
-      return tricks;
-    };
+    string str() const;
 };
 
 #endif
