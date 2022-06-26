@@ -706,8 +706,8 @@ void Covers::explain(
     const size_t tlen = tricksMinByLength.size();
     const size_t numDist = tricksMinByLength[0].size();
 
-    const bool voidWest = (tricksMinByLength[0].getWeight() > 0);
-    const bool voidEast = (tricksMinByLength[tlen-1].getWeight() > 0);
+    unsigned numVoidsWest = 0;
+    unsigned numVoidsEast = 0;
 
     vector<CoverTableau> solutionsMinLength;
     solutionsMinLength.resize(tlen);
@@ -725,28 +725,23 @@ void Covers::explain(
       bool fullCoverFlag;
       coverPtr = Covers::heaviestCover(tricksMinByLength[lenEW], explain, 
         fullCoverFlag);
-      if (! fullCoverFlag)
-      {
-        cout << "Tried to cover len " << lenEW << 
-          ":\n" << tricksMinByLength[lenEW].strList() << endl;
-        if (coverPtr == nullptr)
-          cout << "Got null" << endl;
-        else
-          cout << "Got NON null" << endl;
-        assert(fullCoverFlag);
-      }
+      assert(fullCoverFlag);
 
       // TODO We don't really need either data point, but we need to
       // resize tricks in solutions.
       solutionsMinLength[lenEW].resize(tricks.size());
 
-      // solutionsMinLength[lenEW].addRow(* heavyData.coverPtr);
       for (unsigned f = 0; f < factor; f++)
         solutionsMinLength[lenEW].addRow(* coverPtr);
 
       // TODO Treat the voids separately?
       // if (lenEW > 0 && lenEW+1 < tlen)
         solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
+      
+      if (lenEW == 0)
+        numVoidsWest = factor;
+      else if (lenEW+1 == tlen)
+        numVoidsEast = factor;
     }
 
 
