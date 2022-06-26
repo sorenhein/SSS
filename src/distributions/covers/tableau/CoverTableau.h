@@ -27,7 +27,7 @@ using namespace std;
 class Cover;
 class CoverRow;
 class Profile;
-class RowMatch;
+class RowMatches;
 class RanksNames;
 class ProductStats;
 template<typename T> class CoverStack;
@@ -139,7 +139,7 @@ class CoverTableau
       const vector<unsigned char>& cases) const;
 
     void destroyIntoMatches(
-      list<RowMatch>& rowMatches,
+      RowMatches& rowMatches,
       const size_t rowWestLength);
 
     void updateStats(

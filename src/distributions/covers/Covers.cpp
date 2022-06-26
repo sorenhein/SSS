@@ -719,7 +719,8 @@ void Covers::explain(
     CoverTableau solutionTmp;
     // CoverRow rowTmp;
 
-    list<RowMatch> rowMatches;
+    // list<RowMatch> rowMatches;
+    RowMatches rowMatches;
 
     explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     explain.setComposition(EXPLAIN_LENGTH_ONLY);

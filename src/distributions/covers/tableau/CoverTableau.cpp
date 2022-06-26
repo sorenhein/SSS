@@ -17,7 +17,7 @@
 #include "../Cover.h"
 #include "../CoverStore.h"
 #include "../RowStore.h"
-#include "../RowMatch.h"
+#include "../RowMatches.h"
 #include "../CoverStack.h"
 #include "../CoverCategory.h"
 
@@ -375,10 +375,10 @@ void CoverTableau::partitionResiduals(
 
 
 void CoverTableau::destroyIntoMatches(
-  list<RowMatch>& rowMatches,
+  RowMatches& rowMatches,
   const size_t rowWestLength)
 {
-  // A row is a match with an entry in the list if each cover has
+  // A row is a match with an entry in rowMatches if each cover has
   // the same tops in both, and if the new length is contiguous with
   // the length interval in the match to date.  This is used when
   // turning a cover tableau into row matches in order to combine them
@@ -387,31 +387,7 @@ void CoverTableau::destroyIntoMatches(
   // This CoverTableau gets invalidated!
 
   for (auto& ownRow: rows)
-  {
-    bool foundFlag = false;
-
-    for (auto& rowMatch: rowMatches)
-    {
-      const CoverRow& matchingRow = rowMatch.getSingleRow();
-
-      // Lengths must be contiguous in order to augment.
-      if (! rowMatch.contiguous(rowWestLength))
-        continue;
-
-      if (! ownRow.sameTops(matchingRow))
-        continue;
-
-      rowMatch.add(ownRow.getTricks());
-      foundFlag = true;
-      break;
-    }
-
-    if (! foundFlag)
-    {
-      rowMatches.emplace_back(RowMatch());
-      rowMatches.back().transfer(ownRow, rowWestLength);
-    }
-  }
+    rowMatches.transfer(ownRow, rowWestLength);
 }
 
 
