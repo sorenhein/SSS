@@ -393,6 +393,55 @@ void Covers::findHeaviest(
 }
 
 
+Cover const * Covers::heaviestCover(
+  const Tricks& tricks,
+  const Explain& explain,
+  bool& fullCoverFlag) const
+{
+  // This find the best (highest-weight) cover consistent with explain.
+  // For example, it can find the length-only or tops-only winner.
+  // Note that it may return nullptr if nothing is found, which is
+  // indeed possible in some calls (e.g. 8/4894, Strategy #1).
+
+  Cover const * coverPtr = nullptr;
+
+  Tricks additions;
+  additions.resize(tricks.size());
+
+  unsigned largestWeight = 0;
+  unsigned weight;
+
+  CoverRow row;
+  row.resize(tricks.size());
+
+  for (auto& cover: coverStore)
+  {
+    if (explain.skip(
+        cover.effectiveDepth(),
+        cover.symmetry(),
+        cover.composition()))
+    {
+      // Select consistent candidates.
+      continue;
+    }
+
+    if (row.possibleAdd(cover, tricks, cases, additions, weight))
+    {
+      if (weight > largestWeight)
+      {
+        coverPtr = &cover;
+        largestWeight = weight;
+      }
+    }
+  }
+
+  fullCoverFlag = (largestWeight == tricks.getWeight());
+  return coverPtr;
+}
+
+
+
+
 void Covers::explainByCategory(
   const Tricks& tricks,
   const Explain& explain,
@@ -658,7 +707,7 @@ void Covers::explain(
     const size_t numDist = tricksMinByLength[0].size();
 
     const bool voidWest = (tricksMinByLength[0].getWeight() > 0);
-    const bool voidEast = (tricksMinByLength[tlen].getWeight() > 0);
+    const bool voidEast = (tricksMinByLength[tlen-1].getWeight() > 0);
 
     vector<CoverTableau> solutionsMinLength;
     solutionsMinLength.resize(tlen);
@@ -670,14 +719,30 @@ void Covers::explain(
       if (tricksMinByLength[lenEW].getWeight() == 0)
         continue;
 
-      HeavyData heavyData(numDist);
-      Covers::findHeaviest(tricksMinByLength[lenEW], explain, heavyData);
+      const unsigned factor = tricksMinByLength[lenEW].factor();
+
+      Cover const * coverPtr;
+      bool fullCoverFlag;
+      coverPtr = Covers::heaviestCover(tricksMinByLength[lenEW], explain, 
+        fullCoverFlag);
+      if (! fullCoverFlag)
+      {
+        cout << "Tried to cover len " << lenEW << 
+          ":\n" << tricksMinByLength[lenEW].strList() << endl;
+        if (coverPtr == nullptr)
+          cout << "Got null" << endl;
+        else
+          cout << "Got NON null" << endl;
+        assert(fullCoverFlag);
+      }
 
       // TODO We don't really need either data point, but we need to
       // resize tricks in solutions.
       solutionsMinLength[lenEW].resize(tricks.size());
 
-      solutionsMinLength[lenEW].addRow(* heavyData.coverPtr);
+      // solutionsMinLength[lenEW].addRow(* heavyData.coverPtr);
+      for (unsigned f = 0; f < factor; f++)
+        solutionsMinLength[lenEW].addRow(* coverPtr);
 
       // TODO Treat the voids separately?
       // if (lenEW > 0 && lenEW+1 < tlen)
@@ -714,48 +779,26 @@ void Covers::explain(
       solutionsLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
     }
 
-    CoverTableau solutionTmp;
-    solutionTmp.init(tricks, tmin);
+    solution.init(tricks, tmin);
 
     // Score those row matches anew that involves more than one row.
     explain.setSymmetry(EXPLAIN_GENERAL);
     explain.setComposition(EXPLAIN_MIXED_TERMS);
     for (auto& rowMatch: rowMatches)
     {
-      if (rowMatch.count == 1)
-        solutionTmp.addRow(* rowMatch.rowPtr);
+      if (rowMatch.singleCount())
+        solution.addRow(rowMatch.getSingleRow());
       else
       {
-// cout << rowMatch.tricks.strShort() << endl;
-
         HeavyData heavyData(numDist);
-        Covers::findHeaviest(rowMatch.tricks, explain, heavyData);
+        Covers::findHeaviest(rowMatch.getTricks(), explain, heavyData);
         if (heavyData.coverPtr == nullptr)
         {
           assert(false);
         }
-        solutionTmp.addRow(* heavyData.coverPtr);
+        solution.addRow(* heavyData.coverPtr);
       }
     }
-
-solution = solutionTmp;
-
-/*
-    // TODO For now.  So we don't need the init in front.
-    solution.resize(tricks.size());
-
-    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
-    {
-      if (solutionsMinLength[lenEW].used())
-        solution += solutionsMinLength[lenEW];
-    }
-
-    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
-    {
-      if (solutionsLength[lenEW].used())
-        solution += solutionsLength[lenEW];
-    }
-  */
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);

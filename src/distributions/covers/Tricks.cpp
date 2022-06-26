@@ -208,6 +208,32 @@ bool Tricks::symmetrize()
 }
 
 
+unsigned Tricks::factor()
+{
+  // It may be that a Tricks has only values of, say, 0 and 2 but
+  // no 1, 3, ...  This can be represented as a factor times a
+  // reduced vector.
+
+  unsigned fac = numeric_limits<unsigned>::max();
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
+  {
+    const unsigned char t = Tricks::lookup(extIndex);
+    if (t > 0 && t < fac)
+      fac = t;
+  }
+
+  if (fac == 1)
+    return 1;
+
+  for (unsigned i = 0; i < signature.size(); i++)
+    signature[i] /= fac;
+
+  weight /= fac;
+
+  return fac;
+}
+
+
 void Tricks::uniqueOver(
   const Tricks& compare,
   const vector<unsigned char>& cases)

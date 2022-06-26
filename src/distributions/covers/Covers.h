@@ -76,6 +76,11 @@ class Covers
       const Explain& explain,
       HeavyData& heavyData) const;
 
+    Cover const * heaviestCover(
+      const Tricks& tricks,
+      const Explain& explain,
+      bool& fullCoverFlag) const;
+
     void explainByCategory(
       const Tricks& tricks,
       const Explain& explain,

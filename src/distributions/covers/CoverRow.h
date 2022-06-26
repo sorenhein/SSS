@@ -19,7 +19,6 @@ using namespace std;
 class Cover;
 class Profile;
 class RanksNames;
-struct RowMatch;
 class ProductStats;
 
 enum CoverSymmetry: unsigned;

@@ -392,10 +392,11 @@ void CoverTableau::partitionIntoMatches(
 
     for (auto& rowMatch: rowMatches)
     {
-      const CoverRow& matchingRow = * rowMatch.rowPtr;
+      const CoverRow& matchingRow = rowMatch.getSingleRow();
 
       // Lengths must be contiguous in order to augment.
-      if (rowMatch.lengthLast+1 != rowWestLength)
+      if (! rowMatch.contiguous(rowWestLength))
+      // if (rowMatch.lengthLast+1 != rowWestLength)
         continue;
 
       if (! ownRow.sameTops(matchingRow))

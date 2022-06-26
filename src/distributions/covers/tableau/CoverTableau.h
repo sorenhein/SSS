@@ -27,9 +27,9 @@ using namespace std;
 class Cover;
 class CoverRow;
 class Profile;
-class ProductStats;
+class RowMatch;
 class RanksNames;
-struct RowMatch;
+class ProductStats;
 template<typename T> class CoverStack;
 template<typename T> struct StackEntry;
 
