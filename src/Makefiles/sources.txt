@@ -28,6 +28,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/TrickConvert.cpp            \
                 distributions/covers/CoverRow.cpp                \
                 distributions/covers/RowMatch.cpp                \
+                distributions/covers/RowMatches.cpp              \
                 distributions/covers/CoverStack.cpp              \
                                                                  \
                 distributions/covers/manual/Manual.cpp           \

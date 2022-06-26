@@ -38,7 +38,7 @@
 #include "CoverStack.h"
 #include "Explain.h"
 #include "CoverCategory.h"
-#include "RowMatch.h"
+#include "RowMatches.h"
 
 #include "tableau/TableauStats.h"
 
@@ -717,9 +717,7 @@ void Covers::explain(
     unsigned numVoidsEast = 0;
 
     CoverTableau solutionTmp;
-
-    // vector<CoverTableau> solutionsMinLength;
-    // solutionsMinLength.resize(tlen);
+    // CoverRow rowTmp;
 
     list<RowMatch> rowMatches;
 
@@ -753,23 +751,15 @@ void Covers::explain(
 
       // TODO We don't really need either data point, but we need to
       // resize tricks in solutions.
-      // solutionsMinLength[lenEW].resize(tricks.size());
       solutionTmp.resize(tricks.size());
+      // rowTmp.resize(tricks.size());
 
-// cout << "lenEW " << lenEW << ", f " << factor << endl;
       for (unsigned f = 0; f < factor; f++)
         solutionTmp.addRow(* coverPtr);
-        // solutionsMinLength[lenEW].addRow(* coverPtr);
 
-      // TODO Treat the voids separately?
-      // if (lenEW > 0 && lenEW+1 < tlen)
-        // solutionsMinLength[lenEW].partitionIntoMatches(rowMatches, lenEW);
         solutionTmp.destroyIntoMatches(rowMatches, lenEW);
 
-      // cout << "row matches after length partition\n";
-      // for (auto& rowMatch: rowMatches)
-        // cout << rowMatch.str();
-
+      // TODO Treat the voids separately?
       if (lenEW == 0)
         numVoidsWest = factor;
       else if (lenEW+1 == tlen)
