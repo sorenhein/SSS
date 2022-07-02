@@ -77,118 +77,59 @@ void RowMatches::setVoid(
   //   - Look for matches with the best complexity reduction when
   //     merging in the void
 
-  if (side == OPP_WEST)
-  {
-    list<RowMatch *> potentials;
+  const string sideName = (side == OPP_WEST ? "WEST" : "EAST");
+  assert(side == OPP_WEST || side == OPP_EAST);
+
+  list<RowMatch *> potentials;
 
 // cout << "The matches are:\n";
 // cout << RowMatches::str() << "\n";
-    for (auto& match: matches)
-    {
-      // Lengths must be contiguous with a West void in order to augment.
-      if (! match.contiguous(voidInfo.westLength, side))
-        continue;
-
-      const CoverRow& matchingRow = match.getSingleRow();
-      const unsigned char minWest = matchingRow.minimumByTops(
-        side, sumProfile);
-
-      if (minWest == 0)
-        potentials.push_back(&match);
-    }
-
-    const unsigned psize = static_cast<unsigned>(potentials.size());
-
-    if (psize > voidInfo.repeats)
-    {
-      cout << "WESTWARN Picking random potentials\n";
-    }
-
-    const unsigned pots = min(psize, voidInfo.repeats);
-    if (pots > 0)
-      cout << "WESTUSE " << pots << "\n";
-    auto pit = potentials.begin();
-    for (size_t p = 0; p < pots; p++)
-    {
-      RowMatch& rm = ** pit;
-      rm.add(* voidInfo.tricksPtr, OPP_WEST);
-      pit++;
-    }
-
-    if (psize >= voidInfo.repeats)
-    {
-      cout << "WESTEXHAUSTED\n";
-// cout << "The matches now:\n";
-// cout << RowMatches::str() << "\n";
-      return;
-    }
-
-    const unsigned rest = voidInfo.repeats - psize;
-
-    CoverRow row;
-    row.resize(voidInfo.tricksPtr->size());
-    row.add(* voidInfo.coverPtr, * voidInfo.tricksPtr);
-
-    RowMatches::transfer(row, voidInfo.westLength, side, rest);
-    cout << "WESTREST " << rest << "\n";
-  }
-  else if (side == OPP_EAST)
+  for (auto& match: matches)
   {
-    list<RowMatch *> potentials;
+    // Lengths must be contiguous with a void in order to augment.
+    if (! match.contiguous(voidInfo.westLength, side))
+      continue;
 
-// cout << "The matches are:\n";
-// cout << RowMatches::str() << "\n";
-    for (auto& match: matches)
-    {
-      // Lengths must be contiguous with a West void in order to augment.
-      if (! match.contiguous(voidInfo.westLength, side))
-        continue;
+    const CoverRow& matchingRow = match.getSingleRow();
+    const unsigned char minSide = matchingRow.minimumByTops(
+      side, sumProfile);
 
-      const CoverRow& matchingRow = match.getSingleRow();
-      const unsigned char minEast = matchingRow.minimumByTops(
-        side, sumProfile);
+    if (minSide == 0)
+      potentials.push_back(&match);
+  }
 
-      if (minEast == 0)
-        potentials.push_back(&match);
-    }
+  const unsigned psize = static_cast<unsigned>(potentials.size());
 
-    const unsigned psize = static_cast<unsigned>(potentials.size());
+  if (psize > voidInfo.repeats)
+    cout << sideName << "WARN Picking random potentials\n";
 
-    if (psize > voidInfo.repeats)
-    {
-      cout << "EASTWARN Picking random potentials\n";
-    }
+  const unsigned pots = min(psize, voidInfo.repeats);
+  if (pots > 0)
+    cout << sideName << "USE " << pots << "\n";
+  auto pit = potentials.begin();
+  for (size_t p = 0; p < pots; p++)
+  {
+    RowMatch& rm = ** pit;
+    rm.add(* voidInfo.tricksPtr, side);
+    pit++;
+  }
 
-    const unsigned pots = min(psize, voidInfo.repeats);
-    if (pots > 0)
-      cout << "EASTUSE " << pots << "\n";
-    auto pit = potentials.begin();
-    for (size_t p = 0; p < pots; p++)
-    {
-      RowMatch& rm = ** pit;
-      rm.add(* voidInfo.tricksPtr, side);
-      pit++;
-    }
-
-    if (psize >= voidInfo.repeats)
-    {
-      cout << "EASTEXHAUSTED\n";
+  if (psize >= voidInfo.repeats)
+  {
+    cout << sideName << "EXHAUSTED\n";
 // cout << "The matches now:\n";
 // cout << RowMatches::str() << "\n";
-      return;
-    }
-
-    const unsigned rest = voidInfo.repeats - psize;
-
-    CoverRow row;
-    row.resize(voidInfo.tricksPtr->size());
-    row.add(* voidInfo.coverPtr, * voidInfo.tricksPtr);
-
-    RowMatches::transfer(row, voidInfo.westLength, side, rest);
-    cout << "EASTREST " << rest << "\n";
+    return;
   }
-  else
-    assert(false);
+
+  const unsigned rest = voidInfo.repeats - psize;
+
+  CoverRow row;
+  row.resize(voidInfo.tricksPtr->size());
+  row.add(* voidInfo.coverPtr, * voidInfo.tricksPtr);
+
+  RowMatches::transfer(row, voidInfo.westLength, side, rest);
+  cout << sideName << "REST " << rest << "\n";
 }
 
 
