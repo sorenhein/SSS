@@ -1,15 +1,23 @@
 Current differences g = 0 to g = 4
 ==================================
-7/1683  Random
-7/1641  Random
 
+ c     same     diff
+ 4        4        0
+ 5       27        0
+ 6      113        0
+ 7      483        4
+ 8     1953      133
+ 9     7205     2323
+10    26346    15435
+11    95042    96051
+
+
+7/591   Can't make "Either opponent has the singleton king"
+8/5907  Can't turn "West doubleton", "West AKx(x)" into
+        "West doubleton, or West AK-any"
 
 Texts
 7/1683  "East has at most a doubleton" -> "West is not void"
-
-
-
-
 
 
 

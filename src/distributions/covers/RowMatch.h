@@ -14,6 +14,7 @@
 #include "CoverRow.h"
 #include "Tricks.h"
 
+class Profile;
 enum Opponent: unsigned;
 
 
@@ -33,10 +34,15 @@ class RowMatch
     size_t lengthFirst;
     size_t lengthLast;
 
+    size_t lengthByTopsFirst;
+    size_t lengthByTopsLast;
+
     Tricks tricks;
 
 
   public:
+
+    void setLengthsByTops(const Profile& sumProfile);
 
     void transfer(
       CoverRow& rowIn,
@@ -47,6 +53,14 @@ class RowMatch
       const Opponent towardVoid);
 
     bool contiguous(
+      const size_t westLength,
+      const Opponent towardVoid) const;
+
+    bool possible(
+      const size_t westLength,
+      const Opponent towardVoid) const;
+
+    bool preferred(
       const size_t westLength,
       const Opponent towardVoid) const;
 

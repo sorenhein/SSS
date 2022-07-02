@@ -11,11 +11,21 @@
 
 #include "RowMatch.h"
 #include "Tricks.h"
+#include "product/Profile.h"
 
 #include "../../utils/table.h"
 
 
 using namespace std;
+
+
+void RowMatch::setLengthsByTops(const Profile& sumProfile)
+{
+  lengthByTopsFirst = row.minimumByTops(OPP_WEST, sumProfile);
+
+  lengthByTopsLast = sumProfile.length() -
+    row.minimumByTops(OPP_EAST, sumProfile);
+}
 
 
 void RowMatch::transfer(
@@ -61,6 +71,46 @@ bool RowMatch::contiguous(
   {
     // Toward lower West counts.
     return (lengthFirst == westLength + 1);
+  }
+}
+
+
+bool RowMatch::possible(
+  const size_t westLength,
+  const Opponent towardVoid) const
+{
+  if (towardVoid == OPP_EAST)
+  {
+    // Toward higher West counts.
+    return (lengthLast + 1 == westLength &&
+        westLength <= lengthByTopsLast);
+  }
+  else
+  {
+    // Toward lower West counts.
+    return (lengthFirst == westLength + 1 &&
+        westLength >= lengthByTopsFirst);
+  }
+}
+
+
+bool RowMatch::preferred(
+  const size_t westLength,
+  const Opponent towardVoid) const
+{
+  if (towardVoid == OPP_EAST)
+  {
+    // Toward higher West counts.
+    return (lengthFirst == lengthByTopsFirst &&
+        lengthLast + 1 == lengthByTopsLast &&
+        westLength == lengthByTopsLast);
+  }
+  else
+  {
+    // Toward lower West counts.
+    return (lengthLast == lengthByTopsLast &&
+        lengthFirst == lengthByTopsFirst + 1 &&
+        westLength == lengthByTopsFirst);
   }
 }
 

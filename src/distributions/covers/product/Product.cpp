@@ -252,11 +252,14 @@ assert(tops.size() + canonicalShift == sumProfile.size());
         continue;
       }
 
-// TODO Actually I thought this would happen
-assert(top.upper() != 0xf);
-      const unsigned char sno = no + canonicalShift;
-      const unsigned char u = sumProfile[sno] - top.upper();
-      min += u;
+      const unsigned char tu = top.upper();
+      if (tu != 0xf)
+      {
+        // There is an actual upper bound.
+        const unsigned char sno = no + canonicalShift;
+        const unsigned char u = sumProfile[sno] - tu;
+        min += u;
+      }
       
       no++;
     }

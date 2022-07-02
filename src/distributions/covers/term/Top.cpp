@@ -112,6 +112,8 @@ string Top::strInside(
 
   stringstream ss;
 
+  // TODO This is messed up (the " of " partially repeats).
+
   if (vLower == 0)
   {
     if (vUpper == 1)
