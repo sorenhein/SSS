@@ -11,6 +11,20 @@ Current differences g = 0 to g = 4
 10    26346    15435
 11    95042    96051
 
+With symmetry detection
+
+ c     same     diff
+ 4        4        0
+ 5       27        0
+ 6      113        0
+ 7      487        0
+ 8     2035       51
+ 9     7898     1630
+10    29932    11849
+11   112804    78289
+
+
+
 
 7/591   Can't make "Either opponent has the singleton king"
 
