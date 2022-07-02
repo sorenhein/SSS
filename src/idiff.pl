@@ -6,11 +6,17 @@ use warnings;
 # Intelligent diff (hopefully) of two output files with respect
 # to different cover.
 
+my $DIFFNORMAL = "diffNormal.txt";
+my $DIFFOR = "diffOr.txt";
+
 my $file1 = shift;
 my $file2 = shift;
 
 open my $fh1, '<', $file1 or die $!;
 open my $fh2, '<', $file2 or die $!;
+
+open my $fo1, '>', $DIFFNORMAL or die $!;
+open my $fo2, '>', $DIFFOR or die $!;
 
 my ($lno1, $cards1, $holding1, $header1, $common1, @strats1);
 my ($lno2, $cards2, $holding2, $header2, $common2, @strats2);
@@ -20,11 +26,15 @@ $lno2 = 0;
 
 my @equalStats;
 my @diffStats;
+my @diffOrStats;
+my $diffCum = 0;
+my $diffOrCum = 0;
 
 for my $i (0 .. 11)
 {
   $equalStats[$i] = 0;
   $diffStats[$i] = 0;
+  $diffOrStats[$i] = 0;
 }
 
 # Advance to 4 cards.
@@ -56,36 +66,72 @@ while (1)
   last if ($header1 eq "" && $header2 eq "");
 
   my $diffFlag = 0;
+  my $diffNormalFlag = 0;
+  my $diffOrFlag = 0;
   my @diff;
+  my @diffNormal;
+  my @diffOr;
   for my $i (0 .. $#strats1)
   {
     $diff[$i] = stratDiff(\%{$strats1[$i]}, \%{$strats2[$i]});
 
     if ($diff[$i])
     {
-      $diffStats[$cards1]++;
+      if ($strats1[$i]{text} =~ /; or/)
+      {
+        $diffOrStats[$cards1]++;
+        $diffOrCum += $strats2[$i]{complexity} - $strats1[$i]{complexity};
+        $diffOrFlag = 1;
+        $diffOr[$i] = 1;
+      }
+      else
+      {
+        $diffStats[$cards1]++;
+        $diffCum += $strats2[$i]{complexity} - $strats1[$i]{complexity};
+        $diffNormalFlag = 1;
+        $diffNormal[$i] = 1;
+      }
       $diffFlag = 1;
     }
     else
     {
       $equalStats[$cards1]++;
+      $diffOr[$i] = 0;
+      $diffNormal[$i] = 0;
     }
   }
 
   next unless $diffFlag;
 
-  print $oldHeader;
-  print $common1;
+  if ($diffNormalFlag)
+  {
+    print $fo1 $oldHeader;
+    print $fo1 $common1;
+  }
+
+  if ($diffOrFlag)
+  {
+    print $fo2 $oldHeader;
+    print $fo2 $common1;
+  }
 
   for my $i (0 .. $#strats1)
   {
-    if ($diff[$i])
+    if ($diffNormal[$i])
     {
-      print "ORIGINAL\n";
-      print $strats1[$i]{text};
-      print "\nNEW\n";
-      print $strats2[$i]{text};
-      print "\n";
+      print $fo1 "ORIGINAL\n";
+      print $fo1 $strats1[$i]{text};
+      print $fo1 "\nNEW\n";
+      print $fo1 $strats2[$i]{text};
+      print $fo1 "\n";
+    }
+    elsif ($diffOr[$i])
+    {
+      print $fo2 "ORIGINAL\n";
+      print $fo2 $strats1[$i]{text};
+      print $fo2 "\nNEW\n";
+      print $fo2 $strats2[$i]{text};
+      print $fo2 "\n";
     }
   }
 }
@@ -93,13 +139,21 @@ while (1)
 close $fh1;
 close $fh2;
 
+close $fo1;
+close $fo2;
+
 print "\n";
+
+printf("%2s %8s %8s %8s\n", "c", "same", "diff", "diffOr");
 
 for my $i (4 .. $#equalStats)
 {
-  printf("%2d %8d %8d\n", $i, $equalStats[$i], $diffStats[$i]);
+  printf("%2d %8d %8d %8d\n", $i, $equalStats[$i], $diffStats[$i],
+    $diffOrStats[$i]);
 }
+print "\n";
 
+printf("%2s %8s %8d %8d\n", "", "", $diffCum, $diffOrCum);
 print "\n";
 
 

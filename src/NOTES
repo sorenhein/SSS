@@ -1,34 +1,29 @@
 Current differences g = 0 to g = 4
 ==================================
 
- c     same     diff
- 4        4        0
- 5       27        0
- 6      113        0
- 7      483        4
- 8     1953      133
- 9     7205     2323
-10    26346    15435
-11    95042    96051
+ c     same     diff   diffOr
+ 4        4        0        0
+ 5       27        0        0
+ 6      113        0        0
+ 7      487        0        0
+ 8     2035       11       40
+ 9     7898      344     1286
+10    29932     3128     8721
+11   112804    22580    55709
 
-With symmetry detection
+              113269   347724
 
- c     same     diff
- 4        4        0
- 5       27        0
- 6      113        0
- 7      487        0
- 8     2035       51
- 9     7898     1630
-10    29932    11849
-11   112804    78289
+So 3/4 of the problem is in the lack of OR ability, it seems.
 
+9/15113, #2
+Singleton ace does fit with "2-3, 1 of top, unused, 0 of third".
+Probably they also have different canonical shifts?
+FactoredProduct::sameTops
 
-
-
-7/591   Can't make "Either opponent has the singleton king"
-
-Basically look for symmetries that emerged in matches?
+Maybe combine the guessing with g = 4.  So if there is a single
+cover that needs no length and cuts across everything, perhaps
+initially with exactly one top, then go with that and then match
+the rest.
 
 
 8/5907  Can't turn "West doubleton", "West AKx(x)" into
