@@ -15,6 +15,7 @@
 #include "Cover.h"
 #include "CoverCategory.h"
 
+#include "../../utils/table.h"
 
 CoverRow::CoverRow()
 {
@@ -130,6 +131,24 @@ bool CoverRow::sameTops(const CoverRow& rows2) const
     return false;
 
   return coverPtrs.front()->sameTops(* rows2.coverPtrs.front());
+}
+
+
+unsigned char CoverRow::minimumByTops(
+  const Opponent voidSide,
+  const Profile& sumProfile) const
+{
+  // TODO Extend to general rows.
+  if (coverPtrs.size() != 1)
+  {
+    // Return something that won't be mistaken for being adjacent to
+    // a void.
+    return (voidSide == OPP_WEST ?
+      numeric_limits<unsigned char>::max() :
+      numeric_limits<unsigned char>::min());
+  }
+  else
+    return coverPtrs.front()->minimumByTops(voidSide, sumProfile);
 }
 
 

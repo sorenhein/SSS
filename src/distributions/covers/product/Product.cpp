@@ -218,6 +218,54 @@ bool Product::sameTops(const Product& product2) const
 }
 
 
+unsigned char Product::minimumByTops(
+  const Opponent voidSide,
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  // Determine the minimum number of cards that voidSide must have,
+  // based only on the tops and ignoring the actual length.  This is
+  // useful for determining whether a void is a valid extension of
+  // a cover.
+  
+assert(tops.size() + canonicalShift == sumProfile.size());
+
+  unsigned char min = 0;
+  if (voidSide == OPP_WEST)
+  {
+    for (auto& top: tops)
+    {
+      if (! top.used())
+        continue;
+
+      min += top.lower();
+    }
+  }
+  else
+  {
+    unsigned char no = 0;
+    for (auto& top: tops)
+    {
+      if (! top.used())
+      {
+        no++;
+        continue;
+      }
+
+// TODO Actually I thought this would happen
+assert(top.upper() != 0xf);
+      const unsigned char sno = no + canonicalShift;
+      const unsigned char u = sumProfile[sno] - top.upper();
+      min += u;
+      
+      no++;
+    }
+  }
+  
+  return min;
+}
+
+
 CoverComposition Product::composition() const
 {
   const bool lengthFlag = length.used();

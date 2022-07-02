@@ -21,6 +21,7 @@ class Profile;
 class RanksNames;
 class ProductStats;
 
+enum Opponent: unsigned;
 enum CoverSymmetry: unsigned;
 
 
@@ -90,6 +91,10 @@ class CoverRow
     const Tricks& getTricks() const;
 
     bool sameTops(const CoverRow& rows2) const;
+
+    unsigned char minimumByTops(
+      const Opponent voidSide,
+      const Profile& sumProfile) const;
 
     unsigned char effectiveDepth() const;
 

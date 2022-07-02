@@ -368,6 +368,7 @@ distributions/covers/Covers.obj: distributions/covers/CoverStack.h
 distributions/covers/Covers.obj: distributions/covers/StackEntry.h
 distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Covers.obj: distributions/covers/CoverCategory.h
+distributions/covers/Covers.obj: distributions/covers/RowMatches.h
 distributions/covers/Covers.obj: distributions/covers/RowMatch.h
 distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
@@ -401,9 +402,16 @@ distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
 distributions/covers/CoverRow.obj: distributions/covers/Cover.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverCategory.h
+distributions/covers/CoverRow.obj: utils/table.h
 distributions/covers/RowMatch.obj: distributions/covers/RowMatch.h
-distributions/covers/RowMatch.obj: distributions/covers/Tricks.h
 distributions/covers/RowMatch.obj: distributions/covers/CoverRow.h
+distributions/covers/RowMatch.obj: distributions/covers/Tricks.h
+distributions/covers/RowMatch.obj: utils/table.h
+distributions/covers/RowMatches.obj: distributions/covers/RowMatches.h
+distributions/covers/RowMatches.obj: distributions/covers/RowMatch.h
+distributions/covers/RowMatches.obj: distributions/covers/CoverRow.h
+distributions/covers/RowMatches.obj: distributions/covers/Tricks.h
+distributions/covers/RowMatches.obj: utils/table.h
 distributions/covers/CoverStack.obj: distributions/covers/CoverStack.h
 distributions/covers/CoverStack.obj: distributions/covers/StackEntry.h
 distributions/covers/CoverStack.obj: distributions/covers/tableau/CoverTableau.h
@@ -425,6 +433,7 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStore.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/Cover.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/RowStore.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverRow.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/RowMatches.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/RowMatch.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStack.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/StackEntry.h

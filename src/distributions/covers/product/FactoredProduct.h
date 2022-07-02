@@ -53,6 +53,10 @@ class FactoredProduct
 
     bool sameTops(const FactoredProduct& fp2) const;
 
+    unsigned char minimumByTops(
+      const Opponent voidSide,
+      const Profile& sumProfile) const;
+
     CoverComposition composition() const;
 
     bool explainable() const;

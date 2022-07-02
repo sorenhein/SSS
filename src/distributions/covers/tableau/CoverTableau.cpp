@@ -387,7 +387,7 @@ void CoverTableau::destroyIntoMatches(
   // This CoverTableau gets invalidated!
 
   for (auto& ownRow: rows)
-    rowMatches.transfer(ownRow, rowWestLength);
+    rowMatches.transfer(ownRow, rowWestLength, OPP_EAST);
 }
 
 

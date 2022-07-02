@@ -14,6 +14,8 @@
 #include "CoverRow.h"
 #include "Tricks.h"
 
+enum Opponent: unsigned;
+
 
 using namespace std;
 
@@ -40,9 +42,13 @@ class RowMatch
       CoverRow& rowIn,
       const size_t westLength);
 
-    void add(const Tricks& tricksIn);
+    void add(
+      const Tricks& tricksIn,
+      const Opponent towardVoid);
 
-    bool contiguous(const size_t westLength) const;
+    bool contiguous(
+      const size_t westLength,
+      const Opponent towardVoid) const;
 
     bool singleCount() const;
     

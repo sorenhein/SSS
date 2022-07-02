@@ -1,7 +1,22 @@
-8/4926: East void has 2! tricks
-So there are two voids to spread around
+Current differences g = 0 to g = 4
+==================================
+7/1683  Random
+7/1641  Random
 
-* No segfaults.
+
+Texts
+7/1683  "East has at most a doubleton" -> "West is not void"
+
+
+
+
+
+
+
+8/4812, #2
+Not sure about the output "West has x(x)"
+More like "1-2 cards with no h".
+
 * Look at run w.r.t. quality and time.
 * Cover row matches with > 1 (so 2) covers.
 * Allocate the voids.

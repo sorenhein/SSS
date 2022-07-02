@@ -52,10 +52,6 @@ class Term
     unsigned char data;
 
 
-    unsigned char lower() const;
-
-    unsigned char upper() const;
-
 
   public:
 
@@ -79,6 +75,10 @@ class Term
     bool operator == (const Term& term2) const;
 
     bool used() const;
+
+    unsigned char lower() const;
+
+    unsigned char upper() const;
 
     unsigned char complexity() const;
 

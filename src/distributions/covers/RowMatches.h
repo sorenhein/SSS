@@ -19,6 +19,7 @@ class Tricks;
 
 using namespace std;
 
+class Profile;
 enum Opponent: unsigned;
 
 
@@ -46,11 +47,13 @@ class RowMatches
     void transfer(
       CoverRow& rowIn,
       const size_t westLength,
+      const Opponent towardVoid,
       const unsigned repeats = 1);
 
     void setVoid(
       const Opponent side,
-      VoidInfo& voidInfo);
+      const VoidInfo& voidInfo,
+      const Profile& sumProfile);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };

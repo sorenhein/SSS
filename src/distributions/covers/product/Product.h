@@ -79,6 +79,11 @@ class Product
 
     bool sameTops(const Product& product2) const;
 
+    unsigned char minimumByTops(
+      const Opponent voidSide,
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
     CoverComposition composition() const;
 
     bool explainable() const;

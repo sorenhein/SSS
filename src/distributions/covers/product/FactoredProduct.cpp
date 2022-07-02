@@ -74,6 +74,14 @@ bool FactoredProduct::sameTops(const FactoredProduct& fp2) const
 }
 
 
+unsigned char FactoredProduct::minimumByTops(
+  const Opponent voidSide,
+  const Profile& sumProfile) const
+{
+  return canonicalPtr->minimumByTops(voidSide, sumProfile, canonicalShift);
+}
+
+
 CoverComposition FactoredProduct::composition() const
 {
   return canonicalPtr->composition();

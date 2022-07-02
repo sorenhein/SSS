@@ -762,7 +762,7 @@ void Covers::explain(
         rowTmp.resize(numDist);
         rowTmp.add(* coverPtr, tricksL);
 
-        rowMatches.transfer(rowTmp, lenEW, factor);
+        rowMatches.transfer(rowTmp, lenEW, OPP_EAST, factor);
       }
     }
 
@@ -803,8 +803,8 @@ void Covers::explain(
 
 
     // Add in the voids, completing row matches a bit cleverly.
-    rowMatches.setVoid(OPP_WEST, voidWest);
-    rowMatches.setVoid(OPP_EAST, voidEast);
+    rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
+    rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
 
 
     solution.init(tricks, tmin);

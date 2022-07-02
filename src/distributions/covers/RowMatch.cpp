@@ -12,6 +12,8 @@
 #include "RowMatch.h"
 #include "Tricks.h"
 
+#include "../../utils/table.h"
+
 
 using namespace std;
 
@@ -31,18 +33,35 @@ void RowMatch::transfer(
 }
 
 
-void RowMatch::add(const Tricks& tricksIn)
+void RowMatch::add(
+  const Tricks& tricksIn,
+  const Opponent towardVoid)
 {
   assert(count > 0);
   count++;
-  lengthLast++;
   tricks += tricksIn;
+
+  if (towardVoid == OPP_WEST)
+    lengthFirst--;
+  else
+    lengthLast++;
 }
 
 
-bool RowMatch::contiguous(const size_t westLength) const
+bool RowMatch::contiguous(
+  const size_t westLength,
+  const Opponent towardVoid) const
 {
-  return (lengthLast + 1 == westLength);
+  if (towardVoid == OPP_EAST)
+  {
+    // Toward higher West counts.
+    return (lengthLast + 1 == westLength);
+  }
+  else
+  {
+    // Toward lower West counts.
+    return (lengthFirst == westLength + 1);
+  }
 }
 
 

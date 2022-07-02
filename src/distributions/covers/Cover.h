@@ -22,6 +22,7 @@ class RanksNames;
 class ProductStats;
 class ProductMemory;
 
+enum Opponent: unsigned;
 enum CoverSymmetry: unsigned;
 enum CoverComposition: unsigned;
 
@@ -100,6 +101,10 @@ class Cover
     bool sameTricks(const Cover& covers2) const;
 
     bool sameTops(const Cover& covers2) const;
+
+    unsigned char minimumByTops(
+      const Opponent voidSide,
+      const Profile& sumProfile) const;
 
     bool symmetrized() const;
 

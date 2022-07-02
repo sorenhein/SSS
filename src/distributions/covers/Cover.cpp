@@ -190,6 +190,15 @@ bool Cover::sameTops(const Cover& cover2) const
 }
 
 
+unsigned char Cover::minimumByTops(
+  const Opponent voidSide,
+  const Profile& sumProfile) const
+{
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->minimumByTops(voidSide, sumProfile);
+}
+
+
 bool Cover::symmetrized() const
 {
   return symmetrizeFlag;
