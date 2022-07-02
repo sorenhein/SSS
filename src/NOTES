@@ -13,6 +13,10 @@ Current differences g = 0 to g = 4
 
 
 7/591   Can't make "Either opponent has the singleton king"
+
+Basically look for symmetries that emerged in matches?
+
+
 8/5907  Can't turn "West doubleton", "West AKx(x)" into
         "West doubleton, or West AK-any"
 

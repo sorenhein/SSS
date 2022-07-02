@@ -806,6 +806,8 @@ void Covers::explain(
     rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
     rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
 
+    // Combine obvious symmetries.
+    rowMatches.symmetrize(sumProfile.length());
 
     solution.init(tricks, tmin);
 

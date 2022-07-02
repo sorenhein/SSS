@@ -107,6 +107,8 @@ class Tricks
 
     bool symmetric() const;
 
+    bool symmetricWith(const Tricks& tricks2) const;
+
     CoverSymmetry symmetry() const;
 
     void partition(

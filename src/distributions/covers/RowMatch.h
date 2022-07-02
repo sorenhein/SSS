@@ -52,6 +52,8 @@ class RowMatch
       const Tricks& tricksIn,
       const Opponent towardVoid);
 
+    void symmetrize();
+
     bool contiguous(
       const size_t westLength,
       const Opponent towardVoid) const;
@@ -69,6 +71,10 @@ class RowMatch
     const CoverRow& getSingleRow() const;
 
     const Tricks& getTricks() const;
+
+    bool lengthSymmetrizable(const size_t westLength) const;
+
+    bool symmetricWith(const RowMatch& rowMatch2) const;
 
     string str() const;
 };

@@ -156,6 +156,41 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 }
 
 
+void RowMatches::symmetrize(const size_t westLength)
+{
+  if (matches.size() < 2)
+    return;
+
+  for (auto rit1 = matches.begin(); rit1 != matches.end(); rit1++)
+  {
+    if (! rit1->lengthSymmetrizable(westLength))
+      continue;
+
+    for (auto rit2 = next(rit1); rit2 != matches.end(); )
+    {
+      if (! rit2->lengthSymmetrizable(westLength))
+      {
+        rit2++;
+        continue;
+      }
+
+      if (rit1->symmetricWith(* rit2))
+      {
+// cout << "Symmetrized!\n";
+// cout << "Before\n";
+// cout << RowMatches::str();
+        rit1->symmetrize();
+        rit2 = matches.erase(rit2);
+// cout << "After\n";
+// cout << RowMatches::str();
+      }
+      else
+        rit2++;
+    }
+  }
+}
+
+
 string RowMatches::str() const
 {
   stringstream ss;

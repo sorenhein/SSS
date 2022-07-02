@@ -342,6 +342,41 @@ bool Tricks::symmetric() const
 }
 
 
+bool Tricks::symmetricWith(const Tricks& tricks2) const
+{
+  // TODO I don't actually see why this should be the case.
+  // But if it isn't, then maybe symmetric() is broken?
+  assert(signature.size() % 2 == 0);
+
+  const size_t offset = signature.size() / 2;
+
+  for (size_t i = 0; i < signature.size(); i++)
+  {
+    const size_t corr = (i < offset ? i+offset : i-offset);
+
+    if ((length & 1) && i+1 == offset)
+    {
+      const size_t limited1 = trickConvert.limit(lastForward, signature[i]);
+      if (limited1 != tricks2.signature[corr])
+        return false;
+    }
+    else if ((length & 1) && corr+1 == offset)
+    {
+      const size_t limited2 = trickConvert.limit(lastForward, 
+        tricks2.signature[corr]);
+      if (signature[i]!= limited2)
+        return false;
+    }
+    else
+    {
+      if (signature[i] != tricks2.signature[corr])
+        return false;
+    }
+  }
+  return true;
+}
+
+
 bool Tricks::antiSymmetric() const
 {
   const size_t offset = signature.size() / 2;

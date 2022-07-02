@@ -58,6 +58,13 @@ void RowMatch::add(
 }
 
 
+void RowMatch::symmetrize()
+{
+  tricks.symmetrize();
+  count += count;
+}
+
+
 bool RowMatch::contiguous(
   const size_t westLength,
   const Opponent towardVoid) const
@@ -130,6 +137,21 @@ const CoverRow& RowMatch::getSingleRow() const
 const Tricks& RowMatch::getTricks() const
 {
   return tricks;
+}
+
+
+bool RowMatch::lengthSymmetrizable(const size_t westLength) const
+{
+  const size_t cutoffLow = (westLength + 1) / 2;
+  const size_t cutoffHigh = westLength - cutoffLow;
+
+  return (lengthLast < cutoffLow || lengthFirst > cutoffHigh);
+}
+
+
+bool RowMatch::symmetricWith(const RowMatch& rowMatch) const
+{
+  return tricks.symmetricWith(rowMatch.tricks);
 }
 
 

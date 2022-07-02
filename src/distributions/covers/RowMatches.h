@@ -55,6 +55,8 @@ class RowMatches
       const VoidInfo& voidInfo,
       const Profile& sumProfile);
 
+    void symmetrize(const size_t westLength);
+
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };
     list<RowMatch>::const_iterator end() const
