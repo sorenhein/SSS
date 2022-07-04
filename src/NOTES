@@ -1,5 +1,26 @@
 Current differences g = 0 to g = 4
 ==================================
+9/17714
+match #0 has length 2-3 although the cover only has length 2.
+So it comes up symmetrizable.
+Similarly for 5-8-11 and 6-9-12
+Actually not that wrong, but symmetrize()'s must be consistent
+
+- Make Covers::heuristicMatches(tricks, rowMatches, explain)
+- Turn heuristic back on in g = 4
+
+- Change Term::symmetrizable and SymmTerm itself
+- Problem, RowMatch::symmetrizable
+  Will say 2 out of 4 is symmetrizable as far as it goes
+  But this is more like OPEN_CENTERED (need a real symmetrizable one
+  somewhere)
+  So row.symmetrizable maybe gets an argument to treat the length
+  as unset
+
+The heuristic perhaps needs some tuning:
+- If 1 .. len-1 is possible, go for it
+- If 2 .. len-2 is possible (and len > 5), go for it too
+- Only then look for top-only cover
 
  c     same     diff   diffOr
  4        4        0        0

@@ -19,6 +19,15 @@
 using namespace std;
 
 
+void RowMatches::emplace(
+  CoverRow& rowIn,
+  const size_t westLength)
+{
+  matches.emplace_back(RowMatch());
+  matches.back().transfer(rowIn, 0, westLength);
+}
+
+
 void RowMatches::transfer(
   CoverRow& rowIn,
   const size_t westLength,
@@ -45,6 +54,7 @@ void RowMatches::transfer(
   }
 
   // No extension of an existing row, so add a new row.
+  // RowMatches::emplace(rowIn, westLength);
   matches.emplace_back(RowMatch());
   matches.back().transfer(rowIn, westLength);
 
@@ -156,24 +166,28 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 }
 
 
-void RowMatches::symmetrize(const size_t westLength)
+void RowMatches::symmetrize(const Profile& sumProfile)
 {
   if (matches.size() < 2)
     return;
 
   for (auto rit1 = matches.begin(); rit1 != matches.end(); rit1++)
   {
-    if (! rit1->lengthSymmetrizable(westLength))
+    if (! rit1->symmetrizable(sumProfile))
       continue;
+// cout << "rit1 is symmetrizable\n";
+// cout << rit1->str() << endl;
 
     for (auto rit2 = next(rit1); rit2 != matches.end(); )
     {
-      if (! rit2->lengthSymmetrizable(westLength))
+      if (! rit2->symmetrizable(sumProfile))
       {
         rit2++;
         continue;
       }
 
+// cout << "rit2 is symmetrizable\n";
+// cout << rit2->str() << endl;
       if (rit1->symmetricWith(* rit2))
       {
 // cout << "Symmetrized!\n";

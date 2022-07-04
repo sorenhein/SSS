@@ -128,7 +128,7 @@ bool Product::symmetrizable(
 {
   assert(tops.size() + canonicalShift == sumProfile.size());
 
-  unsigned consecutive = 0;
+  // unsigned consecutive = 0;
   if (length.used())
   {
     SymmTerm symmLength = length.symmetrizable(sumProfile.length());
@@ -136,8 +136,8 @@ bool Product::symmetrizable(
       return true;
     else if (symmLength == TERM_NOT_SYMMETRIZABLE)
       return false;
-    else if (symmLength == TERM_OPEN_CONSECUTIVE)
-      consecutive++;
+    // else if (symmLength == TERM_OPEN_CONSECUTIVE)
+      // consecutive++;
   }
 
   // So now symmLength can be:
@@ -157,12 +157,14 @@ bool Product::symmetrizable(
         return true;
       else if (sterm == TERM_NOT_SYMMETRIZABLE)
         return false;
-      else if (sterm == TERM_OPEN_CONSECUTIVE)
-        consecutive++;
+      // else if (sterm == TERM_OPEN_CONSECUTIVE)
+        // consecutive++;
     }
   }
 
-  return (consecutive > 1);
+  // return (consecutive > 1);
+  // TODO TMP for now: All were open, so not symmetrizable.
+  return false;
 }
 
 

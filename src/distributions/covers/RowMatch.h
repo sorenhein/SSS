@@ -46,6 +46,11 @@ class RowMatch
 
     void transfer(
       CoverRow& rowIn,
+      const size_t westLengthLower,
+      const size_t westLengthUpper);
+
+    void transfer(
+      CoverRow& rowIn,
       const size_t westLength);
 
     void add(
@@ -72,7 +77,7 @@ class RowMatch
 
     const Tricks& getTricks() const;
 
-    bool lengthSymmetrizable(const size_t westLength) const;
+    bool symmetrizable(const Profile& sumProfile) const;
 
     bool symmetricWith(const RowMatch& rowMatch2) const;
 

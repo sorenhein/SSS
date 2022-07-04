@@ -44,6 +44,10 @@ class RowMatches
 
   public:
     
+    void emplace(
+      CoverRow& rowIn,
+      const size_t westLength);
+
     void transfer(
       CoverRow& rowIn,
       const size_t westLength,
@@ -55,7 +59,7 @@ class RowMatches
       const VoidInfo& voidInfo,
       const Profile& sumProfile);
 
-    void symmetrize(const size_t westLength);
+    void symmetrize(const Profile&sumProfile);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };

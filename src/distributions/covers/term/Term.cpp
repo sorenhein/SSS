@@ -110,14 +110,16 @@ SymmTerm Term::symmetrizable(const unsigned char maximum) const
   {
     // When the maximum is odd, e.g. 5, there is no midpoint.
     const unsigned char critical = maximum/2;
-    if (upperInt < critical)
+    if (upperInt <= critical)
       return TERM_SYMMETRIZABLE;
-    else if (lowerInt > critical+1)
+    else if (lowerInt >= critical+1)
       return TERM_SYMMETRIZABLE;
-    else if (upperInt == critical)
-      return TERM_OPEN_CONSECUTIVE;
-    else if (lowerInt == critical+1)
-      return TERM_OPEN_CONSECUTIVE;
+    // else if (upperInt == critical)
+      // return TERM_SYMMETRIZABLE;
+      // return TERM_OPEN_CONSECUTIVE;
+    // else if (lowerInt == critical+1)
+      // return TERM_SYMMETRIZABLE;
+      // return TERM_OPEN_CONSECUTIVE;
     else
       return TERM_NOT_SYMMETRIZABLE;
   }

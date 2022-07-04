@@ -180,6 +180,16 @@ CoverSymmetry CoverRow::symmetry() const
 }
 
 
+bool CoverRow::symmetrizable(const Profile& sumProfile) const
+{
+  // TODO For now, only 1-cover rows.
+  if (coverPtrs.size() != 1)
+    return false;
+  else
+    return coverPtrs.front()->symmetrizable(sumProfile);
+}
+
+
 bool CoverRow::operator < (const CoverRow& rows2) const
 {
   const unsigned mcpw1 = (complexity << 20) / weight;

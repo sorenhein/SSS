@@ -30,6 +30,24 @@ void RowMatch::setLengthsByTops(const Profile& sumProfile)
 
 void RowMatch::transfer(
   CoverRow& rowIn,
+  const size_t westLengthLower,
+  const size_t westLengthUpper)
+{
+  // rowIn gets invalidated!
+  // This version only really gets used with 0-westLength, so
+  // no length at all.
+  row = move(rowIn);
+
+  count = 1;
+  lengthFirst = westLengthLower;
+  lengthLast = westLengthUpper;
+
+  tricks = row.getTricks();
+}
+
+
+void RowMatch::transfer(
+  CoverRow& rowIn,
   const size_t westLength)
 {
   // rowIn gets invalidated!
@@ -140,12 +158,42 @@ const Tricks& RowMatch::getTricks() const
 }
 
 
-bool RowMatch::lengthSymmetrizable(const size_t westLength) const
+bool RowMatch::symmetrizable(const Profile& sumProfile) const
 {
+  // TODO It's rather ugly to reproduce this.  Could we somehow reuse
+  // the code?
+  if (count > 1)
+  {
+    // We can't rely on the length term of the cover, as the length
+    // range has effectively been extended.  So we have to reproduce
+    // the logic in Term::symmetrizable.
+    if (sumProfile.length() & 1)
+    {
+      // Odd number of cards, so no midpoint.
+      const unsigned char critical = sumProfile.length() / 2;
+      if (lengthFirst <= critical && lengthLast > critical)
+        return false;
+    }
+    else
+    {
+      const unsigned char midpoint = sumProfile.length() / 2;
+      if (lengthFirst < midpoint && lengthLast > midpoint)
+        return false;
+      else if (lengthFirst == midpoint && lengthLast > midpoint)
+        return false;
+      else if (lengthFirst < midpoint && lengthLast == midpoint)
+        return false;
+    }
+  }
+
+  return row.symmetrizable(sumProfile);
+
+  /*
   const size_t cutoffLow = (westLength + 1) / 2;
   const size_t cutoffHigh = westLength - cutoffLow;
 
   return (lengthLast < cutoffLow || lengthFirst > cutoffHigh);
+  */
 }
 
 

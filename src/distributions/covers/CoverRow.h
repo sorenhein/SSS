@@ -86,6 +86,8 @@ class CoverRow
 
     CoverSymmetry symmetry() const;
 
+    bool symmetrizable(const Profile& sumProfile) const;
+
     bool operator < (const CoverRow& rows2) const;
 
     const Tricks& getTricks() const;

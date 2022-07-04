@@ -696,6 +696,38 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
+    RowMatches rowMatches;
+
+    // TODO Kludge, but it gets modified if there is a heuristic match.
+    Tricks tricksOrig = tricks;
+
+    /*
+    explain.setComposition(EXPLAIN_TOPS_ONLY);
+    HeavyData heaviestTops(tricks.size());
+    Covers::findHeaviest(tricks, explain, heaviestTops);
+
+    if (heaviestTops.coverPtr != nullptr)
+    {
+cout << "Cover\n";
+cout << heaviestTops.coverPtr->strNumerical() << endl;
+cout << "Tricks\n";
+cout << tricks.strSpaced() << endl;
+cout << "Additions\n";
+cout << heaviestTops.additions.strSpaced() << endl;
+      CoverRow rowTmp;
+      rowTmp.resize(tricks.size());
+      rowTmp.add(* heaviestTops.coverPtr, tricks);
+
+      rowMatches.emplace(rowTmp, sumProfile.length());
+      // tricks -= heaviestTops.additions;
+cout << "Residuals\n";
+cout << tricks.strSpaced() << endl;
+cout << "Matches now\n";
+cout << rowMatches.str() << endl;
+    }
+    */
+
+
     vector<Tricks> tricksOfLength;
     vector<Tricks> tricksWithinLength;
 
@@ -706,7 +738,6 @@ void Covers::explain(
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
-    RowMatches rowMatches;
 
     // Treat the voids separately.
     VoidInfo voidWest, voidEast;
@@ -722,7 +753,7 @@ void Covers::explain(
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       Tricks& tricksL = tricksOfLength[lenEW];
-      // if (tricksOfLength[lenEW].getWeight() == 0)
+// cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
       if (tricksL.getWeight() == 0)
         continue;
 
@@ -773,6 +804,7 @@ void Covers::explain(
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       const Tricks& tricksL = tricksWithinLength[lenEW];
+// cout << "Within " << lenEW << ": " << tricksL.getWeight() << endl;
       if (tricksL.getWeight() == 0)
         continue;
 
@@ -805,11 +837,15 @@ void Covers::explain(
     // Add in the voids, completing row matches a bit cleverly.
     rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
     rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
+// cout << "Matches now2\n";
+// cout << rowMatches.str() << endl;
 
     // Combine obvious symmetries.
-    rowMatches.symmetrize(sumProfile.length());
+    rowMatches.symmetrize(sumProfile);
+// cout << "Matches now3\n";
+// cout << rowMatches.str() << endl;
 
-    solution.init(tricks, tmin);
+    solution.init(tricksOrig, tmin);
 
     // Score those row matches anew that involves more than one row.
     explain.setSymmetry(EXPLAIN_GENERAL);
@@ -837,6 +873,9 @@ void Covers::explain(
   }
   else
     assert(false);
+
+// cout << "Solution now\n",
+// cout << solution.strBracket() << endl;
 
   // This tends to get destroyed when solving with partial solutions,
   // so we just reset it.
