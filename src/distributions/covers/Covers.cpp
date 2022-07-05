@@ -696,10 +696,18 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
+    // Guess followed by exhaustive run.
+    Covers::guessStart(tricks, solution, explain);
+    if (solution.complete())
+    {
+      solution.initStrData(numStrategyTops, tricksSymmetry);
+      return;
+    }
+
     RowMatches rowMatches;
 
     // TODO Kludge, but it gets modified if there is a heuristic match.
-    Tricks tricksOrig = tricks;
+    // Tricks tricksOrig = tricks;
 
     /*
     explain.setComposition(EXPLAIN_TOPS_ONLY);
@@ -728,12 +736,13 @@ cout << rowMatches.str() << endl;
     */
 
 
-    vector<Tricks> tricksOfLength;
     vector<Tricks> tricksWithinLength;
+    vector<Tricks> tricksOfLength;
 
     // TODO May want to split even the symmetrics.  Then the
     // partitioning should also somehow be symmetric.
-    tricks.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
+    // tricks.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
+    solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
 
 
     // Add the length-only covers arising from a minimum trick number
@@ -845,7 +854,7 @@ cout << rowMatches.str() << endl;
 // cout << "Matches now3\n";
 // cout << rowMatches.str() << endl;
 
-    solution.init(tricksOrig, tmin);
+    // solution.init(tricksOrig, tmin);
 
     // Score those row matches anew that involves more than one row.
     explain.setSymmetry(EXPLAIN_GENERAL);

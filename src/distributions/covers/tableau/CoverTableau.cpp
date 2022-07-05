@@ -374,6 +374,15 @@ void CoverTableau::partitionResiduals(
 }
 
 
+void CoverTableau::sliceResiduals(
+  vector<Tricks>& tricksWithinLength,
+  vector<Tricks>& tricksOfLength,
+  const vector<unsigned char>& cases) const
+{
+  residuals.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
+}
+
+
 void CoverTableau::destroyIntoMatches(
   RowMatches& rowMatches,
   const size_t rowWestLength)

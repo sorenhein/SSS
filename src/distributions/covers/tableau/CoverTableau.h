@@ -138,6 +138,11 @@ class CoverTableau
       Tricks& tricksAntisymmetric,
       const vector<unsigned char>& cases) const;
 
+    void sliceResiduals(
+      vector<Tricks>& tricksWithinLength,
+      vector<Tricks>& tricksOfLength,
+      const vector<unsigned char>& cases) const;
+
     void destroyIntoMatches(
       RowMatches& rowMatches,
       const size_t rowWestLength);
