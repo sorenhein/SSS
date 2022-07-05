@@ -592,7 +592,11 @@ void Covers::explain(
   explain.setParameters(numStrategyTops, tmin);
   explain.setSymmetry(tricksSymmetry);
 
-  if (tricksSymmetry == EXPLAIN_SYMMETRIC)
+  // TODO This is a misuse of the goal input parameter, but
+  // it's not forever.
+  const unsigned mode = control.goal();
+
+  if (tricksSymmetry == EXPLAIN_SYMMETRIC && mode != 4)
   {
     // No need for anything fancy if tricks itself is constrained.
     Covers::explainByCategory(tricks, explain, false,
@@ -610,10 +614,6 @@ void Covers::explain(
     tableauCache.store(tricks, solution);
     return;
   }
-
-  // TODO This is a misuse of the goal input parameter, but
-  // it's not forever.
-  const unsigned mode = control.goal();
 
   if (mode == 0)
   {
@@ -704,44 +704,11 @@ void Covers::explain(
       return;
     }
 
-    RowMatches rowMatches;
-
-    // TODO Kludge, but it gets modified if there is a heuristic match.
-    // Tricks tricksOrig = tricks;
-
-    /*
-    explain.setComposition(EXPLAIN_TOPS_ONLY);
-    HeavyData heaviestTops(tricks.size());
-    Covers::findHeaviest(tricks, explain, heaviestTops);
-
-    if (heaviestTops.coverPtr != nullptr)
-    {
-cout << "Cover\n";
-cout << heaviestTops.coverPtr->strNumerical() << endl;
-cout << "Tricks\n";
-cout << tricks.strSpaced() << endl;
-cout << "Additions\n";
-cout << heaviestTops.additions.strSpaced() << endl;
-      CoverRow rowTmp;
-      rowTmp.resize(tricks.size());
-      rowTmp.add(* heaviestTops.coverPtr, tricks);
-
-      rowMatches.emplace(rowTmp, sumProfile.length());
-      // tricks -= heaviestTops.additions;
-cout << "Residuals\n";
-cout << tricks.strSpaced() << endl;
-cout << "Matches now\n";
-cout << rowMatches.str() << endl;
-    }
-    */
-
-
     vector<Tricks> tricksWithinLength;
     vector<Tricks> tricksOfLength;
 
     // TODO May want to split even the symmetrics.  Then the
     // partitioning should also somehow be symmetric.
-    // tricks.partitionGeneral(tricksWithinLength, tricksOfLength, cases);
     solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
 
 
@@ -758,6 +725,8 @@ cout << rowMatches.str() << endl;
 
     const size_t tlen = tricksOfLength.size();
     const size_t numDist = tricksOfLength[0].size();
+
+    RowMatches rowMatches;
 
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
