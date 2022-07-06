@@ -1,14 +1,5 @@
 Current differences g = 0 to g = 4
 ==================================
-9/17714
-match #0 has length 2-3 although the cover only has length 2.
-So it comes up symmetrizable.
-Similarly for 5-8-11 and 6-9-12
-Actually not that wrong, but symmetrize()'s must be consistent
-
-- Make Covers::heuristicMatches(tricks, rowMatches, explain)
-- Turn heuristic back on in g = 4
-
 - Change Term::symmetrizable and SymmTerm itself
 - Problem, RowMatch::symmetrizable
   Will say 2 out of 4 is symmetrizable as far as it goes
@@ -22,17 +13,55 @@ The heuristic perhaps needs some tuning:
 - If 2 .. len-2 is possible (and len > 5), go for it too
 - Only then look for top-only cover
 
+Comparing g = 2 to g = 4 (so both are heuristic; then optimal vs fast).
+Most of the remaining loss occurs when no OR can be generated,
+although I guess the OR could come from the heuristic.
+Actually the old g = 2 was missing a few symmetric covers,
+so g = 4 actually beats g = 2 sometimes.
+
+ c     same     diff   diffOr
+ 4        4        0        0
+ 5       27        0        0
+ 6       97       16        0
+ 7      381      106        0
+ 8     1753      322       11
+ 9     8399      768      473
+10    33947     3629     5565
+11   139667    18123    52711
+
+               10955   137334
+
+Comparing g = 0 to g = 4 (so fastest vs best)
+
+ c     same     diff   diffOr
+ 4        4        0        0
+ 5       27        0        0
+ 6       97       16        0
+ 7      353      134        0
+ 8     1515      536       35
+ 9     6772     1917      951
+10    25206     9045     8890
+11    94697    49829    65975
+
+              148367   305526
+
+Comparing g = 0 to g = 2 (so heuristic vs best/no heuristic).
+Two thirds of the quality loss happens from 0 to 2,
+one third from 2 to 4.
+
  c     same     diff   diffOr
  4        4        0        0
  5       27        0        0
  6      113        0        0
- 7      487        0        0
- 8     2035       11       40
- 9     7898      344     1286
-10    29932     3128     8721
-11   112804    22580    55709
+ 7      459       28        0
+ 8     1848      214       24
+ 9     7767     1159      714
+10    29724     6005     7412
+11   121654    35519    53328
 
-              113269   347724
+              118589   187015
+
+
 
 So 3/4 of the problem is in the lack of OR ability, it seems.
 

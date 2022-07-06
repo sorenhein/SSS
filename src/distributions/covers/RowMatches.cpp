@@ -63,6 +63,8 @@ void RowMatches::transfer(
 }
 
 
+#define ROW_DEBUG
+
 void RowMatches::setVoid(
   const Opponent side,
   const VoidInfo& voidInfo,
@@ -86,8 +88,10 @@ void RowMatches::setVoid(
   list<RowMatch *> potentialsGreat;
   list<RowMatch *> potentialsGood;
 
-// cout << "The matches for " << sideName << " are:\n";
-// cout << RowMatches::str() << "\n";
+#ifdef ROW_DEBUG
+cout << "The matches for " << sideName << " are:\n";
+cout << RowMatches::str() << "\n";
+#endif
 
   for (auto& match: matches)
   {
@@ -105,7 +109,9 @@ void RowMatches::setVoid(
   const unsigned psizeGreat = static_cast<unsigned>(potentialsGreat.size());
   const unsigned psizeGood = static_cast<unsigned>(potentialsGood.size());
 
+#ifdef ROW_DEBUG
 cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
+#endif
 
   if (psizeGreat > voidInfo.repeats)
     cout << sideName << "WARN Picking random great potentials\n";

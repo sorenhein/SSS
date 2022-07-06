@@ -377,6 +377,13 @@ distributions/covers/Covers.obj: strategies/result/Result.h
 distributions/covers/Covers.obj: strategies/result/Winners.h utils/Timer.h
 distributions/covers/Covers.obj: inputs/Control.h inputs/Entity.h
 distributions/covers/Covers.obj: ranks/RanksNames.h ranks/RankNames.h
+distributions/covers/Heuristic.obj: distributions/covers/Heuristic.h
+distributions/covers/Heuristic.obj: distributions/covers/Tricks.h
+distributions/covers/Heuristic.obj: distributions/covers/CoverStore.h
+distributions/covers/Heuristic.obj: distributions/covers/Cover.h
+distributions/covers/Heuristic.obj: distributions/covers/CoverRow.h
+distributions/covers/Heuristic.obj: distributions/covers/Explain.h
+distributions/covers/Heuristic.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Complexity.obj: distributions/covers/Complexity.h
 distributions/covers/Explain.obj: distributions/covers/Explain.h
 distributions/covers/Explain.obj: distributions/covers/CoverCategory.h
@@ -406,6 +413,7 @@ distributions/covers/CoverRow.obj: utils/table.h
 distributions/covers/RowMatch.obj: distributions/covers/RowMatch.h
 distributions/covers/RowMatch.obj: distributions/covers/CoverRow.h
 distributions/covers/RowMatch.obj: distributions/covers/Tricks.h
+distributions/covers/RowMatch.obj: distributions/covers/product/Profile.h
 distributions/covers/RowMatch.obj: utils/table.h
 distributions/covers/RowMatches.obj: distributions/covers/RowMatches.h
 distributions/covers/RowMatches.obj: distributions/covers/RowMatch.h

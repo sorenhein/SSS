@@ -39,6 +39,7 @@ class CoverTableau
   friend StackEntry<Cover>;
   friend StackEntry<CoverRow>;
   friend class Covers;
+  friend class Heuristic;
 
   private:
 

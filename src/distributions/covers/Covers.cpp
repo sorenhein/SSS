@@ -494,6 +494,8 @@ void Covers::explainByCategory(
 }
 
 
+#define DEBUG_GUESS
+
 void Covers::guessStart(
   const Tricks& tricks,
   CoverTableau& partialSolution,
@@ -509,47 +511,83 @@ void Covers::guessStart(
 
   if (heaviestLength.coverPtr == nullptr && 
       heaviestTops.coverPtr == nullptr)
+  {
+#ifdef DEBUG_GUESS
+cout << "guess: Neither is set\n";
+#endif
     return;
- 
-  if (heaviestTops.additions == heaviestLength.additions || 
+  }
+  else if (heaviestLength.coverPtr == nullptr)
+  {
+    // Go with tops
+#ifdef DEBUG_GUESS
+cout << "guess: tops is set\n";
+#endif
+    partialSolution.addRow(* heaviestTops.coverPtr);
+    return;
+  }
+  else if (heaviestTops.coverPtr == nullptr)
+  {
+    // Go with length
+#ifdef DEBUG_GUESS
+cout << "guess: length is set\n";
+#endif
+    partialSolution.addRow(* heaviestLength.coverPtr);
+    return;
+  }
+
+  // TODO More efficiently? Just destroy heaviestLength?
+  // Or can we call Tricks::possible after first addRow somehow?
+  Tricks additionsSum = heaviestLength.additions;
+  additionsSum += heaviestTops.additions;
+
+  if (additionsSum <= tricks)
+  {
+#ifdef DEBUG_GUESS
+cout << "guess: both are additive\n";
+#endif
+    // Go with two separate rows
+    partialSolution.addRow(* heaviestLength.coverPtr);
+    partialSolution.addRow(* heaviestTops.coverPtr);
+  }
+  else if (heaviestTops.additions == heaviestLength.additions || 
       heaviestTops.additions <= heaviestLength.additions)
   {
+#ifdef DEBUG_GUESS
+cout << "guess: tops are dominated\n";
+cout << heaviestLength.coverPtr->strNumerical();
+cout << heaviestTops.coverPtr->strNumerical();
+#endif
     // Go with length
     partialSolution.addRow(* heaviestLength.coverPtr);
   }
   else if (heaviestLength.additions <= heaviestTops.additions)
   {
+#ifdef DEBUG_GUESS
+cout << "guess: length is dominated\n";
+#endif
     // Go with tops
     partialSolution.addRow(* heaviestTops.coverPtr);
   }
   else
   {
-    // TODO More efficiently? Just destroy heaviestLength?
-    // Or can we call Tricks::possible after first addRow somehow?
-    Tricks additionsSum = heaviestLength.additions;
-    additionsSum += heaviestTops.additions;
+#ifdef DEBUG_GUESS
+cout << "guess: both are OR'ed\n";
+#endif
+    // Go with one row and an "OR"
+    partialSolution.addRow(* heaviestLength.coverPtr);
 
-    if (additionsSum <= tricks)
-    {
-      // Go with two separate rows
-      partialSolution.addRow(* heaviestLength.coverPtr);
-      partialSolution.addRow(* heaviestTops.coverPtr);
-    }
-    else
-    {
-      // Go with one row and an "OR"
-      partialSolution.addRow(* heaviestLength.coverPtr);
+    heaviestTops.additions.uniqueOver(heaviestLength.additions, cases);
 
-      heaviestTops.additions.uniqueOver(heaviestLength.additions, cases);
-
-      partialSolution.extendRow(
-        * heaviestTops.coverPtr, 
-        heaviestTops.additions, 
-        heaviestTops.rawWeightAdder, 
-        0);
-    }
+    partialSolution.extendRow(
+      * heaviestTops.coverPtr, 
+      heaviestTops.additions, 
+      heaviestTops.rawWeightAdder, 
+      0);
   }
 }
+
+#define DEBUG_MODE4
 
 void Covers::explain(
   const list<Result>& results,
@@ -596,6 +634,9 @@ void Covers::explain(
   // it's not forever.
   const unsigned mode = control.goal();
 
+  // TODO Put the symmetrics with the others for g = 4 for now.
+  // They would otherwise dominate the runtime, bu it' not quite
+  // as good.
   if (tricksSymmetry == EXPLAIN_SYMMETRIC && mode != 4)
   {
     // No need for anything fancy if tricks itself is constrained.
@@ -731,7 +772,9 @@ void Covers::explain(
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       Tricks& tricksL = tricksOfLength[lenEW];
-// cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
+#ifdef DEBUG_MODE4
+cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
+#endif
       if (tricksL.getWeight() == 0)
         continue;
 
@@ -782,7 +825,9 @@ void Covers::explain(
     for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
     {
       const Tricks& tricksL = tricksWithinLength[lenEW];
+#ifdef DEBUG_MODE4
 // cout << "Within " << lenEW << ": " << tricksL.getWeight() << endl;
+#endif
       if (tricksL.getWeight() == 0)
         continue;
 
@@ -815,13 +860,17 @@ void Covers::explain(
     // Add in the voids, completing row matches a bit cleverly.
     rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
     rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
-// cout << "Matches now2\n";
-// cout << rowMatches.str() << endl;
+#ifdef DEBUG_MODE4
+cout << "Matches now2\n";
+cout << rowMatches.str() << endl;
+#endif
 
     // Combine obvious symmetries.
     rowMatches.symmetrize(sumProfile);
-// cout << "Matches now3\n";
-// cout << rowMatches.str() << endl;
+#ifdef DEBUG_MODE4
+cout << "Matches now3\n";
+cout << rowMatches.str() << endl;
+#endif
 
     // solution.init(tricksOrig, tmin);
 
