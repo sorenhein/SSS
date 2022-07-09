@@ -1,3 +1,15 @@
+Differences g = 4 simple length-1 heuristic to 3*3
+==================================================
+6/546 #1:
+"Either opponent has a singleton": 2
+"Neither opponent is void"       : 3
+
+8/5051 #0:
+West has the ace + West has a doubleton: 2/8 + 2/6 = 4/14
+Q without A, or West has a doubleton: 4/8 + 2/6 = 6/14
+So both have weight 14, but one has lower complexity.
+
+
 Current differences g = 0 to g = 4
 ==================================
 - Change Term::symmetrizable and SymmTerm itself

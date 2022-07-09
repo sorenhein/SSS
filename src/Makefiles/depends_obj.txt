@@ -370,6 +370,8 @@ distributions/covers/Covers.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/Covers.obj: distributions/covers/CoverCategory.h
 distributions/covers/Covers.obj: distributions/covers/RowMatches.h
 distributions/covers/Covers.obj: distributions/covers/RowMatch.h
+distributions/covers/Covers.obj: distributions/covers/Heuristic.h
+distributions/covers/Covers.obj: distributions/covers/Complexity.h
 distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
@@ -379,8 +381,9 @@ distributions/covers/Covers.obj: inputs/Control.h inputs/Entity.h
 distributions/covers/Covers.obj: ranks/RanksNames.h ranks/RankNames.h
 distributions/covers/Heuristic.obj: distributions/covers/Heuristic.h
 distributions/covers/Heuristic.obj: distributions/covers/Tricks.h
-distributions/covers/Heuristic.obj: distributions/covers/CoverStore.h
 distributions/covers/Heuristic.obj: distributions/covers/Cover.h
+distributions/covers/Heuristic.obj: distributions/covers/Complexity.h
+distributions/covers/Heuristic.obj: distributions/covers/CoverStore.h
 distributions/covers/Heuristic.obj: distributions/covers/CoverRow.h
 distributions/covers/Heuristic.obj: distributions/covers/Explain.h
 distributions/covers/Heuristic.obj: distributions/covers/tableau/CoverTableau.h

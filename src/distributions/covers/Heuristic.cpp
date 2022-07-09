@@ -154,15 +154,20 @@ void Heuristic::setPartialSolution(
     }
     else
     {
+// cout << "partial, OR\n";
+// cout << "pbest1\n" << partialBest.ptr1->additions.strSpaced();
+// cout << "pbest2\n" << partialBest.ptr2->additions.strSpaced();
       // One row with an OR.
       partialSolution.addRow(* partialBest.ptr1->coverPtr);
 
-      Tricks additionsScratch = partialBest.ptr1->additions;
+      Tricks additionsScratch = partialBest.ptr2->additions;
       additionsScratch.uniqueOver(partialBest.ptr1->additions, cases);
+// cout << "u over " << additionsScratch.strSpaced();
 
       partialSolution.extendRow(
         * partialBest.ptr2->coverPtr,
-        partialBest.ptr2->additions,
+        // partialBest.ptr2->additions,
+        additionsScratch,
         partialBest.ptr2->rawWeightAdder,
         0);
     }
@@ -194,7 +199,13 @@ bool Heuristic::combine(
     return combinedFlag;
 
   PartialBest partialBest;
+
   unsigned bestWeightAdder = 0;
+  Complexity bestComplexity;
+  bestComplexity.reset();
+  bestComplexity.addRow(0xff, 0xffff);
+  Complexity runningComplexity;
+
   Tricks additionsScratch;
 
   for (auto& pc1: partials)
@@ -207,44 +218,89 @@ bool Heuristic::combine(
 
       if (additionsScratch <= tricks)
       {
+        runningComplexity.reset();
+        pc1.addRowToComplexity(runningComplexity);
+        pc2.addRowToComplexity(runningComplexity);
+
+  cout << "Independent " << additionsScratch.getWeight() << "\n";
+  cout << pc1.coverPtr->strNumerical() << endl;
+  cout << pc2.coverPtr->strNumerical() << endl;
+  cout << additionsScratch.strSpaced() << endl;
         // Go with independent rows.
-        if (additionsScratch.getWeight() > bestWeightAdder)
+        if (runningComplexity < bestComplexity)
+        // if (additionsScratch.getWeight() > bestWeightAdder)
         {
+ cout << "Two rows, complexity now " << runningComplexity.strFull() << endl << endl;
           partialBest.set(&pc1, &pc2, true, true, true);
+          bestWeightAdder = additionsScratch.getWeight();
+          bestComplexity = runningComplexity;
         }
       }
-      else if (pc1.additions == pc2.additions ||
-          pc1.additions <= pc2.additions)
+      else if (pc1.additions <= pc2.additions)
       {
+  cout << "pc2 dominates " << additionsScratch.getWeight() << "\n";
+  cout << pc1.coverPtr->strNumerical() << endl;
+  cout << pc2.coverPtr->strNumerical() << endl;
+  cout << pc1.additions.strSpaced() << endl;
+  cout << pc2.additions.strSpaced() << endl << endl;
         // pc1 is dominated by pc2.
         if (pc2.rawWeightAdder > bestWeightAdder)
         {
+ cout << "  better\n";
           partialBest.set(nullptr, &pc2, false, true, false);
+          bestWeightAdder = additionsScratch.getWeight();
         }
       }
       else if (pc2.additions <= pc1.additions)
       {
+ cout << "pc1 dominates " << additionsScratch.getWeight() << "\n";
         // pc2 is dominated by pc1.
         if (pc1.rawWeightAdder > bestWeightAdder)
         {
+ cout << "  better\n";
           partialBest.set(&pc1, nullptr, true, false, false);
+          bestWeightAdder = additionsScratch.getWeight();
         }
       }
       else
       {
+ cout << "OR " << additionsScratch.getWeight() << "\n";
         // OR them together.
         additionsScratch = pc1.additions;
+// cout << "First  " << additionsScratch.strSpaced() << "\n";
         additionsScratch.orNormal(pc2.additions, cases);
+// cout << "Second " << additionsScratch.strSpaced() << "\n";
 
-        if (additionsScratch.getWeight() > bestWeightAdder)
+        runningComplexity.reset();
+        pc1.addCoverToComplexity(runningComplexity);
+        pc2.addCoverToComplexity(runningComplexity);
+ // cout << "One row, complexity now " << runningComplexity.strFull() << endl;
+
+        // if (additionsScratch.getWeight() > bestWeightAdder)
+        if (runningComplexity < bestComplexity)
         {
-          partialBest.set(&pc1, &pc1, true, true, false);
+  cout << "  better\n";
+          partialBest.set(&pc1, &pc2, true, true, false);
+          bestWeightAdder = additionsScratch.getWeight();
+          bestComplexity = runningComplexity;
         }
       }
     }
   }
 
+// cout << "p bef   " << partialSolution.strResiduals();
   Heuristic::setPartialSolution(partialBest, cases, partialSolution);
+// cout << "p aft   " << partialSolution.strResiduals();
   return true;
+}
+
+
+string Heuristic::str() const
+{
+  stringstream ss;
+  ss << "Heuristic:\n";
+  for (auto& partial: partials)
+    ss << partial.str();
+  return ss.str() + "\n";
 }
 

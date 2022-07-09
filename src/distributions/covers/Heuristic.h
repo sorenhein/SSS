@@ -10,11 +10,14 @@
 #define SSS_HEURISTIC_H
 
 #include <set>
+#include <string>
 
 #include "Tricks.h"
+#include "Cover.h"
+#include "Complexity.h"
 
 class CoverStore;
-class Cover;
+// class Cover;
 class CoverTableau;
 class Explain;
 
@@ -33,6 +36,35 @@ class Heuristic
     {
       return (rawWeightAdder < pc2.rawWeightAdder);
     };
+
+    void addCoverToComplexity(Complexity& complexity) const
+    {
+      // Add cover to a single row.
+      assert(coverPtr != nullptr);
+      complexity.addCoverSingleRow(
+        coverPtr->getComplexity(),
+        additions.getWeight());
+    };
+
+    void addRowToComplexity(Complexity& complexity) const
+    {
+      // Add a whole new row.
+      assert(coverPtr != nullptr);
+      complexity.addRow(
+        coverPtr->getComplexity(),
+        additions.getWeight());
+    };
+
+    string str() const
+    {
+      if (coverPtr == nullptr)
+        return "nullptr";
+
+      string s = coverPtr->strNumerical();
+      s += additions.strSpaced();
+      s += "Weight " + to_string(rawWeightAdder) + "\n";
+      return s;
+    };
   };
 
 
@@ -43,6 +75,13 @@ class Heuristic
     bool flag1;
     bool flag2;
     bool flagIndep;
+
+    PartialBest()
+    {
+      flag1 = false;
+      flag2 = false;
+      flagIndep = false;
+    };
 
     void set(
       PartialCover const * partial1Ptr,
@@ -97,6 +136,8 @@ class Heuristic
       const Tricks& tricks,
       const vector<unsigned char>& cases,
       CoverTableau& partialSolution) const;
+
+    string str() const;
 };
 
 #endif

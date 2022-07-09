@@ -54,9 +54,21 @@ void Complexity::addCover(
   const unsigned char rowComplexity,
   const unsigned rawWeight)
 {
+  // Add a single cover such that its row gets to rowComplexity.
   sum += coverComplexity;
   if (rowComplexity > max)
     max = rowComplexity;
+  raw += rawWeight;
+}
+
+
+void Complexity::addCoverSingleRow(
+  const unsigned char coverComplexity,
+  const unsigned rawWeight)
+{
+  // Assuming a single row, the cover and row complexities are the same.
+  sum += coverComplexity;
+  max = sum;
   raw += rawWeight;
 }
 
@@ -65,6 +77,7 @@ void Complexity::addRow(
   const unsigned char rowComplexity,
   const unsigned rawWeight)
 {
+  // Add a whole new row.
   sum += rowComplexity;
   if (rowComplexity > max)
     max = rowComplexity;

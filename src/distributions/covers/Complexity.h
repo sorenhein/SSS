@@ -41,6 +41,10 @@ class Complexity
     const unsigned char rowComplexity,
     const unsigned rawWeight);
 
+  void addCoverSingleRow(
+    const unsigned char coverComplexity,
+    const unsigned rawWeight);
+
   void addRow(
     const unsigned char rowComplexity,
     const unsigned rawWeight);

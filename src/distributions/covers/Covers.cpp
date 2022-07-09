@@ -39,6 +39,7 @@
 #include "Explain.h"
 #include "CoverCategory.h"
 #include "RowMatches.h"
+#include "Heuristic.h"
 
 #include "tableau/TableauStats.h"
 
@@ -587,7 +588,7 @@ cout << "guess: both are OR'ed\n";
   }
 }
 
-#define DEBUG_MODE4
+// #define DEBUG_MODE4
 
 void Covers::explain(
   const list<Result>& results,
@@ -640,6 +641,7 @@ void Covers::explain(
   if (tricksSymmetry == EXPLAIN_SYMMETRIC && mode != 4)
   {
     // No need for anything fancy if tricks itself is constrained.
+    // TODO Can constrain mode == 4 covers to symmetric ones.
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
@@ -738,9 +740,32 @@ void Covers::explain(
   else if (mode == 4)
   {
     // Guess followed by exhaustive run.
+    /*
     Covers::guessStart(tricks, solution, explain);
     if (solution.complete())
     {
+      solution.initStrData(numStrategyTops, tricksSymmetry);
+      return;
+    }
+    */
+
+    explain.setComposition(EXPLAIN_LENGTH_ONLY);
+    Heuristic heuristic1;
+    heuristic1.findHeaviestN(coverStore, tricks, cases, explain, 3);
+    // cout << "heuristic1\n" << heuristic1.str();
+
+    explain.setComposition(EXPLAIN_TOPS_ONLY);
+    Heuristic heuristic2;
+    heuristic2.findHeaviestN(coverStore, tricks, cases, explain, 3);
+    // cout << "heuristic2\n" << heuristic2.str();
+
+    heuristic2.combine(heuristic1, tricks, cases, solution);
+
+// cout << "resW " << solution.strResiduals() << "\n";
+
+    if (solution.complete())
+    {
+// cout << "ABOUT to declare complete: " << tricksSymmetry << endl;
       solution.initStrData(numStrategyTops, tricksSymmetry);
       return;
     }
@@ -906,7 +931,8 @@ cout << rowMatches.str() << endl;
 
   // This tends to get destroyed when solving with partial solutions,
   // so we just reset it.
-  solution.initStrData(numStrategyTops, EXPLAIN_GENERAL);
+  // solution.initStrData(numStrategyTops, EXPLAIN_GENERAL);
+  solution.initStrData(numStrategyTops, tricksSymmetry);
   tableauCache.store(tricks, solution);
 }
 
