@@ -184,6 +184,8 @@ void Heuristic::setPartialSolution(
 }
 
 
+// #define HEUR_DEBUG
+
 bool Heuristic::combine(
   const Heuristic& heur2,
   const Tricks& tricks,
@@ -222,15 +224,19 @@ bool Heuristic::combine(
         pc1.addRowToComplexity(runningComplexity);
         pc2.addRowToComplexity(runningComplexity);
 
+#ifdef HEUR_DEBUG
   cout << "Independent " << additionsScratch.getWeight() << "\n";
   cout << pc1.coverPtr->strNumerical() << endl;
   cout << pc2.coverPtr->strNumerical() << endl;
   cout << additionsScratch.strSpaced() << endl;
+#endif
         // Go with independent rows.
         if (runningComplexity < bestComplexity)
         // if (additionsScratch.getWeight() > bestWeightAdder)
         {
+#ifdef HEUR_DEBUG
  cout << "Two rows, complexity now " << runningComplexity.strFull() << endl << endl;
+#endif
           partialBest.set(&pc1, &pc2, true, true, true);
           bestWeightAdder = additionsScratch.getWeight();
           bestComplexity = runningComplexity;
@@ -238,33 +244,43 @@ bool Heuristic::combine(
       }
       else if (pc1.additions <= pc2.additions)
       {
+#ifdef HEUR_DEBUG
   cout << "pc2 dominates " << additionsScratch.getWeight() << "\n";
   cout << pc1.coverPtr->strNumerical() << endl;
   cout << pc2.coverPtr->strNumerical() << endl;
   cout << pc1.additions.strSpaced() << endl;
   cout << pc2.additions.strSpaced() << endl << endl;
+#endif
         // pc1 is dominated by pc2.
         if (pc2.rawWeightAdder > bestWeightAdder)
         {
+#ifdef HEUR_DEBUG
  cout << "  better\n";
+#endif
           partialBest.set(nullptr, &pc2, false, true, false);
           bestWeightAdder = additionsScratch.getWeight();
         }
       }
       else if (pc2.additions <= pc1.additions)
       {
+#ifdef HEUR_DEBUG
  cout << "pc1 dominates " << additionsScratch.getWeight() << "\n";
+#endif
         // pc2 is dominated by pc1.
         if (pc1.rawWeightAdder > bestWeightAdder)
         {
+#ifdef HEUR_DEBUG
  cout << "  better\n";
+#endif
           partialBest.set(&pc1, nullptr, true, false, false);
           bestWeightAdder = additionsScratch.getWeight();
         }
       }
       else
       {
+#ifdef HEUR_DEBUG
  cout << "OR " << additionsScratch.getWeight() << "\n";
+#endif
         // OR them together.
         additionsScratch = pc1.additions;
 // cout << "First  " << additionsScratch.strSpaced() << "\n";
@@ -279,7 +295,9 @@ bool Heuristic::combine(
         // if (additionsScratch.getWeight() > bestWeightAdder)
         if (runningComplexity < bestComplexity)
         {
+#ifdef HEUR_DEBUG
   cout << "  better\n";
+#endif
           partialBest.set(&pc1, &pc2, true, true, false);
           bestWeightAdder = additionsScratch.getWeight();
           bestComplexity = runningComplexity;

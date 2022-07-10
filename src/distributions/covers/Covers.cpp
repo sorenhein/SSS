@@ -851,7 +851,7 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
     {
       const Tricks& tricksL = tricksWithinLength[lenEW];
 #ifdef DEBUG_MODE4
-// cout << "Within " << lenEW << ": " << tricksL.getWeight() << endl;
+cout << "Within " << lenEW << ": " << tricksL.getWeight() << endl;
 #endif
       if (tricksL.getWeight() == 0)
         continue;
@@ -912,6 +912,7 @@ cout << rowMatches.str() << endl;
         if (! Covers::heaviestCover(rowMatch.getTricks(), explain, coverPtr))
         {
           cout << "Tried\n" << rowMatch.str() << endl;
+          cout << coverStore.str() << endl;
           assert(false);
         }
       assert(coverPtr != nullptr);

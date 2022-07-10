@@ -177,7 +177,7 @@ string CoverStore::str() const
   ss << store.begin()->strHeader();
 
   for (auto& cover: store)
-    ss << cover.strLine();
+    ss << cover.strLine() << "\n";
 
   return ss.str() + "\n";
 }
