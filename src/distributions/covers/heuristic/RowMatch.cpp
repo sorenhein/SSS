@@ -10,10 +10,10 @@
 #include <cassert>
 
 #include "RowMatch.h"
-#include "Tricks.h"
-#include "product/Profile.h"
 
-#include "../../utils/table.h"
+#include "../product/Profile.h"
+
+#include "../../../utils/table.h"
 
 
 using namespace std;

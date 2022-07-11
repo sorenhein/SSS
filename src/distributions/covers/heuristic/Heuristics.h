@@ -19,7 +19,6 @@
 #include "../Complexity.h"
 
 class CoverStore;
-// class Cover;
 class CoverTableau;
 class Explain;
 
@@ -28,50 +27,6 @@ using namespace std;
 
 class Heuristics
 {
-  /*
-  struct PartialCover
-  {
-    Cover const * coverPtr;
-    Tricks additions;
-    unsigned rawWeightAdder;
-
-    bool operator < (const PartialCover& pc2) const
-    {
-      return (rawWeightAdder < pc2.rawWeightAdder);
-    };
-
-    void addCoverToComplexity(Complexity& complexity) const
-    {
-      // Add cover to a single row.
-      assert(coverPtr != nullptr);
-      complexity.addCoverSingleRow(
-        coverPtr->getComplexity(),
-        additions.getWeight());
-    };
-
-    void addRowToComplexity(Complexity& complexity) const
-    {
-      // Add a whole new row.
-      assert(coverPtr != nullptr);
-      complexity.addRow(
-        coverPtr->getComplexity(),
-        additions.getWeight());
-    };
-
-    string str() const
-    {
-      if (coverPtr == nullptr)
-        return "nullptr";
-
-      string s = coverPtr->strNumerical();
-      s += additions.strSpaced();
-      s += "Weight " + to_string(rawWeightAdder) + "\n";
-      return s;
-    };
-  };
-  */
-
-
   struct PartialBest
   {
     Partial const * ptr1;

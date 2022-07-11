@@ -40,9 +40,6 @@ void Heuristics::emplace(
 
   Partial partial;
   partial.set(coverPtr, additions, rawWeightAdder);
-  // partial.coverPtr = coverPtr;
-  // partial.additions = additions;
-  // partial.rawWeightAdder = rawWeightAdder;
   partials.emplace(partial);
 }
 
@@ -145,7 +142,6 @@ void Heuristics::setPartialSolution(
     if (! partialBest.flag2)
     {
       // Only the first one.
-      // partialSolution.addRow(* partialBest.ptr1->coverPtr);
       partialSolution.addRow(partialBest.ptr1->cover());
     }
     else if (partialBest.flagIndep)
@@ -233,7 +229,6 @@ bool Heuristics::combine(
 #endif
         // Go with independent rows.
         if (runningComplexity < bestComplexity)
-        // if (additionsScratch.getWeight() > bestWeightAdder)
         {
 #ifdef HEUR_DEBUG
  cout << "Two rows, complexity now " << runningComplexity.strFull() << endl << endl;

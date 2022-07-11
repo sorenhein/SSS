@@ -38,8 +38,8 @@
 #include "CoverStack.h"
 #include "Explain.h"
 #include "CoverCategory.h"
-#include "RowMatches.h"
 #include "heuristic/Heuristics.h"
+#include "heuristic/RowMatches.h"
 
 #include "tableau/TableauStats.h"
 

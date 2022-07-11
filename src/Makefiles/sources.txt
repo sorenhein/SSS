@@ -27,12 +27,12 @@ SOURCE_FILES    =                               \
                 distributions/covers/Tricks.cpp                  \
                 distributions/covers/TrickConvert.cpp            \
                 distributions/covers/CoverRow.cpp                \
-                distributions/covers/RowMatch.cpp                \
-                distributions/covers/RowMatches.cpp              \
                 distributions/covers/CoverStack.cpp              \
                                                                  \
                 distributions/covers/heuristic/Heuristics.cpp    \
                 distributions/covers/heuristic/Partial.cpp       \
+                distributions/covers/heuristic/RowMatch.cpp      \
+                distributions/covers/heuristic/RowMatches.cpp    \
                                                                  \
                 distributions/covers/manual/Manual.cpp           \
                                                                  \

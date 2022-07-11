@@ -11,8 +11,8 @@
 
 #include <string>
 
-#include "CoverRow.h"
-#include "Tricks.h"
+#include "../CoverRow.h"
+#include "../Tricks.h"
 
 class Profile;
 enum Opponent: unsigned;
