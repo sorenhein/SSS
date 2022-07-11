@@ -1,8 +1,10 @@
-10/57354
-Why no cover match for length 1-2, no ace?  Is it perhaps deemed
-not symmetrizable?  Look at the whole cover store?
-
 Can we put some of the matching from Heuristic/Cover into CoverStore?
+
+mode == 4: Methods to call for a single solution.
+Heuristic can return a list of non-dominated partials.
+In mode == 4, loop and find the best one.
+Make a PartialCover.h
+Make a heuristic/ including row matches
 
 Differences g = 4 simple length-1 heuristic to 3*3
 ==================================================

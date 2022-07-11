@@ -20,7 +20,6 @@ SOURCE_FILES    =                               \
                                                                  \
                 distributions/covers/Cover.cpp                   \
                 distributions/covers/Covers.cpp                  \
-                distributions/covers/Heuristic.cpp               \
                 distributions/covers/Complexity.cpp              \
                 distributions/covers/Explain.cpp                 \
                 distributions/covers/CoverStore.cpp              \
@@ -31,6 +30,9 @@ SOURCE_FILES    =                               \
                 distributions/covers/RowMatch.cpp                \
                 distributions/covers/RowMatches.cpp              \
                 distributions/covers/CoverStack.cpp              \
+                                                                 \
+                distributions/covers/Heuristic.cpp               \
+                distributions/covers/heuristic/Partial.cpp       \
                                                                  \
                 distributions/covers/manual/Manual.cpp           \
                                                                  \
