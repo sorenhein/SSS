@@ -57,6 +57,25 @@ void Partial::addRowToComplexity(Complexity& complexity) const
 }
 
 
+const Cover& Partial::cover() const
+{
+  assert(coverPtr != nullptr);
+  return * coverPtr;
+}
+
+
+const Tricks& Partial::tricks() const
+{
+  return additions;
+}
+
+
+unsigned Partial::weight() const
+{
+  return rawWeightAdder;
+}
+
+
 string Partial::str() const
 {
   if (coverPtr == nullptr)

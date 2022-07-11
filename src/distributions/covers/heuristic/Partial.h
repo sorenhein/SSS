@@ -29,11 +29,19 @@ class Partial
       const Tricks& additionsIn,
       const unsigned rawWeightAdderIn);
 
+    bool operator < (const unsigned rawWeightAdderIn) const;
+
     bool operator < (const Partial& partial2) const;
 
     void addCoverToComplexity(Complexity& complexity) const;
 
     void addRowToComplexity(Complexity& complexity) const;
+
+    const Cover& cover() const;
+
+    const Tricks& tricks() const;
+
+    unsigned weight() const;
 
     string str() const;
 };

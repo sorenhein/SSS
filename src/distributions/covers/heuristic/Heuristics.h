@@ -6,15 +6,17 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_HEURISTIC_H
-#define SSS_HEURISTIC_H
+#ifndef SSS_HEURISTICS_H
+#define SSS_HEURISTICS_H
 
 #include <set>
 #include <string>
 
-#include "Tricks.h"
-#include "Cover.h"
-#include "Complexity.h"
+#include "Partial.h"
+
+#include "../Tricks.h"
+#include "../Cover.h"
+#include "../Complexity.h"
 
 class CoverStore;
 // class Cover;
@@ -24,8 +26,9 @@ class Explain;
 using namespace std;
 
 
-class Heuristic
+class Heuristics
 {
+  /*
   struct PartialCover
   {
     Cover const * coverPtr;
@@ -66,12 +69,13 @@ class Heuristic
       return s;
     };
   };
+  */
 
 
   struct PartialBest
   {
-    PartialCover const * ptr1;
-    PartialCover const * ptr2;
+    Partial const * ptr1;
+    Partial const * ptr2;
     bool flag1;
     bool flag2;
     bool flagIndep;
@@ -84,8 +88,8 @@ class Heuristic
     };
 
     void set(
-      PartialCover const * partial1Ptr,
-      PartialCover const * partial2Ptr,
+      Partial const * partial1Ptr,
+      Partial const * partial2Ptr,
       const bool flag1In,
       const bool flag2In,
       const bool flagIndepIn)
@@ -101,7 +105,7 @@ class Heuristic
 
   private:
 
-    multiset<PartialCover> partials;
+    multiset<Partial> partials;
 
 
     void emplace(
@@ -110,7 +114,7 @@ class Heuristic
       const unsigned rawWeightAdder);
 
     bool combineSimply(
-      const Heuristic& heur2,
+      const Heuristics& heur2,
       CoverTableau& partialSolution,
       bool& combinedFlag) const;
 
@@ -122,7 +126,7 @@ class Heuristic
 
   public:
 
-    Heuristic();
+    Heuristics();
 
     void findHeaviestN(
       const CoverStore& coverStore,
@@ -132,7 +136,7 @@ class Heuristic
       const size_t numHeaviest);
     
     bool combine(
-      const Heuristic& heur2,
+      const Heuristics& heur2,
       const Tricks& tricks,
       const vector<unsigned char>& cases,
       CoverTableau& partialSolution) const;

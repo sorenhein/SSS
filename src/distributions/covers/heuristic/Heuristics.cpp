@@ -11,44 +11,45 @@
 #include <sstream>
 #include <cassert>
 
-#include "Heuristic.h"
+#include "Heuristics.h"
 
-#include "CoverStore.h"
-#include "Cover.h"
-#include "CoverRow.h"
-#include "Explain.h"
+#include "../CoverStore.h"
+#include "../Cover.h"
+#include "../CoverRow.h"
+#include "../Explain.h"
 
-#include "tableau/CoverTableau.h"
+#include "../tableau/CoverTableau.h"
 
 
 
-Heuristic::Heuristic()
+Heuristics::Heuristics()
 {
   partials.clear();
 }
 
 
-void Heuristic::emplace(
+void Heuristics::emplace(
   Cover const * coverPtr,
   const Tricks& additions,
   const unsigned rawWeightAdder)
 {
   // TODO This is quite inefficient.  I suppose partialCovers might
-  // instead hold pointers to PartialCover's, and there would be a
-  // list of the actual PartialCovers with one scratch element that
+  // instead hold pointers to Partial's, and there would be a
+  // list of the actual Partial's with one scratch element that
   // would get swapped in against the deleted element.
 
-  PartialCover pc;
-  pc.coverPtr = coverPtr;
-  pc.additions = additions;
-  pc.rawWeightAdder = rawWeightAdder;
-  partials.emplace(pc);
+  Partial partial;
+  partial.set(coverPtr, additions, rawWeightAdder);
+  // partial.coverPtr = coverPtr;
+  // partial.additions = additions;
+  // partial.rawWeightAdder = rawWeightAdder;
+  partials.emplace(partial);
 }
 
 
-void Heuristic::findHeaviestN(
+void Heuristics::findHeaviestN(
   const CoverStore& coverStore,
-  const Tricks& tricks,
+  const Tricks& tricksIn,
   const vector<unsigned char>& cases,
   const Explain& explain,
   const size_t numHeaviest)
@@ -59,12 +60,12 @@ void Heuristic::findHeaviestN(
   // e.g. 8/4894, Strategy #1.
   
   Tricks additions;
-  additions.resize(tricks.size());
+  additions.resize(tricksIn.size());
 
   unsigned rawWeightAdder = 0;
 
   CoverRow row;
-  row.resize(tricks.size());
+  row.resize(tricksIn.size());
 
   for (auto& cover: coverStore)
   {
@@ -77,7 +78,7 @@ void Heuristic::findHeaviestN(
       continue;
     }
 
-    if (! row.possibleAdd(cover, tricks, cases, additions, rawWeightAdder))
+    if (! row.possibleAdd(cover, tricksIn, cases, additions, rawWeightAdder))
     {
       // Only use fitting candidates.
       continue;
@@ -85,28 +86,28 @@ void Heuristic::findHeaviestN(
 
     if (partials.size() < numHeaviest)
     {
-      Heuristic::emplace(&cover, additions, rawWeightAdder);
+      Heuristics::emplace(&cover, additions, rawWeightAdder);
     }
     else
     {
       auto plast = prev(partials.end());
-      if (rawWeightAdder > plast->rawWeightAdder)
+      if (rawWeightAdder > plast->weight())
       {
         // Keep the size down to numHeaviest.
         partials.erase(plast);
-        Heuristic::emplace(&cover, additions, rawWeightAdder);
+        Heuristics::emplace(&cover, additions, rawWeightAdder);
       }
     }
   }
 }
 
 
-bool Heuristic::combineSimply(
-  const Heuristic& heur2,
+bool Heuristics::combineSimply(
+  const Heuristics& heur2,
   CoverTableau& partialSolution,
   bool& combinedFlag) const
 {
-  // Returns true if at least one of the two Heuristic's is empty.
+  // Returns true if at least one of the two Heuristics's is empty.
 
   if (heur2.partials.empty())
   {
@@ -116,13 +117,13 @@ bool Heuristic::combineSimply(
       return true;
     }
 
-    partialSolution.addRow(* partials.begin()->coverPtr);
+    partialSolution.addRow(partials.begin()->cover());
     combinedFlag = true;
     return true;
   }
   else if (partials.empty())
   {
-    partialSolution.addRow(* heur2.partials.begin()->coverPtr);
+    partialSolution.addRow(heur2.partials.begin()->cover());
     combinedFlag = true;
     return true;
   }
@@ -134,7 +135,7 @@ bool Heuristic::combineSimply(
 }
 
 
-void Heuristic::setPartialSolution(
+void Heuristics::setPartialSolution(
   const PartialBest& partialBest,
   const vector<unsigned char>& cases,
   CoverTableau& partialSolution) const
@@ -144,13 +145,14 @@ void Heuristic::setPartialSolution(
     if (! partialBest.flag2)
     {
       // Only the first one.
-      partialSolution.addRow(* partialBest.ptr1->coverPtr);
+      // partialSolution.addRow(* partialBest.ptr1->coverPtr);
+      partialSolution.addRow(partialBest.ptr1->cover());
     }
     else if (partialBest.flagIndep)
     {
       // Two rows.
-      partialSolution.addRow(* partialBest.ptr1->coverPtr);
-      partialSolution.addRow(* partialBest.ptr2->coverPtr);
+      partialSolution.addRow(partialBest.ptr1->cover());
+      partialSolution.addRow(partialBest.ptr2->cover());
     }
     else
     {
@@ -158,24 +160,23 @@ void Heuristic::setPartialSolution(
 // cout << "pbest1\n" << partialBest.ptr1->additions.strSpaced();
 // cout << "pbest2\n" << partialBest.ptr2->additions.strSpaced();
       // One row with an OR.
-      partialSolution.addRow(* partialBest.ptr1->coverPtr);
+      partialSolution.addRow(partialBest.ptr1->cover());
 
-      Tricks additionsScratch = partialBest.ptr2->additions;
-      additionsScratch.uniqueOver(partialBest.ptr1->additions, cases);
+      Tricks additionsScratch = partialBest.ptr2->tricks();
+      additionsScratch.uniqueOver(partialBest.ptr1->tricks(), cases);
 // cout << "u over " << additionsScratch.strSpaced();
 
       partialSolution.extendRow(
-        * partialBest.ptr2->coverPtr,
-        // partialBest.ptr2->additions,
+        partialBest.ptr2->cover(),
         additionsScratch,
-        partialBest.ptr2->rawWeightAdder,
+        partialBest.ptr2->weight(),
         0);
     }
   }
   else if (partialBest.flag2)
   {
     // Only the second one.
-    partialSolution.addRow(* partialBest.ptr2->coverPtr);
+    partialSolution.addRow(partialBest.ptr2->cover());
   }
   else
   {
@@ -186,18 +187,18 @@ void Heuristic::setPartialSolution(
 
 // #define HEUR_DEBUG
 
-bool Heuristic::combine(
-  const Heuristic& heur2,
+bool Heuristics::combine(
+  const Heuristics& heur2,
   const Tricks& tricks,
   const vector<unsigned char>& cases,
   CoverTableau& partialSolution) const
 {
-  // Typically one Heuristic will be the top N partial length covers,
+  // Typically one Heuristics will be the top N partial length covers,
   // and the other (pc2) will be the top N partial tops-only covers.
   // We pick the combination that covers the most weight in total.
   
   bool combinedFlag = false;
-  if (Heuristic::combineSimply(heur2, partialSolution, combinedFlag))
+  if (Heuristics::combineSimply(heur2, partialSolution, combinedFlag))
     return combinedFlag;
 
   PartialBest partialBest;
@@ -215,8 +216,8 @@ bool Heuristic::combine(
     for (auto& pc2: heur2.partials)
     {
       // Try adding them together as independent rows.
-      additionsScratch = pc1.additions;
-      additionsScratch += pc2.additions;
+      additionsScratch = pc1.tricks();
+      additionsScratch += pc2.tricks();
 
       if (additionsScratch <= tricks)
       {
@@ -242,7 +243,7 @@ bool Heuristic::combine(
           bestComplexity = runningComplexity;
         }
       }
-      else if (pc1.additions <= pc2.additions)
+      else if (pc1.tricks() <= pc2.tricks())
       {
 #ifdef HEUR_DEBUG
   cout << "pc2 dominates " << additionsScratch.getWeight() << "\n";
@@ -252,7 +253,7 @@ bool Heuristic::combine(
   cout << pc2.additions.strSpaced() << endl << endl;
 #endif
         // pc1 is dominated by pc2.
-        if (pc2.rawWeightAdder > bestWeightAdder)
+        if (pc2.weight() > bestWeightAdder)
         {
 #ifdef HEUR_DEBUG
  cout << "  better\n";
@@ -261,13 +262,13 @@ bool Heuristic::combine(
           bestWeightAdder = additionsScratch.getWeight();
         }
       }
-      else if (pc2.additions <= pc1.additions)
+      else if (pc2.tricks() <= pc1.tricks())
       {
 #ifdef HEUR_DEBUG
  cout << "pc1 dominates " << additionsScratch.getWeight() << "\n";
 #endif
         // pc2 is dominated by pc1.
-        if (pc1.rawWeightAdder > bestWeightAdder)
+        if (pc1.weight() > bestWeightAdder)
         {
 #ifdef HEUR_DEBUG
  cout << "  better\n";
@@ -282,9 +283,9 @@ bool Heuristic::combine(
  cout << "OR " << additionsScratch.getWeight() << "\n";
 #endif
         // OR them together.
-        additionsScratch = pc1.additions;
+        additionsScratch = pc1.tricks();
 // cout << "First  " << additionsScratch.strSpaced() << "\n";
-        additionsScratch.orNormal(pc2.additions, cases);
+        additionsScratch.orNormal(pc2.tricks(), cases);
 // cout << "Second " << additionsScratch.strSpaced() << "\n";
 
         runningComplexity.reset();
@@ -307,16 +308,16 @@ bool Heuristic::combine(
   }
 
 // cout << "p bef   " << partialSolution.strResiduals();
-  Heuristic::setPartialSolution(partialBest, cases, partialSolution);
+  Heuristics::setPartialSolution(partialBest, cases, partialSolution);
 // cout << "p aft   " << partialSolution.strResiduals();
   return true;
 }
 
 
-string Heuristic::str() const
+string Heuristics::str() const
 {
   stringstream ss;
-  ss << "Heuristic:\n";
+  ss << "Heuristics:\n";
   for (auto& partial: partials)
     ss << partial.str();
   return ss.str() + "\n";

@@ -39,7 +39,7 @@
 #include "Explain.h"
 #include "CoverCategory.h"
 #include "RowMatches.h"
-#include "Heuristic.h"
+#include "heuristic/Heuristics.h"
 
 #include "tableau/TableauStats.h"
 
@@ -750,12 +750,12 @@ void Covers::explain(
     */
 
     explain.setComposition(EXPLAIN_LENGTH_ONLY);
-    Heuristic heuristic1;
+    Heuristics heuristic1;
     heuristic1.findHeaviestN(coverStore, tricks, cases, explain, 3);
     // cout << "heuristic1\n" << heuristic1.str();
 
     explain.setComposition(EXPLAIN_TOPS_ONLY);
-    Heuristic heuristic2;
+    Heuristics heuristic2;
     heuristic2.findHeaviestN(coverStore, tricks, cases, explain, 3);
     // cout << "heuristic2\n" << heuristic2.str();
 
