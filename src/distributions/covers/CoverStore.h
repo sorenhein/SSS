@@ -22,6 +22,10 @@ class ProductMemory;
 class Profile;
 class ProfilePair;
 
+class Tricks;
+class Explain;
+class Partial;
+
 
 // Unlike a Memory, this store is more local and specific to one
 // distribution.  Hence the name is also different.
@@ -59,6 +63,12 @@ class CoverStore
     void admixSymmetric();
 
     const Cover& lookup(const Cover& cover) const;
+
+    void heaviestPartial(
+      const Tricks& tricks,
+      const vector<unsigned char>& cases,
+      const Explain& explain,
+      Partial& partial) const;
 
     set<Cover>::const_iterator begin() const;
 

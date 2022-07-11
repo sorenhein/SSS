@@ -17,9 +17,10 @@
 #include "../Cover.h"
 #include "../CoverStore.h"
 #include "../RowStore.h"
-#include "../RowMatches.h"
 #include "../CoverStack.h"
 #include "../CoverCategory.h"
+
+#include "../heuristic/RowMatches.h"
 
 #include "../../../strategies/result/Result.h"
 

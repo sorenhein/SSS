@@ -386,6 +386,10 @@ distributions/covers/Explain.obj: distributions/covers/CoverCategory.h
 distributions/covers/CoverStore.obj: distributions/covers/CoverStore.h
 distributions/covers/CoverStore.obj: distributions/covers/Cover.h
 distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
+distributions/covers/CoverStore.obj: distributions/covers/CoverRow.h
+distributions/covers/CoverStore.obj: distributions/covers/Explain.h
+distributions/covers/CoverStore.obj: distributions/covers/heuristic/Partial.h
+distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
 distributions/covers/CoverStore.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/CoverStore.obj: distributions/covers/product/Profile.h
 distributions/covers/RowStore.obj: distributions/covers/RowStore.h
@@ -457,6 +461,8 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverStack.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/StackEntry.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/CoverTableau.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverCategory.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/RowMatches.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/RowMatch.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winners.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/tableau/TableauCache.h
