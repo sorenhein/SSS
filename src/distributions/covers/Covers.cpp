@@ -710,20 +710,14 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
       Partial partial;
-      Cover const * coverPtr = nullptr; // TODO Use Partial as VoidInfo?
       coverStore.heaviestPartial(tricksL, cases, explain, partial);
-      if (partial.empty() || partial.weight() != tricksL.getWeight())
-      {
-        assert(false);
-      }
-      else
-      {
-        coverPtr = partial.coverPointer();
-        assert(coverPtr != nullptr);
-      }
+      assert(partial.full(tricksL.getWeight()));
 
+      Cover const * coverPtr = partial.coverPointer();
+      assert(coverPtr != nullptr);
 
       // Keep the voids for later, once all other row matches are known.
+      // TODO Use Partial as VoidInfo?
       if (lenEW == 0)
       {
         voidWest.coverPtr = coverPtr;
@@ -816,21 +810,19 @@ cout << rowMatches.str() << endl;
       else
       {
         Partial partial;
-        Cover const * coverPtr = nullptr; // TODO Use Partial as VoidInfo?
+        // TODO Use Partial as VoidInfo?
         coverStore.heaviestPartial(rowMatch.getTricks(), cases, 
           explain, partial);
-        if (partial.empty() || 
-            partial.weight() != rowMatch.getTricks().getWeight())
+
+        if (! partial.full(rowMatch.getTricks().getWeight()))
         {
           cout << "Tried\n" << rowMatch.str() << endl;
           cout << coverStore.str() << endl;
           assert(false);
         }
-        else
-        {
-          coverPtr = partial.coverPointer();
-          assert(coverPtr != nullptr);
-        }
+
+        Cover const * coverPtr = partial.coverPointer();
+        assert(coverPtr != nullptr);
 
         solution.addRow(* coverPtr);
       }

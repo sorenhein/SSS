@@ -51,6 +51,12 @@ bool Partial::empty() const
 }
 
 
+bool Partial::full(const unsigned weightRef) const
+{
+  return (coverPtr != nullptr && rawWeightAdder == weightRef);
+}
+
+
 void Partial::addCoverToComplexity(Complexity& complexity) const
 {
   // Add cover to a single row.

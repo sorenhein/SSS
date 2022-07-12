@@ -35,6 +35,8 @@ class Partial
 
     bool empty() const;
 
+    bool full(const unsigned weightRef) const;
+
     void addCoverToComplexity(Complexity& complexity) const;
 
     void addRowToComplexity(Complexity& complexity) const;
