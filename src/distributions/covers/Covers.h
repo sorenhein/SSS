@@ -71,12 +71,6 @@ class Covers
       CoverStack<T>& stack,
       CoverTableau& solution);
 
-    // Returns true if tricks are completely covered by the result
-    bool heaviestCover(
-      const Tricks& tricks,
-      const Explain& explain,
-      Cover const *& coverPtr) const;
-
     void explainByCategory(
       const Tricks& tricks,
       const Explain& explain,

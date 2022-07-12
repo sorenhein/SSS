@@ -346,58 +346,6 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   CoverTableau& solution);
 
 
-bool Covers::heaviestCover(
-  const Tricks& tricks,
-  const Explain& explain,
-  Cover const *& coverPtr) const
-{
-  // This find the best (highest-weight) cover consistent with explain.
-  // For example, it can find the length-only or tops-only winner.
-  // Note that it may return nullptr if nothing is found, which is
-  // indeed possible in some calls (e.g. 8/4894, Strategy #1).
-
-  coverPtr = nullptr;
-
-  Tricks additions;
-  additions.resize(tricks.size());
-
-  unsigned largestWeight = 0;
-  unsigned weight;
-
-  // TODO If we only ever want complete covers (as I think we do
-  // longer-term), we could just check tricks == cover.getTricks()?
-  // Then cover.getWeight().
-
-  CoverRow row;
-  row.resize(tricks.size());
-
-  for (auto& cover: coverStore)
-  {
-    if (explain.skip(
-        cover.effectiveDepth(),
-        cover.symmetry(),
-        cover.composition()))
-    {
-      // Select consistent candidates.
-      continue;
-    }
-
-    if (row.possibleAdd(cover, tricks, cases, additions, weight))
-    {
-      if (weight > largestWeight)
-      {
-        coverPtr = &cover;
-        largestWeight = weight;
-      }
-    }
-  }
-
-  return (largestWeight == tricks.getWeight());
-}
-
-
-
-
 void Covers::explainByCategory(
   const Tricks& tricks,
   const Explain& explain,
@@ -754,7 +702,6 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
       if (tricksL.getWeight() == 0)
         continue;
 
-      // const unsigned factor = tricksOfLength[lenEW].factor();
       const unsigned factor = tricksL.factor();
 
       if (2*lenEW+1 == tlen)
@@ -762,10 +709,19 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
       else
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
-      Cover const * coverPtr;
-      if (! Covers::heaviestCover(tricksL, explain, coverPtr))
+      Partial partial;
+      Cover const * coverPtr = nullptr; // TODO Use Partial as VoidInfo?
+      coverStore.heaviestPartial(tricksL, cases, explain, partial);
+      if (partial.empty() || partial.weight() != tricksL.getWeight())
+      {
         assert(false);
-      assert(coverPtr != nullptr);
+      }
+      else
+      {
+        coverPtr = partial.coverPointer();
+        assert(coverPtr != nullptr);
+      }
+
 
       // Keep the voids for later, once all other row matches are known.
       if (lenEW == 0)
@@ -859,14 +815,22 @@ cout << rowMatches.str() << endl;
         solution.addRow(rowMatch.getSingleRow());
       else
       {
-        Cover const * coverPtr;
-        if (! Covers::heaviestCover(rowMatch.getTricks(), explain, coverPtr))
+        Partial partial;
+        Cover const * coverPtr = nullptr; // TODO Use Partial as VoidInfo?
+        coverStore.heaviestPartial(rowMatch.getTricks(), cases, 
+          explain, partial);
+        if (partial.empty() || 
+            partial.weight() != rowMatch.getTricks().getWeight())
         {
           cout << "Tried\n" << rowMatch.str() << endl;
           cout << coverStore.str() << endl;
           assert(false);
         }
-      assert(coverPtr != nullptr);
+        else
+        {
+          coverPtr = partial.coverPointer();
+          assert(coverPtr != nullptr);
+        }
 
         solution.addRow(* coverPtr);
       }

@@ -40,6 +40,7 @@ class Partial
     void addRowToComplexity(Complexity& complexity) const;
 
     const Cover& cover() const;
+    Cover const * coverPointer() const;
 
     Tricks& tricks();
     const Tricks& tricks() const;

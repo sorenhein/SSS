@@ -78,6 +78,12 @@ const Cover& Partial::cover() const
 }
 
 
+Cover const * Partial::coverPointer() const
+{
+  return coverPtr;
+}
+
+
 Tricks& Partial::tricks()
 {
   return additions;
