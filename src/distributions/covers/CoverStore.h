@@ -70,6 +70,13 @@ class CoverStore
       const Explain& explain,
       Partial& partial) const;
 
+    void heaviestPartials(
+      const Tricks& tricks,
+      const vector<unsigned char>& cases,
+      const Explain& explain,
+      const size_t numHeaviest,
+      multiset<Partial>& partials) const;
+
     set<Cover>::const_iterator begin() const;
 
     set<Cover>::const_iterator end() const;

@@ -51,51 +51,8 @@ void Heuristics::findHeaviestN(
   const Explain& explain,
   const size_t numHeaviest)
 {
-  // This method finds the numHeaviest highest-weight covers consistent
-  // with explain.  For example, it can find the length-only or
-  // tops-only winners.  It is possible that there is no winner at all,
-  // e.g. 8/4894, Strategy #1.
-  
-  Tricks additions;
-  additions.resize(tricksIn.size());
-
-  unsigned rawWeightAdder = 0;
-
-  CoverRow row;
-  row.resize(tricksIn.size());
-
-  for (auto& cover: coverStore)
-  {
-    if (explain.skip(
-      cover.effectiveDepth(),
-      cover.symmetry(),
-      cover.composition()))
-    {
-      // Only use consistent candidates.
-      continue;
-    }
-
-    if (! row.possibleAdd(cover, tricksIn, cases, additions, rawWeightAdder))
-    {
-      // Only use fitting candidates.
-      continue;
-    }
-
-    if (partials.size() < numHeaviest)
-    {
-      Heuristics::emplace(&cover, additions, rawWeightAdder);
-    }
-    else
-    {
-      auto plast = prev(partials.end());
-      if (rawWeightAdder > plast->weight())
-      {
-        // Keep the size down to numHeaviest.
-        partials.erase(plast);
-        Heuristics::emplace(&cover, additions, rawWeightAdder);
-      }
-    }
-  }
+  coverStore.heaviestPartials(tricksIn, cases, explain,
+    numHeaviest, partials);
 }
 
 

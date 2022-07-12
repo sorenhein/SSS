@@ -163,7 +163,7 @@ void CoverStore::heaviestPartial(
   const Explain& explain,
   Partial& partial) const
 {
-  // This find the best (highest-weight) cover consistent with explain.
+  // This finds the best (highest-weight) cover consistent with explain.
   // For example, it can find the length-only or tops-only winner.
   // Note that coverPtr == nullptr if nothing is found, which is
   // indeed possible (e.g. 8/4894, Strategy #1).
@@ -191,6 +191,66 @@ void CoverStore::heaviestPartial(
       if (weight > partial.weight())
         partial.set(&cover, additions, weight);
     }
+  }
+}
+
+
+void CoverStore::heaviestPartials(
+  const Tricks& tricks,
+  const vector<unsigned char>& cases,
+  const Explain& explain,
+  const size_t numHeaviest,
+  multiset<Partial>& partials) const
+{
+  // Like heaviestPartial(), but returns up to numHeaviest candidates.
+
+  Tricks additions;
+  additions.resize(tricks.size());
+  unsigned weight = 0;
+
+  CoverRow row;
+  row.resize(tricks.size());
+
+  for (auto& cover: store)
+  {
+    if (explain.skip(
+        cover.effectiveDepth(),
+        cover.symmetry(),
+        cover.composition()))
+    {
+      // Select consistent candidates.
+      continue;
+    }
+
+    if (! row.possibleAdd(cover, tricks, cases, additions, weight))
+    {
+      // Only use fitting candidates.
+      continue;
+    }
+
+    if (partials.size() >= numHeaviest)
+    {
+      auto plastIter = prev(partials.end());
+      if (weight > plastIter->weight())
+      {
+        // Keep the size down to numHeaviest.
+        partials.erase(plastIter);
+      }
+      else
+      {
+        // Discard too-light candidate.
+        continue;
+      }
+    }
+
+    // TODO This is quite inefficient.  I suppose partialCovers might
+    // instead hold pointers to Partial's, and there would be a
+    // list of the actual Partial's with one scratch element that
+    // would get swapped in against the deleted element.
+
+    Partial partial;
+    partial.set(&cover, additions, weight);
+    partials.emplace(partial);
   }
 }
 
