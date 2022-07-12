@@ -20,6 +20,14 @@
 using namespace std;
 
 
+Partial::Partial()
+{
+  coverPtr = nullptr;
+  additions.clear();
+  rawWeightAdder = 0;
+}
+
+
 void Partial::set(
   Cover const * coverPtrIn,
   const Tricks& additionsIn,
@@ -34,6 +42,12 @@ void Partial::set(
 bool Partial::operator < (const Partial& partial2) const
 {
   return (rawWeightAdder < partial2.rawWeightAdder);
+}
+
+
+bool Partial::empty() const
+{
+  return (coverPtr == nullptr);
 }
 
 
@@ -61,6 +75,12 @@ const Cover& Partial::cover() const
 {
   assert(coverPtr != nullptr);
   return * coverPtr;
+}
+
+
+Tricks& Partial::tricks()
+{
+  return additions;
 }
 
 

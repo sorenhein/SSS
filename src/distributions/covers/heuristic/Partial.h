@@ -24,14 +24,16 @@ class Partial
   
   public:
 
+    Partial();
+
     void set(
       Cover const * coverPtrIn,
       const Tricks& additionsIn,
       const unsigned rawWeightAdderIn);
 
-    bool operator < (const unsigned rawWeightAdderIn) const;
-
     bool operator < (const Partial& partial2) const;
+
+    bool empty() const;
 
     void addCoverToComplexity(Complexity& complexity) const;
 
@@ -39,6 +41,7 @@ class Partial
 
     const Cover& cover() const;
 
+    Tricks& tricks();
     const Tricks& tricks() const;
 
     unsigned weight() const;

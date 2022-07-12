@@ -346,54 +346,6 @@ template void Covers::explainTemplate<RowStore, CoverRow>(
   CoverTableau& solution);
 
 
-void Covers::findHeaviest(
-  const Tricks& tricks,
-  const Explain& explain,
-  HeavyData& heavyData) const
-{
-  // This find the best (highest-weight) cover consistent with explain.
-  // For example, it can find the length-only or tops-only winner.
-  // Note that coverPtr == nullptr if nothing is found, which is
-  // indeed possible (e.g. 8/4894, Strategy #1).
-
-  Tricks additionsLocal;
-  additionsLocal.resize(tricks.size());
-  unsigned weightLocal = 0;
-
-  CoverRow row;
-  row.resize(tricks.size());
-
-  for (auto& cover: coverStore)
-  {
-// cout << "Trying cover " << cover.strTricksShort() << endl;
-// cout << "  eff " << +cover.effectiveDepth() <<
-  // " symm " << +cover.symmetry() << 
-  // " comp " << +cover.composition() << endl;
-    if (explain.skip(
-        cover.effectiveDepth(),
-        cover.symmetry(),
-        cover.composition()))
-    {
-      // Select consistent candidates.
-      continue;
-    }
-
-// cout << "  Past explain " << cover.strTricksShort() << endl;
-    if (row.possibleAdd(cover, tricks, cases, additionsLocal, weightLocal))
-    {
-// cout << "    Is possible " << cover.strTricksShort() << endl;
-      if (weightLocal > heavyData.rawWeightAdder)
-      {
-// cout << "    Is heavier " << cover.strTricksShort() << endl;
-        heavyData.coverPtr = &cover;
-        heavyData.additions = additionsLocal;
-        heavyData.rawWeightAdder = weightLocal;
-      }
-    }
-  }
-}
-
-
 bool Covers::heaviestCover(
   const Tricks& tricks,
   const Explain& explain,
@@ -503,44 +455,43 @@ void Covers::guessStart(
   Explain& explain) const
 {
   explain.setComposition(EXPLAIN_LENGTH_ONLY);
-  HeavyData heaviestLength(tricks.size());
-  Covers::findHeaviest(tricks, explain, heaviestLength);
+  Partial partialLength;
+  coverStore.heaviestPartial(tricks, cases, explain, partialLength);
  
   explain.setComposition(EXPLAIN_TOPS_ONLY);
-  HeavyData heaviestTops(tricks.size());
-  Covers::findHeaviest(tricks, explain, heaviestTops);
+  Partial partialTops;
+  coverStore.heaviestPartial(tricks, cases, explain, partialTops);
 
-  if (heaviestLength.coverPtr == nullptr && 
-      heaviestTops.coverPtr == nullptr)
+  if (partialLength.empty() && partialTops.empty())
   {
 #ifdef DEBUG_GUESS
 cout << "guess: Neither is set\n";
 #endif
     return;
   }
-  else if (heaviestLength.coverPtr == nullptr)
+  else if (partialLength.empty())
   {
     // Go with tops
 #ifdef DEBUG_GUESS
 cout << "guess: tops is set\n";
 #endif
-    partialSolution.addRow(* heaviestTops.coverPtr);
+    partialSolution.addRow(partialTops.cover());
     return;
   }
-  else if (heaviestTops.coverPtr == nullptr)
+  else if (partialTops.empty())
   {
     // Go with length
 #ifdef DEBUG_GUESS
 cout << "guess: length is set\n";
 #endif
-    partialSolution.addRow(* heaviestLength.coverPtr);
+    partialSolution.addRow(partialLength.cover());
     return;
   }
 
   // TODO More efficiently? Just destroy heaviestLength?
   // Or can we call Tricks::possible after first addRow somehow?
-  Tricks additionsSum = heaviestLength.additions;
-  additionsSum += heaviestTops.additions;
+  Tricks additionsSum = partialLength.tricks();
+  additionsSum += partialTops.tricks();
 
   if (additionsSum <= tricks)
   {
@@ -548,27 +499,27 @@ cout << "guess: length is set\n";
 cout << "guess: both are additive\n";
 #endif
     // Go with two separate rows
-    partialSolution.addRow(* heaviestLength.coverPtr);
-    partialSolution.addRow(* heaviestTops.coverPtr);
+    partialSolution.addRow(partialLength.cover());
+    partialSolution.addRow(partialTops.cover());
   }
-  else if (heaviestTops.additions == heaviestLength.additions || 
-      heaviestTops.additions <= heaviestLength.additions)
+  else if (partialTops.tricks() == partialLength.tricks() || 
+      partialTops.tricks() <= partialLength.tricks())
   {
 #ifdef DEBUG_GUESS
 cout << "guess: tops are dominated\n";
-cout << heaviestLength.coverPtr->strNumerical();
-cout << heaviestTops.coverPtr->strNumerical();
+cout << partialLength.cover().strNumerical();
+cout << partialTops.cover().strNumerical();
 #endif
     // Go with length
-    partialSolution.addRow(* heaviestLength.coverPtr);
+    partialSolution.addRow(partialLength.cover());
   }
-  else if (heaviestLength.additions <= heaviestTops.additions)
+  else if (partialLength.tricks() <= partialTops.tricks())
   {
 #ifdef DEBUG_GUESS
 cout << "guess: length is dominated\n";
 #endif
     // Go with tops
-    partialSolution.addRow(* heaviestTops.coverPtr);
+    partialSolution.addRow(partialTops.cover());
   }
   else
   {
@@ -576,14 +527,14 @@ cout << "guess: length is dominated\n";
 cout << "guess: both are OR'ed\n";
 #endif
     // Go with one row and an "OR"
-    partialSolution.addRow(* heaviestLength.coverPtr);
+    partialSolution.addRow(partialLength.cover());
 
-    heaviestTops.additions.uniqueOver(heaviestLength.additions, cases);
+    partialTops.tricks().uniqueOver(partialLength.tricks(), cases);
 
     partialSolution.extendRow(
-      * heaviestTops.coverPtr, 
-      heaviestTops.additions, 
-      heaviestTops.rawWeightAdder, 
+      partialTops.cover(),
+      partialTops.tricks(),
+      partialTops.weight(),
       0);
   }
 }

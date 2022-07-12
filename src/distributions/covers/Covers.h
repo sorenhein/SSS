@@ -71,11 +71,6 @@ class Covers
       CoverStack<T>& stack,
       CoverTableau& solution);
 
-    void findHeaviest(
-      const Tricks& tricks,
-      const Explain& explain,
-      HeavyData& heavyData) const;
-
     // Returns true if tricks are completely covered by the result
     bool heaviestCover(
       const Tricks& tricks,
