@@ -37,6 +37,8 @@ using namespace std;
 
 class Covers
 {
+  friend class RowMatches;
+
   private:
 
     vector<unsigned char> cases;

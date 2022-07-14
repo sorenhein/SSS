@@ -39,11 +39,10 @@ class CoverTableau
   friend StackEntry<Cover>;
   friend StackEntry<CoverRow>;
   friend class Covers;
+  friend class RowMatches;
   friend class Heuristics;
 
   private:
-
-    list<CoverRow> rows;
 
     unsigned char tricksMin;
 
@@ -69,6 +68,9 @@ class CoverTableau
       CoverTableau& solution);
 
   protected:
+
+    // Only RowMatches uses this (and can destroy it).
+    list<CoverRow> rows;
 
     void addRow(const Cover& cover);
 
@@ -143,10 +145,6 @@ class CoverTableau
       vector<Tricks>& tricksWithinLength,
       vector<Tricks>& tricksOfLength,
       const vector<unsigned char>& cases) const;
-
-    void destroyIntoMatches(
-      RowMatches& rowMatches,
-      const size_t rowWestLength);
 
     void updateStats(
       const Profile& sumProfile,

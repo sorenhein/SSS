@@ -384,23 +384,6 @@ void CoverTableau::sliceResiduals(
 }
 
 
-void CoverTableau::destroyIntoMatches(
-  RowMatches& rowMatches,
-  const size_t rowWestLength)
-{
-  // A row is a match with an entry in rowMatches if each cover has
-  // the same tops in both, and if the new length is contiguous with
-  // the length interval in the match to date.  This is used when
-  // turning a cover tableau into row matches in order to combine them
-  // together more sparsely again.  This tableau is known to cover only 
-  // a single West length, rowWestLength.
-  // This CoverTableau gets invalidated!
-
-  for (auto& ownRow: rows)
-    rowMatches.transfer(ownRow, rowWestLength, OPP_EAST);
-}
-
-
 void CoverTableau::updateStats(
   const Profile& sumProfile,
   ProductStats& productStats,

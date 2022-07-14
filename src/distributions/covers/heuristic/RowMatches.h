@@ -13,8 +13,10 @@
 
 #include "RowMatch.h"
 
+class Covers;
 class Cover;
 class Tricks;
+class Explain;
 
 
 using namespace std;
@@ -59,7 +61,12 @@ class RowMatches
       const VoidInfo& voidInfo,
       const Profile& sumProfile);
 
-    void symmetrize(const Profile&sumProfile);
+    bool incorporateTops(
+      Covers& covers,
+      const vector<Tricks>& tricksWithinLength,
+      Explain& explain);
+
+    void symmetrize(const Profile& sumProfile);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };

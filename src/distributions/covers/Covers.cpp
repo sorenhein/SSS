@@ -746,42 +746,7 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
 
 
     // Add the top covers for a given length.
-    explain.setComposition(EXPLAIN_MIXED_TERMS);
-
-    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
-    {
-      const Tricks& tricksL = tricksWithinLength[lenEW];
-#ifdef DEBUG_MODE4
-cout << "Within " << lenEW << ": " << tricksL.getWeight() << endl;
-#endif
-      if (tricksL.getWeight() == 0)
-        continue;
-
-      // A cover of a given length is always anti-symmetric.
-      if (2*lenEW+1 == tlen)
-        explain.setSymmetry(EXPLAIN_GENERAL);
-      else
-        explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-
-      CoverTableau solutionTmp;
-      solutionTmp.init(tricksL, 0); // Minimum doesn't matter yet
-   
-      // TODO Limit covers to those with the specific length
-      Covers::explainByCategory(tricksL, explain, true,
-        solutionTmp, newTableauFlag);
-
-      if (! solutionTmp.complete())
-      {
-        // TODO This does happen, but rarely.  Probably due to a rank 
-        // being needed that doesn't seem to take any tricks?
-        // So it's really a rank error.
-        cout << "FAILED g = 4" << endl;
-        return;
-      }
-
-      solutionTmp.destroyIntoMatches(rowMatches, lenEW);
-    }
-
+    rowMatches.incorporateTops(* this, tricksWithinLength, explain);
 
     // Add in the voids, completing row matches a bit cleverly.
     rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
@@ -830,6 +795,8 @@ cout << rowMatches.str() << endl;
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);
+    
+    newTableauFlag = true;
   }
   else
     assert(false);

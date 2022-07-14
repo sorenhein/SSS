@@ -13,6 +13,10 @@
 
 #include "RowMatches.h"
 
+#include "../Explain.h"
+#include "../Covers.h"
+#include "../CoverCategory.h"
+
 #include "../../../utils/table.h"
 
 
@@ -169,6 +173,64 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
     // cout << "Done after rest\n";
     // cout << "The matches are now:\n";
     // cout << RowMatches::str() << "\n";
+}
+
+
+bool RowMatches::incorporateTops(
+  Covers& covers,
+  const vector<Tricks>& tricksWithinLength,
+  Explain& explain)
+{
+  // Add the top covers for a given length.
+  explain.setComposition(EXPLAIN_MIXED_TERMS);
+
+  // So the actual maximum East-West length is tlen-1,
+  // as the range goes from 0 to this maximum length.
+  const size_t tlen = tricksWithinLength.size();
+
+  bool newTableauFlag; // Not really used
+
+  for (size_t lenEW = 0; lenEW < tlen; lenEW++)
+  {
+    const Tricks& tricks = tricksWithinLength[lenEW];
+    if (tricks.getWeight() == 0)
+      continue;
+
+    if (2*lenEW+1 == tlen)
+    {
+      // The cover might be symmetric or general.
+      // Here we just assume it's general.  TODO Could sharpen.
+      explain.setSymmetry(EXPLAIN_GENERAL);
+    }
+    else
+    {
+      // A cover of such length is always anti-symmetric.
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    }
+
+    CoverTableau solution;
+    solution.init(tricks, 0); // Minimum doesn't matter yet
+
+    // TODO Limit covers to those with the specific length
+    covers.explainByCategory(tricks, explain, true,
+      solution, newTableauFlag);
+
+    if (! solution.complete())
+    {
+      // TODO This does happen, but rarely.  Probably due to a rank
+      // being needed that doesn't seem to take any tricks?
+      // So it's really a rank error.
+      cout << "FAILED g = 4" << endl;
+      return false;
+    }
+
+    // TODO Maybe solution gets begin/end instead and we run here?
+    // solution.destroyIntoMatches(* this, lenEW);
+    for (auto& row: solution.rows)
+      RowMatches::transfer(row, lenEW, OPP_EAST);
+  }
+
+  return true;
 }
 
 
