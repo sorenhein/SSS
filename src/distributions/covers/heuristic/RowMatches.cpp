@@ -361,6 +361,43 @@ void RowMatches::symmetrize(const Profile& sumProfile)
 }
 
 
+void RowMatches::makeSolution(
+  const CoverStore& coverStore,
+  const vector<unsigned char>& cases,
+  Explain& explain,
+  CoverTableau& solution)
+{
+  // Score those row matches anew that involve more than one row.
+  explain.setSymmetry(EXPLAIN_GENERAL);
+  explain.setComposition(EXPLAIN_MIXED_TERMS);
+
+  for (auto& match: matches)
+  {
+    if (match.singleCount())
+      solution.addRow(match.getSingleRow());
+    else
+    {
+      Partial partial;
+      // TODO Use Partial as VoidInfo?
+      coverStore.heaviestPartial(match.getTricks(), cases,
+        explain, partial);
+
+      if (! partial.full(match.getTricks().getWeight()))
+      {
+        cout << "Tried\n" << match.str() << endl;
+        cout << coverStore.str() << endl;
+        assert(false);
+      }
+
+      Cover const * coverPtr = partial.coverPointer();
+      assert(coverPtr != nullptr);
+
+      solution.addRow(* coverPtr);
+    }
+  }
+}
+
+
 string RowMatches::str() const
 {
   stringstream ss;

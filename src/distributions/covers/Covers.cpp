@@ -692,8 +692,6 @@ void Covers::explain(
 
     // Add in the voids, completing row matches a bit cleverly.
     rowMatches.incorporateVoids(sumProfile);
-    // rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
-    // rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
 #ifdef DEBUG_MODE4
 cout << "Matches now2\n";
 cout << rowMatches.str() << endl;
@@ -706,35 +704,8 @@ cout << "Matches now3\n";
 cout << rowMatches.str() << endl;
 #endif
 
-    // solution.init(tricksOrig, tmin);
-
     // Score those row matches anew that involves more than one row.
-    explain.setSymmetry(EXPLAIN_GENERAL);
-    explain.setComposition(EXPLAIN_MIXED_TERMS);
-    for (auto& rowMatch: rowMatches)
-    {
-      if (rowMatch.singleCount())
-        solution.addRow(rowMatch.getSingleRow());
-      else
-      {
-        Partial partial;
-        // TODO Use Partial as VoidInfo?
-        coverStore.heaviestPartial(rowMatch.getTricks(), cases, 
-          explain, partial);
-
-        if (! partial.full(rowMatch.getTricks().getWeight()))
-        {
-          cout << "Tried\n" << rowMatch.str() << endl;
-          cout << coverStore.str() << endl;
-          assert(false);
-        }
-
-        Cover const * coverPtr = partial.coverPointer();
-        assert(coverPtr != nullptr);
-
-        solution.addRow(* coverPtr);
-      }
-    }
+    rowMatches.makeSolution(coverStore, cases, explain, solution);
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);
@@ -749,7 +720,6 @@ cout << rowMatches.str() << endl;
 
   // This tends to get destroyed when solving with partial solutions,
   // so we just reset it.
-  // solution.initStrData(numStrategyTops, EXPLAIN_GENERAL);
   solution.initStrData(numStrategyTops, tricksSymmetry);
   tableauCache.store(tricks, solution);
 }

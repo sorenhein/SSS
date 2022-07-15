@@ -16,6 +16,7 @@
 
 class Covers;
 class Cover;
+class CoverTableau;
 class CoverStore;
 class Tricks;
 class Explain;
@@ -82,6 +83,12 @@ class RowMatches
     void incorporateVoids(const Profile& sumProfile);
 
     void symmetrize(const Profile& sumProfile);
+
+    void makeSolution(
+      const CoverStore& coverStore,
+      const vector<unsigned char>& cases,
+      Explain& explain,
+      CoverTableau& solution);
 
     list<RowMatch>::const_iterator begin() const
       { return matches.begin(); };
