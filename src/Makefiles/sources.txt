@@ -31,6 +31,7 @@ SOURCE_FILES    =                               \
                                                                  \
                 distributions/covers/heuristic/Heuristics.cpp    \
                 distributions/covers/heuristic/Partial.cpp       \
+                distributions/covers/heuristic/PartialVoid.cpp   \
                 distributions/covers/heuristic/RowMatch.cpp      \
                 distributions/covers/heuristic/RowMatches.cpp    \
                                                                  \

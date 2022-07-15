@@ -13,7 +13,7 @@ class Complexity;
 
 class Partial
 {
-  private:
+  protected:
 
     Cover const * coverPtr;
 

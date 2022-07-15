@@ -41,6 +41,9 @@
 #include "heuristic/Heuristics.h"
 #include "heuristic/RowMatches.h"
 
+// TODO TMP
+#include "heuristic/PartialVoid.h"
+
 #include "tableau/TableauStats.h"
 
 #include "product/ProfilePair.h"
@@ -709,7 +712,7 @@ cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
       else
         explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
 
-      Partial partial;
+      PartialVoid partial;
       coverStore.heaviestPartial(tricksL, cases, explain, partial);
       assert(partial.full(tricksL.getWeight()));
 
