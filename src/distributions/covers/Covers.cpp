@@ -679,81 +679,21 @@ void Covers::explain(
     // partitioning should also somehow be symmetric.
     solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
 
+    RowMatches rowMatches;
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
-
-    // Treat the voids separately.
-    VoidInfo voidWest, voidEast;
-    voidWest.repeats = 0;
-    voidEast.repeats = 0;
-
-    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-    explain.setComposition(EXPLAIN_LENGTH_ONLY);
-
-    const size_t tlen = tricksOfLength.size();
-    const size_t numDist = tricksOfLength[0].size();
-
-    RowMatches rowMatches;
-
-    for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
-    {
-      Tricks& tricksL = tricksOfLength[lenEW];
-#ifdef DEBUG_MODE4
-cout << "Length " << lenEW << ": " << tricksL.getWeight() << endl;
-#endif
-      if (tricksL.getWeight() == 0)
-        continue;
-
-      const unsigned factor = tricksL.factor();
-
-      if (2*lenEW+1 == tlen)
-        explain.setSymmetry(EXPLAIN_SYMMETRIC);
-      else
-        explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-
-      PartialVoid partial;
-      coverStore.heaviestPartial(tricksL, cases, explain, partial);
-      assert(partial.full(tricksL.getWeight()));
-
-      Cover const * coverPtr = partial.coverPointer();
-      assert(coverPtr != nullptr);
-
-      // Keep the voids for later, once all other row matches are known.
-      // TODO Use Partial as VoidInfo?
-      if (lenEW == 0)
-      {
-        voidWest.coverPtr = coverPtr;
-        voidWest.tricksPtr = &tricksL;
-        voidWest.westLength = 0;
-        voidWest.repeats = factor;
-      }
-      else if (lenEW+1 == tlen)
-      {
-        voidEast.coverPtr = coverPtr;
-        voidEast.tricksPtr = &tricksL;
-        voidEast.westLength = lenEW;
-        voidEast.repeats = factor;
-      }
-      else
-      {
-        // TODO Can potentially merge this into RowMatches:setVoid
-        // with another VoidInfo (OPP_EITHER).
-        CoverRow rowTmp;
-        rowTmp.resize(numDist);
-        rowTmp.add(* coverPtr, tricksL);
-
-        rowMatches.transfer(rowTmp, lenEW, OPP_EAST, factor);
-      }
-    }
-
+    rowMatches.incorporateLengths(coverStore, cases, 
+      tricksOfLength, explain);
 
     // Add the top covers for a given length.
-    rowMatches.incorporateTops(* this, tricksWithinLength, explain);
+    if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
+      return;
 
     // Add in the voids, completing row matches a bit cleverly.
-    rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
-    rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
+    rowMatches.incorporateVoids(sumProfile);
+    // rowMatches.setVoid(OPP_WEST, voidWest, sumProfile);
+    // rowMatches.setVoid(OPP_EAST, voidEast, sumProfile);
 #ifdef DEBUG_MODE4
 cout << "Matches now2\n";
 cout << rowMatches.str() << endl;

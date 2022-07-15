@@ -12,9 +12,11 @@
 #include <string>
 
 #include "RowMatch.h"
+#include "PartialVoid.h"
 
 class Covers;
 class Cover;
+class CoverStore;
 class Tricks;
 class Explain;
 
@@ -43,6 +45,11 @@ class RowMatches
 
     list<RowMatch> matches;
 
+    // PartialVoid voidWest;
+    // PartialVoid voidEast;
+    VoidInfo voidWest;
+    VoidInfo voidEast;
+
 
   public:
     
@@ -61,10 +68,18 @@ class RowMatches
       const VoidInfo& voidInfo,
       const Profile& sumProfile);
 
+    void incorporateLengths(
+      const CoverStore& coverStore,
+      const vector<unsigned char>& cases,
+      vector<Tricks>& tricksOfLength,
+      Explain& explain);
+
     bool incorporateTops(
       Covers& covers,
       const vector<Tricks>& tricksWithinLength,
       Explain& explain);
+
+    void incorporateVoids(const Profile& sumProfile);
 
     void symmetrize(const Profile& sumProfile);
 

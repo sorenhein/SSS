@@ -176,6 +176,86 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 }
 
 
+void RowMatches::incorporateLengths(
+  const CoverStore& coverStore,
+  const vector<unsigned char>& cases,
+  vector<Tricks>& tricksOfLength,
+  Explain& explain)
+{
+  // Add the top covers that apply entirely and only to given lengths.
+  explain.setComposition(EXPLAIN_LENGTH_ONLY);
+
+  // The actual maximum East-West length is tlen-1,
+  // as the range goes from 0 to this maximum length.
+  const size_t tlen = tricksOfLength.size();
+  const size_t numDist = tricksOfLength[0].size();
+
+  // Treat the voids separately.
+  // TODO In some constructor? Move to PartialVoid.
+  voidWest.repeats = 0;
+  voidEast.repeats = 0;
+
+  for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
+  {
+    Tricks& tricks = tricksOfLength[lenEW];
+    if (tricks.getWeight() == 0)
+      continue;
+
+    const unsigned factor = tricks.factor();
+
+    if (2*lenEW+1 == tlen)
+      explain.setSymmetry(EXPLAIN_SYMMETRIC);
+    else
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+
+    if (2*lenEW+1 == tlen)
+    {
+      // The cover must be symmetric.
+      explain.setSymmetry(EXPLAIN_SYMMETRIC);
+    }
+    else
+    {
+      // A cover of such length is always anti-symmetric.
+      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    }
+
+    PartialVoid partial;
+    coverStore.heaviestPartial(tricks, cases, explain, partial);
+    assert(partial.full(tricks.getWeight()));
+
+    Cover const * coverPtr = partial.coverPointer();
+    assert(coverPtr != nullptr);
+
+    // Keep the voids for later, once all other row matches are known.
+    // TODO Use Partial as VoidInfo?
+    if (lenEW == 0)
+    {
+      voidWest.coverPtr = coverPtr;
+      voidWest.tricksPtr = &tricks;
+      voidWest.westLength = 0;
+      voidWest.repeats = factor;
+    }
+    else if (lenEW+1 == tlen)
+    {
+      voidEast.coverPtr = coverPtr;
+      voidEast.tricksPtr = &tricks;
+      voidEast.westLength = lenEW;
+      voidEast.repeats = factor;
+    }
+    else
+    {
+      // TODO Can potentially merge this into RowMatches:setVoid
+      // with another VoidInfo (OPP_EITHER).
+      CoverRow rowTmp;
+      rowTmp.resize(numDist);
+      rowTmp.add(* coverPtr, tricks);
+
+      RowMatches::transfer(rowTmp, lenEW, OPP_EAST, factor);
+    }
+  }
+}
+
+
 bool RowMatches::incorporateTops(
   Covers& covers,
   const vector<Tricks>& tricksWithinLength,
@@ -184,7 +264,7 @@ bool RowMatches::incorporateTops(
   // Add the top covers for a given length.
   explain.setComposition(EXPLAIN_MIXED_TERMS);
 
-  // So the actual maximum East-West length is tlen-1,
+  // The actual maximum East-West length is tlen-1,
   // as the range goes from 0 to this maximum length.
   const size_t tlen = tricksWithinLength.size();
 
@@ -231,6 +311,14 @@ bool RowMatches::incorporateTops(
   }
 
   return true;
+}
+
+
+void RowMatches::incorporateVoids(const Profile& sumProfile)
+{
+  // Add in the voids, completing row matches a bit cleverly.
+  RowMatches::setVoid(OPP_WEST, voidWest, sumProfile);
+  RowMatches::setVoid(OPP_EAST, voidEast, sumProfile);
 }
 
 
