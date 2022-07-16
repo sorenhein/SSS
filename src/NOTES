@@ -1,4 +1,12 @@
-Can we put some of the matching from Heuristic/Cover into CoverStore?
+Make a Covers::guessStart based on heuristics.
+Move mode == 4 to number == 3.
+Try mode == 2 as number == 1.
+Eliminate old guessStart.
+
+In RowMatches, cleanup.
+In particular, change VoidInfo to PartialVoid.
+Remove VoidInfo definition.
+
 
 mode == 4: Methods to call for a single solution.
 Heuristic can return a list of non-dominated partials.

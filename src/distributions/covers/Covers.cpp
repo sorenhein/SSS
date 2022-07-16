@@ -228,16 +228,6 @@ void Covers::explainTemplate(
     stack.emplace(solution, tricks, explain.tricksMin(), 
       candidates.begin());
 
-/*
-cout << "partial solution\n";
-cout << solution.str(sumProfile);
-cout << "residuals\n";
-cout << solution.strResiduals() << "\n";
-cout << stack.begin()->tableau.str(sumProfile);
-cout << "residuals\n";
-cout << stack.begin()->tableau.strResiduals() << "\n";
-*/
-
     // Then start with a clean slate.
     solution.reset();
   }
@@ -402,93 +392,23 @@ void Covers::explainByCategory(
 
 void Covers::guessStart(
   const Tricks& tricks,
-  CoverTableau& partialSolution,
-  Explain& explain) const
+  Explain& explain,
+  const size_t numHeaviest,
+  CoverTableau& partialSolution) const
 {
   explain.setComposition(EXPLAIN_LENGTH_ONLY);
-  Partial partialLength;
-  coverStore.heaviestPartial(tricks, cases, explain, partialLength);
- 
+  Heuristics heuristic1;
+  heuristic1.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
+  // cout << "heuristic1\n" << heuristic1.str();
+
   explain.setComposition(EXPLAIN_TOPS_ONLY);
-  Partial partialTops;
-  coverStore.heaviestPartial(tricks, cases, explain, partialTops);
+  Heuristics heuristic2;
+  heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
+  // cout << "heuristic2\n" << heuristic2.str();
 
-  if (partialLength.empty() && partialTops.empty())
-  {
-#ifdef DEBUG_GUESS
-cout << "guess: Neither is set\n";
-#endif
-    return;
-  }
-  else if (partialLength.empty())
-  {
-    // Go with tops
-#ifdef DEBUG_GUESS
-cout << "guess: tops is set\n";
-#endif
-    partialSolution.addRow(partialTops.cover());
-    return;
-  }
-  else if (partialTops.empty())
-  {
-    // Go with length
-#ifdef DEBUG_GUESS
-cout << "guess: length is set\n";
-#endif
-    partialSolution.addRow(partialLength.cover());
-    return;
-  }
-
-  // TODO More efficiently? Just destroy heaviestLength?
-  // Or can we call Tricks::possible after first addRow somehow?
-  Tricks additionsSum = partialLength.tricks();
-  additionsSum += partialTops.tricks();
-
-  if (additionsSum <= tricks)
-  {
-#ifdef DEBUG_GUESS
-cout << "guess: both are additive\n";
-#endif
-    // Go with two separate rows
-    partialSolution.addRow(partialLength.cover());
-    partialSolution.addRow(partialTops.cover());
-  }
-  else if (partialTops.tricks() == partialLength.tricks() || 
-      partialTops.tricks() <= partialLength.tricks())
-  {
-#ifdef DEBUG_GUESS
-cout << "guess: tops are dominated\n";
-cout << partialLength.cover().strNumerical();
-cout << partialTops.cover().strNumerical();
-#endif
-    // Go with length
-    partialSolution.addRow(partialLength.cover());
-  }
-  else if (partialLength.tricks() <= partialTops.tricks())
-  {
-#ifdef DEBUG_GUESS
-cout << "guess: length is dominated\n";
-#endif
-    // Go with tops
-    partialSolution.addRow(partialTops.cover());
-  }
-  else
-  {
-#ifdef DEBUG_GUESS
-cout << "guess: both are OR'ed\n";
-#endif
-    // Go with one row and an "OR"
-    partialSolution.addRow(partialLength.cover());
-
-    partialTops.tricks().uniqueOver(partialLength.tricks(), cases);
-
-    partialSolution.extendRow(
-      partialTops.cover(),
-      partialTops.tricks(),
-      partialTops.weight(),
-      0);
-  }
+  heuristic2.combine(heuristic1, tricks, cases, partialSolution);
 }
+
 
 // #define DEBUG_MODE4
 
@@ -596,7 +516,7 @@ void Covers::explain(
   else if (mode == 2)
   {
     // Guess followed by exhaustive run.
-    Covers::guessStart(tricks, solution, explain);
+    Covers::guessStart(tricks, explain, 1, solution);
     if (solution.complete())
     {
       solution.initStrData(numStrategyTops, tricksSymmetry);
@@ -611,7 +531,7 @@ void Covers::explain(
   else if (mode == 3)
   {
     // Guess followed by split of the remainder by symmetry.
-    Covers::guessStart(tricks, solution, explain);
+    Covers::guessStart(tricks, explain, 1, solution);
     if (solution.complete())
     {
       solution.initStrData(numStrategyTops, tricksSymmetry);
@@ -641,48 +561,24 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
-    // Guess followed by exhaustive run.
-    /*
-    Covers::guessStart(tricks, solution, explain);
+    // Guess followed by heuristic combinations of partial solutions.
+    Covers::guessStart(tricks, explain, 3, solution);
+
     if (solution.complete())
     {
       solution.initStrData(numStrategyTops, tricksSymmetry);
       return;
     }
-    */
-
-    explain.setComposition(EXPLAIN_LENGTH_ONLY);
-    Heuristics heuristic1;
-    heuristic1.findHeaviestN(coverStore, tricks, cases, explain, 3);
-    // cout << "heuristic1\n" << heuristic1.str();
-
-    explain.setComposition(EXPLAIN_TOPS_ONLY);
-    Heuristics heuristic2;
-    heuristic2.findHeaviestN(coverStore, tricks, cases, explain, 3);
-    // cout << "heuristic2\n" << heuristic2.str();
-
-    heuristic2.combine(heuristic1, tricks, cases, solution);
-
-// cout << "resW " << solution.strResiduals() << "\n";
-
-    if (solution.complete())
-    {
-// cout << "ABOUT to declare complete: " << tricksSymmetry << endl;
-      solution.initStrData(numStrategyTops, tricksSymmetry);
-      return;
-    }
-
-    vector<Tricks> tricksWithinLength;
-    vector<Tricks> tricksOfLength;
 
     // TODO May want to split even the symmetrics.  Then the
     // partitioning should also somehow be symmetric.
+    vector<Tricks> tricksWithinLength;
+    vector<Tricks> tricksOfLength;
     solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
-
-    RowMatches rowMatches;
 
     // Add the length-only covers arising from a minimum trick number
     // for a given length.
+    RowMatches rowMatches;
     rowMatches.incorporateLengths(coverStore, cases, 
       tricksOfLength, explain);
 
@@ -692,15 +588,17 @@ void Covers::explain(
 
     // Add in the voids, completing row matches a bit cleverly.
     rowMatches.incorporateVoids(sumProfile);
+
 #ifdef DEBUG_MODE4
-cout << "Matches now2\n";
+cout << "Matches after incorporation\n";
 cout << rowMatches.str() << endl;
 #endif
 
     // Combine obvious symmetries.
     rowMatches.symmetrize(sumProfile);
+
 #ifdef DEBUG_MODE4
-cout << "Matches now3\n";
+cout << "Matches after symmetrize\n";
 cout << rowMatches.str() << endl;
 #endif
 

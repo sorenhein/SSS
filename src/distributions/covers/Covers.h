@@ -82,8 +82,9 @@ class Covers
 
     void guessStart(
       const Tricks& tricks,
-      CoverTableau& partialSolution,
-      Explain& explain) const;
+      Explain& explain,
+      const size_t numHeavist,
+      CoverTableau& partialSolution) const;
 
 
   public:
