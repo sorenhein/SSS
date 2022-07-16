@@ -1,16 +1,11 @@
-Make a Covers::guessStart based on heuristics.
-Move mode == 4 to number == 3.
-Try mode == 2 as number == 1.
-Eliminate old guessStart.
+The heuristic with 3 options is not particularly good.
+It's slower AND less good than with 1 option.
 
 In RowMatches, cleanup.
-In particular, change VoidInfo to PartialVoid.
-Remove VoidInfo definition.
 
-
-mode == 4: Methods to call for a single solution.
 Heuristic can return a list of non-dominated partials.
-In mode == 4, loop and find the best one.
+
+mode == 4: Pick the best solution from a list.
 
 Differences g = 4 simple length-1 heuristic to 3*3
 ==================================================

@@ -86,6 +86,10 @@ class Covers
       const size_t numHeavist,
       CoverTableau& partialSolution) const;
 
+    void guessRest(
+      Explain& explain,
+      CoverTableau& solution);
+
 
   public:
 

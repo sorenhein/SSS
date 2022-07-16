@@ -388,8 +388,6 @@ void Covers::explainByCategory(
 }
 
 
-#define DEBUG_GUESS
-
 void Covers::guessStart(
   const Tricks& tricks,
   Explain& explain,
@@ -407,6 +405,47 @@ void Covers::guessStart(
   // cout << "heuristic2\n" << heuristic2.str();
 
   heuristic2.combine(heuristic1, tricks, cases, partialSolution);
+}
+
+
+void Covers::guessRest(
+  Explain& explain,
+  CoverTableau& solution)
+{
+  // TODO May want to split even the symmetrics.  Then the
+  // partitioning should also somehow be symmetric.
+  vector<Tricks> tricksWithinLength;
+  vector<Tricks> tricksOfLength;
+  solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
+
+  // Add the length-only covers arising from a minimum trick number
+  // for a given length.
+  RowMatches rowMatches;
+  rowMatches.incorporateLengths(coverStore, cases, 
+    tricksOfLength, explain);
+
+  // Add the top covers for a given length.
+  if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
+    return;
+
+  // Add in the voids, completing row matches a bit cleverly.
+  rowMatches.incorporateVoids(sumProfile);
+
+#ifdef DEBUG_MODE4
+cout << "Matches after incorporation\n";
+cout << rowMatches.str() << endl;
+#endif
+
+  // Combine obvious symmetries.
+  rowMatches.symmetrize(sumProfile);
+
+#ifdef DEBUG_MODE4
+cout << "Matches after symmetrize\n";
+cout << rowMatches.str() << endl;
+#endif
+
+  // Score those row matches anew that involves more than one row.
+  rowMatches.makeSolution(coverStore, cases, explain, solution);
 }
 
 
@@ -570,40 +609,9 @@ void Covers::explain(
       return;
     }
 
-    // TODO May want to split even the symmetrics.  Then the
-    // partitioning should also somehow be symmetric.
-    vector<Tricks> tricksWithinLength;
-    vector<Tricks> tricksOfLength;
-    solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
-
-    // Add the length-only covers arising from a minimum trick number
-    // for a given length.
-    RowMatches rowMatches;
-    rowMatches.incorporateLengths(coverStore, cases, 
-      tricksOfLength, explain);
-
-    // Add the top covers for a given length.
-    if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
-      return;
-
-    // Add in the voids, completing row matches a bit cleverly.
-    rowMatches.incorporateVoids(sumProfile);
-
-#ifdef DEBUG_MODE4
-cout << "Matches after incorporation\n";
-cout << rowMatches.str() << endl;
-#endif
-
-    // Combine obvious symmetries.
-    rowMatches.symmetrize(sumProfile);
-
-#ifdef DEBUG_MODE4
-cout << "Matches after symmetrize\n";
-cout << rowMatches.str() << endl;
-#endif
-
-    // Score those row matches anew that involves more than one row.
-    rowMatches.makeSolution(coverStore, cases, explain, solution);
+    // Slice the residuals by West length, find partial covers for
+    // each slice, and combine them back together into a solution.
+    Covers::guessRest(explain, solution);
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);

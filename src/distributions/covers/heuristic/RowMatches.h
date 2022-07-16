@@ -28,28 +28,14 @@ class Profile;
 enum Opponent: unsigned;
 
 
-struct VoidInfo
-{
-  Cover const * coverPtr;
-
-  Tricks * tricksPtr;
-
-  unsigned westLength;
-
-  unsigned repeats;
-};
-
-
 class RowMatches
 {
   private:
 
     list<RowMatch> matches;
 
-    // PartialVoid voidWest;
-    // PartialVoid voidEast;
-    VoidInfo voidWest;
-    VoidInfo voidEast;
+    PartialVoid voidWest;
+    PartialVoid voidEast;
 
 
   public:
@@ -66,7 +52,7 @@ class RowMatches
 
     void setVoid(
       const Opponent side,
-      const VoidInfo& voidInfo,
+      PartialVoid& partialVoid,
       const Profile& sumProfile);
 
     void incorporateLengths(

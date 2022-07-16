@@ -71,10 +71,10 @@ void RowMatches::transfer(
 
 void RowMatches::setVoid(
   const Opponent side,
-  const VoidInfo& voidInfo,
+  PartialVoid& partialVoid,
   const Profile& sumProfile)
 {
-  if (voidInfo.repeats == 0)
+  if (partialVoid.repeats() == 0)
     return;
 
   // Get the length range that the tops of each match could have if
@@ -104,9 +104,9 @@ cout << RowMatches::str() << "\n";
     // the lengths by tops.
     // Lengths must be contiguous with a void in order to augment.
 
-    if (match.preferred(voidInfo.westLength, side))
+    if (match.preferred(partialVoid.lengthWest(), side))
       potentialsGreat.push_back(&match);
-    else if (match.possible(voidInfo.westLength, side))
+    else if (match.possible(partialVoid.lengthWest(), side))
       potentialsGood.push_back(&match);
   }
 
@@ -117,12 +117,12 @@ cout << RowMatches::str() << "\n";
 cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 #endif
 
-  if (psizeGreat > voidInfo.repeats)
+  if (psizeGreat > partialVoid.repeats())
     cout << sideName << "WARN Picking random great potentials\n";
-  else if (psizeGreat + psizeGood > voidInfo.repeats)
+  else if (psizeGreat + psizeGood > partialVoid.repeats())
     cout << sideName << "WARN Picking random good potentials\n";
 
-  unsigned rest = voidInfo.repeats;
+  unsigned rest = partialVoid.repeats();
 
   // Use up any great potentials first.
   const unsigned potsGreat = min(psizeGreat, rest);
@@ -131,7 +131,7 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
   for (size_t p = 0; p < potsGreat; p++)
   {
     RowMatch& rm = ** pitGreat;
-    rm.add(* voidInfo.tricksPtr, side);
+    rm.add(partialVoid.tricks(), side);
     pitGreat++;
   }
 
@@ -150,7 +150,7 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
   for (size_t p = 0; p < potsGood; p++)
   {
     RowMatch& rm = ** pitGood;
-    rm.add(* voidInfo.tricksPtr, side);
+    rm.add(partialVoid.tricks(), side);
     pitGood++;
   }
 
@@ -164,10 +164,10 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 
   // Then keep the rest.
   CoverRow row;
-  row.resize(voidInfo.tricksPtr->size());
-  row.add(* voidInfo.coverPtr, * voidInfo.tricksPtr);
+  row.resize(partialVoid.tricks().size());
+  row.add(partialVoid.cover(), partialVoid.tricks());
 
-  RowMatches::transfer(row, voidInfo.westLength, side, rest);
+  RowMatches::transfer(row, partialVoid.lengthWest(), side, rest);
   cout << sideName << "REST " << rest << "\n";
 
     // cout << "Done after rest\n";
@@ -191,9 +191,6 @@ void RowMatches::incorporateLengths(
   const size_t numDist = tricksOfLength[0].size();
 
   // Treat the voids separately.
-  // TODO In some constructor? Move to PartialVoid.
-  voidWest.repeats = 0;
-  voidEast.repeats = 0;
 
   for (unsigned lenEW = 0; lenEW < tlen; lenEW++)
   {
@@ -223,24 +220,18 @@ void RowMatches::incorporateLengths(
     coverStore.heaviestPartial(tricks, cases, explain, partial);
     assert(partial.full(tricks.getWeight()));
 
-    Cover const * coverPtr = partial.coverPointer();
-    assert(coverPtr != nullptr);
-
     // Keep the voids for later, once all other row matches are known.
-    // TODO Use Partial as VoidInfo?
     if (lenEW == 0)
     {
-      voidWest.coverPtr = coverPtr;
-      voidWest.tricksPtr = &tricks;
-      voidWest.westLength = 0;
-      voidWest.repeats = factor;
+      voidWest = move(partial);
+      // voidWest = partial;
+      voidWest.setVoid(0, factor);
     }
     else if (lenEW+1 == tlen)
     {
-      voidEast.coverPtr = coverPtr;
-      voidEast.tricksPtr = &tricks;
-      voidEast.westLength = lenEW;
-      voidEast.repeats = factor;
+      voidEast = move(partial);
+      // voidEast = partial;
+      voidEast.setVoid(lenEW, factor);
     }
     else
     {
@@ -248,7 +239,7 @@ void RowMatches::incorporateLengths(
       // with another VoidInfo (OPP_EITHER).
       CoverRow rowTmp;
       rowTmp.resize(numDist);
-      rowTmp.add(* coverPtr, tricks);
+      rowTmp.add(partial.cover(), tricks);
 
       RowMatches::transfer(rowTmp, lenEW, OPP_EAST, factor);
     }
@@ -331,8 +322,6 @@ void RowMatches::symmetrize(const Profile& sumProfile)
   {
     if (! rit1->symmetrizable(sumProfile))
       continue;
-// cout << "rit1 is symmetrizable\n";
-// cout << rit1->str() << endl;
 
     for (auto rit2 = next(rit1); rit2 != matches.end(); )
     {
@@ -342,17 +331,10 @@ void RowMatches::symmetrize(const Profile& sumProfile)
         continue;
       }
 
-// cout << "rit2 is symmetrizable\n";
-// cout << rit2->str() << endl;
       if (rit1->symmetricWith(* rit2))
       {
-// cout << "Symmetrized!\n";
-// cout << "Before\n";
-// cout << RowMatches::str();
         rit1->symmetrize();
         rit2 = matches.erase(rit2);
-// cout << "After\n";
-// cout << RowMatches::str();
       }
       else
         rit2++;
@@ -378,21 +360,18 @@ void RowMatches::makeSolution(
     else
     {
       Partial partial;
-      // TODO Use Partial as VoidInfo?
       coverStore.heaviestPartial(match.getTricks(), cases,
         explain, partial);
 
       if (! partial.full(match.getTricks().getWeight()))
       {
-        cout << "Tried\n" << match.str() << endl;
+        cout << "No full match for:\n" << match.str() << endl;
+        cout << "The cover store contains:\n";
         cout << coverStore.str() << endl;
         assert(false);
       }
 
-      Cover const * coverPtr = partial.coverPointer();
-      assert(coverPtr != nullptr);
-
-      solution.addRow(* coverPtr);
+      solution.addRow(partial.cover());
     }
   }
 }
