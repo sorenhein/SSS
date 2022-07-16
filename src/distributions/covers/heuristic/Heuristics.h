@@ -57,6 +57,12 @@ class Heuristics
     };
   };
 
+  struct Dominant
+  {
+    PartialBest partialBest;
+    Tricks tricks;
+  };
+
 
   private:
 
@@ -72,6 +78,20 @@ class Heuristics
       const Heuristics& heur2,
       CoverTableau& partialSolution,
       bool& combinedFlag) const;
+
+    bool combineSimply(
+      const Heuristics& heur2,
+      list<CoverTableau>& partialSolutions,
+      bool& combinedFlag) const;
+
+    bool insertDominant(
+      list<Dominant>& dominant,
+      const Tricks& tricks,
+      Partial const * partial1Ptr,
+      Partial const * partial2Ptr,
+      const bool flag1In,
+      const bool flag2In,
+      const bool flagIndepIn) const;
 
     void setPartialSolution(
       const PartialBest& partialBest,
@@ -95,6 +115,12 @@ class Heuristics
       const Tricks& tricks,
       const vector<unsigned char>& cases,
       CoverTableau& partialSolution) const;
+
+    bool combine(
+      const Heuristics& heur2,
+      const Tricks& tricks,
+      const vector<unsigned char>& cases,
+      list<CoverTableau>& partialSolutions) const;
 
     string str() const;
 };

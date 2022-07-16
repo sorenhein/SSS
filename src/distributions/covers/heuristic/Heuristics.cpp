@@ -89,6 +89,97 @@ bool Heuristics::combineSimply(
 }
 
 
+bool Heuristics::combineSimply(
+  const Heuristics& heur2,
+  list<CoverTableau>& partialSolutions,
+  bool& combinedFlag) const
+{
+  // Returns true if at least one of the two Heuristics's is empty.
+
+  if (heur2.partials.empty())
+  {
+    if (partials.empty())
+    {
+      combinedFlag = false;
+      return true;
+    }
+
+    for (auto& partial: partials)
+    {
+      partialSolutions.emplace_back(CoverTableau());
+      CoverTableau& partialSolution = partialSolutions.back();
+      partialSolution.addRow(partial.cover());
+    }
+
+    combinedFlag = true;
+    return true;
+  }
+  else if (partials.empty())
+  {
+    for (auto& partial: heur2.partials)
+    {
+      partialSolutions.emplace_back(CoverTableau());
+      CoverTableau& partialSolution = partialSolutions.back();
+      partialSolution.addRow(partial.cover());
+    }
+
+    combinedFlag = true;
+    return true;
+  }
+  else
+  {
+    // No simple combination.
+    return false;
+  }
+}
+
+
+bool Heuristics::insertDominant(
+  list<Dominant>& dominant,
+  const Tricks& tricks,
+  Partial const * partial1Ptr,
+  Partial const * partial2Ptr,
+  const bool flag1In,
+  const bool flag2In,
+  const bool flagIndepIn) const
+{
+  // TODO This is inefficient!
+  // Could sort list by weight.
+  // Could know ahead of time whether to test for <= or >=.
+
+  bool insertFlag = false;
+
+  for (auto diter = dominant.begin(); diter != dominant.end(); )
+  {
+    if (tricks <= diter->tricks)
+    {
+      // Dominated.
+      // TODO If identical, pick the lower-complexity one.
+      assert(! insertFlag);
+      return false;
+    }
+    else if (diter->tricks <= tricks)
+    {
+      // Erase all dominated entries.
+      insertFlag = true;
+      diter = dominant.erase(diter);
+    }
+    else
+    {
+      insertFlag = true;
+      diter++;
+    }
+  }
+
+  dominant.emplace_back(Dominant());
+  Dominant& dom = dominant.back();
+  dom.tricks = tricks;
+  dom.partialBest.set(partial1Ptr, partial2Ptr, 
+    flag1In, flag2In, flagIndepIn);
+  return true;
+}
+
+
 void Heuristics::setPartialSolution(
   const PartialBest& partialBest,
   const vector<unsigned char>& cases,
@@ -262,6 +353,119 @@ bool Heuristics::combine(
 // cout << "p bef   " << partialSolution.strResiduals();
   Heuristics::setPartialSolution(partialBest, cases, partialSolution);
 // cout << "p aft   " << partialSolution.strResiduals();
+  return true;
+}
+
+
+bool Heuristics::combine(
+  const Heuristics& heur2,
+  const Tricks& tricks,
+  const vector<unsigned char>& cases,
+  list<CoverTableau>& partialSolutions) const
+{
+  // Typically one Heuristics will be the top N partial length covers,
+  // and the other (pc2) will be the top N partial tops-only covers.
+  // We pick the combination that covers the most weight in total.
+  
+  bool combinedFlag = false;
+  if (Heuristics::combineSimply(heur2, partialSolutions, combinedFlag))
+    return combinedFlag;
+
+  list<Dominant> dominant;
+
+  Tricks additionsScratch;
+  bool flag;
+
+  for (auto& pc1: partials)
+  {
+    for (auto& pc2: heur2.partials)
+    {
+      // Try adding them together as independent rows.
+      additionsScratch = pc1.tricks();
+      additionsScratch += pc2.tricks();
+
+      if (additionsScratch <= tricks)
+      {
+        // TODO Will use partialBest.set(&pc1, &pc2, true, true, true);
+        flag = Heuristics::insertDominant(dominant, additionsScratch,
+          &pc1, &pc2, true, true, true);
+        
+#ifdef HEUR_DEBUG
+  if (flag)
+  {
+    cout << "Independent " << additionsScratch.getWeight() << "\n";
+    cout << pc1.coverPtr->strNumerical() << endl;
+    cout << pc2.coverPtr->strNumerical() << endl;
+    cout << additionsScratch.strSpaced() << endl;
+  }
+#endif
+      }
+      else if (pc1.tricks() <= pc2.tricks())
+      {
+        // pc1 is dominated by pc2.
+        // TODO Will use partialBest.set(nullptr, &pc2, false, true, false);
+
+        flag = Heuristics::insertDominant(dominant, pc2.tricks(),
+          nullptr, &pc2, false, true, false);
+
+#ifdef HEUR_DEBUG
+  if (flag)
+  {
+    cout << "pc2 dominates " << additionsScratch.getWeight() << "\n";
+    cout << pc1.coverPtr->strNumerical() << endl;
+    cout << pc2.coverPtr->strNumerical() << endl;
+    cout << pc1.additions.strSpaced() << endl;
+    cout << pc2.additions.strSpaced() << endl << endl;
+  }
+#endif
+      }
+      else if (pc2.tricks() <= pc1.tricks())
+      {
+        // pc2 is dominated by pc1.
+        flag = Heuristics::insertDominant(dominant, pc1.tricks(),
+          &pc1, nullptr, true, false, false);
+
+#ifdef HEUR_DEBUG
+  if (flag)
+  {
+    cout << "pc1 dominates " << additionsScratch.getWeight() << "\n";
+    cout << pc1.coverPtr->strNumerical() << endl;
+    cout << pc2.coverPtr->strNumerical() << endl;
+    cout << pc1.additions.strSpaced() << endl;
+    cout << pc2.additions.strSpaced() << endl << endl;
+  }
+#endif
+      }
+      else
+      {
+        // OR them together.
+        additionsScratch = pc1.tricks();
+        additionsScratch.orNormal(pc2.tricks(), cases);
+
+        flag = Heuristics::insertDominant(dominant, additionsScratch,
+          &pc1, &pc2, true, true, false);
+
+#ifdef HEUR_DEBUG
+  if (flag)
+  {
+    cout << "OR " << additionsScratch.getWeight() << "\n";
+    cout << pc1.coverPtr->strNumerical() << endl;
+    cout << pc2.coverPtr->strNumerical() << endl;
+    cout << pc1.additions.strSpaced() << endl;
+    cout << pc2.additions.strSpaced() << endl << endl;
+  }
+#endif
+      }
+    }
+  }
+
+  for (auto& dom: dominant)
+  {
+    partialSolutions.emplace_back(CoverTableau());
+    CoverTableau& partialSolution = partialSolutions.back();
+    Heuristics::setPartialSolution(dom.partialBest, cases, partialSolution);
+  }
+
   return true;
 }
 
