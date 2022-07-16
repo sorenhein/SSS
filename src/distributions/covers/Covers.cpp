@@ -388,6 +388,35 @@ void Covers::explainByCategory(
 }
 
 
+void Covers::guessBySymmetry(
+  Explain& explain,
+  const unsigned char tmin,
+  CoverTableau& solution,
+  bool& newTableauFlag)
+{
+  Tricks tricksSymm, tricksAntisymm;
+  solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
+
+  if (tricksSymm.getWeight())
+  {
+    solution.init(tricksSymm, tmin);
+    explain.setSymmetry(EXPLAIN_SYMMETRIC);
+
+    Covers::explainByCategory(tricksSymm, explain, true,
+      solution, newTableauFlag);
+  }
+
+  if (tricksAntisymm.getWeight())
+  {
+    solution.init(tricksAntisymm, tmin);
+
+    explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
+    Covers::explainByCategory(tricksAntisymm, explain, true,
+      solution, newTableauFlag);
+  }
+}
+
+
 void Covers::guessStart(
   const Tricks& tricks,
   Explain& explain,
@@ -530,27 +559,7 @@ void Covers::explain(
   else if (mode == 1)
   {
     // No guess.  Direct split by symmetry.
-    Tricks tricksSymm, tricksAntisymm;
-    solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
-
-    if (tricksSymm.getWeight())
-    {
-      solution.init(tricksSymm, tmin);
-      explain.setSymmetry(EXPLAIN_SYMMETRIC);
-
-      Covers::explainByCategory(tricksSymm, explain, true,
-        solution, newTableauFlag);
-    }
-
-    if (tricksAntisymm.getWeight())
-    {
-      solution.init(tricksAntisymm, tmin);
-      CoverTableau solutionAntisymm;
-
-      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-      Covers::explainByCategory(tricksAntisymm, explain, true,
-        solution, newTableauFlag);
-    }
+    Covers::guessBySymmetry(explain, tmin, solution, newTableauFlag);
   }
   else if (mode == 2)
   {
@@ -571,32 +580,14 @@ void Covers::explain(
   {
     // Guess followed by split of the remainder by symmetry.
     Covers::guessStart(tricks, explain, 1, solution);
+
     if (solution.complete())
     {
       solution.initStrData(numStrategyTops, tricksSymmetry);
       return;
     }
 
-    Tricks tricksSymm, tricksAntisymm;
-    solution.partitionResiduals(tricksSymm, tricksAntisymm, cases);
-
-    if (tricksSymm.getWeight())
-    {
-      solution.init(tricksSymm, tmin);
-      explain.setSymmetry(EXPLAIN_SYMMETRIC);
-
-      Covers::explainByCategory(tricksSymm, explain, true,
-        solution, newTableauFlag);
-    }
-
-    if (tricksAntisymm.getWeight())
-    {
-      solution.init(tricksAntisymm, tmin);
-
-      explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
-      Covers::explainByCategory(tricksAntisymm, explain, true,
-        solution, newTableauFlag);
-    }
+    Covers::guessBySymmetry(explain, tmin, solution, newTableauFlag);
   }
   else if (mode == 4)
   {

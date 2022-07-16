@@ -80,6 +80,12 @@ class Covers
       CoverTableau& solution,
       bool& newTableauFlag);
 
+    void guessBySymmetry(
+      Explain& explain,
+      const unsigned char tmin,
+      CoverTableau& solution,
+      bool& newTableauFlag);
+
     void guessStart(
       const Tricks& tricks,
       Explain& explain,
