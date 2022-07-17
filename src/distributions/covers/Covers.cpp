@@ -621,72 +621,27 @@ void Covers::explain(
       // Slice the residuals by West length, find partial covers for
       // each slice, and combine them back together into a solution.
       Covers::guessRest(explain, solution);
-
-      // Set the actual minimum.
-      solution.setMinTricks(tmin);
-    
-      newTableauFlag = true;
     }
     else
     {
-
 // cout << "Number of partials: " << solutions.size() << "\n";
-    for (auto& partialSolution: solutions)
-    {
-// cout << "Partial:\n";
-// cout << partialSolution.strResiduals();
-// cout << partialSolution.strBracket();
-      if (partialSolution.complete())
+      for (auto& partialSolution: solutions)
       {
-// cout << "Complete\n";
-        partialSolution.initStrData(numStrategyTops, tricksSymmetry);
-      }
-      else
-      {
-        // Slice the residuals by West length, find partial covers for
-        // each slice, and combine them back together into a solution.
-        Covers::guessRest(explain, partialSolution);
-// cout << "Guessed the rest\n";
-        partialSolution.initStrData(numStrategyTops, tricksSymmetry);
-      }
+        if (! partialSolution.complete())
+        {
+          // Slice the residuals by West length, find partial covers for
+          // each slice, and combine them back together into a solution.
+          Covers::guessRest(explain, partialSolution);
+        }
 
-      if (! solution.used())
-      {
-// cout << "First new solution\n";
-        solution = partialSolution;
+        if (! solution.used() || partialSolution < solution)
+          solution = partialSolution;
       }
-      else if (partialSolution < solution)
-      {
-// cout << "Better new solution\n";
-        solution = partialSolution;
-      }
-    }
     }
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);
-    
     newTableauFlag = true;
-
-/*
-    // Guess followed by heuristic combinations of partial solutions.
-    Covers::guessStart(tricks, explain, 3, solution);
-
-    if (solution.complete())
-    {
-      solution.initStrData(numStrategyTops, tricksSymmetry);
-      return;
-    }
-
-    // Slice the residuals by West length, find partial covers for
-    // each slice, and combine them back together into a solution.
-    Covers::guessRest(explain, solution);
-
-    // Set the actual minimum.
-    solution.setMinTricks(tmin);
-    
-    newTableauFlag = true;
-*/
   }
   else
     assert(false);
