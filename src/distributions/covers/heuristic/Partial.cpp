@@ -111,7 +111,7 @@ unsigned Partial::weight() const
 string Partial::str() const
 {
   if (coverPtr == nullptr)
-    return nullptr;
+    return "unset\n";
 
   string s = coverPtr->strNumerical();
   s += additions.strSpaced();

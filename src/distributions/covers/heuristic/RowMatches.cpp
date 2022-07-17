@@ -67,7 +67,7 @@ void RowMatches::transfer(
 }
 
 
-#define ROW_DEBUG
+// #define ROW_DEBUG
 
 void RowMatches::setVoid(
   const Opponent side,

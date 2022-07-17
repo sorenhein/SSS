@@ -92,6 +92,12 @@ class Covers
       const size_t numHeavist,
       CoverTableau& partialSolution) const;
 
+    void guessStarts(
+      const Tricks& tricks,
+      Explain& explain,
+      const size_t numHeavist,
+      list<CoverTableau>& partialSolution) const;
+
     void guessRest(
       Explain& explain,
       CoverTableau& solution);

@@ -437,6 +437,26 @@ void Covers::guessStart(
 }
 
 
+void Covers::guessStarts(
+  const Tricks& tricks,
+  Explain& explain,
+  const size_t numHeaviest,
+  list<CoverTableau>& partialSolutions) const
+{
+  explain.setComposition(EXPLAIN_LENGTH_ONLY);
+  Heuristics heuristic1;
+  heuristic1.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
+// cout << "heuristic1\n" << heuristic1.str();
+
+  explain.setComposition(EXPLAIN_TOPS_ONLY);
+  Heuristics heuristic2;
+  heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
+// cout << "heuristic2\n" << heuristic2.str();
+
+  heuristic2.combine(heuristic1, tricks, cases, partialSolutions);
+}
+
+
 void Covers::guessRest(
   Explain& explain,
   CoverTableau& solution)
@@ -591,6 +611,64 @@ void Covers::explain(
   }
   else if (mode == 4)
   {
+    list<CoverTableau> solutions;
+
+    // Guess followed by heuristic combinations of partial solutions.
+    Covers::guessStarts(tricks, explain, 3, solutions);
+
+    if (solutions.size() == 0)
+    {
+      // Slice the residuals by West length, find partial covers for
+      // each slice, and combine them back together into a solution.
+      Covers::guessRest(explain, solution);
+
+      // Set the actual minimum.
+      solution.setMinTricks(tmin);
+    
+      newTableauFlag = true;
+    }
+    else
+    {
+
+// cout << "Number of partials: " << solutions.size() << "\n";
+    for (auto& partialSolution: solutions)
+    {
+// cout << "Partial:\n";
+// cout << partialSolution.strResiduals();
+// cout << partialSolution.strBracket();
+      if (partialSolution.complete())
+      {
+// cout << "Complete\n";
+        partialSolution.initStrData(numStrategyTops, tricksSymmetry);
+      }
+      else
+      {
+        // Slice the residuals by West length, find partial covers for
+        // each slice, and combine them back together into a solution.
+        Covers::guessRest(explain, partialSolution);
+// cout << "Guessed the rest\n";
+        partialSolution.initStrData(numStrategyTops, tricksSymmetry);
+      }
+
+      if (! solution.used())
+      {
+// cout << "First new solution\n";
+        solution = partialSolution;
+      }
+      else if (partialSolution < solution)
+      {
+// cout << "Better new solution\n";
+        solution = partialSolution;
+      }
+    }
+    }
+
+    // Set the actual minimum.
+    solution.setMinTricks(tmin);
+    
+    newTableauFlag = true;
+
+/*
     // Guess followed by heuristic combinations of partial solutions.
     Covers::guessStart(tricks, explain, 3, solution);
 
@@ -608,6 +686,7 @@ void Covers::explain(
     solution.setMinTricks(tmin);
     
     newTableauFlag = true;
+*/
   }
   else
     assert(false);

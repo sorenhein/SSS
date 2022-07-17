@@ -91,6 +91,7 @@ bool Heuristics::combineSimply(
 
 bool Heuristics::combineSimply(
   const Heuristics& heur2,
+  const Tricks& tricks,
   list<CoverTableau>& partialSolutions,
   bool& combinedFlag) const
 {
@@ -108,6 +109,7 @@ bool Heuristics::combineSimply(
     {
       partialSolutions.emplace_back(CoverTableau());
       CoverTableau& partialSolution = partialSolutions.back();
+      partialSolution.init(tricks, 0);  // tmin comes later
       partialSolution.addRow(partial.cover());
     }
 
@@ -120,6 +122,7 @@ bool Heuristics::combineSimply(
     {
       partialSolutions.emplace_back(CoverTableau());
       CoverTableau& partialSolution = partialSolutions.back();
+      partialSolution.init(tricks, 0);
       partialSolution.addRow(partial.cover());
     }
 
@@ -147,26 +150,22 @@ bool Heuristics::insertDominant(
   // Could sort list by weight.
   // Could know ahead of time whether to test for <= or >=.
 
-  bool insertFlag = false;
-
   for (auto diter = dominant.begin(); diter != dominant.end(); )
   {
-    if (tricks <= diter->tricks)
+    // TODO Could add a Tricks::operator <
+    if (tricks <= diter->tricks && ! (tricks == diter->tricks))
     {
       // Dominated.
-      // TODO If identical, pick the lower-complexity one.
-      assert(! insertFlag);
       return false;
     }
-    else if (diter->tricks <= tricks)
+    else if (diter->tricks <= tricks && ! (tricks == diter->tricks))
     {
       // Erase all dominated entries.
-      insertFlag = true;
       diter = dominant.erase(diter);
     }
     else
     {
-      insertFlag = true;
+      // TODO If identical, could pick the lower-complexity one.
       diter++;
     }
   }
@@ -368,7 +367,8 @@ bool Heuristics::combine(
   // We pick the combination that covers the most weight in total.
   
   bool combinedFlag = false;
-  if (Heuristics::combineSimply(heur2, partialSolutions, combinedFlag))
+  if (Heuristics::combineSimply(heur2, tricks, 
+      partialSolutions, combinedFlag))
     return combinedFlag;
 
   list<Dominant> dominant;
@@ -463,6 +463,7 @@ bool Heuristics::combine(
   {
     partialSolutions.emplace_back(CoverTableau());
     CoverTableau& partialSolution = partialSolutions.back();
+    partialSolution.init(tricks, 0);  // tmin comes later
     Heuristics::setPartialSolution(dom.partialBest, cases, partialSolution);
   }
 

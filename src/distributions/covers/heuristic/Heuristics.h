@@ -9,6 +9,8 @@
 #ifndef SSS_HEURISTICS_H
 #define SSS_HEURISTICS_H
 
+#include <iostream>
+#include <sstream>
 #include <set>
 #include <string>
 
@@ -55,12 +57,28 @@ class Heuristics
       flag2 = flag2In;
       flagIndep = flagIndepIn;
     };
+
+    string str() const
+    {
+      stringstream ss;
+      ss << "ptr1       " << (ptr1 ? ptr1->str() : "null\n");
+      ss << "ptr2       " << (ptr2 ? ptr2->str() : "null\n");
+      ss << "flag1      " << (flag1 ? "true" : "false") << "\n";
+      ss << "flag2      " << (flag2 ? "true" : "false") << "\n";
+      ss << "flagIndep  " << (flagIndep ? "true" : "false") << "\n";
+      return ss.str();
+    };
   };
 
   struct Dominant
   {
     PartialBest partialBest;
     Tricks tricks;
+
+    string str() const
+    {
+      return partialBest.str() + tricks.strSpaced();
+    }
   };
 
 
@@ -81,6 +99,7 @@ class Heuristics
 
     bool combineSimply(
       const Heuristics& heur2,
+      const Tricks& tricks,
       list<CoverTableau>& partialSolutions,
       bool& combinedFlag) const;
 

@@ -4,8 +4,18 @@ It's slower AND less good than with 1 option.
 In RowMatches, cleanup.
 
 Heuristic can return a list of non-dominated partials.
+- Hook up new code
+- Discard combinations where an OR produces a poorer complexity
+  than some other solve of the whole overlapping trick vector.
+  Requires solving that... (at least until the solution is beaten)
+
+Probably something wrong again with classification of strategies
+as symmetric or not (see counts of new vs old mode == 4).
 
 mode == 4: Pick the best solution from a list.
+
+Also look at 3*3 for mode == 2 and 3.  See the score of the heuristic
+alone. Maybe diagram of log10(time) and complexity.
 
 Differences g = 4 simple length-1 heuristic to 3*3
 ==================================================
