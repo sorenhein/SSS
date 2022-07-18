@@ -583,8 +583,36 @@ void Covers::explain(
   }
   else if (mode == 2)
   {
+    list<CoverTableau> solutions;
+
     // Guess followed by exhaustive run.
-    Covers::guessStart(tricks, explain, 1, solution);
+    Covers::guessStarts(tricks, explain, 3, solutions);
+
+    explain.setSymmetry(EXPLAIN_GENERAL);
+
+    if (solutions.size() == 0)
+    {
+      Covers::explainByCategory(tricks, explain, true,
+        solution, newTableauFlag);
+    }
+    else
+    {
+// cout << "Number of partials: " << solutions.size() << "\n";
+      for (auto& partialSolution: solutions)
+      {
+        if (! partialSolution.complete())
+        {
+          Covers::explainByCategory(tricks, explain, true,
+            partialSolution, newTableauFlag);
+        }
+
+        if (! solution.used() || partialSolution < solution)
+          solution = partialSolution;
+      }
+    }
+
+
+    /*
     if (solution.complete())
     {
       solution.initStrData(numStrategyTops, tricksSymmetry);
@@ -595,9 +623,40 @@ void Covers::explain(
 
     Covers::explainByCategory(tricks, explain, true,
       solution, newTableauFlag);
+      */
   }
   else if (mode == 3)
   {
+    list<CoverTableau> solutions;
+
+    // Guess followed by split of the remainder by symmetry.
+    Covers::guessStarts(tricks, explain, 3, solutions);
+
+    explain.setSymmetry(EXPLAIN_GENERAL);
+
+    if (solutions.size() == 0)
+    {
+      Covers::explainByCategory(tricks, explain, true,
+        solution, newTableauFlag);
+    }
+    else
+    {
+// cout << "Number of partials: " << solutions.size() << "\n";
+      for (auto& partialSolution: solutions)
+      {
+        if (! partialSolution.complete())
+        {
+          Covers::guessBySymmetry(explain, tmin, 
+            partialSolution, newTableauFlag);
+        }
+
+        if (! solution.used() || partialSolution < solution)
+          solution = partialSolution;
+      }
+    }
+
+
+/*
     // Guess followed by split of the remainder by symmetry.
     Covers::guessStart(tricks, explain, 1, solution);
 
@@ -608,6 +667,7 @@ void Covers::explain(
     }
 
     Covers::guessBySymmetry(explain, tmin, solution, newTableauFlag);
+    */
   }
   else if (mode == 4)
   {
