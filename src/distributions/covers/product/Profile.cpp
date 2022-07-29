@@ -95,7 +95,16 @@ bool Profile::onlyEquals(
       continue;
 
     if (tops[i] != upperProfile.tops[i])
+{
+  /*
+  cout << Profile::strHeader();
+  cout << Profile::strLine();
+  cout << upperProfile.strLine();
+  cout << sumProfile.strLine();
+  cout << endl;
+  *&
       return false;
+}
   }
 
   return true;
@@ -200,9 +209,9 @@ string Profile::strHeader() const
 {
   stringstream ss;
 
-  ss << setw(6) << "Length";
+  ss << setw(7) << "Length";
   for (unsigned i = 0; i < tops.size(); i++)
-    ss << setw(3) << ("Top" + to_string(i));
+    ss << setw(5) << ("Top" + to_string(i));
 
   return ss.str() + "\n";
 }
@@ -214,7 +223,7 @@ string Profile::strLine() const
 
   ss << setw(6) << +lengthInt << ":";
   for (auto& t: tops)
-    ss << setw(3) << +t;
+    ss << setw(5) << +t;
 
   return ss.str() + "\n";
 }

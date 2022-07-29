@@ -1,13 +1,9 @@
-The heuristic with 3 options is not particularly good.
-It's slower AND less good than with 1 option.
+Product::set has the complexity == 3 hack, quite broad actually.
+Can also have something like singular() where one side has a fixed
+length AND exact cards are given (for East or West).
+
 
 In RowMatches, cleanup.
-
-Heuristic can return a list of non-dominated partials.
-- Hook up new code
-- Discard combinations where an OR produces a poorer complexity
-  than some other solve of the whole overlapping trick vector.
-  Requires solving that... (at least until the solution is beaten)
 
 Probably something wrong again with classification of strategies
 as symmetric or not (see counts of new vs old mode == 4).
@@ -741,3 +737,5 @@ everything?  It must be some stray pointers, but where?
 Is ResConvert::increment actually correct, or do we get too few
 per group?!
 
+
+-n AT5 -s Q876 does some other combination?
