@@ -8,16 +8,83 @@ use warnings;
 my $file = shift;
 open my $fh, '<', $file or die $!;
 
-my $numText = 0;
-my $numUntext = 0;
-my $numSingular = 0;
-my $numTwoTops = 0;
-my $numAnyTwo = 0;
-my $numSingularFull = 0;
-my $numRest = 0;
-my $lno = 0;
+my $TEXT = 0;
+my $UNTEXT = 1;
+my $SINGULAR = 2;
+my $SINGULAR_FULL = 3;
+
+my $TWO_TOPS_EQUAL = 4;
+my $TWO_TOPS_LENGTH_EQUAL = 5;
+my $TWO_TOPS_LENGTHVAR_EQUAL = 6;
+my $ANY_TWO_EQUAL = 7;
+my $ANY_TWO_LENGTH_EQUAL = 8;
+my $ANY_TWO_LENGTHVAR_EQUAL = 9;
+my $TWO_TOPS_EQUAL_ONEVAR = 10;
+my $ANY_TWO_EQUAL_ONEVAR = 11;
+
+my $THREE_TOPS_EQUAL = 12;
+my $THREE_TOPS_LENGTH_EQUAL = 13;
+my $THREE_TOPS_LENGTHVAR_EQUAL = 14;
+my $ANY_THREE_EQUAL = 15;
+my $ANY_THREE_LENGTH_EQUAL = 16;
+my $ANY_THREE_LENGTHVAR_EQUAL = 17;
+my $THREE_TOPS_EQUAL_ONEVAR = 18;
+my $ANY_THREE_EQUAL_ONEVAR = 19;
+
+my $FOUR_TOPS_EQUAL = 20;
+my $FOUR_TOPS_LENGTH_EQUAL = 21;
+my $FOUR_TOPS_LENGTHVAR_EQUAL = 22;
+my $ANY_FOUR_EQUAL = 23;
+my $ANY_FOUR_LENGTH_EQUAL = 24;
+my $ANY_FOUR_LENGTHVAR_EQUAL = 25;
+my $FOUR_TOPS_EQUAL_ONEVAR = 26;
+my $ANY_FOUR_EQUAL_ONEVAR = 27;
+
+my $REST = 28;
+
+my (@numbers, @complexities, @titles);
+for my $i (0 .. $REST)
+{
+  $numbers[$i] = 0;
+  $complexities[$i] = 0;
+}
+
+$titles[$TEXT] = "Text";
+$titles[$UNTEXT] = "Untext";
+$titles[$SINGULAR] = "Singular";
+$titles[$SINGULAR_FULL] = "Singfull";
+
+$titles[$TWO_TOPS_EQUAL] = "Top2 eq";
+$titles[$TWO_TOPS_LENGTH_EQUAL] = "Top2 eqL";
+$titles[$TWO_TOPS_LENGTHVAR_EQUAL] = "Top2 eqV";
+$titles[$ANY_TWO_EQUAL] = "Any2 eq";
+$titles[$ANY_TWO_LENGTH_EQUAL] = "Any2 eqL";
+$titles[$ANY_TWO_LENGTHVAR_EQUAL] = "Any2 eqV";
+$titles[$TWO_TOPS_EQUAL_ONEVAR] = "Top2 eq+";
+$titles[$ANY_TWO_EQUAL_ONEVAR] = "Any2 eq+";
+
+$titles[$THREE_TOPS_EQUAL] = "Top3 eq";
+$titles[$THREE_TOPS_LENGTH_EQUAL] = "Top3 eqL";
+$titles[$THREE_TOPS_LENGTHVAR_EQUAL] = "Top3 eqV";
+$titles[$ANY_THREE_EQUAL] = "Any3 eq";
+$titles[$ANY_THREE_LENGTH_EQUAL] = "Any3 eqL";
+$titles[$ANY_THREE_LENGTHVAR_EQUAL] = "Any3 eqV";
+$titles[$THREE_TOPS_EQUAL_ONEVAR] = "Top3 eq+";
+$titles[$ANY_THREE_EQUAL_ONEVAR] = "Any3 eq+";
+
+$titles[$FOUR_TOPS_EQUAL] = "Top4 eq";
+$titles[$FOUR_TOPS_LENGTH_EQUAL] = "Top4 eqL";
+$titles[$FOUR_TOPS_LENGTHVAR_EQUAL] = "Top4 eqV";
+$titles[$ANY_FOUR_EQUAL] = "Any4 eq";
+$titles[$ANY_FOUR_LENGTH_EQUAL] = "Any4 eqL";
+$titles[$ANY_FOUR_LENGTHVAR_EQUAL] = "Any4 eqV";
+$titles[$FOUR_TOPS_EQUAL_ONEVAR] = "Top4 eq+";
+$titles[$ANY_FOUR_EQUAL_ONEVAR] = "Any4 eq+";
+
+$titles[$REST] = "Rest";
 
 my @oppsMax;
+my $lno = 0;
 
 while (my $line = <$fh>)
 {
@@ -55,10 +122,16 @@ while (my $line = <$fh>)
 
       if ($line2 =~ /unused/)
       {
-        $numUntext++;
         my @splits = split /\s+/, $line2;
         my $num = $#splits - 6;
         $num-- if $line2 =~ / sym /;
+
+        my $compl = $splits[$#splits];
+        $compl =~ /^\[(\d+)/;
+        $compl = $1;
+
+        $numbers[$UNTEXT]++;
+        $complexities[$UNTEXT] += $compl;
 
         my $i = 1;
         my $j = 0;
@@ -159,7 +232,8 @@ while (my $line = <$fh>)
 
         if (singular(\@opps, \@oppsMax))
         {
-          $numSingular++;
+          $numbers[$SINGULAR]++;
+          $complexities[$SINGULAR] += $compl;
           if ($dcount != 1)
           {
             print "COUNT1 $line2\n";
@@ -167,33 +241,241 @@ while (my $line = <$fh>)
         }
         elsif (singular_full(\@opps, \@oppsMax))
         {
-          $numSingularFull++;
+          $numbers[$SINGULAR_FULL]++;
+          $complexities[$SINGULAR_FULL] += $compl;
           if ($dcount != 1)
           {
             print "COUNT2 $line2\n";
           }
         }
-        elsif (two_tops(\@opps))
+        elsif (N_tops_equal(\@opps, 2))
         {
-          $numTwoTops++;
+          $numbers[$TWO_TOPS_EQUAL]++;
+          $complexities[$TWO_TOPS_EQUAL] += $compl;
           if ($dcount == 1)
           {
             print "COUNT3 $line2\n";
           }
         }
-        elsif (any_two(\@opps))
+        elsif (any_N_equal(\@opps, 2))
         {
-          $numAnyTwo++;
+          $numbers[$ANY_TWO_EQUAL]++;
+          $complexities[$ANY_TWO_EQUAL] += $compl;
           if ($dcount == 1)
           {
             print "COUNT4 $line2\n";
           }
         }
+        elsif (N_tops_length_equal(\@opps, 2))
+        {
+          $numbers[$TWO_TOPS_LENGTH_EQUAL]++;
+          $complexities[$TWO_TOPS_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_length_equal(\@opps, 2))
+        {
+          $numbers[$ANY_TWO_LENGTH_EQUAL]++;
+          $complexities[$ANY_TWO_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_lengthvar_equal(\@opps, 2))
+        {
+          $numbers[$TWO_TOPS_LENGTHVAR_EQUAL]++;
+          $complexities[$TWO_TOPS_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_lengthvar_equal(\@opps, 2))
+        {
+          $numbers[$ANY_TWO_LENGTHVAR_EQUAL]++;
+          $complexities[$ANY_TWO_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_equal_onevar(\@opps, 2))
+        {
+          $numbers[$TWO_TOPS_EQUAL_ONEVAR]++;
+          $complexities[$TWO_TOPS_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_equal_onevar(\@opps, 2))
+        {
+          $numbers[$ANY_TWO_EQUAL_ONEVAR]++;
+          $complexities[$ANY_TWO_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+
+
+        elsif (N_tops_equal(\@opps, 3))
+        {
+          $numbers[$THREE_TOPS_EQUAL]++;
+          $complexities[$THREE_TOPS_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_equal(\@opps, 3))
+        {
+          $numbers[$ANY_THREE_EQUAL]++;
+          $complexities[$ANY_THREE_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_length_equal(\@opps, 3))
+        {
+          $numbers[$THREE_TOPS_LENGTH_EQUAL]++;
+          $complexities[$THREE_TOPS_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_length_equal(\@opps, 3))
+        {
+          $numbers[$ANY_THREE_LENGTH_EQUAL]++;
+          $complexities[$ANY_THREE_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_lengthvar_equal(\@opps, 3))
+        {
+          $numbers[$THREE_TOPS_LENGTHVAR_EQUAL]++;
+          $complexities[$THREE_TOPS_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_lengthvar_equal(\@opps, 3))
+        {
+          $numbers[$ANY_THREE_LENGTHVAR_EQUAL]++;
+          $complexities[$ANY_THREE_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_equal_onevar(\@opps, 3))
+        {
+          $numbers[$THREE_TOPS_EQUAL_ONEVAR]++;
+          $complexities[$THREE_TOPS_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_equal_onevar(\@opps, 3))
+        {
+          $numbers[$ANY_THREE_EQUAL_ONEVAR]++;
+          $complexities[$ANY_THREE_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+
+
+        elsif (N_tops_equal(\@opps, 4))
+        {
+          $numbers[$FOUR_TOPS_EQUAL]++;
+          $complexities[$FOUR_TOPS_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_equal(\@opps, 4))
+        {
+          $numbers[$ANY_FOUR_EQUAL]++;
+          $complexities[$ANY_FOUR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_length_equal(\@opps, 4))
+        {
+          $numbers[$FOUR_TOPS_LENGTH_EQUAL]++;
+          $complexities[$FOUR_TOPS_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_length_equal(\@opps, 4))
+        {
+          $numbers[$ANY_FOUR_LENGTH_EQUAL]++;
+          $complexities[$ANY_FOUR_LENGTH_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_lengthvar_equal(\@opps, 4))
+        {
+          $numbers[$FOUR_TOPS_LENGTHVAR_EQUAL]++;
+          $complexities[$FOUR_TOPS_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_lengthvar_equal(\@opps, 4))
+        {
+          $numbers[$ANY_FOUR_LENGTHVAR_EQUAL]++;
+          $complexities[$ANY_FOUR_LENGTHVAR_EQUAL] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+        elsif (N_tops_equal_onevar(\@opps, 4))
+        {
+          $numbers[$FOUR_TOPS_EQUAL_ONEVAR]++;
+          $complexities[$FOUR_TOPS_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT3 $line2\n";
+          }
+        }
+        elsif (any_N_equal_onevar(\@opps, 4))
+        {
+          $numbers[$ANY_FOUR_EQUAL_ONEVAR]++;
+          $complexities[$ANY_FOUR_EQUAL_ONEVAR] += $compl;
+          if ($dcount == 1)
+          {
+            print "COUNT4 $line2\n";
+          }
+        }
+
         else
         {
+          $numbers[$REST]++;
+          $complexities[$REST] += $compl;
+
           print "$line2\n";
           # print "$lno: $line2\n";
-          $numRest++;
           if ($dcount == 1)
           {
             print "COUNT5 $line2\n";
@@ -202,7 +484,7 @@ while (my $line = <$fh>)
       }
       else
       {
-        $numText++;
+        $numbers[$TEXT]++;
       }
     }
   }
@@ -211,15 +493,25 @@ while (my $line = <$fh>)
 close $fh;
 
 print "\n";
-printf("Number text     %7d\n", $numText);
-printf("Number untext   %7d\n", $numUntext);
+for my $i ($TEXT .. $UNTEXT)
+{
+  printf("%-12s %7d %5.2f\n", 
+    $titles[$i], $numbers[$i], $complexities[$i] / $numbers[$i]);
+}
 print "\n";
 
-printf("Number singular %7d\n", $numSingular);
-printf("Number singfull %7d\n", $numSingularFull);
-printf("Number two tops %7d\n", $numTwoTops);
-printf("Number two any  %7d\n", $numAnyTwo);
-printf("Number rest     %7d\n", $numRest);
+for my $i ($SINGULAR .. $REST)
+{
+  if ($numbers[$i] == 0)
+  {
+    printf("%-12s %7d\n", $titles[$i], $numbers[$i]);
+  }
+  else
+  {
+    printf("%-12s %7d %5.2f\n", 
+      $titles[$i], $numbers[$i], $complexities[$i] / $numbers[$i]);
+  }
+}
 
 
 sub singular
@@ -286,74 +578,6 @@ sub singular
 }
 
 
-sub two_tops
-{
-  # The highest two tops, no length
-  my $opps_ref = pop;
-
-  if ($opps_ref->[0]{oper} != -1)
-  {
-    # Length must be unset
-    return 0;
-  }
-
-  my $c = $#$opps_ref;
-  for my $i (1 .. $c-2)
-  {
-    my $oper = $opps_ref->[$i]{oper};
-    if ($oper != -1)
-    {
-      # Low tops must be unset
-      return 0;
-    }
-  }
-
-  for my $i ($c-1 .. $c)
-  {
-    my $oper = $opps_ref->[$i]{oper};
-    if ($oper != 0)
-    {
-      # Two high tops must be equal-sets
-      return 0;
-    }
-  }
-
-  return 1;
-}
-
-
-sub any_two
-{
-  # Any two tops, no length
-  my $opps_ref = pop;
-
-  if ($opps_ref->[0]{oper} != -1)
-  {
-    # Length must be unset
-    return 0;
-  }
-
-  my $c = $#$opps_ref;
-  my $used = 0;
-  for my $i (1 .. $c)
-  {
-    my $oper = $opps_ref->[$i]{oper};
-    next if $oper == -1;
-    return 0 unless $oper == 0;
-    $used++;
-  }
-
-  if ($used == 2)
-  {
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-
 sub singular_full
 {
   # All tops except x exactly; length given exactly
@@ -402,6 +626,292 @@ sub singular_full
 # print "sums $sumWest $sumEast\n";
 
   if ($sumWest == $len || $sumEast == $lenMax - $len)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+
+sub N_tops_equal
+{
+  # The highest N tops, no length
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != -1)
+  {
+    # Length must be unset
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  for my $i (1 .. $c-$N)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != -1)
+    {
+      # Low tops must be unset
+      return 0;
+    }
+  }
+
+  for my $i ($c-$N+1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != 0)
+    {
+      # Two high tops must be equal-sets
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+
+sub N_tops_equal_onevar
+{
+  # The highest N tops, no length
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != -1)
+  {
+    # Length must be unset
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  for my $i (1 .. $c-$N)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != -1)
+    {
+      # Low tops must be unset
+      return 0;
+    }
+  }
+
+  my $numvar = 0;
+  for my $i ($c-$N+1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != 0)
+    {
+      # Two high tops must be equal-sets
+      $numvar++;
+      return 0 if $numvar > 1;
+    }
+  }
+
+  if ($numvar == 0)
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
+}
+
+
+sub N_tops_length_equal
+{
+  # The highest N tops, no length
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != 0)
+  {
+    # Length must be set
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  for my $i (1 .. $c-$N)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != -1)
+    {
+      # Low tops must be unset
+      return 0;
+    }
+  }
+
+  for my $i ($c-$N+1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != 0)
+    {
+      # Two high tops must be equal-sets
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+
+sub N_tops_lengthvar_equal
+{
+  # The highest N tops, length given but not a single value
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} < 1)
+  {
+    # Length must be a range
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  for my $i (1 .. $c-$N)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != -1)
+    {
+      # Low tops must be unset
+      return 0;
+    }
+  }
+
+  for my $i ($c-$N+1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    if ($oper != 0)
+    {
+      # Two high tops must be equal-sets
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+
+sub any_N_equal
+{
+  # Any N tops, no length
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != -1)
+  {
+    # Length must be unset
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  my $used = 0;
+  for my $i (1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    next if $oper == -1;
+    return 0 unless $oper == 0;
+    $used++;
+  }
+
+  if ($used == $N)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+
+sub any_N_equal_onevar
+{
+  # Any N tops, no length
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != -1)
+  {
+    # Length must be unset
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  my $used = 0;
+  my $numvar = 0;
+  for my $i (1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    next if $oper == -1;
+    if ($oper > 0)
+    {
+      $numvar++;
+      return 0 if $numvar > 1;
+    }
+    $used++;
+  }
+
+  if ($used == $N && $numvar == 1)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+
+sub any_N_length_equal
+{
+  # Any N tops, length single value
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} != 0)
+  {
+    # Length must be unset
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  my $used = 0;
+  for my $i (1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    next if $oper == -1;
+    return 0 unless $oper == 0;
+    $used++;
+  }
+
+  if ($used == $N)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+
+sub any_N_lengthvar_equal
+{
+  # Any N tops, length range
+  my ($opps_ref, $N) = @_;
+
+  if ($opps_ref->[0]{oper} < 1)
+  {
+    # Length must be a range
+    return 0;
+  }
+
+  my $c = $#$opps_ref;
+  my $used = 0;
+  for my $i (1 .. $c)
+  {
+    my $oper = $opps_ref->[$i]{oper};
+    next if $oper == -1;
+    return 0 unless $oper == 0;
+    $used++;
+  }
+
+  if ($used == $N)
   {
     return 1;
   }

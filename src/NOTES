@@ -5,6 +5,51 @@ Mark them as they are generated.
 Have a mode where only explainable ones are matched to solutions.
 Check speed difference.
 
+Text          614295  0.00
+Untext        354887  3.41
+
+Singular      171598  3.00
+Singfull        8674  3.00
+
+Top2 eq        37511  4.00
+Top2 eqL       21547  3.00
+Top2 eqV        6364  6.17
+Any2 eq        22141  4.00
+Any2 eqL       36947  3.00
+Any2 eqV        6762  6.18
+Top2 eq+        3653  4.00
+Any2 eq+        1626  4.00
+
+Top3 eq         6690  6.00
+Top3 eqL        3930  3.00
+Top3 eqV         476  8.10
+Any3 eq         2495  6.00
+Any3 eqL       19626  3.00
+Any3 eqV         221  8.17
+Top3 eq+         856  6.00
+Any3 eq+         163  6.00
+
+Top4 eq          707  8.00
+Top4 eqL         630  3.00
+Top4 eqV           8 10.75
+Any4 eq           17  8.00
+Any4 eqL        2113  3.00
+Any4 eqV           0
+Top4 eq+          75  8.00
+Any4 eq+           0
+
+Rest              57  5.61
+
+* We would lose very few covers by limiting ourselves to these.
+* The singular ones should be matchable with C++ first.
+* TopN eq: The N highest tops are set to fixed values.
+* TopN eqL: The same, but also L (though not singular,
+  so complexity should probably not be 3)
+* TopN eqV: The same, but L is a range and not a single value
+* TopN eq+: N tops, N-1 of which constant and one a range.  No L
+
+
+
 
 Product::set has the complexity == 3 hack, quite broad actually.
 Can also have something like singular() where one side has a fixed
