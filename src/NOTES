@@ -1,3 +1,11 @@
+Look which covers are actually used.
+Give them text forms.
+Recognize them as explainable().
+Mark them as they are generated.
+Have a mode where only explainable ones are matched to solutions.
+Check speed difference.
+
+
 Product::set has the complexity == 3 hack, quite broad actually.
 Can also have something like singular() where one side has a fixed
 length AND exact cards are given (for East or West).

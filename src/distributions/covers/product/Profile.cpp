@@ -102,7 +102,7 @@ bool Profile::onlyEquals(
   cout << upperProfile.strLine();
   cout << sumProfile.strLine();
   cout << endl;
-  *&
+  */
       return false;
 }
   }
