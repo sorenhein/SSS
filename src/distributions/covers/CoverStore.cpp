@@ -100,14 +100,17 @@ void CoverStore::add(
   if (! coverScratch.setByProduct(distProfiles, cases))
     return;
 
+// TODO TMP
+if (! coverScratch.explainable())
+{
+  // cout << "NONEXPLAINABLE\n";
+  // cout << coverScratch.strNumerical() << "\n";
+  return;
+}
+
   // Store it in "store".
   auto result = store.insert(coverScratch);
   assert(result.first != store.end());
-
-if (coverScratch.explainable())
-  cout << "EXPLAINABLE\n";
-else
-  cout << "NOT EXPLAINABLE\n";
 
   if (symmetricFlag)
   {
@@ -142,11 +145,6 @@ void CoverStore::admixSymmetric()
 
   for (auto& cover: symmetricCache)
   {
-if (cover.explainable())
-  cout << "EXPLAINABLE\n";
-else
-  cout << "NOT EXPLAINABLE\n";
-
     auto result = store.insert(cover);
     assert(result.first != store.end());
 

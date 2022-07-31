@@ -5,7 +5,7 @@ Mark them as they are generated.
 Have a mode where only explainable ones are matched to solutions.
 Check speed difference.
 
-By our new definition, it seems that < 20% of covers are explainable.
+By our new definition, it seems that ~ half of covers are explainable.
 
 
 Text          614295  0.00

@@ -309,12 +309,15 @@ ExplainEqual Product::mostlyEqual() const
   // EQUAL_NONE: There are too many (> 1) tops that do not have a 
   // single value, but a range (>=, <=, a-b).
   // In all cases, length must be unset or have a single value.
+  // Or now, it counts as the variable one.
   
-  const CoverOperator opLen = length.getOperator();
-  if (opLen != COVER_EQUAL && opLen != COVER_OPERATOR_SIZE)
-    return EQUAL_NONE;
-
   size_t numVariable = 0;
+
+  if (length.used())
+  {
+    if (length.getOperator() != COVER_EQUAL)
+      numVariable++;
+  }
 
   bool firstFlag = false;
   size_t firstSet = 0;
@@ -325,9 +328,8 @@ ExplainEqual Product::mostlyEqual() const
   for (size_t topNo = 0; topNo < tops.size(); topNo++)
   {
     const Top& top = tops[topNo];
-    const CoverOperator op = top.getOperator();
 
-    if (op == COVER_OPERATOR_SIZE)
+    if (! top.used())
     {
       lastFlag = true;
       lastUnused = topNo;
@@ -340,7 +342,7 @@ ExplainEqual Product::mostlyEqual() const
       firstSet = topNo;
     }
 
-    if (op != COVER_EQUAL)
+    if (top.getOperator() != COVER_EQUAL)
     {
       // Too many variable tops?
       numVariable++;
@@ -381,7 +383,7 @@ bool Product::explainableNew() const
   else if (activeCount == 1)
     return true;
   else
-    return (activeCount <= 4 && Product::mostlyEqual() == EQUAL_NONE);
+    return (activeCount <= 5 && Product::mostlyEqual() != EQUAL_NONE);
 }
 
 

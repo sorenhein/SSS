@@ -241,7 +241,7 @@ bool Cover::explainable() const
   if (numDist == 1 || (Cover::symmetric() && numDist == 2))
     return true;
   else
-    return factoredProductPtr->explainable();
+    return factoredProductPtr->explainableNew();
 }
 
 
