@@ -45,8 +45,6 @@ class FactoredProduct
 
     bool includes(const Profile& distProfile) const;
 
-    bool symmetrizable(const Profile& sumProfile) const;
-
     unsigned char getComplexity() const;
 
     unsigned char effectiveDepth() const;
@@ -57,9 +55,12 @@ class FactoredProduct
       const Opponent voidSide,
       const Profile& sumProfile) const;
 
+    bool symmetrizable(const Profile& sumProfile) const;
+
     CoverComposition composition() const;
 
     bool explainable() const;
+    bool explainableNew() const;
 
     Opponent simplestOpponent(const Profile& sumProfile) const;
 

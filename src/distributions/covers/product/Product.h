@@ -28,6 +28,7 @@ class Profile;
 class RanksNames;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
+enum ExplainEqual: unsigned;
 
 
 class Product
@@ -45,6 +46,13 @@ class Product
     unsigned char topSize; // Last used top number + 1; may be 0
 
     unsigned char activeCount; // Number of tops that are used
+
+
+    bool singular(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
+    ExplainEqual mostlyEqual() const;
 
 
   public:
@@ -87,6 +95,8 @@ class Product
     CoverComposition composition() const;
 
     bool explainable() const;
+
+    bool explainableNew() const;
 
     Opponent simplestOpponent(
       const Profile& sumProfile,

@@ -133,6 +133,8 @@ class Tricks
 
     unsigned getWeight() const;
 
+    size_t nonzero() const;
+
     string strList() const;
 
     string strShort() const;

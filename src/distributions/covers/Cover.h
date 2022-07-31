@@ -37,7 +37,7 @@ class Cover
     // Micro-complexity per weight unit.
     unsigned mcpw;
 
-    unsigned char numDist;
+    // unsigned char numDist;
 
     // Set if the cover is symmetric without being symmetrized.
     CoverSymmetry coverSymmetry;
@@ -71,11 +71,6 @@ class Cover
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
 
-    bool symmetrizable(const Profile& sumProfile) const;
-
-    // Will invalidate Cover if not symmetrizable!
-    bool symmetrize();
-
     bool isLengthOnly(
       const unsigned char lenLower,
       const unsigned char lenUpper) const;
@@ -106,6 +101,11 @@ class Cover
       const Opponent voidSide,
       const Profile& sumProfile) const;
 
+    bool symmetrizable(const Profile& sumProfile) const;
+
+    // Will invalidate Cover if not symmetrizable!
+    bool symmetrize();
+
     bool symmetrized() const;
 
     bool symmetric() const;
@@ -115,6 +115,8 @@ class Cover
     CoverSymmetry symmetry() const;
 
     CoverComposition composition() const;
+
+    bool explainable() const;
 
     size_t size() const;
 

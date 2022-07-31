@@ -103,31 +103,6 @@ bool Cover::setByProduct(
 }
 
 
-bool Cover::symmetrizable(const Profile& sumProfile) const
-{
-  // We consider the product terms in the order (length, highest top,
-  // next top, ...).
-  assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->symmetrizable(sumProfile);
-}
-
-
-bool Cover::symmetrize()
-{
-  // Will invalidate Cover if not symmetrizable!
-  assert(! symmetrizeFlag);
-
-  if (! tricks.symmetrize())
-    return false;
-
-  symmetrizeFlag = true;
-
-  // More weight for the same complexity.
-  mcpw >>= 1;
-  return true;
-}
-
-
 void Cover::tricksOr(
   Tricks& running,
   const vector<unsigned char>& cases) const
@@ -199,6 +174,31 @@ unsigned char Cover::minimumByTops(
 }
 
 
+bool Cover::symmetrizable(const Profile& sumProfile) const
+{
+  // We consider the product terms in the order (length, highest top,
+  // next top, ...).
+  assert(factoredProductPtr != nullptr);
+  return factoredProductPtr->symmetrizable(sumProfile);
+}
+
+
+bool Cover::symmetrize()
+{
+  // Will invalidate Cover if not symmetrizable!
+  assert(! symmetrizeFlag);
+
+  if (! tricks.symmetrize())
+    return false;
+
+  symmetrizeFlag = true;
+
+  // More weight for the same complexity.
+  mcpw >>= 1;
+  return true;
+}
+
+
 bool Cover::symmetrized() const
 {
   return symmetrizeFlag;
@@ -230,6 +230,18 @@ CoverComposition Cover::composition() const
 {
   assert(factoredProductPtr != nullptr);
   return factoredProductPtr->composition();
+}
+
+
+bool Cover::explainable() const
+{
+  assert(factoredProductPtr != nullptr);
+
+  const size_t numDist = tricks.nonzero();
+  if (numDist == 1 || (Cover::symmetric() && numDist == 2))
+    return true;
+  else
+    return factoredProductPtr->explainable();
 }
 
 

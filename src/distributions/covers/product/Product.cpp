@@ -22,6 +22,15 @@
 #include "../../../utils/Compare.h"
 #include "../../../utils/table.h"
 
+
+enum ExplainEqual: unsigned
+{
+  EQUAL_FROM_TOP  = 0,
+  EQUAL_ANY = 1,
+  EQUAL_NONE = 2
+};
+
+
 Product::Product()
 {
   Product::reset();
@@ -293,14 +302,86 @@ CoverComposition Product::composition() const
 }
 
 
+ExplainEqual Product::mostlyEqual() const
+{
+  // EQUAL_FROM_TOP: All the tops that are set are the highest ones.
+  // EQUAL_ANY: They are not.
+  // EQUAL_NONE: There are too many (> 1) tops that do not have a 
+  // single value, but a range (>=, <=, a-b).
+  // In all cases, length must be unset or have a single value.
+  
+  const CoverOperator opLen = length.getOperator();
+  if (opLen != COVER_EQUAL && opLen != COVER_OPERATOR_SIZE)
+    return EQUAL_NONE;
+
+  size_t numVariable = 0;
+
+  bool firstFlag = false;
+  size_t firstSet = 0;
+
+  bool lastFlag = false;
+  size_t lastUnused = 0;
+
+  for (size_t topNo = 0; topNo < tops.size(); topNo++)
+  {
+    const Top& top = tops[topNo];
+    const CoverOperator op = top.getOperator();
+
+    if (op == COVER_OPERATOR_SIZE)
+    {
+      lastFlag = true;
+      lastUnused = topNo;
+      continue;
+    }
+
+    if (! firstFlag)
+    {
+      firstFlag = true;
+      firstSet = topNo;
+    }
+
+    if (op != COVER_EQUAL)
+    {
+      // Too many variable tops?
+      numVariable++;
+      if (numVariable > 1)
+        return EQUAL_NONE;
+    }
+  }
+
+  assert(firstFlag);
+  if (! lastFlag || lastUnused < firstSet)
+    return EQUAL_FROM_TOP;
+  else
+    return EQUAL_ANY;
+}
+
+
 bool Product::explainable() const
 {
+  // This is a relatively simple version that says whether there is 
+  // a human-readable output.
   if (activeCount == 0)
     return true;
   else if (activeCount == 1)
     return true;
   else
     return false;
+}
+
+
+bool Product::explainableNew() const
+{
+  // This is a fuller version that determines whether a cover should
+  // be kept in the central list at all.
+  // TODO Once we have string outputs of all these, we can get rid
+  // of the simpler explainable().
+  if (activeCount == 0)
+    return true;
+  else if (activeCount == 1)
+    return true;
+  else
+    return (activeCount <= 4 && Product::mostlyEqual() == EQUAL_NONE);
 }
 
 

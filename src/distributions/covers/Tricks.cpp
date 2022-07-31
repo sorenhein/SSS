@@ -651,6 +651,21 @@ unsigned Tricks::getWeight() const
 }
 
 
+size_t Tricks::nonzero() const
+{
+  // Returns the number of non-zero elements (the number of
+  // distributions that are set).
+  size_t count = 0;
+  for (unsigned extIndex = 0; extIndex < length; extIndex++)
+  {
+    if (Tricks::lookup(extIndex))
+      count++;
+  }
+
+  return count;
+}
+
+
 string Tricks::strList() const
 {
   stringstream ss;

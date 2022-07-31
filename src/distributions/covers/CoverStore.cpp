@@ -104,6 +104,11 @@ void CoverStore::add(
   auto result = store.insert(coverScratch);
   assert(result.first != store.end());
 
+if (coverScratch.explainable())
+  cout << "EXPLAINABLE\n";
+else
+  cout << "NOT EXPLAINABLE\n";
+
   if (symmetricFlag)
   {
     // Nothing to symmetrize.
@@ -137,10 +142,16 @@ void CoverStore::admixSymmetric()
 
   for (auto& cover: symmetricCache)
   {
+if (cover.explainable())
+  cout << "EXPLAINABLE\n";
+else
+  cout << "NOT EXPLAINABLE\n";
+
     auto result = store.insert(cover);
     assert(result.first != store.end());
 
     CoverStore::eliminate(result.first);
+
   }
 
   symmetricCache.clear();
