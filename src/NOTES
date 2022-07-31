@@ -1,11 +1,28 @@
-Look which covers are actually used.
-Give them text forms.
-Recognize them as explainable().
-Mark them as they are generated.
-Have a mode where only explainable ones are matched to solutions.
-Check speed difference.
+Reduce the size of CoverStore
+-----------------------------
+We know that about 2000 factoredProduct's are actually used.
+I think there are about a million cover entries stored.
+When a cover is output, we use cover.strLine() which also
+outputs the long index etc.
+When we output the used products, we use factoredProduct.strLine()
+which leaves off the stuff that only the cover knows.
+Maybe we can parse some of this out in Perl.
+We'd dump the cover stores as they are generated.
+We'd parse out the end of a long output file for the ones used.
+So then we'd show, per distribution, used and unused, or all together.
+Then we'd look for patterns of unused ones that we could drop early.
 
-By our new definition, it seems that ~ half of covers are explainable.
+Text covers
+-----------
+I guess RankNames now uses K-Q and not HH anymore?
+Should it know both?
+Should we show singular and other of these outputs as Hx,
+and then say after the strategy,
+"where H = K or Q, h = 9 or 8, ..."?
+Or "(1 of KQ)(1 of 98)"?
+I think the first looks better.
+But can we mix them in a solution?  Some lines will use K-Q,
+some HH?
 
 
 Text          614295  0.00
@@ -74,27 +91,13 @@ Differences g = 4 simple length-1 heuristic to 3*3
 6/546 #1:
 "Either opponent has a singleton": 2
 "Neither opponent is void"       : 3
+So in this specific case of len = 3, range = 1-2, we can change
+the text output (and can a complexity point).
 
 8/5051 #0:
 West has the ace + West has a doubleton: 2/8 + 2/6 = 4/14
 Q without A, or West has a doubleton: 4/8 + 2/6 = 6/14
 So both have weight 14, but one has lower complexity.
-
-
-Current differences g = 0 to g = 4
-==================================
-- Change Term::symmetrizable and SymmTerm itself
-- Problem, RowMatch::symmetrizable
-  Will say 2 out of 4 is symmetrizable as far as it goes
-  But this is more like OPEN_CENTERED (need a real symmetrizable one
-  somewhere)
-  So row.symmetrizable maybe gets an argument to treat the length
-  as unset
-
-The heuristic perhaps needs some tuning:
-- If 1 .. len-1 is possible, go for it
-- If 2 .. len-2 is possible (and len > 5), go for it too
-- Only then look for top-only cover
 
 Comparing g = 2 to g = 4 (so both are heuristic; then optimal vs fast).
 Most of the remaining loss occurs when no OR can be generated,
@@ -153,27 +156,15 @@ Singleton ace does fit with "2-3, 1 of top, unused, 0 of third".
 Probably they also have different canonical shifts?
 FactoredProduct::sameTops
 
-Maybe combine the guessing with g = 4.  So if there is a single
-cover that needs no length and cuts across everything, perhaps
-initially with exactly one top, then go with that and then match
-the rest.
-
-
 8/5907  Can't turn "West doubleton", "West AKx(x)" into
         "West doubleton, or West AK-any"
 
 Texts
 7/1683  "East has at most a doubleton" -> "West is not void"
 
-
-
 8/4812, #2
 Not sure about the output "West has x(x)"
 More like "1-2 cards with no h".
-
-* Look at run w.r.t. quality and time.
-* Cover row matches with > 1 (so 2) covers.
-* Allocate the voids.
 
 * Can also split the completely symmetric tricks by lengths,
   and only match with symmetric covers length-by-length and combine
@@ -221,11 +212,6 @@ There are more with depth == 4.  Here are the ones >= 100:
 331   11/123101 KQT6/8 miss AJ97xx
 
 11/123101 -D 4: #0 seems to be cached, but from where?!
-
-
-8/1896 #2
-Why not recognized as symmetric?
-
 
 Add the "x" lowest top?
 
@@ -298,13 +284,6 @@ from "East has x".  Perhaps
 11/120243, KQJ4 / 765
 #0 manual: East has at most a tripleton -> West is not void?
 
-For high-depth strategies, maybe search first for ways to get from
-depth 5 to 4? Then solve more exhaustively?
-Or get to symmetric setup?  Or both?  Compare in terms of time?
-Or get from 5 to each of 4, 3, 2 directly.  Try each and choose
-the best.
-
-
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
 
@@ -344,9 +323,6 @@ Presumably depth == 5 is the worst by far.
 
 Deeper strategies
 -----------------
-* Improve the text output when there is > 1 active top
-
-
 For the future it's a decent test of ranks to compare:
 symmetrization of tricks after full run (Combination::strategize
 at the end) vs. ongoing (symmOnlyFlag).
