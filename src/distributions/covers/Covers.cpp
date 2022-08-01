@@ -193,6 +193,12 @@ void Covers::prepare(
   }
 
   coverStore.admixSymmetric();
+  
+/*
+cout << sumProfile.strHeader();
+cout << sumProfile.strLine();
+cout << coverStore.str() << "\n";
+*/
 }
 
 

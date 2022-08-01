@@ -369,7 +369,7 @@ string Cover::strTricksShort() const
 
 
 string Cover::str(
-  const Profile& sumProfile,
+  [[maybe_unused]] const Profile& sumProfile,
   const RanksNames& ranksNames) const
 {
   assert(factoredProductPtr != nullptr);
@@ -379,13 +379,11 @@ string Cover::str(
   // just want the non-verbal version.
   if (ranksNames.used() && factoredProductPtr->explainable())
   {
-
     const Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbal(
       sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
-
   }
   else
     ss << Cover::strTricksShort() + Cover::strLine();

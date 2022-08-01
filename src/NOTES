@@ -1,16 +1,20 @@
 Reduce the size of CoverStore
 -----------------------------
-We know that about 2000 factoredProduct's are actually used.
-I think there are about a million cover entries stored.
-When a cover is output, we use cover.strLine() which also
-outputs the long index etc.
-When we output the used products, we use factoredProduct.strLine()
-which leaves off the stuff that only the cover knows.
-Maybe we can parse some of this out in Perl.
-We'd dump the cover stores as they are generated.
-We'd parse out the end of a long output file for the ones used.
-So then we'd show, per distribution, used and unused, or all together.
-Then we'd look for patterns of unused ones that we could drop early.
+coverall contains the generated covers.
+num45_3 contains the used covers.
+
+Idea:
+5:1,1,1,1,1
+used
+>= 1: unused, 0, 0, 0
+Effectively this is like a single rank >= 1 (OK, two small ranks),
+so should not have complexity 8?
+unused
+<= 1: unused, 0, unused, 0, 0
+So there are two ranks (not at the bottom) that are alive.
+Complexity 8 OK.
+
+
 
 Text covers
 -----------
