@@ -3,6 +3,16 @@ Reduce the size of CoverStore
 coverall contains the generated covers.
 num45_3 contains the used covers.
 
+Odd that -H 11 -h 32556 Strategy #1 yields one thing when in batch mode,
+another when run singly?
+The batch mode has 3 partial solves, the direct one only 1.
+
+Can skip
+- Top as range (completeyl)
+- Top >=, <= when len set (probably?)
+
+What is depth == 0, top == set?!
+
 Idea:
 5:1,1,1,1,1
 used
@@ -13,6 +23,9 @@ unused
 <= 1: unused, 0, unused, 0, 0
 So there are two ranks (not at the bottom) that are alive.
 Complexity 8 OK.
+
+Actually split the ~1.4m cover uses per the below pattern.
+I'm hoping AnyN eqL and eqV will be candidates for elimination.
 
 
 
