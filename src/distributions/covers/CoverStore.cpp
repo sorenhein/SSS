@@ -22,6 +22,11 @@
 
 #include "product/ProfilePair.h"
 
+#include "../../inputs/Control.h"
+
+extern Control control;
+
+
 mutex mtxCoverStore;
 
 
@@ -96,17 +101,27 @@ void CoverStore::add(
   coverScratch.set(productMemory, sumProfile, profilePair, 
     symmetricFlag, false);
 
+// cout << "Got " << coverScratch.strLine() << endl;
+
   // Make its tricks and counts.
   if (! coverScratch.setByProduct(distProfiles, cases))
     return;
 
-// TODO TMP
-if (! coverScratch.explainable())
-{
-  // cout << "NONEXPLAINABLE\n";
-  // cout << coverScratch.strNumerical() << "\n";
-  return;
-}
+  // Only enter covers that are not too deep.
+  if (coverScratch.effectiveDepth() > control.verbalDepth())
+  {
+// cout << "Failed on depth" << endl;
+// cout << "eff " << +coverScratch.effectiveDepth() << endl;
+// cout << "ver " << +control.verbalDepth() << endl;
+    return;
+  }
+
+  if (! coverScratch.explainable())
+  {
+    // cout << "NONEXPLAINABLE\n";
+    // cout << coverScratch.strNumerical() << "\n";
+    return;
+  }
 
   // Store it in "store".
   auto result = store.insert(coverScratch);
@@ -161,6 +176,12 @@ const Cover& CoverStore::lookup(const Cover& cover) const
   // Turn a cover into the one we already know.  It must exist.
 
   auto it = store.find(cover);
+if (it == store.end())
+{
+  cout << "MISSING\n";
+  cout << cover.strNumerical() << endl;
+}
+
   assert(it != store.end());
   return * it;
 }

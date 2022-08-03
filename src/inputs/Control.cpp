@@ -72,7 +72,8 @@ void Control::configure()
       "Holding in dec/hex, e.g. 0x1295 (replaces -n and -s)." },
     { "-H", "--hlength", CORRESPONDENCE_INT, CTRL_HOLDING_LENGTH, "13",
       "Holding length." },
-    { "-c", "--cards", CORRESPONDENCE_INT, CTRL_CARDS, "13",
+    // TODO Switch back to 13
+    { "-c", "--cards", CORRESPONDENCE_INT, CTRL_CARDS, "11",
       "Number of cards (default: 13)." },
     { "-l", "--lower", CORRESPONDENCE_INT, CTRL_WEST_MIN, "0",
       "Minimum West length (default: 0)." },

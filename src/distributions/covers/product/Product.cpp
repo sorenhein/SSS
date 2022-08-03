@@ -308,17 +308,10 @@ ExplainEqual Product::mostlyEqual() const
   // EQUAL_ANY: They are not.
   // EQUAL_NONE: There are too many (> 1) tops that do not have a 
   // single value, but a range (>=, <=, a-b).
-  // In all cases, length must be unset or have a single value.
-  // Or now, it counts as the variable one.
+  // It turns out (in this context, so >= 2 active tops) that
+  // we only really need tops that are set exactly.
+  // Length may be set in any way, or not set.
   
-  size_t numVariable = 0;
-
-  if (length.used())
-  {
-    if (length.getOperator() != COVER_EQUAL)
-      numVariable++;
-  }
-
   bool firstFlag = false;
   size_t firstSet = 0;
 
@@ -343,12 +336,7 @@ ExplainEqual Product::mostlyEqual() const
     }
 
     if (top.getOperator() != COVER_EQUAL)
-    {
-      // Too many variable tops?
-      numVariable++;
-      if (numVariable > 1)
-        return EQUAL_NONE;
-    }
+      return EQUAL_NONE;
   }
 
   assert(firstFlag);
@@ -381,7 +369,19 @@ bool Product::explainableNew() const
   if (activeCount == 0)
     return true;
   else if (activeCount == 1)
+  {
+    // Eliminate top range.
+    // TODO I think this is right, but Manual needs them...
+    /*
+    for (auto& top: tops)
+    {
+      if (top.used() && top.getOperator() == COVER_INSIDE_RANGE)
+        return false;
+    }
+    */
+
     return true;
+  }
   else
     return (activeCount <= 5 && Product::mostlyEqual() != EQUAL_NONE);
 }

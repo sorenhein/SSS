@@ -379,11 +379,15 @@ string Cover::str(
   // just want the non-verbal version.
   if (ranksNames.used() && factoredProductPtr->explainable())
   {
+    ss << Cover::strTricksShort() + Cover::strLine();
+
+    /*
     const Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbal(
       sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
+      */
   }
   else
     ss << Cover::strTricksShort() + Cover::strLine();

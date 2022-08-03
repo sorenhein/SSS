@@ -525,14 +525,17 @@ void DistCore::prepareCovers(ProductMemory& productMemory)
   DistCore::getCoverData(distProfiles, cases, sumProfile);
 
   // Prepare each cover.
-  if (control.runVerbalTricks())
+  if (control.runVerbalTricks() &&
+      control.cards() > sumProfile.length()+1)
   {
+    // North-South should have at least 2 cards.
     timersStrat[22].start();
     covers.prepare(productMemory, distProfiles, cases, sumProfile);
     timersStrat[22].stop();
   }
 
-  if (control.runVerbalTricksManually())
+  if (control.runVerbalTricksManually() &&
+      control.cards() > sumProfile.length()+1)
   {
     // Set the manual covers.
     timersStrat[21].start();

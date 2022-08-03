@@ -12,15 +12,17 @@ my $nfile = shift;
 
 my @table;
 
-my $TOP_EQUAL = 0;
-my $TOP_RANGE = 1;
-my $TOP_GREATER = 2;
-my $TOP_LESS = 3;
+my $TOP_NONE = 0;
 
-my $ANY_EQUAL = 4;
-my $ANY_RANGE = 5;
-my $ANY_GREATER = 6;
-my $ANY_LESS = 7;
+my $TOP_EQUAL = 1;
+my $TOP_RANGE = 2;
+my $TOP_GREATER = 3;
+my $TOP_LESS = 4;
+
+my $ANY_EQUAL = 5;
+my $ANY_RANGE = 6;
+my $ANY_GREATER = 7;
+my $ANY_LESS = 8;
 
 my $LEN_NONE = 0;
 my $LEN_EQUAL = 1;
@@ -44,6 +46,8 @@ for my $top (0 .. $ANY_LESS)
 }
 
 my @top_titles;
+
+$top_titles[$TOP_NONE] = "Lenonly";
 
 $top_titles[$TOP_EQUAL] = "Top==";
 $top_titles[$TOP_RANGE] = "TopRg";
@@ -118,6 +122,7 @@ while (my $line = <$fh>)
         parse_term($f, \$state, \$i, \$j, \@opps);
       }
 
+      # Skip the singular ones.
       my $symmflag = ($line2 =~ /sym/ ? 1 : 0);
       my $dcount = $splits[0] =~ tr/1//;
       $dcount >>= 1 if $symmflag;
@@ -127,13 +132,15 @@ while (my $line = <$fh>)
       my $len_score = get_length_score(\@opps);
       my $depth = get_depth(\@opps);
 
-if ($top_score == $TOP_LESS &&
-    $len_score == $LEN_RANGE)
+=pod
+if ($top_score == $TOP_EQUAL &&
+    $depth == 0)
 {
-  print "ANY!\n";
+  print "HIT!\n";
   print "$lno\n";
   print "$line2\n";
 }
+=cut
 
       $table[$top_score][$len_score][$depth]{uses}++;
 
@@ -228,6 +235,16 @@ sub parse_covers
         my $len_score = get_length_score(\@opps);
         my $depth = get_depth(\@opps);
 
+=pod
+if (# $top_score == $TOP_EQUAL &&
+    # $len_score == $LEN_NONE &&
+    $depth == 5)
+{
+  print "HIT!\n";
+  print "$lno\n";
+  print "$line2\n";
+}
+=cut
         $covers_ref->{$profile}{$key}[$symmflag]{top} = $top_score;
         $covers_ref->{$profile}{$key}[$symmflag]{length} = $len_score;
         $covers_ref->{$profile}{$key}[$symmflag]{depth} = $depth;
@@ -367,7 +384,6 @@ sub get_top_score
     if ($opps_ref->[$i]{oper} == $LEN_NONE)
     {
       $last_unset = $i;
-      last;
     }
   }
 
@@ -387,8 +403,12 @@ sub get_top_score
     }
   }
 
-  if ($first_unset == $last_unset ||
-      ($first_unset == 0 && $last_unset == 999))
+  if (($first_unset == 999 && $last_unset == 0) ||
+      ($c == 1 && $first_unset == 1 && $last_unset == 1))
+  {
+    return $TOP_NONE;
+  }
+  elsif ($first_unset == $last_unset)
   {
     # We have a top situation.
     return $TOP_EQUAL if $non_equal == $LEN_EQUAL;
@@ -427,10 +447,7 @@ sub get_depth
   for my $i (1 .. $c)
   {
     my $oper = $opps_ref->[$i]{oper};
-    if ($oper != $LEN_NONE)
-    {
-      $depth++;
-    }
+    $depth++ unless $oper == $LEN_NONE;
   }
   return $depth;
 }
@@ -452,13 +469,16 @@ sub print_table
   {
     for my $len (0 .. $LEN_LESS)
     {
+
+      my $sum = 0;
+      $sum += $table[$top][$len][$_]{$field} for (0 .. 5);
+      next if $sum == 0;
+
       printf("%-16s", $top_titles[$top] . ' ' . $length_titles[$len]);
-      for my $depth (0 .. 5)
-      {
-        printf("%6d", $table[$top][$len][$depth]{$field});
-      }
+      printf("%6d", $table[$top][$len][$_]{$field}) for (0 .. 5);
       print "\n";
     }
+    print "\n";
   }
   print "\n";
 }
