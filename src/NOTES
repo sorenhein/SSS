@@ -1,20 +1,17 @@
 Reduce the size of CoverStore
 -----------------------------
-coverall contains the generated covers.
-num45_3 contains the used covers.
-
-Make a 2D histogram of len set (or not) and 1 top used
-- Separately for each EW length
-- Separately for symm and not
-- total, uses, used
-
-Make the Cpx field 2 wieder?
-Don't generate 5 actives when depth == 5.
-Drop active == 5 from output.
-
 Can skip Top/Any as range (completely), except that 
 Manual seems to use them
 
+Where does the time go now?
+
+symmetric ones
+--------------
+Get the symmetries done.
+Cover::getWeight, getTricks -- other way of duplicates?
+
+Complexities
+------------
 Idea:
 5:1,1,1,1,1
 used

@@ -139,24 +139,34 @@ bool Product::symmetrizable(
 
   // We need at least one term that is set and symmetrizable on its own.
 
-  // unsigned consecutive = 0;
+  bool uncenteredFlag = false;
+
   if (length.used())
   {
     SymmTerm symmLength = length.symmetrizable(sumProfile.length());
-    if (symmLength == TERM_SYMMETRIZABLE)
+    if (symmLength == TERM_SYMMETRIZABLE_LOW)
       return true;
-    // else if (symmLength == TERM_NOT_SYMMETRIZABLE)
-      // return false;
-
-    // else if (symmLength == TERM_OPEN_CONSECUTIVE)
-      // consecutive++;
+    else if (activeCount == 0)
+    {
+      // A single length can be described as well without symmetry.
+      return false;
+    }
+    else if (symmLength == TERM_SYMMETRIZABLE_HIGH)
+    {
+      // The first symmetrize term should be a low one.
+      return false;
+    }
+    else if (symmLength == TERM_OPEN_UNCENTERED_LOW)
+    {
+      // Needs something more -- not symmetrizable in itself.
+      uncenteredFlag = true;
+    }
+    else if (symmLength == TERM_OPEN_UNCENTERED_HIGH)
+    {
+      // Will never be symmetrizable low.
+      return false;
+    }
   }
-
-  // So now symmLength can be:
-  // OPEN_CONSECUTIVE (1-2 of length 5), or
-  // OPEN_CENTERED (exactly 2 of length 4).
-  // If all set terms are centered, it is not really symmetrizable.
-  // A single consecutive term is also not enough.
 
   for (unsigned char i = static_cast<unsigned char>(tops.size()); --i > 0; )
   {
@@ -165,18 +175,35 @@ bool Product::symmetrizable(
       const SymmTerm sterm = tops[i].symmetrizable(
         sumProfile[i + canonicalShift]);
 
-      if (sterm == TERM_SYMMETRIZABLE)
+      if (sterm == TERM_SYMMETRIZABLE_LOW)
+      {
+        // Compatible with whatever came before.
         return true;
-      // else if (sterm == TERM_NOT_SYMMETRIZABLE)
-        // return false;
-
-      // else if (sterm == TERM_OPEN_CONSECUTIVE)
-        // consecutive++;
+      }
+      else if (sterm == TERM_SYMMETRIZABLE_HIGH)
+      {
+        if (uncenteredFlag)
+          return true;
+        else
+          return false;
+      }
+      else if (sterm == TERM_OPEN_UNCENTERED_LOW)
+      {
+        if (uncenteredFlag)
+          return true;
+        else
+          uncenteredFlag = true;
+      }
+      else if (sterm == TERM_OPEN_UNCENTERED_HIGH)
+      {
+        if (uncenteredFlag)
+          return true;
+        else
+          return false;
+      }
     }
   }
 
-  // return (consecutive > 1);
-  // TODO TMP for now: All were open, so not symmetrizable.
   return false;
 }
 

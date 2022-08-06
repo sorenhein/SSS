@@ -199,6 +199,13 @@ cout << sumProfile.strHeader();
 cout << sumProfile.strLine();
 cout << coverStore.str() << "\n";
 /* */
+  if (coverStore.duplicates())
+  {
+cout << sumProfile.strHeader();
+cout << sumProfile.strLine();
+cout << coverStore.str() << endl;
+assert(false);
+  }
 }
 
 
@@ -680,13 +687,17 @@ void Covers::explain(
     list<CoverTableau> solutions;
 
     // Guess followed by heuristic combinations of partial solutions.
+timersStrat[35].start();
     Covers::guessStarts(tricks, explain, 3, solutions);
+timersStrat[35].stop();
 
     if (solutions.size() == 0)
     {
       // Slice the residuals by West length, find partial covers for
       // each slice, and combine them back together into a solution.
+timersStrat[36].start();
       Covers::guessRest(explain, solution);
+timersStrat[36].stop();
     }
     else
     {
@@ -697,7 +708,9 @@ void Covers::explain(
         {
           // Slice the residuals by West length, find partial covers for
           // each slice, and combine them back together into a solution.
+timersStrat[37].start();
           Covers::guessRest(explain, partialSolution);
+timersStrat[37].stop();
         }
 
         if (! solution.used() || partialSolution < solution)

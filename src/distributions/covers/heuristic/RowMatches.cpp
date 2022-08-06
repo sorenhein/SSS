@@ -320,21 +320,19 @@ void RowMatches::symmetrize(const Profile& sumProfile)
 
   for (auto rit1 = matches.begin(); rit1 != matches.end(); rit1++)
   {
-    if (! rit1->symmetrizable(sumProfile))
-      continue;
-
     for (auto rit2 = next(rit1); rit2 != matches.end(); )
     {
-      if (! rit2->symmetrizable(sumProfile))
-      {
-        rit2++;
-        continue;
-      }
-
       if (rit1->symmetricWith(* rit2))
       {
-        rit1->symmetrize();
-        rit2 = matches.erase(rit2);
+        if (rit1->symmetrizable(sumProfile))
+        {
+          // rit1 has the lower length, so anything is symmetrizable,
+          // it is this.
+          rit1->symmetrize();
+          rit2 = matches.erase(rit2);
+        }
+        else
+          rit2++;
       }
       else
         rit2++;

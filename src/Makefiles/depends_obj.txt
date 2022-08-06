@@ -374,6 +374,7 @@ distributions/covers/Covers.obj: distributions/covers/Cover.h
 distributions/covers/Covers.obj: distributions/covers/heuristic/RowMatches.h
 distributions/covers/Covers.obj: distributions/covers/heuristic/RowMatch.h
 distributions/covers/Covers.obj: distributions/covers/heuristic/PartialVoid.h
+distributions/covers/Covers.obj: distributions/covers/heuristic/PartialVoid.h
 distributions/covers/Covers.obj: distributions/covers/tableau/TableauStats.h
 distributions/covers/Covers.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/Covers.obj: distributions/covers/product/Profile.h
@@ -393,6 +394,7 @@ distributions/covers/CoverStore.obj: distributions/covers/heuristic/Partial.h
 distributions/covers/CoverStore.obj: distributions/covers/Tricks.h
 distributions/covers/CoverStore.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/CoverStore.obj: distributions/covers/product/Profile.h
+distributions/covers/CoverStore.obj: inputs/Control.h inputs/Entity.h
 distributions/covers/RowStore.obj: distributions/covers/RowStore.h
 distributions/covers/RowStore.obj: distributions/covers/CoverRow.h
 distributions/covers/RowStore.obj: distributions/covers/Tricks.h
@@ -445,6 +447,8 @@ distributions/covers/heuristic/RowMatches.obj: distributions/covers/heuristic/Ro
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/heuristic/RowMatch.h
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/CoverRow.h
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/Tricks.h
+distributions/covers/heuristic/RowMatches.obj: distributions/covers/heuristic/PartialVoid.h
+distributions/covers/heuristic/RowMatches.obj: distributions/covers/heuristic/Partial.h
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/Explain.h
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/Covers.h
 distributions/covers/heuristic/RowMatches.obj: distributions/covers/CoverStore.h
@@ -482,6 +486,8 @@ distributions/covers/tableau/CoverTableau.obj: distributions/covers/tableau/Cove
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/CoverCategory.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/RowMatches.h
 distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/RowMatch.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/PartialVoid.h
+distributions/covers/tableau/CoverTableau.obj: distributions/covers/heuristic/Partial.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Result.h
 distributions/covers/tableau/CoverTableau.obj: strategies/result/Winners.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/tableau/TableauCache.h

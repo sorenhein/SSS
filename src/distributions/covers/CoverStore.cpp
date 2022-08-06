@@ -101,11 +101,15 @@ void CoverStore::add(
   coverScratch.set(productMemory, sumProfile, profilePair, 
     symmetricFlag, false);
 
-// cout << "Got " << coverScratch.strLine() << endl;
+// cout << "Got symm: " << symmetricFlag << "\n";
+// cout << coverScratch.strLine() << endl;
 
   // Make its tricks and counts.
   if (! coverScratch.setByProduct(distProfiles, cases))
+  {
+// cout << "Couldn't set\n";
     return;
+  }
 
   // Only enter covers that are not too deep.
   if (coverScratch.effectiveDepth() > control.verbalDepth())
@@ -118,7 +122,7 @@ void CoverStore::add(
 
   if (! coverScratch.explainable())
   {
-    // cout << "NONEXPLAINABLE\n";
+    cout << "NONEXPLAINABLE\n";
     // cout << coverScratch.strNumerical() << "\n";
     return;
   }
@@ -129,6 +133,7 @@ void CoverStore::add(
 
   if (symmetricFlag)
   {
+// cout << "Already symmetric\n";
     // Nothing to symmetrize.
     return;
   }
@@ -141,11 +146,19 @@ void CoverStore::add(
   
   // Discard some symmmetric versions.
   if (! coverScratch.symmetrizable(sumProfile))
+  {
+// cout << "Not symmetrizable\n";
     return;
+  }
 
+  // TODO Is this needed too?
   if (! coverScratch.symmetrize())
+  {
+// cout << "Couldn't symmetrize\n";
     return;
+  }
 
+// cout << "Adding symmetric\n";
   symmetricCache.push_back(coverScratch);
 }
 
@@ -180,6 +193,8 @@ if (it == store.end())
 {
   cout << "MISSING\n";
   cout << cover.strNumerical() << endl;
+  cout << "FROM\n";
+  cout << CoverStore::str() << endl;
 }
 
   assert(it != store.end());
@@ -300,6 +315,28 @@ set<Cover>::const_iterator CoverStore::end() const
 size_t CoverStore::size() const
 {
   return store.size();
+}
+
+
+bool CoverStore::duplicates() const
+{
+  // Not particularly efficient, but only for diagnostics.
+  for (auto it1 = store.begin(); it1 != store.end(); it1++)
+  {
+    for (auto it2 = next(it1); it2 != store.end(); it2++)
+    {
+      auto& c1 = *it1;
+      auto& c2 = *it2;
+      if (c1.getWeight() == c2.getWeight() &&
+          c1.getTricks() == c2.getTricks())
+      {
+        cout << "C1\n" << c1.strNumerical() << "\n";
+        cout << "C2\n" << c2.strNumerical() << "\n";
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 

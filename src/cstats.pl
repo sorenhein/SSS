@@ -45,6 +45,8 @@ for my $top (0 .. $ANY_LESS)
   }
 }
 
+my @matrix;
+
 my @top_titles;
 
 $top_titles[$TOP_NONE] = "Lenonly";
@@ -70,7 +72,7 @@ $length_titles[$LEN_LESS] = "Len<=";
 
 my %allcovers; # Indexed by sum profile string and then code string
 open my $fc, '<', $cfile or die $!;
-parse_covers($cfile, \%allcovers, \@table);
+parse_covers(\%allcovers, \@table);
 close $fc;
 
 open my $fh, '<', $nfile or die $!;
@@ -108,7 +110,7 @@ while (my $line = <$fh>)
       $line2 =~ s/\[\d+\/\d+\]\s*$//;
 
       my @splits = split /\s+/, $line2;
-      my $num = $#splits - 6;
+      my $num = $#splits - 5;
       $num-- if $line2 =~ / sym /;
 
       my $i = 1;
@@ -147,9 +149,25 @@ if ($top_score == $TOP_EQUAL &&
       $line2 =~ /(\d+)\s*$/;
       my $key = $1;
 
+      $profile =~ /^(\d+):/;
+      my $lengthTotal = $1;
+
+      my ($lenStr, $topStr);
+      my $matrixFlag = mstrings(\@opps, $lengthTotal, \$lenStr, \$topStr);
+
+      if ($matrixFlag)
+      {
+        $matrix[$lengthTotal][$symmflag]{uses}{$lenStr}{$topStr}++;
+      }
+
       if ($allcovers{$profile}{$key}[$symmflag]{count} == 0)
       {
         $table[$top_score][$len_score][$depth]{used}++;
+
+        if ($matrixFlag)
+        {
+          $matrix[$lengthTotal][$symmflag]{used}{$lenStr}{$topStr}++;
+        }
       }
 
       $allcovers{$profile}{$key}[$symmflag]{count}++;
@@ -168,15 +186,24 @@ print_table('uses');
 print "Used\n\n";
 print_table('used');
 
+for my $length (2 .. $#matrix)
+{
+  for my $symmflag (0 .. 1)
+  {
+    for my $word (qw(total uses used))
+    {
+      my $header = "Length $length symm $symmflag, $word";
+      print_matrix($header, \%{$matrix[$length][$symmflag]{$word}});
+    }
+  }
+}
 
 
 sub parse_covers
 {
-  my ($cfile, $covers_ref, $table_ref) = @_;
+  my ($covers_ref, $table_ref) = @_;
 
-  my $lno = 0;
-  my $profile;
-  open my $fh, '<', $cfile or die $!;
+  $lno = 0;
 
   while (my $line = <$fc>)
   {
@@ -251,6 +278,16 @@ if (# $top_score == $TOP_EQUAL &&
 
         $table[$top_score][$len_score][$depth]{total}++;
 
+        $profile =~ /^(\d+):/;
+        my $lengthTotal = $1;
+
+        my ($lenStr, $topStr);
+        my $matrixFlag = mstrings(\@opps, $lengthTotal, \$lenStr, \$topStr);
+
+        if ($matrixFlag)
+        {
+          $matrix[$lengthTotal][$symmflag]{total}{$lenStr}{$topStr}++;
+        }
       }
     }
   }
@@ -480,6 +517,139 @@ sub print_table
     }
     print "\n";
   }
+  print "\n";
+}
+
+
+sub to_str
+{
+  my ($ref, $lenTotal) = @_;
+
+  my $op = $ref->{oper};
+  if ($op == $LEN_EQUAL)
+  {
+    my $l = $ref->{lower};
+    return $l . '-' . $l;
+  }
+  elsif ($op == $LEN_RANGE)
+  {
+    return $ref->{lower} . '-' . $ref->{upper};
+  }
+  elsif ($op == $LEN_GREATER)
+  {
+    return $ref->{lower} . '-' . $lenTotal;
+  }
+  elsif ($op == $LEN_LESS)
+  {
+    return 0 . '-' . $ref->{lower};
+  }
+  else
+  {
+    die;
+  }
+
+}
+
+
+sub mstrings
+{
+  my ($opps_ref, $lenTotal, $len_ref, $top_ref) = @_;
+
+  # Check that there is at most one top set.
+  my $c = $#$opps_ref;
+  my $top_seen = 0;
+  for my $i (1 .. $c)
+  {
+    if ($opps_ref->[$i]{oper} != $LEN_NONE)
+    {
+      return 0 if $top_seen;
+      $top_seen = $i;
+    }
+  }
+
+  my $op = $opps_ref->[$top_seen]{oper};
+  if ($top_seen == 0)
+  {
+    $$top_ref = 'any';
+  }
+  else
+  {
+    $$top_ref = to_str(\%{$opps_ref->[$top_seen]}, 'M');
+  }
+
+  if ($opps_ref->[0]{oper} == $LEN_NONE)
+  {
+    $$len_ref = 'any';
+  }
+  else
+  {
+    $$len_ref = to_str(\%{$opps_ref->[0]}, $lenTotal);
+  }
+
+  return 1;
+}
+
+
+sub print_matrix
+{
+  my ($header, $mref) = @_;
+
+  print "$header\n";
+  print '-' x length($header), "\n\n";
+
+  # Build up the whole list of possible tops
+  my %tops;
+  for my $len (keys %$mref)
+  {
+    for my $top (keys %{$mref->{$len}})
+    {
+      $tops{$top} = 1;
+    }
+  }
+
+  # Print header
+  my $hlen = 8 + 6;
+  printf("%8s", '');
+  for my $top (sort keys %tops)
+  {
+    printf("%6s", $top);
+    $hlen += 6;
+  }
+  printf("%6s\n", "Sum");
+
+  print '-' x $hlen, "\n";
+  
+  my $sum = 0;
+  my %colsum;
+  for my $len (sort keys %$mref)
+  {
+    my $rowsum = 0;
+    printf("%-8s", $len);
+    for my $top (sort keys %tops)
+    {
+      if (defined $mref->{$len}{$top})
+      {
+        printf("%6d", $mref->{$len}{$top});
+        $rowsum += $mref->{$len}{$top};
+        $colsum{$top} += $mref->{$len}{$top};
+      }
+      else
+      {
+        printf("%6s", '');
+      }
+    }
+    printf("%6d\n", $rowsum);
+    $sum += $rowsum;
+  }
+
+  print '-' x $hlen, "\n";
+
+  printf("%-8s", "Sum");
+  for my $top (sort keys %colsum)
+  {
+    printf("%6d", $colsum{$top});
+  }
+  printf("%6d\n", $sum);
   print "\n";
 }
 

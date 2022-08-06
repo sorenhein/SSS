@@ -83,6 +83,8 @@ class CoverStore
 
     size_t size() const;
 
+    bool duplicates() const;
+
     string str() const;
 };
 
