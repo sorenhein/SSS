@@ -20,6 +20,7 @@ class Cover;
 class Profile;
 class RanksNames;
 class ProductStats;
+struct CoverLength;
 
 enum Opponent: unsigned;
 enum CoverSymmetry: unsigned;
@@ -99,6 +100,8 @@ class CoverRow
       const Profile& sumProfile) const;
 
     unsigned char effectiveDepth() const;
+
+    bool lengthConsistent(const CoverLength& specificLength) const;
 
     unsigned getWeight() const;
 

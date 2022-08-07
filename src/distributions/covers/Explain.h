@@ -11,8 +11,7 @@
 
 #include <string>
 
-enum CoverSymmetry: unsigned;
-enum CoverComposition: unsigned;
+#include "CoverCategory.h"
 
 
 using namespace std;
@@ -25,6 +24,8 @@ class Explain
     unsigned numStrategyTops;
 
     unsigned char tricksMinInt;
+
+    CoverLength specificLength;
 
     CoverSymmetry symmetry;
 
@@ -40,6 +41,12 @@ class Explain
     void setSymmetry(const CoverSymmetry symmetryIn);
 
     void setComposition(const CoverComposition compositionIn);
+
+    void setSpecificLength(const unsigned char lengthIn);
+
+    void unsetSpecificLength();
+
+    const CoverLength& getSpecificLength() const;
 
     bool skip(
       const unsigned char effectiveDepth,

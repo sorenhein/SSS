@@ -21,6 +21,7 @@ class Profile;
 class RanksNames;
 class ProductStats;
 class ProductMemory;
+struct CoverLength;
 
 enum Opponent: unsigned;
 enum CoverSymmetry: unsigned;
@@ -115,6 +116,8 @@ class Cover
     CoverSymmetry symmetry() const;
 
     CoverComposition composition() const;
+
+    bool lengthConsistent(const CoverLength& specificLength) const;
 
     bool explainable() const;
 

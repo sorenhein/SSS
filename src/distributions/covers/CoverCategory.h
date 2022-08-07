@@ -30,4 +30,10 @@ enum CoverComposition: unsigned
   EXPLAIN_COMPOSITION_UNSET = 3
 };
 
+struct CoverLength
+{
+  bool flag;
+  unsigned char length;
+};
+
 #endif

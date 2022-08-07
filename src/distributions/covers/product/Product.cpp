@@ -329,6 +329,14 @@ CoverComposition Product::composition() const
 }
 
 
+bool Product::lengthConsistent(const unsigned char specificLength) const
+{
+  return (length.used() &&
+      length.getOperator() == COVER_EQUAL &&
+      length.lower() == specificLength);
+}
+
+
 ExplainEqual Product::mostlyEqual() const
 {
   // EQUAL_FROM_TOP: All the tops that are set are the highest ones.

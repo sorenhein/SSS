@@ -98,7 +98,8 @@ bool Cover::setByProduct(
       coverSymmetry = EXPLAIN_GENERAL;
   }
   
-  mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
+  // mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
+  mcpw = (Cover::getComplexity() << 20) / tricks.getWeight();
   return true;
 }
 
@@ -230,6 +231,17 @@ CoverComposition Cover::composition() const
 {
   assert(factoredProductPtr != nullptr);
   return factoredProductPtr->composition();
+}
+
+
+bool Cover::lengthConsistent(const CoverLength& specificLength) const
+{
+  assert(factoredProductPtr != nullptr);
+
+  if (! specificLength.flag)
+    return true;
+  else
+    return factoredProductPtr->lengthConsistent(specificLength.length);
 }
 
 

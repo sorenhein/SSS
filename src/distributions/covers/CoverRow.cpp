@@ -219,6 +219,14 @@ unsigned char CoverRow::effectiveDepth() const
 }
 
 
+bool CoverRow::lengthConsistent(
+  [[maybe_unused]] const CoverLength& specificLength) const
+{
+  // Need this for manual covers.
+  return true;
+}
+
+
 unsigned CoverRow::getWeight() const
 {
   return weight;

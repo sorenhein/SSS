@@ -59,6 +59,8 @@ class FactoredProduct
 
     CoverComposition composition() const;
 
+    bool lengthConsistent(const unsigned char specificLength) const;
+
     bool explainable() const;
     bool explainableNew() const;
 

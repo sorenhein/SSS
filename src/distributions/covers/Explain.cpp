@@ -22,6 +22,8 @@ void Explain::setParameters(
 {
   numStrategyTops = numStrategyTopsIn;
   tricksMinInt = tricksMinIn;
+
+  specificLength.flag = false;
 }
 
 
@@ -34,6 +36,25 @@ void Explain::setSymmetry(const CoverSymmetry symmetryIn)
 void Explain::setComposition(const CoverComposition compositionIn)
 {
   composition = compositionIn;
+}
+
+
+void Explain::setSpecificLength(const unsigned char lengthIn)
+{
+  specificLength.flag = true;
+  specificLength.length = lengthIn;
+}
+
+
+void Explain::unsetSpecificLength()
+{
+  specificLength.flag = false;
+}
+
+
+const CoverLength& Explain::getSpecificLength() const
+{
+  return specificLength;
 }
 
 

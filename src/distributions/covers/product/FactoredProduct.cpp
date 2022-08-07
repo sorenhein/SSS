@@ -88,6 +88,13 @@ CoverComposition FactoredProduct::composition() const
 }
 
 
+bool FactoredProduct::lengthConsistent(
+  const unsigned char specificLength) const
+{
+  return canonicalPtr->lengthConsistent(specificLength);
+}
+
+
 bool FactoredProduct::explainable() const
 {
   return canonicalPtr->explainable();

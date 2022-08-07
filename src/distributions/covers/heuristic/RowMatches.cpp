@@ -19,6 +19,10 @@
 
 #include "../../../utils/table.h"
 
+// TODO TMP
+#include "../../../utils/Timer.h"
+extern vector<Timer> timersStrat;
+
 
 using namespace std;
 
@@ -279,12 +283,18 @@ bool RowMatches::incorporateTops(
       explain.setSymmetry(EXPLAIN_ANTI_SYMMETRIC);
     }
 
+    explain.setSpecificLength(static_cast<unsigned char>(lenEW));
+
+timersStrat[46].start();
     CoverTableau solution;
     solution.init(tricks, 0); // Minimum doesn't matter yet
+timersStrat[46].stop();
 
+timersStrat[47].start();
     // TODO Limit covers to those with the specific length
     covers.explainByCategory(tricks, explain, true,
       solution, newTableauFlag);
+timersStrat[47].stop();
 
     if (! solution.complete())
     {
@@ -292,15 +302,19 @@ bool RowMatches::incorporateTops(
       // being needed that doesn't seem to take any tricks?
       // So it's really a rank error.
       cout << "FAILED g = 4" << endl;
+      explain.unsetSpecificLength();
       return false;
     }
 
     // TODO Maybe solution gets begin/end instead and we run here?
     // solution.destroyIntoMatches(* this, lenEW);
+timersStrat[48].start();
     for (auto& row: solution.rows)
       RowMatches::transfer(row, lenEW, OPP_EAST);
+timersStrat[48].stop();
   }
 
+  explain.unsetSpecificLength();
   return true;
 }
 

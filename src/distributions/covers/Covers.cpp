@@ -274,7 +274,10 @@ void Covers::explainTemplate(
 
     while (candIter != candidates.end())
     {
-      if (explain.skip(candIter->effectiveDepth(), candIter->symmetry()))
+      if (explain.skip(
+          candIter->effectiveDepth(), 
+          candIter->symmetry()) ||
+          ! candIter->lengthConsistent(explain.getSpecificLength()))
       {
         candIter++;
         continue;
@@ -476,38 +479,53 @@ void Covers::guessRest(
 {
   // TODO May want to split even the symmetrics.  Then the
   // partitioning should also somehow be symmetric.
+timersStrat[40].start();
   vector<Tricks> tricksWithinLength;
   vector<Tricks> tricksOfLength;
   solution.sliceResiduals(tricksWithinLength, tricksOfLength, cases);
+timersStrat[40].stop();
 
   // Add the length-only covers arising from a minimum trick number
   // for a given length.
+timersStrat[41].start();
   RowMatches rowMatches;
   rowMatches.incorporateLengths(coverStore, cases, 
     tricksOfLength, explain);
+timersStrat[41].stop();
 
   // Add the top covers for a given length.
+timersStrat[42].start();
   if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
+  {
+timersStrat[42].stop();
     return;
+  }
+timersStrat[42].stop();
 
+timersStrat[43].start();
   // Add in the voids, completing row matches a bit cleverly.
   rowMatches.incorporateVoids(sumProfile);
+timersStrat[43].stop();
 
 #ifdef DEBUG_MODE4
 cout << "Matches after incorporation\n";
 cout << rowMatches.str() << endl;
 #endif
 
+timersStrat[44].start();
   // Combine obvious symmetries.
   rowMatches.symmetrize(sumProfile);
+timersStrat[44].stop();
 
 #ifdef DEBUG_MODE4
 cout << "Matches after symmetrize\n";
 cout << rowMatches.str() << endl;
 #endif
 
+timersStrat[45].start();
   // Score those row matches anew that involves more than one row.
   rowMatches.makeSolution(coverStore, cases, explain, solution);
+timersStrat[45].stop();
 }
 
 

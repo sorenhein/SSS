@@ -1,9 +1,7 @@
 Reduce the size of CoverStore
 -----------------------------
-Can skip Top/Any as range (completely), except that 
+Can skip Top/Any as range (completely) for g = 4, except that 
 Manual seems to use them
-
-Where does the time go now?
 
 symmetric ones
 --------------
@@ -12,6 +10,14 @@ Cover::getWeight, getTricks -- other way of duplicates?
 
 Complexities
 ------------
+Cover: Make a private singular()
+Cover: getComplexity if singular 3.
+Product: Delete aesthetic adjustment.
+
+All singulars now 3 (check in Perl).
+
+
+
 Idea:
 5:1,1,1,1,1
 used
