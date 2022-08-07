@@ -117,6 +117,13 @@ class Product
       const Opponent simplestOpponent,
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
+
+    string strVerbalSingular(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
 };
 
 #endif

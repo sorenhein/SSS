@@ -63,6 +63,10 @@ class Top: public Term
       const TopData& oppsTopData,
       const Opponent simplestOpponent) const;
 
+    string strTopBareEqual(
+      const TopData& oppsTopData,
+      const Opponent simplestOpponent) const;
+
     string strEqualWithLength(
       const Length& length,
       const unsigned char oppsLength,

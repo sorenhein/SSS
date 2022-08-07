@@ -141,3 +141,14 @@ string FactoredProduct::strVerbal(
     sumProfile, ranksNames, simplestOpponent, symmFlag, canonicalShift);
 }
 
+
+string FactoredProduct::strVerbalSingular(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const Opponent simplestOpponent,
+  const bool symmFlag) const
+{
+  return canonicalPtr->strVerbalSingular(
+    sumProfile, ranksNames, simplestOpponent, symmFlag, canonicalShift);
+}
+

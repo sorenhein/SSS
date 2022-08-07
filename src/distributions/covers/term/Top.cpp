@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <vector>
 #include <cassert>
 
 #include "Top.h"
@@ -20,6 +21,42 @@
 #include "../../../ranks/RankNames.h"
 
 #include "../../../utils/table.h"
+
+const vector<string> topCount =
+{
+  "none",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen"
+};
+
+const vector<string> topOrdinal =
+{
+  "void",
+  "singleton",
+  "doubleton",
+  "tripleton",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth",
+  "thirteenth"
+};
 
 
 string Top::strEqual(
@@ -310,26 +347,7 @@ string Top::strLengthRangeEqual(
 
   stringstream ss;
 
-  string slen;
-  if (maxLen == 1)
-    slen = "singleton";
-  else if (maxLen == 2)
-    slen = "doubleton";
-  else if (maxLen == 3)
-    slen = "tripleton";
-  else if (maxLen == 4)
-    slen = "fourth";
-  else if (maxLen == 5)
-    slen = "fifth";
-  else if (maxLen == 6)
-    slen = "sixth";
-  else if (maxLen == 7)
-    slen = "seventh";
-  else
-  {
-    cout << "maxLen assert fail: " << +maxLen << endl;
-    assert(false);
-  }
+  string slen = topOrdinal[maxLen];
 
   if (value == oppsTopData.value)
   {
@@ -416,6 +434,29 @@ string Top::strTopBare(
   else if (vLower + vUpper == oppsTopData.value)
     ss << +vLower << "-" << +vUpper << " of " << strFull;
 
+  return ss.str();
+}
+
+
+string Top::strTopBareEqual(
+  const TopData& oppsTopData,
+  const Opponent simplestOpponent) const
+{
+  assert(Top::getOperator() == COVER_EQUAL);
+
+  const unsigned char value = (simplestOpponent == OPP_WEST ?
+    Top::lower() : oppsTopData.value - Top::upper());
+
+  assert(oppsTopData.rankNamesPtr);
+  const string str = oppsTopData.rankNamesPtr->strShort();
+
+  if (value == 0)
+    return "";
+  else if (value == oppsTopData.value)
+    return str;
+
+  stringstream ss;
+  ss << "(" << topCount[value] << " of " << str << ")";
   return ss.str();
 }
 

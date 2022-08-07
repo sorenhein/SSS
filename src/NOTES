@@ -6,15 +6,12 @@ Manual seems to use them
 symmetric ones
 --------------
 Get the symmetries done.
+Still get some odd ones, e.g length 5, 1-5?
 Cover::getWeight, getTricks -- other way of duplicates?
 
 Complexities
 ------------
-Cover: Make a private singular()
-Cover: getComplexity if singular 3.
-Product: Delete aesthetic adjustment.
-
-All singulars now 3 (check in Perl).
+All singulars now 2 or 3.
 
 
 
@@ -32,6 +29,19 @@ Complexity 8 OK.
 
 Text covers
 -----------
+Issues with singulars:
+- 7/1668: I guess #1, =1 unused =1 becomes QT from the East side,
+  encoded as "no ace", which shows up as " ".  So the simplest
+  opponent should be West here. (Sum profile 1-1-1, len 3).
+- Rank names should be able to output
+  where HH = AK, hhh = T98, ...
+- Then singular outputs should use this, and no ()'s
+- When "has exactly 7", length 1, should be "the same".
+- Same for "has exactly KQ"?
+- When outputting a whole strategy, group all the West, East and
+  Either lines, and add up their complexities ("or"?)
+
+
 I guess RankNames now uses K-Q and not HH anymore?
 Should it know both?
 Should we show singular and other of these outputs as Hx,

@@ -49,6 +49,9 @@ class Cover
     unsigned long long code;
 
 
+    bool singular() const;
+
+
   public:
 
     Cover();

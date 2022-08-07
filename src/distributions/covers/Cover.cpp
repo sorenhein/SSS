@@ -227,6 +227,17 @@ CoverSymmetry Cover::symmetry() const
 }
 
 
+bool Cover::singular() const
+{
+  // Either a single distribution, or two symmetrically.
+  const size_t numDist = tricks.nonzero();
+  if (numDist == 1 || (Cover::symmetric() && numDist == 2))
+    return true;
+  else
+    return false;
+}
+
+
 CoverComposition Cover::composition() const
 {
   assert(factoredProductPtr != nullptr);
@@ -249,8 +260,9 @@ bool Cover::explainable() const
 {
   assert(factoredProductPtr != nullptr);
 
-  const size_t numDist = tricks.nonzero();
-  if (numDist == 1 || (Cover::symmetric() && numDist == 2))
+  // const size_t numDist = tricks.nonzero();
+  // if (numDist == 1 || (Cover::symmetric() && numDist == 2))
+  if (Cover::singular())
     return true;
   else
     return factoredProductPtr->explainableNew();
@@ -306,7 +318,13 @@ unsigned Cover::getWeight() const
 unsigned char Cover::getComplexity() const
 {
   assert(factoredProductPtr != nullptr);
-  return factoredProductPtr->getComplexity();
+  // Aesthetic adjustment: A single holding is quite simple,
+  // no matter how many terms it takes to describe it.
+  const unsigned char c = factoredProductPtr->getComplexity();
+  if (Cover::singular())
+    return min(c, static_cast<unsigned char>(3));
+  else
+    return c;
 }
 
 
@@ -400,6 +418,14 @@ string Cover::str(
     ss << factoredProductPtr->strVerbal(
       sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
       */
+  }
+  else if (Cover::singular())
+  {
+    const Opponent simplestOpponent = 
+      factoredProductPtr->simplestOpponent(sumProfile);
+
+    ss << factoredProductPtr->strVerbalSingular(
+      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
   }
   else
     ss << Cover::strTricksShort() + Cover::strLine();

@@ -128,7 +128,16 @@ while (my $line = <$fh>)
       my $symmflag = ($line2 =~ /sym/ ? 1 : 0);
       my $dcount = $splits[0] =~ tr/1//;
       $dcount >>= 1 if $symmflag;
-      next if $dcount == 1;
+      my $complexity = $splits[$num+2];
+
+      if ($dcount == 1)
+      {
+        if ($complexity != 2 && $complexity != 3)
+        {
+          print "ERROR $lno: Complexity too high\n";
+        }
+        next;
+      }
 
       my $top_score = get_top_score(\@opps);
       my $len_score = get_length_score(\@opps);
@@ -143,6 +152,16 @@ if ($top_score == $TOP_EQUAL &&
   print "$line2\n";
 }
 =cut
+
+      if ($top_score != $TOP_EQUAL && 
+          $top_score != $ANY_EQUAL && 
+          $top_score != $TOP_NONE && 
+          $depth >= 2)
+      {
+        # Looking for AQT with some low cards, for example.
+        printf("lno %8d: top %2d len %2d depth %2d, compl %d\n",
+          $lno, $top_score, $len_score, $depth, $complexity);
+      }
 
       $table[$top_score][$len_score][$depth]{uses}++;
 

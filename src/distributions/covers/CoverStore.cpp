@@ -122,7 +122,7 @@ void CoverStore::add(
 
   if (! coverScratch.explainable())
   {
-    cout << "NONEXPLAINABLE\n";
+    // cout << "NONEXPLAINABLE\n";
     // cout << coverScratch.strNumerical() << "\n";
     return;
   }

@@ -77,14 +77,18 @@ void Product::set(
   const unsigned char canonicalShift = 
     static_cast<unsigned char>(topLowSize - tops.size());
 
+  bool nonEqualFlag = false;
+
   // Always skip the first one.
-  // for (unsigned char i = 1; i < topLowSize; i++)
   for (unsigned char i = 1; i < tops.size(); i++)
   {
-    tops[i].set(
-      sumProfile[i + canonicalShift], 
-      lowerProfile[i + canonicalShift], 
-      upperProfile[i + canonicalShift]);
+    const auto& lower = lowerProfile[i + canonicalShift];
+    const auto& upper = upperProfile[i + canonicalShift];
+
+    tops[i].set(sumProfile[i + canonicalShift], lower, upper);
+
+    if (lower != upper)
+      nonEqualFlag = true;
 
     // Note the first, i.e. lowest one.
     if (tops[i].used())
@@ -100,12 +104,16 @@ void Product::set(
     complexity += tops[i].complexity();
   }
 
-  // Aesthetic adjustment when the only active entries are equals.
-  if (length.used() && 
-      complexity > 3 &&
-      lowerProfile.onlyEquals(upperProfile, sumProfile))
+  if (! nonEqualFlag && activeCount > 1)
   {
-    complexity = 3;
+    // Don't count multiple equal tops (that are unmarred by
+    // unequal ones) as 2 each, but as 2,3,4,5,...
+
+    complexity = length.complexity() + activeCount + 1;
+
+    // Add 1 if the tops are not the consecutive highest ones.
+    if (tops.size() > topSize + static_cast<size_t>(activeCount))
+      complexity++;
   }
 }
 
@@ -608,5 +616,50 @@ string Product::strVerbal(
         sumProfile.length(), 
         simplestOpponent);
   }
+}
+
+
+string Product::strVerbalSingular(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const Opponent simplestOpponent,
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
+{
+  if (activeCount == 0)
+    return "EMPTY?\n";
+
+  string result;
+  if (symmFlag)
+    result = "Either opponent";
+  else if (simplestOpponent == OPP_WEST)
+    result = "West";
+  else
+    result = "East";
+
+  result += " has exactly ";
+
+  TopData topData;
+  unsigned char topNo;
+  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
+  {
+    if (tops[topNo].used())
+    {
+      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+
+      const string topResult =
+        tops[topNo].strTopBareEqual(topData, simplestOpponent);
+
+      /*
+      if (result.back() == ')' || 
+          (result.back() != ' ' && topResult.front() == '('))
+        result += '-';
+        */
+
+      result += topResult;
+    }
+  }
+
+  return result;
 }
 
