@@ -95,6 +95,7 @@ string RankNames::strShort() const
 }
 
 
+// TODO Make as table header
 string RankNames::strHeader() const
 {
   stringstream ss;
@@ -115,3 +116,16 @@ string RankNames::str(const size_t number) const
     strFullInt << "\n";
   return ss.str();
 }
+
+
+// Rename as str later
+string RankNames::strEntry(const size_t number) const
+{
+  stringstream ss;
+  ss <<
+    setw(3) << number << "  " <<
+    setw(12) << left << strShortInt <<
+    strFullInt << "\n";
+  return ss.str();
+}
+

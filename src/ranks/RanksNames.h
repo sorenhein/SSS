@@ -19,6 +19,17 @@ using namespace std;
 enum Side: unsigned;
 
 
+/*
+ * -H 5 -h 62: AQ/- missing KJT
+ *
+ * index  side  actFull actShort     absFull absShort  relShort
+ *     0    NS      ace        A         ace        A    (none)
+ *     1    EW     king        K        king        K         H
+ *     2    NS    queen        Q       queen        Q    (none)
+ *     3    EW jack-ten       JT honor-honor       HH        hh
+ */
+
+
 class RanksNames
 {
   private:

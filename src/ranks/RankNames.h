@@ -16,6 +16,17 @@ using namespace std;
 enum Side: unsigned;
 
 
+enum RankName: unsigned
+{
+  RANKNAME_ACTUAL_FULL = 0,
+  RANKNAME_ACTUAL_SHORT = 1,
+  RANKNAME_ABSOLUTE_FULL = 2,
+  RANKNAME_ABSOLUTE_SHORT = 3,
+  RANKNAME_RELATIVE_SHORT = 4,
+  RANKNAME_FULL = 5
+};
+
+
 class RankNames
 {
   private:
@@ -47,6 +58,10 @@ class RankNames
     string strHeader() const;
 
     string str(const size_t number) const;
+
+    string str(
+      const RankName rankName,
+      const size_t number) const;
 };
 
 #endif
