@@ -23,7 +23,7 @@ enum RankName: unsigned
   RANKNAME_ABSOLUTE_FULL = 2,
   RANKNAME_ABSOLUTE_SHORT = 3,
   RANKNAME_RELATIVE_SHORT = 4,
-  RANKNAME_FULL = 5
+  RANKNAME_SIZE = 5
 };
 
 
@@ -35,8 +35,7 @@ class RankNames
 
     Side sideInt;
 
-    string strFullInt;
-    string strShortInt;
+    string names[RANKNAME_SIZE];
 
 
   public:
@@ -47,21 +46,21 @@ class RankNames
       const Side side,
       const size_t index);
 
+    void completeOpps(
+      size_t& noAbs,
+      size_t& noRel);
+
+    void completeNS();
+
     Side side() const;
 
     size_t size() const;
 
-    string strFull() const;
-
-    string strShort() const;
+    string strComponent(const RankName rankName) const;
 
     string strHeader() const;
 
     string str(const size_t number) const;
-
-    string str(
-      const RankName rankName,
-      const size_t number) const;
 };
 
 #endif

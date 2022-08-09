@@ -67,6 +67,21 @@ void RanksNames::finish()
     if (iter->side() == SIDE_OPPS)
       oppsPtrsByTop[i++] = &* iter;
   }
+
+  if (names.empty())
+    return;
+
+  size_t noAbs = 0; // Only the opponent holding with two+ cards
+  size_t noRel = 0; // All opponent holdings;
+
+  for (i = names.size(); --i > 0; )
+  {
+    auto& rnames = names[i];
+    if (rnames.side() == SIDE_OPPS)
+      rnames.completeOpps(noAbs, noRel);
+    else
+      rnames.completeNS();
+  }
 }
 
 

@@ -82,7 +82,8 @@ string Top::strEqual(
   }
 
   assert(oppsTopData.rankNamesPtr);
-  const string strFull = oppsTopData.rankNamesPtr->strFull();
+  const string strFull = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
 
   stringstream ss;
 
@@ -145,7 +146,8 @@ string Top::strInside(
   }
 
   assert(oppsTopData.rankNamesPtr);
-  const string strFull = oppsTopData.rankNamesPtr->strFull();
+  const string strFull = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
 
   stringstream ss;
 
@@ -242,7 +244,8 @@ string Top::strExactLengthEqual(
   }
 
   assert(oppsTopData.rankNamesPtr);
-  const string strFull = oppsTopData.rankNamesPtr->strFull();
+  const string strFull = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
 
   stringstream ss;
 
@@ -343,7 +346,8 @@ string Top::strLengthRangeEqual(
   const string hstr = (value == 0 ? "" : string(value, 'H'));
 
   assert(oppsTopData.rankNamesPtr);
-  const string strFull = oppsTopData.rankNamesPtr->strFull();
+  const string strFull = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
 
   stringstream ss;
 
@@ -404,7 +408,8 @@ string Top::strTopBare(
   }
 
   assert(oppsTopData.rankNamesPtr);
-  const string strFull = oppsTopData.rankNamesPtr->strFull();
+  const string strFull = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
 
   stringstream ss;
 
@@ -448,7 +453,8 @@ string Top::strTopBareEqual(
     Top::lower() : oppsTopData.value - Top::upper());
 
   assert(oppsTopData.rankNamesPtr);
-  const string str = oppsTopData.rankNamesPtr->strShort();
+  const string str = 
+    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
 
   if (value == 0)
     return "";
