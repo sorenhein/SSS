@@ -15,12 +15,14 @@
 #include "DistHelp.h"
 #include "Survivors.h"
 #include "Reductions.h"
+
 #include "covers/Covers.h"
+
+#include "../ranks/RanksNames.h"
 
 class SurvivorList;
 class DistMap;
 class ProductMemory;
-class RanksNames;
 struct Play;
 
 using namespace std;
@@ -40,6 +42,8 @@ class DistCore
     Reductions reductions;
 
     Covers covers;
+
+    RanksNames ranksNames;
 
 
     void setBinomial();
@@ -78,6 +82,8 @@ class DistCore
 
     void setLookups();
 
+    void setRanksNames(RanksNames& ranksNamesIn);
+
     const SurvivorList& getSurvivors(
       const DistMap& distMap,
       const Play& play) const;
@@ -97,7 +103,7 @@ class DistCore
 
     string str() const;
 
-    string strCovers(const RanksNames& ranksNames) const;
+    string strCovers() const;
 };
 
 #endif

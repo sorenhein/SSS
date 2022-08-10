@@ -82,11 +82,8 @@ int main(int argc, char * argv[])
       combinations.runUniques(cards, distributions);
     }
 
-    // Will be empty, so just to have something.
-    RanksNames ranksNames;
-
     cout << "\n";
-    cout << distributions.strCovers(ranksNames);
+    cout << distributions.strCovers();
     cout << distributions.strCoverCounts();
     cout << distributions.strProductEnterStats();
 

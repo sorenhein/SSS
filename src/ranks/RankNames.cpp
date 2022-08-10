@@ -85,6 +85,7 @@ void RankNames::add(
     names[RANKNAME_ACTUAL_SHORT] = 
       string(1, c) + names[RANKNAME_ACTUAL_SHORT];
   }
+  names[RANKNAME_RELATIVE_SHORT] = "(none)";
 
   count++;
 }
@@ -112,7 +113,7 @@ void RankNames::completeOpps(
     for (size_t i = 1; i < count; i++)
     {
       names[RANKNAME_ABSOLUTE_FULL] += "-" + h0;
-      names[RANKNAME_ABSOLUTE_SHORT] += "-" + h2;
+      names[RANKNAME_ABSOLUTE_SHORT] += h2;
     }
 
     noAbs++;
@@ -121,10 +122,9 @@ void RankNames::completeOpps(
   assert(noRel < CARD_RELATIVE_NAMES.size());
   const string& hr = CARD_RELATIVE_NAMES[noRel];
 
-  names[RANKNAME_RELATIVE_SHORT] = hr;
-
-  for (size_t i = 1; i < count; i++)
-    names[RANKNAME_RELATIVE_SHORT] += "-" + hr;
+  names[RANKNAME_RELATIVE_SHORT] = "";
+  for (size_t i = 0; i < count; i++)
+    names[RANKNAME_RELATIVE_SHORT] += hr;
 
   noRel++;
 }

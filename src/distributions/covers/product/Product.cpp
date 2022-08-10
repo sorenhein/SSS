@@ -650,12 +650,6 @@ string Product::strVerbalSingular(
       const string topResult =
         tops[topNo].strTopBareEqual(topData, simplestOpponent);
 
-      /*
-      if (result.back() == ')' || 
-          (result.back() != ' ' && topResult.front() == '('))
-        result += '-';
-        */
-
       result += topResult;
     }
   }

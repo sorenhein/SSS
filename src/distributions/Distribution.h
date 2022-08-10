@@ -16,6 +16,8 @@
 
 using namespace std;
 
+class RanksNames;
+
 
 class Distribution
 {
@@ -65,6 +67,12 @@ class Distribution
       assert(distCorePtr != nullptr);
       distCorePtr->setLookups();
     };
+
+    void setRanksNames(RanksNames& ranksNames)
+    {
+      assert(distCorePtr != nullptr);
+      distCorePtr->setRanksNames(ranksNames);
+    }
 
     size_t size() const
     {

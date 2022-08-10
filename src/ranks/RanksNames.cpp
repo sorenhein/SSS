@@ -19,10 +19,7 @@
 RanksNames::RanksNames()
 {
   runningIndex = 0;
-  oppsRanks = 0;
-  sidePrev = SIDE_NONE;
-  names.clear();
-  oppsPtrsByTop.clear();
+  RanksNames::reset();
 }
 
 
@@ -30,10 +27,16 @@ void RanksNames::setCards(const unsigned char cards)
 {
   assert(cards <= 13);
   runningIndex = 13 - cards;
+  RanksNames::reset();
+}
+
+
+void RanksNames::reset()
+{
   oppsRanks = 0;
   sidePrev = SIDE_NONE;
   names.clear();
-  oppsPtrsByTop.clear();
+  indexByTop.clear();
 }
 
 
@@ -59,14 +62,16 @@ void RanksNames::add(const Side side)
 
 void RanksNames::finish()
 {
-  oppsPtrsByTop.resize(oppsRanks);
+  indexByTop.resize(oppsRanks);
 
-  size_t i = 0;
-  for (auto iter = names.begin(); iter != names.end(); iter++)
+  size_t itop = 0;
+  for (size_t ifull = 0; ifull < names.size(); ifull++)
   {
-    if (iter->side() == SIDE_OPPS)
-      oppsPtrsByTop[i++] = &* iter;
+    if (names[ifull].side() == SIDE_OPPS)
+      indexByTop[itop++] = ifull;
   }
+
+assert(itop == oppsRanks);
 
   if (names.empty())
     return;
@@ -74,7 +79,7 @@ void RanksNames::finish()
   size_t noAbs = 0; // Only the opponent holding with two+ cards
   size_t noRel = 0; // All opponent holdings;
 
-  for (i = names.size(); --i > 0; )
+  for (auto i = names.size(); --i > 0; )
   {
     auto& rnames = names[i];
     if (rnames.side() == SIDE_OPPS)
@@ -93,8 +98,12 @@ bool RanksNames::used() const
 
 const RankNames& RanksNames::getOpponents(const unsigned topNumber) const
 {
-  assert(topNumber < oppsPtrsByTop.size());
-  return * oppsPtrsByTop[topNumber];
+  assert(topNumber < indexByTop.size());
+
+  const auto itop = indexByTop[topNumber];
+  assert(itop < names.size());
+
+  return names[itop];
 }
 
 
@@ -111,4 +120,22 @@ string RanksNames::str() const
     ss << rnames.str(i++);
 
   return ss.str();
+}
+
+
+string RanksNames::strMap() const
+{
+  if (names.empty())
+    return "";
+
+  string s = " where opponents hold ";
+
+  for (auto riter = names.rbegin(); riter != names.rend(); riter++)
+  {
+    if (riter->side() == SIDE_OPPS)
+      s += riter->strComponent(RANKNAME_RELATIVE_SHORT);
+  }
+
+  s += ".";
+  return s;
 }

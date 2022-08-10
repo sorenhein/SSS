@@ -381,6 +381,13 @@ void DistCore::setLookups()
 }
 
 
+void DistCore::setRanksNames(RanksNames& ranksNamesIn)
+{
+  // Copy, as ranks might go out of scope later.
+  ranksNames = move(ranksNamesIn);
+}
+
+
 const SurvivorList& DistCore::getSurvivors(
   const DistMap& distMap,
   const Play& play) const
@@ -595,7 +602,7 @@ string DistCore::str() const
 }
 
 
-string DistCore::strCovers(const RanksNames& ranksNames) const
+string DistCore::strCovers() const
 {
   return covers.strCache(ranksNames);
 }

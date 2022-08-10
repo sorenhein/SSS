@@ -47,8 +47,6 @@ class DistMemory
       const unsigned char maxCardsIn,
       const bool fullFlag = true);
 
-    // void resizeStats(ExplStats& explStats) const;
-
     void resizeSingle(const vector<set<unsigned>>& dependenciesCan);
 
     // Thread-safe.  Used for generating all distributions in a loop
@@ -68,6 +66,11 @@ class DistMemory
       const unsigned char cards,
       const unsigned holding);
 
+    void setRanksNames(
+      const unsigned char cards,
+      const unsigned holding,
+      RanksNames&& ranksNames);
+
     Distribution& get(
       const unsigned char cards,
       const unsigned holding);
@@ -82,9 +85,7 @@ class DistMemory
 
     string strDynamic() const;
 
-    string strCovers(
-      const unsigned char cards,
-      const RanksNames& ranksNames) const;
+    string strCovers(const unsigned char cards) const;
 
     string strCoverCountsHeader() const;
 

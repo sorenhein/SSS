@@ -228,6 +228,16 @@ void DistMemory::addNoncanonicalMT(
 }
 
 
+void DistMemory::setRanksNames(
+  const unsigned char cards,
+  const unsigned holding,
+  RanksNames&& ranksNames)
+{
+  assert(holding < distributions[cards].size());
+  distributions[cards][holding].setRanksNames(ranksNames);
+}
+
+
 const Distribution& DistMemory::get(
   const unsigned char cards,
   const unsigned holding) const
@@ -287,9 +297,7 @@ string DistMemory::strDynamic() const
 }
 
 
-string DistMemory::strCovers(
-  const unsigned char cards,
-  const RanksNames& ranksNames) const
+string DistMemory::strCovers(const unsigned char cards) const
 {
   if (usedCounts[cards] == 0)
     return "";
@@ -305,7 +313,7 @@ string DistMemory::strCovers(
       continue;
 
     ss << distCore.str() << "\n";
-    ss << distCore.strCovers(ranksNames) << "\n";
+    ss << distCore.strCovers() << "\n";
   }
 
   return ss.str();

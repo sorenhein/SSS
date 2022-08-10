@@ -82,9 +82,7 @@ class Distributions
 
     string str(const unsigned char cards = 0) const;
 
-    string strCovers(
-      const RanksNames& ranksNames,
-      const unsigned char cards = 0) const;
+    string strCovers(const unsigned char cards = 0) const;
 
     string strCoverCounts(const unsigned char cards = 0) const;
 

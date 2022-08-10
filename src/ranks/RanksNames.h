@@ -40,7 +40,11 @@ class RanksNames
 
     deque<RankNames> names;
 
-    vector<RankNames const *> oppsPtrsByTop;
+    // Here only the opponent tops count, so in the example: 0, 2
+    vector<size_t> indexByTop;
+
+
+    void reset();
 
 
   public:
@@ -58,6 +62,8 @@ class RanksNames
     const RankNames& getOpponents(const unsigned topNumber) const;
 
     string str() const;
+
+    string strMap () const;
 };
 
 #endif
