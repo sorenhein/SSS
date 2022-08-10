@@ -68,10 +68,10 @@ class Distribution
       distCorePtr->setLookups();
     };
 
-    void setRanksNames(RanksNames& ranksNames)
+    RanksNames& getRanksNames()
     {
       assert(distCorePtr != nullptr);
-      distCorePtr->setRanksNames(ranksNames);
+      return distCorePtr->getRanksNames();
     }
 
     size_t size() const

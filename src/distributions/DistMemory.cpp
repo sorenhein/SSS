@@ -228,16 +228,6 @@ void DistMemory::addNoncanonicalMT(
 }
 
 
-void DistMemory::setRanksNames(
-  const unsigned char cards,
-  const unsigned holding,
-  RanksNames&& ranksNames)
-{
-  assert(holding < distributions[cards].size());
-  distributions[cards][holding].setRanksNames(ranksNames);
-}
-
-
 const Distribution& DistMemory::get(
   const unsigned char cards,
   const unsigned holding) const

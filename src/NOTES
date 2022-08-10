@@ -1,7 +1,3 @@
-Distribution instead gets a getRanksNames() which returns a ref.
-We set this directly.
-
-
 Reduce the size of CoverStore
 -----------------------------
 Can skip Top/Any as range (completely) for g = 4, except that 
@@ -16,15 +12,6 @@ Cover::getWeight, getTricks -- other way of duplicates?
 Complexities
 ------------
 All singulars now 2 or 3.
-
-ranksNames in driver causes segfault.
-Combination line 357
-Distribution& distribution =
-const RanksNames ranksNames =
-distribution.setRanksNames(ranksNames)
-DistCore has its own ranksNamesPtr, used in strCovers.
-
-
 
 Idea:
 5:1,1,1,1,1

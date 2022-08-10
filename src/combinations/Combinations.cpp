@@ -357,24 +357,21 @@ histoPlay[plays.size()]++;
             Distribution& distribution = 
               distributions.get(cards, centry.getHolding2());
 
-            RanksNames ranksNames = ranks.getRanksNames();
-
-            timersStrat[32].start();
-            comb.covers(
-              distribution.covers(),
-              ranksNames,
-              productStats, 
-              depthStats);
-            timersStrat[32].stop();
-
             // We only need ranksNames here for the relative names,
             // so it doesn't matter that the core information may
             // get overwritten repeatedly here.
             // As ranksNames contains pointers to places within
             // itself, it is convenient to destroy ranksNames here
             // (move semantics).
-            distribution.setRanksNames(ranksNames);
+            distribution.getRanksNames() = ranks.getRanksNames();
 
+            timersStrat[32].start();
+            comb.covers(
+              distribution.covers(),
+              distribution.getRanksNames(),
+              productStats, 
+              depthStats);
+            timersStrat[32].stop();
           }
 
           timersStrat[33].start();

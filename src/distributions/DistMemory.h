@@ -66,11 +66,6 @@ class DistMemory
       const unsigned char cards,
       const unsigned holding);
 
-    void setRanksNames(
-      const unsigned char cards,
-      const unsigned holding,
-      RanksNames&& ranksNames);
-
     Distribution& get(
       const unsigned char cards,
       const unsigned holding);

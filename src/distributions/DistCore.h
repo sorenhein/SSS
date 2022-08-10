@@ -82,7 +82,7 @@ class DistCore
 
     void setLookups();
 
-    void setRanksNames(RanksNames& ranksNamesIn);
+    RanksNames& getRanksNames();
 
     const SurvivorList& getSurvivors(
       const DistMap& distMap,

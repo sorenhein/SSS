@@ -381,10 +381,9 @@ void DistCore::setLookups()
 }
 
 
-void DistCore::setRanksNames(RanksNames& ranksNamesIn)
+RanksNames& DistCore::getRanksNames()
 {
-  // Copy, as ranks might go out of scope later.
-  ranksNames = move(ranksNamesIn);
+  return ranksNames;
 }
 
 
