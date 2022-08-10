@@ -619,6 +619,9 @@ string Product::strVerbal(
 }
 
 
+// TMP? TODO
+#include "../../../ranks/RankNames.h"
+
 string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -641,17 +644,57 @@ string Product::strVerbalSingular(
 
   TopData topData;
   unsigned char topNo;
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
+
+  // The lowest rank (never set) may have to be added in the end.
+  unsigned char lowestWestMax = sumProfile.length();
+
+  assert(length.getOperator() == COVER_EQUAL);
+  unsigned char lowestWestActual = length.lower();
+
+  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
   {
     if (tops[topNo].used())
     {
+      const auto& top = tops[topNo];
+
       sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
 
       const string topResult =
-        tops[topNo].strTopBareEqual(topData, simplestOpponent);
+        top.strTopBareEqual(topData, simplestOpponent);
 
       result += topResult;
+      lowestWestMax -= topData.value;
+
+      assert(top.getOperator() == COVER_EQUAL);
+      lowestWestActual -= top.lower();
     }
+  }
+
+  // TODO This part is quite hideous and should go somewhere else,
+  // possibly in Top.cpp
+  sumProfile.getTopData(canonicalShift, ranksNames, topData);
+  const string str 
+    = topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+
+  if (symmFlag || simplestOpponent == OPP_WEST)
+  {
+    // From West's perspective.
+    if (lowestWestActual == lowestWestMax)
+      result += str;
+    else if (lowestWestActual > 0)
+      // TODO Unlike Top::strTopBareEqual, this writes "1" not "one".
+      // result += "(" + to_string(lowestWestActual) + " of " + str + ")";
+      result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestActual);
+  }
+  else
+  {
+    // From East's perspective.
+    if (lowestWestActual == 0)
+      result += str;
+    else if (lowestWestActual < lowestWestMax)
+      // result += "(" + to_string(lowestWestMax - lowestWestActual) + 
+        // " of " + str + ")";
+      result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestMax- lowestWestActual);
   }
 
   return result;

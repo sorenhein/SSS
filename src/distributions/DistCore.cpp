@@ -603,6 +603,6 @@ string DistCore::str() const
 
 string DistCore::strCovers() const
 {
-  return covers.strCache(ranksNames);
+  return covers.strCache(ranksNames) + ranksNames.strMap();
 }
 

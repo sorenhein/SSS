@@ -49,7 +49,7 @@ class TableauCache
         ss << excessTricks.strSpaced() << "\n";
         ss << tableau.str(sumProfile, ranksNames);
 
-        return ss.str() + "\n";
+        return ss.str();
       };
     };
 

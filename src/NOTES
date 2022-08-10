@@ -1,3 +1,22 @@
+Text covers
+-----------
+Test for singular first of all
+- activeCount == 0: Single length
+- activeCount == 1: Single rank
+- Rest as usual
+
+Output a "where" line for the actual solutions.
+Only when it is of interest.
+
+Turn off the singular, turn on the singles.
+
+Do the remaining ones.
+
+- When "has exactly 7", length 1, should be "the seven".
+- Same for "has exactly KQ"?
+- When outputting a whole strategy, group all the West, East and
+  Either lines, and add up their complexities ("or"?)
+
 Reduce the size of CoverStore
 -----------------------------
 Can skip Top/Any as range (completely) for g = 4, except that 
@@ -11,44 +30,8 @@ Cover::getWeight, getTricks -- other way of duplicates?
 
 Complexities
 ------------
-All singulars now 2 or 3.
+Check that complexities are now homogeneous
 
-Idea:
-5:1,1,1,1,1
-used
->= 1: unused, 0, 0, 0
-Effectively this is like a single rank >= 1 (OK, two small ranks),
-so should not have complexity 8?
-unused
-<= 1: unused, 0, unused, 0, 0
-So there are two ranks (not at the bottom) that are alive.
-Complexity 8 OK.
-
-
-Text covers
------------
-Issues with singulars:
-- 7/1668: I guess #1, =1 unused =1 becomes QT from the East side,
-  encoded as "no ace", which shows up as " ".  So the simplest
-  opponent should be West here. (Sum profile 1-1-1, len 3).
-- Rank names should be able to output
-  where HH = AK, hhh = T98, ...
-- Then singular outputs should use this, and no ()'s
-- When "has exactly 7", length 1, should be "the same".
-- Same for "has exactly KQ"?
-- When outputting a whole strategy, group all the West, East and
-  Either lines, and add up their complexities ("or"?)
-
-
-I guess RankNames now uses K-Q and not HH anymore?
-Should it know both?
-Should we show singular and other of these outputs as Hx,
-and then say after the strategy,
-"where H = K or Q, h = 9 or 8, ..."?
-Or "(1 of KQ)(1 of 98)"?
-I think the first looks better.
-But can we mix them in a solution?  Some lines will use K-Q,
-some HH?
 
 
 Text          614295  0.00
@@ -93,13 +76,6 @@ Rest              57  5.61
   so complexity should probably not be 3)
 * TopN eqV: The same, but L is a range and not a single value
 * TopN eq+: N tops, N-1 of which constant and one a range.  No L
-
-
-
-
-Product::set has the complexity == 3 hack, quite broad actually.
-Can also have something like singular() where one side has a fixed
-length AND exact cards are given (for East or West).
 
 
 In RowMatches, cleanup.

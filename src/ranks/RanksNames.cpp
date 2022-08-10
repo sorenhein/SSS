@@ -79,7 +79,7 @@ assert(itop == oppsRanks);
   size_t noAbs = 0; // Only the opponent holding with two+ cards
   size_t noRel = 0; // All opponent holdings;
 
-  for (auto i = names.size(); --i > 0; )
+  for (auto i = names.size(); i-- > 0; )
   {
     auto& rnames = names[i];
     if (rnames.side() == SIDE_OPPS)
@@ -128,7 +128,7 @@ string RanksNames::strMap() const
   if (names.empty())
     return "";
 
-  string s = " where opponents hold ";
+  string s = "where the opponents hold ";
 
   for (auto riter = names.rbegin(); riter != names.rend(); riter++)
   {
@@ -136,6 +136,5 @@ string RanksNames::strMap() const
       s += riter->strComponent(RANKNAME_RELATIVE_SHORT);
   }
 
-  s += ".";
-  return s;
+  return s + "\n";
 }

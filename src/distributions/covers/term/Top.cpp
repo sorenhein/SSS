@@ -453,17 +453,23 @@ string Top::strTopBareEqual(
     Top::lower() : oppsTopData.value - Top::upper());
 
   assert(oppsTopData.rankNamesPtr);
-  const string str = 
-    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+  // const string str = 
+    // oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
 
   if (value == 0)
     return "";
   else if (value == oppsTopData.value)
-    return str;
+    // return str;
+    return oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+  else
+    return oppsTopData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).
+      substr(0, value);
 
+  /*
   stringstream ss;
   ss << "(" << topCount[value] << " of " << str << ")";
   return ss.str();
+  */
 }
 
 

@@ -41,7 +41,9 @@ const vector<vector<string>> CARD_ABSOLUTE_NAMES =
 {
   {"honor", "honors", "H"},
   {"lower honor", "lower honors", "h"},
-  {"minor honor", "minor honors", "G"}
+  {"minor honor", "minor honors", "G"},
+  {"tiny honor", "tiny honors", "g"},
+  {"micro honor", "micro honors", "F"}
 };
 
 const vector<string> CARD_RELATIVE_NAMES =
@@ -134,7 +136,6 @@ void RankNames::completeNS()
 {
   names[RANKNAME_ABSOLUTE_FULL] = names[RANKNAME_ACTUAL_FULL];
   names[RANKNAME_ABSOLUTE_SHORT] = names[RANKNAME_ACTUAL_SHORT];
-  names[RANKNAME_RELATIVE_SHORT] = "";
 }
 
 

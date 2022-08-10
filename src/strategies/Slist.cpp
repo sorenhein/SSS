@@ -1092,6 +1092,8 @@ void Slist::covers(
         coversIn.getSumProfile(), 
         productStats, 
         newTableauFlag);
+// cout << "RanksNames\n";
+// cout << ranksNames.str();
     }
     else
       cout << strat.str("Unexplained", true) << "\n";
