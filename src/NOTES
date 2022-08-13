@@ -1,3 +1,17 @@
+Comprehensive covers
+--------------------
+* The heuristic cover provided it's length or top
+  - Could perhaps have more than one top OR?
+* Any length-only covers (not voids)
+* Any single-top covers
+* Covers with length and top, 1 active
+* 2+ top covers from the top
+* 2+ top covers "any"
+* Singulars West, East, Either
+
+Keep each in a row, keep them sorted?
+
+
 Text covers
 -----------
 Test for singular first of all
@@ -11,6 +25,8 @@ Only when it is of interest.
 Turn off the singular, turn on the singles.
 
 Do the remaining ones.
+- East has 86 and exactly two other cards from AQ4.
+  Potentially "East has exactly A86, Q86 or 864"
 
 - When "has exactly 7", length 1, should be "the seven".
 - Same for "has exactly KQ"?
