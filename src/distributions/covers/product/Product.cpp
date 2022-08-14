@@ -648,7 +648,12 @@ string Product::strVerbalSingular(
   // The lowest rank (never set) may have to be added in the end.
   unsigned char lowestWestMax = sumProfile.length();
 
-  assert(length.getOperator() == COVER_EQUAL);
+if (length.getOperator() != COVER_EQUAL)
+{
+  cout << Product::strLine() << endl;
+}
+
+
   unsigned char lowestWestActual = length.lower();
 
   for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
@@ -668,6 +673,19 @@ string Product::strVerbalSingular(
       assert(top.getOperator() == COVER_EQUAL);
       lowestWestActual -= top.lower();
     }
+  }
+
+  if (! length.used())
+  {
+    // It can happen rarely that a cover is symmetric and yet length is
+    // unset (example: Missing HHhhx, the cover is 1H and 1h which matches
+    // Hh/Hhx or Hhx/Hh.  In this case we effectively want lowestWestActual
+    // to be 2, and when 1 and 1 are subtracted, it becomes zero.
+    lowestWestActual = 0;
+  }
+  else
+  {
+    assert(length.getOperator() == COVER_EQUAL);
   }
 
   // TODO This part is quite hideous and should go somewhere else,

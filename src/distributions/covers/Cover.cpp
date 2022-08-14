@@ -231,6 +231,7 @@ bool Cover::singular() const
 {
   // Either a single distribution, or two symmetrically.
   const size_t numDist = tricks.nonzero();
+
   if (numDist == 1 || (Cover::symmetric() && numDist == 2))
     return true;
   else
@@ -425,7 +426,8 @@ string Cover::str(
       factoredProductPtr->simplestOpponent(sumProfile);
 
     ss << factoredProductPtr->strVerbalSingular(
-      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
+      sumProfile, ranksNames, simplestOpponent, Cover::symmetric());
+      // sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
   }
   else
     ss << Cover::strTricksShort() + Cover::strLine();
