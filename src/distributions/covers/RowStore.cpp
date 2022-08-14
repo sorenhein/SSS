@@ -13,6 +13,7 @@
 #include <cassert>
 
 #include "RowStore.h"
+#include "CoverCategory.h"
 
 mutex mtxRowStore;
 
@@ -57,7 +58,8 @@ const CoverRow& RowStore::add(
   // Make a CoverRow.
   rowScratch.reset();
   rowScratch.resize(residuals.size());
-  rowScratch.add(cover, additions, rawWeightAdder, residuals);
+  rowScratch.add(cover, additions, rawWeightAdder, residuals, 
+    VERBAL_GENERAL);
 
   // Store it.
   auto result = store.insert(rowScratch);

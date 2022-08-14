@@ -88,6 +88,12 @@ CoverComposition FactoredProduct::composition() const
 }
 
 
+CoverVerbal FactoredProduct::verbal() const
+{
+  return canonicalPtr->verbal();
+}
+
+
 bool FactoredProduct::lengthConsistent(
   const unsigned char specificLength) const
 {

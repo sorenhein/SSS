@@ -64,6 +64,7 @@ class RowMatches
     bool incorporateTops(
       Covers& covers,
       const vector<Tricks>& tricksWithinLength,
+      const Profile& sumProfile,
       Explain& explain);
 
     void incorporateVoids(const Profile& sumProfile);
@@ -73,6 +74,7 @@ class RowMatches
     void makeSolution(
       const CoverStore& coverStore,
       const vector<unsigned char>& cases,
+      const Profile& sumProfile,
       Explain& explain,
       CoverTableau& solution);
 

@@ -26,6 +26,7 @@ struct CoverLength;
 enum Opponent: unsigned;
 enum CoverSymmetry: unsigned;
 enum CoverComposition: unsigned;
+enum CoverVerbal: unsigned;
 
 class Cover
 {
@@ -74,10 +75,6 @@ class Cover
     bool setByProduct(
       const vector<Profile>& distProfiles,
       const vector<unsigned char>& cases);
-
-    bool isLengthOnly(
-      const unsigned char lenLower,
-      const unsigned char lenUpper) const;
 
     void tricksOr(
       Tricks& running,
@@ -137,6 +134,8 @@ class Cover
     unsigned char getComplexity() const;
 
     unsigned char minComplexityAdder(const unsigned resWeight) const;
+
+    CoverVerbal verbal(const Profile& sumProfile) const;
 
     string strHeader() const;
 

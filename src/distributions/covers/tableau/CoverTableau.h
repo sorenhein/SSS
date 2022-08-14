@@ -20,6 +20,7 @@
 #include "../Tricks.h"
 #include "../Complexity.h"
 #include "../CoverState.h"
+#include "../CoverCategory.h"
 
 
 using namespace std;
@@ -30,6 +31,7 @@ class Profile;
 class RowMatches;
 class RanksNames;
 class ProductStats;
+enum CoverVerbal: unsigned;
 template<typename T> class CoverStack;
 template<typename T> struct StackEntry;
 
@@ -72,22 +74,28 @@ class CoverTableau
     // Only RowMatches uses this (and can destroy it).
     list<CoverRow> rows;
 
-    void addRow(const Cover& cover);
+    void addRow(
+      const Cover& cover,
+      const CoverVerbal);
 
-    void addRow(const CoverRow& row); 
+    void addRow(
+      const CoverRow& row,
+      const CoverVerbal verbal = VERBAL_GENERAL); 
 
     void extendRow(
       const Cover& cover,
       const Tricks& additions,
       const unsigned rawWeightAdded,
-      const unsigned rowNo);
+      const unsigned rowNo,
+      const CoverVerbal verbal);
 
     // Dummy method (don't know how to avoid).
     void extendRow(
       const CoverRow& row,
       const Tricks& additions,
       const unsigned rawWeightAdded,
-      const unsigned rowNo);
+      const unsigned rowNo,
+      const CoverVerbal verbal);
 
 
   public:
@@ -128,6 +136,8 @@ class CoverTableau
     unsigned char headroom(const CoverTableau& solution) const;
 
     void project(const unsigned char minCompAdder);
+
+    void sortVerbally();
 
     // This takes projections into account -- see code.
     bool operator < (const CoverTableau& ct2) const;

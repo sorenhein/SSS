@@ -20,6 +20,8 @@
 
 #include "../../ranks/RanksNames.h"
 
+#include "../../utils/table.h"
+
 
 Cover::Cover()
 {
@@ -336,6 +338,24 @@ unsigned char Cover::minComplexityAdder(const unsigned resWeight) const
   // unless we hit an exact divisor.
 
   return static_cast<unsigned char>(1 + ((resWeight * mcpw - 1) >> 20));
+}
+
+
+CoverVerbal Cover::verbal(const Profile& sumProfile) const
+{
+  assert(factoredProductPtr != nullptr);
+
+  if (Cover::singular())
+  {
+    if (Cover::symmetric())
+      return VERBAL_SINGULAR_EITHER;
+    else if (factoredProductPtr->simplestOpponent(sumProfile) == OPP_WEST)
+      return VERBAL_SINGULAR_WEST;
+    else
+      return VERBAL_SINGULAR_EAST;
+  }
+  else 
+    return factoredProductPtr->verbal();
 }
 
 

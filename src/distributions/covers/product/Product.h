@@ -28,6 +28,7 @@ class Profile;
 class RanksNames;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
+enum CoverVerbal: unsigned;
 enum ExplainEqual: unsigned;
 
 
@@ -93,6 +94,8 @@ class Product
       const unsigned char canonicalShift) const;
 
     CoverComposition composition() const;
+
+    CoverVerbal verbal() const;
 
     bool lengthConsistent(const unsigned char specificLength) const;
 

@@ -495,7 +495,8 @@ timersStrat[41].stop();
 
   // Add the top covers for a given length.
 timersStrat[42].start();
-  if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
+  if (! rowMatches.incorporateTops(* this, tricksWithinLength, 
+    sumProfile, explain))
   {
 timersStrat[42].stop();
     return;
@@ -524,7 +525,7 @@ cout << rowMatches.str() << endl;
 
 timersStrat[45].start();
   // Score those row matches anew that involves more than one row.
-  rowMatches.makeSolution(coverStore, cases, explain, solution);
+  rowMatches.makeSolution(coverStore, cases, sumProfile, explain, solution);
 timersStrat[45].stop();
 }
 
@@ -641,20 +642,6 @@ void Covers::explain(
           solution = partialSolution;
       }
     }
-
-
-    /*
-    if (solution.complete())
-    {
-      solution.initStrData(numStrategyTops, tricksSymmetry);
-      return;
-    }
-
-    explain.setSymmetry(EXPLAIN_GENERAL);
-
-    Covers::explainByCategory(tricks, explain, true,
-      solution, newTableauFlag);
-      */
   }
   else if (mode == 3)
   {
@@ -685,20 +672,6 @@ void Covers::explain(
           solution = partialSolution;
       }
     }
-
-
-/*
-    // Guess followed by split of the remainder by symmetry.
-    Covers::guessStart(tricks, explain, 1, solution);
-
-    if (solution.complete())
-    {
-      solution.initStrData(numStrategyTops, tricksSymmetry);
-      return;
-    }
-
-    Covers::guessBySymmetry(explain, tmin, solution, newTableauFlag);
-    */
   }
   else if (mode == 4)
   {
@@ -738,6 +711,8 @@ timersStrat[37].stop();
 
     // Set the actual minimum.
     solution.setMinTricks(tmin);
+    solution.sortVerbally();
+
     newTableauFlag = true;
   }
   else

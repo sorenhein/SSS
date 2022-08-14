@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Tricks.h"
+#include "CoverCategory.h"
 
 using namespace std;
 
@@ -44,6 +45,11 @@ class CoverRow
 
     unsigned char complexity;
 
+    CoverVerbal verbal;
+
+
+    string strEnum() const;
+
 
   public:
 
@@ -70,11 +76,15 @@ class CoverRow
       const Cover& cover,
       const Tricks& additions,
       const unsigned rawWeightAdder,
-      Tricks& residuals);
+      Tricks& residuals,
+      const CoverVerbal verbalIn);
 
     void add(
       const Cover& cover,
-      Tricks& residuals);
+      Tricks& residuals,
+      const CoverVerbal verbalIn);
+
+    void setVerbal(const Profile& profile);
 
     void updateStats(
       ProductStats& productStats,
@@ -89,11 +99,13 @@ class CoverRow
 
     bool symmetrizable(const Profile& sumProfile) const;
 
-    bool operator < (const CoverRow& rows2) const;
+    bool operator < (const CoverRow& row2) const;
+
+    bool lowerVerbal(const CoverRow& row2) const;
 
     const Tricks& getTricks() const;
 
-    bool sameTops(const CoverRow& rows2) const;
+    bool sameTops(const CoverRow& row2) const;
 
     unsigned char minimumByTops(
       const Opponent voidSide,

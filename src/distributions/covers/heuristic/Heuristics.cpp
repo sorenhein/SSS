@@ -71,13 +71,15 @@ bool Heuristics::combineSimply(
       return true;
     }
 
-    partialSolution.addRow(partials.begin()->cover());
+    // Here we use the "fact" that the first Heuristics is length,
+    // the second one (heur2) tops only.
+    partialSolution.addRow(partials.begin()->cover(), VERBAL_LENGTH_ONLY);
     combinedFlag = true;
     return true;
   }
   else if (partials.empty())
   {
-    partialSolution.addRow(heur2.partials.begin()->cover());
+    partialSolution.addRow(heur2.partials.begin()->cover(), VERBAL_TOPS_ONLY);
     combinedFlag = true;
     return true;
   }
@@ -110,7 +112,7 @@ bool Heuristics::combineSimply(
       partialSolutions.emplace_back(CoverTableau());
       CoverTableau& partialSolution = partialSolutions.back();
       partialSolution.init(tricks, 0);  // tmin comes later
-      partialSolution.addRow(partial.cover());
+      partialSolution.addRow(partial.cover(), VERBAL_LENGTH_ONLY);
     }
 
     combinedFlag = true;
@@ -123,7 +125,7 @@ bool Heuristics::combineSimply(
       partialSolutions.emplace_back(CoverTableau());
       CoverTableau& partialSolution = partialSolutions.back();
       partialSolution.init(tricks, 0);
-      partialSolution.addRow(partial.cover());
+      partialSolution.addRow(partial.cover(), VERBAL_TOPS_ONLY);
     }
 
     combinedFlag = true;
@@ -189,13 +191,13 @@ void Heuristics::setPartialSolution(
     if (! partialBest.flag2)
     {
       // Only the first one.
-      partialSolution.addRow(partialBest.ptr1->cover());
+      partialSolution.addRow(partialBest.ptr1->cover(), VERBAL_LENGTH_ONLY);
     }
     else if (partialBest.flagIndep)
     {
       // Two rows.
-      partialSolution.addRow(partialBest.ptr1->cover());
-      partialSolution.addRow(partialBest.ptr2->cover());
+      partialSolution.addRow(partialBest.ptr1->cover(), VERBAL_LENGTH_ONLY);
+      partialSolution.addRow(partialBest.ptr2->cover(), VERBAL_TOPS_ONLY);
     }
     else
     {
@@ -203,7 +205,7 @@ void Heuristics::setPartialSolution(
 // cout << "pbest1\n" << partialBest.ptr1->additions.strSpaced();
 // cout << "pbest2\n" << partialBest.ptr2->additions.strSpaced();
       // One row with an OR.
-      partialSolution.addRow(partialBest.ptr1->cover());
+      partialSolution.addRow(partialBest.ptr1->cover(), VERBAL_HEURISTIC);
 
       Tricks additionsScratch = partialBest.ptr2->tricks();
       additionsScratch.uniqueOver(partialBest.ptr1->tricks(), cases);
@@ -213,13 +215,14 @@ void Heuristics::setPartialSolution(
         partialBest.ptr2->cover(),
         additionsScratch,
         partialBest.ptr2->weight(),
-        0);
+        0,
+        VERBAL_HEURISTIC);
     }
   }
   else if (partialBest.flag2)
   {
     // Only the second one.
-    partialSolution.addRow(partialBest.ptr2->cover());
+    partialSolution.addRow(partialBest.ptr2->cover(), VERBAL_TOPS_ONLY);
   }
   else
   {

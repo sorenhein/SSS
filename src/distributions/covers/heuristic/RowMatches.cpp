@@ -92,7 +92,6 @@ void RowMatches::setVoid(
 
 
   // Look for ways to use the void(s) to complete matches.
-
   list<RowMatch *> potentialsGreat;
   list<RowMatch *> potentialsGood;
 
@@ -169,7 +168,7 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
   // Then keep the rest.
   CoverRow row;
   row.resize(partialVoid.tricks().size());
-  row.add(partialVoid.cover(), partialVoid.tricks());
+  row.add(partialVoid.cover(), partialVoid.tricks(), VERBAL_LENGTH_ONLY);
 
   RowMatches::transfer(row, partialVoid.lengthWest(), side, rest);
   cout << sideName << "REST " << rest << "\n";
@@ -243,7 +242,7 @@ void RowMatches::incorporateLengths(
       // with another VoidInfo (OPP_EITHER).
       CoverRow rowTmp;
       rowTmp.resize(numDist);
-      rowTmp.add(partial.cover(), tricks);
+      rowTmp.add(partial.cover(), tricks, VERBAL_LENGTH_ONLY);
 
       RowMatches::transfer(rowTmp, lenEW, OPP_EAST, factor);
     }
@@ -254,6 +253,7 @@ void RowMatches::incorporateLengths(
 bool RowMatches::incorporateTops(
   Covers& covers,
   const vector<Tricks>& tricksWithinLength,
+  const Profile& sumProfile,
   Explain& explain)
 {
   // Add the top covers for a given length.
@@ -310,7 +310,10 @@ timersStrat[47].stop();
     // solution.destroyIntoMatches(* this, lenEW);
 timersStrat[48].start();
     for (auto& row: solution.rows)
+    {
+      row.setVerbal(sumProfile);
       RowMatches::transfer(row, lenEW, OPP_EAST);
+    }
 timersStrat[48].stop();
   }
 
@@ -358,10 +361,12 @@ void RowMatches::symmetrize(const Profile& sumProfile)
 void RowMatches::makeSolution(
   const CoverStore& coverStore,
   const vector<unsigned char>& cases,
+  const Profile& sumProfile,
   Explain& explain,
   CoverTableau& solution)
 {
-  // Score those row matches anew that involve more than one row.
+  // Score those row matches anew that involve more than one row
+  // in RowMatches, i.e. multiple lengths but the same tops.
   explain.setSymmetry(EXPLAIN_GENERAL);
   explain.setComposition(EXPLAIN_MIXED_TERMS);
 
@@ -383,7 +388,7 @@ void RowMatches::makeSolution(
         assert(false);
       }
 
-      solution.addRow(partial.cover());
+      solution.addRow(partial.cover(), partial.cover().verbal(sumProfile));
     }
   }
 }

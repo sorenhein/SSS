@@ -11,6 +11,7 @@
 
 #include <set>
 
+#include "CoverCategory.h"
 #include "tableau/CoverTableau.h"
 
 class Tricks;
@@ -62,7 +63,8 @@ struct StackEntry
     // This method only makes sense for the Cover version.
     iter = iterIn;
     tableau = tableauIn;
-    tableau.extendRow(* iterIn, additions, rawWeightAdded, rowNumber);
+    tableau.extendRow(* iterIn, additions, rawWeightAdded, rowNumber,
+      VERBAL_GENERAL);
   };
 
   StackEntry(
@@ -72,7 +74,7 @@ struct StackEntry
     // This method is used for both versions.
     iter = iterIn;
     tableau = tableauIn;
-    tableau.addRow(* iterIn);
+    tableau.addRow(* iterIn, VERBAL_GENERAL);
   };
 
   bool operator < (const StackEntry& se2) const

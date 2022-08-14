@@ -30,6 +30,7 @@ void CoverRow::reset()
   weight = 0;
   rawWeight = 0;
   complexity = 0;
+  verbal = VERBAL_GENERAL;
 }
 
 
@@ -96,8 +97,14 @@ void CoverRow::add(
   const Cover& cover,
   const Tricks& additions,
   const unsigned rawWeightAdder,
-  Tricks& residuals)
+  Tricks& residuals,
+  const CoverVerbal verbalIn)
 {
+  if (coverPtrs.empty())
+    verbal = verbalIn;
+  else
+    assert(verbal == verbalIn);
+
   coverPtrs.push_back(&cover);
 
   // additions are disjoint from tricks here.
@@ -115,22 +122,33 @@ void CoverRow::add(
 
 void CoverRow::add(
   const Cover& cover,
-  Tricks& residuals)
+  Tricks& residuals,
+  const CoverVerbal verbalIn)
 {
-  CoverRow::add(cover, cover.getTricks(), cover.getWeight(), residuals);
+  CoverRow::add(cover, cover.getTricks(), cover.getWeight(), residuals,
+    verbalIn);
 }
 
 
-bool CoverRow::sameTops(const CoverRow& rows2) const
+void CoverRow::setVerbal(const Profile& sumProfile)
+{
+  if (coverPtrs.size() != 1)
+    verbal = VERBAL_GENERAL;
+  else
+    verbal = coverPtrs.front()->verbal(sumProfile);
+}
+
+
+bool CoverRow::sameTops(const CoverRow& row2) const
 {
   // TODO For now
   if (CoverRow::size() != 1)
     return false;
 
-  if (rows2.size() != 1)
+  if (row2.size() != 1)
     return false;
 
-  return coverPtrs.front()->sameTops(* rows2.coverPtrs.front());
+  return coverPtrs.front()->sameTops(* row2.coverPtrs.front());
 }
 
 
@@ -190,20 +208,26 @@ bool CoverRow::symmetrizable(const Profile& sumProfile) const
 }
 
 
-bool CoverRow::operator < (const CoverRow& rows2) const
+bool CoverRow::operator < (const CoverRow& row2) const
 {
   const unsigned mcpw1 = (complexity << 20) / weight;
-  const unsigned mcpw2 = (rows2.complexity << 20) / rows2.weight;
+  const unsigned mcpw2 = (row2.complexity << 20) / row2.weight;
 
   if (mcpw1 < mcpw2)
     return true;
   else if (mcpw1 > mcpw2)
     return false;
-  else if (rows2.tricks <= tricks)
+  else if (row2.tricks <= tricks)
     // Just to make sure we don't alias.
     return false;
   else
     return true;
+}
+
+
+bool CoverRow::lowerVerbal(const CoverRow& row2) const
+{
+  return (verbal < row2.verbal);
 }
 
 
@@ -258,6 +282,34 @@ unsigned char CoverRow::minComplexityAdder(
 }
 
 
+string CoverRow::strEnum() const
+{
+  if (verbal == VERBAL_GENERAL)
+    return "A";
+  else if (verbal == VERBAL_HEURISTIC)
+    return "B";
+  else if (verbal == VERBAL_LENGTH_ONLY)
+    return "C";
+  else if (verbal == VERBAL_TOPS_ONLY)
+    return "D";
+  else if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+    return "E";
+  else if (verbal == VERBAL_ANY_TOPS_EQUAL)
+    return "F";
+  else if (verbal == VERBAL_SINGULAR_EITHER)
+    return "G";
+  else if (verbal == VERBAL_SINGULAR_WEST)
+    return "H";
+  else if (verbal == VERBAL_SINGULAR_EAST)
+    return "J";
+  else
+  {
+    assert(false);
+    return "";
+  }
+}
+
+
 string CoverRow::strHeader() const
 {
   return 
@@ -272,7 +324,11 @@ string CoverRow::str(
 {
   stringstream ss;
 
-  ss << "* " << coverPtrs.front()->str(sumProfile, ranksNames);
+  ss << 
+    "*" << 
+    CoverRow::strEnum() <<
+    " " << 
+    coverPtrs.front()->str(sumProfile, ranksNames);
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
     ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames);

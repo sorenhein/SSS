@@ -90,12 +90,14 @@ void CoverTableau::setTrivial(const unsigned char tmin)
 }
 
 
-void CoverTableau::addRow(const Cover& cover)
+void CoverTableau::addRow(
+  const Cover& cover,
+  const CoverVerbal verbal)
 {
   rows.emplace_back(CoverRow());
   CoverRow& row = rows.back();
   row.resize(residuals.size());
-  row.add(cover, cover.getTricks(), cover.getWeight(), residuals);
+  row.add(cover, cover.getTricks(), cover.getWeight(), residuals, verbal);
   complexity.addRow(row.getComplexity(), row.getRawWeight());
 
   const unsigned char minCompAdder = 
@@ -104,7 +106,9 @@ void CoverTableau::addRow(const Cover& cover)
 }
 
 
-void CoverTableau::addRow(const CoverRow& row)
+void CoverTableau::addRow(
+  const CoverRow& row,
+  [[maybe_unused]] const CoverVerbal verbal)
 {
   rows.push_back(row);
   complexity.addRow(row.getComplexity(), row.getRawWeight());
@@ -120,14 +124,15 @@ void CoverTableau::extendRow(
   const Cover& cover,
   const Tricks& additions,
   const unsigned rawWeight,
-  const unsigned rowNo)
+  const unsigned rowNo,
+  const CoverVerbal verbal)
 {
   // A bit fumbly: Advance to the same place as we were at.
   list<CoverRow>::iterator riter;
   unsigned r;
   for (riter = rows.begin(), r = 0; r < rowNo; riter++, r++);
 
-  riter->add(cover, additions, rawWeight, residuals);
+  riter->add(cover, additions, rawWeight, residuals, verbal);
 
   complexity.addCover(cover.getComplexity(), riter->getComplexity(),
     rawWeight);
@@ -142,7 +147,8 @@ void CoverTableau::extendRow(
   [[maybe_unused]] const CoverRow& row,
   [[maybe_unused]] const Tricks& additions,
   [[maybe_unused]] const unsigned rawWeight,
-  [[maybe_unused]] const unsigned rowNo)
+  [[maybe_unused]] const unsigned rowNo,
+  [[maybe_unused]] const CoverVerbal verbal)
 {
   // Need this method to get out of the StackEntry template,
   // or at least I don't know how to avoid it.
@@ -177,7 +183,7 @@ CoverState CoverTableau::attemptRow(
   {
     // We have a solution for sure, as it is the first one.
     solution = * this;
-    solution.addRow(* candIter);
+    solution.addRow(* candIter, VERBAL_GENERAL);
     tableauStats.numSolutions++;
     return COVER_DONE;
   }
@@ -185,7 +191,7 @@ CoverState CoverTableau::attemptRow(
   {
     // We can use this CoverTableau, as the stack element is about
     // to be popped anyway.
-    CoverTableau::addRow(* candIter);
+    CoverTableau::addRow(* candIter, VERBAL_GENERAL);
     if (complexity < solution.complexity)
     {
       solution = * this;
@@ -279,7 +285,8 @@ bool CoverTableau::attempt(
       tableauStats.numCompares++;
       tableauStats.numSolutions++;
       solution = * this;
-      solution.extendRow(* coverIter, additions, rawWeightAdded, rno);
+      solution.extendRow(* coverIter, additions, rawWeightAdded, rno,
+      VERBAL_GENERAL);
     }
     else
     {
@@ -335,6 +342,15 @@ void CoverTableau::project(const unsigned char minCompAdder)
 
   // We cannot reliably adjust up the row complexity nor the raw weight.
   lowerBound.addCover(minCompAdder, 0, 0);
+}
+
+
+void CoverTableau::sortVerbally()
+{
+  rows.sort([](const CoverRow& row1, const CoverRow& row2)
+  {
+    return row1.lowerVerbal(row2);
+  });
 }
 
 

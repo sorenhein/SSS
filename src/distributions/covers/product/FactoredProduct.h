@@ -17,6 +17,7 @@ class RanksNames;
 enum Opponent: unsigned;
 enum CompareType: unsigned;
 enum CoverComposition: unsigned;
+enum CoverVerbal: unsigned;
 
 using namespace std;
 
@@ -58,6 +59,8 @@ class FactoredProduct
     bool symmetrizable(const Profile& sumProfile) const;
 
     CoverComposition composition() const;
+
+    CoverVerbal verbal() const;
 
     bool lengthConsistent(const unsigned char specificLength) const;
 

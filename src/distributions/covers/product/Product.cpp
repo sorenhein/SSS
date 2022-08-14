@@ -337,6 +337,31 @@ CoverComposition Product::composition() const
 }
 
 
+CoverVerbal Product::verbal() const
+{
+  // This only chooses among those options that apply to a Product,
+  // so no singular options and not VERBAL_HEURISTIC as this applies
+  // to a CoverRow with two Covers, not to a Product.
+  
+  if (activeCount == 0)
+  {
+    assert(length.used());
+    return VERBAL_LENGTH_ONLY;
+  }
+
+  const ExplainEqual ee = Product::mostlyEqual();
+  if (ee == EQUAL_FROM_TOP)
+    return VERBAL_HIGH_TOPS_EQUAL;
+  else if (ee == EQUAL_ANY)
+    return VERBAL_ANY_TOPS_EQUAL;
+
+  if (length.used())
+    return VERBAL_GENERAL;
+  else
+    return VERBAL_TOPS_ONLY;
+}
+
+
 bool Product::lengthConsistent(const unsigned char specificLength) const
 {
   return (length.used() &&
