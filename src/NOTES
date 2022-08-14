@@ -1,15 +1,5 @@
 Comprehensive covers
 --------------------
-* The heuristic cover provided it's length or top
-  - Could perhaps have more than one top OR?
-* Any length-only covers (not voids)
-* Any single-top covers
-* Covers with length and top, 1 active
-* 2+ top covers from the top
-* 2+ top covers "any"
-* Singulars West, East, Either
-
-Keep each in a row, keep them sorted?
 
 
 Text covers

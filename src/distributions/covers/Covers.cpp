@@ -442,14 +442,15 @@ void Covers::guessStart(
   explain.setComposition(EXPLAIN_LENGTH_ONLY);
   Heuristics heuristic1;
   heuristic1.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
-  // cout << "heuristic1\n" << heuristic1.str();
+// cout << "heuristic1\n" << heuristic1.str();
 
   explain.setComposition(EXPLAIN_TOPS_ONLY);
   Heuristics heuristic2;
   heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
-  // cout << "heuristic2\n" << heuristic2.str();
+// cout << "heuristic2\n" << heuristic2.str();
 
   heuristic2.combine(heuristic1, tricks, cases, partialSolution);
+// cout << "heuristic2 combined\n" << heuristic2.str();
 }
 
 
@@ -470,6 +471,7 @@ void Covers::guessStarts(
 // cout << "heuristic2\n" << heuristic2.str();
 
   heuristic2.combine(heuristic1, tricks, cases, partialSolutions);
+// cout << "heuristic2 combined\n" << heuristic2.str();
 }
 
 
@@ -489,7 +491,7 @@ timersStrat[40].stop();
   // for a given length.
 timersStrat[41].start();
   RowMatches rowMatches;
-  rowMatches.incorporateLengths(coverStore, cases, 
+  rowMatches.incorporateLengths(coverStore, cases, sumProfile,
     tricksOfLength, explain);
 timersStrat[41].stop();
 

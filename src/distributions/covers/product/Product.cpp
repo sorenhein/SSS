@@ -655,7 +655,16 @@ string Product::strVerbalSingular(
   const unsigned char canonicalShift) const
 {
   if (activeCount == 0)
-    return "EMPTY?\n";
+  {
+    // This can, happen, e.g. 9/18975, JT96/7 missing AKQ8.
+    // One cover applies to d == 3 or 4, so Hx/HH or HH/Hx.
+    // This gets classified as a VERBAL_SINGULAR_EITHER as it is
+    // symmetric and covers two distributions.
+    return length.strLength(
+      sumProfile.length(), 
+      simplestOpponent, 
+      symmFlag);
+  }
 
   string result;
   if (symmFlag)
@@ -675,7 +684,7 @@ string Product::strVerbalSingular(
 
 if (length.getOperator() != COVER_EQUAL)
 {
-  cout << Product::strLine() << endl;
+  cout << "UNEXPECTED: " << Product::strLine() << endl;
 }
 
 

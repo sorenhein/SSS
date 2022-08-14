@@ -449,7 +449,7 @@ string Top::strTopBareEqual(
 {
   assert(Top::getOperator() == COVER_EQUAL);
 
-  const unsigned char value = (simplestOpponent == OPP_WEST ?
+  const unsigned char value = (simplestOpponent != OPP_EAST ?
     Top::lower() : oppsTopData.value - Top::upper());
 
   assert(oppsTopData.rankNamesPtr);

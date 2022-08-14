@@ -151,6 +151,11 @@ class Cover
       const Profile& sumProfile,
       const RanksNames& ranksNames) const;
 
+    string str(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal) const;
+
     string strNumerical() const;
 
 // TODO

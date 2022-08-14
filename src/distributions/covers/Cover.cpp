@@ -459,6 +459,81 @@ string Cover::str(
 }
 
 
+string Cover::str(
+  [[maybe_unused]] const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const CoverVerbal verbal) const
+{
+  assert(factoredProductPtr != nullptr);
+  assert(ranksNames.used());
+
+  // All the singulars, and length only
+  const unsigned coverControl = 0x1c4;
+  // const unsigned coverControl = 0x0;
+
+  stringstream ss;
+  if (! (verbal & coverControl)
+  {
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_GENERAL) // A
+  {
+    // TODO
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_HEURISTIC) // B
+  {
+    // TODO
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_LENGTH_ONLY) // C
+  {
+    const Opponent simplestOpponent = 
+      factoredProductPtr->simplestOpponent(sumProfile);
+
+      ss << factoredProductPtr->strVerbal(
+        sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
+  }
+  else if (verbal == VERBAL_TOPS_ONLY) // D
+  {
+    // TODO
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_HIGH_TOPS_EQUAL) // E
+  {
+    // TODO
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_ANY_TOPS_EQUAL) // F
+  {
+    // TODO
+    ss << Cover::strTricksShort() + Cover::strLine();
+  }
+  else if (verbal == VERBAL_SINGULAR_EITHER ||
+      verbal == VERBAL_SINGULAR_WEST ||
+      verbal == VERBAL_SINGULAR_EAST) // GHJ
+  {
+    Opponent simplestOpponent;
+    if (verbal == VERBAL_SINGULAR_EITHER)
+      simplestOpponent = OPP_EITHER;
+    else if (verbal ==VERBAL_SINGULAR_WEST)
+      simplestOpponent = OPP_WEST;
+    else
+      simplestOpponent = OPP_EAST;
+        
+  ss << factoredProductPtr->strVerbalSingular(
+      sumProfile, ranksNames, simplestOpponent, Cover::symmetric());
+  }
+  else
+    assert(false);
+
+  ss << " [" << +Cover::getComplexity() << 
+    "/" << tricks.getWeight() << "]";
+
+  return ss.str();
+}
+
+
 string Cover::strNumerical() const
 {
   assert(factoredProductPtr != nullptr);

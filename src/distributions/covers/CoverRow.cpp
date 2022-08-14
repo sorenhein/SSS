@@ -328,10 +328,10 @@ string CoverRow::str(
     "*" << 
     CoverRow::strEnum() <<
     " " << 
-    coverPtrs.front()->str(sumProfile, ranksNames);
+    coverPtrs.front()->str(sumProfile, ranksNames, verbal);
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-    ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames);
+    ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames, verbal);
 
   return ss.str() + "\n";
 }

@@ -58,6 +58,7 @@ class RowMatches
     void incorporateLengths(
       const CoverStore& coverStore,
       const vector<unsigned char>& cases,
+      const Profile& sumProfile,
       vector<Tricks>& tricksOfLength,
       Explain& explain);
 

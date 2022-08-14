@@ -182,6 +182,7 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 void RowMatches::incorporateLengths(
   const CoverStore& coverStore,
   const vector<unsigned char>& cases,
+  const Profile& sumProfile,
   vector<Tricks>& tricksOfLength,
   Explain& explain)
 {
@@ -242,7 +243,8 @@ void RowMatches::incorporateLengths(
       // with another VoidInfo (OPP_EITHER).
       CoverRow rowTmp;
       rowTmp.resize(numDist);
-      rowTmp.add(partial.cover(), tricks, VERBAL_LENGTH_ONLY);
+      rowTmp.add(partial.cover(), tricks, 
+        partial.cover().verbal(sumProfile));
 
       RowMatches::transfer(rowTmp, lenEW, OPP_EAST, factor);
     }
