@@ -647,6 +647,53 @@ string Product::strVerbal(
 // TMP? TODO
 #include "../../../ranks/RankNames.h"
 
+
+void Product::getWestLengths(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const Opponent simplestOpponent,
+  const unsigned char canonicalShift,
+  string& result,
+  unsigned char& lowestWestMax,
+  unsigned char& lowestWestActual) const
+{
+  TopData topData;
+  unsigned char topNo;
+
+  lowestWestMax = sumProfile.length();
+  lowestWestActual = length.lower();
+
+  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
+  {
+    if (! tops[topNo].used())
+      continue;
+
+    const auto& top = tops[topNo];
+
+    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+
+    const string topResult = top.strTopBareEqual(topData, simplestOpponent);
+
+    result += topResult;
+    lowestWestMax -= topData.value;
+
+    assert(top.getOperator() == COVER_EQUAL);
+    lowestWestActual -= top.lower();
+  }
+
+  if (! length.used())
+  {
+    // It can happen rarely that a cover is symmetric and yet length is
+    // unset (example: Missing HHhhx, the cover is 1H and 1h which matches
+    // Hh/Hhx or Hhx/Hh.  In this case we effectively want lowestWestActual
+    // to be 2, and when 1 and 1 are subtracted, it becomes zero.
+    lowestWestActual = 0;
+  }
+  else
+    assert(length.getOperator() == COVER_EQUAL);
+}
+
+
 string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -666,6 +713,11 @@ string Product::strVerbalSingular(
       symmFlag);
   }
 
+if (length.getOperator() != COVER_EQUAL)
+{
+  cout << "UNEXPECTED: " << Product::strLine() << endl;
+}
+
   string result;
   if (symmFlag)
     result = "Either opponent";
@@ -676,54 +728,25 @@ string Product::strVerbalSingular(
 
   result += " has exactly ";
 
-  TopData topData;
-  unsigned char topNo;
-
-  // The lowest rank (never set) may have to be added in the end.
-  unsigned char lowestWestMax = sumProfile.length();
-
-if (length.getOperator() != COVER_EQUAL)
-{
-  cout << "UNEXPECTED: " << Product::strLine() << endl;
-}
-
-
-  unsigned char lowestWestActual = length.lower();
-
-  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
-  {
-    if (tops[topNo].used())
-    {
-      const auto& top = tops[topNo];
-
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-
-      const string topResult =
-        top.strTopBareEqual(topData, simplestOpponent);
-
-      result += topResult;
-      lowestWestMax -= topData.value;
-
-      assert(top.getOperator() == COVER_EQUAL);
-      lowestWestActual -= top.lower();
-    }
-  }
-
-  if (! length.used())
-  {
-    // It can happen rarely that a cover is symmetric and yet length is
-    // unset (example: Missing HHhhx, the cover is 1H and 1h which matches
-    // Hh/Hhx or Hhx/Hh.  In this case we effectively want lowestWestActual
-    // to be 2, and when 1 and 1 are subtracted, it becomes zero.
-    lowestWestActual = 0;
-  }
-  else
-  {
-    assert(length.getOperator() == COVER_EQUAL);
-  }
+  // The lowest rank (never set) may have to be added in the end,
+  // so we calculate the range of x's that West may hold.
+  // The maximum number is the sumProfile length minus the maximum tops.
+  // The upper number of the product is the product length minus the
+  // product tops.
+  unsigned char lowestWestMax, lowestWestActual;
+  Product::getWestLengths(
+    sumProfile, 
+    ranksNames, 
+    simplestOpponent,
+    canonicalShift,
+    result,
+    lowestWestMax,
+    lowestWestActual);
 
   // TODO This part is quite hideous and should go somewhere else,
   // possibly in Top.cpp
+
+  TopData topData;
   sumProfile.getTopData(canonicalShift, ranksNames, topData);
   const string str 
     = topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
@@ -734,8 +757,6 @@ if (length.getOperator() != COVER_EQUAL)
     if (lowestWestActual == lowestWestMax)
       result += str;
     else if (lowestWestActual > 0)
-      // TODO Unlike Top::strTopBareEqual, this writes "1" not "one".
-      // result += "(" + to_string(lowestWestActual) + " of " + str + ")";
       result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestActual);
   }
   else
@@ -744,8 +765,6 @@ if (length.getOperator() != COVER_EQUAL)
     if (lowestWestActual == 0)
       result += str;
     else if (lowestWestActual < lowestWestMax)
-      // result += "(" + to_string(lowestWestMax - lowestWestActual) + 
-        // " of " + str + ")";
       result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestMax- lowestWestActual);
   }
 

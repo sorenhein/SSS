@@ -43,6 +43,8 @@ class Length: public Term
 
     bool notVoid() const;
 
+    Opponent simplestOpponent(const unsigned char maximum) const;
+
     string strLengthBare(
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;

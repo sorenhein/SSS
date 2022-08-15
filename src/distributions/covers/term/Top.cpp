@@ -59,6 +59,23 @@ const vector<string> topOrdinal =
 };
 
 
+Opponent Top::simplestOpponent(const unsigned char maximum) const
+{
+  if (! Term::used())
+    return OPP_EITHER;
+
+  // Choose the fuller side, as this tends to be more intuitive.
+  const unsigned char lsum = Top::lower() + Top::upper();
+
+  if (lsum > maximum)
+    return OPP_WEST;
+  else if (lsum < maximum)
+    return OPP_EAST;
+  else
+    return OPP_EITHER;
+}
+
+
 string Top::strEqual(
   const TopData& oppsTopData,
   const Opponent simplestOpponent,

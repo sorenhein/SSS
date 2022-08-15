@@ -69,8 +69,6 @@ class Term
 
     SymmTerm symmetrizable(const unsigned char maximum) const;
 
-    Opponent simplestOpponent(const unsigned char maximum) const;
-
     CoverOperator getOperator() const;
 
     bool operator == (const Term& term2) const;

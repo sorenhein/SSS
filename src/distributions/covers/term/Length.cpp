@@ -25,6 +25,23 @@ bool Length::notVoid() const
 }
 
 
+Opponent Length::simplestOpponent(const unsigned char maximum) const
+{
+  if (! Length::used())
+    return OPP_EITHER;
+
+  // Choose the shorter side, as this tends to be more intuitive.
+  const unsigned char lsum = Length::lower() + Length::upper();
+
+  if (lsum > maximum)
+    return OPP_EAST;
+  else if (lsum < maximum)
+    return OPP_WEST;
+  else
+    return OPP_EITHER;
+}
+
+
 string Length::strEqual(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,

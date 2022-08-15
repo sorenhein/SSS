@@ -137,22 +137,6 @@ SymmTerm Term::symmetrizable(const unsigned char maximum) const
 }
 
 
-Opponent Term::simplestOpponent(const unsigned char maximum) const
-{
-  if (! Term::used())
-    return OPP_EITHER;
-
-  const unsigned char lsum = Term::lower() + Term::upper();
-
-  if (lsum > maximum)
-    return OPP_EAST;
-  else if (lsum < maximum)
-    return OPP_WEST;
-  else
-    return OPP_EITHER;
-}
-
-
 CoverOperator Term::getOperator() const
 {
   return termCompare.getOperator(index);

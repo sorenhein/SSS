@@ -55,6 +55,14 @@ class Product
 
     ExplainEqual mostlyEqual() const;
 
+    void getWestLengths(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
+      const unsigned char canonicalShift,
+      string& result,
+      unsigned char& lowestWestMax,
+      unsigned char& lowestWestActual) const;
 
   public:
 

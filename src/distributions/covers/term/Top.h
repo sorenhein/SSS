@@ -54,6 +54,8 @@ class Top: public Term
 
   public:
 
+    Opponent simplestOpponent(const unsigned char maximum) const;
+
     string strTop(
       const TopData& oppsTopData,
       const Opponent simplestOpponent,

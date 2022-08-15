@@ -472,7 +472,7 @@ string Cover::str(
   // const unsigned coverControl = 0x0;
 
   stringstream ss;
-  if (! (verbal & coverControl)
+  if (! (verbal & coverControl))
   {
     ss << Cover::strTricksShort() + Cover::strLine();
   }
@@ -496,6 +496,9 @@ string Cover::str(
   }
   else if (verbal == VERBAL_TOPS_ONLY) // D
   {
+    const Opponent simplestOpponent = 
+      factoredProductPtr->simplestOpponent(sumProfile);
+
     // TODO
     ss << Cover::strTricksShort() + Cover::strLine();
   }
