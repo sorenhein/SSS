@@ -58,11 +58,23 @@ class Product
     void getWestLengths(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
+      const CoverVerbal verbal,
       const Opponent simplestOpponent,
       const unsigned char canonicalShift,
-      string& result,
-      unsigned char& lowestWestMax,
-      unsigned char& lowestWestActual) const;
+      unsigned char& xesMin,
+      unsigned char& xesMax,
+      unsigned char& xesAvailable) const;
+
+    string strExactTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
+      const unsigned char canonicalShift) const;
+
+    string strAvailableTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift) const;
 
   public:
 
@@ -129,10 +141,17 @@ class Product
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
+    string strVerbalEqualTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
     string strVerbalSingular(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
+      const CoverVerbal verbal,
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 };

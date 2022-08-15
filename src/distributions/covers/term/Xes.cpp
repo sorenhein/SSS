@@ -12,6 +12,8 @@
 
 #include "Xes.h"
 
+#include "../../../utils/table.h"
+
 
 void Xes::set(
   const unsigned char distLengthLower,
@@ -40,6 +42,24 @@ void Xes::set(
     "(" + string(westMax - westMin, 'x') + ")";
   strEast = string(eastMin, 'x') +
     "(" + string(eastMax - eastMin, 'x') + ")";
+}
+
+
+void Xes::getRange(
+  const Opponent opponent,
+  unsigned char& oppMin,
+  unsigned char& oppMax) const
+{
+  if (opponent == OPP_EAST)
+  {
+    oppMin = eastMin;
+    oppMax = eastMax;
+  }
+  else
+  {
+    oppMin = westMin;
+    oppMax = westMax;
+  }
 }
 
  

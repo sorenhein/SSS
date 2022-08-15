@@ -419,6 +419,7 @@ string Cover::strTricksShort() const
 }
 
 
+/*
 string Cover::str(
   [[maybe_unused]] const Profile& sumProfile,
   const RanksNames& ranksNames) const
@@ -432,21 +433,28 @@ string Cover::str(
   {
     ss << Cover::strTricksShort() + Cover::strLine();
 
-    /*
-    const Opponent simplestOpponent = 
-      factoredProductPtr->simplestOpponent(sumProfile);
+    // const Opponent simplestOpponent = 
+      // factoredProductPtr->simplestOpponent(sumProfile);
 
-    ss << factoredProductPtr->strVerbal(
-      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
-      */
+    // ss << factoredProductPtr->strVerbal(
+      // sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
   }
   else if (Cover::singular())
   {
     const Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
 
+    // TODO This is quite backward...
+    CoverVerbal verbal;
+    if (simplestOpponent == OPP_WEST)
+      verbal = VERBAL_SINGULAR_WEST;
+    else if (simplestOpponent == OPP_EAST)
+      verbal = VERBAL_SINGULAR_EAST;
+    else
+      verbal = VERBAL_SINGULAR_EITHER;
+
     ss << factoredProductPtr->strVerbalSingular(
-      sumProfile, ranksNames, simplestOpponent, Cover::symmetric());
+      sumProfile, ranksNames, verbal, Cover::symmetric());
       // sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
   }
   else
@@ -457,6 +465,7 @@ string Cover::str(
 
   return ss.str();
 }
+*/
 
 
 string Cover::str(
@@ -468,7 +477,7 @@ string Cover::str(
   assert(ranksNames.used());
 
   // All the singulars, and length only
-  const unsigned coverControl = 0x1c4;
+  const unsigned coverControl = 0x1ff;
   // const unsigned coverControl = 0x0;
 
   stringstream ss;
@@ -491,8 +500,11 @@ string Cover::str(
     const Opponent simplestOpponent = 
       factoredProductPtr->simplestOpponent(sumProfile);
 
-      ss << factoredProductPtr->strVerbal(
-        sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
+    // TODO Can pick out a sub-method.
+    // TODO symmetric() not symmetrizeFlag?
+    // TODO All these methods into strVerbal?
+    ss << factoredProductPtr->strVerbal(
+      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
   }
   else if (verbal == VERBAL_TOPS_ONLY) // D
   {
@@ -505,27 +517,23 @@ string Cover::str(
   else if (verbal == VERBAL_HIGH_TOPS_EQUAL) // E
   {
     // TODO
-    ss << Cover::strTricksShort() + Cover::strLine();
+    // ss << Cover::strTricksShort() + Cover::strLine();
+    ss << factoredProductPtr->strVerbalEqualTops(
+      sumProfile, ranksNames, verbal, Cover::symmetric());
   }
   else if (verbal == VERBAL_ANY_TOPS_EQUAL) // F
   {
     // TODO
-    ss << Cover::strTricksShort() + Cover::strLine();
+    // ss << Cover::strTricksShort() + Cover::strLine();
+    ss << factoredProductPtr->strVerbalEqualTops(
+      sumProfile, ranksNames, verbal, Cover::symmetric());
   }
   else if (verbal == VERBAL_SINGULAR_EITHER ||
       verbal == VERBAL_SINGULAR_WEST ||
       verbal == VERBAL_SINGULAR_EAST) // GHJ
   {
-    Opponent simplestOpponent;
-    if (verbal == VERBAL_SINGULAR_EITHER)
-      simplestOpponent = OPP_EITHER;
-    else if (verbal ==VERBAL_SINGULAR_WEST)
-      simplestOpponent = OPP_WEST;
-    else
-      simplestOpponent = OPP_EAST;
-        
-  ss << factoredProductPtr->strVerbalSingular(
-      sumProfile, ranksNames, simplestOpponent, Cover::symmetric());
+    ss << factoredProductPtr->strVerbalSingular(
+      sumProfile, ranksNames, verbal, Cover::symmetric());
   }
   else
     assert(false);

@@ -14,6 +14,8 @@
 
 using namespace std;
 
+enum Opponent: unsigned;
+
 
 struct Xes
 {
@@ -27,6 +29,11 @@ struct Xes
     const unsigned char topsExact,
     const unsigned char oppsLength,
     const unsigned char oppsTops);
+
+  void getRange(
+    const Opponent opponent,
+    unsigned char& oppMin,
+    unsigned char& oppMax) const;
 
   string str() const;
 };

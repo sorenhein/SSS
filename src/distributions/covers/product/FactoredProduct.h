@@ -82,10 +82,16 @@ class FactoredProduct
       const Opponent simplestOpponent,
       const bool symmFlag) const;
 
+    string strVerbalEqualTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag) const;
+
     string strVerbalSingular(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
+      const CoverVerbal verbal,
       const bool symmFlag) const;
 };
 
