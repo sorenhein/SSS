@@ -497,14 +497,8 @@ string Cover::str(
   }
   else if (verbal == VERBAL_LENGTH_ONLY) // C
   {
-    const Opponent simplestOpponent = 
-      factoredProductPtr->simplestOpponent(sumProfile);
-
-    // TODO Can pick out a sub-method.
-    // TODO symmetric() not symmetrizeFlag?
-    // TODO All these methods into strVerbal?
-    ss << factoredProductPtr->strVerbal(
-      sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
+    ss << factoredProductPtr->strVerbalLengthOnly(
+      sumProfile, Cover::symmetric());
   }
   else if (verbal == VERBAL_TOPS_ONLY) // D
   {
@@ -514,17 +508,9 @@ string Cover::str(
     // TODO
     ss << Cover::strTricksShort() + Cover::strLine();
   }
-  else if (verbal == VERBAL_HIGH_TOPS_EQUAL) // E
+  else if (verbal == VERBAL_HIGH_TOPS_EQUAL ||
+      verbal == VERBAL_ANY_TOPS_EQUAL) // EF
   {
-    // TODO
-    // ss << Cover::strTricksShort() + Cover::strLine();
-    ss << factoredProductPtr->strVerbalEqualTops(
-      sumProfile, ranksNames, verbal, Cover::symmetric());
-  }
-  else if (verbal == VERBAL_ANY_TOPS_EQUAL) // F
-  {
-    // TODO
-    // ss << Cover::strTricksShort() + Cover::strLine();
     ss << factoredProductPtr->strVerbalEqualTops(
       sumProfile, ranksNames, verbal, Cover::symmetric());
   }

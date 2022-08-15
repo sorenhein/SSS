@@ -141,6 +141,11 @@ class Product
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
+    string strVerbalLengthOnly(
+      const Profile& sumProfile,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
     string strVerbalEqualTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

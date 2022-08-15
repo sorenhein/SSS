@@ -708,46 +708,6 @@ void Product::getWestLengths(
 
   if (! length.used())
     assert(xesMin == 0);
-
-
-  /*
-  lowestWestMax = sumProfile.length();
-
-  if (length.used())
-    // upper() could be 15 if length is of the >= kind.
-    lowestWestActual = min(lowestWestMax, length.upper());
-  else
-    lowestWestActual = lowestWestMax;
-
-  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
-  {
-    if (! tops[topNo].used())
-      continue;
-
-    const auto& top = tops[topNo];
-
-    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-
-    lowestWestMax -= topData.value;
-
-    assert(top.getOperator() == COVER_EQUAL);
-    lowestWestActual -= top.lower();
-  }
-
-  if (! length.used() && 
-      (verbal == VERBAL_SINGULAR_EITHER ||
-       verbal == VERBAL_SINGULAR_WEST ||
-       verbal == VERBAL_SINGULAR_EAST))
-  {
-    // It can happen rarely that a cover is symmetric and yet length is
-    // unset (example: Missing HHhhx, the cover is 1H and 1h which matches
-    // Hh/Hhx or Hhx/Hh.  In this case we effectively want lowestWestActual
-    // to be 2, and when 1 and 1 are subtracted, it becomes zero.
-    lowestWestActual = 0;
-    
-    // TODO I'm not entirely convinced that this is always correct?
-  }
-  */
 }
 
 
@@ -803,6 +763,24 @@ string Product::strAvailableTops(
 }
 
 
+string Product::strVerbalLengthOnly(
+  const Profile& sumProfile,
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
+{
+  assert(activeCount == 0);
+
+  const Opponent simplestOpponent =
+    Product::simplestOpponent(sumProfile, canonicalShift);
+
+  return 
+    length.strLength(
+      sumProfile.length(), 
+      simplestOpponent, 
+      symmFlag);
+}
+
+
 string Product::strVerbalEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -848,8 +826,6 @@ string Product::strVerbalEqualTops(
     xesMin,
     xesMax,
     xesAvailable);
-    // freeWestMax,
-    // freeWestActual);
 
   string other;
   if (verbal == VERBAL_HIGH_TOPS_EQUAL)
@@ -866,44 +842,6 @@ string Product::strVerbalEqualTops(
     result += " and " + to_string(xesMin) + "-" +
       to_string(xesMax) + other;
   }
-
-  /*
-  if (symmFlag || simplestOpponent == OPP_WEST)
-  {
-    // From West's perspective.
-    if (freeWestActual == freeWestMax)
-      result += " and any number of " + other;
-    else if (freeWestActual > 0)
-      result += " and at most " +
-        to_string(freeWestActual) + " " + other;
-    else
-    {
-      cout << Product::strLine() << endl;
-      cout << "freeWestMax " << +freeWestMax << endl;
-      cout << "freeWestActual " << +freeWestActual << endl;
-      assert(false);
-    }
-  }
-  else
-  {
-    // From East's perspective.
-    if (freeWestActual == 0)
-      result += " and any number of " + other;
-    else if (freeWestActual < freeWestMax)
-      result += 
-        " and at most " +
-        to_string(freeWestMax - freeWestActual) +
-        " " +
-        other;
-    else
-    {
-      cout << Product::strLine() << endl;
-      cout << "freeWestMax " << +freeWestMax << endl;
-      cout << "freeWestActual " << +freeWestActual << endl;
-      assert(false);
-    }
-  }
-  */
 
   return result;
 }
@@ -968,8 +906,6 @@ string Product::strVerbalSingular(
     xesMin,
     xesMax,
     xesAvailable);
-    // lowestWestMax,
-    // lowestWestActual);
 
   // TODO This part is quite hideous and should go somewhere else,
   // possibly in Top.cpp
@@ -979,34 +915,12 @@ string Product::strVerbalSingular(
   const string str 
     = topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
 
-  // if (symmFlag || simplestOpponent == OPP_WEST)
-  // {
-    // From West's perspective.
-    if (xesMin == xesAvailable && xesMax == xesAvailable)
-      result += str;
-    else if (xesMin == xesMax)
-      result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, xesMin);
-    else
-      assert(false);
-
-    /*
-    // From West's perspective.
-    if (lowestWestActual == lowestWestMax)
-      result += str;
-    else if (lowestWestActual > 0)
-      result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestActual);
-    */
-  /*
-  }
+  if (xesMin == xesAvailable && xesMax == xesAvailable)
+    result += str;
+  else if (xesMin == xesMax)
+    result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, xesMin);
   else
-  {
-    // From East's perspective.
-    if (lowestWestActual == 0)
-      result += str;
-    else if (lowestWestActual < lowestWestMax)
-      result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, lowestWestMax - lowestWestActual);
-  }
-  */
+    assert(false);
 
   return result;
 }

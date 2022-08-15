@@ -148,6 +148,15 @@ string FactoredProduct::strVerbal(
 }
 
 
+string FactoredProduct::strVerbalLengthOnly(
+  const Profile& sumProfile,
+  const bool symmFlag) const
+{
+  return canonicalPtr->strVerbalLengthOnly(
+    sumProfile, symmFlag, canonicalShift);
+}
+
+
 string FactoredProduct::strVerbalEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
