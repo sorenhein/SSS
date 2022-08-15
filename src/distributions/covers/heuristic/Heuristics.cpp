@@ -58,6 +58,7 @@ void Heuristics::findHeaviestN(
 
 bool Heuristics::combineSimply(
   const Heuristics& heur2,
+  const Profile& sumProfile,
   CoverTableau& partialSolution,
   bool& combinedFlag) const
 {
@@ -73,7 +74,9 @@ bool Heuristics::combineSimply(
 
     // Here we use the "fact" that the first Heuristics is tops only,
     // the second one (heur2) length only.
-    partialSolution.addRow(partials.begin()->cover(), VERBAL_TOPS_ONLY);
+    partialSolution.addRow(partials.begin()->cover(), 
+      partials.begin()->cover().verbal(sumProfile));
+      // VERBAL_TOPS_ONLY);
     combinedFlag = true;
     return true;
   }
@@ -94,6 +97,7 @@ bool Heuristics::combineSimply(
 
 bool Heuristics::combineSimply(
   const Heuristics& heur2,
+  const Profile& sumProfile,
   const Tricks& tricks,
   list<CoverTableau>& partialSolutions,
   bool& combinedFlag) const
@@ -113,7 +117,9 @@ bool Heuristics::combineSimply(
       partialSolutions.emplace_back(CoverTableau());
       CoverTableau& partialSolution = partialSolutions.back();
       partialSolution.init(tricks, 0);  // tmin comes later
-      partialSolution.addRow(partial.cover(), VERBAL_TOPS_ONLY);
+      partialSolution.addRow(partial.cover(), 
+        partial.cover().verbal(sumProfile));
+      // VERBAL_TOPS_ONLY);
     }
 
     combinedFlag = true;
@@ -184,6 +190,7 @@ bool Heuristics::insertDominant(
 
 void Heuristics::setPartialSolution(
   const PartialBest& partialBest,
+  const Profile& sumProfile,
   const vector<unsigned char>& cases,
   CoverTableau& partialSolution) const
 {
@@ -192,12 +199,16 @@ void Heuristics::setPartialSolution(
     if (! partialBest.flag2)
     {
       // Only the first one.
-      partialSolution.addRow(partialBest.ptr1->cover(), VERBAL_TOPS_ONLY);
+      partialSolution.addRow(partialBest.ptr1->cover(), 
+        partialBest.ptr1->cover().verbal(sumProfile));
+        // VERBAL_TOPS_ONLY);
     }
     else if (partialBest.flagIndep)
     {
       // Two rows.
-      partialSolution.addRow(partialBest.ptr1->cover(), VERBAL_TOPS_ONLY);
+      partialSolution.addRow(partialBest.ptr1->cover(), 
+        partialBest.ptr1->cover().verbal(sumProfile));
+        //VERBAL_TOPS_ONLY);
       partialSolution.addRow(partialBest.ptr2->cover(), VERBAL_LENGTH_ONLY);
     }
     else
@@ -236,6 +247,7 @@ void Heuristics::setPartialSolution(
 
 bool Heuristics::combine(
   const Heuristics& heur2,
+  const Profile& sumProfile,
   const Tricks& tricks,
   const vector<unsigned char>& cases,
   CoverTableau& partialSolution) const
@@ -245,7 +257,8 @@ bool Heuristics::combine(
   // We pick the combination that covers the most weight in total.
   
   bool combinedFlag = false;
-  if (Heuristics::combineSimply(heur2, partialSolution, combinedFlag))
+  if (Heuristics::combineSimply(heur2, sumProfile,
+      partialSolution, combinedFlag))
     return combinedFlag;
 
   PartialBest partialBest;
@@ -354,7 +367,7 @@ bool Heuristics::combine(
   }
 
 // cout << "p bef   " << partialSolution.strResiduals();
-  Heuristics::setPartialSolution(partialBest, cases, partialSolution);
+  Heuristics::setPartialSolution(partialBest, sumProfile, cases, partialSolution);
 // cout << "p aft   " << partialSolution.strResiduals();
   return true;
 }
@@ -362,6 +375,7 @@ bool Heuristics::combine(
 
 bool Heuristics::combine(
   const Heuristics& heur2,
+  const Profile& sumProfile,
   const Tricks& tricks,
   const vector<unsigned char>& cases,
   list<CoverTableau>& partialSolutions) const
@@ -371,7 +385,7 @@ bool Heuristics::combine(
   // We pick the combination that covers the most weight in total.
   
   bool combinedFlag = false;
-  if (Heuristics::combineSimply(heur2, tricks, 
+  if (Heuristics::combineSimply(heur2, sumProfile, tricks, 
       partialSolutions, combinedFlag))
     return combinedFlag;
 
@@ -468,7 +482,7 @@ bool Heuristics::combine(
     partialSolutions.emplace_back(CoverTableau());
     CoverTableau& partialSolution = partialSolutions.back();
     partialSolution.init(tricks, 0);  // tmin comes later
-    Heuristics::setPartialSolution(dom.partialBest, cases, partialSolution);
+    Heuristics::setPartialSolution(dom.partialBest, sumProfile, cases, partialSolution);
   }
 
   return true;

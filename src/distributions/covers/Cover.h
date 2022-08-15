@@ -147,12 +147,6 @@ class Cover
 
     string strTricksShort() const;
 
-    /*
-    string str(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames) const;
-      */
-
     string str(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

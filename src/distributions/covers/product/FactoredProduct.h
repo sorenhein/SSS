@@ -86,6 +86,11 @@ class FactoredProduct
       const Profile& sumProfile,
       const bool symmFlag) const;
 
+    string strVerbalOneTopOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag) const;
+
     string strVerbalEqualTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

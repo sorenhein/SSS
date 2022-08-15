@@ -94,11 +94,13 @@ class Heuristics
 
     bool combineSimply(
       const Heuristics& heur2,
+      const Profile& sumProfile,
       CoverTableau& partialSolution,
       bool& combinedFlag) const;
 
     bool combineSimply(
       const Heuristics& heur2,
+      const Profile& sumProfile,
       const Tricks& tricks,
       list<CoverTableau>& partialSolutions,
       bool& combinedFlag) const;
@@ -114,6 +116,7 @@ class Heuristics
 
     void setPartialSolution(
       const PartialBest& partialBest,
+      const Profile& sumProfile,
       const vector<unsigned char>& cases,
       CoverTableau& partialSolution) const;
 
@@ -131,12 +134,14 @@ class Heuristics
     
     bool combine(
       const Heuristics& heur2,
+      const Profile& sumProfile,
       const Tricks& tricks,
       const vector<unsigned char>& cases,
       CoverTableau& partialSolution) const;
 
     bool combine(
       const Heuristics& heur2,
+      const Profile& sumProfile,
       const Tricks& tricks,
       const vector<unsigned char>& cases,
       list<CoverTableau>& partialSolutions) const;

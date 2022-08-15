@@ -184,14 +184,14 @@ string Top::strInside(
     if (vLower+1 == oppsTopData.value)
     {
       if (oppsTopData.value == 2)
-        ss << side << " has one or both ";
+        ss << side << " has one or both";
       else if (oppsTopData.value == 3)
-        ss << side << " has two or all three ";
+        ss << side << " has two or all three";
       else
         ss << side << " lacks at most one " << strFull;
     }
     else if (vLower+2 == oppsTopData.value)
-      ss << side << " lacks at most two ";
+      ss << side << " lacks at most two";
     else
       ss << side << " lacks at most " << +(oppsTopData.value - vLower);
   }

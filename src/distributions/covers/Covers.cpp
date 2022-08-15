@@ -449,7 +449,7 @@ void Covers::guessStart(
   heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
 // cout << "heuristic2\n" << heuristic2.str();
 
-  heuristic2.combine(heuristic1, tricks, cases, partialSolution);
+  heuristic2.combine(heuristic1, sumProfile, tricks, cases, partialSolution);
 // cout << "heuristic2 combined\n" << heuristic2.str();
 }
 
@@ -470,7 +470,7 @@ void Covers::guessStarts(
   heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
 // cout << "heuristic2\n" << heuristic2.str();
 
-  heuristic2.combine(heuristic1, tricks, cases, partialSolutions);
+  heuristic2.combine(heuristic1, sumProfile, tricks, cases, partialSolutions);
 // cout << "heuristic2 combined\n" << heuristic2.str();
 }
 

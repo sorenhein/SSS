@@ -781,6 +781,37 @@ string Product::strVerbalLengthOnly(
 }
 
 
+string Product::strVerbalOneTopOnly(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
+{
+  assert(activeCount == 1);
+
+  const Opponent simplestOpponent =
+    Product::simplestOpponent(sumProfile, canonicalShift);
+
+  TopData topData;
+  unsigned char topNo;
+
+  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
+  {
+    if (! tops[topNo].used())
+      continue;
+
+    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+
+    return tops[topNo].strTop(
+      topData,
+      simplestOpponent, 
+      symmFlag);
+  }
+  assert(false);
+  return "";
+}
+
+
 string Product::strVerbalEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,

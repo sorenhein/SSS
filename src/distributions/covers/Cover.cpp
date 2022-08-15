@@ -419,57 +419,8 @@ string Cover::strTricksShort() const
 }
 
 
-/*
 string Cover::str(
-  [[maybe_unused]] const Profile& sumProfile,
-  const RanksNames& ranksNames) const
-{
-  assert(factoredProductPtr != nullptr);
-  stringstream ss;
-
-  // TODO ranksNames may come from driver.cpp in which case we
-  // just want the non-verbal version.
-  if (ranksNames.used() && factoredProductPtr->explainable())
-  {
-    ss << Cover::strTricksShort() + Cover::strLine();
-
-    // const Opponent simplestOpponent = 
-      // factoredProductPtr->simplestOpponent(sumProfile);
-
-    // ss << factoredProductPtr->strVerbal(
-      // sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
-  }
-  else if (Cover::singular())
-  {
-    const Opponent simplestOpponent = 
-      factoredProductPtr->simplestOpponent(sumProfile);
-
-    // TODO This is quite backward...
-    CoverVerbal verbal;
-    if (simplestOpponent == OPP_WEST)
-      verbal = VERBAL_SINGULAR_WEST;
-    else if (simplestOpponent == OPP_EAST)
-      verbal = VERBAL_SINGULAR_EAST;
-    else
-      verbal = VERBAL_SINGULAR_EITHER;
-
-    ss << factoredProductPtr->strVerbalSingular(
-      sumProfile, ranksNames, verbal, Cover::symmetric());
-      // sumProfile, ranksNames, simplestOpponent, symmetrizeFlag);
-  }
-  else
-    ss << Cover::strTricksShort() + Cover::strLine();
-
-  ss << " [" << +Cover::getComplexity() << 
-    "/" << tricks.getWeight() << "]";
-
-  return ss.str();
-}
-*/
-
-
-string Cover::str(
-  [[maybe_unused]] const Profile& sumProfile,
+  const Profile& sumProfile,
   const RanksNames& ranksNames,
   const CoverVerbal verbal) const
 {
@@ -502,11 +453,8 @@ string Cover::str(
   }
   else if (verbal == VERBAL_TOPS_ONLY) // D
   {
-    const Opponent simplestOpponent = 
-      factoredProductPtr->simplestOpponent(sumProfile);
-
-    // TODO
-    ss << Cover::strTricksShort() + Cover::strLine();
+    ss << factoredProductPtr->strVerbalOneTopOnly(
+      sumProfile, ranksNames, Cover::symmetric());
   }
   else if (verbal == VERBAL_HIGH_TOPS_EQUAL ||
       verbal == VERBAL_ANY_TOPS_EQUAL) // EF
