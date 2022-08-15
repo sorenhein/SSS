@@ -31,6 +31,34 @@ class FactoredProduct
     // Number of unused tops that are elided.
     unsigned char canonicalShift;
 
+    /*
+    string strVerbalLengthOnly(
+      const Profile& sumProfile,
+      const bool symmFlag) const;
+
+    string strVerbalOneTopOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag) const;
+
+    string strVerbalLengthAndOneTop(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag) const;
+
+    string strVerbalEqualTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag) const;
+
+    string strVerbalSingular(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag) const;
+      */
+
 
   public:
 
@@ -75,29 +103,7 @@ class FactoredProduct
 
     string strLine() const;
 
-    // So far this only does the simplest case: One meaningful top.
     string strVerbal(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
-    string strVerbalLengthOnly(
-      const Profile& sumProfile,
-      const bool symmFlag) const;
-
-    string strVerbalOneTopOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const bool symmFlag) const;
-
-    string strVerbalEqualTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const CoverVerbal verbal,
-      const bool symmFlag) const;
-
-    string strVerbalSingular(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const CoverVerbal verbal,

@@ -76,6 +76,37 @@ class Product
       const RanksNames& ranksNames,
       const unsigned char canonicalShift) const;
 
+    string strVerbalLengthOnly(
+      const Profile& sumProfile,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
+    string strVerbalOneTopOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
+    string strVerbalLengthAndOneTop(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
+    string strVerbalEqualTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
+    string strVerbalSingular(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal,
+      const bool symmFlag,
+      const unsigned char canonicalShift = 0) const;
+
   public:
 
     Product();
@@ -133,38 +164,13 @@ class Product
 
     string strLine() const;
 
-    // So far this only does the simplest case: One meaningful top.
     string strVerbal(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
-
-    string strVerbalLengthOnly(
-      const Profile& sumProfile,
-      const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
-
-    string strVerbalOneTopOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
-
-    string strVerbalEqualTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const CoverVerbal verbal,
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
-    string strVerbalSingular(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const CoverVerbal verbal,
-      const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
 };
 
 #endif

@@ -356,10 +356,12 @@ CoverVerbal Product::verbal() const
   else if (ee == EQUAL_ANY)
     return VERBAL_ANY_TOPS_EQUAL;
 
-  if (length.used())
+  if (activeCount >= 2)
     return VERBAL_GENERAL;
-  else
+  else if (! length.used())
     return VERBAL_TOPS_ONLY;
+  else
+    return VERBAL_LENGTH_AND_ONE_TOP;
 }
 
 
@@ -569,82 +571,6 @@ string Product::strLine() const
 }
 
 
-string Product::strVerbal(
-  const Profile& sumProfile,
-  [[maybe_unused]] const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
-  const unsigned char canonicalShift) const
-{
-  if (activeCount == 0)
-  {
-    return length.strLength(
-      sumProfile.length(),
-      simplestOpponent, 
-      symmFlag);
-  }
-
-  TopData topData;
-  unsigned char topNo;
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
-  {
-    if (tops[topNo].used())
-    {
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-      break;
-    }
-  }
-  assert(topData.used());
-
-  if (! length.used())
-  {
-    return tops[topNo].strTop(
-      topData,
-      simplestOpponent, 
-      symmFlag);
-  }
-
-  assert(topNo > 0 && topNo < tops.size());
-  auto& top = tops[topNo];
-
-  if (top.getOperator() == COVER_EQUAL)
-  {
-    return top.strEqualWithLength(
-      length,
-      sumProfile.length(), 
-      topData,
-      simplestOpponent,
-      symmFlag);
-  }
-  else if (length.getOperator() == COVER_EQUAL)
-  {
-    // No inversion, but "has a doubleton with one or both tops"
-    return 
-      length.strLength(
-        sumProfile.length(), 
-        simplestOpponent, 
-        symmFlag) + 
-      " with " +
-      top.strTopBare(
-        topData,
-        simplestOpponent);
-  }
-  else
-  {
-    // Inversion, e.g. "has one top at most doubleton"
-    return 
-      top.strTop(
-        topData,
-        simplestOpponent, 
-        symmFlag) +
-      " " +
-      length.strLengthBare(
-        sumProfile.length(), 
-        simplestOpponent);
-  }
-}
-
-
 // TMP? TODO
 #include "../../../ranks/RankNames.h"
 
@@ -787,6 +713,10 @@ string Product::strVerbalOneTopOnly(
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
+if (activeCount != 1)
+{
+  cout << Product::strLine() << endl;
+}
   assert(activeCount == 1);
 
   const Opponent simplestOpponent =
@@ -809,6 +739,73 @@ string Product::strVerbalOneTopOnly(
   }
   assert(false);
   return "";
+}
+
+
+string Product::strVerbalLengthAndOneTop(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
+{
+  assert(activeCount == 1);
+  assert(length.used());
+
+  const Opponent simplestOpponent =
+    Product::simplestOpponent(sumProfile, canonicalShift);
+
+  TopData topData;
+  unsigned char topNo;
+  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
+  {
+    if (tops[topNo].used())
+    {
+      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+      break;
+    }
+  }
+  assert(topData.used());
+
+  assert(topNo > 0 && topNo < tops.size());
+  auto& top = tops[topNo];
+
+  if (top.getOperator() == COVER_EQUAL)
+  {
+    return top.strEqualWithLength(
+      length,
+      sumProfile.length(), 
+      topData,
+      simplestOpponent,
+      symmFlag);
+  }
+  else if (length.getOperator() == COVER_EQUAL)
+  {
+    // No inversion, but "has a doubleton with one or both tops"
+    return 
+      length.strLength(
+        sumProfile.length(), 
+        simplestOpponent, 
+        symmFlag) + 
+      " with " +
+      top.strTopBare(
+        topData,
+        simplestOpponent);
+  }
+  else
+  {
+    // Inversion, e.g. "has one top at most doubleton"
+    return 
+      top.strTop(
+        topData,
+        simplestOpponent, 
+        symmFlag) +
+      " " +
+      length.strLengthBare(
+        sumProfile.length(), 
+        simplestOpponent);
+  }
+
+
 }
 
 
@@ -954,5 +951,66 @@ string Product::strVerbalSingular(
     assert(false);
 
   return result;
+}
+
+
+string Product::strVerbal(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const CoverVerbal verbal,
+  const bool symmFlag,
+  const unsigned char canonicalShift) const
+{
+  assert(verbal != VERBAL_GENERAL && verbal != VERBAL_HEURISTIC);
+
+  if (verbal == VERBAL_LENGTH_ONLY)
+  {
+    return Product::strVerbalLengthOnly(
+      sumProfile, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else if (verbal == VERBAL_TOPS_ONLY)
+  {
+    return Product::strVerbalOneTopOnly(
+      sumProfile, 
+      ranksNames, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else if (verbal == VERBAL_LENGTH_AND_ONE_TOP)
+  {
+    return Product::strVerbalLengthAndOneTop(
+      sumProfile, 
+      ranksNames, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else if (verbal == VERBAL_HIGH_TOPS_EQUAL ||
+      verbal == VERBAL_ANY_TOPS_EQUAL)
+  {
+    return Product::strVerbalEqualTops(
+      sumProfile, 
+      ranksNames, 
+      verbal, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else if (verbal == VERBAL_SINGULAR_EITHER ||
+      verbal == VERBAL_SINGULAR_WEST ||
+      verbal == VERBAL_SINGULAR_EAST)
+  {
+    return Product::strVerbalSingular(
+      sumProfile, 
+      ranksNames, 
+      verbal, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else
+  {
+    assert(false);
+    return "";
+  }
 }
 

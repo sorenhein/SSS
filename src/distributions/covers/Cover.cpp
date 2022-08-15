@@ -100,7 +100,6 @@ bool Cover::setByProduct(
       coverSymmetry = EXPLAIN_GENERAL;
   }
   
-  // mcpw = (factoredProductPtr->getComplexity() << 20) / tricks.getWeight();
   mcpw = (Cover::getComplexity() << 20) / tricks.getWeight();
   return true;
 }
@@ -259,16 +258,13 @@ bool Cover::lengthConsistent(const CoverLength& specificLength) const
 }
 
 
-bool Cover::explainable() const
+bool Cover::explainable(const Profile& sumProfile) const
 {
-  assert(factoredProductPtr != nullptr);
-
-  // const size_t numDist = tricks.nonzero();
-  // if (numDist == 1 || (Cover::symmetric() && numDist == 2))
-  if (Cover::singular())
-    return true;
+  const CoverVerbal verbal = Cover::verbal(sumProfile);
+  if (verbal == VERBAL_GENERAL || verbal == VERBAL_HEURISTIC)
+    return false;
   else
-    return factoredProductPtr->explainableNew();
+    return true;
 }
 
 
@@ -427,50 +423,16 @@ string Cover::str(
   assert(factoredProductPtr != nullptr);
   assert(ranksNames.used());
 
-  // All the singulars, and length only
-  const unsigned coverControl = 0x1ff;
-  // const unsigned coverControl = 0x0;
-
   stringstream ss;
-  if (! (verbal & coverControl))
+  if (verbal == VERBAL_GENERAL || verbal == VERBAL_HEURISTIC)
   {
     ss << Cover::strTricksShort() + Cover::strLine();
-  }
-  else if (verbal == VERBAL_GENERAL) // A
-  {
-    // TODO
-    ss << Cover::strTricksShort() + Cover::strLine();
-  }
-  else if (verbal == VERBAL_HEURISTIC) // B
-  {
-    // TODO
-    ss << Cover::strTricksShort() + Cover::strLine();
-  }
-  else if (verbal == VERBAL_LENGTH_ONLY) // C
-  {
-    ss << factoredProductPtr->strVerbalLengthOnly(
-      sumProfile, Cover::symmetric());
-  }
-  else if (verbal == VERBAL_TOPS_ONLY) // D
-  {
-    ss << factoredProductPtr->strVerbalOneTopOnly(
-      sumProfile, ranksNames, Cover::symmetric());
-  }
-  else if (verbal == VERBAL_HIGH_TOPS_EQUAL ||
-      verbal == VERBAL_ANY_TOPS_EQUAL) // EF
-  {
-    ss << factoredProductPtr->strVerbalEqualTops(
-      sumProfile, ranksNames, verbal, Cover::symmetric());
-  }
-  else if (verbal == VERBAL_SINGULAR_EITHER ||
-      verbal == VERBAL_SINGULAR_WEST ||
-      verbal == VERBAL_SINGULAR_EAST) // GHJ
-  {
-    ss << factoredProductPtr->strVerbalSingular(
-      sumProfile, ranksNames, verbal, Cover::symmetric());
   }
   else
-    assert(false);
+  {
+    ss << factoredProductPtr->strVerbal(
+      sumProfile, ranksNames, verbal, Cover::symmetric());
+  }
 
   ss << " [" << +Cover::getComplexity() << 
     "/" << tricks.getWeight() << "]";

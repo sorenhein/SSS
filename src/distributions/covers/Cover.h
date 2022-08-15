@@ -39,8 +39,6 @@ class Cover
     // Micro-complexity per weight unit.
     unsigned mcpw;
 
-    // unsigned char numDist;
-
     // Set if the cover is symmetric without being symmetrized.
     CoverSymmetry coverSymmetry;
 
@@ -119,7 +117,7 @@ class Cover
 
     bool lengthConsistent(const CoverLength& specificLength) const;
 
-    bool explainable() const;
+    bool explainable(const Profile& sumProfile) const;
 
     size_t size() const;
 

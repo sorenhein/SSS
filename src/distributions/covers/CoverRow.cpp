@@ -282,26 +282,28 @@ unsigned char CoverRow::minComplexityAdder(
 }
 
 
-string CoverRow::strEnum() const
+string CoverRow::strEnum(const CoverVerbal verbalIn) const
 {
-  if (verbal == VERBAL_GENERAL)
+  if (verbalIn == VERBAL_GENERAL)
     return "A";
-  else if (verbal == VERBAL_HEURISTIC)
+  else if (verbalIn == VERBAL_HEURISTIC)
     return "B";
-  else if (verbal == VERBAL_LENGTH_ONLY)
+  else if (verbalIn == VERBAL_LENGTH_ONLY)
     return "C";
-  else if (verbal == VERBAL_TOPS_ONLY)
+  else if (verbalIn == VERBAL_TOPS_ONLY)
     return "D";
-  else if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+  else if (verbalIn == VERBAL_LENGTH_AND_ONE_TOP)
     return "E";
-  else if (verbal == VERBAL_ANY_TOPS_EQUAL)
+  else if (verbalIn == VERBAL_HIGH_TOPS_EQUAL)
     return "F";
-  else if (verbal == VERBAL_SINGULAR_EITHER)
+  else if (verbalIn == VERBAL_ANY_TOPS_EQUAL)
     return "G";
-  else if (verbal == VERBAL_SINGULAR_WEST)
+  else if (verbalIn == VERBAL_SINGULAR_EITHER)
     return "H";
-  else if (verbal == VERBAL_SINGULAR_EAST)
+  else if (verbalIn == VERBAL_SINGULAR_WEST)
     return "J";
+  else if (verbalIn == VERBAL_SINGULAR_EAST)
+    return "K";
   else
   {
     assert(false);
@@ -322,16 +324,37 @@ string CoverRow::str(
   const Profile& sumProfile,
   const RanksNames& ranksNames) const
 {
+  bool adjustFlag = (verbal == VERBAL_GENERAL || verbal == VERBAL_HEURISTIC);
+  CoverVerbal verbalAdj;
+
   stringstream ss;
 
-  ss << 
-    "*" << 
-    CoverRow::strEnum() <<
-    " " << 
-    coverPtrs.front()->str(sumProfile, ranksNames, verbal);
+  if (adjustFlag)
+  {
+    verbalAdj = coverPtrs.front()->verbal(sumProfile);
 
-  for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-    ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames, verbal);
+    ss << 
+      "*" << 
+      CoverRow::strEnum(verbalAdj) <<
+      " " << 
+      coverPtrs.front()->str(sumProfile, ranksNames, verbalAdj);
+
+    for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
+      ss << 
+        "; or\n  " << 
+        (* iter)->str(sumProfile, ranksNames, (* iter)->verbal(sumProfile));
+  }
+  else
+  {
+    ss << 
+      "*" << 
+      CoverRow::strEnum(verbal) <<
+      " " << 
+      coverPtrs.front()->str(sumProfile, ranksNames, verbal);
+
+    for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
+      ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames, verbal);
+  }
 
   return ss.str() + "\n";
 }

@@ -137,6 +137,7 @@ string FactoredProduct::strLine() const
 }
 
 
+/*
 string FactoredProduct::strVerbal(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -146,8 +147,10 @@ string FactoredProduct::strVerbal(
   return canonicalPtr->strVerbal(
     sumProfile, ranksNames, simplestOpponent, symmFlag, canonicalShift);
 }
+*/
 
 
+/*
 string FactoredProduct::strVerbalLengthOnly(
   const Profile& sumProfile,
   const bool symmFlag) const
@@ -163,6 +166,16 @@ string FactoredProduct::strVerbalOneTopOnly(
   const bool symmFlag) const
 {
   return canonicalPtr->strVerbalOneTopOnly(
+    sumProfile, ranksNames, symmFlag, canonicalShift);
+}
+
+
+string FactoredProduct::strVerbalLengthAndOneTop(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const bool symmFlag) const
+{
+  return canonicalPtr->strVerbalLengthAndOneTop(
     sumProfile, ranksNames, symmFlag, canonicalShift);
 }
 
@@ -185,6 +198,18 @@ string FactoredProduct::strVerbalSingular(
   const bool symmFlag) const
 {
   return canonicalPtr->strVerbalSingular(
+    sumProfile, ranksNames, verbal, symmFlag, canonicalShift);
+}
+*/
+
+
+string FactoredProduct::strVerbal(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const CoverVerbal verbal,
+  const bool symmFlag) const
+{
+  return canonicalPtr->strVerbal(
     sumProfile, ranksNames, verbal, symmFlag, canonicalShift);
 }
 

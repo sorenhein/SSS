@@ -120,8 +120,10 @@ void CoverStore::add(
     return;
   }
 
-  if (! coverScratch.explainable())
+  if (! coverScratch.explainable(sumProfile))
   {
+    // TODO Not sure how much we're throwing away here for different
+    // values of g?
     // cout << "NONEXPLAINABLE\n";
     // cout << coverScratch.strNumerical() << "\n";
     return;

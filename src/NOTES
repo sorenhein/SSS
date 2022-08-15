@@ -1,37 +1,8 @@
-Comprehensive covers
---------------------
-A       199893
-B        81917
-C       137779  DONE
-D        82513
-E        82864
-F        66599
-G       111040  DONE
-H       229698  DONE
-J       221906  DONE
-Sum    1214209  ca. 50%
-
-
 Text covers
 -----------
-Test for singular first of all
-- activeCount == 0: Single length
-- activeCount == 1: Single rank
-- Rest as usual
-
 Output a "where" line for the actual solutions.
 Only when it is of interest.
-
-Turn off the singular, turn on the singles.
-
-Do the remaining ones.
-- East has 86 and exactly two other cards from AQ4.
-  Potentially "East has exactly A86, Q86 or 864"
-
-- When "has exactly 7", length 1, should be "the seven".
-- Same for "has exactly KQ"?
-- When outputting a whole strategy, group all the West, East and
-  Either lines, and add up their complexities ("or"?)
+Make all texts more human to read.
 
 Reduce the size of CoverStore
 -----------------------------

@@ -48,7 +48,7 @@ class CoverRow
     CoverVerbal verbal;
 
 
-    string strEnum() const;
+    string strEnum(const CoverVerbal verbalIn) const;
 
 
   public:
