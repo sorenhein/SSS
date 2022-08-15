@@ -58,7 +58,6 @@ class Product
     void getWestLengths(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const CoverVerbal verbal,
       const Opponent simplestOpponent,
       const unsigned char canonicalShift,
       unsigned char& xesMin,
@@ -149,10 +148,6 @@ class Product
     CoverVerbal verbal() const;
 
     bool lengthConsistent(const unsigned char specificLength) const;
-
-    bool explainable() const;
-
-    bool explainableNew() const;
 
     Opponent simplestOpponent(
       const Profile& sumProfile,

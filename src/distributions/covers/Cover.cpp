@@ -260,11 +260,8 @@ bool Cover::lengthConsistent(const CoverLength& specificLength) const
 
 bool Cover::explainable(const Profile& sumProfile) const
 {
-  const CoverVerbal verbal = Cover::verbal(sumProfile);
-  if (verbal == VERBAL_GENERAL || verbal == VERBAL_HEURISTIC)
-    return false;
-  else
-    return true;
+  // TODO Potentially again activeCount <= 5 in Product.
+  return (Cover::verbal(sumProfile) != VERBAL_GENERAL);
 }
 
 

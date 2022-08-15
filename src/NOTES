@@ -1,8 +1,10 @@
 Text covers
 -----------
+Product.cpp from about line 700: Improve.
+Make all texts more human to read.
+
 Output a "where" line for the actual solutions.
 Only when it is of interest.
-Make all texts more human to read.
 
 Reduce the size of CoverStore
 -----------------------------

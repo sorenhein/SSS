@@ -101,18 +101,6 @@ bool FactoredProduct::lengthConsistent(
 }
 
 
-bool FactoredProduct::explainable() const
-{
-  return canonicalPtr->explainable();
-}
-
-
-bool FactoredProduct::explainableNew() const
-{
-  return canonicalPtr->explainableNew();
-}
-
-
 Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
 {
   return canonicalPtr->simplestOpponent(sumProfile, canonicalShift);
@@ -135,72 +123,6 @@ string FactoredProduct::strLine() const
 {
   return canonicalPtr->strLine();
 }
-
-
-/*
-string FactoredProduct::strVerbal(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbal(
-    sumProfile, ranksNames, simplestOpponent, symmFlag, canonicalShift);
-}
-*/
-
-
-/*
-string FactoredProduct::strVerbalLengthOnly(
-  const Profile& sumProfile,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbalLengthOnly(
-    sumProfile, symmFlag, canonicalShift);
-}
-
-
-string FactoredProduct::strVerbalOneTopOnly(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbalOneTopOnly(
-    sumProfile, ranksNames, symmFlag, canonicalShift);
-}
-
-
-string FactoredProduct::strVerbalLengthAndOneTop(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbalLengthAndOneTop(
-    sumProfile, ranksNames, symmFlag, canonicalShift);
-}
-
-
-string FactoredProduct::strVerbalEqualTops(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const CoverVerbal verbal,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbalEqualTops(
-    sumProfile, ranksNames, verbal, symmFlag, canonicalShift);
-}
-
-
-string FactoredProduct::strVerbalSingular(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const CoverVerbal verbal,
-  const bool symmFlag) const
-{
-  return canonicalPtr->strVerbalSingular(
-    sumProfile, ranksNames, verbal, symmFlag, canonicalShift);
-}
-*/
 
 
 string FactoredProduct::strVerbal(

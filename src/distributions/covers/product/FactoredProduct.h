@@ -31,34 +31,6 @@ class FactoredProduct
     // Number of unused tops that are elided.
     unsigned char canonicalShift;
 
-    /*
-    string strVerbalLengthOnly(
-      const Profile& sumProfile,
-      const bool symmFlag) const;
-
-    string strVerbalOneTopOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const bool symmFlag) const;
-
-    string strVerbalLengthAndOneTop(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const bool symmFlag) const;
-
-    string strVerbalEqualTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const CoverVerbal verbal,
-      const bool symmFlag) const;
-
-    string strVerbalSingular(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const CoverVerbal verbal,
-      const bool symmFlag) const;
-      */
-
 
   public:
 
@@ -91,9 +63,6 @@ class FactoredProduct
     CoverVerbal verbal() const;
 
     bool lengthConsistent(const unsigned char specificLength) const;
-
-    bool explainable() const;
-    bool explainableNew() const;
 
     Opponent simplestOpponent(const Profile& sumProfile) const;
 

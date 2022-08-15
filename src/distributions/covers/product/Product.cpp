@@ -20,6 +20,8 @@
 #include "../term/TopData.h"
 #include "../term/Xes.h"
 
+#include "../../../ranks/RankNames.h"
+
 #include "../../../utils/Compare.h"
 #include "../../../utils/table.h"
 
@@ -418,46 +420,6 @@ ExplainEqual Product::mostlyEqual() const
 }
 
 
-bool Product::explainable() const
-{
-  // This is a relatively simple version that says whether there is 
-  // a human-readable output.
-  if (activeCount == 0)
-    return true;
-  else if (activeCount == 1)
-    return true;
-  else
-    return false;
-}
-
-
-bool Product::explainableNew() const
-{
-  // This is a fuller version that determines whether a cover should
-  // be kept in the central list at all.
-  // TODO Once we have string outputs of all these, we can get rid
-  // of the simpler explainable().
-  if (activeCount == 0)
-    return true;
-  else if (activeCount == 1)
-  {
-    // Eliminate top range.
-    // TODO I think this is right, but Manual needs them...
-    /*
-    for (auto& top: tops)
-    {
-      if (top.used() && top.getOperator() == COVER_INSIDE_RANGE)
-        return false;
-    }
-    */
-
-    return true;
-  }
-  else
-    return (activeCount <= 5 && Product::mostlyEqual() != EQUAL_NONE);
-}
-
-
 Opponent Product::simplestOpponent(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
@@ -571,14 +533,9 @@ string Product::strLine() const
 }
 
 
-// TMP? TODO
-#include "../../../ranks/RankNames.h"
-
-
 void Product::getWestLengths(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  [[maybe_unused]] const CoverVerbal verbal,
   const Opponent simplestOpponent,
   const unsigned char canonicalShift,
   unsigned char& xesMin,
@@ -627,7 +584,8 @@ void Product::getWestLengths(
   }
 
   Xes xes;
-  xes.set(distLengthLower, distLengthUpper, topsExact, oppsLength, oppsTops);
+  xes.set(distLengthLower, distLengthUpper, topsExact, 
+    oppsLength, oppsTops);
   xes.getRange(simplestOpponent, xesMin, xesMax);
 
   xesAvailable = oppsTops - topsExact;
@@ -713,10 +671,6 @@ string Product::strVerbalOneTopOnly(
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-if (activeCount != 1)
-{
-  cout << Product::strLine() << endl;
-}
   assert(activeCount == 1);
 
   const Opponent simplestOpponent =
@@ -737,6 +691,7 @@ if (activeCount != 1)
       simplestOpponent, 
       symmFlag);
   }
+
   assert(false);
   return "";
 }
@@ -804,8 +759,6 @@ string Product::strVerbalLengthAndOneTop(
         sumProfile.length(), 
         simplestOpponent);
   }
-
-
 }
 
 
@@ -848,7 +801,6 @@ string Product::strVerbalEqualTops(
   Product::getWestLengths(
     sumProfile, 
     ranksNames, 
-    verbal,
     simplestOpponent,
     canonicalShift,
     xesMin,
@@ -928,7 +880,6 @@ string Product::strVerbalSingular(
   Product::getWestLengths(
     sumProfile, 
     ranksNames, 
-    verbal,
     simplestOpponent,
     canonicalShift,
     xesMin,
