@@ -345,6 +345,13 @@ void CoverTableau::project(const unsigned char minCompAdder)
 }
 
 
+void CoverTableau::setVerbal(const Profile& sumProfile)
+{
+  for (auto& row: rows)
+    row.setVerbal(sumProfile);
+}
+
+
 void CoverTableau::sortVerbally()
 {
   rows.sort([](const CoverRow& row1, const CoverRow& row2)

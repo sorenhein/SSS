@@ -589,6 +589,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
+    solution.setVerbal(sumProfile);
     tableauCache.store(tricks, solution);
     return;
   }
@@ -598,6 +599,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
+    solution.setVerbal(sumProfile);
     tableauCache.store(tricks, solution);
     return;
   }
@@ -758,6 +760,7 @@ void Covers::explainManually(
   Covers::explainTemplate<RowStore, CoverRow>(tricks,
     explain, rowStore, false, 50000, 25000, stack, solution);
 
+  solution.setVerbal(sumProfile);
   tableauRowCache.store(tricks, solution);
 }
 

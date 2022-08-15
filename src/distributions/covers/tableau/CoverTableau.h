@@ -137,6 +137,8 @@ class CoverTableau
 
     void project(const unsigned char minCompAdder);
 
+    void setVerbal(const Profile& sumProfile);
+
     void sortVerbally();
 
     // This takes projections into account -- see code.
