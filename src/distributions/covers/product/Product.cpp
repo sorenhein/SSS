@@ -20,6 +20,7 @@
 #include "../term/TopData.h"
 #include "../term/Xes.h"
 
+#include "../../../ranks/RanksNames.h"
 #include "../../../ranks/RankNames.h"
 
 #include "../../../utils/Compare.h"
@@ -583,6 +584,16 @@ void Product::getWestLengths(
     oppsTops += topData.value;
   }
 
+/*
+cout << "Product " << Product::strLine() << endl;
+cout << "Xes: sumProfile " << sumProfile.strLine() << endl;
+cout << "distLength " << +distLengthLower << " to " <<
+  +distLengthUpper << endl;
+cout << "topsExact " << +topsExact << endl;
+cout << "oppsLength " << +oppsLength << endl;
+cout << "oppsTops " << +oppsTops << endl;
+*/
+
   Xes xes;
   xes.set(distLengthLower, distLengthUpper, topsExact, 
     oppsLength, oppsTops);
@@ -590,6 +601,8 @@ void Product::getWestLengths(
 
   xesAvailable = oppsTops - topsExact;
 
+// cout << "xes " << +xesMin << " to " << +xesMax << " avail " <<
+  // +xesAvailable << endl;
   if (! length.used())
     assert(xesMin == 0);
 }
@@ -861,17 +874,17 @@ string Product::strVerbalSingular(
   if (length.getOperator() != COVER_EQUAL)
     cout << "UNEXPECTED: " << Product::strLine() << endl;
 
-  string result;
+  string start;
   if (symmFlag)
-    result = "Either opponent";
+    start = "Either opponent";
   else if (simplestOpponent == OPP_WEST)
-    result = "West";
+    start = "West";
   else
-    result = "East";
+    start = "East";
 
-  result += " has exactly ";
+  start += " has exactly ";
 
-  result += Product::strExactTops(sumProfile, ranksNames, 
+  string result = Product::strExactTops(sumProfile, ranksNames, 
     simplestOpponent, canonicalShift);
 
   // Actual maximum number of x's for the sumProfile and the Product.
@@ -889,19 +902,101 @@ string Product::strVerbalSingular(
   // TODO This part is quite hideous and should go somewhere else,
   // possibly in Top.cpp
 
-  TopData topData;
-  sumProfile.getTopData(canonicalShift, ranksNames, topData);
-  const string str 
-    = topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
-
-  if (xesMin == xesAvailable && xesMax == xesAvailable)
-    result += str;
-  else if (xesMin == xesMax)
-    result += topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).substr(0, xesMin);
-  else
+  if (xesMin == 0)
+  {
+    // Nothing to add
+  }
+  else if (canonicalShift > 1)
+  {
+    cout << "Product " << Product::strLine() << endl;
+    cout << "length lower " << +length.lower() << endl;
+    cout << "result size " << result.size() << endl;
+    cout << "start " << start << endl;
+    cout << "result " << result << endl;
+    cout << "xes " << +xesMin << " to " << +xesMax << endl;
     assert(false);
+  }
+  else if (canonicalShift == 1 &&
+      symmFlag && 
+      xesMin == 1 &&
+      2 * length.lower() == sumProfile.length())
+  {
+    // TODO
+    // This is quite a special case and should perhaps be avoided
+    // when generating covers: HT / H8 or H8 / HT can both be
+    // described as length 2 with exactly 1 top (symmetrical).
+    // If we go through the normal expansion, we would say that
+    // we are missing one card, but we have two choices (T and 8).
+    // Pick the higher one.
+    TopData topData;
+    sumProfile.getTopData(canonicalShift, ranksNames, topData);
 
-  return result;
+    // TODO Use 'x' not the actual name?  Fix RankNames?
+    const string str = 
+      topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+
+    result += str.substr(0, 1);
+  }
+  else if (xesMin == xesAvailable)
+  {
+    TopData topData;
+    unsigned char topNo;
+
+    for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
+    {
+      // TODO Pre- or postpend! A mess
+      if (tops[topNo].used())
+        continue;
+
+      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+      result += 
+        topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+    }
+  }
+  else
+  {
+    if (canonicalShift == 0)
+    {
+      // Use the lowest rank.
+      TopData topData;
+      sumProfile.getTopData(canonicalShift, ranksNames, topData);
+      const string str 
+        = topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+
+      assert(xesMin <= str.size());
+      result += str.substr(0, xesMin);
+    }
+    else
+    {
+      cout << "Product " << Product::strLine() << endl;
+      cout << "length lower " << +length.lower() << endl;
+      cout << "result size " << result.size() << endl;
+      cout << "start " << start << endl;
+      cout << "result " << result << endl;
+      cout << "xes " << +xesMin << " to " << +xesMax << endl;
+      assert(false);
+    }
+  }
+
+
+// cout << "result " << result << endl;
+
+if ((simplestOpponent != OPP_EAST && length.lower() != result.size()) ||
+    (simplestOpponent == OPP_EAST && 
+      static_cast<unsigned char>(sumProfile.length() - length.lower()) != result.size()))
+{
+  cout << "Product " << Product::strLine() << endl;
+  cout << "length lower " << +length.lower() << endl;
+  cout << "result size " << result.size() << endl;
+  cout << "start " << start << endl;
+  cout << "result " << result << endl;
+  cout << "xes " << +xesMin << " to " << +xesMax << endl;
+  cout << "xes avail " << +xesAvailable << endl;
+  cout << "canonicalShift " << +canonicalShift << endl;
+  assert(length.lower() == result.size());
+}
+
+  return start + result;
 }
 
 

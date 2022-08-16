@@ -6,6 +6,9 @@ Make all texts more human to read.
 Output a "where" line for the actual solutions.
 Only when it is of interest.
 
+Is it always right only to include in CoverStore covers that are 
+explainable?
+
 Reduce the size of CoverStore
 -----------------------------
 Can skip Top/Any as range (completely) for g = 4, except that 
