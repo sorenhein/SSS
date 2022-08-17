@@ -48,7 +48,8 @@ class RankNames
 
     void completeOpps(
       size_t& noAbs,
-      size_t& noRel);
+      size_t& noRel,
+      const size_t index);
 
     void completeNS();
 

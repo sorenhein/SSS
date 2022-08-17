@@ -464,6 +464,43 @@ Opponent Product::simplestOpponent(
 }
 
 
+Opponent Product::simplestSingular(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  assert(length.used());
+  assert(length.getOperator() == COVER_EQUAL);
+  const auto lWest = length.lower();
+  const auto lSum = sumProfile.length();
+  
+  // Pick a side that is 2+ cards shorter than the other.
+  if (lWest + 1 < lSum - lWest)
+    return OPP_WEST;
+  else if (lSum - lWest + 1 < lWest)
+    return OPP_EAST;
+
+  const unsigned char s = static_cast<unsigned char>(tops.size());
+  assert(static_cast<unsigned>(s + canonicalShift) == sumProfile.size());
+
+  // Start from the highest top.
+  for (unsigned char i = s; --i > 0; )
+  {
+    const Opponent lTop = 
+      tops[i].simplestOpponent(sumProfile[i + canonicalShift]);
+
+    if (lTop == OPP_WEST)
+      return OPP_WEST;
+    else if (lTop == OPP_EAST)
+      return OPP_EAST;
+  }
+
+  if (lWest <= lSum - lWest)
+    return OPP_WEST;
+  else
+    return OPP_EAST;
+}
+
+
 CompareType Product::presentOrder(const Product& product2) const
 {
   const unsigned char ac1 = activeCount + 
@@ -930,14 +967,13 @@ string Product::strVerbalSingular(
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-  Opponent simplestOpponent;
-
+  Opponent simplestLabel;
   if (verbal == VERBAL_SINGULAR_EITHER)
-    simplestOpponent = OPP_EITHER;
-  else if (verbal ==VERBAL_SINGULAR_WEST)
-    simplestOpponent = OPP_WEST;
+    simplestLabel = OPP_EITHER;
+  else if (verbal == VERBAL_SINGULAR_WEST)
+    simplestLabel = OPP_WEST;
   else
-    simplestOpponent = OPP_EAST;
+    simplestLabel = OPP_EAST;
 
   if (activeCount == 0)
   {
@@ -947,7 +983,7 @@ string Product::strVerbalSingular(
     // symmetric and covers two distributions.
     return length.strLength(
       sumProfile.length(), 
-      simplestOpponent, 
+      simplestLabel, 
       symmFlag);
   }
 
@@ -957,7 +993,12 @@ string Product::strVerbalSingular(
   if (length.getOperator() != COVER_EQUAL)
     cout << "UNEXPECTED: " << Product::strLine() << endl;
 
-  string start = "{len " + to_string(sumProfile.length()) + "} ";
+  const Opponent simplestOpponent = 
+    Product::simplestSingular(sumProfile, canonicalShift);
+
+  // string start = "{len " + to_string(sumProfile.length()) + "} ";
+  string start = "";
+
   if (symmFlag)
     start += "Either opponent";
   else if (simplestOpponent == OPP_WEST)
@@ -965,7 +1006,28 @@ string Product::strVerbalSingular(
   else
     start += "East";
 
-  start += " has exactly ";
+  start += " has ";
+
+  if (! length.used())
+    start += "exactly ";
+  else if (simplestOpponent == OPP_EAST)
+  {
+    if (sumProfile.length() - length.lower() == 1)
+      start += "the singleton ";
+    else if (sumProfile.length() - length.lower() == 2)
+      start += "the doubleton ";
+    else
+      start += "exactly ";
+  }
+  else
+  {
+    if (length.lower() == 1)
+      start += "the singleton ";
+    else if (length.lower() == 2)
+      start += "the doubleton ";
+    else
+      start += "exactly ";
+  }
 
   // TODO This part is quite hideous and should go somewhere else,
   // possibly in Top.cpp
@@ -1041,7 +1103,7 @@ string Product::strVerbalSingular(
       // This code picks 4 which is OK, but perhaps A is easier
       // to comprehend.
       const string str = 
-        topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+        topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT);
 
       result += str.substr(0, actualLength - actualTops);
     }
@@ -1070,7 +1132,7 @@ string Product::strVerbalSingular(
       TopData topData;
       sumProfile.getTopData(canonicalShift, ranksNames, topData);
       const string str = 
-        topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+        topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT);
 
       const unsigned char gap = actualLength - actualTops;
       if (gap <= str.size())
@@ -1088,7 +1150,7 @@ string Product::strVerbalSingular(
 
           sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
           const string str2 = 
-            topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
+            topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT);
 
           assert(gap <= str2.size());
           result += str2.substr(gap);

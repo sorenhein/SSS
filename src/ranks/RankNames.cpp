@@ -95,7 +95,8 @@ void RankNames::add(
 
 void RankNames::completeOpps(
   size_t& noAbs,
-  size_t& noRel)
+  size_t& noRel,
+  [[maybe_unused]] const size_t index)
 {
   assert(count > 0);
   if (count == 1)
@@ -107,7 +108,8 @@ void RankNames::completeOpps(
   {
     assert(noAbs < CARD_ABSOLUTE_NAMES.size());
     const string& h0 = CARD_ABSOLUTE_NAMES[noAbs][0];
-    const string& h2 = CARD_ABSOLUTE_NAMES[noAbs][2];
+    // const string& h2 = CARD_ABSOLUTE_NAMES[noAbs][2];
+    const string h2 = (index <= 1 ? "x" : CARD_ABSOLUTE_NAMES[noAbs][2]);
 
     names[RANKNAME_ABSOLUTE_FULL] = h0;
     names[RANKNAME_ABSOLUTE_SHORT] = h2;
@@ -124,6 +126,7 @@ void RankNames::completeOpps(
   assert(noRel < CARD_RELATIVE_NAMES.size());
   const string& hr = CARD_RELATIVE_NAMES[noRel];
 
+  // TODO Something more intelligent to repeat: string(...).
   names[RANKNAME_RELATIVE_SHORT] = "";
   for (size_t i = 0; i < count; i++)
     names[RANKNAME_RELATIVE_SHORT] += hr;

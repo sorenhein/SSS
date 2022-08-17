@@ -79,11 +79,11 @@ assert(itop == oppsRanks);
   size_t noAbs = 0; // Only the opponent holding with two+ cards
   size_t noRel = 0; // All opponent holdings;
 
-  for (auto i = names.size(); i-- > 0; )
+  for (size_t i = names.size(); i-- > 0; )
   {
     auto& rnames = names[i];
     if (rnames.side() == SIDE_OPPS)
-      rnames.completeOpps(noAbs, noRel);
+      rnames.completeOpps(noAbs, noRel, i);
     else
       rnames.completeNS();
   }

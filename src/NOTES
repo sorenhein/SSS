@@ -9,15 +9,13 @@ Only when it is of interest.
 Is it always right only to include in CoverStore covers that are 
 explainable?
 
-Singulars:
-* 10/43370
-  If symmetric, can still output either from West or East,
-  but just say "Either opponent"
-* When deciding simplestOpponent
-  - Singleton always wins
-  - Shortest always wins if the other is >= 2 longer
-  - If within 1, pick the one with dominant high cards
+11/16967, QT84.  Why do we get "East has the doubleton T8" and not
+"West has the doubleton Q4"?
 
+Check the complexity/count score.  1 if exact, > 1 if HhGgx...
+Taking into account symmetry (Either) of course.
+
+Combine within say J: All Wests singular combined onto one line.
 
 
 Reduce the size of CoverStore
