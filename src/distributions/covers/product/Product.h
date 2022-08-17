@@ -62,13 +62,26 @@ class Product
       const unsigned char canonicalShift,
       unsigned char& xesMin,
       unsigned char& xesMax,
-      unsigned char& xesAvailable) const;
+      unsigned char& xesHidden,
+      unsigned char& xesAvailable,
+      unsigned char& topsExact,
+      unsigned char& topsAvailable) const;
+
+    void characterize(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      unsigned char& westActualTops,
+      unsigned char& eastActualTops,
+      unsigned char& hidden,
+      unsigned char& unsetTops) const;
 
     string strExactTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const Opponent simplestOpponent,
-      const unsigned char canonicalShift) const;
+      const unsigned char canonicalShift,
+      const bool skipUnusedFlag) const;
 
     string strAvailableTops(
       const Profile& sumProfile,
