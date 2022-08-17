@@ -9,6 +9,17 @@ Only when it is of interest.
 Is it always right only to include in CoverStore covers that are 
 explainable?
 
+Singulars:
+* 10/43370
+  If symmetric, can still output either from West or East,
+  but just say "Either opponent"
+* When deciding simplestOpponent
+  - Singleton always wins
+  - Shortest always wins if the other is >= 2 longer
+  - If within 1, pick the one with dominant high cards
+
+
+
 Reduce the size of CoverStore
 -----------------------------
 Can skip Top/Any as range (completely) for g = 4, except that 

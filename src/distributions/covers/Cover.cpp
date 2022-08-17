@@ -338,17 +338,15 @@ CoverVerbal Cover::verbal(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
 
-  if (Cover::singular())
-  {
-    if (Cover::symmetric())
-      return VERBAL_SINGULAR_EITHER;
-    else if (factoredProductPtr->simplestOpponent(sumProfile) == OPP_WEST)
-      return VERBAL_SINGULAR_WEST;
-    else
-      return VERBAL_SINGULAR_EAST;
-  }
-  else 
-    return factoredProductPtr->verbal();
+  const CoverVerbal fverbal = factoredProductPtr->verbal();
+  if (fverbal == VERBAL_LENGTH_ONLY || ! Cover::singular())
+    return fverbal;
+  else if (Cover::symmetric())
+    return VERBAL_SINGULAR_EITHER;
+  else if (factoredProductPtr->simplestOpponent(sumProfile) == OPP_WEST)
+    return VERBAL_SINGULAR_WEST;
+  else
+    return VERBAL_SINGULAR_EAST;
 }
 
 
