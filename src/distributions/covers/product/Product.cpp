@@ -425,6 +425,9 @@ Opponent Product::simplestOpponent(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
 {
+  if (length.used() && length.getOperator() == COVER_EQUAL)
+    return Product::simplestSingular(sumProfile, canonicalShift);
+
   // We want to express a Product in terms that make as much
   // intuitive sense as possible.  I think this tends to be in
   // terms of shortness.
@@ -485,6 +488,7 @@ Opponent Product::simplestSingular(
   // Start from the highest top.
   for (unsigned char i = s; --i > 0; )
   {
+    // TODO if tops[i].used() ??
     const Opponent lTop = 
       tops[i].simplestOpponent(sumProfile[i + canonicalShift]);
 
@@ -580,6 +584,10 @@ void Product::characterize(
   unsigned char& hidden,
   unsigned char& unsetTops) const
 {
+  // TODO
+  // Don't really need ranksNames.  Instead look up in sumProfile
+  // directly.
+  // Don't really need west and east, just the combined one.
   westActualTops = 0;
   eastActualTops = 0;
   hidden = 0;
@@ -967,13 +975,13 @@ string Product::strVerbalSingular(
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-  Opponent simplestLabel;
+  Opponent simplestOpponent;
   if (verbal == VERBAL_SINGULAR_EITHER)
-    simplestLabel = OPP_EITHER;
+    simplestOpponent = OPP_EITHER;
   else if (verbal == VERBAL_SINGULAR_WEST)
-    simplestLabel = OPP_WEST;
+    simplestOpponent = OPP_WEST;
   else
-    simplestLabel = OPP_EAST;
+    simplestOpponent = OPP_EAST;
 
   if (activeCount == 0)
   {
@@ -983,7 +991,7 @@ string Product::strVerbalSingular(
     // symmetric and covers two distributions.
     return length.strLength(
       sumProfile.length(), 
-      simplestLabel, 
+      simplestOpponent, 
       symmFlag);
   }
 
@@ -993,8 +1001,24 @@ string Product::strVerbalSingular(
   if (length.getOperator() != COVER_EQUAL)
     cout << "UNEXPECTED: " << Product::strLine() << endl;
 
-  const Opponent simplestOpponent = 
+  /*
+  const Opponent simplestOpponent2 = 
     Product::simplestSingular(sumProfile, canonicalShift);
+
+  if (simplestOpponent2 != simplestOpponent)
+  {
+    if (! symmFlag)
+    {
+      cout << "opp2 " << simplestOpponent2 << endl;
+      cout << "opp  " << simplestOpponent << endl;
+      assert(simplestOpponent2 == simplestOpponent);
+    }
+    else
+    {
+      assert(simplestOpponent == OPP_EITHER);
+    }
+  }
+  */
 
   // string start = "{len " + to_string(sumProfile.length()) + "} ";
   string start = "";

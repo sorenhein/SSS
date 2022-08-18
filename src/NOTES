@@ -5,9 +5,19 @@ Make all texts more human to read.
 
 Output a "where" line for the actual solutions.
 Only when it is of interest.
+Honor codes used in ranks and plays could be consistent with covers.
+HH only used down to JT, then hh instead.
 
 Is it always right only to include in CoverStore covers that are 
 explainable?
+
+Eliminate the special cases in strVerbalSingular by avoiding them
+in the first place (duplicates?).  Probably they are symmetric
+without being the special kind of symmetrizable that we recognize?
+
+In strVerbalSingular, could first derive a new Product and a side
+and a symmFlag.  Only then in a second step do we output text.
+At that point we can then output stuff.
 
 11/16967, QT84.  Why do we get "East has the doubleton T8" and not
 "West has the doubleton Q4"?
@@ -16,6 +26,36 @@ Check the complexity/count score.  1 if exact, > 1 if HhGgx...
 Taking into account symmetry (Either) of course.
 
 Combine within say J: All Wests singular combined onto one line.
+
+11/170822, why not AKQx ?  Length is 4-3
+     17 *H Either opponent has exactly 876 [3/2]
+
+Check #d == 1 if not symmetrical and no x,
+#d == 2 if symmetrical and no x,
+>= 2 if asymmetrical and no x/h/...
+>= 4 if asymmetrical and x/h/...
+
+Check complexity == 3
+
+Remove [...] and see count of different covers
+
+11/50999, at least 6x ?
+
+a singleton honor
+   4056 *H Either opponent has the singleton H [3/4]
+
+the singleton jack
+   5555 *H Either opponent has the singleton J [3/2]
+
+11/161711, xx? Actually also AKJT East?
+     20 *J West has the doubleton 54 [3/1]
+
+11/159158, West has exactly AKTx
+      8 *K East has exactly 876 [3/1]
+
+11/135440, also AQT9 West
+    171 *K East has the doubleton 54 [3/1]
+
 
 
 Reduce the size of CoverStore

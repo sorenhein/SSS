@@ -65,6 +65,7 @@ class FactoredProduct
     bool lengthConsistent(const unsigned char specificLength) const;
 
     Opponent simplestOpponent(const Profile& sumProfile) const;
+    Opponent simplestSingular(const Profile& sumProfile) const;
 
     CompareType presentOrder(const FactoredProduct& fp2) const;
 
