@@ -136,7 +136,8 @@ void CoverStore::add(
   if (symmetricFlag)
   {
 cout << "Already symmetric\n";
-cout << coverScratch.strLine() << endl;
+cout << "sum profile " << sumProfile.strLine();
+cout << "cover " << coverScratch.strLine() << "\n\n";
     // Nothing to symmetrize.
     return;
   }
