@@ -1,5 +1,6 @@
 * In Heuristics, there can be nested lengths, so 2-4 and 3-3 additionally!
   11/159468
+* In CoverStore move the many calls into one Cover call?
 
 Text covers
 -----------
@@ -14,13 +15,10 @@ HH only used down to JT, then hh instead.
 Is it always right only to include in CoverStore covers that are 
 explainable?
 
-Eliminate the special cases in strVerbalSingular by avoiding them
-in the first place (duplicates?).  Probably they are symmetric
-without being the special kind of symmetrizable that we recognize?
-
 In strVerbalSingular, could first derive a new Product and a side
 and a symmFlag.  Only then in a second step do we output text.
 At that point we can then output stuff.
+Or two products, and only then decide on simplestOpponent.
 
 11/16967, QT84.  Why do we get "East has the doubleton T8" and not
 "West has the doubleton Q4"?

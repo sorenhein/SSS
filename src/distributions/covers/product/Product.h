@@ -70,11 +70,13 @@ class Product
     void characterize(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
       const unsigned char canonicalShift,
-      unsigned char& westActualTops,
-      unsigned char& eastActualTops,
-      unsigned char& hidden,
-      unsigned char& unsetTops) const;
+      unsigned char& actualTops,
+      unsigned char& otherActualTops,
+      unsigned char& actualLength,
+      unsigned char& otherActualLength,
+      unsigned char& hidden) const;
 
     string strExactTops(
       const Profile& sumProfile,
