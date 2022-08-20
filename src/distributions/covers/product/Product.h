@@ -156,6 +156,10 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
+    bool discardSymmetric(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
     CoverComposition composition() const;
 
     CoverVerbal verbal() const;

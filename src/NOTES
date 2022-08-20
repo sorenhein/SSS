@@ -1,3 +1,6 @@
+* In Heuristics, there can be nested lengths, so 2-4 and 3-3 additionally!
+  11/159468
+
 Text covers
 -----------
 Product.cpp from about line 700: Improve.

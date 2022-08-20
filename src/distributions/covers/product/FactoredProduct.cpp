@@ -46,6 +46,12 @@ bool FactoredProduct::includes(const Profile& distProfile) const
 }
 
 
+bool FactoredProduct::symmetrizable(const Profile& sumProfile) const
+{
+  return canonicalPtr->symmetrizable(sumProfile, canonicalShift);
+}
+
+
 unsigned char FactoredProduct::getComplexity() const
 {
   return canonicalPtr->getComplexity();
@@ -76,9 +82,9 @@ unsigned char FactoredProduct::minimumByTops(
 }
 
 
-bool FactoredProduct::symmetrizable(const Profile& sumProfile) const
+bool FactoredProduct::discardSymmetric(const Profile& sumProfile) const
 {
-  return canonicalPtr->symmetrizable(sumProfile, canonicalShift);
+  return canonicalPtr->discardSymmetric(sumProfile, canonicalShift);
 }
 
 

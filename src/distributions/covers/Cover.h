@@ -133,6 +133,8 @@ class Cover
 
     unsigned char minComplexityAdder(const unsigned resWeight) const;
 
+    bool discardSymmetric(const Profile& sumProfile) const;
+
     CoverVerbal verbal(const Profile& sumProfile) const;
 
     string strHeader() const;

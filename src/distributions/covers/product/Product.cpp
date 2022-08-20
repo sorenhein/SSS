@@ -323,6 +323,32 @@ assert(tops.size() + canonicalShift == sumProfile.size());
 }
 
 
+bool Product::discardSymmetric(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  // Some singular covers end up duplicated in such a way that it
+  // complicates the string output.  For example, with HHT8 one symmetric
+  // cover may be length 2, exactly 1 H and one 1 T.  But another
+  // symmetric cover mab be length 2, exactly 1 H.  The second card is
+  // unspecified and may be 8 or T, but the symmetry makes the covers
+  // the same.  In general this can happen when there are exactly two
+  // top slots left open (the bottom one which is always unset, and
+  // one other), and there the lengths are balanced.
+  if (! length.used() ||
+      length.getOperator() != COVER_EQUAL ||
+      2 * length.lower() != sumProfile.length())
+    return false;
+  else if (canonicalShift >= 2 || activeCount == 0)
+    return false;
+  else if (activeCount + 2 != 
+      static_cast<unsigned char>(tops.size() + canonicalShift))
+    return false;
+  else
+    return true;
+}
+
+
 CoverComposition Product::composition() const
 {
   const bool lengthFlag = length.used();
@@ -1181,6 +1207,11 @@ string Product::strVerbalSingular(
           break;
         }
       }
+cout << "ACTUAL\n";
+      cout << "\nProduct      " << Product::strLine() << endl;
+      cout << "sum profile " << sumProfile.strLine() << endl;
+      cout << "canonicalShift   " << +canonicalShift << "\n";
+      cout << "result           " << result << "\n";
     }
     else
     {

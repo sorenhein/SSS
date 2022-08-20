@@ -129,15 +129,24 @@ void CoverStore::add(
     return;
   }
 
+  if (symmetricFlag &&
+      coverScratch.discardSymmetric(sumProfile))
+  {
+cout << "Discard\n";
+cout << "sum profile " << sumProfile.strLine();
+cout << "cover " << coverScratch.strLine() << "\n\n";
+    return;
+  }
+
   // Store it in "store".
   auto result = store.insert(coverScratch);
   assert(result.first != store.end());
 
   if (symmetricFlag)
   {
-cout << "Already symmetric\n";
-cout << "sum profile " << sumProfile.strLine();
-cout << "cover " << coverScratch.strLine() << "\n\n";
+// cout << "Already symmetric\n";
+// cout << "sum profile " << sumProfile.strLine();
+// cout << "cover " << coverScratch.strLine() << "\n\n";
     // Nothing to symmetrize.
     return;
   }

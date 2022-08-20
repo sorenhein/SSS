@@ -334,6 +334,15 @@ unsigned char Cover::minComplexityAdder(const unsigned resWeight) const
 }
 
 
+bool Cover::discardSymmetric(const Profile& sumProfile) const
+{
+  // See comment in Product.
+  assert(factoredProductPtr != nullptr);
+  return (Cover::singular() && 
+    factoredProductPtr->discardSymmetric(sumProfile));
+}
+
+
 CoverVerbal Cover::verbal(const Profile& sumProfile) const
 {
   assert(factoredProductPtr != nullptr);
