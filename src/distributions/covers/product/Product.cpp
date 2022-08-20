@@ -1388,9 +1388,7 @@ string Product::strVerbal(
       symmFlag, 
       canonicalShift);
   }
-  else if (verbal == VERBAL_SINGULAR_EITHER ||
-      verbal == VERBAL_SINGULAR_WEST ||
-      verbal == VERBAL_SINGULAR_EAST)
+  else if (verbal == VERBAL_SINGULAR)
   {
     return Product::strVerbalSingular(
       sumProfile, 

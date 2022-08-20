@@ -1,9 +1,6 @@
-Just one type of SINGULAR, as we detect the side later anyway.
-
 * In Heuristics, there can be nested lengths, so 2-4 and 3-3 additionally!
   11/159468
 * In CoverStore move the many calls into one Cover call?
-
 
 Text covers
 -----------

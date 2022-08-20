@@ -120,7 +120,7 @@ void CoverStore::add(
     return;
   }
 
-  if (! coverScratch.explainable(sumProfile))
+  if (! coverScratch.explainable())
   {
     // TODO Not sure how much we're throwing away here for different
     // values of g?

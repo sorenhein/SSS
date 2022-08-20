@@ -130,12 +130,12 @@ void CoverRow::add(
 }
 
 
-void CoverRow::setVerbal(const Profile& sumProfile)
+void CoverRow::setVerbal()
 {
   if (coverPtrs.size() != 1)
     verbal = VERBAL_GENERAL;
   else
-    verbal = coverPtrs.front()->verbal(sumProfile);
+    verbal = coverPtrs.front()->verbal();
 }
 
 
@@ -298,12 +298,8 @@ string CoverRow::strEnum(const CoverVerbal verbalIn) const
     return "F";
   else if (verbalIn == VERBAL_ANY_TOPS_EQUAL)
     return "G";
-  else if (verbalIn == VERBAL_SINGULAR_EITHER)
+  else if (verbalIn == VERBAL_SINGULAR)
     return "H";
-  else if (verbalIn == VERBAL_SINGULAR_WEST)
-    return "J";
-  else if (verbalIn == VERBAL_SINGULAR_EAST)
-    return "K";
   else
   {
     assert(false);
@@ -331,7 +327,7 @@ string CoverRow::str(
 
   if (adjustFlag)
   {
-    verbalAdj = coverPtrs.front()->verbal(sumProfile);
+    verbalAdj = coverPtrs.front()->verbal();
 
     ss << 
       "*" << 
@@ -342,7 +338,7 @@ string CoverRow::str(
     for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
       ss << 
         "; or\n  " << 
-        (* iter)->str(sumProfile, ranksNames, (* iter)->verbal(sumProfile));
+        (* iter)->str(sumProfile, ranksNames, (* iter)->verbal());
   }
   else
   {

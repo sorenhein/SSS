@@ -84,7 +84,7 @@ class CoverRow
       Tricks& residuals,
       const CoverVerbal verbalIn);
 
-    void setVerbal(const Profile& sumProfile);
+    void setVerbal();
 
     void updateStats(
       ProductStats& productStats,

@@ -258,10 +258,10 @@ bool Cover::lengthConsistent(const CoverLength& specificLength) const
 }
 
 
-bool Cover::explainable(const Profile& sumProfile) const
+bool Cover::explainable() const
 {
   // TODO Potentially again activeCount <= 5 in Product.
-  return (Cover::verbal(sumProfile) != VERBAL_GENERAL);
+  return (Cover::verbal() != VERBAL_GENERAL);
 }
 
 
@@ -343,19 +343,15 @@ bool Cover::discardSymmetric(const Profile& sumProfile) const
 }
 
 
-CoverVerbal Cover::verbal(const Profile& sumProfile) const
+CoverVerbal Cover::verbal() const
 {
   assert(factoredProductPtr != nullptr);
 
   const CoverVerbal fverbal = factoredProductPtr->verbal();
   if (fverbal == VERBAL_LENGTH_ONLY || ! Cover::singular())
     return fverbal;
-  else if (Cover::symmetric())
-    return VERBAL_SINGULAR_EITHER;
-  else if (factoredProductPtr->simplestSingular(sumProfile) == OPP_WEST)
-    return VERBAL_SINGULAR_WEST;
   else
-    return VERBAL_SINGULAR_EAST;
+    return VERBAL_SINGULAR;
 }
 
 

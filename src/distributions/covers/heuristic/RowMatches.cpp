@@ -182,7 +182,6 @@ cout << "Potentials " << psizeGreat << ", " << psizeGood << endl;
 void RowMatches::incorporateLengths(
   const CoverStore& coverStore,
   const vector<unsigned char>& cases,
-  const Profile& sumProfile,
   vector<Tricks>& tricksOfLength,
   Explain& explain)
 {
@@ -244,7 +243,7 @@ void RowMatches::incorporateLengths(
       CoverRow rowTmp;
       rowTmp.resize(numDist);
       rowTmp.add(partial.cover(), tricks, 
-        partial.cover().verbal(sumProfile));
+        partial.cover().verbal());
 
       RowMatches::transfer(rowTmp, lenEW, OPP_EAST, factor);
     }
@@ -255,7 +254,6 @@ void RowMatches::incorporateLengths(
 bool RowMatches::incorporateTops(
   Covers& covers,
   const vector<Tricks>& tricksWithinLength,
-  const Profile& sumProfile,
   Explain& explain)
 {
   // Add the top covers for a given length.
@@ -313,7 +311,7 @@ timersStrat[47].stop();
 timersStrat[48].start();
     for (auto& row: solution.rows)
     {
-      row.setVerbal(sumProfile);
+      row.setVerbal();
       RowMatches::transfer(row, lenEW, OPP_EAST);
     }
 timersStrat[48].stop();
@@ -363,7 +361,6 @@ void RowMatches::symmetrize(const Profile& sumProfile)
 void RowMatches::makeSolution(
   const CoverStore& coverStore,
   const vector<unsigned char>& cases,
-  const Profile& sumProfile,
   Explain& explain,
   CoverTableau& solution)
 {
@@ -390,7 +387,7 @@ void RowMatches::makeSolution(
         assert(false);
       }
 
-      solution.addRow(partial.cover(), partial.cover().verbal(sumProfile));
+      solution.addRow(partial.cover(), partial.cover().verbal());
     }
   }
 }

@@ -449,7 +449,7 @@ void Covers::guessStart(
   heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
 // cout << "heuristic2\n" << heuristic2.str();
 
-  heuristic2.combine(heuristic1, sumProfile, tricks, cases, partialSolution);
+  heuristic2.combine(heuristic1, tricks, cases, partialSolution);
 // cout << "heuristic2 combined\n" << heuristic2.str();
 }
 
@@ -470,7 +470,7 @@ void Covers::guessStarts(
   heuristic2.findHeaviestN(coverStore, tricks, cases, explain, numHeaviest);
 // cout << "heuristic2\n" << heuristic2.str();
 
-  heuristic2.combine(heuristic1, sumProfile, tricks, cases, partialSolutions);
+  heuristic2.combine(heuristic1, tricks, cases, partialSolutions);
 // cout << "heuristic2 combined\n" << heuristic2.str();
 }
 
@@ -491,14 +491,13 @@ timersStrat[40].stop();
   // for a given length.
 timersStrat[41].start();
   RowMatches rowMatches;
-  rowMatches.incorporateLengths(coverStore, cases, sumProfile,
+  rowMatches.incorporateLengths(coverStore, cases,
     tricksOfLength, explain);
 timersStrat[41].stop();
 
   // Add the top covers for a given length.
 timersStrat[42].start();
-  if (! rowMatches.incorporateTops(* this, tricksWithinLength, 
-    sumProfile, explain))
+  if (! rowMatches.incorporateTops(* this, tricksWithinLength, explain))
   {
 timersStrat[42].stop();
     return;
@@ -527,7 +526,7 @@ cout << rowMatches.str() << endl;
 
 timersStrat[45].start();
   // Score those row matches anew that involves more than one row.
-  rowMatches.makeSolution(coverStore, cases, sumProfile, explain, solution);
+  rowMatches.makeSolution(coverStore, cases, explain, solution);
 timersStrat[45].stop();
 }
 
@@ -589,7 +588,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
-    solution.setVerbal(sumProfile);
+    solution.setVerbal();
     tableauCache.store(tricks, solution);
     return;
   }
@@ -599,7 +598,7 @@ void Covers::explain(
     Covers::explainByCategory(tricks, explain, false,
       solution, newTableauFlag);
     solution.initStrData(numStrategyTops, tricksSymmetry);
-    solution.setVerbal(sumProfile);
+    solution.setVerbal();
     tableauCache.store(tricks, solution);
     return;
   }
@@ -760,7 +759,7 @@ void Covers::explainManually(
   Covers::explainTemplate<RowStore, CoverRow>(tricks,
     explain, rowStore, false, 50000, 25000, stack, solution);
 
-  solution.setVerbal(sumProfile);
+  solution.setVerbal();
   tableauRowCache.store(tricks, solution);
 }
 

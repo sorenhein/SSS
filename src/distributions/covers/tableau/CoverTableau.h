@@ -137,7 +137,7 @@ class CoverTableau
 
     void project(const unsigned char minCompAdder);
 
-    void setVerbal(const Profile& sumProfile);
+    void setVerbal();
 
     void sortVerbally();
 

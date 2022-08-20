@@ -117,7 +117,7 @@ class Cover
 
     bool lengthConsistent(const CoverLength& specificLength) const;
 
-    bool explainable(const Profile& sumProfile) const;
+    bool explainable() const;
 
     size_t size() const;
 
@@ -135,7 +135,7 @@ class Cover
 
     bool discardSymmetric(const Profile& sumProfile) const;
 
-    CoverVerbal verbal(const Profile& sumProfile) const;
+    CoverVerbal verbal() const;
 
     string strHeader() const;
 

@@ -345,10 +345,10 @@ void CoverTableau::project(const unsigned char minCompAdder)
 }
 
 
-void CoverTableau::setVerbal(const Profile& sumProfile)
+void CoverTableau::setVerbal()
 {
   for (auto& row: rows)
-    row.setVerbal(sumProfile);
+    row.setVerbal();
 }
 
 
