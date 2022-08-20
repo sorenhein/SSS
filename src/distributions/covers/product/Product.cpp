@@ -531,6 +531,52 @@ Opponent Product::simplestSingular(
 }
 
 
+bool Product::simplerThan(const Product& p2) const
+{
+  const unsigned char s = static_cast<unsigned char>(tops.size());
+  assert(p2.tops.size() == s);
+
+  assert(length.used());
+  assert(length.getOperator() == COVER_EQUAL);
+  assert(p2.length.used());
+  assert(p2.length.getOperator() == COVER_EQUAL);
+
+  if (length.lower() < p2.length.lower())
+    return true;
+  else if (p2.length.lower() < length.lower())
+    return false;
+
+/*
+  // Pick a side that is 2+ cards shorter than the other.
+  // But a singleton always wins.
+  if (length.lower() <= 1 && p2.length.lower() > 1)
+    return true;
+  else if (p2.length.lower() <= 1 && length.lower() > 1)
+    return false;
+  else if (length.lower() + 1 < p2.length.lower())
+    return true;
+  else if (p2.length.lower() + 1 < length.lower())
+    return false;
+    */
+
+
+  // Start from the highest top.  Include the 0 top.
+  for (unsigned char topNo = s; topNo-- > 0; )
+  {
+    const auto& top1 = tops[topNo];
+    const auto& top2 = p2.tops[topNo];
+    assert(top1.used() && top2.used());
+
+    if (top1.lower() > top2.lower())
+      return true;
+    else if (top2.lower() > top1.lower())
+      return false;
+  }
+
+  // Backstop.
+  return (length.lower() <= p2.length.lower());
+}
+
 CompareType Product::presentOrder(const Product& product2) const
 {
   const unsigned char ac1 = activeCount + 
@@ -1004,6 +1050,275 @@ string Product::strVerbalEqualTops(
 }
 
 
+void Product::fillUsedTops(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  Product& productWest,
+  Product& productEast,
+  unsigned char& westTops,
+  unsigned char& eastTops) const
+{
+  const unsigned char slength = sumProfile.length();
+  const unsigned char wlength = length.lower();
+  productWest.length = length;
+  productEast.length.set(slength, slength - wlength, slength - wlength);
+
+  westTops = 0;
+  eastTops = 0;
+
+  for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
+  {
+    auto& top = tops[topNo];
+    if (! top.used())
+      continue;
+
+    const unsigned char tlength = sumProfile[topNo + canonicalShift];
+    productWest.tops[topNo] = top;
+    productEast.tops[topNo].set(
+      tlength,
+      tlength - top.lower(),
+      tlength - top.lower());
+
+    westTops += top.lower();
+    eastTops += tlength - top.lower();
+  }
+}
+
+
+void Product::fillUnusedTops(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const Opponent fillOpponent,
+  Product& productWest,
+  Product& productEast) const
+{
+  // The side specified by fillOpponent gets all unused tops except
+  // the lowest one, which remains unset.
+  for (unsigned char topNo = 1; topNo < tops.size(); topNo++)
+  {
+    auto& top = tops[topNo];
+    if (top.used())
+      continue;
+
+    const unsigned char tlength = sumProfile[topNo + canonicalShift];
+
+    if (fillOpponent == OPP_WEST)
+    {
+      productWest.tops[topNo].set(tlength, tlength, tlength);
+      productEast.tops[topNo].set(tlength, 0, 0);
+    }
+    else
+    {
+      productWest.tops[topNo].set(tlength, 0, 0);
+      productEast.tops[topNo].set(tlength, tlength, tlength);
+    }
+  }
+}
+
+
+unsigned char Product::countHidden(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  // Add any that are hidden by the canonical shift.
+  // TODO Could even be a method in sumProfile.
+  unsigned char count = 0;
+
+  for (unsigned char hiddenNo = 0; hiddenNo <= canonicalShift; hiddenNo++)
+    count += sumProfile[hiddenNo];
+
+  return count;
+}
+
+
+void Product::fillSideBottoms(
+  const Opponent fillOpponent,
+  const unsigned char hidden,
+  Product& productWest,
+  Product& productEast) const
+{
+  // The side specified by fillOpponent gets all unused bottoms.
+  // This may span several ranks, depending on canonicalShift.
+  if (fillOpponent == OPP_WEST)
+  {
+    productWest.tops[0].set(hidden, hidden, hidden);
+    productEast.tops[0].set(hidden, 0, 0);
+  }
+  else
+  {
+    productWest.tops[0].set(hidden, 0, 0);
+    productEast.tops[0].set(hidden, hidden, hidden);
+  }
+}
+
+
+void Product::separateSingular(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  Product& productWest,
+  Product& productEast) const
+{
+  // Fill the West and East products out completely with the single
+  // option that exists.
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  assert(length.used());
+  assert(length.getOperator() == COVER_EQUAL);
+
+  unsigned char westTops, eastTops;
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast,
+    westTops, eastTops);
+
+// cout << "filled used tops West " << productWest.strLine() << endl;
+// cout << "filled used tops East " << productEast.strLine() << endl;
+
+  const unsigned char slength = sumProfile.length();
+  const unsigned char wlength = length.lower();
+
+  const unsigned char hidden = 
+    Product::countHidden(sumProfile, canonicalShift);
+
+// cout << "hidden " << +hidden << endl;
+
+  if (westTops == wlength)
+  {
+    // The unused tops are 0 for West, maximum for East.
+    // East also gets any low cards.
+    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
+      productWest, productEast);
+
+// cout << "Case 1 unused West " << productWest.strLine() << endl;
+// cout << "Case 1 unused East " << productEast.strLine() << endl;
+
+    Product::fillSideBottoms(OPP_EAST, hidden, productWest, productEast);
+  }
+  else if (eastTops == slength - wlength)
+  {
+    // The unused tops are 0 for East, maximum for West.
+    // West also gets any low cards.
+    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
+      productWest, productEast);
+
+// cout << "Case 2 unused West " << productWest.strLine() << endl;
+// cout << "Case 2 unused East " << productEast.strLine() << endl;
+
+    Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
+  }
+  else if (westTops + hidden == wlength)
+  {
+    // East gets any unused tops.  West gets all the low cards.
+    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
+      productWest, productEast);
+
+// cout << "Case 3 unused West " << productWest.strLine() << endl;
+// cout << "Case 3 unused East " << productEast.strLine() << endl;
+
+    Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
+    Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
+  }
+  else if (eastTops + hidden == slength - wlength)
+  {
+    // West gets any unused tops.  East gets all the low cards.
+    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
+      productWest, productEast);
+
+// cout << "Case 4 unused West " << productWest.strLine() << endl;
+// cout << "Case 4 unused East " << productEast.strLine() << endl;
+
+    Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
+    Product::fillSideBottoms(OPP_EAST, hidden, productWest, productEast);
+  }
+  else if (canonicalShift == 0)
+  {
+    // There should be no tops left to fill out, as all are used.
+    // Add the right number of low cards to each side.
+    assert(static_cast<unsigned char>(activeCount+1) == tops.size());
+
+    const unsigned char westXes = wlength - westTops;
+    const unsigned char allXes = sumProfile[0];
+    productWest.tops[0].set(allXes, westXes, westXes);
+    productEast.tops[0].set(allXes, allXes - westXes, allXes - westXes);
+  }
+  else
+    assert(false);
+}
+
+
+string Product::strExactTop(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const unsigned char topNo) const
+{
+  const auto& top = tops[topNo];
+  assert(top.used());
+
+  if (top.lower() == 0)
+    return "";
+
+  TopData topData;
+// cout << "Filling " << +topNo << ": " << +top.lower() << endl;
+  sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+  return topData.strTops(top.lower());
+}
+
+
+string Product::strExact(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& anchor,
+  const unsigned char canonicalShift) const
+{
+  string start = anchor + " has ";
+
+  if (! length.used())
+    start += "exactly ";
+  else if (length.lower() == 1)
+    start += "the singleton ";
+  else if (length.lower() == 2)
+    start += "the doubleton ";
+  else
+    start += "exactly ";
+
+  TopData topData;
+  string result = "";
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    --topNo > 0; )
+  {
+    // This excludes the lowest top (number 0).
+    result += Product::strExactTop(sumProfile, ranksNames, 
+      canonicalShift, topNo);
+  }
+
+  if (canonicalShift == 0)
+  {
+    // Same principle.
+    result += Product::strExactTop(sumProfile, ranksNames, canonicalShift, 0);
+  }
+  else if (tops[0].lower() > 0)
+  {
+    // All the low cards.
+    for (unsigned char hiddenNo = canonicalShift+1; hiddenNo-- > 0; )
+    {
+// cout << "FillingY " << +hiddenNo << ": " << +sumProfile[hiddenNo] << endl;
+      sumProfile.getTopData(hiddenNo, ranksNames, topData);
+      result += topData.strTops(topData.value);
+    }
+  }
+
+  if (result.size() != length.lower())
+  {
+    cout << "result " << result << endl;
+    cout << "this product " << Product::strLine() << endl;
+  assert(result.size() == length.lower());
+  }
+
+  return start + result;
+}
+
+
 string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1025,11 +1340,45 @@ string Product::strVerbalSingular(
     // One cover applies to d == 3 or 4, so Hx/HH or HH/Hx.
     // This gets classified as a VERBAL_SINGULAR_EITHER as it is
     // symmetric and covers two distributions.
+    // TODO Can we detect and skip this too in CoverStore?
+    // symmetric, singular, yet no length set
     return length.strLength(
       sumProfile.length(), 
       simplestOpponent, 
       symmFlag);
   }
+
+  Product productWest, productEast;
+  Product::separateSingular(sumProfile, canonicalShift, 
+    productWest, productEast);
+
+// cout << "\nsum profile " << sumProfile.strLine() << endl;
+// cout << "initial product West " << Product::strLine() << endl;
+// cout << "final product West " << productWest.strLine() << endl;
+// cout << "final product East " << productEast.strLine() << endl;
+
+  string resultNew = "";
+  if (productWest.simplerThan(productEast))
+  {
+// cout << "West is simpler" << endl;
+    resultNew = productWest.strExact(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "West"), canonicalShift);
+
+// cout << "rnew " << resultNew << endl;
+    // assert(productWest.length.lower() == resultNew.size());
+  }
+  else
+  {
+// cout << "East is simpler" << endl;
+    resultNew = productEast.strExact(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "East"), canonicalShift);
+
+// cout << "rnew " << resultNew << endl;
+    // assert(productEast.length.lower() == resultNew.size());
+  }
+
+
+  return resultNew;
 
   if (length.used())
     assert(length.getOperator() == COVER_EQUAL);
@@ -1091,12 +1440,14 @@ string Product::strVerbalSingular(
 
   if (actualTops == actualLength)
   {
+// cout <<"Case 1" << endl;
     // Just fill out the used equals.
     result = Product::strExactTops(sumProfile, ranksNames, 
       simplestOpponent, canonicalShift, true);
   }
   else if (otherActualTops == otherActualLength)
   {
+// cout <<"Case 2" << endl;
     // Fill out the used and all the unused equals.
     result = Product::strExactTops(sumProfile, ranksNames, 
       simplestOpponent, canonicalShift, false);
@@ -1112,6 +1463,7 @@ string Product::strVerbalSingular(
   }
   else if (actualTops + hidden == actualLength)
   {
+// cout <<"Case 3" << endl;
     // Start with the used equals.
     result = Product::strExactTops(sumProfile, ranksNames, 
       simplestOpponent, canonicalShift, true);
@@ -1127,6 +1479,7 @@ string Product::strVerbalSingular(
   }
   else if (canonicalShift == 0)
   {
+// cout <<"Case 4" << endl;
     // Start with the used equals.
     result = Product::strExactTops(sumProfile, ranksNames, 
       simplestOpponent, canonicalShift, true);

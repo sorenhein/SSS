@@ -2,6 +2,9 @@
   11/159468
 * In CoverStore move the many calls into one Cover call?
 
+Not sure about simplerThan.
+8/5042 Get A97, not HH from AHH97.  Shorter is not always better, though.
+
 Text covers
 -----------
 Product.cpp from about line 700: Improve.

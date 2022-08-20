@@ -238,6 +238,7 @@ sub stratDiff
   return 1 if ($strat1_ref->{row} != $strat2_ref->{row});
   return 1 if ($strat1_ref->{weight} != $strat2_ref->{weight});
   return 1 if ($strat1_ref->{companion} != $strat2_ref->{companion});
+  return 1 if ($strat1_ref->{text} ne $strat2_ref->{text});
   return 0;
 }
 

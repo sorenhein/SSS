@@ -55,6 +55,8 @@ class Product
 
     ExplainEqual mostlyEqual() const;
 
+    bool simplerThan(const Product& p2) const;
+
     void getWestLengths(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
@@ -66,6 +68,49 @@ class Product
       unsigned char& xesAvailable,
       unsigned char& topsExact,
       unsigned char& topsAvailable) const;
+
+    unsigned char countHidden(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
+    void fillUsedTops(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      Product& productWest,
+      Product& productEast,
+      unsigned char& westTops,
+      unsigned char& eastTops) const;
+
+    void fillUnusedTops(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const Opponent fillOpponent,
+      Product& productWest,
+      Product& productEast) const;
+
+    void fillSideBottoms(
+      const Opponent fillOpponent,
+      const unsigned char hidden,
+      Product& productWest,
+      Product& productEast) const;
+
+    void separateSingular(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      Product& productWest,
+      Product& productEast) const;
+
+    string strExactTop(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const unsigned char topNo) const;
+
+    string strExact(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const string& anchor,
+      const unsigned char canonicalShift) const;
 
     void characterize(
       const Profile& sumProfile,
