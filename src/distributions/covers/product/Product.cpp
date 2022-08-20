@@ -531,6 +531,29 @@ Opponent Product::simplestSingular(
 }
 
 
+void Product::topRange(
+  unsigned char& noLow,
+  unsigned char& noHigh) const
+{
+  bool lowFlag = false;
+
+  for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
+  {
+    const auto& top = tops[topNo];
+    if (top.lower() > 0)
+    {
+      if (! lowFlag)
+      {
+        noLow = topNo;
+        lowFlag = true;
+      }
+
+      noHigh = topNo;
+    }
+  }
+}
+
+
 bool Product::simplerThan(const Product& p2) const
 {
   const unsigned char s = static_cast<unsigned char>(tops.size());
@@ -541,6 +564,18 @@ bool Product::simplerThan(const Product& p2) const
   assert(p2.length.used());
   assert(p2.length.getOperator() == COVER_EQUAL);
 
+  unsigned char noLow1, noHigh1;
+  unsigned char noLow2, noHigh2;
+  Product::topRange(noLow1, noHigh1);
+  p2.topRange(noLow2, noHigh2);
+
+  // If one range is strictly >= the other, it wins.
+  if (noHigh2 <= noLow1)
+    return true;
+  else if (noHigh1 < noLow2)
+    return false;
+
+  // Otherwise prefer the shortest.
   if (length.lower() < p2.length.lower())
     return true;
   else if (p2.length.lower() < length.lower())
@@ -560,9 +595,10 @@ bool Product::simplerThan(const Product& p2) const
     */
 
 
-  // Start from the highest top.  Include the 0 top.
+  // Otherwise prefer more and larger tops.
   for (unsigned char topNo = s; topNo-- > 0; )
   {
+    // Include the 0 top.
     const auto& top1 = tops[topNo];
     const auto& top2 = p2.tops[topNo];
     assert(top1.used() && top2.used());
@@ -644,65 +680,6 @@ string Product::strLine() const
     ss << setw(8) << top.strGeneral();
 
   return ss.str();
-}
-
-
-void Product::characterize(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const unsigned char canonicalShift,
-  unsigned char& actualTops,
-  unsigned char& otherActualTops,
-  unsigned char& actualLength,
-  unsigned char& otherActualLength,
-  unsigned char& hidden) const
-{
-  // TODO
-  // Don't really need ranksNames.  Instead look up in sumProfile
-  // directly.
-  unsigned char westActualTops = 0;
-  unsigned char eastActualTops = 0;
-  hidden = 0;
-  
-  TopData topData;
-  unsigned char topNo;
-
-  // Skip the lowest entry (unused).
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
-  {
-    const auto& top = tops[topNo];
-    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-
-    if (top.used())
-    {
-      assert(top.getOperator() == COVER_EQUAL);
-      westActualTops += top.lower();
-      eastActualTops += topData.value - top.lower();
-    }
-  }
-
-  // Add any that are hidden by the canonical shift.
-  for (unsigned char r = 0; r <= canonicalShift; r++)
-  {
-    sumProfile.getTopData(r, ranksNames, topData);
-    hidden += topData.value;
-  }
-
-  if (simplestOpponent == OPP_EAST)
-  {
-    actualTops = eastActualTops;
-    otherActualTops = westActualTops;
-    actualLength = sumProfile.length() - length.lower();
-    otherActualLength = length.lower();
-  }
-  else
-  {
-    actualTops = westActualTops;
-    otherActualTops = eastActualTops;
-    actualLength = length.lower();
-    otherActualLength = sumProfile.length() - length.lower();
-  }
 }
 
 
@@ -1336,6 +1313,10 @@ string Product::strVerbalSingular(
 
   if (activeCount == 0)
   {
+cout << "\nLENGTH ONLY\n";
+cout << "sum profile " << sumProfile.strLine() << endl;
+cout << "product " << Product::strLine() << endl;
+
     // This can, happen, e.g. 9/18975, JT96/7 missing AKQ8.
     // One cover applies to d == 3 or 4, so Hx/HH or HH/Hx.
     // This gets classified as a VERBAL_SINGULAR_EITHER as it is
@@ -1377,148 +1358,7 @@ string Product::strVerbalSingular(
     // assert(productEast.length.lower() == resultNew.size());
   }
 
-
   return resultNew;
-
-  if (length.used())
-    assert(length.getOperator() == COVER_EQUAL);
-
-  if (length.getOperator() != COVER_EQUAL)
-    cout << "UNEXPECTED: " << Product::strLine() << endl;
-
-  // string start = "{len " + to_string(sumProfile.length()) + "} ";
-  string start = "";
-
-  if (symmFlag)
-    start += "Either opponent";
-  else if (simplestOpponent == OPP_WEST)
-    start += "West";
-  else
-    start += "East";
-
-  start += " has ";
-
-  if (! length.used())
-    start += "exactly ";
-  else if (simplestOpponent == OPP_EAST)
-  {
-    if (sumProfile.length() - length.lower() == 1)
-      start += "the singleton ";
-    else if (sumProfile.length() - length.lower() == 2)
-      start += "the doubleton ";
-    else
-      start += "exactly ";
-  }
-  else
-  {
-    if (length.lower() == 1)
-      start += "the singleton ";
-    else if (length.lower() == 2)
-      start += "the doubleton ";
-    else
-      start += "exactly ";
-  }
-
-  // TODO This part is quite hideous and should go somewhere else,
-  // possibly in Top.cpp
-
-  unsigned char actualTops, otherActualTops;
-  unsigned char actualLength, otherActualLength;
-  unsigned char hidden;
-  Product::characterize(
-    sumProfile, 
-    ranksNames, 
-    simplestOpponent,
-    canonicalShift,
-    actualTops,
-    otherActualTops,
-    actualLength,
-    otherActualLength,
-    hidden);
-
-  string result;
-
-  if (actualTops == actualLength)
-  {
-// cout <<"Case 1" << endl;
-    // Just fill out the used equals.
-    result = Product::strExactTops(sumProfile, ranksNames, 
-      simplestOpponent, canonicalShift, true);
-  }
-  else if (otherActualTops == otherActualLength)
-  {
-// cout <<"Case 2" << endl;
-    // Fill out the used and all the unused equals.
-    result = Product::strExactTops(sumProfile, ranksNames, 
-      simplestOpponent, canonicalShift, false);
-
-    // Add all low cards.
-    for (unsigned char r = 0; r <= canonicalShift; r++)
-    {
-      TopData topData;
-      sumProfile.getTopData(canonicalShift - r, ranksNames, topData);
-      result +=
-        topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
-    }
-  }
-  else if (actualTops + hidden == actualLength)
-  {
-// cout <<"Case 3" << endl;
-    // Start with the used equals.
-    result = Product::strExactTops(sumProfile, ranksNames, 
-      simplestOpponent, canonicalShift, true);
-
-    // Add all low cards.
-    for (unsigned char r = 0; r <= canonicalShift; r++)
-    {
-      TopData topData;
-      sumProfile.getTopData(canonicalShift - r, ranksNames, topData);
-      result +=
-        topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
-    }
-  }
-  else if (canonicalShift == 0)
-  {
-// cout <<"Case 4" << endl;
-    // Start with the used equals.
-    result = Product::strExactTops(sumProfile, ranksNames, 
-      simplestOpponent, canonicalShift, true);
-
-    // Add the right number of low cards.
-    TopData topData;
-    sumProfile.getTopData(canonicalShift, ranksNames, topData);
-
-    // TODO Use 'x' not the actual name?  Fix RankNames?
-    // In 11/136397 #4 we have Hh and we have A and 4 available.
-    // This code picks 4 which is OK, but perhaps A is easier
-    // to comprehend.
-    const string str = 
-      topData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT);
-
-    result += str.substr(0, actualLength - actualTops);
-  }
-  else
-    assert(false);
-
-if (actualLength != result.size())
-{
-  cout << "\nProduct      " << Product::strLine() << endl;
-  cout << "sum profile " << sumProfile.strLine() << endl;
-  cout << "simplestOpponent " << simplestOpponent << "\n";
-  cout << "canonicalShift   " << +canonicalShift << "\n";
-  cout << "actualTops       " << +actualTops << "\n";
-  cout << "otherActualTops  " << +otherActualTops << "\n";
-  cout << "actualLength     " << +actualLength << "\n";
-  cout << "otherActualLen   " << +otherActualLength << "\n";
-  cout << "hidden           " << +hidden << "\n";
-  cout << "length.lower     " << +length.lower() << "\n";
-  cout << "sum length       " << +sumProfile.length() << "\n";
-  cout << "result           " << result << "\n";
-}
-
-  assert(actualLength == result.size());
-
-  return start + result;
 }
 
 

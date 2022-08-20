@@ -2,8 +2,12 @@
   11/159468
 * In CoverStore move the many calls into one Cover call?
 
+Just one type of SINGULAR, as we detect the side later anyway.
+
 Not sure about simplerThan.
 8/5042 Get A97, not HH from AHH97.  Shorter is not always better, though.
+Perhaps shorter except if the highest top is smaller than the other
+side's lowest, at least?  AQT and not xx.
 
 Text covers
 -----------

@@ -55,6 +55,10 @@ class Product
 
     ExplainEqual mostlyEqual() const;
 
+    void topRange(
+      unsigned char& noLow,
+      unsigned char& noHigh) const;
+
     bool simplerThan(const Product& p2) const;
 
     void getWestLengths(
@@ -111,17 +115,6 @@ class Product
       const RanksNames& ranksNames,
       const string& anchor,
       const unsigned char canonicalShift) const;
-
-    void characterize(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const unsigned char canonicalShift,
-      unsigned char& actualTops,
-      unsigned char& otherActualTops,
-      unsigned char& actualLength,
-      unsigned char& otherActualLength,
-      unsigned char& hidden) const;
 
     string strExactTops(
       const Profile& sumProfile,
