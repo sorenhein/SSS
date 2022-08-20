@@ -569,6 +569,28 @@ bool Product::simplerThan(const Product& p2) const
   Product::topRange(noLow1, noHigh1);
   p2.topRange(noLow2, noHigh2);
 
+  // Normally prefer the shortest.
+  if (length.lower() < p2.length.lower())
+  {
+    if (length.lower() <= 1)
+      return true;
+    else
+    {
+      // But not if it uses the lowest rank.
+      // The logic in this is not very strong, but it's hard to
+      // say what makes one choice more intuitive than another.
+      return (noLow1 == 0 ? false : true);
+    }
+  }
+  else if (p2.length.lower() < length.lower())
+  {
+    if (p2.length.lower() <= 1)
+      return false;
+    else
+      return (noLow2 == 0 ? true : false);
+  }
+
+/*
   // If one range is strictly >= the other, it wins.
   if (noHigh2 <= noLow1)
     return true;
@@ -580,6 +602,7 @@ bool Product::simplerThan(const Product& p2) const
     return true;
   else if (p2.length.lower() < length.lower())
     return false;
+    */
 
 /*
   // Pick a side that is 2+ cards shorter than the other.
@@ -1148,16 +1171,11 @@ void Product::separateSingular(
     productWest, productEast,
     westTops, eastTops);
 
-// cout << "filled used tops West " << productWest.strLine() << endl;
-// cout << "filled used tops East " << productEast.strLine() << endl;
-
   const unsigned char slength = sumProfile.length();
   const unsigned char wlength = length.lower();
 
   const unsigned char hidden = 
     Product::countHidden(sumProfile, canonicalShift);
-
-// cout << "hidden " << +hidden << endl;
 
   if (westTops == wlength)
   {
@@ -1165,9 +1183,6 @@ void Product::separateSingular(
     // East also gets any low cards.
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
-
-// cout << "Case 1 unused West " << productWest.strLine() << endl;
-// cout << "Case 1 unused East " << productEast.strLine() << endl;
 
     Product::fillSideBottoms(OPP_EAST, hidden, productWest, productEast);
   }
@@ -1178,9 +1193,6 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
-// cout << "Case 2 unused West " << productWest.strLine() << endl;
-// cout << "Case 2 unused East " << productEast.strLine() << endl;
-
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
   }
   else if (westTops + hidden == wlength)
@@ -1188,9 +1200,6 @@ void Product::separateSingular(
     // East gets any unused tops.  West gets all the low cards.
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
-
-// cout << "Case 3 unused West " << productWest.strLine() << endl;
-// cout << "Case 3 unused East " << productEast.strLine() << endl;
 
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
@@ -1200,9 +1209,6 @@ void Product::separateSingular(
     // West gets any unused tops.  East gets all the low cards.
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
-
-// cout << "Case 4 unused West " << productWest.strLine() << endl;
-// cout << "Case 4 unused East " << productEast.strLine() << endl;
 
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
     Product::fillSideBottoms(OPP_EAST, hidden, productWest, productEast);
@@ -1236,7 +1242,6 @@ string Product::strExactTop(
     return "";
 
   TopData topData;
-// cout << "Filling " << +topNo << ": " << +top.lower() << endl;
   sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
   return topData.strTops(top.lower());
 }
@@ -1250,6 +1255,7 @@ string Product::strExact(
 {
   string start = anchor + " has ";
 
+  // TODO Here we could say "a" or "the" depending on e.g. honor / king.
   if (! length.used())
     start += "exactly ";
   else if (length.lower() == 1)
@@ -1259,12 +1265,12 @@ string Product::strExact(
   else
     start += "exactly ";
 
-  TopData topData;
+  // Fill out the tops from above, but not the 0'th top.
   string result = "";
+
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
-    // This excludes the lowest top (number 0).
     result += Product::strExactTop(sumProfile, ranksNames, 
       canonicalShift, topNo);
   }
@@ -1276,22 +1282,17 @@ string Product::strExact(
   }
   else if (tops[0].lower() > 0)
   {
+    TopData topData;
+
     // All the low cards.
     for (unsigned char hiddenNo = canonicalShift+1; hiddenNo-- > 0; )
     {
-// cout << "FillingY " << +hiddenNo << ": " << +sumProfile[hiddenNo] << endl;
       sumProfile.getTopData(hiddenNo, ranksNames, topData);
       result += topData.strTops(topData.value);
     }
   }
 
-  if (result.size() != length.lower())
-  {
-    cout << "result " << result << endl;
-    cout << "this product " << Product::strLine() << endl;
   assert(result.size() == length.lower());
-  }
-
   return start + result;
 }
 
@@ -1299,66 +1300,25 @@ string Product::strExact(
 string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const CoverVerbal verbal,
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-  Opponent simplestOpponent;
-  if (verbal == VERBAL_SINGULAR_EITHER)
-    simplestOpponent = OPP_EITHER;
-  else if (verbal == VERBAL_SINGULAR_WEST)
-    simplestOpponent = OPP_WEST;
-  else
-    simplestOpponent = OPP_EAST;
-
-  if (activeCount == 0)
-  {
-cout << "\nLENGTH ONLY\n";
-cout << "sum profile " << sumProfile.strLine() << endl;
-cout << "product " << Product::strLine() << endl;
-
-    // This can, happen, e.g. 9/18975, JT96/7 missing AKQ8.
-    // One cover applies to d == 3 or 4, so Hx/HH or HH/Hx.
-    // This gets classified as a VERBAL_SINGULAR_EITHER as it is
-    // symmetric and covers two distributions.
-    // TODO Can we detect and skip this too in CoverStore?
-    // symmetric, singular, yet no length set
-    return length.strLength(
-      sumProfile.length(), 
-      simplestOpponent, 
-      symmFlag);
-  }
+  assert(activeCount > 0);
 
   Product productWest, productEast;
   Product::separateSingular(sumProfile, canonicalShift, 
     productWest, productEast);
 
-// cout << "\nsum profile " << sumProfile.strLine() << endl;
-// cout << "initial product West " << Product::strLine() << endl;
-// cout << "final product West " << productWest.strLine() << endl;
-// cout << "final product East " << productEast.strLine() << endl;
-
-  string resultNew = "";
   if (productWest.simplerThan(productEast))
   {
-// cout << "West is simpler" << endl;
-    resultNew = productWest.strExact(sumProfile, ranksNames, 
+    return productWest.strExact(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), canonicalShift);
-
-// cout << "rnew " << resultNew << endl;
-    // assert(productWest.length.lower() == resultNew.size());
   }
   else
   {
-// cout << "East is simpler" << endl;
-    resultNew = productEast.strExact(sumProfile, ranksNames, 
+    return productEast.strExact(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), canonicalShift);
-
-// cout << "rnew " << resultNew << endl;
-    // assert(productEast.length.lower() == resultNew.size());
   }
-
-  return resultNew;
 }
 
 
@@ -1411,7 +1371,6 @@ string Product::strVerbal(
     return Product::strVerbalSingular(
       sumProfile, 
       ranksNames, 
-      verbal, 
       symmFlag, 
       canonicalShift);
   }

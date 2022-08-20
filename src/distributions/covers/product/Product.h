@@ -155,7 +155,6 @@ class Product
     string strVerbalSingular(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const CoverVerbal verbal,
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
