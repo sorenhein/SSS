@@ -70,8 +70,7 @@ void RanksNames::finish()
     if (names[ifull].side() == SIDE_OPPS)
       indexByTop[itop++] = ifull;
   }
-
-assert(itop == oppsRanks);
+  assert(itop == oppsRanks);
 
   if (names.empty())
     return;
@@ -87,6 +86,11 @@ assert(itop == oppsRanks);
     else
       rnames.completeNS();
   }
+
+  if (names.size() > 2 && names[0].side() == SIDE_OPPS)
+    names[0].makeXes();
+  else if (names.size() > 3 && names[1].side() == SIDE_OPPS)
+    names[1].makeXes();
 }
 
 

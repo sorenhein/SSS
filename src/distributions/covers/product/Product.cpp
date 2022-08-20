@@ -572,22 +572,24 @@ bool Product::simplerThan(const Product& p2) const
   // Normally prefer the shortest.
   if (length.lower() < p2.length.lower())
   {
-    if (length.lower() <= 1)
+    if (length.lower() <= 1 ||
+        length.lower() + 2 < p2.length.lower())
       return true;
     else
     {
       // But not if it uses the lowest rank.
       // The logic in this is not very strong, but it's hard to
       // say what makes one choice more intuitive than another.
-      return (noLow1 == 0 ? false : true);
+      return (noLow1 == 0 && noLow2 > 0 ? false : true);
     }
   }
   else if (p2.length.lower() < length.lower())
   {
-    if (p2.length.lower() <= 1)
+    if (p2.length.lower() <= 1 ||
+        p2.length.lower() + 2 < length.lower())
       return false;
     else
-      return (noLow2 == 0 ? true : false);
+      return (noLow2 == 0 && noLow1 > 0 ? true : false);
   }
 
 /*
@@ -1229,6 +1231,37 @@ void Product::separateSingular(
 }
 
 
+string Product::strExactStart(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  if (! length.used() ||  length.lower() > 2)
+    return "exactly";
+
+  // A somewhat involved way to say "the singleton K" but
+  // "a singleton H", and "the doubleton HH" if there are two,
+  // "a doubleton HH" if there are more.
+
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    topNo-- > 0; )
+  {
+    // Find the first non-zero top.
+    auto& top = tops[topNo];
+    assert(top.used());
+    if (top.lower() == 0)
+      continue;
+
+    if (length.lower() < sumProfile[topNo + canonicalShift])
+      return (length.lower() == 1 ? "a singleton" : "a doubleton");
+    else
+      return (length.lower() == 1 ? "the singleton" : "the doubleton");
+  }
+
+  assert(false);
+  return "";
+}
+
+
 string Product::strExactTop(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1253,17 +1286,8 @@ string Product::strExact(
   const string& anchor,
   const unsigned char canonicalShift) const
 {
-  string start = anchor + " has ";
-
-  // TODO Here we could say "a" or "the" depending on e.g. honor / king.
-  if (! length.used())
-    start += "exactly ";
-  else if (length.lower() == 1)
-    start += "the singleton ";
-  else if (length.lower() == 2)
-    start += "the doubleton ";
-  else
-    start += "exactly ";
+  string start = anchor + " has " + 
+    Product::strExactStart(sumProfile, canonicalShift) + " ";
 
   // Fill out the tops from above, but not the 0'th top.
   string result = "";

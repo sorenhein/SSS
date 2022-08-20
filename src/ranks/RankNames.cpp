@@ -46,9 +46,9 @@ const vector<vector<string>> CARD_ABSOLUTE_NAMES =
   {"micro honor", "micro honors", "F"}
 };
 
-const vector<string> CARD_RELATIVE_NAMES =
+const vector<char> CARD_RELATIVE_NAMES =
 {
-  "H", "h", "G", "g", "F", "f"
+  'H', 'h', 'G', 'g', 'F', 'f'
   
 };
 
@@ -108,8 +108,7 @@ void RankNames::completeOpps(
   {
     assert(noAbs < CARD_ABSOLUTE_NAMES.size());
     const string& h0 = CARD_ABSOLUTE_NAMES[noAbs][0];
-    // const string& h2 = CARD_ABSOLUTE_NAMES[noAbs][2];
-    const string h2 = (index <= 1 ? "x" : CARD_ABSOLUTE_NAMES[noAbs][2]);
+    const string& h2 = CARD_ABSOLUTE_NAMES[noAbs][2];
 
     names[RANKNAME_ABSOLUTE_FULL] = h0;
     names[RANKNAME_ABSOLUTE_SHORT] = h2;
@@ -124,14 +123,23 @@ void RankNames::completeOpps(
   }
 
   assert(noRel < CARD_RELATIVE_NAMES.size());
-  const string& hr = CARD_RELATIVE_NAMES[noRel];
-
-  // TODO Something more intelligent to repeat: string(...).
-  names[RANKNAME_RELATIVE_SHORT] = "";
-  for (size_t i = 0; i < count; i++)
-    names[RANKNAME_RELATIVE_SHORT] += hr;
+  names[RANKNAME_RELATIVE_SHORT] = 
+    string(count, CARD_RELATIVE_NAMES[noRel]);
 
   noRel++;
+}
+
+
+void RankNames::makeXes()
+{
+  const string c = names[RANKNAME_ACTUAL_SHORT].substr(0, 1);
+
+  if (c >= "2" && c <= "8")
+  {
+    names[RANKNAME_ACTUAL_SHORT] = string(count, 'x');
+    names[RANKNAME_ABSOLUTE_SHORT] = string(count, 'x');
+    names[RANKNAME_RELATIVE_SHORT] = string(count, 'x');
+  }
 }
 
 

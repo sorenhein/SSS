@@ -53,6 +53,8 @@ class RankNames
 
     void completeNS();
 
+    void makeXes();
+
     Side side() const;
 
     size_t size() const;

@@ -104,6 +104,10 @@ class Product
       Product& productWest,
       Product& productEast) const;
 
+    string strExactStart(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
     string strExactTop(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
