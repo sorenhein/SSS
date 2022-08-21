@@ -554,6 +554,38 @@ void Product::topRange(
 }
 
 
+bool Product::topsSimplerThan(const Product& p2) const
+{
+  // Prefer more and larger tops.
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
+  {
+    // Include the 0 top.
+    const auto& top1 = tops[topNo];
+    const auto& top2 = p2.tops[topNo];
+
+    if (! top1.used())
+    {
+      if (top2.used())
+        return false;
+      else
+        continue;
+    }
+    else if (! top2.used())
+      return true;
+
+    assert(top1.used() && top2.used());
+
+    if (top1.lower() > top2.lower())
+      return true;
+    else if (top2.lower() > top1.lower())
+      return false;
+  }
+
+  // Backstop.
+  return (length.lower() <= p2.length.lower());
+}
+
+
 bool Product::simplerThan(const Product& p2) const
 {
   const unsigned char s = static_cast<unsigned char>(tops.size());
@@ -592,50 +624,7 @@ bool Product::simplerThan(const Product& p2) const
       return (noLow2 == 0 && noLow1 > 0 ? true : false);
   }
 
-/*
-  // If one range is strictly >= the other, it wins.
-  if (noHigh2 <= noLow1)
-    return true;
-  else if (noHigh1 < noLow2)
-    return false;
-
-  // Otherwise prefer the shortest.
-  if (length.lower() < p2.length.lower())
-    return true;
-  else if (p2.length.lower() < length.lower())
-    return false;
-    */
-
-/*
-  // Pick a side that is 2+ cards shorter than the other.
-  // But a singleton always wins.
-  if (length.lower() <= 1 && p2.length.lower() > 1)
-    return true;
-  else if (p2.length.lower() <= 1 && length.lower() > 1)
-    return false;
-  else if (length.lower() + 1 < p2.length.lower())
-    return true;
-  else if (p2.length.lower() + 1 < length.lower())
-    return false;
-    */
-
-
-  // Otherwise prefer more and larger tops.
-  for (unsigned char topNo = s; topNo-- > 0; )
-  {
-    // Include the 0 top.
-    const auto& top1 = tops[topNo];
-    const auto& top2 = p2.tops[topNo];
-    assert(top1.used() && top2.used());
-
-    if (top1.lower() > top2.lower())
-      return true;
-    else if (top2.lower() > top1.lower())
-      return false;
-  }
-
-  // Backstop.
-  return (length.lower() <= p2.length.lower());
+  return Product::topsSimplerThan(p2);
 }
 
 CompareType Product::presentOrder(const Product& product2) const
@@ -993,6 +982,46 @@ string Product::strVerbalEqualTops(
 {
   assert(activeCount > 0);
 
+  if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+  {
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  unsigned char westTops, eastTops;
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, westTops, eastTops);
+
+  const unsigned char rest = sumProfile.length() - westTops - eastTops;
+
+  const unsigned char westFreeUpper = min(rest, productWest.length.upper());
+  const unsigned char eastFreeUpper = min(rest, productEast.length.upper());
+
+  const unsigned char westFreeLower = rest - eastFreeUpper;
+  const unsigned char eastFreeLower = rest - westFreeUpper;
+
+// cout << "West free " << +westFreeLower << " to " << +westFreeUpper << endl;
+// cout << "East free " << +eastFreeLower << " to " << +eastFreeUpper << endl;
+
+  string resNew;
+  if (// westFreeLower + westFreeUpper <= eastFreeLower + eastFreeUpper ||
+      productWest.topsSimplerThan(productEast))
+  {
+    resNew = productWest.strEqualTops(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "West"), 
+      westFreeLower, westFreeUpper, canonicalShift);
+  }
+  else
+  {
+    resNew = productEast.strEqualTops(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "East"), 
+      eastFreeLower, eastFreeUpper, canonicalShift);
+  }
+
+  return resNew;
+  }
+
+
   const Opponent simplestOpponent =
     Product::simplestOpponent(sumProfile, canonicalShift);
 
@@ -1060,11 +1089,6 @@ void Product::fillUsedTops(
   unsigned char& westTops,
   unsigned char& eastTops) const
 {
-  const unsigned char slength = sumProfile.length();
-  const unsigned char wlength = length.lower();
-  productWest.length = length;
-  productEast.length.set(slength, slength - wlength, slength - wlength);
-
   westTops = 0;
   eastTops = 0;
 
@@ -1076,14 +1100,23 @@ void Product::fillUsedTops(
 
     const unsigned char tlength = sumProfile[topNo + canonicalShift];
     productWest.tops[topNo] = top;
-    productEast.tops[topNo].set(
-      tlength,
-      tlength - top.lower(),
-      tlength - top.lower());
+    productEast.tops[topNo].setMirrored(top, tlength);
 
     westTops += top.lower();
     eastTops += tlength - top.lower();
   }
+
+  const unsigned char slength = sumProfile.length();
+
+  if (length.used())
+    productWest.length = length;
+  else
+    productWest.length.set(slength, westTops, slength - eastTops);
+
+  productEast.length.setMirrored(productWest.length, slength);
+
+// cout << "\nWest " << productWest.strLine() << endl;
+// cout << "East " << productEast.strLine() << endl;
 }
 
 
@@ -1170,8 +1203,7 @@ void Product::separateSingular(
 
   unsigned char westTops, eastTops;
   Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast,
-    westTops, eastTops);
+    productWest, productEast, westTops, eastTops);
 
   const unsigned char slength = sumProfile.length();
   const unsigned char wlength = length.lower();
@@ -1317,6 +1349,85 @@ string Product::strExact(
   }
 
   assert(result.size() == length.lower());
+  return start + result;
+}
+
+
+string Product::strEqualTops(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& anchor,
+  const unsigned char freeLower,
+  const unsigned char freeUpper,
+  const unsigned char canonicalShift) const
+{
+  string start = anchor + " has ";
+
+  // Fill out the tops from above, but not the 0'th top.
+  // Find the last used top.
+
+  unsigned char lowestUsed = 0;
+  string result = "";
+
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    --topNo > 0; )
+  {
+    result += Product::strExactTop(sumProfile, ranksNames, 
+      canonicalShift, topNo);
+
+    if (tops[topNo].used())
+      lowestUsed = topNo;
+  }
+
+      cout << "Product" << Product::strLine() << endl;
+      cout << "cshift " << +canonicalShift << endl;
+  if (canonicalShift == 0)
+  {
+    // We only have to set the x'es.
+    if (freeLower > 0)
+      result += string(freeLower, 'x');
+
+    result += "(" + string(freeUpper - freeLower, 'x') + ")";
+  }
+  else
+  {
+    TopData topData;
+    sumProfile.getTopData(lowestUsed + canonicalShift, ranksNames, topData);
+    const string lowestRank = topData.strTops(topData.value);
+
+    if (lowestRank.empty())
+    {
+      cout << "Product" << Product::strLine() << endl;
+      cout << "lowest used " << +lowestUsed << endl;
+      cout << "lowest rank " << lowestRank << endl;
+    }
+    assert(! lowestRank.empty());
+    const string& lowestCard = lowestRank.substr(lowestRank.size()-1, 1);
+
+    // The unused tops.
+    string lows = "";
+    for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+      --topNo > 0; )
+    {
+      const auto& top = tops[topNo];
+      if (top.used() || top.lower() == 0)
+        continue;
+
+      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
+      lows += topData.strTops(topData.value);
+    }
+
+    if (freeLower == 0 && freeUpper == lows.size())
+    {
+      result += " and any number of cards lower than the " + lowestCard;
+    }
+    else
+    {
+      result += " and " + to_string(freeLower) + "-" + 
+        to_string(freeUpper) + " cards lower than the " + lowestCard;
+    }
+  }
+
   return start + result;
 }
 

@@ -59,6 +59,8 @@ class Product
       unsigned char& noLow,
       unsigned char& noHigh) const;
 
+    bool topsSimplerThan(const Product& p2) const;
+
     bool simplerThan(const Product& p2) const;
 
     void getWestLengths(
@@ -103,6 +105,14 @@ class Product
       const unsigned char canonicalShift,
       Product& productWest,
       Product& productEast) const;
+
+    string strEqualTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const string& anchor,
+      const unsigned char freeLower,
+      const unsigned char freeUpper,
+      const unsigned char canonicalShift) const;
 
     string strExactStart(
       const Profile& sumProfile,

@@ -88,6 +88,19 @@ void Term::set(
 }
 
 
+void Term::setMirrored(
+  const Term& mirror,
+  const unsigned char oppSize)
+{
+  if (! mirror.used())
+    return;
+  else if (mirror.upper() == 15)
+    Term::set(oppSize, 0, oppSize - mirror.lower());
+  else
+    Term::set(oppSize, oppSize - mirror.upper(), oppSize - mirror.lower());
+}
+
+
 bool Term::includes(const unsigned char value) const
 {
   if (Term::used())

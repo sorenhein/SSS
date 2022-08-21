@@ -129,14 +129,8 @@ void CoverStore::add(
     return;
   }
 
-  if (symmetricFlag &&
-      coverScratch.discardSymmetric(sumProfile))
-  {
-cout << "Discard\n";
-cout << "sum profile " << sumProfile.strLine();
-cout << "cover " << coverScratch.strLine() << "\n\n";
+  if (symmetricFlag && coverScratch.discardSymmetric(sumProfile))
     return;
-  }
 
   // Store it in "store".
   auto result = store.insert(coverScratch);

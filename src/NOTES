@@ -1,19 +1,54 @@
-* In Heuristics, there can be nested lengths, so 2-4 and 3-3 additionally!
-  11/159468
-* In CoverStore move the many calls into one Cover call?
+F, equal tops
+-------------
+ and up to two
+       5 *F East has A and 0-2 cards lower than the 8 [4/4]
 
-Text covers
------------
-Product.cpp from about line 700: Improve.
-Make all texts more human to read.
+ and up to two lower cards (Note: A is A and not H here)
+      95 *F East has A and 0-2 cards lower than the A [4/4]
+
+ (exactly A8) and up to two lower cards (Note: 8 is 8 and not h)
+      13 *F East has A8 and 0-2 cards lower than the 8 [4/4]
+
+ perhaps "lower cards" is OK here too
+      36 *F East has AH and 0-2 cards lower than the J [3/8]
+
+ 11/36848
+ QTHH4
+ East has up to one card lower than the T? ("singleton or void lower
+ than the T")
+       2 *F West has QT and 2-3 cards lower than the T [5/3]
+
+ Really should just be "West has K"
+ K is the highest West card
+ The count is everything else
+      12 *F West has K and 0-7 cards lower than the K [2/128]
+
+ 11/135317, West has no cards lower than the T
+       3 *F East has AQT and 0-3 cards lower than the T [6/4]
+ why 0-3 and not just "any"?
+ Should really be "East has AQT"
+
+
+
 
 Output a "where" line for the actual solutions.
 Only when it is of interest.
 Honor codes used in ranks and plays could be consistent with covers.
 HH only used down to JT, then hh instead.
 
+In CoverStore move the many calls into one Cover call?
+
+In Heuristics, there can be nested lengths, so 2-4 and 3-3 additionally!
+11/159468
+
 Is it always right only to include in CoverStore covers that are 
 explainable?
+
+
+Text covers
+-----------
+Product.cpp from about line 700: Improve.
+Make all texts more human to read.
 
 Check the complexity/count score.  1 if exact, > 1 if HhGgx...
 Taking into account symmetry (Either) of course.
@@ -33,6 +68,8 @@ Complexities
 Check that complexities are now homogeneous
 - SINGULAR are OK
 
+East: 8 out of AKJ8 and 1 lower card, complexity 6
+East: A out of AJ and 1 lower card, complexity 5
 
 
 Text          614295  0.00

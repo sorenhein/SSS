@@ -65,6 +65,10 @@ class Term
       const unsigned char lower,
       const unsigned char upper);
 
+    void setMirrored(
+      const Term& mirror,
+      const unsigned char oppSize);
+
     bool includes(const unsigned char value) const;
 
     SymmTerm symmetrizable(const unsigned char maximum) const;
