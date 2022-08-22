@@ -26,6 +26,7 @@ using namespace std;
 
 class Profile;
 class RanksNames;
+struct OppData;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
 enum CoverVerbal: unsigned;
@@ -84,8 +85,8 @@ class Product
       const unsigned char canonicalShift,
       Product& productWest,
       Product& productEast,
-      unsigned char& westTops,
-      unsigned char& eastTops) const;
+      OppData& dataWest,
+      OppData& dataEast) const;
 
     void fillUnusedTops(
       const Profile& sumProfile,
@@ -106,12 +107,16 @@ class Product
       Product& productWest,
       Product& productEast) const;
 
+    string strEqualTopsOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift) const;
+
     string strEqualTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const string& anchor,
-      const unsigned char freeLower,
-      const unsigned char freeUpper,
+      const OppData& data,
       const unsigned char canonicalShift) const;
 
     string strExactStart(

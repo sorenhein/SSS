@@ -1,5 +1,28 @@
 F, equal tops
 -------------
+ 8(x)
+     16 East has 8 and 0-1 cards lower than the 8
+
+ 86, 84
+     50 East has 8 and 1 cards lower than the 8
+
+     10 East has 8 and 1-2 cards lower than the 8
+
+ 87(x)
+      1 East has 87 and 0-1 cards lower than the 7
+
+ East has AKQJ without the 6
+      1 West has 6 and East has AKQJ
+
+ Potentially East has singleton x or void
+      8 West has AQT98
+
+ East has KQ(x)
+      7 West has T87 and East has KQ
+
+
+
+
  and up to two
        5 *F East has A and 0-2 cards lower than the 8 [4/4]
 
@@ -22,12 +45,6 @@ F, equal tops
  K is the highest West card
  The count is everything else
       12 *F West has K and 0-7 cards lower than the K [2/128]
-
- 11/135317, West has no cards lower than the T
-       3 *F East has AQT and 0-3 cards lower than the T [6/4]
- why 0-3 and not just "any"?
- Should really be "East has AQT"
-
 
 
 

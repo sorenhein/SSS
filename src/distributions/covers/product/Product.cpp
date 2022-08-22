@@ -34,6 +34,22 @@ enum ExplainEqual: unsigned
   EQUAL_NONE = 2
 };
 
+struct OppData
+{
+  unsigned char topsUsed;
+  unsigned char freeLower;
+  unsigned char freeUpper;
+
+  string str(const string& header) const
+  {
+    stringstream ss;
+    ss << header;
+    ss << "Tops " << +topsUsed << "\n";
+    ss << "Free " << +freeLower << " to " << +freeUpper << "\n";
+    return ss.str();
+  };
+};
+
 
 Product::Product()
 {
@@ -984,39 +1000,71 @@ string Product::strVerbalEqualTops(
 
   if (verbal == VERBAL_HIGH_TOPS_EQUAL)
   {
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
+    Product productWest, productEast;
+    productWest.resize(tops.size());
+    productEast.resize(tops.size());
   
-  unsigned char westTops, eastTops;
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, westTops, eastTops);
+    OppData dataWest, dataEast;
+    Product::fillUsedTops(sumProfile, canonicalShift, 
+      productWest, productEast, dataWest, dataEast);
 
-  const unsigned char rest = sumProfile.length() - westTops - eastTops;
+    // cout << dataWest.str("West");
+    // cout << dataEast.str("East");
 
-  const unsigned char westFreeUpper = min(rest, productWest.length.upper());
-  const unsigned char eastFreeUpper = min(rest, productEast.length.upper());
+    if (! length.used())
+    {
+      string resWest = productWest.strEqualTopsOnly(sumProfile,
+        ranksNames, canonicalShift);
+      string resEast = productEast.strEqualTopsOnly(sumProfile,
+        ranksNames, canonicalShift);
 
-  const unsigned char westFreeLower = rest - eastFreeUpper;
-  const unsigned char eastFreeLower = rest - westFreeUpper;
+      if (resWest.empty())
+      {
+        // Just state that East has the tops.
+        return "East has " + resEast;
+      }
+      else if (resEast.empty())
+      {
+        // Just state that West has the tops.
+        return "West has " + resWest;
+      }
+      else
+      {
+        return "West has " + resWest + " and East has " + resEast;
+      }
+    }
+    else
+    {
+// cout << "\nProduct NEQ " << Product::strLine() << "\n";
+    }
 
-// cout << "West free " << +westFreeLower << " to " << +westFreeUpper << endl;
-// cout << "East free " << +eastFreeLower << " to " << +eastFreeUpper << endl;
+    // const bool westSimplerFlag = 
+      // (productWest.topsSimplerThan(productEast));
 
-  string resNew;
-  if (// westFreeLower + westFreeUpper <= eastFreeLower + eastFreeUpper ||
-      productWest.topsSimplerThan(productEast))
+    const bool westSimplerFlag =
+      (dataWest.topsUsed + dataWest.freeUpper <=
+       dataEast.topsUsed + dataEast.freeUpper);
+
+    string resNew;
+    // const unsigned char smallCards = sumProfile.length() - 
+      // dataWest.topsUsed - dataEast.topsUsed;
+
+    // unsigned char westDisplayCount, eastDisplayCount;
+
+  if (westSimplerFlag)
   {
     resNew = productWest.strEqualTops(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), 
-      westFreeLower, westFreeUpper, canonicalShift);
+      dataWest, canonicalShift);
   }
   else
   {
     resNew = productEast.strEqualTops(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), 
-      eastFreeLower, eastFreeUpper, canonicalShift);
+      dataEast, canonicalShift);
   }
+
+// cout << "NEQ returns " << resNew << endl;
 
   return resNew;
   }
@@ -1086,11 +1134,11 @@ void Product::fillUsedTops(
   const unsigned char canonicalShift,
   Product& productWest,
   Product& productEast,
-  unsigned char& westTops,
-  unsigned char& eastTops) const
+  OppData& dataWest,
+  OppData& dataEast) const
 {
-  westTops = 0;
-  eastTops = 0;
+  dataWest.topsUsed = 0;
+  dataEast.topsUsed = 0;
 
   for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
   {
@@ -1102,8 +1150,8 @@ void Product::fillUsedTops(
     productWest.tops[topNo] = top;
     productEast.tops[topNo].setMirrored(top, tlength);
 
-    westTops += top.lower();
-    eastTops += tlength - top.lower();
+    dataWest.topsUsed += top.lower();
+    dataEast.topsUsed += tlength - top.lower();
   }
 
   const unsigned char slength = sumProfile.length();
@@ -1111,12 +1159,27 @@ void Product::fillUsedTops(
   if (length.used())
     productWest.length = length;
   else
-    productWest.length.set(slength, westTops, slength - eastTops);
+    productWest.length.set(slength, dataWest.topsUsed, 
+      slength - dataEast.topsUsed);
 
   productEast.length.setMirrored(productWest.length, slength);
 
 // cout << "\nWest " << productWest.strLine() << endl;
 // cout << "East " << productEast.strLine() << endl;
+
+  const unsigned char rest = sumProfile.length() - 
+    dataWest.topsUsed - dataEast.topsUsed;
+
+  const unsigned char westLimit = 
+    productWest.length.upper() - dataWest.topsUsed;
+  const unsigned char eastLimit = 
+    productEast.length.upper() - dataEast.topsUsed;
+
+  dataWest.freeUpper = min(rest, westLimit);
+  dataEast.freeUpper = min(rest, eastLimit);
+
+  dataWest.freeLower = rest - dataEast.freeUpper;
+  dataEast.freeLower = rest - dataWest.freeUpper;
 }
 
 
@@ -1201,9 +1264,9 @@ void Product::separateSingular(
   assert(length.used());
   assert(length.getOperator() == COVER_EQUAL);
 
-  unsigned char westTops, eastTops;
+  OppData dataWest, dataEast;
   Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, westTops, eastTops);
+    productWest, productEast, dataWest, dataEast);
 
   const unsigned char slength = sumProfile.length();
   const unsigned char wlength = length.lower();
@@ -1211,7 +1274,7 @@ void Product::separateSingular(
   const unsigned char hidden = 
     Product::countHidden(sumProfile, canonicalShift);
 
-  if (westTops == wlength)
+  if (dataWest.topsUsed == wlength)
   {
     // The unused tops are 0 for West, maximum for East.
     // East also gets any low cards.
@@ -1220,7 +1283,7 @@ void Product::separateSingular(
 
     Product::fillSideBottoms(OPP_EAST, hidden, productWest, productEast);
   }
-  else if (eastTops == slength - wlength)
+  else if (dataEast.topsUsed == slength - wlength)
   {
     // The unused tops are 0 for East, maximum for West.
     // West also gets any low cards.
@@ -1229,7 +1292,7 @@ void Product::separateSingular(
 
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
   }
-  else if (westTops + hidden == wlength)
+  else if (dataWest.topsUsed + hidden == wlength)
   {
     // East gets any unused tops.  West gets all the low cards.
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
@@ -1238,7 +1301,7 @@ void Product::separateSingular(
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
     Product::fillSideBottoms(OPP_WEST, hidden, productWest, productEast);
   }
-  else if (eastTops + hidden == slength - wlength)
+  else if (dataEast.topsUsed + hidden == slength - wlength)
   {
     // West gets any unused tops.  East gets all the low cards.
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
@@ -1253,7 +1316,7 @@ void Product::separateSingular(
     // Add the right number of low cards to each side.
     assert(static_cast<unsigned char>(activeCount+1) == tops.size());
 
-    const unsigned char westXes = wlength - westTops;
+    const unsigned char westXes = wlength - dataWest.topsUsed;
     const unsigned char allXes = sumProfile[0];
     productWest.tops[0].set(allXes, westXes, westXes);
     productEast.tops[0].set(allXes, allXes - westXes, allXes - westXes);
@@ -1353,12 +1416,29 @@ string Product::strExact(
 }
 
 
+string Product::strEqualTopsOnly(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift) const
+{
+  string result = "";
+
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    --topNo > 0; )
+  {
+    result += Product::strExactTop(sumProfile, ranksNames, 
+      canonicalShift, topNo);
+  }
+
+  return result;
+}
+
+
 string Product::strEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const string& anchor,
-  const unsigned char freeLower,
-  const unsigned char freeUpper,
+  const OppData& data,
   const unsigned char canonicalShift) const
 {
   string start = anchor + " has ";
@@ -1379,15 +1459,15 @@ string Product::strEqualTops(
       lowestUsed = topNo;
   }
 
-      cout << "Product" << Product::strLine() << endl;
-      cout << "cshift " << +canonicalShift << endl;
-  if (canonicalShift == 0)
+      // cout << "Product" << Product::strLine() << endl;
+      // cout << "cshift " << +canonicalShift << endl;
+  if (canonicalShift == 0 && static_cast<unsigned>(activeCount+1) == tops.size())
   {
     // We only have to set the x'es.
-    if (freeLower > 0)
-      result += string(freeLower, 'x');
+    if (data.freeLower > 0)
+      result += string(data.freeLower, 'x');
 
-    result += "(" + string(freeUpper - freeLower, 'x') + ")";
+    result += "(" + string(data.freeUpper - data.freeLower, 'x') + ")";
   }
   else
   {
@@ -1405,28 +1485,34 @@ string Product::strEqualTops(
     const string& lowestCard = lowestRank.substr(lowestRank.size()-1, 1);
 
     // The unused tops.
-    string lows = "";
-    for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-      --topNo > 0; )
-    {
-      const auto& top = tops[topNo];
-      if (top.used() || top.lower() == 0)
-        continue;
+    const unsigned char hidden = Product::countHidden(sumProfile,
+      canonicalShift);
 
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-      lows += topData.strTops(topData.value);
+// cout << data.str("Data") << endl;
+// cout << "hidden " << +hidden << endl;
+
+    if (result.empty())
+      result = "only ";
+    else
+      result += " and ";
+
+    if (data.freeLower == 0 && data.freeUpper == hidden)
+    {
+      result += "any number of cards lower than the " + lowestCard;
     }
-
-    if (freeLower == 0 && freeUpper == lows.size())
+    else if (data.freeLower == data.freeUpper)
     {
-      result += " and any number of cards lower than the " + lowestCard;
+      result += to_string(data.freeLower) + 
+        " cards lower than the " + lowestCard;
     }
     else
     {
-      result += " and " + to_string(freeLower) + "-" + 
-        to_string(freeUpper) + " cards lower than the " + lowestCard;
+      result += to_string(data.freeLower) + "-" + 
+        to_string(data.freeUpper) + " cards lower than the " + lowestCard;
     }
   }
+
+cout << "s+r " << start + result << endl;
 
   return start + result;
 }
