@@ -107,18 +107,6 @@ bool FactoredProduct::lengthConsistent(
 }
 
 
-Opponent FactoredProduct::simplestOpponent(const Profile& sumProfile) const
-{
-  return canonicalPtr->simplestOpponent(sumProfile, canonicalShift);
-}
-
-
-Opponent FactoredProduct::simplestSingular(const Profile& sumProfile) const
-{
-  return canonicalPtr->simplestSingular(sumProfile, canonicalShift);
-}
-
-
 CompareType FactoredProduct::presentOrder(const FactoredProduct& fp2) const
 {
   return canonicalPtr->presentOrder(* fp2.canonicalPtr);

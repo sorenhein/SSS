@@ -43,6 +43,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/product/Profile.cpp         \
                 distributions/covers/product/ProfilePair.cpp     \
                 distributions/covers/product/Product.cpp         \
+                distributions/covers/product/Pverbal.cpp         \
                 distributions/covers/product/FactoredProduct.cpp \
                 distributions/covers/product/ProductMemory.cpp   \
                 distributions/covers/product/ProductStats.cpp    \

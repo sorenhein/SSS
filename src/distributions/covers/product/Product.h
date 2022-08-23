@@ -56,6 +56,18 @@ class Product
 
     ExplainEqual mostlyEqual() const;
 
+    // The following private methods are associated with
+    // strVerbal and live in Pverbal.cpp
+    // TODO Reorder according to Pverbal.cpp
+
+    Opponent simplestOpponent(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift = 0) const;
+
+    Opponent simplestSingular(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift = 0) const;
+
     void topRange(
       unsigned char& noLow,
       unsigned char& noHigh) const;
@@ -224,19 +236,14 @@ class Product
 
     bool lengthConsistent(const unsigned char specificLength) const;
 
-    Opponent simplestOpponent(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift = 0) const;
-
-    Opponent simplestSingular(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift = 0) const;
-
     CompareType presentOrder(const Product& product2) const;
 
     string strHeader(const unsigned lengthIn = 0) const;
 
     string strLine() const;
+
+    // This method and all its private sub-methods live in a separate
+    // implementation file, not Product.cpp but Pverbal.cpp
 
     string strVerbal(
       const Profile& sumProfile,
