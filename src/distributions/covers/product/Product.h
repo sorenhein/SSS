@@ -127,6 +127,13 @@ class Product
       const bool allFlag,
       const bool expandFlag) const;
 
+    string strUsedBottoms(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const bool allFlag,
+      const bool expandFlag) const;
+
     string strEqualTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

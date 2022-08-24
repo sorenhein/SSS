@@ -593,6 +593,27 @@ string Product::strUsedTops(
 }
 
 
+string Product::strUsedBottoms(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const bool allFlag,
+  const bool expandFlag) const
+{
+  string result = "";
+
+  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+  {
+    const unsigned char count = (allFlag ?
+      sumProfile[topNo] : tops[topNo].lower());
+
+    result += ranksNames.strOpponents(topNo, count, expandFlag);
+  }
+
+  return result;
+}
+
+
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
   const bool symmFlag,
@@ -1029,18 +1050,14 @@ string Product::strExact(
 
   if (canonicalShift == 0)
   {
-    // Same principle.
-    result += ranksNames.strOpponents(canonicalShift,
-      tops[0].lower(), false);
+    result += Product::strUsedBottoms(sumProfile, ranksNames,
+      canonicalShift, false, false);
   }
   else if (tops[0].lower() > 0)
   {
     // All the low cards.
-    for (unsigned char hiddenNo = canonicalShift+1; hiddenNo-- > 0; )
-    {
-      result += ranksNames.strOpponents(hiddenNo,
-        sumProfile[hiddenNo], false);
-    }
+    result += Product::strUsedBottoms(sumProfile, ranksNames,
+      canonicalShift, true, false);
   }
 
   return start + result;
