@@ -316,13 +316,7 @@ void Product::getWestLengths(
     topsExactEast += topData.value - top.lower();
   }
 
-  xesHidden = 0;
-  // Add any that are hidden by the canonical shift.
-  for (unsigned char r = 0; r <= canonicalShift; r++)
-  {
-    sumProfile.getTopData(canonicalShift - r, ranksNames, topData);
-    xesHidden += topData.value;
-  }
+  xesHidden = Product::countHidden(sumProfile, canonicalShift);
 
 
 /*
@@ -379,10 +373,12 @@ void Product::fillUsedTops(
   dataWest.ranksUsed = 0;
   dataWest.lowestRankUsed = 0;
   dataWest.lowestRankActive = 0;
+
   dataEast.topsUsed = 0;
   dataEast.ranksUsed = 0;
+  dataEast.lowestRankUsed = 0;
+  dataEast.lowestRankActive = 0;
 
-  // for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     topNo-- > 0; )
   {
@@ -597,31 +593,6 @@ string Product::strUsedTops(
 }
 
 
-string Product::strAvailableTops(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift) const
-{
-  TopData topData;
-  unsigned char topNo;
-  string result;
-
-  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
-  {
-    if (! tops[topNo].used())
-      continue;
-
-    const auto& top = tops[topNo];
-    assert(top.getOperator() == COVER_EQUAL);
-
-    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-
-    result += topData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
-  }
-  return result;
-}
-
-
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
   const bool symmFlag,
@@ -768,52 +739,6 @@ string Product::strExactStart(
 }
 
 
-string Product::strExact(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const string& anchor,
-  const unsigned char canonicalShift) const
-{
-  string start = anchor + " has " + 
-    Product::strExactStart(sumProfile, canonicalShift) + " ";
-
-  // Fill out the tops from above, but not the 0'th top.
-  string result = "";
-  unsigned char check = 0;
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    --topNo > 0; )
-  {
-    result += ranksNames.strOpponents(topNo + canonicalShift,
-      tops[topNo].lower(), false);
-    check += tops[topNo].lower();
-  }
-
-  if (canonicalShift == 0)
-  {
-    // Same principle.
-    result += ranksNames.strOpponents(canonicalShift,
-      tops[0].lower(), false);
-    check += tops[0].lower();
-  }
-  else if (tops[0].lower() > 0)
-  {
-    TopData topData;
-
-    // All the low cards.
-    for (unsigned char hiddenNo = canonicalShift+1; hiddenNo-- > 0; )
-    {
-      sumProfile.getTopData(hiddenNo, ranksNames, topData);
-      result += topData.strTops(topData.value);
-      check += topData.value;
-    }
-  }
-
-  assert(check == length.lower());
-  return start + result;
-}
-
-
 string Product::strEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -826,23 +751,8 @@ string Product::strEqualTops(
   // Fill out the tops from above, but not the 0'th top.
   // Find the last used top.
 
-  unsigned char lowestUsed = 0;
-  unsigned char lowestSet = 0;
-  string result = "";
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    --topNo > 0; )
-  {
-    result += ranksNames.strOpponents(topNo + canonicalShift,
-      tops[topNo].lower(), data.ranksUsed == 1);
-
-    if (tops[topNo].used())
-    {
-      lowestUsed = topNo;
-      if (tops[topNo].lower() > 0)
-        lowestSet = topNo;
-    }
-  }
+  string result = Product::strUsedTops(sumProfile, ranksNames,
+    canonicalShift, false, data.ranksUsed == 1);
 
   // TODO Probably the same as lowestRank == 1
   if (canonicalShift == 0 && static_cast<unsigned>(activeCount+1) == tops.size())
@@ -855,8 +765,7 @@ string Product::strEqualTops(
   }
   else
   {
-    // TopData topData;
-    const unsigned char numOptions = lowestUsed + canonicalShift;
+    const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
 
     if (numOptions <= 2 && data.freeUpper == 1)
     {
@@ -885,8 +794,8 @@ string Product::strEqualTops(
     else
     {
       const string lowestRankStr = 
-        ranksNames.strOpponents(lowestUsed + canonicalShift,
-          sumProfile[lowestUsed + canonicalShift], false);
+        ranksNames.strOpponents(data.lowestRankUsed + canonicalShift,
+          sumProfile[data.lowestRankUsed + canonicalShift], false);
 
       const string& lowestCard = 
         lowestRankStr.substr(lowestRankStr.size()-1, 1);
@@ -925,7 +834,7 @@ string Product::strEqualTops(
           to_string(data.freeUpper);
       }
 
-      if (lowestSet == lowestUsed)
+      if (data.lowestRankActive == data.lowestRankUsed)
         result += " lower-ranked cards";
       else
         result += " cards lower than the " + lowestCard;
@@ -1045,18 +954,8 @@ string Product::strVerbalEqualTops(
 
   result += " has ";
 
-  const string avail = Product::strAvailableTops(sumProfile, ranksNames, 
-      canonicalShift);
-
-  const string avail2 = Product::strUsedTops(sumProfile, ranksNames,
+  const string avail = Product::strUsedTops(sumProfile, ranksNames,
     canonicalShift, true, false);
-
-  if (avail != avail2)
-  {
-    cout << "AVAIL  " << avail << endl;
-    cout << "AVAIL2 " << avail2 << endl;
-  }
-
 
   string exact;
 
@@ -1108,6 +1007,46 @@ string Product::strVerbalEqualTops(
 }
 
 
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                       Singular string methods                      */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
+
+
+string Product::strExact(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& anchor,
+  const unsigned char canonicalShift) const
+{
+  string start = anchor + " has " + 
+    Product::strExactStart(sumProfile, canonicalShift) + " ";
+
+  // Fill out the tops from above, but not the 0'th top.
+  string result = Product::strUsedTops(sumProfile, ranksNames,
+    canonicalShift, false, false);
+
+  if (canonicalShift == 0)
+  {
+    // Same principle.
+    result += ranksNames.strOpponents(canonicalShift,
+      tops[0].lower(), false);
+  }
+  else if (tops[0].lower() > 0)
+  {
+    // All the low cards.
+    for (unsigned char hiddenNo = canonicalShift+1; hiddenNo-- > 0; )
+    {
+      result += ranksNames.strOpponents(hiddenNo,
+        sumProfile[hiddenNo], false);
+    }
+  }
+
+  return start + result;
+}
+
+
 string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1132,6 +1071,12 @@ string Product::strVerbalSingular(
   }
 }
 
+
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                           Overall method                           */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
 
 string Product::strVerbal(
   const Profile& sumProfile,

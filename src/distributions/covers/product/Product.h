@@ -144,11 +144,6 @@ class Product
       const string& anchor,
       const unsigned char canonicalShift) const;
 
-    string strAvailableTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift) const;
-
     string strVerbalLengthOnly(
       const Profile& sumProfile,
       const bool symmFlag,
