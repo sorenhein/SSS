@@ -37,7 +37,8 @@ struct OppData
 {
   unsigned char topsUsed;
   unsigned char ranksUsed;
-  unsigned char oneRankUsed;
+  unsigned char lowestRankUsed;
+  unsigned char lowestRankActive;
   unsigned char freeLower;
   unsigned char freeUpper;
 
@@ -47,7 +48,8 @@ struct OppData
     ss << header;
     ss << "Tops  " << +topsUsed << "\n";
     ss << "Ranks " << +ranksUsed << "\n";
-    ss << "1rank " << +oneRankUsed << "\n";
+    ss << "1rank " << +lowestRankUsed << "\n";
+    ss << "Arank " << +lowestRankActive << "\n";
     ss << "Free  " << +freeLower << " to " << +freeUpper << "\n";
     return ss.str();
   };
@@ -374,11 +376,14 @@ void Product::fillUsedTops(
 {
   dataWest.topsUsed = 0;
   dataWest.ranksUsed = 0;
-  dataWest.oneRankUsed = 0;
+  dataWest.lowestRankUsed = 0;
+  dataWest.lowestRankActive = 0;
   dataEast.topsUsed = 0;
   dataEast.ranksUsed = 0;
 
-  for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
+  // for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    topNo-- > 0; )
   {
     auto& top = tops[topNo];
     if (! top.used())
@@ -390,13 +395,15 @@ void Product::fillUsedTops(
 
     dataWest.topsUsed += top.lower();
     dataWest.ranksUsed++;
+    dataWest.lowestRankUsed = topNo;
     if (top.lower())
-      dataWest.oneRankUsed = topNo;
+      dataWest.lowestRankActive = topNo;
 
     dataEast.topsUsed += tlength - top.lower();
     dataEast.ranksUsed++;
-    if (top.lower() == tlength)
-      dataEast.oneRankUsed = topNo;
+      dataEast.lowestRankUsed = topNo;
+    if (top.lower() < tlength)
+      dataEast.lowestRankActive = topNo;
   }
 
   const unsigned char slength = sumProfile.length();
@@ -1005,7 +1012,7 @@ string Product::strVerbalEqualTops(
       else if (productWest.topsSimplerThan(productEast))
       {
         if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-            dataWest.oneRankUsed == dataEast.oneRankUsed)
+            dataWest.lowestRankActive == dataEast.lowestRankActive)
           return "West has " + resWest;
         else
           return "West has " + resWest + " and not " + resEast;
@@ -1013,7 +1020,7 @@ string Product::strVerbalEqualTops(
       else
       {
         if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-            dataWest.oneRankUsed == dataEast.oneRankUsed)
+            dataWest.lowestRankActive == dataEast.lowestRankActive)
           return "East has " + resEast;
         else
           return "East has " + resEast + " and not " + resWest;
