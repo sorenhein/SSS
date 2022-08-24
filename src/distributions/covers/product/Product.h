@@ -136,13 +136,6 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
-    string strExactTop(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const unsigned char topNo,
-      const bool expandFlag) const;
-
     string strExact(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

@@ -771,21 +771,6 @@ string Product::strExactStart(
 }
 
 
-string Product::strExactTop(
-  [[maybe_unused]] const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const unsigned char topNo,
-  const bool expandFlag) const
-{
-  const auto& top = tops[topNo];
-  assert(top.used());
-
-  return ranksNames.strOpponents(topNo + canonicalShift,
-    top.lower(), expandFlag);
-}
-
-
 string Product::strExact(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -802,16 +787,16 @@ string Product::strExact(
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
-    result += Product::strExactTop(sumProfile, ranksNames, 
-      canonicalShift, topNo, false);
+    result += ranksNames.strOpponents(topNo + canonicalShift,
+      tops[topNo].lower(), false);
     check += tops[topNo].lower();
   }
 
   if (canonicalShift == 0)
   {
     // Same principle.
-    result += Product::strExactTop(sumProfile, ranksNames, 
-      canonicalShift, 0, false);
+    result += ranksNames.strOpponents(canonicalShift,
+      tops[0].lower(), false);
     check += tops[0].lower();
   }
   else if (tops[0].lower() > 0)
@@ -833,7 +818,7 @@ string Product::strExact(
 
 
 string Product::strEqualTopsOnly(
-  const Profile& sumProfile,
+  [[maybe_unused]] const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const OppData& oppData) const
@@ -843,8 +828,8 @@ string Product::strEqualTopsOnly(
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
-    result += Product::strExactTop(sumProfile, ranksNames, 
-      canonicalShift, topNo, oppData.ranksUsed == 1);
+    result += ranksNames.strOpponents(topNo + canonicalShift,
+      tops[topNo].lower(), oppData.ranksUsed == 1);
   }
 
   return result;
@@ -870,9 +855,8 @@ string Product::strEqualTops(
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
-    result += Product::strExactTop(sumProfile, ranksNames, 
-      canonicalShift, topNo, false);
-      // canonicalShift, topNo, data.ranksUsed == 1);
+    result += ranksNames.strOpponents(topNo + canonicalShift,
+      tops[topNo].lower(), data.ranksUsed == 1);
 
     if (tops[topNo].used())
     {
@@ -893,7 +877,7 @@ string Product::strEqualTops(
   }
   else
   {
-    TopData topData;
+    // TopData topData;
     const unsigned char numOptions = lowestUsed + canonicalShift;
 
     if (numOptions <= 2 && data.freeUpper == 1)
@@ -917,43 +901,17 @@ string Product::strEqualTops(
             result += ", ";
         }
 
-        // sumProfile.getTopData(topNo, ranksNames, topData);
-        // result += rcopy + topData.strTops(1);
-
         result += rcopy + ranksNames.strOpponents(topNo, 1, false);
       }
     }
     else
     {
-      /* */
-      sumProfile.getTopData(lowestUsed + canonicalShift, ranksNames, 
-        topData);
-      const string lowestRank = topData.strTops(topData.value);
-      assert(! lowestRank.empty());
-
-      // const string& lowestCard = lowestRank.substr(lowestRank.size()-1, 1);
-      /* */
-
-
-      // const string lowestRankStr = Product::strExactTop(
-        // sumProfile, ranksNames, canonicalShift, lowestUsed, false);
       const string lowestRankStr = 
         ranksNames.strOpponents(lowestUsed + canonicalShift,
           sumProfile[lowestUsed + canonicalShift], false);
 
-/*
-if (lowestRankStr != lowestRank)
-{
-  cout << "lowestRank " << lowestRank << endl;
-  cout << "lowestRankStr " << lowestRankStr << endl;
-}
-*/
-      assert(lowestRankStr == lowestRank);
-
       const string& lowestCard = 
         lowestRankStr.substr(lowestRankStr.size()-1, 1);
-
-
 
       // The unused tops.
       const unsigned char hidden = Product::countHidden(sumProfile,
