@@ -571,13 +571,13 @@ void Product::separateSingular(
 
 
 string Product::strExactTops(
-  const Profile& sumProfile,
+  [[maybe_unused]] const Profile& sumProfile,
   const RanksNames& ranksNames,
   const Opponent simplestOpponent,
   const unsigned char canonicalShift,
-  const  bool skipUnusedFlag) const
+  [[maybe_unused]] const bool skipUnusedFlag) const
 {
-  TopData topData;
+  // TopData topData;
   unsigned char topNo;
   string result;
 
@@ -586,20 +586,18 @@ string Product::strExactTops(
     // This leaves out the lowest top (number 0).
     const auto& top = tops[topNo];
 
-    if (! skipUnusedFlag && ! top.used())
-    {
-      // Add the whole rank string.
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-      result += topData.strTops(topData.value);
-    }
-    else if (top.used())
-    {
-      // Add some (or all) of the rank string.
-      assert(top.getOperator() == COVER_EQUAL);
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-      result += topData.strTops(
-        (simplestOpponent == OPP_EAST ? topData.value - top.lower() :
-          top.lower()));
+    if (! top.used())
+      continue;
+
+    // Add some (or all) of the rank string.
+    assert(top.getOperator() == COVER_EQUAL);
+
+    const unsigned char count = 
+      (simplestOpponent == OPP_EAST ? 
+        sumProfile[topNo + canonicalShift] - top.lower() : top.lower());
+
+    result += ranksNames.strOpponents(topNo + canonicalShift,
+      count, false);
     }
   }
 
