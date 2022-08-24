@@ -134,22 +134,6 @@ class Product
       const bool allFlag,
       const bool expandFlag) const;
 
-    string strEqualTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const string& anchor,
-      const OppData& data,
-      const unsigned char canonicalShift) const;
-
-    string strExactStart(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift) const;
-
-    string strExact(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const string& anchor,
-      const unsigned char canonicalShift) const;
 
     string strVerbalLengthOnly(
       const Profile& sumProfile,
@@ -168,12 +152,47 @@ class Product
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
-    string strVerbalEqualTops(
+    string strVerbalAnyTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const CoverVerbal verbal,
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
+
+    // High tops
+
+    string strVerbalHighTopsOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const Product& productWest,
+      const Product& productEast,
+      const OppData& dataWest,
+      const OppData& dataEast) const;
+
+    string strVerbalHighTopsSide(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const string& side,
+      const OppData& data,
+      const unsigned char canonicalShift) const;
+
+    string strVerbalHighTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const bool symmFlag,
+      const unsigned char canonicalShift) const;
+
+    // Singular
+
+    string strVerbalSingularQualifier(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
+    string strVerbalSingularSide(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const string& side,
+      const unsigned char canonicalShift) const;
 
     string strVerbalSingular(
       const Profile& sumProfile,

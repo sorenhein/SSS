@@ -1,5 +1,20 @@
 F, equal tops
 -------------
+East has (tops only)
+Check how many cards are left and of which ranks
+If only x's, perhaps say thath the other side has (xx)
+
+East has H --> has exactly one of ...
+
+Length 2 is spelled out, AJ = ace-jack
+Maybe other lengths too?
+
+East has x -> East has exactly one x
+
+
+East has A and not QT98 might --> East has A(x)
+
+
  8(x)
      16 East has 8 and 0-1 cards lower than the 8
 

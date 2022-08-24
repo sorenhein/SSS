@@ -729,45 +729,149 @@ string Product::strVerbalLengthAndOneTop(
 }
 
 
-string Product::strExactStart(
+string Product::strVerbalAnyTops(
   const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-  if (! length.used() ||  length.lower() > 2)
-    return "exactly";
+  assert(activeCount > 0);
 
-  // A somewhat involved way to say "the singleton K" but
-  // "a singleton H", and "the doubleton HH" if there are two,
-  // "a doubleton HH" if there are more.
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
 
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    topNo-- > 0; )
+  OppData dataWest, dataEast;
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+#ifdef DEBUG_EQUAL_TOPS
+    cout << "Product  " << Product::strLine() << "\n";
+    cout << "prodWest " << productWest.strLine() << "\n";
+    cout << "prodEast " << productEast.strLine() << "\n";
+    cout << dataWest.str("West");
+    cout << dataEast.str("East");
+#endif
+
+  const Opponent simplestOpponent =
+    Product::simplestOpponent(sumProfile, canonicalShift);
+
+  string result;
+  if (symmFlag)
+    result = "Either opponent";
+  else if (simplestOpponent == OPP_WEST)
+    result = "West";
+  else
+    result = "East";
+
+  result += " has ";
+
+  const string avail = Product::strUsedTops(sumProfile, ranksNames,
+    canonicalShift, true, false);
+
+  string exact;
+
+  if (simplestOpponent == OPP_EAST)
+    exact = productEast.strUsedTops(sumProfile, ranksNames,
+      canonicalShift, false, dataEast.ranksUsed == 1);
+  else
+    exact = productWest.strUsedTops(sumProfile, ranksNames,
+      canonicalShift, false, dataWest.ranksUsed == 1);
+
+  if (exact == "")
+    result += "none";
+  else
+    result += exact;
+
+  result += " out of " + avail;
+
+  unsigned char xesMin, xesMax, xesAvailable, xesHidden,
+    topsExact, topsAvailable;
+  Product::getWestLengths(
+    sumProfile, 
+    ranksNames, 
+    simplestOpponent,
+    canonicalShift,
+    xesMin,
+    xesMax,
+    xesHidden,
+    xesAvailable,
+    topsExact,
+    topsAvailable);
+
+  string other = " cards of other ranks";
+
+  if (xesMin == xesMax)
+    result += " and " + to_string(xesMin) + other;
+  else
   {
-    // Find the first non-zero top.
-    auto& top = tops[topNo];
-    assert(top.used());
-    if (top.lower() == 0)
-      continue;
-
-    if (length.lower() < sumProfile[topNo + canonicalShift])
-      return (length.lower() == 1 ? "a singleton" : "a doubleton");
-    else
-      return (length.lower() == 1 ? "the singleton" : "the doubleton");
+    result += " and " + to_string(xesMin) + "-" +
+      to_string(xesMax) + other;
   }
 
-  assert(false);
-  return "";
+  return result;
 }
 
 
-string Product::strEqualTops(
+
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                     Equal high top string methods                  */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
+
+
+string Product::strVerbalHighTopsOnly(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const string& anchor,
+  const unsigned char canonicalShift,
+  const Product& productWest,
+  const Product& productEast,
+  const OppData& dataWest,
+  const OppData& dataEast) const
+{
+  string resWest = productWest.strUsedTops(sumProfile,
+    ranksNames, canonicalShift, false, dataWest.ranksUsed == 1);
+  string resEast = productEast.strUsedTops(sumProfile,
+    ranksNames, canonicalShift, false, dataEast.ranksUsed == 1);
+
+  if (resWest.empty())
+  {
+    // Just state that East has the tops.
+    return "East has " + resEast;
+  }
+  else if (resEast.empty())
+  {
+    // Just state that West has the tops.
+    return "West has " + resWest;
+  }
+  else if (productWest.topsSimplerThan(productEast))
+  {
+    if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
+        dataWest.lowestRankActive == dataEast.lowestRankActive)
+      return "West has " + resWest;
+    else
+      return "West has " + resWest + " and not " + resEast;
+  }
+  else
+  {
+    if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
+        dataWest.lowestRankActive == dataEast.lowestRankActive)
+      return "East has " + resEast;
+    else
+      return "East has " + resEast + " and not " + resWest;
+  }
+}
+
+
+string Product::strVerbalHighTopsSide(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& side,
   const OppData& data,
   const unsigned char canonicalShift) const
 {
-  string start = anchor + " has ";
+  string start = side + " has ";
 
   // Fill out the tops from above, but not the 0'th top.
   // Find the last used top.
@@ -868,10 +972,9 @@ string Product::strEqualTops(
 }
 
 
-string Product::strVerbalEqualTops(
+string Product::strVerbalHighTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const CoverVerbal verbal,
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
@@ -893,47 +996,13 @@ string Product::strVerbalEqualTops(
     cout << dataEast.str("East");
 #endif
 
-  if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+  if (! length.used())
   {
-    if (! length.used())
-    {
-      string resWest = productWest.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, dataWest.ranksUsed == 1);
-      string resEast = productEast.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, dataEast.ranksUsed == 1);
-
-      if (resWest.empty())
-      {
-        // Just state that East has the tops.
-        return "East has " + resEast;
-      }
-      else if (resEast.empty())
-      {
-        // Just state that West has the tops.
-        return "West has " + resWest;
-      }
-      else if (productWest.topsSimplerThan(productEast))
-      {
-        if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-            dataWest.lowestRankActive == dataEast.lowestRankActive)
-          return "West has " + resWest;
-        else
-          return "West has " + resWest + " and not " + resEast;
-      }
-      else
-      {
-        if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-            dataWest.lowestRankActive == dataEast.lowestRankActive)
-          return "East has " + resEast;
-        else
-          return "East has " + resEast + " and not " + resWest;
-      }
-    }
-    else
-    {
-// cout << "\nProduct NEQ " << Product::strLine() << "\n";
-    }
-
+    return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
+      canonicalShift, productWest, productEast, dataWest, dataEast);
+  }
+  else
+  {
     // const bool westSimplerFlag = 
       // (productWest.topsSimplerThan(productEast));
 
@@ -941,90 +1010,19 @@ string Product::strVerbalEqualTops(
       (dataWest.topsUsed + dataWest.freeUpper <=
        dataEast.topsUsed + dataEast.freeUpper);
 
-    string resNew;
-
     if (westSimplerFlag)
     {
-      resNew = productWest.strEqualTops(sumProfile, ranksNames, 
+      return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
         (symmFlag ? "Either opponent" : "West"), 
         dataWest, canonicalShift);
     }
     else
     {
-      resNew = productEast.strEqualTops(sumProfile, ranksNames, 
+      return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
         (symmFlag ? "Either opponent" : "East"), 
         dataEast, canonicalShift);
     }
-
-// cout << "NEQ returns " << resNew << endl;
-
-    return resNew;
   }
-
-
-  const Opponent simplestOpponent =
-    Product::simplestOpponent(sumProfile, canonicalShift);
-
-  string result;
-  if (symmFlag)
-    result = "Either opponent";
-  else if (simplestOpponent == OPP_WEST)
-    result = "West";
-  else
-    result = "East";
-
-  result += " has ";
-
-  const string avail = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, true, false);
-
-  string exact;
-
-  if (simplestOpponent == OPP_EAST)
-    exact = productEast.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataEast.ranksUsed == 1);
-  else
-    exact = productWest.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataWest.ranksUsed == 1);
-
-  if (exact == "")
-    result += "none";
-  else
-    result += exact;
-
-  result += " out of " + avail;
-
-  unsigned char xesMin, xesMax, xesAvailable, xesHidden,
-    topsExact, topsAvailable;
-  Product::getWestLengths(
-    sumProfile, 
-    ranksNames, 
-    simplestOpponent,
-    canonicalShift,
-    xesMin,
-    xesMax,
-    xesHidden,
-    xesAvailable,
-    topsExact,
-    topsAvailable);
-
-  string other;
-  if (verbal == VERBAL_HIGH_TOPS_EQUAL)
-    other = " lower cards";
-  else if (verbal == VERBAL_ANY_TOPS_EQUAL)
-    other = " cards of other ranks";
-  else
-    assert(false);
-
-  if (xesMin == xesMax)
-    result += " and " + to_string(xesMin) + other;
-  else
-  {
-    result += " and " + to_string(xesMin) + "-" +
-      to_string(xesMax) + other;
-  }
-
-  return result;
 }
 
 
@@ -1035,21 +1033,57 @@ string Product::strVerbalEqualTops(
 /*--------------------------------------------------------------------*/
 
 
-string Product::strExact(
+string Product::strVerbalSingularQualifier(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const string& anchor,
   const unsigned char canonicalShift) const
 {
-  string start = anchor + " has " + 
-    Product::strExactStart(sumProfile, canonicalShift) + " ";
+  if (! length.used() ||  length.lower() > 2)
+    return "exactly";
+
+  // A somewhat involved way to say "the singleton K" but
+  // "a singleton H", and "the doubleton HH" if there are two,
+  // "a doubleton HH" if there are more.
+
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    topNo-- > 0; )
+  {
+    // Find the first non-zero top.
+    auto& top = tops[topNo];
+    assert(top.used());
+    if (top.lower() == 0)
+      continue;
+
+    if (length.lower() < sumProfile[topNo + canonicalShift])
+      return (length.lower() == 1 ? "a singleton" : "a doubleton");
+    else
+      return (length.lower() == 1 ? "the singleton" : "the doubleton");
+  }
+
+  assert(false);
+  return "";
+}
+
+
+string Product::strVerbalSingularSide(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& side,
+  const unsigned char canonicalShift) const
+{
+  string result = side + " has ";
+
+  // Add some verbal cues.
+  result += Product::strVerbalSingularQualifier(sumProfile, 
+    canonicalShift) + " ";
 
   // Fill out the tops from above, but not the 0'th top.
-  string result = Product::strUsedTops(sumProfile, ranksNames,
+  result += Product::strUsedTops(sumProfile, ranksNames,
     canonicalShift, false, false);
 
+  // Fill out the low cards.
   if (canonicalShift == 0)
   {
+    // The right number of the single lowest rank.
     result += Product::strUsedBottoms(sumProfile, ranksNames,
       canonicalShift, false, false);
   }
@@ -1060,7 +1094,7 @@ string Product::strExact(
       canonicalShift, true, false);
   }
 
-  return start + result;
+  return result;
 }
 
 
@@ -1078,12 +1112,12 @@ string Product::strVerbalSingular(
 
   if (productWest.simplerThan(productEast))
   {
-    return productWest.strExact(sumProfile, ranksNames, 
+    return productWest.strVerbalSingularSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), canonicalShift);
   }
   else
   {
-    return productEast.strExact(sumProfile, ranksNames, 
+    return productEast.strVerbalSingularSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), canonicalShift);
   }
 }
@@ -1128,13 +1162,19 @@ string Product::strVerbal(
       symmFlag, 
       canonicalShift);
   }
-  else if (verbal == VERBAL_HIGH_TOPS_EQUAL ||
-      verbal == VERBAL_ANY_TOPS_EQUAL)
+  else if (verbal == VERBAL_ANY_TOPS_EQUAL)
   {
-    return Product::strVerbalEqualTops(
+    return Product::strVerbalAnyTops(
       sumProfile, 
       ranksNames, 
-      verbal, 
+      symmFlag, 
+      canonicalShift);
+  }
+  else if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+  {
+    return Product::strVerbalHighTops(
+      sumProfile, 
+      ranksNames, 
       symmFlag, 
       canonicalShift);
   }
