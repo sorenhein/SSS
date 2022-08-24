@@ -127,12 +127,6 @@ class Product
       const bool allFlag,
       const bool expandFlag) const;
 
-    string strEqualTopsOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const OppData& oppData) const;
-
     string strEqualTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

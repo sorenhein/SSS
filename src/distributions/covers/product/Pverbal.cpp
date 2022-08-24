@@ -814,33 +814,6 @@ string Product::strExact(
 }
 
 
-string Product::strEqualTopsOnly(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const OppData& oppData) const
-{
-  return Product::strUsedTops(sumProfile, ranksNames, canonicalShift, 
-    false, oppData.ranksUsed == 1);
-
-  /*
-  string result = "";
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    --topNo > 0; )
-  {
-    if (! tops[topNo].used())
-      continue;
-
-    result += ranksNames.strOpponents(topNo + canonicalShift,
-      tops[topNo].lower(), oppData.ranksUsed == 1);
-  }
-
-  return result;
-  */
-}
-
-
 string Product::strEqualTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -994,10 +967,10 @@ string Product::strVerbalEqualTops(
   {
     if (! length.used())
     {
-      string resWest = productWest.strEqualTopsOnly(sumProfile,
-        ranksNames, canonicalShift, dataWest);
-      string resEast = productEast.strEqualTopsOnly(sumProfile,
-        ranksNames, canonicalShift, dataEast);
+      string resWest = productWest.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, dataWest.ranksUsed == 1);
+      string resEast = productEast.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, dataEast.ranksUsed == 1);
 
       if (resWest.empty())
       {
@@ -1075,15 +1048,24 @@ string Product::strVerbalEqualTops(
   const string avail = Product::strAvailableTops(sumProfile, ranksNames, 
       canonicalShift);
 
+  const string avail2 = Product::strUsedTops(sumProfile, ranksNames,
+    canonicalShift, true, false);
+
+  if (avail != avail2)
+  {
+    cout << "AVAIL  " << avail << endl;
+    cout << "AVAIL2 " << avail2 << endl;
+  }
+
 
   string exact;
 
   if (simplestOpponent == OPP_EAST)
-    exact = productEast.strEqualTopsOnly(sumProfile, ranksNames,
-      canonicalShift, dataEast);
+    exact = productEast.strUsedTops(sumProfile, ranksNames,
+      canonicalShift, false, dataEast.ranksUsed == 1);
   else
-    exact = productWest.strEqualTopsOnly(sumProfile, ranksNames,
-      canonicalShift, dataWest);
+    exact = productWest.strUsedTops(sumProfile, ranksNames,
+      canonicalShift, false, dataWest.ranksUsed == 1);
 
   if (exact == "")
     result += "none";
