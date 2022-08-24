@@ -119,6 +119,14 @@ class Product
       Product& productWest,
       Product& productEast) const;
 
+
+    string strUsedTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const bool allFlag,
+      const bool expandFlag) const;
+
     string strEqualTopsOnly(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
@@ -141,13 +149,6 @@ class Product
       const RanksNames& ranksNames,
       const string& anchor,
       const unsigned char canonicalShift) const;
-
-    string strExactTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const unsigned char canonicalShift,
-      const bool skipUnusedFlag) const;
 
     string strAvailableTops(
       const Profile& sumProfile,

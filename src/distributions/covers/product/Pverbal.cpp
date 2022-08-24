@@ -45,12 +45,13 @@ struct OppData
   string str(const string& header) const
   {
     stringstream ss;
-    ss << header;
-    ss << "Tops  " << +topsUsed << "\n";
-    ss << "Ranks " << +ranksUsed << "\n";
-    ss << "1rank " << +lowestRankUsed << "\n";
-    ss << "Arank " << +lowestRankActive << "\n";
-    ss << "Free  " << +freeLower << " to " << +freeUpper << "\n";
+    ss << header << "\n";;
+    ss << "Top cards used     " << +topsUsed << "\n";
+    ss << "Ranks used         " << +ranksUsed << "\n";
+    ss << "Lowest rank used   " << +lowestRankUsed << "\n";
+    ss << "Lowest rank active " << +lowestRankActive << "\n";
+    ss << "Free low cards     " << +freeLower << " to " << 
+      +freeUpper << "\n";
     return ss.str();
   };
 };
@@ -570,35 +571,26 @@ void Product::separateSingular(
 /**********************************************************************/
 
 
-string Product::strExactTops(
-  [[maybe_unused]] const Profile& sumProfile,
+string Product::strUsedTops(
+  const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
   const unsigned char canonicalShift,
-  [[maybe_unused]] const bool skipUnusedFlag) const
+  const bool allFlag,
+  const bool expandFlag) const
 {
-  // TopData topData;
-  unsigned char topNo;
-  string result;
+  string result = "";
 
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    --topNo > 0; )
   {
-    // This leaves out the lowest top (number 0).
-    const auto& top = tops[topNo];
-
-    if (! top.used())
+    if (! tops[topNo].used())
       continue;
 
-    // Add some (or all) of the rank string.
-    assert(top.getOperator() == COVER_EQUAL);
-
-    const unsigned char count = 
-      (simplestOpponent == OPP_EAST ? 
-        sumProfile[topNo + canonicalShift] - top.lower() : top.lower());
+    const unsigned char count = (allFlag ?
+      sumProfile[topNo + canonicalShift] : tops[topNo].lower());
 
     result += ranksNames.strOpponents(topNo + canonicalShift,
-      count, false);
-    }
+      count, expandFlag);
   }
 
   return result;
@@ -823,21 +815,29 @@ string Product::strExact(
 
 
 string Product::strEqualTopsOnly(
-  [[maybe_unused]] const Profile& sumProfile,
+  const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const OppData& oppData) const
 {
+  return Product::strUsedTops(sumProfile, ranksNames, canonicalShift, 
+    false, oppData.ranksUsed == 1);
+
+  /*
   string result = "";
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
+    if (! tops[topNo].used())
+      continue;
+
     result += ranksNames.strOpponents(topNo + canonicalShift,
       tops[topNo].lower(), oppData.ranksUsed == 1);
   }
 
   return result;
+  */
 }
 
 
@@ -974,22 +974,24 @@ string Product::strVerbalEqualTops(
 {
   assert(activeCount > 0);
 
-  if (verbal == VERBAL_HIGH_TOPS_EQUAL)
-  {
-    Product productWest, productEast;
-    productWest.resize(tops.size());
-    productEast.resize(tops.size());
-  
-    OppData dataWest, dataEast;
-    Product::fillUsedTops(sumProfile, canonicalShift, 
-      productWest, productEast, dataWest, dataEast);
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+
+  OppData dataWest, dataEast;
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
 
 #ifdef DEBUG_EQUAL_TOPS
-    cout << "Product " << Product::strLine() << "\n";
+    cout << "Product  " << Product::strLine() << "\n";
+    cout << "prodWest " << productWest.strLine() << "\n";
+    cout << "prodEast " << productEast.strLine() << "\n";
     cout << dataWest.str("West");
     cout << dataEast.str("East");
 #endif
 
+  if (verbal == VERBAL_HIGH_TOPS_EQUAL)
+  {
     if (! length.used())
     {
       string resWest = productWest.strEqualTopsOnly(sumProfile,
@@ -1037,27 +1039,23 @@ string Product::strVerbalEqualTops(
        dataEast.topsUsed + dataEast.freeUpper);
 
     string resNew;
-    // const unsigned char smallCards = sumProfile.length() - 
-      // dataWest.topsUsed - dataEast.topsUsed;
 
-    // unsigned char westDisplayCount, eastDisplayCount;
-
-  if (westSimplerFlag)
-  {
-    resNew = productWest.strEqualTops(sumProfile, ranksNames, 
-      (symmFlag ? "Either opponent" : "West"), 
-      dataWest, canonicalShift);
-  }
-  else
-  {
-    resNew = productEast.strEqualTops(sumProfile, ranksNames, 
-      (symmFlag ? "Either opponent" : "East"), 
-      dataEast, canonicalShift);
-  }
+    if (westSimplerFlag)
+    {
+      resNew = productWest.strEqualTops(sumProfile, ranksNames, 
+        (symmFlag ? "Either opponent" : "West"), 
+        dataWest, canonicalShift);
+    }
+    else
+    {
+      resNew = productEast.strEqualTops(sumProfile, ranksNames, 
+        (symmFlag ? "Either opponent" : "East"), 
+        dataEast, canonicalShift);
+    }
 
 // cout << "NEQ returns " << resNew << endl;
 
-  return resNew;
+    return resNew;
   }
 
 
@@ -1074,10 +1072,18 @@ string Product::strVerbalEqualTops(
 
   result += " has ";
 
-  const string exact = Product::strExactTops(sumProfile, ranksNames, 
-    simplestOpponent, canonicalShift, true);
   const string avail = Product::strAvailableTops(sumProfile, ranksNames, 
       canonicalShift);
+
+
+  string exact;
+
+  if (simplestOpponent == OPP_EAST)
+    exact = productEast.strEqualTopsOnly(sumProfile, ranksNames,
+      canonicalShift, dataEast);
+  else
+    exact = productWest.strEqualTopsOnly(sumProfile, ranksNames,
+      canonicalShift, dataWest);
 
   if (exact == "")
     result += "none";
