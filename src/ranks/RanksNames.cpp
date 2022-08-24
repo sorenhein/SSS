@@ -111,6 +111,20 @@ const RankNames& RanksNames::getOpponents(const unsigned topNumber) const
 }
 
 
+string RanksNames::strOpponents(
+  const unsigned topNumber,
+  const unsigned char count,
+  const bool expandFlag) const
+{
+  assert(topNumber < indexByTop.size());
+
+  const auto itop = indexByTop[topNumber];
+  assert(itop < names.size());
+
+  return names[itop].strOpponents(count, expandFlag);
+}
+
+
 string RanksNames::str() const
 {
   if (names.empty())

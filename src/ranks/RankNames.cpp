@@ -52,6 +52,11 @@ const vector<char> CARD_RELATIVE_NAMES =
   
 };
 
+const vector<string> CARD_COUNT_NAMES =
+{
+  "none", "one", "two", "three", "four", "five", "six", "seven", "eight"
+};
+
 
 RankNames::RankNames()
 {
@@ -166,6 +171,32 @@ string RankNames::strComponent(const RankName rankName) const
 {
   assert(rankName < RANKNAME_SIZE);
   return names[rankName];
+}
+
+
+string RankNames::strOpponents(
+  const unsigned char numCards,
+  const bool expandFlag) const
+{
+  if (numCards == 0)
+    return "";
+  else if (numCards == count)
+  {
+    if (expandFlag)
+      return "the " + names[RANKNAME_ACTUAL_FULL];
+    else
+      return names[RANKNAME_ACTUAL_SHORT];
+  }
+  else
+  {
+    if (expandFlag)
+    {
+      return "exactly " + CARD_COUNT_NAMES[numCards] + " of " +
+        names[RANKNAME_ACTUAL_FULL];
+    }
+    else
+      return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
+  }
 }
 
 

@@ -61,9 +61,14 @@ class RanksNames
 
     const RankNames& getOpponents(const unsigned topNumber) const;
 
+    string strOpponents(
+      const unsigned topNumber,
+      const unsigned char count,
+      const bool expandFlag) const;
+
     string str() const;
 
-    string strMap () const;
+    string strMap() const;
 };
 
 #endif

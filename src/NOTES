@@ -44,6 +44,7 @@ F, equal tops
       12 *F West has K and 0-7 cards lower than the K [2/128]
 
 
+11/35189, #3, G output is wrong (8 and 1 other card is correct)
 
 Output a "where" line for the actual solutions.
 Only when it is of interest.

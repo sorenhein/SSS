@@ -18,10 +18,10 @@ enum Side: unsigned;
 
 enum RankName: unsigned
 {
-  RANKNAME_ACTUAL_FULL = 0,
-  RANKNAME_ACTUAL_SHORT = 1,
-  RANKNAME_ABSOLUTE_FULL = 2,
-  RANKNAME_ABSOLUTE_SHORT = 3,
+  RANKNAME_ACTUAL_FULL = 0,     // jack-ten
+  RANKNAME_ACTUAL_SHORT = 1,    // JT
+  RANKNAME_ABSOLUTE_FULL = 2,   // honor-honor
+  RANKNAME_ABSOLUTE_SHORT = 3,  // HH
   RANKNAME_RELATIVE_SHORT = 4,
   RANKNAME_SIZE = 5
 };
@@ -60,6 +60,10 @@ class RankNames
     size_t size() const;
 
     string strComponent(const RankName rankName) const;
+
+    string strOpponents(
+      const unsigned char numCards,
+      const bool expandFlag) const;
 
     string strHeader() const;
 

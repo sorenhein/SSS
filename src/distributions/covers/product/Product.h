@@ -122,7 +122,8 @@ class Product
     string strEqualTopsOnly(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const unsigned char canonicalShift) const;
+      const unsigned char canonicalShift,
+      const OppData& oppData) const;
 
     string strEqualTops(
       const Profile& sumProfile,
@@ -139,7 +140,8 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
-      const unsigned char topNo) const;
+      const unsigned char topNo,
+      const bool expandFlag) const;
 
     string strExact(
       const Profile& sumProfile,
