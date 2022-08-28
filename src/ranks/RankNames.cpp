@@ -176,20 +176,21 @@ string RankNames::strComponent(const RankName rankName) const
 
 string RankNames::strOpponents(
   const unsigned char numCards,
-  const bool expandFlag) const
+  const bool expandFlag,
+  const bool singleRankFlag) const
 {
   if (numCards == 0)
     return "";
   else if (numCards == count)
   {
     if (expandFlag)
-      return "the " + names[RANKNAME_ACTUAL_FULL];
+      return (singleRankFlag ? "the " : "") + names[RANKNAME_ACTUAL_FULL];
     else
       return names[RANKNAME_ACTUAL_SHORT];
   }
   else
   {
-    if (expandFlag)
+    if (expandFlag && singleRankFlag)
     {
       return "exactly " + CARD_COUNT_NAMES[numCards] + " of " +
         names[RANKNAME_ACTUAL_FULL];

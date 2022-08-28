@@ -37,10 +37,33 @@ struct OppData
 {
   unsigned char topsUsed;
   unsigned char ranksUsed;
+  unsigned char ranksActive;
   unsigned char lowestRankUsed;
   unsigned char lowestRankActive;
   unsigned char freeLower;
   unsigned char freeUpper;
+
+
+  string strXes(
+    const bool dashFlag,
+    const bool expandFlag) const
+  {
+    // We only have to set the x'es.
+    if (freeLower > 0)
+    {
+      const string text = 
+        (expandFlag ?  " as well as " : (dashFlag ? "-" : ""));
+      return text + 
+        string(freeLower, 'x') +
+        "(" + string(freeUpper - freeLower, 'x') + ")";
+    }
+    else
+    {
+      const string text = (dashFlag ? "-" : "");
+      return text + "(" + string(freeUpper, 'x') + ")";
+    }
+  }
+
 
   string str(const string& header) const
   {
@@ -48,6 +71,7 @@ struct OppData
     ss << header << "\n";;
     ss << "Top cards used     " << +topsUsed << "\n";
     ss << "Ranks used         " << +ranksUsed << "\n";
+    ss << "Ranks active       " << +ranksActive << "\n";
     ss << "Lowest rank used   " << +lowestRankUsed << "\n";
     ss << "Lowest rank active " << +lowestRankActive << "\n";
     ss << "Free low cards     " << +freeLower << " to " << 
@@ -371,11 +395,13 @@ void Product::fillUsedTops(
 {
   dataWest.topsUsed = 0;
   dataWest.ranksUsed = 0;
+  dataWest.ranksActive = 0;
   dataWest.lowestRankUsed = 0;
   dataWest.lowestRankActive = 0;
 
   dataEast.topsUsed = 0;
   dataEast.ranksUsed = 0;
+  dataEast.ranksActive = 0;
   dataEast.lowestRankUsed = 0;
   dataEast.lowestRankActive = 0;
 
@@ -394,13 +420,19 @@ void Product::fillUsedTops(
     dataWest.ranksUsed++;
     dataWest.lowestRankUsed = topNo;
     if (top.lower())
+    {
+      dataWest.ranksActive++;
       dataWest.lowestRankActive = topNo;
+    }
 
     dataEast.topsUsed += tlength - top.lower();
     dataEast.ranksUsed++;
       dataEast.lowestRankUsed = topNo;
     if (top.lower() < tlength)
+    {
+      dataEast.ranksActive++;
       dataEast.lowestRankActive = topNo;
+    }
   }
 
   const unsigned char slength = sumProfile.length();
@@ -412,9 +444,6 @@ void Product::fillUsedTops(
       slength - dataEast.topsUsed);
 
   productEast.length.setMirrored(productWest.length, slength);
-
-// cout << "\nWest " << productWest.strLine() << endl;
-// cout << "East " << productEast.strLine() << endl;
 
   const unsigned char rest = sumProfile.length() - 
     dataWest.topsUsed - dataEast.topsUsed;
@@ -572,7 +601,8 @@ string Product::strUsedTops(
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const bool allFlag,
-  const bool expandFlag) const
+  const bool expandFlag,
+  const bool singleRankFlag) const
 {
   string result = "";
 
@@ -585,8 +615,16 @@ string Product::strUsedTops(
     const unsigned char count = (allFlag ?
       sumProfile[topNo + canonicalShift] : tops[topNo].lower());
 
-    result += ranksNames.strOpponents(topNo + canonicalShift,
-      count, expandFlag);
+    const string rstr = ranksNames.strOpponents(topNo + canonicalShift,
+        count, expandFlag, singleRankFlag);
+
+    if (rstr.empty())
+      continue;
+
+    if (expandFlag && ! singleRankFlag && ! result.empty())
+      result += "-";
+
+    result += rstr;
   }
 
   return result;
@@ -607,7 +645,8 @@ string Product::strUsedBottoms(
     const unsigned char count = (allFlag ?
       sumProfile[topNo] : tops[topNo].lower());
 
-    result += ranksNames.strOpponents(topNo, count, expandFlag);
+    result += 
+      ranksNames.strOpponents(topNo, count, expandFlag, false);
   }
 
   return result;
@@ -767,16 +806,16 @@ string Product::strVerbalAnyTops(
   result += " has ";
 
   const string avail = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, true, false);
+    canonicalShift, true, false, false);
 
   string exact;
 
   if (simplestOpponent == OPP_EAST)
     exact = productEast.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataEast.ranksUsed == 1);
+      canonicalShift, false, dataEast.ranksActive == 1, false);
   else
     exact = productWest.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataWest.ranksUsed == 1);
+      canonicalShift, false, dataWest.ranksActive == 1, false);
 
   if (exact == "")
     result += "none";
@@ -830,36 +869,111 @@ string Product::strVerbalHighTopsOnly(
   const OppData& dataWest,
   const OppData& dataEast) const
 {
-  string resWest = productWest.strUsedTops(sumProfile,
-    ranksNames, canonicalShift, false, dataWest.ranksUsed == 1);
-  string resEast = productEast.strUsedTops(sumProfile,
-    ranksNames, canonicalShift, false, dataEast.ranksUsed == 1);
-
-  if (resWest.empty())
+  // TODO If they share a single partial rank, for sure we can
+  // drop the opposing side.  But there are other such cases.
+  if (dataEast.topsUsed == 0 ||
+      (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
+        dataWest.lowestRankActive == dataEast.lowestRankActive))
   {
-    // Just state that East has the tops.
-    return "East has " + resEast;
-  }
-  else if (resEast.empty())
-  {
+// cout << "P1" << endl;
     // Just state that West has the tops.
-    return "West has " + resWest;
+    return "West has " + 
+      productWest.strUsedTops(
+        sumProfile,
+        ranksNames, 
+        canonicalShift, 
+        false, 
+        true,
+        dataWest.ranksActive == 1);
   }
-  else if (productWest.topsSimplerThan(productEast))
+
+  if (dataWest.topsUsed == 0 ||
+      (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
+        dataWest.lowestRankActive == dataEast.lowestRankActive))
   {
-    if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-        dataWest.lowestRankActive == dataEast.lowestRankActive)
-      return "West has " + resWest;
+// cout << "P1" << endl;
+    // Just state that East has the tops.
+    return "East has " + 
+      productEast.strUsedTops(
+        sumProfile,
+        ranksNames, 
+        canonicalShift, 
+        false, 
+        true,
+        dataEast.ranksActive == 1);
+  }
+
+  const bool simpleWest = 
+    (dataWest.ranksActive == 1 || dataWest.topsUsed <= 2);
+  const bool simpleEast = 
+    (dataEast.ranksActive == 1 || dataEast.topsUsed <= 2);
+
+  const bool simpleBoth = simpleWest && simpleEast;
+  const bool partialBoth = 
+    (dataWest.ranksActive == 1 && dataEast.ranksActive == 1);
+
+/*
+cout << "Product " << Product::strLine() << endl;
+cout << dataWest.str("West");
+cout << dataEast.str("East");
+cout << "simpleBoth " << simpleBoth << endl;
+cout << "partialBoth " << partialBoth << endl;
+*/
+
+  bool preferWest;
+  if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
+    preferWest = true;
+  else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
+    preferWest = false;
+  else
+    preferWest = productWest.topsSimplerThan(productEast);
+
+  if (preferWest)
+  {
+
+    if (dataWest.lowestRankUsed == 1 && canonicalShift == 0)
+    {
+// cout << "P3" << endl;
+      const string resWest = productWest.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleWest, 
+        dataWest.ranksActive == 1);
+
+      return "West has " + resWest + 
+        dataWest.strXes(! resWest.empty(), dataWest.ranksUsed == 1);
+    }
     else
+    {
+// cout << "P4" << endl;
+      const string resWest = productWest.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleBoth, partialBoth);
+      const string resEast = productEast.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleBoth, partialBoth);
+
       return "West has " + resWest + " and not " + resEast;
+    }
   }
   else
   {
-    if (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-        dataWest.lowestRankActive == dataEast.lowestRankActive)
-      return "East has " + resEast;
+    if (dataEast.lowestRankUsed == 1 && canonicalShift == 0)
+    {
+// cout << "P5" << endl;
+      string resEast = productEast.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleEast, 
+        dataEast.ranksActive == 1);
+
+      return "East has " + resEast + 
+        dataEast.strXes(! resEast.empty(), dataEast.ranksUsed == 1);
+    }
     else
+    {
+// cout << "P6" << endl;
+      string resWest = productWest.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleBoth, partialBoth);
+      string resEast = productEast.strUsedTops(sumProfile,
+        ranksNames, canonicalShift, false, simpleBoth, partialBoth);
+
       return "East has " + resEast + " and not " + resWest;
+    }
   }
 }
 
@@ -877,23 +991,23 @@ string Product::strVerbalHighTopsSide(
   // Find the last used top.
 
   string result = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, false, data.ranksUsed == 1);
+    canonicalShift, false, data.ranksActive == 1, data.ranksActive == 1);
 
-  // TODO Probably the same as lowestRank == 1
-  if (canonicalShift == 0 && static_cast<unsigned>(activeCount+1) == tops.size())
+  const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
+
+  if (numOptions == 1)
   {
+// cout << "P10" << endl;
+// cout << data.str("data");
     // We only have to set the x'es.
-    if (data.freeLower > 0)
-      result += string(data.freeLower, 'x');
-
-    result += "(" + string(data.freeUpper - data.freeLower, 'x') + ")";
+    assert(canonicalShift == 0);
+    result += data.strXes(! result.empty(), data.ranksActive == 1);
   }
   else
   {
-    const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
-
     if (numOptions <= 2 && data.freeUpper == 1)
     {
+// cout << "P11" << endl;
       // There are at most two options for the low cards.
       // We need 1 low card.
       string rcopy = result;
@@ -913,14 +1027,17 @@ string Product::strVerbalHighTopsSide(
             result += ", ";
         }
 
-        result += rcopy + ranksNames.strOpponents(topNo, 1, false);
+        result += rcopy + 
+          ranksNames.strOpponents(topNo, 1, false, false);
       }
     }
     else
     {
+// cout << "P12" << endl;
       const string lowestRankStr = 
         ranksNames.strOpponents(data.lowestRankUsed + canonicalShift,
-          sumProfile[data.lowestRankUsed + canonicalShift], false);
+          sumProfile[data.lowestRankUsed + canonicalShift], 
+          false, false);
 
       const string& lowestCard = 
         lowestRankStr.substr(lowestRankStr.size()-1, 1);
@@ -998,6 +1115,7 @@ string Product::strVerbalHighTops(
 
   if (! length.used())
   {
+cout << "P0" << endl;
     return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
       canonicalShift, productWest, productEast, dataWest, dataEast);
   }
@@ -1012,12 +1130,14 @@ string Product::strVerbalHighTops(
 
     if (westSimplerFlag)
     {
+cout << "P7" << endl;
       return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
         (symmFlag ? "Either opponent" : "West"), 
         dataWest, canonicalShift);
     }
     else
     {
+cout << "P8" << endl;
       return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
         (symmFlag ? "Either opponent" : "East"), 
         dataEast, canonicalShift);
@@ -1078,7 +1198,7 @@ string Product::strVerbalSingularSide(
 
   // Fill out the tops from above, but not the 0'th top.
   result += Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, false, false);
+    canonicalShift, false, false, false);
 
   // Fill out the low cards.
   if (canonicalShift == 0)

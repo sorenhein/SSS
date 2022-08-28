@@ -1,46 +1,25 @@
+High tops only
+--------------
+Don't prefix "the" when ace-kingthe jack
+Also need a dash
+
+A single card is spelled out
+the ace
+the jack
+the eight
+exactly one x / the x
+exactly one honor
+
+Maybe when both are <= 2, also spell out
+
+X and not Y
+If only x is left, express the shorter #honors perhaps as J(x)
+Can be singleton or void
+AH and not H9: West as AH and East has H9 (is probably best after all)
+
+
 F, equal tops
 -------------
-East has (tops only)
-Check how many cards are left and of which ranks
-If only x's, perhaps say thath the other side has (xx)
-
-East has H --> has exactly one of ...
-
-Length 2 is spelled out, AJ = ace-jack
-Maybe other lengths too?
-
-East has x -> East has exactly one x
-
-
-East has A and not QT98 might --> East has A(x)
-
-
- 8(x)
-     16 East has 8 and 0-1 cards lower than the 8
-
- 86, 84
-     50 East has 8 and 1 cards lower than the 8
-
-     10 East has 8 and 1-2 cards lower than the 8
-
- 87(x)
-      1 East has 87 and 0-1 cards lower than the 7
-
- Potentially East has singleton x or void
-      8 West has AQT98
-
- East has KQ(x)
-      7 West has T87 and East has KQ
-
-
-
-
- and up to two
-       5 *F East has A and 0-2 cards lower than the 8 [4/4]
-
- and up to two lower cards (Note: A is A and not H here)
-      95 *F East has A and 0-2 cards lower than the A [4/4]
-
  (exactly A8) and up to two lower cards (Note: 8 is 8 and not h)
       13 *F East has A8 and 0-2 cards lower than the 8 [4/4]
 
@@ -52,12 +31,6 @@ East has A and not QT98 might --> East has A(x)
  East has up to one card lower than the T? ("singleton or void lower
  than the T")
        2 *F West has QT and 2-3 cards lower than the T [5/3]
-
- Really should just be "West has K"
- K is the highest West card
- The count is everything else
-      12 *F West has K and 0-7 cards lower than the K [2/128]
-
 
 11/35189, #3, G output is wrong (8 and 1 other card is correct)
 

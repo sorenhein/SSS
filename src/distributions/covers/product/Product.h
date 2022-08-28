@@ -125,7 +125,8 @@ class Product
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
       const bool allFlag,
-      const bool expandFlag) const;
+      const bool expandFlag,
+      const bool singleRankFlag) const;
 
     string strUsedBottoms(
       const Profile& sumProfile,

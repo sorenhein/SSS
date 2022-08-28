@@ -64,7 +64,8 @@ class RanksNames
     string strOpponents(
       const unsigned topNumber,
       const unsigned char count,
-      const bool expandFlag) const;
+      const bool expandFullFlag,
+      const bool singleRankFlag) const;
 
     string str() const;
 
