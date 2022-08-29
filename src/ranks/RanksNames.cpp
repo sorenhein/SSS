@@ -115,14 +115,19 @@ string RanksNames::strOpponents(
   const unsigned topNumber,
   const unsigned char count,
   const bool expandFullFlag,
-  const bool singleRankFlag) const
+  const bool singleRankFlag,
+  unsigned char& runningCount,
+  bool& exactlyFlag,
+  bool& partialFlag) const
 {
   assert(topNumber < indexByTop.size());
 
   const auto itop = indexByTop[topNumber];
   assert(itop < names.size());
 
-  return names[itop].strOpponents(count, expandFullFlag, singleRankFlag);
+  runningCount += count;
+  return names[itop].strOpponents(count, expandFullFlag, singleRankFlag,
+    exactlyFlag, partialFlag);
 }
 
 

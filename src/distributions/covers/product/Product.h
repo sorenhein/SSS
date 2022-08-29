@@ -126,7 +126,10 @@ class Product
       const unsigned char canonicalShift,
       const bool allFlag,
       const bool expandFlag,
-      const bool singleRankFlag) const;
+      const bool singleRankFlag,
+      const bool onlyFullFlag,
+      bool& exactlyFlag,
+      unsigned char& resultCount) const;
 
     string strUsedBottoms(
       const Profile& sumProfile,

@@ -599,23 +599,34 @@ string Product::strUsedTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
-  const bool allFlag,
-  const bool expandFlag,
-  const bool singleRankFlag) const
+  const bool allAvailableFlag, // Not just the ones in Product
+  const bool expandFlag, // jack, not J etc.
+  const bool singleRankFlag, // Use dashes between expansions
+  const bool onlyFullFlag, // Only ranks where Product == available
+  bool& exactlyFlag,
+  unsigned char& resultCount) const
 {
   string result = "";
+  resultCount = 0;
+  bool partialFlag = false;
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     --topNo > 0; )
   {
-    if (! tops[topNo].used())
+    const auto& top = tops[topNo];
+    if (! top.used())
       continue;
 
-    const unsigned char count = (allFlag ?
-      sumProfile[topNo + canonicalShift] : tops[topNo].lower());
+    const unsigned char available = sumProfile[topNo + canonicalShift];
+    if (onlyFullFlag && top.lower() != available)
+      continue;
+
+    const unsigned char count = (allAvailableFlag ?
+      available : top.lower());
 
     const string rstr = ranksNames.strOpponents(topNo + canonicalShift,
-        count, expandFlag, singleRankFlag);
+        count, expandFlag, singleRankFlag, resultCount, 
+        exactlyFlag, partialFlag);
 
     if (rstr.empty())
       continue;
@@ -638,14 +649,18 @@ string Product::strUsedBottoms(
   const bool expandFlag) const
 {
   string result = "";
+  unsigned char runningCount = 0;
+  bool exactlyFlag = false;
+  bool partialFlag = false;
 
   for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
   {
     const unsigned char count = (allFlag ?
       sumProfile[topNo] : tops[topNo].lower());
 
-    result += 
-      ranksNames.strOpponents(topNo, count, expandFlag, false);
+    result += ranksNames.strOpponents(
+      topNo, count, expandFlag, false, 
+      runningCount, exactlyFlag, partialFlag);
   }
 
   return result;
@@ -804,17 +819,21 @@ string Product::strVerbalAnyTops(
 
   result += " has ";
 
+  unsigned char runningCount = 0;
+  bool exactlyFlag = false;
   const string avail = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, true, false, false);
+    canonicalShift, true, false, false, false, exactlyFlag, runningCount);
 
   string exact;
 
   if (simplestOpponent == OPP_EAST)
     exact = productEast.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataEast.ranksActive == 1, false);
+      canonicalShift, false, dataEast.ranksActive == 1, false, false,
+      exactlyFlag, runningCount);
   else
     exact = productWest.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataWest.ranksActive == 1, false);
+      canonicalShift, false, dataWest.ranksActive == 1, false, false,
+      exactlyFlag, runningCount);
 
   if (exact == "")
     result += "none";
@@ -869,6 +888,8 @@ string Product::strVerbalHighTopsOnlySide(
   const bool singleActiveRank) const
 {
   const unsigned char numInactive = data.lowestRankUsed + canonicalShift;
+  bool exactlyFlag = false;
+  unsigned char runningCount = 0;
 
   if (data.ranksActive < 3 || 
       data.ranksActive <= numInactive ||
@@ -877,7 +898,8 @@ string Product::strVerbalHighTopsOnlySide(
     return side + " has " + 
       Product::strUsedTops(
         sumProfile, ranksNames, canonicalShift, 
-        false, true, data.ranksActive == 1);
+        false, true, data.ranksActive == 1, false, 
+        exactlyFlag, runningCount);
   }
   else
   {
@@ -901,32 +923,39 @@ string Product::strVerbalHighTopsOnlyBothSides(
   const unsigned char numInactive = data.lowestRankUsed + canonicalShift;
   const bool simpleFlag = (data.ranksActive == 1 || data.topsUsed <= 2);
 
+  bool exactlyFlag = false;
+  unsigned char runningCount = 0;
+
   if (numInactive == 1)
   {
     const string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, simpleFlag, data.ranksActive == 1);
+      false, simpleFlag, data.ranksActive == 1, false, 
+      exactlyFlag, runningCount);
 
     return side + " has " + result + 
-      data.strXes(false, simpleFlag);
+      data.strXes(exactlyFlag, simpleFlag);
   }
   else
   {
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, simpleFlag, data.ranksActive == 1);
+      false, simpleFlag, data.ranksActive == 1, false, 
+      exactlyFlag, runningCount);
 
     const bool simpleEast =
       (dataOther.ranksActive == 1 || dataOther.topsUsed <= 2);
 
+    runningCount = 0;
     const string resultOther = productOther.strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, simpleEast, dataOther.ranksActive == 1);
+      false, simpleEast, dataOther.ranksActive == 1, true, 
+      exactlyFlag, runningCount);
 
-    if (dataOther.topsUsed > 2)
+    if (runningCount > 2)
       return side + " has " + resultOwn + 
         " and none of " + resultOther;
-    else if (dataOther.topsUsed == 2 && dataOther.freeUpper > 2)
+    else if (runningCount == 2 && dataOther.freeUpper > 2)
       return side + " has " + resultOwn + 
         " and neither of " + resultOther;
     else
@@ -1022,8 +1051,14 @@ string Product::strVerbalHighTopsSide(
   // Fill out the tops from above, but not the 0'th top.
   // Find the last used top.
 
-  string result = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, false, data.ranksActive == 1, data.ranksActive == 1);
+  unsigned char runningCount = 0;
+  bool exactlyFlag = false;
+  bool partialFlag = false;
+
+  string result = Product::strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    false, data.ranksActive == 1, data.ranksActive == 1, false, 
+    exactlyFlag, runningCount);
 
   const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
 
@@ -1033,8 +1068,8 @@ string Product::strVerbalHighTopsSide(
 // cout << data.str("data");
     // We only have to set the x'es.
     assert(canonicalShift == 0);
-    result += data.strXes(
-      data.ranksActive == 1 && ! result.empty(), data.ranksActive == 1);
+    result += data.strXes(exactlyFlag, data.ranksActive == 1);
+      // data.ranksActive == 1 && ! result.empty(), data.ranksActive == 1);
   }
   else
   {
@@ -1061,7 +1096,8 @@ string Product::strVerbalHighTopsSide(
         }
 
         result += rcopy + 
-          ranksNames.strOpponents(topNo, 1, false, false);
+          ranksNames.strOpponents(topNo, 1, false, false, 
+            runningCount, exactlyFlag, partialFlag);
       }
     }
     else
@@ -1070,7 +1106,7 @@ string Product::strVerbalHighTopsSide(
       const string lowestRankStr = 
         ranksNames.strOpponents(data.lowestRankUsed + canonicalShift,
           sumProfile[data.lowestRankUsed + canonicalShift], 
-          false, false);
+          false, false, runningCount, exactlyFlag, partialFlag);
 
       const string& lowestCard = 
         lowestRankStr.substr(lowestRankStr.size()-1, 1);
@@ -1230,8 +1266,12 @@ string Product::strVerbalSingularSide(
     canonicalShift) + " ";
 
   // Fill out the tops from above, but not the 0'th top.
-  result += Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, false, false, false);
+  bool exactlyFlag = false;
+  unsigned char runningCount = 0;
+
+  result += Product::strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    false, false, false, false, exactlyFlag, runningCount);
 
   // Fill out the low cards.
   if (canonicalShift == 0)

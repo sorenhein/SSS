@@ -177,8 +177,13 @@ string RankNames::strComponent(const RankName rankName) const
 string RankNames::strOpponents(
   const unsigned char numCards,
   const bool expandFlag,
-  const bool singleRankFlag) const
+  const bool singleRankFlag,
+  bool& exactlyFlag,
+  bool& partialFlag) const
 {
+  exactlyFlag = false;
+  partialFlag = false;
+
   if (numCards == 0)
     return "";
   else if (numCards == count)
@@ -190,8 +195,11 @@ string RankNames::strOpponents(
   }
   else
   {
+    partialFlag = true;
+
     if (expandFlag && singleRankFlag)
     {
+      exactlyFlag = true;
       return "exactly " + CARD_COUNT_NAMES[numCards] + " of " +
         names[RANKNAME_ACTUAL_FULL];
     }

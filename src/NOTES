@@ -1,16 +1,8 @@
 High tops only
 --------------
-Don't prefix "the" when ace-kingthe jack
-Also need a dash
+strUsedTops
+Yet another flag, onlyFullFlag
 
-A single card is spelled out
-the ace
-the jack
-the eight
-exactly one x / the x
-exactly one honor
-
-Maybe when both are <= 2, also spell out
 
 X and not Y
 If only x is left, express the shorter #honors perhaps as J(x)

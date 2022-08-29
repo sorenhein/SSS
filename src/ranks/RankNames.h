@@ -64,7 +64,9 @@ class RankNames
     string strOpponents(
       const unsigned char numCards,
       const bool expandFlag,
-      const bool singleRankFlag) const;
+      const bool singleRankFlag,
+      bool& exactlyFlag,
+      bool& partialFlag) const;
 
     string strHeader() const;
 
