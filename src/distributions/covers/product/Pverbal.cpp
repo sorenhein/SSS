@@ -889,6 +889,53 @@ string Product::strVerbalHighTopsOnlySide(
 }
 
 
+string Product::strVerbalHighTopsOnlyBothSides(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const Product& productOther,
+  const string& side,
+  const OppData& data,
+  const OppData& dataOther) const
+{
+  const unsigned char numInactive = data.lowestRankUsed + canonicalShift;
+  const bool simpleFlag = (data.ranksActive == 1 || data.topsUsed <= 2);
+
+  if (numInactive == 1)
+  {
+    const string result = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, simpleFlag, data.ranksActive == 1);
+
+    return side + " has " + result + 
+      data.strXes(false, simpleFlag);
+  }
+  else
+  {
+    const string resultOwn = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, simpleFlag, data.ranksActive == 1);
+
+    const bool simpleEast =
+      (dataOther.ranksActive == 1 || dataOther.topsUsed <= 2);
+
+    const string resultOther = productOther.strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, simpleEast, dataOther.ranksActive == 1);
+
+    if (dataOther.topsUsed > 2)
+      return side + " has " + resultOwn + 
+        " and none of " + resultOther;
+    else if (dataOther.topsUsed == 2 && dataOther.freeUpper > 2)
+      return side + " has " + resultOwn + 
+        " and neither of " + resultOther;
+    else
+      return side + " has " + resultOwn + 
+        " and not " + resultOther;
+  }
+}
+
+
 string Product::strVerbalHighTopsOnly(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -950,59 +997,15 @@ cout << "partialBoth " << partialBoth << endl;
 
   if (preferWest)
   {
-    if (numInactive == 1)
-    {
-// cout << "P3" << endl;
-      const string resWest = productWest.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleWest, 
-        dataWest.ranksActive == 1);
-
-      return "West has " + resWest + 
-        dataWest.strXes(false, simpleWest);
-    }
-    else
-    {
-// cout << "P4" << endl;
-      const string resWest = productWest.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleWest, partialWest);
-      const string resEast = productEast.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleEast, partialEast);
-
-      if (dataEast.topsUsed > 2)
-        return "West has " + resWest + " and none of " + resEast;
-      else if (dataEast.topsUsed == 2 && dataEast.freeUpper > 2)
-        return "West has " + resWest + " and neither of " + resEast;
-      else
-        return "West has " + resWest + " and not " + resEast;
-    }
+    return productWest.strVerbalHighTopsOnlyBothSides(
+      sumProfile, ranksNames, canonicalShift,
+      productEast, "West", dataWest, dataEast);
   }
   else
   {
-    if (numInactive == 1)
-    {
-// cout << "P5" << endl;
-      string resEast = productEast.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleEast, 
-        dataEast.ranksActive == 1);
-
-      return "East has " + resEast + 
-        dataEast.strXes(false, simpleEast);
-    }
-    else
-    {
-// cout << "P6" << endl;
-      string resWest = productWest.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleWest, partialWest);
-      string resEast = productEast.strUsedTops(sumProfile,
-        ranksNames, canonicalShift, false, simpleEast, partialEast);
-
-      if (dataWest.topsUsed > 2)
-        return "East has " + resEast + " and none of " + resWest;
-      else if (dataWest.topsUsed == 2 && dataWest.freeUpper > 2)
-        return "East has " + resEast + " and neither of " + resWest;
-      else
-        return "East has " + resEast + " and not " + resWest;
-    }
+    return productEast.strVerbalHighTopsOnlyBothSides(
+      sumProfile, ranksNames, canonicalShift,
+      productWest, "East", dataEast, dataWest);
   }
 }
 
