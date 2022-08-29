@@ -161,6 +161,15 @@ class Product
 
     // High tops
 
+    string strVerbalHighTopsOnlySide(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const string& side,
+      const string& sideOther,
+      const OppData& data,
+      const bool singleActiveRank) const;
+
     string strVerbalHighTopsOnly(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
