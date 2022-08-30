@@ -1,13 +1,10 @@
 High tops only
 --------------
 Maybe don't need all four args of strUsedTops independently?
-Look at the ones I normally grep away: 
-"lower "
-"lower-ranked"
+
+Put OppData in a file, maybe even a class
 
 Did I break anything in singular?
-
-Clean up code
 
 
 Output a "where" line for the actual solutions.

@@ -67,6 +67,8 @@ class RanksNames
       const bool expandFullFlag,
       const bool singleRankFlag) const;
 
+    string lowestCard(const unsigned topNumber) const;
+
     string str() const;
 
     string strMap() const;

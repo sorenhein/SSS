@@ -126,6 +126,19 @@ string RanksNames::strOpponents(
 }
 
 
+string RanksNames::lowestCard(const unsigned topNumber) const
+{
+  const string r = 
+    RanksNames::getOpponents(topNumber).strComponent(RANKNAME_ACTUAL_FULL);
+
+  const size_t found = r.find_last_of('-');
+  if (found == string::npos)
+    return r;
+  else
+    return r.substr(found+1);
+}
+
+
 string RanksNames::str() const
 {
   if (names.empty())

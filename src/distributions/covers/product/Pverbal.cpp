@@ -67,6 +67,66 @@ struct OppData
   }
 
 
+  string strFreeSemantic() const
+  {
+    if (freeLower == 0)
+    {
+      if (freeUpper == 1)
+        return "at most a singleton";
+      else if (freeUpper == 2)
+        return "at most a doubleton";
+      else if (freeUpper == 3)
+        return "at most a tripleton";
+      else
+        return ("at most " + to_string(freeUpper) + " cards");
+    }
+    else if (freeLower == 1)
+    {
+      if (freeUpper == 1)
+        return "a singleton";
+      else if (freeUpper == 2)
+        return "a singleton or doubleton";
+      else
+        return ( "1-" + to_string(freeUpper) + " cards");
+    }
+    else if (freeLower == 2 && freeUpper == 2)
+      return "a doubleton";
+    else if (freeLower == 3 && freeUpper == 3)
+      return "a tripleton";
+    else
+      return to_string(freeLower) + "-" + to_string(freeUpper) + " cards";
+  }
+
+
+  string strFreeCount() const
+  {
+    if (freeLower == 0)
+    {
+      if (freeUpper == 1)
+        return "at most one";
+      else if (freeUpper == 2)
+        return "at most two";
+      else if (freeUpper == 3)
+        return "at most three";
+      else
+        return "at most " + to_string(freeUpper);
+    }
+    else if (freeLower == 1)
+    {
+      if (freeUpper == 1)
+        return "one";
+      else
+        return "1-" + to_string(freeUpper);
+    }
+    else if (freeLower == 2 && freeUpper == 2)
+      return "two";
+    else if (freeLower == 3 && freeUpper == 3)
+      return "three";
+    else
+      return to_string(freeLower) + "-" + to_string(freeUpper);
+  }
+
+
   string str(const string& header) const
   {
     stringstream ss;
@@ -984,20 +1044,19 @@ string Product::strVerbalHighTopsOnlyBothSides(
   {
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, data.ranksActive == 1, false);
+      false, data.topsUsed == 1, data.ranksActive == 1, false);
 
-    // TODO Call this "lower"
-    return side + " has " + resultOwn + " and perhaps smaller cards";
+    return side + " has " + resultOwn + " and perhaps lower cards";
   }
   else
   {
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, data.ranksActive == 1, false);
+      false, data.topsUsed == 1, data.ranksActive == 1, false);
 
     const string resultOther = productOther.strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, dataOther.ranksFull == 1, dataOther.ranksFull == 1, true);
+      false, dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
 
     string s = (dataOther.topsFull > 2 ? "none of" :
       (dataOther.topsFull == 2 ? "neither of" : "not"));
@@ -1033,21 +1092,9 @@ string Product::strVerbalHighTopsOnly(
       "East", "West", dataEast, singleActiveRank);
   }
 
-  const bool simpleWest = 
-    (dataWest.ranksActive == 1 || dataWest.topsUsed <= 2);
-  const bool simpleEast = 
-    (dataEast.ranksActive == 1 || dataEast.topsUsed <= 2);
-  const bool simpleBoth = simpleWest && simpleEast;
-
-  const bool partialWest = (dataWest.ranksActive == 1);
-  const bool partialEast = (dataEast.ranksActive == 1);
-  const bool partialBoth = partialWest && partialEast;
-
-  // TODO Streamline, maybe put in a simpler() method
-  bool preferWest;
-  if (simpleWest && ! simpleEast)
+  if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
     preferWest = true;
-  else if (! simpleWest && simpleEast)
+  else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
     preferWest = false;
   else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
     preferWest = true;
@@ -1078,75 +1125,54 @@ string Product::strVerbalHighTopsSide(
   const OppData& data,
   const unsigned char canonicalShift) const
 {
-  string result = Product::strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    false, false, data.ranksActive == 1, false);
-
   const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
 
   if (numOptions == 1)
   {
+    string result = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, false, data.ranksActive == 1, false);
+
     // We only have to set the x'es.
     return side + " has " + result + data.strXes(false, false);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
-    // We need 1 low card.
-    result = Product::strAddBottom(ranksNames, canonicalShift, 
-      result, data.freeLower == 0);
+    // We need up to one low card.
+    string result = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, false, data.ranksActive == 1, false);
+
+    return side + " has " +
+      Product::strAddBottom(ranksNames, canonicalShift, 
+        result, data.freeLower == 0);
+  }
+  else if (data.topsUsed == 0)
+  {
+    string result = data.strFreeSemantic();
+
+    if (data.freeUpper != 1)
+      result += " completely";
+
+    return side + " has " + result + " below the " +
+        ranksNames.lowestCard(numOptions);
   }
   else
   {
-cout << "P12" << endl;
-    const string lowestRankStr = 
-      ranksNames.strOpponents(data.lowestRankUsed + canonicalShift,
-        sumProfile[data.lowestRankUsed + canonicalShift], 
-        false, false);
+    // General case.
+    string result = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, data.topsUsed == 1, data.ranksActive == 1, false);
 
-    const string& lowestCard = 
-      lowestRankStr.substr(lowestRankStr.size()-1, 1);
-
-    // The unused tops.
-    const unsigned char numBottoms = Product::countBottoms(sumProfile,
-      canonicalShift);
-
-#ifdef DEBUG_EQUAL_TOPS
-      cout << "cshift " << +canonicalShift << endl;
-      cout << data.str("Data") << endl;
-      cout << "numBottoms " << +numBottoms << endl;
-#endif
-
-    if (result.empty())
-      result = "only ";
-    else
-      result += " and ";
-
-    if (data.freeLower == 0 && data.freeUpper == numBottoms)
-    {
-      // More like "West has K" or "West has exactly one H"
-      result += "any number of ";
-    }
-    else if (data.freeLower == data.freeUpper)
-    {
-      result += to_string(data.freeLower);
-    }
-    else if (data.freeLower == 0)
-    {
-      result += "at most " + to_string(data.freeUpper);
-    }
-    else
-    {
-      result += to_string(data.freeLower) + "-" + 
-        to_string(data.freeUpper);
-    }
+    result += " and " + data.strFreeCount();
 
     if (data.lowestRankActive == data.lowestRankUsed)
-      result += " lower-ranked cards";
+      result += ", lower-ranked cards";
     else
-      result += " cards lower than the " + lowestCard;
-  }
+      result += " cards below the " + ranksNames.lowestCard(numOptions);
 
-  return side + " has " + result;
+    return side + " has " + result;
+  }
 }
 
 
