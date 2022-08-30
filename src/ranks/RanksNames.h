@@ -65,10 +65,7 @@ class RanksNames
       const unsigned topNumber,
       const unsigned char count,
       const bool expandFullFlag,
-      const bool singleRankFlag,
-      unsigned char& runningCount,
-      bool& exactlyFlag,
-      bool& partialFlag) const;
+      const bool singleRankFlag) const;
 
     string str() const;
 

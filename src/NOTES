@@ -1,7 +1,13 @@
 High tops only
 --------------
-strUsedTops
-Yet another flag, onlyFullFlag
+new count method, countOver(const Product& productOther)
+# cards
+# ranks
+In the normal fill method, can set partialFlag (for both)
+Keep all these three new parameters in data
+Then strOpponents doesn't need two parameters anymore
+and has no side effects
+ZZH
 
 
 X and not Y

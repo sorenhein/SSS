@@ -88,7 +88,7 @@ class Product
       unsigned char& topsExact,
       unsigned char& topsAvailable) const;
 
-    unsigned char countHidden(
+    unsigned char countBottoms(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
@@ -127,9 +127,7 @@ class Product
       const bool allFlag,
       const bool expandFlag,
       const bool singleRankFlag,
-      const bool onlyFullFlag,
-      bool& exactlyFlag,
-      unsigned char& resultCount) const;
+      const bool onlyFullFlag) const;
 
     string strUsedBottoms(
       const Profile& sumProfile,
