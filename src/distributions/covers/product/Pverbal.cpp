@@ -685,6 +685,32 @@ string Product::strUsedBottoms(
 }
 
 
+string Product::strAddBottom(
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const string& base,
+  const bool emptyFlag) const
+{
+  // Adds either no bottom or exactly one of each possible bottom.
+
+  string result = "";
+
+  // Show the version without any low card.
+  if (emptyFlag)
+    result = base;
+
+  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+  {
+    if (! result.empty())
+      result += (topNo == 0 ? " or " : ", ");
+
+    result += base + ranksNames.strOpponents(topNo, 1, false, false);
+  }
+
+  return result;
+}
+
+
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
   const bool symmFlag,
@@ -938,16 +964,14 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     const string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, data.ranksActive == 1, false);
+      false, false, data.ranksActive == 1, false);
 
-cout << "Q1 adding x'es\n";
     return side + " has " + result + 
-      data.strXes(false, data.ranksActive == 1);
+      data.strXes(false, false);
   }
   else if (dataOther.freeUpper <= dataOther.topsFull)
   {
     // Prefer to state the low cards.
-cout << "Q2\n";
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
       false, false, data.ranksActive == 1, false);
@@ -962,7 +986,6 @@ cout << "Q2\n";
       sumProfile, ranksNames, canonicalShift, 
       false, data.ranksActive == 1, data.ranksActive == 1, false);
 
-cout << "Q3\n";
     // TODO Call this "lower"
     return side + " has " + resultOwn + " and perhaps smaller cards";
   }
@@ -976,7 +999,6 @@ cout << "Q3\n";
       sumProfile, ranksNames, canonicalShift, 
       false, dataOther.ranksFull == 1, dataOther.ranksFull == 1, true);
 
-cout << "Q4\n";
     string s = (dataOther.topsFull > 2 ? "none of" :
       (dataOther.topsFull == 2 ? "neither of" : "not"));
 
@@ -1021,6 +1043,7 @@ string Product::strVerbalHighTopsOnly(
   const bool partialEast = (dataEast.ranksActive == 1);
   const bool partialBoth = partialWest && partialEast;
 
+  // TODO Streamline, maybe put in a simpler() method
   bool preferWest;
   if (simpleWest && ! simpleEast)
     preferWest = true;
@@ -1055,46 +1078,22 @@ string Product::strVerbalHighTopsSide(
   const OppData& data,
   const unsigned char canonicalShift) const
 {
-  string start = side + " has ";
-
   string result = Product::strUsedTops(
     sumProfile, ranksNames, canonicalShift, 
     false, false, data.ranksActive == 1, false);
-    // false, data.ranksActive == 1, data.ranksActive == 1, false);
 
   const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
 
   if (numOptions == 1)
   {
-cout << "P10" << endl;
-// cout << data.str("data");
     // We only have to set the x'es.
-    result += data.strXes(false, false);
+    return side + " has " + result + data.strXes(false, false);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
-cout << "P11" << endl;
     // We need 1 low card.
-    string rcopy = result;
-    result =  "";
-
-    // Show the version without any low card.
-    if (data.freeLower == 0)
-      result = rcopy;
-
-    for (unsigned char topNo = numOptions; topNo-- > 0; 0)
-    {
-      if (! result.empty())
-      {
-        if (topNo == 0)
-          result += " or ";
-        else
-          result += ", ";
-      }
-
-      result += rcopy + ranksNames.strOpponents(topNo, 1, false, false);
-cout << "P11 end: " << result << endl;
-    }
+    result = Product::strAddBottom(ranksNames, canonicalShift, 
+      result, data.freeLower == 0);
   }
   else
   {
@@ -1147,9 +1146,7 @@ cout << "P12" << endl;
       result += " cards lower than the " + lowestCard;
   }
 
-// cout << "s+r " << start + result << endl;
-
-  return start + result;
+  return side + " has " + result;
 }
 
 
@@ -1169,43 +1166,23 @@ string Product::strVerbalHighTops(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
-#ifdef DEBUG_EQUAL_TOPS
-    cout << "Product  " << Product::strLine() << "\n";
-    cout << "prodWest " << productWest.strLine() << "\n";
-    cout << "prodEast " << productEast.strLine() << "\n";
-    cout << dataWest.str("West");
-    cout << dataEast.str("East");
-#endif
-
   if (! length.used())
   {
-cout << "P0" << endl;
     return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
       canonicalShift, productWest, productEast, dataWest, dataEast);
   }
+  else if (dataWest.topsUsed + dataWest.freeUpper <=
+    dataEast.topsUsed + dataEast.freeUpper)
+  {
+    return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "West"), 
+      dataWest, canonicalShift);
+  }
   else
   {
-    // const bool westSimplerFlag = 
-      // (productWest.topsSimplerThan(productEast));
-
-    const bool westSimplerFlag =
-      (dataWest.topsUsed + dataWest.freeUpper <=
-       dataEast.topsUsed + dataEast.freeUpper);
-
-    if (westSimplerFlag)
-    {
-cout << "P7" << endl;
-      return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
-        (symmFlag ? "Either opponent" : "West"), 
-        dataWest, canonicalShift);
-    }
-    else
-    {
-cout << "P8" << endl;
-      return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
-        (symmFlag ? "Either opponent" : "East"), 
-        dataEast, canonicalShift);
-    }
+    return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "East"), 
+      dataEast, canonicalShift);
   }
 }
 

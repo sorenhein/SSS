@@ -1,36 +1,14 @@
 High tops only
 --------------
-new count method, countOver(const Product& productOther)
-# cards
-# ranks
-In the normal fill method, can set partialFlag (for both)
-Keep all these three new parameters in data
-Then strOpponents doesn't need two parameters anymore
-and has no side effects
-ZZH
+Maybe don't need all four args of strUsedTops independently?
+Look at the ones I normally grep away: 
+"lower "
+"lower-ranked"
 
+Did I break anything in singular?
 
-X and not Y
-If only x is left, express the shorter #honors perhaps as J(x)
-Can be singleton or void
-AH and not H9: West as AH and East has H9 (is probably best after all)
+Clean up code
 
-
-F, equal tops
--------------
- (exactly A8) and up to two lower cards (Note: 8 is 8 and not h)
-      13 *F East has A8 and 0-2 cards lower than the 8 [4/4]
-
- perhaps "lower cards" is OK here too
-      36 *F East has AH and 0-2 cards lower than the J [3/8]
-
- 11/36848
- QTHH4
- East has up to one card lower than the T? ("singleton or void lower
- than the T")
-       2 *F West has QT and 2-3 cards lower than the T [5/3]
-
-11/35189, #3, G output is wrong (8 and 1 other card is correct)
 
 Output a "where" line for the actual solutions.
 Only when it is of interest.

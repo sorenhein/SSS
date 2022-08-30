@@ -136,6 +136,12 @@ class Product
       const bool allFlag,
       const bool expandFlag) const;
 
+    string strAddBottom(
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const string& base,
+      const bool emptyFlag) const;
+
 
     string strVerbalLengthOnly(
       const Profile& sumProfile,
