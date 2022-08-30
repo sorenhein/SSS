@@ -13,7 +13,7 @@ open my $fh, '<', $file or die $!;
 while (my $line = <$fh>)
 {
   last if $line =~ /^Count/;
-  next unless $line =~ /^\*F/;
+  next unless $line =~ /^\*G/;
   $line =~ s///g;
   $line =~ s/^\*F //;
   $line =~ s/; or\s*//;
