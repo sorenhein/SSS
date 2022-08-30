@@ -33,7 +33,7 @@
 // #define DEBUG_EQUAL_TOPS
 
 
-struct OppData
+struct VerbalData
 {
   unsigned char topsUsed;
   unsigned char ranksUsed;
@@ -45,6 +45,46 @@ struct OppData
   unsigned char ranksFull; // Nuber of ranks active, but not on other side
   unsigned char freeLower;
   unsigned char freeUpper;
+
+  void reset()
+  {
+    topsUsed = 0;
+    ranksUsed = 0;
+    ranksActive = 0;
+    lowestRankUsed = 0;
+    lowestRankActive = 0;
+    partialFlag = false;
+    topsFull = 0;
+    ranksFull = 0;
+    freeLower = 0;
+    freeUpper = 0;
+  }
+
+
+  void update(
+    const unsigned char topNo,
+    const unsigned char value,
+    const unsigned char valueMax)
+  {
+    topsUsed += value;
+    ranksUsed++;
+
+    lowestRankUsed = topNo;
+    if (value)
+    {
+      ranksActive++;
+      lowestRankActive = topNo;
+    }
+
+    if (value == valueMax)
+    {
+      topsFull += valueMax;
+      ranksFull++;
+    }
+
+    if (value > 0 && value < valueMax)
+      partialFlag = true;
+  }
 
 
   string strXes(
@@ -455,26 +495,12 @@ void Product::fillUsedTops(
   const unsigned char canonicalShift,
   Product& productWest,
   Product& productEast,
-  OppData& dataWest,
-  OppData& dataEast) const
+  VerbalData& dataWest,
+  VerbalData& dataEast) const
 {
-  dataWest.topsUsed = 0;
-  dataWest.ranksUsed = 0;
-  dataWest.ranksActive = 0;
-  dataWest.lowestRankUsed = 0;
-  dataWest.lowestRankActive = 0;
-  dataWest.partialFlag = false;
-  dataWest.topsFull = 0;
-  dataWest.ranksFull = 0;
-
-  dataEast.topsUsed = 0;
-  dataEast.ranksUsed = 0;
-  dataEast.ranksActive = 0;
-  dataEast.lowestRankUsed = 0;
-  dataEast.lowestRankActive = 0;
-  dataEast.partialFlag = false;
-  dataEast.topsFull = 0;
-  dataEast.ranksFull = 0;
+  // Assumes that all used tops are of the equal type.
+  dataWest.reset();
+  dataEast.reset();
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     topNo-- > 0; )
@@ -487,39 +513,8 @@ void Product::fillUsedTops(
     productWest.tops[topNo] = top;
     productEast.tops[topNo].setMirrored(top, tlength);
 
-    dataWest.topsUsed += top.lower();
-    dataWest.ranksUsed++;
-    dataWest.lowestRankUsed = topNo;
-    if (top.lower())
-    {
-      dataWest.ranksActive++;
-      dataWest.lowestRankActive = topNo;
-    }
-    else
-    {
-      dataEast.topsFull += tlength;
-      dataEast.ranksFull++;
-    }
-
-    dataEast.topsUsed += tlength - top.lower();
-    dataEast.ranksUsed++;
-      dataEast.lowestRankUsed = topNo;
-    if (top.lower() < tlength)
-    {
-      dataEast.ranksActive++;
-      dataEast.lowestRankActive = topNo;
-    }
-    else
-    {
-      dataWest.topsFull += tlength;
-      dataEast.ranksFull++;
-    }
-
-    if (top.lower() > 0 && top.lower() < tlength)
-    {
-      dataWest.partialFlag = true;
-      dataEast.partialFlag = true;
-    }
+    dataWest.update(topNo, top.lower(), tlength);
+    dataEast.update(topNo, tlength - top.lower(), tlength);
   }
 
   const unsigned char slength = sumProfile.length();
@@ -614,7 +609,7 @@ void Product::separateSingular(
   assert(length.used());
   assert(length.getOperator() == COVER_EQUAL);
 
-  OppData dataWest, dataEast;
+  VerbalData dataWest, dataEast;
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
@@ -631,7 +626,8 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_EAST, numBottoms, productWest, productEast);
+    Product::fillSideBottoms(OPP_EAST, numBottoms, 
+      productWest, productEast);
   }
   else if (dataEast.topsUsed == slength - wlength)
   {
@@ -640,7 +636,8 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, productWest, productEast);
+    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      productWest, productEast);
   }
   else if (dataWest.topsUsed + numBottoms == wlength)
   {
@@ -648,8 +645,10 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, productWest, productEast);
-    Product::fillSideBottoms(OPP_WEST, numBottoms, productWest, productEast);
+    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      productWest, productEast);
+    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      productWest, productEast);
   }
   else if (dataEast.topsUsed + numBottoms == slength - wlength)
   {
@@ -657,8 +656,10 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, productWest, productEast);
-    Product::fillSideBottoms(OPP_EAST, numBottoms, productWest, productEast);
+    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      productWest, productEast);
+    Product::fillSideBottoms(OPP_EAST, numBottoms, 
+      productWest, productEast);
   }
   else if (canonicalShift == 0)
   {
@@ -898,7 +899,7 @@ string Product::strVerbalAnyTops(
   productWest.resize(tops.size());
   productEast.resize(tops.size());
 
-  OppData dataWest, dataEast;
+  VerbalData dataWest, dataEast;
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
@@ -984,7 +985,7 @@ string Product::strVerbalHighTopsOnlySide(
   const unsigned char canonicalShift,
   const string& side,
   const string& sideOther,
-  const OppData& data,
+  const VerbalData& data,
   const bool singleActiveRank) const
 {
   // The other side is known to use no tops at all.
@@ -1015,8 +1016,8 @@ string Product::strVerbalHighTopsOnlyBothSides(
   const unsigned char canonicalShift,
   const Product& productOther,
   const string& side,
-  const OppData& data,
-  const OppData& dataOther) const
+  const VerbalData& data,
+  const VerbalData& dataOther) const
 {
   if (data.lowestRankUsed + canonicalShift == 1)
   {
@@ -1072,8 +1073,8 @@ string Product::strVerbalHighTopsOnly(
   const unsigned char canonicalShift,
   const Product& productWest,
   const Product& productEast,
-  const OppData& dataWest,
-  const OppData& dataEast) const
+  const VerbalData& dataWest,
+  const VerbalData& dataEast) const
 {
   const bool singleActiveRank =
     (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
@@ -1092,6 +1093,7 @@ string Product::strVerbalHighTopsOnly(
       "East", "West", dataEast, singleActiveRank);
   }
 
+  bool preferWest;
   if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
     preferWest = true;
   else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
@@ -1122,7 +1124,7 @@ string Product::strVerbalHighTopsSide(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const string& side,
-  const OppData& data,
+  const VerbalData& data,
   const unsigned char canonicalShift) const
 {
   const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
@@ -1188,7 +1190,7 @@ string Product::strVerbalHighTops(
   productWest.resize(tops.size());
   productEast.resize(tops.size());
 
-  OppData dataWest, dataEast;
+  VerbalData dataWest, dataEast;
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 

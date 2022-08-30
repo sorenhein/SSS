@@ -26,7 +26,7 @@ using namespace std;
 
 class Profile;
 class RanksNames;
-struct OppData;
+struct VerbalData;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
 enum CoverVerbal: unsigned;
@@ -97,8 +97,8 @@ class Product
       const unsigned char canonicalShift,
       Product& productWest,
       Product& productEast,
-      OppData& dataWest,
-      OppData& dataEast) const;
+      VerbalData& dataWest,
+      VerbalData& dataEast) const;
 
     void fillUnusedTops(
       const Profile& sumProfile,
@@ -174,7 +174,7 @@ class Product
       const unsigned char canonicalShift,
       const string& side,
       const string& sideOther,
-      const OppData& data,
+      const VerbalData& data,
       const bool singleActiveRank) const;
 
     string strVerbalHighTopsOnlyBothSides(
@@ -183,8 +183,8 @@ class Product
       const unsigned char canonicalShift,
       const Product& productOther,
       const string& side,
-      const OppData& data,
-      const OppData& dataOther) const;
+      const VerbalData& data,
+      const VerbalData& dataOther) const;
 
     string strVerbalHighTopsOnly(
       const Profile& sumProfile,
@@ -192,14 +192,14 @@ class Product
       const unsigned char canonicalShift,
       const Product& productWest,
       const Product& productEast,
-      const OppData& dataWest,
-      const OppData& dataEast) const;
+      const VerbalData& dataWest,
+      const VerbalData& dataEast) const;
 
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const string& side,
-      const OppData& data,
+      const VerbalData& data,
       const unsigned char canonicalShift) const;
 
     string strVerbalHighTops(
