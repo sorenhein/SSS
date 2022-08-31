@@ -649,6 +649,147 @@ string Product::strVerbalLengthAndOneTop(
 }
 
 
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                   Equal high/any top string methods                */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
+
+
+string Product::strVerbalTops(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const string& side,
+  const string& sideOther,
+  const VerbalData& data,
+  const bool singleActiveRank,
+  const bool flipAllowedFlag) const
+{
+  // The other side is known to use no tops at all.
+
+  const unsigned char numOptions = 
+    static_cast<unsigned char>(tops.size()) + 
+    canonicalShift - data.ranksUsed;
+
+  if (! flipAllowedFlag ||
+      data.ranksActive < 3 || 
+      data.ranksActive <= numOptions ||
+      singleActiveRank)
+  {
+    // State it from the intended side.
+    return side + " has " + 
+      Product::strUsedTops(
+        sumProfile, ranksNames, canonicalShift, 
+        false, true, data.ranksActive == 1, false);
+  }
+  else
+  {
+    // State it from the other side.  If the tops are not all
+    // on the high end, but scattered, this output will not make
+    // sense.  So flipAllowedFlag should only be set for high tops.
+    return sideOther + " has " + "(" + 
+      Product::strUsedBottoms(
+        sumProfile, ranksNames, canonicalShift, true, false) + ")";
+  }
+}
+
+
+string Product::strVerbalTopsDual(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const Product& productOther,
+  const string& side,
+  const VerbalData& data,
+  const VerbalData& dataOther) const
+{
+  const string resultOwn = Product::strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    false, data.topsUsed == 1, data.ranksActive == 1, false);
+
+  const string resultOther = productOther.strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    false, dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
+
+  string s = (dataOther.topsFull > 2 ? "none of" :
+    (dataOther.topsFull == 2 ? "neither of" : "not"));
+
+  return side + " has " + resultOwn + " and " + s + " " + resultOther;
+}
+
+
+string Product::strVerbalTopsOnly(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const Product& productWest,
+  const Product& productEast,
+  const VerbalData& dataWest,
+  const VerbalData& dataEast,
+  const bool flipAllowedFlag) const
+{
+  const bool singleActiveRank =
+    (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
+     dataWest.lowestRankActive == dataEast.lowestRankActive);
+
+  if (dataEast.ranksActive == 0 || singleActiveRank)
+  {
+    return productWest.strVerbalTops(
+      sumProfile, ranksNames, canonicalShift,
+      "West", "East", dataWest, singleActiveRank, flipAllowedFlag);
+  }
+  else if (dataWest.ranksActive == 0)
+  {
+    return productEast.strVerbalTops(
+      sumProfile, ranksNames, canonicalShift,
+      "East", "West", dataEast, singleActiveRank, flipAllowedFlag);
+  }
+
+  bool preferWest;
+  if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
+    preferWest = true;
+  else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
+    preferWest = false;
+  else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
+    preferWest = true;
+  else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
+    preferWest = false;
+  else
+    preferWest = productWest.topsSimplerThan(productEast);
+
+  // TODO This part unchecked concerning any-tops.
+  if (preferWest)
+  {
+    if (flipAllowedFlag)
+      return productWest.strVerbalHighTopsOnlyBothSides(
+        sumProfile, ranksNames, canonicalShift,
+        productEast, "West", dataWest, dataEast);
+   else
+      return productWest.strVerbalTopsDual(
+        sumProfile, ranksNames, canonicalShift, 
+        productEast, "West", dataWest, dataEast);
+  }
+  else
+  {
+    if (flipAllowedFlag)
+      return productEast.strVerbalHighTopsOnlyBothSides(
+        sumProfile, ranksNames, canonicalShift,
+        productWest, "East", dataEast, dataWest);
+    else
+      return productEast.strVerbalTopsDual(
+        sumProfile, ranksNames, canonicalShift, 
+        productWest, "East", dataEast, dataWest);
+  }
+}
+
+
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                      Equal any top string methods                  */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
+
 string Product::strVerbalAnyTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -668,8 +809,8 @@ string Product::strVerbalAnyTops(
   if (! length.used())
   {
     // This works for any tops as well.
-    return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
-      canonicalShift, productWest, productEast, dataWest, dataEast);
+    return Product::strVerbalTopsOnly(sumProfile, ranksNames,
+      canonicalShift, productWest, productEast, dataWest, dataEast, false);
   }
 
 #ifdef DEBUG_EQUAL_TOPS
@@ -745,41 +886,6 @@ string Product::strVerbalAnyTops(
 /*--------------------------------------------------------------------*/
 
 
-string Product::strVerbalHighTopsOnlySide(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const string& side,
-  const string& sideOther,
-  const VerbalData& data,
-  const bool singleActiveRank) const
-{
-  // The other side is known to use no tops at all.
-
-  const unsigned char numOptions = 
-    static_cast<unsigned char>(tops.size()) + 
-    canonicalShift - data.ranksUsed;
-
-  if (data.ranksActive < 3 || 
-      data.ranksActive <= numOptions ||
-      singleActiveRank)
-  {
-    // State it from the intended side.
-    return side + " has " + 
-      Product::strUsedTops(
-        sumProfile, ranksNames, canonicalShift, 
-        false, true, data.ranksActive == 1, false);
-  }
-  else
-  {
-    // State it from the other side.
-    return sideOther + " has " + "(" + 
-      Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift, true, false) + ")";
-  }
-}
-
-
 string Product::strVerbalHighTopsOnlyBothSides(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -825,6 +931,11 @@ string Product::strVerbalHighTopsOnlyBothSides(
   }
   else
   {
+    return Product::strVerbalTopsDual(
+      sumProfile, ranksNames, canonicalShift, 
+        productOther, side, data, dataOther);
+
+    /*
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
       false, data.topsUsed == 1, data.ranksActive == 1, false);
@@ -837,59 +948,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
       (dataOther.topsFull == 2 ? "neither of" : "not"));
 
     return side + " has " + resultOwn + " and " + s + " " + resultOther;
-  }
-}
-
-
-string Product::strVerbalHighTopsOnly(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const Product& productWest,
-  const Product& productEast,
-  const VerbalData& dataWest,
-  const VerbalData& dataEast) const
-{
-  const bool singleActiveRank =
-    (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-     dataWest.lowestRankActive == dataEast.lowestRankActive);
-
-  if (dataEast.ranksActive == 0 || singleActiveRank)
-  {
-    return productWest.strVerbalHighTopsOnlySide(
-      sumProfile, ranksNames, canonicalShift,
-      "West", "East", dataWest, singleActiveRank);
-  }
-  else if (dataWest.ranksActive == 0)
-  {
-    return productEast.strVerbalHighTopsOnlySide(
-      sumProfile, ranksNames, canonicalShift,
-      "East", "West", dataEast, singleActiveRank);
-  }
-
-  bool preferWest;
-  if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
-    preferWest = true;
-  else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
-    preferWest = false;
-  else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
-    preferWest = true;
-  else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
-    preferWest = false;
-  else
-    preferWest = productWest.topsSimplerThan(productEast);
-
-  if (preferWest)
-  {
-    return productWest.strVerbalHighTopsOnlyBothSides(
-      sumProfile, ranksNames, canonicalShift,
-      productEast, "West", dataWest, dataEast);
-  }
-  else
-  {
-    return productEast.strVerbalHighTopsOnlyBothSides(
-      sumProfile, ranksNames, canonicalShift,
-      productWest, "East", dataEast, dataWest);
+    */
   }
 }
 
@@ -972,8 +1031,8 @@ string Product::strVerbalHighTops(
 
   if (! length.used())
   {
-    return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
-      canonicalShift, productWest, productEast, dataWest, dataEast);
+    return Product::strVerbalTopsOnly(sumProfile, ranksNames,
+      canonicalShift, productWest, productEast, dataWest, dataEast, true);
   }
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)

@@ -148,6 +148,41 @@ class Product
       const bool symmFlag,
       const unsigned char canonicalShift = 0) const;
 
+    // Both high tops and any tops
+
+    string strVerbalTops(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const string& side,
+      const string& sideOther,
+      const VerbalData& data,
+      const bool singleActiveRank,
+      const bool flipAllowedFlag) const;
+
+    string strVerbalTopsDual(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const Product& productOther,
+      const string& side,
+      const VerbalData& data,
+      const VerbalData& dataOther) const;
+
+    string strVerbalTopsOnly(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const Product& productWest,
+      const Product& productEast,
+      const VerbalData& dataWest,
+      const VerbalData& dataEast,
+      const bool flipAllowedFlag) const;
+
+    
+
+    // Any tops
+
     string strVerbalAnyTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
@@ -173,15 +208,6 @@ class Product
       const string& side,
       const VerbalData& data,
       const VerbalData& dataOther) const;
-
-    string strVerbalHighTopsOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const Product& productWest,
-      const Product& productEast,
-      const VerbalData& dataWest,
-      const VerbalData& dataEast) const;
 
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
