@@ -27,10 +27,6 @@
 
 #include "../../../utils/table.h"
 
-// TMP
-#include "../term/Xes.h"
-
-
 // #define DEBUG_EQUAL_TOPS
 
 
@@ -227,99 +223,6 @@ void Product::topRange(
       noHigh = topNo;
     }
   }
-}
-
-
-void Product::getWestLengths(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const unsigned char canonicalShift,
-  unsigned char& xesMin,
-  unsigned char& xesMax,
-  unsigned char& xesBottom,
-  unsigned char& xesAvailable,
-  unsigned char& topsExact,
-  unsigned char& topsAvailable) const
-{
-  // Calculate the number of free West cards for the current Product and
-  // for the whole sumProfile.  For example, if only the lowest rank
-  // (never set) is free, then we calculate the number of x's that West
-  // may hold as well as the available maximum number of x's.
-  // If only some tops above the lowest one are set, it's the same idea,
-  // but with the number of cards outside of those ranks.
-  unsigned char distLengthLower;
-  unsigned char distLengthUpper;
-  topsExact = 0;
-  const unsigned char oppsLength = sumProfile.length();
-  unsigned char oppsTops = 0;
-  topsAvailable = 0;
-
-  unsigned char topsExactEast = 0;
-
-  if (length.used())
-  {
-    // length could be of the >= kind.
-    distLengthLower = length.lower();
-    distLengthUpper = min(oppsLength, length.upper());
-  }
-  else
-  {
-    distLengthLower = 0;
-    distLengthUpper = oppsLength;
-  }
-
-  TopData topData;
-  unsigned char topNo;
-
-  // Skip the lowest entry (unused).
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
-  {
-    const auto& top = tops[topNo];
-    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-    oppsTops += topData.value;
-
-    if (! top.used())
-    {
-      topsAvailable += topData.value;
-      continue;
-    }
-    else
-      topsAvailable += top.lower();
-
-    assert(top.getOperator() == COVER_EQUAL);
-
-    topsExact += top.lower();
-    topsExactEast += topData.value - top.lower();
-  }
-
-  xesBottom = Product::countBottoms(sumProfile, canonicalShift);
-
-
-/*
-cout << "Product " << Product::strLine() << endl;
-cout << "Xes: sumProfile " << sumProfile.strLine() << endl;
-cout << "distLength " << +distLengthLower << " to " <<
-  +distLengthUpper << endl;
-cout << "topsExact " << +topsExact << endl;
-cout << "oppsLength " << +oppsLength << endl;
-cout << "oppsTops " << +oppsTops << endl;
-*/
-
-  Xes xes;
-  xes.set(distLengthLower, distLengthUpper, topsExact, 
-    oppsLength, oppsTops);
-  xes.getRange(simplestOpponent, xesMin, xesMax);
-
-  xesAvailable = oppsLength - oppsTops;
-
-  if (simplestOpponent == OPP_EAST)
-    topsExact = topsExactEast;
-
-// cout << "xes " << +xesMin << " to " << +xesMax << " avail " <<
-  // +xesAvailable << endl;
-  if (! length.used())
-    assert(xesMin == 0);
 }
 
 
@@ -580,12 +483,23 @@ string Product::strUsedBottoms(
   const bool allFlag,
   const bool expandFlag) const
 {
+  // This method doesn't only do bottoms, but "the opposite of" tops.
+  // In any event it expands cards hidden by a canonical shift.
+  // If we have AQT86 and the queen is not used but AT8 are,
+  // then we get Q6.  If AQT86 is stored as AQTx with a shift of 1,
+  // and if AQT are used, we get 8x.
+
   string result = "";
 
-  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    topNo-- > 0; )
   {
+    const auto& top = tops[topNo];
+    if (top.used() && topNo > canonicalShift)
+      continue;
+
     const unsigned char count = (allFlag ?
-      sumProfile[topNo] : tops[topNo].lower());
+      sumProfile[topNo] : top.lower());
 
     result += ranksNames.strOpponents(topNo, count, expandFlag, false);
   }
@@ -751,6 +665,13 @@ string Product::strVerbalAnyTops(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
+  if (! length.used())
+  {
+    // This works for any tops as well.
+    return Product::strVerbalHighTopsOnly(sumProfile, ranksNames,
+      canonicalShift, productWest, productEast, dataWest, dataEast);
+  }
+
 #ifdef DEBUG_EQUAL_TOPS
     cout << "Product  " << Product::strLine() << "\n";
     cout << "prodWest " << productWest.strLine() << "\n";
@@ -791,31 +712,28 @@ string Product::strVerbalAnyTops(
 
   result += " out of " + avail;
 
-  unsigned char xesMin, xesMax, xesAvailable, xesHidden,
-    topsExact, topsAvailable;
-  Product::getWestLengths(
-    sumProfile, 
-    ranksNames, 
-    simplestOpponent,
-    canonicalShift,
-    xesMin,
-    xesMax,
-    xesHidden,
-    xesAvailable,
-    topsExact,
-    topsAvailable);
+  unsigned char xesMin, xesMax;
+  if (simplestOpponent == OPP_EAST)
+  {
+    xesMin = dataEast.freeLower;
+    xesMax = dataEast.freeUpper;
+  }
+  else
+  {
+    xesMin = dataWest.freeLower;
+    xesMax = dataWest.freeUpper;
+  }
+
+  if (xesMin == xesMax)
+    result += " and " + to_string(xesMin);
+  else
+  {
+    result += " and " + to_string(xesMin) + "-" + to_string(xesMax);
+  }
 
   string other = " cards of other ranks";
 
-  if (xesMin == xesMax)
-    result += " and " + to_string(xesMin) + other;
-  else
-  {
-    result += " and " + to_string(xesMin) + "-" +
-      to_string(xesMax) + other;
-  }
-
-  return result;
+  return result + other;
 }
 
 
@@ -838,12 +756,15 @@ string Product::strVerbalHighTopsOnlySide(
 {
   // The other side is known to use no tops at all.
 
-  const unsigned char numInactive = data.lowestRankUsed + canonicalShift;
+  const unsigned char numOptions = 
+    static_cast<unsigned char>(tops.size()) + 
+    canonicalShift - data.ranksUsed;
 
   if (data.ranksActive < 3 || 
-      data.ranksActive <= numInactive ||
+      data.ranksActive <= numOptions ||
       singleActiveRank)
   {
+    // State it from the intended side.
     return side + " has " + 
       Product::strUsedTops(
         sumProfile, ranksNames, canonicalShift, 
@@ -851,6 +772,7 @@ string Product::strVerbalHighTopsOnlySide(
   }
   else
   {
+    // State it from the other side.
     return sideOther + " has " + "(" + 
       Product::strUsedBottoms(
         sumProfile, ranksNames, canonicalShift, true, false) + ")";
@@ -867,7 +789,11 @@ string Product::strVerbalHighTopsOnlyBothSides(
   const VerbalData& data,
   const VerbalData& dataOther) const
 {
-  if (data.lowestRankUsed + canonicalShift == 1)
+  const unsigned char numOptions = 
+    static_cast<unsigned char>(tops.size()) + 
+    canonicalShift - data.ranksUsed;
+
+  if (numOptions == 1)
   {
     // The lowest cards are a single rank of x'es.
 
@@ -975,7 +901,9 @@ string Product::strVerbalHighTopsSide(
   const VerbalData& data,
   const unsigned char canonicalShift) const
 {
-  const unsigned char numOptions = data.lowestRankUsed + canonicalShift;
+  const unsigned char numOptions = 
+     static_cast<unsigned char>(tops.size()) +
+     canonicalShift - data.ranksUsed;
 
   if (numOptions == 1)
   {

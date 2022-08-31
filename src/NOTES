@@ -1,7 +1,32 @@
 High tops only
 --------------
+There are two main problems in using the high-top code for any-top:
+1. strUsedBottoms would have to include the missing rank,
+   even in the middle of the ranks.  And then this would look odd,
+   e.g. AH(Tx) would be OK, but what about AT(Hx) where H = high?
+2. We state "below the ten", but this would be more like
+   "outside of the stated ranks, high or low" which is a mess.
+What even makes sense to a human here?
+
+East has 7(Ax)
+This happens because "the seven and neither of the queen-ten"
+loses to this formulation.  We can stop that by a flag to the method.
+
+East has HH without the ace
+Be more precise, e.g. exactly two of QJT (how do we do it for
+high-tops?)
+
+
 Maybe don't need all four args of strUsedTops independently?
 Do the any-tops first, then maybe it becomes clearer.
+
+Put language components (semantic) into Cover:
+- simplest opponent
+- Could be the whole text
+- Could be a list of Q86, Q8x, ...
+- Later on could be sentence types with the contents given
+- Prepare for multi-language that way
+- Easier to combine covers into a row
 
 
 Output a "where" line for the actual solutions.

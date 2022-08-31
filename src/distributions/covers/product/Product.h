@@ -76,18 +76,6 @@ class Product
 
     bool simplerThan(const Product& p2) const;
 
-    void getWestLengths(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const unsigned char canonicalShift,
-      unsigned char& xesMin,
-      unsigned char& xesMax,
-      unsigned char& xesHidden,
-      unsigned char& xesAvailable,
-      unsigned char& topsExact,
-      unsigned char& topsAvailable) const;
-
     unsigned char countBottoms(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
