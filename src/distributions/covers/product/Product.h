@@ -17,6 +17,7 @@
 #define SSS_PRODUCT_H
 
 #include <vector>
+#include <list>
 #include <string>
 
 #include "../term/Length.h"
@@ -179,9 +180,31 @@ class Product
       const VerbalData& dataEast,
       const bool flipAllowedFlag) const;
 
+
+    // Compositions
+
+    unsigned char numCompositions(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const unsigned char numFree) const;
+
+    void makeCompositions(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
+      const unsigned char numFree,
+      list<string>& compositions) const;
+
     
 
     // Any tops
+
+    string strVerbalAnyTopsSide(
+      const Profile& sumProfile,
+      const RanksNames& ranksNames,
+      const string& side,
+      const VerbalData& data,
+      const unsigned char canonicalShift) const;
 
     string strVerbalAnyTops(
       const Profile& sumProfile,

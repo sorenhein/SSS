@@ -27,8 +27,6 @@
 
 #include "../../../utils/table.h"
 
-// #define DEBUG_EQUAL_TOPS
-
 
 /**********************************************************************/
 /*                                                                    */
@@ -712,6 +710,9 @@ string Product::strVerbalTopsDual(
     sumProfile, ranksNames, canonicalShift, 
     false, dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
 
+  if (resultOther.empty())
+    return side + " has " + resultOwn;
+
   string s = (dataOther.topsFull > 2 ? "none of" :
     (dataOther.topsFull == 2 ? "neither of" : "not"));
 
@@ -790,6 +791,190 @@ string Product::strVerbalTopsOnly(
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
+string Product::strVerbalAnyTopsSide(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const string& side,
+  const VerbalData& data,
+  const unsigned char canonicalShift) const
+{
+  string result = Product::strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    false, data.ranksActive == 1, false, false);
+
+  if (result.empty())
+    result = "none";
+
+  result += " out of " + Product::strUsedTops(
+    sumProfile, ranksNames, canonicalShift, 
+    true, false, false, false);
+
+  if (data.freeLower == data.freeUpper)
+    result += " and " + to_string(data.freeLower);
+  else
+  {
+    result += " and " + to_string(data.freeLower) + "-" + 
+      to_string(data.freeUpper);
+  }
+
+  return side + " has " + result + " cards of other ranks";
+}
+
+
+unsigned char Product::numCompositions(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const unsigned char numFree) const
+{
+  // There are a number of ranks available in sumProfile that are
+  // not used in Product.  The numFree cards can be split onto these
+  // ranks in a number of ways, similarly to a combinatorial
+  // composition.  But we will only do this expansion into an
+  // explicit list of combinations if there are at most three of them,
+  // plus perhaps a void one.  So here we only count up to three,
+  // and more than that is a maximum.  Hence we are only interested
+  // in 1, 2 or 3 ranks and 1, 2 or 3 free cards.
+
+  if (numFree == 0)
+    return 1;
+  else if (numFree > 3)
+    return numeric_limits<unsigned char>::max();
+
+  vector<unsigned char> histo(4);
+  unsigned char numFreeRanks = 0;
+  unsigned char count = 0;
+
+  for (unsigned char topNo = 0; topNo < sumProfile.size(); topNo++)
+  {
+    if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
+      continue;
+
+    if (++numFreeRanks > 3)
+      return numeric_limits<unsigned char>::max();
+
+    count = min(sumProfile[topNo], static_cast<unsigned char>(3));
+    histo[count]++;
+  }
+
+  if (numFree == 1)
+    return numFreeRanks;
+  else if (numFreeRanks == 1)
+  {
+    if ((numFree == 2 && histo[2] + histo[3] == 0) ||
+        (numFree == 3 && histo[3] == 0))
+    {
+      // Actually an error
+      assert(false);
+      return numeric_limits<unsigned char>::max();
+    }
+    else
+    {
+      // There is only one way to fit 2-3 cards into a single rank
+      count = 1;
+    }
+  }
+  else if (numFree == 2)
+  {
+    // We can fit two cards into a single rank, or we can split them
+    // onto two ranks.
+    count = histo[2] + histo[3] + (numFreeRanks == 2 ? 1 : 3);
+  }
+  else
+  {
+    // We can fit three cards into a single rank with enough room,
+    // or into three ranks as 1+1+1 (if there are enough ranks),
+    // or into two ranks as 2+1.
+    count = histo[3] +
+      (numFreeRanks == 3 ? 1 : 0) +
+      (histo[2] + histo[3]) * (numFreeRanks-1);
+  }
+
+  if (count > 3)
+    return numeric_limits<unsigned char>::max();
+  else
+    return count;
+}
+
+
+void Product::makeCompositions(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
+  const unsigned char numFree,
+  list<string>& compositions) const
+{
+  assert(numFree >= 1 && numFree <= 3);
+
+  vector<list<unsigned char>> histo(4);
+  unsigned char numFreeRanks = 0;
+  unsigned char count = 0;
+
+  for (unsigned char topNo = 0; topNo < sumProfile.size(); topNo++)
+  {
+    if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
+      continue;
+
+    numFreeRanks++;
+    count = min(sumProfile[topNo], static_cast<unsigned char>(3));
+    histo[count].push_back(topNo);
+  }
+
+  if (numFree == 1)
+  {
+    for (unsigned char topNo = 
+      static_cast<unsigned char>(sumProfile.size()); topNo-- > 0; )
+    {
+      if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
+        continue;
+
+      const string rstr = ranksNames.strOpponents(topNo,
+        tops[topNo-canonicalShift].lower(), true, true);
+      compositions.push_back(rstr);
+    }
+  }
+  else if (numFreeRanks == 1)
+  {
+    // There is only one way to fit 2-3 cards into a single rank
+    const unsigned char topNo = (histo[3].empty() ? 
+      histo[2].front() : histo[3].front());
+    const string rstr = ranksNames.strOpponents(topNo,
+      tops[topNo-canonicalShift].lower(), true, true);
+    compositions.push_back(rstr);
+  }
+  else if (numFree == 2)
+  {
+    // We can fit two cards into a single rank, or we can split them
+    // onto two ranks.
+    for (unsigned hno = 2; hno <= 3; hno++)
+    {
+      for (unsigned char topNo: histo[hno])
+      {
+        const string rstr = ranksNames.strOpponents(topNo,
+          tops[topNo-canonicalShift].lower(), true, true);
+        compositions.push_back(rstr);
+      }
+    }
+  }
+  else
+  {
+    // We can fit three cards into a single rank with enough room,
+    // or into three ranks as 1+1+1 (if there are enough ranks),
+    // or into two ranks as 2+1.
+    for (unsigned char topNo: histo[3])
+    {
+      const string rstr = ranksNames.strOpponents(topNo,
+        tops[topNo-canonicalShift].lower(), true, true);
+      compositions.push_back(rstr);
+
+      // Then 2 with this topNo + 1 of any other
+      // Then 1 with this topNo + 2 of any other
+    }
+
+    // Then loop over histo[2] or 2 + 1, then 1 + 2
+  }
+}
+
+
 string Product::strVerbalAnyTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -812,69 +997,37 @@ string Product::strVerbalAnyTops(
     return Product::strVerbalTopsOnly(sumProfile, ranksNames,
       canonicalShift, productWest, productEast, dataWest, dataEast, false);
   }
-
-#ifdef DEBUG_EQUAL_TOPS
-    cout << "Product  " << Product::strLine() << "\n";
-    cout << "prodWest " << productWest.strLine() << "\n";
-    cout << "prodEast " << productEast.strLine() << "\n";
-    cout << dataWest.str("West");
-    cout << dataEast.str("East");
-#endif
-
-  const Opponent simplestOpponent =
-    Product::simplestOpponent(sumProfile, canonicalShift);
-
-  string result;
-  if (symmFlag)
-    result = "Either opponent";
-  else if (simplestOpponent == OPP_WEST)
-    result = "West";
-  else
-    result = "East";
-
-  result += " has ";
-
-  const string avail = Product::strUsedTops(sumProfile, ranksNames,
-    canonicalShift, true, false, false, false);
-
-  string exact;
-
-  if (simplestOpponent == OPP_EAST)
-    exact = productEast.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataEast.ranksActive == 1, false, false);
-  else
-    exact = productWest.strUsedTops(sumProfile, ranksNames,
-      canonicalShift, false, dataWest.ranksActive == 1, false, false);
-
-  if (exact == "")
-    result += "none";
-  else
-    result += exact;
-
-  result += " out of " + avail;
-
-  unsigned char xesMin, xesMax;
-  if (simplestOpponent == OPP_EAST)
+  else if (dataWest.topsUsed + dataWest.freeUpper <=
+    dataEast.topsUsed + dataEast.freeUpper)
   {
-    xesMin = dataEast.freeLower;
-    xesMax = dataEast.freeUpper;
+// TODO Go through freeLower .. freUpper, including 0 (void) separately
+unsigned char numFree = dataWest.freeUpper;
+const unsigned char numComp = productWest.numCompositions(sumProfile,
+  canonicalShift, numFree);
+if (numComp > 3)
+  cout << "COMPLEX\n";
+else
+  cout << "SIMPLE\n";
+
+    return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "West"), 
+      dataWest, canonicalShift);
   }
   else
   {
-    xesMin = dataWest.freeLower;
-    xesMax = dataWest.freeUpper;
+// TODO Go through freeLower .. freUpper, including 0 (void) separately
+unsigned char numFree = dataWest.freeUpper;
+const unsigned char numComp = productEast.numCompositions(sumProfile,
+  canonicalShift, numFree);
+if (numComp > 3)
+  cout << "COMPLEX\n";
+else
+  cout << "SIMPLE\n";
+
+    return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+      (symmFlag ? "Either opponent" : "East"), 
+      dataEast, canonicalShift);
   }
-
-  if (xesMin == xesMax)
-    result += " and " + to_string(xesMin);
-  else
-  {
-    result += " and " + to_string(xesMin) + "-" + to_string(xesMax);
-  }
-
-  string other = " cards of other ranks";
-
-  return result + other;
 }
 
 
@@ -934,21 +1087,6 @@ string Product::strVerbalHighTopsOnlyBothSides(
     return Product::strVerbalTopsDual(
       sumProfile, ranksNames, canonicalShift, 
         productOther, side, data, dataOther);
-
-    /*
-    const string resultOwn = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, data.topsUsed == 1, data.ranksActive == 1, false);
-
-    const string resultOther = productOther.strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
-
-    string s = (dataOther.topsFull > 2 ? "none of" :
-      (dataOther.topsFull == 2 ? "neither of" : "not"));
-
-    return side + " has " + resultOwn + " and " + s + " " + resultOther;
-    */
   }
 }
 
