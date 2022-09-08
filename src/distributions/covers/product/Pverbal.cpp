@@ -432,13 +432,59 @@ void Product::separateSingular(
 /*                                                                    */
 /**********************************************************************/
 
-struct Pstack
+class VerbalComb
 {
-  vector<unsigned char> partialTops;
-  list<unsigned char> openTopNumbers;
-  unsigned char length;
+  // A single combination such as 97x.
 
-  string str() const
+  private:
+
+    vector<unsigned char> partialTops;
+    list<unsigned char> openTopNumbers;
+    unsigned char lengthInt;
+
+  public:
+
+  void resize(const size_t numTops)
+  {
+    partialTops.resize(numTops);
+    openTopNumbers.clear();
+    lengthInt = 0;
+  };
+
+  void setTop(
+    const unsigned char topNo,
+    const bool usedFlag,
+    const unsigned char count)
+  {
+    // Must be an equal top.
+    if (usedFlag)
+    {
+      partialTops[topNo] = count;
+      lengthInt += count;
+    }
+    else
+      openTopNumbers.push_back(topNo);
+  };
+
+  void updateTop(
+    const unsigned char topNo,
+    const unsigned char count)
+  {
+    lengthInt += count - partialTops[topNo];
+    partialTops[topNo] = count;
+  };
+
+  const list<unsigned char>& openTops() const
+  {
+    return openTopNumbers;
+  };
+
+  unsigned char length() const
+  {
+    return lengthInt;
+  };
+
+  string strDebug() const
   {
     stringstream ss;
 
@@ -452,38 +498,86 @@ struct Pstack
       ss << +o << " ";
     ss << "\n";
 
-    ss << "length " << +length << "\n";
+    ss << "length " << +lengthInt << "\n";
     return ss.str();
   };
+
+  string str(const RanksNames& ranksNames) const
+  {
+    if (lengthInt == 0)
+      return "void";
+
+    string s;
+    for (unsigned char topNo = 
+      static_cast<unsigned char>(partialTops.size()); topNo-- > 0; )
+    {
+      if (partialTops[topNo])
+      {
+        s += ranksNames.strOpponents(topNo, partialTops[topNo],
+          false, false);
+      }
+    }
+    return s;
+  };
+};
+
+class VerbalCover
+{
+  private:
+    
+    list<VerbalComb> completions;
+
+  public:
+
+    void push_back(const VerbalComb& verbalComb)
+    {
+      completions.push_back(verbalComb);
+    };
+
+    unsigned char size() const
+    {
+      return static_cast<unsigned char>(completions.size());
+    };
+
+    string str(const RanksNames& ranksNames) const
+    {
+      string s;
+      size_t i = 0;
+
+      for (auto& verbalComb: completions)
+      {
+        if (i > 0)
+          s += (i+1 == completions.size() ? " or " : ", ");
+
+        s += verbalComb.str(ranksNames);
+        i++;
+      }
+      return s;
+    };
 };
 
 
 void Product::makePartialProfile(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
-  Pstack& pstack) const
+  VerbalComb& verbalComb) const
 {
   // We have some top's that are fixed to a single value.
   // We have some explicit, unused tops.
   // We have 1 or more unused implicit bottoms (canonicalShift+1).
 
-  pstack.partialTops.resize(sumProfile.size());
-  pstack.length = 0;
+  verbalComb.resize(sumProfile.size());
 
   for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
       topNo-- > 0; )
   {
-    if (topNo < canonicalShift || ! tops[topNo-canonicalShift].used())
-    {
-      pstack.openTopNumbers.push_back(topNo);
-      continue;
-    }
-
-    // Must be an equal top.
-    const unsigned char count = tops[topNo-canonicalShift].lower();
-
-    pstack.partialTops[topNo] = count;
-    pstack.length += count;
+    if (topNo >= canonicalShift)
+      verbalComb.setTop(
+        topNo, 
+        tops[topNo-canonicalShift].used(),
+        tops[topNo-canonicalShift].lower());
+    else
+      verbalComb.setTop(topNo, false, 0);
   }
 }
 
@@ -493,14 +587,14 @@ bool Product::makeCompletions(
   const unsigned char canonicalShift,
   const VerbalData& data,
   const unsigned char maxCompletions,
-  list<Pstack>& completions) const
+  VerbalCover& completions) const
 {
-  Pstack pstack;
+  VerbalComb verbalComb;
 
-  Product::makePartialProfile(sumProfile, canonicalShift, pstack);
+  Product::makePartialProfile(sumProfile, canonicalShift, verbalComb);
 
-  list<Pstack> stack;
-  stack.push_back(pstack);
+  list<VerbalComb> stack;
+  stack.push_back(verbalComb);
 
   const unsigned char totalLower = data.topsUsed + data.freeLower;
   const unsigned char totalUpper = data.topsUsed + data.freeUpper;
@@ -510,7 +604,8 @@ bool Product::makeCompletions(
   // completion.
   bool firstOpen = true;
 
-  for (auto openNo: pstack.openTopNumbers)
+  // for (auto openNo: pstack.openTopNumbers)
+  for (auto openNo: verbalComb.openTops())
   {
     const size_t psize = stack.size();
     size_t pno = 0;
@@ -525,13 +620,14 @@ bool Product::makeCompletions(
 
       const unsigned char maxCount = min(
         static_cast<unsigned char>(sumProfile[openNo]),
-        static_cast<unsigned char>(totalUpper - piter->length));
+        static_cast<unsigned char>(totalUpper - piter->length()));
 
-      for (unsigned char count = 0; count <= maxCount; count++)
+      // for (unsigned char count = 0; count <= maxCount; count++)
+      for (unsigned char count = maxCount+1; count-- > 0; )
       {
-        piter->length += count - piter->partialTops[openNo];
-        piter->partialTops[openNo] = count;
-        if (piter->length >= totalLower && (count > 0 || firstOpen))
+        piter->updateTop(openNo, count);
+
+        if (piter->length() >= totalLower && (count > 0 || firstOpen))
         {
           completions.push_back(* piter);
           if (completions.size() > maxCompletions ||
@@ -539,7 +635,7 @@ bool Product::makeCompletions(
             return false;
         }
 
-        if (piter->length < totalUpper && openNo > 0)
+        if (piter->length() < totalUpper && openNo > 0)
           stack.push_back(* piter);
       }
 
@@ -976,41 +1072,35 @@ string Product::strVerbalAnyTops(
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    Pstack pstack;
-    list<Pstack> completions;
-    productWest.makePartialProfile(sumProfile, canonicalShift, pstack);
+    VerbalComb verbalComb;
+    VerbalCover completions;
+    const string side = (symmFlag ? "Either opponent" : "West");
+
+    productWest.makePartialProfile(sumProfile, canonicalShift, verbalComb);
     if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
-      cout << "SIMPLE " << completions.size() << "\n";
+      return side + " has " + completions.str(ranksNames);
     }
     else
-    {
-      cout << "COMPLEX\n";
-    }
-
-    return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-      (symmFlag ? "Either opponent" : "West"), 
-      dataWest, canonicalShift);
+      return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+        side, dataWest, canonicalShift);
   }
   else
   {
-    Pstack pstack;
-    list<Pstack> completions;
-    productEast.makePartialProfile(sumProfile, canonicalShift, pstack);
+    VerbalComb verbalComb;
+    VerbalCover completions;
+    const string side = (symmFlag ? "Either opponent" : "East");
+
+    productEast.makePartialProfile(sumProfile, canonicalShift, verbalComb);
     if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
-      cout << "SIMPLE " << completions.size() << "\n";
+      return side + " has " + completions.str(ranksNames);
     }
     else
-    {
-      cout << "COMPLEX\n";
-    }
-
-    return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-      (symmFlag ? "Either opponent" : "East"), 
-      dataEast, canonicalShift);
+      return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+        side, dataEast, canonicalShift);
   }
 }
 

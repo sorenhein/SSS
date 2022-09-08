@@ -1,17 +1,19 @@
+11/159426 #2
+ *G West has AK, AKx or Hx [4/4]
+ *G West has HT9, T9 or T9x [4/4]
+Why do we get both from West?  Should be it once from West and
+once from East?
+
+* Better to have void first or last
+* Better to have by length, so perhaps long to short
+* We get four non-voids too? Max 3?
+* East has HH and not the ace
+
+There is a new class VerbalTableau
+It has a VerbalRow consisting of one or more VerbalCover
+
 High tops only
 --------------
-There are two main problems in using the high-top code for any-top:
-1. strUsedBottoms would have to include the missing rank,
-   even in the middle of the ranks.  And then this would look odd,
-   e.g. AH(Tx) would be OK, but what about AT(Hx) where H = high?
-2. We state "below the ten", but this would be more like
-   "outside of the stated ranks, high or low" which is a mess.
-What even makes sense to a human here?
-
-East has 7(Ax)
-This happens because "the seven and neither of the queen-ten"
-loses to this formulation.  We can stop that by a flag to the method.
-
 East has HH without the ace
 Be more precise, e.g. exactly two of QJT (how do we do it for
 high-tops?)
