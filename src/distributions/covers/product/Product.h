@@ -28,6 +28,7 @@ using namespace std;
 class Profile;
 class RanksNames;
 struct VerbalData;
+struct Pstack;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
 enum CoverVerbal: unsigned;
@@ -186,7 +187,8 @@ class Product
     unsigned char numCompositions(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
-      const unsigned char numFree) const;
+      const unsigned char numFreeLower,
+      const unsigned char numFreeUpper) const;
 
     void makeCompositions(
       const Profile& sumProfile,
@@ -195,7 +197,18 @@ class Product
       const unsigned char numFree,
       list<string>& compositions) const;
 
-    
+    void makePartialProfile(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      Pstack& pstack) const;
+
+    bool makeCompletions(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const VerbalData& data,
+      const unsigned char maxCompletions,
+      list<Pstack>& completions) const;
+
 
     // Any tops
 
