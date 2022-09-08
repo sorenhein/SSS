@@ -184,19 +184,6 @@ class Product
 
     // Compositions
 
-    unsigned char numCompositions(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const unsigned char numFreeLower,
-      const unsigned char numFreeUpper) const;
-
-    void makeCompositions(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const unsigned char numFree,
-      list<string>& compositions) const;
-
     void makePartialProfile(
       const Profile& sumProfile,
       const unsigned char canonicalShift,

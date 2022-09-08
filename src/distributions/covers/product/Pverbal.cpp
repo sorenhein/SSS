@@ -485,21 +485,6 @@ void Product::makePartialProfile(
     pstack.partialTops[topNo] = count;
     pstack.length += count;
   }
-
-  /*
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-      topNo-- > 0; )
-  {
-    if (tops[topNo].used())
-    {
-      // Must be an equal top.
-      pstack.partialTops[topNo + canonicalShift] = tops[topNo].lower();
-      pstack.length += tops[topNo].lower();
-    }
-    else
-      pstack.openTopNumbers.push_back(topNo + canonicalShift);
-  }
-  */
 }
 
 
@@ -564,36 +549,6 @@ bool Product::makeCompletions(
     firstOpen = false;
     stack.erase(stack.begin(), piter);
 
-    /*
-    cout << "openNo " << +openNo << endl;
-    cout << pstack.str();
-    cout << "#completions " << completions.size() << endl;
-    cout << "#stack       " << stack.size() << endl;
-    */
-  }
-
-  if (! stack.empty())
-  {
-    cout << "Stack should be empty\n";
-    cout << Product::strLine() << endl;
-    cout << pstack.str();
-
-    cout << "completions\n";
-    size_t i =  0;
-    for (auto& c: completions)
-    {
-      cout << "number " << i++ << ":\n";
-      cout << c.str() << "\n";
-    }
-
-    cout << "stack\n";
-    i =  0;
-    for (auto& c: stack)
-    {
-      cout << "number " << i++ << ":\n";
-      cout << c.str() << "\n";
-    }
-    cout << endl;
   }
 
   assert(stack.empty());
@@ -996,194 +951,6 @@ string Product::strVerbalAnyTopsSide(
 }
 
 
-unsigned char Product::numCompositions(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const unsigned char numFreeLower,
-  const unsigned char numFreeUpper) const
-{
-  // There are a number of ranks available in sumProfile that are
-  // not used in Product.  The numFree cards can be split onto these
-  // ranks in a number of ways, similarly to a combinatorial
-  // composition.  But we will only do this expansion into an
-  // explicit list of combinations if there are at most three of them,
-  // plus perhaps a void one.  So here we only count up to three,
-  // and more than that is a maximum.  Hence we are only interested
-  // in 1, 2 or 3 ranks and 1, 2 or 3 free cards.
-
-// cout << "numComp: " << +numFreeLower << " to " << +numFreeUpper << endl;
-  if (numFreeUpper == 0)
-    return 1;
-  else if (numFreeUpper > 3)
-  // {
-// cout << "Exceeeds 3: " << +numFreeUpper << endl;
-    return numeric_limits<unsigned char>::max();
-  // }
-
-  vector<unsigned char> histo(4);
-  unsigned char numFreeRanks = 0;
-  unsigned char count = 0;
-
-  if (numFreeLower == 0)
-    numFreeRanks++;
-
-  for (unsigned char topNo = 0; topNo < sumProfile.size(); topNo++)
-  {
-    if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
-      continue;
-
-    numFreeRanks++;
-    if (numFreeRanks > 4 || (numFreeRanks == 4 && numFreeLower > 0))
-      return numeric_limits<unsigned char>::max();
-
-    count = min(sumProfile[topNo], static_cast<unsigned char>(3));
-    histo[count]++;
-  }
-
-/*
-cout << "numComp: numFreeRanks " << +numFreeRanks << endl;
-cout << "histo\n";
-for (size_t i = 0; i< 4; i++)
-  cout << i << ": " << +histo[i] << endl;
-  */
-
-  if (numFreeUpper == 1)
-    return numFreeRanks;
-  else if (numFreeRanks == 1)
-  {
-    if ((numFreeUpper == 2 && histo[2] + histo[3] == 0) ||
-        (numFreeUpper == 3 && histo[3] == 0))
-    {
-      // Actually an error
-      assert(false);
-      return numeric_limits<unsigned char>::max();
-    }
-    else
-    {
-      // There is only one way to fit 2-3 cards into a single rank
-      return 1;
-    }
-  }
-
-  count = 0;
-// cout << "RANGE " << +numFreeLower << " to " << +numFreeUpper << endl;
-// cout << "numFreeRanks " << +numFreeRanks << endl;
-  for (auto f = numFreeLower; f <= numFreeUpper; f++)
-  {
-    if (f == 0)
-      continue;
-    else if (f == 1)
-      count += numFreeRanks;
-    else if (f == 2)
-    {
-      // We can fit two cards into a single rank, or we can split them
-      // onto two ranks.
-      count += histo[2] + histo[3] + (numFreeRanks == 2 ? 1 : 3);
-// cout << "f 2: " << +count << endl;
-// cout<< "histo 2: " << +histo[2] << ", h3 " << +histo[3] << endl;
-    }
-    else if (f == 3)
-    {
-      // We can fit three cards into a single rank with enough room,
-      // or into three ranks as 1+1+1 (if there are enough ranks),
-      // or into two ranks as 2+1.
-      count += histo[3] +
-        (numFreeRanks == 3 ? 1 : 0) +
-        (histo[2] + histo[3]) * (numFreeRanks-1);
-// cout << "f 3: " << +count << endl;
-    }
-    else
-    {
-      assert(false);
-    }
-  }
-
-  if (count > 4 || (count == 4 && numFreeLower > 0))
-    return numeric_limits<unsigned char>::max();
-  else
-    return count;
-}
-
-
-void Product::makeCompositions(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const unsigned char numFree,
-  list<string>& compositions) const
-{
-  assert(numFree >= 1 && numFree <= 3);
-
-  vector<list<unsigned char>> histo(4);
-  unsigned char numFreeRanks = 0;
-  unsigned char count = 0;
-
-  for (unsigned char topNo = 0; topNo < sumProfile.size(); topNo++)
-  {
-    if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
-      continue;
-
-    numFreeRanks++;
-    count = min(sumProfile[topNo], static_cast<unsigned char>(3));
-    histo[count].push_back(topNo);
-  }
-
-  if (numFree == 1)
-  {
-    for (unsigned char topNo = 
-      static_cast<unsigned char>(sumProfile.size()); topNo-- > 0; )
-    {
-      if (topNo >= canonicalShift && tops[topNo-canonicalShift].used())
-        continue;
-
-      const string rstr = ranksNames.strOpponents(topNo,
-        tops[topNo-canonicalShift].lower(), true, true);
-      compositions.push_back(rstr);
-    }
-  }
-  else if (numFreeRanks == 1)
-  {
-    // There is only one way to fit 2-3 cards into a single rank
-    const unsigned char topNo = (histo[3].empty() ? 
-      histo[2].front() : histo[3].front());
-    const string rstr = ranksNames.strOpponents(topNo,
-      tops[topNo-canonicalShift].lower(), true, true);
-    compositions.push_back(rstr);
-  }
-  else if (numFree == 2)
-  {
-    // We can fit two cards into a single rank, or we can split them
-    // onto two ranks.
-    for (unsigned hno = 2; hno <= 3; hno++)
-    {
-      for (unsigned char topNo: histo[hno])
-      {
-        const string rstr = ranksNames.strOpponents(topNo,
-          tops[topNo-canonicalShift].lower(), true, true);
-        compositions.push_back(rstr);
-      }
-    }
-  }
-  else
-  {
-    // We can fit three cards into a single rank with enough room,
-    // or into three ranks as 1+1+1 (if there are enough ranks),
-    // or into two ranks as 2+1.
-    for (unsigned char topNo: histo[3])
-    {
-      const string rstr = ranksNames.strOpponents(topNo,
-        tops[topNo-canonicalShift].lower(), true, true);
-      compositions.push_back(rstr);
-
-      // Then 2 with this topNo + 1 of any other
-      // Then 1 with this topNo + 2 of any other
-    }
-
-    // Then loop over histo[2] or 2 + 1, then 1 + 2
-  }
-}
-
-
 string Product::strVerbalAnyTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1209,56 +976,18 @@ string Product::strVerbalAnyTops(
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-// TODO Go through freeLower .. freUpper, including 0 (void) separately
-// unsigned char numFree = dataWest.freeUpper;
-const unsigned char numComp = productWest.numCompositions(sumProfile,
-  canonicalShift, dataWest.freeLower, dataWest.freeUpper);
-if (numComp > 3)
-  cout << "COMPLEX\n";
-else
-  cout << "SIMPLE " << +numComp << "\n";
-
-Pstack pstack;
-list<Pstack> completions;
-productWest.makePartialProfile(sumProfile, canonicalShift, pstack);
-if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
-  4, completions))
-{
-  if (numComp != static_cast<unsigned char>(completions.size()))
-  {
-    cout << "Got few completions\n";
-    cout << productWest.strLine() << "\n";
-    cout << sumProfile.strLine() << "\n";
-    cout << dataWest.str("data") << "\n";
-    cout << pstack.str();
-    cout << "number of completions: " << completions.size() << endl;
-    size_t i =  0;
-    for (auto& c: completions)
+    Pstack pstack;
+    list<Pstack> completions;
+    productWest.makePartialProfile(sumProfile, canonicalShift, pstack);
+    if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
+      4, completions))
     {
-      cout << "number " << i++ << ":\n";
-      cout << c.str() << "\n";
+      cout << "SIMPLE " << completions.size() << "\n";
     }
-    cout << "numComp " << +numComp << endl;
-    assert(numComp == static_cast<unsigned char>(completions.size()));
-  }
-}
-else if (numComp <= 3)
-{
-  cout << "Got too many completions\n";
-  cout << productWest.strLine() << "\n";
-  cout << sumProfile.strLine() << "\n";
-  cout << dataWest.str("data") << "\n";
-  cout << pstack.str();
-  cout << "number of completions: " << completions.size() << endl;
-  size_t i =  0;
-  for (auto& c: completions)
-  {
-    cout << "number " << i++ << ":\n";
-    cout << c.str() << "\n";
-  }
-  cout << "numComp " << +numComp << endl;
-  assert(numComp <= 3);
-}
+    else
+    {
+      cout << "COMPLEX\n";
+    }
 
     return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), 
@@ -1266,56 +995,19 @@ else if (numComp <= 3)
   }
   else
   {
-// TODO Go through freeLower .. freUpper, including 0 (void) separately
-// unsigned char numFree = dataEast.freeUpper;
-const unsigned char numComp = productEast.numCompositions(sumProfile,
-  canonicalShift, dataEast.freeLower, dataEast.freeUpper);
-if (numComp > 3)
-  cout << "COMPLEX\n";
-else
-  cout << "SIMPLE " << +numComp << "\n";
-
-Pstack pstack;
-list<Pstack> completions;
-productEast.makePartialProfile(sumProfile, canonicalShift, pstack);
-if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
-  4, completions))
-{
-  if (numComp != static_cast<unsigned char>(completions.size()))
-  {
-    cout << "Got few completions\n";
-    cout << productEast.strLine() << "\n";
-    cout << sumProfile.strLine() << "\n";
-    cout << dataEast.str("data East") << "\n";
-    cout << pstack.str();
-    cout << "number of completions: " << completions.size() << endl;
-    size_t i =  0;
-    for (auto& c: completions)
+    Pstack pstack;
+    list<Pstack> completions;
+    productEast.makePartialProfile(sumProfile, canonicalShift, pstack);
+    if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
+      4, completions))
     {
-      cout << "number " << i++ << ":\n";
-      cout << c.str() << "\n";
+      cout << "SIMPLE " << completions.size() << "\n";
     }
-    cout << "numComp " << +numComp << endl;
-    assert(numComp == static_cast<unsigned char>(completions.size()));
-  }
-}
-else if (numComp <= 3)
-{
-  cout << "Got too many completions\n";
-  cout << productEast.strLine() << "\n";
-  cout << sumProfile.strLine() << "\n";
-  cout << dataEast.str("data East") << "\n";
-  cout << pstack.str();
-  cout << "number of completions: " << completions.size() << endl;
-  size_t i =  0;
-  for (auto& c: completions)
-  {
-    cout << "number " << i++ << ":\n";
-    cout << c.str() << "\n";
-  }
-  cout << "numComp " << +numComp << endl;
-  assert(numComp <= 3);
-}
+    else
+    {
+      cout << "COMPLEX\n";
+    }
+
     return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), 
       dataEast, canonicalShift);
