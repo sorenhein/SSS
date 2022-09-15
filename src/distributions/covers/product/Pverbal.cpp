@@ -484,6 +484,11 @@ class VerbalComb
     return lengthInt;
   };
 
+  bool operator < (const VerbalComb& vc2) const
+  {
+    return (lengthInt > vc2.lengthInt);
+  };
+
   string strDebug() const
   {
     stringstream ss;
@@ -521,6 +526,8 @@ class VerbalComb
   };
 };
 
+#include <algorithm>
+
 class VerbalCover
 {
   private:
@@ -532,6 +539,11 @@ class VerbalCover
     void push_back(const VerbalComb& verbalComb)
     {
       completions.push_back(verbalComb);
+    };
+
+    void stable_sort()
+    {
+      std::stable_sort(completions.begin(), completions.end());
     };
 
     unsigned char size() const
@@ -604,7 +616,6 @@ bool Product::makeCompletions(
   // completion.
   bool firstOpen = true;
 
-  // for (auto openNo: pstack.openTopNumbers)
   for (auto openNo: verbalComb.openTops())
   {
     const size_t psize = stack.size();
@@ -629,10 +640,10 @@ bool Product::makeCompletions(
 
         if (piter->length() >= totalLower && (count > 0 || firstOpen))
         {
-          completions.push_back(* piter);
-          if (completions.size() > maxCompletions ||
-              (data.freeLower > 0 && completions.size() == maxCompletions))
+          if (completions.size() >= maxCompletions)
             return false;
+
+          completions.push_back(* piter);
         }
 
         if (piter->length() < totalUpper && openNo > 0)
@@ -648,6 +659,7 @@ bool Product::makeCompletions(
   }
 
   assert(stack.empty());
+  completions.stable_sort();
   return true;
 }
 
@@ -1029,21 +1041,21 @@ string Product::strVerbalAnyTopsSide(
     false, data.ranksActive == 1, false, false);
 
   if (result.empty())
-    result = "none";
-
-  result += " out of " + Product::strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    true, false, false, false);
-
-  if (data.freeLower == data.freeUpper)
-    result += " and " + to_string(data.freeLower);
-  else
   {
-    result += " and " + to_string(data.freeLower) + "-" + 
-      to_string(data.freeUpper);
+    return side + " has " + data.strFreeSemantic() +
+      ", not using " +
+      Product::strUsedTops(sumProfile, ranksNames, canonicalShift, 
+        true, false, false, false);
   }
 
-  return side + " has " + result + " cards of other ranks";
+  if (data.zeroUsedFlag)
+    result += " out of " + Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      true, false, false, false);
+
+  result += " and " + data.strOtherSemantic();
+
+  return side + " has " + result + " of other ranks";
 }
 
 
@@ -1215,10 +1227,13 @@ string Product::strVerbalHighTopsSide(
 
     result += " and " + data.strFreeCount();
 
+    const string cards = (data.freeUpper == 1 ? "card" : "cards");
+
     if (data.lowestRankActive == data.lowestRankUsed)
-      result += ", lower-ranked cards";
+      result += ", lower-ranked " + cards;
     else
-      result += " cards below the " + ranksNames.lowestCard(numOptions);
+      result += " " + cards + " below the " + 
+        ranksNames.lowestCard(numOptions);
 
     return side + " has " + result;
   }

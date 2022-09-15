@@ -3,21 +3,12 @@
  *G West has HT9, T9 or T9x [4/4]
 Why do we get both from West?  Should be it once from West and
 once from East?
-
-* Better to have void first or last
-* Better to have by length, so perhaps long to short
-* We get four non-voids too? Max 3?
-* East has HH and not the ace
+Actually quite interesting?  Do they arise piece by piece,
+but cannot then be combined into a symmetric one?  That could cut
+complexity in a post-processing step.
 
 There is a new class VerbalTableau
 It has a VerbalRow consisting of one or more VerbalCover
-
-High tops only
---------------
-East has HH without the ace
-Be more precise, e.g. exactly two of QJT (how do we do it for
-high-tops?)
-
 
 Maybe don't need all four args of strUsedTops independently?
 Do the any-tops first, then maybe it becomes clearer.

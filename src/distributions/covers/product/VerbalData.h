@@ -25,6 +25,7 @@ struct VerbalData
   unsigned char lowestRankUsed;
   unsigned char lowestRankActive; // Non-zero rank entry
   bool partialFlag; // Entry used (> 0) by both sides
+  bool zeroUsedFlag; // Entry with a zero active value occurs
   unsigned char topsFull; // Count of tops in the ranksOver ranks
   unsigned char ranksFull; // Nuber of ranks active, but not on other side
   unsigned char freeLower;
@@ -38,6 +39,7 @@ struct VerbalData
     lowestRankUsed = 0;
     lowestRankActive = 0;
     partialFlag = false;
+    zeroUsedFlag = false;
     topsFull = 0;
     ranksFull = 0;
     freeLower = 0;
@@ -65,6 +67,9 @@ struct VerbalData
       topsFull += valueMax;
       ranksFull++;
     }
+
+    if (value == 0)
+      zeroUsedFlag = true;
 
     if (value > 0 && value < valueMax)
       partialFlag = true;
@@ -117,6 +122,37 @@ struct VerbalData
       return "a doubleton";
     else if (freeLower == 3 && freeUpper == 3)
       return "a tripleton";
+    else
+      return to_string(freeLower) + "-" + to_string(freeUpper) + " cards";
+  }
+
+
+  string strOtherSemantic() const
+  {
+    if (freeLower == 0)
+    {
+      if (freeUpper == 1)
+        return "at most one card";
+      else if (freeUpper == 2)
+        return "at most two cards";
+      else if (freeUpper == 3)
+        return "at most three cards";
+      else
+        return ("at most " + to_string(freeUpper) + " cards");
+    }
+    else if (freeLower == 1)
+    {
+      if (freeUpper == 1)
+        return "one card";
+      else if (freeUpper == 2)
+        return "one or two cards";
+      else
+        return ( "1-" + to_string(freeUpper) + " cards");
+    }
+    else if (freeLower == 2 && freeUpper == 2)
+      return "two cards";
+    else if (freeLower == 3 && freeUpper == 3)
+      return "three cards";
     else
       return to_string(freeLower) + "-" + to_string(freeUpper) + " cards";
   }
