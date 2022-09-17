@@ -70,6 +70,8 @@ string Length::strEqual(
     ss << side << " has a singleton";
   else if (value == 2)
     ss << side << " has a doubleton";
+  else if (value == 3 && oppsLength > 7)
+    ss << side << " has a tripleton";
   else
     ss << "The suit splits " << 
       +Length::lower() << "=" << +(oppsLength - Length::lower());

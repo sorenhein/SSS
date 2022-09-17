@@ -530,15 +530,94 @@ class VerbalComb
 
 class VerbalCover
 {
+  // A verbal cover can be a list of completions, e.g. 97x, 97 or 7x.
+  // Or it can be the combination of a length constraint, a set of
+  // exact West cards and another set of exact East cards.
+  // Each of these three components can be present or not.
+  //
+
   private:
     
     list<VerbalComb> completions;
 
+    bool lengthFlag;
+    Length const * lengthPtr;
+
+    bool westFlag;
+    VerbalComb west;
+
+    bool eastFlag;
+    VerbalComb east;
+
+
+    string strCompletions(const RanksNames& ranksNames) const
+    {
+      string s;
+      size_t i = 0;
+
+      for (auto& verbalComb: completions)
+      {
+        if (i > 0)
+          s += (i+1 == completions.size() ? " or " : ", ");
+
+        s += verbalComb.str(ranksNames);
+        i++;
+      }
+      return s;
+    };
+
+
   public:
+
+    VerbalCover()
+    {
+      lengthFlag = false;
+      lengthPtr = nullptr;
+      westFlag = false;
+      eastFlag = false;
+    };
 
     void push_back(const VerbalComb& verbalComb)
     {
       completions.push_back(verbalComb);
+    };
+
+    void setLength(const Length& length)
+    {
+      lengthFlag = true;
+      lengthPtr = &length;
+    };
+
+    VerbalComb& activateSide(const Opponent opponent)
+    {
+      assert(opponent == OPP_WEST || opponent == OPP_EAST);
+      if (opponent == OPP_WEST)
+      {
+        westFlag = true;
+        return west;
+      }
+      else
+      {
+        eastFlag = true;
+        return east;
+      }
+    };
+
+    void setSide(
+      const VerbalComb& verbalComb,
+      const Opponent opponent)
+    {
+      assert(opponent == OPP_WEST || opponent == OPP_EAST);
+      if (opponent == OPP_WEST)
+      {
+        westFlag = true;
+        west = verbalComb;
+      }
+      else
+      {
+        eastFlag = true;
+        east = verbalComb;
+      }
     };
 
     void stable_sort()
@@ -553,18 +632,102 @@ class VerbalCover
 
     string str(const RanksNames& ranksNames) const
     {
-      string s;
-      size_t i = 0;
+      return VerbalCover::strCompletions(ranksNames);
+    };
 
-      for (auto& verbalComb: completions)
+    string strGeneral(
+      const unsigned char oppsLength,
+      const bool symmFlag,
+      const RanksNames& ranksNames) const
+    {
+      string lstr = "", wstr = "", estr = "";
+      if (lengthFlag)
       {
-        if (i > 0)
-          s += (i+1 == completions.size() ? " or " : ", ");
+        assert(lengthPtr != nullptr);
 
-        s += verbalComb.str(ranksNames);
-        i++;
+        Opponent simplestOpponent;
+        if (symmFlag)
+          simplestOpponent = OPP_WEST;
+        else if (westFlag == eastFlag)
+          simplestOpponent = lengthPtr->simplestOpponent(oppsLength);
+        else if (westFlag)
+          simplestOpponent = OPP_WEST;
+        else
+          simplestOpponent = OPP_EAST;
+
+        lstr = lengthPtr->strLength(
+          oppsLength, simplestOpponent, symmFlag);
       }
-      return s;
+
+      if (westFlag)
+        wstr = west.str(ranksNames);
+
+      if (eastFlag)
+        estr = east.str(ranksNames);
+
+      if (lengthFlag)
+      {
+        if (westFlag)
+        {
+          if (eastFlag)
+          {
+            if (symmFlag)
+            {
+              if (wstr == estr)
+                return lstr + ", and West and East each have " + wstr;
+              else
+                return lstr + ", and " + wstr + " and " + estr +
+                  " are split";
+            }
+            else if (wstr == estr)
+              return lstr + ", West and East each have " + wstr;
+            else
+              return lstr + ", West has " + wstr + " and East has " + estr;
+          }
+          else
+          {
+            if (symmFlag)
+              return lstr + " with " + wstr;
+            else
+              return lstr + " and West has " + wstr;
+          }
+        }
+        else if (eastFlag)
+        {
+          if (symmFlag)
+            return lstr + " without " + estr;
+          else
+            return lstr + " and East has " + estr;
+        }
+        else
+          return lstr;
+      }
+      else if (westFlag)
+      {
+        if (eastFlag)
+        {
+          assert(wstr == estr);
+          return "West and East each have " + wstr;
+        }
+        else
+        {
+          if (symmFlag)
+            return "Either side has " + wstr;
+          else
+            return "West has " + wstr;
+        }
+      }
+      else if (eastFlag)
+      {
+        if (symmFlag)
+          return "Either side has " + estr;
+        else
+          return "East has " + estr;
+      }
+      else
+        assert(false);
+
+      return "";
     };
 };
 
@@ -1078,6 +1241,7 @@ string Product::strVerbalAnyTops(
   if (! length.used())
   {
     // This works for any tops as well.
+    // TODO Have we lost symmFlag here?
     return Product::strVerbalTopsOnly(sumProfile, ranksNames,
       canonicalShift, productWest, productEast, dataWest, dataEast, false);
   }
@@ -1095,8 +1259,32 @@ string Product::strVerbalAnyTops(
       return side + " has " + completions.str(ranksNames);
     }
     else
+    {
+      // New way.
+      completions.setLength(length);
+
+      if (dataWest.ranksActive > 0)
+        completions.setSide(verbalComb, OPP_WEST);
+
+      if (dataEast.ranksActive > 0)
+      {
+        VerbalComb& vcEast = completions.activateSide(OPP_EAST);
+        productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
+      }
+
+      const string snew = completions.strGeneral(
+        sumProfile.length(), symmFlag, ranksNames);
+
+      const string sold = productWest.strVerbalAnyTopsSide(
+        sumProfile, ranksNames, side, dataWest, canonicalShift);
+
+      cout << "\n";
+      cout << setw(70) << left << sold << "X1X " <<
+        setw(60) << left << snew << "\n";
+
       return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
         side, dataWest, canonicalShift);
+    }
   }
   else
   {
@@ -1111,8 +1299,34 @@ string Product::strVerbalAnyTops(
       return side + " has " + completions.str(ranksNames);
     }
     else
+    {
+      // New way.
+      completions.setLength(length);
+
+      if (dataEast.ranksActive > 0)
+        completions.setSide(verbalComb, OPP_EAST);
+
+      if (dataWest.ranksActive > 0)
+      {
+        VerbalComb& vcWest = completions.activateSide(OPP_WEST);
+        productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
+      }
+
+      const string snew = completions.strGeneral(
+        sumProfile.length(), symmFlag, ranksNames);
+
+      const string sold = productWest.strVerbalAnyTopsSide(
+        sumProfile, ranksNames, side, dataWest, canonicalShift);
+
+      cout << "\n";
+      cout << setw(70) << left << sold << "X2X " <<
+        setw(60) << left << snew << "\n";
+
+      return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+        side, dataWest, canonicalShift);
       return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
         side, dataEast, canonicalShift);
+    }
   }
 }
 

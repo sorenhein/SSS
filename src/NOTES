@@ -1,3 +1,22 @@
+1-1
+2-2
+2-3 or 3-2
+3-3
+3-4 or 4-3
+4-4
+"The suit splits evenly"
+
+Make a bunch of templates with %1, %2, %3 parameters.
+Select them in one step.
+Make a str() in another.
+
+The main problem now is with the first-named / second-named.
+We have to be able to say "has a doubleton and the Q" when twose
+two go together.  Otherwise if looks as if they could be separated.
+Or "has a doubleton not including".
+
+
+
 11/159426 #2
  *G West has AK, AKx or Hx [4/4]
  *G West has HT9, T9 or T9x [4/4]
