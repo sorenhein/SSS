@@ -974,67 +974,48 @@ string Product::strVerbalAnyTops(
     return Product::strVerbalTopsOnly(sumProfile, ranksNames,
       canonicalShift, productWest, productEast, dataWest, dataEast, false);
   }
-  else if (dataWest.topsUsed + dataWest.freeUpper <=
+
+  VerbalCover completions;
+
+  if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    Completion completion;
-    VerbalCover completions;
-    vector<TemplateData> tdata;
     const string side = (symmFlag ? "Either opponent" : "West");
 
-    productWest.makePartialProfile(sumProfile, canonicalShift, completion);
     if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
       return side + " has " + completions.str(ranksNames);
     }
-    else
-    {
-      completions.setLength(length);
-
-      if (dataWest.ranksActive > 0)
-        completions.setSide(completion, OPP_WEST);
-
-      if (dataEast.ranksActive > 0)
-      {
-        Completion& vcEast = completions.activateSide(OPP_EAST);
-        productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
-      }
-
-      return completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames, tdata);
-    }
   }
   else
   {
-    Completion completion;
-    VerbalCover completions;
-    vector<TemplateData> tdata;
     const string side = (symmFlag ? "Either opponent" : "East");
 
-    productEast.makePartialProfile(sumProfile, canonicalShift, completion);
     if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
       return side + " has " + completions.str(ranksNames);
     }
-    else
-    {
-      completions.setLength(length);
-
-      if (dataEast.ranksActive > 0)
-        completions.setSide(completion, OPP_EAST);
-
-      if (dataWest.ranksActive > 0)
-      {
-        Completion& vcWest = completions.activateSide(OPP_WEST);
-        productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
-      }
-
-      return completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames, tdata);
-    }
   }
+
+  completions.setLength(length);
+
+  if (dataWest.ranksActive > 0)
+  {
+    Completion& vcWest = completions.activateSide(OPP_WEST);
+    productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
+  }
+
+  if (dataEast.ranksActive > 0)
+  {
+    Completion& vcEast = completions.activateSide(OPP_EAST);
+    productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
+  }
+
+  vector<TemplateData> tdata;
+  return completions.strGeneral(
+    sumProfile.length(), symmFlag, ranksNames, tdata);
 }
 
 
