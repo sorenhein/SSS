@@ -951,36 +951,6 @@ string Product::strVerbalTopsOnly(
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
-string Product::strVerbalAnyTopsSide(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const string& side,
-  const VerbalData& data,
-  const unsigned char canonicalShift) const
-{
-  string result = Product::strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    false, data.ranksActive == 1, false, false);
-
-  if (result.empty())
-  {
-    return side + " has " + data.strFreeSemantic() +
-      ", not using " +
-      Product::strUsedTops(sumProfile, ranksNames, canonicalShift, 
-        true, false, false, false);
-  }
-
-  if (data.zeroUsedFlag)
-    result += " out of " + Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      true, false, false, false);
-
-  result += " and " + data.strOtherSemantic();
-
-  return side + " has " + result + " of other ranks";
-}
-
-
 string Product::strVerbalAnyTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1020,7 +990,6 @@ string Product::strVerbalAnyTops(
     }
     else
     {
-      // New way.
       completions.setLength(length);
 
       if (dataWest.ranksActive > 0)
@@ -1034,16 +1003,6 @@ string Product::strVerbalAnyTops(
 
       return completions.strGeneral(
         sumProfile.length(), symmFlag, ranksNames, tdata);
-
-      // const string sold = productWest.strVerbalAnyTopsSide(
-        // sumProfile, ranksNames, side, dataWest, canonicalShift);
-
-      // cout << "\n";
-      // cout << setw(70) << left << sold << "X1X " <<
-        // setw(60) << left << snew << "\n";
-
-      // return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-        // side, dataWest, canonicalShift);
     }
   }
   else
@@ -1061,7 +1020,6 @@ string Product::strVerbalAnyTops(
     }
     else
     {
-      // New way.
       completions.setLength(length);
 
       if (dataEast.ranksActive > 0)
@@ -1075,15 +1033,6 @@ string Product::strVerbalAnyTops(
 
       return completions.strGeneral(
         sumProfile.length(), symmFlag, ranksNames, tdata);
-
-      // const string sold = productEast.strVerbalAnyTopsSide(
-        // sumProfile, ranksNames, side, dataEast, canonicalShift);
-
-      // cout << "\n";
-      // cout << setw(70) << left << sold << "X2X " <<
-        // setw(60) << left << snew << "\n";
-
-      // return sold;
     }
   }
 }

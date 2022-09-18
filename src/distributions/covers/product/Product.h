@@ -200,13 +200,6 @@ class Product
 
     // Any tops
 
-    string strVerbalAnyTopsSide(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const string& side,
-      const VerbalData& data,
-      const unsigned char canonicalShift) const;
-
     string strVerbalAnyTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
