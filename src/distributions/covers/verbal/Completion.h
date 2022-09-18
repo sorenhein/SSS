@@ -52,7 +52,10 @@ class Completion
 
     string strDebug() const;
 
-    string str(const RanksNames& ranksNames) const;
+    string str(
+      const RanksNames& ranksNames,
+      const bool expandFlag,
+      const bool singleRankFlag) const;
 };
 
 #endif

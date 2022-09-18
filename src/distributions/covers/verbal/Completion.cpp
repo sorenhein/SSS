@@ -89,7 +89,10 @@ string Completion::strDebug() const
 }
 
 
-string Completion::str(const RanksNames& ranksNames) const
+string Completion::str(
+  const RanksNames& ranksNames,
+  const bool expandFlag,           // jack, not J
+  const bool singleRankFlag) const // Use dashes between expansions
 {
   if (lengthInt == 0)
     return "void";
@@ -100,8 +103,11 @@ string Completion::str(const RanksNames& ranksNames) const
   {
     if (partialTops[topNo])
     {
+      if (expandFlag && ! singleRankFlag && ! s.empty())
+        s += "-";
+
       s += ranksNames.strOpponents(topNo, partialTops[topNo],
-        false, false);
+        expandFlag, singleRankFlag);
     }
   }
   return s;

@@ -568,17 +568,6 @@ string Product::strUsedTops(
     const string rstr = ranksNames.strOpponents(topNo + canonicalShift,
       top.lower(), expandFlag, singleRankFlag);
 
-    if (rstr.empty())
-      assert(false);
-    /*
-    {
-      assert(count == 0);
-      continue;
-    }
-    else
-      assert(count > 0);
-      */
-
     if (expandFlag && ! singleRankFlag && ! result.empty())
       result += "-";
 
@@ -602,6 +591,7 @@ string Product::strUsedBottoms(
   // then we get Q6.  If AQT86 is stored as AQTx with a shift of 1,
   // and if AQT are used, we get 8x.
 
+  assert(! expandFlag);
   string result = "";
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
