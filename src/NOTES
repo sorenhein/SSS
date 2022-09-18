@@ -1,14 +1,4 @@
-1-1
-2-2
-2-3 or 3-2
-3-3
-3-4 or 4-3
-4-4
-"The suit splits evenly"
-
-Make a bunch of templates with %1, %2, %3 parameters.
-Select them in one step.
-Make a str() in another.
+Store the texts in a language file
 
 The main problem now is with the first-named / second-named.
 We have to be able to say "has a doubleton and the Q" when twose

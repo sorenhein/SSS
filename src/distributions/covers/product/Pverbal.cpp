@@ -18,6 +18,9 @@
 #include "Profile.h"
 #include "VerbalData.h"
 
+// TODO Whole file needed, or split perhaps?
+#include "../verbal/VerbalTemplates.h"
+
 #include "../CoverCategory.h"
 
 #include "../verbal/VerbalCover.h"
@@ -952,6 +955,7 @@ string Product::strVerbalAnyTops(
   {
     Completion completion;
     VerbalCover completions;
+    vector<TemplateData> tdata;
     const string side = (symmFlag ? "Either opponent" : "West");
 
     productWest.makePartialProfile(sumProfile, canonicalShift, completion);
@@ -975,7 +979,7 @@ string Product::strVerbalAnyTops(
       }
 
       const string snew = completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames);
+        sumProfile.length(), symmFlag, ranksNames, tdata);
 
       const string sold = productWest.strVerbalAnyTopsSide(
         sumProfile, ranksNames, side, dataWest, canonicalShift);
@@ -992,6 +996,7 @@ string Product::strVerbalAnyTops(
   {
     Completion completion;
     VerbalCover completions;
+    vector<TemplateData> tdata;
     const string side = (symmFlag ? "Either opponent" : "East");
 
     productEast.makePartialProfile(sumProfile, canonicalShift, completion);
@@ -1015,7 +1020,7 @@ string Product::strVerbalAnyTops(
       }
 
       const string snew = completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames);
+        sumProfile.length(), symmFlag, ranksNames, tdata);
 
       const string sold = productWest.strVerbalAnyTopsSide(
         sumProfile, ranksNames, side, dataWest, canonicalShift);

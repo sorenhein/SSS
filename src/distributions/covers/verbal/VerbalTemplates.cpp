@@ -9,6 +9,9 @@
 // Despite the file name, this file implements Product methods.
 // They are separate as there are so many of them.
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <cassert>
 
 #include "VerbalTemplates.h"
@@ -46,8 +49,8 @@ void VerbalTemplates::set(const Language languageIn)
     assert(false);
 
   dictionary.resize(BLANK_SIZE);
-  for (auto i = 0; i < BLANK_SIZE; i++)
-    dictionary.resize(BLANK_MAX_VERSIONS);
+  for (auto& dict: dictionary)
+    dict.resize(BLANK_MAX_VERSIONS);
 
   auto& blankPlayerCap = dictionary[BLANK_PLAYER_CAP];
   blankPlayerCap[BLANK_PLAYER_CAP_WEST] = "West";
@@ -67,39 +70,68 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_DOUBLE_ATMOST] = "has at most a doubleton";
   blankLP[BLANK_LENGTH_PHRASE_TRIPLE_ATMOST] = "has at most a tripleton";
   blankLP[BLANK_LENGTH_PHRASE_CARDS_PARAM] = "has %0 cards";
+  blankLP[BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM] = "has at most %0 cards";
   blankLP[BLANK_LENGTH_PHRASE_RANGE_PARAMS] = "has %0-%1 cards";
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
 }
 
 
-string VerbalTemplates::get(const TemplateData& tdata) const
+string VerbalTemplates::get(
+  const TemplateSentence sentence,
+  const vector<TemplateData>& tdata) const
 {
-  assert(tdata.blank < templates.size());
-  const VerbalTemplate& vt = templates[tdata.blank];
+  assert(sentence < templates.size());
+  const VerbalTemplate& vt = templates[sentence];
+
+  assert(tdata.size() == vt.blanks.size());
 
   string s = vt.pattern;
   string fill = "";
 
-  size_t field = 0;
-  for (auto blank: vt.blanks)
+  auto ttypeIter = vt.blanks.begin();
+  auto tdataIter = tdata.begin();
+
+/*
+cout << "sentence " << sentence << endl;
+for (unsigned i = 0; i < tdata.size(); i++)
+{
+  cout << i << ":\n";
+  cout << "  " << tdata[i].str();
+}
+cout << "template " << vt.str() << endl;
+*/
+
+  for (size_t field = 0; field < tdata.size(); 
+    field++, ttypeIter++, tdataIter++)
   {
+    const VerbalBlank blank = * ttypeIter;
+    const TemplateData& blankData = * tdataIter;
+    assert(blank == blankData.blank);
+
     if (blank == BLANK_PLAYER_CAP)
     {
-      fill = VerbalTemplates::playerCap(tdata);
+      fill = VerbalTemplates::playerCap(blankData);
     }
     else if (blank == BLANK_LENGTH_PHRASE)
     {
-      fill = VerbalTemplates::lengthPhrase(tdata);
+      fill = VerbalTemplates::lengthPhrase(blankData);
     }
     else
+    {
+// cout << "field " << field << endl;
+// cout << "blank " << blank << endl;
       assert(false);
+    }
 
     auto p = s.find("%" + to_string(field));
     if (p == string::npos)
+    {
+// cout << "Looked for " << ("%" + to_string(field)) << endl;
+// cout << "in " << s << endl;
       assert(false);
+    }
 
     s.replace(p, 2, fill);
-    field++;
   }
 
   return s;
@@ -109,18 +141,21 @@ string VerbalTemplates::get(const TemplateData& tdata) const
 string VerbalTemplates::playerCap(const TemplateData& tdata) const
 {
   assert(tdata.numParams == 0);
-  assert(tdata.blank < dictionary[BLANK_PLAYER_CAP].size());
+  assert(tdata.instance < dictionary[BLANK_PLAYER_CAP].size());
 
-  return dictionary[BLANK_PLAYER_CAP][tdata.blank];
+  return dictionary[BLANK_PLAYER_CAP][tdata.instance];
 }
 
 
 string VerbalTemplates::lengthPhrase(const TemplateData& tdata) const
 {
-  assert(tdata.numParams < 2);
-  assert(tdata.blank < dictionary[BLANK_LENGTH_PHRASE].size());
+  assert(tdata.numParams <= 2);
+  assert(tdata.instance < dictionary[BLANK_LENGTH_PHRASE].size());
 
-  string s = dictionary[BLANK_LENGTH_PHRASE][tdata.blank];
+// cout << "looking up " << BLANK_LENGTH_PHRASE << ", " << tdata.blank << endl;
+  string s = dictionary[BLANK_LENGTH_PHRASE][tdata.instance];
+// cout << "length phrase is " << s << endl;
+// cout << "tdata is " << tdata.str() << endl;
 
   for (size_t field = 0; field < tdata.numParams; field++)
   {

@@ -553,6 +553,8 @@ distributions/covers/product/Pverbal.obj: distributions/covers/term/Term.h
 distributions/covers/product/Pverbal.obj: distributions/covers/term/Top.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/VerbalData.h
+distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalTemplates.h
+distributions/covers/product/Pverbal.obj: distributions/covers/verbal/Language.h
 distributions/covers/product/Pverbal.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalCover.h
 distributions/covers/product/Pverbal.obj: ranks/Completion.h utils/Card.h
@@ -609,6 +611,9 @@ distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalC
 distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/CoverOperator.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalBlank.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalTemplates.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Language.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Length.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: ranks/RanksNames.h

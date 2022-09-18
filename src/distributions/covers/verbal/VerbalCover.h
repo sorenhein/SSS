@@ -20,6 +20,7 @@ using namespace std;
 
 class Length;
 class RanksNames;
+struct TemplateData;
 enum Opponent: unsigned;
 
 
@@ -51,17 +52,20 @@ class VerbalCover
     string strLengthEqual(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
-      const bool symmFlag) const;
+      const bool symmFlag,
+      vector<TemplateData>& tdata) const;
 
     string strInside(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
-      const bool symmFlag) const;
+      const bool symmFlag,
+      vector<TemplateData>& tdata) const;
 
     string strLength(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
-      const bool symmFlag) const;
+      const bool symmFlag,
+      vector<TemplateData>& tdata) const;
 
     string strCompletions(const RanksNames& ranksNames) const;
 
@@ -89,6 +93,7 @@ class VerbalCover
     string strGeneral(
       const unsigned char oppsLength,
       const bool symmFlag,
-      const RanksNames& ranksNames) const;
+      const RanksNames& ranksNames,
+      vector<TemplateData>& tdata) const;
 };
 #endif
