@@ -54,6 +54,9 @@ SOURCE_FILES    =                               \
                 distributions/covers/term/Xes.cpp                \
                 distributions/covers/term/TermCompare.cpp        \
                                                                  \
+                distributions/covers/verbal/Completion.cpp       \
+                distributions/covers/verbal/VerbalCover.cpp      \
+                                                                 \
                 inputs/Convert.cpp              \
                 inputs/Control.cpp              \
                 inputs/Entity.cpp               \

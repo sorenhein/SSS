@@ -20,10 +20,12 @@
 
 #include "../CoverCategory.h"
 
-#include "../../../ranks/RanksNames.h"
+#include "../verbal/VerbalCover.h"
 
 #include "../term/CoverOperator.h"
 #include "../term/TopData.h"
+
+#include "../../../ranks/RanksNames.h"
 
 #include "../../../utils/table.h"
 
@@ -432,327 +434,27 @@ void Product::separateSingular(
 /*                                                                    */
 /**********************************************************************/
 
-class VerbalComb
-{
-  // A single combination such as 97x.
-
-  private:
-
-    vector<unsigned char> partialTops;
-    list<unsigned char> openTopNumbers;
-    unsigned char lengthInt;
-
-  public:
-
-  void resize(const size_t numTops)
-  {
-    partialTops.resize(numTops);
-    openTopNumbers.clear();
-    lengthInt = 0;
-  };
-
-  void setTop(
-    const unsigned char topNo,
-    const bool usedFlag,
-    const unsigned char count)
-  {
-    // Must be an equal top.
-    if (usedFlag)
-    {
-      partialTops[topNo] = count;
-      lengthInt += count;
-    }
-    else
-      openTopNumbers.push_back(topNo);
-  };
-
-  void updateTop(
-    const unsigned char topNo,
-    const unsigned char count)
-  {
-    lengthInt += count - partialTops[topNo];
-    partialTops[topNo] = count;
-  };
-
-  const list<unsigned char>& openTops() const
-  {
-    return openTopNumbers;
-  };
-
-  unsigned char length() const
-  {
-    return lengthInt;
-  };
-
-  bool operator < (const VerbalComb& vc2) const
-  {
-    return (lengthInt > vc2.lengthInt);
-  };
-
-  string strDebug() const
-  {
-    stringstream ss;
-
-    ss << "tops ";
-    for (auto p: partialTops)
-      ss << +p << " ";
-    ss << "\n";
-
-    ss << "open ";
-    for (auto o: openTopNumbers)
-      ss << +o << " ";
-    ss << "\n";
-
-    ss << "length " << +lengthInt << "\n";
-    return ss.str();
-  };
-
-  string str(const RanksNames& ranksNames) const
-  {
-    if (lengthInt == 0)
-      return "void";
-
-    string s;
-    for (unsigned char topNo = 
-      static_cast<unsigned char>(partialTops.size()); topNo-- > 0; )
-    {
-      if (partialTops[topNo])
-      {
-        s += ranksNames.strOpponents(topNo, partialTops[topNo],
-          false, false);
-      }
-    }
-    return s;
-  };
-};
-
-#include <algorithm>
-
-class VerbalCover
-{
-  // A verbal cover can be a list of completions, e.g. 97x, 97 or 7x.
-  // Or it can be the combination of a length constraint, a set of
-  // exact West cards and another set of exact East cards.
-  // Each of these three components can be present or not.
-  //
-
-  private:
-    
-    list<VerbalComb> completions;
-
-    bool lengthFlag;
-    Length const * lengthPtr;
-
-    bool westFlag;
-    VerbalComb west;
-
-    bool eastFlag;
-    VerbalComb east;
-
-
-    string strCompletions(const RanksNames& ranksNames) const
-    {
-      string s;
-      size_t i = 0;
-
-      for (auto& verbalComb: completions)
-      {
-        if (i > 0)
-          s += (i+1 == completions.size() ? " or " : ", ");
-
-        s += verbalComb.str(ranksNames);
-        i++;
-      }
-      return s;
-    };
-
-
-  public:
-
-    VerbalCover()
-    {
-      lengthFlag = false;
-      lengthPtr = nullptr;
-      westFlag = false;
-      eastFlag = false;
-    };
-
-    void push_back(const VerbalComb& verbalComb)
-    {
-      completions.push_back(verbalComb);
-    };
-
-    void setLength(const Length& length)
-    {
-      lengthFlag = true;
-      lengthPtr = &length;
-    };
-
-    VerbalComb& activateSide(const Opponent opponent)
-    {
-      assert(opponent == OPP_WEST || opponent == OPP_EAST);
-      if (opponent == OPP_WEST)
-      {
-        westFlag = true;
-        return west;
-      }
-      else
-      {
-        eastFlag = true;
-        return east;
-      }
-    };
-
-    void setSide(
-      const VerbalComb& verbalComb,
-      const Opponent opponent)
-    {
-      assert(opponent == OPP_WEST || opponent == OPP_EAST);
-      if (opponent == OPP_WEST)
-      {
-        westFlag = true;
-        west = verbalComb;
-      }
-      else
-      {
-        eastFlag = true;
-        east = verbalComb;
-      }
-    };
-
-    void stable_sort()
-    {
-      std::stable_sort(completions.begin(), completions.end());
-    };
-
-    unsigned char size() const
-    {
-      return static_cast<unsigned char>(completions.size());
-    };
-
-    string str(const RanksNames& ranksNames) const
-    {
-      return VerbalCover::strCompletions(ranksNames);
-    };
-
-    string strGeneral(
-      const unsigned char oppsLength,
-      const bool symmFlag,
-      const RanksNames& ranksNames) const
-    {
-      string lstr = "", wstr = "", estr = "";
-      if (lengthFlag)
-      {
-        assert(lengthPtr != nullptr);
-
-        Opponent simplestOpponent;
-        if (symmFlag)
-          simplestOpponent = OPP_WEST;
-        else if (westFlag == eastFlag)
-          simplestOpponent = lengthPtr->simplestOpponent(oppsLength);
-        else if (westFlag)
-          simplestOpponent = OPP_WEST;
-        else
-          simplestOpponent = OPP_EAST;
-
-        lstr = lengthPtr->strLength(
-          oppsLength, simplestOpponent, symmFlag);
-      }
-
-      if (westFlag)
-        wstr = west.str(ranksNames);
-
-      if (eastFlag)
-        estr = east.str(ranksNames);
-
-      if (lengthFlag)
-      {
-        if (westFlag)
-        {
-          if (eastFlag)
-          {
-            if (symmFlag)
-            {
-              if (wstr == estr)
-                return lstr + ", and West and East each have " + wstr;
-              else
-                return lstr + ", and " + wstr + " and " + estr +
-                  " are split";
-            }
-            else if (wstr == estr)
-              return lstr + ", West and East each have " + wstr;
-            else
-              return lstr + ", West has " + wstr + " and East has " + estr;
-          }
-          else
-          {
-            if (symmFlag)
-              return lstr + " with " + wstr;
-            else
-              return lstr + " and West has " + wstr;
-          }
-        }
-        else if (eastFlag)
-        {
-          if (symmFlag)
-            return lstr + " without " + estr;
-          else
-            return lstr + " and East has " + estr;
-        }
-        else
-          return lstr;
-      }
-      else if (westFlag)
-      {
-        if (eastFlag)
-        {
-          assert(wstr == estr);
-          return "West and East each have " + wstr;
-        }
-        else
-        {
-          if (symmFlag)
-            return "Either side has " + wstr;
-          else
-            return "West has " + wstr;
-        }
-      }
-      else if (eastFlag)
-      {
-        if (symmFlag)
-          return "Either side has " + estr;
-        else
-          return "East has " + estr;
-      }
-      else
-        assert(false);
-
-      return "";
-    };
-};
-
-
 void Product::makePartialProfile(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
-  VerbalComb& verbalComb) const
+  Completion& completion) const
 {
   // We have some top's that are fixed to a single value.
   // We have some explicit, unused tops.
   // We have 1 or more unused implicit bottoms (canonicalShift+1).
 
-  verbalComb.resize(sumProfile.size());
+  completion.resize(sumProfile.size());
 
   for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
       topNo-- > 0; )
   {
     if (topNo >= canonicalShift)
-      verbalComb.setTop(
+      completion.setTop(
         topNo, 
         tops[topNo-canonicalShift].used(),
         tops[topNo-canonicalShift].lower());
     else
-      verbalComb.setTop(topNo, false, 0);
+      completion.setTop(topNo, false, 0);
   }
 }
 
@@ -764,12 +466,12 @@ bool Product::makeCompletions(
   const unsigned char maxCompletions,
   VerbalCover& completions) const
 {
-  VerbalComb verbalComb;
+  Completion completion;
 
-  Product::makePartialProfile(sumProfile, canonicalShift, verbalComb);
+  Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-  list<VerbalComb> stack;
-  stack.push_back(verbalComb);
+  list<Completion> stack;
+  stack.push_back(completion);
 
   const unsigned char totalLower = data.topsUsed + data.freeLower;
   const unsigned char totalUpper = data.topsUsed + data.freeUpper;
@@ -779,7 +481,7 @@ bool Product::makeCompletions(
   // completion.
   bool firstOpen = true;
 
-  for (auto openNo: verbalComb.openTops())
+  for (auto openNo: completion.openTops())
   {
     const size_t psize = stack.size();
     size_t pno = 0;
@@ -1248,11 +950,11 @@ string Product::strVerbalAnyTops(
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    VerbalComb verbalComb;
+    Completion completion;
     VerbalCover completions;
     const string side = (symmFlag ? "Either opponent" : "West");
 
-    productWest.makePartialProfile(sumProfile, canonicalShift, verbalComb);
+    productWest.makePartialProfile(sumProfile, canonicalShift, completion);
     if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
@@ -1264,11 +966,11 @@ string Product::strVerbalAnyTops(
       completions.setLength(length);
 
       if (dataWest.ranksActive > 0)
-        completions.setSide(verbalComb, OPP_WEST);
+        completions.setSide(completion, OPP_WEST);
 
       if (dataEast.ranksActive > 0)
       {
-        VerbalComb& vcEast = completions.activateSide(OPP_EAST);
+        Completion& vcEast = completions.activateSide(OPP_EAST);
         productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
       }
 
@@ -1288,11 +990,11 @@ string Product::strVerbalAnyTops(
   }
   else
   {
-    VerbalComb verbalComb;
+    Completion completion;
     VerbalCover completions;
     const string side = (symmFlag ? "Either opponent" : "East");
 
-    productEast.makePartialProfile(sumProfile, canonicalShift, verbalComb);
+    productEast.makePartialProfile(sumProfile, canonicalShift, completion);
     if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
@@ -1304,11 +1006,11 @@ string Product::strVerbalAnyTops(
       completions.setLength(length);
 
       if (dataEast.ranksActive > 0)
-        completions.setSide(verbalComb, OPP_EAST);
+        completions.setSide(completion, OPP_EAST);
 
       if (dataWest.ranksActive > 0)
       {
-        VerbalComb& vcWest = completions.activateSide(OPP_WEST);
+        Completion& vcWest = completions.activateSide(OPP_WEST);
         productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
       }
 

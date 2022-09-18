@@ -28,7 +28,7 @@ using namespace std;
 class Profile;
 class RanksNames;
 struct VerbalData;
-class VerbalComb;
+class Completion;
 class VerbalCover;
 enum Opponent: unsigned;
 enum CoverComposition: unsigned;
@@ -188,7 +188,7 @@ class Product
     void makePartialProfile(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
-      VerbalComb& verbalComb) const;
+      Completion& completion) const;
 
     bool makeCompletions(
       const Profile& sumProfile,
