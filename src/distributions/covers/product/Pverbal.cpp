@@ -548,7 +548,6 @@ string Product::strUsedTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
-  const bool allAvailableFlag, // Not just the ones in Product
   const bool expandFlag, // jack, not J etc.
   const bool singleRankFlag, // Use dashes between expansions
   const bool onlyFullFlag) const // Only ranks where Product == available
@@ -559,21 +558,26 @@ string Product::strUsedTops(
     --topNo > 0; )
   {
     const auto& top = tops[topNo];
-    if (! top.used())
+    if (! top.used() || top.lower() == 0)
       continue;
 
     const unsigned char available = sumProfile[topNo + canonicalShift];
     if (onlyFullFlag && top.lower() != available)
       continue;
 
-    const unsigned char count = (allAvailableFlag ?
-      available : top.lower());
-
     const string rstr = ranksNames.strOpponents(topNo + canonicalShift,
-      count, expandFlag, singleRankFlag);
+      top.lower(), expandFlag, singleRankFlag);
 
     if (rstr.empty())
+      assert(false);
+    /*
+    {
+      assert(count == 0);
       continue;
+    }
+    else
+      assert(count > 0);
+      */
 
     if (expandFlag && ! singleRankFlag && ! result.empty())
       result += "-";
@@ -844,7 +848,7 @@ string Product::strVerbalTops(
     return side + " has " + 
       Product::strUsedTops(
         sumProfile, ranksNames, canonicalShift, 
-        false, true, data.ranksActive == 1, false);
+        true, data.ranksActive == 1, false);
   }
   else
   {
@@ -869,11 +873,11 @@ string Product::strVerbalTopsDual(
 {
   const string resultOwn = Product::strUsedTops(
     sumProfile, ranksNames, canonicalShift, 
-    false, data.topsUsed == 1, data.ranksActive == 1, false);
+    data.topsUsed == 1, data.ranksActive == 1, false);
 
   const string resultOther = productOther.strUsedTops(
     sumProfile, ranksNames, canonicalShift, 
-    false, dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
+    dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
 
   if (resultOther.empty())
     return side + " has " + resultOwn;
@@ -1057,7 +1061,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     const string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, false, data.ranksActive == 1, false);
+      false, data.ranksActive == 1, false);
 
     return side + " has " + result + 
       data.strXes(false, false);
@@ -1067,7 +1071,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
     // Prefer to state the low cards.
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, false, data.ranksActive == 1, false);
+      false, data.ranksActive == 1, false);
 
     return side + " has " + resultOwn + "(" +
       Product::strUsedBottoms(
@@ -1077,7 +1081,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
   {
     const string resultOwn = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, data.topsUsed == 1, data.ranksActive == 1, false);
+      data.topsUsed == 1, data.ranksActive == 1, false);
 
     return side + " has " + resultOwn + " and perhaps lower cards";
   }
@@ -1105,7 +1109,7 @@ string Product::strVerbalHighTopsSide(
   {
     string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, false, data.ranksActive == 1, false);
+      false, data.ranksActive == 1, false);
 
     // We only have to set the x'es.
     return side + " has " + result + data.strXes(false, false);
@@ -1115,7 +1119,7 @@ string Product::strVerbalHighTopsSide(
     // We need up to one low card.
     string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, false, data.ranksActive == 1, false);
+      false, data.ranksActive == 1, false);
 
     return side + " has " +
       Product::strAddBottom(ranksNames, canonicalShift, 
@@ -1136,7 +1140,7 @@ string Product::strVerbalHighTopsSide(
     // General case.
     string result = Product::strUsedTops(
       sumProfile, ranksNames, canonicalShift, 
-      false, data.topsUsed == 1, data.ranksActive == 1, false);
+      data.topsUsed == 1, data.ranksActive == 1, false);
 
     result += " and " + data.strFreeCount();
 
@@ -1243,7 +1247,7 @@ string Product::strVerbalSingularSide(
   // Fill out the tops from above, but not the 0'th top.
   result += Product::strUsedTops(
     sumProfile, ranksNames, canonicalShift, 
-    false, false, false, false);
+    false, false, false);
 
   // Fill out the low cards.
   if (canonicalShift == 0)
