@@ -28,16 +28,6 @@ class Length: public Term
     // If this equals "upper", for example, the overall length
     // is of the form ">= lower" rather than [lower, upper].
 
-    string strEqual(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
-    string strInside(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
- 
 
   public:
 
@@ -48,11 +38,6 @@ class Length: public Term
     string strLengthBare(
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;
-
-    string strLength(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
 };
 
 #endif
