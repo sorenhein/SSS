@@ -16,6 +16,7 @@
 using namespace std;
 
 class RanksNames;
+class Profile;
 
 
 class Completion
@@ -52,7 +53,13 @@ class Completion
 
     string strDebug() const;
 
-    string str(
+    string strSet(
+      const RanksNames& ranksNames,
+      const bool expandFlag,
+      const bool singleRankFlag) const;
+
+    string strUnset(
+      const Profile& sumProfile,
       const RanksNames& ranksNames,
       const bool expandFlag,
       const bool singleRankFlag) const;

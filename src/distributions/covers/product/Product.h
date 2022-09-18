@@ -123,8 +123,7 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
-      const bool allFlag,
-      const bool expandFlag) const;
+      const bool allFlag) const;
 
     string strAddBottom(
       const RanksNames& ranksNames,

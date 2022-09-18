@@ -16,6 +16,8 @@
 
 #include "Completion.h"
 
+#include "../product/Profile.h"
+
 #include "../../../ranks/RanksNames.h"
 
 
@@ -89,7 +91,7 @@ string Completion::strDebug() const
 }
 
 
-string Completion::str(
+string Completion::strSet(
   const RanksNames& ranksNames,
   const bool expandFlag,           // jack, not J
   const bool singleRankFlag) const // Use dashes between expansions
@@ -109,6 +111,25 @@ string Completion::str(
       s += ranksNames.strOpponents(topNo, partialTops[topNo],
         expandFlag, singleRankFlag);
     }
+  }
+  return s;
+}
+
+
+string Completion::strUnset(
+  const Profile& sumProfile,
+  const RanksNames& ranksNames,
+  const bool expandFlag,           // jack, not J
+  const bool singleRankFlag) const // Use dashes between expansions
+{
+  string s;
+  for (auto openNo: openTopNumbers)
+  {
+    if (expandFlag && ! singleRankFlag && ! s.empty())
+      s += "-";
+
+    s += ranksNames.strOpponents(openNo, sumProfile[openNo],
+      expandFlag, singleRankFlag);
   }
   return s;
 }

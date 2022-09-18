@@ -582,8 +582,7 @@ string Product::strUsedBottoms(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
-  const bool allFlag,
-  const bool expandFlag) const
+  const bool allFlag) const
 {
   // This method doesn't only do bottoms, but "the opposite of" tops.
   // In any event it expands cards hidden by a canonical shift.
@@ -591,7 +590,6 @@ string Product::strUsedBottoms(
   // then we get Q6.  If AQT86 is stored as AQTx with a shift of 1,
   // and if AQT are used, we get 8x.
 
-  assert(! expandFlag);
   string result = "";
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
@@ -604,7 +602,7 @@ string Product::strUsedBottoms(
     const unsigned char count = (allFlag ?
       sumProfile[topNo] : top.lower());
 
-    result += ranksNames.strOpponents(topNo, count, expandFlag, false);
+    result += ranksNames.strOpponents(topNo, count, false, false);
   }
 
   return result;
@@ -847,7 +845,7 @@ string Product::strVerbalTops(
     // sense.  So flipAllowedFlag should only be set for high tops.
     return sideOther + " has " + "(" + 
       Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift, true, false) + ")";
+        sumProfile, ranksNames, canonicalShift, true) + ")";
   }
 }
 
@@ -1065,7 +1063,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     return side + " has " + resultOwn + "(" +
       Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift, true, false) + ")";
+        sumProfile, ranksNames, canonicalShift, true) + ")";
   }
   else if (dataOther.topsFull == 0)
   {
@@ -1234,23 +1232,52 @@ string Product::strVerbalSingularSide(
   result += Product::strVerbalSingularQualifier(sumProfile, 
     canonicalShift) + " ";
 
-  // Fill out the tops from above, but not the 0'th top.
-  result += Product::strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    false, false, false);
 
   // Fill out the low cards.
   if (canonicalShift == 0)
   {
+    // Fill out the tops from above, but not the 0'th top.
+    const string sold = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, false, false);
+
+    result += sold;
+
+    Completion completion;
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    const string snew = completion.strSet(ranksNames, false, false);
+
     // The right number of the single lowest rank.
-    result += Product::strUsedBottoms(sumProfile, ranksNames,
-      canonicalShift, false, false);
+    const string sold2 = Product::strUsedBottoms(sumProfile, ranksNames,
+      canonicalShift, false);
+
+    const string snew2 = completion.strUnset(sumProfile, ranksNames, 
+      false, false);
+    assert(snew2 == "");
+
+    const string sold3 = sold + sold2;
+    const string snew3 = snew + snew2;
+
+    if (sold3 == snew3)
+      cout << "\n" << setw(40) << left << sold3 << "T3T " << snew3 << "\n";
+    else
+      cout << "\n" << setw(40) << left << sold3 << "T4T " << snew3 << "\n";
+      
+    
+    result += sold2;
   }
   else if (tops[0].lower() > 0)
   {
+    // Fill out the tops from above, but not the 0'th top.
+    const string stops = Product::strUsedTops(
+      sumProfile, ranksNames, canonicalShift, 
+      false, false, false);
+
+    result += stops;
+
     // All the low cards.
     result += Product::strUsedBottoms(sumProfile, ranksNames,
-      canonicalShift, true, false);
+      canonicalShift, true);
   }
 
   return result;

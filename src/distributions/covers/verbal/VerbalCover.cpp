@@ -282,7 +282,7 @@ void VerbalCover::getTopsData(
   tdata[0].set(BLANK_PLAYER_CAP, side);
   tdata[1].setBlank(BLANK_TOPS_PHRASE);
   tdata[1].setData(BLANK_TOPS_PHRASE_HOLDING, 
-    completion.str(ranksNames, false, false));
+    completion.strSet(ranksNames, false, false));
 
 }
 
@@ -300,7 +300,7 @@ void VerbalCover::makeList(
   {
     tdata[i].setBlank(BLANK_LIST_PHRASE);
     tdata[i].setData(BLANK_LIST_PHRASE_HOLDING, 
-      completion.str(ranksNames, false, false));
+      completion.strSet(ranksNames, false, false));
     i++;
   }
 }
@@ -332,10 +332,10 @@ string VerbalCover::strGeneral(
   }
 
   if (westFlag)
-    wstr = west.str(ranksNames, false, false);
+    wstr = west.strSet(ranksNames, false, false);
 
   if (eastFlag)
-    estr = east.str(ranksNames, false, false);
+    estr = east.strSet(ranksNames, false, false);
 
   if (lengthFlag)
   {
