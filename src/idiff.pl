@@ -60,7 +60,7 @@ while (1)
   slurp($fh1, \$lno1, \$common1, \@strats1, \$header1, \$cards1, \$holding1);
   slurp($fh2, \$lno2, \$common2, \@strats2, \$header2, \$cards2, \$holding2);
 
-  die "Different number of strategies" unless $#strats1 == $#strats2;
+  die "Different number of strategies ($#strats1 $#strats2)" unless $#strats1 == $#strats2;
   die "Different commons" unless $common1 eq $common2;
 
   last if ($header1 eq "" && $header2 eq "");

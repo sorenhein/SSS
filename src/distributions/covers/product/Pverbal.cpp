@@ -21,6 +21,9 @@
 // TODO Whole file needed, or split perhaps?
 #include "../verbal/VerbalTemplates.h"
 
+// TODO Probably not needed long-term
+#include "../verbal/VerbalBlank.h"
+
 #include "../CoverCategory.h"
 
 #include "../verbal/VerbalCover.h"
@@ -31,6 +34,8 @@
 #include "../../../ranks/RanksNames.h"
 
 #include "../../../utils/table.h"
+
+extern VerbalTemplates verbalTemplates;
 
 
 /**********************************************************************/
@@ -980,22 +985,28 @@ string Product::strVerbalAnyTops(
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    const string side = (symmFlag ? "Either opponent" : "West");
-
     if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
-      return side + " has " + completions.str(ranksNames);
+      const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+        BLANK_PLAYER_CAP_WEST);
+
+      vector<TemplateData> tdata;
+      completions.makeList(bside, ranksNames, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, tdata);
     }
   }
   else
   {
-    const string side = (symmFlag ? "Either opponent" : "East");
-
     if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
-      return side + " has " + completions.str(ranksNames);
+      const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+        BLANK_PLAYER_CAP_EAST);
+
+      vector<TemplateData> tdata;
+      completions.makeList(bside, ranksNames, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, tdata);
     }
   }
 

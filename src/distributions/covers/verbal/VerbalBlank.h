@@ -16,13 +16,10 @@ using namespace std;
 
 enum VerbalBlank: unsigned
 {
-  BLANK_LENGTH_BAREWORD = 0,
-  BLANK_LENGTH_PHRASE = 1,
-
-  BLANK_TOPS_PHRASE = 2,
-
-  BLANK_PLAYER_CAP = 3,
-
+  BLANK_LENGTH_PHRASE = 0,
+  BLANK_TOPS_PHRASE = 1,
+  BLANK_PLAYER_CAP = 2,
+  BLANK_LIST_PHRASE = 3,
   BLANK_SIZE = 4
 };
 
@@ -57,6 +54,11 @@ enum BlankLengthPhrase: unsigned
 enum BlankTopsPhrase: unsigned
 {
   BLANK_TOPS_PHRASE_HOLDING = 0
+};
+
+enum BlankListPhrase: unsigned
+{
+  BLANK_LIST_PHRASE_HOLDING = 0
 };
 
 #endif

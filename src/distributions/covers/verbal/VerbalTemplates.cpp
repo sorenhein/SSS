@@ -42,6 +42,12 @@ void VerbalTemplates::set(const Language languageIn)
 
     templates[TEMPLATES_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
+
+    // Up to 4 such holdings currently foreseen.
+    templates[TEMPLATES_LIST] =
+      { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
   }
   else if (language == LANGUAGE_GERMAN_DE)
   {
@@ -50,6 +56,11 @@ void VerbalTemplates::set(const Language languageIn)
 
     templates[TEMPLATES_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
+
+    templates[TEMPLATES_LIST] =
+      { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
   }
   else
     assert(false);
@@ -82,7 +93,10 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
 
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
-  blankTP[BLANK_TOPS_PHRASE_HOLDING] = "has %0";
+  blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
+
+  auto& blankLiP = dictionary[BLANK_LIST_PHRASE];
+  blankLiP[BLANK_LIST_PHRASE_HOLDING] = "%0";
 }
 
 
@@ -93,11 +107,14 @@ string VerbalTemplates::get(
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];
 
-  assert(tdata.size() == vt.blanks.size());
+  assert(tdata.size() <= vt.blanks.size());
+  if (sentence != TEMPLATES_LIST)
+    assert(tdata.size() == vt.blanks.size());
 
   string s = vt.pattern;
   string fill = "";
 
+  size_t field;
   auto ttypeIter = vt.blanks.begin();
   auto tdataIter = tdata.begin();
 
@@ -111,7 +128,7 @@ for (unsigned i = 0; i < tdata.size(); i++)
 cout << "template " << vt.str() << endl;
 */
 
-  for (size_t field = 0; field < tdata.size(); 
+  for (field = 0; field < tdata.size(); 
     field++, ttypeIter++, tdataIter++)
   {
     const VerbalBlank blank = * ttypeIter;
@@ -130,6 +147,10 @@ cout << "template " << vt.str() << endl;
     {
       fill = VerbalTemplates::topsPhrase(blankData);
     }
+    else if (blank == BLANK_LIST_PHRASE)
+    {
+      fill = VerbalTemplates::listPhrase(blankData);
+    }
     else
     {
 // cout << "field " << field << endl;
@@ -147,6 +168,31 @@ cout << "template " << vt.str() << endl;
 
     s.replace(p, 2, fill);
   }
+
+  if (sentence == TEMPLATES_LIST)
+  {
+    // Eliminate the trailing % fields.
+    for ( ; field < vt.blanks.size(); field++, ttypeIter++)
+    {
+      const VerbalBlank blank = * ttypeIter;
+      assert(blank == BLANK_LIST_PHRASE);
+
+      auto p = s.find(", %" + to_string(field));
+      if (p == string::npos)
+      {
+cout << "string now '" << s << "'\n";
+cout << "looked for ', %'" << field << endl;
+        assert(false);
+      }
+
+      s.erase(p, 4);
+    }
+  }
+
+  // If there is a comma, turn the last one into " or".
+  auto p = s.find_last_of(",");
+  if (p != string::npos)
+    s.replace(p, 1, " or");
 
   return s;
 }
@@ -196,6 +242,33 @@ string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
 
 // cout << "looking up " << BLANK_TOPS_PHRASE << ", " << tdata.blank << endl;
   string s = dictionary[BLANK_TOPS_PHRASE][tdata.instance];
+// cout << "tops phrase is " << s << endl;
+// cout << "tdata is " << tdata.str() << endl;
+
+  for (size_t field = 0; field < tdata.numParams; field++)
+  {
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+      assert(false);
+
+    if (field == 0)
+      s.replace(p, 2, tdata.text);
+    else
+      assert(false);
+  }
+
+  return s;
+}
+
+
+string VerbalTemplates::listPhrase(const TemplateData& tdata) const
+{
+  // Actually basically the same as topsPhrase.
+  assert(tdata.numParams == 1);
+  assert(tdata.instance < dictionary[BLANK_LIST_PHRASE].size());
+
+// cout << "looking up " << BLANK_LIST_PHRASE << ", " << tdata.blank << endl;
+  string s = dictionary[BLANK_LIST_PHRASE][tdata.instance];
 // cout << "tops phrase is " << s << endl;
 // cout << "tdata is " << tdata.str() << endl;
 

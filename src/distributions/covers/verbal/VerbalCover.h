@@ -74,7 +74,6 @@ class VerbalCover
       const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
 
-    string strCompletions(const RanksNames& ranksNames) const;
 
 
   public:
@@ -95,7 +94,10 @@ class VerbalCover
 
     unsigned char size() const;
 
-    string str(const RanksNames& ranksNames) const;
+    void makeList(
+      const BlankPlayerCap side,
+      const RanksNames& ranksNames,
+      vector<TemplateData>& tdata) const;
 
     string strGeneral(
       const unsigned char oppsLength,

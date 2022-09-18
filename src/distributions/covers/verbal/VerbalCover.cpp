@@ -286,26 +286,21 @@ void VerbalCover::getTopsData(
 }
 
 
-string VerbalCover::strCompletions(const RanksNames& ranksNames) const
+void VerbalCover::makeList(
+  const BlankPlayerCap side,
+  const RanksNames& ranksNames,
+  vector<TemplateData>& tdata) const
 {
-  string s;
-  size_t i = 0;
+  tdata.resize(completions.size() + 1);
+  tdata[0].set(BLANK_PLAYER_CAP, side);
 
+  size_t i = 1;
   for (auto& completion: completions)
   {
-    if (i > 0)
-      s += (i+1 == completions.size() ? " or " : ", ");
-
-    s += completion.str(ranksNames);
+    tdata[i].setBlank(BLANK_LIST_PHRASE);
+    tdata[i].setData(BLANK_LIST_PHRASE_HOLDING, completion.str(ranksNames));
     i++;
   }
-  return s;
-}
-
-
-string VerbalCover::str(const RanksNames& ranksNames) const
-{
-  return VerbalCover::strCompletions(ranksNames);
 }
 
 
@@ -432,12 +427,6 @@ string VerbalCover::strGeneral(
         cout << "\n" << setw(30) << left << s << "Z4Z " << estrNew << "\n";
 
     return s;
-    /*
-    if (symmFlag)
-      return "Either side has " + estr;
-    else
-      return "East has " + estr;
-      */
   }
   else
     assert(false);

@@ -25,7 +25,8 @@ enum TemplateSentence
 {
   TEMPLATES_LENGTH_ONLY = 0,
   TEMPLATES_TOPS_ONLY = 1,
-  TEMPLATES_SIZE = 2
+  TEMPLATES_LIST = 2,
+  TEMPLATES_SIZE = 3
 };
 
 
@@ -116,6 +117,7 @@ struct TemplateData
     ss << "numParams " << numParams << "\n";
     ss << "param1    " << +param1 << "\n";
     ss << "param2    " << +param2 << "\n";
+    ss << "text      " << text << "\n";
     return ss.str();
   };
 };
@@ -137,6 +139,8 @@ class VerbalTemplates
     string lengthPhrase(const TemplateData& tdata) const;
 
     string topsPhrase(const TemplateData& tdata) const;
+
+    string listPhrase(const TemplateData& tdata) const;
 
 
   public:
