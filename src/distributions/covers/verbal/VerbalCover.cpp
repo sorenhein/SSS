@@ -116,173 +116,140 @@ Opponent VerbalCover::simplestOpponent(const unsigned char oppsLength) const
 }
 
 
-string VerbalCover::strLengthEqual(
+void VerbalCover::getLengthEqualData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
   vector<TemplateData>& tdata) const
 {
   // Here lower and upper are identical.
-  string side;
+  BlankPlayerCap side;
   unsigned char value;
-
-  tdata.resize(2);
 
   if (simplestOpponent == OPP_WEST)
   {
-    side = (symmFlag ? "Either opponent" : "West");
+    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     value = lengthLower;
-    tdata[0].setBlank(BLANK_PLAYER_CAP);
-    tdata[0].setData(
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
   }
   else
   {
-    side = (symmFlag ? "Either opponent" : "East");
+    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     value = oppsLength - lengthLower;
-    tdata[0].setBlank(BLANK_PLAYER_CAP);
-    tdata[0].setData(
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
   }
 
-  stringstream ss;
-
+  tdata.resize(2);
   if (value == 0)
   {
-    ss << side << " is void";
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_VOID);
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_VOID);
   }
   else if (value == 1)
   {
-    ss << side << " has a singleton";
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_SINGLE);
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_SINGLE);
   }
-  else if (value == 2 && oppsLength > 5)
+  else if (value == 2 && oppsLength > 4)
   {
-    ss << side << " has a doubleton";
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_DOUBLE);
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_DOUBLE);
   }
-  else if (value == 3 && oppsLength > 7)
+  else if (value == 3 && oppsLength > 6)
   {
-    ss << side << " has a tripleton";
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_TRIPLE);
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_TRIPLE);
   }
   else if (value + value == oppsLength)
   {
-    ss << "The suit splits evenly";
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_EVENLY);
-
-    tdata[0].setData(BLANK_PLAYER_CAP_SUIT);
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_EVENLY);
   }
   else
   {
-    ss << "The suit splits " <<
-      +lengthLower << "=" << +(oppsLength - lengthLower);
-
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
     tdata[1].setBlank(BLANK_LENGTH_PHRASE);
     tdata[1].setData(BLANK_LENGTH_PHRASE_SPLIT_PARAMS,
       lengthLower, oppsLength - lengthLower);
-
-    tdata[0].setData(BLANK_PLAYER_CAP_SUIT);
   }
-
-  return ss.str();
 }
 
 
-string VerbalCover::strInside(
+void VerbalCover::getLengthInsideData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
   vector<TemplateData>& tdata) const
 {
-  string side;
+  BlankPlayerCap side;
   unsigned char vLower, vUpper;
-  tdata.resize(2);
 
   if (simplestOpponent == OPP_WEST)
   {
-    side = (symmFlag ? "Either opponent" : "West");
+    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     vLower = lengthLower;
     vUpper = (lengthOper == COVER_GREATER_EQUAL ?
       oppsLength : lengthUpper);
-    tdata[0].setBlank(BLANK_PLAYER_CAP);
-    tdata[0].setData(
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
   }
   else
   {
-    side = (symmFlag ? "Either opponent" : "East");
+    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     vLower = (lengthOper == COVER_GREATER_EQUAL ?
       0 : oppsLength - lengthUpper);
     vUpper = oppsLength - lengthLower;
-    tdata[0].setBlank(BLANK_PLAYER_CAP);
-    tdata[0].setData(
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
   }
 
-  stringstream ss;
-
+  tdata.resize(2);
   if (vLower == 0)
   {
     if (vUpper == 1)
     {
-      ss << side << " has at most a singleton";
-      tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-      tdata[1].setData(BLANK_LENGTH_PHRASE_SINGLE_ATMOST);
+      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_SINGLE_ATMOST);
     }
     else if (vUpper == 2)
     {
-      ss << side << " has at most a doubleton";
-      tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-      tdata[1].setData(BLANK_LENGTH_PHRASE_DOUBLE_ATMOST);
+      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_DOUBLE_ATMOST);
     }
     else if (vUpper == 3)
     {
-      ss << side << " has at most a tripleton";
+      tdata[0].set(BLANK_PLAYER_CAP, side);
       tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-      tdata[1].setData(BLANK_LENGTH_PHRASE_TRIPLE_ATMOST);
+      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_TRIPLE_ATMOST);
     }
     else
     {
-      ss << side << " has at most " << +vUpper << " cards";
+      tdata[0].set(BLANK_PLAYER_CAP, side);
       tdata[1].setBlank(BLANK_LENGTH_PHRASE);
       tdata[1].setData(BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM, vUpper);
     }
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
-    ss << "Neither opponent is void";
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER);
     tdata[1].setBlank(BLANK_LENGTH_PHRASE);
     tdata[1].setData(BLANK_LENGTH_PHRASE_VOID);
-
-    tdata[0].setData(BLANK_PLAYER_CAP_NEITHER);
+  }
+  else if (vLower+1 == vUpper)
+  {
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
+    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_ODD_EVENLY);
   }
   else if (vLower + vUpper == oppsLength)
   {
-    ss << "Each opponent has " << +vLower << "-" << +vUpper << " cards";
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
     tdata[1].setBlank(BLANK_LENGTH_PHRASE);
     tdata[1].setData(BLANK_LENGTH_PHRASE_RANGE_PARAMS, vLower, vUpper);
-
-    tdata[0].setData(BLANK_PLAYER_CAP_EACH);
   }
   else
   {
-    ss << side << " has " << +vLower << "-" << +vUpper << " cards";
+    tdata[0].set(BLANK_PLAYER_CAP, side);
     tdata[1].setBlank(BLANK_LENGTH_PHRASE);
     tdata[1].setData(BLANK_LENGTH_PHRASE_RANGE_PARAMS, vLower, vUpper);
   }
-
-  return ss.str();
 }
 
 
-string VerbalCover::strLength(
+void VerbalCover::getLengthData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
@@ -290,21 +257,18 @@ string VerbalCover::strLength(
 {
   if (lengthOper == COVER_EQUAL)
   {
-    return VerbalCover::strLengthEqual(
+    VerbalCover::getLengthEqualData(
       oppsLength, simplestOpponent, symmFlag, tdata);
   }
   else if (lengthOper == COVER_INSIDE_RANGE ||
            lengthOper == COVER_LESS_EQUAL ||
            lengthOper == COVER_GREATER_EQUAL)
   {
-    return VerbalCover::strInside(oppsLength, simplestOpponent, symmFlag,
+    VerbalCover::getLengthInsideData(oppsLength, simplestOpponent, symmFlag,
       tdata);
   }
   else
-  {
     assert(false);
-    return "";
-  }
 }
 
 
@@ -338,7 +302,6 @@ string VerbalCover::strGeneral(
   vector<TemplateData>& tdata) const
 {
   string lstr = "", wstr = "", estr = "";
-  string lstrNew = "";
   if (lengthFlag)
   {
     Opponent simplestOpponent;
@@ -351,14 +314,10 @@ string VerbalCover::strGeneral(
     else
       simplestOpponent = OPP_EAST;
 
-    lstr = VerbalCover::strLength(oppsLength, simplestOpponent, symmFlag,
+    VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
       tdata);
     
-    lstrNew = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, tdata);
-    if (lstr == lstrNew)
-    cout << "\n" << setw(40) << left << lstr << "Y1Y " << lstrNew << endl;
-    else
-    cout << "\n" << setw(40) << left << lstr << "Y2Y " << lstrNew << endl;
+    lstr = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, tdata);
   }
 
   if (westFlag)

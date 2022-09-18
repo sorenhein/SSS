@@ -66,6 +66,7 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_DOUBLE] = "has a doubleton";
   blankLP[BLANK_LENGTH_PHRASE_TRIPLE] = "has a tripleton";
   blankLP[BLANK_LENGTH_PHRASE_EVENLY] = "splits evenly";
+  blankLP[BLANK_LENGTH_PHRASE_ODD_EVENLY] = "splits evenly either way";
   blankLP[BLANK_LENGTH_PHRASE_SINGLE_ATMOST] = "has at most a singleton";
   blankLP[BLANK_LENGTH_PHRASE_DOUBLE_ATMOST] = "has at most a doubleton";
   blankLP[BLANK_LENGTH_PHRASE_TRIPLE_ATMOST] = "has at most a tripleton";

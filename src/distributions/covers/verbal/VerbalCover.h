@@ -49,19 +49,19 @@ class VerbalCover
 
     Opponent simplestOpponent(const unsigned char oppsLength) const;
 
-    string strLengthEqual(
+    void getLengthEqualData(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
       vector<TemplateData>& tdata) const;
 
-    string strInside(
+    void getLengthInsideData(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
       vector<TemplateData>& tdata) const;
 
-    string strLength(
+    void getLengthData(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,

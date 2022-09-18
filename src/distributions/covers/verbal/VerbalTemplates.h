@@ -88,6 +88,15 @@ struct TemplateData
     param2 = param2In;
   };
 
+  void set(
+    const VerbalBlank blankIn,
+    const unsigned instanceIn)
+  {
+    blank = blankIn;
+    instance = instanceIn;
+    numParams = 0;
+  };
+
   string str() const
   {
     stringstream ss;

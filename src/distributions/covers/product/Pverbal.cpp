@@ -640,19 +640,20 @@ string Product::strAddBottom(
 
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
-  const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const RanksNames& ranksNames,
+  const bool symmFlag) const
 {
+  // ranksNames aren't really needed when ranks aren't set.
+
   assert(activeCount == 0);
 
-  const Opponent simplestOpponent =
-    Product::simplestOpponent(sumProfile, canonicalShift);
+  VerbalCover completions;
+  completions.setLength(length);
 
-  return 
-    length.strLength(
-      sumProfile.length(), 
-      simplestOpponent, 
-      symmFlag);
+  vector<TemplateData> tdata;
+
+  return completions.strGeneral(
+    sumProfile.length(), symmFlag, ranksNames, tdata);
 }
 
 
@@ -1316,8 +1317,8 @@ string Product::strVerbal(
   {
     return Product::strVerbalLengthOnly(
       sumProfile, 
-      symmFlag, 
-      canonicalShift);
+      ranksNames,
+      symmFlag);
   }
   else if (verbal == VERBAL_TOPS_ONLY)
   {

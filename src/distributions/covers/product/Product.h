@@ -136,8 +136,8 @@ class Product
 
     string strVerbalLengthOnly(
       const Profile& sumProfile,
-      const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      const RanksNames& ranksNames,
+      const bool symmFlag) const;
 
     string strVerbalOneTopOnly(
       const Profile& sumProfile,
