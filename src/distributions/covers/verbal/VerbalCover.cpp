@@ -272,6 +272,20 @@ void VerbalCover::getLengthData(
 }
 
 
+void VerbalCover::getTopsData(
+  const BlankPlayerCap side,
+  const Completion& completion,
+  const RanksNames& ranksNames,
+  vector<TemplateData>& tdata) const
+{
+  tdata.resize(2);
+  tdata[0].set(BLANK_PLAYER_CAP, side);
+  tdata[1].setBlank(BLANK_TOPS_PHRASE);
+  tdata[1].setData(BLANK_TOPS_PHRASE_HOLDING, completion.str(ranksNames));
+
+}
+
+
 string VerbalCover::strCompletions(const RanksNames& ranksNames) const
 {
   string s;
@@ -361,29 +375,69 @@ string VerbalCover::strGeneral(
         return lstr + " and East has " + estr;
     }
     else
+      // This done exclusively in the new way.
       return lstr;
   }
   else if (westFlag)
   {
     if (eastFlag)
     {
+      // This branch currently doesn't happen?
+
       assert(wstr == estr);
-      return "West and East each have " + wstr;
+      string sold = "West and East each have " + wstr;
+
+      VerbalCover::getTopsData(BLANK_PLAYER_CAP_EACH, west, ranksNames, 
+        tdata);
+      string snew = verbalTemplates.get(TEMPLATES_TOPS_ONLY, tdata);
+
+      if (sold == snew)
+        cout << setw(40) << left << sold << "W1W " << snew << "\n";
+      else
+        cout << setw(40) << left << sold << "W2W " << snew << "\n";
+
+      return sold;
     }
     else
     {
-      if (symmFlag)
-        return "Either side has " + wstr;
-      else
-        return "West has " + wstr;
+      VerbalCover::getTopsData(
+        (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST), 
+        west, 
+        ranksNames, 
+        tdata);
+      return verbalTemplates.get(TEMPLATES_TOPS_ONLY, tdata);
     }
   }
   else if (eastFlag)
   {
+    // This branch currently doesn't happen?
+
+    VerbalCover::getTopsData(
+      (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST), 
+      east, 
+      ranksNames, 
+      tdata);
+    const string estrNew = verbalTemplates.get(
+      TEMPLATES_TOPS_ONLY, tdata);
+
+    string s;
+    if (symmFlag)
+      s = "Either side has " + estr;
+    else
+      s = "West has " + estr;
+
+      if (s == estrNew)
+        cout << "\n" << setw(30) << left << s << "Z3Z " << estrNew << "\n";
+      else
+        cout << "\n" << setw(30) << left << s << "Z4Z " << estrNew << "\n";
+
+    return s;
+    /*
     if (symmFlag)
       return "Either side has " + estr;
     else
       return "East has " + estr;
+      */
   }
   else
     assert(false);

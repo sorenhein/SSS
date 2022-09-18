@@ -22,6 +22,7 @@ class Length;
 class RanksNames;
 struct TemplateData;
 enum Opponent: unsigned;
+enum BlankPlayerCap: unsigned;
 
 
 class VerbalCover
@@ -65,6 +66,12 @@ class VerbalCover
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
+      vector<TemplateData>& tdata) const;
+
+    void getTopsData(
+      const BlankPlayerCap side,
+      const Completion& completion,
+      const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
 
     string strCompletions(const RanksNames& ranksNames) const;

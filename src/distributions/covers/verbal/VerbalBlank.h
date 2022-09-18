@@ -19,13 +19,15 @@ enum VerbalBlank: unsigned
   BLANK_LENGTH_BAREWORD = 0,
   BLANK_LENGTH_PHRASE = 1,
 
-  BLANK_PLAYER_CAP = 2,
+  BLANK_TOPS_PHRASE = 2,
 
-  BLANK_SIZE = 3
+  BLANK_PLAYER_CAP = 3,
+
+  BLANK_SIZE = 4
 };
 
 
-enum BlankPlayerCap
+enum BlankPlayerCap: unsigned
 {
   BLANK_PLAYER_CAP_WEST = 0,
   BLANK_PLAYER_CAP_EAST = 1,
@@ -35,7 +37,7 @@ enum BlankPlayerCap
   BLANK_PLAYER_CAP_SUIT = 5
 };
 
-enum BlankLengthPhrase
+enum BlankLengthPhrase: unsigned
 {
   BLANK_LENGTH_PHRASE_VOID = 0,
   BLANK_LENGTH_PHRASE_SINGLE = 1,
@@ -50,6 +52,11 @@ enum BlankLengthPhrase
   BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM = 10,
   BLANK_LENGTH_PHRASE_RANGE_PARAMS = 11,
   BLANK_LENGTH_PHRASE_SPLIT_PARAMS = 12
+};
+
+enum BlankTopsPhrase: unsigned
+{
+  BLANK_TOPS_PHRASE_HOLDING = 0
 };
 
 #endif

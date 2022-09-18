@@ -24,7 +24,8 @@ enum VerbalBlank: unsigned;
 enum TemplateSentence
 {
   TEMPLATES_LENGTH_ONLY = 0,
-  TEMPLATES_SIZE = 1
+  TEMPLATES_TOPS_ONLY = 1,
+  TEMPLATES_SIZE = 2
 };
 
 
@@ -56,6 +57,7 @@ struct TemplateData
   unsigned numParams;
   unsigned char param1;
   unsigned char param2;
+  string text;
 
   void setBlank(const VerbalBlank blankIn)
   {
@@ -75,6 +77,15 @@ struct TemplateData
     instance = instanceIn;
     numParams = 1;
     param1 = param1In;
+  };
+
+  void setData(
+    const unsigned instanceIn,
+    const string& textIn)
+  {
+    instance = instanceIn;
+    numParams = 1;
+    text = textIn;
   };
 
   void setData(
@@ -124,6 +135,8 @@ class VerbalTemplates
     string playerCap(const TemplateData& tdata) const;
 
     string lengthPhrase(const TemplateData& tdata) const;
+
+    string topsPhrase(const TemplateData& tdata) const;
 
 
   public:

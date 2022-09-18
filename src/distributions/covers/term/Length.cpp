@@ -175,6 +175,7 @@ string Length::strLength(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
+assert(false);
   const CoverOperator oper = Length::getOperator();
   if (oper == COVER_EQUAL)
   {

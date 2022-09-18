@@ -39,11 +39,17 @@ void VerbalTemplates::set(const Language languageIn)
   {
     templates[TEMPLATES_LENGTH_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_PHRASE }};
+
+    templates[TEMPLATES_TOPS_ONLY] =
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
   }
   else if (language == LANGUAGE_GERMAN_DE)
   {
     templates[TEMPLATES_LENGTH_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_PHRASE }};
+
+    templates[TEMPLATES_TOPS_ONLY] =
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
   }
   else
     assert(false);
@@ -74,6 +80,9 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM] = "has at most %0 cards";
   blankLP[BLANK_LENGTH_PHRASE_RANGE_PARAMS] = "has %0-%1 cards";
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
+
+  auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
+  blankTP[BLANK_TOPS_PHRASE_HOLDING] = "has %0";
 }
 
 
@@ -116,6 +125,10 @@ cout << "template " << vt.str() << endl;
     else if (blank == BLANK_LENGTH_PHRASE)
     {
       fill = VerbalTemplates::lengthPhrase(blankData);
+    }
+    else if (blank == BLANK_TOPS_PHRASE)
+    {
+      fill = VerbalTemplates::topsPhrase(blankData);
     }
     else
     {
@@ -175,3 +188,28 @@ string VerbalTemplates::lengthPhrase(const TemplateData& tdata) const
   return s;
 }
 
+
+string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
+{
+  assert(tdata.numParams == 1);
+  assert(tdata.instance < dictionary[BLANK_TOPS_PHRASE].size());
+
+// cout << "looking up " << BLANK_TOPS_PHRASE << ", " << tdata.blank << endl;
+  string s = dictionary[BLANK_TOPS_PHRASE][tdata.instance];
+// cout << "tops phrase is " << s << endl;
+// cout << "tdata is " << tdata.str() << endl;
+
+  for (size_t field = 0; field < tdata.numParams; field++)
+  {
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+      assert(false);
+
+    if (field == 0)
+      s.replace(p, 2, tdata.text);
+    else
+      assert(false);
+  }
+
+  return s;
+}

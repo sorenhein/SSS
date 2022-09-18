@@ -668,6 +668,39 @@ string Product::strVerbalOneTopOnly(
   const Opponent simplestOpponent =
     Product::simplestOpponent(sumProfile, canonicalShift);
 
+  // ---
+  Product productWest, productEast;
+
+  // Simpler version of separateSingular where length is given.
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  VerbalData dataWest, dataEast; // Thrown away
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+  Completion completion;
+
+  if (simplestOpponent == OPP_EAST)
+    productEast.makePartialProfile(
+      sumProfile,
+      canonicalShift,
+      completion);
+  else
+    productWest.makePartialProfile(
+      sumProfile,
+      canonicalShift,
+      completion);
+
+  VerbalCover completions;
+  completions.setSide(completion, simplestOpponent);
+
+  vector<TemplateData> tdata;
+
+  string tnew = completions.strGeneral(
+    sumProfile.length(), symmFlag, ranksNames, tdata);
+  // ---
+
   TopData topData;
   unsigned char topNo;
 
@@ -678,10 +711,22 @@ string Product::strVerbalOneTopOnly(
 
     sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
 
-    return tops[topNo].strTop(
+    const string told = tops[topNo].strTop(
       topData,
       simplestOpponent, 
       symmFlag);
+
+    if (tops[topNo].getOperator() == COVER_EQUAL)
+    {
+    // Doesn't seem to happen?
+    if (told == tnew)
+      cout << setw(40) << left << told << "U1U " << tnew << "\n";
+    else
+      cout << setw(40) << left << told << "U2U " << tnew << "\n";
+    }
+
+    return told;
+
   }
 
   assert(false);
@@ -728,11 +773,19 @@ string Product::strVerbalLengthAndOneTop(
   else if (length.getOperator() == COVER_EQUAL)
   {
     // No inversion, but "has a doubleton with one or both tops"
+    // TODO This doesn't work well as the moment:
+    // "The suit splits 3=3 with 1-2 of ace-king-queen"
+    // "The suit splits evenly with ..."
+    // In these cases we need to state whether West or East has something.
+
+    VerbalCover completions;
+    completions.setLength(length);
+
+    vector<TemplateData> tdata;
+
     return 
-      length.strLength(
-        sumProfile.length(), 
-        simplestOpponent, 
-        symmFlag) + 
+      completions.strGeneral(
+        sumProfile.length(), symmFlag, ranksNames, tdata) +
       " with " +
       top.strTopBare(
         topData,
