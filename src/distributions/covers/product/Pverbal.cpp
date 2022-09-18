@@ -1032,18 +1032,18 @@ string Product::strVerbalAnyTops(
         productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
       }
 
-      const string snew = completions.strGeneral(
+      return completions.strGeneral(
         sumProfile.length(), symmFlag, ranksNames, tdata);
 
-      const string sold = productWest.strVerbalAnyTopsSide(
-        sumProfile, ranksNames, side, dataWest, canonicalShift);
+      // const string sold = productWest.strVerbalAnyTopsSide(
+        // sumProfile, ranksNames, side, dataWest, canonicalShift);
 
-      cout << "\n";
-      cout << setw(70) << left << sold << "X1X " <<
-        setw(60) << left << snew << "\n";
+      // cout << "\n";
+      // cout << setw(70) << left << sold << "X1X " <<
+        // setw(60) << left << snew << "\n";
 
-      return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-        side, dataWest, canonicalShift);
+      // return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
+        // side, dataWest, canonicalShift);
     }
   }
   else
@@ -1073,20 +1073,17 @@ string Product::strVerbalAnyTops(
         productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
       }
 
-      const string snew = completions.strGeneral(
+      return completions.strGeneral(
         sumProfile.length(), symmFlag, ranksNames, tdata);
 
-      const string sold = productWest.strVerbalAnyTopsSide(
-        sumProfile, ranksNames, side, dataWest, canonicalShift);
+      // const string sold = productEast.strVerbalAnyTopsSide(
+        // sumProfile, ranksNames, side, dataEast, canonicalShift);
 
-      cout << "\n";
-      cout << setw(70) << left << sold << "X2X " <<
-        setw(60) << left << snew << "\n";
+      // cout << "\n";
+      // cout << setw(70) << left << sold << "X2X " <<
+        // setw(60) << left << snew << "\n";
 
-      return productWest.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-        side, dataWest, canonicalShift);
-      return productEast.strVerbalAnyTopsSide(sumProfile, ranksNames, 
-        side, dataEast, canonicalShift);
+      // return sold;
     }
   }
 }
