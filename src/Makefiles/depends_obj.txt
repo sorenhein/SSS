@@ -40,7 +40,9 @@ driver.obj: distributions/covers/product/FactoredProduct.h
 driver.obj: distributions/covers/TrickConvert.h
 driver.obj: distributions/covers/term/TermCompare.h inputs/Control.h
 driver.obj: inputs/Entity.h inputs/Convert.h strategies/result/ResConvert.h
-driver.obj: utils/Timers.h utils/Timer.h
+driver.obj: distributions/covers/verbal/VerbalTemplates.h
+driver.obj: distributions/covers/verbal/Language.h utils/Timers.h
+driver.obj: utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
@@ -603,6 +605,17 @@ distributions/covers/verbal/Completion.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Completion.obj: utils/Compare.h
 distributions/covers/verbal/Completion.obj: ranks/RanksNames.h
 distributions/covers/verbal/Completion.obj: ranks/RankNames.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalCover.h
+distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
+distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/CoverOperator.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Length.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
+distributions/covers/verbal/VerbalCover.obj: ranks/RanksNames.h
+distributions/covers/verbal/VerbalCover.obj: ranks/RankNames.h utils/table.h
+distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalTemplates.h
+distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Language.h
+distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalBlank.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h

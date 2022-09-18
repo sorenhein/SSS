@@ -16,6 +16,8 @@
 
 #include "strategies/result/ResConvert.h"
 
+#include "distributions/covers/verbal/VerbalTemplates.h"
+
 
 #include "utils/Timers.h"
 
@@ -33,6 +35,7 @@ Combinations combinations;
 SymmetryStore symmetryStore;
 Distributions distributions;
 TermCompare termCompare;
+VerbalTemplates verbalTemplates;
 
 
 int main(int argc, char * argv[])
@@ -47,6 +50,8 @@ int main(int argc, char * argv[])
     cout << control.str();
 
   setlocale(LC_ALL, "en_US.UTF-8");
+
+  verbalTemplates.set(LANGUAGE_ENGLISH_US);
 
   // Set up distributions.
 
