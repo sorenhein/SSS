@@ -1236,35 +1236,9 @@ string Product::strVerbalSingularSide(
   // Fill out the low cards.
   if (canonicalShift == 0)
   {
-    // Fill out the tops from above, but not the 0'th top.
-    const string sold = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, false, false);
-
-    result += sold;
-
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string snew = completion.strSet(ranksNames, false, false);
-
-    // The right number of the single lowest rank.
-    const string sold2 = Product::strUsedBottoms(sumProfile, ranksNames,
-      canonicalShift, false);
-
-    const string snew2 = completion.strUnset(sumProfile, ranksNames, 
-      false, false);
-    assert(snew2 == "");
-
-    const string sold3 = sold + sold2;
-    const string snew3 = snew + snew2;
-
-    if (sold3 == snew3)
-      cout << "\n" << setw(40) << left << sold3 << "T3T " << snew3 << "\n";
-    else
-      cout << "\n" << setw(40) << left << sold3 << "T4T " << snew3 << "\n";
-      
-    
-    result += sold2;
+    result += completion.strSet(ranksNames, false, false);
   }
   else if (tops[0].lower() > 0)
   {
@@ -1276,8 +1250,22 @@ string Product::strVerbalSingularSide(
     result += stops;
 
     // All the low cards.
-    result += Product::strUsedBottoms(sumProfile, ranksNames,
+    const string sbot = Product::strUsedBottoms(sumProfile, ranksNames,
       canonicalShift, true);
+
+    result += sbot;
+
+    /*
+    Completion completion;
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    string snew = completion.strSet(ranksNames, false, false);
+
+    if (snew == stops + sbot)
+      cout << "\n" << setw(40) << left << stops+sbot << "T3T " << snew << "\n";
+    else
+      cout << "\n" << setw(40) << left << stops+sbot << "T4T " << snew << "\n";
+      */
+      
   }
 
   return result;

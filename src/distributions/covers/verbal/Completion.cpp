@@ -122,6 +122,7 @@ string Completion::strUnset(
   const bool expandFlag,           // jack, not J
   const bool singleRankFlag) const // Use dashes between expansions
 {
+  // TODO Currently unused
   string s;
   for (auto openNo: openTopNumbers)
   {
