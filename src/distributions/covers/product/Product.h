@@ -188,6 +188,11 @@ class Product
       const unsigned char canonicalShift,
       Completion& completion) const;
 
+    void makePartialProfileNew(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      Completion& completion) const;
+
     bool makeCompletions(
       const Profile& sumProfile,
       const unsigned char canonicalShift,

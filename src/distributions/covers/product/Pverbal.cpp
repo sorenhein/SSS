@@ -467,6 +467,68 @@ void Product::makePartialProfile(
 }
 
 
+void Product::makePartialProfileNew(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  Completion& completion) const
+{
+  // We have some top's that are fixed to a single value.
+  // We have some explicit, unused tops.
+  // We have 1 or more unused implicit bottoms (canonicalShift+1).
+
+  completion.resize(sumProfile.size());
+
+  // Cover from the highest top down to canonicalShift (exclusive).
+  // If canonicalShift is 0, then we will stop at 1, but then the 0th
+  // real top is by convention unset.
+  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
+      --topNo > canonicalShift; )
+  {
+    completion.setTop(
+      topNo, 
+      tops[topNo-canonicalShift].used(),
+      tops[topNo-canonicalShift].lower());
+  }
+
+  // if (canonicalShift == 0)
+    // return;
+
+  // The zero'th top represents all the actual tops in sumProfile
+  // from 0 up to canonicalShift-1.
+  assert(tops[0].used());
+  const unsigned char bottoms = tops[0].lower();
+
+// cout << "bottoms " << +bottoms << "\n";
+// cout << "count " << +Product::countBottoms(sumProfile, canonicalShift) <<
+  // "\n";
+
+  if (bottoms == 0)
+  {
+    // TODO Does this happen?
+    // Fill with zeroes.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, true, 0);
+  }
+  else if (bottoms == Product::countBottoms(sumProfile, canonicalShift))
+  {
+    // Fill with maximum values.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, true, sumProfile[topNo]);
+  }
+  else if (canonicalShift == 0)
+  {
+    completion.setTop(0, true, bottoms);
+  }
+  else
+  {
+    // TODO Does this happen?
+    // Fill with unused.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, false, 0);
+  }
+}
+
+
 bool Product::makeCompletions(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -1232,41 +1294,9 @@ string Product::strVerbalSingularSide(
   result += Product::strVerbalSingularQualifier(sumProfile, 
     canonicalShift) + " ";
 
-
-  // Fill out the low cards.
-  if (canonicalShift == 0)
-  {
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    result += completion.strSet(ranksNames, false, false);
-  }
-  else if (tops[0].lower() > 0)
-  {
-    // Fill out the tops from above, but not the 0'th top.
-    const string stops = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, false, false);
-
-    result += stops;
-
-    // All the low cards.
-    const string sbot = Product::strUsedBottoms(sumProfile, ranksNames,
-      canonicalShift, true);
-
-    result += sbot;
-
-    /*
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    string snew = completion.strSet(ranksNames, false, false);
-
-    if (snew == stops + sbot)
-      cout << "\n" << setw(40) << left << stops+sbot << "T3T " << snew << "\n";
-    else
-      cout << "\n" << setw(40) << left << stops+sbot << "T4T " << snew << "\n";
-      */
-      
-  }
+  Completion completion;
+  Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+  result += completion.strSet(ranksNames, false, false);
 
   return result;
 }
