@@ -495,7 +495,9 @@ void Product::makePartialProfileNew(
 
   // The zero'th top represents all the actual tops in sumProfile
   // from 0 up to canonicalShift-1.
-  assert(tops[0].used());
+  if (! tops[0].used())
+    return;
+
   const unsigned char bottoms = tops[0].lower();
 
 // cout << "bottoms " << +bottoms << "\n";
@@ -921,37 +923,19 @@ string Product::strVerbalTopsDual(
   const VerbalData& data,
   const VerbalData& dataOther) const
 {
-  const string resultOwn = Product::strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    data.topsUsed == 1, data.ranksActive == 1, false);
+  // TODO This is actually a rare method with ~ 6 calls.  Eliminate?
 
-  const string resultOther = productOther.strUsedTops(
-    sumProfile, ranksNames, canonicalShift, 
-    dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
-
-  /*
   Completion completionRown;
   Product::makePartialProfileNew(
     sumProfile, canonicalShift, completionRown);
-  const string rOwn = completionRown.strSet(ranksNames,
+  const string resultOwn = completionRown.strSet(ranksNames,
     data.topsUsed == 1, data.ranksActive == 1);
 
   Completion completionOther;
   productOther.makePartialProfileNew(
     sumProfile, canonicalShift, completionOther);
-  const string rOther = completionOther.strSet(ranksNames,
+  const string resultOther = completionOther.strSet(ranksNames,
     dataOther.topsUsed == 1, dataOther.ranksActive == 1);
-
-  if (resultOwn == rOwn)
-    cout << "\n" << setw(40) << left << resultOwn << "X1X " << rOwn << "\n";
-  else
-    cout << "\n" << setw(40) << left << resultOwn << "X2X " << rOwn << "\n";
-
-  if (resultOther == rOther)
-    cout << "\n" << setw(40) << left << resultOther << "X3X " << rOther << "\n";
-  else
-    cout << "\n" << setw(40) << left << resultOther << "X4X " << rOther << "\n";
-  */
 
   if (resultOther.empty())
     return side + " has " + resultOwn;
