@@ -1,7 +1,7 @@
-strVerbalSingularSide is still messed up.
-HUH
-T4T occurs when new.
-7/1668
+strVerbalTopsDual
+7/1640
+The alternative strings don't work and may even segfault.
+Also fail in line 498 (assert could be removed).
 
 Store the texts in a language file
 

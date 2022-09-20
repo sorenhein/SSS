@@ -929,6 +929,30 @@ string Product::strVerbalTopsDual(
     sumProfile, ranksNames, canonicalShift, 
     dataOther.topsFull == 1, dataOther.ranksFull == 1, true);
 
+  /*
+  Completion completionRown;
+  Product::makePartialProfileNew(
+    sumProfile, canonicalShift, completionRown);
+  const string rOwn = completionRown.strSet(ranksNames,
+    data.topsUsed == 1, data.ranksActive == 1);
+
+  Completion completionOther;
+  productOther.makePartialProfileNew(
+    sumProfile, canonicalShift, completionOther);
+  const string rOther = completionOther.strSet(ranksNames,
+    dataOther.topsUsed == 1, dataOther.ranksActive == 1);
+
+  if (resultOwn == rOwn)
+    cout << "\n" << setw(40) << left << resultOwn << "X1X " << rOwn << "\n";
+  else
+    cout << "\n" << setw(40) << left << resultOwn << "X2X " << rOwn << "\n";
+
+  if (resultOther == rOther)
+    cout << "\n" << setw(40) << left << resultOther << "X3X " << rOther << "\n";
+  else
+    cout << "\n" << setw(40) << left << resultOther << "X4X " << rOther << "\n";
+  */
+
   if (resultOther.empty())
     return side + " has " + resultOwn;
 
