@@ -51,6 +51,8 @@ class Completion
 
     bool operator < (const Completion& comp2) const;
 
+    bool operator == (const Completion& comp2) const;
+
     string strDebug() const;
 
     string strSet(

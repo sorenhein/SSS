@@ -1046,13 +1046,13 @@ string Product::strVerbalAnyTops(
   if (dataWest.ranksActive > 0)
   {
     Completion& vcWest = completions.activateSide(OPP_WEST);
-    productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
+    productWest.makePartialProfileNew(sumProfile, canonicalShift, vcWest);
   }
 
   if (dataEast.ranksActive > 0)
   {
     Completion& vcEast = completions.activateSide(OPP_EAST);
-    productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
+    productEast.makePartialProfileNew(sumProfile, canonicalShift, vcEast);
   }
 
   vector<TemplateData> tdata;

@@ -72,6 +72,35 @@ bool Completion::operator < (const Completion& comp2) const
 }
 
 
+bool Completion::operator == (const Completion& comp2) const
+{
+  if (partialTops.size() != comp2.partialTops.size())
+    return false;
+  if (openTopNumbers.size() != comp2.openTopNumbers.size())
+    return false;
+  if (lengthInt != comp2.lengthInt)
+    return false;
+
+  for (size_t i = 0; i < partialTops.size(); i++)
+    if (partialTops[i] != comp2.partialTops[i])
+      return false;
+
+  auto oiter1 = openTopNumbers.begin();
+  auto oiter2 = comp2.openTopNumbers.begin();
+
+  while (oiter1 != openTopNumbers.end())
+  {
+    if (* oiter1 != * oiter2)
+      return false;
+
+    oiter1++;
+    oiter2++;
+  }
+
+  return true;
+}
+
+
 string Completion::strDebug() const
 {
   stringstream ss;
