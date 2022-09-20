@@ -707,12 +707,12 @@ string Product::strVerbalOneTopOnly(
   Completion completion;
 
   if (simplestOpponent == OPP_EAST)
-    productEast.makePartialProfile(
+    productEast.makePartialProfileNew(
       sumProfile,
       canonicalShift,
       completion);
   else
-    productWest.makePartialProfile(
+    productWest.makePartialProfileNew(
       sumProfile,
       canonicalShift,
       completion);
@@ -869,7 +869,7 @@ string Product::strVerbalTops(
   {
     // State it from the intended side.
     Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
     return side + " has " + 
       completion.strSet(ranksNames, true, data.ranksActive == 1);
   }
