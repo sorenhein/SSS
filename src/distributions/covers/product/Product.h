@@ -111,14 +111,6 @@ class Product
       Product& productEast) const;
 
 
-    string strUsedTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const bool expandFlag,
-      const bool singleRankFlag,
-      const bool onlyFullFlag) const;
-
     string strUsedBottoms(
       const Profile& sumProfile,
       const RanksNames& ranksNames,

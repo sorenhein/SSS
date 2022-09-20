@@ -570,7 +570,6 @@ bool Product::makeCompletions(
         static_cast<unsigned char>(sumProfile[openNo]),
         static_cast<unsigned char>(totalUpper - piter->length()));
 
-      // for (unsigned char count = 0; count <= maxCount; count++)
       for (unsigned char count = maxCount+1; count-- > 0; )
       {
         piter->updateTop(openNo, count);
@@ -592,7 +591,6 @@ bool Product::makeCompletions(
     }
     firstOpen = false;
     stack.erase(stack.begin(), piter);
-
   }
 
   assert(stack.empty());
@@ -606,40 +604,6 @@ bool Product::makeCompletions(
 /*                             String methods                         */
 /*                                                                    */
 /**********************************************************************/
-
-
-string Product::strUsedTops(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const bool expandFlag, // jack, not J etc.
-  const bool singleRankFlag, // Use dashes between expansions
-  const bool onlyFullFlag) const // Only ranks where Product == available
-{
-  string result = "";
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    --topNo > 0; )
-  {
-    const auto& top = tops[topNo];
-    if (! top.used() || top.lower() == 0)
-      continue;
-
-    const unsigned char available = sumProfile[topNo + canonicalShift];
-    if (onlyFullFlag && top.lower() != available)
-      continue;
-
-    const string rstr = ranksNames.strOpponents(topNo + canonicalShift,
-      top.lower(), expandFlag, singleRankFlag);
-
-    if (expandFlag && ! singleRankFlag && ! result.empty())
-      result += "-";
-
-    result += rstr;
-  }
-
-  return result;
-}
 
 
 string Product::strUsedBottoms(
@@ -1173,9 +1137,10 @@ string Product::strVerbalHighTopsSide(
 
   if (numOptions == 1)
   {
-    string result = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    const string result = completion.strSet(ranksNames, 
+      false, data.ranksActive == 1);
 
     // We only have to set the x'es.
     return side + " has " + result + data.strXes(false, false);
@@ -1183,9 +1148,10 @@ string Product::strVerbalHighTopsSide(
   else if (numOptions == 2 && data.freeUpper == 1)
   {
     // We need up to one low card.
-    string result = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    const string result = completion.strSet(ranksNames, 
+      false, data.ranksActive == 1);
 
     return side + " has " +
       Product::strAddBottom(ranksNames, canonicalShift, 
@@ -1204,9 +1170,10 @@ string Product::strVerbalHighTopsSide(
   else
   {
     // General case.
-    string result = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      data.topsUsed == 1, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    string result = completion.strSet(ranksNames, 
+      data.topsUsed == 1, data.ranksActive == 1);
 
     result += " and " + data.strFreeCount();
 

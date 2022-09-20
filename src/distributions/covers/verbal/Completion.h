@@ -56,7 +56,8 @@ class Completion
     string strSet(
       const RanksNames& ranksNames,
       const bool expandFlag,
-      const bool singleRankFlag) const;
+      const bool singleRankFlag,
+      const bool explicitVoidFlag = false) const;
 
     string strUnset(
       const Profile& sumProfile,

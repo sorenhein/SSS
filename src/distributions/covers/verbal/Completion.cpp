@@ -94,10 +94,11 @@ string Completion::strDebug() const
 string Completion::strSet(
   const RanksNames& ranksNames,
   const bool expandFlag,           // jack, not J
-  const bool singleRankFlag) const // Use dashes between expansions
+  const bool singleRankFlag,       // Use dashes between expansions
+  const bool explicitVoidFlag) const
 {
   if (lengthInt == 0)
-    return "void";
+    return (explicitVoidFlag ? "void" : "");
 
   string s;
   for (unsigned char topNo = 

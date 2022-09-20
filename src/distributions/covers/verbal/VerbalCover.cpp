@@ -300,7 +300,7 @@ void VerbalCover::makeList(
   {
     tdata[i].setBlank(BLANK_LIST_PHRASE);
     tdata[i].setData(BLANK_LIST_PHRASE_HOLDING, 
-      completion.strSet(ranksNames, false, false));
+      completion.strSet(ranksNames, false, false, true));
     i++;
   }
 }
