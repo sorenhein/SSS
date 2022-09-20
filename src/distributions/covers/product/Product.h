@@ -31,6 +31,7 @@ struct VerbalData;
 class Completion;
 class VerbalCover;
 enum Opponent: unsigned;
+enum BlankPlayerCap: unsigned;
 enum CoverComposition: unsigned;
 enum CoverVerbal: unsigned;
 enum ExplainEqual: unsigned;
@@ -115,12 +116,6 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const unsigned char canonicalShift) const;
-
-    string strAddBottom(
-      const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const string& base,
-      const bool emptyFlag) const;
 
 
     string strVerbalLengthOnly(
@@ -219,6 +214,7 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const string& side,
+      const BlankPlayerCap blankSide,
       const VerbalData& data,
       const unsigned char canonicalShift) const;
 

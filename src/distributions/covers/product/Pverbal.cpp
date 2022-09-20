@@ -591,32 +591,6 @@ string Product::strUsedBottoms(
 }
 
 
-string Product::strAddBottom(
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const string& base,
-  const bool emptyFlag) const
-{
-  // Adds either no bottom or exactly one of each possible bottom.
-
-  string result = "";
-
-  // Show the version without any low card.
-  if (emptyFlag)
-    result = base;
-
-  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-  {
-    if (! result.empty())
-      result += (topNo == 0 ? " or " : ", ");
-
-    result += base + ranksNames.strOpponents(topNo, 1, false, false);
-  }
-
-  return result;
-}
-
-
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -1082,6 +1056,7 @@ string Product::strVerbalHighTopsSide(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const string& side,
+  const BlankPlayerCap blankSide,
   const VerbalData& data,
   const unsigned char canonicalShift) const
 {
@@ -1102,14 +1077,18 @@ string Product::strVerbalHighTopsSide(
   else if (numOptions == 2 && data.freeUpper == 1)
   {
     // We need up to one low card.
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string result = completion.strSet(ranksNames, 
-      false, data.ranksActive == 1);
+    VerbalCover completions;
+    if (Product::makeCompletions(sumProfile, canonicalShift, data,
+      4, completions))
+    {
+      vector<TemplateData> tdata;
+      completions.makeList(blankSide, ranksNames, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, tdata);
+    }
 
-    return side + " has " +
-      Product::strAddBottom(ranksNames, canonicalShift, 
-        result, data.freeLower == 0);
+    // This would only fail if we had more than 4 options.
+    assert(false);
+    return "";
   }
   else if (data.topsUsed == 0)
   {
@@ -1168,15 +1147,21 @@ string Product::strVerbalHighTops(
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
+    const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+      BLANK_PLAYER_CAP_WEST);
+
     return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), 
-      dataWest, canonicalShift);
+      bside, dataWest, canonicalShift);
   }
   else
   {
+    const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+      BLANK_PLAYER_CAP_EAST);
+
     return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), 
-      dataEast, canonicalShift);
+      bside, dataEast, canonicalShift);
   }
 }
 
@@ -1289,6 +1274,7 @@ string Product::strVerbal(
   }
   else if (verbal == VERBAL_TOPS_ONLY)
   {
+    assert(false);
     return Product::strVerbalOneTopOnly(
       sumProfile, 
       ranksNames, 
