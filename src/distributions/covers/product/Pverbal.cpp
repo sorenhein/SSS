@@ -1133,9 +1133,10 @@ string Product::strVerbalHighTopsOnlyBothSides(
   else if (dataOther.freeUpper <= dataOther.topsFull)
   {
     // Prefer to state the low cards.
-    const string resultOwn = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    const string resultOwn = completion.strSet(ranksNames, 
+      false, data.ranksActive == 1);
 
     return side + " has " + resultOwn + "(" +
       Product::strUsedBottoms(
@@ -1143,9 +1144,10 @@ string Product::strVerbalHighTopsOnlyBothSides(
   }
   else if (dataOther.topsFull == 0)
   {
-    const string resultOwn = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      data.topsUsed == 1, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    const string resultOwn = completion.strSet(ranksNames, 
+      data.topsUsed == 1, data.ranksActive == 1);
 
     return side + " has " + resultOwn + " and perhaps lower cards";
   }
