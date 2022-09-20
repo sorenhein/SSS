@@ -577,28 +577,14 @@ bool Product::makeCompletions(
 string Product::strUsedBottoms(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const bool allFlag) const
+  const unsigned char canonicalShift) const
 {
-  // This method doesn't only do bottoms, but "the opposite of" tops.
-  // In any event it expands cards hidden by a canonical shift.
-  // If we have AQT86 and the queen is not used but AT8 are,
-  // then we get Q6.  If AQT86 is stored as AQTx with a shift of 1,
-  // and if AQT are used, we get 8x.
-
   string result = "";
 
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    topNo-- > 0; )
+  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
   {
-    const auto& top = tops[topNo];
-    if (top.used() && topNo > canonicalShift)
-      continue;
-
-    const unsigned char count = (allFlag ?
-      sumProfile[topNo] : top.lower());
-
-    result += ranksNames.strOpponents(topNo, count, false, false);
+    result += ranksNames.strOpponents(topNo, sumProfile[topNo], 
+      false, false);
   }
 
   return result;
@@ -848,7 +834,7 @@ string Product::strVerbalTops(
     // sense.  So flipAllowedFlag should only be set for high tops.
     return sideOther + " has " + "(" + 
       Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift, true) + ")";
+        sumProfile, ranksNames, canonicalShift) + ")";
   }
 }
 
@@ -1072,7 +1058,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     return side + " has " + resultOwn + "(" +
       Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift, true) + ")";
+        sumProfile, ranksNames, canonicalShift) + ")";
   }
   else if (dataOther.topsFull == 0)
   {

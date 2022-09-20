@@ -114,8 +114,7 @@ class Product
     string strUsedBottoms(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const unsigned char canonicalShift,
-      const bool allFlag) const;
+      const unsigned char canonicalShift) const;
 
     string strAddBottom(
       const RanksNames& ranksNames,
