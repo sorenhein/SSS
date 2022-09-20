@@ -875,6 +875,13 @@ string Product::strVerbalLengthAndOneTop(
 /*--------------------------------------------------------------------*/
 
 
+  // TEMPLATE
+  // if (sold == snew)
+    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  // else
+    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+
 string Product::strVerbalTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -897,10 +904,10 @@ string Product::strVerbalTops(
       singleActiveRank)
   {
     // State it from the intended side.
+    Completion completion;
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     return side + " has " + 
-      Product::strUsedTops(
-        sumProfile, ranksNames, canonicalShift, 
-        true, data.ranksActive == 1, false);
+      completion.strSet(ranksNames, true, data.ranksActive == 1);
   }
   else
   {
@@ -923,8 +930,6 @@ string Product::strVerbalTopsDual(
   const VerbalData& data,
   const VerbalData& dataOther) const
 {
-  // TODO This is actually a rare method with ~ 6 calls.  Eliminate?
-
   Completion completionRown;
   Product::makePartialProfileNew(
     sumProfile, canonicalShift, completionRown);
@@ -1117,9 +1122,10 @@ string Product::strVerbalHighTopsOnlyBothSides(
   {
     // The lowest cards are a single rank of x'es.
 
-    const string result = Product::strUsedTops(
-      sumProfile, ranksNames, canonicalShift, 
-      false, data.ranksActive == 1, false);
+    Completion completion;
+    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    const string result = completion.strSet(ranksNames, 
+      false, data.ranksActive == 1);
 
     return side + " has " + result + 
       data.strXes(false, false);
