@@ -453,31 +453,6 @@ void Product::makePartialProfile(
 
   completion.resize(sumProfile.size());
 
-  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
-      topNo-- > 0; )
-  {
-    if (topNo >= canonicalShift)
-      completion.setTop(
-        topNo, 
-        tops[topNo-canonicalShift].used(),
-        tops[topNo-canonicalShift].lower());
-    else
-      completion.setTop(topNo, false, 0);
-  }
-}
-
-
-void Product::makePartialProfileNew(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  Completion& completion) const
-{
-  // We have some top's that are fixed to a single value.
-  // We have some explicit, unused tops.
-  // We have 1 or more unused implicit bottoms (canonicalShift+1).
-
-  completion.resize(sumProfile.size());
-
   // Cover from the highest top down to canonicalShift (exclusive).
   // If canonicalShift is 0, then we will stop at 1, but then the 0th
   // real top is by convention unset.
@@ -490,23 +465,22 @@ void Product::makePartialProfileNew(
       tops[topNo-canonicalShift].lower());
   }
 
-  // if (canonicalShift == 0)
-    // return;
-
   // The zero'th top represents all the actual tops in sumProfile
   // from 0 up to canonicalShift-1.
+
   if (! tops[0].used())
+  {
+    // Fill with unused bottoms.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, false, 0);
     return;
+  }
 
   const unsigned char bottoms = tops[0].lower();
-
-// cout << "bottoms " << +bottoms << "\n";
-// cout << "count " << +Product::countBottoms(sumProfile, canonicalShift) <<
-  // "\n";
+  assert(tops[0].getOperator() == COVER_EQUAL);
 
   if (bottoms == 0)
   {
-    // TODO Does this happen?
     // Fill with zeroes.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
       completion.setTop(topNo, true, 0);
@@ -517,16 +491,11 @@ void Product::makePartialProfileNew(
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
       completion.setTop(topNo, true, sumProfile[topNo]);
   }
-  else if (canonicalShift == 0)
-  {
-    completion.setTop(0, true, bottoms);
-  }
   else
   {
-    // TODO Does this happen?
-    // Fill with unused.
-    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, false, 0);
+    // Add a single bottom with the right number.
+    assert(canonicalShift == 0);
+    completion.setTop(0, true, bottoms);
   }
 }
 
@@ -539,7 +508,6 @@ bool Product::makeCompletions(
   VerbalCover& completions) const
 {
   Completion completion;
-
   Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
   list<Completion> stack;
@@ -707,12 +675,12 @@ string Product::strVerbalOneTopOnly(
   Completion completion;
 
   if (simplestOpponent == OPP_EAST)
-    productEast.makePartialProfileNew(
+    productEast.makePartialProfile(
       sumProfile,
       canonicalShift,
       completion);
   else
-    productWest.makePartialProfileNew(
+    productWest.makePartialProfile(
       sumProfile,
       canonicalShift,
       completion);
@@ -869,7 +837,7 @@ string Product::strVerbalTops(
   {
     // State it from the intended side.
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     return side + " has " + 
       completion.strSet(ranksNames, true, data.ranksActive == 1);
   }
@@ -895,13 +863,13 @@ string Product::strVerbalTopsDual(
   const VerbalData& dataOther) const
 {
   Completion completionRown;
-  Product::makePartialProfileNew(
+  Product::makePartialProfile(
     sumProfile, canonicalShift, completionRown);
   const string resultOwn = completionRown.strSet(ranksNames,
     data.topsUsed == 1, data.ranksActive == 1);
 
   Completion completionOther;
-  productOther.makePartialProfileNew(
+  productOther.makePartialProfile(
     sumProfile, canonicalShift, completionOther);
   const string resultOther = completionOther.strSet(ranksNames,
     dataOther.topsUsed == 1, dataOther.ranksActive == 1);
@@ -1046,13 +1014,13 @@ string Product::strVerbalAnyTops(
   if (dataWest.ranksActive > 0)
   {
     Completion& vcWest = completions.activateSide(OPP_WEST);
-    productWest.makePartialProfileNew(sumProfile, canonicalShift, vcWest);
+    productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
   }
 
   if (dataEast.ranksActive > 0)
   {
     Completion& vcEast = completions.activateSide(OPP_EAST);
-    productEast.makePartialProfileNew(sumProfile, canonicalShift, vcEast);
+    productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
   }
 
   vector<TemplateData> tdata;
@@ -1087,7 +1055,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
     // The lowest cards are a single rank of x'es.
 
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     const string result = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
@@ -1098,7 +1066,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
   {
     // Prefer to state the low cards.
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     const string resultOwn = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
@@ -1109,7 +1077,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
   else if (dataOther.topsFull == 0)
   {
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     const string resultOwn = completion.strSet(ranksNames, 
       data.topsUsed == 1, data.ranksActive == 1);
 
@@ -1138,7 +1106,7 @@ string Product::strVerbalHighTopsSide(
   if (numOptions == 1)
   {
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     const string result = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
@@ -1149,7 +1117,7 @@ string Product::strVerbalHighTopsSide(
   {
     // We need up to one low card.
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     const string result = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
@@ -1171,7 +1139,7 @@ string Product::strVerbalHighTopsSide(
   {
     // General case.
     Completion completion;
-    Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
     string result = completion.strSet(ranksNames, 
       data.topsUsed == 1, data.ranksActive == 1);
 
@@ -1278,7 +1246,7 @@ string Product::strVerbalSingularSide(
     canonicalShift) + " ";
 
   Completion completion;
-  Product::makePartialProfileNew(sumProfile, canonicalShift, completion);
+  Product::makePartialProfile(sumProfile, canonicalShift, completion);
   result += completion.strSet(ranksNames, false, false);
 
   return result;
