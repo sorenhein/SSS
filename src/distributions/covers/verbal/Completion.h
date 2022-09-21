@@ -26,6 +26,7 @@ class Completion
   private:
 
     vector<unsigned char> partialTops;
+    vector<bool> used;
 
     list<unsigned char> openTopNumbers;
 
@@ -61,11 +62,7 @@ class Completion
       const bool singleRankFlag,
       const bool explicitVoidFlag = false) const;
 
-    string strUnset(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const bool expandFlag,
-      const bool singleRankFlag) const;
+    string strUnset(const RanksNames& ranksNames) const;
 };
 
 #endif

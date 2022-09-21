@@ -24,6 +24,7 @@
 void Completion::resize(const size_t numTops)
 {
   partialTops.resize(numTops);
+  used.resize(numTops, false);
   openTopNumbers.clear();
   lengthInt = 0;
 }
@@ -35,9 +36,15 @@ void Completion::setTop(
   const unsigned char count)
 {
   // Must be an equal top.
+
+  assert(topNo < used.size());
+  used[topNo] = usedFlag;
+
+  // Permit a maximum value to be stored even if unused.
+  partialTops[topNo] = count;
+
   if (usedFlag)
   {
-    partialTops[topNo] = count;
     lengthInt += count;
   }
   else
@@ -49,7 +56,17 @@ void Completion::updateTop(
   const unsigned char topNo,
   const unsigned char count)
 {
-  lengthInt += count - partialTops[topNo];
+  assert(topNo < used.size());
+
+  if (used[topNo])
+    lengthInt += count - partialTops[topNo];
+  else
+  {
+    // Treat as if partialTops were zero.
+    lengthInt += count;
+    used[topNo] = true;
+  }
+
   partialTops[topNo] = count;
 }
 
@@ -74,12 +91,18 @@ bool Completion::operator < (const Completion& comp2) const
 
 bool Completion::operator == (const Completion& comp2) const
 {
+  if (used.size() != comp2.used.size())
+    return false;
   if (partialTops.size() != comp2.partialTops.size())
     return false;
   if (openTopNumbers.size() != comp2.openTopNumbers.size())
     return false;
   if (lengthInt != comp2.lengthInt)
     return false;
+
+  for (size_t i = 0; i < partialTops.size(); i++)
+    if (used[i] != comp2.used[i])
+      return false;
 
   for (size_t i = 0; i < partialTops.size(); i++)
     if (partialTops[i] != comp2.partialTops[i])
@@ -133,7 +156,8 @@ string Completion::strSet(
   for (unsigned char topNo = 
     static_cast<unsigned char>(partialTops.size()); topNo-- > 0; )
   {
-    if (partialTops[topNo])
+    // if (partialTops[topNo])
+    if (used[topNo])
     {
       if (expandFlag && ! singleRankFlag && ! s.empty())
         s += "-";
@@ -146,21 +170,13 @@ string Completion::strSet(
 }
 
 
-string Completion::strUnset(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const bool expandFlag,           // jack, not J
-  const bool singleRankFlag) const // Use dashes between expansions
+string Completion::strUnset(const RanksNames& ranksNames) const
 {
-  // TODO Currently unused
   string s;
   for (auto openNo: openTopNumbers)
   {
-    if (expandFlag && ! singleRankFlag && ! s.empty())
-      s += "-";
-
-    s += ranksNames.strOpponents(openNo, sumProfile[openNo],
-      expandFlag, singleRankFlag);
+    s += ranksNames.strOpponents(openNo, partialTops[openNo],
+      false, false);
   }
   return s;
 }

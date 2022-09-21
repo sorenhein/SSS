@@ -119,13 +119,13 @@ string VerbalTemplates::get(
   auto tdataIter = tdata.begin();
 
 /*
-cout << "sentence " << sentence << endl;
+cout << "sentence: " << sentence << endl;
 for (unsigned i = 0; i < tdata.size(); i++)
 {
   cout << i << ":\n";
-  cout << "  " << tdata[i].str();
+  cout << tdata[i].str() << "\n";
 }
-cout << "template " << vt.str() << endl;
+cout << "template:\n" << vt.str() << endl;
 */
 
   for (field = 0; field < tdata.size(); 
@@ -181,7 +181,7 @@ cout << "template " << vt.str() << endl;
       if (p == string::npos)
       {
 cout << "string now '" << s << "'\n";
-cout << "looked for ', %'" << field << endl;
+cout << "looked for ', %" << field << "'" << endl;
         assert(false);
       }
 

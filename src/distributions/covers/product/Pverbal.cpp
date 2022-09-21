@@ -662,6 +662,7 @@ string Product::strVerbalOneTopOnly(
     if (! tops[topNo].used())
       continue;
 
+    assert(tops[topNo].getOperator() != COVER_EQUAL);
     sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
 
     const string told = tops[topNo].strTop(
@@ -669,17 +670,7 @@ string Product::strVerbalOneTopOnly(
       simplestOpponent, 
       symmFlag);
 
-    if (tops[topNo].getOperator() == COVER_EQUAL)
-    {
-    // Doesn't seem to happen?
-    if (told == tnew)
-      cout << setw(40) << left << told << "U1U " << tnew << "\n";
-    else
-      cout << setw(40) << left << told << "U2U " << tnew << "\n";
-    }
-
     return told;
-
   }
 
   assert(false);
@@ -1274,7 +1265,6 @@ string Product::strVerbal(
   }
   else if (verbal == VERBAL_TOPS_ONLY)
   {
-    assert(false);
     return Product::strVerbalOneTopOnly(
       sumProfile, 
       ranksNames, 

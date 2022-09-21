@@ -1,7 +1,9 @@
-strVerbalTopsDual
-7/1640
-The alternative strings don't work and may even segfault.
-Also fail in line 498 (assert could be removed).
+makePartialProfile
+! tops[0].used()
+Can we setTop with a value of sumProfile[topNo] even if false?!
+Then have a Completion::strAllBottoms(), no bool's
+
+8/5007: Now get AQ or Q, should be AQ QT Q
 
 Store the texts in a language file
 
