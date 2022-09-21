@@ -40,7 +40,7 @@ void Completion::setTop(
   assert(topNo < used.size());
   used[topNo] = usedFlag;
 
-  // Permit a maximum value to be stored even if unused.
+  // Permit a maximum value to be stored even if the top is unused.
   partialTops[topNo] = count;
 
   if (usedFlag)
@@ -62,7 +62,8 @@ void Completion::updateTop(
     lengthInt += count - partialTops[topNo];
   else
   {
-    // Treat as if partialTops were zero.
+    // Treat as if partialTops were zero, as there might be a
+    // maximum value for an unused top stored here.
     lengthInt += count;
     used[topNo] = true;
   }
@@ -156,7 +157,6 @@ string Completion::strSet(
   for (unsigned char topNo = 
     static_cast<unsigned char>(partialTops.size()); topNo-- > 0; )
   {
-    // if (partialTops[topNo])
     if (used[topNo])
     {
       if (expandFlag && ! singleRankFlag && ! s.empty())

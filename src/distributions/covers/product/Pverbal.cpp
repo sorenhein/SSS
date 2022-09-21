@@ -472,7 +472,7 @@ void Product::makePartialProfile(
   {
     // Fill with unused bottoms.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, false, 0);
+      completion.setTop(topNo, false, sumProfile[topNo]);
     return;
   }
 
@@ -797,9 +797,23 @@ string Product::strVerbalTops(
     // State it from the other side.  If the tops are not all
     // on the high end, but scattered, this output will not make
     // sense.  So flipAllowedFlag should only be set for high tops.
-    return sideOther + " has " + "(" + 
-      Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift) + ")";
+    string sold =
+      Product::strUsedBottoms(sumProfile, ranksNames, canonicalShift);
+
+    Completion completion;
+    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    string snew = completion.strUnset(ranksNames);
+    // cout << "product " << Product::strLine();
+    // cout << "sumprofile " << sumProfile.strLine();
+    // cout << "completion " << completion.strDebug() << endl;
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+
+    return sideOther + " has " + "(" + sold + ")";
   }
 }
 
@@ -1021,9 +1035,21 @@ string Product::strVerbalHighTopsOnlyBothSides(
     const string resultOwn = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
-    return side + " has " + resultOwn + "(" +
-      Product::strUsedBottoms(
-        sumProfile, ranksNames, canonicalShift) + ")";
+
+    string sold =
+      Product::strUsedBottoms(sumProfile, ranksNames, canonicalShift);
+
+    string snew = completion.strUnset(ranksNames);
+    // cout << "product " << Product::strLine();
+    // cout << "sumprofile " << sumProfile.strLine();
+    // cout << "completion " << completion.strDebug() << endl;
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X3X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X4X " << snew << endl;
+
+    return side + " has " + resultOwn + "(" + sold + ")";
   }
   else if (dataOther.topsFull == 0)
   {
