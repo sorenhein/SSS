@@ -574,23 +574,6 @@ bool Product::makeCompletions(
 /**********************************************************************/
 
 
-string Product::strUsedBottoms(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift) const
-{
-  string result = "";
-
-  for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-  {
-    result += ranksNames.strOpponents(topNo, sumProfile[topNo], 
-      false, false);
-  }
-
-  return result;
-}
-
-
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -797,23 +780,11 @@ string Product::strVerbalTops(
     // State it from the other side.  If the tops are not all
     // on the high end, but scattered, this output will not make
     // sense.  So flipAllowedFlag should only be set for high tops.
-    string sold =
-      Product::strUsedBottoms(sumProfile, ranksNames, canonicalShift);
-
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    string snew = completion.strUnset(ranksNames);
-    // cout << "product " << Product::strLine();
-    // cout << "sumprofile " << sumProfile.strLine();
-    // cout << "completion " << completion.strDebug() << endl;
 
-  if (sold == snew)
-    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  else
-    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
-
-    return sideOther + " has " + "(" + sold + ")";
+    return sideOther + " has " + 
+      "(" + completion.strUnset(ranksNames) + ")";
   }
 }
 
@@ -1015,42 +986,34 @@ string Product::strVerbalHighTopsOnlyBothSides(
     static_cast<unsigned char>(tops.size()) + 
     canonicalShift - data.ranksUsed;
 
-  if (numOptions == 1)
+  if (numOptions == 1 ||
+      dataOther.freeUpper <= dataOther.topsFull)
   {
     // The lowest cards are a single rank of x'es.
 
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string result = completion.strSet(ranksNames, 
+    const string resultHigh = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
-    return side + " has " + result + 
-      data.strXes(false, false);
+    const string resultLow = "(" + completion.strUnset(ranksNames) + ")";
+
+    return side + " has " + resultHigh + "(" + resultLow + ")";
   }
+  /*
   else if (dataOther.freeUpper <= dataOther.topsFull)
   {
     // Prefer to state the low cards.
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string resultOwn = completion.strSet(ranksNames, 
+    const string resultHigh = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
+    const string resultLow = completion.strUnset(ranksNames);
 
-    string sold =
-      Product::strUsedBottoms(sumProfile, ranksNames, canonicalShift);
-
-    string snew = completion.strUnset(ranksNames);
-    // cout << "product " << Product::strLine();
-    // cout << "sumprofile " << sumProfile.strLine();
-    // cout << "completion " << completion.strDebug() << endl;
-
-  if (sold == snew)
-    cout << "\n" << setw(40) << left << sold << "X3X " << snew << endl;
-  else
-    cout << "\n" << setw(40) << left << sold << "X4X " << snew << endl;
-
-    return side + " has " + resultOwn + "(" + sold + ")";
+    return side + " has " + resultHigh + "(" + resultLow + ")";
   }
+  */
   else if (dataOther.topsFull == 0)
   {
     Completion completion;
@@ -1085,11 +1048,25 @@ string Product::strVerbalHighTopsSide(
   {
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string result = completion.strSet(ranksNames, 
+    const string resultHigh = completion.strSet(ranksNames, 
       false, data.ranksActive == 1);
 
+    const string sold = data.strXes(false, false);
+
+    // This is not the same, e.g. x(x) vs (xx), (xx) vs (QJT987).
+    // It also confuses T(98) with x(xx).  Look at ranksNames.
+
+    /*
+    const string snew = "(" + completion.strUnset(ranksNames) + ")";
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+    */
+
     // We only have to set the x'es.
-    return side + " has " + result + data.strXes(false, false);
+    return side + " has " + resultHigh + sold;
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
