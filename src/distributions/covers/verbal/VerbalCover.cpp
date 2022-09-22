@@ -27,6 +27,26 @@
 extern VerbalTemplates verbalTemplates;
 
 
+const vector<string> topCount =
+{
+  "none",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen"
+};
+
+
+
 VerbalCover::VerbalCover()
 {
   lengthFlag = false;
@@ -435,4 +455,55 @@ string VerbalCover::strGeneral(
 
   return "";
 }
+
+
+// TODO Later on private and at the right place in the file again
+void VerbalCover::getOnetopEqualData(
+  const unsigned char oppsValue,
+  const unsigned char oppsSize,
+  const BlankPlayerCap side,
+  const Completion& completion,
+  const RanksNames& ranksNames,
+  vector<TemplateData>& tdata) const
+{
+  // Here lower and upper are identical.
+
+  if (oppsValue == 0)
+  {
+    // Should be flipped around before calling this method.
+    assert(false);
+  }
+
+  tdata.resize(2);
+  if (oppsValue == oppsSize)
+  {
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+
+    tdata[1].set(
+      BLANK_ONETOP_PHRASE, 
+        (oppsValue == 1 ? 
+        BLANK_ONETOP_PHRASE_ONE_AND_ONLY : 
+        BLANK_ONETOP_PHRASE_ALL));
+  }
+  else if (oppsValue == 1 && oppsSize == 2)
+  {
+    // TODO Could also do 2 of 4 etc.
+    tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
+    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    tdata[1].setData(
+      BLANK_ONETOP_PHRASE_NUMBER_OF, 
+      "one", 
+      completion.strSet(ranksNames, true, true));
+  }
+  else
+  {
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    tdata[1].setData(
+      BLANK_ONETOP_PHRASE_NUMBER_OF,
+      topCount[oppsValue],
+      completion.strSet(ranksNames, true, true));
+  }
+}
+
 

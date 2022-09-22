@@ -25,8 +25,9 @@ enum TemplateSentence
 {
   TEMPLATES_LENGTH_ONLY = 0,
   TEMPLATES_TOPS_ONLY = 1,
-  TEMPLATES_LIST = 2,
-  TEMPLATES_SIZE = 3
+  TEMPLATES_ONETOP = 2,
+  TEMPLATES_LIST = 3,
+  TEMPLATES_SIZE = 4
 };
 
 
@@ -58,7 +59,8 @@ struct TemplateData
   unsigned numParams;
   unsigned char param1;
   unsigned char param2;
-  string text;
+  string text1;
+  string text2;
 
   void setBlank(const VerbalBlank blankIn)
   {
@@ -86,7 +88,7 @@ struct TemplateData
   {
     instance = instanceIn;
     numParams = 1;
-    text = textIn;
+    text1 = textIn;
   };
 
   void setData(
@@ -98,6 +100,17 @@ struct TemplateData
     numParams = 2;
     param1 = param1In;
     param2 = param2In;
+  };
+
+  void setData(
+    const unsigned instanceIn,
+    const string& textIn1,
+    const string& textIn2)
+  {
+    instance = instanceIn;
+    numParams = 2;
+    text1 = textIn1;
+    text2 = textIn2;
   };
 
   void set(
@@ -117,7 +130,8 @@ struct TemplateData
     ss << "numParams " << numParams << "\n";
     ss << "param1    " << +param1 << "\n";
     ss << "param2    " << +param2 << "\n";
-    ss << "text      " << text << "\n";
+    ss << "text1     " << text1 << "\n";
+    ss << "text2     " << text2 << "\n";
     return ss.str();
   };
 };
@@ -139,6 +153,8 @@ class VerbalTemplates
     string lengthPhrase(const TemplateData& tdata) const;
 
     string topsPhrase(const TemplateData& tdata) const;
+
+    string onetopPhrase(const TemplateData& tdata) const;
 
     string listPhrase(const TemplateData& tdata) const;
 

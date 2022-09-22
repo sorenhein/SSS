@@ -43,6 +43,9 @@ void VerbalTemplates::set(const Language languageIn)
     templates[TEMPLATES_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
+    templates[TEMPLATES_ONETOP] =
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
+
     // Up to 4 such holdings currently foreseen.
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -56,6 +59,9 @@ void VerbalTemplates::set(const Language languageIn)
 
     templates[TEMPLATES_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
+
+    templates[TEMPLATES_ONETOP] =
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
 
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -91,6 +97,12 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM] = "has at most %0 cards";
   blankLP[BLANK_LENGTH_PHRASE_RANGE_PARAMS] = "has %0-%1 cards";
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
+
+  auto& blank1TP = dictionary[BLANK_ONETOP_PHRASE];
+  blank1TP[BLANK_ONETOP_PHRASE_ONE_AND_ONLY] = "has the %0";
+  blank1TP[BLANK_ONETOP_PHRASE_ALL] = "has all of %0";
+  blank1TP[BLANK_ONETOP_PHRASE_EXACT] = "has exactly %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_NUMBER_OF] = "has %0 of %1";
 
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
@@ -142,6 +154,10 @@ cout << "template:\n" << vt.str() << endl;
     else if (blank == BLANK_LENGTH_PHRASE)
     {
       fill = VerbalTemplates::lengthPhrase(blankData);
+    }
+    else if (blank == BLANK_ONETOP_PHRASE)
+    {
+      fill = VerbalTemplates::onetopPhrase(blankData);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
@@ -235,6 +251,34 @@ string VerbalTemplates::lengthPhrase(const TemplateData& tdata) const
 }
 
 
+string VerbalTemplates::onetopPhrase(const TemplateData& tdata) const
+{
+  assert(tdata.numParams <= 2);
+  assert(tdata.instance < dictionary[BLANK_ONETOP_PHRASE].size());
+
+// cout << "looking up " << BLANK_ONETOP_PHRASE << ", " << tdata.blank << endl;
+  string s = dictionary[BLANK_ONETOP_PHRASE][tdata.instance];
+// cout << "tops phrase is " << s << endl;
+// cout << "tdata is " << tdata.str() << endl;
+
+  for (size_t field = 0; field < tdata.numParams; field++)
+  {
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+      assert(false);
+
+    if (field == 0)
+      s.replace(p, 2, tdata.text1);
+    else if (field == 1)
+      s.replace(p, 2, tdata.text2);
+    else
+      assert(false);
+  }
+
+  return s;
+}
+
+
 string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
 {
   assert(tdata.numParams == 1);
@@ -252,7 +296,7 @@ string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
       assert(false);
 
     if (field == 0)
-      s.replace(p, 2, tdata.text);
+      s.replace(p, 2, tdata.text1);
     else
       assert(false);
   }
@@ -279,7 +323,7 @@ string VerbalTemplates::listPhrase(const TemplateData& tdata) const
       assert(false);
 
     if (field == 0)
-      s.replace(p, 2, tdata.text);
+      s.replace(p, 2, tdata.text1);
     else
       assert(false);
   }

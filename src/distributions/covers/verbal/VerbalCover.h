@@ -104,5 +104,15 @@ class VerbalCover
       const bool symmFlag,
       const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
+
+    // TODO Later on private again
+    void getOnetopEqualData(
+      const unsigned char oppsValue,
+      const unsigned char oppsLength,
+      const BlankPlayerCap side,
+      const Completion& completion,
+      const RanksNames& ranksNames,
+      vector<TemplateData>& tdata) const;
+
 };
 #endif

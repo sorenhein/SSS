@@ -81,6 +81,7 @@ string Top::strEqual(
   const Opponent simplestOpponent,
   const bool symmFlag) const
 {
+assert(false);
   // Here lower and upper are identical.
   string side, otherSide;
   unsigned char value;

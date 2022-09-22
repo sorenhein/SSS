@@ -604,7 +604,7 @@ string Product::strVerbalOneTopOnly(
   const Opponent simplestOpponent =
     Product::simplestOpponent(sumProfile, canonicalShift);
 
-  // ---
+  /*
   Product productWest, productEast;
 
   // Simpler version of separateSingular where length is given.
@@ -635,7 +635,8 @@ string Product::strVerbalOneTopOnly(
 
   string tnew = completions.strGeneral(
     sumProfile.length(), symmFlag, ranksNames, tdata);
-  // ---
+  */
+
 
   TopData topData;
   unsigned char topNo;
@@ -648,10 +649,68 @@ string Product::strVerbalOneTopOnly(
     assert(tops[topNo].getOperator() != COVER_EQUAL);
     sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
 
+
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  VerbalData dataWest, dataEast; // Thrown away
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+  Completion completion;
+
+  if (simplestOpponent == OPP_EAST)
+    productEast.makePartialProfile(
+      sumProfile,
+      canonicalShift,
+      completion);
+  else
+    productWest.makePartialProfile(
+      sumProfile,
+      canonicalShift,
+      completion);
+
+    VerbalCover completions;
+    vector<TemplateData> tdata;
+
+    const unsigned char v = tops[topNo].lower();
+    if (v == 0 || simplestOpponent == OPP_EAST)
+    {
+      completions.getOnetopEqualData(
+        sumProfile[topNo + canonicalShift] - tops[topNo].lower(),
+        sumProfile[topNo + canonicalShift],
+        symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST,
+        completion,
+        ranksNames,
+        tdata);
+    }
+    else
+    {
+      completions.getOnetopEqualData(
+        tops[topNo].lower(),
+        sumProfile[topNo + canonicalShift],
+        symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+        completion,
+        ranksNames,
+        tdata);
+    }
+  
+    string tnew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
+
+
     const string told = tops[topNo].strTop(
       topData,
       simplestOpponent, 
       symmFlag);
+
+  if (tops[topNo].getOperator() == COVER_EQUAL)
+  {
+  if (told == tnew)
+    cout << "\n" << setw(40) << left << told << "X1X " << tnew << endl;
+  else
+    cout << "\n" << setw(40) << left << told << "X2X " << tnew << endl;
+  }
 
     return told;
   }
@@ -1000,20 +1059,6 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     return side + " has " + resultHigh + "(" + resultLow + ")";
   }
-  /*
-  else if (dataOther.freeUpper <= dataOther.topsFull)
-  {
-    // Prefer to state the low cards.
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string resultHigh = completion.strSet(ranksNames, 
-      false, data.ranksActive == 1);
-
-    const string resultLow = completion.strUnset(ranksNames);
-
-    return side + " has " + resultHigh + "(" + resultLow + ")";
-  }
-  */
   else if (dataOther.topsFull == 0)
   {
     Completion completion;
