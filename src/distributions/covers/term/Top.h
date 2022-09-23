@@ -28,11 +28,6 @@ class Top: public Term
 {
   private:
 
-    string strInside(
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
     string strExactLengthEqual(
       const unsigned char distLength,
       const unsigned char oppsLength,
@@ -50,11 +45,6 @@ class Top: public Term
   public:
 
     Opponent simplestOpponent(const unsigned char maximum) const;
-
-    string strTop(
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
 
     string strTopBare(
       const TopData& oppsTopData,
