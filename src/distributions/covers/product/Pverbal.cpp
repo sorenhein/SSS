@@ -656,16 +656,9 @@ string Product::strVerbalLengthAndOneTop(
   assert(topNo > 0 && topNo < tops.size());
   auto& top = tops[topNo];
 
-  if (top.getOperator() == COVER_EQUAL)
-  {
-    return top.strEqualWithLength(
-      length,
-      sumProfile.length(), 
-      topData,
-      simplestOpponent,
-      symmFlag);
-  }
-  else if (length.getOperator() == COVER_EQUAL)
+  assert(top.getOperator() != COVER_EQUAL);
+
+  if (length.getOperator() == COVER_EQUAL)
   {
     // No inversion, but "has a doubleton with one or both tops"
     // TODO This doesn't work well as the moment:

@@ -26,22 +26,6 @@ using namespace std;
 
 class Top: public Term
 {
-  private:
-
-    string strExactLengthEqual(
-      const unsigned char distLength,
-      const unsigned char oppsLength,
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
-    string strLengthRangeEqual(
-      const TopData& oppsTopData,
-      const Xes& xes,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
-
   public:
 
     Opponent simplestOpponent(const unsigned char maximum) const;
@@ -53,13 +37,6 @@ class Top: public Term
     string strTopBareEqual(
       const TopData& oppsTopData,
       const Opponent simplestOpponent) const;
-
-    string strEqualWithLength(
-      const Length& length,
-      const unsigned char oppsLength,
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
 };
 
 #endif
