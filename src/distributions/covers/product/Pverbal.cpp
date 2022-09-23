@@ -601,13 +601,7 @@ string Product::strVerbalOneTopOnly(
 {
   assert(activeCount == 1);
 
-  const Opponent simplestOpponent =
-    Product::simplestOpponent(sumProfile, canonicalShift);
-
-  /*
   Product productWest, productEast;
-
-  // Simpler version of separateSingular where length is given.
   productWest.resize(tops.size());
   productEast.resize(tops.size());
   
@@ -615,94 +609,23 @@ string Product::strVerbalOneTopOnly(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
-  Completion completion;
+  assert(dataWest.topsUsed == 1);
+  const unsigned char topNo = dataWest.lowestRankUsed;
 
-  if (simplestOpponent == OPP_EAST)
-    productEast.makePartialProfile(
-      sumProfile,
-      canonicalShift,
-      completion);
-  else
-    productWest.makePartialProfile(
-      sumProfile,
-      canonicalShift,
-      completion);
+  assert(tops[topNo].getOperator() != COVER_EQUAL);
 
   VerbalCover completions;
-  completions.setSide(completion, simplestOpponent);
-
   vector<TemplateData> tdata;
 
-  string tnew = completions.strGeneral(
-    sumProfile.length(), symmFlag, ranksNames, tdata);
-  */
-
-
-  TopData topData;
-  unsigned char topNo;
-
-  for (topNo = static_cast<unsigned char>(tops.size()); topNo-- > 0; )
-  {
-    if (! tops[topNo].used())
-      continue;
-
-    assert(tops[topNo].getOperator() != COVER_EQUAL);
-    sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-
-
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
+  completions.getOnetopData(
+    tops[topNo].lower(),
+    tops[topNo].upper(),
+    sumProfile[topNo + canonicalShift],
+    ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
+    symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+    tdata);
   
-  VerbalData dataWest, dataEast; // Thrown away
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-
-  /*
-  Completion completion;
-
-  if (simplestOpponent == OPP_EAST)
-    productEast.makePartialProfile(
-      sumProfile,
-      canonicalShift,
-      completion);
-  else
-    productWest.makePartialProfile(
-      sumProfile,
-      canonicalShift,
-      completion);
-      */
-
-    VerbalCover completions;
-    vector<TemplateData> tdata;
-
-    assert(dataWest.topsUsed == 1 && topNo == dataWest.lowestRankUsed);
-
-    completions.getOnetopData(
-      tops[topNo].lower(),
-      tops[topNo].upper(),
-      sumProfile[topNo + canonicalShift],
-      ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
-      tdata);
-  
-    string tnew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
-
-
-    const string told = tops[topNo].strTop(
-      topData,
-      simplestOpponent, 
-      symmFlag);
-
-  if (told == tnew)
-    cout << "\n" << setw(40) << left << told << "X1X " << tnew << endl;
-  else
-    cout << "\n" << setw(40) << left << told << "X2X " << tnew << endl;
-    return told;
-  }
-
-  assert(false);
-  return "";
+  return verbalTemplates.get(TEMPLATES_ONETOP, tdata);
 }
 
 
@@ -766,12 +689,64 @@ string Product::strVerbalLengthAndOneTop(
   else
   {
     // Inversion, e.g. "has one top at most doubleton"
-    return 
-      top.strTop(
+
+    const string sold = top.strTop(
         topData,
         simplestOpponent, 
-        symmFlag) +
-      " " +
+        symmFlag);
+
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  VerbalData dataWest, dataEast; // Thrown away
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+  BlankPlayerCap bcap = BLANK_PLAYER_CAP_WEST;
+  if (dataWest.ranksUsed == 1)
+  {
+    assert(dataEast.ranksUsed <= 1);
+    assert(topNo == dataWest.lowestRankUsed);
+    bcap = BLANK_PLAYER_CAP_WEST;
+  }
+  else if (dataEast.ranksUsed == 1)
+  {
+    assert(dataWest.ranksUsed == 0);
+    assert(topNo == dataEast.lowestRankUsed);
+    bcap = BLANK_PLAYER_CAP_EAST;
+  }
+  else
+  {
+    cout << "Product " << Product::strLine() << endl;
+    cout << dataWest.str("West");
+    cout << dataEast.str("East") << endl;
+    cout << "symm " << symmFlag << endl;
+    assert(false);
+  }
+
+  assert(tops[topNo].getOperator() != COVER_EQUAL);
+
+  VerbalCover completions;
+  vector<TemplateData> tdata;
+
+  completions.getOnetopData(
+    tops[topNo].lower(),
+    tops[topNo].upper(),
+    sumProfile[topNo + canonicalShift],
+    ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
+    symmFlag ? BLANK_PLAYER_CAP_EITHER : bcap,
+    tdata);
+  
+  const string snew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+    return 
+      sold +
       length.strLengthBare(
         sumProfile.length(), 
         simplestOpponent);

@@ -470,7 +470,7 @@ void VerbalCover::getOnetopData(
   tdata.resize(2);
 
   // const string choice = completion.strSet(ranksNames, false, true);
-  cout << "choice " << choice << endl;
+  // cout << "choice " << choice << endl;
 
   if (oppsValue1 == 0)
   {
