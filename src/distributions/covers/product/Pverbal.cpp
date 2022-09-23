@@ -658,6 +658,7 @@ string Product::strVerbalOneTopOnly(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
+  /*
   Completion completion;
 
   if (simplestOpponent == OPP_EAST)
@@ -670,31 +671,20 @@ string Product::strVerbalOneTopOnly(
       sumProfile,
       canonicalShift,
       completion);
+      */
 
     VerbalCover completions;
     vector<TemplateData> tdata;
 
-    const unsigned char v = tops[topNo].lower();
-    if (v == 0 || simplestOpponent == OPP_EAST)
-    {
-      completions.getOnetopEqualData(
-        sumProfile[topNo + canonicalShift] - tops[topNo].lower(),
-        sumProfile[topNo + canonicalShift],
-        symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST,
-        completion,
-        ranksNames,
-        tdata);
-    }
-    else
-    {
-      completions.getOnetopEqualData(
-        tops[topNo].lower(),
-        sumProfile[topNo + canonicalShift],
-        symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
-        completion,
-        ranksNames,
-        tdata);
-    }
+    assert(dataWest.topsUsed == 1 && topNo == dataWest.lowestRankUsed);
+
+    completions.getOnetopData(
+      tops[topNo].lower(),
+      tops[topNo].upper(),
+      sumProfile[topNo + canonicalShift],
+      ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
+      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+      tdata);
   
     string tnew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
 
@@ -704,14 +694,10 @@ string Product::strVerbalOneTopOnly(
       simplestOpponent, 
       symmFlag);
 
-  if (tops[topNo].getOperator() == COVER_EQUAL)
-  {
   if (told == tnew)
     cout << "\n" << setw(40) << left << told << "X1X " << tnew << endl;
   else
     cout << "\n" << setw(40) << left << told << "X2X " << tnew << endl;
-  }
-
     return told;
   }
 

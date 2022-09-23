@@ -61,6 +61,7 @@ struct TemplateData
   unsigned char param2;
   string text1;
   string text2;
+  string text3;
 
   void setBlank(const VerbalBlank blankIn)
   {
@@ -100,6 +101,19 @@ struct TemplateData
     numParams = 2;
     param1 = param1In;
     param2 = param2In;
+  };
+
+  void setData(
+    const unsigned instanceIn,
+    const string& textIn1,
+    const string& textIn2,
+    const string& textIn3)
+  {
+    instance = instanceIn;
+    numParams = 3;
+    text1 = textIn1;
+    text2 = textIn2;
+    text3 = textIn3;
   };
 
   void setData(

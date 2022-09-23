@@ -99,10 +99,9 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
 
   auto& blank1TP = dictionary[BLANK_ONETOP_PHRASE];
-  blank1TP[BLANK_ONETOP_PHRASE_ONE_AND_ONLY] = "has the %0";
-  blank1TP[BLANK_ONETOP_PHRASE_ALL] = "has all of %0";
-  blank1TP[BLANK_ONETOP_PHRASE_EXACT] = "has exactly %0 of %1";
-  blank1TP[BLANK_ONETOP_PHRASE_NUMBER_OF] = "has %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATMOST] = "has at most %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATLEAST] = "has at least %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_RANGE_PARAMS] = "has %0-%1 of %2";
 
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
@@ -253,7 +252,7 @@ string VerbalTemplates::lengthPhrase(const TemplateData& tdata) const
 
 string VerbalTemplates::onetopPhrase(const TemplateData& tdata) const
 {
-  assert(tdata.numParams <= 2);
+  assert(tdata.numParams <= 3);
   assert(tdata.instance < dictionary[BLANK_ONETOP_PHRASE].size());
 
 // cout << "looking up " << BLANK_ONETOP_PHRASE << ", " << tdata.blank << endl;
@@ -271,6 +270,8 @@ string VerbalTemplates::onetopPhrase(const TemplateData& tdata) const
       s.replace(p, 2, tdata.text1);
     else if (field == 1)
       s.replace(p, 2, tdata.text2);
+    else if (field == 2)
+      s.replace(p, 2, tdata.text3);
     else
       assert(false);
   }

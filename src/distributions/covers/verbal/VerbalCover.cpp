@@ -458,51 +458,51 @@ string VerbalCover::strGeneral(
 
 
 // TODO Later on private and at the right place in the file again
-void VerbalCover::getOnetopEqualData(
-  const unsigned char oppsValue,
+void VerbalCover::getOnetopData(
+  const unsigned char oppsValue1,
+  const unsigned char oppsValue2,
   const unsigned char oppsSize,
+  const string& choice,
   const BlankPlayerCap side,
-  const Completion& completion,
-  const RanksNames& ranksNames,
   vector<TemplateData>& tdata) const
 {
-  // Here lower and upper are identical.
-
-  if (oppsValue == 0)
-  {
-    // Should be flipped around before calling this method.
-    assert(false);
-  }
-
+  // Here lower and upper are different.
   tdata.resize(2);
-  if (oppsValue == oppsSize)
+
+  // const string choice = completion.strSet(ranksNames, false, true);
+  cout << "choice " << choice << endl;
+
+  if (oppsValue1 == 0)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-
-    tdata[1].set(
-      BLANK_ONETOP_PHRASE, 
-        (oppsValue == 1 ? 
-        BLANK_ONETOP_PHRASE_ONE_AND_ONLY : 
-        BLANK_ONETOP_PHRASE_ALL));
+    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
+      topCount[oppsValue2], choice);
   }
-  else if (oppsValue == 1 && oppsSize == 2)
+  else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
-    // TODO Could also do 2 of 4 etc.
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
+      topCount[oppsValue1], choice);
+  }
+  else if (oppsValue1 + oppsValue2 == oppsSize)
+  {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
     tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(
-      BLANK_ONETOP_PHRASE_NUMBER_OF, 
-      "one", 
-      completion.strSet(ranksNames, true, true));
+    tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      to_string(+oppsValue1), 
+      to_string(+oppsValue2), 
+      choice);
   }
   else
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
     tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(
-      BLANK_ONETOP_PHRASE_NUMBER_OF,
-      topCount[oppsValue],
-      completion.strSet(ranksNames, true, true));
+    tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      to_string(+oppsValue1), 
+      to_string(+oppsValue2), 
+      choice);
   }
 }
 

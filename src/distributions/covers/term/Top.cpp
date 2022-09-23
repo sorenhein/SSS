@@ -76,68 +76,6 @@ Opponent Top::simplestOpponent(const unsigned char maximum) const
 }
 
 
-string Top::strEqual(
-  const TopData& oppsTopData,
-  const Opponent simplestOpponent,
-  const bool symmFlag) const
-{
-assert(false);
-  // Here lower and upper are identical.
-  string side, otherSide;
-  unsigned char value;
-
-  if (simplestOpponent == OPP_WEST)
-  {
-    side = (symmFlag ? "Either opponent" : "West");
-    otherSide = (symmFlag ? "Either opponent" : "East");
-    value = Top::lower();
-  }
-  else
-  {
-    side = (symmFlag ? "Either opponent" : "East");
-    otherSide = (symmFlag ? "Either opponent" : "West");
-    value = oppsTopData.value - Top::lower();
-  }
-
-  assert(oppsTopData.rankNamesPtr);
-  const string strFull = 
-    oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_FULL);
-
-  stringstream ss;
-
-  if (value == 0 || value == oppsTopData.value)
-  {
-    const string longSide = (value == 0 ? otherSide : side);
-
-    ss << longSide << " has ";
-
-    if (oppsTopData.value == 1)
-      ss << "the ";
-    else if (oppsTopData.value > 2)
-      ss << "all of ";
-    
-    ss << strFull;
-  }
-  else if (value == 1)
-  {
-    if (oppsTopData.value == 2)
-      ss << "The " << strFull << " are split";
-    else
-      ss << side << " has exactly one of " << strFull;
-  }
-  else if (value+1 == oppsTopData.value)
-    ss << otherSide << " has exactly one of " << strFull;
-  else if (value == 2)
-    ss << side << " has exactly two of " << strFull;
-  else if (value+2 == oppsTopData.value)
-    ss << otherSide << " has exactly two of " << strFull;
-  else
-    ss << side << " has exactly " +value << " of " << strFull;
-
-  return ss.str();
-}
-
-
 string Top::strInside(
   const TopData& oppsTopData,
   const Opponent simplestOpponent,
@@ -217,21 +155,11 @@ string Top::strTop(
   const bool symmFlag) const
 {
   const CoverOperator oper = Top::getOperator();
-  if (oper == COVER_EQUAL)
-  {
-    return Top::strEqual(oppsTopData, simplestOpponent, symmFlag);
-  }
-  else if (oper == COVER_INSIDE_RANGE ||
-           oper == COVER_LESS_EQUAL ||
-           oper == COVER_GREATER_EQUAL)
-  {
-    return Top::strInside(oppsTopData, simplestOpponent, symmFlag);
-  }
-  else
-  {
-    assert(false);
-    return "";
-  }
+  assert(oper == COVER_INSIDE_RANGE ||
+    oper == COVER_LESS_EQUAL ||
+    oper == COVER_GREATER_EQUAL);
+
+  return Top::strInside(oppsTopData, simplestOpponent, symmFlag);
 }
 
 

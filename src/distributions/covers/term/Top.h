@@ -28,11 +28,6 @@ class Top: public Term
 {
   private:
 
-    string strEqual(
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent,
-      const bool symmFlag) const;
-
     string strInside(
       const TopData& oppsTopData,
       const Opponent simplestOpponent,

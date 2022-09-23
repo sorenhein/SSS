@@ -4,6 +4,8 @@ But at any rate the answer was inconsistent.
 For now, moving to (T) all the way.  Perhaps in ranksNames
 it should be x?
 
+Port strInside from Top.cpp, use as strOnetopData
+
 Store the texts in a language file
 
 The main problem now is with the first-named / second-named.

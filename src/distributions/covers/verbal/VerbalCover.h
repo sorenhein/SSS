@@ -106,12 +106,12 @@ class VerbalCover
       vector<TemplateData>& tdata) const;
 
     // TODO Later on private again
-    void getOnetopEqualData(
-      const unsigned char oppsValue,
+    void getOnetopData(
+      const unsigned char oppsValue1,
+      const unsigned char oppsValue2,
       const unsigned char oppsLength,
+      const string& choice,
       const BlankPlayerCap side,
-      const Completion& completion,
-      const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
 
 };
