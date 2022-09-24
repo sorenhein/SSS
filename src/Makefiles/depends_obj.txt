@@ -34,8 +34,7 @@ driver.obj: distributions/covers/product/Profile.h
 driver.obj: distributions/covers/product/Profile.h ranks/RanksNames.h
 driver.obj: distributions/covers/product/ProductMemory.h
 driver.obj: distributions/covers/product/Product.h
-driver.obj: distributions/covers/term/Length.h
-driver.obj: distributions/covers/term/Term.h distributions/covers/term/Top.h
+driver.obj: distributions/covers/term/Term.h
 driver.obj: distributions/covers/product/FactoredProduct.h
 driver.obj: distributions/covers/TrickConvert.h
 driver.obj: distributions/covers/term/TermCompare.h inputs/Control.h
@@ -91,9 +90,7 @@ combinations/Combination.obj: distributions/covers/product/Profile.h
 combinations/Combination.obj: ranks/RanksNames.h
 combinations/Combination.obj: distributions/covers/product/ProductMemory.h
 combinations/Combination.obj: distributions/covers/product/Product.h
-combinations/Combination.obj: distributions/covers/term/Length.h
 combinations/Combination.obj: distributions/covers/term/Term.h
-combinations/Combination.obj: distributions/covers/term/Top.h
 combinations/Combination.obj: distributions/covers/product/FactoredProduct.h
 combinations/Combination.obj: inputs/Control.h inputs/Entity.h plays/Plays.h
 combinations/Combination.obj: plays/Play.h strategies/result/Winners.h
@@ -156,9 +153,7 @@ combinations/Combinations.obj: distributions/covers/product/Profile.h
 combinations/Combinations.obj: ranks/RanksNames.h
 combinations/Combinations.obj: distributions/covers/product/ProductMemory.h
 combinations/Combinations.obj: distributions/covers/product/Product.h
-combinations/Combinations.obj: distributions/covers/term/Length.h
 combinations/Combinations.obj: distributions/covers/term/Term.h
-combinations/Combinations.obj: distributions/covers/term/Top.h
 combinations/Combinations.obj: distributions/covers/product/FactoredProduct.h
 combinations/Combinations.obj: distributions/covers/tableau/CoverTableau.h
 combinations/Combinations.obj: plays/Plays.h plays/Play.h
@@ -232,9 +227,7 @@ combinations/CombTest.obj: distributions/covers/product/Profile.h
 combinations/CombTest.obj: ranks/RanksNames.h
 combinations/CombTest.obj: distributions/covers/product/ProductMemory.h
 combinations/CombTest.obj: distributions/covers/product/Product.h
-combinations/CombTest.obj: distributions/covers/term/Length.h
 combinations/CombTest.obj: distributions/covers/term/Term.h
-combinations/CombTest.obj: distributions/covers/term/Top.h
 combinations/CombTest.obj: distributions/covers/product/FactoredProduct.h
 combinations/CombTest.obj: strategies/Strategies.h strategies/Slist.h
 combinations/CombTest.obj: strategies/Strategy.h strategies/result/Result.h
@@ -280,9 +273,7 @@ distributions/Distributions.obj: distributions/covers/product/Profile.h
 distributions/Distributions.obj: ranks/RanksNames.h
 distributions/Distributions.obj: distributions/covers/product/ProductMemory.h
 distributions/Distributions.obj: distributions/covers/product/Product.h
-distributions/Distributions.obj: distributions/covers/term/Length.h
 distributions/Distributions.obj: distributions/covers/term/Term.h
-distributions/Distributions.obj: distributions/covers/term/Top.h
 distributions/Distributions.obj: distributions/covers/product/FactoredProduct.h
 distributions/DistMap.obj: distributions/DistMap.h distributions/DistHelp.h
 distributions/DistMap.obj: distributions/SurvivorList.h utils/table.h
@@ -313,9 +304,7 @@ distributions/DistCore.obj: distributions/covers/product/ProfilePair.h
 distributions/DistCore.obj: distributions/covers/product/Profile.h
 distributions/DistCore.obj: distributions/covers/product/ProductMemory.h
 distributions/DistCore.obj: distributions/covers/product/Product.h
-distributions/DistCore.obj: distributions/covers/term/Length.h
 distributions/DistCore.obj: distributions/covers/term/Term.h
-distributions/DistCore.obj: distributions/covers/term/Top.h
 distributions/DistCore.obj: distributions/covers/product/FactoredProduct.h
 distributions/DistCore.obj: plays/Play.h strategies/result/Winners.h
 distributions/DistCore.obj: strategies/result/Winner.h utils/table.h
@@ -366,9 +355,7 @@ distributions/covers/Cover.obj: distributions/covers/product/Profile.h
 distributions/covers/Cover.obj: distributions/covers/product/ProductStats.h
 distributions/covers/Cover.obj: distributions/covers/product/ProductMemory.h
 distributions/covers/Cover.obj: distributions/covers/product/Product.h
-distributions/covers/Cover.obj: distributions/covers/term/Length.h
 distributions/covers/Cover.obj: distributions/covers/term/Term.h
-distributions/covers/Cover.obj: distributions/covers/term/Top.h
 distributions/covers/Cover.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/Cover.obj: ranks/RanksNames.h ranks/RankNames.h
 distributions/covers/Cover.obj: utils/table.h
@@ -536,21 +523,15 @@ distributions/covers/product/Profile.obj: ranks/RankNames.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/ProfilePair.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/Profile.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/Product.h
-distributions/covers/product/ProfilePair.obj: distributions/covers/term/Length.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/term/Term.h
-distributions/covers/product/ProfilePair.obj: distributions/covers/term/Top.h
 distributions/covers/product/Product.obj: distributions/covers/product/Product.h
-distributions/covers/product/Product.obj: distributions/covers/term/Length.h
 distributions/covers/product/Product.obj: distributions/covers/term/Term.h
-distributions/covers/product/Product.obj: distributions/covers/term/Top.h
 distributions/covers/product/Product.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Product.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/Product.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/product/Product.obj: utils/Compare.h utils/table.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/Product.h
-distributions/covers/product/Pverbal.obj: distributions/covers/term/Length.h
 distributions/covers/product/Pverbal.obj: distributions/covers/term/Term.h
-distributions/covers/product/Pverbal.obj: distributions/covers/term/Top.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/VerbalData.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalTemplates.h
@@ -567,17 +548,13 @@ distributions/covers/product/Pverbal.obj: ranks/RanksNames.h
 distributions/covers/product/Pverbal.obj: ranks/RankNames.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/Product.h
-distributions/covers/product/FactoredProduct.obj: distributions/covers/term/Length.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/term/Term.h
-distributions/covers/product/FactoredProduct.obj: distributions/covers/term/Top.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/FactoredProduct.obj: utils/Compare.h
 distributions/covers/product/FactoredProduct.obj: utils/table.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/ProductMemory.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/Product.h
-distributions/covers/product/ProductMemory.obj: distributions/covers/term/Length.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/term/Term.h
-distributions/covers/product/ProductMemory.obj: distributions/covers/term/Top.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/Profile.h
 distributions/covers/product/ProductMemory.obj: distributions/covers/product/ProfilePair.h
@@ -589,17 +566,6 @@ distributions/covers/term/Term.obj: distributions/covers/term/Term.h
 distributions/covers/term/Term.obj: distributions/covers/term/TermCompare.h
 distributions/covers/term/Term.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/term/Term.obj: const.h utils/table.h utils/Compare.h
-distributions/covers/term/Length.obj: distributions/covers/term/Length.h
-distributions/covers/term/Length.obj: distributions/covers/term/Term.h
-distributions/covers/term/Length.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/term/Length.obj: utils/table.h
-distributions/covers/term/Top.obj: distributions/covers/term/Top.h
-distributions/covers/term/Top.obj: distributions/covers/term/Term.h
-distributions/covers/term/Top.obj: distributions/covers/term/Length.h
-distributions/covers/term/Top.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/term/Top.obj: distributions/covers/term/Xes.h
-distributions/covers/term/Top.obj: distributions/covers/term/TopData.h
-distributions/covers/term/Top.obj: utils/table.h ranks/RankNames.h
 distributions/covers/term/Xes.obj: distributions/covers/term/Xes.h
 distributions/covers/term/Xes.obj: utils/table.h
 distributions/covers/term/TermCompare.obj: distributions/covers/term/TermCompare.h
@@ -612,12 +578,11 @@ distributions/covers/verbal/Completion.obj: ranks/RankNames.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalCover.h
 distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/CoverOperator.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalBlank.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Language.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Length.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: ranks/RanksNames.h
 distributions/covers/verbal/VerbalCover.obj: ranks/RankNames.h utils/table.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalTemplates.h

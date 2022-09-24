@@ -414,7 +414,7 @@ ExplainEqual Product::mostlyEqual() const
 
   for (size_t topNo = 0; topNo < tops.size(); topNo++)
   {
-    const Top& top = tops[topNo];
+    const Term& top = tops[topNo];
 
     if (! top.used())
     {

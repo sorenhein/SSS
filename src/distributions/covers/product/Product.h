@@ -20,8 +20,7 @@
 #include <list>
 #include <string>
 
-#include "../term/Length.h"
-#include "../term/Top.h"
+#include "../term/Term.h"
 
 using namespace std;
 
@@ -41,9 +40,9 @@ class Product
 {
   private:
 
-    Length length;
+    Term length;
 
-    vector<Top> tops;
+    vector<Term> tops;
 
     unsigned long long codeInt;
 

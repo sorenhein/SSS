@@ -49,8 +49,6 @@ SOURCE_FILES    =                               \
                 distributions/covers/product/ProductStats.cpp    \
                                                                  \
                 distributions/covers/term/Term.cpp               \
-                distributions/covers/term/Length.cpp             \
-                distributions/covers/term/Top.cpp                \
                 distributions/covers/term/Xes.cpp                \
                 distributions/covers/term/TermCompare.cpp        \
                                                                  \

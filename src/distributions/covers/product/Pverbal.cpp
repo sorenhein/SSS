@@ -636,23 +636,11 @@ string Product::strVerbalLengthAndOneTop(
   const bool symmFlag,
   const unsigned char canonicalShift) const
 {
-  assert(activeCount == 1);
   assert(length.used());
+  assert(activeCount == 1);
 
   const Opponent simplestOpponent =
     Product::simplestOpponent(sumProfile, canonicalShift);
-
-  TopData topData;
-  unsigned char topNo;
-  for (topNo = static_cast<unsigned char>(tops.size()); --topNo > 0; )
-  {
-    if (tops[topNo].used())
-    {
-      sumProfile.getTopData(topNo + canonicalShift, ranksNames, topData);
-      break;
-    }
-  }
-  assert(topData.used());
 
   Product productWest, productEast;
   productWest.resize(tops.size());
@@ -662,91 +650,31 @@ string Product::strVerbalLengthAndOneTop(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
-  assert(topNo == dataWest.lowestRankUsed);
-
+  const unsigned char topNo = dataWest.lowestRankUsed;
   assert(topNo > 0 && topNo < tops.size());
   auto& top = tops[topNo];
 
   assert(top.getOperator() != COVER_EQUAL);
 
-  // if (length.getOperator() == COVER_EQUAL)
-  if (false)
-  {
-    // No inversion, but "has a doubleton with one or both tops"
-    // TODO This doesn't work well as the moment:
-    // "The suit splits 3=3 with 1-2 of ace-king-queen"
-    // "The suit splits evenly with ..."
-    // In these cases we need to state whether West or East has something.
+  VerbalCover completions;
+  vector<TemplateData> tdata;
 
-    VerbalCover completions;
-    completions.setLength(length);
+  completions.getOnetopData(
+    tops[topNo].lower(),
+    tops[topNo].upper(),
+    sumProfile[topNo + canonicalShift],
+    ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
+    symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+    tdata);
 
-    // Actually only uses the length-only branch, so overkill.
-    vector<TemplateData> tdata;
-    const string slen = completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames, tdata);
+  completions.setLength(length);
+  tdata.resize(3);
+  completions.getLengthAdjElement(
+    sumProfile.length(),
+    simplestOpponent,
+    tdata[2]);
 
-    const string stopold = top.strTopBare(topData, simplestOpponent);
-    const string soldall = slen + " with " + stopold;
-
-    tdata.resize(3);
-    unsigned char low, high;
-    if (simplestOpponent == OPP_EAST)
-    {
-      low = sumProfile[topNo + canonicalShift] - top.upper();
-      high = sumProfile[topNo + canonicalShift] - top.lower();
-    }
-    else
-    {
-      low = top.lower();
-      high = top.upper();
-    }
-
-    completions.getOnetopElement(
-      low,
-      high,
-      sumProfile[topNo + canonicalShift], 
-      ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
-      tdata[2]);
-    const string stop = verbalTemplates.get(TEMPLATES_LENGTH_ONETOP, tdata);
-
-  // Holding this thought for now.  The above problem remains.
-  /*
-  if (soldall == stop)
-    cout << "\n" << setw(60) << left << soldall << "X1X " << stop << endl;
-  else
-    cout << "\n" << setw(60) << left << soldall << "X2X " << stop << endl;
-    */
-
-
-    return soldall;
-  }
-  else
-  {
-    // Inversion, e.g. "has one top at most doubleton"
-
-    assert(tops[topNo].getOperator() != COVER_EQUAL);
-
-    VerbalCover completions;
-    vector<TemplateData> tdata;
-
-    completions.getOnetopData(
-      tops[topNo].lower(),
-      tops[topNo].upper(),
-      sumProfile[topNo + canonicalShift],
-      ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
-      tdata);
-
-    completions.setLength(length);
-    tdata.resize(3);
-    completions.getLengthAdjElement(
-      sumProfile.length(),
-      simplestOpponent,
-      tdata[2]);
-
-    return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
-  }
+  return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
 }
 
 

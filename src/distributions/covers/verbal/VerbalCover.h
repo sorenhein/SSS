@@ -14,11 +14,11 @@
 
 #include "Completion.h"
 
+#include "../term/Term.h"
 #include "../term/CoverOperator.h"
 
 using namespace std;
 
-class Length;
 class RanksNames;
 struct TemplateData;
 enum Opponent: unsigned;
@@ -35,6 +35,8 @@ class VerbalCover
   private:
     
     list<Completion> completions;
+
+    vector<TemplateData> templateFills;
 
     bool lengthFlag;
     unsigned char lengthLower;
@@ -82,7 +84,18 @@ class VerbalCover
 
     void push_back(const Completion& completion);
 
-    void setLength(const Length& length);
+
+    // Length only
+
+    void setLength(const Term& length);
+
+    void fillLengthOnly(
+      const unsigned char oppsLength,
+      const bool symmFlag);
+
+    string strLengthOnly() const;
+
+
 
     Completion& activateSide(const Opponent opponent);
 

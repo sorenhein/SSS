@@ -18,8 +18,6 @@
 // TODO Need whole file or just TemplateData?
 #include "VerbalTemplates.h"
 
-#include "../term/Length.h"
-
 #include "../../../ranks/RanksNames.h"
 
 #include "../../../utils/table.h"
@@ -72,6 +70,8 @@ VerbalCover::VerbalCover()
   lengthOper = COVER_EQUAL;
   westFlag = false;
   eastFlag = false;
+
+  templateFills.clear();
 }
 
 
@@ -81,12 +81,37 @@ void VerbalCover::push_back(const Completion& completion)
 }
 
 
-void VerbalCover::setLength(const Length& length)
+void VerbalCover::setLength(const Term& length)
 {
   lengthFlag = true;
   lengthLower = length.lower();
   lengthUpper = length.upper();
   lengthOper = length.getOperator();
+}
+
+
+void VerbalCover::fillLengthOnly(
+  const unsigned char oppsLength,
+  const bool symmFlag)
+{
+  Opponent simplestOpponent;
+  if (symmFlag)
+    simplestOpponent = OPP_WEST;
+  else if (westFlag == eastFlag)
+    simplestOpponent = VerbalCover::simplestOpponent(oppsLength);
+  else if (westFlag)
+    simplestOpponent = OPP_WEST;
+  else
+    simplestOpponent = OPP_EAST;
+
+  VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
+    templateFills);
+}
+
+
+string VerbalCover::strLengthOnly() const
+{
+  return verbalTemplates.get(TEMPLATES_LENGTH_ONLY, templateFills);
 }
 
 

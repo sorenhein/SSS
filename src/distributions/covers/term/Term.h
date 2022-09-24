@@ -37,8 +37,6 @@ enum SymmTerm
 
 class Term
 {
-  friend class Top;
-  friend class Length;
   friend class VerbalCover;
 
   protected: 
