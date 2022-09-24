@@ -80,6 +80,7 @@ Opponent Product::simpler(
 }
 
 
+
 /**********************************************************************/
 /*                                                                    */
 /*                    Count and numerical methods                     */
@@ -232,8 +233,10 @@ void Product::separateSingular(
 
   if (dataWest.topsUsed == wlength)
   {
-    // The unused tops are 0 for West, maximum for East.
-    // East also gets any low cards.
+    //             |    West     East
+    // ------------+-----------------
+    // unused tops |       0  maximum
+    // low cards   |             here
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
 
@@ -242,8 +245,10 @@ void Product::separateSingular(
   }
   else if (dataEast.topsUsed == slength - wlength)
   {
-    // The unused tops are 0 for East, maximum for West.
-    // West also gets any low cards.
+    //             |    West     East
+    // ------------+-----------------
+    // unused tops | maximum        0
+    // low cards   |    here
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
@@ -252,23 +257,29 @@ void Product::separateSingular(
   }
   else if (dataWest.topsUsed + numBottoms == wlength)
   {
-    // East gets any unused tops.  West gets all the low cards.
+    //             |    West     East
+    // ------------+-----------------
+    // unused tops |       0  maximum
+    // low cards   |    here
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      productWest, productEast);
+    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      // productWest, productEast);
     Product::fillSideBottoms(OPP_WEST, numBottoms, 
       productWest, productEast);
   }
   else if (dataEast.topsUsed + numBottoms == slength - wlength)
   {
-    // West gets any unused tops.  East gets all the low cards.
+    //             |    West     East
+    // ------------+-----------------
+    // unused tops | maximum        0
+    // low cards   |             here
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      productWest, productEast);
+    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      // productWest, productEast);
     Product::fillSideBottoms(OPP_EAST, numBottoms, 
       productWest, productEast);
   }
