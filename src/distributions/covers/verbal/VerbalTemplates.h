@@ -17,6 +17,7 @@
 
 using namespace std;
 
+class RanksNames;
 
 enum VerbalBlank: unsigned;
 
@@ -61,6 +62,7 @@ struct TemplateData
   unsigned numParams;
   unsigned char param1;
   unsigned char param2;
+  unsigned char param3;
   string text1;
   string text2;
   string text3;
@@ -103,6 +105,19 @@ struct TemplateData
     numParams = 2;
     param1 = param1In;
     param2 = param2In;
+  };
+
+  void setData(
+    const unsigned instanceIn,
+    const unsigned char& paramIn1,
+    const unsigned char& paramIn2,
+    const unsigned char& paramIn3)
+  {
+    instance = instanceIn;
+    numParams = 3;
+    param1 = paramIn1;
+    param2 = paramIn2;
+    param3 = paramIn3;
   };
 
   void setData(
@@ -172,7 +187,9 @@ class VerbalTemplates
 
     string topsPhrase(const TemplateData& tdata) const;
 
-    string onetopPhrase(const TemplateData& tdata) const;
+    string onetopPhrase(
+      const TemplateData& tdata,
+      const RanksNames& ranksNames) const;
 
     string listPhrase(const TemplateData& tdata) const;
 
@@ -187,6 +204,11 @@ class VerbalTemplates
 
     string get(
       const TemplateSentence sentence,
+      const vector<TemplateData>& tdata) const;
+
+    string get(
+      const TemplateSentence sentence,
+      const RanksNames& ranksNames,
       const vector<TemplateData>& tdata) const;
 };
 

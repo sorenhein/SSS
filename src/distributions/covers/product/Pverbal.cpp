@@ -473,20 +473,18 @@ string Product::strVerbalOneTopOnly(
   assert(dataWest.topsUsed == 1);
   const unsigned char topNo = dataWest.lowestRankUsed;
 
+  // All we need for the rest is topNo and maybe topsUsed just to check.
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
   VerbalCover completions;
-  vector<TemplateData> tdata;
 
-  completions.getOnetopData(
-    tops[topNo].lower(),
-    tops[topNo].upper(),
+  completions.fillOnetopOnly(
+    tops[topNo],
     sumProfile[topNo + canonicalShift],
-    ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
-    symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
-    tdata);
-  
-  return verbalTemplates.get(TEMPLATES_ONETOP, tdata);
+    canonicalShift + topNo,
+    symmFlag);
+
+  return completions.strOnetopOnly(ranksNames);
 }
 
 
@@ -516,25 +514,26 @@ string Product::strVerbalLengthAndOneTop(
 
   assert(top.getOperator() != COVER_EQUAL);
 
+  // For the rest we need topNo, maybe lowestRankUsed,
+  // and simplestOpponent.
+
+  // TODO simplestOpponent is used for adjusted length.
+  // Should it also be used here?!
+
   VerbalCover completions;
-  vector<TemplateData> tdata;
-
-  completions.getOnetopData(
-    tops[topNo].lower(),
-    tops[topNo].upper(),
-    sumProfile[topNo + canonicalShift],
-    ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
-    symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
-    tdata);
-
   completions.setLength(length);
-  tdata.resize(3);
-  completions.getLengthAdjElement(
-    sumProfile.length(),
-    simplestOpponent,
-    tdata[2]);
 
-  return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
+  completions.fillOnetopOnly(
+    tops[topNo],
+    sumProfile[topNo + canonicalShift],
+    canonicalShift + topNo,
+    symmFlag);
+
+  completions.fillLengthAdjElement(
+    sumProfile.length(),
+    simplestOpponent);
+
+  return completions.strOnetopLength(ranksNames);
 }
 
 

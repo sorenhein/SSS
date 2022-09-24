@@ -17,6 +17,45 @@
 #include "VerbalTemplates.h"
 #include "VerbalBlank.h"
 
+#include "../../../ranks/RanksNames.h"
+
+const vector<string> topCount =
+{
+  "none",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen"
+};
+
+const vector<string> topOrdinal =
+{
+  "void",
+  "singleton",
+  "doubleton",
+  "tripleton",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth",
+  "thirteenth"
+};
+
+
 
 VerbalTemplates::VerbalTemplates()
 {
@@ -187,7 +226,105 @@ cout << "template:\n" << vt.str() << endl;
     }
     else if (blank == BLANK_ONETOP)
     {
-      fill = VerbalTemplates::onetopPhrase(blankData);
+      assert(false);
+      // fill = VerbalTemplates::onetopPhrase(blankData);
+    }
+    else if (blank == BLANK_TOPS_PHRASE)
+    {
+      fill = VerbalTemplates::topsPhrase(blankData);
+    }
+    else if (blank == BLANK_LIST_PHRASE)
+    {
+      fill = VerbalTemplates::listPhrase(blankData);
+    }
+    else
+    {
+// cout << "field " << field << endl;
+// cout << "blank " << blank << endl;
+      assert(false);
+    }
+
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+    {
+// cout << "Looked for " << ("%" + to_string(field)) << endl;
+// cout << "in " << s << endl;
+      assert(false);
+    }
+
+    s.replace(p, 2, fill);
+  }
+
+  if (sentence == TEMPLATES_LIST)
+  {
+    // Eliminate the trailing % fields.
+    for ( ; field < vt.blanks.size(); field++, ttypeIter++)
+    {
+      const VerbalBlank blank = * ttypeIter;
+      assert(blank == BLANK_LIST_PHRASE);
+
+      auto p = s.find(", %" + to_string(field));
+      if (p == string::npos)
+      {
+cout << "string now '" << s << "'\n";
+cout << "looked for ', %" << field << "'" << endl;
+        assert(false);
+      }
+
+      s.erase(p, 4);
+    }
+  }
+
+  // If there is a comma, turn the last one into " or".
+  auto p = s.find_last_of(",");
+  if (p != string::npos)
+    s.replace(p, 1, " or");
+
+  return s;
+}
+
+
+string VerbalTemplates::get(
+  const TemplateSentence sentence,
+  const RanksNames& ranksNames,
+  const vector<TemplateData>& tdata) const
+{
+  assert(sentence < templates.size());
+  const VerbalTemplate& vt = templates[sentence];
+
+  assert(tdata.size() <= vt.blanks.size());
+  if (sentence != TEMPLATES_LIST)
+    assert(tdata.size() == vt.blanks.size());
+
+  string s = vt.pattern;
+  string fill = "";
+
+  size_t field;
+  auto ttypeIter = vt.blanks.begin();
+  auto tdataIter = tdata.begin();
+
+  for (field = 0; field < tdata.size(); 
+    field++, ttypeIter++, tdataIter++)
+  {
+    const VerbalBlank blank = * ttypeIter;
+    const TemplateData& blankData = * tdataIter;
+    assert(blank == blankData.blank);
+
+    if (blank == BLANK_PLAYER_CAP)
+    {
+      fill = VerbalTemplates::playerCap(blankData);
+    }
+    else if (blank == BLANK_LENGTH_VERB)
+    {
+      fill = VerbalTemplates::lengthVerb(blankData);
+    }
+    else if (blank == BLANK_LENGTH_ADJ)
+    {
+      fill = VerbalTemplates::lengthAdj(blankData);
+    }
+    else if (blank == BLANK_ONETOP)
+    {
+      fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
@@ -307,7 +444,9 @@ string VerbalTemplates::lengthAdj(const TemplateData& tdata) const
 }
 
 
-string VerbalTemplates::onetopPhrase(const TemplateData& tdata) const
+string VerbalTemplates::onetopPhrase(
+  const TemplateData& tdata,
+  const RanksNames& ranksNames) const
 {
   assert(tdata.numParams <= 3);
   assert(tdata.instance < dictionary[BLANK_ONETOP].size());
@@ -323,12 +462,30 @@ string VerbalTemplates::onetopPhrase(const TemplateData& tdata) const
     if (p == string::npos)
       assert(false);
 
+    // TODO This is a bit of a hack for now.
+    // If there are 2 in total, one is a topCount and one is an
+    // index into ranksNames.  If there are 3, the first 2 are
+    // topCount's.
+
     if (field == 0)
-      s.replace(p, 2, tdata.text1);
+    {
+      if (tdata.numParams == 2)
+        // Use the word version
+        s.replace(p, 2, topCount[tdata.param1]);
+      else
+        s.replace(p, 2, to_string(+tdata.param1));
+    }
     else if (field == 1)
-      s.replace(p, 2, tdata.text2);
+    {
+      if (tdata.numParams == 2)
+        s.replace(p, 2, 
+          ranksNames.getOpponents(tdata.param2).strComponent(RANKNAME_ACTUAL_FULL));
+      else
+        s.replace(p, 2, to_string(tdata.param2));
+    }
     else if (field == 2)
-      s.replace(p, 2, tdata.text3);
+      s.replace(p, 2, 
+        ranksNames.getOpponents(tdata.param3).strComponent(RANKNAME_ACTUAL_FULL));
     else
       assert(false);
   }

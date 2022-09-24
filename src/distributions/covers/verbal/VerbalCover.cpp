@@ -115,6 +115,37 @@ string VerbalCover::strLengthOnly() const
 }
 
 
+void VerbalCover::fillOnetopOnly(
+  const Term& top,
+  const unsigned char oppsSize,
+  const unsigned char onetopIndex,
+  const bool symmFlag)
+{
+  // TODO Always West?
+
+  VerbalCover::getOnetopData(
+    top.lower(),
+    top.upper(),
+    oppsSize,
+    onetopIndex,
+    symmFlag ? BLANK_PLAYER_CAP_EITHER: BLANK_PLAYER_CAP_WEST,
+    templateFills);
+}
+
+
+string VerbalCover::strOnetopOnly(const RanksNames& ranksNames) const
+{
+  return verbalTemplates.get(TEMPLATES_ONETOP, ranksNames, templateFills);
+}
+
+
+string VerbalCover::strOnetopLength(const RanksNames& ranksNames) const
+{
+  return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, 
+    ranksNames, templateFills);
+}
+
+
 Completion& VerbalCover::activateSide(const Opponent opponent)
 {
   assert(opponent == OPP_WEST || opponent == OPP_EAST);
@@ -334,11 +365,13 @@ void VerbalCover::getLengthData(
 }
 
 
-void VerbalCover::getLengthAdjElement(
+void VerbalCover::fillLengthAdjElement(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent,
-  TemplateData& telement) const
+  const Opponent simplestOpponent)
 {
+  templateFills.resize(3);
+  TemplateData& telement = templateFills[2];
+
   unsigned char vLower, vUpper;
 
   if (simplestOpponent == OPP_WEST)
@@ -566,36 +599,36 @@ void VerbalCover::getOnetopElement(
   const unsigned char oppsValue1,
   const unsigned char oppsValue2,
   const unsigned char oppsSize,
-  const string& choice,
+  const unsigned char onetopIndex,
   TemplateData& telement) const
 {
   if (oppsValue1 == 0)
   {
     telement.setBlank(BLANK_ONETOP);
     telement.setData(BLANK_ONETOP_HAS_ATMOST, 
-      topCount[oppsValue2], choice);
+      oppsValue2, onetopIndex);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
     telement.setBlank(BLANK_ONETOP);
     telement.setData(BLANK_ONETOP_HAS_ATLEAST, 
-      topCount[oppsValue1], choice);
+      oppsValue1, onetopIndex);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
   {
     telement.setBlank(BLANK_ONETOP);
     telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
-      to_string(+oppsValue1), 
-      to_string(+oppsValue2), 
-      choice);
+      oppsValue1, 
+      oppsValue2, 
+      onetopIndex);
   }
   else
   {
     telement.setBlank(BLANK_ONETOP);
     telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
-      to_string(+oppsValue1), 
-      to_string(+oppsValue2), 
-      choice);
+      oppsValue1, 
+      oppsValue2, 
+      onetopIndex);
   }
 }
 
@@ -605,7 +638,7 @@ void VerbalCover::getOnetopData(
   const unsigned char oppsValue1,
   const unsigned char oppsValue2,
   const unsigned char oppsSize,
-  const string& choice,
+  const unsigned char onetopIndex,
   const BlankPlayerCap side,
   vector<TemplateData>& tdata) const
 {
@@ -622,7 +655,7 @@ void VerbalCover::getOnetopData(
     tdata[0].set(BLANK_PLAYER_CAP, side);
 
   VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
-    choice, tdata[1]);
+    onetopIndex, tdata[1]);
 }
 
 

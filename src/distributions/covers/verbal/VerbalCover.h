@@ -96,6 +96,18 @@ class VerbalCover
     string strLengthOnly() const;
 
 
+    // One top only
+
+    void fillOnetopOnly(
+      const Term& top,
+      const unsigned char oppsSize,
+      const unsigned char onetopIndex,
+      const bool symmflag);
+
+    string strOnetopOnly(const RanksNames& ranksNames) const;
+
+    string strOnetopLength(const RanksNames& ranksNames) const;
+
 
     Completion& activateSide(const Opponent opponent);
 
@@ -123,20 +135,19 @@ class VerbalCover
       const unsigned char oppsValue1,
       const unsigned char oppsValue2,
       const unsigned char oppsLength,
-      const string& choice,
+      const unsigned char onetopIndex,
       const BlankPlayerCap side,
       vector<TemplateData>& tdata) const;
 
-    void getLengthAdjElement(
+    void fillLengthAdjElement(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      TemplateData& telement) const;
+      const Opponent simplestOpponent);
 
     void getOnetopElement(
       const unsigned char oppsValue1,
       const unsigned char oppsValue2,
       const unsigned char oppsSize,
-      const string& choice,
+      const unsigned char onetopIndex,
       TemplateData& telement) const;
 
 };
