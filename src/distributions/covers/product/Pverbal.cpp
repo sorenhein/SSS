@@ -164,6 +164,9 @@ void Product::fillUnusedTops(
 {
   // The side specified by fillOpponent gets all unused tops except
   // the lowest one, which remains unset.
+  if (fillOpponent == OPP_EITHER)
+    return;
+
   for (unsigned char topNo = 1; topNo < tops.size(); topNo++)
   {
     auto& top = tops[topNo];
@@ -174,19 +177,6 @@ void Product::fillUnusedTops(
 
     Product::fillSides(fillOpponent, topNo, tlength, tlength,
       productWest, productEast);
-
-    /*
-    if (fillOpponent == OPP_WEST)
-    {
-      productWest.tops[topNo].set(tlength, tlength, tlength);
-      productEast.tops[topNo].set(tlength, 0, 0);
-    }
-    else
-    {
-      productWest.tops[topNo].set(tlength, 0, 0);
-      productEast.tops[topNo].set(tlength, tlength, tlength);
-    }
-    */
   }
 }
 
@@ -238,17 +228,33 @@ void Product::separateSingular(
   const unsigned char numBottoms = 
     Product::countBottoms(sumProfile, canonicalShift);
 
+  // Fill out the unused tops.
+  // If one side is already full, the other gets them.
+  // If no side is already full, we fail later.
+  Opponent sideForUnused = OPP_EITHER;
+  if (dataWest.topsUsed == wlength ||
+      dataWest.topsUsed + numBottoms == wlength)
+  {
+    sideForUnused = OPP_EAST;
+  }
+  else if (dataEast.topsUsed == slength - wlength ||
+      dataEast.topsUsed + numBottoms == slength - wlength)
+  {
+    sideForUnused = OPP_WEST;
+  }
+
+  Product::fillUnusedTops(sumProfile, canonicalShift, sideForUnused,
+    productWest, productEast);
+
+
+
   if (dataWest.topsUsed == wlength)
   {
     //             |    West     East
     // ------------+-----------------
     // unused tops |       0  maximum
     // low cards   |             here
-    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
-      productWest, productEast);
 
-    // Product::fillSideBottoms(OPP_EAST, numBottoms, 
-      // productWest, productEast);
     Product::fillSides(OPP_EAST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
@@ -258,11 +264,7 @@ void Product::separateSingular(
     // ------------+-----------------
     // unused tops | maximum        0
     // low cards   |    here
-    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
-      productWest, productEast);
 
-    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      // productWest, productEast);
     Product::fillSides(OPP_WEST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
@@ -272,13 +274,7 @@ void Product::separateSingular(
     // ------------+-----------------
     // unused tops |       0  maximum
     // low cards   |    here
-    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
-      productWest, productEast);
 
-    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      // productWest, productEast);
-    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      // productWest, productEast);
     Product::fillSides(OPP_WEST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
@@ -288,13 +284,7 @@ void Product::separateSingular(
     // ------------+-----------------
     // unused tops | maximum        0
     // low cards   |             here
-    Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
-      productWest, productEast);
 
-    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
-      // productWest, productEast);
-    // Product::fillSideBottoms(OPP_EAST, numBottoms, 
-      // productWest, productEast);
     Product::fillSides(OPP_EAST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
@@ -303,13 +293,6 @@ void Product::separateSingular(
     // There should be no tops left to fill out, as all are used.
     // Add the right number of low cards to each side.
     // assert(static_cast<unsigned char>(activeCount+1) == tops.size());
-
-    /*
-    const unsigned char westXes = wlength - dataWest.topsUsed;
-    const unsigned char allXes = sumProfile[0];
-    productWest.tops[0].set(allXes, westXes, westXes);
-    productEast.tops[0].set(allXes, allXes - westXes, allXes - westXes);
-    */
 
     Product::fillSides(OPP_WEST, 0, 
       sumProfile[0], wlength - dataWest.topsUsed,
