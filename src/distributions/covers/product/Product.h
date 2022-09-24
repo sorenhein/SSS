@@ -53,27 +53,22 @@ class Product
     unsigned char activeCount; // Number of tops that are used
 
 
+    ExplainEqual mostlyEqual() const;
+
+
     bool singular(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
-    ExplainEqual mostlyEqual() const;
-
-    // The following private methods are associated with
-    // strVerbal and live in Pverbal.cpp
-    // TODO Reorder according to Pverbal.cpp
 
     bool topsSimpler(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
-    Opponent simplestSingular(
+    Opponent simpler(
       const Profile& sumProfile,
-      const unsigned char canonicalShift = 0) const;
+      const unsigned char canonicalShift) const;
 
-    bool topsSimplerThan(const Product& productEast) const;
-
-    bool simplerThan(const Product& productEast) const;
 
     unsigned char countBottoms(
       const Profile& sumProfile,

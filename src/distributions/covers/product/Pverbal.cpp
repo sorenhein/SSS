@@ -29,7 +29,6 @@
 #include "../verbal/VerbalCover.h"
 
 #include "../term/CoverOperator.h"
-#include "../term/TopData.h"
 
 #include "../../../ranks/RanksNames.h"
 
@@ -68,64 +67,16 @@ bool Product::topsSimpler(
 }
 
 
-Opponent Product::simplestSingular(
+Opponent Product::simpler(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
 {
-  assert(length.used());
-  assert(length.getOperator() == COVER_EQUAL);
-  const auto lWest = length.lower();
-  const auto lSum = sumProfile.length();
+  const Opponent shorter = length.shorter(sumProfile.length());
+  if (shorter != OPP_EITHER)
+    return shorter;
   
-  // Pick a side that is 2+ cards shorter than the other.
-  if (lWest + 1 < lSum - lWest)
-    return OPP_WEST;
-  else if (lSum - lWest + 1 < lWest)
-    return OPP_EAST;
-
   return (Product::topsSimpler(sumProfile, canonicalShift) ? 
     OPP_WEST : OPP_EAST);
-
-  // TODO Fix the length ones too
-  if (lWest <= lSum - lWest)
-    return OPP_WEST;
-  else
-    return OPP_EAST;
-}
-
-
-bool Product::topsSimplerThan(const Product& productEast) const
-{
-  // Prefer fuller (or set) tops from above.
-  const unsigned char s = static_cast<unsigned char>(tops.size());
-  assert(productEast.tops.size() == s);
-
-  for (unsigned char topNo = s; topNo-- > 0; )
-  {
-    // Include the 0 top.
-    const Opponent longer = tops[topNo].longer(productEast.tops[topNo]);
-    if (longer != OPP_EITHER)
-      return (longer == OPP_WEST ? true : false);
-  }
-
-  // Backstop.
-  return true;
-}
-
-
-bool Product::simplerThan(const Product& productEast) const
-{
-  // First prefer shorter (or unset) length.
-  // Then prefer fuller (or set) tops from above.
-
-  const unsigned char s = static_cast<unsigned char>(tops.size());
-  assert(productEast.tops.size() == s);
-
-  const Opponent shorter = length.shorter(productEast.length);
-  if (shorter != OPP_EITHER)
-    return (shorter == OPP_WEST ? true : false);
-
-  return Product::topsSimplerThan(productEast);
 }
 
 
@@ -541,8 +492,8 @@ string Product::strVerbalLengthAndOneTop(
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
-  const Opponent simplestOpponent =
-    (productWest.simplerThan(productEast) ? OPP_WEST : OPP_EAST);
+  const Opponent simplestOpponent = Product::simpler(
+    sumProfile, canonicalShift);
   
   const unsigned char topNo = dataWest.lowestRankUsed;
   assert(topNo > 0 && topNo < tops.size());
@@ -695,7 +646,9 @@ string Product::strVerbalTopsOnly(
   else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
     preferWest = false;
   else
-    preferWest = productWest.topsSimplerThan(productEast);
+    preferWest = productWest.topsSimpler(sumProfile, canonicalShift);
+
+    // preferWest = productWest.topsSimplerThan(productEast);
 
   // TODO This part unchecked concerning any-tops.
   if (preferWest)
@@ -1054,7 +1007,7 @@ string Product::strVerbalSingular(
   Product::separateSingular(sumProfile, canonicalShift, 
     productWest, productEast);
 
-  if (productWest.simplerThan(productEast))
+  if (Product::simpler(sumProfile, canonicalShift) == OPP_WEST)
   {
     return productWest.strVerbalSingularSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), canonicalShift);
