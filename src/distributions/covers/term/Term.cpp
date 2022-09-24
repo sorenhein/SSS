@@ -174,6 +174,41 @@ unsigned char Term::upper() const
 }
 
 
+Opponent Term::shorter(const unsigned char maximum) const
+{
+  if (! Term::used())
+    return OPP_EITHER;
+
+  // Choose the shorter side, which tends to be more intuitive for lengths.
+  const unsigned char lsum = Term::lower() + Term::upper();
+
+  if (lsum > maximum)
+    return OPP_EAST;
+  else if (lsum < maximum)
+    return OPP_WEST;
+  else
+    return OPP_EITHER;
+
+}
+
+
+Opponent Term::longer(const unsigned char maximum) const
+{
+  if (! Term::used())
+    return OPP_EITHER;
+
+  // Choose the fuller side, which tends to be more intuitive for tops.
+  const unsigned char lsum = Term::lower() + Term::upper();
+
+  if (lsum > maximum)
+    return OPP_WEST;
+  else if (lsum < maximum)
+    return OPP_EAST;
+  else
+    return OPP_EITHER;
+}
+
+
 bool Term::used() const
 {
   return termCompare.used(data);

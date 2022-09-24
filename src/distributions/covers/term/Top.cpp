@@ -23,6 +23,7 @@
 #include "../../../utils/table.h"
 
 
+/*
 Opponent Top::simplestOpponent(const unsigned char maximum) const
 {
   if (! Term::used())
@@ -38,6 +39,7 @@ Opponent Top::simplestOpponent(const unsigned char maximum) const
   else
     return OPP_EITHER;
 }
+*/
 
 
 string Top::strTopBare(

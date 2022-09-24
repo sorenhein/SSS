@@ -28,7 +28,7 @@ class Top: public Term
 {
   public:
 
-    Opponent simplestOpponent(const unsigned char maximum) const;
+    // Opponent simplestOpponent(const unsigned char maximum) const;
 
     string strTopBare(
       const TopData& oppsTopData,

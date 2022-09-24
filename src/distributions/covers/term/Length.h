@@ -31,13 +31,15 @@ class Length: public Term
 
   public:
 
-    bool notVoid() const;
+    // bool notVoid() const;
 
-    Opponent simplestOpponent(const unsigned char maximum) const;
+    // Opponent simplestOpponent(const unsigned char maximum) const;
 
+    /*
     string strLengthBare(
       const unsigned char oppsLength,
       const Opponent simplestOpponent) const;
+      */
 };
 
 #endif

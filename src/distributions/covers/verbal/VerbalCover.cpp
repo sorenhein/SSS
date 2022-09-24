@@ -332,7 +332,21 @@ void VerbalCover::getLengthAdjElement(
     vUpper = oppsLength - lengthLower;
   }
 
-  if (vLower == 0)
+  if (vLower == vUpper)
+  {
+    if (vLower == 1)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
+    else if (vLower == 2)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
+    else if (vLower == 3)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
+    else
+    {
+      telement.setBlank(BLANK_LENGTH_ADJ);
+      telement.setData(BLANK_LENGTH_ADJ_LONG, to_string(+vLower));
+    }
+  }
+  else if (vLower == 0)
   {
     if (vUpper == 1)
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST);

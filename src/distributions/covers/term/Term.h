@@ -84,6 +84,10 @@ class Term
 
     unsigned char upper() const;
 
+    Opponent shorter(const unsigned char maximum) const;
+
+    Opponent longer(const unsigned char maximum) const;
+
     unsigned char complexity() const;
 
     CompareType presentOrder(const Term& term2) const;

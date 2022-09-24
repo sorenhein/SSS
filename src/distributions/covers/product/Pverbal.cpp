@@ -59,14 +59,15 @@ Opponent Product::simplestOpponent(
   // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
   // considered as 1-4 from the other side.
   Opponent backstop = OPP_WEST;
-  const Opponent lOpp = length.simplestOpponent(sumProfile.length());
+  const Opponent lOpp = length.shorter(sumProfile.length());
 
   if (lOpp == OPP_WEST)
     return OPP_WEST;
   else if (lOpp == OPP_EAST)
   {
     // Special case: This is easier to say as "not void".
-    if (length.notVoid())
+    // if (length.notVoid())
+    if (length.lower() == 1 && length.getOperator() == COVER_GREATER_EQUAL)
       backstop = OPP_EAST;
     else
       return OPP_EAST;
@@ -79,7 +80,7 @@ Opponent Product::simplestOpponent(
   for (unsigned char i = s; --i > 0; )
   {
     const Opponent lTop = 
-      tops[i].simplestOpponent(sumProfile[i + canonicalShift]);
+      tops[i].longer(sumProfile[i + canonicalShift]);
 
     if (lTop == OPP_WEST)
       return OPP_WEST;
@@ -114,7 +115,7 @@ Opponent Product::simplestSingular(
   {
     // TODO if tops[i].used() ??
     const Opponent lTop = 
-      tops[i].simplestOpponent(sumProfile[i + canonicalShift]);
+      tops[i].longer(sumProfile[i + canonicalShift]);
 
     if (lTop == OPP_WEST)
       return OPP_WEST;
@@ -668,7 +669,8 @@ string Product::strVerbalLengthAndOneTop(
 
   assert(top.getOperator() != COVER_EQUAL);
 
-  if (length.getOperator() == COVER_EQUAL)
+  // if (length.getOperator() == COVER_EQUAL)
+  if (false)
   {
     // No inversion, but "has a doubleton with one or both tops"
     // TODO This doesn't work well as the moment:
@@ -736,28 +738,14 @@ string Product::strVerbalLengthAndOneTop(
       symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
       tdata);
 
-  const string snew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
+    completions.setLength(length);
+    tdata.resize(3);
+    completions.getLengthAdjElement(
+      sumProfile.length(),
+      simplestOpponent,
+      tdata[2]);
 
-  completions.setLength(length);
-  tdata.resize(3);
-  completions.getLengthAdjElement(
-    sumProfile.length(),
-    simplestOpponent,
-    tdata[2]);
-  const string snewall = verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
-
-
-  const string slenold = length.strLengthBare(sumProfile.length(), 
-    simplestOpponent);
-
-  const string sret = snew + " " + slenold;
-
-  if (sret == snewall)
-    cout << "\n" << setw(60) << left << sret << "X1X " << snewall << endl;
-  else
-    cout << "\n" << setw(60) << left << sret << "X2X " << snewall << endl;
-  
-    return sret;
+    return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
   }
 }
 

@@ -17,15 +17,18 @@
 #include "../../../utils/table.h"
 
 
+/*
 bool Length::notVoid() const
 {
   // This is a special case in Product.
   return (
     Length::lower() == 1 && Length::getOperator() == COVER_GREATER_EQUAL);
 }
+*/
 
 
-Opponent Length::simplestOpponent(const unsigned char maximum) const
+/*
+Opponent Length::shorter(const unsigned char maximum) const
 {
   if (! Length::used())
     return OPP_EITHER;
@@ -40,8 +43,10 @@ Opponent Length::simplestOpponent(const unsigned char maximum) const
   else
     return OPP_EITHER;
 }
+*/
 
 
+/*
 string Length::strLengthBare(
   const unsigned char oppsLength,
   const Opponent simplestOpponent) const
@@ -91,4 +96,5 @@ cout << "\nHIT2" << +vLower << " to " << +vUpper << "\n";
 
   return ss.str();
 }
+*/
 
