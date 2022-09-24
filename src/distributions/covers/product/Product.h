@@ -71,13 +71,9 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift = 0) const;
 
-    void topRange(
-      unsigned char& noLow,
-      unsigned char& noHigh) const;
+    bool topsSimplerThan(const Product& productEast) const;
 
-    bool topsSimplerThan(const Product& p2) const;
-
-    bool simplerThan(const Product& p2) const;
+    bool simplerThan(const Product& productEast) const;
 
     unsigned char countBottoms(
       const Profile& sumProfile,

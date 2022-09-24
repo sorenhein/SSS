@@ -66,7 +66,6 @@ Opponent Product::simplestOpponent(
   else if (lOpp == OPP_EAST)
   {
     // Special case: This is easier to say as "not void".
-    // if (length.notVoid())
     if (length.lower() == 1 && length.getOperator() == COVER_GREATER_EQUAL)
       backstop = OPP_EAST;
     else
@@ -130,78 +129,38 @@ Opponent Product::simplestSingular(
 }
 
 
-bool Product::topsSimplerThan(const Product& p2) const
+bool Product::topsSimplerThan(const Product& productEast) const
 {
-  // Prefer more and larger tops.
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-      topNo-- > 0; )
+  // Prefer fuller (or set) tops from above.
+  const unsigned char s = static_cast<unsigned char>(tops.size());
+  assert(productEast.tops.size() == s);
+
+  for (unsigned char topNo = s; topNo-- > 0; )
   {
     // Include the 0 top.
-    const auto& top1 = tops[topNo];
-    const auto& top2 = p2.tops[topNo];
-
-    if (! top1.used())
-    {
-      if (top2.used())
-        return false;
-      else
-        continue;
-    }
-    else if (! top2.used())
-      return true;
-
-    assert(top1.used() && top2.used());
-
-    if (top1.lower() > top2.lower())
-      return true;
-    else if (top2.lower() > top1.lower())
-      return false;
+    const Opponent longer = tops[topNo].longer(productEast.tops[topNo]);
+    if (longer != OPP_EITHER)
+      return (longer == OPP_WEST ? true : false);
   }
 
   // Backstop.
-  return (length.lower() <= p2.length.lower());
+  return true;
 }
 
 
-bool Product::simplerThan(const Product& p2) const
+bool Product::simplerThan(const Product& productEast) const
 {
+  // First prefer shorter (or unset) length.
+  // Then prefer fuller (or set) tops from above.
+
   const unsigned char s = static_cast<unsigned char>(tops.size());
-  assert(p2.tops.size() == s);
+  assert(productEast.tops.size() == s);
 
-  assert(length.used());
-  assert(length.getOperator() == COVER_EQUAL);
-  assert(p2.length.used());
-  assert(p2.length.getOperator() == COVER_EQUAL);
+  const Opponent shorter = length.shorter(productEast.length);
+  if (shorter != OPP_EITHER)
+    return (shorter == OPP_WEST ? true : false);
 
-  unsigned char noLow1, noHigh1;
-  unsigned char noLow2, noHigh2;
-  Product::topRange(noLow1, noHigh1);
-  p2.topRange(noLow2, noHigh2);
-
-  // Normally prefer the shortest.
-  if (length.lower() < p2.length.lower())
-  {
-    if (length.lower() <= 1 ||
-        length.lower() + 2 < p2.length.lower())
-      return true;
-    else
-    {
-      // But not if it uses the lowest rank.
-      // The logic in this is not very strong, but it's hard to
-      // say what makes one choice more intuitive than another.
-      return (noLow1 == 0 && noLow2 > 0 ? false : true);
-    }
-  }
-  else if (p2.length.lower() < length.lower())
-  {
-    if (p2.length.lower() <= 1 ||
-        p2.length.lower() + 2 < length.lower())
-      return false;
-    else
-      return (noLow2 == 0 && noLow1 > 0 ? true : false);
-  }
-
-  return Product::topsSimplerThan(p2);
+  return Product::topsSimplerThan(productEast);
 }
 
 
@@ -210,30 +169,6 @@ bool Product::simplerThan(const Product& p2) const
 /*                    Count and numerical methods                     */
 /*                                                                    */
 /**********************************************************************/
-
-
-void Product::topRange(
-  unsigned char& noLow,
-  unsigned char& noHigh) const
-{
-  bool lowFlag = false;
-
-  for (unsigned char topNo = 0; topNo < tops.size(); topNo++)
-  {
-    const auto& top = tops[topNo];
-    if (top.lower() > 0)
-    {
-      if (! lowFlag)
-      {
-        noLow = topNo;
-        lowFlag = true;
-      }
-
-      noHigh = topNo;
-    }
-  }
-}
-
 
 unsigned char Product::countBottoms(
   const Profile& sumProfile,
@@ -1187,7 +1122,6 @@ string Product::strVerbal(
   {
     return Product::strVerbalLengthOnly(
       sumProfile, 
-      // ranksNames,
       symmFlag);
   }
   else if (verbal == VERBAL_TOPS_ONLY)

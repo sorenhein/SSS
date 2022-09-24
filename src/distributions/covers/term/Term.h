@@ -84,7 +84,11 @@ class Term
 
     Opponent shorter(const unsigned char maximum) const;
 
+    Opponent shorter(const Term& termEast) const;
+
     Opponent longer(const unsigned char maximum) const;
+
+    Opponent longer(const Term& termEast) const;
 
     unsigned char complexity() const;
 

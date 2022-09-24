@@ -176,10 +176,11 @@ unsigned char Term::upper() const
 
 Opponent Term::shorter(const unsigned char maximum) const
 {
+  // Choose the shorter side, which tends to be more intuitive for lengths.
+
   if (! Term::used())
     return OPP_EITHER;
 
-  // Choose the shorter side, which tends to be more intuitive for lengths.
   const unsigned char lsum = Term::lower() + Term::upper();
 
   if (lsum > maximum)
@@ -188,16 +189,31 @@ Opponent Term::shorter(const unsigned char maximum) const
     return OPP_WEST;
   else
     return OPP_EITHER;
+}
 
+
+Opponent Term::shorter(const Term& termEast) const
+{
+  // Choose the unused one, or the shorter one if both are used.
+  // We only pay attention to the lower() component.
+  if (! Term::used())
+    return (! termEast.used() ? OPP_EITHER : OPP_WEST);
+  else if (! termEast.used())
+    return OPP_EAST;
+  else if (Term::lower() < termEast.lower())
+    return OPP_WEST;
+  else
+    return (Term::lower() > termEast.lower() ? OPP_EAST : OPP_EITHER);
 }
 
 
 Opponent Term::longer(const unsigned char maximum) const
 {
+  // Choose the fuller side, which tends to be more intuitive for tops.
+
   if (! Term::used())
     return OPP_EITHER;
 
-  // Choose the fuller side, which tends to be more intuitive for tops.
   const unsigned char lsum = Term::lower() + Term::upper();
 
   if (lsum > maximum)
@@ -206,6 +222,21 @@ Opponent Term::longer(const unsigned char maximum) const
     return OPP_EAST;
   else
     return OPP_EITHER;
+}
+
+
+Opponent Term::longer(const Term& termEast) const
+{
+  // Choose the used one, or the fuller one if both are used.
+  // We only pay attention to the lower() component.
+  if (! Term::used())
+    return (! termEast.used() ? OPP_EITHER : OPP_EAST);
+  else if (! termEast.used())
+    return OPP_WEST;
+  else if (Term::lower() > termEast.lower())
+    return OPP_WEST;
+  else
+    return (Term::lower() < termEast.lower() ? OPP_EAST : OPP_EITHER);
 }
 
 
