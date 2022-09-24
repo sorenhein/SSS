@@ -45,6 +45,29 @@ extern VerbalTemplates verbalTemplates;
 /**********************************************************************/
 
 
+bool Product::topsSimpler(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift) const
+{
+  const unsigned char s = static_cast<unsigned char>(tops.size());
+  assert(static_cast<unsigned>(s + canonicalShift) == sumProfile.size());
+
+  for (unsigned char topNo = s; topNo-- > 0; )
+  {
+    if (! tops[topNo].used())
+      continue;
+
+    const Opponent lTop = 
+      tops[topNo].longer(sumProfile[topNo + canonicalShift]);
+
+    if (lTop != OPP_EITHER)
+      return (lTop == OPP_WEST);
+  }
+
+  return true;
+}
+
+
 Opponent Product::simplestSingular(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
@@ -60,22 +83,10 @@ Opponent Product::simplestSingular(
   else if (lSum - lWest + 1 < lWest)
     return OPP_EAST;
 
-  const unsigned char s = static_cast<unsigned char>(tops.size());
-  assert(static_cast<unsigned>(s + canonicalShift) == sumProfile.size());
+  return (Product::topsSimpler(sumProfile, canonicalShift) ? 
+    OPP_WEST : OPP_EAST);
 
-  // Start from the highest top.
-  for (unsigned char i = s; --i > 0; )
-  {
-    // TODO if tops[i].used() ??
-    const Opponent lTop = 
-      tops[i].longer(sumProfile[i + canonicalShift]);
-
-    if (lTop == OPP_WEST)
-      return OPP_WEST;
-    else if (lTop == OPP_EAST)
-      return OPP_EAST;
-  }
-
+  // TODO Fix the length ones too
   if (lWest <= lSum - lWest)
     return OPP_WEST;
   else

@@ -63,6 +63,10 @@ class Product
     // strVerbal and live in Pverbal.cpp
     // TODO Reorder according to Pverbal.cpp
 
+    bool topsSimpler(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift) const;
+
     Opponent simplestSingular(
       const Profile& sumProfile,
       const unsigned char canonicalShift = 0) const;
