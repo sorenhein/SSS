@@ -26,9 +26,10 @@ enum TemplateSentence
   TEMPLATES_LENGTH_ONLY = 0,
   TEMPLATES_TOPS_ONLY = 1,
   TEMPLATES_ONETOP = 2,
-  TEMPLATES_ONETOP_LENGTH = 3,
-  TEMPLATES_LIST = 4,
-  TEMPLATES_SIZE = 5
+  TEMPLATES_LENGTH_ONETOP = 3,
+  TEMPLATES_ONETOP_LENGTH = 4,
+  TEMPLATES_LIST = 5,
+  TEMPLATES_SIZE = 6
 };
 
 
@@ -165,7 +166,9 @@ class VerbalTemplates
 
     string playerCap(const TemplateData& tdata) const;
 
-    string lengthPhrase(const TemplateData& tdata) const;
+    string lengthVerb(const TemplateData& tdata) const;
+
+    string lengthAdj(const TemplateData& tdata) const;
 
     string topsPhrase(const TemplateData& tdata) const;
 

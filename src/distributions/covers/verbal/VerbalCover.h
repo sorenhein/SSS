@@ -114,6 +114,11 @@ class VerbalCover
       const BlankPlayerCap side,
       vector<TemplateData>& tdata) const;
 
+    void getLengthAdjElement(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent,
+      TemplateData& telement) const;
+
     void getOnetopElement(
       const unsigned char oppsValue1,
       const unsigned char oppsValue2,

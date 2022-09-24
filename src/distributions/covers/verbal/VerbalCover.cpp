@@ -178,33 +178,33 @@ void VerbalCover::getLengthEqualData(
   if (value == 0)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_VOID);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_VOID);
   }
   else if (value == 1)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_SINGLE);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE);
   }
   else if (value == 2 && oppsLength > 4)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_DOUBLE);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE);
   }
   else if (value == 3 && oppsLength > 6)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_TRIPLE);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE);
   }
   else if (value + value == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_EVENLY);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_EVENLY);
   }
   else
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_SPLIT_PARAMS,
+    tdata[1].setBlank(BLANK_LENGTH_VERB);
+    tdata[1].setData(BLANK_LENGTH_VERB_SPLIT_PARAMS,
       lengthLower, oppsLength - lengthLower);
   }
 }
@@ -240,48 +240,48 @@ void VerbalCover::getLengthInsideData(
     if (vUpper == 1)
     {
       tdata[0].set(BLANK_PLAYER_CAP, side);
-      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_SINGLE_ATMOST);
+      tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE_ATMOST);
     }
     else if (vUpper == 2)
     {
       tdata[0].set(BLANK_PLAYER_CAP, side);
-      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_DOUBLE_ATMOST);
+      tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE_ATMOST);
     }
     else if (vUpper == 3)
     {
       tdata[0].set(BLANK_PLAYER_CAP, side);
-      tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-      tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_TRIPLE_ATMOST);
+      tdata[1].setBlank(BLANK_LENGTH_VERB);
+      tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE_ATMOST);
     }
     else
     {
       tdata[0].set(BLANK_PLAYER_CAP, side);
-      tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-      tdata[1].setData(BLANK_LENGTH_PHRASE_CARDS_ATMOST_PARAM, vUpper);
+      tdata[1].setBlank(BLANK_LENGTH_VERB);
+      tdata[1].setData(BLANK_LENGTH_VERB_CARDS_ATMOST_PARAM, vUpper);
     }
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER);
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_VOID);
+    tdata[1].setBlank(BLANK_LENGTH_VERB);
+    tdata[1].setData(BLANK_LENGTH_VERB_VOID);
   }
   else if (vLower+1 == vUpper)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
-    tdata[1].set(BLANK_LENGTH_PHRASE, BLANK_LENGTH_PHRASE_ODD_EVENLY);
+    tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_ODD_EVENLY);
   }
   else if (vLower + vUpper == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_RANGE_PARAMS, vLower, vUpper);
+    tdata[1].setBlank(BLANK_LENGTH_VERB);
+    tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
   }
   else
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].setBlank(BLANK_LENGTH_PHRASE);
-    tdata[1].setData(BLANK_LENGTH_PHRASE_RANGE_PARAMS, vLower, vUpper);
+    tdata[1].setBlank(BLANK_LENGTH_VERB);
+    tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
   }
 }
 
@@ -306,6 +306,55 @@ void VerbalCover::getLengthData(
   }
   else
     assert(false);
+}
+
+
+void VerbalCover::getLengthAdjElement(
+  const unsigned char oppsLength,
+  const Opponent simplestOpponent,
+  TemplateData& telement) const
+{
+  unsigned char vLower, vUpper;
+
+  if (simplestOpponent == OPP_WEST)
+  {
+    vLower = lengthLower;
+    vUpper = lengthUpper;
+  }
+  else if (lengthUpper == 0xf)
+  {
+    vLower = 0;
+    vUpper = oppsLength - lengthLower;
+  }
+  else
+  {
+    vLower = oppsLength - lengthUpper;
+    vUpper = oppsLength - lengthLower;
+  }
+
+  if (vLower == 0)
+  {
+    if (vUpper == 1)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST);
+    else if (vUpper == 2)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE_ATMOST);
+    else if (vUpper == 3)
+      telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE_ATMOST);
+    else
+    {
+      telement.setBlank(BLANK_LENGTH_ADJ);
+      telement.setData(BLANK_LENGTH_ADJ_LONG_ATMOST, to_string(+vUpper));
+    }
+  }
+  else if (vLower == 2 && vUpper == 3)
+    telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_23);
+  else
+  {
+cout << "range " << +lengthLower << " to " << +lengthUpper << endl;
+cout << "here  " << +vLower << " to " << +vUpper << endl;
+cout << "oppsLength " << +oppsLength << endl;
+    assert(false);
+  }
 }
 
 
@@ -483,28 +532,28 @@ void VerbalCover::getOnetopElement(
 {
   if (oppsValue1 == 0)
   {
-    telement.setBlank(BLANK_ONETOP_PHRASE);
-    telement.setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
+    telement.setBlank(BLANK_ONETOP);
+    telement.setData(BLANK_ONETOP_HAS_ATMOST, 
       topCount[oppsValue2], choice);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
-    telement.setBlank(BLANK_ONETOP_PHRASE);
-    telement.setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
+    telement.setBlank(BLANK_ONETOP);
+    telement.setData(BLANK_ONETOP_HAS_ATLEAST, 
       topCount[oppsValue1], choice);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
   {
-    telement.setBlank(BLANK_ONETOP_PHRASE);
-    telement.setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+    telement.setBlank(BLANK_ONETOP);
+    telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
       to_string(+oppsValue1), 
       to_string(+oppsValue2), 
       choice);
   }
   else
   {
-    telement.setBlank(BLANK_ONETOP_PHRASE);
-    telement.setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+    telement.setBlank(BLANK_ONETOP);
+    telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
       to_string(+oppsValue1), 
       to_string(+oppsValue2), 
       choice);
@@ -524,41 +573,14 @@ void VerbalCover::getOnetopData(
   // Here lower and upper are different.
   tdata.resize(2);
 
-  // const string choice = completion.strSet(ranksNames, false, true);
-  // cout << "choice " << choice << endl;
-
   if (oppsValue1 == 0)
-  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    // tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
-      // topCount[oppsValue2], choice);
-  }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
-  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    // tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
-      // topCount[oppsValue1], choice);
-  }
   else if (oppsValue1 + oppsValue2 == oppsSize)
-  {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
-    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    // tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
-      // to_string(+oppsValue1), 
-      // to_string(+oppsValue2), 
-      // choice);
-  }
   else
-  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    // tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
-      // to_string(+oppsValue1), 
-      // to_string(+oppsValue2), 
-      // choice);
-  }
 
   VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
     choice, tdata[1]);

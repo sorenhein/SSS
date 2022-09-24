@@ -706,8 +706,9 @@ string Product::strVerbalLengthAndOneTop(
       sumProfile[topNo + canonicalShift], 
       ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
       tdata[2]);
-    const string stop = verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
+    const string stop = verbalTemplates.get(TEMPLATES_LENGTH_ONETOP, tdata);
 
+  // Holding this thought for now.  The above problem remains.
   /*
   if (soldall == stop)
     cout << "\n" << setw(60) << left << soldall << "X1X " << stop << endl;
@@ -722,14 +723,6 @@ string Product::strVerbalLengthAndOneTop(
   {
     // Inversion, e.g. "has one top at most doubleton"
 
-    // Product productWest, productEast;
-    // productWest.resize(tops.size());
-    // productEast.resize(tops.size());
-  
-    // VerbalData dataWest, dataEast; // Thrown away
-    // Product::fillUsedTops(sumProfile, canonicalShift, 
-      // productWest, productEast, dataWest, dataEast);
-
     assert(tops[topNo].getOperator() != COVER_EQUAL);
 
     VerbalCover completions;
@@ -742,14 +735,29 @@ string Product::strVerbalLengthAndOneTop(
       ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
       symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
       tdata);
-  
+
   const string snew = verbalTemplates.get(TEMPLATES_ONETOP, tdata);
 
-    return 
-      snew +
-      length.strLengthBare(
-        sumProfile.length(), 
-        simplestOpponent);
+  completions.setLength(length);
+  tdata.resize(3);
+  completions.getLengthAdjElement(
+    sumProfile.length(),
+    simplestOpponent,
+    tdata[2]);
+  const string snewall = verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
+
+
+  const string slenold = length.strLengthBare(sumProfile.length(), 
+    simplestOpponent);
+
+  const string sret = snew + " " + slenold;
+
+  if (sret == snewall)
+    cout << "\n" << setw(60) << left << sret << "X1X " << snewall << endl;
+  else
+    cout << "\n" << setw(60) << left << sret << "X2X " << snewall << endl;
+  
+    return sret;
   }
 }
 
