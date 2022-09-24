@@ -679,15 +679,44 @@ string Product::strVerbalLengthAndOneTop(
     VerbalCover completions;
     completions.setLength(length);
 
+    // Actually only uses the length-only branch, so overkill.
     vector<TemplateData> tdata;
+    const string slen = completions.strGeneral(
+        sumProfile.length(), symmFlag, ranksNames, tdata);
 
-    return 
-      completions.strGeneral(
-        sumProfile.length(), symmFlag, ranksNames, tdata) +
-      " with " +
-      top.strTopBare(
-        topData,
-        simplestOpponent);
+    const string stopold = top.strTopBare(topData, simplestOpponent);
+    const string soldall = slen + " with " + stopold;
+
+    tdata.resize(3);
+    unsigned char low, high;
+    if (simplestOpponent == OPP_EAST)
+    {
+      low = sumProfile[topNo + canonicalShift] - top.upper();
+      high = sumProfile[topNo + canonicalShift] - top.lower();
+    }
+    else
+    {
+      low = top.lower();
+      high = top.upper();
+    }
+
+    completions.getOnetopElement(
+      low,
+      high,
+      sumProfile[topNo + canonicalShift], 
+      ranksNames.getOpponents(canonicalShift + topNo).strComponent(RANKNAME_ACTUAL_FULL),
+      tdata[2]);
+    const string stop = verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, tdata);
+
+  /*
+  if (soldall == stop)
+    cout << "\n" << setw(60) << left << soldall << "X1X " << stop << endl;
+  else
+    cout << "\n" << setw(60) << left << soldall << "X2X " << stop << endl;
+    */
+
+
+    return soldall;
   }
   else
   {

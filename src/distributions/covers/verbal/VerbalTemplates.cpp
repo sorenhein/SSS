@@ -44,7 +44,11 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
     templates[TEMPLATES_ONETOP] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
+
+    templates[TEMPLATES_ONETOP_LENGTH] =
+      { "%0 %1 with %2", { BLANK_PLAYER_CAP, BLANK_LENGTH_PHRASE, 
+        BLANK_ONETOP_PHRASE }};
 
     // Up to 4 such holdings currently foreseen.
     templates[TEMPLATES_LIST] =
@@ -61,7 +65,11 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
     templates[TEMPLATES_ONETOP] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_ONETOP_PHRASE }};
+
+    templates[TEMPLATES_ONETOP_LENGTH] =
+      { "%0 %1 with %2", { BLANK_PLAYER_CAP, BLANK_LENGTH_PHRASE, 
+        BLANK_ONETOP_PHRASE }};
 
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -99,9 +107,9 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_PHRASE_SPLIT_PARAMS] = "splits %0=%1";
 
   auto& blank1TP = dictionary[BLANK_ONETOP_PHRASE];
-  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATMOST] = "has at most %0 of %1";
-  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATLEAST] = "has at least %0 of %1";
-  blank1TP[BLANK_ONETOP_PHRASE_RANGE_PARAMS] = "has %0-%1 of %2";
+  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATMOST] = "at most %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_HAS_ATLEAST] = "at least %0 of %1";
+  blank1TP[BLANK_ONETOP_PHRASE_RANGE_PARAMS] = "%0-%1 of %2";
 
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";

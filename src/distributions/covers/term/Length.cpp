@@ -73,12 +73,21 @@ string Length::strLengthBare(
     else if (vUpper == 3)
       ss << "at most tripleton";
     else
+    {
+cout << "\nHIT1" << +vUpper << "\n";
       ss << "with at most " << +vUpper << " cards";
+    }
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
+  {
+cout << "\nHIT2" << "\n";
     ss << "with no void on either side";
+  }
   else
+  {
+cout << "\nHIT2" << +vLower << " to " << +vUpper << "\n";
     ss << "with " << +vLower << "-" << +vUpper << " cards";
+  }
 
   return ss.str();
 }

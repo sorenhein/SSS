@@ -474,6 +474,44 @@ string VerbalCover::strGeneral(
 }
 
 
+void VerbalCover::getOnetopElement(
+  const unsigned char oppsValue1,
+  const unsigned char oppsValue2,
+  const unsigned char oppsSize,
+  const string& choice,
+  TemplateData& telement) const
+{
+  if (oppsValue1 == 0)
+  {
+    telement.setBlank(BLANK_ONETOP_PHRASE);
+    telement.setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
+      topCount[oppsValue2], choice);
+  }
+  else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
+  {
+    telement.setBlank(BLANK_ONETOP_PHRASE);
+    telement.setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
+      topCount[oppsValue1], choice);
+  }
+  else if (oppsValue1 + oppsValue2 == oppsSize)
+  {
+    telement.setBlank(BLANK_ONETOP_PHRASE);
+    telement.setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      to_string(+oppsValue1), 
+      to_string(+oppsValue2), 
+      choice);
+  }
+  else
+  {
+    telement.setBlank(BLANK_ONETOP_PHRASE);
+    telement.setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      to_string(+oppsValue1), 
+      to_string(+oppsValue2), 
+      choice);
+  }
+}
+
+
 // TODO Later on private and at the right place in the file again
 void VerbalCover::getOnetopData(
   const unsigned char oppsValue1,
@@ -492,35 +530,38 @@ void VerbalCover::getOnetopData(
   if (oppsValue1 == 0)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
-      topCount[oppsValue2], choice);
+    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    // tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATMOST, 
+      // topCount[oppsValue2], choice);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
-      topCount[oppsValue1], choice);
+    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    // tdata[1].setData(BLANK_ONETOP_PHRASE_HAS_ATLEAST, 
+      // topCount[oppsValue1], choice);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
-    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
-      to_string(+oppsValue1), 
-      to_string(+oppsValue2), 
-      choice);
+    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    // tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      // to_string(+oppsValue1), 
+      // to_string(+oppsValue2), 
+      // choice);
   }
   else
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
-    tdata[1].setBlank(BLANK_ONETOP_PHRASE);
-    tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
-      to_string(+oppsValue1), 
-      to_string(+oppsValue2), 
-      choice);
+    // tdata[1].setBlank(BLANK_ONETOP_PHRASE);
+    // tdata[1].setData(BLANK_ONETOP_PHRASE_RANGE_PARAMS, 
+      // to_string(+oppsValue1), 
+      // to_string(+oppsValue2), 
+      // choice);
   }
+
+  VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
+    choice, tdata[1]);
 }
 
 
