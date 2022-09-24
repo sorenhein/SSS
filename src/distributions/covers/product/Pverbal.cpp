@@ -45,52 +45,6 @@ extern VerbalTemplates verbalTemplates;
 /**********************************************************************/
 
 
-Opponent Product::simplestOpponent(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift) const
-{
-  if (length.used() && length.getOperator() == COVER_EQUAL)
-    return Product::simplestSingular(sumProfile, canonicalShift);
-
-  // We want to express a Product in terms that make as much
-  // intuitive sense as possible.  I think this tends to be in
-  // terms of shortness.
-
-  // With 6 cards, we generally want 1-4 to remain, but 2-5 to be 
-  // considered as 1-4 from the other side.
-  Opponent backstop = OPP_WEST;
-  const Opponent lOpp = length.shorter(sumProfile.length());
-
-  if (lOpp == OPP_WEST)
-    return OPP_WEST;
-  else if (lOpp == OPP_EAST)
-  {
-    // Special case: This is easier to say as "not void".
-    if (length.lower() == 1 && length.getOperator() == COVER_GREATER_EQUAL)
-      backstop = OPP_EAST;
-    else
-      return OPP_EAST;
-  }
-  
-  const unsigned char s = static_cast<unsigned char>(tops.size());
-  assert(static_cast<unsigned>(s + canonicalShift) == sumProfile.size());
-
-  // Start from the highest top.
-  for (unsigned char i = s; --i > 0; )
-  {
-    const Opponent lTop = 
-      tops[i].longer(sumProfile[i + canonicalShift]);
-
-    if (lTop == OPP_WEST)
-      return OPP_WEST;
-    else if (lTop == OPP_EAST)
-      return OPP_EAST;
-  }
-
-  return backstop;
-}
-
-
 Opponent Product::simplestSingular(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
@@ -568,17 +522,17 @@ string Product::strVerbalLengthAndOneTop(
   assert(length.used());
   assert(activeCount == 1);
 
-  const Opponent simplestOpponent =
-    Product::simplestOpponent(sumProfile, canonicalShift);
-
   Product productWest, productEast;
   productWest.resize(tops.size());
   productEast.resize(tops.size());
-  
+
   VerbalData dataWest, dataEast; // Thrown away
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
 
+  const Opponent simplestOpponent =
+    (productWest.simplerThan(productEast) ? OPP_WEST : OPP_EAST);
+  
   const unsigned char topNo = dataWest.lowestRankUsed;
   assert(topNo > 0 && topNo < tops.size());
   auto& top = tops[topNo];
