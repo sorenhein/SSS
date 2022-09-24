@@ -172,6 +172,10 @@ void Product::fillUnusedTops(
 
     const unsigned char tlength = sumProfile[topNo + canonicalShift];
 
+    Product::fillSides(fillOpponent, topNo, tlength, tlength,
+      productWest, productEast);
+
+    /*
     if (fillOpponent == OPP_WEST)
     {
       productWest.tops[topNo].set(tlength, tlength, tlength);
@@ -182,27 +186,30 @@ void Product::fillUnusedTops(
       productWest.tops[topNo].set(tlength, 0, 0);
       productEast.tops[topNo].set(tlength, tlength, tlength);
     }
+    */
   }
 }
 
 
-void Product::fillSideBottoms(
+void Product::fillSides(
   const Opponent fillOpponent,
-  const unsigned char numXes,
+  const unsigned char topNo,
+  const unsigned char maximum,
+  const unsigned char actual,
   Product& productWest,
   Product& productEast) const
 {
-  // The side specified by fillOpponent gets all unused bottoms.
-  // This may span several ranks, depending on canonicalShift.
   if (fillOpponent == OPP_WEST)
   {
-    productWest.tops[0].set(numXes, numXes, numXes);
-    productEast.tops[0].set(numXes, 0, 0);
+    productWest.tops[topNo].set(maximum, actual, actual);
+    productEast.tops[topNo].set(maximum, 
+      maximum - actual, maximum - actual);
   }
   else
   {
-    productWest.tops[0].set(numXes, 0, 0);
-    productEast.tops[0].set(numXes, numXes, numXes);
+    productEast.tops[topNo].set(maximum, actual, actual);
+    productWest.tops[topNo].set(maximum, 
+      maximum - actual, maximum - actual);
   }
 }
 
@@ -240,7 +247,9 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_EAST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_EAST, numBottoms, 
+    // Product::fillSideBottoms(OPP_EAST, numBottoms, 
+      // productWest, productEast);
+    Product::fillSides(OPP_EAST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
   else if (dataEast.topsUsed == slength - wlength)
@@ -252,7 +261,9 @@ void Product::separateSingular(
     Product::fillUnusedTops(sumProfile, canonicalShift, OPP_WEST,
       productWest, productEast);
 
-    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      // productWest, productEast);
+    Product::fillSides(OPP_WEST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
   else if (dataWest.topsUsed + numBottoms == wlength)
@@ -266,7 +277,9 @@ void Product::separateSingular(
 
     // Product::fillSideBottoms(OPP_WEST, numBottoms, 
       // productWest, productEast);
-    Product::fillSideBottoms(OPP_WEST, numBottoms, 
+    // Product::fillSideBottoms(OPP_WEST, numBottoms, 
+      // productWest, productEast);
+    Product::fillSides(OPP_WEST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
   else if (dataEast.topsUsed + numBottoms == slength - wlength)
@@ -280,19 +293,27 @@ void Product::separateSingular(
 
     // Product::fillSideBottoms(OPP_WEST, numBottoms, 
       // productWest, productEast);
-    Product::fillSideBottoms(OPP_EAST, numBottoms, 
+    // Product::fillSideBottoms(OPP_EAST, numBottoms, 
+      // productWest, productEast);
+    Product::fillSides(OPP_EAST, 0, numBottoms, numBottoms,
       productWest, productEast);
   }
   else if (canonicalShift == 0)
   {
     // There should be no tops left to fill out, as all are used.
     // Add the right number of low cards to each side.
-    assert(static_cast<unsigned char>(activeCount+1) == tops.size());
+    // assert(static_cast<unsigned char>(activeCount+1) == tops.size());
 
+    /*
     const unsigned char westXes = wlength - dataWest.topsUsed;
     const unsigned char allXes = sumProfile[0];
     productWest.tops[0].set(allXes, westXes, westXes);
     productEast.tops[0].set(allXes, allXes - westXes, allXes - westXes);
+    */
+
+    Product::fillSides(OPP_WEST, 0, 
+      sumProfile[0], wlength - dataWest.topsUsed,
+      productWest, productEast);
   }
   else
     assert(false);

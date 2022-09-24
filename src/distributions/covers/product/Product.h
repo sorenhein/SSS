@@ -89,9 +89,11 @@ class Product
       Product& productWest,
       Product& productEast) const;
 
-    void fillSideBottoms(
+    void fillSides(
       const Opponent fillOpponent,
-      const unsigned char hidden,
+      const unsigned char topNo,
+      const unsigned char maximum,
+      const unsigned char actual,
       Product& productWest,
       Product& productEast) const;
 
