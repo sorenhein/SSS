@@ -45,6 +45,23 @@ const vector<string> topCount =
   "thirteen"
 };
 
+const vector<string> topOrdinal =
+{
+  "void",
+  "singleton",
+  "doubleton",
+  "tripleton",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth",
+  "thirteenth"
+};
 
 
 VerbalCover::VerbalCover()

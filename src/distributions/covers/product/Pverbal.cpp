@@ -653,6 +653,16 @@ string Product::strVerbalLengthAndOneTop(
   }
   assert(topData.used());
 
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+  
+  VerbalData dataWest, dataEast; // Thrown away
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+  assert(topNo == dataWest.lowestRankUsed);
+
   assert(topNo > 0 && topNo < tops.size());
   auto& top = tops[topNo];
 
@@ -683,13 +693,13 @@ string Product::strVerbalLengthAndOneTop(
   {
     // Inversion, e.g. "has one top at most doubleton"
 
-    Product productWest, productEast;
-    productWest.resize(tops.size());
-    productEast.resize(tops.size());
+    // Product productWest, productEast;
+    // productWest.resize(tops.size());
+    // productEast.resize(tops.size());
   
-    VerbalData dataWest, dataEast; // Thrown away
-    Product::fillUsedTops(sumProfile, canonicalShift, 
-      productWest, productEast, dataWest, dataEast);
+    // VerbalData dataWest, dataEast; // Thrown away
+    // Product::fillUsedTops(sumProfile, canonicalShift, 
+      // productWest, productEast, dataWest, dataEast);
 
     assert(tops[topNo].getOperator() != COVER_EQUAL);
 

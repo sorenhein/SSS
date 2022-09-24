@@ -33,10 +33,6 @@ class Top: public Term
     string strTopBare(
       const TopData& oppsTopData,
       const Opponent simplestOpponent) const;
-
-    string strTopBareEqual(
-      const TopData& oppsTopData,
-      const Opponent simplestOpponent) const;
 };
 
 #endif

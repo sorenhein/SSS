@@ -22,42 +22,6 @@
 
 #include "../../../utils/table.h"
 
-const vector<string> topCount =
-{
-  "none",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-  "ten",
-  "eleven",
-  "twelve",
-  "thirteen"
-};
-
-const vector<string> topOrdinal =
-{
-  "void",
-  "singleton",
-  "doubleton",
-  "tripleton",
-  "fourth",
-  "fifth",
-  "sixth",
-  "seventh",
-  "eighth",
-  "ninth",
-  "tenth",
-  "eleventh",
-  "twelfth",
-  "thirteenth"
-};
-
 
 Opponent Top::simplestOpponent(const unsigned char maximum) const
 {
@@ -130,26 +94,5 @@ string Top::strTopBare(
     ss << +vLower << "-" << +vUpper << " of " << strFull;
 
   return ss.str();
-}
-
-
-string Top::strTopBareEqual(
-  const TopData& oppsTopData,
-  const Opponent simplestOpponent) const
-{
-  assert(Top::getOperator() == COVER_EQUAL);
-
-  const unsigned char value = (simplestOpponent != OPP_EAST ?
-    Top::lower() : oppsTopData.value - Top::upper());
-
-  assert(oppsTopData.rankNamesPtr);
-
-  if (value == 0)
-    return "";
-  else if (value == oppsTopData.value)
-    return oppsTopData.rankNamesPtr->strComponent(RANKNAME_ACTUAL_SHORT);
-  else
-    return oppsTopData.rankNamesPtr->strComponent(RANKNAME_ABSOLUTE_SHORT).
-      substr(0, value);
 }
 
