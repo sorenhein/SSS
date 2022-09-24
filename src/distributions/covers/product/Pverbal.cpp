@@ -577,20 +577,14 @@ bool Product::makeCompletions(
 
 string Product::strVerbalLengthOnly(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
   const bool symmFlag) const
 {
-  // ranksNames aren't really needed when ranks aren't set.
-
   assert(activeCount == 0);
 
   VerbalCover completions;
   completions.setLength(length);
-
-  vector<TemplateData> tdata;
-
-  return completions.strGeneral(
-    sumProfile.length(), symmFlag, ranksNames, tdata);
+  completions.fillLengthOnly(sumProfile.length(), symmFlag);
+  return completions.strLengthOnly();
 }
 
 
@@ -1193,7 +1187,7 @@ string Product::strVerbal(
   {
     return Product::strVerbalLengthOnly(
       sumProfile, 
-      ranksNames,
+      // ranksNames,
       symmFlag);
   }
   else if (verbal == VERBAL_TOPS_ONLY)

@@ -113,7 +113,6 @@ class Product
 
     string strVerbalLengthOnly(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const bool symmFlag) const;
 
     string strVerbalOneTopOnly(
