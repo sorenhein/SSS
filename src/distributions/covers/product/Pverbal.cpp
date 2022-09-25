@@ -837,24 +837,7 @@ string Product::strVerbalHighTopsSide(
       simplestOpponent,
       symmFlag);
 
-    const string snew = verbalCover.str(TEMPLATES_ONLY_BELOW, ranksNames);
-
-    string result = data.strFreeSemantic();
-
-    if (data.freeUpper != 1)
-      result += " completely";
-
-    const string sold = side + " has " + result + " below the " +
-      ranksNames.lowestCard(numOptions);
-
-  /*
-  if (sold == snew)
-    cout << "\n" << setw(50) << left << sold << "X1X " << snew << endl;
-  else
-    cout << "\n" << setw(50) << left << sold << "X2X " << snew << endl;
-    */
-
-    return sold;
+    return verbalCover.str(TEMPLATES_ONLY_BELOW, ranksNames);
   }
   else
   {
