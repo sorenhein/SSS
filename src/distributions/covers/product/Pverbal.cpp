@@ -88,8 +88,8 @@ Opponent Product::simpler(
 /**********************************************************************/
 
 void Product::study(
-  [[maybe_unused]] const Profile& sumProfile,
-  [[maybe_unused]] const unsigned char canonicalShift,
+   const Profile& sumProfile,
+   const unsigned char canonicalShift,
   VerbalData& data) const
 {
   // TODO This is an attempt at a more streamlined study.
@@ -101,7 +101,12 @@ void Product::study(
   {
     auto& top = tops[topNo];
     if (top.used())
+    {
+      const unsigned char t = tops[topNo].lower();
+      data.topsUsed += t;
+      data.topsUsedOther += sumProfile[topNo + canonicalShift] - t;
       data.lowestRankUsed = topNo;
+    }
   }
 }
 
@@ -322,6 +327,92 @@ void Product::separateSingular(
 }
 
 
+void Product::completeSingular(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const Opponent side,
+  Completion& completion) const
+{
+  // All given tops are exact.  Length must be set.
+
+  assert(length.used());
+  assert(length.getOperator() == COVER_EQUAL);
+
+  const unsigned char slength = sumProfile.length();
+  const unsigned char wlength = length.lower();
+
+  const unsigned char numBottoms = 
+    Product::countBottoms(sumProfile, canonicalShift);
+
+  VerbalData data;
+  Product::study(sumProfile, canonicalShift, data);
+
+  // Determine which side gets the unused tops.
+  const Opponent sideForUnused = 
+    (data.topsUsed == wlength || data.topsUsed + numBottoms == wlength ?
+    OPP_EAST : OPP_WEST);
+
+/*
+cout << "Product " << Product::strLine() << endl;
+cout << "side " << side << "\n";
+cout << data.str("data");
+cout << "numBottoms " << +numBottoms << endl;
+cout << "side for unused " << sideForUnused << endl;
+ */
+
+  // Cover from the highest top down to canonicalShift (exclusive).
+  // If canonicalShift is 0, then we will stop at 1, but then the 0th
+  // real top is by convention unset.
+  completion.resize(sumProfile.size());
+  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
+      --topNo > canonicalShift; )
+  {
+    const auto& top = tops[topNo - canonicalShift];
+
+    if (top.used())
+    {
+      completion.setTop(topNo, true, 
+        side == OPP_WEST ? top.lower() : sumProfile[topNo] - top.lower());
+    }
+    else if (side == sideForUnused)
+    {
+      // Flip if we are filling the opposite side.
+      completion.setTop(topNo, true,  sumProfile[topNo]);
+    }
+  }
+
+  if (data.topsUsed == wlength ||
+      data.topsUsedOther + numBottoms == slength - wlength)
+  {
+    // All bottoms go to East.
+    if (side == OPP_EAST)
+    {
+      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+        completion.setTop(topNo, true, sumProfile[topNo]);
+    }
+  }
+  else if (data.topsUsedOther == slength - wlength ||
+      data.topsUsed + numBottoms == wlength)
+  {
+    // All bottoms go to West.
+    if (side == OPP_WEST)
+    {
+      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+        completion.setTop(topNo, true, sumProfile[topNo]);
+    }
+  }
+  else if (canonicalShift == 0)
+  {
+    if (side == OPP_WEST)
+      completion.setTop(0, true, wlength - data.topsUsed);
+    else
+      completion.setTop(0, true, slength - wlength - data.topsUsedOther);
+  }
+  else
+    assert(false);
+}
+
+
 /**********************************************************************/
 /*                                                                    */
 /*                             Stack methods                          */
@@ -467,7 +558,6 @@ void Product::setVerbalLengthOnly(
 {
   assert(activeCount == 0);
 
-  // verbalCover.setLength(length);
   verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
 }
 
@@ -955,13 +1045,17 @@ string Product::strVerbalSingularQualifier(
   // A somewhat involved way to say "the singleton K" but
   // "a singleton H", and "the doubleton HH" if there are two,
   // "a doubleton HH" if there are more.
+  // TODO WTF? What if > 2?
 
   for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
     topNo-- > 0; )
   {
     // Find the first non-zero top.
     auto& top = tops[topNo];
-    assert(top.used());
+    if (! top.used())
+      continue;
+
+    // assert(top.used());
     if (top.lower() == 0)
       continue;
 
@@ -971,8 +1065,9 @@ string Product::strVerbalSingularQualifier(
       return (length.lower() == 1 ? "the singleton" : "the doubleton");
   }
 
-  assert(false);
-  return "";
+  // assert(false);
+  // return "";
+  return "exactly";
 }
 
 
@@ -1004,20 +1099,68 @@ string Product::strVerbalSingular(
 {
   assert(activeCount > 0);
 
+
+  string side;
+  Opponent sideOpp;
+  if (Product::simpler(sumProfile, canonicalShift) == OPP_WEST)
+  {
+    side = (symmFlag ? "Either opponent" : "West");
+    sideOpp = OPP_WEST;
+  }
+  else
+  {
+    side = (symmFlag ? "Either opponent" : "East");
+    sideOpp = OPP_EAST;
+  }
+
+  string snew = side + " has ";
+
+  string qualifier;
+  if (sideOpp == OPP_WEST && (! length.used() || length.lower() > 2))
+    qualifier = "exactly";
+  else if (sideOpp == OPP_EAST && 
+    (! length.used() || sumProfile.length() - length.lower() > 2))
+    qualifier = "exactly";
+  else if ((sideOpp == OPP_WEST && length.lower() == 1) ||
+      (sideOpp == OPP_EAST && length.lower() + 1 == sumProfile.length()))
+  {
+    qualifier = "the singleton";
+  }
+  else
+    qualifier = "the doubleton";
+
+  snew += qualifier + " ";
+
+
+  Completion completion;
+  Product::completeSingular(sumProfile, canonicalShift, sideOpp,
+    completion);
+
+  snew += completion.strSet(ranksNames, false, false);
+
+
   Product productWest, productEast;
   Product::separateSingular(sumProfile, canonicalShift, 
     productWest, productEast);
 
+  string sold;
   if (Product::simpler(sumProfile, canonicalShift) == OPP_WEST)
   {
-    return productWest.strVerbalSingularSide(sumProfile, ranksNames, 
+    sold = productWest.strVerbalSingularSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "West"), canonicalShift);
   }
   else
   {
-    return productEast.strVerbalSingularSide(sumProfile, ranksNames, 
+    sold = productEast.strVerbalSingularSide(sumProfile, ranksNames, 
       (symmFlag ? "Either opponent" : "East"), canonicalShift);
   }
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+  return sold;
 }
 
 

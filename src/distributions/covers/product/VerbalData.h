@@ -20,6 +20,7 @@ using namespace std;
 struct VerbalData
 {
   unsigned char topsUsed;
+  unsigned char topsUsedOther; // For opposite player
   unsigned char ranksUsed;
   unsigned char ranksActive; // Non-zero rank entry
   unsigned char lowestRankUsed;
@@ -34,6 +35,7 @@ struct VerbalData
   void reset()
   {
     topsUsed = 0;
+    topsUsedOther = 0;
     ranksUsed = 0;
     ranksActive = 0;
     lowestRankUsed = 0;

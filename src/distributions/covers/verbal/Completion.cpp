@@ -66,6 +66,8 @@ void Completion::updateTop(
     // maximum value for an unused top stored here.
     lengthInt += count;
     used[topNo] = true;
+    
+    // TODO This messes up openTopNumbers.  Is it a problem/bug?
   }
 
   partialTops[topNo] = count;

@@ -108,6 +108,12 @@ class Product
       Product& productWest,
       Product& productEast) const;
 
+    void completeSingular(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const Opponent side,
+      Completion& completion) const;
+
 
     void setVerbalLengthOnly(
       const Profile& sumProfile,
