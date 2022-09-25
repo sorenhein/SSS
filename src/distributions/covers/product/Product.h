@@ -104,21 +104,22 @@ class Product
       Product& productEast) const;
 
 
-    string strVerbalLengthOnly(
+    void setVerbalLengthOnly(
       const Profile& sumProfile,
-      const bool symmFlag) const;
-
-    string strVerbalOneTopOnly(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      VerbalCover& verbalCover) const;
 
-    string strVerbalLengthAndOneTop(
+    void setVerbalOneTopOnly(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      const unsigned char canonicalShift,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalLengthAndOneTop(
+      const Profile& sumProfile,
+      const bool symmFlag,
+      const unsigned char canonicalShift,
+      VerbalCover& verbalCover) const;
 
     // Both high tops and any tops
 

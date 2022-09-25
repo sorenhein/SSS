@@ -441,24 +441,23 @@ bool Product::makeCompletions(
 /**********************************************************************/
 
 
-string Product::strVerbalLengthOnly(
+void Product::setVerbalLengthOnly(
   const Profile& sumProfile,
-  const bool symmFlag) const
+  const bool symmFlag,
+  VerbalCover& verbalCover) const
 {
   assert(activeCount == 0);
 
-  VerbalCover completions;
-  completions.setLength(length);
-  completions.fillLengthOnly(sumProfile.length(), symmFlag);
-  return completions.strLengthOnly();
+  verbalCover.setLength(length);
+  verbalCover.fillLengthOnly(sumProfile.length(), symmFlag);
 }
 
 
-string Product::strVerbalOneTopOnly(
+void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
   const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const unsigned char canonicalShift,
+  VerbalCover& verbalCover) const
 {
   assert(activeCount == 1);
 
@@ -474,25 +473,22 @@ string Product::strVerbalOneTopOnly(
   const unsigned char topNo = dataWest.lowestRankUsed;
 
   // All we need for the rest is topNo and maybe topsUsed just to check.
+  // TODO It seems this is always from the West side.  Should it be?
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
-  VerbalCover completions;
-
-  completions.fillOnetopOnly(
+  verbalCover.fillOnetopOnly(
     tops[topNo],
     sumProfile[topNo + canonicalShift],
     canonicalShift + topNo,
     symmFlag);
-
-  return completions.strOnetopOnly(ranksNames);
 }
 
 
-string Product::strVerbalLengthAndOneTop(
+void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
   const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const unsigned char canonicalShift,
+  VerbalCover& verbalCover) const
 {
   assert(length.used());
   assert(activeCount == 1);
@@ -520,20 +516,17 @@ string Product::strVerbalLengthAndOneTop(
   // TODO simplestOpponent is used for adjusted length.
   // Should it also be used here?!
 
-  VerbalCover completions;
-  completions.setLength(length);
+  verbalCover.setLength(length);
 
-  completions.fillOnetopOnly(
+  verbalCover.fillOnetopOnly(
     tops[topNo],
     sumProfile[topNo + canonicalShift],
     canonicalShift + topNo,
     symmFlag);
 
-  completions.fillLengthAdjElement(
+  verbalCover.fillLengthAdjElement(
     sumProfile.length(),
     simplestOpponent);
-
-  return completions.strOnetopLength(ranksNames);
 }
 
 
@@ -1049,28 +1042,28 @@ string Product::strVerbal(
 {
   assert(verbal != VERBAL_GENERAL && verbal != VERBAL_HEURISTIC);
 
+  VerbalCover verbalCover;
+
 // cout << "\nProduct " << Product::strLine() << "\n";
   if (verbal == VERBAL_LENGTH_ONLY)
   {
-    return Product::strVerbalLengthOnly(
-      sumProfile, 
-      symmFlag);
+    Product::setVerbalLengthOnly(sumProfile, symmFlag, verbalCover);
+    
+    return verbalCover.str(TEMPLATES_LENGTH_ONLY, ranksNames);
   }
   else if (verbal == VERBAL_TOPS_ONLY)
   {
-    return Product::strVerbalOneTopOnly(
-      sumProfile, 
-      ranksNames, 
-      symmFlag, 
-      canonicalShift);
+    Product::setVerbalOneTopOnly(
+      sumProfile, symmFlag, canonicalShift, verbalCover);
+
+    return verbalCover.str(TEMPLATES_ONETOP, ranksNames);
   }
   else if (verbal == VERBAL_LENGTH_AND_ONE_TOP)
   {
-    return Product::strVerbalLengthAndOneTop(
-      sumProfile, 
-      ranksNames, 
-      symmFlag, 
-      canonicalShift);
+    Product::setVerbalLengthAndOneTop(
+      sumProfile, symmFlag, canonicalShift, verbalCover);
+
+    return verbalCover.str(TEMPLATES_ONETOP_LENGTH, ranksNames);
   }
   else if (verbal == VERBAL_ANY_TOPS_EQUAL)
   {

@@ -109,12 +109,6 @@ void VerbalCover::fillLengthOnly(
 }
 
 
-string VerbalCover::strLengthOnly() const
-{
-  return verbalTemplates.get(TEMPLATES_LENGTH_ONLY, templateFills);
-}
-
-
 void VerbalCover::fillOnetopOnly(
   const Term& top,
   const unsigned char oppsSize,
@@ -130,19 +124,6 @@ void VerbalCover::fillOnetopOnly(
     onetopIndex,
     symmFlag ? BLANK_PLAYER_CAP_EITHER: BLANK_PLAYER_CAP_WEST,
     templateFills);
-}
-
-
-string VerbalCover::strOnetopOnly(const RanksNames& ranksNames) const
-{
-  return verbalTemplates.get(TEMPLATES_ONETOP, ranksNames, templateFills);
-}
-
-
-string VerbalCover::strOnetopLength(const RanksNames& ranksNames) const
-{
-  return verbalTemplates.get(TEMPLATES_ONETOP_LENGTH, 
-    ranksNames, templateFills);
 }
 
 
@@ -658,4 +639,11 @@ void VerbalCover::getOnetopData(
     onetopIndex, tdata[1]);
 }
 
+
+string VerbalCover::str(
+  const TemplateSentence sentence,
+  const RanksNames& ranksNames) const
+{
+  return verbalTemplates.get(sentence, ranksNames, templateFills);
+}
 

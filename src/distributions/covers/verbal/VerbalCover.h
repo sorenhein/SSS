@@ -23,6 +23,7 @@ class RanksNames;
 struct TemplateData;
 enum Opponent: unsigned;
 enum BlankPlayerCap: unsigned;
+enum TemplateSentence: unsigned;
 
 
 class VerbalCover
@@ -104,10 +105,6 @@ class VerbalCover
       const unsigned char onetopIndex,
       const bool symmflag);
 
-    string strOnetopOnly(const RanksNames& ranksNames) const;
-
-    string strOnetopLength(const RanksNames& ranksNames) const;
-
 
     Completion& activateSide(const Opponent opponent);
 
@@ -150,5 +147,8 @@ class VerbalCover
       const unsigned char onetopIndex,
       TemplateData& telement) const;
 
+    string str(
+      const TemplateSentence sentence,
+      const RanksNames& ranksNames) const;
 };
 #endif

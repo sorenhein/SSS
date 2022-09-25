@@ -22,7 +22,7 @@ class RanksNames;
 enum VerbalBlank: unsigned;
 
 
-enum TemplateSentence
+enum TemplateSentence: unsigned
 {
   TEMPLATES_LENGTH_ONLY = 0,
   TEMPLATES_TOPS_ONLY = 1,
