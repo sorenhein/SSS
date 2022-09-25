@@ -661,7 +661,7 @@ string Product::strVerbalAnyTops(
 
       vector<TemplateData> tdata;
       completions.makeList(bside, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
     }
   }
   else
@@ -674,7 +674,7 @@ string Product::strVerbalAnyTops(
 
       vector<TemplateData> tdata;
       completions.makeList(bside, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
     }
   }
 
@@ -796,7 +796,7 @@ string Product::strVerbalHighTopsSide(
     {
       vector<TemplateData> tdata;
       completions.makeList(blankSide, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, tdata);
+      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
     }
 
     // This would only fail if we had more than 4 options.

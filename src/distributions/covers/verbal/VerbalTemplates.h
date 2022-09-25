@@ -217,10 +217,6 @@ class VerbalTemplates
 
     string get(
       const TemplateSentence sentence,
-      const vector<TemplateData>& tdata) const;
-
-    string get(
-      const TemplateSentence sentence,
       const RanksNames& ranksNames,
       const vector<TemplateData>& tdata) const;
 };

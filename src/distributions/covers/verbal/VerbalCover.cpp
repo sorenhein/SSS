@@ -538,7 +538,7 @@ string VerbalCover::strGeneral(
     VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
       tdata);
     
-    lstr = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, tdata);
+    lstr = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, ranksNames, tdata);
   }
 
   if (westFlag)
@@ -596,7 +596,8 @@ string VerbalCover::strGeneral(
 
       VerbalCover::getTopsData(BLANK_PLAYER_CAP_EACH, west, ranksNames, 
         tdata);
-      string snew = verbalTemplates.get(TEMPLATES_TOPS_ONLY, tdata);
+      string snew = verbalTemplates.get(TEMPLATES_TOPS_ONLY, 
+        ranksNames, tdata);
 
       if (sold == snew)
         cout << setw(40) << left << sold << "W1W " << snew << "\n";
@@ -612,7 +613,7 @@ string VerbalCover::strGeneral(
         west, 
         ranksNames, 
         tdata);
-      return verbalTemplates.get(TEMPLATES_TOPS_ONLY, tdata);
+      return verbalTemplates.get(TEMPLATES_TOPS_ONLY, ranksNames, tdata);
     }
   }
   else if (eastFlag)
@@ -625,7 +626,7 @@ string VerbalCover::strGeneral(
       ranksNames, 
       tdata);
     const string estrNew = verbalTemplates.get(
-      TEMPLATES_TOPS_ONLY, tdata);
+      TEMPLATES_TOPS_ONLY, ranksNames, tdata);
 
     string s;
     if (symmFlag)
