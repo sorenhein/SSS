@@ -87,6 +87,25 @@ Opponent Product::simpler(
 /*                                                                    */
 /**********************************************************************/
 
+void Product::study(
+  [[maybe_unused]] const Profile& sumProfile,
+  [[maybe_unused]] const unsigned char canonicalShift,
+  VerbalData& data) const
+{
+  // TODO This is an attempt at a more streamlined study.
+
+  data.reset();
+
+  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
+    topNo-- > 0; )
+  {
+    auto& top = tops[topNo];
+    if (top.used())
+      data.lowestRankUsed = topNo;
+  }
+}
+
+
 unsigned char Product::countBottoms(
   const Profile& sumProfile,
   const unsigned char canonicalShift) const
@@ -461,16 +480,9 @@ void Product::setVerbalOneTopOnly(
 {
   assert(activeCount == 1);
 
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
-  
-  VerbalData dataWest, dataEast; // Thrown away
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-
-  assert(dataWest.topsUsed == 1);
-  const unsigned char topNo = dataWest.lowestRankUsed;
+  VerbalData data;
+  Product::study(sumProfile, canonicalShift, data);
+  const unsigned char topNo = data.lowestRankUsed;
 
   // All we need for the rest is topNo and maybe topsUsed just to check.
   // TODO It seems this is always from the West side.  Should it be?
@@ -493,25 +505,16 @@ void Product::setVerbalLengthAndOneTop(
   assert(length.used());
   assert(activeCount == 1);
 
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
-
-  VerbalData dataWest, dataEast; // Thrown away
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-
   const Opponent simplestOpponent = Product::simpler(
     sumProfile, canonicalShift);
   
-  const unsigned char topNo = dataWest.lowestRankUsed;
-  assert(topNo > 0 && topNo < tops.size());
+  VerbalData data;
+  Product::study(sumProfile, canonicalShift, data);
+  const unsigned char topNo = data.lowestRankUsed;
+
   auto& top = tops[topNo];
 
   assert(top.getOperator() != COVER_EQUAL);
-
-  // For the rest we need topNo, maybe lowestRankUsed,
-  // and simplestOpponent.
 
   // TODO simplestOpponent is used for adjusted length.
   // Should it also be used here?!

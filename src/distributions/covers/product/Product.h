@@ -70,6 +70,11 @@ class Product
       const unsigned char canonicalShift) const;
 
 
+    void study(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      VerbalData& data) const;
+
     unsigned char countBottoms(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
