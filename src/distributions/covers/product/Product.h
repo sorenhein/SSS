@@ -117,11 +117,10 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
+      const Opponent simplestOpponent,
       const string& side,
-      const string& sideOther,
-      const VerbalData& data,
-      const bool singleActiveRank,
-      const bool flipAllowedFlag) const;
+      const bool symmFlag,
+      const VerbalData& data) const;
 
     void setVerbalTopsExcluding(
       const Profile& sumProfile,

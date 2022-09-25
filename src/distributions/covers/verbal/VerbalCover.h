@@ -166,8 +166,16 @@ class VerbalCover
 
     unsigned char size() const;
 
+    void fillCompletion(
+      const Opponent side,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      const Completion& completion,
+      const VerbalData& data);
+
     void fillList(
-      const BlankPlayerCap side,
+      const Opponent side,
+      const bool symmFlag,
       const RanksNames& ranksNames,
       const list<Completion>& completions);
 

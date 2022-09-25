@@ -616,13 +616,42 @@ void VerbalCover::getTopsData(
 }
 
 
+void VerbalCover::fillCompletion(
+  const Opponent side,
+  const bool symmFlag,
+  const RanksNames& ranksNames,
+  const Completion& completion,
+  const VerbalData& data)
+{
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills.resize(2);
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
+  templateFills[1].setBlank(BLANK_LIST_PHRASE);
+  templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
+    completion.strSet(ranksNames, true, data.ranksActive == 1));
+}
+
+
 void VerbalCover::fillList(
-  const BlankPlayerCap side,
+  const Opponent side,
+  const bool symmFlag,
   const RanksNames& ranksNames,
   const list<Completion>& completionsIn)
 {
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
   templateFills.resize(completionsIn.size() + 1);
-  templateFills[0].set(BLANK_PLAYER_CAP, side);
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
   size_t i = 1;
   for (auto& completion: completionsIn)

@@ -480,40 +480,28 @@ string Product::strVerbalTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
+  const Opponent simplestOpponent,
   const string& side,
-  const string& sideOther,
-  const VerbalData& data,
-  const bool singleActiveRank,
-  const bool flipAllowedFlag) const
+  const bool symmFlag,
+  const VerbalData& data) const
 {
   // The other side is known to use no tops at all.
 
-  const unsigned char numOptions = 
-    static_cast<unsigned char>(tops.size()) + 
-    canonicalShift - data.ranksUsed;
+  Completion completion;
+  Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-  if (! flipAllowedFlag ||
-      data.ranksActive < 3 || 
-      data.ranksActive <= numOptions ||
-      singleActiveRank)
-  {
-    // State it from the intended side.
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    return side + " has " + 
-      completion.strSet(ranksNames, true, data.ranksActive == 1);
-  }
-  else
-  {
-    // State it from the other side.  If the tops are not all
-    // on the high end, but scattered, this output will not make
-    // sense.  So flipAllowedFlag should only be set for high tops.
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-    return sideOther + " has " + 
-      "(" + completion.strUnset(ranksNames) + ")";
-  }
+  VerbalCover verbalCover;
+  verbalCover.fillCompletion(simplestOpponent, symmFlag,
+    ranksNames, completion, data);
+
+  const string snew = verbalCover.str(TEMPLATES_LIST, ranksNames);
+
+
+  const string sold = side + " has " + 
+    completion.strSet(ranksNames, true, data.ranksActive == 1);
+
+  return sold;
 }
 
 
@@ -559,14 +547,14 @@ string Product::strVerbalTopsOnly(
   if (dataEast.ranksActive == 0 || singleActiveRank)
   {
     return productWest.strVerbalTops(
-      sumProfile, ranksNames, canonicalShift,
-      "West", "East", dataWest, singleActiveRank, flipAllowedFlag);
+      sumProfile, ranksNames, canonicalShift, OPP_WEST, "West", 
+      symmFlag, dataWest);
   }
   else if (dataWest.ranksActive == 0)
   {
     return productEast.strVerbalTops(
-      sumProfile, ranksNames, canonicalShift,
-      "East", "West", dataEast, singleActiveRank, flipAllowedFlag);
+      sumProfile, ranksNames, canonicalShift, OPP_EAST, "East", 
+      symmFlag, dataEast);
   }
 
   bool preferWest;
@@ -666,11 +654,11 @@ string Product::strVerbalAnyTops(
     if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
-      const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
-        BLANK_PLAYER_CAP_WEST);
+      // const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+        // BLANK_PLAYER_CAP_WEST);
 
       VerbalCover verbalCover;
-      verbalCover.fillList(bside, ranksNames, completions);
+      verbalCover.fillList(OPP_WEST, symmFlag, ranksNames, completions);
       return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
   }
@@ -679,11 +667,11 @@ string Product::strVerbalAnyTops(
     if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
-      const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
-        BLANK_PLAYER_CAP_EAST);
+      // const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
+        // BLANK_PLAYER_CAP_EAST);
 
       VerbalCover verbalCover;
-      verbalCover.fillList(bside, ranksNames, completions);
+      verbalCover.fillList(OPP_EAST, symmFlag, ranksNames, completions);
       return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
   }
@@ -774,7 +762,7 @@ string Product::strVerbalHighTopsSide(
   const Opponent simplestOpponent,
   const string& side,
   const bool symmFlag,
-  const BlankPlayerCap blankSide,
+  [[maybe_unused]] const BlankPlayerCap blankSide,
   const VerbalData& data,
   const unsigned char canonicalShift) const
 {
@@ -811,7 +799,6 @@ string Product::strVerbalHighTopsSide(
     // We need up to one low card.
     // "West has Q or Qx".
     list<Completion> completions;
-
     if (! Product::makeCompletions(sumProfile, canonicalShift, 
       data, 4, completions))
     {
@@ -820,7 +807,9 @@ string Product::strVerbalHighTopsSide(
     }
 
     VerbalCover verbalCover;
-    verbalCover.fillList(blankSide, ranksNames, completions);
+    verbalCover.fillList(simplestOpponent, symmFlag, 
+      ranksNames, completions);
+
     return verbalCover.str(TEMPLATES_LIST, ranksNames);
   }
   else if (data.topsUsed == 0)
