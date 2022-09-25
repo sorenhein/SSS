@@ -118,7 +118,6 @@ class Product
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
       const Opponent simplestOpponent,
-      const string& side,
       const bool symmFlag,
       const VerbalData& data) const;
 
@@ -179,15 +178,13 @@ class Product
       const VerbalData& data,
       const bool singleActiveRank) const;
 
-    string strVerbalHighTopsOnlyBothSides(
+    string strVerbalCompletionWithLows(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const unsigned char canonicalShift,
-      const Product& productOther,
+      const RanksNames& ranksNames,
       const Opponent simplestOpponent,
       const bool symmFlag,
-      const VerbalData& data,
-      const VerbalData& dataOther) const;
+      const VerbalData& data) const;
 
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
