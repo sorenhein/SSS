@@ -22,6 +22,7 @@ using namespace std;
 class Profile;
 class RanksNames;
 struct TemplateData;
+struct VerbalData;
 enum Opponent: unsigned;
 enum BlankPlayerCap: unsigned;
 enum TemplateSentence: unsigned;
@@ -126,6 +127,15 @@ class VerbalCover
       const unsigned char onetopIndex,
       const Opponent side,
       const bool symmflag);
+
+    void fillTopsExcluding(
+      const Opponent side,
+      const bool symmFlag,
+      const Completion& completion1,
+      const Completion& completion2,
+      const VerbalData& data1,
+      const VerbalData& data2,
+      const RanksNames& ranksNames);
 
     void fillSingular(
       const Completion& completion,

@@ -522,10 +522,15 @@ string Product::strVerbalTopsDual(
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const Product& productOther,
+  const Opponent simplestOpponent,
   const string& side,
+  const bool symmFlag,
   const VerbalData& data,
-  const VerbalData& dataOther) const
+  const VerbalData& dataOther,
+  VerbalCover& verbalCover) const
 {
+  // TODO Does this deal correctly with symmetric ("Either opponent")?
+
   Completion completionRown;
   Product::makePartialProfile(
     sumProfile, canonicalShift, completionRown);
@@ -544,7 +549,21 @@ string Product::strVerbalTopsDual(
   string s = (dataOther.topsFull > 2 ? "none of" :
     (dataOther.topsFull == 2 ? "neither of" : "not"));
 
-  return side + " has " + resultOwn + " and " + s + " " + resultOther;
+  const string sold = side + " has " + resultOwn + " and " + s + " " + 
+    resultOther;
+
+  verbalCover.fillTopsExcluding(simplestOpponent, symmFlag,
+    completionRown, completionOther, data, dataOther, ranksNames);
+
+  const string snew = verbalCover.str(TEMPLATES_TOPS_EXCLUDING,
+    ranksNames);
+
+  if (sold == snew)
+    cout << "\n" << setw(50) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(50) << left << sold << "X2X " << snew << endl;
+
+  return sold;
 }
 
 
@@ -596,11 +615,16 @@ string Product::strVerbalTopsOnly(
     if (flipAllowedFlag)
       return productWest.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productEast, side, dataWest, dataEast);
+        productEast, OPP_WEST, side, symmFlag, dataWest, dataEast);
    else
-      return productWest.strVerbalTopsDual(
-        sumProfile, ranksNames, canonicalShift, 
-        productEast, side, dataWest, dataEast);
+   {
+     VerbalCover verbalCover;
+
+     return productWest.strVerbalTopsDual(
+       sumProfile, ranksNames, canonicalShift, 
+       productEast, OPP_WEST, side, symmFlag, dataWest, dataEast,
+       verbalCover);
+    }
   }
   else
   {
@@ -608,11 +632,16 @@ string Product::strVerbalTopsOnly(
     if (flipAllowedFlag)
       return productEast.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productWest, side, dataEast, dataWest);
+        productWest, OPP_EAST, side, symmFlag, dataEast, dataWest);
     else
+    {
+      VerbalCover verbalCover;
+
       return productEast.strVerbalTopsDual(
         sumProfile, ranksNames, canonicalShift, 
-        productWest, side, dataEast, dataWest);
+        productWest, OPP_EAST, side, symmFlag, dataEast, dataWest,
+        verbalCover);
+    }
   }
 }
 
@@ -711,7 +740,9 @@ string Product::strVerbalHighTopsOnlyBothSides(
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const Product& productOther,
+  const Opponent simplestOpponent,
   const string& side,
+  const bool symmFlag,
   const VerbalData& data,
   const VerbalData& dataOther) const
 {
@@ -744,9 +775,12 @@ string Product::strVerbalHighTopsOnlyBothSides(
   }
   else
   {
+    VerbalCover verbalCover;
+
     return Product::strVerbalTopsDual(
       sumProfile, ranksNames, canonicalShift, 
-        productOther, side, data, dataOther);
+        productOther, simplestOpponent, side, symmFlag, 
+        data, dataOther, verbalCover);
   }
 }
 

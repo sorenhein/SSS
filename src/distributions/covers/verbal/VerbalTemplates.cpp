@@ -89,6 +89,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
 
+    templates[TEMPLATES_TOPS_EXCLUDING] =
+      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_EXCLUDING, BLANK_TOPS}};
+
     // Up to 4 such holdings currently foreseen.
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -109,6 +113,10 @@ void VerbalTemplates::set(const Language languageIn)
     templates[TEMPLATES_TOPS_LENGTH] =
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
+
+    templates[TEMPLATES_TOPS_EXCLUDING] =
+      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
 
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -162,6 +170,11 @@ void VerbalTemplates::set(const Language languageIn)
   blank1TP[BLANK_TOPS_ONE_RANGE_PARAMS] = "%0-%1 of %2";
   blank1TP[BLANK_TOPS_ACTUAL] = "%0";
 
+  auto& blankEx = dictionary[BLANK_EXCLUDING];
+  blankEx[BLANK_EXCLUDING_NONE] = "none of";
+  blankEx[BLANK_EXCLUDING_NEITHER] = "neither of";
+  blankEx[BLANK_EXCLUDING_NOT] = "not";
+
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
 
@@ -211,6 +224,10 @@ string VerbalTemplates::get(
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
+    }
+    else if (blank == BLANK_EXCLUDING)
+    {
+      fill = VerbalTemplates::excluding(blankData);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
@@ -358,7 +375,14 @@ cout << "tdata is\n" << tdata.str() << endl;
 
     if (field == 0)
     {
-      if (tdata.completionFlag)
+      if (tdata.instance == BLANK_TOPS_ACTUAL)
+      {
+        // For now.  Later on we need the data flags and then this is
+        // probably strSet(ranksNames, topsUsed == 1, ranksActive == 1).
+        // This occurs in the dual text (a and neither of b).
+        s.replace(p, 2, tdata.text1);
+      }
+      else if (tdata.completionFlag)
         s.replace(p, 2, 
           tdata.completion.strSet(ranksNames, false, false));
       else if (tdata.numParams == 2)
@@ -383,6 +407,14 @@ cout << "tdata is\n" << tdata.str() << endl;
   }
 
   return s;
+}
+
+
+string VerbalTemplates::excluding(const TemplateData& tdata) const
+{
+  assert(tdata.numParams == 0);
+  assert(tdata.instance < dictionary[BLANK_EXCLUDING].size());
+  return dictionary[BLANK_EXCLUDING][tdata.instance];
 }
 
 

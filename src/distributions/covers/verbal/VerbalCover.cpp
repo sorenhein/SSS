@@ -16,6 +16,7 @@
 #include "VerbalBlank.h"
 
 #include "../product/Profile.h"
+#include "../product/VerbalData.h"
 
 // TODO Need whole file or just TemplateData?
 #include "VerbalTemplates.h"
@@ -164,6 +165,46 @@ void VerbalCover::fillOnetopLength(
 
   // Fill templateFills position 2 (not pretty -- too implicit?).
   VerbalCover::fillLengthAdjElement(sumProfile.length(), side);
+}
+
+
+void VerbalCover::fillTopsExcluding(
+  const Opponent side,
+  const bool symmFlag,
+  const Completion& completion1,
+  const Completion& completion2,
+  const VerbalData& data1,
+  const VerbalData& data2,
+  const RanksNames& ranksNames)
+{
+  BlankPlayerCap bside;
+
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills.resize(4);
+
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
+  // These should be expanded later in VerbalTemplates.
+  templateFills[1].setBlank(BLANK_TOPS);
+  templateFills[1].setData(BLANK_TOPS_ACTUAL,
+    completion1.strSet(ranksNames, 
+      data1.topsUsed == 1, data1.ranksActive == 1));
+
+  if (data2.topsFull <= 1)
+    templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NOT);
+  else if (data2.topsFull == 2)
+    templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NEITHER);
+  else
+    templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NONE);
+
+  templateFills[3].setBlank(BLANK_TOPS);
+  templateFills[3].setData(BLANK_TOPS_ACTUAL,
+    completion2.strSet(ranksNames, 
+      data2.topsUsed == 1, data2.ranksActive == 1));
 }
 
 

@@ -128,9 +128,12 @@ class Product
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
       const Product& productOther,
+      const Opponent simplestOpponent,
       const string& side,
+      const bool symmFlag,
       const VerbalData& data,
-      const VerbalData& dataOther) const;
+      const VerbalData& dataOther,
+      VerbalCover& verbalCover) const;
 
     string strVerbalTopsOnly(
       const Profile& sumProfile,
@@ -183,7 +186,9 @@ class Product
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
       const Product& productOther,
+      const Opponent simplestOpponent,
       const string& side,
+      const bool symmFlag,
       const VerbalData& data,
       const VerbalData& dataOther) const;
 

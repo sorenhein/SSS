@@ -29,8 +29,9 @@ enum TemplateSentence: unsigned
   TEMPLATES_TOPS_ONLY = 1,
   TEMPLATES_ONETOP = 2,
   TEMPLATES_TOPS_LENGTH = 3,
-  TEMPLATES_LIST = 4,
-  TEMPLATES_SIZE = 5
+  TEMPLATES_TOPS_EXCLUDING = 4,
+  TEMPLATES_LIST = 5,
+  TEMPLATES_SIZE = 6
 };
 
 
@@ -199,6 +200,8 @@ class VerbalTemplates
     string lengthAdj(const TemplateData& tdata) const;
 
     string topsPhrase(const TemplateData& tdata) const;
+
+    string excluding(const TemplateData& tdata) const;
 
     string onetopPhrase(
       const TemplateData& tdata,
