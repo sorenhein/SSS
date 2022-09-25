@@ -1,12 +1,19 @@
+VerbalCover should know its sentence.
+TemplateSentence -> Sentence.
+VerbalTemplate -> VerbalSlots.
+Contains up to 3 VerbalSlot's.
+Each can be an expansion of a number, a completion or ranksNames,
+each of them potentially with arguments such as bool flags.
+In VerbalTemplates, check that the blank matches the template
+expectation (maybe we do this already).
+
+
 7/1668
 Probably debatable whether AQT is A(x) or A(T).
 But at any rate the answer was inconsistent.
 For now, moving to (T) all the way.  Perhaps in ranksNames
 it should be x?
 
-there are now some that say 8((6x))
-
-Port strInside from Top.cpp, use as strOnetopData
 
 Store the texts in a language file
 

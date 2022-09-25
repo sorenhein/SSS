@@ -185,7 +185,6 @@ class Product
       const unsigned char canonicalShift,
       const Product& productOther,
       const Opponent simplestOpponent,
-      const string& side,
       const bool symmFlag,
       const VerbalData& data,
       const VerbalData& dataOther) const;

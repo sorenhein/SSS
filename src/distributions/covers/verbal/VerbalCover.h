@@ -173,6 +173,13 @@ class VerbalCover
       const Completion& completion,
       const VerbalData& data);
 
+    void fillCompletionWithLows(
+      const Opponent side,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      const Completion& completion,
+      const VerbalData& data);
+
     void fillList(
       const Opponent side,
       const bool symmFlag,

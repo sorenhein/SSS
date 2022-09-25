@@ -567,11 +567,9 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag)
     {
-      const string side = (symmFlag ? "Either opponent" : "West");
-
       return productWest.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productEast, OPP_WEST, side, symmFlag, dataWest, dataEast);
+        productEast, OPP_WEST, symmFlag, dataWest, dataEast);
     }
     else
     {
@@ -588,11 +586,9 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag)
     {
-      const string side = (symmFlag ? "Either opponent" : "East");
-
       return productEast.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productWest, OPP_EAST, side, symmFlag, dataEast, dataWest);
+        productWest, OPP_EAST, symmFlag, dataEast, dataWest);
     }
     else
     {
@@ -704,40 +700,31 @@ string Product::strVerbalHighTopsOnlyBothSides(
   const unsigned char canonicalShift,
   const Product& productOther,
   const Opponent simplestOpponent,
-  const string& side,
   const bool symmFlag,
   const VerbalData& data,
   const VerbalData& dataOther) const
 {
+  // TODO numOptions could even to in data?
   const unsigned char numOptions = 
     static_cast<unsigned char>(tops.size()) + 
     canonicalShift - data.ranksUsed;
 
-  if (numOptions == 1 ||
-      dataOther.freeUpper <= dataOther.topsFull)
+  if (numOptions == 1)
   {
     // The lowest cards are a single rank of x'es.
 
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string resultHigh = completion.strSet(ranksNames, 
-      false, data.ranksActive == 1);
 
-    const string resultLow = "(" + completion.strUnset(ranksNames) + ")";
+    VerbalCover verbalCover;
+    verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
+      ranksNames, completion, data);
 
-    return side + " has " + resultHigh + resultLow;
-  }
-  else if (dataOther.topsFull == 0)
-  {
-    Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string resultOwn = completion.strSet(ranksNames, 
-      data.topsUsed == 1, data.ranksActive == 1);
-
-    return side + " has " + resultOwn + " and perhaps lower cards";
+    return verbalCover.str(TEMPLATES_LIST, ranksNames);
   }
   else
   {
+    // "West has X and not Y".
     VerbalCover verbalCover;
 
     Product::setVerbalTopsExcluding(

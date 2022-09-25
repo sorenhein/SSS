@@ -638,6 +638,31 @@ void VerbalCover::fillCompletion(
 }
 
 
+void VerbalCover::fillCompletionWithLows(
+  const Opponent side,
+  const bool symmFlag,
+  const RanksNames& ranksNames,
+  const Completion& completion,
+  const VerbalData& data)
+{
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills.resize(2);
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
+  const string s = 
+    completion.strSet(ranksNames, false, data.ranksActive == 1) +
+    "(" + completion.strUnset(ranksNames) + ")";
+
+  templateFills[1].setBlank(BLANK_LIST_PHRASE);
+  templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);
+}
+
+
 void VerbalCover::fillList(
   const Opponent side,
   const bool symmFlag,
