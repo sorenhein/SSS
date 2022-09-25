@@ -109,7 +109,7 @@ CombinationType Combination::strategize(
 {
   if (control.outputHolding())
   {
-    cout << "Cards" << setw(3) << +ranks.size() << ": " <<
+    cout << "Cards" << setw(3) << right << +ranks.size() << ": " <<
       centry.strHolding() << endl;
   }
 

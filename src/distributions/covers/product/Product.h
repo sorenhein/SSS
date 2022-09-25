@@ -87,27 +87,6 @@ class Product
       VerbalData& dataWest,
       VerbalData& dataEast) const;
 
-    void fillUnusedTops(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const Opponent fillOpponent,
-      Product& productWest,
-      Product& productEast) const;
-
-    void fillSides(
-      const Opponent fillOpponent,
-      const unsigned char topNo,
-      const unsigned char maximum,
-      const unsigned char actual,
-      Product& productWest,
-      Product& productEast) const;
-
-    void separateSingular(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      Product& productWest,
-      Product& productEast) const;
-
     void completeSingular(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
@@ -223,16 +202,6 @@ class Product
       const unsigned char canonicalShift) const;
 
     // Singular
-
-    string strVerbalSingularQualifier(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift) const;
-
-    string strVerbalSingularSide(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const string& side,
-      const unsigned char canonicalShift) const;
 
     string strVerbalSingular(
       const Profile& sumProfile,
