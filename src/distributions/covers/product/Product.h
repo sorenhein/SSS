@@ -203,9 +203,8 @@ class Product
 
     // Singular
 
-    string strVerbalSingular(
+    void setVerbalSingular(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const bool symmFlag,
       const unsigned char canonicalShift,
       VerbalCover& verbalCover) const;

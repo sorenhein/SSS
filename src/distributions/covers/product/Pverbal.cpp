@@ -887,71 +887,26 @@ string Product::strVerbalHighTops(
 /*--------------------------------------------------------------------*/
 
 
-string Product::strVerbalSingular(
+void Product::setVerbalSingular(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
   const bool symmFlag,
   const unsigned char canonicalShift,
-  [[maybe_unused]] VerbalCover& verbalCover) const
+  VerbalCover& verbalCover) const
 {
-  assert(activeCount > 0);
-
   assert(length.used());
+  assert(activeCount > 0);
 
   const Opponent simplestOpponent = Product::simpler(
     sumProfile, canonicalShift);
 
-  string side;
-  if (Product::simpler(sumProfile, canonicalShift) == OPP_WEST)
-  {
-    side = (symmFlag ? "Either opponent" : "West");
-  }
-  else
-  {
-    side = (symmFlag ? "Either opponent" : "East");
-  }
-
-  string sold = side + " has ";
-
-  string qualifier;
-  if (simplestOpponent == OPP_WEST && (! length.used() || length.lower() > 2))
-    qualifier = "exactly";
-  else if (simplestOpponent == OPP_EAST && 
-    (! length.used() || sumProfile.length() - length.lower() > 2))
-    qualifier = "exactly";
-  else if ((simplestOpponent == OPP_WEST && length.lower() == 1) ||
-      (simplestOpponent == OPP_EAST && length.lower() + 1 == sumProfile.length()))
-  {
-    qualifier = "the singleton";
-  }
-  else
-    qualifier = "the doubleton";
-
-  sold += qualifier + " ";
-
-
-  Completion completion;
-  Product::completeSingular(sumProfile, canonicalShift, 
-    simplestOpponent, completion);
-
-  sold += completion.strSet(ranksNames, false, false);
-
-
   const unsigned char len = (simplestOpponent == OPP_WEST ?
     length.lower() : sumProfile.length() - length.lower());
 
+  Completion completion;
+  Product::completeSingular(sumProfile, canonicalShift,
+    simplestOpponent, completion);
+
   verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
-
-  const string snew = verbalCover.str(TEMPLATES_TOPS_LENGTH,
-    ranksNames);
-
-  if (sold == snew)
-    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  else
-    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
-  return sold;
-
 }
 
 
@@ -1011,12 +966,10 @@ string Product::strVerbal(
   }
   else if (verbal == VERBAL_SINGULAR)
   {
-    return Product::strVerbalSingular(
-      sumProfile, 
-      ranksNames, 
-      symmFlag, 
-      canonicalShift,
-      verbalCover);
+    Product::setVerbalSingular(
+      sumProfile, symmFlag, canonicalShift, verbalCover);
+
+    return verbalCover.str(TEMPLATES_TOPS_LENGTH, ranksNames);
   }
   else
   {
