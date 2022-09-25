@@ -163,10 +163,10 @@ class VerbalCover
 
     unsigned char size() const;
 
-    void makeList(
+    void fillList(
       const BlankPlayerCap side,
       const RanksNames& ranksNames,
-      vector<TemplateData>& tdata) const;
+      const list<Completion>& completions);
 
     string strGeneral(
       const unsigned char oppsLength,

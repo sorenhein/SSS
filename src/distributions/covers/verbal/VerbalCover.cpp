@@ -579,19 +579,19 @@ void VerbalCover::getTopsData(
 }
 
 
-void VerbalCover::makeList(
+void VerbalCover::fillList(
   const BlankPlayerCap side,
   const RanksNames& ranksNames,
-  vector<TemplateData>& tdata) const
+  const list<Completion>& completionsIn)
 {
-  tdata.resize(completions.size() + 1);
-  tdata[0].set(BLANK_PLAYER_CAP, side);
+  templateFills.resize(completionsIn.size() + 1);
+  templateFills[0].set(BLANK_PLAYER_CAP, side);
 
   size_t i = 1;
-  for (auto& completion: completions)
+  for (auto& completion: completionsIn)
   {
-    tdata[i].setBlank(BLANK_LIST_PHRASE);
-    tdata[i].setData(BLANK_LIST_PHRASE_HOLDING, 
+    templateFills[i].setBlank(BLANK_LIST_PHRASE);
+    templateFills[i].setData(BLANK_LIST_PHRASE_HOLDING, 
       completion.strSet(ranksNames, false, false, true));
     i++;
   }

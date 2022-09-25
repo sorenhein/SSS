@@ -158,7 +158,7 @@ class Product
       const unsigned char canonicalShift,
       const VerbalData& data,
       const unsigned char maxCompletions,
-      VerbalCover& completions) const;
+      list<Completion>& completions) const;
 
 
     // Any tops

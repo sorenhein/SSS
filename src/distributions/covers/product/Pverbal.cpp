@@ -34,8 +34,6 @@
 
 #include "../../../utils/table.h"
 
-extern VerbalTemplates verbalTemplates;
-
 
 /**********************************************************************/
 /*                                                                    */
@@ -336,7 +334,7 @@ bool Product::makeCompletions(
   const unsigned char canonicalShift,
   const VerbalData& data,
   const unsigned char maxCompletions,
-  VerbalCover& completions) const
+  list<Completion>& completions) const
 {
   Completion completion;
   Product::makePartialProfile(sumProfile, canonicalShift, completion);
@@ -393,7 +391,7 @@ bool Product::makeCompletions(
   }
 
   assert(stack.empty());
-  completions.stable_sort();
+  completions.sort();
   return true;
 }
 
@@ -660,7 +658,7 @@ string Product::strVerbalAnyTops(
       productWest, productEast, dataWest, dataEast, false);
   }
 
-  VerbalCover completions;
+  list<Completion> completions;
 
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
@@ -671,9 +669,9 @@ string Product::strVerbalAnyTops(
       const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
         BLANK_PLAYER_CAP_WEST);
 
-      vector<TemplateData> tdata;
-      completions.makeList(bside, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
+      VerbalCover verbalCover;
+      verbalCover.fillList(bside, ranksNames, completions);
+      return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
   }
   else
@@ -684,28 +682,29 @@ string Product::strVerbalAnyTops(
       const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
         BLANK_PLAYER_CAP_EAST);
 
-      vector<TemplateData> tdata;
-      completions.makeList(bside, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
+      VerbalCover verbalCover;
+      verbalCover.fillList(bside, ranksNames, completions);
+      return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
   }
 
-  completions.setLength(length);
+  VerbalCover verbalCover;
+  verbalCover.setLength(length);
 
   if (dataWest.ranksActive > 0)
   {
-    Completion& vcWest = completions.activateSide(OPP_WEST);
+    Completion& vcWest = verbalCover.activateSide(OPP_WEST);
     productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
   }
 
   if (dataEast.ranksActive > 0)
   {
-    Completion& vcEast = completions.activateSide(OPP_EAST);
+    Completion& vcEast = verbalCover.activateSide(OPP_EAST);
     productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
   }
 
   vector<TemplateData> tdata;
-  return completions.strGeneral(
+  return verbalCover.strGeneral(
     sumProfile.length(), symmFlag, ranksNames, tdata);
 }
 
@@ -810,21 +809,23 @@ string Product::strVerbalHighTopsSide(
   else if (numOptions == 2 && data.freeUpper == 1)
   {
     // We need up to one low card.
-    VerbalCover completions;
-    if (Product::makeCompletions(sumProfile, canonicalShift, data,
-      4, completions))
+    // "West has Q or Qx".
+    list<Completion> completions;
+
+    if (! Product::makeCompletions(sumProfile, canonicalShift, 
+      data, 4, completions))
     {
-      vector<TemplateData> tdata;
-      completions.makeList(blankSide, ranksNames, tdata);
-      return verbalTemplates.get(TEMPLATES_LIST, ranksNames, tdata);
+      // We currently never get more than 4 options.
+      assert(false);
     }
 
-    // This would only fail if we had more than 4 options.
-    assert(false);
-    return "";
+    VerbalCover verbalCover;
+    verbalCover.fillList(blankSide, ranksNames, completions);
+    return verbalCover.str(TEMPLATES_LIST, ranksNames);
   }
   else if (data.topsUsed == 0)
   {
+    // "West has at most a doubleton completely below the ten".
     VerbalCover verbalCover;
 
     verbalCover.fillBelow(
