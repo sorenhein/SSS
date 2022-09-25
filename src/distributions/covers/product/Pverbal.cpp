@@ -462,38 +462,22 @@ void Product::setVerbalLengthAndOneTop(
 }
 
 
-/*--------------------------------------------------------------------*/
-/*                                                                    */
-/*                   Equal high/any top string methods                */
-/*                                                                    */
-/*--------------------------------------------------------------------*/
-
-
-  // TEMPLATE
-  // if (sold == snew)
-    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  // else
-    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
-
-string Product::strVerbalTops(
+void Product::setVerbalTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const Opponent simplestOpponent,
   const bool symmFlag,
-  const VerbalData& data) const
+  const VerbalData& data,
+  VerbalCover& verbalCover) const
 {
   // The other side is known to use no tops at all.
 
   Completion completion;
   Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-  VerbalCover verbalCover;
   verbalCover.fillCompletion(simplestOpponent, symmFlag,
     ranksNames, completion, data);
-
-  return verbalCover.str(TEMPLATES_LIST, ranksNames);
 }
 
 
@@ -520,6 +504,67 @@ void Product::setVerbalTopsExcluding(
 }
 
 
+void Product::setVerbalCompletionWithLows(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const RanksNames& ranksNames,
+  const Opponent simplestOpponent,
+  const bool symmFlag,
+  const VerbalData& data,
+  VerbalCover& verbalCover) const
+{
+  // The lowest cards are a single rank of x'es.
+
+  Completion completion;
+  Product::makePartialProfile(sumProfile, canonicalShift, completion);
+
+  verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
+    ranksNames, completion, data);
+}
+
+
+
+// Add other set methods here
+
+
+
+void Product::setVerbalSingular(
+  const Profile& sumProfile,
+  const bool symmFlag,
+  const unsigned char canonicalShift,
+  VerbalCover& verbalCover) const
+{
+  assert(length.used());
+  assert(activeCount > 0);
+
+  const Opponent simplestOpponent = Product::simpler(
+    sumProfile, canonicalShift);
+
+  const unsigned char len = (simplestOpponent == OPP_WEST ?
+    length.lower() : sumProfile.length() - length.lower());
+
+  Completion completion;
+  Product::completeSingular(sumProfile, canonicalShift,
+    simplestOpponent, completion);
+
+  verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
+}
+
+
+/*--------------------------------------------------------------------*/
+/*                                                                    */
+/*                   Equal high/any top string methods                */
+/*                                                                    */
+/*--------------------------------------------------------------------*/
+
+
+  // TEMPLATE
+  // if (sold == snew)
+    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  // else
+    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+
 string Product::strVerbalTopsOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -538,18 +583,28 @@ string Product::strVerbalTopsOnly(
   // TODO symmFlag relevant here too?!
   if (dataEast.ranksActive == 0 || singleActiveRank)
   {
-    return productWest.strVerbalTops(
+    VerbalCover verbalCover;
+
+    productWest.setVerbalTops(
       sumProfile, ranksNames, canonicalShift, OPP_WEST,
-      symmFlag, dataWest);
+      symmFlag, dataWest, verbalCover);
+
+    return verbalCover.str(TEMPLATES_LIST, ranksNames);
   }
   else if (dataWest.ranksActive == 0)
   {
-    return productEast.strVerbalTops(
+    VerbalCover verbalCover;
+
+    productEast.setVerbalTops(
       sumProfile, ranksNames, canonicalShift, OPP_EAST,
-      symmFlag, dataEast);
+      symmFlag, dataEast, verbalCover);
+
+    return verbalCover.str(TEMPLATES_LIST, ranksNames);
   }
 
   bool preferWest;
+  // TODO This looks reasonably useful in general, but requires
+  // data to be known.
   if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
     preferWest = true;
   else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
@@ -570,9 +625,13 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      return productWest.strVerbalCompletionWithLows(
+      VerbalCover verbalCover;
+
+      productWest.setVerbalCompletionWithLows(
         sumProfile, canonicalShift, ranksNames,
-        OPP_WEST, symmFlag, dataWest);
+        OPP_WEST, symmFlag, dataWest, verbalCover);
+
+      return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
     else
     {
@@ -589,9 +648,13 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      return productEast.strVerbalCompletionWithLows(
+      VerbalCover verbalCover;
+
+      productEast.setVerbalCompletionWithLows(
         sumProfile, canonicalShift, ranksNames,
-        OPP_EAST, symmFlag, dataEast);
+        OPP_EAST, symmFlag, dataEast, verbalCover);
+
+      return verbalCover.str(TEMPLATES_LIST, ranksNames);
     }
     else
     {
@@ -632,7 +695,6 @@ string Product::strVerbalAnyTops(
   if (! length.used())
   {
     // This works for any tops as well.
-    // TODO Have we lost symmFlag here?
     return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, ranksNames,
       productWest, productEast, dataWest, dataEast, false);
@@ -689,27 +751,6 @@ string Product::strVerbalAnyTops(
 /*                     Equal high top string methods                  */
 /*                                                                    */
 /*--------------------------------------------------------------------*/
-
-string Product::strVerbalCompletionWithLows(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
-  const VerbalData& data) const
-{
-  // The lowest cards are a single rank of x'es.
-
-  Completion completion;
-  Product::makePartialProfile(sumProfile, canonicalShift, completion);
-
-  VerbalCover verbalCover;
-  verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
-    ranksNames, completion, data);
-
-  return verbalCover.str(TEMPLATES_LIST, ranksNames);
-}
-
 
 string Product::strVerbalHighTopsSide(
   const Profile& sumProfile,
@@ -851,36 +892,6 @@ string Product::strVerbalHighTops(
       symmFlag,
       bside, dataEast, canonicalShift);
   }
-}
-
-
-/*--------------------------------------------------------------------*/
-/*                                                                    */
-/*                       Singular string methods                      */
-/*                                                                    */
-/*--------------------------------------------------------------------*/
-
-
-void Product::setVerbalSingular(
-  const Profile& sumProfile,
-  const bool symmFlag,
-  const unsigned char canonicalShift,
-  VerbalCover& verbalCover) const
-{
-  assert(length.used());
-  assert(activeCount > 0);
-
-  const Opponent simplestOpponent = Product::simpler(
-    sumProfile, canonicalShift);
-
-  const unsigned char len = (simplestOpponent == OPP_WEST ?
-    length.lower() : sumProfile.length() - length.lower());
-
-  Completion completion;
-  Product::completeSingular(sumProfile, canonicalShift,
-    simplestOpponent, completion);
-
-  verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
 }
 
 

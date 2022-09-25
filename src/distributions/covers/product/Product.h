@@ -94,6 +94,8 @@ class Product
       Completion& completion) const;
 
 
+    // Simple set methods (no branches)
+
     void setVerbalLengthOnly(
       const Profile& sumProfile,
       const bool symmFlag,
@@ -111,15 +113,14 @@ class Product
       const bool symmFlag,
       VerbalCover& verbalCover) const;
 
-    // Both high tops and any tops
-
-    string strVerbalTops(
+    void setVerbalTops(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const unsigned char canonicalShift,
       const Opponent simplestOpponent,
       const bool symmFlag,
-      const VerbalData& data) const;
+      const VerbalData& data,
+      VerbalCover& verbalCover) const;
 
     void setVerbalTopsExcluding(
       const Profile& sumProfile,
@@ -131,6 +132,25 @@ class Product
       const VerbalData& data,
       const VerbalData& dataOther,
       VerbalCover& verbalCover) const;
+
+    void setVerbalCompletionWithLows(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
+      const bool symmFlag,
+      const VerbalData& data,
+      VerbalCover& verbalCover) const;
+
+
+
+    void setVerbalSingular(
+      const Profile& sumProfile,
+      const bool symmFlag,
+      const unsigned char canonicalShift,
+      VerbalCover& verbalCover) const;
+
+    // Both high tops and any tops
 
     string strVerbalTopsOnly(
       const Profile& sumProfile,
@@ -178,14 +198,6 @@ class Product
       const VerbalData& data,
       const bool singleActiveRank) const;
 
-    string strVerbalCompletionWithLows(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
-      const VerbalData& data) const;
-
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
@@ -201,14 +213,6 @@ class Product
       const RanksNames& ranksNames,
       const bool symmFlag,
       const unsigned char canonicalShift) const;
-
-    // Singular
-
-    void setVerbalSingular(
-      const Profile& sumProfile,
-      const bool symmFlag,
-      const unsigned char canonicalShift,
-      VerbalCover& verbalCover) const;
 
   public:
 
