@@ -18,7 +18,7 @@ enum VerbalBlank: unsigned
 {
   BLANK_LENGTH_VERB = 0,
   BLANK_LENGTH_ADJ = 1,
-  BLANK_ONETOP = 2,
+  BLANK_TOPS = 2,
   BLANK_TOPS_PHRASE = 3,
   BLANK_PLAYER_CAP = 4,
   BLANK_LIST_PHRASE = 5,
@@ -66,11 +66,12 @@ enum BlankLengthAdj: unsigned
   BLANK_LENGTH_ADJ_23 = 8
 };
 
-enum BlankOneTop: unsigned
+enum BlankTops: unsigned
 {
-  BLANK_ONETOP_HAS_ATMOST = 0,
-  BLANK_ONETOP_HAS_ATLEAST = 1,
-  BLANK_ONETOP_RANGE_PARAMS = 2
+  BLANK_TOPS_ONE_ATMOST = 0,
+  BLANK_TOPS_ONE_ATLEAST = 1,
+  BLANK_TOPS_ONE_RANGE_PARAMS = 2,
+  BLANK_TOPS_ACTUAL = 3
 };
 
 enum BlankTopsPhrase: unsigned

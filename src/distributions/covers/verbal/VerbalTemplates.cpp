@@ -83,14 +83,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
     templates[TEMPLATES_ONETOP] =
-      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_ONETOP}};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
 
-    templates[TEMPLATES_LENGTH_ONETOP] =
-      { "%0 %1 with %2", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
-        BLANK_ONETOP}};
-
-    templates[TEMPLATES_ONETOP_LENGTH] =
-      { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_ONETOP, 
+    templates[TEMPLATES_TOPS_LENGTH] =
+      { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
 
     // Up to 4 such holdings currently foreseen.
@@ -108,14 +104,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
     templates[TEMPLATES_ONETOP] =
-      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_ONETOP}};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
 
-    templates[TEMPLATES_LENGTH_ONETOP] =
-      { "%0 %1 with %2", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
-        BLANK_ONETOP}};
-
-    templates[TEMPLATES_ONETOP_LENGTH] =
-      { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_ONETOP, 
+    templates[TEMPLATES_TOPS_LENGTH] =
+      { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
 
     templates[TEMPLATES_LIST] =
@@ -164,10 +156,11 @@ void VerbalTemplates::set(const Language languageIn)
   blankLPA[BLANK_LENGTH_ADJ_LONG_ATMOST] = "at most %0";
   blankLPA[BLANK_LENGTH_ADJ_23] = "doubleton or tripleton";
 
-  auto& blank1TP = dictionary[BLANK_ONETOP];
-  blank1TP[BLANK_ONETOP_HAS_ATMOST] = "at most %0 of %1";
-  blank1TP[BLANK_ONETOP_HAS_ATLEAST] = "at least %0 of %1";
-  blank1TP[BLANK_ONETOP_RANGE_PARAMS] = "%0-%1 of %2";
+  auto& blank1TP = dictionary[BLANK_TOPS];
+  blank1TP[BLANK_TOPS_ONE_ATMOST] = "at most %0 of %1";
+  blank1TP[BLANK_TOPS_ONE_ATLEAST] = "at least %0 of %1";
+  blank1TP[BLANK_TOPS_ONE_RANGE_PARAMS] = "%0-%1 of %2";
+  blank1TP[BLANK_TOPS_ACTUAL] = "%0";
 
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
@@ -224,7 +217,7 @@ cout << "template:\n" << vt.str() << endl;
     {
       fill = VerbalTemplates::lengthAdj(blankData);
     }
-    else if (blank == BLANK_ONETOP)
+    else if (blank == BLANK_TOPS)
     {
       assert(false);
       // fill = VerbalTemplates::onetopPhrase(blankData);
@@ -322,7 +315,7 @@ string VerbalTemplates::get(
     {
       fill = VerbalTemplates::lengthAdj(blankData);
     }
-    else if (blank == BLANK_ONETOP)
+    else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
     }
@@ -449,12 +442,15 @@ string VerbalTemplates::onetopPhrase(
   const RanksNames& ranksNames) const
 {
   assert(tdata.numParams <= 3);
-  assert(tdata.instance < dictionary[BLANK_ONETOP].size());
+  assert(tdata.instance < dictionary[BLANK_TOPS].size());
 
-// cout << "looking up " << BLANK_ONETOP << ", " << tdata.blank << endl;
-  string s = dictionary[BLANK_ONETOP][tdata.instance];
-// cout << "tops phrase is " << s << endl;
-// cout << "tdata is " << tdata.str() << endl;
+  string s = dictionary[BLANK_TOPS][tdata.instance];
+
+/*
+cout << "\nlooking up " << BLANK_TOPS << ", " << tdata.blank << endl;
+cout << "tops phrase is" << s << endl;
+cout << "tdata is\n" << tdata.str() << endl;
+*/
 
   for (size_t field = 0; field < tdata.numParams; field++)
   {
@@ -469,7 +465,10 @@ string VerbalTemplates::onetopPhrase(
 
     if (field == 0)
     {
-      if (tdata.numParams == 2)
+      if (tdata.completionFlag)
+        s.replace(p, 2, 
+          tdata.completion.strSet(ranksNames, false, false));
+      else if (tdata.numParams == 2)
         // Use the word version
         s.replace(p, 2, topCount[tdata.param1]);
       else

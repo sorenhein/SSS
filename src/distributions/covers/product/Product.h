@@ -207,7 +207,8 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      const unsigned char canonicalShift,
+      VerbalCover& verbalCover) const;
 
   public:
 

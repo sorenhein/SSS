@@ -891,48 +891,67 @@ string Product::strVerbalSingular(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const unsigned char canonicalShift,
+  [[maybe_unused]] VerbalCover& verbalCover) const
 {
   assert(activeCount > 0);
 
+  assert(length.used());
+
+  const Opponent simplestOpponent = Product::simpler(
+    sumProfile, canonicalShift);
+
   string side;
-  Opponent sideOpp;
   if (Product::simpler(sumProfile, canonicalShift) == OPP_WEST)
   {
     side = (symmFlag ? "Either opponent" : "West");
-    sideOpp = OPP_WEST;
   }
   else
   {
     side = (symmFlag ? "Either opponent" : "East");
-    sideOpp = OPP_EAST;
   }
 
-  string snew = side + " has ";
+  string sold = side + " has ";
 
   string qualifier;
-  if (sideOpp == OPP_WEST && (! length.used() || length.lower() > 2))
+  if (simplestOpponent == OPP_WEST && (! length.used() || length.lower() > 2))
     qualifier = "exactly";
-  else if (sideOpp == OPP_EAST && 
+  else if (simplestOpponent == OPP_EAST && 
     (! length.used() || sumProfile.length() - length.lower() > 2))
     qualifier = "exactly";
-  else if ((sideOpp == OPP_WEST && length.lower() == 1) ||
-      (sideOpp == OPP_EAST && length.lower() + 1 == sumProfile.length()))
+  else if ((simplestOpponent == OPP_WEST && length.lower() == 1) ||
+      (simplestOpponent == OPP_EAST && length.lower() + 1 == sumProfile.length()))
   {
     qualifier = "the singleton";
   }
   else
     qualifier = "the doubleton";
 
-  snew += qualifier + " ";
+  sold += qualifier + " ";
 
 
   Completion completion;
-  Product::completeSingular(sumProfile, canonicalShift, sideOpp,
-    completion);
+  Product::completeSingular(sumProfile, canonicalShift, 
+    simplestOpponent, completion);
 
-  snew += completion.strSet(ranksNames, false, false);
-  return snew;
+  sold += completion.strSet(ranksNames, false, false);
+
+
+  const unsigned char len = (simplestOpponent == OPP_WEST ?
+    length.lower() : sumProfile.length() - length.lower());
+
+  verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
+
+  const string snew = verbalCover.str(TEMPLATES_TOPS_LENGTH,
+    ranksNames);
+
+  if (sold == snew)
+    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  else
+    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+  return sold;
+
 }
 
 
@@ -972,7 +991,7 @@ string Product::strVerbal(
     Product::setVerbalLengthAndOneTop(
       sumProfile, canonicalShift, symmFlag, verbalCover);
 
-    return verbalCover.str(TEMPLATES_ONETOP_LENGTH, ranksNames);
+    return verbalCover.str(TEMPLATES_TOPS_LENGTH, ranksNames);
   }
   else if (verbal == VERBAL_ANY_TOPS_EQUAL)
   {
@@ -996,7 +1015,8 @@ string Product::strVerbal(
       sumProfile, 
       ranksNames, 
       symmFlag, 
-      canonicalShift);
+      canonicalShift,
+      verbalCover);
   }
   else
   {

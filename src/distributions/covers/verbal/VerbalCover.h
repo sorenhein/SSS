@@ -127,6 +127,12 @@ class VerbalCover
       const Opponent side,
       const bool symmflag);
 
+    void fillSingular(
+      const Completion& completion,
+      const unsigned char lenCompletion,
+      const Opponent side,
+      const bool symmFlag);
+
 
     Completion& activateSide(const Opponent opponent);
 

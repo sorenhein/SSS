@@ -451,6 +451,37 @@ cout << "oppsLength " << +oppsLength << endl;
 }
 
 
+void VerbalCover::fillSingular(
+  const Completion& completion,
+  const unsigned char lenCompletion,
+  const Opponent side,
+  const bool symmFlag)
+{
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills.resize(3);
+
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
+  templateFills[1].setBlank(BLANK_TOPS);
+  templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completion);
+
+  if (lenCompletion == 1)
+    templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
+  else if (lenCompletion == 2)
+    templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
+  else if (lenCompletion == 3)
+    templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
+  else
+    templateFills[2].setData(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
+      lenCompletion);
+}
+
+
 void VerbalCover::getTopsData(
   const BlankPlayerCap side,
   const Completion& completion,
@@ -625,28 +656,28 @@ void VerbalCover::getOnetopElement(
 {
   if (oppsValue1 == 0)
   {
-    telement.setBlank(BLANK_ONETOP);
-    telement.setData(BLANK_ONETOP_HAS_ATMOST, 
+    telement.setBlank(BLANK_TOPS);
+    telement.setData(BLANK_TOPS_ONE_ATMOST, 
       oppsValue2, onetopIndex);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
-    telement.setBlank(BLANK_ONETOP);
-    telement.setData(BLANK_ONETOP_HAS_ATLEAST, 
+    telement.setBlank(BLANK_TOPS);
+    telement.setData(BLANK_TOPS_ONE_ATLEAST, 
       oppsValue1, onetopIndex);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
   {
-    telement.setBlank(BLANK_ONETOP);
-    telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
+    telement.setBlank(BLANK_TOPS);
+    telement.setData(BLANK_TOPS_ONE_RANGE_PARAMS, 
       oppsValue1, 
       oppsValue2, 
       onetopIndex);
   }
   else
   {
-    telement.setBlank(BLANK_ONETOP);
-    telement.setData(BLANK_ONETOP_RANGE_PARAMS, 
+    telement.setBlank(BLANK_TOPS);
+    telement.setData(BLANK_TOPS_ONE_RANGE_PARAMS, 
       oppsValue1, 
       oppsValue2, 
       onetopIndex);

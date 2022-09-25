@@ -14,6 +14,7 @@
 #include <string>
 
 #include "Language.h"
+#include "Completion.h"
 
 using namespace std;
 
@@ -27,10 +28,9 @@ enum TemplateSentence: unsigned
   TEMPLATES_LENGTH_ONLY = 0,
   TEMPLATES_TOPS_ONLY = 1,
   TEMPLATES_ONETOP = 2,
-  TEMPLATES_LENGTH_ONETOP = 3,
-  TEMPLATES_ONETOP_LENGTH = 4,
-  TEMPLATES_LIST = 5,
-  TEMPLATES_SIZE = 6
+  TEMPLATES_TOPS_LENGTH = 3,
+  TEMPLATES_LIST = 4,
+  TEMPLATES_SIZE = 5
 };
 
 
@@ -67,9 +67,22 @@ struct TemplateData
   string text2;
   string text3;
 
+  bool completionFlag;
+  Completion completion;
+
   void setBlank(const VerbalBlank blankIn)
   {
     blank = blankIn;
+  };
+
+  void setCompletion(
+    const unsigned instanceIn,
+    const Completion& completionIn)
+  {
+    instance = instanceIn;
+    numParams = 1;
+    completionFlag = true;
+    completion = completionIn;
   };
 
   void setData(const unsigned instanceIn)
