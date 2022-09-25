@@ -59,18 +59,21 @@ class VerbalCover
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
+      const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
     void getLengthInsideData(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
+      const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
     void getLengthData(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       const bool symmFlag,
+      const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
     void getTopsData(

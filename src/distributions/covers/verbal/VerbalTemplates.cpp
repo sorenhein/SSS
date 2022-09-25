@@ -96,7 +96,7 @@ void VerbalTemplates::set(const Language languageIn)
     // TODO The last one could be a different type to tell us
     // to look up ranksNames.lowestCard or something like it.
     templates[TEMPLATES_ONLY_BELOW] =
-      { "%0 %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
+      { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
         BLANK_BELOW, BLANK_TOPS}};
 
     // Up to 4 such holdings currently foreseen.
@@ -125,7 +125,7 @@ void VerbalTemplates::set(const Language languageIn)
         BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
 
     templates[TEMPLATES_ONLY_BELOW] =
-      { "%0 %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
+      { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
         BLANK_BELOW, BLANK_TOPS}};
 
     templates[TEMPLATES_LIST] =

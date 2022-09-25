@@ -849,9 +849,9 @@ string Product::strVerbalHighTopsSide(
 
   /*
   if (sold == snew)
-    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+    cout << "\n" << setw(50) << left << sold << "X1X " << snew << endl;
   else
-    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+    cout << "\n" << setw(50) << left << sold << "X2X " << snew << endl;
     */
 
     return sold;

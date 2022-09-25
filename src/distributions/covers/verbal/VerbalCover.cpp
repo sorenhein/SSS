@@ -111,7 +111,7 @@ void VerbalCover::fillLengthOnly(
     simplestOpponent = OPP_EAST;
 
   VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
-    templateFills);
+    true, templateFills);
 }
 
 
@@ -275,6 +275,7 @@ void VerbalCover::getLengthEqualData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
+  const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
   // Here lower and upper are identical.
@@ -292,6 +293,8 @@ void VerbalCover::getLengthEqualData(
     value = oppsLength - lengthLower;
   }
 
+// cout << "side " << side << endl;
+// cout << "value " << +value << endl;
   tdata.resize(2);
   if (value == 0)
   {
@@ -303,15 +306,21 @@ void VerbalCover::getLengthEqualData(
     tdata[0].set(BLANK_PLAYER_CAP, side);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE);
   }
-  else if (value == 2 && oppsLength > 4)
+  else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE);
   }
-  else if (value == 3 && oppsLength > 6)
+  else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
     tdata[0].set(BLANK_PLAYER_CAP, side);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE);
+  }
+  else if (! abstractableFlag)
+  {
+cout << "side " << side << endl;
+cout << "value " << +value << endl;
+    assert(false);
   }
   else if (value + value == oppsLength)
   {
@@ -332,6 +341,7 @@ void VerbalCover::getLengthInsideData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
+  const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
   BlankPlayerCap side;
@@ -378,6 +388,12 @@ void VerbalCover::getLengthInsideData(
       tdata[1].setData(BLANK_LENGTH_VERB_CARDS_ATMOST_PARAM, vUpper);
     }
   }
+  else if (! abstractableFlag)
+  {
+    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[1].setBlank(BLANK_LENGTH_VERB);
+    tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
+  }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER);
@@ -408,19 +424,24 @@ void VerbalCover::getLengthData(
   const unsigned char oppsLength,
   const Opponent simplestOpponent,
   const bool symmFlag,
+  const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
+  // If abstractableFlag is set, we must state the sentence from
+  // the intended side (and not e.g. "The suit splits 2=2" instead
+  // of "West has a doubleton").
+
   if (lengthOper == COVER_EQUAL)
   {
     VerbalCover::getLengthEqualData(
-      oppsLength, simplestOpponent, symmFlag, tdata);
+      oppsLength, simplestOpponent, symmFlag, abstractableFlag, tdata);
   }
   else if (lengthOper == COVER_INSIDE_RANGE ||
            lengthOper == COVER_LESS_EQUAL ||
            lengthOper == COVER_GREATER_EQUAL)
   {
-    VerbalCover::getLengthInsideData(oppsLength, simplestOpponent, symmFlag,
-      tdata);
+    VerbalCover::getLengthInsideData(oppsLength, simplestOpponent, 
+      symmFlag, abstractableFlag, tdata);
   }
   else
     assert(false);
@@ -514,10 +535,26 @@ void VerbalCover::fillBelow(
   else
     lengthOper = COVER_INSIDE_RANGE;
 
+// cout << "freeLower " << +freeLower << endl;
+// cout << "freeUpper " << +freeUpper << endl;
+// cout << "numBottoms " << +numBottoms << endl;
+
   // This sets numbers 0 and 1.
-  VerbalCover::getLengthData(numBottoms, side, symmFlag, 
-    templateFills);
+  // In a kludge, we first pretend that this is always from West,
+  // and then we adjust to the actual side.  This is to prevent
+  // getLengthData() from reversing the viewpoint.
+  VerbalCover::getLengthData(numBottoms, OPP_WEST, false, 
+    false, templateFills);
   
+  // And here is the fix.
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
   templateFills.resize(4);
 
   if (freeUpper == 1)
@@ -618,7 +655,7 @@ string VerbalCover::strGeneral(
       simplestOpponent = OPP_EAST;
 
     VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
-      tdata);
+      true, tdata);
     
     lstr = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, ranksNames, tdata);
   }
