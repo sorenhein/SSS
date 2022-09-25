@@ -93,6 +93,12 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_TOPS}};
 
+    // TODO The last one could be a different type to tell us
+    // to look up ranksNames.lowestCard or something like it.
+    templates[TEMPLATES_ONLY_BELOW] =
+      { "%0 %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
+        BLANK_BELOW, BLANK_TOPS}};
+
     // Up to 4 such holdings currently foreseen.
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -117,6 +123,10 @@ void VerbalTemplates::set(const Language languageIn)
     templates[TEMPLATES_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
+
+    templates[TEMPLATES_ONLY_BELOW] =
+      { "%0 %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
+        BLANK_BELOW, BLANK_TOPS}};
 
     templates[TEMPLATES_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
@@ -175,6 +185,10 @@ void VerbalTemplates::set(const Language languageIn)
   blankEx[BLANK_EXCLUDING_NEITHER] = "neither of";
   blankEx[BLANK_EXCLUDING_NOT] = "not";
 
+  auto& blankBel = dictionary[BLANK_BELOW];
+  blankBel[BLANK_BELOW_NORMAL] = "below the";
+  blankBel[BLANK_BELOW_COMPLETELY] = "completely below the";
+
   auto& blankTP = dictionary[BLANK_TOPS_PHRASE];
   blankTP[BLANK_TOPS_PHRASE_HOLDING] = "%0";
 
@@ -228,6 +242,10 @@ string VerbalTemplates::get(
     else if (blank == BLANK_EXCLUDING)
     {
       fill = VerbalTemplates::excluding(blankData);
+    }
+    else if (blank == BLANK_BELOW)
+    {
+      fill = VerbalTemplates::below(blankData);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
@@ -380,11 +398,12 @@ cout << "tdata is\n" << tdata.str() << endl;
         // For now.  Later on we need the data flags and then this is
         // probably strSet(ranksNames, topsUsed == 1, ranksActive == 1).
         // This occurs in the dual text (a and neither of b).
-        s.replace(p, 2, tdata.text1);
+        if (tdata.completionFlag)
+          s.replace(p, 2, 
+            tdata.completion.strSet(ranksNames, false, false));
+        else
+          s.replace(p, 2, tdata.text1);
       }
-      else if (tdata.completionFlag)
-        s.replace(p, 2, 
-          tdata.completion.strSet(ranksNames, false, false));
       else if (tdata.numParams == 2)
         // Use the word version
         s.replace(p, 2, topCount[tdata.param1]);
@@ -415,6 +434,14 @@ string VerbalTemplates::excluding(const TemplateData& tdata) const
   assert(tdata.numParams == 0);
   assert(tdata.instance < dictionary[BLANK_EXCLUDING].size());
   return dictionary[BLANK_EXCLUDING][tdata.instance];
+}
+
+
+string VerbalTemplates::below(const TemplateData& tdata) const
+{
+  assert(tdata.numParams == 0);
+  assert(tdata.instance < dictionary[BLANK_BELOW].size());
+  return dictionary[BLANK_BELOW][tdata.instance];
 }
 
 

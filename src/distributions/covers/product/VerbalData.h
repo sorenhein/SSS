@@ -129,6 +129,7 @@ struct VerbalData
   }
 
 
+  /*
   string strOtherSemantic() const
   {
     if (freeLower == 0)
@@ -158,6 +159,7 @@ struct VerbalData
     else
       return to_string(freeLower) + "-" + to_string(freeUpper) + " cards";
   }
+  */
 
 
   string strFreeCount() const

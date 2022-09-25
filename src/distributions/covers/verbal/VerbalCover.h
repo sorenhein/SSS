@@ -137,6 +137,15 @@ class VerbalCover
       const VerbalData& data2,
       const RanksNames& ranksNames);
 
+    void fillBelow(
+      const unsigned char freeLower,
+      const unsigned char freeUpper,
+      const unsigned char numBottoms,
+      const RanksNames& ranksNames,
+      const unsigned char rankNo,
+      const Opponent side,
+      const bool symmFlag);
+
     void fillSingular(
       const Completion& completion,
       const unsigned char lenCompletion,

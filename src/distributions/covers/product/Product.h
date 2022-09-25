@@ -123,13 +123,12 @@ class Product
       const bool singleActiveRank,
       const bool flipAllowedFlag) const;
 
-    string strVerbalTopsDual(
+    void setVerbalTopsExcluding(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const unsigned char canonicalShift,
+      const RanksNames& ranksNames,
       const Product& productOther,
       const Opponent simplestOpponent,
-      const string& side,
       const bool symmFlag,
       const VerbalData& data,
       const VerbalData& dataOther,
@@ -195,7 +194,9 @@ class Product
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
+      const Opponent simplestOpponent,
       const string& side,
+      const bool symmFlag,
       const BlankPlayerCap blankSide,
       const VerbalData& data,
       const unsigned char canonicalShift) const;

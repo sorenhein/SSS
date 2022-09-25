@@ -22,8 +22,9 @@ enum VerbalBlank: unsigned
   BLANK_TOPS_PHRASE = 3,
   BLANK_PLAYER_CAP = 4,
   BLANK_EXCLUDING = 5,
-  BLANK_LIST_PHRASE = 6,
-  BLANK_SIZE = 7
+  BLANK_BELOW = 6,
+  BLANK_LIST_PHRASE = 7,
+  BLANK_SIZE = 8
 };
 
 
@@ -80,6 +81,12 @@ enum BlankExcluding: unsigned
   BLANK_EXCLUDING_NONE = 0,
   BLANK_EXCLUDING_NEITHER = 1,
   BLANK_EXCLUDING_NOT = 2
+};
+
+enum BlankBelow: unsigned
+{
+  BLANK_BELOW_NORMAL = 0,
+  BLANK_BELOW_COMPLETELY = 1
 };
 
 enum BlankTopsPhrase: unsigned

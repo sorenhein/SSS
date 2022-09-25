@@ -492,6 +492,47 @@ cout << "oppsLength " << +oppsLength << endl;
 }
 
 
+void VerbalCover::fillBelow(
+  const unsigned char freeLower,
+  const unsigned char freeUpper,
+  const unsigned char numBottoms,
+  const RanksNames& ranksNames,
+  const unsigned char rankNo,
+  const Opponent side,
+  const bool symmFlag)
+{
+  // Make a synthetic length of small cards.
+  lengthFlag = true;
+  lengthLower = freeLower;
+  lengthUpper = freeUpper;
+  if (freeLower == freeUpper)
+    lengthOper = COVER_EQUAL;
+  else if (freeLower == 0)
+    lengthOper = COVER_LESS_EQUAL;
+  else if (freeUpper == numBottoms)
+    lengthOper = COVER_GREATER_EQUAL;
+  else
+    lengthOper = COVER_INSIDE_RANGE;
+
+  // This sets numbers 0 and 1.
+  VerbalCover::getLengthData(numBottoms, side, symmFlag, 
+    templateFills);
+  
+  templateFills.resize(4);
+
+  if (freeUpper == 1)
+    templateFills[2].set(BLANK_BELOW, BLANK_BELOW_NORMAL);
+  else
+    templateFills[2].set(BLANK_BELOW, BLANK_BELOW_COMPLETELY);
+
+  // This should be expanded later in VerbalTemplates.
+  templateFills[3].setBlank(BLANK_TOPS);
+  templateFills[3].setData(BLANK_TOPS_ACTUAL,
+    ranksNames.lowestCard(rankNo));
+}
+
+
+
 void VerbalCover::fillSingular(
   const Completion& completion,
   const unsigned char lenCompletion,
