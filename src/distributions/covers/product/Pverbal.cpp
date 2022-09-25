@@ -467,15 +467,15 @@ void Product::setVerbalLengthOnly(
 {
   assert(activeCount == 0);
 
-  verbalCover.setLength(length);
-  verbalCover.fillLengthOnly(sumProfile.length(), symmFlag);
+  // verbalCover.setLength(length);
+  verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
 }
 
 
 void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
-  const bool symmFlag,
   const unsigned char canonicalShift,
+  const bool symmFlag,
   VerbalCover& verbalCover) const
 {
   assert(activeCount == 1);
@@ -483,53 +483,40 @@ void Product::setVerbalOneTopOnly(
   VerbalData data;
   Product::study(sumProfile, canonicalShift, data);
   const unsigned char topNo = data.lowestRankUsed;
-
-  // All we need for the rest is topNo and maybe topsUsed just to check.
-  // TODO It seems this is always from the West side.  Should it be?
   assert(tops[topNo].getOperator() != COVER_EQUAL);
+
+  const Opponent simplestOpponent = Product::simpler(
+    sumProfile, canonicalShift);
 
   verbalCover.fillOnetopOnly(
     tops[topNo],
     sumProfile[topNo + canonicalShift],
-    canonicalShift + topNo,
+    topNo + canonicalShift,
+    simplestOpponent,
     symmFlag);
 }
 
 
 void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
-  const bool symmFlag,
   const unsigned char canonicalShift,
+  const bool symmFlag,
   VerbalCover& verbalCover) const
 {
   assert(length.used());
   assert(activeCount == 1);
 
-  const Opponent simplestOpponent = Product::simpler(
-    sumProfile, canonicalShift);
-  
   VerbalData data;
   Product::study(sumProfile, canonicalShift, data);
   const unsigned char topNo = data.lowestRankUsed;
+  assert(tops[topNo].getOperator() != COVER_EQUAL);
 
-  auto& top = tops[topNo];
+  const Opponent simplestOpponent = Product::simpler(
+    sumProfile, canonicalShift);
 
-  assert(top.getOperator() != COVER_EQUAL);
-
-  // TODO simplestOpponent is used for adjusted length.
-  // Should it also be used here?!
-
-  verbalCover.setLength(length);
-
-  verbalCover.fillOnetopOnly(
-    tops[topNo],
-    sumProfile[topNo + canonicalShift],
-    canonicalShift + topNo,
-    symmFlag);
-
-  verbalCover.fillLengthAdjElement(
-    sumProfile.length(),
-    simplestOpponent);
+  verbalCover.fillOnetopLength(
+    length, tops[topNo], sumProfile, topNo + canonicalShift,
+    simplestOpponent, symmFlag);
 }
 
 
@@ -621,8 +608,9 @@ string Product::strVerbalTopsDual(
 
 string Product::strVerbalTopsOnly(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
   const unsigned char canonicalShift,
+  const bool symmFlag,
+  const RanksNames& ranksNames,
   const Product& productWest,
   const Product& productEast,
   const VerbalData& dataWest,
@@ -633,6 +621,7 @@ string Product::strVerbalTopsOnly(
     (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
      dataWest.lowestRankActive == dataEast.lowestRankActive);
 
+  // TODO symmFlag relevant here too?!
   if (dataEast.ranksActive == 0 || singleActiveRank)
   {
     return productWest.strVerbalTops(
@@ -658,30 +647,30 @@ string Product::strVerbalTopsOnly(
   else
     preferWest = productWest.topsSimpler(sumProfile, canonicalShift);
 
-    // preferWest = productWest.topsSimplerThan(productEast);
-
   // TODO This part unchecked concerning any-tops.
   if (preferWest)
   {
+    const string side = (symmFlag ? "Either opponent" : "West");
     if (flipAllowedFlag)
       return productWest.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productEast, "West", dataWest, dataEast);
+        productEast, side, dataWest, dataEast);
    else
       return productWest.strVerbalTopsDual(
         sumProfile, ranksNames, canonicalShift, 
-        productEast, "West", dataWest, dataEast);
+        productEast, side, dataWest, dataEast);
   }
   else
   {
+    const string side = (symmFlag ? "Either opponent" : "East");
     if (flipAllowedFlag)
       return productEast.strVerbalHighTopsOnlyBothSides(
         sumProfile, ranksNames, canonicalShift,
-        productWest, "East", dataEast, dataWest);
+        productWest, side, dataEast, dataWest);
     else
       return productEast.strVerbalTopsDual(
         sumProfile, ranksNames, canonicalShift, 
-        productWest, "East", dataEast, dataWest);
+        productWest, side, dataEast, dataWest);
   }
 }
 
@@ -712,8 +701,9 @@ string Product::strVerbalAnyTops(
   {
     // This works for any tops as well.
     // TODO Have we lost symmFlag here?
-    return Product::strVerbalTopsOnly(sumProfile, ranksNames,
-      canonicalShift, productWest, productEast, dataWest, dataEast, false);
+    return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
+      symmFlag, ranksNames,
+      productWest, productEast, dataWest, dataEast, false);
   }
 
   VerbalCover completions;
@@ -799,7 +789,7 @@ string Product::strVerbalHighTopsOnlyBothSides(
 
     const string resultLow = "(" + completion.strUnset(ranksNames) + ")";
 
-    return side + " has " + resultHigh + "(" + resultLow + ")";
+    return side + " has " + resultHigh + resultLow;
   }
   else if (dataOther.topsFull == 0)
   {
@@ -922,8 +912,9 @@ string Product::strVerbalHighTops(
 
   if (! length.used())
   {
-    return Product::strVerbalTopsOnly(sumProfile, ranksNames,
-      canonicalShift, productWest, productEast, dataWest, dataEast, true);
+    return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
+      symmFlag, ranksNames,
+      productWest, productEast, dataWest, dataEast, true);
   }
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
@@ -1047,7 +1038,7 @@ string Product::strVerbal(
 
   VerbalCover verbalCover;
 
-// cout << "\nProduct " << Product::strLine() << "\n";
+ // cout << "\nProduct " << Product::strLine() << "\n";
   if (verbal == VERBAL_LENGTH_ONLY)
   {
     Product::setVerbalLengthOnly(sumProfile, symmFlag, verbalCover);
@@ -1057,14 +1048,14 @@ string Product::strVerbal(
   else if (verbal == VERBAL_TOPS_ONLY)
   {
     Product::setVerbalOneTopOnly(
-      sumProfile, symmFlag, canonicalShift, verbalCover);
+      sumProfile, canonicalShift, symmFlag, verbalCover);
 
     return verbalCover.str(TEMPLATES_ONETOP, ranksNames);
   }
   else if (verbal == VERBAL_LENGTH_AND_ONE_TOP)
   {
     Product::setVerbalLengthAndOneTop(
-      sumProfile, symmFlag, canonicalShift, verbalCover);
+      sumProfile, canonicalShift, symmFlag, verbalCover);
 
     return verbalCover.str(TEMPLATES_ONETOP_LENGTH, ranksNames);
   }

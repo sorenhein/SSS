@@ -15,6 +15,8 @@
 #include "VerbalCover.h"
 #include "VerbalBlank.h"
 
+#include "../product/Profile.h"
+
 // TODO Need whole file or just TemplateData?
 #include "VerbalTemplates.h"
 
@@ -91,9 +93,12 @@ void VerbalCover::setLength(const Term& length)
 
 
 void VerbalCover::fillLengthOnly(
+  const Term& length,
   const unsigned char oppsLength,
   const bool symmFlag)
 {
+  VerbalCover::setLength(length);
+
   Opponent simplestOpponent;
   if (symmFlag)
     simplestOpponent = OPP_WEST;
@@ -113,17 +118,52 @@ void VerbalCover::fillOnetopOnly(
   const Term& top,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
+  const Opponent side,
   const bool symmFlag)
 {
-  // TODO Always West?
+  if (side == OPP_WEST || side == OPP_EITHER)
+  {
+    VerbalCover::getOnetopData(
+      top.lower(),
+      top.upper(),
+      oppsSize,
+      onetopIndex,
+      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+      templateFills);
+  }
+  else
+  {
+    VerbalCover::getOnetopData(
+      top.upper() == 0xf ? 0 : oppsSize - top.upper(),
+      oppsSize - top.lower(),
+      oppsSize,
+      onetopIndex,
+      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST,
+      templateFills);
+  }
+}
 
-  VerbalCover::getOnetopData(
-    top.lower(),
-    top.upper(),
-    oppsSize,
+
+void VerbalCover::fillOnetopLength(
+  const Term& length,
+  const Term& top,
+  const Profile& sumProfile,
+  const unsigned char onetopIndex,
+  const Opponent side,
+  const bool symmFlag)
+{
+  VerbalCover::setLength(length);
+
+  // Fill templateFills positions 0 and 1.
+  VerbalCover::fillOnetopOnly(
+    top,
+    sumProfile[onetopIndex],
     onetopIndex,
-    symmFlag ? BLANK_PLAYER_CAP_EITHER: BLANK_PLAYER_CAP_WEST,
-    templateFills);
+    side,
+    symmFlag);
+
+  // Fill templateFills position 2 (not pretty -- too implicit?).
+  VerbalCover::fillLengthAdjElement(sumProfile.length(), side);
 }
 
 

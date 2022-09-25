@@ -19,6 +19,7 @@
 
 using namespace std;
 
+class Profile;
 class RanksNames;
 struct TemplateData;
 enum Opponent: unsigned;
@@ -77,6 +78,17 @@ class VerbalCover
       const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
 
+    void fillLengthAdjElement(
+      const unsigned char oppsLength,
+      const Opponent simplestOpponent);
+
+    void getOnetopElement(
+      const unsigned char oppsValue1,
+      const unsigned char oppsValue2,
+      const unsigned char oppsSize,
+      const unsigned char onetopIndex,
+      TemplateData& telement) const;
+
 
 
   public:
@@ -91,6 +103,7 @@ class VerbalCover
     void setLength(const Term& length);
 
     void fillLengthOnly(
+      const Term& length,
       const unsigned char oppsLength,
       const bool symmFlag);
 
@@ -103,6 +116,15 @@ class VerbalCover
       const Term& top,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
+      const Opponent side,
+      const bool symmflag);
+
+    void fillOnetopLength(
+      const Term& length,
+      const Term& top,
+      const Profile& sumProfile,
+      const unsigned char onetopIndex,
+      const Opponent side,
       const bool symmflag);
 
 
@@ -135,17 +157,6 @@ class VerbalCover
       const unsigned char onetopIndex,
       const BlankPlayerCap side,
       vector<TemplateData>& tdata) const;
-
-    void fillLengthAdjElement(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent);
-
-    void getOnetopElement(
-      const unsigned char oppsValue1,
-      const unsigned char oppsValue2,
-      const unsigned char oppsSize,
-      const unsigned char onetopIndex,
-      TemplateData& telement) const;
 
     string str(
       const TemplateSentence sentence,
