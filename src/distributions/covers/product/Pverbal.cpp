@@ -470,7 +470,7 @@ void Product::setVerbalLengthAndOneTop(
 
 
   // TEMPLATE
-  // if (sold == sne
+  // if (sold == snew)
     // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
   // else
     // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
@@ -481,7 +481,7 @@ string Product::strVerbalTops(
   const RanksNames& ranksNames,
   const unsigned char canonicalShift,
   const Opponent simplestOpponent,
-  const string& side,
+  [[maybe_unused]] const string& side,
   const bool symmFlag,
   const VerbalData& data) const
 {
@@ -490,18 +490,11 @@ string Product::strVerbalTops(
   Completion completion;
   Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-
   VerbalCover verbalCover;
   verbalCover.fillCompletion(simplestOpponent, symmFlag,
     ranksNames, completion, data);
 
-  const string snew = verbalCover.str(TEMPLATES_LIST, ranksNames);
-
-
-  const string sold = side + " has " + 
-    completion.strSet(ranksNames, true, data.ranksActive == 1);
-
-  return sold;
+  return verbalCover.str(TEMPLATES_LIST, ranksNames);
 }
 
 
