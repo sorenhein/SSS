@@ -93,6 +93,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_TOPS}};
 
+    templates[TEMPLATES_TOPS_AND_XES] =
+      { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_BOTTOMS}};
+
     // TODO The last one could be a different type to tell us
     // to look up ranksNames.lowestCard or something like it.
     templates[TEMPLATES_ONLY_BELOW] =
@@ -123,6 +127,10 @@ void VerbalTemplates::set(const Language languageIn)
     templates[TEMPLATES_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
+
+    templates[TEMPLATES_TOPS_AND_XES] =
+      { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_BOTTOMS}};
 
     templates[TEMPLATES_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
@@ -179,6 +187,9 @@ void VerbalTemplates::set(const Language languageIn)
   blank1TP[BLANK_TOPS_ONE_ATLEAST] = "at least %0 of %1";
   blank1TP[BLANK_TOPS_ONE_RANGE_PARAMS] = "%0-%1 of %2";
   blank1TP[BLANK_TOPS_ACTUAL] = "%0";
+
+  auto& blankBot = dictionary[BLANK_BOTTOMS];
+  blankBot[BLANK_BOTTOMS_NORMAL] = "%0";
 
   auto& blankEx = dictionary[BLANK_EXCLUDING];
   blankEx[BLANK_EXCLUDING_NONE] = "none of";
@@ -238,6 +249,10 @@ string VerbalTemplates::get(
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
+    }
+    else if (blank == BLANK_BOTTOMS)
+    {
+      fill = VerbalTemplates::bottoms(blankData);
     }
     else if (blank == BLANK_EXCLUDING)
     {
@@ -454,6 +469,29 @@ string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
   string s = dictionary[BLANK_TOPS_PHRASE][tdata.instance];
 // cout << "tops phrase is " << s << endl;
 // cout << "tdata is " << tdata.str() << endl;
+
+  for (size_t field = 0; field < tdata.numParams; field++)
+  {
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+      assert(false);
+
+    if (field == 0)
+      s.replace(p, 2, tdata.text1);
+    else
+      assert(false);
+  }
+
+  return s;
+}
+
+
+string VerbalTemplates::bottoms(const TemplateData& tdata) const
+{
+  assert(tdata.numParams == 1);
+  assert(tdata.instance < dictionary[BLANK_BOTTOMS].size());
+
+  string s = dictionary[BLANK_BOTTOMS][tdata.instance];
 
   for (size_t field = 0; field < tdata.numParams; field++)
   {

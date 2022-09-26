@@ -20,11 +20,12 @@ enum VerbalBlank: unsigned
   BLANK_LENGTH_ADJ = 1,
   BLANK_TOPS = 2,
   BLANK_TOPS_PHRASE = 3,
-  BLANK_PLAYER_CAP = 4,
-  BLANK_EXCLUDING = 5,
-  BLANK_BELOW = 6,
-  BLANK_LIST_PHRASE = 7,
-  BLANK_SIZE = 8
+  BLANK_BOTTOMS = 4,
+  BLANK_PLAYER_CAP = 5,
+  BLANK_EXCLUDING = 6,
+  BLANK_BELOW = 7,
+  BLANK_LIST_PHRASE = 8,
+  BLANK_SIZE = 9
 };
 
 
@@ -74,6 +75,11 @@ enum BlankTops: unsigned
   BLANK_TOPS_ONE_ATLEAST = 1,
   BLANK_TOPS_ONE_RANGE_PARAMS = 2,
   BLANK_TOPS_ACTUAL = 3
+};
+
+enum BlankBottoms: unsigned
+{
+  BLANK_BOTTOMS_NORMAL = 0
 };
 
 enum BlankExcluding: unsigned

@@ -6,6 +6,7 @@ Each can be an expansion of a number, a completion or ranksNames,
 each of them potentially with arguments such as bool flags.
 In VerbalTemplates, check that the blank matches the template
 expectation (maybe we do this already).
+Maybe no productWest/East but straight to completion?
 
 
 7/1668

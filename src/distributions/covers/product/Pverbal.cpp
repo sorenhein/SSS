@@ -204,14 +204,6 @@ void Product::completeSingular(
     (data.topsUsed == wlength || data.topsUsed + numBottoms == wlength ?
     OPP_EAST : OPP_WEST);
 
-/*
-cout << "Product " << Product::strLine() << endl;
-cout << "side " << side << "\n";
-cout << data.str("data");
-cout << "numBottoms " << +numBottoms << endl;
-cout << "side for unused " << sideForUnused << endl;
- */
-
   // Cover from the highest top down to canonicalShift (exclusive).
   // If canonicalShift is 0, then we will stop at 1, but then the 0th
   // real top is by convention unset.
@@ -770,25 +762,11 @@ string Product::strVerbalHighTopsSide(
   {
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    const string resultHigh = completion.strSet(ranksNames, 
-      false, data.ranksActive == 1);
 
-    const string sold = data.strXes(false, false);
-
-    // This is not the same, e.g. x(x) vs (xx), (xx) vs (QJT987).
-    // It also confuses T(98) with x(xx).  Look at ranksNames.
-
-    /*
-    const string snew = "(" + completion.strUnset(ranksNames) + ")";
-
-  if (sold == snew)
-    cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  else
-    cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-    */
-
-    // We only have to set the x'es.
-    return side + " has " + resultHigh + sold;
+    VerbalCover verbalCover;
+    verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames,
+      completion, data);
+     return verbalCover.str(TEMPLATES_TOPS_AND_XES, ranksNames);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
