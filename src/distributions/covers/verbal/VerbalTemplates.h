@@ -15,26 +15,13 @@
 
 #include "Language.h"
 #include "Completion.h"
+#include "VerbalBlank.h"
 
 using namespace std;
 
 class RanksNames;
 
 enum VerbalBlank: unsigned;
-
-
-enum TemplateSentence: unsigned
-{
-  TEMPLATES_LENGTH_ONLY = 0,
-  TEMPLATES_TOPS_ONLY = 1,
-  TEMPLATES_ONETOP = 2,
-  TEMPLATES_TOPS_LENGTH = 3,
-  TEMPLATES_TOPS_EXCLUDING = 4,
-  TEMPLATES_TOPS_AND_XES = 5,
-  TEMPLATES_ONLY_BELOW = 6,
-  TEMPLATES_LIST = 7,
-  TEMPLATES_SIZE = 8
-};
 
 
 struct VerbalTemplate
@@ -225,7 +212,7 @@ class VerbalTemplates
     void set(const Language languageIn);
 
     string get(
-      const TemplateSentence sentence,
+      const Sentence sentence,
       const RanksNames& ranksNames,
       const vector<TemplateData>& tdata) const;
 };

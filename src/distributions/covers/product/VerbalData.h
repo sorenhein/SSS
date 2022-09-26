@@ -78,6 +78,7 @@ struct VerbalData
   }
 
 
+  /*
   string strXes(
     const bool dashFlag,
     const bool expandFlag) const
@@ -96,6 +97,7 @@ struct VerbalData
       return text + "(" + string(freeUpper, 'x') + ")";
     }
   }
+  */
 
 
   string strFreeCount() const

@@ -581,7 +581,7 @@ string Product::strVerbalTopsOnly(
       sumProfile, ranksNames, canonicalShift, OPP_WEST,
       symmFlag, dataWest, verbalCover);
 
-    return verbalCover.str(TEMPLATES_LIST, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else if (dataWest.ranksActive == 0)
   {
@@ -591,7 +591,7 @@ string Product::strVerbalTopsOnly(
       sumProfile, ranksNames, canonicalShift, OPP_EAST,
       symmFlag, dataEast, verbalCover);
 
-    return verbalCover.str(TEMPLATES_LIST, ranksNames);
+    return verbalCover.str(ranksNames);
   }
 
   bool preferWest;
@@ -623,7 +623,7 @@ string Product::strVerbalTopsOnly(
         sumProfile, canonicalShift, ranksNames,
         OPP_WEST, symmFlag, dataWest, verbalCover);
 
-      return verbalCover.str(TEMPLATES_LIST, ranksNames);
+      return verbalCover.str(ranksNames);
     }
     else
     {
@@ -633,7 +633,7 @@ string Product::strVerbalTopsOnly(
         sumProfile, canonicalShift, ranksNames, productEast, 
         OPP_WEST, symmFlag, dataWest, dataEast, verbalCover);
 
-      return verbalCover.str(TEMPLATES_TOPS_EXCLUDING, ranksNames);
+      return verbalCover.str(ranksNames);
     }
   }
   else
@@ -646,7 +646,7 @@ string Product::strVerbalTopsOnly(
         sumProfile, canonicalShift, ranksNames,
         OPP_EAST, symmFlag, dataEast, verbalCover);
 
-      return verbalCover.str(TEMPLATES_LIST, ranksNames);
+      return verbalCover.str(ranksNames);
     }
     else
     {
@@ -656,7 +656,7 @@ string Product::strVerbalTopsOnly(
         sumProfile, canonicalShift, ranksNames, productWest, 
         OPP_EAST, symmFlag, dataEast, dataWest, verbalCover);
 
-      return verbalCover.str(TEMPLATES_TOPS_EXCLUDING, ranksNames);
+      return verbalCover.str(ranksNames);
     }
   }
 }
@@ -702,7 +702,7 @@ string Product::strVerbalAnyTops(
     {
       VerbalCover verbalCover;
       verbalCover.fillList(OPP_WEST, symmFlag, ranksNames, completions);
-      return verbalCover.str(TEMPLATES_LIST, ranksNames);
+      return verbalCover.str(ranksNames);
     }
   }
   else
@@ -712,7 +712,7 @@ string Product::strVerbalAnyTops(
     {
       VerbalCover verbalCover;
       verbalCover.fillList(OPP_EAST, symmFlag, ranksNames, completions);
-      return verbalCover.str(TEMPLATES_LIST, ranksNames);
+      return verbalCover.str(ranksNames);
     }
   }
 
@@ -766,7 +766,7 @@ string Product::strVerbalHighTopsSide(
     VerbalCover verbalCover;
     verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames,
       completion, data);
-     return verbalCover.str(TEMPLATES_TOPS_AND_XES, ranksNames);
+     return verbalCover.str(ranksNames);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
@@ -784,7 +784,7 @@ string Product::strVerbalHighTopsSide(
     verbalCover.fillList(simplestOpponent, symmFlag, 
       ranksNames, completions);
 
-    return verbalCover.str(TEMPLATES_LIST, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else if (data.topsUsed == 0)
   {
@@ -800,7 +800,7 @@ string Product::strVerbalHighTopsSide(
       simplestOpponent,
       symmFlag);
 
-    return verbalCover.str(TEMPLATES_ONLY_BELOW, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else
   {
@@ -895,21 +895,21 @@ string Product::strVerbal(
   {
     Product::setVerbalLengthOnly(sumProfile, symmFlag, verbalCover);
     
-    return verbalCover.str(TEMPLATES_LENGTH_ONLY, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else if (verbal == VERBAL_TOPS_ONLY)
   {
     Product::setVerbalOneTopOnly(
       sumProfile, canonicalShift, symmFlag, verbalCover);
 
-    return verbalCover.str(TEMPLATES_ONETOP, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else if (verbal == VERBAL_LENGTH_AND_ONE_TOP)
   {
     Product::setVerbalLengthAndOneTop(
       sumProfile, canonicalShift, symmFlag, verbalCover);
 
-    return verbalCover.str(TEMPLATES_TOPS_LENGTH, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else if (verbal == VERBAL_ANY_TOPS_EQUAL)
   {
@@ -932,7 +932,7 @@ string Product::strVerbal(
     Product::setVerbalSingular(
       sumProfile, symmFlag, canonicalShift, verbalCover);
 
-    return verbalCover.str(TEMPLATES_TOPS_LENGTH, ranksNames);
+    return verbalCover.str(ranksNames);
   }
   else
   {

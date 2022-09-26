@@ -67,6 +67,7 @@ const vector<string> topOrdinal =
 
 VerbalCover::VerbalCover()
 {
+  sentence = SENTENCE_SIZE;
   lengthFlag = false;
   lengthLower = 0;
   lengthUpper = 0;
@@ -81,6 +82,12 @@ VerbalCover::VerbalCover()
 void VerbalCover::push_back(const Completion& completion)
 {
   completions.push_back(completion);
+}
+
+
+void VerbalCover::setSentence(const Sentence sentenceIn)
+{
+  sentence = sentenceIn;
 }
 
 
@@ -99,6 +106,7 @@ void VerbalCover::fillLengthOnly(
   const bool symmFlag)
 {
   VerbalCover::setLength(length);
+  sentence = SENTENCE_LENGTH_ONLY;
 
   Opponent simplestOpponent;
   if (symmFlag)
@@ -122,6 +130,8 @@ void VerbalCover::fillOnetopOnly(
   const Opponent side,
   const bool symmFlag)
 {
+  sentence = SENTENCE_ONETOP;
+
   if (side == OPP_WEST || side == OPP_EITHER)
   {
     VerbalCover::getOnetopData(
@@ -165,6 +175,8 @@ void VerbalCover::fillOnetopLength(
 
   // Fill templateFills position 2 (not pretty -- too implicit?).
   VerbalCover::fillLengthAdjElement(sumProfile.length(), side);
+
+  sentence = SENTENCE_TOPS_LENGTH;
 }
 
 
@@ -177,6 +189,8 @@ void VerbalCover::fillTopsExcluding(
   const VerbalData& data2,
   const RanksNames& ranksNames)
 {
+  sentence = SENTENCE_TOPS_EXCLUDING;
+
   BlankPlayerCap bside;
 
   if (side == OPP_WEST)
@@ -522,6 +536,8 @@ void VerbalCover::fillBelow(
   const Opponent side,
   const bool symmFlag)
 {
+  sentence = SENTENCE_ONLY_BELOW;
+
   // Make a synthetic length of small cards.
   lengthFlag = true;
   lengthLower = freeLower;
@@ -576,6 +592,8 @@ void VerbalCover::fillSingular(
   const Opponent side,
   const bool symmFlag)
 {
+  sentence = SENTENCE_TOPS_LENGTH;
+
   BlankPlayerCap bside;
   if (side == OPP_WEST)
     bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
@@ -623,6 +641,8 @@ void VerbalCover::fillCompletion(
   const Completion& completion,
   const VerbalData& data)
 {
+  sentence = SENTENCE_LIST;
+
   BlankPlayerCap bside;
   if (side == OPP_WEST)
     bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
@@ -645,6 +665,8 @@ void VerbalCover::fillCompletionWithLows(
   const Completion& completion,
   const VerbalData& data)
 {
+  sentence = SENTENCE_LIST;
+
   BlankPlayerCap bside;
   if (side == OPP_WEST)
     bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
@@ -670,6 +692,8 @@ void VerbalCover::fillBottoms(
   const Completion& completion,
   const VerbalData& data)
 {
+  sentence = SENTENCE_TOPS_AND_XES;
+
   BlankPlayerCap bside;
   if (side == OPP_WEST)
     bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
@@ -701,6 +725,8 @@ void VerbalCover::fillList(
   const RanksNames& ranksNames,
   const list<Completion>& completionsIn)
 {
+  sentence = SENTENCE_LIST;
+
   BlankPlayerCap bside;
   if (side == OPP_WEST)
     bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
@@ -727,6 +753,8 @@ string VerbalCover::strGeneral(
   const RanksNames& ranksNames,
   vector<TemplateData>& tdata) const
 {
+  assert(lengthFlag);
+
   string lstr = "", wstr = "", estr = "";
   if (lengthFlag)
   {
@@ -743,7 +771,7 @@ string VerbalCover::strGeneral(
     VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
       true, tdata);
     
-    lstr = verbalTemplates.get(TEMPLATES_LENGTH_ONLY, ranksNames, tdata);
+    lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
   }
 
   if (westFlag)
@@ -801,7 +829,7 @@ string VerbalCover::strGeneral(
 
       VerbalCover::getTopsData(BLANK_PLAYER_CAP_EACH, west, ranksNames, 
         tdata);
-      string snew = verbalTemplates.get(TEMPLATES_TOPS_ONLY, 
+      string snew = verbalTemplates.get(SENTENCE_TOPS_ONLY, 
         ranksNames, tdata);
 
       if (sold == snew)
@@ -818,7 +846,7 @@ string VerbalCover::strGeneral(
         west, 
         ranksNames, 
         tdata);
-      return verbalTemplates.get(TEMPLATES_TOPS_ONLY, ranksNames, tdata);
+      return verbalTemplates.get(SENTENCE_TOPS_ONLY, ranksNames, tdata);
     }
   }
   else if (eastFlag)
@@ -831,7 +859,7 @@ string VerbalCover::strGeneral(
       ranksNames, 
       tdata);
     const string estrNew = verbalTemplates.get(
-      TEMPLATES_TOPS_ONLY, ranksNames, tdata);
+      SENTENCE_TOPS_ONLY, ranksNames, tdata);
 
     string s;
     if (symmFlag)
@@ -917,9 +945,7 @@ void VerbalCover::getOnetopData(
 }
 
 
-string VerbalCover::str(
-  const TemplateSentence sentence,
-  const RanksNames& ranksNames) const
+string VerbalCover::str(const RanksNames& ranksNames) const
 {
   return verbalTemplates.get(sentence, ranksNames, templateFills);
 }

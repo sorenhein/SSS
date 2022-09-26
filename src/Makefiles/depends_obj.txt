@@ -40,7 +40,8 @@ driver.obj: distributions/covers/TrickConvert.h
 driver.obj: distributions/covers/term/TermCompare.h inputs/Control.h
 driver.obj: inputs/Entity.h inputs/Convert.h strategies/result/ResConvert.h
 driver.obj: distributions/covers/verbal/VerbalTemplates.h
-driver.obj: distributions/covers/verbal/Language.h utils/Timers.h
+driver.obj: distributions/covers/verbal/Language.h
+driver.obj: distributions/covers/verbal/VerbalBlank.h utils/Timers.h
 driver.obj: utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
@@ -536,16 +537,15 @@ distributions/covers/product/Pverbal.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/VerbalData.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/Language.h
+distributions/covers/product/Pverbal.obj: ranks/Completion.h utils/Card.h
+distributions/covers/product/Pverbal.obj: utils/Compare.h
+distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalBlank.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalBlank.h
 distributions/covers/product/Pverbal.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalCover.h
-distributions/covers/product/Pverbal.obj: ranks/Completion.h utils/Card.h
-distributions/covers/product/Pverbal.obj: utils/Compare.h
 distributions/covers/product/Pverbal.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/product/Pverbal.obj: distributions/covers/term/TopData.h
-distributions/covers/product/Pverbal.obj: utils/table.h ranks/RankNames.h
 distributions/covers/product/Pverbal.obj: ranks/RanksNames.h
-distributions/covers/product/Pverbal.obj: ranks/RankNames.h
+distributions/covers/product/Pverbal.obj: ranks/RankNames.h utils/table.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/Product.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/term/Term.h
@@ -578,16 +578,22 @@ distributions/covers/verbal/Completion.obj: ranks/RankNames.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalCover.h
 distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalBlank.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalBlank.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/product/Profile.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/product/VerbalData.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Language.h
 distributions/covers/verbal/VerbalCover.obj: ranks/RanksNames.h
 distributions/covers/verbal/VerbalCover.obj: ranks/RankNames.h utils/table.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Language.h
+distributions/covers/verbal/VerbalTemplates.obj: ranks/Completion.h
+distributions/covers/verbal/VerbalTemplates.obj: utils/Card.h utils/Compare.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalBlank.h
+distributions/covers/verbal/VerbalTemplates.obj: ranks/RanksNames.h
+distributions/covers/verbal/VerbalTemplates.obj: ranks/RankNames.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h

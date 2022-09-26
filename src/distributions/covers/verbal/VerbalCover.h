@@ -14,6 +14,8 @@
 
 #include "Completion.h"
 
+#include "VerbalBlank.h"
+
 #include "../term/Term.h"
 #include "../term/CoverOperator.h"
 
@@ -24,8 +26,6 @@ class RanksNames;
 struct TemplateData;
 struct VerbalData;
 enum Opponent: unsigned;
-enum BlankPlayerCap: unsigned;
-enum TemplateSentence: unsigned;
 
 
 class VerbalCover
@@ -37,6 +37,8 @@ class VerbalCover
 
   private:
     
+    Sentence sentence;
+
     list<Completion> completions;
 
     vector<TemplateData> templateFills;
@@ -158,6 +160,8 @@ class VerbalCover
 
     Completion& activateSide(const Opponent opponent);
 
+    void setSentence(const Sentence sentenceIn);
+
     void setSide(
       const Completion& verbalComb,
       const Opponent opponent);
@@ -208,8 +212,6 @@ class VerbalCover
       const BlankPlayerCap side,
       vector<TemplateData>& tdata) const;
 
-    string str(
-      const TemplateSentence sentence,
-      const RanksNames& ranksNames) const;
+    string str(const RanksNames& ranksNames) const;
 };
 #endif

@@ -8,6 +8,10 @@ In VerbalTemplates, check that the blank matches the template
 expectation (maybe we do this already).
 Maybe no productWest/East but straight to completion?
 
+11/162390
+HHJ97
+"East has exactly one of ace-king and not HJ"
+H is also AK...  So if we say "exactly", we should say "and not J".
 
 7/1668
 Probably debatable whether AQT is A(x) or A(T).

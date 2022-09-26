@@ -14,6 +14,19 @@ using namespace std;
 
 #define BLANK_MAX_VERSIONS 15
 
+enum Sentence: unsigned
+{
+  SENTENCE_LENGTH_ONLY = 0,
+  SENTENCE_TOPS_ONLY = 1,
+  SENTENCE_ONETOP = 2,
+  SENTENCE_TOPS_LENGTH = 3,
+  SENTENCE_TOPS_EXCLUDING = 4,
+  SENTENCE_TOPS_AND_XES = 5,
+  SENTENCE_ONLY_BELOW = 6,
+  SENTENCE_LIST = 7,
+  SENTENCE_SIZE = 8
+};
+
 enum VerbalBlank: unsigned
 {
   BLANK_LENGTH_VERB = 0,

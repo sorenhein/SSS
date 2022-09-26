@@ -71,72 +71,72 @@ void VerbalTemplates::reset()
 
 void VerbalTemplates::set(const Language languageIn)
 {
-  templates.resize(TEMPLATES_SIZE);
+  templates.resize(SENTENCE_SIZE);
   language = languageIn;
 
   if (language == LANGUAGE_ENGLISH_US)
   {
-    templates[TEMPLATES_LENGTH_ONLY] =
+    templates[SENTENCE_LENGTH_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB }};
 
-    templates[TEMPLATES_TOPS_ONLY] =
+    templates[SENTENCE_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
-    templates[TEMPLATES_ONETOP] =
+    templates[SENTENCE_ONETOP] =
       { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
 
-    templates[TEMPLATES_TOPS_LENGTH] =
+    templates[SENTENCE_TOPS_LENGTH] =
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
 
-    templates[TEMPLATES_TOPS_EXCLUDING] =
+    templates[SENTENCE_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_TOPS}};
 
-    templates[TEMPLATES_TOPS_AND_XES] =
+    templates[SENTENCE_TOPS_AND_XES] =
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_BOTTOMS}};
 
     // TODO The last one could be a different type to tell us
     // to look up ranksNames.lowestCard or something like it.
-    templates[TEMPLATES_ONLY_BELOW] =
+    templates[SENTENCE_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
         BLANK_BELOW, BLANK_TOPS}};
 
     // Up to 4 such holdings currently foreseen.
-    templates[TEMPLATES_LIST] =
+    templates[SENTENCE_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
   }
   else if (language == LANGUAGE_GERMAN_DE)
   {
-    templates[TEMPLATES_LENGTH_ONLY] =
+    templates[SENTENCE_LENGTH_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB }};
 
-    templates[TEMPLATES_TOPS_ONLY] =
+    templates[SENTENCE_TOPS_ONLY] =
       { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
 
-    templates[TEMPLATES_ONETOP] =
+    templates[SENTENCE_ONETOP] =
       { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
 
-    templates[TEMPLATES_TOPS_LENGTH] =
+    templates[SENTENCE_TOPS_LENGTH] =
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_LENGTH_ADJ}};
 
-    templates[TEMPLATES_TOPS_EXCLUDING] =
+    templates[SENTENCE_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
 
-    templates[TEMPLATES_TOPS_AND_XES] =
+    templates[SENTENCE_TOPS_AND_XES] =
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_BOTTOMS}};
 
-    templates[TEMPLATES_ONLY_BELOW] =
+    templates[SENTENCE_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
         BLANK_BELOW, BLANK_TOPS}};
 
-    templates[TEMPLATES_LIST] =
+    templates[SENTENCE_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
@@ -209,15 +209,22 @@ void VerbalTemplates::set(const Language languageIn)
 
 
 string VerbalTemplates::get(
-  const TemplateSentence sentence,
+  const Sentence sentence,
   const RanksNames& ranksNames,
   const vector<TemplateData>& tdata) const
 {
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];
 
+  if (tdata.size() > vt.blanks.size())
+  {
+  cout << "sentence " << sentence << endl;
+  cout << "tdata.size " << tdata.size() << endl;
+  cout << "vt.blanks.size " << vt.blanks.size() << endl;
+
   assert(tdata.size() <= vt.blanks.size());
-  if (sentence != TEMPLATES_LIST)
+  }
+  if (sentence != SENTENCE_LIST)
     assert(tdata.size() == vt.blanks.size());
 
   string s = vt.pattern;
@@ -288,7 +295,7 @@ string VerbalTemplates::get(
     s.replace(p, 2, fill);
   }
 
-  if (sentence == TEMPLATES_LIST)
+  if (sentence == SENTENCE_LIST)
   {
     // Eliminate the trailing % fields.
     for ( ; field < vt.blanks.size(); field++, ttypeIter++)
