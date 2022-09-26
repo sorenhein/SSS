@@ -78,57 +78,6 @@ struct VerbalData
   }
 
 
-  /*
-  string strXes(
-    const bool dashFlag,
-    const bool expandFlag) const
-  {
-    // We only have to set the x'es.
-    const string text = 
-      (expandFlag ?  " as well as " : (dashFlag ? "-" : ""));
-
-    if (freeLower > 0)
-    {
-      return text + string(freeLower, 'x') +
-        "(" + string(freeUpper - freeLower, 'x') + ")";
-    }
-    else
-    {
-      return text + "(" + string(freeUpper, 'x') + ")";
-    }
-  }
-  */
-
-
-  string strFreeCount() const
-  {
-    if (freeLower == 0)
-    {
-      if (freeUpper == 1)
-        return "at most one";
-      else if (freeUpper == 2)
-        return "at most two";
-      else if (freeUpper == 3)
-        return "at most three";
-      else
-        return "at most " + to_string(freeUpper);
-    }
-    else if (freeLower == 1)
-    {
-      if (freeUpper == 1)
-        return "one";
-      else
-        return "1-" + to_string(freeUpper);
-    }
-    else if (freeLower == 2 && freeUpper == 2)
-      return "two";
-    else if (freeLower == 3 && freeUpper == 3)
-      return "three";
-    else
-      return to_string(freeLower) + "-" + to_string(freeUpper);
-  }
-
-
   string str(const string& header) const
   {
     stringstream ss;

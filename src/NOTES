@@ -7,6 +7,7 @@ each of them potentially with arguments such as bool flags.
 In VerbalTemplates, check that the blank matches the template
 expectation (maybe we do this already).
 Maybe no productWest/East but straight to completion?
+makeCompletion, makeCompletionList, makeBothCompletions
 
 11/162390
 HHJ97

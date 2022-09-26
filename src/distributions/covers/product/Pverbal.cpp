@@ -748,9 +748,7 @@ string Product::strVerbalHighTopsSide(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
   const Opponent simplestOpponent,
-  const string& side,
   const bool symmFlag,
-  [[maybe_unused]] const BlankPlayerCap blankSide,
   const VerbalData& data,
   const unsigned char canonicalShift) const
 {
@@ -807,20 +805,12 @@ string Product::strVerbalHighTopsSide(
     // General case.
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
-    string result = completion.strSet(ranksNames, 
-      data.topsUsed == 1, data.ranksActive == 1);
 
-    result += " and " + data.strFreeCount();
+    VerbalCover verbalCover;
+    verbalCover.fillTopsAndLower(simplestOpponent, symmFlag,
+      ranksNames, numOptions, completion, data);
 
-    const string cards = (data.freeUpper == 1 ? "card" : "cards");
-
-    if (data.lowestRankActive == data.lowestRankUsed)
-      result += ", lower-ranked " + cards;
-    else
-      result += " " + cards + " below the " + 
-        ranksNames.lowestCard(numOptions);
-
-    return side + " has " + result;
+    return verbalCover.str(ranksNames);
   }
 }
 
@@ -850,25 +840,13 @@ string Product::strVerbalHighTops(
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
-      BLANK_PLAYER_CAP_WEST);
-
     return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      OPP_WEST,
-      (symmFlag ? "Either opponent" : "West"), 
-      symmFlag,
-      bside, dataWest, canonicalShift);
+      OPP_WEST, symmFlag, dataWest, canonicalShift);
   }
   else
   {
-    const BlankPlayerCap bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER :
-      BLANK_PLAYER_CAP_EAST);
-
     return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      OPP_EAST,
-      (symmFlag ? "Either opponent" : "East"), 
-      symmFlag,
-      bside, dataEast, canonicalShift);
+      OPP_EAST, symmFlag, dataEast, canonicalShift);
   }
 }
 

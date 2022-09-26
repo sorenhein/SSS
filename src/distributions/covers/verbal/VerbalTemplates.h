@@ -194,6 +194,8 @@ class VerbalTemplates
 
     string bottoms(const TemplateData& tdata) const;
 
+    string count(const TemplateData& tdata) const;
+
     string below(const TemplateData& tdata) const;
 
     string onetopPhrase(

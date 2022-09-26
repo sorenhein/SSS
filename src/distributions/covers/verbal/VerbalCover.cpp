@@ -719,6 +719,63 @@ void VerbalCover::fillBottoms(
 }
 
 
+void VerbalCover::fillTopsAndLower(
+  const Opponent side,
+  const bool symmFlag,
+  const RanksNames& ranksNames,
+  const unsigned char numOptions,
+  const Completion& completion,
+  const VerbalData& data)
+{
+  sentence = SENTENCE_TOPS_AND_LOWER;
+
+  BlankPlayerCap bside;
+  if (side == OPP_WEST)
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+  else
+    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+
+  templateFills.resize(4);
+  templateFills[0].set(BLANK_PLAYER_CAP, bside);
+
+  const string s = completion.strSet(ranksNames, 
+    data.topsUsed == 1, data.ranksActive == 1);
+  templateFills[1].setBlank(BLANK_TOPS);
+  templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
+
+  templateFills[2].setBlank(BLANK_COUNT);
+  if (data.freeLower == data.freeUpper)
+  {
+    templateFills[2].setData(BLANK_COUNT_EQUAL, topCount[data.freeLower]);
+  }
+  else if (data.freeLower == 0)
+  {
+    templateFills[2].setData(BLANK_COUNT_ATMOST, topCount[data.freeUpper]);
+  }
+  else
+  {
+    templateFills[2].setData(BLANK_COUNT_RANGE_PARAMS, 
+      to_string(+data.freeLower), to_string(+data.freeUpper));
+  }
+
+  string t;
+  if (data.lowestRankActive == data.lowestRankUsed)
+  {
+    t = ", lower-ranked ";
+    t += (data.freeUpper == 1 ? "card" : "cards");
+  }
+  else
+  {
+    t = " ";
+    t += (data.freeUpper == 1 ? "card" : "cards");
+    t += " below the " + ranksNames.lowestCard(numOptions);
+  }
+
+  templateFills[3].setBlank(BLANK_TOPS);
+  templateFills[3].setData(BLANK_TOPS_ACTUAL, t);
+}
+
+
 void VerbalCover::fillList(
   const Opponent side,
   const bool symmFlag,
@@ -756,23 +813,21 @@ string VerbalCover::strGeneral(
   assert(lengthFlag);
 
   string lstr = "", wstr = "", estr = "";
-  if (lengthFlag)
-  {
-    Opponent simplestOpponent;
-    if (symmFlag)
-      simplestOpponent = OPP_WEST;
-    else if (westFlag == eastFlag)
-      simplestOpponent = VerbalCover::simplestOpponent(oppsLength);
-    else if (westFlag)
-      simplestOpponent = OPP_WEST;
-    else
-      simplestOpponent = OPP_EAST;
 
-    VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
-      true, tdata);
+  Opponent simplestOpponent;
+  if (symmFlag)
+    simplestOpponent = OPP_WEST;
+  else if (westFlag == eastFlag)
+    simplestOpponent = VerbalCover::simplestOpponent(oppsLength);
+  else if (westFlag)
+    simplestOpponent = OPP_WEST;
+  else
+    simplestOpponent = OPP_EAST;
+
+  VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
+    true, tdata);
     
-    lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
-  }
+  lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
 
   if (westFlag)
     wstr = west.strSet(ranksNames, false, false);
@@ -780,102 +835,41 @@ string VerbalCover::strGeneral(
   if (eastFlag)
     estr = east.strSet(ranksNames, false, false);
 
-  if (lengthFlag)
-  {
-    if (westFlag)
-    {
-      if (eastFlag)
-      {
-        if (symmFlag)
-        {
-          if (wstr == estr)
-            return lstr + ", and West and East each have " + wstr;
-          else
-            return lstr + ", and " + wstr + " and " + estr +
-              " are split";
-        }
-        else if (wstr == estr)
-          return lstr + ", West and East each have " + wstr;
-        else
-          return lstr + ", West has " + wstr + " and East has " + estr;
-      }
-      else
-      {
-        if (symmFlag)
-          return lstr + " with " + wstr;
-        else
-          return lstr + " and West has " + wstr;
-      }
-    }
-    else if (eastFlag)
-    {
-      if (symmFlag)
-        return lstr + " without " + estr;
-      else
-        return lstr + " and East has " + estr;
-    }
-    else
-      // This done exclusively in the new way.
-      return lstr;
-  }
-  else if (westFlag)
+  if (westFlag)
   {
     if (eastFlag)
     {
-      // This branch currently doesn't happen?
-
-      assert(wstr == estr);
-      string sold = "West and East each have " + wstr;
-
-      VerbalCover::getTopsData(BLANK_PLAYER_CAP_EACH, west, ranksNames, 
-        tdata);
-      string snew = verbalTemplates.get(SENTENCE_TOPS_ONLY, 
-        ranksNames, tdata);
-
-      if (sold == snew)
-        cout << setw(40) << left << sold << "W1W " << snew << "\n";
+      if (symmFlag)
+      {
+        if (wstr == estr)
+          return lstr + ", and West and East each have " + wstr;
+        else
+          return lstr + ", and " + wstr + " and " + estr +
+            " are split";
+      }
+      else if (wstr == estr)
+        return lstr + ", West and East each have " + wstr;
       else
-        cout << setw(40) << left << sold << "W2W " << snew << "\n";
-
-      return sold;
+        return lstr + ", West has " + wstr + " and East has " + estr;
     }
     else
     {
-      VerbalCover::getTopsData(
-        (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST), 
-        west, 
-        ranksNames, 
-        tdata);
-      return verbalTemplates.get(SENTENCE_TOPS_ONLY, ranksNames, tdata);
+      if (symmFlag)
+        return lstr + " with " + wstr;
+      else
+        return lstr + " and West has " + wstr;
     }
   }
   else if (eastFlag)
   {
-    // This branch currently doesn't happen?
-
-    VerbalCover::getTopsData(
-      (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST), 
-      east, 
-      ranksNames, 
-      tdata);
-    const string estrNew = verbalTemplates.get(
-      SENTENCE_TOPS_ONLY, ranksNames, tdata);
-
-    string s;
     if (symmFlag)
-      s = "Either side has " + estr;
+      return lstr + " without " + estr;
     else
-      s = "West has " + estr;
-
-      if (s == estrNew)
-        cout << "\n" << setw(30) << left << s << "Z3Z " << estrNew << "\n";
-      else
-        cout << "\n" << setw(30) << left << s << "Z4Z " << estrNew << "\n";
-
-    return s;
+      return lstr + " and East has " + estr;
   }
   else
-    assert(false);
+    // This done exclusively in the new way.
+    return lstr;
 
   return "";
 }

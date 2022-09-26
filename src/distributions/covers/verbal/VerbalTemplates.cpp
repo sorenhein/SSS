@@ -97,6 +97,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_BOTTOMS}};
 
+    templates[SENTENCE_TOPS_AND_LOWER] =
+      { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_COUNT, BLANK_TOPS}};
+
     // TODO The last one could be a different type to tell us
     // to look up ranksNames.lowestCard or something like it.
     templates[SENTENCE_ONLY_BELOW] =
@@ -125,12 +129,16 @@ void VerbalTemplates::set(const Language languageIn)
         BLANK_LENGTH_ADJ}};
 
     templates[SENTENCE_TOPS_EXCLUDING] =
-      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+      { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
 
     templates[SENTENCE_TOPS_AND_XES] =
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
         BLANK_BOTTOMS}};
+
+    templates[SENTENCE_TOPS_AND_LOWER] =
+      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_COUNT, BLANK_TOPS}};
 
     templates[SENTENCE_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
@@ -181,6 +189,11 @@ void VerbalTemplates::set(const Language languageIn)
   blankLPA[BLANK_LENGTH_ADJ_TRIPLE_ATMOST] = "at most tripleton";
   blankLPA[BLANK_LENGTH_ADJ_LONG_ATMOST] = "at most %0";
   blankLPA[BLANK_LENGTH_ADJ_23] = "doubleton or tripleton";
+
+  auto& blankC = dictionary[BLANK_COUNT];
+  blankC[BLANK_COUNT_EQUAL] = "%0";
+  blankC[BLANK_COUNT_ATMOST] = "at most %0";
+  blankC[BLANK_COUNT_RANGE_PARAMS] = "%0-%1";
 
   auto& blank1TP = dictionary[BLANK_TOPS];
   blank1TP[BLANK_TOPS_ONE_ATMOST] = "at most %0 of %1";
@@ -253,6 +266,10 @@ string VerbalTemplates::get(
     {
       fill = VerbalTemplates::lengthAdj(blankData);
     }
+    else if (blank == BLANK_COUNT)
+    {
+      fill = VerbalTemplates::count(blankData);
+    }
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
@@ -316,9 +333,12 @@ cout << "looked for ', %" << field << "'" << endl;
   }
 
   // If there is a comma, turn the last one into " or".
-  auto p = s.find_last_of(",");
-  if (p != string::npos)
-    s.replace(p, 1, " or");
+  if (sentence != SENTENCE_TOPS_AND_LOWER)
+  {
+    auto p = s.find_last_of(",");
+    if (p != string::npos)
+      s.replace(p, 1, " or");
+  }
 
   return s;
 }
@@ -379,6 +399,31 @@ string VerbalTemplates::lengthAdj(const TemplateData& tdata) const
 
     if (field == 0)
       s.replace(p, 2, tdata.text1);
+    else
+      assert(false);
+  }
+
+  return s;
+}
+
+
+string VerbalTemplates::count(const TemplateData& tdata) const
+{
+  assert(tdata.numParams <= 2);
+  assert(tdata.instance < dictionary[BLANK_COUNT].size());
+
+  string s = dictionary[BLANK_COUNT][tdata.instance];
+
+  for (size_t field = 0; field < tdata.numParams; field++)
+  {
+    auto p = s.find("%" + to_string(field));
+    if (p == string::npos)
+      assert(false);
+
+    if (field == 0)
+      s.replace(p, 2, tdata.text1);
+    else if (field == 1)
+      s.replace(p, 2, tdata.text2);
     else
       assert(false);
   }

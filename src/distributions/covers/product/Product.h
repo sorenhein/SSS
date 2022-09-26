@@ -202,9 +202,7 @@ class Product
       const Profile& sumProfile,
       const RanksNames& ranksNames,
       const Opponent simplestOpponent,
-      const string& side,
       const bool symmFlag,
-      const BlankPlayerCap blankSide,
       const VerbalData& data,
       const unsigned char canonicalShift) const;
 
