@@ -1,3 +1,12 @@
+Completion gets a west and and east.
+It also gets a data for west and east.
+So maybe it's a Completion with a CompletionSide.
+This gets filled at the same time.
+It's a class, so we have to see what is needed externally.
+
+
+strGeneral is still a hodge-podge.
+
 VerbalCover should know its sentence.
 TemplateSentence -> Sentence.
 VerbalTemplate -> VerbalSlots.

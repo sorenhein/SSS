@@ -205,7 +205,8 @@ void VerbalCover::fillTopsExcluding(
   // These should be expanded later in VerbalTemplates.
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL,
-    completion1.strSet(ranksNames, 
+                                   // TODO !!!
+    completion1.strSet(ranksNames, OPP_WEST,
       data1.topsUsed == 1, data1.ranksActive == 1));
 
   if (data2.topsFull <= 1)
@@ -217,7 +218,8 @@ void VerbalCover::fillTopsExcluding(
 
   templateFills[3].setBlank(BLANK_TOPS);
   templateFills[3].setData(BLANK_TOPS_ACTUAL,
-    completion2.strSet(ranksNames, 
+                                   // TODO !!!
+    completion2.strSet(ranksNames, OPP_WEST,
       data2.topsUsed == 1, data2.ranksActive == 1));
 }
 
@@ -628,8 +630,10 @@ void VerbalCover::getTopsData(
   tdata.resize(2);
   tdata[0].set(BLANK_PLAYER_CAP, side);
   tdata[1].setBlank(BLANK_TOPS_PHRASE);
-  tdata[1].setData(BLANK_TOPS_PHRASE_HOLDING, 
-    completion.strSet(ranksNames, false, false));
+  tdata[1].setData(BLANK_TOPS_PHRASE_HOLDING,
+                                  // TODO !!!
+    completion.strSet(ranksNames, OPP_WEST,
+      false, false));
 
 }
 
@@ -654,7 +658,9 @@ void VerbalCover::fillCompletion(
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
-    completion.strSet(ranksNames, true, data.ranksActive == 1));
+                                  // TODO !!!
+    completion.strSet(ranksNames, OPP_WEST,
+      true, data.ranksActive == 1));
 }
 
 
@@ -676,9 +682,13 @@ void VerbalCover::fillCompletionWithLows(
   templateFills.resize(2);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
+  // TODO !!! For now we use OPP_WEST, but when completion is used
+  // more generally, it should be "side" in strUnset()
   const string s = 
-    completion.strSet(ranksNames, false, data.ranksActive == 1) +
-    "(" + completion.strUnset(ranksNames) + ")";
+                                  // TODO !!!
+    completion.strSet(ranksNames, OPP_WEST,
+      false, data.ranksActive == 1) +
+    "(" + completion.strUnset(ranksNames, OPP_WEST) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);
@@ -704,7 +714,9 @@ void VerbalCover::fillBottoms(
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
   const string s = 
-    completion.strSet(ranksNames, false, data.ranksActive == 1);
+                                  // TODO !!!
+    completion.strSet(ranksNames, OPP_WEST,
+      false, data.ranksActive == 1);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
 
@@ -738,7 +750,8 @@ void VerbalCover::fillTopsAndLower(
   templateFills.resize(4);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  const string s = completion.strSet(ranksNames, 
+                                                 // TODO !!!
+  const string s = completion.strSet(ranksNames, OPP_WEST,
     data.topsUsed == 1, data.ranksActive == 1);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
@@ -798,7 +811,8 @@ void VerbalCover::fillList(
   {
     templateFills[i].setBlank(BLANK_LIST_PHRASE);
     templateFills[i].setData(BLANK_LIST_PHRASE_HOLDING, 
-      completion.strSet(ranksNames, false, false, true));
+                                    // TODO !!!
+      completion.strSet(ranksNames, OPP_WEST, false, false, true));
     i++;
   }
 }
@@ -830,10 +844,12 @@ string VerbalCover::strGeneral(
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
 
   if (westFlag)
-    wstr = west.strSet(ranksNames, false, false);
+                                   // TODO !!!
+    wstr = west.strSet(ranksNames, OPP_WEST, false, false);
 
   if (eastFlag)
-    estr = east.strSet(ranksNames, false, false);
+                                   // TODO !!!
+    estr = east.strSet(ranksNames, OPP_WEST, false, false);
 
   if (westFlag)
   {

@@ -16,7 +16,7 @@
 using namespace std;
 
 class RanksNames;
-class Profile;
+enum Opponent: unsigned;
 
 
 class Completion
@@ -25,7 +25,9 @@ class Completion
 
   private:
 
-    vector<unsigned char> partialTops;
+    vector<unsigned char> west;
+    vector<unsigned char> east;
+
     vector<bool> used;
 
     list<unsigned char> openTopNumbers;
@@ -40,11 +42,13 @@ class Completion
     void setTop(
       const unsigned char topNo,
       const bool usedFlag,
-      const unsigned char count);
+      const unsigned char countWest,
+      const unsigned char maximum);
 
     void updateTop(
       const unsigned char topNo,
-      const unsigned char count);
+      const unsigned char count,
+      const unsigned char maximum);
 
     const list<unsigned char>& openTops() const;
 
@@ -58,11 +62,14 @@ class Completion
 
     string strSet(
       const RanksNames& ranksNames,
+      const Opponent side,
       const bool expandFlag,
       const bool singleRankFlag,
       const bool explicitVoidFlag = false) const;
 
-    string strUnset(const RanksNames& ranksNames) const;
+    string strUnset(
+      const RanksNames& ranksNames,
+      const Opponent side) const;
 };
 
 #endif

@@ -18,6 +18,7 @@
 #include "VerbalBlank.h"
 
 #include "../../../ranks/RanksNames.h"
+#include "../../../utils/table.h"
 
 const vector<string> topCount =
 {
@@ -467,7 +468,9 @@ cout << "tdata is\n" << tdata.str() << endl;
         // This occurs in the dual text (a and neither of b).
         if (tdata.completionFlag)
           s.replace(p, 2, 
-            tdata.completion.strSet(ranksNames, false, false));
+                                                // TODO !!!
+            tdata.completion.strSet(ranksNames, OPP_WEST,
+              false, false));
         else
           s.replace(p, 2, tdata.text1);
       }

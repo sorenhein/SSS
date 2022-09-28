@@ -216,12 +216,13 @@ void Product::completeSingular(
     if (top.used())
     {
       completion.setTop(topNo, true, 
-        side == OPP_WEST ? top.lower() : sumProfile[topNo] - top.lower());
+        side == OPP_WEST ? top.lower() : sumProfile[topNo] - top.lower(),
+        sumProfile[topNo]);
     }
     else if (side == sideForUnused)
     {
       // Flip if we are filling the opposite side.
-      completion.setTop(topNo, true,  sumProfile[topNo]);
+      completion.setTop(topNo, true,  sumProfile[topNo], sumProfile[topNo]);
     }
   }
 
@@ -232,7 +233,8 @@ void Product::completeSingular(
     if (side == OPP_EAST)
     {
       for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo]);
+        completion.setTop(topNo, true, sumProfile[topNo],
+          sumProfile[topNo]);
     }
   }
   else if (data.topsUsedOther == slength - wlength ||
@@ -242,15 +244,18 @@ void Product::completeSingular(
     if (side == OPP_WEST)
     {
       for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo]);
+        completion.setTop(topNo, true, sumProfile[topNo],
+          sumProfile[topNo]);
     }
   }
   else if (canonicalShift == 0)
   {
     if (side == OPP_WEST)
-      completion.setTop(0, true, wlength - data.topsUsed);
+      completion.setTop(0, true, wlength - data.topsUsed,
+        sumProfile[0]);
     else
-      completion.setTop(0, true, slength - wlength - data.topsUsedOther);
+      completion.setTop(0, true, slength - wlength - data.topsUsedOther,
+        sumProfile[0]);
   }
   else
     assert(false);
@@ -283,7 +288,8 @@ void Product::makePartialProfile(
     completion.setTop(
       topNo, 
       tops[topNo-canonicalShift].used(),
-      tops[topNo-canonicalShift].lower());
+      tops[topNo-canonicalShift].lower(),
+      sumProfile[topNo]);
   }
 
   // The zero'th top represents all the actual tops in sumProfile
@@ -293,30 +299,36 @@ void Product::makePartialProfile(
   {
     // Fill with unused bottoms.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, false, sumProfile[topNo]);
+      completion.setTop(topNo, false, sumProfile[topNo],
+        sumProfile[topNo]);
     return;
   }
 
-  const unsigned char bottoms = tops[0].lower();
   assert(tops[0].getOperator() == COVER_EQUAL);
+
+  const unsigned char bottoms = tops[0].lower();
+  const unsigned char allBottoms = 
+    Product::countBottoms(sumProfile, canonicalShift);
+
 
   if (bottoms == 0)
   {
     // Fill with zeroes.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, true, 0);
+      completion.setTop(topNo, true, 0, sumProfile[topNo]);
   }
-  else if (bottoms == Product::countBottoms(sumProfile, canonicalShift))
+  else if (bottoms == allBottoms)
   {
     // Fill with maximum values.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, true, sumProfile[topNo]);
+      completion.setTop(topNo, true, sumProfile[topNo],
+        sumProfile[topNo]);
   }
   else
   {
     // Add a single bottom with the right number.
     assert(canonicalShift == 0);
-    completion.setTop(0, true, bottoms);
+    completion.setTop(0, true, bottoms, allBottoms);
   }
 }
 
@@ -361,7 +373,7 @@ bool Product::makeCompletions(
 
       for (unsigned char count = maxCount+1; count-- > 0; )
       {
-        piter->updateTop(openNo, count);
+        piter->updateTop(openNo, count, sumProfile[openNo]);
 
         if (piter->length() >= totalLower && (count > 0 || firstOpen))
         {
@@ -613,52 +625,39 @@ string Product::strVerbalTopsOnly(
     canonicalShift - dataWest.ranksUsed;
 
   // TODO This part unchecked concerning any-tops.
+  VerbalCover verbalCover;
+
   if (preferWest)
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      VerbalCover verbalCover;
-
       productWest.setVerbalCompletionWithLows(
         sumProfile, canonicalShift, ranksNames,
         OPP_WEST, symmFlag, dataWest, verbalCover);
-
-      return verbalCover.str(ranksNames);
     }
     else
     {
-      VerbalCover verbalCover;
-
       productWest.setVerbalTopsExcluding(
         sumProfile, canonicalShift, ranksNames, productEast, 
         OPP_WEST, symmFlag, dataWest, dataEast, verbalCover);
-
-      return verbalCover.str(ranksNames);
     }
   }
   else
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      VerbalCover verbalCover;
-
       productEast.setVerbalCompletionWithLows(
         sumProfile, canonicalShift, ranksNames,
         OPP_EAST, symmFlag, dataEast, verbalCover);
-
-      return verbalCover.str(ranksNames);
     }
     else
     {
-      VerbalCover verbalCover;
-
       productEast.setVerbalTopsExcluding(
         sumProfile, canonicalShift, ranksNames, productWest, 
         OPP_EAST, symmFlag, dataEast, dataWest, verbalCover);
-
-      return verbalCover.str(ranksNames);
     }
   }
+  return verbalCover.str(ranksNames);
 }
 
 
@@ -732,8 +731,11 @@ string Product::strVerbalAnyTops(
   }
 
   vector<TemplateData> tdata;
-  return verbalCover.strGeneral(
+  const string s = verbalCover.strGeneral(
     sumProfile.length(), symmFlag, ranksNames, tdata);
+
+cout << "\nXX" << s << "\n";
+  return s;
 }
 
 
@@ -756,15 +758,15 @@ string Product::strVerbalHighTopsSide(
      static_cast<unsigned char>(tops.size()) +
      canonicalShift - data.ranksUsed;
 
+  VerbalCover verbalCover;
+
   if (numOptions == 1)
   {
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-    VerbalCover verbalCover;
     verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames,
       completion, data);
-     return verbalCover.str(ranksNames);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
@@ -778,17 +780,12 @@ string Product::strVerbalHighTopsSide(
       assert(false);
     }
 
-    VerbalCover verbalCover;
     verbalCover.fillList(simplestOpponent, symmFlag, 
       ranksNames, completions);
-
-    return verbalCover.str(ranksNames);
   }
   else if (data.topsUsed == 0)
   {
     // "West has at most a doubleton completely below the ten".
-    VerbalCover verbalCover;
-
     verbalCover.fillBelow(
       data.freeLower, 
       data.freeUpper,
@@ -797,8 +794,6 @@ string Product::strVerbalHighTopsSide(
       numOptions,
       simplestOpponent,
       symmFlag);
-
-    return verbalCover.str(ranksNames);
   }
   else
   {
@@ -806,12 +801,10 @@ string Product::strVerbalHighTopsSide(
     Completion completion;
     Product::makePartialProfile(sumProfile, canonicalShift, completion);
 
-    VerbalCover verbalCover;
     verbalCover.fillTopsAndLower(simplestOpponent, symmFlag,
       ranksNames, numOptions, completion, data);
-
-    return verbalCover.str(ranksNames);
   }
+  return verbalCover.str(ranksNames);
 }
 
 

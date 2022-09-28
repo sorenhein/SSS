@@ -16,14 +16,16 @@
 
 #include "Completion.h"
 
-#include "../product/Profile.h"
-
 #include "../../../ranks/RanksNames.h"
+
+#include "../../../utils/table.h"
 
 
 void Completion::resize(const size_t numTops)
 {
-  partialTops.resize(numTops);
+  west.resize(numTops);
+  east.resize(numTops);
+
   used.resize(numTops, false);
   openTopNumbers.clear();
   lengthInt = 0;
@@ -33,7 +35,8 @@ void Completion::resize(const size_t numTops)
 void Completion::setTop(
   const unsigned char topNo,
   const bool usedFlag,
-  const unsigned char count)
+  const unsigned char countWest,
+  const unsigned char maximum)
 {
   // Must be an equal top.
 
@@ -41,12 +44,11 @@ void Completion::setTop(
   used[topNo] = usedFlag;
 
   // Permit a maximum value to be stored even if the top is unused.
-  partialTops[topNo] = count;
+  west[topNo] = countWest;
+  east[topNo] = maximum - countWest;
 
   if (usedFlag)
-  {
-    lengthInt += count;
-  }
+    lengthInt += countWest;
   else
     openTopNumbers.push_back(topNo);
 }
@@ -54,23 +56,25 @@ void Completion::setTop(
 
 void Completion::updateTop(
   const unsigned char topNo,
-  const unsigned char count)
+  const unsigned char countWest,
+  const unsigned char maximum)
 {
   assert(topNo < used.size());
 
   if (used[topNo])
-    lengthInt += count - partialTops[topNo];
+    lengthInt += countWest - west[topNo];
   else
   {
     // Treat as if partialTops were zero, as there might be a
     // maximum value for an unused top stored here.
-    lengthInt += count;
+    lengthInt += countWest;
     used[topNo] = true;
     
     // TODO This messes up openTopNumbers.  Is it a problem/bug?
   }
 
-  partialTops[topNo] = count;
+  west[topNo] = countWest;
+  east[topNo] = maximum -countWest;
 }
 
 
@@ -96,19 +100,23 @@ bool Completion::operator == (const Completion& comp2) const
 {
   if (used.size() != comp2.used.size())
     return false;
-  if (partialTops.size() != comp2.partialTops.size())
+  if (west.size() != comp2.west.size())
     return false;
   if (openTopNumbers.size() != comp2.openTopNumbers.size())
     return false;
   if (lengthInt != comp2.lengthInt)
     return false;
 
-  for (size_t i = 0; i < partialTops.size(); i++)
+  for (size_t i = 0; i < west.size(); i++)
     if (used[i] != comp2.used[i])
       return false;
 
-  for (size_t i = 0; i < partialTops.size(); i++)
-    if (partialTops[i] != comp2.partialTops[i])
+  for (size_t i = 0; i < west.size(); i++)
+    if (west[i] != comp2.west[i])
+      return false;
+
+  for (size_t i = 0; i < east.size(); i++)
+    if (east[i] != comp2.east[i])
       return false;
 
   auto oiter1 = openTopNumbers.begin();
@@ -131,9 +139,14 @@ string Completion::strDebug() const
 {
   stringstream ss;
 
-  ss << "tops ";
-  for (auto p: partialTops)
-    ss << +p << " ";
+  ss << "West ";
+  for (auto w: west)
+    ss << +w << " ";
+  ss << "\n";
+
+  ss << "West ";
+  for (auto e: east)
+    ss << +e << " ";
   ss << "\n";
 
   ss << "open ";
@@ -148,6 +161,7 @@ string Completion::strDebug() const
 
 string Completion::strSet(
   const RanksNames& ranksNames,
+  const Opponent side,
   const bool expandFlag,           // jack, not J
   const bool singleRankFlag,       // Use dashes between expansions
   const bool explicitVoidFlag) const
@@ -156,15 +170,17 @@ string Completion::strSet(
     return (explicitVoidFlag ? "void" : "");
 
   string s;
+  const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
+
   for (unsigned char topNo = 
-    static_cast<unsigned char>(partialTops.size()); topNo-- > 0; )
+    static_cast<unsigned char>(west.size()); topNo-- > 0; )
   {
     if (used[topNo])
     {
       if (expandFlag && ! singleRankFlag && ! s.empty())
         s += "-";
 
-      s += ranksNames.strOpponents(topNo, partialTops[topNo],
+      s += ranksNames.strOpponents(topNo, tops[topNo],
         expandFlag, singleRankFlag);
     }
   }
@@ -172,13 +188,16 @@ string Completion::strSet(
 }
 
 
-string Completion::strUnset(const RanksNames& ranksNames) const
+string Completion::strUnset(
+  const RanksNames& ranksNames,
+  const Opponent side) const
 {
   string s;
+  const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
+
   for (auto openNo: openTopNumbers)
   {
-    s += ranksNames.strOpponents(openNo, partialTops[openNo],
-      false, false);
+    s += ranksNames.strOpponents(openNo, tops[openNo], false, false);
   }
   return s;
 }
