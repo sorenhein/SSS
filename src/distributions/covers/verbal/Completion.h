@@ -53,7 +53,7 @@ class Completion
 
     const list<unsigned char>& openTops() const;
 
-    unsigned char length() const;
+    unsigned char length(const Opponent side) const;
 
     bool operator < (const Completion& comp2) const;
 

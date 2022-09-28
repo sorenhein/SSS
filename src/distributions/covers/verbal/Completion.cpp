@@ -96,9 +96,17 @@ const list<unsigned char>& Completion::openTops() const
 }
 
 
-unsigned char Completion::length() const
+unsigned char Completion::length(const Opponent side) const
 {
-  return lengthWest;
+  if (side == OPP_WEST)
+    return lengthWest;
+  else if (side == OPP_EAST)
+    return lengthEast;
+  else
+  {
+    assert(false);
+    return 0;
+  }
 }
 
 
@@ -158,7 +166,7 @@ string Completion::strDebug() const
     ss << +w << " ";
   ss << "\n";
 
-  ss << "West ";
+  ss << "East ";
   for (auto e: east)
     ss << +e << " ";
   ss << "\n";
@@ -169,6 +177,7 @@ string Completion::strDebug() const
   ss << "\n";
 
   ss << "length West " << +lengthWest << "\n";
+  ss << "length East " << +lengthEast << "\n";
   return ss.str();
 }
 

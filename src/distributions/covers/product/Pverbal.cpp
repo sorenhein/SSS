@@ -369,13 +369,14 @@ bool Product::makeCompletionList(
 
       const unsigned char maxCount = min(
         static_cast<unsigned char>(sumProfile[openNo]),
-        static_cast<unsigned char>(totalUpper - piter->length()));
+        static_cast<unsigned char>(totalUpper - piter->length(OPP_WEST)));
 
       for (unsigned char count = maxCount+1; count-- > 0; )
       {
         piter->updateTop(openNo, count, sumProfile[openNo]);
 
-        if (piter->length() >= totalLower && (count > 0 || firstOpen))
+        if (piter->length(OPP_WEST) >= totalLower && 
+            (count > 0 || firstOpen))
         {
           if (completions.size() >= maxCompletions)
             return false;
@@ -383,7 +384,7 @@ bool Product::makeCompletionList(
           completions.push_back(* piter);
         }
 
-        if (piter->length() < totalUpper && openNo > 0)
+        if (piter->length(OPP_WEST) < totalUpper && openNo > 0)
           stack.push_back(* piter);
       }
 

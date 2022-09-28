@@ -166,9 +166,11 @@ class VerbalCover
 
     void setSentence(const Sentence sentenceIn);
 
+    /*
     void setSide(
       const Completion& verbalComb,
       const Opponent opponent);
+      */
 
     void stable_sort();
 

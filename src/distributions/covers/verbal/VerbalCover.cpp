@@ -246,6 +246,7 @@ Completion& VerbalCover::getCompletion()
 }
 
 
+/*
 void VerbalCover::setSide(
   const Completion& completionIn,
   const Opponent opponent)
@@ -262,6 +263,7 @@ void VerbalCover::setSide(
     east = completionIn;
   }
 }
+*/
 
 
 void VerbalCover::stable_sort()
@@ -849,6 +851,9 @@ string VerbalCover::strGeneral(
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
 
+const bool w1 = (completion.length(OPP_WEST) > 0);
+const bool e1 = (completion.length(OPP_EAST) > 0);
+
   if (westFlag)
   {
     wstr = completion.strSet(ranksNames, OPP_WEST, false, false);
@@ -858,6 +863,23 @@ string VerbalCover::strGeneral(
   {
     estr = completion.strSet(ranksNames, OPP_EAST, false, false);
   }
+
+const bool w2 = (wstr != "");
+const bool e2 = (estr != "");
+if (w1 != w2)
+{
+  cout << "completion\n" << completion.strDebug();
+  cout << "w1 " << w1 << endl;
+  cout << "w2 " << w2 << endl;
+}
+if (e1 != e2)
+{
+  cout << "completion\n" << completion.strDebug();
+  cout << "e1 " << e1 << endl;
+  cout << "e2 " << e2 << endl;
+}
+assert(w1 == w2);
+assert(e1 == e2);
 
   if (westFlag)
   {
