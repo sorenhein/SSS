@@ -154,7 +154,6 @@ class VerbalCover
       const bool symmFlag);
 
     void fillSingular(
-      const Completion& completion,
       const unsigned char lenCompletion,
       const Opponent side,
       const bool symmFlag);
@@ -179,7 +178,6 @@ class VerbalCover
       const Opponent side,
       const bool symmFlag,
       const RanksNames& ranksNames,
-      const Completion& completion,
       const VerbalData& data);
 
     void fillBottoms(

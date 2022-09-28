@@ -562,7 +562,6 @@ void VerbalCover::fillBelow(
 
 
 void VerbalCover::fillSingular(
-  const Completion& completionIn,
   const unsigned char lenCompletion,
   const Opponent side,
   const bool symmFlag)
@@ -580,7 +579,7 @@ void VerbalCover::fillSingular(
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
   templateFills[1].setBlank(BLANK_TOPS);
-  templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completionIn);
+  templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completion);
 
   if (lenCompletion == 1)
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
@@ -641,7 +640,6 @@ void VerbalCover::fillCompletionWithLows(
   const Opponent side,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  const Completion& completionIn,
   const VerbalData& data)
 {
   sentence = SENTENCE_LIST;
@@ -659,9 +657,9 @@ void VerbalCover::fillCompletionWithLows(
   // more generally, it should be "side" in strUnset()
   const string s = 
                                   // TODO !!!
-    completionIn.strSet(ranksNames, OPP_WEST,
+    completion.strSet(ranksNames, OPP_WEST,
       false, data.ranksActive == 1) +
-    "(" + completionIn.strUnset(ranksNames, OPP_WEST) + ")";
+    "(" + completion.strUnset(ranksNames, OPP_WEST) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);

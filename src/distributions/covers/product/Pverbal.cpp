@@ -520,11 +520,11 @@ void Product::setVerbalCompletionWithLows(
 {
   // The lowest cards are a single rank of x'es.
 
-  Completion completion;
-  Product::makeCompletion(sumProfile, canonicalShift, completion);
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover.getCompletion());
 
   verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
-    ranksNames, completion, data);
+    ranksNames, data);
 }
 
 
@@ -548,11 +548,10 @@ void Product::setVerbalSingular(
   const unsigned char len = (simplestOpponent == OPP_WEST ?
     length.lower() : sumProfile.length() - length.lower());
 
-  Completion completion;
   Product::makeSingularCompletion(sumProfile, canonicalShift,
-    simplestOpponent, completion);
+    simplestOpponent, verbalCover.getCompletion());
 
-  verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
+  verbalCover.fillSingular(len, simplestOpponent, symmFlag);
 }
 
 
