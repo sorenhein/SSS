@@ -722,18 +722,6 @@ string Product::strVerbalAnyTops(
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
-  if (dataWest.ranksActive > 0)
-  {
-    Completion& vcWest = verbalCover.activateSide(OPP_WEST);
-    productWest.makeCompletion(sumProfile, canonicalShift, vcWest);
-  }
-
-  if (dataEast.ranksActive > 0)
-  {
-    Completion& vcEast = verbalCover.activateSide(OPP_EAST);
-    productEast.makeCompletion(sumProfile, canonicalShift, vcEast);
-  }
-
   vector<TemplateData> tdata;
   const string s = verbalCover.strGeneral(
     sumProfile.length(), symmFlag, ranksNames, tdata);

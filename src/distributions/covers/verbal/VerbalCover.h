@@ -48,10 +48,10 @@ class VerbalCover
     unsigned char lengthUpper;
     CoverOperator lengthOper;
 
-    bool westFlag;
+    // bool westFlag;
     Completion west;
 
-    bool eastFlag;
+    // bool eastFlag;
     Completion east;
 
     Completion completion;
@@ -160,17 +160,9 @@ class VerbalCover
       const bool symmFlag);
 
 
-    Completion& activateSide(const Opponent opponent);
-
     Completion& getCompletion();
 
     void setSentence(const Sentence sentenceIn);
-
-    /*
-    void setSide(
-      const Completion& verbalComb,
-      const Opponent opponent);
-      */
 
     void stable_sort();
 

@@ -72,8 +72,6 @@ VerbalCover::VerbalCover()
   lengthLower = 0;
   lengthUpper = 0;
   lengthOper = COVER_EQUAL;
-  westFlag = false;
-  eastFlag = false;
 
   templateFills.clear();
 }
@@ -107,6 +105,9 @@ void VerbalCover::fillLengthOnly(
 {
   VerbalCover::setLength(length);
   sentence = SENTENCE_LENGTH_ONLY;
+
+  const bool westFlag = (completion.length(OPP_WEST) > 0);
+  const bool eastFlag = (completion.length(OPP_EAST) > 0);
 
   Opponent simplestOpponent;
   if (symmFlag)
@@ -224,46 +225,10 @@ void VerbalCover::fillTopsExcluding(
 }
 
 
-Completion& VerbalCover::activateSide(const Opponent opponent)
-{
-  assert(opponent == OPP_WEST || opponent == OPP_EAST);
-  if (opponent == OPP_WEST)
-  {
-    westFlag = true;
-    return west;
-  }
-  else
-  {
-    eastFlag = true;
-    return east;
-  }
-}
-
-
 Completion& VerbalCover::getCompletion()
 {
   return completion;
 }
-
-
-/*
-void VerbalCover::setSide(
-  const Completion& completionIn,
-  const Opponent opponent)
-{
-  assert(opponent == OPP_WEST || opponent == OPP_EAST);
-  if (opponent == OPP_WEST)
-  {
-    westFlag = true;
-    west = completionIn;
-  }
-  else
-  {
-    eastFlag = true;
-    east = completionIn;
-  }
-}
-*/
 
 
 void VerbalCover::stable_sort()
@@ -836,6 +801,9 @@ string VerbalCover::strGeneral(
 
   string lstr = "", wstr = "", estr = "";
 
+  const bool westFlag = (completion.length(OPP_WEST) > 0);
+  const bool eastFlag = (completion.length(OPP_EAST) > 0);
+
   Opponent simplestOpponent;
   if (symmFlag)
     simplestOpponent = OPP_WEST;
@@ -851,35 +819,11 @@ string VerbalCover::strGeneral(
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
 
-const bool w1 = (completion.length(OPP_WEST) > 0);
-const bool e1 = (completion.length(OPP_EAST) > 0);
-
   if (westFlag)
-  {
     wstr = completion.strSet(ranksNames, OPP_WEST, false, false);
-  }
 
   if (eastFlag)
-  {
     estr = completion.strSet(ranksNames, OPP_EAST, false, false);
-  }
-
-const bool w2 = (wstr != "");
-const bool e2 = (estr != "");
-if (w1 != w2)
-{
-  cout << "completion\n" << completion.strDebug();
-  cout << "w1 " << w1 << endl;
-  cout << "w2 " << w2 << endl;
-}
-if (e1 != e2)
-{
-  cout << "completion\n" << completion.strDebug();
-  cout << "e1 " << e1 << endl;
-  cout << "e2 " << e2 << endl;
-}
-assert(w1 == w2);
-assert(e1 == e2);
 
   if (westFlag)
   {
