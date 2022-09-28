@@ -59,6 +59,11 @@ void Completion::updateTop(
   const unsigned char countWest,
   const unsigned char maximum)
 {
+  // This methods does not respect anything except the numbers
+  // in west and east.  The consistency in openTopNumbers, length
+  // etc. is lost.  It should only be used from a method  such as 
+  // Product::makeCompletionList().
+
   assert(topNo < used.size());
 
   if (used[topNo])
@@ -70,7 +75,6 @@ void Completion::updateTop(
     lengthInt += countWest;
     used[topNo] = true;
     
-    // TODO This messes up openTopNumbers.  Is it a problem/bug?
   }
 
   west[topNo] = countWest;

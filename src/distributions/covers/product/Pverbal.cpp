@@ -177,7 +177,7 @@ void Product::fillUsedTops(
 }
 
 
-void Product::completeSingular(
+void Product::makeSingularCompletion(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const Opponent side,
@@ -268,7 +268,7 @@ void Product::completeSingular(
 /*                                                                    */
 /**********************************************************************/
 
-void Product::makePartialProfile(
+void Product::makeCompletion(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   Completion& completion) const
@@ -333,7 +333,7 @@ void Product::makePartialProfile(
 }
 
 
-bool Product::makeCompletions(
+bool Product::makeCompletionList(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const VerbalData& data,
@@ -341,7 +341,7 @@ bool Product::makeCompletions(
   list<Completion>& completions) const
 {
   Completion completion;
-  Product::makePartialProfile(sumProfile, canonicalShift, completion);
+  Product::makeCompletion(sumProfile, canonicalShift, completion);
 
   list<Completion> stack;
   stack.push_back(completion);
@@ -478,7 +478,7 @@ void Product::setVerbalTops(
   // The other side is known to use no tops at all.
 
   Completion completion;
-  Product::makePartialProfile(sumProfile, canonicalShift, completion);
+  Product::makeCompletion(sumProfile, canonicalShift, completion);
 
   verbalCover.fillCompletion(simplestOpponent, symmFlag,
     ranksNames, completion, data);
@@ -497,10 +497,10 @@ void Product::setVerbalTopsExcluding(
   VerbalCover& verbalCover) const
 {
   Completion completionOwn;
-  Product::makePartialProfile(sumProfile, canonicalShift, completionOwn);
+  Product::makeCompletion(sumProfile, canonicalShift, completionOwn);
 
   Completion completionOther;
-  productOther.makePartialProfile(
+  productOther.makeCompletion(
     sumProfile, canonicalShift, completionOther);
 
   verbalCover.fillTopsExcluding(simplestOpponent, symmFlag,
@@ -520,7 +520,7 @@ void Product::setVerbalCompletionWithLows(
   // The lowest cards are a single rank of x'es.
 
   Completion completion;
-  Product::makePartialProfile(sumProfile, canonicalShift, completion);
+  Product::makeCompletion(sumProfile, canonicalShift, completion);
 
   verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
     ranksNames, completion, data);
@@ -548,7 +548,7 @@ void Product::setVerbalSingular(
     length.lower() : sumProfile.length() - length.lower());
 
   Completion completion;
-  Product::completeSingular(sumProfile, canonicalShift,
+  Product::makeSingularCompletion(sumProfile, canonicalShift,
     simplestOpponent, completion);
 
   verbalCover.fillSingular(completion, len, simplestOpponent, symmFlag);
@@ -696,7 +696,7 @@ string Product::strVerbalAnyTops(
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    if (productWest.makeCompletions(sumProfile, canonicalShift, dataWest,
+    if (productWest.makeCompletionList(sumProfile, canonicalShift, dataWest,
       4, completions))
     {
       VerbalCover verbalCover;
@@ -706,7 +706,7 @@ string Product::strVerbalAnyTops(
   }
   else
   {
-    if (productEast.makeCompletions(sumProfile, canonicalShift, dataEast,
+    if (productEast.makeCompletionList(sumProfile, canonicalShift, dataEast,
       4, completions))
     {
       VerbalCover verbalCover;
@@ -721,13 +721,13 @@ string Product::strVerbalAnyTops(
   if (dataWest.ranksActive > 0)
   {
     Completion& vcWest = verbalCover.activateSide(OPP_WEST);
-    productWest.makePartialProfile(sumProfile, canonicalShift, vcWest);
+    productWest.makeCompletion(sumProfile, canonicalShift, vcWest);
   }
 
   if (dataEast.ranksActive > 0)
   {
     Completion& vcEast = verbalCover.activateSide(OPP_EAST);
-    productEast.makePartialProfile(sumProfile, canonicalShift, vcEast);
+    productEast.makeCompletion(sumProfile, canonicalShift, vcEast);
   }
 
   vector<TemplateData> tdata;
@@ -763,7 +763,7 @@ string Product::strVerbalHighTopsSide(
   if (numOptions == 1)
   {
     Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    Product::makeCompletion(sumProfile, canonicalShift, completion);
 
     verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames,
       completion, data);
@@ -773,7 +773,7 @@ string Product::strVerbalHighTopsSide(
     // We need up to one low card.
     // "West has Q or Qx".
     list<Completion> completions;
-    if (! Product::makeCompletions(sumProfile, canonicalShift, 
+    if (! Product::makeCompletionList(sumProfile, canonicalShift, 
       data, 4, completions))
     {
       // We currently never get more than 4 options.
@@ -799,7 +799,7 @@ string Product::strVerbalHighTopsSide(
   {
     // General case.
     Completion completion;
-    Product::makePartialProfile(sumProfile, canonicalShift, completion);
+    Product::makeCompletion(sumProfile, canonicalShift, completion);
 
     verbalCover.fillTopsAndLower(simplestOpponent, symmFlag,
       ranksNames, numOptions, completion, data);

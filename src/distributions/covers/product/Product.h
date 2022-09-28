@@ -87,12 +87,6 @@ class Product
       VerbalData& dataWest,
       VerbalData& dataEast) const;
 
-    void completeSingular(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const Opponent side,
-      Completion& completion) const;
-
 
     // Simple set methods (no branches)
 
@@ -166,12 +160,18 @@ class Product
 
     // Compositions
 
-    void makePartialProfile(
+    void makeCompletion(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       Completion& completion) const;
 
-    bool makeCompletions(
+    void makeSingularCompletion(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const Opponent side,
+      Completion& completion) const;
+
+    bool makeCompletionList(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const VerbalData& data,
