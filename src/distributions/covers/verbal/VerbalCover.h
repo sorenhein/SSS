@@ -54,6 +54,8 @@ class VerbalCover
     bool eastFlag;
     Completion east;
 
+    Completion completion;
+
 
     Opponent simplestOpponent(const unsigned char oppsLength) const;
 
@@ -159,6 +161,8 @@ class VerbalCover
 
 
     Completion& activateSide(const Opponent opponent);
+
+    Completion& getCompletion();
 
     void setSentence(const Sentence sentenceIn);
 

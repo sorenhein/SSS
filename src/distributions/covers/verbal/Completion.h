@@ -32,7 +32,8 @@ class Completion
 
     list<unsigned char> openTopNumbers;
 
-    unsigned char lengthInt;
+    unsigned char lengthWest;
+    unsigned char lengthEast;
 
 
   public:

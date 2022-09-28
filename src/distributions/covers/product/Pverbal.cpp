@@ -718,6 +718,9 @@ string Product::strVerbalAnyTops(
   VerbalCover verbalCover;
   verbalCover.setLength(length);
 
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover.getCompletion());
+
   if (dataWest.ranksActive > 0)
   {
     Completion& vcWest = verbalCover.activateSide(OPP_WEST);

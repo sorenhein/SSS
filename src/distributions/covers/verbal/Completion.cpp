@@ -28,7 +28,8 @@ void Completion::resize(const size_t numTops)
 
   used.resize(numTops, false);
   openTopNumbers.clear();
-  lengthInt = 0;
+  lengthWest = 0;
+  lengthEast = 0;
 }
 
 
@@ -48,7 +49,10 @@ void Completion::setTop(
   east[topNo] = maximum - countWest;
 
   if (usedFlag)
-    lengthInt += countWest;
+  {
+    lengthWest += countWest;
+    lengthEast += maximum - countWest;
+  }
   else
     openTopNumbers.push_back(topNo);
 }
@@ -67,12 +71,16 @@ void Completion::updateTop(
   assert(topNo < used.size());
 
   if (used[topNo])
-    lengthInt += countWest - west[topNo];
+  {
+    lengthWest += countWest - west[topNo];
+    lengthEast += maximum - countWest - east[topNo];
+  }
   else
   {
     // Treat as if partialTops were zero, as there might be a
     // maximum value for an unused top stored here.
-    lengthInt += countWest;
+    lengthWest += countWest;
+    lengthEast += maximum - countWest;
     used[topNo] = true;
     
   }
@@ -90,13 +98,13 @@ const list<unsigned char>& Completion::openTops() const
 
 unsigned char Completion::length() const
 {
-  return lengthInt;
+  return lengthWest;
 }
 
 
 bool Completion::operator < (const Completion& comp2) const
 {
-  return (lengthInt > comp2.lengthInt);
+  return (lengthWest > comp2.lengthWest);
 }
 
 
@@ -108,7 +116,9 @@ bool Completion::operator == (const Completion& comp2) const
     return false;
   if (openTopNumbers.size() != comp2.openTopNumbers.size())
     return false;
-  if (lengthInt != comp2.lengthInt)
+  if (lengthWest != comp2.lengthWest)
+    return false;
+  if (lengthEast != comp2.lengthEast)
     return false;
 
   for (size_t i = 0; i < west.size(); i++)
@@ -158,7 +168,7 @@ string Completion::strDebug() const
     ss << +o << " ";
   ss << "\n";
 
-  ss << "length " << +lengthInt << "\n";
+  ss << "length West " << +lengthWest << "\n";
   return ss.str();
 }
 
@@ -170,7 +180,8 @@ string Completion::strSet(
   const bool singleRankFlag,       // Use dashes between expansions
   const bool explicitVoidFlag) const
 {
-  if (lengthInt == 0)
+  if ((side == OPP_WEST && lengthWest == 0) ||
+      (side == OPP_EAST && lengthEast == 0))
     return (explicitVoidFlag ? "void" : "");
 
   string s;
