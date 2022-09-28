@@ -754,11 +754,10 @@ string Product::strVerbalHighTopsSide(
 
   if (numOptions == 1)
   {
-    Completion completion;
-    Product::makeCompletion(sumProfile, canonicalShift, completion);
+    Product::makeCompletion(sumProfile, canonicalShift, 
+      verbalCover.getCompletion());
 
-    verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames,
-      completion, data);
+    verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames, data);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
   {
@@ -790,11 +789,11 @@ string Product::strVerbalHighTopsSide(
   else
   {
     // General case.
-    Completion completion;
-    Product::makeCompletion(sumProfile, canonicalShift, completion);
+    Product::makeCompletion(sumProfile, canonicalShift, 
+      verbalCover.getCompletion());
 
     verbalCover.fillTopsAndLower(simplestOpponent, symmFlag,
-      ranksNames, numOptions, completion, data);
+      ranksNames, numOptions, data);
   }
   return verbalCover.str(ranksNames);
 }

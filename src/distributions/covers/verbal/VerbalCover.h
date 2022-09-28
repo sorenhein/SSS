@@ -186,7 +186,6 @@ class VerbalCover
       const Opponent side,
       const bool symmFlag,
       const RanksNames& ranksNames,
-      const Completion& completion,
       const VerbalData& data);
 
     void fillTopsAndLower(
@@ -194,7 +193,6 @@ class VerbalCover
       const bool symmFlag,
       const RanksNames& ranksNames,
       const unsigned char numOptions,
-      const Completion& completion,
       const VerbalData& data);
 
     void fillList(
