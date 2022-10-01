@@ -119,6 +119,9 @@ void VerbalCover::fillLengthOnly(
   else
     simplestOpponent = OPP_EAST;
 
+// cout << "wf " << westFlag << " ef " << eastFlag << " symm " <<
+  // symmFlag << " sopp " << simplestOpponent << endl;
+
   VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
     true, templateFills);
 }
@@ -631,7 +634,8 @@ void VerbalCover::fillCompletion(
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
                                   // TODO !!!
-    completionIn.strSet(ranksNames, OPP_WEST,
+    // completionIn.strSet(ranksNames, OPP_WEST,
+    completionIn.strSet(ranksNames, side,
       true, data.ranksActive == 1));
 }
 
@@ -640,7 +644,7 @@ void VerbalCover::fillCompletionWithLows(
   const Opponent side,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  const VerbalData& data)
+  [[maybe_unused]] const VerbalData& data)
 {
   sentence = SENTENCE_LIST;
 
@@ -657,9 +661,10 @@ void VerbalCover::fillCompletionWithLows(
   // more generally, it should be "side" in strUnset()
   const string s = 
                                   // TODO !!!
-    completion.strSet(ranksNames, OPP_WEST,
-      false, data.ranksActive == 1) +
-    "(" + completion.strUnset(ranksNames, OPP_WEST) + ")";
+    completion.strSetNew(ranksNames, side,
+      // false, data.ranksActive == 1) +
+      false, true) +
+    "(" + completion.strUnset(ranksNames, side) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);

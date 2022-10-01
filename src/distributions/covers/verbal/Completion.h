@@ -25,6 +25,43 @@ class Completion
 
   private:
 
+    struct CompData
+    {
+      unsigned char length;
+
+      // Number of tops used, including with zero values.
+      unsigned char topsUsed;
+
+      // Number of ranks actively used and non-zero.
+      unsigned char ranksActive;
+
+      // Lowest active, non-zero rank.
+      unsigned char lowestRankActive;
+
+      void reset()
+      {
+        length = 0;
+        topsUsed = 0;
+        ranksActive = 0;
+        lowestRankActive = 0;
+      };
+
+      void update(
+        const unsigned char topNo,
+        const unsigned char value,
+        [[maybe_unused]] const unsigned char valueMax)
+      {
+        // Call this from the highest topNo on down in order.
+        topsUsed += value;
+        if (value)
+        {
+          ranksActive++;
+          lowestRankActive = topNo;
+        }
+      };
+    };
+
+
     vector<unsigned char> west;
     vector<unsigned char> east;
 
@@ -32,8 +69,12 @@ class Completion
 
     list<unsigned char> openTopNumbers;
 
-    unsigned char lengthWest;
-    unsigned char lengthEast;
+    CompData dataWest;
+    CompData dataEast;
+
+    // Number of ranks actively used.
+    unsigned char ranksUsed;
+
 
 
   public:
@@ -55,6 +96,8 @@ class Completion
 
     unsigned char length(const Opponent side) const;
 
+    Opponent preferSingleActive() const;
+
     bool operator < (const Completion& comp2) const;
 
     bool operator == (const Completion& comp2) const;
@@ -66,6 +109,13 @@ class Completion
       const Opponent side,
       const bool expandFlag,
       const bool singleRankFlag,
+      const bool explicitVoidFlag = false) const;
+
+    string strSetNew(
+      const RanksNames& ranksNames,
+      const Opponent side,
+      const bool enableExpandFlag,
+      const bool enableSingleRankFlag,
       const bool explicitVoidFlag = false) const;
 
     string strUnset(

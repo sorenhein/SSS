@@ -580,30 +580,20 @@ string Product::strVerbalTopsOnly(
   const VerbalData& dataEast,
   const bool flipAllowedFlag) const
 {
-  const bool singleActiveRank =
-    (dataWest.ranksUsed == 1 && dataEast.ranksUsed == 1 &&
-     dataWest.lowestRankActive == dataEast.lowestRankActive);
+  VerbalCover verbalCover1;
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover1.getCompletion());
 
-  // TODO symmFlag relevant here too?!
-  if (dataEast.ranksActive == 0 || singleActiveRank)
+  const Opponent activeRankSide = 
+    verbalCover1.getCompletion().preferSingleActive();
+
+  if (activeRankSide != OPP_EITHER)
   {
-    VerbalCover verbalCover;
+    verbalCover1.fillCompletion(activeRankSide, symmFlag,
+      ranksNames, verbalCover1.getCompletion(), 
+      activeRankSide == OPP_WEST ? dataWest : dataEast);
 
-    productWest.setVerbalTops(
-      sumProfile, ranksNames, canonicalShift, OPP_WEST,
-      symmFlag, dataWest, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else if (dataWest.ranksActive == 0)
-  {
-    VerbalCover verbalCover;
-
-    productEast.setVerbalTops(
-      sumProfile, ranksNames, canonicalShift, OPP_EAST,
-      symmFlag, dataEast, verbalCover);
-
-    return verbalCover.str(ranksNames);
+    return verbalCover1.str(ranksNames);
   }
 
   bool preferWest;
@@ -631,9 +621,12 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      productWest.setVerbalCompletionWithLows(
-        sumProfile, canonicalShift, ranksNames,
-        OPP_WEST, symmFlag, dataWest, verbalCover);
+      // The lowest cards are a single rank of x'es.
+      Product::makeCompletion(sumProfile, canonicalShift, 
+        verbalCover.getCompletion());
+
+      verbalCover.fillCompletionWithLows(OPP_WEST, symmFlag,
+        ranksNames, dataWest);
     }
     else
     {
@@ -646,9 +639,11 @@ string Product::strVerbalTopsOnly(
   {
     if (flipAllowedFlag && numOptions == 1)
     {
-      productEast.setVerbalCompletionWithLows(
-        sumProfile, canonicalShift, ranksNames,
-        OPP_EAST, symmFlag, dataEast, verbalCover);
+      Product::makeCompletion(sumProfile, canonicalShift, 
+        verbalCover.getCompletion());
+
+      verbalCover.fillCompletionWithLows(OPP_EAST, symmFlag,
+        ranksNames, dataEast);
     }
     else
     {
@@ -851,10 +846,15 @@ string Product::strVerbal(
 
   VerbalCover verbalCover;
 
- // cout << "\nProduct " << Product::strLine() << "\n";
+  // cout << "\nProduct " << Product::strLine() << ", symm " <<
+    // symmFlag << "\n";
   if (verbal == VERBAL_LENGTH_ONLY)
   {
-    Product::setVerbalLengthOnly(sumProfile, symmFlag, verbalCover);
+    Product::makeCompletion(sumProfile, canonicalShift, 
+      verbalCover.getCompletion());
+
+    // Product::setVerbalLengthOnly(sumProfile, symmFlag, verbalCover);
+    verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
     
     return verbalCover.str(ranksNames);
   }
