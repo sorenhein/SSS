@@ -105,6 +105,8 @@ class Completion
 
     unsigned char getTopsFull(const Opponent side) const;
 
+    unsigned char numOptions() const;
+
     Opponent preferSingleActive() const;
 
     Opponent preferSimpleActive() const;

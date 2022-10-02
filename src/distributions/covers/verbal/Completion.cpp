@@ -172,6 +172,12 @@ Opponent Completion::preferSimpleActive() const
 }
 
 
+unsigned char Completion::numOptions() const
+{
+  return static_cast<unsigned char>(used.size()) - ranksUsed;
+}
+
+
 bool Completion::operator < (const Completion& comp2) const
 {
   return (dataWest.length > comp2.dataWest.length);

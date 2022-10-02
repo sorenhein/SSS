@@ -514,10 +514,6 @@ string Product::strVerbalTopsOnly(
   const unsigned char canonicalShift,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  [[maybe_unused]] const Product& productWest,
-  [[maybe_unused]] const Product& productEast,
-  const VerbalData& dataWest,
-  const VerbalData& dataEast,
   const bool flipAllowedFlag) const
 {
   VerbalCover verbalCover;
@@ -529,9 +525,7 @@ string Product::strVerbalTopsOnly(
 
   if (activeRankSide != OPP_EITHER)
   {
-    verbalCover.fillCompletion(activeRankSide, symmFlag,
-      ranksNames, verbalCover.getCompletion(), 
-      activeRankSide == OPP_WEST ? dataWest : dataEast);
+    verbalCover.fillCompletion(activeRankSide, symmFlag, ranksNames);
 
     return verbalCover.str(ranksNames);
   }
@@ -551,8 +545,9 @@ string Product::strVerbalTopsOnly(
     simplestOpponent = OPP_EAST;
 
   const unsigned char numOptions = 
-    static_cast<unsigned char>(tops.size()) + 
-    canonicalShift - dataWest.ranksUsed;
+    verbalCover.getCompletion().numOptions();
+    // static_cast<unsigned char>(tops.size()) + 
+    // canonicalShift - dataWest.ranksUsed;
 
   if (flipAllowedFlag && numOptions == 1)
   {
@@ -595,8 +590,7 @@ string Product::strVerbalAnyTops(
   {
     // This works for any tops as well.
     return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames,
-      productWest, productEast, dataWest, dataEast, false);
+      symmFlag, ranksNames, false);
   }
 
   list<Completion> completions;
@@ -725,8 +719,7 @@ string Product::strVerbalHighTops(
   if (! length.used())
   {
     return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames,
-      productWest, productEast, dataWest, dataEast, true);
+      symmFlag, ranksNames, true);
   }
   else if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)

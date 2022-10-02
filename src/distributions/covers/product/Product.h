@@ -122,10 +122,6 @@ class Product
       const unsigned char canonicalShift,
       const bool symmFlag,
       const RanksNames& ranksNames,
-      const Product& productWest,
-      const Product& productEast,
-      const VerbalData& dataWest,
-      const VerbalData& dataEast,
       const bool flipAllowedFlag) const;
 
 

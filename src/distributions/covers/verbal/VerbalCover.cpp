@@ -637,9 +637,7 @@ void VerbalCover::getTopsData(
 void VerbalCover::fillCompletion(
   const Opponent side,
   const bool symmFlag,
-  const RanksNames& ranksNames,
-  [[maybe_unused]] const Completion& completionIn,
-  [[maybe_unused]] const VerbalData& data)
+  const RanksNames& ranksNames)
 {
   sentence = SENTENCE_LIST;
 
