@@ -20,6 +20,7 @@
 
 // TODO Need whole file or just TemplateData?
 #include "VerbalTemplates.h"
+#include "./Completion.h"
 
 #include "../../../ranks/RanksNames.h"
 
@@ -187,10 +188,10 @@ void VerbalCover::fillOnetopLength(
 void VerbalCover::fillTopsExcluding(
   const Opponent side,
   const bool symmFlag,
-  const Completion& completion1,
-  const Completion& completion2,
-  const VerbalData& data1,
-  const VerbalData& data2,
+  // const Completion& completion1,
+  // const Completion& completion2,
+  // const VerbalData& data1,
+  // const VerbalData& data2,
   const RanksNames& ranksNames)
 {
   sentence = SENTENCE_TOPS_EXCLUDING;
@@ -208,23 +209,43 @@ void VerbalCover::fillTopsExcluding(
 
   // These should be expanded later in VerbalTemplates.
   templateFills[1].setBlank(BLANK_TOPS);
-  templateFills[1].setData(BLANK_TOPS_ACTUAL,
-                                   // TODO !!!
-    completion1.strSet(ranksNames, OPP_WEST,
-      data1.topsUsed == 1, data1.ranksActive == 1));
 
-  if (data2.topsFull <= 1)
+  // string s = (side == OPP_WEST ?  
+    // west.strSetNew(ranksNames, side, true, true) :
+    // east.strSetNew(ranksNames, side, true, true));
+
+  templateFills[1].setData(BLANK_TOPS_ACTUAL, 
+    completion.strSetNew(ranksNames, side, true, true));
+                                   // TODO !!!
+    // completion1.strSetNew(ranksNames, side, true, true);
+      // data1.topsUsed == 1, data1.ranksActive == 1));
+
+  const unsigned topsFull = completion.getTopsFull(
+    side == OPP_WEST ? OPP_EAST : OPP_WEST);
+
+  // const VerbalData& dataOther = (side == OPP_WEST ? dataEast : dataWest);
+  // if (data2.topsFull <= 1)
+  if (topsFull <= 1)
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NOT);
-  else if (data2.topsFull == 2)
+  // else if (data2.topsFull == 2)
+  else if (topsFull == 2)
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NEITHER);
   else
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NONE);
 
   templateFills[3].setBlank(BLANK_TOPS);
-  templateFills[3].setData(BLANK_TOPS_ACTUAL,
+
+  // s = (side == OPP_WEST ?
+    // east.strSetNew(ranksNames, side, true, true) :
+    // west.strSetNew(ranksNames, side, true, true));
+
+  templateFills[3].setData(BLANK_TOPS_ACTUAL, 
+    completion.strSetNew(ranksNames, 
+      side == OPP_WEST ? OPP_EAST : OPP_WEST, 
+      true, true));
                                    // TODO !!!
-    completion2.strSet(ranksNames, OPP_WEST,
-      data2.topsUsed == 1, data2.ranksActive == 1));
+    // completion2.strSetNew(ranksNames, side, true, true);
+      // data2.topsUsed == 1, data2.ranksActive == 1));
 }
 
 

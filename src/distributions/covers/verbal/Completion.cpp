@@ -122,6 +122,20 @@ unsigned char Completion::length(const Opponent side) const
 }
 
 
+unsigned char Completion::getTopsFull(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.topsFull;
+  else if (side == OPP_EAST)
+    return dataEast.topsFull;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 Opponent Completion::preferSingleActive() const
 {
   // Return OPP_WEST if West, OPP_EAST if East, OPP_EITHER if

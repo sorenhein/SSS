@@ -138,10 +138,10 @@ class VerbalCover
     void fillTopsExcluding(
       const Opponent side,
       const bool symmFlag,
-      const Completion& completion1,
-      const Completion& completion2,
-      const VerbalData& data1,
-      const VerbalData& data2,
+      // const Completion& completion1,
+      // const Completion& completion2,
+      // const VerbalData& data1,
+      // const VerbalData& data2,
       const RanksNames& ranksNames);
 
     void fillBelow(

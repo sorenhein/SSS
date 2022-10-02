@@ -38,12 +38,16 @@ class Completion
       // Lowest active, non-zero rank.
       unsigned char lowestRankActive;
 
+      // Tops of full rank.
+      unsigned char topsFull;
+
       void reset()
       {
         length = 0;
         topsUsed = 0;
         ranksActive = 0;
         lowestRankActive = 0;
+        topsFull = 0;
       };
 
       void update(
@@ -58,6 +62,9 @@ class Completion
           ranksActive++;
           lowestRankActive = topNo;
         }
+
+        if (value == valueMax)
+          topsFull += valueMax;
       };
     };
 
@@ -95,6 +102,8 @@ class Completion
     const list<unsigned char>& openTops() const;
 
     unsigned char length(const Opponent side) const;
+
+    unsigned char getTopsFull(const Opponent side) const;
 
     Opponent preferSingleActive() const;
 

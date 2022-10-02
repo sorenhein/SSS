@@ -489,13 +489,13 @@ void Product::setVerbalTops(
 void Product::setVerbalTopsExcluding(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
-  const RanksNames& ranksNames,
+  [[maybe_unused]] const RanksNames& ranksNames,
   const Product& productOther,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
-  const VerbalData& data,
-  const VerbalData& dataOther,
-  VerbalCover& verbalCover) const
+  [[maybe_unused]] const Opponent simplestOpponent,
+  [[maybe_unused]] const bool symmFlag,
+  [[maybe_unused]] const VerbalData& data,
+  [[maybe_unused]] const VerbalData& dataOther,
+  [[maybe_unused]] VerbalCover& verbalCover) const
 {
   Completion completionOwn;
   Product::makeCompletion(sumProfile, canonicalShift, completionOwn);
@@ -504,8 +504,8 @@ void Product::setVerbalTopsExcluding(
   productOther.makeCompletion(
     sumProfile, canonicalShift, completionOther);
 
-  verbalCover.fillTopsExcluding(simplestOpponent, symmFlag,
-    completionOwn, completionOther, data, dataOther, ranksNames);
+  // verbalCover.fillTopsExcluding(simplestOpponent, symmFlag,
+    // completionOwn, completionOther, data, dataOther, ranksNames);
 }
 
 
@@ -575,7 +575,7 @@ string Product::strVerbalTopsOnly(
   const bool symmFlag,
   const RanksNames& ranksNames,
   const Product& productWest,
-  const Product& productEast,
+  [[maybe_unused]] const Product& productEast,
   const VerbalData& dataWest,
   const VerbalData& dataEast,
   const bool flipAllowedFlag) const
@@ -630,9 +630,10 @@ string Product::strVerbalTopsOnly(
     }
     else
     {
-      productWest.setVerbalTopsExcluding(
-        sumProfile, canonicalShift, ranksNames, productEast, 
-        OPP_WEST, symmFlag, dataWest, dataEast, verbalCover);
+      Product::makeCompletion(sumProfile, canonicalShift, 
+        verbalCover.getCompletion());
+
+      verbalCover.fillTopsExcluding(OPP_WEST, symmFlag, ranksNames);
     }
   }
   else
@@ -647,9 +648,10 @@ string Product::strVerbalTopsOnly(
     }
     else
     {
-      productEast.setVerbalTopsExcluding(
-        sumProfile, canonicalShift, ranksNames, productWest, 
-        OPP_EAST, symmFlag, dataEast, dataWest, verbalCover);
+      Product::makeCompletion(sumProfile, canonicalShift, 
+        verbalCover.getCompletion());
+
+      verbalCover.fillTopsExcluding(OPP_EAST, symmFlag, ranksNames);
     }
   }
   return verbalCover.str(ranksNames);
