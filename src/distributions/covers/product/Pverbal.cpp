@@ -467,66 +467,6 @@ void Product::setVerbalLengthAndOneTop(
 }
 
 
-void Product::setVerbalTops(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const unsigned char canonicalShift,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
-  const VerbalData& data,
-  VerbalCover& verbalCover) const
-{
-  // The other side is known to use no tops at all.
-
-  Completion completion;
-  Product::makeCompletion(sumProfile, canonicalShift, completion);
-
-  verbalCover.fillCompletion(simplestOpponent, symmFlag,
-    ranksNames, completion, data);
-}
-
-
-void Product::setVerbalTopsExcluding(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  [[maybe_unused]] const RanksNames& ranksNames,
-  const Product& productOther,
-  [[maybe_unused]] const Opponent simplestOpponent,
-  [[maybe_unused]] const bool symmFlag,
-  [[maybe_unused]] const VerbalData& data,
-  [[maybe_unused]] const VerbalData& dataOther,
-  [[maybe_unused]] VerbalCover& verbalCover) const
-{
-  Completion completionOwn;
-  Product::makeCompletion(sumProfile, canonicalShift, completionOwn);
-
-  Completion completionOther;
-  productOther.makeCompletion(
-    sumProfile, canonicalShift, completionOther);
-
-  // verbalCover.fillTopsExcluding(simplestOpponent, symmFlag,
-    // completionOwn, completionOther, data, dataOther, ranksNames);
-}
-
-
-void Product::setVerbalCompletionWithLows(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
-  const VerbalData& data,
-  VerbalCover& verbalCover) const
-{
-  // The lowest cards are a single rank of x'es.
-
-  Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover.getCompletion());
-
-  verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
-    ranksNames, data);
-}
-
 
 
 // Add other set methods here
@@ -574,86 +514,57 @@ string Product::strVerbalTopsOnly(
   const unsigned char canonicalShift,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  const Product& productWest,
+  [[maybe_unused]] const Product& productWest,
   [[maybe_unused]] const Product& productEast,
   const VerbalData& dataWest,
   const VerbalData& dataEast,
   const bool flipAllowedFlag) const
 {
-  VerbalCover verbalCover1;
+  VerbalCover verbalCover;
   Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover1.getCompletion());
+    verbalCover.getCompletion());
 
   const Opponent activeRankSide = 
-    verbalCover1.getCompletion().preferSingleActive();
+    verbalCover.getCompletion().preferSingleActive();
 
   if (activeRankSide != OPP_EITHER)
   {
-    verbalCover1.fillCompletion(activeRankSide, symmFlag,
-      ranksNames, verbalCover1.getCompletion(), 
+    verbalCover.fillCompletion(activeRankSide, symmFlag,
+      ranksNames, verbalCover.getCompletion(), 
       activeRankSide == OPP_WEST ? dataWest : dataEast);
 
-    return verbalCover1.str(ranksNames);
+    return verbalCover.str(ranksNames);
   }
 
-  bool preferWest;
-  // TODO This looks reasonably useful in general, but requires
-  // data to be known.
-  if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
-    preferWest = true;
-  else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
-    preferWest = false;
-  else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
-    preferWest = true;
-  else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
-    preferWest = false;
+
+  const Opponent opp = verbalCover.getCompletion().preferSimpleActive();
+  Opponent simplestOpponent;
+
+  // TODO Could do a version of topsSimpler here where the tops are
+  // equals.
+  if (opp != OPP_EITHER)
+    simplestOpponent = opp;
+  // else if (productWest.topsSimpler(sumProfile, canonicalShift))
+  else if (Product::topsSimpler(sumProfile, canonicalShift))
+    simplestOpponent = OPP_WEST;
   else
-    preferWest = productWest.topsSimpler(sumProfile, canonicalShift);
+    simplestOpponent = OPP_EAST;
 
   const unsigned char numOptions = 
     static_cast<unsigned char>(tops.size()) + 
     canonicalShift - dataWest.ranksUsed;
 
-  // TODO This part unchecked concerning any-tops.
-  VerbalCover verbalCover;
-
-  if (preferWest)
+  if (flipAllowedFlag && numOptions == 1)
   {
-    if (flipAllowedFlag && numOptions == 1)
-    {
-      // The lowest cards are a single rank of x'es.
-      Product::makeCompletion(sumProfile, canonicalShift, 
-        verbalCover.getCompletion());
-
-      verbalCover.fillCompletionWithLows(OPP_WEST, symmFlag,
-        ranksNames, dataWest);
-    }
-    else
-    {
-      Product::makeCompletion(sumProfile, canonicalShift, 
-        verbalCover.getCompletion());
-
-      verbalCover.fillTopsExcluding(OPP_WEST, symmFlag, ranksNames);
-    }
+    // The lowest cards are a single rank of x'es.
+    verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
+      ranksNames);
   }
   else
   {
-    if (flipAllowedFlag && numOptions == 1)
-    {
-      Product::makeCompletion(sumProfile, canonicalShift, 
-        verbalCover.getCompletion());
-
-      verbalCover.fillCompletionWithLows(OPP_EAST, symmFlag,
-        ranksNames, dataEast);
-    }
-    else
-    {
-      Product::makeCompletion(sumProfile, canonicalShift, 
-        verbalCover.getCompletion());
-
-      verbalCover.fillTopsExcluding(OPP_EAST, symmFlag, ranksNames);
-    }
+    verbalCover.fillTopsExcluding(simplestOpponent, symmFlag, ranksNames);
   }
+
   return verbalCover.str(ranksNames);
 }
 

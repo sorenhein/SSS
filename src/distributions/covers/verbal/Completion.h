@@ -107,6 +107,8 @@ class Completion
 
     Opponent preferSingleActive() const;
 
+    Opponent preferSimpleActive() const;
+
     bool operator < (const Completion& comp2) const;
 
     bool operator == (const Completion& comp2) const;

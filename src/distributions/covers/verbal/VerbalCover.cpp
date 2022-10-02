@@ -638,8 +638,8 @@ void VerbalCover::fillCompletion(
   const Opponent side,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  const Completion& completionIn,
-  const VerbalData& data)
+  [[maybe_unused]] const Completion& completionIn,
+  [[maybe_unused]] const VerbalData& data)
 {
   sentence = SENTENCE_LIST;
 
@@ -654,18 +654,14 @@ void VerbalCover::fillCompletion(
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
-                                  // TODO !!!
-    // completionIn.strSet(ranksNames, OPP_WEST,
-    completionIn.strSet(ranksNames, side,
-      true, data.ranksActive == 1));
+    completion.strSetNew(ranksNames, side, true, true));
 }
 
 
 void VerbalCover::fillCompletionWithLows(
   const Opponent side,
   const bool symmFlag,
-  const RanksNames& ranksNames,
-  [[maybe_unused]] const VerbalData& data)
+  const RanksNames& ranksNames)
 {
   sentence = SENTENCE_LIST;
 
@@ -678,13 +674,7 @@ void VerbalCover::fillCompletionWithLows(
   templateFills.resize(2);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  // TODO !!! For now we use OPP_WEST, but when completion is used
-  // more generally, it should be "side" in strUnset()
-  const string s = 
-                                  // TODO !!!
-    completion.strSetNew(ranksNames, side,
-      // false, data.ranksActive == 1) +
-      false, true) +
+  const string s = completion.strSetNew(ranksNames, side, false, true) +
     "(" + completion.strUnset(ranksNames, side) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);

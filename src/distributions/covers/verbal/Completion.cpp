@@ -154,6 +154,24 @@ Opponent Completion::preferSingleActive() const
 }
 
 
+Opponent Completion::preferSimpleActive() const
+{
+  // Return OPP_WEST if West, OPP_EAST if East, OPP_EITHER if
+  // not a relevant match.
+
+  if (dataWest.ranksActive == 1 && dataEast.ranksActive > 1)
+    return OPP_WEST;
+  else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
+    return OPP_EAST;
+  else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
+    return OPP_WEST;
+  else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
+    return OPP_EAST;
+  else
+    return OPP_EITHER;
+}
+
+
 bool Completion::operator < (const Completion& comp2) const
 {
   return (dataWest.length > comp2.dataWest.length);
