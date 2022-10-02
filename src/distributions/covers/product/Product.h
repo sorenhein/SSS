@@ -90,11 +90,6 @@ class Product
 
     // Simple set methods (no branches)
 
-    void setVerbalLengthOnly(
-      const Profile& sumProfile,
-      const bool symmFlag,
-      VerbalCover& verbalCover) const;
-
     void setVerbalOneTopOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
