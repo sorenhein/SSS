@@ -133,8 +133,8 @@ class Completion
 
     unsigned char getTopsFull(const Opponent side) const;
 
-    unsigned char gettotalLower(const Opponent side) const;
-    unsigned char gettotalUpper(const Opponent side) const;
+    unsigned char getTotalLower(const Opponent side) const;
+    unsigned char getTotalUpper(const Opponent side) const;
 
     unsigned char numOptions() const;
 

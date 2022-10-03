@@ -339,11 +339,13 @@ void Product::makeCompletion(
 bool Product::makeCompletionList(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
-  [[maybe_unused]] const Opponent side,
-  const VerbalData& data,
+  const Opponent side,
   const unsigned char maxCompletions,
   list<Completion>& completions) const
 {
+  // We always put each completion in the West-East order, but if
+  // side == OPP_WEST, we generate and sort them in such an order
+  // that they go from higher to lower and from longer to shorter.
   Completion completion;
   Product::makeCompletion(sumProfile, canonicalShift, completion);
 
@@ -355,8 +357,8 @@ bool Product::makeCompletionList(
   list<Completion> stack;
   stack.push_back(completion);
 
-  const unsigned char totalLower = data.topsUsed + data.freeLower;
-  const unsigned char totalUpper = data.topsUsed + data.freeUpper;
+  const unsigned char totalLower = completion.getTotalLower(side);
+  const unsigned char totalUpper = completion.getTotalUpper(side);
 
   // It's OK to have zero of the highest open top.
   // After that, a zero top was already implicit in some earlier
@@ -579,14 +581,6 @@ string Product::strVerbalAnyTops(
 {
   assert(activeCount > 0);
 
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
-
-  VerbalData dataWest, dataEast;
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-
   if (! length.used())
   {
     // This works for any tops as well.
@@ -594,37 +588,27 @@ string Product::strVerbalAnyTops(
       symmFlag, ranksNames, false);
   }
 
-  list<Completion> completions;
-
-  if (dataWest.topsUsed + dataWest.freeUpper <=
-    dataEast.topsUsed + dataEast.freeUpper)
-  {
-    if (Product::makeCompletionList(sumProfile, canonicalShift, 
-      OPP_WEST, dataWest, 4, completions))
-    {
-      VerbalCover verbalCover;
-      const VerbalSide vside = {OPP_WEST, symmFlag};
-      verbalCover.fillList(vside, ranksNames, completions);
-      return verbalCover.str(ranksNames);
-    }
-  }
-  else
-  {
-    if (Product::makeCompletionList(sumProfile, canonicalShift, 
-      OPP_EAST, dataEast, 4, completions))
-    {
-      VerbalCover verbalCover;
-      const VerbalSide vside = {OPP_EAST, symmFlag};
-      verbalCover.fillList(vside, ranksNames, completions);
-      return verbalCover.str(ranksNames);
-    }
-  }
-
   VerbalCover verbalCover;
   verbalCover.setLength(length);
 
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
+
+  list<Completion> completions;
+
+  const Opponent side = (
+    verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
+    verbalCover.getCompletion().getTotalUpper(OPP_EAST) ? 
+    OPP_WEST : OPP_EAST);
+
+  const VerbalSide vside = {side, symmFlag};
+
+  if (Product::makeCompletionList(sumProfile, canonicalShift, 
+    side, 4, completions))
+  {
+    verbalCover.fillList(vside, ranksNames, completions);
+    return verbalCover.str(ranksNames);
+  }
 
   vector<TemplateData> tdata;
   const string s = verbalCover.strGeneral(
@@ -732,7 +716,7 @@ string Product::strVerbalHighTops(
       // "West has Q or Qx".
       list<Completion> completions;
       if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-        OPP_WEST, dataWest, 4, completions))
+        OPP_WEST, 4, completions))
       {
         // We currently never get more than 4 options.
         assert(false);
@@ -760,7 +744,7 @@ string Product::strVerbalHighTops(
       // "West has Q or Qx".
       list<Completion> completions;
       if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-        OPP_EAST, dataEast, 4, completions))
+        OPP_EAST, 4, completions))
       {
         // We currently never get more than 4 options.
         assert(false);
