@@ -185,8 +185,7 @@ class VerbalCover
     void fillTopsAndLower(
       const VerbalSide& vside,
       const RanksNames& ranksNames,
-      const unsigned char numOptions,
-      const VerbalData& data);
+      const unsigned char numOptions);
 
     void fillList(
       const VerbalSide& vside,

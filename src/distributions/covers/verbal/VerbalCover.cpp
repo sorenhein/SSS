@@ -643,8 +643,7 @@ void VerbalCover::fillBottoms(
 void VerbalCover::fillTopsAndLower(
   const VerbalSide& vside,
   const RanksNames& ranksNames,
-  const unsigned char numOptions,
-  const VerbalData& data)
+  const unsigned char numOptions)
 {
   sentence = SENTENCE_TOPS_AND_LOWER;
   const BlankPlayerCap bside = vside.blank();
@@ -676,7 +675,7 @@ void VerbalCover::fillTopsAndLower(
   }
 
   string t;
-  if (data.lowestRankActive == data.lowestRankUsed)
+  if (completion.lowestRankIsUsed(vside.side))
   {
     t = ", lower-ranked ";
     t += (freeUpper == 1 ? "card" : "cards");

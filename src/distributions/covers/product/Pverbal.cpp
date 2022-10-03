@@ -124,59 +124,6 @@ unsigned char Product::countBottoms(
 }
 
 
-void Product::fillUsedTops(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  Product& productWest,
-  Product& productEast,
-  VerbalData& dataWest,
-  VerbalData& dataEast) const
-{
-  // Assumes that all used tops are of the equal type.
-  dataWest.reset();
-  dataEast.reset();
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    topNo-- > 0; )
-  {
-    auto& top = tops[topNo];
-    if (! top.used())
-      continue;
-
-    const unsigned char tlength = sumProfile[topNo + canonicalShift];
-    productWest.tops[topNo] = top;
-    productEast.tops[topNo].setMirrored(top, tlength);
-
-    dataWest.update(topNo, top.lower(), tlength);
-    dataEast.update(topNo, tlength - top.lower(), tlength);
-  }
-
-  const unsigned char slength = sumProfile.length();
-
-  if (length.used())
-    productWest.length = length;
-  else
-    productWest.length.set(slength, dataWest.topsUsed, 
-      slength - dataEast.topsUsed);
-
-  productEast.length.setMirrored(productWest.length, slength);
-
-  const unsigned char rest = sumProfile.length() - 
-    dataWest.topsUsed - dataEast.topsUsed;
-
-  const unsigned char westLimit = 
-    productWest.length.upper() - dataWest.topsUsed;
-  const unsigned char eastLimit = 
-    productEast.length.upper() - dataEast.topsUsed;
-
-  dataWest.freeUpper = min(rest, westLimit);
-  dataEast.freeUpper = min(rest, eastLimit);
-
-  dataWest.freeLower = rest - dataEast.freeUpper;
-  dataEast.freeLower = rest - dataWest.freeUpper;
-}
-
-
 void Product::makeSingularCompletion(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -623,42 +570,6 @@ cout << "\nXX" << s << "\n";
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
-string Product::strVerbalHighTopsSide(
-  const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const VerbalSide& vside,
-  const VerbalData& data,
-  const unsigned char canonicalShift) const
-{
-  VerbalCover verbalCover;
-  Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover.getCompletion());
-
-  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
-
-  assert(numOptions != 1);
-
-  if (data.topsUsed == 0)
-  {
-    // "West has at most a doubleton completely below the ten".
-    verbalCover.fillBelow(
-      data.freeLower, 
-      data.freeUpper,
-      Product::countBottoms(sumProfile, canonicalShift),
-      ranksNames,
-      numOptions,
-      vside);
-  }
-  else
-  {
-    // General case.
-
-    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, data);
-  }
-  return verbalCover.str(ranksNames);
-}
-
-
 string Product::strVerbalHighTops(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
@@ -723,6 +634,7 @@ string Product::strVerbalHighTops(
     return verbalCover.str(ranksNames);
   }
 
+  /*
   Product productWest, productEast;
   productWest.resize(tops.size());
   productEast.resize(tops.size());
@@ -730,12 +642,13 @@ string Product::strVerbalHighTops(
   VerbalData dataWest, dataEast;
   Product::fillUsedTops(sumProfile, canonicalShift, 
     productWest, productEast, dataWest, dataEast);
+    */
 
+  verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
+  /*
   if (side == OPP_WEST)
   {
     // General case.
-    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
-      dataWest);
   }
   else
   {
@@ -743,6 +656,8 @@ string Product::strVerbalHighTops(
     verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
       dataEast);
   }
+  */
+
   return verbalCover.str(ranksNames);
 }
 

@@ -80,14 +80,6 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
-    void fillUsedTops(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      Product& productWest,
-      Product& productEast,
-      VerbalData& dataWest,
-      VerbalData& dataEast) const;
-
 
     // Simple set methods (no branches)
 
@@ -160,13 +152,6 @@ class Product
       const string& sideOther,
       const VerbalData& data,
       const bool singleActiveRank) const;
-
-    string strVerbalHighTopsSide(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const VerbalSide& vside,
-      const VerbalData& data,
-      const unsigned char canonicalShift) const;
 
     string strVerbalHighTops(
       const Profile& sumProfile,

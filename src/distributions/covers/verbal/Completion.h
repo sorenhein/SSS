@@ -67,6 +67,7 @@ class Completion
       {
         // Call this from the highest topNo on down in order.
         topsUsed += value;
+
         if (value)
         {
           ranksActive++;
@@ -105,6 +106,9 @@ class Completion
     // Number of ranks actively used.
     unsigned char ranksUsed;
 
+    // Lowest rank used, including with zero values.
+    unsigned char lowestRankUsed;
+
 
 
   public:
@@ -142,6 +146,8 @@ class Completion
     unsigned char getTotalUpper(const Opponent side) const;
 
     unsigned char numOptions() const;
+
+    bool lowestRankIsUsed(const Opponent side) const;
 
     Opponent preferSingleActive() const;
 

@@ -59,6 +59,7 @@ void Completion::setTop(
     dataEast.length += maximum - countWest;
 
     ranksUsed++;
+    lowestRankUsed = topNo;
     dataWest.update(topNo, countWest, maximum);
     dataEast.update(topNo, maximum - countWest, maximum);
   }
@@ -296,6 +297,15 @@ Opponent Completion::preferSimpleActive() const
 unsigned char Completion::numOptions() const
 {
   return static_cast<unsigned char>(used.size()) - ranksUsed;
+}
+
+
+bool Completion::lowestRankIsUsed(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return (dataWest.lowestRankActive == lowestRankUsed);
+  else
+    return (dataEast.lowestRankActive == lowestRankUsed);
 }
 
 
