@@ -709,6 +709,20 @@ string Product::strVerbalHighTops(
     return verbalCover.str(ranksNames);
   }
 
+  if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+  {
+    // "West has at most a doubleton completely below the ten".
+    verbalCover.fillBelow(
+      verbalCover.getCompletion().getFreeLower(side),
+      verbalCover.getCompletion().getFreeUpper(side),
+      Product::countBottoms(sumProfile, canonicalShift),
+      ranksNames,
+      numOptions,
+      vside);
+
+    return verbalCover.str(ranksNames);
+  }
+
   Product productWest, productEast;
   productWest.resize(tops.size());
   productEast.resize(tops.size());
@@ -719,46 +733,17 @@ string Product::strVerbalHighTops(
 
   if (side == OPP_WEST)
   {
-    if (verbalCover.getCompletion().getTopsUsed(side) == 0)
-    {
-      // "West has at most a doubleton completely below the ten".
-      verbalCover.fillBelow(
-        verbalCover.getCompletion().getFreeLower(side),
-        verbalCover.getCompletion().getFreeUpper(side),
-        Product::countBottoms(sumProfile, canonicalShift),
-        ranksNames,
-        numOptions,
-        vside);
-    }
-    else
-    {
-      // General case.
-      verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
-        dataWest);
-    }
-    return verbalCover.str(ranksNames);
+    // General case.
+    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
+      dataWest);
   }
   else
   {
-    if (verbalCover.getCompletion().getTopsUsed(side) == 0)
-    {
-      // "West has at most a doubleton completely below the ten".
-      verbalCover.fillBelow(
-        verbalCover.getCompletion().getFreeLower(side),
-        verbalCover.getCompletion().getFreeUpper(side),
-        Product::countBottoms(sumProfile, canonicalShift),
-        ranksNames,
-        numOptions,
-        vside);
-    }
-    else
-    {
-      // General case.
-      verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
-        dataEast);
-    }
-    return verbalCover.str(ranksNames);
+    // General case.
+    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
+      dataEast);
   }
+  return verbalCover.str(ranksNames);
 }
 
 
