@@ -524,8 +524,6 @@ string Product::strVerbalTopsOnly(
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
-  // const Opponent activeRankSide = 
-    // verbalCover.getCompletion().preferSingleActive();
   const VerbalSide vsideSingle = 
     {verbalCover.getCompletion().preferSingleActive(), symmFlag};
 
@@ -534,7 +532,6 @@ string Product::strVerbalTopsOnly(
     verbalCover.fillCompletion(vsideSingle, ranksNames);
     return verbalCover.str(ranksNames);
   }
-
 
   const Opponent opp = verbalCover.getCompletion().preferSimpleActive();
   Opponent simplestOpponent;
@@ -670,14 +667,6 @@ string Product::strVerbalHighTops(
 {
   assert(activeCount > 0);
 
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
-
-  VerbalData dataWest, dataEast;
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-
   if (! length.used())
   {
     return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
@@ -690,71 +679,51 @@ string Product::strVerbalHighTops(
 
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
-  Opponent side;
-  if (dataWest.topsUsed + dataWest.freeUpper <=
-    dataEast.topsUsed + dataEast.freeUpper)
-  {
-    side = OPP_WEST;
-  }
-  else
-    side = OPP_EAST;
+  const Opponent side = (
+    verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
+    verbalCover.getCompletion().getTotalUpper(OPP_EAST) ? 
+    OPP_WEST : OPP_EAST);
 
   VerbalSide vside = {side, symmFlag};
 
-  if (dataWest.topsUsed + dataWest.freeUpper <=
-    dataEast.topsUsed + dataEast.freeUpper)
+  if (numOptions == 1)
   {
-    if (numOptions == 1)
-    {
-      verbalCover.fillBottoms(vside, ranksNames);
-      return verbalCover.str(ranksNames);
-    }
+    verbalCover.fillBottoms(vside, ranksNames);
+    return verbalCover.str(ranksNames);
+  }
 
-    if (numOptions == 2 && dataWest.freeUpper == 1)
+  if (numOptions == 2 && 
+      verbalCover.getCompletion().getFreeUpper(side) == 1)
+  {
+    // We need up to one low card.
+    // "West has Q or Qx".
+    list<Completion> completions;
+    if (! Product::makeCompletionList(sumProfile, canonicalShift, 
+      side, 4, completions))
     {
-      // We need up to one low card.
-      // "West has Q or Qx".
-      list<Completion> completions;
-      if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-        OPP_WEST, 4, completions))
-      {
-        // We currently never get more than 4 options.
-        assert(false);
-      }
+      // We currently never get more than 4 options.
+      assert(false);
+    }
    
-      vside.side = OPP_WEST;
-      verbalCover.fillList(vside, ranksNames, completions);
-      return verbalCover.str(ranksNames);
-    }
+    verbalCover.fillList(vside, ranksNames, completions);
+    return verbalCover.str(ranksNames);
+  }
 
+  Product productWest, productEast;
+  productWest.resize(tops.size());
+  productEast.resize(tops.size());
+
+  VerbalData dataWest, dataEast;
+  Product::fillUsedTops(sumProfile, canonicalShift, 
+    productWest, productEast, dataWest, dataEast);
+
+  if (side == OPP_WEST)
+  {
     return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
       vside, dataWest, canonicalShift);
   }
   else
   {
-    if (numOptions == 1)
-    {
-      verbalCover.fillBottoms(vside, ranksNames);
-      return verbalCover.str(ranksNames);
-    }
-
-    if (numOptions == 2 && dataEast.freeUpper == 1)
-    {
-      // We need up to one low card.
-      // "West has Q or Qx".
-      list<Completion> completions;
-      if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-        OPP_EAST, 4, completions))
-      {
-        // We currently never get more than 4 options.
-        assert(false);
-      }
-   
-      vside.side = OPP_EAST;
-      verbalCover.fillList(vside, ranksNames, completions);
-      return verbalCover.str(ranksNames);
-    }
-
     return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
       vside, dataEast, canonicalShift);
   }

@@ -173,6 +173,20 @@ unsigned char Completion::length(const Opponent side) const
 }
 
 
+unsigned char Completion::getFreeUpper(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.freeUpper;
+  else if (side == OPP_EAST)
+    return dataEast.freeUpper;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 unsigned char Completion::getTopsFull(const Opponent side) const
 {
   if (side == OPP_WEST)
