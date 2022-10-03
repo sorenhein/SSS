@@ -424,15 +424,14 @@ void Product::setVerbalOneTopOnly(
   const unsigned char topNo = data.lowestRankUsed;
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
-  const Opponent simplestOpponent = Product::simpler(
-    sumProfile, canonicalShift);
+  const VerbalSide vside = 
+    {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
   verbalCover.fillOnetopOnly(
     tops[topNo],
     sumProfile[topNo + canonicalShift],
     topNo + canonicalShift,
-    simplestOpponent,
-    symmFlag);
+    vside);
 }
 
 
@@ -450,12 +449,11 @@ void Product::setVerbalLengthAndOneTop(
   const unsigned char topNo = data.lowestRankUsed;
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
-  const Opponent simplestOpponent = Product::simpler(
-    sumProfile, canonicalShift);
+  const VerbalSide vside = 
+    {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
   verbalCover.fillOnetopLength(
-    length, tops[topNo], sumProfile, topNo + canonicalShift,
-    simplestOpponent, symmFlag);
+    length, tops[topNo], sumProfile, topNo + canonicalShift, vside);
 }
 
 
@@ -474,16 +472,16 @@ void Product::setVerbalSingular(
   assert(length.used());
   assert(activeCount > 0);
 
-  const Opponent simplestOpponent = Product::simpler(
-    sumProfile, canonicalShift);
+  const VerbalSide vside = 
+    {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
-  const unsigned char len = (simplestOpponent == OPP_WEST ?
+  const unsigned char len = (vside.side == OPP_WEST ?
     length.lower() : sumProfile.length() - length.lower());
 
   Product::makeSingularCompletion(sumProfile, canonicalShift,
-    simplestOpponent, verbalCover.getCompletion());
+    vside.side, verbalCover.getCompletion());
 
-  verbalCover.fillSingular(len, simplestOpponent, symmFlag);
+  verbalCover.fillSingular(len, vside);
 }
 
 
@@ -512,13 +510,14 @@ string Product::strVerbalTopsOnly(
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
-  const Opponent activeRankSide = 
-    verbalCover.getCompletion().preferSingleActive();
+  // const Opponent activeRankSide = 
+    // verbalCover.getCompletion().preferSingleActive();
+  const VerbalSide vsideSingle = 
+    {verbalCover.getCompletion().preferSingleActive(), symmFlag};
 
-  if (activeRankSide != OPP_EITHER)
+  if (vsideSingle.side != OPP_EITHER)
   {
-    verbalCover.fillCompletion(activeRankSide, symmFlag, ranksNames);
-
+    verbalCover.fillCompletion(vsideSingle, ranksNames);
     return verbalCover.str(ranksNames);
   }
 
@@ -536,20 +535,19 @@ string Product::strVerbalTopsOnly(
   else
     simplestOpponent = OPP_EAST;
 
+  const VerbalSide vsideSimple = {simplestOpponent, symmFlag};
+
   const unsigned char numOptions = 
     verbalCover.getCompletion().numOptions();
-    // static_cast<unsigned char>(tops.size()) + 
-    // canonicalShift - dataWest.ranksUsed;
 
   if (flipAllowedFlag && numOptions == 1)
   {
     // The lowest cards are a single rank of x'es.
-    verbalCover.fillCompletionWithLows(simplestOpponent, symmFlag,
-      ranksNames);
+    verbalCover.fillCompletionWithLows(vsideSimple, ranksNames);
   }
   else
   {
-    verbalCover.fillTopsExcluding(simplestOpponent, symmFlag, ranksNames);
+    verbalCover.fillTopsExcluding(vsideSimple, ranksNames);
   }
 
   return verbalCover.str(ranksNames);
@@ -594,7 +592,8 @@ string Product::strVerbalAnyTops(
       4, completions))
     {
       VerbalCover verbalCover;
-      verbalCover.fillList(OPP_WEST, symmFlag, ranksNames, completions);
+      const VerbalSide vside = {OPP_WEST, symmFlag};
+      verbalCover.fillList(vside, ranksNames, completions);
       return verbalCover.str(ranksNames);
     }
   }
@@ -604,7 +603,8 @@ string Product::strVerbalAnyTops(
       4, completions))
     {
       VerbalCover verbalCover;
-      verbalCover.fillList(OPP_EAST, symmFlag, ranksNames, completions);
+      const VerbalSide vside = {OPP_EAST, symmFlag};
+      verbalCover.fillList(vside, ranksNames, completions);
       return verbalCover.str(ranksNames);
     }
   }
@@ -634,8 +634,7 @@ cout << "\nXX" << s << "\n";
 string Product::strVerbalHighTopsSide(
   const Profile& sumProfile,
   const RanksNames& ranksNames,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const VerbalData& data,
   const unsigned char canonicalShift) const
 {
@@ -659,8 +658,7 @@ string Product::strVerbalHighTopsSide(
       assert(false);
     }
 
-    verbalCover.fillList(simplestOpponent, symmFlag, 
-      ranksNames, completions);
+    verbalCover.fillList(vside, ranksNames, completions);
   }
   else if (data.topsUsed == 0)
   {
@@ -671,15 +669,13 @@ string Product::strVerbalHighTopsSide(
       Product::countBottoms(sumProfile, canonicalShift),
       ranksNames,
       numOptions,
-      simplestOpponent,
-      symmFlag);
+      vside);
   }
   else
   {
     // General case.
 
-    verbalCover.fillTopsAndLower(simplestOpponent, symmFlag,
-      ranksNames, numOptions, data);
+    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, data);
   }
   return verbalCover.str(ranksNames);
 }
@@ -722,28 +718,30 @@ string Product::strVerbalHighTops(
   else
     side = OPP_EAST;
 
+  const VerbalSide vside = {side, symmFlag};
+
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
     if (numOptions == 1)
     {
-      verbalCover.fillBottoms(OPP_WEST, symmFlag, ranksNames, dataWest);
+      verbalCover.fillBottoms(vside, ranksNames);
       return verbalCover.str(ranksNames);
     }
 
     return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      OPP_WEST, symmFlag, dataWest, canonicalShift);
+      vside, dataWest, canonicalShift);
   }
   else
   {
     if (numOptions == 1)
     {
-      verbalCover.fillBottoms(OPP_EAST, symmFlag, ranksNames, dataEast);
+      verbalCover.fillBottoms(vside, ranksNames);
       return verbalCover.str(ranksNames);
     }
 
     return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      OPP_EAST, symmFlag, dataEast, canonicalShift);
+      vside, dataEast, canonicalShift);
   }
 }
 

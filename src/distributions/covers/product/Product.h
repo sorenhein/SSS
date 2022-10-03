@@ -29,6 +29,7 @@ class RanksNames;
 struct VerbalData;
 class Completion;
 class VerbalCover;
+struct VerbalSide;
 enum Opponent: unsigned;
 enum BlankPlayerCap: unsigned;
 enum CoverComposition: unsigned;
@@ -163,8 +164,7 @@ class Product
     string strVerbalHighTopsSide(
       const Profile& sumProfile,
       const RanksNames& ranksNames,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const VerbalData& data,
       const unsigned char canonicalShift) const;
 

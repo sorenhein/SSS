@@ -99,17 +99,6 @@ void VerbalCover::setLength(const Term& length)
 }
 
 
-BlankPlayerCap VerbalCover::verbalSide(
-  const Opponent side,
-  const bool symmFlag) const
-{
-  if (side == OPP_WEST)
-    return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-}
-
-
 void VerbalCover::fillLengthOnly(
   const Term& length,
   const unsigned char oppsLength,
@@ -134,8 +123,8 @@ void VerbalCover::fillLengthOnly(
 // cout << "wf " << westFlag << " ef " << eastFlag << " symm " <<
   // symmFlag << " sopp " << simplestOpponent << endl;
 
-  VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
-    true, templateFills);
+  const VerbalSide vside = {simplestOpponent, symmFlag};
+  VerbalCover::getLengthData(oppsLength, vside, true, templateFills);
 }
 
 
@@ -143,19 +132,18 @@ void VerbalCover::fillOnetopOnly(
   const Term& top,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
-  const Opponent side,
-  const bool symmFlag)
+  const VerbalSide& vside)
 {
   sentence = SENTENCE_ONETOP;
 
-  if (side == OPP_WEST || side == OPP_EITHER)
+  if (vside.side == OPP_WEST || vside.side == OPP_EITHER)
   {
     VerbalCover::getOnetopData(
       top.lower(),
       top.upper(),
       oppsSize,
       onetopIndex,
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
+      vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST,
       templateFills);
   }
   else
@@ -165,7 +153,7 @@ void VerbalCover::fillOnetopOnly(
       oppsSize - top.lower(),
       oppsSize,
       onetopIndex,
-      symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST,
+      vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST,
       templateFills);
   }
 }
@@ -176,8 +164,7 @@ void VerbalCover::fillOnetopLength(
   const Term& top,
   const Profile& sumProfile,
   const unsigned char onetopIndex,
-  const Opponent side,
-  const bool symmFlag)
+  const VerbalSide& vside)
 {
   VerbalCover::setLength(length);
 
@@ -186,36 +173,22 @@ void VerbalCover::fillOnetopLength(
     top,
     sumProfile[onetopIndex],
     onetopIndex,
-    side,
-    symmFlag);
+    vside);
 
   // Fill templateFills position 2 (not pretty -- too implicit?).
-  VerbalCover::fillLengthAdjElement(sumProfile.length(), side);
+  VerbalCover::fillLengthAdjElement(sumProfile.length(), vside.side);
 
   sentence = SENTENCE_TOPS_LENGTH;
 }
 
 
 void VerbalCover::fillTopsExcluding(
-  const Opponent side,
-  const bool symmFlag,
-  // const Completion& completion1,
-  // const Completion& completion2,
-  // const VerbalData& data1,
-  // const VerbalData& data2,
+  const VerbalSide& vside,
   const RanksNames& ranksNames)
 {
   sentence = SENTENCE_TOPS_EXCLUDING;
 
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(4);
 
@@ -223,25 +196,14 @@ void VerbalCover::fillTopsExcluding(
 
   // These should be expanded later in VerbalTemplates.
   templateFills[1].setBlank(BLANK_TOPS);
-
-  // string s = (side == OPP_WEST ?  
-    // west.strSetNew(ranksNames, side, true, true) :
-    // east.strSetNew(ranksNames, side, true, true));
-
   templateFills[1].setData(BLANK_TOPS_ACTUAL, 
-    completion.strSetNew(ranksNames, side, true, true));
-                                   // TODO !!!
-    // completion1.strSetNew(ranksNames, side, true, true);
-      // data1.topsUsed == 1, data1.ranksActive == 1));
+    completion.strSetNew(ranksNames, vside.side, true, true));
 
   const unsigned topsFull = completion.getTopsFull(
-    side == OPP_WEST ? OPP_EAST : OPP_WEST);
+    vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
-  // const VerbalData& dataOther = (side == OPP_WEST ? dataEast : dataWest);
-  // if (data2.topsFull <= 1)
   if (topsFull <= 1)
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NOT);
-  // else if (data2.topsFull == 2)
   else if (topsFull == 2)
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NEITHER);
   else
@@ -249,17 +211,9 @@ void VerbalCover::fillTopsExcluding(
 
   templateFills[3].setBlank(BLANK_TOPS);
 
-  // s = (side == OPP_WEST ?
-    // east.strSetNew(ranksNames, side, true, true) :
-    // west.strSetNew(ranksNames, side, true, true));
-
   templateFills[3].setData(BLANK_TOPS_ACTUAL, 
     completion.strSetNew(ranksNames, 
-      side == OPP_WEST ? OPP_EAST : OPP_WEST, 
-      true, true));
-                                   // TODO !!!
-    // completion2.strSetNew(ranksNames, side, true, true);
-      // data2.topsUsed == 1, data2.ranksActive == 1));
+      vside.side == OPP_WEST ? OPP_EAST : OPP_WEST, true, true));
 }
 
 
@@ -300,52 +254,49 @@ Opponent VerbalCover::simplestOpponent(const unsigned char oppsLength) const
 
 void VerbalCover::getLengthEqualData(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
   // Here lower and upper are identical.
-  BlankPlayerCap side;
+  BlankPlayerCap bside;
   unsigned char value;
 
-  if (simplestOpponent == OPP_WEST)
+  if (vside.side == OPP_WEST)
   {
-    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     value = lengthLower;
   }
   else
   {
-    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     value = oppsLength - lengthLower;
   }
 
-// cout << "side " << side << endl;
-// cout << "value " << +value << endl;
   tdata.resize(2);
   if (value == 0)
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_VOID);
   }
   else if (value == 1)
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE);
   }
   else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE);
   }
   else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE);
   }
   else if (! abstractableFlag)
   {
-cout << "side " << side << endl;
+cout << "bside " << bside << endl;
 cout << "value " << +value << endl;
     assert(false);
   }
@@ -366,24 +317,23 @@ cout << "value " << +value << endl;
 
 void VerbalCover::getLengthInsideData(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
-  BlankPlayerCap side;
+  BlankPlayerCap bside;
   unsigned char vLower, vUpper;
 
-  if (simplestOpponent == OPP_WEST)
+  if (vside.side == OPP_WEST)
   {
-    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     vLower = lengthLower;
     vUpper = (lengthOper == COVER_GREATER_EQUAL ?
       oppsLength : lengthUpper);
   }
   else
   {
-    side = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     vLower = (lengthOper == COVER_GREATER_EQUAL ?
       0 : oppsLength - lengthUpper);
     vUpper = oppsLength - lengthLower;
@@ -394,30 +344,30 @@ void VerbalCover::getLengthInsideData(
   {
     if (vUpper == 1)
     {
-      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE_ATMOST);
     }
     else if (vUpper == 2)
     {
-      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE_ATMOST);
     }
     else if (vUpper == 3)
     {
-      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].setBlank(BLANK_LENGTH_VERB);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE_ATMOST);
     }
     else
     {
-      tdata[0].set(BLANK_PLAYER_CAP, side);
+      tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].setBlank(BLANK_LENGTH_VERB);
       tdata[1].setData(BLANK_LENGTH_VERB_CARDS_ATMOST_PARAM, vUpper);
     }
   }
   else if (! abstractableFlag)
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
   }
@@ -440,7 +390,7 @@ void VerbalCover::getLengthInsideData(
   }
   else
   {
-    tdata[0].set(BLANK_PLAYER_CAP, side);
+    tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
   }
@@ -449,8 +399,7 @@ void VerbalCover::getLengthInsideData(
 
 void VerbalCover::getLengthData(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const bool abstractableFlag,
   vector<TemplateData>& tdata) const
 {
@@ -461,14 +410,14 @@ void VerbalCover::getLengthData(
   if (lengthOper == COVER_EQUAL)
   {
     VerbalCover::getLengthEqualData(
-      oppsLength, simplestOpponent, symmFlag, abstractableFlag, tdata);
+      oppsLength, vside, abstractableFlag, tdata);
   }
   else if (lengthOper == COVER_INSIDE_RANGE ||
            lengthOper == COVER_LESS_EQUAL ||
            lengthOper == COVER_GREATER_EQUAL)
   {
-    VerbalCover::getLengthInsideData(oppsLength, simplestOpponent, 
-      symmFlag, abstractableFlag, tdata);
+    VerbalCover::getLengthInsideData(oppsLength, vside,
+      abstractableFlag, tdata);
   }
   else
     assert(false);
@@ -546,8 +495,7 @@ void VerbalCover::fillBelow(
   const unsigned char numBottoms,
   const RanksNames& ranksNames,
   const unsigned char rankNo,
-  const Opponent side,
-  const bool symmFlag)
+  const VerbalSide& vside)
 {
   sentence = SENTENCE_ONLY_BELOW;
 
@@ -564,26 +512,16 @@ void VerbalCover::fillBelow(
   else
     lengthOper = COVER_INSIDE_RANGE;
 
-// cout << "freeLower " << +freeLower << endl;
-// cout << "freeUpper " << +freeUpper << endl;
-// cout << "numBottoms " << +numBottoms << endl;
-
   // This sets numbers 0 and 1.
   // In a kludge, we first pretend that this is always from West,
   // and then we adjust to the actual side.  This is to prevent
   // getLengthData() from reversing the viewpoint.
-  VerbalCover::getLengthData(numBottoms, OPP_WEST, false, 
-    false, templateFills);
+  //                          TODO
+  const VerbalSide vside2 = {OPP_WEST, false};
+  VerbalCover::getLengthData(numBottoms, vside2, false, templateFills);
   
   // And here is the fix.
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
@@ -604,19 +542,11 @@ void VerbalCover::fillBelow(
 
 void VerbalCover::fillSingular(
   const unsigned char lenCompletion,
-  const Opponent side,
-  const bool symmFlag)
+  const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_LENGTH;
 
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(3);
 
@@ -637,6 +567,7 @@ void VerbalCover::fillSingular(
 }
 
 
+/*
 void VerbalCover::getTopsData(
   const BlankPlayerCap side,
   const Completion& completionIn,
@@ -652,54 +583,37 @@ void VerbalCover::getTopsData(
       false, false));
 
 }
+*/
 
 
 void VerbalCover::fillCompletion(
-  const Opponent side,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const RanksNames& ranksNames)
 {
   sentence = SENTENCE_LIST;
-
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(2);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
-    completion.strSetNew(ranksNames, side, true, true));
+    completion.strSetNew(ranksNames, vside.side, true, true));
 }
 
 
 void VerbalCover::fillCompletionWithLows(
-  const Opponent side,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const RanksNames& ranksNames)
 {
   sentence = SENTENCE_LIST;
-
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(2);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  const string s = completion.strSetNew(ranksNames, side, false, true) +
-    "(" + completion.strUnset(ranksNames, side) + ")";
+  const string s = completion.strSetNew(ranksNames, vside.side, false, true) +
+    "(" + completion.strUnset(ranksNames, vside.side) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);
@@ -707,55 +621,33 @@ void VerbalCover::fillCompletionWithLows(
 
 
 void VerbalCover::fillBottoms(
-  const Opponent side,
-  const bool symmFlag,
-  const RanksNames& ranksNames,
-  [[maybe_unused]] const VerbalData& data)
+  const VerbalSide& vside,
+  const RanksNames& ranksNames)
 {
   sentence = SENTENCE_TOPS_AND_XES;
-
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(3);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  // const string s = completion.strSet(ranksNames, side,
-      // false, data.ranksActive == 1);
-  const string s = completion.strSetNew(ranksNames, side,
-      false, true);
+  const string s = completion.strSetNew(ranksNames, vside.side, false, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
 
 
   templateFills[2].setBlank(BLANK_BOTTOMS);
-  templateFills[2].setData(BLANK_BOTTOMS_NORMAL, completion.strXes(side));
+  templateFills[2].setData(BLANK_BOTTOMS_NORMAL, completion.strXes(vside.side));
 }
 
 
 void VerbalCover::fillTopsAndLower(
-  const Opponent side,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const RanksNames& ranksNames,
   const unsigned char numOptions,
   const VerbalData& data)
 {
   sentence = SENTENCE_TOPS_AND_LOWER;
-
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  BlankPlayerCap bside;
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(4);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
@@ -800,20 +692,12 @@ void VerbalCover::fillTopsAndLower(
 
 
 void VerbalCover::fillList(
-  const Opponent side,
-  const bool symmFlag,
+  const VerbalSide& vside,
   const RanksNames& ranksNames,
   const list<Completion>& completionsIn)
 {
   sentence = SENTENCE_LIST;
-
-  BlankPlayerCap bside = VerbalCover::verbalSide(side, symmFlag);
-  /*
-  if (side == OPP_WEST)
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-  else
-    bside = (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-    */
+  const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(completionsIn.size() + 1);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
@@ -853,8 +737,9 @@ string VerbalCover::strGeneral(
   else
     simplestOpponent = OPP_EAST;
 
-  VerbalCover::getLengthData(oppsLength, simplestOpponent, symmFlag, 
-    true, tdata);
+  const VerbalSide vside = {simplestOpponent, symmFlag};
+
+  VerbalCover::getLengthData(oppsLength, vside, true, tdata);
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
 

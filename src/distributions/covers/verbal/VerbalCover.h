@@ -19,6 +19,8 @@
 #include "../term/Term.h"
 #include "../term/CoverOperator.h"
 
+#include "../../../utils/table.h"
+
 using namespace std;
 
 class Profile;
@@ -26,6 +28,21 @@ class RanksNames;
 struct TemplateData;
 struct VerbalData;
 enum Opponent: unsigned;
+
+
+struct VerbalSide
+{
+  Opponent side;
+  bool symmFlag;
+
+  BlankPlayerCap blank() const
+  {
+    if (side == OPP_WEST)
+      return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+    else
+      return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+  };
+};
 
 
 class VerbalCover
@@ -48,39 +65,30 @@ class VerbalCover
     unsigned char lengthUpper;
     CoverOperator lengthOper;
 
-    // bool westFlag;
     Completion west;
 
-    // bool eastFlag;
     Completion east;
 
     Completion completion;
 
 
-    BlankPlayerCap verbalSide(
-      const Opponent side,
-      const bool symmFlag) const;
-
     Opponent simplestOpponent(const unsigned char oppsLength) const;
 
     void getLengthEqualData(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
     void getLengthInsideData(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
     void getLengthData(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const bool abstractableFlag,
       vector<TemplateData>& tdata) const;
 
@@ -128,24 +136,17 @@ class VerbalCover
       const Term& top,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
-      const Opponent side,
-      const bool symmflag);
+      const VerbalSide& vside);
 
     void fillOnetopLength(
       const Term& length,
       const Term& top,
       const Profile& sumProfile,
       const unsigned char onetopIndex,
-      const Opponent side,
-      const bool symmflag);
+      const VerbalSide& vside);
 
     void fillTopsExcluding(
-      const Opponent side,
-      const bool symmFlag,
-      // const Completion& completion1,
-      // const Completion& completion2,
-      // const VerbalData& data1,
-      // const VerbalData& data2,
+      const VerbalSide& vside,
       const RanksNames& ranksNames);
 
     void fillBelow(
@@ -154,13 +155,11 @@ class VerbalCover
       const unsigned char numBottoms,
       const RanksNames& ranksNames,
       const unsigned char rankNo,
-      const Opponent side,
-      const bool symmFlag);
+      const VerbalSide& vside);
 
     void fillSingular(
       const unsigned char lenCompletion,
-      const Opponent side,
-      const bool symmFlag);
+      const VerbalSide& vside);
 
 
     Completion& getCompletion();
@@ -172,31 +171,25 @@ class VerbalCover
     unsigned char size() const;
 
     void fillCompletion(
-      const Opponent side,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const RanksNames& ranksNames);
 
     void fillCompletionWithLows(
-      const Opponent side,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const RanksNames& ranksNames);
 
     void fillBottoms(
-      const Opponent side,
-      const bool symmFlag,
-      const RanksNames& ranksNames,
-      const VerbalData& data);
+      const VerbalSide& vside,
+      const RanksNames& ranksNames);
 
     void fillTopsAndLower(
-      const Opponent side,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const RanksNames& ranksNames,
       const unsigned char numOptions,
       const VerbalData& data);
 
     void fillList(
-      const Opponent side,
-      const bool symmFlag,
+      const VerbalSide& vside,
       const RanksNames& ranksNames,
       const list<Completion>& completions);
 
