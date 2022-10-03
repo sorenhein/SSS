@@ -15,6 +15,7 @@
 #include "Completion.h"
 
 #include "VerbalBlank.h"
+#include "VerbalTemplates.h"
 
 #include "../term/Term.h"
 #include "../term/CoverOperator.h"
@@ -195,8 +196,7 @@ class VerbalCover
     string strGeneral(
       const unsigned char oppsLength,
       const bool symmFlag,
-      const RanksNames& ranksNames,
-      vector<TemplateData>& tdata) const;
+      const RanksNames& ranksNames) const;
 
     // TODO Later on private again
     void getOnetopData(

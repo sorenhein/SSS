@@ -18,19 +18,9 @@
 #include "Profile.h"
 #include "VerbalData.h"
 
-// TODO Whole file needed, or split perhaps?
-#include "../verbal/VerbalTemplates.h"
-
-// TODO Probably not needed long-term
-#include "../verbal/VerbalBlank.h"
-
 #include "../CoverCategory.h"
 
 #include "../verbal/VerbalCover.h"
-
-#include "../term/CoverOperator.h"
-
-#include "../../../ranks/RanksNames.h"
 
 #include "../../../utils/table.h"
 
@@ -554,9 +544,8 @@ string Product::strVerbalAnyTops(
     return verbalCover.str(ranksNames);
   }
 
-  vector<TemplateData> tdata;
   const string s = verbalCover.strGeneral(
-    sumProfile.length(), symmFlag, ranksNames, tdata);
+    sumProfile.length(), symmFlag, ranksNames);
 
 cout << "\nXX" << s << "\n";
   return s;
@@ -634,29 +623,7 @@ string Product::strVerbalHighTops(
     return verbalCover.str(ranksNames);
   }
 
-  /*
-  Product productWest, productEast;
-  productWest.resize(tops.size());
-  productEast.resize(tops.size());
-
-  VerbalData dataWest, dataEast;
-  Product::fillUsedTops(sumProfile, canonicalShift, 
-    productWest, productEast, dataWest, dataEast);
-    */
-
   verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
-  /*
-  if (side == OPP_WEST)
-  {
-    // General case.
-  }
-  else
-  {
-    // General case.
-    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
-      dataEast);
-  }
-  */
 
   return verbalCover.str(ranksNames);
 }

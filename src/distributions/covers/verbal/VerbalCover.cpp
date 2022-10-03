@@ -719,8 +719,7 @@ void VerbalCover::fillList(
 string VerbalCover::strGeneral(
   const unsigned char oppsLength,
   const bool symmFlag,
-  const RanksNames& ranksNames,
-  vector<TemplateData>& tdata) const
+  const RanksNames& ranksNames) const
 {
   assert(lengthFlag);
 
@@ -741,9 +740,11 @@ string VerbalCover::strGeneral(
 
   const VerbalSide vside = {simplestOpponent, symmFlag};
 
+  vector<TemplateData> tdata;
   VerbalCover::getLengthData(oppsLength, vside, true, tdata);
     
-  lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, tdata);
+  lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
+    tdata);
 
   if (westFlag)
     wstr = completion.strSet(ranksNames, OPP_WEST, false, false);
