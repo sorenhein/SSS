@@ -719,13 +719,45 @@ string Product::strVerbalHighTops(
 
   if (side == OPP_WEST)
   {
-    return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      vside, dataWest, canonicalShift);
+    if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+    {
+      // "West has at most a doubleton completely below the ten".
+      verbalCover.fillBelow(
+        verbalCover.getCompletion().getFreeLower(side),
+        verbalCover.getCompletion().getFreeUpper(side),
+        Product::countBottoms(sumProfile, canonicalShift),
+        ranksNames,
+        numOptions,
+        vside);
+    }
+    else
+    {
+      // General case.
+      verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
+        dataWest);
+    }
+    return verbalCover.str(ranksNames);
   }
   else
   {
-    return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
-      vside, dataEast, canonicalShift);
+    if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+    {
+      // "West has at most a doubleton completely below the ten".
+      verbalCover.fillBelow(
+        verbalCover.getCompletion().getFreeLower(side),
+        verbalCover.getCompletion().getFreeUpper(side),
+        Product::countBottoms(sumProfile, canonicalShift),
+        ranksNames,
+        numOptions,
+        vside);
+    }
+    else
+    {
+      // General case.
+      verbalCover.fillTopsAndLower(vside, ranksNames, numOptions, 
+        dataEast);
+    }
+    return verbalCover.str(ranksNames);
   }
 }
 

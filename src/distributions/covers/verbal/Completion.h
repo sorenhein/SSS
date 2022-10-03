@@ -133,6 +133,9 @@ class Completion
 
     unsigned char getTopsFull(const Opponent side) const;
 
+    unsigned char getTopsUsed(const Opponent side) const;
+
+    unsigned char getFreeLower(const Opponent side) const;
     unsigned char getFreeUpper(const Opponent side) const;
 
     unsigned char getTotalLower(const Opponent side) const;

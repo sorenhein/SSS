@@ -652,8 +652,7 @@ void VerbalCover::fillTopsAndLower(
   templateFills.resize(4);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-                                                 // TODO !!!
-  const string s = completion.strSet(ranksNames, OPP_WEST,
+  const string s = completion.strSet(ranksNames, vside.side,
     data.topsUsed == 1, data.ranksActive == 1);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
