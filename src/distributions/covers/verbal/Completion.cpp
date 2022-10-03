@@ -16,6 +16,8 @@
 
 #include "Completion.h"
 
+#include "../term/Term.h"
+
 #include "../../../ranks/RanksNames.h"
 
 #include "../../../utils/table.h"
@@ -99,6 +101,37 @@ void Completion::updateTop(
 
   west[topNo] = countWest;
   east[topNo] = maximum -countWest;
+}
+
+
+void Completion::setFree(
+  const unsigned char maximum,
+  const Term& length)
+{
+  unsigned char lengthWestLower, lengthWestUpper;
+  if (length.used())
+  {
+    lengthWestLower = length.lower();
+    lengthWestUpper = length.upper();
+  }
+  else
+  {
+    lengthWestLower = dataWest.topsUsed;
+    lengthWestUpper = maximum - dataEast.topsUsed;
+  }
+
+  const unsigned char rest = maximum - 
+    dataWest.topsUsed - dataEast.topsUsed;
+
+  const unsigned char westLimit = lengthWestUpper - dataWest.topsUsed;
+  const unsigned char eastLimit = maximum -
+    lengthWestLower - dataWest.topsUsed;
+
+  dataWest.freeUpper = min(rest, westLimit);
+  dataEast.freeUpper = min(rest, eastLimit);
+
+  dataWest.freeLower = rest - dataEast.freeUpper;
+  dataEast.freeLower = rest - dataWest.freeUpper;
 }
 
 
@@ -330,4 +363,19 @@ string Completion::strUnset(
     s += ranksNames.strOpponents(openNo, tops[openNo], false, false);
   }
   return s;
+}
+
+
+string Completion::strXes(const Opponent side) const
+{
+  string x = "";
+  const CompData& data = (side == OPP_WEST ? dataWest : dataEast);
+
+  if (data.freeLower > 0)
+    x = string(data.freeLower, 'x');
+
+  if (data.freeUpper > data.freeLower)
+    x += "(" + string(data.freeUpper - data.freeLower, 'x') + ")";
+
+  return x;
 }

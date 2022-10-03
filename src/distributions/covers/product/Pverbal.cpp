@@ -292,6 +292,9 @@ void Product::makeCompletion(
       sumProfile[topNo]);
   }
 
+  // TODO Experimental setting of freeLower and freeUpper in Completion.
+  completion.setFree(sumProfile.length(), length);
+
   // The zero'th top represents all the actual tops in sumProfile
   // from 0 up to canonicalShift-1.
 
@@ -644,6 +647,7 @@ string Product::strVerbalHighTopsSide(
 
   if (numOptions == 1)
   {
+assert(false);
     verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames, data);
   }
   else if (numOptions == 2 && data.freeUpper == 1)
@@ -705,14 +709,33 @@ string Product::strVerbalHighTops(
     return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, ranksNames, true);
   }
-  else if (dataWest.topsUsed + dataWest.freeUpper <=
+
+  VerbalCover verbalCover;
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover.getCompletion());
+
+  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
+
+  if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
+    if (numOptions == 1)
+    {
+      verbalCover.fillBottoms(OPP_WEST, symmFlag, ranksNames, dataWest);
+      return verbalCover.str(ranksNames);
+    }
+
     return productWest.strVerbalHighTopsSide(sumProfile, ranksNames, 
       OPP_WEST, symmFlag, dataWest, canonicalShift);
   }
   else
   {
+    if (numOptions == 1)
+    {
+      verbalCover.fillBottoms(OPP_EAST, symmFlag, ranksNames, dataEast);
+      return verbalCover.str(ranksNames);
+    }
+
     return productEast.strVerbalHighTopsSide(sumProfile, ranksNames, 
       OPP_EAST, symmFlag, dataEast, canonicalShift);
   }

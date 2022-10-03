@@ -15,6 +15,7 @@
 
 using namespace std;
 
+class Term;
 class RanksNames;
 enum Opponent: unsigned;
 
@@ -41,6 +42,10 @@ class Completion
       // Tops of full rank.
       unsigned char topsFull;
 
+      // Range of free spaces excluding the given tops.
+      unsigned char freeLower;
+      unsigned char freeUpper;
+
       void reset()
       {
         length = 0;
@@ -48,6 +53,8 @@ class Completion
         ranksActive = 0;
         lowestRankActive = 0;
         topsFull = 0;
+        freeLower = 0;
+        freeUpper = 0;
       };
 
       void update(
@@ -99,6 +106,10 @@ class Completion
       const unsigned char count,
       const unsigned char maximum);
 
+    void setFree(
+      const unsigned char maximum,
+      const Term& length);
+
     const list<unsigned char>& openTops() const;
 
     unsigned char length(const Opponent side) const;
@@ -134,6 +145,8 @@ class Completion
     string strUnset(
       const RanksNames& ranksNames,
       const Opponent side) const;
+
+    string strXes(const Opponent side) const;
 };
 
 #endif

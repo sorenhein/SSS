@@ -699,7 +699,7 @@ void VerbalCover::fillBottoms(
 
   const string s = 
                                   // TODO !!!
-    completion.strSet(ranksNames, OPP_WEST,
+    completion.strSet(ranksNames, side,
       false, data.ranksActive == 1);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
