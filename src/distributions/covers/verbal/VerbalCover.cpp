@@ -652,36 +652,39 @@ void VerbalCover::fillTopsAndLower(
   templateFills.resize(4);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  const string s = completion.strSet(ranksNames, vside.side,
-    data.topsUsed == 1, data.ranksActive == 1);
+  const string s = completion.strSetNew(ranksNames, vside.side,
+    true, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
 
+  const unsigned char freeLower = completion.getFreeLower(vside.side);
+  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
   templateFills[2].setBlank(BLANK_COUNT);
-  if (data.freeLower == data.freeUpper)
+  if (freeLower == freeUpper)
   {
-    templateFills[2].setData(BLANK_COUNT_EQUAL, topCount[data.freeLower]);
+    templateFills[2].setData(BLANK_COUNT_EQUAL, topCount[freeLower]);
   }
-  else if (data.freeLower == 0)
+  else if (freeLower == 0)
   {
-    templateFills[2].setData(BLANK_COUNT_ATMOST, topCount[data.freeUpper]);
+    templateFills[2].setData(BLANK_COUNT_ATMOST, topCount[freeUpper]);
   }
   else
   {
     templateFills[2].setData(BLANK_COUNT_RANGE_PARAMS, 
-      to_string(+data.freeLower), to_string(+data.freeUpper));
+      to_string(+freeLower), to_string(+freeUpper));
   }
 
   string t;
   if (data.lowestRankActive == data.lowestRankUsed)
   {
     t = ", lower-ranked ";
-    t += (data.freeUpper == 1 ? "card" : "cards");
+    t += (freeUpper == 1 ? "card" : "cards");
   }
   else
   {
     t = " ";
-    t += (data.freeUpper == 1 ? "card" : "cards");
+    t += (freeUpper == 1 ? "card" : "cards");
     t += " below the " + ranksNames.lowestCard(numOptions);
   }
 
