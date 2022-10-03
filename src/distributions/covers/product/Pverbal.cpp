@@ -713,6 +713,15 @@ string Product::strVerbalHighTops(
 
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
+  Opponent side;
+  if (dataWest.topsUsed + dataWest.freeUpper <=
+    dataEast.topsUsed + dataEast.freeUpper)
+  {
+    side = OPP_WEST;
+  }
+  else
+    side = OPP_EAST;
+
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {

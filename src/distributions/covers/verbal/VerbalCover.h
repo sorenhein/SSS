@@ -57,6 +57,10 @@ class VerbalCover
     Completion completion;
 
 
+    BlankPlayerCap verbalSide(
+      const Opponent side,
+      const bool symmFlag) const;
+
     Opponent simplestOpponent(const unsigned char oppsLength) const;
 
     void getLengthEqualData(
