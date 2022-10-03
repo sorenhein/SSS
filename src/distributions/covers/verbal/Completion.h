@@ -9,6 +9,9 @@
 #ifndef SSS_COMPLETION_H
 #define SSS_COMPLETION_H
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <string>
@@ -72,6 +75,19 @@ class Completion
 
         if (value == valueMax)
           topsFull += valueMax;
+      };
+
+      string strDebug() const
+      {
+        stringstream ss;
+        ss << "length           " << +length << "\n";
+        ss << "topsUsed         " << +topsUsed  << "\n";
+        ss << "ranksActive      " << +ranksActive << "\n";
+        ss << "lowestRankActive " << +lowestRankActive  << "\n";
+        ss << "topsFull         " << +topsFull << "\n";
+        ss << "freeLower        " << +freeLower << "\n";
+        ss << "freeUpper        " << +freeUpper << "\n";
+        return ss.str();
       };
     };
 

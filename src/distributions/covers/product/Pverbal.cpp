@@ -645,12 +645,9 @@ string Product::strVerbalHighTopsSide(
 
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
-  if (numOptions == 1)
-  {
-assert(false);
-    verbalCover.fillBottoms(simplestOpponent, symmFlag, ranksNames, data);
-  }
-  else if (numOptions == 2 && data.freeUpper == 1)
+  assert(numOptions != 1);
+
+  if (numOptions == 2 && data.freeUpper == 1)
   {
     // We need up to one low card.
     // "West has Q or Qx".

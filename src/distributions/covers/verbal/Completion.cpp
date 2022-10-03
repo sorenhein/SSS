@@ -112,7 +112,7 @@ void Completion::setFree(
   if (length.used())
   {
     lengthWestLower = length.lower();
-    lengthWestUpper = length.upper();
+    lengthWestUpper = min(maximum, length.upper());
   }
   else
   {
@@ -125,13 +125,27 @@ void Completion::setFree(
 
   const unsigned char westLimit = lengthWestUpper - dataWest.topsUsed;
   const unsigned char eastLimit = maximum -
-    lengthWestLower - dataWest.topsUsed;
+    lengthWestLower - dataEast.topsUsed;
 
   dataWest.freeUpper = min(rest, westLimit);
   dataEast.freeUpper = min(rest, eastLimit);
 
   dataWest.freeLower = rest - dataEast.freeUpper;
   dataEast.freeLower = rest - dataWest.freeUpper;
+
+/*
+cout << "setFree:\n";
+cout << "maximum " << +maximum << "\n";
+cout << "length West " << +lengthWestLower << " to " <<
+  +lengthWestUpper << "\n";
+cout << "rest " << +rest << "\n";
+cout << "westLimit " << +westLimit << "\n";
+cout << "eastLimit " << +eastLimit << "\n";
+cout << "free West " << +dataWest.freeLower << " to " << 
+  +dataWest.freeUpper << "\n";
+cout << "free East " << +dataEast.freeLower << " to " << 
+  +dataEast.freeUpper << "\n";
+  */
 }
 
 
@@ -277,8 +291,10 @@ string Completion::strDebug() const
     ss << +o << " ";
   ss << "\n";
 
-  ss << "length West " << +dataWest.length << "\n";
-  ss << "length East " << +dataEast.length << "\n";
+  ss << "ranksUsed " << +ranksUsed << "\n";
+
+  ss << "West:\n" << dataWest.strDebug() << "\n";
+  ss << "East:\n" << dataEast.strDebug() << "\n";
   return ss.str();
 }
 

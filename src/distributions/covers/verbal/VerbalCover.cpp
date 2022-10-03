@@ -697,9 +697,7 @@ void VerbalCover::fillBottoms(
   templateFills.resize(3);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
-  const string s = 
-                                  // TODO !!!
-    completion.strSet(ranksNames, side,
+  const string s = completion.strSet(ranksNames, side,
       false, data.ranksActive == 1);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
@@ -709,6 +707,16 @@ void VerbalCover::fillBottoms(
     x = string(data.freeLower, 'x');
   if (data.freeUpper - data.freeLower > 0)
     x += "(" + string(data.freeUpper - data.freeLower, 'x') + ")";
+
+  const string y = completion.strXes(side);
+  if (x != y)
+  {
+    cout << "x ." << x << ".\n";
+    cout << "y ." << y << "." << endl;
+    cout << data.str("data");
+    cout << completion.strDebug() << endl;
+    assert(x == y);
+  }
 
   templateFills[2].setBlank(BLANK_BOTTOMS);
   templateFills[2].setData(BLANK_BOTTOMS_NORMAL, x);
