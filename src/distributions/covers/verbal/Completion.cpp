@@ -74,15 +74,19 @@ void Completion::setTop(
 
 void Completion::updateTop(
   const unsigned char topNo,
-  const unsigned char countWest,
-  const unsigned char maximum)
+  const unsigned char countSide,
+  const unsigned char maximum,
+  const Opponent side)
 {
   // This methods does not respect anything except the numbers
   // in west and east.  The consistency in openTopNumbers, length
-  // etc. is lost.  It should only be used from a method  such as 
+  // etc. is lost.  It should only be used from a method such as 
   // Product::makeCompletionList().
 
   assert(topNo < used.size());
+
+  const unsigned char countWest = (side == OPP_WEST ?
+    countSide : maximum - countSide);
 
   if (used[topNo])
   {
@@ -100,7 +104,7 @@ void Completion::updateTop(
   }
 
   west[topNo] = countWest;
-  east[topNo] = maximum -countWest;
+  east[topNo] = maximum - countWest;
 }
 
 
@@ -183,6 +187,34 @@ unsigned char Completion::getTopsFull(const Opponent side) const
 }
 
 
+unsigned char Completion::getTotalLower(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.topsUsed + dataWest.freeLower;
+  else if (side == OPP_EAST)
+    return dataEast.topsUsed + dataEast.freeLower;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
+unsigned char Completion::getTotalUpper(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.topsUsed + dataWest.freeUpper;
+  else if (side == OPP_EAST)
+    return dataEast.topsUsed + dataEast.freeUpper;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 Opponent Completion::preferSingleActive() const
 {
   // Return OPP_WEST if West, OPP_EAST if East, OPP_EITHER if
@@ -228,6 +260,12 @@ unsigned char Completion::numOptions() const
 bool Completion::operator < (const Completion& comp2) const
 {
   return (dataWest.length > comp2.dataWest.length);
+}
+
+
+bool Completion::operator > (const Completion& comp2) const
+{
+  return (dataWest.length < comp2.dataWest.length);
 }
 
 
@@ -284,6 +322,11 @@ string Completion::strDebug() const
   ss << "East ";
   for (auto e: east)
     ss << +e << " ";
+  ss << "\n";
+
+  ss << "Used ";
+  for (auto u: used)
+    ss << u << " ";
   ss << "\n";
 
   ss << "open ";

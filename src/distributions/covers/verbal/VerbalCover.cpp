@@ -705,10 +705,11 @@ void VerbalCover::fillList(
   size_t i = 1;
   for (auto& completionIn: completionsIn)
   {
+// cout << "i = " << i << ": " << completionIn.strDebug() << endl;
     templateFills[i].setBlank(BLANK_LIST_PHRASE);
     templateFills[i].setData(BLANK_LIST_PHRASE_HOLDING, 
                                     // TODO !!!
-      completionIn.strSet(ranksNames, OPP_WEST, false, false, true));
+      completionIn.strSet(ranksNames, vside.side, false, false, true));
     i++;
   }
 }

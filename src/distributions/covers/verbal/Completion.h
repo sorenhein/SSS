@@ -119,8 +119,9 @@ class Completion
 
     void updateTop(
       const unsigned char topNo,
-      const unsigned char count,
-      const unsigned char maximum);
+      const unsigned char countSide,
+      const unsigned char maximum,
+      const Opponent side);
 
     void setFree(
       const unsigned char maximum,
@@ -132,6 +133,9 @@ class Completion
 
     unsigned char getTopsFull(const Opponent side) const;
 
+    unsigned char gettotalLower(const Opponent side) const;
+    unsigned char gettotalUpper(const Opponent side) const;
+
     unsigned char numOptions() const;
 
     Opponent preferSingleActive() const;
@@ -139,6 +143,8 @@ class Completion
     Opponent preferSimpleActive() const;
 
     bool operator < (const Completion& comp2) const;
+
+    bool operator > (const Completion& comp2) const;
 
     bool operator == (const Completion& comp2) const;
 

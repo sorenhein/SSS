@@ -137,6 +137,7 @@ class Product
     bool makeCompletionList(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
+      const Opponent side,
       const VerbalData& data,
       const unsigned char maxCompletions,
       list<Completion>& completions) const;

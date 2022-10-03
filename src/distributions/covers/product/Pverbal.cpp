@@ -339,12 +339,18 @@ void Product::makeCompletion(
 bool Product::makeCompletionList(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
+  [[maybe_unused]] const Opponent side,
   const VerbalData& data,
   const unsigned char maxCompletions,
   list<Completion>& completions) const
 {
   Completion completion;
   Product::makeCompletion(sumProfile, canonicalShift, completion);
+
+  // Put the open tops with the other side, as they are unused i.e.
+  // zero with the active/primary side.
+  for (auto openNo: completion.openTops())
+    completion.updateTop(openNo, 0, sumProfile[openNo], side);
 
   list<Completion> stack;
   stack.push_back(completion);
@@ -372,13 +378,13 @@ bool Product::makeCompletionList(
 
       const unsigned char maxCount = min(
         static_cast<unsigned char>(sumProfile[openNo]),
-        static_cast<unsigned char>(totalUpper - piter->length(OPP_WEST)));
+        static_cast<unsigned char>(totalUpper - piter->length(side)));
 
       for (unsigned char count = maxCount+1; count-- > 0; )
       {
-        piter->updateTop(openNo, count, sumProfile[openNo]);
+        piter->updateTop(openNo, count, sumProfile[openNo], side);
 
-        if (piter->length(OPP_WEST) >= totalLower && 
+        if (piter->length(side) >= totalLower && 
             (count > 0 || firstOpen))
         {
           if (completions.size() >= maxCompletions)
@@ -387,7 +393,7 @@ bool Product::makeCompletionList(
           completions.push_back(* piter);
         }
 
-        if (piter->length(OPP_WEST) < totalUpper && openNo > 0)
+        if (piter->length(side) < totalUpper && openNo > 0)
           stack.push_back(* piter);
       }
 
@@ -399,7 +405,13 @@ bool Product::makeCompletionList(
   }
 
   assert(stack.empty());
-  completions.sort();
+
+  // Sort stably from longer to shorter outputs.
+  completions.sort([side](const Completion& c1, const Completion& c2)
+  {
+    return (side == OPP_WEST ? c1 < c2 : c1 > c2);
+  });
+
   return true;
 }
 
@@ -529,7 +541,6 @@ string Product::strVerbalTopsOnly(
   // equals.
   if (opp != OPP_EITHER)
     simplestOpponent = opp;
-  // else if (productWest.topsSimpler(sumProfile, canonicalShift))
   else if (Product::topsSimpler(sumProfile, canonicalShift))
     simplestOpponent = OPP_WEST;
   else
@@ -588,8 +599,8 @@ string Product::strVerbalAnyTops(
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
   {
-    if (productWest.makeCompletionList(sumProfile, canonicalShift, dataWest,
-      4, completions))
+    if (Product::makeCompletionList(sumProfile, canonicalShift, 
+      OPP_WEST, dataWest, 4, completions))
     {
       VerbalCover verbalCover;
       const VerbalSide vside = {OPP_WEST, symmFlag};
@@ -599,8 +610,8 @@ string Product::strVerbalAnyTops(
   }
   else
   {
-    if (productEast.makeCompletionList(sumProfile, canonicalShift, dataEast,
-      4, completions))
+    if (Product::makeCompletionList(sumProfile, canonicalShift, 
+      OPP_EAST, dataEast, 4, completions))
     {
       VerbalCover verbalCover;
       const VerbalSide vside = {OPP_EAST, symmFlag};
@@ -646,21 +657,7 @@ string Product::strVerbalHighTopsSide(
 
   assert(numOptions != 1);
 
-  if (numOptions == 2 && data.freeUpper == 1)
-  {
-    // We need up to one low card.
-    // "West has Q or Qx".
-    list<Completion> completions;
-    if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-      data, 4, completions))
-    {
-      // We currently never get more than 4 options.
-      assert(false);
-    }
-
-    verbalCover.fillList(vside, ranksNames, completions);
-  }
-  else if (data.topsUsed == 0)
+  if (data.topsUsed == 0)
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillBelow(
@@ -718,7 +715,7 @@ string Product::strVerbalHighTops(
   else
     side = OPP_EAST;
 
-  const VerbalSide vside = {side, symmFlag};
+  VerbalSide vside = {side, symmFlag};
 
   if (dataWest.topsUsed + dataWest.freeUpper <=
     dataEast.topsUsed + dataEast.freeUpper)
@@ -726,6 +723,23 @@ string Product::strVerbalHighTops(
     if (numOptions == 1)
     {
       verbalCover.fillBottoms(vside, ranksNames);
+      return verbalCover.str(ranksNames);
+    }
+
+    if (numOptions == 2 && dataWest.freeUpper == 1)
+    {
+      // We need up to one low card.
+      // "West has Q or Qx".
+      list<Completion> completions;
+      if (! Product::makeCompletionList(sumProfile, canonicalShift, 
+        OPP_WEST, dataWest, 4, completions))
+      {
+        // We currently never get more than 4 options.
+        assert(false);
+      }
+   
+      vside.side = OPP_WEST;
+      verbalCover.fillList(vside, ranksNames, completions);
       return verbalCover.str(ranksNames);
     }
 
@@ -737,6 +751,23 @@ string Product::strVerbalHighTops(
     if (numOptions == 1)
     {
       verbalCover.fillBottoms(vside, ranksNames);
+      return verbalCover.str(ranksNames);
+    }
+
+    if (numOptions == 2 && dataEast.freeUpper == 1)
+    {
+      // We need up to one low card.
+      // "West has Q or Qx".
+      list<Completion> completions;
+      if (! Product::makeCompletionList(sumProfile, canonicalShift, 
+        OPP_EAST, dataEast, 4, completions))
+      {
+        // We currently never get more than 4 options.
+        assert(false);
+      }
+   
+      vside.side = OPP_EAST;
+      verbalCover.fillList(vside, ranksNames, completions);
       return verbalCover.str(ranksNames);
     }
 
