@@ -416,8 +416,8 @@ void Product::setVerbalLengthAndOneTop(
 
 void Product::setVerbalSingular(
   const Profile& sumProfile,
-  const bool symmFlag,
   const unsigned char canonicalShift,
+  const bool symmFlag,
   VerbalCover& verbalCover) const
 {
   assert(length.used());
@@ -557,25 +557,23 @@ void Product::setVerbalAnyTops(
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
-string Product::strVerbalHighTops(
+void Product::setVerbalHighTops(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
+  const unsigned char canonicalShift,
   const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const RanksNames& ranksNames,
+  VerbalCover& verbalCover) const
 {
   assert(activeCount > 0);
 
   if (! length.used())
   {
-    VerbalCover verbalCover;
-
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, ranksNames, true, verbalCover);
 
-    return verbalCover.str(ranksNames);
+    return;
   }
 
-  VerbalCover verbalCover;
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
@@ -591,7 +589,7 @@ string Product::strVerbalHighTops(
   if (numOptions == 1)
   {
     verbalCover.fillBottoms(vside, ranksNames);
-    return verbalCover.str(ranksNames);
+    return;
   }
 
   if (numOptions == 2 && 
@@ -608,7 +606,7 @@ string Product::strVerbalHighTops(
     }
    
     verbalCover.fillList(vside, ranksNames, completions);
-    return verbalCover.str(ranksNames);
+    return;
   }
 
   if (verbalCover.getCompletion().getTopsUsed(side) == 0)
@@ -622,12 +620,23 @@ string Product::strVerbalHighTops(
       numOptions,
       vside);
 
-    return verbalCover.str(ranksNames);
+    return;
   }
 
   verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
 
-  return verbalCover.str(ranksNames);
+  return;
+}
+
+
+void Product::setVerbalLengthOnly(
+  const Profile& sumProfile,
+  [[maybe_unused]] const unsigned char canonicalShift,
+  const bool symmFlag,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  VerbalCover& verbalCover) const
+{
+  verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
 }
 
 
@@ -655,7 +664,10 @@ string Product::strVerbal(
     Product::makeCompletion(sumProfile, canonicalShift, 
       verbalCover.getCompletion());
 
-    verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
+    Product::setVerbalLengthOnly(
+      sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
+
+    // verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
     
     return verbalCover.str(ranksNames);
   }
@@ -682,16 +694,15 @@ string Product::strVerbal(
   }
   else if (verbal == VERBAL_HIGH_TOPS_EQUAL)
   {
-    return Product::strVerbalHighTops(
-      sumProfile, 
-      ranksNames, 
-      symmFlag, 
-      canonicalShift);
+    Product::setVerbalHighTops(
+      sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
+
+    return verbalCover.str(ranksNames);
   }
   else if (verbal == VERBAL_SINGULAR)
   {
     Product::setVerbalSingular(
-      sumProfile, symmFlag, canonicalShift, verbalCover);
+      sumProfile, canonicalShift, symmFlag, verbalCover);
 
     return verbalCover.str(ranksNames);
   }

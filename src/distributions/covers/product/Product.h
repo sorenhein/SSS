@@ -99,8 +99,8 @@ class Product
 
     void setVerbalSingular(
       const Profile& sumProfile,
-      const bool symmFlag,
       const unsigned char canonicalShift,
+      const bool symmFlag,
       VerbalCover& verbalCover) const;
 
     // Both high tops and any tops
@@ -146,20 +146,19 @@ class Product
 
     // High tops
 
-    string strVerbalHighTopsOnlySide(
+    void setVerbalLengthOnly(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const unsigned char canonicalShift,
-      const string& side,
-      const string& sideOther,
-      const VerbalData& data,
-      const bool singleActiveRank) const;
-
-    string strVerbalHighTops(
-      const Profile& sumProfile,
-      const RanksNames& ranksNames,
       const bool symmFlag,
-      const unsigned char canonicalShift) const;
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalHighTops(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
 
   public:
 
