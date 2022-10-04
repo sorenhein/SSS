@@ -137,11 +137,12 @@ class Product
 
     // Any tops
 
-    string strVerbalAnyTops(
+    void setVerbalAnyTops(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
+      const unsigned char canonicalShift,
       const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
 
     // High tops
 

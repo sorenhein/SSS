@@ -716,11 +716,15 @@ void VerbalCover::fillList(
 }
 
 
-string VerbalCover::strGeneral(
+void VerbalCover::setGeneral(
   const unsigned char oppsLength,
   const bool symmFlag,
-  const RanksNames& ranksNames) const
+  const RanksNames& ranksNames)
 {
+  // TODO This needs to conform to the rest.
+  // For now we just store the string.
+  sentence = SENTENCE_SIZE;
+
   assert(lengthFlag);
 
   string lstr = "", wstr = "", estr = "";
@@ -759,36 +763,34 @@ string VerbalCover::strGeneral(
       if (symmFlag)
       {
         if (wstr == estr)
-          return lstr + ", and West and East each have " + wstr;
+          strTMP = lstr + ", and West and East each have " + wstr;
         else
-          return lstr + ", and " + wstr + " and " + estr +
+          strTMP = lstr + ", and " + wstr + " and " + estr +
             " are split";
       }
       else if (wstr == estr)
-        return lstr + ", West and East each have " + wstr;
+        strTMP = lstr + ", West and East each have " + wstr;
       else
-        return lstr + ", West has " + wstr + " and East has " + estr;
+        strTMP = lstr + ", West has " + wstr + " and East has " + estr;
     }
     else
     {
       if (symmFlag)
-        return lstr + " with " + wstr;
+        strTMP = lstr + " with " + wstr;
       else
-        return lstr + " and West has " + wstr;
+        strTMP = lstr + " and West has " + wstr;
     }
   }
   else if (eastFlag)
   {
     if (symmFlag)
-      return lstr + " without " + estr;
+      strTMP = lstr + " without " + estr;
     else
-      return lstr + " and East has " + estr;
+      strTMP = lstr + " and East has " + estr;
   }
   else
     // This done exclusively in the new way.
-    return lstr;
-
-  return "";
+    strTMP = lstr;
 }
 
 
@@ -858,6 +860,9 @@ void VerbalCover::getOnetopData(
 
 string VerbalCover::str(const RanksNames& ranksNames) const
 {
-  return verbalTemplates.get(sentence, ranksNames, templateFills);
+  if (sentence == SENTENCE_SIZE)
+    return strTMP;
+  else
+    return verbalTemplates.get(sentence, ranksNames, templateFills);
 }
 

@@ -72,6 +72,8 @@ class VerbalCover
 
     Completion completion;
 
+    string strTMP; // TODO Fix strGeneral and setGeneral
+
 
     Opponent simplestOpponent(const unsigned char oppsLength) const;
 
@@ -193,10 +195,10 @@ class VerbalCover
       const RanksNames& ranksNames,
       const list<Completion>& completions);
 
-    string strGeneral(
+    void setGeneral(
       const unsigned char oppsLength,
       const bool symmFlag,
-      const RanksNames& ranksNames) const;
+      const RanksNames& ranksNames);
 
     // TODO Later on private again
     void getOnetopData(
