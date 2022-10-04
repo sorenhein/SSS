@@ -431,6 +431,7 @@ void Product::setVerbalOneTopOnly(
 }
 
 
+/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -441,16 +442,17 @@ void Product::setVerbalLengthAndOneTop(
   assert(length.used());
   assert(activeCount == 1);
 
-  VerbalData data;
-  Product::study(sumProfile, canonicalShift, data);
-  const unsigned char topNo = data.lowestRankUsed;
+  const unsigned char fullTopNo = 
+    verbalCover.getCompletion().getLowestRankUsed();
+
+  const unsigned char topNo = fullTopNo - canonicalShift;
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
   verbalCover.fillOnetopLength(
-    length, tops[topNo], sumProfile, topNo + canonicalShift, vside);
+    length, tops[topNo], sumProfile, fullTopNo, vside);
 }
 
 
@@ -462,9 +464,6 @@ void Product::setVerbalTopsOnly(
   const bool flipAllowedFlag,
   VerbalCover& verbalCover) const
 {
-  // Product::makeCompletion(sumProfile, canonicalShift, 
-    // verbalCover.getCompletion());
-
   const VerbalSide vsideSingle = 
     {verbalCover.getCompletion().preferSingleActive(), symmFlag};
 
@@ -500,7 +499,6 @@ void Product::setVerbalTopsOnly(
   {
     verbalCover.fillTopsExcluding(vsideSimple, ranksNames);
   }
-
 }
 
 
@@ -523,9 +521,6 @@ void Product::setVerbalAnyTopsEqual(
   }
 
   verbalCover.setLength(length);
-
-  // Product::makeCompletion(sumProfile, canonicalShift, 
-    // verbalCover.getCompletion());
 
   list<Completion> completions;
 
@@ -564,9 +559,6 @@ void Product::setVerbalHighTopsEqual(
 
     return;
   }
-
-  // Product::makeCompletion(sumProfile, canonicalShift, 
-    // verbalCover.getCompletion());
 
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
@@ -620,6 +612,7 @@ void Product::setVerbalHighTopsEqual(
 }
 
 
+/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalSingular(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -633,11 +626,11 @@ void Product::setVerbalSingular(
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
-  const unsigned char len = (vside.side == OPP_WEST ?
-    length.lower() : sumProfile.length() - length.lower());
-
   Product::makeSingularCompletion(sumProfile, canonicalShift,
     vside.side, verbalCover.getCompletion());
+
+  const unsigned char len = (vside.side == OPP_WEST ?
+    length.lower() : sumProfile.length() - length.lower());
 
   verbalCover.fillSingular(len, vside);
 }
@@ -656,6 +649,7 @@ void Product::setVerbalSingular(
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
+/* ------------------------   DONE   ---------------------- */
 string Product::strVerbal(
   const Profile& sumProfile,
   const unsigned char canonicalShift,

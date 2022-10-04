@@ -294,9 +294,9 @@ Opponent Completion::preferSimpleActive() const
 }
 
 
-unsigned char Completion::numOptions() const
+unsigned char Completion::getLowestRankUsed() const
 {
-  return static_cast<unsigned char>(used.size()) - ranksUsed;
+  return lowestRankUsed;
 }
 
 
@@ -306,6 +306,12 @@ bool Completion::lowestRankIsUsed(const Opponent side) const
     return (dataWest.lowestRankActive == lowestRankUsed);
   else
     return (dataEast.lowestRankActive == lowestRankUsed);
+}
+
+
+unsigned char Completion::numOptions() const
+{
+  return static_cast<unsigned char>(used.size()) - ranksUsed;
 }
 
 

@@ -145,9 +145,11 @@ class Completion
     unsigned char getTotalLower(const Opponent side) const;
     unsigned char getTotalUpper(const Opponent side) const;
 
-    unsigned char numOptions() const;
+    unsigned char getLowestRankUsed() const;
 
     bool lowestRankIsUsed(const Opponent side) const;
+
+    unsigned char numOptions() const;
 
     Opponent preferSingleActive() const;
 
