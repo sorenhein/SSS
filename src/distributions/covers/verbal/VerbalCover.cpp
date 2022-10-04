@@ -567,25 +567,6 @@ void VerbalCover::fillSingular(
 }
 
 
-/*
-void VerbalCover::getTopsData(
-  const BlankPlayerCap side,
-  const Completion& completionIn,
-  const RanksNames& ranksNames,
-  vector<TemplateData>& tdata) const
-{
-  tdata.resize(2);
-  tdata[0].set(BLANK_PLAYER_CAP, side);
-  tdata[1].setBlank(BLANK_TOPS_PHRASE);
-  tdata[1].setData(BLANK_TOPS_PHRASE_HOLDING,
-                                  // TODO !!!
-    completionIn.strSet(ranksNames, OPP_WEST,
-      false, false));
-
-}
-*/
-
-
 void VerbalCover::fillCompletion(
   const VerbalSide& vside,
   const RanksNames& ranksNames)
@@ -706,11 +687,10 @@ void VerbalCover::fillList(
   size_t i = 1;
   for (auto& completionIn: completionsIn)
   {
-// cout << "i = " << i << ": " << completionIn.strDebug() << endl;
     templateFills[i].setBlank(BLANK_LIST_PHRASE);
     templateFills[i].setData(BLANK_LIST_PHRASE_HOLDING, 
-                                    // TODO !!!
       completionIn.strSet(ranksNames, vside.side, false, false, true));
+
     i++;
   }
 }

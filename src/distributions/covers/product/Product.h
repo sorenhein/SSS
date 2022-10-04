@@ -73,13 +73,6 @@ class Product
       const unsigned char canonicalShift) const;
 
 
-    // Pverbal: Help methods 
-
-    unsigned char countBottoms(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift) const;
-
-
     // Pverbal: Completion methods 
 
     void makeCompletion(

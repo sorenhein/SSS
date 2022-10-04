@@ -90,27 +90,6 @@ Opponent Product::simpler(
 
 /**********************************************************************/
 /*                                                                    */
-/*                           Help methods                             */
-/*                                                                    */
-/**********************************************************************/
-
-unsigned char Product::countBottoms(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift) const
-{
-  // Add any that are hidden by the canonical shift.
-  // TODO Could even be a method in sumProfile.
-  unsigned char count = 0;
-
-  for (unsigned char topNo = 0; topNo <= canonicalShift; topNo++)
-    count += sumProfile[topNo];
-
-  return count;
-}
-
-
-/**********************************************************************/
-/*                                                                    */
 /*                         Completion methods                         */
 /*                                                                    */
 /**********************************************************************/
@@ -157,9 +136,7 @@ void Product::makeCompletion(
   assert(tops[0].getOperator() == COVER_EQUAL);
 
   const unsigned char bottoms = tops[0].lower();
-  const unsigned char allBottoms = 
-    Product::countBottoms(sumProfile, canonicalShift);
-
+  const unsigned char allBottoms = sumProfile.numBottoms(canonicalShift);
 
   if (bottoms == 0)
   {
@@ -199,8 +176,7 @@ void Product::makeSingularCompletion(
   const unsigned char slength = sumProfile.length();
   const unsigned char wlength = length.lower();
 
-  const unsigned char numBottoms = 
-    Product::countBottoms(sumProfile, canonicalShift);
+  const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
 
   // const Opponent sideOther = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
   const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
@@ -357,7 +333,6 @@ bool Product::makeCompletionList(
 /**********************************************************************/
 
 
-/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalDisaster(
   [[maybe_unused]] const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
@@ -370,7 +345,6 @@ void Product::setVerbalDisaster(
 }
 
 
-/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalLengthOnly(
   const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
@@ -382,7 +356,6 @@ void Product::setVerbalLengthOnly(
 }
 
 
-/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -406,7 +379,6 @@ void Product::setVerbalOneTopOnly(
 }
 
 
-/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -516,6 +488,13 @@ void Product::setVerbalAnyTopsEqual(
   }
 }
 
+  // TEMPLATE
+  // if (sold == snew)
+    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  // else
+    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
+
+
 
 void Product::setVerbalHighTopsEqual(
   const Profile& sumProfile,
@@ -548,8 +527,7 @@ void Product::setVerbalHighTopsEqual(
   else if (numOptions == 2 && 
       verbalCover.getCompletion().getFreeUpper(side) == 1)
   {
-    // We need up to one low card.
-    // "West has Q or Qx".
+    // "West has Q or Qx", so we need up to one low card.
     list<Completion> completions;
     if (! Product::makeCompletionList(sumProfile, canonicalShift, 
       side, 4, completions))
@@ -566,7 +544,7 @@ void Product::setVerbalHighTopsEqual(
     verbalCover.fillBelow(
       verbalCover.getCompletion().getFreeLower(side),
       verbalCover.getCompletion().getFreeUpper(side),
-      Product::countBottoms(sumProfile, canonicalShift),
+      sumProfile.numBottoms(canonicalShift),
       ranksNames,
       numOptions,
       vside);
@@ -578,7 +556,6 @@ void Product::setVerbalHighTopsEqual(
 }
 
 
-/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalSingular(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -602,20 +579,12 @@ void Product::setVerbalSingular(
 }
 
 
-  // TEMPLATE
-  // if (sold == snew)
-    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  // else
-    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
-
 /*--------------------------------------------------------------------*/
 /*                                                                    */
 /*                           Overall method                           */
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
-/* ------------------------   DONE   ---------------------- */
 string Product::strVerbal(
   const Profile& sumProfile,
   const unsigned char canonicalShift,

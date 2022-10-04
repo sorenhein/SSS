@@ -54,6 +54,8 @@ class Profile
       const RanksNames& ranksNames,
       TopData& topData) const;
 
+    unsigned char numBottoms(const unsigned char lastTopNo) const;
+
     unsigned char operator [] (const unsigned char topNo) const;
 
     // Only unused tops or tops with upper == lower.

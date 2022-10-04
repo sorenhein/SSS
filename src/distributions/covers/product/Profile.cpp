@@ -71,6 +71,18 @@ void Profile::getTopData(
 }
 
 
+unsigned char Profile::numBottoms(const unsigned char lastTopNo) const
+{
+  assert(lastTopNo < tops.size());
+  unsigned char count = 0;
+
+  for (unsigned char topNo = 0; topNo <= lastTopNo; topNo++)
+    count += tops[topNo];
+
+  return count;
+}
+
+
 unsigned char Profile::operator [] (const unsigned char topNo) const
 {
   assert(topNo < tops.size());
