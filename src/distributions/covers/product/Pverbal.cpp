@@ -254,14 +254,12 @@ void Product::makeSingularCompletion(
 
   const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
 
-  // const Opponent sideOther = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
   const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
   const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
 
   // Determine which side gets the unused tops.
-  const Opponent sideForUnused = 
-    (topsUsedWest == wlength || topsUsedWest + numBottoms == wlength ?
-    OPP_EAST : OPP_WEST);
+  const Opponent sideForUnused = Product::singularUnusedSide(
+    sumProfile, canonicalShift, completion);
 
   // Cover from the highest top down to canonicalShift (exclusive).
   // If canonicalShift is 0, then we will stop at 1, but then the 0th
@@ -284,6 +282,9 @@ void Product::makeSingularCompletion(
       completion.setTop(topNo, true,  sumProfile[topNo], sumProfile[topNo]);
     }
   }
+
+  // Product::makeSingularCompletionBottoms(
+    // sumProfile, canonicalShift, side, completion);
 
   if (topsUsedWest == wlength ||
       topsUsedEast + numBottoms == slength - wlength)
