@@ -16,15 +16,13 @@
 
 #include "Product.h"
 #include "Profile.h"
-// TODO Eliminate this
-#include "VerbalData.h"
 
 #include "../CoverCategory.h"
-
 #include "../verbal/VerbalCover.h"
-
 #include "../../../utils/table.h"
 
+
+// Methods for each verbal cover type.
 
 typedef void (Product::*VerbalMethod)(
   const Profile& profile,
@@ -95,30 +93,6 @@ Opponent Product::simpler(
 /*                           Help methods                             */
 /*                                                                    */
 /**********************************************************************/
-
-void Product::study(
-   const Profile& sumProfile,
-   const unsigned char canonicalShift,
-  VerbalData& data) const
-{
-  // TODO This is an attempt at a more streamlined study.
-
-  data.reset();
-
-  for (unsigned char topNo = static_cast<unsigned char>(tops.size()); 
-    topNo-- > 0; )
-  {
-    auto& top = tops[topNo];
-    if (top.used())
-    {
-      const unsigned char t = tops[topNo].lower();
-      data.topsUsed += t;
-      data.topsUsedOther += sumProfile[topNo + canonicalShift] - t;
-      data.lowestRankUsed = topNo;
-    }
-  }
-}
-
 
 unsigned char Product::countBottoms(
   const Profile& sumProfile,
@@ -228,12 +202,13 @@ void Product::makeSingularCompletion(
   const unsigned char numBottoms = 
     Product::countBottoms(sumProfile, canonicalShift);
 
-  VerbalData data;
-  Product::study(sumProfile, canonicalShift, data);
+  // const Opponent sideOther = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
+  const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
 
   // Determine which side gets the unused tops.
   const Opponent sideForUnused = 
-    (data.topsUsed == wlength || data.topsUsed + numBottoms == wlength ?
+    (topsUsedWest == wlength || topsUsedWest + numBottoms == wlength ?
     OPP_EAST : OPP_WEST);
 
   // Cover from the highest top down to canonicalShift (exclusive).
@@ -258,8 +233,8 @@ void Product::makeSingularCompletion(
     }
   }
 
-  if (data.topsUsed == wlength ||
-      data.topsUsedOther + numBottoms == slength - wlength)
+  if (topsUsedWest == wlength ||
+      topsUsedEast + numBottoms == slength - wlength)
   {
     // All bottoms go to East.
     if (side == OPP_EAST)
@@ -269,8 +244,8 @@ void Product::makeSingularCompletion(
           sumProfile[topNo]);
     }
   }
-  else if (data.topsUsedOther == slength - wlength ||
-      data.topsUsed + numBottoms == wlength)
+  else if (topsUsedEast == slength - wlength ||
+      topsUsedWest + numBottoms == wlength)
   {
     // All bottoms go to West.
     if (side == OPP_WEST)
@@ -283,10 +258,9 @@ void Product::makeSingularCompletion(
   else if (canonicalShift == 0)
   {
     if (side == OPP_WEST)
-      completion.setTop(0, true, wlength - data.topsUsed,
-        sumProfile[0]);
+      completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
     else
-      completion.setTop(0, true, slength - wlength - data.topsUsedOther,
+      completion.setTop(0, true, slength - wlength - topsUsedEast,
         sumProfile[0]);
   }
   else
@@ -383,6 +357,7 @@ bool Product::makeCompletionList(
 /**********************************************************************/
 
 
+/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalDisaster(
   [[maybe_unused]] const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
@@ -395,6 +370,7 @@ void Product::setVerbalDisaster(
 }
 
 
+/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalLengthOnly(
   const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
@@ -406,6 +382,7 @@ void Product::setVerbalLengthOnly(
 }
 
 
+/* ------------------------   DONE   ---------------------- */
 void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -415,19 +392,17 @@ void Product::setVerbalOneTopOnly(
 {
   assert(activeCount == 1);
 
-  VerbalData data;
-  Product::study(sumProfile, canonicalShift, data);
-  const unsigned char topNo = data.lowestRankUsed;
+  const unsigned char fullTopNo = 
+    verbalCover.getCompletion().getLowestRankUsed();
+
+  const unsigned char topNo = fullTopNo - canonicalShift;
   assert(tops[topNo].getOperator() != COVER_EQUAL);
 
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
   verbalCover.fillOnetopOnly(
-    tops[topNo],
-    sumProfile[topNo + canonicalShift],
-    topNo + canonicalShift,
-    vside);
+    tops[topNo], sumProfile[fullTopNo], fullTopNo, vside);
 }
 
 
@@ -516,13 +491,8 @@ void Product::setVerbalAnyTopsEqual(
     // This works for any tops as well.
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, ranksNames, false, verbalCover);
-
     return;
   }
-
-  verbalCover.setLength(length);
-
-  list<Completion> completions;
 
   const Opponent side = (
     verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
@@ -531,15 +501,19 @@ void Product::setVerbalAnyTopsEqual(
 
   const VerbalSide vside = {side, symmFlag};
 
-  if (Product::makeCompletionList(sumProfile, canonicalShift, 
-    side, 4, completions))
+  verbalCover.setLength(length);
+
+  list<Completion> completions;
+  if (Product::makeCompletionList(
+    sumProfile, canonicalShift, side, 4, completions))
   {
     verbalCover.fillList(vside, ranksNames, completions);
-    return;
   }
-
-  verbalCover.setGeneral(sumProfile.length(), symmFlag, ranksNames);
-  // TODO This needs to be expanded somehow
+  else
+  {
+    // TODO This needs to be expanded somehow
+    verbalCover.setGeneral(sumProfile.length(), symmFlag, ranksNames);
+  }
 }
 
 
@@ -556,11 +530,8 @@ void Product::setVerbalHighTopsEqual(
   {
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, ranksNames, true, verbalCover);
-
     return;
   }
-
-  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
   const Opponent side = (
     verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
@@ -569,13 +540,12 @@ void Product::setVerbalHighTopsEqual(
 
   VerbalSide vside = {side, symmFlag};
 
+  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
   if (numOptions == 1)
   {
     verbalCover.fillBottoms(vside, ranksNames);
-    return;
   }
-
-  if (numOptions == 2 && 
+  else if (numOptions == 2 && 
       verbalCover.getCompletion().getFreeUpper(side) == 1)
   {
     // We need up to one low card.
@@ -589,10 +559,8 @@ void Product::setVerbalHighTopsEqual(
     }
    
     verbalCover.fillList(vside, ranksNames, completions);
-    return;
   }
-
-  if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+  else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillBelow(
@@ -602,13 +570,11 @@ void Product::setVerbalHighTopsEqual(
       ranksNames,
       numOptions,
       vside);
-
-    return;
   }
-
-  verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
-
-  return;
+  else
+  {
+    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
+  }
 }
 
 
