@@ -105,12 +105,13 @@ class Product
 
     // Both high tops and any tops
 
-    string strVerbalTopsOnly(
+    void setVerbalTopsOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
       const RanksNames& ranksNames,
-      const bool flipAllowedFlag) const;
+      const bool flipAllowedFlag,
+      VerbalCover& verbalCover) const;
 
 
     // Compositions

@@ -450,14 +450,14 @@ void Product::setVerbalSingular(
     // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
 
 
-string Product::strVerbalTopsOnly(
+void Product::setVerbalTopsOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
   const RanksNames& ranksNames,
-  const bool flipAllowedFlag) const
+  const bool flipAllowedFlag,
+  VerbalCover& verbalCover) const
 {
-  VerbalCover verbalCover;
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
@@ -467,7 +467,7 @@ string Product::strVerbalTopsOnly(
   if (vsideSingle.side != OPP_EITHER)
   {
     verbalCover.fillCompletion(vsideSingle, ranksNames);
-    return verbalCover.str(ranksNames);
+    return;
   }
 
   const Opponent opp = verbalCover.getCompletion().preferSimpleActive();
@@ -497,7 +497,6 @@ string Product::strVerbalTopsOnly(
     verbalCover.fillTopsExcluding(vsideSimple, ranksNames);
   }
 
-  return verbalCover.str(ranksNames);
 }
 
 
@@ -518,8 +517,12 @@ string Product::strVerbalAnyTops(
   if (! length.used())
   {
     // This works for any tops as well.
-    return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames, false);
+    VerbalCover verbalCover;
+
+    Product::setVerbalTopsOnly(sumProfile, canonicalShift,
+      symmFlag, ranksNames, false, verbalCover);
+
+    return verbalCover.str(ranksNames);
   }
 
   VerbalCover verbalCover;
@@ -569,8 +572,12 @@ string Product::strVerbalHighTops(
 
   if (! length.used())
   {
-    return Product::strVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames, true);
+    VerbalCover verbalCover;
+
+    Product::setVerbalTopsOnly(sumProfile, canonicalShift,
+      symmFlag, ranksNames, true, verbalCover);
+
+    return verbalCover.str(ranksNames);
   }
 
   VerbalCover verbalCover;
