@@ -1,14 +1,18 @@
-Completion gets a west and and east.
-It also gets a data for west and east.
-So maybe it's a Completion with a CompletionSide.
-This gets filled at the same time.
-It's a class, so we have to see what is needed externally.
+Pverbal:
+* Look one last time at simpler() methods, both the two explicit ones
+  and the ones spread throughout the file.
+* strGeneral is still a hodge-podge.
+* setVerbalHighTopsEqual
+  completions: Use the ones from VerbalCover directly
+  Just assert the return value directly
+  side into method?
+* setVerbalAnyTopsEqual
+  same side method
+* setVerbalTopsOnly
+  Also has a side
 
 
-strGeneral is still a hodge-podge.
 
-VerbalCover should know its sentence.
-TemplateSentence -> Sentence.
 VerbalTemplate -> VerbalSlots.
 Contains up to 3 VerbalSlot's.
 Each can be an expansion of a number, a completion or ranksNames,

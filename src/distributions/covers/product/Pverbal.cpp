@@ -168,6 +168,74 @@ void Product::makeCompletion(
 }
 
 
+Opponent Product::singularUnusedSide(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const Completion& completion) const
+{
+  // Determine which side gets the unused tops.
+
+  const unsigned char wlength = length.lower();
+  const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
+  const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
+
+  if (topsUsedWest == wlength ||
+      topsUsedWest + numBottoms == wlength)
+    return OPP_EAST;
+  else
+    return OPP_WEST;
+}
+
+
+void Product::makeSingularCompletionBottoms(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const Opponent side,
+  Completion& completion) const
+{
+  const unsigned char slength = sumProfile.length();
+  const unsigned char wlength = length.lower();
+
+  const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
+  const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
+
+  const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
+
+  if (topsUsedWest == wlength ||
+      topsUsedEast + numBottoms == slength - wlength)
+  {
+    // All bottoms go to East.
+    if (side == OPP_EAST)
+    {
+      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+        completion.setTop(topNo, true, sumProfile[topNo],
+          sumProfile[topNo]);
+    }
+  }
+  else if (topsUsedEast == slength - wlength ||
+      topsUsedWest + numBottoms == wlength)
+  {
+    // All bottoms go to West.
+    if (side == OPP_WEST)
+    {
+      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+        completion.setTop(topNo, true, sumProfile[topNo],
+          sumProfile[topNo]);
+    }
+  }
+  else if (canonicalShift == 0)
+  {
+    if (side == OPP_WEST)
+      completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
+    else
+      completion.setTop(0, true, slength - wlength - topsUsedEast,
+        sumProfile[0]);
+  }
+  else
+    assert(false);
+}
+
+
 void Product::makeSingularCompletion(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
