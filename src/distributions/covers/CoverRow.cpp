@@ -290,7 +290,7 @@ string CoverRow::strEnum(const CoverVerbal verbalIn) const
     return "B";
   else if (verbalIn == VERBAL_LENGTH_ONLY)
     return "C";
-  else if (verbalIn == VERBAL_TOPS_ONLY)
+  else if (verbalIn == VERBAL_ONE_TOP_ONLY)
     return "D";
   else if (verbalIn == VERBAL_LENGTH_AND_ONE_TOP)
     return "E";

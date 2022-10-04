@@ -16,6 +16,7 @@
 
 #include "Product.h"
 #include "Profile.h"
+// TODO Eliminate this
 #include "VerbalData.h"
 
 #include "../CoverCategory.h"
@@ -23,6 +24,26 @@
 #include "../verbal/VerbalCover.h"
 
 #include "../../../utils/table.h"
+
+
+typedef void (Product::*VerbalMethod)(
+  const Profile& profile,
+  const unsigned char canonicalShift,
+  const bool symmFlag,
+  const RanksNames& ranksNames,
+  VerbalCover& verbalCost) const;
+
+static const vector<VerbalMethod> verbalMethods =
+{
+  &Product::setVerbalDisaster,        // VERBAL_GENERAL
+  &Product::setVerbalDisaster,        // VERBAL_HEURISTIC
+  &Product::setVerbalLengthOnly,      // VERBAL_LENGTH_ONLY
+  &Product::setVerbalOneTopOnly,      // VERBAL_ONE_TOP_ONLY
+  &Product::setVerbalLengthAndOneTop, // VERBAL_LENGTH_AND_ONE_TOP
+  &Product::setVerbalHighTopsEqual,   // VERBAL_HIGH_TOPS_EQUAL
+  &Product::setVerbalAnyTopsEqual,    // VERBAL_ANY_TOPS_EQUAL
+  &Product::setVerbalSingular         // VERBAL_SINGULAR
+};
 
 
 /**********************************************************************/
@@ -71,7 +92,7 @@ Opponent Product::simpler(
 
 /**********************************************************************/
 /*                                                                    */
-/*                    Count and numerical methods                     */
+/*                           Help methods                             */
 /*                                                                    */
 /**********************************************************************/
 
@@ -111,6 +132,80 @@ unsigned char Product::countBottoms(
     count += sumProfile[topNo];
 
   return count;
+}
+
+
+/**********************************************************************/
+/*                                                                    */
+/*                         Completion methods                         */
+/*                                                                    */
+/**********************************************************************/
+
+void Product::makeCompletion(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  Completion& completion) const
+{
+  // We have some top's that are fixed to a single value.
+  // We have some explicit, unused tops.
+  // We have 1 or more unused implicit bottoms (canonicalShift+1).
+
+  completion.resize(sumProfile.size());
+
+  // Cover from the highest top down to canonicalShift (exclusive).
+  // If canonicalShift is 0, then we will stop at 1, but then the 0th
+  // real top is by convention unset.
+  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
+      --topNo > canonicalShift; )
+  {
+    completion.setTop(
+      topNo, 
+      tops[topNo-canonicalShift].used(),
+      tops[topNo-canonicalShift].lower(),
+      sumProfile[topNo]);
+  }
+
+  // TODO Experimental setting of freeLower and freeUpper in Completion.
+  completion.setFree(sumProfile.length(), length);
+
+  // The zero'th top represents all the actual tops in sumProfile
+  // from 0 up to canonicalShift-1.
+
+  if (! tops[0].used())
+  {
+    // Fill with unused bottoms.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, false, sumProfile[topNo],
+        sumProfile[topNo]);
+    return;
+  }
+
+  assert(tops[0].getOperator() == COVER_EQUAL);
+
+  const unsigned char bottoms = tops[0].lower();
+  const unsigned char allBottoms = 
+    Product::countBottoms(sumProfile, canonicalShift);
+
+
+  if (bottoms == 0)
+  {
+    // Fill with zeroes.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, true, 0, sumProfile[topNo]);
+  }
+  else if (bottoms == allBottoms)
+  {
+    // Fill with maximum values.
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
+      completion.setTop(topNo, true, sumProfile[topNo],
+        sumProfile[topNo]);
+  }
+  else
+  {
+    // Add a single bottom with the right number.
+    assert(canonicalShift == 0);
+    completion.setTop(0, true, bottoms, allBottoms);
+  }
 }
 
 
@@ -199,80 +294,6 @@ void Product::makeSingularCompletion(
 }
 
 
-/**********************************************************************/
-/*                                                                    */
-/*                             Stack methods                          */
-/*                                                                    */
-/**********************************************************************/
-
-void Product::makeCompletion(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  Completion& completion) const
-{
-  // We have some top's that are fixed to a single value.
-  // We have some explicit, unused tops.
-  // We have 1 or more unused implicit bottoms (canonicalShift+1).
-
-  completion.resize(sumProfile.size());
-
-  // Cover from the highest top down to canonicalShift (exclusive).
-  // If canonicalShift is 0, then we will stop at 1, but then the 0th
-  // real top is by convention unset.
-  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
-      --topNo > canonicalShift; )
-  {
-    completion.setTop(
-      topNo, 
-      tops[topNo-canonicalShift].used(),
-      tops[topNo-canonicalShift].lower(),
-      sumProfile[topNo]);
-  }
-
-  // TODO Experimental setting of freeLower and freeUpper in Completion.
-  completion.setFree(sumProfile.length(), length);
-
-  // The zero'th top represents all the actual tops in sumProfile
-  // from 0 up to canonicalShift-1.
-
-  if (! tops[0].used())
-  {
-    // Fill with unused bottoms.
-    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, false, sumProfile[topNo],
-        sumProfile[topNo]);
-    return;
-  }
-
-  assert(tops[0].getOperator() == COVER_EQUAL);
-
-  const unsigned char bottoms = tops[0].lower();
-  const unsigned char allBottoms = 
-    Product::countBottoms(sumProfile, canonicalShift);
-
-
-  if (bottoms == 0)
-  {
-    // Fill with zeroes.
-    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, true, 0, sumProfile[topNo]);
-  }
-  else if (bottoms == allBottoms)
-  {
-    // Fill with maximum values.
-    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; 0)
-      completion.setTop(topNo, true, sumProfile[topNo],
-        sumProfile[topNo]);
-  }
-  else
-  {
-    // Add a single bottom with the right number.
-    assert(canonicalShift == 0);
-    completion.setTop(0, true, bottoms, allBottoms);
-  }
-}
-
-
 bool Product::makeCompletionList(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -357,15 +378,39 @@ bool Product::makeCompletionList(
 
 /**********************************************************************/
 /*                                                                    */
-/*                  Simple set methods (no branches)                  */
+/*                           Set methods                              */
 /*                                                                    */
 /**********************************************************************/
+
+
+void Product::setVerbalDisaster(
+  [[maybe_unused]] const Profile& sumProfile,
+  [[maybe_unused]] const unsigned char canonicalShift,
+  [[maybe_unused]] const bool symmFlag,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] VerbalCover& verbalCover) const
+{
+  // This only happens if verbal is out of range in strVerbal.
+  assert(false);
+}
+
+
+void Product::setVerbalLengthOnly(
+  const Profile& sumProfile,
+  [[maybe_unused]] const unsigned char canonicalShift,
+  const bool symmFlag,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  VerbalCover& verbalCover) const
+{
+  verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
+}
 
 
 void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
+  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(activeCount == 1);
@@ -390,6 +435,7 @@ void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
+  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(length.used());
@@ -408,48 +454,6 @@ void Product::setVerbalLengthAndOneTop(
 }
 
 
-
-
-// Add other set methods here
-
-
-
-void Product::setVerbalSingular(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const bool symmFlag,
-  VerbalCover& verbalCover) const
-{
-  assert(length.used());
-  assert(activeCount > 0);
-
-  const VerbalSide vside = 
-    {Product::simpler(sumProfile, canonicalShift), symmFlag};
-
-  const unsigned char len = (vside.side == OPP_WEST ?
-    length.lower() : sumProfile.length() - length.lower());
-
-  Product::makeSingularCompletion(sumProfile, canonicalShift,
-    vside.side, verbalCover.getCompletion());
-
-  verbalCover.fillSingular(len, vside);
-}
-
-
-/*--------------------------------------------------------------------*/
-/*                                                                    */
-/*                   Equal high/any top string methods                */
-/*                                                                    */
-/*--------------------------------------------------------------------*/
-
-
-  // TEMPLATE
-  // if (sold == snew)
-    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  // else
-    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
-
 void Product::setVerbalTopsOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -458,8 +462,8 @@ void Product::setVerbalTopsOnly(
   const bool flipAllowedFlag,
   VerbalCover& verbalCover) const
 {
-  Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover.getCompletion());
+  // Product::makeCompletion(sumProfile, canonicalShift, 
+    // verbalCover.getCompletion());
 
   const VerbalSide vsideSingle = 
     {verbalCover.getCompletion().preferSingleActive(), symmFlag};
@@ -500,13 +504,7 @@ void Product::setVerbalTopsOnly(
 }
 
 
-/*--------------------------------------------------------------------*/
-/*                                                                    */
-/*                      Equal any top string methods                  */
-/*                                                                    */
-/*--------------------------------------------------------------------*/
-
-void Product::setVerbalAnyTops(
+void Product::setVerbalAnyTopsEqual(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
@@ -526,8 +524,8 @@ void Product::setVerbalAnyTops(
 
   verbalCover.setLength(length);
 
-  Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover.getCompletion());
+  // Product::makeCompletion(sumProfile, canonicalShift, 
+    // verbalCover.getCompletion());
 
   list<Completion> completions;
 
@@ -550,14 +548,7 @@ void Product::setVerbalAnyTops(
 }
 
 
-
-/*--------------------------------------------------------------------*/
-/*                                                                    */
-/*                     Equal high top string methods                  */
-/*                                                                    */
-/*--------------------------------------------------------------------*/
-
-void Product::setVerbalHighTops(
+void Product::setVerbalHighTopsEqual(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
@@ -574,8 +565,8 @@ void Product::setVerbalHighTops(
     return;
   }
 
-  Product::makeCompletion(sumProfile, canonicalShift, 
-    verbalCover.getCompletion());
+  // Product::makeCompletion(sumProfile, canonicalShift, 
+    // verbalCover.getCompletion());
 
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
 
@@ -629,15 +620,34 @@ void Product::setVerbalHighTops(
 }
 
 
-void Product::setVerbalLengthOnly(
+void Product::setVerbalSingular(
   const Profile& sumProfile,
-  [[maybe_unused]] const unsigned char canonicalShift,
+  const unsigned char canonicalShift,
   const bool symmFlag,
   [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
-  verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
+  assert(length.used());
+  assert(activeCount > 0);
+
+  const VerbalSide vside = 
+    {Product::simpler(sumProfile, canonicalShift), symmFlag};
+
+  const unsigned char len = (vside.side == OPP_WEST ?
+    length.lower() : sumProfile.length() - length.lower());
+
+  Product::makeSingularCompletion(sumProfile, canonicalShift,
+    vside.side, verbalCover.getCompletion());
+
+  verbalCover.fillSingular(len, vside);
 }
+
+
+  // TEMPLATE
+  // if (sold == snew)
+    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
+  // else
+    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
 
 
 /*--------------------------------------------------------------------*/
@@ -648,68 +658,27 @@ void Product::setVerbalLengthOnly(
 
 string Product::strVerbal(
   const Profile& sumProfile,
-  const RanksNames& ranksNames,
-  const CoverVerbal verbal,
+  const unsigned char canonicalShift,
   const bool symmFlag,
-  const unsigned char canonicalShift) const
+  const RanksNames& ranksNames,
+  const CoverVerbal verbal) const
 {
-  assert(verbal != VERBAL_GENERAL && verbal != VERBAL_HEURISTIC);
+  // Turn the product into a verbal string describing the cover.
 
+  // First, make a Completion with some data about the product.
   VerbalCover verbalCover;
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover.getCompletion());
 
   // cout << "\nProduct " << Product::strLine() << ", symm " <<
     // symmFlag << "\n";
-  if (verbal == VERBAL_LENGTH_ONLY)
-  {
-    Product::makeCompletion(sumProfile, canonicalShift, 
-      verbalCover.getCompletion());
 
-    Product::setVerbalLengthOnly(
-      sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
+  // Then dereference into the right verbal method (including some
+  // error handling).
+  // TODO Later on, ranksNames should only be in string methods.
+  (this->*(verbalMethods[verbal]))
+    (sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
 
-    // verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
-    
-    return verbalCover.str(ranksNames);
-  }
-  else if (verbal == VERBAL_TOPS_ONLY)
-  {
-    Product::setVerbalOneTopOnly(
-      sumProfile, canonicalShift, symmFlag, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else if (verbal == VERBAL_LENGTH_AND_ONE_TOP)
-  {
-    Product::setVerbalLengthAndOneTop(
-      sumProfile, canonicalShift, symmFlag, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else if (verbal == VERBAL_ANY_TOPS_EQUAL)
-  {
-    Product::setVerbalAnyTops(
-      sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else if (verbal == VERBAL_HIGH_TOPS_EQUAL)
-  {
-    Product::setVerbalHighTops(
-      sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else if (verbal == VERBAL_SINGULAR)
-  {
-    Product::setVerbalSingular(
-      sumProfile, canonicalShift, symmFlag, verbalCover);
-
-    return verbalCover.str(ranksNames);
-  }
-  else
-  {
-    assert(false);
-    return "";
-  }
+  return verbalCover.str(ranksNames);
 }
 

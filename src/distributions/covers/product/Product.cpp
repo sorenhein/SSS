@@ -382,7 +382,7 @@ CoverVerbal Product::verbal() const
   if (activeCount >= 2)
     return VERBAL_GENERAL;
   else if (! length.used())
-    return VERBAL_TOPS_ONLY;
+    return VERBAL_ONE_TOP_ONLY;
   else
     return VERBAL_LENGTH_AND_ONE_TOP;
 }

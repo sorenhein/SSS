@@ -62,6 +62,8 @@ class Product
       const unsigned char canonicalShift) const;
 
 
+    // Pverbal: Side comparators
+
     bool topsSimpler(
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
@@ -70,6 +72,8 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
+
+    // Pverbal: Help methods 
 
     void study(
       const Profile& sumProfile,
@@ -81,40 +85,7 @@ class Product
       const unsigned char canonicalShift) const;
 
 
-    // Simple set methods (no branches)
-
-    void setVerbalOneTopOnly(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const bool symmFlag,
-      VerbalCover& verbalCover) const;
-
-    void setVerbalLengthAndOneTop(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const bool symmFlag,
-      VerbalCover& verbalCover) const;
-
-
-
-    void setVerbalSingular(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const bool symmFlag,
-      VerbalCover& verbalCover) const;
-
-    // Both high tops and any tops
-
-    void setVerbalTopsOnly(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const bool symmFlag,
-      const RanksNames& ranksNames,
-      const bool flipAllowedFlag,
-      VerbalCover& verbalCover) const;
-
-
-    // Compositions
+    // Pverbal: Completion methods 
 
     void makeCompletion(
       const Profile& sumProfile,
@@ -135,16 +106,14 @@ class Product
       list<Completion>& completions) const;
 
 
-    // Any tops
+    // Pverbal: Set methods
 
-    void setVerbalAnyTops(
+    void setVerbalDisaster(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
       const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
-
-    // High tops
 
     void setVerbalLengthOnly(
       const Profile& sumProfile,
@@ -153,12 +122,51 @@ class Product
       const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
-    void setVerbalHighTops(
+    void setVerbalOneTopOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
       const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
+
+    void setVerbalLengthAndOneTop(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
+
+    // Help method for both high tops and any tops
+
+    void setVerbalTopsOnly(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      const bool flipAllowedFlag,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalHighTopsEqual(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalAnyTopsEqual(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalSingular(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
+      const RanksNames& ranksNames,
+      VerbalCover& verbalCover) const;
+
 
   public:
 
@@ -218,10 +226,10 @@ class Product
 
     string strVerbal(
       const Profile& sumProfile,
-      const RanksNames& ranksNames,
-      const CoverVerbal verbal,
+      const unsigned char canonicalShift,
       const bool symmFlag,
-      const unsigned char canonicalShift = 0) const;
+      const RanksNames& ranksNames,
+      const CoverVerbal verbal) const;
 
 };
 
