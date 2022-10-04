@@ -243,18 +243,6 @@ Completion& VerbalCover::getCompletion()
 }
 
 
-void VerbalCover::stable_sort()
-{
-  std::stable_sort(completions.begin(), completions.end());
-}
-
-
-unsigned char VerbalCover::size() const
-{
-  return static_cast<unsigned char>(completions.size());
-}
-
-
 Opponent VerbalCover::simplestOpponent(const unsigned char oppsLength) const
 {
   if (! lengthFlag)

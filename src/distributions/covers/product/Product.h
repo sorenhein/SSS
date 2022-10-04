@@ -72,6 +72,13 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift) const;
 
+    Opponent simplerEqualTops(const Completion& completion) const;
+
+    Opponent simplerActive(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const Completion& completion) const;
+
 
     // Pverbal: Completion methods 
 

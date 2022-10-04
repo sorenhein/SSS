@@ -172,10 +172,6 @@ class VerbalCover
 
     void setSentence(const Sentence sentenceIn);
 
-    void stable_sort();
-
-    unsigned char size() const;
-
     void fillCompletion(
       const VerbalSide& vside,
       const RanksNames& ranksNames);

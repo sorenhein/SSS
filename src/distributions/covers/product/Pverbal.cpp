@@ -87,6 +87,30 @@ Opponent Product::simpler(
 }
 
 
+Opponent Product::simplerEqualTops(const Completion& completion) const
+{
+  if (completion.getTotalUpper(OPP_WEST) <=
+      completion.getTotalUpper(OPP_EAST))
+    return OPP_WEST;
+  else
+    return OPP_EAST;
+}
+
+
+Opponent Product::simplerActive(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const Completion& completion) const
+{
+  const Opponent sideSimple = completion.preferSimpleActive();
+  if (sideSimple != OPP_EITHER)
+    return sideSimple;
+  else if (Product::topsSimpler(sumProfile, canonicalShift))
+    return OPP_WEST;
+  else
+    return OPP_EAST;
+}
+
 
 /**********************************************************************/
 /*                                                                    */
@@ -244,8 +268,6 @@ void Product::makeSingularCompletion(
 {
   // All given tops are exact.  Length must be set.
 
-  // TODO Make some smaller methods.
-
   assert(length.used());
   assert(length.getOperator() == COVER_EQUAL);
 
@@ -256,6 +278,36 @@ void Product::makeSingularCompletion(
 
   const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
   const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
+
+  // TODO
+  // Up to here, completion has West and East in the right places.
+  // If side == West
+  //   if used, unchanged (but set again)
+  //   if unused, and sideUnused == West, fill completely
+  // If side == East
+  //   if used, flipped
+  //   if unused, and sideUnused == East, fill completely
+  // Also flip the bottom fills
+  // Then in VerbalTemplates::oneTopPhrase, line 464
+  //   always go by West
+  //
+  // How to move to normal West/East relations
+  // if top unused
+  //   if West: fill max
+  //   if East: fill 0
+  //
+  // first fill
+  //   if West: fill 0
+  //   if East: fill max
+  // second fill
+  //   if West: fill max
+  //   if East: fill 0
+  // third fill
+  //   always West
+  // 
+  // VerbalTemplates:
+  //   store side
+  //   use it
 
   // Determine which side gets the unused tops.
   const Opponent sideForUnused = Product::singularUnusedSide(
@@ -497,6 +549,7 @@ void Product::setVerbalTopsOnly(
     return;
   }
 
+  /*
   const Opponent opp = verbalCover.getCompletion().preferSimpleActive();
   Opponent simplestOpponent;
 
@@ -508,8 +561,12 @@ void Product::setVerbalTopsOnly(
     simplestOpponent = OPP_WEST;
   else
     simplestOpponent = OPP_EAST;
+    */
 
-  const VerbalSide vsideSimple = {simplestOpponent, symmFlag};
+  const Opponent side = Product::simplerActive(
+    sumProfile, canonicalShift, verbalCover.getCompletion());
+
+  const VerbalSide vsideSimple = {side, symmFlag};
 
   const unsigned char numOptions = 
     verbalCover.getCompletion().numOptions();
@@ -543,10 +600,8 @@ void Product::setVerbalAnyTopsEqual(
     return;
   }
 
-  const Opponent side = (
-    verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
-    verbalCover.getCompletion().getTotalUpper(OPP_EAST) ? 
-    OPP_WEST : OPP_EAST);
+  const Opponent side = Product::simplerEqualTops(
+    verbalCover.getCompletion());
 
   const VerbalSide vside = {side, symmFlag};
 
@@ -589,10 +644,8 @@ void Product::setVerbalHighTopsEqual(
     return;
   }
 
-  const Opponent side = (
-    verbalCover.getCompletion().getTotalUpper(OPP_WEST) <=
-    verbalCover.getCompletion().getTotalUpper(OPP_EAST) ? 
-    OPP_WEST : OPP_EAST);
+  const Opponent side = Product::simplerEqualTops(
+    verbalCover.getCompletion());
 
   VerbalSide vside = {side, symmFlag};
 
@@ -605,13 +658,10 @@ void Product::setVerbalHighTopsEqual(
       verbalCover.getCompletion().getFreeUpper(side) == 1)
   {
     // "West has Q or Qx", so we need up to one low card.
+    // We currently never get more than 4 options.
     list<Completion> completions;
-    if (! Product::makeCompletionList(sumProfile, canonicalShift, 
-      side, 4, completions))
-    {
-      // We currently never get more than 4 options.
-      assert(false);
-    }
+    assert(Product::makeCompletionList(
+      sumProfile, canonicalShift, side, 4, completions));
    
     verbalCover.fillList(vside, ranksNames, completions);
   }
@@ -641,13 +691,14 @@ void Product::setVerbalSingular(
   assert(length.used());
   assert(activeCount > 0);
 
-  const VerbalSide vside = 
-    {Product::simpler(sumProfile, canonicalShift), symmFlag};
+  const Opponent side = Product::simpler(sumProfile, canonicalShift);
+
+  const VerbalSide vside = {side, symmFlag};
 
   Product::makeSingularCompletion(sumProfile, canonicalShift,
-    vside.side, verbalCover.getCompletion());
+    side, verbalCover.getCompletion());
 
-  const unsigned char len = (vside.side == OPP_WEST ?
+  const unsigned char len = (side == OPP_WEST ?
     length.lower() : sumProfile.length() - length.lower());
 
   verbalCover.fillSingular(len, vside);

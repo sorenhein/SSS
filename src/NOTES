@@ -1,15 +1,7 @@
 Pverbal:
-* Look one last time at simpler() methods, both the two explicit ones
-  and the ones spread throughout the file.
-* strGeneral is still a hodge-podge.
-* setVerbalHighTopsEqual
-  completions: Use the ones from VerbalCover directly
-  Just assert the return value directly
-  side into method?
+* makeSingularCompletion needs to be turned around
 * setVerbalAnyTopsEqual
-  same side method
-* setVerbalTopsOnly
-  Also has a side
+  strGeneral is still a hodge-podge.
 
 
 
@@ -19,8 +11,6 @@ Each can be an expansion of a number, a completion or ranksNames,
 each of them potentially with arguments such as bool flags.
 In VerbalTemplates, check that the blank matches the template
 expectation (maybe we do this already).
-Maybe no productWest/East but straight to completion?
-makeCompletion, makeCompletionList, makeBothCompletions
 
 11/162390
 HHJ97
