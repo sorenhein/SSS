@@ -94,33 +94,11 @@ Opponent Product::simpler(
 /*                                                                    */
 /**********************************************************************/
 
-void Product::makeCompletion(
+void Product::makeCompletionBottoms(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   Completion& completion) const
 {
-  // We have some top's that are fixed to a single value.
-  // We have some explicit, unused tops.
-  // We have 1 or more unused implicit bottoms (canonicalShift+1).
-
-  completion.resize(sumProfile.size());
-
-  // Cover from the highest top down to canonicalShift (exclusive).
-  // If canonicalShift is 0, then we will stop at 1, but then the 0th
-  // real top is by convention unset.
-  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
-      --topNo > canonicalShift; )
-  {
-    completion.setTop(
-      topNo, 
-      tops[topNo-canonicalShift].used(),
-      tops[topNo-canonicalShift].lower(),
-      sumProfile[topNo]);
-  }
-
-  // TODO Experimental setting of freeLower and freeUpper in Completion.
-  completion.setFree(sumProfile.length(), length);
-
   // The zero'th top represents all the actual tops in sumProfile
   // from 0 up to canonicalShift-1.
 
@@ -157,6 +135,36 @@ void Product::makeCompletion(
     assert(canonicalShift == 0);
     completion.setTop(0, true, bottoms, allBottoms);
   }
+}
+
+
+void Product::makeCompletion(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  Completion& completion) const
+{
+  // We have some top's that are fixed to a single value.
+  // We have some explicit, unused tops.
+  // We have 1 or more unused implicit bottoms (canonicalShift+1).
+
+  completion.resize(sumProfile.size());
+
+  // Cover from the highest top down to canonicalShift (exclusive).
+  // If canonicalShift is 0, then we will stop at 1, but then the 0th
+  // real top is by convention unset.
+  for (unsigned char topNo = static_cast<unsigned char>(sumProfile.size());
+      --topNo > canonicalShift; )
+  {
+    completion.setTop(
+      topNo, 
+      tops[topNo-canonicalShift].used(),
+      tops[topNo-canonicalShift].lower(),
+      sumProfile[topNo]);
+  }
+
+  completion.setFree(sumProfile.length(), length);
+
+  Product::makeCompletionBottoms(sumProfile, canonicalShift, completion);
 }
 
 

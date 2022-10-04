@@ -75,6 +75,11 @@ class Product
 
     // Pverbal: Completion methods 
 
+    void makeCompletionBottoms(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      Completion& completion) const;
+
     void makeCompletion(
       const Profile& sumProfile,
       const unsigned char canonicalShift,

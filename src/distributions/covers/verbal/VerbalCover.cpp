@@ -517,28 +517,18 @@ void VerbalCover::fillBelow(
 {
   sentence = SENTENCE_ONLY_BELOW;
 
-  const unsigned char freeLower = completion.getFreeLower(vside.side);
-  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+  const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
+  const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
 
   // Make a synthetic length of small cards.
   VerbalCover::setLength(freeLower, freeUpper, numBottoms);
 
-  // This sets numbers 0 and 1.
-  // In a kludge, we first pretend that this is always from West,
-  // and then we adjust to the actual side.  This is to prevent
-  // getLengthData() from reversing the viewpoint.
-  //                          TODO
-  const VerbalSide vside2 = {OPP_WEST, false};
-  VerbalCover::getLengthData(numBottoms, vside2, false, templateFills);
+  // This sets templateFills numbers 0 and 1 (and the size of 2).
+  VerbalCover::getLengthData(numBottoms, vside, false, templateFills);
   
-  // And here is the fix.
-  const BlankPlayerCap bside = vside.blank();
-
-  templateFills[0].set(BLANK_PLAYER_CAP, bside);
-
   templateFills.resize(4);
 
-  if (freeUpper == 1)
+  if (completion.getFreeUpper(vside.side) == 1)
     templateFills[2].set(BLANK_BELOW, BLANK_BELOW_NORMAL);
   else
     templateFills[2].set(BLANK_BELOW, BLANK_BELOW_COMPLETELY);
