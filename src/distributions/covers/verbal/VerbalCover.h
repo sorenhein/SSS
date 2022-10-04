@@ -125,6 +125,11 @@ class VerbalCover
 
     void setLength(const Term& length);
 
+    void setLength(
+      const unsigned char lower,
+      const unsigned char upper,
+      const unsigned char maximum);
+
     void fillLengthOnly(
       const Term& length,
       const unsigned char oppsLength,
@@ -153,8 +158,6 @@ class VerbalCover
       const RanksNames& ranksNames);
 
     void fillBelow(
-      const unsigned char freeLower,
-      const unsigned char freeUpper,
       const unsigned char numBottoms,
       const RanksNames& ranksNames,
       const unsigned char rankNo,

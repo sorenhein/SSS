@@ -99,6 +99,26 @@ void VerbalCover::setLength(const Term& length)
 }
 
 
+void VerbalCover::setLength(
+  const unsigned char lower,
+  const unsigned char upper,
+  const unsigned char maximum)
+{
+  lengthFlag = true;
+  lengthLower = lower;
+  lengthUpper = upper;
+
+  if (lower == upper)
+    lengthOper = COVER_EQUAL;
+  else if (lower == 0)
+    lengthOper = COVER_LESS_EQUAL;
+  else if (upper == maximum)
+    lengthOper = COVER_GREATER_EQUAL;
+  else
+    lengthOper = COVER_INSIDE_RANGE;
+}
+
+
 void VerbalCover::fillLengthOnly(
   const Term& length,
   const unsigned char oppsLength,
@@ -490,8 +510,6 @@ cout << "oppsLength " << +oppsLength << endl;
 
 
 void VerbalCover::fillBelow(
-  const unsigned char freeLower,
-  const unsigned char freeUpper,
   const unsigned char numBottoms,
   const RanksNames& ranksNames,
   const unsigned char rankNo,
@@ -499,18 +517,11 @@ void VerbalCover::fillBelow(
 {
   sentence = SENTENCE_ONLY_BELOW;
 
+  const unsigned char freeLower = completion.getFreeLower(vside.side);
+  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
   // Make a synthetic length of small cards.
-  lengthFlag = true;
-  lengthLower = freeLower;
-  lengthUpper = freeUpper;
-  if (freeLower == freeUpper)
-    lengthOper = COVER_EQUAL;
-  else if (freeLower == 0)
-    lengthOper = COVER_LESS_EQUAL;
-  else if (freeUpper == numBottoms)
-    lengthOper = COVER_GREATER_EQUAL;
-  else
-    lengthOper = COVER_INSIDE_RANGE;
+  VerbalCover::setLength(freeLower, freeUpper, numBottoms);
 
   // This sets numbers 0 and 1.
   // In a kludge, we first pretend that this is always from West,

@@ -542,8 +542,6 @@ void Product::setVerbalHighTopsEqual(
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillBelow(
-      verbalCover.getCompletion().getFreeLower(side),
-      verbalCover.getCompletion().getFreeUpper(side),
       sumProfile.numBottoms(canonicalShift),
       ranksNames,
       numOptions,
