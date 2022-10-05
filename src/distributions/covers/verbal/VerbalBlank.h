@@ -48,10 +48,11 @@ enum PhraseCategory: unsigned
 
 enum SlotExpansion: unsigned
 {
-  SLOT_NUMERICAL = 0,
-  SLOT_COMPLETION_SET = 1,
-  SLOT_COMPLETION_UNSET = 2,
-  SLOT_LENGTH = 3
+  SLOT_NONE = 0,
+  SLOT_NUMERICAL = 1,
+  SLOT_COMPLETION_SET = 2,
+  SLOT_COMPLETION_UNSET = 3,
+  SLOT_LENGTH = 4
 };
 
 

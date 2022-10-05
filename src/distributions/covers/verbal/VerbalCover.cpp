@@ -75,6 +75,7 @@ VerbalCover::VerbalCover()
   lengthOper = COVER_EQUAL;
 
   templateFills.clear();
+  slots.clear();
 }
 
 
@@ -211,29 +212,53 @@ void VerbalCover::fillTopsExcluding(
   BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(4);
+  slots.resize(4);
 
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   // These should be expanded later in VerbalTemplates.
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, 
     completion.strSetNew(ranksNames, vside.side, true, true));
 
+  slots[1].setSemantics(
+    PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
+  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setBools(true, true);
+
   const unsigned topsFull = completion.getTopsFull(
     vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (topsFull <= 1)
+  {
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NOT);
+    slots[2].setSemantics(
+      PHRASE_EXCLUDING, BLANK_EXCLUDING_NOT, SLOT_NONE);
+  }
   else if (topsFull == 2)
+  {
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NEITHER);
+    slots[2].setSemantics(
+      PHRASE_EXCLUDING, BLANK_EXCLUDING_NEITHER, SLOT_NONE);
+  }
   else
+  {
     templateFills[2].set(BLANK_EXCLUDING, BLANK_EXCLUDING_NONE);
+    slots[2].setSemantics(
+      PHRASE_EXCLUDING, BLANK_EXCLUDING_NONE, SLOT_NONE);
+  }
 
   templateFills[3].setBlank(BLANK_TOPS);
 
   templateFills[3].setData(BLANK_TOPS_ACTUAL, 
     completion.strSetNew(ranksNames, 
       vside.side == OPP_WEST ? OPP_EAST : OPP_WEST, true, true));
+
+  slots[3].setSemantics(
+    PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
+  slots[3].setValues(static_cast<unsigned char>(vside.side));
+  slots[3].setBools(true, true);
 }
 
 
