@@ -3,8 +3,6 @@ Pverbal:
 * setVerbalAnyTopsEqual
   strGeneral is still a hodge-podge.
 
-
-
 VerbalTemplate -> VerbalSlots.
 Contains up to 3 VerbalSlot's.
 Each can be an expansion of a number, a completion or ranksNames,

@@ -717,7 +717,7 @@ void VerbalCover::setGeneral(
   VerbalCover::getLengthData(oppsLength, vside, true, tdata);
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
-    tdata);
+    tdata, slots);
 
   if (westFlag)
     wstr = completion.strSet(ranksNames, OPP_WEST, false, false);
@@ -832,6 +832,7 @@ string VerbalCover::str(const RanksNames& ranksNames) const
   if (sentence == SENTENCE_SIZE)
     return strTMP;
   else
-    return verbalTemplates.get(sentence, ranksNames, templateFills);
+    return verbalTemplates.get(
+      sentence, ranksNames, templateFills, slots);
 }
 

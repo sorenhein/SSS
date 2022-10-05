@@ -549,20 +549,6 @@ void Product::setVerbalTopsOnly(
     return;
   }
 
-  /*
-  const Opponent opp = verbalCover.getCompletion().preferSimpleActive();
-  Opponent simplestOpponent;
-
-  // TODO Could do a version of topsSimpler here where the tops are
-  // equals.
-  if (opp != OPP_EITHER)
-    simplestOpponent = opp;
-  else if (Product::topsSimpler(sumProfile, canonicalShift))
-    simplestOpponent = OPP_WEST;
-  else
-    simplestOpponent = OPP_EAST;
-    */
-
   const Opponent side = Product::simplerActive(
     sumProfile, canonicalShift, verbalCover.getCompletion());
 

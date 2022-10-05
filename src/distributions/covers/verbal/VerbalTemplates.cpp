@@ -15,6 +15,7 @@
 #include <cassert>
 
 #include "VerbalTemplates.h"
+#include "Slot.h"
 #include "VerbalBlank.h"
 
 #include "../../../ranks/RanksNames.h"
@@ -225,7 +226,8 @@ void VerbalTemplates::set(const Language languageIn)
 string VerbalTemplates::get(
   const Sentence sentence,
   const RanksNames& ranksNames,
-  const vector<TemplateData>& tdata) const
+  const vector<TemplateData>& tdata,
+  [[maybe_unused]] const vector<Slot>& slots) const
 {
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];

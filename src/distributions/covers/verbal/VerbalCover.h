@@ -13,6 +13,7 @@
 #include <string>
 
 #include "Completion.h"
+#include "Slot.h"
 
 #include "VerbalBlank.h"
 #include "VerbalTemplates.h"
@@ -60,6 +61,9 @@ class VerbalCover
     list<Completion> completions;
 
     vector<TemplateData> templateFills;
+
+    // TODO These are better alternatives to templateFills.
+    vector<Slot> slots;
 
     bool lengthFlag;
     unsigned char lengthLower;

@@ -53,6 +53,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/term/TermCompare.cpp        \
                                                                  \
                 distributions/covers/verbal/Completion.cpp       \
+                distributions/covers/verbal/Slot.cpp             \
                 distributions/covers/verbal/VerbalCover.cpp      \
                 distributions/covers/verbal/VerbalTemplates.cpp  \
                                                                  \

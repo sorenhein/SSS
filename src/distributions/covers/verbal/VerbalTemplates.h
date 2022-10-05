@@ -20,6 +20,7 @@
 using namespace std;
 
 class RanksNames;
+class Slot;
 
 enum VerbalBlank: unsigned;
 
@@ -216,7 +217,8 @@ class VerbalTemplates
     string get(
       const Sentence sentence,
       const RanksNames& ranksNames,
-      const vector<TemplateData>& tdata) const;
+      const vector<TemplateData>& tdata,
+      const vector<Slot>& slots) const;
 };
 
 #endif

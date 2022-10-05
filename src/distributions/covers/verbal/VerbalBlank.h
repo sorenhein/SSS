@@ -9,10 +9,12 @@
 #ifndef SSS_VERBALBLANK_H
 #define SSS_VERBALBLANK_H
 
-
 using namespace std;
 
-#define BLANK_MAX_VERSIONS 15
+
+// A sentence consists of phrases.
+// Each phrase has a possible set of phrase instances.
+// Each phrase instance has a parameters to instruct its expansion.
 
 enum Sentence: unsigned
 {
@@ -27,6 +29,35 @@ enum Sentence: unsigned
   SENTENCE_LIST = 8,
   SENTENCE_SIZE = 9
 };
+
+enum PhraseCategory: unsigned
+{
+  PHRASE_LENGTH_VERB = 0,
+  PHRASE_LENGTH_ADJ = 1,
+  PHRASE_COUNT = 2,
+  PHRASE_TOPS = 3,
+  PHRASE_TOPS_PHRASE = 4,
+  PHRASE_BOTTOMS = 5,
+  PHRASE_PLAYER_CAP = 6,
+  PHRASE_EXCLUDING = 7,
+  PHRASE_BELOW = 8,
+  PHRASE_LIST_PHRASE = 9,
+  PHRASE_SIZE = 10
+};
+
+
+enum SlotExpansion: unsigned
+{
+  SLOT_NUMERICAL = 0,
+  SLOT_COMPLETION_SET = 1,
+  SLOT_COMPLETION_UNSET = 2,
+  SLOT_LENGTH = 3
+};
+
+
+
+
+#define BLANK_MAX_VERSIONS 15
 
 enum VerbalBlank: unsigned
 {
