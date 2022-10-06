@@ -265,7 +265,7 @@ string VerbalTemplates::get(
 
     if (blank == BLANK_PLAYER_CAP)
     {
-      fill = slot.str(dictionary);
+      fill = slot.str(dictionary, ranksNames, completion);
     }
     else if (blank == BLANK_LENGTH_VERB)
     {
@@ -285,11 +285,11 @@ string VerbalTemplates::get(
     }
     else if (blank == BLANK_BOTTOMS)
     {
-      fill = VerbalTemplates::bottoms(blankData);
+      fill = slot.str(dictionary, ranksNames, completion);
     }
     else if (blank == BLANK_EXCLUDING)
     {
-      fill = slot.str(dictionary);
+      fill = slot.str(dictionary, ranksNames, completion);
 
       /*
       if (fill == fillNew)
@@ -302,7 +302,7 @@ string VerbalTemplates::get(
     }
     else if (blank == BLANK_BELOW)
     {
-      fill = slot.str(dictionary);
+      fill = slot.str(dictionary, ranksNames, completion);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
