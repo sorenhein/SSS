@@ -288,34 +288,13 @@ string VerbalTemplates::get(
     if (blank == BLANK_PLAYER_CAP ||
         blank == BLANK_LENGTH_VERB ||
         blank == BLANK_LENGTH_ADJ ||
-        blank == BLANK_COUNT)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_TOPS)
-    {
-      fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
-
-      string fillNew = slot.str(dictionary, ranksNames, completion);
-
-      if (fill == fillNew)
-        cout << "\n" << setw(40) << left << fill << " X1X " << 
-                setw(40) << fillNew << "\n";
-      else
-        cout << "\n" << setw(40) << left << fill << " X2X " << 
-                setw(40) << fillNew << "\n";
-    }
-    else if (blank == BLANK_BOTTOMS ||
+        blank == BLANK_COUNT ||
+        blank == BLANK_TOPS ||
+        blank == BLANK_BOTTOMS ||
         blank == BLANK_EXCLUDING ||
         blank == BLANK_BELOW)
     {
       fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_TOPS_PHRASE)
-    {
-      assert(false);
-      // TODO I think this is unused.
-      fill = VerbalTemplates::topsPhrase(blankData);
     }
     else if (blank == BLANK_LIST_PHRASE)
     {
@@ -376,126 +355,6 @@ cout << "looked for ', %" << field << "'" << endl;
     auto p = s.find_last_of(",");
     if (p != string::npos)
       s.replace(p, 1, " or");
-  }
-
-  return s;
-}
-
-
-string VerbalTemplates::lengthVerb(const TemplateData& tdata) const
-{
-  assert(tdata.numParams <= 2);
-  assert(tdata.instance < dictionary[BLANK_LENGTH_VERB].size());
-
-// cout << "looking up " << BLANK_LENGTH_VERB << ", " << tdata.blank << endl;
-  string s = dictionary[BLANK_LENGTH_VERB][tdata.instance];
-// cout << "length phrase is " << s << endl;
-// cout << "tdata is " << tdata.str() << endl;
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, to_string(tdata.param1));
-    else if (field == 1)
-      s.replace(p, 2, to_string(tdata.param2));
-    else
-      assert(false);
-  }
-
-  return s;
-}
-
-
-string VerbalTemplates::onetopPhrase(
-  const TemplateData& tdata,
-  const RanksNames& ranksNames) const
-{
-  assert(tdata.numParams <= 3);
-  assert(tdata.instance < dictionary[BLANK_TOPS].size());
-
-  string s = dictionary[BLANK_TOPS][tdata.instance];
-
-/*
-cout << "\nlooking up " << BLANK_TOPS << ", " << tdata.blank << endl;
-cout << "tops phrase is" << s << endl;
-cout << "tdata is\n" << tdata.str() << endl;
-*/
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    // TODO This is a bit of a hack for now.
-    // If there are 2 in total, one is a topCount and one is an
-    // index into ranksNames.  If there are 3, the first 2 are
-    // topCount's.
-
-    if (field == 0)
-    {
-      if (tdata.instance == BLANK_TOPS_ACTUAL)
-      {
-        // For now.  Later on we need the data flags and then this is
-        // probably strSet(ranksNames, topsUsed == 1, ranksActive == 1).
-        // This occurs in the dual text (a and neither of b).
-        if (tdata.completionFlag)
-          s.replace(p, 2, 
-                                                // TODO !!!
-            tdata.completion.strSet(ranksNames, OPP_WEST,
-              false, false));
-        else
-          s.replace(p, 2, tdata.text1);
-      }
-      else if (tdata.numParams == 2)
-        // Use the word version
-        s.replace(p, 2, topCount[tdata.param1]);
-      else
-        s.replace(p, 2, to_string(+tdata.param1));
-    }
-    else if (field == 1)
-    {
-      if (tdata.numParams == 2)
-        s.replace(p, 2, 
-          ranksNames.getOpponents(tdata.param2).strComponent(RANKNAME_ACTUAL_FULL));
-      else
-        s.replace(p, 2, to_string(tdata.param2));
-    }
-    else if (field == 2)
-      s.replace(p, 2, 
-        ranksNames.getOpponents(tdata.param3).strComponent(RANKNAME_ACTUAL_FULL));
-    else
-      assert(false);
-  }
-
-  return s;
-}
-
-
-string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
-{
-  assert(tdata.numParams == 1);
-  assert(tdata.instance < dictionary[BLANK_TOPS_PHRASE].size());
-
-// cout << "looking up " << BLANK_TOPS_PHRASE << ", " << tdata.blank << endl;
-  string s = dictionary[BLANK_TOPS_PHRASE][tdata.instance];
-// cout << "tops phrase is " << s << endl;
-// cout << "tdata is " << tdata.str() << endl;
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, tdata.text1);
-    else
-      assert(false);
   }
 
   return s;

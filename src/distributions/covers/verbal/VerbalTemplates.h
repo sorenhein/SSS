@@ -183,14 +183,6 @@ class VerbalTemplates
     Language language;
 
 
-    string lengthVerb(const TemplateData& tdata) const;
-
-    string topsPhrase(const TemplateData& tdata) const;
-
-    string onetopPhrase(
-      const TemplateData& tdata,
-      const RanksNames& ranksNames) const;
-
     string listPhrase(const TemplateData& tdata) const;
 
 
