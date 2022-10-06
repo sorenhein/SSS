@@ -189,10 +189,6 @@ class VerbalTemplates
 
     string topsPhrase(const TemplateData& tdata) const;
 
-    string bottoms(const TemplateData& tdata) const;
-
-    string count(const TemplateData& tdata) const;
-
     string onetopPhrase(
       const TemplateData& tdata,
       const RanksNames& ranksNames) const;

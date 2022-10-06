@@ -277,7 +277,7 @@ string VerbalTemplates::get(
     }
     else if (blank == BLANK_COUNT)
     {
-      fill = VerbalTemplates::count(blankData);
+      fill = slot.str(dictionary, ranksNames, completion);
     }
     else if (blank == BLANK_TOPS)
     {
@@ -416,31 +416,6 @@ string VerbalTemplates::lengthAdj(const TemplateData& tdata) const
 }
 
 
-string VerbalTemplates::count(const TemplateData& tdata) const
-{
-  assert(tdata.numParams <= 2);
-  assert(tdata.instance < dictionary[BLANK_COUNT].size());
-
-  string s = dictionary[BLANK_COUNT][tdata.instance];
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, tdata.text1);
-    else if (field == 1)
-      s.replace(p, 2, tdata.text2);
-    else
-      assert(false);
-  }
-
-  return s;
-}
-
-
 string VerbalTemplates::onetopPhrase(
   const TemplateData& tdata,
   const RanksNames& ranksNames) const
@@ -516,29 +491,6 @@ string VerbalTemplates::topsPhrase(const TemplateData& tdata) const
   string s = dictionary[BLANK_TOPS_PHRASE][tdata.instance];
 // cout << "tops phrase is " << s << endl;
 // cout << "tdata is " << tdata.str() << endl;
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, tdata.text1);
-    else
-      assert(false);
-  }
-
-  return s;
-}
-
-
-string VerbalTemplates::bottoms(const TemplateData& tdata) const
-{
-  assert(tdata.numParams == 1);
-  assert(tdata.instance < dictionary[BLANK_BOTTOMS].size());
-
-  string s = dictionary[BLANK_BOTTOMS][tdata.instance];
 
   for (size_t field = 0; field < tdata.numParams; field++)
   {

@@ -850,7 +850,7 @@ void VerbalCover::fillTopsAndLower(
     templateFills[2].setData(BLANK_COUNT_ATMOST, topCount[freeUpper]);
     slots[2].setSemantics(PHRASE_COUNT, BLANK_COUNT_ATMOST, 
       SLOT_NUMERICAL);
-    slots[2].setValues(freeLower);
+    slots[2].setValues(freeUpper);
   }
   else
   {
