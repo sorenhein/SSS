@@ -201,6 +201,45 @@ string Slot::str(
     s.replace(p, 2, topOrdinal[uchars[0]]);
     return s;
   }
+  else if (expansion == SLOT_COMPLETION_SET)
+  {
+    assert(numUchars == 1);
+    assert(numBools == 2 || numBools == 3);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    if (numBools == 2)
+      s.replace(p, 2, completion.strSetNew(ranksNames,
+        static_cast<Opponent>(uchars[0]), bools[0], bools[1]));
+    else
+      s.replace(p, 2, completion.strSetNew(ranksNames,
+        static_cast<Opponent>(uchars[0]), bools[0], bools[1], bools[2]));
+
+    return s;
+  }
+  else if (expansion == SLOT_COMPLETION_BOTH)
+  {
+    assert(numUchars == 1);
+    assert(numBools == 2);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, completion.strSetNew(ranksNames,
+      static_cast<Opponent>(uchars[0]), bools[0], bools[1]));
+
+    p = s.find("%1");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, completion.strUnset(ranksNames,
+      static_cast<Opponent>(uchars[0])));
+
+    return s;
+  }
   else if (expansion == SLOT_COMPLETION_XES)
   {
     assert(numUchars == 1);

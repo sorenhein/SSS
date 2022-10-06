@@ -185,8 +185,6 @@ class VerbalTemplates
 
     string lengthVerb(const TemplateData& tdata) const;
 
-    string lengthAdj(const TemplateData& tdata) const;
-
     string topsPhrase(const TemplateData& tdata) const;
 
     string onetopPhrase(

@@ -32,7 +32,7 @@ enum Sentence: unsigned
 
 enum PhraseCategory: unsigned
 {
-  PHRASE_LENGTH_VERB = 0,
+  PHRASE_LENGTH_VERB_OBSOLETE = 0,
   PHRASE_LENGTH_ADJ = 1,
   PHRASE_COUNT = 2,
   PHRASE_TOPS = 3,
@@ -41,9 +41,11 @@ enum PhraseCategory: unsigned
   PHRASE_PLAYER_CAP = 6,
   PHRASE_EXCLUDING = 7,
   PHRASE_BELOW = 8,
-  PHRASE_LIST_PHRASE = 9,
+  PHRASE_LIST_PHRASE = 9, // TODO Goes away
   PHRASE_LENGTH_ORDINAL = 10, // TODO Becomes #1 later on again
-  PHRASE_SIZE = 11
+  PHRASE_LENGTH_VERB = 11, // TODO Renumber to #0 again later
+  PHRASE_LIST = 12,
+  PHRASE_SIZE = 13
 };
 
 
@@ -172,6 +174,25 @@ enum BlankTopsPhrase: unsigned
 enum BlankListPhrase: unsigned
 {
   BLANK_LIST_PHRASE_HOLDING = 0
+};
+
+enum PhraseList: unsigned
+{
+  LIST_HOLDING_EXACT = 0,
+  LIST_HOLDING_WITH_LOWS = 1
+};
+
+enum LengthVerb: unsigned
+{
+  LENGTH_VERB_VOID = 0,
+  LENGTH_VERB_XTON = 1,
+  LENGTH_VERB_EVENLY = 2,
+  LENGTH_VERB_ODD_EVENLY = 3,
+  LENGTH_VERB_XTON_ATMOST = 4,
+  LENGTH_VERB_CARDS = 5,
+  LENGTH_VERB_CARDS_ATMOST = 6,
+  LENGTH_VERB_RANGE = 7,
+  LENGTH_VERB_SPLIT = 8
 };
 
 #endif

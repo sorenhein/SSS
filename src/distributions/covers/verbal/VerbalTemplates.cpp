@@ -181,6 +181,17 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_VERB_RANGE_PARAMS] = "has %0-%1 cards";
   blankLP[BLANK_LENGTH_VERB_SPLIT_PARAMS] = "splits %0=%1";
 
+  auto& blankPLV = dictionary[PHRASE_LENGTH_VERB];
+  blankPLV[LENGTH_VERB_VOID] = "is void";
+  blankPLV[LENGTH_VERB_XTON] = "has a %0";
+  blankPLV[LENGTH_VERB_EVENLY] = "splits evenly";
+  blankPLV[LENGTH_VERB_ODD_EVENLY] = "splits evenly either way";
+  blankPLV[LENGTH_VERB_XTON_ATMOST] = "has at most a %0";
+  blankPLV[LENGTH_VERB_CARDS] = "has %0 cards";
+  blankPLV[LENGTH_VERB_CARDS_ATMOST] = "has at most %0 cards";
+  blankPLV[LENGTH_VERB_RANGE] = "has %0-%1 cards";
+  blankPLV[LENGTH_VERB_SPLIT] = "splits %0=%1";
+
   auto& blankLPA = dictionary[BLANK_LENGTH_ADJ];
   blankLPA[BLANK_LENGTH_ADJ_SINGLE] = "singleton";
   blankLPA[BLANK_LENGTH_ADJ_DOUBLE] = "doubleton";
@@ -225,6 +236,10 @@ void VerbalTemplates::set(const Language languageIn)
 
   auto& blankLiP = dictionary[BLANK_LIST_PHRASE];
   blankLiP[BLANK_LIST_PHRASE_HOLDING] = "%0";
+
+  auto& blankPL = dictionary[PHRASE_LIST];
+  blankPL[LIST_HOLDING_EXACT] = "%0";
+  blankPL[LIST_HOLDING_WITH_LOWS] = "%0(%1)";
 }
 
 
@@ -268,18 +283,17 @@ string VerbalTemplates::get(
 
     // TODO Should we have a slot.phrase() == effectively blank?
 
-    if (blank == BLANK_PLAYER_CAP)
+    if (blank == BLANK_PLAYER_CAP ||
+        blank == BLANK_LENGTH_VERB ||
+        blank == BLANK_LENGTH_ADJ ||
+        blank == BLANK_COUNT)
     {
       fill = slot.str(dictionary, ranksNames, completion);
     }
+    /*
     else if (blank == BLANK_LENGTH_VERB)
     {
       fill = VerbalTemplates::lengthVerb(blankData);
-    }
-    else if (blank == BLANK_LENGTH_ADJ)
-    {
-      // This is reallly PHRASE_LENGTH_ORDINAL, I hope.
-      fill = VerbalTemplates::lengthAdj(blankData);
 
       string fillNew = slot.str(dictionary, ranksNames, completion);
 
@@ -290,23 +304,49 @@ string VerbalTemplates::get(
         cout << "\n" << setw(40) << left << fill << " X2X " << 
                 setw(40) << fillNew << "\n";
     }
+    else if (blank == BLANK_LENGTH_ADJ)
+    {
+      // This is reallly PHRASE_LENGTH_ORDINAL, I hope.
+      fill = slot.str(dictionary, ranksNames, completion);
+    }
     else if (blank == BLANK_COUNT)
     {
       fill = slot.str(dictionary, ranksNames, completion);
     }
+    */
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
     }
-    else if (blank == BLANK_BOTTOMS)
+    else if (blank == BLANK_BOTTOMS ||
+        blank == BLANK_EXCLUDING ||
+        blank == BLANK_BELOW)
     {
       fill = slot.str(dictionary, ranksNames, completion);
     }
+    /*
     else if (blank == BLANK_EXCLUDING)
     {
       fill = slot.str(dictionary, ranksNames, completion);
+    }
+    else if (blank == BLANK_BELOW)
+    {
+      fill = slot.str(dictionary, ranksNames, completion);
+    }
+    */
+    else if (blank == BLANK_TOPS_PHRASE)
+    {
+      assert(false);
+      // TODO I think this is unused.
+      fill = VerbalTemplates::topsPhrase(blankData);
+    }
+    else if (blank == BLANK_LIST_PHRASE)
+    {
+      fill = VerbalTemplates::listPhrase(blankData);
 
       /*
+      string fillNew = slot.str(dictionary, ranksNames, completion);
+
       if (fill == fillNew)
         cout << "\n" << setw(40) << left << fill << " X1X " << 
                 setw(40) << fillNew << "\n";
@@ -314,18 +354,6 @@ string VerbalTemplates::get(
         cout << "\n" << setw(40) << left << fill << " X2X " << 
                 setw(40) << fillNew << "\n";
       */
-    }
-    else if (blank == BLANK_BELOW)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_TOPS_PHRASE)
-    {
-      fill = VerbalTemplates::topsPhrase(blankData);
-    }
-    else if (blank == BLANK_LIST_PHRASE)
-    {
-      fill = VerbalTemplates::listPhrase(blankData);
     }
     else
     {
@@ -397,32 +425,6 @@ string VerbalTemplates::lengthVerb(const TemplateData& tdata) const
       s.replace(p, 2, to_string(tdata.param1));
     else if (field == 1)
       s.replace(p, 2, to_string(tdata.param2));
-    else
-      assert(false);
-  }
-
-  return s;
-}
-
-
-string VerbalTemplates::lengthAdj(const TemplateData& tdata) const
-{
-  assert(tdata.numParams <= 2);
-  assert(tdata.instance < dictionary[BLANK_LENGTH_ADJ].size());
-
-// cout << "looking up " << BLANK_LENGTH_ADJ << ", " << tdata.blank << endl;
-  string s = dictionary[BLANK_LENGTH_ADJ][tdata.instance];
-// cout << "length phrase is " << s << endl;
-// cout << "tdata is " << tdata.str() << endl;
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, tdata.text1);
     else
       assert(false);
   }

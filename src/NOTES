@@ -3,12 +3,23 @@ Pverbal:
 * setVerbalAnyTopsEqual
   strGeneral is still a hodge-podge.
 
-VerbalTemplate -> VerbalSlots.
-Contains up to 3 VerbalSlot's.
-Each can be an expansion of a number, a completion or ranksNames,
-each of them potentially with arguments such as bool flags.
 In VerbalTemplates, check that the blank matches the template
 expectation (maybe we do this already).
+Or just get rid of the expectation completely?
+Then the templates become a longer, flat list.
+
+BLANK_LIST_PHRASE in VerbalTemplates:
+I think the problem is that VerbalCover::fillList gets a 
+list<Completion> from Pverbal, and later on, this is the one
+we also need to expand.  So in general, probably in VerbalCover
+* Always use completions
+* Eliminate completion
+* When we need completion, it is completions[0]
+* Method getCompletions() as well
+* In VerbalTemplates::get, have a counter compNo == 0
+* For each BLANK_LIST_PHRASE (or whatever it's called),
+  increase compNo after use
+* Everywhere, pass completions[compNo] to Slot
 
 11/162390
 HHJ97
