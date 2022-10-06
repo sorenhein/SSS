@@ -290,30 +290,6 @@ string VerbalTemplates::get(
     {
       fill = slot.str(dictionary, ranksNames, completion);
     }
-    /*
-    else if (blank == BLANK_LENGTH_VERB)
-    {
-      fill = VerbalTemplates::lengthVerb(blankData);
-
-      string fillNew = slot.str(dictionary, ranksNames, completion);
-
-      if (fill == fillNew)
-        cout << "\n" << setw(40) << left << fill << " X1X " << 
-                setw(40) << fillNew << "\n";
-      else
-        cout << "\n" << setw(40) << left << fill << " X2X " << 
-                setw(40) << fillNew << "\n";
-    }
-    else if (blank == BLANK_LENGTH_ADJ)
-    {
-      // This is reallly PHRASE_LENGTH_ORDINAL, I hope.
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_COUNT)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    */
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
@@ -324,16 +300,6 @@ string VerbalTemplates::get(
     {
       fill = slot.str(dictionary, ranksNames, completion);
     }
-    /*
-    else if (blank == BLANK_EXCLUDING)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_BELOW)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    */
     else if (blank == BLANK_TOPS_PHRASE)
     {
       assert(false);
