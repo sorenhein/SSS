@@ -56,6 +56,12 @@
    "thirteenth"
  };
 
+ const vector<string> plural =
+ {
+   "",
+   "s"
+ };
+
 
 
 Slot::Slot()
@@ -165,6 +171,11 @@ string Slot::str(
   }
   else if (expansion == SLOT_NUMERICAL)
   {
+if (numUchars == 0 || numUchars > 2)
+{
+  cout << "numChars " << +numUchars << endl;
+  assert(false);
+}
     assert(numUchars == 1 || numUchars == 2);
     assert(numBools == 0);
 
@@ -199,6 +210,37 @@ string Slot::str(
       assert(false);
 
     s.replace(p, 2, topOrdinal[uchars[0]]);
+    return s;
+  }
+  else if (expansion == SLOT_TEXT_LOWER)
+  {
+    assert(numUchars == 1);
+    assert(numBools == 0);
+    
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
+    return s;
+  }
+  else if (expansion == SLOT_TEXT_BELOW)
+  {
+    assert(numUchars == 2);
+    assert(numBools == 0);
+    
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
+
+    p = s.find("%1");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, ranksNames.lowestCard(uchars[1]));
+
     return s;
   }
   else if (expansion == SLOT_COMPLETION_SET)
@@ -252,6 +294,62 @@ string Slot::str(
     // TODO Keep a separate tally of unsigned's?
     s.replace(p, 2, completion.strXes(
       static_cast<Opponent>(uchars[0])));
+    return s;
+  }
+  else if (expansion == SLOT_RANGE_OF)
+  {
+    assert(numUchars == 3);
+    assert(numBools == 0);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, to_string(uchars[0]));
+
+    p = s.find("%1");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, to_string(uchars[1]));
+
+    p = s.find("%2");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, ranksNames.getOpponents(uchars[2]).strComponent(RANKNAME_ACTUAL_FULL));
+
+    return s;
+  }
+  else if (expansion == SLOT_RANKS)
+  {
+    assert(numUchars == 1);
+    assert(numBools == 0);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, ranksNames.lowestCard(uchars[0]));
+    return s;
+  }
+  else if (expansion == SLOT_SOME_OF)
+  {
+    assert(numUchars == 2);
+    assert(numBools == 0);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, topCount[uchars[0]]);
+
+    p = s.find("%1");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, ranksNames.getOpponents(uchars[1]).strComponent(RANKNAME_ACTUAL_FULL));
+
     return s;
   }
   else

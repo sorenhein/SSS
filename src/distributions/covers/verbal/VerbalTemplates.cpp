@@ -218,6 +218,8 @@ void VerbalTemplates::set(const Language languageIn)
   blank1TP[BLANK_TOPS_ONE_ATLEAST] = "at least %0 of %1";
   blank1TP[BLANK_TOPS_ONE_RANGE_PARAMS] = "%0-%1 of %2";
   blank1TP[BLANK_TOPS_ACTUAL] = "%0";
+  blank1TP[BLANK_TOPS_LOWER] = ", lower-ranked card%0";
+  blank1TP[BLANK_TOPS_BELOW] = " card%0 below the %1";
 
   auto& blankBot = dictionary[BLANK_BOTTOMS];
   blankBot[BLANK_BOTTOMS_NORMAL] = "%0";
@@ -293,6 +295,15 @@ string VerbalTemplates::get(
     else if (blank == BLANK_TOPS)
     {
       fill = VerbalTemplates::onetopPhrase(blankData, ranksNames);
+
+      string fillNew = slot.str(dictionary, ranksNames, completion);
+
+      if (fill == fillNew)
+        cout << "\n" << setw(40) << left << fill << " X1X " << 
+                setw(40) << fillNew << "\n";
+      else
+        cout << "\n" << setw(40) << left << fill << " X2X " << 
+                setw(40) << fillNew << "\n";
     }
     else if (blank == BLANK_BOTTOMS ||
         blank == BLANK_EXCLUDING ||

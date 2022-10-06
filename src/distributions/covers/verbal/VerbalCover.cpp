@@ -257,7 +257,9 @@ void VerbalCover::fillTopsExcluding(
 
   slots[3].setSemantics(
     PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
-  slots[3].setValues(static_cast<unsigned char>(vside.side));
+  slots[3].setValues(vside.side == OPP_WEST ?
+    static_cast<unsigned char>(OPP_EAST) :
+    static_cast<unsigned char>(OPP_WEST));
   slots[3].setBools(true, true);
 }
 
@@ -713,7 +715,11 @@ void VerbalCover::fillSingular(
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completion);
   slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
-    SLOT_COMPLETION_UNCLEAR);
+    SLOT_COMPLETION_SET);
+  // TODO This is part of the reversal problem in Pverbal!
+  // slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setValues(static_cast<unsigned char>(OPP_WEST));
+  slots[1].setBools(false, false);
 
   if (lenCompletion == 1)
   {
@@ -887,8 +893,7 @@ void VerbalCover::fillTopsAndLower(
     t += (freeUpper == 1 ? "card" : "cards");
 
     // TODO This tag is not yet implemented
-    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL,
-      SLOT_TEXT_LOWER);
+    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_LOWER, SLOT_TEXT_LOWER);
     slots[3].setValues(freeUpper);
   }
   else
@@ -898,8 +903,7 @@ void VerbalCover::fillTopsAndLower(
     t += " below the " + ranksNames.lowestCard(numOptions);
 
     // TODO This tag is not yet implemented
-    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL,
-      SLOT_TEXT_BELOW);
+    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_BELOW, SLOT_TEXT_BELOW);
     slots[3].setValues(freeUpper, numOptions);
   }
 
@@ -1031,7 +1035,7 @@ void VerbalCover::getOnetopElement(
     telement.setData(BLANK_TOPS_ONE_ATMOST, 
       oppsValue2, onetopIndex);
 
-    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATMOST, SLOT_NUMERICAL);
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATMOST, SLOT_SOME_OF);
     slot.setValues(oppsValue2, onetopIndex);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
@@ -1040,7 +1044,7 @@ void VerbalCover::getOnetopElement(
     telement.setData(BLANK_TOPS_ONE_ATLEAST, 
       oppsValue1, onetopIndex);
 
-    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATLEAST, SLOT_NUMERICAL);
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATLEAST, SLOT_SOME_OF);
     slot.setValues(oppsValue1, onetopIndex);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
@@ -1052,7 +1056,7 @@ void VerbalCover::getOnetopElement(
       onetopIndex);
 
     slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_RANGE_PARAMS, 
-      SLOT_NUMERICAL);
+      SLOT_RANGE_OF);
     slot.setValues(oppsValue1, oppsValue2, onetopIndex);
   }
   else

@@ -62,7 +62,9 @@ enum SlotExpansion: unsigned
   SLOT_TEXT_LOWER = 8,
   SLOT_TEXT_BELOW = 9,
   SLOT_ORDINAL = 10, // Re-sort after NUMERICAL
-  SLOT_LENGTH = 11
+  SLOT_RANGE_OF = 11,
+  SLOT_SOME_OF = 12,
+  SLOT_LENGTH = 13
 };
 
 
@@ -145,7 +147,9 @@ enum BlankTops: unsigned
   BLANK_TOPS_ONE_ATMOST = 0,
   BLANK_TOPS_ONE_ATLEAST = 1,
   BLANK_TOPS_ONE_RANGE_PARAMS = 2,
-  BLANK_TOPS_ACTUAL = 3
+  BLANK_TOPS_ACTUAL = 3,
+  BLANK_TOPS_LOWER = 4,
+  BLANK_TOPS_BELOW = 5
 };
 
 enum BlankBottoms: unsigned
