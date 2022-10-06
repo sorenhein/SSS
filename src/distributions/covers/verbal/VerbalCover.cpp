@@ -543,6 +543,9 @@ void VerbalCover::fillLengthAdjElement(
   templateFills.resize(3);
   TemplateData& telement = templateFills[2];
 
+  slots.resize(3);
+  Slot& selement = slots[2];
+
   unsigned char vLower, vUpper;
 
   if (simplestOpponent == OPP_WEST)
@@ -564,33 +567,69 @@ void VerbalCover::fillLengthAdjElement(
   if (vLower == vUpper)
   {
     if (vLower == 1)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
+
+      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE, 
+        SLOT_NONE);
+    }
     else if (vLower == 2)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
+      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE, 
+        SLOT_NONE);
+    }
     else if (vLower == 3)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
+      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE, 
+        SLOT_NONE);
+    }
     else
     {
       telement.setBlank(BLANK_LENGTH_ADJ);
       telement.setData(BLANK_LENGTH_ADJ_LONG, to_string(+vLower));
+
+      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
+        SLOT_NUMERICAL);
+      selement.setValues(vLower);
     }
   }
   else if (vLower == 0)
   {
     if (vUpper == 1)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST);
+      selement.setSemantics(
+        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST, SLOT_NONE);
+    }
     else if (vUpper == 2)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE_ATMOST);
+      selement.setSemantics(
+        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE_ATMOST, SLOT_NONE);
+    }
     else if (vUpper == 3)
+    {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE_ATMOST);
+      selement.setSemantics(
+        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE_ATMOST, SLOT_NONE);
+    }
     else
     {
       telement.setBlank(BLANK_LENGTH_ADJ);
       telement.setData(BLANK_LENGTH_ADJ_LONG_ATMOST, to_string(+vUpper));
+      selement.setSemantics(
+        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG_ATMOST, SLOT_NUMERICAL);
+      selement.setValues(vUpper);
     }
   }
   else if (vLower == 2 && vUpper == 3)
+  {
     telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_23);
+    selement.setSemantics(
+      PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_23, SLOT_NONE);
+  }
   else
   {
 cout << "range " << +lengthLower << " to " << +lengthUpper << endl;
@@ -619,16 +658,26 @@ void VerbalCover::fillBelow(
   VerbalCover::getLengthData(numBottoms, vside, false, templateFills);
   
   templateFills.resize(4);
+  slots.resize(4);
 
   if (completion.getFreeUpper(vside.side) == 1)
+  {
     templateFills[2].set(BLANK_BELOW, BLANK_BELOW_NORMAL);
+    slots[2].setSemantics(PHRASE_BELOW, BLANK_BELOW_NORMAL, SLOT_NONE);
+  }
   else
+  {
     templateFills[2].set(BLANK_BELOW, BLANK_BELOW_COMPLETELY);
+    slots[2].setSemantics(PHRASE_BELOW, BLANK_BELOW_COMPLETELY, SLOT_NONE);
+  }
 
   // This should be expanded later in VerbalTemplates.
   templateFills[3].setBlank(BLANK_TOPS);
   templateFills[3].setData(BLANK_TOPS_ACTUAL,
     ranksNames.lowestCard(rankNo));
+
+  slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_RANKS);
+  slots[3].setValues(rankNo);
 }
 
 
@@ -642,21 +691,42 @@ void VerbalCover::fillSingular(
   const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(3);
+  slots.resize(3);
 
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completion);
+  slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
+    SLOT_COMPLETION_UNCLEAR);
 
   if (lenCompletion == 1)
+  {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
+    slots[2].setSemantics(PHRASE_LENGTH_ADJ, 
+      BLANK_LENGTH_ADJ_SINGLE, SLOT_NONE);
+  }
   else if (lenCompletion == 2)
+  {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
+    slots[2].setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE, 
+      SLOT_NONE);
+  }
   else if (lenCompletion == 3)
+  {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
+    slots[2].setSemantics(PHRASE_LENGTH_ADJ, 
+      BLANK_LENGTH_ADJ_TRIPLE, SLOT_NONE);
+  }
   else
+  {
     templateFills[2].setData(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
       lenCompletion);
+    slots[2].setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
+      SLOT_NUMERICAL);
+    slots[2].setValues(lenCompletion);
+  }
 }
 
 
@@ -668,11 +738,20 @@ void VerbalCover::fillCompletion(
   const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(2);
+  slots.resize(2);
+
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
     completion.strSetNew(ranksNames, vside.side, true, true));
+
+  slots[1].setSemantics(PHRASE_LIST_PHRASE,
+    BLANK_LIST_PHRASE_HOLDING, SLOT_COMPLETION_SET);
+  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setBools(true, true);
+
 }
 
 
