@@ -114,7 +114,8 @@ class VerbalCover
       const unsigned char oppsValue2,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
-      TemplateData& telement) const;
+      TemplateData& telement,
+      Slot& slot) const;
 
 
 
@@ -210,7 +211,7 @@ class VerbalCover
       const unsigned char oppsLength,
       const unsigned char onetopIndex,
       const BlankPlayerCap side,
-      vector<TemplateData>& tdata) const;
+      vector<TemplateData>& tdata);
 
     string str(const RanksNames& ranksNames) const;
 };

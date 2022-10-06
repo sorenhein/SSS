@@ -763,13 +763,21 @@ void VerbalCover::fillCompletionWithLows(
   const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(2);
+  slots.resize(2);
+
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   const string s = completion.strSetNew(ranksNames, vside.side, false, true) +
     "(" + completion.strUnset(ranksNames, vside.side) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);
+
+  slots[1].setSemantics(PHRASE_LIST_PHRASE,
+    BLANK_LIST_PHRASE_HOLDING, SLOT_COMPLETION_BOTH);
+  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setBools(false, true);
 }
 
 
@@ -783,13 +791,24 @@ void VerbalCover::fillBottoms(
   templateFills.resize(3);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
+  slots.resize(3);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+
   const string s = completion.strSetNew(ranksNames, vside.side, false, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
 
+  slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
+    SLOT_COMPLETION_SET);
+  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setBools(false, true);
 
   templateFills[2].setBlank(BLANK_BOTTOMS);
   templateFills[2].setData(BLANK_BOTTOMS_NORMAL, completion.strXes(vside.side));
+
+  slots[2].setSemantics(PHRASE_BOTTOMS, BLANK_BOTTOMS_NORMAL, 
+    SLOT_COMPLETION_XES);
+  slots[2].setValues(static_cast<unsigned char>(vside.side));
 }
 
 
@@ -802,12 +821,19 @@ void VerbalCover::fillTopsAndLower(
   const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(4);
+  slots.resize(4);
+
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   const string s = completion.strSetNew(ranksNames, vside.side,
     true, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
+  slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
+    SLOT_COMPLETION_SET);
+  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setBools(true, true);
 
   const unsigned char freeLower = completion.getFreeLower(vside.side);
   const unsigned char freeUpper = completion.getFreeUpper(vside.side);
@@ -816,15 +842,23 @@ void VerbalCover::fillTopsAndLower(
   if (freeLower == freeUpper)
   {
     templateFills[2].setData(BLANK_COUNT_EQUAL, topCount[freeLower]);
+    slots[2].setSemantics(PHRASE_COUNT, BLANK_COUNT_EQUAL, SLOT_NUMERICAL);
+    slots[2].setValues(freeLower);
   }
   else if (freeLower == 0)
   {
     templateFills[2].setData(BLANK_COUNT_ATMOST, topCount[freeUpper]);
+    slots[2].setSemantics(PHRASE_COUNT, BLANK_COUNT_ATMOST, 
+      SLOT_NUMERICAL);
+    slots[2].setValues(freeLower);
   }
   else
   {
     templateFills[2].setData(BLANK_COUNT_RANGE_PARAMS, 
       to_string(+freeLower), to_string(+freeUpper));
+    slots[2].setSemantics(PHRASE_COUNT, BLANK_COUNT_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slots[2].setValues(freeLower, freeUpper);
   }
 
   string t;
@@ -832,12 +866,22 @@ void VerbalCover::fillTopsAndLower(
   {
     t = ", lower-ranked ";
     t += (freeUpper == 1 ? "card" : "cards");
+
+    // TODO This tag is not yet implemented
+    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL,
+      SLOT_TEXT_LOWER);
+    slots[3].setValues(freeUpper);
   }
   else
   {
     t = " ";
     t += (freeUpper == 1 ? "card" : "cards");
     t += " below the " + ranksNames.lowestCard(numOptions);
+
+    // TODO This tag is not yet implemented
+    slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL,
+      SLOT_TEXT_BELOW);
+    slots[3].setValues(freeUpper, numOptions);
   }
 
   templateFills[3].setBlank(BLANK_TOPS);
@@ -856,12 +900,20 @@ void VerbalCover::fillList(
   templateFills.resize(completionsIn.size() + 1);
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
 
+  slots.resize(completionsIn.size() + 1);
+  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+
   size_t i = 1;
   for (auto& completionIn: completionsIn)
   {
     templateFills[i].setBlank(BLANK_LIST_PHRASE);
     templateFills[i].setData(BLANK_LIST_PHRASE_HOLDING, 
       completionIn.strSet(ranksNames, vside.side, false, false, true));
+
+    slots[i].setSemantics(PHRASE_LIST_PHRASE, BLANK_LIST_PHRASE_HOLDING,
+      SLOT_COMPLETION_SET);
+    slots[i].setValues(static_cast<unsigned char>(vside.side));
+    slots[i].setBools(false, false, true);
 
     i++;
   }
@@ -951,19 +1003,26 @@ void VerbalCover::getOnetopElement(
   const unsigned char oppsValue2,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
-  TemplateData& telement) const
+  TemplateData& telement,
+  Slot& slot) const
 {
   if (oppsValue1 == 0)
   {
     telement.setBlank(BLANK_TOPS);
     telement.setData(BLANK_TOPS_ONE_ATMOST, 
       oppsValue2, onetopIndex);
+
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATMOST, SLOT_NUMERICAL);
+    slot.setValues(oppsValue2, onetopIndex);
   }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
   {
     telement.setBlank(BLANK_TOPS);
     telement.setData(BLANK_TOPS_ONE_ATLEAST, 
       oppsValue1, onetopIndex);
+
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_ATLEAST, SLOT_NUMERICAL);
+    slot.setValues(oppsValue1, onetopIndex);
   }
   else if (oppsValue1 + oppsValue2 == oppsSize)
   {
@@ -972,14 +1031,23 @@ void VerbalCover::getOnetopElement(
       oppsValue1, 
       oppsValue2, 
       onetopIndex);
+
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slot.setValues(oppsValue1, oppsValue2, onetopIndex);
   }
   else
   {
+    // TODO This looks identical?!
     telement.setBlank(BLANK_TOPS);
     telement.setData(BLANK_TOPS_ONE_RANGE_PARAMS, 
       oppsValue1, 
       oppsValue2, 
       onetopIndex);
+
+    slot.setSemantics(PHRASE_TOPS, BLANK_TOPS_ONE_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slot.setValues(oppsValue1, oppsValue2, onetopIndex);
   }
 }
 
@@ -991,22 +1059,36 @@ void VerbalCover::getOnetopData(
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
   const BlankPlayerCap side,
-  vector<TemplateData>& tdata) const
+  vector<TemplateData>& tdata)
 {
   // Here lower and upper are different.
   tdata.resize(2);
+  slots.resize(2);
 
   if (oppsValue1 == 0)
+  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
+  }
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
+  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
+  }
   else if (oppsValue1 + oppsValue2 == oppsSize)
+  {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_EACH, 
+      SLOT_NONE);
+  }
   else
+  {
     tdata[0].set(BLANK_PLAYER_CAP, side);
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
+  }
 
   VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
-    onetopIndex, tdata[1]);
+    onetopIndex, tdata[1], slots[1]);
 }
 
 
