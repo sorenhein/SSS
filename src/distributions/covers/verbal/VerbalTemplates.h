@@ -183,21 +183,15 @@ class VerbalTemplates
     Language language;
 
 
-    string playerCap(const TemplateData& tdata) const;
-
     string lengthVerb(const TemplateData& tdata) const;
 
     string lengthAdj(const TemplateData& tdata) const;
 
     string topsPhrase(const TemplateData& tdata) const;
 
-    string excluding(const TemplateData& tdata) const;
-
     string bottoms(const TemplateData& tdata) const;
 
     string count(const TemplateData& tdata) const;
-
-    string below(const TemplateData& tdata) const;
 
     string onetopPhrase(
       const TemplateData& tdata,

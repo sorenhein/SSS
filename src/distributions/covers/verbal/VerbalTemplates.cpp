@@ -261,18 +261,11 @@ string VerbalTemplates::get(
     const Slot& slot = * slotIter;
     assert(blank == blankData.blank);
 
+    // TODO Should we have a slot.phrase() == effectively blank?
+
     if (blank == BLANK_PLAYER_CAP)
     {
       fill = slot.str(dictionary);
-
-      /*
-      if (fill == fillNew)
-        cout << "\n" << setw(40) << left << fill << " X1X " << 
-                setw(40) << fillNew << "\n";
-      else
-        cout << "\n" << setw(40) << left << fill << " X2X " << 
-                setw(40) << fillNew << "\n";
-      */
     }
     else if (blank == BLANK_LENGTH_VERB)
     {
@@ -296,11 +289,20 @@ string VerbalTemplates::get(
     }
     else if (blank == BLANK_EXCLUDING)
     {
-      fill = VerbalTemplates::excluding(blankData);
+      fill = slot.str(dictionary);
+
+      /*
+      if (fill == fillNew)
+        cout << "\n" << setw(40) << left << fill << " X1X " << 
+                setw(40) << fillNew << "\n";
+      else
+        cout << "\n" << setw(40) << left << fill << " X2X " << 
+                setw(40) << fillNew << "\n";
+      */
     }
     else if (blank == BLANK_BELOW)
     {
-      fill = VerbalTemplates::below(blankData);
+      fill = slot.str(dictionary);
     }
     else if (blank == BLANK_TOPS_PHRASE)
     {
@@ -357,15 +359,6 @@ cout << "looked for ', %" << field << "'" << endl;
   }
 
   return s;
-}
-
-
-string VerbalTemplates::playerCap(const TemplateData& tdata) const
-{
-  assert(tdata.numParams == 0);
-  assert(tdata.instance < dictionary[BLANK_PLAYER_CAP].size());
-
-  return dictionary[BLANK_PLAYER_CAP][tdata.instance];
 }
 
 
@@ -511,22 +504,6 @@ cout << "tdata is\n" << tdata.str() << endl;
   }
 
   return s;
-}
-
-
-string VerbalTemplates::excluding(const TemplateData& tdata) const
-{
-  assert(tdata.numParams == 0);
-  assert(tdata.instance < dictionary[BLANK_EXCLUDING].size());
-  return dictionary[BLANK_EXCLUDING][tdata.instance];
-}
-
-
-string VerbalTemplates::below(const TemplateData& tdata) const
-{
-  assert(tdata.numParams == 0);
-  assert(tdata.instance < dictionary[BLANK_BELOW].size());
-  return dictionary[BLANK_BELOW][tdata.instance];
 }
 
 
