@@ -74,6 +74,7 @@ VerbalCover::VerbalCover()
   lengthUpper = 0;
   lengthOper = COVER_EQUAL;
 
+  completions.resize(1);
   templateFills.clear();
   slots.clear();
 }
@@ -128,8 +129,8 @@ void VerbalCover::fillLengthOnly(
   VerbalCover::setLength(length);
   sentence = SENTENCE_LENGTH_ONLY;
 
-  const bool westFlag = (completion.length(OPP_WEST) > 0);
-  const bool eastFlag = (completion.length(OPP_EAST) > 0);
+  const bool westFlag = (completions.front().length(OPP_WEST) > 0);
+  const bool eastFlag = (completions.front().length(OPP_EAST) > 0);
 
   Opponent simplestOpponent;
   if (symmFlag)
@@ -220,14 +221,14 @@ void VerbalCover::fillTopsExcluding(
   // These should be expanded later in VerbalTemplates.
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, 
-    completion.strSetNew(ranksNames, vside.side, true, true));
+    completions.front().strSetNew(ranksNames, vside.side, true, true));
 
   slots[1].setSemantics(
     PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
   slots[1].setValues(static_cast<unsigned char>(vside.side));
   slots[1].setBools(true, true);
 
-  const unsigned topsFull = completion.getTopsFull(
+  const unsigned topsFull = completions.front().getTopsFull(
     vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (topsFull <= 1)
@@ -252,7 +253,7 @@ void VerbalCover::fillTopsExcluding(
   templateFills[3].setBlank(BLANK_TOPS);
 
   templateFills[3].setData(BLANK_TOPS_ACTUAL, 
-    completion.strSetNew(ranksNames, 
+    completions.front().strSetNew(ranksNames, 
       vside.side == OPP_WEST ? OPP_EAST : OPP_WEST, true, true));
 
   slots[3].setSemantics(
@@ -266,7 +267,13 @@ void VerbalCover::fillTopsExcluding(
 
 Completion& VerbalCover::getCompletion()
 {
-  return completion;
+  return completions.front();
+}
+
+
+list<Completion>& VerbalCover::getCompletions()
+{
+  return completions;
 }
 
 
@@ -664,8 +671,8 @@ void VerbalCover::fillBelow(
 {
   sentence = SENTENCE_ONLY_BELOW;
 
-  const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
-  const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
+  const unsigned char freeLower = completions.front().getFreeLower(OPP_WEST);
+  const unsigned char freeUpper = completions.front().getFreeUpper(OPP_WEST);
 
   // Make a synthetic length of small cards.
   VerbalCover::setLength(freeLower, freeUpper, numBottoms);
@@ -676,7 +683,7 @@ void VerbalCover::fillBelow(
   templateFills.resize(4);
   slots.resize(4);
 
-  if (completion.getFreeUpper(vside.side) == 1)
+  if (completions.front().getFreeUpper(vside.side) == 1)
   {
     templateFills[2].set(BLANK_BELOW, BLANK_BELOW_NORMAL);
     slots[2].setSemantics(PHRASE_BELOW, BLANK_BELOW_NORMAL, SLOT_NONE);
@@ -713,7 +720,7 @@ void VerbalCover::fillSingular(
   slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
   templateFills[1].setBlank(BLANK_TOPS);
-  templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completion);
+  templateFills[1].setCompletion(BLANK_TOPS_ACTUAL, completions.front());
   slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
     SLOT_COMPLETION_SET);
   // TODO This is part of the reversal problem in Pverbal!
@@ -770,7 +777,7 @@ void VerbalCover::fillCompletion(
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, 
-    completion.strSetNew(ranksNames, vside.side, true, true));
+    completions.front().strSetNew(ranksNames, vside.side, true, true));
 
   slots[1].setSemantics(PHRASE_LIST,
     LIST_HOLDING_EXACT, SLOT_COMPLETION_SET);
@@ -793,8 +800,8 @@ void VerbalCover::fillCompletionWithLows(
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
   slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
-  const string s = completion.strSetNew(ranksNames, vside.side, false, true) +
-    "(" + completion.strUnset(ranksNames, vside.side) + ")";
+  const string s = completions.front().strSetNew(ranksNames, vside.side, false, true) +
+    "(" + completions.front().strUnset(ranksNames, vside.side) + ")";
 
   templateFills[1].setBlank(BLANK_LIST_PHRASE);
   templateFills[1].setData(BLANK_LIST_PHRASE_HOLDING, s);
@@ -819,7 +826,7 @@ void VerbalCover::fillBottoms(
   slots.resize(3);
   slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
-  const string s = completion.strSetNew(ranksNames, vside.side, false, true);
+  const string s = completions.front().strSetNew(ranksNames, vside.side, false, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
 
@@ -829,7 +836,7 @@ void VerbalCover::fillBottoms(
   slots[1].setBools(false, true);
 
   templateFills[2].setBlank(BLANK_BOTTOMS);
-  templateFills[2].setData(BLANK_BOTTOMS_NORMAL, completion.strXes(vside.side));
+  templateFills[2].setData(BLANK_BOTTOMS_NORMAL, completions.front().strXes(vside.side));
 
   slots[2].setSemantics(PHRASE_BOTTOMS, BLANK_BOTTOMS_NORMAL, 
     SLOT_COMPLETION_XES);
@@ -851,7 +858,7 @@ void VerbalCover::fillTopsAndLower(
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
   slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
 
-  const string s = completion.strSetNew(ranksNames, vside.side,
+  const string s = completions.front().strSetNew(ranksNames, vside.side,
     true, true);
   templateFills[1].setBlank(BLANK_TOPS);
   templateFills[1].setData(BLANK_TOPS_ACTUAL, s);
@@ -860,8 +867,8 @@ void VerbalCover::fillTopsAndLower(
   slots[1].setValues(static_cast<unsigned char>(vside.side));
   slots[1].setBools(true, true);
 
-  const unsigned char freeLower = completion.getFreeLower(vside.side);
-  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+  const unsigned char freeLower = completions.front().getFreeLower(vside.side);
+  const unsigned char freeUpper = completions.front().getFreeUpper(vside.side);
 
   templateFills[2].setBlank(BLANK_COUNT);
   if (freeLower == freeUpper)
@@ -887,7 +894,7 @@ void VerbalCover::fillTopsAndLower(
   }
 
   string t;
-  if (completion.lowestRankIsUsed(vside.side))
+  if (completions.front().lowestRankIsUsed(vside.side))
   {
     t = ", lower-ranked ";
     t += (freeUpper == 1 ? "card" : "cards");
@@ -956,8 +963,8 @@ void VerbalCover::setGeneral(
 
   string lstr = "", wstr = "", estr = "";
 
-  const bool westFlag = (completion.length(OPP_WEST) > 0);
-  const bool eastFlag = (completion.length(OPP_EAST) > 0);
+  const bool westFlag = (completions.front().length(OPP_WEST) > 0);
+  const bool eastFlag = (completions.front().length(OPP_EAST) > 0);
 
   Opponent simplestOpponent;
   if (symmFlag)
@@ -975,13 +982,13 @@ void VerbalCover::setGeneral(
   VerbalCover::getLengthData(oppsLength, vside, true, tdata);
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
-    completion, tdata, slots);
+    completions.front(), tdata, slots);
 
   if (westFlag)
-    wstr = completion.strSet(ranksNames, OPP_WEST, false, false);
+    wstr = completions.front().strSet(ranksNames, OPP_WEST, false, false);
 
   if (eastFlag)
-    estr = completion.strSet(ranksNames, OPP_EAST, false, false);
+    estr = completions.front().strSet(ranksNames, OPP_EAST, false, false);
 
   if (westFlag)
   {
@@ -1121,6 +1128,6 @@ string VerbalCover::str(const RanksNames& ranksNames) const
     return strTMP;
   else
     return verbalTemplates.get(
-      sentence, ranksNames, completion, templateFills, slots);
+      sentence, ranksNames, completions.front(), templateFills, slots);
 }
 

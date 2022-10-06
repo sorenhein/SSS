@@ -70,12 +70,6 @@ class VerbalCover
     unsigned char lengthUpper;
     CoverOperator lengthOper;
 
-    Completion west;
-
-    Completion east;
-
-    Completion completion;
-
     string strTMP; // TODO Fix strGeneral and setGeneral
 
 
@@ -174,6 +168,8 @@ class VerbalCover
 
 
     Completion& getCompletion();
+
+    list<Completion>& getCompletions();
 
     void setSentence(const Sentence sentenceIn);
 

@@ -248,9 +248,9 @@ void VerbalTemplates::set(const Language languageIn)
 string VerbalTemplates::get(
   const Sentence sentence,
   const RanksNames& ranksNames,
-  [[maybe_unused]] const Completion& completion,
+   const Completion& completion,
   const vector<TemplateData>& tdata,
-  [[maybe_unused]] const vector<Slot>& slots) const
+   const vector<Slot>& slots) const
 {
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];
