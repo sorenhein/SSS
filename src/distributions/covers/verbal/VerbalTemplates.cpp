@@ -154,7 +154,7 @@ void VerbalTemplates::set(const Language languageIn)
   else
     assert(false);
 
-  dictionary.resize(BLANK_SIZE);
+  dictionary.resize(PHRASE_SIZE);
   for (auto& dict: dictionary)
     dict.resize(BLANK_MAX_VERSIONS);
 
@@ -191,6 +191,11 @@ void VerbalTemplates::set(const Language languageIn)
   blankLPA[BLANK_LENGTH_ADJ_TRIPLE_ATMOST] = "at most tripleton";
   blankLPA[BLANK_LENGTH_ADJ_LONG_ATMOST] = "at most %0";
   blankLPA[BLANK_LENGTH_ADJ_23] = "doubleton or tripleton";
+
+  auto& blankLPO = dictionary[PHRASE_LENGTH_ORDINAL];
+  blankLPO[LENGTH_ORDINAL_EXACT] = "%0";
+  blankLPO[LENGTH_ORDINAL_ATMOST] = "at most %0";
+  blankLPO[LENGTH_ORDINAL_23] = "doubleton or tripleton";
 
   auto& blankC = dictionary[BLANK_COUNT];
   blankC[BLANK_COUNT_EQUAL] = "%0";
@@ -273,7 +278,17 @@ string VerbalTemplates::get(
     }
     else if (blank == BLANK_LENGTH_ADJ)
     {
+      // This is reallly PHRASE_LENGTH_ORDINAL, I hope.
       fill = VerbalTemplates::lengthAdj(blankData);
+
+      string fillNew = slot.str(dictionary, ranksNames, completion);
+
+      if (fill == fillNew)
+        cout << "\n" << setw(40) << left << fill << " X1X " << 
+                setw(40) << fillNew << "\n";
+      else
+        cout << "\n" << setw(40) << left << fill << " X2X " << 
+                setw(40) << fillNew << "\n";
     }
     else if (blank == BLANK_COUNT)
     {

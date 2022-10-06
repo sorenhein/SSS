@@ -570,28 +570,33 @@ void VerbalCover::fillLengthAdjElement(
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
 
-      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE, 
-        SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+        SLOT_ORDINAL);
+      selement.setValues(vLower);
     }
     else if (vLower == 2)
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
-      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE, 
-        SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+        SLOT_ORDINAL);
+      selement.setValues(vLower);
     }
     else if (vLower == 3)
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
-      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE, 
-        SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+        SLOT_ORDINAL);
+      selement.setValues(vLower);
     }
     else
     {
+cout << "vLower " << +vLower << endl;
+assert(false);
       telement.setBlank(BLANK_LENGTH_ADJ);
       telement.setData(BLANK_LENGTH_ADJ_LONG, to_string(+vLower));
 
-      selement.setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
-        SLOT_NUMERICAL);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+        SLOT_ORDINAL);
       selement.setValues(vLower);
     }
   }
@@ -600,27 +605,32 @@ void VerbalCover::fillLengthAdjElement(
     if (vUpper == 1)
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST);
-      selement.setSemantics(
-        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE_ATMOST, SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
+        SLOT_ORDINAL);
+      selement.setValues(vUpper);
     }
     else if (vUpper == 2)
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE_ATMOST);
-      selement.setSemantics(
-        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE_ATMOST, SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
+        SLOT_ORDINAL);
+      selement.setValues(vUpper);
     }
     else if (vUpper == 3)
     {
       telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE_ATMOST);
-      selement.setSemantics(
-        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE_ATMOST, SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
+        SLOT_ORDINAL);
+      selement.setValues(vUpper);
     }
     else
     {
+cout << "vUpper " << +vUpper << endl;
+assert(false);
       telement.setBlank(BLANK_LENGTH_ADJ);
       telement.setData(BLANK_LENGTH_ADJ_LONG_ATMOST, to_string(+vUpper));
-      selement.setSemantics(
-        PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG_ATMOST, SLOT_NUMERICAL);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
+        SLOT_ORDINAL);
       selement.setValues(vUpper);
     }
   }
@@ -629,6 +639,8 @@ void VerbalCover::fillLengthAdjElement(
     telement.set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_23);
     selement.setSemantics(
       PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_23, SLOT_NONE);
+      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_23, 
+        SLOT_NONE);
   }
   else
   {
@@ -704,27 +716,32 @@ void VerbalCover::fillSingular(
   if (lenCompletion == 1)
   {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_SINGLE);
-    slots[2].setSemantics(PHRASE_LENGTH_ADJ, 
-      BLANK_LENGTH_ADJ_SINGLE, SLOT_NONE);
+    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+      SLOT_ORDINAL);
+    slots[2].setValues(lenCompletion);
   }
   else if (lenCompletion == 2)
   {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE);
-    slots[2].setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_DOUBLE, 
-      SLOT_NONE);
+    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+      SLOT_ORDINAL);
+    slots[2].setValues(lenCompletion);
   }
   else if (lenCompletion == 3)
   {
     templateFills[2].set(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_TRIPLE);
-    slots[2].setSemantics(PHRASE_LENGTH_ADJ, 
-      BLANK_LENGTH_ADJ_TRIPLE, SLOT_NONE);
+    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+      SLOT_ORDINAL);
+    slots[2].setValues(lenCompletion);
   }
   else
   {
+cout << "lenCompletion " << +lenCompletion << endl;
+assert(false);
     templateFills[2].setData(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
       lenCompletion);
-    slots[2].setSemantics(PHRASE_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
-      SLOT_NUMERICAL);
+    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+      SLOT_ORDINAL);
     slots[2].setValues(lenCompletion);
   }
 }

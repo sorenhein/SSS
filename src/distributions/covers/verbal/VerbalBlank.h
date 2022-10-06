@@ -42,7 +42,8 @@ enum PhraseCategory: unsigned
   PHRASE_EXCLUDING = 7,
   PHRASE_BELOW = 8,
   PHRASE_LIST_PHRASE = 9,
-  PHRASE_SIZE = 10
+  PHRASE_LENGTH_ORDINAL = 10, // TODO Becomes #1 later on again
+  PHRASE_SIZE = 11
 };
 
 
@@ -58,7 +59,8 @@ enum SlotExpansion: unsigned
   SLOT_COMPLETION_UNCLEAR = 7,
   SLOT_TEXT_LOWER = 8,
   SLOT_TEXT_BELOW = 9,
-  SLOT_LENGTH = 10
+  SLOT_ORDINAL = 10, // Re-sort after NUMERICAL
+  SLOT_LENGTH = 11
 };
 
 
@@ -120,6 +122,13 @@ enum BlankLengthAdj: unsigned
   BLANK_LENGTH_ADJ_TRIPLE_ATMOST = 6,
   BLANK_LENGTH_ADJ_LONG_ATMOST = 7,
   BLANK_LENGTH_ADJ_23 = 8
+};
+
+enum LengthOrdinal: unsigned
+{
+  LENGTH_ORDINAL_EXACT = 0,
+  LENGTH_ORDINAL_ATMOST = 1,
+  LENGTH_ORDINAL_23 = 2
 };
 
 enum BlankCount: unsigned

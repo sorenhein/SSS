@@ -38,6 +38,25 @@
    "thirteen"
  };
 
+ const vector<string> topOrdinal =
+ {
+   "void",
+   "singleton",
+   "doubleton",
+   "tripleton",
+   "fourth",
+   "fifth",
+   "sixth",
+   "seventh",
+   "eighth",
+   "ninth",
+   "tenth",
+   "eleventh",
+   "twelfth",
+   "thirteenth"
+ };
+
+
 
 Slot::Slot()
 {
@@ -168,6 +187,18 @@ string Slot::str(
         s.replace(p, 2, to_string(uchars[field]));
       }
     }
+    return s;
+  }
+  else if (expansion == SLOT_ORDINAL)
+  {
+    assert(numUchars == 1);
+    assert(numBools == 0);
+
+    auto p = s.find("%0");
+    if (p == string::npos)
+      assert(false);
+
+    s.replace(p, 2, topOrdinal[uchars[0]]);
     return s;
   }
   else if (expansion == SLOT_COMPLETION_XES)
