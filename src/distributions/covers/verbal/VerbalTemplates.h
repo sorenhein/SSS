@@ -217,6 +217,7 @@ class VerbalTemplates
     string get(
       const Sentence sentence,
       const RanksNames& ranksNames,
+      const Completion& completion,
       const vector<TemplateData>& tdata,
       const vector<Slot>& slots) const;
 };

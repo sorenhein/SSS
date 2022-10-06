@@ -226,6 +226,7 @@ void VerbalTemplates::set(const Language languageIn)
 string VerbalTemplates::get(
   const Sentence sentence,
   const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion,
   const vector<TemplateData>& tdata,
   [[maybe_unused]] const vector<Slot>& slots) const
 {
@@ -234,12 +235,13 @@ string VerbalTemplates::get(
 
   if (tdata.size() > vt.blanks.size())
   {
-  cout << "sentence " << sentence << endl;
-  cout << "tdata.size " << tdata.size() << endl;
-  cout << "vt.blanks.size " << vt.blanks.size() << endl;
+    cout << "sentence " << sentence << endl;
+    cout << "tdata.size " << tdata.size() << endl;
+    cout << "vt.blanks.size " << vt.blanks.size() << endl;
 
-  assert(tdata.size() <= vt.blanks.size());
+    assert(tdata.size() <= vt.blanks.size());
   }
+
   if (sentence != SENTENCE_LIST)
     assert(tdata.size() == vt.blanks.size());
 
@@ -249,17 +251,28 @@ string VerbalTemplates::get(
   size_t field;
   auto ttypeIter = vt.blanks.begin();
   auto tdataIter = tdata.begin();
+  auto slotIter = slots.begin();
 
   for (field = 0; field < tdata.size(); 
-    field++, ttypeIter++, tdataIter++)
+    field++, ttypeIter++, tdataIter++, slotIter++)
   {
     const VerbalBlank blank = * ttypeIter;
     const TemplateData& blankData = * tdataIter;
+    const Slot& slot = * slotIter;
     assert(blank == blankData.blank);
 
     if (blank == BLANK_PLAYER_CAP)
     {
-      fill = VerbalTemplates::playerCap(blankData);
+      fill = slot.str(dictionary);
+
+      /*
+      if (fill == fillNew)
+        cout << "\n" << setw(40) << left << fill << " X1X " << 
+                setw(40) << fillNew << "\n";
+      else
+        cout << "\n" << setw(40) << left << fill << " X2X " << 
+                setw(40) << fillNew << "\n";
+      */
     }
     else if (blank == BLANK_LENGTH_VERB)
     {
