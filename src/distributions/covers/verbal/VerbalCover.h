@@ -192,8 +192,7 @@ class VerbalCover
 
     void fillList(
       const VerbalSide& vside,
-      const RanksNames& ranksNames,
-      const list<Completion>& completions);
+      const RanksNames& ranksNames);
 
     void setGeneral(
       const unsigned char oppsLength,

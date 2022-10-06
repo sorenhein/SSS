@@ -153,9 +153,15 @@ void Slot::setBools(
 }
 
 
+PhraseCategory Slot::phrase() const
+{
+  return phraseCategory;
+}
+
+
 string Slot::str(
   const vector<vector<string>>& dictionary,
-  [[maybe_unused]] const RanksNames& ranksNames,
+  const RanksNames& ranksNames,
   const Completion& completion) const
 {
   assert(phraseCategory < dictionary.size());

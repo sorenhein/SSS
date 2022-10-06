@@ -70,6 +70,8 @@ class Slot
       const bool bool2,
       const bool bool3);
 
+    PhraseCategory phrase() const;
+
     string str(
       const vector<vector<string>>& dictionary,
       const RanksNames& ranksNames,

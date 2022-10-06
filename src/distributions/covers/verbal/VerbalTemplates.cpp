@@ -6,9 +6,6 @@
    See LICENSE and README.
 */
 
-// Despite the file name, this file implements Product methods.
-// They are separate as there are so many of them.
-
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -248,9 +245,9 @@ void VerbalTemplates::set(const Language languageIn)
 string VerbalTemplates::get(
   const Sentence sentence,
   const RanksNames& ranksNames,
-   const Completion& completion,
+  const list<Completion>& completions,
   const vector<TemplateData>& tdata,
-   const vector<Slot>& slots) const
+  const vector<Slot>& slots) const
 {
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];
@@ -274,6 +271,7 @@ string VerbalTemplates::get(
   auto ttypeIter = vt.blanks.begin();
   auto tdataIter = tdata.begin();
   auto slotIter = slots.begin();
+  auto complIter = completions.begin();
 
   for (field = 0; field < tdata.size(); 
     field++, ttypeIter++, tdataIter++, slotIter++)
@@ -285,47 +283,13 @@ string VerbalTemplates::get(
 
     // TODO Should we have a slot.phrase() == effectively blank?
 
-    if (blank == BLANK_PLAYER_CAP ||
-        blank == BLANK_LENGTH_VERB ||
-        blank == BLANK_LENGTH_ADJ ||
-        blank == BLANK_COUNT ||
-        blank == BLANK_TOPS ||
-        blank == BLANK_BOTTOMS ||
-        blank == BLANK_EXCLUDING ||
-        blank == BLANK_BELOW)
-    {
-      fill = slot.str(dictionary, ranksNames, completion);
-    }
-    else if (blank == BLANK_LIST_PHRASE)
-    {
-      fill = VerbalTemplates::listPhrase(blankData);
-
-      /*
-      string fillNew = slot.str(dictionary, ranksNames, completion);
-
-      if (fill == fillNew)
-        cout << "\n" << setw(40) << left << fill << " X1X " << 
-                setw(40) << fillNew << "\n";
-      else
-        cout << "\n" << setw(40) << left << fill << " X2X " << 
-                setw(40) << fillNew << "\n";
-      */
-    }
-    else
-    {
-// cout << "field " << field << endl;
-// cout << "blank " << blank << endl;
-      assert(false);
-    }
+    assert(complIter != completions.end());
+    fill = slot.str(dictionary, ranksNames, * complIter);
+    if (slot.phrase() == PHRASE_LIST)
+      complIter++;
 
     auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-    {
-// cout << "Looked for " << ("%" + to_string(field)) << endl;
-// cout << "in " << s << endl;
-      assert(false);
-    }
-
+    assert(p != string::npos);
     s.replace(p, 2, fill);
   }
 

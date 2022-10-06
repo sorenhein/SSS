@@ -383,6 +383,8 @@ bool Product::makeCompletionList(
   // We always put each completion in the West-East order, but if
   // side == OPP_WEST, we generate and sort them in such an order
   // that they go from higher to lower and from longer to shorter.
+  completions.clear();
+
   Completion completion;
   Product::makeCompletion(sumProfile, canonicalShift, completion);
 
@@ -593,15 +595,20 @@ void Product::setVerbalAnyTopsEqual(
 
   verbalCover.setLength(length);
 
-  list<Completion> completions;
+  // list<Completion> completions;
   if (Product::makeCompletionList(
-    sumProfile, canonicalShift, side, 4, completions))
+    sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))
   {
-    verbalCover.fillList(vside, ranksNames, completions);
+    verbalCover.fillList(vside, ranksNames);
   }
   else
   {
     // TODO This needs to be expanded somehow
+    // Have to undo the 4+ completions from above.
+    verbalCover.getCompletions().resize(1);
+    Product::makeCompletion(sumProfile, canonicalShift, 
+      verbalCover.getCompletion());
+
     verbalCover.setGeneral(sumProfile.length(), symmFlag, ranksNames);
   }
 }
@@ -645,11 +652,11 @@ void Product::setVerbalHighTopsEqual(
   {
     // "West has Q or Qx", so we need up to one low card.
     // We currently never get more than 4 options.
-    list<Completion> completions;
+    // list<Completion> completions;
     assert(Product::makeCompletionList(
-      sumProfile, canonicalShift, side, 4, completions));
+      sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()));
    
-    verbalCover.fillList(vside, ranksNames, completions);
+    verbalCover.fillList(vside, ranksNames);
   }
   else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
   {
