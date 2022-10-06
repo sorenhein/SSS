@@ -289,7 +289,7 @@ void VerbalCover::getLengthEqualData(
   const unsigned char oppsLength,
   const VerbalSide& vside,
   const bool abstractableFlag,
-  vector<TemplateData>& tdata) const
+  vector<TemplateData>& tdata)
 {
   // Here lower and upper are identical.
   BlankPlayerCap bside;
@@ -307,25 +307,43 @@ void VerbalCover::getLengthEqualData(
   }
 
   tdata.resize(2);
+  slots.resize(2);
+
   if (value == 0)
   {
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_VOID);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_VOID, SLOT_NONE);
   }
   else if (value == 1)
   {
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE, SLOT_NONE);
   }
   else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE, SLOT_NONE);
   }
   else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE, SLOT_NONE);
   }
   else if (! abstractableFlag)
   {
@@ -337,6 +355,11 @@ cout << "value " << +value << endl;
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_EVENLY);
+
+    slots[0].setSemantics(
+      PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_EVENLY, SLOT_NONE);
   }
   else
   {
@@ -344,6 +367,13 @@ cout << "value " << +value << endl;
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_SPLIT_PARAMS,
       lengthLower, oppsLength - lengthLower);
+
+    slots[0].setSemantics(
+      PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_SPLIT_PARAMS, 
+      SLOT_NUMERICAL);
+    slots[1].setValues(lengthLower, oppsLength - lengthLower);
   }
 }
 
@@ -352,7 +382,7 @@ void VerbalCover::getLengthInsideData(
   const unsigned char oppsLength,
   const VerbalSide& vside,
   const bool abstractableFlag,
-  vector<TemplateData>& tdata) const
+  vector<TemplateData>& tdata)
 {
   BlankPlayerCap bside;
   unsigned char vLower, vUpper;
@@ -373,29 +403,49 @@ void VerbalCover::getLengthInsideData(
   }
 
   tdata.resize(2);
+  slots.resize(2);
+
   if (vLower == 0)
   {
     if (vUpper == 1)
     {
       tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE_ATMOST);
+
+      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[1].setSemantics(
+        PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_SINGLE_ATMOST, SLOT_NONE);
     }
     else if (vUpper == 2)
     {
       tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE_ATMOST);
+
+      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[1].setSemantics(
+        PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_DOUBLE_ATMOST, SLOT_NONE);
     }
     else if (vUpper == 3)
     {
       tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].setBlank(BLANK_LENGTH_VERB);
       tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE_ATMOST);
+
+      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[1].setSemantics(
+        PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_TRIPLE_ATMOST, SLOT_NONE);
     }
     else
     {
       tdata[0].set(BLANK_PLAYER_CAP, bside);
       tdata[1].setBlank(BLANK_LENGTH_VERB);
       tdata[1].setData(BLANK_LENGTH_VERB_CARDS_ATMOST_PARAM, vUpper);
+
+      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[1].setSemantics(
+        PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_CARDS_ATMOST_PARAM, 
+        SLOT_NONE);
+      slots[1].setValues(vUpper);
     }
   }
   else if (! abstractableFlag)
@@ -403,29 +453,58 @@ void VerbalCover::getLengthInsideData(
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slots[1].setValues(vLower, vUpper);
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_VOID);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER, 
+      SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_VOID, SLOT_NONE);
   }
   else if (vLower+1 == vUpper)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT);
     tdata[1].set(BLANK_LENGTH_VERB, BLANK_LENGTH_VERB_ODD_EVENLY);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, 
+      SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_ODD_EVENLY, SLOT_NONE);
   }
   else if (vLower + vUpper == oppsLength)
   {
     tdata[0].set(BLANK_PLAYER_CAP, BLANK_PLAYER_CAP_EACH);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_EACH, 
+      SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slots[1].setValues(vLower, vUpper);
   }
   else
   {
     tdata[0].set(BLANK_PLAYER_CAP, bside);
     tdata[1].setBlank(BLANK_LENGTH_VERB);
     tdata[1].setData(BLANK_LENGTH_VERB_RANGE_PARAMS, vLower, vUpper);
+
+    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[1].setSemantics(
+      PHRASE_LENGTH_VERB, BLANK_LENGTH_VERB_RANGE_PARAMS, 
+      SLOT_NUMERICAL);
+    slots[1].setValues(vLower, vUpper);
   }
 }
 
@@ -434,7 +513,7 @@ void VerbalCover::getLengthData(
   const unsigned char oppsLength,
   const VerbalSide& vside,
   const bool abstractableFlag,
-  vector<TemplateData>& tdata) const
+  vector<TemplateData>& tdata)
 {
   // If abstractableFlag is set, we must state the sentence from
   // the intended side (and not e.g. "The suit splits 2=2" instead

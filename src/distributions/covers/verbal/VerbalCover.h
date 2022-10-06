@@ -85,19 +85,19 @@ class VerbalCover
       const unsigned char oppsLength,
       const VerbalSide& vside,
       const bool abstractableFlag,
-      vector<TemplateData>& tdata) const;
+      vector<TemplateData>& tdata);
 
     void getLengthInsideData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
       const bool abstractableFlag,
-      vector<TemplateData>& tdata) const;
+      vector<TemplateData>& tdata);
 
     void getLengthData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
       const bool abstractableFlag,
-      vector<TemplateData>& tdata) const;
+      vector<TemplateData>& tdata);
 
     void getTopsData(
       const BlankPlayerCap side,
