@@ -27,7 +27,7 @@ using namespace std;
 
 class Profile;
 class RanksNames;
-struct TemplateData;
+// struct TemplateData;
 struct VerbalData;
 enum Opponent: unsigned;
 
@@ -60,7 +60,7 @@ class VerbalCover
 
     list<Completion> completions;
 
-    vector<TemplateData> templateFills;
+    // vector<TemplateData> templateFills;
 
     // TODO These are better alternatives to templateFills.
     vector<Slot> slots;
@@ -78,26 +78,25 @@ class VerbalCover
     void getLengthEqualData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
-      const bool abstractableFlag,
-      vector<TemplateData>& tdata);
+      const bool abstractableFlag);
 
     void getLengthInsideData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
-      const bool abstractableFlag,
-      vector<TemplateData>& tdata);
+      const bool abstractableFlag);
 
     void getLengthData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
-      const bool abstractableFlag,
-      vector<TemplateData>& tdata);
+      const bool abstractableFlag);
 
+    /*
     void getTopsData(
       const BlankPlayerCap side,
       const Completion& completion,
       const RanksNames& ranksNames,
       vector<TemplateData>& tdata) const;
+      */
 
     void fillLengthAdjElement(
       const unsigned char oppsLength,
@@ -108,7 +107,6 @@ class VerbalCover
       const unsigned char oppsValue2,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
-      TemplateData& telement,
       Slot& slot) const;
 
 
@@ -152,13 +150,10 @@ class VerbalCover
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
-    void fillTopsExcluding(
-      const VerbalSide& vside,
-      const RanksNames& ranksNames);
+    void fillTopsExcluding(const VerbalSide& vside);
 
     void fillBelow(
       const unsigned char numBottoms,
-      const RanksNames& ranksNames,
       const unsigned char rankNo,
       const VerbalSide& vside);
 
@@ -173,26 +168,18 @@ class VerbalCover
 
     void setSentence(const Sentence sentenceIn);
 
-    void fillCompletion(
-      const VerbalSide& vside,
-      const RanksNames& ranksNames);
+    void fillCompletion(const VerbalSide& vside);
 
-    void fillCompletionWithLows(
-      const VerbalSide& vside,
-      const RanksNames& ranksNames);
+    void fillCompletionWithLows(const VerbalSide& vside);
 
-    void fillBottoms(
-      const VerbalSide& vside,
-      const RanksNames& ranksNames);
+    void fillBottoms(const VerbalSide& vside);
 
     void fillTopsAndLower(
       const VerbalSide& vside,
       const RanksNames& ranksNames,
       const unsigned char numOptions);
 
-    void fillList(
-      const VerbalSide& vside,
-      const RanksNames& ranksNames);
+    void fillList(const VerbalSide& vside);
 
     void setGeneral(
       const unsigned char oppsLength,
@@ -205,8 +192,7 @@ class VerbalCover
       const unsigned char oppsValue2,
       const unsigned char oppsLength,
       const unsigned char onetopIndex,
-      const BlankPlayerCap side,
-      vector<TemplateData>& tdata);
+      const BlankPlayerCap side);
 
     string str(const RanksNames& ranksNames) const;
 };

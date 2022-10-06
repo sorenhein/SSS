@@ -43,6 +43,7 @@ struct VerbalTemplate
 };
 
 
+/*
 struct TemplateData
 {
   VerbalBlank blank;
@@ -170,6 +171,7 @@ struct TemplateData
     return ss.str();
   };
 };
+*/
 
 
 class VerbalTemplates

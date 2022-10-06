@@ -1,12 +1,23 @@
+Slot:
+Streamline cpp, e.g. commonalities, smaller methods
+
+VerbalTemplates:
+check that the blank matches the template
+expectation (maybe we do this already).
+Or just get rid of the expectation completely?
+Then the templates become a longer, flat list.
+Maybe prepare for file read/write:
+{TAG, "TAG", "string"}
+Get associatively from "TAG" to the numerical TAG.
+
+VerbalBlank.h
+Streamline, rename
+
+
 Pverbal:
 * makeSingularCompletion needs to be turned around
 * setVerbalAnyTopsEqual
   strGeneral is still a hodge-podge.
-
-In VerbalTemplates, check that the blank matches the template
-expectation (maybe we do this already).
-Or just get rid of the expectation completely?
-Then the templates become a longer, flat list.
 
 11/162390
 HHJ97

@@ -538,7 +538,6 @@ void Product::setVerbalTopsOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  const RanksNames& ranksNames,
   const bool flipAllowedFlag,
   VerbalCover& verbalCover) const
 {
@@ -547,7 +546,7 @@ void Product::setVerbalTopsOnly(
 
   if (vsideSingle.side != OPP_EITHER)
   {
-    verbalCover.fillCompletion(vsideSingle, ranksNames);
+    verbalCover.fillCompletion(vsideSingle);
     return;
   }
 
@@ -562,11 +561,11 @@ void Product::setVerbalTopsOnly(
   if (flipAllowedFlag && numOptions == 1)
   {
     // The lowest cards are a single rank of x'es.
-    verbalCover.fillCompletionWithLows(vsideSimple, ranksNames);
+    verbalCover.fillCompletionWithLows(vsideSimple);
   }
   else
   {
-    verbalCover.fillTopsExcluding(vsideSimple, ranksNames);
+    verbalCover.fillTopsExcluding(vsideSimple);
   }
 }
 
@@ -584,7 +583,7 @@ void Product::setVerbalAnyTopsEqual(
   {
     // This works for any tops as well.
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames, false, verbalCover);
+      symmFlag, false, verbalCover);
     return;
   }
 
@@ -599,7 +598,7 @@ void Product::setVerbalAnyTopsEqual(
   if (Product::makeCompletionList(
     sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))
   {
-    verbalCover.fillList(vside, ranksNames);
+    verbalCover.fillList(vside);
   }
   else
   {
@@ -633,7 +632,7 @@ void Product::setVerbalHighTopsEqual(
   if (! length.used())
   {
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, ranksNames, true, verbalCover);
+      symmFlag, true, verbalCover);
     return;
   }
 
@@ -645,7 +644,7 @@ void Product::setVerbalHighTopsEqual(
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
   if (numOptions == 1)
   {
-    verbalCover.fillBottoms(vside, ranksNames);
+    verbalCover.fillBottoms(vside);
   }
   else if (numOptions == 2 && 
       verbalCover.getCompletion().getFreeUpper(side) == 1)
@@ -656,14 +655,13 @@ void Product::setVerbalHighTopsEqual(
     assert(Product::makeCompletionList(
       sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()));
    
-    verbalCover.fillList(vside, ranksNames);
+    verbalCover.fillList(vside);
   }
   else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillBelow(
       sumProfile.numBottoms(canonicalShift),
-      ranksNames,
       numOptions,
       vside);
   }

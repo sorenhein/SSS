@@ -153,7 +153,6 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       const bool flipAllowedFlag,
       VerbalCover& verbalCover) const;
 
