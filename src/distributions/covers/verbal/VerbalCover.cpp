@@ -795,7 +795,7 @@ void VerbalCover::fillCompletionWithLows(
   const BlankPlayerCap bside = vside.blank();
 
   templateFills.resize(2);
-  slots.resize(3);
+  slots.resize(2);
 
   templateFills[0].set(BLANK_PLAYER_CAP, bside);
   slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
@@ -981,7 +981,9 @@ void VerbalCover::setGeneral(
   VerbalCover::getLengthData(oppsLength, vside, true, tdata);
     
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
-    completions, tdata, slots);
+    completions, 
+    // tdata, 
+    slots);
 
   if (westFlag)
     wstr = completions.front().strSet(ranksNames, OPP_WEST, false, false);
@@ -1127,6 +1129,8 @@ string VerbalCover::str(const RanksNames& ranksNames) const
     return strTMP;
   else
     return verbalTemplates.get(
-      sentence, ranksNames, completions, templateFills, slots);
+      sentence, ranksNames, completions, 
+      // templateFills, 
+      slots);
 }
 

@@ -183,9 +183,6 @@ class VerbalTemplates
     Language language;
 
 
-    string listPhrase(const TemplateData& tdata) const;
-
-
   public:
 
     VerbalTemplates();
@@ -198,7 +195,6 @@ class VerbalTemplates
       const Sentence sentence,
       const RanksNames& ranksNames,
       const list<Completion>& completions,
-      const vector<TemplateData>& tdata,
       const vector<Slot>& slots) const;
 };
 

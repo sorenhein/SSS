@@ -15,9 +15,10 @@
 #include "Slot.h"
 #include "VerbalBlank.h"
 
-#include "../../../ranks/RanksNames.h"
-#include "../../../utils/table.h"
+// #include "../../../ranks/RanksNames.h"
+// #include "../../../utils/table.h"
 
+/*
 const vector<string> topCount =
 {
   "none",
@@ -53,6 +54,7 @@ const vector<string> topOrdinal =
   "twelfth",
   "thirteenth"
 };
+*/
 
 
 
@@ -246,40 +248,26 @@ string VerbalTemplates::get(
   const Sentence sentence,
   const RanksNames& ranksNames,
   const list<Completion>& completions,
-  const vector<TemplateData>& tdata,
   const vector<Slot>& slots) const
 {
   assert(sentence < templates.size());
   const VerbalTemplate& vt = templates[sentence];
 
-  if (tdata.size() > vt.blanks.size())
-  {
-    cout << "sentence " << sentence << endl;
-    cout << "tdata.size " << tdata.size() << endl;
-    cout << "vt.blanks.size " << vt.blanks.size() << endl;
-
-    assert(tdata.size() <= vt.blanks.size());
-  }
+  assert(slots.size() <= vt.blanks.size());
 
   if (sentence != SENTENCE_LIST)
-    assert(tdata.size() == vt.blanks.size());
+    assert(slots.size() == vt.blanks.size());
 
   string s = vt.pattern;
   string fill = "";
 
   size_t field;
-  auto ttypeIter = vt.blanks.begin();
-  auto tdataIter = tdata.begin();
   auto slotIter = slots.begin();
   auto complIter = completions.begin();
 
-  for (field = 0; field < tdata.size(); 
-    field++, ttypeIter++, tdataIter++, slotIter++)
+  for (field = 0; field < slots.size(); field++, slotIter++)
   {
-    const VerbalBlank blank = * ttypeIter;
-    const TemplateData& blankData = * tdataIter;
     const Slot& slot = * slotIter;
-    assert(blank == blankData.blank);
 
     // TODO Should we have a slot.phrase() == effectively blank?
 
@@ -296,19 +284,10 @@ string VerbalTemplates::get(
   if (sentence == SENTENCE_LIST)
   {
     // Eliminate the trailing % fields.
-    for ( ; field < vt.blanks.size(); field++, ttypeIter++)
+    for ( ; field < vt.blanks.size(); field++)
     {
-      const VerbalBlank blank = * ttypeIter;
-      assert(blank == BLANK_LIST_PHRASE);
-
       auto p = s.find(", %" + to_string(field));
-      if (p == string::npos)
-      {
-cout << "string now '" << s << "'\n";
-cout << "looked for ', %" << field << "'" << endl;
-        assert(false);
-      }
-
+      assert(p != string::npos);
       s.erase(p, 4);
     }
   }
@@ -324,29 +303,3 @@ cout << "looked for ', %" << field << "'" << endl;
   return s;
 }
 
-
-string VerbalTemplates::listPhrase(const TemplateData& tdata) const
-{
-  // Actually basically the same as topsPhrase.
-  assert(tdata.numParams == 1);
-  assert(tdata.instance < dictionary[BLANK_LIST_PHRASE].size());
-
-// cout << "looking up " << BLANK_LIST_PHRASE << ", " << tdata.blank << endl;
-  string s = dictionary[BLANK_LIST_PHRASE][tdata.instance];
-// cout << "tops phrase is " << s << endl;
-// cout << "tdata is " << tdata.str() << endl;
-
-  for (size_t field = 0; field < tdata.numParams; field++)
-  {
-    auto p = s.find("%" + to_string(field));
-    if (p == string::npos)
-      assert(false);
-
-    if (field == 0)
-      s.replace(p, 2, tdata.text1);
-    else
-      assert(false);
-  }
-
-  return s;
-}
