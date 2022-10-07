@@ -53,10 +53,10 @@
    "thirteenth"
  };
 
- const vector<string> plural =
+ const vector<string> cardStrings =
  {
-   "",
-   "s"
+   "card",
+   "cards"
  };
 
 
@@ -274,13 +274,13 @@ string Slot::strCommon(
   else if (expansion0 == SLOT_TEXT_LOWER)
   {
     assert(Slot::has(0, 1, 0));
-    Slot::replace(s, "%0", plural[uchars[0] == 1 ? 0 : 1]);
+    Slot::replace(s, "%0", cardStrings[uchars[0] == 1 ? 0 : 1]);
     return s;
   }
   else if (expansion0 == SLOT_TEXT_BELOW)
   {
     assert(Slot::has(0, 2, 0));
-    Slot::replace(s, "%0", plural[uchars[0] == 1 ? 0 : 1]);
+    Slot::replace(s, "%0", cardStrings[uchars[0] == 1 ? 0 : 1]);
     Slot::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
     return s;
   }

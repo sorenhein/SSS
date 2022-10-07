@@ -290,18 +290,20 @@ string VerbalTemplates::get(
         instanceToText,
         ranksNames,
         * complIter);
+      if (slot.getPhrase() == LIST_HOLDING_EXACT)
+        complIter++;
     }
     else
     {
       fill = slot.str(dictionary, ranksNames, * complIter);
+      if (slot.phrase() == PHRASE_LIST)
+        complIter++;
     }
 
 
 
 
 
-    if (slot.phrase() == PHRASE_LIST)
-      complIter++;
 
     auto p = s.find("%" + to_string(field));
     assert(p != string::npos);
