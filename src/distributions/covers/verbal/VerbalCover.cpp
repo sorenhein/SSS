@@ -166,11 +166,11 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_EXCLUDING;
 
-  BlankPlayerCap bside = vside.blank();
+  // BlankPlayerCap bside = vside.blank();
 
   slots.resize(4);
 
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(TOPS_ACTUAL);
   slots[1].setSide(vside.side);
@@ -227,17 +227,17 @@ void VerbalCover::getLengthEqualData(
   const bool abstractableFlag)
 {
   // Here lower and upper are identical.
-  BlankPlayerCap bside;
+  // BlankPlayerCap bside;
   unsigned char value;
 
   if (vside.side == OPP_WEST)
   {
-    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+    // bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     value = lengthLower;
   }
   else
   {
-    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+    // bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     value = oppsLength - lengthLower;
   }
 
@@ -245,30 +245,30 @@ void VerbalCover::getLengthEqualData(
 
   if (value == 0)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_VOID);
   }
   else if (value == 1)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (! abstractableFlag)
   {
-cout << "bside " << bside << endl;
+// cout << "bside " << bside << endl;
 cout << "value " << +value << endl;
     assert(false);
   }

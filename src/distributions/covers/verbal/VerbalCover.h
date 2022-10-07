@@ -17,6 +17,7 @@
 
 #include "VerbalBlank.h"
 #include "VerbalTemplates.h"
+#include "VerbalDimensions.h"
 
 #include "../term/Term.h"
 #include "../term/CoverOperator.h"
@@ -27,7 +28,6 @@ using namespace std;
 
 class Profile;
 class RanksNames;
-// struct TemplateData;
 struct VerbalData;
 enum Opponent: unsigned;
 
@@ -43,6 +43,14 @@ struct VerbalSide
       return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     else
       return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+  };
+
+  VerbalPhrase player() const
+  {
+    if (side == OPP_WEST)
+      return (symmFlag ? PLAYER_EITHER : PLAYER_WEST);
+    else
+      return (symmFlag ? PLAYER_EITHER : PLAYER_EAST);
   };
 };
 
@@ -89,14 +97,6 @@ class VerbalCover
       const unsigned char oppsLength,
       const VerbalSide& vside,
       const bool abstractableFlag);
-
-    /*
-    void getTopsData(
-      const BlankPlayerCap side,
-      const Completion& completion,
-      const RanksNames& ranksNames,
-      vector<TemplateData>& tdata) const;
-      */
 
     void fillLengthAdjElement(
       const unsigned char oppsLength,
