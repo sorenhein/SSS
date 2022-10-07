@@ -111,6 +111,10 @@ void VerbalCover::fillOnetopOnly(
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
 
+  VerbalCover::getOnetopData(
+    vLower, vUpper, oppsSize, onetopIndex, vside.player());
+
+  /*
   if (vside.side == OPP_WEST || vside.side == OPP_EITHER)
   {
     VerbalCover::getOnetopData(
@@ -137,6 +141,7 @@ void VerbalCover::fillOnetopOnly(
     assert(vUpper == oppsSize - top.lower());
     assert(vside.player() == (vside.symmFlag ? PLAYER_EITHER: PLAYER_EAST));
   }
+  */
 }
 
 
@@ -659,11 +664,19 @@ void VerbalCover::getOnetopData(
   // Here lower and upper are different.
   slots.resize(2);
 
+  /*
   if (oppsValue1 == 0)
     slots[0].setPhrase(player);
-  else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
+  // else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
+  else if (oppsValue2 == oppsSize)
     slots[0].setPhrase(player);
   else if (oppsValue1 + oppsValue2 == oppsSize)
+    slots[0].setPhrase(PLAYER_EACH);
+  else
+    slots[0].setPhrase(player);
+    */
+
+  if (oppsValue1 + oppsValue2 == oppsSize)
     slots[0].setPhrase(PLAYER_EACH);
   else
     slots[0].setPhrase(player);
