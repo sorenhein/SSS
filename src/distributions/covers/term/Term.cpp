@@ -174,6 +174,27 @@ unsigned char Term::upper() const
 }
 
 
+void Term::range(
+  const unsigned char maximum,
+  const Opponent side,
+  unsigned char& vLower,
+  unsigned char& vUpper) const
+{
+  if (side == OPP_WEST || side == OPP_EITHER)
+  {
+    vLower = Term::lower();
+    vUpper = (Term::getOperator() == COVER_GREATER_EQUAL ?
+      maximum : Term::upper());
+  }
+  else
+  {
+    vLower = (Term::getOperator() == COVER_GREATER_EQUAL ?
+      0 : maximum - Term::upper());
+    vUpper = maximum - Term::lower();
+  }
+}
+
+
 Opponent Term::shorter(const unsigned char maximum) const
 {
   // Choose the shorter side, which tends to be more intuitive for lengths.

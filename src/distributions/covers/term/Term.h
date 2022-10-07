@@ -82,6 +82,12 @@ class Term
 
     unsigned char upper() const;
 
+    void range(
+      const unsigned char maximum,
+      const Opponent side,
+      unsigned char& vLower,
+      unsigned char& vUpper) const;
+
     Opponent shorter(const unsigned char maximum) const;
 
     Opponent shorter(const Term& termEast) const;

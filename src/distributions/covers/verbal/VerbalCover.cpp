@@ -33,24 +33,21 @@ VerbalCover::VerbalCover()
   lengthLower = 0;
   lengthUpper = 0;
   lengthOper = COVER_EQUAL;
+  length.reset();
 
   completions.resize(1);
   slots.clear();
 }
 
 
-void VerbalCover::push_back(const Completion& completionIn)
-{
-  completions.push_back(completionIn);
-}
-
-
-void VerbalCover::setLength(const Term& length)
+void VerbalCover::setLength(const Term& lengthIn)
 {
   lengthFlag = true;
-  lengthLower = length.lower();
-  lengthUpper = length.upper();
-  lengthOper = length.getOperator();
+  lengthLower = lengthIn.lower();
+  lengthUpper = lengthIn.upper();
+  lengthOper = lengthIn.getOperator();
+
+  length = lengthIn;
 }
 
 
@@ -59,6 +56,8 @@ void VerbalCover::setLength(
   const unsigned char upper,
   const unsigned char maximum)
 {
+  length.set(maximum, lower, upper);
+
   lengthFlag = true;
   lengthLower = lower;
   lengthUpper = upper;
@@ -75,12 +74,12 @@ void VerbalCover::setLength(
 
 
 void VerbalCover::fillLengthOnly(
-  const Term& length,
+  const Term& lengthIn,
   const unsigned char oppsLength,
   const bool symmFlag)
 {
   // TODO Swap
-  VerbalCover::setLength(length);
+  VerbalCover::setLength(lengthIn);
   sentence = SENTENCE_LENGTH_ONLY;
 
   const bool westFlag = (completions.front().length(OPP_WEST) > 0);
@@ -131,13 +130,13 @@ void VerbalCover::fillOnetopOnly(
 
 
 void VerbalCover::fillOnetopLength(
-  const Term& length,
+  const Term& lengthIn,
   const Term& top,
   const Profile& sumProfile,
   const unsigned char onetopIndex,
   const VerbalSide& vside)
 {
-  VerbalCover::setLength(length);
+  VerbalCover::setLength(lengthIn);
 
   // Fill templateFills positions 0 and 1.
   VerbalCover::fillOnetopOnly(
@@ -195,13 +194,19 @@ list<Completion>& VerbalCover::getCompletions()
 }
 
 
+void VerbalCover::push_back(const Completion& completionIn)
+{
+  completions.push_back(completionIn);
+}
+
+
 Opponent VerbalCover::simplestOpponent(const unsigned char oppsLength) const
 {
-  if (! lengthFlag)
+  if (! length.used())
     return OPP_EITHER;
 
   // Choose the shorter side, as this tends to be more intuitive.
-  const unsigned char lsum = lengthLower + lengthUpper;
+  const unsigned char lsum = length.lower() + length.upper();
 
   if (lsum > oppsLength)
     return OPP_EAST;
@@ -221,9 +226,9 @@ void VerbalCover::getLengthEqualData(
   unsigned char value;
 
   if (vside.side == OPP_WEST)
-    value = lengthLower;
+    value = length.lower();
   else
-    value = oppsLength - lengthLower;
+    value = oppsLength - length.lower();
 
   slots.resize(2);
 
@@ -254,7 +259,7 @@ void VerbalCover::getLengthEqualData(
   {
     slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_SPLIT);
-    slots[1].setValues(lengthLower, oppsLength - lengthLower);
+    slots[1].setValues(length.lower(), oppsLength - length.lower());
   }
 }
 
@@ -265,19 +270,7 @@ void VerbalCover::getLengthInsideData(
   const bool abstractableFlag)
 {
   unsigned char vLower, vUpper;
-
-  if (vside.side == OPP_WEST)
-  {
-    vLower = lengthLower;
-    vUpper = (lengthOper == COVER_GREATER_EQUAL ?
-      oppsLength : lengthUpper);
-  }
-  else
-  {
-    vLower = (lengthOper == COVER_GREATER_EQUAL ?
-      0 : oppsLength - lengthUpper);
-    vUpper = oppsLength - lengthLower;
-  }
+  length.range(oppsLength, vside.side, vLower, vUpper);
 
   slots.resize(2);
 
@@ -360,6 +353,10 @@ void VerbalCover::fillLengthAdjElement(
 
   unsigned char vLower, vUpper;
 
+  assert(lengthLower == length.lower());
+  assert(lengthUpper == length.upper());
+  assert(lengthOper == length.getOperator());
+
   if (simplestOpponent == OPP_WEST)
   {
     vLower = lengthLower;
@@ -375,6 +372,11 @@ void VerbalCover::fillLengthAdjElement(
     vLower = oppsLength - lengthUpper;
     vUpper = oppsLength - lengthLower;
   }
+
+  unsigned char vLower2, vUpper2;
+  length.range(oppsLength, simplestOpponent, vLower2, vUpper2);
+  assert(vLower == vLower2);
+  assert(vUpper == vUpper2);
 
   if (vLower == vUpper)
   {
@@ -567,7 +569,7 @@ void VerbalCover::setGeneral(
   // For now we just store the string.
   sentence = SENTENCE_SIZE;
 
-  assert(lengthFlag);
+  assert(length.used());
 
   string lstr = "", wstr = "", estr = "";
 

@@ -68,6 +68,8 @@ class VerbalCover
     unsigned char lengthUpper;
     CoverOperator lengthOper;
 
+    Term length;
+
     string strTMP; // TODO Fix strGeneral and setGeneral
 
 
@@ -113,8 +115,6 @@ class VerbalCover
 
     VerbalCover();
 
-    void push_back(const Completion& completion);
-
 
     // Length only
 
@@ -125,64 +125,76 @@ class VerbalCover
       const unsigned char upper,
       const unsigned char maximum);
 
+    // Fills.
+
+    // SENTENCE_LENGTH_ONLY
     void fillLengthOnly(
-      const Term& length,
+      const Term& lengthIn,
       const unsigned char oppsLength,
       const bool symmFlag);
 
-    string strLengthOnly() const;
-
-
-    // One top only
-
+    // SENTENCE_ONETOP
     void fillOnetopOnly(
       const Term& top,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
+    // SENTENCE_TOPS_LENGTH
     void fillOnetopLength(
-      const Term& length,
+      const Term& lengthIn,
       const Term& top,
       const Profile& sumProfile,
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
-    void fillTopsExcluding(const VerbalSide& vside);
-
-    void fillBelow(
-      const unsigned char numBottoms,
-      const unsigned char rankNo,
-      const VerbalSide& vside);
-
+    // SENTENCE_TOPS_LENGTH
     void fillSingular(
       const unsigned char lenCompletion,
       const VerbalSide& vside);
 
+    // SENTENCE_TOPS_EXCLUDING
+    void fillTopsExcluding(const VerbalSide& vside);
 
-    Completion& getCompletion();
-
-    list<Completion>& getCompletions();
-
-    // void setSentence(const Sentence sentenceIn);
-
-    void fillCompletion(const VerbalSide& vside);
-
-    void fillCompletionWithLows(const VerbalSide& vside);
-
+    // SENTENCE_TOPS_AND_XES
     void fillBottoms(const VerbalSide& vside);
 
+    // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLower(
       const VerbalSide& vside,
       const RanksNames& ranksNames,
       const unsigned char numOptions);
 
+    // SENTENCE_ONLY_BELOW
+    void fillBelow(
+      const unsigned char numBottoms,
+      const unsigned char rankNo,
+      const VerbalSide& vside);
+
+    // SENTENCE_LIST
+    void fillCompletion(const VerbalSide& vside);
+
+    // SENTENCE_LIST
+    void fillCompletionWithLows(const VerbalSide& vside);
+
+    // SENTENCE_LIST
     void fillList(const VerbalSide& vside);
 
+    // SENTENCE_SIZE
     void setGeneral(
       const unsigned char oppsLength,
       const bool symmFlag,
       const RanksNames& ranksNames);
+
+
+    // Direct manipulation of completions
+
+    void push_back(const Completion& completion);
+
+    Completion& getCompletion();
+
+    list<Completion>& getCompletions();
+
 
     string str(const RanksNames& ranksNames) const;
 };
