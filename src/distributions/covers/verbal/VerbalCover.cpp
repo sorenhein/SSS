@@ -260,31 +260,23 @@ void VerbalCover::getLengthEqualData(
   if (value == 0)
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    // slots[1].setSemantics(
-      // PHRASE_LENGTH_VERB, XLENGTH_VERB_VOID, SLOT_NONE);
     slots[1].setPhrase(LENGTH_VERB_VOID);
   }
   else if (value == 1)
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    // slots[1].setSemantics(
-      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    // slots[1].setSemantics(
-      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    // slots[1].setSemantics(
-      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
     slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
@@ -298,16 +290,18 @@ cout << "value " << +value << endl;
   {
     slots[0].setSemantics(
       PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_EVENLY, SLOT_NONE);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_EVENLY, SLOT_NONE);
+    slots[1].setPhrase(LENGTH_VERB_EVENLY);
   }
   else
   {
     slots[0].setSemantics(
       PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_SPLIT, 
-      SLOT_NUMERICAL);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_SPLIT, 
+      // SLOT_NUMERICAL);
+    slots[1].setPhrase(LENGTH_VERB_SPLIT);
     slots[1].setValues(lengthLower, oppsLength - lengthLower);
   }
 }
@@ -343,29 +337,25 @@ void VerbalCover::getLengthInsideData(
     if (vUpper == 1)
     {
       slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-      slots[1].setSemantics(
-        PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON_ATMOST, SLOT_ORDINAL);
+      slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else if (vUpper == 2)
     {
       slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-      slots[1].setSemantics(
-        PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON_ATMOST, SLOT_ORDINAL);
+      slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else if (vUpper == 3)
     {
       slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-      slots[1].setSemantics(
-        PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON_ATMOST, SLOT_ORDINAL);
+      slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else
     {
       slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-      slots[1].setSemantics(
-        PHRASE_LENGTH_VERB, XLENGTH_VERB_CARDS_ATMOST, SLOT_NUMERICAL);
+      slots[1].setPhrase(LENGTH_VERB_ATMOST);
       slots[1].setValues(vUpper);
     }
   }
