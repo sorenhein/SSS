@@ -1,20 +1,17 @@
-VerbalBlank.h
-Streamline, rename
-Needed at all anymore?
-
 Places that use English text:
 - VerbalMap (but read in from a file)
 - Slot (the vectors on top of the file)
 - VerbalTemplates (the templates -- delete the first {})
 - RanksNames (move it out?)
 
+Re-sort methods in VerbalCover (some become private?).
+Use sentence order.
+push_back together with getCompletion(s)
+
 Completion:strNew is the only one now?
 
 Slot:
 topCount etc. must go out again.
-When flattening texts, dictionary lookup becomes 1D.
-Don't need phraseCategory.
-Don't need isNew and newFlag
 
 VerbalTemplates:
 Get associatively from "TAG" to the numerical TAG.

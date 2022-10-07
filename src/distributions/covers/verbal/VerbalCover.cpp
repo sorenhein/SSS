@@ -13,19 +13,15 @@
 #include <cassert>
 
 #include "VerbalCover.h"
-#include "VerbalBlank.h"
+
+#include "VerbalDimensions.h"
 
 #include "../product/Profile.h"
-#include "../product/VerbalData.h"
 
-// TODO Need whole file or just TemplateData?
-#include "VerbalTemplates.h"
-#include "VerbalDimensions.h"
-#include "./Completion.h"
-
-#include "../../../ranks/RanksNames.h"
+#include "../term/CoverOperator.h"
 
 #include "../../../utils/table.h"
+
 
 extern VerbalTemplates verbalTemplates;
 
@@ -46,12 +42,6 @@ VerbalCover::VerbalCover()
 void VerbalCover::push_back(const Completion& completionIn)
 {
   completions.push_back(completionIn);
-}
-
-
-void VerbalCover::setSentence(const Sentence sentenceIn)
-{
-  sentence = sentenceIn;
 }
 
 
@@ -89,6 +79,7 @@ void VerbalCover::fillLengthOnly(
   const unsigned char oppsLength,
   const bool symmFlag)
 {
+  // TODO Swap
   VerbalCover::setLength(length);
   sentence = SENTENCE_LENGTH_ONLY;
 
@@ -125,9 +116,7 @@ void VerbalCover::fillOnetopOnly(
       top.upper(),
       oppsSize,
       onetopIndex,
-      // vside);
       vside.symmFlag ? PLAYER_EITHER : PLAYER_WEST);
-      // vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
   }
   else
   {
@@ -137,7 +126,6 @@ void VerbalCover::fillOnetopOnly(
       oppsSize,
       onetopIndex,
       vside.symmFlag ? PLAYER_EITHER : PLAYER_EAST);
-      // vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
   }
 }
 
@@ -169,8 +157,6 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_EXCLUDING;
 
-  // BlankPlayerCap bside = vside.blank();
-
   slots.resize(4);
 
   slots[0].setPhrase(vside.player());
@@ -179,8 +165,9 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
   slots[1].setSide(vside.side);
   slots[1].setBools(true, true);
 
-  const unsigned topsFull = completions.front().getTopsFull(
-    vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  const unsigned topsFull = completions.front().getTopsFull(sideOther);
+    // vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (topsFull <= 1)
     slots[2].setPhrase(EXCLUDING_NOT);
@@ -190,7 +177,8 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
     slots[2].setPhrase(EXCLUDING_NONE);
 
   slots[3].setPhrase(TOPS_ACTUAL);
-  slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  // slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  slots[3].setSide(sideOther);
   slots[3].setBools(true, true);
 }
 
@@ -230,19 +218,12 @@ void VerbalCover::getLengthEqualData(
   const bool abstractableFlag)
 {
   // Here lower and upper are identical.
-  // BlankPlayerCap bside;
   unsigned char value;
 
   if (vside.side == OPP_WEST)
-  {
-    // bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     value = lengthLower;
-  }
   else
-  {
-    // bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     value = oppsLength - lengthLower;
-  }
 
   slots.resize(2);
 
@@ -251,19 +232,9 @@ void VerbalCover::getLengthEqualData(
     slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_VOID);
   }
-  else if (value == 1)
-  {
-    slots[0].setPhrase(vside.player());
-    slots[1].setPhrase(LENGTH_VERB_XTON);
-    slots[1].setValues(value);
-  }
-  else if (value == 2 && (! abstractableFlag || oppsLength > 4))
-  {
-    slots[0].setPhrase(vside.player());
-    slots[1].setPhrase(LENGTH_VERB_XTON);
-    slots[1].setValues(value);
-  }
-  else if (value == 3 && (! abstractableFlag || oppsLength > 6))
+  else if (value == 1 ||
+    (value == 2 && (! abstractableFlag || oppsLength > 4)) ||
+    (value == 3 && (! abstractableFlag || oppsLength > 6)))
   {
     slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_XTON);
@@ -271,8 +242,7 @@ void VerbalCover::getLengthEqualData(
   }
   else if (! abstractableFlag)
   {
-// cout << "bside " << bside << endl;
-cout << "value " << +value << endl;
+    cout << "value " << +value << endl;
     assert(false);
   }
   else if (value + value == oppsLength)
@@ -294,19 +264,16 @@ void VerbalCover::getLengthInsideData(
   const VerbalSide& vside,
   const bool abstractableFlag)
 {
-  BlankPlayerCap bside;
   unsigned char vLower, vUpper;
 
   if (vside.side == OPP_WEST)
   {
-    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
     vLower = lengthLower;
     vUpper = (lengthOper == COVER_GREATER_EQUAL ?
       oppsLength : lengthUpper);
   }
   else
   {
-    bside = (vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
     vLower = (lengthOper == COVER_GREATER_EQUAL ?
       0 : oppsLength - lengthUpper);
     vUpper = oppsLength - lengthLower;
@@ -316,19 +283,7 @@ void VerbalCover::getLengthInsideData(
 
   if (vLower == 0)
   {
-    if (vUpper == 1)
-    {
-      slots[0].setPhrase(vside.player());
-      slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
-      slots[1].setValues(vUpper);
-    }
-    else if (vUpper == 2)
-    {
-      slots[0].setPhrase(vside.player());
-      slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
-      slots[1].setValues(vUpper);
-    }
-    else if (vUpper == 3)
+    if (vUpper <= 3)
     {
       slots[0].setPhrase(vside.player());
       slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
@@ -383,15 +338,13 @@ void VerbalCover::getLengthData(
 
   if (lengthOper == COVER_EQUAL)
   {
-    VerbalCover::getLengthEqualData(
-      oppsLength, vside, abstractableFlag);
+    VerbalCover::getLengthEqualData(oppsLength, vside, abstractableFlag);
   }
   else if (lengthOper == COVER_INSIDE_RANGE ||
            lengthOper == COVER_LESS_EQUAL ||
            lengthOper == COVER_GREATER_EQUAL)
   {
-    VerbalCover::getLengthInsideData(oppsLength, vside,
-      abstractableFlag);
+    VerbalCover::getLengthInsideData(oppsLength, vside, abstractableFlag);
   }
   else
     assert(false);
@@ -439,9 +392,7 @@ void VerbalCover::fillLengthAdjElement(
   }
   else
   {
-cout << "range " << +lengthLower << " to " << +lengthUpper << endl;
-cout << "here  " << +vLower << " to " << +vUpper << endl;
-cout << "oppsLength " << +oppsLength << endl;
+    // More cases could in principle arise here.
     assert(false);
   }
 }
@@ -454,18 +405,19 @@ void VerbalCover::fillBelow(
 {
   sentence = SENTENCE_ONLY_BELOW;
 
-  const unsigned char freeLower = completions.front().getFreeLower(OPP_WEST);
-  const unsigned char freeUpper = completions.front().getFreeUpper(OPP_WEST);
+  const auto& completion = completions.front();
+  const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
+  const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
 
   // Make a synthetic length of small cards.
   VerbalCover::setLength(freeLower, freeUpper, numBottoms);
 
-  // This sets templateFills numbers 0 and 1 (and the size of 2).
+  // Set templateFills numbers 0 and 1 (and the size of 2).
   VerbalCover::getLengthData(numBottoms, vside, false);
   
   slots.resize(4);
 
-  if (completions.front().getFreeUpper(vside.side) == 1)
+  if (completion.getFreeUpper(vside.side) == 1)
     slots[2].setPhrase(BELOW_NORMAL);
   else
     slots[2].setPhrase(BELOW_COMPLETELY);
@@ -481,8 +433,6 @@ void VerbalCover::fillSingular(
   const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_LENGTH;
-
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(3);
 
@@ -502,7 +452,6 @@ void VerbalCover::fillSingular(
 void VerbalCover::fillCompletion(const VerbalSide& vside)
 {
   sentence = SENTENCE_LIST;
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(2);
 
@@ -518,7 +467,6 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 {
   sentence = SENTENCE_LIST;
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(2);
 
@@ -533,7 +481,6 @@ void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 void VerbalCover::fillBottoms(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_AND_XES;
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(3);
   slots[0].setPhrase(vside.player());
@@ -553,7 +500,6 @@ void VerbalCover::fillTopsAndLower(
   const unsigned char numOptions)
 {
   sentence = SENTENCE_TOPS_AND_LOWER;
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(4);
 
@@ -563,8 +509,9 @@ void VerbalCover::fillTopsAndLower(
   slots[1].setSide(vside.side);
   slots[1].setBools(true, true);
 
-  const unsigned char freeLower = completions.front().getFreeLower(vside.side);
-  const unsigned char freeUpper = completions.front().getFreeUpper(vside.side);
+  const auto& completion = completions.front();
+  const unsigned char freeLower = completion.getFreeLower(vside.side);
+  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
 
   if (freeLower == freeUpper)
   {
@@ -582,7 +529,7 @@ void VerbalCover::fillTopsAndLower(
     slots[2].setValues(freeLower, freeUpper);
   }
 
-  if (completions.front().lowestRankIsUsed(vside.side))
+  if (completion.lowestRankIsUsed(vside.side))
   {
     slots[3].setPhrase(TOPS_LOWER);
     slots[3].setValues(freeUpper);
@@ -598,7 +545,6 @@ void VerbalCover::fillTopsAndLower(
 void VerbalCover::fillList(const VerbalSide& vside)
 {
   sentence = SENTENCE_LIST;
-  const BlankPlayerCap bside = vside.blank();
 
   slots.resize(completions.size() + 1);
   slots[0].setPhrase(vside.player());
@@ -706,11 +652,6 @@ void VerbalCover::getOnetopElement(
     slot.setPhrase(TOPS_ATLEAST);
     slot.setValues(oppsValue1, onetopIndex);
   }
-  else if (oppsValue1 + oppsValue2 == oppsSize)
-  {
-    slot.setPhrase(TOPS_RANGE);
-    slot.setValues(oppsValue1, oppsValue2, onetopIndex);
-  }
   else
   {
     // TODO This looks identical?!
@@ -720,14 +661,12 @@ void VerbalCover::getOnetopElement(
 }
 
 
-// TODO Later on private and at the right place in the file again
 void VerbalCover::getOnetopData(
   const unsigned char oppsValue1,
   const unsigned char oppsValue2,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
   const VerbalPhrase player)
-  // const BlankPlayerCap side)
 {
   // Here lower and upper are different.
   slots.resize(2);
@@ -751,7 +690,6 @@ string VerbalCover::str(const RanksNames& ranksNames) const
   if (sentence == SENTENCE_SIZE)
     return strTMP;
   else
-    return verbalTemplates.get(
-      sentence, ranksNames, completions, slots);
+    return verbalTemplates.get(sentence, ranksNames, completions, slots);
 }
 

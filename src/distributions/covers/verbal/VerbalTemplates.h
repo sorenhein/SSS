@@ -15,35 +15,34 @@
 
 #include "Language.h"
 #include "Completion.h"
-#include "VerbalBlank.h"
 
 using namespace std;
 
 class RanksNames;
 class Slot;
 
-enum VerbalBlank: unsigned;
 enum VerbalGroup: unsigned;
 enum SlotExpansion: unsigned;
+
+
+enum Sentence: unsigned
+{
+  SENTENCE_LENGTH_ONLY = 0,
+  SENTENCE_ONETOP = 2, // TODO Renam, renumber
+  SENTENCE_TOPS_LENGTH = 3,
+  SENTENCE_TOPS_EXCLUDING = 4,
+  SENTENCE_TOPS_AND_XES = 5,
+  SENTENCE_TOPS_AND_LOWER = 6,
+  SENTENCE_ONLY_BELOW = 7,
+  SENTENCE_LIST = 8,
+  SENTENCE_SIZE = 9
+};
 
 
 struct VerbalTemplate
 {
   string pattern;
-
-  list<VerbalBlank> blanks;
-
   list<VerbalGroup> groups;
-
-  string str() const
-  {
-    stringstream ss;
-    ss << "pattern '" << pattern << "'\n";
-    for (auto i: blanks)
-    ss << i << " ";
-    ss << "\n";
-    return ss.str();
-  };
 };
 
 
@@ -61,6 +60,9 @@ class VerbalTemplates
     vector<VerbalGroup> instanceToGroup;
     vector<SlotExpansion> instanceToExpansion;
     vector<string> instanceToText;
+
+
+    void setMaps();
 
 
   public:

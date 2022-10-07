@@ -19,6 +19,8 @@
 
 #include "../CoverCategory.h"
 #include "../verbal/VerbalCover.h"
+#include "../term/CoverOperator.h"
+
 #include "../../../utils/table.h"
 
 
@@ -717,7 +719,7 @@ string Product::strVerbal(
     verbalCover.getCompletion());
 
   // cout << "\nProduct " << Product::strLine() << ", symm " <<
-    // symmFlag << "\n";
+    // symmFlag << ", verbal " << verbal << "\n";
 
   // Then dereference into the right verbal method (including some
   // error handling).

@@ -12,15 +12,13 @@
 #include <vector>
 #include <string>
 
-#include "Completion.h"
+#include "./Completion.h"
 #include "Slot.h"
 
-#include "VerbalBlank.h"
 #include "VerbalTemplates.h"
 #include "VerbalDimensions.h"
 
 #include "../term/Term.h"
-#include "../term/CoverOperator.h"
 
 #include "../../../utils/table.h"
 
@@ -30,20 +28,14 @@ class Profile;
 class RanksNames;
 struct VerbalData;
 enum Opponent: unsigned;
+enum CoverOperator: unsigned;
 
 
+// TODO Put it somewhere and avoid include of table.h?
 struct VerbalSide
 {
   Opponent side;
   bool symmFlag;
-
-  BlankPlayerCap blank() const
-  {
-    if (side == OPP_WEST)
-      return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
-    else
-      return (symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
-  };
 
   VerbalPhrase player() const
   {
@@ -68,11 +60,9 @@ class VerbalCover
 
     list<Completion> completions;
 
-    // vector<TemplateData> templateFills;
-
-    // TODO These are better alternatives to templateFills.
     vector<Slot> slots;
 
+    // TODO Proper Term (length)?
     bool lengthFlag;
     unsigned char lengthLower;
     unsigned char lengthUpper;
@@ -108,6 +98,14 @@ class VerbalCover
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
       Slot& slot) const;
+
+    void getOnetopData(
+      const unsigned char oppsValue1,
+      const unsigned char oppsValue2,
+      const unsigned char oppsLength,
+      const unsigned char onetopIndex,
+      const VerbalPhrase player);
+
 
 
 
@@ -166,7 +164,7 @@ class VerbalCover
 
     list<Completion>& getCompletions();
 
-    void setSentence(const Sentence sentenceIn);
+    // void setSentence(const Sentence sentenceIn);
 
     void fillCompletion(const VerbalSide& vside);
 
@@ -185,15 +183,6 @@ class VerbalCover
       const unsigned char oppsLength,
       const bool symmFlag,
       const RanksNames& ranksNames);
-
-    // TODO Later on private again
-    void getOnetopData(
-      const unsigned char oppsValue1,
-      const unsigned char oppsValue2,
-      const unsigned char oppsLength,
-      const unsigned char onetopIndex,
-      const VerbalPhrase player);
-      // const BlankPlayerCap side);
 
     string str(const RanksNames& ranksNames) const;
 };

@@ -63,8 +63,6 @@
 
 Slot::Slot()
 {
-  phraseCategory = static_cast<PhraseCategory>(
-    numeric_limits<unsigned>::max());
   phraseInstance = numeric_limits<unsigned>::max();
   expansion = SLOT_SIZE;
 
@@ -74,28 +72,12 @@ Slot::Slot()
 
   uchars.clear();
   bools.clear();
-
-  newFlag = false;
 }
-
-
-/*
-void Slot::setSemantics(
-  const PhraseCategory phraseCategoryIn,
-  const unsigned phraseInstanceIn,
-  const SlotExpansion expansionIn)
-{
-  phraseCategory = phraseCategoryIn;
-  phraseInstance = phraseInstanceIn;
-  expansion = expansionIn;
-}
-*/
 
 
 void Slot::setPhrase(const VerbalPhrase phraseIn)
 {
-  newFlag = true;
-  vphrase = phraseIn;
+  phrase = phraseIn;
 }
 
 
@@ -170,22 +152,9 @@ void Slot::setBools(
 }
 
 
-PhraseCategory Slot::phrase() const
-{
-  return phraseCategory;
-}
-
-
 VerbalPhrase Slot::getPhrase() const
 {
-  return vphrase;
-}
-
-
-// TODO TMP
-bool Slot::isNew() const
-{
-  return newFlag;
+  return phrase;
 }
 
 
@@ -341,31 +310,19 @@ string Slot::strCommon(
 }
 
 
-string Slot::str(
-  const vector<vector<string>>& dictionary,
-  const RanksNames& ranksNames,
-  const Completion& completion) const
-{
-  assert(phraseCategory < dictionary.size());
-  assert(phraseInstance < dictionary[phraseCategory].size());
-
-  string s = dictionary[phraseCategory][phraseInstance];
-  return Slot::strCommon(s, expansion, ranksNames, completion);
-}
-
-
+// TODO Combine back down into one method
 string Slot::str(
   const vector<SlotExpansion>& instanceToExpansion,
   const vector<string>& instanceToText,
   const RanksNames& ranksNames,
   const Completion& completion) const
 {
-  assert(vphrase < instanceToExpansion.size());
-  assert(vphrase < instanceToText.size());
+  assert(phrase < instanceToExpansion.size());
+  assert(phrase < instanceToText.size());
 
   return Slot::strCommon(
-    instanceToText[vphrase],
-    instanceToExpansion[vphrase],
+    instanceToText[phrase],
+    instanceToExpansion[phrase],
     ranksNames,
     completion);
 }

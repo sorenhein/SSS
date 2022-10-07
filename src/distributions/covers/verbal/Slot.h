@@ -61,9 +61,7 @@ class Slot
     vector<unsigned char> uchars;
     vector<bool> bools;
 
-    // TODO TMP
-    bool newFlag;
-    VerbalPhrase vphrase;
+    VerbalPhrase phrase;
 
 
     bool has(
@@ -102,13 +100,6 @@ class Slot
 
     Slot();
 
-    /*
-    void setSemantics(
-      const PhraseCategory phraseCategoryIn,
-      const unsigned phraseInstanceIn,
-      const SlotExpansion expansionIn);
-      */
-
     void setPhrase(const VerbalPhrase phraseIn);
 
     void setSide(const Opponent sideIn);
@@ -135,16 +126,7 @@ class Slot
       const bool bool2,
       const bool bool3);
 
-    PhraseCategory phrase() const;
-
     VerbalPhrase getPhrase() const;
-
-    bool isNew() const;
-
-    string str(
-      const vector<vector<string>>& dictionary,
-      const RanksNames& ranksNames,
-      const Completion& completion) const;
 
     string str(
       const vector<SlotExpansion>& instanceToExpansion,
