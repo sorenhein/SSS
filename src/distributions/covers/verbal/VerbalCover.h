@@ -94,22 +94,6 @@ class VerbalCover
       const unsigned char oppsLength,
       const Opponent simplestOpponent);
 
-    void getOnetopElement(
-      const unsigned char oppsValue1,
-      const unsigned char oppsValue2,
-      const unsigned char oppsSize,
-      const unsigned char onetopIndex,
-      Slot& slot) const;
-
-    void getOnetopData(
-      const unsigned char oppsValue1,
-      const unsigned char oppsValue2,
-      const unsigned char oppsLength,
-      const unsigned char onetopIndex,
-      const VerbalPhrase player);
-
-
-
 
   public:
 

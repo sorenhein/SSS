@@ -111,37 +111,30 @@ void VerbalCover::fillOnetopOnly(
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
 
-  VerbalCover::getOnetopData(
-    vLower, vUpper, oppsSize, onetopIndex, vside.player());
+  // Here lower and upper are different.
+  slots.resize(2);
 
-  /*
-  if (vside.side == OPP_WEST || vside.side == OPP_EITHER)
+  if (vLower + vUpper == oppsSize)
+    slots[0].setPhrase(PLAYER_EACH);
+  else
+    slots[0].setPhrase(vside.player());
+
+  if (vLower == 0)
   {
-    VerbalCover::getOnetopData(
-      top.lower(),
-      top.upper(),
-      oppsSize,
-      onetopIndex,
-      vside.symmFlag ? PLAYER_EITHER : PLAYER_WEST);
-    
-    assert(top.lower() == vLower);
-    assert(vUpper == (top.upper() == 0xf ? oppsSize : top.upper()));
-    assert(vside.player() == (vside.symmFlag ? PLAYER_EITHER: PLAYER_WEST));
+    slots[1].setPhrase(TOPS_ATMOST);
+    slots[1].setValues(vUpper, onetopIndex);
+  }
+  else if (vUpper == oppsSize)
+  {
+    slots[1].setPhrase(TOPS_ATLEAST);
+    slots[1].setValues(vLower, onetopIndex);
   }
   else
   {
-    VerbalCover::getOnetopData(
-      top.upper() == 0xf ? 0 : oppsSize - top.upper(),
-      oppsSize - top.lower(),
-      oppsSize,
-      onetopIndex,
-      vside.symmFlag ? PLAYER_EITHER : PLAYER_EAST);
-
-    assert(vLower == (top.upper() == 0xf ? 0 : oppsSize - top.upper()));
-    assert(vUpper == oppsSize - top.lower());
-    assert(vside.player() == (vside.symmFlag ? PLAYER_EITHER: PLAYER_EAST));
+    slots[1].setPhrase(TOPS_RANGE);
+    slots[1].setValues(vLower, vUpper, onetopIndex);
   }
-  */
+
 }
 
 
@@ -318,6 +311,7 @@ void VerbalCover::getLengthInsideData(
   }
   else if (vLower+1 == vUpper)
   {
+    // TODO Is this true??
     slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_ODD_EVENLY);
   }
@@ -345,6 +339,7 @@ void VerbalCover::getLengthData(
   // the intended side (and not e.g. "The suit splits 2=2" instead
   // of "West has a doubleton").
 
+  // TODO Add length.isEqual() to Term
   if (lengthOper == COVER_EQUAL)
   {
     VerbalCover::getLengthEqualData(oppsLength, vside, abstractableFlag);
@@ -626,63 +621,6 @@ void VerbalCover::setGeneral(
   else
     // This done exclusively in the new way.
     strTMP = lstr;
-}
-
-
-void VerbalCover::getOnetopElement(
-  const unsigned char oppsValue1,
-  const unsigned char oppsValue2,
-  const unsigned char oppsSize,
-  const unsigned char onetopIndex,
-  Slot& slot) const
-{
-  if (oppsValue1 == 0)
-  {
-    slot.setPhrase(TOPS_ATMOST);
-    slot.setValues(oppsValue2, onetopIndex);
-  }
-  else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
-  {
-    slot.setPhrase(TOPS_ATLEAST);
-    slot.setValues(oppsValue1, onetopIndex);
-  }
-  else
-  {
-    slot.setPhrase(TOPS_RANGE);
-    slot.setValues(oppsValue1, oppsValue2, onetopIndex);
-  }
-}
-
-
-void VerbalCover::getOnetopData(
-  const unsigned char oppsValue1,
-  const unsigned char oppsValue2,
-  const unsigned char oppsSize,
-  const unsigned char onetopIndex,
-  const VerbalPhrase player)
-{
-  // Here lower and upper are different.
-  slots.resize(2);
-
-  /*
-  if (oppsValue1 == 0)
-    slots[0].setPhrase(player);
-  // else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
-  else if (oppsValue2 == oppsSize)
-    slots[0].setPhrase(player);
-  else if (oppsValue1 + oppsValue2 == oppsSize)
-    slots[0].setPhrase(PLAYER_EACH);
-  else
-    slots[0].setPhrase(player);
-    */
-
-  if (oppsValue1 + oppsValue2 == oppsSize)
-    slots[0].setPhrase(PLAYER_EACH);
-  else
-    slots[0].setPhrase(player);
-
-  VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
-    onetopIndex, slots[1]);
 }
 
 
