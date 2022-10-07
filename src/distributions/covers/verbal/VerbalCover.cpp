@@ -637,7 +637,6 @@ void VerbalCover::fillTopsAndLower(
     t = ", lower-ranked ";
     t += (freeUpper == 1 ? "card" : "cards");
 
-    // TODO This tag is not yet implemented
     slots[3].setSemantics(PHRASE_TOPS, BLANK_TOPS_LOWER, SLOT_TEXT_LOWER);
     slots[3].setValues(freeUpper);
   }

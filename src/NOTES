@@ -1,5 +1,7 @@
 Slot:
-Streamline cpp, e.g. commonalities, smaller methods
+topCount etc. must go out again.
+When flattening texts, dictionary lookup becomes 1D.
+Don't need phraseCategory.
 
 VerbalTemplates:
 check that the blank matches the template
