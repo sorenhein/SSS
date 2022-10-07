@@ -12,12 +12,11 @@
 #include <vector>
 #include <string>
 
-// #include "../../../utils/table.h"
-
 class RanksNames;
 class Completion;
 
 enum PhraseCategory: unsigned;
+enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
 
 using namespace std;
@@ -62,6 +61,10 @@ class Slot
     vector<unsigned char> uchars;
     vector<bool> bools;
 
+    // TODO TMP
+    bool newFlag;
+    VerbalPhrase vphrase;
+
 
     bool has(
       const unsigned char actOpp,
@@ -88,6 +91,12 @@ class Slot
       const unsigned char field,
       unsigned char uchar) const;
 
+    string strCommon(
+      const string& str,
+      const SlotExpansion& expansionIn,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
 
   public:
 
@@ -97,6 +106,8 @@ class Slot
       const PhraseCategory phraseCategoryIn,
       const unsigned phraseInstanceIn,
       const SlotExpansion expansionIn);
+
+    void setPhrase(const VerbalPhrase phraseIn);
 
     void setSide(const Opponent sideIn);
 
@@ -124,8 +135,18 @@ class Slot
 
     PhraseCategory phrase() const;
 
+    VerbalPhrase getPhrase() const;
+
+    bool isNew() const;
+
     string str(
       const vector<vector<string>>& dictionary,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string str(
+      const vector<SlotExpansion>& instanceToExpansion,
+      const vector<string>& instanceToText,
       const RanksNames& ranksNames,
       const Completion& completion) const;
 };

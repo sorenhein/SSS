@@ -15,46 +15,7 @@
 #include "Slot.h"
 #include "VerbalBlank.h"
 
-// #include "../../../ranks/RanksNames.h"
-// #include "../../../utils/table.h"
-
-/*
-const vector<string> topCount =
-{
-  "none",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-  "ten",
-  "eleven",
-  "twelve",
-  "thirteen"
-};
-
-const vector<string> topOrdinal =
-{
-  "void",
-  "singleton",
-  "doubleton",
-  "tripleton",
-  "fourth",
-  "fifth",
-  "sixth",
-  "seventh",
-  "eighth",
-  "ninth",
-  "tenth",
-  "eleventh",
-  "twelfth",
-  "thirteenth"
-};
-*/
+#include "VerbalMap.h"
 
 
 
@@ -72,83 +33,117 @@ void VerbalTemplates::reset()
 
 void VerbalTemplates::set(const Language languageIn)
 {
+  instanceToGroup.resize(VERBAL_PHRASE_SIZE);
+  instanceToExpansion.resize(VERBAL_PHRASE_SIZE);
+  instanceToText.resize(VERBAL_PHRASE_SIZE);
+
+  for (auto& vm: verbalMap)
+  {
+    instanceToGroup[vm.instance] = vm.group;
+    instanceToExpansion[vm.instance] = vm.expansion;
+    instanceToText[vm.instance] = vm.text;
+  }
+
+
+
   templates.resize(SENTENCE_SIZE);
   language = languageIn;
 
   if (language == LANGUAGE_ENGLISH_US)
   {
     templates[SENTENCE_LENGTH_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB }};
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB },
+      { GROUP_PLAYER, GROUP_LENGTH_VERB} };
 
     templates[SENTENCE_TOPS_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE },
+      { GROUP_PLAYER, GROUP_PLAYER }}; // TODO Unused?
 
     templates[SENTENCE_ONETOP] =
-      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS},
+      { GROUP_PLAYER, GROUP_TOPS }};
 
     templates[SENTENCE_TOPS_LENGTH] =
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_LENGTH_ADJ}};
+        BLANK_LENGTH_ADJ},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL }};
 
     templates[SENTENCE_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_EXCLUDING, BLANK_TOPS}};
+        BLANK_EXCLUDING, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS }};
 
     templates[SENTENCE_TOPS_AND_XES] =
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_BOTTOMS}};
+        BLANK_BOTTOMS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS }};
 
     templates[SENTENCE_TOPS_AND_LOWER] =
       { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_COUNT, BLANK_TOPS}};
+        BLANK_COUNT, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS }};
 
     // TODO The last one could be a different type to tell us
     // to look up ranksNames.lowestCard or something like it.
     templates[SENTENCE_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
-        BLANK_BELOW, BLANK_TOPS}};
+        BLANK_BELOW, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS }};
 
     // Up to 4 such holdings currently foreseen.
     templates[SENTENCE_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
-        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE },
+        { GROUP_PLAYER, GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST }};
   }
   else if (language == LANGUAGE_GERMAN_DE)
   {
     templates[SENTENCE_LENGTH_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB }};
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB },
+      { GROUP_PLAYER, GROUP_LENGTH_VERB} };
 
     templates[SENTENCE_TOPS_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE }};
+      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE },
+      { GROUP_PLAYER, GROUP_PLAYER }}; // TODO Unused?
 
     templates[SENTENCE_ONETOP] =
-      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS}};
+      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS},
+      { GROUP_PLAYER, GROUP_TOPS }};
 
     templates[SENTENCE_TOPS_LENGTH] =
       { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_LENGTH_ADJ}};
+        BLANK_LENGTH_ADJ},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL }};
 
     templates[SENTENCE_TOPS_EXCLUDING] =
-      { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_EXCLUDING, BLANK_LENGTH_ADJ}};
+      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_EXCLUDING, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS }};
 
     templates[SENTENCE_TOPS_AND_XES] =
       { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_BOTTOMS}};
+        BLANK_BOTTOMS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS }};
 
     templates[SENTENCE_TOPS_AND_LOWER] =
-      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_COUNT, BLANK_TOPS}};
+      { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
+        BLANK_COUNT, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS }};
 
+    // TODO The last one could be a different type to tell us
+    // to look up ranksNames.lowestCard or something like it.
     templates[SENTENCE_ONLY_BELOW] =
       { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
-        BLANK_BELOW, BLANK_TOPS}};
+        BLANK_BELOW, BLANK_TOPS},
+        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS }};
 
+    // Up to 4 such holdings currently foreseen.
     templates[SENTENCE_LIST] =
       { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
         BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
-        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE }};
+        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE },
+        { GROUP_PLAYER, GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST }};
   }
   else
     assert(false);
@@ -157,6 +152,7 @@ void VerbalTemplates::set(const Language languageIn)
   for (auto& dict: dictionary)
     dict.resize(BLANK_MAX_VERSIONS);
 
+  // X
   auto& blankPlayerCap = dictionary[BLANK_PLAYER_CAP];
   blankPlayerCap[BLANK_PLAYER_CAP_WEST] = "West";
   blankPlayerCap[BLANK_PLAYER_CAP_EAST] = "East";
@@ -165,6 +161,7 @@ void VerbalTemplates::set(const Language languageIn)
   blankPlayerCap[BLANK_PLAYER_CAP_NEITHER] = "Neither opponent";
   blankPlayerCap[BLANK_PLAYER_CAP_SUIT] = "The suit";
 
+  // X
   auto& blankLP = dictionary[BLANK_LENGTH_VERB];
   blankLP[BLANK_LENGTH_VERB_VOID] = "is void";
   blankLP[BLANK_LENGTH_VERB_SINGLE] = "has a singleton";
@@ -180,17 +177,19 @@ void VerbalTemplates::set(const Language languageIn)
   blankLP[BLANK_LENGTH_VERB_RANGE_PARAMS] = "has %0-%1 cards";
   blankLP[BLANK_LENGTH_VERB_SPLIT_PARAMS] = "splits %0=%1";
 
+  // X
   auto& blankPLV = dictionary[PHRASE_LENGTH_VERB];
-  blankPLV[LENGTH_VERB_VOID] = "is void";
-  blankPLV[LENGTH_VERB_XTON] = "has a %0";
-  blankPLV[LENGTH_VERB_EVENLY] = "splits evenly";
-  blankPLV[LENGTH_VERB_ODD_EVENLY] = "splits evenly either way";
-  blankPLV[LENGTH_VERB_XTON_ATMOST] = "has at most a %0";
-  blankPLV[LENGTH_VERB_CARDS] = "has %0 cards";
-  blankPLV[LENGTH_VERB_CARDS_ATMOST] = "has at most %0 cards";
-  blankPLV[LENGTH_VERB_RANGE] = "has %0-%1 cards";
-  blankPLV[LENGTH_VERB_SPLIT] = "splits %0=%1";
+  blankPLV[XLENGTH_VERB_VOID] = "is void";
+  blankPLV[XLENGTH_VERB_XTON] = "has a %0";
+  blankPLV[XLENGTH_VERB_EVENLY] = "splits evenly";
+  blankPLV[XLENGTH_VERB_ODD_EVENLY] = "splits evenly either way";
+  blankPLV[XLENGTH_VERB_XTON_ATMOST] = "has at most a %0";
+  blankPLV[XLENGTH_VERB_CARDS] = "has %0 cards";
+  blankPLV[XLENGTH_VERB_CARDS_ATMOST] = "has at most %0 cards";
+  blankPLV[XLENGTH_VERB_RANGE] = "has %0-%1 cards";
+  blankPLV[XLENGTH_VERB_SPLIT] = "splits %0=%1";
 
+  // X
   auto& blankLPA = dictionary[BLANK_LENGTH_ADJ];
   blankLPA[BLANK_LENGTH_ADJ_SINGLE] = "singleton";
   blankLPA[BLANK_LENGTH_ADJ_DOUBLE] = "doubleton";
@@ -202,16 +201,19 @@ void VerbalTemplates::set(const Language languageIn)
   blankLPA[BLANK_LENGTH_ADJ_LONG_ATMOST] = "at most %0";
   blankLPA[BLANK_LENGTH_ADJ_23] = "doubleton or tripleton";
 
+  // X
   auto& blankLPO = dictionary[PHRASE_LENGTH_ORDINAL];
-  blankLPO[LENGTH_ORDINAL_EXACT] = "%0";
-  blankLPO[LENGTH_ORDINAL_ATMOST] = "at most %0";
-  blankLPO[LENGTH_ORDINAL_23] = "doubleton or tripleton";
+  blankLPO[XLENGTH_ORDINAL_EXACT] = "%0";
+  blankLPO[XLENGTH_ORDINAL_ATMOST] = "at most %0";
+  blankLPO[XLENGTH_ORDINAL_23] = "doubleton or tripleton";
 
+  // X
   auto& blankC = dictionary[BLANK_COUNT];
   blankC[BLANK_COUNT_EQUAL] = "%0";
   blankC[BLANK_COUNT_ATMOST] = "at most %0";
   blankC[BLANK_COUNT_RANGE_PARAMS] = "%0-%1";
 
+  // X
   auto& blank1TP = dictionary[BLANK_TOPS];
   blank1TP[BLANK_TOPS_ONE_ATMOST] = "at most %0 of %1";
   blank1TP[BLANK_TOPS_ONE_ATLEAST] = "at least %0 of %1";
@@ -223,11 +225,13 @@ void VerbalTemplates::set(const Language languageIn)
   auto& blankBot = dictionary[BLANK_BOTTOMS];
   blankBot[BLANK_BOTTOMS_NORMAL] = "%0";
 
+  // X
   auto& blankEx = dictionary[BLANK_EXCLUDING];
   blankEx[BLANK_EXCLUDING_NONE] = "none of";
   blankEx[BLANK_EXCLUDING_NEITHER] = "neither of";
   blankEx[BLANK_EXCLUDING_NOT] = "not";
 
+  // X
   auto& blankBel = dictionary[BLANK_BELOW];
   blankBel[BLANK_BELOW_NORMAL] = "below the";
   blankBel[BLANK_BELOW_COMPLETELY] = "completely below the";
@@ -239,8 +243,8 @@ void VerbalTemplates::set(const Language languageIn)
   blankLiP[BLANK_LIST_PHRASE_HOLDING] = "%0";
 
   auto& blankPL = dictionary[PHRASE_LIST];
-  blankPL[LIST_HOLDING_EXACT] = "%0";
-  blankPL[LIST_HOLDING_WITH_LOWS] = "%0(%1)";
+  blankPL[XLIST_HOLDING_EXACT] = "%0";
+  blankPL[XLIST_HOLDING_WITH_LOWS] = "%0(%1)";
 }
 
 
@@ -264,15 +268,38 @@ string VerbalTemplates::get(
   size_t field;
   auto slotIter = slots.begin();
   auto complIter = completions.begin();
+  auto giter = vt.groups.begin();
 
-  for (field = 0; field < slots.size(); field++, slotIter++)
+  for (field = 0; field < slots.size(); field++, slotIter++, giter++)
   {
     const Slot& slot = * slotIter;
 
     // TODO Should we have a slot.phrase() == effectively blank?
 
     assert(complIter != completions.end());
-    fill = slot.str(dictionary, ranksNames, * complIter);
+
+    if (slot.isNew())
+    {
+      const VerbalPhrase vp = slot.getPhrase();
+      assert(vp < instanceToGroup.size());
+      const VerbalGroup vg = instanceToGroup[vp];
+      assert(vg == * giter);
+
+      fill = slot.str(
+        instanceToExpansion, 
+        instanceToText,
+        ranksNames,
+        * complIter);
+    }
+    else
+    {
+      fill = slot.str(dictionary, ranksNames, * complIter);
+    }
+
+
+
+
+
     if (slot.phrase() == PHRASE_LIST)
       complIter++;
 

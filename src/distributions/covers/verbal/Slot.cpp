@@ -74,6 +74,8 @@ Slot::Slot()
 
   uchars.clear();
   bools.clear();
+
+  newFlag = false;
 }
 
 
@@ -85,6 +87,13 @@ void Slot::setSemantics(
   phraseCategory = phraseCategoryIn;
   phraseInstance = phraseInstanceIn;
   expansion = expansionIn;
+}
+
+
+void Slot::setPhrase(const VerbalPhrase phraseIn)
+{
+  newFlag = true;
+  vphrase = phraseIn;
 }
 
 
@@ -165,6 +174,19 @@ PhraseCategory Slot::phrase() const
 }
 
 
+VerbalPhrase Slot::getPhrase() const
+{
+  return vphrase;
+}
+
+
+// TODO TMP
+bool Slot::isNew() const
+{
+  return newFlag;
+}
+
+
 bool Slot::has(
   const unsigned char actOpp,
   const unsigned char actUchars,
@@ -214,22 +236,21 @@ void Slot::replace(
 }
 
 
-string Slot::str(
-  const vector<vector<string>>& dictionary,
+string Slot::strCommon(
+  const string& str,
+  const SlotExpansion& expansionIn,
   const RanksNames& ranksNames,
   const Completion& completion) const
 {
-  assert(phraseCategory < dictionary.size());
-  assert(phraseInstance < dictionary[phraseCategory].size());
+  string s = str;
+  const SlotExpansion expansion0 = expansionIn; // TODO Not pretty
 
-  string s = dictionary[phraseCategory][phraseInstance];
-
-  if (expansion == SLOT_NONE)
+  if (expansion0 == SLOT_NONE)
   {
     assert(Slot::has(0, 0, 0));
     return s;
   }
-  else if (expansion == SLOT_NUMERICAL)
+  else if (expansion0 == SLOT_NUMERICAL)
   {
     assert(Slot::has(0, 1, 0) || Slot::has(0, 2, 0));
 
@@ -238,32 +259,32 @@ string Slot::str(
 
     return s;
   }
-  else if (expansion == SLOT_ORDINAL)
+  else if (expansion0 == SLOT_ORDINAL)
   {
     assert(Slot::has(0, 1, 0));
     Slot::replace(s, "%0", topOrdinal[uchars[0]]);
     return s;
   }
-  else if (expansion == SLOT_RANKS)
+  else if (expansion0 == SLOT_RANKS)
   {
     assert(Slot::has(0, 1, 0));
     Slot::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
     return s;
   }
-  else if (expansion == SLOT_TEXT_LOWER)
+  else if (expansion0 == SLOT_TEXT_LOWER)
   {
     assert(Slot::has(0, 1, 0));
     Slot::replace(s, "%0", plural[uchars[0] == 1 ? 0 : 1]);
     return s;
   }
-  else if (expansion == SLOT_TEXT_BELOW)
+  else if (expansion0 == SLOT_TEXT_BELOW)
   {
     assert(Slot::has(0, 2, 0));
     Slot::replace(s, "%0", plural[uchars[0] == 1 ? 0 : 1]);
     Slot::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
     return s;
   }
-  else if (expansion == SLOT_RANGE_OF)
+  else if (expansion0 == SLOT_RANGE_OF)
   {
     assert(Slot::has(0, 3, 0));
     Slot::replace(s, "%0", uchars[0]);
@@ -272,7 +293,7 @@ string Slot::str(
       strComponent(RANKNAME_ACTUAL_FULL));
     return s;
   }
-  else if (expansion == SLOT_SOME_OF)
+  else if (expansion0 == SLOT_SOME_OF)
   {
     assert(Slot::has(0, 2, 0));
     Slot::replace(s, "%0", topCount[uchars[0]]);
@@ -280,7 +301,7 @@ string Slot::str(
       strComponent(RANKNAME_ACTUAL_FULL));
     return s;
   }
-  else if (expansion == SLOT_COMPLETION_SET)
+  else if (expansion0 == SLOT_COMPLETION_SET)
   {
     assert(Slot::has(1, 0, 2) || Slot::has(1, 0, 3));
 
@@ -293,7 +314,7 @@ string Slot::str(
 
     return s;
   }
-  else if (expansion == SLOT_COMPLETION_BOTH)
+  else if (expansion0 == SLOT_COMPLETION_BOTH)
   {
     assert(Slot::has(1, 0, 2));
 
@@ -304,7 +325,7 @@ string Slot::str(
 
     return s;
   }
-  else if (expansion == SLOT_COMPLETION_XES)
+  else if (expansion0 == SLOT_COMPLETION_XES)
   {
     assert(Slot::has(1, 0, 0));
     Slot::replace(s, "%0", completion.strXes(side));
@@ -317,3 +338,32 @@ string Slot::str(
   }
 }
 
+
+string Slot::str(
+  const vector<vector<string>>& dictionary,
+  const RanksNames& ranksNames,
+  const Completion& completion) const
+{
+  assert(phraseCategory < dictionary.size());
+  assert(phraseInstance < dictionary[phraseCategory].size());
+
+  string s = dictionary[phraseCategory][phraseInstance];
+  return Slot::strCommon(s, expansion, ranksNames, completion);
+}
+
+
+string Slot::str(
+  const vector<SlotExpansion>& instanceToExpansion,
+  const vector<string>& instanceToText,
+  const RanksNames& ranksNames,
+  const Completion& completion) const
+{
+  assert(vphrase < instanceToExpansion.size());
+  assert(vphrase < instanceToText.size());
+
+  return Slot::strCommon(
+    instanceToText[vphrase],
+    instanceToExpansion[vphrase],
+    ranksNames,
+    completion);
+}

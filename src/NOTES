@@ -1,3 +1,5 @@
+Completion:strNew is the only one now?
+
 Slot:
 topCount etc. must go out again.
 When flattening texts, dictionary lookup becomes 1D.
