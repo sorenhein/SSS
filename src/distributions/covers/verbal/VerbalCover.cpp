@@ -108,6 +108,9 @@ void VerbalCover::fillOnetopOnly(
 {
   sentence = SENTENCE_ONETOP;
 
+  unsigned char vLower, vUpper;
+  top.range(oppsSize, vside.side, vLower, vUpper);
+
   if (vside.side == OPP_WEST || vside.side == OPP_EITHER)
   {
     VerbalCover::getOnetopData(
@@ -116,6 +119,10 @@ void VerbalCover::fillOnetopOnly(
       oppsSize,
       onetopIndex,
       vside.symmFlag ? PLAYER_EITHER : PLAYER_WEST);
+    
+    assert(top.lower() == vLower);
+    assert(vUpper == (top.upper() == 0xf ? oppsSize : top.upper()));
+    assert(vside.player() == (vside.symmFlag ? PLAYER_EITHER: PLAYER_WEST));
   }
   else
   {
@@ -125,6 +132,10 @@ void VerbalCover::fillOnetopOnly(
       oppsSize,
       onetopIndex,
       vside.symmFlag ? PLAYER_EITHER : PLAYER_EAST);
+
+    assert(vLower == (top.upper() == 0xf ? 0 : oppsSize - top.upper()));
+    assert(vUpper == oppsSize - top.lower());
+    assert(vside.player() == (vside.symmFlag ? PLAYER_EITHER: PLAYER_EAST));
   }
 }
 
@@ -352,31 +363,7 @@ void VerbalCover::fillLengthAdjElement(
   Slot& selement = slots[2];
 
   unsigned char vLower, vUpper;
-
-  assert(lengthLower == length.lower());
-  assert(lengthUpper == length.upper());
-  assert(lengthOper == length.getOperator());
-
-  if (simplestOpponent == OPP_WEST)
-  {
-    vLower = lengthLower;
-    vUpper = lengthUpper;
-  }
-  else if (lengthUpper == 0xf)
-  {
-    vLower = 0;
-    vUpper = oppsLength - lengthLower;
-  }
-  else
-  {
-    vLower = oppsLength - lengthUpper;
-    vUpper = oppsLength - lengthLower;
-  }
-
-  unsigned char vLower2, vUpper2;
-  length.range(oppsLength, simplestOpponent, vLower2, vUpper2);
-  assert(vLower == vLower2);
-  assert(vUpper == vUpper2);
+  length.range(oppsLength, simplestOpponent, vLower, vUpper);
 
   if (vLower == vUpper)
   {
@@ -656,7 +643,6 @@ void VerbalCover::getOnetopElement(
   }
   else
   {
-    // TODO This looks identical?!
     slot.setPhrase(TOPS_RANGE);
     slot.setValues(oppsValue1, oppsValue2, onetopIndex);
   }
