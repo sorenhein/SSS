@@ -20,6 +20,7 @@
 
 // TODO Need whole file or just TemplateData?
 #include "VerbalTemplates.h"
+#include "VerbalDimensions.h"
 #include "./Completion.h"
 
 #include "../../../ranks/RanksNames.h"
@@ -259,28 +260,32 @@ void VerbalCover::getLengthEqualData(
   if (value == 0)
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_VOID, SLOT_NONE);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_VOID, SLOT_NONE);
+    slots[1].setPhrase(LENGTH_VERB_VOID);
   }
   else if (value == 1)
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 2 && (! abstractableFlag || oppsLength > 4))
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (value == 3 && (! abstractableFlag || oppsLength > 6))
   {
     slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
-    slots[1].setSemantics(
-      PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    // slots[1].setSemantics(
+      // PHRASE_LENGTH_VERB, XLENGTH_VERB_XTON, SLOT_ORDINAL);
+    slots[1].setPhrase(LENGTH_VERB_XTON);
     slots[1].setValues(value);
   }
   else if (! abstractableFlag)
