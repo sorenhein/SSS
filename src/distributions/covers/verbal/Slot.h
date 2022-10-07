@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 
+#include "../../../utils/table.h"
+
 class RanksNames;
 class Completion;
 
@@ -19,6 +21,25 @@ enum PhraseCategory: unsigned;
 enum SlotExpansion: unsigned;
 
 using namespace std;
+
+
+enum SlotExpansion: unsigned
+{
+  SLOT_NONE = 0,
+  SLOT_NUMERICAL = 1,
+  SLOT_RANKS = 2,
+  SLOT_COMPLETION_SET = 3,
+  SLOT_COMPLETION_UNSET = 4,
+  SLOT_COMPLETION_BOTH = 5,
+  SLOT_COMPLETION_XES = 6,
+  SLOT_COMPLETION_UNCLEAR = 7,
+  SLOT_TEXT_LOWER = 8,
+  SLOT_TEXT_BELOW = 9,
+  SLOT_ORDINAL = 10, // Re-sort after NUMERICAL
+  SLOT_RANGE_OF = 11,
+  SLOT_SOME_OF = 12,
+  SLOT_LENGTH = 13
+};
 
 
 class Slot
@@ -33,9 +54,11 @@ class Slot
 
     SlotExpansion expansion;
 
+    unsigned char numOpp;
     unsigned char numUchars;
     unsigned char numBools;
 
+    Opponent side;
     vector<unsigned char> uchars;
     vector<bool> bools;
 
@@ -47,6 +70,8 @@ class Slot
       const PhraseCategory phraseCategoryIn,
       const unsigned phraseInstanceIn,
       const SlotExpansion expansionIn);
+
+    void setSide(const Opponent sideIn);
 
     void setValues(const unsigned char value1);
 

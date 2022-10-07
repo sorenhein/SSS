@@ -49,6 +49,7 @@ enum PhraseCategory: unsigned
 };
 
 
+/*
 enum SlotExpansion: unsigned
 {
   SLOT_NONE = 0,
@@ -66,6 +67,7 @@ enum SlotExpansion: unsigned
   SLOT_SOME_OF = 12,
   SLOT_LENGTH = 13
 };
+*/
 
 
 

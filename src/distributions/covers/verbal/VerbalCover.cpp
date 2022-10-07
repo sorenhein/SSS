@@ -176,7 +176,7 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 
   slots[1].setSemantics(
     PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
-  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setSide(vside.side);
   slots[1].setBools(true, true);
 
   const unsigned topsFull = completions.front().getTopsFull(
@@ -200,9 +200,7 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 
   slots[3].setSemantics(
     PHRASE_TOPS, BLANK_TOPS_ACTUAL, SLOT_COMPLETION_SET);
-  slots[3].setValues(vside.side == OPP_WEST ?
-    static_cast<unsigned char>(OPP_EAST) :
-    static_cast<unsigned char>(OPP_WEST));
+  slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
   slots[3].setBools(true, true);
 }
 
@@ -458,67 +456,15 @@ void VerbalCover::fillLengthAdjElement(
 
   if (vLower == vUpper)
   {
-    // if (vLower == 1)
-    // {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-        SLOT_ORDINAL);
-      selement.setValues(vLower);
-    /*
-    }
-    else if (vLower == 2)
-    {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-        SLOT_ORDINAL);
-      selement.setValues(vLower);
-    }
-    else if (vLower == 3)
-    {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-        SLOT_ORDINAL);
-      selement.setValues(vLower);
-    }
-    else
-    {
-cout << "vLower " << +vLower << endl;
-assert(false);
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-        SLOT_ORDINAL);
-      selement.setValues(vLower);
-    }
-    */
+    selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+      SLOT_ORDINAL);
+    selement.setValues(vLower);
   }
   else if (vLower == 0)
   {
-    // if (vUpper == 1)
-    // {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
-        SLOT_ORDINAL);
-      selement.setValues(vUpper);
-    /*
-    }
-    else if (vUpper == 2)
-    {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
-        SLOT_ORDINAL);
-      selement.setValues(vUpper);
-    }
-    else if (vUpper == 3)
-    {
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
-        SLOT_ORDINAL);
-      selement.setValues(vUpper);
-    }
-    else
-    {
-cout << "vUpper " << +vUpper << endl;
-assert(false);
-      telement.setBlank(BLANK_LENGTH_ADJ);
-      telement.setData(BLANK_LENGTH_ADJ_LONG_ATMOST, to_string(+vUpper));
-      selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
-        SLOT_ORDINAL);
-      selement.setValues(vUpper);
-    }
-    */
+    selement.setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_ATMOST, 
+      SLOT_ORDINAL);
+    selement.setValues(vUpper);
   }
   else if (vLower == 2 && vUpper == 3)
   {
@@ -586,39 +532,12 @@ void VerbalCover::fillSingular(
     SLOT_COMPLETION_SET);
   // TODO This is part of the reversal problem in Pverbal!
   // slots[1].setValues(static_cast<unsigned char>(vside.side));
-  slots[1].setValues(static_cast<unsigned char>(OPP_WEST));
+  slots[1].setSide(OPP_WEST);
   slots[1].setBools(false, false);
 
-  // if (lenCompletion == 1)
-  // {
-    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-      SLOT_ORDINAL);
-    slots[2].setValues(lenCompletion);
-  /*
-  }
-  else if (lenCompletion == 2)
-  {
-    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-      SLOT_ORDINAL);
-    slots[2].setValues(lenCompletion);
-  }
-  else if (lenCompletion == 3)
-  {
-    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-      SLOT_ORDINAL);
-    slots[2].setValues(lenCompletion);
-  }
-  else
-  {
-cout << "lenCompletion " << +lenCompletion << endl;
-assert(false);
-    templateFills[2].setData(BLANK_LENGTH_ADJ, BLANK_LENGTH_ADJ_LONG, 
-      lenCompletion);
-    slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
-      SLOT_ORDINAL);
-    slots[2].setValues(lenCompletion);
-  }
-  */
+  slots[2].setSemantics(PHRASE_LENGTH_ORDINAL, LENGTH_ORDINAL_EXACT, 
+    SLOT_ORDINAL);
+  slots[2].setValues(lenCompletion);
 }
 
 
@@ -633,7 +552,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
   slots[1].setSemantics(PHRASE_LIST,
     LIST_HOLDING_EXACT, SLOT_COMPLETION_SET);
-  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setSide(vside.side);
   slots[1].setBools(true, true);
 
 }
@@ -650,7 +569,7 @@ void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 
   slots[1].setSemantics(PHRASE_LIST,
     LIST_HOLDING_WITH_LOWS, SLOT_COMPLETION_BOTH);
-  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setSide(vside.side);
   slots[1].setBools(false, true);
 }
 
@@ -665,12 +584,12 @@ void VerbalCover::fillBottoms(const VerbalSide& vside)
 
   slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
     SLOT_COMPLETION_SET);
-  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setSide(vside.side);
   slots[1].setBools(false, true);
 
   slots[2].setSemantics(PHRASE_BOTTOMS, BLANK_BOTTOMS_NORMAL, 
     SLOT_COMPLETION_XES);
-  slots[2].setValues(static_cast<unsigned char>(vside.side));
+  slots[2].setSide(vside.side);
 }
 
 
@@ -688,7 +607,7 @@ void VerbalCover::fillTopsAndLower(
 
   slots[1].setSemantics(PHRASE_TOPS, BLANK_TOPS_ACTUAL, 
     SLOT_COMPLETION_SET);
-  slots[1].setValues(static_cast<unsigned char>(vside.side));
+  slots[1].setSide(vside.side);
   slots[1].setBools(true, true);
 
   const unsigned char freeLower = completions.front().getFreeLower(vside.side);
@@ -749,7 +668,7 @@ void VerbalCover::fillList(const VerbalSide& vside)
   {
     slots[i].setSemantics(PHRASE_LIST, LIST_HOLDING_EXACT,
       SLOT_COMPLETION_SET);
-    slots[i].setValues(static_cast<unsigned char>(vside.side));
+    slots[i].setSide(vside.side);
     slots[i].setBools(false, false, true);
   }
 }
