@@ -49,27 +49,6 @@ enum PhraseCategory: unsigned
 };
 
 
-/*
-enum SlotExpansion: unsigned
-{
-  SLOT_NONE = 0,
-  SLOT_NUMERICAL = 1,
-  SLOT_RANKS = 2,
-  SLOT_COMPLETION_SET = 3,
-  SLOT_COMPLETION_UNSET = 4,
-  SLOT_COMPLETION_BOTH = 5,
-  SLOT_COMPLETION_XES = 6,
-  SLOT_COMPLETION_UNCLEAR = 7,
-  SLOT_TEXT_LOWER = 8,
-  SLOT_TEXT_BELOW = 9,
-  SLOT_ORDINAL = 10, // Re-sort after NUMERICAL
-  SLOT_RANGE_OF = 11,
-  SLOT_SOME_OF = 12,
-  SLOT_LENGTH = 13
-};
-*/
-
-
 
 
 #define BLANK_MAX_VERSIONS 15

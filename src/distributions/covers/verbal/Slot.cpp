@@ -17,7 +17,7 @@
 
 #include "../../../ranks/RanksNames.h"
 
-#include "../../../utils/table.h"
+// #include "../../../utils/table.h"
 
 
  const vector<string> topCount =
@@ -68,7 +68,7 @@ Slot::Slot()
 {
   phraseCategory = PHRASE_SIZE;
   phraseInstance = BLANK_MAX_VERSIONS;
-  expansion = SLOT_LENGTH;
+  expansion = SLOT_SIZE;
 
   numOpp = 0;
   numUchars = 0;
@@ -167,6 +167,55 @@ PhraseCategory Slot::phrase() const
 }
 
 
+bool Slot::has(
+  const unsigned char actOpp,
+  const unsigned char actUchars,
+  const unsigned char actBools) const
+{
+  return (numOpp == actOpp &&
+    numUchars == actUchars &&
+    numBools == actBools);
+}
+
+
+void Slot::replace(
+  string& s,
+  const string& percent,
+  const string& repl) const
+{
+  auto p = s.find(percent);
+  assert(p != string::npos);
+  s.replace(p, 2, repl);
+}
+
+
+void Slot::replace(
+  string& s,
+  const string& percent,
+  const unsigned char uchar) const
+{
+  Slot::replace(s, percent, to_string(uchar));
+}
+
+
+void Slot::replace(
+  string& s,
+  const unsigned char field,
+  const string& repl) const
+{
+  Slot::replace(s, "%" + to_string(field), repl);
+}
+
+
+void Slot::replace(
+  string& s,
+  const unsigned char field,
+  const unsigned char uchar) const
+{
+  Slot::replace(s, "%" + to_string(field), to_string(uchar));
+}
+
+
 string Slot::str(
   const vector<vector<string>>& dictionary,
   const RanksNames& ranksNames,
@@ -179,192 +228,194 @@ string Slot::str(
 
   if (expansion == SLOT_NONE)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 0);
-    assert(numBools == 0);
+    assert(Slot::has(0, 0, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 0);
+    // assert(numBools == 0);
     return s;
   }
   else if (expansion == SLOT_NUMERICAL)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 1 || numUchars == 2);
-    assert(numBools == 0);
+    assert(Slot::has(0, 1, 0) || Slot::has(0, 2, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 1 || numUchars == 2);
+    // assert(numBools == 0);
 
     if (numUchars == 1)
     {
-      auto p = s.find("%0");
-      if (p == string::npos)
-        assert(false);
-
-      s.replace(p, 2, topCount[uchars[0]]);
+      Slot::replace(s, "%0", topCount[uchars[0]]);
+      // auto p = s.find("%0");
+      // assert(p != string::npos);
+      // s.replace(p, 2, topCount[uchars[0]]);
     }
     else
     {
-      for (size_t field = 0; field < numUchars; field++)
+      for (unsigned char field = 0; field < numUchars; field++)
       {
-        auto p = s.find("%" + to_string(field));
-        if (p == string::npos)
-          assert(false);
-
-        s.replace(p, 2, to_string(uchars[field]));
+        Slot::replace(s, field, uchars[field]);
+        // auto p = s.find("%" + to_string(field));
+        // assert(p != string::npos);
+        // s.replace(p, 2, to_string(uchars[field]));
       }
     }
     return s;
   }
   else if (expansion == SLOT_ORDINAL)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 1);
-    assert(numBools == 0);
+    assert(Slot::has(0, 1, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 1);
+    // assert(numBools == 0);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, topOrdinal[uchars[0]]);
+    Slot::replace(s, "%0", topOrdinal[uchars[0]]);
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, topOrdinal[uchars[0]]);
     return s;
   }
   else if (expansion == SLOT_TEXT_LOWER)
   {
-    assert(numUchars == 1);
-    assert(numBools == 0);
+    assert(Slot::has(0, 1, 0));
+    // assert(numUchars == 1);
+    // assert(numBools == 0);
     
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
+    Slot::replace(s, "%0", 
+      plural[uchars[0] == 1 ? 0 : 1]);
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
     return s;
   }
   else if (expansion == SLOT_TEXT_BELOW)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 2);
-    assert(numBools == 0);
+    assert(Slot::has(0, 2, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 2);
+    // assert(numBools == 0);
     
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
+    Slot::replace(s, "%0", plural[uchars[0] == 1 ? 0 : 1]);
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
 
-    s.replace(p, 2, plural[uchars[0] == 1 ? 0 : 1]);
-
-    p = s.find("%1");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, ranksNames.lowestCard(uchars[1]));
+    Slot::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
+    // p = s.find("%1");
+    // assert(p != string::npos);
+    // s.replace(p, 2, ranksNames.lowestCard(uchars[1]));
 
     return s;
   }
   else if (expansion == SLOT_COMPLETION_SET)
   {
-    assert(numOpp == 1);
-    assert(numUchars == 0);
-    assert(numBools == 2 || numBools == 3);
+    assert(Slot::has(1, 0, 2) || Slot::has(1, 0, 3));
+    // assert(numOpp == 1);
+    // assert(numUchars == 0);
+    // assert(numBools == 2 || numBools == 3);
 
     auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
-
+    assert(p != string::npos);
     if (numBools == 2)
-      s.replace(p, 2, completion.strSetNew(ranksNames,
-        side, bools[0], bools[1]));
+      Slot::replace(s, "%0",
+        completion.strSetNew(ranksNames, side, bools[0], bools[1]));
+      // s.replace(p, 2, completion.strSetNew(ranksNames,
+        // side, bools[0], bools[1]));
     else
-      s.replace(p, 2, completion.strSetNew(ranksNames,
-        side, bools[0], bools[1], bools[2]));
+      Slot::replace(s, "%0",
+        completion.strSetNew(ranksNames, side, bools[0], bools[1], bools[2]));
+      // s.replace(p, 2, completion.strSetNew(ranksNames,
+        // side, bools[0], bools[1], bools[2]));
 
     return s;
   }
   else if (expansion == SLOT_COMPLETION_BOTH)
   {
-    assert(numOpp == 1);
-    assert(numUchars == 0);
-    assert(numBools == 2);
+    assert(Slot::has(1, 0, 2));
+    // assert(numOpp == 1);
+    // assert(numUchars == 0);
+    // assert(numBools == 2);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
+    Slot::replace(s, "%0",
+      completion.strSetNew(ranksNames, side, bools[0], bools[1]));
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, completion.strSetNew(ranksNames,
+      // side, bools[0], bools[1]));
 
-    s.replace(p, 2, completion.strSetNew(ranksNames,
-      side, bools[0], bools[1]));
-
-    p = s.find("%1");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, completion.strUnset(ranksNames, side));
+    Slot::replace(s, "%1", completion.strUnset(ranksNames, side));
+    // p = s.find("%1");
+    // assert(p != string::npos);
+    // s.replace(p, 2, completion.strUnset(ranksNames, side));
 
     return s;
   }
   else if (expansion == SLOT_COMPLETION_XES)
   {
-    assert(numOpp == 1);
-    assert(numUchars == 0);
-    assert(numBools == 0);
+    assert(Slot::has(1, 0, 0));
+    // assert(numOpp == 1);
+    // assert(numUchars == 0);
+    // assert(numBools == 0);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, completion.strXes(side));
+    Slot::replace(s, "%0", completion.strXes(side));
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, completion.strXes(side));
     return s;
   }
   else if (expansion == SLOT_RANGE_OF)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 3);
-    assert(numBools == 0);
+    assert(Slot::has(0, 3, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 3);
+    // assert(numBools == 0);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
+    Slot::replace(s, "%0", uchars[0]);
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, to_string(uchars[0]));
 
-    s.replace(p, 2, to_string(uchars[0]));
+    Slot::replace(s, "%1", uchars[1]);
+    // p = s.find("%1");
+    // assert(p != string::npos);
+    // s.replace(p, 2, to_string(uchars[1]));
 
-    p = s.find("%1");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, to_string(uchars[1]));
-
-    p = s.find("%2");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, ranksNames.getOpponents(uchars[2]).strComponent(RANKNAME_ACTUAL_FULL));
+    Slot::replace(s, "%2", 
+      ranksNames.getOpponents(uchars[2]).strComponent(RANKNAME_ACTUAL_FULL));
+    // p = s.find("%2");
+    // assert(p != string::npos);
+    // s.replace(p, 2, ranksNames.getOpponents(uchars[2]).strComponent(RANKNAME_ACTUAL_FULL));
 
     return s;
   }
   else if (expansion == SLOT_RANKS)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 1);
-    assert(numBools == 0);
+    assert(Slot::has(0, 1, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 1);
+    // assert(numBools == 0);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, ranksNames.lowestCard(uchars[0]));
+    Slot::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, ranksNames.lowestCard(uchars[0]));
     return s;
   }
   else if (expansion == SLOT_SOME_OF)
   {
-    assert(numOpp == 0);
-    assert(numUchars == 2);
-    assert(numBools == 0);
+    assert(Slot::has(0, 2, 0));
+    // assert(numOpp == 0);
+    // assert(numUchars == 2);
+    // assert(numBools == 0);
 
-    auto p = s.find("%0");
-    if (p == string::npos)
-      assert(false);
+    Slot::replace(s, "%0", topCount[uchars[0]]);
+    // auto p = s.find("%0");
+    // assert(p != string::npos);
+    // s.replace(p, 2, topCount[uchars[0]]);
 
-    s.replace(p, 2, topCount[uchars[0]]);
-
-    p = s.find("%1");
-    if (p == string::npos)
-      assert(false);
-
-    s.replace(p, 2, ranksNames.getOpponents(uchars[1]).strComponent(RANKNAME_ACTUAL_FULL));
+    Slot::replace(s, "%1", 
+      ranksNames.getOpponents(uchars[1]).strComponent(RANKNAME_ACTUAL_FULL));
+    // p = s.find("%1");
+    // assert(p != string::npos);
+    // s.replace(p, 2, ranksNames.getOpponents(uchars[1]).strComponent(RANKNAME_ACTUAL_FULL));
 
     return s;
   }

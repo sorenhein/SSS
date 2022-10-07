@@ -38,7 +38,7 @@ enum SlotExpansion: unsigned
   SLOT_ORDINAL = 10, // Re-sort after NUMERICAL
   SLOT_RANGE_OF = 11,
   SLOT_SOME_OF = 12,
-  SLOT_LENGTH = 13
+  SLOT_SIZE = 13
 };
 
 
@@ -61,6 +61,33 @@ class Slot
     Opponent side;
     vector<unsigned char> uchars;
     vector<bool> bools;
+
+
+    bool has(
+      const unsigned char actOpp,
+      const unsigned char actUchars,
+      const unsigned char actBools) const;
+
+    void replace(
+      string& s,
+      const string& percent,
+      const string& repl) const;
+
+    void replace(
+      string& s,
+      const string& percent,
+      unsigned char uchar) const;
+
+    void replace(
+      string& s,
+      const unsigned char field,
+      const string& repl) const;
+
+    void replace(
+      string& s,
+      const unsigned char field,
+      unsigned char uchar) const;
+
 
   public:
 
