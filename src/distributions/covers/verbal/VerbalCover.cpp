@@ -8,17 +8,14 @@
 
 #include <iostream>
 #include <iomanip>
-#include <sstream>
-#include <algorithm>
 #include <cassert>
 
 #include "VerbalCover.h"
 
+#include "VerbalTemplates.h"
 #include "VerbalDimensions.h"
 
 #include "../product/Profile.h"
-
-#include "../term/CoverOperator.h"
 
 #include "../../../utils/table.h"
 
@@ -29,24 +26,14 @@ extern VerbalTemplates verbalTemplates;
 VerbalCover::VerbalCover()
 {
   sentence = SENTENCE_SIZE;
-  lengthFlag = false;
-  lengthLower = 0;
-  lengthUpper = 0;
-  lengthOper = COVER_EQUAL;
-  length.reset();
-
   completions.resize(1);
   slots.clear();
+  length.reset();
 }
 
 
 void VerbalCover::setLength(const Term& lengthIn)
 {
-  lengthFlag = true;
-  lengthLower = lengthIn.lower();
-  lengthUpper = lengthIn.upper();
-  lengthOper = lengthIn.getOperator();
-
   length = lengthIn;
 }
 
@@ -57,19 +44,6 @@ void VerbalCover::setLength(
   const unsigned char maximum)
 {
   length.set(maximum, lower, upper);
-
-  lengthFlag = true;
-  lengthLower = lower;
-  lengthUpper = upper;
-
-  if (lower == upper)
-    lengthOper = COVER_EQUAL;
-  else if (lower == 0)
-    lengthOper = COVER_LESS_EQUAL;
-  else if (upper == maximum)
-    lengthOper = COVER_GREATER_EQUAL;
-  else
-    lengthOper = COVER_INSIDE_RANGE;
 }
 
 
@@ -78,18 +52,20 @@ void VerbalCover::fillLengthOnly(
   const unsigned char oppsLength,
   const bool symmFlag)
 {
-  // TODO Swap
-  VerbalCover::setLength(lengthIn);
   sentence = SENTENCE_LENGTH_ONLY;
+  VerbalCover::setLength(lengthIn);
 
+  // TODO Probably the same as length directly?
   const bool westFlag = (completions.front().length(OPP_WEST) > 0);
   const bool eastFlag = (completions.front().length(OPP_EAST) > 0);
 
+  // TODO This could be a Term method?
+  // Or a completion.preferShorter(oppsLength, symmFlag);
   Opponent simplestOpponent;
   if (symmFlag)
     simplestOpponent = OPP_WEST;
   else if (westFlag == eastFlag)
-    simplestOpponent = VerbalCover::simplestOpponent(oppsLength);
+    simplestOpponent = length.shorter(oppsLength);
   else if (westFlag)
     simplestOpponent = OPP_WEST;
   else
@@ -134,7 +110,6 @@ void VerbalCover::fillOnetopOnly(
     slots[1].setPhrase(TOPS_RANGE);
     slots[1].setValues(vLower, vUpper, onetopIndex);
   }
-
 }
 
 
@@ -149,10 +124,7 @@ void VerbalCover::fillOnetopLength(
 
   // Fill templateFills positions 0 and 1.
   VerbalCover::fillOnetopOnly(
-    top,
-    sumProfile[onetopIndex],
-    onetopIndex,
-    vside);
+    top, sumProfile[onetopIndex], onetopIndex, vside);
 
   // Fill templateFills position 2 (not pretty -- too implicit?).
   VerbalCover::fillLengthAdjElement(sumProfile.length(), vside.side);
@@ -175,7 +147,6 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 
   const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
   const unsigned topsFull = completions.front().getTopsFull(sideOther);
-    // vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (topsFull <= 1)
     slots[2].setPhrase(EXCLUDING_NOT);
@@ -185,7 +156,6 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
     slots[2].setPhrase(EXCLUDING_NONE);
 
   slots[3].setPhrase(TOPS_ACTUAL);
-  // slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
   slots[3].setSide(sideOther);
   slots[3].setBools(true, true);
 }
@@ -206,23 +176,6 @@ list<Completion>& VerbalCover::getCompletions()
 void VerbalCover::push_back(const Completion& completionIn)
 {
   completions.push_back(completionIn);
-}
-
-
-Opponent VerbalCover::simplestOpponent(const unsigned char oppsLength) const
-{
-  if (! length.used())
-    return OPP_EITHER;
-
-  // Choose the shorter side, as this tends to be more intuitive.
-  const unsigned char lsum = length.lower() + length.upper();
-
-  if (lsum > oppsLength)
-    return OPP_EAST;
-  else if (lsum < oppsLength)
-    return OPP_WEST;
-  else
-    return OPP_EITHER;
 }
 
 
@@ -339,19 +292,10 @@ void VerbalCover::getLengthData(
   // the intended side (and not e.g. "The suit splits 2=2" instead
   // of "West has a doubleton").
 
-  // TODO Add length.isEqual() to Term
-  if (lengthOper == COVER_EQUAL)
-  {
+  if (length.isEqual())
     VerbalCover::getLengthEqualData(oppsLength, vside, abstractableFlag);
-  }
-  else if (lengthOper == COVER_INSIDE_RANGE ||
-           lengthOper == COVER_LESS_EQUAL ||
-           lengthOper == COVER_GREATER_EQUAL)
-  {
-    VerbalCover::getLengthInsideData(oppsLength, vside, abstractableFlag);
-  }
   else
-    assert(false);
+    VerbalCover::getLengthInsideData(oppsLength, vside, abstractableFlag);
 }
 
 
@@ -429,7 +373,7 @@ void VerbalCover::fillSingular(
 
   slots[1].setPhrase(TOPS_ACTUAL);
   // TODO This is part of the reversal problem in Pverbal!
-  // slots[1].setValues(static_cast<unsigned char>(vside.side));
+  // slots[1].setSide(vside.side);
   slots[1].setSide(OPP_WEST);
   slots[1].setBools(false, false);
 
@@ -485,7 +429,6 @@ void VerbalCover::fillBottoms(const VerbalSide& vside)
 
 void VerbalCover::fillTopsAndLower(
   const VerbalSide& vside,
-  [[maybe_unused]]const RanksNames& ranksNames,
   const unsigned char numOptions)
 {
   sentence = SENTENCE_TOPS_AND_LOWER;
@@ -560,14 +503,17 @@ void VerbalCover::setGeneral(
 
   string lstr = "", wstr = "", estr = "";
 
+  // const auto& completion = completions.front();
+  // TODO Same as length?
   const bool westFlag = (completions.front().length(OPP_WEST) > 0);
   const bool eastFlag = (completions.front().length(OPP_EAST) > 0);
 
+  // TODO This too could be the same Term method as above.
   Opponent simplestOpponent;
   if (symmFlag)
     simplestOpponent = OPP_WEST;
   else if (westFlag == eastFlag)
-    simplestOpponent = VerbalCover::simplestOpponent(oppsLength);
+    simplestOpponent = length.shorter(oppsLength);
   else if (westFlag)
     simplestOpponent = OPP_WEST;
   else

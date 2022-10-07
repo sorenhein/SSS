@@ -78,6 +78,8 @@ class Term
 
     bool used() const;
 
+    bool isEqual() const;
+
     unsigned char lower() const;
 
     unsigned char upper() const;

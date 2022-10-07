@@ -267,6 +267,12 @@ bool Term::used() const
 }
 
 
+bool Term::isEqual() const
+{
+  return (Term::used() && Term::getOperator() == COVER_EQUAL);
+}
+
+
 unsigned char Term::complexity() const
 {
   return termCompare.complexity(data);

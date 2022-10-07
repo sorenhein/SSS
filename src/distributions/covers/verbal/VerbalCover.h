@@ -15,7 +15,6 @@
 #include "./Completion.h"
 #include "Slot.h"
 
-#include "VerbalTemplates.h"
 #include "VerbalDimensions.h"
 
 #include "../term/Term.h"
@@ -26,12 +25,14 @@ using namespace std;
 
 class Profile;
 class RanksNames;
-struct VerbalData;
+// struct VerbalData;
+enum Sentence: unsigned;
 enum Opponent: unsigned;
-enum CoverOperator: unsigned;
+// enum CoverOperator: unsigned;
 
 
-// TODO Put it somewhere and avoid include of table.h?
+// TODO Put it somewhere and avoid include of VerbalDimensions?
+// and table.h?
 struct VerbalSide
 {
   Opponent side;
@@ -62,18 +63,12 @@ class VerbalCover
 
     vector<Slot> slots;
 
-    // TODO Proper Term (length)?
-    bool lengthFlag;
-    unsigned char lengthLower;
-    unsigned char lengthUpper;
-    CoverOperator lengthOper;
-
     Term length;
 
     string strTMP; // TODO Fix strGeneral and setGeneral
 
 
-    Opponent simplestOpponent(const unsigned char oppsLength) const;
+    // Opponent simplestOpponent(const unsigned char oppsLength) const;
 
     void getLengthEqualData(
       const unsigned char oppsLength,
@@ -146,7 +141,6 @@ class VerbalCover
     // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLower(
       const VerbalSide& vside,
-      const RanksNames& ranksNames,
       const unsigned char numOptions);
 
     // SENTENCE_ONLY_BELOW

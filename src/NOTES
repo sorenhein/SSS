@@ -6,7 +6,6 @@ Places that use English text:
 
 Re-sort methods in VerbalCover (some become private?).
 Use sentence order.
-push_back together with getCompletion(s)
 
 Completion:strNew is the only one now?
 

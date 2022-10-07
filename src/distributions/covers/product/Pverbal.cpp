@@ -626,7 +626,7 @@ void Product::setVerbalHighTopsEqual(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  const RanksNames& ranksNames,
+  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(activeCount > 0);
@@ -669,7 +669,7 @@ void Product::setVerbalHighTopsEqual(
   }
   else
   {
-    verbalCover.fillTopsAndLower(vside, ranksNames, numOptions);
+    verbalCover.fillTopsAndLower(vside, numOptions);
   }
 }
 
