@@ -99,55 +99,12 @@ void VerbalTemplates::set(const Language languageIn)
   }
   else if (language == LANGUAGE_GERMAN_DE)
   {
-    templates[SENTENCE_LENGTH_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB },
-      { GROUP_PLAYER, GROUP_LENGTH_VERB} };
-
-    templates[SENTENCE_TOPS_ONLY] =
-      { "%0 %1", { BLANK_PLAYER_CAP, BLANK_TOPS_PHRASE },
-      { GROUP_PLAYER, GROUP_PLAYER }}; // TODO Unused?
-
-    templates[SENTENCE_ONETOP] =
-      { "%0 has %1", { BLANK_PLAYER_CAP, BLANK_TOPS},
-      { GROUP_PLAYER, GROUP_TOPS }};
-
-    templates[SENTENCE_TOPS_LENGTH] =
-      { "%0 has %1 %2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_LENGTH_ADJ},
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL }};
-
-    templates[SENTENCE_TOPS_EXCLUDING] =
-      { "%0 has %1 and %2 %3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_EXCLUDING, BLANK_TOPS},
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS }};
-
-    templates[SENTENCE_TOPS_AND_XES] =
-      { "%0 has %1%2", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_BOTTOMS},
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS }};
-
-    templates[SENTENCE_TOPS_AND_LOWER] =
-      { "%0 has %1 and %2%3", { BLANK_PLAYER_CAP, BLANK_TOPS, 
-        BLANK_COUNT, BLANK_TOPS},
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS }};
-
-    // TODO The last one could be a different type to tell us
-    // to look up ranksNames.lowestCard or something like it.
-    templates[SENTENCE_ONLY_BELOW] =
-      { "%0 %1 %2 %3", { BLANK_PLAYER_CAP, BLANK_LENGTH_VERB, 
-        BLANK_BELOW, BLANK_TOPS},
-        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS }};
-
-    // Up to 4 such holdings currently foreseen.
-    templates[SENTENCE_LIST] =
-      { "%0 has %1, %2, %3, %4", { BLANK_PLAYER_CAP, 
-        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE,
-        BLANK_LIST_PHRASE, BLANK_LIST_PHRASE },
-        { GROUP_PLAYER, GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST }};
+    assert(false);
   }
   else
     assert(false);
 
+  /*
   dictionary.resize(PHRASE_SIZE);
   for (auto& dict: dictionary)
     dict.resize(BLANK_MAX_VERSIONS);
@@ -245,6 +202,7 @@ void VerbalTemplates::set(const Language languageIn)
   auto& blankPL = dictionary[PHRASE_LIST];
   blankPL[XLIST_HOLDING_EXACT] = "%0";
   blankPL[XLIST_HOLDING_WITH_LOWS] = "%0(%1)";
+  */
 }
 
 
@@ -295,6 +253,7 @@ string VerbalTemplates::get(
     }
     else
     {
+      assert(false);
       fill = slot.str(dictionary, ranksNames, * complIter);
       if (slot.phrase() == PHRASE_LIST)
         complIter++;

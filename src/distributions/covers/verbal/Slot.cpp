@@ -79,6 +79,7 @@ Slot::Slot()
 }
 
 
+/*
 void Slot::setSemantics(
   const PhraseCategory phraseCategoryIn,
   const unsigned phraseInstanceIn,
@@ -88,6 +89,7 @@ void Slot::setSemantics(
   phraseInstance = phraseInstanceIn;
   expansion = expansionIn;
 }
+*/
 
 
 void Slot::setPhrase(const VerbalPhrase phraseIn)

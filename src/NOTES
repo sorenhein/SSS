@@ -1,21 +1,23 @@
+VerbalBlank.h
+Streamline, rename
+Needed at all anymore?
+
+Places that use English text:
+- VerbalMap (but read in from a file)
+- Slot (the vectors on top of the file)
+- VerbalTemplates (the templates -- delete the first {})
+- RanksNames (move it out?)
+
 Completion:strNew is the only one now?
 
 Slot:
 topCount etc. must go out again.
 When flattening texts, dictionary lookup becomes 1D.
 Don't need phraseCategory.
+Don't need isNew and newFlag
 
 VerbalTemplates:
-check that the blank matches the template
-expectation (maybe we do this already).
-Or just get rid of the expectation completely?
-Then the templates become a longer, flat list.
-Maybe prepare for file read/write:
-{TAG, "TAG", "string"}
 Get associatively from "TAG" to the numerical TAG.
-
-VerbalBlank.h
-Streamline, rename
 
 
 Pverbal:

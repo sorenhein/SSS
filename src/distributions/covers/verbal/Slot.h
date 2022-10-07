@@ -102,10 +102,12 @@ class Slot
 
     Slot();
 
+    /*
     void setSemantics(
       const PhraseCategory phraseCategoryIn,
       const unsigned phraseInstanceIn,
       const SlotExpansion expansionIn);
+      */
 
     void setPhrase(const VerbalPhrase phraseIn);
 

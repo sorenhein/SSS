@@ -192,7 +192,8 @@ class VerbalCover
       const unsigned char oppsValue2,
       const unsigned char oppsLength,
       const unsigned char onetopIndex,
-      const BlankPlayerCap side);
+      const VerbalPhrase player);
+      // const BlankPlayerCap side);
 
     string str(const RanksNames& ranksNames) const;
 };

@@ -125,7 +125,9 @@ void VerbalCover::fillOnetopOnly(
       top.upper(),
       oppsSize,
       onetopIndex,
-      vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
+      // vside);
+      vside.symmFlag ? PLAYER_EITHER : PLAYER_WEST);
+      // vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_WEST);
   }
   else
   {
@@ -134,7 +136,8 @@ void VerbalCover::fillOnetopOnly(
       oppsSize - top.lower(),
       oppsSize,
       onetopIndex,
-      vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
+      vside.symmFlag ? PLAYER_EITHER : PLAYER_EAST);
+      // vside.symmFlag ? BLANK_PLAYER_CAP_EITHER : BLANK_PLAYER_CAP_EAST);
   }
 }
 
@@ -274,14 +277,12 @@ cout << "value " << +value << endl;
   }
   else if (value + value == oppsLength)
   {
-    slots[0].setSemantics(
-      PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
+    slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_EVENLY);
   }
   else
   {
-    slots[0].setSemantics(
-      PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, SLOT_NONE);
+    slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_SPLIT);
     slots[1].setValues(lengthLower, oppsLength - lengthLower);
   }
@@ -317,57 +318,54 @@ void VerbalCover::getLengthInsideData(
   {
     if (vUpper == 1)
     {
-      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[0].setPhrase(vside.player());
       slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else if (vUpper == 2)
     {
-      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[0].setPhrase(vside.player());
       slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else if (vUpper == 3)
     {
-      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[0].setPhrase(vside.player());
       slots[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
       slots[1].setValues(vUpper);
     }
     else
     {
-      slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+      slots[0].setPhrase(vside.player());
       slots[1].setPhrase(LENGTH_VERB_ATMOST);
       slots[1].setValues(vUpper);
     }
   }
   else if (! abstractableFlag)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_RANGE);
     slots[1].setValues(vLower, vUpper);
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_NEITHER, 
-      SLOT_NONE);
+    slots[0].setPhrase(PLAYER_NEITHER);
     slots[1].setPhrase(LENGTH_VERB_VOID);
   }
   else if (vLower+1 == vUpper)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_SUIT, 
-      SLOT_NONE);
+    slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_ODD_EVENLY);
   }
   else if (vLower + vUpper == oppsLength)
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_EACH, 
-      SLOT_NONE);
+    slots[0].setPhrase(PLAYER_EACH);
     slots[1].setPhrase(LENGTH_VERB_RANGE);
     slots[1].setValues(vLower, vUpper);
   }
   else
   {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+    slots[0].setPhrase(vside.player());
     slots[1].setPhrase(LENGTH_VERB_RANGE);
     slots[1].setValues(vLower, vUpper);
   }
@@ -488,7 +486,7 @@ void VerbalCover::fillSingular(
 
   slots.resize(3);
 
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(TOPS_ACTUAL);
   // TODO This is part of the reversal problem in Pverbal!
@@ -508,7 +506,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
   slots.resize(2);
 
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(LIST_HOLDING_EXACT);
   slots[1].setSide(vside.side);
@@ -524,7 +522,7 @@ void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 
   slots.resize(2);
 
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(LIST_HOLDING_WITH_LOWS);
   slots[1].setSide(vside.side);
@@ -538,7 +536,7 @@ void VerbalCover::fillBottoms(const VerbalSide& vside)
   const BlankPlayerCap bside = vside.blank();
 
   slots.resize(3);
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(TOPS_ACTUAL);
   slots[1].setSide(vside.side);
@@ -559,7 +557,7 @@ void VerbalCover::fillTopsAndLower(
 
   slots.resize(4);
 
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(TOPS_ACTUAL);
   slots[1].setSide(vside.side);
@@ -603,7 +601,7 @@ void VerbalCover::fillList(const VerbalSide& vside)
   const BlankPlayerCap bside = vside.blank();
 
   slots.resize(completions.size() + 1);
-  slots[0].setSemantics(PHRASE_PLAYER_CAP, bside, SLOT_NONE);
+  slots[0].setPhrase(vside.player());
 
   for (size_t i = 1; i < slots.size(); i++)
   {
@@ -728,28 +726,20 @@ void VerbalCover::getOnetopData(
   const unsigned char oppsValue2,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
-  const BlankPlayerCap side)
+  const VerbalPhrase player)
+  // const BlankPlayerCap side)
 {
   // Here lower and upper are different.
   slots.resize(2);
 
   if (oppsValue1 == 0)
-  {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
-  }
+    slots[0].setPhrase(player);
   else if (oppsValue2 == oppsSize || oppsValue2 == 0xf)
-  {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
-  }
+    slots[0].setPhrase(player);
   else if (oppsValue1 + oppsValue2 == oppsSize)
-  {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, BLANK_PLAYER_CAP_EACH, 
-      SLOT_NONE);
-  }
+    slots[0].setPhrase(PLAYER_EACH);
   else
-  {
-    slots[0].setSemantics(PHRASE_PLAYER_CAP, side, SLOT_NONE);
-  }
+    slots[0].setPhrase(player);
 
   VerbalCover::getOnetopElement(oppsValue1, oppsValue2, oppsSize,
     onetopIndex, slots[1]);
