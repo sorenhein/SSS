@@ -55,6 +55,8 @@ list<VerbalElement> verbalMap =
     SLOT_NUMERICAL, "has %0 cards" },
   { LENGTH_VERB_ATMOST, "LENGTH_VERB_ATMOST", GROUP_LENGTH_VERB,
     SLOT_NUMERICAL, "has at most %0 cards" },
+  { LENGTH_VERB_12, "LENGTH_VERB_12", GROUP_LENGTH_VERB, 
+    SLOT_NONE, "has a singleton or doubleton" },
   { LENGTH_VERB_RANGE, "LENGTH_VERB_RANGE", GROUP_LENGTH_VERB, 
     SLOT_NUMERICAL, "has %0-%1 cards" },
   { LENGTH_VERB_SPLIT, "LENGTH_VERB_SPLIT", GROUP_LENGTH_VERB, 

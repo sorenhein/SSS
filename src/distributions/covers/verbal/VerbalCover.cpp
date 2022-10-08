@@ -143,6 +143,11 @@ void VerbalCover::getLengthInsideData(
     slots[1].setPhrase(LENGTH_VERB_RANGE);
     slots[1].setValues(vLower, vUpper);
   }
+  else if (vLower == 1 && vUpper == 2)
+  {
+    slots[0].setPhrase(vside.player());
+    slots[1].setPhrase(LENGTH_VERB_12);
+  }
   else
   {
     slots[0].setPhrase(vside.player());
