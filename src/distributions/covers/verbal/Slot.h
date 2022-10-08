@@ -51,8 +51,6 @@ class Slot
     // so we just use an unsigned here.
     unsigned phraseInstance;
 
-    SlotExpansion expansion;
-
     unsigned char numOpp;
     unsigned char numUchars;
     unsigned char numBools;
@@ -88,12 +86,6 @@ class Slot
       string& s,
       const unsigned char field,
       unsigned char uchar) const;
-
-    string strCommon(
-      const string& str,
-      const SlotExpansion& expansionIn,
-      const RanksNames& ranksNames,
-      const Completion& completion) const;
 
 
   public:

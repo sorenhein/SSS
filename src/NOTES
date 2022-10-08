@@ -4,6 +4,17 @@ Places that use English text:
 - VerbalTemplates (the templates)
 - RanksNames (move it out?)
 
+Completion:
+Sort out the expansions (when true and when false flags?)
+
+Slot:
+topCount etc. must go out again.
+
+VerbalTemplates:
+Get associatively from "TAG" to the numerical TAG.
+
+Store the texts in a language file
+
 struct DictEntry
 {
   unsigned instance;
@@ -51,17 +62,6 @@ struct Dictionary
     words.init(CHAPTER_WORDS, "words.txt");
   };
 };
-
-Completion:
-Sort out the expansions (when true and when false flags?)
-
-Slot:
-topCount etc. must go out again.
-
-VerbalTemplates:
-Get associatively from "TAG" to the numerical TAG.
-
-Store the texts in a language file
 
 -----
 
