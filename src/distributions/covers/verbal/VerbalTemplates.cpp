@@ -62,6 +62,10 @@ void VerbalTemplates::set(const Language languageIn)
       { "%0 has %1 %2",
         { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL }};
 
+    templates[SENTENCE_TOPS_LENGTH_WITHOUT] =
+      { "%0 has %1 %2 without %3",
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL, GROUP_TOPS }};
+
     templates[SENTENCE_TOPS_EXCLUDING] =
       { "%0 has %1 and %2 %3",
         { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS }};

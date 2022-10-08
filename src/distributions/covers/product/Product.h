@@ -123,28 +123,24 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     void setVerbalLengthOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     void setVerbalOneTopOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     void setVerbalLengthAndOneTop(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     // Help method for both high tops and any tops
@@ -160,21 +156,18 @@ class Product
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     void setVerbalAnyTopsEqual(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
     void setVerbalSingular(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
-      const RanksNames& ranksNames,
       VerbalCover& verbalCover) const;
 
 

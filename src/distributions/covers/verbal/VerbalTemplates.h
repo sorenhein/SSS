@@ -28,8 +28,9 @@ enum SlotExpansion: unsigned;
 enum Sentence: unsigned
 {
   SENTENCE_LENGTH_ONLY = 0,
-  SENTENCE_ONETOP = 2, // TODO Renam, renumber
-  SENTENCE_TOPS_LENGTH = 3,
+  SENTENCE_ONETOP = 1, // TODO Renam, renumber
+  SENTENCE_TOPS_LENGTH = 2,
+  SENTENCE_TOPS_LENGTH_WITHOUT = 3,
   SENTENCE_TOPS_EXCLUDING = 4,
   SENTENCE_TOPS_AND_XES = 5,
   SENTENCE_TOPS_AND_LOWER = 6,

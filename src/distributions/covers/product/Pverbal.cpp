@@ -30,7 +30,6 @@ typedef void (Product::*VerbalMethod)(
   const Profile& profile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  const RanksNames& ranksNames,
   VerbalCover& verbalCost) const;
 
 static const vector<VerbalMethod> verbalMethods =
@@ -432,7 +431,6 @@ void Product::setVerbalDisaster(
   [[maybe_unused]] const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
   [[maybe_unused]] const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   [[maybe_unused]] VerbalCover& verbalCover) const
 {
   // This only happens if verbal is out of range in strVerbal.
@@ -444,7 +442,6 @@ void Product::setVerbalLengthOnly(
   const Profile& sumProfile,
   [[maybe_unused]] const unsigned char canonicalShift,
   const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
@@ -455,7 +452,6 @@ void Product::setVerbalOneTopOnly(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(activeCount == 1);
@@ -478,7 +474,6 @@ void Product::setVerbalLengthAndOneTop(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(length.used());
@@ -538,16 +533,14 @@ void Product::setVerbalAnyTopsEqual(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(activeCount > 0);
 
   if (! length.used())
   {
-    // This works for any tops as well.
-    Product::setVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, false, verbalCover);
+    Product::setVerbalTopsOnly(
+      sumProfile, canonicalShift, symmFlag, false, verbalCover);
     return;
   }
 
@@ -556,16 +549,14 @@ void Product::setVerbalAnyTopsEqual(
   const Opponent side = Product::simplerEqualTops(
     verbalCover.getCompletion());
 
-  const VerbalSide vside = {side, symmFlag};
-
   if (Product::makeCompletionList(
     sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))
   {
-    verbalCover.fillList(vside);
+    verbalCover.fillList({side, symmFlag});
     return;
   }
 
-  // Have to undo the 4+ completions from above.  Not pretty.
+  // Have to undo the 4+ completions from above.  Ugh.
   verbalCover.getCompletions().resize(1);
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
@@ -580,29 +571,17 @@ void Product::setVerbalAnyTopsEqual(
   }
   else
   {
-    verbalCover.setGeneral(sumProfile.length(), symmFlag, ranksNames);
-
-    string sold = verbalCover.str(ranksNames);
-    cout << "\n" << setw(40) << left << sold << "X1X\n";
+    const Opponent simplestOpponent = 
+      Product::simpler(sumProfile, canonicalShift);
+    verbalCover.fillTwosided(sumProfile, {simplestOpponent, symmFlag});
   }
-
-
-  // TODO This needs to be expanded somehow
 }
-
-  // TEMPLATE
-  // if (sold == snew)
-    // cout << "\n" << setw(40) << left << sold << "X1X " << snew << endl;
-  // else
-    // cout << "\n" << setw(40) << left << sold << "X2X " << snew << endl;
-
 
 
 void Product::setVerbalHighTopsEqual(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(activeCount > 0);
@@ -654,7 +633,6 @@ void Product::setVerbalSingular(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
   const bool symmFlag,
-  [[maybe_unused]] const RanksNames& ranksNames,
   VerbalCover& verbalCover) const
 {
   assert(length.used());
@@ -690,18 +668,15 @@ string Product::strVerbal(
   // Turn the product into a verbal string describing the cover.
 
   // First, make a Completion with some data about the product.
+  // Sometimes this is overtaken locally by a list of completions.
   VerbalCover verbalCover;
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
-  // cout << "\nProduct " << Product::strLine() << ", symm " <<
-    // symmFlag << ", verbal " << verbal << "\n";
-
   // Then dereference into the right verbal method (including some
   // error handling).
-  // TODO Later on, ranksNames should only be in string methods.
   (this->*(verbalMethods[verbal]))
-    (sumProfile, canonicalShift, symmFlag, ranksNames, verbalCover);
+    (sumProfile, canonicalShift, symmFlag, verbalCover);
 
   return verbalCover.str(ranksNames);
 }

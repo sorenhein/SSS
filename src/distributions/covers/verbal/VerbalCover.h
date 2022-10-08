@@ -128,7 +128,13 @@ class VerbalCover
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
+    // SENTENCE_TOPS_LENGTH
     void fillOnesided(
+      const Profile& sumProfile,
+      const VerbalSide& vside);
+
+    // SENTENCE_TOPS_LENGTH_WITHOUT
+    void fillTwosided(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
@@ -162,12 +168,6 @@ class VerbalCover
 
     // SENTENCE_LIST
     void fillList(const VerbalSide& vside);
-
-    // SENTENCE_SIZE
-    void setGeneral(
-      const unsigned char oppsLength,
-      const bool symmFlag,
-      const RanksNames& ranksNames);
 
 
     // Direct manipulation of completions

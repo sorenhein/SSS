@@ -155,6 +155,22 @@ void VerbalCover::fillOnesided(
 }
 
 
+void VerbalCover::fillTwosided(
+  const Profile& sumProfile,
+  const VerbalSide& vside)
+{
+  // length is already set.
+  VerbalCover::fillOnesided(sumProfile, vside);
+
+  sentence = SENTENCE_TOPS_LENGTH_WITHOUT;
+  slots.resize(4);
+
+  slots[3].setPhrase(TOPS_ACTUAL);
+  slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  slots[3].setBools(false, false);
+}
+
+
 void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_EXCLUDING;
@@ -509,63 +525,8 @@ void VerbalCover::fillList(const VerbalSide& vside)
 }
 
 
-void VerbalCover::setGeneral(
-  const unsigned char oppsLength,
-  const bool symmFlag,
-  const RanksNames& ranksNames)
-{
-  // TODO This needs to conform to the rest.
-  // For now we just store the string.
-  sentence = SENTENCE_SIZE;
-
-  assert(length.used());
-
-  string lstr = "", wstr = "", estr = "";
-
-  // const auto& completion = completions.front();
-  // TODO Same as length?
-
-  // TODO This too could be the same Term method as above.
-  Opponent simplestOpponent;
-  if (symmFlag)
-    simplestOpponent = OPP_WEST;
-  else if (westFlag == eastFlag)
-    simplestOpponent = length.shorter(oppsLength);
-  else if (westFlag)
-    simplestOpponent = OPP_WEST;
-  else
-    simplestOpponent = OPP_EAST;
-
-  const VerbalSide vside = {simplestOpponent, symmFlag};
-
-  VerbalCover::getLengthData(oppsLength, vside, true);
-    
-  lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
-    completions, slots);
-
-  wstr = completions.front().strSet(ranksNames, OPP_WEST, false, false);
-  estr = completions.front().strSet(ranksNames, OPP_EAST, false, false);
-
-  if (symmFlag)
-  {
-    if (wstr == estr)
-      strTMP = lstr + ", and West and East each have " + wstr;
-    else
-      strTMP = lstr + ", and " + wstr + " and " + estr +
-        " are split";
-  }
-  else if (wstr == estr)
-    strTMP = lstr + ", West and East each have " + wstr;
-  else
-    strTMP = lstr + ", West has " + wstr + " and East has " + estr;
-}
-
-
 string VerbalCover::str(const RanksNames& ranksNames) const
 {
-  if (sentence == SENTENCE_SIZE)
-    return strTMP;
-  else
-    return verbalTemplates.get(sentence, ranksNames, completions, slots);
+  return verbalTemplates.get(sentence, ranksNames, completions, slots);
 }
 

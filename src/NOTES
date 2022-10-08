@@ -7,7 +7,60 @@ Places that use English text:
 Re-sort methods in VerbalCover (some become private?).
 Use sentence order.
 
+struct DictEntry
+{
+  unsigned instance;
+  string tag;
+  unsigned group;
+  unsigned expansion;
+};
+
+struct DictDefinition
+{
+  DictEntry dictEntry;
+  string definition;
+};
+
+enum Chapters
+{
+  CHAPTER_SENTENCES = 0,
+  CHAPTER_PHRASES = 1
+  CHAPTER_WORDS = 2
+};
+
+class Chapter
+{
+  private:
+    list<DictEntry> connections;
+
+  public:
+    void init(const Chapters& chapter);
+    void read(const Language& language);
+
+    template<T>
+    string lookup(const T index) const;
+};
+
+struct Dictionary
+{
+  Chapter sentences;
+  Chapter phrases;
+  Chapter words;
+
+  Dictionary::Dictionary()
+  {
+    sentences.init(CHAPTER_SENTENCES, "sentences.txt");
+    phrases.init(CHAPTER_PHRASES, "phrases.txt");
+    words.init(CHAPTER_WORDS, "words.txt");
+  };
+};
+
+Completion:
+Sort out the expansions (when true and when false flags?)
 Completion:strNew is the only one now?
+
+Pverbal:
+Can we use simpler instead of simplerEqualTops?
 
 Slot:
 topCount etc. must go out again.
