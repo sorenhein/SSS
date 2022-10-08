@@ -232,8 +232,11 @@ string Slot::strCommon(
   }
   else if (expansion0 == SLOT_ORDINAL)
   {
-    assert(Slot::has(0, 1, 0));
-    Slot::replace(s, "%0", topOrdinal[uchars[0]]);
+    assert(Slot::has(0, 1, 0) || Slot::has(0, 2, 0));
+
+    for (unsigned char field = 0; field < numUchars; field++)
+      Slot::replace(s, field, topOrdinal[uchars[field]]);
+
     return s;
   }
   else if (expansion0 == SLOT_RANKS)

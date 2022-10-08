@@ -33,7 +33,7 @@ class Completion
     {
       unsigned char length;
 
-      // Number of tops used, including with zero values.
+      // Number of tops used.
       unsigned char topsUsed;
 
       // Number of ranks actively used and non-zero.
@@ -150,6 +150,8 @@ class Completion
     bool lowestRankIsUsed(const Opponent side) const;
 
     unsigned char numOptions() const;
+
+    Opponent preferShorterActive(const bool symmFlag) const;
 
     Opponent preferSingleActive() const;
 

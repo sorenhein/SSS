@@ -551,29 +551,43 @@ void Product::setVerbalAnyTopsEqual(
     return;
   }
 
+  verbalCover.setLength(length);
+
   const Opponent side = Product::simplerEqualTops(
     verbalCover.getCompletion());
 
   const VerbalSide vside = {side, symmFlag};
 
-  verbalCover.setLength(length);
-
-  // list<Completion> completions;
   if (Product::makeCompletionList(
     sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))
   {
     verbalCover.fillList(vside);
+    return;
+  }
+
+  // Have to undo the 4+ completions from above.  Not pretty.
+  verbalCover.getCompletions().resize(1);
+  Product::makeCompletion(sumProfile, canonicalShift, 
+    verbalCover.getCompletion());
+
+  if (verbalCover.getCompletion().getTopsFull(OPP_WEST) == 0)
+  {
+    verbalCover.fillOnesided(sumProfile, {OPP_EAST, symmFlag});
+  }
+  else if (verbalCover.getCompletion().getTopsFull(OPP_EAST) == 0)
+  {
+    verbalCover.fillOnesided(sumProfile, {OPP_WEST, symmFlag});
   }
   else
   {
-    // TODO This needs to be expanded somehow
-    // Have to undo the 4+ completions from above.
-    verbalCover.getCompletions().resize(1);
-    Product::makeCompletion(sumProfile, canonicalShift, 
-      verbalCover.getCompletion());
-
     verbalCover.setGeneral(sumProfile.length(), symmFlag, ranksNames);
+
+    string sold = verbalCover.str(ranksNames);
+    cout << "\n" << setw(40) << left << sold << "X1X\n";
   }
+
+
+  // TODO This needs to be expanded somehow
 }
 
   // TEMPLATE

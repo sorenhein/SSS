@@ -126,10 +126,32 @@ void VerbalCover::fillOnetopLength(
   VerbalCover::fillOnetopOnly(
     top, sumProfile[onetopIndex], onetopIndex, vside);
 
-  // Fill templateFills position 2 (not pretty -- too implicit?).
-  VerbalCover::fillLengthAdjElement(sumProfile.length(), vside.side);
+  slots.resize(3);
+
+  VerbalCover::fillLengthAdjElement(
+    sumProfile.length(), vside.side, slots[2]);
 
   sentence = SENTENCE_TOPS_LENGTH;
+}
+
+
+void VerbalCover::fillOnesided(
+  const Profile& sumProfile,
+  const VerbalSide& vside)
+{
+  // length is already set.
+  sentence = SENTENCE_TOPS_LENGTH;
+
+  slots.resize(3);
+
+  slots[0].setPhrase(vside.player());
+
+  slots[1].setPhrase(TOPS_ACTUAL);
+  slots[1].setSide(vside.side);
+  slots[1].setBools(false, false);
+
+  VerbalCover::fillLengthAdjElement(
+    sumProfile.length(), vside.side, slots[2]);
 }
 
 
@@ -301,32 +323,31 @@ void VerbalCover::getLengthData(
 
 void VerbalCover::fillLengthAdjElement(
   const unsigned char oppsLength,
-  const Opponent simplestOpponent)
+  const Opponent simplestOpponent,
+  Slot& slot)
 {
-  slots.resize(3);
-  Slot& selement = slots[2];
-
   unsigned char vLower, vUpper;
   length.range(oppsLength, simplestOpponent, vLower, vUpper);
 
   if (vLower == vUpper)
   {
-    selement.setPhrase(LENGTH_ORDINAL_EXACT);
-    selement.setValues(vLower);
+    slot.setPhrase(LENGTH_ORDINAL_EXACT);
+    slot.setValues(vLower);
   }
   else if (vLower == 0)
   {
-    selement.setPhrase(LENGTH_ORDINAL_ATMOST);
-    selement.setValues(vUpper);
+    slot.setPhrase(LENGTH_ORDINAL_ATMOST);
+    slot.setValues(vUpper);
   }
-  else if (vLower == 2 && vUpper == 3)
+  else if (vLower + 1 == vUpper)
   {
-    selement.setPhrase(LENGTH_ORDINAL_23);
+    slot.setPhrase(LENGTH_ORDINAL_ADJACENT);
+    slot.setValues(vLower, vUpper);
   }
   else
   {
-    // More cases could in principle arise here.
-    assert(false);
+    slot.setPhrase(LENGTH_ORDINAL_RANGE);
+    slot.setValues(vLower, vUpper);
   }
 }
 
@@ -503,8 +524,6 @@ void VerbalCover::setGeneral(
 
   // const auto& completion = completions.front();
   // TODO Same as length?
-  const bool westFlag = (completions.front().length(OPP_WEST) > 0);
-  const bool eastFlag = (completions.front().length(OPP_EAST) > 0);
 
   // TODO This too could be the same Term method as above.
   Opponent simplestOpponent;
@@ -524,47 +543,21 @@ void VerbalCover::setGeneral(
   lstr = verbalTemplates.get(SENTENCE_LENGTH_ONLY, ranksNames, 
     completions, slots);
 
-  if (westFlag)
-    wstr = completions.front().strSet(ranksNames, OPP_WEST, false, false);
+  wstr = completions.front().strSet(ranksNames, OPP_WEST, false, false);
+  estr = completions.front().strSet(ranksNames, OPP_EAST, false, false);
 
-  if (eastFlag)
-    estr = completions.front().strSet(ranksNames, OPP_EAST, false, false);
-
-  if (westFlag)
+  if (symmFlag)
   {
-    if (eastFlag)
-    {
-      if (symmFlag)
-      {
-        if (wstr == estr)
-          strTMP = lstr + ", and West and East each have " + wstr;
-        else
-          strTMP = lstr + ", and " + wstr + " and " + estr +
-            " are split";
-      }
-      else if (wstr == estr)
-        strTMP = lstr + ", West and East each have " + wstr;
-      else
-        strTMP = lstr + ", West has " + wstr + " and East has " + estr;
-    }
+    if (wstr == estr)
+      strTMP = lstr + ", and West and East each have " + wstr;
     else
-    {
-      if (symmFlag)
-        strTMP = lstr + " with " + wstr;
-      else
-        strTMP = lstr + " and West has " + wstr;
-    }
+      strTMP = lstr + ", and " + wstr + " and " + estr +
+        " are split";
   }
-  else if (eastFlag)
-  {
-    if (symmFlag)
-      strTMP = lstr + " without " + estr;
-    else
-      strTMP = lstr + " and East has " + estr;
-  }
+  else if (wstr == estr)
+    strTMP = lstr + ", West and East each have " + wstr;
   else
-    // This done exclusively in the new way.
-    strTMP = lstr;
+    strTMP = lstr + ", West has " + wstr + " and East has " + estr;
 }
 
 

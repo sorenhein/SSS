@@ -87,7 +87,8 @@ class VerbalCover
 
     void fillLengthAdjElement(
       const unsigned char oppsLength,
-      const Opponent simplestOpponent);
+      const Opponent simplestOpponent,
+      Slot& slot);
 
 
   public:
@@ -125,6 +126,10 @@ class VerbalCover
       const Term& top,
       const Profile& sumProfile,
       const unsigned char onetopIndex,
+      const VerbalSide& vside);
+
+    void fillOnesided(
+      const Profile& sumProfile,
       const VerbalSide& vside);
 
     // SENTENCE_TOPS_LENGTH

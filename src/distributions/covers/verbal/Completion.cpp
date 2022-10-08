@@ -258,6 +258,18 @@ unsigned char Completion::getTotalUpper(const Opponent side) const
 }
 
 
+// TODO May not be needed
+Opponent Completion::preferShorterActive(const bool symmFlag) const
+{
+  if (symmFlag)
+    return OPP_WEST;
+  else if (dataWest.length > 0 && dataEast.length > 0)
+    return (dataWest.length <= dataEast.length ? OPP_WEST : OPP_EAST);
+  else 
+    return (dataWest.length > 0 ? OPP_WEST : OPP_EAST);
+}
+
+
 Opponent Completion::preferSingleActive() const
 {
   // Return OPP_WEST if West, OPP_EAST if East, OPP_EITHER if
