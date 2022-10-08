@@ -17,9 +17,7 @@
 #include "Product.h"
 #include "Profile.h"
 
-#include "../CoverCategory.h"
 #include "../verbal/VerbalCover.h"
-#include "../term/CoverOperator.h"
 
 #include "../../../utils/table.h"
 
@@ -136,7 +134,7 @@ void Product::makeCompletionBottoms(
     return;
   }
 
-  assert(tops[0].getOperator() == COVER_EQUAL);
+  assert(tops[0].isEqual());
 
   const unsigned char bottoms = tops[0].lower();
   const unsigned char allBottoms = sumProfile.numBottoms(canonicalShift);
@@ -267,10 +265,8 @@ void Product::makeSingularCompletion(
   const Opponent side,
   Completion& completion) const
 {
-  // All given tops are exact.  Length must be set.
-
-  assert(length.used());
-  assert(length.getOperator() == COVER_EQUAL);
+  // All given tops are exact.
+  assert(length.used() && length.isEqual());
 
   const unsigned char slength = sumProfile.length();
   const unsigned char wlength = length.lower();
@@ -460,7 +456,7 @@ void Product::setVerbalOneTopOnly(
     verbalCover.getCompletion().getLowestRankUsed();
 
   const unsigned char topNo = fullTopNo - canonicalShift;
-  assert(tops[topNo].getOperator() != COVER_EQUAL);
+  assert(! tops[topNo].isEqual());
 
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
@@ -483,7 +479,7 @@ void Product::setVerbalLengthAndOneTop(
     verbalCover.getCompletion().getLowestRankUsed();
 
   const unsigned char topNo = fullTopNo - canonicalShift;
-  assert(tops[topNo].getOperator() != COVER_EQUAL);
+  assert(! tops[topNo].isEqual());
 
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
@@ -514,10 +510,8 @@ void Product::setVerbalTopsOnly(
 
   const VerbalSide vsideSimple = {side, symmFlag};
 
-  const unsigned char numOptions = 
-    verbalCover.getCompletion().numOptions();
-
-  if (flipAllowedFlag && numOptions == 1)
+  if (flipAllowedFlag && 
+    verbalCover.getCompletion().numOptions() == 1)
   {
     // The lowest cards are a single rank of x'es.
     verbalCover.fillCompletionWithLows(vsideSimple);
@@ -525,6 +519,54 @@ void Product::setVerbalTopsOnly(
   else
   {
     verbalCover.fillTopsExcluding(vsideSimple);
+  }
+}
+
+
+void Product::setVerbalHighTopsEqual(
+  const Profile& sumProfile,
+  const unsigned char canonicalShift,
+  const bool symmFlag,
+  VerbalCover& verbalCover) const
+{
+  assert(activeCount > 0);
+
+  if (! length.used())
+  {
+    Product::setVerbalTopsOnly(sumProfile, canonicalShift,
+      symmFlag, true, verbalCover);
+    return;
+  }
+
+  const Opponent side = Product::simplerEqualTops(
+    verbalCover.getCompletion());
+
+  VerbalSide vside = {side, symmFlag};
+
+  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
+  if (numOptions == 1)
+  {
+    verbalCover.fillBottoms(vside);
+  }
+  else if (numOptions == 2 && 
+      verbalCover.getCompletion().getFreeUpper(side) == 1)
+  {
+    // "West has Q or Qx", so we need up to one low card.
+    // We currently never get more than 4 options.
+    assert(Product::makeCompletionList(
+      sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()));
+   
+    verbalCover.fillList(vside);
+  }
+  else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+  {
+    // "West has at most a doubleton completely below the ten".
+    verbalCover.fillBelow(
+      sumProfile.numBottoms(canonicalShift), numOptions, vside);
+  }
+  else
+  {
+    verbalCover.fillTopsAndLower(vside, numOptions);
   }
 }
 
@@ -571,60 +613,8 @@ void Product::setVerbalAnyTopsEqual(
   }
   else
   {
-    const Opponent simplestOpponent = 
-      Product::simpler(sumProfile, canonicalShift);
-    verbalCover.fillTwosided(sumProfile, {simplestOpponent, symmFlag});
-  }
-}
-
-
-void Product::setVerbalHighTopsEqual(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const bool symmFlag,
-  VerbalCover& verbalCover) const
-{
-  assert(activeCount > 0);
-
-  if (! length.used())
-  {
-    Product::setVerbalTopsOnly(sumProfile, canonicalShift,
-      symmFlag, true, verbalCover);
-    return;
-  }
-
-  const Opponent side = Product::simplerEqualTops(
-    verbalCover.getCompletion());
-
-  VerbalSide vside = {side, symmFlag};
-
-  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
-  if (numOptions == 1)
-  {
-    verbalCover.fillBottoms(vside);
-  }
-  else if (numOptions == 2 && 
-      verbalCover.getCompletion().getFreeUpper(side) == 1)
-  {
-    // "West has Q or Qx", so we need up to one low card.
-    // We currently never get more than 4 options.
-    // list<Completion> completions;
-    assert(Product::makeCompletionList(
-      sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()));
-   
-    verbalCover.fillList(vside);
-  }
-  else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
-  {
-    // "West has at most a doubleton completely below the ten".
-    verbalCover.fillBelow(
-      sumProfile.numBottoms(canonicalShift),
-      numOptions,
-      vside);
-  }
-  else
-  {
-    verbalCover.fillTopsAndLower(vside, numOptions);
+    verbalCover.fillTwosided(sumProfile, 
+      {Product::simpler(sumProfile, canonicalShift), symmFlag});
   }
 }
 

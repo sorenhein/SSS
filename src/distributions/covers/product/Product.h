@@ -137,19 +137,17 @@ class Product
       const bool symmFlag,
       VerbalCover& verbalCover) const;
 
-    void setVerbalLengthAndOneTop(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const bool symmFlag,
-      VerbalCover& verbalCover) const;
-
-    // Help method for both high tops and any tops
-
     void setVerbalTopsOnly(
       const Profile& sumProfile,
       const unsigned char canonicalShift,
       const bool symmFlag,
       const bool flipAllowedFlag,
+      VerbalCover& verbalCover) const;
+
+    void setVerbalLengthAndOneTop(
+      const Profile& sumProfile,
+      const unsigned char canonicalShift,
+      const bool symmFlag,
       VerbalCover& verbalCover) const;
 
     void setVerbalHighTopsEqual(
