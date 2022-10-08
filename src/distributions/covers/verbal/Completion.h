@@ -151,8 +151,6 @@ class Completion
 
     unsigned char numOptions() const;
 
-    Opponent preferShorterActive(const bool symmFlag) const;
-
     Opponent preferSingleActive() const;
 
     Opponent preferSimpleActive() const;

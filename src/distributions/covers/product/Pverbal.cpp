@@ -18,6 +18,7 @@
 #include "Profile.h"
 
 #include "../verbal/VerbalCover.h"
+#include "../verbal/VerbalSide.h"
 
 #include "../../../utils/table.h"
 
@@ -95,7 +96,7 @@ Opponent Product::simplerActive(
   if (sideSimple != OPP_EITHER)
     return sideSimple;
 
-  return (Product::topsSimpler(sumProfile, canonicalShift) =
+  return (Product::topsSimpler(sumProfile, canonicalShift) ?
     OPP_WEST : OPP_EAST);
 }
 
@@ -471,7 +472,7 @@ void Product::setVerbalHighTopsEqual(
   const unsigned char numOptions = verbalCover.getCompletion().numOptions();
   if (numOptions == 1)
   {
-    verbalCover.fillBottoms(vside);
+    verbalCover.fillTopsAndXes(vside);
   }
   else if (numOptions == 2 && 
       verbalCover.getCompletion().getFreeUpper(side) == 1)

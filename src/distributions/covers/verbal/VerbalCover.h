@@ -10,51 +10,25 @@
 #define SSS_VERBALCOVER_H
 
 #include <vector>
+#include <list>
 #include <string>
 
 #include "./Completion.h"
 #include "Slot.h"
 
-#include "VerbalDimensions.h"
-
 #include "../term/Term.h"
-
-#include "../../../utils/table.h"
 
 using namespace std;
 
 class Profile;
 class RanksNames;
-// struct VerbalData;
+struct VerbalSide;
 enum Sentence: unsigned;
 enum Opponent: unsigned;
-// enum CoverOperator: unsigned;
-
-
-// TODO Put it somewhere and avoid include of VerbalDimensions?
-// and table.h?
-struct VerbalSide
-{
-  Opponent side;
-  bool symmFlag;
-
-  VerbalPhrase player() const
-  {
-    if (side == OPP_WEST)
-      return (symmFlag ? PLAYER_EITHER : PLAYER_WEST);
-    else
-      return (symmFlag ? PLAYER_EITHER : PLAYER_EAST);
-  };
-};
 
 
 class VerbalCover
 {
-  // A verbal cover can be a list of completions, e.g. 97x, 97 or 7x.
-  // Or it can be the combination of a length constraint, a set of
-  // exact West cards and another set of exact East cards.
-  // Each of these three components can be present or not.
-
   private:
     
     Sentence sentence;
@@ -65,10 +39,13 @@ class VerbalCover
 
     Term length;
 
-    string strTMP; // TODO Fix strGeneral and setGeneral
 
+    // Used to make a synthetic length of small cards.
 
-    // Opponent simplestOpponent(const unsigned char oppsLength) const;
+    void setLength(
+      const unsigned char lower,
+      const unsigned char upper,
+      const unsigned char maximum);
 
     void getLengthEqualData(
       const unsigned char oppsLength,
@@ -85,7 +62,7 @@ class VerbalCover
       const VerbalSide& vside,
       const bool abstractableFlag);
 
-    void fillLengthAdjElement(
+    void fillLengthOrdinal(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
       Slot& slot);
@@ -99,11 +76,6 @@ class VerbalCover
     // Length only
 
     void setLength(const Term& length);
-
-    void setLength(
-      const unsigned char lower,
-      const unsigned char upper,
-      const unsigned char maximum);
 
     // Fills.
 
@@ -138,16 +110,11 @@ class VerbalCover
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_LENGTH
-    void fillSingular(
-      const unsigned char lenCompletion,
-      const VerbalSide& vside);
-
     // SENTENCE_TOPS_EXCLUDING
     void fillTopsExcluding(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_XES
-    void fillBottoms(const VerbalSide& vside);
+    void fillTopsAndXes(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLower(
@@ -158,6 +125,11 @@ class VerbalCover
     void fillBelow(
       const unsigned char numBottoms,
       const unsigned char rankNo,
+      const VerbalSide& vside);
+
+    // SENTENCE_TOPS_LENGTH
+    void fillSingular(
+      const unsigned char lenCompletion,
       const VerbalSide& vside);
 
     // SENTENCE_LIST

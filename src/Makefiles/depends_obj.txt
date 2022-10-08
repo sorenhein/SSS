@@ -533,15 +533,10 @@ distributions/covers/product/Product.obj: utils/Compare.h utils/table.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/Product.h
 distributions/covers/product/Pverbal.obj: distributions/covers/term/Term.h
 distributions/covers/product/Pverbal.obj: distributions/covers/product/Profile.h
-distributions/covers/product/Pverbal.obj: distributions/covers/CoverCategory.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalCover.h
-distributions/covers/product/Pverbal.obj: ranks/Completion.h utils/Card.h
-distributions/covers/product/Pverbal.obj: utils/Compare.h
+distributions/covers/product/Pverbal.obj: distributions/covers/verbal/./Completion.h
 distributions/covers/product/Pverbal.obj: distributions/covers/verbal/Slot.h
-distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalTemplates.h
-distributions/covers/product/Pverbal.obj: distributions/covers/verbal/Language.h
-distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalDimensions.h
-distributions/covers/product/Pverbal.obj: distributions/covers/term/CoverOperator.h
+distributions/covers/product/Pverbal.obj: distributions/covers/verbal/VerbalSide.h
 distributions/covers/product/Pverbal.obj: utils/table.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/FactoredProduct.h
 distributions/covers/product/FactoredProduct.obj: distributions/covers/product/Product.h
@@ -577,17 +572,21 @@ distributions/covers/verbal/Slot.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Slot.obj: utils/Compare.h ranks/RanksNames.h
 distributions/covers/verbal/Slot.obj: ranks/RankNames.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalCover.h
-distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
-distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/./Completion.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Slot.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Language.h
+distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
+distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalDimensions.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/CoverOperator.h
-distributions/covers/verbal/VerbalCover.obj: utils/table.h
+distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalSide.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/product/Profile.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/./Completion.h
+distributions/covers/verbal/VerbalCover.obj: utils/table.h
+distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/Verbalside.h
+distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/VerbalDimensions.h
+distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/Slot.h
+distributions/covers/verbal/VerbalSide.obj: utils/table.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalTemplates.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Language.h
 distributions/covers/verbal/VerbalTemplates.obj: ranks/Completion.h

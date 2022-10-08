@@ -55,6 +55,7 @@ SOURCE_FILES    =                               \
                 distributions/covers/verbal/Completion.cpp       \
                 distributions/covers/verbal/Slot.cpp             \
                 distributions/covers/verbal/VerbalCover.cpp      \
+                distributions/covers/verbal/VerbalSide.cpp       \
                 distributions/covers/verbal/VerbalTemplates.cpp  \
                                                                  \
                 inputs/Convert.cpp              \

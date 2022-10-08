@@ -55,7 +55,7 @@ void VerbalTemplates::set(const Language languageIn)
     templates[SENTENCE_LENGTH_ONLY] =
       { "%0 %1", { GROUP_PLAYER, GROUP_LENGTH_VERB} };
 
-    templates[SENTENCE_ONETOP] =
+    templates[SENTENCE_ONETOP_ONLY] =
       { "%0 has %1", { GROUP_PLAYER, GROUP_TOPS }};
 
     templates[SENTENCE_TOPS_LENGTH] =
