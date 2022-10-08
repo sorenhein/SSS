@@ -372,9 +372,7 @@ void VerbalCover::fillSingular(
   slots[0].setPhrase(vside.player());
 
   slots[1].setPhrase(TOPS_ACTUAL);
-  // TODO This is part of the reversal problem in Pverbal!
-  // slots[1].setSide(vside.side);
-  slots[1].setSide(OPP_WEST);
+  slots[1].setSide(vside.side);
   slots[1].setBools(false, false);
 
   slots[2].setPhrase(LENGTH_ORDINAL_EXACT);

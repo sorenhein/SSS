@@ -281,36 +281,6 @@ void Product::makeSingularCompletion(
   const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
   const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
 
-  // TODO
-  // Up to here, completion has West and East in the right places.
-  // If side == West
-  //   if used, unchanged (but set again)
-  //   if unused, and sideUnused == West, fill completely
-  // If side == East
-  //   if used, flipped
-  //   if unused, and sideUnused == East, fill completely
-  // Also flip the bottom fills
-  // Then in VerbalTemplates::oneTopPhrase, line 464
-  //   always go by West
-  //
-  // How to move to normal West/East relations
-  // if top unused
-  //   if West: fill max
-  //   if East: fill 0
-  //
-  // first fill
-  //   if West: fill 0
-  //   if East: fill max
-  // second fill
-  //   if West: fill max
-  //   if East: fill 0
-  // third fill
-  //   always West
-  // 
-  // VerbalTemplates:
-  //   store side
-  //   use it
-
   // Determine which side gets the unused tops.
   const Opponent sideForUnused = Product::singularUnusedSide(
     sumProfile, canonicalShift, completion);
@@ -326,14 +296,13 @@ void Product::makeSingularCompletion(
 
     if (top.used())
     {
-      completion.setTop(topNo, true, 
-        side == OPP_WEST ? top.lower() : sumProfile[topNo] - top.lower(),
-        sumProfile[topNo]);
+      completion.setTop(topNo, true, top.lower(), sumProfile[topNo]);
     }
-    else if (side == sideForUnused)
+    else
     {
-      // Flip if we are filling the opposite side.
-      completion.setTop(topNo, true,  sumProfile[topNo], sumProfile[topNo]);
+      const unsigned char wno = 
+        (sideForUnused == OPP_WEST ? sumProfile[topNo] : 0);
+      completion.setTop(topNo, true, wno, sumProfile[topNo]);
     }
   }
 
@@ -344,12 +313,8 @@ void Product::makeSingularCompletion(
       topsUsedEast + numBottoms == slength - wlength)
   {
     // All bottoms go to East.
-    if (side == OPP_EAST)
-    {
-      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo],
-          sumProfile[topNo]);
-    }
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+      completion.setTop(topNo, true, 0, sumProfile[topNo]);
   }
   else if (topsUsedEast == slength - wlength ||
       topsUsedWest + numBottoms == wlength)
@@ -358,17 +323,14 @@ void Product::makeSingularCompletion(
     if (side == OPP_WEST)
     {
       for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo],
-          sumProfile[topNo]);
+      {
+        completion.setTop(topNo, true, sumProfile[topNo], sumProfile[topNo]);
+      }
     }
   }
   else if (canonicalShift == 0)
   {
-    if (side == OPP_WEST)
-      completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
-    else
-      completion.setTop(0, true, slength - wlength - topsUsedEast,
-        sumProfile[0]);
+    completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
   }
   else
     assert(false);

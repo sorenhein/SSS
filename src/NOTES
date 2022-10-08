@@ -1,7 +1,7 @@
 Places that use English text:
 - VerbalMap (but read in from a file)
 - Slot (the vectors on top of the file)
-- VerbalTemplates (the templates -- delete the first {})
+- VerbalTemplates (the templates)
 - RanksNames (move it out?)
 
 Re-sort methods in VerbalCover (some become private?).
