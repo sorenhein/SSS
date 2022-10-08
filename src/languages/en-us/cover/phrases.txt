@@ -1,0 +1,154 @@
+name PLAYER_WEST
+string "West"
+
+name PLAYER_EAST
+string "East"
+
+name PLAYER_EITHER
+string "Either opponent"
+
+name PLAYER_EACH
+string "Each opponent"
+
+name PLAYER_NEITHER
+string "Neither opponent"
+
+name PLAYER_SUIT
+string "The suit"
+
+
+name LENGTH_VERB_VOID
+string "is void"
+
+# Example: has a singleton
+name LENGTH_VERB_XTON
+string "has a %0"
+
+name LENGTH_VERB_EVENLY
+string "splits evenly"
+
+name LENGTH_VERB_ODD_EVENLY
+string "splits evenly either way"
+
+# Example: has at most a doubleton
+name LENGTH_VERB_XTON_ATMOST
+string "has at most a %0"
+
+# Example: Has two cards
+name LENGTH_VERB_CARDS
+string "has %0 cards"
+
+# Example: Has at most two cards
+name LENGTH_VERB_ATMOST
+string "has at most %0 cards"
+
+name LENGTH_VERB_12
+string "has a singleton or doubleton"
+
+# Example: Has 2-3 cards
+name LENGTH_VERB_RANGE
+string "has %0-%1 cards"
+
+# Example: [The suit] splits 2=3
+name LENGTH_VERB_SPLIT
+string "splits %0=%1"
+
+
+# Example: third
+name LENGTH_ORDINAL_EXACT
+string "%0"
+
+Example: at most third
+name LENGTH_ORDINAL_ATMOST
+string "at most %0"
+
+# Example: singleton or doubleton
+name LENGTH_ORDINAL_ADJACENT
+string "%0 or %1"
+
+# Example: doubleton to fourth
+name LENGTH_ORDINAL_RANGE
+string "%0 to %1"
+
+
+# Example: two
+name COUNT_EXACT
+string "%0"
+
+# Example: at most two
+name COUNT_ATMOST
+string "at most %0"
+
+# Example: 2-3
+name COUNT_RANGE
+string "%0-%1"
+
+
+# Example: At most two of QJT
+# %0: Number
+# %1: Holding
+name TOPS_ATMOST
+string "at most %0 of %1"
+
+# Example: At least one of QJT
+# %0: Number
+# %1: Holding
+name TOPS_ATLEAST
+string "at least %0 of %1"
+
+# Example: 1-2 of QJT
+# %0: Number
+# %1: Number
+# %2: Holding
+name TOPS_ATLEAST
+name TOPS_RANGE
+string "%0-%1 of %2"
+
+# Example: KQ
+name TOPS_ACTUAL
+string "%0"
+
+# Example: T (always a single card)
+name TOPS_RANKS
+string "%0"
+
+# Example: cards (plural).  May also be card (singular).
+name TOPS_LOWER
+string ", lower-ranked %0"
+
+# Example: cards below the T.
+# %0: card or cards.
+# %1: A specific card.
+name TOPS_BELOW
+string " %0 below the %1"
+
+
+name EXCLUDING_NONE
+string "none of"
+
+name EXCLUDING_NEITHER
+string "neither of"
+
+name EXCLUDING_NOT
+string "not"
+
+
+name BELOW_NORMAL
+string "below the"
+
+BELOW_COMPLETELY
+string "completely below the"
+
+
+# Example: x(xx)
+name BOTTOMS_NORMAL
+"%0"
+
+
+# Example: KQT
+name LIST_HOLDING_EXACT
+string "%0"
+
+# Example: KQT(x)
+name LIST_HOLDING_WITH_LOWS
+string "%0(%1)"

@@ -51,14 +51,14 @@ class Chapter
 
 struct Dictionary
 {
-  Chapter sentences;
-  Chapter phrases;
+  Chapter coverSentences;
+  Chapter coverPhrases;
   Chapter words;
 
   Dictionary::Dictionary()
   {
-    sentences.init(CHAPTER_SENTENCES, "sentences.txt");
-    phrases.init(CHAPTER_PHRASES, "phrases.txt");
+    sentences.init(CHAPTER_SENTENCES, "cover/sentences.txt");
+    phrases.init(CHAPTER_PHRASES, "cover/phrases.txt");
     words.init(CHAPTER_WORDS, "words.txt");
   };
 };
