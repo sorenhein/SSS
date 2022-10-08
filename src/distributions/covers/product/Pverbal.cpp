@@ -86,16 +86,6 @@ Opponent Product::simpler(
 }
 
 
-Opponent Product::simplerEqualTops(const Completion& completion) const
-{
-  if (completion.getTotalUpper(OPP_WEST) <=
-      completion.getTotalUpper(OPP_EAST))
-    return OPP_WEST;
-  else
-    return OPP_EAST;
-}
-
-
 Opponent Product::simplerActive(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
@@ -104,10 +94,9 @@ Opponent Product::simplerActive(
   const Opponent sideSimple = completion.preferSimpleActive();
   if (sideSimple != OPP_EITHER)
     return sideSimple;
-  else if (Product::topsSimpler(sumProfile, canonicalShift))
-    return OPP_WEST;
-  else
-    return OPP_EAST;
+
+  return (Product::topsSimpler(sumProfile, canonicalShift) =
+    OPP_WEST : OPP_EAST);
 }
 
 
@@ -475,8 +464,7 @@ void Product::setVerbalHighTopsEqual(
     return;
   }
 
-  const Opponent side = Product::simplerEqualTops(
-    verbalCover.getCompletion());
+  const Opponent side = Product::simpler(sumProfile, canonicalShift);
 
   VerbalSide vside = {side, symmFlag};
 
@@ -525,8 +513,7 @@ void Product::setVerbalAnyTopsEqual(
 
   verbalCover.setLength(length);
 
-  const Opponent side = Product::simplerEqualTops(
-    verbalCover.getCompletion());
+  const Opponent side = Product::simpler(sumProfile, canonicalShift);
 
   if (Product::makeCompletionList(
     sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))

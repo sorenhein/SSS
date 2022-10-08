@@ -59,9 +59,6 @@ Completion:
 Sort out the expansions (when true and when false flags?)
 Completion:strNew is the only one now?
 
-Pverbal:
-Can we use simpler instead of simplerEqualTops?
-
 Slot:
 topCount etc. must go out again.
 
