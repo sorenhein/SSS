@@ -97,12 +97,6 @@ class Product
       const unsigned char canonicalShift,
       const Completion& completion) const;
 
-    void makeSingularCompletionBottoms(
-      const Profile& sumProfile,
-      const unsigned char canonicalShift,
-      const Opponent side,
-      Completion& completion) const;
-
     void makeSingularCompletion(
       const Profile& sumProfile,
       const unsigned char canonicalShift,

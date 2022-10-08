@@ -210,71 +210,14 @@ Opponent Product::singularUnusedSide(
 }
 
 
-void Product::makeSingularCompletionBottoms(
-  const Profile& sumProfile,
-  const unsigned char canonicalShift,
-  const Opponent side,
-  Completion& completion) const
-{
-  const unsigned char slength = sumProfile.length();
-  const unsigned char wlength = length.lower();
-
-  const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
-  const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
-
-  const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
-
-  if (topsUsedWest == wlength ||
-      topsUsedEast + numBottoms == slength - wlength)
-  {
-    // All bottoms go to East.
-    if (side == OPP_EAST)
-    {
-      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo],
-          sumProfile[topNo]);
-    }
-  }
-  else if (topsUsedEast == slength - wlength ||
-      topsUsedWest + numBottoms == wlength)
-  {
-    // All bottoms go to West.
-    if (side == OPP_WEST)
-    {
-      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-        completion.setTop(topNo, true, sumProfile[topNo],
-          sumProfile[topNo]);
-    }
-  }
-  else if (canonicalShift == 0)
-  {
-    if (side == OPP_WEST)
-      completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
-    else
-      completion.setTop(0, true, slength - wlength - topsUsedEast,
-        sumProfile[0]);
-  }
-  else
-    assert(false);
-}
-
-
 void Product::makeSingularCompletion(
   const Profile& sumProfile,
   const unsigned char canonicalShift,
-  const Opponent side,
+  [[maybe_unused]] const Opponent side,
   Completion& completion) const
 {
   // All given tops are exact.
   assert(length.used() && length.isEqual());
-
-  const unsigned char slength = sumProfile.length();
-  const unsigned char wlength = length.lower();
-
-  const unsigned char numBottoms = sumProfile.numBottoms(canonicalShift);
-
-  const unsigned char topsUsedWest = completion.getTopsUsed(OPP_WEST);
-  const unsigned char topsUsedEast = completion.getTopsUsed(OPP_EAST);
 
   // Determine which side gets the unused tops.
   const Opponent sideForUnused = Product::singularUnusedSide(
@@ -301,31 +244,25 @@ void Product::makeSingularCompletion(
     }
   }
 
-  // Product::makeSingularCompletionBottoms(
-    // sumProfile, canonicalShift, side, completion);
+  const unsigned char wlength = length.lower();
+  const unsigned char elength = sumProfile.length() - length.lower();
 
-  if (topsUsedWest == wlength ||
-      topsUsedEast + numBottoms == slength - wlength)
+  if (completion.getTopsUsed(OPP_WEST) == wlength)
   {
     // All bottoms go to East.
     for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
       completion.setTop(topNo, true, 0, sumProfile[topNo]);
   }
-  else if (topsUsedEast == slength - wlength ||
-      topsUsedWest + numBottoms == wlength)
+  else if (completion.getTopsUsed(OPP_EAST) == elength)
   {
     // All bottoms go to West.
-    if (side == OPP_WEST)
-    {
-      for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
-      {
-        completion.setTop(topNo, true, sumProfile[topNo], sumProfile[topNo]);
-      }
-    }
+    for (unsigned char topNo = canonicalShift+1; topNo-- > 0; )
+      completion.setTop(topNo, true, sumProfile[topNo], sumProfile[topNo]);
   }
   else if (canonicalShift == 0)
   {
-    completion.setTop(0, true, wlength - topsUsedWest, sumProfile[0]);
+    completion.setTop(
+      0, true, wlength - completion.getTopsUsed(OPP_WEST), sumProfile[0]);
   }
   else
     assert(false);

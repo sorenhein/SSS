@@ -69,11 +69,6 @@ VerbalTemplates:
 Get associatively from "TAG" to the numerical TAG.
 
 
-Pverbal:
-* makeSingularCompletion needs to be turned around
-* setVerbalAnyTopsEqual
-  strGeneral is still a hodge-podge.
-
 11/162390
 HHJ97
 "East has exactly one of ace-king and not HJ"
