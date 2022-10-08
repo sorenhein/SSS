@@ -4,9 +4,6 @@ Places that use English text:
 - VerbalTemplates (the templates)
 - RanksNames (move it out?)
 
-Re-sort methods in VerbalCover (some become private?).
-Use sentence order.
-
 struct DictEntry
 {
   unsigned instance;
@@ -57,7 +54,6 @@ struct Dictionary
 
 Completion:
 Sort out the expansions (when true and when false flags?)
-Completion:strNew is the only one now?
 
 Slot:
 topCount etc. must go out again.
@@ -65,6 +61,9 @@ topCount etc. must go out again.
 VerbalTemplates:
 Get associatively from "TAG" to the numerical TAG.
 
+Store the texts in a language file
+
+-----
 
 11/162390
 HHJ97
@@ -77,16 +76,6 @@ But at any rate the answer was inconsistent.
 For now, moving to (T) all the way.  Perhaps in ranksNames
 it should be x?
 
-
-Store the texts in a language file
-
-The main problem now is with the first-named / second-named.
-We have to be able to say "has a doubleton and the Q" when twose
-two go together.  Otherwise if looks as if they could be separated.
-Or "has a doubleton not including".
-
-
-
 11/159426 #2
  *G West has AK, AKx or Hx [4/4]
  *G West has HT9, T9 or T9x [4/4]
@@ -98,18 +87,6 @@ complexity in a post-processing step.
 
 There is a new class VerbalTableau
 It has a VerbalRow consisting of one or more VerbalCover
-
-Maybe don't need all four args of strUsedTops independently?
-Do the any-tops first, then maybe it becomes clearer.
-
-Put language components (semantic) into Cover:
-- simplest opponent
-- Could be the whole text
-- Could be a list of Q86, Q8x, ...
-- Later on could be sentence types with the contents given
-- Prepare for multi-language that way
-- Easier to combine covers into a row
-
 
 Output a "where" line for the actual solutions.
 Only when it is of interest.

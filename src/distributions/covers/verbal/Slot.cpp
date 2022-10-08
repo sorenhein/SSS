@@ -280,10 +280,10 @@ string Slot::strCommon(
     assert(Slot::has(1, 0, 2) || Slot::has(1, 0, 3));
 
     if (numBools == 2)
-      Slot::replace(s, "%0", completion.strSetNew(ranksNames, side, 
+      Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
         bools[0], bools[1]));
     else
-      Slot::replace(s, "%0", completion.strSetNew(ranksNames, side, 
+      Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
         bools[0], bools[1], bools[2]));
 
     return s;
@@ -293,7 +293,7 @@ string Slot::strCommon(
     assert(Slot::has(1, 0, 2));
 
     Slot::replace(s, "%0",
-      completion.strSetNew(ranksNames, side, bools[0], bools[1]));
+      completion.strSet(ranksNames, side, bools[0], bools[1]));
 
     Slot::replace(s, "%1", completion.strUnset(ranksNames, side));
 

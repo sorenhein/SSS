@@ -6,9 +6,6 @@
    See LICENSE and README.
 */
 
-// Despite the file name, this file implements Product methods.
-// They are separate as there are so many of them.
-
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -79,7 +76,7 @@ void Completion::updateTop(
   const unsigned char maximum,
   const Opponent side)
 {
-  // This methods does not respect anything except the numbers
+  // This method does not respect anything except the numbers
   // in west and east.  The consistency in openTopNumbers, length
   // etc. is lost.  It should only be used from a method such as 
   // Product::makeCompletionList().
@@ -137,20 +134,6 @@ void Completion::setFree(
 
   dataWest.freeLower = rest - dataEast.freeUpper;
   dataEast.freeLower = rest - dataWest.freeUpper;
-
-/*
-cout << "setFree:\n";
-cout << "maximum " << +maximum << "\n";
-cout << "length West " << +lengthWestLower << " to " <<
-  +lengthWestUpper << "\n";
-cout << "rest " << +rest << "\n";
-cout << "westLimit " << +westLimit << "\n";
-cout << "eastLimit " << +eastLimit << "\n";
-cout << "free West " << +dataWest.freeLower << " to " << 
-  +dataWest.freeUpper << "\n";
-cout << "free East " << +dataEast.freeLower << " to " << 
-  +dataEast.freeUpper << "\n";
-  */
 }
 
 
@@ -166,34 +149,6 @@ unsigned char Completion::length(const Opponent side) const
     return dataWest.length;
   else if (side == OPP_EAST)
     return dataEast.length;
-  else
-  {
-    assert(false);
-    return 0;
-  }
-}
-
-
-unsigned char Completion::getFreeLower(const Opponent side) const
-{
-  if (side == OPP_WEST)
-    return dataWest.freeLower;
-  else if (side == OPP_EAST)
-    return dataEast.freeLower;
-  else
-  {
-    assert(false);
-    return 0;
-  }
-}
-
-
-unsigned char Completion::getFreeUpper(const Opponent side) const
-{
-  if (side == OPP_WEST)
-    return dataWest.freeUpper;
-  else if (side == OPP_EAST)
-    return dataEast.freeUpper;
   else
   {
     assert(false);
@@ -230,6 +185,34 @@ unsigned char Completion::getTopsUsed(const Opponent side) const
 }
 
 
+unsigned char Completion::getFreeLower(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.freeLower;
+  else if (side == OPP_EAST)
+    return dataEast.freeLower;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
+unsigned char Completion::getFreeUpper(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.freeUpper;
+  else if (side == OPP_EAST)
+    return dataEast.freeUpper;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 unsigned char Completion::getTotalLower(const Opponent side) const
 {
   if (side == OPP_WEST)
@@ -255,6 +238,27 @@ unsigned char Completion::getTotalUpper(const Opponent side) const
     assert(false);
     return 0;
   }
+}
+
+
+unsigned char Completion::getLowestRankUsed() const
+{
+  return lowestRankUsed;
+}
+
+
+bool Completion::lowestRankIsUsed(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return (dataWest.lowestRankActive == lowestRankUsed);
+  else
+    return (dataEast.lowestRankActive == lowestRankUsed);
+}
+
+
+unsigned char Completion::numOptions() const
+{
+  return static_cast<unsigned char>(used.size()) - ranksUsed;
 }
 
 
@@ -294,27 +298,6 @@ Opponent Completion::preferSimpleActive() const
 }
 
 
-unsigned char Completion::getLowestRankUsed() const
-{
-  return lowestRankUsed;
-}
-
-
-bool Completion::lowestRankIsUsed(const Opponent side) const
-{
-  if (side == OPP_WEST)
-    return (dataWest.lowestRankActive == lowestRankUsed);
-  else
-    return (dataEast.lowestRankActive == lowestRankUsed);
-}
-
-
-unsigned char Completion::numOptions() const
-{
-  return static_cast<unsigned char>(used.size()) - ranksUsed;
-}
-
-
 bool Completion::operator < (const Completion& comp2) const
 {
   return (dataWest.length > comp2.dataWest.length);
@@ -327,110 +310,7 @@ bool Completion::operator > (const Completion& comp2) const
 }
 
 
-bool Completion::operator == (const Completion& comp2) const
-{
-  if (used.size() != comp2.used.size())
-    return false;
-  if (west.size() != comp2.west.size())
-    return false;
-  if (openTopNumbers.size() != comp2.openTopNumbers.size())
-    return false;
-  if (dataWest.length != comp2.dataWest.length)
-    return false;
-  if (dataEast.length != comp2.dataEast.length)
-    return false;
-
-  for (size_t i = 0; i < west.size(); i++)
-    if (used[i] != comp2.used[i])
-      return false;
-
-  for (size_t i = 0; i < west.size(); i++)
-    if (west[i] != comp2.west[i])
-      return false;
-
-  for (size_t i = 0; i < east.size(); i++)
-    if (east[i] != comp2.east[i])
-      return false;
-
-  auto oiter1 = openTopNumbers.begin();
-  auto oiter2 = comp2.openTopNumbers.begin();
-
-  while (oiter1 != openTopNumbers.end())
-  {
-    if (* oiter1 != * oiter2)
-      return false;
-
-    oiter1++;
-    oiter2++;
-  }
-
-  return true;
-}
-
-
-string Completion::strDebug() const
-{
-  stringstream ss;
-
-  ss << "West ";
-  for (auto w: west)
-    ss << +w << " ";
-  ss << "\n";
-
-  ss << "East ";
-  for (auto e: east)
-    ss << +e << " ";
-  ss << "\n";
-
-  ss << "Used ";
-  for (auto u: used)
-    ss << u << " ";
-  ss << "\n";
-
-  ss << "open ";
-  for (auto o: openTopNumbers)
-    ss << +o << " ";
-  ss << "\n";
-
-  ss << "ranksUsed " << +ranksUsed << "\n";
-
-  ss << "West:\n" << dataWest.strDebug() << "\n";
-  ss << "East:\n" << dataEast.strDebug() << "\n";
-  return ss.str();
-}
-
-
 string Completion::strSet(
-  const RanksNames& ranksNames,
-  const Opponent side,
-  const bool expandFlag,           // jack, not J
-  const bool singleRankFlag,       // Use dashes between expansions
-  const bool explicitVoidFlag) const
-{
-  if ((side == OPP_WEST && dataWest.length == 0) ||
-      (side == OPP_EAST && dataEast.length == 0))
-    return (explicitVoidFlag ? "void" : "");
-
-  string s;
-  const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
-
-  for (unsigned char topNo = 
-    static_cast<unsigned char>(west.size()); topNo-- > 0; )
-  {
-    if (used[topNo])
-    {
-      if (expandFlag && ! singleRankFlag && ! s.empty())
-        s += "-";
-
-      s += ranksNames.strOpponents(topNo, tops[topNo],
-        expandFlag, singleRankFlag);
-    }
-  }
-  return s;
-}
-
-
-string Completion::strSetNew(
   const RanksNames& ranksNames,
   const Opponent side,
   const bool enableExpandFlag,     // jack, not J

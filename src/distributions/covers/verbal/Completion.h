@@ -9,9 +9,6 @@
 #ifndef SSS_COMPLETION_H
 #define SSS_COMPLETION_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <vector>
 #include <list>
 #include <string>
@@ -63,7 +60,7 @@ class Completion
       void update(
         const unsigned char topNo,
         const unsigned char value,
-        [[maybe_unused]] const unsigned char valueMax)
+        const unsigned char valueMax)
       {
         // Call this from the highest topNo on down in order.
         topsUsed += value;
@@ -76,19 +73,6 @@ class Completion
 
         if (value == valueMax)
           topsFull += valueMax;
-      };
-
-      string strDebug() const
-      {
-        stringstream ss;
-        ss << "length           " << +length << "\n";
-        ss << "topsUsed         " << +topsUsed  << "\n";
-        ss << "ranksActive      " << +ranksActive << "\n";
-        ss << "lowestRankActive " << +lowestRankActive  << "\n";
-        ss << "topsFull         " << +topsFull << "\n";
-        ss << "freeLower        " << +freeLower << "\n";
-        ss << "freeUpper        " << +freeUpper << "\n";
-        return ss.str();
       };
     };
 
@@ -159,18 +143,7 @@ class Completion
 
     bool operator > (const Completion& comp2) const;
 
-    bool operator == (const Completion& comp2) const;
-
-    string strDebug() const;
-
     string strSet(
-      const RanksNames& ranksNames,
-      const Opponent side,
-      const bool expandFlag,
-      const bool singleRankFlag,
-      const bool explicitVoidFlag = false) const;
-
-    string strSetNew(
       const RanksNames& ranksNames,
       const Opponent side,
       const bool enableExpandFlag,

@@ -132,10 +132,8 @@ void VerbalCover::getLengthInsideData(
     slots[0].setPhrase(PLAYER_NEITHER);
     slots[1].setPhrase(LENGTH_VERB_VOID);
   }
-  else if (vLower+1 == vUpper)
+  else if (vLower+1 == vUpper && vLower + vUpper == oppsLength)
   {
-    // TODO Is this true??
-    // NO!
     slots[0].setPhrase(PLAYER_SUIT);
     slots[1].setPhrase(LENGTH_VERB_ODD_EVENLY);
   }
