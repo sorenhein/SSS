@@ -77,28 +77,52 @@ void Completion::updateTop(
   const Opponent side)
 {
   // This method does not respect anything except the numbers
-  // in west and east.  The consistency in openTopNumbers, length
-  // etc. is lost.  It should only be used from a method such as 
-  // Product::makeCompletionList().
+  // in west and east, the length and topsUsed.  The consistency in 
+  // openTopNumbers etc.  is lost.  It should only be used from a 
+  // method such as Product::makeCompletionList().
 
   assert(topNo < used.size());
 
   const unsigned char countWest = (side == OPP_WEST ?
     countSide : maximum - countSide);
+  const unsigned char countEast = (side == OPP_WEST ?
+    maximum - countSide : countSide);
 
   if (used[topNo])
   {
     dataWest.length += countWest - west[topNo];
-    dataEast.length += maximum - countWest - east[topNo];
+    dataEast.length += countEast - east[topNo];
+
+    dataWest.topsUsed += countWest - west[topNo];
+    dataEast.topsUsed += countEast - east[topNo];
+
+    if (west[topNo] == 0 && countWest > 0)
+      dataWest.ranksActive++;
+    else if (west[topNo] != 0 && countWest == 0)
+      dataWest.ranksActive--;
+
+    if (east[topNo] == 0 && countEast > 0)
+      dataEast.ranksActive++;
+    else if (east[topNo] != 0 && countEast == 0)
+      dataEast.ranksActive--;
   }
   else
   {
     // Treat as if partialTops were zero, as there might be a
     // maximum value for an unused top stored here.
     dataWest.length += countWest;
-    dataEast.length += maximum - countWest;
+    dataEast.length += countEast;
+
+    dataWest.topsUsed += countWest;
+    dataEast.topsUsed += countEast;
+
+    if (countWest > 0)
+      dataWest.ranksActive++;
+
+    if (countEast > 0)
+      dataEast.ranksActive++;
+
     used[topNo] = true;
-    
   }
 
   west[topNo] = countWest;
@@ -314,7 +338,7 @@ string Completion::strSet(
   const RanksNames& ranksNames,
   const Opponent side,
   const bool enableExpandFlag,     // jack, not J
-  const bool enableSingleRankFlag, // Use dashes between expansions
+  [[maybe_unused]] const bool enableSingleRankFlag, // Use dashes between expansions
   const bool explicitVoidFlag) const
 {
   if ((side == OPP_WEST && dataWest.length == 0) ||
@@ -325,10 +349,19 @@ string Completion::strSet(
     ((side == OPP_WEST && dataWest.topsUsed == 1) ||
      (side == OPP_EAST && dataEast.topsUsed == 1));
 
+  /*
   const bool singleRankFlag = enableSingleRankFlag &&
     ((side == OPP_WEST && dataWest.ranksActive == 1) ||
      (side == OPP_EAST && dataEast.ranksActive == 1));
+     */
 
+/*
+cout << "side " << side << endl;
+cout << "West\n";
+cout << "topsUsed " << +dataWest.topsUsed << endl;
+cout << "East\n";
+cout << "topsUsed " << +dataEast.topsUsed << endl;
+*/
   string s;
   const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
 
@@ -337,11 +370,13 @@ string Completion::strSet(
   {
     if (used[topNo])
     {
-      if (expandFlag && ! singleRankFlag && ! s.empty())
-        s += "-";
+      // if (expandFlag && ! singleRankFlag && ! s.empty())
+        // s += "-";
 
-      s += ranksNames.strOpponents(topNo, tops[topNo],
-        expandFlag, singleRankFlag);
+      if (expandFlag)
+        s += ranksNames.strOpponentsExpanded(topNo, tops[topNo]);
+      else
+        s += ranksNames.strOpponents(topNo, tops[topNo]);
     }
   }
   return s;
@@ -357,7 +392,7 @@ string Completion::strUnset(
 
   for (auto openNo: openTopNumbers)
   {
-    s += ranksNames.strOpponents(openNo, tops[openNo], false, false);
+    s += ranksNames.strOpponents(openNo, tops[openNo]);
   }
   return s;
 }

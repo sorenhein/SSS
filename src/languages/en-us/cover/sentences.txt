@@ -62,4 +62,4 @@ string "%0 %1 %2 %3"
 # %0: Player
 # %x: Holdings
 name SENTENCE_LIST
-string "%0 has %1, %2, %3, %4"
+string "%0 has exactly %1, %2, %3, %4"

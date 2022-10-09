@@ -59,10 +59,9 @@ class RankNames
 
     string strComponent(const RankName rankName) const;
 
-    string strOpponents(
-      const unsigned char numCards,
-      const bool expandFlag,
-      const bool singleRankFlag) const;
+    string strOpponents(const unsigned char numCards) const;
+
+    string strOpponentsExpanded(const unsigned char numCards) const;
 
     string strHeader() const;
 

@@ -113,16 +113,27 @@ const RankNames& RanksNames::getOpponents(const unsigned topNumber) const
 
 string RanksNames::strOpponents(
   const unsigned topNumber,
-  const unsigned char count,
-  const bool expandFullFlag,
-  const bool singleRankFlag) const
+  const unsigned char count) const
 {
   assert(topNumber < indexByTop.size());
 
   const auto itop = indexByTop[topNumber];
   assert(itop < names.size());
 
-  return names[itop].strOpponents(count, expandFullFlag, singleRankFlag);
+  return names[itop].strOpponents(count);
+}
+
+
+string RanksNames::strOpponentsExpanded(
+  const unsigned topNumber,
+  const unsigned char count) const
+{
+  assert(topNumber < indexByTop.size());
+
+  const auto itop = indexByTop[topNumber];
+  assert(itop < names.size());
+
+  return names[itop].strOpponentsExpanded(count);
 }
 
 

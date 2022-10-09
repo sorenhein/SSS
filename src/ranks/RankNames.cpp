@@ -143,43 +143,26 @@ string RankNames::strComponent(const RankName rankName) const
 }
 
 
-string RankNames::strOpponents(
-  const unsigned char numCards,
-  const bool expandFlag,
-  const bool singleRankFlag) const
+string RankNames::strOpponents(const unsigned char numCards) const
 {
   if (numCards == 0)
     return "";
-
-  if (expandFlag && singleRankFlag)
-  {
-    if (numCards == count)
-      return "the " + names[RANKNAME_ACTUAL_FULL];
-    else 
-      return "exactly " + dictionary.numerals.get(numCards).text + " of " +
-        names[RANKNAME_ACTUAL_FULL];
-  }
-  else if (expandFlag)
-  {
-assert(false);
-    // TODO I suspect this branch doesn't happen,
-    // so we could come down to a single bool, expandFlag.
-    // More like
-    // enum, EXPAND_SINGLE_RANK, EXPAND_ALWAYS, EXPAND_NEVER
-    // But the middle one should be more like ace-H-H-7
-    // and mainly be used for stuff like ace-queen
-    if (numCards == count)
-      return names[RANKNAME_ACTUAL_FULL];
-    else
-      return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
-  }
+  else if (numCards == count)
+    return names[RANKNAME_ACTUAL_SHORT];
   else
-  {
-    if (numCards == count)
-      return names[RANKNAME_ACTUAL_SHORT];
-    else
-      return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
-  }
+    return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
+}
+
+
+string RankNames::strOpponentsExpanded(const unsigned char numCards) const
+{
+  if (numCards == 0)
+    return "";
+  else if (numCards == count)
+    return "the " + names[RANKNAME_ACTUAL_FULL];
+  else 
+    return "exactly " + dictionary.numerals.get(numCards).text + " of " +
+      names[RANKNAME_ACTUAL_FULL];
 }
 
 

@@ -1,10 +1,15 @@
 Places that use English text:
 - VerbalMap (but read in from a file)
 - Slot (the vectors on top of the file)
-- VerbalTemplates (the templates)
+- VerbalTemplates (the templates and "or")
 - RanksNames (move it out?)
-  - line 150, strOpponents: Is it really a phrase?
+  - line 150, strOpponentsExpanded: Is it really a phrase?
+  - Completion::strSet: Only one bool arg from VerbalCover
+  - Maybe use singleRank instead, re-enable dash in strSet
 
+11/11492, could still be "jack and one lower-ranked card", not "J"
+
+k
 Completion:
 Sort out the expansions (when true and when false flags?)
 
