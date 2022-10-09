@@ -374,6 +374,7 @@ string Completion::strSet(
       (side == OPP_EAST && dataEast.length == 0))
     return (explicitVoidFlag ? "void" : "");
 
+assert(! expandFlag);
   // TODO This method probably loses the expandFlag.
   string s;
   const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);

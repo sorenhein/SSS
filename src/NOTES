@@ -9,6 +9,9 @@ Places that use English text:
 Remember to add the two new cases from TOPS_ACTUAL and SLOTS_
 to the new dictionary and map as well.
 
+Check that methods in Completion and RankNames and even RanksNames
+are actually used.  Might be some rot.
+
 11/11492, could still be "jack and one lower-ranked card", not "J"
 
 Completion:

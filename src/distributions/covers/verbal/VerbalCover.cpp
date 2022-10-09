@@ -479,15 +479,27 @@ void VerbalCover::fillSingular(
 
 void VerbalCover::fillCompletion(const VerbalSide& vside)
 {
-  sentence = SENTENCE_LIST;
-
   slots.resize(2);
 
   slots[0].setPhrase(vside.player());
 
-  slots[1].setPhrase(LIST_HOLDING_EXACT);
-  slots[1].setSide(vside.side);
-  slots[1].setBools(completions.front().expandable(vside.side));
+  if (! completions.front().expandable(vside.side))
+  {
+    sentence = SENTENCE_LIST;
+
+    slots[1].setPhrase(LIST_HOLDING_EXACT);
+    slots[1].setSide(vside.side);
+    slots[1].setBools(false);
+    // slots[1].setBools(completions.front().expandable(vside.side));
+  }
+  else
+  {
+    // A bit of a kludge to allow the expansion.
+    sentence = SENTENCE_ONETOP_ONLY;
+
+    slots[0].setPhrase(vside.player());
+    VerbalCover::fillTopsActual(vside.side, slots[1]);
+  }
 }
 
 
