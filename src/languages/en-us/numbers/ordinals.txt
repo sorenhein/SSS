@@ -1,0 +1,41 @@
+name ORDINAL_0
+string "void"
+
+name ORDINAL_1
+string "singleton"
+
+name ORDINAL_2
+string "doubleton"
+
+name ORDINAL_3
+string "tripleton"
+
+name ORDINAL_4
+string "fourth"
+
+name ORDINAL_5
+string "fifth"
+
+name ORDINAL_6
+string "sixth"
+
+name ORDINAL_7
+string "seventh"
+
+name ORDINAL_8
+string eighth"
+
+name ORDINAL_9
+string "ninth"
+
+name ORDINAL_10
+string "tenth
+
+name ORDINAL_11
+string "eleventh"
+
+name ORDINAL_12
+string "twelfth"
+
+name ORDINAL_13
+string "thirteenth"

@@ -1,0 +1,41 @@
+name NUMERAL_0
+string "none"
+
+name NUMERAL_1
+string "one"
+
+name NUMERAL_2
+string "two"
+
+name NUMERAL_3
+string "three"
+
+name NUMERAL_4
+string "four"
+
+name NUMERAL_5
+string "five"
+
+name NUMERAL_6
+string "six"
+
+name NUMERAL_7
+string "seven"
+
+name NUMERAL_8
+string "eight"
+
+name NUMERAL_9
+string "nine"
+
+name NUMERAL_10
+string "ten"
+
+name NUMERAL_11
+string "eleven"
+
+name NUMERAL_12
+string "twelve"
+
+name NUMERAL_13
+string "thirteen"

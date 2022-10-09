@@ -62,7 +62,10 @@ SOURCE_FILES    =                               \
                 inputs/Control.cpp              \
                 inputs/Entity.cpp               \
                 inputs/parse.cpp                \
-                                                \
+                                                                 \
+                languages/Component.cpp                          \
+                languages/Dictionary.cpp                         \
+                                                                 \
                 plays/Plays.cpp                 \
                 plays/Play.cpp                  \
                 plays/Nodes.cpp                 \

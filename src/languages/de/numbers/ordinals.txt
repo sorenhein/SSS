@@ -1,0 +1,41 @@
+name ORDINAL_0
+string "Chicane"
+
+name ORDINAL_1
+string "Single"
+
+name ORDINAL_2
+string "Double"
+
+name ORDINAL_3
+string "zu dritt"
+
+name ORDINAL_4
+string "zu viert"
+
+name ORDINAL_5
+string "zu fünft"
+
+name ORDINAL_6
+string "zu sechst"
+
+name ORDINAL_7
+string "zu siebent"
+
+name ORDINAL_8
+string zu acht"
+
+name ORDINAL_9
+string "zu neunt"
+
+name ORDINAL_10
+string "zu zehnt
+
+name ORDINAL_11
+string "zu elft"
+
+name ORDINAL_12
+string "zu zwölft"
+
+name ORDINAL_13
+string "zu dreizehnt"

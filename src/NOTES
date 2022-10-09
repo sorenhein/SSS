@@ -10,58 +10,6 @@ Sort out the expansions (when true and when false flags?)
 Slot:
 topCount etc. must go out again.
 
-VerbalTemplates:
-Get associatively from "TAG" to the numerical TAG.
-
-Store the texts in a language file
-
-struct DictEntry
-{
-  unsigned instance;
-  string tag;
-  unsigned group;
-  unsigned expansion;
-};
-
-struct DictDefinition
-{
-  DictEntry dictEntry;
-  string definition;
-};
-
-enum Chapters
-{
-  CHAPTER_SENTENCES = 0,
-  CHAPTER_PHRASES = 1
-  CHAPTER_WORDS = 2
-};
-
-class Chapter
-{
-  private:
-    list<DictEntry> connections;
-
-  public:
-    void init(const Chapters& chapter);
-    void read(const Language& language);
-
-    template<T>
-    string lookup(const T index) const;
-};
-
-struct Dictionary
-{
-  Chapter coverSentences;
-  Chapter coverPhrases;
-  Chapter words;
-
-  Dictionary::Dictionary()
-  {
-    sentences.init(CHAPTER_SENTENCES, "cover/sentences.txt");
-    phrases.init(CHAPTER_PHRASES, "cover/phrases.txt");
-    words.init(CHAPTER_WORDS, "words.txt");
-  };
-};
 
 -----
 

@@ -1,0 +1,38 @@
+name CARD_SHORT_2
+string "2"
+
+name CARD_SHORT_3
+string "3"
+
+name CARD_SHORT_4
+string "4"
+
+name CARD_SHORT_5
+string "5"
+
+name CARD_SHORT_6
+string "6"
+
+name CARD_SHORT_7
+string "7"
+
+name CARD_SHORT_8
+string "8"
+
+name CARD_SHORT_9
+string "9"
+
+name CARD_SHORT_TEN
+string "T"
+
+name CARD_SHORT_JACK
+string "J"
+
+name CARD_SHORT_QUEEN
+string "Q"
+
+name CARD_SHORT_KING
+string "K"
+
+name CARD_SHORT_ACE
+string "A"

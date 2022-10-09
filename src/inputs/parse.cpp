@@ -119,6 +119,24 @@ bool parseBool(
 }
 
 
+bool parseQuotedString(
+  const string& text,
+  string& value)
+{
+  // Not much error checking here.
+  const auto sp1 = text.find("\"");
+  if (sp1 == string::npos)
+    return false;
+
+  const auto sp2 = text.find("\"", sp1+1);
+  if (sp2 == string::npos)
+    return false;
+
+  value = text.substr(sp1, sp2-sp1);
+  return true;
+}
+
+
 void parseDelimitedString(
   const string& text,
   const string& delimiter,

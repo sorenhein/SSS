@@ -1,0 +1,19 @@
+# In case we have multiple cards of a given rank.
+name HONOR_SHORT_1
+string "H"
+
+name HONOR_SHORT_2
+string "h"
+
+name HONOR_SHORT_3
+string "G"
+
+name HONOR_SHORT_4
+string "g"
+
+name HONOR_SHORT_5
+string "F"
+
+name HONOR_SHORT_6
+string "f"
+

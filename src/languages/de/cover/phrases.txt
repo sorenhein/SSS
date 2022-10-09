@@ -2,56 +2,56 @@ name PLAYER_WEST
 string "West"
 
 name PLAYER_EAST
-string "East"
+string "Ost"
 
 name PLAYER_EITHER
-string "Either opponent"
+string "Einer der Gegner"
 
 name PLAYER_EACH
-string "Each opponent"
+string "Jeder Gegner"
 
 name PLAYER_NEITHER
-string "Neither opponent"
+string "Keiner der Gegner"
 
 name PLAYER_SUIT
-string "The suit"
+string "Die Farbe"
 
 
 name LENGTH_VERB_VOID
-string "is void"
+string "ist Chicane"
 
 # Example: has a singleton
 name LENGTH_VERB_XTON
-string "has a %0"
+string "hat ein %0"
 
 name LENGTH_VERB_EVENLY
-string "splits evenly"
+string "ist gleichmässig verteilt"
 
 name LENGTH_VERB_ODD_EVENLY
-string "splits evenly either way"
+string "ist gleichmässig verteilt"
 
 # Example: has at most a doubleton
 name LENGTH_VERB_XTON_ATMOST
-string "has at most a %0"
+string "hat höchstens ein %0"
 
 # Example: Has two cards
 name LENGTH_VERB_CARDS
-string "has %0 cards"
+string "hat %0 Karten"
 
 # Example: Has at most two cards
 name LENGTH_VERB_ATMOST
-string "has at most %0 cards"
+string "hat höchstens %0 Karten"
 
 name LENGTH_VERB_12
-string "has a singleton or doubleton"
+string "hat ein Single oder Double"
 
 # Example: Has 2-3 cards
 name LENGTH_VERB_RANGE
-string "has %0-%1 cards"
+string "hat %0-%1 Karten"
 
 # Example: [The suit] splits 2=3
 name LENGTH_VERB_SPLIT
-string "splits %0=%1"
+string "ist %0=%1 verteilt"
 
 
 # Example: third
@@ -60,15 +60,15 @@ string "%0"
 
 Example: at most third
 name LENGTH_ORDINAL_ATMOST
-string "at most %0"
+string "höchstens %0"
 
 # Example: singleton or doubleton
 name LENGTH_ORDINAL_ADJACENT
-string "%0 or %1"
+string "%0 oder %1"
 
 # Example: doubleton to fourth
 name LENGTH_ORDINAL_RANGE
-string "%0 to %1"
+string "%0 bis %1"
 
 
 # Example: two
@@ -77,7 +77,7 @@ string "%0"
 
 # Example: at most two
 name COUNT_ATMOST
-string "at most %0"
+string "höchstens %0"
 
 # Example: 2-3
 name COUNT_RANGE
@@ -88,20 +88,20 @@ string "%0-%1"
 # %0: Number
 # %1: Holding
 name TOPS_ATMOST
-string "at most %0 of %1"
+string "höchstens %0 von %1"
 
 # Example: At least one of QJT
 # %0: Number
 # %1: Holding
 name TOPS_ATLEAST
-string "at least %0 of %1"
+string "mindestens %0 von %1"
 
 # Example: 1-2 of QJT
 # %0: Number
 # %1: Number
 # %2: Holding
 name TOPS_RANGE
-string "%0-%1 of %2"
+string "%0-%1 von %2"
 
 # Example: KQ
 name TOPS_ACTUAL
@@ -113,30 +113,30 @@ string "%0"
 
 # Example: cards (plural).  May also be card (singular).
 name TOPS_LOWER
-string ", lower-ranked %0"
+string ", niedrigere %0"
 
 # Example: cards below the T.
 # %0: card or cards.
 # %1: A specific card.
 name TOPS_BELOW
-string " %0 below the %1"
+string " %0 unterhalb von %1"
 
 
 name EXCLUDING_NONE
-string "none of"
+string "nicht"
 
 name EXCLUDING_NEITHER
-string "neither of"
+string "nicht"
 
 name EXCLUDING_NOT
-string "not"
+string "nicht"
 
 
 name BELOW_NORMAL
-string "below the"
+string "unterhalb von"
 
 BELOW_COMPLETELY
-string "completely below the"
+string "komplett unterhalb von"
 
 
 # Example: x(xx)

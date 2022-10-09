@@ -1,0 +1,16 @@
+name CARD
+string "Karte"
+
+name CARDS
+string "Karten"
+
+
+name HONOR
+string "Figur"
+
+name HONORS
+string "Figuren"
+
+
+name CONJUNCTION_OR
+string "oder"

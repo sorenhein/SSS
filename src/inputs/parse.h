@@ -24,6 +24,10 @@ bool parseBool(
   const string& text,
   bool& value);
 
+bool parseQuotedString(
+  const string& text,
+  string& value);
+
 void parseDelimitedString(
   const string& text,
   const string& delimiter,

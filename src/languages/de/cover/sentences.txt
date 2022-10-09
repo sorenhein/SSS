@@ -1,0 +1,65 @@
+# Example: West has a doubleton, West is void.
+# %0: Player
+# %1: Length
+name SENTENCE_LENGTH_ONLY
+string "%0 %1"
+
+# Example: West has the king
+# %0: Player
+# %1: Top
+name SENTENCE_ONETOP_ONLY
+string "%0 hat %1"
+
+# Example: West has AK fourth
+# %0: Player
+# %1: Holding
+# %2: Length ordinal
+name SENTENCE_TOPS_LENGTH
+string "%0 hat %1 %2"
+
+# Example: West has AK fourth without the T9
+# %0: Player
+# %1: Holding
+# %2: Ordinal
+# %3: Holding
+name SENTENCE_TOPS_LENGTH_WITHOUT
+string "%0 hat %1 %2 ohne %3"
+
+# Example: West has AK and none of J9
+# %0: Player
+# %1: Holding
+# %2: Negation indicator
+# %3: Holding
+name SENTENCE_TOPS_EXCLUDING
+string "%0 hat %1 und %2 %3"
+
+# Example: West has AKJx(x)
+# %0: Player
+# %1: Holding
+# %2: Holding
+name SENTENCE_TOPS_AND_XES
+string "%0 hat %1%2"
+
+# Example: West has AQ and 1-2 cards below the T
+# %0: Player
+# %1: Holding
+# %2: Card count indicator
+# %3: Holding
+name SENTENCE_TOPS_AND_LOWER
+string "%0 hat %1 und %2%3"
+
+# Example: West has a doubleton below the T
+# %0: Player
+# %1: Length
+# %2: Below indicator
+# %3: Holding
+name SENTENCE_ONLY_BELOW
+string "%0 %1 %2 %3"
+
+# Example: West has AT, QT or Tx.
+# The list has up to four entries.  The unused variables are purged.
+# last ',' is replaced with ' or', where the word is in words.txt.
+# %0: Player
+# %x: Holdings
+name SENTENCE_LIST
+string "%0 hat %1, %2, %3, %4"

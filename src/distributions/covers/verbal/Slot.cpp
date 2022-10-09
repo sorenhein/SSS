@@ -255,6 +255,9 @@ string Slot::str(
   }
   else if (expansion == SLOT_TEXT_BELOW)
   {
+    // If we permit full card names here, they should be in dative
+    // (in German, and it doesn't hurt in English and Danish).
+    // I don't have a good general mechanism for this.
     assert(Slot::has(0, 2, 0));
     Slot::replace(s, "%0", cardStrings[uchars[0] == 1 ? 0 : 1]);
     Slot::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
@@ -262,6 +265,7 @@ string Slot::str(
   }
   else if (expansion == SLOT_RANGE_OF)
   {
+    // Dative.
     assert(Slot::has(0, 3, 0));
     Slot::replace(s, "%0", uchars[0]);
     Slot::replace(s, "%1", uchars[1]);
@@ -271,6 +275,7 @@ string Slot::str(
   }
   else if (expansion == SLOT_SOME_OF)
   {
+    // Dative.
     assert(Slot::has(0, 2, 0));
     Slot::replace(s, "%0", topCount[uchars[0]]);
     Slot::replace(s, "%1", ranksNames.getOpponents(uchars[1]).

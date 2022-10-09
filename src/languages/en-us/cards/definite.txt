@@ -1,0 +1,38 @@
+name CARD_FULL_2
+string "the deuce"
+
+name CARD_FULL_3
+string "the trey"
+
+name CARD_FULL_4
+string "the four"
+
+name CARD_FULL_5
+string "the five"
+
+name CARD_FULL_6
+string "the six"
+
+name CARD_FULL_7
+string "the seven"
+
+name CARD_FULL_8
+string "the eight"
+
+name CARD_FULL_9
+string "the nine"
+
+name CARD_FULL_TEN
+string "the ten"
+
+name CARD_FULL_JACK
+string "the jack"
+
+name CARD_FULL_QUEEN
+string "the queen"
+
+name CARD_FULL_KING
+string "the king"
+
+name CARD_FULL_ACE
+string "the ace"

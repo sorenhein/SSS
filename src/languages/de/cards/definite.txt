@@ -1,0 +1,38 @@
+name CARD_FULL_2
+string "die Zwei"
+
+name CARD_FULL_3
+string "die Drei"
+
+name CARD_FULL_4
+string "die Vier"
+
+name CARD_FULL_5
+string "die Fünf"
+
+name CARD_FULL_6
+string "die Sechs"
+
+name CARD_FULL_7
+string "die Sieben"
+
+name CARD_FULL_8
+string "die Acht"
+
+name CARD_FULL_9
+string "die Neun"
+
+name CARD_FULL_TEN
+string "die Zehn"
+
+name CARD_FULL_JACK
+string "den Buben"
+
+name CARD_FULL_QUEEN
+string "die Dame"
+
+name CARD_FULL_KING
+string "den König"
+
+name CARD_FULL_ACE
+string "das Ass"
