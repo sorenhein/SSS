@@ -40,8 +40,8 @@ driver.obj: distributions/covers/TrickConvert.h
 driver.obj: distributions/covers/term/TermCompare.h inputs/Control.h
 driver.obj: inputs/Entity.h inputs/Convert.h strategies/result/ResConvert.h
 driver.obj: distributions/covers/verbal/VerbalTemplates.h
-driver.obj: distributions/covers/verbal/Language.h utils/Timers.h
-driver.obj: utils/Timer.h
+driver.obj: distributions/covers/verbal/Language.h languages/Dictionary.h
+driver.obj: languages/Component.h utils/Timers.h utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
@@ -594,11 +594,29 @@ distributions/covers/verbal/VerbalTemplates.obj: utils/Card.h utils/Compare.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalMap.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalDimensions.h
+distributions/covers/verbal/VerbalTemplates.obj: languages/Dictionary.h
+distributions/covers/verbal/VerbalTemplates.obj: languages/Component.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
+languages/Component.obj: languages/Component.h languages/VerbalConnection.h
+languages/Component.obj: inputs/parse.h
+languages/Dictionary.obj: languages/Dictionary.h languages/Component.h
+languages/Dictionary.obj: languages/connections/cover/sentences.h
+languages/Dictionary.obj: languages/VerbalConnection.h
+languages/Dictionary.obj: languages/PhraseExpansion.h
+languages/Dictionary.obj: languages/connections/cover/phrases.h
+languages/Dictionary.obj: languages/connections/cards/definite.h
+languages/Dictionary.obj: languages/connections/cards/indefinite.h
+languages/Dictionary.obj: languages/connections/cards/short.h
+languages/Dictionary.obj: languages/connections/honors/short.h
+languages/Dictionary.obj: languages/connections/numbers/numerals.h
+languages/Dictionary.obj: languages/connections/numbers/ordinals.h
+languages/Dictionary.obj: languages/connections/words.h
+languages/Dictionary.obj: languages/VerbalConnection.h
+languages/Dictionary.obj: languages/PhraseExpansion.h
 plays/Plays.obj: plays/Plays.h plays/Play.h strategies/result/Winners.h
 plays/Plays.obj: strategies/result/Winner.h utils/table.h utils/Card.h
 plays/Plays.obj: utils/Compare.h plays/Nodes.h plays/Node.h

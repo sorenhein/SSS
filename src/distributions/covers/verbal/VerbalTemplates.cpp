@@ -16,6 +16,10 @@
 #include "Slot.h"
 #include "VerbalMap.h"
 
+#include "../../../languages/Dictionary.h"
+
+extern Dictionary dictionary;
+
 
 VerbalTemplates::VerbalTemplates()
 {

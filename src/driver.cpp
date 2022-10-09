@@ -18,6 +18,7 @@
 
 #include "distributions/covers/verbal/VerbalTemplates.h"
 
+#include "languages/Dictionary.h"
 
 #include "utils/Timers.h"
 
@@ -29,6 +30,7 @@ Timers timers;
 
 Control control;
 Convert convert;
+Dictionary dictionary;
 ResConvert resConvert;
 TrickConvert trickConvert;
 Combinations combinations;
@@ -52,6 +54,8 @@ int main(int argc, char * argv[])
   setlocale(LC_ALL, "en_US.UTF-8");
 
   verbalTemplates.set(LANGUAGE_ENGLISH_US);
+
+  // dictionary.read("en-us");
 
   // Set up distributions.
 
