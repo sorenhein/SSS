@@ -47,7 +47,7 @@ void Dictionary::read(const string& language)
   numerals.read(language, "numbers/numerals.txt");
 
   ordinals.init(ordinalsConnection);
-  ordinals.read(language, "ordinals/ordinals.txt");
+  ordinals.read(language, "numbers/ordinals.txt");
 
   words.init(wordsConnection);
   words.read(language, "words.txt");

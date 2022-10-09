@@ -132,7 +132,7 @@ bool parseQuotedString(
   if (sp2 == string::npos)
     return false;
 
-  value = text.substr(sp1, sp2-sp1);
+  value = text.substr(sp1+1, sp2-sp1-1);
   return true;
 }
 

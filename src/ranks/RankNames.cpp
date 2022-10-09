@@ -16,8 +16,13 @@
 
 #include "RankNames.h"
 
+#include "../languages/Dictionary.h"
+
 #include "../utils/table.h"
 #include "../const.h"
+
+
+extern Dictionary dictionary;
 
 
 const vector<string> CARD_FULL_NAMES =
@@ -82,12 +87,22 @@ void RankNames::add(
   if (count == 0)
   {
     names[RANKNAME_ACTUAL_FULL] = CARD_FULL_NAMES[index];
+if (dictionary.cardsIndefinite.get(index).text != CARD_FULL_NAMES[index])
+{
+  cout << "index " << index << endl;
+  cout << "CFN     " << CARD_FULL_NAMES[index] << endl;
+  cout << "lookup  " << dictionary.cardsIndefinite.get(index).text << endl;
+
+assert(dictionary.cardsIndefinite.get(index).text == CARD_FULL_NAMES[index]);
+}
+
     names[RANKNAME_ACTUAL_SHORT] = c;
   }
   else
   {
     names[RANKNAME_ACTUAL_FULL] = 
       CARD_FULL_NAMES[index] + "-" + names[RANKNAME_ACTUAL_FULL];
+assert(dictionary.cardsIndefinite.get(index).text == CARD_FULL_NAMES[index]);
 
     names[RANKNAME_ACTUAL_SHORT] = 
       string(1, c) + names[RANKNAME_ACTUAL_SHORT];

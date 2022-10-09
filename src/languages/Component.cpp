@@ -16,6 +16,8 @@
 
 #include "../inputs/parse.h"
 
+const static string prefix = "languages/";
+
 
 void Component::init(const list<VerbalConnection>& connections)
 {
@@ -58,9 +60,15 @@ void Component::read(
   const string& filename)
 {
   ifstream fin;
-  const string fname = language + "/" + filename;
+  const string fname = prefix + language + "/" + filename;
   fin.open(fname);
-  string line;
+  if (! fin)
+  {
+    cout << "Could not open file " << fname << endl;
+    assert(false);
+  }
+
+  string line, tag, text;
 
   while (getline(fin, line))
   {
@@ -82,8 +90,6 @@ void Component::read(
 
     const string& tagname = line.substr(0, sp);
     const string rest = line.substr(sp+1);
-
-    string tag, text;
 
     if (tagname == "name")
     {
@@ -124,7 +130,7 @@ void Component::read(
 }
 
 
-const VerbalInstance& Component::get(const unsigned index) const
+const VerbalInstance& Component::get(const size_t index) const
 {
   assert(index < lookup.size());
   return lookup[index];

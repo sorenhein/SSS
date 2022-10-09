@@ -23,13 +23,13 @@ name ORDINAL_7
 string "seventh"
 
 name ORDINAL_8
-string eighth"
+string "eighth"
 
 name ORDINAL_9
 string "ninth"
 
 name ORDINAL_10
-string "tenth
+string "tenth"
 
 name ORDINAL_11
 string "eleventh"

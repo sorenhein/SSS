@@ -58,7 +58,7 @@ string "splits %0=%1"
 name LENGTH_ORDINAL_EXACT
 string "%0"
 
-Example: at most third
+# Example: at most third
 name LENGTH_ORDINAL_ATMOST
 string "at most %0"
 
@@ -135,13 +135,13 @@ string "not"
 name BELOW_NORMAL
 string "below the"
 
-BELOW_COMPLETELY
+name BELOW_COMPLETELY
 string "completely below the"
 
 
 # Example: x(xx)
 name BOTTOMS_NORMAL
-"%0"
+string "%0"
 
 
 # Example: KQT

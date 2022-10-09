@@ -44,7 +44,7 @@ class Component
       const string& language,
       const string& filename);
 
-    const VerbalInstance& get(const unsigned index) const;
+    const VerbalInstance& get(const size_t index) const;
 };
 
 #endif
