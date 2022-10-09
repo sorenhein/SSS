@@ -8,6 +8,10 @@
 
 #include "Dictionary.h"
 
+#include "VerbalConnection.h"
+#include "PhraseExpansion.h"
+
+
 #include "connections/cover/sentences.h"
 #include "connections/cover/phrases.h"
 
@@ -21,6 +25,21 @@
 #include "connections/numbers/ordinals.h"
 
 #include "connections/words.h"
+
+
+list<VerbalConnection> wordsConnection =
+{
+  { WORDS_CARD, "CARD", GROUP_CARDS, PHRASE_NONE },
+  { WORDS_CARDS, "CARDS", GROUP_CARDS, PHRASE_NONE },
+
+  { WORDS_HONOR, "HONOR", GROUP_HONORS, PHRASE_NONE },
+  { WORDS_HONORS, "HONORS", GROUP_HONORS, PHRASE_NONE },
+
+  { WORDS_SMALL, "SMALL", GROUP_SMALL, PHRASE_NONE },
+
+  { WORDS_CONJUNCTION, "CONJUNCTION_OR", GROUP_CONJUNCTIONS, PHRASE_NONE }
+};
+
 
 
 void Dictionary::read(const string& language)

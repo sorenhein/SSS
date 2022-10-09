@@ -16,21 +16,12 @@
 #include "RankNames.h"
 
 #include "../languages/Dictionary.h"
+#include "../languages/connections/words.h"
 
 #include "../utils/table.h"
 
 
 extern Dictionary dictionary;
-
-
-const vector<vector<string>> CARD_ABSOLUTE_NAMES =
-{
-  {"honor", "honors", "H"},
-  {"lower honor", "lower honors", "h"},
-  {"minor honor", "minor honors", "G"},
-  {"tiny honor", "tiny honors", "g"},
-  {"micro honor", "micro honors", "F"}
-};
 
 
 RankNames::RankNames()
@@ -70,7 +61,9 @@ void RankNames::add(
       dictionary.cardsShort.get(index).text +
       names[RANKNAME_ACTUAL_SHORT];
   }
-  names[RANKNAME_RELATIVE_SHORT] = "(none)";
+  names[RANKNAME_RELATIVE_SHORT] = 
+    "(" + dictionary.numerals.get(0).text + ")";
+
 
   count++;
 }
@@ -83,32 +76,24 @@ void RankNames::completeOpps(
   assert(count > 0);
   if (count == 1)
   {
-    names[RANKNAME_ABSOLUTE_FULL] = names[RANKNAME_ACTUAL_FULL];
     names[RANKNAME_ABSOLUTE_SHORT] = names[RANKNAME_ACTUAL_SHORT];
   }
   else
   {
-    assert(noAbs < CARD_ABSOLUTE_NAMES.size());
-    const string& h0 = CARD_ABSOLUTE_NAMES[noAbs][0];
-    const string& h2 = CARD_ABSOLUTE_NAMES[noAbs][2];
-
-    names[RANKNAME_ABSOLUTE_FULL] = h0;
-    names[RANKNAME_ABSOLUTE_SHORT] = h2;
-
+    // Repeat the short honor symbol count times.
+    const string& h = dictionary.honorsShort.get(noAbs).text;
+    names[RANKNAME_ABSOLUTE_SHORT] = h;
     for (size_t i = 1; i < count; i++)
-    {
-      names[RANKNAME_ABSOLUTE_FULL] += "-" + h0;
-      names[RANKNAME_ABSOLUTE_SHORT] += h2;
-    }
+      names[RANKNAME_ABSOLUTE_SHORT] += h;
 
     noAbs++;
   }
 
   // Repeat the short honor symbol count times.
-  const string lookup = dictionary.honorsShort.get(noRel).text;
-  names[RANKNAME_RELATIVE_SHORT] = lookup;
+  const string& h = dictionary.honorsShort.get(noRel).text;
+  names[RANKNAME_RELATIVE_SHORT] = h;
   for (size_t i = 1; i < count; i++)
-    names[RANKNAME_RELATIVE_SHORT] += lookup;
+    names[RANKNAME_RELATIVE_SHORT] += h;
 
   noRel++;
 }
@@ -120,16 +105,21 @@ void RankNames::makeXes()
 
   if (c >= "2" && c <= "8")
   {
-    names[RANKNAME_ACTUAL_SHORT] = string(count, 'x');
-    names[RANKNAME_ABSOLUTE_SHORT] = string(count, 'x');
-    names[RANKNAME_RELATIVE_SHORT] = string(count, 'x');
+    // If the last rank is small enough, show it as x'es.
+    const string& x = dictionary.words.get(WORDS_SMALL).text;
+    string xes = x;
+    for (size_t i = 1; i < count; i++)
+      xes += x;
+
+    names[RANKNAME_ACTUAL_SHORT] = xes;
+    names[RANKNAME_ABSOLUTE_SHORT] = xes;
+    names[RANKNAME_RELATIVE_SHORT] = xes;
   }
 }
 
 
 void RankNames::completeNS()
 {
-  names[RANKNAME_ABSOLUTE_FULL] = names[RANKNAME_ACTUAL_FULL];
   names[RANKNAME_ABSOLUTE_SHORT] = names[RANKNAME_ACTUAL_SHORT];
 }
 
@@ -178,7 +168,6 @@ string RankNames::strOpponents(
         names[RANKNAME_ACTUAL_FULL];
     }
     else
-      // TODO Is this right, or should it be something with honors?
       return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
   }
 }

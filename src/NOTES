@@ -3,6 +3,7 @@ Places that use English text:
 - Slot (the vectors on top of the file)
 - VerbalTemplates (the templates)
 - RanksNames (move it out?)
+  - line 150, strOpponents: Is it really a phrase?
 
 Completion:
 Sort out the expansions (when true and when false flags?)

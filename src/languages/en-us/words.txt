@@ -12,5 +12,9 @@ name HONORS
 string "honors"
 
 
+name SMALL
+string "x"
+
+
 name CONJUNCTION_OR
 string "or"

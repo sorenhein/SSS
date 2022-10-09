@@ -1,5 +1,5 @@
 name NUMERAL_0
-string "null"
+string "keine"
 
 name NUMERAL_1
 string "eine"
