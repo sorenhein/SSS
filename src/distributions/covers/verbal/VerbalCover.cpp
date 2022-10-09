@@ -322,10 +322,7 @@ void VerbalCover::fillOnesided(
 
   slots[0].setPhrase(vside.player());
 
-  slots[1].setPhrase(TOPS_ACTUAL);
-  slots[1].setSide(vside.side);
-  slots[1].setBools(completions.front().expandable(vside.side));
-  // slots[1].setBools(true);
+  VerbalCover::fillTopsActual(vside.side, slots[1]);
 
   VerbalCover::fillLengthOrdinal(
     sumProfile.length(), vside.side, slots[2]);
@@ -342,11 +339,9 @@ void VerbalCover::fillTwosided(
   sentence = SENTENCE_TOPS_LENGTH_WITHOUT;
   slots.resize(4);
 
-  slots[3].setPhrase(TOPS_ACTUAL);
-  slots[3].setSide(vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-  slots[3].setBools(completions.front().expandable(
-    vside.side == OPP_WEST ? OPP_EAST : OPP_WEST));
-  // slots[3].setBools(true);
+  VerbalCover::fillTopsActual(
+    (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST),
+    slots[3]);
 }
 
 
@@ -370,10 +365,7 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
   else
     slots[2].setPhrase(EXCLUDING_NONE);
 
-  slots[3].setPhrase(TOPS_ACTUAL);
-  slots[3].setSide(sideOther);
-  slots[3].setBools(completions.front().expandable(sideOther));
-  // slots[3].setBools(true);
+  VerbalCover::fillTopsActual(sideOther, slots[3]);
 }
 
 
@@ -386,7 +378,6 @@ void VerbalCover::fillTopsAndXes(const VerbalSide& vside)
 
   slots[1].setPhrase(TOPS_ACTUAL);
   slots[1].setSide(vside.side);
-  // slots[1].setBools(completions.front().expandable(vside.side));
   slots[1].setBools(false);
 
   slots[2].setPhrase(BOTTOMS_NORMAL);
@@ -404,10 +395,7 @@ void VerbalCover::fillTopsAndLower(
 
   slots[0].setPhrase(vside.player());
 
-  slots[1].setPhrase(TOPS_ACTUAL);
-  slots[1].setSide(vside.side);
-  slots[1].setBools(completions.front().expandable(vside.side));
-  // slots[1].setBools(false);
+  VerbalCover::fillTopsActual(vside.side, slots[1]);
 
   const auto& completion = completions.front();
   const unsigned char freeLower = completion.getFreeLower(vside.side);
@@ -482,10 +470,7 @@ void VerbalCover::fillSingular(
 
   slots[0].setPhrase(vside.player());
 
-  slots[1].setPhrase(TOPS_ACTUAL);
-  slots[1].setSide(vside.side);
-  slots[1].setBools(completions.front().expandable(vside.side));
-  // slots[1].setBools(true);
+  VerbalCover::fillTopsActual(vside.side, slots[1]);
 
   slots[2].setPhrase(LENGTH_ORDINAL_EXACT);
   slots[2].setValues(lenCompletion);
@@ -503,7 +488,6 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   slots[1].setPhrase(LIST_HOLDING_EXACT);
   slots[1].setSide(vside.side);
   slots[1].setBools(completions.front().expandable(vside.side));
-  // slots[1].setBools(true);
 }
 
 
