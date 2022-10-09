@@ -147,7 +147,6 @@ class Completion
       const RanksNames& ranksNames,
       const Opponent side,
       const bool enableExpandFlag,
-      const bool enableSingleRankFlag,
       const bool explicitVoidFlag = false) const;
 
     string strUnset(

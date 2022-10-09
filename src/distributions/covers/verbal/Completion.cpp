@@ -337,41 +337,27 @@ bool Completion::operator > (const Completion& comp2) const
 string Completion::strSet(
   const RanksNames& ranksNames,
   const Opponent side,
-  const bool enableExpandFlag,     // jack, not J
-  [[maybe_unused]] const bool enableSingleRankFlag, // Use dashes between expansions
+  const bool enableExpandFlag,
   const bool explicitVoidFlag) const
 {
   if ((side == OPP_WEST && dataWest.length == 0) ||
       (side == OPP_EAST && dataEast.length == 0))
     return (explicitVoidFlag ? "void" : "");
 
-  const bool expandFlag = enableExpandFlag && 
-    ((side == OPP_WEST && dataWest.topsUsed == 1) ||
-     (side == OPP_EAST && dataEast.topsUsed == 1));
-
-  /*
-  const bool singleRankFlag = enableSingleRankFlag &&
+  const bool expandFlag = enableExpandFlag &&
     ((side == OPP_WEST && dataWest.ranksActive == 1) ||
      (side == OPP_EAST && dataEast.ranksActive == 1));
-     */
 
-/*
-cout << "side " << side << endl;
-cout << "West\n";
-cout << "topsUsed " << +dataWest.topsUsed << endl;
-cout << "East\n";
-cout << "topsUsed " << +dataEast.topsUsed << endl;
-*/
   string s;
   const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
 
   for (unsigned char topNo = 
     static_cast<unsigned char>(west.size()); topNo-- > 0; )
   {
-    if (used[topNo])
+    if (used[topNo] && tops[topNo] > 0)
     {
-      // if (expandFlag && ! singleRankFlag && ! s.empty())
-        // s += "-";
+      if (expandFlag && ! s.empty())
+        s += "-";
 
       if (expandFlag)
         s += ranksNames.strOpponentsExpanded(topNo, tops[topNo]);

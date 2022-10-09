@@ -284,23 +284,22 @@ string Slot::str(
   }
   else if (expansion == SLOT_COMPLETION_SET)
   {
-    assert(Slot::has(1, 0, 2) || Slot::has(1, 0, 3));
+    assert(Slot::has(1, 0, 1) || Slot::has(1, 0, 2));
 
-    if (numBools == 2)
+    if (numBools == 1)
       Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
-        bools[0], bools[1]));
+        bools[0]));
     else
       Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
-        bools[0], bools[1], bools[2]));
+        bools[0], bools[1]));
 
     return s;
   }
   else if (expansion == SLOT_COMPLETION_BOTH)
   {
-    assert(Slot::has(1, 0, 2));
+    assert(Slot::has(1, 0, 1));
 
-    Slot::replace(s, "%0",
-      completion.strSet(ranksNames, side, bools[0], bools[1]));
+    Slot::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
 
     Slot::replace(s, "%1", completion.strUnset(ranksNames, side));
 
