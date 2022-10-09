@@ -82,7 +82,7 @@ void RanksNames::finish()
   {
     auto& rnames = names[i];
     if (rnames.side() == SIDE_OPPS)
-      rnames.completeOpps(noAbs, noRel, i);
+      rnames.completeOpps(noAbs, noRel);
     else
       rnames.completeNS();
   }

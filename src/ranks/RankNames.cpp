@@ -12,35 +12,16 @@
 #include <cassert>
 
 #include <vector>
-#include <string>
 
 #include "RankNames.h"
 
 #include "../languages/Dictionary.h"
 
 #include "../utils/table.h"
-#include "../const.h"
 
 
 extern Dictionary dictionary;
 
-
-const vector<string> CARD_FULL_NAMES =
-{
-  "deuce",
-  "trey",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-  "ten",
-  "jack",
-  "queen",
-  "king",
-  "ace"
-};
 
 const vector<vector<string>> CARD_ABSOLUTE_NAMES =
 {
@@ -49,17 +30,6 @@ const vector<vector<string>> CARD_ABSOLUTE_NAMES =
   {"minor honor", "minor honors", "G"},
   {"tiny honor", "tiny honors", "g"},
   {"micro honor", "micro honors", "F"}
-};
-
-const vector<char> CARD_RELATIVE_NAMES =
-{
-  'H', 'h', 'G', 'g', 'F', 'f'
-  
-};
-
-const vector<string> CARD_COUNT_NAMES =
-{
-  "none", "one", "two", "three", "four", "five", "six", "seven", "eight"
 };
 
 
@@ -82,30 +52,23 @@ void RankNames::add(
 
   sideInt = side;
 
-  const char c = static_cast<char>(CARD_NAMES[index]);
-
   if (count == 0)
   {
-    names[RANKNAME_ACTUAL_FULL] = CARD_FULL_NAMES[index];
-if (dictionary.cardsIndefinite.get(index).text != CARD_FULL_NAMES[index])
-{
-  cout << "index " << index << endl;
-  cout << "CFN     " << CARD_FULL_NAMES[index] << endl;
-  cout << "lookup  " << dictionary.cardsIndefinite.get(index).text << endl;
+    names[RANKNAME_ACTUAL_FULL] = 
+      dictionary.cardsIndefinite.get(index).text;
 
-assert(dictionary.cardsIndefinite.get(index).text == CARD_FULL_NAMES[index]);
-}
-
-    names[RANKNAME_ACTUAL_SHORT] = c;
+    names[RANKNAME_ACTUAL_SHORT] =
+      dictionary.cardsShort.get(index).text;
   }
   else
   {
     names[RANKNAME_ACTUAL_FULL] = 
-      CARD_FULL_NAMES[index] + "-" + names[RANKNAME_ACTUAL_FULL];
-assert(dictionary.cardsIndefinite.get(index).text == CARD_FULL_NAMES[index]);
+      dictionary.cardsIndefinite.get(index).text + "-" + 
+      names[RANKNAME_ACTUAL_FULL];
 
     names[RANKNAME_ACTUAL_SHORT] = 
-      string(1, c) + names[RANKNAME_ACTUAL_SHORT];
+      dictionary.cardsShort.get(index).text +
+      names[RANKNAME_ACTUAL_SHORT];
   }
   names[RANKNAME_RELATIVE_SHORT] = "(none)";
 
@@ -115,8 +78,7 @@ assert(dictionary.cardsIndefinite.get(index).text == CARD_FULL_NAMES[index]);
 
 void RankNames::completeOpps(
   size_t& noAbs,
-  size_t& noRel,
-  [[maybe_unused]] const size_t index)
+  size_t& noRel)
 {
   assert(count > 0);
   if (count == 1)
@@ -142,9 +104,11 @@ void RankNames::completeOpps(
     noAbs++;
   }
 
-  assert(noRel < CARD_RELATIVE_NAMES.size());
-  names[RANKNAME_RELATIVE_SHORT] = 
-    string(count, CARD_RELATIVE_NAMES[noRel]);
+  // Repeat the short honor symbol count times.
+  const string lookup = dictionary.honorsShort.get(noRel).text;
+  names[RANKNAME_RELATIVE_SHORT] = lookup;
+  for (size_t i = 1; i < count; i++)
+    names[RANKNAME_RELATIVE_SHORT] += lookup;
 
   noRel++;
 }
@@ -207,10 +171,14 @@ string RankNames::strOpponents(
   {
     if (expandFlag && singleRankFlag)
     {
-      return "exactly " + CARD_COUNT_NAMES[numCards] + " of " +
+      return 
+        "exactly " + 
+        dictionary.numerals.get(numCards).text +
+        " of " +
         names[RANKNAME_ACTUAL_FULL];
     }
     else
+      // TODO Is this right, or should it be something with honors?
       return names[RANKNAME_ABSOLUTE_SHORT].substr(0, numCards);
   }
 }
