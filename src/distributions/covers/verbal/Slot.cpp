@@ -299,14 +299,15 @@ string Slot::str(
   }
   else if (expansion == SLOT_COMPLETION_SET)
   {
-    assert(Slot::has(1, 0, 1) || Slot::has(1, 0, 2));
+  // cout << +numOpp  << endl;
+  // cout << +numUchars << endl;
+  // cout << +numBools <<  endl;
+    assert(Slot::has(1, 0, 0) || Slot::has(1, 0, 1));
 
-    if (numBools == 1)
-      Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
-        bools[0]));
+    if (numBools == 0)
+      Slot::replace(s, "%0", completion.strSet(ranksNames, side));
     else
-      Slot::replace(s, "%0", completion.strSet(ranksNames, side, 
-        bools[0], bools[1]));
+      Slot::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
 
     return s;
   }

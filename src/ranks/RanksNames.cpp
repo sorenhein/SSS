@@ -124,19 +124,6 @@ string RanksNames::strOpponents(
 }
 
 
-string RanksNames::strOpponentsExpanded(
-  const unsigned topNumber,
-  const unsigned char count) const
-{
-  assert(topNumber < indexByTop.size());
-
-  const auto itop = indexByTop[topNumber];
-  assert(itop < names.size());
-
-  return names[itop].strOpponentsExpanded(count);
-}
-
-
 string RanksNames::lowestCard(const unsigned topNumber) const
 {
   const string r = 

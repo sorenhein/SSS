@@ -428,7 +428,6 @@ void Product::setVerbalTopsOnly(
 
   if (vsideSingle.side != OPP_EITHER)
   {
-// cout << "Branch A\n";
     verbalCover.fillCompletion(vsideSingle);
     return;
   }
@@ -461,7 +460,6 @@ void Product::setVerbalHighTopsEqual(
 
   if (! length.used())
   {
-// cout << "Branch 0\n";
     Product::setVerbalTopsOnly(sumProfile, canonicalShift,
       symmFlag, true, verbalCover);
     return;
@@ -592,6 +590,7 @@ string Product::strVerbal(
 
 // cout << Product::strLine() << endl;
 // cout << "verbal " << verbal << endl;
+
   // Then dereference into the right verbal method (including some
   // error handling).
   (this->*(verbalMethods[verbal]))

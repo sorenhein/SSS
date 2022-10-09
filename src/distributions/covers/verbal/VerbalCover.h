@@ -143,6 +143,7 @@ class VerbalCover
     void fillCompletionWithLows(const VerbalSide& vside);
 
     // SENTENCE_LIST
+    // SENTENCE_ONETOP_ONLY
     void fillList(const VerbalSide& vside);
 
 

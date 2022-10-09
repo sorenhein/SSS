@@ -152,7 +152,6 @@ class Completion
     string strSet(
       const RanksNames& ranksNames,
       const Opponent side,
-      const bool enableExpandFlag,
       const bool explicitVoidFlag = false) const;
 
     string strUnset(

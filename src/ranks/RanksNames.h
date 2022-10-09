@@ -65,10 +65,6 @@ class RanksNames
       const unsigned topNumber,
       const unsigned char count) const;
 
-    string strOpponentsExpanded(
-      const unsigned topNumber,
-      const unsigned char count) const;
-
     string lowestCard(const unsigned topNumber) const;
 
     string str() const;

@@ -17,7 +17,12 @@
 
 #include "../../../ranks/RanksNames.h"
 
+#include "../../../languages/Dictionary.h"
+#include "../../../languages/connections/words.h"
+
 #include "../../../utils/table.h"
+
+extern Dictionary dictionary;
 
 
 void Completion::resize(const size_t numTops)
@@ -367,15 +372,12 @@ bool Completion::operator > (const Completion& comp2) const
 string Completion::strSet(
   const RanksNames& ranksNames,
   const Opponent side,
-  const bool expandFlag,
   const bool explicitVoidFlag) const
 {
   if ((side == OPP_WEST && dataWest.length == 0) ||
       (side == OPP_EAST && dataEast.length == 0))
     return (explicitVoidFlag ? "void" : "");
 
-assert(! expandFlag);
-  // TODO This method probably loses the expandFlag.
   string s;
   const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
 
@@ -383,15 +385,7 @@ assert(! expandFlag);
     static_cast<unsigned char>(west.size()); topNo-- > 0; )
   {
     if (used[topNo] && tops[topNo] > 0)
-    {
-      if (expandFlag && ! s.empty())
-        s += "-";
-
-      if (expandFlag)
-        s += ranksNames.strOpponentsExpanded(topNo, tops[topNo]);
-      else
-        s += ranksNames.strOpponents(topNo, tops[topNo]);
-    }
+      s += ranksNames.strOpponents(topNo, tops[topNo]);
   }
   return s;
 }
@@ -414,14 +408,21 @@ string Completion::strUnset(
 
 string Completion::strXes(const Opponent side) const
 {
-  string x = "";
+  const string& x = dictionary.words.get(WORDS_SMALL).text;
+
+  string xes = "";
   const CompData& data = (side == OPP_WEST ? dataWest : dataEast);
 
-  if (data.freeLower > 0)
-    x = string(data.freeLower, 'x');
+  for (unsigned char i = 0; i < data.freeLower; i++)
+    xes += x;
 
   if (data.freeUpper > data.freeLower)
-    x += "(" + string(data.freeUpper - data.freeLower, 'x') + ")";
+  {
+    xes += "(";
+    for (unsigned char i = data.freeLower; i < data.freeUpper; i++)
+      xes += x;
+    xes += ")";
+  }
 
-  return x;
+  return xes;
 }

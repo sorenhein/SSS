@@ -490,7 +490,6 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
     slots[1].setPhrase(LIST_HOLDING_EXACT);
     slots[1].setSide(vside.side);
     slots[1].setBools(false);
-    // slots[1].setBools(completions.front().expandable(vside.side));
   }
   else
   {
@@ -528,7 +527,7 @@ void VerbalCover::fillList(const VerbalSide& vside)
   {
     slots[i].setPhrase(LIST_HOLDING_EXACT);
     slots[i].setSide(vside.side);
-    slots[i].setBools(false, true);
+    slots[i].setBools(true);
   }
 }
 

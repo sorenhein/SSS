@@ -2,9 +2,6 @@ Places that use English text:
 - VerbalMap (but read in from a file)
 - Slot (the vectors on top of the file)
 - VerbalTemplates (the templates and "or")
-- RanksNames (move it out?)
-  - line 150, strOpponentsExpanded: Is it really a phrase?
-  - Maybe use singleRank instead, re-enable dash in strSet
 
 Remember to add the two new cases from TOPS_ACTUAL and SLOTS_
 to the new dictionary and map as well.
@@ -14,11 +11,10 @@ are actually used.  Might be some rot.
 
 11/11492, could still be "jack and one lower-ranked card", not "J"
 
-Completion:
-Sort out the expansions (when true and when false flags?)
-
 Slot:
 topCount etc. must go out again.
+
+Check German vs English (line counts of each file).
 
 
 -----

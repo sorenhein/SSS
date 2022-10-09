@@ -61,8 +61,6 @@ class RankNames
 
     string strOpponents(const unsigned char numCards) const;
 
-    string strOpponentsExpanded(const unsigned char numCards) const;
-
     string strHeader() const;
 
     string str(const size_t number) const;

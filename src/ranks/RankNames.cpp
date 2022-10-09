@@ -154,19 +154,6 @@ string RankNames::strOpponents(const unsigned char numCards) const
 }
 
 
-string RankNames::strOpponentsExpanded(const unsigned char numCards) const
-{
-  // TODO This method probably goes away.
-  assert(numCards > 0);
-
-  if (numCards == count)
-    return "the " + names[RANKNAME_ACTUAL_FULL];
-  else 
-    return "exactly " + dictionary.numerals.get(numCards).text + " of " +
-      names[RANKNAME_ACTUAL_FULL];
-}
-
-
 string RankNames::strHeader() const
 {
   stringstream ss;
