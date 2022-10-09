@@ -55,7 +55,7 @@ int main(int argc, char * argv[])
 
   verbalTemplates.set(LANGUAGE_ENGLISH_US);
 
-  // dictionary.read("en-us");
+  dictionary.read("en-us");
 
   // Set up distributions.
 

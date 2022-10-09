@@ -28,27 +28,27 @@ void Dictionary::read(const string& language)
   coverSentences.init(sentencesConnection);
   coverSentences.read(language, "cover/sentences.txt");
 
-  coverSentences.init(phrasesConnection);
+  coverPhrases.init(phrasesConnection);
   coverPhrases.read(language, "cover/phrases.txt");
 
-  coverSentences.init(definiteConnection);
+  cardsDefinite.init(definiteConnection);
   cardsDefinite.read(language, "cards/definite.txt");
 
-  coverSentences.init(indefiniteConnection);
+  cardsIndefinite.init(indefiniteConnection);
   cardsIndefinite.read(language, "cards/indefinite.txt");
 
-  coverSentences.init(cardsShortConnection);
+  cardsShort.init(cardsShortConnection);
   cardsShort.read(language, "cards/short.txt");
 
-  coverSentences.init(honorsShortConnection);
+  honorsShort.init(honorsShortConnection);
   honorsShort.read(language, "honors/short.txt");
 
-  coverSentences.init(numeralsConnection);
+  numerals.init(numeralsConnection);
   numerals.read(language, "numbers/numerals.txt");
 
-  coverSentences.init(ordinalsConnection);
+  ordinals.init(ordinalsConnection);
   ordinals.read(language, "ordinals/ordinals.txt");
 
-  coverSentences.init(wordsConnection);
+  words.init(wordsConnection);
   words.read(language, "words.txt");
 }
