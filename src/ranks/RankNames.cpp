@@ -156,9 +156,10 @@ string RankNames::strOpponents(const unsigned char numCards) const
 
 string RankNames::strOpponentsExpanded(const unsigned char numCards) const
 {
-  if (numCards == 0)
-    return "";
-  else if (numCards == count)
+  // TODO This method probably goes away.
+  assert(numCards > 0);
+
+  if (numCards == count)
     return "the " + names[RANKNAME_ACTUAL_FULL];
   else 
     return "exactly " + dictionary.numerals.get(numCards).text + " of " +

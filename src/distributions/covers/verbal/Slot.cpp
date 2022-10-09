@@ -282,6 +282,21 @@ string Slot::str(
       strComponent(RANKNAME_ACTUAL_FULL));
     return s;
   }
+  else if (expansion == SLOT_SOME_RANK_SET)
+  {
+    assert(Slot::has(0, 2, 0));
+    Slot::replace(s, "%0", topCount[uchars[0]]);
+    Slot::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
+      strComponent(RANKNAME_ACTUAL_FULL));
+    return s;
+  }
+  else if (expansion == SLOT_FULL_RANK_SET)
+  {
+    assert(Slot::has(0, 1, 0));
+    Slot::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+      strComponent(RANKNAME_ACTUAL_FULL));
+    return s;
+  }
   else if (expansion == SLOT_COMPLETION_SET)
   {
     assert(Slot::has(1, 0, 1) || Slot::has(1, 0, 2));

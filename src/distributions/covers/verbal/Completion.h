@@ -131,7 +131,13 @@ class Completion
 
     unsigned char getLowestRankUsed() const;
 
+    unsigned char getLowestRankActive(const Opponent side) const;
+
     bool lowestRankIsUsed(const Opponent side) const;
+
+    bool expandable(const Opponent side) const;
+
+    bool fullRanked(const Opponent side) const;
 
     unsigned char numOptions() const;
 

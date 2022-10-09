@@ -67,6 +67,10 @@ class VerbalCover
       const Opponent simplestOpponent,
       Slot& slot);
 
+    void fillTopsActual(
+      const Opponent side,
+      Slot& slot);
+
 
   public:
 

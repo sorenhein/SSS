@@ -271,12 +271,42 @@ unsigned char Completion::getLowestRankUsed() const
 }
 
 
+unsigned char Completion::getLowestRankActive(const Opponent side) const
+{
+  if (side == OPP_WEST)
+    return dataWest.lowestRankActive;
+  else if (side == OPP_EAST)
+    return dataEast.lowestRankActive;
+  else
+  {
+    assert(false);
+    return 0;
+  }
+}
+
+
 bool Completion::lowestRankIsUsed(const Opponent side) const
 {
   if (side == OPP_WEST)
     return (dataWest.lowestRankActive == lowestRankUsed);
   else
     return (dataEast.lowestRankActive == lowestRankUsed);
+}
+
+
+bool Completion::expandable(const Opponent side) const
+{
+  return(
+     (side == OPP_WEST && dataWest.ranksActive == 1) ||
+     (side == OPP_EAST && dataEast.ranksActive == 1));
+}
+
+
+bool Completion::fullRanked(const Opponent side) const
+{
+  return(
+     (side == OPP_WEST && dataWest.topsUsed == dataWest.topsFull) ||
+     (side == OPP_EAST && dataEast.topsUsed == dataEast.topsFull));
 }
 
 
@@ -337,17 +367,14 @@ bool Completion::operator > (const Completion& comp2) const
 string Completion::strSet(
   const RanksNames& ranksNames,
   const Opponent side,
-  const bool enableExpandFlag,
+  const bool expandFlag,
   const bool explicitVoidFlag) const
 {
   if ((side == OPP_WEST && dataWest.length == 0) ||
       (side == OPP_EAST && dataEast.length == 0))
     return (explicitVoidFlag ? "void" : "");
 
-  const bool expandFlag = enableExpandFlag &&
-    ((side == OPP_WEST && dataWest.ranksActive == 1) ||
-     (side == OPP_EAST && dataEast.ranksActive == 1));
-
+  // TODO This method probably loses the expandFlag.
   string s;
   const vector<unsigned char>& tops = (side == OPP_WEST ? west : east);
 

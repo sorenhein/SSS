@@ -6,6 +6,9 @@ Places that use English text:
   - line 150, strOpponentsExpanded: Is it really a phrase?
   - Maybe use singleRank instead, re-enable dash in strSet
 
+Remember to add the two new cases from TOPS_ACTUAL and SLOTS_
+to the new dictionary and map as well.
+
 11/11492, could still be "jack and one lower-ranked card", not "J"
 
 Completion:

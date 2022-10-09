@@ -588,6 +588,8 @@ string Product::strVerbal(
   Product::makeCompletion(sumProfile, canonicalShift, 
     verbalCover.getCompletion());
 
+// cout << Product::strLine() << endl;
+// cout << "verbal " << verbal << endl;
   // Then dereference into the right verbal method (including some
   // error handling).
   (this->*(verbalMethods[verbal]))
