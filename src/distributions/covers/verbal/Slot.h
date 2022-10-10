@@ -18,10 +18,12 @@ class Completion;
 enum PhraseCategory: unsigned;
 enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
+enum PhraseExpansion: unsigned;
 
 using namespace std;
 
 
+/*
 enum SlotExpansion: unsigned
 {
   SLOT_NONE = 0,
@@ -39,6 +41,7 @@ enum SlotExpansion: unsigned
   SLOT_COMPLETION_XES = 12,
   SLOT_SIZE = 13
 };
+*/
 
 
 class Slot
@@ -121,7 +124,7 @@ class Slot
     VerbalPhrase getPhrase() const;
 
     string str(
-      const vector<SlotExpansion>& instanceToExpansion,
+      const vector<PhraseExpansion>& instanceToExpansion,
       const vector<string>& instanceToText,
       const RanksNames& ranksNames,
       const Completion& completion) const;

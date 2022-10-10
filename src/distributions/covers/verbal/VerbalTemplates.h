@@ -21,7 +21,7 @@ class RanksNames;
 
 enum SentencesEnum: unsigned;
 enum VerbalGroup: unsigned;
-enum SlotExpansion: unsigned;
+enum PhraseExpansion: unsigned;
 
 
 class VerbalTemplates
@@ -31,7 +31,7 @@ class VerbalTemplates
     vector<list<VerbalGroup>> templates;
 
     vector<VerbalGroup> instanceToGroup;
-    vector<SlotExpansion> instanceToExpansion;
+    vector<PhraseExpansion> instanceToExpansion;
     vector<string> instanceToText;
 
 
