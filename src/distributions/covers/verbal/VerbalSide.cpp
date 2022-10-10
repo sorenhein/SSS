@@ -8,12 +8,13 @@
 
 #include "Verbalside.h"
 
-#include "VerbalDimensions.h"
+#include "../../../languages/Dictionary.h"
+#include "../../../languages/connections/cover/phrases.h"
 
 #include "../../../utils/table.h"
 
 
-VerbalPhrase VerbalSide::player() const
+PhrasesEnum VerbalSide::player() const
 {
  if (side == OPP_WEST)
    return (symmFlag ? PLAYER_EITHER : PLAYER_WEST);

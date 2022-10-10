@@ -17,6 +17,7 @@ class Completion;
 
 enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
+enum PhrasesEnum: unsigned;
 enum PhraseExpansion: unsigned;
 
 using namespace std;
@@ -26,7 +27,7 @@ class Slot
 {
   private:
 
-    VerbalPhrase phrase;
+    PhrasesEnum phrase;
 
     unsigned char numOpp;
     unsigned char numUchars;
@@ -68,7 +69,7 @@ class Slot
 
     Slot();
 
-    void setPhrase(const VerbalPhrase phraseIn);
+    void setPhrase(const PhrasesEnum phraseIn);
 
     void setSide(const Opponent sideIn);
 
@@ -85,7 +86,7 @@ class Slot
 
     void setBools(const bool bool1);
 
-    VerbalPhrase getPhrase() const;
+    PhrasesEnum getPhrase() const;
 
     string str(
       const PhraseExpansion expansion,

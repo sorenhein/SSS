@@ -13,12 +13,12 @@
 #include "VerbalCover.h"
 
 #include "VerbalTemplates.h"
-#include "VerbalDimensions.h"
 #include "VerbalSide.h"
 
 #include "../product/Profile.h"
 
 #include "../../../languages/connections/cover/sentences.h"
+#include "../../../languages/connections/cover/phrases.h"
 
 #include "../../../utils/table.h"
 

@@ -1,0 +1,38 @@
+name CARD_DEF_2
+string "the deuce"
+
+name CARD_DEF_3
+string "the trey"
+
+name CARD_DEF_4
+string "the four"
+
+name CARD_DEF_5
+string "the five"
+
+name CARD_DEF_6
+string "the six"
+
+name CARD_DEF_7
+string "the seven"
+
+name CARD_DEF_8
+string "the eight"
+
+name CARD_DEF_9
+string "the nine"
+
+name CARD_DEF_TEN
+string "the ten"
+
+name CARD_DEF_JACK
+string "the jack"
+
+name CARD_DEF_QUEEN
+string "the queen"
+
+name CARD_DEF_KING
+string "the king"
+
+name CARD_DEF_ACE
+string "the ace"

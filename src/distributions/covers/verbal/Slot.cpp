@@ -35,7 +35,7 @@ Slot::Slot()
 }
 
 
-void Slot::setPhrase(const VerbalPhrase phraseIn)
+void Slot::setPhrase(const PhrasesEnum phraseIn)
 {
   phrase = phraseIn;
 }
@@ -88,7 +88,7 @@ void Slot::setBools(const bool bool1)
 }
 
 
-VerbalPhrase Slot::getPhrase() const
+PhrasesEnum Slot::getPhrase() const
 {
   return phrase;
 }

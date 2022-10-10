@@ -58,7 +58,7 @@ string "ist %0=%1 verteilt"
 name LENGTH_ORDINAL_EXACT
 string "%0"
 
-Example: at most third
+# Example: at most third
 name LENGTH_ORDINAL_ATMOST
 string "höchstens %0"
 
@@ -107,6 +107,14 @@ string "%0-%1 von %2"
 name TOPS_ACTUAL
 string "%0"
 
+# Example: exactly two of KQJ
+name TOPS_SOME_ACTUAL
+string "genau %0 von %1"
+
+# Example: the king
+name TOPS_FULL_ACTUAL
+string "den %0"
+
 # Example: T (always a single card)
 name TOPS_RANKS
 string "%0"
@@ -135,13 +143,13 @@ string "nicht"
 name BELOW_NORMAL
 string "unterhalb von"
 
-BELOW_COMPLETELY
+name BELOW_COMPLETELY
 string "komplett unterhalb von"
 
 
 # Example: x(xx)
 name BOTTOMS_NORMAL
-"%0"
+string "%0"
 
 
 # Example: KQT

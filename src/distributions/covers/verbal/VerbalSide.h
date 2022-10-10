@@ -13,14 +13,14 @@
 using namespace std;
 
 enum Opponent: unsigned;
-enum VerbalPhrase: unsigned;
+enum PhrasesEnum: unsigned;
 
 struct VerbalSide
 {
   Opponent side;
   bool symmFlag;
 
-  VerbalPhrase player() const;
+  PhrasesEnum player() const;
 };
 
 

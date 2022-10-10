@@ -23,13 +23,13 @@ name ORDINAL_7
 string "zu siebent"
 
 name ORDINAL_8
-string zu acht"
+string "zu acht"
 
 name ORDINAL_9
 string "zu neunt"
 
 name ORDINAL_10
-string "zu zehnt
+string "zu zehnt"
 
 name ORDINAL_11
 string "zu elft"
