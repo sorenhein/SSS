@@ -15,33 +15,11 @@
 class RanksNames;
 class Completion;
 
-enum PhraseCategory: unsigned;
 enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
 enum PhraseExpansion: unsigned;
 
 using namespace std;
-
-
-/*
-enum SlotExpansion: unsigned
-{
-  SLOT_NONE = 0,
-  SLOT_NUMERICAL = 1,
-  SLOT_ORDINAL = 2,
-  SLOT_RANKS = 3,
-  SLOT_TEXT_LOWER = 4,
-  SLOT_TEXT_BELOW = 5,
-  SLOT_RANGE_OF = 6,
-  SLOT_SOME_OF = 7,
-  SLOT_SOME_RANK_SET = 8,
-  SLOT_FULL_RANK_SET = 9,
-  SLOT_COMPLETION_SET = 10,
-  SLOT_COMPLETION_BOTH = 11,
-  SLOT_COMPLETION_XES = 12,
-  SLOT_SIZE = 13
-};
-*/
 
 
 class Slot
@@ -106,17 +84,6 @@ class Slot
       const unsigned char value3);
 
     void setBools(const bool bool1);
-
-    /*
-    void setBools(
-      const bool bool1,
-      const bool bool2);
-
-    void setBools(
-      const bool bool1,
-      const bool bool2,
-      const bool bool3);
-      */
 
     VerbalPhrase getPhrase() const;
 

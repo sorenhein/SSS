@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-// #include <sstream>
 #include <cassert>
 
 #include "Slot.h"
@@ -22,52 +21,6 @@
 #include "../../../ranks/RanksNames.h"
 
 extern Dictionary dictionary;
-
-
- /*
- const vector<string> topCount =
- {
-   "none",
-   "one",
-   "two",
-   "three",
-   "four",
-   "five",
-   "six",
-   "seven",
-   "eight",
-   "nine",
-   "ten",
-   "eleven",
-   "twelve",
-   "thirteen"
- };
-
- const vector<string> topOrdinal =
- {
-   "void",
-   "singleton",
-   "doubleton",
-   "tripleton",
-   "fourth",
-   "fifth",
-   "sixth",
-   "seventh",
-   "eighth",
-   "ninth",
-   "tenth",
-   "eleventh",
-   "twelfth",
-   "thirteenth"
- };
-
- const vector<string> cardStrings =
- {
-   "card",
-   "cards"
- };
- */
-
 
 
 Slot::Slot()
@@ -133,32 +86,6 @@ void Slot::setBools(const bool bool1)
   bools.resize(1);
   bools[0] = bool1;
 }
-
-
-/*
-void Slot::setBools(
-  const bool bool1,
-  const bool bool2)
-{
-  numBools = 2;
-  bools.resize(2);
-  bools[0] = bool1;
-  bools[1] = bool2;
-}
-
-
-void Slot::setBools(
-  const bool bool1,
-  const bool bool2,
-  const bool bool3)
-{
-  numBools = 3;
-  bools.resize(3);
-  bools[0] = bool1;
-  bools[1] = bool2;
-  bools[2] = bool3;
-}
-*/
 
 
 VerbalPhrase Slot::getPhrase() const
@@ -235,7 +162,6 @@ string Slot::str(
 
     for (unsigned char field = 0; field < numUchars; field++)
       Slot::replace(s, field, dictionary.numerals.get(uchars[field]).text);
-      // Slot::replace(s, field, topCount[uchars[field]]);
 
     return s;
   }
@@ -245,7 +171,6 @@ string Slot::str(
 
     for (unsigned char field = 0; field < numUchars; field++)
       Slot::replace(s, field, dictionary.ordinals.get(uchars[field]).text);
-      // Slot::replace(s, field, topOrdinal[uchars[field]]);
 
     return s;
   }
@@ -260,7 +185,6 @@ string Slot::str(
     assert(Slot::has(0, 1, 0));
     Slot::replace(s, "%0", dictionary.words.get(
       uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS ).text);
-    // Slot::replace(s, "%0", cardStrings[uchars[0] == 1 ? 0 : 1]);
     return s;
   }
   else if (expansion == PHRASE_TEXT_BELOW)
@@ -269,7 +193,6 @@ string Slot::str(
     // (in German, and it doesn't hurt in English and Danish).
     // I don't have a good general mechanism for this.
     assert(Slot::has(0, 2, 0));
-    // Slot::replace(s, "%0", cardStrings[uchars[0] == 1 ? 0 : 1]);
     Slot::replace(s, "%0", dictionary.words.get(
       uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS ).text);
     Slot::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
@@ -289,7 +212,6 @@ string Slot::str(
   {
     // Dative.
     assert(Slot::has(0, 2, 0));
-    // Slot::replace(s, "%0", topCount[uchars[0]]);
     Slot::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Slot::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
       strComponent(RANKNAME_ACTUAL_FULL));
@@ -298,7 +220,6 @@ string Slot::str(
   else if (expansion == PHRASE_SOME_RANK_SET)
   {
     assert(Slot::has(0, 2, 0));
-    // Slot::replace(s, "%0", topCount[uchars[0]]);
     Slot::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Slot::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
       strComponent(RANKNAME_ACTUAL_FULL));
