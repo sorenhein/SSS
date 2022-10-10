@@ -107,6 +107,14 @@ string "%0-%1 of %2"
 name TOPS_ACTUAL
 string "%0"
 
+# Example: exactly two of KQJ
+name TOPS_SOME_ACTUAL
+string "exactly %0 of %1"
+
+# Example: the king
+name TOPS_FULL_ACTUAL
+string "the %0"
+
 # Example: T (always a single card)
 name TOPS_RANKS
 string "%0"

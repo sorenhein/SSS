@@ -15,10 +15,10 @@
 
 #include "Slot.h"
 #include "Completion.h"
-#include "VerbalMap.h"
 
 #include "../../../languages/Dictionary.h"
 #include "../../../languages/connections/cover/sentences.h"
+#include "../../../languages/connections/cover/phrases.h"
 
 extern Dictionary dictionary;
 
@@ -35,53 +35,43 @@ void VerbalTemplates::reset()
 }
 
 
-void VerbalTemplates::setMaps()
-{
-  instanceToGroup.resize(VERBAL_PHRASE_SIZE);
-  instanceToExpansion.resize(VERBAL_PHRASE_SIZE);
-  instanceToText.resize(VERBAL_PHRASE_SIZE);
-
-  for (auto& vm: verbalMap)
-  {
-    instanceToGroup[vm.instance] = vm.group;
-    instanceToExpansion[vm.instance] = vm.expansion;
-    instanceToText[vm.instance] = vm.text;
-  }
-}
-
-
 void VerbalTemplates::set()
 {
   templates.resize(SENTENCE_SIZE);
-  VerbalTemplates::setMaps();
 
-    templates[SENTENCE_LENGTH_ONLY] =
-      { GROUP_PLAYER, GROUP_LENGTH_VERB } ;
+  templates[SENTENCE_LENGTH_ONLY] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH_VERB } ;
 
-    templates[SENTENCE_ONETOP_ONLY] =
-      { GROUP_PLAYER, GROUP_TOPS };
+  templates[SENTENCE_ONETOP_ONLY] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS };
 
-    templates[SENTENCE_TOPS_LENGTH] =
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL };
+  templates[SENTENCE_TOPS_LENGTH] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_LENGTH_ORDINAL };
 
-    templates[SENTENCE_TOPS_LENGTH_WITHOUT] =
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL, GROUP_TOPS };
+  templates[SENTENCE_TOPS_LENGTH_WITHOUT] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_LENGTH_ORDINAL, GROUP_PHRASES_TOPS };
 
-    templates[SENTENCE_TOPS_EXCLUDING] =
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS };
+  templates[SENTENCE_TOPS_EXCLUDING] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_EXCLUDING, GROUP_PHRASES_TOPS };
 
-    templates[SENTENCE_TOPS_AND_XES] =
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS };
+  templates[SENTENCE_TOPS_AND_XES] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_BOTTOMS };
 
-    templates[SENTENCE_TOPS_AND_LOWER] =
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS };
+  templates[SENTENCE_TOPS_AND_LOWER] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT, 
+      GROUP_PHRASES_TOPS };
 
-    templates[SENTENCE_ONLY_BELOW] =
-        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS };
+  templates[SENTENCE_ONLY_BELOW] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH_VERB, 
+      GROUP_PHRASES_BELOW, GROUP_PHRASES_TOPS };
 
-    // Up to 4 such holdings currently foreseen.
-    templates[SENTENCE_LIST] =
-        { GROUP_PLAYER, GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST };
+  // Up to 4 such holdings currently foreseen.
+  templates[SENTENCE_LIST] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LIST, GROUP_PHRASES_LIST, 
+      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST };
 }
 
 
@@ -99,7 +89,8 @@ string VerbalTemplates::get(
     assert(slots.size() == vtgroups.size());
 
   // string expansion = vt.pattern;
-  string expansion = dictionary.coverSentences.get(sentence).text;
+  const VerbalInstance& vinst = dictionary.coverSentences.get(sentence);
+  string expansion = vinst.text;
   string fill = "";
 
   size_t field;
@@ -111,14 +102,16 @@ string VerbalTemplates::get(
   {
     const Slot& slot = * slotIter;
 
-    assert(slot.getPhrase() < instanceToGroup.size());
-    assert(instanceToGroup[slot.getPhrase()] == * giter);
+    // assert(slot.getPhrase() < instanceToGroup.size());
+    const VerbalInstance& vpinst =
+      dictionary.coverPhrases.get(slot.getPhrase());
+    assert(vpinst.group == * giter);
 
     assert(complIter != completions.end());
 
     fill = slot.str(
-      instanceToExpansion, 
-      instanceToText,
+      static_cast<PhraseExpansion>(vpinst.expansion),
+      vpinst.text,
       ranksNames,
       * complIter);
 

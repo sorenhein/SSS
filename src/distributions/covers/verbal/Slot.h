@@ -48,11 +48,7 @@ class Slot
 {
   private:
 
-    PhraseCategory phraseCategory;
-
-    // Each PhraseCategory has a different enum for its instances,
-    // so we just use an unsigned here.
-    unsigned phraseInstance;
+    VerbalPhrase phrase;
 
     unsigned char numOpp;
     unsigned char numUchars;
@@ -62,7 +58,6 @@ class Slot
     vector<unsigned char> uchars;
     vector<bool> bools;
 
-    VerbalPhrase phrase;
 
 
     bool has(
@@ -124,8 +119,8 @@ class Slot
     VerbalPhrase getPhrase() const;
 
     string str(
-      const vector<PhraseExpansion>& instanceToExpansion,
-      const vector<string>& instanceToText,
+      const PhraseExpansion expansion,
+      const string& text,
       const RanksNames& ranksNames,
       const Completion& completion) const;
 };

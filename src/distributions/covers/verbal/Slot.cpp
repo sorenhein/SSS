@@ -65,8 +65,6 @@
 
 Slot::Slot()
 {
-  phraseInstance = numeric_limits<unsigned>::max();
-
   numOpp = 0;
   numUchars = 0;
   numBools = 0;
@@ -209,16 +207,18 @@ void Slot::replace(
 
 
 string Slot::str(
-  const vector<PhraseExpansion>& instanceToExpansion,
-  const vector<string>& instanceToText,
+  // const vector<PhraseExpansion>& instanceToExpansion,
+  // const vector<string>& instanceToText,
+  const PhraseExpansion expansion,
+  const string& text,
   const RanksNames& ranksNames,
   const Completion& completion) const
 {
-  assert(phrase < instanceToExpansion.size());
-  assert(phrase < instanceToText.size());
+  // assert(phrase < instanceToExpansion.size());
+  // assert(phrase < instanceToText.size());
 
-  string s = instanceToText[phrase];
-  const PhraseExpansion expansion = instanceToExpansion[phrase];
+  string s = text;
+  // const PhraseExpansion expansion = instanceToExpansion[phrase];
 
   if (expansion == PHRASE_NONE)
   {

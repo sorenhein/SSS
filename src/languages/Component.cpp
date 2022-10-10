@@ -36,7 +36,7 @@ void Component::init(const list<VerbalConnection>& connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
     vi.group = vc.group;
-    vi.expansion = vi.expansion;
+    vi.expansion = vc.expansion;
     vi.text = "";
 
     auto mit = instanceMap.find(vc.tag);

@@ -22,20 +22,21 @@ class RanksNames;
 enum SentencesEnum: unsigned;
 enum VerbalGroup: unsigned;
 enum PhraseExpansion: unsigned;
+enum PhrasesGroup: unsigned;
 
 
 class VerbalTemplates
 {
   private:
 
-    vector<list<VerbalGroup>> templates;
+    vector<list<PhrasesGroup>> templates;
 
-    vector<VerbalGroup> instanceToGroup;
-    vector<PhraseExpansion> instanceToExpansion;
-    vector<string> instanceToText;
+    // vector<VerbalGroup> instanceToGroup;
+    // vector<PhraseExpansion> instanceToExpansion;
+    // vector<string> instanceToText;
 
 
-    void setMaps();
+    // void setMaps();
 
 
   public:
