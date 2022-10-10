@@ -16,7 +16,8 @@ enum WordsEnum: unsigned
   WORDS_HONOR = 2,
   WORDS_HONORS = 3,
   WORDS_SMALL = 4,
-  WORDS_CONJUNCTION = 5
+  WORDS_CONJUNCTION = 5,
+  WORDS_THEY_HOLD = 6
 };
 
 enum WordsGroups: unsigned
@@ -24,7 +25,8 @@ enum WordsGroups: unsigned
   GROUP_CARDS = 0,
   GROUP_HONORS = 1,
   GROUP_SMALL = 2,
-  GROUP_CONJUNCTIONS = 3
+  GROUP_CONJUNCTIONS = 3,
+  GROUP_THEY_HOLD = 4
 };
 
 #endif

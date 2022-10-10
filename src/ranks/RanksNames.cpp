@@ -13,7 +13,12 @@
 
 #include "RanksNames.h"
 
+#include "../languages/Dictionary.h"
+#include "../languages/connections/words.h"
+
 #include "../utils/table.h"
+
+extern Dictionary dictionary;
 
 
 RanksNames::RanksNames()
@@ -158,7 +163,7 @@ string RanksNames::strMap() const
   if (names.empty())
     return "";
 
-  string s = "where the opponents hold ";
+  string s = dictionary.words.get(WORDS_THEY_HOLD).text;
 
   for (auto riter = names.rbegin(); riter != names.rend(); riter++)
   {

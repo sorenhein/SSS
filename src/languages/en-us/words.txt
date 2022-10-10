@@ -16,5 +16,9 @@ name SMALL
 string "x"
 
 
+name THEY_HOLD
+string "where the opponents hold "
+
+
 name CONJUNCTION_OR
 string "or"

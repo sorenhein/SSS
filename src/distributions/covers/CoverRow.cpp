@@ -15,7 +15,12 @@
 #include "Cover.h"
 #include "CoverCategory.h"
 
+#include "../../languages/Dictionary.h"
+#include "../../languages/connections/words.h"
+
 #include "../../utils/table.h"
+
+extern Dictionary dictionary;
 
 CoverRow::CoverRow()
 {
@@ -321,6 +326,7 @@ string CoverRow::str(
   const RanksNames& ranksNames) const
 {
   bool adjustFlag = (verbal == VERBAL_GENERAL || verbal == VERBAL_HEURISTIC);
+  const string& orWord = dictionary.words.get(WORDS_CONJUNCTION).text;
   CoverVerbal verbalAdj;
 
   stringstream ss;
@@ -336,8 +342,7 @@ string CoverRow::str(
       coverPtrs.front()->str(sumProfile, ranksNames, verbalAdj);
 
     for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-      ss << 
-        "; or\n  " << 
+      ss << "; " << orWord << "\n  " << 
         (* iter)->str(sumProfile, ranksNames, (* iter)->verbal());
   }
   else
@@ -349,7 +354,8 @@ string CoverRow::str(
       coverPtrs.front()->str(sumProfile, ranksNames, verbal);
 
     for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-      ss << "; or\n  " << (* iter)->str(sumProfile, ranksNames, verbal);
+      ss << "; " << orWord << "\n  " << 
+        (* iter)->str(sumProfile, ranksNames, verbal);
   }
 
   return ss.str() + "\n";
@@ -359,11 +365,12 @@ string CoverRow::str(
 string CoverRow::strNumerical() const
 {
   stringstream ss;
+  const string& orWord = dictionary.words.get(WORDS_CONJUNCTION).text;
 
   ss << "* " << coverPtrs.front()->strNumerical();
 
   for (auto iter = next(coverPtrs.begin()); iter != coverPtrs.end(); iter++)
-    ss << "; or\n  " << (* iter)->strNumerical();
+    ss << "; " << orWord << "\n  " << (* iter)->strNumerical();
 
   return ss.str() + "\n";
 }

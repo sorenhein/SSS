@@ -19,7 +19,7 @@
 #include "../../../languages/Dictionary.h"
 #include "../../../languages/connections/cover/sentences.h"
 #include "../../../languages/connections/cover/phrases.h"
-#include "../../../languages/connections//words.h"
+#include "../../../languages/connections/words.h"
 
 extern Dictionary dictionary;
 
