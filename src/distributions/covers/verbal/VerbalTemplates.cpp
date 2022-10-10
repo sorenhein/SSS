@@ -13,29 +13,18 @@
 
 #include "VerbalTemplates.h"
 
-#include "Slot.h"
 #include "Completion.h"
+#include "Slot.h"
 
 #include "../../../languages/Dictionary.h"
 #include "../../../languages/connections/cover/sentences.h"
 #include "../../../languages/connections/cover/phrases.h"
+#include "../../../languages/connections//words.h"
 
 extern Dictionary dictionary;
 
 
 VerbalTemplates::VerbalTemplates()
-{
-  VerbalTemplates::reset();
-}
-
-
-void VerbalTemplates::reset()
-{
-  templates.clear();
-}
-
-
-void VerbalTemplates::set()
 {
   templates.resize(SENTENCE_SIZE);
 
@@ -88,33 +77,31 @@ string VerbalTemplates::get(
   if (sentence != SENTENCE_LIST)
     assert(slots.size() == vtgroups.size());
 
-  // string expansion = vt.pattern;
-  const VerbalInstance& vinst = dictionary.coverSentences.get(sentence);
-  string expansion = vinst.text;
+  string expansion = dictionary.coverSentences.get(sentence).text;
   string fill = "";
 
   size_t field;
   auto slotIter = slots.begin();
-  auto complIter = completions.begin();
   auto giter = vtgroups.begin();
+  auto complIter = completions.begin();
 
   for (field = 0; field < slots.size(); field++, slotIter++, giter++)
   {
     const Slot& slot = * slotIter;
 
-    // assert(slot.getPhrase() < instanceToGroup.size());
-    const VerbalInstance& vpinst =
+    const VerbalInstance& instance =
       dictionary.coverPhrases.get(slot.getPhrase());
-    assert(vpinst.group == * giter);
+    assert(instance.group == * giter);
 
     assert(complIter != completions.end());
 
     fill = slot.str(
-      static_cast<PhraseExpansion>(vpinst.expansion),
-      vpinst.text,
+      static_cast<PhraseExpansion>(instance.expansion),
+      instance.text,
       ranksNames,
       * complIter);
 
+    // This is the only case with multiple holdings in a list.
     if (slot.getPhrase() == LIST_HOLDING_EXACT)
       complIter++;
 
@@ -141,7 +128,8 @@ string VerbalTemplates::get(
     // The excepted sentence has a comma on purpose.
     auto p = expansion.find_last_of(",");
     if (p != string::npos)
-      expansion.replace(p, 1, " or");
+      expansion.replace(p, 1, 
+        " " + dictionary.words.get(WORDS_CONJUNCTION).text);
   }
 
   return expansion;

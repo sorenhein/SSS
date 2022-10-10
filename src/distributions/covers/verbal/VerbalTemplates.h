@@ -15,14 +15,12 @@
 
 using namespace std;
 
+class RanksNames;
 class Completion;
 class Slot;
-class RanksNames;
 
-enum SentencesEnum: unsigned;
-enum VerbalGroup: unsigned;
-enum PhraseExpansion: unsigned;
 enum PhrasesGroup: unsigned;
+enum SentencesEnum: unsigned;
 
 
 class VerbalTemplates
@@ -31,21 +29,10 @@ class VerbalTemplates
 
     vector<list<PhrasesGroup>> templates;
 
-    // vector<VerbalGroup> instanceToGroup;
-    // vector<PhraseExpansion> instanceToExpansion;
-    // vector<string> instanceToText;
-
-
-    // void setMaps();
-
 
   public:
 
     VerbalTemplates();
-
-    void reset();
-
-    void set();
 
     string get(
       const SentencesEnum sentence,

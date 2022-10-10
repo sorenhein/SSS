@@ -1,23 +1,25 @@
-Places that use English text:
-- VerbalMap (but read in from a file)
-- Slot (the vectors on top of the file)
-- VerbalTemplates (the templates and "or")
+Remove
+VerbalMap
+VerbalDimension
+Language.h
 
-Remember to add the two new cases from TOPS_ACTUAL and SLOTS_
-to the new dictionary and map as well.
+Rename
+VerbalTemplates Expand
+Slot Phrase
 
-Check that methods in Completion and RankNames and even RanksNames
-are actually used.  Might be some rot.
-
-11/11492, could still be "jack and one lower-ranked card", not "J"
-
-Slot:
-topCount etc. must go out again.
+Clean up
+Slot
+Completion (methods?)
+Rank?Names (methods?)
+VerbalCover
 
 Check German vs English (line counts of each file).
 
+Run German
 
 -----
+
+11/11492, could still be "jack and one lower-ranked card", not "J"
 
 11/162390
 HHJ97

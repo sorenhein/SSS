@@ -107,6 +107,7 @@ class Slot
 
     void setBools(const bool bool1);
 
+    /*
     void setBools(
       const bool bool1,
       const bool bool2);
@@ -115,6 +116,7 @@ class Slot
       const bool bool1,
       const bool bool2,
       const bool bool3);
+      */
 
     VerbalPhrase getPhrase() const;
 
