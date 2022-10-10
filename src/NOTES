@@ -1,15 +1,12 @@
-Rename
-VerbalTemplates Expand
-Slot Phrase
+Language
+--------
+RanksNames.strMap() -- a sentence
+CoverRow or --> oder from lookup
 
-Clean up
-Completion (methods?)
-Rank?Names (methods?)
-
-Check German vs English (line counts of each file).
-- CoverRow or --> oder from lookup
-- Make an extracted file of only lines (no complexity)
-- Sort, uniq -c, look at
+German
+------
+Make an extracted file of only cover lines (no complexity)
+Sort, uniq -c, look at
 
 Run German
 - TOPS_FULL_ACTUAL has "den %0" which can't be right -- definite?

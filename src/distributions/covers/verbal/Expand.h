@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_VERBALTEMPLATES_H
-#define SSS_VERBALTEMPLATES_H
+#ifndef SSS_EXPAND_H
+#define SSS_EXPAND_H
 
 #include <vector>
 #include <list>
@@ -17,28 +17,28 @@ using namespace std;
 
 class RanksNames;
 class Completion;
-class Slot;
+class Phrase;
 
 enum PhrasesGroup: unsigned;
 enum SentencesEnum: unsigned;
 
 
-class VerbalTemplates
+class Expand
 {
   private:
 
-    vector<list<PhrasesGroup>> templates;
+    vector<list<PhrasesGroup>> groupCheck;
 
 
   public:
 
-    VerbalTemplates();
+    Expand();
 
     string get(
       const SentencesEnum sentence,
       const RanksNames& ranksNames,
       const list<Completion>& completions,
-      const vector<Slot>& slots) const;
+      const vector<Phrase>& phrases) const;
 };
 
 #endif

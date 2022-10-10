@@ -16,7 +16,7 @@
 
 #include "strategies/result/ResConvert.h"
 
-#include "distributions/covers/verbal/VerbalTemplates.h"
+#include "distributions/covers/verbal/Expand.h"
 
 #include "languages/Dictionary.h"
 
@@ -37,7 +37,7 @@ Combinations combinations;
 SymmetryStore symmetryStore;
 Distributions distributions;
 TermCompare termCompare;
-VerbalTemplates verbalTemplates;
+Expand expand;
 
 
 int main(int argc, char * argv[])
@@ -53,8 +53,8 @@ int main(int argc, char * argv[])
 
   setlocale(LC_ALL, "en_US.UTF-8");
 
-  // dictionary.read("en-us");
-  dictionary.read("de");
+  dictionary.read("en-us");
+  // dictionary.read("de");
 
   // Set up distributions.
 

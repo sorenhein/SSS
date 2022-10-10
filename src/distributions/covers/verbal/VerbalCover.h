@@ -14,7 +14,7 @@
 #include <string>
 
 #include "./Completion.h"
-#include "Slot.h"
+#include "Phrase.h"
 
 #include "../term/Term.h"
 
@@ -35,7 +35,7 @@ class VerbalCover
 
     list<Completion> completions;
 
-    vector<Slot> slots;
+    vector<Phrase> phrases;
 
     Term length;
 
@@ -65,11 +65,11 @@ class VerbalCover
     void fillLengthOrdinal(
       const unsigned char oppsLength,
       const Opponent simplestOpponent,
-      Slot& slot);
+      Phrase& phrase);
 
     void fillTopsActual(
       const Opponent side,
-      Slot& slot);
+      Phrase& phrase);
 
 
   public:

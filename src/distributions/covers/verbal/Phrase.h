@@ -6,8 +6,8 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_SLOT_H
-#define SSS_SLOT_H
+#ifndef SSS_PHRASE_H
+#define SSS_PHRASE_H
 
 #include <vector>
 #include <string>
@@ -23,7 +23,7 @@ enum PhraseExpansion: unsigned;
 using namespace std;
 
 
-class Slot
+class Phrase
 {
   private:
 
@@ -67,7 +67,7 @@ class Slot
 
   public:
 
-    Slot();
+    Phrase();
 
     void setPhrase(const PhrasesEnum phraseIn);
 
