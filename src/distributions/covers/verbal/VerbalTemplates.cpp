@@ -14,9 +14,11 @@
 #include "VerbalTemplates.h"
 
 #include "Slot.h"
+#include "Completion.h"
 #include "VerbalMap.h"
 
 #include "../../../languages/Dictionary.h"
+#include "../../../languages/connections/cover/sentences.h"
 
 extern Dictionary dictionary;
 
@@ -48,79 +50,62 @@ void VerbalTemplates::setMaps()
 }
 
 
-void VerbalTemplates::set(const Language languageIn)
+void VerbalTemplates::set()
 {
   templates.resize(SENTENCE_SIZE);
-  language = languageIn;
   VerbalTemplates::setMaps();
 
-  if (language == LANGUAGE_ENGLISH_US)
-  {
     templates[SENTENCE_LENGTH_ONLY] =
-      { "%0 %1", { GROUP_PLAYER, GROUP_LENGTH_VERB} };
+      { GROUP_PLAYER, GROUP_LENGTH_VERB } ;
 
     templates[SENTENCE_ONETOP_ONLY] =
-      { "%0 has %1", { GROUP_PLAYER, GROUP_TOPS }};
+      { GROUP_PLAYER, GROUP_TOPS };
 
     templates[SENTENCE_TOPS_LENGTH] =
-      { "%0 has %1 %2",
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL }};
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL };
 
     templates[SENTENCE_TOPS_LENGTH_WITHOUT] =
-      { "%0 has %1 %2 without %3",
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL, GROUP_TOPS }};
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_LENGTH_ORDINAL, GROUP_TOPS };
 
     templates[SENTENCE_TOPS_EXCLUDING] =
-      { "%0 has %1 and %2 %3",
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS }};
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_EXCLUDING, GROUP_TOPS };
 
     templates[SENTENCE_TOPS_AND_XES] =
-      { "%0 has %1%2",
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS }};
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_BOTTOMS };
 
     templates[SENTENCE_TOPS_AND_LOWER] =
-      { "%0 has %1 and %2%3",
-        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS }};
+        { GROUP_PLAYER, GROUP_TOPS, GROUP_COUNT, GROUP_TOPS };
 
     templates[SENTENCE_ONLY_BELOW] =
-      { "%0 %1 %2 %3",
-        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS }};
+        { GROUP_PLAYER, GROUP_LENGTH_VERB, GROUP_BELOW, GROUP_TOPS };
 
     // Up to 4 such holdings currently foreseen.
     templates[SENTENCE_LIST] =
-      { "%0 has %1, %2, %3, %4", { GROUP_PLAYER, 
-        GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST }};
-  }
-  else if (language == LANGUAGE_GERMAN_DE)
-  {
-    assert(false);
-  }
-  else
-    assert(false);
-
+        { GROUP_PLAYER, GROUP_LIST, GROUP_LIST, GROUP_LIST, GROUP_LIST };
 }
 
 
 string VerbalTemplates::get(
-  const Sentence sentence,
+  const SentencesEnum sentence,
   const RanksNames& ranksNames,
   const list<Completion>& completions,
   const vector<Slot>& slots) const
 {
   assert(sentence < templates.size());
-  const VerbalTemplate& vt = templates[sentence];
+  const auto& vtgroups = templates[sentence];
 
   // A list has room for up to 4 entries, but they need not be present.
   if (sentence != SENTENCE_LIST)
-    assert(slots.size() == vt.groups.size());
+    assert(slots.size() == vtgroups.size());
 
-  string expansion = vt.pattern;
+  // string expansion = vt.pattern;
+  string expansion = dictionary.coverSentences.get(sentence).text;
   string fill = "";
 
   size_t field;
   auto slotIter = slots.begin();
   auto complIter = completions.begin();
-  auto giter = vt.groups.begin();
+  auto giter = vtgroups.begin();
 
   for (field = 0; field < slots.size(); field++, slotIter++, giter++)
   {
@@ -149,7 +134,7 @@ string VerbalTemplates::get(
   if (sentence == SENTENCE_LIST)
   {
     // Eliminate the trailing placeholders in a list.
-    for ( ; field < vt.groups.size(); field++)
+    for ( ; field < vtgroups.size(); field++)
     {
       auto p = expansion.find(", %" + to_string(field));
       assert(p != string::npos);

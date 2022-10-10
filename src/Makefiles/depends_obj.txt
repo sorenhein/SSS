@@ -40,8 +40,8 @@ driver.obj: distributions/covers/TrickConvert.h
 driver.obj: distributions/covers/term/TermCompare.h inputs/Control.h
 driver.obj: inputs/Entity.h inputs/Convert.h strategies/result/ResConvert.h
 driver.obj: distributions/covers/verbal/VerbalTemplates.h
-driver.obj: distributions/covers/verbal/Language.h languages/Dictionary.h
-driver.obj: languages/Component.h utils/Timers.h utils/Timer.h
+driver.obj: languages/Dictionary.h languages/Component.h utils/Timers.h
+driver.obj: utils/Timer.h
 combinations/Combination.obj: combinations/Combinations.h
 combinations/Combination.obj: combinations/CombMemory.h
 combinations/Combination.obj: combinations/CombEntry.h
@@ -566,7 +566,11 @@ distributions/covers/verbal/Completion.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Completion.obj: utils/Compare.h
 distributions/covers/verbal/Completion.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/Completion.obj: ranks/RanksNames.h
-distributions/covers/verbal/Completion.obj: ranks/RankNames.h utils/table.h
+distributions/covers/verbal/Completion.obj: ranks/RankNames.h
+distributions/covers/verbal/Completion.obj: languages/Dictionary.h
+distributions/covers/verbal/Completion.obj: languages/Component.h
+distributions/covers/verbal/Completion.obj: languages/connections/words.h
+distributions/covers/verbal/Completion.obj: utils/table.h
 distributions/covers/verbal/Slot.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/Slot.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Slot.obj: utils/Compare.h ranks/RanksNames.h
@@ -576,26 +580,28 @@ distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/./Compl
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/term/Term.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalTemplates.h
-distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Language.h
-distributions/covers/verbal/VerbalCover.obj: ranks/Completion.h utils/Card.h
-distributions/covers/verbal/VerbalCover.obj: utils/Compare.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalDimensions.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalSide.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/product/Profile.h
+distributions/covers/verbal/VerbalCover.obj: languages/connections/cover/sentences.h
+distributions/covers/verbal/VerbalCover.obj: languages/VerbalConnection.h
+distributions/covers/verbal/VerbalCover.obj: languages/PhraseExpansion.h
 distributions/covers/verbal/VerbalCover.obj: utils/table.h
 distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/Verbalside.h
 distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/VerbalDimensions.h
 distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/VerbalSide.obj: utils/table.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalTemplates.h
-distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Language.h
+distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/VerbalTemplates.obj: ranks/Completion.h
 distributions/covers/verbal/VerbalTemplates.obj: utils/Card.h utils/Compare.h
-distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/Slot.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalMap.h
 distributions/covers/verbal/VerbalTemplates.obj: distributions/covers/verbal/VerbalDimensions.h
 distributions/covers/verbal/VerbalTemplates.obj: languages/Dictionary.h
 distributions/covers/verbal/VerbalTemplates.obj: languages/Component.h
+distributions/covers/verbal/VerbalTemplates.obj: languages/connections/cover/sentences.h
+distributions/covers/verbal/VerbalTemplates.obj: languages/VerbalConnection.h
+distributions/covers/verbal/VerbalTemplates.obj: languages/PhraseExpansion.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
@@ -604,6 +610,8 @@ inputs/parse.obj: inputs/parse.h
 languages/Component.obj: languages/Component.h languages/VerbalConnection.h
 languages/Component.obj: inputs/parse.h
 languages/Dictionary.obj: languages/Dictionary.h languages/Component.h
+languages/Dictionary.obj: languages/VerbalConnection.h
+languages/Dictionary.obj: languages/PhraseExpansion.h
 languages/Dictionary.obj: languages/connections/cover/sentences.h
 languages/Dictionary.obj: languages/VerbalConnection.h
 languages/Dictionary.obj: languages/PhraseExpansion.h
@@ -615,8 +623,6 @@ languages/Dictionary.obj: languages/connections/honors/short.h
 languages/Dictionary.obj: languages/connections/numbers/numerals.h
 languages/Dictionary.obj: languages/connections/numbers/ordinals.h
 languages/Dictionary.obj: languages/connections/words.h
-languages/Dictionary.obj: languages/VerbalConnection.h
-languages/Dictionary.obj: languages/PhraseExpansion.h
 plays/Plays.obj: plays/Plays.h plays/Play.h strategies/result/Winners.h
 plays/Plays.obj: strategies/result/Winner.h utils/table.h utils/Card.h
 plays/Plays.obj: utils/Compare.h plays/Nodes.h plays/Node.h
@@ -709,7 +715,9 @@ ranks/canon.obj: utils/table.h ranks/Opponents.h ranks/canon.h const.h
 ranks/cranked.obj: ranks/cranked.h plays/Play.h strategies/result/Winners.h
 ranks/cranked.obj: strategies/result/Winner.h utils/table.h utils/Card.h
 ranks/cranked.obj: utils/Compare.h utils/table.h const.h
-ranks/RankNames.obj: ranks/RankNames.h utils/table.h const.h
+ranks/RankNames.obj: ranks/RankNames.h languages/Dictionary.h
+ranks/RankNames.obj: languages/Component.h languages/connections/words.h
+ranks/RankNames.obj: utils/table.h
 ranks/RanksNames.obj: ranks/RanksNames.h ranks/RankNames.h utils/table.h
 strategies/Slist.obj: strategies/Slist.h strategies/Strategy.h
 strategies/Slist.obj: strategies/result/Result.h strategies/result/Winners.h

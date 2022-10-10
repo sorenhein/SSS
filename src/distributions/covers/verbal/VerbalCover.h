@@ -23,7 +23,7 @@ using namespace std;
 class Profile;
 class RanksNames;
 struct VerbalSide;
-enum Sentence: unsigned;
+enum SentencesEnum: unsigned;
 enum Opponent: unsigned;
 
 
@@ -31,7 +31,7 @@ class VerbalCover
 {
   private:
     
-    Sentence sentence;
+    SentencesEnum sentence;
 
     list<Completion> completions;
 

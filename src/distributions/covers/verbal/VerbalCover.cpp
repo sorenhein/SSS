@@ -18,6 +18,8 @@
 
 #include "../product/Profile.h"
 
+#include "../../../languages/connections/cover/sentences.h"
+
 #include "../../../utils/table.h"
 
 
