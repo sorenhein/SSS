@@ -21,6 +21,8 @@ for my $tag (@tags)
     $line =~ s///g;
     $line =~ s/^\*${tag} //;
     $line =~ s/; or\s*//;
+    $line =~ s/; oder\s*//;
+    $line =~ s/; eller\s*//;
     $line =~ s/\[\d+\/\d+\]//;
     chomp $line;
 

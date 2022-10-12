@@ -54,6 +54,14 @@ void RankNames::add(
     // Only the lowest card of that rank.
     names[RANKNAME_ACTUAL_LOW_DEF] = 
       dictionary.cardsDefinite.get(index).text;
+
+    // Only used if we need one card.
+    names[RANKNAME_ACTUAL_FULL_DEF] = 
+      dictionary.cardsDefinite.get(index).text;
+
+    // Only used if we need one card.
+    names[RANKNAME_ACTUAL_FULL_DEF_OF] = 
+      dictionary.cardsPrepositionOf.get(index).text;
   }
   else
   {
@@ -64,6 +72,10 @@ void RankNames::add(
     names[RANKNAME_ACTUAL_SHORT] = 
       dictionary.cardsShort.get(index).text +
       names[RANKNAME_ACTUAL_SHORT];
+
+    names[RANKNAME_ACTUAL_FULL_DEF] = 
+      dictionary.cardsShort.get(index).text + "-" +
+      names[RANKNAME_ACTUAL_FULL_DEF];
   }
   names[RANKNAME_RELATIVE_SHORT] = 
     "(" + dictionary.numerals.get(0).text + ")";
@@ -143,7 +155,25 @@ size_t RankNames::size() const
 string RankNames::strComponent(const RankName rankName) const
 {
   assert(rankName < RANKNAME_SIZE);
-  return names[rankName];
+
+  if (rankName == RANKNAME_ACTUAL_FULL_DEF)
+  {
+    if (count == 1)
+      return names[rankName]; // Article built in
+    else
+      return dictionary.words.get(WORDS_PARTICLE_DEF_PLURAL).text + " " +
+        names[RANKNAME_ACTUAL_FULL];
+  }
+  else if (rankName == RANKNAME_ACTUAL_FULL_DEF_OF)
+  {
+    if (count == 1)
+      return names[rankName]; // Preposition and article built in
+    else
+      return dictionary.words.get(WORDS_DEF_PLURAL_OF).text + " " +
+        names[RANKNAME_ACTUAL_FULL];
+  }
+  else
+    return names[rankName];
 }
 
 

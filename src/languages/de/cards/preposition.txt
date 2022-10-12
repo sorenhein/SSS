@@ -1,0 +1,38 @@
+name CARD_PREP_OF_2
+string "von der Zwei"
+
+name CARD_PREP_OF_3
+string "von der Drei"
+
+name CARD_PREP_OF_4
+string "von der Vier"
+
+name CARD_PREP_OF_5
+string "von der Fünf"
+
+name CARD_PREP_OF_6
+string "von der Sechs"
+
+name CARD_PREP_OF_7
+string "von der Sieben"
+
+name CARD_PREP_OF_8
+string "von der Acht"
+
+name CARD_PREP_OF_9
+string "von der Neun"
+
+name CARD_PREP_OF_TEN
+string "von der Zehn"
+
+name CARD_PREP_OF_JACK
+string "com Buben"
+
+name CARD_PREP_OF_QUEEN
+string "von der Dame"
+
+name CARD_PREP_OF_KING
+string "vom König"
+
+name CARD_PREP_OF_ACE
+string "vom Ass"

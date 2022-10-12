@@ -1,0 +1,38 @@
+name PREP_OF_2
+string "of the deuce"
+
+name PREP_OF_3
+string "of the trey"
+
+name PREP_OF_4
+string "of the four"
+
+name PREP_OF_5
+string "of the five"
+
+name PREP_OF_6
+string "of the six"
+
+name PREP_OF_7
+string "of the seven"
+
+name PREP_OF_8
+string "of the eight"
+
+name PREP_OF_9
+string "of the nine"
+
+name PREP_OF_TEN
+string "of the ten"
+
+name PREP_OF_JACK
+string "of the jack"
+
+name PREP_OF_QUEEN
+string "of the queen"
+
+name PREP_OF_KING
+string "of the king"
+
+name PREP_OF_ACE
+string "of the ace"

@@ -18,12 +18,14 @@ enum Side: unsigned;
 
 enum RankName: unsigned
 {
-  RANKNAME_ACTUAL_FULL = 0,     // jack-ten
-  RANKNAME_ACTUAL_SHORT = 1,    // JT
-  RANKNAME_ACTUAL_LOW_DEF = 2,    // the ten (the lowest of that rank)
-  RANKNAME_ABSOLUTE_SHORT = 3,  // HH
-  RANKNAME_RELATIVE_SHORT = 4,
-  RANKNAME_SIZE = 5
+  RANKNAME_ACTUAL_FULL = 0,        // jack-ten
+  RANKNAME_ACTUAL_SHORT = 1,       // JT
+  RANKNAME_ACTUAL_LOW_DEF = 2,     // the ten (the lowest of that rank)
+  RANKNAME_ACTUAL_FULL_DEF = 3,    // the king-queen (accusative)
+  RANKNAME_ACTUAL_FULL_DEF_OF = 4, // of the king-queen (dative)
+  RANKNAME_ABSOLUTE_SHORT = 5,     // HH
+  RANKNAME_RELATIVE_SHORT = 6,
+  RANKNAME_SIZE = 7
 };
 
 

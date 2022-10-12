@@ -20,6 +20,46 @@ H is also AK...  So if we say "exactly", we should say "and not J".
 German
 ------
 Check as well
+Danish, French?
+
+TOPS_FULL_ACTUAL
+"the", "den"
+Goes to PHASE_FULL_RANK_SET
+Goes to ranksNames.getOpponents().strComponent(RANKNAME_ACTUAL_FULL).
+This may be one card or several.
+If several, I guess we say "the" (nine-eight) in English (definite plural).
+In German probably "die" (definite plural).
+If one, "the" in English (definite singular).
+In German, the right article for that card (definite singular).
+
+D0:
+9/17724
+West hat mindestens eine von Ass-König
+Karte aus
+
+11/133371
+Einer der Gegner hat AH und nicht DH
+keine Karte aus ?
+
+7/1640
+Einer der Gegner hat den Ass und nicht den Dame
+
+10/44406
+Einer der Gegner hat ein Double komplett unterhalb von das Ass
+
+11/136302
+Ost hat den Ass und zwei Karten unterhalb von den Buben
+
+11/162047
+Einer der Gegner hat den Ass-König und nicht 86
+
+Ost hat D10 zu dritt bis zu sechst
+
+9/15122
+Einer der Gegner hat den Neun Single
+
+11/51510
+West hat ein Double aus den Acht-Sieben-Sechs
 
 
 Using honors as words

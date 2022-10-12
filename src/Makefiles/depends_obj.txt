@@ -629,6 +629,7 @@ languages/Dictionary.obj: languages/connections/cover/phrases.h
 languages/Dictionary.obj: languages/connections/cards/definite.h
 languages/Dictionary.obj: languages/connections/cards/indefinite.h
 languages/Dictionary.obj: languages/connections/cards/short.h
+languages/Dictionary.obj: languages/connections/cards/preposition.h
 languages/Dictionary.obj: languages/connections/honors/short.h
 languages/Dictionary.obj: languages/connections/numbers/numerals.h
 languages/Dictionary.obj: languages/connections/numbers/ordinals.h

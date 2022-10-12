@@ -20,5 +20,13 @@ name CONJUNCTION_OR
 string "or"
 
 
+name PARTICLE_DEF_PLURAL
+string "the"
+
+
+name PREPOSITION_DEF_PLURAL_OF
+string "of"
+
+
 name THEY_HOLD
 string "where the opponents hold "

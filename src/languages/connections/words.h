@@ -17,7 +17,9 @@ enum WordsEnum: unsigned
   WORDS_HONORS = 3,
   WORDS_SMALL = 4,
   WORDS_CONJUNCTION = 5,
-  WORDS_THEY_HOLD = 6
+  WORDS_PARTICLE_DEF_PLURAL = 6,
+  WORDS_DEF_PLURAL_OF = 7,
+  WORDS_THEY_HOLD = 8
 };
 
 enum WordsGroups: unsigned
@@ -26,7 +28,9 @@ enum WordsGroups: unsigned
   GROUP_HONORS = 1,
   GROUP_SMALL = 2,
   GROUP_CONJUNCTIONS = 3,
-  GROUP_THEY_HOLD = 4
+  GROUP_PARTICLES = 4,
+  GROUP_PREPOSITIONS = 5,
+  GROUP_THEY_HOLD = 6
 };
 
 #endif

@@ -18,6 +18,7 @@
 #include "connections/cards/definite.h"
 #include "connections/cards/indefinite.h"
 #include "connections/cards/short.h"
+#include "connections/cards/preposition.h"
 
 #include "connections/honors/short.h"
 
@@ -146,6 +147,12 @@ list<VerbalConnection> wordsConnection =
 
   { WORDS_CONJUNCTION, "CONJUNCTION_OR", GROUP_CONJUNCTIONS, PHRASE_NONE },
 
+  { WORDS_PARTICLE_DEF_PLURAL, "PARTICLE_DEF_PLURAL", 
+    GROUP_PARTICLES, PHRASE_NONE },
+
+  { WORDS_DEF_PLURAL_OF, "PREPOSITION_DEF_PLURAL_OF", 
+    GROUP_PREPOSITIONS, PHRASE_NONE },
+
   { WORDS_THEY_HOLD, "THEY_HOLD", GROUP_THEY_HOLD, PHRASE_NONE },
 };
 
@@ -164,6 +171,9 @@ void Dictionary::read(const string& language)
 
   cardsIndefinite.init(indefiniteConnection);
   cardsIndefinite.read(language, "cards/indefinite.txt");
+
+  cardsPrepositionOf.init(prepositionConnection);
+  cardsPrepositionOf.read(language, "cards/preposition.txt");
 
   cardsShort.init(cardsShortConnection);
   cardsShort.read(language, "cards/short.txt");

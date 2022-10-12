@@ -21,6 +21,7 @@ struct Dictionary
 
   Component cardsDefinite;
   Component cardsIndefinite;
+  Component cardsPrepositionOf;
   Component cardsShort;
 
   Component honorsShort;
