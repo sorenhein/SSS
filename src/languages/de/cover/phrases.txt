@@ -127,7 +127,7 @@ string "genau %0 von %1"
 
 # Example: the king
 name TOPS_FULL_ACTUAL
-string "den %0"
+string "%0"
 
 # Example: T (always a single card)
 name TOPS_RANKS

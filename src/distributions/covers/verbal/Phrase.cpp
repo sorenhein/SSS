@@ -239,7 +239,7 @@ string Phrase::str(
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
-      strComponent(RANKNAME_ACTUAL_FULL));
+      strComponent(RANKNAME_ACTUAL_FULL_DEF));
     return s;
   }
   else if (expansion == PHRASE_COMPLETION_SET)
