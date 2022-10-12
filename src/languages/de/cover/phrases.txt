@@ -20,6 +20,9 @@ string "Die Farbe"
 name LENGTH_VERB_VOID
 string "ist Chicane"
 
+name LENGTH_VERB_NOT_VOID
+string "ist nicht Chicane"
+
 # Example: has a singleton
 name LENGTH_VERB_XTON
 string "hat ein %0"

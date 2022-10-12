@@ -21,6 +21,8 @@ struct VerbalSide
   bool symmFlag;
 
   PhrasesEnum player() const;
+
+  PhrasesEnum otherPlayer() const;
 };
 
 

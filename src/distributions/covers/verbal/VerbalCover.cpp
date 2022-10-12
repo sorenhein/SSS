@@ -110,7 +110,12 @@ void VerbalCover::getLengthInsideData(
 
   if (vLower == 0)
   {
-    if (vUpper <= 3)
+    if (vUpper+1 == oppsLength)
+    {
+      phrases[0].setPhrase(vside.otherPlayer());
+      phrases[1].setPhrase(LENGTH_VERB_NOT_VOID);
+    }
+    else if (vUpper <= 3)
     {
       phrases[0].setPhrase(vside.player());
       phrases[1].setPhrase(LENGTH_VERB_XTON_ATMOST);

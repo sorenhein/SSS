@@ -21,3 +21,12 @@ PhrasesEnum VerbalSide::player() const
  else
    return (symmFlag ? PLAYER_EITHER : PLAYER_EAST);
 }
+
+
+PhrasesEnum VerbalSide::otherPlayer() const
+{
+ if (side == OPP_WEST)
+   return (symmFlag ? PLAYER_EITHER : PLAYER_EAST);
+ else
+   return (symmFlag ? PLAYER_EITHER : PLAYER_WEST);
+}

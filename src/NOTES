@@ -1,4 +1,3 @@
-First have to look at the word "exactly" and where it is used.
 ------------------
 SINGULAR:
 9/18180 #1
@@ -26,7 +25,10 @@ West has the ace doubleton or tripleton without Q6
 a bit suspect, without any of or sth like that?
 Either opponent has AH and not H7
 
-1. lowestCard gets definite article, BELOW_ loses it.
+11/162390
+HHJ97
+"East has exactly one of ace-king and not HJ"
+H is also AK...  So if we say "exactly", we should say "and not J".
 
 2. Maybe a completion with 2 cards also turns into text somehow?
 Maybe it two complete ranks?
@@ -37,17 +39,9 @@ German
 Make an extracted file of only cover lines (no complexity)
 Sort, uniq -c, look at
 
-
-
-Run German
 - TOPS_FULL_ACTUAL has "den %0" which can't be right -- definite?
 
 -----
-
-11/162390
-HHJ97
-"East has exactly one of ace-king and not HJ"
-H is also AK...  So if we say "exactly", we should say "and not J".
 
 11/159426 #2
 3122160 *G East has exactly HT9, T9x or T9 [4/4]
@@ -74,9 +68,6 @@ explainable?
 
 Text covers
 -----------
-Check the complexity/count score.  1 if exact, > 1 if HhGgx...
-Taking into account symmetry (Either) of course.
-
 Combine within say J: All Wests singular combined onto one line.
 
 Remove [...] and see count of different covers
@@ -220,6 +211,11 @@ There are more with depth == 4.  Here are the ones >= 100:
 11/123101 -D 4: #0 seems to be cached, but from where?!
 
 Add the "x" lowest top?
+Maybe we do need to reintroduce the 0th rank, 11/124454 would benefit
+from "East has x".  Perhaps
+* Each opponent has 2-3 cards (4-11)
+* West has the H and not the x (3, 7, 11, 15)
+* West has 4 cards including all 3 hhh's
 
 Consider allowing somehow the excluded covers that are splittable
 into a symmetric part within the overall symmetry, and an
@@ -280,15 +276,6 @@ trivial            187
 asymmetric       29770
 symmetric        42627
 general         116436
-
-Maybe we do need to reintroduce the 0th rank, 11/124454 would benefit
-from "East has x".  Perhaps
-* Each opponent has 2-3 cards (4-11)
-* West has the H and not the x (3, 7, 11, 15)
-* West has 4 cards including all 3 hhh's
-
-11/120243, KQJ4 / 765
-#0 manual: East has at most a tripleton -> West is not void?
 
 Why do tableaux consume so much memory?  Do they?  Can we make a "frame"
 or "skeleton" that gets stored afterward?
