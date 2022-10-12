@@ -6,44 +6,38 @@ use warnings;
 # perl csplit.pl num45_3
 # Split the verbal e.g. of type "*F" into buckets.
 
-my @types;
 my $file = shift;
+my @tags = qw(C D E F G H);
 
-open my $fh, '<', $file or die $!;
-while (my $line = <$fh>)
+for my $tag (@tags)
 {
-  last if $line =~ /^Count/;
-  next unless $line =~ /^\*G/;
-  $line =~ s///g;
-  $line =~ s/^\*F //;
-  $line =~ s/; or\s*//;
-  $line =~ s/\[\d+\/\d+\]//;
-  chomp $line;
+  my @types;
 
-  if ($line =~ /lower than the/)
+  open my $fh, '<', $file or die $!;
+  while (my $line = <$fh>)
   {
+    last if $line =~ /^Count/;
+    next unless $line =~ /^\*${tag}/;
+    $line =~ s///g;
+    $line =~ s/^\*${tag} //;
+    $line =~ s/; or\s*//;
+    $line =~ s/\[\d+\/\d+\]//;
+    chomp $line;
+
     $types[0]{$line}++;
   }
-  elsif ($line =~ /only/)
-  {
-    $types[1]{$line}++;
-  }
-  elsif ($line =~ /West/ && $line =~ /East/)
-  {
-    $types[2]{$line}++;
-  }
-  else
-  {
-    $types[3]{$line}++;
-  }
-}
 
-close $fh;
+  close $fh;
 
-for my $i (0 .. $#types)
-{
-  for my $key (sort keys %{$types[$i]})
+  open my $fo, '>', "${tag}0" or die $!;
+
+  for my $i (0 .. $#types)
   {
-    printf("%6d %s\n", $types[$i]{$key}, $key);
+    for my $key (sort keys %{$types[$i]})
+    {
+      printf $fo ("%6d %s\n", $types[$i]{$key}, $key);
+    }
   }
+
+  close $fo;
 }

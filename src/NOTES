@@ -1,7 +1,42 @@
+First have to look at the word "exactly" and where it is used.
+------------------
+SINGULAR:
+9/18180 #1
+East has a singleton chosen from ace-king
+East has exactly one of ace-king singleton
+fillSingular -> fillTopsActual: 
+Could think of TOPS_SOME_ACTUAL, the English text.
+But fillTopsActual is heavily used.  So first look at the
+word "exactly"
+
+It occurs in SENTENCE_LIST and in
+TOPS_SOME_ACTUAL, nowhere else.
+
+In F0 (HIGH_TOPS_EQUAL)
+We do get things like
+East has exactly one of jack-ten and not KH
+
+and not the jack (as the other H is already implicit in "one")
+West has exactly one of ace-king and not HJ
+
+G0:
+without any of
+West has the ace doubleton or tripleton without Q6
+
+a bit suspect, without any of or sth like that?
+Either opponent has AH and not H7
+
+1. lowestCard gets definite article, BELOW_ loses it.
+
+2. Maybe a completion with 2 cards also turns into text somehow?
+
+
 German
 ------
 Make an extracted file of only cover lines (no complexity)
 Sort, uniq -c, look at
+
+
 
 Run German
 - TOPS_FULL_ACTUAL has "den %0" which can't be right -- definite?

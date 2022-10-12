@@ -465,7 +465,10 @@ void Product::setVerbalHighTopsEqual(
     return;
   }
 
+  verbalCover.setLength(length);
+
   const Opponent side = Product::simpler(sumProfile, canonicalShift);
+  const Opponent otherSide = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   VerbalSide vside = {side, symmFlag};
 
@@ -489,6 +492,10 @@ void Product::setVerbalHighTopsEqual(
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillBelow(
       sumProfile.numBottoms(canonicalShift), numOptions, vside);
+  }
+  else if (verbalCover.getCompletion().getTopsUsed(otherSide) == 0)
+  {
+    verbalCover.fillOnesided(sumProfile, {side, symmFlag});
   }
   else
   {

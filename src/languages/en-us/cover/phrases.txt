@@ -49,6 +49,10 @@ string "has a singleton or doubleton"
 name LENGTH_VERB_RANGE
 string "has %0-%1 cards"
 
+# Example: Has between two and four cards
+name LENGTH_VERB_BETWEEN
+string "has between %0 and %1 cards"
+
 # Example: [The suit] splits 2=3
 name LENGTH_VERB_SPLIT
 string "splits %0=%1"
@@ -95,6 +99,13 @@ string "at most %0 of %1"
 # %1: Holding
 name TOPS_ATLEAST
 string "at least %0 of %1"
+
+# Example: one or two of QJT
+# %0: Number
+# %1: Number
+# %2: Holding
+name TOPS_ADJACENT
+string "%0 or %1 of %2"
 
 # Example: 1-2 of QJT
 # %0: Number

@@ -423,7 +423,11 @@ distributions/covers/TrickConvert.obj: distributions/covers/ConvertData.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverRow.h
 distributions/covers/CoverRow.obj: distributions/covers/Tricks.h
 distributions/covers/CoverRow.obj: distributions/covers/CoverCategory.h
-distributions/covers/CoverRow.obj: distributions/covers/Cover.h utils/table.h
+distributions/covers/CoverRow.obj: distributions/covers/Cover.h
+distributions/covers/CoverRow.obj: languages/Dictionary.h
+distributions/covers/CoverRow.obj: languages/Component.h
+distributions/covers/CoverRow.obj: languages/connections/words.h
+distributions/covers/CoverRow.obj: utils/table.h
 distributions/covers/CoverStack.obj: distributions/covers/CoverStack.h
 distributions/covers/CoverStack.obj: distributions/covers/StackEntry.h
 distributions/covers/CoverStack.obj: distributions/covers/CoverCategory.h
@@ -580,6 +584,7 @@ distributions/covers/verbal/Expand.obj: languages/connections/cover/sentences.h
 distributions/covers/verbal/Expand.obj: languages/VerbalConnection.h
 distributions/covers/verbal/Expand.obj: languages/PhraseExpansion.h
 distributions/covers/verbal/Expand.obj: languages/connections/cover/phrases.h
+distributions/covers/verbal/Expand.obj: languages/connections/words.h
 distributions/covers/verbal/Phrase.obj: distributions/covers/verbal/Phrase.h
 distributions/covers/verbal/Phrase.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Phrase.obj: utils/Compare.h
@@ -723,7 +728,9 @@ ranks/cranked.obj: utils/Compare.h utils/table.h const.h
 ranks/RankNames.obj: ranks/RankNames.h languages/Dictionary.h
 ranks/RankNames.obj: languages/Component.h languages/connections/words.h
 ranks/RankNames.obj: utils/table.h
-ranks/RanksNames.obj: ranks/RanksNames.h ranks/RankNames.h utils/table.h
+ranks/RanksNames.obj: ranks/RanksNames.h ranks/RankNames.h
+ranks/RanksNames.obj: languages/Dictionary.h languages/Component.h
+ranks/RanksNames.obj: languages/connections/words.h utils/table.h
 strategies/Slist.obj: strategies/Slist.h strategies/Strategy.h
 strategies/Slist.obj: strategies/result/Result.h strategies/result/Winners.h
 strategies/Slist.obj: strategies/optim/Study.h utils/Compare.h

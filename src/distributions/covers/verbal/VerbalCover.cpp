@@ -126,7 +126,8 @@ void VerbalCover::getLengthInsideData(
   else if (! abstractableFlag)
   {
     phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(LENGTH_VERB_RANGE);
+    phrases[1].setPhrase(
+      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
     phrases[1].setValues(vLower, vUpper);
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
@@ -142,7 +143,8 @@ void VerbalCover::getLengthInsideData(
   else if (vLower + vUpper == oppsLength)
   {
     phrases[0].setPhrase(PLAYER_EACH);
-    phrases[1].setPhrase(LENGTH_VERB_RANGE);
+    phrases[1].setPhrase(
+      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
     phrases[1].setValues(vLower, vUpper);
   }
   else if (vLower == 1 && vUpper == 2)
@@ -153,7 +155,8 @@ void VerbalCover::getLengthInsideData(
   else
   {
     phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(LENGTH_VERB_RANGE);
+    phrases[1].setPhrase(
+      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
     phrases[1].setValues(vLower, vUpper);
   }
 }
@@ -224,6 +227,11 @@ void VerbalCover::fillOnetopOnly(
   {
     phrases[1].setPhrase(TOPS_ATLEAST);
     phrases[1].setValues(vLower, onetopIndex);
+  }
+  else if (vLower+1 == vUpper)
+  {
+    phrases[1].setPhrase(TOPS_ADJACENT);
+    phrases[1].setValues(vLower, vUpper, onetopIndex);
   }
   else
   {

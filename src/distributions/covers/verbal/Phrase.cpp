@@ -198,6 +198,16 @@ string Phrase::str(
     Phrase::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
     return s;
   }
+  else if (expansion == PHRASE_ADJACENT)
+  {
+    // Dative.
+    assert(Phrase::has(0, 3, 0));
+    Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
+    Phrase::replace(s, "%1", dictionary.numerals.get(uchars[1]).text);
+    Phrase::replace(s, "%2", ranksNames.getOpponents(uchars[2]).
+      strComponent(RANKNAME_ACTUAL_FULL));
+    return s;
+  }
   else if (expansion == PHRASE_RANGE_OF)
   {
     // Dative.

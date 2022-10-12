@@ -49,6 +49,10 @@ string "hat ein Single oder Double"
 name LENGTH_VERB_RANGE
 string "hat %0-%1 Karten"
 
+# Example: Has betweeen two and four cards
+name LENGTH_VERB_BETWEEN
+string "hat zwischen %0 und %1 Karten"
+
 # Example: [The suit] splits 2=3
 name LENGTH_VERB_SPLIT
 string "ist %0=%1 verteilt"
@@ -95,6 +99,13 @@ string "höchstens %0 von %1"
 # %1: Holding
 name TOPS_ATLEAST
 string "mindestens %0 von %1"
+
+# Example: one or two of QJT
+# %0: Number
+# %1: Number
+# %2: Holding
+name TOPS_ADJACENT
+string "%0 oder %1 von %2"
 
 # Example: 1-2 of QJT
 # %0: Number
