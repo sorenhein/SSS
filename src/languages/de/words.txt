@@ -16,5 +16,13 @@ name SMALL
 string "x"
 
 
+name PARTICLE_DEF_PLURAL
+string ""
+
+
+name PREPOSITION_DEF_PLURAL_OF
+string ""
+
+
 name CONJUNCTION_OR
 string "oder"
