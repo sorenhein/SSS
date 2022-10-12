@@ -42,25 +42,21 @@ Ost hat D10 zu dritt bis zu sechst
 
 Using honors as words
 ---------------------
-West has at least one of king-queen
-West has at least one honor
-ten-nine?!
-
-West has at least one of king-queen doubleton or tripleton
-West has a doubleton or tripleton with at least one honor
-
-East has exactly one of ace-king and at most one, lower-ranked card
-East has exactly one honor singleton or doubleton
-
-East has one-two cards completely below the ten
-one or two
-
-Either opponent has exactly one of ace-king and one-two, lower-ranked cards
-Either opponent has exactly one honor doubleton or tripleton
+1. First slip around to avoid honors as an exclusion:
 
 * Either opponent has the eight and none of the ace-king-queen
 * East has the eight and neither of A6
-Other way round?
+
+2.
+There are 5 in cover/phrases.txt that use "of":
+TOPS_ATMOST (PHRASE_SOME_OF)
+TOPS_ATLEAST (ditto)
+TOPS_ADJACENT (PHRASE_ADJACENT)
+TOPS_RANGE (PHRASE_RANGE_OF)
+TOPS_SOME_ACTUAL (PHRASE_SOME_RANK_SET)
+
+I guess if we change strComponent(RANK_ACTUAL_FULL) to include the
+"of" preposition and delete it in these four, it evens out.
 
 East has A76 fourth to sixth
 between fourth and sixth
