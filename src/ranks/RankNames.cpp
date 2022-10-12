@@ -50,6 +50,10 @@ void RankNames::add(
 
     names[RANKNAME_ACTUAL_SHORT] =
       dictionary.cardsShort.get(index).text;
+
+    // Only the lowest card of that rank.
+    names[RANKNAME_ACTUAL_LOW_DEF] = 
+      dictionary.cardsDefinite.get(index).text;
   }
   else
   {

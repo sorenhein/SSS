@@ -29,6 +29,7 @@ Either opponent has AH and not H7
 1. lowestCard gets definite article, BELOW_ loses it.
 
 2. Maybe a completion with 2 cards also turns into text somehow?
+Maybe it two complete ranks?
 
 
 German
@@ -43,27 +44,16 @@ Run German
 
 -----
 
-11/11492, could still be "jack and one lower-ranked card", not "J"
-
 11/162390
 HHJ97
 "East has exactly one of ace-king and not HJ"
 H is also AK...  So if we say "exactly", we should say "and not J".
 
-7/1668
-Probably debatable whether AQT is A(x) or A(T).
-But at any rate the answer was inconsistent.
-For now, moving to (T) all the way.  Perhaps in ranksNames
-it should be x?
-
 11/159426 #2
- *G West has AK, AKx or Hx [4/4]
- *G West has HT9, T9 or T9x [4/4]
-Why do we get both from West?  Should be it once from West and
-once from East?
-Actually quite interesting?  Do they arise piece by piece,
-but cannot then be combined into a symmetric one?  That could cut
-complexity in a post-processing step.
+3122160 *G East has exactly HT9, T9x or T9 [4/4]
+3122161 *G West has exactly HT9, T9x or T9 [4/4]
+Do they arise piece by piece, but cannot then be combined into 
+a symmetric one?  That could cut complexity in a post-processing step.
 
 There is a new class VerbalTableau
 It has a VerbalRow consisting of one or more VerbalCover
@@ -99,10 +89,6 @@ Manual seems to use them
 
 Complexities
 ------------
-Check that complexities are now homogeneous
-- HIGH_TOPS are OK
-- SINGULAR are OK
-
 East: 8 out of AKJ8 and 1 lower card, complexity 6
 East: A out of AJ and 1 lower card, complexity 5
 
@@ -186,20 +172,10 @@ Singleton ace does fit with "2-3, 1 of top, unused, 0 of third".
 Probably they also have different canonical shifts?
 FactoredProduct::sameTops
 
-8/5907  Can't turn "West doubleton", "West AKx(x)" into
-        "West doubleton, or West AK-any"
-
 Texts
-7/1683  "East has at most a doubleton" -> "West is not void"
-
-8/4812, #2
-Not sure about the output "West has x(x)"
-More like "1-2 cards with no h".
 
 * Can also split the completely symmetric tricks by lengths,
   and only match with symmetric covers length-by-length and combine
-
-10/44451 #0 is now familiar, so may look at this.
 
 11/136262 #4: There is a difference between d = 33 (QJ9) and 
 say d = 29 (QJ6).  Yet we apparently never win a trick with the 7.

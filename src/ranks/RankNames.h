@@ -20,9 +20,10 @@ enum RankName: unsigned
 {
   RANKNAME_ACTUAL_FULL = 0,     // jack-ten
   RANKNAME_ACTUAL_SHORT = 1,    // JT
-  RANKNAME_ABSOLUTE_SHORT = 2,  // HH
-  RANKNAME_RELATIVE_SHORT = 3,
-  RANKNAME_SIZE = 4
+  RANKNAME_ACTUAL_LOW_DEF = 2,    // the ten (the lowest of that rank)
+  RANKNAME_ABSOLUTE_SHORT = 3,  // HH
+  RANKNAME_RELATIVE_SHORT = 4,
+  RANKNAME_SIZE = 5
 };
 
 

@@ -138,7 +138,7 @@ string ", lower-ranked %0"
 # %0: card or cards.
 # %1: A specific card.
 name TOPS_BELOW
-string " %0 below the %1"
+string " %0 below %1"
 
 
 name EXCLUDING_NONE
@@ -152,10 +152,10 @@ string "not"
 
 
 name BELOW_NORMAL
-string "below the"
+string "below"
 
 name BELOW_COMPLETELY
-string "completely below the"
+string "completely below"
 
 
 # Example: x(xx)
