@@ -71,6 +71,10 @@ class VerbalCover
       const Opponent side,
       Phrase& phrase);
 
+    void fillExcluding(
+      const VerbalSide& vside,
+      Phrase& phrase) const;
+
 
   public:
 

@@ -17,13 +17,14 @@ string "%0 hat %1"
 name SENTENCE_TOPS_LENGTH
 string "%0 hat %1 %2"
 
-# Example: West has AK fourth without the T9
+# Example: West has AK fourth but neither of T9
 # %0: Player
 # %1: Holding
 # %2: Ordinal
-# %3: Holding
+# %3: Negation indicator
+# %4: Holding
 name SENTENCE_TOPS_LENGTH_WITHOUT
-string "%0 hat %1 %2 ohne %3"
+string "%0 hat %1 %2 aber %3 %4"
 
 # Example: West has AK and none of J9
 # %0: Player

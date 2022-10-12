@@ -344,6 +344,22 @@ void VerbalCover::fillOnesided(
 }
 
 
+void VerbalCover::fillExcluding(
+  const VerbalSide& vside,
+  Phrase& phrase) const
+{
+  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  const unsigned topsFull = completions.front().getTopsFull(sideOther);
+
+  if (topsFull <= 1)
+    phrase.setPhrase(EXCLUDING_NOT);
+  else if (topsFull == 2)
+    phrase.setPhrase(EXCLUDING_NEITHER);
+  else
+    phrase.setPhrase(EXCLUDING_NONE);
+}
+
+
 void VerbalCover::fillTwosided(
   const Profile& sumProfile,
   const VerbalSide& vside)
@@ -352,11 +368,16 @@ void VerbalCover::fillTwosided(
   VerbalCover::fillOnesided(sumProfile, vside);
 
   sentence = SENTENCE_TOPS_LENGTH_WITHOUT;
-  phrases.resize(4);
+  phrases.resize(5);
+
+  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+  const unsigned topsFull = completions.front().getTopsFull(sideOther);
+
+  VerbalCover::fillExcluding(vside, phrases[3]);
 
   VerbalCover::fillTopsActual(
     (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST),
-    phrases[3]);
+    phrases[4]);
 }
 
 
@@ -370,16 +391,9 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 
   VerbalCover::fillTopsActual(vside.side, phrases[1]);
 
+  VerbalCover::fillExcluding(vside, phrases[2]);
+
   const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-  const unsigned topsFull = completions.front().getTopsFull(sideOther);
-
-  if (topsFull <= 1)
-    phrases[2].setPhrase(EXCLUDING_NOT);
-  else if (topsFull == 2)
-    phrases[2].setPhrase(EXCLUDING_NEITHER);
-  else
-    phrases[2].setPhrase(EXCLUDING_NONE);
-
   VerbalCover::fillTopsActual(sideOther, phrases[3]);
 }
 
