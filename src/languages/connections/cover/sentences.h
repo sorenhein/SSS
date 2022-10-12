@@ -22,8 +22,9 @@ enum SentencesEnum: unsigned
   SENTENCE_TOPS_AND_XES = 5,
   SENTENCE_TOPS_AND_LOWER = 6,
   SENTENCE_ONLY_BELOW = 7,
-  SENTENCE_LIST = 8,
-  SENTENCE_SIZE = 9
+  SENTENCE_SINGULAR_EXACT = 8,
+  SENTENCE_LIST = 9,
+  SENTENCE_SIZE = 10
 };
 
 enum SentencesGroup: unsigned

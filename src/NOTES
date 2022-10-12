@@ -1,22 +1,3 @@
-More expansions
----------------
-Maybe a completion with 2 cards also turns into text somehow?
-Maybe if two complete ranks?
-
-Terser wording
---------------
-SINGULAR:
-9/18180 #1
-East has a singleton chosen from ace-king
-East has exactly one of ace-king singleton
-fillSingular -> fillTopsActual: 
-Could think of TOPS_SOME_ACTUAL, the English text.
-But fillTopsActual is heavily used.  So first look at the
-word "exactly"
-
-It occurs in SENTENCE_LIST and in
-TOPS_SOME_ACTUAL, nowhere else.
-
 Mention of split honors
 -----------------------
 a bit suspect, without any of or sth like that?
@@ -41,6 +22,33 @@ German
 Check as well
 
 
+Using honors as words
+---------------------
+West has at least one of king-queen
+West has at least one honor
+ten-nine?!
+
+West has at least one of king-queen doubleton or tripleton
+West has a doubleton or tripleton with at least one honor
+
+East has exactly one of ace-king and at most one, lower-ranked card
+East has exactly one honor singleton or doubleton
+
+East has one-two cards completely below the ten
+one or two
+
+Either opponent has exactly one of ace-king and one-two, lower-ranked cards
+Either opponent has exactly one honor doubleton or tripleton
+
+* Either opponent has the eight and none of the ace-king-queen
+* East has the eight and neither of A6
+Other way round?
+
+East has A76 fourth to sixth
+between fourth and sixth
+
+East has a doubleton chosen from the ace-king-queen
+East has two honors doubleton
 
 
 -----

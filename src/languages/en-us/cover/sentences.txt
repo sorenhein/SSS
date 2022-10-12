@@ -57,6 +57,13 @@ string "%0 has %1 and %2%3"
 name SENTENCE_ONLY_BELOW
 string "%0 %1 %2 %3"
 
+# Example: West has a doubleton chosen from king-queen-jack
+# %0: Player
+# %1: Length ordinal
+# %3: Holding
+name SENTENCE_SINGULAR_EXACT
+string "%0 has a %1 chosen from %2"
+
 # Example: West has AT, QT or Tx.
 # The list has up to four entries.  The unused variables are purged.
 # last ',' is replaced with ' or', where the word is in words.txt.

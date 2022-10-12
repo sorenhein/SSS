@@ -493,16 +493,33 @@ void VerbalCover::fillSingular(
   const unsigned char lenCompletion,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_TOPS_LENGTH;
 
   phrases.resize(3);
 
   phrases[0].setPhrase(vside.player());
 
-  VerbalCover::fillTopsActual(vside.side, phrases[1]);
+  const Completion& completion = completions.front();
+  const Opponent side = vside.side;
 
-  phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
-  phrases[2].setValues(lenCompletion);
+  if (completion.expandable(side) && ! completion.fullRanked(side))
+  {
+    sentence = SENTENCE_SINGULAR_EXACT;
+
+    phrases[1].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[1].setValues(lenCompletion);
+
+    phrases[2].setPhrase(TOPS_FULL_ACTUAL);
+    phrases[2].setValues(completion.getLowestRankActive(side));
+  }
+  else
+  {
+    sentence = SENTENCE_TOPS_LENGTH;
+
+    VerbalCover::fillTopsActual(side, phrases[1]);
+
+    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[2].setValues(lenCompletion);
+  }
 }
 
 
