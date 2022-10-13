@@ -42,16 +42,8 @@ Ost hat D10 zu dritt bis zu sechst
 
 Using honors as words
 ---------------------
-2.
-There are 5 in cover/phrases.txt that use "of":
-TOPS_ATMOST (PHRASE_SOME_OF)
-TOPS_ATLEAST (ditto)
-TOPS_ADJACENT (PHRASE_ADJACENT)
-TOPS_RANGE (PHRASE_RANGE_OF)
-TOPS_SOME_ACTUAL (PHRASE_SOME_RANK_SET)
-
-I guess if we change strComponent(RANK_ACTUAL_FULL) to include the
-"of" preposition and delete it in these four, it evens out.
+Now that "of" is part of STR_ACTUAL_FULL, it could start to say
+"two honors" and not "two of ace-king".
 
 East has A76 fourth to sixth
 between fourth and sixth

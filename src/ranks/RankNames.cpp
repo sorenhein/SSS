@@ -186,6 +186,20 @@ string RankNames::strComponent(const RankName rankName) const
           names[RANKNAME_ACTUAL_FULL];
     }
   }
+  else if (rankName == RANKNAME_ACTUAL_FULL)
+  {
+    if (count == 1)
+      return names[rankName]; // Preposition and article built in
+    else
+    {
+      const string& t = dictionary.words.get(WORDS_DEF_PLURAL_OF).text;
+      if (t.empty())
+        return names[RANKNAME_ACTUAL_FULL];
+      else
+        return dictionary.words.get(WORDS_DEF_PLURAL_OF).text + " " +
+          names[RANKNAME_ACTUAL_FULL];
+    }
+  }
   else
     return names[rankName];
 }

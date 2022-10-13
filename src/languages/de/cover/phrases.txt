@@ -93,37 +93,39 @@ string "%0-%1"
 
 # Example: At most two of QJT
 # %0: Number
-# %1: Holding
+# %1: Holding ("of")
 name TOPS_ATMOST
-string "höchstens %0 von %1"
+string "höchstens %0 %1"
 
 # Example: At least one of QJT
 # %0: Number
-# %1: Holding
+# %1: Holding ("of")
 name TOPS_ATLEAST
-string "mindestens %0 von %1"
+string "mindestens %0 %1"
 
 # Example: one or two of QJT
 # %0: Number
 # %1: Number
-# %2: Holding
+# %2: Holding ("of")
 name TOPS_ADJACENT
-string "%0 oder %1 von %2"
+string "%0 oder %1 %2"
 
 # Example: 1-2 of QJT
 # %0: Number
 # %1: Number
-# %2: Holding
+# %2: Holding ("of")
 name TOPS_RANGE
-string "%0-%1 von %2"
+string "%0-%1 %2"
 
 # Example: KQ
 name TOPS_ACTUAL
 string "%0"
 
 # Example: exactly two of KQJ
+# %0: Number
+# %1: Holding ("of")
 name TOPS_SOME_ACTUAL
-string "genau %0 von %1"
+string "genau %0 %1"
 
 # Example: the king
 name TOPS_FULL_ACTUAL
