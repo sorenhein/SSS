@@ -1,5 +1,8 @@
 Mention of split honors
 -----------------------
+Maybe also mid-honors?
+Formalize with languages entry
+
 a bit suspect, without any of or sth like that?
 Either opponent has AH and not H7
 
@@ -15,6 +18,43 @@ G0:
 HHJ97
 "East has exactly one of ace-king and not HJ"
 H is also AK...  So if we say "exactly", we should say "and not J".
+
+
+    21 East has AH and not H9 
+    20 East has AH and not QH 
+     2 East has exactly one honor and neither of H98 
+     7 East has exactly two honors and not H9 
+
+   at most doubleton
+   153 East has exactly one honor and at most one, lower-ranked card 
+    41 East has exactly one honor and at most two, lower-ranked cards 
+    87 East has exactly one honor and one, lower-ranked card 
+
+Flip?
+     2 East has exactly one of nine-eight and neither of AJH 
+    11 East has the eight and neither of KT 
+    10 East has the jack and neither of A8 
+     5 Either opponent has the eight and none of AKJ 
+
+singleton or doubleton
+    45 East has one-two cards completely below the jack 
+    68 East has one-two cards completely below the king 
+   111 East has one-two cards completely below the queen 
+    27 East has one-two cards completely below the ten 
+
+     ???
+     6 East is not void completely below the ten 
+   114 West is not void completely below the jack 
+   131 West is not void completely below the ten 
+
+Here it does work to omit the other H?
+     3 Either opponent has AH and one, lower-ranked card 
+
+Hmm...
+HT8 flip?
+     1 Either opponent has exactly one honor and neither of HT8 
+     2 Either opponent has exactly one honor and not HH8 
+     5 Either opponent has exactly one of queen-jack-ten and not AHH 
 
 
 German
@@ -42,7 +82,16 @@ Ost hat D10 zu dritt bis zu sechst
 
 Using honors as words
 ---------------------
+"Each opponent has one or two of ten-nine-eight"
+Potentially "one or two mid-honors"
+
+"East has a doubleton chosen from the ace-king-queen"
+East has doubleton honors
+
 Either opponent has exactly one honor and one-two, lower-ranked cards
+
+"West has A8 fourth to sixth"
+between?
 
 
 East has A76 fourth to sixth
