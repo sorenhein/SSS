@@ -188,6 +188,7 @@ string RankNames::strComponent(const RankName rankName) const
   }
   else if (rankName == RANKNAME_ACTUAL_FULL)
   {
+    // TODO Same as previous case.  Maybe it can be removed.
     if (count == 1)
       return names[rankName]; // Preposition and article built in
     else

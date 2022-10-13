@@ -184,7 +184,7 @@ string Phrase::str(
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", dictionary.words.get(
-      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS ).text);
+      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
     return s;
   }
   else if (expansion == PHRASE_TEXT_BELOW)
@@ -194,7 +194,7 @@ string Phrase::str(
     // I don't have a good general mechanism for this.
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.words.get(
-      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS ).text);
+      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
     Phrase::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
     return s;
   }
@@ -204,8 +204,8 @@ string Phrase::str(
     assert(Phrase::has(0, 3, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", dictionary.numerals.get(uchars[1]).text);
-    Phrase::replace(s, "%2", ranksNames.getOpponents(uchars[2]).
-      strComponent(RANKNAME_ACTUAL_FULL));
+    Phrase::replace(s, "%2", ranksNames.strComponent(
+      RANKNAME_ACTUAL_FULL, uchars[2], uchars[1] > 1));
     return s;
   }
   else if (expansion == PHRASE_RANGE_OF)
@@ -214,8 +214,8 @@ string Phrase::str(
     assert(Phrase::has(0, 3, 0));
     Phrase::replace(s, "%0", uchars[0]);
     Phrase::replace(s, "%1", uchars[1]);
-    Phrase::replace(s, "%2", ranksNames.getOpponents(uchars[2]).
-      strComponent(RANKNAME_ACTUAL_FULL));
+    Phrase::replace(s, "%2", ranksNames.strComponent(
+      RANKNAME_ACTUAL_FULL, uchars[2], uchars[1] > 1));
     return s;
   }
   else if (expansion == PHRASE_SOME_OF)
@@ -223,16 +223,16 @@ string Phrase::str(
     // Dative.
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    Phrase::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
-      strComponent(RANKNAME_ACTUAL_FULL));
+    Phrase::replace(s, "%1", ranksNames.strComponent(
+      RANKNAME_ACTUAL_FULL, uchars[1], uchars[0] > 1));
     return s;
   }
   else if (expansion == PHRASE_SOME_RANK_SET)
   {
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    Phrase::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
-      strComponent(RANKNAME_ACTUAL_FULL));
+    Phrase::replace(s, "%1", ranksNames.strComponent(
+      RANKNAME_ACTUAL_FULL, uchars[1], uchars[0] > 1));
     return s;
   }
   else if (expansion == PHRASE_FULL_RANK_SET)

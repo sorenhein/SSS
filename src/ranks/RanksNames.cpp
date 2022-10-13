@@ -107,12 +107,30 @@ bool RanksNames::used() const
 
 const RankNames& RanksNames::getOpponents(const unsigned topNumber) const
 {
+  // TODO Do we still need this method?
   assert(topNumber < indexByTop.size());
 
   const auto itop = indexByTop[topNumber];
   assert(itop < names.size());
 
   return names[itop];
+}
+
+
+string RanksNames::strComponent(
+  const RankName rankName,
+  const unsigned char topNumber,
+  const bool pluralFlag) const
+{
+  if (static_cast<unsigned>(topNumber+1) == indexByTop.size())
+  {
+    if (pluralFlag)
+      return dictionary.words.get(WORDS_HONORS).text;
+    else
+      return dictionary.words.get(WORDS_HONOR).text;
+  }
+  else
+    return RanksNames::getOpponents(topNumber).strComponent(rankName);
 }
 
 

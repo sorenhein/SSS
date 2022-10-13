@@ -61,6 +61,11 @@ class RanksNames
 
     const RankNames& getOpponents(const unsigned topNumber) const;
 
+    string strComponent(
+      const RankName rankName,
+      const unsigned char topNumber,
+      const bool pluralFlag) const;
+
     string strOpponents(
       const unsigned topNumber,
       const unsigned char count) const;
