@@ -348,6 +348,13 @@ Opponent Completion::preferSimpleActive() const
     return OPP_WEST;
   else if (dataWest.ranksActive > 1 && dataEast.ranksActive == 1)
     return OPP_EAST;
+  else if (dataWest.ranksActive == 1 && dataEast.ranksActive == 1 &&
+    dataWest.lowestRankActive != dataEast.lowestRankActive)
+  {
+    // Prefer the one with the higher single rank.
+    return (dataWest.lowestRankActive > dataEast.lowestRankActive ?
+      OPP_WEST : OPP_EAST);
+  }
   else if (dataWest.topsUsed == 1 && dataEast.topsUsed > 1)
     return OPP_WEST;
   else if (dataEast.topsUsed == 1 && dataWest.topsUsed > 1)
