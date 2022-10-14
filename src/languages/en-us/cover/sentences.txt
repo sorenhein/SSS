@@ -34,6 +34,11 @@ string "%0 has %1 %2 but %3 %4"
 name SENTENCE_TOPS_EXCLUDING
 string "%0 has %1 and %2 %3"
 
+# Example: The key cards split AK=J9
+# %0: Both (two holdings)
+name SENTENCE_TOPS_BOTH
+string "The key cards split %0"
+
 # Example: West has AKJx(x)
 # %0: Player
 # %1: Holding

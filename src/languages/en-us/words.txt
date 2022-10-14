@@ -11,6 +11,12 @@ string "honor"
 name HONORS
 string "honors"
 
+name MID_HONOR
+string "mid-honor"
+
+name MID_HONORS
+string "mid-honors"
+
 
 name SMALL
 string "x"

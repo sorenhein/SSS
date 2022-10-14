@@ -383,9 +383,21 @@ void VerbalCover::fillTwosided(
 
 void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 {
-  sentence = SENTENCE_TOPS_EXCLUDING;
+  // sentence = SENTENCE_TOPS_EXCLUDING;
+  sentence = SENTENCE_TOPS_BOTH;
 
-  phrases.resize(4);
+  phrases.resize(1);
+
+  phrases[0].setSide(vside.side);
+  phrases[0].setBools(vside.symmFlag);
+
+  if (vside.symmFlag)
+    phrases[0].setPhrase(BOTH_EITHER_PLAYER);
+  else
+    phrases[0].setPhrase(BOTH_ONE_PLAYER);
+
+  /*
+  phrases.resize(2);
 
   phrases[0].setPhrase(vside.player());
 
@@ -395,6 +407,7 @@ void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 
   const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
   VerbalCover::fillTopsActual(sideOther, phrases[3]);
+  */
 }
 
 

@@ -1,40 +1,34 @@
 Mention of split honors
 -----------------------
-Maybe also mid-honors?
-Formalize with languages entry
+* Idea for the honor-honor split problem:
 
-a bit suspect, without any of or sth like that?
-Either opponent has AH and not H7
+We can no doubt do the same for SENTENCE_TOPS_LENGTH_WITHOUT
+as with SENTENCE_TOPS_BOTH.
+Then eliminate EXCLUDING_ and as a group.
 
-In F0 (HIGH_TOPS_EQUAL)
-We do get things like
-East has exactly one of jack-ten and not KH
+F0:
+The key cards split 8-AKJ either way
+Start from the higher side?
 
-and not the jack (as the other H is already implicit in "one")
-West has exactly one of ace-king and not HJ
-
-G0:
-11/162390
-HHJ97
-"East has exactly one of ace-king and not HJ"
-H is also AK...  So if we say "exactly", we should say "and not J".
+East has exactly one honor and at most one, lower-ranked card
+...at most doubleton
 
 
-    21 East has AH and not H9 
-    20 East has AH and not QH 
-     2 East has exactly one honor and neither of H98 
-     7 East has exactly two honors and not H9 
+* Special case Xton honors
 
-   at most doubleton
+"East has a doubleton chosen from the ace-king-queen"
+East has doubleton honors
+
+
+* Lengths
+
+   at most doubleton [as they are the highest tops]
    153 East has exactly one honor and at most one, lower-ranked card 
     41 East has exactly one honor and at most two, lower-ranked cards 
     87 East has exactly one honor and one, lower-ranked card 
 
-Flip?
-     2 East has exactly one of nine-eight and neither of AJH 
-    11 East has the eight and neither of KT 
-    10 East has the jack and neither of A8 
-     5 Either opponent has the eight and none of AKJ 
+    This too?  Or maybe OK.  So only when it's a single-rank honor
+     3 Either opponent has AH and one, lower-ranked card 
 
 singleton or doubleton
     45 East has one-two cards completely below the jack 
@@ -42,63 +36,19 @@ singleton or doubleton
    111 East has one-two cards completely below the queen 
     27 East has one-two cards completely below the ten 
 
-     ???
+"West has A8 fourth to sixth"
+between?
+
+     ??? East has at least one card completely below the X
      6 East is not void completely below the ten 
    114 West is not void completely below the jack 
    131 West is not void completely below the ten 
-
-Here it does work to omit the other H?
-     3 Either opponent has AH and one, lower-ranked card 
-
-Hmm...
-HT8 flip?
-     1 Either opponent has exactly one honor and neither of HT8 
-     2 Either opponent has exactly one honor and not HH8 
-     5 Either opponent has exactly one of queen-jack-ten and not AHH 
 
 
 German
 ------
 Check as well
 Danish, French?
-
-D0:
-9/17724
-West hat mindestens eine von Ass-König
-Karte aus
-
-11/133371
-Einer der Gegner hat AH und nicht DH
-keine Karte aus ?
-
-10/44406
-Einer der Gegner hat ein Double komplett unterhalb von das Ass
-
-11/136302
-Ost hat das Ass und zwei Karten unterhalb von den Buben
-
-Ost hat D10 zu dritt bis zu sechst
-
-
-Using honors as words
----------------------
-"Each opponent has one or two of ten-nine-eight"
-Potentially "one or two mid-honors"
-
-"East has a doubleton chosen from the ace-king-queen"
-East has doubleton honors
-
-Either opponent has exactly one honor and one-two, lower-ranked cards
-
-"West has A8 fourth to sixth"
-between?
-
-
-East has A76 fourth to sixth
-between fourth and sixth
-
-East has a doubleton chosen from the ace-king-queen
-East has two honors doubleton
 
 
 -----

@@ -156,6 +156,19 @@ name EXCLUDING_NOT
 string "not"
 
 
+# Example: QH=H7
+# %0: Holding
+# %1: Holding
+name BOTH_ONE_PLAYER
+string "%0=%1"
+
+# Example: QH=H7
+# %0: Holding
+# %1: Holding
+name BOTH_EITHER_PLAYER
+string "%0-%1 either way"
+
+
 name BELOW_NORMAL
 string "below"
 

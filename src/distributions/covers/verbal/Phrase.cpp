@@ -20,6 +20,8 @@
 
 #include "../../../ranks/RanksNames.h"
 
+#include "../../../utils/table.h"
+
 extern Dictionary dictionary;
 
 
@@ -260,6 +262,27 @@ string Phrase::str(
     Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
 
     Phrase::replace(s, "%1", completion.strUnset(ranksNames, side));
+
+    return s;
+  }
+  else if (expansion == PHRASE_BOTH)
+  {
+    assert(Phrase::has(1, 0, 1));
+
+    if (bools[0])
+    {
+      // Symmetric.
+      const Opponent sideOther = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
+      Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
+      Phrase::replace(s, "%1", completion.strSet(ranksNames, sideOther));
+    }
+    else
+    {
+      // Always state West first.
+      Phrase::replace(s, "%0", completion.strSet(ranksNames, OPP_WEST));
+      Phrase::replace(s, "%1", completion.strSet(ranksNames, OPP_EAST));
+    }
+
 
     return s;
   }

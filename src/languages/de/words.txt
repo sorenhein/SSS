@@ -11,6 +11,12 @@ string "Figur"
 name HONORS
 string "Figuren"
 
+name MID_HONOR
+string "Mittelfigur"
+
+name MID_HONORS
+string "Mittelfiguren"
+
 
 name SMALL
 string "x"

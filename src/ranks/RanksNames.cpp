@@ -131,11 +131,10 @@ string RanksNames::strComponent(
   }
   else if (static_cast<unsigned>(topNumber+2) == indexByTop.size())
   {
-    // TODO TMP, Just to see what it looks like
     if (pluralFlag)
-      return "mid-honors";
+      return dictionary.words.get(WORDS_MID_HONORS).text;
     else
-      return "mid-honor";
+      return dictionary.words.get(WORDS_MID_HONOR).text;
   }
   else
     return RanksNames::getOpponents(topNumber).strComponent(rankName);
