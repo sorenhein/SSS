@@ -18,7 +18,7 @@ enum Side: unsigned;
 
 enum RankName: unsigned
 {
-  RANKNAME_ACTUAL_FULL = 0,        // jack-ten
+  RANKNAME_ACTUAL_FULL_INDEF = 0,  // jack-ten
   RANKNAME_ACTUAL_SHORT = 1,       // JT
   RANKNAME_ACTUAL_LOW_DEF = 2,     // the ten (the lowest of that rank)
   RANKNAME_ACTUAL_FULL_DEF = 3,    // the king-queen (accusative)

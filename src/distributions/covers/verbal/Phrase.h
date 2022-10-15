@@ -86,6 +86,10 @@ class Phrase
 
     void setBools(const bool bool1);
 
+    void setBools(
+      const bool bool1,
+      const bool bool2);
+
     PhrasesEnum getPhrase() const;
 
     string str(

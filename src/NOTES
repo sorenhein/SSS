@@ -1,21 +1,31 @@
 Mention of split honors
 -----------------------
-* Idea for the honor-honor split problem:
-
+1.
 We can no doubt do the same for SENTENCE_TOPS_LENGTH_WITHOUT
 as with SENTENCE_TOPS_BOTH.
 Then eliminate EXCLUDING_ and as a group.
 
+The key cards split queen=eight and East has a doubleton or tripleton
+The key cards split Q8=A and East has a doubleton or tripleton
+
+vs
+
+East has the eight doubleton or tripleton but neither of QT
+
+2.
 F0:
 The key cards split 8-AKJ either way
-Start from the higher side?
+Start from the higher side:
+add Completion::preferHigherActive,
+go by lowestRankActive
+Use this only in Product::setVerbalTopsOnly in the last case.
+
+3.
 
 East has exactly one honor and at most one, lower-ranked card
 ...at most doubleton
 
-
-* Special case Xton honors
-
+4.
 "East has a doubleton chosen from the ace-king-queen"
 East has doubleton honors
 
@@ -35,9 +45,6 @@ singleton or doubleton
     68 East has one-two cards completely below the king 
    111 East has one-two cards completely below the queen 
     27 East has one-two cards completely below the ten 
-
-"West has A8 fourth to sixth"
-between?
 
      ??? East has at least one card completely below the X
      6 East is not void completely below the ten 

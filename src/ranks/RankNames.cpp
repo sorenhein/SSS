@@ -45,7 +45,7 @@ void RankNames::add(
 
   if (count == 0)
   {
-    names[RANKNAME_ACTUAL_FULL] = 
+    names[RANKNAME_ACTUAL_FULL_INDEF] = 
       dictionary.cardsIndefinite.get(index).text;
 
     names[RANKNAME_ACTUAL_SHORT] =
@@ -65,9 +65,9 @@ void RankNames::add(
   }
   else
   {
-    names[RANKNAME_ACTUAL_FULL] = 
+    names[RANKNAME_ACTUAL_FULL_INDEF] = 
       dictionary.cardsIndefinite.get(index).text + "-" + 
-      names[RANKNAME_ACTUAL_FULL];
+      names[RANKNAME_ACTUAL_FULL_INDEF];
 
     names[RANKNAME_ACTUAL_SHORT] = 
       dictionary.cardsShort.get(index).text +
@@ -166,10 +166,10 @@ string RankNames::strComponent(const RankName rankName) const
         dictionary.words.get(WORDS_PARTICLE_DEF_PLURAL).text;
 
       if (t.empty())
-        return names[RANKNAME_ACTUAL_FULL];
+        return names[RANKNAME_ACTUAL_FULL_INDEF];
       else
         return dictionary.words.get(WORDS_PARTICLE_DEF_PLURAL).text + " " +
-          names[RANKNAME_ACTUAL_FULL];
+          names[RANKNAME_ACTUAL_FULL_INDEF];
     }
   }
   else if (rankName == RANKNAME_ACTUAL_FULL_DEF_OF)
@@ -180,26 +180,15 @@ string RankNames::strComponent(const RankName rankName) const
     {
       const string& t = dictionary.words.get(WORDS_DEF_PLURAL_OF).text;
       if (t.empty())
-        return names[RANKNAME_ACTUAL_FULL];
+        return names[RANKNAME_ACTUAL_FULL_INDEF];
       else
         return dictionary.words.get(WORDS_DEF_PLURAL_OF).text + " " +
-          names[RANKNAME_ACTUAL_FULL];
+          names[RANKNAME_ACTUAL_FULL_INDEF];
     }
   }
-  else if (rankName == RANKNAME_ACTUAL_FULL)
+  else if (rankName == RANKNAME_ACTUAL_FULL_INDEF)
   {
-    // TODO Same as previous case.  Maybe it can be removed.
-    if (count == 1)
-      return names[rankName]; // Preposition and article built in
-    else
-    {
-      const string& t = dictionary.words.get(WORDS_DEF_PLURAL_OF).text;
-      if (t.empty())
-        return names[RANKNAME_ACTUAL_FULL];
-      else
-        return dictionary.words.get(WORDS_DEF_PLURAL_OF).text + " " +
-          names[RANKNAME_ACTUAL_FULL];
-    }
+    return names[RANKNAME_ACTUAL_FULL_INDEF];
   }
   else
     return names[rankName];

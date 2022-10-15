@@ -384,30 +384,48 @@ void VerbalCover::fillTwosided(
 void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
 {
   // sentence = SENTENCE_TOPS_EXCLUDING;
+  // This is an expansion with quite a lot of parameters in
+  // a single Phrase.
   sentence = SENTENCE_TOPS_BOTH;
 
   phrases.resize(1);
 
-  phrases[0].setSide(vside.side);
-  phrases[0].setBools(vside.symmFlag);
+  const Completion& completion = completions.front();
+  const bool bothExpandableFlag =
+    completion.expandable(OPP_WEST) &&
+    completion.expandable(OPP_EAST);
+
+  if (bothExpandableFlag)
+  {
+    // Needed to expand the two sides.
+    Opponent side1, side2;
+    if (vside.symmFlag)
+    {
+      side1 = vside.side;
+      side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
+    }
+    else
+    {
+      side1 = OPP_WEST;
+      side2 = OPP_EAST;
+    }
+
+    phrases[0].setValues(
+      completion.getLowestRankActive(side1),
+      completion.getLowestRankActive(side2));
+  }
+  else if (vside.symmFlag)
+  {
+    // Needed to know which side to state first.
+    phrases[0].setSide(vside.side);
+  }
+
+  phrases[0].setBools(vside.symmFlag, bothExpandableFlag);
 
   if (vside.symmFlag)
     phrases[0].setPhrase(BOTH_EITHER_PLAYER);
   else
     phrases[0].setPhrase(BOTH_ONE_PLAYER);
-
-  /*
-  phrases.resize(2);
-
-  phrases[0].setPhrase(vside.player());
-
-  VerbalCover::fillTopsActual(vside.side, phrases[1]);
-
-  VerbalCover::fillExcluding(vside, phrases[2]);
-
-  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-  VerbalCover::fillTopsActual(sideOther, phrases[3]);
-  */
 }
 
 

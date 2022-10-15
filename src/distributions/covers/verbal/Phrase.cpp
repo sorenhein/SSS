@@ -90,6 +90,17 @@ void Phrase::setBools(const bool bool1)
 }
 
 
+void Phrase::setBools(
+  const bool bool1,
+  const bool bool2)
+{
+  numBools = 2;
+  bools.resize(2);
+  bools[0] = bool1;
+  bools[1] = bool2;
+}
+
+
 PhrasesEnum Phrase::getPhrase() const
 {
   return phrase;
@@ -207,7 +218,7 @@ string Phrase::str(
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", dictionary.numerals.get(uchars[1]).text);
     Phrase::replace(s, "%2", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL, uchars[2], uchars[1] > 1));
+      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[2], uchars[1] > 1));
     return s;
   }
   else if (expansion == PHRASE_RANGE_OF)
@@ -217,7 +228,7 @@ string Phrase::str(
     Phrase::replace(s, "%0", uchars[0]);
     Phrase::replace(s, "%1", uchars[1]);
     Phrase::replace(s, "%2", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL, uchars[2], uchars[1] > 1));
+      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[2], uchars[1] > 1));
     return s;
   }
   else if (expansion == PHRASE_SOME_OF)
@@ -226,7 +237,7 @@ string Phrase::str(
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL, uchars[1], uchars[0] > 1));
+      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
     return s;
   }
   else if (expansion == PHRASE_SOME_RANK_SET)
@@ -234,7 +245,7 @@ string Phrase::str(
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL, uchars[1], uchars[0] > 1));
+      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
     return s;
   }
   else if (expansion == PHRASE_FULL_RANK_SET)
@@ -267,22 +278,32 @@ string Phrase::str(
   }
   else if (expansion == PHRASE_BOTH)
   {
-    assert(Phrase::has(1, 0, 1));
-
-    if (bools[0])
+    if (bools[1]) // expandable
     {
-      // Symmetric.
-      const Opponent sideOther = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
+      assert(Phrase::has(0, 2, 2));
+
+      Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
+      Phrase::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
+        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
+    }
+    else if (bools[0]) // symmFlag
+    {
+      assert(Phrase::has(1, 0, 2));
+
+      const Opponent sideOther = 
+        (side == OPP_WEST ? OPP_EAST : OPP_WEST);
       Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
       Phrase::replace(s, "%1", completion.strSet(ranksNames, sideOther));
     }
-    else
+    else // Asymmetric
     {
+      assert(Phrase::has(0, 0, 2));
+
       // Always state West first.
       Phrase::replace(s, "%0", completion.strSet(ranksNames, OPP_WEST));
       Phrase::replace(s, "%1", completion.strSet(ranksNames, OPP_EAST));
     }
-
 
     return s;
   }

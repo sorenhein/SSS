@@ -75,7 +75,7 @@ string "%0 or %1"
 
 # Example: doubleton to fourth
 name LENGTH_ORDINAL_RANGE
-string "%0 to %1"
+string "between %0 and %1"
 
 
 # Example: two
