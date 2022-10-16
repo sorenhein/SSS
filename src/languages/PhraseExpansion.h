@@ -27,7 +27,8 @@ enum PhraseExpansion: unsigned
   PHRASE_COMPLETION_XES = 13,
   PHRASE_BOTH = 14,
   PHRASE_BOTH_ENTRY = 15,
-  PHRASE_SIZE = 16
+  PHRASE_HONORS = 16,
+  PHRASE_SIZE = 17
 };
 
 #endif

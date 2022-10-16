@@ -330,6 +330,25 @@ string Phrase::str(
       Phrase::replace(s, "%2", to_string(+uchars[1]));
     }
 
+    return s;
+  }
+  else if (expansion == PHRASE_HONORS)
+  {
+    if (numUchars == 0)
+    {
+      assert(Phrase::has(0, 0, 0));
+    }
+    else if (numUchars == 1)
+    {
+      assert(Phrase::has(0, 1, 0));
+      Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
+    }
+    else
+    {
+      assert(Phrase::has(0, 2, 0));
+      Phrase::replace(s, "%0", dictionary.ordinals.get(uchars[0]).text);
+      Phrase::replace(s, "%1", dictionary.ordinals.get(uchars[1]).text);
+    }
 
     return s;
   }

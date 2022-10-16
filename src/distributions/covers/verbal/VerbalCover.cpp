@@ -542,11 +542,26 @@ void VerbalCover::fillBelow(
 
 
 
+void VerbalCover::fillHonorsEqual(
+  const unsigned char numHonors,
+  Phrase& phrase) const
+{
+  if (numHonors == 1)
+  {
+    phrase.setPhrase(HONORS_ONE);
+  }
+  else
+  {
+    phrase.setPhrase(HONORS_MULTIPLE);
+    phrase.setValues(numHonors);
+  }
+}
+
+
 void VerbalCover::fillSingular(
   const unsigned char lenCompletion,
   const VerbalSide& vside)
 {
-
   phrases.resize(3);
 
   phrases[0].setPhrase(vside.player());
@@ -554,7 +569,26 @@ void VerbalCover::fillSingular(
   const Completion& completion = completions.front();
   const Opponent side = vside.side;
 
-  if (completion.expandable(side) && ! completion.fullRanked(side))
+  if (! completion.expandable(side) || completion.fullRanked(side))
+  {
+    sentence = SENTENCE_TOPS_LENGTH;
+
+    VerbalCover::fillTopsActual(side, phrases[1]);
+
+    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[2].setValues(lenCompletion);
+  }
+  else if (completion.highRanked(side))
+  {
+    sentence = SENTENCE_HONORS_ORDINAL;
+
+    VerbalCover::fillHonorsEqual(
+      completion.getTopsUsed(side), phrases[1]);
+
+    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[2].setValues(lenCompletion);
+  }
+  else
   {
     sentence = SENTENCE_SINGULAR_EXACT;
 
@@ -563,15 +597,6 @@ void VerbalCover::fillSingular(
 
     phrases[2].setPhrase(TOPS_FULL_ACTUAL);
     phrases[2].setValues(completion.getLowestRankActive(side));
-  }
-  else
-  {
-    sentence = SENTENCE_TOPS_LENGTH;
-
-    VerbalCover::fillTopsActual(side, phrases[1]);
-
-    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
-    phrases[2].setValues(lenCompletion);
   }
 }
 

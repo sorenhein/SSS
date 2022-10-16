@@ -315,6 +315,29 @@ bool Completion::fullRanked(const Opponent side) const
 }
 
 
+bool Completion::highRanked(const Opponent side) const
+{
+  if (side == OPP_WEST)
+  {
+    if (! dataWest.highestRankFlag)
+      return false;
+    else if (! dataEast.highestRankFlag)
+      return true;
+    else
+      return (dataWest.highestRankActive >= dataEast.highestRankActive);
+  }
+  else
+  {
+    if (! dataEast.highestRankFlag)
+      return false;
+    else if (! dataWest.highestRankFlag)
+      return true;
+    else
+      return (dataEast.highestRankActive >= dataWest.highestRankActive);
+  }
+}
+
+
 unsigned char Completion::numOptions() const
 {
   return static_cast<unsigned char>(used.size()) - ranksUsed;

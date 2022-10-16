@@ -69,7 +69,12 @@ enum PhrasesEnum: unsigned
   EITHER_WAY = 100,
   ONE_WAY = 101,
 
-  VERBAL_PHRASE_SIZE = 110
+  HONORS_ONE = 110,
+  HONORS_MULTIPLE = 111,
+  HONORS_12 = 112,
+  HONORS_RANGE = 113,
+
+  VERBAL_PHRASE_SIZE = 120
 };
 
 enum PhrasesGroup: unsigned
@@ -83,7 +88,8 @@ enum PhrasesGroup: unsigned
   GROUP_PHRASES_BELOW = 6,
   GROUP_PHRASES_BOTTOMS = 7,
   GROUP_PHRASES_LIST = 8,
-  GROUP_PHRASES_EITHER_WAY = 9
+  GROUP_PHRASES_EITHER_WAY = 9,
+  GROUP_PHRASES_HONORS = 10
 
 };
 

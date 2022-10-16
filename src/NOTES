@@ -2,6 +2,17 @@ Mention of split honors
 -----------------------
 
 1. "lower-ranked"
+VerbalCover::fillTopsAndLower
+New SENTENCE_HONORS_ORDINAL
+
+if (completion.highRanked(side))
+{
+  3 phrases
+  1 is vside.side
+  1 is fillHonorsEqual(as in fillSingular)
+  1 is fillLengthOrdinal(sumProfile.length(), side, phrase[2])
+}
+
 "East has exactly one honor and at most one, lower-ranked card"
 "East has exactly one honor at most doubleton"
 This works for an honor which is always the highest opposing card.
@@ -10,16 +21,25 @@ This works for an honor which is always the highest opposing card.
     41 East has exactly one honor and at most two, lower-ranked cards 
     87 East has exactly one honor and one, lower-ranked card 
 
+So if the stated ranks (AH) are the highest ones, we can go to
+"exactly ... and doubleton, tripleton, ..."
+
+"East has one honor at most tripleton"
+So it's really the same sentence as below!
+
+If not, no change except perhaps "one-two" -> "one or two,
+lower-ranks cards"
+
+TOPS_LOWER
+fillTopsAndLower
+SENTENCE_TOPS_AND_LOWER
+
+If fillLengthOrdinal?
+
 
 2. "chosen from"
-"East has a doubleton chosen from the ace-king-queen"
-East has doubleton honors
-
-SENTENCE_SINGULAR_EXACT in sentences.txt:
-%0 has %1 honors
-Applies when the single rank is the highest (maybe other cases too?)
-
-
+add mid-honors
+Anything left?
 
 German
 ------

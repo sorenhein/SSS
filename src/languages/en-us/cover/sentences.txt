@@ -59,6 +59,14 @@ string "%0 %1 %2 %3"
 name SENTENCE_SINGULAR_EXACT
 string "%0 has a %1 chosen from %2"
 
+# Example: East has exactly one honor at most doubleton"
+# Example: East has exactly two honors doubleton"
+# %0: Player
+# %1: Honors
+# %2: Ordinal
+name SENTENCE_HONORS_ORDINAL
+string "%0 has exactly %1 %2"
+
 # Example: West has AT, QT or Tx.
 # The list has up to four entries.  The unused variables are purged.
 # last ',' is replaced with ' or', where the word is in words.txt.

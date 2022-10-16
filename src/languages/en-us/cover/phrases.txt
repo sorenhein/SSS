@@ -190,3 +190,16 @@ string "either way"
 
 name ONE_WAY
 string ""
+
+
+name HONORS_ONE
+string "one honor"
+
+name HONORS_MULTIPLE
+string "%0 honors"
+
+name HONORS_12
+string "one or two honors"
+
+name HONORS_RANGE
+string "%0-%1 honors"
