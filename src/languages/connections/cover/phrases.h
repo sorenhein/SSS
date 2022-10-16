@@ -56,6 +56,7 @@ enum PhrasesEnum: unsigned
 
   BOTH_ONE_PLAYER = 60,
   BOTH_EITHER_PLAYER = 61,
+  BOTH_ONE_PLAYER_LENGTH = 62,
 
   BELOW_NORMAL = 70,
   BELOW_COMPLETELY = 71,
@@ -65,7 +66,10 @@ enum PhrasesEnum: unsigned
   LIST_HOLDING_EXACT = 90,
   LIST_HOLDING_WITH_LOWS = 91,
 
-  VERBAL_PHRASE_SIZE = 100
+  EITHER_WAY = 100,
+  ONE_WAY = 101,
+
+  VERBAL_PHRASE_SIZE = 110
 };
 
 enum PhrasesGroup: unsigned
@@ -78,7 +82,8 @@ enum PhrasesGroup: unsigned
   GROUP_PHRASES_BOTH_SIDES = 5,
   GROUP_PHRASES_BELOW = 6,
   GROUP_PHRASES_BOTTOMS = 7,
-  GROUP_PHRASES_LIST = 8
+  GROUP_PHRASES_LIST = 8,
+  GROUP_PHRASES_EITHER_WAY = 9
 
 };
 

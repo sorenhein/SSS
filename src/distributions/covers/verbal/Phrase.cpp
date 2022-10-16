@@ -307,6 +307,32 @@ string Phrase::str(
 
     return s;
   }
+  else if (expansion == PHRASE_BOTH_ENTRY)
+  {
+    if (bools[0]) // expandable)
+    {
+      assert(Phrase::has(0, 3, 1));
+
+      Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
+
+      Phrase::replace(s, "%1", to_string(+uchars[1]));
+      Phrase::replace(s, "%2", to_string(+uchars[2]));
+    }
+    else
+    {
+      // Symmetry is handled elsewhere.
+      assert(Phrase::has(1, 2, 1));
+
+      Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
+
+      Phrase::replace(s, "%1", to_string(+uchars[0]));
+      Phrase::replace(s, "%2", to_string(+uchars[1]));
+    }
+
+
+    return s;
+  }
   else if (expansion == PHRASE_COMPLETION_XES)
   {
     assert(Phrase::has(1, 0, 0));

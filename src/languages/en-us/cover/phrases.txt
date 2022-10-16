@@ -150,7 +150,7 @@ string " %0 below %1"
 # %0: Holding
 # %1: Holding
 name BOTH_ONE_PLAYER
-string "%0=%1"
+string "%0 = %1"
 
 # Example: QH=H7
 # %0: Holding
@@ -158,6 +158,12 @@ string "%0=%1"
 name BOTH_EITHER_PLAYER
 string "%0 / %1 either way"
 
+# Example: ace-king with 2-3 cards
+# %0: Holding
+# %1: Numeral
+# %2: Numeral
+name BOTH_ONE_PLAYER_LENGTH
+string "%0 with %1-%2 cards"
 
 name BELOW_NORMAL
 string "below"
@@ -178,3 +184,9 @@ string "%0"
 # Example: KQT(x)
 name LIST_HOLDING_WITH_LOWS
 string "%0(%1)"
+
+name EITHER_WAY
+string "either way"
+
+name ONE_WAY
+string ""

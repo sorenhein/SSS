@@ -36,3 +36,4 @@ string "of"
 
 name THEY_HOLD
 string "where the opponents hold "
+

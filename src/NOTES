@@ -1,34 +1,20 @@
 Mention of split honors
 -----------------------
-1.
-"The key cards split A=T8 and West has doubleton or tripleton"
-A bit verbose.
-"The key cards split (A doubleton or tripleton) = T8
-"The key cards split (A with 2-3 cards) = (T8 with 2-3 cards)
 
-"The key cards split ace-king=eight and East has doubleton or tripleton"
-to
-"The key cards split ace-king = (eight doubleton or tripleton)"
+1. "lower-ranked"
+"East has exactly one honor and at most one, lower-ranked card"
+"East has exactly one honor at most doubleton"
+This works for an honor which is always the highest opposing card.
 
-2.
-
-East has exactly one honor and at most one, lower-ranked card
-...at most doubleton
-
-3.
-"East has a doubleton chosen from the ace-king-queen"
-East has doubleton honors
-
-
-* Lengths
-
-   at most doubleton [as they are the highest tops]
    153 East has exactly one honor and at most one, lower-ranked card 
     41 East has exactly one honor and at most two, lower-ranked cards 
     87 East has exactly one honor and one, lower-ranked card 
 
-    This too?  Or maybe OK.  So only when it's a single-rank honor
-     3 Either opponent has AH and one, lower-ranked card 
+
+2. "completely below"
+Can we use LENGTH_VERB? Are we already?
+fillBelow, getLengthData with abstractable == false
+
 
 singleton or doubleton
     45 East has one-two cards completely below the jack 
@@ -40,6 +26,12 @@ singleton or doubleton
      6 East is not void completely below the ten 
    114 West is not void completely below the jack 
    131 West is not void completely below the ten 
+
+
+3. "chosen from"
+"East has a doubleton chosen from the ace-king-queen"
+East has doubleton honors
+
 
 
 German

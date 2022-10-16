@@ -22,7 +22,7 @@ string "%0 has %1 %2"
 # %1: Player
 # %2: Length ordinal
 name SENTENCE_TOPS_BOTH_LENGTH
-string "The key cards split %0 and %1 has %2"
+string "The key cards split (%0) = (%1) %2"
 
 # Example: The key cards split AK=J9
 # %0: Both (two holdings)

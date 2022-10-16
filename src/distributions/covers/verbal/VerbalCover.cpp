@@ -349,15 +349,50 @@ void VerbalCover::fillTopsBothLength(
   const VerbalSide& vside)
 {
   // length is already set.
-  VerbalCover::fillTopsBoth(vside);
-
   sentence = SENTENCE_TOPS_BOTH_LENGTH;
+
   phrases.resize(3);
 
-  phrases[1].setPhrase(vside.player());
+  const Completion& completion = completions.front();
+  const bool bothExpandableFlag =
+    completion.expandable(OPP_WEST) &&
+    completion.expandable(OPP_EAST);
 
-  VerbalCover::fillLengthOrdinal(
-    sumProfile.length(), vside.side, phrases[2]);
+  phrases[0].setPhrase(BOTH_ONE_PLAYER_LENGTH);
+  phrases[0].setBools(bothExpandableFlag);
+
+  phrases[1].setPhrase(BOTH_ONE_PLAYER_LENGTH);
+  phrases[1].setBools(bothExpandableFlag);
+
+  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
+
+  if (bothExpandableFlag)
+  {
+    phrases[0].setValues(
+      completion.getLowestRankActive(vside.side),
+      length.lower(),
+      length.upper());
+
+    phrases[1].setValues(
+      completion.getLowestRankActive(sideOther),
+      sumProfile.length() - length.upper(),
+      sumProfile.length() - length.lower());
+  }
+  else
+  {
+    phrases[0].setSide(vside.side);
+    phrases[0].setValues(length.lower(), length.upper());
+
+    phrases[1].setSide(sideOther);
+    phrases[1].setValues(
+      sumProfile.length() - length.upper(), 
+      sumProfile.length() - length.lower());
+  }
+
+  if (vside.symmFlag)
+    phrases[2].setPhrase(EITHER_WAY);
+  else
+    phrases[2].setPhrase(ONE_WAY);
 }
 
 
