@@ -39,6 +39,10 @@ class Completion
       // Lowest active, non-zero rank.
       unsigned char lowestRankActive;
 
+      // Highest active, non-zero rank.
+      bool highestRankFlag;
+      unsigned char highestRankActive;
+
       // Tops of full rank.
       unsigned char topsFull;
 
@@ -52,6 +56,8 @@ class Completion
         topsUsed = 0;
         ranksActive = 0;
         lowestRankActive = 0;
+        highestRankFlag = false;
+        highestRankActive = 0;
         topsFull = 0;
         freeLower = 0;
         freeUpper = 0;
@@ -69,6 +75,12 @@ class Completion
         {
           ranksActive++;
           lowestRankActive = topNo;
+
+          if (! highestRankFlag)
+          {
+            highestRankFlag = true;
+            highestRankActive = topNo;
+          }
         }
 
         if (value == valueMax)
@@ -144,6 +156,8 @@ class Completion
     Opponent preferSingleActive() const;
 
     Opponent preferSimpleActive() const;
+
+    Opponent preferHighActive() const;
 
     bool operator < (const Completion& comp2) const;
 

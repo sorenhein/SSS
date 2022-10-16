@@ -1,31 +1,21 @@
 Mention of split honors
 -----------------------
 1.
-"The key cards split ace-jack-ten either way"
-OK, so that doesn't work...
-"The key cards split ace / jack-ten either way"
-
 "The key cards split A=T8 and West has doubleton or tripleton"
 A bit verbose.
 "The key cards split (A doubleton or tripleton) = T8
+"The key cards split (A with 2-3 cards) = (T8 with 2-3 cards)
 
 "The key cards split ace-king=eight and East has doubleton or tripleton"
+to
 "The key cards split ace-king = (eight doubleton or tripleton)"
 
 2.
-F0:
-The key cards split 8-AKJ either way
-Start from the higher side:
-add Completion::preferHigherActive,
-go by lowestRankActive
-Use this only in Product::setVerbalTopsOnly in the last case.
-
-3.
 
 East has exactly one honor and at most one, lower-ranked card
 ...at most doubleton
 
-4.
+3.
 "East has a doubleton chosen from the ace-king-queen"
 East has doubleton honors
 

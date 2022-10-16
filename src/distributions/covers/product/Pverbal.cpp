@@ -423,8 +423,10 @@ void Product::setVerbalTopsOnly(
   const bool flipAllowedFlag,
   VerbalCover& verbalCover) const
 {
+  const Completion& completion = verbalCover.getCompletion();
+
   const VerbalSide vsideSingle = 
-    {verbalCover.getCompletion().preferSingleActive(), symmFlag};
+    {completion.preferSingleActive(), symmFlag};
 
   if (vsideSingle.side != OPP_EITHER)
   {
@@ -432,21 +434,20 @@ void Product::setVerbalTopsOnly(
     return;
   }
 
-  const Opponent side = Product::simplerActive(
-    sumProfile, canonicalShift, verbalCover.getCompletion());
+  const VerbalSide vsideSimple = 
+    {Product::simplerActive(sumProfile, canonicalShift, completion), 
+    symmFlag};
 
-  const VerbalSide vsideSimple = {side, symmFlag};
-
-  if (flipAllowedFlag && 
-    verbalCover.getCompletion().numOptions() == 1)
+  if (flipAllowedFlag && completion.numOptions() == 1)
   {
     // The lowest cards are a single rank of x'es.
     verbalCover.fillCompletionWithLows(vsideSimple);
+    return;
   }
-  else
-  {
-    verbalCover.fillTopsBoth(vsideSimple);
-  }
+
+  const VerbalSide vsideHigh = {completion.preferHighActive(), symmFlag};
+
+  verbalCover.fillTopsBoth(vsideHigh);
 }
 
 

@@ -364,6 +364,14 @@ Opponent Completion::preferSimpleActive() const
 }
 
 
+Opponent Completion::preferHighActive() const
+{
+  // Prefer the one with the higher rank.
+  return (dataWest.highestRankActive >= dataEast.highestRankActive ?
+    OPP_WEST : OPP_EAST);
+}
+
+
 bool Completion::operator < (const Completion& comp2) const
 {
   return (dataWest.length > comp2.dataWest.length);
