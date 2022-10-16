@@ -18,21 +18,11 @@ name SENTENCE_TOPS_LENGTH
 string "%0 has %1 %2"
 
 # Example: West has AK fourth and neither of T9
-# %0: Player
-# %1: Holding
-# %2: Ordinal
-# %3: Negation indicator
-# %4: Holding
-name SENTENCE_TOPS_LENGTH_WITHOUT
-string "%0 has %1 %2 but %3 %4"
-
-# Example: West has AK and none of J9
-# %0: Player
-# %1: Holding
-# %2: Negation indicator
-# %3: Holding
-name SENTENCE_TOPS_EXCLUDING
-string "%0 has %1 and %2 %3"
+# %0: Both (two holdings)
+# %1: Player
+# %2: Length ordinal
+name SENTENCE_TOPS_BOTH_LENGTH
+string "The key cards split %0 and %1 has %2"
 
 # Example: The key cards split AK=J9
 # %0: Both (two holdings)

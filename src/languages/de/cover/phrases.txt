@@ -146,16 +146,6 @@ name TOPS_BELOW
 string " %0 unterhalb von %1"
 
 
-name EXCLUDING_NONE
-string "nicht"
-
-name EXCLUDING_NEITHER
-string "nicht"
-
-name EXCLUDING_NOT
-string "nicht"
-
-
 name BELOW_NORMAL
 string "unterhalb von"
 

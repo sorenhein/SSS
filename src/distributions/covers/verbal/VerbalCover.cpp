@@ -344,46 +344,25 @@ void VerbalCover::fillOnesided(
 }
 
 
-void VerbalCover::fillExcluding(
-  const VerbalSide& vside,
-  Phrase& phrase) const
-{
-  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-  const unsigned topsFull = completions.front().getTopsFull(sideOther);
-
-  if (topsFull <= 1)
-    phrase.setPhrase(EXCLUDING_NOT);
-  else if (topsFull == 2)
-    phrase.setPhrase(EXCLUDING_NEITHER);
-  else
-    phrase.setPhrase(EXCLUDING_NONE);
-}
-
-
-void VerbalCover::fillTwosided(
+void VerbalCover::fillTopsBothLength(
   const Profile& sumProfile,
   const VerbalSide& vside)
 {
   // length is already set.
-  VerbalCover::fillOnesided(sumProfile, vside);
+  VerbalCover::fillTopsBoth(vside);
 
-  sentence = SENTENCE_TOPS_LENGTH_WITHOUT;
-  phrases.resize(5);
+  sentence = SENTENCE_TOPS_BOTH_LENGTH;
+  phrases.resize(3);
 
-  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-  const unsigned topsFull = completions.front().getTopsFull(sideOther);
+  phrases[1].setPhrase(vside.player());
 
-  VerbalCover::fillExcluding(vside, phrases[3]);
-
-  VerbalCover::fillTopsActual(
-    (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST),
-    phrases[4]);
+  VerbalCover::fillLengthOrdinal(
+    sumProfile.length(), vside.side, phrases[2]);
 }
 
 
-void VerbalCover::fillTopsExcluding(const VerbalSide& vside)
+void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 {
-  // sentence = SENTENCE_TOPS_EXCLUDING;
   // This is an expansion with quite a lot of parameters in
   // a single Phrase.
   sentence = SENTENCE_TOPS_BOTH;

@@ -445,7 +445,7 @@ void Product::setVerbalTopsOnly(
   }
   else
   {
-    verbalCover.fillTopsExcluding(vsideSimple);
+    verbalCover.fillTopsBoth(vsideSimple);
   }
 }
 
@@ -545,7 +545,7 @@ void Product::setVerbalAnyTopsEqual(
   }
   else
   {
-    verbalCover.fillTwosided(sumProfile, 
+    verbalCover.fillTopsBothLength(sumProfile, 
       {Product::simpler(sumProfile, canonicalShift), symmFlag});
   }
 }

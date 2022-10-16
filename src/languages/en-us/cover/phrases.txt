@@ -146,16 +146,6 @@ name TOPS_BELOW
 string " %0 below %1"
 
 
-name EXCLUDING_NONE
-string "none of"
-
-name EXCLUDING_NEITHER
-string "neither of"
-
-name EXCLUDING_NOT
-string "not"
-
-
 # Example: QH=H7
 # %0: Holding
 # %1: Holding

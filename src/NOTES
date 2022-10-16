@@ -1,16 +1,16 @@
 Mention of split honors
 -----------------------
 1.
-We can no doubt do the same for SENTENCE_TOPS_LENGTH_WITHOUT
-as with SENTENCE_TOPS_BOTH.
-Then eliminate EXCLUDING_ and as a group.
+"The key cards split ace-jack-ten either way"
+OK, so that doesn't work...
+"The key cards split ace / jack-ten either way"
 
-The key cards split queen=eight and East has a doubleton or tripleton
-The key cards split Q8=A and East has a doubleton or tripleton
+"The key cards split A=T8 and West has doubleton or tripleton"
+A bit verbose.
+"The key cards split (A doubleton or tripleton) = T8
 
-vs
-
-East has the eight doubleton or tripleton but neither of QT
+"The key cards split ace-king=eight and East has doubleton or tripleton"
+"The key cards split ace-king = (eight doubleton or tripleton)"
 
 2.
 F0:

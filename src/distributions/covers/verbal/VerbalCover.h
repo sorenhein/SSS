@@ -71,10 +71,6 @@ class VerbalCover
       const Opponent side,
       Phrase& phrase);
 
-    void fillExcluding(
-      const VerbalSide& vside,
-      Phrase& phrase) const;
-
 
   public:
 
@@ -113,13 +109,13 @@ class VerbalCover
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_LENGTH_WITHOUT
-    void fillTwosided(
+    // SENTENCE_TOPS_BOTH_LENGTH
+    void fillTopsBothLength(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_EXCLUDING
-    void fillTopsExcluding(const VerbalSide& vside);
+    // SENTENCE_TOPS_BOTH
+    void fillTopsBoth(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_XES
     void fillTopsAndXes(const VerbalSide& vside);

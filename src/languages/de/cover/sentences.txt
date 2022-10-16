@@ -26,14 +26,6 @@ string "%0 hat %1 %2"
 name SENTENCE_TOPS_LENGTH_WITHOUT
 string "%0 hat %1 %2 aber %3 %4"
 
-# Example: West has AK and none of J9
-# %0: Player
-# %1: Holding
-# %2: Negation indicator
-# %3: Holding
-name SENTENCE_TOPS_EXCLUDING
-string "%0 hat %1 und %2 %3"
-
 # Example: West has AKJx(x)
 # %0: Player
 # %1: Holding
