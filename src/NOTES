@@ -11,26 +11,13 @@ This works for an honor which is always the highest opposing card.
     87 East has exactly one honor and one, lower-ranked card 
 
 
-2. "completely below"
-Can we use LENGTH_VERB? Are we already?
-fillBelow, getLengthData with abstractable == false
-
-
-singleton or doubleton
-    45 East has one-two cards completely below the jack 
-    68 East has one-two cards completely below the king 
-   111 East has one-two cards completely below the queen 
-    27 East has one-two cards completely below the ten 
-
-     ??? East has at least one card completely below the X
-     6 East is not void completely below the ten 
-   114 West is not void completely below the jack 
-   131 West is not void completely below the ten 
-
-
-3. "chosen from"
+2. "chosen from"
 "East has a doubleton chosen from the ace-king-queen"
 East has doubleton honors
+
+SENTENCE_SINGULAR_EXACT in sentences.txt:
+%0 has %1 honors
+Applies when the single rank is the highest (maybe other cases too?)
 
 
 

@@ -110,7 +110,7 @@ void VerbalCover::getLengthInsideData(
 
   if (vLower == 0)
   {
-    if (vUpper+1 == oppsLength)
+    if (vUpper+1 == oppsLength && abstractableFlag)
     {
       phrases[0].setPhrase(vside.otherPlayer());
       phrases[1].setPhrase(LENGTH_VERB_NOT_VOID);
@@ -130,10 +130,18 @@ void VerbalCover::getLengthInsideData(
   }
   else if (! abstractableFlag)
   {
-    phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(
-      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
-    phrases[1].setValues(vLower, vUpper);
+    if (vLower == 1 && vUpper == 2)
+    {
+      phrases[0].setPhrase(vside.player());
+      phrases[1].setPhrase(LENGTH_VERB_12);
+    }
+    else
+    {
+      phrases[0].setPhrase(vside.player());
+      phrases[1].setPhrase(
+        vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
+      phrases[1].setValues(vLower, vUpper);
+    }
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
