@@ -65,7 +65,6 @@ enum PhrasesEnum: unsigned
   BOTTOMS_NORMAL = 80,
 
   LIST_HOLDING_EXACT = 90,
-  LIST_HOLDING_WITH_LOWS = 91,
 
   EITHER_WAY = 100,
   ONE_WAY = 101,

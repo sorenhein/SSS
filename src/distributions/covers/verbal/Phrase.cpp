@@ -412,31 +412,6 @@ string Phrase::str(
     Phrase::replace(s, "%1", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
   }
-  else if (expansion == PHRASE_COMPLETION_SET)
-  {
-assert(false);
-    assert(Phrase::has(1, 0, 0) || Phrase::has(1, 0, 1));
-
-    if (numBools == 0)
-      Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
-    else
-      Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
-  }
-  else if (expansion == PHRASE_COMPLETION_UNSET)
-  {
-assert(false);
-    assert(Phrase::has(1, 0, 0));
-    Phrase::replace(s, "%0", completion.strUnset(ranksNames, side));
-  }
-  else if (expansion == PHRASE_COMPLETION_BOTH)
-  {
-assert(false);
-    assert(Phrase::has(1, 0, 1));
-
-    Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
-
-    Phrase::replace(s, "%1", completion.strUnset(ranksNames, side));
-  }
   else if (expansion == PHRASE_BOTH)
   {
     if (bools[1]) // expandable

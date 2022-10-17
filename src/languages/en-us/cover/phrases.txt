@@ -175,10 +175,6 @@ string "%0"
 name LIST_HOLDING_EXACT
 string "%0"
 
-# Example: KQT(x)
-name LIST_HOLDING_WITH_LOWS
-string "%0(%1)"
-
 name EITHER_WAY
 string "either way"
 
