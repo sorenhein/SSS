@@ -64,6 +64,28 @@ class Phrase
       const unsigned char field,
       unsigned char uchar) const;
 
+    string strNone(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strDigits(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strNumerical(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strOrdinal(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+
+
 
   public:
 

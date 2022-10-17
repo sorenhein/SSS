@@ -41,7 +41,9 @@ enum PhrasesEnum: unsigned
 
   COUNT_EXACT = 40,
   COUNT_ATMOST = 41,
-  COUNT_RANGE = 42,
+  COUNT_ATLEAST = 42,
+  COUNT_RANGE = 43,
+  COUNT_OR = 44,
 
   TOPS_ATMOST = 50,
   TOPS_ATLEAST = 51,

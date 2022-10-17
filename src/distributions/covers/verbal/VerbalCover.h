@@ -98,6 +98,12 @@ class VerbalCover
       const bool symmFlag);
 
     // SENTENCE_ONETOP
+    void fillOnetopOnlyOld(
+      const Term& top,
+      const unsigned char oppsSize,
+      const unsigned char onetopIndex,
+      const VerbalSide& vside);
+
     void fillOnetopOnly(
       const Term& top,
       const unsigned char oppsSize,

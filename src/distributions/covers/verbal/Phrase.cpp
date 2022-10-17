@@ -25,6 +25,23 @@
 extern Dictionary dictionary;
 
 
+// Methods for each phrase type.
+
+
+typedef string (Phrase::*PhraseMethod)(
+  const string& text,
+  const RanksNames& ranksNames,
+  const Completion& completion) const;
+
+static const vector<PhraseMethod> phraseMethods =
+{
+  &Phrase::strNone,            // PHRASE_NONE
+  &Phrase::strDigits,          // PHRASE_DIGIT
+  &Phrase::strNumerical,       // PHRASE_NUMERICAL
+  &Phrase::strOrdinal          // PHRASE_ORDINAL
+};
+
+
 Phrase::Phrase()
 {
   numOpp = 0;
@@ -156,6 +173,60 @@ void Phrase::replace(
 }
 
 
+string Phrase::strNone(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 0, 0));
+  return text;
+}
+
+
+string Phrase::strDigits(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+
+  string s = text;
+  for (unsigned char field = 0; field < numUchars; field++)
+    Phrase::replace(s, field, uchars[field]);
+  return s;
+}
+
+
+string Phrase::strNumerical(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+
+  string s = text;
+  for (unsigned char field = 0; field < numUchars; field++)
+    Phrase::replace(s, field, 
+      dictionary.numerals.get(uchars[field]).text);
+  return s;
+}
+
+
+string Phrase::strOrdinal(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+
+  string s = text;
+  for (unsigned char field = 0; field < numUchars; field++)
+    Phrase::replace(s, field, 
+      dictionary.ordinals.get(uchars[field]).text);
+  return s;
+}
+
+
 string Phrase::str(
   const PhraseExpansion expansion,
   const string& text,
@@ -167,6 +238,8 @@ string Phrase::str(
   if (expansion == PHRASE_NONE)
   {
     assert(Phrase::has(0, 0, 0));
+
+    // return Phrase::strNone(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_DIGITS)
   {
@@ -174,6 +247,8 @@ string Phrase::str(
 
     for (unsigned char field = 0; field < numUchars; field++)
       Phrase::replace(s, field, uchars[field]);
+    
+    // return Phrase::strDigits(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_NUMERICAL)
   {
@@ -182,6 +257,8 @@ string Phrase::str(
     for (unsigned char field = 0; field < numUchars; field++)
       Phrase::replace(s, field, 
         dictionary.numerals.get(uchars[field]).text);
+
+    // return Phrase::strNumerical(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_ORDINAL)
   {
@@ -190,6 +267,8 @@ string Phrase::str(
     for (unsigned char field = 0; field < numUchars; field++)
       Phrase::replace(s, field, 
         dictionary.ordinals.get(uchars[field]).text);
+
+    // return Phrase::strOrdinal(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_RANKS)
   {
@@ -214,6 +293,7 @@ string Phrase::str(
   }
   else if (expansion == PHRASE_ADJACENT)
   {
+    // TODO Call is PHRASE_COMPONENT_DEF_OF
     // Dative.
     assert(Phrase::has(0, 3, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);

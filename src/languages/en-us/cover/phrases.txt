@@ -86,9 +86,17 @@ string "%0"
 name COUNT_ATMOST
 string "at most %0"
 
+# Example: at least two
+name COUNT_ATLEAST
+string "at least %0"
+
 # Example: 2-3
 name COUNT_RANGE
 string "%0-%1"
+
+# Example: one or two 
+name COUNT_OR
+string "%0 or %1"
 
 
 # Example: At most two of QJT
@@ -104,9 +112,8 @@ name TOPS_ATLEAST
 string "at least %0 %1"
 
 # Example: one or two of QJT
-# %0: Number
-# %1: Number
-# %2: Holding ("of")
+# %0: Holding ("of")
+# TODO Probably no longer needed ---------------------
 name TOPS_ADJACENT
 string "%0 or %1 %2"
 

@@ -212,13 +212,13 @@ void VerbalCover::fillLengthOnly(
 }
 
 
-void VerbalCover::fillOnetopOnly(
+void VerbalCover::fillOnetopOnlyOld(
   const Term& top,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_ONETOP_ONLY;
+  sentence = SENTENCE_COUNT_ONETOP;
 
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
@@ -250,12 +250,70 @@ void VerbalCover::fillOnetopOnly(
   {
     phrases.resize(3);
 
+    phrases[1].setPhrase(COUNT_OR);
+    phrases[1].setValues(vLower, vUpper, onetopIndex);
+  }
+}
+
+
+void VerbalCover::fillOnetopOnly(
+  const Term& top,
+  const unsigned char oppsSize,
+  const unsigned char onetopIndex,
+  const VerbalSide& vside)
+{
+  sentence = SENTENCE_COUNT_ONETOP;
+
+  unsigned char vLower, vUpper;
+  top.range(oppsSize, vside.side, vLower, vUpper);
+
+  // Here lower and upper are different.
+  phrases.resize(3);
+
+  if (vLower + vUpper == oppsSize)
+    phrases[0].setPhrase(PLAYER_EACH);
+  else
+    phrases[0].setPhrase(vside.player());
+
+  if (vLower == 0)
+  {
+    phrases[1].setPhrase(COUNT_ATMOST);
+    phrases[1].setValues(vUpper);
+
+    phrases[2].setPhrase(TOPS_RANGE);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vUpper > 1);
+  }
+  else if (vUpper == oppsSize)
+  {
+    phrases[1].setPhrase(COUNT_ATLEAST);
+    phrases[1].setValues(vLower);
+
+    phrases[2].setPhrase(TOPS_RANGE);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vLower > 1);
+  }
+  else if (vLower+1 == vUpper)
+  {
+    // phrases.resize(3);
+
+    phrases[1].setPhrase(COUNT_OR);
+    phrases[1].setValues(vLower, vUpper);
+
+    phrases[2].setPhrase(TOPS_RANGE);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vUpper > 1);
+  }
+  else
+  {
+    // phrases.resize(3);
+
     phrases[1].setPhrase(DIGITS_RANGE);
     phrases[1].setValues(vLower, vUpper);
 
     phrases[2].setPhrase(TOPS_RANGE);
     phrases[2].setValues(onetopIndex);
-    phrases[2].setBools(vLower > 1);
+    phrases[2].setBools(vUpper > 1);
   }
 }
 
@@ -301,7 +359,7 @@ void VerbalCover::fillOnetopLength(
   VerbalCover::setLength(lengthIn);
 
   // Fill templateFills positions 0 and 1.
-  VerbalCover::fillOnetopOnly(
+  VerbalCover::fillOnetopOnlyOld(
     top, sumProfile[onetopIndex], onetopIndex, vside);
 
   sentence = SENTENCE_TOPS_LENGTH;

@@ -6,9 +6,17 @@ string "%0 %1"
 
 # Example: West has the king
 # %0: Player
-# %1: Top
+# %1: Count
+# %2: Top
 name SENTENCE_ONETOP_ONLY
 string "%0 has %1"
+
+# Example: West has the king
+# %0: Player
+# %1: Count
+# %2: Top
+name SENTENCE_COUNT_ONETOP
+string "%0 has %1 %2"
 
 # Example: West has AK fourth
 # %0: Player
