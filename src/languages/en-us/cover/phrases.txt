@@ -143,8 +143,21 @@ string "%0 / %1 either way"
 # %0: Holding
 # %1: Numeral
 # %2: Numeral
-name BOTH_ONE_PLAYER_LENGTH
-string "%0 with %1-%2 cards"
+name BOTH_ONE_PLAYER_INDEF_LENGTH
+string "%0"
+
+# Example: ace-king with 2-3 cards
+# %0: Holding
+# %1: Numeral
+# %2: Numeral
+name BOTH_ONE_PLAYER_SET_LENGTH
+string "%0"
+
+name ONE_PLAYER_SET
+string "%0"
+
+name ONE_PLAYER_UNSET
+string "%0"
 
 name BELOW_NORMAL
 string "below"

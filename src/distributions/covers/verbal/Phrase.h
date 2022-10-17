@@ -119,8 +119,15 @@ class Phrase
       const RanksNames& ranksNames,
       const Completion& completion) const;
 
+    string strCompletionSet(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
 
-
+    string strCompletionUnset(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
 
     string strXes(
       const string& text,

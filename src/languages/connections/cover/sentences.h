@@ -28,7 +28,8 @@ enum SentencesEnum: unsigned
   SENTENCE_SINGULAR_EXACT = 11,
   SENTENCE_HONORS_ORDINAL = 12,
   SENTENCE_LIST = 13,
-  SENTENCE_SIZE = 14
+  SENTENCE_SET_UNSET = 14,
+  SENTENCE_SIZE = 15
 };
 
 enum SentencesGroup: unsigned

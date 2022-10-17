@@ -46,8 +46,9 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strIndefiniteRank,  // PHRASE_INDEFINITE_RANK
   &Phrase::strDefiniteRank,    // PHRASE_DEFINITE_RANK
   &Phrase::strOfDefiniteRank,  // PHRASE_OF_DEFINITE_RANK
-
-  &Phrase::strXes,             // PHRASE_XES
+  &Phrase::strCompletionSet,   // PHRASE_COMPLETION_SET
+  &Phrase::strCompletionUnset, // PHRASE_COMPLETION_UNSET
+  &Phrase::strXes              // PHRASE_XES
 };
 
 
@@ -333,6 +334,35 @@ string Phrase::strOfDefiniteRank(
 }
 
 
+string Phrase::strCompletionSet(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  const Completion& completion) const
+{
+  assert(Phrase::has(1, 0, 0) || Phrase::has(1, 0, 1));
+
+  string s = text;
+  if (numBools == 0)
+    Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
+  else
+    Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
+  return s;
+}
+
+
+string Phrase::strCompletionUnset(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  const Completion& completion) const
+{
+  assert(Phrase::has(1, 0, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", completion.strUnset(ranksNames, side));
+  return s;
+}
+
+
 // -----
 
 string Phrase::strXes(
@@ -367,7 +397,8 @@ string Phrase::str(
       expansion == PHRASE_INDEFINITE_RANK ||
       expansion == PHRASE_DEFINITE_RANK ||
       expansion == PHRASE_OF_DEFINITE_RANK ||
-
+      expansion == PHRASE_COMPLETION_SET ||
+      expansion == PHRASE_COMPLETION_UNSET ||
       expansion == PHRASE_XES)
   {
     return (this->*(phraseMethods[expansion]))
@@ -383,6 +414,7 @@ string Phrase::str(
   }
   else if (expansion == PHRASE_COMPLETION_SET)
   {
+assert(false);
     assert(Phrase::has(1, 0, 0) || Phrase::has(1, 0, 1));
 
     if (numBools == 0)
@@ -390,8 +422,15 @@ string Phrase::str(
     else
       Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
   }
+  else if (expansion == PHRASE_COMPLETION_UNSET)
+  {
+assert(false);
+    assert(Phrase::has(1, 0, 0));
+    Phrase::replace(s, "%0", completion.strUnset(ranksNames, side));
+  }
   else if (expansion == PHRASE_COMPLETION_BOTH)
   {
+assert(false);
     assert(Phrase::has(1, 0, 1));
 
     Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
@@ -425,29 +464,6 @@ string Phrase::str(
       // Always state West first.
       Phrase::replace(s, "%0", completion.strSet(ranksNames, OPP_WEST));
       Phrase::replace(s, "%1", completion.strSet(ranksNames, OPP_EAST));
-    }
-  }
-  else if (expansion == PHRASE_BOTH_ENTRY)
-  {
-    if (bools[0]) // expandable)
-    {
-      assert(Phrase::has(0, 3, 1));
-
-      Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
-        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
-
-      Phrase::replace(s, "%1", to_string(+uchars[1]));
-      Phrase::replace(s, "%2", to_string(+uchars[2]));
-    }
-    else
-    {
-      // Symmetry is handled elsewhere.
-      assert(Phrase::has(1, 2, 1));
-
-      Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
-
-      Phrase::replace(s, "%1", to_string(+uchars[0]));
-      Phrase::replace(s, "%2", to_string(+uchars[1]));
     }
   }
   else

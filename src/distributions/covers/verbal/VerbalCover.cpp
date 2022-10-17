@@ -436,30 +436,28 @@ void VerbalCover::fillTopsBothLength(
   // length is already set.
   sentence = SENTENCE_TOPS_BOTH_LENGTH;
 
-  phrases.resize(3);
+  phrases.resize(5);
 
   const Completion& completion = completions.front();
   const bool bothExpandableFlag =
     completion.expandable(OPP_WEST) &&
     completion.expandable(OPP_EAST);
 
-  phrases[0].setPhrase(BOTH_ONE_PLAYER_LENGTH);
-  phrases[0].setBools(bothExpandableFlag);
-
-  phrases[1].setPhrase(BOTH_ONE_PLAYER_LENGTH);
-  phrases[1].setBools(bothExpandableFlag);
-
   const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (bothExpandableFlag)
   {
-    phrases[0].setValues(
-      completion.getLowestRankActive(vside.side),
-      length.lower(),
-      length.upper());
+    phrases[0].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[0].setValues(completion.getLowestRankActive(vside.side));
 
-    phrases[1].setValues(
-      completion.getLowestRankActive(sideOther),
+    phrases[1].setPhrase(DIGITS_RANGE);
+    phrases[1].setValues(length.lower(), length.upper());
+
+    phrases[2].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[2].setValues(completion.getLowestRankActive(sideOther));
+
+    phrases[3].setPhrase(DIGITS_RANGE);
+    phrases[3].setValues( 
       sumProfile.length() - length.upper(),
       sumProfile.length() - length.lower());
   }
@@ -480,19 +478,25 @@ void VerbalCover::fillTopsBothLength(
     unsigned char vLower, vUpper;
     length.range(sumProfile.length(), side1, vLower, vUpper);
 
+    phrases[0].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
     phrases[0].setSide(side1);
-    phrases[0].setValues(vLower, vUpper);
+
+    phrases[1].setPhrase(DIGITS_RANGE);
+    phrases[1].setValues(vLower, vUpper);
 
     length.range(sumProfile.length(), side2, vLower, vUpper);
 
-    phrases[1].setSide(side2);
-    phrases[1].setValues(vLower, vUpper);
+    phrases[2].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[2].setSide(side2);
+
+    phrases[3].setPhrase(DIGITS_RANGE);
+    phrases[3].setValues(vLower, vUpper);
   }
 
   if (vside.symmFlag)
-    phrases[2].setPhrase(EITHER_WAY);
+    phrases[4].setPhrase(EITHER_WAY);
   else
-    phrases[2].setPhrase(ONE_WAY);
+    phrases[4].setPhrase(ONE_WAY);
 }
 
 
@@ -755,15 +759,18 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
 void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 {
-  sentence = SENTENCE_LIST;
+  sentence = SENTENCE_SET_UNSET;
 
-  phrases.resize(2);
+  phrases.resize(3);
 
   phrases[0].setPhrase(vside.player());
 
-  phrases[1].setPhrase(LIST_HOLDING_WITH_LOWS);
+  phrases[1].setPhrase(ONE_PLAYER_SET);
   phrases[1].setSide(vside.side);
   phrases[1].setBools(false);
+
+  phrases[2].setPhrase(ONE_PLAYER_UNSET);
+  phrases[2].setSide(vside.side);
 }
 
 
