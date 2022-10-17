@@ -692,18 +692,6 @@ void VerbalCover::fillSingular(
   else if (completion.highRanked(side))
   {
     VerbalCover::fillHonorsOrdinal(sumProfile.length(), vside);
-
-    /*
-    sentence = SENTENCE_HONORS_ORDINAL;
-
-    phrases[0].setPhrase(vside.player());
-
-    VerbalCover::fillHonorsEqual(
-      completion.getTopsUsed(side), phrases[1]);
-
-    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
-    phrases[2].setValues(lenCompletion);
-    */
   }
   else
   {

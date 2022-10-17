@@ -237,36 +237,44 @@ string Phrase::str(
 
   if (expansion == PHRASE_NONE)
   {
-    assert(Phrase::has(0, 0, 0));
+    return (this->*(phraseMethods[expansion]))
+      (text, ranksNames, completion);
+    // assert(Phrase::has(0, 0, 0));
 
     // return Phrase::strNone(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_DIGITS)
   {
-    assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+    return (this->*(phraseMethods[expansion]))
+      (text, ranksNames, completion);
+    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
-    for (unsigned char field = 0; field < numUchars; field++)
-      Phrase::replace(s, field, uchars[field]);
+    // for (unsigned char field = 0; field < numUchars; field++)
+      // Phrase::replace(s, field, uchars[field]);
     
     // return Phrase::strDigits(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_NUMERICAL)
   {
-    assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+    return (this->*(phraseMethods[expansion]))
+      (text, ranksNames, completion);
+    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
-    for (unsigned char field = 0; field < numUchars; field++)
-      Phrase::replace(s, field, 
-        dictionary.numerals.get(uchars[field]).text);
+    // for (unsigned char field = 0; field < numUchars; field++)
+      // Phrase::replace(s, field, 
+        // dictionary.numerals.get(uchars[field]).text);
 
     // return Phrase::strNumerical(text, ranksNames, completion);
   }
   else if (expansion == PHRASE_ORDINAL)
   {
-    assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+    return (this->*(phraseMethods[expansion]))
+      (text, ranksNames, completion);
+    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
-    for (unsigned char field = 0; field < numUchars; field++)
-      Phrase::replace(s, field, 
-        dictionary.ordinals.get(uchars[field]).text);
+    // for (unsigned char field = 0; field < numUchars; field++)
+      // Phrase::replace(s, field, 
+        // dictionary.ordinals.get(uchars[field]).text);
 
     // return Phrase::strOrdinal(text, ranksNames, completion);
   }
@@ -305,8 +313,6 @@ string Phrase::str(
   {
     // Dative.
     assert(Phrase::has(0, 1, 1));
-    // Phrase::replace(s, "%0", uchars[0]);
-    // Phrase::replace(s, "%1", uchars[1]);
     Phrase::replace(s, "%0", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
   }
