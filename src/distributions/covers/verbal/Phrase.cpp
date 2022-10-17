@@ -167,38 +167,40 @@ string Phrase::str(
   if (expansion == PHRASE_NONE)
   {
     assert(Phrase::has(0, 0, 0));
-    return s;
+  }
+  else if (expansion == PHRASE_DIGITS)
+  {
+    assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
+
+    for (unsigned char field = 0; field < numUchars; field++)
+      Phrase::replace(s, field, uchars[field]);
   }
   else if (expansion == PHRASE_NUMERICAL)
   {
     assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
     for (unsigned char field = 0; field < numUchars; field++)
-      Phrase::replace(s, field, dictionary.numerals.get(uchars[field]).text);
-
-    return s;
+      Phrase::replace(s, field, 
+        dictionary.numerals.get(uchars[field]).text);
   }
   else if (expansion == PHRASE_ORDINAL)
   {
     assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
     for (unsigned char field = 0; field < numUchars; field++)
-      Phrase::replace(s, field, dictionary.ordinals.get(uchars[field]).text);
-
-    return s;
+      Phrase::replace(s, field, 
+        dictionary.ordinals.get(uchars[field]).text);
   }
   else if (expansion == PHRASE_RANKS)
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
-    return s;
   }
   else if (expansion == PHRASE_TEXT_LOWER)
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", dictionary.words.get(
       uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
-    return s;
   }
   else if (expansion == PHRASE_TEXT_BELOW)
   {
@@ -209,7 +211,6 @@ string Phrase::str(
     Phrase::replace(s, "%0", dictionary.words.get(
       uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
     Phrase::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
-    return s;
   }
   else if (expansion == PHRASE_ADJACENT)
   {
@@ -219,17 +220,15 @@ string Phrase::str(
     Phrase::replace(s, "%1", dictionary.numerals.get(uchars[1]).text);
     Phrase::replace(s, "%2", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[2], uchars[1] > 1));
-    return s;
   }
   else if (expansion == PHRASE_RANGE_OF)
   {
     // Dative.
-    assert(Phrase::has(0, 3, 0));
-    Phrase::replace(s, "%0", uchars[0]);
-    Phrase::replace(s, "%1", uchars[1]);
-    Phrase::replace(s, "%2", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[2], uchars[1] > 1));
-    return s;
+    assert(Phrase::has(0, 1, 1));
+    // Phrase::replace(s, "%0", uchars[0]);
+    // Phrase::replace(s, "%1", uchars[1]);
+    Phrase::replace(s, "%0", ranksNames.strComponent(
+      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
   }
   else if (expansion == PHRASE_SOME_OF)
   {
@@ -238,7 +237,6 @@ string Phrase::str(
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
-    return s;
   }
   else if (expansion == PHRASE_SOME_RANK_SET)
   {
@@ -246,14 +244,12 @@ string Phrase::str(
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
-    return s;
   }
   else if (expansion == PHRASE_FULL_RANK_SET)
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
       strComponent(RANKNAME_ACTUAL_FULL_DEF));
-    return s;
   }
   else if (expansion == PHRASE_COMPLETION_SET)
   {
@@ -263,8 +259,6 @@ string Phrase::str(
       Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
     else
       Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
-
-    return s;
   }
   else if (expansion == PHRASE_COMPLETION_BOTH)
   {
@@ -273,8 +267,6 @@ string Phrase::str(
     Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
 
     Phrase::replace(s, "%1", completion.strUnset(ranksNames, side));
-
-    return s;
   }
   else if (expansion == PHRASE_BOTH)
   {
@@ -304,8 +296,6 @@ string Phrase::str(
       Phrase::replace(s, "%0", completion.strSet(ranksNames, OPP_WEST));
       Phrase::replace(s, "%1", completion.strSet(ranksNames, OPP_EAST));
     }
-
-    return s;
   }
   else if (expansion == PHRASE_BOTH_ENTRY)
   {
@@ -329,8 +319,6 @@ string Phrase::str(
       Phrase::replace(s, "%1", to_string(+uchars[0]));
       Phrase::replace(s, "%2", to_string(+uchars[1]));
     }
-
-    return s;
   }
   else if (expansion == PHRASE_HONORS)
   {
@@ -349,18 +337,16 @@ string Phrase::str(
       Phrase::replace(s, "%0", dictionary.ordinals.get(uchars[0]).text);
       Phrase::replace(s, "%1", dictionary.ordinals.get(uchars[1]).text);
     }
-
-    return s;
   }
   else if (expansion == PHRASE_COMPLETION_XES)
   {
     assert(Phrase::has(1, 0, 0));
     Phrase::replace(s, "%0", completion.strXes(side));
-    return s;
   }
   else
   {
     assert(false);
-    return "";
   }
+
+  return s;
 }

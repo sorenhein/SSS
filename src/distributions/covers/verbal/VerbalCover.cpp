@@ -248,8 +248,14 @@ void VerbalCover::fillOnetopOnly(
   }
   else
   {
-    phrases[1].setPhrase(TOPS_RANGE);
-    phrases[1].setValues(vLower, vUpper, onetopIndex);
+    phrases.resize(3);
+
+    phrases[1].setPhrase(DIGITS_RANGE);
+    phrases[1].setValues(vLower, vUpper);
+
+    phrases[2].setPhrase(TOPS_RANGE);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vLower > 1);
   }
 }
 

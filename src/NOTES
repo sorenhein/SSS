@@ -1,16 +1,38 @@
 Mention of split honors
 -----------------------
 
-1.
-"The key cards split (7 with 0-3 cards) = (Q9 with 3-6 cards)"
-up to 3 cards, at least 3 cards ?
+0.
+Put the groups of sentences and phrases into the .txt files.
+Then they come out of Dictionary.cpp and Expand.cpp.
+We just need the map from their string names to their internal numbers.
+
+1. 
+Order and comments of Phrase
+- Phrases without if-then
+- Dereference by function pointer?
+
+2. Order and comments of VerbalCover
+
+3.
+When both sides in play, () = ():
+3-3: tripleton
+2-2: doubleton
+x-x: ordinal in general
+
+Range 2-3:
+with x-y cards
+with at most
+with at least
+
+Needs a new group,  GROUP_PHRASES_WITH
+LENGTH_WITH_EXACT, expands to PHRASE_ORDINAL, no "with", just "%0"
+LENGTH_WITH_RANGE, expands to PHRASE_NUMERICAL, "%0-%1 cards"
+LENGTH_WITH_ATMOST, expands to PHRASE_NUMERICAL, "with at most %0 cards"
+LENGTH_WITH_ATLEAST, expands to PHRASE_NUMERICAL, "with at least %0 cards"
 
 2. "East has a doubleton chosen from the eight-seven-six"
 East has two of eight-seven-six doubleton ?
 
-3. Order and comments of VerbalCover, Phrase
-- Phrases without if-then
-- Dereference by function pointer?
 
 4. "chosen from"
 add mid-honors

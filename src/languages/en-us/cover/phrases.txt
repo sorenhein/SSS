@@ -111,11 +111,9 @@ name TOPS_ADJACENT
 string "%0 or %1 %2"
 
 # Example: 1-2 of QJT
-# %0: Number
-# %1: Number
 # %2: Holding ("of")
 name TOPS_RANGE
-string "%0-%1 %2"
+string "%0"
 
 # Example: KQ
 name TOPS_ACTUAL
@@ -203,3 +201,8 @@ string "one or two honors"
 
 name HONORS_RANGE
 string "%0-%1 honors"
+
+
+# Example: 1-2
+name DIGITS_RANGE
+string "%0-%1"
