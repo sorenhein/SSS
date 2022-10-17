@@ -592,7 +592,8 @@ void VerbalCover::fillTopsAndLower(
   if (completion.lowestRankIsUsed(vside.side))
   {
     phrases[3].setPhrase(TOPS_LOWER);
-    phrases[3].setValues(freeUpper);
+    phrases[3].setBools(freeUpper > 1);
+    // phrases[3].setValues(freeUpper);
   }
   else
   {

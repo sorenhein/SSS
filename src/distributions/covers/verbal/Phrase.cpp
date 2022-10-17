@@ -39,7 +39,10 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strDigits,          // PHRASE_DIGIT
   &Phrase::strNumerical,       // PHRASE_NUMERICAL
   &Phrase::strOrdinal,         // PHRASE_ORDINAL
-  &Phrase::strCardsWord        // PHRASE_CARDS
+  &Phrase::strCardsWord,       // PHRASE_CARDS_WORD
+  &Phrase::strHonorsWord,      // PHRASE_HONORS_WORD
+  &Phrase::strMidHonorsWord,   // PHRASE_MID_HONORS_WORD
+  &Phrase::strLowestCard       // PHRASE_LOWEST_CARD
 };
 
 
@@ -233,11 +236,52 @@ string Phrase::strCardsWord(
   [[maybe_unused]] const RanksNames& ranksNames,
   [[maybe_unused]] const Completion& completion) const
 {
-  assert(Phrase::has(0, 1, 0));
+  assert(Phrase::has(0, 0, 1));
 
   string s = text;
   Phrase::replace(s, "%0", dictionary.words.get(
-    uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
+    bools[0] == 0 ? WORDS_CARD : WORDS_CARDS).text);
+  return s;
+}
+
+
+string Phrase::strHonorsWord(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 0, 1));
+
+  string s = text;
+  Phrase::replace(s, "%0", dictionary.words.get(
+    bools[0] == 0 ? WORDS_HONOR : WORDS_HONORS).text);
+  return s;
+}
+
+
+string Phrase::strMidHonorsWord(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 0, 1));
+
+  string s = text;
+  Phrase::replace(s, "%0", dictionary.words.get(
+    bools[0] == 0 ? WORDS_MID_HONOR : WORDS_MID_HONORS).text);
+  return s;
+}
+
+
+string Phrase::strLowestCard(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
   return s;
 }
 
@@ -254,17 +298,22 @@ string Phrase::str(
       expansion == PHRASE_DIGITS ||
       expansion == PHRASE_NUMERICAL ||
       expansion == PHRASE_ORDINAL ||
-      expansion == PHRASE_CARDS)
+      expansion == PHRASE_CARDS_WORD ||
+      expansion == PHRASE_HONORS_WORD ||
+      expansion == PHRASE_MID_HONORS_WORD ||
+      expansion == PHRASE_LOWEST_CARD)
   {
     return (this->*(phraseMethods[expansion]))
       (text, ranksNames, completion);
   }
 
+  /*
   else if (expansion == PHRASE_RANKS)
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
   }
+  */
   else if (expansion == PHRASE_TEXT_BELOW)
   {
     // If we permit full card names here, they should be in dative

@@ -89,6 +89,21 @@ class Phrase
       const RanksNames& ranksNames,
       const Completion& completion) const;
 
+    string strHonorsWord(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strMidHonorsWord(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strLowestCard(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
 
 
 
