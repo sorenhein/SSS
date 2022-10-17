@@ -38,7 +38,8 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strNone,            // PHRASE_NONE
   &Phrase::strDigits,          // PHRASE_DIGIT
   &Phrase::strNumerical,       // PHRASE_NUMERICAL
-  &Phrase::strOrdinal          // PHRASE_ORDINAL
+  &Phrase::strOrdinal,         // PHRASE_ORDINAL
+  &Phrase::strCardsWord        // PHRASE_CARDS
 };
 
 
@@ -227,6 +228,20 @@ string Phrase::strOrdinal(
 }
 
 
+string Phrase::strCardsWord(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", dictionary.words.get(
+    uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
+  return s;
+}
+
+
 string Phrase::str(
   const PhraseExpansion expansion,
   const string& text,
@@ -235,59 +250,20 @@ string Phrase::str(
 {
   string s = text;
 
-  if (expansion == PHRASE_NONE)
+  if (expansion == PHRASE_NONE ||
+      expansion == PHRASE_DIGITS ||
+      expansion == PHRASE_NUMERICAL ||
+      expansion == PHRASE_ORDINAL ||
+      expansion == PHRASE_CARDS)
   {
     return (this->*(phraseMethods[expansion]))
       (text, ranksNames, completion);
-    // assert(Phrase::has(0, 0, 0));
-
-    // return Phrase::strNone(text, ranksNames, completion);
   }
-  else if (expansion == PHRASE_DIGITS)
-  {
-    return (this->*(phraseMethods[expansion]))
-      (text, ranksNames, completion);
-    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
-    // for (unsigned char field = 0; field < numUchars; field++)
-      // Phrase::replace(s, field, uchars[field]);
-    
-    // return Phrase::strDigits(text, ranksNames, completion);
-  }
-  else if (expansion == PHRASE_NUMERICAL)
-  {
-    return (this->*(phraseMethods[expansion]))
-      (text, ranksNames, completion);
-    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
-
-    // for (unsigned char field = 0; field < numUchars; field++)
-      // Phrase::replace(s, field, 
-        // dictionary.numerals.get(uchars[field]).text);
-
-    // return Phrase::strNumerical(text, ranksNames, completion);
-  }
-  else if (expansion == PHRASE_ORDINAL)
-  {
-    return (this->*(phraseMethods[expansion]))
-      (text, ranksNames, completion);
-    // assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
-
-    // for (unsigned char field = 0; field < numUchars; field++)
-      // Phrase::replace(s, field, 
-        // dictionary.ordinals.get(uchars[field]).text);
-
-    // return Phrase::strOrdinal(text, ranksNames, completion);
-  }
   else if (expansion == PHRASE_RANKS)
   {
     assert(Phrase::has(0, 1, 0));
     Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
-  }
-  else if (expansion == PHRASE_TEXT_LOWER)
-  {
-    assert(Phrase::has(0, 1, 0));
-    Phrase::replace(s, "%0", dictionary.words.get(
-      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
   }
   else if (expansion == PHRASE_TEXT_BELOW)
   {
