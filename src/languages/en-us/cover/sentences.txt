@@ -40,10 +40,15 @@ string "%0 has %1 %2 %3"
 name SENTENCE_TOPS_BOTH_LENGTH
 string "The key cards split (%0 with %1 cards) = (%2 with %3 cards) %4"
 
-# Example: The key cards split AK=J9
+# Example: The key cards split AK / J9 either way
 # %0: Both (two holdings)
-name SENTENCE_TOPS_BOTH
-string "The key cards split %0"
+name SENTENCE_TOPS_BOTH_SYMM
+string "The key cards split %0 / %1 either way"
+
+# Example: The key cards split AK = J9
+# %0: Both (two holdings)
+name SENTENCE_TOPS_BOTH_NOT_SYMM
+string "The key cards split %0 = %1"
 
 # Example: West has AKJx(x)
 # %0: Player

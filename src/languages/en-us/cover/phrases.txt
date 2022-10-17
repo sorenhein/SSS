@@ -127,18 +127,6 @@ name TOPS_LOWER
 string "%0"
 
 
-# Example: QH=H7
-# %0: Holding
-# %1: Holding
-name BOTH_ONE_PLAYER
-string "%0 = %1"
-
-# Example: QH=H7
-# %0: Holding
-# %1: Holding
-name BOTH_EITHER_PLAYER
-string "%0 / %1 either way"
-
 # Example: ace-king with 2-3 cards
 # %0: Holding
 # %1: Numeral

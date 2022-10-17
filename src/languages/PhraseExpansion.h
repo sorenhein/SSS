@@ -31,7 +31,6 @@ enum PhraseExpansion: unsigned
   PHRASE_XES = 13,
 
   PHRASE_SOME_RANK_SET = 15,
-  PHRASE_BOTH = 20,
 
 
   PHRASE_SIZE = 25

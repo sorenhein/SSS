@@ -412,35 +412,6 @@ string Phrase::str(
     Phrase::replace(s, "%1", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
   }
-  else if (expansion == PHRASE_BOTH)
-  {
-    if (bools[1]) // expandable
-    {
-      assert(Phrase::has(0, 2, 2));
-
-      Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
-        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
-      Phrase::replace(s, "%1", ranksNames.getOpponents(uchars[1]).
-        strComponent(RANKNAME_ACTUAL_FULL_INDEF));
-    }
-    else if (bools[0]) // symmFlag
-    {
-      assert(Phrase::has(1, 0, 2));
-
-      const Opponent sideOther = 
-        (side == OPP_WEST ? OPP_EAST : OPP_WEST);
-      Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
-      Phrase::replace(s, "%1", completion.strSet(ranksNames, sideOther));
-    }
-    else // Asymmetric
-    {
-      assert(Phrase::has(0, 0, 2));
-
-      // Always state West first.
-      Phrase::replace(s, "%0", completion.strSet(ranksNames, OPP_WEST));
-      Phrase::replace(s, "%1", completion.strSet(ranksNames, OPP_EAST));
-    }
-  }
   else
   {
     assert(false);

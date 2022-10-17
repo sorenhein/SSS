@@ -504,46 +504,46 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 {
   // This is an expansion with quite a lot of parameters in
   // a single Phrase.
-  sentence = SENTENCE_TOPS_BOTH;
-
-  phrases.resize(1);
 
   const Completion& completion = completions.front();
   const bool bothExpandableFlag =
     completion.expandable(OPP_WEST) &&
     completion.expandable(OPP_EAST);
 
+  phrases.resize(2);
+
+  Opponent side1, side2;
+  if (vside.symmFlag)
+  {
+    sentence = SENTENCE_TOPS_BOTH_SYMM;
+
+    side1 = vside.side;
+    side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
+  }
+  else
+  {
+    sentence = SENTENCE_TOPS_BOTH_NOT_SYMM;
+
+    side1 = OPP_WEST;
+    side2 = OPP_EAST;
+  }
+
   if (bothExpandableFlag)
   {
-    // Needed to expand the two sides.
-    Opponent side1, side2;
-    if (vside.symmFlag)
-    {
-      side1 = vside.side;
-      side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
-    }
-    else
-    {
-      side1 = OPP_WEST;
-      side2 = OPP_EAST;
-    }
+    phrases[0].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[0].setValues(completion.getLowestRankActive(side1));
 
-    phrases[0].setValues(
-      completion.getLowestRankActive(side1),
-      completion.getLowestRankActive(side2));
+    phrases[1].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[1].setValues(completion.getLowestRankActive(side2));
   }
-  else if (vside.symmFlag)
-  {
-    // Needed to know which side to state first.
-    phrases[0].setSide(vside.side);
-  }
-
-  phrases[0].setBools(vside.symmFlag, bothExpandableFlag);
-
-  if (vside.symmFlag)
-    phrases[0].setPhrase(BOTH_EITHER_PLAYER);
   else
-    phrases[0].setPhrase(BOTH_ONE_PLAYER);
+  {
+    phrases[0].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[0].setSide(side1);
+
+    phrases[1].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[1].setSide(side2);
+  }
 }
 
 
