@@ -75,6 +75,10 @@ class VerbalCover
       const unsigned char numHonors,
       Phrase& phrase) const;
 
+    void fillHonorsOrdinal(
+      const unsigned char oppsLength,
+      const VerbalSide& vside);
+
 
   public:
 
@@ -126,6 +130,7 @@ class VerbalCover
 
     // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLower(
+      const Profile& sumProfile,
       const VerbalSide& vside,
       const unsigned char numOptions);
 
@@ -137,6 +142,7 @@ class VerbalCover
 
     // SENTENCE_TOPS_LENGTH
     void fillSingular(
+      const Profile& sumProfile,
       const unsigned char lenCompletion,
       const VerbalSide& vside);
 

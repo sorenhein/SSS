@@ -500,7 +500,9 @@ void Product::setVerbalHighTopsEqual(
   }
   else
   {
-    verbalCover.fillTopsAndLower(vside, numOptions);
+    verbalCover.setLength(length);
+
+    verbalCover.fillTopsAndLower(sumProfile, vside, numOptions);
   }
 }
 
@@ -568,10 +570,12 @@ void Product::setVerbalSingular(
   Product::makeSingularCompletion(sumProfile, canonicalShift,
     side, verbalCover.getCompletion());
 
+  verbalCover.setLength(length);
+
   const unsigned char len = (side == OPP_WEST ?
     length.lower() : sumProfile.length() - length.lower());
 
-  verbalCover.fillSingular(len, vside);
+  verbalCover.fillSingular(sumProfile, len, vside);
 }
 
 

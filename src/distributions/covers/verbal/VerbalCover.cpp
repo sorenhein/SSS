@@ -468,9 +468,21 @@ void VerbalCover::fillTopsAndXes(const VerbalSide& vside)
 
 
 void VerbalCover::fillTopsAndLower(
+  const Profile& sumProfile,
   const VerbalSide& vside,
   const unsigned char numOptions)
 {
+  const auto& completion = completions.front();
+
+  if (completion.expandable(vside.side) &&
+      ! completion.fullRanked(vside.side) &&
+      completion.highRanked(vside.side))
+  {
+    VerbalCover::fillHonorsOrdinal(sumProfile.length(), vside);
+    return;
+  }
+
+
   sentence = SENTENCE_TOPS_AND_LOWER;
 
   phrases.resize(4);
@@ -479,7 +491,6 @@ void VerbalCover::fillTopsAndLower(
 
   VerbalCover::fillTopsActual(vside.side, phrases[1]);
 
-  const auto& completion = completions.front();
   const unsigned char freeLower = completion.getFreeLower(vside.side);
   const unsigned char freeUpper = completion.getFreeUpper(vside.side);
 
@@ -558,13 +569,32 @@ void VerbalCover::fillHonorsEqual(
 }
 
 
-void VerbalCover::fillSingular(
-  const unsigned char lenCompletion,
+void VerbalCover::fillHonorsOrdinal(
+  const unsigned char oppsLength,
   const VerbalSide& vside)
 {
   phrases.resize(3);
 
+  const Completion& completion = completions.front();
+  const Opponent side = vside.side;
+
+  sentence = SENTENCE_HONORS_ORDINAL;
+
   phrases[0].setPhrase(vside.player());
+
+  VerbalCover::fillHonorsEqual(
+    completion.getTopsUsed(side), phrases[1]);
+
+  VerbalCover::fillLengthOrdinal(oppsLength, side, phrases[2]);
+}
+
+
+void VerbalCover::fillSingular(
+  const Profile& sumProfile,
+  const unsigned char lenCompletion,
+  const VerbalSide& vside)
+{
+  phrases.resize(3);
 
   const Completion& completion = completions.front();
   const Opponent side = vside.side;
@@ -573,6 +603,8 @@ void VerbalCover::fillSingular(
   {
     sentence = SENTENCE_TOPS_LENGTH;
 
+    phrases[0].setPhrase(vside.player());
+
     VerbalCover::fillTopsActual(side, phrases[1]);
 
     phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
@@ -580,17 +612,25 @@ void VerbalCover::fillSingular(
   }
   else if (completion.highRanked(side))
   {
+    VerbalCover::fillHonorsOrdinal(sumProfile.length(), vside);
+
+    /*
     sentence = SENTENCE_HONORS_ORDINAL;
+
+    phrases[0].setPhrase(vside.player());
 
     VerbalCover::fillHonorsEqual(
       completion.getTopsUsed(side), phrases[1]);
 
     phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
     phrases[2].setValues(lenCompletion);
+    */
   }
   else
   {
     sentence = SENTENCE_SINGULAR_EXACT;
+
+    phrases[0].setPhrase(vside.player());
 
     phrases[1].setPhrase(LENGTH_ORDINAL_EXACT);
     phrases[1].setValues(lenCompletion);

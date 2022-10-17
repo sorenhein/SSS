@@ -1,41 +1,12 @@
 Mention of split honors
 -----------------------
 
-1. "lower-ranked"
-VerbalCover::fillTopsAndLower
-New SENTENCE_HONORS_ORDINAL
+The key cards split (7 with 3-15 cards) = (Q9 with 247-3 cards)
 
-if (completion.highRanked(side))
-{
-  3 phrases
-  1 is vside.side
-  1 is fillHonorsEqual(as in fillSingular)
-  1 is fillLengthOrdinal(sumProfile.length(), side, phrase[2])
-}
+"East has a doubleton chosen from the eight-seven-six"
+East has two of eight-seven-six doubleton ?
 
-"East has exactly one honor and at most one, lower-ranked card"
-"East has exactly one honor at most doubleton"
-This works for an honor which is always the highest opposing card.
-
-   153 East has exactly one honor and at most one, lower-ranked card 
-    41 East has exactly one honor and at most two, lower-ranked cards 
-    87 East has exactly one honor and one, lower-ranked card 
-
-So if the stated ranks (AH) are the highest ones, we can go to
-"exactly ... and doubleton, tripleton, ..."
-
-"East has one honor at most tripleton"
-So it's really the same sentence as below!
-
-If not, no change except perhaps "one-two" -> "one or two,
-lower-ranks cards"
-
-TOPS_LOWER
-fillTopsAndLower
-SENTENCE_TOPS_AND_LOWER
-
-If fillLengthOrdinal?
-
+1. Order and comments of VerbalCover, Phrase
 
 2. "chosen from"
 add mid-honors
@@ -75,8 +46,6 @@ explainable?
 Text covers
 -----------
 Combine within say J: All Wests singular combined onto one line.
-
-Remove [...] and see count of different covers
 
 
 Reduce the size of CoverStore
