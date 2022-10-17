@@ -224,7 +224,7 @@ void VerbalCover::fillOnetopOnlyOld(
   top.range(oppsSize, vside.side, vLower, vUpper);
 
   // Here lower and upper are different.
-  phrases.resize(2);
+  phrases.resize(3);
 
   if (vLower + vUpper == oppsSize)
     phrases[0].setPhrase(PLAYER_EACH);
@@ -233,21 +233,34 @@ void VerbalCover::fillOnetopOnlyOld(
 
   if (vLower == 0)
   {
-    phrases[1].setPhrase(TOPS_ATMOST);
-    phrases[1].setValues(vUpper, onetopIndex);
+    phrases[1].setPhrase(COUNT_ATMOST);
+    phrases[1].setValues(vUpper);
+
+    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vUpper > 1);
   }
   else if (vUpper == oppsSize)
   {
-    phrases[1].setPhrase(TOPS_ATLEAST);
-    phrases[1].setValues(vLower, onetopIndex);
+    phrases[1].setPhrase(COUNT_ATLEAST);
+    phrases[1].setValues(vLower);
+
+    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vLower > 1);
   }
   else if (vLower+1 == vUpper)
   {
-    phrases[1].setPhrase(TOPS_ADJACENT);
-    phrases[1].setValues(vLower, vUpper, onetopIndex);
+    phrases[1].setPhrase(COUNT_OR);
+    phrases[1].setValues(vLower, vUpper);
+
+    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setValues(onetopIndex);
+    phrases[2].setBools(vUpper > 1);
   }
   else
   {
+assert(false);
     phrases.resize(3);
 
     phrases[1].setPhrase(COUNT_OR);
@@ -362,12 +375,12 @@ void VerbalCover::fillOnetopLength(
   VerbalCover::fillOnetopOnlyOld(
     top, sumProfile[onetopIndex], onetopIndex, vside);
 
-  sentence = SENTENCE_TOPS_LENGTH;
+  sentence = SENTENCE_TOPS_LENGTH_OLD;
 
-  phrases.resize(3);
+  phrases.resize(4);
 
   VerbalCover::fillLengthOrdinal(
-    sumProfile.length(), vside.side, phrases[2]);
+    sumProfile.length(), vside.side, phrases[3]);
 }
 
 

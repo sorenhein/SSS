@@ -45,9 +45,6 @@ enum PhrasesEnum: unsigned
   COUNT_RANGE = 43,
   COUNT_OR = 44,
 
-  TOPS_ATMOST = 50,
-  TOPS_ATLEAST = 51,
-  TOPS_ADJACENT = 52,
   TOPS_RANGE = 53,
   TOPS_ACTUAL = 54,
   TOPS_SOME_ACTUAL = 55,
@@ -77,7 +74,9 @@ enum PhrasesEnum: unsigned
 
   DIGITS_RANGE = 120,
 
-  VERBAL_PHRASE_SIZE = 130
+  OF_DEFINITE_RANK = 130,
+
+  VERBAL_PHRASE_SIZE = 140
 };
 
 enum PhrasesGroup: unsigned

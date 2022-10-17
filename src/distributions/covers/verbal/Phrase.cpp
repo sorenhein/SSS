@@ -295,7 +295,7 @@ string Phrase::strOfDefiniteRank(
   assert(Phrase::has(0, 1, 1));
 
   string s = text;
-  Phrase::replace(s, "%1", ranksNames.strComponent(
+  Phrase::replace(s, "%0", ranksNames.strComponent(
     RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
   return s;
 }
@@ -323,30 +323,12 @@ string Phrase::str(
       (text, ranksNames, completion);
   }
 
-  else if (expansion == PHRASE_ADJACENT)
-  {
-    // TODO Call is PHRASE_COMPONENT_DEF_OF
-    // Dative.
-    assert(Phrase::has(0, 3, 0));
-    Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    Phrase::replace(s, "%1", dictionary.numerals.get(uchars[1]).text);
-    Phrase::replace(s, "%2", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[2], uchars[1] > 1));
-  }
   else if (expansion == PHRASE_RANGE_OF)
   {
     // Dative.
     assert(Phrase::has(0, 1, 1));
     Phrase::replace(s, "%0", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
-  }
-  else if (expansion == PHRASE_SOME_OF)
-  {
-    // Dative.
-    assert(Phrase::has(0, 2, 0));
-    Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    Phrase::replace(s, "%1", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
   }
   else if (expansion == PHRASE_SOME_RANK_SET)
   {
