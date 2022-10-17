@@ -142,13 +142,7 @@ string "%0"
 
 # Example: cards (plural).  May also be card (singular).
 name TOPS_LOWER
-string ", lower-ranked %0"
-
-# Example: cards below the T.
-# %0: card or cards.
-# %1: A specific card.
-name TOPS_BELOW
-string " %0 below %1"
+string "%0"
 
 
 # Example: QH=H7

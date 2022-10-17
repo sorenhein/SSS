@@ -22,9 +22,10 @@ enum PhraseExpansion: unsigned
 
   PHRASE_LOWEST_CARD = 7,
 
+  PHRASE_OF_DEFINITE_RANK = 8,
 
 
-  PHRASE_TEXT_BELOW = 11,
+
   PHRASE_ADJACENT = 12,
   PHRASE_RANGE_OF = 13,
   PHRASE_SOME_OF = 14,

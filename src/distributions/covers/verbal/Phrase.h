@@ -104,6 +104,11 @@ class Phrase
       const RanksNames& ranksNames,
       const Completion& completion) const;
 
+    string strOfDefiniteRank(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
 
 
 

@@ -42,7 +42,8 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strCardsWord,       // PHRASE_CARDS_WORD
   &Phrase::strHonorsWord,      // PHRASE_HONORS_WORD
   &Phrase::strMidHonorsWord,   // PHRASE_MID_HONORS_WORD
-  &Phrase::strLowestCard       // PHRASE_LOWEST_CARD
+  &Phrase::strLowestCard,      // PHRASE_LOWEST_CARD
+  &Phrase::strOfDefiniteRank   // PHRASE_OF_DEFINITE_RANK
 };
 
 
@@ -275,13 +276,27 @@ string Phrase::strMidHonorsWord(
 
 string Phrase::strLowestCard(
   const string& text,
-  [[maybe_unused]] const RanksNames& ranksNames,
+  const RanksNames& ranksNames,
   [[maybe_unused]] const Completion& completion) const
 {
   assert(Phrase::has(0, 1, 0));
 
   string s = text;
   Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
+  return s;
+}
+
+
+string Phrase::strOfDefiniteRank(
+  const string& text,
+  const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 1));
+
+  string s = text;
+  Phrase::replace(s, "%1", ranksNames.strComponent(
+    RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
   return s;
 }
 
@@ -301,29 +316,13 @@ string Phrase::str(
       expansion == PHRASE_CARDS_WORD ||
       expansion == PHRASE_HONORS_WORD ||
       expansion == PHRASE_MID_HONORS_WORD ||
-      expansion == PHRASE_LOWEST_CARD)
+      expansion == PHRASE_LOWEST_CARD ||
+      expansion == PHRASE_OF_DEFINITE_RANK)
   {
     return (this->*(phraseMethods[expansion]))
       (text, ranksNames, completion);
   }
 
-  /*
-  else if (expansion == PHRASE_RANKS)
-  {
-    assert(Phrase::has(0, 1, 0));
-    Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
-  }
-  */
-  else if (expansion == PHRASE_TEXT_BELOW)
-  {
-    // If we permit full card names here, they should be in dative
-    // (in German, and it doesn't hurt in English and Danish).
-    // I don't have a good general mechanism for this.
-    assert(Phrase::has(0, 2, 0));
-    Phrase::replace(s, "%0", dictionary.words.get(
-      uchars[0] == 1 ? WORDS_CARD : WORDS_CARDS).text);
-    Phrase::replace(s, "%1", ranksNames.lowestCard(uchars[1]));
-  }
   else if (expansion == PHRASE_ADJACENT)
   {
     // TODO Call is PHRASE_COMPONENT_DEF_OF

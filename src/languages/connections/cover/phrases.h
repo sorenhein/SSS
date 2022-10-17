@@ -54,7 +54,6 @@ enum PhrasesEnum: unsigned
   TOPS_FULL_ACTUAL = 56,
   TOPS_RANKS = 57,
   TOPS_LOWER = 58,
-  TOPS_BELOW = 59,
 
   BOTH_ONE_PLAYER = 60,
   BOTH_EITHER_PLAYER = 61,

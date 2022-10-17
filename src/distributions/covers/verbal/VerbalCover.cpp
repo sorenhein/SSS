@@ -562,8 +562,6 @@ void VerbalCover::fillTopsAndLower(
   }
 
 
-  sentence = SENTENCE_TOPS_AND_LOWER;
-
   phrases.resize(4);
 
   phrases[0].setPhrase(vside.player());
@@ -591,14 +589,22 @@ void VerbalCover::fillTopsAndLower(
 
   if (completion.lowestRankIsUsed(vside.side))
   {
+    sentence = SENTENCE_TOPS_AND_LOWER;
+
     phrases[3].setPhrase(TOPS_LOWER);
     phrases[3].setBools(freeUpper > 1);
     // phrases[3].setValues(freeUpper);
   }
   else
   {
-    phrases[3].setPhrase(TOPS_BELOW);
-    phrases[3].setValues(freeUpper, numOptions);
+    sentence = SENTENCE_TOPS_AND_BELOW;
+    phrases.resize(5);
+
+    phrases[3].setPhrase(TOPS_LOWER);
+    phrases[3].setBools(freeUpper > 1);
+
+    phrases[4].setPhrase(TOPS_RANKS);
+    phrases[4].setValues(numOptions);
   }
 }
 
