@@ -388,13 +388,28 @@ void VerbalCover::fillTopsBothLength(
   }
   else
   {
-    phrases[0].setSide(vside.side);
-    phrases[0].setValues(length.lower(), length.upper());
+    Opponent side1, side2;
+    if (vside.symmFlag)
+    {
+      side1 = vside.side;
+      side2 = sideOther;
+    }
+    else
+    {
+      side1 = OPP_WEST;
+      side2 = OPP_EAST;
+    }
 
-    phrases[1].setSide(sideOther);
-    phrases[1].setValues(
-      sumProfile.length() - length.upper(), 
-      sumProfile.length() - length.lower());
+    unsigned char vLower, vUpper;
+    length.range(sumProfile.length(), side1, vLower, vUpper);
+
+    phrases[0].setSide(side1);
+    phrases[0].setValues(vLower, vUpper);
+
+    length.range(sumProfile.length(), side2, vLower, vUpper);
+
+    phrases[1].setSide(side2);
+    phrases[1].setValues(vLower, vUpper);
   }
 
   if (vside.symmFlag)
