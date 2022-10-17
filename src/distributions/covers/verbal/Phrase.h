@@ -104,7 +104,25 @@ class Phrase
       const RanksNames& ranksNames,
       const Completion& completion) const;
 
+    string strIndefiniteRank(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+    string strDefiniteRank(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
     string strOfDefiniteRank(
+      const string& text,
+      const RanksNames& ranksNames,
+      const Completion& completion) const;
+
+
+
+
+    string strXes(
       const string& text,
       const RanksNames& ranksNames,
       const Completion& completion) const;

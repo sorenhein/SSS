@@ -43,7 +43,11 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strHonorsWord,      // PHRASE_HONORS_WORD
   &Phrase::strMidHonorsWord,   // PHRASE_MID_HONORS_WORD
   &Phrase::strLowestCard,      // PHRASE_LOWEST_CARD
-  &Phrase::strOfDefiniteRank   // PHRASE_OF_DEFINITE_RANK
+  &Phrase::strIndefiniteRank,  // PHRASE_INDEFINITE_RANK
+  &Phrase::strDefiniteRank,    // PHRASE_DEFINITE_RANK
+  &Phrase::strOfDefiniteRank,  // PHRASE_OF_DEFINITE_RANK
+
+  &Phrase::strXes,             // PHRASE_XES
 };
 
 
@@ -287,6 +291,34 @@ string Phrase::strLowestCard(
 }
 
 
+string Phrase::strIndefiniteRank(
+  const string& text,
+  const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+    strComponent(RANKNAME_ACTUAL_FULL_INDEF));
+  return s;
+}
+
+
+string Phrase::strDefiniteRank(
+  const string& text,
+  const RanksNames& ranksNames,
+  [[maybe_unused]] const Completion& completion) const
+{
+  assert(Phrase::has(0, 1, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+    strComponent(RANKNAME_ACTUAL_FULL_DEF));
+  return s;
+}
+
+
 string Phrase::strOfDefiniteRank(
   const string& text,
   const RanksNames& ranksNames,
@@ -297,6 +329,21 @@ string Phrase::strOfDefiniteRank(
   string s = text;
   Phrase::replace(s, "%0", ranksNames.strComponent(
     RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
+  return s;
+}
+
+
+// -----
+
+string Phrase::strXes(
+  const string& text,
+  [[maybe_unused]] const RanksNames& ranksNames,
+  const Completion& completion) const
+{
+  assert(Phrase::has(1, 0, 0));
+
+  string s = text;
+  Phrase::replace(s, "%0", completion.strXes(side));
   return s;
 }
 
@@ -317,31 +364,22 @@ string Phrase::str(
       expansion == PHRASE_HONORS_WORD ||
       expansion == PHRASE_MID_HONORS_WORD ||
       expansion == PHRASE_LOWEST_CARD ||
-      expansion == PHRASE_OF_DEFINITE_RANK)
+      expansion == PHRASE_INDEFINITE_RANK ||
+      expansion == PHRASE_DEFINITE_RANK ||
+      expansion == PHRASE_OF_DEFINITE_RANK ||
+
+      expansion == PHRASE_XES)
   {
     return (this->*(phraseMethods[expansion]))
       (text, ranksNames, completion);
   }
 
-  else if (expansion == PHRASE_RANGE_OF)
-  {
-    // Dative.
-    assert(Phrase::has(0, 1, 1));
-    Phrase::replace(s, "%0", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
-  }
   else if (expansion == PHRASE_SOME_RANK_SET)
   {
     assert(Phrase::has(0, 2, 0));
     Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
     Phrase::replace(s, "%1", ranksNames.strComponent(
       RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
-  }
-  else if (expansion == PHRASE_FULL_RANK_SET)
-  {
-    assert(Phrase::has(0, 1, 0));
-    Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
-      strComponent(RANKNAME_ACTUAL_FULL_DEF));
   }
   else if (expansion == PHRASE_COMPLETION_SET)
   {
@@ -411,29 +449,6 @@ string Phrase::str(
       Phrase::replace(s, "%1", to_string(+uchars[0]));
       Phrase::replace(s, "%2", to_string(+uchars[1]));
     }
-  }
-  else if (expansion == PHRASE_HONORS)
-  {
-    if (numUchars == 0)
-    {
-      assert(Phrase::has(0, 0, 0));
-    }
-    else if (numUchars == 1)
-    {
-      assert(Phrase::has(0, 1, 0));
-      Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    }
-    else
-    {
-      assert(Phrase::has(0, 2, 0));
-      Phrase::replace(s, "%0", dictionary.ordinals.get(uchars[0]).text);
-      Phrase::replace(s, "%1", dictionary.ordinals.get(uchars[1]).text);
-    }
-  }
-  else if (expansion == PHRASE_COMPLETION_XES)
-  {
-    assert(Phrase::has(1, 0, 0));
-    Phrase::replace(s, "%0", completion.strXes(side));
   }
   else
   {
