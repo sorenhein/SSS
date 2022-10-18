@@ -462,6 +462,12 @@ void VerbalCover::fillCountHonorsOrdinal(
 }
 
 
+/**********************************************************************/
+/*                                                                    */
+/*                          End of fixed                              */
+/*                                                                    */
+/**********************************************************************/
+
 void VerbalCover::fillOnetopLength(
   const Term& lengthIn,
   const Term& top,
@@ -661,6 +667,23 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
     phrases[1].setPhrase(TOPS_SET);
     phrases[1].setSide(side2);
   }
+}
+
+
+void VerbalCover::fillExactlyTopsMaybeUnset(const VerbalSide& vside)
+{
+  sentence = SENTENCE_EXACTLY_TOPS_MAYBE_UNSET;
+
+  phrases.resize(3);
+
+  phrases[0].setPhrase(vside.player());
+
+  phrases[1].setPhrase(TOPS_SET);
+  phrases[1].setSide(vside.side);
+  phrases[1].setBools(false);
+
+  phrases[2].setPhrase(TOPS_UNSET);
+  phrases[2].setSide(vside.side);
 }
 
 
@@ -889,23 +912,6 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   {
     VerbalCover::fillTops(vside);
   }
-}
-
-
-void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
-{
-  sentence = SENTENCE_EXACTLY_TOPS_MAYBE_UNSET;
-
-  phrases.resize(3);
-
-  phrases[0].setPhrase(vside.player());
-
-  phrases[1].setPhrase(TOPS_SET);
-  phrases[1].setSide(vside.side);
-  phrases[1].setBools(false);
-
-  phrases[2].setPhrase(TOPS_UNSET);
-  phrases[2].setSide(vside.side);
 }
 
 

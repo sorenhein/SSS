@@ -140,6 +140,7 @@ class VerbalCover
     // SENTENCE_EXACTLY_TOPS_AND_LOWER
     // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
     // SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
+    void fillExactlyTopsMaybeUnset(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_XES
     void fillTopsAndXes(const VerbalSide& vside);
@@ -201,8 +202,6 @@ class VerbalCover
     // SENTENCE_LIST
     void fillCompletion(const VerbalSide& vside);
 
-    // SENTENCE_LIST
-    void fillCompletionWithLows(const VerbalSide& vside);
 
     // SENTENCE_LIST
     // SENTENCE_ONETOP_ONLY

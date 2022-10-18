@@ -441,7 +441,7 @@ void Product::setVerbalTopsOnly(
   if (flipAllowedFlag && completion.numOptions() == 1)
   {
     // The lowest cards are a single rank of x'es.
-    verbalCover.fillCompletionWithLows(vsideSimple);
+    verbalCover.fillExactlyTopsMaybeUnset(vsideSimple);
     return;
   }
 
