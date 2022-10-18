@@ -102,7 +102,7 @@ class VerbalCover
       const bool symmFlag);
 
     // SENTENCE_TOPS
-    // See above
+    // See fillTops above
 
     // SENTENCE_LENGTH_BELOW_TOPS
     void fillLengthBelowTops(
@@ -110,25 +110,32 @@ class VerbalCover
       const unsigned char rankNo,
       const VerbalSide& vside);
 
+    // SENTENCE_FILL_ORDINAL_FROM_TOPS
+    void fillOrdinalFromTops(
+      const VerbalSide& vside,
+      const unsigned char lenCompletion);
+ 
     // SENTENCE_COUNT_TOPS
+    // SENTENCE_COUNT_TOPS
+    // TODO There is also fillOnetopOnlyOld
     void fillCountTops(
       const Term& lengthIn,
       const unsigned char oppsLength,
       const bool symmFlag);
 
-    // SENTENCE_FILL_ORDINAL_FROM_TOPS
-    void fillOrdinalFromTops(
-      const VerbalSide& vside,
-      const unsigned char lenCompletion);
-
- 
-    // SENTENCE_COUNT_TOPS
-    // TODO Occurs multiple times
-
     // SENTENCE_EXACTLY_COUNT_TOPS
     void fillExactlyCountTops(const VerbalSide& vside);
 
     // SENTENCE_TOPS_ORDINAL
+    // TODO There are two of them -- unify
+    void fillTopsOrdinal(
+      const Profile& sumProfile,
+      const VerbalSide& vside);
+
+    void fillTopsOrdinal(
+      const Profile& sumProfile,
+      const unsigned char lenCompletion,
+      const VerbalSide& vside);
 
     // SENTENCE_COUNT_TOPS_ORDINAL
     void fillCountTopsOrdinal(
@@ -164,6 +171,8 @@ class VerbalCover
     void fillTopsAndXes(const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_LIST
+    void fillExactlyList(const VerbalSide& vside);
+
     // SENTENCE_2SPLIT_TOPS_SYMM
     // SENTENCE_2SPLIT_TOPS_ASYMM
     // SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
@@ -208,7 +217,6 @@ class VerbalCover
 
     // SENTENCE_LIST
     // SENTENCE_ONETOP_ONLY
-    void fillList(const VerbalSide& vside);
 
 
     // Direct manipulation of completions

@@ -486,7 +486,7 @@ void Product::setVerbalHighTopsEqual(
     assert(Product::makeCompletionList(
       sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()));
    
-    verbalCover.fillList(vside);
+    verbalCover.fillExactlyList(vside);
   }
   else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
   {
@@ -529,7 +529,7 @@ void Product::setVerbalAnyTopsEqual(
   if (Product::makeCompletionList(
     sumProfile, canonicalShift, side, 4, verbalCover.getCompletions()))
   {
-    verbalCover.fillList({side, symmFlag});
+    verbalCover.fillExactlyList({side, symmFlag});
     return;
   }
 
