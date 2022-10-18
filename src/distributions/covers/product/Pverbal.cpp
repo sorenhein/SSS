@@ -411,7 +411,7 @@ void Product::setVerbalLengthAndOneTop(
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
-  verbalCover.fillOnetopLength(
+  verbalCover.fillCountTopsOrdinal(
     length, tops[topNo], sumProfile, fullTopNo, vside);
 }
 
@@ -502,7 +502,7 @@ void Product::setVerbalHighTopsEqual(
   {
     verbalCover.setLength(length);
 
-    verbalCover.fillTopsAndLower(sumProfile, vside, numOptions);
+    verbalCover.fillTopsAndLowerMultiple(sumProfile, vside, numOptions);
   }
 }
 

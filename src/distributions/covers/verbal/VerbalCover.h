@@ -131,14 +131,32 @@ class VerbalCover
     // SENTENCE_TOPS_ORDINAL
 
     // SENTENCE_COUNT_TOPS_ORDINAL
+    void fillCountTopsOrdinal(
+      const Term& lengthIn,
+      const Term& top,
+      const Profile& sumProfile,
+      const unsigned char onetopIndex,
+      const VerbalSide& vside);
 
     // SENTENCE_COUNT_HONORS_ORDINAL
     // See above
 
     // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
+    void fillExactlyCountTopsOrdinal(
+      const Profile& sumProfile,
+      const VerbalSide& vside);
+
     // SENTENCE_TOPS_AND_LOWER
+    void fillTopsAndLower(const VerbalSide& vside);
+
     // SENTENCE_EXACTLY_TOPS_AND_LOWER
+    void fillExactlyTopsAndLower(const VerbalSide& vside);
+
     // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+    void fillTopsAndCountBelowCard(
+      const VerbalSide& vside,
+      const unsigned char numOptions);
+
     // SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
     void fillExactlyTopsMaybeUnset(const VerbalSide& vside);
 
@@ -153,7 +171,6 @@ class VerbalCover
 
 
 
-    // SENTENCE_ONETOP
     void fillOnetopOnlyOld(
       const Term& top,
       const unsigned char oppsSize,
@@ -166,40 +183,26 @@ class VerbalCover
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_LENGTH
-    void fillOnetopLength(
-      const Term& lengthIn,
-      const Term& top,
-      const Profile& sumProfile,
-      const unsigned char onetopIndex,
-      const VerbalSide& vside);
-
-    // SENTENCE_TOPS_LENGTH
     void fillOnesided(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_BOTH_LENGTH
     void fillTopsBothLength(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    // SENTENCE_TOPS_BOTH
     void fillTopsBoth(const VerbalSide& vside);
 
-    // SENTENCE_TOPS_AND_LOWER
-    void fillTopsAndLower(
+    void fillTopsAndLowerMultiple(
       const Profile& sumProfile,
       const VerbalSide& vside,
       const unsigned char numOptions);
 
-    // SENTENCE_TOPS_LENGTH
     void fillSingular(
       const Profile& sumProfile,
       const unsigned char lenCompletion,
       const VerbalSide& vside);
 
-    // SENTENCE_LIST
     void fillCompletion(const VerbalSide& vside);
 
 
