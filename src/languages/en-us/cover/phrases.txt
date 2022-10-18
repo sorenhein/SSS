@@ -99,25 +99,19 @@ name COUNT_OR
 string "%0 or %1"
 
 
-# Example: 1-2 of QJT
-# %2: Holding ("of")
-name TOPS_RANGE
+name TOPS_LOWEST
 string "%0"
 
-# Example: KQ
-name TOPS_ACTUAL
+name TOPS_DEFINITE
 string "%0"
 
-# Example: the king
-name TOPS_FULL_ACTUAL
+name TOPS_OF_DEFINITE
 string "%0"
 
-# Example: T (always a single card)
-name TOPS_RANKS
+name TOPS_SET
 string "%0"
 
-# Example: cards (plural).  May also be card (singular).
-name TOPS_LOWER
+name TOPS_CARDS_WORD
 string "%0"
 
 
