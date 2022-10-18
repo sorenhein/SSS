@@ -38,9 +38,6 @@ static const vector<PhraseMethod> phraseMethods =
   &Phrase::strDigits,          // PHRASE_DIGIT
   &Phrase::strNumerical,       // PHRASE_NUMERICAL
   &Phrase::strOrdinal,         // PHRASE_ORDINAL
-  &Phrase::strCardsWord,       // PHRASE_CARDS_WORD
-  &Phrase::strHonorsWord,      // PHRASE_HONORS_WORD
-  &Phrase::strMidHonorsWord,   // PHRASE_MID_HONORS_WORD
   &Phrase::strLowestCard,      // PHRASE_LOWEST_CARD
   &Phrase::strIndefiniteRank,  // PHRASE_INDEFINITE_RANK
   &Phrase::strDefiniteRank,    // PHRASE_DEFINITE_RANK
@@ -232,48 +229,6 @@ string Phrase::strOrdinal(
   for (unsigned char field = 0; field < numUchars; field++)
     Phrase::replace(s, field, 
       dictionary.ordinals.get(uchars[field]).text);
-  return s;
-}
-
-
-string Phrase::strCardsWord(
-  const string& text,
-  [[maybe_unused]] const RanksNames& ranksNames,
-  [[maybe_unused]] const Completion& completion) const
-{
-  assert(Phrase::has(0, 0, 1));
-
-  string s = text;
-  Phrase::replace(s, "%0", dictionary.words.get(
-    bools[0] == 0 ? WORDS_CARD : WORDS_CARDS).text);
-  return s;
-}
-
-
-string Phrase::strHonorsWord(
-  const string& text,
-  [[maybe_unused]] const RanksNames& ranksNames,
-  [[maybe_unused]] const Completion& completion) const
-{
-  assert(Phrase::has(0, 0, 1));
-
-  string s = text;
-  Phrase::replace(s, "%0", dictionary.words.get(
-    bools[0] == 0 ? WORDS_HONOR : WORDS_HONORS).text);
-  return s;
-}
-
-
-string Phrase::strMidHonorsWord(
-  const string& text,
-  [[maybe_unused]] const RanksNames& ranksNames,
-  [[maybe_unused]] const Completion& completion) const
-{
-  assert(Phrase::has(0, 0, 1));
-
-  string s = text;
-  Phrase::replace(s, "%0", dictionary.words.get(
-    bools[0] == 0 ? WORDS_MID_HONOR : WORDS_MID_HONORS).text);
   return s;
 }
 

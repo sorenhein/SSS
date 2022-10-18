@@ -202,7 +202,7 @@ void VerbalCover::fillLengthOnly(
   const unsigned char oppsLength,
   const bool symmFlag)
 {
-  sentence = SENTENCE_LENGTH_ONLY;
+  sentence = SENTENCE_LENGTH;
   VerbalCover::setLength(lengthIn);
 
   const Opponent side = (symmFlag ? OPP_WEST : length.shorter(oppsLength));
@@ -218,7 +218,7 @@ void VerbalCover::fillOnetopOnlyOld(
   const unsigned char onetopIndex,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_COUNT_ONETOP;
+  sentence = SENTENCE_COUNT_TOPS;
 
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
@@ -275,7 +275,7 @@ void VerbalCover::fillOnetopOnly(
   const unsigned char onetopIndex,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_COUNT_ONETOP;
+  sentence = SENTENCE_COUNT_TOPS;
 
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
@@ -375,7 +375,7 @@ void VerbalCover::fillOnetopLength(
   VerbalCover::fillOnetopOnlyOld(
     top, sumProfile[onetopIndex], onetopIndex, vside);
 
-  sentence = SENTENCE_TOPS_LENGTH_OLD;
+  sentence = SENTENCE_COUNT_TOPS_ORDINAL;
 
   phrases.resize(4);
 
@@ -413,7 +413,7 @@ void VerbalCover::fillOnesided(
   if (completion.expandable(vside.side) &&
       ! completion.fullRanked(vside.side))
   {
-    sentence = SENTENCE_TOPS_LENGTH_OLDER;
+    sentence = SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL;
 
     phrases.resize(4);
 
@@ -433,7 +433,7 @@ void VerbalCover::fillOnesided(
   }
   else
   {
-    sentence = SENTENCE_TOPS_LENGTH;
+    sentence = SENTENCE_TOPS_ORDINAL;
 
     phrases.resize(3);
 
@@ -628,7 +628,7 @@ void VerbalCover::fillTopsAndLower(
     if (completion.expandable(vside.side) &&
         ! completion.fullRanked(vside.side))
     {
-      sentence = SENTENCE_TOPS_AND_LOWER_NEW;
+      sentence = SENTENCE_EXACTLY_TOPS_AND_LOWER;
 
       phrases.resize(5);
 
@@ -807,7 +807,7 @@ void VerbalCover::fillSingular(
 
   if (! completion.expandable(side) || completion.fullRanked(side))
   {
-    sentence = SENTENCE_TOPS_LENGTH;
+    sentence = SENTENCE_TOPS_ORDINAL;
 
     phrases[0].setPhrase(vside.player());
 
@@ -857,7 +857,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   {
     phrases.resize(3);
 
-    sentence = SENTENCE_EXACT_COUNT_ONETOP;
+    sentence = SENTENCE_EXACTLY_COUNT_TOPS;
 
     phrases[0].setPhrase(vside.player());
 
@@ -874,7 +874,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   {
     phrases.resize(2);
 
-    sentence = SENTENCE_ONETOP_ONLY;
+    sentence = SENTENCE_TOPS;
 
     phrases[0].setPhrase(vside.player());
 
