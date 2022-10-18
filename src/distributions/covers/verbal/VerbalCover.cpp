@@ -680,6 +680,7 @@ void VerbalCover::fillTopsAndLower(
     if (completion.expandable(vside.side) &&
         ! completion.fullRanked(vside.side))
     {
+assert(false);
       sentence = SENTENCE_TOPS_AND_BELOW_NEW;
 
       phrases.resize(6);
@@ -725,7 +726,7 @@ void VerbalCover::fillTopsAndLower(
 
       VerbalCover::fillFreeCount(vside, phrases[2]);
 
-      sentence = SENTENCE_TOPS_AND_BELOW;
+      sentence = SENTENCE_TOPS_AND_COUNT_BELOW_CARD;
       phrases.resize(5);
 
       if (freeUpper == 1)
@@ -885,7 +886,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
 void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 {
-  sentence = SENTENCE_SET_UNSET;
+  sentence = SENTENCE_EXACTLY_TOPS_MAYBE_UNSET;
 
   phrases.resize(3);
 
