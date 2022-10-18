@@ -109,6 +109,8 @@ Expand::Expand()
 
 
 
+
+  /*
   groupCheck[SENTENCE_TOPS_BOTH_LENGTH] =
     { GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT,
       GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT,
@@ -119,6 +121,7 @@ Expand::Expand()
 
   groupCheck[SENTENCE_TOPS_BOTH_NOT_SYMM] = 
     { GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
+    */
 }
 
 

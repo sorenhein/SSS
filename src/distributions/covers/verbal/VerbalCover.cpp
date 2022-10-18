@@ -453,9 +453,12 @@ void VerbalCover::fillTopsBothLength(
   const VerbalSide& vside)
 {
   // length is already set.
-  sentence = SENTENCE_TOPS_BOTH_LENGTH;
+  if (vside.symmFlag)
+    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_SYMM;
+  else
+    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM;
 
-  phrases.resize(5);
+  phrases.resize(4);
 
   const Completion& completion = completions.front();
   const bool bothExpandableFlag =
@@ -511,11 +514,6 @@ void VerbalCover::fillTopsBothLength(
     phrases[3].setPhrase(DIGITS_RANGE);
     phrases[3].setValues(vLower, vUpper);
   }
-
-  if (vside.symmFlag)
-    phrases[4].setPhrase(DICT_EITHER_WAY);
-  else
-    phrases[4].setPhrase(DICT_ONE_WAY);
 }
 
 
@@ -534,14 +532,14 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
   Opponent side1, side2;
   if (vside.symmFlag)
   {
-    sentence = SENTENCE_TOPS_BOTH_SYMM;
+    sentence = SENTENCE_2SPLIT_TOPS_SYMM;
 
     side1 = vside.side;
     side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
   }
   else
   {
-    sentence = SENTENCE_TOPS_BOTH_NOT_SYMM;
+    sentence = SENTENCE_2SPLIT_TOPS_ASYMM;
 
     side1 = OPP_WEST;
     side2 = OPP_EAST;

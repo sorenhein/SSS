@@ -3,8 +3,6 @@ Mention of split honors
 
 Can we do something about the LIST_HOLDING and the count?
 
-Clean up names and numbers of SENTENCE_
-
 0.
 Put the groups of sentences and phrases into the .txt files.
 Then they come out of Dictionary.cpp and Expand.cpp.

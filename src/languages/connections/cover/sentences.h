@@ -9,8 +9,6 @@
 #ifndef SSS_SENTENCES_H
 #define SSS_SENTENCES_H
 
-#include "../../VerbalConnection.h"
-#include "../../PhraseExpansion.h"
 
 enum SentencesEnum: unsigned
 {
@@ -34,11 +32,7 @@ enum SentencesEnum: unsigned
   SENTENCE_2SPLIT_TOPS_ASYMM = 17,
   SENTENCE_2SPLIT_TOPS_DIGITS_SYMM = 18,
   SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM = 19,
-
-  SENTENCE_TOPS_BOTH_SYMM = 20,
-  SENTENCE_TOPS_BOTH_NOT_SYMM = 21,
-  SENTENCE_TOPS_BOTH_LENGTH = 22,
-  SENTENCE_SIZE = 23
+  SENTENCE_SIZE = 20
 };
 
 enum SentencesGroup: unsigned
