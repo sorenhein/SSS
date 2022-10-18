@@ -70,9 +70,24 @@ Expand::Expand()
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT, 
       GROUP_PHRASES_TOPS };
 
+  groupCheck[SENTENCE_TOPS_AND_LOWER_NEW] =
+    { GROUP_PHRASES_PLAYER, 
+      GROUP_PHRASES_COUNT, 
+      GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_COUNT, 
+      GROUP_PHRASES_TOPS };
+
   groupCheck[SENTENCE_TOPS_AND_BELOW] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT, 
       GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
+
+  groupCheck[SENTENCE_TOPS_AND_BELOW_NEW] =
+    { GROUP_PHRASES_PLAYER, 
+      GROUP_PHRASES_COUNT, 
+      GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_COUNT, 
+      GROUP_PHRASES_TOPS, 
+      GROUP_PHRASES_TOPS };
 
   groupCheck[SENTENCE_ONLY_BELOW] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH_VERB, 
@@ -155,7 +170,8 @@ string Expand::get(
     }
   }
 
-  if (sentence != SENTENCE_TOPS_AND_LOWER)
+  if (sentence != SENTENCE_TOPS_AND_LOWER &&
+      sentence != SENTENCE_TOPS_AND_LOWER_NEW)
   {
     // If there is a comma in a list, turn the last one into " or".
     // The excepted sentence has a comma on purpose.

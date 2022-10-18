@@ -15,7 +15,6 @@
 class RanksNames;
 class Completion;
 
-// enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
 enum PhrasesEnum: unsigned;
 enum PhraseExpansion: unsigned;
@@ -133,8 +132,6 @@ class Phrase
       const string& text,
       const RanksNames& ranksNames,
       const Completion& completion) const;
-
-
 
 
   public:

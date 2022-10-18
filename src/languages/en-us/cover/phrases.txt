@@ -38,8 +38,8 @@ name LENGTH_VERB_XTON_ATMOST
 string "has at most a %0"
 
 # Example: Has two cards
-name LENGTH_VERB_CARDS
-string "has %0 cards"
+# name LENGTH_VERB_CARDS
+# string "has %0 cards"
 
 # Example: Has at most two cards
 name LENGTH_VERB_ATMOST
@@ -108,12 +108,6 @@ string "%0"
 name TOPS_ACTUAL
 string "%0"
 
-# Example: exactly two of KQJ
-# %0: Number
-# %1: Holding ("of")
-name TOPS_SOME_ACTUAL
-string "exactly %0 %1"
-
 # Example: the king
 name TOPS_FULL_ACTUAL
 string "%0"
@@ -147,6 +141,7 @@ string "%0"
 name ONE_PLAYER_UNSET
 string "%0"
 
+
 name BELOW_NORMAL
 string "below"
 
@@ -175,12 +170,6 @@ string "one honor"
 
 name HONORS_MULTIPLE
 string "%0 honors"
-
-name HONORS_12
-string "one or two honors"
-
-name HONORS_RANGE
-string "%0-%1 honors"
 
 
 # Example: 1-2

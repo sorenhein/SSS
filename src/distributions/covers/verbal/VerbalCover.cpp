@@ -419,13 +419,6 @@ void VerbalCover::fillOnesided(
 
     phrases[0].setPhrase(vside.player());
 
-    /*
-    phrases[1].setPhrase(TOPS_SOME_ACTUAL);
-    phrases[1].setValues(
-      completion.getTopsUsed(vside.side),
-      completion.getLowestRankActive(vside.side));
-    */
-
     const unsigned char len = completion.getTopsUsed(vside.side);
 
     phrases[1].setPhrase(COUNT_EXACT);
@@ -630,76 +623,117 @@ void VerbalCover::fillTopsAndLower(
     return;
   }
 
-
-  phrases.resize(4);
-
-  phrases[0].setPhrase(vside.player());
-
-  if (completion.expandable(vside.side) &&
-      ! completion.fullRanked(vside.side))
-  {
-    phrases[1].setPhrase(TOPS_SOME_ACTUAL);
-    phrases[1].setValues(
-      completion.getTopsUsed(vside.side),
-      completion.getLowestRankActive(vside.side));
-
-    /*
-    const unsigned char len = completion.getTopsUsed(vside.side);
-
-    phrases[1].setPhrase(COUNT_EXACT);
-    phrases[1].setValues(len);
-
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
-    phrases[2].setValues(completion.getLowestRankActive(vside.side));
-    phrases[2].setBools(len > 1);
-    */
-
-  }
-  else
-  {
-    VerbalCover::fillTopsActual(vside.side, phrases[1]);
-  }
-
-  const unsigned char freeLower = completion.getFreeLower(vside.side);
-  const unsigned char freeUpper = completion.getFreeUpper(vside.side);
-
-  VerbalCover::fillFreeCount(vside, phrases[2]);
-  /*
-  if (freeLower == freeUpper)
-  {
-    phrases[2].setPhrase(COUNT_EXACT);
-    phrases[2].setValues(freeLower);
-  }
-  else if (freeLower == 0)
-  {
-    phrases[2].setPhrase(COUNT_ATMOST);
-    phrases[2].setValues(freeUpper);
-  }
-  else
-  {
-    phrases[2].setPhrase(COUNT_RANGE);
-    phrases[2].setValues(freeLower, freeUpper);
-  }
-  */
-
   if (completion.lowestRankIsUsed(vside.side))
   {
-    sentence = SENTENCE_TOPS_AND_LOWER;
+    if (completion.expandable(vside.side) &&
+        ! completion.fullRanked(vside.side))
+    {
+      sentence = SENTENCE_TOPS_AND_LOWER_NEW;
 
-    phrases[3].setPhrase(TOPS_LOWER);
-    phrases[3].setBools(freeUpper > 1);
-    // phrases[3].setValues(freeUpper);
+      phrases.resize(5);
+
+      phrases[0].setPhrase(vside.player());
+
+      /*
+      phrases[1].setPhrase(TOPS_SOME_ACTUAL);
+      phrases[1].setValues(
+        completion.getTopsUsed(vside.side),
+        completion.getLowestRankActive(vside.side));
+        */
+
+      const unsigned char len = completion.getTopsUsed(vside.side);
+
+      phrases[1].setPhrase(COUNT_EXACT);
+      phrases[1].setValues(len);
+
+      phrases[2].setPhrase(OF_DEFINITE_RANK);
+      phrases[2].setValues(completion.getLowestRankActive(vside.side));
+      phrases[2].setBools(len > 1);
+
+      const unsigned char freeLower = completion.getFreeLower(vside.side);
+      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
+      VerbalCover::fillFreeCount(vside, phrases[3]);
+
+
+      phrases[4].setPhrase(TOPS_LOWER);
+      phrases[4].setBools(freeUpper > 1);
+    }
+    else
+    {
+      phrases.resize(4);
+
+      phrases[0].setPhrase(vside.player());
+
+      VerbalCover::fillTopsActual(vside.side, phrases[1]);
+
+      const unsigned char freeLower = completion.getFreeLower(vside.side);
+      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
+      VerbalCover::fillFreeCount(vside, phrases[2]);
+
+      sentence = SENTENCE_TOPS_AND_LOWER;
+
+      phrases[3].setPhrase(TOPS_LOWER);
+      phrases[3].setBools(freeUpper > 1);
+    }
   }
   else
   {
-    sentence = SENTENCE_TOPS_AND_BELOW;
-    phrases.resize(5);
+    if (completion.expandable(vside.side) &&
+        ! completion.fullRanked(vside.side))
+    {
+      sentence = SENTENCE_TOPS_AND_BELOW_NEW;
 
-    phrases[3].setPhrase(TOPS_LOWER);
-    phrases[3].setBools(freeUpper > 1);
+      phrases.resize(6);
 
-    phrases[4].setPhrase(TOPS_RANKS);
-    phrases[4].setValues(numOptions);
+      phrases[0].setPhrase(vside.player());
+
+      const unsigned char len = completion.getTopsUsed(vside.side);
+
+      phrases[1].setPhrase(COUNT_EXACT);
+      phrases[1].setValues(len);
+
+      phrases[2].setPhrase(OF_DEFINITE_RANK);
+      phrases[2].setValues(completion.getLowestRankActive(vside.side));
+      phrases[2].setBools(len > 1);
+
+      const unsigned char freeLower = completion.getFreeLower(vside.side);
+      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
+      VerbalCover::fillFreeCount(vside, phrases[3]);
+
+      // phrases.resize(5);
+
+      phrases[4].setPhrase(TOPS_LOWER);
+      phrases[4].setBools(freeUpper > 1);
+
+      phrases[5].setPhrase(TOPS_RANKS);
+      phrases[5].setValues(numOptions);
+    }
+    else
+    {
+      phrases.resize(4);
+
+      phrases[0].setPhrase(vside.player());
+
+      VerbalCover::fillTopsActual(vside.side, phrases[1]);
+
+      const unsigned char freeLower = completion.getFreeLower(vside.side);
+      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+
+      VerbalCover::fillFreeCount(vside, phrases[2]);
+
+      sentence = SENTENCE_TOPS_AND_BELOW;
+      phrases.resize(5);
+
+      phrases[3].setPhrase(TOPS_LOWER);
+      phrases[3].setBools(freeUpper > 1);
+
+      phrases[4].setPhrase(TOPS_RANKS);
+      phrases[4].setValues(numOptions);
+    }
+
   }
 }
 

@@ -14,9 +14,8 @@
 #include "Completion.h"
 
 #include "../../../languages/Dictionary.h"
-#include "../../../languages/connections/words.h"
-
 #include "../../../languages/PhraseExpansion.h"
+#include "../../../languages/connections/words.h"
 
 #include "../../../ranks/RanksNames.h"
 
@@ -363,8 +362,6 @@ string Phrase::strCompletionUnset(
 }
 
 
-// -----
-
 string Phrase::strXes(
   const string& text,
   [[maybe_unused]] const RanksNames& ranksNames,
@@ -384,38 +381,8 @@ string Phrase::str(
   const RanksNames& ranksNames,
   const Completion& completion) const
 {
-  string s = text;
+  assert(expansion < phraseMethods.size());
 
-  if (expansion == PHRASE_NONE ||
-      expansion == PHRASE_DIGITS ||
-      expansion == PHRASE_NUMERICAL ||
-      expansion == PHRASE_ORDINAL ||
-      expansion == PHRASE_CARDS_WORD ||
-      expansion == PHRASE_HONORS_WORD ||
-      expansion == PHRASE_MID_HONORS_WORD ||
-      expansion == PHRASE_LOWEST_CARD ||
-      expansion == PHRASE_INDEFINITE_RANK ||
-      expansion == PHRASE_DEFINITE_RANK ||
-      expansion == PHRASE_OF_DEFINITE_RANK ||
-      expansion == PHRASE_COMPLETION_SET ||
-      expansion == PHRASE_COMPLETION_UNSET ||
-      expansion == PHRASE_XES)
-  {
-    return (this->*(phraseMethods[expansion]))
-      (text, ranksNames, completion);
-  }
-
-  else if (expansion == PHRASE_SOME_RANK_SET)
-  {
-    assert(Phrase::has(0, 2, 0));
-    Phrase::replace(s, "%0", dictionary.numerals.get(uchars[0]).text);
-    Phrase::replace(s, "%1", ranksNames.strComponent(
-      RANKNAME_ACTUAL_FULL_DEF_OF, uchars[1], uchars[0] > 1));
-  }
-  else
-  {
-    assert(false);
-  }
-
-  return s;
+  return (this->*(phraseMethods[expansion]))
+    (text, ranksNames, completion);
 }

@@ -1,30 +1,17 @@
 Mention of split honors
 -----------------------
-VerbalCover::fillTopsActual
-Three versions
-The middle one is the one that needs to fill two phrases and not one.
-expandable && ! fullRanked
-So test for this in the four places where it occurs?
-And remove it from fillTopsActual?
-In fillSingular it can't happen due to the if test.
-In fillCompletion we probably need a new sentence.
-In fillOneSided ditto.
-In fillTopsAndLower ditto.
 
+Clean up names and numbers of PHRASE_
+Clean up names and numbers of SENTENCE_
 
 0.
 Put the groups of sentences and phrases into the .txt files.
 Then they come out of Dictionary.cpp and Expand.cpp.
 We just need the map from their string names to their internal numbers.
 
-1. 
-Order and comments of Phrase
-- Phrases without if-then
-- Dereference by function pointer?
+1. Order and comments of VerbalCover
 
-2. Order and comments of VerbalCover
-
-3.
+2.
 When both sides in play, () = ():
 3-3: tripleton
 2-2: doubleton
@@ -41,7 +28,7 @@ LENGTH_WITH_RANGE, expands to PHRASE_NUMERICAL, "%0-%1 cards"
 LENGTH_WITH_ATMOST, expands to PHRASE_NUMERICAL, "with at most %0 cards"
 LENGTH_WITH_ATLEAST, expands to PHRASE_NUMERICAL, "with at least %0 cards"
 
-2. "East has a doubleton chosen from the eight-seven-six"
+3. "East has a doubleton chosen from the eight-seven-six"
 East has two of eight-seven-six doubleton ?
 
 
