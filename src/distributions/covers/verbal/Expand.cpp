@@ -151,7 +151,7 @@ string Expand::get(
       * complIter);
 
     // This is the only case with multiple holdings in a list.
-    if (phrase.getPhrase() == LIST_HOLDING_EXACT)
+    if (phrase.getPhrase() == LIST_HOLDING)
       complIter++;
 
     // Fill in the placeholder.

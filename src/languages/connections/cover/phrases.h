@@ -9,8 +9,6 @@
 #ifndef SSS_PHRASES_H
 #define SSS_PHRASES_H
 
-#include "../../VerbalConnection.h"
-#include "../../PhraseExpansion.h"
 
 enum PhrasesEnum: unsigned
 {
@@ -64,21 +62,12 @@ enum PhrasesEnum: unsigned
   TOPS_SET = 74,
   TOPS_UNSET = 75,
   TOPS_XES = 76,
-  TOPS_CARDS_WORD = 77, // TODO Really a top?
 
-  BELOW_NORMAL = 80,
-  BELOW_COMPLETELY = 81,
+  LIST_HOLDING = 80,
 
-  LIST_HOLDING_EXACT = 90,
-
-  EITHER_WAY = 100,
-  ONE_WAY = 101,
-
-  HONORS_ONE = 110,
-  HONORS_MULTIPLE = 111,
-
-  VERBAL_PHRASE_SIZE = 120
+  VERBAL_PHRASE_SIZE = 90
 };
+
 
 enum PhrasesGroup: unsigned
 {
@@ -89,11 +78,7 @@ enum PhrasesGroup: unsigned
   GROUP_PHRASES_DIGITS = 4,
   GROUP_PHRASES_TOPS = 5,
   GROUP_PHRASES_WORD = 6,
-
-  GROUP_PHRASES_BELOW = 7,
-  GROUP_PHRASES_LIST = 9,
-  GROUP_PHRASES_EITHER_WAY = 10,
-  GROUP_PHRASES_HONORS = 11
+  GROUP_PHRASES_LIST = 7
 
 };
 

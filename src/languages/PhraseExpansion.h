@@ -9,6 +9,7 @@
 #ifndef SSS_PHRASEEXPANSION_H
 #define SSS_PHRASEEXPANSION_H
 
+
 enum PhraseExpansion: unsigned
 {
   PHRASE_NONE = 0,
@@ -30,9 +31,7 @@ enum PhraseExpansion: unsigned
   PHRASE_COMPLETION_UNSET = 12,
   PHRASE_XES = 13,
 
-  PHRASE_SOME_RANK_SET = 14,
-
-  PHRASE_SIZE = 15
+  PHRASE_SIZE = 14
 };
 
 #endif

@@ -848,7 +848,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
     phrases[0].setPhrase(vside.player());
 
-    phrases[1].setPhrase(LIST_HOLDING_EXACT);
+    phrases[1].setPhrase(LIST_HOLDING);
     phrases[1].setSide(vside.side);
     phrases[1].setBools(false);
   }
@@ -909,7 +909,7 @@ void VerbalCover::fillList(const VerbalSide& vside)
 
   for (size_t i = 1; i < phrases.size(); i++)
   {
-    phrases[i].setPhrase(LIST_HOLDING_EXACT);
+    phrases[i].setPhrase(LIST_HOLDING);
     phrases[i].setSide(vside.side);
     phrases[i].setBools(true);
   }
