@@ -367,7 +367,7 @@ void Product::setVerbalLengthOnly(
   const bool symmFlag,
   VerbalCover& verbalCover) const
 {
-  verbalCover.fillLengthOnly(length, sumProfile.length(), symmFlag);
+  verbalCover.fillLength(length, sumProfile.length(), symmFlag);
 }
 
 
@@ -388,7 +388,7 @@ void Product::setVerbalOneTopOnly(
   const VerbalSide vside = 
     {Product::simpler(sumProfile, canonicalShift), symmFlag};
 
-  verbalCover.fillOnetopOnly(
+  verbalCover.fillCountTops(
     tops[topNo], sumProfile[fullTopNo], fullTopNo, vside);
 }
 
@@ -491,7 +491,7 @@ void Product::setVerbalHighTopsEqual(
   else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
   {
     // "West has at most a doubleton completely below the ten".
-    verbalCover.fillBelow(
+    verbalCover.fillLengthBelowTops(
       sumProfile.numBottoms(canonicalShift), numOptions, vside);
   }
   else if (verbalCover.getCompletion().getTopsUsed(otherSide) == 0)

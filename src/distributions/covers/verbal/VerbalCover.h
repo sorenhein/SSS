@@ -47,6 +47,8 @@ class VerbalCover
       const unsigned char upper,
       const unsigned char maximum);
 
+    // Used for lengths.
+
     void getLengthEqualData(
       const unsigned char oppsLength,
       const VerbalSide& vside,
@@ -61,6 +63,8 @@ class VerbalCover
       const unsigned char oppsLength,
       const VerbalSide& vside,
       const bool abstractableFlag);
+
+    // Helper fill functions.
 
     void fillLengthOrdinal(
       const unsigned char oppsLength,
@@ -79,20 +83,35 @@ class VerbalCover
       const VerbalSide& vside,
       Phrase& phrase) const;
 
+    // SENTENCE_TOPS
+    void fillTops(const VerbalSide& vside);
+
 
   public:
 
     VerbalCover();
 
-
-    // Length only
-
     void setLength(const Term& length);
 
     // Fills.
 
-    // SENTENCE_LENGTH_ONLY
-    void fillLengthOnly(
+    // SENTENCE_LENGTH
+    void fillLength(
+      const Term& lengthIn,
+      const unsigned char oppsLength,
+      const bool symmFlag);
+
+    // SENTENCE_TOPS
+    // See above
+
+    // SENTENCE_LENGTH_BELOW_TOPS
+    void fillLengthBelowTops(
+      const unsigned char numBottoms,
+      const unsigned char rankNo,
+      const VerbalSide& vside);
+
+    // SENTENCE_COUNT_TOPS
+    void fillCountTops(
       const Term& lengthIn,
       const unsigned char oppsLength,
       const bool symmFlag);
@@ -104,7 +123,7 @@ class VerbalCover
       const unsigned char onetopIndex,
       const VerbalSide& vside);
 
-    void fillOnetopOnly(
+    void fillCountTops(
       const Term& top,
       const unsigned char oppsSize,
       const unsigned char onetopIndex,
@@ -139,12 +158,6 @@ class VerbalCover
       const Profile& sumProfile,
       const VerbalSide& vside,
       const unsigned char numOptions);
-
-    // SENTENCE_ONLY_BELOW
-    void fillBelow(
-      const unsigned char numBottoms,
-      const unsigned char rankNo,
-      const VerbalSide& vside);
 
     // SENTENCE_TOPS_LENGTH
     void fillSingular(

@@ -197,7 +197,7 @@ void VerbalCover::getLengthData(
 /*                                                                    */
 /**********************************************************************/
 
-void VerbalCover::fillLengthOnly(
+void VerbalCover::fillLength(
   const Term& lengthIn,
   const unsigned char oppsLength,
   const bool symmFlag)
@@ -210,6 +210,50 @@ void VerbalCover::fillLengthOnly(
   const VerbalSide vside = {side, symmFlag};
   VerbalCover::getLengthData(oppsLength, vside, true);
 }
+
+
+void VerbalCover::fillTops(const VerbalSide& vside)
+{
+  sentence = SENTENCE_TOPS;
+
+  phrases.resize(2);
+
+  phrases[0].setPhrase(vside.player());
+
+  VerbalCover::fillTopsActual(vside.side, phrases[1]);
+}
+
+
+void VerbalCover::fillLengthBelowTops(
+  const unsigned char numBottoms,
+  const unsigned char rankNo,
+  const VerbalSide& vside)
+{
+  sentence = SENTENCE_LENGTH_BELOW_TOPS;
+
+  const auto& completion = completions.front();
+  const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
+  const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
+
+  // Make a synthetic length of small cards.
+  VerbalCover::setLength(freeLower, freeUpper, numBottoms);
+
+  // Set templateFills numbers 0 and 1 (and the size of 2).
+  VerbalCover::getLengthData(numBottoms, vside, false);
+  
+  phrases.resize(4);
+
+  if (completion.getFreeUpper(vside.side) == 1)
+    phrases[2].setPhrase(DICT_BELOW);
+  else
+    phrases[2].setPhrase(DICT_BELOW_COMPLETELY);
+
+  phrases[3].setPhrase(TOPS_LOWEST);
+  phrases[3].setValues(rankNo);
+}
+
+
+
 
 
 void VerbalCover::fillOnetopOnlyOld(
@@ -269,7 +313,7 @@ assert(false);
 }
 
 
-void VerbalCover::fillOnetopOnly(
+void VerbalCover::fillCountTops(
   const Term& top,
   const unsigned char oppsSize,
   const unsigned char onetopIndex,
@@ -308,8 +352,6 @@ void VerbalCover::fillOnetopOnly(
   }
   else if (vLower+1 == vUpper)
   {
-    // phrases.resize(3);
-
     phrases[1].setPhrase(COUNT_OR);
     phrases[1].setValues(vLower, vUpper);
 
@@ -319,8 +361,6 @@ void VerbalCover::fillOnetopOnly(
   }
   else
   {
-    // phrases.resize(3);
-
     phrases[1].setPhrase(DIGITS_RANGE);
     phrases[1].setValues(vLower, vUpper);
 
@@ -703,35 +743,6 @@ void VerbalCover::fillTopsAndLower(
 }
 
 
-void VerbalCover::fillBelow(
-  const unsigned char numBottoms,
-  const unsigned char rankNo,
-  const VerbalSide& vside)
-{
-  sentence = SENTENCE_LENGTH_BELOW_TOPS;
-
-  const auto& completion = completions.front();
-  const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
-  const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
-
-  // Make a synthetic length of small cards.
-  VerbalCover::setLength(freeLower, freeUpper, numBottoms);
-
-  // Set templateFills numbers 0 and 1 (and the size of 2).
-  VerbalCover::getLengthData(numBottoms, vside, false);
-  
-  phrases.resize(4);
-
-  if (completion.getFreeUpper(vside.side) == 1)
-    phrases[2].setPhrase(DICT_BELOW);
-  else
-    phrases[2].setPhrase(DICT_BELOW_COMPLETELY);
-
-  phrases[3].setPhrase(TOPS_LOWEST);
-  phrases[3].setValues(rankNo);
-}
-
-
 
 void VerbalCover::fillHonorsOrdinal(
   const unsigned char oppsLength,
@@ -834,13 +845,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   }
   else
   {
-    phrases.resize(2);
-
-    sentence = SENTENCE_TOPS;
-
-    phrases[0].setPhrase(vside.player());
-
-    VerbalCover::fillTopsActual(vside.side, phrases[1]);
+    VerbalCover::fillTops(vside);
   }
 }
 
