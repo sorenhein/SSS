@@ -513,9 +513,9 @@ void VerbalCover::fillTopsBothLength(
   }
 
   if (vside.symmFlag)
-    phrases[4].setPhrase(EITHER_WAY);
+    phrases[4].setPhrase(DICT_EITHER_WAY);
   else
-    phrases[4].setPhrase(ONE_WAY);
+    phrases[4].setPhrase(DICT_ONE_WAY);
 }
 
 
@@ -649,8 +649,10 @@ void VerbalCover::fillTopsAndLower(
       VerbalCover::fillFreeCount(vside, phrases[3]);
 
 
-      phrases[4].setPhrase(TOPS_CARDS_WORD);
-      phrases[4].setBools(freeUpper > 1);
+      if (freeUpper == 1)
+        phrases[4].setPhrase(DICT_CARD);
+      else
+        phrases[4].setPhrase(DICT_CARDS);
     }
     else
     {
@@ -667,8 +669,10 @@ void VerbalCover::fillTopsAndLower(
 
       sentence = SENTENCE_TOPS_AND_LOWER;
 
-      phrases[3].setPhrase(TOPS_CARDS_WORD);
-      phrases[3].setBools(freeUpper > 1);
+      if (freeUpper == 1)
+        phrases[3].setPhrase(DICT_CARD);
+      else
+        phrases[3].setPhrase(DICT_CARDS);
     }
   }
   else
@@ -698,8 +702,12 @@ void VerbalCover::fillTopsAndLower(
 
       // phrases.resize(5);
 
-      phrases[4].setPhrase(TOPS_CARDS_WORD);
-      phrases[4].setBools(freeUpper > 1);
+      if (freeUpper == 1)
+        phrases[4].setPhrase(DICT_CARD);
+      else
+        phrases[4].setPhrase(DICT_CARDS);
+      // phrases[4].setPhrase(TOPS_CARDS_WORD);
+      // phrases[4].setBools(freeUpper > 1);
 
       phrases[5].setPhrase(TOPS_LOWEST);
       phrases[5].setValues(numOptions);
@@ -720,8 +728,10 @@ void VerbalCover::fillTopsAndLower(
       sentence = SENTENCE_TOPS_AND_BELOW;
       phrases.resize(5);
 
-      phrases[3].setPhrase(TOPS_CARDS_WORD);
-      phrases[3].setBools(freeUpper > 1);
+      if (freeUpper == 1)
+        phrases[3].setPhrase(DICT_CARD);
+      else
+        phrases[3].setPhrase(DICT_CARDS);
 
       phrases[4].setPhrase(TOPS_LOWEST);
       phrases[4].setValues(numOptions);
@@ -751,9 +761,9 @@ void VerbalCover::fillBelow(
   phrases.resize(4);
 
   if (completion.getFreeUpper(vside.side) == 1)
-    phrases[2].setPhrase(BELOW_NORMAL);
+    phrases[2].setPhrase(DICT_BELOW);
   else
-    phrases[2].setPhrase(BELOW_COMPLETELY);
+    phrases[2].setPhrase(DICT_BELOW_COMPLETELY);
 
   phrases[3].setPhrase(TOPS_LOWEST);
   phrases[3].setValues(rankNo);
@@ -761,27 +771,11 @@ void VerbalCover::fillBelow(
 
 
 
-void VerbalCover::fillHonorsEqual(
-  const unsigned char numHonors,
-  Phrase& phrase) const
-{
-  if (numHonors == 1)
-  {
-    phrase.setPhrase(HONORS_ONE);
-  }
-  else
-  {
-    phrase.setPhrase(HONORS_MULTIPLE);
-    phrase.setValues(numHonors);
-  }
-}
-
-
 void VerbalCover::fillHonorsOrdinal(
   const unsigned char oppsLength,
   const VerbalSide& vside)
 {
-  phrases.resize(3);
+  phrases.resize(4);
 
   const Completion& completion = completions.front();
   const Opponent side = vside.side;
@@ -790,10 +784,14 @@ void VerbalCover::fillHonorsOrdinal(
 
   phrases[0].setPhrase(vside.player());
 
-  VerbalCover::fillHonorsEqual(
-    completion.getTopsUsed(side), phrases[1]);
+  const unsigned char numHonors = completion.getTopsUsed(side);
 
-  VerbalCover::fillLengthOrdinal(oppsLength, side, phrases[2]);
+  phrases[1].setPhrase(COUNT_EXACT);
+  phrases[1].setValues(numHonors);
+
+  phrases[2].setPhrase(numHonors == 1 ? DICT_HONOR : DICT_HONORS);
+
+  VerbalCover::fillLengthOrdinal(oppsLength, side, phrases[3]);
 }
 
 

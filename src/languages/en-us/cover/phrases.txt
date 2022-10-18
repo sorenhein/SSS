@@ -152,4 +152,29 @@ string "one honor"
 name HONORS_MULTIPLE
 string "%0 honors"
 
+name DICT_CARD
+string "card"
 
+name DICT_CARDS
+string "cards"
+
+name DICT_HONOR
+string "honor"
+
+name DICT_HONORS
+string "honors"
+
+name DICT_MID_HONOR
+string "mid-honors"
+
+name DICT_BELOW
+string "below"
+
+name DICT_BELOW_COMPLETELY
+string "completely below"
+
+name DICT_EITHER_WAY
+string "either way"
+
+name DICT_ONE_WAY
+string ""

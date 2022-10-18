@@ -71,10 +71,6 @@ class VerbalCover
       const Opponent side,
       Phrase& phrase);
 
-    void fillHonorsEqual(
-      const unsigned char numHonors,
-      Phrase& phrase) const;
-
     void fillHonorsOrdinal(
       const unsigned char oppsLength,
       const VerbalSide& vside);

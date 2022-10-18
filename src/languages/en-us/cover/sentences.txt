@@ -127,7 +127,7 @@ string "%0 has a %1 chosen from %2"
 # %1: Honors
 # %2: Ordinal
 name SENTENCE_HONORS_ORDINAL
-string "%0 has exactly %1 %2"
+string "%0 has exactly %1 %2 %3"
 
 # Example: West has AT, QT or Tx.
 # The list has up to four entries.  The unused variables are purged.

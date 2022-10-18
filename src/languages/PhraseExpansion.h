@@ -30,10 +30,9 @@ enum PhraseExpansion: unsigned
   PHRASE_COMPLETION_UNSET = 12,
   PHRASE_XES = 13,
 
-  PHRASE_SOME_RANK_SET = 15,
+  PHRASE_SOME_RANK_SET = 14,
 
-
-  PHRASE_SIZE = 25
+  PHRASE_SIZE = 15
 };
 
 #endif
