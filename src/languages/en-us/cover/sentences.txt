@@ -115,6 +115,18 @@ name SENTENCE_EXACTLY_LIST
 string "%0 has exactly %1, %2, %3, %4"
 
 
+name SENTENCE_2SPLIT_TOPS_SYMM
+string "The key cards split %0 / %1 either way"
+
+name SENTENCE_2SPLIT_TOPS_ASYMM
+string "The key cards split %0 = %1"
+
+name SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
+string "The key cards split (%0 with %1 cards) / (%2 with %3 cards) either way"
+
+name SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
+string "The key cards split (%0 with %1 cards) = (%2 with %3 cards)"
+
 
 
 # Example: West has AK fourth and neither of T9
