@@ -75,7 +75,7 @@ class VerbalCover
       const Opponent side,
       Phrase& phrase);
 
-    void fillHonorsOrdinal(
+    void fillCountHonorsOrdinal(
       const unsigned char oppsLength,
       const VerbalSide& vside);
 
@@ -116,6 +116,42 @@ class VerbalCover
       const unsigned char oppsLength,
       const bool symmFlag);
 
+    // SENTENCE_FILL_ORDINAL_FROM_TOPS
+    void fillOrdinalFromTops(
+      const VerbalSide& vside,
+      const unsigned char lenCompletion);
+
+ 
+    // SENTENCE_COUNT_TOPS
+    // TODO Occurs multiple times
+
+    // SENTENCE_EXACTLY_COUNT_TOPS
+    void fillExactlyCountTops(const VerbalSide& vside);
+
+    // SENTENCE_TOPS_ORDINAL
+
+    // SENTENCE_COUNT_TOPS_ORDINAL
+
+    // SENTENCE_COUNT_HONORS_ORDINAL
+    // See above
+
+    // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
+    // SENTENCE_TOPS_AND_LOWER
+    // SENTENCE_EXACTLY_TOPS_AND_LOWER
+    // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+    // SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
+
+    // SENTENCE_TOPS_AND_XES
+    void fillTopsAndXes(const VerbalSide& vside);
+
+    // SENTENCE_EXACTLY_LIST
+    // SENTENCE_2SPLIT_TOPS_SYMM
+    // SENTENCE_2SPLIT_TOPS_ASYMM
+    // SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
+    // SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
+
+
+
     // SENTENCE_ONETOP
     void fillOnetopOnlyOld(
       const Term& top,
@@ -149,9 +185,6 @@ class VerbalCover
 
     // SENTENCE_TOPS_BOTH
     void fillTopsBoth(const VerbalSide& vside);
-
-    // SENTENCE_TOPS_AND_XES
-    void fillTopsAndXes(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLower(
