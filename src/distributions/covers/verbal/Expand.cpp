@@ -34,6 +34,14 @@ Expand::Expand()
   groupCheck[SENTENCE_TOPS] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS };
 
+  groupCheck[SENTENCE_LENGTH_BELOW_TOPS] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH, 
+      GROUP_PHRASES_WORD, GROUP_PHRASES_TOPS };
+
+  groupCheck[SENTENCE_ORDINAL_FROM_TOPS] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_ORDINAL, 
+      GROUP_PHRASES_TOPS };
+
   groupCheck[SENTENCE_COUNT_TOPS] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, GROUP_PHRASES_TOPS };
 
@@ -47,6 +55,10 @@ Expand::Expand()
   groupCheck[SENTENCE_COUNT_TOPS_ORDINAL] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, 
       GROUP_PHRASES_TOPS, GROUP_PHRASES_ORDINAL };
+
+  groupCheck[SENTENCE_COUNT_HONORS_ORDINAL] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT,
+      GROUP_PHRASES_WORD, GROUP_PHRASES_ORDINAL };
 
   groupCheck[SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL] =
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, 
@@ -71,6 +83,15 @@ Expand::Expand()
     { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
       GROUP_PHRASES_TOPS };
 
+  groupCheck[SENTENCE_TOPS_AND_XES] =
+    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
+
+  // Up to 4 such holdings currently foreseen.
+  groupCheck[SENTENCE_EXACTLY_LIST] =
+    { GROUP_PHRASES_PLAYER, 
+      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST, 
+      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST };
+
 
 
   groupCheck[SENTENCE_TOPS_BOTH_LENGTH] =
@@ -83,35 +104,6 @@ Expand::Expand()
 
   groupCheck[SENTENCE_TOPS_BOTH_NOT_SYMM] = 
     { GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_TOPS_AND_XES] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_TOPS_AND_BELOW_NEW] =
-    { GROUP_PHRASES_PLAYER, 
-      GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, 
-      GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, 
-      GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_ONLY_BELOW] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH, 
-      GROUP_PHRASES_WORD, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_SINGULAR_EXACT] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_ORDINAL, 
-      GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_HONORS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT,
-      GROUP_PHRASES_WORD, GROUP_PHRASES_ORDINAL };
-
-  // Up to 4 such holdings currently foreseen.
-  groupCheck[SENTENCE_LIST] =
-    { GROUP_PHRASES_PLAYER, 
-      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST, 
-      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST };
 }
 
 
@@ -125,7 +117,7 @@ string Expand::get(
   const auto& vtgroups = groupCheck[sentence];
 
   // A list has room for up to 4 entries, but they need not be present.
-  if (sentence != SENTENCE_LIST)
+  if (sentence != SENTENCE_EXACTLY_LIST)
     assert(phrases.size() == vtgroups.size());
 
   string expansion = dictionary.coverSentences.get(sentence).text;
@@ -162,7 +154,7 @@ string Expand::get(
     expansion.replace(p, 2, fill);
   }
 
-  if (sentence == SENTENCE_LIST)
+  if (sentence == SENTENCE_EXACTLY_LIST)
   {
     // Eliminate the trailing placeholders in a list.
     for ( ; field < vtgroups.size(); field++)

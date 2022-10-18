@@ -11,6 +11,21 @@ string "%0 %1"
 name SENTENCE_TOPS
 string "%0 has %1"
 
+# Example: West has a doubleton below the T
+# %0: Player
+# %1: Length
+# %2: Below indicator
+# %3: Holding
+name SENTENCE_LENGTH_BELOW_TOPS
+string "%0 %1 %2 %3"
+
+# Example: West has a doubleton chosen from king-queen-jack
+# %0: Player
+# %1: Length ordinal
+# %3: Holding
+name SENTENCE_ORDINAL_FROM_TOPS
+string "%0 has a %1 chosen from %2"
+
 # Example: West has the king
 # %0: Player
 # %1: Count
@@ -40,6 +55,14 @@ string "%0 has %1 %2"
 name SENTENCE_COUNT_TOPS_ORDINAL
 string "%0 has %1 %2 %3"
 
+# Example: East has exactly one honor at most doubleton"
+# Example: East has exactly two honors doubleton"
+# %0: Player
+# %1: Honors
+# %2: Ordinal
+name SENTENCE_COUNT_HONORS_ORDINAL
+string "%0 has exactly %1 %2 %3"
+
 # Example: West has AK fourth
 # %0: Player
 # %1: Holding
@@ -64,8 +87,33 @@ string "%0 has %1 and %2, lower-ranked %3"
 name SENTENCE_EXACTLY_TOPS_AND_LOWER
 string "%0 has exactly %1 %2 and %3, lower-ranked %4"
 
+# Example: West has AQ and 1-2 cards below the T
+# %0: Player
+# %1: Holding
+# %2: Count
+# %3: Card count indicator
+# %4: Holding
+name SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+string "%0 has %1 and %2 %3 below %4"
+
 name SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
 string "%0 has exactly %1(%2)"
+
+# Example: West has AKJx(x)
+# %0: Player
+# %1: Holding
+# %2: Holding
+name SENTENCE_TOPS_AND_XES
+string "%0 has %1%2"
+
+# Example: West has AT, QT or Tx.
+# The list has up to four entries.  The unused variables are purged.
+# last ',' is replaced with ' or', where the word is in words.txt.
+# %0: Player
+# %x: Holdings
+name SENTENCE_EXACTLY_LIST
+string "%0 has exactly %1, %2, %3, %4"
+
 
 
 
@@ -85,59 +133,3 @@ string "The key cards split %0 / %1 either way"
 # %0: Both (two holdings)
 name SENTENCE_TOPS_BOTH_NOT_SYMM
 string "The key cards split %0 = %1"
-
-# Example: West has AKJx(x)
-# %0: Player
-# %1: Holding
-# %2: Holding
-name SENTENCE_TOPS_AND_XES
-string "%0 has %1%2"
-
-# Example: West has AQ and 1-2 cards below the T
-# %0: Player
-# %1: Holding
-# %2: Count
-# %3: Card count indicator
-# %4: Holding
-name SENTENCE_TOPS_AND_COUNT_BELOW_CARD
-string "%0 has %1 and %2 %3 below %4"
-
-# Example: West has AQ and 1-2 cards below the T
-# %0: Player
-# %1: Holding
-# %2: Count
-# %3: Card count indicator
-# %4: Holding
-name SENTENCE_TOPS_AND_BELOW_NEW
-string "%0 has %1 %2 and %2 %3 below %4"
-
-# Example: West has a doubleton below the T
-# %0: Player
-# %1: Length
-# %2: Below indicator
-# %3: Holding
-name SENTENCE_ONLY_BELOW
-string "%0 %1 %2 %3"
-
-# Example: West has a doubleton chosen from king-queen-jack
-# %0: Player
-# %1: Length ordinal
-# %3: Holding
-name SENTENCE_SINGULAR_EXACT
-string "%0 has a %1 chosen from %2"
-
-# Example: East has exactly one honor at most doubleton"
-# Example: East has exactly two honors doubleton"
-# %0: Player
-# %1: Honors
-# %2: Ordinal
-name SENTENCE_HONORS_ORDINAL
-string "%0 has exactly %1 %2 %3"
-
-# Example: West has AT, QT or Tx.
-# The list has up to four entries.  The unused variables are purged.
-# last ',' is replaced with ' or', where the word is in words.txt.
-# %0: Player
-# %x: Holdings
-name SENTENCE_LIST
-string "%0 has exactly %1, %2, %3, %4"

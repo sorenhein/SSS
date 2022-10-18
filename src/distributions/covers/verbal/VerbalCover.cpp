@@ -677,67 +677,30 @@ void VerbalCover::fillTopsAndLower(
   }
   else
   {
-    if (completion.expandable(vside.side) &&
-        ! completion.fullRanked(vside.side))
-    {
-assert(false);
-      sentence = SENTENCE_TOPS_AND_BELOW_NEW;
+    assert((! completion.expandable(vside.side)) ||
+        completion.fullRanked(vside.side));
 
-      phrases.resize(6);
+    phrases.resize(4);
 
-      phrases[0].setPhrase(vside.player());
+    phrases[0].setPhrase(vside.player());
 
-      const unsigned char len = completion.getTopsUsed(vside.side);
+    VerbalCover::fillTopsActual(vside.side, phrases[1]);
 
-      phrases[1].setPhrase(COUNT_EXACT);
-      phrases[1].setValues(len);
+    const unsigned char freeLower = completion.getFreeLower(vside.side);
+    const unsigned char freeUpper = completion.getFreeUpper(vside.side);
 
-      phrases[2].setPhrase(TOPS_OF_DEFINITE);
-      phrases[2].setValues(completion.getLowestRankActive(vside.side));
-      phrases[2].setBools(len > 1);
+    VerbalCover::fillFreeCount(vside, phrases[2]);
 
-      const unsigned char freeLower = completion.getFreeLower(vside.side);
-      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
+    sentence = SENTENCE_TOPS_AND_COUNT_BELOW_CARD;
+    phrases.resize(5);
 
-      VerbalCover::fillFreeCount(vside, phrases[3]);
-
-      // phrases.resize(5);
-
-      if (freeUpper == 1)
-        phrases[4].setPhrase(DICT_CARD);
-      else
-        phrases[4].setPhrase(DICT_CARDS);
-      // phrases[4].setPhrase(TOPS_CARDS_WORD);
-      // phrases[4].setBools(freeUpper > 1);
-
-      phrases[5].setPhrase(TOPS_LOWEST);
-      phrases[5].setValues(numOptions);
-    }
+    if (freeUpper == 1)
+      phrases[3].setPhrase(DICT_CARD);
     else
-    {
-      phrases.resize(4);
+      phrases[3].setPhrase(DICT_CARDS);
 
-      phrases[0].setPhrase(vside.player());
-
-      VerbalCover::fillTopsActual(vside.side, phrases[1]);
-
-      const unsigned char freeLower = completion.getFreeLower(vside.side);
-      const unsigned char freeUpper = completion.getFreeUpper(vside.side);
-
-      VerbalCover::fillFreeCount(vside, phrases[2]);
-
-      sentence = SENTENCE_TOPS_AND_COUNT_BELOW_CARD;
-      phrases.resize(5);
-
-      if (freeUpper == 1)
-        phrases[3].setPhrase(DICT_CARD);
-      else
-        phrases[3].setPhrase(DICT_CARDS);
-
-      phrases[4].setPhrase(TOPS_LOWEST);
-      phrases[4].setValues(numOptions);
-    }
-
+    phrases[4].setPhrase(TOPS_LOWEST);
+    phrases[4].setValues(numOptions);
   }
 }
 
@@ -747,7 +710,7 @@ void VerbalCover::fillBelow(
   const unsigned char rankNo,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_ONLY_BELOW;
+  sentence = SENTENCE_LENGTH_BELOW_TOPS;
 
   const auto& completion = completions.front();
   const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
@@ -781,7 +744,7 @@ void VerbalCover::fillHonorsOrdinal(
   const Completion& completion = completions.front();
   const Opponent side = vside.side;
 
-  sentence = SENTENCE_HONORS_ORDINAL;
+  sentence = SENTENCE_COUNT_HONORS_ORDINAL;
 
   phrases[0].setPhrase(vside.player());
 
@@ -823,7 +786,7 @@ void VerbalCover::fillSingular(
   }
   else
   {
-    sentence = SENTENCE_SINGULAR_EXACT;
+    sentence = SENTENCE_ORDINAL_FROM_TOPS;
 
     phrases[0].setPhrase(vside.player());
 
@@ -845,7 +808,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
   {
     phrases.resize(2);
 
-    sentence = SENTENCE_LIST;
+    sentence = SENTENCE_EXACTLY_LIST;
 
     phrases[0].setPhrase(vside.player());
 
@@ -903,7 +866,7 @@ void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 
 void VerbalCover::fillList(const VerbalSide& vside)
 {
-  sentence = SENTENCE_LIST;
+  sentence = SENTENCE_EXACTLY_LIST;
 
   phrases.resize(completions.size() + 1);
   phrases[0].setPhrase(vside.player());
