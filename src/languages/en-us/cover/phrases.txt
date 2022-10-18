@@ -17,64 +17,60 @@ name PLAYER_SUIT
 string "The suit"
 
 
-name LENGTH_VERB_VOID
+name LENGTH_VOID
 string "is void"
 
-name LENGTH_VERB_NOT_VOID
+name LENGTH_NOT_VOID
 string "is not void"
 
 # Example: has a singleton
-name LENGTH_VERB_XTON
+name LENGTH_XTON
 string "has a %0"
 
-name LENGTH_VERB_EVENLY
+name LENGTH_EVENLY
 string "splits evenly"
 
-name LENGTH_VERB_ODD_EVENLY
+name LENGTH_ODD_EVENLY
 string "splits evenly either way"
 
 # Example: has at most a doubleton
-name LENGTH_VERB_XTON_ATMOST
+name LENGTH_XTON_ATMOST
 string "has at most a %0"
 
-# Example: Has two cards
-# name LENGTH_VERB_CARDS
-# string "has %0 cards"
-
 # Example: Has at most two cards
-name LENGTH_VERB_ATMOST
+name LENGTH_ATMOST
 string "has at most %0 cards"
 
-name LENGTH_VERB_12
+name LENGTH_12
 string "has a singleton or doubleton"
 
 # Example: Has 2-3 cards
-name LENGTH_VERB_RANGE
+name LENGTH_RANGE
 string "has %0-%1 cards"
 
 # Example: Has between two and four cards
-name LENGTH_VERB_BETWEEN
+name LENGTH_BETWEEN
 string "has between %0 and %1 cards"
 
 # Example: [The suit] splits 2=3
-name LENGTH_VERB_SPLIT
+name LENGTH_SPLIT
 string "splits %0=%1"
 
 
 # Example: third
-name LENGTH_ORDINAL_EXACT
+name ORDINAL_EXACT
 string "%0"
 
 # Example: at most third
-name LENGTH_ORDINAL_ATMOST
+name ORDINAL_ATMOST
 string "at most %0"
 
 # Example: singleton or doubleton
-name LENGTH_ORDINAL_ADJACENT
+name ORDINAL_ADJACENT
 string "%0 or %1"
 
 # Example: doubleton to fourth
-name LENGTH_ORDINAL_RANGE
+name ORDINAL_RANGE
 string "between %0 and %1"
 
 
@@ -99,7 +95,16 @@ name COUNT_OR
 string "%0 or %1"
 
 
+# Example: 1-2
+name DIGITS_RANGE
+string "%0-%1"
+
+
+
 name TOPS_LOWEST
+string "%0"
+
+name TOPS_INDEFINITE
 string "%0"
 
 name TOPS_DEFINITE
@@ -111,28 +116,14 @@ string "%0"
 name TOPS_SET
 string "%0"
 
+name TOPS_UNSET
+string "%0"
+
+name TOPS_XES
+string "%0"
+
+# TODO Really a top?
 name TOPS_CARDS_WORD
-string "%0"
-
-
-# Example: ace-king with 2-3 cards
-# %0: Holding
-# %1: Numeral
-# %2: Numeral
-name BOTH_ONE_PLAYER_INDEF_LENGTH
-string "%0"
-
-# Example: ace-king with 2-3 cards
-# %0: Holding
-# %1: Numeral
-# %2: Numeral
-name BOTH_ONE_PLAYER_SET_LENGTH
-string "%0"
-
-name ONE_PLAYER_SET
-string "%0"
-
-name ONE_PLAYER_UNSET
 string "%0"
 
 
@@ -142,10 +133,6 @@ string "below"
 name BELOW_COMPLETELY
 string "completely below"
 
-
-# Example: x(xx)
-name BOTTOMS_NORMAL
-string "%0"
 
 
 # Example: KQT
@@ -166,10 +153,3 @@ name HONORS_MULTIPLE
 string "%0 honors"
 
 
-# Example: 1-2
-name DIGITS_RANGE
-string "%0-%1"
-
-
-name OF_DEFINITE_RANK
-string "%0"

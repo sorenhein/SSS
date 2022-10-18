@@ -70,14 +70,14 @@ void VerbalCover::getLengthEqualData(
   if (value == 0)
   {
     phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(LENGTH_VERB_VOID);
+    phrases[1].setPhrase(LENGTH_VOID);
   }
   else if (value == 1 ||
     (value == 2 && (! abstractableFlag || oppsLength > 4)) ||
     (value == 3 && (! abstractableFlag || oppsLength > 6)))
   {
     phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(LENGTH_VERB_XTON);
+    phrases[1].setPhrase(LENGTH_XTON);
     phrases[1].setValues(value);
   }
   else if (! abstractableFlag)
@@ -87,12 +87,12 @@ void VerbalCover::getLengthEqualData(
   else if (value + value == oppsLength)
   {
     phrases[0].setPhrase(PLAYER_SUIT);
-    phrases[1].setPhrase(LENGTH_VERB_EVENLY);
+    phrases[1].setPhrase(LENGTH_EVENLY);
   }
   else
   {
     phrases[0].setPhrase(PLAYER_SUIT);
-    phrases[1].setPhrase(LENGTH_VERB_SPLIT);
+    phrases[1].setPhrase(LENGTH_SPLIT);
     phrases[1].setValues(length.lower(), oppsLength - length.lower());
   }
 }
@@ -113,18 +113,18 @@ void VerbalCover::getLengthInsideData(
     if (vUpper+1 == oppsLength && abstractableFlag)
     {
       phrases[0].setPhrase(vside.otherPlayer());
-      phrases[1].setPhrase(LENGTH_VERB_NOT_VOID);
+      phrases[1].setPhrase(LENGTH_NOT_VOID);
     }
     else if (vUpper <= 3)
     {
       phrases[0].setPhrase(vside.player());
-      phrases[1].setPhrase(LENGTH_VERB_XTON_ATMOST);
+      phrases[1].setPhrase(LENGTH_XTON_ATMOST);
       phrases[1].setValues(vUpper);
     }
     else
     {
       phrases[0].setPhrase(vside.player());
-      phrases[1].setPhrase(LENGTH_VERB_ATMOST);
+      phrases[1].setPhrase(LENGTH_ATMOST);
       phrases[1].setValues(vUpper);
     }
   }
@@ -133,43 +133,43 @@ void VerbalCover::getLengthInsideData(
     if (vLower == 1 && vUpper == 2)
     {
       phrases[0].setPhrase(vside.player());
-      phrases[1].setPhrase(LENGTH_VERB_12);
+      phrases[1].setPhrase(LENGTH_12);
     }
     else
     {
       phrases[0].setPhrase(vside.player());
       phrases[1].setPhrase(
-        vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
+        vLower+1 == vUpper ? LENGTH_RANGE : LENGTH_BETWEEN);
       phrases[1].setValues(vLower, vUpper);
     }
   }
   else if (vLower == 1 && vUpper+1 == oppsLength)
   {
     phrases[0].setPhrase(PLAYER_NEITHER);
-    phrases[1].setPhrase(LENGTH_VERB_VOID);
+    phrases[1].setPhrase(LENGTH_VOID);
   }
   else if (vLower+1 == vUpper && vLower + vUpper == oppsLength)
   {
     phrases[0].setPhrase(PLAYER_SUIT);
-    phrases[1].setPhrase(LENGTH_VERB_ODD_EVENLY);
+    phrases[1].setPhrase(LENGTH_ODD_EVENLY);
   }
   else if (vLower + vUpper == oppsLength)
   {
     phrases[0].setPhrase(PLAYER_EACH);
     phrases[1].setPhrase(
-      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
+      vLower+1 == vUpper ? LENGTH_RANGE : LENGTH_BETWEEN);
     phrases[1].setValues(vLower, vUpper);
   }
   else if (vLower == 1 && vUpper == 2)
   {
     phrases[0].setPhrase(vside.player());
-    phrases[1].setPhrase(LENGTH_VERB_12);
+    phrases[1].setPhrase(LENGTH_12);
   }
   else
   {
     phrases[0].setPhrase(vside.player());
     phrases[1].setPhrase(
-      vLower+1 == vUpper ? LENGTH_VERB_RANGE : LENGTH_VERB_BETWEEN);
+      vLower+1 == vUpper ? LENGTH_RANGE : LENGTH_BETWEEN);
     phrases[1].setValues(vLower, vUpper);
   }
 }
@@ -236,7 +236,7 @@ void VerbalCover::fillOnetopOnlyOld(
     phrases[1].setPhrase(COUNT_ATMOST);
     phrases[1].setValues(vUpper);
 
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setPhrase(TOPS_OF_DEFINITE);
     phrases[2].setValues(onetopIndex);
     phrases[2].setBools(vUpper > 1);
   }
@@ -245,7 +245,7 @@ void VerbalCover::fillOnetopOnlyOld(
     phrases[1].setPhrase(COUNT_ATLEAST);
     phrases[1].setValues(vLower);
 
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setPhrase(TOPS_OF_DEFINITE);
     phrases[2].setValues(onetopIndex);
     phrases[2].setBools(vLower > 1);
   }
@@ -254,7 +254,7 @@ void VerbalCover::fillOnetopOnlyOld(
     phrases[1].setPhrase(COUNT_OR);
     phrases[1].setValues(vLower, vUpper);
 
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setPhrase(TOPS_OF_DEFINITE);
     phrases[2].setValues(onetopIndex);
     phrases[2].setBools(vUpper > 1);
   }
@@ -341,22 +341,22 @@ void VerbalCover::fillLengthOrdinal(
 
   if (vLower == vUpper)
   {
-    phrase.setPhrase(LENGTH_ORDINAL_EXACT);
+    phrase.setPhrase(ORDINAL_EXACT);
     phrase.setValues(vLower);
   }
   else if (vLower == 0)
   {
-    phrase.setPhrase(LENGTH_ORDINAL_ATMOST);
+    phrase.setPhrase(ORDINAL_ATMOST);
     phrase.setValues(vUpper);
   }
   else if (vLower + 1 == vUpper)
   {
-    phrase.setPhrase(LENGTH_ORDINAL_ADJACENT);
+    phrase.setPhrase(ORDINAL_ADJACENT);
     phrase.setValues(vLower, vUpper);
   }
   else
   {
-    phrase.setPhrase(LENGTH_ORDINAL_RANGE);
+    phrase.setPhrase(ORDINAL_RANGE);
     phrase.setValues(vLower, vUpper);
   }
 }
@@ -424,7 +424,7 @@ void VerbalCover::fillOnesided(
     phrases[1].setPhrase(COUNT_EXACT);
     phrases[1].setValues(len);
 
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setPhrase(TOPS_OF_DEFINITE);
     phrases[2].setValues(completion.getLowestRankActive(vside.side));
     phrases[2].setBools(len > 1);
 
@@ -466,13 +466,13 @@ void VerbalCover::fillTopsBothLength(
 
   if (bothExpandableFlag)
   {
-    phrases[0].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[0].setPhrase(TOPS_INDEFINITE);
     phrases[0].setValues(completion.getLowestRankActive(vside.side));
 
     phrases[1].setPhrase(DIGITS_RANGE);
     phrases[1].setValues(length.lower(), length.upper());
 
-    phrases[2].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[2].setPhrase(TOPS_INDEFINITE);
     phrases[2].setValues(completion.getLowestRankActive(sideOther));
 
     phrases[3].setPhrase(DIGITS_RANGE);
@@ -497,7 +497,7 @@ void VerbalCover::fillTopsBothLength(
     unsigned char vLower, vUpper;
     length.range(sumProfile.length(), side1, vLower, vUpper);
 
-    phrases[0].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[0].setPhrase(TOPS_SET);
     phrases[0].setSide(side1);
 
     phrases[1].setPhrase(DIGITS_RANGE);
@@ -505,7 +505,7 @@ void VerbalCover::fillTopsBothLength(
 
     length.range(sumProfile.length(), side2, vLower, vUpper);
 
-    phrases[2].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[2].setPhrase(TOPS_SET);
     phrases[2].setSide(side2);
 
     phrases[3].setPhrase(DIGITS_RANGE);
@@ -549,18 +549,18 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 
   if (bothExpandableFlag)
   {
-    phrases[0].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[0].setPhrase(TOPS_INDEFINITE);
     phrases[0].setValues(completion.getLowestRankActive(side1));
 
-    phrases[1].setPhrase(BOTH_ONE_PLAYER_INDEF_LENGTH);
+    phrases[1].setPhrase(TOPS_INDEFINITE);
     phrases[1].setValues(completion.getLowestRankActive(side2));
   }
   else
   {
-    phrases[0].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[0].setPhrase(TOPS_SET);
     phrases[0].setSide(side1);
 
-    phrases[1].setPhrase(BOTH_ONE_PLAYER_SET_LENGTH);
+    phrases[1].setPhrase(TOPS_SET);
     phrases[1].setSide(side2);
   }
 }
@@ -577,7 +577,7 @@ void VerbalCover::fillTopsAndXes(const VerbalSide& vside)
   phrases[1].setSide(vside.side);
   phrases[1].setBools(false);
 
-  phrases[2].setPhrase(BOTTOMS_NORMAL);
+  phrases[2].setPhrase(TOPS_XES);
   phrases[2].setSide(vside.side);
 }
 
@@ -634,19 +634,12 @@ void VerbalCover::fillTopsAndLower(
 
       phrases[0].setPhrase(vside.player());
 
-      /*
-      phrases[1].setPhrase(TOPS_SOME_ACTUAL);
-      phrases[1].setValues(
-        completion.getTopsUsed(vside.side),
-        completion.getLowestRankActive(vside.side));
-        */
-
       const unsigned char len = completion.getTopsUsed(vside.side);
 
       phrases[1].setPhrase(COUNT_EXACT);
       phrases[1].setValues(len);
 
-      phrases[2].setPhrase(OF_DEFINITE_RANK);
+      phrases[2].setPhrase(TOPS_OF_DEFINITE);
       phrases[2].setValues(completion.getLowestRankActive(vside.side));
       phrases[2].setBools(len > 1);
 
@@ -694,7 +687,7 @@ void VerbalCover::fillTopsAndLower(
       phrases[1].setPhrase(COUNT_EXACT);
       phrases[1].setValues(len);
 
-      phrases[2].setPhrase(OF_DEFINITE_RANK);
+      phrases[2].setPhrase(TOPS_OF_DEFINITE);
       phrases[2].setValues(completion.getLowestRankActive(vside.side));
       phrases[2].setBools(len > 1);
 
@@ -822,7 +815,7 @@ void VerbalCover::fillSingular(
 
     VerbalCover::fillTopsActual(side, phrases[1]);
 
-    phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[2].setPhrase(ORDINAL_EXACT);
     phrases[2].setValues(lenCompletion);
   }
   else if (completion.highRanked(side))
@@ -835,7 +828,7 @@ void VerbalCover::fillSingular(
 
     phrases[0].setPhrase(vside.player());
 
-    phrases[1].setPhrase(LENGTH_ORDINAL_EXACT);
+    phrases[1].setPhrase(ORDINAL_EXACT);
     phrases[1].setValues(lenCompletion);
 
     phrases[2].setPhrase(TOPS_DEFINITE);
@@ -875,7 +868,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
     phrases[1].setPhrase(COUNT_EXACT);
     phrases[1].setValues(len);
 
-    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setPhrase(TOPS_OF_DEFINITE);
     phrases[2].setValues(completion.getLowestRankActive(vside.side));
     phrases[2].setBools(len > 1);
   }
@@ -900,11 +893,11 @@ void VerbalCover::fillCompletionWithLows(const VerbalSide& vside)
 
   phrases[0].setPhrase(vside.player());
 
-  phrases[1].setPhrase(ONE_PLAYER_SET);
+  phrases[1].setPhrase(TOPS_SET);
   phrases[1].setSide(vside.side);
   phrases[1].setBools(false);
 
-  phrases[2].setPhrase(ONE_PLAYER_UNSET);
+  phrases[2].setPhrase(TOPS_UNSET);
   phrases[2].setSide(vside.side);
 }
 
