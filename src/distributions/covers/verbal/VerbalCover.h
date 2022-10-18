@@ -69,6 +69,7 @@ class VerbalCover
 
     void fillTopsActual(
       const Opponent side,
+      const string& prefix,
       Phrase& phrase);
 
     void fillHonorsEqual(

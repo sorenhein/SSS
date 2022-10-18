@@ -1,15 +1,15 @@
 Mention of split honors
 -----------------------
-fillOnetopOnly gets used for two things:
-1. To fill SENTENCE_COUNT_ONETOP which now has 3 entries.
-2. In fillOnetopLength which resets to SENTENCE_TOPS_LENGTH and
-has 2+1 entries, with the 2 used to coming from fillOnetopOnly.
-SENTENCE_TOPS_LENGTH in turn gets used in several cases, so not
-that easy to modify.
-
-So fillOnetopLength should no longer use fillOnetopOnly.
-Instead we need the old version of that method back.
-Look in Sourcetree what it used to be.
+VerbalCover::fillTopsActual
+Three versions
+The middle one is the one that needs to fill two phrases and not one.
+expandable && ! fullRanked
+So test for this in the four places where it occurs?
+And remove it from fillTopsActual?
+In fillSingular it can't happen due to the if test.
+In fillCompletion we probably need a new sentence.
+In fillOneSided ditto.
+In fillTopsAndLower ditto.
 
 
 0.

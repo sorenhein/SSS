@@ -15,7 +15,7 @@
 class RanksNames;
 class Completion;
 
-enum VerbalPhrase: unsigned;
+// enum VerbalPhrase: unsigned;
 enum Opponent: unsigned;
 enum PhrasesEnum: unsigned;
 enum PhraseExpansion: unsigned;

@@ -386,25 +386,31 @@ void VerbalCover::fillOnetopLength(
 
 void VerbalCover::fillTopsActual(
   const Opponent side,
+  [[maybe_unused]] const string& prefix,
   Phrase& phrase)
 {
   const Completion& completion = completions.front();
 
   if (! completion.expandable(side))
   {
+// cout << "\nXX " << prefix << "0\n";
     phrase.setPhrase(TOPS_ACTUAL);
     phrase.setSide(side);
     phrase.setBools(false);
   }
+  /*
   else if (! completion.fullRanked(side))
   {
+cout << "\nXX " << prefix << "1\n";
     phrase.setPhrase(TOPS_SOME_ACTUAL);
     phrase.setValues(
       completion.getTopsUsed(side),
       completion.getLowestRankActive(side));
   }
+  */
   else
   {
+// cout << "\nXX " << prefix << "2\n";
     phrase.setPhrase(TOPS_FULL_ACTUAL);
     phrase.setValues(completion.getLowestRankActive(side));
   }
@@ -422,7 +428,21 @@ void VerbalCover::fillOnesided(
 
   phrases[0].setPhrase(vside.player());
 
-  VerbalCover::fillTopsActual(vside.side, phrases[1]);
+  // VerbalCover::fillTopsActual(vside.side, "A", phrases[1]);
+
+  const Completion& completion = completions.front();
+  if (completion.expandable(vside.side) &&
+      ! completion.fullRanked(vside.side))
+  {
+    phrases[1].setPhrase(TOPS_SOME_ACTUAL);
+    phrases[1].setValues(
+      completion.getTopsUsed(vside.side),
+      completion.getLowestRankActive(vside.side));
+  }
+  else
+  {
+    VerbalCover::fillTopsActual(vside.side, "A", phrases[1]);
+  }
 
   VerbalCover::fillLengthOrdinal(
     sumProfile.length(), vside.side, phrases[2]);
@@ -583,7 +603,18 @@ void VerbalCover::fillTopsAndLower(
 
   phrases[0].setPhrase(vside.player());
 
-  VerbalCover::fillTopsActual(vside.side, phrases[1]);
+  if (completion.expandable(vside.side) &&
+      ! completion.fullRanked(vside.side))
+  {
+    phrases[1].setPhrase(TOPS_SOME_ACTUAL);
+    phrases[1].setValues(
+      completion.getTopsUsed(vside.side),
+      completion.getLowestRankActive(vside.side));
+  }
+  else
+  {
+    VerbalCover::fillTopsActual(vside.side, "B", phrases[1]);
+  }
 
   const unsigned char freeLower = completion.getFreeLower(vside.side);
   const unsigned char freeUpper = completion.getFreeUpper(vside.side);
@@ -708,7 +739,7 @@ void VerbalCover::fillSingular(
 
     phrases[0].setPhrase(vside.player());
 
-    VerbalCover::fillTopsActual(side, phrases[1]);
+    VerbalCover::fillTopsActual(side, "C", phrases[1]);
 
     phrases[2].setPhrase(LENGTH_ORDINAL_EXACT);
     phrases[2].setValues(lenCompletion);
@@ -736,9 +767,11 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 {
   phrases.resize(2);
 
+  const Completion& completion = completions.front();
+
   phrases[0].setPhrase(vside.player());
 
-  if (! completions.front().expandable(vside.side))
+  if (! completion.expandable(vside.side))
   {
     sentence = SENTENCE_LIST;
 
@@ -751,8 +784,18 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
     // A bit of a kludge to allow the expansion.
     sentence = SENTENCE_ONETOP_ONLY;
 
-    phrases[0].setPhrase(vside.player());
-    VerbalCover::fillTopsActual(vside.side, phrases[1]);
+    if (completion.expandable(vside.side) &&
+        ! completion.fullRanked(vside.side))
+    {
+      phrases[1].setPhrase(TOPS_SOME_ACTUAL);
+      phrases[1].setValues(
+        completion.getTopsUsed(vside.side),
+        completion.getLowestRankActive(vside.side));
+    }
+    else
+    {
+      VerbalCover::fillTopsActual(vside.side, "D", phrases[1]);
+    }
   }
 }
 
