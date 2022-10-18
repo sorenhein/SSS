@@ -18,6 +18,13 @@ string "%0 has %1"
 name SENTENCE_COUNT_ONETOP
 string "%0 has %1 %2"
 
+# Example: West has the king
+# %0: Player
+# %1: Count
+# %2: Top
+name SENTENCE_EXACT_COUNT_ONETOP
+string "%0 has exactly %1 %2"
+
 # Example: West has AK fourth
 # %0: Player
 # %1: Holding

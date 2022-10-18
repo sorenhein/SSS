@@ -765,37 +765,56 @@ void VerbalCover::fillSingular(
 
 void VerbalCover::fillCompletion(const VerbalSide& vside)
 {
-  phrases.resize(2);
 
   const Completion& completion = completions.front();
 
-  phrases[0].setPhrase(vside.player());
-
   if (! completion.expandable(vside.side))
   {
+    phrases.resize(2);
+
     sentence = SENTENCE_LIST;
+
+    phrases[0].setPhrase(vside.player());
 
     phrases[1].setPhrase(LIST_HOLDING_EXACT);
     phrases[1].setSide(vside.side);
     phrases[1].setBools(false);
   }
+  else if (completion.expandable(vside.side) &&
+      ! completion.fullRanked(vside.side))
+  {
+    phrases.resize(3);
+
+    // sentence = SENTENCE_ONETOP_ONLY;
+    sentence = SENTENCE_EXACT_COUNT_ONETOP;
+
+    phrases[0].setPhrase(vside.player());
+
+    const unsigned char len = completion.getTopsUsed(vside.side);
+
+    phrases[1].setPhrase(COUNT_EXACT);
+    phrases[1].setValues(len);
+
+    phrases[2].setPhrase(OF_DEFINITE_RANK);
+    phrases[2].setValues(completion.getLowestRankActive(vside.side));
+    phrases[2].setBools(len > 1);
+
+    /*
+    phrases[1].setPhrase(TOPS_SOME_ACTUAL);
+    phrases[1].setValues(
+      completion.getTopsUsed(vside.side),
+      completion.getLowestRankActive(vside.side));
+      */
+  }
   else
   {
-    // A bit of a kludge to allow the expansion.
+    phrases.resize(2);
+
     sentence = SENTENCE_ONETOP_ONLY;
 
-    if (completion.expandable(vside.side) &&
-        ! completion.fullRanked(vside.side))
-    {
-      phrases[1].setPhrase(TOPS_SOME_ACTUAL);
-      phrases[1].setValues(
-        completion.getTopsUsed(vside.side),
-        completion.getLowestRankActive(vside.side));
-    }
-    else
-    {
-      VerbalCover::fillTopsActual(vside.side, "D", phrases[1]);
-    }
+    phrases[0].setPhrase(vside.player());
+
+    VerbalCover::fillTopsActual(vside.side, "D", phrases[1]);
   }
 }
 
