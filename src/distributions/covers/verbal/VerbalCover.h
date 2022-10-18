@@ -40,12 +40,13 @@ class VerbalCover
     Term length;
 
 
-    // Used to make a synthetic length of small cards.
+    // Make a synthetic length of small cards.
 
     void setLength(
       const unsigned char lower,
       const unsigned char upper,
       const unsigned char maximum);
+
 
     // Used for lengths.
 
@@ -64,7 +65,8 @@ class VerbalCover
       const VerbalSide& vside,
       const bool abstractableFlag);
 
-    // Helper fill functions.
+
+    // Phrase fill functions.
 
     void fillLengthOrdinal(
       const unsigned char oppsLength,
@@ -75,78 +77,39 @@ class VerbalCover
       const Opponent side,
       Phrase& phrase);
 
-    void fillCountHonorsOrdinal(
-      const unsigned char oppsLength,
-      const VerbalSide& vside);
-
     void fillFreeCount(
       const VerbalSide& vside,
       Phrase& phrase) const;
 
+
+    // Private sentence fill methods.
+
     // SENTENCE_TOPS
     void fillTops(const VerbalSide& vside);
-
-
-  public:
-
-    VerbalCover();
-
-    void setLength(const Term& length);
-
-    // Fills.
-
-    // SENTENCE_LENGTH
-    void fillLength(
-      const Term& lengthIn,
-      const unsigned char oppsLength,
-      const bool symmFlag);
-
-    // SENTENCE_TOPS
-    // See fillTops above
-
-    // SENTENCE_LENGTH_BELOW_TOPS
-    void fillLengthBelowTops(
-      const unsigned char numBottoms,
-      const unsigned char rankNo,
-      const VerbalSide& vside);
 
     // SENTENCE_FILL_ORDINAL_FROM_TOPS
     void fillOrdinalFromTops(
       const VerbalSide& vside,
       const unsigned char lenCompletion);
- 
-    // SENTENCE_COUNT_TOPS
-    // SENTENCE_COUNT_TOPS
-    // TODO There is also fillOnetopOnlyOld
-    void fillCountTops(
-      const Term& lengthIn,
-      const unsigned char oppsLength,
-      const bool symmFlag);
 
     // SENTENCE_EXACTLY_COUNT_TOPS
     void fillExactlyCountTops(const VerbalSide& vside);
 
     // SENTENCE_TOPS_ORDINAL
-    // TODO There are two of them -- unify
     void fillTopsOrdinal(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
+    // TODO There are two of them -- unify
     void fillTopsOrdinal(
       const Profile& sumProfile,
       const unsigned char lenCompletion,
       const VerbalSide& vside);
 
-    // SENTENCE_COUNT_TOPS_ORDINAL
-    void fillCountTopsOrdinal(
-      const Term& lengthIn,
-      const Term& top,
-      const Profile& sumProfile,
-      const unsigned char onetopIndex,
-      const VerbalSide& vside);
-
     // SENTENCE_COUNT_HONORS_ORDINAL
-    // See above
+    void fillCountHonorsOrdinal(
+      const unsigned char oppsLength,
+      const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
     void fillExactlyCountTopsOrdinal(
@@ -164,6 +127,70 @@ class VerbalCover
       const VerbalSide& vside,
       const unsigned char numOptions);
 
+
+  public:
+
+    VerbalCover();
+
+    void setLength(const Term& length);
+
+    // Fills in sentence order.
+
+    // SENTENCE_LENGTH
+    void fillLength(
+      const Term& lengthIn,
+      const unsigned char oppsLength,
+      const bool symmFlag);
+
+    // SENTENCE_TOPS
+    // See fillTops above
+
+    // SENTENCE_LENGTH_BELOW_TOPS
+    void fillLengthBelowTops(
+      const unsigned char numBottoms,
+      const unsigned char rankNo,
+      const VerbalSide& vside);
+
+    // SENTENCE_FILL_ORDINAL_FROM_TOPS
+    // See fillOrdinalFromTops above
+ 
+    // SENTENCE_COUNT_TOPS
+    // TODO Shares name with method above.  Disambiguate or merge?
+    void fillCountTops(
+      const Term& top,
+      const unsigned char oppsSize,
+      const unsigned char onetopIndex,
+      const VerbalSide& vside);
+
+    // SENTENCE_EXACTLY_COUNT_TOPS
+    // See fillExactlyCountTops above
+
+    // SENTENCE_TOPS_ORDINAL
+    // See fillTopsOrdinal above
+
+    // SENTENCE_COUNT_TOPS_ORDINAL
+    void fillCountTopsOrdinal(
+      const Term& lengthIn,
+      const Term& top,
+      const Profile& sumProfile,
+      const unsigned char onetopIndex,
+      const VerbalSide& vside);
+
+    // SENTENCE_COUNT_HONORS_ORDINAL
+    // See fillCountHonorsOrdinal above
+
+    // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
+    // See fillExactlyCounttopsOrdinal above
+
+    // SENTENCE_TOPS_AND_LOWER
+    // See fillTopsAndLower above
+
+    // SENTENCE_EXACTLY_TOPS_AND_LOWER
+    // See fillExactlyTopsAndLower above
+
+    // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+    // See fillTopsAndCountBelowCard above
+
     // SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
     void fillExactlyTopsMaybeUnset(const VerbalSide& vside);
 
@@ -180,17 +207,8 @@ class VerbalCover
 
 
 
-    void fillOnetopOnlyOld(
-      const Term& top,
-      const unsigned char oppsSize,
-      const unsigned char onetopIndex,
-      const VerbalSide& vside);
 
-    void fillCountTops(
-      const Term& top,
-      const unsigned char oppsSize,
-      const unsigned char onetopIndex,
-      const VerbalSide& vside);
+    // Fill methods that use several sentences.
 
     void fillOnesided(
       const Profile& sumProfile,
@@ -213,10 +231,6 @@ class VerbalCover
       const VerbalSide& vside);
 
     void fillCompletion(const VerbalSide& vside);
-
-
-    // SENTENCE_LIST
-    // SENTENCE_ONETOP_ONLY
 
 
     // Direct manipulation of completions

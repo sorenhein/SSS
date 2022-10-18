@@ -286,11 +286,10 @@ void VerbalCover::fillLength(
   const bool symmFlag)
 {
   sentence = SENTENCE_LENGTH;
+  VerbalCover::setLength(lengthIn);
 
   const Opponent side = (symmFlag ? OPP_WEST : length.shorter(oppsLength));
   const VerbalSide vside = {side, symmFlag};
-
-  VerbalCover::setLength(lengthIn);
 
   VerbalCover::getLengthData(oppsLength, vside, true);
 }
@@ -412,63 +411,6 @@ void VerbalCover::fillCountTops(
 }
 
 
-void VerbalCover::fillOnetopOnlyOld(
-  const Term& top,
-  const unsigned char oppsSize,
-  const unsigned char onetopIndex,
-  const VerbalSide& vside)
-{
-  sentence = SENTENCE_COUNT_TOPS;
-
-  unsigned char vLower, vUpper;
-  top.range(oppsSize, vside.side, vLower, vUpper);
-
-  // Here lower and upper are different.
-  phrases.resize(3);
-
-  if (vLower + vUpper == oppsSize)
-    phrases[0].setPhrase(PLAYER_EACH);
-  else
-    phrases[0].setPhrase(vside.player());
-
-  if (vLower == 0)
-  {
-    phrases[1].setPhrase(COUNT_ATMOST);
-    phrases[1].setValues(vUpper);
-
-    phrases[2].setPhrase(TOPS_OF_DEFINITE);
-    phrases[2].setValues(onetopIndex);
-    phrases[2].setBools(vUpper > 1);
-  }
-  else if (vUpper == oppsSize)
-  {
-    phrases[1].setPhrase(COUNT_ATLEAST);
-    phrases[1].setValues(vLower);
-
-    phrases[2].setPhrase(TOPS_OF_DEFINITE);
-    phrases[2].setValues(onetopIndex);
-    phrases[2].setBools(vLower > 1);
-  }
-  else if (vLower+1 == vUpper)
-  {
-    phrases[1].setPhrase(COUNT_OR);
-    phrases[1].setValues(vLower, vUpper);
-
-    phrases[2].setPhrase(TOPS_OF_DEFINITE);
-    phrases[2].setValues(onetopIndex);
-    phrases[2].setBools(vUpper > 1);
-  }
-  else
-  {
-assert(false);
-    phrases.resize(3);
-
-    phrases[1].setPhrase(COUNT_OR);
-    phrases[1].setValues(vLower, vUpper, onetopIndex);
-  }
-}
-
-
 void VerbalCover::fillExactlyCountTops(const VerbalSide& vside)
 {
   sentence = SENTENCE_EXACTLY_COUNT_TOPS;
@@ -530,8 +472,8 @@ void VerbalCover::fillCountTopsOrdinal(
 {
   VerbalCover::setLength(lengthIn);
 
-  // Fill templateFills positions 0 and 1.
-  VerbalCover::fillOnetopOnlyOld(
+  // Fill positions 0 and 1.
+  VerbalCover::fillCountTops(
     top, sumProfile[onetopIndex], onetopIndex, vside);
 
   sentence = SENTENCE_COUNT_TOPS_ORDINAL;
@@ -758,10 +700,12 @@ void VerbalCover::fillTopsBothLength(
   phrases.resize(4);
 
   const Completion& completion = completions.front();
+  // TODO completion method
   const bool bothExpandableFlag =
     completion.expandable(OPP_WEST) &&
     completion.expandable(OPP_EAST);
 
+  // TODO VerbalSide method
   const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   if (bothExpandableFlag)
@@ -769,6 +713,7 @@ void VerbalCover::fillTopsBothLength(
     phrases[0].setPhrase(TOPS_INDEFINITE);
     phrases[0].setValues(completion.getLowestRankActive(vside.side));
 
+    // TODO Here too like below, length.range?
     phrases[1].setPhrase(DIGITS_RANGE);
     phrases[1].setValues(length.lower(), length.upper());
 
@@ -782,6 +727,7 @@ void VerbalCover::fillTopsBothLength(
   }
   else
   {
+    // TODO VerbalSide method
     Opponent side1, side2;
     if (vside.symmFlag)
     {
@@ -816,9 +762,7 @@ void VerbalCover::fillTopsBothLength(
 
 void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 {
-  // This is an expansion with quite a lot of parameters in
-  // a single Phrase.
-
+  // TODO New method completion.expandableBoth()
   const Completion& completion = completions.front();
   const bool bothExpandableFlag =
     completion.expandable(OPP_WEST) &&
@@ -826,6 +770,7 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 
   phrases.resize(2);
 
+  // TODO VerbalSide new method?
   Opponent side1, side2;
   if (vside.symmFlag)
   {
@@ -896,7 +841,6 @@ void VerbalCover::fillTopsAndLowerMultiple(
     VerbalCover::fillTopsAndCountBelowCard(vside, numOptions);
   }
 }
-
 
 
 void VerbalCover::fillSingular(
