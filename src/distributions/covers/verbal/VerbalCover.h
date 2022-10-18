@@ -69,7 +69,6 @@ class VerbalCover
 
     void fillTopsActual(
       const Opponent side,
-      const string& prefix,
       Phrase& phrase);
 
     void fillHonorsEqual(
@@ -79,6 +78,10 @@ class VerbalCover
     void fillHonorsOrdinal(
       const unsigned char oppsLength,
       const VerbalSide& vside);
+
+    void fillFreeCount(
+      const VerbalSide& vside,
+      Phrase& phrase) const;
 
 
   public:

@@ -40,6 +40,14 @@ string "%0 has %1 %2"
 name SENTENCE_TOPS_LENGTH_OLD
 string "%0 has %1 %2 %3"
 
+# Example: West has AK fourth
+# %0: Player
+# %1: Holding
+# %2: Count
+# %3: Length ordinal
+name SENTENCE_TOPS_LENGTH_OLDER
+string "%0 has exactly %1 %2 %3"
+
 # Example: West has AK fourth and neither of T9
 # %0: Both (two holdings)
 # %1: Player

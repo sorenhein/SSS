@@ -31,7 +31,8 @@ enum SentencesEnum: unsigned
   SENTENCE_HONORS_ORDINAL = 14,
   SENTENCE_LIST = 15,
   SENTENCE_SET_UNSET = 16,
-  SENTENCE_SIZE = 17
+  SENTENCE_TOPS_LENGTH_OLDER = 17,
+  SENTENCE_SIZE = 18
 };
 
 enum SentencesGroup: unsigned
