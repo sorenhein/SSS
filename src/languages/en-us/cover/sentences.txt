@@ -1,137 +1,65 @@
 group SENTENCES_GENERAL
 
 
-# Example: West has a doubleton, West is void.
-# %0: Player
-# %1: Length
 name SENTENCE_LENGTH
-string "%0 %1"
+string "{S_PLAYER0} {S_LENGTH1}"
 
-# Example: West has the king
-# %0: Player
-# %1: Count
-# %2: Top
 name SENTENCE_TOPS
-string "%0 has %1"
+string "{S_PLAYER0} has {S_TOPS1}"
 
-# Example: West has a doubleton below the T
-# %0: Player
-# %1: Length
-# %2: Below indicator
-# %3: Holding
 name SENTENCE_LENGTH_BELOW_TOPS
-string "%0 %1 %2 %3"
+string "{S_PLAYER0} {S_LENGTH1} {S_DICT2} {S_TOPS3}"
 
-# Example: West has a doubleton chosen from king-queen-jack
-# %0: Player
-# %1: Length ordinal
-# %3: Holding
-# name SENTENCE_ORDINAL_FROM_TOPS
-# string "%0 has a %1 chosen from %2"
 name SENTENCE_COUNT_OF_TOPS_ORDINAL
-string "%0 has exactly %1 of %2 %3"
+string "{S_PLAYER0} has exactly {S_COUNT1} of {S_TOPS2} {S_ORDINAL3}"
 
-# Example: West has the king
-# %0: Player
-# %1: Count
-# %2: Top
 name SENTENCE_COUNT_TOPS
-string "%0 has %1 %2"
+string "{S_PLAYER0} has {S_COUNT1} {S_TOPS2}"
 
-# Example: West has the king
-# %0: Player
-# %1: Count
-# %2: Top
 name SENTENCE_EXACTLY_COUNT_TOPS
-string "%0 has exactly %1 %2"
+string "{S_PLAYER0} has exactly {S_COUNT1} {S_TOPS2}"
 
-# Example: West has AK fourth
-# %0: Player
-# %1: Holding
-# %2: Length ordinal
 name SENTENCE_TOPS_ORDINAL
-string "%0 has %1 %2"
+string "{S_PLAYER0} has {S_TOPS1} {S_ORDINAL2}"
 
-# Example: West has AK fourth
-# %0: Player
-# %1: Holding
-# %2: Count
-# %3: Length ordinal
 name SENTENCE_COUNT_TOPS_ORDINAL
-string "%0 has %1 %2 %3"
+string "{S_PLAYER0} has {S_COUNT1} {S_TOPS2} {S_ORDINAL3}"
 
-# Example: East has exactly one honor at most doubleton"
-# Example: East has exactly two honors doubleton"
-# %0: Player
-# %1: Honors
-# %2: Ordinal
 name SENTENCE_COUNT_HONORS_ORDINAL
-string "%0 has exactly %1 %2 %3"
+string "{S_PLAYER0} has exactly {S_COUNT1} {S_DICT2} {S_ORDINAL3}"
 
-# Example: West has AK fourth
-# %0: Player
-# %1: Holding
-# %2: Count
-# %3: Length ordinal
 name SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
-string "%0 has exactly %1 %2 %3"
+string "{S_PLAYER0} has exactly {S_COUNT1} {S_TOPS2} {S_ORDINAL3}"
 
-# Example: West has AQ and one-two, lower-ranked cards
-# %0: Player
-# %1: Holding
-# %1: Count
-# %3: Card count indicator
 name SENTENCE_TOPS_AND_LOWER
-string "%0 has %1 and %2, lower-ranked %3"
+string "{S_PLAYER0} has {S_TOPS1} and {S_COUNT2}, lower-ranked {S_DICT3}"
 
-# Example: West has AQ and one-two, lower-ranked cards
-# %0: Player
-# %1: Holding
-# %1: Count
-# %3: Card count indicator
 name SENTENCE_EXACTLY_TOPS_AND_LOWER
-string "%0 has exactly %1 %2 and %3, lower-ranked %4"
+string "{S_PLAYER0} has exactly {S_COUNT1} {S_TOPS2} and {S_COUNT3}, lower-ranked {S_DICT4}"
 
-# Example: West has AQ and 1-2 cards below the T
-# %0: Player
-# %1: Holding
-# %2: Count
-# %3: Card count indicator
-# %4: Holding
 name SENTENCE_TOPS_AND_COUNT_BELOW_CARD
-string "%0 has %1 and %2 %3 below %4"
+string "{S_PLAYER0} has {S_TOPS1} and {S_COUNT2} {S_DICT3} below {S_TOPS4}"
 
 name SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
-string "%0 has exactly %1(%2)"
+string "{S_PLAYER0} has exactly {S_TOPS1}({S_TOPS2})"
 
 name SENTENCE_TOPS_MAYBE_OTHERS
-string "%0 has %1 and maybe other ranks"
+string "{S_PLAYER0} has {S_TOPS1} and maybe other ranks"
 
-# Example: West has AKJx(x)
-# %0: Player
-# %1: Holding
-# %2: Holding
 name SENTENCE_TOPS_AND_XES
-string "%0 has %1%2"
+string "{S_PLAYER0} has {S_TOPS1}{S_TOPS2}"
 
-# Example: West has AT, QT or Tx.
-# The list has up to four entries.  The unused variables are purged.
-# last ',' is replaced with ' or', where the word is in words.txt.
-# %0: Player
-# %x: Holdings
 name SENTENCE_EXACTLY_LIST
-string "%0 has exactly %1, %2, %3, %4"
-
+string "{S_PLAYER0} has exactly {S_LIST1}, {S_LIST2}, {S_LIST3}, {S_LIST4}"
 
 name SENTENCE_2SPLIT_TOPS_SYMM
-string "The key cards split %0 / %1 either way"
+string "The key cards split {S_TOPS0} / {S_TOPS1} either way"
 
 name SENTENCE_2SPLIT_TOPS_ASYMM
-string "The key cards split %0 = %1"
+string "The key cards split {S_TOPS0} = {S_TOPS1}"
 
 name SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
-string "The key cards split (%0 with %1 cards) / (%2 with %3 cards) either way"
+string "The key cards split ({S_TOPS0} with {S_DIGITS1} cards) / ({S_TOPS2} with {S_DIGITS3} cards) either way"
 
 name SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
-string "The key cards split (%0 with %1 cards) = (%2 with %3 cards)"
-
+string "The key cards split ({S_TOPS0} with {S_DIGITS1} cards) = ({S_TOPS2} with {S_DIGITS3} cards)"

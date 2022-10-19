@@ -124,19 +124,27 @@ string Expand::get(
   if (sentence != SENTENCE_EXACTLY_LIST)
     assert(phrases.size() == vtgroups.size());
 
+  const auto& groupList = 
+    dictionary.coverSentences.get(sentence).expansions;
+  assert(groupList.size() == vtgroups.size());
+
   string expansion = dictionary.coverSentences.get(sentence).text;
   string fill = "";
+  string tag;
 
   size_t field;
   auto phraseIter = phrases.begin();
   auto giter = vtgroups.begin();
+  auto gliter = groupList.begin();
   auto complIter = completions.begin();
 
-  for (field = 0; field < phrases.size(); field++, phraseIter++, giter++)
+  for (field = 0; field < phrases.size(); 
+      field++, phraseIter++, giter++, gliter++)
   {
     const Phrase& phrase = * phraseIter;
 
     assert(phrase.getGroup() == * giter);
+    assert(phrase.getGroup() == * gliter);
     assert(complIter != completions.end());
 
     fill = phrase.str(ranksNames, * complIter);
@@ -146,19 +154,41 @@ string Expand::get(
       complIter++;
 
     // Fill in the placeholder.
-    auto p = expansion.find("%" + to_string(field));
+    tag = dictionary.groupTag(* gliter);
+    auto p = tag.find("%");
     assert(p != string::npos);
-    expansion.replace(p, 2, fill);
+    tag.replace(p, 1, to_string(field));
+
+    auto q = expansion.find(tag);
+    assert(q != string::npos);
+    expansion.replace(q, tag.size(), fill);
+
+    // auto p = expansion.find("%" + to_string(field));
+    // assert(p != string::npos);
+    // expansion.replace(p, 2, fill);
   }
 
   if (sentence == SENTENCE_EXACTLY_LIST)
   {
+// cout << "Start with: " << expansion << endl;
     // Eliminate the trailing placeholders in a list.
-    for ( ; field < vtgroups.size(); field++)
+    for ( ; field < vtgroups.size(); field++, gliter++)
     {
-      auto p = expansion.find(", %" + to_string(field));
+      // Fill in the placeholder.
+      // TODO Expand::findTag(* gliter, tag, pos);
+      tag = ", " + dictionary.groupTag(* gliter);
+      auto p = tag.find("%");
       assert(p != string::npos);
-      expansion.erase(p, 4);
+      tag.replace(p, 1, to_string(field));
+
+      auto q = expansion.find(tag);
+      assert(q != string::npos);
+      expansion.erase(q, tag.size());
+
+// cout << "Now: " << expansion << endl;
+      // auto p = expansion.find(", %" + to_string(field));
+      // assert(p != string::npos);
+      // expansion.erase(p, 4);
     }
   }
 
@@ -167,6 +197,7 @@ string Expand::get(
   {
     // If there is a comma in a list, turn the last one into " or".
     // The excepted sentence has a comma on purpose.
+    // TODO Expand::recomma(expansion);
     auto p = expansion.find_last_of(",");
     if (p != string::npos)
       expansion.replace(p, 1, 

@@ -151,14 +151,14 @@ list<VerbalConnection> phrasesConnection =
 
 list<TagConnection> phrasesGroupConnection =
 {
-  { GROUP_PHRASES_PLAYER, "PLAYER" },
-  { GROUP_PHRASES_LENGTH, "LENGTH" },
-  { GROUP_PHRASES_ORDINAL, "ORDINAL" },
-  { GROUP_PHRASES_COUNT, "COUNT" },
-  { GROUP_PHRASES_DIGITS, "DIGITS" },
-  { GROUP_PHRASES_DICT, "DICT" },
-  { GROUP_PHRASES_TOPS, "TOPS" },
-  { GROUP_PHRASES_LIST, "LIST" }
+  { GROUP_PHRASES_PLAYER, "S_PLAYER" },
+  { GROUP_PHRASES_LENGTH, "S_LENGTH" },
+  { GROUP_PHRASES_ORDINAL, "S_ORDINAL" },
+  { GROUP_PHRASES_COUNT, "S_COUNT" },
+  { GROUP_PHRASES_DIGITS, "S_DIGITS" },
+  { GROUP_PHRASES_DICT, "S_DICT" },
+  { GROUP_PHRASES_TOPS, "S_HOLDING" },
+  { GROUP_PHRASES_LIST, "S_LIST" }
 };
 
 
@@ -384,12 +384,22 @@ void Dictionary::setPhraseTags()
   phraseTags[PHRASE_INDEFINITE_RANK] = "{INDEFINITE%}";
   phraseTags[PHRASE_DEFINITE_RANK] = "{DEFINITE%}";
   phraseTags[PHRASE_OF_DEFINITE_RANK] = "{OF_DEFINITE%}";
-  phraseTags[PHRASE_COMPLETION_SET] = "{TOPS%}";
+  phraseTags[PHRASE_COMPLETION_SET] = "{HOLDING%}";
   phraseTags[PHRASE_COMPLETION_UNSET] = "{LOWS%}";
   phraseTags[PHRASE_XES] = "{XES%}";
 
-  // TODO When we add expansions of sentences as well,
-  // they might to in the same map?
+  groupTags.resize(GROUP_PHRASES_SIZE);
+  groupTags[GROUP_PHRASES_PLAYER] = "{S_PLAYER%}";
+  groupTags[GROUP_PHRASES_LENGTH] = "{S_LENGTH%}";
+  groupTags[GROUP_PHRASES_ORDINAL] = "{S_ORDINAL%}";
+  groupTags[GROUP_PHRASES_COUNT] = "{S_COUNT%}";
+  groupTags[GROUP_PHRASES_DIGITS] = "{S_DIGITS%}";
+  groupTags[GROUP_PHRASES_DICT] = "{S_DICT%}";
+  groupTags[GROUP_PHRASES_TOPS] = "{S_TOPS%}";
+  groupTags[GROUP_PHRASES_LIST] = "{S_LIST%}";
+
+  // TODO Here, directly above, further above: P_
+  // Also in phrases.txt
   phraseExpansionGroup["DIGITS"] = PHRASE_DIGITS;
   phraseExpansionGroup["NUMERICAL"] = PHRASE_NUMERICAL;
   phraseExpansionGroup["ORDINAL"] = PHRASE_ORDINAL;
@@ -397,9 +407,20 @@ void Dictionary::setPhraseTags()
   phraseExpansionGroup["INDEFINITE"] = PHRASE_INDEFINITE_RANK;
   phraseExpansionGroup["DEFINITE"] = PHRASE_DEFINITE_RANK;
   phraseExpansionGroup["OF_DEFINITE"] = PHRASE_OF_DEFINITE_RANK;
-  phraseExpansionGroup["TOPS"] = PHRASE_COMPLETION_SET;
+  phraseExpansionGroup["HOLDING"] = PHRASE_COMPLETION_SET;
   phraseExpansionGroup["LOWS"] = PHRASE_COMPLETION_UNSET;
   phraseExpansionGroup["XES"] = PHRASE_XES;
+
+  // We keep the information for sentences in the same data structure.
+  // This may not be entirely clean, but we keep the namespaces apart.
+  phraseExpansionGroup["S_PLAYER"] = GROUP_PHRASES_PLAYER;
+  phraseExpansionGroup["S_LENGTH"] = GROUP_PHRASES_LENGTH;
+  phraseExpansionGroup["S_ORDINAL"] = GROUP_PHRASES_ORDINAL;
+  phraseExpansionGroup["S_COUNT"] = GROUP_PHRASES_COUNT;
+  phraseExpansionGroup["S_DIGITS"] = GROUP_PHRASES_DIGITS;
+  phraseExpansionGroup["S_DICT"] = GROUP_PHRASES_DICT;
+  phraseExpansionGroup["S_TOPS"] = GROUP_PHRASES_TOPS;
+  phraseExpansionGroup["S_LIST"] = GROUP_PHRASES_LIST;
 }
 
 
@@ -456,6 +477,13 @@ const string& Dictionary::phraseTag(const unsigned index) const
 {
   assert(index < phraseTags.size());
   return phraseTags[index];
+}
+
+
+const string& Dictionary::groupTag(const unsigned index) const
+{
+  assert(index < groupTags.size());
+  return groupTags[index];
 }
 
 

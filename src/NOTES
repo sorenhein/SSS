@@ -1,19 +1,11 @@
-Mention of split honors
------------------------
-Can we do something about the LIST_HOLDING and the count?
-
-1.
-sentences.txt gets tags corresponding to phrase groups.
-- In sentences.txt add {PLAYER0} etc.
-- For sentence they can differ
-- Then we have to be able to look up the instance of a sentence too
-- That gives us the check in Expand
+Clean up:
+Dictionary
+Expand
+Component
 
 German
-------
-Check as well
-Danish, French?
-
+Danish
+French
 
 -----
 
