@@ -126,6 +126,7 @@ class VerbalCover
 
     VerbalCover();
 
+    // TODO Make private over time
     void setLength(const Term& length);
 
     // Fills in sentence order.
@@ -206,6 +207,7 @@ class VerbalCover
     // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
     // SENTENCE_TOPS_ORDINAL
     void fillOnesided(
+      const Term& lengthIn,
       const Profile& sumProfile,
       const VerbalSide& vside);
 

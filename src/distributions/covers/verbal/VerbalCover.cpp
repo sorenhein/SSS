@@ -652,11 +652,11 @@ void VerbalCover::fillExactlyList(const VerbalSide& vside)
 /**********************************************************************/
 
 void VerbalCover::fillOnesided(
+  const Term& lengthIn,
   const Profile& sumProfile,
   const VerbalSide& vside)
 {
-  // length is already set.
-  // TODO Let VerbalCover do this?
+  VerbalCover::setLength(lengthIn);
   const Completion& completion = completions.front();
 
   if (completion.expandable(vside.side) &&

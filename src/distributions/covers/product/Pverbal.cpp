@@ -468,18 +468,18 @@ void Product::setVerbalHighTopsEqual(
 
   verbalCover.setLength(length);
 
+  const Completion& completion = verbalCover.getCompletion();
   const Opponent side = Product::simpler(sumProfile, canonicalShift);
   const Opponent otherSide = (side == OPP_WEST ? OPP_EAST : OPP_WEST);
 
   VerbalSide vside = {side, symmFlag};
 
-  const unsigned char numOptions = verbalCover.getCompletion().numOptions();
+  const unsigned char numOptions = completion.numOptions();
   if (numOptions == 1)
   {
     verbalCover.fillTopsAndXes(vside);
   }
-  else if (numOptions == 2 && 
-      verbalCover.getCompletion().getFreeUpper(side) == 1)
+  else if (numOptions == 2 && completion.getFreeUpper(side) == 1)
   {
     // "West has Q or Qx", so we need up to one low card.
     // We currently never get more than 4 options.
@@ -488,15 +488,15 @@ void Product::setVerbalHighTopsEqual(
    
     verbalCover.fillExactlyList(vside);
   }
-  else if (verbalCover.getCompletion().getTopsUsed(side) == 0)
+  else if (completion.getTopsUsed(side) == 0)
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillLengthBelowTops(
       sumProfile.numBottoms(canonicalShift), numOptions, vside);
   }
-  else if (verbalCover.getCompletion().getTopsUsed(otherSide) == 0)
+  else if (completion.getTopsUsed(otherSide) == 0)
   {
-    verbalCover.fillOnesided(sumProfile, {side, symmFlag});
+    verbalCover.fillOnesided(length, sumProfile, vside);
   }
   else
   {
@@ -538,11 +538,11 @@ void Product::setVerbalAnyTopsEqual(
 
   if (verbalCover.getCompletion().getTopsFull(OPP_WEST) == 0)
   {
-    verbalCover.fillOnesided(sumProfile, {OPP_EAST, symmFlag});
+    verbalCover.fillOnesided(length, sumProfile, {OPP_EAST, symmFlag});
   }
   else if (verbalCover.getCompletion().getTopsFull(OPP_EAST) == 0)
   {
-    verbalCover.fillOnesided(sumProfile, {OPP_WEST, symmFlag});
+    verbalCover.fillOnesided(length, sumProfile, {OPP_WEST, symmFlag});
   }
   else
   {
