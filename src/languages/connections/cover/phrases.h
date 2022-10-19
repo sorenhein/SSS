@@ -83,7 +83,6 @@ enum PhrasesGroup: unsigned
   GROUP_PHRASES_TOPS = 6,
   GROUP_PHRASES_LIST = 7,
   GROUP_PHRASES_SIZE = 8
-
 };
 
 #endif

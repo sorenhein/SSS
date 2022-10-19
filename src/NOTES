@@ -3,23 +3,16 @@ Mention of split honors
 Can we do something about the LIST_HOLDING and the count?
 
 1.
-Put the groups of sentences and phrases into the .txt files.
-Then they come out of Dictionary.cpp and Expand.cpp.
-We just need the map from their string names to their internal numbers.
+Derive the phrase group from the tag in phrases.txt.
+Store it in Phrase.
+Check that expansion == this.
+When it is, don't tell Phrase the expansion anymore.
 
 2.
-Put the groups also into the expansions.
-- For sentences, we get the group of each phrase
-- For phrases, we get the expansion in Phrase.cpp
-
-phrases now
-"%0-%1" could be "%{numeral0}-%{numeral1}"
-
-above some phrases:
-group PLAYER
-LENGTH
-etc. (phrases.h in connections; 8 of them)
-
+Phrase can also return its group.
+sentences.txt gets tags corresponding to phrase groups.
+These are not the PHRASE_COMPLETION_SET etc., I think, 
+but the ones currently set in Expand.
 
 We should be able to tell when reading the phrase from a file,
 what kind of expansion it will need.  Then Phrase::str does not get
