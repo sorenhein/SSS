@@ -155,6 +155,8 @@ class Completion
 
     bool highRanked(const Opponent side) const;
 
+    bool secondRanked(const Opponent side) const;
+
     unsigned char numOptions() const;
 
     Opponent preferSingleActive() const;

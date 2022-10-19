@@ -512,6 +512,7 @@ void VerbalCover::fillCountTopsOrdinal(
 
 
 void VerbalCover::fillCountHonorsOrdinal(
+  const bool highestHonorFlag,
   const Profile& sumProfile,
   const VerbalSide& vside)
 {
@@ -526,7 +527,10 @@ void VerbalCover::fillCountHonorsOrdinal(
   phrases[1].setPhrase(COUNT_EXACT);
   phrases[1].setValues(numHonors);
 
-  phrases[2].setPhrase(numHonors == 1 ? DICT_HONOR : DICT_HONORS);
+  if (highestHonorFlag)
+    phrases[2].setPhrase(numHonors == 1 ? DICT_HONOR : DICT_HONORS);
+  else
+    phrases[2].setPhrase(numHonors == 1 ? DICT_MID_HONOR : DICT_MID_HONORS);
 
   VerbalCover::fillLengthOrdinal(sumProfile, vside, phrases[3]);
 }
@@ -818,7 +822,11 @@ void VerbalCover::fillTopsAndLowerMultiple(
 
   else if (completion.highRanked(vside.side))
   {
-    VerbalCover::fillCountHonorsOrdinal(sumProfile, vside);
+    VerbalCover::fillCountHonorsOrdinal(true, sumProfile, vside);
+  }
+  else if (completion.secondRanked(vside.side))
+  {
+    VerbalCover::fillCountHonorsOrdinal(false, sumProfile, vside);
   }
   else
   {
@@ -843,7 +851,11 @@ void VerbalCover::fillSingular(
   }
   else if (completion.highRanked(side))
   {
-    VerbalCover::fillCountHonorsOrdinal(sumProfile, vside);
+    VerbalCover::fillCountHonorsOrdinal(true, sumProfile, vside);
+  }
+  else if (completion.secondRanked(side))
+  {
+    VerbalCover::fillCountHonorsOrdinal(false, sumProfile, vside);
   }
   else
   {

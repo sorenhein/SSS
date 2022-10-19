@@ -109,6 +109,7 @@ class VerbalCover
 
     // SENTENCE_COUNT_HONORS_ORDINAL
     void fillCountHonorsOrdinal(
+      const bool highestHonorFlag,
       const Profile& sumProfile,
       const VerbalSide& vside);
 

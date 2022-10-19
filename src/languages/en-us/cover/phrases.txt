@@ -143,6 +143,9 @@ name DICT_HONORS
 string "honors"
 
 name DICT_MID_HONOR
+string "mid-honor"
+
+name DICT_MID_HONORS
 string "mid-honors"
 
 name DICT_BELOW
