@@ -19,7 +19,6 @@ class RanksNames;
 class Completion;
 class Phrase;
 
-enum PhrasesGroup: unsigned;
 enum SentencesEnum: unsigned;
 
 
@@ -27,12 +26,17 @@ class Expand
 {
   private:
 
-    vector<list<PhrasesGroup>> groupCheck;
+    void findTag(
+      const unsigned group,
+      const size_t field,
+      const string& expansion,
+      string& tag,
+      size_t& pos) const;
+
+    void recomma(string& expansion) const;
 
 
   public:
-
-    Expand();
 
     string get(
       const SentencesEnum sentence,

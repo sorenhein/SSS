@@ -30,7 +30,7 @@ name LENGTH_NOT_VOID
 string "is not void"
 
 name LENGTH_XTON
-string "has a {ORDINAL0}"
+string "has a {P_ORDINAL0}"
 
 name LENGTH_EVENLY
 string "splits evenly"
@@ -39,73 +39,73 @@ name LENGTH_ODD_EVENLY
 string "splits evenly either way"
 
 name LENGTH_XTON_ATMOST
-string "has at most a {ORDINAL0}"
+string "has at most a {P_ORDINAL0}"
 
 name LENGTH_ATMOST
-string "has at most {NUMERICAL0} cards"
+string "has at most {P_NUMERICAL0} cards"
 
 name LENGTH_12
 string "has a singleton or doubleton"
 
 name LENGTH_RANGE
-string "has {NUMERICAL0}-{NUMERICAL1} cards"
+string "has {P_NUMERICAL0}-{P_NUMERICAL1} cards"
 
 name LENGTH_BETWEEN
-string "has between {NUMERICAL0} and {NUMERICAL1} cards"
+string "has between {P_NUMERICAL0} and {P_NUMERICAL1} cards"
 
 name LENGTH_SPLIT
-string "splits {NUMERICAL0}={NUMERICAL1}"
+string "splits {P_NUMERICAL0}={P_NUMERICAL1}"
 
 
 group S_ORDINAL
 # -------------
 
 name ORDINAL_EXACT
-string "{ORDINAL0}"
+string "{P_ORDINAL0}"
 
 name ORDINAL_ATMOST
-string "at most {ORDINAL0}"
+string "at most {P_ORDINAL0}"
 
 name ORDINAL_ADJACENT
-string "{ORDINAL0} or {ORDINAL1}"
+string "{P_ORDINAL0} or {P_ORDINAL1}"
 
 name ORDINAL_RANGE
-string "between {ORDINAL0} and {ORDINAL1}"
+string "between {P_ORDINAL0} and {P_ORDINAL1}"
 
 
 group S_COUNT
 # -----------
 
 name COUNT_EXACT
-string "{NUMERICAL0}"
+string "{P_NUMERICAL0}"
 
 name COUNT_ATMOST
-string "at most {NUMERICAL0}"
+string "at most {P_NUMERICAL0}"
 
 name COUNT_ATLEAST
-string "at least {NUMERICAL0}"
+string "at least {P_NUMERICAL0}"
 
 name COUNT_RANGE
-string "{NUMERICAL0}-{NUMERICAL1}"
+string "{P_NUMERICAL0}-{P_NUMERICAL1}"
 
 name COUNT_OR
-string "{NUMERICAL0} or {NUMERICAL1}"
+string "{P_NUMERICAL0} or {P_NUMERICAL1}"
 
 
 group S_DIGITS
 # ------------
 
 name DIGITS_EXACT
-string "{DIGITS0}"
+string "{P_DIGITS0}"
 
 name DIGITS_ATMOST
-string "at most {DIGITS0}"
+string "at most {P_DIGITS0}"
 
 name DIGITS_ATLEAST
-string "at least {DIGITS0}"
+string "at least {P_DIGITS0}"
 
 name DIGITS_RANGE
-string "{DIGITS0}-{DIGITS1}"
+string "{P_DIGITS0}-{P_DIGITS1}"
 
 
 group S_DICT
@@ -146,29 +146,29 @@ group S_HOLDING
 # -------------
 
 name TOPS_LOWEST
-string "{LOWEST0}"
+string "{P_LOWEST0}"
 
 name TOPS_INDEFINITE
-string "{INDEFINITE0}"
+string "{P_INDEFINITE0}"
 
 name TOPS_DEFINITE
-string "{DEFINITE0}"
+string "{P_DEFINITE0}"
 
 name TOPS_OF_DEFINITE
-string "{OF_DEFINITE0}"
+string "{P_OF_DEFINITE0}"
 
 name TOPS_SET
-string "{HOLDING0}"
+string "{P_HOLDING0}"
 
 name TOPS_UNSET
-string "{LOWS0}"
+string "{P_LOWS0}"
 
 name TOPS_XES
-string "{XES0}"
+string "{P_XES0}"
 
 
 group S_LIST
 # ----------
 
 name LIST_HOLDING
-string "{HOLDING0}"
+string "{P_HOLDING0}"

@@ -24,90 +24,29 @@
 extern Dictionary dictionary;
 
 
-Expand::Expand()
+void Expand::findTag(
+  const unsigned group,
+  const size_t field,
+  const string& expansion,
+  string& tag,
+  size_t& pos) const
 {
-  groupCheck.resize(SENTENCE_SIZE);
+  tag = dictionary.groupTag(group);
+  auto p = tag.find("%");
+  assert(p != string::npos);
+  tag.replace(p, 1, to_string(field));
 
-  groupCheck[SENTENCE_LENGTH] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH } ;
+  pos = expansion.find(tag);
+  assert(pos != string::npos);
+}
 
-  groupCheck[SENTENCE_TOPS] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS };
 
-  groupCheck[SENTENCE_LENGTH_BELOW_TOPS] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_LENGTH, 
-      GROUP_PHRASES_DICT, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_COUNT_OF_TOPS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, GROUP_PHRASES_ORDINAL };
-
-  groupCheck[SENTENCE_COUNT_TOPS] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_EXACTLY_COUNT_TOPS] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_TOPS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
-      GROUP_PHRASES_ORDINAL };
-
-  groupCheck[SENTENCE_COUNT_TOPS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, GROUP_PHRASES_ORDINAL };
-
-  groupCheck[SENTENCE_COUNT_HONORS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT,
-      GROUP_PHRASES_DICT, GROUP_PHRASES_ORDINAL };
-
-  groupCheck[SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, GROUP_PHRASES_ORDINAL };
-
-  groupCheck[SENTENCE_TOPS_AND_LOWER] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_DICT };
-
-  groupCheck[SENTENCE_EXACTLY_TOPS_AND_LOWER] =
-    { GROUP_PHRASES_PLAYER, 
-      GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_TOPS, 
-      GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_DICT };
-
-  groupCheck[SENTENCE_TOPS_AND_COUNT_BELOW_CARD] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_COUNT, 
-      GROUP_PHRASES_DICT, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_EXACTLY_TOPS_MAYBE_UNSET] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, 
-      GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_TOPS_MAYBE_OTHERS] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_TOPS_AND_XES] =
-    { GROUP_PHRASES_PLAYER, GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
-
-  // Up to 4 such holdings currently foreseen.
-  groupCheck[SENTENCE_EXACTLY_LIST] =
-    { GROUP_PHRASES_PLAYER, 
-      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST, 
-      GROUP_PHRASES_LIST, GROUP_PHRASES_LIST };
-
-  groupCheck[SENTENCE_2SPLIT_TOPS_SYMM] = 
-    { GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_2SPLIT_TOPS_ASYMM] = 
-    { GROUP_PHRASES_TOPS, GROUP_PHRASES_TOPS };
-
-  groupCheck[SENTENCE_2SPLIT_TOPS_DIGITS_SYMM] = 
-    { GROUP_PHRASES_TOPS, GROUP_PHRASES_DIGITS,
-      GROUP_PHRASES_TOPS, GROUP_PHRASES_DIGITS };
-
-  groupCheck[SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM] = 
-    { GROUP_PHRASES_TOPS, GROUP_PHRASES_DIGITS,
-      GROUP_PHRASES_TOPS, GROUP_PHRASES_DIGITS };
+void Expand::recomma(string& expansion) const
+{
+  size_t pos = expansion.find_last_of(",");
+  if (pos != string::npos)
+    expansion.replace(pos, 1, 
+      " " + dictionary.words.get(WORDS_CONJUNCTION).text);
 }
 
 
@@ -117,33 +56,26 @@ string Expand::get(
   const list<Completion>& completions,
   const vector<Phrase>& phrases) const
 {
-  assert(sentence < groupCheck.size());
-  const auto& vtgroups = groupCheck[sentence];
+  const auto& groupList = 
+    dictionary.coverSentences.get(sentence).expansions;
 
   // A list has room for up to 4 entries, but they need not be present.
   if (sentence != SENTENCE_EXACTLY_LIST)
-    assert(phrases.size() == vtgroups.size());
-
-  const auto& groupList = 
-    dictionary.coverSentences.get(sentence).expansions;
-  assert(groupList.size() == vtgroups.size());
+    assert(phrases.size() == groupList.size());
 
   string expansion = dictionary.coverSentences.get(sentence).text;
-  string fill = "";
-  string tag;
+  string fill = "", tag;
 
-  size_t field;
+  size_t field, pos;
   auto phraseIter = phrases.begin();
-  auto giter = vtgroups.begin();
   auto gliter = groupList.begin();
   auto complIter = completions.begin();
 
   for (field = 0; field < phrases.size(); 
-      field++, phraseIter++, giter++, gliter++)
+      field++, phraseIter++, gliter++)
   {
     const Phrase& phrase = * phraseIter;
 
-    assert(phrase.getGroup() == * giter);
     assert(phrase.getGroup() == * gliter);
     assert(complIter != completions.end());
 
@@ -154,41 +86,20 @@ string Expand::get(
       complIter++;
 
     // Fill in the placeholder.
-    tag = dictionary.groupTag(* gliter);
-    auto p = tag.find("%");
-    assert(p != string::npos);
-    tag.replace(p, 1, to_string(field));
-
-    auto q = expansion.find(tag);
-    assert(q != string::npos);
-    expansion.replace(q, tag.size(), fill);
-
-    // auto p = expansion.find("%" + to_string(field));
-    // assert(p != string::npos);
-    // expansion.replace(p, 2, fill);
+    Expand::findTag(* gliter, field, expansion, tag, pos);
+    expansion.replace(pos, tag.size(), fill);
   }
 
   if (sentence == SENTENCE_EXACTLY_LIST)
   {
-// cout << "Start with: " << expansion << endl;
     // Eliminate the trailing placeholders in a list.
-    for ( ; field < vtgroups.size(); field++, gliter++)
+    for ( ; field < groupList.size(); field++, gliter++)
     {
       // Fill in the placeholder.
-      // TODO Expand::findTag(* gliter, tag, pos);
-      tag = ", " + dictionary.groupTag(* gliter);
-      auto p = tag.find("%");
-      assert(p != string::npos);
-      tag.replace(p, 1, to_string(field));
+      Expand::findTag(* gliter, field, expansion, tag, pos);
 
-      auto q = expansion.find(tag);
-      assert(q != string::npos);
-      expansion.erase(q, tag.size());
-
-// cout << "Now: " << expansion << endl;
-      // auto p = expansion.find(", %" + to_string(field));
-      // assert(p != string::npos);
-      // expansion.erase(p, 4);
+      // Also delete the leading ", "
+      expansion.erase(pos-2, tag.size()+2);
     }
   }
 
@@ -197,11 +108,7 @@ string Expand::get(
   {
     // If there is a comma in a list, turn the last one into " or".
     // The excepted sentence has a comma on purpose.
-    // TODO Expand::recomma(expansion);
-    auto p = expansion.find_last_of(",");
-    if (p != string::npos)
-      expansion.replace(p, 1, 
-        " " + dictionary.words.get(WORDS_CONJUNCTION).text);
+    Expand::recomma(expansion);
   }
 
   return expansion;

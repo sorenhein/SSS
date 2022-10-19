@@ -1,7 +1,12 @@
-Clean up:
-Dictionary
-Expand
-Component
+Might still have to clean up types and code in Rank?Names.
+
+RANKNAME used:
+ACTUAL_FULL_INDEF
+ACTUAL_FULL_DEF
+ACTUAL_FULL_DEF_OF
+
+See whether getTopData in Profile is used.
+If not, we may not need ACTUAL_SHORT, ABSOLUTE_SHORT either
 
 German
 Danish

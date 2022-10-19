@@ -107,7 +107,6 @@ bool RanksNames::used() const
 
 const RankNames& RanksNames::getOpponents(const unsigned topNumber) const
 {
-  // TODO Do we still need this method?
   assert(topNumber < indexByTop.size());
 
   const auto itop = indexByTop[topNumber];

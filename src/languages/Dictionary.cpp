@@ -376,17 +376,17 @@ void Dictionary::setMap(
 void Dictionary::setPhraseTags()
 {
   phraseTags.resize(PHRASE_SIZE);
-  phraseTags[PHRASE_NONE] = "{NONE%}";
-  phraseTags[PHRASE_DIGITS] = "{DIGITS%}";
-  phraseTags[PHRASE_NUMERICAL] = "{NUMERICAL%}";
-  phraseTags[PHRASE_ORDINAL] = "{ORDINAL%}";
-  phraseTags[PHRASE_LOWEST_CARD] = "{LOWEST%}";
-  phraseTags[PHRASE_INDEFINITE_RANK] = "{INDEFINITE%}";
-  phraseTags[PHRASE_DEFINITE_RANK] = "{DEFINITE%}";
-  phraseTags[PHRASE_OF_DEFINITE_RANK] = "{OF_DEFINITE%}";
-  phraseTags[PHRASE_COMPLETION_SET] = "{HOLDING%}";
-  phraseTags[PHRASE_COMPLETION_UNSET] = "{LOWS%}";
-  phraseTags[PHRASE_XES] = "{XES%}";
+  phraseTags[PHRASE_NONE] = "{P_NONE%}";
+  phraseTags[PHRASE_DIGITS] = "{P_DIGITS%}";
+  phraseTags[PHRASE_NUMERICAL] = "{P_NUMERICAL%}";
+  phraseTags[PHRASE_ORDINAL] = "{P_ORDINAL%}";
+  phraseTags[PHRASE_LOWEST_CARD] = "{P_LOWEST%}";
+  phraseTags[PHRASE_INDEFINITE_RANK] = "{P_INDEFINITE%}";
+  phraseTags[PHRASE_DEFINITE_RANK] = "{P_DEFINITE%}";
+  phraseTags[PHRASE_OF_DEFINITE_RANK] = "{P_OF_DEFINITE%}";
+  phraseTags[PHRASE_COMPLETION_SET] = "{P_HOLDING%}";
+  phraseTags[PHRASE_COMPLETION_UNSET] = "{P_LOWS%}";
+  phraseTags[PHRASE_XES] = "{P_XES%}";
 
   groupTags.resize(GROUP_PHRASES_SIZE);
   groupTags[GROUP_PHRASES_PLAYER] = "{S_PLAYER%}";
@@ -398,18 +398,16 @@ void Dictionary::setPhraseTags()
   groupTags[GROUP_PHRASES_TOPS] = "{S_TOPS%}";
   groupTags[GROUP_PHRASES_LIST] = "{S_LIST%}";
 
-  // TODO Here, directly above, further above: P_
-  // Also in phrases.txt
-  phraseExpansionGroup["DIGITS"] = PHRASE_DIGITS;
-  phraseExpansionGroup["NUMERICAL"] = PHRASE_NUMERICAL;
-  phraseExpansionGroup["ORDINAL"] = PHRASE_ORDINAL;
-  phraseExpansionGroup["LOWEST"] = PHRASE_LOWEST_CARD;
-  phraseExpansionGroup["INDEFINITE"] = PHRASE_INDEFINITE_RANK;
-  phraseExpansionGroup["DEFINITE"] = PHRASE_DEFINITE_RANK;
-  phraseExpansionGroup["OF_DEFINITE"] = PHRASE_OF_DEFINITE_RANK;
-  phraseExpansionGroup["HOLDING"] = PHRASE_COMPLETION_SET;
-  phraseExpansionGroup["LOWS"] = PHRASE_COMPLETION_UNSET;
-  phraseExpansionGroup["XES"] = PHRASE_XES;
+  phraseExpansionGroup["P_DIGITS"] = PHRASE_DIGITS;
+  phraseExpansionGroup["P_NUMERICAL"] = PHRASE_NUMERICAL;
+  phraseExpansionGroup["P_ORDINAL"] = PHRASE_ORDINAL;
+  phraseExpansionGroup["P_LOWEST"] = PHRASE_LOWEST_CARD;
+  phraseExpansionGroup["P_INDEFINITE"] = PHRASE_INDEFINITE_RANK;
+  phraseExpansionGroup["P_DEFINITE"] = PHRASE_DEFINITE_RANK;
+  phraseExpansionGroup["P_OF_DEFINITE"] = PHRASE_OF_DEFINITE_RANK;
+  phraseExpansionGroup["P_HOLDING"] = PHRASE_COMPLETION_SET;
+  phraseExpansionGroup["P_LOWS"] = PHRASE_COMPLETION_UNSET;
+  phraseExpansionGroup["P_XES"] = PHRASE_XES;
 
   // We keep the information for sentences in the same data structure.
   // This may not be entirely clean, but we keep the namespaces apart.
