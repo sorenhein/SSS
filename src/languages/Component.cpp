@@ -14,6 +14,7 @@
 #include "Dictionary.h"
 #include "Component.h"
 #include "VerbalConnection.h"
+#include "PhraseExpansion.h"
 
 #include "../inputs/parse.h"
 
@@ -38,7 +39,6 @@ void Component::init(const list<VerbalConnection>& connections)
   for (auto& vc: connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
-    vi.expansion = vc.expansion;
     vi.text = "";
 
     auto mit = instanceMap.find(vc.tag);
@@ -137,7 +137,9 @@ void Component::read(
 
         // Check whether the text contains an expansion.
         if (text.find("{") != string::npos)
-          assert(lookup[index].expansion == Component::strArgument(text));
+          lookup[index].expansion = Component::strArgument(text);
+        else
+          lookup[index].expansion = PHRASE_NONE; // TODO Kludge
 
         lookup[index].text = text;
       }

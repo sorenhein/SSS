@@ -14,14 +14,10 @@ using namespace std;
 
 struct VerbalConnection
 {
-  // For example: 
-  // PLAYER_WEST, 
-  // "PLAYER_WEST", 
-  // PHRASE_NONE.
+  // For example: PLAYER_WEST, "PLAYER_WEST". 
 
   unsigned instance;
   string tag;
-  unsigned expansion;
 };
 
 

@@ -16,6 +16,7 @@ class RanksNames;
 class Completion;
 
 enum Opponent: unsigned;
+enum PhrasesGroup: unsigned;
 enum PhrasesEnum: unsigned;
 enum PhraseExpansion: unsigned;
 
@@ -140,6 +141,8 @@ class Phrase
       const bool bool2);
 
     PhrasesEnum getPhrase() const;
+
+    PhrasesGroup getGroup() const;
 
     string str(
       const PhraseExpansion expansion,

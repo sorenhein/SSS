@@ -130,6 +130,13 @@ PhrasesEnum Phrase::getPhrase() const
 }
 
 
+PhrasesGroup Phrase::getGroup() const
+{
+  return static_cast<PhrasesGroup>(
+    dictionary.coverPhrases.get(phrase).group);
+}
+
+
 bool Phrase::has(
   const unsigned char actOpp,
   const unsigned char actUchars,
@@ -363,6 +370,15 @@ string Phrase::str(
   const Completion& completion) const
 {
   assert(expansion < phraseMethods.size());
+
+  const unsigned e = dictionary.coverPhrases.get(phrase).expansion;
+  if (e != expansion)
+  {
+    cout << "phrase " << phrase << endl;
+    cout << "expansion " << expansion << endl;
+    cout << "e " << e << endl;
+    assert(false);
+  }
 
   return (this->*(phraseMethods[expansion]))
     (text, ranksNames, completion);

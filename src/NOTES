@@ -3,9 +3,7 @@ Mention of split honors
 Can we do something about the LIST_HOLDING and the count?
 
 1.
-Derive the phrase group from the tag in phrases.txt.
-Store it in Phrase.
-Check that expansion == this.
+Let Phrase look up its expansion and store it.
 When it is, don't tell Phrase the expansion anymore.
 
 2.
