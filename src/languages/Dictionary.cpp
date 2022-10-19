@@ -362,11 +362,31 @@ void Dictionary::setMap(
 }
 
 
+void Dictionary::setPhraseTags()
+{
+  phraseTags.resize(PHRASE_SIZE);
+  phraseTags[PHRASE_NONE] = "{NONE%}";
+  phraseTags[PHRASE_DIGITS] = "{DIGITS%}";
+  phraseTags[PHRASE_NUMERICAL] = "{NUMERICAL%}";
+  phraseTags[PHRASE_ORDINAL] = "{ORDINAL%}";
+  phraseTags[PHRASE_LOWEST_CARD] = "{LOWEST%}";
+  phraseTags[PHRASE_INDEFINITE_RANK] = "{INDEFINITE%}";
+  phraseTags[PHRASE_DEFINITE_RANK] = "{DEFINITE%}";
+  phraseTags[PHRASE_OF_DEFINITE_RANK] = "{OF_DEFINITE%}";
+  phraseTags[PHRASE_COMPLETION_SET] = "{TOPS%}";
+  phraseTags[PHRASE_COMPLETION_UNSET] = "{LOWS%}";
+  phraseTags[PHRASE_XES] = "{XES%}";
+}
+
+
 void Dictionary::read(const string& language)
 {
+  Dictionary::setPhraseTags();
+
   Dictionary::setMap(sentencesGroupConnection, sentenceGroupMap);
   coverSentences.init(sentencesConnection);
-  coverSentences.read(language, "cover/sentences.txt", sentenceGroupMap);
+  coverSentences.read(language, "cover/sentences.txt", 
+    sentenceGroupMap);
 
   Dictionary::setMap(phrasesGroupConnection, phraseGroupMap);
   coverPhrases.init(phrasesConnection);
@@ -388,8 +408,7 @@ void Dictionary::read(const string& language)
 
   Dictionary::setMap(cardsShortGroupConnection, cardsShortGroupMap);
   cardsShort.init(cardsShortConnection);
-  cardsShort.read(language, "cards/short.txt",
-    cardsShortGroupMap);
+  cardsShort.read(language, "cards/short.txt", cardsShortGroupMap);
 
   Dictionary::setMap(honorsShortGroupConnection, honorsShortGroupMap);
   honorsShort.init(honorsShortConnection);
@@ -407,3 +426,11 @@ void Dictionary::read(const string& language)
   words.init(wordsConnection);
   words.read(language, "words.txt", wordsGroupMap);
 }
+
+
+const string& Dictionary::phraseTag(const unsigned index) const
+{
+  assert(index < phraseTags.size());
+  return phraseTags[index];
+}
+

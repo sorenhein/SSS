@@ -30,7 +30,7 @@ name LENGTH_NOT_VOID
 string "is not void"
 
 name LENGTH_XTON
-string "has a %0"
+string "has a {ORDINAL0}"
 
 name LENGTH_EVENLY
 string "splits evenly"
@@ -39,73 +39,73 @@ name LENGTH_ODD_EVENLY
 string "splits evenly either way"
 
 name LENGTH_XTON_ATMOST
-string "has at most a %0"
+string "has at most a {ORDINAL0}"
 
 name LENGTH_ATMOST
-string "has at most %0 cards"
+string "has at most {NUMERICAL0} cards"
 
 name LENGTH_12
 string "has a singleton or doubleton"
 
 name LENGTH_RANGE
-string "has %0-%1 cards"
+string "has {NUMERICAL0}-{NUMERICAL1} cards"
 
 name LENGTH_BETWEEN
-string "has between %0 and %1 cards"
+string "has between {NUMERICAL0} and {NUMERICAL1} cards"
 
 name LENGTH_SPLIT
-string "splits %0=%1"
+string "splits {NUMERICAL0}={NUMERICAL1}"
 
 
 group PHRASES_ORDINAL
 # -------------------
 
 name ORDINAL_EXACT
-string "%0"
+string "{ORDINAL0}"
 
 name ORDINAL_ATMOST
-string "at most %0"
+string "at most {ORDINAL0}"
 
 name ORDINAL_ADJACENT
-string "%0 or %1"
+string "{ORDINAL0} or {ORDINAL1}"
 
 name ORDINAL_RANGE
-string "between %0 and %1"
+string "between {ORDINAL0} and {ORDINAL1}"
 
 
 group PHRASES_COUNT
 # -----------------
 
 name COUNT_EXACT
-string "%0"
+string "{NUMERICAL0}"
 
 name COUNT_ATMOST
-string "at most %0"
+string "at most {NUMERICAL0}"
 
 name COUNT_ATLEAST
-string "at least %0"
+string "at least {NUMERICAL0}"
 
 name COUNT_RANGE
-string "%0-%1"
+string "{NUMERICAL0}-{NUMERICAL1}"
 
 name COUNT_OR
-string "%0 or %1"
+string "{NUMERICAL0} or {NUMERICAL1}"
 
 
 group PHRASES_DIGITS
 # ------------------
 
 name DIGITS_EXACT
-string "%0"
+string "{DIGITS0}"
 
 name DIGITS_ATMOST
-string "at most %0"
+string "at most {DIGITS0}"
 
 name DIGITS_ATLEAST
-string "at least %0"
+string "at least {DIGITS0}"
 
 name DIGITS_RANGE
-string "%0-%1"
+string "{DIGITS0}-{DIGITS1}"
 
 
 group PHRASES_DICT
@@ -146,29 +146,29 @@ group PHRASES_TOPS
 # ----------------
 
 name TOPS_LOWEST
-string "%0"
+string "{LOWEST0}"
 
 name TOPS_INDEFINITE
-string "%0"
+string "{INDEFINITE0}"
 
 name TOPS_DEFINITE
-string "%0"
+string "{DEFINITE0}"
 
 name TOPS_OF_DEFINITE
-string "%0"
+string "{OF_DEFINITE0}"
 
 name TOPS_SET
-string "%0"
+string "{TOPS0}"
 
 name TOPS_UNSET
-string "%0"
+string "{LOWS0}"
 
 name TOPS_XES
-string "%0"
+string "{XES0}"
 
 
 group PHRASES_LIST
 # ----------------
 
 name LIST_HOLDING
-string "%0"
+string "{TOPS0}"

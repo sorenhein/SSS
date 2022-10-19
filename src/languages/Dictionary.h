@@ -46,12 +46,18 @@ struct Dictionary
 
   Component words;
 
+  vector<string> phraseTags;
+
 
   void setMap(
     const list<TagConnection>& groupConnection,
     map<string, unsigned>& groupMap) const;
 
+  void setPhraseTags();
+
   void read(const string& language);
+
+  const string& phraseTag(const unsigned index) const;
 };
 
 #endif

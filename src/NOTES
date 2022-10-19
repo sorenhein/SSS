@@ -20,7 +20,12 @@ group PLAYER
 LENGTH
 etc. (phrases.h in connections; 8 of them)
 
-So then it's not in phrasesConnection but 
+
+We should be able to tell when reading the phrase from a file,
+what kind of expansion it will need.  Then Phrase::str does not get
+this as an argument, but knows already.
+This probably needs a reverse lookup of the string (map again)
+and yet another method in Dictionary.
 
 German
 ------

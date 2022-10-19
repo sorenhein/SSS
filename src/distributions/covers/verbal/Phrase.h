@@ -53,15 +53,10 @@ class Phrase
       const string& percent,
       unsigned char uchar) const;
 
-    void replace(
-      string& s,
+    void finishTag(
+      const PhraseExpansion expansion,
       const unsigned char field,
-      const string& repl) const;
-
-    void replace(
-      string& s,
-      const unsigned char field,
-      unsigned char uchar) const;
+      string& tag) const;
 
     string strNone(
       const string& text,

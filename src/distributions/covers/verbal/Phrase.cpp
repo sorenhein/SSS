@@ -148,7 +148,7 @@ void Phrase::replace(
 {
   auto p = s.find(percent);
   assert(p != string::npos);
-  s.replace(p, 2, repl);
+  s.replace(p, percent.size(), repl);
 }
 
 
@@ -161,21 +161,13 @@ void Phrase::replace(
 }
 
 
-void Phrase::replace(
-  string& s,
+void Phrase::finishTag(
+  const PhraseExpansion expansion,
   const unsigned char field,
-  const string& repl) const
+  string& tag) const
 {
-  Phrase::replace(s, "%" + to_string(field), repl);
-}
-
-
-void Phrase::replace(
-  string& s,
-  const unsigned char field,
-  const unsigned char uchar) const
-{
-  Phrase::replace(s, "%" + to_string(field), to_string(uchar));
+  tag = dictionary.phraseTag(expansion);
+  Phrase::replace(tag, "%", to_string(field));
 }
 
 
@@ -196,9 +188,18 @@ string Phrase::strDigits(
 {
   assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
+  const string& tag = dictionary.phraseTag(PHRASE_DIGITS);
   string s = text;
+
   for (unsigned char field = 0; field < numUchars; field++)
-    Phrase::replace(s, field, uchars[field]);
+  {
+    // TODO Maybe this will show up in multiple methods and it
+    // should centralized?
+    string tagField = tag;
+    Phrase::replace(tagField, "%", to_string(field));
+
+    Phrase::replace(s, tagField, uchars[field]);
+  }
   return s;
 }
 
@@ -210,10 +211,19 @@ string Phrase::strNumerical(
 {
   assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
+  const string& tag = dictionary.phraseTag(PHRASE_NUMERICAL);
   string s = text;
+
   for (unsigned char field = 0; field < numUchars; field++)
-    Phrase::replace(s, field, 
+  {
+    // TODO Maybe this will show up in multiple methods and it
+    // should centralized?
+    string tagField = tag;
+    Phrase::replace(tagField, "%", to_string(field));
+
+    Phrase::replace(s, tagField, 
       dictionary.numerals.get(uchars[field]).text);
+  }
   return s;
 }
 
@@ -225,10 +235,19 @@ string Phrase::strOrdinal(
 {
   assert(Phrase::has(0, 1, 0) || Phrase::has(0, 2, 0));
 
+  const string& tag = dictionary.phraseTag(PHRASE_ORDINAL);
   string s = text;
+
   for (unsigned char field = 0; field < numUchars; field++)
-    Phrase::replace(s, field, 
+  {
+    // TODO Maybe this will show up in multiple methods and it
+    // should centralized?
+    string tagField = tag;
+    Phrase::replace(tagField, "%", to_string(field));
+
+    Phrase::replace(s, tagField,
       dictionary.ordinals.get(uchars[field]).text);
+  }
   return s;
 }
 
@@ -241,7 +260,11 @@ string Phrase::strLowestCard(
   assert(Phrase::has(0, 1, 0));
 
   string s = text;
-  Phrase::replace(s, "%0", ranksNames.lowestCard(uchars[0]));
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_LOWEST_CARD);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, ranksNames.lowestCard(uchars[0]));
   return s;
 }
 
@@ -254,7 +277,11 @@ string Phrase::strIndefiniteRank(
   assert(Phrase::has(0, 1, 0));
 
   string s = text;
-  Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_INDEFINITE_RANK);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, ranksNames.getOpponents(uchars[0]).
     strComponent(RANKNAME_ACTUAL_FULL_INDEF));
   return s;
 }
@@ -268,7 +295,11 @@ string Phrase::strDefiniteRank(
   assert(Phrase::has(0, 1, 0));
 
   string s = text;
-  Phrase::replace(s, "%0", ranksNames.getOpponents(uchars[0]).
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_DEFINITE_RANK);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, ranksNames.getOpponents(uchars[0]).
     strComponent(RANKNAME_ACTUAL_FULL_DEF));
   return s;
 }
@@ -282,7 +313,11 @@ string Phrase::strOfDefiniteRank(
   assert(Phrase::has(0, 1, 1));
 
   string s = text;
-  Phrase::replace(s, "%0", ranksNames.strComponent(
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_OF_DEFINITE_RANK);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, ranksNames.strComponent(
     RANKNAME_ACTUAL_FULL_DEF_OF, uchars[0], bools[0]));
   return s;
 }
@@ -296,10 +331,14 @@ string Phrase::strCompletionSet(
   assert(Phrase::has(1, 0, 0) || Phrase::has(1, 0, 1));
 
   string s = text;
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_COMPLETION_SET);
+  Phrase::replace(tag, "%", "0");
+
   if (numBools == 0)
-    Phrase::replace(s, "%0", completion.strSet(ranksNames, side));
+    Phrase::replace(s, tag, completion.strSet(ranksNames, side));
   else
-    Phrase::replace(s, "%0", completion.strSet(ranksNames, side, bools[0]));
+    Phrase::replace(s, tag, completion.strSet(ranksNames, side, bools[0]));
   return s;
 }
 
@@ -312,7 +351,11 @@ string Phrase::strCompletionUnset(
   assert(Phrase::has(1, 0, 0));
 
   string s = text;
-  Phrase::replace(s, "%0", completion.strUnset(ranksNames, side));
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_COMPLETION_UNSET);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, completion.strUnset(ranksNames, side));
   return s;
 }
 
@@ -325,7 +368,11 @@ string Phrase::strXes(
   assert(Phrase::has(1, 0, 0));
 
   string s = text;
-  Phrase::replace(s, "%0", completion.strXes(side));
+  // TODO Unify
+  string tag = dictionary.phraseTag(PHRASE_XES);
+  Phrase::replace(tag, "%", "0");
+
+  Phrase::replace(s, tag, completion.strXes(side));
   return s;
 }
 
