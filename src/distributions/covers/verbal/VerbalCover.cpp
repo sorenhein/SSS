@@ -770,47 +770,30 @@ void VerbalCover::fillTwosidedLength(
 
   const Completion& completion = completions.front();
   const bool bothExpandableFlag = completion.expandableBoth();
-  unsigned char vLower, vUpper;
 
   if (bothExpandableFlag)
   {
     phrases[0].setPhrase(TOPS_INDEFINITE);
     phrases[0].setValues(completion.getLowestRankActive(side1));
 
-    length.range(sumProfile.length(), side1, vLower, vUpper);
-
     VerbalCover::fillDigits(sumProfile, side1, phrases[1]);
-    // phrases[1].setPhrase(DIGITS_RANGE);
-    // phrases[1].setValues(vLower, vUpper);
 
     phrases[2].setPhrase(TOPS_INDEFINITE);
     phrases[2].setValues(completion.getLowestRankActive(side2));
 
-    length.range(sumProfile.length(), side2, vLower, vUpper);
-
     VerbalCover::fillDigits(sumProfile, side2, phrases[3]);
-    // phrases[3].setPhrase(DIGITS_RANGE);
-    // phrases[3].setValues(vLower, vUpper);
   }
   else
   {
     phrases[0].setPhrase(TOPS_SET);
     phrases[0].setSide(side1);
 
-    length.range(sumProfile.length(), side1, vLower, vUpper);
-
     VerbalCover::fillDigits(sumProfile, side1, phrases[1]);
-    // phrases[1].setPhrase(DIGITS_RANGE);
-    // phrases[1].setValues(vLower, vUpper);
 
     phrases[2].setPhrase(TOPS_SET);
     phrases[2].setSide(side2);
 
-    length.range(sumProfile.length(), side2, vLower, vUpper);
-
     VerbalCover::fillDigits(sumProfile, side1, phrases[3]);
-    // phrases[3].setPhrase(DIGITS_RANGE);
-    // phrases[3].setValues(vLower, vUpper);
   }
 }
 
