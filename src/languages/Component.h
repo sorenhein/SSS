@@ -22,7 +22,6 @@ using namespace std;
 struct VerbalInstance
 {
   unsigned group;
-  unsigned groupOld;
   unsigned expansion;
   string text;
 };

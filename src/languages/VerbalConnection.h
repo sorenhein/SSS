@@ -17,12 +17,10 @@ struct VerbalConnection
   // For example: 
   // PLAYER_WEST, 
   // "PLAYER_WEST", 
-  // GROUP_PLAYER, 
   // PHRASE_NONE.
 
   unsigned instance;
   string tag;
-  unsigned group;
   unsigned expansion;
 };
 

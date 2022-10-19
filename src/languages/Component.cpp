@@ -35,7 +35,6 @@ void Component::init(const list<VerbalConnection>& connections)
   for (auto& vc: connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
-    vi.groupOld = vc.group;
     vi.expansion = vc.expansion;
     vi.text = "";
 
@@ -133,16 +132,6 @@ void Component::read(
         assert(index < lookup.size());
         lookup[index].group = group;
         lookup[index].text = text;
-
-        if (group != lookup[index].groupOld)
-        {
-          cout << err << endl;
-          cout << "tag " << tag << endl;
-          cout << "new group " << group << endl;
-          cout << "old group " << lookup[index].groupOld << endl;
-          cout << "text " << text << endl;
-          assert(group == lookup[index].groupOld);
-        }
       }
     }
     else
