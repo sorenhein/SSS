@@ -465,7 +465,7 @@ void Product::setVerbalHighTopsEqual(
     return;
   }
 
-  verbalCover.setLength(length);
+  // verbalCover.setLength(length);
 
   const Completion& completion = verbalCover.getCompletion();
   const Opponent side = Product::simpler(sumProfile, canonicalShift);
@@ -491,7 +491,7 @@ void Product::setVerbalHighTopsEqual(
   {
     // "West has at most a doubleton completely below the ten".
     verbalCover.fillLengthBelowTops(
-      sumProfile.numBottoms(canonicalShift), numOptions, vside);
+      sumProfile.numBottoms(canonicalShift), vside);
   }
   else if (completion.getTopsUsed(otherSide) == 0)
   {

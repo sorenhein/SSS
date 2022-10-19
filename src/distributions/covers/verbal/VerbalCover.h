@@ -143,7 +143,7 @@ class VerbalCover
     // SENTENCE_LENGTH_BELOW_TOPS
     void fillLengthBelowTops(
       const unsigned char numBottoms,
-      const unsigned char rankNo,
+      // const unsigned char rankNo,
       const VerbalSide& vside);
 
     // SENTENCE_FILL_ORDINAL_FROM_TOPS

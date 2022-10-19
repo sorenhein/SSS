@@ -319,7 +319,7 @@ void VerbalCover::fillTops(const VerbalSide& vside)
 
 void VerbalCover::fillLengthBelowTops(
   const unsigned char numBottoms,
-  const unsigned char rankNo,
+  // const unsigned char rankNo,
   const VerbalSide& vside)
 {
   sentence = SENTENCE_LENGTH_BELOW_TOPS;
@@ -328,6 +328,7 @@ void VerbalCover::fillLengthBelowTops(
   const auto& completion = completions.front();
   const unsigned char freeLower = completion.getFreeLower(OPP_WEST);
   const unsigned char freeUpper = completion.getFreeUpper(OPP_WEST);
+  const unsigned char rankNo = completion.numOptions();
 
   // Make a synthetic length of small cards.
   VerbalCover::setLength(freeLower, freeUpper, numBottoms);
