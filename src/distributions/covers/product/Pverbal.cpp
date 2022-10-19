@@ -447,7 +447,7 @@ void Product::setVerbalTopsOnly(
 
   const VerbalSide vsideHigh = {completion.preferHighActive(), symmFlag};
 
-  verbalCover.fillTopsBoth(vsideHigh);
+  verbalCover.fillTwosided(vsideHigh);
 }
 
 
@@ -548,7 +548,7 @@ void Product::setVerbalAnyTopsEqual(
   }
   else
   {
-    verbalCover.fillTopsBothLength(sumProfile, 
+    verbalCover.fillTwosidedLength(sumProfile, 
       {Product::simpler(sumProfile, canonicalShift), symmFlag});
   }
 }

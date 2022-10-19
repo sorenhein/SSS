@@ -675,105 +675,19 @@ void VerbalCover::fillOnesided(
 }
 
 
-void VerbalCover::fillTopsBothLength(
-  const Profile& sumProfile,
-  const VerbalSide& vside)
+void VerbalCover::fillTwosided(const VerbalSide& vside)
 {
-  // length is already set.
   if (vside.symmFlag)
-    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_SYMM;
+    sentence = SENTENCE_2SPLIT_TOPS_SYMM;
   else
-    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM;
-
-  phrases.resize(4);
-
-  const Completion& completion = completions.front();
-  // TODO completion method
-  const bool bothExpandableFlag =
-    completion.expandable(OPP_WEST) &&
-    completion.expandable(OPP_EAST);
-
-  // TODO VerbalSide method
-  const Opponent sideOther = (vside.side == OPP_WEST ? OPP_EAST : OPP_WEST);
-
-  if (bothExpandableFlag)
-  {
-    phrases[0].setPhrase(TOPS_INDEFINITE);
-    phrases[0].setValues(completion.getLowestRankActive(vside.side));
-
-    // TODO Here too like below, length.range?
-    phrases[1].setPhrase(DIGITS_RANGE);
-    phrases[1].setValues(length.lower(), length.upper());
-
-    phrases[2].setPhrase(TOPS_INDEFINITE);
-    phrases[2].setValues(completion.getLowestRankActive(sideOther));
-
-    phrases[3].setPhrase(DIGITS_RANGE);
-    phrases[3].setValues( 
-      sumProfile.length() - length.upper(),
-      sumProfile.length() - length.lower());
-  }
-  else
-  {
-    // TODO VerbalSide method
-    Opponent side1, side2;
-    if (vside.symmFlag)
-    {
-      side1 = vside.side;
-      side2 = sideOther;
-    }
-    else
-    {
-      side1 = OPP_WEST;
-      side2 = OPP_EAST;
-    }
-
-    unsigned char vLower, vUpper;
-    length.range(sumProfile.length(), side1, vLower, vUpper);
-
-    phrases[0].setPhrase(TOPS_SET);
-    phrases[0].setSide(side1);
-
-    phrases[1].setPhrase(DIGITS_RANGE);
-    phrases[1].setValues(vLower, vUpper);
-
-    length.range(sumProfile.length(), side2, vLower, vUpper);
-
-    phrases[2].setPhrase(TOPS_SET);
-    phrases[2].setSide(side2);
-
-    phrases[3].setPhrase(DIGITS_RANGE);
-    phrases[3].setValues(vLower, vUpper);
-  }
-}
-
-
-void VerbalCover::fillTopsBoth(const VerbalSide& vside)
-{
-  // TODO New method completion.expandableBoth()
-  const Completion& completion = completions.front();
-  const bool bothExpandableFlag =
-    completion.expandable(OPP_WEST) &&
-    completion.expandable(OPP_EAST);
+    sentence = SENTENCE_2SPLIT_TOPS_ASYMM;
 
   phrases.resize(2);
 
-  // TODO VerbalSide new method?
+  const Completion& completion = completions.front();
+  const bool bothExpandableFlag = completion.expandableBoth();
   Opponent side1, side2;
-  if (vside.symmFlag)
-  {
-    sentence = SENTENCE_2SPLIT_TOPS_SYMM;
-
-    side1 = vside.side;
-    side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
-  }
-  else
-  {
-    sentence = SENTENCE_2SPLIT_TOPS_ASYMM;
-
-    side1 = OPP_WEST;
-    side2 = OPP_EAST;
-  }
+  vside.bothPlayers(side1, side2);
 
   if (bothExpandableFlag)
   {
@@ -794,6 +708,64 @@ void VerbalCover::fillTopsBoth(const VerbalSide& vside)
 }
 
 
+void VerbalCover::fillTwosidedLength(
+  const Profile& sumProfile,
+  const VerbalSide& vside)
+{
+  // length is already set. TODO Pass it in?
+  if (vside.symmFlag)
+    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_SYMM;
+  else
+    sentence = SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM;
+
+  phrases.resize(4);
+
+  const Completion& completion = completions.front();
+  const bool bothExpandableFlag = completion.expandableBoth();
+  const Opponent sideOther = vside.otherSide();
+
+  if (bothExpandableFlag)
+  {
+    phrases[0].setPhrase(TOPS_INDEFINITE);
+    phrases[0].setValues(completion.getLowestRankActive(vside.side));
+
+    // TODO Here too like below, length.range?
+    phrases[1].setPhrase(DIGITS_RANGE);
+    phrases[1].setValues(length.lower(), length.upper());
+
+    phrases[2].setPhrase(TOPS_INDEFINITE);
+    phrases[2].setValues(completion.getLowestRankActive(sideOther));
+
+    phrases[3].setPhrase(DIGITS_RANGE);
+    phrases[3].setValues( 
+      sumProfile.length() - length.upper(),
+      sumProfile.length() - length.lower());
+  }
+  else
+  {
+    Opponent side1, side2;
+    vside.bothPlayers(side1, side2);
+    unsigned char vLower, vUpper;
+
+    length.range(sumProfile.length(), side1, vLower, vUpper);
+
+    phrases[0].setPhrase(TOPS_SET);
+    phrases[0].setSide(side1);
+
+    phrases[1].setPhrase(DIGITS_RANGE);
+    phrases[1].setValues(vLower, vUpper);
+
+    length.range(sumProfile.length(), side2, vLower, vUpper);
+
+    phrases[2].setPhrase(TOPS_SET);
+    phrases[2].setSide(side2);
+
+    phrases[3].setPhrase(DIGITS_RANGE);
+    phrases[3].setValues(vLower, vUpper);
+  }
+}
+
+
 void VerbalCover::fillTopsAndLowerMultiple(
   const Profile& sumProfile,
   const VerbalSide& vside,
@@ -806,27 +778,22 @@ void VerbalCover::fillTopsAndLowerMultiple(
       completion.highRanked(vside.side))
   {
     VerbalCover::fillCountHonorsOrdinal(sumProfile.length(), vside);
-    return;
   }
-
-  if (completion.lowestRankIsUsed(vside.side))
-  {
-    if (completion.expandable(vside.side) &&
-        ! completion.fullRanked(vside.side))
-    {
-      VerbalCover::fillExactlyTopsAndLower(vside);
-    }
-    else
-    {
-      VerbalCover::fillTopsAndLower(vside);
-    }
-  }
-  else
+  else if (! completion.lowestRankIsUsed(vside.side))
   {
     assert((! completion.expandable(vside.side)) ||
         completion.fullRanked(vside.side));
 
     VerbalCover::fillTopsAndCountBelowCard(vside, numOptions);
+  }
+  else if (completion.expandable(vside.side) &&
+      ! completion.fullRanked(vside.side))
+  {
+    VerbalCover::fillExactlyTopsAndLower(vside);
+  }
+  else
+  {
+    VerbalCover::fillTopsAndLower(vside);
   }
 }
 
@@ -845,7 +812,6 @@ void VerbalCover::fillSingular(
   }
   else if (completion.highRanked(side))
   {
-    phrases.resize(3);
     VerbalCover::fillCountHonorsOrdinal(sumProfile.length(), vside);
   }
   else

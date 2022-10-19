@@ -7,6 +7,7 @@ VerbalCover: Continue clean-up and more smaller methods.
 Arg orders.
 No TODO's.
 More into vside?
+Let setLength happen from VerbalCover, e.g. fillOnesided?
 
 0.
 Put the groups of sentences and phrases into the .txt files.

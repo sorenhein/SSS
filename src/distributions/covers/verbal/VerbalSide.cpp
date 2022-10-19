@@ -30,3 +30,27 @@ PhrasesEnum VerbalSide::otherPlayer() const
  else
    return (symmFlag ? PLAYER_EITHER : PLAYER_WEST);
 }
+
+
+Opponent VerbalSide::otherSide() const
+{
+  return (side == OPP_WEST ? OPP_EAST : OPP_WEST);
+}
+
+
+void VerbalSide::bothPlayers(
+  Opponent& side1,
+  Opponent& side2) const
+{
+  if (symmFlag)
+  {
+    side1 = side;
+    side2 = (side1 == OPP_WEST ? OPP_EAST : OPP_WEST);
+  }
+  else
+  {
+    side1 = OPP_WEST;
+    side2 = OPP_EAST;
+  }
+}
+

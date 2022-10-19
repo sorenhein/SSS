@@ -307,6 +307,13 @@ bool Completion::expandable(const Opponent side) const
 }
 
 
+bool Completion::expandableBoth() const
+{
+  return Completion::expandable(OPP_WEST) &&
+      Completion::expandable(OPP_EAST);
+}
+
+
 bool Completion::fullRanked(const Opponent side) const
 {
   return(

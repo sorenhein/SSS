@@ -198,22 +198,31 @@ class VerbalCover
     // SENTENCE_2SPLIT_TOPS_ASYMM
     // SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
     // SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
-
-
+    // See below
 
 
     // Fill methods that use several sentences.
 
+    // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
+    // SENTENCE_TOPS_ORDINAL
     void fillOnesided(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    void fillTopsBothLength(
+    // SENTENCE_2SPLIT_TOPS_SYMM
+    // SENTENCE_2SPLIT_TOPS_ASYMM
+    void fillTwosided(const VerbalSide& vside);
+
+    // SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
+    // SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
+    void fillTwosidedLength(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
-    void fillTopsBoth(const VerbalSide& vside);
-
+    // SENTENCE_COUNT_HONORS_ORDINAL
+    // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+    // SENTENCE_EXACTLY_TOPS_AND_LOWER
+    // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLowerMultiple(
       const Profile& sumProfile,
       const VerbalSide& vside,

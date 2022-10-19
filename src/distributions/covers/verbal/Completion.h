@@ -149,6 +149,8 @@ class Completion
 
     bool expandable(const Opponent side) const;
 
+    bool expandableBoth() const;
+
     bool fullRanked(const Opponent side) const;
 
     bool highRanked(const Opponent side) const;

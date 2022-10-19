@@ -23,6 +23,12 @@ struct VerbalSide
   PhrasesEnum player() const;
 
   PhrasesEnum otherPlayer() const;
+
+  Opponent otherSide() const;
+
+  void bothPlayers(
+    Opponent& side1,
+    Opponent& side2) const;
 };
 
 
