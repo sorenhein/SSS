@@ -26,4 +26,11 @@ struct VerbalConnection
   unsigned expansion;
 };
 
+
+struct TagConnection
+{
+  unsigned group;
+  string tag;
+};
+
 #endif

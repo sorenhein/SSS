@@ -1,9 +1,15 @@
+group GROUP_CARDS
+# ---------------
+
 name CARD
 string "card"
 
 name CARDS
 string "cards"
 
+
+group GROUP_HONORS
+# ----------------
 
 name HONOR
 string "honor"
@@ -18,21 +24,36 @@ name MID_HONORS
 string "mid-honors"
 
 
+group GROUP_SMALL
+# ---------------
+
 name SMALL
 string "x"
 
+
+group GROUP_CONJUNCTIONS
+# ----------------------
 
 name CONJUNCTION_OR
 string "or"
 
 
+group GROUP_PARTICLES
+# -------------------
+
 name PARTICLE_DEF_PLURAL
 string "the"
 
 
+group GROUP_PREPOSITIONS
+# ----------------------
+
 name PREPOSITION_DEF_PLURAL_OF
 string "of"
 
+
+group GROUP_THEY_HOLD
+# -------------------
 
 name THEY_HOLD
 string "where the opponents hold "

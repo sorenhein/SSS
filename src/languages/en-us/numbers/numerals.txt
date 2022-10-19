@@ -1,3 +1,6 @@
+group GROUP_NUMERAL
+
+
 name NUMERAL_0
 string "none"
 

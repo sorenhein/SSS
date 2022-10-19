@@ -9,13 +9,28 @@
 #ifndef SSS_DICTIONARY_H
 #define SSS_DICTIONARY_H
 
+#include <map>
+
 #include "Component.h"
+#include "VerbalConnection.h"
 
 using namespace std;
 
 
 struct Dictionary
 {
+  map<string, unsigned> sentenceGroupMap;
+  map<string, unsigned> phraseGroupMap;
+
+  map<string, unsigned> definiteGroupMap;
+  map<string, unsigned> indefiniteGroupMap;
+  map<string, unsigned> prepositionGroupMap;
+  map<string, unsigned> cardsShortGroupMap;
+  map<string, unsigned> honorsShortGroupMap;
+  map<string, unsigned> numeralsGroupMap;
+  map<string, unsigned> ordinalsGroupMap;
+  map<string, unsigned> wordsGroupMap;
+
   Component coverSentences;
   Component coverPhrases;
 
@@ -31,6 +46,10 @@ struct Dictionary
 
   Component words;
 
+
+  void setMap(
+    const list<TagConnection>& groupConnection,
+    map<string, unsigned>& groupMap) const;
 
   void read(const string& language);
 };

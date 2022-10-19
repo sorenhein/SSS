@@ -1,3 +1,6 @@
+group SENTENCES_GENERAL
+
+
 # Example: West has a doubleton, West is void.
 # %0: Player
 # %1: Length

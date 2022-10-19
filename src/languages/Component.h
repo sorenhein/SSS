@@ -22,6 +22,7 @@ using namespace std;
 struct VerbalInstance
 {
   unsigned group;
+  unsigned groupOld;
   unsigned expansion;
   string text;
 };
@@ -42,7 +43,8 @@ class Component
 
     void read(
       const string& language,
-      const string& filename);
+      const string& filename,
+      const map<string, unsigned>& groupMap);
 
     const VerbalInstance& get(const size_t index) const;
 };

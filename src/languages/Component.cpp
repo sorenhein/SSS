@@ -31,11 +31,11 @@ void Component::init(const list<VerbalConnection>& connections)
 
   lookup.resize(highest+1);
 
-  // Prepare the lookups -- still missing its text.
+  // Prepare the lookups -- still missing its group and text.
   for (auto& vc: connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
-    vi.group = vc.group;
+    vi.groupOld = vc.group;
     vi.expansion = vc.expansion;
     vi.text = "";
 
@@ -57,7 +57,8 @@ void Component::init(const list<VerbalConnection>& connections)
 
 void Component::read(
   const string& language,
-  const string& filename)
+  const string& filename,
+  const map<string, unsigned>& groupMap)
 {
   ifstream fin;
   const string fname = prefix + language + "/" + filename;
@@ -69,6 +70,7 @@ void Component::read(
   }
 
   string line, tag, text;
+  unsigned group = numeric_limits<unsigned>::max();
 
   while (getline(fin, line))
   {
@@ -91,7 +93,21 @@ void Component::read(
     const string& tagname = line.substr(0, sp);
     const string rest = line.substr(sp+1);
 
-    if (tagname == "name")
+    if (tagname == "group")
+    {
+      // This applies to all following entries until the group
+      // is perhaps changed.
+      auto git = groupMap.find(rest);
+      if (git == groupMap.end())
+      {
+        cout << err << endl;
+        cout << "Could not find group " << rest << endl;
+        assert(false);
+      }
+      else
+        group = git->second;
+    }
+    else if (tagname == "name")
     {
       tag = rest;
     }
@@ -115,7 +131,18 @@ void Component::read(
       {
         const unsigned index = mit->second;
         assert(index < lookup.size());
+        lookup[index].group = group;
         lookup[index].text = text;
+
+        if (group != lookup[index].groupOld)
+        {
+          cout << err << endl;
+          cout << "tag " << tag << endl;
+          cout << "new group " << group << endl;
+          cout << "old group " << lookup[index].groupOld << endl;
+          cout << "text " << text << endl;
+          assert(group == lookup[index].groupOld);
+        }
       }
     }
     else

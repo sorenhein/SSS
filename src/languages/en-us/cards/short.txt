@@ -1,3 +1,6 @@
+group GROUP_SHORT
+
+
 name CARD_SHORT_2
 string "2"
 

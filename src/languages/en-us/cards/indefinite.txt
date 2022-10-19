@@ -1,3 +1,6 @@
+group GROUP_INDEFINITE
+
+
 name CARD_INDEF_2
 string "deuce"
 

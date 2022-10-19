@@ -1,3 +1,6 @@
+group GROUP_DEFINITE
+
+
 name CARD_DEF_2
 string "the deuce"
 

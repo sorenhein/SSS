@@ -1,3 +1,6 @@
+group GROUP_HONOR_SHORT
+
+
 # In case we have multiple cards of a given rank.
 name HONOR_SHORT_1
 string "H"

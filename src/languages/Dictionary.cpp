@@ -6,6 +6,9 @@
    See LICENSE and README.
 */
 
+#include <iostream>
+#include <cassert>
+
 #include "Dictionary.h"
 
 #include "VerbalConnection.h"
@@ -80,6 +83,11 @@ list<VerbalConnection> sentencesConnection =
     GROUP_SENTENCES, PHRASE_NONE },
 };
 
+list<TagConnection> sentencesGroupConnection =
+{
+  { GROUP_SENTENCES, "SENTENCES_GENERAL"}
+};
+
 
 list<VerbalConnection> phrasesConnection =
 {
@@ -134,13 +142,13 @@ list<VerbalConnection> phrasesConnection =
     GROUP_PHRASES_COUNT, PHRASE_NUMERICAL },
 
   { DIGITS_EXACT, "DIGITS_EXACT", 
-    GROUP_PHRASES_COUNT, PHRASE_DIGITS},
+    GROUP_PHRASES_DIGITS, PHRASE_DIGITS},
   { DIGITS_ATMOST, "DIGITS_ATMOST", 
-    GROUP_PHRASES_COUNT, PHRASE_DIGITS},
+    GROUP_PHRASES_DIGITS, PHRASE_DIGITS},
   { DIGITS_ATLEAST, "DIGITS_ATLEAST", 
-    GROUP_PHRASES_COUNT, PHRASE_DIGITS},
+    GROUP_PHRASES_DIGITS, PHRASE_DIGITS},
   { DIGITS_RANGE, "DIGITS_RANGE", 
-    GROUP_PHRASES_COUNT, PHRASE_DIGITS},
+    GROUP_PHRASES_DIGITS, PHRASE_DIGITS},
 
   { TOPS_LOWEST, "TOPS_LOWEST", 
     GROUP_PHRASES_TOPS, PHRASE_LOWEST_CARD },
@@ -158,29 +166,198 @@ list<VerbalConnection> phrasesConnection =
     GROUP_PHRASES_TOPS, PHRASE_XES},
 
   { DICT_CARD, "DICT_CARD", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_CARDS, "DICT_CARDS", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_HONOR, "DICT_HONOR", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_HONORS, "DICT_HONORS", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_MID_HONOR, "DICT_MID_HONOR", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_MID_HONORS, "DICT_MID_HONORS", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_BELOW, "DICT_BELOW", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_BELOW_COMPLETELY, "DICT_BELOW_COMPLETELY", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_EITHER_WAY, "DICT_EITHER_WAY", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
   { DICT_ONE_WAY, "DICT_ONE_WAY", 
-    GROUP_PHRASES_WORD, PHRASE_NONE },
+    GROUP_PHRASES_DICT, PHRASE_NONE },
 
   { LIST_HOLDING, "LIST_HOLDING", 
     GROUP_PHRASES_LIST, PHRASE_COMPLETION_SET }
 };
+
+list<TagConnection> phrasesGroupConnection =
+{
+  { GROUP_PHRASES_PLAYER, "PHRASES_PLAYER" },
+  { GROUP_PHRASES_LENGTH, "PHRASES_LENGTH" },
+  { GROUP_PHRASES_ORDINAL, "PHRASES_ORDINAL" },
+  { GROUP_PHRASES_COUNT, "PHRASES_COUNT" },
+  { GROUP_PHRASES_DIGITS, "PHRASES_DIGITS" },
+  { GROUP_PHRASES_DICT, "PHRASES_DICT" },
+  { GROUP_PHRASES_TOPS, "PHRASES_TOPS" },
+  { GROUP_PHRASES_LIST, "PHRASES_LIST" }
+};
+
+
+list<VerbalConnection> definiteConnection =
+{
+  { DEFINITE_2, "CARD_DEF_2", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_3, "CARD_DEF_3", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_4, "CARD_DEF_4", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_5, "CARD_DEF_5", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_6, "CARD_DEF_6", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_7, "CARD_DEF_7", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_8, "CARD_DEF_8", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_9, "CARD_DEF_9", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_TEN, "CARD_DEF_TEN", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_JACK, "CARD_DEF_JACK", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_QUEEN, "CARD_DEF_QUEEN", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_KING, "CARD_DEF_KING", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_ACE, "CARD_DEF_ACE", GROUP_DEFINITE, PHRASE_NONE }
+};
+
+list<TagConnection> definiteGroupConnection =
+{
+  { GROUP_DEFINITE, "GROUP_DEFINITE" }
+};
+
+
+list<VerbalConnection> indefiniteConnection =
+{
+  { INDEFINITE_2, "CARD_INDEF_2", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_3, "CARD_INDEF_3", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_4, "CARD_INDEF_4", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_5, "CARD_INDEF_5", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_6, "CARD_INDEF_6", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_7, "CARD_INDEF_7", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_8, "CARD_INDEF_8", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_9, "CARD_INDEF_9", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_TEN, "CARD_INDEF_TEN", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_JACK, "CARD_INDEF_JACK", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_QUEEN, "CARD_INDEF_QUEEN", GROUP_DEFINITE, PHRASE_NONE },
+  { DEFINITE_KING, "CARD_INDEF_KING", GROUP_DEFINITE, PHRASE_NONE },
+  { INDEFINITE_ACE, "CARD_INDEF_ACE", GROUP_DEFINITE, PHRASE_NONE }
+};
+
+list<TagConnection> indefiniteGroupConnection =
+{
+  { GROUP_INDEFINITE, "GROUP_INDEFINITE" }
+};
+
+
+list<VerbalConnection> prepositionConnection =
+{
+  { PREP_OF_2, "PREP_OF_2", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_3, "PREP_OF_3", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_4, "PREP_OF_4", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_5, "PREP_OF_5", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_6, "PREP_OF_6", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_7, "PREP_OF_7", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_8, "PREP_OF_8", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_9, "PREP_OF_9", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_TEN, "PREP_OF_TEN", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_JACK, "PREP_OF_JACK", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_QUEEN, "PREP_OF_QUEEN", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_KING, "PREP_OF_KING", GROUP_PREP_LOCAL, PHRASE_NONE },
+  { PREP_OF_ACE, "PREP_OF_ACE", GROUP_PREP_LOCAL, PHRASE_NONE }
+};
+
+list<TagConnection> prepositionGroupConnection =
+{
+  { GROUP_PREP_LOCAL, "GROUP_PREPOSITION" }
+};
+
+
+list<VerbalConnection> cardsShortConnection =
+{
+  { SHORT_2, "CARD_SHORT_2", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_3, "CARD_SHORT_3", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_4, "CARD_SHORT_4", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_5, "CARD_SHORT_5", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_6, "CARD_SHORT_6", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_7, "CARD_SHORT_7", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_8, "CARD_SHORT_8", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_9, "CARD_SHORT_9", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_TEN, "CARD_SHORT_TEN", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_JACK, "CARD_SHORT_JACK", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_QUEEN, "CARD_SHORT_QUEEN", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_KING, "CARD_SHORT_KING", GROUP_SHORT, PHRASE_NONE },
+  { SHORT_ACE, "CARD_SHORT_ACE", GROUP_SHORT, PHRASE_NONE }
+};
+
+list<TagConnection> cardsShortGroupConnection =
+{
+  { GROUP_SHORT, "GROUP_SHORT" }
+};
+
+
+list<VerbalConnection> honorsShortConnection =
+{
+  { HONOR_SHORT_1, "HONOR_SHORT_1", GROUP_HONOR_SHORT, PHRASE_NONE },
+  { HONOR_SHORT_2, "HONOR_SHORT_2", GROUP_HONOR_SHORT, PHRASE_NONE },
+  { HONOR_SHORT_3, "HONOR_SHORT_3", GROUP_HONOR_SHORT, PHRASE_NONE },
+  { HONOR_SHORT_4, "HONOR_SHORT_4", GROUP_HONOR_SHORT, PHRASE_NONE },
+  { HONOR_SHORT_5, "HONOR_SHORT_5", GROUP_HONOR_SHORT, PHRASE_NONE },
+  { HONOR_SHORT_6, "HONOR_SHORT_6", GROUP_HONOR_SHORT, PHRASE_NONE }
+};
+
+list<TagConnection> honorsShortGroupConnection =
+{
+  { GROUP_HONOR_SHORT, "GROUP_HONOR_SHORT" }
+};
+
+
+list<VerbalConnection> numeralsConnection =
+{
+  { NUMERAL_0, "NUMERAL_0", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_1, "NUMERAL_1", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_2, "NUMERAL_2", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_3, "NUMERAL_3", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_4, "NUMERAL_4", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_5, "NUMERAL_5", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_6, "NUMERAL_6", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_7, "NUMERAL_7", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_8, "NUMERAL_8", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_9, "NUMERAL_9", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_10, "NUMERAL_10", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_11, "NUMERAL_11", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_12, "NUMERAL_12", GROUP_NUMERAL, PHRASE_NONE },
+  { NUMERAL_13, "NUMERAL_13", GROUP_NUMERAL, PHRASE_NONE }
+};
+
+list<TagConnection> numeralsGroupConnection =
+{
+  { GROUP_NUMERAL, "GROUP_NUMERAL" }
+};
+
+
+list<VerbalConnection> ordinalsConnection =
+{
+  { ORDINAL_0, "ORDINAL_0", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_1, "ORDINAL_1", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_2, "ORDINAL_2", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_3, "ORDINAL_3", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_4, "ORDINAL_4", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_5, "ORDINAL_5", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_6, "ORDINAL_6", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_7, "ORDINAL_7", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_8, "ORDINAL_8", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_9, "ORDINAL_9", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_10, "ORDINAL_10", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_11, "ORDINAL_11", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_12, "ORDINAL_12", GROUP_ORDINAL, PHRASE_NONE },
+  { ORDINAL_13, "ORDINAL_13", GROUP_ORDINAL, PHRASE_NONE }
+};
+
+list<TagConnection> ordinalsGroupConnection =
+{
+  { GROUP_ORDINAL, "GROUP_ORDINAL" }
+};
+
 
 
 list<VerbalConnection> wordsConnection =
@@ -206,37 +383,81 @@ list<VerbalConnection> wordsConnection =
   { WORDS_THEY_HOLD, "THEY_HOLD", GROUP_THEY_HOLD, PHRASE_NONE }
 };
 
+list<TagConnection> wordsGroupConnection =
+{
+  { GROUP_CARDS, "GROUP_CARDS" },
+  { GROUP_HONORS, "GROUP_HONORS" },
+  { GROUP_SMALL, "GROUP_SMALL" },
+  { GROUP_CONJUNCTIONS, "GROUP_CONJUNCTIONS" },
+  { GROUP_PARTICLES, "GROUP_PARTICLES" },
+  { GROUP_PREPOSITIONS, "GROUP_PREPOSITIONS" },
+  { GROUP_THEY_HOLD, "GROUP_THEY_HOLD" }
+};
+
+
+
+void Dictionary::setMap(
+  const list<TagConnection>& groupConnection,
+  map<string, unsigned>& groupMap) const
+{
+  for (const auto& gc: groupConnection)
+  {
+    auto gcit = groupMap.find(gc.tag);
+    if (gcit != groupMap.end())
+    {
+      cout << "Duplicate " << gc.tag << " in map" << endl;
+      assert(false);
+    }
+    else
+    {
+      groupMap[gc.tag] = gc.group;
+    }
+  }
+}
 
 
 void Dictionary::read(const string& language)
 {
+  Dictionary::setMap(sentencesGroupConnection, sentenceGroupMap);
   coverSentences.init(sentencesConnection);
-  coverSentences.read(language, "cover/sentences.txt");
+  coverSentences.read(language, "cover/sentences.txt", sentenceGroupMap);
 
+  Dictionary::setMap(phrasesGroupConnection, phraseGroupMap);
   coverPhrases.init(phrasesConnection);
-  coverPhrases.read(language, "cover/phrases.txt");
+  coverPhrases.read(language, "cover/phrases.txt", phraseGroupMap);
 
+  Dictionary::setMap(definiteGroupConnection, definiteGroupMap);
   cardsDefinite.init(definiteConnection);
-  cardsDefinite.read(language, "cards/definite.txt");
+  cardsDefinite.read(language, "cards/definite.txt", definiteGroupMap);
 
+  Dictionary::setMap(indefiniteGroupConnection, indefiniteGroupMap);
   cardsIndefinite.init(indefiniteConnection);
-  cardsIndefinite.read(language, "cards/indefinite.txt");
+  cardsIndefinite.read(language, "cards/indefinite.txt",
+    indefiniteGroupMap);
 
+  Dictionary::setMap(prepositionGroupConnection, prepositionGroupMap);
   cardsPrepositionOf.init(prepositionConnection);
-  cardsPrepositionOf.read(language, "cards/preposition.txt");
+  cardsPrepositionOf.read(language, "cards/preposition.txt",
+    prepositionGroupMap);
 
+  Dictionary::setMap(cardsShortGroupConnection, cardsShortGroupMap);
   cardsShort.init(cardsShortConnection);
-  cardsShort.read(language, "cards/short.txt");
+  cardsShort.read(language, "cards/short.txt",
+    cardsShortGroupMap);
 
+  Dictionary::setMap(honorsShortGroupConnection, honorsShortGroupMap);
   honorsShort.init(honorsShortConnection);
-  honorsShort.read(language, "honors/short.txt");
+  honorsShort.read(language, "honors/short.txt", honorsShortGroupMap);
 
+  Dictionary::setMap(numeralsGroupConnection, numeralsGroupMap);
   numerals.init(numeralsConnection);
-  numerals.read(language, "numbers/numerals.txt");
+  numerals.read(language, "numbers/numerals.txt", numeralsGroupMap);
 
+  Dictionary::setMap(ordinalsGroupConnection, ordinalsGroupMap);
   ordinals.init(ordinalsConnection);
-  ordinals.read(language, "numbers/ordinals.txt");
+  ordinals.read(language, "numbers/ordinals.txt", ordinalsGroupMap);
 
+  Dictionary::setMap(wordsGroupConnection, wordsGroupMap);
   words.init(wordsConnection);
-  words.read(language, "words.txt");
+  words.read(language, "words.txt", wordsGroupMap);
 }
