@@ -809,12 +809,14 @@ void VerbalCover::fillTopsAndLowerMultiple(
 
 
 void VerbalCover::fillSingular(
+  const Term& lengthIn,
   const Profile& sumProfile,
-  const unsigned char lenCompletion,
   const VerbalSide& vside)
 {
   const Completion& completion = completions.front();
   const Opponent side = vside.side;
+
+  VerbalCover::setLength(lengthIn);
 
   if (! completion.expandable(side) || completion.fullRanked(side))
   {
@@ -826,7 +828,11 @@ void VerbalCover::fillSingular(
   }
   else
   {
-    VerbalCover::fillOrdinalFromTops(vside, lenCompletion);
+    // Same length.
+    unsigned char vLower, vUpper;
+    length.range(sumProfile.length(), vside.side, vLower, vUpper);
+
+    VerbalCover::fillOrdinalFromTops(vside, vLower);
   }
 }
 

@@ -232,8 +232,8 @@ class VerbalCover
     // SENTENCE_COUNT_HONORS_ORDINAL
     // SENTENCE_FILL_ORDINAL_FROM_TOPS
     void fillSingular(
+      const Term& lengthIn,
       const Profile& sumProfile,
-      const unsigned char lenCompletion,
       const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_LIST

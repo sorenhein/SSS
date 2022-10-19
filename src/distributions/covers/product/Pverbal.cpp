@@ -570,12 +570,7 @@ void Product::setVerbalSingular(
   Product::makeSingularCompletion(sumProfile, canonicalShift,
     side, verbalCover.getCompletion());
 
-  verbalCover.setLength(length);
-
-  const unsigned char len = (side == OPP_WEST ?
-    length.lower() : sumProfile.length() - length.lower());
-
-  verbalCover.fillSingular(sumProfile, len, vside);
+  verbalCover.fillSingular(length, sumProfile, vside);
 }
 
 
