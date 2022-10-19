@@ -73,7 +73,7 @@ class VerbalCover
       const Opponent simplestOpponent,
       Phrase& phrase);
 
-    void fillTopsActual(
+    void fillHoldingOrRank(
       const Opponent side,
       Phrase& phrase);
 
@@ -98,12 +98,6 @@ class VerbalCover
     // SENTENCE_TOPS_ORDINAL
     void fillTopsOrdinal(
       const Profile& sumProfile,
-      const VerbalSide& vside);
-
-    // TODO There are two of them -- unify
-    void fillTopsOrdinal(
-      const Profile& sumProfile,
-      const unsigned char lenCompletion,
       const VerbalSide& vside);
 
     // SENTENCE_COUNT_HONORS_ORDINAL
@@ -225,11 +219,17 @@ class VerbalCover
       const VerbalSide& vside,
       const unsigned char numOptions);
 
+    // SENTENCE_COUNT_TOPS_ORDINAL
+    // SENTENCE_COUNT_HONORS_ORDINAL
+    // SENTENCE_FILL_ORDINAL_FROM_TOPS
     void fillSingular(
       const Profile& sumProfile,
       const unsigned char lenCompletion,
       const VerbalSide& vside);
 
+    // SENTENCE_EXACTLY_LIST
+    // SENTENCE_EXACTLY_COUNT_TOPS
+    // SENTENCE_TOPS
     void fillCompletion(const VerbalSide& vside);
 
 
