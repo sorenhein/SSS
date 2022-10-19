@@ -364,22 +364,17 @@ string Phrase::strXes(
 
 
 string Phrase::str(
-  const PhraseExpansion expansion,
-  const string& text,
   const RanksNames& ranksNames,
   const Completion& completion) const
 {
+  const VerbalInstance& vi = dictionary.coverPhrases.get(phrase);
+
+  // Just take the first one.  If there are more, they are supposed
+  // to be the same.
+  assert(! vi.expansions.empty());
+  const unsigned expansion = vi.expansions.front();
   assert(expansion < phraseMethods.size());
 
-  const unsigned e = dictionary.coverPhrases.get(phrase).expansion;
-  if (e != expansion)
-  {
-    cout << "phrase " << phrase << endl;
-    cout << "expansion " << expansion << endl;
-    cout << "e " << e << endl;
-    assert(false);
-  }
-
   return (this->*(phraseMethods[expansion]))
-    (text, ranksNames, completion);
+    (vi.text, ranksNames, completion);
 }

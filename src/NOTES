@@ -3,20 +3,11 @@ Mention of split honors
 Can we do something about the LIST_HOLDING and the count?
 
 1.
-Let Phrase look up its expansion and store it.
-When it is, don't tell Phrase the expansion anymore.
-
-2.
-Phrase can also return its group.
 sentences.txt gets tags corresponding to phrase groups.
-These are not the PHRASE_COMPLETION_SET etc., I think, 
-but the ones currently set in Expand.
-
-We should be able to tell when reading the phrase from a file,
-what kind of expansion it will need.  Then Phrase::str does not get
-this as an argument, but knows already.
-This probably needs a reverse lookup of the string (map again)
-and yet another method in Dictionary.
+- In sentences.txt add {PLAYER0} etc.
+- For sentence they can differ
+- Then we have to be able to look up the instance of a sentence too
+- That gives us the check in Expand
 
 German
 ------

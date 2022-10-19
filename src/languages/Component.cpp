@@ -35,7 +35,7 @@ void Component::init(const list<VerbalConnection>& connections)
 
   lookup.resize(highest+1);
 
-  // Prepare the lookups -- still missing its group, expansion and text.
+  // Prepare the lookups -- still missing its group, expansions and text.
   for (auto& vc: connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
@@ -137,9 +137,9 @@ void Component::read(
 
         // Check whether the text contains an expansion.
         if (text.find("{") != string::npos)
-          lookup[index].expansion = Component::strArgument(text);
+          Component::parseExpansions(text, lookup[index].expansions);
         else
-          lookup[index].expansion = PHRASE_NONE; // TODO Kludge
+          lookup[index].expansions.push_back(PHRASE_NONE);
 
         lookup[index].text = text;
       }
@@ -163,12 +163,21 @@ const VerbalInstance& Component::get(const size_t index) const
 }
 
 
-unsigned Component::strArgument(const string& text) const
+void Component::parseExpansions(
+  const string& text,
+  list<unsigned>& expansions) const
 {
-  auto p1 = text.find("{");
-  auto p2 = text.find("}");
-  assert(p1 != string::npos && p2 != string::npos);
+  size_t pos = 0;
+  while (true)
+  {
+    size_t p1 = text.find("{", pos);
+    size_t p2 = text.find("}", pos);
+    if (p1 == string::npos || p2 == string::npos)
+      return;
 
-  return dictionary.phraseGroup(text.substr(p1+1, p2-p1-2));
+    expansions.push_back(
+      dictionary.phraseGroup(text.substr(p1+1, p2-p1-2)));
+    pos = p2+1;
+  }
 }
 

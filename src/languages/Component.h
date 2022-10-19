@@ -22,8 +22,8 @@ using namespace std;
 struct VerbalInstance
 {
   unsigned group;
-  unsigned expansion;
   string text;
+  list<unsigned> expansions;
 };
 
 
@@ -47,7 +47,9 @@ class Component
 
     const VerbalInstance& get(const size_t index) const;
 
-    unsigned strArgument(const string& text) const;
+    void parseExpansions(
+      const string& text,
+      list<unsigned>& expansions) const;
 };
 
 #endif

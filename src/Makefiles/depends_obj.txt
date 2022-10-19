@@ -581,8 +581,6 @@ distributions/covers/verbal/Expand.obj: distributions/covers/verbal/Phrase.h
 distributions/covers/verbal/Expand.obj: languages/Dictionary.h
 distributions/covers/verbal/Expand.obj: languages/Component.h
 distributions/covers/verbal/Expand.obj: languages/connections/cover/sentences.h
-distributions/covers/verbal/Expand.obj: languages/VerbalConnection.h
-distributions/covers/verbal/Expand.obj: languages/PhraseExpansion.h
 distributions/covers/verbal/Expand.obj: languages/connections/cover/phrases.h
 distributions/covers/verbal/Expand.obj: languages/connections/words.h
 distributions/covers/verbal/Phrase.obj: distributions/covers/verbal/Phrase.h
@@ -590,9 +588,10 @@ distributions/covers/verbal/Phrase.obj: ranks/Completion.h utils/Card.h
 distributions/covers/verbal/Phrase.obj: utils/Compare.h
 distributions/covers/verbal/Phrase.obj: languages/Dictionary.h
 distributions/covers/verbal/Phrase.obj: languages/Component.h
-distributions/covers/verbal/Phrase.obj: languages/connections/words.h
 distributions/covers/verbal/Phrase.obj: languages/PhraseExpansion.h
+distributions/covers/verbal/Phrase.obj: languages/connections/words.h
 distributions/covers/verbal/Phrase.obj: ranks/RanksNames.h ranks/RankNames.h
+distributions/covers/verbal/Phrase.obj: utils/table.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalCover.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/./Completion.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Phrase.h
@@ -601,32 +600,29 @@ distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/Expand.
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/verbal/VerbalSide.h
 distributions/covers/verbal/VerbalCover.obj: distributions/covers/product/Profile.h
 distributions/covers/verbal/VerbalCover.obj: languages/connections/cover/sentences.h
-distributions/covers/verbal/VerbalCover.obj: languages/VerbalConnection.h
-distributions/covers/verbal/VerbalCover.obj: languages/PhraseExpansion.h
 distributions/covers/verbal/VerbalCover.obj: languages/connections/cover/phrases.h
 distributions/covers/verbal/VerbalCover.obj: utils/table.h
 distributions/covers/verbal/VerbalSide.obj: distributions/covers/verbal/Verbalside.h
 distributions/covers/verbal/VerbalSide.obj: languages/Dictionary.h
 distributions/covers/verbal/VerbalSide.obj: languages/Component.h
 distributions/covers/verbal/VerbalSide.obj: languages/connections/cover/phrases.h
-distributions/covers/verbal/VerbalSide.obj: languages/VerbalConnection.h
-distributions/covers/verbal/VerbalSide.obj: languages/PhraseExpansion.h
 distributions/covers/verbal/VerbalSide.obj: utils/table.h
 inputs/Convert.obj: inputs/Convert.h const.h utils/table.h
 inputs/Control.obj: inputs/Control.h inputs/Entity.h inputs/Convert.h
 inputs/Control.obj: inputs/parse.h const.h
 inputs/Entity.obj: inputs/Entity.h inputs/parse.h
 inputs/parse.obj: inputs/parse.h
-languages/Component.obj: languages/Component.h languages/VerbalConnection.h
-languages/Component.obj: inputs/parse.h
+languages/Component.obj: languages/Dictionary.h languages/Component.h
+languages/Component.obj: languages/VerbalConnection.h
+languages/Component.obj: languages/PhraseExpansion.h inputs/parse.h
 languages/Dictionary.obj: languages/Dictionary.h languages/Component.h
 languages/Dictionary.obj: languages/VerbalConnection.h
 languages/Dictionary.obj: languages/PhraseExpansion.h
 languages/Dictionary.obj: languages/connections/cover/sentences.h
-languages/Dictionary.obj: languages/VerbalConnection.h
-languages/Dictionary.obj: languages/PhraseExpansion.h
 languages/Dictionary.obj: languages/connections/cover/phrases.h
 languages/Dictionary.obj: languages/connections/cards/definite.h
+languages/Dictionary.obj: languages/VerbalConnection.h
+languages/Dictionary.obj: languages/PhraseExpansion.h
 languages/Dictionary.obj: languages/connections/cards/indefinite.h
 languages/Dictionary.obj: languages/connections/cards/short.h
 languages/Dictionary.obj: languages/connections/cards/preposition.h

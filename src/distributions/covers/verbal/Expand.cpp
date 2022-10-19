@@ -136,17 +136,10 @@ string Expand::get(
   {
     const Phrase& phrase = * phraseIter;
 
-    const VerbalInstance& instance =
-      dictionary.coverPhrases.get(phrase.getPhrase());
-    assert(instance.group == * giter);
-
+    assert(phrase.getGroup() == * giter);
     assert(complIter != completions.end());
 
-    fill = phrase.str(
-      static_cast<PhraseExpansion>(instance.expansion),
-      instance.text,
-      ranksNames,
-      * complIter);
+    fill = phrase.str(ranksNames, * complIter);
 
     // This is the only case with multiple holdings in a list.
     if (phrase.getPhrase() == LIST_HOLDING)

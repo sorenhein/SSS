@@ -1,5 +1,5 @@
-group PHRASES_PLAYER
-# ------------------
+group PLAYER
+# ----------
 
 name PLAYER_WEST
 string "West"
@@ -20,8 +20,8 @@ name PLAYER_SUIT
 string "The suit"
 
 
-group PHRASES_LENGTH
-# ------------------
+group LENGTH
+# ----------
 
 name LENGTH_VOID
 string "is void"
@@ -57,8 +57,8 @@ name LENGTH_SPLIT
 string "splits {NUMERICAL0}={NUMERICAL1}"
 
 
-group PHRASES_ORDINAL
-# -------------------
+group ORDINAL
+# -----------
 
 name ORDINAL_EXACT
 string "{ORDINAL0}"
@@ -73,8 +73,8 @@ name ORDINAL_RANGE
 string "between {ORDINAL0} and {ORDINAL1}"
 
 
-group PHRASES_COUNT
-# -----------------
+group COUNT
+# ---------
 
 name COUNT_EXACT
 string "{NUMERICAL0}"
@@ -92,8 +92,8 @@ name COUNT_OR
 string "{NUMERICAL0} or {NUMERICAL1}"
 
 
-group PHRASES_DIGITS
-# ------------------
+group DIGITS
+# ----------
 
 name DIGITS_EXACT
 string "{DIGITS0}"
@@ -108,8 +108,8 @@ name DIGITS_RANGE
 string "{DIGITS0}-{DIGITS1}"
 
 
-group PHRASES_DICT
-# ----------------
+group DICT
+# --------
 
 name DICT_CARD
 string "card"
@@ -142,8 +142,8 @@ name DICT_ONE_WAY
 string ""
 
 
-group PHRASES_TOPS
-# ----------------
+group TOPS
+# --------
 
 name TOPS_LOWEST
 string "{LOWEST0}"
@@ -167,8 +167,8 @@ name TOPS_XES
 string "{XES0}"
 
 
-group PHRASES_LIST
-# ----------------
+group LIST
+# --------
 
 name LIST_HOLDING
 string "{TOPS0}"

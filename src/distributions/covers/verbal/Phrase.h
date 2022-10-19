@@ -145,8 +145,6 @@ class Phrase
     PhrasesGroup getGroup() const;
 
     string str(
-      const PhraseExpansion expansion,
-      const string& text,
       const RanksNames& ranksNames,
       const Completion& completion) const;
 };

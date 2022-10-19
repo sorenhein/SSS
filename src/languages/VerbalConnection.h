@@ -6,24 +6,14 @@
    See LICENSE and README.
 */
 
-#ifndef SSS_VERBAL_CONNECTION_H
-#define SSS_VERBAL_CONNECTION_H
-
-using namespace std;
-
+#ifndef SSS_VERBALCONNECTION_H
+#define SSS_VERBALCONNECTION_H
 
 struct VerbalConnection
 {
-  // For example: PLAYER_WEST, "PLAYER_WEST". 
+  // For example: PLAYER_WEST, "PLAYER_WEST".
 
   unsigned instance;
-  string tag;
-};
-
-
-struct TagConnection
-{
-  unsigned group;
   string tag;
 };
 

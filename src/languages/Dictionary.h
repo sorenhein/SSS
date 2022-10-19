@@ -12,7 +12,8 @@
 #include <map>
 
 #include "Component.h"
-#include "VerbalConnection.h"
+
+struct TagConnection;
 
 using namespace std;
 
