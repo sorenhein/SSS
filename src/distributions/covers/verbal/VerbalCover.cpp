@@ -292,17 +292,15 @@ void VerbalCover::fillFreeCount(
 
 void VerbalCover::fillLength(
   const Term& lengthIn,
-  const unsigned char oppsLength,
-  const bool symmFlag)
+  const Profile& sumProfile,
+  const VerbalSide& vside)
 {
   sentence = SENTENCE_LENGTH;
   phrases.resize(2);
 
   VerbalCover::setLength(lengthIn);
-  const Opponent side = (symmFlag ? OPP_WEST : length.shorter(oppsLength));
-  const VerbalSide vside = {side, symmFlag};
 
-  VerbalCover::getLengthData(oppsLength, vside, true);
+  VerbalCover::getLengthData(sumProfile.length(), vside, true);
 }
 
 
@@ -319,7 +317,6 @@ void VerbalCover::fillTops(const VerbalSide& vside)
 
 void VerbalCover::fillLengthBelowTops(
   const unsigned char numBottoms,
-  // const unsigned char rankNo,
   const VerbalSide& vside)
 {
   sentence = SENTENCE_LENGTH_BELOW_TOPS;
@@ -347,18 +344,22 @@ void VerbalCover::fillLengthBelowTops(
 
 
 void VerbalCover::fillOrdinalFromTops(
-  const VerbalSide& vside,
-  const unsigned char lenCompletion)
+  const Profile& sumProfile,
+  const VerbalSide& vside)
 {
   sentence = SENTENCE_ORDINAL_FROM_TOPS;
   phrases.resize(3);
 
+  // Same length.
   const auto& completion = completions.front();
+  unsigned char vLower, vUpper;
+  length.range(sumProfile.length(), vside.side, vLower, vUpper);
+
 
   phrases[0].setPhrase(vside.player());
 
   phrases[1].setPhrase(ORDINAL_EXACT);
-  phrases[1].setValues(lenCompletion);
+  phrases[1].setValues(vLower);
 
   phrases[2].setPhrase(TOPS_DEFINITE);
   phrases[2].setValues(completion.getLowestRankActive(vside.side));
@@ -571,14 +572,13 @@ void VerbalCover::fillExactlyTopsAndLower(const VerbalSide& vside)
 }
 
 
-void VerbalCover::fillTopsAndCountBelowCard(
-  const VerbalSide& vside,
-  const unsigned char numOptions)
+void VerbalCover::fillTopsAndCountBelowCard(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_AND_COUNT_BELOW_CARD;
   phrases.resize(5);
 
   const auto& completion = completions.front();
+  const unsigned char numOptions = completion.numOptions();
   const unsigned char freeLower = completion.getFreeLower(vside.side);
   const unsigned char freeUpper = completion.getFreeUpper(vside.side);
 
@@ -786,7 +786,6 @@ void VerbalCover::fillTopsAndLowerMultiple(
   VerbalCover::setLength(lengthIn);
 
   const auto& completion = completions.front();
-  const unsigned char numOptions = completion.numOptions();
 
   if (completion.expandable(vside.side) &&
       ! completion.fullRanked(vside.side) &&
@@ -799,7 +798,7 @@ void VerbalCover::fillTopsAndLowerMultiple(
     assert((! completion.expandable(vside.side)) ||
         completion.fullRanked(vside.side));
 
-    VerbalCover::fillTopsAndCountBelowCard(vside, numOptions);
+    VerbalCover::fillTopsAndCountBelowCard(vside);
   }
   else if (completion.expandable(vside.side) &&
       ! completion.fullRanked(vside.side))
@@ -833,11 +832,7 @@ void VerbalCover::fillSingular(
   }
   else
   {
-    // Same length.
-    unsigned char vLower, vUpper;
-    length.range(sumProfile.length(), vside.side, vLower, vUpper);
-
-    VerbalCover::fillOrdinalFromTops(vside, vLower);
+    VerbalCover::fillOrdinalFromTops(sumProfile, vside);
   }
 }
 

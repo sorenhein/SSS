@@ -1,21 +1,16 @@
 Mention of split honors
 -----------------------
-No side detection at all in VerbalCover?
-
 Can we do something about the LIST_HOLDING and the count?
 
-VerbalCover: Continue clean-up and more smaller methods.
-Arg orders.
-No TODO's.
-Let setLength happen from VerbalCover, e.g. fillOnesided?
-Some of the args from Pverbal to VerbalCover are known to VerbalCover.
+VerbalCover: Bug fillTwosidedLength
+11/161321
 
-0.
+No TODO's.
+
+1.
 Put the groups of sentences and phrases into the .txt files.
 Then they come out of Dictionary.cpp and Expand.cpp.
 We just need the map from their string names to their internal numbers.
-
-1. Order and comments of VerbalCover
 
 2.
 When both sides in play, () = ():
@@ -37,12 +32,9 @@ LENGTH_WITH_ATLEAST, expands to PHRASE_NUMERICAL, "with at least %0 cards"
 3. "East has a doubleton chosen from the eight-seven-six"
 East has two of eight-seven-six doubleton ?
 
-
 4. "chosen from"
 add mid-honors
 Anything left?
-
-Pack some of sideOther etc into vside ?
 
 German
 ------

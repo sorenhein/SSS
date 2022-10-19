@@ -42,6 +42,8 @@ class VerbalCover
 
     // Make a synthetic length of small cards.
 
+    void setLength(const Term& length);
+
     void setLength(
       const unsigned char lower,
       const unsigned char upper,
@@ -89,8 +91,8 @@ class VerbalCover
 
     // SENTENCE_FILL_ORDINAL_FROM_TOPS
     void fillOrdinalFromTops(
-      const VerbalSide& vside,
-      const unsigned char lenCompletion);
+      const Profile& sumProfile,
+      const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_COUNT_TOPS
     void fillExactlyCountTops(const VerbalSide& vside);
@@ -117,25 +119,20 @@ class VerbalCover
     void fillExactlyTopsAndLower(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_COUNT_BELOW_CARD
-    void fillTopsAndCountBelowCard(
-      const VerbalSide& vside,
-      const unsigned char numOptions);
+    void fillTopsAndCountBelowCard(const VerbalSide& vside);
 
 
   public:
 
     VerbalCover();
 
-    // TODO Make private over time
-    void setLength(const Term& length);
-
     // Fills in sentence order.
 
     // SENTENCE_LENGTH
     void fillLength(
       const Term& lengthIn,
-      const unsigned char oppsLength,
-      const bool symmFlag);
+      const Profile& sumProfile,
+      const VerbalSide& vside);
 
     // SENTENCE_TOPS
     // See fillTops above
@@ -143,7 +140,6 @@ class VerbalCover
     // SENTENCE_LENGTH_BELOW_TOPS
     void fillLengthBelowTops(
       const unsigned char numBottoms,
-      // const unsigned char rankNo,
       const VerbalSide& vside);
 
     // SENTENCE_FILL_ORDINAL_FROM_TOPS

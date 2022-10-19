@@ -367,7 +367,10 @@ void Product::setVerbalLengthOnly(
   const bool symmFlag,
   VerbalCover& verbalCover) const
 {
-  verbalCover.fillLength(length, sumProfile.length(), symmFlag);
+  const Opponent side = 
+    (symmFlag ? OPP_WEST : length.shorter(sumProfile.length()));
+
+  verbalCover.fillLength(length, sumProfile, {side, symmFlag});
 }
 
 
@@ -464,8 +467,6 @@ void Product::setVerbalHighTopsEqual(
       symmFlag, true, verbalCover);
     return;
   }
-
-  // verbalCover.setLength(length);
 
   const Completion& completion = verbalCover.getCompletion();
   const Opponent side = Product::simpler(sumProfile, canonicalShift);
