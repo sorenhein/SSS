@@ -376,6 +376,19 @@ void Dictionary::setPhraseTags()
   phraseTags[PHRASE_COMPLETION_SET] = "{TOPS%}";
   phraseTags[PHRASE_COMPLETION_UNSET] = "{LOWS%}";
   phraseTags[PHRASE_XES] = "{XES%}";
+
+  // TODO When we add expansions of sentences as well,
+  // they might to in the same map?
+  phraseExpansionGroup["DIGITS"] = PHRASE_DIGITS;
+  phraseExpansionGroup["NUMERICAL"] = PHRASE_NUMERICAL;
+  phraseExpansionGroup["ORDINAL"] = PHRASE_ORDINAL;
+  phraseExpansionGroup["LOWEST"] = PHRASE_LOWEST_CARD;
+  phraseExpansionGroup["INDEFINITE"] = PHRASE_INDEFINITE_RANK;
+  phraseExpansionGroup["DEFINITE"] = PHRASE_DEFINITE_RANK;
+  phraseExpansionGroup["OF_DEFINITE"] = PHRASE_OF_DEFINITE_RANK;
+  phraseExpansionGroup["TOPS"] = PHRASE_COMPLETION_SET;
+  phraseExpansionGroup["LOWS"] = PHRASE_COMPLETION_UNSET;
+  phraseExpansionGroup["XES"] = PHRASE_XES;
 }
 
 
@@ -432,5 +445,13 @@ const string& Dictionary::phraseTag(const unsigned index) const
 {
   assert(index < phraseTags.size());
   return phraseTags[index];
+}
+
+
+unsigned Dictionary::phraseGroup(const string& tag) const
+{
+  const auto pit = phraseExpansionGroup.find(tag);
+  assert(pit != phraseExpansionGroup.end());
+  return pit->second;
 }
 

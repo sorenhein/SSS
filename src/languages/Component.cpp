@@ -11,12 +11,15 @@
 #include <fstream>
 #include <cassert>
 
+#include "Dictionary.h"
 #include "Component.h"
 #include "VerbalConnection.h"
 
 #include "../inputs/parse.h"
 
 const static string prefix = "languages/";
+
+extern Dictionary dictionary;
 
 
 void Component::init(const list<VerbalConnection>& connections)
@@ -31,7 +34,7 @@ void Component::init(const list<VerbalConnection>& connections)
 
   lookup.resize(highest+1);
 
-  // Prepare the lookups -- still missing its group and text.
+  // Prepare the lookups -- still missing its group, expansion and text.
   for (auto& vc: connections)
   {
     VerbalInstance& vi = lookup[vc.instance];
@@ -131,6 +134,11 @@ void Component::read(
         const unsigned index = mit->second;
         assert(index < lookup.size());
         lookup[index].group = group;
+
+        // Check whether the text contains an expansion.
+        if (text.find("{") != string::npos)
+          assert(lookup[index].expansion == Component::strArgument(text));
+
         lookup[index].text = text;
       }
     }
@@ -151,3 +159,14 @@ const VerbalInstance& Component::get(const size_t index) const
   assert(index < lookup.size());
   return lookup[index];
 }
+
+
+unsigned Component::strArgument(const string& text) const
+{
+  auto p1 = text.find("{");
+  auto p2 = text.find("}");
+  assert(p1 != string::npos && p2 != string::npos);
+
+  return dictionary.phraseGroup(text.substr(p1+1, p2-p1-2));
+}
+

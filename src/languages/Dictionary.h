@@ -48,6 +48,8 @@ struct Dictionary
 
   vector<string> phraseTags;
 
+  map<string, unsigned> phraseExpansionGroup;
+
 
   void setMap(
     const list<TagConnection>& groupConnection,
@@ -58,6 +60,8 @@ struct Dictionary
   void read(const string& language);
 
   const string& phraseTag(const unsigned index) const;
+
+  unsigned phraseGroup(const string& tag) const;
 };
 
 #endif

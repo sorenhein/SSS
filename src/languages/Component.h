@@ -46,6 +46,8 @@ class Component
       const map<string, unsigned>& groupMap);
 
     const VerbalInstance& get(const size_t index) const;
+
+    unsigned strArgument(const string& text) const;
 };
 
 #endif
