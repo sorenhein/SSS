@@ -224,9 +224,9 @@ class VerbalCover
     // SENTENCE_EXACTLY_TOPS_AND_LOWER
     // SENTENCE_TOPS_AND_LOWER
     void fillTopsAndLowerMultiple(
+      const Term& lengthIn,
       const Profile& sumProfile,
-      const VerbalSide& vside,
-      const unsigned char numOptions);
+      const VerbalSide& vside);
 
     // SENTENCE_COUNT_TOPS_ORDINAL
     // SENTENCE_COUNT_HONORS_ORDINAL

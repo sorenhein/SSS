@@ -777,11 +777,14 @@ void VerbalCover::fillTwosidedLength(
 
 
 void VerbalCover::fillTopsAndLowerMultiple(
+  const Term& lengthIn,
   const Profile& sumProfile,
-  const VerbalSide& vside,
-  const unsigned char numOptions)
+  const VerbalSide& vside)
 {
+  VerbalCover::setLength(lengthIn);
+
   const auto& completion = completions.front();
+  const unsigned char numOptions = completion.numOptions();
 
   if (completion.expandable(vside.side) &&
       ! completion.fullRanked(vside.side) &&

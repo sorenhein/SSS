@@ -500,9 +500,7 @@ void Product::setVerbalHighTopsEqual(
   }
   else
   {
-    verbalCover.setLength(length);
-
-    verbalCover.fillTopsAndLowerMultiple(sumProfile, vside, numOptions);
+    verbalCover.fillTopsAndLowerMultiple(length, sumProfile, vside);
   }
 }
 
