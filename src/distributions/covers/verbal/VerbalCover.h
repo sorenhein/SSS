@@ -153,8 +153,8 @@ class VerbalCover
     // TODO Shares name with method above.  Disambiguate or merge?
     void fillCountTops(
       const Term& top,
-      const unsigned char oppsSize,
       const unsigned char onetopIndex,
+      const Profile& sumProfile,
       const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_COUNT_TOPS
@@ -167,8 +167,8 @@ class VerbalCover
     void fillCountTopsOrdinal(
       const Term& lengthIn,
       const Term& top,
-      const Profile& sumProfile,
       const unsigned char onetopIndex,
+      const Profile& sumProfile,
       const VerbalSide& vside);
 
     // SENTENCE_COUNT_HONORS_ORDINAL

@@ -366,14 +366,15 @@ void VerbalCover::fillOrdinalFromTops(
 
 void VerbalCover::fillCountTops(
   const Term& top,
-  const unsigned char oppsSize,
   const unsigned char onetopIndex,
+  const Profile& sumProfile,
   const VerbalSide& vside)
 {
   sentence = SENTENCE_COUNT_TOPS;
   phrases.resize(3);
 
   // Here lower and upper are different.
+  const unsigned char oppsSize = sumProfile[onetopIndex];
   unsigned char vLower, vUpper;
   top.range(oppsSize, vside.side, vLower, vUpper);
 
@@ -458,15 +459,14 @@ void VerbalCover::fillTopsOrdinal(
 void VerbalCover::fillCountTopsOrdinal(
   const Term& lengthIn,
   const Term& top,
-  const Profile& sumProfile,
   const unsigned char onetopIndex,
+  const Profile& sumProfile,
   const VerbalSide& vside)
 {
   VerbalCover::setLength(lengthIn);
 
   // Fill phrases 0 to 2.
-  VerbalCover::fillCountTops(
-    top, sumProfile[onetopIndex], onetopIndex, vside);
+  VerbalCover::fillCountTops(top, onetopIndex, sumProfile, vside);
 
   // Reset the sentence and size.
   sentence = SENTENCE_COUNT_TOPS_ORDINAL;
