@@ -807,27 +807,22 @@ void VerbalCover::fillTopsAndLowerMultiple(
 
   const auto& completion = completions.front();
 
-  if (completion.expandable(vside.side) &&
-      ! completion.fullRanked(vside.side) &&
-      completion.highRanked(vside.side))
+  if (! completion.expandable(vside.side) || 
+      completion.fullRanked(vside.side))
+  {
+    if (! completion.lowestRankIsUsed(vside.side))
+      VerbalCover::fillTopsAndCountBelowCard(vside);
+    else
+      VerbalCover::fillTopsAndLower(vside);
+  }
+
+  else if (completion.highRanked(vside.side))
   {
     VerbalCover::fillCountHonorsOrdinal(sumProfile, vside);
   }
-  else if (! completion.lowestRankIsUsed(vside.side))
-  {
-    assert((! completion.expandable(vside.side)) ||
-        completion.fullRanked(vside.side));
-
-    VerbalCover::fillTopsAndCountBelowCard(vside);
-  }
-  else if (completion.expandable(vside.side) &&
-      ! completion.fullRanked(vside.side))
-  {
-    VerbalCover::fillExactlyTopsAndLower(vside);
-  }
   else
   {
-    VerbalCover::fillTopsAndLower(vside);
+    VerbalCover::fillExactlyTopsAndLower(vside);
   }
 }
 
