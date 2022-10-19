@@ -520,8 +520,6 @@ void Product::setVerbalAnyTopsEqual(
     return;
   }
 
-  verbalCover.setLength(length);
-
   const Opponent side = Product::simpler(sumProfile, canonicalShift);
 
   if (Product::makeCompletionList(
@@ -546,7 +544,7 @@ void Product::setVerbalAnyTopsEqual(
   }
   else
   {
-    verbalCover.fillTwosidedLength(sumProfile, 
+    verbalCover.fillTwosidedLength(length, sumProfile, 
       {Product::simpler(sumProfile, canonicalShift), symmFlag});
   }
 }

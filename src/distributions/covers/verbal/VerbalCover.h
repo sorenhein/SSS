@@ -218,6 +218,7 @@ class VerbalCover
     // SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
     // SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
     void fillTwosidedLength(
+      const Term& lengthIn,
       const Profile& sumProfile,
       const VerbalSide& vside);
 

@@ -705,10 +705,10 @@ void VerbalCover::fillTwosided(const VerbalSide& vside)
 
 
 void VerbalCover::fillTwosidedLength(
+  const Term& lengthIn,
   const Profile& sumProfile,
   const VerbalSide& vside)
 {
-  // length is already set. TODO Pass it in?
   if (vside.symmFlag)
     sentence = SENTENCE_2SPLIT_TOPS_DIGITS_SYMM;
   else
@@ -716,6 +716,7 @@ void VerbalCover::fillTwosidedLength(
 
   phrases.resize(4);
 
+  VerbalCover::setLength(lengthIn);
   const Completion& completion = completions.front();
   const bool bothExpandableFlag = completion.expandableBoth();
   const Opponent sideOther = vside.otherSide();
