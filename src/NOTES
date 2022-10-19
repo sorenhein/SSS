@@ -2,39 +2,14 @@ Mention of split honors
 -----------------------
 Can we do something about the LIST_HOLDING and the count?
 
-VerbalCover: Bug fillTwosidedLength
-11/161321
-
-No TODO's.
-
 1.
 Put the groups of sentences and phrases into the .txt files.
 Then they come out of Dictionary.cpp and Expand.cpp.
 We just need the map from their string names to their internal numbers.
 
-2.
-When both sides in play, () = ():
-3-3: tripleton
-2-2: doubleton
-x-x: ordinal in general
+2. Add mid-honors in places where honors can occur
 
-Range 2-3:
-with x-y cards
-with at most
-with at least
-
-Needs a new group,  GROUP_PHRASES_WITH
-LENGTH_WITH_EXACT, expands to PHRASE_ORDINAL, no "with", just "%0"
-LENGTH_WITH_RANGE, expands to PHRASE_NUMERICAL, "%0-%1 cards"
-LENGTH_WITH_ATMOST, expands to PHRASE_NUMERICAL, "with at most %0 cards"
-LENGTH_WITH_ATLEAST, expands to PHRASE_NUMERICAL, "with at least %0 cards"
-
-3. "East has a doubleton chosen from the eight-seven-six"
-East has two of eight-seven-six doubleton ?
-
-4. "chosen from"
-add mid-honors
-Anything left?
+3. Do we still need WORDS?
 
 German
 ------

@@ -23,8 +23,10 @@ string "%0 %1 %2 %3"
 # %0: Player
 # %1: Length ordinal
 # %3: Holding
-name SENTENCE_ORDINAL_FROM_TOPS
-string "%0 has a %1 chosen from %2"
+# name SENTENCE_ORDINAL_FROM_TOPS
+# string "%0 has a %1 chosen from %2"
+name SENTENCE_COUNT_OF_TOPS_ORDINAL
+string "%0 has exactly %1 of %2 %3"
 
 # Example: West has the king
 # %0: Player
@@ -98,6 +100,9 @@ string "%0 has %1 and %2 %3 below %4"
 
 name SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
 string "%0 has exactly %1(%2)"
+
+name SENTENCE_TOPS_MAYBE_OTHERS
+string "%0 has %1 and maybe other ranks"
 
 # Example: West has AKJx(x)
 # %0: Player

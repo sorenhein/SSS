@@ -284,6 +284,37 @@ void VerbalCover::fillFreeCount(
 }
 
 
+void VerbalCover::fillDigits(
+  const Profile& sumProfile,
+  const Opponent side,
+  Phrase& phrase) const
+{
+  unsigned char vLower, vUpper;
+  length.range(sumProfile.length(), side, vLower, vUpper);
+
+  if (vLower == vUpper)
+  {
+    phrase.setPhrase(DIGITS_EXACT);
+    phrase.setValues(vLower);
+  }
+  else if (vLower == 0)
+  {
+    phrase.setPhrase(DIGITS_ATMOST);
+    phrase.setValues(vUpper);
+  }
+  else if (vUpper == sumProfile.length())
+  {
+    phrase.setPhrase(DIGITS_ATLEAST);
+    phrase.setValues(vLower);
+  }
+  else
+  {
+    phrase.setPhrase(DIGITS_RANGE);
+    phrase.setValues(vLower, vUpper);
+  }
+}
+
+
 /**********************************************************************/
 /*                                                                    */
 /*                          Fill methods                              */
@@ -343,26 +374,28 @@ void VerbalCover::fillLengthBelowTops(
 }
 
 
-void VerbalCover::fillOrdinalFromTops(
+void VerbalCover::fillCountOfTopsOrdinal(
   const Profile& sumProfile,
   const VerbalSide& vside)
 {
-  sentence = SENTENCE_ORDINAL_FROM_TOPS;
-  phrases.resize(3);
+  sentence = SENTENCE_COUNT_OF_TOPS_ORDINAL;
+  phrases.resize(4);
 
   // Same length.
   const auto& completion = completions.front();
   unsigned char vLower, vUpper;
   length.range(sumProfile.length(), vside.side, vLower, vUpper);
 
-
   phrases[0].setPhrase(vside.player());
 
-  phrases[1].setPhrase(ORDINAL_EXACT);
+  phrases[1].setPhrase(COUNT_EXACT);
   phrases[1].setValues(vLower);
 
   phrases[2].setPhrase(TOPS_DEFINITE);
   phrases[2].setValues(completion.getLowestRankActive(vside.side));
+
+  phrases[3].setPhrase(ORDINAL_EXACT);
+  phrases[3].setValues(vLower);
 }
 
 
@@ -614,6 +647,19 @@ void VerbalCover::fillExactlyTopsMaybeUnset(const VerbalSide& vside)
 }
 
 
+void VerbalCover::fillTopsMaybeOthers(const VerbalSide& vside)
+{
+  sentence = SENTENCE_TOPS_MAYBE_OTHERS;
+  phrases.resize(2);
+
+  phrases[0].setPhrase(vside.player());
+
+  phrases[1].setPhrase(TOPS_SET);
+  phrases[1].setSide(vside.side);
+  phrases[1].setBools(true);
+}
+
+
 void VerbalCover::fillTopsAndXes(const VerbalSide& vside)
 {
   sentence = SENTENCE_TOPS_AND_XES;
@@ -717,63 +763,54 @@ void VerbalCover::fillTwosidedLength(
 
   phrases.resize(4);
 
+  Opponent side1, side2;
+  vside.bothPlayers(side1, side2);
+
   VerbalCover::setLength(lengthIn);
+
   const Completion& completion = completions.front();
   const bool bothExpandableFlag = completion.expandableBoth();
-  const Opponent sideOther = vside.otherSide();
   unsigned char vLower, vUpper;
 
   if (bothExpandableFlag)
   {
     phrases[0].setPhrase(TOPS_INDEFINITE);
-    phrases[0].setValues(completion.getLowestRankActive(vside.side));
-
-    // TODO I'm pretty sure the coded way is wrong.
-    // We're setting cards according to sides, and we should
-    // probably go by side1, side2 as below.  then the length range
-    // stuff might also work.  This difference shows up in 
-    // 11/161321 Strategy #4.  But actually I don't see how
-    // the covers add up to that strategy...
-    //
-    // length.range(sumProfile.length(), vside.side, vLower, vUpper);
-    // assert(vLower == length.lower());
-    // assert(vUpper == length.upper());
-
-    phrases[1].setPhrase(DIGITS_RANGE);
-    phrases[1].setValues(length.lower(), length.upper());
-
-    phrases[2].setPhrase(TOPS_INDEFINITE);
-    phrases[2].setValues(completion.getLowestRankActive(sideOther));
-
-    // length.range(sumProfile.length(), sideOther, vLower, vUpper);
-    // assert(vLower == sumProfile.length() - length.upper());
-    // assert(vUpper == sumProfile.length() - length.lower());
-
-    phrases[3].setPhrase(DIGITS_RANGE);
-    phrases[3].setValues( 
-      sumProfile.length() - length.upper(),
-      sumProfile.length() - length.lower());
-  }
-  else
-  {
-    Opponent side1, side2;
-    vside.bothPlayers(side1, side2);
+    phrases[0].setValues(completion.getLowestRankActive(side1));
 
     length.range(sumProfile.length(), side1, vLower, vUpper);
 
+    VerbalCover::fillDigits(sumProfile, side1, phrases[1]);
+    // phrases[1].setPhrase(DIGITS_RANGE);
+    // phrases[1].setValues(vLower, vUpper);
+
+    phrases[2].setPhrase(TOPS_INDEFINITE);
+    phrases[2].setValues(completion.getLowestRankActive(side2));
+
+    length.range(sumProfile.length(), side2, vLower, vUpper);
+
+    VerbalCover::fillDigits(sumProfile, side2, phrases[3]);
+    // phrases[3].setPhrase(DIGITS_RANGE);
+    // phrases[3].setValues(vLower, vUpper);
+  }
+  else
+  {
     phrases[0].setPhrase(TOPS_SET);
     phrases[0].setSide(side1);
 
-    phrases[1].setPhrase(DIGITS_RANGE);
-    phrases[1].setValues(vLower, vUpper);
+    length.range(sumProfile.length(), side1, vLower, vUpper);
 
-    length.range(sumProfile.length(), side2, vLower, vUpper);
+    VerbalCover::fillDigits(sumProfile, side1, phrases[1]);
+    // phrases[1].setPhrase(DIGITS_RANGE);
+    // phrases[1].setValues(vLower, vUpper);
 
     phrases[2].setPhrase(TOPS_SET);
     phrases[2].setSide(side2);
 
-    phrases[3].setPhrase(DIGITS_RANGE);
-    phrases[3].setValues(vLower, vUpper);
+    length.range(sumProfile.length(), side2, vLower, vUpper);
+
+    VerbalCover::fillDigits(sumProfile, side1, phrases[3]);
+    // phrases[3].setPhrase(DIGITS_RANGE);
+    // phrases[3].setValues(vLower, vUpper);
   }
 }
 
@@ -832,7 +869,7 @@ void VerbalCover::fillSingular(
   }
   else
   {
-    VerbalCover::fillOrdinalFromTops(sumProfile, vside);
+    VerbalCover::fillCountOfTopsOrdinal(sumProfile, vside);
   }
 }
 
@@ -843,8 +880,7 @@ void VerbalCover::fillCompletion(const VerbalSide& vside)
 
   if (! completion.expandable(vside.side))
   {
-    // Make a list with one completion.
-    VerbalCover::fillExactlyList(vside);
+    VerbalCover::fillTopsMaybeOthers(vside);
   }
   else if (! completion.fullRanked(vside.side))
   {

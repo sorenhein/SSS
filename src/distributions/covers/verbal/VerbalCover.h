@@ -79,6 +79,11 @@ class VerbalCover
       const VerbalSide& vside,
       Phrase& phrase);
 
+    void fillDigits(
+      const Profile& sumProfile,
+      const Opponent side,
+      Phrase& phrase) const;
+
     void fillFreeCount(
       const VerbalSide& vside,
       Phrase& phrase) const;
@@ -89,8 +94,8 @@ class VerbalCover
     // SENTENCE_TOPS
     void fillTops(const VerbalSide& vside);
 
-    // SENTENCE_FILL_ORDINAL_FROM_TOPS
-    void fillOrdinalFromTops(
+    // SENTENCE_COUNT_OF_TOPS_ORDINAL
+    void fillCountOfTopsOrdinal(
       const Profile& sumProfile,
       const VerbalSide& vside);
 
@@ -184,6 +189,9 @@ class VerbalCover
 
     // SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
     void fillExactlyTopsMaybeUnset(const VerbalSide& vside);
+
+    // SENTENCE_TOPS_MAYBE_OTHERS
+    void fillTopsMaybeOthers(const VerbalSide& vside);
 
     // SENTENCE_TOPS_AND_XES
     void fillTopsAndXes(const VerbalSide& vside);

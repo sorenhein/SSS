@@ -42,7 +42,10 @@ enum PhrasesEnum: unsigned
   COUNT_RANGE = 43,
   COUNT_OR = 44,
 
-  DIGITS_RANGE = 50,
+  DIGITS_EXACT = 50,
+  DIGITS_ATMOST = 51,
+  DIGITS_ATLEAST = 52,
+  DIGITS_RANGE = 53,
 
   DICT_CARD = 60,
   DICT_CARDS = 61,

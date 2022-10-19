@@ -95,7 +95,15 @@ name COUNT_OR
 string "%0 or %1"
 
 
-# Example: 1-2
+name DIGITS_EXACT
+string "%0"
+
+name DIGITS_ATMOST
+string "at most %0"
+
+name DIGITS_ATLEAST
+string "at least %0"
+
 name DIGITS_RANGE
 string "%0-%1"
 
