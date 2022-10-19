@@ -69,12 +69,12 @@ class VerbalCover
     // Phrase fill functions.
 
     void fillLengthOrdinal(
-      const unsigned char oppsLength,
-      const Opponent simplestOpponent,
+      const Profile& sumProfile,
+      const VerbalSide& vside,
       Phrase& phrase);
 
     void fillHoldingOrRank(
-      const Opponent side,
+      const VerbalSide& vside,
       Phrase& phrase);
 
     void fillFreeCount(
@@ -102,7 +102,7 @@ class VerbalCover
 
     // SENTENCE_COUNT_HONORS_ORDINAL
     void fillCountHonorsOrdinal(
-      const unsigned char oppsLength,
+      const Profile& sumProfile,
       const VerbalSide& vside);
 
     // SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
@@ -250,6 +250,8 @@ class VerbalCover
 
     list<Completion>& getCompletions();
 
+
+    // String method
 
     string str(const RanksNames& ranksNames) const;
 };
