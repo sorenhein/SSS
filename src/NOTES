@@ -1,16 +1,54 @@
 Might still have to clean up types and code in Rank?Names.
 
-RANKNAME used:
-ACTUAL_FULL_INDEF
-ACTUAL_FULL_DEF
-ACTUAL_FULL_DEF_OF
-
-See whether getTopData in Profile is used.
-If not, we may not need ACTUAL_SHORT, ABSOLUTE_SHORT either
-
 German
 Danish
 French
+
+German
+------
+
+Zwischen
+--------
+Ost hat zwischen eine und drei Karten
+Ost hat genau eine Mittelhonneur zwischen Double und zu fünft
+Ost hat D10 zwischen zu viert und zu sechst
+
+eine von
+--------
+Ost has mindestens eine von Acht-Sieben Double
+
+Chicane
+-------
+West hat genau A, B, x oder void
+
+This comes from Completion::strSet.
+It should refer to a new entry in words.txt, prehaps just VOID.
+
+einen Honneur
+-------------
+Jeder Gegner hat eine oder zwei Honneure 
+Jeder Gegner hat eine oder zwei Mittelhonneure
+Einer der Gegner has mindestens eine Honneur Double
+
+von + dative
+------------
+West hat genau zwei von die Acht-Sieben-Sechs Double
+
+unterhalb (von + dative)
+---------
+Einer der Gegner hat ein Double komplett unterhalb das Ass
+Einer der Gegner hat das Ass und eine Karte unterhalb von die Dame
+Einer der Gegner hat das Ass und zwei Karten unterhalb von den Buben
+
+Maybe preposition.txt goes away.
+dative.txt is activated.
+In SENTENCE_TOPS_AND_COUNT_BELOW_CARD we refer to TOPS_LOWEST.
+This refers to P_LOWEST which refers to strLowest in Phrase.cpp.
+This just makes a card.  It could be a dative card instead.
+Similarly, DICT_BELOW and BELOW_COMPLETELY in phrases.txt can
+include "von".  Then dative is OK here too.
+
+
 
 -----
 
