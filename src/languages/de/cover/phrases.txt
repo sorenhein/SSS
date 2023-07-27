@@ -1,3 +1,6 @@
+group S_PLAYER
+# ------------
+
 name PLAYER_WEST
 string "West"
 
@@ -11,157 +14,161 @@ name PLAYER_EACH
 string "Jeder Gegner"
 
 name PLAYER_NEITHER
-string "Keiner der Gegner"
+string "Kein Gegner"
 
 name PLAYER_SUIT
 string "Die Farbe"
 
 
-name LENGTH_VERB_VOID
+group S_LENGTH
+# ------------
+
+name LENGTH_VOID
 string "ist Chicane"
 
-name LENGTH_VERB_NOT_VOID
+name LENGTH_NOT_VOID
 string "ist nicht Chicane"
 
-# Example: has a singleton
-name LENGTH_VERB_XTON
-string "hat ein %0"
+name LENGTH_XTON
+string "hat ein {P_ORDINAL0}"
 
-name LENGTH_VERB_EVENLY
-string "ist gleichmässig verteilt"
+name LENGTH_EVENLY
+string "ist gleich verteilt"
 
-name LENGTH_VERB_ODD_EVENLY
-string "ist gleichmässig verteilt"
+name LENGTH_ODD_EVENLY
+string "ist so gleich wie möglich verteilt"
 
-# Example: has at most a doubleton
-name LENGTH_VERB_XTON_ATMOST
-string "hat höchstens ein %0"
+name LENGTH_XTON_ATMOST
+string "hat höchstens ein {P_ORDINAL0}"
 
-# Example: Has two cards
-name LENGTH_VERB_CARDS
-string "hat %0 Karten"
+name LENGTH_ATMOST
+string "hat höchstens {P_NUMERICAL0} cards"
 
-# Example: Has at most two cards
-name LENGTH_VERB_ATMOST
-string "hat höchstens %0 Karten"
-
-name LENGTH_VERB_12
+name LENGTH_12
 string "hat ein Single oder Double"
 
-# Example: Has 2-3 cards
-name LENGTH_VERB_RANGE
-string "hat %0-%1 Karten"
+name LENGTH_RANGE
+string "hat {P_NUMERICAL0}-{P_NUMERICAL1} Karten"
 
-# Example: Has betweeen two and four cards
-name LENGTH_VERB_BETWEEN
-string "hat zwischen %0 und %1 Karten"
+name LENGTH_BETWEEN
+string "hat zwischen {P_NUMERICAL0} und {P_NUMERICAL1} Karten"
 
-# Example: [The suit] splits 2=3
-name LENGTH_VERB_SPLIT
-string "ist %0=%1 verteilt"
+name LENGTH_SPLIT
+string "ist {P_NUMERICAL0}={P_NUMERICAL1} verteilt"
 
 
-# Example: third
-name LENGTH_ORDINAL_EXACT
-string "%0"
+group S_ORDINAL
+# -------------
 
-# Example: at most third
-name LENGTH_ORDINAL_ATMOST
-string "höchstens %0"
+name ORDINAL_EXACT
+string "{P_ORDINAL0}"
 
-# Example: singleton or doubleton
-name LENGTH_ORDINAL_ADJACENT
-string "%0 oder %1"
+name ORDINAL_ATMOST
+string "höchstens {P_ORDINAL0}"
 
-# Example: doubleton to fourth
-name LENGTH_ORDINAL_RANGE
-string "%0 bis %1"
+name ORDINAL_ADJACENT
+string "{P_ORDINAL0} oder {P_ORDINAL1}"
+
+name ORDINAL_RANGE
+string "zwischen {P_ORDINAL0} und {P_ORDINAL1}"
 
 
-# Example: two
+group S_COUNT
+# -----------
+
 name COUNT_EXACT
-string "%0"
+string "{P_NUMERICAL0}"
 
-# Example: at most two
 name COUNT_ATMOST
-string "höchstens %0"
+string "höchstens {P_NUMERICAL0}"
 
-# Example: 2-3
+name COUNT_ATLEAST
+string "mindestens {P_NUMERICAL0}"
+
 name COUNT_RANGE
-string "%0-%1"
+string "{P_NUMERICAL0}-{P_NUMERICAL1}"
+
+name COUNT_OR
+string "{P_NUMERICAL0} oder {P_NUMERICAL1}"
 
 
-# Example: At most two of QJT
-# %0: Number
-# %1: Holding ("of")
-name TOPS_ATMOST
-string "höchstens %0 %1"
+group S_DIGITS
+# ------------
 
-# Example: At least one of QJT
-# %0: Number
-# %1: Holding ("of")
-name TOPS_ATLEAST
-string "mindestens %0 %1"
+name DIGITS_EXACT
+string "{P_DIGITS0}"
 
-# Example: one or two of QJT
-# %0: Number
-# %1: Number
-# %2: Holding ("of")
-name TOPS_ADJACENT
-string "%0 oder %1 %2"
+name DIGITS_ATMOST
+string "höchstens {P_DIGITS0}"
 
-# Example: 1-2 of QJT
-# %0: Number
-# %1: Number
-# %2: Holding ("of")
-name TOPS_RANGE
-string "%0-%1 %2"
+name DIGITS_ATLEAST
+string "mindestens {P_DIGITS0}"
 
-# Example: KQ
-name TOPS_ACTUAL
-string "%0"
-
-# Example: exactly two of KQJ
-# %0: Number
-# %1: Holding ("of")
-name TOPS_SOME_ACTUAL
-string "genau %0 %1"
-
-# Example: the king
-name TOPS_FULL_ACTUAL
-string "%0"
-
-# Example: T (always a single card)
-name TOPS_RANKS
-string "%0"
-
-# Example: cards (plural).  May also be card (singular).
-name TOPS_LOWER
-string ", niedrigere %0"
-
-# Example: cards below the T.
-# %0: card or cards.
-# %1: A specific card.
-name TOPS_BELOW
-string " %0 unterhalb von %1"
+name DIGITS_RANGE
+string "{P_DIGITS0}-{P_DIGITS1}"
 
 
-name BELOW_NORMAL
-string "unterhalb von"
+group S_DICT
+# ----------
 
-name BELOW_COMPLETELY
-string "komplett unterhalb von"
+name DICT_CARD
+string "Karte"
+
+name DICT_CARDS
+string "Karten"
+
+name DICT_HONOR
+string "Honneur"
+
+name DICT_HONORS
+string "Honneure"
+
+name DICT_MID_HONOR
+string "Mittelhonneur"
+
+name DICT_MID_HONORS
+string "Mittelhonneure"
+
+name DICT_BELOW
+string "unterhalb"
+
+name DICT_BELOW_COMPLETELY
+string "komplett unterhalb"
+
+name DICT_EITHER_WAY
+string "oder anders herum"
+
+name DICT_ONE_WAY
+string ""
 
 
-# Example: x(xx)
-name BOTTOMS_NORMAL
-string "%0"
+group S_HOLDING
+# -------------
+
+name TOPS_LOWEST
+string "{P_LOWEST0}"
+
+name TOPS_INDEFINITE
+string "{P_INDEFINITE0}"
+
+name TOPS_DEFINITE
+string "{P_DEFINITE0}"
+
+name TOPS_OF_DEFINITE
+string "{P_OF_DEFINITE0}"
+
+name TOPS_SET
+string "{P_HOLDING0}"
+
+name TOPS_UNSET
+string "{P_LOWS0}"
+
+name TOPS_XES
+string "{P_XES0}"
 
 
-# Example: KQT
-name LIST_HOLDING_EXACT
-string "%0"
+group S_LIST
+# ----------
 
-# Example: KQT(x)
-name LIST_HOLDING_WITH_LOWS
-string "%0(%1)"
+name LIST_HOLDING
+string "{P_HOLDING0}"

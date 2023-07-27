@@ -1,65 +1,65 @@
-# Example: West has a doubleton, West is void.
-# %0: Player
-# %1: Length
-name SENTENCE_LENGTH_ONLY
-string "%0 %1"
+group SENTENCES_GENERAL
 
-# Example: West has the king
-# %0: Player
-# %1: Top
-name SENTENCE_ONETOP_ONLY
-string "%0 hat %1"
 
-# Example: West has AK fourth
-# %0: Player
-# %1: Holding
-# %2: Length ordinal
-name SENTENCE_TOPS_LENGTH
-string "%0 hat %1 %2"
+name SENTENCE_LENGTH
+string "{S_PLAYER0} {S_LENGTH1}"
 
-# Example: West has AK fourth but neither of T9
-# %0: Player
-# %1: Holding
-# %2: Ordinal
-# %3: Negation indicator
-# %4: Holding
-name SENTENCE_TOPS_LENGTH_WITHOUT
-string "%0 hat %1 %2 aber %3 %4"
+name SENTENCE_TOPS
+string "{S_PLAYER0} hat {S_TOPS1}"
 
-# Example: West has AKJx(x)
-# %0: Player
-# %1: Holding
-# %2: Holding
-name SENTENCE_TOPS_AND_XES
-string "%0 hat %1%2"
+name SENTENCE_LENGTH_BELOW_TOPS
+string "{S_PLAYER0} {S_LENGTH1} {S_DICT2} {S_TOPS3}"
 
-# Example: West has AQ and 1-2 cards below the T
-# %0: Player
-# %1: Holding
-# %2: Card count indicator
-# %3: Holding
+name SENTENCE_COUNT_OF_TOPS_ORDINAL
+string "{S_PLAYER0} hat genau {S_COUNT1} von {S_TOPS2} {S_ORDINAL3}"
+
+name SENTENCE_COUNT_TOPS
+string "{S_PLAYER0} hat {S_COUNT1} {S_TOPS2}"
+
+name SENTENCE_EXACTLY_COUNT_TOPS
+string "{S_PLAYER0} hat genau {S_COUNT1} {S_TOPS2}"
+
+name SENTENCE_TOPS_ORDINAL
+string "{S_PLAYER0} hat {S_TOPS1} {S_ORDINAL2}"
+
+name SENTENCE_COUNT_TOPS_ORDINAL
+string "{S_PLAYER0} has {S_COUNT1} {S_TOPS2} {S_ORDINAL3}"
+
+name SENTENCE_COUNT_HONORS_ORDINAL
+string "{S_PLAYER0} hat genau {S_COUNT1} {S_DICT2} {S_ORDINAL3}"
+
+name SENTENCE_EXACTLY_COUNT_TOPS_ORDINAL
+string "{S_PLAYER0} hat genau {S_COUNT1} {S_TOPS2} {S_ORDINAL3}"
+
 name SENTENCE_TOPS_AND_LOWER
-string "%0 hat %1 und %2%3"
+string "{S_PLAYER0} hat {S_TOPS1} und {S_COUNT2}, niedrigere {S_DICT3}"
 
-# Example: West has a doubleton below the T
-# %0: Player
-# %1: Length
-# %2: Below indicator
-# %3: Holding
-name SENTENCE_ONLY_BELOW
-string "%0 %1 %2 %3"
+name SENTENCE_EXACTLY_TOPS_AND_LOWER
+string "{S_PLAYER0} hat genau {S_COUNT1} {S_TOPS2} und {S_COUNT3}, niedrigere {S_DICT4}"
 
-# Example: West has a doubleton chosen from king-queen-jack
-# %0: Player
-# %1: Length ordinal
-# %3: Holding
-name SENTENCE_SINGULAR_EXACT
-string "%0 hat ein %1 aus %2"
+name SENTENCE_TOPS_AND_COUNT_BELOW_CARD
+string "{S_PLAYER0} hat {S_TOPS1} und {S_COUNT2} {S_DICT3} unterhalb von {S_TOPS4}"
 
-# Example: West has AT, QT or Tx.
-# The list has up to four entries.  The unused variables are purged.
-# last ',' is replaced with ' or', where the word is in words.txt.
-# %0: Player
-# %x: Holdings
-name SENTENCE_LIST
-string "%0 hat genau %1, %2, %3, %4"
+name SENTENCE_EXACTLY_TOPS_MAYBE_UNSET
+string "{S_PLAYER0} hat genau {S_TOPS1}({S_TOPS2})"
+
+name SENTENCE_TOPS_MAYBE_OTHERS
+string "{S_PLAYER0} hat {S_TOPS1} und vielleicht andere Ränge"
+
+name SENTENCE_TOPS_AND_XES
+string "{S_PLAYER0} hat {S_TOPS1}{S_TOPS2}"
+
+name SENTENCE_EXACTLY_LIST
+string "{S_PLAYER0} hat genau {S_LIST1}, {S_LIST2}, {S_LIST3}, {S_LIST4}"
+
+name SENTENCE_2SPLIT_TOPS_SYMM
+string "Die Schlüsselkarten sind {S_TOPS0} / {S_TOPS1} oder anders herum verteilt"
+
+name SENTENCE_2SPLIT_TOPS_ASYMM
+string "Die Schlüsselkarten sind {S_TOPS0} = {S_TOPS1} verteilt"
+
+name SENTENCE_2SPLIT_TOPS_DIGITS_SYMM
+string "Die Schlüsselkarten sind ({S_TOPS0} mit {S_DIGITS1} Karten) / ({S_TOPS2} mit {S_DIGITS3} Karten) oder anders herum verteilt"
+
+name SENTENCE_2SPLIT_TOPS_DIGITS_ASYMM
+string "Die Schlüsselkarten sind ({S_TOPS0} mit {S_DIGITS1} Karten) = ({S_TOPS2} mit {S_DIGITS3} Karten) verteilt"

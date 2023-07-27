@@ -1,3 +1,6 @@
+group GROUP_INDEFINITE
+
+
 name CARD_INDEF_2
 string "Zwei"
 
@@ -26,7 +29,7 @@ name CARD_INDEF_TEN
 string "Zehn"
 
 name CARD_INDEF_JACK
-string "Bube"
+string "Buben"
 
 name CARD_INDEF_QUEEN
 string "Dame"

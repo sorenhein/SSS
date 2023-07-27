@@ -1,38 +1,38 @@
-name CARD_FULL_2
+name CARD_DEF_2
 string "der Zwei"
 
-name CARD_FULL_3
+name CARD_DEF_3
 string "der Drei"
 
-name CARD_FULL_4
+name CARD_DEF_4
 string "der Vier"
 
-name CARD_FULL_5
+name CARD_DEF_5
 string "der Fünf"
 
-name CARD_FULL_6
+name CARD_DEF_6
 string "der Sechs"
 
-name CARD_FULL_7
+name CARD_DEF_7
 string "der Sieben"
 
-name CARD_FULL_8
+name CARD_DEF_8
 string "der Acht"
 
-name CARD_FULL_9
+name CARD_DEF_9
 string "der Neun"
 
-name CARD_FULL_TEN
+name CARD_DEF_TEN
 string "der Zehn"
 
-name CARD_FULL_JACK
+name CARD_DEF_JACK
 string "dem Buben"
 
-name CARD_FULL_QUEEN
+name CARD_DEF_QUEEN
 string "der Dame"
 
-name CARD_FULL_KING
+name CARD_DEF_KING
 string "dem König"
 
-name CARD_FULL_ACE
+name CARD_DEF_ACE
 string "dem Ass"

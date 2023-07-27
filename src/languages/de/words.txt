@@ -1,3 +1,6 @@
+group GROUP_CARDS
+# ---------------
+
 name CARD
 string "Karte"
 
@@ -5,30 +8,53 @@ name CARDS
 string "Karten"
 
 
+group GROUP_HONORS
+# ----------------
+
 name HONOR
-string "Figur"
+string "Honneur"
 
 name HONORS
-string "Figuren"
+string "Honneure"
 
 name MID_HONOR
-string "Mittelfigur"
+string "Mittelhonneur"
 
 name MID_HONORS
-string "Mittelfiguren"
+string "Mittelhonneure"
 
+
+group GROUP_SMALL
+# ---------------
 
 name SMALL
 string "x"
 
 
-name PARTICLE_DEF_PLURAL
-string ""
-
-
-name PREPOSITION_DEF_PLURAL_OF
-string ""
-
+group GROUP_CONJUNCTIONS
+# ----------------------
 
 name CONJUNCTION_OR
 string "oder"
+
+
+group GROUP_PARTICLES
+# -------------------
+
+name PARTICLE_DEF_PLURAL
+string "die"
+
+
+group GROUP_PREPOSITIONS
+# ----------------------
+
+name PREPOSITION_DEF_PLURAL_OF
+string "von"
+
+
+group GROUP_THEY_HOLD
+# -------------------
+
+name THEY_HOLD
+string "wo die Gegner halten "
+

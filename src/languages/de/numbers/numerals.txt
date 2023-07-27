@@ -1,3 +1,6 @@
+group GROUP_NUMERAL
+
+
 name NUMERAL_0
 string "keine"
 
@@ -35,7 +38,7 @@ name NUMERAL_11
 string "elf"
 
 name NUMERAL_12
-string "twölf"
+string "zwölf"
 
 name NUMERAL_13
 string "dreizehn"

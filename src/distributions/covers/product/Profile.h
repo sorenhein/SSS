@@ -15,7 +15,6 @@
 using namespace std;
 
 class RanksNames;
-struct TopData;
 
 
 class Profile
@@ -48,11 +47,6 @@ class Profile
     void limit();
 
     unsigned char length() const;
-
-    void getTopData(
-      const unsigned char topNo,
-      const RanksNames& ranksNames,
-      TopData& topData) const;
 
     unsigned char numBottoms(const unsigned char lastTopNo) const;
 

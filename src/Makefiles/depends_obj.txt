@@ -519,8 +519,6 @@ distributions/covers/tableau/TableauCache.obj: distributions/covers/CoverState.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/CoverCategory.h
 distributions/covers/tableau/TableauCache.obj: distributions/covers/product/Profile.h
 distributions/covers/product/Profile.obj: distributions/covers/product/Profile.h
-distributions/covers/product/Profile.obj: distributions/covers/term/TopData.h
-distributions/covers/product/Profile.obj: utils/table.h ranks/RankNames.h
 distributions/covers/product/Profile.obj: ranks/RanksNames.h
 distributions/covers/product/Profile.obj: ranks/RankNames.h
 distributions/covers/product/ProfilePair.obj: distributions/covers/product/ProfilePair.h

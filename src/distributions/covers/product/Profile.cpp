@@ -13,8 +13,6 @@
 
 #include "Profile.h"
 
-#include "../term/TopData.h"
-
 #include "../../../ranks/RanksNames.h"
 
 
@@ -56,18 +54,6 @@ void Profile::limit()
 unsigned char Profile::length() const
 {
   return lengthInt;
-}
-
-
-void Profile::getTopData(
-  const unsigned char topNo,
-  const RanksNames& ranksNames,
-  TopData& topData) const
-{
-  assert(topNo < tops.size());
-
-  topData.value = tops[topNo];
-  topData.rankNamesPtr = &ranksNames.getOpponents(topNo);
 }
 
 

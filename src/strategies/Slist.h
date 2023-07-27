@@ -28,7 +28,7 @@ class DepthStats;
 
 using namespace std;
 
-typedef bool (Strategy::*ComparatorType)(const Strategy& strat) const;
+typedef int (Strategy::*ComparatorType)(const Strategy& strat) const;
 
 
 
